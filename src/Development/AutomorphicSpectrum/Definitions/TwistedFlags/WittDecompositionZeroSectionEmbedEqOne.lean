@@ -82,7 +82,6 @@ theorem lineT_gram (neg : Bool) (i l : Fin 1) :
   rw [Examples₂.diagForm_apply, ← star_piT_mul]
   cases neg <;> simp [Module.Basis.unitsSMul_apply, Examples₂.sgn, Units.smul_def]
 
-theorem lineNeg_gram (i l : Fin 1) : (lineNeg D).gram i l = -(D.sp.T : D.host.E) := lineT_gram true i l
 
 theorem linePos_gram (i l : Fin 1) : (linePos D).gram i l = (D.sp.T : D.host.E) := lineT_gram false i l
 
@@ -112,17 +111,6 @@ theorem hasSignature_nat {T : ℕ} (hT : 0 < T) :
       simp [Matrix.mul_apply, Formalism.UG.Jpq]
       rw [← h1]; field_simp
 
-theorem lineT_sigOK (neg : Bool) : (lineT D neg).SigOK := fun τ => by
-  have h := hasSignature_nat D.sp.T_prime.pos
-  cases neg
-  · have e : (lineT D false).gram.map τ = Matrix.of fun _ _ : Fin 1 => (D.sp.T : ℂ) := by
-      ext i l; rw [Matrix.map_apply, lineT_gram]; simp
-    show Formalism.UG.HasSignature _ 1 0
-    rw [e]; exact h.1
-  · have e : (lineT D true).gram.map τ = Matrix.of fun _ _ : Fin 1 => -(D.sp.T : ℂ) := by
-      ext i l; rw [Matrix.map_apply, lineT_gram]; simp
-    show Formalism.UG.HasSignature _ 0 1
-    rw [e]; exact h.2
 
 theorem isLineVec_lineT (neg : Bool) : IsLineVec (lineT D neg) fun _ => 1 := by
   refine ⟨rfl, ?_⟩
@@ -237,9 +225,6 @@ def IsFrame0 (T : HSp D) {r : ℕ} (C C' : Matrix (Fin T.rank) (Fin r) D.host.E)
     Formalism.UG.cT (D.sp.cm.sig : D.host.E →+* D.host.E) B0 * T.gram * B0 = T0.gram ∧
     T.rank = 2 * r + T0.rank
 
-theorem isQuotFrame_iff {T T0 : HSp D} {r : ℕ} {C C' : Matrix (Fin T.rank) (Fin r) D.host.E}
-    {B0 : Matrix (Fin T.rank) (Fin T0.rank) D.host.E} : IsQuotFrame T C C' T0 B0 ↔ 0 < r ∧ IsFrame0 T C C' T0 B0 :=
-  ⟨fun h => ⟨h.1.1, h.1.2, h.2⟩, fun h => ⟨⟨h.1, h.2.1⟩, h.2.2⟩⟩
 
 theorem gram_swap_zero {a b : ℕ} {M : Matrix (Fin S.rank) (Fin a) D.host.E} {N : Matrix (Fin S.rank) (Fin b) D.host.E}
     (h : Mᴴ * S.gram * N = 0) : Nᴴ * S.gram * M = 0 := by
@@ -250,8 +235,6 @@ theorem gram_swap_zero {a b : ℕ} {M : Matrix (Fin S.rank) (Fin a) D.host.E} {N
 theorem isFrame0_hyp : IsFrame0 S d.e d.e' S₀ d.i₀ :=
   ⟨isIsoSub_e d, d.e'e', d.e'e, gram_swap_zero d.i₀e, gram_swap_zero d.i₀e', d.iso, by have := d.rank_add; omega⟩
 
-theorem isLeviEmb_witt_embedding (g : GA D S₀) : IsLeviEmb S d.e d.e' S₀ d.i₀ g (d.emb0 g) :=
-  ⟨d.wittDecomp_anisotropicEmbedding_inclX g, d.wittDecomp_anisotropicEmbedding_inclY g, d.wittDecomp_anisotropicEmbedding_inclAnisotropic g⟩
 
 def scaleHyp (y : D.host.E) (hy : y ≠ 0) : HypDec S S₀ ρ where
   e := y • d.e
@@ -267,28 +250,10 @@ def scaleHyp (y : D.host.E) (hy : y ≠ 0) : HypDec S S₀ ρ where
   i₀e' := by rw [Matrix.mul_smul, d.i₀e', smul_zero]
   rank_add := d.rank_add
 
-theorem incA_mul_inv {y : D.host.E} (hy : y ≠ 0) : incA D y⁻¹ * incA D y = 1 := by
-  rw [← map_mul, inv_mul_cancel₀ hy, map_one]
 
-theorem scaleHyp_jX (y : D.host.E) (hy : y ≠ 0) : (scaleHyp d y hy).jX = incA D y • d.jX := rat_smul y d.e
 
-theorem scaleHyp_pX (y : D.host.E) (hy : y ≠ 0) : (scaleHyp d y hy).pX = incA D y⁻¹ • d.pX := by
-  rw [HypDec.pX, HypDec.pX, ← rat_smul]
-  congr 1
-  change ((star y)⁻¹ • d.e')ᴴ * S.gram = y⁻¹ • (d.e'ᴴ * S.gram)
-  rw [conjTranspose_smul, Matrix.smul_mul, star_inv₀, star_star]
 
-theorem blockX_scaleHyp (y : D.host.E) (hy : y ≠ 0) (g : GA D S) : blockX (scaleHyp d y hy) g = blockX d g := by
-  rw [blockX, blockX, scaleHyp_jX, scaleHyp_pX, Matrix.mul_smul, Matrix.smul_mul, Matrix.mul_smul, smul_smul,
-    incA_mul_inv hy, one_smul]
 
-theorem witt_embedding_scale_invariant (y : D.host.E) (hy : y ≠ 0) : (scaleHyp d y hy).emb0 = d.emb0 := by
-  ext1 g
-  refine (scaleHyp d y hy).ga_ext ?_ ?_ ?_
-  · rw [HypDec.wittDecomp_anisotropicEmbedding_inclX, scaleHyp_jX, Matrix.mul_smul, d.wittDecomp_anisotropicEmbedding_inclX]
-  · rw [HypDec.wittDecomp_anisotropicEmbedding_inclAnisotropic]; exact (d.wittDecomp_anisotropicEmbedding_inclAnisotropic g).symm
-  · have e : (scaleHyp d y hy).jY = incA D (star y)⁻¹ • d.jY := rat_smul _ d.e'
-    rw [HypDec.wittDecomp_anisotropicEmbedding_inclY, e, Matrix.mul_smul, d.wittDecomp_anisotropicEmbedding_inclY]
 
 theorem mem_flagN_of_blocks {g : GA D S} {T : Mx D ρ ρ} {b : Mx D ρ S₀.rank} (hT : GlobalTheory.BesselChar.StrictUp T)
     (hX : mt S g ⬝ d.jX = d.jX + d.jX ⬝ T) (h0 : mt S g ⬝ d.j0 = d.j0 + d.jX ⬝ b) : g ∈ NFlag S d.e := by
@@ -299,20 +264,7 @@ theorem mem_flagN_of_blocks {g : GA D S} {T : Mx D ρ ρ} {b : Mx D ρ S₀.rank
   funext k
   exact congrFun (congrFun h1 k) i
 
-theorem flagN_le_scaleHyp (y : D.host.E) (hy : y ≠ 0) : NFlag S d.e ≤ NFlag S (scaleHyp d y hy).e := fun g hg => by
-  obtain ⟨T, b, hT, h1, h2⟩ := exists_blocks d hg
-  refine mem_flagN_of_blocks (scaleHyp d y hy) hT (b := incA D y⁻¹ • b) ?_ ?_
-  · rw [scaleHyp_jX, Matrix.mul_smul, h1, smul_add, Matrix.smul_mul]
-  · rw [scaleHyp_jX, Matrix.smul_mul, Matrix.mul_smul, smul_smul, mul_comm, incA_mul_inv hy, one_smul]
-    exact h2
 
-theorem flagN_scaleHyp (y : D.host.E) (hy : y ≠ 0) : NFlag S (scaleHyp d y hy).e = NFlag S d.e := by
-  refine le_antisymm ?_ (flagN_le_scaleHyp d y hy)
-  have h := flagN_le_scaleHyp (scaleHyp d y hy) y⁻¹ (inv_ne_zero hy)
-  have e : (scaleHyp (scaleHyp d y hy) y⁻¹ (inv_ne_zero hy)).e = d.e := by
-    change y⁻¹ • y • d.e = d.e
-    rw [smul_smul, inv_mul_cancel₀ hy, one_smul]
-  rwa [e] at h
 
 theorem conj_mem_flagN (g : GA D S₀) {n : GA D S} (hn : n ∈ NFlag S d.e) :
     d.emb0 g * n * (d.emb0 g)⁻¹ ∈ NFlag S d.e := by
@@ -324,12 +276,6 @@ theorem conj_mem_flagN (g : GA D S₀) {n : GA D S} (hn : n ∈ NFlag S d.e) :
   · rw [mt_mul, mt_mul, Matrix.mul_assoc, Matrix.mul_assoc, d.wittDecomp_anisotropicEmbedding_inclAnisotropic, cancel₂ h2, Matrix.add_mul, Matrix.mul_add,
       cancel₂ (d.wittDecomp_anisotropicEmbedding_inclAnisotropic g), Matrix.mul_assoc, mt_mul_inv, Matrix.mul_one, Matrix.mul_assoc, cancel₂ (d.wittDecomp_anisotropicEmbedding_inclX g)]
 
-theorem eq_one_of_levi_embedding_mem_flag {g : GA D S₀} (h : d.emb0 g ∈ NFlag S d.e) : g = 1 := by
-  obtain ⟨T, b, -, -, h2⟩ := exists_blocks d h
-  have h3 : d.p0 ⬝ (mt S (d.emb0 g) ⬝ d.j0) = d.p0 ⬝ (d.j0 + d.jX ⬝ b) := by rw [h2]
-  rw [d.wittDecomp_anisotropicEmbedding_inclAnisotropic, cancel₂ d.p0_j0, Matrix.one_mul, Matrix.mul_add, d.p0_j0, cancel₂ d.p0_jX, Matrix.zero_mul, add_zero]
-    at h3
-  exact mt_injective S₀ (h3.trans (mt_one S₀).symm)
 
 variable (ψ : AddChar (AF D.host.F) ℂ)
 
@@ -402,11 +348,6 @@ def emb0Equiv : GA D S₀ ≃* GA D S where
       Matrix.one_mul, Matrix.mul_assoc, witt_decomposition_zero_section_embed_eq_one, Matrix.mul_one])
   map_mul' := map_mul d.emb0
 
-theorem isHaar_map_levi_embedding (μ : Measure (GA D S₀)) (hμ : μ.IsHaarMeasure) : (μ.map d.emb0).IsHaarMeasure := by
-  obtain ⟨i1, i2, i3, i4, i5, -⟩ := GlobalTheory.Mem.AdelicGroupTop.adelic_unitary_topology D S
-  obtain ⟨k1, k2, k3, k4, k5, -⟩ := GlobalTheory.Mem.AdelicGroupTop.adelic_unitary_topology D S₀
-  exact MulEquiv.isHaarMeasure_map μ (emb0Equiv d) d.continuous_embed
-    (continuous_of_mt S₀ (continuous_const.matrix_mul ((continuous_mt S).matrix_mul continuous_const)))
 
 end Zero
 
@@ -549,17 +490,9 @@ def srcDual (j r : ℕ) : Matrix (Fin (D.sp.Y j).rank) (Fin r) D.host.E := (star
 
 def skewDual (j r : ℕ) : Matrix (Fin (D.sp.Y j).rank) (Fin r) D.host.E := D.host.xi0⁻¹ • F.dualMat j r
 
-theorem srcMat_even {j : ℕ} (he : Even j) (r : ℕ) : F.srcMat j r = F.colMat j r := by
-  rw [srcMat, srcScal, if_pos he, one_smul]
 
-theorem srcDual_even {j : ℕ} (he : Even j) (r : ℕ) : F.srcDual j r = F.dualMat j r := by
-  rw [srcDual, srcScal, if_pos he, star_one, inv_one, one_smul]
 
-theorem srcMat_odd {j : ℕ} (ho : ¬ Even j) (r : ℕ) : F.srcMat j r = D.host.xi0 • F.colMat j r := by
-  rw [srcMat, srcScal, if_neg ho]
 
-theorem srcDual_odd {j : ℕ} (ho : ¬ Even j) (r : ℕ) : F.srcDual j r = -F.skewDual j r := by
-  rw [srcDual, srcScal, if_neg ho, GlobalTheory.DualPairCheck.star_purely_imaginary_eq_neg, inv_neg, neg_smul, skewDual]
 
 def base (j r : ℕ) : Matrix (Fin (D.sp.Y j).rank) (Fin r) D.host.E :=
   fun k i => if i.1 < rho D j then F.e j i k else F.z j k
@@ -649,9 +582,6 @@ theorem dual_col : (F.dualMat j r)ᴴ * (D.sp.Y j).gram * F.colMat j r = 1 := by
   · subst h; simp
   · rw [if_neg h, if_neg fun e => h (Fin.ext e.symm), map_zero]
 
-theorem skewDual_spec : (-D.host.xi0) • ((F.skewDual j r)ᴴ * (D.sp.Y j).gram * F.colMat j r) = 1 := by
-  rw [skewDual, conjTranspose_smul, Matrix.smul_mul, Matrix.smul_mul, F.dual_col hj hr, smul_smul, star_inv₀,
-    GlobalTheory.DualPairCheck.star_purely_imaginary_eq_neg, mul_inv_cancel₀ (neg_ne_zero.2 xi_zero_ne_zero), one_smul]
 
 end Rel
 
@@ -732,30 +662,14 @@ theorem frameMat_iXY (j : ℕ) : frameMat (D.sp.Y j) (D.sp.X j) (D.sp.iXY j) =
     frameMat (D.sp.Y j) (V0 D j) (F.embeddingLineSum j) * (orthogonalDecompLineSum D j).iA := by
   rw [← F.embedding_line_sum_inl j]; exact frameMat_comp _ _ _ _ _
 
-theorem frameMat_alt (j : ℕ) : frameMat (D.sp.Y j) (V0 D j) (F.embeddingLineSum j) *ᵥ vecB (orthogonalDecompLineSum D j) (fun _ => 1) = F.z j := by
-  rw [vecB, Matrix.mulVec_mulVec]
-  refine Eq.trans (congrArg (· *ᵥ fun _ => (1 : D.host.E))
-    (frameMat_comp (D.sp.Y j) (V0 D j) (lineNeg D) (F.embeddingLineSum j) (LinearMap.inr D.host.E _ _)).symm) ?_
-  apply (D.sp.Y j).frame.equivFun.symm.injective
-  have h := col_frameMat (D.sp.Y j) (lineNeg D) (F.embeddingLineSum j ∘ₗ LinearMap.inr D.host.E _ _) 0
-  have h2 : (F.embeddingLineSum j ∘ₗ LinearMap.inr D.host.E _ _) ((lineNeg D).frame 0) = vecY j (F.z j) := by
-    rw [embeddingLineSum, LinearMap.coprod_inr]; exact lineMap_frame _ _ _ _
-  refine Eq.trans (congrArg _ (funext fun k => ?_)) (h.trans h2)
-  simp only [Matrix.mulVec, dotProduct, mul_one]
-  exact Fin.sum_univ_one _
 
 def besDat {j : ℕ} (hj : j < D.R.m) (he : Even j) : BesDat (D.sp.X j) (D.sp.Y j) (D.sp.iXY j) :=
   toBesDat (F.hypEven hj he rfl) (orthogonalDecompLineSum D j) (isLineVec_lineT true) one_ne_zero (D.sp.iXY j) (F.frameMat_iXY j)
 
-theorem besDat_rho {j : ℕ} (hj : j < D.R.m) (he : Even j) : (F.besDat hj he).ρ = rho D j := rfl
 
-theorem besDat_e {j : ℕ} (hj : j < D.R.m) (he : Even j) : (F.besDat hj he).e = F.colMat j (rho D j) := rfl
 
-theorem besDat_alt {j : ℕ} (hj : j < D.R.m) (he : Even j) : (F.besDat hj he).z = F.z j := F.frameMat_alt j
 
-theorem besDat_c {j : ℕ} (hj : j < D.R.m) (he : Even j) (i) : (F.besDat hj he).c i = 1 := rfl
 
-theorem besDat_y {j : ℕ} (hj : j < D.R.m) (he : Even j) : ((F.besDat hj he).y : GA D (D.sp.Y j)) = 1 := rfl
 
 theorem isFrame0_even {j : ℕ} (hj : j < D.R.m) (he : Even j) {r : ℕ} (hr : r = rho D j) :
     IsFrame0 (D.sp.Y j) (F.colMat j r) (F.dualMat j r) (V0 D j) (frameMat _ _ (F.embeddingLineSum j)) :=
@@ -765,9 +679,6 @@ theorem isFrame0_odd {j : ℕ} (hj : j < D.R.m) (ho : ¬ Even j) {r : ℕ} (hr :
     IsFrame0 (D.sp.Y j) (F.colMat j r) (F.dualMat j r) (D.sp.X j) (frameMat _ _ (D.sp.iXY j)) :=
   isFrame0_hyp (F.hypOdd hj ho hr)
 
-theorem isFrame_source_odd {j : ℕ} (hj : j < D.R.m) (ho : ¬ Even j) {r : ℕ} (hr : r = rho D j) :
-    IsFrame0 (D.sp.Y j) (F.srcMat j r) (F.srcDual j r) (D.sp.X j) (frameMat _ _ (D.sp.iXY j)) :=
-  isFrame0_hyp (F.hypSrc hj ho hr)
 
 def embeddingIntoLineSum (D : D7) (j : ℕ) : GA D (D.sp.X j) →* GA D (V0 D j) := (orthogonalDecompLineSum D j).emb.comp (MonoidHom.inl _ _)
 
@@ -817,23 +728,9 @@ theorem emb_mem_GQ {h : GA D (D.sp.X j)} (hh : h ∈ GQ (D.sp.X j)) : F.emb j h 
     exact HypDec.wittDecomp_anisotropicEmbedding_mem_rationalPoints _ ((orthogonalDecompLineSum D j).emb_mem_GQ hh (one_mem _))
   · rw [F.emb_odd hj he]; exact HypDec.wittDecomp_anisotropicEmbedding_mem_rationalPoints _ hh
 
-theorem isLeviEmb_even (he : Even j) (h : GA D (D.sp.X j)) : IsLeviEmb (D.sp.Y j) (F.colMat j (rho D j))
-    (F.dualMat j (rho D j)) (V0 D j) (frameMat _ _ (F.embeddingLineSum j)) (embeddingIntoLineSum D j h) (F.emb j h) := by
-  rw [F.emb_even hj he]; exact isLeviEmb_witt_embedding (F.hypEven hj he rfl) _
 
-theorem isLeviEmb_odd (ho : ¬ Even j) (h : GA D (D.sp.X j)) : IsLeviEmb (D.sp.Y j) (F.colMat j (rho D j))
-    (F.dualMat j (rho D j)) (D.sp.X j) (frameMat _ _ (D.sp.iXY j)) h (F.emb j h) := by
-  rw [F.emb_odd hj ho]; exact isLeviEmb_witt_embedding (F.hypOdd hj ho rfl) _
 
-theorem isLeviEmb_source_frame_odd (ho : ¬ Even j) (h : GA D (D.sp.X j)) : IsLeviEmb (D.sp.Y j) (F.srcMat j (rho D j))
-    (F.srcDual j (rho D j)) (D.sp.X j) (frameMat _ _ (D.sp.iXY j)) h (F.emb j h) := by
-  rw [F.emb_odd hj ho, ← witt_embedding_scale_invariant _ (srcScal D j) (srcScal_ne j)]
-  exact isLeviEmb_witt_embedding (F.hypSrc hj ho rfl) _
 
-theorem grpN_alt : NFlag (D.sp.Y j) (F.srcMat j (rho D j)) = F.grpN j := by
-  by_cases he : Even j
-  · rw [F.srcMat_even he]
-  · exact flagN_scaleHyp (F.hypOdd hj he rfl) _ (srcScal_ne j)
 
 theorem conj_mem_grpN (h : GA D (D.sp.X j)) {n : GA D (D.sp.Y j)} (hn : n ∈ F.grpN j) :
     F.emb j h * n * (F.emb j h)⁻¹ ∈ F.grpN j := by
@@ -841,29 +738,7 @@ theorem conj_mem_grpN (h : GA D (D.sp.X j)) {n : GA D (D.sp.Y j)} (hn : n ∈ F.
   · rw [F.emb_even hj he]; exact conj_mem_flagN (F.hypEven hj he rfl) _ hn
   · rw [F.emb_odd hj he]; exact conj_mem_flagN (F.hypOdd hj he rfl) _ hn
 
-theorem eq_one_of_emb_mem {h : GA D (D.sp.X j)} (hh : F.emb j h ∈ F.grpN j) : h = 1 := by
-  by_cases he : Even j
-  · apply F.emb_injective hj
-    rw [F.emb_even hj he] at hh
-    rw [F.emb_even hj he, eq_one_of_levi_embedding_mem_flag (F.hypEven hj he rfl) hh, map_one, map_one]
-  · rw [F.emb_odd hj he] at hh; exact eq_one_of_levi_embedding_mem_flag (F.hypOdd hj he rfl) hh
 
-theorem mem_grpR {g : GA D (D.sp.Y j)} : g ∈ F.grpR j ↔ ∃ n ∈ F.grpN j, ∃ h, g = n * F.emb j h := by
-  refine ⟨fun hg => ?_, ?_⟩
-  · let K : Subgroup (GA D (D.sp.Y j)) :=
-      { carrier := {g | ∃ n ∈ F.grpN j, ∃ h, g = n * F.emb j h}
-        one_mem' := ⟨1, one_mem _, 1, by rw [map_one, one_mul]⟩
-        mul_mem' := by
-          rintro _ _ ⟨n, hn, h, rfl⟩ ⟨n', hn', h', rfl⟩
-          exact ⟨_, mul_mem hn (F.conj_mem_grpN hj h hn'), h * h', by rw [map_mul]; group⟩
-        inv_mem' := by
-          rintro _ ⟨n, hn, h, rfl⟩
-          exact ⟨_, F.conj_mem_grpN hj h⁻¹ (inv_mem hn), h⁻¹, by rw [map_inv]; group⟩ }
-    have : F.grpR j ≤ K := sup_le (fun n hn => ⟨n, hn, 1, by rw [map_one, mul_one]⟩)
-      (by rintro _ ⟨h, rfl⟩; exact ⟨1, one_mem _, h, (one_mul _).symm⟩)
-    exact this hg
-  · rintro ⟨n, hn, h, rfl⟩
-    exact mul_mem (Subgroup.mem_sup_left hn) (Subgroup.mem_sup_right ⟨h, rfl⟩)
 
 theorem psiN_even (he : Even j) : F.psiN ψ j = besChar ψ (F.besDat hj he) := dif_pos ⟨hj, he⟩
 
@@ -878,11 +753,6 @@ theorem psiN_odd_eq (ho : ¬ Even j) {n : GA D (D.sp.Y j)} (hn : n ∈ F.grpN j)
     F.psiN ψ j n = psiFlag ψ (F.hypOdd hj ho rfl) n := by
   rw [F.psiN_odd ψ ho]; exact psiU_eq_psiFlag (F.hypOdd hj ho rfl) ψ hn
 
-theorem psiU_alt (ho : ¬ Even j) {n : GA D (D.sp.Y j)} (hn : n ∈ F.grpN j) :
-    psiU ψ (D.sp.Y j) (F.srcMat j (rho D j)) n = F.psiN ψ j n := by
-  rw [F.psiN_odd_eq hj ψ ho hn]
-  refine (psiU_eq_psiFlag (F.hypSrc hj ho rfl) ψ ((F.grpN_alt hj).ge hn)).trans ?_
-  rw [psiFlag, psiFlag, hypSrc, blockX_scaleHyp]
 
 theorem psiN_mul {n n' : GA D (D.sp.Y j)} (hn : n ∈ F.grpN j) (hn' : n' ∈ F.grpN j) :
     F.psiN ψ j (n * n') = F.psiN ψ j n * F.psiN ψ j n' := by
@@ -915,17 +785,9 @@ theorem psiN_conj (h : GA D (D.sp.X j)) {n : GA D (D.sp.Y j)} (hn : n ∈ F.grpN
 
 end Grp
 
-theorem isEmbHom_emb {j : ℕ} (hj : j < D.R.m) : IsEmbHom (D.sp.iXY j) (F.emb j) := fun h => by
-  by_cases he : Even j
-  · rw [emb, dif_pos hj, dif_pos he]; exact embRel_embA _ _ _ (F.frameMat_iXY j) h
-  · rw [F.emb_odd hj he]; exact HypDec.embRel_isometric_embedding _ h _ rfl
 
-theorem isEmbHom_embedding_into_line_sum (j : ℕ) : IsEmbHom (B := V0 D j) (LinearMap.inl D.host.E _ _) (embeddingIntoLineSum D j) :=
-  fun h => (orthogonalDecompLineSum D j).embRel_left _ rfl h
 
-theorem isEmbHom_embYm : IsEmbHom D.sp.eYm.toLinearMap (embYm D) := fun h => (hypTop D).embRel_isometric_embedding h _ rfl
 
-theorem isEmbHom_embTop : IsEmbHom D.sp.iX' F.embTop := fun h => F.orthTop.embRel_left _ rfl h
 
 theorem isIsoSub_colMat (j : ℕ) : IsIsoSub (D.sp.Y j) (F.colMat j (rho D j)) := by
   by_cases hj : j < D.R.m
@@ -1004,7 +866,6 @@ namespace Meas
 
 variable {F : Frames D} (M : Meas F)
 
-theorem isNPair {j : ℕ} (hj : j < D.R.m) (he : Even j) : IsNPair (F.besDat hj he) (M.μN j) (M.fdN j) := M.unitN j
 
 def IsCut (j : ℕ) (β : GA D (D.sp.Y j) → ℝ) : Prop :=
   IsCutoffB (D.sp.Y j) (D.sp.X j) (F.colMat j (rho D j)) (F.emb j) (M.μN j) (M.μX j) β
@@ -1016,24 +877,10 @@ def quotInt (j : ℕ) (β : GA D (D.sp.Y j) → ℝ) (Φ : GA D (D.sp.Y j) → �
 def cutMeas (j : ℕ) (β : GA D (D.sp.Y j) → ℝ) : Measure (GA D (D.sp.Y j)) :=
   (M.μY j).withDensity fun g => ENNReal.ofReal (β g)
 
-theorem integral_cutMeas {j : ℕ} {β : GA D (D.sp.Y j) → ℝ} (hβ : M.IsCut j β) (Φ : GA D (D.sp.Y j) → ℂ) :
-    ∫ g, Φ g ∂(M.cutMeas j β) = M.quotInt j β Φ := by
-  refine (integral_withDensity_eq_integral_smul (f := fun g => (β g).toNNReal) hβ.2.1.real_toNNReal Φ).trans ?_
-  refine integral_congr_ae (Filter.Eventually.of_forall fun g => ?_)
-  simp only [NNReal.smul_def, Real.coe_toNNReal _ (hβ.1 g), Complex.real_smul]
 
-theorem integrable_cutMeas {j : ℕ} {β : GA D (D.sp.Y j) → ℝ} (hβ : M.IsCut j β) (Φ : GA D (D.sp.Y j) → ℂ) :
-    Integrable Φ (M.cutMeas j β) ↔ Integrable (fun g => (β g : ℂ) * Φ g) (M.μY j) := by
-  refine (integrable_withDensity_iff_integrable_smul (f := fun g => (β g).toNNReal) hβ.2.1.real_toNNReal).trans ?_
-  simp only [NNReal.smul_def, Real.coe_toNNReal _ (hβ.1 _), Complex.real_smul]
 
 end Meas
 
-theorem rho_step (j : ℕ) : (Odd j → rho D (j - 1) = rho D j) ∧
-    (Even j → 2 ≤ j → j + 2 ≤ D.R.m → rho D (j - 1) = rho D j + 1) ∧ rho D 0 = D.R.rS := by
-  have hm := Nat.even_iff.1 D.R.m_even
-  simp only [rho, Ranks.rS, Nat.even_iff, Nat.odd_iff]
-  refine ⟨?_, ?_, ?_⟩ <;> intros <;> omega
 
 example (D : D7) : (D.sp.Y 0).hT (vecY 0 ((Frames.std D).z 0)) (vecY 0 ((Frames.std D).z 0)) = -(D.sp.T : D.host.E) := by
   rw [(Frames.std_isBase D).2, D.sp.zm_norm]

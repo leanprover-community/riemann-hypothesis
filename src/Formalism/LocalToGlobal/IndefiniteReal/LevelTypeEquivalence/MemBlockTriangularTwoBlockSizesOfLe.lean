@@ -17,22 +17,7 @@ section Gen
 
 variable {D : D7} {V : HSp D} {β : GL (Fin V.rank) (EAf D)}
 
-theorem choose_congr' {α : Type*} {p q : α → Prop} (hp : ∃ x, p x) (hq : ∃ x, q x) (e : p = q) :
-    hp.choose = hq.choose := by
-  subst e; rfl
 
-theorem level_action_congr {L1 L2 : Formalism.L2.DIV.LevDat D.host.E ℂ V.rank} (g1 : Formalism.L2.DIV.G0 L1.Pg L1.r)
-    (g2 : Formalism.L2.DIV.G0 L2.Pg L2.r) (hI : ∀ κ, IsLevelLift V β L1 g1 κ ↔ IsLevelLift V β L2 g2 κ)
-    (hc : ∀ κ, levChi V β (flagL L1) κ = levChi V β (flagL L2) κ) :
-    actG0 V β L1 g1 = actG0 V β L2 g2 := by
-  funext F
-  unfold actG0
-  by_cases h : ∃ κ, IsLevelLift V β L1 g1 κ
-  · have h' : ∃ κ, IsLevelLift V β L2 g2 κ := let ⟨κ, hκ⟩ := h; ⟨κ, (hI κ).1 hκ⟩
-    rw [dif_pos h, dif_pos h', choose_congr' h h' (funext fun κ => propext (hI κ))]
-    simp only [hc]
-  · have h' : ¬ ∃ κ, IsLevelLift V β L2 g2 κ := fun ⟨κ, hκ⟩ => h ⟨κ, (hI κ).2 hκ⟩
-    rw [dif_neg h, dif_neg h']
 
 variable {n r : ℕ} {κF : Type} [CommRing κF]
 
@@ -82,17 +67,6 @@ theorem levFn_datY_noQ (hn : V.rank ≤ r) (hr : r ≤ V.rank) (t j : ℕ) (Pg Q
   rw [Finset.prod_eq_one hq]
   rfl
 
-theorem level_action_independent_of_primes (hn : V.rank ≤ r) (hr : r ≤ V.rank) (t j : ℕ) (Pg Q : Finset (Pl D.host.E))
-    (P : LevelP Pg r ℂ) (χ : ℕ → ∀ PP : Pl D.host.E, (kP PP)ˣ →* ℂˣ) (ξ ξ' : ∀ PP : Pl D.host.E, (kP PP)ˣ →* ℂˣ) (fr : Formalism.IndefR.Lev.Frm)
-    (g0 : G0 Pg r) :
-    actG0 V β (datY V.rank r t j hr Pg Q P χ ξ fr) g0 = actG0 V β (datY V.rank r t j hr Pg ∅ P χ ξ' fr) g0 := by
-  refine level_action_congr (L1 := datY V.rank r t j hr Pg Q P χ ξ fr) (L2 := datY V.rank r t j hr Pg ∅ P χ ξ' fr) g0 g0
-    (fun κ => ?_) (fun κ => ?_)
-  · unfold IsLevelLift
-    rw [mem_parLev_datY_noQ hn hr t j Pg Q P χ ξ ξ' fr]
-    rfl
-  · unfold levChi
-    rw [levFn_datY_noQ hn hr t j Pg Q P χ ξ ξ' fr]
 
 end Gen
 
@@ -156,13 +130,6 @@ section MultLev
 
 variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar}
 
-theorem mult_lev' {θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)} {M : DSModel V S} {J : Set (GA D V)}
-    {χ : GA D V → ℂ} {T : MMap M} (hT : T ∈ Mult θ M J χ) : ∀ v, ∀ k ∈ J, ∀ g, T v (g * k) = χ k * T v g := by
-  induction hT using Submodule.span_induction with
-  | mem x hx => exact hx.lev
-  | zero => intro v k _ g; simp
-  | add x y _ _ hx hy => intro v k hk g; simp [hx v k hk g, hy v k hk g, mul_add]
-  | smul a x _ hx => intro v k hk g; simp [hx v k hk g, mul_left_comm]
 
 end MultLev
 
@@ -176,11 +143,6 @@ theorem rank_lowerChainSpace_zero_le : (Yc D 0).rank ≤ D.R.r := by
   show D.R.r + min 0 D.R.m * D.R.t ≤ D.R.r
   simp
 
-theorem actYt_zero (t : T) (g : G) : actYt R t 0 g = principalLevelAction R g := by
-  refine LinearMap.ext fun F => ?_
-  show actG0 (Yc D 0) (R.βY 0) (R.datYt t 0 R.triv) (R.eG g) F = actG0 (Yc D 0) (R.βY 0) (R.dat0 R.triv) (R.eG g) F
-  unfold LevCh.datYt LevCh.dat0
-  rw [level_action_independent_of_primes rank_lowerChainSpace_zero_le (r_le_Y 0) D.R.t 0 R.Pg (R.Q t) R.triv R.chi (R.xiR t) (fun _ => 1) Frm.B]
 
 end Real
 

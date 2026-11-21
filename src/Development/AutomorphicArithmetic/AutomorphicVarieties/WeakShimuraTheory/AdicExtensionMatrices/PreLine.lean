@@ -1,8 +1,89 @@
-import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.AdicExtensionMatrices.ResLift
-import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.AdicExtensionMatrices.SxCpRes
+import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.AdicExtensionMatrices.PdMapAdj
+import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.AdicExtensionMatrices.AdicContMap
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoRes
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoMvps
 
+section
+open IsLocalRing Polynomial UpperTheory.V.Alg UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws
+
+private theorem res_ps {Λ : Type} [CommRing Λ] [IsLocalRing Λ] [IsCO Λ (PowerSeries (ResidueField Λ))]
+    (x : PowerSeries (ResidueField Λ)) :
+    res Λ (PowerSeries (ResidueField Λ)) x = PowerSeries.constantCoeff x := by
+  obtain ⟨a, ha⟩ := IsLocalRing.residue_surjective (PowerSeries.constantCoeff x)
+  have hm : x - algebraMap Λ (PowerSeries (ResidueField Λ)) a ∈
+      maximalIdeal (PowerSeries (ResidueField Λ)) := by
+    rw [mem_maximalIdeal, mem_nonunits_iff, PowerSeries.isUnit_iff_constantCoeff, map_sub,
+      PowerSeries.algebraMap_apply, PowerSeries.constantCoeff_C,
+      IsLocalRing.ResidueField.algebraMap_eq, ha, sub_self]
+    exact not_isUnit_zero
+  have h0 := (res_eq_zero_iff Λ (PowerSeries (ResidueField Λ)) _).2 hm
+  rw [map_sub, sub_eq_zero] at h0
+  rw [h0, AlgHom.commutes, IsLocalRing.ResidueField.algebraMap_eq, ha]
+
+theorem UpperTheory.V.Ws.sxResLift :
+    ∀ {O Γ : Type} [CommRing O] [Group Γ] [TopologicalSpace Γ] {Φ : Fr O Γ} {Λ : Type} [CommRing Λ] [IsLocalRing Λ] {a : O →+* Λ} [IsCO Λ (PowerSeries (ResidueField Λ))] (Q : PD Φ.ι Γ (ResidueField Λ)[X]), Φ.IsRes (C.comp ((residue Λ).comp a)) Q → Φ.IsRes ((residue Λ).comp a) (Q.map (evalRingHom 0)) ∧ Φ.Lifts a (Q.map (evalRingHom 0)) (Q.map (Polynomial.coeToPowerSeries.ringHom : (ResidueField Λ)[X] →+* PowerSeries (ResidueField Λ))) := by
+  intro O Γ _ _ _ Φ Λ _ _ a _ Q h
+  have hev : (evalRingHom (0 : ResidueField Λ)).comp (C.comp ((residue Λ).comp a)) =
+      (residue Λ).comp a := by
+    ext x
+    simp
+  have hco : (Polynomial.coeToPowerSeries.ringHom :
+      (ResidueField Λ)[X] →+* PowerSeries (ResidueField Λ)).comp (C.comp ((residue Λ).comp a)) =
+      (algebraMap Λ (PowerSeries (ResidueField Λ))).comp a := by
+    ext x
+    simp [PowerSeries.algebraMap_apply, IsLocalRing.ResidueField.algebraMap_eq]
+  have hcont : ∀ {R' : Type} [CommRing R'] (f : (ResidueField Λ)[X] →+* R') (J : Ideal R'),
+      (Q.map f).Cont J := by
+    intro R' _ f J i j
+    exact adicCont_map f bot_le (h.cont i j)
+  have hpt : ∀ p : (ResidueField Λ)[X],
+      res Λ (PowerSeries (ResidueField Λ)) (p : PowerSeries (ResidueField Λ)) = eval 0 p := by
+    intro p
+    rw [res_ps, ← PowerSeries.coeff_zero_eq_constantCoeff_apply, Polynomial.coeff_coe,
+      coeff_zero_eq_eval_zero]
+  obtain ⟨_, hp1, hr1⟩ := sxPdMap (C.comp ((residue Λ).comp a)) (evalRingHom 0) Q
+  obtain ⟨_, hp2, _⟩ := sxPdMap (C.comp ((residue Λ).comp a))
+    (Polynomial.coeToPowerSeries.ringHom :
+      (ResidueField Λ)[X] →+* PowerSeries (ResidueField Λ)) Q
+  refine ⟨⟨?_, ?_, hcont _ _⟩, ⟨?_, hcont _ _, ?_⟩⟩
+  · have := hp1 h.pair
+    rwa [hev] at this
+  · have := hr1 h.res
+    rwa [hev] at this
+  · have := hp2 h.pair
+    rwa [hco] at this
+  · apply PD.ext
+    · refine MonoidHom.ext fun g => Matrix.ext fun i j => ?_
+      exact hpt (Q.r g i j)
+    · funext v
+      refine Matrix.ext fun i j => ?_
+      exact hpt (Q.n v i j)
+end
+
+section
+open IsLocalRing Polynomial UpperTheory.V.Alg UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws
+
+private theorem cp_low {R : Type} [CommRing R] (M : M4 R) (σ : Equiv.Perm (Fin 4))
+    (h : ∀ i j, i < j → M (σ i) (σ j) = 0) : M.charpoly = ∏ i, (X - C (M i i)) := by
+  have h1 : (Matrix.reindex σ.symm σ.symm M).charpoly = M.charpoly := Matrix.charpoly_reindex _ _
+  rw [← h1, ← Matrix.charpoly_transpose, Matrix.charpoly_of_upperTriangular]
+  · simpa using Equiv.prod_comp σ fun i => X - C (M i i)
+  · intro i j hij
+    simpa using h j i hij
+
+theorem UpperTheory.V.Ws.sxCpRes :
+    ∀ {O Γ : Type} [CommRing O] [Group Γ] {Φ : Fr O Γ} {R : Type} [CommRing R] (a : O →+* R) (P : PD Φ.ι Γ R), Φ.Res a P → ∀ g, (P.r g).charpoly = ∏ i, (X - C (a (Φ.χ i g))) := by
+  intro O Γ _ _ Φ R _ a P h g
+  simp only [← h.diag g]
+  rcases h.shape with ⟨h1, -⟩ | h1
+  · refine cp_low _ (Equiv.swap 1 2) fun i j hij => h1 g _ _ ?_ ?_
+    · exact fun e => hij.ne ((Equiv.swap 1 2).injective e)
+    · revert i j; decide
+  · refine cp_low _ 1 fun i j hij => h1 g _ _ hij.ne ?_
+    revert i j; decide
+end
+
+section
 open IsLocalRing Polynomial UpperTheory.V.Alg UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws
 
 private theorem preLine_desc {Λ A T S : Type} [CommRing Λ] [CommRing A] [CommRing T] [CommRing S] [Algebra Λ A]
@@ -62,3 +143,4 @@ theorem UpperTheory.V.Ws.sxPreLine :
     · exact (hg _).trans (hr s i l)
     · exact (hg _).trans (hn v i l)
   · rw [hg, hB', (res_eq_zero_iff Λ Y.B b).2 hb, map_zero]
+end

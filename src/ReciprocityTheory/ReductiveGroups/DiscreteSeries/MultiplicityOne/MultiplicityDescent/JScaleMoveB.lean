@@ -91,23 +91,5 @@ theorem dsigW_conj {σ : Mat k r → (H →L[ℂ] H)} (hσ : Formalism.MainNotio
     rw [dsigW_conj hσ ht w (fun Y hY => hw Y (List.mem_cons_of_mem X hY)) u,
       dsig_conj hσ ht (hw X List.mem_cons_self)]
 
-theorem cw_transport {Wp : Type} [NormedAddCommGroup Wp] {σ : Mat k r → (H →L[ℂ] H)}
-    (hσ : Formalism.MainNotions.S.IsURepOn (GV k r) σ) {t : Mat k r} (ht : t ∈ GV k r) {B : H → Wp}
-    (hB : Formalism.MainNotions.S.IsCWCont (k := k) (r := r) σ B) :
-    Formalism.MainNotions.S.IsCWCont (k := k) (r := r) σ (fun v => B (σ t v)) := by
-  obtain ⟨C, Ws, hWs, hb⟩ := hB
-  refine ⟨C, Ws.map (List.map fun X => t⁻¹ * X * t), ?_, fun v hv => ?_⟩
-  · intro w hw X hX
-    obtain ⟨w0, hw0, rfl⟩ := List.mem_map.1 hw
-    obtain ⟨X0, hX0, rfl⟩ := List.mem_map.1 hX
-    exact lie_conj ht (hWs w0 hw0 X0 hX0)
-  · refine (hb (σ t v) (smooth_mul hσ ht hv)).trans (le_of_eq ?_)
-    congr 1
-    rw [List.map_map]
-    congr 1
-    apply List.map_congr_left
-    intro w hw
-    simp only [Function.comp]
-    rw [dsigW_conj hσ ht w (hWs w hw), hσ.2.1 t ht]
 
 end ReciprocityTheory.ChartRestriction.DS.Mult1.Down.ScaleMoveB

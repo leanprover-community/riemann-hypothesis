@@ -62,33 +62,5 @@ def TieRd4Props {j : ℕ}
     (fderiv ℂ (fun z : V (nd X) => (WithLp.toLp 2 fun k =>
       R.rd ⟨d.w (jj k) Z, R.w_mem (jj k)⟩ (cpt X x z) / R.rd ⟨d.w j0 Z, R.w_mem j0⟩ (cpt X x z) : V (nd X))) 0).det ≠ 0
 
-theorem tieReading_of (h : LawsP T) (j : ℕ) (hG : GenFrEx (T.Q.Xo j) T.Q.c)
-    (d : ReciprocityTheory.ChartRestriction.G.T0.Data T.Q.c.F (Comp (T.Q.Xo j) T.Q.c) (fun Z => Om Z) (WTZ D.host.E) (fun Z => AC Z))
-    (κ : Comp (T.Q.Xo j) T.Q.c → (T.U j T.σ₀).Comp)
-    (hall : FnAlgClosed (T.Q.Xo j) T.Q.c → KappaTie j hG κ → KappaOnto h j hG κ → DTie h j hG d →
-      NrmTie h j hG d κ →
-      ∃ (R : ∀ Z, RdData1 d Z ((T.U j T.σ₀).X (κ Z)))
-        (Gen : ∀ Z, Set (Frame ((T.U j T.σ₀).X (κ Z)).Ψ D.R.r))
-        (pt : ∀ Z, Frame ((T.U j T.σ₀).X (κ Z)).Ψ D.R.r → (Om Z →+* ℂ)),
-        ∀ Z, TieRd1Props h hG d κ Z (R Z) ∧ TieRd2Props d Z (R Z) (Gen Z) (pt Z) ∧ TieRd3Props d Z (R Z) ∧
-          TieRd4Props d Z (R Z) (Gen Z)) :
-    TieReadingSt h j hG d κ := by
-  intro hF hκ hκo hd hn
-  obtain ⟨R, Gen, pt, H⟩ := hall hF hκ hκo hd hn
-  refine ⟨fun Z =>
-    { Rg := (R Z).Rg, w_mem := (R Z).w_mem, rd := (R Z).rd, WE := (R Z).WE, wL_mem := (R Z).wL_mem,
-      wt := (R Z).wt, Gen := Gen Z, Gen_sub := (H Z).2.1.1, Gen_dense := (H Z).2.1.2.1, pt := pt Z,
-      pt_mem := (H Z).2.1.2.2.1, pt_onto := (H Z).2.1.2.2.2.1, w_nz := (H Z).2.2.1.2, sec := (H Z).1.1,
-      inj := (H Z).1.2.1, norm := (H Z).2.1.2.2.2.2.1, ratio_rd := (H Z).2.1.2.2.2.2.2.2.2.2,
-      Gen_inv := (H Z).2.1.2.2.2.2.2.1, orbit_inj := (H Z).2.1.2.2.2.2.2.2.1,
-      Gen_max := (H Z).2.1.2.2.2.2.2.2.2.1, bir := (H Z).2.2.1.1, coordAt := (H Z).2.2.2 }, ?_, ?_, ?_, ?_⟩
-  · intro Z u F hF
-    exact (H Z).1.2.2.2.2.1 u F hF
-  · intro Z u F he
-    exact (H Z).1.2.2.1 u F he
-  · intro Z u he
-    exact (H Z).1.2.2.2.1 u he
-  · intro Z u hu
-    exact (H Z).1.2.2.2.2.2 u hu
 
 end Formalism.L2.Pj

@@ -2,10 +2,782 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.TwistStep
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FiltrationZeroMembership
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeRhamPeriodRingFieldTPowFiltrationUnitsStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MooreDeterminantEqUnramifiedMulPeriod
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedOfFrobeniusIterateFixedFilZero
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsIndependentFrobSolutionsCrisProof
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsSecondKindMatrixMooreDetNeZero
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsNonzeroFrobVectorResidueZeroProof
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RatioIntegral
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BcrisPlusFrobeniusStableSubringInFilZero
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineFormalismOfRegular
 
+section
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations GlobalTheory.Pst GlobalTheory.PMon TensorProduct
+open scoped Formalism.Per
+
+namespace GlobalTheory.PMon
+
+theorem phiB_moore_det {l : ℕ} [Fact l.Prime] (P : LocPrime l) (n : ℕ) (a : Fin (n + 1) → P.R.B)
+    (ha : ∀ j, P.φB^[n + 1] (a j) = (l : P.R.B) * a j) :
+    P.φB (Matrix.of fun i j : Fin (n + 1) => P.φB^[i] (a j)).det =
+      (-1) ^ n * (l : P.R.B) * (Matrix.of fun i j : Fin (n + 1) => P.φB^[i] (a j)).det := by
+  set M := Matrix.of fun i j : Fin (n + 1) => P.φB^[i] (a j) with hM
+  have h1 : P.φB M.det = (M.map P.φB).det := by
+    rw [AlgHom.map_det]; rfl
+  have h2 : M.map P.φB = Matrix.diagonal (fun i : Fin (n + 1) => if i = Fin.last n then (l : P.R.B) else 1) *
+      M.submatrix (finRotate (n + 1)) id := by
+    ext i j
+    rw [Matrix.diagonal_mul, Matrix.map_apply, Matrix.submatrix_apply, finRotate_succ_apply, id]
+    simp only [hM, Matrix.of_apply]
+    rw [← Function.iterate_succ_apply' (f := P.φB)]
+    by_cases hi : i = Fin.last n
+    · subst hi
+      simp [ha]
+    · rw [if_neg hi, one_mul, Fin.val_add_one, if_neg hi]
+  rw [h1, h2, Matrix.det_mul, Matrix.det_diagonal, Matrix.det_permute, sign_finRotate]
+  simp [Finset.prod_ite_eq']
+  ring
+
+theorem mooreDeterminant_eq_unramified_mul_period_alt : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (T : LocTied l P AI) (h : ℕ), 0 < h → ∀ a : Fin h → P.R.B, (∀ j, P.φB^[h] (a j) = (l : P.R.B) * a j) → (∀ (i : ℕ) j, ev P i (a j) ∈ Fil P 0) → (Matrix.of fun i j : Fin h => P.φB^[i] (a j)).det ≠ 0 → P.ιB (Matrix.of fun i j : Fin h => P.φB^[i] (a j)).det ∈ Fil P 1 → ∃ κ : ↥(MaximalUnramifiedExtension l), κ ≠ 0 ∧ (Matrix.of fun i j : Fin h => P.φB^[i] (a j)).det = algebraMap ↥(MaximalUnramifiedExtension l) P.R.B κ * P.tB := by
+  intro l _ P AI T h hh a ha _ hd hF
+  obtain ⟨n, rfl⟩ : ∃ n, h = n + 1 := ⟨h - 1, by omega⟩
+  set d := (Matrix.of fun i j : Fin (n + 1) => P.φB^[i] (a j)).det with hdd
+  have hφd : P.φB d = (-1) ^ n * (l : P.R.B) * d := phiB_moore_det P n a ha
+  have ht : IsUnit P.tB := isUnit_tB P
+  have hl : IsUnit (l : P.R.B) := by
+    have h0 : (l : ℚ_[l]) ≠ 0 := Nat.cast_ne_zero.mpr (Fact.out : l.Prime).ne_zero
+    have := (IsUnit.mk0 _ h0).map (algebraMap ℚ_[l] P.R.B)
+    rwa [map_natCast] at this
+  have hφt : P.φB P.tB = (l : P.R.B) * P.tB := by
+    rw [localPrime_frobenius_periodT, Algebra.smul_def, map_natCast]
+  set c := d * ((ht.unit⁻¹ : P.R.Bˣ) : P.R.B) with hc
+  have hct : c * P.tB = d := by
+    rw [hc, mul_assoc, Units.inv_mul_of_eq ht.unit_spec, mul_one]
+  have hφc : P.φB c = (-1) ^ n * c := by
+    apply (hl.mul ht).mul_right_cancel
+    have e := congrArg P.φB hct
+    rw [map_mul, hφt, hφd, ← hct] at e
+    rw [show P.φB c * ((l : P.R.B) * P.tB) = P.φB c * ((l : P.R.B) * P.tB) from rfl]
+    linear_combination e
+  have hφ2 : P.φB^[2] c = c := by
+    rw [Function.iterate_succ_apply', Function.iterate_one, hφc, map_mul, hφc, map_pow, map_neg, map_one, ← mul_assoc,
+      ← mul_pow, neg_one_mul, neg_neg, one_pow, one_mul]
+  have hFc : P.ιB c ∈ Fil P 0 := by
+    have e : tz P 1 * P.ιB c = P.ιB d := by
+      rw [show tz P 1 = P.ιB P.tB by simp [tz], ← map_mul, mul_comm, hct]
+    have key := (GlobalTheory.T.deRhamPeriodRing_field_tPow_filtration_units l P AI T).2.2.1 0 1 (P.ιB c)
+    rw [zero_add, e] at key
+    exact key.2 hF
+  have hev : ∀ j < 2, ev P j c ∈ Fil P 0 := by
+    intro j hj
+    interval_cases j
+    · simpa [ev] using hFc
+    · simp only [ev, Function.iterate_one, hφc, map_mul, map_pow, map_neg, map_one]
+      rcases neg_one_pow_eq_or P.R.BdR n with h1 | h1
+      · rw [h1, one_mul]; exact hFc
+      · rw [h1, neg_one_mul]
+        simp only [Fil, SetLike.mem_coe] at hFc ⊢
+        exact neg_mem hFc
+  obtain ⟨κ, -, hκ⟩ := GlobalTheory.T.unramified_of_frobeniusIterate_fixed_filZero l P AI T 2 two_pos c hφ2 hev
+  refine ⟨κ, ?_, ?_⟩
+  · rintro rfl
+    apply hd
+    rw [← hct, hκ, map_zero, zero_mul]
+  · rw [← hκ, hct]
+
+end GlobalTheory.PMon
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations GlobalTheory.Pst GlobalTheory.PMon TensorProduct
+open scoped Formalism.Per
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mooreDeterminant_eq_unramified_mul_period : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (T : LocTied l P AI) (h : ℕ), 0 < h → ∀ a : Fin h → P.R.B, (∀ j, P.φB^[h] (a j) = (l : P.R.B) * a j) → (∀ (i : ℕ) j, ev P i (a j) ∈ Fil P 0) → (Matrix.of fun i j : Fin h => P.φB^[i] (a j)).det ≠ 0 → P.ιB (Matrix.of fun i j : Fin h => P.φB^[i] (a j)).det ∈ Fil P 1 → ∃ κ : ↥(MaximalUnramifiedExtension l), κ ≠ 0 ∧ (Matrix.of fun i j : Fin h => P.φB^[i] (a j)).det = algebraMap ↥(MaximalUnramifiedExtension l) P.R.B κ * P.tB := by
+  atlas_forward_decl GlobalTheory.PMon.mooreDeterminant_eq_unramified_mul_period_alt
+end
+
+section
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations GlobalTheory.Pst GlobalTheory.PMon TensorProduct
+open scoped Formalism.Per
+
+namespace GlobalTheory.PMon
+
+theorem ratio_holds : Ratio := GlobalTheory.PMon.RatioTransport.ratio_of_acris
+
+end GlobalTheory.PMon
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations GlobalTheory.Pst GlobalTheory.PMon TensorProduct
+open scoped Formalism.Per
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.crisPlus_frob_eigenvector_ratio_padic : Ratio := by
+  atlas_forward_decl GlobalTheory.PMon.ratio_holds
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations GlobalTheory.Pst GlobalTheory.PMon TensorProduct
+open scoped Formalism.Per
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.bcrisPlus_frobeniusStable_subring_in_filZero : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (T : LocTied l P AI), (∀ b, Plus T b → Plus T (P.φB b)) ∧ (∀ b, Plus T b → ∀ j, ev P j b ∈ Fil P 0) ∧ (∀ a b, Plus T a → Plus T b → Plus T (a + b) ∧ Plus T (a * b)) ∧ (∀ q : ℚ_[l], Plus T (algebraMap ℚ_[l] P.R.B q)) ∧ (∀ x : Formalism.Per.Ainf l, Plus T (T.eB.symm (Formalism.Per.aB l x))) ∧ Plus T P.tB := by
+  first | exact @GlobalTheory.PMon.CrisPlus.plus_props | exact GlobalTheory.PMon.CrisPlus.plus_props | (intros; apply GlobalTheory.PMon.CrisPlus.plus_props <;> assumption)
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations GlobalTheory.Pst GlobalTheory.PMon TensorProduct
+open scoped Formalism.Per
+
+noncomputable section
+
+namespace GlobalTheory.PMon.MooreDeterminant
+
+variable {B Q : Type} [CommRing B] [IsDomain B] [Field Q] [Algebra Q B]
+
+theorem det_mem (S : B → Prop) (h0 : ∀ q : Q, S (algebraMap Q B q))
+    (hadd : ∀ a b, S a → S b → S (a + b)) (hmul : ∀ a b, S a → S b → S (a * b))
+    {ι : Type} [Fintype ι] [DecidableEq ι] (M : Matrix ι ι B) (hM : ∀ i j, S (M i j)) : S M.det := by
+  rw [Matrix.det_apply]
+  have hz : S 0 := by simpa using h0 0
+  refine Finset.sum_induction _ S hadd hz ?_
+  intro σ _
+  rw [Units.smul_def, zsmul_eq_mul]
+  apply hmul
+  · have := h0 (((Equiv.Perm.sign σ : ℤˣ) : ℤ) : Q)
+    simpa using this
+  · have h1 : S 1 := by simpa using h0 1
+    exact Finset.prod_induction _ S hmul h1 (fun i _ => hM _ _)
+
+theorem iter_eq (φ : B →+* B) (m : ℕ) : ⇑(φ ^ m) = (⇑φ)^[m] := RingHom.coe_pow φ m
+
+theorem moore_core (φ : B →+* B) (S : B → Prop)
+    (hφ : ∀ b, S b → S (φ b)) (h0 : ∀ q : Q, S (algebraMap Q B q))
+    (hadd : ∀ a b, S a → S b → S (a + b)) (hmul : ∀ a b, S a → S b → S (a * b))
+    (L : B) (hL : φ L = L) (h : ℕ)
+    (ratio : ∀ s, s < h → ∀ ω ω' : B, S ω → S ω' → φ^[h] ω = L ^ s * ω → φ^[h] ω' = L ^ s * ω' → ω' ≠ 0 →
+      φ ω * ω' = ω * φ ω' → ∃ c : Q, ω = c • ω') :
+    ∀ (n : ℕ) (a : Fin (n + 1) → B), n + 1 ≤ h → (∀ j, S (a j)) → (∀ j, φ^[h] (a j) = L * a j) →
+      LinearIndependent Q a → (Matrix.of fun i j : Fin (n + 1) => φ^[i] (a j)).det ≠ 0 := by
+  have hSit : ∀ (i : ℕ) b, S b → S (φ^[i] b) := by
+    intro i
+    induction i with
+    | zero => intro b hb; simpa using hb
+    | succ i ih => intro b hb; rw [Function.iterate_succ_apply']; exact hφ _ (ih b hb)
+  intro n
+  induction n with
+  | zero =>
+    intro a _ _ _ ha
+    rw [Matrix.det_fin_one]
+    simpa using ha.ne_zero 0
+  | succ n ih =>
+    intro a hk hSa hfa ha hdet
+    set M : Matrix (Fin (n + 2)) (Fin (n + 2)) B := Matrix.of fun i j => φ^[i] (a j) with hMdef
+
+    have hA := ih (a ∘ Fin.castSucc) (by omega) (fun j => hSa _) (fun j => hfa _)
+      (ha.comp _ (Fin.castSucc_injective _))
+    set ω : Fin (n + 2) → B := fun m => (Matrix.of fun i j : Fin (n + 1) => φ^[i] (a (m.succAbove j))).det with hωdef
+    have hωl : ω (Fin.last _) = (Matrix.of fun i j : Fin (n + 1) => φ^[i] ((a ∘ Fin.castSucc) j)).det := by
+      simp [ω, Fin.succAbove_last]
+    have hωl0 : ω (Fin.last _) ≠ 0 := by rw [hωl]; exact hA
+    have hu : ∀ m, M.adjugate m (Fin.last _) = (-1) ^ ((n + 1 : ℕ) + (m : ℕ)) * ω m := by
+      intro m
+      rw [Matrix.adjugate_fin_succ_eq_det_submatrix]
+      simp only [Fin.val_last, Fin.succAbove_last, ω]
+      congr 2
+    have hw : ∀ m, M.adjugate m 0 = (-1) ^ (m : ℕ) * φ (ω m) := by
+      intro m
+      rw [Matrix.adjugate_fin_succ_eq_det_submatrix, hωdef]
+      simp only [Fin.val_zero, zero_add, Fin.succAbove_zero]
+      rw [RingHom.map_det]
+      congr 2
+      ext i j
+      simp [M, Matrix.submatrix_apply, RingHom.mapMatrix_apply, Function.iterate_succ_apply']
+    have hK : M * M.adjugate = 0 := by rw [Matrix.mul_adjugate, hdet, zero_smul]
+    have hker : ∀ i c, ∑ m, M i m * M.adjugate m c = 0 := fun i c => by
+      have := congrFun (congrFun hK i) c
+      simpa [Matrix.mul_apply] using this
+
+    set v : Fin (n + 2) → B := fun m => M.adjugate (Fin.last _) (Fin.last _) * M.adjugate m 0 -
+      M.adjugate (Fin.last _) 0 * M.adjugate m (Fin.last _) with hvdef
+    have hv : ∀ i, ∑ m, M i m * v m = 0 := by
+      intro i
+      have e1 := hker i 0
+      have e2 := hker i (Fin.last _)
+      simp only [v, mul_sub, Finset.sum_sub_distrib]
+      have : ∑ m, M i m * (M.adjugate (Fin.last _) (Fin.last _) * M.adjugate m 0) =
+          M.adjugate (Fin.last _) (Fin.last _) * ∑ m, M i m * M.adjugate m 0 := by
+        rw [Finset.mul_sum]; exact Finset.sum_congr rfl fun _ _ => by ring
+      have : ∑ m, M i m * (M.adjugate (Fin.last _) 0 * M.adjugate m (Fin.last _)) =
+          M.adjugate (Fin.last _) 0 * ∑ m, M i m * M.adjugate m (Fin.last _) := by
+        rw [Finset.mul_sum]; exact Finset.sum_congr rfl fun _ _ => by ring
+      simp_all
+    have hvl : v (Fin.last _) = 0 := by simp only [v]; ring
+    have hv' : Matrix.mulVec (Matrix.of fun i j : Fin (n + 1) => φ^[i] ((a ∘ Fin.castSucc) j)) (v ∘ Fin.castSucc) = 0 := by
+      funext i
+      have := hv (Fin.castSucc i)
+      rw [Fin.sum_univ_castSucc, hvl, mul_zero, add_zero] at this
+      simpa [Matrix.mulVec, dotProduct, M] using this
+    have hv0 := Matrix.eq_zero_of_mulVec_eq_zero hA hv'
+    have hvall : ∀ m, v m = 0 := by
+      intro m
+      refine Fin.lastCases hvl (fun j => ?_) m
+      exact congrFun hv0 j
+
+    have hcomm : ∀ m, φ (ω m) * ω (Fin.last _) = ω m * φ (ω (Fin.last _)) := by
+      intro m
+      have E := hvall m
+      simp only [v, hu, hw, Fin.val_last, pow_add] at E
+      have hs : ((-1 : B) ^ (m : ℕ)) ^ 2 = 1 := by rw [← pow_mul, mul_comm, pow_mul]; simp
+      have he : ((-1 : B) ^ (n + 1)) ^ 2 = 1 := by rw [← pow_mul, mul_comm, pow_mul]; simp
+      linear_combination ((-1 : B) ^ (m : ℕ)) * E
+        - (φ (ω m) * ω (Fin.last _) - ω m * φ (ω (Fin.last _))) * hs
+        - (φ (ω m) * ω (Fin.last _) - ω m * φ (ω (Fin.last _))) * ((-1 : B) ^ (m : ℕ)) ^ 2 * he
+
+    have hSω : ∀ m, S (ω m) := fun m => det_mem S h0 hadd hmul _ (fun i j => hSit _ _ (hSa _))
+    have hLi : ∀ i : ℕ, φ^[i] L = L := fun i => Function.iterate_fixed hL i
+    have hfω : ∀ m, φ^[h] (ω m) = L ^ (n + 1) * ω m := by
+      intro m
+      rw [← iter_eq, hωdef]
+      simp only
+      rw [RingHom.map_det]
+      have : (φ ^ h).mapMatrix (Matrix.of fun i j : Fin (n + 1) => φ^[i] (a (m.succAbove j))) =
+          L • (Matrix.of fun i j : Fin (n + 1) => φ^[i] (a (m.succAbove j))) := by
+        ext i j
+        simp only [RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.of_apply, Matrix.smul_apply, smul_eq_mul, iter_eq]
+        rw [← Function.iterate_add_apply, add_comm, Function.iterate_add_apply, hfa, ← iter_eq, map_mul, iter_eq, hLi]
+      rw [this, Matrix.det_smul, Fintype.card_fin]
+
+    have hrat : ∀ m, ∃ c : Q, ω m = c • ω (Fin.last _) := fun m =>
+      ratio (n + 1) (by omega) _ _ (hSω m) (hSω _) (hfω m) (hfω _) hωl0 (hcomm m)
+    choose c hc using hrat
+
+    have hrow := hker 0 (Fin.last _)
+    set d : Fin (n + 2) → Q := fun m => (-1) ^ ((n + 1 : ℕ) + (m : ℕ)) * c m with hd
+    have hsum : (∑ m, d m • a m) * ω (Fin.last _) = 0 := by
+      rw [← hrow, Finset.sum_mul]
+      refine Finset.sum_congr rfl fun m _ => ?_
+      rw [hu, hc m]
+      simp only [M, Matrix.of_apply, Fin.val_zero, Function.iterate_zero, id, hd, Algebra.smul_def, map_mul, map_pow,
+        map_neg, map_one]
+      ring
+    have hsum0 : ∑ m, d m • a m = 0 := (mul_eq_zero.1 hsum).resolve_right hωl0
+    have hdl := Fintype.linearIndependent_iff.1 ha d hsum0 (Fin.last _)
+    have hcl : c (Fin.last _) = 0 := by
+      simp only [hd, mul_eq_zero, pow_eq_zero_iff', neg_eq_zero, one_ne_zero, false_and, false_or] at hdl
+      exact hdl
+    apply hωl0
+    rw [hc (Fin.last _), hcl, zero_smul]
+
+end GlobalTheory.PMon.MooreDeterminant
+
+namespace GlobalTheory.PMon
+
+theorem moore_statement : Moore := by
+  intro l _ P AI T h k hk a hPa hfa ha
+  obtain ⟨hF, hinj, -⟩ := GlobalTheory.T.deRhamPeriodRing_field_tPow_filtration_units l P AI T
+  obtain ⟨hpφ, -, hpR, hpQ, -⟩ := GlobalTheory.T.bcrisPlus_frobeniusStable_subring_in_filZero l P AI T
+  haveI : IsDomain P.R.BdR := hF.isDomain
+  haveI : IsDomain P.R.B := Function.Injective.isDomain (P.ιB : P.R.B →+* P.R.BdR) hinj
+  cases k with
+  | zero => simp
+  | succ n =>
+    exact GlobalTheory.PMon.MooreDeterminant.moore_core (Q := ℚ_[l]) (P.φB : P.R.B →+* P.R.B) (Plus T) hpφ hpQ
+      (fun a b ha hb => (hpR a b ha hb).1) (fun a b ha hb => (hpR a b ha hb).2) (l : P.R.B) (map_natCast _ l) h
+      (fun s hs ω ω' h1 h2 h3 h4 h5 h6 => GlobalTheory.T.crisPlus_frob_eigenvector_ratio_padic l P AI T h s hs ω ω' h1 h2 h3 h4 h5 h6)
+      n a hk hPa hfa ha
+
+end GlobalTheory.PMon
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations GlobalTheory.Pst GlobalTheory.PMon TensorProduct
+open scoped Formalism.Per
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mooreDeterminant_crisPlus_ne_zero : Moore := by
+  atlas_forward_decl GlobalTheory.PMon.moore_statement
+end
+
+section
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations GlobalTheory.Pst GlobalTheory.PMon TensorProduct
+open scoped Formalism.Per
+
+namespace GlobalTheory.PMon
+
+theorem fil_add_nat_le {l : ℕ} [Fact l.Prime] (P : LocPrime l) (a : ℤ) (k : ℕ) {x : P.R.BdR}
+    (hx : x ∈ (P.PD (botExt l)).Fil (a + k)) : x ∈ (P.PD (botExt l)).Fil a := by
+  induction k generalizing a with
+  | zero => simpa using hx
+  | succ k ih =>
+    apply ih
+    have h := (P.PD (botExt l)).Fil_anti (a + k)
+    apply h
+    have : a + ((k + 1 : ℕ) : ℤ) = a + k + 1 := by push_cast; ring
+    rwa [← this]
+
+theorem no_fil_zero_neg_slope : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (T : LocTied l P AI)
+    (h d : ℕ), 0 < h → 0 < d → ∀ c : P.R.B, (l : P.R.B) ^ d * P.φB^[h] c = c →
+    (∀ j < h, ev P j c ∈ Fil P 0) → c = 0 := by
+  intro l _ P AI T h d hh hd c hc hfil
+  have hF : IsField P.R.BdR := GlobalTheory.RegularRing.isField_of_tied T
+  have hι : Function.Injective P.ιB := fun a b hab => (P.PD (botExt l)).ι_inj (by rw [P.PD_ι, P.PD_ι, hab])
+  set PD := P.PD (botExt l) with hPD
+  have hdom : ∀ a b : P.R.B, a * b = 0 → a = 0 ∨ b = 0 := by
+    intro a b hab
+    have h0 : P.ιB a * P.ιB b = 0 := by rw [← map_mul, hab, map_zero]
+    by_cases ha : P.ιB a = 0
+    · exact Or.inl (hι (by rw [ha, map_zero]))
+    · right
+      obtain ⟨y, hy⟩ := hF.mul_inv_cancel ha
+      apply hι
+      rw [map_zero]
+      calc P.ιB b = (y * P.ιB a) * P.ιB b := by rw [mul_comm y, hy, one_mul]
+        _ = 0 := by rw [mul_assoc, h0, mul_zero]
+  haveI : NoZeroDivisors P.R.B := ⟨fun {a b} hab => hdom a b hab⟩
+  haveI : Nontrivial P.R.B := nontrivial_B P
+  by_contra hc0
+  set N : P.R.B := ∏ j ∈ Finset.range h, P.φB^[j] c with hN
+  have hφN : c * P.φB N = N * P.φB^[h] c := by
+    have e1 : P.φB N = ∏ j ∈ Finset.range h, P.φB^[j + 1] c := by
+      rw [hN, map_prod]
+      refine Finset.prod_congr rfl fun j _ => ?_
+      rw [Function.iterate_succ_apply']
+    rw [e1, hN]
+    have e2 := Finset.prod_range_succ' (fun j => P.φB^[j] c) h
+    have e3 := Finset.prod_range_succ (fun j => P.φB^[j] c) h
+    simp only [Function.iterate_zero, id] at e2
+    rw [mul_comm c, ← e2, e3]
+  have hlN : (l : P.R.B) ^ d * P.φB N = N := by
+    have : c * ((l : P.R.B) ^ d * P.φB N - N) = 0 := by
+      calc c * ((l : P.R.B) ^ d * P.φB N - N) = (l : P.R.B) ^ d * (c * P.φB N) - N * c := by ring
+        _ = N * ((l : P.R.B) ^ d * P.φB^[h] c) - N * c := by rw [hφN]; ring
+        _ = 0 := by rw [hc, sub_self]
+    rcases hdom _ _ this with h1 | h1
+    · exact absurd h1 hc0
+    · exact sub_eq_zero.mp h1
+  set x : P.R.B := N * P.tB ^ d with hx
+  have hφx : PD.φ x = x := by
+    rw [P.PD_φ, hx, map_mul, map_pow, localPrime_frobenius_periodT, Algebra.smul_def, map_natCast, mul_pow]
+    linear_combination (P.tB ^ d) * hlN
+  have hmul : ∀ (a b : ℤ) (u v : P.R.BdR), u ∈ PD.Fil a → v ∈ PD.Fil b → u * v ∈ PD.Fil (a + b) :=
+    fun a b u v hu hv => PD.Fil_mul a b u v hu hv
+  have hιN : P.ιB N ∈ PD.Fil 0 := by
+    rw [hN, map_prod]
+    refine Finset.prod_induction _ (fun u => u ∈ PD.Fil 0) (fun u v hu hv => by simpa using hmul 0 0 u v hu hv)
+      (by simpa using PD.one_mem) fun j hj => ?_
+    exact hfil j (Finset.mem_range.mp hj)
+  have hιt : P.ιB P.tB ∈ PD.Fil 1 := by
+    have := PD.mem_filtration_one
+    rwa [P.PD_ι, P.period_datum_t_eq] at this
+  have hιtd : ∀ k : ℕ, P.ιB (P.tB ^ k) ∈ PD.Fil k := by
+    intro k
+    induction k with
+    | zero => simpa using PD.one_mem
+    | succ k ih =>
+      rw [pow_succ, map_mul]
+      have := hmul k 1 _ _ ih hιt
+      simpa using this
+  have hιx1 : P.ιB x ∈ PD.Fil 1 := by
+    have h1 : P.ιB x ∈ PD.Fil (0 + d) := by rw [hx, map_mul]; exact hmul 0 d _ _ hιN (hιtd d)
+    obtain ⟨k, hk⟩ : ∃ k : ℕ, d = k + 1 := ⟨d - 1, by omega⟩
+    apply fil_add_nat_le P 1 k
+    have : (1 : ℤ) + (k : ℤ) = 0 + (d : ℤ) := by rw [hk]; push_cast; ring
+    rwa [this]
+  have hιx0 : P.ιB x ∈ PD.Fil 0 := fil_add_nat_le P 0 1 (by simpa using hιx1)
+  obtain ⟨q, hq⟩ := PD.fund x hφx (by rw [P.PD_ι]; exact hιx0)
+  by_cases hq0 : q = 0
+  · have hx0 : x = 0 := by rw [← hq, hq0, map_zero]
+    have hN0 : N = 0 := by
+      rcases hdom _ _ hx0 with h1 | h1
+      · exact h1
+      · exact absurd (pow_eq_zero_iff (by omega) |>.mp h1) (isUnit_tB P).ne_zero
+    rw [hN, Finset.prod_eq_zero_iff] at hN0
+    obtain ⟨j, -, hj⟩ := hN0
+    apply hc0
+    apply (phiB_injective P).iterate j
+    rw [hj, iterate_map_zero]
+  · have hqx : P.ιB x = algebraMap ℚ_[l] P.R.BdR q := by rw [← hq, AlgHom.commutes]
+    have hinv : algebraMap ℚ_[l] P.R.BdR q⁻¹ ∈ PD.Fil 0 := by
+      rw [Algebra.algebraMap_eq_smul_one]
+      exact Submodule.smul_of_tower_mem _ _ PD.one_mem
+    have hone : algebraMap ℚ_[l] P.R.BdR q⁻¹ * P.ιB x = 1 := by
+      rw [hqx, ← map_mul, inv_mul_cancel₀ hq0, map_one]
+    have h2 : P.ιB P.tB ∈ PD.Fil 2 := by
+      have := hmul 1 (0 + 1) _ _ hιt (hmul 0 1 _ _ hinv hιx1)
+      rw [hone, mul_one] at this
+      simpa using this
+    have := PD.not_mem_filtration_two
+    rw [P.PD_ι, P.period_datum_t_eq] at this
+    exact this h2
+
+end GlobalTheory.PMon
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations GlobalTheory.Pst GlobalTheory.PMon TensorProduct
+open scoped Formalism.Per
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eq_zero_of_frobenius_periodic_mem_deRhamFil_zero : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (T : LocTied l P AI) (h d : ℕ), 0 < h → 0 < d → ∀ c : P.R.B, (l : P.R.B) ^ d * P.φB^[h] c = c → (∀ j < h, ev P j c ∈ Fil P 0) → c = 0 := by
+  atlas_forward_decl GlobalTheory.PMon.no_fil_zero_neg_slope
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations GlobalTheory.Pst GlobalTheory.PMon TensorProduct
+open scoped Formalism.Per
+
+noncomputable section
+namespace GlobalTheory.SecondKind
+
+variable {l : ℕ} [Fact l.Prime] (P : LocPrime l)
+
+theorem fil_add {a : ℤ} {x y : P.R.BdR} (hx : x ∈ Fil P a) (hy : y ∈ Fil P a) : x + y ∈ Fil P a :=
+  ((P.PD (botExt l)).Fil a).add_mem hx hy
+
+theorem fil_zero (a : ℤ) : (0 : P.R.BdR) ∈ Fil P a := ((P.PD (botExt l)).Fil a).zero_mem
+
+theorem fil_sum {a : ℤ} {ι : Type} (s : Finset ι) (f : ι → P.R.BdR) (hf : ∀ i ∈ s, f i ∈ Fil P a) :
+    ∑ i ∈ s, f i ∈ Fil P a := ((P.PD (botExt l)).Fil a).sum_mem hf
+
+theorem fil_smul {a : ℤ} (q : ℚ_[l]) {x : P.R.BdR} (hx : x ∈ Fil P a) : q • x ∈ Fil P a :=
+  ((P.PD (botExt l)).Fil a).smul_of_tower_mem q hx
+
+theorem fil_mul {a b : ℤ} {x y : P.R.BdR} (hx : x ∈ Fil P a) (hy : y ∈ Fil P b) : x * y ∈ Fil P (a + b) :=
+  (P.PD (botExt l)).Fil_mul a b x y hx hy
+
+theorem fil_one : (1 : P.R.BdR) ∈ Fil P 0 := (P.PD (botExt l)).one_mem
+
+theorem fil_natCast_mul {a : ℤ} (n : ℕ) {x : P.R.BdR} (hx : x ∈ Fil P a) : (n : P.R.BdR) * x ∈ Fil P a := by
+  rw [← nsmul_eq_mul]; exact ((P.PD (botExt l)).Fil a).toAddSubmonoid.nsmul_mem hx n
+
+theorem iter_smul (n : ℕ) (q : ℚ_[l]) (x : P.R.B) : P.φB^[n] (q • x) = q • P.φB^[n] x := by
+  induction n generalizing x with
+  | zero => rfl
+  | succ n ih => rw [Function.iterate_succ_apply, Function.iterate_succ_apply, map_smul, ih]
+
+theorem iter_add (n : ℕ) (x y : P.R.B) : P.φB^[n] (x + y) = P.φB^[n] x + P.φB^[n] y := by
+  induction n generalizing x y with
+  | zero => rfl
+  | succ n ih => rw [Function.iterate_succ_apply, Function.iterate_succ_apply, Function.iterate_succ_apply, map_add, ih]
+
+def phiN (n : ℕ) : P.R.B →+* P.R.B := (P.φB : P.R.B →+* P.R.B) ^ n
+
+theorem phiN_apply (n : ℕ) (x : P.R.B) : phiN P n x = P.φB^[n] x := by
+  simp only [phiN, RingHom.coe_pow]; rfl
+
+theorem iter_natCast (n m : ℕ) : P.φB^[n] (m : P.R.B) = m := by
+  rw [← phiN_apply, map_natCast]
+
+theorem iter_mul (n : ℕ) (x y : P.R.B) : P.φB^[n] (x * y) = P.φB^[n] x * P.φB^[n] y := by
+  rw [← phiN_apply, map_mul, phiN_apply, phiN_apply]
+
+theorem ev_mul (n : ℕ) (x y : P.R.B) : ev P n (x * y) = ev P n x * ev P n y := by
+  simp only [ev, iter_mul, map_mul]
+
+theorem ev_smul (n : ℕ) (q : ℚ_[l]) (x : P.R.B) : ev P n (q • x) = q • ev P n x := by
+  simp only [ev, iter_smul, map_smul]
+
+theorem ev_add (n : ℕ) (x y : P.R.B) : ev P n (x + y) = ev P n x + ev P n y := by
+  simp only [ev, iter_add, map_add]
+
+theorem crisFrobenius_cyclotomicPeriod : P.φB P.tB = (l : P.R.B) * P.tB := by
+  have h := (P.PD (botExt l)).t_φ
+  rw [P.PD_φ, P.period_datum_t_eq, P.PD_p, Algebra.smul_def, map_natCast] at h
+  exact h
+
+theorem crisFrobenius_iterate_cyclotomicPeriod (n : ℕ) : P.φB^[n] P.tB = (l : P.R.B) ^ n * P.tB := by
+  induction n with
+  | zero => simp
+  | succ n ih => rw [Function.iterate_succ_apply', ih, map_mul, map_pow, map_natCast, crisFrobenius_cyclotomicPeriod]; ring
+
+end GlobalTheory.SecondKind
+end
+
+noncomputable section
+namespace GlobalTheory.SecondKind
+
+variable {l : ℕ} [Fact l.Prime] (P : LocPrime l)
+
+def fil0 : Subring P.R.BdR where
+  carrier := Fil P 0
+  mul_mem' := fun hx hy => by simpa using fil_mul P hx hy
+  one_mem' := fil_one P
+  add_mem' := fun hx hy => fil_add P hx hy
+  zero_mem' := fil_zero P 0
+  neg_mem' := fun hx => ((P.PD (botExt l)).Fil 0).neg_mem hx
+
+theorem det_mul_mem {k : ℕ} (M : Matrix (Fin k) (Fin k) P.R.BdR) (hM : ∀ i m, M i m ∈ Fil P 0)
+    (v : Fin k → P.R.BdR) (hv : ∀ i, M.mulVec v i ∈ Fil P 1) (m : Fin k) : M.det * v m ∈ Fil P 1 := by
+  let M' : Matrix (Fin k) (Fin k) (fil0 P) := fun i m => ⟨M i m, hM i m⟩
+  have hMM : M = (fil0 P).subtype.mapMatrix M' := by ext i m; rfl
+  have hadj : ∀ i, M.adjugate m i ∈ Fil P 0 := by
+    intro i
+    rw [hMM, ← RingHom.map_adjugate]
+    exact (M'.adjugate m i).2
+  have key : M.det * v m = (M.adjugate.mulVec (M.mulVec v)) m := by
+    rw [Matrix.mulVec_mulVec, Matrix.adjugate_mul, Matrix.smul_mulVec, Matrix.one_mulVec]
+    rfl
+  rw [key]
+  show ∑ i, M.adjugate m i * M.mulVec v i ∈ Fil P 1
+  refine fil_sum P _ _ fun i _ => ?_
+  simpa using fil_mul P (hadj i) (hv i)
+
+end GlobalTheory.SecondKind
+end
+
+noncomputable section
+namespace GlobalTheory.SecondKind
+
+variable {l : ℕ} [Fact l.Prime] (P : LocPrime l)
+
+def tI : P.R.B := (((isUnit_tB P).unit⁻¹ : P.R.Bˣ) : P.R.B)
+
+theorem tI_mul : tI P * P.tB = 1 := (isUnit_tB P).val_inv_mul
+
+theorem iter_tI (n : ℕ) : P.φB^[n] (tI P) * ((l : P.R.B) ^ n * P.tB) = 1 := by
+  rw [← crisFrobenius_iterate_cyclotomicPeriod, ← iter_mul, tI_mul, ← phiN_apply, map_one]
+
+theorem eq_zero_of_frobeniusImages_mem_filOne {AI : LocAinf l P} (T : LocTied l P AI) (h k : ℕ) (hkh : k < h) (d : P.R.B)
+    (hφ : P.φB^[h] d = (l : P.R.B) ^ k * d) (hev : ∀ j, ev P j d ∈ Fil P 1) : d = 0 := by
+  have hB := GlobalTheory.T.deRhamPeriodRing_field_tPow_filtration_units l P AI T
+  have hl0 : ((l : ℚ_[l])) ≠ 0 := by exact_mod_cast (Fact.out : l.Prime).ne_zero
+
+  have hc : (l : P.R.B) ^ (h - k) * P.φB^[h] (d * tI P) = d * tI P := by
+    have h1 := iter_tI P h
+    rw [iter_mul, hφ]
+    have h2 : (l : P.R.B) ^ h * P.φB^[h] (tI P) = tI P := by
+      calc (l : P.R.B) ^ h * P.φB^[h] (tI P) = (l : P.R.B) ^ h * P.φB^[h] (tI P) * (P.tB * tI P) := by
+            rw [mul_comm P.tB, tI_mul, mul_one]
+        _ = (P.φB^[h] (tI P) * ((l : P.R.B) ^ h * P.tB)) * tI P := by ring
+        _ = tI P := by rw [h1, one_mul]
+    calc (l : P.R.B) ^ (h - k) * ((l : P.R.B) ^ k * d * P.φB^[h] (tI P))
+        = d * ((l : P.R.B) ^ (h - k + k) * P.φB^[h] (tI P)) := by rw [pow_add]; ring
+      _ = d * tI P := by rw [Nat.sub_add_cancel hkh.le, h2]
+
+  have hcf : ∀ j < h, ev P j (d * tI P) ∈ Fil P 0 := by
+    intro j _
+    have hiff := (hB.2.2.1 0 1 (ev P j (d * tI P)))
+    rw [hiff, hB.2.2.2.2.2.2.2.2.2.2, ev_mul]
+    have e1 : ev P j (tI P) * (((l : P.R.BdR)) ^ j * P.ιB P.tB) = 1 := by
+      have := congrArg P.ιB (iter_tI P j)
+      rwa [map_mul, map_one, map_mul, map_pow, map_natCast] at this
+    have e2 : P.ιB P.tB * ev P j (tI P) = algebraMap ℚ_[l] P.R.BdR (((l : ℚ_[l]) ^ j)⁻¹) := by
+      have hq : ((l : P.R.BdR)) ^ j * algebraMap ℚ_[l] P.R.BdR (((l : ℚ_[l]) ^ j)⁻¹) = 1 := by
+        rw [← map_natCast (algebraMap ℚ_[l] P.R.BdR), ← map_pow, ← map_mul,
+          mul_inv_cancel₀ (pow_ne_zero _ hl0), map_one]
+      calc P.ιB P.tB * ev P j (tI P)
+          = P.ιB P.tB * ev P j (tI P) * ((l : P.R.BdR) ^ j * algebraMap ℚ_[l] P.R.BdR (((l : ℚ_[l]) ^ j)⁻¹)) := by
+            rw [hq, mul_one]
+        _ = (ev P j (tI P) * ((l : P.R.BdR) ^ j * P.ιB P.tB)) * algebraMap ℚ_[l] P.R.BdR (((l : ℚ_[l]) ^ j)⁻¹) := by ring
+        _ = _ := by rw [e1, one_mul]
+    have : P.ιB P.tB * (ev P j d * ev P j (tI P)) = ((l : ℚ_[l]) ^ j)⁻¹ • ev P j d := by
+      rw [Algebra.smul_def, ← e2]; ring
+    rw [this]
+    simpa using fil_smul P (((l : ℚ_[l]) ^ j)⁻¹) (hev j)
+  have hz := GlobalTheory.T.eq_zero_of_frobenius_periodic_mem_deRhamFil_zero l P AI T h (h - k) (by omega) (by omega) (d * tI P) hc hcf
+  calc d = d * tI P * P.tB := by rw [mul_assoc, tI_mul, mul_one]
+    _ = 0 := by rw [hz, zero_mul]
+
+end GlobalTheory.SecondKind
+end
+
+noncomputable section
+namespace GlobalTheory.SecondKind
+
+variable {l : ℕ} [Fact l.Prime] (P : LocPrime l)
+
+def evL (n : ℕ) : P.R.B →ₗ[ℚ_[l]] P.R.BdR where
+  toFun := ev P n
+  map_add' := ev_add P n
+  map_smul' := ev_smul P n
+
+theorem ev_shift (h i : ℕ) (x : P.R.B) (hx : P.φB^[h] x = (l : P.R.B) * x) :
+    ev P (i + h) x = (l : P.R.BdR) * ev P i x := by
+  simp only [ev]
+  rw [Function.iterate_add_apply, hx, iter_mul, iter_natCast, map_mul, map_natCast]
+
+theorem sum_all (h : ℕ) (hh : 0 < h) (lam : Fin h → P.R.BdR) (a : Fin h → P.R.B)
+    (haφ : ∀ j, P.φB^[h] (a j) = (l : P.R.B) * a j)
+    (hs : ∀ i : Fin h, ∑ j, lam j * ev P i (a j) ∈ Fil P 1) (i : ℕ) :
+    ∑ j, lam j * ev P i (a j) ∈ Fil P 1 := by
+  induction i using Nat.strong_induction_on with
+  | _ i ih =>
+    by_cases hi : i < h
+    · exact hs ⟨i, hi⟩
+    · have e : i = (i - h) + h := by omega
+      have : ∑ j, lam j * ev P i (a j) = (l : P.R.BdR) * ∑ j, lam j * ev P (i - h) (a j) := by
+        rw [Finset.mul_sum]
+        refine Finset.sum_congr rfl fun j _ => ?_
+        rw [e, ev_shift P h (i - h) (a j) (haφ j), Nat.add_sub_cancel]; ring
+      rw [this]
+      exact fil_natCast_mul P l (ih (i - h) (by omega))
+
+theorem span_props {AI : LocAinf l P} (T : LocTied l P AI) (h : ℕ) (a : Fin h → P.R.B)
+    (haP : ∀ j, Plus T (a j)) (haφ : ∀ j, P.φB^[h] (a j) = (l : P.R.B) * a j) (x : P.R.B)
+    (hx : x ∈ Submodule.span ℚ_[l] (Set.range a)) :
+    Plus T x ∧ P.φB^[h] x = (l : P.R.B) * x := by
+  have hp := GlobalTheory.T.bcrisPlus_frobeniusStable_subring_in_filZero l P AI T
+  induction hx using Submodule.span_induction with
+  | mem x hx =>
+    obtain ⟨j, rfl⟩ := hx
+    exact ⟨haP j, haφ j⟩
+  | zero =>
+    refine ⟨?_, ?_⟩
+    · simpa using hp.2.2.2.1 0
+    · rw [← phiN_apply, map_zero, mul_zero]
+  | add x y _ _ hx hy =>
+    exact ⟨(hp.2.2.1 x y hx.1 hy.1).1, by rw [iter_add, hx.2, hy.2, mul_add]⟩
+  | smul q x _ hx =>
+    refine ⟨?_, ?_⟩
+    · rw [Algebra.smul_def]; exact (hp.2.2.1 _ _ (hp.2.2.2.1 q) hx.1).2
+    · rw [iter_smul, hx.2, mul_smul_comm]
+
+end GlobalTheory.SecondKind
+end
+
+noncomputable section
+namespace GlobalTheory.SecondKind
+
+variable {l : ℕ} [Fact l.Prime] (P : LocPrime l)
+
+theorem dep_false {AI : LocAinf l P} (T : LocTied l P AI) (h : ℕ) (hh : 2 ≤ h) (lam : Fin h → P.R.BdR)
+    (hlam : ∀ j, lam j ∈ Fil P 0) (hind : ∀ c : Fin h → ℚ_[l], ∑ j, c j • lam j ∈ Fil P 1 → c = 0)
+    (a : Fin h → P.R.B) (ha0 : a ≠ 0) (haP : ∀ j, Plus T (a j))
+    (haφ : ∀ j, P.φB^[h] (a j) = (l : P.R.B) * a j)
+    (hs : ∀ i : Fin h, ∑ j, lam j * ev P i (a j) ∈ Fil P 1) (hli : ¬ LinearIndependent ℚ_[l] a) : False := by
+  have hB := GlobalTheory.T.deRhamPeriodRing_field_tPow_filtration_units l P AI T
+  have hp := GlobalTheory.T.bcrisPlus_frobeniusStable_subring_in_filZero l P AI T
+  let V := Submodule.span ℚ_[l] (Set.range a)
+  haveI : FiniteDimensional ℚ_[l] V := FiniteDimensional.span_of_finite ℚ_[l] (Set.finite_range a)
+  let k := Module.finrank ℚ_[l] V
+  let bas : Module.Basis (Fin k) ℚ_[l] V := Module.finBasis ℚ_[l] V
+  let b : Fin k → P.R.B := fun m => (bas m : P.R.B)
+  have hkh : k < h := by
+    have h1 : k ≤ h := (by simpa using finrank_range_le_card (R := ℚ_[l]) a : Set.finrank ℚ_[l] (Set.range a) ≤ h)
+    rcases h1.lt_or_eq with h1 | h1
+    · exact h1
+    · exfalso; apply hli
+      rw [linearIndependent_iff_card_eq_finrank_span, Fintype.card_fin]; exact h1.symm
+  have hk0 : 0 < k := by
+    rcases Nat.eq_zero_or_pos k with h0 | h0
+    · exfalso; apply ha0
+      have hbot : V = ⊥ := Submodule.finrank_eq_zero.mp h0
+      funext j
+      have : a j ∈ V := Submodule.subset_span ⟨j, rfl⟩
+      rw [hbot, Submodule.mem_bot] at this
+      exact this
+    · exact h0
+  let c : Fin h → Fin k → ℚ_[l] := fun j m => bas.repr ⟨a j, Submodule.subset_span ⟨j, rfl⟩⟩ m
+  have hac : ∀ j, a j = ∑ m, c j m • b m := by
+    intro j
+    have := congrArg Subtype.val (bas.sum_repr ⟨a j, Submodule.subset_span ⟨j, rfl⟩⟩)
+    rw [Submodule.coe_sum] at this
+    simpa [c, b] using this.symm
+  have hbP : ∀ m, Plus T (b m) ∧ P.φB^[h] (b m) = (l : P.R.B) * b m :=
+    fun m => span_props P T h a haP haφ _ (bas m).2
+  have hbli : LinearIndependent ℚ_[l] b :=
+    bas.linearIndependent.map' V.subtype V.ker_subtype
+  have hd := GlobalTheory.T.mooreDeterminant_crisPlus_ne_zero l P AI T h k hkh.le b (fun m => (hbP m).1) (fun m => (hbP m).2) hbli
+  let lam' : Fin k → P.R.BdR := fun m => ∑ j, c j m • lam j
+  have hlam'0 : ∀ m, lam' m ∈ Fil P 0 := fun m => fil_sum P _ _ fun j _ => fil_smul P _ (hlam j)
+  let m0 : Fin k := ⟨0, hk0⟩
+  have hm0 : lam' m0 ∉ Fil P 1 := by
+    intro hmem
+    have hz := hind (fun j => c j m0) hmem
+    have hle : Submodule.span ℚ_[l] ((Subtype.val : V → P.R.B) ⁻¹' Set.range a) ≤
+        LinearMap.ker (bas.coord m0) := by
+      rw [Submodule.span_le]
+      rintro x ⟨j, hj⟩
+      have hx : x = ⟨a j, Submodule.subset_span ⟨j, rfl⟩⟩ := Subtype.ext hj.symm
+      subst hx
+      show bas.coord m0 _ = 0
+      rw [Module.Basis.coord_apply]
+      exact congrFun hz j
+    rw [Submodule.span_span_coe_preimage] at hle
+    have := hle (Submodule.mem_top (x := bas m0))
+    rw [LinearMap.mem_ker, Module.Basis.coord_apply, Module.Basis.repr_self, Finsupp.single_eq_same] at this
+    exact one_ne_zero this
+  have hsum' : ∀ i : ℕ, ∑ m, lam' m * ev P i (b m) ∈ Fil P 1 := by
+    intro i
+    have e : ∑ j, lam j * ev P i (a j) = ∑ m, lam' m * ev P i (b m) := by
+      calc ∑ j, lam j * ev P i (a j) = ∑ j, lam j * evL P i (∑ m, c j m • b m) :=
+            Finset.sum_congr rfl fun j _ => by rw [← hac j]; rfl
+        _ = ∑ j, ∑ m, (c j m • lam j) * ev P i (b m) := by
+            refine Finset.sum_congr rfl fun j _ => ?_
+            rw [map_sum, Finset.mul_sum]
+            refine Finset.sum_congr rfl fun m _ => ?_
+            rw [map_smul, mul_smul_comm, smul_mul_assoc]; rfl
+        _ = ∑ m, lam' m * ev P i (b m) := by
+            rw [Finset.sum_comm]
+            refine Finset.sum_congr rfl fun m _ => ?_
+            rw [Finset.sum_mul]
+    rw [← e]; exact sum_all P h (by omega) lam a haφ hs i
+  have hdet : ∀ j : ℕ, ev P j (Matrix.of fun i m : Fin k => P.φB^[i] (b m)).det ∈ Fil P 1 := by
+    intro j
+    let M : Matrix (Fin k) (Fin k) P.R.BdR := Matrix.of fun i m => ev P (j + i) (b m)
+    have eM : ev P j (Matrix.of fun i m : Fin k => P.φB^[i] (b m)).det = M.det := by
+      have : ev P j = ((P.ιB : P.R.B →+* P.R.BdR).comp (phiN P j)) := by
+        funext x; simp [ev, phiN_apply]
+      rw [this, RingHom.map_det]
+      congr 1
+      ext i m
+      simp [M, ev, phiN_apply, Function.iterate_add_apply]
+    rw [eM]
+    have hMv : ∀ i, M.mulVec lam' i ∈ Fil P 1 := by
+      intro i
+      show ∑ m, M i m * lam' m ∈ Fil P 1
+      have e : ∑ m, M i m * lam' m = ∑ m, lam' m * ev P (j + i) (b m) :=
+        Finset.sum_congr rfl fun m _ => mul_comm _ _
+      rw [e]; exact hsum' (j + i)
+    have h1 := det_mul_mem P M (fun i m => hp.2.1 _ (hbP m).1 (j + i)) lam' hMv m0
+    obtain ⟨y, hy0, hy⟩ := hB.2.2.2.1 (lam' m0) (hlam'0 m0) hm0
+    have := fil_mul P h1 hy0
+    rw [mul_assoc, hy, mul_one] at this
+    simpa using this
+  have hdφ : P.φB^[h] (Matrix.of fun i m : Fin k => P.φB^[i] (b m)).det =
+      (l : P.R.B) ^ k * (Matrix.of fun i m : Fin k => P.φB^[i] (b m)).det := by
+    rw [← phiN_apply, RingHom.map_det]
+    have : (phiN P h).mapMatrix (Matrix.of fun i m : Fin k => P.φB^[i] (b m)) =
+        (l : P.R.B) • Matrix.of fun i m : Fin k => P.φB^[i] (b m) := by
+      ext i m
+      simp only [RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.of_apply, Matrix.smul_apply, smul_eq_mul,
+        phiN_apply]
+      rw [← Function.iterate_add_apply, add_comm, Function.iterate_add_apply, (hbP m).2, iter_mul, iter_natCast]
+    rw [this, Matrix.det_smul, Fintype.card_fin]
+  exact hd (eq_zero_of_frobeniusImages_mem_filOne P T h k hkh _ hdφ hdet)
+
+end GlobalTheory.SecondKind
+
+namespace GlobalTheory.SecondKind
+
+theorem exists_secondKind : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (T : LocTied l P AI) (h : ℕ), 2 ≤ h → ∀ lam : Fin h → P.R.BdR, (∀ j, lam j ∈ Fil P 0) → (∀ c : Fin h → ℚ_[l], ∑ j, c j • lam j ∈ Fil P 1 → c = 0) → ∃ a : Fin h → P.R.B, (∀ j, P.φB^[h] (a j) = (l : P.R.B) * a j) ∧ (∀ (i : ℕ) j, ev P i (a j) ∈ Fil P 0) ∧ (∀ i : Fin h, ∑ j, lam j * ev P i (a j) ∈ Fil P 1) ∧ (Matrix.of fun i j : Fin h => P.φB^[i] (a j)).det ≠ 0 := by
+  intro l _ P AI T h hh lam hlam hind
+  obtain ⟨a, ha0, haP, haφ, hs⟩ := GlobalTheory.T.existsNonzeroFrobVectorResidueZero_proof l P AI T h hh lam hlam hind
+  refine ⟨a, haφ, fun i j => (GlobalTheory.T.bcrisPlus_frobeniusStable_subring_in_filZero l P AI T).2.1 _ (haP j) i, hs, ?_⟩
+  by_cases hli : LinearIndependent ℚ_[l] a
+  · exact GlobalTheory.T.mooreDeterminant_crisPlus_ne_zero l P AI T h h le_rfl a haP haφ hli
+  · exact (dep_false P T h hh lam hlam hind a ha0 haP haφ hs hli).elim
+
+end GlobalTheory.SecondKind
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations GlobalTheory.Pst GlobalTheory.PMon TensorProduct
+open scoped Formalism.Per
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_secondKind_matrix_moore_det_ne_zero : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (T : LocTied l P AI) (h : ℕ), 2 ≤ h → ∀ lam : Fin h → P.R.BdR, (∀ j, lam j ∈ Fil P 0) → (∀ c : Fin h → ℚ_[l], ∑ j, c j • lam j ∈ Fil P 1 → c = 0) → ∃ a : Fin h → P.R.B, (∀ j, P.φB^[h] (a j) = (l : P.R.B) * a j) ∧ (∀ (i : ℕ) j, ev P i (a j) ∈ Fil P 0) ∧ (∀ i : Fin h, ∑ j, lam j * ev P i (a j) ∈ Fil P 1) ∧ (Matrix.of fun i j : Fin h => P.φB^[i] (a j)).det ≠ 0 := by
+  atlas_forward_decl GlobalTheory.SecondKind.exists_secondKind
+end
+
+section
 section
 noncomputable section
 
@@ -349,3 +1121,4 @@ open scoped Formalism.Per
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.fundamentalLemmaLattice_degreeOne : FLAt 1 := by
   atlas_forward_decl GlobalTheory.PMon.FLOne.flAt_one
+end

@@ -22,7 +22,6 @@ variable (M V) in
 
 def equivFamilies : SecOn M V ≃ Geo.Tor.secOn M V := secOnEquiv M V
 
-theorem equivFamilies_val (s : SecOn M V) : (equivFamilies M V s).1 = coord s := rfl
 
 theorem compat (s : SecOn M V) (i j : M.ι) {O : X.Opens} (hi : O ≤ V ⊓ M.U i) (hj : O ≤ V ⊓ M.U j)
     (hij : O ≤ M.U i ⊓ M.U j) :
@@ -187,11 +186,6 @@ theorem pullLE_restrict (π : X' ⟶ X) {W' : X'.Opens} (h : W ≤ V) (e : W' �
     pullLE M π W W' e (restrict M h s) = pullLE M π V W' (e.trans (π.preimage_mono h)) s :=
   (congrArg (restrict (M.pull π) e) (pull_restrict π h s)).trans (restrict_restrict _ _ _)
 
-theorem chart_pullLE (hM : M.IsLB) (π : X' ⟶ X) {V' : X'.Opens} (e : V' ≤ π ⁻¹ᵁ V)
-    (j : (M.pull π).ι) (h : V ≤ M.U (j PUnit.unit)) (h' : V' ≤ (M.pull π).U j) (s : SecOn M V) :
-    chart (LB.isLB_pull hM π) j h' (pullLE M π V V' e s) =
-      (π.appLE V V' e).hom (chart hM (j PUnit.unit) h s) := by
-  rw [chart_apply, chart_apply, coord_pullLE, resG_appLE, appLE_resG]
 
 variable {t : ℤ}
 
@@ -563,15 +557,10 @@ def secCube : GlobalTheory.Cube.{0} κ R :=
     (fun h => SecOnR.restrict f M (iInf_le_iInf_of_subset D h))
     (fun _ x => SecOnR.restrict_self f _ x) (fun _ _ x => SecOnR.restrict_restrict f _ _ x)
 
-theorem secCube_obj (s : Finset κ) :
-    (secCube f M D).obj s = ModuleCat.of R (SecOnR f M (⨅ i ∈ s, D i)) := rfl
 
 theorem res_secCube {s t : Finset κ} (h : s ⊆ t) :
     GlobalTheory.Cube.res (secCube f M D) h = SecOnR.restrict f M (iInf_le_iInf_of_subset D h) := rfl
 
-theorem secCube_empty_bijective : Function.Bijective fun s : LB.Sec M =>
-    (SecOnR.of f M _ (GlobalTheory.LB.ofSec s _) : (secCube f M D).obj ∅) :=
-  SecOn.ofSec_bijective (by simp)
 
 def cechLB [LinearOrder κ] : CochainComplex (ModuleCat.{0} R) ℕ := cechComplex (secCube f M D)
 
@@ -617,8 +606,6 @@ def secCubeMul {H : LB X} (t : ℤ) (s : LB.Sec H) :
     secCube f (tw M H t) D ⟶ secCube f (tw M H (t + 1)) D :=
   secCubeMap f D (SecOn.mulSec M t s) (SecOn.mulSec_restrict s)
 
-theorem secCubeMul_app {H : LB X} (t : ℤ) (s : LB.Sec H) (I : Finset κ) :
-    ((secCubeMul f M D t s).app I).hom = SecOnR.mulSec f M t s (⨅ i ∈ I, D i) := rfl
 
 theorem preimage_biInf (π : X' ⟶ X) (s : Finset κ) :
     π ⁻¹ᵁ (⨅ i ∈ s, D i) = ⨅ i ∈ s, π ⁻¹ᵁ D i := by
@@ -660,15 +647,6 @@ def secOnRTrivEquiv (f : X ⟶ Spec (CommRingCat.of R)) [IsIso f] {V : X.Opens} 
       rw [e]
       exact (secOnTrivEquiv V).symm.bijective.comp (cst_bijective f hV))
 
-theorem coord_secOnRTrivEquiv (f : X ⟶ Spec (CommRingCat.of R)) [IsIso f] {V : X.Opens}
-    (hV : V = ⊤) (r : R) (i : (Inh.trivLB X).ι) :
-    SecOnR.coord (secOnRTrivEquiv f hV r) i = cst f _ r := by
-  refine (SecOnR.coord_base_smul r _ i).trans ?_
-  have e := SecOn.coord_chart_symm (Inh.trivLB_isLB X) PUnit.unit i (le_top : V ≤ ⊤) 1
-  have e₂ : rs X (inf_le_left : V ⊓ ⊤ ≤ V) 1 *
-      rs X (le_inf le_top le_top : V ⊓ ⊤ ≤ ⊤ ⊓ ⊤) 1 = 1 := by
-    rw [map_one, map_one, _root_.one_mul]
-  exact (congrArg (cst f _ r * ·) (e.trans e₂)).trans (_root_.mul_one _)
 
 example : Nonempty (ℤ ≃ₗ[ℤ]
     (secCube (𝟙 (Spec (CommRingCat.of ℤ))) (Inh.trivLB _) (fun _ : Fin 2 => ⊤)).obj {0, 1}) :=

@@ -145,40 +145,7 @@ theorem lifts_iff {R R' : Type} [CommRing R] [CommRing R'] (x : Sp R ⟶ S) (c :
     · rw [charVal_tanPt, charVal_tanPt]
       ext <;> simp [dualMap, h]
 
-theorem killsOver_id_iff (Y : AddSubgroup X) {B : Type} [CommRing B] [Nontrivial B] (b : Sp B ⟶ S) :
-    KillsOver (𝟙 (splitTorus S X)) Y b ↔ Y = ⊤ := by
-  constructor
-  · intro h
-    rw [eq_top_iff]
-    intro χ _
-    obtain ⟨t, ht⟩ := exists_charVal (X := X) (spMap (algebraMap B (AddMonoidAlgebra B (X ⧸ Y))) ≫ b)
-      (MonoidHom.toHomUnits ((AddMonoidAlgebra.of B (X ⧸ Y)).comp
-        (AddMonoidHom.toMultiplicative (QuotientAddGroup.mk' Y))))
-    have ht' : ∀ χ, charVal t χ = AddMonoidAlgebra.single (QuotientAddGroup.mk χ : X ⧸ Y) 1 := ht
-    have h1 := h _ _ t fun y hy => by
-      rw [ht', (QuotientAddGroup.eq_zero_iff y).2 hy]; rfl
-    rw [Category.comp_id] at h1
-    have h2 := ht' χ
-    rw [h1, charVal_one, AddMonoidAlgebra.one_def] at h2
-    exact (QuotientAddGroup.eq_zero_iff χ).1 (AddMonoidAlgebra.single_left_injective one_ne_zero h2).symm
-  · rintro rfl A _ g t ht
-    rw [Category.comp_id]
-    exact charVal_ext fun χ => (ht χ trivial).trans (charVal_one χ).symm
 
-theorem killsOver_sq {B : Type} [CommRing B] (b : Sp B ⟶ S) :
-    KillsOver (𝟙 (splitTorus S X) * 𝟙 (splitTorus S X)) (nsmulAddMonoidHom (α := X) 2).range b := by
-  intro A _ g t ht
-  rw [MonObj.comp_mul, Category.comp_id]
-  refine charVal_ext fun χ => ?_
-  rw [charVal_mul, ← charVal_add, charVal_one]
-  exact ht _ ⟨χ, two_nsmul χ⟩
 
-theorem not_killsOver_mu_two (b : Sp (ZMod 2) ⟶ S) :
-    ¬ KillsOver (𝟙 (splitTorus S ℤ)) (nsmulAddMonoidHom (α := ℤ) 2).range b := by
-  rw [killsOver_id_iff]
-  intro h
-  obtain ⟨n, hn⟩ : (1 : ℤ) ∈ (nsmulAddMonoidHom (α := ℤ) 2).range := h ▸ trivial
-  have : 2 * n = 1 := by simpa using hn
-  omega
 
 end GlobalTheory.CompanionTheory.Ar.TorusModel

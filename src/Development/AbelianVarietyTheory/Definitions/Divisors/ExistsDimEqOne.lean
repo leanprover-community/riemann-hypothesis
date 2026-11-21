@@ -143,9 +143,6 @@ theorem tmap_comp {A B C : AbVar K} (f : A ⟶ B) (g : B ⟶ C) :
 theorem tmap_id (A : AbVar K) : tmap l A A (𝟙 A) = LinearMap.id :=
   LinearMap.ext fun t => Tate.ext fun n => Category.comp_id (t.lev n)
 
-theorem tmap_galT {A B : AbVar K} (f : A ⟶ B) (σ : Gal K) :
-    tmap l A B f ∘ₗ galT l A σ = galT l B σ ∘ₗ tmap l A B f :=
-  LinearMap.ext fun t => Tate.ext fun n => Category.assoc (specAut σ) (t.lev n) f.hom
 
 def vmap {A B : AbVar K} (f : A ⟶ B) : Vl l A →ₗ[ℚ_[l]] Vl l B := (tmap l A B f).baseChange ℚ_[l]
 
@@ -306,13 +303,7 @@ theorem exists_dim_eq_one (K : Type) [Field K] : ∃ A : AbVar K, A.dim = 1 :=
 
 theorem exists_dim_one (K : Type) [Field K] : ∃ A : AbVar K, A.dim = 1 := exists_dim_eq_one K
 
-theorem isIsogeny_id (A : AbVar K) : IsIsogeny (𝟙 A) :=
-  ⟨inferInstanceAs (IsFinite (𝟙 _)), inferInstanceAs (Surjective (𝟙 _))⟩
 
-theorem deg_id (A : AbVar K) : deg (𝟙 A) = 1 := by
-  have : IsIso (Hom.hom (𝟙 A)).left := inferInstanceAs (IsIso (𝟙 _))
-  rw [deg, if_pos (isIsogeny_id A), Scheme.Hom.finrank_eq_one_of_isIso]
-  rfl
 
 theorem lam_eq {A : AbVar K} (c : Pic A.X.left) {Y : Over (Sp K)} (x y : Y ⟶ A.X) :
     lam c x y = CechPic.lam c x y := by

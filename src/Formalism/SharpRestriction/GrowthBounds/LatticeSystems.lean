@@ -570,9 +570,6 @@ end PlacesLevel
 
 variable {p : ℕ}
 
-theorem edges_finite (G : GAtP p) (v : Fin G.P.nV) (L : Submodule (G.P.W v) (Fin (G.P.m + 1) → G.P.Qq v)) :
-    {L'' : Submodule (G.P.W v) (Fin (G.P.m + 1) → G.P.Qq v) | IsEdge p (G.P.n' v) G.P.r ⟨L'', L⟩}.Finite :=
-  ef_places_finite G.P v L
 
 def yEnd (G : GAtP p) (v : Fin G.P.nV) : Module.End G.O G.Fn where
   toFun := G.yv v
@@ -1560,8 +1557,6 @@ def RestLocEdge (G : GAtP p) (v : Fin G.P.nV) : Prop :=
       dualLat G.O G.Kf (HL (O := G.O) (G.P.ι v) (G.P.σ v) (G.P.lam0 v) Lv) ≤
         Re' p (G.P.ι v) (G.P.σ v) G.P.w G.P.r (G.P.lam0 v) e)
 
-theorem la_locD_of_edge (G : GAtP p) (v : Fin G.P.nV) (h : RestLocEdge G v) : RestLocD G v :=
-  fun Lv hLv => ⟨la_H_le_V G v Lv hLv, (h Lv hLv).1, (h Lv hLv).2, la_reflexive G v Lv hLv⟩
 
 end Formalism.MainNotions.G.LatticeSystems
 
@@ -2447,20 +2442,12 @@ theorem open_part_of_local_and_lemma_J (G : GAtP p) (hD : ∀ v, RestLocD G v) (
   fun h1 h2 VV t Dd cStar κ hne hLP =>
     restWalk_of_local_J G VV t Dd κ (fun v _ => hD v) (hJ h1 h2 VV t Dd cStar κ hne hLP)
 
-theorem open_part_of_edge_inclusions (G : GAtP p) (hE : ∀ v, RestLocEdge G v) (hJ : RestJAll G) : RemainingCountingStatement G :=
-  open_part_of_local_and_lemma_J G (fun v => la_locD_of_edge G v (hE v)) hJ
 
 theorem instance_of_open_part (D : Formalism.BasicNotions.D7) (G : GAtP p) (hA : admitted D G) (hR : RemainingCountingStatement G) : Conclusion1 D G :=
   have hfin : Module.Finite G.O G.Mna := mna_finite G hA.2.1
   counting_statement_of_block_form D G hA hR hfin (fun v => mna_free G v)
 
-theorem instance_of_edges_and_lemma_J (D : Formalism.BasicNotions.D7) (G : GAtP p) (hA : admitted D G) (hE : ∀ v, RestLocEdge G v)
-    (hJ : RestJAll G) : Conclusion1 D G :=
-  instance_of_open_part D G hA (open_part_of_edge_inclusions G hE hJ)
 
-theorem instance_of_edge_bases_and_lemma_J (D : Formalism.BasicNotions.D7) (G : GAtP p) (hA : admitted D G) (hB : ∀ v, RestEdgeBasis G v)
-    (hJ : RestJAll G) : Conclusion1 D G :=
-  instance_of_open_part D G hA (open_part_of_local_and_lemma_J G (fun v => restLocD_of_edgeBasis G v (hB v)) hJ)
 
 theorem restLocD (G : GAtP p) (v : Fin G.P.nV) : RestLocD G v :=
   restLocD_of_edgeBasis G v (restEdgeBasis G v)
@@ -2489,8 +2476,6 @@ def upd (G : GAtP p) (L : G.P.Tup) (v : Fin G.P.nV) (A : Lat G v) : G.P.Tup :=
 def sysOf (G : GAtP p) (t : Fin G.P.nV → ℕ) (σ : Fin G.P.nV → Slot) : G.P.Tup → Submodule G.O G.P.Xsp :=
   G.P.sys fun v => piLattice₂ G v (t v) (σ v)
 
-theorem latSys_eq (G : GAtP p) (t : Fin G.P.nV → ℕ) (σ : Fin G.P.nV → Slot) :
-    latSys G t σ = G.funMod (sysOf G t σ) := rfl
 
 def EquivSys (G : GAtP p) (Hv : G.P.Tup → Submodule G.O G.P.Xsp) : Prop :=
   ∀ (i : G.comp) (γ : (G.lev i).Γ) (L : G.P.Tup), G.P.IsLatTup L → ∀ ξ ∈ Hv L,
@@ -4423,29 +4408,15 @@ namespace Formalism.MainNotions.G.LatticeSystems
 
 open Formalism.MainNotions.G Formalism.MainNotions.SelectionLemmas
 
-theorem stmt1Loc_of_rest1 (D : Formalism.BasicNotions.D7) (h : ∀ (p : ℕ) (G : GAtP p), RemainingCountingStatement G) : RationalPlaneProblemLocal D :=
-  fun p G hA => instance_of_open_part D G hA (h p G)
 
-theorem problem_of_open_part_everywhere (D : Formalism.BasicNotions.D7)
-    (h : ∀ (u : D.what₂.Word) (w : D.what₂.places.Pl)
-      (hh : Formalism.BasicNotions.GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)), RemainingCountingStatement (D.gat u w hh)) : IntegralityFromMetric D :=
-  fun u w hh hA => instance_of_open_part D _ hA (h u w hh)
 
 theorem admissibleModule_iff_lattice_quotients (D : Formalism.BasicNotions.D7) {p : ℕ} (G : GAtP p) : admitted D G ↔ adm1 D G ∧ adm2 D G :=
   ⟨fun h => ⟨h.1, h.2.1⟩, fun h => ⟨h.1, h.2, exponent_condition_holds D G⟩⟩
 
-theorem stmt1Loc_of_J (D : Formalism.BasicNotions.D7) (h : ∀ (p : ℕ) (G : GAtP p), RestJAll G) : RationalPlaneProblemLocal D :=
-  fun p G hA => instance_of_lemma_J D G hA (h p G)
 
-theorem problem_of_lemma_J_everywhere (D : Formalism.BasicNotions.D7)
-    (h : ∀ (u : D.what₂.Word) (w : D.what₂.places.Pl)
-      (hh : Formalism.BasicNotions.GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)), RestJAll (D.gat u w hh)) : IntegralityFromMetric D :=
-  fun u w hh hA => instance_of_lemma_J D _ hA (h u w hh)
 
-theorem stmt1Loc_proved (D : Formalism.BasicNotions.D7) : RationalPlaneProblemLocal D := fun _ G hA => theta_kernel_expansion D G hA
 
 theorem problem_holds (D : Formalism.BasicNotions.D7) : IntegralityFromMetric D := fun _ _ _ hA => theta_kernel_expansion D _ hA
 
-theorem problem_holds_family {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : FamilyGlobalDerivation Fm := fun _ _ => problem_holds _
 
 end Formalism.MainNotions.G.LatticeSystems

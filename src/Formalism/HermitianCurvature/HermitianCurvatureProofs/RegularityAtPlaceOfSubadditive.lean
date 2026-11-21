@@ -360,20 +360,6 @@ namespace Formalism.FourierDecayAlt.P
 
 open Formalism.FourierDecayAlt Formalism.QuantumDeterminants
 
-theorem norm_bound_at_place {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
-    [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] {P : M.Par} (p : KB.Pl P Wp Wq)
-    (f : B.Mat P.k P.r → (Wq →L[ℂ] Wp)) (Ap Am : B.Mat P.k P.r → (Wq →L[ℂ] Wq))
-    (ApPt AmPt : C.LPt → (Wq →L[ℂ] Wq)) (b : ℝ) (n₀ p₀ : ℕ)
-    (hAp : ∀ γ, D.IsLocPt γ (P.r + 1) → 0 < TBB.Gp p γ →
-      p.V (fun g => (f g).comp (Ap g)) γ = (p.V f γ).comp (ApPt γ))
-    (hAm : ∀ γ, D.IsLocPt γ (P.r + 1) → 0 < TBB.Gp p γ →
-      p.V (fun g => (f g).comp (Am g)) γ = (p.V f γ).comp (AmPt γ))
-    (hlow : ∀ γ, D.IsLocPt γ (P.r + 1) → 0 < TBB.Gp p γ → ∀ v : Wq,
-      ‖v‖ ^ 2 ≤ (3 * b) ^ (2 * n₀) * (TBB.Tq p / TBB.Gp p γ) ^ n₀ *
-        (‖(ContinuousLinearMap.adjoint (ApPt γ)) v‖ ^ 2 + ‖(ContinuousLinearMap.adjoint (AmPt γ)) v‖ ^ 2))
-    (hnp : ∀ γ, D.IsLocPt γ (P.r + 1) → 0 < TBB.Gp p γ → ‖ApPt γ‖ ^ 2 ≤ (TBB.Gp p γ / TBB.Tq p) ^ n₀)
-    (hnm : ∀ γ, D.IsLocPt γ (P.r + 1) → 0 < TBB.Gp p γ → ‖AmPt γ‖ ^ 2 ≤ (TBB.Gp p γ / TBB.Tq p) ^ n₀) :
-    Formalism.FourierDecayAlt.TBB.NormAt p f (TBBx4.fpm p f Ap p₀) (TBBx4.fpm p f Am p₀) b n₀ p₀ := TBBx4.normAt_fpm p f Ap Am ApPt AmPt b n₀ p₀ hAp hAm hlow hnp hnm
 
 theorem regularity_at_place {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
     [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] {P : M.Par} (p : KB.Pl P Wp Wq)

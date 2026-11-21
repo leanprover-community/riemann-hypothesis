@@ -1,8 +1,60 @@
 import Mathlib
 import Formalism.LocalToGlobal.ExponentGrids.IntegerShiftClosedExponent
-import Formalism.LocalToGlobal.ExponentGrids.ExponentGridsProofs.ArithmeticBoundCyclicTwo
+import Formalism.LocalToGlobal.ExponentGrids.SecondComplementClosedValuation
+import Formalism.LocalToGlobal.ExponentGrids.ExponentGridsProofs.NormaliserValuationBound
+import Formalism.SizeWindowBrackets.ChainSlopeWindows.PBrDiv
 import Formalism.LocalToGlobal.Divisibility.NumbersLemmas
 
+section
+open Module NumberField IsDedekindDomain Finset
+open Formalism.DivisionValues (vw conjPl PlOver)
+open Formalism.CG (HCdeg HCDplus HCDminus)
+open Formalism.D5 (PhiSet E0)
+open Formalism.LFunctionChainParameters.characterSumData (ArithData)
+open Formalism.RankGapBounds.WeightedMeanData (Consts)
+open Formalism.LFunctionChainParameters Formalism.LFunctionChainParameters.WeightedSlopeBounds Formalism.LFunctionChainParameters.LChain2 Formalism.LFunctionChainParameters.LChain6
+open Formalism.LFunctionChainParameters.LBrDiv (plOf TypePrimeCostDeviationBound)
+
+noncomputable section
+
+namespace Formalism.AtG
+
+namespace PlacesLyingOver
+
+open Formalism.DivisionValues.PlaceSumConjugation
+
+variable {K : Type} [Field K] [NumberField K]
+
+theorem vw_mul' (w : HeightOneSpectrum (𝓞 K)) (a b : K) (ha : a ≠ 0) (hb : b ≠ 0) :
+    vw w (a * b) = vw w a + vw w b := by
+  unfold vw
+  rw [← FractionalIdeal.spanSingleton_mul_spanSingleton]
+  exact FractionalIdeal.count_mul K w
+    ((FractionalIdeal.spanSingleton_ne_zero_iff).2 ha)
+    ((FractionalIdeal.spanSingleton_ne_zero_iff).2 hb)
+
+theorem vw_one' (w : HeightOneSpectrum (𝓞 K)) : vw w (1 : K) = 0 := by
+  unfold vw
+  rw [FractionalIdeal.spanSingleton_one, FractionalIdeal.count_one]
+
+theorem vw_pow' (w : HeightOneSpectrum (𝓞 K)) (a : K) (ha : a ≠ 0) (n : ℕ) :
+    vw w (a ^ n) = (n : ℤ) * vw w a := by
+  induction n with
+  | zero => simp [vw_one']
+  | succ n ih =>
+    rw [pow_succ, vw_mul' w _ _ (pow_ne_zero n ha) ha, ih]
+    push_cast
+    ring
+
+end PlacesLyingOver
+
+open PlacesLyingOver Formalism.DivisionValues.ValuationRepresentative Formalism.DivisionValues.PlaceSumConjugation
+
+end Formalism.AtG
+end
+end
+
+section
 open Module NumberField IsDedekindDomain Finset
 open Formalism.DivisionValues (vw conjPl PlOver)
 open Formalism.L2.Indef (DefBase DefSide DefCols SPer IndefNum IndefCore)
@@ -18,29 +70,12 @@ open PlacesLyingOver Formalism.DivisionValues.PlaceSumConjugation
 
 variable {K : Type} [Field K] [NumberField K]
 
-theorem perBd_mono [StarRing K] {Bs : DefBase K} {Df : DefSide Bs} {Dc : DefCols Df} {u : Dc.Mem}
-    {Nu : Submodule (𝓞 K) (Fin (Dc.a u) → K)} {t : Bs.Tup} {w : HeightOneSpectrum (𝓞 K)} {s s' : ℝ}
-    (h : s' ≤ s) (H : PerBd Dc u Nu t w s) : PerBd Dc u Nu t w s' := by
-  intro φ hφ F hF
-  rcases H φ hφ F hF with h0 | h1
-  · exact Or.inl h0
-  · exact Or.inr (le_trans h h1)
 
 end UnitPeriodBounds
 
 open PlacesLyingOver UnitPeriodBounds Formalism.DivisionValues.PlaceSumConjugation Formalism.DivisionValues.ValuationRepresentative
 
-theorem root_of_unity_valuation_zero : RootOfUnityIsUnit := by
-  intro K _ _ c n hn hc w
-  have hc0 : c ≠ 0 := by
-    intro h
-    rw [h, zero_pow hn.ne'] at hc
-    exact zero_ne_one hc
-  have h := vw_pow' w c hc0 n
-  rw [hc, vw_one'] at h
-  have hn' : (n : ℤ) ≠ 0 := by exact_mod_cast hn.ne'
-  rcases mul_eq_zero.mp h.symm with h1 | h1
-  · exact absurd h1 hn'
-  · exact h1
 
 end Formalism.AtG
+end
+end

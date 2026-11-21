@@ -33,29 +33,7 @@ theorem L_ne (H : Host E) :
   rw [h, MulChar.one_apply isUnit_one.neg] at h1
   norm_num at h1
 
-theorem hostRd_pow : hostRd E ^ Module.finrank ℚ E = |(discr E : ℝ)| := by
-  have hn : (Module.finrank ℚ E : ℝ) ≠ 0 := by
-    exact_mod_cast (Module.finrank_pos (R := ℚ) (M := E)).ne'
-  unfold hostRd
-  rw [← Real.rpow_natCast, ← Real.rpow_mul (abs_nonneg _), one_div, inv_mul_cancel₀ hn, Real.rpow_one]
 
-theorem bad_exists (l : Tor.Level H) : ∃ bad : Finset ℕ, 2 ∈ bad ∧
-    ∀ r : ℕ, r ∈ bad ↔ r.Prime ∧ (r : ℤ) ∣ 2 * discr E * l.M' := by
-  have hM : l.M' ≠ 0 := Nat.lcm_ne_zero (by have := l.three_le; omega) l.A_pos.ne'
-  have hne : (2 * discr E * (l.M' : ℤ)) ≠ 0 :=
-    mul_ne_zero (mul_ne_zero two_ne_zero (NumberField.discr_ne_zero E)) (by exact_mod_cast hM)
-  refine ⟨(2 * discr E * (l.M' : ℤ)).natAbs.primeFactors, ?_, ?_⟩
-  · rw [Nat.mem_primeFactors]
-    refine ⟨Nat.prime_two, ?_, Int.natAbs_ne_zero.mpr hne⟩
-    rw [← Int.natCast_dvd]
-    exact ⟨discr E * (l.M' : ℤ), by push_cast; ring⟩
-  · intro r
-    rw [Nat.mem_primeFactors, Int.natCast_dvd]
-    constructor
-    · rintro ⟨hp, hd, -⟩
-      exact ⟨hp, hd⟩
-    · rintro ⟨hp, hd⟩
-      exact ⟨hp, hd, Int.natAbs_ne_zero.mpr hne⟩
 
 variable {Y : Model Xo c (algebraMap (𝓞 c.F) c.F)} {T : Top.RootTower (CMType H) (D.p + D.q)}
 
@@ -69,12 +47,6 @@ variable {O : Type} [CommRing O] {β : O →+* c.F} {Y' : Model Xo c β} {S : Fi
   {RM : Top.RootModel (CMType H) (D.p + D.q)}
   {Sys : PB.AnSys (Top.dimFl (CMType H) (D.p + D.q)) (Option (RootIx D))} {Fx : FixedData Y' Sys}
 
-theorem finite_g (o : RootOrigin Y' S RM Fx) : letI := o.g.toAlgebra; Module.Finite Fx.Ωf RM.Ω := by
-  letI := o.g.toAlgebra
-  have hd : 0 < o.Fl.deg := by
-    obtain ⟨_, _, _, _, _, _, _, _, _, _, hpos, _⟩ := o.Fl.generic
-    exact hpos
-  exact Module.finite_of_finrank_pos (by rw [o.g_deg]; exact hd)
 
 theorem pi_pt_ne (o : RootOrigin Y' S RM Fx) (x : o.Re.R.X) :
     ∃ a : ℂ, a ≠ 0 ∧ (fun i => o.Re.R.lift x x ⟨o.k₀, o.ix i⟩) = a • Fx.pt (o.Re.π x) := by

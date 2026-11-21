@@ -43,14 +43,6 @@ theorem eq_zero_of_fixed (ψ : AddChar (AF D.host.F) ℂ) (V W : HSp D) (L : Add
   · exact absurd (sub_eq_zero.1 h1) hne
   · exact h1
 
-theorem unr_void {X : ThetaX D} {T : ThetaTied D X} (Wl : WeilTied D X T) (V W : HSp D)
-    (S : Finset (HeightOneSpectrum (𝓞 D.host.F))) {u u' : WA V W} (hu : u ∈ latVWS V W S) (hu' : u' ∈ latVWS V W S)
-    (hne : Wl.ψ (symplH V W u u') ≠ 1) (Φ : X.Sch V W)
-    (hΦ : ∀ x ∈ latVWS V W S, Heisenberg₂ Wl.ψ V W x (Wl.evS V W Φ) = Wl.evS V W Φ) :
-    Φ = 0 ∧ ∀ χ χ' (p : GA D V × GA D W), Wl.om V W χ χ' p Φ = Φ := by
-  have h0 : Φ = 0 := Wl.evS_inj V W (by
-    rw [eq_zero_of_fixed Wl.ψ V W _ hu hu' hne _ hΦ, map_zero])
-  exact ⟨h0, fun χ χ' p => by rw [h0, map_zero]⟩
 
 end GlobalTheory.WeilVacCollapse
 

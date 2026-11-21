@@ -52,8 +52,6 @@ def DV.RhoUnit (D : D7) (ρ : D.what₂.Tup → ℝ) : Prop :=
   ∀ w : D.what₂.places.Pl, ∃ r : ℚ, (r : ℝ) = ρ (D.what₂.muAt w) ^ 2 ∧
     vAdd (D.plEq w) (r : D.what₂.LL) = 0 ∧ vAdd (D.plEq (D.what₂.places.conj w)) (r : D.what₂.LL) = 0
 
-theorem DV.rhoUnit_one (D : D7) : DV.RhoUnit D (fun _ => 1) :=
-  fun _ => ⟨1, by norm_num, by simp [vAdd], by simp [vAdd]⟩
 
 namespace RowSide
 

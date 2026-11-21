@@ -75,9 +75,7 @@ def cuspWeight (z : (Σ k, ι k) → ℂ) : ℝ :=
   max 0 (sSup {x | ∃ I : Submodule O abelian₂, I ≠ ⊥ ∧ IsSaturated I ∧ IsIsoSub C.form I ∧
     x = -Real.log (C.Nz z I)})
 
-theorem restrict_Nz (hT : T ⊆ S) : (C.restrict hT).Nz = C.Nz := rfl
 
-theorem restrict_cuspWeight (hT : T ⊆ S) : (C.restrict hT).cuspWeight = C.cuspWeight := rfl
 
 def toCuspData (C : CuspDataOn D D.Xo O abelian₂) : CuspData D O abelian₂ where
   rank := C.rank
@@ -120,13 +118,9 @@ section Bridge
 
 variable {D : ComponentData II Ψ K ι Ω E} {O abelian₂ : Type} [CommRing O] [AddCommGroup abelian₂] [Module O abelian₂]
 
-theorem CuspDataOn.toCuspData_ofCuspData (Cd : CuspData D O abelian₂) : (CuspDataOn.ofCuspData Cd).toCuspData = Cd := rfl
 
-theorem CuspDataOn.ofCuspData_toCuspData (C : CuspDataOn D D.Xo O abelian₂) : CuspDataOn.ofCuspData C.toCuspData = C := rfl
 
-theorem CuspDataOn.ofCuspData_Nz (Cd : CuspData D O abelian₂) : (CuspDataOn.ofCuspData Cd).Nz = Cd.Nz := rfl
 
-theorem CuspDataOn.ofCuspData_cuspWeight (Cd : CuspData D O abelian₂) : (CuspDataOn.ofCuspData Cd).cuspWeight = Cd.cuspWeight := rfl
 
 end Bridge
 
@@ -204,11 +198,8 @@ def CuspFamily.const (Cd : CuspData D O abelian₂) (hXo : D.Xo.Nonempty) : Cusp
 
 variable (Cd : CuspData D O abelian₂) (hXo : D.Xo.Nonempty) (H : HodgeData D)
 
-theorem CuspFamily.const_Uat : (CuspFamily.const Cd hXo).Uat = Cd.cuspWeight := rfl
 
-theorem CuspFamily.const_meanU : (CuspFamily.const Cd hXo).meanU H = LowerBoundFree.meanU H Cd := rfl
 
-theorem CuspFamily.const_cuspCorr : (CuspFamily.const Cd hXo).cuspCorr H = LowerBoundFree.cuspCorr H Cd := rfl
 
 end Const
 
@@ -269,11 +260,6 @@ omit [DecidableEq Ψ] in
 theorem StokesLimit.hyp_iff_fam (X : ComponentSetting D O Lt) (hXo : D.Xo.Nonempty) (B : ℕ) (a : ℝ) :
     StokesLimit.Hyp X B a ↔ StokesLimitFam.Hyp (ComponentFamilySetting.componentFamilySetting_ofSetting X hXo) B a := Iff.rfl
 
-theorem StokesLimit.of_fam (h : StokesLimitFam.Statement) (X : ComponentSetting D O Lt) (hXo : D.Xo.Nonempty) (B : ℕ)
-    (a : ℝ) (hII : IsIntersectionSystem II) (hB : 4 * D.f + 2 ≤ B) (hlim : ArLimExists X.H X.S B)
-    (hyp : StokesLimit.Hyp X B a) :
-    ((D.n + 1 : ℕ) : ℝ) * (a - meanU X.H X.Cd / 2) * degMu X.H ≤ arLim X.H X.S B :=
-  h II Ψ K ι Ω E D (ComponentFamilySetting.componentFamilySetting_ofSetting X hXo) B a hII hB hlim hyp
 
 end Bridge
 
@@ -290,11 +276,6 @@ theorem lineData_Xo_nonempty : (lineData II hII).Xo.Nonempty :=
 def planeFamily : CuspFamily (lineData II hII) :=
   CuspFamily.const (planeCusp II hII) (lineData_Xo_nonempty II hII)
 
-theorem planeFamily_isotropic (z : (Σ _ : Unit, Fin 2) → ℂ) :
-    ∃ I : Submodule ((planeFamily II hII).O ((planeFamily II hII).comp z))
-        ((planeFamily II hII).abelian₂ ((planeFamily II hII).comp z)),
-      I ≠ ⊥ ∧ IsSaturated I ∧ IsIsoSub ((planeFamily II hII).cusp _).form I ∧ 0 < (planeFamily II hII).Nz z I :=
-  ⟨planeLine, planeLine_ne_bot, planeLine_saturated, planeLine_isIso, planeCusp_Nz_pos II hII z⟩
 
 end Line
 

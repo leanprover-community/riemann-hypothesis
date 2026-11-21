@@ -3,26 +3,875 @@ import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GroupDict
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSheetCover
 import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsProved
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsLatticeEmbeddingStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.LatticeStabilizerEquivAutomorphisms
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntEmbInjective
+import BuildAid.ForwardExisting
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.AdaptedFrameInverseProperties
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ArchimedeanUnitaryRepresentation
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ArchimedeanUnitarySurjective
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ArchimedeanActionOnLatticeVectors
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsMajorantOfPositiveFrame
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsAdaptedFrameBis
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.AdaptedFrameDeterminesLattice
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.AdaptedFrameOfEquivalent
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.AdaptedFrameChangeUnitary
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.NormSqEqAdaptedFrameSumStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.NormSqEqAdaptedFrameSum
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsTranslatedRiemannLattice
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.HolomorphicAdaptedFrameOnBall
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.BallMobiusHolomorphicPotentialChange
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.BallMobiusMul
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.BallMobiusZeroEqIffUnitary
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.BallMobiusTransitive
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.BallMobiusZeroContinuous
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.BallAutomorphismInverseExistsStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.BallAutomorphismInverseExists
 
+section
+section
+open NumberField Matrix MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GroundTheory.Heights₂.Heights.FiniteCovolume GroundTheory.Automorphic GlobalTheory.CompanionTheory.Ar.Cusp.Dict
+open scoped ENNReal InnerProductSpace
+open scoped ComplexOrder
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Stab
+
+section Ext
+
+variable {E : Type} [Field E] [NumberField E] {V : Type} [AddCommGroup V] [Module E V] {Λ : Type}
+  [AddCommGroup Λ] [Module (𝓞 E) Λ]
+
+theorem exists_basis (e : Λ →+ V) (hspan : Submodule.span E (e.range : Set V) = ⊤) :
+    ∃ (I : Type) (b : Module.Basis I E V) (xs : I → Λ), ∀ i, b i = e (xs i) := by
+  obtain ⟨B, hB, hsp, hli⟩ := exists_linearIndependent E (e.range : Set V)
+  have hx : ∀ i : B, ∃ x, e x = i.1 := fun i => AddMonoidHom.mem_range.1 (hB i.2)
+  choose xs hxs using hx
+  refine ⟨B, Module.Basis.mk hli (by rw [Subtype.range_coe, hsp, hspan]), xs, fun i => ?_⟩
+  rw [Module.Basis.mk_apply, hxs]
+
+theorem exists_clear {I : Type} (e : Λ →+ V) (he : Function.Injective e)
+    (hs : ∀ (a : 𝓞 E) x, e (a • x) = (a : E) • e x) (b : Module.Basis I E V) (xs : I → Λ)
+    (hb : ∀ i, b i = e (xs i)) (x : Λ) :
+    ∃ (d : 𝓞 E) (s : Finset I) (a : I → 𝓞 E), d ≠ 0 ∧ d • x = ∑ i ∈ s, a i • xs i := by
+  classical
+  obtain ⟨⟨d, hd⟩, hint⟩ := IsLocalization.exist_integer_multiples (nonZeroDivisors (𝓞 E))
+    (b.repr (e x)).support (fun i => b.repr (e x) i)
+  have h2 : ∀ i ∈ (b.repr (e x)).support, ∃ a : 𝓞 E, (a : E) = (d : E) * b.repr (e x) i := by
+    intro i hi
+    obtain ⟨a, ha⟩ := hint i hi
+    refine ⟨a, ?_⟩
+    rw [show (a : E) = algebraMap (𝓞 E) E a from rfl, ha, Algebra.smul_def]
+  choose! a ha using h2
+  refine ⟨d, (b.repr (e x)).support, a, nonZeroDivisors.ne_zero hd, he ?_⟩
+  rw [hs, map_sum]
+  conv_lhs => rw [← b.linearCombination_repr (e x), Finsupp.linearCombination_apply, Finsupp.sum,
+    Finset.smul_sum]
+  refine Finset.sum_congr rfl fun i hi => ?_
+  rw [hs, ← hb, ha i hi, smul_smul]
+
+theorem exists_ext (e : Λ →+ V) (he : Function.Injective e)
+    (hs : ∀ (a : 𝓞 E) x, e (a • x) = (a : E) • e x)
+    (hspan : Submodule.span E (e.range : Set V) = ⊤) (f : Λ →ₗ[𝓞 E] Λ) :
+    ∃ Φ : V →ₗ[E] V, ∀ x, Φ (e x) = e (f x) := by
+  obtain ⟨I, b, xs, hb⟩ := exists_basis e hspan
+  refine ⟨b.constr E fun i => e (f (xs i)), fun x => ?_⟩
+  obtain ⟨d, s, a, hd, hx⟩ := exists_clear e he hs b xs hb x
+  have hdE : (d : E) ≠ 0 := by simpa using hd
+  have h1 : (d : E) • (b.constr E fun i => e (f (xs i))) (e x) = (d : E) • e (f x) := by
+    rw [← map_smul, ← hs, ← hs, ← map_smul, hx]
+    simp only [map_sum, hs, map_smul, ← hb, Module.Basis.constr_basis]
+  exact smul_right_injective _ hdE h1
+
+theorem exists_extEquiv (e : Λ →+ V) (he : Function.Injective e)
+    (hs : ∀ (a : 𝓞 E) x, e (a • x) = (a : E) • e x)
+    (hspan : Submodule.span E (e.range : Set V) = ⊤) (φ : Λ ≃ₗ[𝓞 E] Λ) :
+    ∃ Φ : V ≃ₗ[E] V, ∀ x, Φ (e x) = e (φ x) := by
+  obtain ⟨Φ₁, h₁⟩ := exists_ext e he hs hspan (φ : Λ →ₗ[𝓞 E] Λ)
+  obtain ⟨Φ₂, h₂⟩ := exists_ext e he hs hspan (φ.symm : Λ →ₗ[𝓞 E] Λ)
+  refine ⟨LinearEquiv.ofLinear Φ₁ Φ₂ ?_ ?_, fun x => h₁ x⟩
+  · refine LinearMap.ext_on hspan ?_
+    rintro _ ⟨x, rfl⟩
+    simp [h₁, h₂]
+  · refine LinearMap.ext_on hspan ?_
+    rintro _ ⟨x, rfl⟩
+    simp [h₁, h₂]
+
+theorem exists_lat (e : Λ →+ V) (he : Function.Injective e)
+    (hs : ∀ (a : 𝓞 E) x, e (a • x) = (a : E) • e x) (γ : V ≃ₗ[E] V)
+    (h₁ : ∀ x, ∃ y, e y = γ (e x)) (h₂ : ∀ x, ∃ y, e y = γ.symm (e x)) :
+    ∃ φ : Λ ≃ₗ[𝓞 E] Λ, ∀ x, e (φ x) = γ (e x) := by
+  choose f hf using h₁
+  choose k hk using h₂
+  refine ⟨{ toFun := f, invFun := k, map_add' := fun x y => he ?_, map_smul' := fun a x => he ?_,
+            left_inv := fun x => he ?_, right_inv := fun x => he ?_ }, hf⟩
+  · simp [hf]
+  · simp [hf, hs]
+  · simp [hf, hk]
+  · simp [hf, hk]
+
+theorem eq_zero_of_trace {xi u : E} (hxi : xi ≠ 0)
+    (h : ∀ a : 𝓞 E, Algebra.trace ℚ E (xi * ((a : E) * u)) = 0) : u = 0 := by
+  by_contra hu
+  obtain ⟨z, hz⟩ := Algebra.trace_surjective ℚ E 1
+  have halg : IsAlgebraic ℤ (z / (xi * u)) :=
+    (IsFractionRing.isAlgebraic_iff ℤ ℚ E).2 (Algebra.IsAlgebraic.isAlgebraic _)
+  obtain ⟨m, hm, hint⟩ := halg.exists_integral_multiple
+  have h1 := h (IsIntegralClosure.mk' (𝓞 E) _ hint)
+  rw [show ((IsIntegralClosure.mk' (𝓞 E) _ hint : 𝓞 E) : E) = _ from
+    IsIntegralClosure.algebraMap_mk' (𝓞 E) _ hint] at h1
+  have h2 : xi * (m • (z / (xi * u)) * u) = (m : ℚ) • z := by
+    rw [zsmul_eq_mul, Algebra.smul_def]
+    simp only [eq_intCast, map_intCast]
+    field_simp
+  rw [h2, map_smul, hz] at h1
+  simp at h1
+  exact hm h1
+
+end Ext
+
+section Main
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {Ψ : Type} [Fintype Ψ] {j j' n g : ℕ}
+  {Λ : Type} [AddCommGroup Λ] [Module (𝓞 E) Λ] {F : UnivFam E Ψ j j' n g Λ}
+
+theorem xi_ne_zero (C : LatEmb F) : C.xi ≠ 0 := by
+  have hΨ : ∃ τ : Ψ, True := by
+    by_contra hn
+    have hn' : ∀ τ : Ψ, False := fun τ => hn ⟨τ, trivial⟩
+    let s : 𝓞 E →+* ℂ := (Classical.arbitrary (InfinitePlace E)).embedding.comp (algebraMap (𝓞 E) E)
+    have h := (F.cm.2 s).2 (fun ⟨τ, _⟩ => hn' τ)
+    exact hn' h.choose
+  obtain ⟨τ, -⟩ := hΨ
+  intro h0
+  have h1 := C.xi_eq τ
+  rw [h0, map_zero] at h1
+  have he : C.eps τ ≠ 0 := by
+    intro h
+    have := C.eps_sq τ
+    rw [h] at this
+    norm_num at this
+  have hc : C.c * C.eps τ ≠ 0 := mul_ne_zero C.c_pos.ne' he
+  have : ((C.c * C.eps τ : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hc
+  exact (mul_ne_zero Complex.I_ne_zero this) h1.symm
+
+theorem sesq_eq (C : LatEmb F) (φ : autGrp (E := E) F.form) (x y : Λ) :
+    C.h.toSesq (C.e (φ.1 y)) (C.e (φ.1 x)) = C.h.toSesq (C.e y) (C.e x) := by
+  rw [← sub_eq_zero]
+  refine eq_zero_of_trace (xi_ne_zero C) fun a => ?_
+  have h1 := C.form_eq (a • φ.1 x) (φ.1 y)
+  have h2 := C.form_eq (a • x) y
+  have h3 : F.form (a • φ.1 x) (φ.1 y) = F.form (a • x) y := by
+    rw [← map_smul]
+    exact φ.2 _ _
+  rw [h3, h2, C.e_smul, C.e_smul, map_smul, map_smul, smul_eq_mul, smul_eq_mul] at h1
+  rw [mul_sub, mul_sub, map_sub, sub_eq_zero]
+  exact h1.symm
+
+theorem ext_unitary (C : LatEmb F) (φ : autGrp (E := E) F.form)
+    (Φ : (Fin (j + j') → E) ≃ₗ[E] (Fin (j + j') → E)) (hΦ : ∀ x, Φ (C.e x) = C.e (φ.1 x)) :
+    Φ ∈ C.h.unitaryGroup := by
+  obtain ⟨I, b, xs, hb⟩ := exists_basis C.e C.integral.isLattice.span_eq_top
+  intro v w
+  have key : (C.h.toSesq.comp (Φ : (Fin (j + j') → E) →ₗ[E] (Fin (j + j') → E))).compl₂
+      (Φ : (Fin (j + j') → E) →ₗ[E] (Fin (j + j') → E)) = C.h.toSesq := by
+    refine LinearMap.ext_basis b b fun p q => ?_
+    simp only [LinearMap.compl₂_apply, LinearMap.comp_apply, LinearEquiv.coe_coe, hb, hΦ]
+    exact sesq_eq C φ _ _
+  exact LinearMap.congr_fun₂ key v w
+
+open scoped Pointwise in
+theorem stab_apply_mem (C : LatEmb F) (γ : latticeStab C.h C.e.range) (x : Λ) :
+    ∃ y, C.e y = ((γ : C.h.unitaryGroup) : (Fin (j + j') → E) ≃ₗ[E] (Fin (j + j') → E)) (C.e x) := by
+  have hs : (γ : C.h.unitaryGroup) • C.e.range = C.e.range := MulAction.mem_stabilizer_iff.1 γ.2
+  have h1 : (γ : C.h.unitaryGroup) • C.e x ∈ (γ : C.h.unitaryGroup) • C.e.range :=
+    AddSubgroup.smul_mem_pointwise_smul _ _ _ ⟨x, rfl⟩
+  rw [hs] at h1
+  exact h1
+
+theorem exists_of_stab (C : LatEmb F) (γ : latticeStab C.h C.e.range) :
+    ∃ φ : autGrp (E := E) F.form, ∀ x, C.e (φ.1 x) =
+      ((γ : C.h.unitaryGroup) : (Fin (j + j') → E) ≃ₗ[E] (Fin (j + j') → E)) (C.e x) := by
+  obtain ⟨φ, hφ⟩ := exists_lat C.e C.e_inj C.e_smul
+    ((γ : C.h.unitaryGroup) : (Fin (j + j') → E) ≃ₗ[E] (Fin (j + j') → E))
+    (stab_apply_mem C γ) (stab_apply_mem C γ⁻¹)
+  refine ⟨⟨φ, fun x y => ?_⟩, hφ⟩
+  have hu := (γ : C.h.unitaryGroup).2 (C.e y) (C.e x)
+  apply Int.cast_injective (α := ℚ)
+  rw [C.form_eq, C.form_eq, hφ, hφ]
+  exact congrArg (fun t => Algebra.trace ℚ E (C.xi * t)) hu
+
+open scoped Pointwise in
+
+theorem exists_of_aut (C : LatEmb F) (φ : autGrp (E := E) F.form) :
+    ∃ γ : latticeStab C.h C.e.range, ∀ x,
+      ((γ : C.h.unitaryGroup) : (Fin (j + j') → E) ≃ₗ[E] (Fin (j + j') → E)) (C.e x) = C.e (φ.1 x) := by
+  obtain ⟨Φ, hΦ⟩ := exists_extEquiv C.e C.e_inj C.e_smul C.integral.isLattice.span_eq_top φ.1
+  have hU := ext_unitary C φ Φ hΦ
+  refine ⟨⟨⟨Φ, hU⟩, ?_⟩, hΦ⟩
+  refine MulAction.mem_stabilizer_iff.2 ?_
+  ext v
+  change v ∈ Φ • C.e.range ↔ _
+  rw [AddSubgroup.mem_smul_pointwise_iff_exists]
+  constructor
+  · rintro ⟨_, ⟨x, rfl⟩, rfl⟩
+    exact ⟨φ.1 x, (hΦ x).symm⟩
+  · rintro ⟨y, rfl⟩
+    refine ⟨C.e (φ.1.symm y), ⟨_, rfl⟩, ?_⟩
+    change Φ (C.e (φ.1.symm y)) = _
+    rw [hΦ, LinearEquiv.apply_symm_apply]
+
+theorem exists_alpha : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Type) [Fintype Ψ] (j j' n g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (F : UnivFam E Ψ j j' n g Λ) (C : LatEmb F), ∃ α : latticeStab C.h C.e.range ≃* autGrp (E := E) F.form, ∀ γ x, C.e ((α γ).1 x) = ((γ : C.h.unitaryGroup) : (Fin (j + j') → E) ≃ₗ[E] (Fin (j + j') → E)) (C.e x) := by
+  intro E _ _ _ Ψ _ j j' n g Λ _ _ F C
+  choose A hA using exists_of_stab C
+  choose B hB using exists_of_aut C
+  have hspan := C.integral.isLattice.span_eq_top
+  refine ⟨{ toFun := A, invFun := B, left_inv := fun γ => ?_, right_inv := fun φ => ?_,
+            map_mul' := fun a b => ?_ }, hA⟩
+  · refine Subtype.ext (Subtype.ext (LinearEquiv.toLinearMap_injective
+      (LinearMap.ext_on hspan ?_)))
+    rintro _ ⟨x, rfl⟩
+    simp only [LinearEquiv.coe_coe]
+    rw [hB, hA]
+  · exact Subtype.ext (LinearEquiv.ext fun x => C.e_inj (by rw [hA, hB]))
+  · refine Subtype.ext (LinearEquiv.ext fun x => C.e_inj ?_)
+    change C.e ((A (a * b)).1 x) = C.e ((A a).1 ((A b).1 x))
+    rw [hA, hA, hA]
+    rfl
+
+end Main
+
+end GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Stab
+end
+end
+
+open NumberField Matrix MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GroundTheory.Heights₂.Heights.FiniteCovolume GroundTheory.Automorphic GlobalTheory.CompanionTheory.Ar.Cusp.Dict
+open scoped ENNReal InnerProductSpace
+open scoped ComplexOrder
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lattice_stabilizer_equiv_automorphisms : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Type) [Fintype Ψ] (j j' n g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (F : UnivFam E Ψ j j' n g Λ) (C : LatEmb F), ∃ α : latticeStab C.h C.e.range ≃* autGrp (E := E) F.form, ∀ γ x, C.e ((α γ).1 x) = ((γ : C.h.unitaryGroup) : (Fin (j + j') → E) ≃ₗ[E] (Fin (j + j') → E)) (C.e x) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Stab.exists_alpha
+end
+
+section
+section
+open NumberField Matrix MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GroundTheory.Heights₂.Heights.FiniteCovolume GroundTheory.Automorphic GlobalTheory.CompanionTheory.Ar.Cusp.Dict
+open scoped ENNReal InnerProductSpace
+open scoped ComplexOrder
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.Cusp.Dict.TmBasic
+
+theorem conj_unitary {ι : Type} [Fintype ι] (M G : Matrix ι ι ℂ)
+    (h : (M.map (starRingEnd ℂ))ᵀ * G.map (starRingEnd ℂ) * M = G.map (starRingEnd ℂ)) :
+    (M.map (starRingEnd ℂ))ᴴ * G * M.map (starRingEnd ℂ) = G := by
+  have h2 := congrArg (fun X : Matrix ι ι ℂ => X.map (starRingEnd ℂ)) h
+  simp only [Matrix.map_mul] at h2
+  have e1 : (G.map (starRingEnd ℂ)).map (starRingEnd ℂ) = G := by ext i k; simp
+  have e2 : ((M.map (starRingEnd ℂ))ᵀ).map (starRingEnd ℂ) = (M.map (starRingEnd ℂ))ᴴ := by
+    ext i k; simp [Matrix.conjTranspose_apply]
+  rw [e1, e2] at h2
+  exact h2
+
+theorem tm_basic : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Type) [Fintype Ψ] (j j' n g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (F : UnivFam E Ψ j j' n g Λ) (C : LatEmb F), (∀ (a b : C.Arch) τ, C.tm (a * b) τ = C.tm a τ * C.tm b τ) ∧ (∀ τ, C.tm 1 τ = 1) ∧ (∀ (a : C.Arch) τ, (C.tm a τ)ᴴ * C.gr τ * C.tm a τ = C.gr τ) ∧ ∀ τ, Continuous fun a : C.Arch => C.tm a τ := by
+  intro E _ _ _ Ψ _ j j' n g Λ _ _ F C
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro a b τ
+    simp only [LatEmb.tm, tauMat]
+    split_ifs with h
+    · simp
+    · simp [Matrix.map_mul]
+  · intro τ
+    simp only [LatEmb.tm, tauMat]
+    split_ifs with h
+    · simp
+    · simp
+  · intro a τ
+    have hm := mem_archUnitary.1 a.2 (plc F τ)
+    simp only [LatEmb.tm, tauMat, LatEmb.gr]
+    by_cases h0 : (plc F τ).embedding = embOf (F.σ τ)
+    · rw [if_pos h0]
+      rw [gramAt, h0] at hm
+      have e : ((a.1 (plc F τ) : GL (Fin (j + j')) ℂ) : Matrix (Fin (j + j')) (Fin (j + j')) ℂ)ᴴ =
+          (((a.1 (plc F τ) : GL (Fin (j + j')) ℂ) : Matrix (Fin (j + j')) (Fin (j + j')) ℂ).map
+            (starRingEnd ℂ))ᵀ := by
+        ext i k; simp [Matrix.conjTranspose_apply]
+      rw [e]
+      exact hm
+    · have h' : (plc F τ).embedding = ComplexEmbedding.conjugate (embOf (F.σ τ)) :=
+        (InfinitePlace.embedding_mk_eq (embOf (F.σ τ))).resolve_left h0
+      rw [if_neg h0]
+      apply conj_unitary
+      have e : gramAt C.h (Pi.basisFun E (Fin (j + j'))) (plc F τ) =
+          ((gram C.h.toSesq (Pi.basisFun E (Fin (j + j')))).map (embOf (F.σ τ))).map (starRingEnd ℂ) := by
+        rw [gramAt, h']
+        ext i k
+        simp [ComplexEmbedding.conjugate_coe_eq]
+      rw [e] at hm
+      exact hm
+  · intro τ
+    simp only [LatEmb.tm, tauMat]
+    have hc : Continuous fun a : C.Arch =>
+        ((a.1 (plc F τ) : GL _ ℂ) : Matrix (Fin (j + j')) (Fin (j + j')) ℂ) :=
+      Units.continuous_val.comp ((continuous_apply (plc F τ)).comp continuous_subtype_val)
+    split_ifs with h
+    · exact hc
+    · exact hc.matrix_map Complex.continuous_conj
+
+end GlobalTheory.CompanionTheory.Ar.Cusp.Dict.TmBasic
+end
+end
+
+open NumberField Matrix MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GroundTheory.Heights₂.Heights.FiniteCovolume GroundTheory.Automorphic GlobalTheory.CompanionTheory.Ar.Cusp.Dict
+open scoped ENNReal InnerProductSpace
+open scoped ComplexOrder
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.archimedean_unitary_representation : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Type) [Fintype Ψ] (j j' n g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (F : UnivFam E Ψ j j' n g Λ) (C : LatEmb F), (∀ (a b : C.Arch) τ, C.tm (a * b) τ = C.tm a τ * C.tm b τ) ∧ (∀ τ, C.tm 1 τ = 1) ∧ (∀ (a : C.Arch) τ, (C.tm a τ)ᴴ * C.gr τ * C.tm a τ = C.gr τ) ∧ ∀ τ, Continuous fun a : C.Arch => C.tm a τ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Cusp.Dict.TmBasic.tm_basic
+end
+
+section
+section
+open NumberField Matrix MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GroundTheory.Heights₂.Heights.FiniteCovolume GroundTheory.Automorphic GlobalTheory.CompanionTheory.Ar.Cusp.Dict
+open scoped ENNReal InnerProductSpace
+open scoped ComplexOrder
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.Cusp.Dict
+
+section TmSurj
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E]
+
+omit [IsCMField E] in
+
+theorem embOf_coe (s : 𝓞 E →+* ℂ) (x : 𝓞 E) : embOf s (x : E) = s x :=
+  IsFractionRing.lift_algebraMap (intEmb_injective s) x
+
+omit [IsCMField E] in
+
+theorem embOf_restrict (φ : E →+* ℂ) : embOf (φ.comp (algebraMap (𝓞 E) E)) = φ := by
+  apply IsLocalization.ringHom_ext (nonZeroDivisors (𝓞 E))
+  ext x
+  simpa using embOf_coe (φ.comp (algebraMap (𝓞 E) E)) x
+
+omit [IsCMField E] in
+
+theorem embOf_conj (s : 𝓞 E →+* ℂ) : embOf ((starRingEnd ℂ).comp s) = ComplexEmbedding.conjugate (embOf s) := by
+  apply IsLocalization.ringHom_ext (nonZeroDivisors (𝓞 E))
+  ext x
+  have h1 := embOf_coe ((starRingEnd ℂ).comp s) x
+  have h2 := embOf_coe s x
+  simp only [RingHom.comp_apply, ComplexEmbedding.conjugate_coe_eq]
+  change embOf ((starRingEnd ℂ).comp s) (x : E) = starRingEnd ℂ (embOf s (x : E))
+  rw [h1, h2]; rfl
+
+omit [IsCMField E] in
+
+theorem embOf_inj {s s' : 𝓞 E →+* ℂ} (h : embOf s = embOf s') : s = s' := by
+  ext x
+  rw [← embOf_coe s, ← embOf_coe s', h]
+
+variable {Ψ : Type} [Fintype Ψ] {j j' n g : ℕ} {Λ : Type} [AddCommGroup Λ] [Module (𝓞 E) Λ]
+
+theorem plc_bijective (F : UnivFam E Ψ j j' n g Λ) : Function.Bijective (plc F) := by
+  constructor
+  · intro τ τ' h
+    rcases InfinitePlace.mk_eq_iff.1 h with h | h
+    · exact F.cm.1 (embOf_inj h)
+    · exfalso
+      rw [← embOf_conj] at h
+      have h' := embOf_inj h
+      exact (F.cm.2 (F.σ τ)).1 ⟨τ, rfl⟩ ⟨τ', h'.symm⟩
+  · intro w
+    by_cases hs : ∃ τ, F.σ τ = w.embedding.comp (algebraMap (𝓞 E) E)
+    · obtain ⟨τ, hτ⟩ := hs
+      refine ⟨τ, ?_⟩
+      simp only [plc, hτ, embOf_restrict, InfinitePlace.mk_embedding]
+    · have := not_imp_not.2 (F.cm.2 (w.embedding.comp (algebraMap (𝓞 E) E))).2 hs
+      obtain ⟨τ, hτ⟩ := not_not.1 this
+      refine ⟨τ, ?_⟩
+      have : embOf (F.σ τ) = ComplexEmbedding.conjugate w.embedding := by
+        rw [hτ, ← RingHom.comp_assoc, embOf_restrict]; rfl
+      simp only [plc, this, InfinitePlace.mk_conjugate_eq, InfinitePlace.mk_embedding]
+
+end TmSurj
+
+theorem tm_surj : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Type) [Fintype Ψ] (j j' n g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (F : UnivFam E Ψ j j' n g Λ) (C : LatEmb F) (b : Ψ → Matrix (Fin (j + j')) (Fin (j + j')) ℂ), (∀ τ, (b τ)ᴴ * C.gr τ * b τ = C.gr τ) → ∃ a : C.Arch, ∀ τ, C.tm a τ = b τ := by
+  intro E _ _ _ Ψ _ j j' n g Λ _ _ F C b hb
+  classical
+  have hbij := plc_bijective F
+  let e : Ψ ≃ InfinitePlace E := Equiv.ofBijective (plc F) hbij
+  have he : ∀ τ, e.symm (plc F τ) = τ := fun τ => e.symm_apply_apply τ
+  have hw : ∀ w, plc F (e.symm w) = w := fun w => e.apply_symm_apply w
+  let v := Pi.basisFun E (Fin (j + j'))
+  let M : InfinitePlace E → Matrix (Fin (j + j')) (Fin (j + j')) ℂ := fun w =>
+    if w.embedding = embOf (F.σ (e.symm w)) then b (e.symm w) else (b (e.symm w)).map (starRingEnd ℂ)
+  have hct : ∀ X : Matrix (Fin (j + j')) (Fin (j + j')) ℂ, (X.map (starRingEnd ℂ))ᵀ = Xᴴ := fun X => by
+    ext i k; simp [Matrix.conjTranspose_apply]
+  have hM : ∀ w, ((M w).map (starRingEnd ℂ))ᵀ * gramAt C.h v w * M w = gramAt C.h v w := by
+    intro w
+    have hτ := hb (e.symm w)
+    rw [hct]
+    by_cases hc : w.embedding = embOf (F.σ (e.symm w))
+    · have hg : gramAt C.h v w = C.gr (e.symm w) := by
+        simp only [gramAt, LatEmb.gr, hc]; rfl
+      simp only [M, if_pos hc, hg]
+      exact hτ
+    · have hconj : w.embedding = ComplexEmbedding.conjugate (embOf (F.σ (e.symm w))) := by
+        have h1 : InfinitePlace.mk (embOf (F.σ (e.symm w))) = InfinitePlace.mk w.embedding := by
+          rw [InfinitePlace.mk_embedding]; exact hw w
+        rcases InfinitePlace.mk_eq_iff.1 h1 with h | h
+        · exact absurd h.symm hc
+        · exact h.symm
+      have hg : gramAt C.h v w = (C.gr (e.symm w)).map (starRingEnd ℂ) := by
+        ext i k
+        simp only [gramAt, LatEmb.gr, Matrix.map_apply, hconj]
+        rfl
+      have h2 := congrArg (fun X : Matrix (Fin (j + j')) (Fin (j + j')) ℂ => X.map (starRingEnd ℂ)) hτ
+      simp only [Matrix.map_mul] at h2
+      have h3 : ((b (e.symm w)).map (starRingEnd ℂ))ᴴ = ((b (e.symm w))ᴴ).map (starRingEnd ℂ) := by
+        ext i k; simp [Matrix.conjTranspose_apply]
+      simp only [M, if_neg hc, hg]
+      rw [h3]
+      exact h2
+  have hH : ∀ w, IsUnit (gramAt C.h v w).det := by
+    intro w
+    have := (isUnit_det_gram C.h v).map w.embedding
+    rw [RingHom.map_det] at this
+    exact this
+  let a : InfinitePlace E → GL (Fin (j + j')) ℂ := fun w =>
+    Matrix.nonsingInvUnit (M w) (isUnit_det_of_unitary (starRingEnd ℂ) (hH w) (hM w))
+  have ha : a ∈ C.Arch := mem_archUnitary.2 fun w => hM w
+  refine ⟨⟨a, ha⟩, fun τ => ?_⟩
+  have haM : ∀ w, (a w : Matrix (Fin (j + j')) (Fin (j + j')) ℂ) = M w := fun w => rfl
+  simp only [LatEmb.tm, tauMat, haM, M, he]
+  by_cases hc : (plc F τ).embedding = embOf (F.σ τ)
+  · simp only [if_pos hc]
+  · simp only [if_neg hc]
+    ext i k
+    simp
+
+end GlobalTheory.CompanionTheory.Ar.Cusp.Dict
+end
+end
+
+open NumberField Matrix MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GroundTheory.Heights₂.Heights.FiniteCovolume GroundTheory.Automorphic GlobalTheory.CompanionTheory.Ar.Cusp.Dict
+open scoped ENNReal InnerProductSpace
+open scoped ComplexOrder
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.archimedean_unitary_surjective : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Type) [Fintype Ψ] (j j' n g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (F : UnivFam E Ψ j j' n g Λ) (C : LatEmb F) (b : Ψ → Matrix (Fin (j + j')) (Fin (j + j')) ℂ), (∀ τ, (b τ)ᴴ * C.gr τ * b τ = C.gr τ) → ∃ a : C.Arch, ∀ τ, C.tm a τ = b τ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Cusp.Dict.tm_surj
+end
+
+section
+section
+open NumberField Matrix MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GroundTheory.Heights₂.Heights.FiniteCovolume GroundTheory.Automorphic GlobalTheory.CompanionTheory.Ar.Cusp.Dict
+open scoped ENNReal InnerProductSpace
+open scoped ComplexOrder
+
+namespace GlobalTheory.CompanionTheory.Ar.Cusp.Dict
+
+theorem tm_archEmbed_mulVec_vec (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Type) [Fintype Ψ]
+    (j j' n g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (F : UnivFam E Ψ j j' n g Λ)
+    (C : LatEmb F) (γ : C.h.unitaryGroup) (x : Λ) (τ : Ψ) :
+    C.tm (archEmbed C.h (Pi.basisFun E (Fin (j + j'))) γ) τ *ᵥ C.vec x τ =
+      fun i => embOf (F.σ τ)
+        (((γ : C.h.unitaryGroup) : (Fin (j + j') → E) ≃ₗ[E] (Fin (j + j') → E)) (C.e x) i) := by
+  set b := Pi.basisFun E (Fin (j + j')) with hb
+  set G : GL (Fin (j + j')) E := (unitaryGroupEquivMatrix C.h b γ).1 with hG
+  have hGM : (G : Matrix (Fin (j + j')) (Fin (j + j')) E) =
+      LinearMap.toMatrix b b (((γ : C.h.unitaryGroup) :
+        (Fin (j + j') → E) ≃ₗ[E] (Fin (j + j') → E)) : (Fin (j + j') → E) →ₗ[E] (Fin (j + j') → E)) :=
+    unitaryGroupEquivMatrix_apply C.h b γ
+  have hact : ∀ v : Fin (j + j') → E, (G : Matrix (Fin (j + j')) (Fin (j + j')) E) *ᵥ v =
+      ((γ : C.h.unitaryGroup) : (Fin (j + j') → E) ≃ₗ[E] (Fin (j + j') → E)) v := by
+    intro v
+    rw [hGM, hb, LinearMap.toMatrix_eq_toMatrix', LinearMap.toMatrix'_mulVec]
+    rfl
+  have htm : C.tm (archEmbed C.h b γ) τ =
+      (G : Matrix (Fin (j + j')) (Fin (j + j')) E).map (embOf (F.σ τ)) := by
+    have hw : ∀ w : InfinitePlace E,
+        (((archEmbed C.h b γ : archUnitary C.h b) : InfinitePlace E → GL (Fin (j + j')) ℂ) w :
+          Matrix (Fin (j + j')) (Fin (j + j')) ℂ) =
+        (G : Matrix (Fin (j + j')) (Fin (j + j')) E).map w.embedding := fun w => rfl
+    unfold LatEmb.tm tauMat
+    split_ifs with h
+    · rw [hw, h]
+    · rw [hw]
+      rcases InfinitePlace.embedding_mk_eq (embOf (F.σ τ)) with h' | h'
+      · exact absurd h' h
+      · have h'' : (plc F τ).embedding = ComplexEmbedding.conjugate (embOf (F.σ τ)) := h'
+        rw [h'']
+        ext a c
+        simp [ComplexEmbedding.conjugate_coe_eq]
+  rw [htm]
+  funext i
+  have := RingHom.map_mulVec (embOf (F.σ τ)) (G : Matrix (Fin (j + j')) (Fin (j + j')) E) (C.e x) i
+  rw [hact] at this
+  rw [this]
+  rfl
+
+end GlobalTheory.CompanionTheory.Ar.Cusp.Dict
+end
+
+open NumberField Matrix MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GroundTheory.Heights₂.Heights.FiniteCovolume GroundTheory.Automorphic GlobalTheory.CompanionTheory.Ar.Cusp.Dict
+open scoped ENNReal InnerProductSpace
+open scoped ComplexOrder
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.archimedean_action_on_lattice_vectors : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Type) [Fintype Ψ] (j j' n g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (F : UnivFam E Ψ j j' n g Λ) (C : LatEmb F) (γ : C.h.unitaryGroup) (x : Λ) (τ : Ψ), C.tm (archEmbed C.h (Pi.basisFun E (Fin (j + j'))) γ) τ *ᵥ C.vec x τ = fun i => embOf (F.σ τ) (((γ : C.h.unitaryGroup) : (Fin (j + j') → E) ≃ₗ[E] (Fin (j + j') → E)) (C.e x) i) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Cusp.Dict.tm_archEmbed_mulVec_vec
+end
+
+section
+section
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.Cusp.Dict.TauMaj
+
+open NumberField Matrix GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GroundTheory.Heights₂.Heights.FiniteCovolume GroundTheory.Automorphic GlobalTheory.CompanionTheory.Ar.Cusp.Dict
+open scoped ComplexOrder
+
+section Conj
+
+variable {ι : Type} [Fintype ι] [DecidableEq ι]
+
+abbrev cj (A : Matrix ι ι ℂ) : Matrix ι ι ℂ := A.map (starRingEnd ℂ)
+
+theorem cj_cj (A : Matrix ι ι ℂ) : cj (cj A) = A := by
+  ext i k; simp [cj]
+
+theorem cj_injective : Function.Injective (cj : Matrix ι ι ℂ → Matrix ι ι ℂ) :=
+  Function.LeftInverse.injective cj_cj
+
+theorem cj_mul (A B : Matrix ι ι ℂ) : cj (A * B) = cj A * cj B := Matrix.map_mul
+
+theorem cj_eq (A : Matrix ι ι ℂ) : cj A = Aᴴᵀ := by
+  ext i k; simp [cj]
+
+theorem cj_inv (A : Matrix ι ι ℂ) : cj A⁻¹ = (cj A)⁻¹ := by
+  rw [cj_eq, cj_eq, conjTranspose_nonsing_inv, transpose_nonsing_inv]
+
+theorem cj_conjTranspose (A : Matrix ι ι ℂ) : cj Aᴴ = (cj A)ᴴ := by
+  ext i k; simp [cj]
+
+theorem posDef_cj {P : Matrix ι ι ℂ} (h : P.PosDef) : (cj P).PosDef := by
+  have : cj P = Pᵀ := by rw [cj_eq, h.1.eq]
+  rw [this]
+  exact h.transpose
+
+theorem cj_mulVec (A : Matrix ι ι ℂ) (v : ι → ℂ) : cj A *ᵥ star v = star (A *ᵥ v) := by
+  ext i; simp [cj, mulVec, dotProduct, map_sum]
+
+theorem re_term_cj (P G : Matrix ι ι ℂ) (v : ι → ℂ) :
+    (star (G *ᵥ star v) ⬝ᵥ (cj P *ᵥ (G *ᵥ star v))).re = (star (cj G *ᵥ v) ⬝ᵥ (P *ᵥ (cj G *ᵥ v))).re := by
+  have hu : G *ᵥ star v = star (cj G *ᵥ v) := by
+    rw [← cj_mulVec, cj_cj]
+  rw [hu, cj_mulVec, star_dotProduct_star, dotProduct_comm]
+  simp
+
+theorem stab_iff_cj (P G : Matrix ι ι ℂ) :
+    (G.map (starRingEnd ℂ))ᵀ * cj P * G = cj P ↔ (cj G)ᴴ * P * cj G = P := by
+  have h : (G.map (starRingEnd ℂ))ᵀ * cj P * G = cj ((cj G)ᴴ * P * cj G) := by
+    rw [cj_mul, cj_mul, cj_conjTranspose, cj_cj]
+    rfl
+  rw [h]
+  exact cj_injective.eq_iff
+
+end Conj
+
+section Arch
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {Ψ : Type} [Fintype Ψ] {j j' n g : ℕ} {Λ : Type}
+  [AddCommGroup Λ] [Module (𝓞 E) Λ]
+
+omit [IsCMField E] in
+theorem embOf_coe (s : 𝓞 E →+* ℂ) (a : 𝓞 E) : embOf s (a : E) = s a :=
+  IsFractionRing.lift_algebraMap (intEmb_injective s) a
+
+omit [IsCMField E] in
+theorem embOf_comp (φ : E →+* ℂ) : embOf (φ.comp (algebraMap (𝓞 E) E)) = φ :=
+  IsLocalization.ringHom_ext (nonZeroDivisors (𝓞 E)) (by
+    ext a; simpa using embOf_coe (φ.comp (algebraMap (𝓞 E) E)) a)
+
+omit [IsCMField E] in
+theorem embOf_injective : Function.Injective (embOf : (𝓞 E →+* ℂ) → (E →+* ℂ)) := by
+  intro s s' h
+  ext a
+  have := congrArg (fun φ : E →+* ℂ => φ (a : E)) h
+  simpa [embOf_coe] using this
+
+theorem plc_bijective (F : UnivFam E Ψ j j' n g Λ) : Function.Bijective (plc F) := by
+  have hcm := F.cm
+  constructor
+  · intro τ τ' h
+    rcases InfinitePlace.mk_eq_iff.1 h with h | h
+    · exact hcm.1 (embOf_injective h)
+    · exfalso
+      have hs : F.σ τ' = (starRingEnd ℂ).comp (F.σ τ) := by
+        ext a
+        have := congrArg (fun φ : E →+* ℂ => φ (a : E)) h
+        simpa [embOf_coe, ComplexEmbedding.conjugate_coe_eq] using this.symm
+      exact ((hcm.2 (F.σ τ)).1 ⟨τ, rfl⟩) ⟨τ', hs⟩
+  · intro w
+    set s : 𝓞 E →+* ℂ := w.embedding.comp (algebraMap (𝓞 E) E) with hs
+    by_cases h : ∃ τ, F.σ τ = s
+    · obtain ⟨τ, hτ⟩ := h
+      refine ⟨τ, ?_⟩
+      rw [plc, hτ, hs, embOf_comp, InfinitePlace.mk_embedding]
+    · have h2 : ∃ τ, F.σ τ = (starRingEnd ℂ).comp s := by
+        by_contra h3
+        exact h ((hcm.2 s).2 h3)
+      obtain ⟨τ, hτ⟩ := h2
+      refine ⟨τ, ?_⟩
+      have he : embOf (F.σ τ) = ComplexEmbedding.conjugate w.embedding := by
+        rw [hτ]
+        have : (starRingEnd ℂ).comp s =
+            (ComplexEmbedding.conjugate w.embedding).comp (algebraMap (𝓞 E) E) := by
+          ext a; simp [hs, ComplexEmbedding.conjugate_coe_eq]
+        rw [this, embOf_comp]
+      rw [plc, he, InfinitePlace.mk_conjugate_eq, InfinitePlace.mk_embedding]
+
+theorem emb_ne (F : UnivFam E Ψ j j' n g Λ) (τ : Ψ) (h : (plc F τ).embedding ≠ embOf (F.σ τ)) :
+    (plc F τ).embedding = ComplexEmbedding.conjugate (embOf (F.σ τ)) :=
+  (InfinitePlace.embedding_mk_eq (embOf (F.σ τ))).resolve_left h
+
+def atPlc (F : UnivFam E Ψ j j' n g Λ) (Pt : Ψ → Matrix (Fin (j + j')) (Fin (j + j')) ℂ) (τ : Ψ) :
+    Matrix (Fin (j + j')) (Fin (j + j')) ℂ := by
+  classical
+  exact if (plc F τ).embedding = embOf (F.σ τ) then Pt τ else cj (Pt τ)
+
+variable {F : UnivFam E Ψ j j' n g Λ} (C : LatEmb F)
+
+theorem gramAt_of_eq {τ : Ψ} (h : (plc F τ).embedding = embOf (F.σ τ)) :
+    gramAt C.h (Pi.basisFun E (Fin (j + j'))) (plc F τ) = C.gr τ := by
+  rw [gramAt, h]; rfl
+
+theorem gramAt_of_ne {τ : Ψ} (h : (plc F τ).embedding ≠ embOf (F.σ τ)) :
+    gramAt C.h (Pi.basisFun E (Fin (j + j'))) (plc F τ) = cj (C.gr τ) := by
+  rw [gramAt, emb_ne F τ h]
+  ext i k
+  simp [LatEmb.gr, ComplexEmbedding.conjugate_coe_eq]
+
+theorem vecAt_of_eq (x : Λ) {τ : Ψ} (h : (plc F τ).embedding = embOf (F.σ τ)) :
+    vecAt (Pi.basisFun E (Fin (j + j'))) (C.e x) (plc F τ) = C.vec x τ := by
+  ext i
+  simp [vecAt, LatEmb.vec, h]
+
+theorem vecAt_of_ne (x : Λ) {τ : Ψ} (h : (plc F τ).embedding ≠ embOf (F.σ τ)) :
+    vecAt (Pi.basisFun E (Fin (j + j'))) (C.e x) (plc F τ) = star (C.vec x τ) := by
+  ext i
+  simp [vecAt, LatEmb.vec, emb_ne F τ h, ComplexEmbedding.conjugate_coe_eq]
+
+theorem tm_of_eq (a : C.Arch) {τ : Ψ} (h : (plc F τ).embedding = embOf (F.σ τ)) :
+    C.tm a τ = ((a : InfinitePlace E → GL (Fin (j + j')) ℂ) (plc F τ) : Matrix (Fin (j + j')) (Fin (j + j')) ℂ) := by
+  rw [LatEmb.tm, tauMat, if_pos h]
+
+theorem tm_of_ne (a : C.Arch) {τ : Ψ} (h : (plc F τ).embedding ≠ embOf (F.σ τ)) :
+    C.tm a τ = cj ((a : InfinitePlace E → GL (Fin (j + j')) ℂ) (plc F τ) : Matrix (Fin (j + j')) (Fin (j + j')) ℂ) := by
+  rw [LatEmb.tm, tauMat, if_neg h]
+
+theorem atPlc_of_eq (Pt : Ψ → Matrix (Fin (j + j')) (Fin (j + j')) ℂ) {τ : Ψ}
+    (h : (plc F τ).embedding = embOf (F.σ τ)) : atPlc F Pt τ = Pt τ := by
+  rw [atPlc]; exact if_pos h
+
+theorem atPlc_of_ne (Pt : Ψ → Matrix (Fin (j + j')) (Fin (j + j')) ℂ) {τ : Ψ}
+    (h : (plc F τ).embedding ≠ embOf (F.σ τ)) : atPlc F Pt τ = cj (Pt τ) := by
+  rw [atPlc]; exact if_neg h
+
+def majOf (Pt : Ψ → Matrix (Fin (j + j')) (Fin (j + j')) ℂ) (hP : ∀ τ, (Pt τ).PosDef)
+    (hS : ∀ τ, Pt τ * (C.gr τ)⁻¹ * Pt τ = C.gr τ) : Majorant C.h (Pi.basisFun E (Fin (j + j'))) where
+  P w := atPlc F Pt ((Equiv.ofBijective _ (plc_bijective F)).symm w)
+  posDef w := by
+    obtain ⟨τ, rfl⟩ := (plc_bijective F).2 w
+    have hτ : (Equiv.ofBijective _ (plc_bijective F)).symm (plc F τ) = τ :=
+      Equiv.ofBijective_symm_apply_apply _ _ _
+    rw [hτ]
+    by_cases h : (plc F τ).embedding = embOf (F.σ τ)
+    · rw [atPlc_of_eq Pt h]; exact hP τ
+    · rw [atPlc_of_ne Pt h]; exact posDef_cj (hP τ)
+  siegel w := by
+    obtain ⟨τ, rfl⟩ := (plc_bijective F).2 w
+    have hτ : (Equiv.ofBijective _ (plc_bijective F)).symm (plc F τ) = τ :=
+      Equiv.ofBijective_symm_apply_apply _ _ _
+    rw [hτ]
+    by_cases h : (plc F τ).embedding = embOf (F.σ τ)
+    · rw [atPlc_of_eq Pt h, gramAt_of_eq C h]; exact hS τ
+    · rw [atPlc_of_ne Pt h, gramAt_of_ne C h, ← cj_inv, ← cj_mul, ← cj_mul, hS τ]
+
+theorem majOf_P (Pt : Ψ → Matrix (Fin (j + j')) (Fin (j + j')) ℂ) (hP : ∀ τ, (Pt τ).PosDef)
+    (hS : ∀ τ, Pt τ * (C.gr τ)⁻¹ * Pt τ = C.gr τ) (τ : Ψ) : (majOf C Pt hP hS).P (plc F τ) = atPlc F Pt τ := by
+  show atPlc F Pt ((Equiv.ofBijective _ (plc_bijective F)).symm (plc F τ)) = _
+  rw [Equiv.ofBijective_symm_apply_apply]
+
+theorem majOf_term (Pt : Ψ → Matrix (Fin (j + j')) (Fin (j + j')) ℂ) (hP : ∀ τ, (Pt τ).PosDef)
+    (hS : ∀ τ, Pt τ * (C.gr τ)⁻¹ * Pt τ = C.gr τ) (a : C.Arch) (x : Λ) (τ : Ψ) :
+    (star (invApply a (vecAt (Pi.basisFun E (Fin (j + j'))) (C.e x)) (plc F τ)) ⬝ᵥ
+      ((majOf C Pt hP hS).P (plc F τ) *ᵥ invApply a (vecAt (Pi.basisFun E (Fin (j + j'))) (C.e x)) (plc F τ))).re =
+    (star (C.tm a⁻¹ τ *ᵥ C.vec x τ) ⬝ᵥ (Pt τ *ᵥ (C.tm a⁻¹ τ *ᵥ C.vec x τ))).re := by
+  rw [majOf_P]
+  by_cases h : (plc F τ).embedding = embOf (F.σ τ)
+  · rw [atPlc_of_eq Pt h, tm_of_eq C _ h, ← vecAt_of_eq C x h]
+    rfl
+  · rw [atPlc_of_ne Pt h, tm_of_ne C _ h, ← re_term_cj, ← vecAt_of_ne C x h]
+    rfl
+
+theorem majOf_len (Pt : Ψ → Matrix (Fin (j + j')) (Fin (j + j')) ℂ) (hP : ∀ τ, (Pt τ).PosDef)
+    (hS : ∀ τ, Pt τ * (C.gr τ)⁻¹ * Pt τ = C.gr τ) (a : C.Arch) (x : Λ) :
+    (majOf C Pt hP hS).len (invApply a (vecAt (Pi.basisFun E (Fin (j + j'))) (C.e x))) ^ 2 =
+      ∑ τ, (star (C.tm a⁻¹ τ *ᵥ C.vec x τ) ⬝ᵥ (Pt τ *ᵥ (C.tm a⁻¹ τ *ᵥ C.vec x τ))).re := by
+  rw [Majorant.len, Real.sq_sqrt]
+  · rw [← (Equiv.ofBijective _ (plc_bijective F)).sum_comp]
+    exact Finset.sum_congr rfl fun τ _ => majOf_term C Pt hP hS a x τ
+  · exact Finset.sum_nonneg fun w _ => ((majOf C Pt hP hS).posDef w).posSemidef.re_dotProduct_nonneg _
+
+theorem majOf_stab (Pt : Ψ → Matrix (Fin (j + j')) (Fin (j + j')) ℂ) (hP : ∀ τ, (Pt τ).PosDef)
+    (hS : ∀ τ, Pt τ * (C.gr τ)⁻¹ * Pt τ = C.gr τ) (c : C.Arch) :
+    c ∈ (majOf C Pt hP hS).stab ↔ ∀ τ, (C.tm c τ)ᴴ * Pt τ * C.tm c τ = Pt τ := by
+  have hloc : ∀ τ, ((((c : InfinitePlace E → GL (Fin (j + j')) ℂ) (plc F τ) : Matrix (Fin (j + j')) (Fin (j + j')) ℂ)).map
+        (starRingEnd ℂ))ᵀ * (majOf C Pt hP hS).P (plc F τ) *
+        ((c : InfinitePlace E → GL (Fin (j + j')) ℂ) (plc F τ) : Matrix (Fin (j + j')) (Fin (j + j')) ℂ) =
+        (majOf C Pt hP hS).P (plc F τ) ↔ (C.tm c τ)ᴴ * Pt τ * C.tm c τ = Pt τ := by
+    intro τ
+    rw [majOf_P]
+    by_cases h : (plc F τ).embedding = embOf (F.σ τ)
+    · rw [atPlc_of_eq Pt h, tm_of_eq C _ h]
+      rfl
+    · rw [atPlc_of_ne Pt h, tm_of_ne C _ h]
+      exact stab_iff_cj _ _
+  rw [Majorant.stab, Subgroup.mem_subgroupOf, Subgroup.mem_pi]
+  constructor
+  · intro hc τ
+    exact (hloc τ).1 (mem_unitaryGroupMatrix.1 (hc (plc F τ) (Set.mem_univ _)))
+  · intro hc w _
+    obtain ⟨τ, rfl⟩ := (plc_bijective F).2 w
+    exact mem_unitaryGroupMatrix.2 ((hloc τ).2 (hc τ))
+
+end Arch
+
+theorem exists_majorant : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Type) [Fintype Ψ] (j j' n g : ℕ) (Λ : Type)
+    [AddCommGroup Λ] [Module (𝓞 E) Λ] (F : UnivFam E Ψ j j' n g Λ) (C : LatEmb F)
+    (Pt : Ψ → Matrix (Fin (j + j')) (Fin (j + j')) ℂ), (∀ τ, (Pt τ).PosDef) →
+    (∀ τ, Pt τ * (C.gr τ)⁻¹ * Pt τ = C.gr τ) →
+    ∃ M : Majorant C.h (Pi.basisFun E (Fin (j + j'))),
+      (∀ (a : C.Arch) (x : Λ), M.len (invApply a (vecAt (Pi.basisFun E (Fin (j + j'))) (C.e x))) ^ 2 =
+        ∑ τ, (star (C.tm a⁻¹ τ *ᵥ C.vec x τ) ⬝ᵥ (Pt τ *ᵥ (C.tm a⁻¹ τ *ᵥ C.vec x τ))).re) ∧
+      ∀ c : C.Arch, c ∈ M.stab ↔ ∀ τ, (C.tm c τ)ᴴ * Pt τ * C.tm c τ = Pt τ :=
+  by
+  intro E _ _ _ Ψ _ j j' n g Λ _ _ F C Pt hP hS
+  exact ⟨majOf C Pt hP hS, majOf_len C Pt hP hS, majOf_stab C Pt hP hS⟩
+
+end GlobalTheory.CompanionTheory.Ar.Cusp.Dict.TauMaj
+end
+end
+
+open NumberField Matrix MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GroundTheory.Heights₂.Heights.FiniteCovolume GroundTheory.Automorphic GlobalTheory.CompanionTheory.Ar.Cusp.Dict
+open scoped ENNReal InnerProductSpace
+open scoped ComplexOrder
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_majorant_of_positive_frame : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Type) [Fintype Ψ] (j j' n g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (F : UnivFam E Ψ j j' n g Λ) (C : LatEmb F) (Pt : Ψ → Matrix (Fin (j + j')) (Fin (j + j')) ℂ), (∀ τ, (Pt τ).PosDef) → (∀ τ, Pt τ * (C.gr τ)⁻¹ * Pt τ = C.gr τ) → ∃ M : Majorant C.h (Pi.basisFun E (Fin (j + j'))), (∀ (a : C.Arch) (x : Λ), M.len (invApply a (vecAt (Pi.basisFun E (Fin (j + j'))) (C.e x))) ^ 2 = ∑ τ, (star (C.tm a⁻¹ τ *ᵥ C.vec x τ) ⬝ᵥ (Pt τ *ᵥ (C.tm a⁻¹ τ *ᵥ C.vec x τ))).re) ∧ ∀ c : C.Arch, c ∈ M.stab ↔ ∀ τ, (C.tm c τ)ᴴ * Pt τ * C.tm c τ = Pt τ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Cusp.Dict.TauMaj.exists_majorant
+end
+
+section
+open NumberField Matrix MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GroundTheory.Heights₂.Heights.FiniteCovolume GroundTheory.Automorphic GlobalTheory.CompanionTheory.Ar.Cusp.Dict
+open scoped ENNReal InnerProductSpace
+open scoped ComplexOrder
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.normSq_eq_adapted_frame_sum : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Type) [Fintype Ψ] (j j' n g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (F : UnivFam E Ψ j j' n g Λ) (C : LatEmb F) (R : RiemLat E g Λ) (A : Ψ → Matrix (Fin (j + j')) (Sg j j') ℂ), R.form = F.form → C.IsAdapted R A → ∀ x, R.normSq x = 2 * C.c * ∑ τ, (star (C.cinv (A τ) τ *ᵥ C.vec x τ) ⬝ᵥ (C.cinv (A τ) τ *ᵥ C.vec x τ)).re := by
+  first | exact @GlobalTheory.CompanionTheory.Ar.Cusp.Dict.AdaptedLen.normSq_adapted | exact GlobalTheory.CompanionTheory.Ar.Cusp.Dict.AdaptedLen.normSq_adapted | (intros; apply GlobalTheory.CompanionTheory.Ar.Cusp.Dict.AdaptedLen.normSq_adapted <;> assumption)
+end
+
+section
+section
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.Cusp.Dict
+
+open Matrix GlobalTheory.CompanionTheory.Ar.Cusp
+open scoped ComplexOrder
+
+variable {Ψ : Type} [Fintype Ψ] {j j' n : ℕ}
+
+theorem IsSgU.det_toBlocks₁₁_ne_zero {u : Matrix (Sg j j') (Sg j j') ℂ} (hu : IsSgU u) :
+    u.toBlocks₁₁.det ≠ 0 := by
+  obtain ⟨A, B, C, D, rfl⟩ : ∃ A B C D, u = fromBlocks A B C D :=
+    ⟨_, _, _, _, (fromBlocks_toBlocks u).symm⟩
+  rw [toBlocks_fromBlocks₁₁]
+  unfold IsSgU sgI at hu
+  rw [fromBlocks_conjTranspose, fromBlocks_multiply, fromBlocks_multiply] at hu
+  have h := (fromBlocks_inj.1 hu).1
+  simp only [Matrix.mul_one, Matrix.mul_zero, add_zero, zero_add, Matrix.mul_neg] at h
+  intro hdet
+  obtain ⟨v, hv, hAv⟩ := Matrix.exists_mulVec_eq_zero_iff.2 hdet
+  have h1 : -(Cᴴ *ᵥ (C *ᵥ v)) = v := by
+    have h2 := congrArg (fun M => M *ᵥ v) h
+    simp only [Matrix.add_mulVec, Matrix.neg_mulVec, ← Matrix.mulVec_mulVec, Matrix.one_mulVec, hAv,
+      Matrix.mulVec_zero, zero_add] at h2
+    exact h2
+  have h3 : star v ⬝ᵥ v = -(star (C *ᵥ v) ⬝ᵥ (C *ᵥ v)) := by
+    calc star v ⬝ᵥ v = star v ⬝ᵥ (-(Cᴴ *ᵥ (C *ᵥ v))) := by rw [h1]
+      _ = -(star (C *ᵥ v) ⬝ᵥ (C *ᵥ v)) := by
+        rw [dotProduct_neg, Matrix.dotProduct_mulVec, Matrix.star_mulVec]
+  have h4 : 0 ≤ star v ⬝ᵥ v := dotProduct_star_self_nonneg v
+  have h5 : 0 ≤ star (C *ᵥ v) ⬝ᵥ (C *ᵥ v) := dotProduct_star_self_nonneg _
+  have h6 : star v ⬝ᵥ v = 0 := le_antisymm (by rw [h3]; exact neg_nonpos.2 h5) h4
+  exact hv (dotProduct_star_self_eq_zero.1 h6)
+
+theorem moebW_zero (u : Matrix (Sg j j') (Sg j j') ℂ) : moebW u 0 = u.toBlocks₂₁ * u.toBlocks₁₁⁻¹ := by
+  simp [moebW]
+
+theorem continuous_matrix_inv {X m : Type} [TopologicalSpace X] [Fintype m] [DecidableEq m]
+    {A : X → Matrix m m ℂ} (hA : Continuous A) (hd : ∀ x, (A x).det ≠ 0) :
+    Continuous fun x => (A x)⁻¹ := by
+  have h : (fun x => (A x)⁻¹) = fun x => ((A x).det)⁻¹ • (A x).adjugate := by
+    funext x
+    rw [Matrix.inv_def, Ring.inverse_eq_inv']
+  rw [h]
+  exact (hA.matrix_det.inv₀ hd).smul hA.matrix_adjugate
+
+theorem continuous_moebBall_zero (Ψ : Type) [Fintype Ψ] (j j' n : ℕ) (q : Ψ × Fin j × Fin j' ≃ Fin n)
+    (X : Type) [TopologicalSpace X] (f : X → Ψ → Matrix (Sg j j') (Sg j j') ℂ)
+    (hc : ∀ τ, Continuous fun x => f x τ) (hu : ∀ x τ, IsSgU (f x τ)) :
+    Continuous fun x => moebBall q (f x) 0 := by
+  have hb : ∀ τ, (ballMat q 0 τ)ᵀ = 0 := by
+    intro τ
+    ext a b
+    simp [ballMat]
+  refine continuous_pi fun k => ?_
+  simp only [moebBall, ballPt, hb, moebW_zero]
+  set τ := (q.symm k).1
+  have h11 : Continuous fun x => (f x τ).toBlocks₁₁ :=
+    continuous_matrix fun a b => (hc τ).matrix_elem _ _
+  have h21 : Continuous fun x => (f x τ).toBlocks₂₁ :=
+    continuous_matrix fun a b => (hc τ).matrix_elem _ _
+  have hm := h21.matrix_mul (continuous_matrix_inv h11 fun x => (hu x τ).det_toBlocks₁₁_ne_zero)
+  exact hm.matrix_elem _ _
+
+end GlobalTheory.CompanionTheory.Ar.Cusp.Dict
+end
+end
+
+open NumberField Matrix MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GroundTheory.Heights₂.Heights.FiniteCovolume GroundTheory.Automorphic GlobalTheory.CompanionTheory.Ar.Cusp.Dict
+open scoped ENNReal InnerProductSpace
+open scoped ComplexOrder
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ball_mobius_zero_continuous : ∀ (Ψ : Type) [Fintype Ψ] (j j' n : ℕ) (q : Ψ × Fin j × Fin j' ≃ Fin n) (X : Type) [TopologicalSpace X] (f : X → Ψ → Matrix (Sg j j') (Sg j j') ℂ), (∀ τ, Continuous fun x => f x τ) → (∀ x τ, IsSgU (f x τ)) → Continuous fun x => moebBall q (f x) 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Cusp.Dict.continuous_moebBall_zero
+end
+
+section
+open NumberField Matrix MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GroundTheory.Heights₂.Heights.FiniteCovolume GroundTheory.Automorphic GlobalTheory.CompanionTheory.Ar.Cusp.Dict
+open scoped ENNReal InnerProductSpace
+open scoped ComplexOrder
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ball_automorphism_inverse_exists : ∀ (Ψ : Type) [Fintype Ψ] (j j' n : ℕ) (q : Ψ × Fin j × Fin j' ≃ Fin n) (Z : (Fin n → ℂ) → Fin n → ℂ) (G : (Fin n → ℂ) → ℂ), DifferentiableOn ℂ Z (ballDom q) → Set.BijOn Z (ballDom q) (ballDom q) → DifferentiableOn ℂ G (ballDom q) → (∀ t ∈ ballDom q, ballPot q (Z t) = ballPot q t + (G t).re) → ∃ Y : (Fin n → ℂ) → Fin n → ℂ, DifferentiableOn ℂ Y (ballDom q) ∧ ∀ t ∈ ballDom q, Y t ∈ ballDom q ∧ Z (Y t) = t ∧ Y (Z t) = t := by
+  first | exact @GlobalTheory.CompanionTheory.Ar.Cusp.BallInverse.exists_inverse | exact GlobalTheory.CompanionTheory.Ar.Cusp.BallInverse.exists_inverse | (intros; apply GlobalTheory.CompanionTheory.Ar.Cusp.BallInverse.exists_inverse <;> assumption)
+end
+
+section
 section
 noncomputable section
 
@@ -266,3 +1115,4 @@ open scoped ENNReal InnerProductSpace
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.exists_group_dictionary : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Type) [Fintype Ψ] (j j' n g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (H : Host E) (F : UnivFam E Ψ j j' n g Λ), Nonempty (GroupDict F) := by
   atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Cusp.Dict.groupDict_nonempty
+end

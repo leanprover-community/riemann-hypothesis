@@ -1,13 +1,122 @@
 import Mathlib
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.EtaleCharts.FlatSectionExtension.SigmaLocal
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.EtaleCharts.FlatSectionExtension.HomExt
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.EtaleCharts.FlatSectionExtension.ChartRange
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.EtaleCharts.FlatSectionExtension.CoverComm
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.EtaleCharts.FlatSectionExtension.PieceFacts
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.EtaleCharts.FlatSectionExtension.GMatNat
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.EtaleCharts.FlatSectionExtension.GMatLoc
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.EtaleCharts.FlatSectionExtension.GvChart
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.EtaleCharts.FlatSectionExtension.RatioInj
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.EtaleCharts.FlatSectionExtension.USelf
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.EtaleCharts.FlatSectionExtension.LocMatOne
 
+section
+open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC CrystallineSemistableComparison CrystallineSemistableComparison.Onto UpperTheory.Gal.KunnethLefschetz.G.PX
+
+theorem UpperTheory.Gal.KunnethLefschetz.G.PX.homExt :
+    ∀ {V X : Scheme.{0}} (a b : V ⟶ X), (∀ x : V, ∃ U : V.Opens, x ∈ U ∧ U.ι ≫ a = U.ι ≫ b) → a = b := by
+  intro V X a b h
+  choose W hxW hW using h
+  have hcov : TopologicalSpace.IsOpenCover W := by
+    refine TopologicalSpace.IsOpenCover.mk (eq_top_iff.mpr ?_)
+    intro x _
+    exact TopologicalSpace.Opens.mem_iSup.mpr ⟨x, hxW x⟩
+  exact (V.openCoverOfIsOpenCover W hcov).hom_ext _ _ hW
+end
+
+section
+open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC CrystallineSemistableComparison CrystallineSemistableComparison.Onto UpperTheory.Gal.KunnethLefschetz.G.PX
+
+private lemma appLE_univ_congr_of_eq {V Z : Scheme.{0}} {f g : V ⟶ Z} (hfg : f = g) (U : Z.Opens)
+    (e : ⊤ ≤ f ⁻¹ᵁ U) (e' : ⊤ ≤ g ⁻¹ᵁ U) : f.appLE U ⊤ e = g.appLE U ⊤ e' := by
+  subst hfg; rfl
+
+private lemma appLE_lift_eq {Y V : Scheme.{0}} (C : Y.Opens) (l : V ⟶ (C : Scheme.{0}))
+    (h : ⊤ ≤ (l ≫ C.ι) ⁻¹ᵁ C) : (l ≫ C.ι).appLE C ⊤ h = C.topIso.inv ≫ l.appTop := by
+  rw [← Scheme.Hom.appLE_comp_appLE l C.ι C ⊤ ⊤ (by simp) (by simp), Scheme.Hom.appTop,
+    Scheme.Hom.app_eq_appLE, Scheme.Opens.ι_appLE, Scheme.Opens.topIso_inv]
+  simp
+  congr 1
+
+private lemma eq_of_appLE_eq {Y V : Scheme.{0}} (C : Y.Opens) (hC : IsAffineOpen C) (y y' : V ⟶ Y)
+    (h : ⊤ ≤ y ⁻¹ᵁ C) (h' : ⊤ ≤ y' ⁻¹ᵁ C) (e : y.appLE C ⊤ h = y'.appLE C ⊤ h') : y = y' := by
+  have r : ∀ z : V ⟶ Y, ⊤ ≤ z ⁻¹ᵁ C → Set.range z ⊆ Set.range C.ι := by
+    rintro z hz _ ⟨x, rfl⟩
+    simpa using hz (Set.mem_univ x)
+  obtain ⟨l, rfl⟩ : ∃ l, l ≫ C.ι = y := ⟨_, IsOpenImmersion.lift_fac C.ι y (r y h)⟩
+  obtain ⟨l', rfl⟩ : ∃ l, l ≫ C.ι = y' := ⟨_, IsOpenImmersion.lift_fac C.ι y' (r y' h')⟩
+  haveI : IsAffine (C : Scheme.{0}) := hC
+  rw [appLE_lift_eq, appLE_lift_eq] at e
+  have e2 : l.appTop = l'.appTop := (cancel_epi C.topIso.inv).mp e
+  rw [ext_of_isAffine e2]
+
+theorem UpperTheory.Gal.KunnethLefschetz.G.PX.chartInj :
+    ∀ {K : Type} [CommRing K] {W Z Y : Scheme.{0}} {q : Z ⟶ Spec (CommRingCat.of K)} {i : W ⟶ Z} {π : Y ⟶ Z} {D : E.LineData Y} {d : ℕ} (B : Blow q i π D d) (α : B.ι) (k : Fin d) {V : Scheme.{0}} (y y' : V ⟶ Y) (h : ⊤ ≤ y ⁻¹ᵁ (B.c α).C k) (h' : ⊤ ≤ y' ⁻¹ᵁ (B.c α).C k), y ≫ π = y' ≫ π → uV B α k y h = uV B α k y' h' → y = y' := by
+  intro K _ W Z Y q i π D d B α k V y y' h h' hπ hu
+  have hle := (B.c α).C_le k
+  refine eq_of_appLE_eq _ ((B.c α).C_aff k) y y' h h' ?_
+  have hpi : ∀ r : Γ(Z, B.V α), (y.appLE _ ⊤ h).hom ((π.appLE (B.V α) _ hle).hom r) =
+      (y'.appLE _ ⊤ h').hom ((π.appLE (B.V α) _ hle).hom r) := by
+    intro r
+    have e1 := Scheme.Hom.appLE_comp_appLE y π (B.V α) ((B.c α).C k) ⊤ hle h
+    have e2 := Scheme.Hom.appLE_comp_appLE y' π (B.V α) ((B.c α).C k) ⊤ hle h'
+    have e3 := e1.trans ((appLE_univ_congr_of_eq hπ (B.V α) _ _).trans e2.symm)
+    exact congrArg (fun t => t.hom r) e3
+  have hP := MvPolynomial.ringHom_ext
+    (f := (y.appLE _ ⊤ h).hom.comp (MvPolynomial.eval₂Hom (π.appLE (B.V α) _ hle).hom ((B.c α).u k)))
+    (g := (y'.appLE _ ⊤ h').hom.comp (MvPolynomial.eval₂Hom (π.appLE (B.V α) _ hle).hom ((B.c α).u k)))
+    (fun r => by simpa using hpi r)
+    (fun m => by simpa [uV] using congrFun hu m)
+  refine CommRingCat.hom_ext (RingHom.ext fun s => ?_)
+  obtain ⟨P, rfl⟩ := (B.c α).surj k s
+  exact congrArg (fun t => t P) hP
+end
+
+section
+open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC CrystallineSemistableComparison CrystallineSemistableComparison.Onto UpperTheory.Gal.KunnethLefschetz.G.PX
+
+private theorem mem_of_unit {K : Type} [CommRing K] {W Z Y : Scheme.{0}} {q : Z ⟶ Spec (CommRingCat.of K)} {i : W ⟶ Z} {π : Y ⟶ Z} {D : E.LineData Y} {d : ℕ} (B : Blow q i π D d) (β : B.ι) (m l : Fin d) {V : Scheme.{0}} (y : V ⟶ Y) (h : ⊤ ≤ y ⁻¹ᵁ (B.c β).C m) (hu : IsUnit (uV B β m y h l)) : ⊤ ≤ y ⁻¹ᵁ (B.c β).C l := by
+  have h1 : V.basicOpen (uV B β m y h l) = ⊤ := Scheme.basicOpen_of_isUnit V hu
+  have h2 : V.basicOpen (uV B β m y h l) ≤ y ⁻¹ᵁ (Y.basicOpen ((B.c β).u m l)) := by
+    unfold uV
+    rw [Scheme.Hom.appLE]
+    simp only [CommRingCat.hom_comp, RingHom.comp_apply]
+    rw [Scheme.basicOpen_res, Scheme.preimage_basicOpen]
+    exact inf_le_right
+  intro x hx
+  have h3 : x ∈ y ⁻¹ᵁ (Y.basicOpen ((B.c β).u m l)) := h2 (h1.ge hx)
+  have h4 : y x ∈ Y.basicOpen ((B.c β).u m l) := h3
+  rw [← (B.c β).inter m l] at h4
+  exact h4.2
+
+theorem UpperTheory.Gal.KunnethLefschetz.G.PX.ratioInj :
+    ∀ {K : Type} [CommRing K] {W Z Y : Scheme.{0}} {q : Z ⟶ Spec (CommRingCat.of K)} {i : W ⟶ Z} {π : Y ⟶ Z} {D : E.LineData Y} {d : ℕ} (B : Blow q i π D d) (β : B.ι) (m l : Fin d) {V : Scheme.{0}} (y y' : V ⟶ Y) (p : V ⟶ W) (h : ⊤ ≤ y ⁻¹ᵁ (B.c β).C m) (h' : ⊤ ≤ y' ⁻¹ᵁ (B.c β).C l) (s : (Γ(V, ⊤))ˣ), y ≫ π = p ≫ i → y' ≫ π = p ≫ i → uV B β m y h = (s : Γ(V, ⊤)) • uV B β l y' h' → y = y' := by
+  intro K _ W Z Y q i π D d B β m l V y y' p h h' s hy hy' e
+  have hl : uV B β m y h l = (s : Γ(V, ⊤)) := by
+    have := congrFun e l
+    simpa [uSelf B β l y' h'] using this
+  have h'' : ⊤ ≤ y ⁻¹ᵁ (B.c β).C l := mem_of_unit B β m l y h (hl ▸ s.isUnit)
+  have hV : ∀ x : V, (p ≫ i) x ∈ B.V β := by
+    intro x
+    rw [← hy, Scheme.Hom.comp_apply]
+    exact (B.c β).C_le m (h (Set.mem_univ x))
+  have hg := gvChart B y p hy β β m l h h'' 1 (locMatOne B β p hV)
+  rw [Matrix.one_mulVec] at hg
+  obtain ⟨c, hc⟩ : ∃ c : (Γ(V, ⊤))ˣ, uV B β m y h = (c : Γ(V, ⊤)) • uV B β l y h'' := ⟨_, hg⟩
+  have hcs : (c : Γ(V, ⊤)) = s := by
+    have := congrFun hc l
+    rw [hl, Pi.smul_apply, uSelf B β l y h'', smul_eq_mul, mul_one] at this
+    exact this.symm
+  have hvv : uV B β l y h'' = uV B β l y' h' := by
+    funext j
+    have h1 := congrFun hc j
+    have h2 := congrFun e j
+    rw [Pi.smul_apply, smul_eq_mul] at h1 h2
+    rw [hcs] at h1
+    exact s.isUnit.mul_left_cancel (h1.symm.trans h2)
+  exact chartInj B β l y y' h'' h' (hy.trans hy'.symm) hvv
+end
+
+section
 open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC CrystallineSemistableComparison CrystallineSemistableComparison.Onto UpperTheory.Gal.KunnethLefschetz.G.PX
 
 private theorem injKey {K : Type} [CommRing K] {W Z Y : Scheme.{0}} {q : Z ⟶ Spec (CommRingCat.of K)} {i : W ⟶ Z}
@@ -109,3 +218,4 @@ theorem UpperTheory.Gal.KunnethLefschetz.G.PX.injField :
       exact l₃ z.2)
   rw [← ea, ← eb] at hk
   simpa only [Category.assoc] using hk
+end

@@ -3,9 +3,161 @@ import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.GaloisSideT
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ToNatAddValMul
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormalizedValuationPrimitiveRootPrimePowSubOneStatement
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsLevelOrderExponentsSmallValuationDetermina
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsTameInertiaElementAtAuxiliaryPrime
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PropEOfAdmissibleStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PropEOfAdmissible
 
+section
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.BlochKatoReduction.Gen GlobalTheory.TwSys
+open scoped TensorProduct
+
+namespace GlobalTheory.TwSys.InertiaElt
+
+open Filter Topology
+
+theorem exists_coprime_dvd_mul_pow (m : ℕ) (o : ℕ) (ho : o ≠ 0) : ∃ t K : ℕ, Nat.Coprime t m ∧ o ∣ t * m ^ K := by
+  induction o using Nat.recOnMul with
+  | zero => exact absurd rfl ho
+  | one => exact ⟨1, 0, Nat.coprime_one_left m, one_dvd _⟩
+  | prime p hp =>
+    by_cases h : p ∣ m
+    · exact ⟨1, 1, Nat.coprime_one_left m, by simpa using h⟩
+    · exact ⟨p, 0, (Nat.Prime.coprime_iff_not_dvd hp).2 h, by simp⟩
+  | mul a b iha ihb =>
+    obtain ⟨t, K, ht, hK⟩ := iha (left_ne_zero_of_mul ho)
+    obtain ⟨t', K', ht', hK'⟩ := ihb (right_ne_zero_of_mul ho)
+    refine ⟨t * t', K + K', Nat.Coprime.mul_left ht ht', ?_⟩
+    have : t * t' * m ^ (K + K') = (t * m ^ K) * (t' * m ^ K') := by ring
+    rw [this]
+    exact mul_dvd_mul hK hK'
+
+theorem exists_limit_pow {Γ : Type*} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [CompactSpace Γ]
+    (σ : Γ) (m : ℕ) : ∃ z : Γ, (∀ I : Subgroup Γ, IsClosed (I : Set Γ) → σ ∈ I → z ∈ I) ∧
+      (∀ U : Subgroup Γ, IsOpen (U : Set Γ) → ∃ k : ℕ, z⁻¹ * σ ^ (m ^ k) ∈ U) ∧
+      ∀ U : Subgroup Γ, IsOpen (U : Set Γ) → U.Normal → ∃ n : ℕ, Nat.Coprime n m ∧ z ^ n ∈ U := by
+  obtain ⟨z, hz⟩ : ∃ z : Γ, MapClusterPt z atTop (fun k : ℕ => σ ^ (m ^ k)) :=
+    exists_clusterPt_of_compactSpace (map (fun k : ℕ => σ ^ (m ^ k)) atTop)
+  have key : ∀ U : Subgroup Γ, IsOpen (U : Set Γ) → ∃ᶠ k : ℕ in atTop, z⁻¹ * σ ^ (m ^ k) ∈ U := by
+    intro U hU
+    have ho : IsOpen ((fun x : Γ => z⁻¹ * x) ⁻¹' (U : Set Γ)) := hU.preimage (by fun_prop)
+    exact hz.frequently (p := fun x => z⁻¹ * x ∈ U) (ho.mem_nhds (by simp))
+  refine ⟨z, fun I hI hσ => ?_, fun U hU => (key U hU).exists, fun U hU hN => ?_⟩
+  · exact hI.mem_of_mapClusterPt hz (Eventually.of_forall fun k => I.pow_mem hσ _)
+  · have : Finite (Γ ⧸ U) := U.quotient_finite_of_isOpen hU
+    obtain ⟨t, K, ht, hK⟩ := exists_coprime_dvd_mul_pow m (orderOf (QuotientGroup.mk' U σ)) (orderOf_pos _).ne'
+    obtain ⟨k, hk, hmem⟩ := frequently_atTop.1 (key U hU) K
+    refine ⟨t, ht, ?_⟩
+    have e : QuotientGroup.mk' U z = QuotientGroup.mk' U σ ^ (m ^ k) := by
+      rw [← map_pow]
+      exact QuotientGroup.eq.2 hmem
+    rw [← QuotientGroup.eq_one_iff]
+    change QuotientGroup.mk' U (z ^ t) = 1
+    rw [map_pow, e, ← pow_mul, ← orderOf_dvd_iff_pow_eq_one]
+    refine hK.trans ?_
+    rw [mul_comm]
+    exact Nat.mul_dvd_mul_right (pow_dvd_pow m hk) t
+
+theorem isUnit_sub_one {O : Type*} [CommRing O] [IsDomain O] {n : ℕ} {ζ : O} (hn : IsUnit (n : O))
+    (h : IsPrimitiveRoot ζ n) (h1 : 1 < n) : IsUnit (ζ - 1) := by
+  obtain ⟨k, rfl⟩ : ∃ k, n = k + 1 + 1 := ⟨n - 2, by omega⟩
+  have e := h.prod_one_sub_pow_eq_order
+  rw [Finset.prod_range_succ'] at e
+  have hu : IsUnit (1 - ζ ^ (0 + 1)) := by
+    refine isUnit_of_mul_isUnit_right (x := ∏ j ∈ Finset.range k, (1 - ζ ^ (j + 1 + 1))) ?_
+    rw [e]
+    exact_mod_cast hn
+  rw [← neg_sub]
+  simpa using hu.neg
+
+theorem exists_place_mem (E : Type) [Field E] [NumberField E] {p : ℕ} (hp : p.Prime) :
+    ∃ v : HeightOneSpectrum (𝓞 E), ((p : ℕ) : 𝓞 E) ∈ v.asIdeal := by
+  have hnu : ¬ IsUnit ((p : ℕ) : 𝓞 E) := by
+    intro h
+    have h2 : IsUnit (Algebra.norm ℤ ((p : ℕ) : 𝓞 E)) := h.map _
+    have e : Algebra.norm ℤ ((p : ℕ) : 𝓞 E) = (p : ℤ) ^ Module.finrank ℤ (𝓞 E) := by
+      rw [← Algebra.norm_algebraMap]
+      simp
+    rw [e, isUnit_pow_iff Module.finrank_pos.ne', Int.isUnit_iff_natAbs_eq, Int.natAbs_natCast] at h2
+    exact hp.one_lt.ne' h2
+  obtain ⟨M, hM, hle⟩ := Ideal.exists_le_maximal (Ideal.span {((p : ℕ) : 𝓞 E)}) (by
+    rwa [Ne, Ideal.span_singleton_eq_top])
+  have hmem : ((p : ℕ) : 𝓞 E) ∈ M := hle (Ideal.mem_span_singleton_self _)
+  refine ⟨⟨M, hM.isPrime, ?_⟩, hmem⟩
+  rintro rfl
+  exact hp.ne_zero (by exact_mod_cast (Ideal.mem_bot.1 hmem))
+
+end GlobalTheory.TwSys.InertiaElt
+
+open GlobalTheory.TwSys.InertiaElt in
+
+theorem GlobalTheory.TwSys.exists_tameInertiaElementAtAuxiliaryPrime : ∀ (D : Formalism.BasicNotions.D7) (N : NData D.R D.host D.what₂) (X : NTw D.R D.host D.what₂ D.LL0 N)
+    (i : X.Tw), ∃ z, IsTameInertiaElementAtTwistPrime X i z := by
+  intro D N X i
+  have hl : (X.l i).Prime := (X.lPrime i).out
+  obtain ⟨v, hv⟩ : ∃ v, v ∈ X.pD i := by
+    have hp : (if X.l i = D.host.pde then D.host.pde' else D.host.pde).Prime := by
+      split_ifs
+      · exact D.host.pde'_prime
+      · exact D.host.pde_prime
+    obtain ⟨v, hv⟩ := exists_place_mem D.host.E hp
+    refine ⟨v, ?_⟩
+    rw [← Finset.mem_coe, X.pD_eq i]
+    exact hv
+  obtain ⟨A, hA⟩ := exists_isPlaceOver N.Om v
+
+  obtain ⟨p, hp, hp15, hp2, hpl⟩ : ∃ p : ℕ, p.Prime ∧ p ∣ 15 ∧ p ≠ 2 ∧ p ≠ X.l i := by
+    by_cases h : X.l i = 3
+    · exact ⟨5, by norm_num, by norm_num, by norm_num, by omega⟩
+    · exact ⟨3, by norm_num, by norm_num, by norm_num, fun h' => h h'.symm⟩
+  have : Fact p.Prime := ⟨hp⟩
+  have hcard := X.delta_15 i v hv A hA
+  have : Finite ((Ine (F := D.host.E) A).map (X.delta i)) := Nat.finite_of_card_ne_zero (by rw [hcard]; norm_num)
+  obtain ⟨⟨y, hy⟩, hyo⟩ := exists_prime_orderOf_dvd_card' (G := (Ine (F := D.host.E) A).map (X.delta i)) p
+    (by rw [hcard]; exact hp15)
+  obtain ⟨σ, hσ, rfl⟩ := Subgroup.mem_map.1 hy
+  have hord : orderOf (X.delta i σ) = p := by
+    rw [← hyo, ← Subgroup.orderOf_coe]
+  obtain ⟨z, hz1, hz2, hz3⟩ := exists_limit_pow σ (X.l i * Ideal.absNorm v.asIdeal)
+  refine ⟨z, v, hv, A, hA, hz1 _ (isClosed_Ine A) hσ, ?_, hz3⟩
+  obtain ⟨k, hk⟩ := hz2 _ (X.delta_open i)
+  have hz : X.delta i z = X.delta i σ ^ ((X.l i * Ideal.absNorm v.asIdeal) ^ k) := by
+    rw [MonoidHom.mem_ker, map_mul, map_inv, map_pow, inv_mul_eq_one] at hk
+    exact hk
+  have hpl' : Nat.Coprime p (X.l i) := (Nat.coprime_primes hp hl).2 hpl
+  have hpq : Nat.Coprime p (Ideal.absNorm v.asIdeal) := by
+    refine Nat.Coprime.coprime_dvd_left hp15 ?_
+    have := X.delta_tame i v hv
+    rw [Nat.Coprime, Nat.gcd_rec, this]
+    norm_num
+  have hprim : IsPrimitiveRoot (X.delta i σ) p := hord ▸ IsPrimitiveRoot.orderOf _
+  have hcop : Nat.Coprime ((X.l i * Ideal.absNorm v.asIdeal) ^ k * 2) p :=
+    Nat.Coprime.symm (Nat.Coprime.mul_right (Nat.Coprime.pow_right _ (Nat.Coprime.mul_right hpl' hpq))
+      ((Nat.coprime_primes hp Nat.prime_two).2 hp2))
+  have hprim2 : IsPrimitiveRoot (((X.delta i z : (X.O0 i)ˣ) : X.O0 i) ^ 2) p := by
+    have := hprim.pow_of_coprime _ hcop
+    rw [pow_mul, ← hz] at this
+    rw [← Units.val_pow_eq_pow_val]
+    exact IsPrimitiveRoot.coe_units_iff.2 this
+  refine isUnit_sub_one ?_ hprim2 hp.one_lt
+  have hlnu : ¬ IsUnit ((X.l i : ℕ) : X.O0 i) := by
+    intro h
+    have h2 := h.map (algebraMap (X.O0 i) (X.O i))
+    rw [map_natCast] at h2
+    exact X.O_l i h2
+  have hc : IsCoprime ((p : ℕ) : X.O0 i) ((X.l i : ℕ) : X.O0 i) := hpl'.cast
+  obtain ⟨a, b, hab⟩ := hc
+  rcases IsLocalRing.isUnit_or_isUnit_of_isUnit_add (hab ▸ isUnit_one) with h | h
+  · exact isUnit_of_mul_isUnit_right h
+  · exact absurd (isUnit_of_mul_isUnit_right h) hlnu
+end
+
+section
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.BlochKatoReduction.Gen GlobalTheory.TwSys
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.propE_of_admissible : ∀ (D : Formalism.BasicNotions.D7) (N : NData D.R D.host D.what₂) (X : NTw D.R D.host D.what₂ D.LL0 N) (N0 : X.Tw → ℕ), adm9 X N0 → adm10 X → PropE X N0 := by
+  first | exact @GlobalTheory.ToricFactor.propE | exact GlobalTheory.ToricFactor.propE | (intros; apply GlobalTheory.ToricFactor.propE <;> assumption)
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.BlochKatoReduction.Gen GlobalTheory.TwSys
@@ -211,14 +363,6 @@ theorem exists_ine {i : X.Tw} {M : ℕ} (hM : 1 ≤ M) {A0 : Finset (PlE D.host)
     simp
   · simp
 
-theorem zk_pow_prim (i : X.Tw) {k e : ℕ} (he : e < k) :
-    IsPrimitiveRoot ((X.zk i k ^ (X.l i ^ e) : (X.Ok i k)ˣ) : X.Ok i k) (X.l i ^ (k - e)) := by
-  have hl : (X.l i).Prime := (X.lPrime i).out
-  rw [Units.val_pow_eq_pow_val]
-  refine (X.zk_prim i k).pow (pow_pos hl.pos _) ?_
-  rw [← pow_add]
-  congr 1
-  omega
 
 theorem tameVal_le {S : Type} [CommRing S] [IsDomain S] [IsDiscreteValuationRing S] (l : ℕ) (ψ : GE N →* Sˣ)
     (A : ValuationSubring N.Om) {σ : GE N} (hσ : σ ∈ Ine (F := D.host.E) A) (h : ψ σ ≠ 1) :
@@ -227,58 +371,6 @@ theorem tameVal_le {S : Type} [CommRing S] [IsDomain S] [IsDiscreteValuationRing
   rintro x ⟨τ, -, -, rfl⟩
   exact nval_nonneg _
 
-theorem psiOk_partD (Y : NExp D.R D.host D.what₂ D.LL0 N X) {i : X.Tw} {M k : ℕ} (hM : 1 ≤ M) (hk : 1 ≤ k)
-    {A0 : Finset (PlE D.host)} {ι : Type} [Fintype ι]
-    {P : ι → PlE D.host} {d} (h : SlopeTestRemainingChoices X i M A0 P d) {Q : Finset (PlE D.host)} (hQ : IsQ P Q) (e : ι → ℕ) {ε : ℝ}
-    (he : ∀ q, e q < k ∧ (X.l i : ℝ) ^ e q / (Nat.totient (X.l i ^ k) : ℝ) ≤ ε)
-    (ψ' : X.RCG i Q →* (X.Ok i k)ˣ) (χ : Multiplicative (DelQM D.host (X.l i) Q M) →* (X.Ok i k)ˣ)
-    (hχ : ψ'.comp (X.art i Q) = χ.comp (Y.delU i Q M))
-    (hψ : ∀ g, ψ' (X.art i Q g) = ∏ q, (X.zk i k ^ (X.l i ^ e q)) ^ (Multiplicative.toAdd (d q g)).val) :
-    PsiOk i A0 Q k ψ' ∧ ∑ v ∈ Q, tameVal (X.l i) (ψ'.comp (X.art i Q)) (N.plOm.1 v) ≤ Q.card * ε := by
-  classical
-  have hl : (X.l i).Prime := (X.lPrime i).out
-  have hF : ∀ q, ((X.zk i k ^ (X.l i ^ e q) : (X.Ok i k)ˣ) : X.Ok i k) - 1 ≠ 0 ∧
-      nval (X.Ok i k) (X.l i) (((X.zk i k ^ (X.l i ^ e q) : (X.Ok i k)ˣ) : X.Ok i k) - 1) ≤ ε := by
-    intro q
-    have := GlobalTheory.T.normalizedValuation_primitiveRoot_prime_pow_sub_one (X.Ok i k) (X.l i) (k - e q) hl (by have := (he q).1; omega) (l_ne_zero_Ok i k).1
-      (l_not_unit i k).1 _ (zk_pow_prim i (he q).1)
-    refine ⟨this.1, ?_⟩
-    rw [this.2, totient_bound hl (he q).1]
-    exact (he q).2
-  have hne : ∀ q, X.zk i k ^ (X.l i ^ e q) ≠ 1 := fun q h => (hF q).1 (by rw [h]; simp)
-  refine ⟨⟨fun v hv => ?_, ?_, hk, ?_, ?_, fun g => ?_, fun v A hA => ⟨?_, fun hv => ?_⟩, ?_⟩, ?_⟩
-  · obtain ⟨q, hq⟩ := (hQ v).1 hv
-    obtain ⟨a, b, c, -⟩ := h.1 q v hq
-    exact ⟨a, b, c⟩
-  · rw [Finset.disjoint_left]
-    intro v hv hv'
-    obtain ⟨q, hq⟩ := (hQ v).1 hv
-    obtain ⟨-, -, -, a, b, -⟩ := h.1 q v hq
-    rcases Finset.mem_union.1 hv' with h | h
-    · exact a h
-    · exact b h
-  · refine Subgroup.isOpen_mono (H₁ := (X.art i Q).ker) (fun g hg => ?_) (X.art_cont i Q)
-    rw [MonoidHom.mem_ker] at hg ⊢
-    rw [MonoidHom.comp_apply, hg, map_one]
-  · intro g g' hg
-    rw [MonoidHom.comp_apply, MonoidHom.comp_apply, X.art_anti i Q g g' hg, map_inv]
-  · rw [MonoidHom.comp_apply, hψ]
-    exact prod_mem fun q _ => pow_mem (pow_mem (Subgroup.mem_zpowers _) _) _
-  · rintro ⟨σ, hσ, h1⟩
-    by_contra hv
-    exact h1 (by rw [MonoidHom.comp_apply, X.art_unr i Q v hv A hA σ hσ, map_one])
-  · obtain ⟨q, hq⟩ := (hQ v).1 hv
-    obtain ⟨σ, hσ, h1⟩ := exists_ine hM h _ (ψ'.comp (X.art i Q)) hψ hq A hA
-    exact ⟨σ, hσ, h1 ▸ hne q⟩
-  · intro v hv A hA σ hσ
-    rw [hχ, MonoidHom.comp_apply, Y.delU_l i Q M v hv A hA σ hσ, map_one]
-  · rw [← nsmul_eq_mul]
-    refine Finset.sum_le_card_nsmul _ _ _ fun v hv => ?_
-    obtain ⟨q, hq⟩ := (hQ v).1 hv
-    obtain ⟨σ, hσ, h1⟩ := exists_ine hM h _ (ψ'.comp (X.art i Q)) hψ hq (N.plOm.1 v) (N.plOm.2 v)
-    refine (tameVal_le _ _ _ hσ (h1 ▸ hne q)).trans ?_
-    rw [h1]
-    exact (hF q).2
 
 theorem exists_factor (Y : NExp D.R D.host D.what₂ D.LL0 N X) (i : X.Tw) (M : ℕ) {Q : Finset (PlE D.host)}
     (hQ : ∀ v ∈ Q, v ∉ X.S0 i) :
@@ -298,13 +390,6 @@ theorem psiAt_prod {Γ A ι : Type} [Group Γ] [CommGroup A] [Fintype ι] (b : B
   · simp [psiAt, h]
   · simp [psiAt, h]
 
-theorem side_prim (i : X.Tw) (k : ℕ) (b : Bool) :
-    IsPrimitiveRoot (((if b then X.zk i k else (X.zk i k)⁻¹ : (X.Ok i k)ˣ)) : X.Ok i k) (X.l i ^ k) := by
-  rw [IsPrimitiveRoot.coe_units_iff]
-  have := IsPrimitiveRoot.coe_units_iff.1 (X.zk_prim i k)
-  cases b
-  · exact this.inv
-  · exact this
 
 theorem vK_bounds {S : Type} [CommRing S] [IsDomain S] [IsDiscreteValuationRing S] {l : ℕ}
     (h0 : (l : S) ≠ 0) (h1 : ¬ IsUnit (l : S)) {a : S} (ha : a ≠ 0) {n : ℕ} {x : FractionRing S}
@@ -352,120 +437,8 @@ theorem exists_level (i : X.Tw) (R Dd nmax M₀ : ℕ) (I J : Type) [Finite I] [
   simp only [Units.val_pow_eq_pow_val, MvPolynomial.aeval_def]
   exact this
 
-theorem admAB_of_toric_parts (D : Formalism.BasicNotions.D7) (N : NData D.R D.host D.what₂) (X : NTw D.R D.host D.what₂ D.LL0 N) (bkP : BKPh X)
-    (N0 : X.Tw → ℕ) (hU : DelUTie bkP.ex) (hAB : PropABCD bkP.ex) (hX : GaloisSideTwistedSelmerAuxiliaryPrimes bkP) (hadm : AdmACD bkP N0) :
-    Formalism.MainNotions.IntegralHeckeForms.TwistingCharacterExistence bkP.ex bkP N0 := by
-  classical
-  intro i hi hS eps' heps F hF A0
-  have hl : (X.l i).Prime := (X.lPrime i).out
-  obtain ⟨h1, h2, h3, -, h9, h10⟩ := hadm
-  obtain ⟨sNC, sSD, sNJ, sth, sS, sr, -⟩ := hS
-  obtain ⟨z, hz⟩ := GlobalTheory.TwSys.exists_tameInertiaElementAtAuxiliaryPrime D N X i
-  obtain ⟨R, Dd, M₀, hM₀, hR⟩ := hX i {s | goodS bkP i s}
-    (fun s hs => ⟨h1 i hi s, h2 i hi s, sSD s hs, sNJ s hs, sNC, h3, sr⟩)
-  choose HE vE hHEo hHEn hvE hE using fun lam => GlobalTheory.T.propE_of_admissible D N X N0 h9 h10 i lam z hi (sS lam) (sth lam) hz
-  choose HB AB vB nB hHBo hHBn hB using fun y : ↥(Finset.Icc 1 D.R.m) × Bool =>
-    hAB i F y.1 y.2 z hi y.1.2 (hF _ y.1.2 _) hz
-  have hopen : IsOpen (((⨅ lam, HE lam) ⊓ ⨅ y, HB y : Subgroup (GE N)) : Set (GE N)) := by
-    rw [Subgroup.coe_inf, Subgroup.coe_iInf, Subgroup.coe_iInf]
-    exact (isOpen_iInter_of_finite hHEo).inter (isOpen_iInter_of_finite hHBo)
-  have hnorm : ((⨅ lam, HE lam) ⊓ ⨅ y, HB y : Subgroup (GE N)).Normal := by
-    haveI := Subgroup.normal_iInf_normal hHEn
-    haveI := Subgroup.normal_iInf_normal hHBn
-    infer_instance
-  choose H0 S0 d hd hco using fun M (h : M₀ ≤ M) => hU i M hi (hM₀.trans h)
-  choose P hPa hPs hPF using fun M (h : M₀ ≤ M) =>
-    hR M h _ _ _ (hd M h) z hz _ hopen hnorm (A0 ∪ Finset.univ.biUnion AB)
-  choose Q hQ hQc using fun M (h : M₀ ≤ M) => exists_isQ (P M h)
-  choose Fs hFs hFc using fun M (h : M₀ ≤ M) (s : {s // goodS bkP i s}) => hPF M h s.1 s.2 (Q M h) (hQ M h)
-  choose fE hfE hfE' using fun M (h : M₀ ≤ M) lam => hE lam M R (P M h) _ (Q M h) (hM₀.trans h)
-    (isAuxiliaryPlaceFamilyAtLevel_mono (hPa M h) (Finset.empty_subset _)) (steps_mono (hPs M h) (inf_le_left.trans (iInf_le _ lam))) (hQ M h)
-  choose fB hfB hfB' using fun M (h : M₀ ≤ M) y => hB y M R (P M h) (d M h) (Q M h) (hM₀.trans h) (hco M h)
-    (isAuxiliaryPlaceFamilyAtLevel_mono (hPa M h) ((Finset.subset_biUnion_of_mem AB (Finset.mem_univ y)).trans Finset.subset_union_right))
-    (steps_mono (hPs M h) (inf_le_right.trans (iInf_le _ y))) (hQ M h)
-  set C : ℝ := (SigG bkP i).card + 2 * D.R.m + D.R.t * (4 * R) + 1 with hC
-  have hCpos : 0 < C := by positivity
-  have hεC : C * (eps' / C) = eps' := by field_simp
-  have hε : 0 < eps' / C := div_pos heps hCpos
-  generalize eps' / C = ε at hε hεC
-  have hle : ∀ c : ℝ, c ≤ C → c * ε ≤ eps' := fun c hc => hεC ▸ mul_le_mul_of_nonneg_right hc hε.le
-  have c1 : (0 : ℝ) ≤ (SigG bkP i).card := Nat.cast_nonneg _
-  have c2 : (0 : ℝ) ≤ D.R.m := Nat.cast_nonneg _
-  have c3 : (0 : ℝ) ≤ D.R.t * (4 * R) := by positivity
-  have he0 := e_pos (l_ne_zero_Ok i 0).2.2 (l_not_unit i 0).2.2
-  obtain ⟨M, hM, k, e, hk, hkM, he, Hev⟩ := exists_level i R Dd (2 + ∑ y, nB y) M₀ {s // goodS bkP i s}
-    (X.abelian₂ i ⊕ (↥(Finset.Icc 1 D.R.m) × Bool))
-    (nu X i * (IsDiscreteValuationRing.addVal (X.O0 i) (X.l i : X.O0 i)).toNat) (Sum.elim vE vB) Fs
-    (fun M h => Sum.elim (fE M h) (fB M h))
-    (fun M h x => by
-      obtain ⟨m, hm, hv⟩ := hFc M h x
-      exact ⟨m, hm, hv.trans (addVal_l_pow (l_ne_zero_Ok i 0).2.2 _).le⟩)
-    (fun M h y => by
-      rcases y with lam | y
-      · exact ordHyp_mono (hfE M h lam) (Nat.le_add_right _ _)
-      · exact ordHyp_mono (hfB M h y)
-          ((Finset.single_le_sum (fun _ _ => Nat.zero_le _) (Finset.mem_univ y)).trans (Nat.le_add_left _ _))) hε
-  haveI : NeZero (X.l i ^ M) := ⟨pow_ne_zero _ hl.ne_zero⟩
-  have hu : ∀ (b : Bool) q, ((if b then X.zk i k else (X.zk i k)⁻¹) ^ (X.l i ^ e q)) ^ (X.l i ^ M) = 1 := by
-    intro b q
-    rw [← pow_mul]
-    exact ((IsPrimitiveRoot.coe_units_iff.1 (side_prim i k b)).pow_eq_one_iff_dvd _).2
-      (Dvd.dvd.mul_left (pow_dvd_pow _ hkM) _)
-  have hmem : ∀ q, P M hM q ∈ Q M hM := fun q => (hQ M hM _).2 ⟨q, Or.inl rfl⟩
-  let χ : Multiplicative (DelQM D.host (X.l i) (Q M hM) M) →* (X.Ok i k)ˣ :=
-    prodChar (X.l i ^ M) (fun q => (⟨P M hM q, hmem q⟩ : ↥(Q M hM))) (fun q => X.zk i k ^ (X.l i ^ e q)) (hu true)
-  have hχ : ∀ x : DelQM D.host (X.l i) (Q M hM) M, χ (Multiplicative.ofAdd x) =
-      ∏ q, (X.zk i k ^ (X.l i ^ e q)) ^ (x ⟨P M hM q, hmem q⟩).val := fun _ => rfl
-  obtain ⟨φ, hφ⟩ := exists_factor bkP.ex i M (Q := Q M hM) (fun v hv => by
-    obtain ⟨q, hq⟩ := (hQ M hM v).1 hv
-    exact ((hPa M hM).1 q v hq).2.2.2.1)
-  have hψχ : (χ.comp φ).comp (X.art i (Q M hM)) = χ.comp (bkP.ex.delU i (Q M hM) M) := by
-    rw [MonoidHom.comp_assoc, hφ]
-  have hψ : ∀ g, (χ.comp φ) (X.art i (Q M hM) g) =
-      ∏ q, (X.zk i k ^ (X.l i ^ e q)) ^ (Multiplicative.toAdd (d M hM (P M hM q) g)).val := by
-    intro g
-    refine (DFunLike.congr_fun hψχ g).trans ((hχ (Multiplicative.toAdd (bkP.ex.delU i (Q M hM) M g))).trans ?_)
-    refine Finset.prod_congr rfl fun q _ => ?_
-    rw [hco M hM _ (conjCl_of_isQ (hQ M hM))]
-  generalize χ.comp φ = ψ' at hψχ hψ
-  obtain ⟨hok, hD⟩ := psiOk_partD bkP.ex (hM₀.trans hM) hk (isAuxiliaryPlaceFamilyAtLevel_mono (hPa M hM) Finset.subset_union_left) (hQ M hM) e he
-    ψ' χ hψχ hψ
-  refine ⟨Q M hM, k, ψ', hok, ⟨fun _ => ε, fun _ => hε.le, ?_, fun s hs => ?_⟩, fun lam => ?_, ?_,
-    M, χ, hψχ, fun _ _ => ε, fun _ _ => hε.le, ?_, fun j hj b Tψ hT hmemT => ?_⟩
-  · rw [Finset.sum_const, nsmul_eq_mul]
-    exact hle _ (by linarith)
-  · obtain ⟨hne, hv⟩ := (Hev _ (side_prim i k (X.side i s))).1 ⟨s, hs⟩
-    rw [hFs M hM ⟨s, hs⟩ k _ _ (hu (X.side i s)) (fun g => psiAt_prod _ _ _ _ _ g (hψ g)),
-      valE_eq (l_ne_zero_Ok i k).1 (l_not_unit i k).1 hne]
-    refine ENNReal.ofReal_le_ofReal (hv.trans (le_of_eq ?_))
-    congr 1
-    rw [Nat.cast_mul, mul_div_assoc, div_self (by exact_mod_cast he0.ne'), mul_one]
-  · obtain ⟨hne, hv⟩ := (Hev _ (side_prim i k (X.sideL i lam))).2 (.inl lam)
-    have := hfE' M hM lam k _ (psiAt (X.sideL i lam) ψ') (hu (X.sideL i lam)) (fun g => psiAt_prod _ _ _ _ _ _ (hψ g))
-    obtain ⟨hx, hvK⟩ := vK_bounds (l_ne_zero_Ok i k).1 (l_not_unit i k).1 hne this
-    simp only [Sum.elim_inl] at hv hvK
-    rw [hvE] at hv
-    have h0 := hle 1 (by linarith)
-    refine ⟨hx, ?_, ?_⟩
-    · rw [hvK]
-      exact le_sub_iff_add_le.2 (by rw [neg_add_cancel]; exact nval_nonneg _)
-    · rw [hvK]
-      linarith
-  · have hc : ((Q M hM).card : ℝ) ≤ 4 * R := by
-      have := hQc M hM
-      rw [Fintype.card_sum, Fintype.card_fin] at this
-      exact_mod_cast (by omega : (Q M hM).card ≤ 4 * R)
-    refine (mul_le_mul_of_nonneg_left (hD.trans (mul_le_mul_of_nonneg_right hc hε.le)) (Nat.cast_nonneg _)).trans ?_
-    rw [← mul_assoc]
-    exact hle _ (by linarith)
-  · have := hle (D.R.m * 2) (by linarith)
-    simpa [mul_assoc] using this
-  · obtain ⟨hne, hv⟩ := (Hev _ (side_prim i k b)).2 (.inr (⟨j, hj⟩, b))
-    have := hfB' M hM (⟨j, hj⟩, b) k _ (psiAt b χ) (hu b) (fun x => psiAt_prod _ _ _ _ _ _ (hχ x)) hne Tψ hT hmemT
-    simp only [Sum.elim_inr] at hv
-    refine this.trans (add_le_add_right ?_ _)
-    linarith
 
 end GlobalTheory.TwistChoice
 
+end
 end

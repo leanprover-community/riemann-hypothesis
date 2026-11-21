@@ -1,10 +1,115 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsAHOfIsFactorAH
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsIsogenyOfNcard
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPolarizedSuperlatticeOfRiemannFormStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatticeHomFiniteImageOfTrivialOnMultiples
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsHolUnifPullAlongGroupHomStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPolarizedSuperlatticeOfRiemannForm
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsHolUnifPullAlongGroupHom
 
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_polarized_superlattice_of_riemann_form : ∀ (g : ℕ) (Λ : Submodule ℤ (Fin g → ℂ)) (Hm : Matrix (Fin g) (Fin g) ℂ),
+    DiscreteTopology Λ → Submodule.span ℝ (Λ : Set (Fin g → ℂ)) = ⊤ → Hm.IsHermitian →
+    (∀ z : Fin g → ℂ, z ≠ 0 → 0 < (z ⬝ᵥ Hm.mulVec (star z)).re) →
+    (∀ l ∈ Λ, ∀ l' ∈ Λ, ∃ n : ℤ, (l ⬝ᵥ Hm.mulVec (star l')).im = n) →
+    ∃ (Λ₁ : Submodule ℤ (Fin g → ℂ)) (N : ℕ) (Ef : LinearMap.BilinForm ℤ Λ₁),
+      Λ ≤ Λ₁ ∧ 0 < N ∧ (∀ x ∈ Λ₁, (N : ℂ) • x ∈ Λ) ∧ DiscreteTopology Λ₁ ∧
+      Submodule.span ℝ (Λ₁ : Set (Fin g → ℂ)) = ⊤ ∧
+      (∀ a b : Λ₁, (Ef a b : ℝ) = (hermForm Hm a b).im) ∧ Function.Bijective Ef := by
+  first | exact @GlobalTheory.UnimodOver.exists_unimodular_overlattice | exact GlobalTheory.UnimodOver.exists_unimodular_overlattice | (intros; apply GlobalTheory.UnimodOver.exists_unimodular_overlattice <;> assumption)
+end
+end
+
+section
+section
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory
+
+theorem lattice_hom_finite_image_of_trivial_on_multiples :
+    ∀ (g : ℕ) (Λ : Submodule ℤ (Fin g → ℂ)) (G : Type) [Group G] (e : (Fin g → ℂ) → G) (N : ℕ),
+    DiscreteTopology Λ → Submodule.span ℝ (Λ : Set (Fin g → ℂ)) = ⊤ → (∀ z w, e (z + w) = e z * e w) → 0 < N →
+    (∀ l ∈ Λ, e ((N : ℂ) • l) = 1) → (e '' (Λ : Set (Fin g → ℂ))).Finite := by
+  intro g Λ G _ e N hd hspan hadd hN hker
+  haveI := hd
+  haveI : IsZLattice ℝ Λ := ⟨hspan⟩
+  let b := Module.Free.chooseBasis ℤ Λ
+  let f : (Module.Free.ChooseBasisIndex ℤ Λ → Fin N) → G :=
+    fun a => e (∑ i, ((a i : ℕ) : ℤ) • ((b i : Λ) : Fin g → ℂ))
+  refine (Set.finite_range f).subset ?_
+  rintro _ ⟨l, hl, rfl⟩
+  set x : Λ := ⟨l, hl⟩ with hxdef
+  let c : Module.Free.ChooseBasisIndex ℤ Λ → ℤ := fun i => b.repr x i
+  let q : Λ := ∑ i, (c i / N) • b i
+  have hc : ∀ i, 0 ≤ c i % (N : ℤ) := fun i => Int.emod_nonneg _ (by exact_mod_cast hN.ne')
+  refine ⟨fun i => ⟨(c i % (N : ℤ)).toNat, ?_⟩, ?_⟩
+  · have h1 := Int.emod_lt_of_pos (c i) (by exact_mod_cast hN : (0 : ℤ) < N)
+    omega
+  · have hl' : l = (N : ℂ) • ((q : Λ) : Fin g → ℂ) +
+        ∑ i, (((c i % (N : ℤ)).toNat : ℕ) : ℤ) • ((b i : Λ) : Fin g → ℂ) := by
+      have hx : l = ((∑ i, c i • b i : Λ) : Fin g → ℂ) := by
+        rw [b.sum_repr x]
+      rw [hx]
+      simp only [q, Submodule.coe_sum, Submodule.coe_smul, Finset.smul_sum]
+      rw [← Finset.sum_add_distrib]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [Int.toNat_of_nonneg (hc i)]
+      have hN' : (N : ℂ) = ((N : ℤ) : ℂ) := by norm_cast
+      rw [hN', Int.cast_smul_eq_zsmul, smul_smul, ← add_smul]
+      have h2 := Int.mul_ediv_add_emod (c i) (N : ℤ)
+      congr 1
+      linarith
+    refine Eq.trans ?_ (congrArg e hl').symm
+    rw [hadd, hker _ q.2, one_mul]
+
+end GlobalTheory
+end
+end
+
+set_option autoImplicit false
+
+noncomputable section
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_image_lattice_of_hom_trivial_on_multiples : ∀ (g : ℕ) (Λ : Submodule ℤ (Fin g → ℂ)) (G : Type) [Group G] (e : (Fin g → ℂ) → G) (N : ℕ),
+    DiscreteTopology Λ → Submodule.span ℝ (Λ : Set (Fin g → ℂ)) = ⊤ → (∀ z w, e (z + w) = e z * e w) → 0 < N →
+    (∀ l ∈ Λ, e ((N : ℂ) • l) = 1) → (e '' (Λ : Set (Fin g → ℂ))).Finite := by
+  atlas_forward_decl GlobalTheory.lattice_hom_finite_image_of_trivial_on_multiples
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_holUnif_pull_along_groupHom : ∀ (A B : Over (Sp ℂ)) [GrpObj A] [GrpObj B] (φ : A ⟶ B) (L : LB B.left) (g : ℕ) (u' : HolUnif B L g)
+    (ex : (Fin g → ℂ) → (𝟙_ (Over (Sp ℂ)) ⟶ A)) (Λ : Submodule ℤ (Fin g → ℂ)) (Hm : Matrix (Fin g) (Fin g) ℂ)
+    (χ' : u'.Λ → ℂ),
+    (∀ z w, ex (z + w) = ex z * ex w) → Function.Surjective ex → (∀ z, ex z = 1 ↔ z ∈ Λ) →
+    DiscreteTopology Λ → Submodule.span ℝ (Λ : Set (Fin g → ℂ)) = ⊤ →
+    (∀ (U : A.left.Opens) (f : Γ(A.left, U)), IsOpen {z | ⊤ ≤ (ex z).left ⁻¹ᵁ U} ∧
+      DifferentiableOn ℂ (fun z => valAt' (ex z).left U f) {z | ⊤ ≤ (ex z).left ⁻¹ᵁ U}) →
+    (∀ z, ex z ≫ φ = u'.ex z) → Λ ≤ u'.Λ → u'.IsAH Hm χ' →
+    ∃ (u : HolUnif A (L.pull φ.left) g) (χ : u.Λ → ℂ), (∀ w, w ∈ u.Λ ↔ w ∈ Λ) ∧ u.IsAH Hm χ := by
+  first | exact @GlobalTheory.PullUnifHom.exists_holUnif_pull_hom | exact GlobalTheory.PullUnifHom.exists_holUnif_pull_hom | (intros; apply GlobalTheory.PullUnifHom.exists_holUnif_pull_hom <;> assumption)
+end
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -123,3 +228,5 @@ theorem GlobalTheory.riemann_polarised_torus : ∀ (g : ℕ) (Λ : Submodule ℤ
     GlobalTheory.SmoothDescent.smoothOfRelativeDimension_of_etale_cover ℂ _ _ ψ.left A.hom g hψe hψs inferInstance
       (by rw [Over.w]; exact hPg ▸ P.smoothDim)
   exact ⟨A, inferInstance, hA', hsm, P.L.pull φ.left, uA, χA, pull_isLB P.isLB _, hΛA, hAHA⟩
+end
+end

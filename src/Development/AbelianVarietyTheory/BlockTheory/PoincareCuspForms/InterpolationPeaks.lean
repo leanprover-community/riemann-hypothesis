@@ -89,30 +89,9 @@ def Statement : Prop :=
 
 variable {E}
 
-theorem four_lt_bExp (X : Data E r) (hf : 0 < X.Ψ.card) (hr : 0 < r) :
-    4 * (X.Ψ.card : ℝ) * (r : ℝ) ^ 2 < bExp X := by
-  have h1 : (0 : ℝ) < X.Ψ.card := by exact_mod_cast hf
-  have h2 : (0 : ℝ) < r := by exact_mod_cast hr
-  have : 0 < (X.Ψ.card : ℝ) * (r : ℝ) ^ 2 := by positivity
-  unfold bExp; nlinarith
 
-theorem factor_mul_firstMinimum {X : Data E r} (Xa : ArchInM X) : tFac Xa * Xa.a1 = Xa.c1 + Xa.a1 := by
-  have := Xa.frame_theta_weight_pos.ne'
-  unfold tFac; field_simp; ring
 
-theorem tFac_range {X : Data E r} (Xa : ArchInM X) : 0 ≤ tFac Xa ∧ tFac Xa * Xa.rr ≤ 2 * Xa.T := by
-  have h1 := Xa.frame_theta_weight_pos
-  have h2 := Xa.frame_theta_const_pos
-  refine ⟨by unfold tFac; positivity, ?_⟩
-  rw [mul_comm]; exact Xa.rr_le
 
-theorem peak_of_interpGt (h : InterpGtStatement E) (X : Data E r) (Xa : ArchInM X) (Fl : FlatM X Xa)
-    (hd : PropDisc X) (hm : ModeBound X)
-    (hq : HasMargin X Xa.Fp Xa.L (fun x => tFac Xa * Xa.ps0 x) (bExp X)) (j : Fin Fl.δ) :
-    ∃ P ∈ X.SSgt Xa.Fp Xa.c1, ∀ j', P (Fl.xs j') ≠ 0 ↔ j' = j := by
-  obtain ⟨P, hP, hv⟩ := h r X Xa Fl hd hm hq (fun j' => if j' = j then 1 else 0)
-  refine ⟨P, hP, fun j' => ?_⟩
-  rw [hv]; by_cases e : j' = j <;> simp [e]
 
 end
 

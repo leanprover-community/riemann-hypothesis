@@ -4,10 +4,124 @@ import Formalism.LocalToGlobal.ProjectiveLattices.CuspFree
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ThExprUniqOfChartIndep2
 import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.EvaluationLemmaForNablaLevels
 import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ShortValTotOfPinned
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.CoverProductIndepOfLift
+import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.CoverMulShortThetaSeriesIndepOfFramedLift
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HeckeKer
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsSabMapOfBaseEq
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsQProjOverOfIsIso
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ModuliSchemeLevelMapsHeckePoints
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.AllUniformizationLawsHold
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointReducedFromTestRing
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedModuliAlgebraicLawsChartWeightIntegrality
 
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory.Models.RankZero
+
+namespace GlobalTheory.LevelMapsAnyRank
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H}
+
+def unitSim (D : Datum H) : Sim D where
+  f _ := LinearMap.id
+  ν _ := 1
+  tower _ _ _ _ _ := ⟨0, by simp⟩
+  inv _ _ := ⟨LinearMap.id, fun _ => ⟨⟨0, by simp⟩, ⟨0, by simp⟩⟩⟩
+  mult _ _ _ _ := by simp
+
+theorem levelMaps_rank_zero (hD : D.p + D.q = 0) : ToroidalLevelCompatibility (H := H) (D := D) := by
+  intro l l₂ Xo Xo₂ hd
+  have hsub := subsingleton_La hD
+  obtain ⟨hs, hG⟩ := isIso_moduli GlobalTheory.card_torsion_abelianVariety hD Xo
+  obtain ⟨hs₂, hG₂⟩ := isIso_moduli GlobalTheory.card_torsion_abelianVariety hD Xo₂
+  have hA : l.A ∣ l₂.A := hd.2.2
+  obtain ⟨r, hr⟩ : ∃ r : Xo₂.X ⟶ Xo.X, r ≫ Xo.s = Xo₂.s ≫ spMap (levelFieldIncl hA) :=
+    ⟨(Xo₂.s ≫ spMap (levelFieldIncl hA)) ≫ inv Xo.s, by simp⟩
+  obtain ⟨m⟩ := nonempty_sabMap hG₂ hG r
+  have haut : ∀ g : Sim D, Xo₂.LevAut g (Iso.refl _) := fun g => by
+    obtain ⟨ν⟩ := nonempty_sabMap hG₂ hG₂ (Iso.refl Xo₂.X).hom
+    exact ⟨Category.id_comp _, ν, fun _ => sec_comm hG₂ ν.cart.1.w _ _, fun _ => sec_comm hG₂ ν.cart.1.w _ _⟩
+  refine ⟨r, levelFieldIncl hA, m, coe_levelFieldIncl hA, hr, fun _ => sec_comm hG m.cart.1.w _ _,
+    fun _ => sec_comm hG m.cart.1.w _ _, fun g _ => ⟨Iso.refl _, haut g, Category.id_comp _⟩, fun c c₂ hc => ?_⟩
+  have hring : (IntermediateField.inclusion c₂.le).toRingHom.comp (levelFieldIncl hA) =
+      (IntermediateField.inclusion hc.le).toRingHom.comp (IntermediateField.inclusion c.le).toRingHom := by
+    ext x
+    exact coe_levelFieldIncl hA x
+  have w : (pullback.fst Xo₂.s (spMap (IntermediateField.inclusion c₂.le).toRingHom) ≫ r) ≫ Xo.s =
+      (pullback.snd Xo₂.s (spMap (IntermediateField.inclusion c₂.le).toRingHom) ≫
+        spMap (IntermediateField.inclusion hc.le).toRingHom) ≫
+        spMap (IntermediateField.inclusion c.le).toRingHom := by
+    rw [Category.assoc, hr, pullback.condition_assoc, Category.assoc, GlobalTheory.Models.RankZero.spMap_comp,
+      GlobalTheory.Models.RankZero.spMap_comp, hring]
+  have e₁ := pullback.lift_fst _ _ w
+  have e₂ := pullback.lift_snd _ _ w
+  have i₀ : IsIso (spMap (IntermediateField.inclusion hc.le).toRingHom) := by
+    have : IsIso (CommRingCat.ofHom (IntermediateField.inclusion hc.le).toRingHom) :=
+      (ConcreteCategory.isIso_iff_bijective _).2 ⟨IntermediateField.inclusion_injective hc.le,
+        fun x => ⟨⟨x.1, hc.ge x.2⟩, rfl⟩⟩
+    exact inferInstanceAs (IsIso (Spec.map (CommRingCat.ofHom (IntermediateField.inclusion hc.le).toRingHom)))
+  have i₁ : IsIso (pullback.lift _ _ w) := IsIso.of_isIso_fac_right e₂
+  refine ⟨pullback.lift _ _ w, e₁, e₂, inferInstance, inferInstance, inferInstance, fun k _ _ y y' h => ⟨?_, ?_⟩⟩
+  · obtain rfl := (cancel_mono _).1 h
+    exact ⟨unitSim D, Iso.refl _, ⟨by simp [unitSim], fun a => by rw [Subsingleton.elim (_ - a) 0]; exact zero_mem _,
+      fun a => ⟨0, Subsingleton.elim _ _⟩⟩, haut _, Category.id_comp _,
+      congrArg (y ≫ ·) (Category.comp_id _).symm⟩
+  · intro g _ _ _ _
+    exact ⟨fun a => by rw [Subsingleton.elim (g.f l₂.M a - a) 0]; exact zero_mem _,
+      fun a => ⟨0, Subsingleton.elim _ _⟩⟩
+
+theorem levelMaps (D : Datum H) : ToroidalLevelCompatibility (H := H) (D := D) := by
+  rcases Nat.eq_zero_or_pos (D.p + D.q) with h | h
+  · exact levelMaps_rank_zero h
+  · exact (GlobalTheory.moduliScheme_levelMaps_heckePoints.2 E H D h).1
+
+end GlobalTheory.LevelMapsAnyRank
+end
+
+section
+open AlgebraicGeometry CategoryTheory NumberField Matrix Complex
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level
+open GlobalTheory.SW hiding Level
+open Formalism.L2.Pj GlobalTheory.Dict GlobalTheory.ClsVal
+open scoped Classical
+
+namespace GlobalTheory.EquivariantLiftInvariance
+
+theorem cover_product_indep_of_lift : Formalism.MainNotions.ModuliIntegralCharts.H1.ChartIndepSt2 → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (n : ℕ) (d : DeltaDat Xo c n), d.IsLev → d.l₂.A = l.A → (∃ _ : StarRing (𝓞 E), IsNab d.Xo₂ d.c₂ d.nab₂) → ∀ (ψ : (LaI Xo c d ≃ₗ[𝓞 E] LaI Xo c d) →* c.Fˣ), d.PsiTie ψ → ∀ w : (Fin n → LevQ Dw d.l₂) → c.F, DatEq d ψ w → ∀ (Λ : GenLat E n) (N : ℕ), Λ.Unimod → Λ.TrivAt d.l₂.M → Λ.LevOK N d.l₂.M → ∀ (a : (E →+* ℂ) × ℕ → ℕ) (P : MvPolynomial (LtN Dw n) d.c₂.F), P ∈ HHa Dw.mult n d.c₂.F ComplexEmbedding.conjugate (InPsi H) (fun τ i => a (τ, i)) → ∀ (β : d.c₂.F) (r' : d.Xo₂.X ⟶ Xo.X) (m' : SABMap d.Xo₂.univ.t Xo.univ.t r'), DeltaDat.EtaOK { d with r := r', m := m' } → ∀ (k : Type) [Field k] [IsAlgClosed k] [Algebra c.F k] [Algebra d.c₂.F k], (∀ a : c.F, algebraMap d.c₂.F k (d.eF a) = algebraMap c.F k a) → ∀ (y : FrPt Xo c k) (y₂ y₂' : FrPt d.Xo₂ d.c₂ k), FrOver d y₂ y → FrOver { d with r := r', m := m' } y₂' y → ∀ v v', ShortValAt d.Xo₂ d.c₂ d.nab₂ (fun q => d.eF (w q)) Λ β N P y₂ v → ShortValAt d.Xo₂ d.c₂ d.nab₂ (fun q => d.eF (w q)) Λ β N P y₂' v' → evR d.Xo₂ d.c₂ d.cδ y₂ * v = evR d.Xo₂ d.c₂ d.cδ y₂' * v' := by
+  intro hC E _ _ _ H Dw l Xo c n d hLev hA hnab ψ htie w hw Λ N hU hT hOK a P hP β r' m' hE' k _ _ _ _
+    hk y y₂ y₂' ho ho' v v' hv hv'
+  obtain ⟨_, hnab⟩ := hnab
+  have hL : Laws := GlobalTheory.firstFiveLaws.1
+  have hN := GlobalTheory.LevelMapsAnyRank.levelMaps Dw
+  obtain ⟨hdvd, hM, hcop, hb, hI, hE, -⟩ := hLev
+  obtain ⟨g, ρ, ν, hg, hρ, hmv, hfr⟩ := GlobalTheory.exists_levMove_of_frOver hL E H Dw l Xo c n d hN hdvd hM hE
+    r' m' hE' k hk y y₂ y₂' ho ho'
+  have hM₂ : 0 < d.l₂.M := by have := d.l₂.three_le; omega
+  have hbI : d.l₂.Mb ≤ d.I := hb ▸ (Ideal.mul_le_inf.trans inf_le_right)
+  have hmb : ((d.l₂.M : ℕ) : 𝓞 E) ∈ d.l₂.Mb := by
+    refine (Ideal.mul_le_inf.trans inf_le_left : d.l₂.Mb * d.l₂.Mb.map (H.bar : 𝓞 E →+* 𝓞 E) ≤ _) ?_
+    rw [d.l₂.prod]; exact Ideal.mem_span_singleton_self _
+  obtain ⟨g', hg'⟩ := g.inv d.l₂.M hM₂
+  obtain ⟨kI, hkI⟩ := GlobalTheory.DatumInverseCharacter.exists_quot_equiv Dw (hbI hmb) _ g' hg'
+  obtain ⟨σ, hσ⟩ := GlobalTheory.DatumInverseCharacter.exists_quot_equiv Dw hmb _ g' hg'
+  have hw' := hw g hg kI σ.toEquiv (fun a => (hkI a).symm) hσ
+  have hgA : ∀ a, Dw.ModN d.l₂.A (g.f d.l₂.A a - a) := by rw [hA]; exact hg.2.2
+  have hc := htie kI g ρ hg hgA hρ (fun a => (hkI a).symm) k y₂ y₂' hfr.1
+  have h1 := GlobalTheory.ShortValMove.shortValAt_move hL hC E H Dw d.l₂ d.Xo₂ d.c₂ d.nab₂ hnab k ρ.hom ν _ _ y₂ y₂' hmv hfr
+    σ.toEquiv hσ n a P hP (fun q => d.eF (w q)) Λ β N v' hv'
+  have h2 := GlobalTheory.ShortLiftInvariance.shortValAt_smul d.Xo₂ d.c₂ d.nab₂ (fun q => d.eF (w q))
+    (fun q => d.eF (w (fun b => σ.toEquiv.symm (q b)))) (d.eF (((ψ kI)⁻¹ : c.Fˣ) : c.F))
+    (fun q => by rw [hw', map_mul]) Λ β N P y₂ v hv
+  have h3 := ((GlobalTheory.shortThetaValue_existsUnique_natural hL hC E H Dw d.l₂ d.Xo₂ d.c₂ d.nab₂ hnab n Λ N hU hT hOK a P
+    hP _ β).1 k y₂).unique h1 h2
+  rw [hc, h3, _root_.mul_mul_mul_comm, ← map_mul, ← map_mul]
+  simp
+
+end GlobalTheory.EquivariantLiftInvariance
+end
+
+section
 section Descent
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
@@ -173,3 +287,4 @@ theorem exists_sec_oneClass : Formalism.MainNotions.ModuliIntegralCharts.H1.Char
     exact (hd _ _).exists.choose_spec k hk _ y y₂ hy.choose_spec.choose_spec.choose_spec ho v hv
 
 end GlobalTheory.ClsDescent
+end

@@ -1,8 +1,114 @@
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.BlockDeterminants.Decomp
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.GalTPDefs
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.ThkTowStab
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.ThkBaseBadA
+import Development.WeilBound.ThetaLifts.TowerModels.StabEx
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.ThetaBasicK
+import Development.WeilBound.ThetaLifts.TowerModels.StabCpt
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.IsLatRepL
+import Development.WeilBound.ThetaLifts.LatticeBasics.CommuteTheta
 
+section
+set_option synthInstance.maxHeartbeats 200000
+
+section
+noncomputable section
+namespace PositivityTheory.ThKG.Tow.Stab
+open scoped TensorProduct Matrix Pointwise RestrictedProduct
+open NumberField IsDedekindDomain Topology Filter GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n : ℕ}
+attribute [local instance] ae_ring ae_t2 ae_smul
+theorem exists_compact_mat_k {B : Base F E} {X : Spc F E n} {r s : ℕ} (hB : _root_.UpperTheory.TP.W.GoodK σ B) (hX : X.IsHerm σ B r s) :
+    ∃ S : Set (Matrix (Fin n) (Fin n) (AE F E)), IsCompact S ∧ ∀ k ∈ stabK (σ := σ) B X, mat k ∈ S := by
+  obtain ⟨Φ, hΦ, eΦ⟩ := exists_section hB.cm B.emb
+  choose C hC h using fin_bound X hX.lat
+  choose R hR using fun w => cartan_bound (hX.cartan w)
+  have hD : IsCompact (Φ '' Set.univ.pi fun w => Metric.closedBall (0 : ℂ) (R w)) :=
+    (isCompact_univ_pi fun w => isCompact_closedBall _ _).image hΦ
+  refine ⟨Set.univ.pi fun i => Set.univ.pi fun j => (Φ '' Set.univ.pi fun w => Metric.closedBall (0 : ℂ) (R w)) + C i j,
+    isCompact_univ_pi fun i => isCompact_univ_pi fun j => hD.add (hC i j), fun k hk i _ j _ => ?_⟩
+  rw [eΦ (mat k i j)]
+  refine Set.add_mem_add ⟨_, fun w _ => ?_, rfl⟩ (h i j _ fun y hy => (hk.2 y hy).1)
+  rw [mem_closedBall_zero_iff]
+  refine hR w ((mat k).map (piInf (B.emb w))) ?_ (hk.1 w) i j
+  rw [← Levi.iso_map_piInf (σ := σ) (fun τ z => Levi.piInf_cA hB.cm τ z)]
+  have e : (mat k)ᵀ * incM F X.J * (mat k).map (cA σ) = incM F X.J := k.2
+  rw [e]
+  exact Matrix.ext fun i j => Levi.piInf_incl _ _
+theorem isCompact_stabK_k {B : Base F E} {X : Spc F E n} {r s : ℕ} (hB : _root_.UpperTheory.TP.W.GoodK σ B) (hX : X.IsHerm σ B r s) :
+    IsCompact ((stabK (σ := σ) B X : Subgroup (UA σ X.J)) : Set (UA σ X.J)) := by
+  obtain ⟨S, hS, h⟩ := _root_.PositivityTheory.ThKG.Tow.Stab.exists_compact_mat_k hB hX
+  have hc : Continuous (cA (F := F) σ) := IsModuleTopology.continuous_of_linearMap (cA (F := F) σ).toLinearMap
+  have hU : IsClosed ((UG (cA σ) (incM F X.J) : Subgroup (GL (Fin n) (AE F E))) : Set (GL (Fin n) (AE F E))) :=
+    isClosed_eq (((Units.continuous_val.matrix_transpose).matrix_mul continuous_const).matrix_mul
+      (Units.continuous_val.matrix_map hc)) continuous_const
+  exact isCompact_of_units _ hU _ (isClosed_stabK B X (isCompact_latHat X hX.lat.fg).isClosed) S hS
+    fun k hk => ⟨h k hk, h _ (inv_mem hk)⟩
+end PositivityTheory.ThKG.Tow.Stab
+end
+end
+end
+
+section
+set_option synthInstance.maxHeartbeats 200000
+
+section
+noncomputable section
+namespace PositivityTheory.ThKG.Tow
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
+theorem stabEx_k : _root_.GlobalTheory.ThK.StabEx_k := by
+  intro F E _ _ _ _ _ σ B n X r s hB hX
+  have hc := _root_.PositivityTheory.ThKG.Tow.Stab.isCompact_stabK_k hB hX
+  obtain ⟨μK, hμK⟩ := Stab.exists_haar_of_isCompact _ hc
+  obtain ⟨μ, hμ⟩ := Stab.exists_haar_idele (F := F) (E := E)
+  exact ⟨Stab.stabK B X, μK, μ, Stab.isStab_stabK B X, hc, hμK, hμ⟩
+end PositivityTheory.ThKG.Tow
+end
+end
+end
+
+section
+set_option synthInstance.maxHeartbeats 200000
+
+section
+noncomputable section
+namespace GlobalTheory.ThK.Dbl.Bad
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open GlobalTheory.Doubling (absE)
+open PositivityTheory.ThKG.Loc (idem)
+open PositivityTheory.ThKG.Loc.Cone
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n d : ℕ}
+variable {Y : Spc F E n} {B : Base F E} {v : Pl F} {r s : ℕ}
+theorem theta_pm_k (hB : _root_.UpperTheory.TP.W.GoodK σ B) (h : Y.IsHerm σ B r s) (h0 : min r s = 0) (w) : Y.θ w = 1 ∨ Y.θ w = -1 :=
+  cartan_pm (h.sig w) h0 (fun i j => (hB.cm.2.2.2 _ _).symm.trans (congrArg _ (h.herm i j))) (h.cartan w)
+theorem commute_theta_k (hB : _root_.UpperTheory.TP.W.GoodK σ B) (h : Y.IsHerm σ B r s) (h0 : min r s = 0) (w) (A) : Commute A (Y.θ w) := by
+  rcases _root_.GlobalTheory.ThK.Dbl.Bad.theta_pm_k hB h h0 w with e | e <;> rw [e]
+  exacts [Commute.one_right _, Commute.neg_one_right _]
+theorem stab_iff_k (hB : _root_.UpperTheory.TP.W.GoodK σ B) (h : Y.IsHerm σ B r s) (h0 : min r s = 0) {K : Subgroup (UA σ Y.J)} (hK : IsStab B K)
+    {g : UA σ Y.J} : g ∈ K ↔ ∀ v, IntAt v g :=
+  (hK g).trans ⟨fun a _ z hz _ => a.2 z hz, fun a => ⟨fun w => _root_.GlobalTheory.ThK.Dbl.Bad.commute_theta_k hB h h0 w _, fun _ hz =>
+    ⟨mulVec_mem h.lat (fun v z h1 h2 => (a v z h1 h2).1) hz, mulVec_mem h.lat (fun v z h1 h2 => (a v z h1 h2).2) hz⟩⟩⟩
+theorem emb_mem_k (hB : _root_.UpperTheory.TP.W.GoodK σ B) (h : Y.IsHerm σ B r s) (h0 : min r s = 0) {K : Subgroup (G2 σ Y)} (hK : IsStab2 B K)
+    {e : UA σ Y.J × UA σ Y.J →* G2 σ Y} (he : ∀ g g', IsEmb g g' (e (g, g'))) {g : UA σ Y.J} (hg : ∀ v, IntAt v g) :
+    e (g, 1) ∈ K := by
+  refine (hK _).2 ⟨fun w => ?_, fun z z' hz hz' k hk => ?_⟩
+  · rw [he g 1, Matrix.fromBlocks_map, Matrix.map_zero _ (map_zero _)]
+    simp only [Commute, SemiconjBy, Matrix.fromBlocks_multiply, Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add,
+      (_root_.GlobalTheory.ThK.Dbl.Bad.commute_theta_k hB h h0 w _).eq, (_root_.GlobalTheory.ThK.Dbl.Bad.commute_theta_k hB h h0 w _).neg_right.eq]
+  · obtain ⟨g', e1, hg'⟩ : ∃ g', k = e (g', 1) ∧ mat g' *ᵥ z ∈ latHat Y := by
+      rcases hk with rfl | rfl
+      · exact ⟨g, rfl, mulVec_mem h.lat (fun v z h1 h2 => (hg v z h1 h2).1) hz⟩
+      · exact ⟨g⁻¹, by rw [← map_inv, Prod.inv_mk, inv_one], mulVec_mem h.lat (fun v z h1 h2 => (hg v z h1 h2).2) hz⟩
+    rw [e1, he g' 1, Matrix.fromBlocks_mulVec, show mat (1 : UA σ Y.J) = 1 from rfl]
+    simpa using ⟨hg', hz'⟩
+end GlobalTheory.ThK.Dbl.Bad
+end
+end
+end
+
+section
 set_option synthInstance.maxHeartbeats 200000
 
 section
@@ -256,5 +362,6 @@ theorem UpperTheory.TP.decomp_k :
       rwa [pr_eq_pk.2 (mem_gAt_pk.1 hb)] at this
   · exact (Filter.eventually_cofinite.1 ((Euler.ae_mulVec hX.lat (mat g)).and (Euler.ae_mulVec hX.lat (mat g⁻¹)))).subset
       fun v hv h => hv fun z hz h3 => ⟨h.1 z hz h3, h.2 z hz h3⟩
+end
 end
 end

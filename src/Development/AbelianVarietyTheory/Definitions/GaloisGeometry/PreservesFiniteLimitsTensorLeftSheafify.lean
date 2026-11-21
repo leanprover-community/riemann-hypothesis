@@ -255,10 +255,7 @@ def cupN (X : Scheme.{0}) (i j n : ℕ) (h : i + j = n) : H R i X →ₗ[R] H R 
 
 def cup (X : Scheme.{0}) (i j : ℕ) : H R i X →ₗ[R] H R j X →ₗ[R] H R (i + j) X := cupN R X i j (i + j) rfl
 
-theorem cupN_apply (X : Scheme.{0}) (i j n : ℕ) (h : i + j = n) (a : H R i X) (b : H R j X) :
-    cupN R X i j n h a b = cupExt R X h a b := rfl
 
-theorem cup_eq_cupN (X : Scheme.{0}) (i j : ℕ) : cup R X i j = cupN R X i j (i + j) rfl := rfl
 
 end Cup
 
@@ -409,10 +406,6 @@ theorem e_one (X : Scheme.{0}) : H0.e R X (one R X) = 1 := by
   change ((((1 : ULift.{1} R) • (1 : ULift.{1} R)) • (⟨1⟩ : ULift.{1} C(X, R))).down) x = (1 : C(X, R)) x
   simp
 
-theorem gal_cup {k : Type} [Field k] (Ω : Type) [Field Ω] [Algebra k Ω] {X : Scheme.{0}}
-    (p : X ⟶ Spec (CommRingCat.of k)) (i j : ℕ) (σ : Ω ≃ₐ[k] Ω) (a : H R i (geom Ω p)) (b : H R j (geom Ω p)) :
-    gal R Ω p (i + j) σ (cup R (geom Ω p) i j a b) = cup R (geom Ω p) i j (gal R Ω p i σ a) (gal R Ω p j σ b) :=
-  pull_cup R _ i j a b
 
 end One
 

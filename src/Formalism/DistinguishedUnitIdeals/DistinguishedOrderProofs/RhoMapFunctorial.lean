@@ -122,11 +122,6 @@ theorem phiIt_mem_pull {i : ZMod n} (k : ℕ) {v : V} (hv : v ∈ L.N i) :
     L.phiIt i k v ∈ L.pull i k :=
   Submodule.subset_span (Set.mem_image_of_mem (L.phiIt i k) hv)
 
-theorem phiIt_sm {i : ZMod n} (k : ℕ) {a : PowerSeries O} {v : V} (hv : v ∈ sm a (L.N i)) :
-    L.phiIt i k v ∈ sm ((⇑B.φ)^[k] a) (L.pull i k) := by
-  obtain ⟨u, hu, rfl⟩ := mem_sm.1 hv
-  rw [phiIt_smul]
-  exact smul_mem_sm _ (phiIt_mem_pull L k hu)
 
 theorem γ_N (h1 : ∀ i, ∀ v ∈ L.N i, L.γ i v - v ∈ sm X (L.N i)) {i : ZMod n} {v : V}
     (hv : v ∈ L.N i) : L.γ i v ∈ L.N i := by

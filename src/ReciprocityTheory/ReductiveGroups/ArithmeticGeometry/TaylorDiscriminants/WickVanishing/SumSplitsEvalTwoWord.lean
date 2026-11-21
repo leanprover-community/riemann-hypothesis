@@ -1,5 +1,183 @@
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.EvalZeroReplicateAppend
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.WickOperatorVanishing
 
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open MvPowerSeries ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
+
+namespace ReciprocityTheory.ChartRestriction.G.TB.G2
+
+variable {k : Type} [CommRing k] {d : ℕ}
+
+section Dof
+variable (F : Fin d → PS k 2 d) (v : Fin d → k)
+
+theorem dof_add (f g : PS k 1 d) : Dof F v (f + g) = Dof F v f + Dof F v g := by
+  unfold Dof
+  simp only [map_add, mul_add, Finset.sum_add_distrib]
+
+theorem dof_zero : Dof F v (0 : PS k 1 d) = 0 := by
+  simp [Dof]
+
+theorem dof_C (a : k) : Dof F v (C a : PS k 1 d) = 0 := by
+  unfold Dof
+  have h : ∀ j : Fin d, pderiv k ((0 : Fin 1), j) (C a : PS k 1 d) = 0 := fun j => by
+    simp
+  simp [h]
+
+theorem dof_mul (f g : PS k 1 d) : Dof F v (f * g) = Dof F v f * g + f * Dof F v g := by
+  unfold Dof
+  rw [Finset.sum_mul, Finset.mul_sum, ← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  rw [Derivation.leibniz, smul_eq_mul, smul_eq_mul]
+  ring
+
+theorem dof_list_sum (L : List (PS k 1 d)) : Dof F v L.sum = (L.map (Dof F v)).sum := by
+  induction L with
+  | nil => simp [dof_zero]
+  | cons a L ih => simp [dof_add, ih]
+
+end Dof
+
+section Words
+variable (F : Fin d → PS k 2 d) {ι : Type} (u : ι → Fin d → k)
+
+def T (w : List ι) (A : PS k 1 d) : PS k 1 d := w.foldr (fun l g => Dof F (u l) g) A
+
+theorem T_cons (l : ι) (w : List ι) (A : PS k 1 d) : T F u (l :: w) A = Dof F (u l) (T F u w A) := rfl
+
+theorem T_append (w w' : List ι) (A : PS k 1 d) : T F u (w ++ w') A = T F u w (T F u w' A) := by
+  simp [T, List.foldr_append]
+
+theorem T_add (w : List ι) (A B : PS k 1 d) : T F u w (A + B) = T F u w A + T F u w B := by
+  induction w with
+  | nil => rfl
+  | cons l w ih => rw [T_cons, T_cons, T_cons, ih, dof_add]
+
+theorem T_zero (w : List ι) : T F u w (0 : PS k 1 d) = 0 := by
+  induction w with
+  | nil => rfl
+  | cons l w ih => rw [T_cons, ih, dof_zero]
+
+def splits : List ι → List (List ι × List ι)
+  | [] => [([], [])]
+  | l :: w => (splits w).map (fun p => (l :: p.1, p.2)) ++ (splits w).map (fun p => (p.1, l :: p.2))
+
+theorem T_mul (w : List ι) (A B : PS k 1 d) :
+    T F u w (A * B) = ((splits w).map (fun p => T F u p.1 A * T F u p.2 B)).sum := by
+  induction w with
+  | nil => simp [splits, T]
+  | cons l w ih =>
+    rw [T_cons, ih, dof_list_sum, List.map_map]
+    simp only [splits, List.map_append, List.map_map, List.sum_append]
+    rw [← List.sum_map_add]
+    congr 1
+    apply List.map_congr_left
+    intro p _
+    simp only [Function.comp_apply]
+    rw [dof_mul]
+    rfl
+
+end Words
+
+end ReciprocityTheory.ChartRestriction.G.TB.G2
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open MvPowerSeries ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
+
+namespace ReciprocityTheory.ChartRestriction.G.TB.G2
+
+variable {k : Type} [CommRing k] {d : ℕ}
+
+section Q
+variable {ι : Type} (c : ι → ι → k)
+
+def ev2 : List ι → k
+  | [x, y] => c x y
+  | _ => 0
+
+variable (F : Fin d → PS k 2 d) (u : ι → Fin d → k) (q : PS k 1 d)
+  (hq0 : constantCoeff q = 0) (hq1 : ∀ l, constantCoeff (Dof F (u l) q) = 0)
+  (hq2 : ∀ l l', Dof F (u l) (Dof F (u l') q) = C (c l l'))
+include hq2
+
+theorem T_q_long (w : List ι) (hw : 3 ≤ w.length) : T F u w q = 0 := by
+  induction w with
+  | nil => simp at hw
+  | cons a w ih =>
+    rw [T_cons]
+    rcases w with _ | ⟨b, _ | ⟨e, _ | ⟨f, w⟩⟩⟩
+    · simp at hw
+    · simp at hw
+    · rw [T_cons, T_cons]
+      change Dof F (u a) (Dof F (u b) (Dof F (u e) q)) = 0
+      rw [hq2, dof_C]
+    · rw [ih (by simp)]
+      exact dof_zero ..
+
+include hq0 hq1
+
+theorem cc_T_q (b : List ι) : constantCoeff (T F u b q) = ev2 c b := by
+  rcases b with _ | ⟨x, _ | ⟨y, _ | ⟨z, b⟩⟩⟩
+  · exact hq0
+  · rw [T_cons]
+    exact hq1 x
+  · rw [T_cons, T_cons]
+    change constantCoeff (Dof F (u x) (Dof F (u y) q)) = c x y
+    rw [hq2, constantCoeff_C]
+  · rw [T_q_long c F u q hq2 _ (by simp), map_zero]
+    rfl
+
+theorem cc_T_mul_q (w : List ι) (A : PS k 1 d) :
+    constantCoeff (T F u w (A * q)) =
+      ((splits w).map (fun p => constantCoeff (T F u p.1 A) * ev2 c p.2)).sum := by
+  rw [T_mul, map_list_sum, List.map_map]
+  congr 1
+  apply List.map_congr_left
+  intro p _
+  simp only [Function.comp_apply, map_mul]
+  rw [cc_T_q c F u q hq0 hq1 hq2]
+
+end Q
+
+end ReciprocityTheory.ChartRestriction.G.TB.G2
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+namespace ReciprocityTheory.ChartRestriction.G.TB.G2
+
+variable {k : Type} [CommRing k] {ι : Type}
+
+def ev0 (b : List ι) : k := if b = [] then 1 else 0
+
+def ev1 (g : ι → k) : List ι → k
+  | [y] => g y
+  | _ => 0
+
+def word (Ls : List ι) (m : ι →₀ ℕ) : List ι := Ls.flatMap (fun l => List.replicate (m l) l)
+
+theorem word_cons (l : ι) (Ls : List ι) (m : ι →₀ ℕ) :
+    word (l :: Ls) m = List.replicate (m l) l ++ word Ls m := by
+  simp only [word, List.flatMap_cons]
+
+end ReciprocityTheory.ChartRestriction.G.TB.G2
+end
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -208,3 +386,5 @@ theorem sum_splits_evalTwo_word (c : ι → ι → k) (hc : ∀ x y, c x y = c y
     linear_combination -ha - hb1 - hb2 - hcc
 
 end ReciprocityTheory.ChartRestriction.G.TB.G2
+end
+end

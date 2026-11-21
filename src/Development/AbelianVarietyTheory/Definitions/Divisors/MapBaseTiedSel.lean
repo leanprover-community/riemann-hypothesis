@@ -50,7 +50,6 @@ theorem Bundle.Comparison₂.recPins {b : Bundle D O c} (t : b.Comparison₂) : 
   muDef := t.pins3.muDef
   recPins := t.recPins
 
-theorem zsc_eq_ind (P : RowSideFamily O.ex) (Del h0 : ℕ) (c : ℝ) : Ind.zsc P Del h0 c = zsc P Del h0 c := rfl
 
 theorem exists_part_eq (p : Ind.Part D O c) (C : GlobalTheory.Cp.SquareIntegrableColumnsCompatible p.R.T p.P) (hD : p.Dcf = C.c.face) (hS : HEq p.Spf C.Sp) :
     ∃ (b : Bundle D O c) (t : b.Comparison₂), b.part t = p := by
@@ -100,11 +99,7 @@ def partSel (σ : RawSel Bundle 𝒜) (τ : TieSel σ) : RawSel Ind.Part 𝒜 :=
 def tieSelOf {σ : RawSel Bundle 𝒜} (h : AtAll HasTie 𝒜 σ) : TieSel σ :=
   fun Fm hc x hx i => Classical.choice (h Fm hc x hx i)
 
-theorem map_base_tiedSel (σ : RawSel Bundle 𝒜) (τ : TieSel σ) :
-    (RawSel.map TiedBundle.base (compatibleSelection σ τ) : RawSel Bundle 𝒜) = @σ := rfl
 
-theorem map_part_tiedSel (σ : RawSel Bundle 𝒜) (τ : TieSel σ) :
-    (RawSel.map TiedBundle.part (compatibleSelection σ τ) : RawSel Ind.Part 𝒜) = @partSel 𝒜 σ τ := rfl
 
 end Sel
 
@@ -133,22 +128,11 @@ theorem Row.descend {Lk' : LkT TiedBundle} (hQ : ∀ K X f T c, Q K X f T c → 
     Row Q Lk H :=
   (Row.of_tied hQ hL h).imp fun _ _ _ H => let ⟨_, t⟩ := H; t
 
-theorem Row.of_part {Lk' : LkT Ind.Part} (hQ : ∀ K X f T c, Q K X f T c → Q' K X f T c)
-    (hL : EvP fun _ K => ∀ β : BPt K, β.Is Q → ∀ (c : ℝ) (b : Bundle β.D β.O c), Lk K β c b → ∃ t : b.Comparison₂, Lk' K β c (b.part t))
-    {H : ∀ 𝒜 : FamClass, RawSel Ind.Part 𝒜 → Prop} (h : Row Q' Lk' H) :
-    Row Q Lk fun 𝒜 σ => ∃ τ : TieSel σ, H 𝒜 (partSel σ τ) :=
-  Row.of_tied (Lk' := fun K β c b => Lk' K β c (TiedBundle.part _ _ c b)) hQ hL
-    (H := fun 𝒜 σ => H 𝒜 (RawSel.map TiedBundle.part σ))
-    (Row.map (Bd := TiedBundle) TiedBundle.part (fun _ _ _ _ _ t => t) (fun _ _ _ _ _ t => t) h)
 
 theorem Row.onTied {H : ∀ 𝒜 : FamClass, RawSel Bundle 𝒜 → Prop} (h : Row Q Lk H) :
     Row Q Lk.onTied fun 𝒜 σ => H 𝒜 (RawSel.map TiedBundle.base σ) :=
   Row.map (Bd := TiedBundle) TiedBundle.base (fun _ _ _ _ _ t => t) (fun _ _ _ _ _ t => t) h
 
-theorem Row.of_onTied (hT : RowE Q Lk fun _ => HasTie) {H : ∀ 𝒜 : FamClass, RawSel Bundle 𝒜 → Prop}
-    (h : Row Q Lk.onTied fun 𝒜 σ => H 𝒜 (RawSel.map TiedBundle.base σ)) : Row Q Lk H :=
-  Row.descend (fun _ _ _ _ _ t => t)
-    (EvP.mono (fun _ _ _ H β hq c b hl => let ⟨t⟩ := H β hq c b hl; ⟨t, hl⟩) hT) h
 
 end Construction₂
 

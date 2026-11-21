@@ -48,11 +48,6 @@ theorem massRows_pos (hA : AutFin D F0 what₂) (hne : what₂.Nonempty) : 0 < C
   unfold Cnt.massRows
   exact Finset.sum_pos (fun Λ hΛ => wRow_pos D F0 (hA Λ hΛ)) hne
 
-theorem sum_massRow (hA : AutFin D F0 what₂) (hne : what₂.Nonempty) : ∑ Λ ∈ what₂, massRow D F0 what₂ Λ = 1 := by
-  have hpos := massRows_pos D F0 what₂ hA hne
-  have hm : ∑ Λ ∈ what₂, wRow D F0 Λ = Cnt.massRows D F0 what₂ := rfl
-  unfold massRow
-  rw [← Finset.sum_div, hm, div_self hpos.ne']
 
 end Mass
 
@@ -63,10 +58,7 @@ variable {D : D7} {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS ((Tu D u : �
 
 def massTerm (t : Term D u u' F0 what₂) : ℝ := massRow D F0 what₂ t.lam
 
-theorem term_mass_eq_weight_ratio (t : Term D u u' F0 what₂) : massTerm t = wRow D F0 t.lam / Cnt.massRows D F0 what₂ := rfl
 
-theorem massTerm_pos (hA : AutFin D F0 what₂) (t : Term D u u' F0 what₂) : 0 < massTerm t :=
-  div_pos (wRow_pos D F0 (hA _ t.mem)) (massRows_pos D F0 what₂ hA ⟨_, t.mem⟩)
 
 end TermMass
 
@@ -93,10 +85,6 @@ theorem norm_psiInf (g : ℕ) (x : E) : ‖psiInf g x‖ = 1 := by
     | (rw [Complex.abs_exp]; simp)
     | simp [Complex.norm_exp]
 
-theorem norm_phasePair {N : ℕ} (g : ℕ) (L U : Matrix (Fin N) (Fin N) E) : ‖phasePair g L U‖ = 1 := by
-  unfold phasePair
-  rw [norm_mul, norm_inv, norm_inv, norm_psiInf, norm_psiInf]
-  norm_num
 
 end Phase
 
@@ -117,11 +105,6 @@ def phaseAt (t : Term D u u' F0 what₂) (w : Point D.host.E (D.R.rS + 1)) : ℂ
     phasePair (gS D) h.choose.2.1 h.choose.2.2
   else 0
 
-theorem norm_phaseAt_le (t : Term D u u' F0 what₂) (w : Point D.host.E (D.R.rS + 1)) : ‖phaseAt t w‖ ≤ 1 := by
-  unfold phaseAt
-  split_ifs
-  · rw [norm_phasePair]
-  · simp
 
 def cAt (vR : Term D u u' F0 what₂ → ℝ) (t : Term D u u' F0 what₂) (w : Point D.host.E (D.R.rS + 1)) : ℂ :=
   phaseAt t w * (vR t : ℂ)
@@ -240,22 +223,6 @@ theorem ptOf_spec (t : Term D u u' F0 what₂) (h : ∃ w, t.atPt w ∧ t.releva
   rw [dif_pos h]
   exact h.choose_spec.1
 
-theorem ptOf_GPoint_iff (hA : ∀ t : Term D u u' F0 what₂, t.G ≠ 0 → t.relevant → ∃ w, t.atPt w)
-    (hB : ∀ (t : Term D u u' F0 what₂) w, t.atPt w → Formalism.MainNotions.S.LocalSplitGroups.Gpt (D.mem u).A.T (D.mem u').A.T w ≠ 0)
-    (hC : ∀ (t : Term D u u' F0 what₂) w, t.atPt w → t.G ≠ 0) (t : Term D u u' F0 what₂) :
-    (t.G ≠ 0 ∧ t.relevant) ↔ Formalism.MainNotions.S.LocalSplitGroups.Gpt (D.mem u).A.T (D.mem u').A.T (ptOf t) ≠ 0 := by
-  constructor
-  · rintro ⟨hG, hr⟩
-    obtain ⟨w, hw⟩ := hA t hG hr
-    exact hB t _ (ptOf_spec t ⟨w, hw, hr⟩)
-  · intro hne
-    by_cases h : ∃ w, t.atPt w ∧ t.relevant
-    · exact ⟨hC t _ (ptOf_spec t h), h.choose_spec.2⟩
-    · exfalso
-      apply hne
-      unfold ptOf
-      rw [dif_neg h]
-      exact Gpt_junkPoint_eq_zero D u u'
 
 def cTerm (vR : Term D u u' F0 what₂ → ℝ) (t : Term D u u' F0 what₂) : ℂ :=
   if h : ∃ w, t.atPt w then cAt vR t h.choose else 0
@@ -339,17 +306,9 @@ def KgsOf (vR : Term D u u' F0 what₂ → ℝ) (Q : PairSys D u u' F0 what₂) 
 
 variable (Q : PairSys D u u' F0 what₂)
 
-theorem massTerm_pair (p : Q.P) : massTerm (Q.fst p) = massTerm (Q.snd p) := by
-  unfold massTerm
-  rw [Q.row p]
 
 def KgsFinite : Prop := ∀ w w' : Point D.host.E (D.R.rS + 1), (gsAt Q w w').Finite
 
-theorem Kgs_fin (vR : Term D u u' F0 what₂ → ℝ) (hF : KgsFinite Q) (w w' : Point D.host.E (D.R.rS + 1)) :
-    KgsOf vR Q w w' = ∑ p ∈ (hF w w').toFinset,
-      (massTerm (Q.fst p) : ℂ) * cAt vR (Q.fst p) w * star (cAt vR (Q.snd p) w') := by
-  unfold KgsOf
-  rw [← Finset.tsum_subtype', Set.Finite.coe_toFinset]
 
 variable {H₁ : Type} [NormedAddCommGroup H₁] [InnerProductSpace ℂ H₁] [FiniteDimensional ℂ H₁]
   {H₂ : Type} [NormedAddCommGroup H₂] [InnerProductSpace ℂ H₂]

@@ -24,14 +24,123 @@ import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCompComparison
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlagEqualChangeLowerTriangular
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FrameLawsOfModuli
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.FrMapComp
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenericLuDecompositionUniqueStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LuFactorsGenerateSameFieldStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AlgIndepOfSameAdjoinStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenericFlagTriangularChangeStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FramePointBorelSectionScalingStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginComponentGenericPointStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsCombBaseChange
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenericLuDecompositionUnique
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LuFactorsGenerateSameField
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AlgIndepOfSameAdjoin
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenericFlagTriangularChange
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FramePointBorelSectionScaling
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginComponentGenericPoint
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.ExpBCChart
 
+section
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_lu_decomposition_mul_generic_unipotent : ∀ (K L : Type) [Field K] [Field L] [Algebra K L] (n : ℕ) (A : Matrix (Fin n) (Fin n) K) (u : Matrix (Fin n) (Fin n) L), A.det ≠ 0 → (∀ k, u k k = 1) → (∀ l k, l < k → u l k = 0) → AlgebraicIndependent K (fun q : {lk : Fin n × Fin n // lk.2 < lk.1} => u q.1.1 q.1.2) → ∃ v w : Matrix (Fin n) (Fin n) L, A.map (algebraMap K L) * u = v * w ∧ (∀ k, v k k = 1) ∧ (∀ l k, l < k → v l k = 0) ∧ (∀ l k, k < l → w l k = 0) ∧ ∀ k, w k k ≠ 0 := by
+  first | exact @GlobalTheory.CompanionTheory.GenericLU.generic_lu | exact GlobalTheory.CompanionTheory.GenericLU.generic_lu | (intros; apply GlobalTheory.CompanionTheory.GenericLU.generic_lu <;> assumption)
+end
+
+section
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lu_factors_generate_same_field : ∀ (K L : Type) [Field K] [Field L] [Algebra K L] (n : ℕ) (A : Matrix (Fin n) (Fin n) K) (u v w : Matrix (Fin n) (Fin n) L), A.det ≠ 0 → (∀ k, u k k = 1) → (∀ l k, l < k → u l k = 0) → (∀ k, v k k = 1) → (∀ l k, l < k → v l k = 0) → (∀ l k, k < l → w l k = 0) → (∀ k, w k k ≠ 0) → A.map (algebraMap K L) * u = v * w → IntermediateField.adjoin K (Set.range fun p : Fin n × Fin n => u p.1 p.2) = IntermediateField.adjoin K (Set.range fun p : Fin n × Fin n => v p.1 p.2) := by
+  first | exact @GlobalTheory.CompanionTheory.LuFields.adjoin_entries_eq | exact GlobalTheory.CompanionTheory.LuFields.adjoin_entries_eq | (intros; apply GlobalTheory.CompanionTheory.LuFields.adjoin_entries_eq <;> assumption)
+end
+
+section
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.alg_indep_of_same_adjoin : ∀ (K L J : Type) [Field K] [Field L] [Algebra K L] [Finite J] (x y : J → L), AlgebraicIndependent K x → IntermediateField.adjoin K (Set.range x) = IntermediateField.adjoin K (Set.range y) → AlgebraicIndependent K y := by
+  first | exact @GlobalTheory.CompanionTheory.FieldGen.algebraicIndependent_of_adjoin_eq | exact GlobalTheory.CompanionTheory.FieldGen.algebraicIndependent_of_adjoin_eq | (intros; apply GlobalTheory.CompanionTheory.FieldGen.algebraicIndependent_of_adjoin_eq <;> assumption)
+end
+
+section
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.generic_flag_triangular_change : ∀ (L Li : Type) [Field L] [AddCommGroup Li] [Module L Li] (r : ℕ) (f b g : Fin r → Li) (v w : Matrix (Fin r) (Fin r) L), LinearIndependent L f → LinearIndependent L b → (∀ k, v k k = 1) → (∀ l k, l < k → v l k = 0) → (∀ l k, k < l → w l k = 0) → (∀ k, w k k ≠ 0) → (∀ k, g k = ∑ j, (v * w) j k • f j) → (∀ i : ℕ, GlobalTheory.CompanionTheory.Ar.flagStep L b i = GlobalTheory.CompanionTheory.Ar.flagStep L g i) → ∃ Tm : Matrix (Fin r) (Fin r) L, (∀ i, b i = ∑ m, Tm i m • ∑ j, v j m • f j) ∧ (∀ i m, i < m → Tm i m = 0) ∧ ∀ i, Tm i i ≠ 0 := by
+  first | exact @GlobalTheory.CompanionTheory.Ar.FlagChange.adapted_triangular | exact GlobalTheory.CompanionTheory.Ar.FlagChange.adapted_triangular | (intros; apply GlobalTheory.CompanionTheory.Ar.FlagChange.adapted_triangular <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain MeasureTheory Filter Topology
+open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.ChartRestriction.G.AR.Inst Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
+open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Rec
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open scoped Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frame_point_borel_section_scaling : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (a : GlobalTheory.CompanionTheory.Ar.Rec.WZ E) (f : Rul Xo c) (L : Type) [Field L] [Algebra c.F L] (t : Ix Dw → Lˣ) (y y' : FrPt Xo c L), f ∈ GlobalTheory.CompanionTheory.Ar.Rec.secZ Xo c a → FrBor t y y' → evR Xo c f y' = ((∏ i, t i ^ GlobalTheory.CompanionTheory.Ar.Rec.exZ Dw a i : Lˣ) : L) * evR Xo c f y := by
+  first | exact @GlobalTheory.CompanionTheory.Ar.Rec.FieldPt.evR_frBor_secZ_field | exact GlobalTheory.CompanionTheory.Ar.Rec.FieldPt.evR_frBor_secZ_field | (intros; apply GlobalTheory.CompanionTheory.Ar.Rec.FieldPt.evR_frBor_secZ_field <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain MeasureTheory Filter Topology
+open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.ChartRestriction.G.AR.Inst Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
+open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Rec
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open scoped Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.root_origin_component_generic_point : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (SS : Finset ℕ) (RM : Top.RootModel (CMType H) (Dw.p + Dw.q)) (Sys : PB.AnSys (Top.dimFl (CMType H) (Dw.p + Dw.q)) (Option (RootIx Dw))) (Fx : FixedData Y Sys) (Or : RootOrigin Y SS RM Fx) (Z : Comp Xo c), GlobalTheory.CompanionTheory.Ar.genPt Fx.ξf = Y.j (Formalism.L2.Pj.genPt Z) → ∃ ψ : kap Z ≃+* Or.𝔐.Ω₀, spMap ψ.toRingHom ≫ genSp Z ≫ Y.j = Or.𝔐.ξ₀ ∧ ∀ a : c.F, Or.𝔐.fn (ψ (algebraMap c.F (kap Z) a)) = Or.𝔐.cst a := by
+  first | exact @GlobalTheory.CompanionTheory.Ar.KapEquiv.exists_kap_equiv | exact GlobalTheory.CompanionTheory.Ar.KapEquiv.exists_kap_equiv | (intros; apply GlobalTheory.CompanionTheory.Ar.KapEquiv.exists_kap_equiv <;> assumption)
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Filter Topology
+open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.ChartRestriction.G.AR.Inst Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
+open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Rec
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open scoped Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.CompanionTheory.Ar.CombMap
+
+theorem isCombAt_spMap : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (S T : Type) [CommRing S] [CommRing T] (φ : S →+* T) (x : Sp S ⟶ Xo.X) (m : ℕ) (v : Fin m → (Sp (DualNumber S) ⟶ Xo.univ.t.G.left)) (cf : Fin m → S) (w : Sp (DualNumber S) ⟶ Xo.univ.t.G.left), IsCombAt x v cf w → IsCombAt (spMap φ ≫ x) (fun i => spMap (Formalism.L2.Pj.dualMap φ) ≫ v i) (fun i => φ (cf i)) (spMap (Formalism.L2.Pj.dualMap φ) ≫ w) := by
+  intro E _ _ _ H Dw l Xo S T _ _ φ x m v cf w hc
+  obtain ⟨u, hu, hw⟩ := hc
+  have hcomp : (Formalism.L2.Pj.dualMap φ).comp (algebraMap S (DualNumber S)) =
+      (algebraMap T (DualNumber T)).comp φ := by
+    ext s <;> simp [Formalism.L2.Pj.dualMap, TrivSqZeroExt.algebraMap_eq_inl]
+  let f : tEps (spMap φ ≫ x) ⟶ tEps x := Over.homMk (spMap (Formalism.L2.Pj.dualMap φ)) (by
+    show spMap (Formalism.L2.Pj.dualMap φ) ≫ spMap (algebraMap S (DualNumber S)) ≫ x =
+      spMap (algebraMap T (DualNumber T)) ≫ spMap φ ≫ x
+    rw [← Category.assoc, ← ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp, hcomp,
+      ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp, Category.assoc])
+  let P : (tEps x ⟶ Xo.univ.t.G) →* (tEps (spMap φ ≫ x) ⟶ Xo.univ.t.G) :=
+    { toFun := fun g => f ≫ g
+      map_one' := CategoryTheory.MonObj.comp_one f
+      map_mul' := CategoryTheory.MonObj.comp_mul f }
+  refine ⟨fun i => f ≫ u i, fun i => ?_, ?_⟩
+  · rw [Over.comp_left, hu i]
+    show spMap (Formalism.L2.Pj.dualMap φ) ≫ spMap (ReciprocityTheory.ChartRestriction.G.Geo.Tor.epsMul (cf i)) ≫ v i =
+      spMap (ReciprocityTheory.ChartRestriction.G.Geo.Tor.epsMul (φ (cf i))) ≫ spMap (Formalism.L2.Pj.dualMap φ) ≫ v i
+    rw [← Category.assoc, ← Category.assoc, ← ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp,
+      ← ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp]
+    congr 2
+    ext y <;> simp [Formalism.L2.Pj.dualMap, ReciprocityTheory.ChartRestriction.G.Geo.Tor.epsMul, smul_eq_mul, map_mul,
+      TrivSqZeroExt.algebraMap_eq_inl]
+  · have h1 : (List.ofFn fun i => f ≫ u i) = (List.ofFn u).map P := by
+      rw [List.map_ofFn]
+      rfl
+    rw [h1, ← map_list_prod]
+    show (f ≫ (List.ofFn u).prod).left = _
+    rw [Over.comp_left, hw]
+    rfl
+
+end GlobalTheory.CompanionTheory.Ar.CombMap
+end
+
+open NumberField IsDedekindDomain MeasureTheory Filter Topology
+open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.ChartRestriction.G.AR.Inst Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
+open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Rec
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open scoped Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.is_comb_base_change : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (S T : Type) [CommRing S] [CommRing T] (φ : S →+* T) (x : Sp S ⟶ Xo.X) (m : ℕ) (v : Fin m → (Sp (DualNumber S) ⟶ Xo.univ.t.G.left)) (cf : Fin m → S) (w : Sp (DualNumber S) ⟶ Xo.univ.t.G.left), IsCombAt x v cf w → IsCombAt (spMap φ ≫ x) (fun i => spMap (Formalism.L2.Pj.dualMap φ) ≫ v i) (fun i => φ (cf i)) (spMap (Formalism.L2.Pj.dualMap φ) ≫ w) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.CombMap.isCombAt_spMap
+end
+
+section
 open NumberField IsDedekindDomain MeasureTheory Filter Topology
 open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.ChartRestriction.G.AR.Inst Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
 open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Rec
@@ -585,3 +694,5 @@ theorem read_exists : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H 
   exact ⟨Fr, ReadEx.read_core (o.Or B (κ Z)) Fr h Z hL.genT hL.evalWD (hκ Z)⟩
 
 end GlobalTheory.CompanionTheory.Ar.Rec
+end
+end

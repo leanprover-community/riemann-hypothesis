@@ -27,9 +27,6 @@ def InCen (s : A →+* A) (J : Matrix (Fin n) (Fin n) A) (W : Submodule A (Fin n
     (Y : Matrix (Fin n) (Fin n) A) : Prop :=
   InNil s J W Y ∧ ∀ u ∈ perpSet s J W, Y *ᵥ u = 0
 
-theorem inCen_zero (s : A →+* A) (J : Matrix (Fin n) (Fin n) A) (W : Submodule A (Fin n → A)) :
-    InCen s J W 0 := by
-  refine ⟨⟨?_, ?_, ?_, ?_⟩, ?_⟩ <;> simp [IsSkew, perpSet, Formalism.UG.hform]
 
 end Lie
 

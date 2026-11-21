@@ -1,7 +1,410 @@
 import Mathlib
 import Formalism.HermitianCurvature.StatementQ
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelTransfer.LzConjTranspose
+import Formalism.FormalDegreeBessel.FinalG
+import Formalism.FormalDegreeBessel.StatementRP
 
+section
+open Matrix
+
+noncomputable section
+
+namespace PIQnLT
+
+open Formalism.REAL Formalism.QuantumDeterminants
+
+variable {k i r' : ℕ}
+
+theorem lev_val (j : Fin (2 * r' + k + 1)) : (levPos k i r' j).val = j.val + i := rfl
+
+theorem lev_inj : Function.Injective (levPos k i r') := by
+  intro a b h
+  apply Fin.ext
+  have h' := congrArg Fin.val h
+  rw [lev_val, lev_val] at h'
+  omega
+
+theorem liftVec_lev (v : Fin (2 * r' + k + 1) → ℂ) (j : Fin (2 * r' + k + 1)) :
+    liftVec k i r' v (levPos k i r' j) = v j := by
+  have hj := j.isLt
+  have h1 : i ≤ (levPos k i r' j).val ∧ (levPos k i r' j).val < 2 * r' + k + 1 + i := by rw [lev_val]; omega
+  simp only [liftVec]
+  rw [dif_pos h1]
+  congr 1
+  apply Fin.ext
+  show j.val + i - i = j.val
+  omega
+
+theorem liftVec_out (v : Fin (2 * r' + k + 1) → ℂ) (p : Fin (2 * (i + r') + k + 1))
+    (hp : ¬ (i ≤ p.val ∧ p.val < 2 * r' + k + 1 + i)) : liftVec k i r' v p = 0 := by
+  simp only [liftVec]
+  rw [dif_neg hp]
+
+theorem ιLev_lev (g : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) (p q : Fin (2 * r' + k + 1)) :
+    ιLev k i r' g (levPos k i r' p) (levPos k i r' q) = g p q := by
+  have hp := p.isLt
+  have hq := q.isLt
+  have h1 : i ≤ (levPos k i r' p).val ∧ (levPos k i r' p).val < 2 * r' + k + 1 + i := by rw [lev_val]; omega
+  have h2 : i ≤ (levPos k i r' q).val ∧ (levPos k i r' q).val < 2 * r' + k + 1 + i := by rw [lev_val]; omega
+  simp only [ιLev]
+  rw [dif_pos h1, dif_pos h2]
+  congr 1 <;> apply Fin.ext
+  · show p.val + i - i = p.val
+    omega
+  · show q.val + i - i = q.val
+    omega
+
+theorem ιLev_out (g : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) (p q : Fin (2 * (i + r') + k + 1))
+    (hp : ¬ (i ≤ p.val ∧ p.val < 2 * r' + k + 1 + i)) : ιLev k i r' g p q = if p = q then 1 else 0 := by
+  simp only [ιLev]
+  rw [dif_neg hp]
+
+theorem ιLev_in_out (g : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) (p q : Fin (2 * (i + r') + k + 1))
+    (hp : i ≤ p.val ∧ p.val < 2 * r' + k + 1 + i) (hq : ¬ (i ≤ q.val ∧ q.val < 2 * r' + k + 1 + i)) :
+    ιLev k i r' g p q = 0 := by
+  simp only [ιLev]
+  rw [dif_pos hp, dif_neg hq]
+
+theorem sum_lev {M : Type*} [AddCommMonoid M] (f : Fin (2 * (i + r') + k + 1) → M)
+    (h : ∀ p : Fin (2 * (i + r') + k + 1), ¬ (i ≤ p.val ∧ p.val < 2 * r' + k + 1 + i) → f p = 0) :
+    ∑ p, f p = ∑ j : Fin (2 * r' + k + 1), f (levPos k i r' j) := by
+  rw [← Finset.sum_image (s := Finset.univ) (g := levPos k i r') (fun x _ y _ e => lev_inj e)]
+  refine (Finset.sum_subset (Finset.subset_univ _) ?_).symm
+  intro p _ hp
+  apply h
+  intro hc
+  apply hp
+  refine Finset.mem_image.2 ⟨⟨p.val - i, by omega⟩, Finset.mem_univ _, ?_⟩
+  apply Fin.ext
+  show p.val - i + i = p.val
+  omega
+
+theorem hpk_lev (p q : Fin (2 * r' + k + 1)) :
+    Hpk k (i + r') (levPos k i r' p) (levPos k i r' q) = Hpk k r' p q := by
+  have hp := p.isLt
+  have hq := q.isLt
+  simp only [Hpk, Fin.ext_iff, lev_val]
+  have e1 : (↑p + i < i + r' ∧ ↑p + i + (↑q + i) = 2 * (i + r') + k) ↔ (↑p < r' ∧ ↑p + ↑q = 2 * r' + k) := by
+    constructor <;> intro h <;> omega
+  have e2 : (↑q + i < i + r' ∧ ↑p + i + (↑q + i) = 2 * (i + r') + k) ↔ (↑q < r' ∧ ↑p + ↑q = 2 * r' + k) := by
+    constructor <;> intro h <;> omega
+  have e3 : (i + r' ≤ p.val + i ∧ p.val + i ≤ i + r' + k ∧ p.val + i = q.val + i) ↔
+      (r' ≤ p.val ∧ p.val ≤ r' + k ∧ p.val = q.val) := by
+    constructor <;> intro h <;> omega
+  have e4 : (↑p + i = i + r' + k) ↔ (↑p = r' + k) := by
+    constructor <;> intro h <;> omega
+  simp only [e1, e2, e3, e4]
+
+theorem hpk_in_out (p q : Fin (2 * (i + r') + k + 1))
+    (hp : i ≤ p.val ∧ p.val < 2 * r' + k + 1 + i) (hq : ¬ (i ≤ q.val ∧ q.val < 2 * r' + k + 1 + i)) :
+    Hpk k (i + r') p q = 0 := by
+  simp only [Hpk, Fin.ext_iff]
+  split_ifs <;> first | rfl | (exfalso; omega)
+
+theorem hpk_out_in (p q : Fin (2 * (i + r') + k + 1))
+    (hp : ¬ (i ≤ p.val ∧ p.val < 2 * r' + k + 1 + i)) (hq : i ≤ q.val ∧ q.val < 2 * r' + k + 1 + i) :
+    Hpk k (i + r') p q = 0 := by
+  simp only [Hpk, Fin.ext_iff]
+  split_ifs <;> first | rfl | (exfalso; omega)
+
+def Lz (k i r' : ℕ) (X : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) :
+    Matrix (Fin (2 * (i + r') + k + 1)) (Fin (2 * (i + r') + k + 1)) ℂ := fun p q =>
+  if hp : i ≤ p.val ∧ p.val < 2 * r' + k + 1 + i then
+    (if hq : i ≤ q.val ∧ q.val < 2 * r' + k + 1 + i then X ⟨p.val - i, by omega⟩ ⟨q.val - i, by omega⟩ else 0)
+  else 0
+
+theorem ιLev_eq (X : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) :
+    ιLev k i r' X = Lz k i r' X + ιLev k i r' 0 := by
+  ext p q
+  simp only [ιLev, Lz, Matrix.add_apply]
+  split_ifs <;> simp
+
+theorem Lz_lev (X : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) (p q : Fin (2 * r' + k + 1)) :
+    Lz k i r' X (levPos k i r' p) (levPos k i r' q) = X p q := by
+  have hp := p.isLt
+  have hq := q.isLt
+  have h1 : i ≤ (levPos k i r' p).val ∧ (levPos k i r' p).val < 2 * r' + k + 1 + i := by rw [lev_val]; omega
+  have h2 : i ≤ (levPos k i r' q).val ∧ (levPos k i r' q).val < 2 * r' + k + 1 + i := by rw [lev_val]; omega
+  simp only [Lz]
+  rw [dif_pos h1, dif_pos h2]
+  congr 1 <;> apply Fin.ext
+  · show p.val + i - i = p.val
+    omega
+  · show q.val + i - i = q.val
+    omega
+
+theorem Lz_out_left (X : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) (p q : Fin (2 * (i + r') + k + 1))
+    (hp : ¬ (i ≤ p.val ∧ p.val < 2 * r' + k + 1 + i)) : Lz k i r' X p q = 0 := by
+  simp only [Lz]
+  rw [dif_neg hp]
+
+theorem Lz_out_right (X : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) (p q : Fin (2 * (i + r') + k + 1))
+    (hq : ¬ (i ≤ q.val ∧ q.val < 2 * r' + k + 1 + i)) : Lz k i r' X p q = 0 := by
+  simp only [Lz]
+  split_ifs <;> first | rfl | (exfalso; apply hq; assumption)
+
+def LzL (k i r' : ℕ) :
+    Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ →ₗ[ℂ]
+      Matrix (Fin (2 * (i + r') + k + 1)) (Fin (2 * (i + r') + k + 1)) ℂ where
+  toFun := Lz k i r'
+  map_add' X Y := by
+    ext p q; simp only [Lz, Matrix.add_apply]; split_ifs <;> simp
+  map_smul' c X := by
+    ext p q; simp only [Lz, Matrix.smul_apply, RingHom.id_apply]; split_ifs <;> simp
+
+theorem LzL_apply (X : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) : LzL k i r' X = Lz k i r' X := rfl
+
+section Hom
+
+variable (hL : LevHom)
+include hL
+
+theorem Lz_mul (X Y : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) :
+    Lz k i r' (X * Y) = Lz k i r' X * Lz k i r' Y := by
+  ext p q
+  by_cases hp : i ≤ p.val ∧ p.val < 2 * r' + k + 1 + i
+  · by_cases hq : i ≤ q.val ∧ q.val < 2 * r' + k + 1 + i
+    · obtain ⟨a, rfl⟩ : ∃ a, levPos k i r' a = p :=
+        ⟨⟨p.val - i, by omega⟩, Fin.ext (by show p.val - i + i = p.val; omega)⟩
+      obtain ⟨b, rfl⟩ : ∃ b, levPos k i r' b = q :=
+        ⟨⟨q.val - i, by omega⟩, Fin.ext (by show q.val - i + i = q.val; omega)⟩
+      rw [Lz_lev, Matrix.mul_apply, Matrix.mul_apply, sum_lev]
+      · simp only [Lz_lev]
+      · intro m hm
+        rw [Lz_out_right _ _ _ hm, zero_mul]
+    · rw [Lz_out_right _ _ _ hq, Matrix.mul_apply]
+      exact (Finset.sum_eq_zero fun m _ => by rw [Lz_out_right _ _ _ hq, mul_zero]).symm
+  · rw [Lz_out_left _ _ _ hp, Matrix.mul_apply]
+    exact (Finset.sum_eq_zero fun m _ => by rw [Lz_out_left _ _ _ hp, zero_mul]).symm
+
+theorem Lz_one : Lz k i r' 1 + ιLev k i r' 0 = 1 := by
+  rw [← ιLev_eq]
+  exact (hL k i r').1
+
+theorem Lz_pow (X : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) (n : ℕ) :
+    Lz k i r' (X ^ (n + 1)) = Lz k i r' X ^ (n + 1) := by
+  induction n with
+  | zero => rw [zero_add, pow_one, pow_one]
+  | succ n ih => rw [pow_succ, Lz_mul hL, ih, ← pow_succ]
+
+end Hom
+
+end PIQnLT
+end
+end
+
+section
+open Matrix
+
+noncomputable section
+
+namespace PIQnLT
+
+open Formalism.REAL Formalism.QuantumDeterminants
+
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+
+variable {k i r' : ℕ}
+
+set_option backward.isDefEq.respectTransparency false in
+theorem exp_Lz (hL : LevHom) (Y : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) :
+    NormedSpace.exp (Lz k i r' Y) = ιLev k i r' (NormedSpace.exp Y) := by
+  have h0 : ιLev k i r' 0 = 1 - Lz k i r' 1 := by
+    rw [← Lz_one (k := k) (i := i) (r' := r') hL]
+    abel
+  letI : NormedRing (Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) := Matrix.linftyOpNormedRing
+  letI : NormedAlgebra ℂ (Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) :=
+    Matrix.linftyOpNormedAlgebra
+  letI : NormedRing (Matrix (Fin (2 * (i + r') + k + 1)) (Fin (2 * (i + r') + k + 1)) ℂ) :=
+    Matrix.linftyOpNormedRing
+  letI : NormedAlgebra ℂ (Matrix (Fin (2 * (i + r') + k + 1)) (Fin (2 * (i + r') + k + 1)) ℂ) :=
+    Matrix.linftyOpNormedAlgebra
+  have h1 := NormedSpace.exp_series_hasSum_exp' (𝕂 := ℂ) Y
+  have h3 := NormedSpace.exp_series_hasSum_exp' (𝕂 := ℂ) (Lz k i r' Y)
+  have hc : Continuous (LzL k i r') := (LzL k i r').continuous_of_finiteDimensional
+  have h2 := h1.map (LzL k i r') hc
+  have hfun : (fun n : ℕ => ((n.factorial : ℂ)⁻¹) • (Lz k i r' Y) ^ n) =
+      (fun n : ℕ => (LzL k i r') (((n.factorial : ℂ)⁻¹) • Y ^ n) +
+        (if n = 0 then (1 - Lz k i r' 1) else 0)) := by
+    funext n
+    cases n with
+    | zero => simp [LzL_apply]
+    | succ m =>
+      have hm : m + 1 ≠ 0 := by omega
+      rw [if_neg hm, add_zero, LinearMap.map_smul, LzL_apply, Lz_pow hL]
+  have h5 : HasSum (fun n : ℕ => ((n.factorial : ℂ)⁻¹) • (Lz k i r' Y) ^ n)
+      (LzL k i r' (NormedSpace.exp Y) + (1 - Lz k i r' 1)) := by
+    rw [hfun]
+    exact h2.add (hasSum_ite_eq 0 (1 - Lz k i r' 1))
+  have e := h3.unique h5
+  refine e.trans ?_
+  rw [ιLev_eq, h0]
+  rfl
+
+end PIQnLT
+end
+end
+
+section
+open Matrix
+
+noncomputable section
+
+namespace PIQnLT
+
+open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
+
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+
+variable {k i r' : ℕ}
+
+theorem lev_in (j : Fin (2 * r' + k + 1)) :
+    i ≤ (levPos k i r' j).val ∧ (levPos k i r' j).val < 2 * r' + k + 1 + i := by
+  have := j.isLt
+  simp only [levPos]
+  omega
+
+theorem cases_lev (p : Fin (2 * (i + r') + k + 1)) :
+    (∃ p', p = levPos k i r' p') ∨ ¬ (i ≤ p.val ∧ p.val < 2 * r' + k + 1 + i) := by
+  by_cases h : i ≤ p.val ∧ p.val < 2 * r' + k + 1 + i
+  · left
+    exact ⟨⟨p.val - i, by omega⟩, Fin.ext (by simp [levPos]; omega)⟩
+  · right
+    exact h
+
+theorem Lz_sub (X Y : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) :
+    Lz k i r' (X - Y) = Lz k i r' X - Lz k i r' Y := by
+  ext p q
+  simp only [Lz, Matrix.sub_apply]
+  split_ifs <;> simp
+
+theorem Lz_add (X Y : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) :
+    Lz k i r' (X + Y) = Lz k i r' X + Lz k i r' Y := by
+  ext p q
+  simp only [Lz, Matrix.add_apply]
+  split_ifs <;> simp
+
+theorem Lz_smul (c : ℂ) (X : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) :
+    Lz k i r' (c • X) = c • Lz k i r' X := by
+  ext p q
+  simp only [Lz, Matrix.smul_apply]
+  split_ifs <;> simp
+
+theorem hpk_mul_Lz (W : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) :
+    Hpk k (i + r') * Lz k i r' W = Lz k i r' (Hpk k r' * W) := by
+  ext p q
+  rw [Matrix.mul_apply, sum_lev (fun s => Hpk k (i + r') p s * Lz k i r' W s q)
+    (fun s hs => by simp only [Lz_out_left W s q hs, mul_zero])]
+  rcases cases_lev p with ⟨p', rfl⟩ | hp
+  · rcases cases_lev q with ⟨q', rfl⟩ | hq
+    · simp only [hpk_lev, Lz_lev, Matrix.mul_apply]
+    · simp only [Lz_out_right _ _ _ hq, mul_zero, Finset.sum_const_zero]
+  · simp only [hpk_out_in p _ hp (lev_in _), zero_mul, Finset.sum_const_zero, Lz_out_left _ _ _ hp]
+
+theorem Lz_mul_hpk (W : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) :
+    Lz k i r' W * Hpk k (i + r') = Lz k i r' (W * Hpk k r') := by
+  ext p q
+  rw [Matrix.mul_apply, sum_lev (fun s => Lz k i r' W p s * Hpk k (i + r') s q)
+    (fun s hs => by simp only [Lz_out_right W p s hs, zero_mul])]
+  rcases cases_lev q with ⟨q', rfl⟩ | hq
+  · rcases cases_lev p with ⟨p', rfl⟩ | hp
+    · simp only [hpk_lev, Lz_lev, Matrix.mul_apply]
+    · simp only [Lz_out_left _ _ _ hp, zero_mul, Finset.sum_const_zero]
+  · simp only [hpk_in_out _ q (lev_in _) hq, mul_zero, Finset.sum_const_zero, Lz_out_right _ _ _ hq]
+
+theorem Lz_conjTranspose (W : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) :
+    (Lz k i r' W)ᴴ = Lz k i r' Wᴴ := by
+  ext p q
+  simp only [Matrix.conjTranspose_apply, Lz]
+  split_ifs <;> simp_all
+
+theorem single_lev (a b : Fin (2 * r' + k + 1)) :
+    Matrix.single (levPos k i r' a) (levPos k i r' b) (1 : ℂ) = Lz k i r' (Matrix.single a b 1) := by
+  ext p q
+  have ha := a.isLt
+  have hb := b.isLt
+  simp only [Lz, Matrix.single_apply, levPos, Fin.ext_iff]
+  split_ifs <;> first | rfl | (exfalso; omega)
+
+theorem hpk_inv (k r : ℕ) : (Hpk k r)⁻¹ = Hpk k r :=
+  Matrix.inv_eq_left_inv (Formalism.QuantumDeterminants.GBasic.Hpk_sq k r)
+
+theorem hpart1_lev (a b : Fin (2 * r' + k + 1)) :
+    hpart1 (Hpk k (i + r')) (Matrix.single (levPos k i r' a) (levPos k i r' b) 1) =
+      Lz k i r' (hpart1 (Hpk k r') (Matrix.single a b 1)) := by
+  unfold hpart1
+  rw [hpk_inv, hpk_inv, single_lev, Lz_conjTranspose, hpk_mul_Lz, Lz_mul_hpk, Lz_smul, Lz_sub]
+
+theorem hpart2_lev (a b : Fin (2 * r' + k + 1)) :
+    hpart2 (Hpk k (i + r')) (Matrix.single (levPos k i r' a) (levPos k i r' b) 1) =
+      Lz k i r' (hpart2 (Hpk k r') (Matrix.single a b 1)) := by
+  unfold hpart2
+  rw [hpk_inv, hpk_inv, single_lev, Lz_conjTranspose, hpk_mul_Lz, Lz_mul_hpk, Lz_smul, Lz_add]
+
+section Transport
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
+variable (hL : LevHom)
+include hL
+
+theorem RdV_Lz (X : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ)
+    (F : Matrix (Fin (2 * (i + r') + k + 1)) (Fin (2 * (i + r') + k + 1)) ℂ → E)
+    (x : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) :
+    RdV (Lz k i r' X) F (ιLev k i r' x) = RdV X (fun y => F (ιLev k i r' y)) x := by
+  unfold RdV
+  congr 1
+  funext t
+  rw [← Lz_smul, exp_Lz hL, ← (hL k i r').2]
+
+theorem EabH_lev (a b : Fin (2 * r' + k + 1))
+    (F : Matrix (Fin (2 * (i + r') + k + 1)) (Fin (2 * (i + r') + k + 1)) ℂ → E)
+    (x : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) :
+    EabH (Hpk k (i + r')) (levPos k i r' a) (levPos k i r' b) F (ιLev k i r' x) =
+      EabH (Hpk k r') a b (fun y => F (ιLev k i r' y)) x := by
+  simp only [EabH]
+  rw [hpart1_lev, hpart2_lev, RdV_Lz hL, RdV_Lz hL]
+
+theorem Top_lev (u : ℂ) (a b : Fin (2 * r' + k + 1))
+    (F : Matrix (Fin (2 * (i + r') + k + 1)) (Fin (2 * (i + r') + k + 1)) ℂ → E)
+    (x : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) :
+    Formalism.QuantumDeterminants.Top (Formalism.FourierDecayAlt.Q.EH k (i + r')) u (levPos k i r' a) (levPos k i r' b) F (ιLev k i r' x) =
+      Formalism.QuantumDeterminants.Top (Formalism.FourierDecayAlt.Q.EH k r') u a b (fun y => F (ιLev k i r' y)) x := by
+  simp only [Formalism.QuantumDeterminants.Top, Formalism.FourierDecayAlt.Q.EH]
+  rw [EabH_lev hL]
+  simp only [lev_inj.eq_iff]
+
+omit hL in
+theorem foldr_ofFn {α β : Type*} {t : ℕ} (R : α → β) (Tb : Fin t → α → α) (Ts : Fin t → β → β)
+    (h : ∀ j G, R (Tb j G) = Ts j (R G)) (F : α) :
+    R ((List.ofFn Tb).foldr (fun T h => T h) F) = (List.ofFn Ts).foldr (fun T h => T h) (R F) := by
+  induction t generalizing F with
+  | zero => simp
+  | succ t ih =>
+    rw [List.ofFn_succ, List.ofFn_succ, List.foldr_cons, List.foldr_cons, h]
+    exact congrArg _ (ih (fun j => Tb j.succ) (fun j => Ts j.succ) (fun j G => h j.succ G) F)
+
+theorem qminorOp_lev {t : ℕ} (a b : Fin t → Fin (2 * r' + k + 1)) (u : ℂ)
+    (F : Matrix (Fin (2 * (i + r') + k + 1)) (Fin (2 * (i + r') + k + 1)) ℂ → E)
+    (x : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) :
+    qminorOp (Formalism.FourierDecayAlt.Q.EH k (i + r')) (levPos k i r' ∘ a) (levPos k i r' ∘ b) u F (ιLev k i r' x) =
+      qminorOp (Formalism.FourierDecayAlt.Q.EH k r') a b u (fun y => F (ιLev k i r' y)) x := by
+  unfold qminorOp
+  simp only [Finset.sum_apply, Pi.smul_apply]
+  refine Finset.sum_congr rfl fun σ _ => ?_
+  congr 1
+  have := foldr_ofFn (fun (G : Matrix (Fin (2 * (i + r') + k + 1)) (Fin (2 * (i + r') + k + 1)) ℂ → E) y =>
+      G (ιLev k i r' y))
+    (fun j : Fin t => Formalism.QuantumDeterminants.Top (Formalism.FourierDecayAlt.Q.EH k (i + r')) (u - ((j : ℕ) : ℂ)) (levPos k i r' (a (σ j))) (levPos k i r' (b j)))
+    (fun j : Fin t => Formalism.QuantumDeterminants.Top (Formalism.FourierDecayAlt.Q.EH k r') (u - ((j : ℕ) : ℂ)) (a (σ j)) (b j))
+    (fun j G => funext fun y => Top_lev hL _ _ _ G y) F
+  exact congrFun this x
+
+end Transport
+
+end PIQnLT
+end
+end
+
+section
 open Matrix
 
 noncomputable section
@@ -212,3 +615,5 @@ theorem uC_lev (k i r' : ℕ) (Y : ℂ) : uC k (i + r') ⟨i, by omega⟩ Y = uC
   rw [mdim_lev]
 
 end PIQnLT
+end
+end

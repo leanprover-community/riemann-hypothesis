@@ -9,12 +9,1036 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsotropicFrameDecom
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WittFrameLeviNormalizesRadicalProperties
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SemidirectHaarMeasureProduct
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MulVecCEApply
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AddHaarCharLeftRightMatrixMulAdeleTensorStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AddHaarCharSkewHermitianNormScale
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsContinuousChartIsotropicUnipotentRadical
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LeviConjScalarIdeleUnipotentCoordinates
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnitSmulOfCentralParabolicLevi
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AddHaarCharLeftRightMatrixMulAdeleTensor
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemSkewA
+import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AddEquivAddHaarCharProdCongr
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsRestrictScalarsMatrixLeftRightMulAdeleTens
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AddHaarLeftRightMulAdelicMatricesModule
 
+section
+open scoped TensorProduct NNReal ENNReal Matrix
+open NumberField MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet GlobalTheory.ResLine GlobalTheory.ResidueEisenstein
+open GlobalTheory.Doubling (absE)
+open Formalism.UG (cT bc)
+open GlobalTheory.ResidueEisenstein.ModConj
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.addHaarChar_leftRight_matrixMul_adeleTensor : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (j m : ℕ) [LocallyCompactSpace (Matrix (Fin j) (Fin m) (AF F ⊗[F] E))] [SecondCountableTopology (Matrix (Fin j) (Fin m) (AF F ⊗[F] E))] [MeasurableSpace (Matrix (Fin j) (Fin m) (AF F ⊗[F] E))] [BorelSpace (Matrix (Fin j) (Fin m) (AF F ⊗[F] E))] (g : GL (Fin j) (AF F ⊗[F] E)) (a : GL (Fin m) (AF F ⊗[F] E)), addEquivAddHaarChar (GlobalTheory.ModuLR.lrCE g a) = absE F E (Matrix.GeneralLinearGroup.det g) ^ m * absE F E (Matrix.GeneralLinearGroup.det a) ^ j := by
+  first | exact @GlobalTheory.ResidueEisenstein.ModMat.addEquivAddHaarChar_lrCE | exact GlobalTheory.ResidueEisenstein.ModMat.addEquivAddHaarChar_lrCE | (intros; apply GlobalTheory.ResidueEisenstein.ModMat.addEquivAddHaarChar_lrCE <;> assumption)
+end
+
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
+open GlobalTheory.Doubling (absE)
+
+noncomputable section
+
+namespace GlobalTheory.LeviModulus
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+
+def hmat (σ : E →ₐ[F] E) {n : ℕ} (J : Matrix (Fin n) (Fin n) E) (x u : Fin n → AE F E) (c : AE F E) :
+    Matrix (Fin n) (Fin n) (AE F E) :=
+  1 + Matrix.vecMulVec (u + c • x) (incM F J *ᵥ fun i => cA σ (x i)) -
+    Matrix.vecMulVec x (incM F J *ᵥ fun i => cA σ (u i))
+
+variable (σ : E →ₐ[F] E)
+
+def imA : AddSubgroup (AE F E) where
+  carrier := {z | cA σ z = -z}
+  zero_mem' := by simp
+  add_mem' := by
+    intro a b ha hb
+    simp only [Set.mem_setOf_eq, map_add] at *
+    rw [ha, hb, neg_add]
+  neg_mem' := by
+    intro a ha
+    simp only [Set.mem_setOf_eq, map_neg] at *
+    rw [ha]
+
+theorem cA_cA (hσ : ∀ a, σ (σ a) = a) (z : AE F E) : cA σ (cA σ z) = z := by
+  induction z using TensorProduct.induction_on with
+  | zero => simp
+  | add x y hx hy => simp only [map_add, hx, hy]
+  | tmul a x =>
+    show Algebra.TensorProduct.map _ _ (Algebra.TensorProduct.map _ _ (a ⊗ₜ[F] x)) = a ⊗ₜ[F] x
+    simp [hσ]
+
+theorem mem_imA {z : AE F E} : z ∈ imA σ ↔ cA σ z = -z := Iff.rfl
+
+variable (F E) in
+
+theorem topAE : IsTopologicalRing (AE F E) ∧ LocallyCompactSpace (AE F E) ∧ SecondCountableTopology (AE F E) ∧
+    T2Space (AE F E) := by
+  haveI : Module.Finite F E := Module.Finite.of_restrictScalars_finite ℚ F E
+  haveI : IsModuleTopology (AF F) (AE F E) := ⟨rfl⟩
+  haveI : IsTopologicalRing (AE F E) := IsModuleTopology.isTopologicalRing (AF F) _
+  haveI := GlobalTheory.AdelicUnitaryTop.locallyCompact_adele F
+  haveI := GlobalTheory.AdelicUnitaryTop.secondCountable_adele F
+  haveI := GlobalTheory.AdelicUnitaryTop.t2Space_adeleRing_numberField F
+  obtain ⟨e⟩ := GlobalTheory.AdelicUnitaryTop.nonempty_homeomorph (F := F) (E := E) (AF F)
+  exact ⟨inferInstance, e.isClosedEmbedding.locallyCompactSpace, e.secondCountableTopology, e.isEmbedding.t2Space⟩
+
+theorem continuous_cA : Continuous (cA σ) := by
+  haveI : IsModuleTopology (AF F) (AE F E) := ⟨rfl⟩
+  haveI := (topAE F E).1
+  exact IsModuleTopology.continuous_of_linearMap (cA σ).toLinearMap
+
+theorem isClosed_imA : IsClosed (imA σ : Set (AE F E)) := by
+  obtain ⟨h1, -, -, h4⟩ := topAE F E
+  haveI := h1
+  exact isClosed_eq (continuous_cA σ) continuous_neg
+
+theorem topUA {n : ℕ} (J : Matrix (Fin n) (Fin n) E) :
+    IsTopologicalGroup (UA σ J) ∧ LocallyCompactSpace (UA σ J) ∧ SecondCountableTopology (UA σ J) ∧
+      T2Space (UA σ J) := by
+  obtain ⟨h1, h2, h3, h4⟩ := topAE F E
+  haveI : LocallyCompactSpace (Matrix (Fin n) (Fin n) (AE F E)) :=
+    inferInstanceAs (LocallyCompactSpace (Fin n → Fin n → AE F E))
+  haveI : LocallyCompactSpace (Matrix (Fin n) (Fin n) (AE F E))ᵐᵒᵖ :=
+    MulOpposite.opHomeomorph.symm.isClosedEmbedding.locallyCompactSpace
+  haveI : LocallyCompactSpace (GL (Fin n) (AE F E)) := Units.isClosedEmbedding_embedProduct.locallyCompactSpace
+  haveI : SecondCountableTopology (Matrix (Fin n) (Fin n) (AE F E)) :=
+    inferInstanceAs (SecondCountableTopology (Fin n → Fin n → AE F E))
+  haveI : SecondCountableTopology (Matrix (Fin n) (Fin n) (AE F E))ᵐᵒᵖ :=
+    MulOpposite.opHomeomorph.symm.isEmbedding.secondCountableTopology
+  haveI : SecondCountableTopology (GL (Fin n) (AE F E)) := Units.isEmbedding_embedProduct.secondCountableTopology
+  haveI : T2Space (GL (Fin n) (AE F E)) := Units.isEmbedding_embedProduct.t2Space
+  have hs : Continuous (cA σ) := continuous_cA σ
+  have hc : IsClosed (UG (cA σ) (incM F J) : Set (GL (Fin n) (AE F E))) := by
+    have hv : Continuous fun g : GL (Fin n) (AE F E) => (g : Matrix (Fin n) (Fin n) (AE F E)) := Units.continuous_val
+    exact isClosed_eq ((hv.matrix_transpose.matrix_mul continuous_const).matrix_mul (hv.matrix_map hs))
+      continuous_const
+  exact ⟨inferInstance, hc.isClosedEmbedding_subtypeVal.locallyCompactSpace,
+    hc.isClosedEmbedding_subtypeVal.isEmbedding.secondCountableTopology,
+    inferInstanceAs (T2Space (UG (cA σ) (incM F J)))⟩
+
+def conjOn {G : Type} [Group G] [TopologicalSpace G] [ContinuousMul G] (N : Subgroup G) (g : G)
+    (h₁ : ∀ u ∈ N, g * u * g⁻¹ ∈ N) (h₂ : ∀ u ∈ N, g⁻¹ * u * g ∈ N) : N ≃ₜ* N where
+  toFun u := ⟨g * u * g⁻¹, h₁ u u.2⟩
+  invFun u := ⟨g⁻¹ * u * g, h₂ u u.2⟩
+  left_inv u := Subtype.ext (by simp [mul_assoc])
+  right_inv u := Subtype.ext (by simp [mul_assoc])
+  map_mul' u v := Subtype.ext (by simp [mul_assoc])
+  continuous_toFun := by fun_prop
+  continuous_invFun := by fun_prop
+
+theorem conjOn_apply {G : Type} [Group G] [TopologicalSpace G] [ContinuousMul G] (N : Subgroup G) (g : G)
+    (h₁ : ∀ u ∈ N, g * u * g⁻¹ ∈ N) (h₂ : ∀ u ∈ N, g⁻¹ * u * g ∈ N) (u : N) :
+    ((conjOn N g h₁ h₂ u : N) : G) = g * u * g⁻¹ := rfl
+
+end GlobalTheory.LeviModulus
+
+end
+end
+
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK GlobalTheory.LeviModulus
+open GlobalTheory.Doubling (absE)
+
+noncomputable section
+
+namespace GlobalTheory.ImaginaryModulus
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+
+theorem sig_sig {σ : E →ₐ[F] E} (h : IsCMExt F E σ) (x : E) : σ (σ x) = x := by
+  obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
+  apply τ.injective
+  rw [h.2.2.2, h.2.2.2, star_star]
+
+theorem exists_anti {σ : E →ₐ[F] E} (h : IsCMExt F E σ) : ∃ δ : E, δ ≠ 0 ∧ σ δ = -δ := by
+  obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
+  by_cases hx : ∃ x, σ x ≠ x
+  · obtain ⟨x, hx⟩ := hx
+    refine ⟨x - σ x, sub_ne_zero.2 (Ne.symm hx), ?_⟩
+    rw [map_sub, sig_sig h]; ring
+  · push_neg at hx
+    exfalso
+    have hr : ComplexEmbedding.IsReal τ := by
+      rw [ComplexEmbedding.isReal_iff]
+      ext x
+      rw [ComplexEmbedding.conjugate_coe_eq]
+      have := h.2.2.2 τ x
+      rw [hx x] at this
+      exact this.symm
+    exact InfinitePlace.isComplex_mk_iff.1 (h.2.1.isComplex _) hr
+
+theorem cA_inclR (σ : E →ₐ[F] E) (e : E) : cA σ (inclR (F := F) (AF F) e) = inclR (F := F) (AF F) (σ e) := by
+  simp [cA, inclR]
+
+theorem cA_eq_sigR (σ : E →ₐ[F] E) (z : AE F E) : cA σ z = sigR (AF F) σ z := by
+  induction z using TensorProduct.induction_on with
+  | zero => simp
+  | add x y hx hy => simp only [map_add, hx, hy]
+  | tmul a x => simp [cA, sigR]
+
+section Iso
+
+variable (σ : E →ₐ[F] E) [IsTopologicalRing (AE F E)]
+
+def splitIm (hσ : ∀ x, σ (σ x) = x) (δ : E) (hδ0 : δ ≠ 0) (hδ : σ δ = -δ) : (imA σ × imA σ) ≃ₜ+ AE F E where
+  toFun p := (p.1 : AE F E) + inclR (F := F) (AF F) δ * p.2
+  invFun z := (⟨inclR (F := F) (AF F) (2⁻¹ : E) * (z - cA σ z), by
+      rw [mem_imA, map_mul, map_sub, cA_inclR, cA_cA σ hσ, map_inv₀ σ 2, map_ofNat σ 2]; ring⟩,
+    ⟨inclR (F := F) (AF F) (2⁻¹ : E) * inclR (F := F) (AF F) δ⁻¹ * (z + cA σ z), by
+      rw [mem_imA, map_mul, map_mul, map_add, cA_inclR, cA_inclR, cA_cA σ hσ, map_inv₀ σ 2, map_inv₀ σ δ,
+        map_ofNat σ 2, hδ, inv_neg, map_neg]; ring⟩)
+  left_inv p := by
+    obtain ⟨⟨x, hx⟩, ⟨y, hy⟩⟩ := p
+    have hh : inclR (F := F) (AF F) (2⁻¹ : E) * 2 = 1 := by
+      rw [show (2 : AE F E) = inclR (F := F) (AF F) 2 from (map_ofNat _ 2).symm, ← map_mul,
+        inv_mul_cancel₀ (two_ne_zero), map_one]
+    have hc : inclR (F := F) (AF F) δ * inclR (F := F) (AF F) δ⁻¹ = 1 := by
+      rw [← map_mul, mul_inv_cancel₀ hδ0, map_one]
+    have hz : cA σ (x + inclR (F := F) (AF F) δ * y) = -x + inclR (F := F) (AF F) δ * y := by
+      rw [map_add, map_mul, hx, hy, cA_inclR, hδ, map_neg]; ring
+    refine Prod.ext (Subtype.ext ?_) (Subtype.ext ?_)
+    · show inclR (F := F) (AF F) (2⁻¹ : E) * ((x + inclR (F := F) (AF F) δ * y) - cA σ (x + inclR (F := F) (AF F) δ * y)) = x
+      rw [hz]; linear_combination x * hh
+    · show inclR (F := F) (AF F) (2⁻¹ : E) * inclR (F := F) (AF F) δ⁻¹ *
+        ((x + inclR (F := F) (AF F) δ * y) + cA σ (x + inclR (F := F) (AF F) δ * y)) = y
+      rw [hz]
+      linear_combination (y * inclR (F := F) (AF F) δ * inclR (F := F) (AF F) δ⁻¹) * hh + y * hc
+  right_inv z := by
+    have hh : inclR (F := F) (AF F) (2⁻¹ : E) * 2 = 1 := by
+      rw [show (2 : AE F E) = inclR (F := F) (AF F) 2 from (map_ofNat _ 2).symm, ← map_mul,
+        inv_mul_cancel₀ (two_ne_zero), map_one]
+    have hc : inclR (F := F) (AF F) δ * inclR (F := F) (AF F) δ⁻¹ = 1 := by
+      rw [← map_mul, mul_inv_cancel₀ hδ0, map_one]
+    show inclR (F := F) (AF F) (2⁻¹ : E) * (z - cA σ z) + inclR (F := F) (AF F) δ *
+      (inclR (F := F) (AF F) (2⁻¹ : E) * inclR (F := F) (AF F) δ⁻¹ * (z + cA σ z)) = z
+    linear_combination z * hh + inclR (F := F) (AF F) (2⁻¹ : E) * (z + cA σ z) * hc
+  map_add' p q := by
+    show ((p.1 + q.1 : imA σ) : AE F E) + _ * ((p.2 + q.2 : imA σ) : AE F E) = _
+    push_cast; ring
+  continuous_toFun := by
+    exact (continuous_subtype_val.comp continuous_fst).add
+      (continuous_const.mul (continuous_subtype_val.comp continuous_snd))
+  continuous_invFun := by
+    have hc := continuous_cA σ
+    exact (Continuous.subtype_mk (continuous_const.mul (continuous_id.sub hc)) _).prodMk
+      (Continuous.subtype_mk (continuous_const.mul (continuous_id.add hc)) _)
+
+theorem splitIm_apply (hσ : ∀ x, σ (σ x) = x) (δ : E) (hδ0 : δ ≠ 0) (hδ : σ δ = -δ) (p : imA σ × imA σ) :
+    splitIm σ hσ δ hδ0 hδ p = (p.1 : AE F E) + inclR (F := F) (AF F) δ * p.2 := rfl
+
+end Iso
+
+variable (F E) in
+
+def scal [IsTopologicalRing (AE F E)] : AE F E ≃ₜ+ Matrix (Fin 1) (Fin 1) (AE F E) where
+  toFun z := Matrix.of fun _ _ => z
+  invFun M := M 0 0
+  left_inv z := rfl
+  right_inv M := by
+    ext i j
+    rw [Subsingleton.elim i 0, Subsingleton.elim j 0]
+    rfl
+  map_add' _ _ := rfl
+  continuous_toFun := continuous_pi fun _ => continuous_pi fun _ => continuous_id
+  continuous_invFun := (continuous_apply 0).comp (continuous_apply 0)
+
+theorem addEquivAddHaarChar_imA : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
+    (B : Base F E), B.IsGood σ →
+    ∀ [IsTopologicalRing (AE F E)] [LocallyCompactSpace (imA σ)] [MeasurableSpace (imA σ)] [BorelSpace (imA σ)]
+      (l : (AE F E)ˣ) (L : imA σ ≃ₜ+ imA σ), (∀ b, (L b : AE F E) = l * cA σ l * b) → addEquivAddHaarChar L = absE F E l := by
+  intro F E _ _ _ _ _ σ B hB _ _ _ _ l L hL
+  have hcm := hB.cm
+  haveI : IsTotallyReal F := hcm.1
+  have hσ := sig_sig hcm
+  obtain ⟨δ, hδ0, hδ⟩ := exists_anti hcm
+  obtain ⟨-, hlc, hsc, ht2⟩ := topAE F E
+  letI : MeasurableSpace (AE F E) := borel _
+  haveI : BorelSpace (AE F E) := ⟨rfl⟩
+  haveI : LocallyCompactSpace (Matrix (Fin 1) (Fin 1) (AE F E)) :=
+    inferInstanceAs (LocallyCompactSpace (Fin 1 → Fin 1 → AE F E))
+  haveI : SecondCountableTopology (Matrix (Fin 1) (Fin 1) (AE F E)) :=
+    inferInstanceAs (SecondCountableTopology (Fin 1 → Fin 1 → AE F E))
+  letI : MeasurableSpace (Matrix (Fin 1) (Fin 1) (AE F E)) := borel _
+  haveI : BorelSpace (Matrix (Fin 1) (Fin 1) (AE F E)) := ⟨rfl⟩
+  set Φ := splitIm σ hσ δ hδ0 hδ
+  set M : AE F E ≃ₜ+ AE F E := (Φ.symm.trans (GlobalTheory.ModuLR.prodCE L L)).trans Φ
+  set a : (AE F E)ˣ := l * GlobalTheory.Doubling.conjUnit σ l
+  have ha : (a : AE F E) = l * cA σ l := by
+    show (l : AE F E) * sigR (AF F) σ l = _
+    rw [cA_eq_sigR]
+  have hM : ∀ z, M z = a * z := by
+    intro z
+    obtain ⟨p, rfl⟩ := Φ.surjective z
+    show Φ (GlobalTheory.ModuLR.prodCE L L (Φ.symm (Φ p))) = a * Φ p
+    rw [ContinuousAddEquiv.symm_apply_apply, GlobalTheory.ModuLR.prodCE_apply, splitIm_apply, splitIm_apply, hL, hL, ha]
+    ring
+  set g : GL (Fin 1) (AE F E) := Units.map (Matrix.scalar (Fin 1) : AE F E →+* _).toMonoidHom a
+  have hg : Matrix.GeneralLinearGroup.det g = a := by
+    ext
+    rw [Matrix.GeneralLinearGroup.val_det_apply, Matrix.det_unique]
+    rfl
+  have hT : ((scal F E).symm.trans M).trans (scal F E) = GlobalTheory.ModuLR.lrCE g 1 := by
+    ext u i j
+    rw [Subsingleton.elim i 0, Subsingleton.elim j 0]
+    show M (u 0 0) = (((g : Matrix (Fin 1) (Fin 1) (AE F E)) * u * 1 : Matrix (Fin 1) (Fin 1) (AE F E)) 0 0)
+    rw [hM, Matrix.mul_one, Matrix.mul_apply, Fin.sum_univ_one]
+    rfl
+  have h1 : addEquivAddHaarChar M = absE F E a := by
+    have := GlobalTheory.ModuLR.addEquivAddHaarChar_transport (scal F E) M
+    rw [← this, hT]
+    rw [GlobalTheory.ModuLR.chi_lr F E 1 1 g 1, hg, map_one, map_one]
+    simp
+  haveI : SecondCountableTopology (imA σ) := Topology.IsEmbedding.subtypeVal.secondCountableTopology
+  haveI : T2Space (imA σ) := Topology.IsEmbedding.subtypeVal.t2Space
+  haveI : BorelSpace (imA σ × imA σ) := Prod.borelSpace
+  have h2 : addEquivAddHaarChar M = addEquivAddHaarChar L * addEquivAddHaarChar L := by
+    rw [GlobalTheory.ModuLR.addEquivAddHaarChar_transport Φ, GlobalTheory.ModuLR.addEquivAddHaarChar_prodCE]
+  have h3 : absE F E a = absE F E l * absE F E l := by
+    rw [map_mul, GlobalTheory.Doubling.absE_conjUnit]
+  exact (mul_self_inj (by positivity) (by positivity)).1 (h2.symm.trans (h1.trans h3))
+
+end GlobalTheory.ImaginaryModulus
+end
+end
+
+section
+section
+open scoped TensorProduct NNReal ENNReal Matrix
+open NumberField MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet GlobalTheory.ResLine GlobalTheory.ResidueEisenstein
+open GlobalTheory.Doubling (absE)
+open Formalism.UG (cT bc)
+open GlobalTheory.ResidueEisenstein.ModConj
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK GlobalTheory.LeviModulus
+
+noncomputable section
+
+namespace GlobalTheory.ResidueEisenstein.ModConj.SkewSplit
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+
+theorem mem_skewA_iff {σ : E →ₐ[F] E} {j : ℕ} {c : Matrix (Fin j) (Fin j) (AF F ⊗[F] E)} :
+    c ∈ skewA σ j ↔ ∀ i k, c i k + sigR (AF F) σ (c k i) = 0 := by
+  rw [mem_skewA]
+  constructor
+  · intro h i k
+    have := congrFun (congrFun h i) k
+    simpa [cT] using this
+  · intro h
+    ext i k
+    simpa [cT] using h i k
+
+theorem cT_apply (σ : E →ₐ[F] E) {j : ℕ} (M : Matrix (Fin j) (Fin j) (AF F ⊗[F] E)) (i k : Fin j) :
+    cT (sigR (AF F) σ) M i k = sigR (AF F) σ (M k i) := by
+  simp [cT]
+
+theorem sigR_sigR {σ : E →ₐ[F] E} (hσ : ∀ x, σ (σ x) = x) (z : AF F ⊗[F] E) :
+    sigR (AF F) σ (sigR (AF F) σ z) = z := by
+  rw [← GlobalTheory.ImaginaryModulus.cA_eq_sigR, ← GlobalTheory.ImaginaryModulus.cA_eq_sigR]
+  exact cA_cA σ hσ z
+
+theorem sigR_inclR (σ : E →ₐ[F] E) (e : E) :
+    sigR (AF F) σ (inclR (F := F) (AF F) e) = inclR (F := F) (AF F) (σ e) := by
+  rw [← GlobalTheory.ImaginaryModulus.cA_eq_sigR]
+  exact GlobalTheory.ImaginaryModulus.cA_inclR σ e
+
+theorem continuous_sigR (σ : E →ₐ[F] E) : Continuous (sigR (AF F) σ) := by
+  have : (sigR (AF F) σ : AF F ⊗[F] E → AF F ⊗[F] E) = cA σ :=
+    funext fun z => (GlobalTheory.ImaginaryModulus.cA_eq_sigR σ z).symm
+  rw [this]
+  exact continuous_cA σ
+
+theorem continuous_cT (σ : E →ₐ[F] E) (j : ℕ) :
+    Continuous (fun M : Matrix (Fin j) (Fin j) (AF F ⊗[F] E) => cT (sigR (AF F) σ) M) := by
+  have hs := continuous_sigR σ
+  exact continuous_pi fun i => continuous_pi fun k =>
+    hs.comp ((continuous_apply i).comp (continuous_apply k))
+
+def split (σ : E →ₐ[F] E) (hσ : ∀ x, σ (σ x) = x) (j : ℕ) (δ : E) (hδ0 : δ ≠ 0) (hδ : σ δ = -δ) :
+    (skewA σ j × skewA σ j) ≃ₜ+ Matrix (Fin j) (Fin j) (AF F ⊗[F] E) where
+  toFun p := (p.1 : Matrix (Fin j) (Fin j) (AF F ⊗[F] E)) + inclR (F := F) (AF F) δ • (p.2 : Matrix (Fin j) (Fin j) (AF F ⊗[F] E))
+  invFun M := (⟨inclR (F := F) (AF F) (2⁻¹ : E) • (M - cT (sigR (AF F) σ) M), by
+      rw [mem_skewA_iff]
+      intro i k
+      simp only [Matrix.smul_apply, Matrix.sub_apply, cT_apply, smul_eq_mul, map_mul, map_sub, sigR_inclR,
+        sigR_sigR hσ, map_inv₀ σ 2, map_ofNat σ 2]
+      ring⟩,
+    ⟨inclR (F := F) (AF F) (2⁻¹ : E) • inclR (F := F) (AF F) δ⁻¹ • (M + cT (sigR (AF F) σ) M), by
+      rw [mem_skewA_iff]
+      intro i k
+      simp only [Matrix.smul_apply, Matrix.add_apply, cT_apply, smul_eq_mul, map_mul, map_add, sigR_inclR,
+        sigR_sigR hσ, map_inv₀ σ 2, map_ofNat σ 2, map_inv₀ σ δ, hδ, inv_neg, map_neg]
+      ring⟩)
+  left_inv p := by
+    obtain ⟨⟨x, hx⟩, ⟨y, hy⟩⟩ := p
+    rw [mem_skewA_iff] at hx hy
+    have hh : inclR (F := F) (AF F) (2⁻¹ : E) * 2 = 1 := by
+      rw [show (2 : AF F ⊗[F] E) = inclR (F := F) (AF F) 2 from (map_ofNat _ 2).symm, ← map_mul,
+        inv_mul_cancel₀ (two_ne_zero), map_one]
+    have hc : inclR (F := F) (AF F) δ * inclR (F := F) (AF F) δ⁻¹ = 1 := by
+      rw [← map_mul, mul_inv_cancel₀ hδ0, map_one]
+    have hx' : ∀ i k, sigR (AF F) σ (x k i) = -x i k := fun i k => eq_neg_of_add_eq_zero_right (hx i k)
+    have hy' : ∀ i k, sigR (AF F) σ (y k i) = -y i k := fun i k => eq_neg_of_add_eq_zero_right (hy i k)
+    refine Prod.ext (Subtype.ext ?_) (Subtype.ext ?_)
+    · ext i k
+      show inclR (F := F) (AF F) (2⁻¹ : E) * ((x i k + inclR (F := F) (AF F) δ * y i k) -
+        sigR (AF F) σ (x k i + inclR (F := F) (AF F) δ * y k i)) = x i k
+      rw [map_add, map_mul, hx', hy', sigR_inclR, hδ, map_neg]
+      linear_combination x i k * hh
+    · ext i k
+      show inclR (F := F) (AF F) (2⁻¹ : E) * (inclR (F := F) (AF F) δ⁻¹ * ((x i k + inclR (F := F) (AF F) δ * y i k) +
+        sigR (AF F) σ (x k i + inclR (F := F) (AF F) δ * y k i))) = y i k
+      rw [map_add, map_mul, hx', hy', sigR_inclR, hδ, map_neg]
+      linear_combination (y i k * inclR (F := F) (AF F) δ * inclR (F := F) (AF F) δ⁻¹) * hh + y i k * hc
+  right_inv M := by
+    have hh : inclR (F := F) (AF F) (2⁻¹ : E) * 2 = 1 := by
+      rw [show (2 : AF F ⊗[F] E) = inclR (F := F) (AF F) 2 from (map_ofNat _ 2).symm, ← map_mul,
+        inv_mul_cancel₀ (two_ne_zero), map_one]
+    have hc : inclR (F := F) (AF F) δ * inclR (F := F) (AF F) δ⁻¹ = 1 := by
+      rw [← map_mul, mul_inv_cancel₀ hδ0, map_one]
+    ext i k
+    show inclR (F := F) (AF F) (2⁻¹ : E) * (M i k - sigR (AF F) σ (M k i)) + inclR (F := F) (AF F) δ *
+      (inclR (F := F) (AF F) (2⁻¹ : E) * (inclR (F := F) (AF F) δ⁻¹ * (M i k + sigR (AF F) σ (M k i)))) = M i k
+    linear_combination M i k * hh + inclR (F := F) (AF F) (2⁻¹ : E) * (M i k + sigR (AF F) σ (M k i)) * hc
+  map_add' p q := by
+    show ((p.1 + q.1 : skewA σ j) : Matrix (Fin j) (Fin j) (AF F ⊗[F] E)) + _ • ((p.2 + q.2 : skewA σ j) : Matrix (Fin j) (Fin j) (AF F ⊗[F] E)) = _
+    push_cast
+    rw [smul_add]
+    abel
+  continuous_toFun := by
+    show Continuous fun p : skewA σ j × skewA σ j => (p.1 : Matrix (Fin j) (Fin j) (AF F ⊗[F] E)) +
+      inclR (F := F) (AF F) δ • (p.2 : Matrix (Fin j) (Fin j) (AF F ⊗[F] E))
+    exact (continuous_subtype_val.comp continuous_fst).add
+      ((continuous_subtype_val.comp continuous_snd).const_smul (inclR (F := F) (AF F) δ))
+  continuous_invFun := by
+    have hc := continuous_cT σ j
+    have h1 : Continuous fun M : Matrix (Fin j) (Fin j) (AF F ⊗[F] E) =>
+        inclR (F := F) (AF F) (2⁻¹ : E) • (M - cT (sigR (AF F) σ) M) :=
+      (continuous_id.sub hc).const_smul (inclR (F := F) (AF F) (2⁻¹ : E))
+    have h2 : Continuous fun M : Matrix (Fin j) (Fin j) (AF F ⊗[F] E) =>
+        inclR (F := F) (AF F) (2⁻¹ : E) • inclR (F := F) (AF F) δ⁻¹ • (M + cT (sigR (AF F) σ) M) :=
+      ((continuous_id.add hc).const_smul (inclR (F := F) (AF F) δ⁻¹)).const_smul (inclR (F := F) (AF F) (2⁻¹ : E))
+    exact (h1.subtype_mk _).prodMk (h2.subtype_mk _)
+
+theorem split_apply (σ : E →ₐ[F] E) (hσ : ∀ x, σ (σ x) = x) (j : ℕ) (δ : E) (hδ0 : δ ≠ 0) (hδ : σ δ = -δ)
+    (p : skewA σ j × skewA σ j) :
+    split σ hσ j δ hδ0 hδ p = (p.1 : Matrix (Fin j) (Fin j) (AF F ⊗[F] E)) +
+      inclR (F := F) (AF F) δ • (p.2 : Matrix (Fin j) (Fin j) (AF F ⊗[F] E)) := rfl
+
+end GlobalTheory.ResidueEisenstein.ModConj.SkewSplit
+
+namespace GlobalTheory.ResidueEisenstein.ModConj
+
+open GlobalTheory.ResidueEisenstein.ModConj.SkewSplit in
+
+theorem addEquivAddHaarChar_skewA_scale : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (j : ℕ) [LocallyCompactSpace (GlobalTheory.ResidueEisenstein.ModConj.skewA σ j)] [SecondCountableTopology (GlobalTheory.ResidueEisenstein.ModConj.skewA σ j)] [MeasurableSpace (GlobalTheory.ResidueEisenstein.ModConj.skewA σ j)] [BorelSpace (GlobalTheory.ResidueEisenstein.ModConj.skewA σ j)] (l : (AF F ⊗[F] E)ˣ) (L : GlobalTheory.ResidueEisenstein.ModConj.skewA σ j ≃ₜ+ GlobalTheory.ResidueEisenstein.ModConj.skewA σ j), (∀ s, (L s : Matrix (Fin j) (Fin j) (AF F ⊗[F] E)) = ((l : AF F ⊗[F] E) * sigR (AF F) σ (l : AF F ⊗[F] E)) • (s : Matrix (Fin j) (Fin j) (AF F ⊗[F] E))) → addEquivAddHaarChar L = absE F E l ^ (j * j) := by
+  intro F E _ _ _ _ _ σ hcm j _ _ _ _ l L hL
+  haveI : IsTotallyReal F := hcm.1
+  have hσ := GlobalTheory.ImaginaryModulus.sig_sig hcm
+  obtain ⟨δ, hδ0, hδ⟩ := GlobalTheory.ImaginaryModulus.exists_anti hcm
+  obtain ⟨-, hlc, hsc, ht2⟩ := topAE F E
+  haveI : LocallyCompactSpace (AF F ⊗[F] E) := hlc
+  haveI : SecondCountableTopology (AF F ⊗[F] E) := hsc
+  haveI : T2Space (AF F ⊗[F] E) := ht2
+  haveI : LocallyCompactSpace (Matrix (Fin j) (Fin j) (AF F ⊗[F] E)) :=
+    inferInstanceAs (LocallyCompactSpace (Fin j → Fin j → AF F ⊗[F] E))
+  haveI : SecondCountableTopology (Matrix (Fin j) (Fin j) (AF F ⊗[F] E)) :=
+    inferInstanceAs (SecondCountableTopology (Fin j → Fin j → AF F ⊗[F] E))
+  letI : MeasurableSpace (Matrix (Fin j) (Fin j) (AF F ⊗[F] E)) := borel _
+  haveI : BorelSpace (Matrix (Fin j) (Fin j) (AF F ⊗[F] E)) := ⟨rfl⟩
+  haveI : T2Space (skewA σ j) := Topology.IsEmbedding.subtypeVal.t2Space
+  haveI : BorelSpace (skewA σ j × skewA σ j) := Prod.borelSpace
+  set Φ := split σ hσ j δ hδ0 hδ
+  set M : Matrix (Fin j) (Fin j) (AF F ⊗[F] E) ≃ₜ+ Matrix (Fin j) (Fin j) (AF F ⊗[F] E) :=
+    (Φ.symm.trans (GlobalTheory.ModuLR.prodCE L L)).trans Φ
+  set a : (AF F ⊗[F] E)ˣ := l * GlobalTheory.Doubling.conjUnit σ l
+  have ha : (a : AF F ⊗[F] E) = l * sigR (AF F) σ l := rfl
+  have hM : ∀ z, M z = (a : AF F ⊗[F] E) • z := by
+    intro z
+    obtain ⟨p, rfl⟩ := Φ.surjective z
+    show Φ (GlobalTheory.ModuLR.prodCE L L (Φ.symm (Φ p))) = (a : AF F ⊗[F] E) • Φ p
+    rw [ContinuousAddEquiv.symm_apply_apply, GlobalTheory.ModuLR.prodCE_apply, split_apply, split_apply, hL, hL, ha,
+      smul_add, smul_comm (inclR (F := F) (AF F) δ)]
+  set g : GL (Fin j) (AF F ⊗[F] E) := Units.map (Matrix.scalar (Fin j) : (AF F ⊗[F] E) →+* _).toMonoidHom a
+  have hg : Matrix.GeneralLinearGroup.det g = a ^ j := by
+    ext
+    rw [Matrix.GeneralLinearGroup.val_det_apply, Units.val_pow_eq_pow_val]
+    show (Matrix.scalar (Fin j) (a : AF F ⊗[F] E)).det = _
+    rw [Matrix.scalar_apply, Matrix.det_diagonal, Finset.prod_const, Finset.card_univ, Fintype.card_fin]
+  have hT : M = GlobalTheory.ModuLR.lrCE g 1 := by
+    ext u i k
+    rw [hM, GlobalTheory.ModuLR.lrCE_apply, Units.val_one, Matrix.mul_one]
+    show ((a : AF F ⊗[F] E) • u) i k = (Matrix.scalar (Fin j) (a : AF F ⊗[F] E) * u) i k
+    rw [Matrix.scalar_apply, Matrix.smul_eq_diagonal_mul]
+  have h1 : addEquivAddHaarChar M = absE F E a ^ (j * j) := by
+    rw [hT, GlobalTheory.ModuLR.chi_lr F E j j g 1, hg, map_one, map_one, one_pow, mul_one, map_pow, ← pow_mul]
+  have h2 : addEquivAddHaarChar M = addEquivAddHaarChar L * addEquivAddHaarChar L := by
+    rw [GlobalTheory.ModuLR.addEquivAddHaarChar_transport Φ, GlobalTheory.ModuLR.addEquivAddHaarChar_prodCE]
+  have h3 : absE F E a = absE F E l * absE F E l := by
+    rw [map_mul, GlobalTheory.Doubling.absE_conjUnit]
+  have h4 : addEquivAddHaarChar L * addEquivAddHaarChar L = absE F E l ^ (j * j) * absE F E l ^ (j * j) := by
+    rw [← h2, h1, h3, mul_pow]
+  exact (mul_self_inj (by positivity) (by positivity)).1 h4
+
+end GlobalTheory.ResidueEisenstein.ModConj
+
+end
+end
+
+open scoped TensorProduct NNReal ENNReal Matrix
+open NumberField MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet GlobalTheory.ResLine GlobalTheory.ResidueEisenstein
+open GlobalTheory.Doubling (absE)
+open Formalism.UG (cT bc)
+open GlobalTheory.ResidueEisenstein.ModConj
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.addHaarChar_skewHermitian_normScale : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (j : ℕ) [LocallyCompactSpace (GlobalTheory.ResidueEisenstein.ModConj.skewA σ j)] [SecondCountableTopology (GlobalTheory.ResidueEisenstein.ModConj.skewA σ j)] [MeasurableSpace (GlobalTheory.ResidueEisenstein.ModConj.skewA σ j)] [BorelSpace (GlobalTheory.ResidueEisenstein.ModConj.skewA σ j)] (l : (AF F ⊗[F] E)ˣ) (L : GlobalTheory.ResidueEisenstein.ModConj.skewA σ j ≃ₜ+ GlobalTheory.ResidueEisenstein.ModConj.skewA σ j), (∀ s, (L s : Matrix (Fin j) (Fin j) (AF F ⊗[F] E)) = ((l : AF F ⊗[F] E) * sigR (AF F) σ (l : AF F ⊗[F] E)) • (s : Matrix (Fin j) (Fin j) (AF F ⊗[F] E))) → addEquivAddHaarChar L = absE F E l ^ (j * j) := by
+  atlas_forward_decl GlobalTheory.ResidueEisenstein.ModConj.addEquivAddHaarChar_skewA_scale
+end
+
+section
+section
+open scoped TensorProduct NNReal ENNReal Matrix
+open NumberField MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet GlobalTheory.ResLine GlobalTheory.ResidueEisenstein
+open GlobalTheory.Doubling (absE)
+open Formalism.UG (cT bc)
+open GlobalTheory.ResidueEisenstein.ModConj
+
+noncomputable section
+
+namespace GlobalTheory.ResidueEisenstein.ChartU
+
+open GlobalTheory.SphEis GlobalTheory.SphEis.UnipCrd
+
+section Ring
+
+variable {R : Type} [CommRing R] (s : R →+* R) {n : ℕ} (A : Matrix (Fin n) (Fin n) R) {a b c : ℕ}
+
+theorem gram_comb (X₁ Y₁ : Matrix (Fin n) (Fin a) R) (X₂ Y₂ : Matrix (Fin n) (Fin b) R)
+    (X₃ Y₃ : Matrix (Fin n) (Fin c) R) (R₁ : Matrix (Fin a) (Fin n) R) (R₂ : Matrix (Fin b) (Fin n) R)
+    (R₃ : Matrix (Fin c) (Fin n) R)
+    (h11 : gr s A Y₁ Y₁ = gr s A X₁ X₁) (h12 : gr s A Y₁ Y₂ = gr s A X₁ X₂) (h13 : gr s A Y₁ Y₃ = gr s A X₁ X₃)
+    (h21 : gr s A Y₂ Y₁ = gr s A X₂ X₁) (h22 : gr s A Y₂ Y₂ = gr s A X₂ X₂) (h23 : gr s A Y₂ Y₃ = gr s A X₂ X₃)
+    (h31 : gr s A Y₃ Y₁ = gr s A X₃ X₁) (h32 : gr s A Y₃ Y₂ = gr s A X₃ X₂) (h33 : gr s A Y₃ Y₃ = gr s A X₃ X₃) :
+    gr s A (Y₁ * R₁ + Y₂ * R₂ + Y₃ * R₃) (Y₁ * R₁ + Y₂ * R₂ + Y₃ * R₃) =
+      gr s A (X₁ * R₁ + X₂ * R₂ + X₃ * R₃) (X₁ * R₁ + X₂ * R₂ + X₃ * R₃) := by
+  simp only [gr_add_left, gr_add_right, gr_mul_left, gr_mul_right, h11, h12, h13, h21, h22, h23, h31, h32, h33]
+
+theorem comb_mul {p : ℕ} (Y₁ : Matrix (Fin n) (Fin a) R) (Y₂ : Matrix (Fin n) (Fin b) R)
+    (Y₃ : Matrix (Fin n) (Fin c) R) (R₁ : Matrix (Fin a) (Fin n) R) (R₂ : Matrix (Fin b) (Fin n) R)
+    (R₃ : Matrix (Fin c) (Fin n) R) (X : Matrix (Fin n) (Fin p) R) :
+    (Y₁ * R₁ + Y₂ * R₂ + Y₃ * R₃) * X = Y₁ * (R₁ * X) + Y₂ * (R₂ * X) + Y₃ * (R₃ * X) := by
+  simp only [Matrix.add_mul, Matrix.mul_assoc]
+
+theorem cT_smul' {p q : Type} (x : R) (M : Matrix p q R) : cT s (x • M) = s x • cT s M := by
+  ext i k; simp [cT]
+
+end Ring
+
+end GlobalTheory.ResidueEisenstein.ChartU
+
+namespace GlobalTheory.ResidueEisenstein.ChartU
+
+open GlobalTheory.SphEis GlobalTheory.SphEis.UnipCrd
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
+  {n : ℕ} (J : Matrix (Fin n) (Fin n) E) {j m : ℕ} (C D : Matrix (Fin n) (Fin j) E) (Z : Matrix (Fin n) (Fin m) E)
+  (J₀ : Matrix (Fin m) (Fin m) E)
+
+def uMat (b : Matrix (Fin j) (Fin m) (AF F ⊗[F] E)) (c : Matrix (Fin j) (Fin j) (AF F ⊗[F] E)) :
+    Matrix (Fin n) (Fin n) (AF F ⊗[F] E) :=
+  adMat F C * adMat F (cT (σ : E →+* E) D * J) +
+    (adMat F Z + adMat F C * b) * adMat F (J₀⁻¹ * (cT (σ : E →+* E) Z * J)) +
+    (adMat F D - adMat F Z * plus σ J₀ b + adMat F C * c) * adMat F (cT (σ : E →+* E) C * J)
+
+variable {σ J C D Z J₀}
+
+theorem adMat_mul' {p q r : ℕ} (X : Matrix (Fin p) (Fin q) E) (Y : Matrix (Fin q) (Fin r) E) :
+    adMat F X * adMat F Y = adMat F (X * Y) := (Matrix.map_mul).symm
+
+theorem adMat_add' {p q : ℕ} (X Y : Matrix (Fin p) (Fin q) E) : adMat F X + adMat F Y = adMat F (X + Y) :=
+  (Matrix.map_add _ (map_add _) X Y).symm
+
+theorem adMat_one' {p : ℕ} : adMat F (1 : Matrix (Fin p) (Fin p) E) = 1 := Matrix.map_one _ (map_zero _) (map_one _)
+
+theorem adMat_zero' {p q : ℕ} : adMat F (0 : Matrix (Fin p) (Fin q) E) = 0 := Matrix.map_zero _ (map_zero _)
+
+theorem uMat_mul_C (hF : Fr σ J C D Z J₀) (b c) : uMat σ J C D Z J₀ b c * adMat F C = adMat F C := by
+  have e1 : adMat F (cT (σ : E →+* E) D * J) * adMat F C = 1 := by rw [adMat_mul', hF.dc, adMat_one']
+  have e2 : adMat F (J₀⁻¹ * (cT (σ : E →+* E) Z * J)) * adMat F C = 0 := by
+    rw [adMat_mul', Matrix.mul_assoc, hF.zc, Matrix.mul_zero, adMat_zero']
+  have e3 : adMat F (cT (σ : E →+* E) C * J) * adMat F C = 0 := by rw [adMat_mul', hF.cc, adMat_zero']
+  rw [uMat, comb_mul, e1, e2, e3]; simp
+
+theorem uMat_mul_Z (hF : Fr σ J C D Z J₀) (b c) :
+    uMat σ J C D Z J₀ b c * adMat F Z = adMat F Z + adMat F C * b := by
+  have hu : IsUnit J₀.det := isUnit_iff_ne_zero.mpr hF.herm₀.2
+  have e1 : adMat F (cT (σ : E →+* E) D * J) * adMat F Z = 0 := by rw [adMat_mul', hF.dz, adMat_zero']
+  have e2 : adMat F (J₀⁻¹ * (cT (σ : E →+* E) Z * J)) * adMat F Z = 1 := by
+    rw [adMat_mul', Matrix.mul_assoc, hF.zz, Matrix.nonsing_inv_mul _ hu, adMat_one']
+  have e3 : adMat F (cT (σ : E →+* E) C * J) * adMat F Z = 0 := by rw [adMat_mul', hF.cz, adMat_zero']
+  rw [uMat, comb_mul, e1, e2, e3]; simp
+
+theorem uMat_mul_D (hF : Fr σ J C D Z J₀) (b c) :
+    uMat σ J C D Z J₀ b c * adMat F D = adMat F D - adMat F Z * plus σ J₀ b + adMat F C * c := by
+  have e1 : adMat F (cT (σ : E →+* E) D * J) * adMat F D = 0 := by rw [adMat_mul', hF.dd, adMat_zero']
+  have e2 : adMat F (J₀⁻¹ * (cT (σ : E →+* E) Z * J)) * adMat F D = 0 := by
+    rw [adMat_mul', Matrix.mul_assoc, hF.zd, Matrix.mul_zero, adMat_zero']
+  have e3 : adMat F (cT (σ : E →+* E) C * J) * adMat F D = 1 := by rw [adMat_mul', hF.cd, adMat_one']
+  rw [uMat, comb_mul, e1, e2, e3]; simp
+
+end GlobalTheory.ResidueEisenstein.ChartU
+
+namespace GlobalTheory.ResidueEisenstein.ChartU
+
+open GlobalTheory.SphEis GlobalTheory.SphEis.UnipCrd
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
+  {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {j m : ℕ} {C D : Matrix (Fin n) (Fin j) E} {Z : Matrix (Fin n) (Fin m) E}
+  {J₀ : Matrix (Fin m) (Fin m) E}
+
+theorem uMat_unitary (hF : Fr σ J C D Z J₀) (b : Matrix (Fin j) (Fin m) (AF F ⊗[F] E))
+    (c : Matrix (Fin j) (Fin j) (AF F ⊗[F] E)) (hc : c + cT (sigR (AF F) σ) c + b * plus σ J₀ b = 0) :
+    cT (sigR (AF F) σ) (uMat σ J C D Z J₀ b c) * adMat F J * uMat σ J C D Z J₀ b c = adMat F J := by
+  set s := sigR (AF F) σ with hs
+  set p := plus σ J₀ b with hp
+  have hu : IsUnit J₀.det := isUnit_iff_ne_zero.mpr hF.herm₀.2
+  have key : cT s p * adMat F J₀ = b := by
+    rw [hp, plus, Formalism.UG.cT_mul, cT_cT σ hF.cm, cT_adMat, cT_inv_herm σ J₀ hF.herm₀, Matrix.mul_assoc, adMat_mul',
+      Matrix.nonsing_inv_mul _ hu, adMat_one', Matrix.mul_one]
+  have key2 : adMat F J₀ * p = cT s b := by
+    rw [hp, plus, ← Matrix.mul_assoc, adMat_mul', Matrix.mul_nonsing_inv _ hu, adMat_one', Matrix.one_mul]
+  have g0 : ∀ {p q : ℕ} (X : Matrix (Fin n) (Fin p) E) (Y : Matrix (Fin n) (Fin q) E), cT (σ : E →+* E) X * J * Y = 0 →
+      gr s (adMat F J) (adMat F X) (adMat F Y) = 0 := by
+    intro p q X Y h; rw [gr_adMat, h]; exact adMat_zero'
+  have g1 : ∀ (X Y : Matrix (Fin n) (Fin j) E), cT (σ : E →+* E) X * J * Y = 1 →
+      gr s (adMat F J) (adMat F X) (adMat F Y) = 1 := by
+    intro X Y h; rw [gr_adMat, h]; exact adMat_one'
+  have gzz : gr s (adMat F J) (adMat F Z) (adMat F Z) = adMat F J₀ := by rw [gr_adMat, hF.zz]
+  have hcc := g0 C C hF.cc
+  have hdd := g0 D D hF.dd
+  have hcz := g0 C Z hF.cz
+  have hdz := g0 D Z hF.dz
+  have hzc := g0 Z C hF.zc
+  have hzd := g0 Z D hF.zd
+  have hcd := g1 C D hF.cd
+  have hdc := g1 D C hF.dc
+  have hsum : adMat F C * adMat F (cT (σ : E →+* E) D * J) + adMat F Z * adMat F (J₀⁻¹ * (cT (σ : E →+* E) Z * J)) +
+      adMat F D * adMat F (cT (σ : E →+* E) C * J) = 1 := by
+    rw [adMat_mul', adMat_mul', adMat_mul', adMat_add', adMat_add', hF.sum, adMat_one']
+  have := gram_comb s (adMat F J) (adMat F C) (adMat F C) (adMat F Z) (adMat F Z + adMat F C * b)
+    (adMat F D) (adMat F D - adMat F Z * p + adMat F C * c) (adMat F (cT (σ : E →+* E) D * J))
+    (adMat F (J₀⁻¹ * (cT (σ : E →+* E) Z * J))) (adMat F (cT (σ : E →+* E) C * J)) rfl
+    (by simp only [gr_add_right, gr_mul_right, hcc, hcz]; simp)
+    (by simp only [gr_add_right, gr_sub_right, gr_mul_right, hcc, hcz, hcd]; simp)
+    (by simp only [gr_add_left, gr_mul_left, hcc, hzc]; simp)
+    (by simp only [gr_add_right, gr_add_left, gr_mul_right, gr_mul_left, hcz, hcc, hzc, gzz]; simp)
+    (by
+      simp only [gr_add_right, gr_add_left, gr_sub_right, gr_mul_right, gr_mul_left, hcz, hcc, hzc, gzz, hzd, hcd]
+      simp [key2])
+    (by simp only [gr_add_left, gr_sub_left, gr_mul_left, hcc, hzc, hdc]; simp)
+    (by
+      simp only [gr_add_right, gr_add_left, gr_sub_left, gr_mul_right, gr_mul_left, hcz, hcc, hzc, gzz, hdz, hdc]
+      simp [key])
+    (by
+      simp only [gr_add_right, gr_add_left, gr_sub_left, gr_sub_right, gr_mul_right, gr_mul_left, hcz, hcc, hzc, gzz,
+        hdz, hdc, hcd, hdd, hzd]
+      simp only [Matrix.mul_zero, Matrix.zero_mul, Matrix.mul_one, Matrix.one_mul, sub_zero, zero_add, add_zero, zero_sub,
+        sub_neg_eq_add, key]
+      simp only [Matrix.neg_mul, sub_neg_eq_add]
+      rw [← hc]
+      abel)
+  rw [hsum] at this
+  simpa [gr, uMat, hp, Formalism.UG.cT_one] using this
+
+end GlobalTheory.ResidueEisenstein.ChartU
+
+namespace GlobalTheory.ResidueEisenstein.ChartU
+
+open GlobalTheory.SphEis GlobalTheory.SphEis.UnipCrd
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
+  {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {j m : ℕ} {C D : Matrix (Fin n) (Fin j) E} {Z : Matrix (Fin n) (Fin m) E}
+  {J₀ : Matrix (Fin m) (Fin m) E}
+
+theorem uInv_mul (hF : Fr σ J C D Z J₀) (b c) (hc : c + cT (sigR (AF F) σ) c + b * plus σ J₀ b = 0) :
+    (adMat F J⁻¹ * cT (sigR (AF F) σ) (uMat σ J C D Z J₀ b c) * adMat F J) * uMat σ J C D Z J₀ b c = 1 := by
+  have hu : IsUnit J.det := isUnit_iff_ne_zero.mpr hF.herm.2
+  rw [Matrix.mul_assoc, Matrix.mul_assoc, ← Matrix.mul_assoc _ (adMat F J), uMat_unitary hF b c hc, adMat_mul',
+    Matrix.nonsing_inv_mul _ hu, adMat_one']
+
+def uPt (hF : Fr σ J C D Z J₀) (b : Matrix (Fin j) (Fin m) (AF F ⊗[F] E)) (c : Matrix (Fin j) (Fin j) (AF F ⊗[F] E))
+    (hc : c + cT (sigR (AF F) σ) c + b * plus σ J₀ b = 0) : GAd σ J :=
+  let g : GL (Fin n) (AF F ⊗[F] E) :=
+    ⟨uMat σ J C D Z J₀ b c, adMat F J⁻¹ * cT (sigR (AF F) σ) (uMat σ J C D Z J₀ b c) * adMat F J,
+      mul_eq_one_comm.mp (uInv_mul hF b c hc), uInv_mul hF b c hc⟩
+  let x : HR (AF F) σ J := ⟨g, uMat_unitary hF b c hc⟩
+  x
+
+theorem uPt_mat (hF : Fr σ J C D Z J₀) (b c) (hc : c + cT (sigR (AF F) σ) c + b * plus σ J₀ b = 0) :
+    (matHom _ σ J (uPt hF b c hc)).1 = uMat σ J C D Z J₀ b c := rfl
+
+theorem uPt_inv (hF : Fr σ J C D Z J₀) (b c) (hc : c + cT (sigR (AF F) σ) c + b * plus σ J₀ b = 0) :
+    ((matHom _ σ J (uPt hF b c hc))⁻¹ : GL (Fin n) (AF F ⊗[F] E)).1 =
+      adMat F J⁻¹ * cT (sigR (AF F) σ) (uMat σ J C D Z J₀ b c) * adMat F J := rfl
+
+theorem uPt_crd (hF : Fr σ J C D Z J₀) (b c) (hc : c + cT (sigR (AF F) σ) c + b * plus σ J₀ b = 0) :
+    Crd σ J C D Z J₀ (uPt hF b c hc) b c :=
+  ⟨uMat_mul_C hF b c, uMat_mul_Z hF b c, uMat_mul_D hF b c⟩
+
+end GlobalTheory.ResidueEisenstein.ChartU
+
+namespace GlobalTheory.ResidueEisenstein.ChartU
+
+open GlobalTheory.SphEis GlobalTheory.SphEis.UnipCrd
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
+  {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {j m : ℕ} {C D : Matrix (Fin n) (Fin j) E} {Z : Matrix (Fin n) (Fin m) E}
+  {J₀ : Matrix (Fin m) (Fin m) E}
+
+theorem cT_mul_plus (hF : Fr σ J C D Z J₀) (b : Matrix (Fin j) (Fin m) (AF F ⊗[F] E)) :
+    cT (sigR (AF F) σ) (b * plus σ J₀ b) = b * plus σ J₀ b := by
+  rw [Formalism.UG.cT_mul, plus, Formalism.UG.cT_mul, cT_cT σ hF.cm, cT_adMat, cT_inv_herm σ J₀ hF.herm₀, Matrix.mul_assoc]
+
+theorem sigR_half : sigR (AF F) σ (inclR (F := F) (AF F) (2⁻¹ : E)) = inclR (F := F) (AF F) (2⁻¹ : E) := by
+  have h : σ (2⁻¹ : E) = 2⁻¹ := by rw [map_inv₀, map_ofNat]
+  simp [sigR, inclR, h]
+
+theorem half_add_half : inclR (F := F) (AF F) (2⁻¹ : E) + inclR (F := F) (AF F) (2⁻¹ : E) = 1 := by
+  rw [← map_add, show (2⁻¹ : E) + 2⁻¹ = 1 by norm_num, map_one]
+
+theorem skew_crd (hF : Fr σ J C D Z J₀) (b : Matrix (Fin j) (Fin m) (AF F ⊗[F] E)) (s : skewA σ j) :
+    ((s : Matrix (Fin j) (Fin j) (AF F ⊗[F] E)) - inclR (F := F) (AF F) (2⁻¹ : E) • (b * plus σ J₀ b)) +
+      cT (sigR (AF F) σ) ((s : Matrix (Fin j) (Fin j) (AF F ⊗[F] E)) - inclR (F := F) (AF F) (2⁻¹ : E) • (b * plus σ J₀ b)) +
+      b * plus σ J₀ b = 0 := by
+  have hs : (s : Matrix (Fin j) (Fin j) (AF F ⊗[F] E)) + cT (sigR (AF F) σ) s = 0 := mem_skewA.mp s.2
+  rw [cT_sub', cT_smul', cT_mul_plus hF, sigR_half]
+  have e : ∀ (S T X : Matrix (Fin j) (Fin j) (AF F ⊗[F] E)) (h : AF F ⊗[F] E),
+      S - h • X + (T - h • X) + X = (S + T) - (h + h) • X + X := by
+    intro S T X h; rw [add_smul]; abel
+  rw [e, hs, half_add_half, one_smul]; abel
+
+end GlobalTheory.ResidueEisenstein.ChartU
+
+namespace GlobalTheory.ResidueEisenstein.ChartU
+
+open GlobalTheory.SphEis GlobalTheory.SphEis.UnipCrd
+
+theorem chart : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (n : ℕ) (J : Matrix (Fin n) (Fin n) E) (j m : ℕ) (C D : Matrix (Fin n) (Fin j) E) (Z : Matrix (Fin n) (Fin m) E) (J₀ : Matrix (Fin m) (Fin m) E), GlobalTheory.SphEis.Fr σ J C D Z J₀ → ∃ φ : Matrix (Fin j) (Fin m) (AF F ⊗[F] E) × GlobalTheory.ResidueEisenstein.ModConj.skewA σ j → GAd σ J, Continuous φ ∧ ∀ b s, GlobalTheory.SphEis.Crd σ J C D Z J₀ (φ (b, s)) b ((s : Matrix (Fin j) (Fin j) (AF F ⊗[F] E)) - inclR (F := F) (AF F) (2⁻¹ : E) • (b * GlobalTheory.SphEis.plus σ J₀ b)) := by
+  intro F E _ _ _ _ _ σ n J j m C D Z J₀ hF
+  haveI : IsModuleTopology (AF F) (AF F ⊗[F] E) := ⟨rfl⟩
+  haveI : IsTopologicalRing (AF F ⊗[F] E) := IsModuleTopology.isTopologicalRing (AF F) _
+  have hsg : Continuous (sigR (AF F) σ) := GlobalTheory.AdelicUnitaryTop.continuous_sigR (AF F) σ
+  have hcT : ∀ {X : Type} [TopologicalSpace X] {p q : ℕ} {f : X → Matrix (Fin p) (Fin q) (AF F ⊗[F] E)},
+      Continuous f → Continuous fun x => cT (sigR (AF F) σ) (f x) := fun hf => (hf.matrix_map hsg).matrix_transpose
+  let cF : Matrix (Fin j) (Fin m) (AF F ⊗[F] E) × skewA σ j → Matrix (Fin j) (Fin j) (AF F ⊗[F] E) := fun p =>
+    (p.2 : Matrix (Fin j) (Fin j) (AF F ⊗[F] E)) - inclR (F := F) (AF F) (2⁻¹ : E) • (p.1 * plus σ J₀ p.1)
+  refine ⟨fun p => uPt hF p.1 (cF p) (skew_crd hF p.1 p.2), ?_, fun b s => uPt_crd hF _ _ _⟩
+  have hb : Continuous fun p : Matrix (Fin j) (Fin m) (AF F ⊗[F] E) × skewA σ j => p.1 := continuous_fst
+  have hpl : Continuous fun p : Matrix (Fin j) (Fin m) (AF F ⊗[F] E) × skewA σ j => plus σ J₀ p.1 :=
+    continuous_const.matrix_mul (hcT hb)
+  have hbp : Continuous fun p : Matrix (Fin j) (Fin m) (AF F ⊗[F] E) × skewA σ j => p.1 * plus σ J₀ p.1 :=
+    hb.matrix_mul hpl
+  have hh : Continuous fun p : Matrix (Fin j) (Fin m) (AF F ⊗[F] E) × skewA σ j =>
+      inclR (F := F) (AF F) (2⁻¹ : E) • (p.1 * plus σ J₀ p.1) := by
+    have := hbp.const_smul (inclR (F := F) (AF F) (2⁻¹ : E)); exact this
+  have hs : Continuous fun p : Matrix (Fin j) (Fin m) (AF F ⊗[F] E) × skewA σ j =>
+      (p.2 : Matrix (Fin j) (Fin j) (AF F ⊗[F] E)) := continuous_subtype_val.comp continuous_snd
+  have hc : Continuous cF := hs.sub hh
+  have hM : Continuous fun p : Matrix (Fin j) (Fin m) (AF F ⊗[F] E) × skewA σ j => uMat σ J C D Z J₀ p.1 (cF p) :=
+    ((continuous_const.matrix_mul continuous_const).add
+      ((continuous_const.add (continuous_const.matrix_mul hb)).matrix_mul continuous_const)).add
+      (((continuous_const.sub (continuous_const.matrix_mul hpl)).add (continuous_const.matrix_mul hc)).matrix_mul
+        continuous_const)
+  have hMi : Continuous fun p : Matrix (Fin j) (Fin m) (AF F ⊗[F] E) × skewA σ j =>
+      adMat F J⁻¹ * cT (sigR (AF F) σ) (uMat σ J C D Z J₀ p.1 (cF p)) * adMat F J :=
+    (continuous_const.matrix_mul (hcT hM)).matrix_mul continuous_const
+  rw [(isEmbedding_matHom (AF F) σ J).continuous_iff]
+  exact Units.continuous_iff.mpr ⟨hM.congr fun p => (uPt_mat hF _ _ _).symm, hMi.congr fun p => (uPt_inv hF _ _ _).symm⟩
+
+end GlobalTheory.ResidueEisenstein.ChartU
+end
+end
+
+open scoped TensorProduct NNReal ENNReal Matrix
+open NumberField MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet GlobalTheory.ResLine GlobalTheory.ResidueEisenstein
+open GlobalTheory.Doubling (absE)
+open Formalism.UG (cT bc)
+open GlobalTheory.ResidueEisenstein.ModConj
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_continuous_chart_isotropicUnipotentRadical : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (n : ℕ) (J : Matrix (Fin n) (Fin n) E) (j m : ℕ) (C D : Matrix (Fin n) (Fin j) E) (Z : Matrix (Fin n) (Fin m) E) (J₀ : Matrix (Fin m) (Fin m) E), GlobalTheory.SphEis.Fr σ J C D Z J₀ → ∃ φ : Matrix (Fin j) (Fin m) (AF F ⊗[F] E) × GlobalTheory.ResidueEisenstein.ModConj.skewA σ j → GAd σ J, Continuous φ ∧ ∀ b s, GlobalTheory.SphEis.Crd σ J C D Z J₀ (φ (b, s)) b ((s : Matrix (Fin j) (Fin j) (AF F ⊗[F] E)) - inclR (F := F) (AF F) (2⁻¹ : E) • (b * GlobalTheory.SphEis.plus σ J₀ b)) := by
+  atlas_forward_decl GlobalTheory.ResidueEisenstein.ChartU.chart
+end
+
+section
+section
+open scoped TensorProduct NNReal ENNReal Matrix
+open NumberField MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet GlobalTheory.ResLine GlobalTheory.ResidueEisenstein
+open GlobalTheory.Doubling (absE)
+open Formalism.UG (cT bc)
+open GlobalTheory.ResidueEisenstein.ModConj
+
+noncomputable section
+
+namespace GlobalTheory.ResidueEisenstein.LeviConj
+
+open GlobalTheory.SphEis GlobalTheory.SphEis.UnipCrd
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+
+theorem cT_smul' (s : AF F ⊗[F] E →+* AF F ⊗[F] E) {p q : Type} (a : AF F ⊗[F] E) (M : Matrix p q (AF F ⊗[F] E)) :
+    cT s (a • M) = s a • cT s M := by
+  ext i k; simp [cT]
+
+theorem det_conj_mul_det (s : AF F ⊗[F] E →+* AF F ⊗[F] E) {k : ℕ} (M K : Matrix (Fin k) (Fin k) (AF F ⊗[F] E))
+    (hK : IsUnit K.det) (h : cT s M * K * M = K) : s M.det * M.det = 1 := by
+  have hd := congrArg Matrix.det h
+  rw [Matrix.det_mul, Matrix.det_mul] at hd
+  have e : (cT s M).det = s M.det := by
+    rw [cT, Matrix.det_transpose]; exact (RingHom.map_det s M).symm
+  rw [e] at hd
+  apply hK.mul_right_cancel
+  rw [one_mul]; nth_rewrite 2 [← hd]; ring
+
+open GlobalTheory.SphEis.UnipCrd in
+
+theorem crd_conj_scalar : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (n : ℕ) (J : Matrix (Fin n) (Fin n) E) (j m : ℕ) (C D : Matrix (Fin n) (Fin j) E) (Z : Matrix (Fin n) (Fin m) E) (J₀ : Matrix (Fin m) (Fin m) E), GlobalTheory.SphEis.Fr σ J C D Z J₀ → ∀ (g : GAd σ J) (l : (AF F ⊗[F] E)ˣ) (γ : Matrix (Fin j) (Fin j) (AF F ⊗[F] E)), (matHom _ σ J g).1 * adMat F C = (l : AF F ⊗[F] E) • adMat F C → (matHom _ σ J g).1 * adMat F D = adMat F D * γ → ∃ δ : GL (Fin m) (AF F ⊗[F] E), absE F E (Matrix.GeneralLinearGroup.det δ) = 1 ∧ δ.1 * adMat F J₀⁻¹ * cT (sigR (AF F) σ) δ.1 = adMat F J₀⁻¹ ∧ ∀ u b c, GlobalTheory.SphEis.Crd σ J C D Z J₀ u b c → GlobalTheory.SphEis.Crd σ J C D Z J₀ (g * u * g⁻¹) ((l : AF F ⊗[F] E) • (b * δ.1)) (((l : AF F ⊗[F] E) * sigR (AF F) σ (l : AF F ⊗[F] E)) • c) := by
+  intro F E _ _ _ _ _ σ n J j m C D Z J₀ hF g l γ hC hD
+  set s := sigR (AF F) σ with hs
+  set G := (matHom _ σ J g).1 with hG
+  have hU : cT s G * adMat F J * G = adMat F J := g.2
+  have pres : ∀ {p q : ℕ} (X : Matrix (Fin n) (Fin p) (AF F ⊗[F] E)) (Y : Matrix (Fin n) (Fin q) (AF F ⊗[F] E)),
+      cT s (G * X) * adMat F J * (G * Y) = cT s X * adMat F J * Y := by
+    intro p q X Y
+    rw [Formalism.UG.cT_mul]
+    calc cT s X * cT s G * adMat F J * (G * Y) = cT s X * (cT s G * adMat F J * G) * Y := by
+          simp only [Matrix.mul_assoc]
+      _ = _ := by rw [hU]
+  have g0 : ∀ {p q : ℕ} (X : Matrix (Fin n) (Fin p) E) (Y : Matrix (Fin n) (Fin q) E), cT (σ : E →+* E) X * J * Y = 0 →
+      cT s (adMat F X) * adMat F J * adMat F Y = 0 := by
+    intro p q X Y h; have := gr_adMat (F := F) σ J X Y; rw [h] at this; simpa [gr] using this
+  have hcd : cT s (adMat F C) * adMat F J * adMat F D = 1 := by
+    have := gr_adMat (F := F) σ J C D; rw [hF.cd] at this; simpa [gr] using this
+  have hzz : cT s (adMat F Z) * adMat F J * adMat F Z = adMat F J₀ := by
+    have := gr_adMat (F := F) σ J Z Z; rw [hF.zz] at this; simpa [gr] using this
+  have hcz := g0 C Z hF.cz
+  have hdz := g0 D Z hF.dz
+  have linv : (l : AF F ⊗[F] E) * ((l⁻¹ : (AF F ⊗[F] E)ˣ) : AF F ⊗[F] E) = 1 := Units.mul_inv l
+  have sinv : s (l : AF F ⊗[F] E) * s ((l⁻¹ : (AF F ⊗[F] E)ˣ) : AF F ⊗[F] E) = 1 := by rw [← map_mul, linv, map_one]
+  have ssl : ∀ x, s (s x) = x := sigR_invol σ hF.cm
+
+  have hγ : γ = s ((l⁻¹ : (AF F ⊗[F] E)ˣ) : AF F ⊗[F] E) • 1 := by
+    have e := pres (adMat F C) (adMat F D)
+    rw [hC, hD, hcd, GlobalTheory.ResidueEisenstein.LeviConj.cT_smul', Matrix.smul_mul, Matrix.smul_mul, ← Matrix.mul_assoc, hcd,
+      Matrix.one_mul] at e
+    calc γ = (s ((l⁻¹ : (AF F ⊗[F] E)ˣ) : AF F ⊗[F] E) * s (l : AF F ⊗[F] E)) • γ := by rw [mul_comm, sinv, one_smul]
+      _ = _ := by rw [← smul_smul, e]
+
+  have hcgz : cT s (adMat F C) * adMat F J * (G * adMat F Z) = 0 := by
+    have e := pres (adMat F C) (adMat F Z)
+    rw [hC, hcz, GlobalTheory.ResidueEisenstein.LeviConj.cT_smul', Matrix.smul_mul, Matrix.smul_mul] at e
+    calc _ = (s ((l⁻¹ : (AF F ⊗[F] E)ˣ) : AF F ⊗[F] E) * s (l : AF F ⊗[F] E)) •
+          (cT s (adMat F C) * adMat F J * (G * adMat F Z)) := by rw [mul_comm, sinv, one_smul]
+      _ = 0 := by rw [← smul_smul, e, smul_zero]
+  have cTγ : cT s γ = ((l⁻¹ : (AF F ⊗[F] E)ˣ) : AF F ⊗[F] E) • 1 := by
+    rw [hγ, GlobalTheory.ResidueEisenstein.LeviConj.cT_smul', ssl, Formalism.UG.cT_one]
+  have hdgz : cT s (adMat F D) * adMat F J * (G * adMat F Z) = 0 := by
+    have e := pres (adMat F D) (adMat F Z)
+    rw [hD, hdz, Formalism.UG.cT_mul, cTγ, Matrix.smul_mul, Matrix.one_mul, Matrix.smul_mul, Matrix.smul_mul] at e
+    calc _ = ((l : AF F ⊗[F] E) * ((l⁻¹ : (AF F ⊗[F] E)ˣ) : AF F ⊗[F] E)) •
+          (cT s (adMat F D) * adMat F J * (G * adMat F Z)) := by rw [linv, one_smul]
+      _ = 0 := by rw [← smul_smul, e, smul_zero]
+  have hsum : adMat F C * (cT s (adMat F D) * adMat F J) + adMat F Z * (adMat F J₀⁻¹ * (cT s (adMat F Z) * adMat F J))
+      + adMat F D * (cT s (adMat F C) * adMat F J) = 1 := by
+    have := congrArg (fun M => adMat F M) hF.sum
+    simp only [adMat, Matrix.map_add _ (map_add _), Matrix.map_mul, Matrix.map_one _ (map_zero _) (map_one _)] at this
+    rw [cT_adMat, cT_adMat, cT_adMat]
+    simpa only [adMat] using this
+  obtain ⟨δ₀, hδ₀⟩ : ∃ X, X = adMat F J₀⁻¹ * (cT s (adMat F Z) * adMat F J * (G * adMat F Z)) := ⟨_, rfl⟩
+  have hGZ : G * adMat F Z = adMat F Z * δ₀ := by
+    calc G * adMat F Z = (adMat F C * (cT s (adMat F D) * adMat F J) + adMat F Z * (adMat F J₀⁻¹ * (cT s (adMat F Z) * adMat F J))
+      + adMat F D * (cT s (adMat F C) * adMat F J)) * (G * adMat F Z) := by rw [hsum, Matrix.one_mul]
+      _ = _ := by
+        simp only [Matrix.add_mul, Matrix.mul_assoc]
+        simp only [← Matrix.mul_assoc (cT s (adMat F D)), ← Matrix.mul_assoc (cT s (adMat F C)),
+          ← Matrix.mul_assoc (cT s (adMat F Z))]
+        rw [hdgz, hcgz, Matrix.mul_zero, Matrix.mul_zero, zero_add, add_zero, hδ₀]
+  have hδu : cT s δ₀ * adMat F J₀ * δ₀ = adMat F J₀ := by
+    have e := pres (adMat F Z) (adMat F Z)
+    rw [hGZ, hzz, Formalism.UG.cT_mul] at e
+    calc cT s δ₀ * adMat F J₀ * δ₀ = cT s δ₀ * (cT s (adMat F Z) * adMat F J * adMat F Z) * δ₀ := by rw [hzz]
+      _ = _ := by rw [← e]; simp only [Matrix.mul_assoc]
+
+  have hu0 : IsUnit J₀.det := isUnit_iff_ne_zero.mpr hF.herm₀.2
+  have jj : adMat F J₀⁻¹ * adMat F J₀ = 1 := by
+    rw [adMat, adMat, ← Matrix.map_mul, Matrix.nonsing_inv_mul _ hu0, Matrix.map_one _ (map_zero _) (map_one _)]
+  have jj' : adMat F J₀ * adMat F J₀⁻¹ = 1 := by
+    rw [adMat, adMat, ← Matrix.map_mul, Matrix.mul_nonsing_inv _ hu0, Matrix.map_one _ (map_zero _) (map_one _)]
+  have hJ0 : cT s (adMat F J₀) = adMat F J₀ := by
+    rw [cT_adMat]; congr 1; ext i k; simp [Formalism.UG.cT, hF.herm₀.1]
+  have hJ0i : cT s (adMat F J₀⁻¹) = adMat F J₀⁻¹ := by
+    rw [cT_adMat, cT_inv_herm σ J₀ hF.herm₀]
+  have hK : IsUnit (adMat F J₀).det := by
+    rw [show (adMat F J₀).det = inclR (F := F) (AF F) J₀.det from (RingHom.map_det _ _).symm]; exact hu0.map _
+  obtain ⟨δi, hδi⟩ : ∃ X, X = adMat F J₀⁻¹ * cT s δ₀ * adMat F J₀ := ⟨_, rfl⟩
+  have hl : δi * δ₀ = 1 := by
+    rw [hδi, Matrix.mul_assoc, Matrix.mul_assoc, ← Matrix.mul_assoc (cT s δ₀), hδu, jj]
+  have hr : δ₀ * δi = 1 := mul_eq_one_comm.mp hl
+  let δ : GL (Fin m) (AF F ⊗[F] E) := ⟨δi, δ₀, hl, hr⟩
+  have hδval : δ.1 = δi := rfl
+  have hiu : cT s δi * adMat F J₀ * δi = adMat F J₀ := by
+    calc cT s δi * adMat F J₀ * δi = cT s δi * (cT s δ₀ * adMat F J₀ * δ₀) * δi := by rw [hδu]
+      _ = cT s (δ₀ * δi) * adMat F J₀ * (δ₀ * δi) := by rw [Formalism.UG.cT_mul]; simp only [Matrix.mul_assoc]
+      _ = _ := by rw [hr, Formalism.UG.cT_one, Matrix.one_mul, Matrix.mul_one]
+  have cTδi : cT s δi = adMat F J₀ * δ₀ * adMat F J₀⁻¹ := by
+    rw [hδi, Formalism.UG.cT_mul, Formalism.UG.cT_mul, hJ0, hJ0i, cT_cT σ hF.cm, Matrix.mul_assoc]
+  have key : δ₀ * adMat F J₀⁻¹ = adMat F J₀⁻¹ * cT s δi := by
+    rw [cTδi, ← Matrix.mul_assoc, ← Matrix.mul_assoc, jj, Matrix.one_mul]
+  refine ⟨δ, ?_, ?_, ?_⟩
+  · have h1 := GlobalTheory.ResidueEisenstein.LeviConj.det_conj_mul_det s δi (adMat F J₀) hK hiu
+    have hu : GlobalTheory.Doubling.conjUnit σ (Matrix.GeneralLinearGroup.det δ) * Matrix.GeneralLinearGroup.det δ = 1 := by
+      ext
+      show sigR (AF F) σ _ * _ = 1
+      exact h1
+    have h2 := congrArg (absE F E) hu
+    rw [map_mul, GlobalTheory.Doubling.absE_conjUnit, map_one, ← sq] at h2
+    exact (pow_eq_one_iff_of_nonneg (by positivity) two_ne_zero).1 h2
+  · rw [hδval, Matrix.mul_assoc, ← key, hδi]
+    calc adMat F J₀⁻¹ * cT s δ₀ * adMat F J₀ * (δ₀ * adMat F J₀⁻¹)
+        = adMat F J₀⁻¹ * (cT s δ₀ * adMat F J₀ * δ₀) * adMat F J₀⁻¹ := by simp only [Matrix.mul_assoc]
+      _ = _ := by rw [hδu, jj, Matrix.one_mul]
+  · intro u b c hu
+    set Gi := (matHom _ σ J g⁻¹).1 with hGi
+    have hGiG : Gi * G = 1 := by
+      rw [hGi, hG, ← Units.val_mul, ← map_mul, inv_mul_cancel, map_one, Units.val_one]
+    have iC : Gi * adMat F C = ((l⁻¹ : (AF F ⊗[F] E)ˣ) : AF F ⊗[F] E) • adMat F C := by
+      have e : adMat F C = ((l⁻¹ : (AF F ⊗[F] E)ˣ) : AF F ⊗[F] E) • (G * adMat F C) := by
+        rw [hC, smul_smul, Units.inv_mul, one_smul]
+      conv_lhs => rw [e]
+      rw [Matrix.mul_smul, ← Matrix.mul_assoc, hGiG, Matrix.one_mul]
+    have iZ : Gi * adMat F Z = adMat F Z * δi := by
+      have e : adMat F Z = G * adMat F Z * δi := by rw [hGZ, Matrix.mul_assoc, hr, Matrix.mul_one]
+      conv_lhs => rw [e]
+      rw [← Matrix.mul_assoc, ← Matrix.mul_assoc, hGiG, Matrix.one_mul]
+    have hGD : G * adMat F D = s ((l⁻¹ : (AF F ⊗[F] E)ˣ) : AF F ⊗[F] E) • adMat F D := by
+      rw [hD, hγ, Matrix.mul_smul, Matrix.mul_one]
+    have iD : Gi * adMat F D = s (l : AF F ⊗[F] E) • adMat F D := by
+      have e : adMat F D = s (l : AF F ⊗[F] E) • (G * adMat F D) := by
+        rw [hGD, smul_smul, sinv, one_smul]
+      conv_lhs => rw [e]
+      rw [Matrix.mul_smul, ← Matrix.mul_assoc, hGiG, Matrix.one_mul]
+    have hplus : adMat F Z * GlobalTheory.SphEis.plus σ J₀ ((l : AF F ⊗[F] E) • (b * δi)) =
+        s (l : AF F ⊗[F] E) • (G * (adMat F Z * GlobalTheory.SphEis.plus σ J₀ b)) := by
+      simp only [GlobalTheory.SphEis.plus]
+      rw [GlobalTheory.ResidueEisenstein.LeviConj.cT_smul', Formalism.UG.cT_mul, ← Matrix.mul_assoc G, hGZ, Matrix.mul_smul, Matrix.mul_smul]
+      congr 1
+      rw [← hs, ← Matrix.mul_assoc (adMat F J₀⁻¹), ← key]; simp only [Matrix.mul_assoc]
+    have hm : (matHom _ σ J (g * u * g⁻¹)).1 = G * (matHom _ σ J u).1 * Gi := by
+      rw [map_mul, map_mul, Units.val_mul, Units.val_mul]
+    refine ⟨?_, ?_, ?_⟩
+    · rw [hm]
+      calc G * (matHom _ σ J u).1 * Gi * adMat F C
+          = ((l⁻¹ : (AF F ⊗[F] E)ˣ) : AF F ⊗[F] E) • (G * ((matHom _ σ J u).1 * adMat F C)) := by
+            rw [Matrix.mul_assoc, iC, Matrix.mul_smul, Matrix.mul_assoc]
+        _ = adMat F C := by rw [hu.onC, hC, smul_smul, Units.inv_mul, one_smul]
+    · rw [hm, hδval]
+      calc G * (matHom _ σ J u).1 * Gi * adMat F Z = G * ((matHom _ σ J u).1 * adMat F Z) * δi := by
+            rw [Matrix.mul_assoc, iZ, ← Matrix.mul_assoc, Matrix.mul_assoc G]
+        _ = _ := by
+            rw [hu.onZ, Matrix.mul_add, ← Matrix.mul_assoc G (adMat F C), hGZ, hC, Matrix.add_mul, Matrix.mul_assoc,
+              hr, Matrix.mul_one, Matrix.smul_mul, Matrix.smul_mul, Matrix.mul_smul, Matrix.mul_assoc]
+    · rw [hm, hδval, hplus]
+      calc G * (matHom _ σ J u).1 * Gi * adMat F D
+          = s (l : AF F ⊗[F] E) • (G * ((matHom _ σ J u).1 * adMat F D)) := by
+            rw [Matrix.mul_assoc, iD, Matrix.mul_smul, Matrix.mul_assoc]
+        _ = s (l : AF F ⊗[F] E) • (G * adMat F D - G * (adMat F Z * GlobalTheory.SphEis.plus σ J₀ b) + G * (adMat F C * c)) := by
+            rw [hu.onD, Matrix.mul_add, Matrix.mul_sub]
+        _ = _ := by
+            rw [hGD, ← Matrix.mul_assoc G (adMat F C), hC]
+            simp only [smul_add, smul_sub, smul_smul, sinv, one_smul, Matrix.smul_mul, Matrix.mul_smul]
+            rw [mul_comm (s (l : AF F ⊗[F] E))]
+
+end GlobalTheory.ResidueEisenstein.LeviConj
+
+end
+end
+
+open scoped TensorProduct NNReal ENNReal Matrix
+open NumberField MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet GlobalTheory.ResLine GlobalTheory.ResidueEisenstein
+open GlobalTheory.Doubling (absE)
+open Formalism.UG (cT bc)
+open GlobalTheory.ResidueEisenstein.ModConj
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.leviConj_scalarIdele_unipotentCoordinates : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (n : ℕ) (J : Matrix (Fin n) (Fin n) E) (j m : ℕ) (C D : Matrix (Fin n) (Fin j) E) (Z : Matrix (Fin n) (Fin m) E) (J₀ : Matrix (Fin m) (Fin m) E), GlobalTheory.SphEis.Fr σ J C D Z J₀ → ∀ (g : GAd σ J) (l : (AF F ⊗[F] E)ˣ) (γ : Matrix (Fin j) (Fin j) (AF F ⊗[F] E)), (matHom _ σ J g).1 * adMat F C = (l : AF F ⊗[F] E) • adMat F C → (matHom _ σ J g).1 * adMat F D = adMat F D * γ → ∃ δ : GL (Fin m) (AF F ⊗[F] E), absE F E (Matrix.GeneralLinearGroup.det δ) = 1 ∧ δ.1 * adMat F J₀⁻¹ * cT (sigR (AF F) σ) δ.1 = adMat F J₀⁻¹ ∧ ∀ u b c, GlobalTheory.SphEis.Crd σ J C D Z J₀ u b c → GlobalTheory.SphEis.Crd σ J C D Z J₀ (g * u * g⁻¹) ((l : AF F ⊗[F] E) • (b * δ.1)) (((l : AF F ⊗[F] E) * sigR (AF F) σ (l : AF F ⊗[F] E)) • c) := by
+  atlas_forward_decl GlobalTheory.ResidueEisenstein.LeviConj.crd_conj_scalar
+end
+
+section
+section
+open scoped TensorProduct NNReal ENNReal Matrix
+open NumberField MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet GlobalTheory.ResLine GlobalTheory.ResidueEisenstein
+open GlobalTheory.Doubling (absE)
+open Formalism.UG (cT bc)
+open GlobalTheory.ResidueEisenstein.ModConj
+
+namespace GlobalTheory.CentralLevi
+
+theorem exists_unit_smul_of_central : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (n : ℕ) (J : Matrix (Fin n) (Fin n) E) (r m : ℕ) (X Y : Matrix (Fin n) (Fin (r + 1)) E) (Z : Matrix (Fin n) (Fin m) E) (J₀ : Matrix (Fin m) (Fin m) E), GlobalTheory.SphEis.Fr σ J X Y Z J₀ → ∀ g ∈ GlobalTheory.StdPar.levi σ J X Y {Fin.last r}, (∀ k ∈ GlobalTheory.StdPar.levi σ J X Y {Fin.last r}, g * k = k * g) → ∃ l : (AF F ⊗[F] E)ˣ, (matHom _ σ J g).1 * adMat F X = (l : AF F ⊗[F] E) • adMat F X := by
+  intro F E _ _ _ _ _ σ n J r m X Y Z J₀ f g hg hc
+  obtain ⟨lv, hlv⟩ := GlobalTheory.SphEis.exists_isLv F E σ n J (r + 1) m X Y Z J₀ f
+
+  let Dα : GL (Fin (r + 1)) (AF F ⊗[F] E) → GL (Fin (r + 1)) (AF F ⊗[F] E) := fun α =>
+    ⟨cT (sigR (AF F) σ) (α⁻¹).1, cT (sigR (AF F) σ) α.1,
+      by rw [← Formalism.UG.cT_mul, Units.mul_inv, Formalism.UG.cT_one],
+      by rw [← Formalism.UG.cT_mul, Units.inv_mul, Formalism.UG.cT_one]⟩
+  have hmem : ∀ α, lv α ∈ GlobalTheory.StdPar.levi σ J X Y {Fin.last r} := fun α => by
+    refine Subgroup.mem_iInf.2 fun k => Subgroup.mem_iInf.2 fun hk => ?_
+    rw [Finset.mem_singleton] at hk
+    subst hk
+    exact ⟨⟨α, trivial, hlv.onC α⟩, ⟨Dα α, trivial, hlv.onD α⟩⟩
+  obtain ⟨B, -, hB⟩ := (Subgroup.mem_iInf.1 (Subgroup.mem_iInf.1 hg (Fin.last r)) (Finset.mem_singleton_self _)).1
+  change GL (Fin (r + 1)) (AF F ⊗[F] E) at B
+  change (matHom _ σ J g).1 * adMat F X = adMat F X * B.1 at hB
+  have hL : adMat F (cT (σ : E →+* E) Y * J) * adMat F X = 1 := by
+    rw [← Matrix.map_mul, f.dc, Matrix.map_one _ (map_zero _) (map_one _)]
+  have hcomm : ∀ α : GL (Fin (r + 1)) (AF F ⊗[F] E), B.1 * α.1 = α.1 * B.1 := fun α => by
+    have e := congrArg (fun h => (matHom _ σ J h).1 * adMat F X) (hc (lv α) (hmem α))
+    simp only [map_mul, Units.val_mul] at e
+    have e1 : (matHom _ σ J g).1 * (matHom _ σ J (lv α)).1 * adMat F X = adMat F X * (B.1 * α.1) := by
+      rw [Matrix.mul_assoc, hlv.onC, ← Matrix.mul_assoc, hB, Matrix.mul_assoc]
+    have e2 : (matHom _ σ J (lv α)).1 * (matHom _ σ J g).1 * adMat F X = adMat F X * (α.1 * B.1) := by
+      rw [Matrix.mul_assoc, hB, ← Matrix.mul_assoc, hlv.onC, Matrix.mul_assoc]
+    have := congrArg (adMat F (cT (σ : E →+* E) Y * J) * ·) (e1.symm.trans (e.trans e2))
+    simpa only [← Matrix.mul_assoc, hL, Matrix.one_mul] using this
+  obtain ⟨c, hcB⟩ := Matrix.mem_range_scalar_of_commute_transvectionStruct (M := B.1) fun t =>
+    (hcomm ⟨t.toMatrix, t.inv.toMatrix, t.mul_inv, t.inv_mul⟩).symm
+  have hu : IsUnit c := by
+    have h1 := congrFun (congrFun (Units.mul_inv B) 0) 0
+    rw [← hcB, Matrix.scalar_apply, Matrix.diagonal_mul, Matrix.one_apply_eq] at h1
+    exact ⟨⟨c, _, h1, by rw [mul_comm]; exact h1⟩, rfl⟩
+  refine ⟨hu.unit, ?_⟩
+  rw [hB, ← hcB, IsUnit.unit_spec]
+  ext i j
+  simp [Matrix.scalar_apply, Matrix.mul_diagonal, mul_comm]
+
+end GlobalTheory.CentralLevi
+end
+
+open scoped TensorProduct NNReal ENNReal Matrix
+open NumberField MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet GlobalTheory.ResLine GlobalTheory.ResidueEisenstein
+open GlobalTheory.Doubling (absE)
+open Formalism.UG (cT bc)
+open GlobalTheory.ResidueEisenstein.ModConj
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_unit_smul_of_central_parabolicLevi : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (n : ℕ) (J : Matrix (Fin n) (Fin n) E) (r m : ℕ) (X Y : Matrix (Fin n) (Fin (r + 1)) E) (Z : Matrix (Fin n) (Fin m) E) (J₀ : Matrix (Fin m) (Fin m) E), GlobalTheory.SphEis.Fr σ J X Y Z J₀ → ∀ g ∈ GlobalTheory.StdPar.levi σ J X Y {Fin.last r}, (∀ k ∈ GlobalTheory.StdPar.levi σ J X Y {Fin.last r}, g * k = k * g) → ∃ l : (AF F ⊗[F] E)ˣ, (matHom _ σ J g).1 * adMat F X = (l : AF F ⊗[F] E) • adMat F X := by
+  atlas_forward_decl GlobalTheory.CentralLevi.exists_unit_smul_of_central
+end
+
+section
 section
 open scoped TensorProduct NNReal ENNReal Matrix
 open NumberField MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet GlobalTheory.ResLine GlobalTheory.ResidueEisenstein
@@ -339,3 +1363,4 @@ open GlobalTheory.Doubling (absE)
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.leviCentreFlow_conj_scales_haar_isotropicUnipotent : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (n : ℕ) (J : Matrix (Fin n) (Fin n) E) (r : ℕ) (X Y : Matrix (Fin n) (Fin (r + 1)) E), IsCMExt F E σ → IsHermND σ J → IsWittFrame σ J X Y → ∀ b, IsFlowJ σ J X Y b → ∀ ν : Measure (unipRad σ J X), ν.IsHaarMeasure → ∀ (t : ℝ) (f : GAd σ J → ℝ≥0∞), Measurable f → ∫⁻ u : unipRad σ J X, f (b t * u * (b t)⁻¹) ∂ν = ENNReal.ofReal (Real.exp (-(((n : ℝ) - (r + 1)) * t))) * ∫⁻ u : unipRad σ J X, f u ∂ν := by
   atlas_forward_decl GlobalTheory.ResidueEisenstein.ModConj.modulus_conj_flow
+end

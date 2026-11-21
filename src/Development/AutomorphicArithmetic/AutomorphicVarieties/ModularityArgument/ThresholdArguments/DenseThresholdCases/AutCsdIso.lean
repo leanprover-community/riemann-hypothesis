@@ -1,9 +1,17 @@
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.DiscreteSeriesCoefficientsCuspidal
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AdmissibleResidues.PolarizedAutomorphicOfAutP
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.AutomorphyLifting.IsAutCsdA
-import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.IsoAltAlt
-import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.IsobaricDense
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.AutomorphyLifting.CompatCsdOf
 
+section
+noncomputable abbrev UpperTheory.V.Z.Win.WitA.isobaricDense := @UpperTheory.V.Z.Win.WitA.iso'
+end
+
+section
+noncomputable abbrev And.isobaricDense := @UpperTheory.V.Z.Win.WitA.iso'
+end
+
+section
 set_option maxHeartbeats 800000
 set_option synthInstance.maxHeartbeats 200000
 
@@ -32,5 +40,6 @@ theorem autQIsoN : _root_.UpperTheory.GalN.V.AutomorphyOverRationalsIsobaricDens
   obtain ⟨⟨π, h1, h3⟩, hw⟩ := h (continuous_of_iso hc e) K h2 (isIrr_iso e' hi)
   exact ⟨⟨π, h1, attC_iso e'.symm' h3⟩, hw.isobaricDense e'.symm'⟩
 end UpperTheory.GalN.V
+end
 end
 end

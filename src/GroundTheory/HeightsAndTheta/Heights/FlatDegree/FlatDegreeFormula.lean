@@ -8,8 +8,6 @@ open NumberField
 noncomputable def rootDisc (F : Type*) [Field F] [NumberField F] : ℝ :=
   |(discr F : ℝ)| ^ ((1 : ℝ) / (Module.finrank ℚ F : ℝ))
 
-theorem rootDisc_rat : rootDisc ℚ = 1 := by
-  simp [rootDisc]
 
 def RootDiscriminantMonotone.Statement : Prop :=
   ∀ (K E : Type) [Field K] [NumberField K] [Field E] [NumberField E] [Algebra K E],

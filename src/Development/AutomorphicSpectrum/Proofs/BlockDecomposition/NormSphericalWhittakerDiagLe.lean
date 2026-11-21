@@ -6,11 +6,52 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsStdInvAndTriv
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SplitOrInertOfUnramified
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsUnramifiedCharCompUnitsMap
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegrableMulIntInd
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EnlHolds
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnramifiedWhittakerSphericalSpanStatement
+import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.KFiniteVectors.KFiniteThetaLifts.PureThetaTransfer.TTRANS
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsBCBaseChange
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnramifiedWhittakerSphericalSpan
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactWhittakerMemSphericalSpan
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnramifiedQuadraticResidueCard
 
+section
+open NumberField IsDedekindDomain GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3 Ad3.K.QuadraticBaseChangeGL3.Th
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Automorphic.Reduction (finAt infAt maxCompact)
+open GroundTheory.Automorphic.GLnLocal (integralGL)
+open Ad3.R (G2 Jd md KA LInv IsLoc2 pt)
+open scoped NumberField.AdeleRing ValuativeRel
+
+namespace GlobalTheory.CompanionTheory.BaseChangeData
+
+theorem enl_holds : ∀ (K : Type) [Field K] [NumberField K], Ad3.K.QuadraticBaseChangeGL3.Th.ENL K := by
+  intro K _ _ _ c S hS
+  classical
+  have hB : ({w : PlK K | w.asIdeal ∣ differentIdeal ℤ (𝓞 K)}).Finite :=
+    Ideal.finite_factors GroundTheory.Global.differentIdeal_ne_bot
+  refine ⟨(S ∪ hB.toFinset).image below, fun v hv w _ => ?_⟩
+  have hvw : v = below w := eq_below v w
+  have hw : w ∉ S ∪ hB.toFinset := fun h => hv (hvw ▸ Finset.mem_image_of_mem below h)
+  simp only [Finset.mem_union, not_or, Set.Finite.mem_toFinset, Set.mem_ofPred_eq] at hw
+  refine ⟨hS w hw.1, ?_⟩
+  by_contra hne
+  exact hw.2 ((dvd_different_iff w).2 hne)
+
+end GlobalTheory.CompanionTheory.BaseChangeData
+end
+
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unramified_whittaker_spherical_span : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] (n : ℕ) (ψ₀ : AddChar F ℂ), (∀ x ∈ 𝒪[F], ψ₀ x = 1) → (∃ x : F, (GLnLocal.uniformizer F : F) * x ∈ 𝒪[F] ∧ ψ₀ x ≠ 1) → ∀ (z : Fin n → ℂˣ) (W : GL (Fin n) F → ℂ), W ∈ Submodule.span ℂ {f : GL (Fin n) F → ℂ | ∃ h : GL (Fin n) F, f = fun g => Spherical.sphericalWhittaker ψ₀ z (g * h)} → (∀ g, ∀ k ∈ GLnLocal.integralGL F n, W (g * k) = W g) → ∀ g, W g = W 1 * Spherical.sphericalWhittaker ψ₀ z g := by
+  first | exact @GlobalTheory.CompanionTheory.SphericalSpan.eq_mul_sphericalWhittaker | exact GlobalTheory.CompanionTheory.SphericalSpan.eq_mul_sphericalWhittaker | (intros; apply GlobalTheory.CompanionTheory.SphericalSpan.eq_mul_sphericalWhittaker <;> assumption)
+end
+
+section
 open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
 open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
 open GroundTheory.Automorphic.GodementSection (localChar)
@@ -187,3 +228,5 @@ theorem main : ∀ (K : Type) [Field K] [NumberField K], Module.finrank ℚ K = 
   exact norm_spherical_whittaker_diag_le h1 y hy m n
 
 end GlobalTheory.CompanionTheory.ThetaBound
+end
+end

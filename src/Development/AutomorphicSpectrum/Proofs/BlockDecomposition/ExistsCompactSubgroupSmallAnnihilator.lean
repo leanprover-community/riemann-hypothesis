@@ -1,6 +1,99 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousRowM
+import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.TwistedKernels.ExPhiPlusOnto
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AddCharConductorAndHaarIntegersExist
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousMirProj
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirabolicCharacterEqStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwistedKernelConjugation
 
+section
+open GlobalTheory.PRep GlobalTheory.BZMir GlobalTheory.BZMir.Fun Matrix ValuativeRel GlobalTheory.SplitWeil
+open scoped Topology
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.BZBeta
+
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+
+theorem continuous_gl {X : Type*} [TopologicalSpace X] {m : ℕ} (f : X → GL (Fin m) k)
+    (hf : Continuous fun x => ((f x : GL (Fin m) k) : Matrix (Fin m) (Fin m) k)) : Continuous f := by
+  refine Units.continuous_iff.2 ⟨hf, ?_⟩
+  have h : (fun x => (((f x)⁻¹ : GL (Fin m) k) : Matrix (Fin m) (Fin m) k)) =
+      fun x => (Matrix.det (f x : Matrix (Fin m) (Fin m) k))⁻¹ •
+        Matrix.adjugate (f x : Matrix (Fin m) (Fin m) k) := by
+    funext x
+    rw [Matrix.coe_units_inv, Matrix.inv_def, Ring.inverse_eq_inv']
+  show Continuous (fun x => (((f x)⁻¹ : GL (Fin m) k) : Matrix (Fin m) (Fin m) k))
+  rw [h]
+  have hd : ∀ x, Matrix.det (f x : Matrix (Fin m) (Fin m) k) ≠ 0 := fun x =>
+    ((Matrix.isUnit_iff_isUnit_det _).1 (f x).isUnit).ne_zero
+  exact (Continuous.inv₀ hf.matrix_det hd).smul hf.matrix_adjugate
+
+theorem continuous_levi (n : ℕ) : Continuous (levi k n) := by
+  have hv : Continuous fun g : GL (Fin n) k => ((g : GL (Fin n) k) : Matrix (Fin n) (Fin n) k) :=
+    Units.continuous_val
+  have h : Continuous fun g : GL (Fin n) k => glEmb k n g := by
+    refine continuous_gl _ ?_
+    refine continuous_pi fun i => continuous_pi fun j => ?_
+    show Continuous fun g : GL (Fin n) k => glEmbMat k n (g : Matrix (Fin n) (Fin n) k) i j
+    induction i using Fin.lastCases with
+    | last =>
+      induction j using Fin.lastCases with
+      | last => simpa [glEmbMat] using continuous_const
+      | cast j => simpa [glEmbMat] using continuous_const
+    | cast i =>
+      induction j using Fin.lastCases with
+      | last => simpa [glEmbMat] using continuous_const
+      | cast j =>
+        simp only [glEmbMat, Fin.lastCases_castSucc]
+        exact (continuous_apply j).comp ((continuous_apply i).comp hv)
+  exact h.subtype_mk (fun g => glEmb_mem_Mir k n g)
+
+def unipMir (m : ℕ) (x : Fin m → k) : Mir k m :=
+  ⟨unip k m (Multiplicative.ofAdd x), MirU_le_Mir k m ⟨_, rfl⟩⟩
+
+def secMat (n : ℕ) (j : Fin (n + 1)) (a : Fin (n + 1) → k) : Matrix (Fin (n + 1)) (Fin (n + 1)) k :=
+  ((1 : Matrix (Fin (n + 1)) (Fin (n + 1)) k).updateRow (Fin.last n)
+    (a ∘ Equiv.swap j (Fin.last n))).submatrix id (Equiv.swap j (Fin.last n))
+
+end GlobalTheory.CompanionTheory.BZBeta
+
+end
+end
+
+section
+noncomputable section
+
+open Matrix GlobalTheory.PRep GlobalTheory.BZMir
+
+namespace GlobalTheory.CompanionTheory.BZOnto
+
+variable {k : Type} [Field k]
+
+def rowM {n : ℕ} (g : Mir k (n + 1)) : Fin (n + 1) → k :=
+  ((mirabolicProjection k (n + 1) g : GL (Fin (n + 1)) k) : Matrix (Fin (n + 1)) (Fin (n + 1)) k) (Fin.last n)
+
+def perp (ψ : AddChar k Circle) {m : ℕ} (Λ : AddSubgroup (Fin m → k)) : AddSubgroup (Fin m → k) where
+  carrier := {b | ∀ l ∈ Λ, ψ (b ⬝ᵥ l) = 1}
+  add_mem' {a b} ha hb l hl := by rw [add_dotProduct, AddChar.map_add_eq_mul, ha l hl, hb l hl, one_mul]
+  zero_mem' l _ := by simp
+  neg_mem' {a} ha l hl := by rw [neg_dotProduct, AddChar.map_neg_eq_inv, ha l hl, inv_one]
+
+open GlobalTheory.BZMir.Fun GlobalTheory.CompanionTheory.BZBeta
+open scoped Topology
+
+section Row
+
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+
+end Row
+
+end GlobalTheory.CompanionTheory.BZOnto
+
+end
+end
+
+section
 open Matrix GlobalTheory.PRep GlobalTheory.BZMir GlobalTheory.BZMir.Fun GlobalTheory.CompanionTheory.BZBeta GlobalTheory.CompanionTheory.BZOnto GlobalTheory.SplitWeil ValuativeRel
 open scoped Topology
 
@@ -63,3 +156,4 @@ theorem dotProduct_mem_cball {m : ℕ} {r s : kˣ} {b l : Fin m → k} (hb : b �
         simp
 
 end GlobalTheory.CompanionTheory.BZOnto.PerpSmall
+end

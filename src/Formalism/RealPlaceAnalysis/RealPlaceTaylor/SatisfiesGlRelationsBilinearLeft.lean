@@ -116,9 +116,6 @@ theorem canonicalCommutation_holds : CCR := by
     refine ⟨(mulX_negDeriv_commutator _ _).trans hI, mulX_mul_mulX_comm _ _, ?_⟩
     rw [neg_mul_neg, neg_mul_neg, deriv_mul_deriv_comm (i, a) (j, b)]
 
-lemma sum_sum_sub_sum_sum {A α β : Type*} [AddCommGroup A] [Fintype α] [Fintype β] (f g : α → β → A) :
-    ∑ x, ∑ y, f x y - ∑ x, ∑ y, g x y = ∑ x, ∑ y, (f x y - g x y) := by
-  simp only [Finset.sum_sub_distrib]
 
 lemma sum_sum_sub_sum_sum_swap {A α β : Type*} [AddCommGroup A] [Fintype α] [Fintype β] (f : α → β → A)
     (g : β → α → A) :
@@ -271,28 +268,5 @@ theorem fockPairGl_of (h : CCR) : FockPairGl := by
     simp only [mul_neg, neg_mul]
     rw [bilinearLeft_mul_bilinearRight hBP hBB hPP]
 
-theorem fockCas_of (h : CCR) : FockCas := by
-  intro M n' ε ε'
-  have hBP : ∀ i j a b, bop ε ε' i a * bpl ε ε' j b - bpl ε ε' j b * bop ε ε' i a =
-      if i = j ∧ a = b then 1 else 0 := fun i j a b => (h M n' ε ε' i j a b).1
-  have hBB : ∀ i j a b, bop ε ε' i a * bop ε ε' j b = bop ε ε' j b * bop ε ε' i a :=
-    fun i j a b => (h M n' ε ε' i j a b).2.1
-  have hEg : Eg ε ε' = bilinearLeft (bop ε ε') (bpl ε ε') := by
-    funext i j
-    rfl
-  have hEg' : Eg' ε ε' = fun a b => -bilinearRight (bop ε ε') (bpl ε ε') a b := by
-    funext a b
-    rfl
-  have hNN : NN ε ε' = bilinearNumber (bop ε ε') (bpl ε ε') := rfl
-  refine ⟨?_, ?_⟩
-  · simp only [NN, Eg, Eg', Finset.sum_neg_distrib, neg_neg]
-    exact Finset.sum_comm
-  · have hc : Cas (Eg' ε ε') = ∑ a, ∑ b,
-        bilinearRight (bop ε ε') (bpl ε ε') a b * bilinearRight (bop ε ε') (bpl ε ε') b a := by
-      rw [hEg']
-      simp only [Cas, neg_mul_neg]
-    rw [hc, casimir_bilinearRight_sum hBP hBB, hEg, casimir_bilinearLeft hBP, hNN, Nat.cast_smul_eq_nsmul,
-      Nat.cast_smul_eq_nsmul]
-    abel
 
 end Formalism.REAL

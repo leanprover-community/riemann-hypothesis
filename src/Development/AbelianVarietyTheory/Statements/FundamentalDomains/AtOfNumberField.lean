@@ -35,7 +35,6 @@ def At (x : KeyIn ℂ) : Prop :=
       (∃ (τ M : Matrix (Fin x₀.P.g) (Fin x₀.P.g) ℂ) (a b : Fin x₀.P.g → ℂ) (c : ℂ),
         charHalf _ a b ∧ c ≠ 0 ∧ NormalAt x₀ τ M a b c ∧ e t₀ = M.det ^ 4 / c ^ 8)
 
-theorem connFam_iff : ConnFam ↔ ∀ x, At x := Iff.rfl
 
 theorem exists_datum (H : TorusAlgebraic) (g : ℕ) (hg : 1 ≤ g) : ∃ x : KeyIn ℂ, x.P.g = g :=
   let ⟨x, _, _, h, _⟩ := KeyPow.Test.exists_classical H g hg 0 0 (Or.inl rfl) (Or.inl rfl)

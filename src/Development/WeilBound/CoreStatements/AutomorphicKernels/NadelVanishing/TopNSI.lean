@@ -1,10 +1,41 @@
-import Development.WeilBound.CoreStatements.AutomorphicKernels.NadelVanishing.TopNadel
-import Development.WeilBound.CoreStatements.AutomorphicKernels.NadelVanishing.TopIsolated
-import Development.WeilBound.CoreStatements.AutomorphicKernels.NadelVanishing.TopPointSep
+import Mathlib
+import Development.WeilBound.CoreStatements.PublishedTheorems.NadelVanishingPairs.NadelVanishingLemmas.NadelVanishingPairsOfPrincipalisation
+import Development.WeilBound.CoreStatements.ResolutionCharZero.PrincipalisationClosed
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsolatedNonKltDivisorOfPrincipalisation
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PointSeparationPairOfPrincipalisation
 
+section
+namespace NadelVanishingSeparation.NSI
+
+theorem nadelVanishingPair : GlobalTheory.Published.NadelVanishingPair :=
+  GlobalTheory.Discrepancy.nadelVanishingPair_of_principalisation PositivityTheory.ResPlug.WeightsCompactStabilizer.principalisation_closed
+
+end NadelVanishingSeparation.NSI
+end
+
+section
+namespace NadelVanishingSeparation.NSI
+
+theorem isolatedNonKltDivisor : GlobalTheory.Published.IsolatedNonKltDivisor :=
+  GlobalTheory.isolatedNonKltDivisor_of_principalisation PositivityTheory.ResPlug.WeightsCompactStabilizer.principalisation_closed
+
+end NadelVanishingSeparation.NSI
+end
+
+section
+namespace NadelVanishingSeparation.NSI
+
+theorem pointSeparationPair : GlobalTheory.Published.PointSeparationPair :=
+  GlobalTheory.pointSeparationPair_of_principalisation PositivityTheory.ResPlug.WeightsCompactStabilizer.principalisation_closed
+
+end NadelVanishingSeparation.NSI
+end
+
+section
 namespace NadelVanishingSeparation.NSI
 
 theorem nadelVanishingAndNonKltDivisor : GlobalTheory.Published.NadelVanishingAndNonKltDivisor :=
   ⟨nadelVanishingPair, isolatedNonKltDivisor⟩
 
 end NadelVanishingSeparation.NSI
+end

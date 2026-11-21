@@ -97,69 +97,7 @@ theorem mem_of_span (ρ : Representation ℂ G V) {K : Subgroup G} (c : IsCompac
   rw [av_of_fixed ρ K K₀ hfix] at h1
   exact (Submodule.smul_mem_iff _ (Nat.cast_ne_zero.2 Fintype.card_ne_zero)).1 h1
 
-theorem isAdmissible_orb (π : Representation ℂ G V) (ρ : Representation ℂ G W) (hπ : IsAdmissible π) (f : W)
-    (hf : f ∈ ⨆ (T : V →ₗ[ℂ] W) (_ : ∀ g, T ∘ₗ π g = ρ g ∘ₗ T), LinearMap.range T) :
-    IsAdmissible (sub ρ (orb ρ f) (orb_stable ρ f)) := by
-  rw [iSup_subtype', Submodule.mem_iSup_iff_exists_finset] at hf
-  obtain ⟨s, hs⟩ := hf
-  have hT : ∀ (T : {T : V →ₗ[ℂ] W // ∀ g, T ∘ₗ π g = ρ g ∘ₗ T}) g v, ρ g (T.1 v) = T.1 (π g v) :=
-    fun T g v => (LinearMap.congr_fun (T.2 g) v).symm
-  let S : Set W := {w | ∃ T ∈ s, ∃ v, w = T.1 v}
-  have h1 : f ∈ Submodule.span ℂ S := by
-    refine (iSup₂_le fun T hT' => ?_ : _ ≤ Submodule.span ℂ S) hs
-    rintro _ ⟨v, rfl⟩
-    exact Submodule.subset_span ⟨T, hT', v, rfl⟩
-  have h2 : orb ρ f ≤ Submodule.span ℂ S := by
-    refine Submodule.span_le.2 ?_
-    rintro _ ⟨g, rfl⟩
-    refine (Submodule.span_le (p := (Submodule.span ℂ S).comap (ρ g))).2 ?_ h1
-    rintro _ ⟨T, hT', v, rfl⟩
-    exact Submodule.subset_span ⟨T, hT', _, hT T g v⟩
-  refine ⟨fun w => ?_, fun K o c => ?_⟩
-  · have h3 : Submodule.span ℂ S ≤ smoothPart ρ := by
-      refine Submodule.span_le.2 ?_
-      rintro _ ⟨T, -, v, rfl⟩
-      refine Subgroup.isOpen_mono (H₁ := stab π v) (H₂ := stab ρ (T.1 v)) (fun g hg => ?_) (hπ.1 v)
-      show ρ g (T.1 v) = T.1 v
-      rw [hT, show π g v = v from hg]
-    have h4 : IsOpen {g | ρ g w.1 = w.1} := h3 (h2 w.2)
-    convert h4 using 3
-    exact Subtype.ext_iff
-  · haveI := hπ.2 K o c
-    let W₀ : Submodule ℂ W := ⨆ T : s, (fixed π K).map T.1.1
-    have h3 : (fixed (sub ρ (orb ρ f) (orb_stable ρ f)) K).map (orb ρ f).subtype ≤ W₀ := by
-      rintro _ ⟨w, hw, rfl⟩
-      refine mem_of_span ρ c S W₀ ?_ (h2 w.2) fun k hk => congrArg Subtype.val (mem_fixed.1 hw k hk)
-      rintro _ ⟨T, hT', v, rfl⟩
-      refine ⟨stab π v, hπ.1 v, fun K' h _ => Submodule.mem_iSup_of_mem (⟨T, hT'⟩ : s) ⟨av π K K' v, ?_, ?_⟩⟩
-      · exact mem_fixed.2 (av_fixed π K K' h)
-      · simp [av, hT]
-    haveI := Submodule.finiteDimensional_of_le h3
-    exact (Submodule.equivMapOfInjective _ (Submodule.injective_subtype _) _).symm.finiteDimensional
 
-theorem isAdmissible_smInd [FiniteDimensional ℂ W] (P : Subgroup G) (σ : Representation ℂ P W) {C : Set G} (hC : IsCompact C)
-    (hPC : ∀ x : G, ∃ p : P, ∃ w ∈ C, x = p * w) : IsAdmissible (smInd P σ) := by
-  refine ⟨fun v => ?_, fun K o c => ?_⟩
-  · have h : IsOpen {g | ind P σ g v.1 = v.1} := v.2
-    convert h using 3
-    exact Subtype.ext_iff
-  · obtain ⟨t, -, ht⟩ := hC.elim_nhds_subcover (fun x => (fun y => x⁻¹ * y) ⁻¹' (K : Set G)) fun x _ =>
-      (o.preimage (by fun_prop)).mem_nhds (by simp)
-    let ev : fixed (smInd P σ) K →ₗ[ℂ] (t → W) :=
-      { toFun := fun f x => f.1.1.1 x
-        map_add' := fun _ _ => rfl
-        map_smul' := fun _ _ => rfl }
-    refine FiniteDimensional.of_injective ev ((injective_iff_map_eq_zero ev).2 fun f hf => ?_)
-    ext x
-    obtain ⟨p, w, hw, rfl⟩ := hPC x
-    obtain ⟨y, hy, hk⟩ := Set.mem_iUnion₂.1 (ht hw)
-    have h1 : f.1.1.1 (y * (y⁻¹ * w)) = f.1.1.1 y :=
-      congrArg (fun φ : smoothPart (ind P σ) => φ.1.1 y) (mem_fixed.1 f.2 _ hk)
-    have h2 : f.1.1.1 y = 0 := congrFun hf ⟨y, hy⟩
-    rw [mul_inv_cancel_left, h2] at h1
-    have h3 := f.1.1.2 p w
-    rw [h1, map_zero] at h3
-    exact h3
 
 end Top
 

@@ -74,8 +74,6 @@ structure LawsSh (T : Top D) : Prop where
 def Packet66Rest (Q : Par D) : Prop :=
   ∃ G : In66 Q, G.PinDat ∧ G.PinTower ∧ G.HasData ∧ G.PinPts ∧ G.PinLat ∧ G.BaseChange
 
-theorem LawsP.packet66_rest {T : Top D} (h : LawsP T) : Packet66Rest T.Q :=
-  ⟨T.G, h.datum_condition, h.tower, h.hasData_condition, h.points_condition, h.lattice_condition, h.bc66⟩
 
 def TopExists (D : D7) : Prop := ∃ T : Top D, LawsP T
 

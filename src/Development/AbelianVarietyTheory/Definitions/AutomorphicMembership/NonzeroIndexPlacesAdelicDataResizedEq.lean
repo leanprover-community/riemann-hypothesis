@@ -84,9 +84,6 @@ theorem ExtModel.par_eq (h : Enl B B') :
 
 variable {hX : B.fields.Ok} {Wt W₁ : Set B.places.Pl}
 
-theorem ExtModel.not_ext {z : Dat (w.st Z) w.I hX T Wt} {z' : Dat (w.st Z) w.I hX T W₁}
-    (h : z'.R.ψ ≠ z.R.ψ ∨ z'.R.nW ≠ z.R.nW) : ¬ Ext z z' :=
-  fun e => h.elim (fun q => q (eq_of_heq e.ψ)) fun q => q (eq_of_heq e.nW)
 
 theorem ExtModel.nonzeroIndexPlaces_adelicDataResized_eq {z : Dat (w.st Z) w.I hX T Wt} {z' : Dat (w.st Z) w.I hX T W₁} (e : Ext z z') :
     z.W1 (fun _ _ => 0) = z'.W1 fun _ _ => 0 :=

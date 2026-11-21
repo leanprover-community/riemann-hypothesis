@@ -1,7 +1,7 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ContDiffUncentre
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsBdryChartOfHol
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LogPeriodsRiemannFormStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LogPeriodsRiemannForm
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComplexPointsIffCentresStatement
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GramMatrixConjugation
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ConjugatePointSameCentreStatement
@@ -14,14 +14,489 @@ import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BoundaryDiscMapEmbe
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeTangentVectorsAffineOpenStatement
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HolomorphicDiscInAffineOpen
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianMapTangentCoordinates
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ChartLatticeTangentCoordinatesStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeGeneratedSumSpecialization
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeGeneratedSumSpecializationFrame
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelComplexLinearComparison
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TBijective
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsConjugateLogPeriodsStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCptAwayFromPrimesStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCptInteriorFlag
+import BuildAid.ForwardExisting
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsConjugateLogPeriods
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ConjugateRootZeroSecond
 
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl GlobalTheory.CompanionTheory.Ar.Flat Filter Topology Metric
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.log_periods_riemann_form : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (σ : KA l →+* ℂ) (n a : ℕ) (C : BdryChart Xo σ n a), 1 ≤ D.p + D.q → σ (baseKA l).ρ = H.rt0 → ∃ (ρ : ℝ) (Λ : Type) (_ : AddCommGroup Λ) (L : LogPeriods n a C.g Λ), 0 < ρ ∧ ρ ≤ 1 ∧ ∀ z ∈ punct n a 1, C.IsRiem ((ρ : ℂ) • z) (L.H z) := by
+  first | exact @GlobalTheory.CompanionTheory.Ar.Flat.exists_logPeriods_isRiem | exact GlobalTheory.CompanionTheory.Ar.Flat.exists_logPeriods_isRiem | (intros; apply GlobalTheory.CompanionTheory.Ar.Flat.exists_logPeriods_isRiem <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped Matrix ComplexOrder
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.RiemGram
+
+theorem hodgeForm_of_isHodgeGram {S : Scheme.{0}} {G : Over S} [GrpObj G] {L : LB G.left} {x : Sp ℂ ⟶ S} {n : ℕ}
+    {v : Fin n → (epsAt x ⟶ G)} {Γ : Matrix (Fin n) (Fin n) ℂ} (hL : L.IsLB) (hv : ∀ i, IsTanAt G x (v i))
+    (h : Fl.IsHodgeGram G L x v Γ) (i j : Fin n) : HodgeForm G L x (v i) (v j) (Γ i j) := by
+  obtain ⟨Q, ψ, v', u, Hm, χ, W, hp, hiso, hAH, hvW, hΓ⟩ := h
+  have hM : (L.pull ψ).IsLB := LB.isLB_pull hL ψ
+  obtain ⟨w, hw⟩ := LBIso.symm hiso
+  exact ⟨hL, hv i, hv j, Q.A, inferInstance, ψ, Q.g, TorsionTauCompare.transport Q.isLB hM hw u, Hm, χ, v' i, v' j,
+    W i, W j, hp, TorsionTauCompare.isAH_transport Q.isLB hM hw u hAH, (hvW i).1, (hvW j).1, (hvW i).2, (hvW j).2,
+    hΓ i j⟩
+
+theorem isTanAt_value {R : Type} [CommRing R] {G : Over (Sp R)} [GrpObj G] {Ei : Type} [AddCommGroup Ei] [Module R Ei]
+    (M : LieModel G (𝟙 (Sp R)) Ei) (f : R →+* ℂ) (e : Ei) (v : epsAt (spMap f) ⟶ G)
+    (hv : v.left = spMap (dualMap f) ≫ (M.pt e).left) : IsTanAt G (spMap f) v := by
+  have ht := M.tan e
+  unfold IsTanAt at ht ⊢
+  have hsq : Spec.map (CommRingCat.ofHom (TrivSqZeroExt.fstHom ℂ ℂ ℂ).toRingHom) ≫ spMap (dualMap f) =
+      spMap f ≫ Spec.map (CommRingCat.ofHom (TrivSqZeroExt.fstHom R R R).toRingHom) := by
+    simp only [spMap, ← Spec.map_comp, ← CommRingCat.ofHom_comp]
+    congr 2
+    refine RingHom.ext fun r => ?_
+    simp [dualMap]
+  rw [hv, ← Category.assoc, hsq, Category.assoc, ht]
+  let F : Over.mk (spMap f) ⟶ Over.mk (𝟙 (Sp R)) := Over.homMk (spMap f) (by simp)
+  have h1 : F ≫ (1 : Over.mk (𝟙 (Sp R)) ⟶ G) = 1 := MonObj.comp_one _
+  exact congrArg CommaMorphism.left h1
+
+theorem exists_value {R : Type} [CommRing R] {G : Over (Sp R)} [GrpObj G] {Ei : Type} [AddCommGroup Ei] [Module R Ei]
+    (M : LieModel G (𝟙 (Sp R)) Ei) (f : R →+* ℂ) (e : Ei) :
+    ∃ v : epsAt (spMap f) ⟶ G, v.left = spMap (dualMap f) ≫ (M.pt e).left := by
+  have hsq : spMap (dualMap f) ≫ spMap (algebraMap R (DualNumber R)) =
+      spMap (algebraMap ℂ (DualNumber ℂ)) ≫ spMap f := by
+    simp only [spMap, ← Spec.map_comp, ← CommRingCat.ofHom_comp]
+    congr 2
+    refine RingHom.ext fun r => ?_
+    ext <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl]
+  refine ⟨Over.homMk (spMap (dualMap f) ≫ (M.pt e).left) ?_, rfl⟩
+  have hw := Over.w (M.pt e)
+  show (spMap (dualMap f) ≫ (M.pt e).left) ≫ G.hom = spMap (algebraMap ℂ (DualNumber ℂ)) ≫ spMap f
+  rw [Category.assoc, hw, ← hsq]
+  simp
+
+theorem gramAt_of_isRiem : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (σ : KA l →+* ℂ) (n a : ℕ) (C : Flat.BdryChart Xo σ n a) (X : Scheme.{0}) (t : SAB H X) (h : Sp C.R ⟶ X) (m : SABMap C.t t h) (Ω : Type) [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) (Li : Type) [AddCommGroup Li] [Module Ω Li] (M : LieModel t.G ξ Li) (N : ℕ) (b : Fin N → Li) (x : Fin N → Fin C.g → C.R) (z : Fin n → ℂ) (Hm : Matrix (Fin C.g) (Fin C.g) ℂ) (w : Fin N → (epsAt (spMap (C.ψ z) ≫ h) ⟶ t.G)), C.IsRiem z Hm → (∀ k, M.ValAt _ (b k) (w k)) → (∀ k, (w k).left = spMap (dualMap (C.ψ z)) ≫ (C.M.pt (x k)).left ≫ m.φ) → M.GramAt t.PP.L (spMap (C.ψ z) ≫ h) b (Matrix.of fun i j => (Real.pi : ℂ) * ((fun e => C.ψ z (x j e)) ⬝ᵥ Hm *ᵥ star (fun e => C.ψ z (x i e)))) := by
+  intro E _ _ _ H D l Xo σ n a C X t h m Ω _ ξ Li _ _ M N b x z Hm w hR hval hw
+  choose v hv using fun k => exists_value C.M (C.ψ z) (x k)
+  have hG := (hR N x v (Matrix.of fun i j => (Real.pi : ℂ) * hermForm Hm (fun e => C.ψ z (x i e))
+    (fun e => C.ψ z (x j e))) hv).2 fun _ _ => rfl
+  have hF := hodgeForm_of_isHodgeGram C.t.PP.isLB (fun k => isTanAt_value C.M (C.ψ z) (x k) (v k) (hv k)) hG
+  have e : ∀ k, (w k).left = (v k).left ≫ m.φ := fun k => by rw [hw k, hv k, Category.assoc]
+  exact ⟨w, hval, fun p q => (GlobalTheory.T.hodge_inner_product_map_iff E H X t (Sp C.R) C.t h m (spMap (C.ψ z)) (v p) (v q) (w p) (w q) _
+    (e p) (e q)).1 (hodgeInnerProduct_iff_hodgeForm.2 (hF q p))⟩
+
+end GlobalTheory.CompanionTheory.Ar.RiemGram
+end
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped Matrix ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.chart_lattice_tangent_coordinates : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (σ : KA l →+* ℂ) (n a : ℕ) (C : Flat.BdryChart Xo σ n a) (X : Scheme.{0}) (t : SAB H X) (h : Sp C.R ⟶ X) (m : SABMap C.t t h) (Ω : Type) [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) (Li : Type) [AddCommGroup Li] [Module Ω Li] (M : LieModel t.G ξ Li) (N : ℕ) (b : Fin N → Li) (x : Fin N → Fin C.g → C.R) (z : Fin n → ℂ) (Hm : Matrix (Fin C.g) (Fin C.g) ℂ) (w : Fin N → (epsAt (spMap (C.ψ z) ≫ h) ⟶ t.G)), C.IsRiem z Hm → (∀ k, M.ValAt _ (b k) (w k)) → (∀ k, (w k).left = spMap (dualMap (C.ψ z)) ≫ (C.M.pt (x k)).left ≫ m.φ) → M.GramAt t.PP.L (spMap (C.ψ z) ≫ h) b (Matrix.of fun i j => (Real.pi : ℂ) * ((fun e => C.ψ z (x j e)) ⬝ᵥ Hm *ᵥ star (fun e => C.ψ z (x i e)))) := by
+  first | exact @GlobalTheory.CompanionTheory.Ar.RiemGram.gramAt_of_isRiem | exact GlobalTheory.CompanionTheory.Ar.RiemGram.gramAt_of_isRiem | (intros; apply GlobalTheory.CompanionTheory.Ar.RiemGram.gramAt_of_isRiem <;> assumption)
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped Matrix ComplexOrder
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.HodgeMetric.FrameLat
+
+theorem not_inFibre_of_complex {Ω : Type} [Field Ω] [CharZero Ω] {X : Scheme.{0}} {ξ : Spec (CommRingCat.of Ω) ⟶ X}
+    {z : Spec (CommRingCat.of ℂ) ⟶ X} (hz : genPt ξ ⤳ centre z) {p : ℕ} (hp : p.Prime) :
+    ¬ InFibre ξ p ⟨centre z, hz⟩ := by
+  have hp0 : (p : ℂ) ≠ 0 := Nat.cast_ne_zero.2 hp.ne_zero
+  have hs : (Scheme.stalkClosedPointTo z).hom (p : X.presheaf.stalk (centre z)) ≠ 0 := fun h0 =>
+    hp0 ((map_natCast (Scheme.stalkClosedPointTo z).hom p).symm.trans h0)
+  obtain ⟨u, hu⟩ := CxVal.isUnit _ hs
+  have hg : genMap ξ ⟨centre z, hz⟩ (p : X.presheaf.stalk (centre z)) = (p : Ω) := map_natCast _ _
+  intro h
+  refine h ⟨Nat.cast_ne_zero.2 hp.ne_zero, ⟨_, hg⟩, ⟨((u⁻¹ : (X.presheaf.stalk (centre z))ˣ) : X.presheaf.stalk (centre z)), ?_⟩⟩
+  have h1 : genMap ξ ⟨centre z, hz⟩ (u : X.presheaf.stalk (centre z)) = (p : Ω) := by rw [hu, hg]
+  have h2 : genMap ξ ⟨centre z, hz⟩ ((u⁻¹ : (X.presheaf.stalk (centre z))ˣ) : X.presheaf.stalk (centre z)) *
+      genMap ξ ⟨centre z, hz⟩ (u : X.presheaf.stalk (centre z)) = 1 := by
+    rw [← map_mul, Units.inv_mul, map_one]
+  rw [h1] at h2
+  exact eq_inv_of_mul_eq_one_left h2
+
+theorem frame_mem_lat : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (S : Finset ℕ) (Ω : Type) [Field Ω] [CharZero Ω] (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (y : (Σ k, J k) → Ω) (𝔐 : HodgeCpt Y S y) (a b : CMType H ⊕ CMType H) (N : ℕ) (bb : Fin N → ↥(𝔐.Vgen a ⊔ 𝔐.Vgen b)) (z : Spec (CommRingCat.of ℂ) ⟶ 𝔐.X) (h : genPt 𝔐.ξ ⤳ centre z), (Lat.comap (fun p => 𝔐.V a p ⊔ 𝔐.V b p) (𝔐.Vgen a ⊔ 𝔐.Vgen b).subtype).IsFrameAt bb ⟨centre z, h⟩ → ∀ k, ((bb k : ↥(𝔐.Vgen a ⊔ 𝔐.Vgen b)) : 𝔐.Li) ∈ 𝔐.M.lat ⟨centre z, h⟩ := by
+  intro E _ _ _ H D l Xo c Y S Ω _ _ K _ J _ y 𝔐 a b N bb z hgen hfr k
+  have hβ : Function.Injective (algebraMap (𝓞 c.F) c.F) := NumberField.RingOfIntegers.coe_injective
+  obtain ⟨hV, -, -⟩ := GlobalTheory.T.hodge_cpt_away_from_primes E H D l Xo c _ _ Y S Ω K J y 𝔐 hβ ⟨centre z, hgen⟩
+    fun r hr => not_inFibre_of_complex hgen hr
+  have hm : bb k ∈ (Lat.comap (fun p => 𝔐.V a p ⊔ 𝔐.V b p) (𝔐.Vgen a ⊔ 𝔐.Vgen b).subtype) ⟨centre z, hgen⟩ := by
+    rw [hfr.2]
+    exact Submodule.subset_span ⟨k, rfl⟩
+  have hm' : ((bb k : ↥(𝔐.Vgen a ⊔ 𝔐.Vgen b)) : 𝔐.Li) ∈ 𝔐.V a ⟨centre z, hgen⟩ ⊔ 𝔐.V b ⟨centre z, hgen⟩ := hm
+  rw [hV, hV] at hm'
+  refine (sup_le ?_ ?_ : 𝔐.dR a ⟨centre z, hgen⟩ ⊔ 𝔐.dR b ⟨centre z, hgen⟩ ≤ 𝔐.M.lat ⟨centre z, hgen⟩) hm'
+  · exact fun x hx => hx.1
+  · exact fun x hx => hx.1
+
+end GlobalTheory.CompanionTheory.Ar.HodgeMetric.FrameLat
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped Matrix ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hodge_generated_sum_specialization : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (S : Finset ℕ) (Ω : Type) [Field Ω] [CharZero Ω] (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (y : (Σ k, J k) → Ω) (𝔐 : HodgeCpt Y S y) (a b : CMType H ⊕ CMType H) (N : ℕ) (bb : Fin N → ↥(𝔐.Vgen a ⊔ 𝔐.Vgen b)) (z : Spec (CommRingCat.of ℂ) ⟶ 𝔐.X) (h : genPt 𝔐.ξ ⤳ centre z), (Lat.comap (fun p => 𝔐.V a p ⊔ 𝔐.V b p) (𝔐.Vgen a ⊔ 𝔐.Vgen b).subtype).IsFrameAt bb ⟨centre z, h⟩ → ∀ k, ((bb k : ↥(𝔐.Vgen a ⊔ 𝔐.Vgen b)) : 𝔐.Li) ∈ 𝔐.M.lat ⟨centre z, h⟩ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.HodgeMetric.FrameLat.frame_mem_lat
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped Matrix ComplexOrder
+
+noncomputable section
+namespace GlobalTheory.CompanionTheory.Ar.PeriodIndep
+
+section Dual
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H}
+  {Xo : Moduli D l} {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F} {Y : Model Xo c β} {S : Finset ℕ}
+  {Ω : Type} [Field Ω] {K : Type} [Fintype K] {J : K → Type} {y : (Σ k, J k) → Ω}
+
+theorem disjoint_sup_biSup {α I : Type} [CompleteLattice α] [IsModularLattice α] {t : I → α} (hind : iSupIndep t)
+    (a b : I) : Disjoint (t a ⊔ t b) (⨆ s ∈ {s | s ≠ a ∧ s ≠ b}, t s) := by
+  by_cases hab : a = b
+  · subst hab
+    rw [sup_idem]
+    exact hind.disjoint_biSup fun h => h.1 rfl
+  · refine Disjoint.disjoint_sup_left_of_disjoint_sup_right (hind.disjoint_biSup fun h => h.2 rfl) ?_
+    have h1 : t b ≤ ⨆ j, ⨆ (_ : j ≠ a), t j :=
+      le_iSup₂_of_le (f := fun j (_ : j ≠ a) => t j) b (fun h => hab h.symm) le_rfl
+    have h2 : (⨆ s ∈ {s | s ≠ a ∧ s ≠ b}, t s) ≤ ⨆ j, ⨆ (_ : j ≠ a), t j :=
+      iSup₂_le fun s hs => le_iSup₂_of_le (f := fun j (_ : j ≠ a) => t j) s hs.1 le_rfl
+    exact (hind a).mono_right (sup_le h1 h2)
+
+theorem exists_dual_sup (𝔐 : HodgeCpt Y S y) (hind : iSupIndep 𝔐.Vgen) (q : Cpt 𝔐.ξ)
+    (hV : ∀ s, 𝔐.V s q = 𝔐.dR s q) (hlat : 𝔐.M.lat q = ⨆ s, 𝔐.dR s q) (a b : CMType H ⊕ CMType H) {N : ℕ}
+    (bb : Fin N → ↥(𝔐.Vgen a ⊔ 𝔐.Vgen b))
+    (hfr : (Lat.comap (fun p => 𝔐.V a p ⊔ 𝔐.V b p) (𝔐.Vgen a ⊔ 𝔐.Vgen b).subtype).IsFrameAt bb q) :
+    ∃ π : Fin N → Module.Dual Ω 𝔐.Li, (∀ j l, π j (bb l : 𝔐.Li) = if j = l then 1 else 0) ∧
+      ∀ j, ∀ e ∈ 𝔐.M.lat q, π j e ∈ regAt 𝔐.ξ q := by
+  classical
+  obtain ⟨hli, hsp⟩ := hfr
+  obtain ⟨W, hW, hc⟩ := (disjoint_sup_biSup hind a b).symm.exists_isCompl
+  let pr : 𝔐.Li →ₗ[Ω] ↥(𝔐.Vgen a ⊔ 𝔐.Vgen b) := Submodule.linearProjOfIsCompl _ _ hc.symm
+  have hker : LinearMap.ker (Fintype.linearCombination Ω bb) = ⊥ := by
+    refine LinearMap.ker_eq_bot'.2 fun m hm => funext fun k => ?_
+    exact Fintype.linearIndependent_iff.1 hli m (by rwa [Fintype.linearCombination_apply] at hm) k
+  obtain ⟨g, hg⟩ := LinearMap.exists_leftInverse_of_injective _ hker
+  have hgb : ∀ l, g (bb l) = Pi.single l 1 := fun l => by
+    have := LinearMap.congr_fun hg (Pi.single l 1)
+    simpa [Fintype.linearCombination_apply_single] using this
+  have hpr : ∀ x : ↥(𝔐.Vgen a ⊔ 𝔐.Vgen b), pr (x : 𝔐.Li) = x := fun x =>
+    Submodule.linearProjOfIsCompl_apply_left hc.symm x
+  refine ⟨fun j => (LinearMap.proj j).comp (g.comp pr), fun j k => ?_, fun j e he => ?_⟩
+  · simp only [LinearMap.comp_apply, hpr, hgb, LinearMap.proj_apply]
+    simp [Pi.single_apply]
+  · rw [hlat] at he
+    induction he using Submodule.iSup_induction' with
+    | mem s' x hx =>
+      by_cases e : s' = a ∨ s' = b
+      · have hxs : x ∈ 𝔐.Vgen a ⊔ 𝔐.Vgen b := by
+          rcases e with rfl | rfl
+          · exact Submodule.mem_sup_left hx.2
+          · exact Submodule.mem_sup_right hx.2
+        have hxV : x ∈ 𝔐.V a q ⊔ 𝔐.V b q := by
+          rcases e with rfl | rfl
+          · exact Submodule.mem_sup_left ((hV _).symm ▸ hx)
+          · exact Submodule.mem_sup_right ((hV _).symm ▸ hx)
+        have hm : (⟨x, hxs⟩ : ↥(𝔐.Vgen a ⊔ 𝔐.Vgen b)) ∈
+            Lat.comap (fun p => 𝔐.V a p ⊔ 𝔐.V b p) (𝔐.Vgen a ⊔ 𝔐.Vgen b).subtype q := hxV
+        rw [hsp] at hm
+        obtain ⟨c', hc'⟩ := (Submodule.mem_span_range_iff_exists_fun _).1 hm
+        have e1 : ∀ k, (c' k • bb k) = ((c' k : regAt 𝔐.ξ q) : Ω) • bb k := fun _ => rfl
+        have e2 : pr x = ∑ k, ((c' k : regAt 𝔐.ξ q) : Ω) • bb k := by
+          rw [show pr x = ⟨x, hxs⟩ from hpr ⟨x, hxs⟩, ← hc']
+          exact Finset.sum_congr rfl fun k _ => e1 k
+        simp only [LinearMap.comp_apply, e2, map_sum, map_smul, hgb, LinearMap.proj_apply]
+        refine sum_mem fun k _ => ?_
+        rw [smul_eq_mul]
+        refine mul_mem (c' k).2 ?_
+        rw [Pi.single_apply]
+        split_ifs
+        · exact one_mem _
+        · exact zero_mem _
+      · have hxW : x ∈ W := by
+          push_neg at e
+          exact hW (Submodule.mem_iSup_of_mem s' (Submodule.mem_iSup_of_mem e hx.2))
+        have : pr x = 0 := Submodule.linearProjOfIsCompl_apply_right' hc.symm hxW
+        simp [this]
+    | zero => simpa using zero_mem _
+    | add x y _ _ hx hy => simpa using add_mem hx hy
+
+end Dual
+
+theorem values_indep : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (S : Finset ℕ) (Ω : Type) [Field Ω] [CharZero Ω] (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (y : (Σ k, J k) → Ω) (𝔐 : HodgeCpt Y S y) (a b : CMType H ⊕ CMType H) (N : ℕ) (bb : Fin N → ↥(𝔐.Vgen a ⊔ 𝔐.Vgen b)) (z : Spec (CommRingCat.of ℂ) ⟶ 𝔐.X) (h : genPt 𝔐.ξ ⤳ centre z) (Vz : Type) [AddCommGroup Vz] [Module ℂ Vz] (MR : LieModel 𝔐.t.G z Vz) (e : Fin N → Vz), (Lat.comap (fun p => 𝔐.V a p ⊔ 𝔐.V b p) (𝔐.Vgen a ⊔ 𝔐.Vgen b).subtype).IsFrameAt bb ⟨centre z, h⟩ → (∀ k, 𝔐.M.ValAt z ((bb k : ↥(𝔐.Vgen a ⊔ 𝔐.Vgen b)) : 𝔐.Li) (MR.pt (e k))) → LinearIndependent ℂ e := by
+  intro E _ _ _ H D l Xo c Y S Ω _ _ K _ J _ y 𝔐 a b N bb z h Vz _ _ MR e hfr hval
+  classical
+  have hβ : Function.Injective (algebraMap (𝓞 c.F) c.F) := FaithfulSMul.algebraMap_injective _ _
+  have hξ : IsCptGen 𝔐.ξ := 𝔐.tie.gen
+  have hsm : Smooth 𝔐.t.G.hom := 𝔐.t.semi.smooth
+  obtain ⟨-, -, -, -, -, -, hind, -⟩ := GlobalTheory.T.hodge_cpt_interior_generic E H D l Xo c _ _ Y S Ω K J y 𝔐 hβ
+  obtain ⟨hV, -, hlat⟩ := GlobalTheory.T.hodge_cpt_away_from_primes E H D l Xo c _ _ Y S Ω K J y 𝔐 hβ ⟨centre z, h⟩
+    fun r hr => GrNorm.not_inFibre hξ h hr
+  obtain ⟨π, hπ, hreg⟩ := exists_dual_sup 𝔐 hind ⟨centre z, h⟩ hV hlat a b bb hfr
+  have hg : ∀ j, ∃ g : Vz →ₗ[ℂ] ℂ, ∀ k, g (e k) = if j = k then 1 else 0 := fun j => by
+    obtain ⟨g, hg⟩ := GlobalTheory.T.lattice_regular_at_local_point 𝔐.X 𝔐.t.G Ω 𝔐.ξ 𝔐.Li 𝔐.M ℂ z h Vz MR (π j) hξ (hreg j)
+    refine ⟨g, fun k => hg (bb k : 𝔐.Li) _ _ (hval k) ?_⟩
+    rw [hπ j k]
+    split_ifs
+    · exact RootHt.ArchB.val_one h
+    · exact RootHt.ArchB.val_zero h
+  choose g hg using hg
+  refine Fintype.linearIndependent_iff.2 fun w hw j => ?_
+  have := congrArg (g j) hw
+  simpa [map_sum, hg, Finset.sum_ite_eq] using this
+
+end GlobalTheory.CompanionTheory.Ar.PeriodIndep
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped Matrix ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hodge_generated_sum_specialization_frame : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (S : Finset ℕ) (Ω : Type) [Field Ω] [CharZero Ω] (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (y : (Σ k, J k) → Ω) (𝔐 : HodgeCpt Y S y) (a b : CMType H ⊕ CMType H) (N : ℕ) (bb : Fin N → ↥(𝔐.Vgen a ⊔ 𝔐.Vgen b)) (z : Spec (CommRingCat.of ℂ) ⟶ 𝔐.X) (h : genPt 𝔐.ξ ⤳ centre z) (Vz : Type) [AddCommGroup Vz] [Module ℂ Vz] (MR : LieModel 𝔐.t.G z Vz) (e : Fin N → Vz), (Lat.comap (fun p => 𝔐.V a p ⊔ 𝔐.V b p) (𝔐.Vgen a ⊔ 𝔐.Vgen b).subtype).IsFrameAt bb ⟨centre z, h⟩ → (∀ k, 𝔐.M.ValAt z ((bb k : ↥(𝔐.Vgen a ⊔ 𝔐.Vgen b)) : 𝔐.Li) (MR.pt (e k))) → LinearIndependent ℂ e := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.PeriodIndep.values_indep
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped Matrix ComplexOrder
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.FrameFibre
+
+section Push
+
+variable {S S' : Scheme.{0}} {G' : Over S'} [GrpObj G'] {G : Over S} [GrpObj G] {f : S' ⟶ S}
+  {φ : G'.left ⟶ G.left}
+
+def push (hφ : IsGrpPullback G' G f φ) {T : Over S'} (x : T ⟶ G') : Over.mk (T.hom ≫ f) ⟶ G :=
+  Over.homMk (x.left ≫ φ) (by
+    have h1 := hφ.1.w
+    have h2 := Over.w x
+    simp only [Over.mk_hom, Category.assoc, Functor.id_obj, Functor.const_obj_obj, Over.mk_left]
+    rw [h1, ← Category.assoc, h2])
+
+theorem push_mul (hφ : IsGrpPullback G' G f φ) {T : Over S'} (x y : T ⟶ G') :
+    push hφ (x * y) = push hφ x * push hφ y := by
+  apply Over.OverMorphism.ext
+  exact (hφ.2 T x y (push hφ x) (push hφ y) rfl rfl).symm
+
+theorem push_one (hφ : IsGrpPullback G' G f φ) (T : Over S') :
+    push hφ (1 : T ⟶ G') = 1 := by
+  have h := push_mul hφ (1 : T ⟶ G') 1
+  rw [_root_.mul_one] at h
+  exact left_eq_mul.mp h
+
+end Push
+
+theorem spec_fst_dualMap {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) :
+    Spec.map (CommRingCat.ofHom (TrivSqZeroExt.fstHom B B B).toRingHom) ≫
+        Spec.map (CommRingCat.ofHom (dualMap f)) =
+      Spec.map (CommRingCat.ofHom f) ≫ Spec.map (CommRingCat.ofHom (TrivSqZeroExt.fstHom A A A).toRingHom) := by
+  rw [← Spec.map_comp, ← Spec.map_comp]
+  congr 1
+  refine CommRingCat.hom_ext (RingHom.ext fun a => ?_)
+  simp [dualMap]
+
+theorem spec_alg_dualMap {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) :
+    Spec.map (CommRingCat.ofHom (dualMap f)) ≫ Spec.map (CommRingCat.ofHom (algebraMap A (DualNumber A))) =
+      Spec.map (CommRingCat.ofHom (algebraMap B (DualNumber B))) ≫ Spec.map (CommRingCat.ofHom f) := by
+  rw [← Spec.map_comp, ← Spec.map_comp]
+  congr 1
+  refine CommRingCat.hom_ext (RingHom.ext fun a => ?_)
+  ext <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl]
+
+theorem spec_epsMul_dualMap {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) (c : A) :
+    Spec.map (CommRingCat.ofHom (epsMul (f c))) ≫ Spec.map (CommRingCat.ofHom (dualMap f)) =
+      Spec.map (CommRingCat.ofHom (dualMap f)) ≫ Spec.map (CommRingCat.ofHom (epsMul c)) := by
+  rw [← Spec.map_comp, ← Spec.map_comp]
+  congr 1
+  refine CommRingCat.hom_ext (RingHom.ext fun a => ?_)
+  ext <;> simp [dualMap, epsMul, mul_comm]
+
+theorem exists_linear_of_pullback {X : Scheme.{0}} {R : Type} [CommRing R] {G' : Over (Sp R)} [GrpObj G']
+    {G : Over X} [GrpObj G] {h : Sp R ⟶ X} {φ : G'.left ⟶ G.left} (hφ : IsGrpPullback G' G h φ) {g : ℕ}
+    (M : LieModel G' (𝟙 (Sp R)) (Fin g → R)) (ψ : R →+* ℂ) {Vz : Type} [AddCommGroup Vz] [Module ℂ Vz]
+    (MR : LieModel G (spMap ψ ≫ h) Vz) :
+    ∃ Θ : (Fin g → ℂ) →ₗ[ℂ] Vz, ∀ x : Fin g → R,
+      (MR.pt (Θ (fun e => ψ (x e)))).left = spMap (dualMap ψ) ≫ (M.pt x).left ≫ φ := by
+  let c : epsAt (spMap ψ ≫ h) ⟶ Over.mk ((epsAt (𝟙 (Sp R))).hom ≫ h) :=
+    Over.homMk (spMap (dualMap ψ)) (by
+      have key := spec_alg_dualMap ψ
+      simp only [Over.mk_hom, Category.comp_id]
+      rw [← Category.assoc, key, Category.assoc])
+  let w : (Fin g → R) → (epsAt (spMap ψ ≫ h) ⟶ G) := fun x => c ≫ push hφ (M.pt x)
+  have wl : ∀ x, (w x).left = spMap (dualMap ψ) ≫ (M.pt x).left ≫ φ := fun _ => rfl
+  have wt : ∀ x, IsTanAt G (spMap ψ ≫ h) (w x) := by
+    intro x
+    let c0 : Over.mk (spMap ψ ≫ h) ⟶ Over.mk ((Over.mk (𝟙 (Sp R))).hom ≫ h) :=
+      Over.homMk (spMap ψ) (by simp)
+    have h0 : c0 ≫ push hφ (1 : Over.mk (𝟙 (Sp R)) ⟶ G') = 1 := by
+      rw [push_one]; exact MonObj.comp_one c0
+    have h1 : spMap ψ ≫ (1 : Over.mk (𝟙 (Sp R)) ⟶ G').left ≫ φ = (1 : Over.mk (spMap ψ ≫ h) ⟶ G).left :=
+      congrArg CommaMorphism.left h0
+    have h2 := M.tan x
+    unfold IsTanAt at h2 ⊢
+    rw [wl, ← h1, ← h2, ← Category.assoc, spec_fst_dualMap ψ]
+    simp only [Category.assoc]
+  choose j hj using fun x => MR.onto (w x) (wt x)
+  have jadd : ∀ x y, j (x + y) = j x + j y := by
+    intro x y
+    apply MR.inj
+    rw [MR.add, hj, hj, hj]
+    simp only [w, M.add, push_mul, MonObj.comp_mul]
+  have jsmul : ∀ (a : R) x, j (a • x) = ψ a • j x := by
+    intro a x
+    apply MR.inj
+    apply Over.OverMorphism.ext
+    rw [MR.smul, hj, hj, wl, wl, M.smul, ← Category.assoc (Spec.map _) (spMap (dualMap ψ)),
+      spec_epsMul_dualMap]
+    simp only [Category.assoc]
+  let J : (Fin g → R) →+ Vz := AddMonoidHom.mk' j jadd
+  refine ⟨∑ i, (LinearMap.proj i : (Fin g → ℂ) →ₗ[ℂ] ℂ).smulRight (j (Pi.single i 1)), fun x => ?_⟩
+  have hΘ : (∑ i, (LinearMap.proj i : (Fin g → ℂ) →ₗ[ℂ] ℂ).smulRight (j (Pi.single i 1)))
+      (fun e => ψ (x e)) = j x := by
+    have hx : x = ∑ i, x i • (Pi.single i 1 : Fin g → R) := by
+      conv_lhs => rw [← Finset.univ_sum_single x]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [← Pi.single_smul, smul_eq_mul, _root_.mul_one]
+    have hJ : J x = ∑ i, J (x i • (Pi.single i 1 : Fin g → R)) := by
+      conv_lhs => rw [hx]
+      exact map_sum J _ _
+    have hJ' : j x = ∑ i, ψ (x i) • j (Pi.single i 1) := by
+      refine hJ.trans (Finset.sum_congr rfl fun i _ => jsmul _ _)
+    rw [hJ']
+    simp [LinearMap.sum_apply]
+  rw [hΘ, hj, wl]
+
+theorem exists_linear_fibre : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (X : Scheme.{0}) (t : SAB H X) (R : Type) [CommRing R] (t' : SAB H (Sp R)) (h : Sp R ⟶ X) (m : SABMap t' t h) (g : ℕ) (M : LieModel t'.G (𝟙 (Sp R)) (Fin g → R)) (ψ : R →+* ℂ) (Vz : Type) [AddCommGroup Vz] [Module ℂ Vz] (MR : LieModel t.G (spMap ψ ≫ h) Vz), ∃ Θ : (Fin g → ℂ) →ₗ[ℂ] Vz, ∀ x : Fin g → R, (MR.pt (Θ (fun e => ψ (x e)))).left = spMap (dualMap ψ) ≫ (M.pt x).left ≫ m.φ := by
+  intro E _ _ _ H X t R _ t' h m g M ψ Vz _ _ MR
+  exact exists_linear_of_pullback m.cart M ψ MR
+
+end GlobalTheory.CompanionTheory.Ar.FrameFibre
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped Matrix ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lie_model_complex_linear_comparison : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (X : Scheme.{0}) (t : SAB H X) (R : Type) [CommRing R] (t' : SAB H (Sp R)) (h : Sp R ⟶ X) (m : SABMap t' t h) (g : ℕ) (M : LieModel t'.G (𝟙 (Sp R)) (Fin g → R)) (ψ : R →+* ℂ) (Vz : Type) [AddCommGroup Vz] [Module ℂ Vz] (MR : LieModel t.G (spMap ψ ≫ h) Vz), ∃ Θ : (Fin g → ℂ) →ₗ[ℂ] Vz, ∀ x : Fin g → R, (MR.pt (Θ (fun e => ψ (x e)))).left = spMap (dualMap ψ) ≫ (M.pt x).left ≫ m.φ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.FrameFibre.exists_linear_fibre
+end
+
+section
+section
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.Flat.MonodromyBij
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar GroundTheory.Heights₂.Heights.LowerBoundFree
+open GroundTheory.Heights₂.Heights.Regular
+open scoped Matrix ComplexOrder
+
+def basePoint (n a : ℕ) : Fin n → ℂ := fun k => if k.val < a then -1 else 0
+
+theorem basePoint_mem {n a : ℕ} (h : a ≤ n) : basePoint n a ∈ logCover h := by
+  refine ⟨fun i => ?_, fun k hk => ?_⟩
+  · have : (Fin.castLE h i).val < a := i.isLt
+    simp [basePoint, this]
+  · have : ¬ k.val < a := by omega
+    simp [basePoint, this]
+
+theorem shift_mem {n a : ℕ} (h : a ≤ n) (i : Fin a) :
+    basePoint n a + Pi.single (Fin.castLE h i) (2 * Real.pi * Complex.I) ∈ logCover h := by
+  refine ⟨fun j => ?_, fun k hk => ?_⟩
+  · have hj : (Fin.castLE h j).val < a := j.isLt
+    by_cases hji : Fin.castLE h j = Fin.castLE h i
+    · simp [basePoint, hj, hji, Pi.single_apply]
+    · simp [basePoint, hj, Pi.single_apply, hji]
+  · have hk' : ¬ k.val < a := by omega
+    have hne : k ≠ Fin.castLE h i := by
+      intro e
+      apply hk'
+      rw [e]
+      exact i.isLt
+    simp [basePoint, hk', Pi.single_apply, hne]
+
+theorem expCover_shift {n a : ℕ} (h : a ≤ n) (i : Fin a) (w : Fin n → ℂ) :
+    expCover a (w + Pi.single (Fin.castLE h i) (2 * Real.pi * Complex.I)) = expCover a w := by
+  funext k
+  by_cases hk : k = Fin.castLE h i
+  · subst hk
+    have : (Fin.castLE h i).val < a := i.isLt
+    simp [expCover, this, Complex.exp_add, Complex.exp_two_pi_mul_I]
+  · simp [expCover, Pi.single_apply, hk]
+
+theorem monodromy_preserves_form {n a g : ℕ} {Λ : Type} [AddCommGroup Λ] (L : Flat.LogPeriods n a g Λ) (i : Fin a) (x y : Λ) :
+    L.E (L.T i x) (L.T i y) = L.E x y := by
+  have hw := basePoint_mem L.a_le
+  have h1 := L.im _ (shift_mem L.a_le i) x y
+  rw [expCover_shift, L.mono i _ hw x, L.mono i _ hw y] at h1
+  have h2 := L.im _ hw (L.T i x) (L.T i y)
+  exact_mod_cast h2.symm.trans h1
+
+theorem T_bijective : ∀ (n a g : ℕ) (Λ : Type) [AddCommGroup Λ] (L : Flat.LogPeriods n a g Λ) (i : Fin a),
+    Function.Bijective (L.T i) := by
+  intro n a g Λ _ L i
+  haveI := L.fin
+  let e : Λ ≃ₗ[ℤ] Module.Dual ℤ Λ := LinearEquiv.ofBijective L.E L.unimod
+  let S : Λ →ₗ[ℤ] Λ := e.symm.toLinearMap ∘ₗ (L.T i).dualMap ∘ₗ e.toLinearMap
+  have hS : ∀ x, S (L.T i x) = x := by
+    intro x
+    apply e.injective
+    simp only [S, LinearMap.comp_apply, LinearEquiv.coe_coe, LinearEquiv.apply_symm_apply]
+    ext y
+    simpa [e, LinearMap.dualMap_apply] using monodromy_preserves_form L i x y
+  have hSsurj : Function.Surjective S := fun x => ⟨_, hS x⟩
+  have hSinj : Function.Injective S := OrzechProperty.injective_of_surjective_endomorphism S hSsurj
+  refine ⟨Function.LeftInverse.injective hS, fun y => ⟨S y, hSinj (hS (S y))⟩⟩
+
+end GlobalTheory.CompanionTheory.Ar.Flat.MonodromyBij
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped Matrix ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.bijective_logPeriods_T : ∀ (n a g : ℕ) (Λ : Type) [AddCommGroup Λ] (L : Flat.LogPeriods n a g Λ) (i : Fin a), Function.Bijective (L.T i) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Flat.MonodromyBij.T_bijective
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped Matrix ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_conjugate_log_periods : ∀ (n a g r : ℕ) (Λ : Type) [AddCommGroup Λ] (L : Flat.LogPeriods n a g Λ) (U : Fin r → (Fin n → ℂ) → Fin g → ℂ), (∀ i, Function.Bijective (L.T i)) → ∃ L' : Flat.LogPeriods n a g Λ, ∀ u ∈ Flat.punct n a 1, HodgeMetric.periodGram L' (fun k u' => star (U k (star u'))) u = (HodgeMetric.periodGram L U (star u)).map (starRingEnd ℂ) := by
+  first | exact @GlobalTheory.CompanionTheory.Ar.Flat.ConjPeriods.exists_conj_periodGram | exact GlobalTheory.CompanionTheory.Ar.Flat.ConjPeriods.exists_conj_periodGram | (intros; apply GlobalTheory.CompanionTheory.Ar.Flat.ConjPeriods.exists_conj_periodGram <;> assumption)
+end
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar GroundTheory.Heights₂.Heights.LowerBoundFree
 open scoped Matrix ComplexOrder
@@ -316,3 +791,5 @@ theorem exists_isFramePeriods : Top.Given → ∀ (E : Type) [Field E] [NumberFi
       rwa [e] at this
 
 end GlobalTheory.CompanionTheory.Ar.FramePeriods
+end
+end

@@ -135,20 +135,5 @@ namespace Formalism.ELL
 
 open Formalism.G
 
-theorem expWeight_of (h : LogWeight.{u}) : ExpWeight.{u} := by
-  intro K _ _ _ p q hp hp0 hp1 hq F e l E he hei he1 hegap hlog hE0 _hEl hlE n hn
-  have hlw := h K p q hp hp0 hp1 hq F e l he hei he1 hegap hlog
-  have hr0 : 0 < ‖(p : K)‖ ^ (-1 / ((q : ℝ) - 1)) := Real.rpow_pos_of_pos hp0 _
-  have key : ∀ m : ℕ, (‖(p : K)‖ ^ (-1 / ((q : ℝ) - 1)))⁻¹ *
-      (‖(p : K)‖ ^ (-1 / ((q : ℝ) - 1))) ^ m =
-        ‖(p : K)‖ ^ (-((m : ℝ) - 1) / ((q : ℝ) - 1)) := by
-    intro m
-    rw [← Real.rpow_natCast, ← Real.rpow_mul hp0.le, ← Real.rpow_neg hp0.le,
-      ← Real.rpow_add hp0]
-    congr 1
-    ring
-  have := ExponentialCoefficientWeight.inv_le hr0 hE0 hlog.2.1
-    (fun m hm => by rw [key m]; exact hlw m (by omega)) hlE n hn
-  rwa [key n] at this
 
 end Formalism.ELL

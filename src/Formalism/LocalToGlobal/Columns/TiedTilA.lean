@@ -77,18 +77,6 @@ theorem til_tmv_eq_padM (ι : Matrix (Fin (n + 1)) (Fin n) R) (hι1 : ∀ a b : 
     · rw [til_tmv_padM_cc, Matrix.mul_apply]
       simp [hι1]
 
-theorem til_tmv_padM_ext (ι : Matrix (Fin (n + 1)) (Fin n) R) (hι1 : ∀ a b : Fin n, ι a.castSucc b = if a = b then 1 else 0)
-    (hι2 : ∀ b : Fin n, ι (Fin.last n) b = 0) (z : Fin (n + 1) → R) (hz1 : ∀ a : Fin n, z a.castSucc = 0)
-    (y : Matrix (Fin n) (Fin n) R) : padM R n y * ι = ι * y ∧ padM R n y *ᵥ z = z := by
-  constructor
-  · ext a b
-    refine Fin.lastCases ?_ (fun a' => ?_) a
-    · simp [Matrix.mul_apply, Fin.sum_univ_castSucc, til_tmv_padM_lc, til_tmv_padM_ll, hι1, hι2]
-    · simp [Matrix.mul_apply, Fin.sum_univ_castSucc, til_tmv_padM_cc, til_tmv_padM_cl, hι1, hι2]
-  · funext a
-    refine Fin.lastCases ?_ (fun a' => ?_) a
-    · simp [Matrix.mulVec, dotProduct, Fin.sum_univ_castSucc, hz1, til_tmv_padM_ll]
-    · simp [Matrix.mulVec, dotProduct, Fin.sum_univ_castSucc, hz1, til_tmv_padM_cl]
 
 end Pad
 

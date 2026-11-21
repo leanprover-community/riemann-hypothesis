@@ -70,17 +70,9 @@ theorem projectiveLineSource_zero : projectiveLineSource 0 = Set.range ((↑) : 
 theorem projectiveLineSource_one : projectiveLineSource 1 = {x | x ≠ ((0 : ℂ) : OnePoint ℂ)} := by
   simp [projectiveLineSource]
 
-theorem projectiveLineCoord_zero (x : OnePoint ℂ) : projLineAffineCoordinate 0 x = fun _ => x.elim 0 id := by
-  funext l
-  simp [projLineAffineCoordinate]
 
-theorem projectiveLineCoord_one (x : OnePoint ℂ) : projLineAffineCoordinate 1 x = fun _ => x.elim 0 (fun z => z⁻¹) := by
-  funext l
-  simp [projLineAffineCoordinate]
 
-theorem projectiveLineLift_zero (q : Σ _ : Unit, Fin 2) : homogeneousLift 0 q = if q.2 = 0 then 1 else X 0 := rfl
 
-theorem projectiveLineLift_one (q : Σ _ : Unit, Fin 2) : homogeneousLift 1 q = if q.2 = 1 then 1 else X 0 := rfl
 
 private theorem onePoint_eq_infty_or_exists_coe (x : OnePoint ℂ) : x = ∞ ∨ ∃ z : ℂ, x = (z : OnePoint ℂ) := by
   rcases x with _ | z

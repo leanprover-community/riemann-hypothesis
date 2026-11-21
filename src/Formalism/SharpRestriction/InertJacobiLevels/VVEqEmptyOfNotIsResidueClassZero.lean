@@ -116,53 +116,13 @@ theorem val_orbit (h t : ZMod N) (i : ℕ) : (t + i • h).val = (t.val + i * h.
 
 def bsVal (N h t : ℕ) : ℕ := sInf {v | ∃ i : ℕ, (t + i * h) % N = v}
 
-theorem bsVal_mem (N h t : ℕ) : ∃ i : ℕ, (t + i * h) % N = bsVal N h t := by
-  unfold bsVal
-  exact Nat.sInf_mem (s := {v | ∃ i : ℕ, (t + i * h) % N = v}) ⟨(t + 0 * h) % N, 0, rfl⟩
 
 def bsC (h t : ZMod N) : ZMod N := (bsVal N h.val t.val : ℕ)
 
-theorem bsC_val (h t : ZMod N) : (bsC h t).val = bsVal N h.val t.val := by
-  unfold bsC
-  rw [ZMod.val_natCast]
-  obtain ⟨i, hi⟩ := bsVal_mem N h.val t.val
-  rw [← hi, Nat.mod_mod]
 
-theorem bsC_eq (h t : ZMod N) : ∃ i : ℕ, bsC h t = t + i • h := by
-  obtain ⟨i, hi⟩ := bsVal_mem N h.val t.val
-  refine ⟨i, ?_⟩
-  unfold bsC
-  rw [← hi, ZMod.natCast_mod]
-  simp [nsmul_eq_mul, ZMod.natCast_zmod_val]
 
-theorem card_nsmul_zmod (h : ZMod N) : N • h = 0 := by
-  rw [nsmul_eq_mul, ZMod.natCast_self, zero_mul]
 
-theorem bsC_orb (h t : ZMod N) : ∃ i : ℕ, bsC h t + i • h = t := by
-  obtain ⟨i, hi⟩ := bsC_eq h t
-  refine ⟨(N - 1) * i, ?_⟩
-  rw [hi]
-  have hN : 1 ≤ N := Nat.one_le_iff_ne_zero.mpr (NeZero.ne N)
-  simp only [nsmul_eq_mul, Nat.cast_mul, Nat.cast_sub hN, ZMod.natCast_self, Nat.cast_one]
-  ring
 
-theorem bsC_step (h t : ZMod N) : bsC h (t + h) = bsC h t := by
-  have hN : 1 ≤ N := Nat.one_le_iff_ne_zero.mpr (NeZero.ne N)
-  unfold bsC
-  congr 1
-  unfold bsVal
-  congr 1
-  ext v
-  simp only [Set.mem_setOf_eq, ← val_orbit]
-  constructor
-  · rintro ⟨i, rfl⟩
-    refine ⟨i + 1, ?_⟩
-    rw [add_nsmul, one_nsmul, add_comm (i • h) h, ← add_assoc]
-  · rintro ⟨i, rfl⟩
-    refine ⟨i + (N - 1), ?_⟩
-    congr 1
-    simp only [nsmul_eq_mul, Nat.cast_add, Nat.cast_sub hN, ZMod.natCast_self, Nat.cast_one]
-    ring
 
 end Base
 
@@ -377,10 +337,6 @@ theorem plGG_top_iff (z : Bool × G.HH D) : G.plGG D z ∈ D.host.topPlaces ↔ 
     have h2 : (1 : ℤˣ) = -1 := congrArg Prod.fst h1
     exact absurd (congrArg Units.val h2) (by norm_num)
 
-theorem mem_thickPlaces (g : D.R.GG) :
-    g ∈ D.host.thickPlaces ↔ ∃ s ∈ D.host.T2, D.R.tau2 (D.R.dig s + D.host.u0) = g := by
-  unfold Formalism.BasicNotions.Host.thickPlaces
-  rw [Finset.mem_image]
 
 theorem plGG_thick_iff (z : Bool × G.HH D) : G.plGG D z ∈ D.host.thickPlaces ↔ G.IsThickPl D z := by
   obtain ⟨b, t⟩ := z
@@ -641,12 +597,7 @@ theorem tie_supp_sat (w : D.what₂.places.Pl)
     w ∈ (tieWeightData L0 X0 K dr len hw hg hu).supp := by
   exact (mem_tieSupp L0 w).2 (Or.inl h)
 
-theorem tie_supp_old (w : D.what₂.places.Pl) (h : w ∈ L0.supp) : w ∈ (tieWeightData L0 X0 K dr len hw hg hu).supp := by
-  exact (mem_tieSupp L0 w).2 (Or.inr (Or.inr h))
 
-theorem tie_FDef : (tieWeightData L0 X0 K dr len hw hg hu).FDef := by
-  intro j _ w
-  rfl
 
 theorem tie_fills
     (hf : ∀ j ∈ SizeData₂.lifts D, ∀ (τ : D.what₂.Tau) (z : Bool × G.HH D),

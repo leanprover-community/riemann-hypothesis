@@ -31,8 +31,6 @@ theorem IsSupercuspidal.of_equiv (h : IsSupercuspidal π) (e : π.Equiv π') : I
   obtain ⟨b, rfl⟩ := hsurj y
   rw [Subsingleton.elim a b]
 
-theorem isSupercuspidal_iff_of_equiv (e : π.Equiv π') : IsSupercuspidal π ↔ IsSupercuspidal π' :=
-  ⟨fun h => h.of_equiv e, fun h => h.of_equiv e.symm⟩
 
 end Parabolic
 
@@ -49,23 +47,9 @@ variable (π : CuspidalAutomorphicRepresentation K n)
 def IsSupercuspidalAt (v : HeightOneSpectrum (𝓞 K)) : Prop :=
   ∃ D : AdelicDecomposition π.toModule, IsSupercuspidal (D.finite.π v)
 
-theorem isSupercuspidalAt_iff (v : HeightOneSpectrum (𝓞 K)) :
-    π.IsSupercuspidalAt v ↔ ∀ D : AdelicDecomposition π.toModule, IsSupercuspidal (D.finite.π v) := by
-  constructor
-  · rintro ⟨D, hD⟩ D'
-    obtain ⟨e⟩ := AdelicDecomposition.nonempty_equiv_local D D' v
-    exact hD.of_equiv e
-  · intro h
-    obtain ⟨D⟩ := π.nonempty_adelicDecomposition
-    exact ⟨D, h D⟩
 
 variable {μ : Measure (Reduction.normOneGL K n)} [μ.IsHaarMeasure]
 
-theorem nonempty_adelicDecomposition_ofSummand (V : Submodule ℂ (CuspL2 μ)) [CompleteSpace V]
-    (hV : (cuspRepT μ).IsInvariant V) (hirr : ((cuspRepT μ).restrict V hV).IsIrreducible)
-    (hne : summandCuspForms V ≠ ⊥) :
-    Nonempty (AdelicDecomposition (ofSummand V hV hirr hne).toModule) :=
-  (ofSummand V hV hirr hne).nonempty_adelicDecomposition
 
 end CuspidalAutomorphicRepresentation
 

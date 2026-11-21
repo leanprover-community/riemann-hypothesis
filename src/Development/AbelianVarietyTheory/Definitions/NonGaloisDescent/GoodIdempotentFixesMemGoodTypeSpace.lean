@@ -60,13 +60,6 @@ def SigTiedOf : Prop := ∀ i, X.NonzeroIndexPlace i → SigTiedAt Y i
 
 variable {Y} {i : X.Tw} {j : ℕ} {b : Bool}
 
-theorem isEigSys_iff {ev : ℕ → PlE D.host → FractionRing (X.O i)} :
-    IsEigSys Y i j b ev ↔ Eigsp Y i j b ev ⊓ V0 Y i j b ≠ ⊥ := by
-  rw [Submodule.ne_bot_iff]
-  refine exists_congr fun x => ?_
-  simp only [IsEigVec, Eigsp, Submodule.mem_inf, Submodule.mem_iInf, LinearMap.mem_ker, LinearMap.sub_apply,
-    LinearMap.smul_apply, LinearMap.id_apply, sub_eq_zero]
-  tauto
 
 theorem IsEigSys.congr {ev ev' : ℕ → PlE D.host → FractionRing (X.O i)} (h : IsEigSys Y i j b ev)
     (e : ∀ k P, HkIdx i k P → ev k P = ev' k P) : IsEigSys Y i j b ev' :=
@@ -113,14 +106,6 @@ theorem SigTiedAt.mem' (h : SigTiedAt Y i) (s : X.Sig i) {k : ℕ} {P : PlE D.ho
   · exact ⟨1, by rw [map_one, h.zero]⟩
   · exact h.mem s k P ⟨h0, hk, hP, hS⟩
 
-theorem SigTiedAt.hEig_one (h : SigTiedAt Y i) (s : X.Sig i) {P : PlE D.host} (hP : IsSplitPl D.host P)
-    (hS : P ∉ X.S0 i) {σ : G D.host.E N.Om} (hσ : IsFrob (F := D.host.E) (N.plOm.1 P) (normV P) σ⁻¹) :
-    X.hEig i s 1 P = algebraMap (X.O0 i) (X.O i)
-      ((((eps0 X i σ : (X.O0 i)ˣ) : X.O0 i) ^ D.R.t) • Tmat i s σ).trace := by
-  have h1 : 1 ≤ D.R.r := (GlobalTheory.GalChar.odd_r D.R).pos
-  have := h.frob s P hS hP σ hσ 1 h1
-  rw [Matrix.coeff_charpolyRev_eq_neg_trace, map_neg] at this
-  simpa using this
 
 end Sys
 
@@ -189,7 +174,6 @@ def EigParOf : Prop := ∀ i, X.NonzeroIndexPlace i → EigParAt C Rw Y i
 
 variable {C Rw Y} {i : X.Tw} {b : Bool}
 
-theorem liftIdx_jS (s : X.Sig i) : liftIdx (Finset.mem_Icc.2 (X.jS_range i s)) = jIdx s := rfl
 
 theorem EigParAt.full (h : EigParAt C Rw Y i) (iC : FractionRing (X.O i) →+* ℂ)
     (hC : ∀ x, iC (embO X i b x) = embLL0 D x) {j : ℕ} (hj : j ∈ Finset.Icc 1 D.R.m)
@@ -435,14 +419,6 @@ open Classical in
     eH := fun _ _ _ => 1
     eH_idem := fun _ _ _ => mul_one _ }
 
-theorem mem_invariant_forms (i : D.ntw.Tw) (j : ℕ) (b : Bool) (x : (ex D).Fm i j b) : x ∈ V0 (ex D) i j b := by
-  refine ⟨x, ?_, ?_⟩
-  · simp only [Fm0, SetLike.mem_coe, Submodule.mem_iInf, LinearMap.mem_ker]
-    intro u
-    exact sub_eq_zero.2 (one_smul (FractionRing (D.ntw.O i)) x).symm
-  · have : eG (ex D) i j b = 1 := map_one _
-    rw [this]
-    rfl
 
 theorem coeff_charpolyRev_scalar {A : Type} [CommRing A] (n k : ℕ) (c : A) :
     (c • (1 : Matrix (Fin n) (Fin n) A)).charpolyRev.coeff k = (-1) ^ k * (n.choose k : A) * c ^ k := by
@@ -488,44 +464,14 @@ theorem hkFrob (i : D.ntw.Tw) (s : (tw D).Sig i) : HkFrob (X := tw D) i s := by
   rw [h4]
   simp
 
-theorem sigTiedAt (i : D.ntw.Tw) : SigTiedAt (X := tw D) (ex D) i where
-  inj s s' e1 e2 _ := Prod.ext (Fin.ext (Nat.succ_injective e1)) e2
-  vec s := ⟨(1 : FractionRing (D.ntw.O i)), mem_invariant_forms D i _ _ _, one_ne_zero, fun _ _ _ => rfl⟩
-  all j hj b ev := fun ⟨x, _, h0, h⟩ =>
-    ⟨(liftIdx hj, b), Nat.sub_add_cancel (Finset.mem_Icc.1 hj).1, rfl, fun k P hk => smul_left_injective _ h0 (h k P hk)⟩
-  zero s P := by change algebraMap _ _ (val D i 0 P) = 1; simp [val]
-  mem s k P _ := ⟨val D i k P, rfl⟩
-  ss s W _ := by
-    obtain ⟨W', hW'⟩ := Submodule.exists_isCompl W
-    refine ⟨W', fun g v hv => ?_, hW'⟩
-    have : ((mapRep (algebraMap (D.ntw.O0 i) (FractionRing (D.ntw.O0 i))) ((tw D).rhoS i s) g : GL _ _) :
-        Matrix (Fin D.R.r) (Fin D.R.r) (FractionRing (D.ntw.O0 i))) =
-        algebraMap (D.ntw.O0 i) (FractionRing (D.ntw.O0 i)) (chiS (X := tw D) i s g : (D.ntw.O0 i)ˣ) • 1 := by
-      change (Matrix.diagonal fun _ => ((chiS (X := tw D) i s g : (D.ntw.O0 i)ˣ) : D.ntw.O0 i)).map _ = _
-      rw [Matrix.diagonal_map (map_zero _), Matrix.smul_one_eq_diagonal]
-    rw [this, Matrix.smul_mulVec, Matrix.one_mulVec]
-    exact W'.smul_mem _ hv
-  frob := hkFrob D i
 
-theorem exists_sigTied : ∃ (X : NTw D.R D.host D.what₂ D.LL0 D.nd) (Y : NExp D.R D.host D.what₂ D.LL0 D.nd X)
-    (e : X.Tw ≃ D.ntw.Tw), (∀ i, X.NonzeroIndexPlace i ↔ D.ntw.NonzeroIndexPlace (e i)) ∧ (∀ i, Fintype.card (X.Sig i) = D.R.m * 2) ∧
-      (∀ i, SigTiedAt Y i) ∧ SigTiedOf Y :=
-  ⟨tw D, ex D, Equiv.refl _, fun _ => Iff.rfl, fun _ => by simp, sigTiedAt D, fun i _ => sigTiedAt D i⟩
 
 example (i : D.ntw.Tw) (P : PlE D.host) :
     val D i 1 P = (D.R.r : D.ntw.O0 i) * Ring.inverse ((normV P : ℕ) : D.ntw.O0 i) ^ D.R.t := by simp [val]
 
 variable {D}
 
-theorem not_sigTiedAt_of_isEmpty {X : NTw D.R D.host D.what₂ D.LL0 D.nd} {Y : NExp D.R D.host D.what₂ D.LL0 D.nd X} {i : X.Tw}
-    [IsEmpty (X.Sig i)] {j : ℕ} (hj : j ∈ Finset.Icc 1 D.R.m) {b ev} (h : IsEigSys Y i j b ev) : ¬ SigTiedAt Y i :=
-  fun H => let ⟨s, _⟩ := H.all j hj b ev h; isEmptyElim s
 
-theorem not_eigParAt (C : CharFrame D) (Rw : RowSide D) (h : ∀ σ, ¬ D.nd.goodRow σ) (i : D.ntw.Tw) :
-    ¬ EigParAt C Rw (X := tw D) (ex D) i := fun H =>
-  let s : (tw D).Sig i := (⟨0, by have := D.R.two_le_m; omega⟩, true)
-  let ⟨σ, _, hσ, _⟩ := H.exists_row (sigTiedAt D i) s (Reading.nonempty (X := tw D) i true).some
-  h σ hσ
 
 end Model
 

@@ -229,13 +229,5 @@ theorem isPerfect_ell {R : Type} [CommRing R] (W : WeierstrassCurve R) [W.IsElli
   haveI := (WeierstrassCurve.ellPolAV W).isAb.comm
   isPerfect_lam (WeierstrassCurve.ellPolAV W).isLB (WeierstrassCurve.ellPolAV W).ktriv
 
-theorem isDual_unit : IsDual (𝟙_ (Over S)) (𝟙_ (Over S)) (LB.triv _) := by
-  have h0 : ∀ (Y : Over S) (a b : Y ⟶ 𝟙_ (Over S)), evc (LB.isLB_triv _) a b = 0 := fun _ _ _ ↦ map_zero _
-  refine ⟨LB.isLB_triv _, (isAdditive_iff (LB.isLB_triv _)).2 fun _ _ _ _ ↦ by simp only [h0, add_zero],
-    (triv_ev_iff (LB.isLB_triv _) _ _).2 (h0 _ _ _), fun T M hM ha ↦ ⟨toUnit T, ?_, fun _ _ ↦ toUnit_unique _ _⟩⟩
-  refine (cls_eq_iff hM (pull_isLB (LB.isLB_triv _) _)).1 ?_
-  have e := ha.evc_one hM (snd (𝟙_ (Over S)) T)
-  rw [toUnit_unique 1 (fst _ T), evc, lift_fst_snd, Over.id_left, pull_id] at e
-  rw [e, cls_ev (LB.isLB_triv _), h0]
 
 end GlobalTheory.AbDual

@@ -346,30 +346,6 @@ theorem isChowFormCycle_point (F : Type*) [Field F] :
   · rw [Finsupp.support_single _ one_ne_zero]
     simp
 
-theorem chowDegree_point (F : Type*) [Field F] :
-    chowDegree (⊥ : Ideal (MvPolynomial (Fin 1) F)) 1 = 1 := by
-  have hX := isChowForm_point F
-  have key : ∀ δ, (∃ f, IsChowForm (⊥ : Ideal (MvPolynomial (Fin 1) F)) 1 f ∧ IsMultiHomog δ f) →
-      δ = 1 := by
-    rintro δ ⟨f, hf, hδ⟩
-    have hXf : X (0, 0) ∣ f := (hX.2 f).mp ((hf.2 f).mpr dvd_rfl)
-    have hfX : f ∣ X (0, 0) := (hf.2 _).mp ((hX.2 _).mpr dvd_rfl)
-    obtain ⟨q, rfl⟩ := hXf
-    obtain ⟨r, hr⟩ := hfX
-    have hqr : q * r = 1 := by
-      have h' : X (0, 0) * (q * r) = X (0, 0) * 1 := by
-        rw [mul_one, ← mul_assoc]
-        exact hr.symm
-      exact mul_left_cancel₀ (X_ne_zero _) h'
-    obtain ⟨c, -, rfl⟩ := (isUnit_iff_eq_C_of_isReduced (P := q)).mp (IsUnit.of_mul_eq_one r hqr)
-    have h1 : IsWeightedHomogeneous (groupWeight 1 1) (X (0, 0) * C c : MvPolynomial (Fin 1 × Fin 1) F)
-        ((fun _ => 1) + 0) :=
-      IsWeightedHomogeneous.mul (isMultiHomog_point F) (isWeightedHomogeneous_C _ c)
-    rw [add_zero] at h1
-    exact congrFun (IsWeightedHomogeneous.inj_right hf.1 hδ h1) 0
-  apply le_antisymm
-  · exact Nat.sInf_le ⟨X (0, 0), hX, isMultiHomog_point F⟩
-  · exact le_csInf ⟨1, X (0, 0), hX, isMultiHomog_point F⟩ fun δ hδ => (key δ hδ).ge
 
 theorem SphereMeanLinear.hypotheses_inhabited : ∑ j : Fin 1, ‖(fun _ => (1 : ℂ)) j‖ ^ 2 = 1 := by
   simp

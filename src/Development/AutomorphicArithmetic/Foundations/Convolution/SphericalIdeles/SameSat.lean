@@ -1,9 +1,72 @@
 import Mathlib
 import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalIdeles.SphConj
 import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalIdeles.LiftAll
-import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalIdeles.SmoEq
-import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalIdeles.PowSat
+import Development.AutomorphicArithmetic.Foundations.Convolution.NormCharacterPowers.NormCharPowHolds
+import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.IsoEq
+import Development.AutomorphicArithmetic.Foundations.Convolution.TraceSplitting.PowTwist
 
+section
+open NumberField IsDedekindDomain Filter
+open GlobalTheory.CuspRep GlobalTheory.GalOfCusp
+
+theorem UpperTheory.ConvolutionTheory.Sph.smoEq :
+    UpperTheory.ConvolutionTheory.Sph.SmoEq := by
+  intro K _ _ _ n hn P P' h
+  obtain ⟨s, hs⟩ := PositivityTheory.AdelicQuotientData.jacquetShalikaRigidity K Unit Unit (fun _ => n) (fun _ => n)
+    (fun _ => CG.mk P) (fun _ => CG.mk P') (fun _ => hn) (fun _ => hn)
+    (h.mono fun w ⟨B, h1, h2⟩ => ⟨fun _ => B, fun _ => B, fun _ => h1, fun _ => h2, rfl⟩)
+  have e : (CG.mk P : CG K n) = CG.mk P' := eq_of_heq (Sigma.mk.inj (hs ())).2
+  exact (UpperTheory.ConvolutionTheory.Dp.isoEq K n P P').1 (Quotient.exact e)
+end
+
+section
+noncomputable section
+
+open NumberField IsDedekindDomain
+open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Geo UpperTheory.ConvolutionTheory.C GlobalTheory.CuspRep Formalism.L2.Host Formalism.ConjugateSelfDual UpperTheory.V.Published UpperTheory.CBC
+
+namespace UpperTheory.ConvolutionTheory.Sph.PW
+
+variable {K : Type} [Field K] [NumberField K]
+
+private theorem ideleModule_localIdele (v : HeightOneSpectrum (𝓞 K)) (x : (v.adicCompletion K)ˣ) :
+    ((GroundTheory.Global.IdeleGroup.ideleModule K (Neutral.B1.localIdele K v x)).1 : ℝ) =
+      ‖(x : v.adicCompletion K)‖ := by
+  have e : Neutral.B1.localIdele K v x = GroundTheory.Global.IdeleGroup.finiteEmbedding v x :=
+    Units.ext rfl
+  rw [e]
+  exact GroundTheory.Global.IdeleGroup.ideleModule_finiteEmbedding v x
+
+private theorem norm_eq_zpow (v : HeightOneSpectrum (𝓞 K)) (x : v.adicCompletion K) (n : ℤ)
+    (h : Valued.v x = WithZero.exp n) : ‖x‖ = (Ideal.absNorm v.asIdeal : ℝ) ^ n := by
+  rw [FinitePlace.norm_def, h, WithZeroMulInt.toNNReal_neg_apply _ WithZero.exp_ne_zero]
+  simp [WithZero.exp]
+
+private theorem loc_eq {χ : HChar K} {s : ℂ} (h : UpperTheory.ConvolutionTheory.T.IsPow χ s)
+    (v : HeightOneSpectrum (𝓞 K)) (x : (v.adicCompletion K)ˣ) :
+    ((χ.loc v x : ℂˣ) : ℂ) = ((‖(x : v.adicCompletion K)‖ : ℝ) : ℂ) ^ s := by
+  rw [← ideleModule_localIdele]
+  exact h _
+
+end UpperTheory.ConvolutionTheory.Sph.PW
+
+open UpperTheory.ConvolutionTheory.Sph.PW in
+theorem UpperTheory.ConvolutionTheory.Sph.powSat :
+    UpperTheory.ConvolutionTheory.Sph.PowSat := by
+  intro K _ _ χ s h v
+  refine ⟨fun x hx => Units.ext ?_, ?_⟩
+  · rw [loc_eq h, norm_eq_zpow v _ 0 (by simpa [Formalism.L2.Host.IsUnitAt] using hx)]
+    simp
+  · have e : χ.val v = χ.loc v (Formalism.L2.Host.atFin v (Formalism.L2.Host.unif v)) := rfl
+    rw [e, loc_eq h, norm_eq_zpow v _ (-1) (Formalism.L2.Host.unif_spec v), zpow_neg_one,
+      Complex.ofReal_inv, Complex.inv_cpow _ _ (by
+        rw [Complex.arg_ofReal_of_nonneg (by positivity)]
+        exact Real.pi_pos.ne), Complex.cpow_neg]
+    simp
+end
+end
+
+section
 open MeasureTheory NumberField IsDedekindDomain Filter
 open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction
 open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Geo UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C UpperTheory.ConvolutionTheory.T GlobalTheory.CuspRep Formalism.L2.Host Formalism.ConjugateSelfDual
@@ -71,3 +134,4 @@ theorem UpperTheory.ConvolutionTheory.Sph.norm :
   refine ⟨s, χ, χ', V, V', θ, hχ, hχ', hV, hP', hθ, hst, hW', hOff, fun Λ' t' h => ?_⟩
   by_contra hc
   exact c5 _ V' Λ' t' hP' h (famParts F E σ hσ hp n hn hlow _ _ hc)
+end

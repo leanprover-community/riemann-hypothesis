@@ -139,8 +139,6 @@ def groupRep {π : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (h : Formalis
   map_one' := h.1
   map_mul' g g' := h.2 _ g.2 _ g'.2
 
-theorem groupRep_eq_ujRep {π : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (h : IsURepOn (UJset ε) π) :
-    groupRep ε h.1 = GlobalTheory.Orb.ujRep h := rfl
 
 def IsFactor (ρ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) (Z Y : Submodule ℂ H)
     (π : Matrix (Fin n) (Fin n) ℂ → (H' →L[ℂ] H')) : Prop :=
@@ -846,10 +844,6 @@ structure IndModule extends Datum ε where
 
 attribute [instance] IndModule.hacg IndModule.hips IndModule.hcs
 
-theorem Datum.exists_indModule (D : Datum ε) : ∃ I : IndModule ε, I.toDatum = D := by
-  obtain ⟨H, _, _, _, ρ, ι, h⟩ := exists_isIndModel D.flag D.pos
-    (fun m hm => D.temp.2.2.1.2.1 _ ⟨m, hm, rfl⟩) D.s
-  exact ⟨{ D with H := H, ρ := ρ, ι := ι, model := h }, rfl⟩
 
 theorem IndModule.isCRepOn (I : IndModule ε) : Formalism.QuantumDeterminants.IsCRepOn (UJset ε) I.ρ :=
   mats_top ▸ I.model.isCRepOn fun _ hf _ hy => indFun_mul_right hf hy
@@ -877,21 +871,6 @@ theorem hasFiniteLength_of_finiteDimensional {H : Type} [NormedAddCommGroup H] [
     | succ i ih => exact Nat.lt_of_le_of_lt ih (Submodule.finrank_lt_finrank_of_lt (hY Fin.castSucc_lt_succ))
   exact (this (Fin.last r)).trans (Submodule.finrank_le _)
 
-theorem mult_det : mult ε (fun g => g.det • (1 : ℂ →L[ℂ] ℂ)) (fun g => g.det • (1 : ℂ →L[ℂ] ℂ)) = 1 := by
-  have hk := (GlobalTheory.Published.infinitesimalEquivalence_hyp_det ε).2.2.1
-  refine le_antisymm (iSup₂_le fun r ⟨Z, Y, h, h'⟩ => ?_) (le_iSup₂_of_le (f := fun (r : ℕ) _ => (r : ℕ∞)) 1
-    ⟨fun _ => ⊥, fun _ => ⊤, fun _ => ⟨(isGKSub_det ε _).1, (isGKSub_det ε _).1, bot_le, LinearMap.id, by simp [hk],
-      by simp, fun _ _ _ _ => rfl, fun _ _ _ _ => rfl⟩, fun i l e => absurd e (by omega)⟩ le_rfl)
-  have ne : ∀ i, ¬ Y i ≤ Z i := fun i e => by
-    obtain ⟨-, -, -, T, h1, h2, -⟩ := h i
-    obtain ⟨w, hw, hw1⟩ : (1 : ℂ) ∈ (Y i).map T := by rw [h1, hk]; trivial
-    exact one_ne_zero (hw1 ▸ (h2 w hw).2 (e hw))
-  by_contra hr
-  have hr : 1 < r := by simpa using hr
-  have := h' ⟨0, by omega⟩ ⟨1, hr⟩ (by simp)
-  rcases eq_bot_or_eq_top (Y ⟨0, by omega⟩) with e | e
-  · exact ne _ (e ▸ bot_le)
-  · exact ne _ (le_top.trans (e ▸ this))
 
 end Characters
 
@@ -946,20 +925,6 @@ def sphericalDatum (s : ℂ) : Datum e2 where
   temp := isIrrTempered_one (isClosed_leviOne isIsotropicFlag_unitary_one_one (by simp)) levi_borel_le_compact
   s := ![s]
 
-theorem exists_standard_indModule {s : ℂ} (hs : 0 < s.re) : ∃ I : IndModule e2, I.toDatum = sphericalDatum s ∧
-    I.IsStandard W2 ∧ rho 2 ![1] 0 = 1 ∧ ∃ w : I.H, ‖w‖ = 1 ∧ ∀ k ∈ KG e2, I.ρ (uMat k) w = w := by
-  haveI : IsProbabilityMeasure (muK e2) := ⟨Measure.haarMeasure_self⟩
-  obtain ⟨H, _, _, _, ρ, ι, h⟩ := exists_isIndModel (σ := fun _ => (1 : ℂ →L[ℂ] ℂ)) isIsotropicFlag_unitary_one_one (by simp)
-    (fun _ _ _ => rfl) ![s]
-  obtain ⟨f, hf, h1, h2⟩ := exists_spherical isIsotropicFlag_unitary_one_one (by simp) ![s]
-  refine ⟨{ sphericalDatum s with H := H, ρ := ρ, ι := ι, model := h }, rfl,
-    ⟨fun i => ⟨i, rfl⟩, Subsingleton.strictAnti (α := Fin 1) _, fun i => ?_⟩, by simp [rho]; norm_num, ι ⟨f, hf⟩, ?_,
-    fun k hk => h.transl k trivial _ _ fun g => (h2 g k hk).symm⟩
-  · obtain rfl : i = (0 : Fin 1) := Subsingleton.elim (α := Fin 1) _ _
-    exact hs
-  · have := h.norm_sq ⟨f, hf⟩
-    have e : ∀ k : KG e2, f k = 1 := fun k => by rw [← one_mul k.1, h2 _ _ k.2, h1]
-    exact (sq_eq_sq₀ (norm_nonneg _) zero_le_one).1 (by simpa [e] using this)
 
 end RankOne
 

@@ -231,8 +231,6 @@ def SharpLatticeBoundForNumber (D : D7) : Prop := SharpLatticeBound D (kapSharp 
 
 def BaseLevelRowSide.BaseLevelSideLevelOneCondition {D : D7} (X : BaseLevelRowSide D) : Prop := X.L1c0 X.kap0
 
-theorem SharpLatticeBound.iff_def {D : D7} (hn : 0 < D.what₂.Drows) : (∃ kap, SharpLatticeBound D kap) ↔ SharpLatticeBoundForNumber D :=
-  ⟨fun ⟨_, h⟩ => by have := RowSide.RowLatticeBoundForBasis.kap_eq h hn; unfold SharpLatticeBoundForNumber kapSharp; rw [← this]; exact h, fun h => ⟨_, h⟩⟩
 
 end Formalism.BasicNotions
 

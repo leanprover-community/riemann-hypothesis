@@ -1,8 +1,31 @@
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.EigenvalueSeparation.StableEigenspaces.FrobeniusUniformizerIdentity
+import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.EigenvalueSeparation.StableEigenspaces.StableHulls.IsStableHull
+import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.EigenvalueSeparation.StableEigenspaces.FiniteTypes.FintypeHolds
+import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.EigenvalueSeparation.StableEigenspaces.CentralEigenvalues.CenteigHolds
+import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.EigenvalueSeparation.StableEigenspaces.CentralEigenvalues.IsStableEigenspaceCap
+import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.EigenvalueSeparation.StableEigenspaces.SizeBounds.SizetHolds
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MulInvEqOfCentral
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InterpolationLocalL2Bound
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LintegralCompactLe
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LintegralTranslate
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsStableBdSub
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PairSp
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TendstoExpMulPoly
 
+section
+namespace PositivityTheory.Rg.BcB.E.E3
+
+theorem frobenius_uniformizer_identity (h : LocNonPosGlue) : PositivityTheory.Rg.BcB.E.E3 :=
+  asm_holds fintype_holds (GlobalTheory.CompanionTheory.LocSlice.locSlGlue sizet_holds GlobalTheory.CompanionTheory.CentralMult.multC GlobalTheory.CompanionTheory.InterpLoc.interpolation_local_L2_bound)
+    (h sizet_holds) centeig_holds (GlobalTheory.CompanionTheory.CentRe.centReGlue_holds sizet_holds GlobalTheory.CompanionTheory.CentralMult.multC) hullaut_holds
+    GlobalTheory.CompanionTheory.HullExp.hullNonPos GlobalTheory.CompanionTheory.PairSpProof.pairSp
+
+end PositivityTheory.Rg.BcB.E.E3
+end
+
+section
 namespace PositivityTheory.Rg.BcB.E.E3
 
 theorem etale_base_change_of_duality : PositivityTheory.Rg.BcB.E.E3 := frobenius_uniformizer_identity GlobalTheory.CompanionTheory.LocExponent.locNonPosGlue_holds
 
 end PositivityTheory.Rg.BcB.E.E3
+end

@@ -4,10 +4,225 @@ import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPr
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.DilationUnipotentWeylMeasure
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormDiagonalEntryDilationGeneratorLeOne
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CkOnInCCCongrOnGroup
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MatrixCoefficientSmoothDerivatives
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DiscreteSeriesUnitarySmoothBasic
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DerivedActionDiscreteSeriesProperties
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialProperness.ZhatNormLinearBound
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.KFiniteDerivativesFiniteSpan
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.SumNonneg
+
+section
+open BranchingSupport Formalism.FourierDecayAlt Formalism.FourierDecayAlt.ThreeDimData Matrix MeasureTheory Finset
+open scoped InnerProductSpace ENNReal
+
+namespace GlobalTheory.CoeffDeriv
+
+open GlobalTheory.DerivedAction
+
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+
+variable {k r : ℕ} {ε : Fin (2 * r + k + 1) → Bool} {mu : Fin (2 * r + k + 1) → ℝ} {R : Rep k r}
+  {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V]
+
+noncomputable def coefL (R : Rep k r) (x : R.H) (X : V) : R.H →L[ℝ] V :=
+  ((innerSL ℂ x).smulRight X).restrictScalars ℝ
+
+theorem coefL_apply (x w : R.H) (X : V) : coefL R x X w = ⟪x, w⟫_ℂ • X := rfl
+
+theorem dsigW_smooth (hR : R.IsDS ε mu) {y : R.H} (hy : y ∈ R.sm) (b : List (Mx k r))
+    (hb : ∀ Y ∈ b, B.inLie k r Y) : PI.UpqRep.dsigW (k := k) (r := r) R.σ b y ∈ R.sm := by
+  induction b with
+  | nil => exact hy
+  | cons Y b ih =>
+    exact dsig_smooth hR.2 (hb Y (by simp)) (ih fun Z hZ => hb Z (by simp [hZ]))
+
+theorem right_step (hK : PI.KFinSmooth) (hR : R.IsDS ε mu) (X : V) (F : Mx k r → V) (x : R.H) {y : R.H}
+    (hy : y ∈ R.sm) (hF : ∀ g ∈ GG k r, F g = ⟪x, R.σ g y⟫_ℂ • X) {Y : Mx k r} (hY : B.inLie k r Y)
+    (g : Mx k r) (hg : g ∈ GG k r) :
+    deriv (fun t : ℝ => F (g * NormedSpace.exp ((t : ℂ) • Y))) 0 =
+      ⟪x, R.σ g (PI.UpqRep.dsig (k := k) (r := r) R.σ Y y)⟫_ℂ • X := by
+  obtain ⟨hmul, -⟩ := rep_basic_of_isDS hK k r ε mu R hR
+  have h := (coefL R x X).hasFDerivAt.comp_hasDerivAt (0 : ℝ) (hasDerivAt_apply (σ := R.σ) hY hy (R.σ g))
+  rw [← coefL_apply, ← h.deriv]
+  congr 1
+  funext t
+  have he : NormedSpace.exp ((t : ℂ) • Y) ∈ GG k r := exp_mem hY t
+  rw [hF _ (Formalism.FourierDecayAlt.P.TranslationBesselVanishing.uh_mul hg he), hmul g hg _ he]
+  rfl
+
+theorem left_step (hK : PI.KFinSmooth) (hR : R.IsDS ε mu) (X : V) (F : Mx k r → V) {x : R.H} (y : R.H)
+    (hx : x ∈ R.sm) (hF : ∀ g ∈ GG k r, F g = ⟪x, R.σ g y⟫_ℂ • X) {Y : Mx k r} (hY : B.inLie k r Y)
+    (g : Mx k r) (hg : g ∈ GG k r) :
+    B.LdV Y F g = ⟪PI.UpqRep.dsig (k := k) (r := r) R.σ Y x, R.σ g y⟫_ℂ • X := by
+  obtain ⟨hmul, hone, hinner, -⟩ := rep_basic_of_isDS hK k r ε mu R hR
+  have h1 := (hasDerivAt_dsig (σ := R.σ) hY hx).inner ℂ (hasDerivAt_const (0 : ℝ) (R.σ g y))
+  simp only [inner_zero_right, zero_add] at h1
+  have h := h1.smul_const X
+  unfold B.LdV
+  rw [← h.deriv]
+  congr 1
+  funext t
+  have he : NormedSpace.exp ((t : ℂ) • Y) ∈ GG k r := exp_mem hY t
+  have he' : NormedSpace.exp (-((t : ℂ) • Y)) ∈ GG k r := by
+    have := exp_mem hY (-t)
+    rwa [Complex.ofReal_neg, neg_smul] at this
+  have hee : NormedSpace.exp ((t : ℂ) • Y) * NormedSpace.exp (-((t : ℂ) • Y)) = 1 := by
+    rw [← Matrix.exp_add_of_commute _ _ (Commute.refl ((t : ℂ) • Y)).neg_right, add_neg_cancel, NormedSpace.exp_zero]
+  rw [hF _ (Formalism.FourierDecayAlt.P.TranslationBesselVanishing.uh_mul he' hg), hmul _ he' g hg, ← hinner _ he, ← hmul _ he _ he', hee, hone]
+
+theorem coeff_dLR : PI.KFinSmooth → ∀ (k r : ℕ) (ε : Fin (2 * r + k + 1) → Bool) (mu : Fin (2 * r + k + 1) → ℝ) (R : Rep k r) (V : Type) [NormedAddCommGroup V] [NormedSpace ℂ V] (X : V) (F : Mx k r → V), R.IsDS ε mu → ∀ x ∈ R.sm, ∀ y ∈ R.sm, (∀ g ∈ GG k r, F g = ⟪x, R.σ g y⟫_ℂ • X) → B.CkOn ⊤ (B.GV k r) F ∧ ∀ a b : List (Mx k r), (∀ Y ∈ a, B.inLie k r Y) → (∀ Y ∈ b, B.inLie k r Y) → ∀ g ∈ GG k r, B.dLR a b F g = ⟪PI.UpqRep.dsigW (k := k) (r := r) R.σ a x, R.σ g (PI.UpqRep.dsigW (k := k) (r := r) R.σ b y)⟫_ℂ • X := by
+  intro hK k r ε mu R V _ _ X F hR x hx y hy hF
+  refine ⟨fun g₀ hg₀ => ?_, fun a b ha hb => ?_⟩
+  · obtain ⟨U, G, hU, hgU, hG, hfG⟩ := hy g₀ hg₀
+    refine ⟨U, fun g => coefL R x X (G g), hU, hgU, (coefL R x X).contDiff.comp_contDiffOn hG, ?_⟩
+    intro g hg hgG
+    have e : R.σ g y = G g := hfG g hg hgG
+    rw [hF g hgG, e]
+    rfl
+  · have hRw : ∀ g ∈ GG k r, B.Rw b F g = ⟪x, R.σ g (PI.UpqRep.dsigW (k := k) (r := r) R.σ b y)⟫_ℂ • X := by
+      induction b with
+      | nil => exact hF
+      | cons Y b ih =>
+        have hb' : ∀ Z ∈ b, B.inLie k r Z := fun Z hZ => hb Z (by simp [hZ])
+        intro g hg
+        exact right_step hK hR X _ x (dsigW_smooth hR hy b hb') (ih hb') (hb Y (by simp)) g hg
+    induction a with
+    | nil => exact hRw
+    | cons Y a ih =>
+      have ha' : ∀ Z ∈ a, B.inLie k r Z := fun Z hZ => ha Z (by simp [hZ])
+      intro g hg
+      exact left_step hK hR X _ _ (dsigW_smooth hR hx a ha') (ih ha') (ha Y (by simp)) g hg
+
+end GlobalTheory.CoeffDeriv
+end
+
+section
+open BranchingSupport Formalism.FourierDecayAlt Formalism.FourierDecayAlt.ThreeDimData Matrix MeasureTheory Finset
+open scoped InnerProductSpace ENNReal
+
+noncomputable section
+
+namespace GlobalTheory.UnitBoxWords
+
+open PI.UpqRep GlobalTheory.DerivedAction
+
+variable {k r : ℕ} {ε : Fin (2 * r + k + 1) → Bool} {mu : Fin (2 * r + k + 1) → ℝ}
+
+def lieSubspace (k r : ℕ) : Submodule ℝ (Mx k r) where
+  carrier := {X | InLieHpk k r X}
+  add_mem' := fun {X Y} hX hY => by
+    simp only [Set.mem_setOf_eq, InLieHpk] at *
+    rw [Matrix.conjTranspose_add, Matrix.add_mul, Matrix.mul_add, add_add_add_comm, hX, hY, add_zero]
+  zero_mem' := by simp [InLieHpk]
+  smul_mem' := fun c X hX => by
+    simp only [Set.mem_setOf_eq, InLieHpk] at *
+    rw [Matrix.conjTranspose_smul, star_trivial, Matrix.smul_mul, Matrix.mul_smul, ← smul_add, hX, smul_zero]
+
+theorem exists_box_generators (k r : ℕ) : ∃ (J : Type) (_ : Fintype J) (Z : J → Mx k r),
+    (∀ j, InLieHpk k r (Z j)) ∧ ∀ Y, B.unitLie k r Y → ∃ c : J → ℝ, (∀ j, |c j| ≤ 1) ∧ Y = ∑ j, c j • Z j := by
+  obtain ⟨P, hP⟩ := (lieSubspace k r).subtype.exists_leftInverse_of_injective (Submodule.ker_subtype _)
+  let n := Fin (2 * r + k + 1)
+  let E : (n × n) ⊕ (n × n) → Mx k r :=
+    Sum.elim (fun p => Matrix.single p.1 p.2 1) (fun p => Matrix.single p.1 p.2 Complex.I)
+  refine ⟨(n × n) ⊕ (n × n), inferInstance, fun j => (P (E j)).1, fun j => (P (E j)).2, fun Y hY => ?_⟩
+  let c : (n × n) ⊕ (n × n) → ℝ := Sum.elim (fun p => (Y p.1 p.2).re) (fun p => (Y p.1 p.2).im)
+  refine ⟨c, ?_, ?_⟩
+  · rintro (p | p)
+    · exact (Complex.abs_re_le_norm _).trans (hY.2 _ _)
+    · exact (Complex.abs_im_le_norm _).trans (hY.2 _ _)
+  · have h1 : Y = ∑ j, c j • E j := by
+      rw [Fintype.sum_sum_type, ← Finset.sum_add_distrib, Fintype.sum_prod_type]
+      conv_lhs => rw [Matrix.matrix_eq_sum_single Y]
+      refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
+      simp only [c, E, Sum.elim_inl, Sum.elim_inr, Matrix.smul_single, ← Matrix.single_add]
+      congr 1
+      simp [Complex.real_smul]
+    have hYL : Y ∈ lieSubspace k r := hY.1
+    have h2 : (P Y).1 = Y := by
+      have := LinearMap.congr_fun hP ⟨Y, hYL⟩
+      exact congrArg Subtype.val this
+    calc Y = (P Y).1 := h2.symm
+      _ = (P (∑ j, c j • E j)).1 := by rw [← h1]
+      _ = _ := by simp [map_sum]
+
+theorem dsig_sum_letter {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] {σ : Mx k r → (H →L[ℂ] H)}
+    {J : Type} [Fintype J] {Z : J → Mx k r} (hZ : ∀ j, InLieHpk k r (Z j)) (c : J → ℝ) {v : H}
+    (hv : v ∈ smoothVecs (k := k) (r := r) σ) :
+    dsig (k := k) (r := r) σ (∑ j, c j • Z j) v = ∑ j, (c j : ℂ) • dsig (k := k) (r := r) σ (Z j) v := by
+  obtain ⟨L, hL⟩ := exists_lin hv
+  have hm : (∑ j, c j • Z j) ∈ lieSubspace k r :=
+    Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (hZ j)
+  rw [(hL _ hm).1, map_sum]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  rw [map_smul, (hL _ (hZ j)).1, Complex.coe_smul]
+
+theorem dsig_sum_vec (R : Rep k r) {X : Mx k r} (hX : InLieHpk k r X) {ι : Type} (s : Finset ι) (c : ι → ℂ)
+    {v : ι → R.H} (hv : ∀ i, v i ∈ R.sm) :
+    dsig (k := k) (r := r) R.σ X (∑ i ∈ s, c i • v i) = ∑ i ∈ s, c i • dsig (k := k) (r := r) R.σ X (v i) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp [dsig_zero]
+  | insert a s ha ih =>
+    have h1 : c a • v a ∈ R.smSub := R.smSub.smul_mem _ (hv a)
+    have h2 : ∑ i ∈ s, c i • v i ∈ R.smSub := R.smSub.sum_mem fun i _ => R.smSub.smul_mem _ (hv i)
+    rw [Finset.sum_insert ha, Finset.sum_insert ha, dsig_add hX h1 h2, dsig_smul hX _ (hv a), ih]
+
+theorem box_words_fintype (hK : PI.KFinSmooth) (R : Rep k r) (hR : R.IsDS ε mu) {x : R.H} (hx : x ∈ R.TK) (m : ℕ) :
+    ∃ (ι : Type) (_ : Fintype ι) (xs : ι → R.H), (∀ i, xs i ∈ R.TK) ∧ ∀ a : List (Mx k r),
+      (∀ Y ∈ a, B.unitLie k r Y) → a.length ≤ m → ∃ co : ι → ℝ, (∀ i, |co i| ≤ 1) ∧
+        dsigW (k := k) (r := r) R.σ a x = ∑ i, (co i : ℂ) • xs i := by
+  obtain ⟨J, _, Z, hZ, hbox⟩ := exists_box_generators k r
+  have h0 : InLieHpk k r (0 : Mx k r) := (lieSubspace k r).zero_mem
+  induction m with
+  | zero =>
+    refine ⟨Unit, inferInstance, fun _ => x, fun _ => hx, fun a _ hl => ⟨fun _ => 1, by simp, ?_⟩⟩
+    obtain rfl : a = [] := List.length_eq_zero_iff.1 (Nat.le_zero.1 hl)
+    simp [dsigW]
+  | succ m ih =>
+    obtain ⟨ι, _, xs, hxs, h⟩ := ih
+    refine ⟨Unit ⊕ (J × ι), inferInstance,
+      Sum.elim (fun _ => x) (fun p => dsig (k := k) (r := r) R.σ (Z p.1) (xs p.2)), ?_, ?_⟩
+    · rintro (p | p)
+      · exact hx
+      · exact (dsig_TK hK R hR (hZ p.1) _ (hxs p.2)).2
+    · intro a ha hl
+      cases a with
+      | nil =>
+        refine ⟨Sum.elim (fun _ => 1) (fun _ => 0), ?_, ?_⟩
+        · rintro (p | p) <;> simp
+        · simp [dsigW, Fintype.sum_sum_type]
+      | cons Y a =>
+        have hY := ha Y (by simp)
+        obtain ⟨co, hco, e⟩ := h a (fun Y hY => ha Y (by simp [hY])) (by simpa using hl)
+        obtain ⟨c, hc, eY⟩ := hbox Y hY
+        have hsm : ∀ i, xs i ∈ R.sm := fun i => (dsig_TK hK R hR h0 _ (hxs i)).1
+        refine ⟨Sum.elim (fun _ => 0) (fun p => co p.2 * c p.1), ?_, ?_⟩
+        · rintro (p | p)
+          · simp
+          · simp only [Sum.elim_inr, abs_mul]
+            exact mul_le_one₀ (hco _) (abs_nonneg _) (hc _)
+        · have hYL : InLieHpk k r Y := hY.1
+          show dsig (k := k) (r := r) R.σ Y (dsigW (k := k) (r := r) R.σ a x) = _
+          rw [e, dsig_sum_vec R hYL _ _ hsm, Fintype.sum_sum_type, Fintype.sum_prod_type_right]
+          simp only [Sum.elim_inl, Sum.elim_inr, Complex.ofReal_zero, zero_smul, Finset.sum_const_zero, zero_add]
+          refine Finset.sum_congr rfl fun i _ => ?_
+          rw [eY, dsig_sum_letter hZ c (hsm i), Finset.smul_sum]
+          refine Finset.sum_congr rfl fun j _ => ?_
+          rw [smul_smul, Complex.ofReal_mul]
+
+theorem box_words : PI.KFinSmooth → ∀ (k r : ℕ) (ε : Fin (2 * r + k + 1) → Bool) (mu : Fin (2 * r + k + 1) → ℝ) (R : Rep k r), R.IsDS ε mu → ∀ x ∈ R.TK, ∀ m : ℕ, ∃ (M : ℕ) (xs : Fin M → R.H), (∀ i, xs i ∈ R.TK) ∧ ∀ a : List (Mx k r), (∀ Y ∈ a, B.unitLie k r Y) → a.length ≤ m → ∃ co : Fin M → ℝ, (∀ i, |co i| ≤ 1) ∧ PI.UpqRep.dsigW (k := k) (r := r) R.σ a x = ∑ i, (co i : ℂ) • xs i := by
+  intro hK k r ε mu R hR x hx m
+  obtain ⟨ι, _, xs, hxs, h⟩ := box_words_fintype hK R hR hx m
+  let e := (Fintype.equivFin ι).symm
+  refine ⟨_, xs ∘ e, fun i => hxs _, fun a ha hl => ?_⟩
+  obtain ⟨co, hco, h'⟩ := h a ha hl
+  refine ⟨co ∘ e, fun i => hco _, ?_⟩
+  rw [h', ← e.sum_comp]
+  rfl
+
+end GlobalTheory.UnitBoxWords
+end
+end
+
+section
 open BranchingSupport Formalism.FourierDecayAlt Formalism.FourierDecayAlt.ThreeDimData Matrix MeasureTheory Finset
 open scoped InnerProductSpace ENNReal
 
@@ -124,3 +339,4 @@ theorem isCoef_ckOn_inCC : Hyps → ∀ (k r : ℕ) (ε : Fin (2 * r + k + 1) �
   exact ⟨hc.1 h1, fun m => hc.2 m (h2 m)⟩
 
 end GlobalTheory
+end

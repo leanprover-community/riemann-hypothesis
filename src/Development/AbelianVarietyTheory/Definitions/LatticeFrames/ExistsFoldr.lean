@@ -36,30 +36,8 @@ theorem mat_iff (G : GLoc v) (j a : ℕ) (ha : j + a = G.s + 1) (g : GA D (c.V j
     simp only [Matrix.mul_assoc]
     rw [(G.FY j a ha).βγ, Matrix.mul_one, ← Matrix.mul_assoc, (G.FY j a ha).βγ, Matrix.one_mul]
 
-theorem glam_unique {n : ℕ} (G : Fin n → GLoc v) (j : ℕ) (g : GA D (c.V j)) {a a' : ℂ} (h : GLam G j g a) (h' : GLam G j g a') :
-    a = a' := by
-  obtain ⟨b, hb, x, hx, rfl⟩ := h
-  obtain ⟨b', hb', x', hx', rfl⟩ := h'
-  obtain rfl : b = b' := funext fun i => by have := hb i; have := hb' i; omega
-  refine Finset.prod_congr rfl fun i _ => ?_
-  have : x i = x' i := Subtype.ext (((mat_iff _ _ _ _ _ _).1 (hx i)).trans ((mat_iff _ _ _ _ _ _).1 (hx' i)).symm)
-  rw [this]
 
-theorem glam_exists {n : ℕ} {G : Fin n → GLoc v} (P : GPin G) (j : ℕ) (hj : j < D.R.m) (g : GA D (c.V j)) (hg : g ∈ v.JG j) :
-    ∃ a, a ≠ 0 ∧ GLam G j g a := by
-  have hb : ∀ i, j + ((G i).s + 1 - j) = (G i).s + 1 := fun i => by have := (G i).hs; omega
-  refine ⟨_, ?_, fun i => (G i).s + 1 - j, hb, fun i => ⟨_, ((P.lev j hj g).1 hg).2 i _ (hb i) _ ((mat_iff _ _ _ _ _ _).2 rfl)⟩,
-    fun i => (mat_iff _ _ _ _ _ _).2 rfl, rfl⟩
-  exact Finset.prod_ne_zero_iff.2 fun i _ => Units.ne_zero _
 
-theorem glam_mul {n : ℕ} (G : Fin n → GLoc v) (j : ℕ) {g g' : GA D (c.V j)} {a a' : ℂ} (h : GLam G j g a) (h' : GLam G j g' a') :
-    GLam G j (g * g') (a * a') := by
-  obtain ⟨b, hb, x, hx, rfl⟩ := h
-  obtain ⟨b', hb', x', hx', rfl⟩ := h'
-  obtain rfl : b = b' := funext fun i => by have := hb i; have := hb' i; omega
-  refine ⟨b, hb, fun i => x i * x' i, fun i => (mat_iff _ _ _ _ _ _).2 ?_, ?_⟩
-  · rw [map_mul, ← (mat_iff _ _ _ _ _ _).1 (hx i), ← (mat_iff _ _ _ _ _ _).1 (hx' i)]; rfl
-  · rw [← Finset.prod_mul_distrib]; simp
 
 theorem exists_foldr (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) {ι : Type} (e : ι → WO S T →₀ ℂ) (l : List ι) :
     ∃ d : WO S T →₀ ℂ, ∀ f, comb ψ S T d f = l.foldr (fun i f' => comb ψ S T (e i) f') f := by
@@ -247,26 +225,6 @@ theorem iter_congr {r t : Type} [Fintype r] [DecidableEq r] [Fintype t] [Decidab
     unfold TypeDatum.step
     simp only [this]
 
-theorem withMu_same {s κ : ℕ} (S : SymData k s κ) (t : Type) [Fintype t] [DecidableEq t] (μ : ℕ → kˣ →* ℂˣ) (h : ∀ j, IsTame (μ j))
-    (e : ∀ j (x : kˣ), valuation k (x : k) = 1 → μ j x = S.μ j x) :
-    ((withMu S μ h).T t).lev = (S.T t).lev ∧ ((withMu S μ h).T t).Phi = (S.T t).Phi ∧ ((withMu S μ h).T t).PhiTop = (S.T t).PhiTop := by
-  have hΦ : ∀ j, S.P.iterPhi t μ h j = S.P.iterPhi t S.μ S.tame j := fun j => by
-    unfold TypeDatum.iterPhi
-    rw [iter_congr S.P h S.tame e j]
-    generalize S.P.iter t S.μ S.tame j = Q
-    have : Q.rho (μ (j + 1)) = Q.rho (S.μ (j + 1)) := MonoidHom.ext fun g => by
-      rw [TypeDatum.rho_apply, TypeDatum.rho_apply, e _ _ (val_det (Q.le_KO g.2))]
-    unfold TypeDatum.Phi
-    rw [this]
-  refine ⟨?_, ?_, ?_⟩
-  · funext j a ha
-    change (S.P.iter t μ h j).toLevel.map _ = (S.P.iter t S.μ S.tame j).toLevel.map _
-    rw [iter_congr S.P h S.tame e j]; rfl
-  · funext j a ha
-    change LatFrame.transport _ _ (S.P.iterPhi t μ h j) = LatFrame.transport _ _ (S.P.iterPhi t S.μ S.tame j)
-    rw [hΦ]; rfl
-  · change LatFrame.transport _ _ (S.P.iterPhi t μ h _) = LatFrame.transport _ _ (S.P.iterPhi t S.μ S.tame _)
-    rw [hΦ]; rfl
 
 end Mu
 
@@ -285,10 +243,6 @@ theorem _root_.GlobalTheory.SeeSaw.GModel.phi_sb (G : _root_.GlobalTheory.SeeSaw
   obtain ⟨hstep, htop, -⟩ := hreg
   exact ⟨hstep, htop⟩
 
-theorem volLast_ne (j : ℕ) (h : j + 2 * 0 + 2 = D.R.m) : Measure.map (c.jac j 0 h).d.emb0 (c.x (j + 1)).vol.μ ≠ 0 := by
-  haveI := (c.x (j + 1)).vol.haar
-  rw [Ne, Measure.map_eq_zero_iff (c.jac j 0 h).d.continuous_embed.measurable.aemeasurable]
-  exact NeZero.ne _
 
 def inv0 {S S₀ : HSp D} (d : HypDec S S₀ 0) : HypDec S₀ S 0 where
   e := 0

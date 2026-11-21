@@ -8,16 +8,1007 @@ import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.TorsionPairing
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.AbelianPartValuesOfExpansionLawsStatement
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ArcTorsionValuesNormsIntegralPositiveStatement
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.AbelianPartValuesTorsionPairingSeparationIntegraStatement
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsArcIsometryTorsionIntegralGauge
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.IntegralGaugeValuesAreValuationUnitsStatement
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsFiniteDimensionalFieldDegenerationValues
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.TorsionClassesDescendFiniteAlgebra
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsValuationSubringIntegralClosureCompleteDVRStatement
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsValuedFieldValuationCentreLePow
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.TwistTxCosetNormGe
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsArcLiftExtensionLargerClosedFieldStatement
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.LabelledTorsionValuesAdditiveKernelSurjective
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsIntegralDegenerationValuesStatement
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Definitions.Degenerations.CharZeroOfIsPrimitiveRoot
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsGtExtOfTorsion
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsValuationSubringIntegralClosureCompleteDVR
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RangeAlgebraMapEqIInfDiscreteValuationSubring
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsCompleteIsAlgClosedCExt
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.TxCosetCriterion
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsArcLiftExtensionLargerClosedField
 
+section
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open scoped CategoryTheory.Obj BigOperators
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory GlobalTheory.Ex
+
+namespace GlobalTheory.Ex.ArcLift
+
+theorem mem_of_pow_mem {K : Type} [Field K] (W : ValuationSubring K) {x : K} {n : ℕ} (hn : n ≠ 0) (h : x ^ n ∈ W) :
+    x ∈ W := by
+  rw [← W.valuation_le_one_iff] at h ⊢
+  rw [map_pow] at h
+  exact (pow_le_one_iff hn).1 h
+
+theorem local_noeth {O' : Type} [CommRing O'] [IsDomain O'] {ϖ : O'} (h : GlobalTheory.LN.ArcBase O' ϖ) :
+    IsLocalRing O' ∧ IsNoetherianRing O' := by
+  rcases h with ⟨h, -⟩ | ⟨h, -⟩
+  · letI := h.toField
+    exact ⟨inferInstance, inferInstance⟩
+  · exact ⟨inferInstance, inferInstance⟩
+
+theorem exists_lift : Laws → BrGtSt → AllA fun {_} _ _ _ {_} {_} {_} {_} {_} {_} _ {O'} _ _ {_} a => ∀ (F : Type) [Field F] [IsAlgClosed F] [Algebra (FractionRing O') F] (S : ValuationSubring F), (∀ r : O', algebraMap (FractionRing O') F (algebraMap O' _ r) ∈ S) → ∃ A : Lift a F, A.ν.Integral S := by
+  intro hL hG E _ _ _ H D l Xo c W₀ Y O' _ _ _ b ϖ a hb F _ _ _ S hS
+  obtain ⟨_, _⟩ := local_noeth hb
+  obtain ⟨N, ν, hν⟩ := GlobalTheory.T.exists_integral_degeneration_values hL O' a.D₀ a.even a.bimult F S hS
+  have hr : H.rt0 ∈ c.F := c.le (IntermediateField.subset_adjoin _ _ (by simp))
+  have hz : zeta l.A ∈ c.F := c.le (IntermediateField.subset_adjoin _ _ (by simp))
+  have hrW : H.rt0 ∈ W₀ := mem_of_pow_mem W₀ two_ne_zero (by
+    rw [H.sqrt_neg_disc_sq]; exact neg_mem (natCast_mem W₀ _))
+  have hzW : zeta l.A ∈ W₀ := mem_of_pow_mem W₀ l.A_pos.ne' (by
+    rw [zeta, (Complex.isPrimitiveRoot_exp l.A l.A_pos.ne').pow_eq_one]; exact one_mem _)
+  let r : c.V W₀ := ⟨⟨H.rt0, hr⟩, hrW⟩
+  let z : c.V W₀ := ⟨⟨zeta l.A, hz⟩, hzW⟩
+  obtain ⟨hdet, I, hζ, hA, hM⟩ := a.geom F r z rfl rfl _ rfl
+  have hq := fun n (v : D.La) =>
+    (((hG O' a.D₀ a.even a.bimult F N ν).2.2.2.2 n).1 (I.ev n v)).exists
+  choose q hq using hq
+  have hr2 : r ^ 2 = -(H.d : c.V W₀) := by
+    apply Subtype.ext; apply Subtype.ext
+    simpa [r] using H.sqrt_neg_disc_sq
+  refine ⟨{ ρ := algebraMap (FractionRing O') F (algebraMap O' _ (b r))
+            ρ_sq := by rw [← map_pow, ← map_pow, ← map_pow, hr2, map_neg, map_neg, map_neg, map_natCast, map_natCast, map_natCast]
+            det := fun τ => by
+              obtain ⟨n, h1, h2⟩ := hdet τ
+              exact ⟨n, h1, by
+                rw [h2]
+                by_cases h : τ H.rt = algebraMap (FractionRing O') F (algebraMap O' _ (b r))
+                · rw [if_pos h]; exact if_pos h
+                · rw [if_neg h]; exact if_neg h⟩
+            I := I, N := N, ν := ν, q := q, hq := hq
+            be := { be := a.be.comp ν.eX.toIntLinearEquiv.toLinearMap ν.eX.toIntLinearEquiv.toLinearMap
+                    symm := fun y z => a.be_symm _ _
+                    pos := fun y hy => a.be_pos _ (by simpa using hy)
+                    dvd := fun y z => a.be_dvd _ _ }
+            be_eq := fun _ _ => rfl
+            ρ_eq := fun r' h => by
+              obtain rfl : r' = r := Subtype.ext (Subtype.ext h)
+              rfl
+            ζ_eq := fun z' h => by
+              obtain rfl : z' = z := Subtype.ext (Subtype.ext h)
+              exact hζ
+            levA := hA
+            levM := hM
+            closed := inferInstance }, hν⟩
+
+end GlobalTheory.Ex.ArcLift
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open scoped CategoryTheory.Obj BigOperators
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory GlobalTheory.Ex
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_arcIsometry_torsion_integralGauge : Laws → BrGtSt → AllA fun {_} _ _ _ {_} {_} {_} {_} {_} {_} _ {O'} _ _ {_} a => ∀ (F : Type) [Field F] [IsAlgClosed F] [Algebra (FractionRing O') F] (S : ValuationSubring F), (∀ r : O', algebraMap (FractionRing O') F (algebraMap O' _ r) ∈ S) → ∃ A : Lift a F, A.ν.Integral S := by
+  atlas_forward_decl GlobalTheory.Ex.ArcLift.exists_lift
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open scoped CategoryTheory.Obj BigOperators
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory GlobalTheory.Ex
+noncomputable section
+namespace GlobalTheory.Ex.UnitVal
+
+section Values
+variable {C : Type} [Field C] {X Y : Scheme.{0}}
+
+theorem valF_appLE' {F : Type} [Field F] {x : Sp F ⟶ X} {U : X.Opens} (f : X ⟶ Y) (W : Y.Opens) (e : U ≤ f ⁻¹ᵁ W)
+    (h : ⊤ ≤ x ⁻¹ᵁ U) (a : Γ(Y, W)) : valF x U ((f.appLE W U e).hom a) = valF (x ≫ f) W a := by
+  have h' : ⊤ ≤ (x ≫ f) ⁻¹ᵁ W := fun q hq => e (h hq)
+  rw [valF, valF, dif_pos h, dif_pos h', ← Scheme.Hom.appLE_comp_appLE x f W U ⊤ e h]
+  rfl
+
+theorem valF_res' {F : Type} [Field F] {x : Sp F ⟶ X} {U V : X.Opens} (e : V ≤ U)
+    (h : ⊤ ≤ x ⁻¹ᵁ V) (a : Γ(X, U)) : valF x V ((X.presheaf.map (homOfLE e).op).hom a) = valF x U a := by
+  have h' : ⊤ ≤ x ⁻¹ᵁ U := fun q hq => e (h hq)
+  rw [valF, valF, dif_pos h, dif_pos h', ← Scheme.Hom.map_appLE x h (homOfLE e).op]
+  rfl
+
+theorem exists_valHom (S : ValuationSubring C) (t : Sp S ⟶ X) (U : X.Opens) (ht : ⊤ ≤ t ⁻¹ᵁ U) :
+    ∃ g : Γ(X, U) →+* S, ∀ a, valF (spMap S.subtype ≫ t) U a = g a := by
+  refine ⟨(Scheme.ΓSpecIso (CommRingCat.of S)).hom.hom.comp (t.appLE U ⊤ ht).hom, fun a => ?_⟩
+  have h' : ⊤ ≤ (spMap S.subtype ≫ t) ⁻¹ᵁ U := fun q _ => ht (Set.mem_univ (spMap S.subtype q))
+  rw [valF, dif_pos h']
+  have e : (spMap S.subtype ≫ t).appLE U ⊤ h' ≫ (Scheme.ΓSpecIso (CommRingCat.of C)).hom =
+      t.appLE U ⊤ ht ≫ (Scheme.ΓSpecIso (CommRingCat.of S)).hom ≫ CommRingCat.ofHom S.subtype := by
+    rw [← Scheme.ΓSpecIso_naturality, ← Scheme.Hom.appLE_comp_appLE (spMap S.subtype) t U ⊤ ⊤ ht le_rfl,
+      Category.assoc]
+    rfl
+  exact congrArg (fun g => g.hom a) e
+
+theorem val_valF_le {S : ValuationSubring C} (t : Sp S ⟶ X) (U : X.Opens)
+    (ht : ⊤ ≤ t ⁻¹ᵁ U) (a : Γ(X, U)) : valF (spMap S.subtype ≫ t) U a ∈ S := by
+  obtain ⟨g, hg⟩ := exists_valHom S t U ht
+  rw [hg]
+  exact (g a).2
+
+theorem val_valF_unit {S : ValuationSubring C} (t : Sp S ⟶ X) (U : X.Opens)
+    (ht : ⊤ ≤ t ⁻¹ᵁ U) (a : Γ(X, U)) (ha : IsUnit a) : S.valuation (valF (spMap S.subtype ≫ t) U a) = 1 := by
+  obtain ⟨g, hg⟩ := exists_valHom S t U ht
+  rw [hg]
+  exact (S.valuation_eq_one_iff (g a)).1 (ha.map g)
+end Values
+
+section Geo
+variable {R : Type} [CommRing R] [IsDomain R] {D : DegPre R} {C : Type} [Field C] [Algebra (FractionRing R) C]
+  {N : NumD C} {ν : NumOf D C N} {S : ValuationSubring C} {s : Sp S ⟶ Sp R}
+
+theorem exists_base (h : ∀ r : R, algebraMap (FractionRing R) C (algebraMap R _ r) ∈ S) :
+    ∃ s : Sp S ⟶ Sp R, spMap S.subtype ≫ s = (TF (R := R) C).hom := by
+  refine ⟨spMap (((algebraMap (FractionRing R) C).comp (algebraMap R _)).codRestrict S.toSubring h), ?_⟩
+  change _ = jFK (R := R) C ≫ jK R
+  rw [← Spec.map_comp, ← Spec.map_comp]
+  rfl
+
+theorem base_ext {a b : Sp S ⟶ Sp R} (h : spMap S.subtype ≫ a = spMap S.subtype ≫ b) : a = b := by
+  obtain ⟨a, rfl⟩ := Spec.map_surjective a
+  obtain ⟨b, rfl⟩ := Spec.map_surjective b
+  rw [← Spec.map_comp, ← Spec.map_comp] at h
+  have := Spec.map_injective h
+  congr 1
+  ext r
+  exact congrArg (fun g => g.hom r) this
+
+theorem isDominant_sub : IsDominant (spMap S.subtype) :=
+  ⟨(PrimeSpectrum.denseRange_comap_iff_ker_le_nilRadical S.subtype).2 (by
+    rw [(RingHom.injective_iff_ker_eq_bot _).1 S.subtype_injective]; exact bot_le)⟩
+
+theorem chart_int (hν : ν.Integral S) (hs : spMap S.subtype ≫ s = (TF (R := R) C).hom) (y : Sp S ⟶ D.P.A.left)
+    (hy : y ≫ D.P.A.hom = s) : ⊤ ≤ y ⁻¹ᵁ D.P.L.U (ν.J (spMap S.subtype ≫ y)) := by
+  obtain ⟨x₀, e, h⟩ := hν (Over.homMk (spMap S.subtype ≫ y) (by rw [Category.assoc, hy, hs]))
+  have := D.P.isAb.proper
+  have := isDominant_sub (S := S)
+  have e' : spMap S.subtype ≫ x₀ = spMap S.subtype ≫ y := e
+  obtain rfl : x₀ = y := ext_of_isDominant_of_isSeparated D.P.A.hom
+    (base_ext (by rw [← Category.assoc, e', Category.assoc])) _ e'
+  exact h
+
+theorem wchart_int (hν : ν.Integral S) (hs : spMap S.subtype ≫ s = (TF (R := R) C).hom) {Y : Scheme.{0}} {K : Type}
+    [Fintype K] (φ : K → (Y ⟶ D.P.A.left)) (r : Sp S ⟶ Y) (h : ∀ k, r ≫ φ k ≫ D.P.A.hom = s) :
+    ⊤ ≤ r ⁻¹ᵁ LB.wchart D.P.L φ fun k => ν.J ((spMap S.subtype ≫ r) ≫ φ k) := fun q hq =>
+  Set.mem_iInter.2 fun k => by
+    beta_reduce
+    rw [Category.assoc]
+    exact chart_int hν hs (r ≫ φ k) (by rw [Category.assoc, h]) hq
+
+theorem val_vF (hν : ν.Integral S) (hs : spMap S.subtype ≫ s = (TF (R := R) C).hom)
+    {Y : Scheme.{0}} {K : Type} [Fintype K] {φ : K → (Y ⟶ D.P.A.left)} {ε : K → ℤ} (t : LB.Gen (LB.LinComb D.P.L φ ε))
+    (r : Sp S ⟶ Y) (h : ∀ k, r ≫ φ k ≫ D.P.A.hom = s) {r' : Sp C ⟶ Y} (e : spMap S.subtype ≫ r = r') :
+    S.valuation (vF t r' ν.J) = 1 := by
+  subst e
+  exact val_valF_unit r _ (wchart_int hν hs φ r h) _ (Units.isUnit _)
+
+theorem val_sF (hν : ν.Integral S) (hs : spMap S.subtype ≫ s = (TF (R := R) C).hom)
+    {Y : Scheme.{0}} {K : Type} [Fintype K] {φ : K → (Y ⟶ D.P.A.left)} {ε : K → ℤ} (t : LB.Sec (LB.LinComb D.P.L φ ε))
+    (r : Sp S ⟶ Y) (h : ∀ k, r ≫ φ k ≫ D.P.A.hom = s) {r' : Sp C ⟶ Y} (e : spMap S.subtype ≫ r = r') :
+    sF t r' ν.J ∈ S := by
+  subst e
+  exact val_valF_le r _ (wchart_int hν hs φ r h) _
+
+theorem exists_ext (hν : ν.Integral S) (hs : spMap S.subtype ≫ s = (TF (R := R) C).hom) (x : TF (R := R) C ⟶ D.P.A) :
+    ∃ x₀ : Over.mk s ⟶ D.P.A, (Over.homMk (spMap S.subtype) hs : TF (R := R) C ⟶ Over.mk s) ≫ x₀ = x := by
+  obtain ⟨x₀, e, -⟩ := hν x
+  refine ⟨Over.homMk x₀ (base_ext ?_), Over.OverMorphism.ext e⟩
+  rw [← Category.assoc, e, Over.w x]
+  exact hs.symm
+
+theorem val_rig (hν : ν.Integral S) (hs : spMap S.subtype ≫ s = (TF (R := R) C).hom) :
+    S.valuation (vF (L := D.P.L) (φ := fun _ : PUnit => eSec D.P.A) (ε := fun _ => 1) D.rig (TF (R := R) C).hom ν.J) = 1 :=
+  val_vF hν hs _ s (fun _ => by
+    have : eSec D.P.A ≫ D.P.A.hom = 𝟙 _ := Over.w η[D.P.A]
+    exact (congrArg (s ≫ ·) this).trans (Category.comp_id _)) hs
+
+theorem val_θ (hν : ν.Integral S) (hs : spMap S.subtype ≫ s = (TF (R := R) C).hom)
+    (x y u : N.A) : S.valuation ((N.θ x y u : C)) = 1 := by
+  obtain ⟨x₀, hx⟩ := exists_ext hν hs (ν.eA x)
+  obtain ⟨y₀, hy⟩ := exists_ext hν hs (ν.eA y)
+  obtain ⟨u₀, hu⟩ := exists_ext hν hs (ν.eA u)
+  rw [ν.θ_eq]
+  refine val_vF hν hs _ (lift x₀ (lift y₀ u₀)).left (fun k => ?_) ?_
+  · exact (congrArg (_ ≫ ·) (Over.w (psum D.P.A (x3 D.P.A) k.down))).trans (Over.w (lift x₀ (lift y₀ u₀)))
+  · rw [← hx, ← hy, ← hu, ← comp_lift, ← comp_lift]
+    rfl
+
+theorem val_σ (hν : ν.Integral S) (hs : spMap S.subtype ≫ s = (TF (R := R) C).hom)
+    (x : N.A) : S.valuation ((N.σ x : C)) = 1 := by
+  obtain ⟨x₀, hx⟩ := exists_ext hν hs (ν.eA x)
+  rw [ν.σ_eq]
+  refine val_vF hν hs _ x₀.left (fun k => ?_) (congrArg (·.left) hx)
+  fin_cases k
+  · exact (congrArg (_ ≫ ·) (Over.w ι[D.P.A])).trans (Over.w x₀)
+  · exact (congrArg (_ ≫ ·) (Category.id_comp _)).trans (Over.w x₀)
+
+theorem val_th (hν : ν.Integral S) (hs : spMap S.subtype ≫ s = (TF (R := R) C).hom)
+    (x : N.A) : N.th x ∈ S := by
+  obtain ⟨x₀, hx⟩ := exists_ext hν hs (ν.eA x)
+  have h := congrArg S.valuation (ν.th_eq x)
+  rw [map_mul, val_rig hν hs, _root_.mul_one] at h
+  rw [← S.valuation_le_one_iff, h, S.valuation_le_one_iff]
+  exact val_sF hν hs _ x₀.left (fun _ => (congrArg (_ ≫ ·) (Category.id_comp _)).trans (Over.w x₀))
+    (congrArg (·.left) hx)
+
+theorem val_psi (hν : ν.Integral S) (hs : spMap S.subtype ≫ s = (TF (R := R) C).hom)
+    (χ : D.X) (hχ : PsiUnitOn D χ Set.univ) : S.valuation (vF (D.psi χ) (jFK (R := R) C) ν.J) = 1 := by
+  have e : jFK (R := R) C ≫ D.xK χ = spMap S.subtype ≫ s ≫ (D.c χ).left := by
+    rw [← Category.assoc, hs]
+    exact (Category.assoc _ _ _).symm
+  have h1 := chart_int hν hs (s ≫ (D.c χ).left)
+    ((Category.assoc _ _ _).trans ((congrArg (s ≫ ·) (Over.w (D.c χ))).trans (Category.comp_id _)))
+  rw [← e] at h1
+  have h2 : s (IsLocalRing.closedPoint S) ∈ ((D.c χ).left ⁻¹ᵁ D.P.L.U (ν.J (jFK (R := R) C ≫ D.xK χ)) : (Sp R).Opens) :=
+    h1 (Set.mem_univ _)
+  obtain ⟨_, ⟨V, hV, rfl⟩, hy, hle⟩ := (Sp R).isBasis_affineOpens.exists_subset_of_mem_open h2 (TopologicalSpace.Opens.isOpen _)
+  have h3 : ⊤ ≤ s ⁻¹ᵁ V := ((IsLocalRing.closedPoint_mem_iff (s ⁻¹ᵁ V)).1 hy).ge
+  have h : jK R ⁻¹ᵁ V ≤ (LB.LinComb D.P.L (K := PUnit) (fun _ => D.xK χ) (fun _ => -1)).U
+      (fun _ => ν.J (jFK (R := R) C ≫ D.xK χ)) := fun y hy => Set.mem_iInter.2 fun _ => hle hy
+  obtain ⟨r, hr, er⟩ := hχ (fun _ => ν.J (jFK (R := R) C ≫ D.xK χ)) V hV (Set.subset_univ _) hle h
+  have hs' : jFK (R := R) C ≫ jK R = spMap S.subtype ≫ s := hs.symm
+  have h4 : ⊤ ≤ jFK (R := R) C ⁻¹ᵁ (jK R ⁻¹ᵁ V) := by
+    change ⊤ ≤ (jFK (R := R) C ≫ jK R) ⁻¹ᵁ V
+    rw [hs']
+    exact fun q _ => h3 (Set.mem_univ (spMap S.subtype q))
+  have a := valF_res' h h4 ((D.psi χ).s _).val
+  rw [Scheme.Hom.app_eq_appLE] at er
+  refine (congrArg S.valuation (a.symm.trans ((congrArg (valF _ _) er.symm).trans
+    (valF_appLE' (jK R) V le_rfl h4 r)))).trans ?_
+  exact (congrArg (fun q => S.valuation (valF q V r)) hs').trans (val_valF_unit s V h3 r hr)
+
+theorem val_ψ (hν : ν.Integral S) (hs : spMap S.subtype ≫ s = (TF (R := R) C).hom)
+    (χ : N.X) (hχ : PsiUnitOn D (ν.eX χ) Set.univ) : S.valuation ((N.ψ χ : C)) = 1 := by
+  rw [ν.ψ_eq, map_mul, val_rig hν hs, val_psi hν hs _ hχ, _root_.mul_one]
+end Geo
+
+theorem integral_values : ∀ (R : Type) [CommRing R] [IsDomain R] (D : DegPre R) (F : Type) [Field F] [Algebra (FractionRing R) F] (S : ValuationSubring F), (∀ r : R, algebraMap (FractionRing R) F (algebraMap R _ r) ∈ S) → ∀ (N : NumD F) (ν : NumOf D F N), ν.Integral S → (∀ x y u, S.valuation (N.θ x y u : F) = 1) ∧ (∀ x, S.valuation (N.σ x : F) = 1) ∧ (∀ x, N.th x ∈ S) ∧ ((∀ y, PsiUnitOn D y Set.univ) → ∀ χ, S.valuation (N.ψ χ : F) = 1) := by
+  intro R _ _ D F _ _ S hR N ν hν
+  obtain ⟨s, hs⟩ := exists_base (R := R) (S := S) hR
+  exact ⟨val_θ hν hs, val_σ hν hs, val_th hν hs, fun h χ => val_ψ hν hs χ (h _)⟩
+
+end GlobalTheory.Ex.UnitVal
+end
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open scoped CategoryTheory.Obj BigOperators
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory GlobalTheory.Ex
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integralGauge_values_are_valuationUnits : ∀ (R : Type) [CommRing R] [IsDomain R] (D : DegPre R) (F : Type) [Field F] [Algebra (FractionRing R) F] (S : ValuationSubring F), (∀ r : R, algebraMap (FractionRing R) F (algebraMap R _ r) ∈ S) → ∀ (N : NumD F) (ν : NumOf D F N), ν.Integral S → (∀ x y u, S.valuation (N.θ x y u : F) = 1) ∧ (∀ x, S.valuation (N.σ x : F) = 1) ∧ (∀ x, N.th x ∈ S) ∧ ((∀ y, PsiUnitOn D y Set.univ) → ∀ χ, S.valuation (N.ψ χ : F) = 1) := by
+  first | exact @GlobalTheory.Ex.UnitVal.integral_values | exact GlobalTheory.Ex.UnitVal.integral_values | (intros; apply GlobalTheory.Ex.UnitVal.integral_values <;> assumption)
+end
+
+section
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open scoped CategoryTheory.Obj BigOperators
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory GlobalTheory.Ex
+
+noncomputable section
+namespace GlobalTheory.FiniteValues
+open GlobalTheory.TorusExt GlobalTheory.ArcExt
+
+theorem exists_finset_point {R : Type} [CommRing R] [IsDomain R] {F : Type} [Field F] [Algebra (FractionRing R) F]
+    (B : Over (Spec (CommRingCat.of R))) [LocallyOfFiniteType B.hom] (p : TF (R := R) F ⟶ B) :
+    ∃ S : Finset F, ∀ K : IntermediateField (FractionRing R) F, (S : Set F) ⊆ K →
+      ∃ l : TF (R := R) K ⟶ B, extMap (R := R) (algebraMap K F) rfl ≫ l = p := by
+  classical
+  obtain ⟨_, ⟨U, hU, rfl⟩, hpt, -⟩ := B.left.isBasis_affineOpens.exists_subset_of_mem_open
+    (Set.mem_univ (p.left (IsLocalRing.closedPoint F))) isOpen_univ
+  have hU : IsAffineOpen U := hU
+  obtain ⟨f, hf⟩ : ∃ f : Γ(B.left, U) ⟶ CommRingCat.of F, Spec.map f ≫ hU.fromSpec = p.left := by
+    refine ⟨Spec.preimage (IsOpenImmersion.lift hU.fromSpec p.left ?_), ?_⟩
+    · rintro _ ⟨y, rfl⟩
+      rw [hU.range_fromSpec, Subsingleton.elim (α := PrimeSpectrum F) y (IsLocalRing.closedPoint F)]
+      exact hpt
+    · rw [Spec.map_preimage]; exact IsOpenImmersion.lift_fac _ _ _
+  obtain ⟨g, hg⟩ : ∃ g : CommRingCat.of R ⟶ Γ(B.left, U), Spec.map g = hU.fromSpec ≫ B.hom :=
+    ⟨Spec.preimage _, Spec.map_preimage _⟩
+  have hgf : g ≫ f = CommRingCat.ofHom (algebraMap R (FractionRing R)) ≫
+      CommRingCat.ofHom (algebraMap (FractionRing R) F) :=
+    Spec.map_injective (by
+      rw [Spec.map_comp, hg, ← Category.assoc, hf, Spec.map_comp]
+      exact Over.w p)
+  have hV : ∀ r : R, f.hom (g.hom r) = algebraMap (FractionRing R) F (algebraMap R _ r) := fun r =>
+    congrArg (fun q => q.hom r) hgf
+  have hft : g.hom.FiniteType := by
+    have : LocallyOfFiniteType (Spec.map g) := by rw [hg]; infer_instance
+    exact HasRingHomProperty.Spec_iff.1 this
+  let _ : Algebra R Γ(B.left, U) := g.hom.toAlgebra
+  obtain ⟨s, hs⟩ := (show Algebra.FiniteType R Γ(B.left, U) from hft).out
+  refine ⟨s.image f.hom, fun K hK => ?_⟩
+  have hr : ∀ a, f.hom a ∈ K := fun a => by
+    have ha : a ∈ Algebra.adjoin R (s : Set Γ(B.left, U)) := hs ▸ Algebra.mem_top
+    induction ha using Algebra.adjoin_induction with
+    | mem x hx => exact hK (Finset.mem_image_of_mem _ hx)
+    | algebraMap r => exact (hV r).symm ▸ K.algebraMap_mem _
+    | add x y _ _ hx hy => rw [map_add]; exact add_mem hx hy
+    | mul x y _ _ hx hy => rw [map_mul]; exact mul_mem hx hy
+  let f' : Γ(B.left, U) ⟶ CommRingCat.of K := CommRingCat.ofHom (f.hom.codRestrict K hr)
+  refine ⟨Over.homMk (Spec.map f' ≫ hU.fromSpec) ?_, Over.OverMorphism.ext ?_⟩
+  · change (Spec.map f' ≫ hU.fromSpec) ≫ B.hom = Spec.map _ ≫ Spec.map _
+    rw [Category.assoc, ← hg, ← Spec.map_comp, ← Spec.map_comp]
+    congr 1
+    ext r
+    exact hV r
+  · change Spec.map _ ≫ Spec.map f' ≫ hU.fromSpec = _
+    rw [← hf, ← Spec.map_comp_assoc]
+    rfl
+
+theorem exists_finite_field_of_values : ∀ (R : Type) [CommRing R] [IsDomain R] (D : DegPre R) (F : Type) [Field F] [Algebra (FractionRing R) F] [Algebra.IsAlgebraic (FractionRing R) F] (N : NumD F) (_ : NumOf D F N) (T : Set N.A), T.Finite → ∃ (K₁ : IntermediateField (FractionRing R) F) (A₀ : Subgroup N.A), FiniteDimensional (FractionRing R) K₁ ∧ (∀ x ∈ T, x ∈ A₀) ∧ (∀ χ, N.c χ ∈ A₀) ∧ (∀ x ∈ A₀, ∀ y ∈ A₀, ∀ u ∈ A₀, (N.θ x y u : F) ∈ K₁) ∧ (∀ x ∈ A₀, (N.σ x : F) ∈ K₁) ∧ (∀ x ∈ A₀, N.th x ∈ K₁) ∧ ∀ χ, (N.ψ χ : F) ∈ K₁ := by
+  intro R _ _ D F _ _ _ N ν T hT
+  haveI := D.P.isAb.proper
+  choose S hS using fun x : N.A => exists_finset_point D.P.A (ν.eA x)
+  let s : Set F := ⋃ x ∈ T, (S x : Set F)
+  haveI : Finite s := (hT.biUnion fun x _ => (S x).finite_toSet).to_subtype
+  let K := IntermediateField.adjoin (FractionRing R) s
+  let f : K →+* F := algebraMap K F
+  have hf : f.comp (algebraMap (FractionRing R) K) = algebraMap (FractionRing R) F := rfl
+  let Φ : (TF (R := R) K ⟶ D.P.A) →* N.A :=
+    MonoidHom.mk' (fun x => ν.eA.symm (extMap f hf ≫ x)) fun x y => by rw [MonObj.comp_mul, map_mul]
+  have hΦ : ∀ x, ν.eA (Φ x) = extMap f hf ≫ x := fun x => ν.eA.apply_symm_apply _
+  let J : (Sp K ⟶ D.P.A.left) → D.P.L.ι := fun ψ => ν.J (spMap f ≫ ψ)
+  have hJ : ∀ ψ, ⊤ ≤ ψ ⁻¹ᵁ D.P.L.U (J ψ) := fun ψ z _ => by
+    have h := ν.good (spMap f ≫ ψ) (Set.mem_univ (IsLocalRing.closedPoint F))
+    rw [Subsingleton.elim (α := PrimeSpectrum K) z (spMap f (IsLocalRing.closedPoint F))]
+    exact h
+  have hJ' : ∀ ψ, ν.J (spMap f ≫ ψ) = J ψ := fun _ => rfl
+  have hm : ∀ a : K, f a ∈ K := fun a => a.2
+  have hv : ∀ {Y : Scheme.{0}} {I : Type} [Fintype I] {φ : I → (Y ⟶ D.P.A.left)} {ε : I → ℤ}
+      (t : LB.Gen (LB.LinComb D.P.L φ ε)) (r : Sp K ⟶ Y), vF t (spMap f ≫ r) ν.J ∈ K := fun t r => by
+    rw [vF_ext f hJ hJ']; exact hm _
+  have hw : ∀ {Y : Scheme.{0}} {I : Type} [Fintype I] {φ : I → (Y ⟶ D.P.A.left)} {ε : I → ℤ}
+      (t : LB.Sec (LB.LinComb D.P.L φ ε)) (r : Sp K ⟶ Y), sF t (spMap f ≫ r) ν.J ∈ K := fun t r => by
+    rw [sF_ext f hJ hJ']; exact hm _
+  have hrig : rigVal ν ∈ K := by
+    rw [rigVal, ← Over.w (extMap (R := R) f hf)]
+    exact hv _ _
+  refine ⟨K, Φ.range, IntermediateField.finiteDimensional_adjoin fun x _ => (Algebra.IsAlgebraic.isAlgebraic x).isIntegral,
+    fun x hx => ?_, fun χ => ?_, ?_, ?_, ?_, fun χ => ?_⟩
+  · obtain ⟨l, hl⟩ := hS x K ((Set.subset_biUnion_of_mem (u := fun x => (S x : Set F)) hx).trans
+      (IntermediateField.subset_adjoin _ _))
+    exact ⟨l, ν.eA.injective ((hΦ l).trans hl)⟩
+  · exact ⟨DegPre.cF D K (ν.eX χ), ν.eA.injective ((hΦ _).trans ((DVR.comp_cP D _ _).trans (ν.c_eq χ).symm))⟩
+  · rintro _ ⟨x, rfl⟩ _ ⟨y, rfl⟩ _ ⟨u, rfl⟩
+    rw [ν.θ_eq, hΦ, hΦ, hΦ, ← comp_lift, ← comp_lift]
+    exact hv _ _
+  · rintro _ ⟨x, rfl⟩
+    rw [ν.σ_eq, hΦ]
+    exact hv _ _
+  · rintro _ ⟨x, rfl⟩
+    have h0 : rigVal ν ≠ 0 := vF_ne_zero ν.good _ _
+    rw [eq_div_of_mul_eq h0 (ν.th_eq (Φ x)), hΦ]
+    exact div_mem (hw _ _) hrig
+  · rw [ν.ψ_eq]
+    refine mul_mem ?_ hrig
+    rw [← (extMap_jFK (R := R) f hf).trans (Category.id_comp _)]
+    exact hv _ _
+
+end GlobalTheory.FiniteValues
+end
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open scoped CategoryTheory.Obj BigOperators
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory GlobalTheory.Ex
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_finiteDimensional_field_degenerationValues : ∀ (R : Type) [CommRing R] [IsDomain R] (D : DegPre R) (F : Type) [Field F] [Algebra (FractionRing R) F] [Algebra.IsAlgebraic (FractionRing R) F] (N : NumD F) (_ : NumOf D F N) (T : Set N.A), T.Finite → ∃ (K₁ : IntermediateField (FractionRing R) F) (A₀ : Subgroup N.A), FiniteDimensional (FractionRing R) K₁ ∧ (∀ x ∈ T, x ∈ A₀) ∧ (∀ χ, N.c χ ∈ A₀) ∧ (∀ x ∈ A₀, ∀ y ∈ A₀, ∀ u ∈ A₀, (N.θ x y u : F) ∈ K₁) ∧ (∀ x ∈ A₀, (N.σ x : F) ∈ K₁) ∧ (∀ x ∈ A₀, N.th x ∈ K₁) ∧ ∀ χ, (N.ψ χ : F) ∈ K₁ := by
+  atlas_forward_decl GlobalTheory.FiniteValues.exists_finite_field_of_values
+end
+
+section
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.Ex
+open scoped BigOperators
+
+namespace GlobalTheory.Ex
+
+theorem NumD.exists_descent_subring : ∀ (O F : Type) [CommRing O] [CommRing F] (io : O →+* F), Function.Injective io → ∀ (N : NumD F) (A₀ : Subgroup N.A), (∀ χ, N.c χ ∈ A₀) → (∀ x ∈ A₀, ∀ y ∈ A₀, ∀ u ∈ A₀, ∃ a : Oˣ, io a = N.θ x y u) → (∀ x ∈ A₀, ∃ a : Oˣ, io a = N.σ x) → (∀ x ∈ A₀, ∃ a : O, io a = N.th x) → (∀ χ, ∃ a : Oˣ, io a = N.ψ χ) → ∃ (N₀ : NumD O) (I : NumD.Hom io N₀ N), I.lam = 1 ∧ ∀ (k : ℕ) (p : N.QT k), p.1.2.b ∈ A₀ → (∀ χ, ∃ a : Oˣ, io a = p.1.2.s χ) → ∃ p₀ : N₀.QT k, p.1.1.toAdd = I.e p₀.1.1.toAdd ∧ I.Rel p₀.1.2 p.1.2 := by
+  intro O F _ _ io hio N A₀ hc hθ hσ hth hψ
+  have hθ' : ∀ x y u : A₀, ∃ a : Oˣ, Units.map io.toMonoidHom a = N.θ x y u := fun x y u =>
+    (hθ x x.2 y y.2 u u.2).imp fun a h => Units.ext h
+  have hσ' : ∀ x : A₀, ∃ a : Oˣ, Units.map io.toMonoidHom a = N.σ x := fun x =>
+    (hσ x x.2).imp fun a h => Units.ext h
+  have hth' : ∀ x : A₀, ∃ a : O, io a = N.th x := fun x => hth x x.2
+  have hψ' : ∀ χ, ∃ a : Oˣ, Units.map io.toMonoidHom a = N.ψ χ := fun χ =>
+    (hψ χ).imp fun a h => Units.ext h
+  choose θ eθ using hθ'
+  choose σ eσ using hσ'
+  choose th eth using hth'
+  choose ψ eψ using hψ'
+  have inj : Function.Injective (Units.map io.toMonoidHom) := Units.map_injective hio
+  let B₀ : NumB O :=
+    { A := A₀
+      θ := θ
+      cub :=
+        { face := fun x y => inj (by rw [eθ, map_one]; exact N.cub.face _ _)
+          s01 := fun x y z => inj (by rw [eθ, eθ]; exact N.cub.s01 _ _ _)
+          s12 := fun x y z => inj (by rw [eθ, eθ]; exact N.cub.s12 _ _ _)
+          coc := fun x x' x'' y => inj (by simp only [map_mul, eθ]; exact N.cub.coc _ _ _ _) }
+      σ := σ
+      σ_one := inj (by rw [eσ, map_one]; exact N.σ_one)
+      σ_mul := fun x y => inj (by simp only [map_mul, eθ, eσ]; exact N.σ_mul _ _)
+      th := th }
+  let N₀ : NumD O :=
+    { toNumB := B₀
+      X := N.X
+      c := fun χ => (⟨N.c χ, hc χ⟩ : A₀)
+      c_add := fun a b => Subtype.ext (N.c_add a b)
+      ψ := ψ
+      even := fun χ => inj (by
+        change Units.map io.toMonoidHom (ψ (-χ) * σ ⟨N.c χ, hc χ⟩) = _
+        simp only [map_mul, eψ, eσ]; exact N.even χ)
+      bimult := fun a a' b => inj (by
+        change Units.map io.toMonoidHom (_ * θ ⟨N.c a, hc a⟩ ⟨N.c a', hc a'⟩ ⟨N.c b, hc b⟩) = _
+        simp only [map_mul, map_div, eψ, eθ]; exact N.bimult a a' b) }
+  let I : NumD.Hom io N₀ N :=
+    { φ := A₀.subtype
+      h := fun _ => 1
+      h_one := rfl
+      θ_eq := fun (x y u : A₀) => by
+        simp only [mul_one]; exact (eθ x y u).symm
+      σ_eq := fun (x : A₀) => by
+        simp only [mul_one]; exact (eσ x).symm
+      lam := 1
+      th_eq := fun (x : A₀) => by
+        simp only [mul_one, Units.val_one, one_mul]; exact (eth x).symm
+      e := AddEquiv.refl N.X
+      c_eq := fun _ => rfl
+      ψ_eq := fun (χ : N.X) => by
+        simp only [mul_one]; exact (eψ χ).symm }
+  let Φ : N₀.Gt →* N.Gt := MonoidHom.mk'
+    (fun g => ⟨((show A₀ from g.b) : N.A), fun (χ : N.X) => Units.map io.toMonoidHom (g.s χ), fun (χ χ' : N.X) => by
+      have := congrArg (Units.map io.toMonoidHom) (g.mult χ χ')
+      rw [map_mul, map_mul] at this
+      rw [← this]
+      exact congrArg _ (eθ ⟨N.c χ, hc χ⟩ ⟨N.c χ', hc χ'⟩ g.b).symm⟩)
+    (fun g g' => NumD.Gt.ext rfl (funext fun (χ : N.X) => by
+      change Units.map io.toMonoidHom (g.s χ * g'.s χ / θ ⟨N.c χ, hc χ⟩ g.b g'.b) = _
+      rw [map_div, map_mul, eθ]; rfl))
+  have Φinj : Function.Injective Φ := fun g g' h =>
+    NumD.Gt.ext (Subtype.ext (congrArg NumD.Gt.b h))
+      (funext fun (χ : N.X) => inj (congrArg (fun z : N.Gt => z.s χ) h))
+  have Φio : ∀ y : N.X, Φ (N₀.io y) = N.io y := fun y =>
+    NumD.Gt.ext rfl (funext fun (χ : N.X) => by
+      change Units.map io.toMonoidHom (ψ (y + χ) / ψ y / ψ χ) = _
+      rw [map_div, map_div, eψ, eψ, eψ]; rfl)
+  refine ⟨N₀, I, rfl, fun k p hb hs => ?_⟩
+  have hs' : ∀ χ, ∃ a : Oˣ, Units.map io.toMonoidHom a = p.1.2.s χ := fun χ =>
+    (hs χ).imp fun a h => Units.ext h
+  choose s es using hs'
+  let g₀ : N₀.Gt := ⟨(⟨p.1.2.b, hb⟩ : A₀), s, fun (χ χ' : N.X) => inj (by
+    change Units.map io.toMonoidHom (s (χ + χ') * θ ⟨N.c χ, hc χ⟩ ⟨N.c χ', hc χ'⟩ ⟨p.1.2.b, hb⟩) = _
+    simp only [map_mul, es, eθ]; exact p.1.2.mult χ χ')⟩
+  have hg : Φ g₀ = p.1.2 := NumD.Gt.ext rfl (funext fun χ => es χ)
+  refine ⟨⟨(p.1.1, g₀), Φinj ?_⟩, rfl, rfl, fun (χ : N.X) => ?_⟩
+  · change Φ (g₀ ^ k) = Φ (N₀.io (show N.X from p.1.1.toAdd))
+    rw [map_pow, hg, Φio]; exact p.2
+  · change p.1.2.s χ * 1 = Units.map io.toMonoidHom (s χ) * 1 * 1
+    rw [es, mul_one, mul_one]
+
+end GlobalTheory.Ex
+end
+
+section
+section
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.Ex
+open scoped BigOperators
+
+namespace GlobalTheory.Ex.TorsDesc
+
+theorem s_mem_of_basis {F : Type} [CommRing F] (N : NumD F) (U : Subgroup Fˣ) (g : N.Gt) {ι : Type}
+    (e : Module.Basis ι ℤ N.X) (hθ : ∀ χ χ', N.θ (N.c χ) (N.c χ') g.b ∈ U) (he : ∀ l, g.s (e l) ∈ U) (χ : N.X) :
+    g.s χ ∈ U := by
+  have hχ : χ ∈ Submodule.span ℤ (Set.range e) := by rw [e.span_eq]; trivial
+  rw [← Submodule.mem_toAddSubgroup, Submodule.span_int_eq_addSubgroupClosure] at hχ
+  induction hχ using AddSubgroup.closure_induction with
+  | mem x hx => obtain ⟨l, rfl⟩ := hx; exact he l
+  | zero => rw [NumD.Gt.s_zero]; exact U.one_mem
+  | add x y _ _ hx hy =>
+    rw [eq_div_iff_mul_eq'.2 (g.mult x y)]
+    exact U.div_mem (U.mul_mem hx hy) (hθ _ _)
+  | neg x _ hx =>
+    have := g.mult x (-x)
+    rw [add_neg_cancel, NumD.Gt.s_zero, one_mul] at this
+    exact (U.mul_mem_cancel_left hx).1 (this ▸ hθ _ _)
+
+theorem s_mem_of_root {F : Type} [CommRing F] (N : NumD F) (U : Subgroup Fˣ)
+    (hθ : ∀ x y u, N.θ x y u ∈ U) (hψ : ∀ χ, N.ψ χ ∈ U) {k : ℕ} (hU : ∀ u : Fˣ, u ^ k ∈ U → u ∈ U) (p : N.QT k)
+    (χ : N.X) : p.1.2.s χ ∈ U := by
+  refine hU _ ?_
+  rw [← NumD.Gt.pow_s, N.mem_QT.1 p.2, NumD.io_s]
+  exact U.mul_mem (U.div_mem (U.div_mem (hψ _) (hψ _)) (hψ _)) (U.prod_mem fun _ _ => hθ _ _ _)
+
+theorem exists_finite_subalgebra (O F : Type) [CommRing O] [IsDomain O] [IsNoetherianRing O] [IsIntegrallyClosed O]
+    [CharZero O] [Field F] [Algebra (FractionRing O) F] [Algebra O F] [IsScalarTower O (FractionRing O) F]
+    (K : IntermediateField (FractionRing O) F) [FiniteDimensional (FractionRing O) K] :
+    ∃ O₁ : Subalgebra O F, Module.Finite O O₁ ∧ ∀ x ∈ K, IsIntegral O x → x ∈ O₁ := by
+  have : CharZero (FractionRing O) := IsFractionRing.charZero_of_isFractionRing O
+  have : Module.Finite O (integralClosure O K) := IsIntegralClosure.finite O (FractionRing O) K _
+  let v : K →ₐ[O] F := { K.val.toRingHom with commutes' := fun _ => rfl }
+  have hv : Function.Injective v := Subtype.val_injective
+  refine ⟨(integralClosure O K).map v, Module.Finite.equiv ((integralClosure O K).equivMapOfInjective v hv).toLinearEquiv,
+    fun x hx hi => ⟨⟨x, hx⟩, ?_, rfl⟩⟩
+  exact (isIntegral_algHom_iff v hv).1 hi
+
+theorem descend : ∀ (O F : Type) [CommRing O] [IsDomain O] [IsNoetherianRing O] [IsIntegrallyClosed O] [CharZero O] [Field F] [Algebra (FractionRing O) F] [Algebra O F] [IsScalarTower O (FractionRing O) F] [Algebra.IsAlgebraic (FractionRing O) F] (S : ValuationSubring F), (∀ x, x ∈ S ↔ IsIntegral O x) → ∀ (N : NumD F) (K₁ : IntermediateField (FractionRing O) F) (A₀ : Subgroup N.A), FiniteDimensional (FractionRing O) K₁ → (∀ χ, N.c χ ∈ A₀) → (∀ x ∈ A₀, ∀ y ∈ A₀, ∀ u ∈ A₀, (N.θ x y u : F) ∈ K₁) → (∀ x ∈ A₀, (N.σ x : F) ∈ K₁) → (∀ x ∈ A₀, N.th x ∈ K₁) → (∀ χ, (N.ψ χ : F) ∈ K₁) → (∀ x y u, S.valuation (N.θ x y u : F) = 1) → (∀ x, S.valuation (N.σ x : F) = 1) → (∀ x, N.th x ∈ S) → (∀ χ, S.valuation (N.ψ χ : F) = 1) → ∀ (Ix : Type) [Finite Ix] (k : Ix → ℕ) (p : ∀ i, N.QT (k i)), (∀ i, 0 < k i) → (∀ i, (p i).1.2.b ∈ A₀) → ∃ O₁ : Subalgebra O F, Module.Finite O O₁ ∧ ∃ (N₀ : NumD O₁) (I : NumD.Hom O₁.val.toRingHom N₀ N), I.lam = 1 ∧ ∀ i (p' : N.QT (k i)), N.QEq (p i) p' → ∃ p₀ : N₀.QT (k i), p'.1.1.toAdd = I.e p₀.1.1.toAdd ∧ I.Rel p₀.1.2 p'.1.2 := by
+  intro O F _ _ _ _ _ _ _ _ _ _ S hS N K₁ A₀ hK hc hθ hσ hth hψ vθ vσ vth vψ Ix _ k p hk hp
+  let e := Module.Free.chooseBasis ℤ N.X
+  let T : Set F := Set.range fun il : Ix × Module.Free.ChooseBasisIndex ℤ N.X => ((p il.1).1.2.s (e il.2) : F)
+  have : Finite T := (Set.finite_range _).to_subtype
+  have : FiniteDimensional (FractionRing O) (IntermediateField.adjoin (FractionRing O) T) :=
+    IntermediateField.finiteDimensional_adjoin fun x _ => (Algebra.IsAlgebraic.isAlgebraic x).isIntegral
+  let K₂ := K₁ ⊔ IntermediateField.adjoin (FractionRing O) T
+  have : FiniteDimensional (FractionRing O) K₂ := IntermediateField.finiteDimensional_sup _ _
+  have h12 : K₁ ≤ K₂ := le_sup_left
+  obtain ⟨O₁, hfin, hO⟩ := exists_finite_subalgebra O F K₂
+  have hunit : ∀ u : Fˣ, (u : F) ∈ K₂ → S.valuation (u : F) = 1 → ∃ a : O₁ˣ, O₁.val.toRingHom a = u := by
+    intro u hu hv
+    have h1 : (u : F) ∈ O₁ := hO _ hu ((hS _).1 ((S.valuation_le_one_iff _).1 hv.le))
+    have h2 : ((u⁻¹ : Fˣ) : F) ∈ O₁ := by
+      rw [Units.val_inv_eq_inv_val]
+      exact hO _ (K₂.inv_mem hu) ((hS _).1 ((S.valuation_le_one_iff _).1 (by rw [map_inv₀, hv, inv_one])))
+    exact ⟨⟨⟨_, h1⟩, ⟨_, h2⟩, Subtype.ext u.mul_inv, Subtype.ext u.inv_mul⟩, rfl⟩
+  let U : Subgroup Fˣ :=
+    { carrier := {u | (u : F) ∈ K₂}
+      mul_mem' := fun ha hb => K₂.mul_mem ha hb
+      one_mem' := K₂.one_mem
+      inv_mem' := fun {u} hu => by
+        change ((u⁻¹ : Fˣ) : F) ∈ K₂
+        rw [Units.val_inv_eq_inv_val]
+        exact K₂.inv_mem hu }
+  let V : Subgroup Fˣ := (S.valuation.toMonoidWithZeroHom.toMonoidHom.comp (Units.coeHom F)).ker
+  obtain ⟨N₀, I, hI, h⟩ := GlobalTheory.Ex.NumD.exists_descent_subring O₁ F O₁.val.toRingHom Subtype.val_injective N A₀ hc
+    (fun x hx y hy u hu => hunit _ (h12 (hθ x hx y hy u hu)) (vθ _ _ _))
+    (fun x hx => hunit _ (h12 (hσ x hx)) (vσ _))
+    (fun x hx => ⟨⟨_, hO _ (h12 (hth x hx)) ((hS _).1 (vth x))⟩, rfl⟩)
+    (fun χ => hunit _ (h12 (hψ χ)) (vψ _))
+  refine ⟨O₁, hfin, N₀, I, hI, fun i p' ⟨z, _, hz⟩ => h _ p' ?_ fun χ => hunit _ ?_ ?_⟩
+  · rw [hz]
+    exact A₀.mul_mem (hp i) (hc z)
+  · have h1 : (p i).1.2.s χ ∈ U := s_mem_of_basis N U _ e (fun χ χ' => h12 (hθ _ (hc _) _ (hc _) _ (hp i)))
+      (fun l => (le_sup_right : _ ≤ K₂) (IntermediateField.subset_adjoin _ _ ⟨(i, l), rfl⟩)) χ
+    have hψU : ∀ χ, N.ψ χ ∈ U := fun χ => h12 (hψ χ)
+    change p'.1.2.s χ ∈ U
+    rw [hz, NumD.Gt.mul_s]
+    exact U.div_mem (U.mul_mem h1 (U.div_mem (U.div_mem (hψU _) (hψU _)) (hψU _)))
+      (h12 (hθ _ (hc _) _ (hp i) _ (hc z)))
+  · refine s_mem_of_root N V vθ vψ (fun u hu => ?_) p' χ
+    have : S.valuation (u : F) ^ k i = 1 := by
+      rw [← map_pow, ← Units.val_pow_eq_pow_val]; exact hu
+    exact (pow_eq_one_iff_of_nonneg zero_le (hk i).ne').1 this
+
+end GlobalTheory.Ex.TorsDesc
+end
+
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.Ex
+open scoped BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.torsionClasses_descend_finite_algebra : ∀ (O F : Type) [CommRing O] [IsDomain O] [IsNoetherianRing O] [IsIntegrallyClosed O] [CharZero O] [Field F] [Algebra (FractionRing O) F] [Algebra O F] [IsScalarTower O (FractionRing O) F] [Algebra.IsAlgebraic (FractionRing O) F] (S : ValuationSubring F), (∀ x, x ∈ S ↔ IsIntegral O x) → ∀ (N : NumD F) (K₁ : IntermediateField (FractionRing O) F) (A₀ : Subgroup N.A), FiniteDimensional (FractionRing O) K₁ → (∀ χ, N.c χ ∈ A₀) → (∀ x ∈ A₀, ∀ y ∈ A₀, ∀ u ∈ A₀, (N.θ x y u : F) ∈ K₁) → (∀ x ∈ A₀, (N.σ x : F) ∈ K₁) → (∀ x ∈ A₀, N.th x ∈ K₁) → (∀ χ, (N.ψ χ : F) ∈ K₁) → (∀ x y u, S.valuation (N.θ x y u : F) = 1) → (∀ x, S.valuation (N.σ x : F) = 1) → (∀ x, N.th x ∈ S) → (∀ χ, S.valuation (N.ψ χ : F) = 1) → ∀ (Ix : Type) [Finite Ix] (k : Ix → ℕ) (p : ∀ i, N.QT (k i)), (∀ i, 0 < k i) → (∀ i, (p i).1.2.b ∈ A₀) → ∃ O₁ : Subalgebra O F, Module.Finite O O₁ ∧ ∃ (N₀ : NumD O₁) (I : NumD.Hom O₁.val.toRingHom N₀ N), I.lam = 1 ∧ ∀ i (p' : N.QT (k i)), N.QEq (p i) p' → ∃ p₀ : N₀.QT (k i), p'.1.1.toAdd = I.e p₀.1.1.toAdd ∧ I.Rel p₀.1.2 p'.1.2 := by
+  atlas_forward_decl GlobalTheory.Ex.TorsDesc.descend
+end
+
+section
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_valuationSubring_integral_closure_completeDVR : ∀ (O : Type) [CommRing O] [IsDomain O] [CharZero O] (ϖ : O), GlobalTheory.LN.ArcBase O ϖ → ∀ (F : Type) [Field F] [Algebra (FractionRing O) F] [Algebra O F] [IsScalarTower O (FractionRing O) F] [Algebra.IsAlgebraic (FractionRing O) F], ∃ S : ValuationSubring F, ∀ x, x ∈ S ↔ IsIntegral O x := by
+  first | exact @GlobalTheory.LN.exists_valuationSubring_isIntegral | exact GlobalTheory.LN.exists_valuationSubring_isIntegral | (intros; apply GlobalTheory.LN.exists_valuationSubring_isIntegral <;> assumption)
+end
+
+section
+section
+namespace GlobalTheory.Ex
+
+theorem exists_complete_isAlgClosed_centred_at_prime :
+    ∀ (R K : Type) [CommRing R] [IsDomain R] [IsNoetherianRing R] [Field K] [Algebra R K] [FaithfulSMul R K] [Algebra.IsAlgebraic R K] (P : Ideal R), P.IsPrime → P ≠ ⊥ → ∃ (C : Type) (_ : NontriviallyNormedField C) (_ : IsUltrametricDist C) (_ : CompleteSpace C) (_ : IsAlgClosed C) (gam : K →+* C), (∀ r, ‖gam (algebraMap R K r)‖ ≤ 1) ∧ ∀ r ∈ P, ‖gam (algebraMap R K r)‖ < 1 := by
+  intro R K _ _ _ _ _ _ _ P hP hP0
+  obtain ⟨O, _, _, _, _, φ, hker, hcom⟩ :=
+    GlobalTheory.exists_complete_discreteValuationRing_of_prime_lt (⊥ : Ideal R) P (bot_lt_iff_ne_bot.2 hP0)
+  have hφ : Function.Injective φ := (RingHom.injective_iff_ker_eq_bot φ).2 hker
+  obtain ⟨C, i1, i2, i3, i4, i5, -, -, h1, h2⟩ :=
+    GlobalTheory.Ex.exists_complete_isAlgClosed_cExt O (FractionRing O)
+  let ψ : R →+* C := (algebraMap (FractionRing O) C).comp ((algebraMap O (FractionRing O)).comp φ)
+  have hψ : Function.Injective ψ :=
+    (algebraMap (FractionRing O) C).injective.comp
+      ((IsFractionRing.injective O (FractionRing O)).comp hφ)
+  letI : Algebra R C := ψ.toAlgebra
+  haveI : FaithfulSMul R C := (faithfulSMul_iff_algebraMap_injective R C).2 hψ
+  let g : K →ₐ[R] C := IsAlgClosed.lift
+  have hg : ∀ r, g.toRingHom (algebraMap R K r) = ψ r := fun r => g.commutes r
+  refine ⟨C, i1, i2, i3, i4, g.toRingHom, fun r => ?_, fun r hr => ?_⟩
+  · rw [hg]
+    exact h1 (φ r)
+  · rw [hg]
+    exact h2 (φ r) (by rw [← hcom] at hr; exact hr)
+
+end GlobalTheory.Ex
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_complete_algClosed_field_centred_at_prime : ∀ (R K : Type) [CommRing R] [IsDomain R] [IsNoetherianRing R] [Field K] [Algebra R K] [FaithfulSMul R K] [Algebra.IsAlgebraic R K] (P : Ideal R), P.IsPrime → P ≠ ⊥ → ∃ (C : Type) (_ : NontriviallyNormedField C) (_ : IsUltrametricDist C) (_ : CompleteSpace C) (_ : IsAlgClosed C) (gam : K →+* C), (∀ r, ‖gam (algebraMap R K r)‖ ≤ 1) ∧ ∀ r ∈ P, ‖gam (algebraMap R K r)‖ < 1 := by
+  atlas_forward_decl GlobalTheory.Ex.exists_complete_isAlgClosed_centred_at_prime
+end
+
+section
+section
+namespace GlobalTheory
+
+theorem exists_valuedField_centred_subalgebra (R K : Type) [CommRing R] [IsDomain R]
+    [IsNoetherianRing R] [Field K] [Algebra R K] [FaithfulSMul R K] [Algebra.IsAlgebraic R K]
+    (u : R) (hu : u ≠ 0) (A : Subalgebra R K) (hA : A.FG) (P : Ideal A) (hP : P.IsPrime)
+    (huP : algebraMap R A u ∈ P) :
+    ∃ (C : Type) (_ : NontriviallyNormedField C) (_ : IsUltrametricDist C) (_ : CompleteSpace C)
+      (_ : IsAlgClosed C) (gam : K →+* C), (∀ x ∈ A, ‖gam x‖ ≤ 1) ∧
+        ∀ x : A, x ∈ P → ‖gam (x : K)‖ < 1 := by
+  have hinjK : Function.Injective (algebraMap R K) := FaithfulSMul.algebraMap_injective R K
+  have hinj : Function.Injective (algebraMap R A) := by
+    intro a b hab
+    apply hinjK
+    have := congrArg (fun x : A => (x : K)) hab
+    simpa using this
+  haveI : IsNoetherianRing A := isNoetherianRing_of_fg hA
+  haveI : Algebra.IsAlgebraic A K := Algebra.IsAlgebraic.extendScalars hinj
+  haveI : FaithfulSMul A K :=
+    (faithfulSMul_iff_algebraMap_injective A K).2 Subtype.val_injective
+  have hne : P ≠ ⊥ := by
+    intro h
+    rw [h, Ideal.mem_bot] at huP
+    exact hu (hinj (by rw [huP, map_zero]))
+  obtain ⟨C, i1, i2, i3, i4, gam, h1, h2⟩ := GlobalTheory.T.exists_complete_algClosed_field_centred_at_prime A K P hP hne
+  exact ⟨C, i1, i2, i3, i4, gam, fun x hx => h1 ⟨x, hx⟩, fun x hx => h2 x hx⟩
+
+theorem exists_valuedField_centre_le_pow : ∀ (R K : Type) [CommRing R] [IsDomain R] [IsNoetherianRing R] [IsLocalRing R] [Field K] [Algebra R K] [FaithfulSMul R K] [Algebra.IsAlgebraic R K] (u : R), u ∈ IsLocalRing.maximalIdeal R → u ≠ 0 → ∀ R₁ : Subalgebra R K, Module.Finite R R₁ → ∀ S : ValuationSubring K, (∀ r, algebraMap R K r ∈ S) → ∀ e : ℕ, ∃ (C : Type) (_ : NontriviallyNormedField C) (_ : IsUltrametricDist C) (_ : CompleteSpace C) (_ : IsAlgClosed C) (gam : K →+* C), (∀ r, ‖gam (algebraMap R K r)‖ ≤ 1) ∧ ‖gam (algebraMap R K u)‖ < 1 ∧ ∀ f ∈ R₁, S.valuation f < 1 → ‖gam f‖ < 1 ∧ (S.valuation (algebraMap R K u) = 1 → ‖gam f‖ ≤ ‖gam (algebraMap R K u)‖ ^ e) := by
+  intro R K _ _ _ _ _ _ _ _ u hum hu R₁ hfin S hS e
+  have hinjK : Function.Injective (algebraMap R K) := FaithfulSMul.algebraMap_injective R K
+  have hR : ∀ r, S.valuation (algebraMap R K r) ≤ 1 := fun r =>
+    (S.valuation_le_one_iff _).2 (hS r)
+  have hR₁ : ∀ x ∈ R₁, S.valuation x ≤ 1 := by
+    intro x hx
+    have hint : IsIntegral R x := by
+      have h := (Algebra.IsIntegral.isIntegral (R := R) (⟨x, hx⟩ : R₁)).map R₁.val
+      simpa using h
+    letI : Algebra R S := ((algebraMap R K).codRestrict S.toSubring hS).toAlgebra
+    haveI : IsScalarTower R S K := IsScalarTower.of_algebraMap_eq fun _ => rfl
+    have hint' : IsIntegral S x := hint.tower_top
+    obtain ⟨y, hy⟩ := (IsIntegrallyClosed.isIntegral_iff (R := S) (K := K)).1 hint'
+    rw [← hy]
+    exact (S.valuation_le_one_iff _).2 y.2
+  have hfg : (Subalgebra.toSubmodule R₁).FG := Module.Finite.iff_fg.1 hfin
+  let q : Ideal R₁ :=
+    { carrier := {x | S.valuation (x : K) < 1}
+      add_mem' := fun {a b} ha hb => by
+        simpa using S.valuation.map_add_lt ha hb
+      zero_mem' := by simp
+      smul_mem' := fun c x hx => by
+        have hx' : S.valuation (x : K) < 1 := hx
+        show S.valuation ((c : K) * (x : K)) < 1
+        rw [map_mul]
+        exact lt_of_le_of_lt (mul_le_of_le_one_left' (hR₁ _ c.2)) hx' }
+  have hq : ∀ x : R₁, x ∈ q ↔ S.valuation (x : K) < 1 := fun _ => Iff.rfl
+  have hqp : q.IsPrime := by
+    refine ⟨?_, ?_⟩
+    · rw [Ideal.ne_top_iff_one, hq]; simp
+    · intro a b hab
+      by_contra hcon
+      rw [not_or, hq, hq, not_lt, not_lt] at hcon
+      rw [hq, Subalgebra.coe_mul, map_mul, le_antisymm (hR₁ _ a.2) hcon.1,
+        le_antisymm (hR₁ _ b.2) hcon.2] at hab
+      simp at hab
+  by_cases hv : S.valuation (algebraMap R K u) = 1
+  ·
+    set U : K := algebraMap R K u with hU
+    have hU0 : U ≠ 0 := fun h => hu (hinjK (by rw [← hU, h, map_zero]))
+    let Q : Submodule R K := (q.restrictScalars R).map R₁.val.toLinearMap
+    have hQ : Q.FG := by
+      haveI : IsNoetherian R R₁ := isNoetherian_of_isNoetherianRing_of_finite R R₁
+      exact Submodule.FG.map _ (IsNoetherian.noetherian _)
+    let N : Submodule R K := Subalgebra.toSubmodule R₁ ⊔
+      Q.map (LinearMap.mulRight R (U ^ (e + 1))⁻¹)
+    have hN : N.FG := Submodule.FG.sup hfg (hQ.map _)
+    let A : Subalgebra R K := Algebra.adjoin R (N : Set K)
+    have hA : A.FG := by
+      obtain ⟨s, hs⟩ := hN
+      refine ⟨s, ?_⟩
+      show _ = Algebra.adjoin R (N : Set K)
+      rw [← hs, Algebra.adjoin_span]
+    have hinv : ∀ x ∈ A, ∃ a ∈ R₁, S.valuation (x - a) < 1 := by
+      intro x hx
+      induction hx using Algebra.adjoin_induction with
+      | mem x hx =>
+        obtain ⟨a, ha, _, ⟨_, ⟨g, hg, rfl⟩, rfl⟩, rfl⟩ := Submodule.mem_sup.1 hx
+        refine ⟨a, ha, ?_⟩
+        have hg' : S.valuation (g : K) < 1 := hg
+        simpa [hv] using hg'
+      | algebraMap r => exact ⟨_, R₁.algebraMap_mem r, by simp⟩
+      | add x y _ _ hx hy =>
+        obtain ⟨a, ha, hx⟩ := hx
+        obtain ⟨b, hb, hy⟩ := hy
+        refine ⟨a + b, R₁.add_mem ha hb, ?_⟩
+        rw [show x + y - (a + b) = (x - a) + (y - b) by ring]
+        exact S.valuation.map_add_lt hx hy
+      | mul x y _ _ hx hy =>
+        obtain ⟨a, ha, hx⟩ := hx
+        obtain ⟨b, hb, hy⟩ := hy
+        refine ⟨a * b, R₁.mul_mem ha hb, ?_⟩
+        rw [show x * y - a * b = (x - a) * (y - b) + (b * (x - a) + a * (y - b)) by ring]
+        refine S.valuation.map_add_lt ?_ (S.valuation.map_add_lt ?_ ?_) <;> rw [map_mul]
+        · exact lt_of_le_of_lt (mul_le_of_le_one_left' hx.le) hy
+        · exact lt_of_le_of_lt (mul_le_of_le_one_left' (hR₁ _ hb)) hx
+        · exact lt_of_le_of_lt (mul_le_of_le_one_left' (hR₁ _ ha)) hy
+    have hnu : ¬ IsUnit (algebraMap R A u) := by
+      intro hun
+      obtain ⟨x, hx⟩ := hun.exists_right_inv
+      have hx' : U * (x : K) = 1 := by
+        have := congrArg (fun x : A => (x : K)) hx
+        simpa using this
+      obtain ⟨a, ha, hxa⟩ := hinv x x.2
+      obtain ⟨M, hM, hqM⟩ := Ideal.exists_le_maximal q hqp.ne_top
+      have hMc : (M.comap (algebraMap R R₁)).IsMaximal :=
+        Ideal.isMaximal_comap_of_isIntegral_of_isMaximal M
+      have huM : algebraMap R R₁ u ∈ M := by
+        rw [← Ideal.mem_comap, IsLocalRing.eq_maximalIdeal hMc]; exact hum
+      have h1 : (1 - algebraMap R R₁ u * ⟨a, ha⟩ : R₁) ∈ q := by
+        rw [hq]
+        have : ((1 - algebraMap R R₁ u * ⟨a, ha⟩ : R₁) : K) = U * (x - a) := by
+          rw [mul_sub, hx']; simp [hU]
+        rw [this, map_mul, hv, one_mul]
+        exact hxa
+      apply hM.ne_top
+      rw [Ideal.eq_top_iff_one]
+      simpa using M.add_mem (hqM h1) (M.mul_mem_right (⟨a, ha⟩ : R₁) huM)
+    obtain ⟨P, hP, huP⟩ := exists_max_ideal_of_mem_nonunits (mem_nonunits_iff.2 hnu)
+    obtain ⟨C, i1, i2, i3, i4, gam, h1, h2⟩ :=
+      exists_valuedField_centred_subalgebra R K u hu A hA P hP.isPrime huP
+    have hgu : ‖gam U‖ < 1 := h2 _ huP
+    refine ⟨C, i1, i2, i3, i4, gam, fun r => h1 _ (A.algebraMap_mem r), hgu, ?_⟩
+    intro f hf hvf
+    have hmem : f * (U ^ (e + 1))⁻¹ ∈ A :=
+      Algebra.subset_adjoin (Submodule.mem_sup_right
+        (Submodule.mem_map.2 ⟨f, Submodule.mem_map.2 ⟨⟨f, hf⟩, hvf, rfl⟩, rfl⟩))
+    have hle : ‖gam f‖ ≤ ‖gam U‖ ^ (e + 1) := by
+      have hf' : f = f * (U ^ (e + 1))⁻¹ * U ^ (e + 1) := by field_simp
+      have h3 := h1 _ hmem
+      rw [hf', map_mul, norm_mul, map_pow, norm_pow]
+      exact mul_le_of_le_one_left (by positivity) h3
+    refine ⟨hle.trans_lt (pow_lt_one₀ (norm_nonneg _) hgu (by omega)), fun _ => hle.trans ?_⟩
+    exact pow_le_pow_of_le_one (norm_nonneg _) hgu.le (by omega)
+  · have huq : algebraMap R R₁ u ∈ q := lt_of_le_of_ne (hR u) hv
+    obtain ⟨C, i1, i2, i3, i4, gam, h1, h2⟩ :=
+      exists_valuedField_centred_subalgebra R K u hu R₁ (Subalgebra.fg_of_fg_toSubmodule hfg)
+        q hqp huq
+    exact ⟨C, i1, i2, i3, i4, gam, fun r => h1 _ (R₁.algebraMap_mem r), h2 _ huq,
+      fun f hf hvf => ⟨h2 ⟨f, hf⟩ hvf, fun h => absurd h hv⟩⟩
+
+end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_valuedField_valuationCentre_le_pow : ∀ (R K : Type) [CommRing R] [IsDomain R] [IsNoetherianRing R] [IsLocalRing R] [Field K] [Algebra R K] [FaithfulSMul R K] [Algebra.IsAlgebraic R K] (u : R), u ∈ IsLocalRing.maximalIdeal R → u ≠ 0 → ∀ R₁ : Subalgebra R K, Module.Finite R R₁ → ∀ S : ValuationSubring K, (∀ r, algebraMap R K r ∈ S) → ∀ e : ℕ, ∃ (C : Type) (_ : NontriviallyNormedField C) (_ : IsUltrametricDist C) (_ : CompleteSpace C) (_ : IsAlgClosed C) (gam : K →+* C), (∀ r, ‖gam (algebraMap R K r)‖ ≤ 1) ∧ ‖gam (algebraMap R K u)‖ < 1 ∧ ∀ f ∈ R₁, S.valuation f < 1 → ‖gam f‖ < 1 ∧ (S.valuation (algebraMap R K u) = 1 → ‖gam f‖ ≤ ‖gam (algebraMap R K u)‖ ^ e) := by
+  atlas_forward_decl GlobalTheory.exists_valuedField_centre_le_pow
+end
+
+section
+section
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.Ex
+open scoped BigOperators
+
+namespace GlobalTheory.TwistCoset
+
+theorem tx_eq_of_qEq {O : Type} [CommRing O] [TopologicalSpace O] (N : NumD O) {m : ℕ} (hm : Odd m)
+    {p p' : N.QT (m ^ 2)} (h : N.QEq p p') : N.tx m p' = N.tx m p := by
+  obtain ⟨z, h1, h2⟩ := h
+  refine Eq.trans (tsum_congr fun χ => ?_) ((Equiv.addRight (m • z)).tsum_eq fun χ => N.txT m p χ)
+  exact (GlobalTheory.T.thetaConstantTerm_representative_dependence O N m hm p p' χ).1 z h1 h2
+
+variable {O : Type} [CommRing O] {N : NumD O} {k : ℕ} {β : N.Form k} {u r : Oˣ} {l : ℕ}
+
+theorem twRel_mul {a b : N.QT l} {a' b' : (N.twist β u).QT l} (ha : TwRel β u r a a') (hb : TwRel β u r b b') :
+    TwRel β u r (a * b) (a' * b') := by
+  obtain ⟨a1, a2, a3⟩ := ha
+  obtain ⟨b1, b2, b3⟩ := hb
+  refine ⟨congrArg₂ (fun s t : Multiplicative N.X => s * t) a1 b1,
+    congrArg₂ (fun s t : N.A => s * t) a2 b2, fun z => ?_⟩
+  change a'.1.2.s z * b'.1.2.s z / N.θ (N.c z) a'.1.2.b b'.1.2.b =
+    a.1.2.s z * b.1.2.s z / N.θ (N.c z) a.1.2.b b.1.2.b * r ^ β.be (a.1.1.toAdd + b.1.1.toAdd) z
+  rw [a2, b2, a3, b3, map_add, LinearMap.add_apply, zpow_add]
+  apply Additive.ofMul.injective
+  simp only [ofMul_mul, ofMul_div]; abel
+
+theorem twRel_qEq (hr : r ^ l = u) {a b : N.QT l} {a' b' : (N.twist β u).QT l} (ha : TwRel β u r a a')
+    (hb : TwRel β u r b b') (h : N.QEq a b) : (N.twist β u).QEq a' b' := by
+  obtain ⟨a1, a2, a3⟩ := ha
+  obtain ⟨b1, b2, b3⟩ := hb
+  obtain ⟨z, h1, h2⟩ := h
+  refine ⟨z, ?_, NumD.Gt.ext ?_ (funext fun (w : N.X) => ?_)⟩
+  · rw [a1, b1]; exact h1
+  · refine b2.trans ?_
+    rw [h2]
+    exact congrArg (fun s : N.A => s * N.c z) a2.symm
+  · change b'.1.2.s w = a'.1.2.s w * (N.twist β u).τ z w / N.θ (N.c w) a'.1.2.b (N.c z)
+    have e : r ^ ((l : ℤ) * β.be z w) = u ^ β.be z w := by rw [zpow_mul, zpow_natCast, hr]
+    rw [b3, a3, a2, N.twist_τ, h1, h2, NumD.Gt.mul_s, NumD.io_s, NumD.io_b, map_add, LinearMap.add_apply, map_nsmul,
+      LinearMap.smul_apply, nsmul_eq_mul, zpow_add, e]
+    apply Additive.ofMul.injective
+    simp only [ofMul_mul, ofMul_div]; abel
+
+theorem exists_twRel_of_eq_one (r : Oˣ) (h : (N.twist β u).QT l) (h1 : h.1.1 = 1) {e : ℕ} (he : h.1.2 ^ e = 1) :
+    ∃ h₀ : N.QT l, h₀ ^ e = 1 ∧ TwRel β u r h₀ h := by
+  let f : (N.twist β u).Gt →* N.Gt := MonoidHom.mk' (fun g => ⟨g.b, g.s, g.mult⟩) fun _ _ => rfl
+  have hl : h.1.2 ^ l = 1 := by
+    rw [(N.twist β u).mem_QT.1 h.2, h1]; exact (N.twist β u).io_zero
+  refine ⟨⟨(1, f h.1.2), ?_⟩, Subtype.ext (Prod.ext (one_pow e) ?_), h1, rfl, fun z => ?_⟩
+  · rw [NumD.mem_QT, ← map_pow, hl, map_one]; exact N.io_zero.symm
+  · change f h.1.2 ^ e = 1
+    rw [← map_pow, he, map_one]
+  · change h.1.2.s z = h.1.2.s z * r ^ β.be 0 z
+    rw [map_zero, LinearMap.zero_apply, zpow_zero, mul_one]
+
+variable {La : Type} [AddCommGroup La] {q : La → N.QT l}
+
+theorem qEq_zero (hq : ∀ a b, N.QEq (q a * q b) (q (a + b))) : N.QEq (q 0) 1 := by
+  have := TateInh.qEq_mul N (hq 0 0) ((N.qEq_equivalence l).refl (q 0)⁻¹)
+  rwa [add_zero, mul_inv_cancel_right, mul_inv_cancel] at this
+
+theorem qEq_nsmul (hq : ∀ a b, N.QEq (q a * q b) (q (a + b))) (a : La) (e : ℕ) : N.QEq (q a ^ e) (q (e • a)) := by
+  have E := N.qEq_equivalence l
+  induction e with
+  | zero => rw [pow_zero, zero_smul]; exact E.symm (qEq_zero hq)
+  | succ e ih => rw [pow_succ, succ_nsmul]; exact E.trans (TateInh.qEq_mul N ih (E.refl _)) (hq _ _)
+
+theorem qEq_pow {a b : N.QT l} (h : N.QEq a b) (e : ℕ) : N.QEq (a ^ e) (b ^ e) := by
+  induction e with
+  | zero => rw [pow_zero, pow_zero]; exact (N.qEq_equivalence l).refl _
+  | succ e ih => rw [pow_succ, pow_succ]; exact TateInh.qEq_mul N ih h
+
+theorem eq_zero_of_pow_nsmul {n : ℕ} (hn : ∀ a : La, n • a = 0 → a = 0) (e : ℕ) (a : La) (h : n ^ e • a = 0) :
+    a = 0 := by
+  induction e with
+  | zero => rwa [pow_zero, one_smul] at h
+  | succ e ih => exact ih (hn _ (by rwa [pow_succ', mul_smul] at h))
+
+end GlobalTheory.TwistCoset
+
+open GlobalTheory.TwistCoset in
+
+theorem GlobalTheory.twist_tx_coset_norm_ge : ∀ (C : Type) [NontriviallyNormedField C] [IsUltrametricDist C] [CompleteSpace C] [IsAlgClosed C] (N : NumD C) (k : ℕ) (β : N.Form k) (u r : Cˣ) (qf : QuadraticMap ℤ N.X ℝ) (n g j : ℕ), n.Prime → Odd n → ‖(n : C)‖ = 1 → 1 ≤ j → ‖(u : C)‖ < 1 → r ^ ((n ^ j) ^ 2) = u → (N.twist β u).Int qf → (∀ y, qf y = -Real.log ‖(u : C)‖ * ((β.be y y : ℝ) / 2)) → N.Tors n g → ∀ (La : Type) [AddCommGroup La] (q : La → N.QT ((n ^ j) ^ 2)), (∀ a : La, n • a = 0 → a = 0) → (∀ a b, N.QEq (q a * q b) (q (a + b))) → (∀ a b, N.QEq (q a) (q b) ↔ ∃ e, a = b + (n ^ j) ^ 2 • e) → (∀ p, ∃ a, N.QEq (q a) p) → ∀ p : La → (N.twist β u).QT ((n ^ j) ^ 2), (∀ x, TwRel β u r (q x) (p x)) → (∃ x, 1 ≤ ‖(N.twist β u).tx (n ^ j) (p x)‖) ∧ ∀ x, ∃ h, ‖(u : C)‖ ^ (β.be (q x).1.1.toAdd (q x).1.1.toAdd).toNat ≤ ‖(N.twist β u).tx (n ^ j) (p (x + n ^ (j - 1) • h))‖ := by
+  intro C _ _ _ _ N k β u r qf n g j hp ho hn hj hu hr hI hqf hT La _ q htf hadd hker honto p hpq
+  have hm : Odd (n ^ j) := ho.pow
+  have E := N.qEq_equivalence ((n ^ j) ^ 2)
+  have hP : qf.PosDef := GlobalTheory.CosetCrit.posDef_of_tendsto (X := N.X) hI.pos
+  have key : ∀ (x : La) (χ₀ : N.X), (∀ χ : N.X, qf ((q x).1.1.toAdd + n ^ j • χ₀) ≤ qf ((q x).1.1.toAdd + n ^ j • χ)) →
+      ∃ e, Real.exp (-(qf ((q x).1.1.toAdd + n ^ j • χ₀) / ((n ^ j : ℕ) : ℝ) ^ 2)) ≤
+        ‖(N.twist β u).tx (n ^ j) (p (x + n ^ (j - 1) • e))‖ := fun x χ₀ h₀ => by
+    obtain ⟨h, h1, h2, h3⟩ := GlobalTheory.CosetCrit.exists_norm_tx_ge (N := N.twist β u) (q := qf) hI hp ho hn hT hj (p x)
+      (χ₀ := χ₀) (by rw [(hpq x).1]; exact h₀)
+    obtain ⟨h', h4, h5⟩ := exists_twRel_of_eq_one r h h1 h2
+    obtain ⟨a, ha⟩ := honto h'
+    have h6 : N.QEq (q (n ^ (j + 1) • a)) (q 0) := by
+      have := qEq_pow ha (n ^ (j + 1))
+      rw [h4] at this
+      exact E.trans (E.symm (qEq_nsmul hadd a _)) (E.trans this (E.symm (qEq_zero hadd)))
+    obtain ⟨e, he⟩ := (hker _ _).1 h6
+    have h7 : a = n ^ (j - 1) • e := by
+      refine sub_eq_zero.1 (eq_zero_of_pow_nsmul htf (j + 1) _ ?_)
+      rw [smul_sub, he, zero_add, ← mul_smul, ← pow_add, ← pow_mul, show j + 1 + (j - 1) = j * 2 by omega, sub_self]
+    refine ⟨e, ?_⟩
+    have h8 : N.QEq (q x * h') (q (x + a)) := E.trans (TateInh.qEq_mul N (E.refl _) (E.symm ha)) (hadd x a)
+    rw [← h7, tx_eq_of_qEq _ hm (twRel_qEq hr (twRel_mul (hpq x) h5) (hpq (x + a)) h8)]
+    rw [(hpq x).1] at h3
+    exact h3
+  refine ⟨?_, fun x => ?_⟩
+  · obtain ⟨z, hz, -⟩ := E.symm (qEq_zero hadd)
+    have hz0 : (q 0).1.1.toAdd + n ^ j • (-(n ^ j • z)) = 0 := by
+      rw [hz, smul_neg, ← mul_smul, ← sq]
+      exact (congrArg (· + -((n ^ j) ^ 2 • z)) (zero_add _)).trans (add_neg_cancel _)
+    obtain ⟨e, he⟩ := key 0 (-(n ^ j • z)) fun χ => by rw [hz0, map_zero]; exact hP.nonneg _
+    rw [hz0, map_zero, zero_div, neg_zero, Real.exp_zero] at he
+    exact ⟨_, he⟩
+  · obtain ⟨χ₀, h₀⟩ := (GlobalTheory.CosetCrit.tendsto_class (X := N.X) (q := qf) hI.pos (q x).1.1.toAdd
+      hm.pos.ne').exists_forall_le
+    obtain ⟨e, he⟩ := key x χ₀ h₀
+    refine ⟨e, le_trans ?_ he⟩
+    have h1 := h₀ 0
+    rw [smul_zero, add_zero, hqf (q x).1.1.toAdd] at h1
+    have h2 := hP.nonneg ((q x).1.1.toAdd + n ^ j • χ₀)
+    set y := (q x).1.1.toAdd
+    have hB : 0 ≤ β.be y y := by
+      by_cases hy : y = 0
+      · rw [hy, map_zero]
+      · exact (β.pos y hy).le
+    have h0 : 0 < ‖(u : C)‖ := norm_pos_iff.2 u.ne_zero
+    have hL : Real.log ‖(u : C)‖ < 0 := Real.log_neg h0 hu
+    have hc : (((β.be y y).toNat : ℕ) : ℝ) = (β.be y y : ℝ) := by
+      rw [← Int.cast_natCast, Int.toNat_of_nonneg hB]
+    have hB' : (0 : ℝ) ≤ (β.be y y : ℝ) := by exact_mod_cast hB
+    have hsq : (1 : ℝ) ≤ ((n ^ j : ℕ) : ℝ) ^ 2 := one_le_pow₀ (by exact_mod_cast hm.pos)
+    have h3 := div_le_self h2 hsq
+    rw [← Real.exp_log (pow_pos h0 _), Real.log_pow, hc]
+    refine Real.exp_le_exp.2 ?_
+    nlinarith [mul_nonneg hB' (neg_pos.2 hL).le]
+end
+
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.Ex
+open scoped BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.twist_tx_coset_norm_ge_alt : ∀ (C : Type) [NontriviallyNormedField C] [IsUltrametricDist C] [CompleteSpace C] [IsAlgClosed C] (N : NumD C) (k : ℕ) (β : N.Form k) (u r : Cˣ) (qf : QuadraticMap ℤ N.X ℝ) (n g j : ℕ), n.Prime → Odd n → ‖(n : C)‖ = 1 → 1 ≤ j → ‖(u : C)‖ < 1 → r ^ ((n ^ j) ^ 2) = u → (N.twist β u).Int qf → (∀ y, qf y = -Real.log ‖(u : C)‖ * ((β.be y y : ℝ) / 2)) → N.Tors n g → ∀ (La : Type) [AddCommGroup La] (q : La → N.QT ((n ^ j) ^ 2)), (∀ a : La, n • a = 0 → a = 0) → (∀ a b, N.QEq (q a * q b) (q (a + b))) → (∀ a b, N.QEq (q a) (q b) ↔ ∃ e, a = b + (n ^ j) ^ 2 • e) → (∀ p, ∃ a, N.QEq (q a) p) → ∀ p : La → (N.twist β u).QT ((n ^ j) ^ 2), (∀ x, TwRel β u r (q x) (p x)) → (∃ x, 1 ≤ ‖(N.twist β u).tx (n ^ j) (p x)‖) ∧ ∀ x, ∃ h, ‖(u : C)‖ ^ (β.be (q x).1.1.toAdd (q x).1.1.toAdd).toNat ≤ ‖(N.twist β u).tx (n ^ j) (p (x + n ^ (j - 1) • h))‖ := by
+  atlas_forward_decl GlobalTheory.twist_tx_coset_norm_ge
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open scoped CategoryTheory.Obj BigOperators
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory GlobalTheory.Ex
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_arcLift_extension_larger_closed_field : Laws → BrGtSt → BrWpSt → AllA fun {_} _ _ _ {_} {_} {_} {_} {_} {_} _ {O'} _ _ {_} a => ∀ (F F' : Type) [Field F] [IsAlgClosed F] [Algebra (FractionRing O') F] [Field F'] [IsAlgClosed F'] [Algebra (FractionRing O') F'] (f : F →+* F'), f.comp (algebraMap (FractionRing O') F) = algebraMap (FractionRing O') F' → ∀ S : ValuationSubring F', (∀ r : O', algebraMap (FractionRing O') F' (algebraMap O' _ r) ∈ S) → ∀ A : Lift a F, ∃ A' : Lift a F', A'.ν.Integral S ∧ ∃ I : NumD.Hom f A.N A'.N, I.lam = 1 ∧ f A.ρ = A'.ρ ∧ (∀ n, 0 < n → f (A.I.ζ n) = A'.I.ζ n) ∧ (∀ y, A'.ν.eX (I.e y) = A.ν.eX y) ∧ ∀ n v, (A'.q n v).1.1.toAdd = I.e (A.q n v).1.1.toAdd ∧ I.Rel (A.q n v).1.2 (A'.q n v).1.2 := by
+  first | exact @GlobalTheory.LiftExt.exists_lift_ext | exact GlobalTheory.LiftExt.exists_lift_ext | (intros; apply GlobalTheory.LiftExt.exists_lift_ext <;> assumption)
+end
+
+section
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open scoped CategoryTheory.Obj BigOperators
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory GlobalTheory.Ex
+
+namespace GlobalTheory.Ex
+
+theorem arcF_values_add_ker_onto : BrGtSt → AllD fun D => ∀ (R : Type) [CommRing R] [IsDomain R] (F : Type) [Field F] [IsAlgClosed F] [Algebra (FractionRing R) F] (A : ArcF D R F) (n : ℕ), 0 < n → (∀ a b, A.N.QEq (A.q n a * A.q n b) (A.q n (a + b))) ∧ (∀ a b, A.N.QEq (A.q n a) (A.q n b) ↔ ∃ e, a = b + n • e) ∧ ∀ p, ∃ a, A.N.QEq (A.q n a) p := by
+  intro hG E _ _ _ H D R _ _ F _ _ _ A n hn
+  obtain ⟨-, -, hadd, -, hQ⟩ := hG R A.D₀ A.even A.bimult F A.N A.ν
+  refine ⟨fun a b => ?_, fun a b => ?_, fun q => ?_⟩
+  · obtain ⟨p, h₁, h₂, h₃⟩ := A.I.add n hn a b
+    obtain ⟨q, hq⟩ := ((hQ n).1 p).exists
+    have e : q = A.q n a * A.q n b := by
+      refine Subtype.ext (Prod.ext ?_ ((hadd _ _ _ _ _ _ (A.hq n a).2 (A.hq n b).2 hq.2).1 h₂))
+      apply Multiplicative.toAdd.injective
+      apply A.ν.eX.injective
+      rw [hq.1, h₁, ← (A.hq n a).1, ← (A.hq n b).1, ← map_add]
+      rfl
+    rw [← e]
+    exact ((hQ n).2.2 _ _ _ _ hq (A.hq n _)).1 h₃
+  · rw [← (hQ n).2.2 _ _ _ _ (A.hq n a) (A.hq n b)]
+    exact A.I.ker n hn a b
+  · obtain ⟨p₀, hp₀⟩ := (hQ n).2.1 q
+    obtain ⟨a, ha⟩ := A.I.onto n hn p₀
+    exact ⟨a, ((hQ n).2.2 _ _ _ _ (A.hq n a) hp₀).1 ha⟩
+
+end GlobalTheory.Ex
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open scoped CategoryTheory.Obj BigOperators
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory GlobalTheory.Ex
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.labelledTorsionValues_additive_kernel_surjective : BrGtSt → AllD fun D => ∀ (R : Type) [CommRing R] [IsDomain R] (F : Type) [Field F] [IsAlgClosed F] [Algebra (FractionRing R) F] (A : ArcF D R F) (n : ℕ), 0 < n → (∀ a b, A.N.QEq (A.q n a * A.q n b) (A.q n (a + b))) ∧ (∀ a b, A.N.QEq (A.q n a) (A.q n b) ↔ ∃ e, a = b + n • e) ∧ ∀ p, ∃ a, A.N.QEq (A.q n a) p := by
+  atlas_forward_decl GlobalTheory.Ex.arcF_values_add_ker_onto
+end
+
+section
 section
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
 open scoped CategoryTheory.Obj BigOperators
@@ -243,3 +1234,4 @@ open GlobalTheory GlobalTheory.Ex
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.exists_arcSeries_integral_algebraic_over_powerSeries : HV → Laws6 → GlobalTheory.LN.UDvrSt → GlobalTheory.LN.HomExtSt → ThetaPtDeterminesSt → EndDeterminedOnTorsionSt → ThetaUnifAV → AllA fun {E} _ _ _ {H} {D} {l} {Xo} {c} {W₀} Y {O'} _ _ {b} a => ∀ (K : Type) [Field K] [IsAlgClosed K] [Algebra (FractionRing O') K] [Algebra (PowerSeries O') K] [FaithfulSMul (PowerSeries O') K] [Algebra.IsAlgebraic (PowerSeries O') K], (∀ x, algebraMap (FractionRing O') K (algebraMap O' _ x) = algebraMap (PowerSeries O') K (PowerSeries.C x)) → Nonempty (Ser a K (algebraMap _ K)) := by
   atlas_forward_decl GlobalTheory.ArcSeries.exists_series
+end

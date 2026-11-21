@@ -40,8 +40,6 @@ theorem Prime_five : AuxiliaryInertOddPrime HostModel.host 5 := by
     have h₂ := (by norm_num : Nat.Prime 5).dvd_of_dvd_pow h₁
     omega
 
-theorem not_Prime : ¬ AuxiliaryInertOddPrime HostModel.host 7 ∧ ¬ AuxiliaryInertOddPrime HostModel.host 11 := by
-  refine ⟨fun h => h.2.2.1 ?_, fun h => h.2.2.1 ?_⟩ <;> rw [HostModel.host_d] <;> decide
 
 theorem hypotheses_inhabited (h : N1ab) :
     ∃ (H : Host HostModel.E21) (D : Datum H) (_ : ∀ l : Level H, Moduli D l), D.p = 1 ∧ D.q = 1 ∧ 1 ≤ D.p + D.q ∧

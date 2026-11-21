@@ -12,28 +12,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.UChart.SepBModel
 
-theorem fromBase_id {V : Type} [CommRing V] [IsDomain V] (Q : DegPre V) (τ₀ : Gens Q) (h : ∀ a b, (τ₀ a b).IsGen) :
-    FromBase Q τ₀ (RingHom.id V) := by
-  have hs : spMap (RingHom.id V) = 𝟙 (Sp V) := Spec.map_id _
-  refine ⟨Q.P.A, inferInstance, Q.P.L, cpt Q, τ₀, 𝟙 _, GlobalTheory.PolDeg.Wit.idPull _, Q.P.isAb, Q.P.isLB, ?_,
-    GlobalTheory.PolDeg.Wit.idPull_isGen Q.P.isLB, fun a => ?_, h, fun a b z J J₀ hJ hJ₀ => ?_⟩
-  · rw [hs]; exact GlobalTheory.PolDeg.Wit.grpPullback_id Q.P.A
-  · rw [hs]; exact (Category.comp_id _).trans (Category.id_comp _).symm
-  · rw [hs]
-    refine (gen_trans (h a b) (𝟙 _) z (hJ.mem _ _) (hJ₀.mem _ _)).trans (congrArg (· * _) ?_)
-    have e : ∀ q : Sp V ⟶ Q.P.A.left, gm q z _ ((GlobalTheory.PolDeg.Wit.idPull Q.P.L).s (fun _ => J₀ (q ≫ 𝟙 _), J q)) =
-        (gm q z _ (Q.P.L.g (J q) (J₀ q)))⁻¹ := fun q => by
-      have h0 : q z ∈ Q.P.L.U (J₀ (q ≫ 𝟙 _)) := by rw [Category.comp_id]; exact hJ₀ q
-      refine (GlobalTheory.PolDeg.Wit.gw_idPull Q.P.L q z _ _ h0 (hJ q)).trans ?_
-      rw [Category.comp_id]
-      exact eq_inv_of_mul_eq_one_left ((gm_cocycle Q.P.isLB q z (hJ₀ q) (hJ q) (hJ₀ q)).trans
-        (gm_self Q.P.isLB q z (hJ₀ q)))
-    rw [e, e, e, e]
-    let F : (Sp V ⟶ Q.P.A.left) → ((Sp V).presheaf.stalk z)ˣ := fun q => gm q z _ (Q.P.L.g (J q) (J₀ q))
-    show ∏ k : Fin 4, F (𝟙 _ ≫ ![cpt Q (a + b), cpt Q a, cpt Q b, cpt Q 0] k) ^ (![-1, 1, 1, -1] : Fin 4 → ℤ) k =
-      (F _)⁻¹ * ((F _)⁻¹)⁻¹ * ((F _)⁻¹)⁻¹ * (F _)⁻¹
-    simp only [Category.id_comp, Fin.prod_univ_four]
-    simp
 
 theorem gm_field {W : Type} [Field W] {Z : Scheme.{0}} (r : Z ⟶ Sp W) (z : Z) (U : (Sp W).Opens) (h : r z ∈ U)
     (a : Γ(Sp W, U)ˣ) : ∃ x : Wˣ, gm r z U a = gm r z ⊤ (unitOn x) := by
@@ -186,17 +164,7 @@ theorem torus_mem_of_sepAtB_tate (x : ℤ → ℤ → ℚˣ) {m N : ℕ} (s : Fi
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Geo.Tor.Level H}
 
-theorem sepB_two_of_sep {Xo : Moduli Dw l} {c : Coeff l} {φ : InvFun (𝓞 E)} {S : Scheme.{0}} {j : Xo.XF c ⟶ S}
-    (h : Sep Xo c φ j) (V : Type) [CommRing V] [IsDomain V] [IsLocalRing V] (C : MonoFam Xo c φ V) (hV : GlobalTheory.Mum.Base V)
-    (ξ : Sp V ⟶ S) (hξ : C.y ≫ j = jK V ≫ ξ) (τ₀ : Gens C.P.D.toPre) (K : Type) [Field K] [IsAlgClosed K] (ev : V →+* K)
-    (k₀ : Subfield K) (hk : IsAlgClosed k₀) (hc : ∀ p, (spMap ev ≫ ξ) p = ξ (closedPoint V)) (hd : DefOver k₀ (spMap ev ≫ ξ)) :
-    SepAtB C.P.D.toPre τ₀ (N := 0) (Sum.elim C.s ![]) ev k₀ := by
-  obtain ⟨h0, B₀, _, _, M₀, c₀, B', _, π₁, π₀, w, c', -, h₁, h₂, h₃, h₄, h₅, h₆, -⟩ := h V C hV ξ hξ K ev k₀ hk hc hd
-  exact ⟨h0, ⟨B₀, _, inferInstance, M₀, c₀, B', _, π₁, π₀, w, c', h₁, h₂, h₃, h₄, h₅, h₆⟩, fun _ _ _ _ _ i => i.elim0⟩
 
-theorem uPoinStX_of_uStB (h : UStB) : GlobalTheory.UPoinc.UPoinStX := fun E _ _ _ H Dw hpq φ h₁ h₂ l Xo c => by
-  obtain ⟨Z, zs, i, OZ, N, d, J, S, π, j, BD, hP, -⟩ := h E H Dw hpq φ h₁ h₂ l Xo c
-  exact ⟨Z, zs, i, OZ, N, d, J, S, π, j, BD, hP⟩
 
 theorem stalkMap_gm {X Y Z : Scheme.{0}} (r : Z ⟶ Y) (f : Y ⟶ X) (z : Z) (U : X.Opens) (h : f (r z) ∈ U) (a : Γ(X, U)ˣ) :
     Units.map (r.stalkMap z).hom.toMonoidHom (gm f (r z) U a) = gm (r ≫ f) z U a := by
@@ -256,34 +224,7 @@ theorem exists_coords {Xo : Moduli Dw l} {c : Coeff l} {φ : InvFun (𝓞 E)} {V
   rw [Fintype.prod_sum_type]
   simp only [Sum.elim_inl, Sum.elim_inr, map_one, one_zpow, Finset.prod_const_one, _root_.mul_one, hε']
 
-theorem not_sepB_point {Xo : Moduli Dw l} {c : Coeff l} {φ : InvFun (𝓞 E)} {V : Type} [CommRing V] [IsDomain V]
-    [IsLocalRing V] (C : MonoFam Xo c φ V) (hV : GlobalTheory.Mum.Base V) (hm : 1 ≤ C.m) :
-    ¬ SepB Xo c φ (S := Sp c.F) (pullback.snd _ _) := fun h => by
-  obtain ⟨N, s, ε, τ₀, h₁, h₂, h₃, h₄⟩ := exists_coords C
-  let K := AlgebraicClosure (FractionRing V)
-  let ev : V →+* K := (algebraMap (FractionRing V) K).comp (algebraMap V (FractionRing V))
-  have hev : Function.Injective ev :=
-    (algebraMap (FractionRing V) K).injective.comp (IsFractionRing.injective V (FractionRing V))
-  have hs : Subsingleton (Sp c.F) := inferInstanceAs (Subsingleton (PrimeSpectrum c.F))
-  have hk : IsAlgClosed (⊤ : Subfield K) := IsAlgClosed.of_ringEquiv K _ Subfield.topEquiv.symm
-  have hd : DefOver (⊤ : Subfield K) (spMap ev ≫ spMap C.b) :=
-    ⟨spMap (ev.codRestrict (⊤ : Subfield K) fun _ => Subfield.mem_top _) ≫ spMap C.b, by
-      rw [← Category.assoc]; congr 1; exact (Spec.map_comp _ _).symm⟩
-  have := (h V C hV (spMap C.b) C.y_over N s ε τ₀ h₁ h₂ h₃ h₄ K ev ⊤ hk (fun p => Subsingleton.elim _ _) hd).1 ⟨0, hm⟩
-  rw [h₁, map_eq_zero_iff _ hev] at this
-  exact C.s_ne_zero _ this
 
-theorem exists_not_sepB : ∃ (E : Type) (_ : Field E) (_ : NumberField E) (_ : IsCMField E) (H : Host E) (Dw : Datum H)
-    (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (φ : InvFun (𝓞 E)),
-    IsPolFan H.bar (min Dw.p Dw.q) φ ∧ NoSelfInt H.bar (min Dw.p Dw.q) φ ∧
-      ¬ SepB Xo c φ (S := Sp c.F) (pullback.snd _ _) := by
-  obtain ⟨E, _, _, _, H, Dw, l, Xo, c, φ, C, h₁, h₂, h₃, -, h₅⟩ := exists_monoFam_nontrivial
-  exact ⟨E, _, _, _, H, Dw, l, Xo, c, φ, h₁, h₂, not_sepB_point C h₃ h₅⟩
 
-theorem sepAtB_closed {Xo : Moduli Dw l} {c : Coeff l} {φ : InvFun (𝓞 E)} {V : Type} [CommRing V] [IsDomain V]
-    [IsLocalRing V] (C : MonoFam Xo c φ V) {N : ℕ} (s : Fin C.m ⊕ Fin N → V) (τ₀ : Gens C.P.D.toPre)
-    (hs : ∀ i, s (.inl i) = C.s i) : SepAtB C.P.D.toPre τ₀ s (residue V) ⊤ :=
-  (sepAtB_iff_of_range _ _ _ _ ⊤ fun _ => Subfield.mem_top _).2 fun i => by
-    rw [hs]; exact (residue_eq_zero_iff _).2 (C.s_mem i)
 
 end GlobalTheory.UChart.SepBModel

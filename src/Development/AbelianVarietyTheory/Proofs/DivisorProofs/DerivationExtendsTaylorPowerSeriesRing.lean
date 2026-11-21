@@ -1,12 +1,253 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DerivationTaylorPowerSeriesOfDerivationsKill
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TaylorIsRingHom
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCoeffwiseDerivationMvPowerSeries
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSolveMvPowerSeriesMatrixIdentityConst
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoeffSingleDerivationTaylorPowerSeries
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MvPowerSeriesDegreeAdicFiltrationMulLe
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCoordinatePolynomialSubMemMaximalIdealPow
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqZeroOfForallMemFilt
 
+section
+section
+open IsLocalRing GlobalTheory.FormalOrigin GlobalTheory.FormalOrigin.Extend
+
+namespace GlobalTheory
+
+theorem mvPowerSeries_derivation_coeffwise (σ R : Type) [CommRing R] (D : Derivation ℤ R R) :
+    ∃ E : Derivation ℤ (MvPowerSeries σ R) (MvPowerSeries σ R),
+      ∀ F α, MvPowerSeries.coeff α (E F) = D (MvPowerSeries.coeff α F) := by
+  classical
+  let L : MvPowerSeries σ R →ₗ[ℤ] MvPowerSeries σ R :=
+    { toFun := fun F => fun α => D (MvPowerSeries.coeff α F)
+      map_add' := by
+        intro F G
+        funext α
+        show D (MvPowerSeries.coeff α (F + G)) = D (MvPowerSeries.coeff α F) + D (MvPowerSeries.coeff α G)
+        rw [map_add, map_add]
+      map_smul' := by
+        intro n F
+        funext α
+        show D (MvPowerSeries.coeff α (n • F)) = n • D (MvPowerSeries.coeff α F)
+        rw [map_zsmul, map_zsmul] }
+  have hL : ∀ F α, MvPowerSeries.coeff α (L F) = D (MvPowerSeries.coeff α F) := fun _ _ => rfl
+  refine ⟨Derivation.mk' L ?_, ?_⟩
+  · intro F G
+    ext α
+    rw [smul_eq_mul, smul_eq_mul, map_add]
+    erw [hL]
+    rw [MvPowerSeries.coeff_mul, map_sum,
+      MvPowerSeries.coeff_mul, mul_comm G, MvPowerSeries.coeff_mul, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun p _ => ?_
+    rw [Derivation.leibniz, smul_eq_mul, smul_eq_mul]
+    erw [hL, hL]
+    exact congrArg (_ + ·) (mul_comm _ _)
+  · intro F α
+    rfl
+
+end GlobalTheory
+end
+
+open IsLocalRing GlobalTheory.FormalOrigin GlobalTheory.FormalOrigin.Extend
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_coeffwise_derivation_mvPowerSeries : ∀ (σ R : Type) [CommRing R] (D : Derivation ℤ R R), ∃ E : Derivation ℤ (MvPowerSeries σ R) (MvPowerSeries σ R), ∀ F α, MvPowerSeries.coeff α (E F) = D (MvPowerSeries.coeff α F) := by
+  atlas_forward_decl GlobalTheory.mvPowerSeries_derivation_coeffwise
+end
+
+section
+section
+open IsLocalRing GlobalTheory.FormalOrigin GlobalTheory.FormalOrigin.Extend
+
+namespace GlobalTheory
+
+open Matrix
+
+theorem powerSeries_matrix_solve : ∀ (n : ℕ) (R : Type) [CommRing R] (J : Fin n → Fin n → MvPowerSeries (Fin n) R), (∀ i j, MvPowerSeries.constantCoeff (J i j) = if i = j then 1 else 0) → ∀ b : Fin n → MvPowerSeries (Fin n) R, ∃ G : Fin n → MvPowerSeries (Fin n) R, ∀ i, ∑ j, G j * J i j = b i := by
+  intro n R _ J hJ b
+  let M : Matrix (Fin n) (Fin n) (MvPowerSeries (Fin n) R) := Matrix.of J
+  have hM : (MvPowerSeries.constantCoeff (σ := Fin n) (R := R)).mapMatrix M = 1 := by
+    ext i j
+    simp [M, Matrix.one_apply, hJ]
+  have hdet : IsUnit M.det := by
+    rw [MvPowerSeries.isUnit_iff_constantCoeff, RingHom.map_det, hM, Matrix.det_one]
+    exact isUnit_one
+  refine ⟨M⁻¹ *ᵥ b, fun i => ?_⟩
+  have h := congrFun (Matrix.mulVec_mulVec b M M⁻¹) i
+  rw [Matrix.mul_nonsing_inv _ hdet, Matrix.one_mulVec] at h
+  rw [← h]
+  simp only [Matrix.mulVec, dotProduct, M, Matrix.of_apply]
+  exact Finset.sum_congr rfl (fun j _ => mul_comm _ _)
+
+end GlobalTheory
+end
+
+open IsLocalRing GlobalTheory.FormalOrigin GlobalTheory.FormalOrigin.Extend
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_solve_mvPowerSeries_matrix_identity_const : ∀ (n : ℕ) (R : Type) [CommRing R] (J : Fin n → Fin n → MvPowerSeries (Fin n) R), (∀ i j, MvPowerSeries.constantCoeff (J i j) = if i = j then 1 else 0) → ∀ b : Fin n → MvPowerSeries (Fin n) R, ∃ G : Fin n → MvPowerSeries (Fin n) R, ∀ i, ∑ j, G j * J i j = b i := by
+  atlas_forward_decl GlobalTheory.powerSeries_matrix_solve
+end
+
+section
+section
+open IsLocalRing GlobalTheory.FormalOrigin GlobalTheory.FormalOrigin.Extend
+
+namespace GlobalTheory.FormalOrigin.Extend
+
+theorem list_foldr_iterate_single_of_nodup {A : Type} {n : ℕ} (d : Fin n → A → A) (j : Fin n) (f : A) :
+    ∀ l : List (Fin n), l.Nodup →
+      l.foldr (fun i g => (d i)^[(Finsupp.single j 1 : Fin n →₀ ℕ) i] g) f = if j ∈ l then d j f else f := by
+  intro l hl
+  induction l with
+  | nil => simp
+  | cons i l ih =>
+    rw [List.nodup_cons] at hl
+    rw [List.foldr_cons, ih hl.2]
+    by_cases hij : i = j
+    · subst hij
+      simp [hl.1]
+    · have hji : j ≠ i := fun h => hij h.symm
+      simp [Finsupp.single_apply, hij, hji]
+
+theorem taylor_coeff_single (A B : Type) [CommRing A] [CommRing B] [Algebra ℚ B] (n : ℕ) (ev : A →+* B)
+    (ds : Fin n → Derivation ℤ A A) (j : Fin n) (f : A) :
+    MvPowerSeries.coeff (Finsupp.single j 1) (taylor ev (fun i => ⇑(ds i)) f) = ev (ds j f) := by
+  have hit : iterOp (fun i => ⇑(ds i)) (Finsupp.single j 1) f = ds j f := by
+    unfold iterOp
+    rw [list_foldr_iterate_single_of_nodup _ j f _ (List.nodup_finRange n)]
+    simp [List.mem_finRange]
+  have hprod : (∏ i, (((Finsupp.single j 1 : Fin n →₀ ℕ) i).factorial : ℚ)) = 1 := by
+    refine Finset.prod_eq_one fun i _ => ?_
+    by_cases h : j = i
+    · subst h; simp
+    · simp [Finsupp.single_apply, h]
+  show (∏ i, (((Finsupp.single j 1 : Fin n →₀ ℕ) i).factorial : ℚ))⁻¹ • ev (iterOp (fun i => ⇑(ds i)) (Finsupp.single j 1) f) = _
+  rw [hit, hprod, inv_one, one_smul]
+
+end GlobalTheory.FormalOrigin.Extend
+end
+
+open IsLocalRing GlobalTheory.FormalOrigin GlobalTheory.FormalOrigin.Extend
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coeff_single_derivationTaylorPowerSeries : ∀ (A B : Type) [CommRing A] [CommRing B] [Algebra ℚ B] (n : ℕ) (ev : A →+* B) (ds : Fin n → Derivation ℤ A A) (j : Fin n) (f : A), MvPowerSeries.coeff (Finsupp.single j 1) (taylor ev (fun i => ⇑(ds i)) f) = ev (ds j f) := by
+  atlas_forward_decl GlobalTheory.FormalOrigin.Extend.taylor_coeff_single
+end
+
+section
+section
+open IsLocalRing GlobalTheory.FormalOrigin GlobalTheory.FormalOrigin.Extend
+
+namespace GlobalTheory.FormalOrigin.Extend
+
+theorem filt_mul_filt_le (σ R : Type) [CommRing R] (I : Ideal R) (j k : ℕ) :
+    filt (σ := σ) I j * filt I k ≤ filt I (j + k) := by
+  classical
+  refine Ideal.mul_le.2 fun F hF G hG => ?_
+  rw [mem_filt] at hF hG ⊢
+  intro α
+  rw [MvPowerSeries.coeff_mul]
+  refine Ideal.sum_mem _ fun p hp => ?_
+  have hα : p.1 + p.2 = α := Finset.HasAntidiagonal.mem_antidiagonal.1 hp
+  have hd : α.degree = p.1.degree + p.2.degree := by rw [← hα, map_add]
+  have h := Ideal.mul_mem_mul (hF p.1) (hG p.2)
+  rw [← pow_add] at h
+  exact Ideal.pow_le_pow_right (by omega) h
+
+end GlobalTheory.FormalOrigin.Extend
+end
+
+open IsLocalRing GlobalTheory.FormalOrigin GlobalTheory.FormalOrigin.Extend
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mvPowerSeriesDegreeAdicFiltration_mul_le : ∀ (σ R : Type) [CommRing R] (I : Ideal R) (j k : ℕ), filt (σ := σ) I j * filt I k ≤ filt I (j + k) := by
+  atlas_forward_decl GlobalTheory.FormalOrigin.Extend.filt_mul_filt_le
+end
+
+section
+section
+open IsLocalRing GlobalTheory.FormalOrigin GlobalTheory.FormalOrigin.Extend
+
+namespace GlobalTheory
+
+theorem exists_mem_closure_sub_mem_maximalIdeal_pow
+    (R A : Type) [CommRing R] [IsLocalRing R] [CommRing A] [IsLocalRing A]
+    (inc : R →+* A) (ev : A →+* R) (hev : ∀ r, ev (inc r) = r) (n : ℕ) (z : Fin n → A)
+    (hm : maximalIdeal A = (maximalIdeal R).map inc ⊔ Ideal.span (Set.range z))
+    (k : ℕ) (f : A) :
+    ∃ p ∈ Subring.closure (Set.range inc ∪ Set.range z), f - p ∈ maximalIdeal A ^ k := by
+  set P := Subring.closure (Set.range inc ∪ Set.range z) with hP
+  set m := maximalIdeal A with hmdef
+  have incP : ∀ r, inc r ∈ P := fun r => Subring.subset_closure (Or.inl ⟨r, rfl⟩)
+  have zP : ∀ i, z i ∈ P := fun i => Subring.subset_closure (Or.inr ⟨i, rfl⟩)
+  have hker : ∀ x : A, x - inc (ev x) ∈ m := by
+    intro x
+    have h1 : x - inc (ev x) ∈ RingHom.ker ev := by
+      simp [RingHom.mem_ker, hev]
+    exact le_maximalIdeal (RingHom.ker_ne_top ev) h1
+  let C : ℕ → Ideal A := fun j =>
+    { carrier := {x | ∃ q ∈ P, q ∈ m ^ j ∧ x - q ∈ m ^ (j + 1)}
+      add_mem' := by
+        rintro a b ⟨q, hq, hqm, hqe⟩ ⟨q', hq', hqm', hqe'⟩
+        refine ⟨q + q', P.add_mem hq hq', Ideal.add_mem _ hqm hqm', ?_⟩
+        have : a + b - (q + q') = (a - q) + (b - q') := by ring
+        rw [this]; exact Ideal.add_mem _ hqe hqe'
+      zero_mem' := ⟨0, P.zero_mem, Ideal.zero_mem _, by simp⟩
+      smul_mem' := by
+        rintro c x ⟨q, hq, hqm, hqe⟩
+        refine ⟨inc (ev c) * q, P.mul_mem (incP _) hq, Ideal.mul_mem_left _ _ hqm, ?_⟩
+        have hx : x ∈ m ^ j := by
+          have : x = q + (x - q) := by ring
+          rw [this]; exact Ideal.add_mem _ hqm (Ideal.pow_le_pow_right (Nat.le_succ j) hqe)
+        have : c • x - inc (ev c) * q = inc (ev c) * (x - q) + (c - inc (ev c)) * x := by
+          simp only [smul_eq_mul]; ring
+        rw [this]
+        refine Ideal.add_mem _ (Ideal.mul_mem_left _ _ hqe) ?_
+        rw [pow_succ']
+        exact Ideal.mul_mem_mul (hker c) hx }
+  have memC : ∀ j x, x ∈ C j ↔ ∃ q ∈ P, q ∈ m ^ j ∧ x - q ∈ m ^ (j + 1) := fun _ _ => Iff.rfl
+  have hC1 : m ≤ C 1 := by
+    calc m = _ := hm
+      _ ≤ C 1 := by
+        refine sup_le ?_ ?_
+        · rw [Ideal.map_le_iff_le_comap]
+          intro r hr
+          refine (memC _ _).2 ⟨inc r, incP r, ?_, by simp⟩
+          rw [pow_one, hm]; exact Ideal.mem_sup_left (Ideal.mem_map_of_mem _ hr)
+        · rw [Ideal.span_le]
+          rintro _ ⟨i, rfl⟩
+          refine (memC _ _).2 ⟨z i, zP i, ?_, by simp⟩
+          rw [pow_one, hm]; exact Ideal.mem_sup_right (Ideal.subset_span ⟨i, rfl⟩)
+  have hCj : ∀ j, m ^ j ≤ C j := by
+    intro j
+    induction j with
+    | zero =>
+      intro x _
+      exact (memC _ _).2 ⟨inc (ev x), incP _, by simp, by simpa using hker x⟩
+    | succ j ih =>
+      rw [pow_succ]
+      refine Ideal.mul_le.2 fun y hy w hw => ?_
+      obtain ⟨q, hq, hqm, hqe⟩ := (memC _ _).1 (ih hy)
+      obtain ⟨q1, hq1, hq1m, hq1e⟩ := (memC _ _).1 (hC1 hw)
+      refine (memC _ _).2 ⟨q * q1, P.mul_mem hq hq1, ?_, ?_⟩
+      · rw [pow_succ]; exact Ideal.mul_mem_mul hqm (by simpa using hq1m)
+      · have : y * w - q * q1 = q * (w - q1) + (y - q) * w := by ring
+        rw [this]
+        refine Ideal.add_mem _ ?_ ?_
+        · have : m ^ (j + 1 + 1) = m ^ j * m ^ (1 + 1) := by rw [← pow_add]
+          rw [this]; exact Ideal.mul_mem_mul hqm hq1e
+        · rw [pow_succ]; exact Ideal.mul_mem_mul hqe hw
+  induction k with
+  | zero => exact ⟨0, P.zero_mem, by simp⟩
+  | succ k ih =>
+    obtain ⟨p, hp, hfp⟩ := ih
+    obtain ⟨q, hq, -, hqe⟩ := (memC _ _).1 (hCj k hfp)
+    refine ⟨p + q, P.add_mem hp hq, ?_⟩
+    rw [show f - (p + q) = f - p - q by ring]
+    exact hqe
+
+end GlobalTheory
+end
+
+open IsLocalRing GlobalTheory.FormalOrigin GlobalTheory.FormalOrigin.Extend
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_coordinate_polynomial_sub_mem_maximalIdeal_pow : ∀ (R A : Type) [CommRing R] [IsLocalRing R] [CommRing A] [IsLocalRing A] (inc : R →+* A) (ev : A →+* R), (∀ r, ev (inc r) = r) → ∀ (n : ℕ) (z : Fin n → A), maximalIdeal A = (maximalIdeal R).map inc ⊔ Ideal.span (Set.range z) → ∀ (k : ℕ) (f : A), ∃ p ∈ Subring.closure (Set.range inc ∪ Set.range z), f - p ∈ maximalIdeal A ^ k := by
+  atlas_forward_decl GlobalTheory.exists_mem_closure_sub_mem_maximalIdeal_pow
+end
+
+section
 section
 open IsLocalRing GlobalTheory.FormalOrigin GlobalTheory.FormalOrigin.Extend
 
@@ -143,3 +384,4 @@ open IsLocalRing GlobalTheory.FormalOrigin
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.derivation_extends_taylorPowerSeriesRing : ∀ (R A : Type) [CommRing R] [IsLocalRing R] [IsNoetherianRing R] [IsAdicComplete (maximalIdeal R) R] [Algebra ℚ R] [CommRing A] [IsLocalRing A] [IsNoetherianRing A] (inc : R →+* A) (ev : A →+* R), (∀ r, ev (inc r) = r) → ∀ (n : ℕ) (ds : Fin n → Derivation ℤ A A) (z : Fin n → A), (∀ i, ev (z i) = 0) → (∀ a i, ev (ds a (z i)) = if a = i then 1 else 0) → maximalIdeal A = (maximalIdeal R).map inc ⊔ Ideal.span (Set.range z) → (∀ a r, ds a (inc r) = 0) → ∀ (d : Derivation ℤ A A) (D : Derivation ℤ R R), (∀ r, d (inc r) = inc (D r)) → ∃ dΩ : Derivation ℤ (MvPowerSeries (Fin n) R) (MvPowerSeries (Fin n) R), (∀ r, dΩ (MvPowerSeries.C r) = MvPowerSeries.C (D r)) ∧ ∀ f, dΩ (taylor ev (fun i => ⇑(ds i)) f) = taylor ev (fun i => ⇑(ds i)) (d f) := by
   atlas_forward_decl GlobalTheory.FormalOrigin.Extend.derivation_extends
+end

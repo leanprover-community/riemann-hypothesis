@@ -360,16 +360,8 @@ def levelDeep (D : D7) {hU} (hS : SplitPrimes D) : ReciprocityTheory.ChartRestri
   have h := splitOK_of D hS
   levelOfPs D _ (fun p hp => ⟨(h p hp).1, (h p hp).2.1⟩) (by simp) (MbProd_of D _ h) (MbCop_of D _ h)
 
-theorem levelOf_M (D : D7) (hU) (hS : SplitPrimes D) :
-    (levelOf D (hU := hU) hS).M = D.host.g 0 * D.host.g 1 ∧ (levelOf D (hU := hU) hS).A = 1 := by
-  simp [levelOf, levelOfPs]
 
-theorem levelDeep_M (D : D7) (hU) (hS : SplitPrimes D) :
-    (levelDeep D (hU := hU) hS).M = D.host.g 0 * D.host.g 1 * D.host.pde * D.host.pde' := by
-  simp [levelDeep, levelOfPs, mul_assoc]
 
-theorem hostOf_bar (D : D7) (hU) (a : 𝓞 D.host.E) :
-    (((hostOf D hU).bar a : 𝓞 D.host.E) : D.host.E) = D.host.conj (a : D.host.E) := barE_eq_conj D a
 
 section Dat
 

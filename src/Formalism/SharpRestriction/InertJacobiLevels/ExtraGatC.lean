@@ -62,7 +62,6 @@ def gatTiesC : GatTies (withGatC D h0 rOf eOf bs) where
 
 theorem withGatC_M (u w h) : ((withGatC D h0 rOf eOf bs).gat u w h).M = ⊥ := gatOfC_M _ _ _ _ _ _
 
-theorem withGatC_e (u w h) : ((withGatC D h0 rOf eOf bs).gat u w h).e = eOf (D.what₂.places.resChar w) := rfl
 
 theorem withGatC_trans (u w h) (c : ((withGatC D h0 rOf eOf bs).gat u w h).comp)
     (L L' : ((withGatC D h0 rOf eOf bs).gat u w h).P.Tup) (hL : ((withGatC D h0 rOf eOf bs).gat u w h).P.IsLatTup L)
@@ -107,7 +106,6 @@ theorem withGatCB_n' (v) :
     ((withGatCB D h0 rOf eOf B).gat u w h).P.n' v = addOrderOf (hP D (D.what₂.places.resChar w)) :=
   order_gPsi D (served_of h)
 
-theorem withGatCB_r : ((withGatCB D h0 rOf eOf B).gat u w h).P.r = rOf u (D.what₂.places.resChar w) := rfl
 
 theorem gatTiesCB_pos
     (hB : ∀ t ∈ B u (D.what₂.places.resChar w), ∀ t' ∈ B u (D.what₂.places.resChar w), ∀ i : ℕ,
@@ -121,7 +119,6 @@ theorem gatTiesCB_pos
   exact congrArg (fun x : ↥(D.R.Psi) => (x : D.R.GG))
     (h1.trans (tau1P_mul_gPsi_pow D (served_of h) t0 s.val))
 
-theorem hP_withGatCB (p : ℕ) : hP (withGatCB D h0 rOf eOf B) p = hP D p := rfl
 
 end Formalism.MainNotions.Inhab
 

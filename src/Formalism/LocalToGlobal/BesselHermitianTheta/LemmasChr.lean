@@ -86,11 +86,6 @@ theorem r_odd (D : D7) : Odd D.R.r := by
   show D.R.k + D.R.m - 1 = 2 * (a + b - 1) + 1
   omega
 
-theorem col_lift_ok (T : ThetaTied D X) (μ : D.what₂.Tup) (s : ℕ) (h1 : 1 ≤ s) (h2 : s ≤ D.R.m) (j : ℕ) (hj : j ≤ D.R.m) :
-    ResEta D (T.eChr (X.chrOf μ s)) (D.sp.X j).rank := by
-  apply col_ok T μ s h1 h2
-  rw [rank_X X j hj]
-  exact D.R.k_even.add (D.R.t_odd.add_one.mul_left j)
 
 theorem row_lift_ok (T : ThetaTied D X) (μ : D.what₂.Tup) (s : ℕ) (h1 : 1 ≤ s) (h2 : s ≤ D.R.m) (i : ℕ) (hi : i ≤ D.R.m) :
     ResEta D (T.eChr (X.carY μ s i)) (D.sp.Y i).rank := by
@@ -106,10 +101,6 @@ theorem row_lift_ok (T : ThetaTied D X) (μ : D.what₂.Tup) (s : ℕ) (h1 : 1 �
   · intro ho
     exact hr.add_odd (ho.mul ht)
 
-theorem rank_X_ne (X : ThetaX D) (j : ℕ) (hj : j < D.R.m) : (D.sp.X j).rank ≠ (D.sp.X (j + 1)).rank := by
-  rw [rank_X X j hj.le, rank_X X (j + 1) hj, Nat.succ_mul]
-  generalize j * (D.R.t + 1) = q
-  omega
 
 theorem rank_Y_ne (X : ThetaX D) (j : ℕ) (hj : j < D.R.m) : (D.sp.Y (j + 1)).rank ≠ (D.sp.Y j).rank := by
   rw [rank_Y X (j + 1) hj, rank_Y X j hj.le, Nat.succ_mul]

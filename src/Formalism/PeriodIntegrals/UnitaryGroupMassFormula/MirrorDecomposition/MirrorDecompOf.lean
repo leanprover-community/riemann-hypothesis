@@ -1,7 +1,134 @@
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MirrorDecomposition.HpkRowEsI
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MirrorDecomposition.IsMonomialConjTranspose
+import Mathlib
+import Formalism.HermitianCurvature.FiniteOrderIntersectionInSmooth
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerPairs.Forward
 
+section
+open Matrix
+
+noncomputable section
+
+namespace PI.MirrorSection₂
+
+open Formalism.FourierDecayAlt.C2
+
+variable {m : ℕ}
+
+theorem ut_mul {a b : Matrix (Fin m) (Fin m) ℂ} (ha : a ∈ UTset m) (hb : b ∈ UTset m) : a * b ∈ UTset m := by
+  refine ⟨fun i j hji => ?_, fun i => ?_⟩
+  · rw [Matrix.mul_apply]
+    apply Finset.sum_eq_zero
+    intro l _
+    by_cases hl : l < i
+    · rw [ha.1 i l hl, zero_mul]
+    · rw [hb.1 l j (lt_of_lt_of_le hji (not_lt.mp hl)), mul_zero]
+  · rw [Matrix.mul_apply, Finset.sum_eq_single i]
+    · rw [ha.2, hb.2, one_mul]
+    · intro l _ hl
+      rcases lt_or_gt_of_ne hl with h | h
+      · rw [ha.1 i l h, zero_mul]
+      · rw [hb.1 l i h, mul_zero]
+    · intro h; exact absurd (Finset.mem_univ _) h
+
+theorem lt_mul {a b : Matrix (Fin m) (Fin m) ℂ} (ha : a ∈ LTset m) (hb : b ∈ LTset m) : a * b ∈ LTset m := by
+  refine ⟨fun i j hji => ?_, fun i => ?_⟩
+  · rw [Matrix.mul_apply]
+    apply Finset.sum_eq_zero
+    intro l _
+    by_cases hl : i < l
+    · rw [ha.1 i l hl, zero_mul]
+    · rw [hb.1 l j (lt_of_le_of_lt (not_lt.mp hl) hji), mul_zero]
+  · rw [Matrix.mul_apply, Finset.sum_eq_single i]
+    · rw [ha.2, hb.2, one_mul]
+    · intro l _ hl
+      rcases lt_or_gt_of_ne hl with h | h
+      · rw [hb.1 l i h, mul_zero]
+      · rw [ha.1 i l h, zero_mul]
+    · intro h; exact absurd (Finset.mem_univ _) h
+
+theorem det_ut {u : Matrix (Fin m) (Fin m) ℂ} (hu : u ∈ UTset m) : u.det = 1 := by
+  rw [det_of_upperTriangular (fun i j h => hu.1 i j h)]
+  simp [hu.2]
+
+theorem ut_conjTranspose {u : Matrix (Fin m) (Fin m) ℂ} (hu : u ∈ UTset m) : uᴴ ∈ LTset m := by
+  refine ⟨fun i j hij => ?_, fun i => ?_⟩
+  · rw [conjTranspose_apply, hu.1 j i hij, star_zero]
+  · rw [conjTranspose_apply, hu.2, star_one]
+
+theorem lt_conjTranspose {l : Matrix (Fin m) (Fin m) ℂ} (hl : l ∈ LTset m) : lᴴ ∈ UTset m := by
+  refine ⟨fun i j hij => ?_, fun i => ?_⟩
+  · rw [conjTranspose_apply, hl.1 j i hij, star_zero]
+  · rw [conjTranspose_apply, hl.2, star_one]
+
+theorem ut_inv {u : Matrix (Fin m) (Fin m) ℂ} (hu : u ∈ UTset m) :
+    u * u⁻¹ = 1 ∧ u⁻¹ * u = 1 ∧ u⁻¹ ∈ UTset m := by
+  have hd : IsUnit u.det := by rw [det_ut hu]; exact isUnit_one
+  have h1 : u * u⁻¹ = 1 := mul_nonsing_inv u hd
+  have h2 : u⁻¹ * u = 1 := nonsing_inv_mul u hd
+  have hbt : BlockTriangular u id := fun i j h => hu.1 i j h
+  haveI := u.invertibleOfIsUnitDet hd
+  have hbti : BlockTriangular u⁻¹ id := blockTriangular_inv_of_blockTriangular hbt
+  refine ⟨h1, h2, fun i j hji => hbti hji, fun i => ?_⟩
+  have e := congrFun (congrFun h1 i) i
+  rw [Matrix.mul_apply, Finset.sum_eq_single i, hu.2, one_mul, Matrix.one_apply_eq] at e
+  · exact e
+  · intro l _ hl
+    rcases lt_or_gt_of_ne hl with h | h
+    · rw [hu.1 i l h, zero_mul]
+    · rw [hbti h, mul_zero]
+  · intro h; exact absurd (Finset.mem_univ _) h
+
+theorem lt_inv {l : Matrix (Fin m) (Fin m) ℂ} (hl : l ∈ LTset m) :
+    l * l⁻¹ = 1 ∧ l⁻¹ * l = 1 ∧ l⁻¹ ∈ LTset m := by
+  have hu := ut_inv (lt_conjTranspose hl)
+  have hd : IsUnit l.det := by
+    have := det_ut (lt_conjTranspose hl)
+    rw [det_conjTranspose] at this
+    have h2 : l.det = 1 := by simpa using congrArg star this
+    rw [h2]; exact isUnit_one
+  refine ⟨mul_nonsing_inv l hd, nonsing_inv_mul l hd, ?_⟩
+  have := ut_conjTranspose hu.2.2
+  rwa [conjTranspose_nonsing_inv, conjTranspose_conjTranspose] at this
+
+
+theorem monomialMatrix_conjTranspose (w : Equiv.Perm (Fin m)) (d : Fin m → ℂ) :
+    (monoP w d)ᴴ = monoP w.symm (fun a => star (d (w.symm a))) := by
+  ext i a
+  simp only [conjTranspose_apply, monoP, of_apply]
+  by_cases h : a = w i
+  · rw [if_pos h, if_pos (by rw [h, Equiv.symm_apply_apply])]
+    rw [h, Equiv.symm_apply_apply]
+  · rw [if_neg h, star_zero, if_neg]
+    intro h'
+    exact h (by rw [h', Equiv.apply_symm_apply])
+
+theorem isMonomial_conjTranspose {P : Matrix (Fin m) (Fin m) ℂ} (hP : IsMonomial P) : IsMonomial Pᴴ := by
+  obtain ⟨w, d, hd, rfl⟩ := hP
+  exact ⟨w.symm, fun a => star (d (w.symm a)), fun a => by simpa using hd (w.symm a),
+    monomialMatrix_conjTranspose w d⟩
+
+
+theorem split_exists (hLS : LowSplit) {P : Matrix (Fin m) (Fin m) ℂ} (hP : IsMonomial P) (hPd : IsUnit P.det)
+    {u : Matrix (Fin m) (Fin m) ℂ} (hu : u ∈ UTset m) :
+    ∃ a v : Matrix (Fin m) (Fin m) ℂ, a ∈ UTset m ∧ v ∈ UTset m ∧ P * a * P⁻¹ ∈ LTset m ∧
+      P * v * P⁻¹ ∈ UTset m ∧ u = a * v := by
+  obtain ⟨⟨l₁, l₂⟩, ⟨h1, h2, he⟩, -⟩ := hLS m Pᴴ (isMonomial_conjTranspose hP) uᴴ (ut_conjTranspose hu)
+  have key : ∀ l : Matrix (Fin m) (Fin m) ℂ, ((Pᴴ)⁻¹ * l * Pᴴ)ᴴ = P * lᴴ * P⁻¹ := by
+    intro l
+    rw [conjTranspose_mul, conjTranspose_mul, conjTranspose_conjTranspose, conjTranspose_nonsing_inv,
+      conjTranspose_conjTranspose, Matrix.mul_assoc]
+  refine ⟨l₂ᴴ, l₁ᴴ, lt_conjTranspose h2.1, lt_conjTranspose h1.1, ?_, ?_, ?_⟩
+  · rw [← key]; exact ut_conjTranspose h2.2
+  · rw [← key]; exact lt_conjTranspose h1.2
+  · have := congrArg conjTranspose he
+    simp only [conjTranspose_conjTranspose, conjTranspose_mul] at this
+    exact this
+
+end PI.MirrorSection₂
+end
+end
+
+section
 open Matrix
 
 noncomputable section
@@ -24,18 +151,6 @@ end Gen
 
 variable {k r : ℕ}
 
-theorem uw_frame {z : Fin (2 * r + k + 1) → ℂ} {h : B.Mat k r} (hh : h ∈ UWset k r z) :
-    h * Ff k r z = Ff k r z := by
-  have hfix : ∀ b, h *ᵥ fvec k r z b = fvec k r z b := by
-    intro b
-    unfold fvec
-    split_ifs with ha
-    · exact (hh.2.1 ⟨b.val, ha⟩).1
-    · exact hh.2.2
-  have := mul_of_col z h 1 (fun b => by
-    rw [hfix b]
-    simp [Matrix.one_apply])
-  rwa [Matrix.mul_one] at this
 
 theorem pair_lt {m : ℕ} {P b u' : Matrix (Fin m) (Fin m) ℂ} (hb : b ∈ UTset m) (h : bᴴ * P * u' = P)
     (hP : IsUnit P.det) : P * u' * P⁻¹ ∈ LTset m := by
@@ -47,131 +162,8 @@ theorem pair_lt {m : ℕ} {P b u' : Matrix (Fin m) (Fin m) ℂ} (hb : b ∈ UTse
       _ = (bᴴ)⁻¹ := by rw [h, Matrix.mul_assoc, mul_nonsing_inv P hP, Matrix.mul_one]
   rw [e]; exact iL.2.2
 
-theorem pair_of_lt {m : ℕ} {P a : Matrix (Fin m) (Fin m) ℂ} (hP : IsUnit P.det) (ha : P * a * P⁻¹ ∈ LTset m) :
-    ∃ b, b ∈ UTset m ∧ bᴴ * P * a = P := by
-  have iA := lt_inv ha
-  refine ⟨((P * a * P⁻¹)⁻¹)ᴴ, lt_conjTranspose iA.2.2, ?_⟩
-  rw [conjTranspose_conjTranspose]
-  calc (P * a * P⁻¹)⁻¹ * P * a = (P * a * P⁻¹)⁻¹ * (P * a * P⁻¹) * P := by
-        simp only [Matrix.mul_assoc]; rw [nonsing_inv_mul P hP, Matrix.mul_one]
-    _ = P := by rw [iA.2.1, Matrix.one_mul]
 
-theorem mirrorDecomp_of (hC : CurvatureConditionOneClauseThree) (hT : TauMem) (hLS : LowSplit) : MirrorDecomp := by
-  intro k r z z' γ hS hP hmono s' hs'
-  have hz' : StdZ k r z' := hS.2.2
-  have hγ : γ ∈ B.GV k r := hP.1
-  have hPd : IsUnit (Zhat k r z z' γ).det := isUnit_iff_ne_zero.mpr (det_Zhat_ne z z' hS γ hP)
-  obtain ⟨hbij, -, hinj⟩ := hC k r z z' γ hS hP
-
-  have hRS : ∀ ρ ∈ Rst k r z z' γ, γ⁻¹ * ρ * γ ∈ Sset k r z' := by
-    intro ρ hρ
-    obtain ⟨s0, hs0, he⟩ := hρ.1.2
-    rw [(rho_conj γ hγ ρ s0 he).1]; exact hs0
-  have hRL : ∀ ρ ∈ Rst k r z z' γ,
-      Zhat k r z z' γ * uMap k r z' (γ⁻¹ * ρ * γ) * (Zhat k r z z' γ)⁻¹ ∈ LTset (r + 1) := by
-    intro ρ hρ
-    obtain ⟨hb, -, he⟩ := hbij.1 hρ
-    exact pair_lt hb he hPd
-
-  have hSgF : ∀ σ ∈ Sg' k r z z' γ, ∃ v, v ∈ UTset (r + 1) ∧
-      Zhat k r z z' γ * v * (Zhat k r z z' γ)⁻¹ ∈ UTset (r + 1) ∧ σ * Ff k r z' = Ff k r z' * v := by
-    rintro σ ⟨n0, hn0, v, hv, hvP, h, hh, rfl⟩
-    obtain ⟨-, hn0F, -⟩ := Sset_frame z' hz' n0 ⟨1, ⟨by show (1 : B.Mat k r)ᴴ * Hpk k r * 1 = Hpk k r; simp,
-      fun a => ⟨by simp, by simp⟩, by simp⟩, n0, hn0.1, (Matrix.one_mul _).symm⟩
-    rw [hn0.2, Matrix.mul_one] at hn0F
-    have hτ := hT k r z' hz' v hv
-    have hτF : tauM k r z' v * Ff k r z' = Ff k r z' * v := mul_of_col z' _ v hτ.2.1
-    refine ⟨v, hv, hvP, ?_⟩
-    calc n0 * tauM k r z' v * h * Ff k r z' = n0 * (tauM k r z' v * (h * Ff k r z')) := by
-          simp only [Matrix.mul_assoc]
-      _ = Ff k r z' * v := by rw [uw_frame hh, hτF, ← Matrix.mul_assoc, hn0F]
-
-  have hdata : ∀ ρ σ, ρ ∈ Rst k r z z' γ → σ ∈ Sg' k r z z' γ → s' = γ⁻¹ * ρ * γ * σ →
-      ∃ v, Zhat k r z z' γ * v * (Zhat k r z z' γ)⁻¹ ∈ UTset (r + 1) ∧
-        uMap k r z' s' = uMap k r z' (γ⁻¹ * ρ * γ) * v := by
-    intro ρ σ hρ hσ he
-    obtain ⟨v, -, hvP, hσF⟩ := hSgF σ hσ
-    obtain ⟨-, hxF, -⟩ := Sset_frame z' hz' _ (hRS ρ hρ)
-    refine ⟨v, hvP, uMap_eq z' hz' s' _ ?_⟩
-    rw [he]
-    calc γ⁻¹ * ρ * γ * σ * Ff k r z' = (γ⁻¹ * ρ * γ) * (σ * Ff k r z') := by rw [Matrix.mul_assoc]
-      _ = Ff k r z' * (uMap k r z' (γ⁻¹ * ρ * γ) * v) := by
-          rw [hσF, ← Matrix.mul_assoc, hxF, Matrix.mul_assoc]
-
-  have huniq : ∀ ρ₁ σ₁ ρ₂ σ₂, ρ₁ ∈ Rst k r z z' γ → σ₁ ∈ Sg' k r z z' γ → s' = γ⁻¹ * ρ₁ * γ * σ₁ →
-      ρ₂ ∈ Rst k r z z' γ → σ₂ ∈ Sg' k r z z' γ → s' = γ⁻¹ * ρ₂ * γ * σ₂ → ρ₁ = ρ₂ ∧ σ₁ = σ₂ := by
-    intro ρ₁ σ₁ ρ₂ σ₂ h1 h1' e1 h2 h2' e2
-    obtain ⟨v₁, hv₁, hu₁⟩ := hdata ρ₁ σ₁ h1 h1' e1
-    obtain ⟨v₂, hv₂, hu₂⟩ := hdata ρ₂ σ₂ h2 h2' e2
-    have ha := split_unique hPd (hRL ρ₁ h1) (hRL ρ₂ h2) hv₁ hv₂ (hu₁.symm.trans hu₂)
-    have hρ : ρ₁ = ρ₂ := hinj h1 h2 ha
-    subst hρ
-    refine ⟨rfl, ?_⟩
-    have hx : IsUnit (γ⁻¹ * ρ₁ * γ).det := isUnit_det_of_mem_GV (Sset_frame z' hz' _ (hRS ρ₁ h1)).1
-    have e3 := e1.symm.trans e2
-    calc σ₁ = (γ⁻¹ * ρ₁ * γ)⁻¹ * (γ⁻¹ * ρ₁ * γ * σ₁) := by
-          rw [← Matrix.mul_assoc, nonsing_inv_mul _ hx, Matrix.one_mul]
-      _ = (γ⁻¹ * ρ₁ * γ)⁻¹ * (γ⁻¹ * ρ₁ * γ * σ₂) := by rw [e3]
-      _ = σ₂ := by rw [← Matrix.mul_assoc, nonsing_inv_mul _ hx, Matrix.one_mul]
-
-  obtain ⟨h, hh, m, hm, hsm⟩ := hs'
-  obtain ⟨-, hs'F, huUT⟩ := Sset_frame z' hz' s' ⟨h, hh, m, hm, hsm⟩
-  obtain ⟨a, v, haU, hvU, haL, hvP, hsplit⟩ := split_exists hLS hmono hPd huUT
-  obtain ⟨b, hbU, hbP⟩ := pair_of_lt hPd haL
-  have hmem : ((b, a) : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ × Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ) ∈
-      {p : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ × Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ |
-        p.1 ∈ UTset (r + 1) ∧ p.2 ∈ UTset (r + 1) ∧ p.1ᴴ * Zhat k r z z' γ * p.2 = Zhat k r z z' γ} :=
-    ⟨hbU, haU, hbP⟩
-  obtain ⟨ρ, hρ, hρe⟩ := hbij.2.2 hmem
-  have hxa : uMap k r z' (γ⁻¹ * ρ * γ) = a := (Prod.ext_iff.mp hρe).2
-  obtain ⟨x, hxdef⟩ : ∃ x, x = γ⁻¹ * ρ * γ := ⟨_, rfl⟩
-  have hxS : x ∈ Sset k r z' := by rw [hxdef]; exact hRS ρ hρ
-  obtain ⟨h₂, hh₂, m₂, hm₂, hx2⟩ := id hxS
-  obtain ⟨hxG, hxF, -⟩ := Sset_frame z' hz' x hxS
-  rw [hxdef, hxa, ← hxdef] at hxF
-  have hxU := isUnit_det_of_mem_GV hxG
-  have iA := ut_inv haU
-  have hxiF : x⁻¹ * Ff k r z' = Ff k r z' * a⁻¹ :=
-    frame_inv hxU (by rw [det_ut haU]; exact isUnit_one) hxF
-  obtain ⟨h₃, hh3def⟩ : ∃ h₃, h₃ = h₂⁻¹ * h := ⟨_, rfl⟩
-  have hh₃ : h₃ ∈ UWset k r z' := by rw [hh3def]; exact uw_mul (uw_inv hh₂) hh
-  have ih₃ := uh_inv hh₃.1
-  have hcm : h₃ * m * h₃⁻¹ ∈ Nset k r := by
-    have := conj_n (uw_inv hh₃) hm
-    rwa [Matrix.nonsing_inv_nonsing_inv _ (isUnit_det_of_mem_GV hh₃.1)] at this
-  obtain ⟨n, hndef⟩ : ∃ n, n = m₂⁻¹ * (h₃ * m * h₃⁻¹) := ⟨_, rfl⟩
-  have hn : n ∈ Nset k r := by rw [hndef]; exact n_mul (n_inv hm₂) hcm
-  have hσ_eq : x⁻¹ * s' = n * h₃ := by
-    have e1 : x⁻¹ * s' = m₂⁻¹ * (h₃ * m) := by
-      rw [hx2, hsm, Matrix.mul_inv_rev, hh3def]; simp only [Matrix.mul_assoc]
-    rw [e1, hndef]
-    simp only [Matrix.mul_assoc]
-    rw [ih₃.2.1, Matrix.mul_one]
-  have hσF : x⁻¹ * s' * Ff k r z' = Ff k r z' * v := by
-    rw [Matrix.mul_assoc, hs'F, hsplit, ← Matrix.mul_assoc, hxiF, Matrix.mul_assoc, ← Matrix.mul_assoc a⁻¹,
-      iA.2.1, Matrix.one_mul]
-  have hnF : n * Ff k r z' = Ff k r z' * v := by
-    calc n * Ff k r z' = n * (h₃ * Ff k r z') := by rw [uw_frame hh₃]
-      _ = x⁻¹ * s' * Ff k r z' := by rw [← Matrix.mul_assoc, hσ_eq]
-      _ = Ff k r z' * v := hσF
-  have hτ := hT k r z' hz' v hvU
-  have hτF : tauM k r z' v * Ff k r z' = Ff k r z' * v := mul_of_col z' _ v hτ.2.1
-  have iτ := uh_inv hτ.1.1
-  have hvd : IsUnit v.det := by rw [det_ut hvU]; exact isUnit_one
-  have hτiF : (tauM k r z' v)⁻¹ * Ff k r z' = Ff k r z' * v⁻¹ :=
-    frame_inv (isUnit_det_of_mem_GV hτ.1.1) hvd hτF
-  have hn0 : n * (tauM k r z' v)⁻¹ ∈ Nset k r := n_mul hn (n_inv hτ.1)
-  have hn0F : n * (tauM k r z' v)⁻¹ * Ff k r z' = Ff k r z' * (1 : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ) := by
-    rw [Matrix.mul_assoc, hτiF, ← Matrix.mul_assoc, hnF, Matrix.mul_assoc, (ut_inv hvU).1]
-  have hn0u : uMap k r z' (n * (tauM k r z' v)⁻¹) = 1 := uMap_eq z' hz' _ _ hn0F
-  have hσmem : x⁻¹ * s' ∈ Sg' k r z z' γ := by
-    refine ⟨n * (tauM k r z' v)⁻¹, ⟨hn0, hn0u⟩, v, hvU, hvP, h₃, hh₃, ?_⟩
-    rw [hσ_eq, Matrix.mul_assoc n, iτ.2.1, Matrix.mul_one]
-  have heq : s' = γ⁻¹ * ρ * γ * (x⁻¹ * s') := by
-    rw [← hxdef, ← Matrix.mul_assoc, mul_nonsing_inv _ hxU, Matrix.one_mul]
-  refine ⟨(ρ, x⁻¹ * s'), ⟨hρ, hσmem, heq⟩, ?_⟩
-  rintro ⟨ρ', σ'⟩ ⟨h1, h2, h3⟩
-  obtain ⟨e1, e2⟩ := huniq ρ' σ' ρ _ h1 h2 h3 hρ hσmem heq
-  exact Prod.ext e1 e2
 
 end PI.MirrorSection₂
+end
+end

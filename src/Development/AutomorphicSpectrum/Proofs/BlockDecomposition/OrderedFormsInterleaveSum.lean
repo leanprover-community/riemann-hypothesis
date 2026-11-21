@@ -3,9 +3,171 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.Zelevin
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IrreducibleAdmissibleGL
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.LanglandsMultisegments
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OrderedFormsMutualShuffleEq
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsCommonOrderedForm
+import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.ZelevinskyInterleaving.Interleave
 import GroundTheory.PAdicHodge.AInfGalois
 
+section
+open Zc.Comb
+
+universe u
+
+namespace GlobalTheory.CompanionTheory.SegOrder
+
+variable {T : Type u}
+
+theorem exists_last_start (s : T → T) (hs : ∀ (t : T) (j : ℕ), 0 < j → s^[j] t ≠ t)
+    (m : Multiset (ASeg T)) (hm : m ≠ 0) :
+    ∃ a ∈ m, ∀ b ∈ m, ¬ ∃ j : ℕ, 0 < j ∧ b.start = s^[j] a.start := by
+  have irr : ∀ a : ASeg T, ¬ ∃ j : ℕ, 0 < j ∧ a.start = s^[j] a.start := by
+    rintro a ⟨j, hj, h⟩
+    exact hs a.start j hj h.symm
+  induction m using Multiset.induction_on with
+  | empty => exact absurd rfl hm
+  | cons x m ih =>
+    by_cases hm' : m = 0
+    · subst hm'
+      refine ⟨x, Multiset.mem_cons_self x 0, ?_⟩
+      intro b hb
+      have hbx : b = x := by simpa using hb
+      subst hbx
+      exact irr b
+    · obtain ⟨a, ham, hmax⟩ := ih hm'
+      by_cases hax : ∃ j : ℕ, 0 < j ∧ x.start = s^[j] a.start
+      · obtain ⟨j, hj, hxa⟩ := hax
+        refine ⟨x, Multiset.mem_cons_self x m, ?_⟩
+        intro b hb
+        rcases Multiset.mem_cons.mp hb with rfl | hbm
+        · exact irr b
+        · rintro ⟨i, hi, hbx⟩
+          refine hmax b hbm ⟨i + j, by omega, ?_⟩
+          rw [hbx, hxa, Function.iterate_add_apply]
+      · refine ⟨a, Multiset.mem_cons_of_mem ham, ?_⟩
+        intro b hb
+        rcases Multiset.mem_cons.mp hb with rfl | hbm
+        · exact hax
+        · exact hmax b hbm
+
+theorem exists_ordered_form : ∀ {T : Type u} (s : T → T), Function.Injective s →
+    (∀ (t : T) (j : ℕ), 0 < j → s^[j] t ≠ t) →
+    ∀ m : Multiset (ASeg T), ∃ L : List (ASeg T), (L : Multiset (ASeg T)) = m ∧ AOrdered s L := by
+  classical
+  intro T s _ hs m
+  induction hn : Multiset.card m generalizing m with
+  | zero =>
+    refine ⟨[], ?_, List.Pairwise.nil⟩
+    simpa using (Multiset.card_eq_zero.mp hn).symm
+  | succ n ih =>
+    have hm : m ≠ 0 := by
+      rintro rfl
+      simp at hn
+    obtain ⟨a, ham, hmax⟩ := exists_last_start s hs m hm
+    have hcard : Multiset.card (m.erase a) = n := by
+      rw [Multiset.card_erase_of_mem ham, hn]
+      rfl
+    obtain ⟨L, hL, hord⟩ := ih (m.erase a) hcard
+    refine ⟨a :: L, ?_, ?_⟩
+    · rw [← Multiset.cons_coe, hL]
+      exact Multiset.cons_erase ham
+    · refine List.pairwise_cons.mpr ⟨?_, hord⟩
+      intro b hb hprec
+      have hbm : b ∈ m := by
+        have : b ∈ (L : Multiset (ASeg T)) := by simpa using hb
+        rw [hL] at this
+        exact Multiset.mem_of_mem_erase this
+      exact hmax b hbm hprec.2
+
+end GlobalTheory.CompanionTheory.SegOrder
+end
+
+section
+open Zc.Comb
+
+universe u
+
+namespace GlobalTheory.CompanionTheory.SegOrder
+
+variable {T : Type u}
+
+theorem interleave_left_nil (b : List T) : Interleave b [] b := by
+  induction b with
+  | nil => exact Interleave.nil
+  | cons a b ih => exact Interleave.left ih
+
+theorem interleave_right_nil (b : List T) : Interleave [] b b := by
+  induction b with
+  | nil => exact Interleave.nil
+  | cons a b ih => exact Interleave.right ih
+
+theorem Interleave.append_left {u v w : List T} (h : Interleave u v w) (b : List T) :
+    Interleave (u ++ b) v (w ++ b) := by
+  induction h with
+  | nil => exact interleave_left_nil b
+  | left _ ih => exact Interleave.left ih
+  | right _ ih => exact Interleave.right ih
+
+theorem Interleave.append_right {u v w : List T} (h : Interleave u v w) (b : List T) :
+    Interleave u (v ++ b) (w ++ b) := by
+  induction h with
+  | nil => exact interleave_right_nil b
+  | left _ ih => exact Interleave.left ih
+  | right _ ih => exact Interleave.right ih
+
+theorem wt_cons (s : T → T) (a : ASeg T) (L : List (ASeg T)) :
+    wt s (a :: L) = wt s L ++ ASeg.dec s a := by
+  simp [wt]
+
+theorem exists_sublists_interleave (s : T → T) (L : List (ASeg T)) :
+    ∀ m n : Multiset (ASeg T), (L : Multiset (ASeg T)) = m + n →
+      ∃ L₁ L₂ : List (ASeg T), L₁.Sublist L ∧ L₂.Sublist L ∧
+        (L₁ : Multiset (ASeg T)) = m ∧ (L₂ : Multiset (ASeg T)) = n ∧
+        Interleave (wt s L₁) (wt s L₂) (wt s L) := by
+  classical
+  induction L with
+  | nil =>
+    intro m n h
+    have h0 : m = 0 ∧ n = 0 := add_eq_zero.1 (by simpa using h.symm)
+    refine ⟨[], [], List.Sublist.refl _, List.Sublist.refl _, ?_, ?_, Zc.Comb.Interleave.nil⟩
+    · simp [h0.1]
+    · simp [h0.2]
+  | cons a L ih =>
+    intro m n h
+    have ha : a ∈ m + n := by
+      rw [← h]
+      simp
+    rcases Multiset.mem_add.1 ha with ha | ha
+    · have hL : (L : Multiset (Zc.Comb.ASeg T)) = m.erase a + n := by
+        apply (Multiset.cons_inj_right a).1
+        rw [Multiset.cons_coe, h, ← Multiset.cons_add, Multiset.cons_erase ha]
+      obtain ⟨L₁, L₂, h₁, h₂, e₁, e₂, hI⟩ := ih (m.erase a) n hL
+      refine ⟨a :: L₁, L₂, List.Sublist.cons₂ a h₁, List.Sublist.cons a h₂, ?_, e₂, ?_⟩
+      · rw [← Multiset.cons_coe, e₁, Multiset.cons_erase ha]
+      · rw [GlobalTheory.CompanionTheory.SegOrder.wt_cons, GlobalTheory.CompanionTheory.SegOrder.wt_cons]
+        exact GlobalTheory.CompanionTheory.SegOrder.Interleave.append_left hI _
+    · have hL : (L : Multiset (Zc.Comb.ASeg T)) = m + n.erase a := by
+        apply (Multiset.cons_inj_right a).1
+        rw [Multiset.cons_coe, h, ← Multiset.add_cons, Multiset.cons_erase ha]
+      obtain ⟨L₁, L₂, h₁, h₂, e₁, e₂, hI⟩ := ih m (n.erase a) hL
+      refine ⟨L₁, a :: L₂, List.Sublist.cons a h₁, List.Sublist.cons₂ a h₂, e₁, ?_, ?_⟩
+      · rw [← Multiset.cons_coe, e₂, Multiset.cons_erase ha]
+      · rw [GlobalTheory.CompanionTheory.SegOrder.wt_cons, GlobalTheory.CompanionTheory.SegOrder.wt_cons]
+        exact GlobalTheory.CompanionTheory.SegOrder.Interleave.append_right hI _
+
+theorem exists_common_ordered_form : ∀ {T : Type u} (s : T → T), Function.Injective s →
+    (∀ (t : T) (j : ℕ), 0 < j → s^[j] t ≠ t) →
+    ∀ m n : Multiset (ASeg T), ∃ L₁ L₂ L : List (ASeg T),
+      (L₁ : Multiset (ASeg T)) = m ∧ (L₂ : Multiset (ASeg T)) = n ∧
+      (L : Multiset (ASeg T)) = m + n ∧ AOrdered s L₁ ∧ AOrdered s L₂ ∧ AOrdered s L ∧
+      Interleave (wt s L₁) (wt s L₂) (wt s L) := by
+  intro T s hinj hs m n
+  obtain ⟨L, hL, hord⟩ := exists_ordered_form s hinj hs (m + n)
+  obtain ⟨L₁, L₂, h₁, h₂, c₁, c₂, hi⟩ := exists_sublists_interleave s L m n hL
+  exact ⟨L₁, L₂, L, c₁, c₂, hL, List.Pairwise.sublist h₁ hord, List.Pairwise.sublist h₂ hord,
+    hord, hi⟩
+
+end GlobalTheory.CompanionTheory.SegOrder
+end
+
+section
 section
 noncomputable section
 
@@ -74,3 +236,4 @@ open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.Loc
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.ordered_forms_interleave_sum : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (hA : GlobalTheory.Published.IrreducibleAdmissibleGL), ∀ (𝔪 𝔫 : Multiset (Segment k)), ∃ (h₁ h₂ h : ℕ) (Δ₁ : Fin h₁ → Segment k) (Δ₂ : Fin h₂ → Segment k) (Δ : Fin h → Segment k), IsOrderedForm Δ₁ 𝔪 ∧ IsOrderedForm Δ₂ 𝔫 ∧ IsOrderedForm Δ (𝔪 + 𝔫) ∧ Zc.Comb.Interleave (wtW Δ₁) (wtW Δ₂) (wtW Δ) := by
   atlas_forward_decl GlobalTheory.CompanionTheory.ZcMerge.exists_common_orderedForm
+end

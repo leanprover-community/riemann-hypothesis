@@ -28,14 +28,6 @@ theorem isRightDomain_rightOf (σ : ℝ) : IsRightDomain (rightOf σ) := by
   simp only [mem_rightOf, Complex.add_re, Complex.ofReal_re] at hs ⊢
   linarith
 
-theorem isRightDomain_re_ge (σ : ℝ) : IsRightDomain {s | σ ≤ s.re} := by
-  refine ⟨⟨σ, fun s hs => ?_⟩, fun s hs t ht => ?_⟩
-  · simp only [mem_rightOf] at hs
-    exact le_of_lt hs
-  · show σ ≤ (s + t).re
-    have hs' : σ ≤ s.re := hs
-    simp only [Complex.add_re, Complex.ofReal_re]
-    linarith
 
 theorem IsRightDomain.inter (a : IsRightDomain U) (b : IsRightDomain U') : IsRightDomain (U ∩ U') := by
   obtain ⟨⟨σ₁, h₁⟩, a₂⟩ := a
@@ -182,14 +174,6 @@ theorem laurentConst_div_pow (k : ℕ) : ∀ {g : ℂ → ℂ} {p : FormalMultil
     field_simp
     ring
 
-theorem laurentCoeff_div_pow {g : ℂ → ℂ} {p : FormalMultilinearSeries ℂ ℂ ℂ} (hg : HasFPowerSeriesAt g p s₀) (i k : ℕ) :
-    LaurentCoeff (fun s => g s / (s - s₀) ^ k) s₀ (i - k) (p.coeff i) := by
-  unfold LaurentCoeff
-  refine laurentConst_congr (laurentConst_div_pow i hg) ?_
-  filter_upwards [self_mem_nhdsWithin] with s hs
-  have hd : s - s₀ ≠ 0 := sub_ne_zero.mpr hs
-  rw [neg_sub, zpow_sub₀ hd, zpow_natCast, zpow_natCast]
-  field_simp
 
 theorem exists_laurentConst (a : MeromorphicAt H s₀) : ∃ c, LaurentConst H s₀ c := by
   obtain ⟨n, hn⟩ := a
@@ -360,7 +344,6 @@ theorem eventually (a : IsExtAt h s₀ H) : ∀ᶠ s in 𝓝 s₀, IsExtAt h s H
   obtain ⟨U, hU, hs, hm⟩ := exists_isOpen_isMerExt_of_isExtAt a
   filter_upwards [hU.mem_nhds hs] with s hs' using ⟨U, hs', hm⟩
 
-theorem exists_isOpen (a : IsExtAt h s₀ H) : ∃ U, IsOpen U ∧ s₀ ∈ U ∧ IsMerExt h U H := exists_isOpen_isMerExt_of_isExtAt a
 
 end IsExtAt
 
@@ -560,19 +543,9 @@ theorem PoleLE.mul_hol (a : PoleLE h s₀ k) (e : CoeffAt h s₀ (-k) c) (b : Ho
     (t1.mul t2).congr fun s => by ring
   exact ⟨hm.poleLE_iff.mpr ⟨_, t3⟩, hm.coeffAt_of_tendsto t3⟩
 
-theorem isOpen_contDom (h : ℂ → ℂ) : IsOpen (contDom h) := by
-  rw [isOpen_iff_mem_nhds]
-  rintro s ⟨H, hs⟩
-  exact hs.eventually.mono fun s' hs' => ⟨H, hs'⟩
 
 theorem IsMerExt.subset_contDom (a : IsMerExt h U H) : U ⊆ contDom h := fun _ hs => ⟨H, a.isExtAt hs⟩
 
-theorem isRightDomain_contDom (hs : s₀ ∈ contDom h) : IsRightDomain (contDom h) := by
-  obtain ⟨H, U, hsU, hU, hm, he⟩ := hs
-  obtain ⟨σ, hσ⟩ := hU.1
-  refine ⟨⟨σ, hσ.trans (IsMerExt.subset_contDom ⟨hU, hm, he⟩)⟩, fun s hs t ht => ?_⟩
-  obtain ⟨H', U', hsU', hU', hm', he'⟩ := hs
-  exact ⟨H', U', hU'.2 s hsU' t ht, hU', hm', he'⟩
 
 theorem CoeffAt.laurent_eq (a : CoeffAt h s₀ n c) : laurent h s₀ n = c := by
   have hex : ∃ c, CoeffAt h s₀ n c := ⟨c, a⟩
@@ -607,10 +580,6 @@ theorem IsExtAt.cont_eventuallyEq (a : IsExtAt h s₀ H) : cont h =ᶠ[𝓝[≠]
   filter_upwards [h1, h2] with s hs1 hs2
   exact (HolValueAt.valueAt ⟨H, hs2, hs1, rfl⟩).cont_eq
 
-theorem meromorphicOn_cont (h : ℂ → ℂ) : MeromorphicOn (cont h) (contDom h) := by
-  intro s hs
-  obtain ⟨H, ha⟩ := hs
-  exact ha.meromorphicAt.congr ha.cont_eventuallyEq.symm
 
 theorem HolValueAt.analyticAt_cont (a : HolValueAt h s₀ c) : AnalyticAt ℂ (cont h) s₀ := by
   obtain ⟨H, ha, han, hv⟩ := id a
@@ -628,22 +597,7 @@ theorem HolValueAt.analyticAt_cont (a : HolValueAt h s₀ c) : AnalyticAt ℂ (c
 
 theorem eqOn_cont (a : AnalyticOnNhd ℂ h (rightOf σ)) : EqOn (cont h) h (rightOf σ) := fun _ hs => (holValueAt_self a hs).valueAt.cont_eq
 
-theorem isMerExt_cont (a : AnalyticOnNhd ℂ h (rightOf σ)) : IsMerExt h (contDom h) (cont h) := by
-  have hsub : rightOf σ ⊆ contDom h :=
-    (isMerExt_self (isRightDomain_rightOf σ) a.meromorphicOn).subset_contDom
-  have hmem : ((σ + 1 : ℝ) : ℂ) ∈ rightOf σ := by
-    simp only [mem_rightOf, Complex.ofReal_re]
-    linarith
-  exact ⟨isRightDomain_contDom (hsub hmem), meromorphicOn_cont h, ⟨σ, eqOn_cont a⟩⟩
 
-theorem continues_iff (a : AnalyticOnNhd ℂ h (rightOf σ)) : Continues h ↔ contDom h = univ := by
-  constructor
-  · rintro ⟨H, hH⟩
-    exact eq_univ_of_univ_subset hH.subset_contDom
-  · intro e
-    refine ⟨cont h, ?_⟩
-    rw [← e]
-    exact isMerExt_cont a
 
 theorem isMerExt_riemannZeta : IsMerExt (fun s => ∑' n : ℕ, 1 / ((n : ℂ) + 1) ^ s) univ riemannZeta := by
   refine ⟨isRightDomain_univ, fun s _ => ?_, ⟨1, fun s hs => zeta_eq_tsum_one_div_nat_add_one_cpow hs⟩⟩

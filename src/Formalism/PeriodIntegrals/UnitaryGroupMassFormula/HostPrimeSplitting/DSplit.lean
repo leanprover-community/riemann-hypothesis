@@ -22,16 +22,6 @@ theorem sqrt_isIntegral : IsIntegral ℤ H.sqrtMinusD := by
 
 def sqrtO : 𝓞 H.E := ⟨H.sqrtMinusD, sqrt_isIntegral H⟩
 
-theorem liesOver_d (P : HeightOneSpectrum (𝓞 H.E)) (hP : ((H.d : ℤ) : 𝓞 H.E) ∈ P.asIdeal) :
-    P.asIdeal.LiesOver (span {((H.d : ℕ) : ℤ)}) := by
-  have hd : (H.d).Prime := H.hyp.2.1
-  have hmax : (span {((H.d : ℕ) : ℤ)}).IsMaximal :=
-    PrincipalIdealRing.isMaximal_of_irreducible (Nat.prime_iff_prime_int.mp hd).irreducible
-  constructor
-  refine hmax.eq_of_le (Ideal.IsPrime.ne_top inferInstance) ?_
-  rw [Ideal.span_le, Set.singleton_subset_iff]
-  show algebraMap ℤ (𝓞 H.E) _ ∈ P.asIdeal
-  simpa using hP
 
 abbrev cE : H.E ≃ₐ[ℚ] H.E := H.conj
 

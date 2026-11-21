@@ -1,5 +1,116 @@
-import Development.EtaleCohomology.CohomologicalPurity.LeafWCechPf
+import Development.EtaleCohomology.CohomologicalPurity.LeafChartFactPf
 
+section
+noncomputable section
+open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC
+
+namespace LateralTheory.CohomologicalPurity.Thom.ExcP.Chart
+
+theorem eqv_of_isIso {R : Type} [CommRing R] {E E' : Spc} (f : E ⟶ E') [IsIso f] (F : Shv R) : Eqv R f F := by
+  intro n
+  refine ⟨fun x y h => ?_, fun y => ⟨pull R (inv f) F n y, ?_⟩⟩
+  · have := congrArg (pull R (inv f) F n) h
+    rwa [← pull_comp, ← pull_comp, IsIso.inv_hom_id, pull_id, pull_id] at this
+  · rw [← pull_comp, IsIso.hom_inv_id, pull_id]
+
+theorem eqv_comp {R : Type} [CommRing R] {E E' E'' : Spc} {f : E ⟶ E'} {g : E' ⟶ E''} {F : Shv R}
+    (hf : Eqv R f F) (hg : Eqv R g F) : Eqv R (f ≫ g) F := by
+  intro n
+  have : (pull R (f ≫ g) F n : _ → _) = pull R f F n ∘ pull R g F n := funext fun x => pull_comp R f g F n x
+  rw [this]; exact (hf n).comp (hg n)
+
+theorem eqv_of_section {R : Type} [CommRing R] {E E' : Spc} {f : E ⟶ E'} {r : E' ⟶ E} {F : Shv R}
+    (h : f ≫ r = 𝟙 _) (hr : Eqv R r F) : Eqv R f F := by
+  intro n
+  have hc : (pull R f F n : _ → _) ∘ pull R r F n = id := by
+    funext x; change pull R f F n (pull R r F n x) = x; rw [← pull_comp, h, pull_id]
+  have : Function.Bijective ((pull R f F n : _ → _) ∘ pull R r F n) := by rw [hc]; exact Function.bijective_id
+  exact (Function.Bijective.of_comp_iff _ (hr n)).1 this
+
+def fW (d : ℕ) (R : Type) [CommRing R] :
+    Spec (CommRingCat.of (LaurentPolynomial (MvPolynomial (Fin d) R))) ⟶ Spec (CommRingCat.of (MvPolynomial (Fin d) R)) :=
+  Spec.map (CommRingCat.ofHom (LaurentPolynomial.C : MvPolynomial (Fin d) R →+* _))
+
+theorem smooth_C (A : Type) [CommRing A] : (LaurentPolynomial.C : A →+* LaurentPolynomial A).Smooth := by
+  have h1 : (Polynomial.C : A →+* Polynomial A).Smooth := by
+    rw [show (Polynomial.C : A →+* Polynomial A) = algebraMap A (Polynomial A) from rfl]
+    exact RingHom.smooth_algebraMap.2 ⟨inferInstance, inferInstance⟩
+  have h2 : (algebraMap (Polynomial A) (LaurentPolynomial A)).Smooth :=
+    RingHom.Smooth.holdsForLocalizationAway (R := Polynomial A) (S := LaurentPolynomial A) Polynomial.X
+  have h3 := RingHom.Smooth.comp h1 h2
+  convert h3 using 1
+  ext a
+  simp
+
+instance (d : ℕ) (R : Type) [CommRing R] : Smooth (fW d R) := by
+  rw [fW, HasRingHomProperty.Spec_iff (P := @Smooth)]
+  exact smooth_C _
+
+instance (d : ℕ) (R : Type) [CommRing R] : Surjective (fW d R) := by
+  let s : LaurentPolynomial (MvPolynomial (Fin d) R) →+* MvPolynomial (Fin d) R := LaurentPolynomial.eval₂ (RingHom.id _) 1
+  have hs : s.comp LaurentPolynomial.C = RingHom.id _ := by ext x <;> simp [s]
+  have : Spec.map (CommRingCat.ofHom s) ≫ fW d R = 𝟙 _ := by
+    rw [fW, ← Spec.map_comp, ← CommRingCat.ofHom_comp, hs]; exact Spec.map_id _
+  have : Surjective (Spec.map (CommRingCat.ofHom s) ≫ fW d R) := by rw [this]; infer_instance
+  exact Surjective.of_comp (Spec.map (CommRingCat.ofHom s)) (fW d R)
+
+def LeafWCech : Prop := ∀ (d : ℕ) (R : Type) [CommRing R],
+  ∃ ψ : W d R ⟶ cech (fW d R), IsIso ψ ∧ wa d R ≫ ψ ≫ cechAug (fW d R) = 𝟙 _
+
+theorem LeafWEqvR_of (hW : LeafWCech) : LeafWEqvR := by
+  intro hH q _ d R _ _ i
+  obtain ⟨ψ, hψ, he⟩ := hW d R
+  have hA : Eqv _ (cechAug (fW d R)) (tw q i) := hH.2.1 (ZMod q) (fW d R) (tw q i)
+  exact eqv_of_section (by rw [← he]) (eqv_comp (eqv_of_isIso ψ _) hA)
+
+end LateralTheory.CohomologicalPurity.Thom.ExcP.Chart
+end
+end
+
+section
+noncomputable section
+open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC
+
+namespace LateralTheory.CohomologicalPurity.Thom.ExcP.Chart
+
+abbrev vtx (n : ℕ) (i : Fin (n + 1)) : SimplexCategory.mk 0 ⟶ SimplexCategory.mk n :=
+  SimplexCategory.const _ _ i
+
+def LeafCechRec : Prop := ∀ (X : Spc) (P Z : PSh) (φ : P ⟶ Z) (r : X ⟶ disc.obj Z)
+  (g : X.obj (op (SimplexCategory.mk 0)) ⟶ P), g ≫ φ = r.app (op (SimplexCategory.mk 0)) →
+  (∀ (n : ℕ) (U : Scheme.{0}ᵒᵖ) (x x' : (X.obj (op (SimplexCategory.mk n))).obj U),
+    (∀ i, g.app U ((X.map (vtx n i).op).app U x) = g.app U ((X.map (vtx n i).op).app U x')) → x = x') →
+  (∀ (n : ℕ) (U : Scheme.{0}ᵒᵖ) (y : Fin (n + 1) → P.obj U) (z : Z.obj U), (∀ i, φ.app U (y i) = z) →
+    ∃ x, ∀ i, g.app U ((X.map (vtx n i).op).app U x) = y i) →
+  ∃ ψ : X ⟶ (Arrow.mk φ).cechNerve, IsIso ψ ∧ ψ ≫ (Arrow.mk φ).augmentedCechNerve.hom = r
+
+def LeafWData : Prop := ∀ (d : ℕ) (R : Type) [CommRing R],
+  ∃ (r : W d R ⟶ disc.obj (yoneda.obj (Spec (CommRingCat.of (MvPolynomial (Fin d) R)))))
+    (g : (W d R).obj (op (SimplexCategory.mk 0)) ⟶
+      yoneda.obj (Spec (CommRingCat.of (LaurentPolynomial (MvPolynomial (Fin d) R))))),
+    wa d R ≫ r = 𝟙 _ ∧ g ≫ yoneda.map (fW d R) = r.app (op (SimplexCategory.mk 0)) ∧
+    (∀ (n : ℕ) (U : Scheme.{0}ᵒᵖ) (x x' : ((W d R).obj (op (SimplexCategory.mk n))).obj U),
+      (∀ i, g.app U (((W d R).map (vtx n i).op).app U x) = g.app U (((W d R).map (vtx n i).op).app U x')) →
+        x = x') ∧
+    (∀ (n : ℕ) (U : Scheme.{0}ᵒᵖ) (y : Fin (n + 1) → (yoneda.obj (Spec (CommRingCat.of
+        (LaurentPolynomial (MvPolynomial (Fin d) R))))).obj U) (z : (yoneda.obj (Spec (CommRingCat.of
+        (MvPolynomial (Fin d) R)))).obj U), (∀ i, (yoneda.map (fW d R)).app U (y i) = z) →
+      ∃ x, ∀ i, g.app U (((W d R).map (vtx n i).op).app U x) = y i)
+
+theorem LeafWCech_of (hC : LeafCechRec) (hD : LeafWData) : LeafWCech := by
+  intro d R _
+  obtain ⟨r, g, hr, hg, hi, hs⟩ := hD d R
+  obtain ⟨ψ, hψ, he⟩ := hC (W d R) _ _ (yoneda.map (fW d R)) r g hg hi hs
+  refine ⟨ψ, hψ, ?_⟩
+  change wa d R ≫ ψ ≫ (Arrow.mk (yoneda.map (fW d R))).augmentedCechNerve.hom = 𝟙 _
+  subst he
+  exact hr
+
+end LateralTheory.CohomologicalPurity.Thom.ExcP.Chart
+end
+end
+
+section
 noncomputable section
 open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC
 
@@ -76,3 +187,5 @@ theorem leafCechRec : LeafCechRec := by
 theorem LeafWCech_of_data (hD : LeafWData) : LeafWCech := LeafWCech_of leafCechRec hD
 
 end LateralTheory.CohomologicalPurity.Thom.ExcP.Chart
+end
+end

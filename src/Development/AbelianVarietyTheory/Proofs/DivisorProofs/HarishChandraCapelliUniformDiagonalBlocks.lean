@@ -1,8 +1,327 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BlkEquivInl
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolyMapOfSum
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteDimensionalSpanAdjoin
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HyperbolicPlaneFormSkew
+import BuildAid.ForwardExisting
 
+section
+open Matrix GlobalTheory.LeviHC
+open Formalism.REAL (GlRel qdet)
+
+noncomputable section
+
+namespace GlobalTheory.LeviHC.FactorMod
+
+variable {M : Type} [AddCommGroup M] [Module ℂ M]
+
+theorem finMod_mono {K₁ K₂ : Submodule ℂ M} (h : K₁ ≤ K₂) {A : Subalgebra ℂ (Module.End ℂ M)} {v : M}
+    (hf : FinMod K₁ A v) : FinMod K₂ A v := by
+  unfold FinMod at *
+  have e : Submodule.span ℂ {y : M ⧸ K₂ | ∃ a ∈ A, y = K₂.mkQ (a v)} =
+      (Submodule.span ℂ {y : M ⧸ K₁ | ∃ a ∈ A, y = K₁.mkQ (a v)}).map (Submodule.factor h) := by
+    rw [Submodule.map_span]
+    congr 1
+    ext y
+    simp only [Set.mem_setOf_eq, Set.mem_image]
+    constructor
+    · rintro ⟨a, ha, rfl⟩
+      exact ⟨K₁.mkQ (a v), ⟨a, ha, rfl⟩, Submodule.factor_mk h _⟩
+    · rintro ⟨_, ⟨a, ha, rfl⟩, rfl⟩
+      exact ⟨a, ha, Submodule.factor_mk h _⟩
+  rw [e]
+  infer_instance
+
+theorem comm_of_mem_adjoin {s : Set (Module.End ℂ M)} {f b : Module.End ℂ M} (hb : b ∈ Algebra.adjoin ℂ s)
+    (h : ∀ g ∈ s, Commute f g) : Commute f b := by
+  have hle : Algebra.adjoin ℂ s ≤ Subalgebra.centralizer ℂ {f} :=
+    Algebra.adjoin_le fun g hg => (Subalgebra.mem_centralizer_iff ℂ).2 fun y hy => by
+      rw [Set.mem_singleton_iff.1 hy]; exact (h g hg)
+  exact (((Subalgebra.mem_centralizer_iff ℂ).1 (hle hb)) f rfl)
+
+def core (K : Submodule ℂ M) (S : Subalgebra ℂ (Module.End ℂ M)) : Submodule ℂ M where
+  carrier := {x | ∀ b ∈ S, b x ∈ K}
+  add_mem' := fun hx hy b hb => by rw [map_add]; exact K.add_mem (hx b hb) (hy b hb)
+  zero_mem' := fun b _ => by rw [map_zero]; exact K.zero_mem
+  smul_mem' := fun c x hx b hb => by rw [map_smul]; exact K.smul_mem c (hx b hb)
+
+theorem core_le (K : Submodule ℂ M) (S : Subalgebra ℂ (Module.End ℂ M)) : core K S ≤ K := fun x hx => by
+  simpa using hx 1 S.one_mem
+
+theorem finMod_factor : ∀ (M : Type) [AddCommGroup M] [Module ℂ M] (M' K : Submodule ℂ M) (c p q : ℂ → Module.End ℂ M),
+ (∃ (d : ℕ) (a : ℕ → Module.End ℂ M), a d = 1 ∧ ∀ u, p u = ∑ i ∈ Finset.range (d + 1), u ^ i • a i) →
+ (∃ (d : ℕ) (a : ℕ → Module.End ℂ M), a d = 1 ∧ ∀ u, q u = ∑ i ∈ Finset.range (d + 1), u ^ i • a i) →
+ (∀ u u', Commute (p u) (p u')) → (∀ u u', Commute (q u) (q u')) → (∀ u u', Commute (p u) (q u')) → (∀ u u', Commute (c u) (q u')) →
+ (∀ u, ∀ x ∈ M', c u x ∈ M' ∧ p u x ∈ M' ∧ q u x ∈ M') → (∀ u, ∀ x ∈ K, p u x ∈ K) →
+ (∀ u, ∀ x ∈ M', c u x - p u (q u x) ∈ K) →
+ ∀ v ∈ M', FinMod ⊥ (Algebra.adjoin ℂ (Set.range c)) v → FinMod K (Algebra.adjoin ℂ (Set.range p)) v := by
+  intro M _ _ M' K c p q hp hq hpp hqq hpq hcq hM hK hrel v hv hfin
+  set S := Algebra.adjoin ℂ (Set.range q) with hS
+
+  have cb : ∀ u, ∀ b ∈ S, Commute (c u) b := fun u b hb =>
+    comm_of_mem_adjoin hb (by rintro _ ⟨u', rfl⟩; exact hcq u u')
+  have pb : ∀ u, ∀ b ∈ S, Commute (p u) b := fun u b hb =>
+    comm_of_mem_adjoin hb (by rintro _ ⟨u', rfl⟩; exact hpq u u')
+  have qb : ∀ u, ∀ b ∈ S, Commute (q u) b := fun u b hb =>
+    comm_of_mem_adjoin hb (by rintro _ ⟨u', rfl⟩; exact hqq u u')
+
+  have hSM : ∀ b ∈ S, ∀ x ∈ M', b x ∈ M' := by
+    have hle : S ≤ GlobalTheory.LeviHC.MidBlock.stab M' :=
+      Algebra.adjoin_le (by rintro _ ⟨u, rfl⟩ x hx; exact (hM u x hx).2.2)
+    intro b hb x hx
+    exact hle hb x hx
+  set K' := core K S
+  have hK'p : ∀ u, ∀ x ∈ K', p u x ∈ K' ∧ q u x ∈ K' := by
+    intro u x hx
+    refine ⟨fun b hb => ?_, fun b hb => ?_⟩
+    · have e : b (p u x) = p u (b x) := by
+        have := (pb u b hb).eq
+        exact (congrArg (fun f : Module.End ℂ M => f x) this).symm
+      rw [e]; exact hK u _ (hx b hb)
+    · have : b * q u ∈ S := S.mul_mem hb (Algebra.subset_adjoin ⟨u, rfl⟩)
+      exact hx _ this
+  have hrel' : ∀ u, ∀ x ∈ M', c u x - p u (q u x) ∈ K' := by
+    intro u x hx b hb
+    have e1 : b (c u x) = c u (b x) := (congrArg (fun f : Module.End ℂ M => f x) (cb u b hb).eq).symm
+    have e2 : b (q u x) = q u (b x) := (congrArg (fun f : Module.End ℂ M => f x) (qb u b hb).eq).symm
+    have e3 : b (p u (q u x)) = p u (b (q u x)) :=
+      (congrArg (fun f : Module.End ℂ M => f (q u x)) (pb u b hb).eq).symm
+    rw [map_sub, e1, e3, e2]
+    exact hrel u _ (hSM b hb x hx)
+  have h1 : FinMod K' (Algebra.adjoin ℂ (Set.range c)) v := finMod_mono bot_le hfin
+  have h2 := GlobalTheory.LeviHC.QuotMonic.monicFactorFiniteMod_of GlobalTheory.LeviHC.monicFactorFinite M M' K' c p q hp hq hpp hqq hpq
+    hM hK'p hrel' v hv h1
+  exact finMod_mono (core_le K S) h2
+
+end GlobalTheory.LeviHC.FactorMod
+
+end
+end
+
+section
+open Matrix GlobalTheory.LeviHC
+open Formalism.REAL (GlRel qdet)
+
+noncomputable section
+
+namespace GlobalTheory.LeviHC.MidThree
+
+open GlobalTheory.LeviHC.MidBlock (stab mem_stab glComm comm_qdet)
+open Polynomial
+
+section Alg
+
+variable {A : Type} [Ring A] [Algebra ℂ A]
+
+theorem polyMap_of_sum {ι : Type} (s : Finset ι) (f : ι → ℂ[X]) (a : ι → A) (d : ℕ) (k₀ : ι) (hk₀ : k₀ ∈ s)
+    (hm : (f k₀).Monic) (hd : (f k₀).natDegree = d) (hlt : ∀ k ∈ s, k ≠ k₀ → (f k).natDegree < d) :
+    ∃ b : ℕ → A, b d = a k₀ ∧ ∀ u, ∑ k ∈ s, (f k).eval u • a k = ∑ i ∈ Finset.range (d + 1), u ^ i • b i := by
+  refine ⟨fun i => ∑ k ∈ s, (f k).coeff i • a k, ?_, fun u => ?_⟩
+  · show ∑ k ∈ s, (f k).coeff d • a k = a k₀
+    rw [Finset.sum_eq_single_of_mem k₀ hk₀ fun k hk hne => by
+      rw [coeff_eq_zero_of_natDegree_lt (hlt k hk hne), zero_smul]]
+    rw [← hd, hm.coeff_natDegree, one_smul]
+  · simp only [Finset.smul_sum]
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun k hk => ?_
+    have hk' : (f k).natDegree < d + 1 := by
+      by_cases h : k = k₀
+      · rw [h, hd]; omega
+      · have := hlt k hk h; omega
+    rw [eval_eq_sum_range' hk', Finset.sum_smul]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [smul_smul, mul_comm]
+
+theorem monic_shift {p : ℂ → A} (t : ℂ)
+    (hp : ∃ (d : ℕ) (a : ℕ → A), a d = 1 ∧ ∀ u, p u = ∑ i ∈ Finset.range (d + 1), u ^ i • a i) :
+    ∃ (d : ℕ) (a : ℕ → A), a d = 1 ∧ ∀ u, p (u - t) = ∑ i ∈ Finset.range (d + 1), u ^ i • a i := by
+  obtain ⟨d, a, ha, hp⟩ := hp
+  have hdeg : ∀ i, ((X - C t) ^ i).natDegree = i := fun i => by
+    rw [(monic_X_sub_C t).natDegree_pow, natDegree_X_sub_C, mul_one]
+  obtain ⟨b, hb, e⟩ := polyMap_of_sum (Finset.range (d + 1)) (fun i => (X - C t) ^ i) a d d
+    (Finset.self_mem_range_succ d) ((monic_X_sub_C t).pow d) (hdeg d) fun k hk hne => by
+      rw [hdeg]; have := Finset.mem_range.1 hk; omega
+  refine ⟨d, b, hb.trans ha, fun u => ?_⟩
+  rw [hp, ← e]
+  simp
+
+end Alg
+
+end GlobalTheory.LeviHC.MidThree
+
+end
+end
+
+section
+section
+open NumberField
+
+noncomputable section
+
+open Polynomial
+
+namespace GlobalTheory.CycSpanFin
+
+variable {V : Type} [AddCommGroup V] [Module ℂ V]
+
+theorem commute_aeval_left {x y : Module.End ℂ V} (h : Commute x y) (p : ℂ[X]) : Commute (aeval x p) y := by
+  induction p using Polynomial.induction_on' with
+  | add p q hp hq => rw [map_add]; exact hp.add_left hq
+  | monomial n a => rw [aeval_monomial]; exact (Algebra.commute_algebraMap_left a y).mul_left (h.pow_left n)
+
+theorem coeff_mem_span_fin {M : Type} [AddCommGroup M] [Module ℂ M] {n : ℕ} {a : ℕ → M} {p : ℂ → M}
+    (hp : ∀ u, p u = ∑ i ∈ Finset.range (n + 1), u ^ i • a i) {i : ℕ} (hi : i < n + 1) :
+    a i ∈ Submodule.span ℂ (Set.range fun j : Fin (n + 1) => p ((j : ℕ) : ℂ)) := by
+  rw [← Subspace.forall_mem_dualAnnihilator_apply_eq_zero_iff]
+  intro φ hφ
+  set Q : ℂ[X] := ∑ j ∈ Finset.range (n + 1), monomial j (φ (a j)) with hQdef
+  have hev : ∀ u, Q.eval u = φ (p u) := by
+    intro u
+    rw [hp, map_sum]
+    simp only [Q, eval_finset_sum, eval_monomial]
+    exact Finset.sum_congr rfl fun j _ => by rw [map_smul, smul_eq_mul, mul_comm]
+  have hdeg : Q.natDegree ≤ n := by
+    apply natDegree_sum_le_of_forall_le
+    intro j hj
+    exact (natDegree_monomial_le _).trans (Nat.lt_succ_iff.1 (Finset.mem_range.1 hj))
+  have h0 : Q = 0 := by
+    refine Polynomial.eq_zero_of_natDegree_lt_card_of_eval_eq_zero Q
+      (f := fun j : Fin (n + 1) => ((j : ℕ) : ℂ)) (Nat.cast_injective.comp Fin.val_injective) ?_ ?_
+    · intro j
+      rw [hev]
+      exact (Submodule.mem_dualAnnihilator φ).1 hφ _ (Submodule.subset_span ⟨j, rfl⟩)
+    · simpa using Nat.lt_succ_of_le hdeg
+  have := congrArg (fun P : Polynomial ℂ => P.coeff i) h0
+  simpa [Q, Polynomial.finset_sum_coeff, Polynomial.coeff_monomial, hi, Nat.lt_succ_iff.1 hi] using this
+
+def stabAlg (N : Submodule ℂ V) : Subalgebra ℂ (Module.End ℂ V) where
+  carrier := {T | ∀ v ∈ N, T v ∈ N}
+  mul_mem' ha hb v hv := ha _ (hb v hv)
+  add_mem' ha hb v hv := N.add_mem (ha v hv) (hb v hv)
+  algebraMap_mem' r v hv := by
+    rw [Module.algebraMap_end_apply]
+    exact N.smul_mem r hv
+
+def ext (T : Module.End ℂ V) (d : ℕ) (N : Submodule ℂ V) : Submodule ℂ V :=
+  ⨆ k : Fin (d + 1), N.map (T ^ (k : ℕ))
+
+theorem le_ext (T : Module.End ℂ V) (d : ℕ) (N : Submodule ℂ V) : N ≤ ext T d N := fun v hv =>
+  Submodule.mem_iSup_of_mem (0 : Fin (d + 1)) ⟨v, hv, by simp⟩
+
+theorem pow_mem_ext (T : Module.End ℂ V) {d k : ℕ} (hk : k ≤ d) {N : Submodule ℂ V} {v : V} (hv : v ∈ N) :
+    (T ^ k) v ∈ ext T d N :=
+  Submodule.mem_iSup_of_mem (⟨k, by omega⟩ : Fin (d + 1)) (Submodule.mem_map_of_mem hv)
+
+theorem aeval_mem_ext (T : Module.End ℂ V) {Q : ℂ[X]} (hQ : Q ≠ 0) {N : Submodule ℂ V}
+    (hN : ∀ v ∈ N, aeval T Q v = 0) (p : ℂ[X]) {v : V} (hv : v ∈ N) : aeval T p v ∈ ext T Q.natDegree N := by
+  set Q' := Q * C Q.leadingCoeff⁻¹ with hQ'
+  have hm : Q'.Monic := monic_mul_leadingCoeff_inv hQ
+  have hdeg : Q'.natDegree = Q.natDegree := by
+    rw [hQ', natDegree_mul_C (inv_ne_zero (leadingCoeff_ne_zero.2 hQ))]
+  have hQ'v : aeval T Q' v = 0 := by
+    rw [hQ', mul_comm, map_mul, Module.End.mul_apply, hN v hv, map_zero]
+  have hsplit : p = p %ₘ Q' + (p /ₘ Q') * Q' := by
+    rw [mul_comm]; exact (modByMonic_add_div p Q').symm
+  rw [hsplit, map_add, LinearMap.add_apply, map_mul, Module.End.mul_apply, hQ'v, map_zero, add_zero]
+  have hlt : (p %ₘ Q').natDegree < Q.natDegree + 1 := by
+    have := natDegree_modByMonic_le p hm
+    omega
+  rw [aeval_eq_sum_range' hlt, LinearMap.sum_apply]
+  refine Submodule.sum_mem _ fun i hi => ?_
+  rw [LinearMap.smul_apply]
+  exact Submodule.smul_mem _ _ (pow_mem_ext T (Nat.lt_succ_iff.1 (Finset.mem_range.1 hi)) hv)
+
+theorem ext_stable (T : Module.End ℂ V) {Q : ℂ[X]} (hQ : Q ≠ 0) {N : Submodule ℂ V}
+    (hN : ∀ v ∈ N, aeval T Q v = 0) : ∀ v ∈ ext T Q.natDegree N, T v ∈ ext T Q.natDegree N := by
+  have : ext T Q.natDegree N ≤ (ext T Q.natDegree N).comap T := by
+    unfold ext
+    refine iSup_le fun k => ?_
+    intro y hy
+    obtain ⟨x, hx, rfl⟩ := Submodule.mem_map.1 hy
+    rw [Submodule.mem_comap]
+    change T ((T ^ (k : ℕ)) x) ∈ ext T Q.natDegree N
+    have := aeval_mem_ext T hQ hN (X ^ ((k : ℕ) + 1)) hx
+    rwa [map_pow, aeval_X, pow_succ', Module.End.mul_apply] at this
+  exact fun v hv => this hv
+
+theorem ext_stable_comm (T S : Module.End ℂ V) (d : ℕ) (hST : Commute S T) {N : Submodule ℂ V}
+    (hS : ∀ v ∈ N, S v ∈ N) : ∀ v ∈ ext T d N, S v ∈ ext T d N := by
+  have : ext T d N ≤ (ext T d N).comap S := by
+    unfold ext
+    refine iSup_le fun k => ?_
+    intro y hy
+    obtain ⟨x, hx, rfl⟩ := Submodule.mem_map.1 hy
+    rw [Submodule.mem_comap]
+    change S ((T ^ (k : ℕ)) x) ∈ ext T d N
+    have h := congrArg (fun F : Module.End ℂ V => F x) (hST.pow_right (k : ℕ)).eq
+    simp only [Module.End.mul_apply] at h
+    rw [h]
+    exact pow_mem_ext T (Nat.lt_succ_iff.1 k.2) (hS x hx)
+  exact fun v hv => this hv
+
+theorem ext_kill (T R : Module.End ℂ V) (d : ℕ) (hRT : Commute R T) {N : Submodule ℂ V}
+    (hN : ∀ v ∈ N, R v = 0) : ∀ v ∈ ext T d N, R v = 0 := by
+  have : ext T d N ≤ LinearMap.ker R := by
+    unfold ext
+    refine iSup_le fun k => ?_
+    intro y hy
+    obtain ⟨x, hx, rfl⟩ := Submodule.mem_map.1 hy
+    rw [LinearMap.mem_ker]
+    have h := congrArg (fun F : Module.End ℂ V => F x) (hRT.pow_right (k : ℕ)).eq
+    simp only [Module.End.mul_apply] at h
+    rw [h, hN x hx, map_zero]
+  exact fun v hv => this hv
+
+theorem exists_stable (a : ℕ → Module.End ℂ V) (Q : ℕ → ℂ[X]) (hc : ∀ i j, Commute (a i) (a j))
+    (hQ : ∀ j, Q j ≠ 0) (w : V) (hw : ∀ j, aeval (a j) (Q j) w = 0) : ∀ m : ℕ, ∃ N : Submodule ℂ V,
+      FiniteDimensional ℂ N ∧ w ∈ N ∧ (∀ j < m, ∀ v ∈ N, a j v ∈ N) ∧ (∀ j, ∀ v ∈ N, aeval (a j) (Q j) v = 0)
+  | 0 => ⟨Submodule.span ℂ {w}, inferInstance, Submodule.mem_span_singleton_self w, by simp, fun j v hv => by
+      obtain ⟨r, rfl⟩ := Submodule.mem_span_singleton.1 hv
+      rw [map_smul, hw, smul_zero]⟩
+  | m + 1 => by
+      obtain ⟨N, hf, hwN, hst, hk⟩ := exists_stable a Q hc hQ w hw m
+      haveI := hf
+      refine ⟨ext (a m) (Q m).natDegree N, ?_, le_ext _ _ _ hwN, ?_, ?_⟩
+      · unfold ext; infer_instance
+      · intro j hj
+        rcases Nat.lt_succ_iff_lt_or_eq.1 hj with h | h
+        · exact ext_stable_comm (a m) (a j) _ (hc j m) (hst j h)
+        · subst h; exact ext_stable (a j) (hQ j) (hk j)
+      · intro j
+        exact ext_kill (a m) _ _ (commute_aeval_left (hc j m) _) (hk j)
+
+theorem finiteDimensional_span_adjoin : ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (n : ℕ) (c : ℕ → Module.End ℂ V)
+    (g : ℂ → Module.End ℂ V), (∀ u, g u = ∑ i ∈ Finset.range (n + 1), u ^ i • c i) → (∀ u u', Commute (g u) (g u')) →
+    ∀ (w : V) (P : ℂ → Polynomial ℂ), (∀ u, P u ≠ 0) → (∀ u, Polynomial.aeval (g u) (P u) w = 0) →
+    FiniteDimensional ℂ (Submodule.span ℂ {y | ∃ b ∈ Algebra.adjoin ℂ (Set.range g), y = b w}) := by
+  intro V _ _ n c g hg hc w P hP hw
+  obtain ⟨N, hf, hwN, hst, -⟩ := exists_stable (fun j : ℕ => g (j : ℂ)) (fun j => P (j : ℂ))
+    (fun i j => hc _ _) (fun j => hP _) w (fun j => hw _) (n + 1)
+  haveI := hf
+  have hgS : ∀ u, g u ∈ stabAlg N := by
+    intro u
+    have hspan : Submodule.span ℂ (Set.range fun j : Fin (n + 1) => g ((j : ℕ) : ℂ)) ≤
+        Subalgebra.toSubmodule (stabAlg N) :=
+      Submodule.span_le.2 (by rintro _ ⟨j, rfl⟩; exact fun v hv => hst j j.2 v hv)
+    apply hspan
+    rw [hg u]
+    exact Submodule.sum_mem _ fun i hi =>
+      Submodule.smul_mem _ _ (coeff_mem_span_fin hg (Finset.mem_range.1 hi))
+  have hA : Algebra.adjoin ℂ (Set.range g) ≤ stabAlg N :=
+    Algebra.adjoin_le (by rintro _ ⟨u, rfl⟩; exact hgS u)
+  have hle : Submodule.span ℂ {y | ∃ b ∈ Algebra.adjoin ℂ (Set.range g), y = b w} ≤ N :=
+    Submodule.span_le.2 (by rintro _ ⟨b, hb, rfl⟩; exact hA hb w hwN)
+  exact Submodule.finiteDimensional_of_le hle
+
+end GlobalTheory.CycSpanFin
+end
+end
+
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finiteDimensional_span_adjoin_apply_of_annihilating : ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (n : ℕ) (c : ℕ → Module.End ℂ V) (g : ℂ → Module.End ℂ V), (∀ u, g u = ∑ i ∈ Finset.range (n + 1), u ^ i • c i) → (∀ u u', Commute (g u) (g u')) → ∀ (w : V) (P : ℂ → Polynomial ℂ), (∀ u, P u ≠ 0) → (∀ u, Polynomial.aeval (g u) (P u) w = 0) → FiniteDimensional ℂ (Submodule.span ℂ {y | ∃ b ∈ Algebra.adjoin ℂ (Set.range g), y = b w}) := by
+  atlas_forward_decl GlobalTheory.CycSpanFin.finiteDimensional_span_adjoin
+end
+
+section
 section
 open NumberField MeasureTheory GlobalTheory.CuspRep
 
@@ -243,3 +562,4 @@ open NumberField MeasureTheory GlobalTheory.CuspRep
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.harishChandra_capelli_uniform_diagonalBlocks : ∀ (M : Type) [AddCommGroup M] [Module ℂ M] (a r : ℕ) (hr : r ≤ a) (X : Fin a → Fin a → Module.End ℂ M), Formalism.REAL.GlRel X → ∀ M' K : Submodule ℂ M, (∀ i j, ∀ x ∈ M', X i j x ∈ M') → (∀ i j : Fin a, (i : ℕ) < r → r ≤ (j : ℕ) → ∀ x ∈ M', X i j x ∈ K) → (∀ i j : Fin a, ((i : ℕ) < r ↔ (j : ℕ) < r) → ∀ x ∈ K, X i j x ∈ K) → ∀ Q : ℂ → Polynomial ℂ, (∀ u, Q u ≠ 0) → ∃ q : ℂ → Polynomial ℂ, (∀ u, q u ≠ 0) ∧ ∀ v ∈ M', (∀ u, Polynomial.aeval (Formalism.REAL.qdet X u) (Q u) v = 0) → ∀ u, Polynomial.aeval (Formalism.REAL.qdet (fun p p' : Fin r => X (GlobalTheory.LeviGA.blkEquiv hr (Sum.inl p)) (GlobalTheory.LeviGA.blkEquiv hr (Sum.inl p'))) u) (q u) v ∈ K ∧ Polynomial.aeval (Formalism.REAL.qdet (fun p p' : Fin (a - r) => X (GlobalTheory.LeviGA.blkEquiv hr (Sum.inr p)) (GlobalTheory.LeviGA.blkEquiv hr (Sum.inr p'))) u) (q u) v ∈ K := by
   atlas_forward_decl GlobalTheory.LeviHC.CapAlg.capalg
+end

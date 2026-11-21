@@ -50,8 +50,6 @@ variable (S₀ : HSp D) {ρ : ℕ}
 
 theorem adj_plus (b : Mx D ρ S₀.rank) : adj (plus S₀ b) = b ⬝ giA S₀ := by rw [plus, adj_mul, adj_adj, adj_giA]
 
-theorem adj_plus_gA (b : Mx D ρ S₀.rank) : adj (plus S₀ b) ⬝ gA S₀ = b := by
-  rw [adj_plus, Matrix.mul_assoc, giA_mul_gA, Matrix.mul_one]
 
 theorem gA_plus (b : Mx D ρ S₀.rank) : gA S₀ ⬝ plus S₀ b = adj b := gA_giA_cancel S₀ _
 
@@ -367,21 +365,6 @@ theorem wittDecomp_anisotropicEmbedding_injective : Function.Injective d.emb0 :=
   have h1 : d.p0 ⬝ (mt S (d.emb0 g) ⬝ d.j0) = d.p0 ⬝ (mt S (d.emb0 g') ⬝ d.j0) := by rw [h]
   rwa [wittDecomp_anisotropicEmbedding_inclAnisotropic, wittDecomp_anisotropicEmbedding_inclAnisotropic, cancel₂ d.p0_j0, cancel₂ d.p0_j0, Matrix.one_mul, Matrix.one_mul] at h1)
 
-theorem embRel_isometric_embedding (ι : S₀.V →ₗ[D.host.E] S.V) (hι : frameMat S S₀ ι = d.i₀) : EmbRel S S₀ ι (d.emb0 g) g := by
-  rw [EmbRel, hι]
-  refine ⟨d.wittDecomp_anisotropicEmbedding_inclAnisotropic g, fun x hx => ?_⟩
-  have h1 : d.q0 *ᵥ x = 0 := by
-    rw [q0, ← Matrix.mulVec_mulVec]
-    exact (congrArg (S₀.gram⁻¹ *ᵥ ·) hx).trans (Matrix.mulVec_zero _)
-  have h2 : d.p0 *ᵥ (fun i => incA D (x i)) = 0 := by
-    funext i
-    have := RingHom.map_mulVec (incA D) d.q0 x i
-    rw [h1, Pi.zero_apply, map_zero] at this
-    exact this.symm
-  have h3 := congrArg (· *ᵥ fun i => incA D (x i)) d.sum_eq_one
-  change mt S (d.emb0 g) *ᵥ _ = _
-  simp only [Matrix.add_mulVec, ← Matrix.mulVec_mulVec, h2, Matrix.mulVec_zero, Matrix.one_mulVec] at h3
-  simp only [unitaryMatrix_wittCoreEmbedding, Matrix.add_mulVec, ← Matrix.mulVec_mulVec, h2, Matrix.mulVec_zero, h3]
 
 end Emb
 

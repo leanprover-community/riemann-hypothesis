@@ -1,11 +1,283 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.EvalVIndP
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HomLatticePlaceCutSmulMemOpenSubgroup
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HomLatticeCompletionCutIntegralProperties
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HeisenbergOperatorDisjointSupportSmulAddStatement
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ThetaLatticeVacuumOfCarriesLatticeCompletionsStatement
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.CarriesLatticeCompletionOfTrivialAtPlacesStatement
+import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsSumFrame
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HeisenbergOperatorDisjointSupportSmulAdd
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ThetaLatticeVacuumOfCarriesLatticeCompletions
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MemHomLatticeCompletionIffSupportedMapsStatement
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.AdelicPointComponentsAtPlacesLatticesVacuaStatement
 
+section
+noncomputable section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.FinPl GlobalTheory.MixPer
+open IsDedekindDomain NumberField
+
+namespace GlobalTheory.VacLoc
+
+variable {D : D7}
+
+open scoped Classical
+
+def indP (D : D7) (X : Set (Pl D)) : Af D.host.F :=
+  ⟨fun v => if v ∈ X then 1 else 0, Filter.Eventually.of_forall fun v => by
+    by_cases h : v ∈ X <;> simp [h, one_mem, zero_mem]⟩
+
+theorem evalV_indP (X : Set (Pl D)) (v : Pl D) :
+    evalV D.host.F v (indP D X) = if v ∈ X then 1 else 0 := rfl
+
+theorem indicatorAdele_mem_integralAdeles (X : Set (Pl D)) : indP D X ∈ intAf D.host.F := by
+  intro v; rw [evalV_indP]; by_cases h : v ∈ X <;> simp [h, one_mem, zero_mem]
+
+theorem finiteAdele_ext {a b : Af D.host.F} (h : ∀ v, evalV D.host.F v a = evalV D.host.F v b) : a = b :=
+  RestrictedProduct.ext _ _ h
+
+theorem indicatorAdele_singleton_mul_singleton (X Y : Set (Pl D)) : indP D X * indP D Y = indP D (X ∩ Y) := by
+  apply finiteAdele_ext; intro v; rw [map_mul, evalV_indP, evalV_indP, evalV_indP]
+  by_cases hX : v ∈ X <;> by_cases hY : v ∈ Y <;> simp [hX, hY]
+
+theorem indicatorAdele_union_of_disjoint {X Y : Set (Pl D)} (h : Disjoint X Y) : indP D X + indP D Y = indP D (X ∪ Y) := by
+  apply finiteAdele_ext; intro v; rw [map_add, evalV_indP, evalV_indP, evalV_indP]
+  by_cases hX : v ∈ X <;> by_cases hY : v ∈ Y <;> simp [hX, hY]
+  exact Set.disjoint_left.mp h hX hY
+
+theorem indicatorAdele_univ : indP D Set.univ = 1 := by
+  apply finiteAdele_ext; intro v; rw [evalV_indP, map_one]; simp
+
+theorem indicatorAdele_empty : indP D ∅ = 0 := by
+  apply finiteAdele_ext; intro v; rw [evalV_indP, map_zero]; simp
+
+end GlobalTheory.VacLoc
+
+end
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.FinPl GlobalTheory.MixPer
+open IsDedekindDomain NumberField Matrix
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.LatLevel
+
+open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes in
+
+theorem exists_finset_of_nhds_zero {F : Type} [Field F] [NumberField F] (V : Set (Af F)) (hV : IsOpen V)
+    (h0 : (0 : Af F) ∈ V) :
+    ∃ s : Finset (HeightOneSpectrum (𝓞 F)), ∀ γ ∈ Formalism.MainNotions.StandardLattice.intAf F, (∀ v ∈ s, evalV F v γ = 0) → γ ∈ V := by
+  set f := RestrictedProduct.structureMap (fun v : HeightOneSpectrum (𝓞 F) => v.adicCompletion F)
+    (fun v => (v.adicCompletionIntegers F : Set (v.adicCompletion F))) Filter.cofinite with hf
+  have hc : Continuous f := (RestrictedProduct.isOpenEmbedding_structureMap
+    (fun v => Valued.isOpen_integer _)).continuous
+  have hO : IsOpen (f ⁻¹' V) := hV.preimage hc
+  have hz : (0 : ∀ v : HeightOneSpectrum (𝓞 F), v.adicCompletionIntegers F) ∈ f ⁻¹' V := h0
+  obtain ⟨I, u, hu, hsub⟩ := isOpen_pi_iff.mp hO _ hz
+  refine ⟨I, fun γ hγ hs => ?_⟩
+  let x : ∀ v : HeightOneSpectrum (𝓞 F), v.adicCompletionIntegers F := fun v => ⟨γ v, hγ v⟩
+  have hx : x ∈ (I : Set _).pi u := by
+    intro v hv
+    have h1 : x v = 0 := Subtype.ext (hs v hv)
+    rw [h1]
+    exact (hu v hv).2
+  have := hsub hx
+  exact this
+
+end GlobalTheory.LatLevel
+
+namespace GlobalTheory.LatLevel
+
+theorem smul_mem_open_of_vanish : ∀ (D : D7) (S T : HSp D) (LS : Set (Fin S.rank → D.host.E)) (LT : Set (Fin T.rank → D.host.E)) (P : Pl D → Prop) (U : AddSubgroup (WO S T)), IsOpen (U : Set (WO S T)) → ∀ u ∈ latO S T LS LT P, ∃ s : Finset (Pl D), ∀ γ ∈ intAf D.host.F, (∀ v ∈ s, evalV D.host.F v γ = 0) → pairA D.host.F 0 γ • u ∈ U := by
+  intro D S T LS LT P U hU u _hu
+  letI : IsModuleTopology (AF D.host.F) (AE D) := ⟨rfl⟩
+  have hg : Continuous fun β : Af D.host.F => (pairA D.host.F 0 β) • u := by
+    have h1 : Continuous fun β : Af D.host.F => pairA D.host.F 0 β :=
+      continuous_const.prodMk continuous_id
+    exact h1.smul continuous_const
+  obtain ⟨s, hs⟩ := exists_finset_of_nhds_zero _ (hU.preimage hg)
+    (by
+      show pairA D.host.F 0 0 • u ∈ (U : Set (WO S T))
+      have : pairA D.host.F 0 0 = 0 := rfl
+      rw [this, zero_smul]
+      exact U.zero_mem)
+  exact ⟨s, fun γ hγ hv => hs γ hγ hv⟩
+
+end GlobalTheory.LatLevel
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.FinPl GlobalTheory.MixPer
+open IsDedekindDomain NumberField Matrix
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.homLattice_placeCut_smul_mem_openSubgroup : ∀ (D : D7) (S T : HSp D) (LS : Set (Fin S.rank → D.host.E)) (LT : Set (Fin T.rank → D.host.E)) (P : Pl D → Prop) (U : AddSubgroup (WO S T)), IsOpen (U : Set (WO S T)) → ∀ u ∈ latO S T LS LT P, ∃ s : Finset (Pl D), ∀ γ ∈ intAf D.host.F, (∀ v ∈ s, evalV D.host.F v γ = 0) → pairA D.host.F 0 γ • u ∈ U := by
+  atlas_forward_decl GlobalTheory.LatLevel.smul_mem_open_of_vanish
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.FinPl GlobalTheory.MixPer
+open IsDedekindDomain NumberField Matrix
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.FinPl
+
+theorem pairA_zero_mul_pairA_zero (F : Type) [Field F] [NumberField F] (a b : Af F) :
+    pairA F 0 a * pairA F 0 b = pairA F 0 (a * b) := by
+  show (((0 : Ainf F), a) * ((0 : Ainf F), b) : Ainf F × Af F) = ((0 : Ainf F), a * b)
+  rw [Prod.mk_mul_mk, mul_zero]
+
+theorem pairA_zero_smul_tmul (F E : Type) [Field F] [NumberField F] [Field E] [Algebra F E] (a b : Af F) (e : E) :
+    pairA F 0 a • (pairA F 0 b ⊗ₜ[F] e : AF F ⊗[F] E) = pairA F 0 (a * b) ⊗ₜ[F] e := by
+  rw [TensorProduct.smul_tmul', smul_eq_mul, pairA_zero_mul_pairA_zero]
+
+theorem infPart_pairA_zero_tmul (D : D7) (b : Af D.host.F) (e : D.host.E) :
+    infPart D (pairA D.host.F 0 b ⊗ₜ[D.host.F] e) = 0 := by
+  show Algebra.TensorProduct.map (fstA D.host.F) (AlgHom.id D.host.F D.host.E)
+    (pairA D.host.F 0 b ⊗ₜ[D.host.F] e) = 0
+  rw [Algebra.TensorProduct.map_tmul]
+  have : fstA D.host.F (pairA D.host.F 0 b) = 0 := rfl
+  rw [this, TensorProduct.zero_tmul]
+
+theorem latO_algebra : ∀ (D : D7) (S T : HSp D) (LS : Set (Fin S.rank → D.host.E)) (LT : Set (Fin T.rank → D.host.E)) (P : Pl D → Prop) (u : WO S T), u ∈ latO S T LS LT P → (∀ γ ∈ intAf D.host.F, pairA D.host.F 0 γ • u ∈ latO S T LS LT (fun v => P v ∧ evalV D.host.F v γ ≠ 0)) ∧ pairA D.host.F 0 1 • u = u ∧ u.map (infPart D) = 0 ∧ ((∀ v, ¬ P v) → u = 0) := by
+  intro D S T LS LT P u hu
+  unfold latO at hu
+  induction hu using AddSubgroup.closure_induction with
+  | mem w hw =>
+    obtain ⟨α, hα, hP, a, ha, s, hs, t, ht, rfl⟩ := hw
+    refine ⟨fun γ hγ => ?_, ?_, ?_, fun h => ?_⟩
+    · refine AddSubgroup.subset_closure ⟨γ * α, fun v => ?_, fun v hv => ?_, a, ha, s, hs, t, ht, ?_⟩
+      · rw [map_mul]
+        exact mul_mem (hγ v) (hα v)
+      · rw [map_mul]
+        by_cases h : P v
+        · have : evalV D.host.F v γ = 0 := by
+            by_contra h'
+            exact hv ⟨h, h'⟩
+          rw [this, zero_mul]
+        · rw [hP v h, mul_zero]
+      · ext i j
+        exact pairA_zero_smul_tmul _ _ _ _ _
+    · ext i j
+      have := pairA_zero_smul_tmul D.host.F D.host.E 1 α (a * t i * ∑ k, star (s k) * S.gram k j)
+      rw [one_mul] at this
+      exact this
+    · ext i j
+      exact infPart_pairA_zero_tmul D α _
+    · have h0 : α = 0 := by
+        apply RestrictedProduct.ext
+        intro v
+        exact hP v (h v)
+      subst h0
+      ext i j
+      have : pairA D.host.F 0 0 = 0 := rfl
+      show pairA D.host.F 0 0 ⊗ₜ[D.host.F] _ = (0 : AE D)
+      rw [this, TensorProduct.zero_tmul]
+  | zero =>
+    refine ⟨fun γ _ => ?_, smul_zero _, ?_, fun _ => rfl⟩
+    · rw [smul_zero]
+      exact zero_mem _
+    · ext i j
+      exact map_zero (infPart D)
+  | add x y _ _ hx hy =>
+    refine ⟨fun γ hγ => ?_, ?_, ?_, fun h => ?_⟩
+    · rw [smul_add]
+      exact add_mem (hx.1 γ hγ) (hy.1 γ hγ)
+    · rw [smul_add, hx.2.1, hy.2.1]
+    · ext i j
+      have h1 : infPart D (x i j) = 0 := congrFun (congrFun hx.2.2.1 i) j
+      have h2 : infPart D (y i j) = 0 := congrFun (congrFun hy.2.2.1 i) j
+      show infPart D (x i j + y i j) = 0
+      rw [(infPart D).map_add, h1, h2, add_zero]
+    · rw [hx.2.2.2 h, hy.2.2.2 h, add_zero]
+  | neg x _ hx =>
+    refine ⟨fun γ hγ => ?_, ?_, ?_, fun h => ?_⟩
+    · rw [smul_neg]
+      exact neg_mem (hx.1 γ hγ)
+    · rw [smul_neg, hx.2.1]
+    · ext i j
+      have h1 : infPart D (x i j) = 0 := congrFun (congrFun hx.2.2.1 i) j
+      show infPart D (- x i j) = 0
+      rw [map_neg, h1, neg_zero]
+    · rw [hx.2.2.2 h, neg_zero]
+
+end GlobalTheory.FinPl
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.FinPl GlobalTheory.MixPer
+open IsDedekindDomain NumberField Matrix
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.homLatticeCompletion_cut_integral_properties : ∀ (D : D7) (S T : HSp D) (LS : Set (Fin S.rank → D.host.E)) (LT : Set (Fin T.rank → D.host.E)) (P : Pl D → Prop) (u : WO S T), u ∈ latO S T LS LT P → (∀ γ ∈ intAf D.host.F, pairA D.host.F 0 γ • u ∈ latO S T LS LT (fun v => P v ∧ evalV D.host.F v γ ≠ 0)) ∧ pairA D.host.F 0 1 • u = u ∧ u.map (infPart D) = 0 ∧ ((∀ v, ¬ P v) → u = 0) := by
+  atlas_forward_decl GlobalTheory.FinPl.latO_algebra
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.FinPl GlobalTheory.MixPer
+open IsDedekindDomain NumberField Matrix
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heisenbergOperator_disjointSupport_smul_add : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (c c' : AF D.host.F) (x y : WO S T) (f : WO S T → ℂ), c * c' = 0 → heisO ψ S T (c • x + c' • y) f = heisO ψ S T (c • x) (heisO ψ S T (c' • y) f) := by
+  first | exact @GlobalTheory.HeisDisj.heisO_smul_add_smul | exact GlobalTheory.HeisDisj.heisO_smul_add_smul | (intros; apply GlobalTheory.HeisDisj.heisO_smul_add_smul <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.FinPl GlobalTheory.MixPer
+open IsDedekindDomain NumberField Matrix
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.thetaLatticeVacuum_of_carriesLatticeCompletions : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (χS χT : (AE D)ˣ →* Circle) (om : Om S T), IsWeilDatumO ψ S T χS χT om → ∀ (LS : Lat S) (LT : Lat T), IsSelfDualC S LS → IsSelfDualC T LT → ∀ (P : Pl D → Prop) (f : WO S T → ℂ), Vac ψ S T LS LT P f → ∀ (g : GA D S) (h : GA D T) (MS : Lat S) (MT : Lat T), IsSelfDualC S MS → IsSelfDualC T MT → Moves S g LS MS P → Moves T h LT MT P → Vac ψ S T MS MT P (om (g, h) f) := by
+  first | exact @GlobalTheory.VacMove.vac_of_moves | exact GlobalTheory.VacMove.vac_of_moves | (intros; apply GlobalTheory.VacMove.vac_of_moves <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.FinPl GlobalTheory.MixPer
+open IsDedekindDomain NumberField Matrix
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+theorem GlobalTheory.fixes_latV_of_mem_grpOff : ∀ (D : D7) (S : HSp D) (L : Lat S) (P : Pl D → Prop), ∀ g ∈ grpOff S P, Moves S g L L P := by
+  intro D S L P g hg y hy
+  obtain ⟨⟨ε, -, -, -, hAt, hOff⟩, -⟩ := GlobalTheory.T.adelicPoint_components_atPlaces_lattices_vacua D P
+  have hmul : ∀ a ∈ idOff D P, ∀ b ∈ idAt D P, a * b = 0 := by
+    intro a ha b hb
+    rw [← (hAt b).1 hb, ← mul_assoc, mul_comm a ε, (hOff a).1 ha, zero_mul]
+  have hker := MonoidHom.mem_ker.1 hg
+  have hent : ∀ i j, mt S g i j - (1 : Matrix (Fin S.rank) (Fin S.rank) (AE D)) i j ∈ idOff D P := by
+    intro i j
+    rw [← Ideal.Quotient.eq]
+    have h2 := congrArg (fun u : GL (Fin S.rank) (AE D ⧸ idOff D P) => u.1 i j) hker
+    simp only [MonoidHom.comp_apply, Matrix.GeneralLinearGroup.map_apply, Units.val_one] at h2
+    have h3 : Ideal.Quotient.mk (idOff D P) ((1 : Matrix (Fin S.rank) (Fin S.rank) (AE D)) i j) =
+        (1 : Matrix (Fin S.rank) (Fin S.rank) (AE D ⧸ idOff D P)) i j := by
+      by_cases hij : i = j
+      · subst hij; simp only [Matrix.one_apply_eq, map_one]
+      · simp only [Matrix.one_apply_ne hij, map_zero]
+    rw [h3, ← h2]
+    rfl
+  have hfix : mt S g *ᵥ y = y := by
+    funext i
+    have e : (mt S g *ᵥ y) i = y i + ∑ j, (mt S g i j - (1 : Matrix (Fin S.rank) (Fin S.rank) (AE D)) i j) * y j := by
+      simp [Matrix.mulVec, dotProduct, sub_mul, Finset.sum_sub_distrib, Matrix.one_apply]
+    rw [e, Finset.sum_eq_zero (fun j _ => hmul _ (hent i j) _ (hy j)), add_zero]
+  rw [hfix]
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.FinPl GlobalTheory.MixPer
+open IsDedekindDomain NumberField Matrix
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.carriesLatticeCompletion_of_trivialAtPlaces : ∀ (D : D7) (S : HSp D) (L : Lat S) (P : Pl D → Prop), ∀ g ∈ grpOff S P, Moves S g L L P := by
+  first | exact @GlobalTheory.fixes_latV_of_mem_grpOff | exact GlobalTheory.fixes_latV_of_mem_grpOff | (intros; apply GlobalTheory.fixes_latV_of_mem_grpOff <;> assumption)
+end
+
+section
 noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.FinPl GlobalTheory.MixPer
 open IsDedekindDomain NumberField Matrix
@@ -127,4 +399,5 @@ theorem vac_loc : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (�
 
 end GlobalTheory.VacLoc
 
+end
 end

@@ -108,11 +108,6 @@ theorem infiniteAdeleInl_add_finiteAdeleInr (x : 𝔸[K]) :
   · rw [adeleRing_add_fst, infiniteAdeleInl_fst, finiteAdeleInr_fst, add_zero]
   · rw [adeleRing_add_snd, infiniteAdeleInl_snd, finiteAdeleInr_snd, zero_add]
 
-theorem continuous_infinitePlaceIncl (w : InfinitePlace K) :
-    Continuous (infinitePlaceIncl (K := K) w) := by
-  classical
-  exact (continuous_single (A := fun u : InfinitePlace K => u.Completion) w).prodMk
-    continuous_const
 
 variable (K) in
 
@@ -134,9 +129,6 @@ theorem continuous_localAdelicChar (v : HeightOneSpectrum (𝓞 K)) :
     Continuous (localAdelicChar K v) :=
   (continuous_adelicChar (K := K)).comp (continuous_finitePlaceIncl v)
 
-theorem continuous_infiniteAdelicChar (w : InfinitePlace K) :
-    Continuous (infiniteAdelicChar K w) :=
-  (continuous_adelicChar (K := K)).comp (continuous_infinitePlaceIncl w)
 
 theorem infiniteAdelicChar_apply (w : InfinitePlace K) (z : w.Completion) :
     infiniteAdelicChar K w z = 𝐞 (-((w.mult : ℝ) * (extensionEmbedding w z).re)) := by
@@ -234,13 +226,6 @@ theorem localAdelicChar_coe (v : HeightOneSpectrum (𝓞 K)) {k : K}
     localAdelicChar K v k = 𝐞 (Algebra.trace ℚ K k) :=
   localAdelicChar_eq v _ (by rw [sub_self]; exact zero_mem _) hk'
 
-theorem exists_localAdelicChar_eq (v : HeightOneSpectrum (𝓞 K)) (y : v.adicCompletion K) :
-    ∃ k : K, y - k ∈ v.adicCompletionIntegers K ∧
-      (∀ u ≠ v, (k : u.adicCompletion K) ∈ u.adicCompletionIntegers K) ∧
-      localAdelicChar K v y = 𝐞 (Algebra.trace ℚ K k) := by
-  obtain ⟨k, hk, hk'⟩ := exists_sub_mem_adicCompletionIntegers_and_forall_ne v y
-  exact ⟨k, hk, hk', localAdelicChar_eq v y (mem_localInvDifferent_of_mem hk)
-    fun u hu => mem_localInvDifferent_of_mem (hk' u hu)⟩
 
 theorem forall_localAdelicChar_mul_eq_one_iff (v : HeightOneSpectrum (𝓞 K))
     (x : v.adicCompletion K) :
@@ -287,10 +272,6 @@ theorem forall_localAdelicChar_eq_one_iff_le (v : HeightOneSpectrum (𝓞 K))
   ⟨fun h x hx => (forall_localAdelicChar_mul_eq_one_iff v x).mp fun a ha => h _ (hM a ha x hx),
     fun h _ hx => localAdelicChar_eq_one_of_mem (h hx)⟩
 
-theorem finite_mulSupport_localAdelicChar (x : 𝔸[K]) :
-    (Function.mulSupport fun v => localAdelicChar K v (x.2 v)).Finite :=
-  (Filter.eventually_cofinite.mp x.2.2).subset fun _ hv hO =>
-    hv (localAdelicChar_eq_one_of_mem (mem_localInvDifferent_of_mem hO))
 
 theorem adelicChar_eq_prod (x : 𝔸[K]) :
     adelicChar K x = (∏ w : InfinitePlace K, infiniteAdelicChar K w (x.1 w)) *

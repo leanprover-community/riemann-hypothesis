@@ -40,7 +40,6 @@ theorem famR_sub {Φ Ψ : Q.Fn P.k P.r (Wq →L[ℂ] Wp)} (hΦ : FamR P Bs Dc Φ
   rw [sub_eq_add_neg]
   exact famR_add hΦ (famR_neg hΨ)
 
-theorem famR_zero (hΦ : FamR P Bs Dc (fun _ _ => 0)) : FamR P Bs Dc 0 := hΦ
 
 theorem famR_opL {Φ : Q.Fn P.k P.r (Wq →L[ℂ] Wp)} (hΦ : FamR P Bs Dc Φ) (a : Fin P.r) (j : Fin 6) :
     FamR P Bs Dc (Q.crd (opL a j) Φ) :=
@@ -68,8 +67,6 @@ def Lin (v : PiLp 2 (fun _ : Fin (Module.finrank ℂ Wq) => Wp)) : (Wq →L[ℂ]
   map_add' A C := by rw [hsV_add, inner_add_right]
   map_smul' a A := by rw [hsV_smul, inner_smul_right]; rfl
 
-theorem Lin_apply (v : PiLp 2 (fun _ : Fin (Module.finrank ℂ Wq) => Wp)) (A : Wq →L[ℂ] Wp) :
-    Lin v A = inner ℂ v (B.hsVec A) := rfl
 
 variable (P : M.Par)
 

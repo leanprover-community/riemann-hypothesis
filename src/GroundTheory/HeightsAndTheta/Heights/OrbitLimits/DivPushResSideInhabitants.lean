@@ -2,9 +2,60 @@ import Mathlib
 import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffFubiniStudyRatioCompChart0
 import ReciprocityTheory.AnalyticForms.PotentialTheory.IntegrableOnTargetOfTsupport
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.KerEqBotOfCoord
-import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsPushForwardOpen
+import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsProjRegularFibre
-import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsProjRegularDens
+import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsProjRegular
+
+section
+set_option maxSynthPendingDepth 1
+
+noncomputable section
+
+namespace GroundTheory.Heights₂.Heights.Targets
+
+open MeasureTheory ReciprocityTheory.AnForm.M
+
+def PushForwardOpen.Statement : Prop :=
+  ∀ {e : ℕ} {X : Type} [TopologicalSpace X] [CompactSpace X] [T2Space X] (A : FinHolAtlas e X)
+    (Φ : Fin e → LocPot X), (∀ i, IsPotential A (Φ i)) → ∀ (q : X → Fin e → ℂ) (O : Set X),
+    IsOpen O →
+    (∀ x ∈ O, ∀ j, x ∈ (A.chart j).source →
+      AnalyticAt ℂ (q ∘ (A.chart j).symm) (A.chart j x) ∧
+        LinearMap.det (fderiv ℂ (q ∘ (A.chart j).symm) (A.chart j x) :
+          (Fin e → ℂ) →ₗ[ℂ] (Fin e → ℂ)) ≠ 0) →
+    (∀ j, ∀ᵐ u, u ∈ (A.chart j).target → (A.chart j).symm u ∉ O → locDens A Φ j u = 0) →
+    (∀ᵐ y, (q ⁻¹' {y} ∩ O).Finite) →
+    ∀ g : X → ℝ, MIntegrable A Φ g →
+      Integrable (fun y => ∑ᶠ x ∈ q ⁻¹' {y} ∩ O, g x * pushDens A Φ q x) ∧
+        mInt A Φ g = ∫ y, ∑ᶠ x ∈ q ⁻¹' {y} ∩ O, g x * pushDens A Φ q x
+
+end GroundTheory.Heights₂.Heights.Targets
+end
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+noncomputable section
+
+namespace GroundTheory.Heights₂.Heights.Targets
+
+open MvPolynomial MeasureTheory ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.AnForm.M
+
+def ProjRegularDens.Statement : Prop :=
+  ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (P J : Ideal (MRing ι)) (n : ℕ)
+    (R : AnLogRes P J (n + 1)) (L : Fin n → HermLine ι)
+    (Ψ : (((k : K) → ι k) → ℂ) →ₗ[ℂ] (Fin (n + 1) → ℂ)) (V : Set R.X) (BV : FinHolAtlas n V),
+    (∀ j, IsSmoothHerm (L j)) → HoloMap BV R.A Subtype.val → IsClosed V →
+    (∀ x ∈ V, Ψ (segre (R.lift x x)) ≠ 0) →
+    ∀ j, ∀ᵐ u, u ∈ (BV.chart j).target → (BV.chart j).symm u ∉ projRegular R Ψ BV →
+      locDens BV (fun i => (potOf R (L i)).pullback Subtype.val continuous_subtype_val) j u = 0
+
+end GroundTheory.Heights₂.Heights.Targets
+end
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 noncomputable section
@@ -80,13 +131,6 @@ theorem PushForwardOpen.hyps_inhabited :
     have hb : b = y 0 := congrFun (Set.mem_singleton_iff.1 h2) 0
     rw [ha, hb]
 
-theorem PushForwardOpen.pushforwardOpen_projLine (h : PushForwardOpen.Statement) :
-    mInt p1 (fun _ : Fin 1 => fsPot) (fun _ => (1 : ℝ)) =
-      ∫ y, ∑ᶠ x ∈ PushForwardOpen.projLineAffineCoordinate ⁻¹' {y} ∩ PushForwardOpen.finitePlane,
-        (fun _ : OnePoint ℂ => (1 : ℝ)) x * pushDens p1 (fun _ : Fin 1 => fsPot)
-          PushForwardOpen.projLineAffineCoordinate x := by
-  obtain ⟨hΦ, hO, hq, hd, hf, hg⟩ := PushForwardOpen.hyps_inhabited
-  exact (h p1 _ hΦ PushForwardOpen.projLineAffineCoordinate _ hO hq hd hf _ hg).2
 
 abbrev ProjRegular.pointV : Set ProjectiveLineResolution.res.X := {((0 : ℂ) : OnePoint ℂ)}
 
@@ -134,27 +178,9 @@ theorem ProjRegularDens.hyps_inhabited :
       ∀ x ∈ ProjRegular.pointV, ProjRegular.projFirstCoordinate (segre (ProjectiveLineResolution.res.lift x x)) ≠ 0 :=
   ⟨fun j => j.elim0, ProjRegular.holoMap_pointV, isClosed_singleton, ProjRegular.projFirstCoord_segre_lift_ne_zero⟩
 
-theorem ProjRegular.applies_to_point (h : ProjRegular.Statement) :
-    IsOpen (projRegular ProjectiveLineResolution.res ProjRegular.projFirstCoordinate (ptAtlas ProjRegular.pointV)) :=
-  (h Unit (PBlk 2) ⊥ ProjectiveLineResolution.JJ 0 ProjectiveLineResolution.res ProjRegular.projFirstCoordinate ProjRegular.pointV
-    (ptAtlas ProjRegular.pointV) ProjRegular.hyps_inhabited).1
 
-theorem ProjRegularFibre.applies_to_point (h : ProjRegularFibre.Statement) :
-    ∀ᵐ y, ((projCoord ProjectiveLineResolution.res ProjRegular.projFirstCoordinate ∘ Subtype.val : ProjRegular.pointV → Fin 0 → ℂ)
-      ⁻¹' {y} ∩ projRegular ProjectiveLineResolution.res ProjRegular.projFirstCoordinate (ptAtlas ProjRegular.pointV)).Finite := by
-  obtain ⟨h1, h2, h3⟩ := ProjRegularFibre.hyps_inhabited
-  exact h Unit (PBlk 2) ⊥ ProjectiveLineResolution.JJ 0 ProjectiveLineResolution.res ProjRegular.projFirstCoordinate ProjRegular.pointV
-    (ptAtlas ProjRegular.pointV) h1 h2 h3
 
-theorem ProjRegularDens.applies_to_point (h : ProjRegularDens.Statement) :
-    ∀ j, ∀ᵐ u, u ∈ ((ptAtlas ProjRegular.pointV).chart j).target →
-      ((ptAtlas ProjRegular.pointV).chart j).symm u ∉
-        projRegular ProjectiveLineResolution.res ProjRegular.projFirstCoordinate (ptAtlas ProjRegular.pointV) →
-      locDens (ptAtlas ProjRegular.pointV)
-        (fun i => (potOf ProjectiveLineResolution.res ((Fin.elim0 : Fin 0 → HermLine (PBlk 2)) i)).pullback
-          Subtype.val continuous_subtype_val) j u = 0 := by
-  obtain ⟨h0, h1, h2, h3⟩ := ProjRegularDens.hyps_inhabited
-  exact h Unit (PBlk 2) ⊥ ProjectiveLineResolution.JJ 0 ProjectiveLineResolution.res Fin.elim0 ProjRegular.projFirstCoordinate ProjRegular.pointV
-    (ptAtlas ProjRegular.pointV) h0 h1 h2 h3
 
 end GroundTheory.Heights₂.Heights.Targets
+end
+end

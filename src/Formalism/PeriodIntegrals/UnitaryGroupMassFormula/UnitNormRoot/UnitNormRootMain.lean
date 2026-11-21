@@ -46,21 +46,6 @@ theorem norm_shift {S : HSpace E} {r : ℕ} {T T' : E} (F : FlagG S r T) (F' : F
     smul_eq_mul, hxz, hzx', hxx, F.z_norm, starRingEnd_apply] at h2
   linear_combination h2
 
-theorem nat_eq_of (ζ : (𝓞 E)ˣ) {T T' : ℕ}
-    (h : ((T' : ℕ) : E) = star ((ζ : 𝓞 E) : E) * ((ζ : 𝓞 E) : E) * (T : E)) : T = T' := by
-  have hn := congrArg (Algebra.norm ℚ) h
-  rw [map_mul, map_mul, Algebra.norm_natCast, Algebra.norm_natCast] at hn
-  have hs : Algebra.norm ℚ (star ((ζ : 𝓞 E) : E)) = Algebra.norm ℚ ((ζ : 𝓞 E) : E) := by
-    have := Algebra.norm_eq_of_algEquiv (R := ℚ) (starRingAut (R := E)).toRatAlgEquiv
-      ((ζ : 𝓞 E) : E)
-    simpa using this
-  have hu := NumberField.Units.norm E ζ
-  have h1 : Algebra.norm ℚ ((ζ : 𝓞 E) : E) * Algebra.norm ℚ ((ζ : 𝓞 E) : E) = 1 := by
-    rw [← abs_mul_abs_self, hu, one_mul]
-  rw [hs, h1, one_mul] at hn
-  have hd : Module.finrank ℚ E ≠ 0 := Module.finrank_pos.ne'
-  have h3 : T' ^ Module.finrank ℚ E = T ^ Module.finrank ℚ E := by exact_mod_cast hn
-  exact (Nat.pow_left_injective hd h3).symm
 
 theorem root_of (hC : Formalism.L2.SG.IdCell.StarIsConj E) (ζ : (𝓞 E)ˣ)
     (h : star ((ζ : 𝓞 E) : E) * ((ζ : 𝓞 E) : E) = 1) : ∃ n : ℕ, 0 < n ∧ ζ ^ n = 1 := by
@@ -78,14 +63,5 @@ theorem root_of (hC : Formalism.L2.SG.IdCell.StarIsConj E) (ζ : (𝓞 E)ˣ)
   rw [Units.val_pow_eq_pow_val, Units.val_one, map_pow, map_one]
   exact hpow
 
-theorem unitNormRoot_main : Formalism.L2.SG.IdCell.NormRoot E := by
-  intro S r T T' F F' c ζ hC hT _ hS hc
-  have h := norm_shift F F' (c (Fin.last r)) (hS (Fin.last r))
-  rw [hc] at h
-  have hTT := nat_eq_of ζ h
-  subst hTT
-  refine ⟨rfl, root_of hC ζ ?_⟩
-  have hT0 : (T : E) ≠ 0 := Nat.cast_ne_zero.mpr hT.ne'
-  exact mul_right_cancel₀ hT0 (h.symm.trans (one_mul _).symm)
 
 end PI.UnitNormRootW

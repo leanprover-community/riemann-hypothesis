@@ -28,32 +28,6 @@ def rtCl (Γ K : Subgroup G) (δ : G) (hδ : ∀ κ ∈ K, δ⁻¹ * κ * δ ∈
 def DiaFree (Γ K D : Subgroup G) : Prop :=
   ∀ x : G, ∀ δ ∈ D, DoubleCoset.mk Γ K (x * δ) = DoubleCoset.mk Γ K x → δ ∈ K
 
-theorem diaFree_of_isNeat {Γ K K₀ D : Subgroup G} (hK : K ≤ K₀) (hD : D ≤ K₀) (hn : IsNeat Γ K₀) :
-    DiaFree Γ K D := by
-  intro x δ hδ h
-  obtain ⟨γ, hγ, κ, hκ, hx⟩ := (DoubleCoset.eq Γ K (x * δ) x).mp h
-
-  have hst : (⟨γ⁻¹, Γ.inv_mem hγ⟩ : Γ) ∈ stabAt Γ K₀ x := by
-    show x⁻¹ * γ⁻¹ * x ∈ K₀
-    have e : x⁻¹ * γ⁻¹ * x = δ * κ := by
-      calc x⁻¹ * γ⁻¹ * x = x⁻¹ * γ⁻¹ * (γ * (x * δ) * κ) := by rw [← hx]
-        _ = δ * κ := by group
-    rw [e]
-    exact K₀.mul_mem (hD hδ) (hK hκ)
-  rw [hn x] at hst
-  have hγ1 : γ = 1 := by
-    have := congrArg Subtype.val (Set.mem_singleton_iff.mp hst)
-    simpa using this
-  subst hγ1
-  have e2 : δ = κ⁻¹ := by
-    have : x * 1 = x * (δ * κ) := by
-      calc x * 1 = x := mul_one x
-        _ = 1 * (x * δ) * κ := hx
-        _ = x * (δ * κ) := by group
-    have := (mul_left_cancel this).symm
-    exact eq_inv_of_mul_eq_one_left this
-  rw [e2]
-  exact K.inv_mem hκ
 
 def AMFChi (k : Type) [CommRing k] {W : Type} [AddCommGroup W] [Module k W] (Γ K : Subgroup G)
     (ρ : Representation k Γ W) (χ : K →* kˣ) : Submodule k (G → W) where
@@ -74,17 +48,6 @@ def FixAt (k : Type) [CommRing k] {W : Type} [AddCommGroup W] [Module k W] (Γ K
     (ρ : Representation k Γ W) (χ : K →* kˣ) (D : Subgroup G) : Submodule k (G → W) :=
   AMFChi k Γ K ρ χ ⊓ ⨅ δ : D, LinearMap.ker (rtF k W (δ : G) - LinearMap.id)
 
-theorem mem_FixAt {k : Type} [CommRing k] {W : Type} [AddCommGroup W] [Module k W] {Γ K : Subgroup G}
-    {ρ : Representation k Γ W} {χ : K →* kˣ} {D : Subgroup G} {f : G → W} :
-    f ∈ FixAt k Γ K ρ χ D ↔ f ∈ AMFChi k Γ K ρ χ ∧ ∀ δ ∈ D, ∀ g : G, f (g * δ) = f g := by
-  unfold FixAt
-  simp only [Submodule.mem_inf, Submodule.mem_iInf, LinearMap.mem_ker, LinearMap.sub_apply,
-    LinearMap.id_apply, sub_eq_zero, Subtype.forall]
-  constructor
-  · rintro ⟨h1, h2⟩
-    exact ⟨h1, fun δ hδ g => congrFun (h2 δ hδ) g⟩
-  · rintro ⟨h1, h2⟩
-    exact ⟨h1, fun δ hδ => funext fun g => h2 δ hδ g⟩
 
 end Abstract
 

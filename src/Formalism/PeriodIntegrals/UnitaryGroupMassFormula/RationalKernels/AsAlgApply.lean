@@ -71,12 +71,5 @@ theorem eG_mem (T : GoodSet K G) (P : Pair K G) (h : ∀ s, (T.tau s).asAlgebraH
   refine AddSubgroup.sum_mem _ fun i _ => AddSubgroup.subset_closure ?_
   exact ⟨a i, b i * eS T s, mul_assoc _ _ _⟩
 
-lemma tau_eps_ne (T : GoodSet K G) (P : Pair K G) (h : M1 T P) (s : T.S) :
-    (T.tau s).asAlgebraHom (eps P) ≠ 0 := by
-  intro h0
-  have h1 : nS T P s = 1 := h s
-  unfold nS at h1
-  rw [Submodule.finrank_eq_zero.mpr (by rw [h0]; exact LinearMap.range_zero)] at h1
-  exact zero_ne_one h1
 
 end PI.Dv.RK

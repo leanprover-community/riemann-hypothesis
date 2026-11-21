@@ -16,22 +16,5 @@ theorem eq_pt_of_secCoord {o : Type} [CommRing o] {m : ℕ} {A : Type} [CommRing
   obtain ⟨hv, e⟩ := (ProjCoord.secCoord_iff (Equiv.refl _) (𝟙 _) c y (by rwa [Category.comp_id]) v).1 h1
   exact ⟨hv, (Category.comp_id _).symm.trans e⟩
 
-theorem hom_ext_of_secCoord : ∀ (o : Type) [CommRing o] (Y : Scheme.{0}) (m : ℕ) (g g' : Y ⟶ PSpace o m),
-    g ≫ PSpace.str o m = g' ≫ PSpace.str o m →
-    (∀ (A : Type) [CommRing A] (x : Sp A ⟶ Y) (v : Fin (m + 1) → A),
-      SecCoord (GlobalTheory.ProjSpace.O1 o m) (GlobalTheory.ProjSpace.coord o m) (x ≫ g) v →
-      SecCoord (GlobalTheory.ProjSpace.O1 o m) (GlobalTheory.ProjSpace.coord o m) (x ≫ g') v) → g = g' := by
-  intro o _ Y m g g' hs H
-  refine Scheme.hom_ext_of_forall _ _ fun t => ?_
-  obtain ⟨W, hW, j, hj, ht, hc⟩ := RepUniq.exists_affine_secCoord (GlobalTheory.ProjSpace.O1_isLB o m)
-    (GlobalTheory.ProjSpace.coord o m) g t
-  obtain ⟨β, hβ⟩ := RepUniq.exists_spMap (A := Γ(Y, W)) ((hW.fromSpec ≫ g) ≫ PSpace.str o m)
-  have hβ' : (hW.fromSpec ≫ g') ≫ PSpace.str o m = spMap β :=
-    ((Category.assoc _ _ _).trans (congrArg (_ ≫ ·) hs.symm)).trans ((Category.assoc _ _ _).symm.trans hβ)
-  obtain ⟨_, e₁⟩ := eq_pt_of_secCoord β _ hβ _ hc
-  obtain ⟨_, e₂⟩ := eq_pt_of_secCoord β _ hβ' _ (H _ hW.fromSpec _ hc)
-  have e : hW.fromSpec ≫ g = hW.fromSpec ≫ g' := e₁.trans e₂.symm
-  refine ⟨W, ht, ?_⟩
-  rw [← RepUniq.isoSpec_hom_fromSpec hW, Category.assoc, Category.assoc, e]
 
 end GlobalTheory.ZM.ProjExt

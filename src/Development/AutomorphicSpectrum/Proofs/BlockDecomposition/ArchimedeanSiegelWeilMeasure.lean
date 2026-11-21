@@ -9,16 +9,1032 @@ import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.Infinit
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ComplexCoordinatesExistAtInfinityStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DisintegrationAlongContinuousQuotientMap
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DensityBoundFromBoxVolumeGrowth
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MeasurableDensityFromBoxVolumeGrowth
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GoodSetCompactLinearlyIndependent
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ArchimedeanCompactSetDensityBoundedStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ArchimedeanMeasureScalingByUnits
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ArchimedeanHermitianScalingByUnits
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ShearPreservesArchimedeanHaar
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ShearPushforwardHermitianMeasure
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SchwartzArchContinuousIntegrable
+import Development.AutomorphicSpectrum.Proofs.GlobalProofs.HermitianMeasureScalingTransform
+import Development.AutomorphicSpectrum.Proofs.GlobalProofs.CoordinateMeasureScalingTensor
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.LocalRankOneDensityUniformizerPower
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.CoordinateHaarMeasure
+import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ArchimedeanFrameKTypeDecomposition
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.DenLE
 
+section
+section
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC GlobalTheory.CompanionTheory.SiegelND
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.CompanionTheory.WeilSiegel.Frame GlobalTheory.CompanionTheory.WhitFree
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.WhitFree.AvgInf
+
+theorem exists_mem_boxK_two_pow {K W : Type} [CommRing K] [Fintype W] (κ : K ≃+* (W → ℂ)) {n M : ℕ}
+    {R : ℝ} (hR : 0 < R) (X : Fin n → Fin M → K) :
+    ∃ j : ℕ, X ∈ boxK κ (fun _ _ => (2 : ℝ) ^ j * R) := by
+  set B : ℝ := ∑ a, ∑ i, ∑ w, ‖κ (X a i) w‖ with hB
+  obtain ⟨j, hj⟩ := pow_unbounded_of_one_lt (B / R) (one_lt_two : (1 : ℝ) < 2)
+  refine ⟨j, fun a i w => ?_⟩
+  have h1 : ‖κ (X a i) w‖ ≤ ∑ w, ‖κ (X a i) w‖ :=
+    Finset.single_le_sum (f := fun w => ‖κ (X a i) w‖) (fun _ _ => norm_nonneg _) (Finset.mem_univ w)
+  have h2 : ∑ w, ‖κ (X a i) w‖ ≤ ∑ i, ∑ w, ‖κ (X a i) w‖ :=
+    Finset.single_le_sum (f := fun i => ∑ w, ‖κ (X a i) w‖)
+      (fun _ _ => Finset.sum_nonneg fun _ _ => norm_nonneg _) (Finset.mem_univ i)
+  have h3 : ∑ i, ∑ w, ‖κ (X a i) w‖ ≤ B :=
+    Finset.single_le_sum (f := fun a => ∑ i, ∑ w, ‖κ (X a i) w‖)
+      (fun _ _ => Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => norm_nonneg _)
+      (Finset.mem_univ a)
+  have h4 : B < (2 : ℝ) ^ j * R := (div_lt_iff₀ hR).1 hj
+  linarith
+
+theorem exists_large_ofReal_div_mul_le {A : ℝ} (hA : 0 ≤ A) {D ε : ℝ≥0∞} (hD : D ≠ ⊤) (hε : ε ≠ 0) :
+    ∃ R : ℝ, 1 ≤ R ∧ ENNReal.ofReal (A / R) * D ≤ ε := by
+  obtain ⟨δ, hδ0, hδ⟩ := ENNReal.lt_iff_exists_nnreal_btwn.1 (pos_iff_ne_zero.2 hε)
+  have hδ0' : (0 : ℝ) < δ := by exact_mod_cast hδ0
+  have hDr : 0 ≤ D.toReal := ENNReal.toReal_nonneg
+  have hq : 0 ≤ A * D.toReal / δ := by positivity
+  refine ⟨1 + A * D.toReal / δ, by linarith, ?_⟩
+  have hRpos : 0 < 1 + A * D.toReal / δ := by linarith
+  have hkey : A / (1 + A * D.toReal / δ) * D.toReal ≤ δ := by
+    rw [div_mul_eq_mul_div, div_le_iff₀ hRpos]
+    have : (δ : ℝ) * (1 + A * D.toReal / δ) = δ + A * D.toReal := by
+      field_simp
+    rw [this]
+    have : (0 : ℝ) ≤ δ := hδ0'.le
+    linarith
+  calc ENNReal.ofReal (A / (1 + A * D.toReal / δ)) * D
+      = ENNReal.ofReal (A / (1 + A * D.toReal / δ)) * ENNReal.ofReal D.toReal := by
+        rw [ENNReal.ofReal_toReal hD]
+    _ = ENNReal.ofReal (A / (1 + A * D.toReal / δ) * D.toReal) :=
+        (ENNReal.ofReal_mul (by positivity)).symm
+    _ ≤ ENNReal.ofReal (δ : ℝ) := ENNReal.ofReal_le_ofReal hkey
+    _ = δ := ENNReal.ofReal_coe_nnreal
+    _ ≤ ε := hδ.le
+
+theorem tsum_geometric_half_mul (c d : ℝ≥0∞) :
+    ∑' j : ℕ, c * (2⁻¹ : ℝ≥0∞) ^ j * d = c * 2 * d := by
+  rw [ENNReal.tsum_mul_right, ENNReal.tsum_mul_left, ENNReal.tsum_geometric,
+    ENNReal.one_sub_inv_two, inv_inv]
+
+theorem shell_real_identity {c R : ℝ} (hR : 0 < R) (e j : ℕ) :
+    c / ((2 : ℝ) ^ j * R) ^ (e + 1) * ((2 : ℝ) ^ (j + 1) * R) ^ e
+      = c * 2 ^ e / R * (1 / 2) ^ j := by
+  have h2 : (2 : ℝ) ^ (j + 1) * R = 2 * ((2 : ℝ) ^ j * R) := by ring
+  have key : ∀ P : ℝ, P ≠ 0 → c / P ^ (e + 1) * (2 * P) ^ e = c * 2 ^ e / P := by
+    intro P hP
+    rw [mul_pow, pow_succ]
+    field_simp
+  rw [h2, key _ (by positivity), one_div, inv_pow]
+  field_simp
+
+theorem tail_small_of_density :
+    ∀ (K W : Type) [CommRing K] [Fintype W] (κ : K ≃+* (W → ℂ)) (n M : ℕ) (H : Type) [MeasurableSpace H] [MeasurableSpace (Fin n → Fin M → K)] (μ : Measure (Fin n → Fin M → K)) (ν : Measure H) (q : (Fin n → Fin M → K) → H) (C₀ : ℝ≥0∞), C₀ ≠ ⊤ → (∀ r : Fin n → W → ℝ, (∀ a w, 0 < r a w) → GlobalTheory.CompanionTheory.WhitFree.AvgInf.DenLE μ ν q (GlobalTheory.CompanionTheory.WhitFree.AvgInf.boxK κ r) (C₀ * ∏ a, ∏ w, ENNReal.ofReal (r a w) ^ (2 * (M - n)))) → Measurable q → (∀ r : Fin n → W → ℝ, MeasurableSet (GlobalTheory.CompanionTheory.WhitFree.AvgInf.boxK (M := M) κ r)) → ∀ φ : (Fin n → Fin M → K) → ℂ, (∀ k : ℕ, ∃ C : ℝ, ∀ R : ℝ, 1 ≤ R → ∀ X, X ∉ GlobalTheory.CompanionTheory.WhitFree.AvgInf.boxK κ (fun _ _ => R) → ‖φ X‖ ≤ C / R ^ k) → ∀ ε : ℝ≥0∞, ε ≠ 0 → ∃ R : ℝ, 1 ≤ R ∧ ∀ Y, MeasurableSet Y → ∫⁻ X in (GlobalTheory.CompanionTheory.WhitFree.AvgInf.boxK κ (fun _ _ => R))ᶜ ∩ q ⁻¹' Y, ‖φ X‖ₑ ∂μ ≤ ε * ν Y := by
+  intro K W _ _ κ n M H _ _ μ ν q C₀ hC₀ hden hq hbox φ hφ ε hε
+  obtain ⟨e, he⟩ : ∃ e : ℕ, e = 2 * (M - n) * Fintype.card W * n := ⟨_, rfl⟩
+  obtain ⟨C, hC⟩ := hφ (e + 1)
+  have hA : 0 ≤ |C| * (2 : ℝ) ^ e := by positivity
+  obtain ⟨R, hR1, hRε⟩ := exists_large_ofReal_div_mul_le hA
+    (ENNReal.mul_ne_top (by simp) hC₀ : (2 : ℝ≥0∞) * C₀ ≠ ⊤) hε
+  refine ⟨R, hR1, fun Y hY => ?_⟩
+  have hR0 : 0 < R := by linarith
+  let S : ℕ → Set (Fin n → Fin M → K) := fun j =>
+    (boxK κ (fun _ _ => (2 : ℝ) ^ (j + 1) * R) \ boxK κ (fun _ _ => (2 : ℝ) ^ j * R)) ∩ q ⁻¹' Y
+  have hcover : (boxK κ (fun _ _ => R))ᶜ ∩ q ⁻¹' Y ⊆ ⋃ j, S j := by
+    rintro X ⟨hX, hXY⟩
+    classical
+    have hex := exists_mem_boxK_two_pow κ hR0 X
+    have hne : Nat.find hex ≠ 0 := by
+      intro h0
+      have := Nat.find_spec hex
+      rw [h0] at this
+      simp only [pow_zero, one_mul] at this
+      exact hX this
+    obtain ⟨j, hj⟩ := Nat.exists_eq_succ_of_ne_zero hne
+    refine Set.mem_iUnion.2 ⟨j, ⟨?_, ?_⟩, hXY⟩
+    · have := Nat.find_spec hex
+      rw [hj] at this
+      exact this
+    · exact Nat.find_min hex (by omega)
+  have hshell : ∀ j, ∫⁻ X in S j, ‖φ X‖ₑ ∂μ
+      ≤ ENNReal.ofReal (|C| * 2 ^ e / R) * (2⁻¹ : ℝ≥0∞) ^ j * (C₀ * ν Y) := by
+    intro j
+    have hRj : 1 ≤ (2 : ℝ) ^ j * R := by
+      have : (1 : ℝ) ≤ 2 ^ j := one_le_pow₀ one_le_two
+      nlinarith
+    have hRj0 : 0 < (2 : ℝ) ^ j * R := by linarith
+    have hSm : MeasurableSet (S j) := ((hbox _).diff (hbox _)).inter (hq hY)
+    have hpt : ∀ X ∈ S j, ‖φ X‖ₑ ≤ ENNReal.ofReal (|C| / ((2 : ℝ) ^ j * R) ^ (e + 1)) := by
+      rintro X ⟨⟨-, hX⟩, -⟩
+      rw [← ofReal_norm]
+      refine ENNReal.ofReal_le_ofReal ((hC _ hRj X hX).trans ?_)
+      exact div_le_div_of_nonneg_right (le_abs_self C) (by positivity)
+    have hmu : μ (S j) ≤ C₀ * ENNReal.ofReal (((2 : ℝ) ^ (j + 1) * R) ^ e) * ν Y := by
+      have h1 := hden (fun _ _ => (2 : ℝ) ^ (j + 1) * R) (fun _ _ => by positivity) Y hY
+      have h2 : μ (S j) ≤ μ (boxK κ (fun _ _ => (2 : ℝ) ^ (j + 1) * R) ∩ q ⁻¹' Y) :=
+        measure_mono fun X hX => ⟨hX.1.1, hX.2⟩
+      have h3 : (∏ a : Fin n, ∏ w : W, ENNReal.ofReal ((2 : ℝ) ^ (j + 1) * R) ^ (2 * (M - n)))
+          = ENNReal.ofReal (((2 : ℝ) ^ (j + 1) * R) ^ e) := by
+        rw [ENNReal.ofReal_pow (by positivity), he]
+        simp only [Finset.prod_const, Finset.card_univ, Fintype.card_fin, ← pow_mul]
+      rw [h3] at h1
+      exact h2.trans h1
+    calc ∫⁻ X in S j, ‖φ X‖ₑ ∂μ
+        ≤ ∫⁻ _ in S j, ENNReal.ofReal (|C| / ((2 : ℝ) ^ j * R) ^ (e + 1)) ∂μ :=
+          setLIntegral_mono' hSm hpt
+      _ = ENNReal.ofReal (|C| / ((2 : ℝ) ^ j * R) ^ (e + 1)) * μ (S j) := setLIntegral_const _ _
+      _ ≤ ENNReal.ofReal (|C| / ((2 : ℝ) ^ j * R) ^ (e + 1)) *
+            (C₀ * ENNReal.ofReal (((2 : ℝ) ^ (j + 1) * R) ^ e) * ν Y) := by gcongr
+      _ = (ENNReal.ofReal (|C| / ((2 : ℝ) ^ j * R) ^ (e + 1)) *
+            ENNReal.ofReal (((2 : ℝ) ^ (j + 1) * R) ^ e)) * (C₀ * ν Y) := by ring
+      _ = ENNReal.ofReal (|C| * 2 ^ e / R) * (2⁻¹ : ℝ≥0∞) ^ j * (C₀ * ν Y) := by
+          rw [← ENNReal.ofReal_mul (by positivity), shell_real_identity hR0,
+            ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_pow (by norm_num)]
+          congr 3
+          rw [one_div, ENNReal.ofReal_inv_of_pos (by norm_num)]
+          simp
+  calc ∫⁻ X in (boxK κ (fun _ _ => R))ᶜ ∩ q ⁻¹' Y, ‖φ X‖ₑ ∂μ
+      ≤ ∫⁻ X in ⋃ j, S j, ‖φ X‖ₑ ∂μ := lintegral_mono_set hcover
+    _ ≤ ∑' j, ∫⁻ X in S j, ‖φ X‖ₑ ∂μ := lintegral_iUnion_le _ _
+    _ ≤ ∑' j : ℕ, ENNReal.ofReal (|C| * 2 ^ e / R) * (2⁻¹ : ℝ≥0∞) ^ j * (C₀ * ν Y) :=
+        ENNReal.tsum_le_tsum hshell
+    _ = ENNReal.ofReal (|C| * 2 ^ e / R) * 2 * (C₀ * ν Y) := tsum_geometric_half_mul _ _
+    _ = ENNReal.ofReal (|C| * 2 ^ e / R) * (2 * C₀) * ν Y := by ring
+    _ ≤ ε * ν Y := by gcongr
+
+end GlobalTheory.CompanionTheory.WhitFree.AvgInf
+end
+end
+
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC GlobalTheory.CompanionTheory.SiegelND
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.CompanionTheory.WeilSiegel.Frame GlobalTheory.CompanionTheory.WhitFree
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_box_radius_tail_lintegral_le_eps_mul : ∀ (K W : Type) [CommRing K] [Fintype W] (κ : K ≃+* (W → ℂ)) (n M : ℕ) (H : Type) [MeasurableSpace H] [MeasurableSpace (Fin n → Fin M → K)] (μ : Measure (Fin n → Fin M → K)) (ν : Measure H) (q : (Fin n → Fin M → K) → H) (C₀ : ℝ≥0∞), C₀ ≠ ⊤ → (∀ r : Fin n → W → ℝ, (∀ a w, 0 < r a w) → GlobalTheory.CompanionTheory.WhitFree.AvgInf.DenLE μ ν q (GlobalTheory.CompanionTheory.WhitFree.AvgInf.boxK κ r) (C₀ * ∏ a, ∏ w, ENNReal.ofReal (r a w) ^ (2 * (M - n)))) → Measurable q → (∀ r : Fin n → W → ℝ, MeasurableSet (GlobalTheory.CompanionTheory.WhitFree.AvgInf.boxK (M := M) κ r)) → ∀ φ : (Fin n → Fin M → K) → ℂ, (∀ k : ℕ, ∃ C : ℝ, ∀ R : ℝ, 1 ≤ R → ∀ X, X ∉ GlobalTheory.CompanionTheory.WhitFree.AvgInf.boxK κ (fun _ _ => R) → ‖φ X‖ ≤ C / R ^ k) → ∀ ε : ℝ≥0∞, ε ≠ 0 → ∃ R : ℝ, 1 ≤ R ∧ ∀ Y, MeasurableSet Y → ∫⁻ X in (GlobalTheory.CompanionTheory.WhitFree.AvgInf.boxK κ (fun _ _ => R))ᶜ ∩ q ⁻¹' Y, ‖φ X‖ₑ ∂μ ≤ ε * ν Y := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WhitFree.AvgInf.tail_small_of_density
+end
+
+section
+section
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC GlobalTheory.CompanionTheory.SiegelND
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.CompanionTheory.WeilSiegel.Frame GlobalTheory.CompanionTheory.WhitFree
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.WhitFree.AvgInf.Topo
+
+open GlobalTheory.CompanionTheory.WhitFree.AvgInf
+
+variable {K W : Type} [CommRing K] [TopologicalSpace K] [Fintype W]
+
+lemma cont_coord (κ : K ≃+* (W → ℂ)) (hκ : IsHomeomorph κ) {n M : ℕ} (b : Fin n) (i : Fin M) (w : W) :
+    Continuous fun X : Fin n → Fin M → K => κ (X b i) w :=
+  (continuous_apply w).comp (hκ.continuous.comp ((continuous_apply i).comp (continuous_apply b)))
+
+lemma isOpen_nearK (κ : K ≃+* (W → ℂ)) (hκ : IsHomeomorph κ) {n M : ℕ} (w : W) (s : Fin n → ℂ) (ε : ℝ) :
+    IsOpen (nearK (M := M) κ w s ε) := by
+  have : nearK (M := M) κ w s ε = ⋂ i, {X | ‖∑ b, s b * κ (X b i) w‖ < ε} := by
+    ext X; simp [nearK]
+  rw [this]
+  refine isOpen_iInter_of_finite fun i => ?_
+  refine isOpen_lt ?_ continuous_const
+  refine Continuous.norm ?_
+  refine continuous_finset_sum _ fun b _ => ?_
+  exact continuous_const.mul (cont_coord κ hκ b i w)
+
+lemma isCompact_boxK (κ : K ≃+* (W → ℂ)) (hκ : IsHomeomorph κ) {n M : ℕ} (r : Fin n → W → ℝ) :
+    IsCompact (boxK (M := M) κ r) := by
+  let e : K ≃ₜ (W → ℂ) := hκ.homeomorph κ
+  let Φ : (Fin n → Fin M → K) ≃ₜ (Fin n → Fin M → W → ℂ) :=
+    Homeomorph.piCongrRight fun _ => Homeomorph.piCongrRight fun _ => e
+  have hB : IsCompact (Set.univ.pi fun a : Fin n => Set.univ.pi fun _ : Fin M =>
+      Set.univ.pi fun w : W => Metric.closedBall (0 : ℂ) (r a w)) :=
+    isCompact_univ_pi fun a => isCompact_univ_pi fun _ => isCompact_univ_pi fun w =>
+      isCompact_closedBall _ _
+  have : boxK (M := M) κ r = Φ ⁻¹' (Set.univ.pi fun a : Fin n => Set.univ.pi fun _ : Fin M =>
+      Set.univ.pi fun w : W => Metric.closedBall (0 : ℂ) (r a w)) := by
+    ext X
+    simp [boxK, Φ, e]
+  rw [this]
+  exact (Homeomorph.isCompact_preimage Φ).2 hB
+
+lemma linIndep_iff (κ : K ≃+* (W → ℂ)) {n M : ℕ} (X : Fin n → Fin M → K) :
+    LinearIndependent K X ↔ ∀ w, LinearIndependent ℂ (fun b i => κ (X b i) w) := by
+  classical
+  constructor
+  · intro hX w
+    rw [Fintype.linearIndependent_iff] at hX ⊢
+    intro t ht b
+    have key := hX (fun b => κ.symm (Pi.single w (t b))) (by
+      funext i
+      apply κ.injective
+      funext w'
+      have := congrFun ht i
+      simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul] at this
+      simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, map_sum, map_mul,
+        RingEquiv.apply_symm_apply, Pi.zero_apply, map_zero, Finset.sum_apply, Pi.mul_apply]
+      by_cases h : w' = w
+      · subst h; simpa using this
+      · simp [Pi.single_apply, h])
+    have := congrFun (congrArg κ (key b)) w
+    simpa using this
+  · intro h
+    rw [Fintype.linearIndependent_iff]
+    intro c hc b
+    apply κ.injective
+    funext w
+    have hw := h w
+    rw [Fintype.linearIndependent_iff] at hw
+    have := hw (fun b => κ (c b) w) (by
+      funext i
+      have := congrArg (fun y => κ y w) (congrFun hc i)
+      simpa [Finset.sum_apply, map_sum, map_mul] using this) b
+    simpa using this
+
+lemma isOpen_linIndep (κ : K ≃+* (W → ℂ)) (hκ : IsHomeomorph κ) (n M : ℕ) :
+    IsOpen {X : Fin n → Fin M → K | LinearIndependent K X} := by
+  have : {X : Fin n → Fin M → K | LinearIndependent K X} =
+      ⋂ w, (fun X : Fin n → Fin M → K => fun b i => κ (X b i) w) ⁻¹'
+        {Y : Fin n → Fin M → ℂ | LinearIndependent ℂ Y} := by
+    ext X; simp [linIndep_iff κ X]
+  rw [this]
+  refine isOpen_iInter_of_finite fun w => ?_
+  refine isOpen_setOfPred_linearIndependent.preimage ?_
+  exact continuous_pi fun b => continuous_pi fun i => cont_coord κ hκ b i w
+
+end GlobalTheory.CompanionTheory.WhitFree.AvgInf.Topo
+
+namespace GlobalTheory.CompanionTheory.WhitFree.AvgInf.Topo
+
+open GlobalTheory.CompanionTheory.WhitFree.AvgInf
+
+variable {K W : Type} [CommRing K] [TopologicalSpace K] [Fintype W]
+
+lemma goodK_subset (κ : K ≃+* (W → ℂ)) {n M : ℕ} (R ε : ℝ) (hε : 0 < ε) :
+    goodK (n := n) (M := M) κ R ε ⊆ {X : Fin n → Fin M → K | LinearIndependent K X} := by
+  intro X hX
+  rcases hX with ⟨-, hX⟩
+  show LinearIndependent K X
+  rw [Fintype.linearIndependent_iff]
+  intro c hc b0
+  by_contra h0
+  have hk : κ (c b0) ≠ 0 := by
+    intro h; exact h0 (κ.injective (by simpa using h))
+  obtain ⟨w, hw⟩ := Function.ne_iff.1 hk
+  haveI : Nonempty (Fin n) := ⟨b0⟩
+  obtain ⟨a, ha⟩ := Finite.exists_max fun b => ‖κ (c b) w‖
+  have hca : κ (c a) w ≠ 0 := by
+    intro h
+    have := ha b0
+    rw [h, norm_zero] at this
+    exact hw (norm_le_zero_iff.1 this)
+  have hsum : ∀ i, ∑ b, κ (c b) w * κ (X b i) w = 0 := by
+    intro i
+    have := congrArg (fun y => κ y w) (congrFun hc i)
+    simpa [Finset.sum_apply, map_sum, map_mul] using this
+  apply hX
+  simp only [Set.mem_iUnion]
+  refine ⟨w, a, fun b => κ (c b) w / κ (c a) w, ⟨div_self hca, fun b => ?_⟩, ?_⟩
+  · rw [norm_div]
+    exact div_le_one_of_le₀ (ha b) (norm_nonneg _)
+  · intro i
+    have : ∑ b, κ (c b) w / κ (c a) w * κ (X b i) w = (κ (c a) w)⁻¹ * ∑ b, κ (c b) w * κ (X b i) w := by
+      rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl fun b _ => ?_
+      ring
+    rw [this, hsum i, mul_zero, norm_zero]
+    exact hε
+
+theorem boxK_goodK_topology : ∀ (K W : Type) [CommRing K] [TopologicalSpace K] [Fintype W] (κ : K ≃+* (W → ℂ)), IsHomeomorph κ → ∀ n M : ℕ, (∀ r : Fin n → W → ℝ, IsCompact (GlobalTheory.CompanionTheory.WhitFree.AvgInf.boxK (M := M) κ r)) ∧ IsOpen {X : Fin n → Fin M → K | LinearIndependent K X} ∧ ∀ R ε : ℝ, 0 < ε → IsCompact (GlobalTheory.CompanionTheory.WhitFree.AvgInf.goodK (n := n) (M := M) κ R ε) ∧ GlobalTheory.CompanionTheory.WhitFree.AvgInf.goodK (n := n) (M := M) κ R ε ⊆ {X : Fin n → Fin M → K | LinearIndependent K X} := by
+  intro K W _ _ _ κ hκ n M
+  refine ⟨fun r => isCompact_boxK κ hκ r, isOpen_linIndep κ hκ n M, fun R ε hε => ⟨?_, goodK_subset κ R ε hε⟩⟩
+  refine (isCompact_boxK κ hκ _).diff ?_
+  exact isOpen_iUnion fun w => isOpen_iUnion fun a => isOpen_iUnion fun s => isOpen_iUnion fun _ =>
+    isOpen_nearK κ hκ w s ε
+
+end GlobalTheory.CompanionTheory.WhitFree.AvgInf.Topo
+end
+end
+
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC GlobalTheory.CompanionTheory.SiegelND
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.CompanionTheory.WeilSiegel.Frame GlobalTheory.CompanionTheory.WhitFree
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.good_set_compact_linearly_independent : ∀ (K W : Type) [CommRing K] [TopologicalSpace K] [Fintype W] (κ : K ≃+* (W → ℂ)), IsHomeomorph κ → ∀ n M : ℕ, (∀ r : Fin n → W → ℝ, IsCompact (GlobalTheory.CompanionTheory.WhitFree.AvgInf.boxK (M := M) κ r)) ∧ IsOpen {X : Fin n → Fin M → K | LinearIndependent K X} ∧ ∀ R ε : ℝ, 0 < ε → IsCompact (GlobalTheory.CompanionTheory.WhitFree.AvgInf.goodK (n := n) (M := M) κ R ε) ∧ GlobalTheory.CompanionTheory.WhitFree.AvgInf.goodK (n := n) (M := M) κ R ε ⊆ {X : Fin n → Fin M → K | LinearIndependent K X} := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WhitFree.AvgInf.Topo.boxK_goodK_topology
+end
+
+section
+section
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC GlobalTheory.CompanionTheory.SiegelND
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.CompanionTheory.WeilSiegel.Frame GlobalTheory.CompanionTheory.WhitFree
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+namespace GlobalTheory.CompanionTheory.SW.Dil
+
+theorem pi_smul_nnreal {ι : Type} [Fintype ι] {X : ι → Type} [∀ i, MeasurableSpace (X i)]
+    (μ : ∀ i, Measure (X i)) [∀ i, SigmaFinite (μ i)] (c : ι → ℝ≥0) :
+    Measure.pi (fun i => c i • μ i) = (∏ i, c i) • Measure.pi μ := by
+  classical
+  refine Measure.pi_eq (μ := fun i => c i • μ i) fun s hs => ?_
+  rw [Measure.smul_apply, Measure.pi_pi]
+  simp only [Measure.smul_apply, ENNReal.smul_def, smul_eq_mul, ENNReal.coe_finset_prod,
+    Finset.prod_mul_distrib]
+
+theorem coordW_map_units : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (n M d : ℕ) (b : Module.Basis (Fin d) F E) (lam : Measure (Ainf F)), lam.IsAddHaarMeasure → ∀ e : Ainf F ≃+* (NumberField.InfinitePlace F → ℝ), IsHomeomorph e → ∀ t : Fin n → Ainf F, (∀ a, IsUnit (t a)) → (GlobalTheory.CompanionTheory.SW.coordW (Ainf F) b lam n M).map (fun X a i => algebraMap (Ainf F) (Ainf F ⊗[F] E) (t a) * X a i) = (∏ a, ((∏ w, ‖e (t a) w‖₊)⁻¹) ^ (d * M)) • GlobalTheory.CompanionTheory.SW.coordW (Ainf F) b lam n M := by
+  intro F E _ _ _ _ _ σ hσ n M d b lam hlam e he t ht
+  obtain ⟨j1, j2, j3, j4, -⟩ := GlobalTheory.T.tensor_locally_compact_ring F E σ hσ (Ainf F)
+  haveI : BorelSpace (Ainf F ⊗[F] E) := ⟨rfl⟩
+  haveI : BorelSpace (Ainf F) := ⟨rfl⟩
+  obtain ⟨hK, -, -⟩ := GlobalTheory.T.coordinate_haar_measure F E σ hσ (Ainf F) d b lam hlam
+  haveI := hK
+  have hfm : ∀ a, Measurable (fun y : Ainf F ⊗[F] E => algebraMap (Ainf F) (Ainf F ⊗[F] E) (t a) * y) :=
+    fun a => (continuous_const.mul continuous_id).measurable
+  have hrow : ∀ a, (Measure.pi fun _ : Fin M => GlobalTheory.CompanionTheory.SW.coordK (Ainf F) b lam).map
+      (fun (x : Fin M → Ainf F ⊗[F] E) i => algebraMap (Ainf F) (Ainf F ⊗[F] E) (t a) * x i) =
+      (((∏ w, ‖e (t a) w‖₊)⁻¹) ^ (d * M)) • Measure.pi fun _ : Fin M => GlobalTheory.CompanionTheory.SW.coordK (Ainf F) b lam := by
+    intro a
+    obtain ⟨u, hu⟩ := ht a
+    have h := GlobalTheory.CompanionTheory.HaarScale.unit_mul_map_haar F e he lam hlam (t a) (ht a)
+    rw [← hu] at h
+    have hk := coordK_map_unit (Ainf F) σ hσ b lam u _ h
+    rw [hu] at hk
+    have hk1 := pi_map_scale (ι := Fin M) (GlobalTheory.CompanionTheory.SW.coordK (Ainf F) b lam) _ (hfm a) _ hk
+    simp only [Fintype.card_fin, ← pow_mul] at hk1
+    exact hk1
+  have hrm : ∀ a, Measurable (fun (x : Fin M → Ainf F ⊗[F] E) i =>
+      algebraMap (Ainf F) (Ainf F ⊗[F] E) (t a) * x i) := fun a =>
+    measurable_pi_iff.2 fun i => (hfm a).comp (measurable_pi_apply i)
+  haveI : ∀ a, SigmaFinite ((Measure.pi fun _ : Fin M => GlobalTheory.CompanionTheory.SW.coordK (Ainf F) b lam).map
+      (fun (x : Fin M → Ainf F ⊗[F] E) i => algebraMap (Ainf F) (Ainf F ⊗[F] E) (t a) * x i)) := fun a => by
+    rw [hrow a]; infer_instance
+  have hmap := Measure.pi_map_pi (μ := fun _ : Fin n => Measure.pi fun _ : Fin M => GlobalTheory.CompanionTheory.SW.coordK (Ainf F) b lam)
+    (f := fun a (x : Fin M → Ainf F ⊗[F] E) i => algebraMap (Ainf F) (Ainf F ⊗[F] E) (t a) * x i) (fun a => (hrm a).aemeasurable)
+  unfold GlobalTheory.CompanionTheory.SW.coordW
+  refine hmap.trans ?_
+  simp only [hrow]
+  exact pi_smul_nnreal _ _
+
+end GlobalTheory.CompanionTheory.SW.Dil
+end
+end
+
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC GlobalTheory.CompanionTheory.SiegelND
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.CompanionTheory.WeilSiegel.Frame GlobalTheory.CompanionTheory.WhitFree
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.archimedean_measure_scaling_by_units : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (n M d : ℕ) (b : Module.Basis (Fin d) F E) (lam : Measure (Ainf F)), lam.IsAddHaarMeasure → ∀ e : Ainf F ≃+* (NumberField.InfinitePlace F → ℝ), IsHomeomorph e → ∀ t : Fin n → Ainf F, (∀ a, IsUnit (t a)) → (GlobalTheory.CompanionTheory.SW.coordW (Ainf F) b lam n M).map (fun X a i => algebraMap (Ainf F) (Ainf F ⊗[F] E) (t a) * X a i) = (∏ a, ((∏ w, ‖e (t a) w‖₊)⁻¹) ^ (d * M)) • GlobalTheory.CompanionTheory.SW.coordW (Ainf F) b lam n M := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.Dil.coordW_map_units
+end
+
+section
+section
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC GlobalTheory.CompanionTheory.SiegelND
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.CompanionTheory.WeilSiegel.Frame GlobalTheory.CompanionTheory.WhitFree
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+namespace GlobalTheory.CompanionTheory.SW.DiagScale
+
+section Gen
+
+theorem pi_map_scale_family {ι X : Type} [Fintype ι] [MeasurableSpace X] (μ : Measure X) [SigmaFinite μ]
+    (f : ι → X → X) (hf : ∀ i, Measurable (f i)) (c : ι → ℝ≥0) (h : ∀ i, μ.map (f i) = c i • μ) :
+    (Measure.pi fun _ : ι => μ).map (fun x i => f i (x i)) =
+      (∏ i, c i) • Measure.pi fun _ : ι => μ := by
+  haveI : ∀ i, SigmaFinite (μ.map (f i)) := fun i => by rw [h i]; infer_instance
+  rw [Measure.pi_map_pi (f := f) (fun i => (hf i).aemeasurable)]
+  simp only [h]
+  refine Measure.pi_eq fun s hs => ?_
+  rw [Measure.smul_apply, Measure.pi_pi]
+  simp only [Measure.smul_apply, ENNReal.smul_def, smul_eq_mul, Finset.prod_mul_distrib]
+  push_cast
+  rfl
+
+theorem map_mul_scale {A : Type} [CommRing A] [TopologicalSpace A] [IsTopologicalRing A]
+    [MeasurableSpace A] [BorelSpace A] (lam : Measure A) (u v : A) (c c' : ℝ≥0)
+    (hu : lam.map (fun y => u * y) = c • lam) (hv : lam.map (fun y => v * y) = c' • lam) :
+    lam.map (fun y => u * v * y) = (c * c') • lam := by
+  have hm : ∀ x : A, Measurable (fun y : A => x * y) :=
+    fun x => (continuous_const.mul continuous_id).measurable
+  have e : (fun y => u * v * y) = (fun y => u * y) ∘ (fun y => v * y) := by
+    funext y
+    simp [mul_assoc]
+  rw [e, ← Measure.map_map (hm u) (hm v), hv, Measure.map_smul, hu, smul_smul, mul_comm]
+
+def mulU (A : Type) [CommRing A] [TopologicalSpace A] [IsTopologicalRing A]
+    [MeasurableSpace A] [BorelSpace A] (u : Aˣ) : A ≃ᵐ A :=
+  { toEquiv := Units.mulLeft u
+    measurable_toFun := (continuous_const.mul continuous_id).measurable
+    measurable_invFun := (continuous_const.mul continuous_id).measurable }
+
+theorem prod_pairs {n : ℕ} (c : Fin n → ℝ≥0) :
+    (∏ i, c i * c i) * ∏ p : {p : Fin n × Fin n // p.1 < p.2}, (c p.1.1 * c p.1.2) ^ 2 =
+      ∏ a, c a ^ (2 * n) := by
+  classical
+  set g : Fin n × Fin n → ℝ≥0 := fun x => c x.1 * c x.2 with hg
+  have h1 : ∏ x : Fin n × Fin n, g x = (∏ a, c a) ^ (2 * n) := by
+    rw [Fintype.prod_prod_type]
+    simp only [hg, Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ, Fintype.card_fin]
+    rw [Finset.prod_pow]
+    ring
+  have hU : ∏ x ∈ Finset.univ.filter (fun x : Fin n × Fin n => x.1 < x.2), g x =
+      ∏ p : {p : Fin n × Fin n // p.1 < p.2}, g p :=
+    Finset.prod_subtype _ (by simp) _
+  have hL : ∏ x ∈ Finset.univ.filter (fun x : Fin n × Fin n => x.2 < x.1), g x =
+      ∏ x ∈ Finset.univ.filter (fun x : Fin n × Fin n => x.1 < x.2), g x :=
+    Finset.prod_equiv (Equiv.prodComm _ _) (by simp) (by simp [hg, mul_comm])
+  have hD : ∏ x ∈ Finset.univ.filter (fun x : Fin n × Fin n => x.1 = x.2), g x =
+      ∏ i, c i * c i := by
+    symm
+    refine Finset.prod_nbij' (fun i => (i, i)) Prod.fst (by simp) (by simp) (by simp) ?_ (by simp [hg])
+    rintro ⟨a, b⟩ h
+    simpa using (Finset.mem_filter.1 h).2
+  have hS : ∏ x : Fin n × Fin n, g x =
+      (∏ x ∈ Finset.univ.filter (fun x : Fin n × Fin n => x.1 < x.2), g x) *
+      ((∏ x ∈ Finset.univ.filter (fun x : Fin n × Fin n => x.1 = x.2), g x) *
+       (∏ x ∈ Finset.univ.filter (fun x : Fin n × Fin n => x.2 < x.1), g x)) := by
+    rw [← Finset.prod_filter_mul_prod_filter_not Finset.univ (fun x : Fin n × Fin n => x.1 < x.2) g]
+    congr 1
+    rw [← Finset.prod_filter_mul_prod_filter_not
+      (Finset.univ.filter (fun x : Fin n × Fin n => ¬ x.1 < x.2)) (fun x => x.1 = x.2) g,
+      Finset.filter_filter, Finset.filter_filter]
+    congr 1
+    · refine Finset.prod_congr (Finset.filter_congr fun x _ => ?_) fun _ _ => rfl
+      constructor
+      · exact fun h => h.2
+      · exact fun h => ⟨by simp [h], h⟩
+    · refine Finset.prod_congr (Finset.filter_congr fun x _ => ?_) fun _ _ => rfl
+      constructor
+      · intro h
+        exact lt_of_le_of_ne (not_lt.1 h.1) (fun e => h.2 e.symm)
+      · intro h
+        exact ⟨not_lt.2 h.le, h.ne'⟩
+  have hP : ∏ p : {p : Fin n × Fin n // p.1 < p.2}, (c p.1.1 * c p.1.2) ^ 2 =
+      (∏ p : {p : Fin n × Fin n // p.1 < p.2}, g p) ^ 2 := by
+    rw [Finset.prod_pow]
+  have hT : ∏ a, c a ^ (2 * n) = (∏ a, c a) ^ (2 * n) := Finset.prod_pow _ _ _
+  rw [hT, ← h1, hS, hL, hD, hU, hP]
+  ring
+
+end Gen
+
+section H
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+variable (R : Type) [CommRing R] [Algebra F R] [TopologicalSpace R] [IsTopologicalRing R]
+  [LocallyCompactSpace R] [SecondCountableTopology R] [T2Space R] [MeasurableSpace R] [BorelSpace R]
+
+theorem coordHerm_map_diag (σ : E →ₐ[F] E) (hσ : HeckeCharacterZeroLocus.SiegelWeilU.IsCMExt F E σ) {d : ℕ}
+    (b : Module.Basis (Fin d) F E) (lam : Measure R) [lam.IsAddHaarMeasure] {n : ℕ}
+    (u : Fin n → Rˣ) (c : Fin n → ℝ≥0) (h : ∀ a, lam.map (fun y => (u a : R) * y) = c a • lam)
+    (τ : HeckeCharacterZeroLocus.SiegelWeilU.HermR R σ n → HeckeCharacterZeroLocus.SiegelWeilU.HermR R σ n) (hτm : Measurable τ)
+    (hτ : ∀ S i j, (τ S : Matrix (Fin n) (Fin n) (R ⊗[F] E)) i j =
+      algebraMap R (R ⊗[F] E) (u i) * (S : Matrix (Fin n) (Fin n) (R ⊗[F] E)) i j *
+        algebraMap R (R ⊗[F] E) (u j)) :
+    (GlobalTheory.CompanionTheory.SW.coordHerm R σ b lam n).map τ =
+      (∏ a, c a ^ (2 * n)) • GlobalTheory.CompanionTheory.SW.coordHerm R σ b lam n := by
+  obtain ⟨t1, t2, t3, t4, t5, t6, t7, -, -, -⟩ := GlobalTheory.T.tensor_locally_compact_ring F E σ hσ R
+  haveI : BorelSpace (R ⊗[F] E) := ⟨rfl⟩
+  have h2 : Module.finrank F E = 2 := hσ.2.2.1
+  have hd : d = 2 := by
+    rw [← h2, Module.finrank_eq_card_basis b, Fintype.card_fin]
+  subst hd
+  obtain ⟨hinv, δ, hδ, hσδ⟩ := GlobalTheory.CompanionTheory.SW.HaarCoord.conj_facts hσ
+  haveI : IsModuleTopology R (R ⊗[F] E) := ⟨rfl⟩
+  haveI : ContinuousSMul R (R ⊗[F] E) := IsModuleTopology.toContinuousSMul R _
+  obtain ⟨hK, -, hH⟩ := GlobalTheory.CompanionTheory.SW.coord_measures_haar F E σ hσ R 2 b lam ‹_›
+  haveI := hK
+  haveI := hH n
+  have hhom := GlobalTheory.CompanionTheory.SW.HaarCoord.hermCoord_isHomeomorph R hinv h2 hδ hσδ n t5 t6
+  let φ := GlobalTheory.CompanionTheory.SW.HaarCoord.hermCoord R σ n
+  let Q : Measure ({p : Fin n × Fin n // p.1 < p.2} → R ⊗[F] E) :=
+    Measure.pi fun _ => GlobalTheory.CompanionTheory.SW.coordK R b lam
+  let P := (Measure.pi fun _ : Fin n => lam).prod Q
+  have hν : GlobalTheory.CompanionTheory.SW.coordHerm R σ b lam n = Measure.comap φ P := rfl
+  have hcond : Function.Injective φ ∧ ∀ s, MeasurableSet s → NullMeasurableSet (φ '' s) P := by
+    by_contra hc
+    have h0 : GlobalTheory.CompanionTheory.SW.coordHerm R σ b lam n = 0 := by
+      rw [hν, Measure.comap, dif_neg hc]
+    have := isOpen_univ.measure_pos (GlobalTheory.CompanionTheory.SW.coordHerm R σ b lam n) Set.univ_nonempty
+    simp [h0] at this
+  let D1 : (Fin n → R) ≃ᵐ (Fin n → R) :=
+    MeasurableEquiv.piCongrRight fun i => mulU R (u i * u i)
+  let D2 : ({p : Fin n × Fin n // p.1 < p.2} → R ⊗[F] E) ≃ᵐ
+      ({p : Fin n × Fin n // p.1 < p.2} → R ⊗[F] E) :=
+    MeasurableEquiv.piCongrRight fun p =>
+      mulU (R ⊗[F] E) (Units.map (algebraMap R (R ⊗[F] E)).toMonoidHom (u p.1.1 * u p.1.2))
+  have hsc : ∀ a a', lam.map (fun y => ((u a * u a' : Rˣ) : R) * y) = (c a * c a') • lam := by
+    intro a a'
+    rw [Units.val_mul]
+    exact map_mul_scale lam _ _ _ _ (h a) (h a')
+  have m1 : (Measure.pi fun _ : Fin n => lam).map D1 =
+      (∏ i, c i * c i) • Measure.pi fun _ : Fin n => lam :=
+    pi_map_scale_family lam (fun i y => ((u i * u i : Rˣ) : R) * y)
+      (fun i => (continuous_const.mul continuous_id).measurable) _ (fun i => hsc i i)
+  have m2 : Q.map D2 = (∏ p : {p : Fin n × Fin n // p.1 < p.2}, (c p.1.1 * c p.1.2) ^ 2) • Q :=
+    pi_map_scale_family (GlobalTheory.CompanionTheory.SW.coordK R b lam)
+      (fun (p : {p : Fin n × Fin n // p.1 < p.2}) y => algebraMap R (R ⊗[F] E) ((u p.1.1 * u p.1.2 : Rˣ) : R) * y)
+      (fun p => (continuous_const.mul continuous_id).measurable) _
+      (fun p => GlobalTheory.CompanionTheory.SW.Dil.coordK_map_unit R σ hσ b lam _ _ (hsc p.1.1 p.1.2))
+  have hD : P.map (D1.prodCongr D2) = (∏ a, c a ^ (2 * n)) • P := by
+    have e := Measure.map_prod_map (Measure.pi fun _ : Fin n => lam) Q D1.measurable D2.measurable
+    rw [m1, m2, Measure.prod_smul_left, Measure.prod_smul_right, smul_smul, prod_pairs] at e
+    exact e.symm
+  rw [hν]
+  refine GlobalTheory.CompanionTheory.SW.Dil.map_comap_scale φ P τ hτm (D1.prodCongr D2) _ hhom.surjective hcond.1 hcond.2 ?_ hD
+  intro S
+  refine Prod.ext ?_ ?_
+  · funext i
+    change algebraMap F R (1 / 2) * Algebra.trace R (R ⊗[F] E) ((τ S : Matrix (Fin n) (Fin n) (R ⊗[F] E)) i i) =
+      ((u i * u i : Rˣ) : R) * (algebraMap F R (1 / 2) *
+        Algebra.trace R (R ⊗[F] E) ((S : Matrix (Fin n) (Fin n) (R ⊗[F] E)) i i))
+    have e : algebraMap R (R ⊗[F] E) (u i) * (S : Matrix (Fin n) (Fin n) (R ⊗[F] E)) i i *
+        algebraMap R (R ⊗[F] E) (u i) =
+        ((u i * u i : Rˣ) : R) • (S : Matrix (Fin n) (Fin n) (R ⊗[F] E)) i i := by
+      rw [Algebra.smul_def, Units.val_mul, map_mul]
+      ring
+    rw [hτ, e, map_smul, smul_eq_mul]
+    ring
+  · funext p
+    change (τ S : Matrix (Fin n) (Fin n) (R ⊗[F] E)) p.1.1 p.1.2 =
+      algebraMap R (R ⊗[F] E) ((u p.1.1 * u p.1.2 : Rˣ) : R) *
+        (S : Matrix (Fin n) (Fin n) (R ⊗[F] E)) p.1.1 p.1.2
+    rw [hτ, Units.val_mul, map_mul]
+    ring
+
+end H
+
+theorem coordHerm_map_diag_ainf : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (n d : ℕ) (b : Module.Basis (Fin d) F E) (lam : Measure (Ainf F)), lam.IsAddHaarMeasure → ∀ e : Ainf F ≃+* (NumberField.InfinitePlace F → ℝ), IsHomeomorph e → ∀ t : Fin n → Ainf F, (∀ a, IsUnit (t a)) → ∀ τ : HeckeCharacterZeroLocus.SiegelWeilU.HermR (Ainf F) σ n → HeckeCharacterZeroLocus.SiegelWeilU.HermR (Ainf F) σ n, Measurable τ → (∀ S i j, (τ S : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)) i j = algebraMap (Ainf F) (Ainf F ⊗[F] E) (t i) * (S : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)) i j * algebraMap (Ainf F) (Ainf F ⊗[F] E) (t j)) → (GlobalTheory.CompanionTheory.SW.coordHerm (Ainf F) σ b lam n).map τ = (∏ a, ((∏ w, ‖e (t a) w‖₊)⁻¹) ^ (2 * n)) • GlobalTheory.CompanionTheory.SW.coordHerm (Ainf F) σ b lam n := by
+  intro F E _ _ _ _ _ σ hσ n d b lam hlam e he t ht τ hτm hτ
+  haveI : BorelSpace (Ainf F) := ⟨rfl⟩
+  exact coordHerm_map_diag (Ainf F) σ hσ b lam (fun a => (ht a).unit)
+    (fun a => (∏ w, ‖e (t a) w‖₊)⁻¹)
+    (fun a => GlobalTheory.CompanionTheory.HaarScale.unit_mul_map_haar F e he lam hlam (t a) (ht a)) τ hτm hτ
+
+end GlobalTheory.CompanionTheory.SW.DiagScale
+end
+end
+
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC GlobalTheory.CompanionTheory.SiegelND
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.CompanionTheory.WeilSiegel.Frame GlobalTheory.CompanionTheory.WhitFree
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.archimedean_hermitian_scaling_by_units : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (n d : ℕ) (b : Module.Basis (Fin d) F E) (lam : Measure (Ainf F)), lam.IsAddHaarMeasure → ∀ e : Ainf F ≃+* (NumberField.InfinitePlace F → ℝ), IsHomeomorph e → ∀ t : Fin n → Ainf F, (∀ a, IsUnit (t a)) → ∀ τ : HeckeCharacterZeroLocus.SiegelWeilU.HermR (Ainf F) σ n → HeckeCharacterZeroLocus.SiegelWeilU.HermR (Ainf F) σ n, Measurable τ → (∀ S i j, (τ S : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)) i j = algebraMap (Ainf F) (Ainf F ⊗[F] E) (t i) * (S : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)) i j * algebraMap (Ainf F) (Ainf F ⊗[F] E) (t j)) → (GlobalTheory.CompanionTheory.SW.coordHerm (Ainf F) σ b lam n).map τ = (∏ a, ((∏ w, ‖e (t a) w‖₊)⁻¹) ^ (2 * n)) • GlobalTheory.CompanionTheory.SW.coordHerm (Ainf F) σ b lam n := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.DiagScale.coordHerm_map_diag_ainf
+end
+
+section
+section
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC GlobalTheory.CompanionTheory.SiegelND
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.CompanionTheory.WeilSiegel.Frame GlobalTheory.CompanionTheory.WhitFree
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.WhitFree.AvgInf
+
+theorem pi_map_update_add {V : Type} [AddCommGroup V] [MeasurableSpace V] [MeasurableAdd₂ V] {n : ℕ}
+    (ν : Measure V) [SigmaFinite ν] [ν.IsAddRightInvariant] (a : Fin n) (T : (Fin n → V) → V)
+    (hT : Measurable T) (hTa : ∀ x y, T (Function.update x a y) = T x) :
+    (Measure.pi fun _ : Fin n => ν).map (fun x => Function.update x a (x a + T x)) =
+      Measure.pi fun _ : Fin n => ν := by
+  have hf : Measurable (fun x : Fin n → V => Function.update x a (x a + T x)) := by
+    refine measurable_pi_lambda _ fun j => ?_
+    by_cases h : j = a
+    · subst h
+      simp only [Function.update_self]
+      exact (measurable_pi_apply j).add hT
+    · simpa [Function.update_of_ne h] using measurable_pi_apply j
+  refine (Measure.pi_eq fun s hs => ?_).symm
+  have h2s : MeasurableSet (Set.univ.pi s) := MeasurableSet.univ_pi hs
+  rw [← Measure.pi_pi, ← lintegral_indicator_one h2s, ← lintegral_indicator_one h2s,
+    lintegral_map (measurable_one.indicator h2s) hf]
+  refine lintegral_eq_of_lmarginal_eq {a} ((measurable_one.indicator h2s).comp hf)
+    (measurable_one.indicator h2s) ?_
+  simp_rw [lmarginal_singleton]
+  ext x
+  have key : ∀ y : V, Function.update (Function.update x a y) a (Function.update x a y a + T (Function.update x a y))
+      = Function.update x a (y + T x) := by
+    intro y
+    simp [hTa]
+  simp only [Function.comp_def, key]
+  exact lintegral_add_right_eq_self
+    (fun y => (Set.univ.pi s).indicator (1 : (Fin n → V) → ℝ≥0∞) (Function.update x a y)) (T x)
+
+theorem coordW_map_shearK : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (n M d : ℕ) (b : Module.Basis (Fin d) F E) (lam : Measure (Ainf F)), lam.IsAddHaarMeasure → ∀ (a : Fin n) (s : Fin n → Ainf F ⊗[F] E), s a = 0 → (GlobalTheory.CompanionTheory.SW.coordW (Ainf F) b lam n M).map (GlobalTheory.CompanionTheory.WhitFree.AvgInf.shearK a s) = GlobalTheory.CompanionTheory.SW.coordW (Ainf F) b lam n M := by
+  intro F E _ _ _ _ _ σ hσ n M d b lam hlam a s hs
+  obtain ⟨j1, j2, j3, j4, -⟩ := GlobalTheory.CompanionTheory.SW.TopK.topTens_props F E σ hσ (Ainf F)
+  haveI : BorelSpace (Ainf F ⊗[F] E) := ⟨rfl⟩
+  haveI : BorelSpace (Ainf F) := ⟨rfl⟩
+  obtain ⟨hK, -, -⟩ := GlobalTheory.CompanionTheory.SW.coord_measures_haar F E σ hσ (Ainf F) d b lam hlam
+  haveI := hK
+  haveI : SigmaFinite (GlobalTheory.CompanionTheory.SW.coordK (Ainf F) b lam) := inferInstance
+  haveI hν : (Measure.pi fun _ : Fin M => GlobalTheory.CompanionTheory.SW.coordK (Ainf F) b lam).IsAddHaarMeasure := inferInstance
+  have hmul : ∀ c : Ainf F ⊗[F] E, Measurable (fun y : Ainf F ⊗[F] E => c * y) := fun c =>
+    (continuous_const.mul continuous_id).measurable
+  have hT : Measurable (fun (x : Fin n → Fin M → Ainf F ⊗[F] E) (i : Fin M) => ∑ c, s c * x c i) := by
+    refine measurable_pi_lambda _ fun i => ?_
+    refine Finset.measurable_sum _ fun c _ => ?_
+    exact (hmul (s c)).comp ((measurable_pi_apply i).comp (measurable_pi_apply c))
+  have hTa : ∀ (x : Fin n → Fin M → Ainf F ⊗[F] E) (y : Fin M → Ainf F ⊗[F] E),
+      (fun i => ∑ c, s c * Function.update x a y c i) = fun i => ∑ c, s c * x c i := by
+    intro x y
+    funext i
+    refine Finset.sum_congr rfl fun c _ => ?_
+    by_cases h : c = a
+    · subst h; simp [hs]
+    · simp [Function.update_of_ne h]
+  exact pi_map_update_add (Measure.pi fun _ : Fin M => GlobalTheory.CompanionTheory.SW.coordK (Ainf F) b lam) a _ hT hTa
+
+end GlobalTheory.CompanionTheory.WhitFree.AvgInf
+end
+end
+
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC GlobalTheory.CompanionTheory.SiegelND
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.CompanionTheory.WeilSiegel.Frame GlobalTheory.CompanionTheory.WhitFree
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.shear_preserves_archimedean_haar : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (n M d : ℕ) (b : Module.Basis (Fin d) F E) (lam : Measure (Ainf F)), lam.IsAddHaarMeasure → ∀ (a : Fin n) (s : Fin n → Ainf F ⊗[F] E), s a = 0 → (GlobalTheory.CompanionTheory.SW.coordW (Ainf F) b lam n M).map (GlobalTheory.CompanionTheory.WhitFree.AvgInf.shearK a s) = GlobalTheory.CompanionTheory.SW.coordW (Ainf F) b lam n M := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WhitFree.AvgInf.coordW_map_shearK
+end
+
+section
+section
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC GlobalTheory.CompanionTheory.SiegelND
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.CompanionTheory.WeilSiegel.Frame GlobalTheory.CompanionTheory.WhitFree
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.WhitFree.AvgInf.ShearHaar
+
+section Gen
+
+variable {H : Type} [AddCommGroup H] [TopologicalSpace H] [IsTopologicalAddGroup H]
+  [LocallyCompactSpace H] [SecondCountableTopology H] [T2Space H] [MeasurableSpace H] [BorelSpace H]
+
+theorem exists_scale (ν : Measure H) [ν.IsAddHaarMeasure] (e : H ≃ₜ+ H) :
+    ∃ c : ℝ≥0, c ≠ 0 ∧ ν.map e = c • ν := by
+  haveI : (ν.map e).IsAddHaarMeasure := e.isAddHaarMeasure_map ν
+  exact ⟨Measure.addHaarScalarFactor (ν.map e) ν,
+    (Measure.addHaarScalarFactor_pos_of_isAddHaarMeasure _ _).ne',
+    Measure.isAddLeftInvariant_eq_smul _ _⟩
+
+theorem map_eq_of_sq_conj (ν : Measure H) [ν.IsAddHaarMeasure] (A B D : H ≃ₜ+ H)
+    (h1 : ∀ x, B x = A (A x)) (h2 : ∀ x, B (D x) = D (A x)) : ν.map A = ν := by
+  obtain ⟨c, hc0, hc⟩ := exists_scale ν A
+  obtain ⟨d, hd0, hd⟩ := exists_scale ν D
+  obtain ⟨b, -, hb⟩ := exists_scale ν B
+  have mA : Measurable A := A.continuous.measurable
+  have mB : Measurable B := B.continuous.measurable
+  have mD : Measurable D := D.continuous.measurable
+  have e1 : b • ν = (c * c) • ν := by
+    rw [← hb]
+    have : (B : H → H) = A ∘ A := funext h1
+    rw [this, ← Measure.map_map mA mA, hc, Measure.map_smul, hc, smul_smul]
+  have e2 : (d * b) • ν = (c * d) • ν := by
+    have h3 : (B : H → H) ∘ D = D ∘ A := funext h2
+    have l : (ν.map D).map B = (d * b) • ν := by
+      rw [hd, Measure.map_smul, hb, smul_smul]
+    have r : (ν.map A).map D = (c * d) • ν := by
+      rw [hc, Measure.map_smul, hd, smul_smul]
+    rw [← l, ← r, Measure.map_map mB mD, Measure.map_map mD mA, h3]
+  obtain ⟨Kc, hK, hKn⟩ := exists_compact_mem_nhds (0 : H)
+  have hpos : ν Kc ≠ 0 := (Measure.measure_pos_of_mem_nhds ν hKn).ne'
+  have htop : ν Kc ≠ ⊤ := hK.measure_lt_top.ne
+  have cancel : ∀ u v : ℝ≥0, u • ν = v • ν → u = v := by
+    intro u v h
+    have := congrArg (fun m : Measure H => m Kc) h
+    simp only [Measure.smul_apply, ENNReal.smul_def, smul_eq_mul] at this
+    exact_mod_cast (ENNReal.mul_left_inj hpos htop).1 this
+  have hb' := cancel _ _ e1
+  have hcd := cancel _ _ e2
+  have hc1 : c = 1 := by
+    rw [hb'] at hcd
+    have : (c * d) * c = (c * d) * 1 := by
+      calc (c * d) * c = d * (c * c) := by ring
+        _ = c * d := hcd
+        _ = (c * d) * 1 := (mul_one _).symm
+    exact mul_left_cancel₀ (mul_ne_zero hc0 hd0) this
+  rw [hc, hc1, one_smul]
+
+end Gen
+
+section Mat
+
+local notation "cTr" => HeckeCharacterZeroLocus.SiegelWeilU.cT
+
+variable {K : Type} [CommRing K] (s : K →+* K) {n : ℕ}
+
+theorem cT_one : cTr s (1 : Matrix (Fin n) (Fin n) K) = 1 := by
+  unfold HeckeCharacterZeroLocus.SiegelWeilU.cT
+  rw [Matrix.map_one _ (map_zero _) (map_one _), Matrix.transpose_one]
+
+theorem conj_conj (g h S : Matrix (Fin n) (Fin n) K) :
+    cTr s h * (cTr s g * S * g) * h = cTr s (g * h) * S * (g * h) := by
+  rw [HeckeCharacterZeroLocus.SiegelWeilU.cT_mul]
+  simp only [Matrix.mul_assoc]
+
+theorem shearM_zero (a : Fin n) : shearM a (0 : Fin n → K) = 1 := by
+  ext i j
+  simp [shearM]
+
+theorem shearM_mul (a : Fin n) (x y : Fin n → K) (hy : y a = 0) :
+    shearM a x * shearM a y = shearM a (x + y) := by
+  have hN : (Matrix.of (fun b c => if c = a then x b else 0) *
+      Matrix.of (fun b c => if c = a then y b else 0) : Matrix (Fin n) (Fin n) K) = 0 := by
+    ext i j
+    rw [Matrix.mul_apply]
+    refine Finset.sum_eq_zero fun k _ => ?_
+    by_cases hk : k = a
+    · subst hk
+      by_cases hj : j = k <;> simp [hj, hy]
+    · simp [hk]
+  rw [shearM, shearM, shearM, Matrix.add_mul, Matrix.mul_add, Matrix.mul_add, hN, Matrix.one_mul,
+    Matrix.one_mul, Matrix.mul_one, add_zero]
+  ext i j
+  by_cases hj : j = a
+  · simp [hj]
+    ring
+  · simp [hj]
+
+def diagAt (a : Fin n) (t : K) : Matrix (Fin n) (Fin n) K :=
+  Matrix.diagonal fun i => if i = a then t else 1
+
+theorem diagAt_mul (a : Fin n) (t u : K) (h : t * u = 1) : diagAt a t * diagAt a u = 1 := by
+  rw [diagAt, diagAt, Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
+  congr 1
+  funext i
+  by_cases hi : i = a <;> simp [hi, h]
+
+theorem diagAt_shearM (a : Fin n) (x : Fin n → K) (hx : x a = 0) :
+    diagAt a 2 * shearM a (x + x) = shearM a x * diagAt a 2 := by
+  ext i j
+  rw [diagAt, Matrix.diagonal_mul, Matrix.mul_diagonal]
+  simp only [shearM, Matrix.add_apply, Matrix.of_apply, Pi.add_apply]
+  by_cases hj : j = a
+  · subst hj
+    by_cases hi : i = j
+    · subst hi
+      simp [hx]
+    · simp [Matrix.one_apply, hi] <;> ring
+  · by_cases hij : i = j
+    · subst hij
+      simp [hj]
+    · rw [Matrix.one_apply_ne hij]
+      simp [hj]
+
+variable [TopologicalSpace K] [IsTopologicalRing K]
+
+def conjEq (H : AddSubgroup (Matrix (Fin n) (Fin n) K))
+    (hH : ∀ S ∈ H, ∀ g : Matrix (Fin n) (Fin n) K, cTr s g * S * g ∈ H)
+    (g g' : Matrix (Fin n) (Fin n) K) (h1 : g * g' = 1) (h2 : g' * g = 1) : H ≃ₜ+ H where
+  toFun S := ⟨cTr s g * S * g, hH _ S.2 g⟩
+  invFun S := ⟨cTr s g' * S * g', hH _ S.2 g'⟩
+  left_inv S := Subtype.ext (by
+    change cTr s g' * (cTr s g * (S : Matrix (Fin n) (Fin n) K) * g) * g' = S
+    rw [conj_conj, h1, cT_one, Matrix.one_mul, Matrix.mul_one])
+  right_inv S := Subtype.ext (by
+    change cTr s g * (cTr s g' * (S : Matrix (Fin n) (Fin n) K) * g') * g = S
+    rw [conj_conj, h2, cT_one, Matrix.one_mul, Matrix.mul_one])
+  map_add' S T := Subtype.ext (by
+    change cTr s g * ((S : Matrix (Fin n) (Fin n) K) + T) * g = cTr s g * S * g + cTr s g * T * g
+    rw [Matrix.mul_add, Matrix.add_mul])
+  continuous_toFun :=
+    ((continuous_const.matrix_mul continuous_subtype_val).matrix_mul continuous_const).subtype_mk _
+  continuous_invFun :=
+    ((continuous_const.matrix_mul continuous_subtype_val).matrix_mul continuous_const).subtype_mk _
+
+theorem conjEq_val (H : AddSubgroup (Matrix (Fin n) (Fin n) K))
+    (hH : ∀ S ∈ H, ∀ g : Matrix (Fin n) (Fin n) K, cTr s g * S * g ∈ H)
+    (g g' : Matrix (Fin n) (Fin n) K) (h1 : g * g' = 1) (h2 : g' * g = 1) (S : H) :
+    (conjEq s H hH g g' h1 h2 S : Matrix (Fin n) (Fin n) K) = cTr s g * S * g := rfl
+
+theorem map_shear (H : AddSubgroup (Matrix (Fin n) (Fin n) K))
+    (hH : ∀ S ∈ H, ∀ g : Matrix (Fin n) (Fin n) K, cTr s g * S * g ∈ H)
+    [LocallyCompactSpace H] [SecondCountableTopology H] [T2Space H] [MeasurableSpace H] [BorelSpace H]
+    (ν : Measure H) [ν.IsAddHaarMeasure] (h2 : IsUnit (2 : K)) (a : Fin n) (x : Fin n → K) (hx : x a = 0)
+    (τ : H → H) (hτ : ∀ S, (τ S : Matrix (Fin n) (Fin n) K) = cTr s (shearM a x) * S * shearM a x) :
+    ν.map τ = ν := by
+  have inv : ∀ y : Fin n → K, y a = 0 → shearM a y * shearM a (-y) = 1 ∧ shearM a (-y) * shearM a y = 1 := by
+    intro y hy
+    refine ⟨?_, ?_⟩
+    · rw [shearM_mul a _ _ (by simp [hy]), add_neg_cancel, shearM_zero]
+    · rw [shearM_mul a _ _ hy, neg_add_cancel, shearM_zero]
+  have hxx : (x + x) a = 0 := by simp [hx]
+  obtain ⟨i1, i2⟩ := inv x hx
+  obtain ⟨j1, j2⟩ := inv (x + x) hxx
+  have d1 : diagAt a (2 : K) * diagAt a ((h2.unit⁻¹ : Kˣ) : K) = 1 :=
+    diagAt_mul a _ _ (h2.mul_val_inv)
+  have d2 : diagAt a ((h2.unit⁻¹ : Kˣ) : K) * diagAt a (2 : K) = 1 :=
+    diagAt_mul a _ _ (h2.val_inv_mul)
+  have hτe : τ = conjEq s H hH _ _ i1 i2 := funext fun S => Subtype.ext (hτ S)
+  rw [hτe]
+  refine map_eq_of_sq_conj ν _ (conjEq s H hH _ _ j1 j2) (conjEq s H hH _ _ d1 d2) ?_ ?_
+  · intro S
+    apply Subtype.ext
+    rw [conjEq_val, conjEq_val, conjEq_val, conj_conj, shearM_mul a _ _ hx]
+  · intro S
+    apply Subtype.ext
+    rw [conjEq_val, conjEq_val, conjEq_val, conjEq_val, conj_conj, conj_conj, diagAt_shearM a x hx]
+
+end Mat
+
+end GlobalTheory.CompanionTheory.WhitFree.AvgInf.ShearHaar
+
+namespace GlobalTheory.CompanionTheory.WhitFree.AvgInf.ShearHaar
+
+theorem coordHerm_map_shear : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (n d : ℕ) (b : Module.Basis (Fin d) F E) (lam : Measure (Ainf F)), lam.IsAddHaarMeasure → ∀ (a : Fin n) (s : Fin n → Ainf F ⊗[F] E), s a = 0 → ∀ τ : HeckeCharacterZeroLocus.SiegelWeilU.HermR (Ainf F) σ n → HeckeCharacterZeroLocus.SiegelWeilU.HermR (Ainf F) σ n, Measurable τ → (∀ S, (τ S : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)) = HeckeCharacterZeroLocus.SiegelWeilU.cT (sigR (Ainf F) σ) (GlobalTheory.CompanionTheory.WhitFree.AvgInf.shearM a s) * S * GlobalTheory.CompanionTheory.WhitFree.AvgInf.shearM a s) → (GlobalTheory.CompanionTheory.SW.coordHerm (Ainf F) σ b lam n).map τ = GlobalTheory.CompanionTheory.SW.coordHerm (Ainf F) σ b lam n := by
+  intro F E _ _ _ _ _ σ hσ n d b lam hlam a s hs τ _ hτ
+  haveI : BorelSpace (Ainf F) := ⟨rfl⟩
+  obtain ⟨i1, i2, i3, i4, -⟩ := GlobalTheory.T.tensor_locally_compact_ring F E σ hσ (Ainf F)
+  haveI : BorelSpace (Ainf F ⊗[F] E) := ⟨rfl⟩
+  obtain ⟨-, -, hH⟩ := GlobalTheory.T.coordinate_haar_measure F E σ hσ (Ainf F) d b lam hlam
+  haveI := hH n
+  obtain ⟨hLH, hSH, hT2H, hBH, -⟩ := GlobalTheory.CompanionTheory.SW.HermTop.herm_top F E σ hσ (Ainf F) n
+  haveI := hLH
+  haveI := hSH
+  haveI := hT2H
+  haveI := hBH
+  have hinv : ∀ x : Ainf F ⊗[F] E, HeckeCharacterZeroLocus.SiegelWeilU.sigR (Ainf F) σ (HeckeCharacterZeroLocus.SiegelWeilU.sigR (Ainf F) σ x) = x :=
+    GlobalTheory.CompanionTheory.SW.GramAlg.sigR_invol (Ainf F) (GlobalTheory.CompanionTheory.SW.GramAlg.sigma_invol hσ)
+  have hmem : ∀ S ∈ HeckeCharacterZeroLocus.SiegelWeilU.HermR (Ainf F) σ n, ∀ g : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E),
+      HeckeCharacterZeroLocus.SiegelWeilU.cT (HeckeCharacterZeroLocus.SiegelWeilU.sigR (Ainf F) σ) g * S * g ∈ HeckeCharacterZeroLocus.SiegelWeilU.HermR (Ainf F) σ n := by
+    intro S hS g
+    have hS' : HeckeCharacterZeroLocus.SiegelWeilU.cT (HeckeCharacterZeroLocus.SiegelWeilU.sigR (Ainf F) σ) S = S := by
+      ext i j
+      exact hS i j
+    have key : HeckeCharacterZeroLocus.SiegelWeilU.cT (HeckeCharacterZeroLocus.SiegelWeilU.sigR (Ainf F) σ)
+        (HeckeCharacterZeroLocus.SiegelWeilU.cT (HeckeCharacterZeroLocus.SiegelWeilU.sigR (Ainf F) σ) g * S * g)
+        = HeckeCharacterZeroLocus.SiegelWeilU.cT (HeckeCharacterZeroLocus.SiegelWeilU.sigR (Ainf F) σ) g * S * g := by
+      rw [HeckeCharacterZeroLocus.SiegelWeilU.cT_mul, HeckeCharacterZeroLocus.SiegelWeilU.cT_mul, GlobalTheory.CompanionTheory.SW.GramAlg.cT_cT _ hinv, hS', Matrix.mul_assoc]
+    intro i j
+    exact congrFun (congrFun key i) j
+  have h2 : IsUnit (2 : Ainf F ⊗[F] E) := by
+    have : IsUnit (algebraMap F (Ainf F ⊗[F] E) 2) := (IsUnit.mk0 (2 : F) two_ne_zero).map _
+    rwa [map_ofNat] at this
+  exact map_shear (HeckeCharacterZeroLocus.SiegelWeilU.sigR (Ainf F) σ) (HeckeCharacterZeroLocus.SiegelWeilU.HermR (Ainf F) σ n) hmem
+    (GlobalTheory.CompanionTheory.SW.coordHerm (Ainf F) σ b lam n) h2 a s hs τ hτ
+
+end GlobalTheory.CompanionTheory.WhitFree.AvgInf.ShearHaar
+end
+end
+
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC GlobalTheory.CompanionTheory.SiegelND
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.CompanionTheory.WeilSiegel.Frame GlobalTheory.CompanionTheory.WhitFree
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.shear_pushforward_hermitian_measure : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (n d : ℕ) (b : Module.Basis (Fin d) F E) (lam : Measure (Ainf F)), lam.IsAddHaarMeasure → ∀ (a : Fin n) (s : Fin n → Ainf F ⊗[F] E), s a = 0 → ∀ τ : HeckeCharacterZeroLocus.SiegelWeilU.HermR (Ainf F) σ n → HeckeCharacterZeroLocus.SiegelWeilU.HermR (Ainf F) σ n, Measurable τ → (∀ S, (τ S : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)) = HeckeCharacterZeroLocus.SiegelWeilU.cT (sigR (Ainf F) σ) (GlobalTheory.CompanionTheory.WhitFree.AvgInf.shearM a s) * S * GlobalTheory.CompanionTheory.WhitFree.AvgInf.shearM a s) → (GlobalTheory.CompanionTheory.SW.coordHerm (Ainf F) σ b lam n).map τ = GlobalTheory.CompanionTheory.SW.coordHerm (Ainf F) σ b lam n := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WhitFree.AvgInf.ShearHaar.coordHerm_map_shear
+end
+
+section
+section
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC GlobalTheory.CompanionTheory.SiegelND
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.CompanionTheory.WeilSiegel.Frame GlobalTheory.CompanionTheory.WhitFree
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.WhitFree.AvgInf.SchwartzTuple
+
+theorem decay_of_functionals {V ι : Type} [AddCommGroup V] [TopologicalSpace V] [Fintype ι] {N : ℕ}
+    (e : V ≃+ (Fin N → ℝ)) (hes : Continuous e.symm) (c : ι → V →+ ℂ) (hc : ∀ i, Continuous (c i))
+    (f : SchwartzMap (Fin N → ℝ) ℂ) (k : ℕ) :
+    ∃ C : ℝ, ∀ R : ℝ, 1 ≤ R → ∀ X : V, (∃ i, R < ‖c i X‖) → ‖f (e X)‖ ≤ C / R ^ k := by
+  let L : ι → (Fin N → ℝ) →L[ℝ] ℂ := fun i =>
+    ((c i).comp e.symm.toAddMonoidHom).toRealLinearMap ((hc i).comp hes)
+  have hL : ∀ i X, c i X = L i (e X) := by
+    intro i X
+    show c i X = c i (e.symm (e X))
+    rw [e.symm_apply_apply]
+  set T : ℝ := ∑ i, ‖L i‖ + 1 with hT
+  have hTpos : 0 < T := by
+    have : 0 ≤ ∑ i, ‖L i‖ := Finset.sum_nonneg fun _ _ => norm_nonneg _
+    linarith
+  obtain ⟨C0, hC0⟩ := f.decay k 0
+  refine ⟨C0 * T ^ k, fun R hR X ⟨i, hi⟩ => ?_⟩
+  have hRpos : 0 < R := by linarith
+  set x := e X with hx
+  have hb : ‖c i X‖ ≤ T * ‖x‖ := by
+    rw [hL]
+    refine ((L i).le_opNorm x).trans ?_
+    refine mul_le_mul_of_nonneg_right ?_ (norm_nonneg _)
+    have : ‖L i‖ ≤ ∑ j, ‖L j‖ :=
+      Finset.single_le_sum (f := fun j => ‖L j‖) (fun _ _ => norm_nonneg _) (Finset.mem_univ i)
+    linarith
+  have hRx : R ≤ T * ‖x‖ := hi.le.trans hb
+  have hd : ‖x‖ ^ k * ‖f x‖ ≤ C0 := by
+    simpa [norm_iteratedFDeriv_zero] using hC0.2 x
+  rw [le_div_iff₀ (pow_pos hRpos k)]
+  calc ‖f x‖ * R ^ k ≤ ‖f x‖ * (T * ‖x‖) ^ k :=
+        mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hRpos.le hRx k) (norm_nonneg _)
+    _ = (‖x‖ ^ k * ‖f x‖) * T ^ k := by rw [mul_pow]; ring
+    _ ≤ C0 * T ^ k := mul_le_mul_of_nonneg_right hd (pow_nonneg hTpos.le k)
+
+theorem schwartzArch_facts : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (κ : Ainf F ⊗[F] E ≃+* (NumberField.InfinitePlace F → ℂ)), IsHomeomorph κ → ∀ (n M d : ℕ) (b : Module.Basis (Fin d) F E) (lam : Measure (Ainf F)), lam.IsAddHaarMeasure → ∀ φ : (Fin n → Fin M → Ainf F ⊗[F] E) → ℂ, GlobalTheory.Published.SiegelOneVector.IsSchwartzArch φ → Continuous φ ∧ Integrable φ (GlobalTheory.CompanionTheory.SW.coordW (Ainf F) b lam n M) ∧ (∃ B : ℝ, ∀ X, ‖φ X‖ ≤ B) ∧ ∀ k : ℕ, ∃ C : ℝ, ∀ R : ℝ, 1 ≤ R → ∀ X, X ∉ GlobalTheory.CompanionTheory.WhitFree.AvgInf.boxK κ (fun _ _ => R) → ‖φ X‖ ≤ C / R ^ k := by
+  intro F E _ _ _ _ _ σ hCM κ hκ n M d b lam hlam φ hφ
+  have hloc := GlobalTheory.T.infinite_adeles_local_ring_totally_real F hCM.1
+  obtain ⟨hTR, hLC, hSC, hT2, -⟩ := id hloc
+  haveI := hTR
+  haveI := hLC
+  haveI := hSC
+  haveI := hT2
+  haveI : BorelSpace (Ainf F) := ⟨rfl⟩
+  obtain ⟨i1, i2, i3, i4, hsc, -, hrepr, hB, -, hgc⟩ := GlobalTheory.T.tensor_locally_compact_ring F E σ hCM (Ainf F)
+  haveI := hB n M
+  obtain ⟨-, hW, -⟩ := GlobalTheory.T.coordinate_haar_measure F E σ hCM (Ainf F) d b lam hlam
+  haveI := hW n M
+  obtain ⟨N, e, he, hes, f, hf⟩ := hφ
+  have hφe : φ = fun x => f (e x) := funext hf
+  have hφc : Continuous φ := by rw [hφe]; exact f.continuous.comp he
+  set μ := GlobalTheory.CompanionTheory.SW.coordW (Ainf F) b lam n M with hμ
+  haveI hμe : (μ.map e).IsAddHaarMeasure := e.isAddHaarMeasure_map μ he hes
+  have hint : Integrable φ μ := by
+    have h1 : Integrable (fun x => f x) (μ.map e) := f.integrable
+    rw [hφe]
+    exact (integrable_map_measure h1.aestronglyMeasurable he.measurable.aemeasurable).1 h1
+  refine ⟨hφc, hint, ?_, fun k => ?_⟩
+  · obtain ⟨C0, hC0⟩ := f.decay 0 0
+    refine ⟨C0, fun X => ?_⟩
+    rw [hf]
+    simpa [norm_iteratedFDeriv_zero] using hC0.2 (e X)
+  · let c : (Fin n × Fin M × NumberField.InfinitePlace F) → (Fin n → Fin M → Ainf F ⊗[F] E) →+ ℂ := fun p =>
+      { toFun := fun X => κ (X p.1 p.2.1) p.2.2
+        map_zero' := by simp
+        map_add' := fun X Y => by simp }
+    have hc : ∀ p, Continuous (c p) := fun p =>
+      (continuous_apply p.2.2).comp (hκ.continuous.comp
+        ((continuous_apply p.2.1).comp (continuous_apply p.1)))
+    obtain ⟨C, hC⟩ := decay_of_functionals e hes c hc f k
+    refine ⟨C, fun R hR X hX => ?_⟩
+    rw [hf]
+    refine hC R hR X ?_
+    simp only [boxK, Set.mem_setOf_eq, not_forall, not_le] at hX
+    obtain ⟨a, i, w, h⟩ := hX
+    exact ⟨(a, i, w), h⟩
+
+end GlobalTheory.CompanionTheory.WhitFree.AvgInf.SchwartzTuple
+end
+end
+
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC GlobalTheory.CompanionTheory.SiegelND
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.CompanionTheory.WeilSiegel.Frame GlobalTheory.CompanionTheory.WhitFree
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.schwartz_arch_continuous_integrable : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (κ : Ainf F ⊗[F] E ≃+* (NumberField.InfinitePlace F → ℂ)), IsHomeomorph κ → ∀ (n M d : ℕ) (b : Module.Basis (Fin d) F E) (lam : Measure (Ainf F)), lam.IsAddHaarMeasure → ∀ φ : (Fin n → Fin M → Ainf F ⊗[F] E) → ℂ, GlobalTheory.Published.SiegelOneVector.IsSchwartzArch φ → Continuous φ ∧ Integrable φ (GlobalTheory.CompanionTheory.SW.coordW (Ainf F) b lam n M) ∧ (∃ B : ℝ, ∀ X, ‖φ X‖ ≤ B) ∧ ∀ k : ℕ, ∃ C : ℝ, ∀ R : ℝ, 1 ≤ R → ∀ X, X ∉ GlobalTheory.CompanionTheory.WhitFree.AvgInf.boxK κ (fun _ _ => R) → ‖φ X‖ ≤ C / R ^ k := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WhitFree.AvgInf.SchwartzTuple.schwartzArch_facts
+end
+
+section
 section
 open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
@@ -446,3 +1462,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.archimedean_siegel_weil_measure : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), IsHermND σ J → ∀ n : ℕ, 0 < n → 2 * n < M → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E) (laminf : Measure (Ainf F)), GlobalTheory.CompanionTheory.SW.IsStdInf laminf → ∀ minf : HermR (Ainf F) σ n → Measure (Fin n → Fin M → Ainf F ⊗[F] E), IsGramFibFree (Ainf F) σ J n (GlobalTheory.CompanionTheory.SW.coordW (Ainf F) b laminf n M) (GlobalTheory.CompanionTheory.SW.coordHerm (Ainf F) σ b laminf n) minf → ∀ (c : HermR (Ainf F) σ n) (φ : (Fin n → Fin M → Ainf F ⊗[F] E) → ℂ), GlobalTheory.Published.SiegelOneVector.IsSchwartzArch φ → Measurable φ ∧ Integrable φ (minf c) ∧ ∀ ρ : ℕ → HermR (Ainf F) σ n → ℝ, (∀ k, Continuous (ρ k) ∧ HasCompactSupport (ρ k) ∧ (∀ y, 0 ≤ ρ k y) ∧ 0 < ∫ y, ρ k y ∂(GlobalTheory.CompanionTheory.SW.coordHerm (Ainf F) σ b laminf n)) → Filter.Tendsto (fun k => tsupport (ρ k)) Filter.atTop (nhds (0 : HermR (Ainf F) σ n)).smallSets → (∀ k, Integrable (fun X => φ X * (gramTest (Ainf F) σ J c (ρ k) X : ℂ)) (GlobalTheory.CompanionTheory.SW.coordW (Ainf F) b laminf n M)) ∧ Filter.Tendsto (fun k => (∫ X, φ X * (gramTest (Ainf F) σ J c (ρ k) X : ℂ) ∂(GlobalTheory.CompanionTheory.SW.coordW (Ainf F) b laminf n M)) / ((∫ y, ρ k y ∂(GlobalTheory.CompanionTheory.SW.coordHerm (Ainf F) σ b laminf n) : ℝ) : ℂ)) Filter.atTop (nhds (∫ X, φ X ∂(minf c))) := by
   atlas_forward_decl GlobalTheory.CompanionTheory.WhitFree.AvgInf.avgInf_tendsto
+end

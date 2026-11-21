@@ -1,6 +1,20 @@
 import Mathlib
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LowerShearHaar.TriShear
 
+section
+open MeasureTheory
+
+namespace PI.LowSplitHaarW
+
+def TriShear : Prop :=
+  ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (r : ι → ℕ) (g : ι → (ι → ℂ) → ℂ),
+    (∀ i, Measurable (g i)) →
+    (∀ i (x y : ι → ℂ), (∀ j, r j < r i → x j = y j) → g i x = g i y) →
+    MeasurePreserving (fun x : ι → ℂ => fun i => x i + g i x) volume volume
+
+end PI.LowSplitHaarW
+end
+
+section
 open MeasureTheory
 
 noncomputable section
@@ -83,3 +97,5 @@ theorem triShear : TriShear := by
   exact measurePreserving_of_card (Fintype.card ι) ι rfl r g hg hdep
 
 end PI.LowSplitHaarW
+end
+end

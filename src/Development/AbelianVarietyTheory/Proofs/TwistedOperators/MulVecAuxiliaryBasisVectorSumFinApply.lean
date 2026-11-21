@@ -1,15 +1,680 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsEqActStdLat
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsLatticeStdLatAndAct
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ScaledBasisMemChainLattice
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsLatticeChainLatAndComap
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsOpenAndRelIndexNeZero
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsIsRepsOfFg
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.StabiliserFiniteCosetsMod
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsUnipotent
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegralPeriodicEqMeasureMulSumCosets
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.VolFreePerLatStdLat
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RelIndexPerLat
 
+section
+open MeasureTheory ValuativeRel Matrix
+open scoped Pointwise
+open GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.ExponentTerms GlobalTheory.RootEx.UnfoldShape
+
+namespace GlobalTheory.RootEx.UnfoldShape
+
+theorem isLattice_stdLat_and_act : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ι : Type) [Fintype ι] [DecidableEq ι], Submodule.IsLattice k (stdLat k ι) ∧ ∀ (g : GL ι k) (L : Submodule 𝒪[k] (ι → k)), Submodule.IsLattice k L → Submodule.IsLattice k (act g L) := by
+  intro k _ _ _ _ ι _ _
+  refine ⟨⟨?_, ?_⟩, fun g L hL => ⟨?_, ?_⟩⟩
+  · unfold stdLat
+    refine Submodule.fg_pi fun _ => ?_
+    rw [Submodule.one_eq_span]
+    exact Submodule.fg_span_singleton _
+  · rw [eq_top_iff]
+    intro v _
+    have hv : v = ∑ i, v i • (Pi.single i (1 : k) : ι → k) := by
+      ext j
+      simp [Pi.single_apply]
+    rw [hv]
+    refine Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ?_)
+    refine mem_stdLat.2 fun j => ?_
+    rw [Pi.single_apply]
+    split_ifs
+    · exact one_mem _
+    · exact zero_mem _
+  · exact hL.fg.map _
+  · have himg : ((act g L : Submodule 𝒪[k] (ι → k)) : Set (ι → k))
+        = (g : Matrix ι ι k).mulVecLin '' (L : Set (ι → k)) := by
+      ext v
+      exact mem_act
+    rw [himg, ← Submodule.map_span, hL.span_eq_top, Submodule.map_top, LinearMap.range_eq_top]
+    intro w
+    refine ⟨((g⁻¹ : GL ι k) : Matrix ι ι k) *ᵥ w, ?_⟩
+    rw [Matrix.mulVecLin_apply, Matrix.mulVec_mulVec, Units.mul_inv, Matrix.one_mulVec]
+
+end GlobalTheory.RootEx.UnfoldShape
+end
+
+section
+open MeasureTheory ValuativeRel Matrix
+open scoped Pointwise
+open GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.ExponentTerms GlobalTheory.RootEx.UnfoldShape
+
+namespace GlobalTheory.RootEx.LatOpen
+
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+  {ι : Type}
+
+theorem eventually_smul_mem (L : Submodule 𝒪[k] (ι → k))
+    (hL : Submodule.span k (L : Set (ι → k)) = ⊤) (x : ι → k) :
+    ∀ᶠ t in nhds (0 : k), t • x ∈ L := by
+  have hx : x ∈ Submodule.span k (L : Set (ι → k)) := by rw [hL]; trivial
+  induction hx using Submodule.span_induction with
+  | mem y hy =>
+    have h : (𝒪[k] : Set k) ∈ nhds (0 : k) := (isOpen_int k).mem_nhds (zero_mem 𝒪[k])
+    filter_upwards [h] with t ht
+    exact L.smul_mem (⟨t, ht⟩ : 𝒪[k]) hy
+  | zero => exact Filter.Eventually.of_forall fun t => by simp
+  | add y z _ _ hy hz =>
+    filter_upwards [hy, hz] with t h1 h2
+    rw [smul_add]
+    exact L.add_mem h1 h2
+  | smul a y _ hy =>
+    have ht : Filter.Tendsto (fun t : k => t * a) (nhds 0) (nhds 0) := by
+      have h : Continuous (fun t : k => t * a) := continuous_id.mul continuous_const
+      simpa using h.tendsto 0
+    filter_upwards [ht.eventually hy] with t h
+    rwa [smul_smul]
+
+theorem isOpen_of_span_eq_top [Fintype ι] [DecidableEq ι] (L : Submodule 𝒪[k] (ι → k))
+    (hL : Submodule.span k (L : Set (ι → k)) = ⊤) : IsOpen (L : Set (ι → k)) := by
+  refine AddSubgroup.isOpen_of_mem_nhds L.toAddSubgroup (g := 0) ?_
+  have h : ∀ᶠ x in nhds (0 : ι → k), ∀ i, x i • (Pi.single i (1 : k) : ι → k) ∈ L := by
+    refine Filter.eventually_all.2 fun i => ?_
+    have ht : Filter.Tendsto (fun x : ι → k => x i) (nhds 0) (nhds 0) :=
+      (continuous_apply i).tendsto (0 : ι → k)
+    exact ht.eventually (eventually_smul_mem L hL _)
+  filter_upwards [h] with x hx
+  have e : x = ∑ i, x i • (Pi.single i (1 : k) : ι → k) := by
+    funext j
+    simp [Finset.sum_apply, Pi.single_apply]
+  change x ∈ L
+  rw [e]
+  exact L.sum_mem fun i _ => hx i
+
+theorem isCompact_stdLat : IsCompact (stdLat k ι : Set (ι → k)) := by
+  have e : (stdLat k ι : Set (ι → k)) = Set.pi Set.univ fun _ => (𝒪[k] : Set k) := by
+    ext v
+    simp only [SetLike.mem_coe, mem_stdLat, Set.mem_pi, Set.mem_univ, true_imp_iff]
+  rw [e]
+  exact isCompact_univ_pi fun _ => isCompact_int k
+
+theorem isOpen_and_relIndex_ne_zero (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] (ι : Type) [Fintype ι] [DecidableEq ι]
+    (L : Submodule 𝒪[k] (ι → k)) (hL : Submodule.IsLattice k L) :
+    IsOpen (L : Set (ι → k)) ∧ L.toAddSubgroup.relIndex (stdLat k ι).toAddSubgroup ≠ 0 := by
+  have ho := isOpen_of_span_eq_top L hL.span_eq_top
+  refine ⟨ho, ?_⟩
+  haveI : CompactSpace (stdLat k ι).toAddSubgroup :=
+    isCompact_iff_compactSpace.1 (isCompact_stdLat (k := k) (ι := ι))
+  haveI : Finite ((stdLat k ι).toAddSubgroup ⧸
+      L.toAddSubgroup.addSubgroupOf (stdLat k ι).toAddSubgroup) :=
+    AddSubgroup.quotient_finite_of_isOpen _ (ho.preimage continuous_subtype_val)
+  exact AddSubgroup.index_ne_zero_of_finite
+
+end GlobalTheory.RootEx.LatOpen
+end
+
+section
+open MeasureTheory ValuativeRel Matrix
+open scoped Pointwise
+open GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.ExponentTerms GlobalTheory.RootEx.UnfoldShape
+
+namespace GlobalTheory.RootEx.UnfoldShape
+
+theorem exists_isReps_of_fg (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] (ι : Type) [Fintype ι] [DecidableEq ι] (ϖ : 𝒪[k])
+    (hϖ : Irreducible ϖ) (M : Submodule 𝒪[k] (ι → k)) (hM : M.FG) :
+    ∃ T : Finset (ι → k), IsReps ϖ M T := by
+  classical
+  have h1 : Finite (𝒪[k] ⧸ Ideal.span {ϖ}) := by
+    rw [← hϖ.maximalIdeal_eq]
+    exact (inferInstance : Finite 𝓀[k])
+  have hfin : Module.Finite 𝒪[k] M := Module.Finite.iff_fg.mpr hM
+  set N : Submodule 𝒪[k] M := Ideal.span {ϖ} • ⊤ with hN
+  have h2 : Finite (M ⧸ N) := by
+    have : Finite (M ⧸ (⊤ : Submodule 𝒪[k] M)) := by
+      have : Subsingleton (M ⧸ (⊤ : Submodule 𝒪[k] M)) :=
+        Submodule.Quotient.subsingleton_iff.mpr rfl
+      infer_instance
+    exact Submodule.finite_quotient_smul _ Module.Finite.fg_top
+  have hmem : ∀ x : M, x ∈ N ↔ (x : ι → k) ∈ ϖ • M := by
+    intro x
+    rw [hN, Submodule.ideal_span_singleton_smul, Submodule.mem_smul_pointwise_iff_exists,
+      Submodule.mem_smul_pointwise_iff_exists]
+    constructor
+    · rintro ⟨b, -, rfl⟩
+      exact ⟨b, b.2, rfl⟩
+    · rintro ⟨b, hb, h⟩
+      exact ⟨⟨b, hb⟩, trivial, Subtype.ext h⟩
+  have := Fintype.ofFinite (M ⧸ N)
+  choose s hs using Submodule.Quotient.mk_surjective N
+  refine ⟨Finset.univ.image fun q => (s q : ι → k), ?_, ?_⟩
+  · intro t ht
+    obtain ⟨q, -, rfl⟩ := Finset.mem_image.mp ht
+    exact (s q).2
+  · intro v hv
+    have key : ∀ q, v - (s q : ι → k) ∈ ϖ • M ↔ Submodule.Quotient.mk (⟨v, hv⟩ : M) = q := by
+      intro q
+      conv_rhs => rw [← hs q, Submodule.Quotient.eq, hmem]
+      rfl
+    refine ⟨s (Submodule.Quotient.mk ⟨v, hv⟩), ⟨Finset.mem_image.mpr ⟨_, Finset.mem_univ _, rfl⟩,
+      (key _).mpr rfl⟩, ?_⟩
+    rintro t ⟨ht, h⟩
+    obtain ⟨q, -, rfl⟩ := Finset.mem_image.mp ht
+    rw [(key q).mp h]
+
+end GlobalTheory.RootEx.UnfoldShape
+end
+
+section
+open MeasureTheory ValuativeRel Matrix
+open scoped Pointwise
+open GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.ExponentTerms GlobalTheory.RootEx.UnfoldShape
+
+namespace GlobalTheory.RootEx.UnfoldShape
+
+theorem stabiliser_finite_cosets_mod (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] (ι : Type) [Fintype ι] [DecidableEq ι] (ϖ : 𝒪[k])
+    (M : Submodule 𝒪[k] (ι → k)) (S : Finset (ι → k)) (hM : M.FG) (hS : IsReps ϖ M S) :
+    ∃ T : Finset (GL ι k), (∀ t ∈ T, act t M = M) ∧ ∀ t : GL ι k, act t M = M →
+      ∃ t₀ ∈ T, ∃ j : GL ι k, act j M = M ∧ MapsInto (j.val - 1) M (ϖ • M) ∧ t = t₀ * j := by
+  classical
+  obtain ⟨s, hs⟩ := hM
+  have hmem : ∀ t : GL ι k, act t M = M → ∀ x ∈ M, t.val *ᵥ x ∈ M := fun t ht x hx => by
+    have h : t.val *ᵥ x ∈ act t M := mem_act.2 ⟨x, hx, rfl⟩
+    rwa [ht] at h
+  have hsM : ∀ x : s, x.1 ∈ M := fun x => hs ▸ Submodule.subset_span x.2
+  have hex : ∀ (t : {t : GL ι k // act t M = M}) (x : s), ∃ r : S, t.1.val *ᵥ x.1 - r.1 ∈ ϖ • M := by
+    intro t x
+    obtain ⟨r, hr, -⟩ := hS.2 _ (hmem t.1 t.2 x.1 (hsM x))
+    exact ⟨⟨r, hr.1⟩, hr.2⟩
+  choose f hf using hex
+  have hsec : ∀ y : Set.range f, ∃ t, f t = y.1 := fun y => y.2
+  choose g hg using hsec
+  have : Fintype (Set.range f) := Fintype.ofFinite _
+  refine ⟨Finset.univ.image fun y => (g y).1, ?_, fun t ht => ?_⟩
+  · intro t ht
+    obtain ⟨y, -, rfl⟩ := Finset.mem_image.1 ht
+    exact (g y).2
+  · set t₀ := g ⟨f ⟨t, ht⟩, ⟨_, rfl⟩⟩ with ht₀
+    have hft : f t₀ = f ⟨t, ht⟩ := hg _
+    have hinv : act (t₀.1)⁻¹ M = M := by
+      have h := act_mul (t₀.1)⁻¹ t₀.1 M
+      rw [inv_mul_cancel, act_one, t₀.2] at h
+      exact h.symm
+    refine ⟨t₀.1, Finset.mem_image.2 ⟨_, Finset.mem_univ _, rfl⟩, (t₀.1)⁻¹ * t, ?_, ?_, ?_⟩
+    · rw [act_mul, ht, hinv]
+    · intro v hv
+      rw [← hs] at hv
+      induction hv using Submodule.span_induction with
+      | mem x hx =>
+        have h1 := hf ⟨t, ht⟩ ⟨x, hx⟩
+        have h2 := hf t₀ ⟨x, hx⟩
+        rw [hft] at h2
+        have h3 := sub_mem h1 h2
+        rw [sub_sub_sub_cancel_right] at h3
+        obtain ⟨w, hw, hw'⟩ := mem_smul_iff.1 h3
+        refine mem_smul_iff.2 ⟨_, hmem _ hinv w hw, ?_⟩
+        rw [← Matrix.mulVec_smul, hw', Matrix.mulVec_sub, Matrix.sub_mulVec, Matrix.mulVec_mulVec,
+          Matrix.mulVec_mulVec, Units.inv_mul, Units.val_mul]
+      | zero => rw [Matrix.mulVec_zero]; exact zero_mem _
+      | add x y _ _ hx hy => rw [Matrix.mulVec_add]; exact add_mem hx hy
+      | smul a x _ hx =>
+        rw [Matrix.mulVec_smul]
+        exact Submodule.smul_mem _ a hx
+    · rw [mul_inv_cancel_left]
+
+end GlobalTheory.RootEx.UnfoldShape
+end
+
+section
+open MeasureTheory ValuativeRel Matrix
+open scoped Pointwise
+open GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.ExponentTerms GlobalTheory.RootEx.UnfoldShape
+
+noncomputable section
+namespace GlobalTheory.RootEx.UnfoldFlag
+
+variable {k : Type} [Field k] [ValuativeRel k] {n : Type} [Fintype n] [DecidableEq n] {c : ℕ}
+
+def flagMat (y : Fin c → (n ⊕ Fin c → k)) : Matrix (n ⊕ Fin c) (n ⊕ Fin c) k :=
+  Matrix.of fun r s =>
+    Sum.elim (fun s => (1 : Matrix (n ⊕ Fin c) (n ⊕ Fin c) k) r (Sum.inl s)) (fun i => y i r) s
+
+theorem flagMat_mulVec (y : Fin c → (n ⊕ Fin c → k)) (v : n ⊕ Fin c → k) :
+    flagMat y *ᵥ v = inX k n c (fun r => v (Sum.inl r)) + ∑ i, v (Sum.inr i) • y i := by
+  funext r
+  rw [inX_apply]
+  simp only [mulVec, dotProduct, flagMat, of_apply, Fintype.sum_sum_type, Sum.elim_inl,
+    Sum.elim_inr, Pi.add_apply, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+  congr 1
+  · rcases r with r | l
+    · simp [one_apply]
+    · simp [one_apply]
+  · exact Finset.sum_congr rfl fun i _ => mul_comm _ _
+
+theorem flagMat_uni {y : Fin c → (n ⊕ Fin c → k)} (hY : ∀ i, y i ∈ Yle k n c (i.val + 1))
+    (h1 : ∀ i, y i (Sum.inr i) = 1) (h0 : ∀ i : Fin c, i.val = 0 → ∀ r, y i (Sum.inl r) = 0) :
+    Radical.Uni (lev 1) (flagMat y) := by
+  intro r s hrs
+  rcases s with s | i
+  · simp [flagMat]
+  · simp only [flagMat, of_apply, Sum.elim_inr]
+    rcases r with r | l
+    · have hi : i.val = 0 := by
+        simp only [lev, Sum.elim_inl, Sum.elim_inr] at hrs
+        omega
+      rw [h0 i hi r, one_apply_ne (by simp)]
+    · simp only [lev, Sum.elim_inr] at hrs
+      rcases Nat.lt_or_eq_of_le hrs with h | h
+      · rw [(mem_Yle.mp (hY i)) l h,
+          one_apply_ne (fun e => by simp only [Sum.inr.injEq] at e; subst e; omega)]
+      · have e : i = l := Fin.ext (by omega)
+        subst e
+        rw [h1, one_apply_eq]
+
+theorem exists_unipotent : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : Type) [Fintype n] [DecidableEq n] (c : ℕ) (hc : 1 ≤ c) (ϖ : 𝒪[k]), (ϖ : k) ≠ 0 → ∀ Λ : Submodule 𝒪[k] (n ⊕ Fin c → k), (∀ i : Fin c, (Λ ⊓ Yle k n c (i.val + 1)).map (LinearMap.proj (Sum.inr i)) = Submodule.span 𝒪[k] {(ϖ : k) ^ (i.val + 1)}) → (ϖ : k) • aux k n (⟨0, hc⟩ : Fin c) ∈ Λ → ∃ u ∈ N k n c 1, act u Λ = chainLat ϖ c (Λ.comap (inX k n c)) := by
+  intro k _ _ _ _ n _ _ c hc ϖ hϖ Λ hΛ hfirst
+  have hpow : ∀ i : Fin c, (ϖ : k) ^ (i.val + 1) ≠ 0 := fun i => pow_ne_zero _ hϖ
+
+  have hpick : ∀ i : Fin c, ∃ w : n ⊕ Fin c → k, w ∈ Λ ∧ w ∈ Yle k n c (i.val + 1) ∧
+      w (Sum.inr i) = (ϖ : k) ^ (i.val + 1) ∧ (i.val = 0 → ∀ r, w (Sum.inl r) = 0) := by
+    intro i
+    by_cases hi : i.val = 0
+    · have e : i = ⟨0, hc⟩ := Fin.ext hi
+      subst e
+      refine ⟨(ϖ : k) • aux k n (⟨0, hc⟩ : Fin c), hfirst, ?_, ?_, fun _ r => ?_⟩
+      · rw [mem_Yle]
+        intro l hl
+        have hl0 : l ≠ ⟨0, hc⟩ := fun e => by subst e; simp at hl
+        simp [aux, hl0]
+      · simp [aux]
+      · simp [aux]
+    · have hmem : (ϖ : k) ^ (i.val + 1) ∈
+          (Λ ⊓ Yle k n c (i.val + 1)).map (LinearMap.proj (R := 𝒪[k]) (Sum.inr i)) := by
+        rw [hΛ i]
+        exact Submodule.mem_span_singleton_self _
+      obtain ⟨w, hw, hwi⟩ := Submodule.mem_map.1 hmem
+      exact ⟨w, (Submodule.mem_inf.1 hw).1, (Submodule.mem_inf.1 hw).2, hwi, fun h => absurd h hi⟩
+  choose w hwΛ hwY hw1 hw0 using hpick
+
+  obtain ⟨y, hy⟩ : ∃ y : Fin c → (n ⊕ Fin c → k), ∀ i, y i = ((ϖ : k) ^ (i.val + 1))⁻¹ • w i :=
+    ⟨_, fun _ => rfl⟩
+  have hyY : ∀ i, y i ∈ Yle k n c (i.val + 1) := by
+    intro i
+    rw [mem_Yle]
+    intro l hl
+    rw [hy, Pi.smul_apply, (mem_Yle.mp (hwY i)) l hl, smul_zero]
+  have hy1 : ∀ i, y i (Sum.inr i) = 1 := by
+    intro i
+    rw [hy, Pi.smul_apply, hw1, smul_eq_mul, inv_mul_cancel₀ (hpow i)]
+  have hy0 : ∀ i : Fin c, i.val = 0 → ∀ r, y i (Sum.inl r) = 0 := by
+    intro i hi r
+    rw [hy, Pi.smul_apply, hw0 i hi r, smul_zero]
+  have hyw : ∀ i, (ϖ : k) ^ (i.val + 1) • y i = w i := by
+    intro i
+    rw [hy, smul_smul, mul_inv_cancel₀ (hpow i), one_smul]
+  have hU := flagMat_uni hyY hy1 hy0
+  have hdet : IsUnit (flagMat y).det := by
+    rw [hU.det]
+    exact isUnit_one
+  obtain ⟨g, hg⟩ : ∃ g : GL (n ⊕ Fin c) k, g.val = flagMat y := ⟨Matrix.nonsingInvUnit _ hdet, rfl⟩
+
+  have himg : act g (chainLat ϖ c (Λ.comap (inX k n c))) = Λ := by
+    apply le_antisymm
+    · intro v hv
+      obtain ⟨u, hu, rfl⟩ := mem_act.1 hv
+      obtain ⟨huL, hua⟩ := mem_chainLat.1 hu
+      rw [hg, flagMat_mulVec]
+      refine Λ.add_mem (Submodule.mem_comap.1 huL) (Λ.sum_mem fun i _ => ?_)
+      obtain ⟨a, ha⟩ := hua i
+      rw [ha, mul_smul, hyw i]
+      exact Λ.smul_mem a (hwΛ i)
+    · have hX : ∀ x ∈ Λ.comap (inX k n c),
+          inX k n c x ∈ act g (chainLat ϖ c (Λ.comap (inX k n c))) := by
+        intro x hx
+        refine mem_act.2 ⟨inX k n c x, inX_mem_chainLat.2 hx, ?_⟩
+        rw [hg, flagMat_mulVec]
+        simp [inX_apply]
+      have hW : ∀ i, w i ∈ act g (chainLat ϖ c (Λ.comap (inX k n c))) := by
+        intro i
+        refine mem_act.2 ⟨(ϖ : k) ^ (i.val + 1) • aux k n i, scaled_basis_mem_chainLattice ϖ _ i, ?_⟩
+        rw [hg, mulVec_smul, ← hyw i]
+        congr 1
+        rw [aux, mulVec_single_one]
+        rfl
+
+      have key : ∀ j, j ≤ c → ∀ v ∈ Λ, v ∈ Yle k n c j →
+          v ∈ act g (chainLat ϖ c (Λ.comap (inX k n c))) := by
+        intro j
+        induction j with
+        | zero =>
+          intro _ v hv hv0
+          have e : v = inX k n c (fun r => v (Sum.inl r)) := by
+            funext r
+            rcases r with r | l
+            · simp [inX_apply]
+            · simp [inX_apply, (mem_Yle.mp hv0) l (by omega)]
+          rw [e]
+          apply hX
+          rw [Submodule.mem_comap, ← e]
+          exact hv
+        | succ j ih =>
+          intro hj v hv hvY
+          obtain ⟨i, hi⟩ : ∃ i : Fin c, i.val = j := ⟨⟨j, by omega⟩, rfl⟩
+          subst hi
+          have hmem : v (Sum.inr i) ∈ Submodule.span 𝒪[k] {(ϖ : k) ^ (i.val + 1)} := by
+            rw [← hΛ i]
+            exact Submodule.mem_map_of_mem (Submodule.mem_inf.2 ⟨hv, hvY⟩)
+          obtain ⟨a, ha⟩ := Submodule.mem_span_singleton.1 hmem
+          have hrest : v - a • w i ∈ Yle k n c i.val := by
+            rw [mem_Yle]
+            intro l hl
+            rcases eq_or_ne l i with rfl | hne
+            · rw [Pi.sub_apply, Pi.smul_apply, hw1, ha, sub_self]
+            · have hne' : l.val ≠ i.val := fun h => hne (Fin.ext h)
+              have hl' : i.val + 1 < l.val + 1 := by omega
+              rw [Pi.sub_apply, Pi.smul_apply, (mem_Yle.mp hvY) l hl', (mem_Yle.mp (hwY i)) l hl',
+                smul_zero, sub_zero]
+          have h1 := ih (by omega) (v - a • w i) (Λ.sub_mem hv (Λ.smul_mem a (hwΛ i))) hrest
+          have h2 := Submodule.add_mem _ h1 (Submodule.smul_mem _ a (hW i))
+          rwa [sub_add_cancel] at h2
+      intro v hv
+      exact key c le_rfl v hv (mem_Yle.2 fun l hl => absurd hl (by have := l.isLt; omega))
+  refine ⟨g⁻¹, (Radical.mem_N_iff g⁻¹).2 ?_, ?_⟩
+  · exact Radical.Uni.inv (g := g) (by rw [hg]; exact hU)
+  · conv_lhs => rw [← himg]
+    rw [← act_mul, inv_mul_cancel, act_one]
+
+end GlobalTheory.RootEx.UnfoldFlag
+end
+end
+
+section
+open MeasureTheory ValuativeRel Matrix
+open scoped Pointwise
+open GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.ExponentTerms GlobalTheory.RootEx.UnfoldShape
+
+namespace GlobalTheory.RootEx.UnfoldShape
+
+theorem integral_periodic_eq_measure_mul_sum_cosets :
+    ∀ (V : Type) [AddCommGroup V] [MeasurableSpace V] [MeasurableAdd V] (μ : Measure V) [μ.IsAddLeftInvariant] (H : AddSubgroup V), MeasurableSet (H : Set V) → μ H ≠ ⊤ → ∀ (F : V → ℂ) (ι : Type) (T : Finset ι) (t : ι → V), (∀ x, ∀ h ∈ H, F (x + h) = F x) → (∀ x, F x ≠ 0 → ∃ w ∈ T, x - t w ∈ H) → (∀ w ∈ T, ∀ w' ∈ T, t w - t w' ∈ H → w = w') → ∫ x, F x ∂μ = (μ.real H : ℂ) * ∑ w ∈ T, F (t w) := by
+  intro V _ _ _ μ _ H hH hμ F ι T t hper hsupp hinj
+  set S : ι → Set V := fun w => (fun x => -t w + x) ⁻¹' (H : Set V) with hS
+  have hmem : ∀ w x, x ∈ S w ↔ x - t w ∈ H := by
+    intro w x
+    simp only [hS, Set.mem_preimage, SetLike.mem_coe]
+    rw [neg_add_eq_sub]
+  have hSm : ∀ w, MeasurableSet (S w) := fun w => (measurable_const_add (-t w)) hH
+  have hSμ : ∀ w, μ (S w) = μ H := fun w => measure_preimage_add μ (-t w) _
+  have hval : ∀ w x, x - t w ∈ H → F x = F (t w) := by
+    intro w x hx
+    have := hper (t w) _ hx
+    rwa [add_sub_cancel] at this
+  have hF : F = fun x => ∑ w ∈ T, (S w).indicator (fun _ => F (t w)) x := by
+    funext x
+    by_cases hx : ∃ w ∈ T, x - t w ∈ H
+    · obtain ⟨w, hw, hxw⟩ := hx
+      rw [Finset.sum_eq_single w]
+      · rw [Set.indicator_of_mem ((hmem w x).2 hxw)]
+        exact hval w x hxw
+      · intro w' hw' hne
+        apply Set.indicator_of_notMem
+        intro h
+        apply hne
+        apply hinj w' hw' w hw
+        have := H.sub_mem hxw ((hmem w' x).1 h)
+        rwa [sub_sub_sub_cancel_left] at this
+      · intro h; exact absurd hw h
+    · have h0 : F x = 0 := by
+        by_contra h
+        exact hx (hsupp x h)
+      rw [h0]
+      symm
+      apply Finset.sum_eq_zero
+      intro w hw
+      apply Set.indicator_of_notMem
+      intro h
+      exact hx ⟨w, hw, (hmem w x).1 h⟩
+  have h1 : ∫ x, F x ∂μ = ∫ x, ∑ w ∈ T, (S w).indicator (fun _ => F (t w)) x ∂μ := by
+    conv_lhs => rw [hF]
+  rw [h1, integral_finset_sum, Finset.mul_sum]
+  · apply Finset.sum_congr rfl
+    intro w _
+    rw [integral_indicator_const _ (hSm w), Measure.real, hSμ w, Complex.real_smul]
+    rfl
+  · intro w _
+    rw [integrable_indicator_iff (hSm w)]
+    exact integrableOn_const (by rw [hSμ w]; exact hμ)
+
+end GlobalTheory.RootEx.UnfoldShape
+end
+
+section
+open MeasureTheory ValuativeRel Matrix
+open scoped Pointwise
+open GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.ExponentTerms GlobalTheory.RootEx.UnfoldShape
+
+namespace GlobalTheory.RootEx.UnfoldShape
+
+def boxExp {n n' : Type} {c : ℕ} : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1)) → ℕ
+  | (_, Sum.inl _) => 0
+  | (Sum.inl _, Sum.inr j) => j.val
+  | (Sum.inr l, Sum.inr j) => j.val - (l.val + 1)
+
+theorem boxExp_eq_zero {n n' : Type} {c : ℕ} (rs : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1)))
+    (h : ¬ Free 1 rs) : boxExp rs = 0 := by
+  rcases rs with ⟨r | l, s | j⟩ <;> simp only [Free, boxExp] at h ⊢ <;> omega
+
+theorem sum_fin_sub (c j : ℕ) (hj : j ≤ c) :
+    ∑ l : Fin c, (j - (l.val + 1)) = j * (j - 1) / 2 := by
+  rw [Fin.sum_univ_eq_sum_range (fun l => j - (l + 1)) c]
+  have h1 : ∑ l ∈ Finset.range c, (j - (l + 1)) = ∑ l ∈ Finset.range j, (j - (l + 1)) := by
+    symm
+    refine Finset.sum_subset (Finset.range_subset_range.2 hj) ?_
+    intro x _ hx
+    simp only [Finset.mem_range] at hx
+    omega
+  rw [h1, ← Finset.sum_range_id, ← Finset.sum_range_reflect (fun i => i) j]
+  refine Finset.sum_congr rfl fun x _ => by omega
+
+theorem sum_boxExp (n n' : Type) [Fintype n] [Fintype n'] (c : ℕ) :
+    ∑ rs : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1)), boxExp rs = expo c (Fintype.card n) := by
+  rw [Fintype.sum_prod_type_right, Fintype.sum_sum_type]
+  simp only [Fintype.sum_sum_type, boxExp, Finset.sum_const_zero, zero_add,
+    Finset.sum_const, Finset.card_univ, smul_eq_mul]
+  have h : ∀ j : Fin (c + 1), Fintype.card n * j.val + ∑ l : Fin c, (j.val - (l.val + 1))
+      = j.val * Fintype.card n + j.val * (j.val - 1) / 2 := by
+    intro j
+    rw [sum_fin_sub c j (by omega), mul_comm]
+  rw [Finset.sum_congr rfl fun j _ => h j,
+    Fin.sum_univ_eq_sum_range (fun j => j * Fintype.card n + j * (j - 1) / 2) (c + 1), expo]
+  symm
+  refine Finset.sum_subset ?_ ?_
+  · intro x hx
+    simp only [Finset.mem_Icc, Finset.mem_range] at hx ⊢
+    omega
+  · intro x hx hx'
+    simp only [Finset.mem_Icc, Finset.mem_range] at hx hx'
+    obtain rfl : x = 0 := by omega
+    simp
+
+section
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+
+theorem measure_pow_mul_mem [MeasurableSpace k] [BorelSpace k] {ϖ : 𝒪[k]} (hϖ : Irreducible ϖ)
+    (ν : Measure k) (hν : IsUnitVol ν) (m : ℕ) :
+    ν {x | (ϖ : k) ^ m * x ∈ 𝒪[k]} = (resCard k : ENNReal) ^ m := by
+  have := hν.1
+  have h0 : (ϖ : k) ≠ 0 := fun h => hϖ.ne_zero (Subtype.ext h)
+  set u : kˣ := Units.mk0 (ϖ : k) h0 with hu
+  have hset : {x | (ϖ : k) ^ m * x ∈ 𝒪[k]} = cball (u⁻¹ ^ m) := by
+    ext x
+    have hv : 0 < valuation k (ϖ : k) ^ m := pow_pos ((Valuation.pos_iff _).2 h0) m
+    simp only [Set.mem_ofPred_eq, cball, Valuation.mem_integer_iff, map_mul, map_pow, hu,
+      Units.val_pow_eq_pow_val, Units.val_inv_eq_inv_val, Units.val_mk0, map_inv₀, inv_pow]
+    rw [← one_div, le_div_iff₀ hv, mul_comm]
+  have h1 : distribHaarChar k u⁻¹ = (resCard k : NNReal) := by
+    have := nabs_uniformiser hϖ (x := u) rfl
+    rw [map_inv]
+    apply NNReal.coe_injective
+    rw [NNReal.coe_inv]
+    simp only [nabs] at this
+    rw [this]
+    simp
+  rw [hset, measure_cball, hν.2, mul_one, map_pow, h1]
+  simp
+
+theorem perLat_stdLat_eq {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
+    {c : ℕ} {ϖ : 𝒪[k]} (h0 : (ϖ : k) ≠ 0) :
+    ((perLat ϖ n' c (stdLat k n) : AddSubgroup _) :
+      Set ({rs : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1)) // Free 1 rs} → k)) =
+      Set.univ.pi fun rs : {rs : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1)) // Free 1 rs} =>
+        {x | (ϖ : k) ^ boxExp rs.1 * x ∈ 𝒪[k]} := by
+  have key : ∀ (i l : ℕ) (x : k), l ≤ i →
+      ((∃ a : 𝒪[k], (ϖ : k) ^ (i + 1) * x = a * (ϖ : k) ^ (l + 1)) ↔
+        (ϖ : k) ^ (i + 1 - (l + 1)) * x ∈ 𝒪[k]) := by
+    intro i l x hl
+    have hp : (ϖ : k) ^ (i + 1) = (ϖ : k) ^ (i + 1 - (l + 1)) * (ϖ : k) ^ (l + 1) := by
+      rw [← pow_add]; congr 1; omega
+    constructor
+    · rintro ⟨a, ha⟩
+      have : (ϖ : k) ^ (i + 1 - (l + 1)) * x = a := by
+        apply mul_right_cancel₀ (pow_ne_zero (l + 1) h0)
+        rw [← ha, hp]; ring
+      rw [this]; exact a.2
+    · intro h
+      exact ⟨⟨_, h⟩, by rw [hp]; ring⟩
+  ext e
+  simp only [SetLike.mem_coe, mem_perLat, mem_chainLat, mem_stdLat, Set.mem_pi, Set.mem_univ,
+    Set.mem_ofPred_eq, forall_true_left, Pi.smul_apply, smul_eq_mul]
+  constructor
+  · rintro h ⟨⟨r, s | j⟩, hf⟩
+    · rcases r with r | l <;> simp [Free] at hf
+    · have hj : j ≠ 0 := by
+        rintro rfl
+        rcases r with r | l <;> simp [Free] at hf
+      obtain ⟨i, rfl⟩ := Fin.exists_succ_eq.2 hj
+      rcases r with r | l
+      · have := (h i).1 r
+        simp only [UnfoldShape.col, dif_pos hf] at this
+        exact this
+      · have := (h i).2 l
+        simp only [UnfoldShape.col, dif_pos hf] at this
+        have hl : l.val ≤ i.val := by
+          simp only [Free, Fin.val_succ] at hf; omega
+        exact (key _ _ _ hl).1 this
+  · intro h i
+    refine ⟨fun r => ?_, fun l => ?_⟩
+    · have hf : Free 1 ((Sum.inl r, Sum.inr i.succ) : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1))) := by
+        simp [Free]
+      simp only [UnfoldShape.col, dif_pos hf]
+      exact h ⟨_, hf⟩
+    · by_cases hf : Free 1 ((Sum.inr l, Sum.inr i.succ) : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1)))
+      · simp only [UnfoldShape.col, dif_pos hf]
+        have hl : l.val ≤ i.val := by
+          simp only [Free, Fin.val_succ] at hf; omega
+        exact (key _ _ _ hl).2 (h ⟨_, hf⟩)
+      · simp only [UnfoldShape.col, dif_neg hf]
+        exact ⟨0, by simp⟩
+
+end
+
+theorem volFree_perLat_stdLat (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (n : Type) [Fintype n]
+    [DecidableEq n] (n' : Type) [Fintype n'] [DecidableEq n'] (c : ℕ) (ϖ : 𝒪[k])
+    (hϖ : Irreducible ϖ) (ν : Measure k) (hν : IsUnitVol ν) :
+    volFree ν n n' c (perLat ϖ n' c (stdLat k n))
+      = (resCard k : ENNReal) ^ expo c (Fintype.card n) := by
+  classical
+  have := hν.1
+  have := secondCountable k
+  have h0 : (ϖ : k) ≠ 0 := fun h => hϖ.ne_zero (Subtype.ext h)
+  rw [perLat_stdLat_eq h0, volFree, Measure.pi_pi]
+  simp only [measure_pow_mul_mem hϖ ν hν]
+  rw [Finset.prod_pow_eq_pow_sum, ← sum_boxExp n n' c]
+  congr 1
+  rw [← Finset.sum_subtype (Finset.univ.filter fun rs => Free 1 rs) (by simp) boxExp]
+  refine Finset.sum_subset (Finset.filter_subset _ _) fun x _ hx => boxExp_eq_zero x ?_
+  simpa using hx
+
+end GlobalTheory.RootEx.UnfoldShape
+end
+
+section
+open MeasureTheory ValuativeRel Matrix
+open scoped Pointwise
+open GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.ExponentTerms GlobalTheory.RootEx.UnfoldShape
+
+namespace GlobalTheory.RootEx.PerIndex
+
+variable {k : Type} [Field k] [ValuativeRel k] {n : Type}
+
+theorem col_add (n' : Type) {c : ℕ}
+    (e f : {rs : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1)) // Free 1 rs} → k) (i : Fin c) :
+    UnfoldShape.col (n' := n') (e + f) i
+      = UnfoldShape.col (n' := n') e i + UnfoldShape.col (n' := n') f i := by
+  funext r
+  simp only [UnfoldShape.col, Pi.add_apply]
+  split_ifs <;> simp
+
+theorem relIndex_perLat (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] (n : Type) [Fintype n] [DecidableEq n] (n' : Type)
+    [Fintype n'] [DecidableEq n'] (c : ℕ) (ϖ : 𝒪[k]) (hϖ : (ϖ : k) ≠ 0)
+    (L : Submodule 𝒪[k] (n → k)) :
+    (perLat ϖ n' c L).relIndex (perLat ϖ n' c (stdLat k n))
+      = (L.toAddSubgroup.relIndex (stdLat k n).toAddSubgroup) ^ c := by
+  classical
+  let φ : perLat ϖ n' c (stdLat k n) →+ (Fin c → (stdLat k n).toAddSubgroup) :=
+    AddMonoidHom.mk' (fun e i => ⟨fun r => ((ϖ : k) ^ ((i : ℕ) + 1) •
+      UnfoldShape.col (n' := n') e.1 i) (Sum.inl r), (mem_chainLat.1 (mem_perLat.1 e.2 i)).1⟩)
+      (by
+        intro e f
+        funext i
+        apply Subtype.ext
+        funext r
+        simp only [AddSubgroup.coe_add, Pi.add_apply, col_add, smul_add])
+  have hφ : Function.Surjective φ := by
+    intro v
+    have hY : ∀ i : Fin c, ((ϖ : k) ^ ((i : ℕ) + 1))⁻¹ • inX k n c (v i).1
+        ∈ Yle k n c ((i : ℕ) + 1) := by
+      intro i
+      rw [mem_Yle]
+      intro l _
+      simp [inX_apply]
+    have hc := col_uncol (n' := n') hY
+    have hs : ∀ i : Fin c, (ϖ : k) ^ ((i : ℕ) + 1) • UnfoldShape.col (n' := n')
+        (uncol n' fun i : Fin c => ((ϖ : k) ^ ((i : ℕ) + 1))⁻¹ • inX k n c (v i).1) i
+        = inX k n c (v i).1 := by
+      intro i
+      rw [hc, smul_smul, mul_inv_cancel₀ (pow_ne_zero _ hϖ), one_smul]
+    refine ⟨⟨uncol n' fun i : Fin c => ((ϖ : k) ^ ((i : ℕ) + 1))⁻¹ • inX k n c (v i).1, ?_⟩, ?_⟩
+    · rw [mem_perLat]
+      intro i
+      rw [hs, mem_chainLat]
+      refine ⟨?_, fun l => ⟨0, ?_⟩⟩
+      · simpa [inX_apply] using (v i).2
+      · simp [inX_apply]
+    · funext i
+      apply Subtype.ext
+      funext r
+      exact congrFun (hs i) (Sum.inl r)
+  have hcomap : (perLat ϖ n' c L).addSubgroupOf (perLat ϖ n' c (stdLat k n))
+      = (AddSubgroup.pi Set.univ fun _ : Fin c =>
+          L.toAddSubgroup.addSubgroupOf (stdLat k n).toAddSubgroup).comap φ := by
+    ext e
+    rw [AddSubgroup.mem_addSubgroupOf, AddSubgroup.mem_comap, AddSubgroup.mem_pi, mem_perLat]
+    constructor
+    · intro h i _
+      exact (mem_chainLat.1 (h i)).1
+    · intro h i
+      exact mem_chainLat.2 ⟨h i trivial, (mem_chainLat.1 (mem_perLat.1 e.2 i)).2⟩
+  rw [AddSubgroup.relIndex, hcomap, AddSubgroup.index_comap_of_surjective _ hφ,
+    AddSubgroup.index_pi]
+  simp [AddSubgroup.relIndex]
+
+end GlobalTheory.RootEx.PerIndex
+end
+
+section
 open MeasureTheory ValuativeRel Matrix
 open scoped Pointwise
 
@@ -428,3 +1093,5 @@ theorem shape : GlobalTheory.IndefiniteRowSideFullHecke.ExponentTerms.Shape :=
     ⟨oneClass hc hϖ hψ hν L', oneCoset hc hϖ hψ hν L', funMod hϖ hψ hν L', injSupp hϖ ψ ν L'⟩
 
 end GlobalTheory.RootEx.UnfoldShape
+end
+end

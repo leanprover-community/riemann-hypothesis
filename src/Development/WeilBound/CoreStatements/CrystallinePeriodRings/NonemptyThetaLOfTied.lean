@@ -124,9 +124,6 @@ def thetaL : ThetaL P AI where
 
 end SlopeTestRemainingChoices
 
-theorem nonempty_thetaL_of_tied (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P)
-    (T : LocTied6 l P AI) : Nonempty (ThetaL P AI) :=
-  ⟨thetaL T⟩
 
 theorem nonempty_thetaL :
     ∀ (D : Formalism.BasicNotions.D7) (l : ℕ) [Fact l.Prime], Nonempty (ThetaL (D.loc l) (D.locA l)) :=

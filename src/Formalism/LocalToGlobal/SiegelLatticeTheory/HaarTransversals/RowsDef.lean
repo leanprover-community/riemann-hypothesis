@@ -96,10 +96,6 @@ theorem finrank_HH_eq_Dcount (hinj : Function.Injective (evAt I μf fund σs R R
     Module.finrank ℂ (HH I μf fund Re T) = I.Dcount σs μf fund R Re :=
   ((eHomEquivHH hinj hran).finrank_eq).symm
 
-theorem rank_HH_eq (hinj : Function.Injective (evAt I μf fund σs R Re w₀))
-    (hran : LinearMap.range (evAt I μf fund σs R Re w₀) = HH I μf fund Re T) :
-    Module.rank ℂ (HH I μf fund Re T) = Module.rank ℂ (I.eHom σs μf fund R Re) :=
-  ((eHomEquivHH hinj hran).rank_eq).symm
 
 theorem finiteDimensional_eHom (hinj : Function.Injective (evAt I μf fund σs R Re w₀))
     (hran : LinearMap.range (evAt I μf fund σs R Re w₀) = HH I μf fund Re T)
@@ -107,17 +103,7 @@ theorem finiteDimensional_eHom (hinj : Function.Injective (evAt I μf fund σs R
     FiniteDimensional ℂ (I.eHom σs μf fund R Re) :=
   LinearEquiv.finiteDimensional (eHomEquivHH hinj hran).symm
 
-theorem Dcount_pos_iff (hinj : Function.Injective (evAt I μf fund σs R Re w₀))
-    (hran : LinearMap.range (evAt I μf fund σs R Re w₀) = HH I μf fund Re T)
-    [hfin : FiniteDimensional ℂ (HH I μf fund Re T)] :
-    0 < I.Dcount σs μf fund R Re ↔ HH I μf fund Re T ≠ ⊥ := by
-  rw [← finrank_HH_eq_Dcount hinj hran, Nat.pos_iff_ne_zero, Ne, Submodule.finrank_eq_zero]
 
-theorem finiteDimensional_HH_of_eHom (hinj : Function.Injective (evAt I μf fund σs R Re w₀))
-    (hran : LinearMap.range (evAt I μf fund σs R Re w₀) = HH I μf fund Re T)
-    [hfin : FiniteDimensional ℂ (I.eHom σs μf fund R Re)] :
-    FiniteDimensional ℂ (HH I μf fund Re T) :=
-  LinearEquiv.finiteDimensional (eHomEquivHH hinj hran)
 
 end Count
 

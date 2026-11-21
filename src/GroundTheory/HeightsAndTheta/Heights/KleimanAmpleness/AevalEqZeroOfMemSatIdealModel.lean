@@ -33,9 +33,6 @@ variable {S : Type} [CommRing S] {K : Type} [Fintype K] {ι : K → Type} [∀ k
   {Ω : Type} [Field Ω] [Algebra S Ω] {y : (Σ k, ι k) → Ω} {k₀ : K} {N : ℕ} {e : ι k₀ ≃ Fin (N + 1)}
   {J : Ideal (MRingOver S ι)}
 
-theorem mem_dehom {g : MRingOver S ι} {a : K → ℕ} (hg : g ∈ J) (ha : IsMultiHomog g a) (d : ∀ k, ι k) :
-    aeval y g * ∏ k, y ⟨k, d k⟩ ^ (-(a k : ℤ)) ∈ dehom S y J d :=
-  ⟨g, a, hg, ha, rfl⟩
 
 omit [Fintype K] [∀ k, Fintype (ι k)] in
 
@@ -75,27 +72,8 @@ theorem homogeneousComponent_mem_satIdeal {p : Kleiman.Poly S N} (hp : p ∈ sat
     homogeneousComponent n p ∈ satIdeal S y k₀ e J :=
   homogeneousComponent_mem_of_mem satIdeal_isHomogeneous hp n
 
-theorem one_mem_dehom_top (d : ∀ k, ι k) : (1 : Ω) ∈ dehom S y (⊤ : Ideal (MRingOver S ι)) d := by
-  classical
-  refine ⟨1, 0, Submodule.mem_top, ?_, ?_⟩
-  · intro m hm k
-    have : m = 0 := by
-      by_contra h
-      exact (mem_support_iff.mp hm) (by rw [coeff_one, if_neg (Ne.symm h)])
-    simp [this]
-  · simp
 
-theorem one_mem_satIdeal_top : (1 : Kleiman.Poly S N) ∈ satIdeal S y k₀ e (⊤ : Ideal (MRingOver S ι)) := by
-  classical
-  refine Ideal.subset_span ⟨0, isHomogeneous_one _ _, fun i _ d _ => ?_⟩
-  rw [map_one]
-  exact Submodule.subset_span (one_mem_dehom_top d)
 
-theorem mem_satIdeal_of_aeval_eq_zero {f : Kleiman.Poly S N} {n : ℕ} (hf : f.IsHomogeneous n)
-    (h0 : aeval (baseVec y k₀ e) f = 0) : f ∈ satIdeal S y k₀ e J :=
-  Ideal.subset_span ⟨n, hf, fun i _ d _ => by
-    rw [Kleiman.aeval_div_of_isHomogeneous (x := baseVec y k₀ e) hf i, h0, zero_div]
-    exact zero_mem _⟩
 
 omit [Fintype K] [∀ k, Fintype (ι k)] in
 
@@ -110,22 +88,7 @@ theorem aeval_eq_zero_of_mem_mIdealOver {g : MRingOver S ι} (hg : g ∈ mIdealO
   · funext p
     simp
 
-theorem eq_zero_of_mem_dehom_mIdealOver {d : ∀ k, ι k} {u : Ω} (hu : u ∈ dehom S y (mIdealOver S y) d) :
-    u = 0 := by
-  obtain ⟨g, a, hg, -, rfl⟩ := hu
-  rw [aeval_eq_zero_of_mem_mIdealOver hg, zero_mul]
 
-theorem aeval_eq_zero_of_mem_satIdeal_model [DecidableEq K] {f : Kleiman.Poly S N} {n : ℕ}
-    (hf : f.IsHomogeneous n) (hmem : f ∈ satIdeal S y k₀ e (mIdealOver S y)) {d : ∀ k, ι k}
-    (hd : ∀ k, y ⟨k, d k⟩ ≠ 0) : aeval (baseVec y k₀ e) f = 0 := by
-  have hi : baseVec y k₀ e (e (d k₀)) ≠ 0 := by simpa [IndefiniteRowSideFullHecke.Kleiman2.blockVec] using hd k₀
-  have h1 := aeval_mem_of_mem_satIdeal hmem hi hd
-  have h2 : Submodule.span (overRing (S := S) y k₀ e d (e (d k₀))) (dehom S y (mIdealOver S y) d) = ⊥ := by
-    rw [Submodule.span_eq_bot]
-    intro u hu
-    exact eq_zero_of_mem_dehom_mIdealOver hu
-  rw [h2, Submodule.mem_bot, Kleiman.aeval_div_of_isHomogeneous (x := baseVec y k₀ e) hf] at h1
-  exact (div_eq_zero_iff.1 h1).resolve_right (pow_ne_zero _ hi)
 
 end Facts
 

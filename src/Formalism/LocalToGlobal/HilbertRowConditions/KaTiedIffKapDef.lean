@@ -37,11 +37,6 @@ theorem mem_range_iff (x : Qb) : x ∈ (toQb D T).range ↔ x ∈ OsQ (KsQ D T C
 theorem range_eq : ((toQb D T).range : Set Qb) = OsQ (KsQ D T C X.pieces) :=
   Set.ext fun x => X.mem_range_iff x
 
-theorem Os_le_LL (x : Qb) (hx : x ∈ OsQ (KsQ D T C X.pieces)) : x ∈ T.LLQ := by
-  obtain ⟨y, hy⟩ := RingHom.mem_range.1 ((X.mem_range_iff x).2 hx)
-  show x ∈ T.jLL.toRatAlgHom.fieldRange
-  rw [AlgHom.mem_fieldRange]
-  exact ⟨D.what₂.OtoLL y, hy⟩
 
 end OTied
 
@@ -89,15 +84,6 @@ theorem aPlus_int (D : D7) (j : ℕ) (hj : 1 ≤ j) (hjm : j ≤ D.R.m) (τ : D.
   push_cast
   linear_combination ha + hb + (-1/2 : ℚ) * q1 + (-1/2 : ℚ) * q2 + (1/2 : ℚ) * q3
 
-theorem kaSmallOf_int (D : D7) (j : ℕ) (τ : D.what₂.Tau) (c₀ : ℕ) : ∃ z : ℤ, kaSmallOf D j τ c₀ = z := by
-  obtain ⟨bb, hbb⟩ := getQ_int _ (D.hc τ).b_int (j + c₀)
-  obtain ⟨ee, hee⟩ := getQ_int _ (D.hc τ).e_int (j - 1)
-  obtain ⟨s, hs⟩ := D.R.t_odd
-  have qt : (D.R.t : ℚ) = 2 * s + 1 := by exact_mod_cast hs
-  refine ⟨-(bb - ee - ((s : ℤ) + 1 + c₀)), ?_⟩
-  unfold kaSmallOf aMinusAt
-  push_cast
-  linear_combination (-1 : ℚ) * hbb + hee + (1/2 : ℚ) * qt
 
 theorem vPar_eq_sigPar (D : D7) (τ : D.what₂.Tau) (i : ℕ) : vPar D τ i = DV.sigPar D τ i := by
   unfold vPar DV.sigPar getQ
@@ -122,27 +108,7 @@ theorem aPlus_eq (D : D7) (j : ℕ) (hj : 1 ≤ j) (hjm : j ≤ D.R.m) (τ : D.w
   rw [vPar_eq_sigPar, getQ_e_eq D j hj hjm τ]
   linear_combination (-1/2 : ℚ) * q2 + (1/2 : ℚ) * q3
 
-theorem kaSmallOf_eq (D : D7) (j : ℕ) (hj : 1 ≤ j) (hjm : j ≤ D.R.m) (τ : D.what₂.Tau) (c : ℕ) :
-    kaSmallOf D j τ c = -DV.aMinusQ D j τ c := by
-  unfold kaSmallOf aMinusAt DV.aMinusQ
-  rw [getQ_e_eq D j hj hjm τ]
-  unfold getQ
-  ring
 
-theorem kaTied_iff_kapDef (D : D7) : KappaCompatible D ↔ DV.KapDef D := by
-  constructor
-  · intro h j hj hjm τ
-    refine ⟨fun i => ?_, fun c => ?_⟩
-    · rw [← aPlus_eq D j hj hjm τ i]
-      exact_mod_cast h.big j hj hjm τ i
-    · rw [← kaSmallOf_eq D j hj hjm τ c]
-      exact_mod_cast h.small j hj hjm τ c
-  · intro h
-    refine ⟨fun j hj hjm τ i => ?_, fun j hj hjm τ c => ?_⟩
-    · rw [aPlus_eq D j hj hjm τ i]
-      exact_mod_cast (h j hj hjm τ).1 i
-    · rw [kaSmallOf_eq D j hj hjm τ c]
-      exact_mod_cast (h j hj hjm τ).2 c
 
 structure GTied (D : D7) {G Pl0 T : Type} [Group G] [Fintype G] {m : ℕ}
     (A : Formalism.L2.DIV.FamIn D.what₂.LL G Pl0 T m) where

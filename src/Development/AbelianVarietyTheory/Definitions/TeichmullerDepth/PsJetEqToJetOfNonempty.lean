@@ -91,31 +91,8 @@ def MapSer {G B : Over (Sp k)} (q : G ⟶ B) (x : ∀ m : ℕ, algOver k (JetR k
   ∀ m : ℕ, ∃ a : JetR k (Fin 1 × Fin g) m →ₐ[k] JetR k (Fin 1 × Fin d) m,
     (∀ j, a (zR m ((0 : Fin 1), j)) = GlobalTheory.JetSer.toJet m (ψ j)) ∧ x m ≫ q = algOverHom a ≫ y m
 
-theorem psJet_eq_toJet_of_nonempty {n : ℕ} [Nonempty (Fin n × Fin d)] (m : ℕ) (f : PS k n d) :
-    psJet m f = GlobalTheory.JetSer.toJet m f := by
-  symm
-  refine (GlobalTheory.JetSer.toJet_eq_mk_iff m f _).2 fun e he => ?_
-  rw [MvPowerSeries.coeff_trunc, if_pos]
-  have hle : ∀ i, e i ≤ m := fun i => by have := Finsupp.le_degree i e; omega
-  refine lt_of_le_of_ne (fun i => ?_) fun h => ?_
-  · simpa using (hle i).trans (Nat.le_succ m)
-  · have := hle (Classical.arbitrary _)
-    rw [h] at this
-    simp at this
 
-theorem psJet_eq_toJet_of_pos (hd : 0 < d) {n : ℕ} (m : ℕ) (f : PS k (n + 1) d) :
-    psJet m f = GlobalTheory.JetSer.toJet m f :=
-  haveI : Nonempty (Fin (n + 1) × Fin d) := ⟨(0, ⟨0, hd⟩)⟩
-  psJet_eq_toJet_of_nonempty m f
 
-theorem cubeSer_iff_psJet (hd : 0 < d) {G : Over (Sp k)} [GrpObj G] [IsCommMonObj G] {L : RigLB G} (c : CubicalStr G L)
-    (x : ∀ m : ℕ, algOver k (JetR k (Fin 1 × Fin d) m) ⟶ G) (i : L.L.ι) (Φ : PS k 3 d) :
-    CubeSer c x i Φ ↔ ∀ m : ℕ,
-      ∃ h : (⊤ : (Sp (JetR k (Fin 3 × Fin d) m)).Opens) ≤ (jet3 x m).left ⁻¹ᵁ (Theta G L.L).U (fun _ => i),
-        (Semi.res h (pullU (jet3 x m).left _ (c.t.s fun _ => i))).val =
-          (Scheme.ΓSpecIso (CommRingCat.of (JetR k (Fin 3 × Fin d) m))).inv.hom (psJet m Φ) := by
-  refine forall_congr' fun m => ?_
-  rw [psJet_eq_toJet_of_pos hd m Φ]
 
 theorem CubeSer.unique {G : Over (Sp k)} [GrpObj G] [IsCommMonObj G] {L : RigLB G} {c : CubicalStr G L}
     {x : ∀ m : ℕ, algOver k (JetR k (Fin 1 × Fin d) m) ⟶ G} {i : L.L.ι} {Φ Φ' : PS k 3 d}
@@ -138,14 +115,6 @@ theorem CubeSer.isUnit {G : Over (Sp k)} [GrpObj G] [IsCommMonObj G] {L : RigLB 
   rw [GlobalTheory.JetSer.jetAug_toJet] at hu3
   exact MvPowerSeries.isUnit_iff_constantCoeff.2 hu3
 
-theorem cubeSer_one {G : Over (Sp k)} [GrpObj G] [IsCommMonObj G] {L : RigLB G} (c : CubicalStr G L)
-    (x : ∀ m : ℕ, algOver k (JetR k (Fin 1 × Fin d) m) ⟶ G) (i : L.L.ι) (hc : c.t.s (fun _ => i) = 1)
-    (h : ∀ m, (⊤ : (Sp (JetR k (Fin 3 × Fin d) m)).Opens) ≤ (jet3 x m).left ⁻¹ᵁ (Theta G L.L).U (fun _ => i)) :
-    CubeSer c x i 1 := by
-  intro m
-  refine ⟨h m, ?_⟩
-  rw [hc, map_one, map_one, GlobalTheory.JetSer.toJet_one, map_one]
-  rfl
 
 theorem MapSer.constantCoeff_eq_zero {G B : Over (Sp k)} {q : G ⟶ B}
     {x : ∀ m : ℕ, algOver k (JetR k (Fin 1 × Fin d) m) ⟶ G} {y : ∀ m : ℕ, algOver k (JetR k (Fin 1 × Fin g) m) ⟶ B}
@@ -159,28 +128,7 @@ theorem MapSer.constantCoeff_eq_zero {G B : Over (Sp k)} {q : G ⟶ B}
   rw [h0, map_zero] at h1
   rw [← GlobalTheory.JetSer.jetAug_toJet 0 (ψ j), ← h1, map_zero]
 
-theorem mapSer_iff_psJet {G B : Over (Sp k)} (q : G ⟶ B) (x : ∀ m : ℕ, algOver k (JetR k (Fin 1 × Fin d) m) ⟶ G)
-    (y : ∀ m : ℕ, algOver k (JetR k (Fin 1 × Fin g) m) ⟶ B) (ψ : Fin g → PS k 1 d) :
-    MapSer q x y ψ ↔ (∀ j, MvPowerSeries.constantCoeff (ψ j) = 0) ∧
-      ∀ m : ℕ, ∃ a : JetR k (Fin 1 × Fin g) m →ₐ[k] JetR k (Fin 1 × Fin d) m,
-        (∀ j, a (zR m ((0 : Fin 1), j)) = psJet m (ψ j)) ∧ x m ≫ q = algOverHom a ≫ y m := by
-  constructor
-  · intro h
-    refine ⟨h.constantCoeff_eq_zero, fun m => ?_⟩
-    obtain ⟨a, ha, hq⟩ := h m
-    exact ⟨a, fun j => (ha j).trans (GlobalTheory.ChartJLaw.psJet_eq_toJet m _ (h.constantCoeff_eq_zero j)).symm, hq⟩
-  · rintro ⟨h0, h⟩ m
-    obtain ⟨a, ha, hq⟩ := h m
-    exact ⟨a, fun j => (ha j).trans (GlobalTheory.ChartJLaw.psJet_eq_toJet m _ (h0 j)), hq⟩
 
-theorem mapSer_id {G : Over (Sp k)} (x : ∀ m : ℕ, algOver k (JetR k (Fin 1 × Fin d) m) ⟶ G) :
-    MapSer (𝟙 G) x x (pt k d 0) := by
-  intro m
-  refine ⟨AlgHom.id k _, fun j => (GlobalTheory.JetSer.toJet_X m _).symm, ?_⟩
-  have : algOverHom (AlgHom.id k (JetR k (Fin 1 × Fin d) m)) = 𝟙 _ := by
-    apply Over.OverMorphism.ext
-    exact Spec.map_id _
-  rw [this, Category.id_comp, Category.comp_id]
 
 example (m : ℕ) : GlobalTheory.JetSer.toJet m (1 : PS k 3 0) = 1 := GlobalTheory.JetSer.toJet_one m
 

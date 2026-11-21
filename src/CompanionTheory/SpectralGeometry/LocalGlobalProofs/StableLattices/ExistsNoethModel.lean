@@ -55,30 +55,6 @@ theorem span_good {R S : Type} [CommRing R] [CommRing S] [IsNoetherianRing S] (�
   obtain ⟨r, hr, hr'⟩ := exists_good_notMem σ A B hM hL h e hA m
   exact hr' (hle (Ideal.subset_span ⟨r, hr, rfl⟩))
 
-theorem exists_fg_span {R S : Type} [CommRing R] [CommRing S] [Algebra S R] (T : Set S)
-    (hT : Ideal.span (algebraMap S R '' T) = ⊤) :
-    ∃ C : Subalgebra S R, C.FG ∧ Ideal.span (algebraMap S C '' T) = ⊤ := by
-  classical
-  have h1 : (1 : R) ∈ Ideal.span (algebraMap S R '' T) := by rw [hT]; trivial
-  obtain ⟨c, hc, hs⟩ := Submodule.mem_span_set.1 h1
-  let F : Finset R := c.support.image c
-  refine ⟨Algebra.adjoin S (F : Set R), Subalgebra.fg_adjoin_finset F, ?_⟩
-  set C := Algebra.adjoin S (F : Set R)
-  have hmem : ∀ y ∈ c.support, c y ∈ C := fun y hy =>
-    Algebra.subset_adjoin (Finset.mem_coe.2 (Finset.mem_image_of_mem c hy))
-  choose! t ht hty using fun y (hy : y ∈ c.support) => hc hy
-  rw [Ideal.eq_top_iff_one]
-  have e1 : (1 : C) = ∑ y ∈ c.support.attach,
-      (⟨c y.1, hmem y.1 y.2⟩ : C) * algebraMap S C (t y.1) := by
-    apply Subtype.ext
-    refine (OneMemClass.coe_one C).trans (hs.symm.trans ?_)
-    rw [Finsupp.sum, ← Finset.sum_attach]
-    simp only [AddSubmonoidClass.coe_finset_sum, MulMemClass.coe_mul, smul_eq_mul]
-    refine Finset.sum_congr rfl fun y _ => ?_
-    have : ((algebraMap S C (t y.1) : C) : R) = y.1 := hty y.1 y.2
-    rw [this]
-  rw [e1]
-  exact Ideal.sum_mem _ fun y _ => Ideal.mul_mem_left _ _ (Ideal.subset_span ⟨_, ht y.1 y.2, rfl⟩)
 
 theorem relAmple_of_span {S S' : Type} [CommRing S] [CommRing S'] (τ : S →+* S') (B : Over (Sp S)) [IsProper B.hom]
     {M : LB B.left} (hM : M.IsLB) (T : Set S) (hT : T ⊆ good B M) (h : Ideal.span (τ '' T) = ⊤) :
@@ -132,20 +108,5 @@ theorem exists_noeth_model (R : Type) [CommRing R] (A : Over (Sp R)) [GrpObj A] 
     (smoothOfRelativeDimension_isStableUnderBaseChange g).of_isPullback (IsPullback.of_hasPullback B₀.hom _) hg₀,
     h₂, hM, hiso φ₁ h₃ h₂.1.w⟩
 
-theorem polModel : PolModel := by
-  intro R _ A _ g hA hg L hL hamp
-  obtain ⟨S, _, σ, B, _, φ, M, hS, hB, hgB, hp, hM, e⟩ := exists_noeth_model R A g hA hg L hL
-  have := hB.proper
-  have := hB.smooth
-  letI : Algebra S R := σ.toAlgebra
-  obtain ⟨C, hC, hsp⟩ := exists_fg_span (good B M) (span_good σ A B hM hL hp.1 e hamp)
-  have hCn : IsNoetherianRing C :=
-    have := (Subalgebra.fg_iff_finiteType C).1 hC
-    Algebra.FiniteType.isNoetherianRing S C
-  obtain ⟨inst, φ₁, h₁, h₂, h₃⟩ := GlobalTheory.CompanionTheory.Ar.Approx.model_passes_to_subalgebra S R A B φ hp C
-  exact ⟨C, inferInstance, C.val.toRingHom, _, inst, φ₁, M.pull (pullback.fst _ _), hCn,
-    GlobalTheory.PolPull.isAbelianScheme_of_isGrpPullback hB h₁,
-    (smoothOfRelativeDimension_isStableUnderBaseChange g).of_isPullback (IsPullback.of_hasPullback B.hom _) hgB,
-    h₂, pull_isLB hM _, relAmple_of_span (algebraMap S C) B hM _ subset_rfl hsp⟩
 
 end GlobalTheory.CompanionTheory.PolSpread

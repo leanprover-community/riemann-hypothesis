@@ -72,16 +72,6 @@ def volHE (G : GaugeFam F E σ) (M : ℕ) (J : Matrix (Fin M) (Fin M) E) : ENNRe
 
 def volH (G : GaugeFam F E σ) (M : ℕ) (J : Matrix (Fin M) (Fin M) E) : ℝ := (volHE G M J).toReal
 
-theorem volHE_spec (G : GaugeFam F E σ) (M : ℕ) (J : Matrix (Fin M) (Fin M) E)
-    (h : ∃ 𝓕, IsFDH F E σ M J (G.μ M J) 𝓕) :
-    ∃ 𝓕, IsFDH F E σ M J (G.μ M J) 𝓕 ∧ volHE G M J = G.μ M J 𝓕 := by
-  have hf : HasFundamentalDomain (HFinIn (AF F) σ J) (HA (AF F) σ J) (G.μ M J) := ⟨h⟩
-  refine ⟨hf.ExistsIsFundamentalDomain.choose, hf.ExistsIsFundamentalDomain.choose_spec, ?_⟩
-  simp [volHE, covolume, hf]
 
-theorem volHE_eq (G : GaugeFam F E σ) (M : ℕ) (J : Matrix (Fin M) (Fin M) E) (c : ENNReal)
-    (h : AllSome (IsFDH F E σ M J (G.μ M J)) fun 𝓕 => G.μ M J 𝓕 = c) : volHE G M J = c := by
-  obtain ⟨𝓕, h1, h2⟩ := volHE_spec G M J h.1
-  rw [h2, h.2 𝓕 h1]
 
 end Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes

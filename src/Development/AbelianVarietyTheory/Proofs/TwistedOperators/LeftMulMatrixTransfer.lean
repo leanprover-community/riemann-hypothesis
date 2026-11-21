@@ -199,17 +199,6 @@ def hlin (J : Matrix (Fin r) (Fin r) A) (x : Fin r → A) : (Fin r → A) →ₗ
   map_add' y z := by simp [hform_eq, Matrix.mulVec_add]
   map_smul' a y := by simp [hform_eq, Matrix.mulVec_smul]
 
-theorem hlin_surj (hσ : ∀ a, σ (σ a) = a) {J : Matrix (Fin r) (Fin r) A} (hJ : IsUnit J.det)
-    (f : (Fin r → A) →ₗ[A] A) : ∃ x, ∀ y, hform σ J x y = f y := by
-  refine ⟨σ ∘ ((fun i => f (Pi.single i 1)) ᵥ* J⁻¹), fun y => ?_⟩
-  have : σ ∘ σ ∘ ((fun i => f (Pi.single i 1)) ᵥ* J⁻¹) = (fun i => f (Pi.single i 1)) ᵥ* J⁻¹ :=
-    funext fun i => hσ _
-  rw [hform_eq, this, Matrix.dotProduct_mulVec, Matrix.vecMul_vecMul, Matrix.nonsing_inv_mul _ hJ,
-    Matrix.vecMul_one, LinearMap.pi_apply_eq_sum_univ f y]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  have : (fun j => if i = j then (1 : A) else 0) = Pi.single i 1 := by
-    ext j; simp [Pi.single_apply, eq_comm]
-  rw [smul_eq_mul, mul_comm, this]
 
 end Forms
 
@@ -307,159 +296,10 @@ theorem HidaSetting.exists_intw (S : HidaSetting σ τ α b) {x : B} {φ : B ≃
     simpa using h1)
   exact ⟨g, hg⟩
 
-theorem isConj_of_iso {x : B} {φ φ' : B ≃ₗ[A] (Fin r → A)} (h : Iso σ τ J x φ)
-    (h' : Iso σ τ J x φ') {g g' : UJ σ J}
-    (hg : Intw α ((g : GL (Fin r) A) : Matrix (Fin r) (Fin r) A) φ)
-    (hg' : Intw α ((g' : GL (Fin r) A) : Matrix (Fin r) (Fin r) A) φ') : IsConj g g' := by
-  obtain ⟨t, ht⟩ := exists_UJ σ J (φ.symm ≪≫ₗ φ') (by
-    intro u u'
-    have h2 := h (φ.symm u') (φ.symm u)
-    rw [← h'] at h2
-    simpa using h2.symm)
-  rw [isConj_iff]
-  refine ⟨t, ?_⟩
-  rw [mul_inv_eq_iff_eq_mul]
-  apply Subtype.ext
-  apply Units.ext
-  apply Matrix.toLin'.injective
-  refine LinearMap.ext fun u => ?_
-  simp only [Subgroup.coe_mul, Units.val_mul, Matrix.toLin'_apply, ← Matrix.mulVec_mulVec]
-  rw [ht, hg, hg', ht]
-  simp
 
-theorem HidaSetting.map_mul_of_comm (S : HidaSetting σ τ α b) (ψ : B →ₗ[A] B)
-    (h : ∀ y, ψ (α * y) = α * ψ y) (y : B) : ψ y = ψ 1 * y := by
-  have hp : ∀ n : ℕ, ψ (α ^ n) = ψ 1 * α ^ n := by
-    intro n
-    induction n with
-    | zero => simp
-    | succ n ih => rw [pow_succ', h, ih]; ring
-  have : ψ = LinearMap.mulLeft A (ψ 1) := b.ext fun i => by rw [S.pow, hp]; rfl
-  exact LinearMap.congr_fun this y
 
-theorem HidaSetting.norm_of_isConj (S : HidaSetting σ τ α b) {x x' : B} {φ φ' : B ≃ₗ[A] (Fin r → A)}
-    (h : Iso σ τ J x φ) (h' : Iso σ τ J x' φ') {g g' : UJ σ J}
-    (hg : Intw α ((g : GL (Fin r) A) : Matrix (Fin r) (Fin r) A) φ)
-    (hg' : Intw α ((g' : GL (Fin r) A) : Matrix (Fin r) (Fin r) A) φ') (hc : IsConj g' g) :
-    ∃ z : Bˣ, x' = x * (z * τ z) := by
-  obtain ⟨t, ht⟩ := isConj_iff.1 hc
-  rw [mul_inv_eq_iff_eq_mul] at ht
-  have ht' : ((t : GL (Fin r) A) : Matrix (Fin r) (Fin r) A) * (g' : GL (Fin r) A)
-      = ((g : GL (Fin r) A) : Matrix (Fin r) (Fin r) A) * (t : GL (Fin r) A) :=
-    congrArg (fun s : UJ σ J => ((s : GL (Fin r) A) : Matrix (Fin r) (Fin r) A)) ht
-  let T : (Fin r → A) ≃ₗ[A] (Fin r → A) := Matrix.toLinearEquiv' ((t : GL (Fin r) A) : Matrix (Fin r) (Fin r) A)
-    (Units.invertible _)
-  have hT : ∀ u, T u = ((t : GL (Fin r) A) : Matrix (Fin r) (Fin r) A) *ᵥ u := fun u => rfl
-  let ψ : B ≃ₗ[A] B := φ' ≪≫ₗ T ≪≫ₗ φ.symm
-  have hψ : ∀ y, φ (ψ y) = ((t : GL (Fin r) A) : Matrix (Fin r) (Fin r) A) *ᵥ φ' y := fun y => by
-    simp [ψ, hT]
-  have hcomm : ∀ y, ψ (α * y) = α * ψ y := by
-    intro y
-    apply φ.injective
-    have e1 := hg' (φ' y)
-    have e2 := hg (φ (ψ y))
-    rw [LinearEquiv.symm_apply_apply] at e1 e2
-    rw [hψ, ← e1, ← e2, hψ, Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, ht']
-  have hm : ∀ y, ψ y = ψ 1 * y := S.map_mul_of_comm ψ.toLinearMap hcomm
-  have hu : IsUnit (ψ 1) := IsUnit.of_mul_eq_one (ψ.symm 1) (by rw [← hm]; simp)
-  refine ⟨hu.unit, S.eq_of_trace fun y => ?_⟩
-  have e1 := h' y 1
-  have e2 := h (ψ y) (ψ 1)
-  rw [hψ, hψ, (mem_UJ_iff σ J _).1 t.2, e1, hm y] at e2
-  unfold tf at e2
-  rw [map_one, mul_one] at e2
-  rw [e2, IsUnit.unit_spec]
-  congr 1; ring
 
-theorem charpoly_of_intw {g : Matrix (Fin r) (Fin r) A} {φ : B ≃ₗ[A] (Fin r → A)}
-    (b : Module.Basis (Fin r) A B)
-    (hg : Intw α g φ) : g.charpoly = (Algebra.leftMulMatrix b α).charpoly := by
-  haveI := Module.Free.of_basis b
-  haveI := Module.Finite.of_basis b
-  have h1 : Matrix.toLin' g = φ.conj (Algebra.lmul A B α) := LinearMap.ext fun u => by
-    simpa [LinearEquiv.conj_apply] using hg u
-  rw [← Matrix.charpoly_toLin', h1, LinearEquiv.charpoly_conj, Algebra.leftMulMatrix_apply,
-    LinearMap.charpoly_toMatrix]
 
-theorem HidaSetting.exists_of_charpoly [IsArtinianRing A] (S : HidaSetting σ τ α b) (hJ : IsHerm σ J)
-    (hd : IsUnit J.det) (g : UJ σ J)
-    (hg : ((g : GL (Fin r) A) : Matrix (Fin r) (Fin r) A).charpoly
-      = (Algebra.leftMulMatrix b α).charpoly)
-    (hs : (Algebra.leftMulMatrix b α).charpoly.Separable) :
-    ∃ x φ, IsUnit x ∧ τ x = x ∧ Iso σ τ J x φ ∧
-      Intw α ((g : GL (Fin r) A) : Matrix (Fin r) (Fin r) A) φ := by
-  set G : Matrix (Fin r) (Fin r) A := ((g : GL (Fin r) A) : Matrix (Fin r) (Fin r) A) with hG
-  obtain ⟨v, hv⟩ := exists_cyclic G (hg ▸ hs)
-  have hmin : aeval G (minpoly A S.pb.gen) = 0 := by
-    rw [← charpoly_leftMulMatrix S.pb]
-    show aeval G (Algebra.leftMulMatrix b α).charpoly = 0
-    rw [← hg]; exact Matrix.aeval_self_charpoly G
-  let ρ := S.pb.lift G hmin
-  have hρ : ρ α = G := S.pb.lift_gen G hmin
-  let φ₀ : B →ₗ[A] (Fin r → A) :=
-    { toFun := fun y => ρ y *ᵥ v
-      map_add' := fun y z => by rw [map_add, Matrix.add_mulVec]
-      map_smul' := fun a y => by rw [map_smul, Matrix.smul_mulVec]; rfl }
-  have hdet : IsUnit (LinearMap.toMatrix b (Pi.basisFun A (Fin r)) φ₀).det := by
-    convert hv using 2
-    ext i j
-    simp [LinearMap.toMatrix_apply, φ₀, S.pow, hρ, krylov]
-  let φ := LinearEquiv.ofIsUnitDet hdet
-  have hφ : ∀ y, φ y = ρ y *ᵥ v := fun y => LinearEquiv.ofIsUnitDet_apply hdet y
-  have hα : ∀ y, φ (α * y) = G *ᵥ φ y := fun y => by
-    rw [hφ, hφ, map_mul, hρ, Matrix.mulVec_mulVec]
-  have hadj1 : ∀ y y', hform σ J (φ y') (φ (α * y)) = hform σ J (φ (τ α * y')) (φ y) := by
-    intro y y'
-    rw [← (mem_UJ_iff σ J _).1 g.2 (φ (τ α * y')), ← hα, ← hα, ← mul_assoc, S.hα, one_mul]
-  have hadjn : ∀ (n : ℕ) y y',
-      hform σ J (φ y') (φ (α ^ n * y)) = hform σ J (φ (τ (α ^ n) * y')) (φ y) := by
-    intro n
-    induction n with
-    | zero => simp
-    | succ n ih =>
-      intro y y'
-      rw [pow_succ', mul_assoc, hadj1, ih, map_mul τ, ← mul_assoc, mul_comm (τ α)]
-  have hadj : ∀ l y y', hform σ J (φ y') (φ (l * y)) = hform σ J (φ (τ l * y')) (φ y) := by
-    intro l y y'
-    have hl : l ∈ Submodule.span A (Set.range b) := b.mem_span l
-    induction hl using Submodule.span_induction with
-    | mem l hl => obtain ⟨i, rfl⟩ := hl; rw [S.pow, hadjn]
-    | zero => simp [hform]
-    | add l m _ _ h1 h2 =>
-      rw [add_mul, map_add, map_add, add_mul, map_add]
-      simp only [hform, Pi.add_apply, map_add, add_mul, mul_add, Finset.sum_add_distrib] at h1 h2 ⊢
-      rw [h1, h2]
-    | smul a l _ h1 =>
-      have e : τ (a • l) * y' = σ a • (τ l * y') := by
-        rw [Algebra.smul_def, Algebra.smul_def, map_mul, S.comp, mul_assoc]
-      rw [smul_mul_assoc, map_smul, e, map_smul]
-      have e1 : ∀ u u' : Fin r → A, hform σ J u (a • u') = a * hform σ J u u' := fun u u' =>
-        (hlin σ J u).map_smul a u'
-      have e2 : ∀ u u' : Fin r → A, hform σ J (σ a • u) u' = a * hform σ J u u' := fun u u' => by
-        simp [hform, S.hσ, Finset.mul_sum, mul_assoc]
-      rw [e1, e2, h1]
-  obtain ⟨x, hx⟩ := S.exists_trace (hlin σ J (φ 1) ∘ₗ φ.toLinearMap)
-  have hiso : Iso σ τ J x φ := by
-    intro y y'
-    have := hadj (τ y') y 1
-    rw [S.hτ, mul_one] at this
-    rw [← this]
-    refine (hx (τ y' * y)).trans ?_
-    unfold tf; congr 1; ring
-  refine ⟨x, φ, ?_, ?_, hiso, fun u => by rw [hα]; simp⟩
-  · obtain ⟨u, hu⟩ := hlin_surj σ S.hσ hd (Algebra.trace A B ∘ₗ φ.symm.toLinearMap)
-    refine IsUnit.of_mul_eq_one (τ (φ.symm u)) (S.eq_of_trace fun y => ?_)
-    have e1 := hiso y (φ.symm u)
-    rw [LinearEquiv.apply_symm_apply, hu] at e1
-    unfold tf at e1
-    rw [mul_right_comm, ← e1]
-    simp
-  · refine S.eq_of_trace fun y => ?_
-    have e1 := hiso y 1
-    rw [hform_symm σ S.hσ hJ, hiso] at e1
-    unfold tf at e1
-    rw [← S.trace_star] at e1
-    simpa [S.hτ] using e1
 
 def gram (τ : B →+* B) (x : B) (e : Module.Basis (Fin r) A B) : Matrix (Fin r) (Fin r) A :=
   Matrix.of fun i j => tf A τ x (e i) (e j)
@@ -679,25 +519,7 @@ theorem sig_fixed (hF : ∀ e, c e = e → ∃ a, algebraMap F E a = e) (z : E �
   | add y y' h h' => rw [map_add, map_add, tmul_add, h, h']
   | tmul a t => simp [Algebra.algebraMap_eq_smul_one, TensorProduct.smul_tmul]
 
-theorem exists_unit_plus (hP : IsPPol c r P) {x : AdjoinRoot P ⊗[F] k} (hu : IsUnit x)
-    (hx : starLk k hP x = x) : ∃ x₀ : (Lplus hP ⊗[F] k)ˣ, inclPlus k hP x₀ = x := by
-  obtain ⟨u, rfl⟩ := hu
-  obtain ⟨w, hw⟩ := (star_fixed_iff k hP _).1 hx
-  have h2 : starLk k hP ((u⁻¹ : _ˣ) : AdjoinRoot P ⊗[F] k) = (u⁻¹ : _ˣ) := by
-    apply Units.eq_inv_of_mul_eq_one_left
-    rw [← hx, ← map_mul, Units.mul_inv, map_one]
-  obtain ⟨w', hw'⟩ := (star_fixed_iff k hP _).1 h2
-  have h3 : w * w' = 1 := inclPlus_injective k hP (by rw [map_mul, hw, hw', map_one, Units.mul_inv])
-  exact ⟨Units.mkOfMulEqOne w w' h3, hw⟩
 
-theorem mk_eq_iff_normL (hP : IsPPol c r P) (x x' : (Lplus hP ⊗[F] k)ˣ) :
-    (QuotientGroup.mk x : _ ⧸ normL k hP) = QuotientGroup.mk x' ↔
-      ∃ z : (AdjoinRoot P ⊗[F] k)ˣ,
-        inclPlus k hP x' = inclPlus k hP x * (z * starLk k hP z) := by
-  rw [QuotientGroup.eq, normL, Subgroup.mem_comap, MonoidHom.mem_range]
-  refine exists_congr fun z => ?_
-  rw [map_mul, map_inv, eq_inv_mul_iff_mul_eq, eq_comm, Units.ext_iff]
-  rfl
 
 theorem mk_eq_iff_normE (d d' : kˣ) :
     (QuotientGroup.mk d : _ ⧸ normE k c) = QuotientGroup.mk d' ↔
@@ -785,68 +607,6 @@ theorem norm_inclPlus [CharZero E] [FiniteDimensional F E] (hP : IsPPol c r P)
   show _ = inclPlus k hP ((Algebra.TensorProduct.comm F (Lplus hP) k).symm _)
   rw [AlgEquiv.symm_apply_apply]
 
-theorem classParamAt [CharZero E] [FiniteDimensional F E] (hP : IsPPol c r P)
-    (hc : ∀ e, c (c e) = e) : ClassParamAt k hP := by
-  classical
-  intro J hJ hd
-  obtain ⟨b, S, hch⟩ := exists_setting k hP hc
-  obtain ⟨b₀, -⟩ := exists_pow_basis hP
-  haveI : IsArtinianRing (k ⊗[F] E) := IsArtinianRing.of_finite k _
-  haveI : IsArtinianRing (E ⊗[F] k) :=
-    (Algebra.TensorProduct.comm F k E).toRingEquiv.isArtinianRing
-  have hiso : ∀ x φ, IsIsometry hP J x φ ↔
-      Iso (sigR (c : E →ₐ[F] E) k) (starLk k hP) J (inclPlus k hP x) φ := by
-    intro x φ
-    simp only [IsIsometry, Iso, hU, hx, tf, trLk_eq k b₀]
-  let Rel : (Lplus hP ⊗[F] k)ˣ ⧸ normL k hP → UJ (sigR (c : E →ₐ[F] E) k) J → Prop := fun ξ g =>
-    ∃ x φ, QuotientGroup.mk x = ξ ∧ IsIsometry hP J x φ ∧
-      Intw (AdjoinRoot.root P ⊗ₜ[F] (1 : k))
-        ((g : GL (Fin r) (E ⊗[F] k)) : Matrix (Fin r) (Fin r) (E ⊗[F] k)) φ
-  have hRel : ∀ ξ ξ' g g', Rel ξ g → Rel ξ' g' →
-      (ξ = ξ' ↔ ConjClasses.mk g = ConjClasses.mk g') := by
-    rintro _ _ g g' ⟨x, φ, rfl, h1, h2⟩ ⟨x', φ', rfl, h1', h2'⟩
-    rw [ConjClasses.mk_eq_mk_iff_isConj, mk_eq_iff_normL]
-    rw [hiso] at h1 h1'
-    constructor
-    · rintro ⟨z, hz⟩
-      rw [hz] at h1'
-      exact isConj_of_iso (h1.mul z) h1' (h2.mul z) h2'
-    · intro h
-      exact S.norm_of_isConj h1 h1' h2 h2' h.symm
-  let Φ : (Lplus hP ⊗[F] k)ˣ ⧸ normL k hP → ConjClasses (UJ (sigR (c : E →ₐ[F] E) k) J) :=
-    fun ξ => if h : ∃ g, Rel ξ g then ConjClasses.mk h.choose else ConjClasses.mk 1
-  have hΦ : ∀ ξ g, Rel ξ g → Φ ξ = ConjClasses.mk g := by
-    intro ξ g h
-    have h' : ∃ g, Rel ξ g := ⟨g, h⟩
-    simp only [Φ, dif_pos h']
-    exact (hRel _ _ _ _ h'.choose_spec h).1 rfl
-  have hex : ∀ ξ ∈ Xk hP J, ∃ g, Rel ξ g := by
-    rintro _ ⟨x, rfl, φ, h⟩
-    obtain ⟨g, hg⟩ := S.exists_intw ((hiso x φ).1 h)
-    exact ⟨g, x, φ, rfl, h, hg⟩
-  refine ⟨?_, Φ, ?_, ?_, ?_, ?_⟩
-  · rintro x ⟨x', hx', φ, h⟩
-    obtain ⟨z, hz⟩ := (mk_eq_iff_normL k hP _ _).1 hx'
-    exact ⟨_, (hiso _ _).2 (hz ▸ ((hiso _ _).1 h).mul z)⟩
-  · intro x φ h
-    obtain ⟨g, hg⟩ := S.exists_intw ((hiso x φ).1 h)
-    exact ⟨g, hg, hΦ _ _ ⟨x, φ, rfl, h, hg⟩⟩
-  · intro ξ hξ
-    obtain ⟨g, hg⟩ := hex ξ hξ
-    refine ⟨g, (hΦ _ _ hg).symm, ?_⟩
-    obtain ⟨x, φ, -, -, h⟩ := hg
-    rw [charpoly_of_intw b h, hch]
-  · intro ξ hξ ξ' hξ' h
-    obtain ⟨g, hg⟩ := hex ξ hξ
-    obtain ⟨g', hg'⟩ := hex ξ' hξ'
-    rw [hΦ _ _ hg, hΦ _ _ hg'] at h
-    exact (hRel _ _ _ _ hg hg').2 h
-  · rintro _ ⟨g, rfl, hg⟩
-    obtain ⟨x, φ, hu, hx, h1, h2⟩ := S.exists_of_charpoly hJ hd g (hg.trans hch.symm)
-      (by rw [hch]; exact hP.2.1.separable.map)
-    obtain ⟨x₀, rfl⟩ := exists_unit_plus k hP hu hx
-    have h3 := (hiso _ _).2 h1
-    exact ⟨QuotientGroup.mk x₀, ⟨x₀, rfl, φ, h3⟩, hΦ _ _ ⟨x₀, φ, rfl, h3, h2⟩⟩
 
 theorem discAt [CharZero E] [FiniteDimensional F E] (hP : IsPPol c r P)
     (hc : ∀ e, c (c e) = e) (hc1 : c ≠ 1) (hF : ∀ e, c e = e → ∃ a, algebraMap F E a = e) :
@@ -883,30 +643,9 @@ theorem discAt [CharZero E] [FiniteDimensional F E] (hP : IsPPol c r P)
   obtain ⟨δ₁, hδ₁⟩ := hex 1
   exact ⟨δ, hδ, fun δ' hδ' => (hmul x δ' δ₁ hδ' hδ₁).trans (hmul x δ δ₁ hδ hδ₁).symm⟩
 
-theorem quad_facts [CharZero F] (h2 : Module.finrank F E = 2) (hc1 : c ≠ 1) :
-    (∀ e, c (c e) = e) ∧ ∀ e, c e = e → ∃ a, algebraMap F E a = e := by
-  haveI : Algebra.IsQuadraticExtension F E := ⟨h2⟩
-  have hcard : Nat.card (E ≃ₐ[F] E) = 2 := by rw [IsGalois.card_aut_eq_finrank, h2]
-  obtain ⟨y, -, hy⟩ := (Nat.card_eq_two_iff' (1 : E ≃ₐ[F] E)).1 hcard
-  refine ⟨fun e => ?_, fun e he => ?_⟩
-  · have : c ^ 2 = 1 := hcard ▸ pow_card_eq_one'
-    rw [pow_two] at this
-    exact AlgEquiv.congr_fun this e
-  · refine (IsGalois.mem_range_algebraMap_iff_fixed e).2 fun f => ?_
-    by_cases hf : f = 1
-    · rw [hf]; rfl
-    · rw [(hy f hf).trans (hy c hc1).symm, he]
 
 end Concrete
 
-theorem classParamCM : GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialInclusion.ClassParamCM := by
-  intro F E _ _ _ _ _ _ _ h2 c hc1 r P hP
-  obtain ⟨hc, hF⟩ := quad_facts h2 hc1
-  exact ⟨⟨classParamAt _ hP hc, discAt _ hP hc hc1 hF⟩,
-    fun _ => ⟨classParamAt _ hP hc, discAt _ hP hc hc1 hF⟩,
-    fun _ => ⟨classParamAt _ hP hc, discAt _ hP hc hc1 hF⟩⟩
 
-theorem classParam : GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialInclusion.ClassParam :=
-  GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialInclusion.classParam_of_CM classParamCM
 
 end GlobalTheory.ClassParam

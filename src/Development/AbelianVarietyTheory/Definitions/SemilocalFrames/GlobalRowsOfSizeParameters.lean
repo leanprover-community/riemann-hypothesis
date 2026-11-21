@@ -17,11 +17,7 @@ theorem scale_pos (D : D7) (u : D.what₂.Word) : 0 < (D.mem u).A.GamP ^ (-2 : �
   have hD : 0 < D.what₂.Dstar := by rw [← D.Dstar_eq u]; exact (D.mem u).A.Dstar_pos
   positivity
 
-theorem duWin_of_data {D : D7} {C0 : ℝ} (h : StandingNumericalData D C0) : DuWin D C0 := h.2.2.2.2.2.2.2.2.2.1
 
-theorem duWin_zero_iff (D : D7) : DuWin D 0 ↔ ∀ u, D.duS u = 0 := by
-  unfold DuWin
-  simp
 
 theorem duWin_forces {D : D7} {C0 : ℝ} (h : DuWin D C0) (h0 : C0 ≠ 0) : 1 ≤ C0 ∧ ∀ u, D.duS u ≠ 0 := by
   obtain ⟨a, b⟩ := h D.u₀
@@ -310,19 +306,7 @@ theorem exists_glob0_of_zeroFreeRegion (p1 : GlobalTheory.Mem.An.ExplZeta) (p2 :
   have : (0 : ℝ) < D.host.TT.card := lt_of_lt_of_le (by positivity) t1
   exact Finset.card_pos.1 (by exact_mod_cast this)
 
-theorem one_lt_of_global_data {D : D7} {x eps CD Cg : ℝ} (G : Glob0 D x eps CD Cg) : 1 < x := by
-  have h := G.nums.k_hi
-  have hk : (5 : ℝ) ≤ D.R.k := by
-    have := D.R.m_add_three_le_k; have := D.R.two_le_m
-    exact_mod_cast (by omega : 5 ≤ D.R.k)
-  rw [show (5 : ℝ) = ((5 : ℕ) : ℝ) by norm_num, Real.rpow_natCast] at h
-  by_contra hc
-  have : x ^ 5 ≤ 1 ^ 5 := (Odd.strictMono_pow (by decide : Odd 5)).monotone (not_lt.1 hc)
-  linarith
 
-theorem not_glob0_small (x eps CD Cg : ℝ) : ¬ Glob0 (recd 0) x eps CD Cg := fun G => by
-  have h : ((2 : ℕ) : ℝ) ^ 4 ≤ ((8 : ℕ) : ℝ) := G.nums.mf
-  norm_num at h
 
 end GlobalTheory.Diag.PG.Model0
 

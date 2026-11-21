@@ -55,7 +55,6 @@ end
 def CMDatumFamilyClass : FamClass := fun {_} Fm =>
   LinkedFamiliesAligned Fm ∧ ∃ x0 : ℝ, ∀ x (hx : Fm.x1 < x), x0 ≤ x → ∀ i : Fm.Ix x, ∃ T : LinkedFamilyData (Fm.ex x hx i), HostDatumS T
 
-theorem CMDatumFamilyClass.c2sa {eps : ℝ} {Fm : FamP eps} (h : CMDatumFamilyClass Fm) : LinkedFamiliesAligned Fm := h.1
 
 theorem CMDatumFamilyClass.c2s {eps : ℝ} {Fm : FamP eps} (h : CMDatumFamilyClass Fm) : LinkedFamiliesLevelClass Fm := h.1.c2s
 

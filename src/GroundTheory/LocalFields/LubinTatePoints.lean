@@ -1,9 +1,312 @@
 import Mathlib
 import GroundTheory.LocalFields.Interface
-import GroundTheory.LocalFields.ExamplesLaurent
+import GroundTheory.LocalFields.Examples
 import GroundTheory.LocalFields.SeparableClosure
 import GroundTheory.LocalFields.FormalGroups.LubinTateGroup
 
+section
+namespace GroundTheory.LocalField
+
+open ValuativeRel Polynomial IsLocalRing
+
+namespace EqualChar
+
+variable (K : Type*) [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
+variable (p : ℕ) [hp : Fact p.Prime] [CharP K p]
+
+instance charP_integer : CharP 𝒪[K] p :=
+  (CharP.charP_iff_prime_eq_zero hp.out).mpr (Subtype.ext (by simp))
+
+instance charP_residueField : CharP 𝓀[K] p :=
+  (CharP.charP_iff_prime_eq_zero hp.out).mpr (by
+    rw [← map_natCast (residue 𝒪[K]), CharP.cast_eq_zero, map_zero])
+
+theorem exists_card_residueField_eq : ∃ n : ℕ, 0 < n ∧ Nat.card 𝓀[K] = p ^ n := by
+  let := Fintype.ofFinite 𝓀[K]
+  obtain ⟨n, -, h⟩ := FiniteField.card 𝓀[K] p
+  exact ⟨n, n.pos, by rw [Nat.card_eq_fintype_card, h]⟩
+
+noncomputable def residueExponent : ℕ := (exists_card_residueField_eq K p).choose
+
+theorem residueExponent_pos : 0 < residueExponent K p :=
+  (exists_card_residueField_eq K p).choose_spec.1
+
+theorem card_residueField : Nat.card 𝓀[K] = p ^ residueExponent K p :=
+  (exists_card_residueField_eq K p).choose_spec.2
+
+theorem one_lt_card_residueField : 1 < p ^ residueExponent K p :=
+  Nat.one_lt_pow (residueExponent_pos K p).ne' hp.out.one_lt
+
+theorem pow_card_residueField (a : 𝓀[K]) : a ^ p ^ residueExponent K p = a := by
+  let := Fintype.ofFinite 𝓀[K]
+  rw [← card_residueField, Nat.card_eq_fintype_card]
+  exact FiniteField.pow_card a
+
+noncomputable def teichmullerSubring : Subring 𝒪[K] :=
+  (iterateFrobenius 𝒪[K] p (residueExponent K p)).eqLocus (RingHom.id _)
+
+theorem mem_teichmullerSubring {x : 𝒪[K]} :
+    x ∈ teichmullerSubring K p ↔ x ^ p ^ residueExponent K p = x := Iff.rfl
+
+theorem eq_zero_of_mem_teichmullerSubring {x : 𝒪[K]} (hx : x ∈ teichmullerSubring K p)
+    (h0 : residue 𝒪[K] x = 0) : x = 0 := by
+  by_contra hne
+  have hv0 : 0 < valuation K (x : K) := by
+    rw [zero_lt_iff, ne_eq, map_eq_zero]
+    exact fun h => hne (Subtype.ext h)
+  have hv1 : valuation K (x : K) < 1 := by
+    rw [residue_eq_zero_iff, mem_maximalIdeal, mem_nonunits_iff] at h0
+    exact (Valuation.Integer.not_isUnit_iff_valuation_lt_one).mp h0
+  have h := pow_lt_self_of_lt_one₀ hv0 hv1 (one_lt_card_residueField K p)
+  rw [← map_pow, ← Subring.coe_pow, (mem_teichmullerSubring K p).mp hx] at h
+  exact lt_irrefl _ h
+
+theorem exists_mem_teichmullerSubring_residue_eq (a : 𝓀[K]) :
+    ∃ x ∈ teichmullerSubring K p, residue 𝒪[K] x = a := by
+  let := IsTopologicalAddGroup.rightUniformSpace K
+  have := isUniformAddGroup_of_addCommGroup (G := K)
+  set q := p ^ residueExponent K p with hqdef
+  have hq : 1 < q := one_lt_card_residueField K p
+  have hq0 : ((q : ℕ) : 𝒪[K]) = 0 :=
+    (CharP.cast_eq_zero_iff 𝒪[K] p q).mpr (dvd_pow_self p (residueExponent_pos K p).ne')
+  obtain ⟨a₀, rfl⟩ := residue_surjective a
+  set f : 𝒪[K][X] := X ^ q - X with hf
+  have hmonic : f.Monic := monic_X_pow_sub (by rw [degree_X]; exact_mod_cast hq)
+  have hroot : f.eval a₀ ∈ maximalIdeal 𝒪[K] := by
+    rw [← residue_eq_zero_iff]
+    simp [f, hqdef, pow_card_residueField]
+  have hder : IsUnit (Ideal.Quotient.mk (maximalIdeal 𝒪[K]) (f.derivative.eval a₀)) := by
+    have : f.derivative.eval a₀ = -1 := by
+      simp [f, derivative_X_pow, hq0]
+    rw [this, map_neg, map_one]
+    exact isUnit_one.neg
+  obtain ⟨x, hx, hxa⟩ := HenselianRing.is_henselian f hmonic a₀ hroot hder
+  refine ⟨x, ?_, ?_⟩
+  · rw [mem_teichmullerSubring]
+    simpa [f, IsRoot, sub_eq_zero] using hx
+  · rw [← sub_eq_zero, ← map_sub, residue_eq_zero_iff]
+    exact hxa
+
+noncomputable def teichmullerEquiv : teichmullerSubring K p ≃+* 𝓀[K] :=
+  RingEquiv.ofBijective ((residue 𝒪[K]).comp (teichmullerSubring K p).subtype)
+    ⟨(injective_iff_map_eq_zero _).mpr fun x hx =>
+        Subtype.ext (eq_zero_of_mem_teichmullerSubring K p x.2 hx),
+      fun a => by
+        obtain ⟨x, hx, h⟩ := exists_mem_teichmullerSubring_residue_eq K p a
+        exact ⟨⟨x, hx⟩, h⟩⟩
+
+noncomputable def teichmullerHom : 𝓀[K] →+* 𝒪[K] :=
+  (teichmullerSubring K p).subtype.comp (teichmullerEquiv K p).symm.toRingHom
+
+theorem residue_teichmullerHom (a : 𝓀[K]) : residue 𝒪[K] (teichmullerHom K p a) = a :=
+  (teichmullerEquiv K p).apply_symm_apply a
+
+end EqualChar
+
+end GroundTheory.LocalField
+end
+
+section
+open scoped LaurentSeries
+
+namespace GroundTheory.LocalField
+
+open ValuativeRel Polynomial IsLocalRing Topology Filter WithZero HahnSeries
+
+
+namespace EqualChar
+
+variable (K : Type*) [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
+
+noncomputable def uniformizer : 𝒪[K] :=
+  (IsDiscreteValuationRing.exists_irreducible 𝒪[K]).choose
+
+theorem irreducible_uniformizer : Irreducible (uniformizer K) :=
+  (IsDiscreteValuationRing.exists_irreducible 𝒪[K]).choose_spec
+
+theorem uniformizer_ne_zero : (uniformizer K : K) ≠ 0 := fun h =>
+  (irreducible_uniformizer K).ne_zero (Subtype.ext h)
+
+theorem valuation_uniformizer_pos : 0 < valuation K (uniformizer K : K) := by
+  rw [zero_lt_iff, ne_eq, map_eq_zero]
+  exact uniformizer_ne_zero K
+
+theorem valuation_uniformizer_lt_one : valuation K (uniformizer K : K) < 1 :=
+  Valuation.Integer.not_isUnit_iff_valuation_lt_one.mp (irreducible_uniformizer K).not_isUnit
+
+def ballIdeal (γ : (ValueGroupWithZero K)ˣ) : Ideal 𝒪[K] where
+  carrier := {x | valuation K (x : K) < γ}
+  add_mem' {a b} ha hb := by
+    change valuation K ((a : K) + (b : K)) < γ
+    exact lt_of_le_of_lt ((valuation K).map_add _ _) (max_lt ha hb)
+  zero_mem' := by simp
+  smul_mem' c x hx := by
+    change valuation K ((c : K) * (x : K)) < γ
+    rw [map_mul]
+    exact lt_of_le_of_lt (mul_le_of_le_one_left' ((Valuation.mem_integer_iff _ _).mp c.2)) hx
+
+omit [TopologicalSpace K] [IsNonarchimedeanLocalField K] in
+theorem mem_ballIdeal {γ : (ValueGroupWithZero K)ˣ} {x : 𝒪[K]} :
+    x ∈ ballIdeal K γ ↔ valuation K (x : K) < γ := Iff.rfl
+
+theorem hasBasis_nhds_zero_integer :
+    (𝓝 (0 : 𝒪[K])).HasBasis (fun _ => True)
+      fun γ : (ValueGroupWithZero K)ˣ => ((ballIdeal K γ : Ideal 𝒪[K]) : Set 𝒪[K]) := by
+  rw [nhds_subtype_eq_comap, ZeroMemClass.coe_zero]
+  refine ((IsValuativeTopology.hasBasis_nhds_zero K).comap Subtype.val).congr
+    (fun _ => Iff.rfl) fun γ _ => ?_
+  ext x
+  simp [mem_ballIdeal]
+
+instance : IsLinearTopology 𝒪[K] 𝒪[K] :=
+  IsLinearTopology.mk_of_hasBasis' 𝒪[K] (hasBasis_nhds_zero_integer K)
+    fun I r _ hx => I.mul_mem_left r hx
+
+theorem isTopologicallyNilpotent_uniformizer : IsTopologicallyNilpotent (uniformizer K) := by
+  refine (hasBasis_nhds_zero_integer K).tendsto_right_iff.mpr fun γ _ => ?_
+  obtain ⟨N, hN⟩ := exists_pow_lt₀ (valuation_uniformizer_lt_one K) γ
+  filter_upwards [eventually_ge_atTop N] with n hn
+  rw [SetLike.mem_coe, mem_ballIdeal, Subring.coe_pow, map_pow]
+  exact lt_of_le_of_lt (pow_le_pow_of_le_one zero_le
+    (valuation_uniformizer_lt_one K).le hn) hN
+
+variable (p : ℕ) [Fact p.Prime] [CharP K p]
+
+
+section Uniform
+
+local instance uniformSpaceK : UniformSpace K := IsTopologicalAddGroup.rightUniformSpace K
+
+local instance isUniformAddGroupK : IsUniformAddGroup K := isUniformAddGroup_of_addCommGroup
+
+local instance uniformSpaceResidue : UniformSpace 𝓀[K] := ⊥
+
+local instance discreteUniformityResidue : DiscreteUniformity 𝓀[K] := ⟨rfl⟩
+
+noncomputable def powerSeriesHom : PowerSeries 𝓀[K] →+* 𝒪[K] :=
+  PowerSeries.eval₂Hom (φ := teichmullerHom K p) continuous_of_discreteTopology
+    (isTopologicallyNilpotent_uniformizer K)
+
+theorem powerSeriesHom_apply (F : PowerSeries 𝓀[K]) :
+    powerSeriesHom K p F = PowerSeries.eval₂ (teichmullerHom K p) (uniformizer K) F := by
+  rw [powerSeriesHom, PowerSeries.coe_eval₂Hom]
+
+
+theorem powerSeriesHom_X : powerSeriesHom K p PowerSeries.X = uniformizer K := by
+  rw [powerSeriesHom_apply, PowerSeries.eval₂_X]
+
+theorem hasSum_powerSeriesHom (F : PowerSeries 𝓀[K]) :
+    HasSum (fun d => teichmullerHom K p (PowerSeries.coeff d F) * uniformizer K ^ d)
+      (powerSeriesHom K p F) := by
+  rw [powerSeriesHom_apply]
+  exact PowerSeries.hasSum_eval₂ continuous_of_discreteTopology
+    (isTopologicallyNilpotent_uniformizer K) F
+
+theorem powerSeriesHom_surjective : Function.Surjective (powerSeriesHom K p) := by
+  intro y
+  have hstep : ∀ z : 𝒪[K], ∃ w : 𝒪[K],
+      z = teichmullerHom K p (residue 𝒪[K] z) + uniformizer K * w := by
+    intro z
+    have hm : z - teichmullerHom K p (residue 𝒪[K] z) ∈ maximalIdeal 𝒪[K] := by
+      rw [← residue_eq_zero_iff, map_sub, residue_teichmullerHom, sub_self]
+    rw [(irreducible_uniformizer K).maximalIdeal_eq, Ideal.mem_span_singleton'] at hm
+    obtain ⟨w, hw⟩ := hm
+    exact ⟨w, by rw [mul_comm, hw]; ring⟩
+  choose next hnext using hstep
+  obtain ⟨rem, hrem0, hremS⟩ : ∃ rem : ℕ → 𝒪[K], rem 0 = y ∧ ∀ n, rem (n + 1) = next (rem n) :=
+    ⟨fun n => next^[n] y, rfl, fun n => Function.iterate_succ_apply' next n y⟩
+  refine ⟨PowerSeries.mk fun n => residue 𝒪[K] (rem n), ?_⟩
+  have hpartial : ∀ n, y = (∑ d ∈ Finset.range n,
+      teichmullerHom K p (residue 𝒪[K] (rem d)) * uniformizer K ^ d) +
+        rem n * uniformizer K ^ n := by
+    intro n
+    induction n with
+    | zero => simp [hrem0]
+    | succ n ih =>
+      rw [Finset.sum_range_succ, hremS]
+      linear_combination ih + uniformizer K ^ n * hnext (rem n)
+  have hT1 := (hasSum_powerSeriesHom K p
+    (PowerSeries.mk fun n => residue 𝒪[K] (rem n))).tendsto_sum_nat
+  simp only [PowerSeries.coeff_mk] at hT1
+  have h0 : Tendsto (fun n => rem n * uniformizer K ^ n) atTop (𝓝 0) :=
+    IsLinearTopology.tendsto_mul_zero_of_right rem (fun n => uniformizer K ^ n)
+      (isTopologicallyNilpotent_uniformizer K)
+  have hT2 : Tendsto (fun n => ∑ d ∈ Finset.range n,
+      teichmullerHom K p (residue 𝒪[K] (rem d)) * uniformizer K ^ d) atTop (𝓝 y) := by
+    have he : (fun n => ∑ d ∈ Finset.range n,
+        teichmullerHom K p (residue 𝒪[K] (rem d)) * uniformizer K ^ d) =
+          fun n => y - rem n * uniformizer K ^ n :=
+      funext fun n => by rw [eq_sub_iff_add_eq, ← hpartial n]
+    rw [he]
+    simpa using (tendsto_const_nhds (x := y)).sub h0
+  exact tendsto_nhds_unique hT1 hT2
+
+end Uniform
+
+
+noncomputable def laurentHom : 𝓀[K]⸨X⸩ →+* K :=
+  IsLocalization.lift (M := Submonoid.powers (PowerSeries.X : PowerSeries 𝓀[K]))
+    (g := (Subring.subtype 𝒪[K]).comp (powerSeriesHom K p)) (by
+      rintro ⟨_, n, rfl⟩
+      simp only [RingHom.comp_apply, map_pow, powerSeriesHom_X, Subring.subtype_apply]
+      exact (pow_ne_zero n (uniformizer_ne_zero K)).isUnit)
+
+theorem laurentHom_coe (F : PowerSeries 𝓀[K]) :
+    laurentHom K p (F : 𝓀[K]⸨X⸩) = powerSeriesHom K p F :=
+  IsLocalization.lift_eq (M := Submonoid.powers (PowerSeries.X : PowerSeries 𝓀[K])) _ F
+
+theorem laurentHom_single (n : ℤ) :
+    laurentHom K p (single n 1) = (uniformizer K : K) ^ n := by
+  rw [RatFunc.single_zpow, map_zpow₀, ← HahnSeries.ofPowerSeries_X, laurentHom_coe,
+    powerSeriesHom_X]
+
+
+omit [Fact p.Prime] [CharP K p] in
+
+theorem valued_le_one_iff {x : 𝓀[K]⸨X⸩} (hx : x ≠ 0) : Valued.v x ≤ 1 ↔ 0 ≤ x.order := by
+  have h := LaurentSeries.valuation_le_iff_coeff_lt_eq_zero (K := 𝓀[K]) (D := 0) (f := x)
+  simp only [neg_zero, exp_zero] at h
+  rw [h]
+  constructor
+  · intro H
+    by_contra hneg
+    exact hx (HahnSeries.coeff_order_eq_zero.mp (H _ (not_le.mp hneg)))
+  · intro H n hn
+    exact HahnSeries.coeff_eq_zero_of_lt_order (lt_of_lt_of_le hn H)
+
+
+
+theorem laurentHom_surjective : Function.Surjective (laurentHom K p) := by
+  intro x
+  rcases eq_or_ne x 0 with rfl | hx
+  · exact ⟨0, map_zero _⟩
+  have hvx : 0 < valuation K x := by
+    rw [zero_lt_iff, ne_eq, map_eq_zero]
+    exact hx
+  obtain ⟨m, hm⟩ := exists_pow_lt₀ (valuation_uniformizer_lt_one K)
+    (Units.mk0 (valuation K x)⁻¹ (inv_ne_zero hvx.ne'))
+  have hy : valuation K ((uniformizer K : K) ^ m * x) ≤ 1 := by
+    rw [map_mul, map_pow]
+    have h := mul_lt_mul_of_pos_right hm hvx
+    rw [Units.val_mk0, inv_mul_cancel₀ hvx.ne'] at h
+    exact h.le
+  obtain ⟨F, hF⟩ := powerSeriesHom_surjective K p
+    ⟨(uniformizer K : K) ^ m * x, (Valuation.mem_integer_iff _ _).mpr hy⟩
+  refine ⟨single (-(m : ℤ)) 1 * (F : 𝓀[K]⸨X⸩), ?_⟩
+  rw [map_mul, laurentHom_single, laurentHom_coe, hF, zpow_neg, zpow_natCast, ← mul_assoc,
+    inv_mul_cancel₀ (pow_ne_zero _ (uniformizer_ne_zero K)), one_mul]
+
+noncomputable def laurentEquiv : 𝓀[K]⸨X⸩ ≃+* K :=
+  RingEquiv.ofBijective (laurentHom K p) ⟨(laurentHom K p).injective, laurentHom_surjective K p⟩
+
+
+end EqualChar
+
+
+end GroundTheory.LocalField
+end
+
+section
 noncomputable section
 
 namespace GroundTheory.LocalField
@@ -428,11 +731,6 @@ theorem evalPoint_neg {σ : Type*} [Finite σ] (x : σ → IdealPoint Ω F) (p :
     psEval_subst' (fun _ => constantCoeff_point_val p) _ _ fun i => (x i).valuation_lt_one]
   rfl
 
-theorem psEval_apply_val {σ : Type*} [Finite σ] (φ : Hom F G) (p : F.Point σ) (x : σ → Ω)
-    (hx : ∀ i, valuation Ω (x i) < 1) :
-    psEval (φ.apply p).val x = psEval φ.toPowerSeries fun _ => psEval p.val x := by
-  rw [Hom.apply_val, PowerSeries.subst,
-    psEval_subst' (fun _ => constantCoeff_point_val p) _ _ hx]
 
 instance instAddGroup : AddGroup (IdealPoint Ω F) where
   add_assoc a b c := by
@@ -527,8 +825,6 @@ def endPointMap [F.IsComm] : Hom F F →+* AddMonoid.End (IdealPoint Ω F) where
   map_zero' := AddMonoidHom.ext fun x => Hom.pointMap_zero x
   map_add' f g := AddMonoidHom.ext fun x => Hom.pointMap_add f g x
 
-theorem endPointMap_apply [F.IsComm] (φ : Hom F F) (x : IdealPoint Ω F) :
-    endPointMap Ω F φ x = φ.pointMap x := rfl
 
 def Iso.pointEquiv (e : Iso F G) : IdealPoint Ω F ≃+ IdealPoint Ω G where
   toFun := e.hom.pointMap
@@ -572,9 +868,6 @@ noncomputable instance instModuleLubinTate {hf : IsLubinTateSeries π f} :
     Module 𝒪[K] (IdealPoint Ω (lubinTateFormalGroup hπ hf)) :=
   Module.compHom _ ((endPointMap Ω _).comp (lubinTateEndRingHom hπ hf))
 
-theorem lubinTate_smul_eq (hf : IsLubinTateSeries π f) (a : 𝒪[K])
-    (x : IdealPoint Ω (lubinTateFormalGroup hπ hf)) :
-    a • x = (lubinTateHom hπ hf hf a).pointMap x := rfl
 
 theorem lubinTate_smul_val (hf : IsLubinTateSeries π f) (a : 𝒪[K])
     (x : IdealPoint Ω (lubinTateFormalGroup hπ hf)) :
@@ -624,3 +917,5 @@ end LubinTate
 end FormalGroup
 
 end GroundTheory.LocalField
+end
+end

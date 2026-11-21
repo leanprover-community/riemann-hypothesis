@@ -92,33 +92,6 @@ theorem IsInter.unique (hX : IsArithVar p 1) {a b : ℝ} (ha : L.IsInter M a) (h
   obtain ⟨r, hr⟩ := exists_isRatSec L.isLB
   rw [(ha r hr).2, (hb r hr).2, H.unique hX H']
 
-theorem IsInter.triv_shift {t a : ℝ} (h : ((triv p).shift (fun _ => t) fun _ => rfl).IsInter M a)
-    [Finite (k →+* ℂ)] : a = t * ArInt.gdeg M 1 := by
-  obtain ⟨h, -, H⟩ := h
-  have hr : IsRatSec (LB.triv X) fun _ => 1 := fun a b h => by
-    exact ((congrArg (· * _) (map_one _)).trans (one_mul _)).symm
-  have hL := LB.isLB_triv X
-  have h₀ (z : X) : (divOfRatSec hL hr).IsEqn z 1 :=
-    (presents_divOfRatSec hL hr).isEqn PUnit.unit z trivial
-  have h₁ (z : X) : (divOfRatSec hL hr).mult z = 0 := (h₀ z).mult_eq.trans (unitAt_one z).ord_eq_zero
-  have h₂ (σ) : offSupp p σ (divOfRatSec hL hr) = univ :=
-    eq_univ_of_forall fun y => mem_offSupp.2 fun h => h (h₀ _)
-  have h₃ (σ) : logNorm (((triv p).shift (fun _ => t) fun _ => rfl).φ σ) (fun _ => 1) =
-      fun _ : CxPts p σ => -t * 1 := funext fun y => by
-    have e := ratVal_fnOf (y := y) mem_ptsIn_top trivial 1
-    rw [map_one, ev_one mem_ptsIn_top] at e
-    rw [logNorm, Units.val_one, e]
-    simp [triv, shift, Weight.ofFun, Weight.addFn]
-  have e := (H _ hr).2
-  have := Fintype.ofFinite (k →+* ℂ)
-  simp only [archInt, div] at e
-  erw [finsum_congr fun z => congrArg (fun n : ℤ => (n : ℝ) * h z) (h₁ z)] at e
-  rw [e, ArInt.gdeg, ArInt.chInt]
-  simp only [Int.cast_zero, zero_mul, finsum_zero, zero_sub]
-  rw [finsum_eq_sum_of_fintype, finsum_eq_sum_of_fintype, Finset.mul_sum, ← Finset.sum_neg_distrib]
-  refine Finset.sum_congr rfl fun σ _ => ?_
-  erw [h₂, h₃, Weight.chernInt_const_mul]
-  ring
 
 end HermLB
 
@@ -230,18 +203,7 @@ theorem IsFlagCh2.unique {D : ℕ} (hX : IsArithVar p D) {H : h.IsCInf} {fl : Ve
   obtain ⟨-, x', hx', rfl⟩ := hb
   rw [funext fun i => (hx i).unique hX (hx' i)]
 
-theorem isFlagCh2_rank_one {h : VMetric p E 1} (H : h.IsCInf) (fl : Vert.Flag E 1) :
-    IsFlagCh2 H fl a ↔ (grLB fl 0 H).IsSelfInter (2 * a) := by
-  obtain ⟨h₁, h₂⟩ := flagBc_rank_one h fl
-  refine ⟨?_, fun e => ⟨h₁, fun _ => 2 * a, fun i => Subsingleton.elim 0 i ▸ e, by simp [h₂]⟩⟩
-  rintro ⟨-, x, hx, rfl⟩
-  convert hx 0 using 1
-  rw [h₂, Fin.sum_univ_one]
-  ring
 
-theorem isFlagCh2_rank_zero {h : VMetric p E 0} (H : h.IsCInf) (fl : Vert.Flag E 0) :
-    IsFlagCh2 H fl a ↔ a = 0 := by
-  simp [IsFlagCh2, FlagBcFinite, flagBc]
 
 variable (h) in
 
@@ -268,17 +230,12 @@ variable (h) in
 
 def ch2Deg : ℝ := Classical.epsilon h.IsCh2Deg
 
-theorem IsCh2Deg.ch2Deg_eq (ha : h.IsCh2Deg a) : h.ch2Deg = a :=
-  (Classical.epsilon_spec ⟨a, ha⟩).unique ha
 
 theorem IsCh2Deg.eq_div (ha : h.IsCh2Deg a) (M : h.FlagModel) (hb : IsFlagCh2 M.cInf M.flag b) :
     a = b / M.deg := by
   rw [hb.unique M.reg.toIsArithVar (ha.2 M),
     mul_div_cancel_left₀ _ (Nat.cast_ne_zero.2 M.deg_pos.ne')]
 
-theorem isCh2Deg_rank_zero (hX : IsRegSurf p) {h : VMetric p E 0} (H : h.IsCInf)
-    (fl : Vert.Flag E 0) : h.IsCh2Deg 0 :=
-  ⟨⟨.self hX H fl⟩, fun M => (isFlagCh2_rank_zero _ _).2 (mul_zero _)⟩
 
 end VMetric
 
@@ -287,13 +244,6 @@ abbrev HermVB.ch2Deg [IsIntegral X] {r : ℕ} (E : HermVB p r) : ℝ := E.h.ch2D
 def ProjSpace.hermSum : HermVB (PSpace.str ℤ 1) (1 + 1) :=
   (HermVB.ofLB (ProjSpace.hermitianTwistingSheaf ℤ 1)).orthSum (HermVB.ofLB (ProjSpace.hermitianTwistingSheaf ℤ 1)).dual
 
-theorem ProjSpace.exists_flagModel_hermSum :
-    haveI := ProjSpace.isRegSurf_line.isIntegral
-    ∃ M : ProjSpace.hermSum.h.FlagModel, M.deg = 1 :=
-  haveI := ProjSpace.isRegSurf_line.isIntegral
-  ⟨.self ProjSpace.isRegSurf_line ProjSpace.hermSum.cInf (.ofBiprod
-    (HermVB.ofLB (ProjSpace.hermitianTwistingSheaf ℤ 1)).h.isVB (HermVB.ofLB (ProjSpace.hermitianTwistingSheaf ℤ 1)).dual.h.isVB),
-    RegCover.deg_self ProjSpace.isRegSurf_line⟩
 
 variable (p) in
 

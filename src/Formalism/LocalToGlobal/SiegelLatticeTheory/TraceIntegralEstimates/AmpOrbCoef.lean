@@ -1,5 +1,266 @@
-import Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.AmpNZFinal
+import Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.AmpNZTie
+import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.AmpRootCut
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.PtCellUniq
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermitianFormFlagVector
+import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.AmpTrans
+import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.AmpBig
+import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.AmpOrbClosed
+import Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.MomTie
+import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CoefDecay
 
+section
+open MeasureTheory Matrix
+open scoped ENNReal
+
+noncomputable section
+
+namespace Formalism.L2.S.Pv.AmpCell
+
+open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S
+
+variable {k r : ℕ}
+
+theorem one_mem_UW' (z : Fin (2 * r + k + 1) → ℂ) :
+    (1 : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) ∈ UWset k r z := by
+  refine ⟨?_, fun a => ⟨Matrix.one_mulVec _, Matrix.one_mulVec _⟩, Matrix.one_mulVec _⟩
+  show (1 : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)ᴴ * Hpk k r * 1 = Hpk k r
+  simp
+
+theorem mem_S_of_N (z : Fin (2 * r + k + 1) → ℂ) {n : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
+    (hn : n ∈ Nset k r) : n ∈ Sset k r z := ⟨1, one_mem_UW' z, n, hn, (one_mul n).symm⟩
+
+def Ds (r : ℕ) : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ := Matrix.diagonal fun b => (-1 : ℂ) ^ (r - b.val)
+
+theorem Ds_mul_Ds : Ds r * Ds r = 1 := by
+  unfold Ds
+  rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
+  congr 1
+  funext b
+  rw [← mul_pow]
+  norm_num
+
+theorem zhatO_eq (z z' : Fin (2 * r + k + 1) → ℂ) (g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) :
+    ZhatO k r z z' g = Zhat k r z z' g * Ds r := by
+  ext a b
+  simp only [Ds]
+  rw [Matrix.mul_diagonal]
+  simp only [ZhatO]
+  ring
+
+theorem inCell_of_rep {z z' : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hz' : inWb k r z') (hT : 0 < Tz k r z)
+    (hT' : 0 < Tz k r z') {n n' g₀ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hn : n ∈ Nset k r)
+    (hn' : n' ∈ Nset k r) {p : Point ℂ (r + 1)} (hZ : ZhatO k r z z' g₀ = ptMat p) :
+    IsInCell (ZhatO k r z z' (n * g₀ * n')) p := by
+  have hni : n⁻¹ ∈ Nset k r := WeylGroupFacts.mem_n_inv hn
+  have hE := Formalism.FourierDecayAlt.P.zhat_equivalence k r z z' ⟨hz, hT⟩ ⟨hz', hT'⟩ n⁻¹ (mem_S_of_N z hni) n'
+    (mem_S_of_N z' hn') g₀
+  have hnn : (n⁻¹)⁻¹ = n := Matrix.nonsing_inv_nonsing_inv _ (WeylGroupFacts.isUnit_of_uh hn.1)
+  rw [hnn] at hE
+  have hu := ((Formalism.FourierDecayAlt.P.unipotent_map_frame k r z ⟨hz, hT⟩).1 n⁻¹ (mem_S_of_N z hni)).2.1
+  have hu' := ((Formalism.FourierDecayAlt.P.unipotent_map_frame k r z' ⟨hz', hT'⟩).1 n' (mem_S_of_N z' hn')).2.1
+  refine ⟨(Formalism.FourierDecayAlt.C2.uMap k r z n⁻¹)ᴴ, Ds r * Formalism.FourierDecayAlt.C2.uMap k r z' n' * Ds r, fun i j => ⟨fun hij => ?_, fun hij => ?_⟩,
+    fun i j => ⟨fun hij => ?_, fun hij => ?_⟩, ?_⟩
+  · rw [Matrix.conjTranspose_apply, hu.1 j i hij, star_zero]
+  · subst hij; rw [Matrix.conjTranspose_apply, hu.2 i, star_one]
+  · unfold Ds; rw [Matrix.mul_diagonal, Matrix.diagonal_mul, hu'.1 i j hij]; ring
+  · subst hij; unfold Ds; rw [Matrix.mul_diagonal, Matrix.diagonal_mul, hu'.2 i, mul_one, ← pow_add, ← two_mul, pow_mul]
+    simp
+  · rw [zhatO_eq, hE, ← hZ, zhatO_eq]
+    calc (Formalism.FourierDecayAlt.C2.uMap k r z n⁻¹)ᴴ * Zhat k r z z' g₀ * Formalism.FourierDecayAlt.C2.uMap k r z' n' * Ds r
+        = (Formalism.FourierDecayAlt.C2.uMap k r z n⁻¹)ᴴ * (Zhat k r z z' g₀ * (Ds r * Ds r)) * Formalism.FourierDecayAlt.C2.uMap k r z' n' * Ds r := by
+          rw [Ds_mul_Ds, Matrix.mul_one]
+      _ = _ := by simp only [Matrix.mul_assoc]
+
+theorem zhat_monomial {z z' : Fin (2 * r + k + 1) → ℂ} {g₀ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
+    {p : Point ℂ (r + 1)} (hZ : ZhatO k r z z' g₀ = ptMat p) :
+    Formalism.FourierDecayAlt.C2.IsMonomial (Zhat k r z z' g₀) := by
+  have hinv : Function.Involutive (Formalism.L2.SG.PtCell.pinv p) := Formalism.L2.SG.PtCell.pinv_pinv p
+  refine ⟨hinv.toPerm _, fun a => (-1 : ℂ) ^ (r - a.val) * Formalism.L2.SG.PtCell.pval p.1 (Formalism.L2.SG.PtCell.pinv p a).val,
+    fun a => mul_ne_zero (pow_ne_zero _ (by norm_num))
+      (Formalism.L2.SG.PtCell.pval_ne p.1 (fun b hb => (p.2.1 b hb).1) _ (by rw [p.2.2]; exact (Formalism.L2.SG.PtCell.pinv p a).isLt)),
+    ?_⟩
+  have hZ' : Zhat k r z z' g₀ = ptMat p * Ds r := by
+    rw [← hZ, zhatO_eq, Matrix.mul_assoc, Ds_mul_Ds, Matrix.mul_one]
+  rw [hZ', Formalism.L2.SG.PtCell.ptMat_eq_mono]
+  ext i a
+  rw [show Ds r = Matrix.diagonal (fun b : Fin (r + 1) => (-1 : ℂ) ^ (r - b.val)) from rfl, Matrix.mul_diagonal]
+  simp only [Formalism.L2.SG.PtCell.mono, Formalism.FourierDecayAlt.C2.monoP, Matrix.of_apply, Function.Involutive.coe_toPerm]
+  by_cases h : a = Formalism.L2.SG.PtCell.pinv p i
+  · have h2 : i = Formalism.L2.SG.PtCell.pinv p a := by rw [h, hinv]
+    rw [if_pos h]
+    simp only [h2, if_true]
+    ring
+  · have h2 : ¬ i = Formalism.L2.SG.PtCell.pinv p a := fun e => h (by rw [e, hinv])
+    rw [if_neg h]
+    simp only [h2, if_false]
+    ring
+
+theorem cell_representation : Formalism.MainNotions.S.Pv.LemmaJ.CellRep := by
+  intro D W γ p θ' νR hz hz' hT hT' hRel hνR
+  obtain ⟨p', μR, ⟨n, hn, n', hn', g₀, hγ, hZ', μ₀, h0, h1, hμR⟩, hq⟩ := hνR
+  have hcell := inCell_of_rep hz hz' hT hT' hn hn' hZ'
+  rw [← hγ] at hcell
+  have hpp : p = p' := Formalism.L2.SG.PtCell.isInCell_uniq hRel.2.1 hcell
+  subst hpp
+  have hnU : n ∈ UH (Hpk D.R.k D.R.rS) := hn.1
+  have hn'U : n' ∈ UH (Hpk D.R.k D.R.rS) := hn'.1
+  have hu := WeylGroupFacts.isUnit_of_uh hnU
+  have hu' := WeylGroupFacts.isUnit_of_uh hn'U
+  have hg₀ : g₀ = n⁻¹ * γ * n'⁻¹ := by
+    rw [hγ]
+    calc g₀ = (n⁻¹ * n) * g₀ * (n' * n'⁻¹) := by
+          rw [Matrix.nonsing_inv_mul _ hu, Matrix.mul_nonsing_inv _ hu', Matrix.one_mul, Matrix.mul_one]
+      _ = n⁻¹ * (n * g₀ * n') * n'⁻¹ := by simp only [Matrix.mul_assoc]
+  have hg₀U : g₀ ∈ UH (Hpk D.R.k D.R.rS) := by
+    rw [hg₀]
+    exact WeylGroupFacts.uh_mul (WeylGroupFacts.uh_mul (WeylGroupFacts.uh_inv hnU) hRel.1) (WeylGroupFacts.uh_inv hn'U)
+  have hGeq : Gf D.R.k D.R.rS W.z W.z' γ = Gf D.R.k D.R.rS W.z W.z' g₀ := by
+    rw [hγ]
+    exact Formalism.QuantumDeterminants.gInv _ _ _ _ hz hz' n (mem_S_of_N _ hn) n' (mem_S_of_N _ hn') g₀
+  have hG : 0 < Gf D.R.k D.R.rS W.z W.z' g₀ := by
+    refine lt_of_le_of_ne (Formalism.QuantumDeterminants.gNonneg _ _ _ _ hz hz' hT hT' g₀ hg₀U) (fun e => hRel.2.2 ?_)
+    rw [hGeq, ← e]
+  refine ⟨n, hn, n', hn', g₀, hγ, hg₀U, hZ', hG, zhat_monomial hZ', μ₀, h0, h1, ?_⟩
+  rw [← hμR]
+  exact hq
+
+end Formalism.L2.S.Pv.AmpCell
+end
+end
+
+section
+namespace Formalism.L2.S.Pv.AmpFinal
+
+open Formalism.MainNotions.S.Pv.LemmaJ
+
+theorem rootCmp_of_parts (hRJ : RootJac) (hRH : RootHaar) (hOQ : OrbQuotEx) (hRA : RelAtPt) : RootCmp :=
+  rootCmp_of Formalism.L2.S.Pv.AmpCell.cell_representation Formalism.MainNotions.S.Pv.AmpTrans.amplitude_transport hRJ hRH hOQ hRA
+
+theorem ampUnif_of_parts (hAO : AmpOrbU) (hRJ : RootJac) (hRH : RootHaar) (hOQ : OrbQuotEx) (hRA : RelAtPt)
+    (hNZ : AmpNZ) : AmpUnif :=
+  ampUnif_of' hAO (rootCmp_of_parts hRJ hRH hOQ hRA) hNZ
+
+variable [Fact Formalism.FourierDecayAlt.ThreeDimData.DecLow] [Fact Formalism.L2.SG.LitS.PfNVG.BesselNVG] in
+theorem ampOrbU_of (hJ : PI.BesselMapUniq.BesselMapUniq) (hKD : Formalism.MainNotions.S.Pv.AmpDD.KDense)
+    (hKF : Formalism.MainNotions.S.Pv.AmpDD.AmpKF) : AmpOrbU :=
+  fun Cg cb Cu cT CT C0 => ⟨0, 1000, fun C' Cl _ hCl D large₂ =>
+    Formalism.L2.SG.AmpOrbClosed.ampOrb0_of hJ hKD hKF D large₂ C' Cl Cg cb Cu cT CT C0 hCl⟩
+
+variable [Fact Formalism.FourierDecayAlt.ThreeDimData.DecLow] [Fact Formalism.L2.SG.LitS.PfNVG.BesselNVG] in
+
+theorem amplitude_uniform_of_parts (hJ : PI.BesselMapUniq.BesselMapUniq) (hKD : Formalism.MainNotions.S.Pv.AmpDD.KDense)
+    (hKF : Formalism.MainNotions.S.Pv.AmpDD.AmpKF) (hRJ : RootJac) (hRH : RootHaar) (hOQ : OrbQuotEx) (hRA : RelAtPt)
+    (hNZ : AmpNZ) : AmpUnif :=
+  ampUnif_of_parts (ampOrbU_of hJ hKD hKF) hRJ hRH hOQ hRA hNZ
+
+variable [Fact Formalism.FourierDecayAlt.ThreeDimData.DecLow] [Fact Formalism.L2.SG.LitS.PfNVG.BesselNVG] in
+
+theorem amplitude_uniform_of_orbit (hJ : PI.BesselMapUniq.BesselMapUniq) (hKD : Formalism.MainNotions.S.Pv.AmpDD.KDense)
+    (hRJ : RootJac) (hRH : RootHaar) (hOQ : OrbQuotEx) (hRA : RelAtPt) (hNZ : AmpNZ) : AmpUnif :=
+  ampUnif_of_parts (fun Cg cb Cu cT CT C0 => ⟨0, 1000, fun C' Cl _ hCl D large₂ =>
+    Formalism.L2.SG.AmpOrbClosed.ampOrb0 hJ hKD D large₂ C' Cl Cg cb Cu cT CT C0 hCl⟩) hRJ hRH hOQ hRA hNZ
+
+end Formalism.L2.S.Pv.AmpFinal
+end
+
+section
+open MeasureTheory
+open scoped ENNReal InnerProductSpace
+
+noncomputable section
+
+namespace Formalism.MainNotions.S.Pv.LemmaJ
+
+open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.Bridge Formalism.MainNotions.S.ThB
+
+def AmpOrbCoefDD : Prop :=
+  ∀ Cg cb Cu cT CT C0 : ℝ, ∃ C'₀ Cl₀ : ℝ, ∀ C' Cl : ℝ, C'₀ ≤ C' → Cl₀ ≤ Cl → ∀ (D : D7) (large₂ : SizeData₂ D),
+    Cnt.Hyp0 D large₂ C' Cl Cg cb Cu cT CT C0 →
+    ∀ τ w w', HypTT D w w' → ∀ θ (W : LocW D.R.k D.R.rS) (hW : GoodW D τ w w' θ W)
+      (A : LocS W) (hA : GoodS D (lamD D τ) A) (hT : 0 < Tr D w) (hT' : 0 < Tr D w'),
+    ∃ (v v' : A.H) (l : W.Wp) (l' : W.Wq) (ξ : W.Wp) (ξ' : W.Wq) (κ : ℂ), κ ≠ 0 ∧
+      v ∈ PI.UpqRep.smoothVecs (k := D.R.k) (r := D.R.rS) A.σ ∧
+      v' ∈ PI.UpqRep.smoothVecs (k := D.R.k) (r := D.R.rS) A.σ ∧
+      Formalism.FourierDecayAlt.ThreeDimData.be W.z (toBessel D τ w w' θ W (lamD D τ) A hW hA hT hT').c W.π A.σ W.μW
+                (toBessel D τ w w' θ W (lamD D τ) A hW hA hT hT').μN v v = (innerSL ℂ l).smulRight l ∧
+      Formalism.FourierDecayAlt.ThreeDimData.be W.z' (toBessel D τ w w' θ W (lamD D τ) A hW hA hT hT').c W.π' A.σ W.μW'
+                (toBessel D τ w w' θ W (lamD D τ) A hW hA hT hT').μN v' v' = (innerSL ℂ l').smulRight l' ∧
+      ⟪l, ξ⟫_ℂ ≠ 0 ∧ ⟪ξ', l'⟫_ℂ ≠ 0 ∧
+      OrbEq D hW hA hT hT' (fun g => κ • Formalism.MainNotions.S.Pv.AmpDD.coefF (toBessel D τ w w' θ W (lamD D τ) A hW hA hT hT')
+        v v' ξ ξ' g)
+
+theorem ampNZCoef_of (hE : AmpOrbCoefDD) (hCI : Formalism.MainNotions.S.Pv.BetaCut.CoefInCC)
+    (hBI : Formalism.MainNotions.S.Pv.BetaCut.BetaInfCoefNZ) : AmpNZCoef := by
+  intro Cg cb Cu cT CT C0
+  obtain ⟨A1, B1, hE'⟩ := hE Cg cb Cu cT CT C0
+  refine ⟨A1, max B1 1000, fun C' Cl hC' hCl D large₂ hH τ w w' hTT θ W hW A hA hT hT' μsec hsec => ?_⟩
+  have hCl1 : B1 ≤ Cl := le_trans (le_max_left _ _) hCl
+  have hCl2 : (1000 : ℝ) ≤ Cl := le_trans (le_max_right _ _) hCl
+  obtain ⟨v, v', l, l', ξ, ξ', κ, hκ, hv, hv', hbe, hbe', hl, hl', hOrb⟩ :=
+    hE' C' Cl hC' hCl1 D large₂ hH τ w w' hTT θ W hW A hA hT hT'
+  refine ⟨_, hOrb, ?_⟩
+  set L := toBessel D τ w w' θ W (lamD D τ) A hW hA hT hT' with hLdef
+  have hk2 : 2 ≤ D.R.k := by have := Formalism.MainNotions.BridgeLemma.five_le_k D; omega
+
+  have hv0 : 0 < D.host.v := by
+    unfold Host.v Host.rdE
+    refine div_pos (Real.rpow_pos_of_pos (abs_pos.2 ?_) _) two_pos
+    exact_mod_cast NumberField.discr_ne_zero D.host.E
+  have hka0 : 0 < D.host.ka := by unfold Host.ka; exact div_pos Real.pi_pos hv0
+  have hg0 : (0 : ℝ) < D.host.g 0 := by exact_mod_cast (D.host.g_prime 0).pos
+  have hg1 : (0 : ℝ) < D.host.g 1 := by exact_mod_cast (D.host.g_prime 1).pos
+  set ka : ℝ := D.host.ka / ((D.host.g 0 : ℝ) * (D.host.g 1 : ℝ)) with hka
+  have hkapos : 0 < ka := by positivity
+  have hc : L.c = ((2 * ka : ℝ) : ℂ) := by
+    show (((2 * D.host.ka / ((D.host.g 0 : ℝ) * (D.host.g 1 : ℝ)) : ℝ) : ℂ)) = _
+    congr 1; rw [hka]; ring
+
+  have hW' := hW
+  obtain ⟨-, -, -, -, -, -, hG, -, -, -, -, hNq, hq, -⟩ := hW'
+  have hκtop : kapN D θ ≠ ⊤ := ENNReal.ofReal_ne_top
+  have hκ0 : kapN D θ ≠ 0 := by
+    intro h0
+    have hμN : W.μN = 0 := by rw [hNq, h0]; unfold haarLie; rw [zero_smul]
+    have hS0 : muS W.μW W.μN = 0 := by unfold muS; rw [hμN, Measure.prod_zero, Measure.map_zero]
+    have h1 := hq (fun _ => 1) measurable_const
+    rw [hS0] at h1
+    simp at h1
+    exact hG.2.1 h1
+
+  have hL1 : (1 : ℝ) ≤ large₂.sc.L := by
+    unfold Scale.L
+    exact Real.one_le_rpow (le_of_lt large₂.sc.one_lt_alt) (le_of_lt large₂.sc.eps_pos)
+  obtain ⟨-, hTie⟩ := Formalism.L2.S.Pv.Mom.paramTieG_of hH.1 0 (by rw [abs_zero, add_zero]; nlinarith)
+  have hl0 : l1dist (lamD D τ) (lamD D τ) ≤ 0 * D.R.k * (D.R.m : ℝ) ^ 3 := by
+    unfold l1dist; simp
+  obtain ⟨h, hgap, hok⟩ := hTie τ (lamD D τ) hl0 (Formalism.MainNotions.S.Inh.obj_isHCParam_lamSH D.R (D.hc τ))
+  have hsm : jNorm2 L (fun g => κ • Formalism.MainNotions.S.Pv.AmpDD.coefF L v v' ξ ξ' g) μsec =
+      ENNReal.ofReal (‖κ‖ ^ 2) * jNorm2 L (Formalism.MainNotions.S.Pv.AmpDD.coefF L v v' ξ ξ') μsec :=
+    Formalism.MainNotions.BesselShellMomentBounds.jNorm2_smul L κ _ μsec
+  rw [hsm]
+  refine mul_ne_zero (ENNReal.ofReal_pos.2 (pow_pos (norm_pos_iff.2 hκ) 2)).ne' ?_
+  exact Formalism.L2.S.Pv.AmpNZTie.jNorm2_coef_ne' hk2 L ka hkapos hc hκ0 hκtop μsec hsec h hgap hok v v' hv hv'
+    l l' ξ ξ' hbe hbe' hl hl' hCI hBI
+
+theorem coefficients_in_compact_closure : Formalism.MainNotions.S.Pv.BetaCut.CoefInCC := by
+  intro k r ε lam H _ _ _ σ h m A hlam hσ hgap hm hA v hv v' hv' Wp Wq _ _ _ _ ξ ξ'
+  exact Formalism.L2.SG.Pf.CoefDecay.coefM_inCC hlam hgap m hm hA hσ hv hv' ξ ξ' 5
+
+theorem ampNZ_of_parts (hE : AmpOrbCoefDD) (hBI : Formalism.MainNotions.S.Pv.BetaCut.BetaInfCoefNZ) : AmpNZ :=
+  ampNZ_of (ampNZCoef_of hE coefficients_in_compact_closure hBI)
+
+variable [Fact Formalism.FourierDecayAlt.ThreeDimData.DecLow] [Fact Formalism.L2.SG.LitS.PfNVG.BesselNVG] in
+
+theorem amplitude_uniform_of_coefficients (hJ : PI.BesselMapUniq.BesselMapUniq) (hKD : Formalism.MainNotions.S.Pv.AmpDD.KDense)
+    (hRJ : RootJac) (hRH : RootHaar) (hOQ : OrbQuotEx) (hRA : RelAtPt) (hE : AmpOrbCoefDD)
+    (hBI : Formalism.MainNotions.S.Pv.BetaCut.BetaInfCoefNZ) : AmpUnif :=
+  Formalism.L2.S.Pv.AmpFinal.amplitude_uniform_of_orbit hJ hKD hRJ hRH hOQ hRA (ampNZ_of_parts hE hBI)
+
+end Formalism.MainNotions.S.Pv.LemmaJ
+end
+end
+
+section
 open MeasureTheory Matrix
 open scoped InnerProductSpace ENNReal
 
@@ -224,3 +485,5 @@ theorem amplitude_uniform_of_bessel_uniq (hJ : PI.BesselMapUniq.BesselMapUniq) (
   Formalism.MainNotions.S.Pv.LemmaJ.amplitude_uniform_of_coefficients hJ hKD hRJ hRH hOQ hRA (ampOrbCoefDD_of hJ) hBI
 
 end Formalism.L2.S.Pv.AmpOrbCoef
+end
+end

@@ -4,10 +4,18 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemZalgCommuteCompa
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CentreEnvelopingAlgebraCommuteRealLieSmoothingStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LieDerivativeRealLieSmoothingEqDensityStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RealLieSmoothingMemSlowlyIncreasingStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteDimensionalCentreAnnihilatorCompatibleMapsStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteDimensionalCentreAnnihilatorCompatibleMaps
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RealLieSmoothingMemSmoothAdelicFunctionsStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothingRightTranslateMaxCompact
 
+section
+open NumberField GlobalTheory.CuspRep GlobalTheory.CuspQuot GlobalTheory.AutGrowth MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finiteDimensional_centreAnnihilatorCompatibleMaps : GlobalTheory.Published.AutomorphicFormsFiniteGL → ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ) (φ : Sm E a), IsAutForm φ → ∀ L : Subgroup (GL (Fin a) (Af E)), IsOpen (L : Set (GL (Fin a) (Af E))) → FiniteDimensional ℂ (mapsJ φ L) := by
+  first | exact @GlobalTheory.AutGrowth.KilledFin.finiteDimensional_mapsJ | exact GlobalTheory.AutGrowth.KilledFin.finiteDimensional_mapsJ | (intros; apply GlobalTheory.AutGrowth.KilledFin.finiteDimensional_mapsJ <;> assumption)
+end
+
+section
 noncomputable section
 
 open NumberField GlobalTheory.CuspRep GlobalTheory.CuspQuot GlobalTheory.AutGrowth MeasureTheory Filter Topology
@@ -180,3 +188,5 @@ theorem exists_finite_space : GlobalTheory.Published.AutomorphicFormsFiniteGL �
   exact (hT.1.2 w0).1
 
 end GlobalTheory.AutGrowth.SmoothFinite
+end
+end

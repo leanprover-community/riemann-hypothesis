@@ -1,7 +1,43 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RootSumMapFrobeniusPow
+import Development.AbelianVarietyTheory.Definitions.Divisors.OrthSubrepresentation
+
+section
+open Polynomial GlobalTheory.CuspGL GlobalTheory.BI GlobalTheory.Shin SemidirectProduct
+open scoped Classical
+
+namespace GlobalTheory.Shin
+
+open Polynomial SemidirectProduct in
+open scoped Classical in
+
+theorem _root_.GlobalTheory.Shin.rootSum_map_frobeniusPow : ∀ (F : Type) [Field F] [Finite F] (θ : AlgebraicClosure F →* ℂ) (t : F →+* F) (j : ℕ), (∀ x, t x = x ^ (ringChar F ^ j)) → ∀ (k : ℕ) (P : F[X]), _root_.GlobalTheory.CuspGL.rootSum θ k (P.map t) = _root_.GlobalTheory.CuspGL.rootSum θ (k * ringChar F ^ j) P := by
+  intro F _ _ θ t j ht k P
+  haveI : Fact (ringChar F).Prime := ⟨CharP.char_is_prime F (ringChar F)⟩
+  haveI : CharP (AlgebraicClosure F) (ringChar F) :=
+    charP_of_injective_algebraMap (algebraMap F (AlgebraicClosure F)).injective (ringChar F)
+  haveI : ExpChar (AlgebraicClosure F) (ringChar F) := ExpChar.prime Fact.out
+  unfold _root_.GlobalTheory.CuspGL.rootSum
+  have hmap : (P.map t).map (algebraMap F (AlgebraicClosure F)) =
+      (P.map (algebraMap F (AlgebraicClosure F))).map
+        (iterateFrobenius (AlgebraicClosure F) (ringChar F) j) := by
+    rw [map_map, map_map]
+    congr 1
+    ext x
+    simp [iterateFrobenius_def, ht, map_pow]
+  rw [hmap, ← roots_map_of_injective_of_card_eq_natDegree
+    (iterateFrobenius (AlgebraicClosure F) (ringChar F) j).injective
+    IsAlgClosed.card_roots_eq_natDegree, Multiset.map_map]
+  congr 1
+  refine Multiset.map_congr rfl fun α _ => ?_
+  rw [Function.comp_apply, iterateFrobenius_def, map_pow, ← pow_mul, mul_comm]
+
+end GlobalTheory.Shin
+end
+
+section
 open Polynomial GlobalTheory.CuspGL GlobalTheory.BI GlobalTheory.Shin SemidirectProduct
 open scoped Classical
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.rootSum_map_frobenius_pow_eq_rootSum_mul : ∀ (F : Type) [Field F] [Finite F] (θ : AlgebraicClosure F →* ℂ) (t : F →+* F) (j : ℕ), (∀ x, t x = x ^ (ringChar F ^ j)) → ∀ (k : ℕ) (P : F[X]), rootSum θ k (P.map t) = rootSum θ (k * ringChar F ^ j) P := by
   first | (exact @GlobalTheory.Shin.rootSum_map_frobeniusPow) | (exact GlobalTheory.Shin.rootSum_map_frobeniusPow) | (intros; apply GlobalTheory.Shin.rootSum_map_frobeniusPow  <;> assumption)
+end

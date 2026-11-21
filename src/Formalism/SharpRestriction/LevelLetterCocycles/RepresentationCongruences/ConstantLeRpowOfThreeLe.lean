@@ -1,7 +1,50 @@
-import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.P2PowMemSpanCUniformizerPowP1PowMulXPow
+import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.FormalSeriesValueAtTwoPointsGenericPoints
 import Mathlib.RingTheory.PowerSeries.Substitution
 import Mathlib.Analysis.SpecialFunctions.Log.Base
 
+section
+namespace Formalism.MainNotions.N.FrobeniusPowerSeries
+
+open PowerSeries
+
+namespace ContPA
+
+variable {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
+  [IsAdicComplete (IsLocalRing.maximalIdeal O) O]
+
+section P2
+variable {l : ℕ} [hlp : Fact l.Prime] {p1 p2 e u α β : O⟦X⟧}
+
+theorem p1_pow_mem_span_C_pow_X_pow (hp : p1 = C (l : O) * e + u * X ^ l) (m η : ℕ) :
+    p1 ^ m ∈ Ideal.span {C (l : O) ^ (m + 1 - (η + l - 1) / l), (X : O⟦X⟧) ^ η} := by
+  have hl0 : 0 < l := hlp.out.pos
+  have hle : η ≤ l * ((η + l - 1) / l) := by
+    have h1 := Nat.div_add_mod (η + l - 1) l
+    have h2 := Nat.mod_lt (η + l - 1) hl0
+    omega
+  have hsub : p1 - u * X ^ l ∈ Ideal.span {(C (l : O) : O⟦X⟧)} := by
+    rw [hp, add_sub_cancel_right]
+    exact Ideal.mem_span_singleton'.mpr ⟨e, mul_comm _ _⟩
+  have h := pow_mem_span_of_sub hsub m ((η + l - 1) / l)
+  refine mem_of_mem_span_pair h (Ideal.subset_span (by simp)) ?_
+  have e1 : (u * X ^ l) ^ ((η + l - 1) / l) =
+      (u ^ ((η + l - 1) / l) * X ^ (l * ((η + l - 1) / l) - η)) * (X : O⟦X⟧) ^ η := by
+    rw [mul_pow, ← pow_mul, mul_assoc, ← pow_add, Nat.sub_add_cancel hle]
+  rw [e1]
+  exact Ideal.mul_mem_left _ _ (Ideal.subset_span (by simp))
+
+
+variable {ϖ : O} (hϖ : Irreducible ϖ)
+include hϖ
+
+end P2
+
+end ContPA
+
+end Formalism.MainNotions.N.FrobeniusPowerSeries
+end
+
+section
 namespace Formalism.MainNotions.N.FrobeniusPowerSeries
 
 open PowerSeries
@@ -93,25 +136,7 @@ theorem PhiData.isDist_p (s : ℕ) : IsDist (P.p s) := by
   show (P.p s).map (IsLocalRing.residue O) ≠ 0
   rw [h]
   exact mul_ne_zero hw.ne_zero (pow_ne_zero _ X_ne_zero)
-theorem PhiData.wdeg_p (s : ℕ) : wdeg (P.p s) = l ^ s := by
-  obtain ⟨w, hw, hs⟩ := P.map_p s
-  exact (ContPA.dist_of_map_eq hw _ hs).2
 
-theorem PhiData.p_one_mem_span_l_X_pow_l : P.p 1 ∈ Ideal.span {C (l : O), (X : O⟦X⟧) ^ l} := by
-  rw [P.first_partial_unit_eq_exp]
-  exact Ideal.add_mem _ (Ideal.mul_mem_right _ _ (Ideal.subset_span (by simp)))
-    (Ideal.mul_mem_left _ _ (Ideal.subset_span (by simp)))
-theorem PhiData.p2_mem_span_C_natCast_p1_pow_natCast : P.p 2 ∈ Ideal.span {C (l : O), P.p 1 ^ l} := by
-  rw [P.p_two_eq_l_mul_phi_eps_add_phi_u_mul]
-  exact Ideal.add_mem _ (Ideal.mul_mem_right _ _ (Ideal.subset_span (by simp)))
-    (Ideal.mul_mem_left _ _ (Ideal.subset_span (by simp)))
-theorem PhiData.p_two_mem_span_l_X_pow_l_sq : P.p 2 ∈ Ideal.span {C (l : O), (X : O⟦X⟧) ^ (l ^ 2)} := by
-  have h := ContPA.p2_sub_mul_X_pow_mem_span_C_natCast P.first_partial_unit_eq_exp P.p_two_eq_l_mul_phi_eps_add_phi_u_mul
-  obtain ⟨z, hz⟩ := Ideal.mem_span_singleton'.mp h
-  have : P.p 2 = z * C (l : O) + (P.φ P.u * P.u ^ l) * X ^ (l ^ 2) := by rw [hz, sq]; ring
-  rw [this]
-  exact Ideal.add_mem _ (Ideal.mul_mem_left _ _ (Ideal.subset_span (by simp)))
-    (Ideal.mul_mem_left _ _ (Ideal.subset_span (by simp)))
 
 variable {ϖ : O} (hϖ : Irreducible ϖ)
 include hϖ
@@ -210,12 +235,6 @@ theorem PhiData.cont_pow_X_pow_eq_zero_of_lt (y b : ℕ) (hy : 1 ≤ y) (hb : 1 
     cont ϖ (P.p 1 ^ y) ((X : O⟦X⟧) ^ b) = 0 :=
   ContPA.content_p1_pow_X_pow_eq_zero hϖ P.hl P.hu P.first_partial_unit_eq_exp y b hlt
 
-theorem PhiData.content_p1_pow_X_pow_le (y b : ℕ) (hy : 1 ≤ y) (hb : 1 ≤ b) :
-    cont ϖ (P.p 1 ^ y) ((X : O⟦X⟧) ^ b) ≠ ⊤ ∧
-    ((cont ϖ (P.p 1 ^ y) ((X : O⟦X⟧) ^ b)).toNat : ℝ) ≤
-      eO (O := O) l * max 0 ((b : ℝ) / l - y + 2 + Real.logb l b) := by
-  unfold eO
-  exact ContPA.content_p1_pow_X_pow_le_general hϖ P.hl P.hl0 P.isUnit_eps P.hu P.first_partial_unit_eq_exp y b hy hb
 
 theorem PhiData.E2 (y be : ℕ) (hbe : 1 ≤ be) :
     cont ϖ ((X : O⟦X⟧) ^ (l * be)) (P.p 1 ^ y) =
@@ -433,3 +452,4 @@ theorem PhiData.c3b (w B η : ℕ) (hBη : 1 ≤ B ∨ 1 ≤ η) (k : ℕ)
   exact le_of_le_ceil_eO_mul P hϖ w B η k hk
 
 end Formalism.MainNotions.N.FrobeniusPowerSeries
+end

@@ -6,31 +6,6 @@ namespace Formalism.MainNotions.DIV.Inh
 
 open Formalism.BasicNotions Formalism.MainNotions.ModuliIntegralCharts NumberField
 
-theorem nonempty_local_provision_degenerate (D : D7) : Nonempty (ModuliIntegralCharts.Prov D) := by
-  exact ⟨{
-    Dat := Empty
-    rk := fun w => w.elim
-    jj := fun w => w.elim
-    jj_range := fun w => w.elim
-    loc := fun w => w.elim
-    ex := fun w => w.elim
-    NgC := fun _ => Unit
-    NgC_ne := fun _ => ⟨()⟩
-    KF := fun _ _ => Unit
-    kfNorm := fun _ _ => 1
-    pbKF := fun w => w.elim
-    levIn := fun _ _ => True
-    Xg := fun _ => Unit
-    bc := fun {w} => w.elim
-    DivX := fun _ => Unit
-    effD := fun _ => True
-    noVertD := fun _ => True
-    posBdD := fun _ => True
-    ampleOnAbelianBase := fun _ _ _ => True
-    Met := fun _ => Unit
-    nefFib := fun _ => True
-    ampleGen := fun _ => True
-    limRA := fun _ => True }⟩
 
 namespace LocalProvisionModel
 
@@ -585,12 +560,6 @@ open LocalProvisionModel
 
 variable (D : D7)
 
-theorem exists_full_local_provision :
-    ∃ P : ModuliIntegralCharts.Prov D, ∀ r j, 1 ≤ j → j + 1 ≤ r → ∃ w : P.Dat, P.rk w = r ∧ P.jj w = j := by
-  refine ⟨provDegenerate D {rj : ℕ × ℕ // 1 ≤ rj.2 ∧ rj.2 + 1 ≤ rj.1} (fun w => w.1.1) (fun w => w.1.2)
-    (fun w => w.2) (fun _ p => mpTrivialAb D p (Classical.choice (nonempty_coefficient_field p))), ?_⟩
-  intro r j hj hr
-  exact ⟨⟨(r, j), hj, hr⟩, rfl, rfl⟩
 
 end Formalism.MainNotions.DIV.Inh
 

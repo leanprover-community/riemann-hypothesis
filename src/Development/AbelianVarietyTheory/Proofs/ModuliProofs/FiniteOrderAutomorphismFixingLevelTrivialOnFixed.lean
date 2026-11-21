@@ -11,12 +11,313 @@ import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsSabCancel
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjPull
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsIsoStalkMapOfFlatOfSurjectiveOnStalks
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.GenericPartDenseProOpen
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.TorsionPointFixedOfGenericSectionsFixed
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.Splits
+import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.FormallyUnramifiedOfTangentMapInjective
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsIsDominantGeometricPointOfIsPreimmersion
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsTorsionSectionsOfRoot
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.SerreLemmaSemiAbelian
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.FinitePointsOfIsOpenImmersion
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsIsoOfIsOpenImmersionOfGeometricallyConnected
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.CmModelCoefficientSubringDedekindCompatibleEmbed
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.CmModelCoefficientInclusionsEtaleOpenImmersion
 
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj TensorProduct Pointwise
+
+namespace GlobalTheory
+
+theorem comp_eq_of_extending_section {X U W G T : Scheme.{0}} [IsReduced X] (j : U ⟶ X)
+    [IsDominant j] (g : G ⟶ X) [IsSeparated g] (a : W ⟶ G) [IsOpenImmersion (a ≫ g)]
+    (s : U ⟶ G) (hs : pullback.fst (a ≫ g) j ≫ a = pullback.snd (a ≫ g) j ≫ s)
+    (r : X ⟶ X) (r₀ : U ⟶ U) (φ : G ⟶ G) (hr : r₀ ≫ j = j ≫ r) (hφ : φ ≫ g = g ≫ r)
+    (hsφ : s ≫ φ = r₀ ≫ s) (w : T ⟶ W) (hw : w ≫ (a ≫ g) ≫ r = w ≫ a ≫ g) :
+    w ≫ a ≫ φ = w ≫ a := by
+  have key : ∀ {V : Scheme.{0}} (v : V ⟶ W) (u : V ⟶ U), v ≫ a ≫ g = u ≫ j → v ≫ a = u ≫ s := by
+    intro V v u h
+    have := congrArg (pullback.lift v u h ≫ ·) hs
+    simpa only [pullback.lift_fst_assoc, pullback.lift_snd_assoc] using this
+  let f₁ := pullback.fst (a ≫ g) ((a ≫ g) ≫ r)
+  let f₂ := pullback.snd (a ≫ g) ((a ≫ g) ≫ r)
+  have hc : f₁ ≫ a ≫ g = f₂ ≫ (a ≫ g) ≫ r := pullback.condition
+  let t := f₂ ≫ a ≫ g
+  have : IsOpenImmersion t := inferInstance
+  have : IsReduced (pullback (a ≫ g) ((a ≫ g) ≫ r)) := isReduced_of_isOpenImmersion t
+  have := isDominant_pullback_fst_of_isOpenMap j t t.isOpenEmbedding.isOpenMap
+  have hd : pullback.fst t j ≫ f₂ ≫ a ≫ g = pullback.snd t j ≫ j := pullback.condition
+  have he : f₂ ≫ a ≫ φ = f₁ ≫ a := by
+    refine ext_of_isDominant_of_isSeparated g ?_ (pullback.fst t j) ?_
+    · simp only [Category.assoc, hφ, hc]
+    · have h₁ := key (pullback.fst t j ≫ f₂) (pullback.snd t j) ((Category.assoc _ _ _).trans hd)
+      have h₂ := key (pullback.fst t j ≫ f₁) (pullback.snd t j ≫ r₀) (by
+        simp only [Category.assoc, hc, hr, reassoc_of% hd])
+      simp only [Category.assoc] at h₁ h₂
+      rw [h₂, reassoc_of% h₁, hsφ]
+  have := congrArg (pullback.lift w w hw.symm ≫ ·) he
+  simpa only [f₁, f₂, pullback.lift_fst_assoc, pullback.lift_snd_assoc] using this
+
+theorem torsion_point_fixed_of_generic_sections_fixed : ∀ (X U : Scheme.{0}) [IsLocallyNoetherian X] (j : U ⟶ X), ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNormalScheme X → IsPreimmersion j → Flat j → IsDominant j → QuasiCompact j → ∀ (G : Over X) [GrpObj G] (n : ℕ) (I : Type) [Finite I] (σ : I → (Over.mk j ⟶ G)) (r : X ⟶ X) (r₀ : U ⟶ U) (φ : G.left ⟶ G.left), IsSemiAbelian G → IsUnit (n : Γ(X, ⊤)) → (∀ i, σ i ^ n = 1) → (∀ (k : Type) [Field k] [IsAlgClosed k] (u : Sp k ⟶ U) (y : Over.mk (u ≫ j) ⟶ G), y ^ n = 1 → ∃ i, y.left = u ≫ (σ i).left) → r₀ ≫ j = j ≫ r → IsIso r → IsGrpPullback G G r φ → (∀ i, (σ i).left ≫ φ = r₀ ≫ (σ i).left) → ∀ (k : Type) [Field k] [IsAlgClosed k] (x : Sp k ⟶ X) (y : Over.mk x ⟶ G), x ≫ r = x → y ^ n = 1 → y.left ≫ φ = y.left := by
+  intro X U _ j hN hj₁ hj₂ hj₃ hj₄ G _ n I _ σ r r₀ φ hG hn hσ hgeo hr _ hφ hσφ k _ _ x y hx hy
+  have := hG.comm
+  have := hG.smooth
+  have := hG.separated
+  have := IsNormalScheme.of_pred hN
+  have hex : ∀ {T : Over X} (z : T ⟶ G), z ^ n = 1 →
+      ∃ z' : T ⟶ torsion G n, z' ≫ torsion.ι G n = z := fun z hz =>
+    ⟨pullback.lift z (toUnit _) (by rw [GrpTangent.comp_mulN, hz, Hom.one_def]),
+      pullback.lift_fst _ _ _⟩
+  have hι : torsion.ι G n ^ n = 1 := by
+    rw [← GrpTangent.comp_mulN, Hom.one_def]
+    exact pullback.condition.trans (congrArg (· ≫ _) (toUnit_unique _ _))
+  have hcl : IsClosedImmersion η[G].left := by
+    have : IsClosedImmersion (η[G].left ≫ G.hom) := by
+      rw [Over.w]; exact inferInstanceAs (IsClosedImmersion (𝟙 X))
+    exact IsClosedImmersion.of_comp _ G.hom
+  have : IsClosedImmersion (torsion.ι G n).left :=
+    MorphismProperty.of_isPullback (P := @IsClosedImmersion)
+      (GrpTangent.isPullback_torsion G n).flip hcl
+  have hsep : IsSeparated (torsion G n).hom := by
+    rw [← Over.w (torsion.ι G n)]; infer_instance
+  choose τ hτ using fun i => hex (σ i) (hσ i)
+  have hτ' : ∀ i, (τ i).left ≫ (torsion.ι G n).left = (σ i).left := fun i =>
+    congrArg Over.Hom.left (hτ i)
+  obtain ⟨y', rfl⟩ := hex y hy
+  obtain ⟨i, W, hyW, hW, he⟩ := exists_opens_isOpenImmersion_extending_section X U j hN hj₁ hj₂
+    hj₃ hj₄ _ (torsion G n).hom I (fun i => (τ i).left) (GrpTangent.etale_torsion G hn) hsep
+    (fun i => Over.w (τ i)) (fun k _ _ u z hz => by
+      obtain ⟨i, hi⟩ := hgeo k u (Over.homMk z hz ≫ torsion.ι G n)
+        (by rw [← comp_pow, hι, comp_one])
+      refine ⟨i, ?_⟩
+      rw [← cancel_mono (torsion.ι G n).left, Category.assoc, hτ']
+      exact hi) (y'.left (IsLocalRing.closedPoint k))
+  have hrange : Set.range y'.left ⊆ Set.range W.ι := by
+    rintro _ ⟨z, rfl⟩
+    rw [Scheme.Opens.range_ι, Subsingleton.elim (α := PrimeSpectrum k) z (IsLocalRing.closedPoint k)]
+    exact hyW
+  have hw := IsOpenImmersion.lift_fac W.ι y'.left hrange
+  have hq : (W.ι ≫ (torsion.ι G n).left) ≫ G.hom = W.ι ≫ (torsion G n).hom := by
+    rw [Category.assoc, Over.w]
+  have : IsOpenImmersion ((W.ι ≫ (torsion.ι G n).left) ≫ G.hom) := hq ▸ hW
+  have hyx : y'.left ≫ (torsion G n).hom = x := Over.w y'
+  have := comp_eq_of_extending_section j G.hom (W.ι ≫ (torsion.ι G n).left) (σ i).left (by
+      have h := congrArg (pullback.lift (pullback.fst ((W.ι ≫ (torsion.ι G n).left) ≫ G.hom) j)
+        (pullback.snd _ j) (by rw [← hq]; exact pullback.condition) ≫ · ≫ (torsion.ι G n).left) he
+      simpa only [Category.assoc, pullback.lift_fst_assoc, pullback.lift_snd_assoc, hτ'] using h)
+    r r₀ φ hr hφ.1.w (hσφ i) (IsOpenImmersion.lift W.ι y'.left hrange)
+    (by rw [hq, Category.assoc, reassoc_of% hw, reassoc_of% hw, reassoc_of% hyx, hyx, hx])
+  simpa only [Category.assoc, reassoc_of% hw, Over.comp_left] using this
+
+end GlobalTheory
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj TensorProduct Pointwise
+
+namespace GlobalTheory
+namespace MinkDiv
+
+variable {A : Type} [AddCommGroup A]
+
+theorem iterate_eq (f g : A →+ A) (hfg : ∀ z, f z = z + g z) (y : A) (hy : g (g (g y)) = 0)
+    (n : ℕ) : f^[n] y = y + n • g y + (n.choose 2) • g (g y) := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    rw [Function.iterate_succ_apply', ih, map_add, map_add, map_nsmul, map_nsmul, hfg y,
+      hfg (g y), hfg (g (g y)), hy, Nat.choose_succ_succ' n 1, Nat.choose_one_right]
+    simp only [add_nsmul, smul_add, one_nsmul, add_zero]
+    abel
+
+theorem prime_case (l p : ℕ) (hl : l.Prime) (ho : Odd l) (hp : p.Prime) (f : A →+ A)
+    (hdiv : ∀ x : A, ∃ y : A, l • y = x)
+    (hord : ∀ (x : A) (a : ℕ), l ^ a • x = 0 → f^[p] x = x)
+    (hfix : ∀ x : A, l • x = 0 → f x = x) :
+    ∀ (a : ℕ) (x : A), l ^ a • x = 0 → f x = x := by
+  set g : A →+ A := f - AddMonoidHom.id A with hg
+  have hfg : ∀ z, f z = z + g z := fun z => by simp [hg]
+  have key : ∀ k : ℕ, ∀ x : A, l ^ (k + 1) • x = 0 → g x = 0 := by
+    intro k
+    induction k with
+    | zero =>
+      intro x hx
+      have := hfix x (by simpa using hx)
+      simp [hg, this]
+    | succ k ih =>
+      intro x hx
+      have h1 : ∀ z : A, l • z = 0 → g z = 0 := fun z hz =>
+        ih z (by rw [pow_succ, mul_smul, hz, smul_zero])
+      have h2 : ∀ z : A, l ^ (k + 1 + 1) • z = 0 → l • g z = 0 := fun z hz => by
+        rw [← map_nsmul]
+        exact ih _ (by rw [← mul_smul, ← pow_succ]; exact hz)
+      by_cases hpl : p = l
+      · subst hpl
+        obtain ⟨y, rfl⟩ := hdiv x
+        have hy : p ^ (k + 1 + 1 + 1) • y = 0 := by rw [pow_succ, mul_smul]; exact hx
+        have e1 : p • p • g y = 0 := by
+          rw [← map_nsmul g p y]; exact h2 _ hx
+        have e2 : p • g (g y) = 0 := by
+          apply h2
+          rw [pow_succ, pow_succ, mul_smul, mul_smul, e1, smul_zero]
+        have e3 : g (g (g y)) = 0 := h1 _ e2
+        have e4 := iterate_eq f g hfg y e3 p
+        rw [hord y _ hy] at e4
+        have h3 : 2 < p := by
+          rcases hp.two_le.lt_or_eq with h | h
+          · exact h
+          · subst h; exact absurd ho (by decide)
+        obtain ⟨c, hc⟩ := hp.dvd_choose_self (k := 2) (by norm_num) h3
+        rw [hc, mul_comm, mul_smul, e2, smul_zero, add_zero] at e4
+        rw [map_nsmul]
+        exact (add_eq_left.mp e4.symm)
+      · have e1 : l • g x = 0 := h2 x hx
+        have e2 : g (g x) = 0 := h1 _ e1
+        have e4 := iterate_eq f g hfg x (by rw [e2, map_zero]) p
+        rw [hord x _ hx, e2, smul_zero, add_zero] at e4
+        have e5 : p • g x = 0 := add_eq_left.mp e4.symm
+        have hc : Nat.Coprime p l := (Nat.coprime_primes hp hl).mpr hpl
+        have d1 := addOrderOf_dvd_of_nsmul_eq_zero e5
+        have d2 := addOrderOf_dvd_of_nsmul_eq_zero e1
+        have d3 := Nat.dvd_gcd d1 d2
+        rw [hc, Nat.dvd_one] at d3
+        exact AddMonoid.addOrderOf_eq_one_iff.mp d3
+  intro a x hx
+  have := key a x (by rw [pow_succ', mul_smul, hx, smul_zero])
+  rw [hfg, this, add_zero]
+
+theorem add_case (l : ℕ) (hl : l.Prime) (ho : Odd l)
+    (hdiv : ∀ x : A, ∃ y : A, l • y = x) (r : ℕ) (hr : r ≠ 0) :
+    ∀ f : AddMonoid.End A, (∀ (x : A) (a : ℕ), l ^ a • x = 0 → f^[r] x = x) →
+    (∀ x : A, l • x = 0 → f x = x) →
+    ∀ (a : ℕ) (x : A), l ^ a • x = 0 → f x = x := by
+  induction r using induction_on_primes with
+  | zero => exact absurd rfl hr
+  | one => intro f h _ a x hx; exact h x a hx
+  | prime_mul p b hp ih =>
+    intro f hord hfix
+    have hb : b ≠ 0 := by rintro rfl; simp at hr
+    have hc : ((f ^ p : AddMonoid.End A) : A → A) = f^[p] := AddMonoid.End.coe_pow _ _ _
+    have := ih hb (f ^ p)
+      (fun x a hx => by rw [hc, ← Function.iterate_mul]; exact hord x a hx)
+      (fun x hx => by rw [hc]; exact Function.iterate_fixed (hfix x hx) p)
+    exact prime_case l p hl ho hp f hdiv
+      (fun x a hx => by have h := this a x hx; rw [hc] at h; exact h) hfix
+
+end MinkDiv
+
+theorem minkowski_divisible : ∀ (Q : Type) [CommGroup Q] (l : ℕ) (u : Q ≃* Q) (r : ℕ), l.Prime → Odd l → 0 < r → (∀ x : Q, ∃ y : Q, y ^ l = x) → (∀ x, u^[r] x = x) → (∀ x, x ^ l = 1 → u x = x) → ∀ (x : Q) (a : ℕ), x ^ (l ^ a) = 1 → u x = x := by
+  intro Q _ l u r hl ho hr hdiv hord hfix x a hx
+  exact MinkDiv.add_case (A := Additive Q) l hl ho (fun x => hdiv x.toMul) r hr.ne'
+    (MonoidHom.toAdditive u.toMonoidHom) (fun x _ _ => hord x.toMul) (fun x hx => hfix x.toMul hx)
+    a (Additive.ofMul x) hx
+
+end GlobalTheory
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj TensorProduct Pointwise
+
+namespace GlobalTheory
+namespace SerreLemma
+
+variable {k : Type} [Field k] [IsAlgClosed k]
+
+theorem exists_lift {X Y : Over (Sp k)} (m : X ⟶ Y) [LocallyOfFiniteType m.left]
+    (x : 𝟙_ (Over (Sp k)) ⟶ Y) (hx : x.left (IsLocalRing.closedPoint k) ∈ Set.range m.left) :
+    ∃ a : 𝟙_ (Over (Sp k)) ⟶ X, a ≫ m = x := by
+  let x' : Spec (CommRingCat.of k) ⟶ Y.left := x.left
+  have hJ : JacobsonSpace ↥(pullback m.left x') :=
+    LocallyOfFiniteType.jacobsonSpace (pullback.snd m.left x')
+  obtain ⟨w, hw⟩ := hx
+  obtain ⟨z₀, -, -⟩ := Scheme.Pullback.exists_preimage_pullback (f := m.left) (g := x') w _ hw
+  obtain ⟨z, -, hz⟩ := nonempty_inter_closedPoints (Z := (Set.univ : Set ↥(pullback m.left x')))
+    ⟨z₀, trivial⟩ isClosed_univ.isLocallyClosed
+  replace hz : IsClosed {z} := hz
+  have e : (pointOfClosedPoint (pullback.snd m.left x') z hz ≫ pullback.fst _ _) ≫ m.left = x' := by
+    rw [Category.assoc, pullback.condition, pointOfClosedPoint_comp_assoc]
+  refine ⟨Over.homMk (pointOfClosedPoint (pullback.snd m.left x') z hz ≫ pullback.fst _ _) ?_,
+    Over.OverMorphism.ext e⟩
+  rw [← Over.w m, ← Category.assoc, e]
+  exact Over.w x
+
+theorem exists_pow_eq (G : Over (Sp k)) [GrpObj G] (hG : IsSemiAbelian G) (n : ℕ) (hn : (n : k) ≠ 0)
+    (x : 𝟙_ (Over (Sp k)) ⟶ G) : ∃ y : 𝟙_ (Over (Sp k)) ⟶ G, y ^ n = x := by
+  have := hG.comm
+  have := hG.smooth
+  have : IsIntegral G.left := isIntegral_left_of_isSemiAbelian G
+  have hu : IsUnit (n : Γ(Sp k, ⊤)) := by
+    simpa using (Ne.isUnit hn).map (Scheme.ΓSpecIso (.of k)).inv.hom
+  have := GrpTangent.etale_mulN G hu
+  have := LocallyOfFiniteType.jacobsonSpace G.hom
+  set U : Set G.left := Set.range (mulN G n).left with hU
+  have hUo : IsOpen U := (mulN G n).left.isOpenMap.isOpen_range
+  have hone : (1 : 𝟙_ _ ⟶ G).left (IsLocalRing.closedPoint k) ∈ U := by
+    refine ⟨(1 : 𝟙_ _ ⟶ G).left (IsLocalRing.closedPoint k), ?_⟩
+    exact congrArg (fun z : 𝟙_ (Over (Sp k)) ⟶ G => z.left (IsLocalRing.closedPoint k))
+      (MonObj.one_comp (mulN G n))
+  have hVo : IsOpen ((GrpObj.mulRight x).hom.left ⁻¹' U) := hUo.preimage (Scheme.Hom.continuous _)
+  have hV : ((GrpObj.mulRight x).hom.left ⁻¹' U).Nonempty := by
+    refine ⟨(x⁻¹).left (IsLocalRing.closedPoint k), ?_⟩
+    rw [Set.mem_preimage, OpenSubgroupScheme.mulRight_apply, inv_mul_cancel]
+    exact hone
+  obtain ⟨y, ⟨hyU, hyV⟩, hyc⟩ := nonempty_inter_closedPoints
+    (nonempty_preirreducible_inter hUo hVo ⟨_, hone⟩ hV) (hUo.inter hVo).isLocallyClosed
+  obtain ⟨z, rfl⟩ := OpenSubgroupScheme.exists_point y hyc
+  rw [Set.mem_preimage, OpenSubgroupScheme.mulRight_apply] at hyV
+  obtain ⟨a, ha⟩ := exists_lift _ z hyU
+  obtain ⟨b, hb⟩ := exists_lift _ _ hyV
+  rw [GrpTangent.comp_mulN] at ha hb
+  refine ⟨a⁻¹ * b, ?_⟩
+  rw [mul_pow, inv_pow, ha, hb, inv_mul_cancel_left]
+
+end SerreLemma
+
+theorem serre_lemma_semiAbelian : ∀ (k : Type) [Field k] [IsAlgClosed k] (G : Over (Sp k)) [GrpObj G], IsSemiAbelian G → ∀ (N r : ℕ) (u : Aut G), Odd N → 3 ≤ N → (N : k) ≠ 0 → 0 < r → IsMonHom u.hom → u ^ r = 1 → (∀ x : 𝟙_ (Over (Sp k)) ⟶ G, x ^ N = 1 → x ≫ u.hom = x) → u = 1 := by
+  intro k _ _ G _ hG N r u hodd h3 hN hr hu hur hfix
+  have := hG.comm
+  obtain ⟨l, hl, hlN⟩ := Nat.exists_prime_and_dvd (n := N) (by omega)
+  have hlo : Odd l := Odd.of_dvd_nat hodd hlN
+  have hlk : (l : k) ≠ 0 := by
+    obtain ⟨c, rfl⟩ := hlN
+    rw [Nat.cast_mul] at hN
+    exact left_ne_zero_of_mul hN
+  let e : (𝟙_ (Over (Sp k)) ⟶ G) ≃* (𝟙_ (Over (Sp k)) ⟶ G) :=
+    { toFun x := x ≫ u.hom
+      invFun x := x ≫ u.inv
+      left_inv x := (Category.assoc _ _ _).trans ((congrArg (x ≫ ·) u.hom_inv_id).trans (Category.comp_id x))
+      right_inv x := (Category.assoc _ _ _).trans ((congrArg (x ≫ ·) u.inv_hom_id).trans (Category.comp_id x))
+      map_mul' x y := MonObj.mul_comp x y u.hom }
+  have hit : ∀ (n : ℕ) x, e^[n] x = x ≫ (u ^ n).hom := by
+    intro n
+    induction n with
+    | zero => intro x; exact (Category.comp_id x).symm
+    | succ n ih =>
+      intro x
+      rw [Function.iterate_succ_apply', ih, pow_succ', Aut.Aut_mul_def]
+      exact Category.assoc x (u ^ n).hom u.hom
+  have key := minkowski_divisible _ l e r hl hlo hr (SerreLemma.exists_pow_eq G hG l hlk)
+    (fun x => by rw [hit, hur]; exact Category.comp_id x)
+    (fun x hx => hfix x (by obtain ⟨c, rfl⟩ := hlN; rw [pow_mul, hx, one_pow]))
+  have hm : IsMonHom (u.hom * (𝟙 G)⁻¹) :=
+    { one_hom := by
+        rw [MonObj.comp_mul, GrpObj.comp_inv, Category.comp_id, IsMonHom.one_hom, mul_inv_cancel,
+          one_eq_one]
+      mul_hom := by
+        rw [mul_eq_mul, MonObj.comp_mul, GrpObj.comp_inv, Category.comp_id, MonObj.mul_comp,
+          MonObj.comp_mul, mul_inv, _root_.mul_mul_mul_comm]
+        congr 1 <;> simp [MonObj.comp_mul, GrpObj.comp_inv] }
+  have h1 := GlobalTheory.TorsionDense.eq_one_of_torsion_comp_eq_one k G G hG hG l hl hlk (u.hom * (𝟙 G)⁻¹) hm (fun _ _ y a hy => by
+    rw [MonObj.comp_mul, GrpObj.comp_inv, Category.comp_id]
+    exact mul_inv_eq_one.mpr (key y a hy))
+  exact Iso.ext (mul_inv_eq_one.mp h1)
+
+end GlobalTheory
+end
+
+section
 section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
@@ -289,3 +590,4 @@ open GlobalTheory.Models
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.finiteOrderAutomorphism_fixing_level_trivial_on_fixedFibre : Out.Laws → Out.Laws2 → Out.Laws3 → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (S : ℕ) (β : RZ H S l.A →+* KA l) (C : Cpt Xo.s Xo.univ.t β) (r : Xo.X ≅ Xo.X) (ν : SABMap Xo.univ.t Xo.univ.t r.hom) (ρ : C.X ≅ C.X) (mu : SABMap C.t C.t ρ.hom), IsInc (RZ H S l.A).subtype (KA l).val.toRingHom β → 0 < S → (∃ e, l.A ∣ S ^ e) → C.j ≫ ρ.hom = r.hom ≫ C.j → C.m.φ ≫ mu.φ = ν.φ ≫ C.m.φ → l.M ∣ S → r.hom ≫ Xo.s = Xo.s → (∀ x, (Xo.univ.eta x).left ≫ ν.φ = r.hom ≫ (Xo.univ.eta x).left) → (∃ (τ : Aut C.t.G.left) (d : ℕ), 0 < d ∧ τ ^ d = 1 ∧ τ.hom = mu.φ) → ∀ (k : Type) [Field k] [IsAlgClosed k] (x : Sp k ⟶ C.X), x ≫ ρ.hom = x → pullback.fst C.t.G.hom x ≫ mu.φ = pullback.fst C.t.G.hom x := by
   atlas_forward_decl GlobalTheory.fibre_fixed_of_finite_order_of_level_fixed
+end

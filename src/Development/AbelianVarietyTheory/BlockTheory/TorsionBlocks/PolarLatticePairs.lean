@@ -276,16 +276,7 @@ def IsStandard : Prop :=
 
 end PairDatum
 
-theorem levelJ_le (D : D7) {N : ℕ} (𝔮 : Ideal (𝓞 D.host.E)) (I : Finset (Fin N)) :
-    levelJ D 𝔮 I ≤ intPts D N := fun _ h => h.1
 
-theorem levelJ_top (D : D7) {N : ℕ} (I : Finset (Fin N)) : levelJ D ⊤ I = intPts D N := by
-  have key : ∀ y ∈ OhE D, y ∈ idHat D ⊤ := by
-    intro y hy
-    exact AddSubgroup.subset_closure ⟨1, Submodule.mem_top, y, hy, by simp⟩
-  refine le_antisymm (levelJ_le D _ I) fun h hh => ⟨hh, ?_, ?_⟩
-  · intro i _ j _; exact key _ (hh i j).1
-  · intro i _ j _; exact key _ (hh i j).2
 
 example (D : D7) {a d : ℕ} (l : Tup D a d (fun _ => 0) → ℂ) :
     gNormSq D l = ‖l (fun _ k => k.elim0)‖ ^ 2 := by

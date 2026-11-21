@@ -99,13 +99,6 @@ theorem AtScale.mono {eps x0 x1 : ℝ} {D : D7} (h : AtScale eps x1 D) (hx : x0 
   let ⟨L, h1, h2, h3⟩ := h
   ⟨L, h1, hx.trans h2, h3⟩
 
-theorem qPos_of (h1 : RowsPos) (h2 : DimQEq) : QPos := by
-  intro eps
-  obtain ⟨x1, h1⟩ := h1 eps
-  obtain ⟨x2, h2⟩ := h2 eps
-  refine ⟨max x1 x2, fun D hD G _ _ Pl0 T A Ks _ _ _ R F hS hK b => ?_⟩
-  rw [pos_iff, h2 D (hD.mono (le_max_right _ _)) G Pl0 T A Ks R F hS hK b]
-  exact h1 D (hD.mono (le_max_left _ _)) G Pl0 T A Ks R F hS b
 
 end GlobalTheory.IndefiniteRowSideFullHecke.PositiveDimensionTuples
 

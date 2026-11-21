@@ -1,8 +1,400 @@
 import Mathlib
-import GroundTheory.AutomorphicForms.GL2.GodementSectionUnramified
+import GroundTheory.AutomorphicForms.GL2.GodementSection
+import GroundTheory.GlobalFields.TateThesis.HeckeCharRayClass
+import GroundTheory.GlobalFields.TateThesis.EulerFactorsFinite
 import GroundTheory.AutomorphicForms.GL2.GodementSectionLocal
 import GroundTheory.AutomorphicForms.GL2.FiniteIdeleDecomp
 
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology NumberField.mixedEmbedding
+open scoped NumberField.AdeleRing SchwartzMap Classical
+
+namespace GroundTheory.Automorphic.GodementSection
+
+open GroundTheory.Global GroundTheory.Automorphic.Adele2 IdeleGroup
+
+noncomputable section
+
+variable {K : Type*} [Field K] [NumberField K]
+
+def infChar (χ : HeckeCharacter K) : (InfiniteAdeleRing K)ˣ →* Circle :=
+  χ.toIdele.comp ofInfinite
+
+def finChar (χ : HeckeCharacter K) : (FiniteAdeleRing (𝓞 K) K)ˣ →* Circle :=
+  χ.toIdele.comp ofFinite
+
+def infMod (a : (InfiniteAdeleRing K)ˣ) : ℝ :=
+  ∏ w : InfinitePlace K, ‖(a : InfiniteAdeleRing K) w‖ ^ w.mult
+
+def finMod (b : (FiniteAdeleRing (𝓞 K) K)ˣ) : ℝ :=
+  ∏ᶠ v : HeightOneSpectrum (𝓞 K), ‖(b : FiniteAdeleRing (𝓞 K) K) v‖
+
+theorem infMod_pos (a : (InfiniteAdeleRing K)ˣ) : 0 < infMod a :=
+  infiniteModule_pos (ofInfinite a)
+
+theorem finMod_pos (b : (FiniteAdeleRing (𝓞 K) K)ˣ) : 0 < finMod b :=
+  finiteModule_pos (ofFinite b)
+
+theorem toIdele_eq_finChar_mul_infChar (χ : HeckeCharacter K) (x : IdeleGroup K) :
+    χ.toIdele x = finChar χ (toFinite K x) * infChar χ (toInfinite K x) := by
+  rw [finChar, infChar, MonoidHom.comp_apply, MonoidHom.comp_apply, ← map_mul,
+    ofFinite_mul_ofInfinite]
+
+theorem ideleModule_eq_infMod_mul_finMod (x : IdeleGroup K) :
+    (ideleModule K x : ℝ) = infMod (toInfinite K x) * finMod (toFinite K x) := rfl
+
+theorem modPow_eq (x : IdeleGroup K) (s : ℂ) :
+    modPow x s = ((infMod (toInfinite K x) : ℝ) : ℂ) ^ s * ((finMod (toFinite K x) : ℝ) : ℂ) ^ s := by
+  rw [modPow, ideleModule_eq_infMod_mul_finMod, Complex.ofReal_mul]
+  exact Complex.mul_cpow_ofReal_nonneg (infMod_pos _).le (finMod_pos _).le s
+
+def infVec (y : Fin 2 → InfiniteAdeleRing K) : Fin 2 → mixedSpace K :=
+  fun i ↦ homeomorphMixedSpace K (y i)
+
+def archSection (χ₁ χ₂ : HeckeCharacter K) (s : ℂ) (φ : (Fin 2 → mixedSpace K) → ℂ)
+    (g : GL (Fin 2) (InfiniteAdeleRing K)) : ℂ :=
+  (infChar χ₁ (Matrix.GeneralLinearGroup.det g) : ℂ) *
+    ((infMod (Matrix.GeneralLinearGroup.det g) : ℝ) : ℂ) ^ s *
+      ∫ a, φ (infVec (![0, (a : InfiniteAdeleRing K)] ᵥ*
+        (g : Matrix (Fin 2) (Fin 2) (InfiniteAdeleRing K)))) *
+        (infChar (χ₁ * χ₂⁻¹) a : ℂ) * ((infMod a : ℝ) : ℂ) ^ (2 * s) ∂infiniteIdeleMeasure K
+
+def finSection (χ₁ χ₂ : HeckeCharacter K) (s : ℂ) (Φ : (Fin 2 → FiniteAdeleRing (𝓞 K) K) → ℂ)
+    (g : GL (Fin 2) (FiniteAdeleRing (𝓞 K) K)) : ℂ :=
+  (finChar χ₁ (Matrix.GeneralLinearGroup.det g) : ℂ) *
+    ((finMod (Matrix.GeneralLinearGroup.det g) : ℝ) : ℂ) ^ s *
+      ∫ b, Φ (![0, (b : FiniteAdeleRing (𝓞 K) K)] ᵥ*
+        (g : Matrix (Fin 2) (Fin 2) (FiniteAdeleRing (𝓞 K) K))) *
+        (finChar (χ₁ * χ₂⁻¹) b : ℂ) * ((finMod b : ℝ) : ℂ) ^ (2 * s) ∂finiteIdeleMeasure K
+
+theorem val_symm_fst (p : (InfiniteAdeleRing K)ˣ × (FiniteAdeleRing (𝓞 K) K)ˣ) :
+    (((IdeleGroup.prodEquiv K).symm p : IdeleGroup K) : 𝔸[K]).1 = (p.1 : InfiniteAdeleRing K) := by
+  rw [← IdeleGroup.prodEquiv_apply_fst, ContinuousMulEquiv.apply_symm_apply]
+
+theorem val_symm_snd (p : (InfiniteAdeleRing K)ˣ × (FiniteAdeleRing (𝓞 K) K)ˣ) :
+    (((IdeleGroup.prodEquiv K).symm p : IdeleGroup K) : 𝔸[K]).2 =
+      (p.2 : FiniteAdeleRing (𝓞 K) K) := by
+  rw [← IdeleGroup.prodEquiv_apply_snd, ContinuousMulEquiv.apply_symm_apply]
+
+theorem toInfinite_symm (p : (InfiniteAdeleRing K)ˣ × (FiniteAdeleRing (𝓞 K) K)ˣ) :
+    toInfinite K ((IdeleGroup.prodEquiv K).symm p) = p.1 := by
+  change (IdeleGroup.prodEquiv K ((IdeleGroup.prodEquiv K).symm p)).1 = p.1
+  rw [ContinuousMulEquiv.apply_symm_apply]
+
+theorem toFinite_symm (p : (InfiniteAdeleRing K)ˣ × (FiniteAdeleRing (𝓞 K) K)ˣ) :
+    toFinite K ((IdeleGroup.prodEquiv K).symm p) = p.2 := by
+  change (IdeleGroup.prodEquiv K ((IdeleGroup.prodEquiv K).symm p)).2 = p.2
+  rw [ContinuousMulEquiv.apply_symm_apply]
+
+theorem toInfinite_detI (g : GL (Fin 2) 𝔸[K]) :
+    toInfinite K (detI g) = Matrix.GeneralLinearGroup.det (AdelicGLn.prodEquiv K 2 g).1 := by
+  apply Units.ext
+  change ((detI g : IdeleGroup K) : 𝔸[K]).1 = _
+  rw [Matrix.GeneralLinearGroup.val_det_apply, Matrix.GeneralLinearGroup.val_det_apply,
+    Matrix.det_fin_two, Matrix.det_fin_two]
+  simp [AdelicGLn.prodEquiv_apply_fst]
+
+theorem toFinite_detI (g : GL (Fin 2) 𝔸[K]) :
+    toFinite K (detI g) = Matrix.GeneralLinearGroup.det (AdelicGLn.prodEquiv K 2 g).2 := by
+  apply Units.ext
+  change ((detI g : IdeleGroup K) : 𝔸[K]).2 = _
+  rw [Matrix.GeneralLinearGroup.val_det_apply, Matrix.GeneralLinearGroup.val_det_apply,
+    Matrix.det_fin_two, Matrix.det_fin_two]
+  simp [AdelicGLn.prodEquiv_apply_snd]
+
+theorem infPart_slice (g : GL (Fin 2) 𝔸[K]) (t : 𝔸[K]) :
+    infPart (![0, t] ᵥ* (g : Matrix (Fin 2) (Fin 2) 𝔸[K])) =
+      infVec (![0, t.1] ᵥ* ((AdelicGLn.prodEquiv K 2 g).1 :
+        Matrix (Fin 2) (Fin 2) (InfiniteAdeleRing K))) := by
+  funext i
+  simp only [infPart, infVec, Matrix.vecMul, dotProduct, Fin.sum_univ_two]
+  congr 1
+
+theorem finPart_slice (g : GL (Fin 2) 𝔸[K]) (t : 𝔸[K]) :
+    finPart (![0, t] ᵥ* (g : Matrix (Fin 2) (Fin 2) 𝔸[K])) =
+      ![0, t.2] ᵥ* ((AdelicGLn.prodEquiv K 2 g).2 :
+        Matrix (Fin 2) (Fin 2) (FiniteAdeleRing (𝓞 K) K)) := by
+  funext i
+  simp [finPart, Matrix.vecMul, dotProduct, Fin.sum_univ_two, AdelicGLn.prodEquiv_apply_snd]
+
+theorem godementSection_tensor (χ₁ χ₂ : HeckeCharacter K) (s : ℂ) (φ : 𝓢(Fin 2 → mixedSpace K, ℂ))
+    (Φ : (Fin 2 → FiniteAdeleRing (𝓞 K) K) → ℂ) (g : GL (Fin 2) 𝔸[K]) :
+    godementSection χ₁ χ₂ s (schwartzBruhatTensor2 φ Φ) g =
+      archSection χ₁ χ₂ s φ (AdelicGLn.prodEquiv K 2 g).1 *
+        finSection χ₁ χ₂ s Φ (AdelicGLn.prodEquiv K 2 g).2 := by
+  have hZ : globalZeta (slice (schwartzBruhatTensor2 φ Φ) g) (χ₁ * χ₂⁻¹) (2 * s) =
+      (∫ a, φ (infVec (![0, (a : InfiniteAdeleRing K)] ᵥ*
+          ((AdelicGLn.prodEquiv K 2 g).1 : Matrix (Fin 2) (Fin 2) (InfiniteAdeleRing K)))) *
+        (infChar (χ₁ * χ₂⁻¹) a : ℂ) * ((infMod a : ℝ) : ℂ) ^ (2 * s) ∂infiniteIdeleMeasure K) *
+      ∫ b, Φ (![0, (b : FiniteAdeleRing (𝓞 K) K)] ᵥ*
+          ((AdelicGLn.prodEquiv K 2 g).2 : Matrix (Fin 2) (Fin 2) (FiniteAdeleRing (𝓞 K) K))) *
+        (finChar (χ₁ * χ₂⁻¹) b : ℂ) * ((finMod b : ℝ) : ℂ) ^ (2 * s) ∂finiteIdeleMeasure K := by
+    rw [← integral_prod_mul, globalZeta, integral_ideleMeasure]
+    congr 1
+    funext p
+    have h1 := val_symm_fst p
+    have h2 := val_symm_snd p
+    simp only [slice, schwartzBruhatTensor2, infPart_slice, finPart_slice, h1, h2]
+    rw [toIdele_eq_finChar_mul_infChar, toInfinite_symm, toFinite_symm]
+    change _ * _ * (modPow _ (2 * s)) = _
+    rw [modPow_eq, toInfinite_symm, toFinite_symm, Circle.coe_mul]
+    ring
+  rw [godementSection, hZ, archSection, finSection, toIdele_eq_finChar_mul_infChar, modPow_eq,
+    toInfinite_detI, toFinite_detI, Circle.coe_mul]
+  ring
+
+theorem finSlice_mem {Φ : (Fin 2 → FiniteAdeleRing (𝓞 K) K) → ℂ}
+    (hΦ : Φ ∈ finiteSchwartzBruhat2 K) (g : GL (Fin 2) (FiniteAdeleRing (𝓞 K) K)) :
+    (fun b : FiniteAdeleRing (𝓞 K) K ↦
+      Φ (![0, b] ᵥ* (g : Matrix (Fin 2) (Fin 2) (FiniteAdeleRing (𝓞 K) K)))) ∈
+        finiteSchwartzBruhat K := by
+  obtain ⟨hlc, hcs⟩ := (mem_finiteSchwartzBruhat2 K).mp (comp_vecMul_mem_finiteSchwartzBruhat2 g hΦ)
+  have hcl : Topology.IsClosedEmbedding (fun v : FiniteAdeleRing (𝓞 K) K ↦ ![0, v]) :=
+    Function.LeftInverse.isClosedEmbedding (f := fun x : Fin 2 → FiniteAdeleRing (𝓞 K) K ↦ x 1)
+      (fun v ↦ rfl) (continuous_apply 1)
+      (continuous_pi (Fin.forall_fin_two.mpr ⟨continuous_const, continuous_id⟩))
+  exact ⟨hlc.comp_continuous hcl.continuous, hcs.comp_isClosedEmbedding hcl⟩
+
+theorem finMod_eq (b : (FiniteAdeleRing (𝓞 K) K)ˣ) : finMod b = finiteModule (ofFinite b) := by
+  simp only [finMod, finiteModule, ofFinite_val_snd]
+
+theorem continuous_finMod : Continuous (finMod (K := K)) :=
+  (continuous_finiteModule.comp continuous_ofFinite).congr fun b ↦ (finMod_eq b).symm
+
+theorem integrable_norm_finIntegrand {Φ : (Fin 2 → FiniteAdeleRing (𝓞 K) K) → ℂ}
+    (hΦ : Φ ∈ finiteSchwartzBruhat2 K) (g : GL (Fin 2) (FiniteAdeleRing (𝓞 K) K)) {σ : ℝ}
+    (hσ : 1 < σ) :
+    Integrable (fun b : (FiniteAdeleRing (𝓞 K) K)ˣ ↦
+      ‖Φ (![0, (b : FiniteAdeleRing (𝓞 K) K)] ᵥ*
+        (g : Matrix (Fin 2) (Fin 2) (FiniteAdeleRing (𝓞 K) K)))‖ * finMod b ^ σ)
+      (finiteIdeleMeasure K) := by
+  set h : FiniteAdeleRing (𝓞 K) K → ℂ := fun b ↦
+    Φ (![0, b] ᵥ* (g : Matrix (Fin 2) (Fin 2) (FiniteAdeleRing (𝓞 K) K))) with hh
+  have hmem : h ∈ finiteSchwartzBruhat K := finSlice_mem hΦ g
+  obtain ⟨M, hM⟩ := hmem.1.continuous.bounded_above_of_compact_support hmem.2
+  obtain ⟨L, hL⟩ := exists_subset_idealFiniteAdeles hmem.2
+  have hcont : Continuous fun b : (FiniteAdeleRing (𝓞 K) K)ˣ ↦ ‖h b‖ * finMod b ^ σ :=
+    (hmem.1.continuous.comp Units.continuous_val).norm.mul
+      (continuous_finMod.rpow_const fun b ↦ Or.inl (finMod_pos b).ne')
+  refine ((integrable_finiteZetaBound L hσ).const_mul (max M 0)).mono'
+    hcont.aestronglyMeasurable (Eventually.of_forall fun b ↦ ?_)
+  have hpow : 0 ≤ finMod b ^ σ := (Real.rpow_pos_of_pos (finMod_pos b) σ).le
+  rw [Real.norm_of_nonneg (mul_nonneg (norm_nonneg _) hpow)]
+  by_cases hb : (b : FiniteAdeleRing (𝓞 K) K) ∈ idealFiniteAdeles L
+  · have hfz : finiteZetaBound L σ b = finMod b ^ σ := by
+      rw [finiteZetaBound, if_pos hb, finMod_eq]
+    rw [hfz]
+    exact mul_le_mul_of_nonneg_right ((hM _).trans (le_max_left _ _)) hpow
+  · have h0 : h b = 0 := by
+      by_contra hne
+      exact hb (hL (subset_tsupport h hne))
+    change ‖h b‖ * _ ≤ _
+    rw [h0, norm_zero, zero_mul]
+    exact mul_nonneg (le_max_right _ _) (finiteZetaBound_nonneg _ _ _)
+
+def toMixedGL (g : GL (Fin 2) (InfiniteAdeleRing K)) : GL (Fin 2) (mixedSpace K) :=
+  Matrix.GeneralLinearGroup.map
+    (InfiniteAdeleRing.ringEquiv_mixedSpace K : InfiniteAdeleRing K →+* mixedSpace K) g
+
+def archSliceMap (g : GL (Fin 2) (InfiniteAdeleRing K)) :
+    mixedSpace K →L[ℝ] (Fin 2 → mixedSpace K) :=
+  LinearMap.toContinuousLinearMap
+    { toFun := fun u j ↦ u * (toMixedGL g : Matrix (Fin 2) (Fin 2) (mixedSpace K)) 1 j
+      map_add' := fun u v ↦ by funext j; simp [add_mul]
+      map_smul' := fun c u ↦ by funext j; simp }
+
+theorem archSliceMap_apply (g : GL (Fin 2) (InfiniteAdeleRing K)) (a : InfiniteAdeleRing K) :
+    archSliceMap g (homeomorphMixedSpace K a) =
+      infVec (![0, a] ᵥ* (g : Matrix (Fin 2) (Fin 2) (InfiniteAdeleRing K))) := by
+  funext j
+  simp only [archSliceMap, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk,
+    infVec, Matrix.vecMul, dotProduct, Fin.sum_univ_two, toMixedGL,
+    Matrix.GeneralLinearGroup.map_apply, homeomorphMixedSpace_apply, Matrix.cons_val_zero,
+    Matrix.cons_val_one, zero_mul, zero_add]
+  exact (map_mul (InfiniteAdeleRing.ringEquiv_mixedSpace K) a _).symm
+
+theorem norm_le_archSliceMap (g : GL (Fin 2) (InfiniteAdeleRing K)) (u : mixedSpace K) :
+    ‖u‖ ≤ (‖((toMixedGL g)⁻¹ : GL (Fin 2) (mixedSpace K)) 0 1‖ +
+      ‖((toMixedGL g)⁻¹ : GL (Fin 2) (mixedSpace K)) 1 1‖) * (1 + ‖archSliceMap g u‖) ^ 1 := by
+  set N := ((toMixedGL g)⁻¹ : GL (Fin 2) (mixedSpace K))
+  set w := archSliceMap g u
+  have hw : w = ![0, u] ᵥ* (toMixedGL g : Matrix (Fin 2) (Fin 2) (mixedSpace K)) := by
+    funext j
+    simp [w, archSliceMap, Matrix.vecMul, dotProduct, Fin.sum_univ_two]
+  have hu : u = w 0 * N 0 1 + w 1 * N 1 1 := by
+    have : ![0, u] = w ᵥ* (N : Matrix (Fin 2) (Fin 2) (mixedSpace K)) := by
+      rw [hw, Matrix.vecMul_vecMul, ← Units.val_mul, mul_inv_cancel, Units.val_one,
+        Matrix.vecMul_one]
+    have := congrFun this 1
+    simpa [Matrix.vecMul, dotProduct, Fin.sum_univ_two] using this
+  have h0 : ‖w 0‖ ≤ ‖w‖ := norm_le_pi_norm w 0
+  have h1 : ‖w 1‖ ≤ ‖w‖ := norm_le_pi_norm w 1
+  rw [pow_one]
+  calc ‖u‖ = ‖w 0 * N 0 1 + w 1 * N 1 1‖ := by rw [← hu]
+    _ ≤ ‖w 0‖ * ‖N 0 1‖ + ‖w 1‖ * ‖N 1 1‖ :=
+        (norm_add_le _ _).trans (add_le_add (norm_mul_le _ _) (norm_mul_le _ _))
+    _ ≤ ‖w‖ * ‖N 0 1‖ + ‖w‖ * ‖N 1 1‖ :=
+        add_le_add (mul_le_mul_of_nonneg_right h0 (norm_nonneg _))
+          (mul_le_mul_of_nonneg_right h1 (norm_nonneg _))
+    _ ≤ (‖N 0 1‖ + ‖N 1 1‖) * (1 + ‖w‖) := by
+        have := norm_nonneg w
+        have := norm_nonneg (N 0 1)
+        have := norm_nonneg (N 1 1)
+        nlinarith
+
+def archSlice (φ : 𝓢(Fin 2 → mixedSpace K, ℂ)) (g : GL (Fin 2) (InfiniteAdeleRing K)) :
+    𝓢(mixedSpace K, ℂ) :=
+  SchwartzMap.compCLM ℂ (archSliceMap g).hasTemperateGrowth ⟨1, _, norm_le_archSliceMap g⟩ φ
+
+theorem archSlice_apply (φ : 𝓢(Fin 2 → mixedSpace K, ℂ)) (g : GL (Fin 2) (InfiniteAdeleRing K))
+    (a : InfiniteAdeleRing K) :
+    archSlice φ g (homeomorphMixedSpace K a) =
+      φ (infVec (![0, a] ᵥ* (g : Matrix (Fin 2) (Fin 2) (InfiniteAdeleRing K)))) := by
+  rw [archSlice, SchwartzMap.compCLM_apply, Function.comp_apply, archSliceMap_apply]
+
+end
+
+end GroundTheory.Automorphic.GodementSection
+end
+
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open scoped NumberField.AdeleRing Classical
+
+namespace GroundTheory.Automorphic.GodementSection
+
+open GroundTheory.Global GroundTheory.Automorphic.Adele2 IdeleGroup
+
+noncomputable section
+
+variable {K : Type*} [Field K] [NumberField K]
+
+variable (K) in
+
+def integralInd : FiniteAdeleRing (𝓞 K) K → ℂ :=
+  (integralFiniteAdeles (𝓞 K) K : Set (FiniteAdeleRing (𝓞 K) K)).indicator 1
+
+variable (K) in
+
+def integralInd2 : (Fin 2 → FiniteAdeleRing (𝓞 K) K) → ℂ :=
+  finiteTensor2 fun _ ↦ integralInd K
+
+theorem isClopen_integralFiniteAdeles :
+    IsClopen (integralFiniteAdeles (𝓞 K) K : Set (FiniteAdeleRing (𝓞 K) K)) :=
+  ⟨AddSubgroup.isClosed_of_isOpen (integralFiniteAdeles (𝓞 K) K).toAddSubgroup
+    isOpen_integralFiniteAdeles, isOpen_integralFiniteAdeles⟩
+
+theorem integralInd_mem : integralInd K ∈ finiteSchwartzBruhat K := by
+  refine ⟨?_, HasCompactSupport.intro (isCompact_integralFiniteAdeles K) fun x hx ↦
+    Set.indicator_of_notMem hx _⟩
+  rw [IsLocallyConstant.iff_exists_open]
+  intro x
+  by_cases hx : x ∈ integralFiniteAdeles (𝓞 K) K
+  · refine ⟨_, isClopen_integralFiniteAdeles.isOpen, hx, fun y hy ↦ ?_⟩
+    simp only [integralInd, Set.indicator_of_mem hy, Set.indicator_of_mem hx, Pi.one_apply]
+  · refine ⟨_, isClopen_integralFiniteAdeles.compl.isOpen, hx, fun y hy ↦ ?_⟩
+    simp only [integralInd, Set.indicator_of_notMem hy, Set.indicator_of_notMem hx]
+
+theorem integralInd2_mem : integralInd2 K ∈ finiteSchwartzBruhat2 K :=
+  finiteTensor2_mem fun _ ↦ integralInd_mem
+
+theorem integralInd_apply (x : FiniteAdeleRing (𝓞 K) K) :
+    integralInd K x = if x ∈ integralFiniteAdeles (𝓞 K) K then 1 else 0 := by
+  by_cases hx : x ∈ integralFiniteAdeles (𝓞 K) K
+  · simp [integralInd, hx]
+  · simp [integralInd, hx]
+
+theorem vecMul_mem_integral_iff {k : GL (Fin 2) (FiniteAdeleRing (𝓞 K) K)}
+    (hk : k ∈ AdelicGLn.integralFiniteGL K 2) (b : FiniteAdeleRing (𝓞 K) K) :
+    (∀ j, (![0, b] ᵥ* (k : Matrix (Fin 2) (Fin 2) (FiniteAdeleRing (𝓞 K) K))) j ∈
+      integralFiniteAdeles (𝓞 K) K) ↔ b ∈ integralFiniteAdeles (𝓞 K) K := by
+  obtain ⟨hk1, hk2⟩ := (AdelicGLn.mem_integralFiniteGL_iff K 2).1 hk
+  have hv : ∀ (x : Fin 2 → FiniteAdeleRing (𝓞 K) K) (A : Matrix (Fin 2) (Fin 2) _),
+      (x ᵥ* A) = fun j ↦ x 0 * A 0 j + x 1 * A 1 j := fun x A ↦ by
+    ext j; simp [Matrix.vecMul, dotProduct, Fin.sum_univ_two]
+  constructor
+  · intro h
+    have he : ![0, b] ᵥ* (k : Matrix (Fin 2) (Fin 2) (FiniteAdeleRing (𝓞 K) K)) ᵥ*
+        ((k⁻¹ : GL (Fin 2) (FiniteAdeleRing (𝓞 K) K)) : Matrix (Fin 2) (Fin 2) _) = ![0, b] := by
+      rw [Matrix.vecMul_vecMul, ← Units.val_mul, mul_inv_cancel, Units.val_one,
+        Matrix.vecMul_one]
+    have h1 := congrFun he 1
+    rw [hv] at h1
+    simp only [Matrix.cons_val_one, Matrix.cons_val_zero] at h1
+    rw [← h1]
+    exact add_mem (mul_mem (h 0) (hk2 0 1)) (mul_mem (h 1) (hk2 1 1))
+  · intro hb j
+    rw [hv]
+    simp only [Matrix.cons_val_zero, Matrix.cons_val_one, zero_mul, zero_add]
+    exact mul_mem hb (hk1 1 j)
+
+theorem integralInd2_vecMul {k : GL (Fin 2) (FiniteAdeleRing (𝓞 K) K)}
+    (hk : k ∈ AdelicGLn.integralFiniteGL K 2) (b : FiniteAdeleRing (𝓞 K) K) :
+    integralInd2 K (![0, b] ᵥ* (k : Matrix (Fin 2) (Fin 2) (FiniteAdeleRing (𝓞 K) K))) =
+      integralInd K b := by
+  rw [integralInd2, finiteTensor2_apply, integralInd_apply, integralInd_apply, integralInd_apply]
+  have h := vecMul_mem_integral_iff hk b
+  by_cases hb : b ∈ integralFiniteAdeles (𝓞 K) K
+  · have h' := h.2 hb
+    simp [hb, h' 0, h' 1]
+  · have h' : ¬ ∀ j, (![0, b] ᵥ* (k : Matrix (Fin 2) (Fin 2) (FiniteAdeleRing (𝓞 K) K))) j ∈
+        integralFiniteAdeles (𝓞 K) K := fun h'' ↦ hb (h.1 h'')
+    rw [Fin.forall_fin_two] at h'
+    by_cases h0 : (![0, b] ᵥ* (k : Matrix (Fin 2) (Fin 2) (FiniteAdeleRing (𝓞 K) K))) 0 ∈
+        integralFiniteAdeles (𝓞 K) K
+    · have h1 : (![0, b] ᵥ* (k : Matrix (Fin 2) (Fin 2) (FiniteAdeleRing (𝓞 K) K))) 1 ∉
+          integralFiniteAdeles (𝓞 K) K := fun h1 ↦ h' ⟨h0, h1⟩
+      simp [hb, h0, h1]
+    · simp [hb, h0]
+
+theorem hasSum_integral_finiteIdeleMeasure_of_invariant {F : (FiniteAdeleRing (𝓞 K) K)ˣ → ℂ}
+    (hFi : Integrable F (finiteIdeleMeasure K))
+    (hF : ∀ x, ∀ w ∈ finiteIntegralUnits K, F (x * w) = F x) :
+    HasSum (fun c : (FiniteAdeleRing (𝓞 K) K)ˣ ⧸ finiteIntegralUnits K ↦ F c.out)
+      (∫ x, F x ∂finiteIdeleMeasure K) := by
+  set W := finiteIntegralUnits K
+  have hWo : IsOpen (W : Set (FiniteAdeleRing (𝓞 K) K)ˣ) := isOpen_finiteIntegralUnits K
+  have hc : Countable ((FiniteAdeleRing (𝓞 K) K)ˣ ⧸ W) := countable_quotient_of_isOpen hWo
+  have : DiscreteTopology ((FiniteAdeleRing (𝓞 K) K)ˣ ⧸ W) := QuotientGroup.discreteTopology hWo
+  set S : (FiniteAdeleRing (𝓞 K) K)ˣ ⧸ W → Set (FiniteAdeleRing (𝓞 K) K)ˣ :=
+    fun c ↦ QuotientGroup.mk ⁻¹' {c}
+  have hSm : ∀ c, MeasurableSet (S c) := fun c ↦
+    (isOpen_discrete ({c} : Set ((FiniteAdeleRing (𝓞 K) K)ˣ ⧸ W))).preimage
+      QuotientGroup.continuous_mk |>.measurableSet
+  have hSW : ∀ c, S c = (fun b ↦ c.out⁻¹ * b) ⁻¹' (W : Set (FiniteAdeleRing (𝓞 K) K)ˣ) := by
+    intro c
+    ext b
+    simp only [S, Set.mem_preimage, Set.mem_singleton_iff, SetLike.mem_coe]
+    conv_lhs => rw [← QuotientGroup.out_eq' c]
+    rw [eq_comm, QuotientGroup.eq]
+  have hd : Pairwise (Function.onFun Disjoint S) := by
+    intro c d hcd
+    refine Set.disjoint_left.2 fun p hp hq ↦ hcd ?_
+    exact hp.symm.trans hq
+  have hu : ⋃ c, S c = Set.univ :=
+    Set.eq_univ_of_forall fun p ↦ Set.mem_iUnion.2 ⟨(p : _ ⧸ W), rfl⟩
+  have h := hasSum_integral_iUnion hSm hd hFi.integrableOn
+  rw [hu, Measure.restrict_univ] at h
+  have hval : ∀ c, ∫ x in S c, F x ∂finiteIdeleMeasure K = F c.out := by
+    intro c
+    have hconst : ∀ b ∈ S c, F b = F c.out := by
+      intro b hb
+      rw [hSW c] at hb
+      have hb' : c.out⁻¹ * b ∈ W := hb
+      have := hF c.out _ hb'
+      rwa [mul_inv_cancel_left] at this
+    rw [setIntegral_congr_fun (hSm c) hconst, setIntegral_const, Measure.real, hSW c,
+      measure_preimage_mul, finiteIdeleMeasure_finiteIntegralUnits]
+    simp
+  simp only [hval] at h
+  exact h
+
+end
+
+end GroundTheory.Automorphic.GodementSection
+end
+
+section
 open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum MeasureTheory Matrix Filter
   Topology
 open scoped NumberField.AdeleRing Classical nonZeroDivisors
@@ -311,10 +703,6 @@ theorem hasSum_partialLFunction (χ : HeckeCharacter K) (S : Finset (HeightOneSp
   · simp only [zero_mul, norm_zero, norm_mul, norm_inv]
     positivity
 
-theorem partialLFunction_empty (χ : HeckeCharacter K) {z : ℂ} (hz : 1 < z.re) :
-    partialLFunction χ ∅ z = χ.LFunction z := by
-  refine (hasSum_partialLFunction χ ∅ hz).unique ?_
-  simpa using χ.hasSum_LFunction hz
 
 theorem mem_units_adicCompletionIntegers_iff {v : HeightOneSpectrum (𝓞 K)}
     (x : (v.adicCompletion K)ˣ) :
@@ -817,3 +1205,4 @@ theorem finSection_restrictedTensor2 (χ₁ χ₂ : HeckeCharacter K)
 end
 
 end GroundTheory.Automorphic.GodementSection
+end

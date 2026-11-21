@@ -22,31 +22,7 @@ variable {n : ℕ}
 def weylDisc (x : Matrix (Fin n) (Fin n) ℂ) : ℂ :=
   resultant x.charpoly (derivative x.charpoly) n (n - 1) / x.det ^ (n - 1)
 
-theorem weylDisc_eq_prod {x : Matrix (Fin n) (Fin n) ℂ} {z : Fin n → ℂ} (hz : ∀ a, z a ≠ 0)
-    (h : x.charpoly = ∏ a, (X - C (z a))) : weylDisc x = ∏ a, ∏ b ∈ Finset.univ.erase a, (1 - z b / z a) := by
-  have hn : (∏ a, (X - C (z a))).natDegree = n := by rw [← h, charpoly_natDegree_eq_dim, Fintype.card_fin]
-  have hd : x.det = ∏ a, z a := by
-    have := Matrix.det_eq_sign_charpoly_coeff x
-    rw [h, coeff_zero_eq_eval_zero] at this
-    simp [this, eval_prod, Finset.prod_neg, ← mul_assoc, ← mul_pow]
-  have hr := resultant_prod_left Finset.univ (fun a => X - C (z a)) (derivative (∏ a, (X - C (z a)))) (n - 1)
-    (by simp) ((natDegree_derivative_le _).trans (by rw [hn]))
-  rw [hn] at hr
-  rw [weylDisc, h, hr, hd, ← Finset.prod_pow, ← Finset.prod_div_distrib]
-  refine Finset.prod_congr rfl fun a _ => ?_
-  rw [natDegree_X_sub_C, resultant_X_sub_C_left _ _ _ ((natDegree_derivative_le _).trans (by rw [hn])),
-    derivative_prod_finset, eval_finsetSum, Finset.sum_eq_single a, show n - 1 = (Finset.univ.erase a).card by simp,
-    ← Finset.prod_const, eval_mul, eval_prod]
-  · simp only [derivative_sub, derivative_X, derivative_C, sub_zero, eval_one, mul_one, eval_sub, eval_X, eval_C,
-      ← Finset.prod_div_distrib]
-    exact Finset.prod_congr rfl fun b _ => by field_simp [hz a]
-  · intro b _ hb
-    rw [eval_mul, eval_prod, Finset.prod_eq_zero (i := a) (by simp [hb.symm]) (by simp), zero_mul]
-  · simp
 
-theorem weylDisc_diagonal {z : Fin n → ℂ} (hz : ∀ a, z a ≠ 0) :
-    weylDisc (diagonal z) = ∏ a, ∏ b ∈ Finset.univ.erase a, (1 - z b / z a) :=
-  weylDisc_eq_prod hz (charpoly_diagonal z)
 
 theorem weylDisc_ne_zero_iff {x : Matrix (Fin n) (Fin n) ℂ} (hx : x.det ≠ 0) : weylDisc x ≠ 0 ↔ IsRegSS x := by
   have hn : x.charpoly.natDegree = n := by rw [charpoly_natDegree_eq_dim, Fintype.card_fin]
@@ -138,10 +114,6 @@ def IsGlobalChar (μ : Measure (UJ ε)) (π : UJ ε →* (V →L[ℂ] V)) (Θ : 
 
 theorem isInducing_matCoord : Topology.IsInducing (matCoord (ujMat ε)) := (Formalism.REAL.isClosedEmbeddingMatrix n ε).1.isInducing
 
-theorem isGlobalChar_trivial (μ : Measure (UJ ε)) [μ.IsHaarMeasure] : IsGlobalChar μ (charRep 1) fun _ => 1 :=
-  ⟨⟨continuous_const.locallyIntegrable, fun _ _ => continuousAt_const, fun _ hf =>
-    repTrace_charRep (χ := 1) continuous_const (continuous_of_mem_ccSmooth isInducing_matCoord.continuous hf) hf.1⟩,
-    fun _ _ => ⟨⟨fun _ => 1, analyticAt_const, .of_forall fun _ => rfl⟩, fun _ => rfl⟩⟩
 
 end Char
 
@@ -301,13 +273,6 @@ def InducedCharacterSupport : Prop :=
 def HarishChandraCharacters : Prop :=
   CharacterRegularity ∧ DiscreteSeriesCharacter ∧ WeylIntegrationFormula ∧ InducedCharacterSupport
 
-theorem DiscreteSeriesCharacter.apply_torusPt (h : DiscreteSeriesCharacter) {n : ℕ} {ε : Fin n → Bool}
-    {μ : Measure (UJ ε)} [μ.IsHaarMeasure] {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V]
-    [CompleteSpace V] {lam : Fin n → ℝ} {σ : Matrix (Fin n) (Fin n) ℂ → (V →L[ℂ] V)} (hl : IsHCParam lam)
-    (hσ : IsDS ε lam σ) {hU : IsURepOn (UJset ε) σ} {Θ : UJ ε → ℂ} (hΘ : IsCharFn (ujMat ε) μ (ujRep hU) Θ)
-    {θ : Fin n → ℝ} (hθ : IsRegSS (ujMat ε (torusPt ε θ))) : Θ (torusPt ε θ) = dsChar ε lam θ := by
-  obtain ⟨Θ', h1, h2⟩ := h n ε μ V lam σ hl hσ hU
-  rw [hΘ.unique isInducing_matCoord h1.1 hθ, h2 θ hθ]
 
 theorem InducedCharacterSupport.indModule (h : InducedCharacterSupport) {n : ℕ} {ε : Fin n → Bool}
     (μ : Measure (UJ ε)) [μ.IsHaarMeasure] (I : IndModule ε) (ha : I.a ≠ 0) : ∃ Θ, IsGlobalChar μ I.rep Θ ∧

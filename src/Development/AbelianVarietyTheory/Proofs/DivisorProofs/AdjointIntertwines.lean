@@ -26,31 +26,7 @@ omit [FiniteDimensional ℂ X] in
 theorem inner_of_norm (a : X →ₗ[ℂ] X) (ha : ∀ x, ‖a x‖ = ‖x‖) (x x' : X) : ⟪a x, a x'⟫_ℂ = ⟪x, x'⟫_ℂ :=
   (LinearIsometry.mk a ha).inner_map_map x x'
 
-theorem adjoint_intertwines (th : X →ₗ[ℂ] Y) (a : X →ₗ[ℂ] X) (b : Y →ₗ[ℂ] Y) (ha : ∀ x, ‖a x‖ = ‖x‖) (hb : ∀ y, ‖b y‖ = ‖y‖)
-    (hc : ∀ x, th (a x) = b (th x)) (y : Y) : LinearMap.adjoint th (b y) = a (LinearMap.adjoint th y) := by
-  have hs : Function.Surjective a := LinearMap.injective_iff_surjective.1 (LinearIsometry.mk a ha).injective
-  refine ext_inner_right ℂ fun x => ?_
-  obtain ⟨x', rfl⟩ := hs x
-  rw [LinearMap.adjoint_inner_left, hc, inner_of_norm b hb, inner_of_norm a ha, LinearMap.adjoint_inner_left]
 
-theorem inner_central {G : Type} [Group G] [Fintype G] (ρ : Representation ℂ G Y) (hρ : ∀ g y, ‖ρ g y‖ = ‖y‖) (c : G → ℂ)
-    (hc : ∀ g y, (∑ h, c h • ρ h) (ρ g y) = ρ g ((∑ h, c h • ρ h) y)) (y : Y) (hy : (∑ h, c h • ρ h) y = y) (w : Y) :
-    ⟪y, (∑ h, c h • ρ h) w⟫_ℂ = ⟪y, w⟫_ℂ := by
-  set E : Y →ₗ[ℂ] Y := ∑ h, c h • ρ h with hE
-  have hadj : ∀ w, LinearMap.adjoint E w = ∑ h, star (c h) • ρ h⁻¹ w := fun w => by
-    refine ext_inner_right ℂ fun x => ?_
-    rw [LinearMap.adjoint_inner_left, hE, LinearMap.sum_apply, inner_sum, sum_inner]
-    refine Finset.sum_congr rfl fun h _ => ?_
-    rw [LinearMap.smul_apply, inner_smul_right, inner_smul_left, ← inner_of_norm (ρ h) (hρ h) (ρ h⁻¹ w),
-      Representation.self_inv_apply]
-    simp
-  have hcomm : E (LinearMap.adjoint E y) = LinearMap.adjoint E y := by
-    rw [hadj, map_sum]
-    refine Finset.sum_congr rfl fun h _ => ?_
-    rw [map_smul, hc, hy]
-  have h0 : LinearMap.adjoint E y - y = 0 := by
-    rw [← inner_self_eq_zero (𝕜 := ℂ), inner_sub_left, LinearMap.adjoint_inner_left, map_sub, hcomm, hy, sub_self]
-  rw [← LinearMap.adjoint_inner_left, sub_eq_zero.1 h0]
 
 end Lin
 

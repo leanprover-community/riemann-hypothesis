@@ -54,23 +54,6 @@ theorem existsUnique_cancel {t : SAB H S} {t' : SAB H S'} {t'' : SAB H S''} {f :
 
 end Triple
 
-theorem abLocus_torus (k : Type) [Field k] [IsAlgClosed k] [CharZero k] :
-    IsSemiAbelian (splitTorus (Spec (CommRingCat.of k)) ℤ) ∧ abLocus (splitTorus (Spec (CommRingCat.of k)) ℤ) = ∅ := by
-  refine ⟨GlobalTheory.Diag.isSemiAbelian _ ℤ, Set.eq_empty_of_forall_notMem fun s hs => ?_⟩
-  have h := hs k (𝟙 _) ⟨s, rfl⟩
-  refine GlobalTheory.MultiplicativeTorusSetting.not_isProper_torus (k := k) ?_
-  have e : (splitTorus (Spec (CommRingCat.of k)) ℤ).hom =
-      inv (pullback.fst (splitTorus (Spec (CommRingCat.of k)) ℤ).hom (𝟙 _)) ≫ pullback.snd _ (𝟙 _) := by
-    rw [IsIso.eq_inv_comp, pullback.condition, Category.comp_id]
-  rw [e]
-  infer_instance
 
-theorem not_isProjOver_affineLine (R : Type) [CommRing R] [Nontrivial R] :
-    ¬ IsProjOver (spMap (Polynomial.C : R →+* Polynomial R)) := fun h => by
-  have hp := projProper R _ _ h
-  have hf : IsFinite (spMap (Polynomial.C : R →+* Polynomial R)) :=
-    IsFinite.iff_isProper_and_isAffineHom.2 ⟨hp, inferInstance⟩
-  have h2 := (IsFinite.SpecMap_iff _).1 hf
-  exact Polynomial.not_finite (R := R) (RingHom.finite_algebraMap.1 h2)
 
 end GlobalTheory.PullCalcTest

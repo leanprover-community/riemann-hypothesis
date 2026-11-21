@@ -389,23 +389,5 @@ def Stmt (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.lo
 def ShareAbsoluteConstant : Prop :=
   ∀ CR CA CB CK C₀ : ℝ, ∃ C : ℝ, ∀ D : D7, ∀ HW : HWOf D.loc, ∀ F : FonOf D.loc D.locA HW, ∀ Cm : CmpOf D.loc D.locA HW F, Stmt D HW F Cm C CR CA CB CK C₀
 
-theorem theorem_c_mono_constant (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) {C C' : ℝ} (hC : C ≤ C') (h : aux₃ D HW F C) : aux₃ D HW F C' := by
-  intro l _ K LL hg _ d T₁ T₂ F b S η m hS hm
-  obtain ⟨e, he, h2, h3⟩ := h l K LL hg d T₁ T₂ F b S η m hS hm
-  refine ⟨e, le_trans he ?_, h2, h3⟩
-  unfold Formalism.MainNotions.RamifiedCoefficientChains.eBd
-  have hlam : 0 ≤ Formalism.MainNotions.RamifiedCoefficientChains.lam ((D.loc l).PD K).p (Formalism.MainNotions.RamifiedCoefficientChains.hpar _ b S + η) := by
-    unfold Formalism.MainNotions.RamifiedCoefficientChains.lam
-    have h11 : 11 ≤ ((D.loc l).PD K).p := hS.2.1
-    have h1 : (1 : ℝ) < (((D.loc l).PD K).p : ℝ) := by
-      exact_mod_cast (by omega : 1 < ((D.loc l).PD K).p)
-    rcases Nat.eq_zero_or_pos (Formalism.MainNotions.RamifiedCoefficientChains.hpar _ b S + η) with h0 | h0
-    · rw [h0]; simp
-    · have h2 : (1 : ℝ) ≤ 2 * ((Formalism.MainNotions.RamifiedCoefficientChains.hpar _ b S + η : ℕ) : ℝ) := by
-        have : (1 : ℝ) ≤ ((Formalism.MainNotions.RamifiedCoefficientChains.hpar _ b S + η : ℕ) : ℝ) := by exact_mod_cast h0
-        linarith
-      have := Real.logb_nonneg h1 h2
-      linarith
-  nlinarith
 
 end Formalism.MainNotions.CrystallineLiftingInputs

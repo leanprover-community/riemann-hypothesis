@@ -94,9 +94,6 @@ def IsPeriodAt (C : CuspDataOn Dc T O' Lt) (w : (Σ k, J k) → ℂ) {g : ℕ} (
       ∀ x', (∀ a, (B a).mulVec x' = C.emb τ a • x') → (x - pr τ x) ⬝ᵥ Hm.mulVec (star x') = 0) ∧
     ∀ τ v v', star (C.lie w τ v) ⬝ᵥ C.lie w τ v' = pr τ (P v') ⬝ᵥ Hm.mulVec (star (pr τ (P v)))
 
-theorem isPeriodAt_restrict (C : CuspDataOn Dc T O' Lt) (h : T' ⊆ T) (w : (Σ k, J k) → ℂ) {g : ℕ} (P : Lt → Fin g → ℂ)
-    (Hm : Matrix (Fin g) (Fin g) ℂ) (B : O' → Matrix (Fin g) (Fin g) ℂ) :
-    IsPeriodAt (C.restrict h) w P Hm B ↔ IsPeriodAt C w P Hm B := Iff.rfl
 
 theorem IsPeriodAt.gramLie {C : CuspDataOn Dc T O' Lt} {w : (Σ k, J k) → ℂ} {g : ℕ} {P : Lt → Fin g → ℂ}
     {Hm : Matrix (Fin g) (Fin g) ℂ} {B : O' → Matrix (Fin g) (Fin g) ℂ} (h : IsPeriodAt C w P Hm B) :
@@ -157,39 +154,6 @@ def planeData : CuspDataOn (lineData II hII) (lineData II hII).Xo GaussianInt (G
 def planePer (v : GaussianInt × GaussianInt) : Fin 2 → ℂ :=
   ![toComplex v.1 + Complex.I * toComplex v.2, star (toComplex v.1 - Complex.I * toComplex v.2)]
 
-theorem plane_isPeriodAt (w : (Σ _ : Unit, Fin 2) → ℂ) :
-    IsPeriodAt (planeData II hII) w planePer (Matrix.diagonal fun _ => (1 / 2 : ℂ))
-      fun a => Matrix.diagonal ![toComplex a, star (toComplex a)] := by
-  refine ⟨fun a v => ?_, fun v => ?_, fun v v' => ?_, fun _ x => ![x 0, 0], fun _ x => ⟨fun a => ?_, fun x' hx' => ?_⟩,
-    fun _ v v' => ?_⟩
-  · ext k; fin_cases k <;> simp [planePer, Matrix.mulVec_diagonal] <;> ring
-  · show Complex.normSq (toComplex v.1) + Complex.normSq (toComplex v.2) = _
-    simp [planePer, Matrix.mulVec_diagonal, dotProduct, Fin.sum_univ_two, Complex.normSq_apply]
-    ring
-  · show (((-planeForm) v v' : ℤ) : ℝ) = _
-    have hr : ∀ x : GaussianInt, ((x.re : ℤ) : ℝ) = (toComplex x).re := fun x => by rw [toComplex_def₂]
-    have hi : ∀ x : GaussianInt, ((x.im : ℤ) : ℝ) = (toComplex x).im := fun x => by rw [toComplex_def₂]
-    rw [LinearMap.neg_apply, LinearMap.neg_apply, planeForm_apply]
-    push_cast
-    rw [hr, hr, hr, hr, hi, hi, hi, hi]
-    simp only [planePer]
-    generalize toComplex v.1 = a; generalize toComplex v.2 = b
-    generalize toComplex v'.1 = a'; generalize toComplex v'.2 = b'
-    simp [Matrix.mulVec_diagonal, dotProduct, Fin.sum_univ_two]
-    ring
-  · ext k; fin_cases k <;> simp [planeData, Matrix.mulVec_diagonal]
-  · have h := congrFun (hx' ⟨0, 1⟩) 1
-    have h1 : x' 1 = 0 := by
-      simp [planeData, Matrix.mulVec_diagonal, toComplex_def₂, Complex.ext_iff] at h
-      rcases h with h | h
-      · norm_num at h
-      · exact Complex.ext h.1 h.2
-    simp [Matrix.mulVec_diagonal, dotProduct, Fin.sum_univ_two, h1]
-  · show ∑ _c : Fin 1, star ((1 + Complex.I) * planeLie v) * ((1 + Complex.I) * planeLie v') = _
-    simp [planePer, planeLie, Matrix.mulVec_diagonal, dotProduct, Fin.sum_univ_two]
-    ring_nf
-    simp
-    ring
 
 example : planeLine ≠ ⊥ ∧ IsSaturated planeLine ∧ IsIsoSub (planeData II hII).form planeLine :=
   ⟨planeLine_ne_bot, planeLine_saturated, fun x hx y hy => by
@@ -235,9 +199,6 @@ def CptOrigin.CuspTie (Cd : CuspData Dc O' Lt) : Prop := Or.IsFibreWeight Cd.cus
 
 variable {Or}
 
-theorem CptOrigin.cuspTieAt_restrict (e : 𝓞 E ≃+* O') (C : CuspDataOn Dc T O' Lt) (h : T' ⊆ T)
-    (z : Spec (CommRingCat.of ℂ) ⟶ Or.𝔐.X) (w : (Σ k, J k) → ℂ) :
-    Or.CuspTieAt e (C.restrict h) z w ↔ Or.CuspTieAt e C z w := Iff.rfl
 
 theorem CptOrigin.CuspTieOn.restrict {e : 𝓞 E ≃+* O'} {C : CuspDataOn Dc T O' Lt} (hC : Or.CuspTieOn e C)
     (h : T' ⊆ T) : Or.CuspTieOn e (C.restrict h) :=
@@ -250,18 +211,7 @@ theorem CptOrigin.CuspTieAt.normSq_pos {e : 𝓞 E ≃+* O'} {C : CuspDataOn Dc 
   rw [hn]
   exact hAH.2.1 _ fun h0 => hv (α.injective (by rw [map_zero]; exact Subtype.ext h0))
 
-theorem CptOrigin.FamTie.cuspTieOn {F : CuspFamily Dc} (h : Or.FamTie F) :
-    ∃ e : ∀ a, 𝓞 E ≃+* F.O a, ∀ a, Or.CuspTieOn (e a) (F.cusp a) := by
-  obtain ⟨e, he⟩ := h
-  refine ⟨e, fun a z w hw hz hT => ?_⟩
-  obtain ⟨-, rfl⟩ := hT
-  exact he z w hw hz
 
-theorem CptOrigin.famTie_of_cuspTieOn {F : CuspFamily Dc} (e : ∀ a, 𝓞 E ≃+* F.O a)
-    (h : ∀ a, Or.CuspTieOn (e a) (F.cusp a))
-    (hXo : ∀ (z : Spec (CommRingCat.of ℂ) ⟶ Or.𝔐.X) w, CoordsAt Or.𝔐.ξ Dc.y z w → w ∈ mcPts (mCoordIdeal Dc.y)) :
-    Or.FamTie F :=
-  ⟨e, fun z w hw hz => h _ z w hw hz ⟨⟨hXo z w hw, fun hb => (Or.bd z w hw).1 hb hz⟩, rfl⟩⟩
 
 theorem CptOrigin.FamTie.isFibreWeight {F : CuspFamily Dc} (h : Or.FamTie F) : Or.IsFibreWeight F.Uat := by
   obtain ⟨e, he⟩ := h
@@ -284,9 +234,6 @@ theorem CptOrigin.FamTie.cuspTie {F : CuspFamily Dc} (h : Or.FamTie F) {Cd : Cus
     (hU : ∀ w ∉ Dc.Bd, Cd.cuspWeight w = F.Uat w) : Or.CuspTie Cd :=
   h.isFibreWeight.congr hU
 
-theorem CptOrigin.cuspTie_of_const {Cd : CuspData Dc O' Lt} (hXo : Dc.Xo.Nonempty)
-    (h : Or.FamTie (CuspFamily.const Cd hXo)) : Or.CuspTie Cd :=
-  h.cuspTie fun _ _ => rfl
 
 end Comparison₂
 

@@ -9,10 +9,307 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsUnitarisable
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FixedNeBotOfFixedVectorConj
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FixedVectorIdentityIsotypicConjugateType
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.StandardFrameSplitConjMemIntegralMatrices
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SelfDualFrameConjugatePlaceIntegral
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IntegralGLPullbackContinuousRingEquivStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TypePlacesMemPlacesOverGenerators
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.StandardFrameConjugateClose
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FixedNeBotOfFixedVector
 
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.TypeRec.factG
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.RecTie Formalism.L2.Rows GlobalTheory.Mem GlobalTheory.Mem.R3 ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2
+open scoped TensorProduct
+open Formalism.IndefR.principalLevelFrame Formalism.IndefR.Mult
+
+noncomputable section
+
+namespace GlobalTheory.SplitFrameKO
+
+theorem valued_le_one_of_map {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
+    {v : HeightOneSpectrum (𝓞 F)} {w : HeightOneSpectrum (𝓞 E)}
+    (c : v.adicCompletion F ≃+* w.adicCompletion E) (hc : Continuous c) (y : v.adicCompletion F)
+    (hy : Valued.v y ≤ 1) : Valued.v (c y) ≤ 1 := by
+  by_contra hne
+  push_neg at hne
+  have hy0 : y ≠ 0 := by
+    rintro rfl
+    rw [map_zero, map_zero] at hne
+    exact absurd hne (not_lt.2 zero_le')
+  have h1 : Valued.v (c y⁻¹) < 1 := by
+    rw [map_inv₀, map_inv₀]
+    exact inv_lt_one_of_one_lt₀ hne
+  have h2 := GlobalTheory.FixedAtSplit.valued_lt_one_of_map c hc _ h1
+  rw [map_inv₀] at h2
+  have h3 : 1 < Valued.v y := by
+    have hpos : 0 < Valued.v y := by
+      rw [zero_lt_iff]; exact (map_ne_zero _).2 hy0
+    exact (inv_lt_one₀ hpos).1 h2
+  exact absurd hy (not_le.2 h3)
+
+theorem val_le_one_of_mem_KO {E : Type} [Field E] [NumberField E] {w : HeightOneSpectrum (𝓞 E)} {n : ℕ}
+    (κ : GL (Fin n) (w.adicCompletion E)) (hκ : κ ∈ GlobalTheory.SplitWeil.KO (w.adicCompletion E) (Fin n)) (a b : Fin n) :
+    Valued.v ((κ : Matrix (Fin n) (Fin n) (w.adicCompletion E)) a b) ≤ 1 := by
+  have : (Valued.v : Valuation (w.adicCompletion E) (WithZero (Multiplicative ℤ))).Compatible :=
+    Valuation.Compatible.ofValuation _
+  have he := ValuativeRel.isEquiv (ValuativeRel.valuation (w.adicCompletion E))
+    (Valued.v : Valuation (w.adicCompletion E) (WithZero (Multiplicative ℤ)))
+  exact he.le_one_iff_le_one.1 ((Valuation.mem_integer_iff _ _).1 (((GlobalTheory.SplitFlip.mem_KO_iff κ).1 hκ).1 a b))
+
+end GlobalTheory.SplitFrameKO
+
+namespace GlobalTheory.SplitFrameKO
+
+set_option maxHeartbeats 2000000 in
+
+theorem main : ∀ (D : D7) (V : HSp D) (n : ℕ) (hF : D.host.F = maximalRealSubfield D.host.E) (P : principalLevelFrame.RowPsi V n) (β : GL (Fin V.rank) (EAf D)), GlobalTheory.Mem.R3.StdFrame hF P → ∀ (s : SplitPlace D.host.E), ∃ h : GL (Fin n) (s.v.adicCompletion (maximalRealSubfield D.host.E)), ∀ κ : Formalism.AUTREP.GAf D.host.E n, TrivOutside {s.v} κ → h⁻¹ * s.loc n κ * h ∈ GlobalTheory.SplitWeil.KO (s.v.adicCompletion (maximalRealSubfield D.host.E)) (Fin n) → ∀ a b : Fin V.rank, Valued.v (GlobalTheory.StdFrames.cpt s.w ((β⁻¹ * finE V (P.ψ κ) * β).val a b)) ≤ 1 := by
+  intro D V n hF P β hS s
+  obtain ⟨⟨βs, βs', h1, h2, hfr⟩, -⟩ := hS
+  obtain ⟨c, hc, hc', hci⟩ := GlobalTheory.SplitComplHomeo.exists_complEquiv D.host.E s
+  obtain ⟨f, hf⟩ : ∃ f : (FiniteAdeleRing (𝓞 D.host.F) D.host.F ⊗[D.host.F] D.host.E) →+* s.w.adicCompletion D.host.E,
+    f = (GlobalTheory.StdFrames.cpt s.w).comp (swapAE D) := ⟨_, rfl⟩
+  have hn : V.rank = n := GlobalTheory.SplitFrameW.eq_of_mul_eq_one (βs.map f) (βs'.map f)
+    (by rw [← Matrix.map_mul, h1, Matrix.map_one _ (map_zero f) (map_one f)])
+    (by rw [← Matrix.map_mul, h2, Matrix.map_one _ (map_zero f) (map_one f)])
+  subst hn
+  obtain ⟨Φc, hΦc⟩ : ∃ Φc : Matrix (Fin V.rank) (Fin V.rank) (EAf D) →+*
+      Matrix (Fin V.rank) (Fin V.rank) (s.v.adicCompletion (maximalRealSubfield D.host.E)),
+    Φc = (c.symm.toRingHom.comp (GlobalTheory.StdFrames.cpt s.w)).mapMatrix := ⟨_, rfl⟩
+  obtain ⟨B, hB⟩ : ∃ B : Matrix (Fin V.rank) (Fin V.rank) (EAf D), B = βs.map (swapAE D) := ⟨_, rfl⟩
+  obtain ⟨B', hB'⟩ : ∃ B' : Matrix (Fin V.rank) (Fin V.rank) (EAf D), B' = βs'.map (swapAE D) := ⟨_, rfl⟩
+  have hBB : B * B' = 1 := by
+    rw [hB, hB', ← Matrix.map_mul, h1, Matrix.map_one _ (map_zero _) (map_one _)]
+  have hBB' : B' * B = 1 := by
+    rw [hB, hB', ← Matrix.map_mul, h2, Matrix.map_one _ (map_zero _) (map_one _)]
+  obtain ⟨X, hX⟩ : ∃ X, X = Φc ((β⁻¹).val * B) := ⟨_, rfl⟩
+  obtain ⟨X', hX'⟩ : ∃ X', X' = Φc (B' * β.val) := ⟨_, rfl⟩
+  have hXX : X * X' = 1 := by
+    rw [hX, hX', ← map_mul, show (β⁻¹).val * B * (B' * β.val) = (β⁻¹).val * (B * B') * β.val by
+      simp only [Matrix.mul_assoc], hBB, Matrix.mul_one, Units.inv_mul, map_one]
+  have hXX' : X' * X = 1 := by
+    rw [hX, hX', ← map_mul, show B' * β.val * ((β⁻¹).val * B) = B' * (β.val * (β⁻¹).val) * B by
+      simp only [Matrix.mul_assoc], Units.mul_inv, Matrix.mul_one, hBB', map_one]
+  obtain ⟨g, hg⟩ : ∃ g : GL (Fin V.rank) (s.v.adicCompletion (maximalRealSubfield D.host.E)),
+    g = ⟨X', X, hXX', hXX⟩ := ⟨_, rfl⟩
+  refine ⟨g, fun κ _ hk a b => ?_⟩
+  have hK : Φc (((κ.1 : Matrix (Fin V.rank) (Fin V.rank) (ReciprocityTheory.Aut.AL D.host.E)).map (swapCast hF).symm).map (swapAE D)) =
+      ((s.loc V.rank κ : GL _ _) : Matrix _ _ _) := by
+    rw [hΦc]
+    refine Matrix.ext fun i j => ?_
+    change c.symm (((GlobalTheory.StdFrames.toAd D).comp (swapAE D)) ((swapCast hF).symm (κ.1.val i j)) s.w) = s.proj (κ.1.val i j)
+    rw [GlobalTheory.SplitFrameW.cpt_swap D.host.F hF ((GlobalTheory.StdFrames.toAd D).comp (swapAE D)) (fun a x => GlobalTheory.StdFrames.toAd_spec D x a) s c hc hci]
+    exact c.symm_apply_apply _
+  have e1 : (finE V (P.ψ κ)).val = B * (((κ.1 : Matrix (Fin V.rank) (Fin V.rank) (ReciprocityTheory.Aut.AL D.host.E)).map
+      (swapCast hF).symm).map (swapAE D)) * B' := by
+    change (finMat D.sp.cm.sig V.gram (P.ψ κ)).map (swapAE D) = _
+    rw [hfr κ, Matrix.map_mul, Matrix.map_mul, hB, hB']
+  have hM : Φc ((β⁻¹ * finE V (P.ψ κ) * β).val) = X * ((s.loc V.rank κ : GL _ _) : Matrix _ _ _) * X' := by
+    rw [Units.val_mul, Units.val_mul, e1, ← hK, hX, hX', ← map_mul, ← map_mul]
+    simp only [Matrix.mul_assoc]
+  have e3 : (↑(g⁻¹ * s.loc V.rank κ * g) : Matrix (Fin V.rank) (Fin V.rank) (s.v.adicCompletion (maximalRealSubfield D.host.E))) =
+      X * ((s.loc V.rank κ : GL _ _) : Matrix _ _ _) * X' := by
+    rw [hg]; rfl
+  have hent : Φc ((β⁻¹ * finE V (P.ψ κ) * β).val) a b =
+      c.symm (GlobalTheory.StdFrames.cpt s.w ((β⁻¹ * finE V (P.ψ κ) * β).val a b)) := by
+    rw [hΦc]; rfl
+  have e2 : GlobalTheory.StdFrames.cpt s.w ((β⁻¹ * finE V (P.ψ κ) * β).val a b) =
+      c ((↑(g⁻¹ * s.loc V.rank κ * g) : Matrix (Fin V.rank) (Fin V.rank) (s.v.adicCompletion (maximalRealSubfield D.host.E))) a b) := by
+    rw [e3, ← hM, hent, c.apply_symm_apply]
+  rw [e2]
+  exact valued_le_one_of_map c hc _ (val_le_one_of_mem_KO _ hk a b)
+
+end GlobalTheory.SplitFrameKO
+end
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.TypeRec.factG
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.RecTie Formalism.L2.Rows GlobalTheory.Mem GlobalTheory.Mem.R3 ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2
+open scoped TensorProduct
+open Formalism.IndefR.principalLevelFrame Formalism.IndefR.Mult
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.standardFrame_split_conj_mem_integral_matrices : ∀ (D : D7) (V : HSp D) (n : ℕ) (hF : D.host.F = maximalRealSubfield D.host.E) (P : principalLevelFrame.RowPsi V n) (β : GL (Fin V.rank) (EAf D)), GlobalTheory.Mem.R3.StdFrame hF P → ∀ (s : SplitPlace D.host.E), ∃ h : GL (Fin n) (s.v.adicCompletion (maximalRealSubfield D.host.E)), ∀ κ : Formalism.AUTREP.GAf D.host.E n, TrivOutside {s.v} κ → h⁻¹ * s.loc n κ * h ∈ GlobalTheory.SplitWeil.KO (s.v.adicCompletion (maximalRealSubfield D.host.E)) (Fin n) → ∀ a b : Fin V.rank, Valued.v (GlobalTheory.StdFrames.cpt s.w ((β⁻¹ * finE V (P.ψ κ) * β).val a b)) ≤ 1 := by
+  atlas_forward_decl GlobalTheory.SplitFrameKO.main
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.TypeRec.factG
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.RecTie Formalism.L2.Rows GlobalTheory.Mem GlobalTheory.Mem.R3 ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2
+open scoped TensorProduct
+open Formalism.IndefR.principalLevelFrame Formalism.IndefR.Mult
+
+namespace GlobalTheory.ConjInt
+open GlobalTheory.StdFrames GlobalTheory.AdIsom GlobalTheory.IdemSupport
+
+theorem frame_mat_le_one : ∀ (D : D7) (V : HSp D) (β : GL (Fin V.rank) (EAf D)) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)) (N : ℕ), IsSDFrame V β Λ N → ∀ (g : GA D V) (Q : Formalism.L2.DIV.Pl D.host.E), (∀ a b : Fin V.rank, Valued.v (GlobalTheory.StdFrames.cpt Q ((β⁻¹ * (finE V g)⁻¹ * β).val a b)) ≤ 1) → ∀ a b : Fin V.rank, Valued.v (GlobalTheory.StdFrames.cpt (GlobalTheory.IdemSupport.cP Q) ((β⁻¹ * finE V g * β).val a b)) ≤ 1 := by
+  intro D V β Λ N hSD g Q h a b
+  obtain ⟨hGi, U', hU'i, hU'⟩ := unimod_of_isSD hSD
+  have hX : Formalism.UG.cT (sg D) (finE V g).val * GlobalTheory.IndefiniteRowSideFullHecke.ChainMatrices.ratM V.gram * (finE V g).val =
+      GlobalTheory.IndefiniteRowSideFullHecke.ChainMatrices.ratM V.gram := GlobalTheory.LevSplit.finE_mem_UA V g
+  have hYsub := GlobalTheory.ConjLt.conj_sub_one (sg D) β (finE V g) _ U' hX hU'
+  have hY : (β⁻¹ * finE V g * β).val = U' * Formalism.UG.cT (sg D) (β⁻¹ * (finE V g)⁻¹ * β).val *
+      (Formalism.UG.cT (sg D) β.val * GlobalTheory.IndefiniteRowSideFullHecke.ChainMatrices.ratM V.gram * β.val) := by
+    rw [Matrix.mul_sub, Matrix.mul_one, Matrix.sub_mul, hU'] at hYsub
+    exact sub_left_inj.1 hYsub
+  have hM : ∀ i j, Valued.v (cpt (GlobalTheory.IdemSupport.cP Q)
+      ((Formalism.UG.cT (sg D) (β⁻¹ * (finE V g)⁻¹ * β).val) i j)) ≤ 1 := by
+    intro i j
+    exact (cpt_cjA_le_iff Q _).2 (h j i)
+  have hint : ∀ x ∈ GlobalTheory.StdFrames.OA D, Valued.v (cpt (GlobalTheory.IdemSupport.cP Q) x) ≤ 1 :=
+    fun x hx => (mem_OA x).1 hx (GlobalTheory.IdemSupport.cP Q)
+  rw [hY, Matrix.mul_apply, map_sum]
+  refine Valuation.map_sum_le _ fun j _ => ?_
+  rw [map_mul, Valuation.map_mul, Matrix.mul_apply, map_sum]
+  refine mul_le_one' ?_ (hint _ (hGi j b))
+  refine Valuation.map_sum_le _ fun i _ => ?_
+  rw [map_mul, Valuation.map_mul]
+  exact mul_le_one' (hint _ (hU'i a i)) (hM i j)
+
+end GlobalTheory.ConjInt
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.TypeRec.factG
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.RecTie Formalism.L2.Rows GlobalTheory.Mem GlobalTheory.Mem.R3 ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2
+open scoped TensorProduct
+open Formalism.IndefR.principalLevelFrame Formalism.IndefR.Mult
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.selfDualFrame_conjugate_place_integral : ∀ (D : D7) (V : HSp D) (β : GL (Fin V.rank) (EAf D)) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)) (N : ℕ), IsSDFrame V β Λ N → ∀ (g : GA D V) (Q : Formalism.L2.DIV.Pl D.host.E), (∀ a b : Fin V.rank, Valued.v (GlobalTheory.StdFrames.cpt Q ((β⁻¹ * (finE V g)⁻¹ * β).val a b)) ≤ 1) → ∀ a b : Fin V.rank, Valued.v (GlobalTheory.StdFrames.cpt (GlobalTheory.IdemSupport.cP Q) ((β⁻¹ * finE V g * β).val a b)) ≤ 1 := by
+  atlas_forward_decl GlobalTheory.ConjInt.frame_mat_le_one
+end
+
+section
+open IsDedekindDomain NumberField
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+namespace GlobalTheory.IntegralPullback
+
+open Filter Topology ValuativeRel
+
+theorem valued_le_one_of_map {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
+    {v : HeightOneSpectrum (𝓞 F)} {w : HeightOneSpectrum (𝓞 E)}
+    (c : v.adicCompletion F ≃+* w.adicCompletion E) (hc : Continuous c) (z : v.adicCompletion F)
+    (hz : Valued.v (c z) ≤ 1) : Valued.v z ≤ 1 := by
+  by_contra h
+  rw [not_le] at h
+  have hz0 : z ≠ 0 := by
+    rintro rfl
+    simp at h
+  have hcz : c z ≠ 0 := (map_ne_zero c).mpr hz0
+
+  have hinv : Valued.v z⁻¹ < 1 := by
+    rw [map_inv₀]
+    exact inv_lt_one_of_one_lt₀ h
+  have ht : Tendsto (fun n : ℕ => (c z⁻¹) ^ n) atTop (𝓝 0) := by
+    have := (hc.tendsto 0).comp (Valued.tendsto_zero_pow_of_v_lt_one hinv)
+    simpa [Function.comp_def, map_pow] using this
+
+  have h1 : 1 ≤ Valued.v (c z⁻¹) := by
+    rw [map_inv₀]
+    calc (1 : WithZero (Multiplicative ℤ)) = Valued.v (c z)⁻¹ * Valued.v (c z) := by
+          rw [← map_mul, inv_mul_cancel₀ hcz, map_one]
+      _ ≤ Valued.v (c z)⁻¹ * 1 := by gcongr
+      _ = Valued.v (c z)⁻¹ := mul_one _
+  have hU : {y : w.adicCompletion E | Valued.v y < 1} ∈ 𝓝 (0 : w.adicCompletion E) :=
+    Valued.mem_nhds_zero.mpr ⟨1, fun y hy => by simpa using hy⟩
+  obtain ⟨n, hn⟩ := (ht.eventually_mem hU).exists
+  have hn' : Valued.v ((c z⁻¹) ^ n) < 1 := hn
+  rw [map_pow] at hn'
+  exact absurd hn' (not_lt.mpr (one_le_pow₀ h1))
+
+theorem mem_integer_iff {E : Type} [Field E] [NumberField E] {w : HeightOneSpectrum (𝓞 E)}
+    (z : w.adicCompletion E) :
+    z ∈ (valuation (w.adicCompletion E)).integer ↔ Valued.v z ≤ 1 := by
+  rw [Valuation.mem_integer_iff, ← Valuation.vle_one_iff (valuation (w.adicCompletion E))]
+  show Valued.v z ≤ Valued.v 1 ↔ _
+  rw [map_one]
+
+private theorem mem_KO_of_integral_entries' {F : Type} [Field F] [NumberField F]
+    {v : HeightOneSpectrum (𝓞 F)} {n : ℕ} (A : GL (Fin n) (v.adicCompletion F))
+    (h1 : ∀ i j, (A : Matrix (Fin n) (Fin n) (v.adicCompletion F)) i j ∈
+      (valuation (v.adicCompletion F)).integer)
+    (h2 : ∀ i j, ((A⁻¹ : GL (Fin n) (v.adicCompletion F)) :
+      Matrix (Fin n) (Fin n) (v.adicCompletion F)) i j ∈ (valuation (v.adicCompletion F)).integer) :
+    A ∈ GlobalTheory.SplitWeil.KO (v.adicCompletion F) (Fin n) := by
+
+  let P : Matrix (Fin n) (Fin n) (valuation (v.adicCompletion F)).integer :=
+    Matrix.of fun i j => ⟨_, h1 i j⟩
+  let Q : Matrix (Fin n) (Fin n) (valuation (v.adicCompletion F)).integer :=
+    Matrix.of fun i j => ⟨_, h2 i j⟩
+  let f := algebraMap (valuation (v.adicCompletion F)).integer (v.adicCompletion F)
+  have hP : P.map f = (A : Matrix (Fin n) (Fin n) _) := by
+    ext i j
+    simp only [P, f, Matrix.map_apply, Matrix.of_apply, Algebra.algebraMap_ofSubsemiring_apply]
+  have hQ : Q.map f = ((A⁻¹ : GL (Fin n) _) : Matrix (Fin n) (Fin n) _) := by
+    ext i j
+    simp only [Q, f, Matrix.map_apply, Matrix.of_apply, Algebra.algebraMap_ofSubsemiring_apply]
+  have inj : ∀ X Y : Matrix (Fin n) (Fin n) (valuation (v.adicCompletion F)).integer,
+      X.map f = Y.map f → X = Y := by
+    intro X Y h
+    exact Matrix.ext fun i j => Subtype.ext (congrFun (congrFun h i) j)
+  have hPQ : P * Q = 1 := inj _ _ (by
+    rw [Matrix.map_mul, Matrix.map_one f (map_zero f) (map_one f), hP, hQ]
+    exact A.mul_inv)
+  have hQP : Q * P = 1 := inj _ _ (by
+    rw [Matrix.map_mul, Matrix.map_one f (map_zero f) (map_one f), hP, hQ]
+    exact A.inv_mul)
+  unfold GlobalTheory.SplitWeil.KO
+  refine MonoidHom.mem_range.mpr ⟨⟨P, Q, hPQ, hQP⟩, ?_⟩
+  refine Matrix.GeneralLinearGroup.ext fun i j => ?_
+  rw [Matrix.GeneralLinearGroup.map_apply]
+  exact congrFun (congrFun hP i) j
+
+private theorem entry_mem_integer_of_map_mem_KO {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
+    {v : HeightOneSpectrum (𝓞 F)} {w : HeightOneSpectrum (𝓞 E)}
+    (c : v.adicCompletion F ≃+* w.adicCompletion E) (hc : Continuous c) {n : ℕ}
+    (M : GL (Fin n) (v.adicCompletion F))
+    (hM : Matrix.GeneralLinearGroup.map c.toRingHom M ∈ GlobalTheory.SplitWeil.KO (w.adicCompletion E) (Fin n))
+    (i j : Fin n) :
+    (M : Matrix (Fin n) (Fin n) (v.adicCompletion F)) i j ∈
+      (valuation (v.adicCompletion F)).integer := by
+  unfold GlobalTheory.SplitWeil.KO at hM
+  obtain ⟨C, hC⟩ := MonoidHom.mem_range.mp hM
+  rw [GlobalTheory.IntegralPullback.mem_integer_iff]
+  apply valued_le_one_of_map c hc
+  rw [← GlobalTheory.IntegralPullback.mem_integer_iff]
+  have hij := congrArg (fun g : GL (Fin n) (w.adicCompletion E) =>
+    (g : Matrix (Fin n) (Fin n) (w.adicCompletion E)) i j) hC
+  simp only [Matrix.GeneralLinearGroup.map_apply] at hij
+  have : c ((M : Matrix (Fin n) (Fin n) (v.adicCompletion F)) i j) =
+      ((C : Matrix (Fin n) (Fin n) (valuation (w.adicCompletion E)).integer) i j :
+        w.adicCompletion E) := hij.symm
+  rw [this]
+  exact ((C : Matrix (Fin n) (Fin n) (valuation (w.adicCompletion E)).integer) i j).2
+
+theorem mem_KO_of_map : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] {v : HeightOneSpectrum (𝓞 F)} {w : HeightOneSpectrum (𝓞 E)} (c : v.adicCompletion F ≃+* w.adicCompletion E), Continuous c → ∀ {n : ℕ} (A : GL (Fin n) (v.adicCompletion F)), Matrix.GeneralLinearGroup.map c.toRingHom A ∈ GlobalTheory.SplitWeil.KO (w.adicCompletion E) (Fin n) → A ∈ GlobalTheory.SplitWeil.KO (v.adicCompletion F) (Fin n) := by
+  intro F E _ _ _ _ v w c hc n A hA
+  have hAinv : Matrix.GeneralLinearGroup.map c.toRingHom A⁻¹ ∈
+      GlobalTheory.SplitWeil.KO (w.adicCompletion E) (Fin n) := by
+    rw [map_inv]
+    exact inv_mem hA
+  exact mem_KO_of_integral_entries' A (entry_mem_integer_of_map_mem_KO c hc A hA) (entry_mem_integer_of_map_mem_KO c hc A⁻¹ hAinv)
+
+end GlobalTheory.IntegralPullback
+end
+
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.TypeRec.factG
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.RecTie Formalism.L2.Rows GlobalTheory.Mem GlobalTheory.Mem.R3 ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2
+open scoped TensorProduct
+open Formalism.IndefR.principalLevelFrame Formalism.IndefR.Mult
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integralGL_pullback_continuousRingEquiv : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] {v : HeightOneSpectrum (𝓞 F)} {w : HeightOneSpectrum (𝓞 E)} (c : v.adicCompletion F ≃+* w.adicCompletion E), Continuous c → ∀ {n : ℕ} (A : GL (Fin n) (v.adicCompletion F)), Matrix.GeneralLinearGroup.map c.toRingHom A ∈ GlobalTheory.SplitWeil.KO (w.adicCompletion E) (Fin n) → A ∈ GlobalTheory.SplitWeil.KO (v.adicCompletion F) (Fin n) := by
+  atlas_forward_decl GlobalTheory.IntegralPullback.mem_KO_of_map
+end
+
+section
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.TypeRec.factG
@@ -281,3 +578,4 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.spherical_away_from_types : PrN → OverRows fun _ _ _ _ w Z _ _ z _ Y => ∀ (σ : (w.st Z).toD7.what₂.FT) (s : ReciprocityTheory.Aut.SplitPlace (w.st Z).toD7.host.E), (∀ k : Fin 2, s.w ∉ placesOver (w.st Z).toD7.host.E ((w.st Z).toD7.host.g k)) → ∃ τ, IsLocS (repOf Y σ).S s τ ∧ GlobalTheory.SmGL.IsSpherical τ.ρ := by
   atlas_forward_decl GlobalTheory.RowSphOff.rowSph_overRows
+end

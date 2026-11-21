@@ -81,17 +81,6 @@ def Induces (w : Place p OE) {O : Type} [CommRing O] [Algebra ℤ_[p] O] (σ : O
 def Emb (w : Place p OE) (O : Type) [CommRing O] [Algebra ℤ_[p] O] : Type :=
   {σ : OE →+* O // w.Induces σ}
 
-theorem conj_induces_iff [StarRing OE] (w : Place p OE) {O : Type} [CommRing O]
-    [Algebra ℤ_[p] O] (σ : OE →+* O) :
-    w.conj.Induces σ ↔ w.Induces (σ.comp (starRingEnd OE)) := by
-  have : ∀ x : Op p OE, extend σ (bar p OE x) = extend (σ.comp (starRingEnd OE)) x := by
-    intro x
-    induction x using TensorProduct.induction_on with
-    | zero => simp
-    | tmul z a => rfl
-    | add x y hx hy => rw [map_add, map_add, map_add, hx, hy]
-  unfold Induces
-  rw [← this]; rfl
 
 def IsDiffVal_vp [IsDedekindDomain OE] [CharZero OE] [Module.Finite ℤ OE] (w : Place p OE)
     (vd : ℝ) : Prop :=
@@ -225,34 +214,8 @@ def gaussUnrPlace (s h : ℤ_[p]) (hs : s * s = -1) (hh : 2 * h = 1) : UnrPlace 
 
 local instance : Fact (Nat.Prime 5) := ⟨by norm_num⟩
 
-theorem exists_sqrt_neg_one_five : ∃ s h : ℤ_[5], s * s = -1 ∧ 2 * h = 1 := by
-  have h2 : ‖(2 : ℤ_[5])‖ = 1 := by
-    have := (PadicInt.norm_natCast_eq_one_iff (p := 5) (n := 2)).2 (by norm_num)
-    simpa using this
-  obtain ⟨h, hh⟩ := (PadicInt.isUnit_iff.2 h2).exists_right_inv
-  have h5 : ‖(5 : ℤ_[5])‖ < 1 := by
-    have := PadicInt.norm_p (p := 5)
-    simp only [Nat.cast_ofNat] at this
-    rw [this]; norm_num
-  have hn : ‖(Polynomial.X ^ 2 + 1 : Polynomial ℤ_[5]).aeval (2 : ℤ_[5])‖ <
-      ‖(Polynomial.X ^ 2 + 1 : Polynomial ℤ_[5]).derivative.aeval (2 : ℤ_[5])‖ ^ 2 := by
-    have e1 : (Polynomial.X ^ 2 + 1 : Polynomial ℤ_[5]).aeval (2 : ℤ_[5]) = 5 := by
-      simp; norm_num
-    have e2 : (Polynomial.X ^ 2 + 1 : Polynomial ℤ_[5]).derivative.aeval (2 : ℤ_[5]) = 2 * 2 := by
-      simp; norm_num
-    rw [e1, e2, norm_mul, h2]; simpa using h5
-  obtain ⟨s, hs, -⟩ := hensels_lemma hn
-  refine ⟨s, h, ?_, hh⟩
-  simp at hs
-  linear_combination hs
 
-theorem nonempty_splitPlace_five : Nonempty (SplitPlace 5 GaussianInt) := by
-  obtain ⟨s, h, hs, hh⟩ := exists_sqrt_neg_one_five
-  exact ⟨gaussPlace s h hs hh⟩
 
-theorem nonempty_unrPlace_five : Nonempty (UnrPlace 5 GaussianInt) := by
-  obtain ⟨s, h, hs, hh⟩ := exists_sqrt_neg_one_five
-  exact ⟨gaussUnrPlace s h hs hh⟩
 
 end Gauss
 

@@ -1,6 +1,115 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.CoordDnApply
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.EmbeddingXiZeroNeZero
 
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta MeasureTheory IsDedekindDomain NumberField Matrix
+open scoped TensorProduct ContDiff
+
+namespace GlobalTheory.DualPairCompare
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+variable {D : D7}
+
+section Gen
+variable {R : Type} [CommRing R] {a b : ℕ}
+
+def leftMul (J Ji : Matrix (Fin a) (Fin a) R) (h1 : Ji * J = 1) :
+    Matrix (Fin a) (Fin b) R ≃ₗ[R] Matrix (Fin a) (Fin b) R where
+  toFun x := Jiᵀ * x
+  invFun y := Jᵀ * y
+  map_add' := Matrix.mul_add _
+  map_smul' c x := Matrix.mul_smul _ c x
+  left_inv x := by
+    change Jᵀ * (Jiᵀ * x) = x
+    rw [← Matrix.mul_assoc, ← Matrix.transpose_mul, h1, Matrix.transpose_one, Matrix.one_mul]
+  right_inv x := by
+    change Jiᵀ * (Jᵀ * x) = x
+    rw [← Matrix.mul_assoc, ← Matrix.transpose_mul, mul_eq_one_comm.1 h1, Matrix.transpose_one, Matrix.one_mul]
+
+theorem gen_supp (f : R) (g : Matrix (Fin a) (Fin a) R) :
+    (∀ i j, f * (g - 1) i j = (g - 1) i j) ↔ (1 - f) • g = (1 - f) • (1 : Matrix (Fin a) (Fin a) R) := by
+  rw [← Matrix.ext_iff]
+  refine forall₂_congr fun i j => ?_
+  simp only [Matrix.smul_apply, Matrix.sub_apply, smul_eq_mul]
+  constructor <;> intro h <;> linear_combination -h
+
+theorem gen_cont [TopologicalSpace R] [IsTopologicalRing R] (J Ji : Matrix (Fin a) (Fin a) R) (h1 : Ji * J = 1) :
+    Continuous (leftMul (b := b) J Ji h1) ∧ Continuous (leftMul (b := b) J Ji h1).symm :=
+  ⟨continuous_const.matrix_mul continuous_id, continuous_const.matrix_mul continuous_id⟩
+
+end Gen
+
+open GlobalTheory.IndefiniteRowSideFullHecke
+
+theorem suppAt_iff' (e : AE D) (V : HSp D) (g : GA D V) : SuppAt e V g ↔ HeisenbergWeilMatrices.IsAt (e + HeisenbergWeilMatrices.cj D e) g :=
+  gen_supp _ _
+
+theorem suppAt_iff {v : HeightOneSpectrum (𝓞 D.host.F)} {e : AE D} (he : HeisenbergWeilMatrices.IsSplitIdem D v e) (V : HSp D)
+    (g : GA D V) : SuppAt e V g ↔ HeisenbergWeilMatrices.IsAt (HeisenbergWeilMatrices.idemFin D v) g := by
+  rw [suppAt_iff', he.sum]
+
+end GlobalTheory.DualPairCompare
+
+end
+end
+
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta MeasureTheory IsDedekindDomain NumberField Matrix
+open scoped TensorProduct ContDiff
+
+namespace GlobalTheory.DualPairCompare
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+variable {D : D7}
+section Gen
+variable {R : Type} [CommRing R] {a b : ℕ}
+
+def thenTr (φ : Matrix (Fin a) (Fin b) R ≃ₗ[R] Matrix (Fin a) (Fin b) R) :
+    Matrix (Fin a) (Fin b) R ≃ₗ[R] Matrix (Fin b) (Fin a) R :=
+  φ.trans (Matrix.transposeLinearEquiv _ _ R R)
+
+
+end Gen
+
+open GlobalTheory.IndefiniteRowSideFullHecke
+
+instance topRing (D : D7) : IsTopologicalRing (AE D) := IsModuleTopology.isTopologicalRing (AF D.host.F) _
+
+theorem gramInv_mul (A : HSp D) : HeisenbergWeilMatrices.gramInvA A * HeisenbergWeilMatrices.gramA A = 1 := by
+  unfold HeisenbergWeilMatrices.gramInvA HeisenbergWeilMatrices.gramA
+  rw [← Matrix.map_mul, Matrix.nonsing_inv_mul _ (isUnit_iff_ne_zero.2 (gram_det_ne A))]
+  exact Matrix.map_one _ (incA D).map_zero (incA D).map_one
+
+def coordUp (A B : HSp D) : HeisenbergWeilMatrices.WA A B ≃ₗ[AE D] WA A B :=
+  leftMul (HeisenbergWeilMatrices.gramA A) (HeisenbergWeilMatrices.gramInvA A) (gramInv_mul A)
+
+def coordDn (V W : HSp D) : HeisenbergWeilMatrices.WA W V ≃ₗ[AE D] WA V W :=
+  thenTr (coordUp W V)
+
+
+theorem cont_up (A B : HSp D) : Continuous (coordUp A B) ∧ Continuous (coordUp A B).symm :=
+  gen_cont _ _ (gramInv_mul A)
+
+structure IsCoord {V W A B : HSp D} (φ : HeisenbergWeilMatrices.WA A B ≃ₗ[AE D] WA V W) : Prop where
+  cont : Continuous φ
+  cont_symm : Continuous φ.symm
+  herm : ∀ x y, hHom V W (φ y) (φ x) = HeisenbergWeilMatrices.herm x y
+  rat : ∀ x, φ x ∈ ratL V W ↔ x ∈ HeisenbergWeilMatrices.WQ A B
+  inf : ∀ x, (φ x).map (infPart D) = 0 ↔ x.map (infPart D) = 0
+  fin : ∀ x, (φ x).map (finPart D) = 0 ↔ x.map (finPart D) = 0
+
+end GlobalTheory.DualPairCompare
+
+end
+end
+
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta MeasureTheory IsDedekindDomain NumberField Matrix
@@ -36,37 +145,9 @@ theorem gen_smooth_iff {P : Type} [NormedAddCommGroup P] [NormedSpace ℝ P] [Fi
     convert this using 2 with t
     exact congrArg (fun q => f (w + q)) (h3 _ (h0 t)).symm
 
-theorem gen_smooth_comp (φ : M →+ N) (hφ : Continuous φ) (Z : M → Prop) (Z' : N → Prop) (hZ : ∀ x, Z x → Z' (φ x))
-    (f : N → ℂ) (h : SmoothAlong Z' f) : SmoothAlong Z (f ∘ φ) := by
-  intro k L hL h0 w
-  have := h k (φ.comp L) (hφ.comp hL) (fun t => hZ _ (h0 t)) (φ w)
-  convert this using 2 with t
-  exact congrArg f (φ.map_add _ _)
 
-theorem gen_smooth_equiv (φ : M ≃+ N) (h1 : Continuous φ) (h2 : Continuous φ.symm) (Z : M → Prop) (Z' : N → Prop)
-    (hZ : ∀ x, Z' (φ x) ↔ Z x) (f : N → ℂ) : SmoothAlong Z' f ↔ SmoothAlong Z (f ∘ φ) := by
-  refine ⟨gen_smooth_comp φ.toAddMonoidHom h1 Z Z' (fun x => (hZ x).2) f, fun h => ?_⟩
-  have := gen_smooth_comp φ.symm.toAddMonoidHom h2 Z' Z (fun x hx => (hZ _).1 (by simpa using hx)) _ h
-  convert this using 1
-  funext x
-  simp
 
-theorem gen_level (φ : M ≃+ N) (h1 : Continuous φ) (h2 : Continuous φ.symm) (Z Q : M → Prop) (Z' Q' : N → Prop)
-    (hZ : ∀ x, Z' (φ x) ↔ Z x) (hQ : ∀ x, Q' (φ x) ↔ Q x) :
-    (∃ U : AddSubgroup N, IsOpen (U : Set N) ∧ ∀ u ∈ U, Z' u → Q' u) ↔
-      ∃ U : AddSubgroup M, IsOpen (U : Set M) ∧ ∀ u ∈ U, Z u → Q u := by
-  constructor
-  · rintro ⟨U, hU, h⟩
-    exact ⟨U.comap φ.toAddMonoidHom, hU.preimage h1, fun u hu h0 => (hQ u).1 (h _ hu ((hZ u).2 h0))⟩
-  · rintro ⟨U, hU, h⟩
-    refine ⟨U.comap φ.symm.toAddMonoidHom, hU.preimage h2, fun u hu h0 => ?_⟩
-    obtain ⟨u, rfl⟩ := φ.surjective u
-    exact (hQ u).2 (h u (by simpa using hu) ((hZ u).1 h0))
 
-theorem gen_cont_equiv (φ : M ≃+ N) (h2 : Continuous φ.symm) (f : N → ℂ) (h : Continuous (f ∘ φ)) : Continuous f := by
-  convert h.comp h2 using 1
-  funext x
-  simp
 
 omit [TopologicalSpace M] [TopologicalSpace N] in
 theorem gen_quasi (φ : M ≃+ N) (S : AddSubgroup M) (S' : AddSubgroup N) (hS : ∀ x, φ x ∈ S' ↔ x ∈ S)
@@ -74,32 +155,7 @@ theorem gen_quasi (φ : M ≃+ N) (S : AddSubgroup M) (S' : AddSubgroup N) (hS :
     (∀ γ ∈ S', ∀ w, f (γ + w) = κ' γ w * f w) ↔ ∀ γ ∈ S, ∀ w, (f ∘ φ) (γ + w) = κ γ w * (f ∘ φ) w := by
   simp only [φ.surjective.forall, hS, hκ, Function.comp_apply, map_add]
 
-theorem gen_continuous [IsTopologicalAddGroup M] {A : Type} [AddCommGroup A] [TopologicalSpace A]
-    [IsTopologicalAddGroup A] (ψ : AddChar A ℂ) (hψ : Continuous ψ) (s : M → M → A)
-    (hs : Continuous fun p : M × M => s p.1 p.2) (R : M →+ M) (hR : Continuous R) (U : AddSubgroup M)
-    (hU : IsOpen (U : Set M)) (g : M → ℂ) (h1 : ∀ w, Continuous fun d => g (w + R d))
-    (h2 : ∀ d, d - R d ∈ U → ∀ x, ψ (s x (d - R d)) * g (x + (d - R d)) = g x) : Continuous g := by
-  rw [continuous_iff_continuousAt]
-  intro w₀
-  have hd : Continuous fun w => w - w₀ := continuous_id.sub continuous_const
-  have hu : Continuous fun w => (w - w₀) - R (w - w₀) := hd.sub (hR.comp hd)
-  have hG : Continuous fun w => ψ (-s (w₀ + R (w - w₀)) ((w - w₀) - R (w - w₀))) * g (w₀ + R (w - w₀)) :=
-    (hψ.comp (hs.comp ((continuous_const.add (hR.comp hd)).prodMk hu)).neg).mul ((h1 w₀).comp hd)
-  refine hG.continuousAt.congr ?_
-  filter_upwards [(hU.preimage hu).mem_nhds (show w₀ ∈ _ by simp)] with w hw
-  rw [← h2 _ hw (w₀ + R (w - w₀)), ← mul_assoc, ← AddChar.map_add_eq_mul, neg_add_cancel, AddChar.map_zero_eq_one,
-    one_mul]
-  congr 1
-  abel
 
-theorem gen_cont_herm {R : Type} [CommRing R] [TopologicalSpace R] [IsTopologicalRing R] {a b : ℕ} (σ : R →+* R)
-    (hσ : Continuous σ) (Ji : Matrix (Fin a) (Fin a) R) (K : Matrix (Fin b) (Fin b) R) (ξ : R) :
-    Continuous fun p : Matrix (Fin a) (Fin b) R × Matrix (Fin a) (Fin b) R =>
-      ξ * Matrix.trace ((Ji * Formalism.UG.cT σ p.2ᵀ * K)ᵀᵀ * p.1ᵀ) :=
-  continuous_const.mul
-    (((continuous_const.matrix_mul (continuous_snd.matrix_transpose.matrix_map
-      hσ).matrix_transpose).matrix_mul continuous_const).matrix_transpose.matrix_transpose.matrix_mul
-        continuous_fst.matrix_transpose).matrix_trace
 
 end Gen
 
@@ -131,18 +187,9 @@ theorem continuous_cA (D : D7) : Continuous (cA D) :=
   IsModuleTopology.continuous_of_linearMap
     (Algebra.TensorProduct.map (AlgHom.id (AF D.host.F) (AF D.host.F)) D.sp.cm.sig).toLinearMap
 
-theorem continuous_hsymp (A B : HSp D) : Continuous fun p : HeisenbergWeilMatrices.WA A B × HeisenbergWeilMatrices.WA A B => HeisenbergWeilMatrices.hsymp p.1 p.2 :=
-  continuous_const.mul ((IsModuleTopology.continuous_of_linearMap (HeisenbergWeilMatrices.trA D)).comp
-    (gen_cont_herm (cA D) (continuous_cA D) (HeisenbergWeilMatrices.gramInvA A) (HeisenbergWeilMatrices.gramA B) (incA D D.host.xi0)))
 
-theorem continuous_of_isTheta {A B : HSp D} {ψ : AddChar (AF D.host.F) ℂ} (hψ : Continuous ψ) {g : HeisenbergWeilMatrices.WA A B → ℂ}
-    (hg : HeisenbergWeilMatrices.IsTheta ψ g) : Continuous g := by
-  obtain ⟨-, hs, U, hU, hl⟩ := hg
-  obtain ⟨co, c1, c2, -⟩ := exists_coMat D A.rank B.rank
-  exact gen_continuous ψ hψ HeisenbergWeilMatrices.hsymp (continuous_hsymp A B) ((realMat D _ _).comp co)
-    ((continuous_realMat D _ _).comp c1) U hU g (fun w => (hs w).continuous.comp c1)
-    fun d hd x => congrFun (hl _ hd (c2 d)) x
 
 end GlobalTheory.DualPairCompare
 
+end
 end

@@ -162,19 +162,7 @@ theorem chTh_ok_ambD (hm : m2 + 1 < R.m) (hT : 0 < Pr.T u) (hq : MuqTie Ch sel m
   th i hi := stepC_ok_deg W Ch sel mu cst A u i (by omega) _ hT _ _ hq (h.1 i hi) (h.2.2.1 i hi)
   top := stepC_ok_deg W Ch sel mu cst A u (m2 + 1) hm _ hT _ _ hq h.2.1 h.2.2.2
 
-theorem inst_ambD (hm : m2 + 1 < R.m) (hT : 0 < Pr.T u) (hq : MuqTie Ch sel mu cst) (hTh : ThHypD W Ch sel mu cst A u m2)
-    (b : L.β (m2 + 1)) (P : LevFam X.E X.K R.r Pr.vGs)
-    (hK : KerHypOn W Ch sel mu cst L A u m2 b (coupling_index_set_finite sel mu cst L u m2 b) P)
-    (hlev : (cst.sharp = false ∧ P = rP0 Ch) ∨ (cst.sharp = true ∧ P = rPsymF Ch)) :
-    ChTh.Ok (Ch := Ch) cst (chTh W Ch sel mu cst A u m2) ∧
-      (chKerC W Ch sel mu cst L A u m2 b (coupling_index_set_finite sel mu cst L u m2 b) P (kerEquivC_of W Ch sel mu cst L A u m2 b _ P hK)).Shape
-        (chTh W Ch sel mu cst A u m2) :=
-  ⟨chTh_ok_ambD W Ch sel mu cst A u m2 hm hT hq hTh, chKerC_shape W Ch sel mu cst L A u m2 b _ P _ hlev⟩
 
-theorem theta_hypothesis_degree_form : ThHypDOf := by
-  intro X Pr R W Ch sel S mu cst A u m2 h
-  exact ⟨fun i hi => ⟨(h.1 i hi).1, (h.1 i hi).2.1, jets_rational_of_degree_form _ _ _ _ _ _ _ (h.1 i hi).2.2⟩,
-    ⟨h.2.1.1, h.2.1.2.1, jets_rational_of_degree_form _ _ _ _ _ _ _ h.2.1.2.2⟩, h.2.2.1, h.2.2.2⟩
 
 end Chain
 
@@ -185,35 +173,10 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Ch
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K))) (G : ChGlob X R.m)
   {D : D7} (s : Seam D X) {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ) (χ : TaylorLogMetric.IdE D → ℂ) (cD : D.what₂.Tau → ℂ) (u : Pr.Word) (m2 : ℕ)
 
-theorem chTh_ok_ofD (hm : m2 + 1 < R.m) (hT : 0 < Pr.T u) (h : ThHypND W Ch sel mu cst G s B χ cD u m2) :
-    ChTh.Ok (Ch := Ch) cst (chTh W Ch sel mu cst (ambOf s B χ cD) u m2) :=
-  chTh_ok_ambD W Ch sel mu cst (ambOf s B χ cD) u m2 hm hT h.2.1.1 h.2.2
 
-theorem inst_ofD (hm : m2 + 1 < R.m) (hT : 0 < Pr.T u) (hTh : ThHypND W Ch sel mu cst G s B χ cD u m2)
-    (b : L.β (m2 + 1)) (P : LevFam X.E X.K R.r Pr.vGs)
-    (hK : KerHypOn W Ch sel mu cst L (ambOf s B χ cD) u m2 b (coupling_index_set_finite sel mu cst L u m2 b) P)
-    (hlev : (cst.sharp = false ∧ P = rP0 Ch) ∨ (cst.sharp = true ∧ P = rPsymF Ch)) :
-    ChTh.Ok (Ch := Ch) cst (chTh W Ch sel mu cst (ambOf s B χ cD) u m2) ∧
-      (chKerC W Ch sel mu cst L (ambOf s B χ cD) u m2 b (coupling_index_set_finite sel mu cst L u m2 b) P
-        (kerEquivC_of W Ch sel mu cst L (ambOf s B χ cD) u m2 b _ P hK)).Shape (chTh W Ch sel mu cst (ambOf s B χ cD) u m2) :=
-  inst_ambD W Ch sel mu cst L (ambOf s B χ cD) u m2 hm hT hTh.2.1.1 hTh.2.2 b P hK hlev
 
 end ChainN
 
-theorem theta_distribution_unfold_degree : ThDistUnfD := by
-  intro X A a b Sall SB D sel mU mI lam lam' n hV hrat Y Y' fr fr' hinj hdet sh sS sD hn N f N' f' c x hR P
-  have h1 : ((thDistC A Sall SB D sel mU mI lam lam' n N f N' f' c x P : DIV.VV X.K lam') : DIV.Pol X.K X.Tau b) =
-      (muInvDet sel SB mU mI N f * (muInvDet sel SB mU mI N' f')⁻¹) • jetMap (A.jetK Sall N N' c x) n (P : DIV.Pol X.K X.Tau a) := by
-    unfold thDistC
-    rw [if_pos ⟨hR.2.2.2.1, hR.2.2.2.2⟩, LinearMap.smul_apply, Submodule.coe_smul, jetOp_coe lam lam' n hV]
-  have hPc := map_mem_VV A.σ₀ lam (P : DIV.Pol X.K X.Tau a) P.2
-  have key := unfolding_gl_eval ℂ X.Tau a b Y Y' fr fr' hinj hdet (RingHom.id ℂ) A.cD (A.thInd Sall N N' c x)
-    (fun m => (A.chiF a b N N')⁻¹ * jetC A.cD (A.thInd Sall N N' c x) m) (A.chiF a b N N')⁻¹ (fun _ => rfl) sh sS sD n hn (MvPolynomial.map A.σ₀ (P : DIV.Pol X.K X.Tau a))
-  have hloc : jetMap (fun m => (A.chiF a b N N')⁻¹ * jetC A.cD (A.thInd Sall N N' c x) m) n (MvPolynomial.map A.σ₀ (P : DIV.Pol X.K X.Tau a)) =
-      jetMap (fun m => A.σ₀ (A.jetK Sall N N' c x m)) n (MvPolynomial.map A.σ₀ (P : DIV.Pol X.K X.Tau a)) :=
-    jet_local_rationality ℂ X.Tau a b lam n _ _ (fun m hm => (jetK_spec_deg A Sall D _ hrat N N' c x hR m hm).symm) _ hPc
-  rw [hloc, ← map_jetMap, evG_id_map, evG_id_map] at key
-  rw [h1, evG_smul, key, smul_smul]
 
 theorem kernel_table_spec_degree : TabKSpecD := by
   intro X A a b Sall cA cB dg hA hB hsm hrat N N' hN hN' Ξ m hm
@@ -247,65 +210,14 @@ theorem kernel_table_spec_degree : TabKSpecD := by
   unfold jetC
   ring
 
-theorem descent_table_spec : DescentTableSpec := by
-  intro X A a b Sall cA cB dg N N' Ξ h m hm
-  obtain ⟨k, hk⟩ := h m hm
-  unfold Amb.descentTableFirst
-  rw [← hk, desc_map]
 
-theorem descent_table_eq : DescentTablesAgree := by
-  intro X A a b Sall cA cB dg hA hB hsm hrat N N' hN hN' Ξ
-  have h := kernel_table_spec_degree X A a b Sall cA cB dg hA hB hsm hrat N N' hN hN' Ξ
-  refine ⟨fun m hm => ⟨_, h m hm⟩, fun m hm => ?_⟩
-  unfold Amb.descentTableFirst
-  rw [← h m hm, desc_map]
 
-theorem jetFieldDeg_le_iff {X : Fields} (A : Amb X) (a b : ℕ) (Sall : Finset (HeightOneSpectrum (𝓞 X.E))) (D : ℕ) (dg : X.Tau → ℕ) (k : IntermediateField ℚ ℂ) :
-    A.jetFieldDeg a b Sall D dg ≤ k ↔ ∀ z ∈ A.jetSetDeg a b Sall D dg, z ∈ k := by
-  unfold Amb.jetFieldDeg
-  rw [IntermediateField.adjoin_le_iff]
-  rfl
 
-theorem jets_rational_degree_iff : JetsRatDegIff := by
-  intro X A a b Sall D dg
-  constructor
-  · intro h z hz
-    have hle : A.jetFieldDeg a b Sall D dg ≤ rangeIF A.σ₀ := by
-      rw [jetFieldDeg_le_iff]
-      rintro w ⟨N, N', c, x, m, hr, hm, rfl⟩
-      exact (mem_rangeIF _ _).2 (h N N' c x hr m hm)
-    exact (mem_rangeIF _ _).1 (hle hz)
-  · intro h N N' c x hr m hm
-    exact h _ (IntermediateField.subset_adjoin ℚ _ ⟨N, N', c, x, m, hr, hm, rfl⟩)
 
-theorem jets_rational_degree_with_field : JetsRatDegWithK := by
-  intro X A M _ _ hM a b Sall D dg hle N N' c x hr m hm
-  have hz : (A.chiF a b N N')⁻¹ * jetC A.cD (A.thInd Sall N N' c x) m ∈ A.jetFieldDeg a b Sall D dg :=
-    IntermediateField.subset_adjoin ℚ _ ⟨N, N', c, x, m, hr, hm, rfl⟩
-  refine ⟨⟨_, hle hz⟩, ?_⟩
-  exact congrArg (fun G => (A.chiF a b N N')⁻¹ * jetC A.cD G m) (withK_thInd A M hM Sall N N' c x).symm
 
-theorem jetFieldDeg_le {X : Fields} (A : Amb X) (a b : ℕ) (Sall : Finset (HeightOneSpectrum (𝓞 X.E))) (D : ℕ) (dg : X.Tau → ℕ) :
-    A.jetFieldDeg a b Sall D dg ≤ A.jetField a b Sall D := by
-  rw [jetFieldDeg_le_iff]
-  rintro w ⟨N, N', c, x, m, hr, _, rfl⟩
-  exact IntermediateField.subset_adjoin ℚ _ ⟨N, N', c, x, m, hr, rfl⟩
 
-theorem chain_rational_degree_of_cosets : StepsRatDegOfCos := by
-  intro D L hT Gi Gl K Y cX ex t hF hC u μ hU i hi N N' c x hR m hm
-  obtain ⟨k, hk⟩ := hC u μ hU i hi N N' c x hR m hm
-  obtain ⟨y, hy⟩ := hF k
-  exact ⟨y, hy.trans hk⟩
 
-theorem chain_rational_degree_each : StepsRatStepDeg := by
-  intro D L hT Gi Gl K Y cX ex t W hF hC hW u μ hU i hi
-  have e : stepDeg W (t.word u) i = fun τ => ∑ r, nuT D u i (t.seam.iT τ) r := funext fun τ => hW u i hi τ
-  rw [e]
-  exact chain_rational_degree_of_cosets D L hT Gi Gl K Y cX ex t hF hC u μ hU i hi
 
-theorem anaTopD_of {X : Fields} (A : Amb X) {R : Ranks} {m2 : ℕ} (hm : R.m = m2 + 2) {Sall : Finset (HeightOneSpectrum (𝓞 X.E))} {D : ℕ} {dg : X.Tau → ℕ}
-    (h : A.AnaStepD (R.N (m2 + 1)) (R.N (m2 + 1 + 1)) Sall D dg) : A.AnaStepD (R.N (m2 + 1)) (R.N R.m) Sall D dg := by
-  rw [hm]; exact h
 
 open Classical in
 

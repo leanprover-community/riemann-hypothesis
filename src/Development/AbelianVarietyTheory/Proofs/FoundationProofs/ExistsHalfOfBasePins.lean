@@ -136,10 +136,6 @@ def IsCoverLevel {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Recipro
   l.Dvd l₂ ∧ l₂.M = l.M * pd ∧ Nat.Coprime pd l.M ∧ l₂.Mb = l.Mb * I ∧
     I ⊔ I.map (H.bar : 𝓞 E →+* 𝓞 E) = ⊤ ∧ l₂.A = 1
 
-theorem isCoverLevel_of_covPin {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E}
-    {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {n : ℕ} {Tup : Type} {dδ : Tup → DeltaDat Xo c n}
-    (h : CovPin Xo c dδ) (t : Tup) : IsCoverLevel l (dδ t).pd (dδ t).I (dδ t).l₂ :=
-  ⟨(h t).1.1, (h t).1.2.1, (h t).1.2.2.1, (h t).1.2.2.2.1, (h t).1.2.2.2.2.1, (h t).2.1⟩
 
 theorem exists_coverLevel {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} (l : Level H)
     (hA : l.A = 1) (pd : ℕ) (I : Ideal (𝓞 E)) (hodd : Odd pd) (hc : Nat.Coprime pd l.M)

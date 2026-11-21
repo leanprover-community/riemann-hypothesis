@@ -1,6 +1,169 @@
-import Development.AutomorphicArithmetic.TwistedTraces.ExistsSignedOrthonormalBasisOfIsCompl
-import Development.AutomorphicArithmetic.TwistedTraces.TrFormDefiniteOnArchSkewArchHerm
+import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.CuspidalMultiplicityOneTotallyComplex
 
+section
+open MeasureTheory NumberField GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.RightCosetSpace
+open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum UpperTheory.ConvolutionTheory.C Polynomial Topology
+
+theorem UpperTheory.exists_signed_orthonormal_basis_of_isCompl :
+    ∀ (V : Type) [AddCommGroup V] [Module ℝ V] [FiniteDimensional ℝ V] (B : LinearMap.BilinForm ℝ V) (k p : Submodule ℝ V), IsCompl k p → (∀ X Y, B X Y = B Y X) → (∀ X ∈ k, X ≠ 0 → B X X < 0) → (∀ X ∈ p, X ≠ 0 → 0 < B X X) → (∀ X ∈ k, ∀ Y ∈ p, B X Y = 0) → ∃ (d : ℕ) (b : Module.Basis (Fin d) ℝ V) (ε : Fin d → ℝ), (∀ i, ε i = 1 ∨ ε i = -1) ∧ (∀ i j, B (b i) (b j) = if i = j then ε i else 0) ∧ ∀ i, ε i = -1 → b i ∈ k := by
+  intro V _ _ _ B k p hc hsymm hneg hpos hzero
+  classical
+  obtain ⟨bk, hbk⟩ := exists_signed_basis (B.restrict k)
+    (fun x y => hsymm (x : V) y) (s := -1)
+    (by norm_num) (fun v hv => by
+      have h0 : (v : V) ≠ 0 := fun e => hv (Subtype.ext e)
+      have := hneg v v.2 h0
+      change 0 < _ * B (v : V) v
+      linarith)
+  obtain ⟨bp, hbp⟩ := exists_signed_basis (B.restrict p)
+    (fun x y => hsymm (x : V) y) (s := 1)
+    (by norm_num) (fun v hv => by
+      have h0 : (v : V) ≠ 0 := fun e => hv (Subtype.ext e)
+      have := hpos v v.2 h0
+      change 0 < _ * B (v : V) v
+      linarith)
+  set e := Submodule.prodEquivOfIsCompl k p hc
+  set b0 := (bk.prod bp).map e
+  set f : Fin (Module.finrank ℝ k) ⊕ Fin (Module.finrank ℝ p) → V :=
+    Sum.elim (fun i => (bk i : V)) (fun j => (bp j : V))
+  have hb0 : ∀ x, b0 x = f x := by
+    rintro (i | j)
+    · simp [b0, e, f, Submodule.coe_prodEquivOfIsCompl']
+    · simp [b0, e, f, Submodule.coe_prodEquivOfIsCompl']
+  set ε0 : Fin (Module.finrank ℝ k) ⊕ Fin (Module.finrank ℝ p) → ℝ :=
+    Sum.elim (fun _ => -1) (fun _ => 1)
+  have horth : ∀ x y, B (b0 x) (b0 y) = if x = y then ε0 x else 0 := by
+    intro x y
+    rw [hb0, hb0]
+    rcases x with i | i <;> rcases y with j | j
+    · have := hbk i j
+      change B _ _ = _ at this
+      simp only [f, ε0, Sum.elim_inl, Sum.inl.injEq]
+      exact this
+    · simp only [f, ε0, Sum.elim_inl, Sum.elim_inr, reduceCtorEq, if_false]
+      exact hzero _ (bk i).2 _ (bp j).2
+    · simp only [f, ε0, Sum.elim_inl, Sum.elim_inr, reduceCtorEq, if_false]
+      rw [hsymm]
+      exact hzero _ (bk j).2 _ (bp i).2
+    · have := hbp i j
+      change B _ _ = _ at this
+      simp only [f, ε0, Sum.elim_inr, Sum.inr.injEq]
+      exact this
+  set σ := finSumFinEquiv (m := Module.finrank ℝ k) (n := Module.finrank ℝ p)
+  refine ⟨_, b0.reindex σ, ε0 ∘ σ.symm, fun i => ?_, fun i j => ?_, fun i hi => ?_⟩
+  · rcases hx : σ.symm i with a | a <;> simp [ε0, hx]
+  · rw [Module.Basis.reindex_apply, Module.Basis.reindex_apply, horth]
+    simp only [Function.comp_apply, σ.symm.injective.eq_iff]
+  · rw [Module.Basis.reindex_apply, hb0]
+    simp only [Function.comp_apply] at hi
+    rcases hx : σ.symm i with a | a
+    · simp only [f, Sum.elim_inl]
+      exact (bk a).2
+    · rw [hx] at hi
+      simp [ε0] at hi
+      norm_num at hi
+end
+
+section
+open MeasureTheory NumberField GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.RightCosetSpace
+open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum UpperTheory.ConvolutionTheory.C Polynomial Topology
+
+private theorem algebra_trace_pi_eq_sum_trace {R A ι : Type*} [CommRing R] [CommRing A] [Algebra R A] [Fintype ι]
+    [Module.Free R A] [Module.Finite R A] (x : ι → A) :
+    Algebra.trace R (ι → A) x = ∑ i, Algebra.trace R A (x i) := by
+  classical
+  let b := Module.Free.chooseBasis R A
+  rw [Algebra.trace_eq_matrix_trace (Pi.basis fun _ : ι => b), Matrix.trace, Fintype.sum_sigma]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [Algebra.trace_eq_matrix_trace b, Matrix.trace]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  simp [Algebra.leftMulMatrix_eq_repr_mul, Pi.basis_repr, Pi.basis_apply]
+
+theorem UpperTheory.trace_mixedSpace_eq_mixedTraceL_mul :
+    ∀ (K : Type) [Field K] [NumberField K] (x : NumberField.mixedEmbedding.mixedSpace K), Algebra.trace ℝ (NumberField.mixedEmbedding.mixedSpace K) x = mixedTraceL K (x * ((fun _ => (1 : ℝ)), (fun _ => (2 : ℂ)))) := by
+  classical
+  intro K _ _ x
+  rw [Algebra.trace_prod_apply, algebra_trace_pi_eq_sum_trace, algebra_trace_pi_eq_sum_trace]
+  simp [mixedTraceL, Algebra.trace_complex_apply, mul_comm]
+end
+
+section
+open MeasureTheory NumberField GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.RightCosetSpace
+open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum UpperTheory.ConvolutionTheory.C Polynomial Topology
+
+open scoped Classical in
+private theorem trace_mixedSpace_eq {K : Type} [Field K] [NumberField K]
+    (x : NumberField.mixedEmbedding.mixedSpace K) :
+    Algebra.trace ℝ (NumberField.mixedEmbedding.mixedSpace K) x =
+      mixedTraceL K x + ∑ v, (x.2 v).re := by
+  rw [UpperTheory.trace_mixedSpace_eq_mixedTraceL_mul, mixedTraceL_apply, mixedTraceL_apply]
+  simp only [Prod.fst_mul, Prod.snd_mul, Pi.mul_apply, mul_one, Complex.mul_re, Complex.re_ofNat,
+    Complex.im_ofNat, mul_zero, sub_zero, ← Finset.sum_mul]
+  ring
+
+open scoped Classical in
+private theorem trace_eq_zero_of_star_neg {K : Type} [Field K] [NumberField K]
+    (z : NumberField.mixedEmbedding.mixedSpace K) (hz : star z = -z) :
+    Algebra.trace ℝ (NumberField.mixedEmbedding.mixedSpace K) z = 0 := by
+  have h1 : mixedTraceL K (star z) = mixedTraceL K z := mixedTraceL_star z
+  rw [hz, map_neg] at h1
+  have h2 : ∑ v, (z.2 v).re = 0 := by
+    have h3 : ∀ v, (z.2 v).re = 0 := fun v => by
+      have h4 : star (z.2 v) = -(z.2 v) := congrFun (congrArg Prod.snd hz) v
+      have h5 := congrArg Complex.re h4
+      simp only [Complex.star_def, Complex.conj_re, Complex.neg_re] at h5
+      linarith
+    simp [h3]
+  rw [trace_mixedSpace_eq, h2]
+  linarith
+
+open scoped Classical in
+private theorem trace_conjTranspose_mul_pos {K : Type} [Field K] [NumberField K] {n : ℕ}
+    {A : Matrix (Fin n) (Fin n) (NumberField.mixedEmbedding.mixedSpace K)} (hA : A ≠ 0) :
+    0 < Algebra.trace ℝ (NumberField.mixedEmbedding.mixedSpace K)
+      (Matrix.trace (A.conjTranspose * A)) := by
+  rw [trace_mixedSpace_eq]
+  have h1 := mixedTraceL_trace_conjTranspose_mul_self_pos hA
+  have h2 : 0 ≤ ∑ v, ((Matrix.trace (A.conjTranspose * A)).2 v).re := by
+    refine Finset.sum_nonneg fun v _ => ?_
+    simp only [Matrix.trace, Matrix.diag_apply, Matrix.mul_apply, Matrix.conjTranspose_apply,
+      Prod.snd_sum, Finset.sum_apply, Complex.re_sum, Prod.snd_mul, Pi.mul_apply, Prod.snd_star,
+      Pi.star_apply]
+    refine Finset.sum_nonneg fun i _ => Finset.sum_nonneg fun j _ => ?_
+    rw [Complex.star_def, ← Complex.normSq_eq_conj_mul_self, Complex.ofReal_re]
+    exact Complex.normSq_nonneg _
+  linarith
+
+theorem UpperTheory.trForm_definite_on_archSkew_archHerm :
+    ∀ (K : Type) [Field K] [NumberField K] (n : ℕ), (∀ X ∈ archSkew K n, X ≠ 0 → trForm K n X X < 0) ∧ (∀ X ∈ archHerm K n, X ≠ 0 → 0 < trForm K n X X) ∧ (∀ X ∈ archSkew K n, ∀ Y ∈ archHerm K n, trForm K n X Y = 0) := by
+  intro K _ _ n
+  refine ⟨fun X hX h0 => ?_, fun X hX h0 => ?_, fun X hX Y hY => ?_⟩
+  · rw [mem_archSkew] at hX
+    have hX0 : mat (X : ArchMatrix K n) ≠ 0 := fun e => h0 (Subtype.ext (mat_injective e))
+    have e : mat (X : ArchMatrix K n) * mat (X : ArchMatrix K n) =
+        -((mat (X : ArchMatrix K n)).conjTranspose * mat (X : ArchMatrix K n)) := by
+      rw [hX, Matrix.neg_mul, neg_neg]
+    have h := trace_conjTranspose_mul_pos hX0
+    have h2 : trForm K n X X = Algebra.trace ℝ (NumberField.mixedEmbedding.mixedSpace K)
+        (Matrix.trace (mat (X : ArchMatrix K n) * mat (X : ArchMatrix K n))) := rfl
+    rw [h2, e, Matrix.trace_neg, map_neg]
+    linarith
+  · rw [mem_archHerm] at hX
+    have hX0 : mat (X : ArchMatrix K n) ≠ 0 := fun e => h0 (Subtype.ext (mat_injective e))
+    have h := trace_conjTranspose_mul_pos hX0
+    rw [hX] at h
+    exact h
+  · rw [mem_archSkew] at hX
+    rw [mem_archHerm] at hY
+    have h2 : trForm K n X Y = Algebra.trace ℝ (NumberField.mixedEmbedding.mixedSpace K)
+        (Matrix.trace (mat (X : ArchMatrix K n) * mat (Y : ArchMatrix K n))) := rfl
+    rw [h2]
+    refine trace_eq_zero_of_star_neg _ ?_
+    rw [← Matrix.trace_conjTranspose, Matrix.conjTranspose_mul, hX, hY, Matrix.mul_neg,
+      Matrix.trace_neg, Matrix.trace_mul_comm]
+end
+
+section
 open MeasureTheory NumberField GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.RightCosetSpace
 open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum UpperTheory.ConvolutionTheory.C Polynomial Topology
 
@@ -36,3 +199,4 @@ theorem UpperTheory.exists_signed_basis_lieSubalgebra_exp_compact :
   rw [mem_archSkew] at h
   show Matrix.conjTranspose (t • mat (b i : ArchMatrix K n)) = -(t • mat (b i : ArchMatrix K n))
   rw [Matrix.conjTranspose_smul, star_trivial, h, smul_neg]
+end

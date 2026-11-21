@@ -299,16 +299,6 @@ theorem germ_pullOn (a : ChartPull B' B φ) (w : φ ≫ p = p' ≫ spMap σ)
         ((chartPullOn a hψ).le j hj) g) :=
   germ_pullChart _ _ _ g j z _ hj
 
-theorem resTo_pullChart (a : ChartPull B' B φ) (w : φ ≫ p = p' ≫ spMap σ)
-    (hψ : ψ ≫ I.subschemeι = I'.subschemeι ≫ φ) (h : W ≤ φ ⁻¹ᵁ O) (hO : SuppIn O I)
-    (hW : SuppIn W I') (f : H0 p B O) :
-    resTo hW (pullChart a w h f) = pullOn a w hψ (resTo hO f) :=
-  LB.sec_ext fun j => fun_ext_ger fun z hz => by
-    change germ j z (Opens.mem_top z) hz.2 _ = germ j z (Opens.mem_top z) hz.2 _
-    rw [germ_resTo, germ_pullChart, germ_pullOn]
-    refine Eq.trans ?_ (congrArg (ψ.stalkMap z).hom (germ_resTo hO (fun _ => a.idx (j PUnit.unit))
-      (ψ z) ((chartPullOn a hψ).le j hz.2) f)).symm
-    exact (stalkMap_square hψ z _ _ (f.loc (a.idx (j PUnit.unit)))).symm
 
 end On
 
@@ -381,13 +371,6 @@ variable {D : ℕ} [SmoothOfRelativeDimension D p] [SmoothOfRelativeDimension D 
 abbrev chartPullCanon : ChartPull (K.baseChange H).bundle K.bundle φ :=
   GlobalTheory.chartPullPull K.bundle φ
 
-theorem jacFun_baseChange (i : (K.baseChange H).bundle.ι) (j : L'.ι) :
-    (K.baseChange H).jacFun (fun t => chartSec l (s t)) i j =
-      (φ.appLE (K.bundle.U (i PUnit.unit) ⊓ L.U (l.idx j)) _
-        (inf_le_inf (pull_U_le φ i) (l.le j))).hom (K.jacFun s (i PUnit.unit) (l.idx j)) := by
-  refine Eq.trans (congrArg ((K.baseChange H).jacobian i inf_le_left) (funext fun t => ?_))
-    (K.jacobian_baseChange H i inf_le_left inf_le_left _ _)
-  exact (resG_appLE φ _ _ _).trans (LB.appLE_resG φ _ _ _).symm
 
 abbrev pullQuotSec (e : (LB.div A (tw B L D)).Sec) : (LB.div A' (tw B' L' D)).Sec :=
   chartSec (chartPullQuot a (chartPullTwist b l D)) e
@@ -410,46 +393,11 @@ variable (hS : Etale ((cutIdeal hL s).subschemeι ≫ p))
   {ψ : (cutIdeal hL' fun t => chartSec l (s t)).subscheme ⟶ (cutIdeal hL s).subscheme}
   (hψ : ψ ≫ (cutIdeal hL s).subschemeι = (cutIdeal hL' fun t => chartSec l (s t)).subschemeι ≫ φ)
 
-theorem mulEDs_pullOn (n : ℤ) (g : sectionsOnClosedSubscheme p (tw B L n) (cutIdeal hL s)) :
-    mulEDs (K.baseChange H) hL' hA' hB' _ hS' n _ he' (pullOn (chartPullTwist b l n) H.w hψ g) =
-      pullOn (chartPullTwist (chartPullTens (chartPullCanon H K) a) l n) H.w hψ
-        (mulEDs K hL hA hB s hS n e he g) :=
-  ext_germ fun z _ => by
-    obtain ⟨⟨i, c, d, j⟩, ⟨hc, -⟩, h', -⟩ := (quotChart (K.baseChange H).isLB hA' hB' hL' (n := n)
-      (d := 0) rfl).cover ((cutIdeal hL' fun t => chartSec l (s t)).subschemeι z)
-    obtain ⟨⟨hi, hd⟩, hj⟩ := mem_tw_U.1 h'
-    have q := pt_square hψ z
-    refine ⟨_, _, (germ_mulEDs _ hL' hA' hB' _ hS' _ he' _ z i c d j hi hc hd hj).trans ?_⟩
-    refine Eq.trans ?_ (germ_pullOn _ _ _ _ _ _ _).symm
-    refine Eq.trans ?_ (congrArg (ψ.stalkMap z).hom (germ_mulEDs K hL hA hB s hS e he g (ψ z)
-      (i PUnit.unit) (a.idx c) (b.idx d) (l.idx j) (q.symm ▸ pull_U_le φ i hi) (q.symm ▸ a.le c hc)
-      (q.symm ▸ b.le d hd) (q.symm ▸ l.le j hj))).symm
-    simp only [map_mul]
-    refine congrArg₂ (· * ·) (congrArg₂ (· * ·) ?_ ?_) (germ_pullOn _ _ _ _ _ _ _)
-    · exact (congrArg _ (ger_appLE φ _ _ _ _)).trans (stalkMap_square hψ z _ _ _).symm
-    · rw [jacFun_baseChange]
-      exact (congrArg _ (ger_appLE φ _ _ _ _)).trans (stalkMap_square hψ z _ _ _).symm
 
 variable {O : Y.Opens} {W : Y'.Opens} (hW : W ≤ φ ⁻¹ᵁ O) (hO : SuppIn O (cutIdeal hL s))
   (hO' : SuppIn W (cutIdeal hL' fun t => chartSec l (s t)))
 
-theorem Res_pullChart (n : ℤ) (m : H0 p (tw (tens K.bundle A) L n) O) :
-    Res (K.baseChange H) hL' hA' hB' _ hS' n _ he' hO'
-        (pullChart (chartPullTwist (chartPullTens (chartPullCanon H K) a) l n) H.w hW m) =
-      pullOn (chartPullTwist b l n) H.w hψ (Res K hL hA hB s hS n e he hO m) := by
-  rw [Res_eq_iff, mulEDs_pullOn H K l a b s hL hA hB hL' hA' hB' e hS hS' he he' hψ, mulEDs_Res,
-    resTo_pullChart _ _ hψ hW hO]
 
-theorem sym_pullChart {n d : ℤ} {r : ℕ} (h : n + r = d)
-    {V : Submodule k (H0 p (tw (tens K.bundle A) L d) O)}
-    {V' : Submodule k' (H0 p' (tw (tens (K.baseChange H).bundle A') L' d) W)}
-    (f : Fil (cutIdeal hL s) r V) (f' : Fil (cutIdeal hL' fun t => chartSec l (s t)) r V')
-    (hf : f'.1 = pullChart (chartPullTwist (chartPullTens (chartPullCanon H K) a) l d) H.w hW f.1) :
-    sym (K.baseChange H) hL' hA' hB' _ hS' _ he' hO' h V' f' =
-      fun α => pullOn (chartPullTwist b l n) H.w hψ (sym K hL hA hB s hS e he hO h V f α) := by
-  rw [sym_eq_iff, HasSymbol, hf]
-  simp only [mulEDs_pullOn H K l a b s hL hA hB hL' hA' hB' e hS hS' he he' hψ]
-  exact HasLead.pullChart _ l H.w hψ hW hO' ((sym_eq_iff K hL hA hB s hS e he hO h f _).1 rfl)
 
 end Symbol
 
@@ -479,24 +427,8 @@ section Order
 
 variable {ι : Type} (s : ι → L.Sec) {B : LB Y} {B' : LB Y'} {O : Y.Opens} {n : ℕ}
 
-theorem vanishesTo_baseChange_iff (hB' : B'.IsLB) (a : ChartPull B' B φ) (f : H0 p B O) :
-    VanishesTo (cutIdealPull φ hL s) n (pullChart a H.w le_rfl f) ↔
-      VanishesTo (cutIdeal hL s) n f :=
-  have := flat_of_isPullback H
-  have := surjective_of_isPullback H
-  vanishesTo_pullChart_iff_of_flat (stalkId_cutIdeal_secPull hL s) hB' a H.w f
 
-theorem Fil_baseChange (hB' : B'.IsLB) (a : ChartPull B' B φ) (V : Submodule E (H0 p B O)) :
-    Fil (cutIdealPull φ hL s) n (Submodule.span E' (pullChart (O := O) a H.w le_rfl '' V)) =
-      Submodule.span E' (pullChart (O := O) a H.w le_rfl '' Fil (cutIdeal hL s) n V) :=
-  letI := σ.toAlgebra
-  Fil_span_pullChart_of_free (stalkId_cutIdeal_secPull hL s) H hB' a V
 
-theorem pullChart_mem_Fil (a : ChartPull B' B φ) {V : Submodule E (H0 p B O)}
-    (f : Fil (cutIdeal hL s) n V) : pullChart a H.w le_rfl f.1 ∈
-      Fil (cutIdealPull φ hL s) n (Submodule.span E' (pullChart (O := O) a H.w le_rfl '' V)) :=
-  ⟨Submodule.subset_span ⟨f.1, f.2.1, rfl⟩,
-    VanishesTo.pullChart f.2.2 a H.w le_rfl fun z => (stalkId_cutIdeal_secPull hL s z).ge⟩
 
 end Order
 
@@ -515,67 +447,9 @@ abbrev pullCut {ι : Type} (s : ι → L.Sec) (n : ℤ) : sectionsOnClosedSubsch
     sectionsOnClosedSubscheme p' (tw B' (L.pull φ) n) (cutIdealPull φ hL s) :=
   pullOn (chartPullTwist b (GlobalTheory.chartPullPull L φ) n) H.w (cutMap_ι φ hL s)
 
-theorem Res_baseChange (n : ℤ) (m : H0 p (tw (tens K.bundle A) L n) O) :
-    Res (K.baseChange H) (LB.isLB_pull hL φ) hA' hB' (fun i => secPull (s i) φ)
-        (etale_baseChange H (stalkId_cutIdeal_secPull hL s) hS) n
-        (pullQuotSec (GlobalTheory.chartPullPull L φ) a b e)
-        (suppIn_pullQuotSec _ a b s hL _ hA' hB' e he)
-        (hO.preimage (stalkId_cutIdeal_secPull hL s)) (pullAdj H K a n m) =
-      pullCut H hL b s n (Res K hL hA hB s hS n e he hO m) :=
-  Res_pullChart H K _ a b s hL hA hB _ hA' hB' e hS _ he _ (cutMap_ι φ hL s) le_rfl hO _ n m
 
-theorem sym_baseChange {n d : ℤ} {r : ℕ} (h : n + r = d)
-    (V : Submodule E (H0 p (tw (tens K.bundle A) L d) O)) (f : Fil (cutIdeal hL s) r V) :
-    sym (K.baseChange H) (LB.isLB_pull hL φ) hA' hB' (fun i => secPull (s i) φ)
-        (etale_baseChange H (stalkId_cutIdeal_secPull hL s) hS)
-        (pullQuotSec (GlobalTheory.chartPullPull L φ) a b e)
-        (suppIn_pullQuotSec _ a b s hL _ hA' hB' e he)
-        (hO.preimage (stalkId_cutIdeal_secPull hL s)) h
-        (Submodule.span E' (pullAdj H K a d '' V)) ⟨pullAdj H K a d f.1, pullChart_mem_Fil H hL s _ f⟩ =
-      fun α => pullCut H hL b s n (sym K hL hA hB s hS e he hO h V f α) :=
-  sym_pullChart H K _ a b s hL hA hB _ hA' hB' e hS _ he _ (cutMap_ι φ hL s) le_rfl hO _ h f _ rfl
 
 end Field
 
-theorem vanishing_baseChange {E E' : Type} [Field E] [Field E'] {σ : E →+* E'} {p : Y ⟶ Sp E}
-    {p' : Y' ⟶ Sp E'} (H : IsPullback φ p' p (spMap σ)) {L : LB Y} (hL : L.IsLB) :
-    (∀ {ι : Type} (s : ι → L.Sec),
-      (∀ z, stalkId (cutIdealPull φ hL s) z =
-        (stalkId (cutIdeal hL s) (φ z)).map (φ.stalkMap z).hom) ∧
-      ∀ {B : LB Y} {B' : LB Y'}, B'.IsLB → ∀ (a : ChartPull B' B φ) (O : Y.Opens) (n : ℕ),
-        (∀ f : H0 p B O, VanishesTo (cutIdealPull φ hL s) n (pullChart a H.w le_rfl f) ↔
-          VanishesTo (cutIdeal hL s) n f) ∧
-        ∀ V : Submodule E (H0 p B O),
-          Fil (cutIdealPull φ hL s) n (Submodule.span E' (pullChart (O := O) a H.w le_rfl '' V)) =
-            Submodule.span E' (pullChart (O := O) a H.w le_rfl '' Fil (cutIdeal hL s) n V)) ∧
-    ∀ {D : ℕ} [SmoothOfRelativeDimension D p] (K : CanonLB p D) {A B : LB Y} {A' B' : LB Y'}
-      (hA : A.IsLB) (hB : B.IsLB) (hA' : A'.IsLB) (hB' : B'.IsLB) (a : ChartPull A' A φ)
-      (b : ChartPull B' B φ) (s : Fin D → L.Sec) (hS : Etale ((cutIdeal hL s).subschemeι ≫ p))
-      (e : (LB.div A (tw B L D)).Sec) (he : SuppIn (nonzeroLocus e) (cutIdeal hL s)) {O : Y.Opens}
-      (hO : SuppIn O (cutIdeal hL s)),
-      haveI := smooth_baseChange H D
-      (∀ (n : ℤ) (m : H0 p (tw (tens K.bundle A) L n) O),
-        Res (K.baseChange H) (LB.isLB_pull hL φ) hA' hB' (fun i => secPull (s i) φ)
-            (etale_baseChange H (stalkId_cutIdeal_secPull hL s) hS) n
-            (pullQuotSec (GlobalTheory.chartPullPull L φ) a b e)
-            (suppIn_pullQuotSec _ a b s hL _ hA' hB' e he)
-            (hO.preimage (stalkId_cutIdeal_secPull hL s)) (pullAdj H K a n m) =
-          pullCut H hL b s n (Res K hL hA hB s hS n e he hO m)) ∧
-      ∀ {n d : ℤ} {r : ℕ} (h : n + r = d) (V : Submodule E (H0 p (tw (tens K.bundle A) L d) O))
-        (f : Fil (cutIdeal hL s) r V),
-        sym (K.baseChange H) (LB.isLB_pull hL φ) hA' hB' (fun i => secPull (s i) φ)
-            (etale_baseChange H (stalkId_cutIdeal_secPull hL s) hS)
-            (pullQuotSec (GlobalTheory.chartPullPull L φ) a b e)
-            (suppIn_pullQuotSec _ a b s hL _ hA' hB' e he)
-            (hO.preimage (stalkId_cutIdeal_secPull hL s)) h
-            (Submodule.span E' (pullAdj H K a d '' V))
-            ⟨pullAdj H K a d f.1, pullChart_mem_Fil H hL s _ f⟩ =
-          fun α => pullCut H hL b s n (sym K hL hA hB s hS e he hO h V f α) :=
-  ⟨fun s => ⟨stalkId_cutIdeal_secPull hL s, fun hB' a _ _ =>
-      ⟨vanishesTo_baseChange_iff H hL s hB' a, Fil_baseChange H hL s hB' a⟩⟩,
-    fun {D} _ K _ _ _ _ hA hB hA' hB' a b s hS e he _ hO =>
-      haveI := smooth_baseChange H D
-      ⟨Res_baseChange H hL K hA hB hA' hB' a b s hS e he hO,
-        sym_baseChange H hL K hA hB hA' hB' a b s hS e he hO⟩⟩
 
 end GlobalTheory.Vanishing

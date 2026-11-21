@@ -194,10 +194,5 @@ namespace GlobalTheory.CompanionTheory.Ar
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
 
-theorem exists_lieModel_line :
-    ∃ (G : Over (Spec (CommRingCat.of ℤ))) (_ : GrpObj G) (_ : IsCommMonObj G),
-      SmoothOfRelativeDimension 1 G.hom ∧ ∀ (R : Type) [CommRing R]
-        (x : Spec (CommRingCat.of R) ⟶ Spec (CommRingCat.of ℤ)), Nonempty (LieModel G x R) := by
-  exact ⟨LieInh.gaObj _, inferInstance, inferInstance, LieInh.smooth_affineSpace _ 1, fun R _ x => ⟨LieInh.gaLie x⟩⟩
 
 end GlobalTheory.CompanionTheory.Ar

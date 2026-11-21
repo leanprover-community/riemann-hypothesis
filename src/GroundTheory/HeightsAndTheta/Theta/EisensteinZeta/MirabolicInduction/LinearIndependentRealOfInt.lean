@@ -413,10 +413,6 @@ theorem exists_short_generators {lam : ℝ} (hlam : 0 < lam) (C : ℝ) :
   exact Finset.single_le_sum (f := fun n => |Rf n|) (fun i _ => abs_nonneg _)
     (Finset.mem_range.2 (Nat.lt_succ_of_le hn))
 
-theorem exists_det_gram_lower {lam : ℝ} (hlam : 0 < lam) (n : ℕ) :
-    ∃ g : ℝ, 0 < g ∧ ∀ b : Fin n → W, LinearIndependent ℝ b →
-      Sep (span ℤ (Set.range b)) lam → g ≤ (gram ℝ b).det :=
-  (bounds n).1 lam hlam
 
 end
 

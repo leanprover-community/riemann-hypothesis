@@ -303,34 +303,7 @@ theorem hasSum_integral_conj_isConj (f : CompactlySupportedContinuousMap G ℂ) 
 def conjClassRep {α : Type*} [Monoid α] (c : ConjClasses α) : α :=
   (ConjClasses.exists_rep c).choose
 
-theorem mk_conjClassRep {α : Type*} [Monoid α] (c : ConjClasses α) :
-    ConjClasses.mk (conjClassRep c) = c :=
-  (ConjClasses.exists_rep c).choose_spec
 
-theorem hasSum_orbitalIntegral (f : CompactlySupportedContinuousMap G ℂ)
-    (hf : IsTraceClass ((rightRegularRep Γ μ).integrated μ (UnitaryRep.ccToL1 μ f))) :
-    HasSum (fun c : ConjClasses Γ =>
-        ∫ x, conjOrbitFun (centralizerIn Γ ((conjClassRep c : Γ) : G))
-          (centralizerIn_le_centralizer Γ _) f x
-          ∂quotientMeasure (centralizerIn Γ ((conjClassRep c : Γ) : G)) μ)
-      (trace ((rightRegularRep Γ μ).integrated μ (UnitaryRep.ccToL1 μ f))) := by
-  have h := hasSum_integral_conj Γ μ f hf
-  rw [← (Equiv.sigmaFiberEquiv (ConjClasses.mk : Γ → ConjClasses Γ)).hasSum_iff] at h
-  refine h.sigma fun c => ?_
-  let e : {γ' : Γ // IsConj (conjClassRep c) γ'} ≃ {γ' : Γ // ConjClasses.mk γ' = c} :=
-    Equiv.subtypeEquivRight fun γ' => by
-      have hc := mk_conjClassRep c
-      constructor
-      · intro h'
-        rw [← hc]
-        exact ConjClasses.mk_eq_mk_iff_isConj.2 (isConj_comm.1 h')
-      · intro h'
-        rw [← hc] at h'
-        exact isConj_comm.1 (ConjClasses.mk_eq_mk_iff_isConj.1 h')
-  have h2 := hasSum_integral_conj_isConj Γ μ f (conjClassRep c)
-  rw [← e.symm.hasSum_iff] at h2
-  convert h2 using 1
-  all_goals rfl
 
 end Geometric
 

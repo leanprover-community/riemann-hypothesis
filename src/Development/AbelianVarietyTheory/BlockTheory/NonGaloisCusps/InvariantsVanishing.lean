@@ -38,10 +38,6 @@ def Concl [NeZero n] : Prop :=
     TensIso Γ.T₀.L Γ.χ₁ X ∧
       adm PD emb Γ D.t D.Ut Γ.W₀ X = (finiteSelmer PD Γ.T₀.L Γ.χ₁ X : Set _)
 
-theorem invariants_eq_bot_iff :
-    (resRep Γ).invariants = ⊥ ↔ ∀ x, (∀ g, resRep Γ g x = x) → x = 0 := by
-  rw [Submodule.eq_bot_iff]
-  exact Iff.rfl
 
 example (x : resK Γ) : Γ.lam ^ 1 • x = 0 := by
   obtain ⟨y, rfl⟩ := Ideal.Quotient.mk_surjective x

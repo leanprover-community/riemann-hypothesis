@@ -78,45 +78,6 @@ theorem gs_gsD_of_diaMul (h : Formalism.MainNotions.product_first_zeroth_parts.D
     Fintype.sum_eq_single 1 (fun c hc => by simp [hc])]
   simp only [if_true, mul_one, h1, (D.mem u).A.card_Fv v, Formalism.MainNotions.product_first_zeroth_parts.Nm, LinearMap.sum_apply]
 
-theorem ffAll_iso_of (i : ℕ)
-    (hc : ∀ v, ∀ φ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i, Formalism.MainNotions.product_first_zeroth_parts.FFop D u i v φ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i)
-    (hd : ∀ v, ∀ φ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i, ∀ ψ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i,
-      (D.fm u).ipC i (Formalism.MainNotions.product_first_zeroth_parts.FFop D u i v φ) (Formalism.MainNotions.product_first_zeroth_parts.FFop D u i v ψ) =
-        ((D.mem u).A.T : ℂ) ^ D.R.N i * (D.fm u).ipC i φ ψ) :
-    ∀ φ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i, ∀ ψ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i,
-      (D.fm u).ipC i (Formalism.MainNotions.product_first_zeroth_parts.FFall D u i φ) (Formalism.MainNotions.product_first_zeroth_parts.FFall D u i ψ) =
-        ((D.mem u).A.T : ℂ) ^ (D.R.f * D.R.N i) * (D.fm u).ipC i φ ψ := by
-  have key : ∀ l : List (D.mem u).A.vT, ∀ φ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i, ∀ ψ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i,
-      (l.foldr (fun v g => (Formalism.MainNotions.product_first_zeroth_parts.FFop D u i v).comp g) LinearMap.id) φ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i ∧
-      (D.fm u).ipC i ((l.foldr (fun v g => (Formalism.MainNotions.product_first_zeroth_parts.FFop D u i v).comp g) LinearMap.id) φ)
-          ((l.foldr (fun v g => (Formalism.MainNotions.product_first_zeroth_parts.FFop D u i v).comp g) LinearMap.id) ψ) =
-        ((D.mem u).A.T : ℂ) ^ (l.length * D.R.N i) * (D.fm u).ipC i φ ψ := by
-    intro l
-    induction l with
-    | nil => intro φ hφ ψ _; simp [hφ]
-    | cons v l ih =>
-      intro φ hφ ψ hψ
-      obtain ⟨h1, h2⟩ := ih φ hφ ψ hψ
-      obtain ⟨h3, _⟩ := ih ψ hψ ψ hψ
-      refine ⟨?_, ?_⟩
-      · simp only [List.foldr_cons, LinearMap.comp_apply]; exact hc v _ h1
-      · simp only [List.foldr_cons, LinearMap.comp_apply, List.length_cons]
-        rw [hd v _ h1 _ h3, h2, ← mul_assoc, ← pow_add]
-        congr 2; ring
-  intro φ hφ ψ hψ
-  have := (key (Finset.univ : Finset (D.mem u).A.vT).toList φ hφ ψ hψ).2
-  rw [Finset.length_toList, Finset.card_univ, (D.mem u).A.card_vT] at this
-  exact this
 
-theorem frobenius_identities_no_kernel_of_clauses
-    (h7a : ∀ i, i ≤ D.R.m → ∀ v, ∀ φ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i,
-      Formalism.MainNotions.product_first_zeroth_parts.FFop D u i v φ = Formalism.MainNotions.product_first_zeroth_parts.Dop D u i v (Formalism.MainNotions.product_first_zeroth_parts.Gs D u i v φ))
-    (h7c : ∀ i, i ≤ D.R.m → ∀ v, ∀ φ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i, Formalism.MainNotions.product_first_zeroth_parts.FFop D u i v φ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i)
-    (h7d : ∀ i, i ≤ D.R.m → ∀ v, ∀ φ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i, ∀ ψ ∈ Formalism.MainNotions.product_first_zeroth_parts.MramI D u i,
-      (D.fm u).ipC i (Formalism.MainNotions.product_first_zeroth_parts.FFop D u i v φ) (Formalism.MainNotions.product_first_zeroth_parts.FFop D u i v ψ) =
-        ((D.mem u).A.T : ℂ) ^ D.R.N i * (D.fm u).ipC i φ ψ)
-    (hD : Formalism.MainNotions.product_first_zeroth_parts.DiaMul D u) : FrobeniusOperatorRelations D u :=
-  ⟨h7a, gs_gsD_of_diaMul D u hD, h7c, h7d,
-    fun i hi => ffAll_iso_of D u i (h7c i hi) (h7d i hi)⟩
 
 end Formalism.L2.GlobalTheoryTheory.LocalLatticeBases

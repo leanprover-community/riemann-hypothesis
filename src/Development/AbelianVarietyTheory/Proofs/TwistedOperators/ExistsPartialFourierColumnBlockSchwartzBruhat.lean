@@ -1,8 +1,377 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PartialColumnFourierMemSchwartzBruhat
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PartialColumnFourierInversionSchwartzBruhat
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PartialColumnFourierEqFiniteFourierSumDepth
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MeasurePreservingPiCurry
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.PartialFourierInversion
 
+section
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.SplitFlip GlobalTheory.ColFourier
+open scoped Topology
+
+noncomputable section
+namespace GlobalTheory.ColFourier
+
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+  {A C : Type} [Fintype A] [DecidableEq C]
+
+omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [Fintype A] in
+
+theorem setCols_eq_add_offBlock (P : Finset C) (Y Y' : Matrix A C k) (T : Matrix A P k) :
+    setCols P Y' T = setCols P Y T + setCols P (Y' - Y) 0 := by
+  ext i j; by_cases h : j ∈ P <;> simp [setCols, h]
+
+omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [Fintype A] in
+
+theorem setCols_of_add (P : Finset C) (Y : Matrix A C k) (x t : (Σ _ : A, P) → k) :
+    setCols P Y (Matrix.of fun i j => (x + t) ⟨i, j⟩) =
+      setCols P Y (Matrix.of fun i j => x ⟨i, j⟩) + setCols P 0 (Matrix.of fun i j => t ⟨i, j⟩) := by
+  ext i j; by_cases h : j ∈ P <;> simp [setCols, h]
+
+omit [ValuativeRel k] [IsNonarchimedeanLocalField k] [Fintype A] in
+theorem continuous_setCols_left (P : Finset C) (T : Matrix A P k) :
+    Continuous fun Y : Matrix A C k => setCols P Y T := by
+  refine continuous_pi fun i => continuous_pi fun j => ?_
+  by_cases h : j ∈ P
+  · simp only [setCols, of_apply, dif_pos h]; exact continuous_const
+  · simp only [setCols, of_apply, dif_neg h]
+    exact continuous_id.matrix_elem i j
+
+omit [ValuativeRel k] [IsNonarchimedeanLocalField k] [Fintype A] in
+theorem continuous_setCols_pair (P : Finset C) :
+    Continuous fun q : Matrix A C k × ((Σ _ : A, P) → k) =>
+      setCols P q.1 (Matrix.of fun i j => q.2 ⟨i, j⟩) := by
+  refine continuous_pi fun i => continuous_pi fun j => ?_
+  by_cases h : j ∈ P
+  · simp only [setCols, of_apply, dif_pos h]
+    exact (continuous_apply (⟨i, ⟨j, h⟩⟩ : (Σ _ : A, P))).comp continuous_snd
+  · simp only [setCols, of_apply, dif_neg h]
+    exact continuous_fst.matrix_elem i j
+
+omit [DecidableEq C] in
+theorem continuous_pairCols_pair (P : Finset C) :
+    Continuous fun q : Matrix A C k × Matrix A P k => pairCols P q.1 q.2 := by
+  unfold pairCols
+  refine continuous_finset_sum _ fun i _ => continuous_finset_sum _ fun j _ => ?_
+  exact (continuous_snd.matrix_elem i j).mul (continuous_fst.matrix_elem i (j : C))
+
+end GlobalTheory.ColFourier
+
+theorem GlobalTheory.ColFourier.fourierInt_mem_SB : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (A C : Type) [Fintype A] [DecidableEq A] [DecidableEq C] (ψ : AddChar k Circle) (m : Measure k), HasConductor ψ 1 → IsUnitVol m → ∀ (P : Finset C), ∀ Ξ ∈ SB (Matrix A C k), fourierInt ψ m P Ξ ∈ SB (Matrix A C k) := by
+  intro k _ _ _ _ _ _ A C _ _ _ ψ m hψ hm P Ξ hΞ
+  haveI := secondCountable k
+  haveI := t2Space k
+  haveI := hm.1
+  have hinv := GlobalTheory.LocFlat.PartialFourier.eventually_add_invariant hΞ
+  refine ⟨(IsLocallyConstant.iff_eventually_eq _).mpr fun Y => ?_, ?_⟩
+  · have hK : IsCompact (restrictCols P '' tsupport Ξ) := hΞ.2.image (continuous_restrictCols P)
+    have h1 : ∀ᶠ Y' in 𝓝 Y, ∀ X, Ξ (X + setCols P (Y' - Y) 0) = Ξ X := by
+      have hc : Continuous (fun Y' : Matrix A C k => setCols P (Y' - Y) 0) :=
+        (continuous_setCols_left P 0).comp (continuous_id.sub continuous_const)
+      have h0 : setCols P (Y - Y) (0 : Matrix A P k) = 0 := by
+        ext i j; by_cases h : j ∈ P <;> simp [setCols, h]
+      have ht : Filter.Tendsto (fun Y' : Matrix A C k => setCols P (Y' - Y) 0) (𝓝 Y) (𝓝 0) := by
+        convert hc.tendsto Y using 2
+        exact h0.symm
+      exact ht.eventually hinv
+    have h2 : ∀ᶠ Y' in 𝓝 Y, ∀ T ∈ restrictCols P '' tsupport Ξ,
+        ψ (pairCols P Y' T) = ψ (pairCols P Y T) := by
+      refine hK.eventually_forall_of_forall_eventually fun T _ => ?_
+      have h3 : IsLocallyConstant fun q : Matrix A C k × Matrix A P k =>
+          (ψ (pairCols P q.1 q.2), ψ (pairCols P Y q.2)) :=
+        (hψ.isLocallyConstant.comp_continuous (continuous_pairCols_pair P)).prodMk
+          (hψ.isLocallyConstant.comp_continuous
+            ((continuous_pairCols_pair P).comp (continuous_const.prodMk continuous_snd)))
+      filter_upwards [h3.eventually_eq (Y, T)] with q hq
+      simp only [Prod.mk.injEq] at hq
+      rw [hq.1, hq.2]
+    filter_upwards [h1, h2] with Y' hY1 hY2
+    unfold fourierInt
+    congr 1
+    funext T
+    rw [setCols_eq_add_offBlock P Y Y' T, hY1]
+    by_cases hT : setCols P Y T ∈ tsupport Ξ
+    · rw [hY2 T ⟨_, hT, restrictCols_setCols P Y T⟩]
+    · simp [image_eq_zero_of_notMem_tsupport hT]
+  · have hc : Continuous fun t : (Σ _ : A, P) → k =>
+        setCols P (0 : Matrix A C k) (Matrix.of fun i j => t ⟨i, j⟩) :=
+      (continuous_setCols_pair P).comp (continuous_const.prodMk continuous_id)
+    have h0 : setCols P (0 : Matrix A C k) (Matrix.of fun i j => (0 : (Σ _ : A, P) → k) ⟨i, j⟩) = 0 := by
+      ext i j; by_cases h : j ∈ P <;> simp [setCols, h]
+    have hU : {Z : Matrix A C k | ∀ X, Ξ (X + Z) = Ξ X} ∈
+        𝓝 (setCols P (0 : Matrix A C k) (Matrix.of fun i j => (0 : (Σ _ : A, P) → k) ⟨i, j⟩)) := by
+      rw [h0]; exact hinv
+    obtain ⟨s, hs⟩ := FourierPi.exists_box_subset (hc.continuousAt.preimage_mem_nhds hU)
+    refine HasCompactSupport.intro ((hΞ.2.prod (FourierPi.isCompact_box (1 * s⁻¹))).image
+      (continuous_setCols_pair P)) fun Y hY => ?_
+    rw [fourierInt_eq_pi]
+    by_cases hy : (fun p : (Σ _ : A, P) => Y p.1 p.2) ∈ FourierPi.box (Σ _ : A, P) (1 * s⁻¹)
+    · refine integral_eq_zero_of_ae (Filter.Eventually.of_forall fun x => ?_)
+      have hback : setCols P (setCols P Y (Matrix.of fun i j => x ⟨i, j⟩))
+          (Matrix.of fun i j => (fun p : (Σ _ : A, P) => Y p.1 p.2) ⟨i, j⟩) = Y := by
+        ext i j; by_cases h : j ∈ P <;> simp [setCols, h]
+      have hX : setCols P Y (Matrix.of fun i j => x ⟨i, j⟩) ∉ tsupport Ξ := fun hX =>
+        hY ⟨(_, fun p => Y p.1 p.2), ⟨hX, hy⟩, hback⟩
+      simp [image_eq_zero_of_notMem_tsupport hX]
+    · refine FourierPi.fourier_eq_zero_pi (Measure.pi fun _ : (Σ _ : A, P) => m) hψ (s := s)
+        (f := fun x => Ξ (setCols P Y (Matrix.of fun i j => x ⟨i, j⟩))) (fun t ht x => ?_) hy
+      show Ξ (setCols P Y (Matrix.of fun i j => (x + t) ⟨i, j⟩)) = Ξ (setCols P Y (Matrix.of fun i j => x ⟨i, j⟩))
+      rw [setCols_of_add]
+      exact hs ht _
+end
+end
+
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.SplitFlip GlobalTheory.ColFourier
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.partialColumnFourier_mem_schwartzBruhat : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (A C : Type) [Fintype A] [DecidableEq A] [DecidableEq C] (ψ : AddChar k Circle) (m : Measure k), HasConductor ψ 1 → IsUnitVol m → ∀ (P : Finset C), ∀ Ξ ∈ SB (Matrix A C k), fourierInt ψ m P Ξ ∈ SB (Matrix A C k) := by
+  atlas_forward_decl GlobalTheory.ColFourier.fourierInt_mem_SB
+end
+
+section
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.SplitFlip GlobalTheory.ColFourier
+
+noncomputable section
+namespace GlobalTheory.ColFourier
+
+theorem fourier_pi_inversion_at {k : Type*} [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] {n : Type*} [Fintype n] [DecidableEq n]
+    {ψ : AddChar k Circle} {c : kˣ} {ν : Measure k} (h : HasConductor ψ c) (hν : IsSelfDual ψ ν)
+    {g : (n → k) → ℂ} (hg : g ∈ SB (n → k)) (a : n → k) :
+    ∫ y : n → k, (∫ x, g x * (ψ (x ⬝ᵥ y) : ℂ) ∂(Measure.pi fun _ => ν)) * (ψ⁻¹ (y ⬝ᵥ a) : ℂ)
+      ∂(Measure.pi fun _ => ν) = g a := by
+  haveI := hν.1
+  haveI := secondCountable k
+  haveI := t2Space k
+  have hh : (fun x => g (x + a)) ∈ SB (n → k) :=
+    ⟨hg.1.comp_continuous (by fun_prop), hg.2.comp_homeomorph (Homeomorph.addRight a)⟩
+  have h1 := (FourierPi.fourier_pi_of_conductor h hν hh).2
+  simp only [zero_add] at h1
+  rw [← h1]
+  congr 1
+  funext y
+  rw [← integral_mul_const,
+    ← integral_add_right_eq_self (fun x => g x * (ψ (x ⬝ᵥ y) : ℂ) * (ψ⁻¹ (y ⬝ᵥ a) : ℂ)) a]
+  congr 1
+  funext x
+  rw [add_dotProduct, AddChar.map_add_eq_mul, AddChar.inv_apply', dotProduct_comm y a, mul_assoc,
+    ← Circle.coe_mul, mul_inv_cancel_right]
+
+theorem fourierInt_inv_fourierInt : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (A C : Type) [Fintype A] [DecidableEq A] [DecidableEq C] (ψ : AddChar k Circle) (m : Measure k), HasConductor ψ 1 → IsUnitVol m → ∀ (P : Finset C), ∀ Ξ ∈ SB (Matrix A C k), fourierInt ψ⁻¹ m P (fourierInt ψ m P Ξ) = Ξ := by
+  intro k _ _ _ _ _ _ A C _ _ _ ψ m hψ hm P Ξ hΞ
+  have hν : IsSelfDual ψ m := isSelfDual_of_isUnitVol m hψ hm
+  haveI := hν.1
+  haveI := secondCountable k
+  haveI := t2Space k
+  funext X
+  have h0 := comp_setCols_mem_SB hΞ P X
+  have hg : (fun x : (_ : A) × P → k => Ξ (setCols P X (Matrix.of fun i j => x ⟨i, j⟩))) ∈
+      SB ((_ : A) × P → k) :=
+    ⟨h0.1.comp_continuous (f := fun x : (_ : A) × P → k => (Matrix.of fun i j => x ⟨i, j⟩ : Matrix A P k))
+        (continuous_pi fun i => continuous_pi fun j => continuous_apply _),
+      HasCompactSupport.intro (h0.2.image (f := fun (U : Matrix A P k) (p : (_ : A) × P) => U p.1 p.2)
+        (continuous_pi fun p => (continuous_apply p.2).comp (continuous_apply p.1)))
+        fun x hx => image_eq_zero_of_notMem_tsupport (f := fun U => Ξ (setCols P X U)) fun h => hx ⟨_, h, rfl⟩⟩
+  have h1 := fourier_pi_inversion_at hψ hν hg (fun p => X p.1 p.2)
+  have h2 : setCols P X (Matrix.of fun i (j : P) => X i j) = X := setCols_restrictCols P X
+  simp only [h2] at h1
+  rw [← h1, fourierInt_eq_pi]
+  congr 1
+  funext y
+  rw [fourierInt_eq_pi]
+  have h3 : (fun p : (_ : A) × P => setCols P X (Matrix.of fun i j => y ⟨i, j⟩) p.1 p.2) = y := by
+    funext p
+    simp [setCols, p.2.2]
+  simp only [setCols_setCols, h3]
+
+end GlobalTheory.ColFourier
+end
+end
+
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.SplitFlip GlobalTheory.ColFourier
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.partialColumnFourier_inversion_schwartzBruhat : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (A C : Type) [Fintype A] [DecidableEq A] [DecidableEq C] (ψ : AddChar k Circle) (m : Measure k), HasConductor ψ 1 → IsUnitVol m → ∀ (P : Finset C), ∀ Ξ ∈ SB (Matrix A C k), fourierInt ψ⁻¹ m P (fourierInt ψ m P Ξ) = Ξ := by
+  atlas_forward_decl GlobalTheory.ColFourier.fourierInt_inv_fourierInt
+end
+
+section
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.SplitFlip GlobalTheory.ColFourier
+open scoped Pointwise
+
+noncomputable section
+namespace GlobalTheory.ColFourier
+
+section Lemmas
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+variable {A C : Type} [Fintype A] [DecidableEq C]
+
+theorem mem_maxIdeal_pow_iff {ϖ : kˣ} (hϖ : IsUnif ϖ) (n : ℕ) (r : 𝒪[k]) :
+    r ∈ IsLocalRing.maximalIdeal 𝒪[k] ^ n ↔ valuation k (r : k) ≤ valuation k ((ϖ ^ n : kˣ) : k) := by
+  rw [hϖ.maximalIdeal_eq, Ideal.span_singleton_pow, Ideal.mem_span_singleton,
+    ← (Valuation.integer.integers (valuation k)).le_iff_dvd]
+  rfl
+
+theorem natDatum_setCols_eq {ϖ : kˣ} {n : ℕ} {Φ : Matrix A C k → ℂ} (hΦ : IsNatDatum ϖ n Φ) (P : Finset C)
+    (Y : Matrix A C k) {U V : Matrix A P k} (h : ∀ i j, U i j - V i j ∈ cball (ϖ ^ n)) :
+    Φ (setCols P Y U) = Φ (setCols P Y V) := by
+  have h0 : 0 < valuation k ((ϖ ^ n : kˣ) : k) := zero_lt_iff.2 (by simp)
+  have hZ : setCols P 0 (U - V) ∈ matLat A ((ϖ ^ n) • stdLat k C) := by
+    rw [mem_matLat]
+    intro i
+    rw [mem_smul_lat, mem_stdLat]
+    intro j
+    by_cases hj : j ∈ P
+    · have h1 := h i ⟨j, hj⟩
+      simp only [cball, Set.mem_setOf_eq] at h1
+      simp only [Pi.smul_apply, Matrix.row, setCols, of_apply, dif_pos hj, Matrix.sub_apply, Units.smul_def,
+        smul_eq_mul]
+      rw [Valuation.mem_integer_iff, map_mul, Units.val_inv_eq_inv_val, map_inv₀, inv_mul_le_iff₀ h0, mul_one]
+      exact h1
+    · simp [Matrix.row, setCols, hj]
+  have := hΦ.2 (setCols P Y V) _ hZ
+  rw [← this]
+  congr 1
+  ext i j
+  by_cases hj : j ∈ P <;> simp [setCols, hj]
+
+theorem psi_pairCols_eq {ψ : AddChar k Circle} (hψ : HasConductor ψ 1) {ϖ : kˣ} {n : ℕ} (P : Finset C)
+    {Y : Matrix A C k} (hY : ∀ i, ∀ j ∈ P, ((ϖ ^ n : kˣ) : k) * Y i j ∈ 𝒪[k]) {U V : Matrix A P k}
+    (h : ∀ i j, U i j - V i j ∈ cball (ϖ ^ n)) : ψ (pairCols P Y U) = ψ (pairCols P Y V) := by
+  have h1 : pairCols P Y U = pairCols P Y V + pairCols P Y (U - V) := by
+    simp only [pairCols, ← Finset.sum_add_distrib, Matrix.sub_apply]
+    refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
+  rw [h1, AddChar.map_add_eq_mul, hψ.eq_one (y := pairCols P Y (U - V)) ?_, mul_one]
+  show valuation k _ ≤ valuation k ((1 : kˣ) : k)
+  rw [Units.val_one, map_one]
+  refine Valuation.map_sum_le _ fun i _ => Valuation.map_sum_le _ fun j _ => ?_
+  have h2 := h i j
+  have h3 := hY i j j.2
+  rw [cball, Set.mem_setOf_eq] at h2
+  rw [Valuation.mem_integer_iff, map_mul] at h3
+  rw [map_mul, Matrix.sub_apply]
+  exact (mul_le_mul' h2 le_rfl).trans (by rw [mul_comm] at h3 ⊢; exact h3)
+
+end Lemmas
+
+theorem fourierInt_eq_fourierSum : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (A C : Type) [Fintype A] [DecidableEq A]
+    [DecidableEq C] (ψ : AddChar k Circle) (m : Measure k) (ϖ : kˣ), IsUnif ϖ → HasConductor ψ 1 → IsUnitVol m →
+    ∀ (P : Finset C) (n : ℕ) (Φ : Matrix A C k → ℂ), IsNatDatum ϖ n Φ →
+      fourierInt ψ m P Φ = fourierSum ψ ϖ n P Φ := by
+  intro k _ _ _ _ _ _ A C _ _ _ ψ m ϖ hϖ hψ hm P n Φ hΦ
+  haveI := secondCountable k
+  haveI := t2Space k
+  haveI := hm.1
+  have h0 : 0 < valuation k ((ϖ ^ n : kˣ) : k) := zero_lt_iff.2 (by simp)
+  funext Y
+  rw [fourierSum_apply]
+  split_ifs with hY
+  · rw [fourierInt]
+    set F : Matrix A P k → ℂ := fun U => Φ (setCols P Y U) * (ψ (pairCols P Y U) : ℂ) with hF
+    let S : (A → P → Res k n) → Set (Matrix A P k) := fun T =>
+      Set.univ.pi fun i => Set.univ.pi fun j => (fun x => x + -liftRes T i j) ⁻¹' cball (ϖ ^ n)
+    have hmemS : ∀ T U, U ∈ S T ↔ ∀ i j, U i j - liftRes T i j ∈ cball (ϖ ^ n) := by
+      intro T U
+      exact ⟨fun h i j => by simpa [sub_eq_add_neg] using h i trivial j trivial,
+        fun h i _ j _ => by simpa [sub_eq_add_neg] using h i j⟩
+    have hS : ∀ T, MeasurableSet (S T) := fun T =>
+      MeasurableSet.univ_pi fun i => MeasurableSet.univ_pi fun j =>
+        (isOpen_cball _).measurableSet.preimage (measurable_add_const _)
+    have hcb : m (cball (ϖ ^ n)) = (distribHaarChar k (ϖ ^ n) : ENNReal) := by
+      rw [measure_cball, hm.2, mul_one]
+    have hvolE : ∀ T, (volM m A P) (S T) = (distribHaarChar k (ϖ ^ n) : ENNReal) ^ (Fintype.card A * P.card) := by
+      intro T
+      simp only [volM, S]
+      refine (Measure.pi_pi (fun _ : A => Measure.pi fun _ : P => m)
+        (fun i => Set.univ.pi fun j => (fun x => x + -liftRes T i j) ⁻¹' cball (ϖ ^ n))).trans ?_
+      simp only [Measure.pi_pi, measure_preimage_add_right, hcb, Finset.prod_const, Finset.card_univ,
+        Fintype.card_coe, ← pow_mul]
+      rw [mul_comm]
+    have hnabs : nabs k (ϖ ^ n) = ((resCard k : ℝ) ^ n)⁻¹ := by
+      have h1 : ∀ l : ℕ, nabs k (ϖ ^ l) = nabs k ϖ ^ l := by
+        intro l; induction l with
+        | zero => simp [nabs_one]
+        | succ l ih => rw [pow_succ, nabs_mul, ih, pow_succ]
+      rw [h1, nabs_uniformiser hϖ.irreducible (x := ϖ) rfl, inv_pow]
+    have hvol : ∀ T, (volM m A P).real (S T) = ((resCard k : ℝ) ^ (n * Fintype.card A * P.card))⁻¹ := by
+      intro T
+      rw [Measure.real, hvolE, ENNReal.toReal_pow, ENNReal.coe_toReal]
+      have : ((distribHaarChar k (ϖ ^ n) : NNReal) : ℝ) = nabs k (ϖ ^ n) := rfl
+      rw [this, hnabs, inv_pow, ← pow_mul, mul_assoc]
+    have hfin : ∀ T, (volM m A P) (S T) ≠ ⊤ := fun T => by
+      rw [hvolE]; exact ENNReal.pow_ne_top ENNReal.coe_ne_top
+    have hpt : ∀ U, F U = ∑ T, (S T).indicator (fun _ => F (liftRes T)) U := by
+      intro U
+      by_cases hU : ∀ i j, U i j ∈ 𝒪[k]
+      · let T0 : A → P → Res k n := fun i j => Ideal.Quotient.mk _ ⟨U i j, hU i j⟩
+        have key1 : ∀ T i j, U i j - liftRes T i j ∈ cball (ϖ ^ n) ↔ T i j = T0 i j := by
+          intro T i j
+          have e : T i j = T0 i j ↔ (⟨U i j, hU i j⟩ - Quotient.out (T i j) : 𝒪[k]) ∈
+              IsLocalRing.maximalIdeal 𝒪[k] ^ n := by
+            conv_lhs => rw [← Ideal.Quotient.mk_out (T i j)]
+            rw [eq_comm]
+            exact Ideal.Quotient.eq
+          rw [e, mem_maxIdeal_pow_iff hϖ]
+          rfl
+        have key : ∀ T, U ∈ S T ↔ T = T0 := by
+          intro T
+          rw [hmemS]
+          simp only [key1]
+          exact ⟨fun h => funext fun i => funext fun j => h i j, fun h i j => by rw [h]⟩
+        rw [Finset.sum_eq_single T0 (fun T _ hT => Set.indicator_of_notMem (fun h => hT ((key T).1 h)) _)
+          (by simp), Set.indicator_of_mem ((key T0).2 rfl)]
+        have hd := (hmemS T0 U).1 ((key T0).2 rfl)
+        simp only [hF]
+        rw [natDatum_setCols_eq hΦ P Y hd, psi_pairCols_eq hψ P hY hd]
+      · push_neg at hU
+        obtain ⟨i, j, hij⟩ := hU
+        have hz : F U = 0 := by
+          simp only [hF]
+          rw [hΦ.1 _ ?_, zero_mul]
+          intro hm'
+          apply hij
+          have := mem_matLat_stdLat.1 hm' i j
+          simpa [setCols, j.2] using this
+        rw [hz]
+        symm
+        refine Finset.sum_eq_zero fun T _ => Set.indicator_of_notMem (fun h => hij ?_) _
+        have h1 : valuation k (U i j - liftRes T i j) ≤ valuation k ((ϖ ^ n : kˣ) : k) := (hmemS T U).1 h i j
+        have h2 : U i j - liftRes T i j ∈ 𝒪[k] := by
+          rw [Valuation.mem_integer_iff]
+          refine le_trans h1 ?_
+          rw [Units.val_pow_eq_pow_val, map_pow]
+          exact pow_le_one' (hϖ.mem) n
+        simpa using add_mem h2 (liftRes_mem T i j)
+    rw [show F = fun U => ∑ T, (S T).indicator (fun _ => F (liftRes T)) U from funext hpt]
+    rw [integral_finset_sum _ (fun T _ => (integrable_indicator_iff (hS T)).2
+      (integrableOn_const (lt_top_iff_ne_top.2 (hfin T)).ne)), Finset.mul_sum]
+    refine Finset.sum_congr rfl fun T _ => ?_
+    rw [integral_indicator_const _ (hS T), hvol, Complex.real_smul]
+    push_cast
+    rfl
+  · rw [fourierInt_eq_pi]
+    refine GlobalTheory.SplitWeil.FourierPi.fourier_eq_zero_pi _ hψ (s := ϖ ^ n) (fun t ht x => ?_) ?_
+    · exact natDatum_setCols_eq hΦ P Y fun i j => by simpa using ht ⟨i, j⟩ trivial
+    · intro hmem
+      apply hY
+      intro i j hj
+      have h1 : valuation k (Y i j) ≤ valuation k ((((1 : kˣ) * (ϖ ^ n)⁻¹ : kˣ)) : k) := hmem ⟨i, ⟨j, hj⟩⟩ trivial
+      rw [one_mul, Units.val_inv_eq_inv_val, map_inv₀] at h1
+      rw [Valuation.mem_integer_iff, map_mul]
+      calc valuation k ((ϖ ^ n : kˣ) : k) * valuation k (Y i j)
+          ≤ valuation k ((ϖ ^ n : kˣ) : k) * (valuation k ((ϖ ^ n : kˣ) : k))⁻¹ := mul_le_mul' le_rfl h1
+        _ = 1 := mul_inv_cancel₀ h0.ne'
+
+end GlobalTheory.ColFourier
+end
+end
+
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.SplitFlip GlobalTheory.ColFourier
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.partialColumnFourier_eq_finiteFourierSum_depth : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (A C : Type) [Fintype A] [DecidableEq A] [DecidableEq C] (ψ : AddChar k Circle) (m : Measure k) (ϖ : kˣ), IsUnif ϖ → HasConductor ψ 1 → IsUnitVol m → ∀ (P : Finset C) (n : ℕ) (Φ : Matrix A C k → ℂ), IsNatDatum ϖ n Φ → fourierInt ψ m P Φ = fourierSum ψ ϖ n P Φ := by
+  atlas_forward_decl GlobalTheory.ColFourier.fourierInt_eq_fourierSum
+end
+
+section
 section
 namespace GlobalTheory.ColFourier
 open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.SplitFlip
@@ -172,3 +541,4 @@ theorem _root_.GlobalTheory.T.exists_partialFourier_columnBlock_schwartzBruhat :
         𝓕 (fun S => (ψ (pairM S R) : ℂ) * Ξ (S + T)) = fun Z => (ψ (pairM Z R - pairM Z T) : ℂ) * 𝓕 Ξ Z) ∧
       ∀ Ξ ∈ GlobalTheory.WeilM.SB (Matrix A C k), ∀ n, IsNatDatum ϖ n (𝓕 Ξ) → fourierSum ψ⁻¹ ϖ n P (𝓕 Ξ) = Ξ := by
   atlas_forward_decl GlobalTheory.ColFourier.exists_blockFourier
+end

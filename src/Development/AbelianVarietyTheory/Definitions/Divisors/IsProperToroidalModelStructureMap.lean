@@ -87,41 +87,8 @@ def toSymB : levelForms H N X →ₗ[ℤ] Formalism.MainNotions.ModuliIntegralCh
     (toSymB H N X β : X →ₗ[ℤ] X →ₗ[ℤ] ℝ) a b = ((β : LinearMap.BilinForm ℤ X) a b : ℝ) := by
   simp [toSymB]
 
-theorem toSymB_injective : Function.Injective (toSymB H N X) := fun β γ h => by
-  ext a b
-  have := congrArg (fun B : Formalism.MainNotions.ModuliIntegralCharts.SymB (fun x : E => IsCMField.complexConj E x) X =>
-    (B : X →ₗ[ℤ] X →ₗ[ℤ] ℝ) a b) h
-  simp only [toSymB_apply] at this
-  exact_mod_cast this
 
-theorem mem_range_toSymB (B : Formalism.MainNotions.ModuliIntegralCharts.SymB (fun x : E => IsCMField.complexConj E x) X) :
-    B ∈ LinearMap.range (toSymB H N X) ↔ ∀ a b, ∃ z : ℤ, (B : X →ₗ[ℤ] X →ₗ[ℤ] ℝ) a b = N * z := by
-  constructor
-  · rintro ⟨β, rfl⟩ a b
-    obtain ⟨z, hz⟩ := β.2.2.2 a b
-    exact ⟨z, by rw [toSymB_apply, hz]; push_cast; rfl⟩
-  · intro h
-    choose g hg using h
-    have inj : ∀ {a b : ℤ}, (a : ℝ) = b → a = b := fun h => by exact_mod_cast h
-    have hg' : ∀ a b, (((N : ℤ) * g a b : ℤ) : ℝ) = (B : X →ₗ[ℤ] X →ₗ[ℤ] ℝ) a b := fun a b => by
-      rw [hg]; push_cast; rfl
-    let γ : LinearMap.BilinForm ℤ X := LinearMap.mk₂ ℤ (fun a b => (N : ℤ) * g a b)
-      (fun a b c => inj (by rw [Int.cast_add, hg', hg', hg', map_add, LinearMap.add_apply]))
-      (fun n a b => inj (by
-        rw [smul_eq_mul, Int.cast_mul n, hg', hg', map_smul, LinearMap.smul_apply, zsmul_eq_mul]))
-      (fun a b c => inj (by rw [Int.cast_add, hg', hg', hg', map_add]))
-      (fun n a b => inj (by rw [smul_eq_mul, Int.cast_mul n, hg', hg', map_smul, zsmul_eq_mul]))
-    refine ⟨⟨γ, fun y z => inj ?_, fun a y z => inj ?_, fun y z => Dvd.intro _ rfl⟩, ?_⟩
-    · exact (hg' y z).trans ((B.2.1 y z).trans (hg' z y).symm)
-    · exact (hg' _ z).trans ((B.2.2 a _ (H.bar_eq a) y z).trans (hg' y _).symm)
-    · ext a b
-      exact (toSymB_apply _ a b).trans (hg' a b)
 
-theorem smul_trForm_mem (H : Host E) (N : ℕ) : (N : ℤ) • HostModel.trForm H ∈ levelForms H N (𝓞 E) := by
-  obtain ⟨h1, h2, -⟩ := (levelForms H 1 (𝓞 E)).smul_mem (N : ℤ)
-    (show HostModel.trForm H ∈ levelForms H 1 (𝓞 E) from
-      ⟨HostModel.trForm_symm H, HostModel.trForm_adj H, fun _ _ => by simp⟩)
-  exact ⟨h1, h2, fun y z => Dvd.intro _ rfl⟩
 
 end Forms
 
@@ -151,28 +118,6 @@ theorem IsPartOfBasis.exists_dual {v : Fin m → L} (h : IsPartOfBasis v) :
   rw [← hb j, Module.Basis.coord_apply, Module.Basis.repr_self, Finsupp.single_apply]
   simp [eq_comm]
 
-theorem exists_isPartOfBasis_of_ne_zero [Module.Free ℤ L] [Module.Finite ℤ L] {v : L} (hv : v ≠ 0) :
-    ∃ (k : ℤ) (w : L), 0 < k ∧ v = k • w ∧ IsPartOfBasis ![w] := by
-  classical
-  obtain ⟨n, S⟩ := (Submodule.span ℤ {v}).smithNormalForm (Module.finBasis ℤ L)
-  have hn : n = 1 := by
-    rw [← Fintype.card_fin n, ← Module.finrank_eq_card_basis S.bN,
-      ← (LinearEquiv.toSpanNonzeroSingleton ℤ L v hv).finrank_eq, Module.finrank_self]
-  subst hn
-  obtain ⟨r, hr⟩ : ∃ r : ℤ, v = r • S.bM (S.f 0) := by
-    have h := S.bN.sum_repr ⟨v, Submodule.mem_span_singleton_self v⟩
-    have h' := congrArg Subtype.val h
-    simp only [Fin.sum_univ_one, Submodule.coe_smul, S.snf, smul_smul] at h'
-    exact ⟨_, h'.symm⟩
-  let e : Fin 1 ⊕ Fin _ ≃ Fin (Module.finrank ℤ L) :=
-    ((Equiv.ofInjective S.f S.f.injective).sumCongr (Fintype.equivFin _).symm).trans (Equiv.Set.sumCompl (Set.range S.f))
-  have key : ∀ b : Module.Basis (Fin (Module.finrank ℤ L)) ℤ L, IsPartOfBasis ![b (S.f 0)] := fun b =>
-    ⟨_, b.reindex e.symm, fun i => by fin_cases i; simp [e]⟩
-  rcases lt_trichotomy r 0 with h | h | h
-  · refine ⟨-r, -S.bM (S.f 0), by omega, by simp [hr], ?_⟩
-    simpa using key (S.bM.map (LinearEquiv.neg ℤ))
-  · exact absurd (by simp [hr, h]) hv
-  · exact ⟨r, _, h, hr, key _⟩
 
 example (w : L) : ¬ IsPartOfBasis ![(2 : ℤ) • w] := fun h => by
   have := h.isUnit_of_smul (i := 0) (k := 2) (w := w) rfl
@@ -243,29 +188,6 @@ theorem IsMonomial.tau (h : IsMonomial Dg t β) (hs : ∀ i y z, β i y z = β i
   have := hp n'
   field_simp
 
-theorem IsMonomial.betaAt_eq (h : IsMonomial Dg t β) (hs : ∀ i y z, β i y z = β i z y) {C : Type} [NormedField C]
-    (f : R →+* C) (hle : ∀ a, ‖f a‖ ≤ 1) (ht : ∀ i, f (t i) ≠ 0) (p : ℕ) (a b : Dg.X) :
-    betaAt Dg f p a b = ∑ i, -Real.logb p ‖f (t i)‖ * β i a b := by
-  have hunit : ∀ u : Rˣ, ‖f u‖ = 1 := by
-    intro u
-    have h1 : ‖f u‖ * ‖f (u⁻¹ : Rˣ)‖ = 1 := by rw [← norm_mul, ← map_mul]; simp
-    have h2 := hle (u⁻¹ : Rˣ)
-    have h3 := hle u
-    nlinarith [norm_nonneg (f u), norm_nonneg (f (u⁻¹ : Rˣ))]
-  have key : ∀ y, vPsiAt Dg f p y = ∑ i, -Real.logb p ‖f (t i)‖ * ((β i y y : ℝ) / 2) := fun y => by
-    have hex : ∃ r, PsiCoord Dg y r := (h y).elim fun _ h => h.elim fun _ h => ⟨_, h.2⟩
-    obtain ⟨u, n, hn, hr⟩ := h.coord hex.choose_spec
-    rw [vPsiAt, dif_pos hex, hr, map_mul, norm_mul, hunit, one_mul, map_prod, norm_prod,
-      Real.logb_prod _ _ fun i _ => by simp [ht i], ← Finset.sum_neg_distrib]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [map_pow, norm_pow, Real.logb_pow, hn]
-    push_cast
-    ring
-  rw [betaAt, key, key, key, ← Finset.sum_sub_distrib, ← Finset.sum_sub_distrib]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  simp only [map_add, LinearMap.add_apply, hs i b a]
-  push_cast
-  ring
 
 theorem psiUnitOn_of_coord {y : Dg.X} {r : R} (hr : PsiCoord Dg y r) {U : Set (Sp R)}
     (hU : ∀ p ∈ U, r ∉ p.asIdeal) : PsiUnitOn Dg y U := by
@@ -301,43 +223,7 @@ theorem IsMonomial.psiUnitOn (h : IsMonomial Dg t β) (y : Dg.X) {U : Set (Sp R)
   · obtain ⟨i, -, hi⟩ := (Ideal.IsPrime.prod_mem_iff).1 hm
     exact (Ideal.IsPrime.prod_mem_iff).2 ⟨i, Finset.mem_univ _, hpr.mem_of_pow_mem _ hi⟩
 
-theorem isMonomial_arcData (k : Type) [Field k] {X : Type} [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X]
-    (be : LinearMap.BilinForm ℤ X) (hs : ∀ y z, be y z = be z y) (hp : ∀ y, y ≠ 0 → 0 < be y y)
-    (he : ∀ y, (2 : ℤ) ∣ be y y) :
-    IsMonomial (ToricData.arcData k be hs hp he).toPre ![PowerSeries.X] ![be] := by
-  intro (y : X)
-  have h0 : 0 ≤ be y y := by
-    by_cases h : y = 0
-    · simp [h]
-    · exact (hp y h).le
-  obtain ⟨n, hn⟩ : ∃ n : ℕ, be y y = 2 * n := ⟨(be y y / 2).toNat, by have := he y; omega⟩
-  refine ⟨1, ![n], fun i => by fin_cases i; exact hn, fun _ => PUnit.unit, le_rfl, PsiCoordLocal.generic_le _ _ _ le_rfl,
-    ToricData.psi_eq_toOpen _ y _ ?_ _ _ _⟩
-  rw [ToricData.arcExp_val, hn]
-  simp
 
-theorem exists_isMonomial_isPartOfBasis (H : Host E) {N : ℕ} (hN : N ≠ 0) (k : Type) [Field k] :
-    ∃ (Dd : DegData (PowerSeries k) (Ideal.span {PowerSeries.X})) (_ : Module (𝓞 E) Dd.toPre.X)
-      (γ : Fin 1 → levelForms H N Dd.toPre.X),
-      Nontrivial Dd.toPre.X ∧ IsMonomial Dd.toPre ![PowerSeries.X] (fun i => γ i) ∧ IsPartOfBasis γ := by
-  have pos : ∀ y : 𝓞 E, y ≠ 0 → 0 < ((N : ℤ) • HostModel.trForm H) y y := fun y hy =>
-    mul_pos (by exact_mod_cast Nat.pos_of_ne_zero hN) (HostModel.trForm_pos H hy)
-  have hv : (⟨_, smul_trForm_mem H N⟩ : levelForms H N (𝓞 E)) ≠ 0 := fun h => by
-    have := pos 1 one_ne_zero
-    rw [show (N : ℤ) • HostModel.trForm H = 0 from congrArg Subtype.val h] at this
-    simp at this
-  obtain ⟨r, w, hr, hw, hb⟩ := exists_isPartOfBasis_of_ne_zero hv
-  have hp : ∀ y : 𝓞 E, y ≠ 0 → 0 < (w : LinearMap.BilinForm ℤ (𝓞 E)) y y := fun y hy => by
-    have := pos y hy
-    rw [show (N : ℤ) • HostModel.trForm H = r • (w : LinearMap.BilinForm ℤ (𝓞 E)) from congrArg Subtype.val hw] at this
-    exact (mul_pos_iff_of_pos_left hr).1 this
-  have he : ∀ y : 𝓞 E, (2 : ℤ) ∣ (w : LinearMap.BilinForm ℤ (𝓞 E)) y y := fun y =>
-    ⟨_, apply_self_eq_two_mul w.2 y⟩
-  refine ⟨ToricData.arcData (X := 𝓞 E) k w w.2.1 hp he, inferInstanceAs (Module (𝓞 E) (𝓞 E)), ![w], inferInstanceAs (Nontrivial (𝓞 E)), ?_, hb⟩
-  convert isMonomial_arcData (X := 𝓞 E) k w w.2.1 hp he using 1
-  funext i
-  fin_cases i
-  rfl
 
 end Monomial
 
@@ -346,8 +232,6 @@ section Charts
 def IsEtaleCompletion {A R : Type} [CommRing A] [IsLocalRing A] [CommRing R] [IsLocalRing R] (φ : A →+* R) : Prop :=
   φ.Flat ∧ (maximalIdeal A).map φ = maximalIdeal R ∧ ((residue R).comp φ).Finite
 
-theorem isEtaleCompletion_id (A : Type) [CommRing A] [IsLocalRing A] : IsEtaleCompletion (RingHom.id A) :=
-  ⟨RingHom.Flat.id A, Ideal.map_id _, RingHom.Finite.of_surjective _ residue_surjective⟩
 
 variable {H : Host E} {D : Datum H} {l : Level H} {Xo : Moduli D l} {c : Coeff l} {O : Type} [CommRing O]
   {β : O →+* c.F}
@@ -401,8 +285,6 @@ theorem mem_abLocus_iff (h : IsToricChart Z ξ P γ) (p : Sp (ChartRing k m d)) 
   rw [← h3, mem_genBd_iff, not_not, ← abLocus_pullback abLocusOne Z.t.semi μ.cart.1 p]
   rfl
 
-theorem data_at_point_n3 (h : IsToricChart Z ξ P γ) : UniformisationConclusion t (abLocus t.G) :=
-  ⟨P, fun y => h.2.2.2.2.2.1.psiUnitOn y fun p hp => (h.mem_abLocus_iff p).1 hp, h.2.2.2.2.1⟩
 
 theorem centre_mem_iff (h : IsToricChart Z ξ P γ) : ξ (closedPoint _) ∈ genBd Z ↔ m ≠ 0 := by
   refine (h.2.2.1 _).trans ?_
@@ -532,35 +414,13 @@ instance isProper_bQ : IsProper T.bQ := by
     exact T.j_b
   · rw [Category.assoc, bQ_genStr, T.Z.jQ_over, Y.jQ_over]
 
-theorem bQ_mem_genBd (x : gen T.Z) : T.bQ x ∈ genBd Y ↔ x ∈ genBd T.Z := by
-  rw [mem_genBd_iff, mem_genBd_iff, ← T.b_mem_abLocus, ← Scheme.Hom.comp_apply, ← Scheme.Hom.comp_apply, bQ_genι]
 
-theorem isPullback_jQ : IsPullback (𝟙 _) T.Z.jQ Y.jQ T.bQ := by
-  have := T.Z.jQ_open
-  have := Y.jQ_open
-  refine (IsOpenImmersion.isPullback (𝟙 _) T.Z.jQ Y.jQ T.bQ (by simp) ?_).flip.flip
-  ext x
-  exact not_iff_not.1 (T.bQ_mem_genBd x)
 
-theorem isIso_bQ_restrict : IsIso (T.bQ ∣_ (haveI := Y.jQ_open; Y.jQ.opensRange)) := by
-  have := Y.jQ_open
-  have h := T.isPullback_jQ
-  refine ((MorphismProperty.isomorphisms Scheme).arrow_mk_iso_iff (morphismRestrictOpensRange T.bQ Y.jQ)).2 ?_
-  rw [MorphismProperty.isomorphisms.iff, ← h.flip.isoPullback_inv_snd]
-  infer_instance
 
-theorem surjective_bQ : Function.Surjective T.bQ := by
-  have hc : IsClosed (Set.range T.bQ) := T.bQ.isClosedMap.isClosed_range
-  have hd : Dense (Set.range T.bQ) := Y.jQ_dense.mono (by
-    rintro _ ⟨x, rfl⟩
-    exact ⟨T.Z.jQ x, by rw [← Scheme.Hom.comp_apply, jQ_bQ]⟩)
-  exact Set.range_eq_univ.1 (hc.closure_eq.symm.trans hd.closure_eq)
 
 theorem mem_support_BD_iff (x : gen T.Z) : genι T.Z x ∈ T.BD.idealSheaf.support ↔ x ∈ genBd T.Z :=
   ⟨fun h => mem_genBd_iff.2 (T.BD_supp _ h), T.BD_pos x⟩
 
-theorem j_notMem_support_BD (x : Xo.XF c) : T.Z.j x ∉ T.BD.idealSheaf.support := fun h =>
-  (T.mem_support_BD_iff (T.Z.jQ x)).1 h ⟨x, rfl⟩
 
 theorem isRegularLocalRing (x : gen T.Z) : IsRegularLocalRing ((gen T.Z).presheaf.stalk x) := (T.snc x).1
 
@@ -624,29 +484,7 @@ def TorModel.ofNoBoundary (Y : Model Xo c β) (h : Function.Surjective Y.jQ) : T
   m0 := 1
   torModel_multiplicity_pos := one_pos
 
-theorem surjective_jQ_of_dim_eq_zero (Y : Model Xo c β) (h : D.dim = 0) : Function.Surjective Y.jQ := by
-  have hs := Xo.smooth
-  rw [h] at hs
-  have : Etale Xo.s := (Etale.iff_smoothOfRelativeDimension_zero _).2 hs
-  have : QuasiCompact Xo.s := by
-    obtain ⟨N, i, _, _, e⟩ := Xo.qproj
-    have := isProper_str (KA l) N
-    rw [← e]
-    infer_instance
-  have : LocallyQuasiFinite Xo.s := by
-    refine ⟨fun {U} hU {V} hV e => ?_⟩
-    have h₁ := Xo.s.formallyUnramified_appLE hU hV e
-    have h₂ := Xo.s.finiteType_appLE hU hV e
-    algebraize [(Xo.s.appLE U V e).hom]
-    exact inferInstanceAs (Algebra.QuasiFinite _ _)
-  have : IsFinite Xo.s := IsFinite.of_locallyQuasiFinite _
-  have := isProper_genStr Y
-  have : IsProper (Y.jQ ≫ genStr Y) := by rw [Y.jQ_over]; infer_instance
-  have : IsProper Y.jQ := IsProper.of_comp Y.jQ (genStr Y)
-  exact Set.range_eq_univ.1 (Y.jQ.isClosedMap.isClosed_range.closure_eq.symm.trans Y.jQ_dense.closure_eq)
 
-theorem nonempty_torModel_of_definite (Y : Model Xo c β) (h : D.p = 0 ∨ D.q = 0) : Nonempty (TorModel Y) :=
-  ⟨.ofNoBoundary Y (surjective_jQ_of_dim_eq_zero Y (by rcases h with h | h <;> simp [Datum.dim, h]))⟩
 
 end Model
 

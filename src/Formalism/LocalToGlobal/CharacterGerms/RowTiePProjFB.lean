@@ -1,5 +1,139 @@
-import Formalism.LocalToGlobal.CharacterGerms.EndomorphismLimitIntegral
+import Formalism.LocalToGlobal.CharacterGerms.CoeffSubstEqSum
+import Formalism.LocalToGlobal.CharacterGerms.RowTieProj
 
+section
+noncomputable section
+
+open MvPowerSeries ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
+
+namespace Formalism.L2.FormalSeriesBounds
+
+namespace RowTiePE0
+
+open PartialDerivEval
+
+variable {C : Type} [Field C] [CharZero C] {V : VF C} {O : Type} [CommRing O] [StarRing O] {dd : ℕ}
+
+theorem actK_self (B : FB C dd O) (a : O) : B.actK C a = B.A.act a := by
+  funext i; unfold FB.actK; rw [show algebraMap C C = RingHom.id C from rfl, map_id]; rfl
+
+theorem TendsS.ev {m n : ℕ} {a : ℕ → Fin m → Pt C n dd} {A : Fin m → Pt C n dd} {f : ℕ → PS C m dd}
+    {F : PS C m dd} (ha0 : ∀ k, Z0 (a k)) (hA0 : Z0 A) (ha : ∀ j i, TendsS V (fun k => a k j i) (A j i))
+    (hf : TendsS V f F) : TendsS V (fun k => ev (a k) (f k)) (ev A F) := by
+  unfold ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ.ev
+  exact TendsS.subst (fun k p => ha0 k p.1 p.2) (fun p => hA0 p.1 p.2) (fun p => ha p.1 p.2) hf
+
+theorem constant_zero_two_points {n : ℕ} (P Q : Pt C n dd) (hP : ∀ i, constantCoeff (P i) = 0) (hQ : ∀ i, constantCoeff (Q i) = 0) :
+    Z0 (![P, Q] : Fin 2 → Pt C n dd) := by
+  intro j i; fin_cases j
+  · exact hP i
+  · exact hQ i
+
+theorem tends_two {n : ℕ} {P Q : ℕ → Pt C n dd} {P' Q' : Pt C n dd} (hP : ∀ i, TendsS V (fun k => P k i) (P' i))
+    (hQ : ∀ i, TendsS V (fun k => Q k i) (Q' i)) :
+    ∀ j i, TendsS V (fun k => (![P k, Q k] : Fin 2 → Pt C n dd) j i) ((![P', Q'] : Fin 2 → Pt C n dd) j i) := by
+  intro j i; fin_cases j
+  · exact hP i
+  · exact hQ i
+
+theorem const_comp1 {n : ℕ} {φ : Pt C 1 dd} (hφ : ∀ i, constantCoeff (φ i) = 0) {b : Pt C n dd}
+    (hb : ∀ i, constantCoeff (b i) = 0) (i : Fin dd) : constantCoeff (comp1 φ b i) = 0 :=
+  const_ev (z0_1 b hb) (hφ i)
+
+theorem TendsS.comp1 {n : ℕ} {φ : ℕ → Pt C 1 dd} {Φ : Pt C 1 dd} {b : ℕ → Pt C n dd} {B : Pt C n dd}
+    (hb0 : ∀ k i, constantCoeff (b k i) = 0) (hB0 : ∀ i, constantCoeff (B i) = 0)
+    (hφ : ∀ i, TendsS V (fun k => φ k i) (Φ i)) (hb : ∀ i, TendsS V (fun k => b k i) (B i)) (i : Fin dd) :
+    TendsS V (fun k => comp1 (φ k) (b k) i) (comp1 Φ B i) :=
+  TendsS.ev (fun k => z0_1 _ (hb0 k)) (z0_1 _ hB0)
+    (fun j i' => by rw [Fin.fin_one_eq_zero j]; exact hb i') (hφ i)
+
+theorem TendsS.expS {n : ℕ} {g : ℕ → PS C n dd} {G : PS C n dd} (hg0 : ∀ k, constantCoeff (g k) = 0)
+    (hG0 : constantCoeff G = 0) (hg : TendsS V g G) : TendsS V (fun k => FB.expS C (g k)) (FB.expS C G) := by
+  unfold FB.expS PowerSeries.subst
+  exact TendsS.subst (fun k _ => hg0 k) (fun _ => hG0) (fun _ => hg) (TendsS.const _)
+
+theorem exists_lim (Y : FBChart C V O dd) {φ : ℕ → Pt C 1 dd}
+    (hφ : ∀ (N : ℕ) i μ, ∃ n0 : ℕ, ∀ n ≥ n0, V.Ge N (coeff μ (φ (n + 1) i) - coeff μ (φ n i))) :
+    ∃ e : Pt C 1 dd, ∀ i, TendsS V (fun n => φ n i) (e i) := by
+  have h : ∀ i μ, ∃ x, Tends V (fun n => coeff μ (φ n i)) x := fun i μ => exists_tends Y.cpl fun N => hφ N i μ
+  choose L hL using h
+  exact ⟨fun i => (fun μ => L i μ : MvPowerSeries (Fin 1 × Fin dd) C), fun i μ => hL i μ⟩
+
+theorem const_of_lim (Y : FBChart C V O dd) {a : ℕ → O} {e : Pt C 1 dd}
+    (he : ∀ i, TendsS V (fun n => Y.B.A.act (a n) i) (e i)) (i : Fin dd) : constantCoeff (e i) = 0 := by
+  have h := he i 0
+  simp only [coeff_zero_eq_constantCoeff_apply, Y.B.A.const] at h
+  exact h.unique (tends_const 0)
+
+theorem endomorphism_limit_integral (Y : FBChart C V O dd) : EndomorphismLimitIntegral Y := by
+  intro a ha hb
+  obtain ⟨e, he⟩ := exists_lim Y (φ := fun n => Y.B.A.act (a n)) ha
+  obtain ⟨eb, heb⟩ := exists_lim Y (φ := fun n => Y.B.A.act (star (a n))) hb
+  have e0 := const_of_lim Y he
+  have eb0 := const_of_lim Y (a := fun n => star (a n)) heb
+  have act0 : ∀ x i, constantCoeff (Y.B.A.act x i) = 0 := Y.B.A.const
+  refine ⟨e, eb, fun i => (he i).intS fun n => Y.intAct _ i, fun i => (heb i).intS fun n => Y.intAct _ i,
+    fun N i μ => he i μ N, fun N i μ => heb i μ N, ?_, ?_⟩
+  ·
+    funext i
+    have hP : ∀ i, constantCoeff (addOf Y.B.G.F (pt C (n := 2) dd 0) (pt C (n := 2) dd 1) i) = 0 :=
+      fun j => const_addOf Y 0 1 j
+    have L := TendsS.comp1 (φ := fun k => Y.B.A.act (a k)) (b := fun _ => addOf Y.B.G.F (pt C (n := 2) dd 0)
+      (pt C (n := 2) dd 1)) (fun _ => hP) hP he (fun j => TendsS.const _) i
+    have hc : ∀ (j : Fin 2) k i', constantCoeff (comp1 (Y.B.A.act (a k)) (pt C (n := 2) dd j) i') = 0 :=
+      fun j k i' => const_comp1 (act0 _) (fun _ => z0_pt j _) i'
+    have hcl : ∀ (j : Fin 2) i', constantCoeff (comp1 e (pt C (n := 2) dd j) i') = 0 :=
+      fun j i' => const_comp1 e0 (fun _ => z0_pt j _) i'
+    have R := TendsS.ev (V := V) (f := fun _ => Y.B.G.F i) (F := Y.B.G.F i)
+      (a := fun k => ![comp1 (Y.B.A.act (a k)) (pt C (n := 2) dd 0), comp1 (Y.B.A.act (a k)) (pt C (n := 2) dd 1)])
+      (A := ![comp1 e (pt C (n := 2) dd 0), comp1 e (pt C (n := 2) dd 1)])
+      (fun k => constant_zero_two_points _ _ (hc 0 k) (hc 1 k)) (constant_zero_two_points _ _ (hcl 0) (hcl 1))
+      (tends_two (TendsS.comp1 (fun _ => z0_pt 0) (z0_pt 0) he (fun _ => TendsS.const _))
+        (TendsS.comp1 (fun _ => z0_pt 1) (z0_pt 1) he (fun _ => TendsS.const _))) (TendsS.const _)
+    have eq : (fun k => comp1 (Y.B.A.act (a k)) (addOf Y.B.G.F (pt C (n := 2) dd 0) (pt C (n := 2) dd 1)) i) =
+        fun k => ev ![comp1 (Y.B.A.act (a k)) (pt C (n := 2) dd 0), comp1 (Y.B.A.act (a k)) (pt C (n := 2) dd 1)]
+          (Y.B.G.F i) := funext fun k => by rw [Y.B.A.hom (a k)]; rfl
+    rw [eq] at L
+    exact L.unique R
+  ·
+    let g : ℕ → PS C 2 dd := fun k => ev (n := 2) ![comp1 (Y.B.A.act (a k)) (pt C dd 0), pt C dd 1] Y.h -
+      ev (n := 2) ![pt C dd 0, comp1 (Y.B.A.act (star (a k))) (pt C dd 1)] Y.h
+    have hc0 : ∀ k, Z0 (![comp1 (Y.B.A.act (a k)) (pt C dd 0), pt C dd 1] : Fin 2 → Pt C 2 dd) :=
+      fun k => constant_zero_two_points _ _ (const_comp1 (act0 _) (fun _ => z0_pt 0 _)) (fun _ => z0_pt 1 _)
+    have hc1 : ∀ k, Z0 (![pt C dd 0, comp1 (Y.B.A.act (star (a k))) (pt C dd 1)] : Fin 2 → Pt C 2 dd) :=
+      fun k => constant_zero_two_points _ _ (fun _ => z0_pt 0 _) (const_comp1 (act0 _) (fun _ => z0_pt 1 _))
+    have hC0 : Z0 (![comp1 e (pt C dd 0), pt C dd 1] : Fin 2 → Pt C 2 dd) :=
+      constant_zero_two_points _ _ (const_comp1 e0 (fun _ => z0_pt 0 _)) (fun _ => z0_pt 1 _)
+    have hC1 : Z0 (![pt C dd 0, comp1 eb (pt C dd 1)] : Fin 2 → Pt C 2 dd) :=
+      constant_zero_two_points _ _ (fun _ => z0_pt 0 _) (const_comp1 eb0 (fun _ => z0_pt 1 _))
+    have hg : TendsS V g (ev (n := 2) ![comp1 e (pt C dd 0), pt C dd 1] Y.h -
+        ev (n := 2) ![pt C dd 0, comp1 eb (pt C dd 1)] Y.h) :=
+      (TendsS.ev hc0 hC0 (tends_two (TendsS.comp1 (fun _ => z0_pt 0) (z0_pt 0) he (fun _ => TendsS.const _))
+        (fun _ => TendsS.const _)) (TendsS.const _)).sub
+      (TendsS.ev hc1 hC1 (tends_two (fun _ => TendsS.const _)
+        (TendsS.comp1 (fun _ => z0_pt 1) (z0_pt 1) heb (fun _ => TendsS.const _))) (TendsS.const _))
+    have hh := h_const Y
+    have hg0 : ∀ k, constantCoeff (g k) = 0 := fun k => by
+      simp only [g, map_sub, constantCoeff_ev (hc0 k), constantCoeff_ev (hc1 k), hh, sub_zero]
+    have hG0 : constantCoeff (ev (n := 2) ![comp1 e (pt C dd 0), pt C dd 1] Y.h -
+        ev (n := 2) ![pt C dd 0, comp1 eb (pt C dd 1)] Y.h) = 0 := by
+      simp only [map_sub, constantCoeff_ev hC0, constantCoeff_ev hC1, hh, sub_zero]
+    have hE := TendsS.expS hg0 hG0 hg
+    have hadk : ∀ k, FB.expS C (g k) = Y.B.ad (a k) := fun k => by
+      have h1 := Y.gauge.ad (a k)
+      rw [toK_self, actK_self, actK_self] at h1
+      exact h1.symm
+    simp only [hadk] at hE
+    exact hE.intS fun k => Y.intAd _
+
+
+end RowTiePE0
+
+end Formalism.L2.FormalSeriesBounds
+end
+end
+
+section
 noncomputable section
 
 open MvPowerSeries ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
@@ -218,116 +352,12 @@ theorem linAct_tends {φ : ℕ → Pt C 1 dd} {Φ : Pt C 1 dd} (hφ : ∀ i, Ten
     (∑ j, MvPowerSeries.coeff (Finsupp.single ((0 : Fin 1), j) 1) (Φ i) * v j)
   exact tends_fintype_sum fun j => tends_mul_const (hφ i _) (v j)
 
-theorem proj_one (hL : LSmallSt) (hLie : ProjLieSt) (Y : FBChart C V O dd) {d : ℕ} [NeZero d]
-    {I : Fin 2 → Type} [∀ g, Fintype (I g)] (p : PairData Y d I) (g : Fin 2) (ε : O)
-    (hε : ∃ y, ε * ε - ε = (V.l : O) * y) (hε1 : ∀ a, V.MM (p.em g a ε - 1))
-    (hεx : ∀ x : O, (∀ a, V.MM (p.em g a x)) → ∃ y, ε * x = (V.l : O) * y) (e : Pt C 1 dd)
-    (he : ∀ (N : ℕ) i μ, ∃ n0 : ℕ, ∀ n ≥ n0,
-      V.Ge N (MvPowerSeries.coeff μ (e i) - MvPowerSeries.coeff μ (Y.B.A.act (ε ^ V.l ^ n) i))) :
-    (∀ i, MvPowerSeries.constantCoeff (e i) = 0) ∧ comp1 e e = e ∧
-      (∀ a, comp1 e (Y.B.A.act a) = comp1 (Y.B.A.act a) e) ∧
-      (∀ c, linAct e (p.u g c) = p.u g c) ∧
-      (∀ v : Fin dd → C, ∃ b : I g → C, linAct e v = ∑ c, b c • p.u g c) := by
-  have hT := tends_of_endomorphism_limit Y he
-  have e0 : ∀ i, constantCoeff (e i) = 0 := const_of_lim Y hT
-  have act0 : ∀ x i, constantCoeff (Y.B.A.act x i) = 0 := Y.B.A.const
-  refine ⟨e0, ?_, ?_, ?_, hLie _ V O dd Y d I p g ε hε hε1 hεx e he⟩
-  ·
-    funext i
-    have L := TendsS.comp1 (φ := fun n => Y.B.A.act (ε ^ V.l ^ n)) (b := fun n => Y.B.A.act (ε ^ V.l ^ n))
-      (fun n => act0 _) e0 hT hT i
-    have R := tendsS_of_small hL Y (x := fun n => ε ^ V.l ^ n * ε ^ V.l ^ n) (sq_cong hε) hT i
-    have eq : (fun n => comp1 (Y.B.A.act (ε ^ V.l ^ n)) (Y.B.A.act (ε ^ V.l ^ n)) i) =
-        fun n => Y.B.A.act (ε ^ V.l ^ n * ε ^ V.l ^ n) i := funext fun n => by rw [Y.B.A.mul_act]
-    rw [eq] at L
-    exact L.unique R
-  ·
-    intro a
-    funext i
-    have L := TendsS.comp1 (φ := fun n => Y.B.A.act (ε ^ V.l ^ n)) (b := fun _ => Y.B.A.act a)
-      (fun _ => act0 a) (act0 a) hT (fun _ => TendsS.const _) i
-    have R := TendsS.comp1 (φ := fun _ => Y.B.A.act a) (b := fun n => Y.B.A.act (ε ^ V.l ^ n))
-      (fun n => act0 _) e0 (fun _ => TendsS.const _) hT i
-    have eq : (fun n => comp1 (Y.B.A.act (ε ^ V.l ^ n)) (Y.B.A.act a) i) =
-        fun n => comp1 (Y.B.A.act a) (Y.B.A.act (ε ^ V.l ^ n)) i := funext fun n => by
-      rw [← Y.B.A.mul_act, ← Y.B.A.mul_act, mul_comm]
-    rw [eq] at L
-    exact L.unique R
-  ·
-    intro c
-    funext i
-    have L := linAct_tends hT (p.u g c) i
-    have eq : (fun n => linAct (Y.B.A.act (ε ^ V.l ^ n)) (p.u g c) i) =
-        fun n => (p.em g (p.ty g c) ε) ^ V.l ^ n * p.u g c i := funext fun n => by
-      rw [p.u_eig, map_pow]; rfl
-    rw [eq] at L
-    have R := (tends_pow_one (hε1 (p.ty g c))).mul (tends_const (V := V) (p.u g c i))
-    rw [one_mul] at R
-    exact L.unique R
 
-theorem projFB_of (hL : LSmallSt) (hLie : ProjLieSt) : ProjFBSt := by
-  intro C _ _ V O _ _ dd Y d _ I _ p hE0
-  obtain ⟨ε, hε, hε1, hεx⟩ := p.em_unr 0
-  have hl2 : 2 ≤ V.l := V.l_prime.two_le
-  have hεs := star_rel hε
-
-  have hεs1 : ∀ a, V.MM (p.em 1 a (star ε) - 1) := fun a => by rw [p.em_conj, star_star]; exact hε1 a
-  have hεsx : ∀ x : O, (∀ a, V.MM (p.em 1 a x)) → ∃ y, star ε * x = (V.l : O) * y := by
-    intro x hx
-    obtain ⟨y, hy⟩ := hεx (star x) fun a => by rw [← p.em_conj]; exact hx a
-    refine ⟨star y, ?_⟩
-    have h := congrArg star hy
-    simp only [star_mul, star_star, star_natCast] at h
-    rw [mul_comm, h, mul_comm]
-
-  have cvA : ActCv Y (fun n => ε ^ V.l ^ n) := fun N i μ => by
-    obtain ⟨n0, h⟩ := hL C V O dd Y (fun n => ε ^ V.l ^ (n + 1)) (fun n => ε ^ V.l ^ n) (pow_cong hl2 hε) N i μ
-    exact ⟨n0, h⟩
-  have cvB : ActCv Y (fun n => star ε ^ V.l ^ n) := fun N i μ => by
-    obtain ⟨n0, h⟩ := hL C V O dd Y (fun n => star ε ^ V.l ^ (n + 1)) (fun n => star ε ^ V.l ^ n)
-      (pow_cong hl2 hεs) N i μ
-    exact ⟨n0, h⟩
-  have sA : (fun n => star (ε ^ V.l ^ n)) = fun n => star ε ^ V.l ^ n := funext fun n => star_pow _ _
-  have sB : (fun n => star (star ε ^ V.l ^ n)) = fun n => ε ^ V.l ^ n := funext fun n => by
-    rw [star_pow, star_star]
-  obtain ⟨e, eb, -, -, he, heb, hhom, hexp⟩ := hE0 (fun n => ε ^ V.l ^ n) cvA (by rw [sA]; exact cvB)
-  obtain ⟨e', eb', -, -, he', heb', hhom', hexp'⟩ := hE0 (fun n => star ε ^ V.l ^ n) cvB (by rw [sB]; exact cvA)
-  simp only [star_pow, star_star] at heb heb'
-  have hee : e' = eb := funext fun i => (tends_of_endomorphism_limit Y he' i).unique (tends_of_endomorphism_limit Y heb i)
-  have hee' : eb' = e := funext fun i => (tends_of_endomorphism_limit Y heb' i).unique (tends_of_endomorphism_limit Y he i)
-  subst hee hee'
-  obtain ⟨c0, i0, cm0, fx0, sp0⟩ := proj_one hL hLie Y p 0 ε hε hε1 hεx eb' he
-  obtain ⟨c1, i1, cm1, fx1, sp1⟩ := proj_one hL hLie Y p 1 (star ε) hεs hεs1 hεsx e' he'
-  have hint0 : ∀ i, IntS V (eb' i) := fun i => (tends_of_endomorphism_limit Y he i).intS fun n => Y.intAct _ i
-  have hint1 : ∀ i, IntS V (e' i) := fun i => (tends_of_endomorphism_limit Y he' i).intS fun n => Y.intAct _ i
-  refine ⟨![eb', e'], ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
-  · intro g i; fin_cases g
-    · exact hint0 i
-    · exact hint1 i
-  · intro g i; fin_cases g
-    · exact c0 i
-    · exact c1 i
-  · intro g; fin_cases g
-    · exact hhom
-    · exact hhom'
-  · intro g; fin_cases g
-    · exact i0
-    · exact i1
-  · intro g a; fin_cases g
-    · exact cm0 a
-    · exact cm1 a
-  · intro g c; fin_cases g
-    · exact fx0 c
-    · exact fx1 c
-  · intro g v; fin_cases g
-    · exact sp0 v
-    · exact sp1 v
-  · intro g; fin_cases g
-    · exact hexp
-    · exact hexp'
 
 end Main
 
 end RowTiePProj
 
 end Formalism.L2.FormalSeriesBounds
+end
+end

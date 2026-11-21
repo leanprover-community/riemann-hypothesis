@@ -1,8 +1,277 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsFlagModelHermSum
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsTorsionFormWithPoint
+import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.SiegelReframe
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CharChPartZero
 
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open Matrix MeasureTheory Set Filter Topology
+open GlobalTheory.IndefiniteRowSideFullHecke.SiegelReframe
+open scoped Real ContDiff
+
+namespace GlobalTheory.TorsionForm
+
+abbrev Ext (m : ℕ) : Type := Finset (Fin m) → ℂ
+
+def sgn {m : ℕ} (i : Fin m) (S : Finset (Fin m)) : ℂ := (-1) ^ (S.filter (· < i)).card
+
+def wedge {m : ℕ} (i : Fin m) (w : Ext m) : Ext m :=
+  fun S => if i ∈ S then sgn i S * w (S.erase i) else 0
+
+def contr {m : ℕ} (i : Fin m) (w : Ext m) : Ext m :=
+  fun S => if i ∈ S then 0 else sgn i S * w (insert i S)
+
+def dt {n : ℕ} (g : ℕ) (i : Fin n) : Fin (n + n + g) := (i.castAdd n).castAdd g
+
+def dtb {n : ℕ} (g : ℕ) (i : Fin n) : Fin (n + n + g) := (i.natAdd n).castAdd g
+
+def dzb (n : ℕ) {g : ℕ} (a : Fin g) : Fin (n + n + g) := a.natAdd (n + n)
+
+def join {m g : ℕ} (S : Finset (Fin m)) (I : Finset (Fin g)) : Finset (Fin (m + g)) :=
+  S.map (Fin.castAddEmb g) ∪ I.map (Fin.natAddEmb m)
+
+def strN {m g : ℕ} (K : Ext (m + g) →L[ℂ] Ext (m + g)) : Ext m := fun S =>
+  ∑ I : Finset (Fin g), (-1) ^ I.card * (I.card : ℂ) * K (Pi.single (join ∅ I) 1) (join S I)
+
+def phi {m : ℕ} (w : Ext m) : Ext m := fun S => ((2 * π * Complex.I)⁻¹ : ℂ) ^ (S.card / 2) * w S
+
+def IsMellinDeriv (F : ℝ → ℂ) (T : ℂ) : Prop :=
+  ∃ C₁ C₀ : ℂ, IntegrableOn (fun u : ℝ => (F u - C₁ / u - C₀) / u) (Ioc 0 1) ∧
+    IntegrableOn (fun u : ℝ => F u / u) (Ioi 1) ∧
+    T = -(∫ u in Ioc (0 : ℝ) 1, (F u - C₁ / u - C₀) / u) - (∫ u in Ioi (1 : ℝ), F u / u) + C₁ -
+      Real.eulerMascheroniConstant * C₀
+
+section Deriv
+
+variable {V W : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [SMul ℂ V] [NormedAddCommGroup W]
+  [NormedSpace ℝ W] [SMul ℂ W]
+
+def d10 (f : V → W) (P v : V) : W :=
+  (1 / 2 : ℂ) • (fderiv ℝ f P v - Complex.I • fderiv ℝ f P (Complex.I • v))
+
+def d01 (f : V → W) (P v : V) : W :=
+  (1 / 2 : ℂ) • (fderiv ℝ f P v + Complex.I • fderiv ℝ f P (Complex.I • v))
+
+end Deriv
+
+variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {g n : ℕ}
+  (τ : E → Matrix (Fin g) (Fin g) ℂ) (M : Submodule ℤ (Fl g)) (j : Fl g → Pt E g → ℂ)
+  (h : Pt E g → ℝ) (β : Fin n → E)
+
+def hor (P : Pt E g) (v : E) : Pt E g := (v, fderiv ℂ (fun b => per (τ b) (flat τ P)) P.1 v)
+
+def vert (E : Type) [Zero E] (a : Fin g) : Pt E g := (0, Pi.single a 1)
+
+def imPart (b : E) : Matrix (Fin g) (Fin g) ℂ := (τ b).map fun t => (t.im : ℂ)
+
+def pointDifference (s : Pt E g → Ext (n + n + g)) (P v : Pt E g) : Ext (n + n + g) :=
+  d10 s P v + d10 (fun Q => (Real.log (h Q) : ℂ)) P v • s P
+
+def connForm (b v : E) (w : Ext (n + n + g)) : Ext (n + n + g) :=
+  ∑ a, ∑ c, ((Matrix.of fun a e => d01 (fun b' => imPart τ b' a e) b v) * (imPart τ b)⁻¹) a c •
+    wedge (dzb n c) (contr (dzb n a) w)
+
+def nablaE (s : Pt E g → Ext (n + n + g)) (P : Pt E g) : Ext (n + n + g) :=
+  ∑ i, (wedge (dt g i) (pointDifference h s P (hor τ P (β i))) +
+    wedge (dtb g i) (d01 s P (hor τ P (β i)) + connForm τ P.1 (β i) (s P)))
+
+def dbarV (s : Pt E g → Ext (n + n + g)) (P : Pt E g) : Ext (n + n + g) :=
+  ∑ a, wedge (dzb n a) (d01 s P (vert E a))
+
+def dbarAdj (s : Pt E g → Ext (n + n + g)) (P : Pt E g) : Ext (n + n + g) :=
+  -∑ a, ∑ c, (2 * imPart τ P.1 a c) • contr (dzb n c) (pointDifference h s P (vert E a))
+
+def superconn (u : ℝ) (s : Pt E g → Ext (n + n + g)) (P : Pt E g) : Ext (n + n + g) :=
+  nablaE τ h β s P + (Real.sqrt u : ℂ) • (dbarV s P + dbarAdj τ h s P)
+
+def curv (b : E) (u : ℝ) (f : (Fin g → ℂ) → Ext (n + n + g)) (z : Fin g → ℂ) : Ext (n + n + g) :=
+  superconn τ h β u (superconn τ h β u fun P => f P.2) (b, z)
+
+def IsSec {m : ℕ} (b : E) (f : (Fin g → ℂ) → Ext m) : Prop :=
+  ContDiff ℝ ∞ f ∧ ∀ l ∈ M, ∀ z, f (z + per (τ b) l) = j l (b, z) • f z
+
+def IsHeatKernel (b : E) (u : ℝ) (D : Set (Fl g))
+    (K : ℝ → (Fin g → ℂ) → (Fin g → ℂ) → Ext (n + n + g) →L[ℂ] Ext (n + n + g)) : Prop :=
+  ContDiffOn ℝ ∞ (fun a : ℝ × (Fin g → ℂ) × (Fin g → ℂ) => K a.1 a.2.1 a.2.2) (Ioi 0 ×ˢ univ) ∧
+  (∀ t > 0, ∀ l ∈ M, ∀ z z', K t (z + per (τ b) l) z' = j l (b, z) • K t z z' ∧
+    j l (b, z') • K t z (z' + per (τ b) l) = K t z z') ∧
+  (∀ t > 0, ∀ z z' w, HasDerivAt (fun t' => K t' z z' w)
+    (-curv τ h β b u (fun y => K t y z' w) z) t) ∧
+  ∀ f, IsSec τ M j b f → TendstoLocallyUniformly
+    (fun t z => ∫ x in D, K t z (per (τ b) x) (f (per (τ b) x))) f (𝓝[>] 0)
+
+def IsHeatTrace (b : E) (F : ℝ → Ext (n + n)) : Prop :=
+  ∃ D : Set (Fl g), IsAddFundamentalDomain M D volume ∧ ∀ u > 0, ∃ K,
+    IsHeatKernel τ M j h β b u D K ∧
+      F u = phi (∫ x in D, strN (K 1 (per (τ b) x) (per (τ b) x)))
+
+def IsAcyclicAt (b : E) : Prop :=
+  ∀ f : (Fin g → ℂ) → Ext (0 + 0 + g), IsSec τ M j b f →
+    (∀ z, dbarV (fun P : Pt E g => f P.2) (b, z) + dbarAdj τ h (fun P => f P.2) (b, z) = 0) →
+    ∀ z, ∀ I ≠ ∅, f z I = 0
+
+def IsTorsionForm (b : E) (T : Ext (n + n)) : Prop :=
+  ∃ F, IsHeatTrace τ M j h β b F ∧ ∀ S, IsMellinDeriv (fun u => F u S) (T S)
+
+theorem sgn_mul_self {m : ℕ} (i : Fin m) (S : Finset (Fin m)) : sgn i S * sgn i S = 1 := by
+  rw [sgn, ← mul_pow]; simp
+
+theorem sgn_erase {m : ℕ} (i : Fin m) (S : Finset (Fin m)) : sgn i (S.erase i) = sgn i S := by
+  unfold sgn; congr 2; ext x; simp only [Finset.mem_filter, Finset.mem_erase]
+  exact ⟨fun h => ⟨h.1.2, h.2⟩, fun h => ⟨⟨h.2.ne, h.1⟩, h.2⟩⟩
+
+theorem sgn_insert {m : ℕ} (i : Fin m) (S : Finset (Fin m)) : sgn i (insert i S) = sgn i S := by
+  rw [← sgn_erase, Finset.erase_insert_eq_erase, sgn_erase]
+
+theorem wedge_contr_add {m : ℕ} (i : Fin m) (w : Ext m) :
+    wedge i (contr i w) + contr i (wedge i w) = w := by
+  funext S
+  by_cases hS : i ∈ S
+  · simp [wedge, contr, hS, sgn_erase, ← mul_assoc, sgn_mul_self, Finset.insert_erase hS]
+  · simp [wedge, contr, hS, sgn_insert, ← mul_assoc, sgn_mul_self, Finset.erase_insert hS]
+
+example : wedge (0 : Fin 2) (wedge 1 (Pi.single ∅ 1)) Finset.univ = 1 ∧
+    wedge (1 : Fin 2) (wedge 0 (Pi.single ∅ 1)) Finset.univ = -1 := by
+  have e₁ : (Finset.univ : Finset (Fin 2)).erase 0 = {1} := by decide
+  have e₂ : (Finset.univ : Finset (Fin 2)).erase 1 = {0} := by decide
+  have e₃ : ((Finset.univ : Finset (Fin 2)).filter (· = 0)).card = 1 := by decide
+  have e₄ : (({1} : Finset (Fin 2)).filter (· = 0)).card = 0 := by decide
+  simp [wedge, sgn, e₁, e₂, e₃, e₄]
+
+end GlobalTheory.TorsionForm
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open Matrix Set
+open GlobalTheory.IndefiniteRowSideFullHecke.SiegelReframe
+
+namespace GlobalTheory.TorsionForm
+
+def IsDatum {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {g : ℕ} (B : Set E)
+    (τ : E → Matrix (Fin g) (Fin g) ℂ) (M : Submodule ℤ (Fl g)) (j : Fl g → Pt E g → ℂ)
+    (h : Pt E g → ℝ) : Prop :=
+  IsPeriodMap B τ ∧ IsLat M ∧ IsFactor B τ M j ∧ IsMetric B τ M j h
+
+def BaseChange : Prop :=
+  ∀ (E E' : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] [FiniteDimensional ℂ E]
+    [NormedAddCommGroup E'] [NormedSpace ℂ E'] [FiniteDimensional ℂ E'] (g n : ℕ) (B : Set E)
+    (τ : E → Matrix (Fin g) (Fin g) ℂ) (M : Submodule ℤ (Fl g)) (j : Fl g → Pt E g → ℂ)
+    (h : Pt E g → ℝ), IsDatum B τ M j h → ∀ (B' : Set E') (φ : E' → E), IsOpen B' →
+    DifferentiableOn ℂ φ B' → MapsTo φ B' B → ∀ (β : Fin n → E'), ∀ b ∈ B', ∀ T,
+      IsTorsionForm (τ ∘ φ) M (fun l P => j l (φ P.1, P.2)) (fun P => h (φ P.1, P.2)) β b T ↔
+        IsTorsionForm τ M j h (fun i => fderiv ℂ φ b (β i)) (φ b) T
+
+def OneVector : Prop :=
+  ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] [FiniteDimensional ℂ E] (g n : ℕ) (B : Set E)
+    (τ : E → Matrix (Fin g) (Fin g) ℂ) (M : Submodule ℤ (Fl g)) (j : Fl g → Pt E g → ℂ)
+    (h : Pt E g → ℝ), IsDatum B τ M j h → ∀ (β : Fin n → E) (a : Fin n → ℂ), ∀ b ∈ B, ∀ T,
+      IsTorsionForm τ M j h β b T → ∃ T', IsTorsionForm τ M j h ![∑ i, a i • β i] b T' ∧
+        T' ∅ = T ∅ ∧
+        T' Finset.univ = ∑ i, ∑ k, a i * star (a k) * T {i.castAdd n, k.natAdd n}
+
+def IsometryInv : Prop :=
+  ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] [FiniteDimensional ℂ E] (g n : ℕ) (B : Set E)
+    (τ : E → Matrix (Fin g) (Fin g) ℂ) (M : Submodule ℤ (Fl g)) (j j' : Fl g → Pt E g → ℂ)
+    (h h' : Pt E g → ℝ) (φ : Pt E g → ℂ), IsDatum B τ M j h → IsDatum B τ M j' h' →
+    IsBundleIso B τ M j j' φ → IsIsometry B h h' φ → ∀ (β : Fin n → E), ∀ b ∈ B, ∀ T,
+      IsTorsionForm τ M j h β b T → IsTorsionForm τ M j' h' β b T
+
+def TranslationInv : Prop :=
+  ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] [FiniteDimensional ℂ E] (g n : ℕ) (B : Set E)
+    (τ : E → Matrix (Fin g) (Fin g) ℂ) (M : Submodule ℤ (Fl g)) (j : Fl g → Pt E g → ℂ)
+    (h : Pt E g → ℝ), IsDatum B τ M j h → ∀ (x : Fl g) (β : Fin n → E), ∀ b ∈ B, ∀ T,
+      IsTorsionForm τ M j h β b T →
+        IsTorsionForm τ M (translPullFactor τ x j) (fun P => h (transl τ x P)) β b T
+
+def SymplecticInv : Prop :=
+  ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] [FiniteDimensional ℂ E] (g n : ℕ) (B : Set E)
+    (τ : E → Matrix (Fin g) (Fin g) ℂ) (M : Submodule ℤ (Fl g)) (γ : Sp g) (j : Fl g → Pt E g → ℂ)
+    (h : Pt E g → ℝ), IsPeriodMap B τ → IsDatum B (fun b => moeb γ (τ b)) (latAct M γ) j h →
+    ∀ (β : Fin n → E), ∀ b ∈ B, ∀ T, IsTorsionForm (fun b => moeb γ (τ b)) (latAct M γ) j h β b T →
+      IsTorsionForm τ M (fun l P => j (l ᵥ* (γ⁻¹).mat) (reframe τ γ P)) (fun P => h (reframe τ γ P))
+        β b T
+
+open Classical in
+
+def twistFactor {E : Type} {g : ℕ} (M M' : Submodule ℤ (Fl g))
+    (χ : AddChar (M' ⧸ M.submoduleOf M') ℂ) (j : Fl g → Pt E g → ℂ) (l : Fl g) (P : Pt E g) : ℂ :=
+  if hl : l ∈ M' then χ (Submodule.Quotient.mk ⟨l, hl⟩) * j l P else 0
+
+def CoverSum : Prop :=
+  ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] [FiniteDimensional ℂ E] (g n : ℕ) (B : Set E)
+    (τ : E → Matrix (Fin g) (Fin g) ℂ) (M M' : Submodule ℤ (Fl g)) (j : Fl g → Pt E g → ℂ)
+    (h : Pt E g → ℝ), IsDatum B τ M' j h → IsLat M → M ≤ M' → ∀ (β : Fin n → E), ∀ b ∈ B,
+    ∀ T : AddChar (M' ⧸ M.submoduleOf M') ℂ → Ext (n + n),
+      (∀ χ, IsTorsionForm τ M' (twistFactor M M' χ j) h β b (T χ)) →
+      IsTorsionForm τ M j h β b (∑ᶠ χ, T χ)
+
+def FlatAcyclic : Prop :=
+  ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] [FiniteDimensional ℂ E] (g : ℕ) (B : Set E)
+    (τ : E → Matrix (Fin g) (Fin g) ℂ) (M : Submodule ℤ (Fl g)) (j : Fl g → Pt E g → ℂ)
+    (h : Pt E g → ℝ), IsDatum B τ M j h → ChernIsFlat B τ h → ∀ b ∈ B, IsAcyclicAt τ M j h b
+
+end GlobalTheory.TorsionForm
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open Matrix MeasureTheory Set Filter Topology
+open GlobalTheory.IndefiniteRowSideFullHecke.SiegelReframe
+open scoped Real ContDiff ComplexConjugate
+
+namespace GlobalTheory.TorsionForm
+
+def str {m g : ℕ} (K : Ext (m + g) →L[ℂ] Ext (m + g)) : Ext m := fun S =>
+  ∑ I : Finset (Fin g), (-1) ^ I.card * K (Pi.single (join ∅ I) 1) (join S I)
+
+def baseMul {n : ℕ} (k : Matrix (Fin n) (Fin n) ℂ) (w : Ext (n + n)) : Ext (n + n) :=
+  ∑ i, ∑ l, k i l • wedge (i.castAdd n) (wedge (l.natAdd n) w)
+
+variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {g n : ℕ}
+  (τ : E → Matrix (Fin g) (Fin g) ℂ) (M : Submodule ℤ (Fl g)) (j : Fl g → Pt E g → ℂ)
+  (h : Pt E g → ℝ) (β : Fin n → E)
+
+def IsHeatTraceWith (b : E) (k : Matrix (Fin n) (Fin n) ℂ) (F : ℝ → Ext (n + n)) : Prop :=
+  ∃ D : Set (Fl g), IsAddFundamentalDomain M D volume ∧ ∀ u > 0, ∃ K,
+    IsHeatKernel τ M j h β b u D K ∧
+      F u = phi (∫ x in D, (strN (K 1 (per (τ b) x) (per (τ b) x)) +
+        ((u : ℂ)⁻¹) • baseMul k (str (K 1 (per (τ b) x) (per (τ b) x)))))
+
+def IsTorsionFormWith (b : E) (k : Matrix (Fin n) (Fin n) ℂ) (T : Ext (n + n)) : Prop :=
+  ∃ F, IsHeatTraceWith τ M j h β b k F ∧ ∀ S, IsMellinDeriv (fun u => F u S) (T S)
+
+def IsClosedHerm (B : Set E) (k : E → E →ₗ[ℂ] E →ₗ⋆[ℂ] ℂ) : Prop :=
+  (∀ v w, ContDiffOn ℝ ∞ (fun b => k b v w) B) ∧ ∀ b ∈ B, (∀ v w, k b w v = conj (k b v w)) ∧
+    ∀ u v w, d10 (fun x => k x v w) b u = d10 (fun x => k x u w) b v
+
+theorem isTorsionFormWith_zero (b : E) (T : Ext (n + n)) :
+    IsTorsionFormWith τ M j h β b 0 T ↔ IsTorsionForm τ M j h β b T := by
+  simp [IsTorsionFormWith, IsTorsionForm, IsHeatTraceWith, IsHeatTrace, baseMul]
+
+example (k : ℂ) : baseMul (n := 1) (of fun _ _ => k) (Pi.single ∅ 1) Finset.univ = k := by
+  have e₁ : (Finset.univ : Finset (Fin 2)).erase 0 = {1} := by decide
+  have e₄ : (({1} : Finset (Fin 2)).filter (· = 0)).card = 0 := by decide
+  have e₅ : Fin.castAdd 1 (0 : Fin 1) = (0 : Fin 2) := rfl
+  have e₆ : Fin.natAdd 1 (0 : Fin 1) = (1 : Fin 2) := rfl
+  simp [baseMul, wedge, sgn, e₁, e₄, e₅, e₆]
+
+end GlobalTheory.TorsionForm
+end
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -302,3 +571,5 @@ def ArithRiemannRoch : Prop :=
     AmpleVanishing
 
 end GlobalTheory.Published
+end
+end

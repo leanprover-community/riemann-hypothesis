@@ -51,12 +51,6 @@ theorem colE_mem (p : ℕ) (β : n → k) : colE c (p + 1) β ∈ N k n c p := b
   rintro (r | r) (s | s) h <;> simp [colE, upU, lev, Matrix.one_apply] at h ⊢
   omega
 
-theorem rowE_not_mem (l : Fin c) (u : n → k) (hu : u ≠ 0) : rowE c (l.val + 1) u ∉ N k n c (l.val + 1) := by
-  rw [mem_N_iff]
-  intro h
-  apply hu
-  funext s
-  simpa [rowE, lowU] using h (Sum.inr l) (Sum.inl s) (by simp [lev])
 
 theorem simple_entry_mul {p : ℕ} {g h : GL (n ⊕ Fin c) k} (hg : InN p g) (hh : InN p h) (i j : Fin c)
     (hij : j.val = i.val + 1) : (g * h).val (Sum.inr i) (Sum.inr j) =
@@ -123,34 +117,7 @@ theorem simpleSum_conj (u : GL (n ⊕ Fin c) k) (g : GL n k) :
     simp [embX, fromBlocks_multiply]
   simp only [simpleSum, hv]
 
-theorem simpleSum_row_col (l : Fin c) (hl : l.val + 1 < c) (u β : n → k) :
-    simpleSum (rowE c (l.val + 1) u * colE c (l.val + 1 + 1) β * (rowE c (l.val + 1) u)⁻¹) = u ⬝ᵥ β := by
-  have hv : ∀ i j : Fin c, (rowE c (l.val + 1) u * colE c (l.val + 1 + 1) β * (rowE c (l.val + 1) u)⁻¹).val
-      (Sum.inr i) (Sum.inr j) = (if i = l ∧ j.val = l.val + 1 then u ⬝ᵥ β else 0) + (1 : Matrix _ _ k) i j := by
-    intro i j
-    show ((fromBlocks 1 0 _ 1 * fromBlocks 1 _ 0 1 * fromBlocks 1 0 _ 1 : Matrix (n ⊕ Fin c) (n ⊕ Fin c) k)) _ _ = _
-    simp only [fromBlocks_multiply, fromBlocks_apply₂₂]
-    by_cases hi : i = l <;> by_cases hj : j.val = l.val + 1 <;>
-      simp [Matrix.mul_apply, Matrix.one_apply, dotProduct, hi, hj, Fin.val_inj]
-  simp only [simpleSum, hv]
-  rw [Finset.sum_eq_single l, Finset.sum_eq_single ⟨l.val + 1, hl⟩]
-  · simp [Matrix.one_apply, Fin.ext_iff]
-  · intro j _ hj
-    rw [if_neg]; intro h; exact hj (Fin.ext h)
-  · simp
-  · intro i _ hi
-    refine Finset.sum_eq_zero fun j _ => ?_
-    split_ifs with h1 h2
-    · exact absurd h2.1 hi
-    · have : i ≠ j := by rintro rfl; omega
-      simp [this]
-    · rfl
-  · simp
 
-theorem affPt_block {n' : Type*} [Fintype n'] [DecidableEq n'] (p : ℕ) (x₀ : Matrix n n' k)
-    (e : {rs : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1)) // Free p rs} → k) (r : n) (s : n') :
-    affPt p x₀ e (Sum.inl r) (Sum.inl s) = x₀ r s := by
-  simp [affPt, basePt, Free]
 
 theorem free_last {n' : Type*} (p : ℕ) (hp : p ≤ c) (r : n ⊕ Fin c) :
     Free (n := n) (n' := n') p (r, Sum.inr (Fin.last c)) := by
@@ -219,14 +186,6 @@ theorem coord_embedding (p : ℕ) : MeasurableEmbedding
     · simp only [mkN, Matrix.of_apply, dif_neg h]
       exact (mem_N_iff.1 g.2 r s (not_lt.1 h)).symm
 
-theorem volN_ne_zero (ν : Measure k) [SigmaFinite ν] (hν : ν ≠ 0) (p : ℕ) : volN ν n c p ≠ 0 := by
-  classical
-  intro h
-  have h1 : volN ν n c p Set.univ = 0 := by rw [h]; rfl
-  unfold volN at h1
-  rw [(coord_embedding (k := k) (n := n) (c := c) p).1.comap_apply, Set.image_univ, (coord_embedding (k := k) (n := n) (c := c) p).2.range_eq, Measure.pi_univ] at h1
-  obtain ⟨_, _, h2⟩ := Finset.prod_eq_zero_iff.1 h1
-  exact hν (Measure.measure_univ_eq_zero.1 h2)
 
 end meas
 
@@ -249,53 +208,6 @@ def reg (G : Type*) [Group G] : Representation ℂ G (G →₀ ℂ) where
   map_one' := by ext; simp
   map_mul' g h := by ext; simp [mul_assoc]
 
-theorem reg_single {G : Type*} [Group G] (g h : G) (x : ℂ) :
-    reg G g (Finsupp.single h x) = Finsupp.single (g * h) x := by simp [reg]
 
-theorem exists_isPos (ψ : AddChar k Circle) (p : ℕ) :
-    ∃ b : (GL n k →₀ ℂ) →ₗ[ℂ] (GL (n ⊕ Fin c) k →₀ ℂ) →ₗ[ℂ] ℂ,
-      IsPos ψ p (reg (GL n k))
-        (reg (GL (n ⊕ Fin c) k)) b ∧ b ≠ 0 := by
-  let w : GL n k → ℂ := fun g =>
-    ((nabs k (Matrix.GeneralLinearGroup.det g) ^ (((c : ℝ) + 1) / 2 - p) : ℝ) : ℂ)
-  have hw : ∀ g g', w (g * g') = w g * w g' := by
-    intro g g'
-    simp only [w, nabs, map_mul, NNReal.coe_mul]
-    rw [Real.mul_rpow (NNReal.coe_nonneg _) (NNReal.coe_nonneg _)]; push_cast; rfl
-  let b : (GL n k →₀ ℂ) →ₗ[ℂ] (GL (n ⊕ Fin c) k →₀ ℂ) →ₗ[ℂ] ℂ :=
-    Finsupp.linearCombination ℂ fun g => Finsupp.linearCombination ℂ fun h => w g * chi ψ p ((embX c g)⁻¹ * h)
-  have hb : ∀ g h x y, b (Finsupp.single g x) (Finsupp.single h y) = x * (y * (w g * chi ψ p ((embX c g)⁻¹ * h))) := by
-    intro g h x y; simp [b]
-  refine ⟨b, ⟨?_, ?_⟩, ?_⟩
-  · intro φ u hu v
-    induction φ using Finsupp.induction_linear with
-    | zero => simp
-    | add a a' h1 h2 => simp only [map_add, LinearMap.add_apply, h1, h2]; ring
-    | single g x =>
-      induction v using Finsupp.induction_linear with
-      | zero => simp
-      | add a a' h1 h2 => simp only [map_add, h1, h2]; ring
-      | single h y =>
-        rw [reg_single, hb, hb,
-          show (embX c g)⁻¹ * (u * h) = ((embX c g)⁻¹ * u * embX c g) * ((embX c g)⁻¹ * h) by group,
-          chi_mul ψ p (conj_mem hu g), simpleSum_conj]
-        ring
-  · intro g' φ v
-    induction φ using Finsupp.induction_linear with
-    | zero => simp
-    | add a a' h1 h2 => simp only [map_add, LinearMap.add_apply, h1, h2]; ring
-    | single g x =>
-      induction v using Finsupp.induction_linear with
-      | zero => simp
-      | add a a' h1 h2 => simp only [map_add, h1, h2]; ring
-      | single h y =>
-        rw [reg_single, reg_single, hb, hb,
-          hw, show (embX c (g' * g))⁻¹ * (embX c g' * h) = (embX c g)⁻¹ * h by rw [map_mul]; group]
-        simp only [w]; ring
-  · intro h0
-    have := hb 1 1 1 1
-    rw [h0] at this
-    simp [w, nabs, chi, one_mem] at this
-    exact Circle.coe_ne_zero _ this.symm
 
 end GlobalTheory.RootEx.Model

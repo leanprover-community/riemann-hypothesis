@@ -63,27 +63,8 @@ theorem hyp (A B : HSp D) (hA : HSpace.SigOK A) (hB : HSpace.SigOK B) (ha : 1 �
   simp only [wcoef, e2, Module.End.one_apply] at h1
   simp only [swSec, e1, Module.End.one_apply, GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero.evZero_delta, h1]
 
-theorem hyp_definite (D : D7) {n m : ℕ} (hn : 1 ≤ n) (hm : n < m) :
-    ∃ A B : HSp D, A.rank = n ∧ B.rank = m ∧ wittIndex B = 0 ∧ Hyp A B :=
-  ⟨Inh.P D n, Inh.P D m, rfl, rfl, wittIndex_eq_zero_iff_isAniso.2 (GlobalTheory.ThetaMean.Model.isAniso_posSpace _),
-    hyp _ _ (Examples₂.posSpace_sigOK _ _) (Examples₂.posSpace_sigOK _ _) hn hm⟩
 
-theorem hyp_indefinite (D : D7) : ∃ A B : HSp D, 1 ≤ A.rank ∧ A.rank < B.rank ∧ B.rank ≤ 2 * A.rank ∧
-    A.rank + wittIndex B < B.rank ∧ (∀ τ, B.sig τ = (8, 1)) ∧ HSpace.SigOK B ∧ Hyp A B := by
-  have h := Examples₂.lorentzSpace_signature_ok (E := D.host.E) Examples₂.star_isIntegral
-  have h1 : Formalism.MainNotions.SchurIrreducible.wittIdx (Examples₂.lorentzSpace (E := D.host.E) Examples₂.star_isIntegral) ≤ 1 :=
-    (WittSignature.wittIdx_le_signature _ _ h D.host.φ₀ (D.sp.cm.cmUnram.2.1 D.host.φ₀)).2
-  refine ⟨Inh.P D 5, Examples₂.lorentzSpace Examples₂.star_isIntegral, (by decide : 1 ≤ 5), (by decide : 5 < 8 + 1),
-    (by decide : 8 + 1 ≤ 2 * 5), ?_, fun _ => rfl, h,
-    hyp _ _ (Examples₂.posSpace_sigOK _ _) h (by decide : 1 ≤ 5) (by decide : 5 < 8 + 1)⟩
-  rw [← GlobalTheory.RallisIP.wittIdx_eq_wittIndex]
-  exact (Nat.add_le_add_left h1 5).trans_lt (by decide : 5 + 1 < 8 + 1)
 
-theorem conclusion_zero (A B : HSp D) (hab : A.rank < B.rank) (omh : WRep (dblSp A) B) (a : GL (Fin A.rank) (AE D))
-    (ν : Measure (WO A B)) (𝓕 : Set (WO A B)) (mH : Measure (GA D B)) :
-    Eis.EisValueAt A (flat A a (swSec A B omh ν 𝓕 0) (sZero A B)) (sZero A B) (ThetaMean.thetaMean omh mH 0) := by
-  have := GlobalTheory.ThetaMean.Model.conclusion_zero A B omh a ν 𝓕 mH
-  rwa [if_pos hab, one_smul] at this
 
 end GlobalTheory.Core.Rk.IP.FockModel
 

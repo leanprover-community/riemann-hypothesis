@@ -555,13 +555,6 @@ theorem IsCInf.grMet (H : h.IsCInf) : (h.grMet fl i).IsCInf :=
 
 def grLB (H : h.IsCInf) : HermLB p := det (H.grMet fl i)
 
-theorem flagBc_rank_one (h : VMetric p E 1) (fl : Vert.Flag E 1) :
-    h.FlagBcFinite fl ∧ h.flagBc fl = 0 := by
-  have e (σ) : ((h.stepMet fl 0).met σ).bcMeas (stepSeq_shortExact fl 0) (fl.isVB (Fin.castSucc 0))
-      (fl.isVB_gr 0) = 0 := Met.bcMeas_rank_zero _ _ _
-  refine ⟨fun i σ => ?_, ?_⟩
-  · rw [Subsingleton.elim i 0, e]; simp
-  · simp only [flagBc, bcInt, Fin.sum_univ_one, e]; simp
 
 end VMetric
 

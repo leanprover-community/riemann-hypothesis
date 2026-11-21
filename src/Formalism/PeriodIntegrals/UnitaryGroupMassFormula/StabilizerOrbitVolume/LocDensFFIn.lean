@@ -1,6 +1,429 @@
 import Mathlib
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.LocDensFFCnt
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.LocDensFF
 
+section
+noncomputable section
+
+namespace PI.VolStabSW.FFHS
+
+open Module
+
+variable {K : Type} [Field K] {σ : K →+* K}
+
+structure IsSq {V : Type} [AddCommGroup V] [Module K V] (σ : K →+* K) (h : V → V → K) :
+    Prop where
+  add_right : ∀ x y z, h x (y + z) = h x y + h x z
+  smul_right : ∀ (c : K) x y, h x (c • y) = c * h x y
+  herm : ∀ x y, h y x = σ (h x y)
+
+structure IsHS {V : Type} [AddCommGroup V] [Module K V] (σ : K →+* K) (h : V → V → K) : Prop
+    extends IsSq σ h where
+  nondeg : ∀ x, (∀ y, h x y = 0) → x = 0
+
+section basic
+
+variable {V : Type} [AddCommGroup V] [Module K V] {h : V → V → K}
+
+def IsSq.lin (hs : IsSq σ h) (x : V) : V →ₗ[K] K where
+  toFun := h x
+  map_add' := hs.add_right x
+  map_smul' c y := by simp [hs.smul_right]
+
+theorem IsSq.lin_apply (hs : IsSq σ h) (x y : V) : hs.lin x y = h x y := rfl
+
+theorem IsSq.add_left (hs : IsSq σ h) (x y z : V) : h (x + y) z = h x z + h y z := by
+  rw [hs.herm z (x + y), hs.add_right, map_add, ← hs.herm, ← hs.herm]
+
+theorem IsSq.smul_left (hs : IsSq σ h) (c : K) (x y : V) : h (c • x) y = σ c * h x y := by
+  rw [hs.herm y (c • x), hs.smul_right, map_mul, ← hs.herm]
+
+theorem IsSq.zero_right (hs : IsSq σ h) (x : V) : h x 0 = 0 := by
+  have h0 := hs.smul_right 0 x 0
+  simpa using h0
+
+theorem IsSq.zero_left (hs : IsSq σ h) (y : V) : h 0 y = 0 := by
+  rw [hs.herm y 0, hs.zero_right, map_zero]
+
+theorem IsSq.sub_right (hs : IsSq σ h) (x y z : V) : h x (y - z) = h x y - h x z := by
+  rw [sub_eq_add_neg, hs.add_right, ← neg_one_smul K z, hs.smul_right]
+  ring
+
+theorem IsSq.self_fixed (hs : IsSq σ h) (x : V) : σ (h x x) = h x x := by
+  exact (hs.herm x x).symm
+
+theorem IsSq.ext_basis {h' : V → V → K} (hs : IsSq σ h) (hs' : IsSq σ h') {ι : Type}
+    (b : Basis ι K V) (hb : ∀ i j, h (b i) (b j) = h' (b i) (b j)) (x y : V) : h x y = h' x y := by
+  have h1 : ∀ i y, h (b i) y = h' (b i) y := by
+    intro i y
+    have e := b.ext (f₁ := hs.lin (b i)) (f₂ := hs'.lin (b i)) (fun j => hb i j)
+    exact LinearMap.congr_fun e y
+  have h3 : ∀ x y, h y x = h' y x := by
+    intro x y
+    have e := b.ext (f₁ := hs.lin y) (f₂ := hs'.lin y) (fun i => by
+      simp only [IsSq.lin_apply]
+      rw [hs.herm (b i) y, hs'.herm (b i) y, h1])
+    exact LinearMap.congr_fun e x
+  exact h3 y x
+
+theorem exists_aniso (h2 : (2 : K) ≠ 0) (hs : IsHS σ h) (x : V) (hx : x ≠ 0) :
+    ∃ e, h e e ≠ 0 := by
+  by_contra H
+  push_neg at H
+  obtain ⟨y, hy⟩ : ∃ y, h x y ≠ 0 := by
+    by_contra H'
+    push_neg at H'
+    exact hx (hs.nondeg x H')
+  have key : ∀ c : K, c * h x y + σ (c * h x y) = 0 := by
+    intro c
+    have e1 : h (x + c • y) (x + c • y) = h x x + h x (c • y) + (h (c • y) x + h (c • y) (c • y)) := by
+      rw [hs.add_right, IsSq.add_left hs.toIsSq, IsSq.add_left hs.toIsSq]
+      ring
+    rw [H, H, H, hs.herm x (c • y), hs.smul_right] at e1
+    linear_combination -e1
+  have ha : h x y + σ (h x y) = 0 := by simpa using key 1
+  by_cases hσ : ∃ c, σ c ≠ c
+  · obtain ⟨c, hc⟩ := hσ
+    have e2 := key c
+    rw [map_mul] at e2
+    have hsa : σ (h x y) = -(h x y) := by linear_combination ha
+    rw [hsa] at e2
+    have e3 : (c - σ c) * h x y = 0 := by linear_combination e2
+    rcases mul_eq_zero.1 e3 with h0 | h0
+    · exact hc (by linear_combination -h0)
+    · exact hy h0
+  · push_neg at hσ
+    rw [hσ] at ha
+    have e3 : (2 : K) * h x y = 0 := by linear_combination ha
+    rcases mul_eq_zero.1 e3 with h0 | h0
+    · exact h2 h0
+    · exact hy h0
+
+def perp (hs : IsSq σ h) (e : V) : Submodule K V := LinearMap.ker (hs.lin e)
+
+theorem mem_perp (hs : IsSq σ h) (e w : V) : w ∈ perp hs e ↔ h e w = 0 := by
+  exact LinearMap.mem_ker
+
+theorem perp_isHS (hs : IsHS σ h) (e : V) (he : h e e ≠ 0) :
+    IsHS σ (fun w w' : perp hs.toIsSq e => h w w') where
+  add_right x y z := hs.add_right x y z
+  smul_right c x y := hs.smul_right c x y
+  herm x y := hs.herm x y
+  nondeg w hw := by
+    have hq := hs.toIsSq
+    apply Subtype.ext
+    apply hs.nondeg
+    intro y
+    have hm : y - ((h e e)⁻¹ * h e y) • e ∈ perp hq e := by
+      have : (h e e)⁻¹ * h e y * h e e = h e y := by
+        rw [mul_comm, ← mul_assoc, mul_inv_cancel₀ he, one_mul]
+      rw [mem_perp, hq.sub_right, hq.smul_right, this, sub_self]
+    have h1 := hw ⟨_, hm⟩
+    have hwe : h w e = 0 := by rw [hq.herm e w, (mem_perp hq e w).1 w.2, map_zero]
+    calc h w y = h w (((h e e)⁻¹ * h e y) • e + (y - ((h e e)⁻¹ * h e y) • e)) := by
+          rw [add_sub_cancel]
+      _ = ((h e e)⁻¹ * h e y) * h w e + h w (y - ((h e e)⁻¹ * h e y) • e) := by
+          rw [hq.add_right, hq.smul_right]
+      _ = 0 := by rw [hwe, h1]; ring
+
+theorem finrank_perp [FiniteDimensional K V] (hs : IsSq σ h) (e : V) (he : h e e ≠ 0) :
+    finrank K (perp hs e) + 1 = finrank K V := by
+  have hsurj : LinearMap.range (hs.lin e) = ⊤ := by
+    rw [LinearMap.range_eq_top]
+    intro c
+    refine ⟨(c / h e e) • e, ?_⟩
+    rw [IsSq.lin_apply, hs.smul_right, div_mul_cancel₀ _ he]
+  have e1 := LinearMap.finrank_range_add_finrank_ker (hs.lin e)
+  rw [hsurj, finrank_top, Module.finrank_self] at e1
+  unfold perp
+  omega
+
+theorem linIndep_orth (hs : IsSq σ h) {n : ℕ} (f : Fin n → V)
+    (h1 : ∀ i j, i ≠ j → h (f i) (f j) = 0) (h2 : ∀ i, h (f i) (f i) ≠ 0) :
+    LinearIndependent K f := by
+  rw [Fintype.linearIndependent_iff]
+  intro g hg i
+  have e1 := congrArg (hs.lin (f i)) hg
+  rw [map_sum, map_zero] at e1
+  simp only [map_smul, IsSq.lin_apply, smul_eq_mul] at e1
+  rw [Finset.sum_eq_single i] at e1
+  · exact (mul_eq_zero.1 e1).resolve_right (h2 i)
+  · intro j _ hji
+    rw [h1 i j (Ne.symm hji), mul_zero]
+  · simp
+
+theorem decomp_val (hs : IsSq σ h) (e w : V) (hw : h e w = 0) (s : K) :
+    h (s • e + w) (s • e + w) = σ s * s * h e e + h w w := by
+  have hwe : h w e = 0 := by rw [hs.herm e w, hw, map_zero]
+  rw [hs.add_right, IsSq.add_left hs, IsSq.add_left hs, IsSq.smul_left hs, IsSq.smul_left hs, hs.smul_right,
+    hs.smul_right, hw, hwe]
+  ring
+
+end basic
+
+theorem exists_orth (h2 : (2 : K) ≠ 0) : ∀ (m : ℕ) (V : Type) [AddCommGroup V] [Module K V]
+    [FiniteDimensional K V] (h : V → V → K), IsHS σ h → finrank K V = m →
+    ∃ f : Fin m → V, (∀ i j, i ≠ j → h (f i) (f j) = 0) ∧ ∀ i, h (f i) (f i) ≠ 0 := by
+  intro m
+  induction m with
+  | zero =>
+    intro V _ _ _ h hs hm
+    exact ⟨Fin.elim0, fun i => i.elim0, fun i => i.elim0⟩
+  | succ n ih =>
+    intro V _ _ _ h hs hm
+    obtain ⟨x, hx⟩ := Module.finrank_pos_iff_exists_ne_zero.mp (by omega : 0 < finrank K V)
+    obtain ⟨e, he⟩ := exists_aniso h2 hs x hx
+    have hp := perp_isHS hs e he
+    have hr := finrank_perp hs.toIsSq e he
+    obtain ⟨g, hg1, hg2⟩ := ih (perp hs.toIsSq e) (fun w w' => h w w') hp (by omega)
+    refine ⟨Fin.cons e (fun i => (g i : V)), ?_, ?_⟩
+    · intro i j hij
+      induction i using Fin.cases <;> induction j using Fin.cases
+      · exact absurd rfl hij
+      · simp only [Fin.cons_zero, Fin.cons_succ]
+        exact (mem_perp hs.toIsSq e _).1 (g _).2
+      · simp only [Fin.cons_zero, Fin.cons_succ]
+        rw [hs.herm e, (mem_perp hs.toIsSq e _).1 (g _).2, map_zero]
+      · simp only [Fin.cons_succ]
+        exact hg1 _ _ (fun h' => hij (by rw [h']))
+    · intro i
+      induction i using Fin.cases
+      · simpa using he
+      · simpa using hg2 _
+
+end PI.VolStabSW.FFHS
+end
+end
+
+section
+noncomputable section
+
+namespace PI.VolStabSW.FFHS
+
+open Module
+
+variable {K : Type} [Field K] [Fintype K] [DecidableEq K] {σ : K →+* K}
+
+theorem perp_sub_mem {V : Type} [AddCommGroup V] [Module K V] {h : V → V → K} (hs : IsSq σ h)
+    (e x : V) (he : h e e ≠ 0) : x - ((h e e)⁻¹ * h e x) • e ∈ perp hs e := by
+  rw [mem_perp, hs.sub_right, hs.smul_right, mul_right_comm, inv_mul_cancel₀ he, one_mul, sub_self]
+
+theorem card_decomp {V : Type} [AddCommGroup V] [Module K V] [Finite V] {h : V → V → K}
+    (hs : IsSq σ h) (e : V) (he : h e e ≠ 0) (c : K) :
+    Nat.card {x : V // h x x = c} =
+      ∑ t : K, Nat.card {w : perp hs e // h w w = c - σ t * t * h e e} := by
+  classical
+  let T : V → K := fun x => (h e e)⁻¹ * h e x
+  have hTe : ∀ (t : K) (w : perp hs e), T ((t • e) + (w : V)) = t := by
+    intro t w
+    simp only [T]
+    rw [hs.add_right, hs.smul_right, (mem_perp hs e w).1 w.2, add_zero, ← mul_assoc,
+      mul_comm ((h e e)⁻¹) t, mul_assoc, inv_mul_cancel₀ he, mul_one]
+  let eqv : {x : V // h x x = c} ≃ Σ t : K, {w : perp hs e // h w w = c - σ t * t * h e e} :=
+    { toFun := fun x => ⟨T x.1, ⟨⟨x.1 - T x.1 • e, perp_sub_mem hs e x.1 he⟩, by
+        have h1 := decomp_val hs e (x.1 - T x.1 • e)
+          ((mem_perp hs e _).1 (perp_sub_mem hs e x.1 he)) (T x.1)
+        have hx : T x.1 • e + (x.1 - T x.1 • e) = x.1 := by abel
+        rw [hx, x.2] at h1
+        show h (x.1 - T x.1 • e) (x.1 - T x.1 • e) = c - σ (T x.1) * T x.1 * h e e
+        rw [eq_sub_iff_add_eq, add_comm]
+        exact h1.symm⟩⟩
+      invFun := fun p => ⟨p.1 • e + (p.2.1 : V), by
+        rw [decomp_val hs e p.2.1 ((mem_perp hs e _).1 p.2.1.2) p.1]
+        have h2 : h (p.2.1 : V) (p.2.1 : V) = c - σ p.1 * p.1 * h e e := p.2.2
+        rw [h2]
+        ring⟩
+      left_inv := fun x => Subtype.ext (by
+        show T x.1 • e + (x.1 - T x.1 • e) = x.1
+        abel)
+      right_inv := fun p => by
+        refine Sigma.subtype_ext (hTe p.1 p.2.1) (Subtype.ext ?_)
+        show p.1 • e + (p.2.1 : V) - T (p.1 • e + (p.2.1 : V)) • e = (p.2.1 : V)
+        rw [hTe]
+        abel }
+  rw [Nat.card_congr eqv, Nat.card_sigma]
+
+theorem card_norm (q : ℕ) (hq0 : 0 < q) (hK : Fintype.card K = q ^ 2) (hσ : ∀ x, σ (σ x) = x)
+    (h2 : (2 : K) ≠ 0)
+    (hN : ∀ d, σ d = d → Nat.card {t : K // t * σ t = d} = if d = 0 then 1 else q + 1) :
+    ∀ (m : ℕ) (V : Type) [AddCommGroup V] [Module K V] [FiniteDimensional K V]
+      (h : V → V → K), IsHS σ h → finrank K V = m → ∀ c, σ c = c →
+      (Nat.card {x : V // h x x = c} : ℝ) = (q : ℝ) ^ (2 * (m : ℤ) - 1) +
+        (-1) ^ m * (q : ℝ) ^ ((m : ℤ) - 1) * ((if c = 0 then (q : ℝ) else 0) - 1) := by
+  intro m
+  induction m with
+  | zero =>
+    intro V _ _ _ h hh hm c hc
+    haveI : Subsingleton V := Module.finrank_zero_iff.1 hm
+    have hr : (q:ℝ) ≠ 0 := by exact_mod_cast hq0.ne'
+    have hcard : Nat.card {x : V // h x x = c} = if c = 0 then 1 else 0 := by
+      split_ifs with hc0
+      · rw [Nat.card_eq_one_iff_exists]
+        refine ⟨⟨0, by rw [hh.toIsSq.zero_left, hc0]⟩, fun y => Subtype.ext (Subsingleton.elim _ _)⟩
+      · rw [Nat.card_eq_zero]
+        left
+        constructor
+        intro x
+        apply hc0
+        rw [← x.2, Subsingleton.elim x.1 0, hh.toIsSq.zero_left]
+    rw [hcard]
+    split_ifs with hc0
+    · push_cast
+      field_simp
+      ring
+    · push_cast
+      ring
+  | succ m ih =>
+    intro V _ _ _ h hh hm c hc
+    haveI : Nontrivial V := Module.nontrivial_of_finrank_eq_succ hm
+    haveI : Finite V := Module.finite_of_finite K
+    obtain ⟨x0, hx0⟩ := exists_ne (0 : V)
+    obtain ⟨e, he⟩ := exists_aniso h2 hh x0 hx0
+    have hdec := card_decomp hh.toIsSq e he c
+    have haσ : σ (h e e) = h e e := hh.toIsSq.self_fixed e
+    have hperp := perp_isHS hh e he
+    have hfr : finrank K (perp hh.toIsSq e) = m := by
+      have := finrank_perp hh.toIsSq e he
+      omega
+    have hterm : ∀ t : K, (Nat.card {w : perp hh.toIsSq e // h w w = c - σ t * t * h e e} : ℝ) =
+        (q:ℝ) ^ (2 * (m:ℤ) - 1) + (-1) ^ m * (q:ℝ) ^ ((m:ℤ) - 1) *
+          ((if c - σ t * t * h e e = 0 then (q:ℝ) else 0) - 1) := by
+      intro t
+      have hfix : σ (c - σ t * t * h e e) = c - σ t * t * h e e := by
+        rw [map_sub, map_mul, map_mul, hσ, hc, haσ]
+        ring
+      exact ih (perp hh.toIsSq e) (fun w w' => h w w') hperp hfr _ hfix
+    have hP : ∀ t : K, (c - σ t * t * h e e = 0) ↔ t * σ t = c / h e e := by
+      intro t
+      rw [sub_eq_zero, eq_div_iff he]
+      exact ⟨fun h' => by rw [h']; ring, fun h' => by rw [← h']; ring⟩
+    have hcnt : ((Finset.univ.filter (fun t : K => c - σ t * t * h e e = 0)).card : ℝ) =
+        if c = 0 then 1 else (q:ℝ) + 1 := by
+      have hfixd : σ (c / h e e) = c / h e e := by rw [map_div₀, hc, haσ]
+      have h3 := hN (c / h e e) hfixd
+      rw [Nat.card_eq_fintype_card, Fintype.card_subtype] at h3
+      have h4 : (Finset.univ.filter (fun t : K => c - σ t * t * h e e = 0)) =
+          Finset.univ.filter (fun t => t * σ t = c / h e e) := by
+        ext t
+        simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+        exact hP t
+      rw [h4, h3]
+      have h5 : c / h e e = 0 ↔ c = 0 := div_eq_zero_iff.trans (or_iff_left he)
+      by_cases hc0 : c = 0
+      · simp [hc0]
+      · simp [hc0, h5]
+    have hsum : ∑ t : K, ((q:ℝ) ^ (2 * (m:ℤ) - 1) + (-1) ^ m * (q:ℝ) ^ ((m:ℤ) - 1) *
+          ((if c - σ t * t * h e e = 0 then (q:ℝ) else 0) - 1)) =
+        (q:ℝ) * (q:ℝ) * ((q:ℝ) ^ (2 * (m:ℤ) - 1) - (-1) ^ m * (q:ℝ) ^ ((m:ℤ) - 1)) +
+          (-1) ^ m * (q:ℝ) ^ ((m:ℤ) - 1) * (q:ℝ) *
+            (Finset.univ.filter (fun t : K => c - σ t * t * h e e = 0)).card := by
+      have e1 : ∀ t : K, ((q:ℝ) ^ (2 * (m:ℤ) - 1) + (-1) ^ m * (q:ℝ) ^ ((m:ℤ) - 1) *
+          ((if c - σ t * t * h e e = 0 then (q:ℝ) else 0) - 1)) =
+          ((q:ℝ) ^ (2 * (m:ℤ) - 1) - (-1) ^ m * (q:ℝ) ^ ((m:ℤ) - 1)) +
+            (-1) ^ m * (q:ℝ) ^ ((m:ℤ) - 1) * (if c - σ t * t * h e e = 0 then (q:ℝ) else 0) :=
+        fun t => by ring
+      rw [Finset.sum_congr rfl (fun t _ => e1 t), Finset.sum_add_distrib, Finset.sum_const,
+        Finset.card_univ, hK, ← Finset.mul_sum, Finset.sum_ite, Finset.sum_const_zero, add_zero,
+        Finset.sum_const]
+      simp only [nsmul_eq_mul]
+      push_cast
+      ring
+    rw [hdec, Nat.cast_sum, Finset.sum_congr rfl (fun t _ => hterm t), hsum, hcnt]
+    have hr : (q:ℝ) ≠ 0 := by exact_mod_cast hq0.ne'
+    have e2 : (q:ℝ) ^ (2 * ((m + 1 : ℕ) : ℤ) - 1) = (q:ℝ) * (q:ℝ) * (q:ℝ) ^ (2 * (m:ℤ) - 1) := by
+      rw [show (2 * ((m + 1 : ℕ) : ℤ) - 1) = 1 + 1 + (2 * (m:ℤ) - 1) by push_cast; ring,
+        zpow_add₀ hr, zpow_add₀ hr, zpow_one]
+    have e3 : (q:ℝ) ^ (((m + 1 : ℕ) : ℤ) - 1) = (q:ℝ) * (q:ℝ) ^ ((m:ℤ) - 1) := by
+      rw [show (((m + 1 : ℕ) : ℤ) - 1) = 1 + ((m:ℤ) - 1) by push_cast; ring, zpow_add₀ hr, zpow_one]
+    rw [e2, e3, pow_succ]
+    split_ifs <;> ring
+
+theorem card_diag (q : ℕ) (hq0 : 0 < q) (hK : Fintype.card K = q ^ 2) (hσ : ∀ x, σ (σ x) = x)
+    (h2 : (2 : K) ≠ 0)
+    (hN : ∀ d, σ d = d → Nat.card {t : K // t * σ t = d} = if d = 0 then 1 else q + 1) :
+    ∀ (a m : ℕ), a ≤ m → ∀ (V : Type) [AddCommGroup V] [Module K V] [FiniteDimensional K V]
+      (h : V → V → K), IsHS σ h → finrank K V = m → ∀ d : Fin a → K, (∀ i, σ (d i) = d i) →
+      (∀ i, d i ≠ 0) →
+      (Nat.card {Y : Fin a → V // ∀ i j, h (Y i) (Y j) = if i = j then d i else 0} : ℝ) =
+        ∏ j : Fin a, ((q : ℝ) ^ (2 * (m - j) - 1) - (-1) ^ (m - j) * (q : ℝ) ^ (m - j - 1)) := by
+  intro a
+  induction a with
+  | zero =>
+    intro m _ V _ _ _ h hh hm d hd hd0
+    rw [Fin.prod_univ_zero]
+    have h1 : Nat.card {Y : Fin 0 → V // ∀ i j, h (Y i) (Y j) = if i = j then d i else 0} = 1 :=
+      Nat.card_eq_one_iff_exists.2
+        ⟨⟨Fin.elim0, fun i => Fin.elim0 i⟩, fun Y => Subtype.ext (funext fun i => Fin.elim0 i)⟩
+    rw [h1]
+    simp
+  | succ a ih =>
+    intro m ham V _ _ _ h hh hm d hd hd0
+    classical
+    haveI : Finite V := Module.finite_of_finite K
+    haveI := Fintype.ofFinite V
+    obtain ⟨m', rfl⟩ : ∃ m', m = m' + 1 := ⟨m - 1, by omega⟩
+    let eqv : {Y : Fin (a + 1) → V // ∀ i j, h (Y i) (Y j) = if i = j then d i else 0} ≃
+        Σ y0 : {x : V // h x x = d 0}, {Y' : Fin a → perp hh.toIsSq y0.1 //
+          ∀ i j, h (Y' i : V) (Y' j : V) = if i = j then d i.succ else 0} :=
+      { toFun := fun Y => ⟨⟨Y.1 0, by simpa using Y.2 0 0⟩, ⟨fun i => ⟨Y.1 i.succ, by
+            rw [mem_perp]
+            have h3 := Y.2 0 i.succ
+            rwa [if_neg (Fin.succ_ne_zero i).symm] at h3⟩,
+          fun i j => by
+            have h3 := Y.2 i.succ j.succ
+            simpa [Fin.succ_inj] using h3⟩⟩
+        invFun := fun p => ⟨Fin.cons p.1.1 (fun i => (p.2.1 i : V)), by
+          intro i j
+          refine Fin.cases ?_ (fun i => ?_) i <;> refine Fin.cases ?_ (fun j => ?_) j
+          · simpa using p.1.2
+          · simp only [Fin.cons_zero, Fin.cons_succ]
+            rw [if_neg (Fin.succ_ne_zero j).symm]
+            exact (mem_perp _ _ _).1 (p.2.1 j).2
+          · simp only [Fin.cons_zero, Fin.cons_succ]
+            rw [if_neg (Fin.succ_ne_zero i), hh.toIsSq.herm p.1.1 (p.2.1 i),
+              (mem_perp _ _ _).1 (p.2.1 i).2, map_zero]
+          · simp only [Fin.cons_succ, Fin.succ_inj]
+            exact p.2.2 i j⟩
+        left_inv := fun Y => Subtype.ext (Fin.cons_self_tail Y.1)
+        right_inv := fun p => rfl }
+    rw [Nat.card_congr eqv, Nat.card_sigma, Nat.cast_sum]
+    have hfib : ∀ y0 : {x : V // h x x = d 0}, (Nat.card {Y' : Fin a → perp hh.toIsSq y0.1 //
+          ∀ i j, h (Y' i : V) (Y' j : V) = if i = j then d i.succ else 0} : ℝ) =
+        ∏ j : Fin a, ((q:ℝ) ^ (2 * (m' - j) - 1) - (-1) ^ (m' - j) * (q:ℝ) ^ (m' - j - 1)) := by
+      intro y0
+      have hy0 : h y0.1 y0.1 ≠ 0 := by rw [y0.2]; exact hd0 0
+      have hfr : finrank K (perp hh.toIsSq y0.1) = m' := by
+        have := finrank_perp hh.toIsSq y0.1 hy0
+        omega
+      exact ih m' (by omega) (perp hh.toIsSq y0.1) (fun w w' => h w w') (perp_isHS hh y0.1 hy0) hfr
+        (fun i => d i.succ) (fun i => hd i.succ) (fun i => hd0 i.succ)
+    rw [Finset.sum_congr rfl (fun y0 _ => hfib y0), Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+    have hN0 := card_norm q hq0 hK hσ h2 hN (m' + 1) V h hh hm (d 0) (hd 0)
+    rw [← Nat.card_eq_fintype_card, hN0, if_neg (hd0 0), Fin.prod_univ_succ]
+    have z1 : (q:ℝ) ^ (2 * ((m' + 1 : ℕ) : ℤ) - 1) = (q:ℝ) ^ (2 * (m' + 1 - ((0 : Fin (a + 1)) : ℕ)) - 1) := by
+      rw [← zpow_natCast]
+      congr 1
+      simp only [Fin.val_zero]
+      omega
+    have z2 : (q:ℝ) ^ (((m' + 1 : ℕ) : ℤ) - 1) = (q:ℝ) ^ (m' + 1 - ((0 : Fin (a + 1)) : ℕ) - 1) := by
+      rw [← zpow_natCast]
+      congr 1
+      simp only [Fin.val_zero]
+      omega
+    rw [z1, z2]
+    have hP : ∏ j : Fin a, ((q:ℝ) ^ (2 * (m' + 1 - (j.succ : ℕ)) - 1) -
+        (-1) ^ (m' + 1 - (j.succ : ℕ)) * (q:ℝ) ^ (m' + 1 - (j.succ : ℕ) - 1)) =
+        ∏ j : Fin a, ((q:ℝ) ^ (2 * (m' - j) - 1) - (-1) ^ (m' - j) * (q:ℝ) ^ (m' - j - 1)) := by
+      refine Finset.prod_congr rfl fun j _ => ?_
+      rw [Fin.val_succ, Nat.add_sub_add_right]
+    rw [hP]
+    simp only [Fin.val_zero, Nat.sub_zero]
+    ring
+
+end PI.VolStabSW.FFHS
+end
+end
+
+section
 noncomputable section
 
 namespace PI.VolStabSW.FFHS
@@ -300,3 +723,5 @@ theorem fFInert_holds : FFInert := by
     (fun i => hsU.toIsSq.self_fixed (f i)) hnz
 
 end PI.VolStabSW.FFHS
+end
+end

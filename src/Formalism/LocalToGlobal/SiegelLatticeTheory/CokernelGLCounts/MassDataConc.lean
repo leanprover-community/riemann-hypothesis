@@ -108,16 +108,12 @@ theorem inMass_bC (h : (bC X hb hK FdN FdN' u u' X0 L T sd C Th R).ρ0 ≠ 0) :
   change (bC X hb hK FdN FdN' u u' X0 L T sd C Th R).AA / (bC X hb hK FdN FdN' u u' X0 L T sd C Th R).ρ0 * (bC X hb hK FdN FdN' u u' X0 L T sd C Th R).ρ0 = (bC X hb hK FdN FdN' u u' X0 L T sd C Th R).AA
   rw [div_mul_eq_mul_div, mul_div_assoc, div_self h, mul_one]
 
-theorem link_sig (h : T.Gam1 = (bC X hb hK FdN FdN' u u' X0 L T sd C Th R).Gam1) :
-    T.pairSum (T.sc T.genSet) =
-      (bC X hb hK FdN FdN' u u' X0 L T sd C Th R).Gam1 * (bC X hb hK FdN FdN' u u' X0 L T sd C Th R).Sig := pairSum_eq T h
 
 theorem energy_defs :
     (bC X hb hK FdN FdN' u u' X0 L T sd C Th R).e1 = max sd 1 ∧
       (bC X hb hK FdN FdN' u u' X0 L T sd C Th R).δ =
         C * ((D.R.rS : ℝ) + 1) * (C / Th) ^ (Fintype.card (NumberField.InfinitePlace X.B.I.F)) := ⟨rfl, rfl⟩
 
-theorem inJacMod_bC : (bC X hb hK FdN FdN' u u' X0 L T sd C Th R).InJacMod := rfl
 
 theorem scaled_volume_level_subgroup (hV : 0 < X.volK2) (A : AnIn) :
     (Real.sqrt (c0X X u FdN * c0X X u' FdN'))⁻¹ * X.volK2 =
@@ -291,17 +287,7 @@ theorem inOrdinary_bCF (hP : ProdConv X u u' ψ) :
   exact inOrdinary_bC X hb hK FdN FdN' u u' X0 (locOf X u u' ψ) T sd C Th
     ⟨KVOf X u u' vR Q (VConstants X u u' 1 i0 i0' FdN FdN' νq), KtopVOf X u u' M δ (VConstants X u u' 1 i0 i0' FdN FdN' νq)⟩ hP.2.2.2.2.1.ne'
 
-theorem inTypedC_of
-    (h : InTypedAt X hb hK FdN FdN' u u' X0
-      (anOf T (kapN D * Formalism.L2.SG.RealObj.DisintegrationConstant X u u' 1) (Formalism.L2.SG.RealObj.degX X)
-        ((locOf X u u' ψ).volZZ / (((locOf X u u' ψ).localVolumeArchimedean * ∏ p, (locOf X u u' ψ).localVolumeAtPlace p) * (locOf X u u' ψ).volPP) *
-          ((locOf X u u' ψ).volPP * (Formalism.L2.SG.RealObj.IntC X u u' 1 / kapN D)))
-        (Formalism.L2.SG.RealObj.IntC X u u' 1 / kapN D) (Formalism.L2.SG.RealObj.IntOO X u u' 1) sd C Th D.R.rS
-        (Fintype.card (NumberField.InfinitePlace X.B.I.F))
-        ⟨KVOf X u u' vR Q (VConstants X u u' 1 i0 i0' FdN FdN' νq), KtopVOf X u u' M δ (VConstants X u u' 1 i0 i0' FdN FdN' νq)⟩) ψ) :
-    InTypedC X hb hK FdN FdN' u u' X0 ψ T sd C Th vR Q M δ i0 i0' νq := h
 
-theorem inJacMod_bCF : (bCF X hb hK FdN FdN' u u' X0 ψ T sd C Th vR Q M δ i0 i0' νq).InJacMod := rfl
 
 def LevelOneLatticeAgreement : Prop := T.Gam1 = (bCF X hb hK FdN FdN' u u' X0 ψ T sd C Th vR Q M δ i0 i0' νq).Gam1
 

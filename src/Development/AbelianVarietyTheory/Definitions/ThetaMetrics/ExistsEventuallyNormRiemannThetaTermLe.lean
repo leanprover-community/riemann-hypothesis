@@ -25,13 +25,9 @@ theorem IsSiegel.posDef {Ω : Matrix ι ι ℂ} (h : IsSiegel Ω) : (Ω.map Comp
 theorem IsSiegel.mem_siegelH [Fintype ι] {Ω : Matrix ι ι ℂ} (h : IsSiegel Ω) :
     Ω ∈ ReciprocityTheory.PTheta.SiegelH ι := h
 
-theorem IsSiegel.of_mem_siegelH [Fintype ι] {Ω : Matrix ι ι ℂ}
-    (h : Ω ∈ ReciprocityTheory.PTheta.SiegelH ι) : IsSiegel Ω := h
 
 def siegelUpperHalfSpace (ι : Type*) : Set (Matrix ι ι ℂ) := {Ω | IsSiegel Ω}
 
-theorem siegelUpperHalfSpace_eq_siegelH (ι : Type*) [Fintype ι] :
-    siegelUpperHalfSpace ι = ReciprocityTheory.PTheta.SiegelH ι := rfl
 
 @[simp] theorem mem_siegelUpperHalfSpace {Ω : Matrix ι ι ℂ} :
     Ω ∈ siegelUpperHalfSpace ι ↔ IsSiegel Ω := Iff.rfl
@@ -50,17 +46,6 @@ theorem IsSiegel.dotProduct_pos [Fintype ι] {Ω : Matrix ι ι ℂ} (h : IsSieg
     (hx : x ≠ 0) : 0 < x ⬝ᵥ (Ω.map Complex.im *ᵥ x) := by
   simpa using h.posDef.dotProduct_mulVec_pos hx
 
-theorem isSiegel_ofReal_add_I_smul {X Y : Matrix ι ι ℝ} (hX : X.IsSymm) (hY : Y.PosDef) :
-    IsSiegel (X.map ofReal + I • Y.map ofReal) := by
-  have hY' : Y.IsSymm := by
-    ext i j
-    simpa using hY.isHermitian.apply i j
-  refine ⟨?_, ?_⟩
-  · ext i j
-    simp [hX.apply, hY'.apply]
-  · convert hY
-    ext i j
-    simp
 
 theorem isSiegel_diagonal_iff [DecidableEq ι] {τ : ι → ℂ} :
     IsSiegel (diagonal τ) ↔ ∀ i, 0 < (τ i).im := by
@@ -73,16 +58,6 @@ theorem isSiegel_I_smul_one [DecidableEq ι] : IsSiegel (I • (1 : Matrix ι ι
   rw [smul_one_eq_diagonal, isSiegel_diagonal_iff]
   simp
 
-theorem isSiegel_unique_iff [Unique ι] {Ω : Matrix ι ι ℂ} :
-    IsSiegel Ω ↔ 0 < (Ω default default).im := by
-  classical
-  have : Ω = diagonal fun _ => Ω default default := by
-    ext i j
-    obtain rfl := Subsingleton.elim i default
-    obtain rfl := Subsingleton.elim j default
-    simp
-  rw [this, isSiegel_diagonal_iff]
-  simp
 
 theorem IsSiegel.smul {Ω : Matrix ι ι ℂ} (h : IsSiegel Ω) {q : ℝ} (hq : 0 < q) :
     IsSiegel ((q : ℂ) • Ω) := by
@@ -99,29 +74,6 @@ theorem IsSiegel.submatrix {Ω : Matrix ι ι ℂ} (h : IsSiegel Ω) {e : κ →
     (he : Function.Injective e) : IsSiegel (Ω.submatrix e e) :=
   ⟨h.isSymm.submatrix e, h.posDef.submatrix he⟩
 
-theorem isSiegel_fromBlocks_iff [Finite ι] [Finite κ] {Ω₁ : Matrix ι ι ℂ} {Ω₂ : Matrix κ κ ℂ} :
-    IsSiegel (fromBlocks Ω₁ 0 0 Ω₂) ↔ IsSiegel Ω₁ ∧ IsSiegel Ω₂ := by
-  have := Fintype.ofFinite ι
-  have := Fintype.ofFinite κ
-  refine ⟨fun h => ⟨h.submatrix Sum.inl_injective, h.submatrix Sum.inr_injective⟩,
-    fun ⟨h₁, h₂⟩ => IsSiegel.of_dotProduct_pos ?_ fun x hx => ?_⟩
-  · exact IsSymm.fromBlocks h₁.isSymm (by simp) h₂.isSymm
-  · have e : x ⬝ᵥ ((fromBlocks Ω₁ 0 0 Ω₂).map Complex.im *ᵥ x) =
-        (x ∘ Sum.inl) ⬝ᵥ (Ω₁.map Complex.im *ᵥ (x ∘ Sum.inl)) +
-        (x ∘ Sum.inr) ⬝ᵥ (Ω₂.map Complex.im *ᵥ (x ∘ Sum.inr)) := by
-      simp [dotProduct, mulVec, Fintype.sum_sum_type]
-    have n₁ := h₁.posDef.posSemidef.dotProduct_mulVec_nonneg (x ∘ Sum.inl)
-    have n₂ := h₂.posDef.posSemidef.dotProduct_mulVec_nonneg (x ∘ Sum.inr)
-    simp only [star_trivial] at n₁ n₂
-    rw [e]
-    by_cases hl : x ∘ Sum.inl = 0
-    · have hr : x ∘ Sum.inr ≠ 0 := fun hr => hx (by
-        funext i
-        rcases i with i | i
-        · exact congrFun hl i
-        · exact congrFun hr i)
-      linarith [h₂.dotProduct_pos hr]
-    · linarith [h₁.dotProduct_pos hl]
 
 theorem isSiegel_example : IsSiegel !![1 + 2 * I, 1 / 2 + I; 1 / 2 + I, 2 * I] := by
   refine IsSiegel.of_dotProduct_pos ?_ fun x hx => ?_
@@ -214,8 +166,6 @@ theorem IsSiegel.eventually_isSiegel {Ω : Matrix ι ι ℂ} (h : IsSiegel Ω) :
 def riemannThetaTerm (a b : ι → ℝ) (Ω : Matrix ι ι ℂ) (v : ι → ℂ) (n : ι → ℤ) : ℂ :=
   ReciprocityTheory.PTheta.thetaTerm a b v Ω n
 
-theorem riemannThetaTerm_eq_thetaTerm (a b : ι → ℝ) (Ω : Matrix ι ι ℂ) (v : ι → ℂ) (n : ι → ℤ) :
-    riemannThetaTerm a b Ω v n = ReciprocityTheory.PTheta.thetaTerm a b v Ω n := rfl
 
 theorem riemannThetaTerm_def (a b : ι → ℝ) (Ω : Matrix ι ι ℂ) (v : ι → ℂ) (n : ι → ℤ) :
     riemannThetaTerm a b Ω v n =
@@ -227,8 +177,6 @@ attribute [eqns riemannThetaTerm_def] riemannThetaTerm
 def riemannTheta (a b : ι → ℝ) (Ω : Matrix ι ι ℂ) (v : ι → ℂ) : ℂ :=
   ReciprocityTheory.PTheta.theta a b v Ω
 
-theorem riemannTheta_eq_theta (a b : ι → ℝ) (Ω : Matrix ι ι ℂ) (v : ι → ℂ) :
-    riemannTheta a b Ω v = ReciprocityTheory.PTheta.theta a b v Ω := rfl
 
 theorem riemannTheta_def (a b : ι → ℝ) (Ω : Matrix ι ι ℂ) (v : ι → ℂ) :
     riemannTheta a b Ω v = ∑' n : ι → ℤ, riemannThetaTerm a b Ω v n := rfl
@@ -376,12 +324,6 @@ theorem hasSumLocallyUniformlyOn_riemannTheta (a b : ι → ℝ) :
   rw [hasSumUniformlyOn_iff_tendstoUniformlyOn]
   exact tendstoUniformlyOn_tsum (summable_riemannThetaBound a hc S) fun n q hq => hq n
 
-theorem IsSiegel.hasSumLocallyUniformly_riemannTheta {Ω : Matrix ι ι ℂ} (h : IsSiegel Ω)
-    (a b : ι → ℝ) :
-    HasSumLocallyUniformly (fun n v => riemannThetaTerm a b Ω v n) (riemannTheta a b Ω) := by
-  rw [hasSumLocallyUniformly_iff_tendstoLocallyUniformly, ← tendstoLocallyUniformlyOn_univ]
-  exact (hasSumLocallyUniformlyOn_riemannTheta a b).comp (t := Set.univ) (fun v => (v, Ω))
-    (fun v _ => ⟨trivial, h⟩) (by fun_prop)
 
 theorem continuous_riemannThetaTerm (a b : ι → ℝ) (n : ι → ℤ) :
     Continuous fun p : (ι → ℂ) × Matrix ι ι ℂ => riemannThetaTerm a b p.2 p.1 n := by
@@ -428,15 +370,6 @@ theorem hasFDerivAt_riemannThetaTerm (a b : ι → ℝ) (Ω : Matrix ι ι ℂ) 
   simp only [e]
   exact ((riemannThetaForm a n).hasFDerivAt.const_add _).cexp
 
-theorem IsSiegel.summable_norm_riemannThetaTerm_smul_form {Ω : Matrix ι ι ℂ} (h : IsSiegel Ω)
-    (a b : ι → ℝ) (v : ι → ℂ) :
-    Summable fun n => ‖riemannThetaTerm a b Ω v n • riemannThetaForm a n‖ := by
-  obtain ⟨c, hc, hY⟩ := posDef_exists_mul_dotProduct_le h.posDef
-  refine ((summable_pow_mul_riemannThetaBound a hc ‖v‖ 1).mul_left (2 * π)).of_nonneg_of_le
-    (fun _ => norm_nonneg _) fun n => ?_
-  rw [norm_smul, pow_one, ← mul_assoc, mul_comm]
-  exact mul_le_mul (norm_riemannThetaForm_le a n)
-    (norm_riemannThetaTerm_le a b hY (abs_im_apply_le_norm v) n) (norm_nonneg _) (by positivity)
 
 theorem IsSiegel.hasFDerivAt_riemannTheta {Ω : Matrix ι ι ℂ} (h : IsSiegel Ω)
     (a b : ι → ℝ) (v : ι → ℂ) :
@@ -461,9 +394,6 @@ theorem IsSiegel.differentiable_riemannTheta {Ω : Matrix ι ι ℂ} (h : IsSieg
     (a b : ι → ℝ) : Differentiable ℂ (riemannTheta a b Ω) :=
   fun v => (h.hasFDerivAt_riemannTheta a b v).differentiableAt
 
-theorem IsSiegel.continuous_riemannTheta {Ω : Matrix ι ι ℂ} (h : IsSiegel Ω)
-    (a b : ι → ℝ) : Continuous (riemannTheta a b Ω) :=
-  (h.differentiable_riemannTheta a b).continuous
 
 theorem cexp_two_pi_I_dotProduct_intCast (n m : ι → ℤ) :
     cexp (2 * π * I * ((fun i => (n i : ℂ)) ⬝ᵥ fun i => (m i : ℂ))) = 1 := by
@@ -561,28 +491,7 @@ theorem riemannTheta_add_mulVec_intCast {Ω : Matrix ι ι ℂ} (h : Ω.IsSymm) 
   rw [riemannTheta_char_add_intCast_left] at this
   simpa only [ofReal_intCast] using this
 
-theorem riemannTheta_add_lattice {Ω : Matrix ι ι ℂ} (h : Ω.IsSymm) (a b : ι → ℝ)
-    (v : ι → ℂ) (m k : ι → ℤ) :
-    riemannTheta a b Ω (v + ((fun i => (m i : ℂ)) + Ω *ᵥ fun i => (k i : ℂ))) =
-      cexp (2 * π * I * (((fun i => (a i : ℂ)) ⬝ᵥ fun i => (m i : ℂ)) -
-        ((fun i => (b i : ℂ)) ⬝ᵥ fun i => (k i : ℂ)) -
-        ((fun i => (k i : ℂ)) ⬝ᵥ (Ω *ᵥ fun i => (k i : ℂ))) / 2 - (fun i => (k i : ℂ)) ⬝ᵥ v)) *
-        riemannTheta a b Ω v := by
-  have : (fun i => v i + (b i : ℂ)) = v + fun i => (b i : ℂ) := rfl
-  rw [add_comm (fun i => (m i : ℂ)), ← add_assoc, riemannTheta_add_intCast,
-    riemannTheta_add_mulVec_intCast h, ← mul_assoc, ← Complex.exp_add, this, dotProduct_add,
-    dotProduct_comm (fun i => (k i : ℂ)) fun i => (b i : ℂ)]
-  congr 2
-  ring
 
-theorem riemannTheta_eq_cexp_mul_zero_zero {Ω : Matrix ι ι ℂ} (h : Ω.IsSymm) (a b : ι → ℝ)
-    (v : ι → ℂ) :
-    riemannTheta a b Ω v =
-      cexp (2 * π * I * (((fun i => (a i : ℂ)) ⬝ᵥ (Ω *ᵥ fun i => (a i : ℂ))) / 2 +
-        (fun i => (a i : ℂ)) ⬝ᵥ fun i => v i + b i)) *
-        riemannTheta 0 0 Ω (v + (fun i => (b i : ℂ)) + Ω *ᵥ fun i => (a i : ℂ)) := by
-  rw [riemannTheta_add_mulVec_ofReal h, riemannTheta_add_ofReal, ← mul_assoc, ← Complex.exp_add]
-  simp
 
 theorem riemannThetaTerm_neg (a b : ι → ℝ) (Ω : Matrix ι ι ℂ) (v : ι → ℂ) (n : ι → ℤ) :
     riemannThetaTerm a b Ω (-v) (-n) = riemannThetaTerm (-a) (-b) Ω v n := by
@@ -600,9 +509,6 @@ theorem riemannTheta_neg (a b : ι → ℝ) (Ω : Matrix ι ι ℂ) (v : ι → 
   simp only [riemannTheta_def, ← riemannThetaTerm_neg]
   exact ((Equiv.neg (ι → ℤ)).tsum_eq (riemannThetaTerm a b Ω (-v))).symm
 
-theorem riemannTheta_zero_zero_neg (Ω : Matrix ι ι ℂ) (v : ι → ℂ) :
-    riemannTheta 0 0 Ω (-v) = riemannTheta 0 0 Ω v := by
-  rw [riemannTheta_neg, neg_zero]
 
 theorem riemannTheta_half_neg (α β : ι → ℤ) (Ω : Matrix ι ι ℂ) (v : ι → ℂ) :
     riemannTheta (fun i => (α i : ℝ) / 2) (fun i => (β i : ℝ) / 2) Ω (-v) =
@@ -746,91 +652,21 @@ theorem riemannTheta_fin_one (z τ : ℂ) : riemannTheta 0 0 !![τ] ![z] = jacob
   rw [riemannTheta_unique_zero_zero]
   simp
 
-theorem riemannTheta_submatrix_equiv (e : κ ≃ ι) (a b : ι → ℝ) (Ω : Matrix ι ι ℂ) (v : ι → ℂ) :
-    riemannTheta (a ∘ e) (b ∘ e) (Ω.submatrix e e) (v ∘ e) = riemannTheta a b Ω v := by
-  rw [riemannTheta_def, riemannTheta_def, ← (Equiv.arrowCongr e (Equiv.refl ℤ)).symm.tsum_eq]
-  refine tsum_congr fun n => ?_
-  simp only [riemannThetaTerm_eq_sum, ← e.sum_comp]
-  simp
 
-theorem riemannThetaTerm_fromBlocks (a₁ b₁ : ι → ℝ) (a₂ b₂ : κ → ℝ) (Ω₁ : Matrix ι ι ℂ)
-    (Ω₂ : Matrix κ κ ℂ) (v₁ : ι → ℂ) (v₂ : κ → ℂ) (n₁ : ι → ℤ) (n₂ : κ → ℤ) :
-    riemannThetaTerm (Sum.elim a₁ a₂) (Sum.elim b₁ b₂) (fromBlocks Ω₁ 0 0 Ω₂) (Sum.elim v₁ v₂)
-        (Sum.elim n₁ n₂) =
-      riemannThetaTerm a₁ b₁ Ω₁ v₁ n₁ * riemannThetaTerm a₂ b₂ Ω₂ v₂ n₂ := by
-  simp only [riemannThetaTerm_eq_sum, ← Complex.exp_add, Fintype.sum_sum_type]
-  congr 1
-  simp
-  ring
 
-theorem riemannTheta_fromBlocks {Ω₁ : Matrix ι ι ℂ} {Ω₂ : Matrix κ κ ℂ} (h₁ : IsSiegel Ω₁)
-    (h₂ : IsSiegel Ω₂) (a₁ b₁ : ι → ℝ) (a₂ b₂ : κ → ℝ) (v₁ : ι → ℂ) (v₂ : κ → ℂ) :
-    riemannTheta (Sum.elim a₁ a₂) (Sum.elim b₁ b₂) (fromBlocks Ω₁ 0 0 Ω₂) (Sum.elim v₁ v₂) =
-      riemannTheta a₁ b₁ Ω₁ v₁ * riemannTheta a₂ b₂ Ω₂ v₂ := by
-  rw [riemannTheta_def, riemannTheta_def, riemannTheta_def, tsum_mul_tsum_of_summable_norm
-    (h₁.summable_norm_riemannThetaTerm a₁ b₁ v₁) (h₂.summable_norm_riemannThetaTerm a₂ b₂ v₂),
-    ← (Equiv.sumArrowEquivProdArrow ι κ ℤ).symm.tsum_eq]
-  exact tsum_congr fun n => riemannThetaTerm_fromBlocks ..
 
-theorem riemannTheta_fromBlocks' {Ω₁ : Matrix ι ι ℂ} {Ω₂ : Matrix κ κ ℂ} (h₁ : IsSiegel Ω₁)
-    (h₂ : IsSiegel Ω₂) (a b : ι ⊕ κ → ℝ) (v : ι ⊕ κ → ℂ) :
-    riemannTheta a b (fromBlocks Ω₁ 0 0 Ω₂) v =
-      riemannTheta (a ∘ Sum.inl) (b ∘ Sum.inl) Ω₁ (v ∘ Sum.inl) *
-        riemannTheta (a ∘ Sum.inr) (b ∘ Sum.inr) Ω₂ (v ∘ Sum.inr) := by
-  rw [← riemannTheta_fromBlocks h₁ h₂]
-  simp only [Sum.elim_comp_inl_inr]
 
 section Theta
 
 open ReciprocityTheory.PTheta
 
-theorem summable_norm_thetaTerm_of_mem_siegelH {τ : Matrix ι ι ℂ} (h : τ ∈ SiegelH ι)
-    (a b : ι → ℝ) (z : ι → ℂ) :
-    Summable fun l => ‖thetaTerm a b z τ l‖ :=
-  IsSiegel.summable_norm_riemannThetaTerm h a b z
 
-theorem hasSum_theta_of_mem_siegelH {τ : Matrix ι ι ℂ} (h : τ ∈ SiegelH ι)
-    (a b : ι → ℝ) (z : ι → ℂ) :
-    HasSum (thetaTerm a b z τ) (theta a b z τ) :=
-  IsSiegel.hasSum_riemannTheta h a b z
 
-theorem hasSumLocallyUniformlyOn_theta_siegelH (a b : ι → ℝ) :
-    HasSumLocallyUniformlyOn (fun l (p : (ι → ℂ) × Matrix ι ι ℂ) => thetaTerm a b p.1 p.2 l)
-      (fun p => theta a b p.1 p.2) (Set.univ ×ˢ SiegelH ι) :=
-  hasSumLocallyUniformlyOn_riemannTheta a b
 
-theorem differentiable_theta_of_mem_siegelH {τ : Matrix ι ι ℂ} (h : τ ∈ SiegelH ι) (a b : ι → ℝ) :
-    Differentiable ℂ fun z => theta a b z τ :=
-  IsSiegel.differentiable_riemannTheta h a b
 
-theorem exists_theta_ne_zero_of_mem_siegelH {τ : Matrix ι ι ℂ} (h : τ ∈ SiegelH ι) (a b : ι → ℝ) :
-    ∃ z, theta a b z τ ≠ 0 :=
-  Function.ne_iff.mp (IsSiegel.riemannTheta_ne_zero h a b)
 
-theorem integral_theta_mul_eC_of_mem_siegelH {τ : Matrix ι ι ℂ} (h : τ ∈ SiegelH ι)
-    (a b : ι → ℝ) (z : ι → ℂ) (l : ι → ℤ) :
-    ∫ x in Set.Icc (0 : ι → ℝ) 1, theta a b (z + ofRealVec x) τ *
-        eC (-(shiftVec a l ⬝ᵥ ofRealVec x)) = thetaTerm a b z τ l := by
-  have := IsSiegel.integral_riemannTheta_mul_cexp h a b z l
-  simp only [neg_mul] at this
-  simp only [eC, mul_neg]
-  exact this
 
-theorem riemannTheta_add_eq_autFactor_mul {Ω : Matrix ι ι ℂ} (h : Ω.IsSymm) (a b : ι → ℝ)
-    (v : ι → ℂ) (k m : ι → ℤ) :
-    riemannTheta a b Ω (v + Ω *ᵥ ofIntVec k + ofIntVec m) =
-      autFactor a b Ω k m v * riemannTheta a b Ω v := by
-  rw [add_assoc, add_comm (Ω *ᵥ _), autFactor, eC, eC, ← Complex.exp_add]
-  refine (riemannTheta_add_lattice h a b v m k).trans ?_
-  congr 2
-  unfold ofRealVec ofIntVec
-  ring
 
-theorem theta_fromBlocks_zero {τ₁ : Matrix ι ι ℂ} {τ₂ : Matrix κ κ ℂ} (h₁ : τ₁ ∈ SiegelH ι)
-    (h₂ : τ₂ ∈ SiegelH κ) (a₁ b₁ : ι → ℝ) (a₂ b₂ : κ → ℝ) (z₁ : ι → ℂ) (z₂ : κ → ℂ) :
-    theta (Sum.elim a₁ a₂) (Sum.elim b₁ b₂) (Sum.elim z₁ z₂) (fromBlocks τ₁ 0 0 τ₂) =
-      theta a₁ b₁ z₁ τ₁ * theta a₂ b₂ z₂ τ₂ :=
-  riemannTheta_fromBlocks h₁ h₂ a₁ b₁ a₂ b₂ z₁ z₂
 
 end Theta
 

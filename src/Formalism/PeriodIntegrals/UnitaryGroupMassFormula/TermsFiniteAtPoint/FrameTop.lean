@@ -1,6 +1,307 @@
 import Mathlib
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermsFiniteAtPoint.FrameOp
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermsFiniteAtPoint.HeisOpHolds
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.SecondDualReduction
+import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.SplitRow
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IdentityCellTrace.TraceOneHolds
 
+section
+noncomputable section
+
+open scoped Classical
+
+namespace PI.TermsAtPtFiniteW.LeviW
+
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermDef PI.TermsAtPtFiniteW.HeisW
+
+variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ}
+
+def psiF (e f : Fin r → S.V) (U U' : Matrix (Fin r) (Fin r) E) : S.V →ₗ[E] S.V :=
+  LinearMap.id + ∑ a, (S.hT (f a)).smulRight (∑ c, U c a • e c - e a) +
+    ∑ a, (S.hT (e a)).smulRight (∑ c, U' c a • f c - f a)
+
+theorem psiF_apply (e f : Fin r → S.V) (U U' : Matrix (Fin r) (Fin r) E) (v : S.V) :
+    psiF e f U U' v = v + ∑ a, S.hT (f a) v • (∑ c, U c a • e c - e a) +
+      ∑ a, S.hT (e a) v • (∑ c, U' c a • f c - f a) := by
+  simp [psiF, LinearMap.sum_apply]
+
+def wv (e f : Fin r → S.V) (v : S.V) : S.V :=
+  v - ∑ a, S.hT (f a) v • e a - ∑ a, S.hT (e a) v • f a
+
+theorem psiF_eq (e f : Fin r → S.V) (U U' : Matrix (Fin r) (Fin r) E) (v : S.V) :
+    psiF e f U U' v = wv e f v + ∑ a, S.hT (f a) v • ∑ c, U c a • e c +
+      ∑ a, S.hT (e a) v • ∑ c, U' c a • f c := by
+  rw [psiF_apply, wv]
+  simp only [smul_sub, Finset.sum_sub_distrib]
+  abel
+
+
+section Pair
+
+variable (e f : Fin r → S.V) (hee : ∀ a b, S.hT (e a) (e b) = 0) (hff : ∀ a b, S.hT (f a) (f b) = 0)
+  (hef : ∀ a b, S.hT (e a) (f b) = if a = b then 1 else 0)
+
+include hef in
+theorem hfe (a b : Fin r) : S.hT (f a) (e b) = if a = b then 1 else 0 := by
+  rw [← hsym, hef]
+  by_cases h : a = b
+  · subst h; simp
+  · simp [h, Ne.symm h]
+
+include hee hef in
+theorem e_w (c : Fin r) (v : S.V) : S.hT (e c) (wv e f v) = 0 := by
+  simp [wv, hee, hef]
+
+include hff hef in
+theorem f_w (c : Fin r) (v : S.V) : S.hT (f c) (wv e f v) = 0 := by
+  simp [wv, hff, hfe e f hef]
+
+theorem algδ (p q : Fin r → E) (u w : Matrix (Fin r) (Fin r) E)
+    (h : ∀ a b, ∑ c, u c a * w c b = if a = b then 1 else 0) :
+    ∑ a, p a * ∑ c, u c a * ∑ b, q b * w c b = ∑ a, p a * q a := by
+  have key : ∀ a, ∑ c, u c a * ∑ b, q b * w c b = q a := by
+    intro a
+    calc ∑ c, u c a * ∑ b, q b * w c b = ∑ b, q b * ∑ c, u c a * w c b := by
+          simp_rw [Finset.mul_sum]
+          rw [Finset.sum_comm]
+          exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
+      _ = q a := by simp [h]
+  simp only [key]
+
+include hee hff hef in
+theorem gram (U U' : Matrix (Fin r) (Fin r) E) (hUU : ∀ a b, ∑ c, star (U c a) * U' c b = if a = b then 1 else 0)
+    (x y : S.V) :
+    S.hT (psiF e f U U' x) (psiF e f U U' y) = S.hT (wv e f x) (wv e f y) +
+      ∑ a, star (S.hT (f a) x) * S.hT (e a) y + ∑ a, star (S.hT (e a) x) * S.hT (f a) y := by
+  have hUU' : ∀ a b, ∑ c, star (U' c a) * U c b = if a = b then 1 else 0 := by
+    intro a b
+    have h1 : ∑ c, star (U' c a) * U c b = star (∑ c, star (U c b) * U' c a) := by
+      simp only [star_sum, star_mul', star_star]
+      exact Finset.sum_congr rfl fun _ _ => mul_comm _ _
+    rw [h1, hUU b a]
+    by_cases h : a = b
+    · subst h; simp
+    · simp [h, Ne.symm h]
+  have pairR : ∀ (u : S.V) (s : Fin r → E) (t : Matrix (Fin r) (Fin r) E) (g : Fin r → S.V),
+      S.hT u (∑ a, s a • ∑ c, t c a • g c) = ∑ a, s a * ∑ c, t c a * S.hT u (g c) := by
+    intro u s t g
+    simp [map_sum, smul_eq_mul]
+  have pairL : ∀ (u : S.V) (s : Fin r → E) (t : Matrix (Fin r) (Fin r) E) (g : Fin r → S.V),
+      S.hT (∑ a, s a • ∑ c, t c a • g c) u = ∑ a, star (s a) * ∑ c, star (t c a) * S.hT (g c) u := by
+    intro u s t g
+    simp [map_sum, LinearMap.sum_apply, smul_eq_mul, starRingEnd_apply]
+  have hwe : ∀ (v : S.V) (c : Fin r), S.hT (wv e f v) (e c) = 0 := fun v c => by
+    rw [← hsym, e_w e f hee hef c v, star_zero]
+  have hwf : ∀ (v : S.V) (c : Fin r), S.hT (wv e f v) (f c) = 0 := fun v c => by
+    rw [← hsym, f_w e f hff hef c v, star_zero]
+  have hfe' := hfe e f hef
+  have k1 : ∑ a, star (S.hT (f a) x) * ∑ c, star (U c a) * ∑ b, S.hT (e b) y * U' c b =
+      ∑ a, star (S.hT (f a) x) * S.hT (e a) y :=
+    algδ _ _ (fun c a => star (U c a)) U' hUU
+  have k2 : ∑ a, star (S.hT (e a) x) * ∑ c, star (U' c a) * ∑ b, S.hT (f b) y * U c b =
+      ∑ a, star (S.hT (e a) x) * S.hT (f a) y :=
+    algδ _ _ (fun c a => star (U' c a)) U hUU'
+  rw [psiF_eq, psiF_eq]
+  simp only [map_add, LinearMap.add_apply]
+  simp only [pairL]
+  simp only [pairR]
+  simp only [hwe, hwf, e_w e f hee hef, f_w e f hff hef, hee, hff, hef, hfe', mul_zero, zero_mul,
+    Finset.sum_const_zero, add_zero, zero_add, mul_ite, mul_one, Finset.sum_ite_eq, Finset.sum_ite_eq',
+    Finset.mem_univ, if_true]
+  linear_combination k1 + k2
+
+include hee hff hef in
+theorem isom_psiF (U U' : Matrix (Fin r) (Fin r) E)
+    (hUU : ∀ a b, ∑ c, star (U c a) * U' c b = if a = b then 1 else 0) (x y : S.V) :
+    S.hT (psiF e f U U' x) (psiF e f U U' y) = S.hT x y := by
+  rw [gram e f hee hff hef U U' hUU x y]
+  have h1 : ∀ c, S.hT (wv e f x) (e c) = 0 := fun c => by
+    rw [← hsym, e_w e f hee hef c x, star_zero]
+  have h2 : ∀ c, S.hT (wv e f x) (f c) = 0 := fun c => by
+    rw [← hsym, f_w e f hff hef c x, star_zero]
+  have h3 : S.hT (wv e f x) (wv e f y) = S.hT (wv e f x) y := by
+    rw [show wv e f y = y - ∑ a, S.hT (f a) y • e a - ∑ a, S.hT (e a) y • f a from rfl]
+    simp [h1, h2]
+  have h4 : S.hT (wv e f x) y = S.hT x y - ∑ a, star (S.hT (f a) x) * S.hT (e a) y -
+      ∑ a, star (S.hT (e a) x) * S.hT (f a) y := by
+    simp [wv, LinearMap.sum_apply, smul_eq_mul, starRingEnd_apply]
+  rw [h3, h4]
+  ring
+
+include hef in
+theorem psiF_e (U U' : Matrix (Fin r) (Fin r) E) (hee : ∀ a b, S.hT (e a) (e b) = 0) (j : Fin r) :
+    psiF e f U U' (e j) = ∑ c, U c j • e c := by
+  rw [psiF_apply]
+  simp [hfe e f hef, hee] <;> abel
+
+theorem psiF_fix (U U' : Matrix (Fin r) (Fin r) E) (v : S.V) (h1 : ∀ a, S.hT (f a) v = 0)
+    (h2 : ∀ a, S.hT (e a) v = 0) : psiF e f U U' v = v := by
+  rw [psiF_apply]
+  simp [h1, h2]
+
+end Pair
+
+theorem gmap_of_isom (Λ : Submodule (𝓞 E) S.V) (hU : Formalism.HermitianLatticesTheory.IsUnimodular S.hT Λ) (n : S.V ≃ₗ[E] S.V)
+    (hn : ∀ x y, S.hT (n x) (n y) = S.hT x y) (hΛ : ∀ v ∈ Λ, n v ∈ Λ) : Formalism.HermitianLatticesTheory.gmap n Λ = Λ := by
+  unfold Formalism.HermitianLatticesTheory.gmap
+  apply le_antisymm
+  · rw [Submodule.map_le_iff_le_comap]
+    intro w hw
+    exact hΛ w hw
+  · intro v hv
+    rw [Submodule.mem_map]
+    refine ⟨n.symm v, ?_, by simp⟩
+    have hU' : Formalism.HermitianLatticesTheory.dual S.hT Λ = Λ := hU
+    have h1 : v ∈ Formalism.HermitianLatticesTheory.dual S.hT Λ := by rw [hU']; exact hv
+    rw [← hU']
+    simp only [Formalism.HermitianLatticesTheory.dual, Formalism.E.hdual, Submodule.mem_iInf, Submodule.mem_comap,
+      LinearMap.coe_restrictScalars] at h1 ⊢
+    intro y hy
+    have := h1 (n y) (hΛ y hy)
+    rwa [← hn y (n.symm v), LinearEquiv.apply_symm_apply]
+
+theorem inj_of_isom (g : S.V →ₗ[E] S.V) (hg : ∀ x y, S.hT (g x) (g y) = S.hT x y) : Function.Injective g := by
+  rw [injective_iff_map_eq_zero]
+  intro x hx
+  apply S.nondeg.1 x
+  intro y
+  rw [← hg x y, hx]
+  simp
+
+end PI.TermsAtPtFiniteW.LeviW
+end
+end
+
+section
+noncomputable section
+
+open scoped Classical
+
+namespace PI.TermsAtPtFiniteW.FrameW
+
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermDef PI.TermsAtPtFiniteW.HeisW
+  PI.TermsAtPtFiniteW.LeviW
+
+section Gen
+
+variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ}
+
+theorem sum_sub_delta (X : Matrix (Fin r) (Fin r) E) (g : Fin r → S.V) (a : Fin r) :
+    ∑ c, X c a • g c - g a = ∑ c, (X c a - if c = a then 1 else 0) • g c := by
+  simp only [sub_smul, Finset.sum_sub_distrib, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq',
+    Finset.mem_univ, if_true]
+
+theorem psiF_mem (Λ : Submodule (𝓞 E) S.V) (e f : Fin r → S.V) (U U' : Matrix (Fin r) (Fin r) E) (m : E)
+    (hm : star m = m) (hint : ∀ x ∈ Λ, ∀ y ∈ Λ, ∃ o : 𝓞 E, (o : E) = S.hT x y)
+    (he : ∀ c, e c ∈ Λ) (hf : ∀ c, m • f c ∈ Λ)
+    (hU : ∀ c a, ∃ o : 𝓞 E, (o : E) * m = U c a - if c = a then 1 else 0)
+    (hU' : ∀ c a, ∃ o : 𝓞 E, (o : E) * m = U' c a - if c = a then 1 else 0)
+    {v : S.V} (hv : v ∈ Λ) : psiF e f U U' v ∈ Λ := by
+  rw [psiF_apply]
+  refine Λ.add_mem (Λ.add_mem hv ?_) ?_
+  · refine Submodule.sum_mem _ fun a _ => ?_
+    rw [sum_sub_delta, Finset.smul_sum]
+    refine Submodule.sum_mem _ fun c _ => ?_
+    obtain ⟨o, ho⟩ := hU c a
+    rw [← ho, smul_smul]
+    refine smul_memO Λ ?_ (he c)
+    obtain ⟨o2, h2⟩ := hint _ (hf a) _ hv
+    have hmf : S.hT (m • f a) v = m * S.hT (f a) v := by
+      rw [LinearMap.map_smulₛₗ₂, starRingEnd_apply, hm, smul_eq_mul]
+    refine ⟨o2 * o, ?_⟩
+    have : ((o2 * o : 𝓞 E) : E) = (o2 : E) * (o : E) := rfl
+    rw [this, h2, hmf]
+    ring
+  · refine Submodule.sum_mem _ fun a _ => ?_
+    rw [sum_sub_delta, Finset.smul_sum]
+    refine Submodule.sum_mem _ fun c _ => ?_
+    obtain ⟨o, ho⟩ := hU' c a
+    rw [← ho]
+    have : S.hT (e a) v • ((o : E) * m) • f c = (S.hT (e a) v * o) • (m • f c) := by
+      rw [smul_smul, smul_smul, mul_assoc]
+    rw [this]
+    refine smul_memO Λ ?_ (hf c)
+    obtain ⟨o2, h2⟩ := hint _ (he a) _ hv
+    exact ⟨o2 * o, by rw [← h2]; rfl⟩
+
+end Gen
+
+section D7
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+theorem aaS_eq (D : D7) (a : Fin D.R.rS) :
+    Formalism.L2.SG.Saturated.aaS D a = (ddS D ^ (D.R.rS - a.1))⁻¹ := by
+  unfold Formalism.L2.SG.Saturated.aaS
+  have hk : ((D.R.rS : ℤ) - (a : ℕ)) = ((D.R.rS - a.1 : ℕ) : ℤ) := by
+    rw [Nat.cast_sub a.2.le]
+  rw [hk, zpow_neg, zpow_natCast]
+
+theorem one_mem_aaS (D : D7) (a : Fin D.R.rS) : (1 : D.host.E) ∈ Formalism.L2.SG.Saturated.aaS D a := by
+  rw [aaS_eq, FractionalIdeal.mem_inv_iff (pow_ne_zero _ (PI.SRW.ddS_ne D))]
+  intro y hy
+  rw [one_mul]
+  have : ddS D ^ (D.R.rS - a.1) ≤ 1 := by
+    unfold ddS
+    rw [← FractionalIdeal.coeIdeal_pow]
+    exact FractionalIdeal.coeIdeal_le_one
+  exact this hy
+
+theorem norm_mem_ddS (D : D7) :
+    ((Ideal.absNorm (differentIdeal ℤ (𝓞 D.host.F)) : ℕ) : D.host.E) ∈ ddS D := by
+  unfold ddS
+  rw [FractionalIdeal.mem_coeIdeal]
+  refine ⟨((Ideal.absNorm (differentIdeal ℤ (𝓞 D.host.F)) : ℕ) : 𝓞 D.host.E), ?_, map_natCast _ _⟩
+  have := Ideal.mem_map_of_mem (algebraMap (𝓞 D.host.F) (𝓞 D.host.E))
+    (Ideal.absNorm_mem (differentIdeal ℤ (𝓞 D.host.F)))
+  rwa [map_natCast] at this
+
+theorem m_mem_aaS_inv (D : D7) (a : Fin D.R.rS) :
+    (((Ideal.absNorm (differentIdeal ℤ (𝓞 D.host.F))) ^ D.R.rS : ℕ) : D.host.E) ∈
+      (Formalism.L2.SG.Saturated.aaS D a)⁻¹ := by
+  rw [aaS_eq, inv_inv]
+  set N := Ideal.absNorm (differentIdeal ℤ (𝓞 D.host.F))
+  have hNk : ((N : D.host.E)) ^ (D.R.rS - a.1) ∈ ddS D ^ (D.R.rS - a.1) := by
+    rw [← FractionalIdeal.mem_coe, FractionalIdeal.coe_pow]
+    exact Submodule.pow_mem_pow _ (FractionalIdeal.mem_coe.mpr (norm_mem_ddS D)) _
+  have h1 : ((N : D.host.E)) ^ (D.R.rS - a.1) ∈ ((ddS D ^ (D.R.rS - a.1) :
+      FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E) : Submodule (𝓞 D.host.E) D.host.E) :=
+    FractionalIdeal.mem_coe.mpr hNk
+  have h2 := Submodule.smul_mem _ ((N : 𝓞 D.host.E) ^ a.1) h1
+  rw [Algebra.smul_def, map_pow, map_natCast, ← pow_add, Nat.add_sub_cancel' a.2.le] at h2
+  push_cast
+  exact FractionalIdeal.mem_coe.mp h2
+
+theorem frame_fin (D : D7) {T : D.host.E} (F0 : FlagG (VS D) D.R.rS T) (b : 𝓞 D.host.E)
+    (B : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) (𝓞 D.host.E)) (hB : UpB b B)
+    (nH nL : (VS D).V ≃ₗ[D.host.E] (VS D).V) (hnHe : ∀ j, nH (F0.e j) = F0.e j)
+    (hnHz : nH F0.z = F0.z + ∑ c, ((B (Fin.castSucc c) (Fin.last D.R.rS) : 𝓞 D.host.E) : D.host.E) • F0.e c)
+    (hnLe : ∀ i, nL (F0.e i) = ∑ c, ((B (Fin.castSucc c) (Fin.castSucc i) : 𝓞 D.host.E) : D.host.E) • F0.e c)
+    (hnLz : nL F0.z = F0.z) (j : Fin (D.R.rS + 1)) :
+    (nH * nL) (frame (lf D F0) j) = ∑ c, ((B c j : 𝓞 D.host.E) : D.host.E) • frame (lf D F0) c := by
+  have hfe : ∀ i, frame (lf D F0) (Fin.castSucc i) = F0.e i := fun i => by
+    simp [frame, Formalism.MainNotions.S.FlagG.fvec]
+  have hfz : frame (lf D F0) (Fin.last D.R.rS) = F0.z := by
+    simp [frame, Formalism.MainNotions.S.FlagG.fvec]
+  rw [LinearEquiv.mul_apply]
+  induction j using Fin.lastCases with
+  | last =>
+    rw [hfz, hnLz, hnHz, Fin.sum_univ_castSucc, hfz, (hB _ _).2.1 rfl]
+    simp only [hfe]
+    rw [add_comm]
+    congr 1
+    simp
+  | cast i =>
+    rw [hfe, hnLe, map_sum, Fin.sum_univ_castSucc, hfz, (hB _ _).1 (Fin.castSucc_lt_last i)]
+    simp only [map_smul, hnHe, hfe]
+    simp
+
+end D7
+
+end PI.TermsAtPtFiniteW.FrameW
+end
+end
+
+section
 noncomputable section
 
 open scoped Classical
@@ -226,3 +527,5 @@ theorem frameOp_holds : FrameOp := by
     (by rw [hnL]; exact psiF_fix F0.e f UE U'E F0.z (fun a => (hL _ hzL a).2) (fun a => F0.z_orth a))⟩
 
 end PI.TermsAtPtFiniteW
+end
+end

@@ -118,12 +118,6 @@ omit [CharP (ResidueField O) p] in
 theorem divisorOfPrime_eq_ramificationIdx_smul {ϖ : O} (hϖ : Irreducible ϖ) : Z.divP p = ramIdx O p • Z.div ϖ hϖ.ne_zero :=
   Z.div_eq_addVal_smul hϖ _
 
-theorem toQ_div (g : O) (hg : g ≠ 0) : toQ (Z.div g hg) =
-    (((IsDiscreteValuationRing.addVal O g).toNat : ℚ) / ramIdx O p) • toQ (Z.divP p) := by
-  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible O
-  rw [Z.divisorOfPrime_eq_ramificationIdx_smul p hϖ, Z.div_eq_addVal_smul hϖ, map_nsmul, map_nsmul, ← Nat.cast_smul_eq_nsmul ℚ,
-    ← Nat.cast_smul_eq_nsmul ℚ, smul_smul,
-    div_mul_cancel₀ _ (Nat.cast_ne_zero.2 (ramIdx_ne_zero O p))]
 
 set_option linter.overlappingInstances false in
 

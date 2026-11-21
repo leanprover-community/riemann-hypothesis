@@ -1,18 +1,844 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsRescaledConvergentSubsequence
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteDimensionalPairTyped
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PairSpaceCarriesFlat
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FinStable
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemProdSpanInfStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteDimensionalProdSpanStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FlatAbsoluteCharacterStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TendstoAbsoluteCharacterOne
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CarriesTwistAbsoluteCharacter
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CarriesTwist
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FinStableTwist
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FinStableInducedSpan
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteDimensionalTypedDiscrete
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteDimensionalTypedExtension
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteDimensionalTypedNode
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CarriesInducedNode
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AdmissibleDiscreteSpaces
+import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.CapelliComplements.FirstLemmaH
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TypedSecondBlockRestriction
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FlatNodeFunction
 
+section
+section
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
+open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
+open scoped ContDiff
+
+namespace GlobalTheory.CompanionTheory.LimVec
+
+theorem normalised_subseq_limit : ∀ {M : Type} [AddCommGroup M] [Module ℂ M] [FiniteDimensional ℂ M] (g : ℕ → M), (∀ k, g k ≠ 0) → ∃ (c : ℕ → ℂ) (φ : ℕ → ℕ) (G : M), StrictMono φ ∧ G ≠ 0 ∧ ∀ ℓ : Module.Dual ℂ M, Tendsto (fun k => c k * ℓ (g (φ k))) atTop (𝓝 (ℓ G)) := by
+  intro M _ _ _ g hg
+  let e : M ≃ₗ[ℂ] (Fin (Module.finrank ℂ M) → ℂ) := (Module.finBasis ℂ M).equivFun
+  let s : ℕ → ℂ := fun k => ((‖e (g k)‖⁻¹ : ℝ) : ℂ)
+  have hv : ∀ k, e (g k) ≠ 0 := fun k h => hg k (by simpa using h)
+  have hmem : ∀ k, s k • e (g k) ∈ Metric.sphere (0 : Fin (Module.finrank ℂ M) → ℂ) 1 := by
+    intro k
+    have hn : ‖e (g k)‖ ≠ 0 := norm_ne_zero_iff.mpr (hv k)
+    rw [mem_sphere_zero_iff_norm, norm_smul]
+    simp only [s, Complex.norm_real, norm_inv, norm_norm]
+    exact inv_mul_cancel₀ hn
+  obtain ⟨v, hvs, φ, hφ, hlim⟩ := (isCompact_sphere (0 : Fin (Module.finrank ℂ M) → ℂ) 1).tendsto_subseq hmem
+  have hv0 : v ≠ 0 := by
+    intro h
+    rw [h] at hvs
+    simp at hvs
+  refine ⟨fun k => s (φ k), φ, e.symm v, hφ, by simpa using hv0, fun ℓ => ?_⟩
+  let L : (Fin (Module.finrank ℂ M) → ℂ) →ₗ[ℂ] ℂ := ℓ ∘ₗ e.symm.toLinearMap
+  have hL : Continuous L := LinearMap.continuous_of_finiteDimensional L
+  have h := (hL.tendsto v).comp hlim
+  have hfun : (L ∘ ((fun k => s k • e (g k)) ∘ φ)) = fun k => s (φ k) * ℓ (g (φ k)) := by
+    funext k
+    simp [L]
+  rw [hfun] at h
+  simpa [L] using h
+
+end GlobalTheory.CompanionTheory.LimVec
+end
+
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
+open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_rescaled_convergent_subsequence : ∀ {M : Type} [AddCommGroup M] [Module ℂ M] [FiniteDimensional ℂ M] (g : ℕ → M), (∀ k, g k ≠ 0) → ∃ (c : ℕ → ℂ) (φ : ℕ → ℕ) (G : M), StrictMono φ ∧ G ≠ 0 ∧ ∀ ℓ : Module.Dual ℂ M, Tendsto (fun k => c k * ℓ (g (φ k))) atTop (𝓝 (ℓ G)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LimVec.normalised_subseq_limit
+end
+
+section
+section
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
+open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
+open scoped ContDiff
+
+namespace GlobalTheory.CompanionTheory.LimV.FdPair
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {a b : ℕ}
+
+theorem pairSpace_eq_prodSpan (U₁ : Submodule ℂ (Sm E a)) (U₂ : Submodule ℂ (Sm E b)) :
+    pairSpace U₁ U₂ = prodSpan (U₁.map (Sm E a).subtype) (U₂.map (Sm E b).subtype) := by
+  apply le_antisymm
+  · refine Submodule.span_mono ?_
+    rintro F ⟨φ₁, h₁, φ₂, h₂, rfl⟩
+    exact ⟨φ₁.1, ⟨φ₁, h₁, rfl⟩, φ₂.1, ⟨φ₂, h₂, rfl⟩, rfl⟩
+  · refine Submodule.span_mono ?_
+    rintro F ⟨_, ⟨φ₁, h₁, rfl⟩, _, ⟨φ₂, h₂, rfl⟩, rfl⟩
+    exact ⟨φ₁, h₁, φ₂, h₂, rfl⟩
+
+theorem map_typed {N : ℕ} (U : Submodule ℂ (Sm E N)) (K : Subgroup (GL (Fin N) (Af E)))
+    (W : Submodule ℂ (Kinf E N → ℂ)) :
+    U.map (Sm E N).subtype ⊓ typeF K W = (typed U K W).map (Sm E N).subtype := by
+  ext f
+  constructor
+  · rintro ⟨⟨φ, hφ, rfl⟩, hS⟩
+    exact ⟨φ, ⟨hφ, hS⟩, rfl⟩
+  · rintro ⟨φ, ⟨hφ, hS⟩, rfl⟩
+    exact ⟨⟨φ, hφ, rfl⟩, hS⟩
+
+theorem slice_left {K₁ : Subgroup (GL (Fin a) (Af E))} {K₂ : Subgroup (GL (Fin b) (Af E))}
+    {W₁ : Submodule ℂ (Kinf E a → ℂ)} {W₂ : Submodule ℂ (Kinf E b → ℂ)} {F : H E a b → ℂ}
+    (hF : TypeH K₁ K₂ W₁ W₂ F) (y : GA E b) : (fun x => F (x, y)) ∈ typeF K₁ W₁ := by
+  refine ⟨fun u hu g => ?_, fun g => ?_⟩
+  · have := hF.1 u hu 1 K₂.one_mem (g, y)
+    simpa using this
+  · let L : (Kinf E a × Kinf E b → ℂ) →ₗ[ℂ] (Kinf E a → ℂ) :=
+      { toFun := fun f k => f (k, 1), map_add' := fun _ _ => rfl, map_smul' := fun _ _ => rfl }
+    have hL : Submodule.span ℂ {f : Kinf E a × Kinf E b → ℂ | ∃ w₁ ∈ W₁, ∃ w₂ ∈ W₂, f = fun k => w₁ k.1 * w₂ k.2}
+        ≤ W₁.comap L := by
+      refine Submodule.span_le.2 ?_
+      rintro f ⟨w₁, h₁, w₂, h₂, rfl⟩
+      have : L (fun k => w₁ k.1 * w₂ k.2) = w₂ 1 • w₁ := by
+        funext k
+        simp [L, mul_comm]
+      show L _ ∈ W₁
+      rw [this]
+      exact W₁.smul_mem _ h₁
+    have := hL (hF.2 (g, y))
+    simpa [L] using this
+
+theorem slice_right {K₁ : Subgroup (GL (Fin a) (Af E))} {K₂ : Subgroup (GL (Fin b) (Af E))}
+    {W₁ : Submodule ℂ (Kinf E a → ℂ)} {W₂ : Submodule ℂ (Kinf E b → ℂ)} {F : H E a b → ℂ}
+    (hF : TypeH K₁ K₂ W₁ W₂ F) (x : GA E a) : (fun y => F (x, y)) ∈ typeF K₂ W₂ := by
+  refine ⟨fun u hu g => ?_, fun g => ?_⟩
+  · have := hF.1 1 K₁.one_mem u hu (x, g)
+    simpa using this
+  · let L : (Kinf E a × Kinf E b → ℂ) →ₗ[ℂ] (Kinf E b → ℂ) :=
+      { toFun := fun f k => f (1, k), map_add' := fun _ _ => rfl, map_smul' := fun _ _ => rfl }
+    have hL : Submodule.span ℂ {f : Kinf E a × Kinf E b → ℂ | ∃ w₁ ∈ W₁, ∃ w₂ ∈ W₂, f = fun k => w₁ k.1 * w₂ k.2}
+        ≤ W₂.comap L := by
+      refine Submodule.span_le.2 ?_
+      rintro f ⟨w₁, h₁, w₂, h₂, rfl⟩
+      have : L (fun k => w₁ k.1 * w₂ k.2) = w₁ 1 • w₂ := by
+        funext k
+        simp [L]
+      show L _ ∈ W₂
+      rw [this]
+      exact W₂.smul_mem _ h₂
+    have := hL (hF.2 (x, g))
+    simpa [L] using this
+
+theorem finiteDimensional_pairSpace_inf_typeHF : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {a b : ℕ}
+    (U₁ : Submodule ℂ (Sm E a)) (U₂ : Submodule ℂ (Sm E b)) (K₁ : Subgroup (GL (Fin a) (Af E)))
+    (K₂ : Subgroup (GL (Fin b) (Af E))) (W₁ : Submodule ℂ (Kinf E a → ℂ)) (W₂ : Submodule ℂ (Kinf E b → ℂ)),
+    FiniteDimensional ℂ (typed U₁ K₁ W₁) → FiniteDimensional ℂ (typed U₂ K₂ W₂) →
+    FiniteDimensional ℂ ((pairSpace U₁ U₂ ⊓ typeHF K₁ K₂ W₁ W₂ : Submodule ℂ (H E a b → ℂ))) := by
+  intro E _ _ _ a b U₁ U₂ K₁ K₂ W₁ W₂ h₁ h₂
+  have f₁ : FiniteDimensional ℂ (U₁.map (Sm E a).subtype ⊓ typeF K₁ W₁ : Submodule ℂ (GA E a → ℂ)) := by
+    rw [map_typed]; infer_instance
+  have f₂ : FiniteDimensional ℂ (U₂.map (Sm E b).subtype ⊓ typeF K₂ W₂ : Submodule ℂ (GA E b → ℂ)) := by
+    rw [map_typed]; infer_instance
+  haveI hfd := GlobalTheory.T.finiteDimensional_prodSpan (U₁.map (Sm E a).subtype ⊓ typeF K₁ W₁) (U₂.map (Sm E b).subtype ⊓ typeF K₂ W₂) f₁ f₂
+  refine Submodule.finiteDimensional_of_le (S₂ := prodSpan (U₁.map (Sm E a).subtype ⊓ typeF K₁ W₁)
+    (U₂.map (Sm E b).subtype ⊓ typeF K₂ W₂)) ?_
+  rintro F ⟨hU, hT⟩
+  rw [SetLike.mem_coe, pairSpace_eq_prodSpan] at hU
+  exact GlobalTheory.T.mem_prodSpan_inf _ _ _ _ F hU (fun y => slice_left hT y) (fun x => slice_right hT x)
+
+end GlobalTheory.CompanionTheory.LimV.FdPair
+end
+
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
+open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finiteDimensional_pair_typed : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {a b : ℕ} (U₁ : Submodule ℂ (Sm E a)) (U₂ : Submodule ℂ (Sm E b)) (K₁ : Subgroup (GL (Fin a) (Af E))) (K₂ : Subgroup (GL (Fin b) (Af E))) (W₁ : Submodule ℂ (Kinf E a → ℂ)) (W₂ : Submodule ℂ (Kinf E b → ℂ)), FiniteDimensional ℂ (typed U₁ K₁ W₁) → FiniteDimensional ℂ (typed U₂ K₂ W₂) → FiniteDimensional ℂ ((pairSpace U₁ U₂ ⊓ typeHF K₁ K₂ W₁ W₂ : Submodule ℂ (H E a b → ℂ))) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LimV.FdPair.finiteDimensional_pairSpace_inf_typeHF
+end
+
+section
+section
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
+open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
+open scoped ContDiff
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.LimV
+
+section PairCarry
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {a b : ℕ}
+
+theorem FlatFn.fin_inv {N : ℕ} {e : GA E N → ℂ} (he : FlatFn e) (x : GA E N) {u : GL (Fin N) (Af E)}
+    (hu : u ∈ KO E N) : e (x * finGL E N u) = e x := by
+  have h := he.rinv x 1 u hu
+  simpa [cf] using h
+
+theorem FlatFn.inf_inv {N : ℕ} {e : GA E N → ℂ} (he : FlatFn e) (x : GA E N) (k : Kinf E N) :
+    e (x * infGL E N (Unitary.toUnits k)) = e x := by
+  have h := he.rinv x k 1 (one_mem _)
+  simpa [cf] using h
+
+theorem mul_mem_pairSpace (e₁ : GA E a → ℂ) (e₂ : GA E b → ℂ) (U₁ U₁' : Submodule ℂ (Sm E a))
+    (U₂ U₂' : Submodule ℂ (Sm E b)) (F : H E a b → ℂ) (c₁ : Carries e₁ U₁ U₁') (c₂ : Carries e₂ U₂ U₂')
+    (hF : F ∈ pairSpace U₁ U₂) : (fun x => e₁ x.1 * e₂ x.2 * F x) ∈ pairSpace U₁' U₂' := by
+  induction hF using Submodule.span_induction with
+  | mem G hG =>
+    obtain ⟨φ₁, h₁, φ₂, h₂, rfl⟩ := hG
+    obtain ⟨ψ₁, k₁, i₁⟩ := c₁ φ₁ h₁
+    obtain ⟨ψ₂, k₂, i₂⟩ := c₂ φ₂ h₂
+    refine Submodule.subset_span ⟨ψ₁, k₁, ψ₂, k₂, funext fun x => ?_⟩
+    simp only [i₁, i₂]
+    ring
+  | zero =>
+    have : (fun x : H E a b => e₁ x.1 * e₂ x.2 * (0 : H E a b → ℂ) x) = 0 := by
+      funext x; simp
+    rw [this]
+    exact Submodule.zero_mem _
+  | add G G' _ _ h h' =>
+    have : (fun x : H E a b => e₁ x.1 * e₂ x.2 * (G + G') x) =
+        (fun x => e₁ x.1 * e₂ x.2 * G x) + fun x => e₁ x.1 * e₂ x.2 * G' x := by
+      funext x; simp only [Pi.add_apply]; ring
+    rw [this]
+    exact Submodule.add_mem _ h h'
+  | smul c G _ h =>
+    have : (fun x : H E a b => e₁ x.1 * e₂ x.2 * (c • G) x) = c • fun x => e₁ x.1 * e₂ x.2 * G x := by
+      funext x; simp only [Pi.smul_apply, smul_eq_mul]; ring
+    rw [this]
+    exact Submodule.smul_mem _ c h
+
+theorem pair_carry (e₁ : GA E a → ℂ) (e₂ : GA E b → ℂ) (U₁ U₁' : Submodule ℂ (Sm E a))
+    (U₂ U₂' : Submodule ℂ (Sm E b)) (K₁ : Subgroup (GL (Fin a) (Af E))) (K₂ : Subgroup (GL (Fin b) (Af E)))
+    (W₁ : Submodule ℂ (Kinf E a → ℂ)) (W₂ : Submodule ℂ (Kinf E b → ℂ)) (F : H E a b → ℂ)
+    (f₁ : FlatFn e₁) (f₂ : FlatFn e₂) (c₁ : Carries e₁ U₁ U₁') (c₂ : Carries e₂ U₂ U₂')
+    (hF : F ∈ pairSpace U₁ U₂) (hT : TypeH K₁ K₂ W₁ W₂ F) :
+    (fun x => e₁ x.1 * e₂ x.2 * F x) ∈
+      (pairSpace U₁' U₂' ⊓ typeHF (K₁ ⊓ KO E a) (K₂ ⊓ KO E b) W₁ W₂ : Submodule ℂ (H E a b → ℂ)) := by
+  refine Submodule.mem_inf.2 ⟨mul_mem_pairSpace e₁ e₂ U₁ U₁' U₂ U₂' F c₁ c₂ hF, ?_, fun x => ?_⟩
+  · intro u₁ hu₁ u₂ hu₂ x
+    have h₁ : e₁ (x * (finGL E a u₁, finGL E b u₂)).1 = e₁ x.1 := f₁.fin_inv x.1 hu₁.2
+    have h₂ : e₂ (x * (finGL E a u₁, finGL E b u₂)).2 = e₂ x.2 := f₂.fin_inv x.2 hu₂.2
+    show e₁ (x * (finGL E a u₁, finGL E b u₂)).1 * e₂ (x * (finGL E a u₁, finGL E b u₂)).2 *
+      F (x * (finGL E a u₁, finGL E b u₂)) = e₁ x.1 * e₂ x.2 * F x
+    rw [h₁, h₂, hT.1 u₁ hu₁.1 u₂ hu₂.1 x]
+  · have h : (fun k : Kinf E a × Kinf E b =>
+        (fun y : H E a b => e₁ y.1 * e₂ y.2 * F y)
+          (x * (infGL E a (Unitary.toUnits k.1), infGL E b (Unitary.toUnits k.2)))) =
+        (e₁ x.1 * e₂ x.2) • fun k : Kinf E a × Kinf E b =>
+          F (x * (infGL E a (Unitary.toUnits k.1), infGL E b (Unitary.toUnits k.2))) := by
+      funext k
+      have h₁ : e₁ (x * (infGL E a (Unitary.toUnits k.1), infGL E b (Unitary.toUnits k.2))).1 = e₁ x.1 :=
+        f₁.inf_inv x.1 k.1
+      have h₂ : e₂ (x * (infGL E a (Unitary.toUnits k.1), infGL E b (Unitary.toUnits k.2))).2 = e₂ x.2 :=
+        f₂.inf_inv x.2 k.2
+      simp only [Pi.smul_apply, smul_eq_mul, h₁, h₂]
+    rw [h]
+    exact Submodule.smul_mem _ _ (hT.2 x)
+
+end PairCarry
+
+end GlobalTheory.CompanionTheory.LimV
+
+end
+end
+
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
+open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pair_space_carries_flat : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {a b : ℕ} (e₁ : GA E a → ℂ) (e₂ : GA E b → ℂ) (U₁ U₁' : Submodule ℂ (Sm E a)) (U₂ U₂' : Submodule ℂ (Sm E b)) (K₁ : Subgroup (GL (Fin a) (Af E))) (K₂ : Subgroup (GL (Fin b) (Af E))) (W₁ : Submodule ℂ (Kinf E a → ℂ)) (W₂ : Submodule ℂ (Kinf E b → ℂ)) (F : H E a b → ℂ), FlatFn e₁ → FlatFn e₂ → Carries e₁ U₁ U₁' → Carries e₂ U₂ U₂' → F ∈ pairSpace U₁ U₂ → TypeH K₁ K₂ W₁ W₂ F → (fun x => e₁ x.1 * e₂ x.2 * F x) ∈ (pairSpace U₁' U₂' ⊓ typeHF (K₁ ⊓ KO E a) (K₂ ⊓ KO E b) W₁ W₂ : Submodule ℂ (H E a b → ℂ)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LimV.pair_carry
+end
+
+section
+section
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
+open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
+open scoped ContDiff
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.LimV
+
+theorem carries_tw {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {N : ℕ} (e : GA E N → ℂ)
+    (U U' : Submodule ℂ (Sm E N)) (z : ℂ) (h : Carries e U U') : Carries e (tw U z) (tw U' z) := by
+  rintro _ ⟨ψ, hψ, rfl⟩
+  obtain ⟨ψ', hψ', hx⟩ := h ψ hψ
+  refine ⟨mulChi N (Model.absC E z) ψ', ⟨ψ', hψ', rfl⟩, fun x => ?_⟩
+  simp only [LinearEquiv.coe_coe, mulChi_apply, hx, mul_assoc]
+
+end GlobalTheory.CompanionTheory.LimV
+
+end
+end
+
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
+open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.carries_twist : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {N : ℕ} (e : GA E N → ℂ) (U U' : Submodule ℂ (Sm E N)) (z : ℂ), Carries e U U' → Carries e (tw U z) (tw U' z) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LimV.carries_tw
+end
+
+section
+section
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
+open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
+open scoped ContDiff
+
+namespace GlobalTheory.CompanionTheory.LimV
+
+theorem finStable_tw {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {N : ℕ}
+    (U : Submodule ℂ (Sm E N)) (z : ℂ) (h : FinStable U) : FinStable (tw U z) := by
+  rintro g _ ⟨ψ, hψ, rfl⟩
+  exact ⟨_, U.add_mem (U.smul_mem _ (h g ψ hψ)) (U.smul_mem _ hψ), (act_mulChi _ (.fin g) ψ).symm⟩
+
+end GlobalTheory.CompanionTheory.LimV
+end
+
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
+open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finStable_twist : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {N : ℕ} (U : Submodule ℂ (Sm E N)) (z : ℂ), FinStable U → FinStable (tw U z) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LimV.finStable_tw
+end
+
+section
+section
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
+open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
+open scoped ContDiff
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.LimV
+
+variable {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {r s : ℕ}
+
+theorem act_fin_val {N : ℕ} (g : GL (Fin N) (Af E)) (φ : Sm E N) (x : GA E N) :
+    (act (.fin g) φ).1 x = φ.1 (x * finGL E N g) := rfl
+
+theorem memInd2_act_fin {U₁ : Submodule ℂ (Sm E r)} {U₂ : Submodule ℂ (Sm E s)}
+    (g : GL (Fin (r + s)) (Af E)) {φ : Sm E (r + s)} (h : MemInd2 U₁ U₂ φ) :
+    MemInd2 U₁ U₂ (act (.fin g) φ) := by
+  obtain ⟨h1, h2⟩ := h
+  refine ⟨fun x y => ?_, fun k g' => ?_⟩
+  · rw [act_fin_val, act_fin_val, mul_assoc, h1]
+  · convert h2 k (g' * g) using 2 with m
+    rw [act_fin_val, map_mul, mul_assoc, mul_assoc]
+
+theorem indSpan_finStable (U₁ : Submodule ℂ (Sm E r)) (U₂ : Submodule ℂ (Sm E s)) :
+    FinStable (indSpan U₁ U₂) := by
+  intro g φ hφ
+  change φ ∈ Submodule.span ℂ _ at hφ
+  change _ ∈ Submodule.span ℂ _
+  induction hφ using Submodule.span_induction with
+  | mem φ h => exact Submodule.subset_span (memInd2_act_fin g h)
+  | zero => rw [map_zero]; exact Submodule.zero_mem _
+  | add a b _ _ ha hb => rw [map_add]; exact Submodule.add_mem _ ha hb
+  | smul c a _ ha => rw [map_smul]; exact Submodule.smul_mem _ c ha
+
+end GlobalTheory.CompanionTheory.LimV
+
+end
+end
+
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
+open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finStable_induced_span : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {r s : ℕ} (U₁ : Submodule ℂ (Sm E r)) (U₂ : Submodule ℂ (Sm E s)), FinStable (indSpan U₁ U₂) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LimV.indSpan_finStable
+end
+
+section
+section
+noncomputable section
+
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
+open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
+open scoped ContDiff
+
+namespace GlobalTheory.CompanionTheory.LimV.FdV
+
+open GlobalTheory.CompanionTheory.AdmDiscFin GlobalTheory.LevelTypeProj
+
+variable {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {N : ℕ}
+
+theorem continuous_sliceTC (φ : Sm E N) (g : GA E N) :
+    Continuous fun k : Kinf E N => φ.1 (g * infGL E N (Unitary.toUnits k)) := by
+  have h1 : Continuous fun k : Kinf E N => (Unitary.toUnits k : GL (Fin N) (Cinf E)) :=
+    Units.continuous_iff.2 ⟨continuous_subtype_val, continuous_subtype_val.star⟩
+  have e : (fun k : Kinf E N => φ.1 (g * infGL E N (Unitary.toUnits k))) =
+      fun k => chart φ.1 g (toL (Unitary.toUnits k : GL (Fin N) (Cinf E)).val) := by
+    funext k
+    rw [chart_val]
+  rw [e]
+  have hc : ContinuousOn (chart φ.1 g) (invSet E N) := (φ.2 g).continuousOn
+  have h3' : Continuous fun k : Kinf E N =>
+      ((Unitary.toUnits k : GL (Fin N) (Cinf E)) : Matrix (Fin N) (Fin N) (Cinf E)) :=
+    (Units.continuous_val (M := Matrix (Fin N) (Fin N) (Cinf E))).comp h1
+  have h3 : Continuous fun k : Kinf E N =>
+      toL ((Unitary.toUnits k : GL (Fin N) (Cinf E)) : Matrix (Fin N) (Fin N) (Cinf E)) := h3'
+  exact hc.comp_continuous h3 fun k => val_mem_invSet _
+
+theorem fd_typed {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {N : ℕ} (V : Submodule ℂ (Sm E N))
+    (K : Subgroup (GL (Fin N) (Af E))) (W : Submodule ℂ (Kinf E N → ℂ)) (hV : IsDiscrete V)
+    (hK : IsOpen (K : Set (GL (Fin N) (Af E)))) (hW : FiniteDimensional ℂ W) :
+    FiniteDimensional ℂ (typed V K W) := by
+  haveI := hW
+  obtain ⟨ψ, hψV, hψ0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hV.ne_bot
+  have hadm : PrAdm.SupSpansPsiPart V ψ = V :=
+    (hV.irred _ (PrAdm.admissible_span_le V ψ) (PrAdm.isStable_admissible_span hV.stable ψ)).resolve_left fun h => hψ0 (by
+      have h2 := PrAdm.mem_admissible_span_self hψV
+      rw [h] at h2
+      simpa using h2)
+  let Y : Submodule ℂ (Kinf E N → ℂ) := Submodule.span ℂ
+    {f | ∃ φ : Sm E N, φ ∈ typed V K W ∧ ∃ g : GA E N, f = fun k => φ.1 (g * infGL E N (Unitary.toUnits k))}
+  have hYW : Y ≤ W := by
+    refine Submodule.span_le.2 ?_
+    rintro _ ⟨φ, hφ, g, rfl⟩
+    exact hφ.2.2 g
+  haveI : FiniteDimensional ℂ Y := Submodule.finiteDimensional_of_le hYW
+  have hYl : ∀ f ∈ Y, ∀ k, (fun x => f (k * x)) ∈ Y := by
+    intro f hf k
+    induction hf using Submodule.span_induction with
+    | mem f hf =>
+      obtain ⟨φ, hφ, g, rfl⟩ := hf
+      refine Submodule.subset_span ⟨φ, hφ, g * infGL E N (Unitary.toUnits k), funext fun x => ?_⟩
+      simp only [map_mul, mul_assoc]
+    | zero => exact Y.zero_mem
+    | add x y _ _ hx hy => exact Y.add_mem hx hy
+    | smul r x _ hx => exact Y.smul_mem r hx
+  have hYc : ∀ f ∈ Y, Continuous f := by
+    intro f hf
+    induction hf using Submodule.span_induction with
+    | mem f hf =>
+      obtain ⟨φ, -, g, rfl⟩ := hf
+      exact continuous_sliceTC φ g
+    | zero => exact continuous_const
+    | add x y _ _ hx hy => exact hx.add hy
+    | smul r x _ hx => exact hx.const_smul r
+  have hF := PrAdm.finiteDimensional_admissible_isotypic hV.aut (hV.aut ψ hψV) hK (dualRep Y hYl) (isContRep_dualRep Y hYl hYc)
+  rw [hadm] at hF
+  refine Submodule.finiteDimensional_of_le (S₂ := V ⊓ typePart K (dualRep Y hYl)) ?_
+  intro φ hφ
+  refine ⟨hφ.1, fun k hk => Subtype.ext (funext fun g => hφ.2.1 k hk g), fun g => ?_⟩
+  exact le_coeffSpan_dualRep Y hYl (Submodule.subset_span ⟨φ, hφ, g, rfl⟩)
+
+end GlobalTheory.CompanionTheory.LimV.FdV
+
+end
+end
+
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
+open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finiteDimensional_typed_discrete : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {N : ℕ} (V : Submodule ℂ (Sm E N)) (K : Subgroup (GL (Fin N) (Af E))) (W : Submodule ℂ (Kinf E N → ℂ)), IsDiscrete V → IsOpen (K : Set (GL (Fin N) (Af E))) → FiniteDimensional ℂ W → FiniteDimensional ℂ (typed V K W) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LimV.FdV.fd_typed
+end
+
+section
+section
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
+open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
+open scoped ContDiff
+
+namespace GlobalTheory.CompanionTheory.LimV
+
+theorem typed_tw_finite {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {N : ℕ}
+    (U : Submodule ℂ (Sm E N)) (z : ℂ)
+    (H : ∀ (K : Subgroup (GL (Fin N) (Af E))) (W : Submodule ℂ (Kinf E N → ℂ)),
+      IsOpen (K : Set (GL (Fin N) (Af E))) → FiniteDimensional ℂ W → FiniteDimensional ℂ (typed U K W))
+    (K : Subgroup (GL (Fin N) (Af E))) (W : Submodule ℂ (Kinf E N → ℂ))
+    (hK : IsOpen (K : Set (GL (Fin N) (Af E)))) (hW : FiniteDimensional ℂ W) :
+    FiniteDimensional ℂ (typed (tw U z) K W) := by
+  have hK₀ : IsOpen ((K ⊓ KO E N : Subgroup (GL (Fin N) (Af E))) : Set (GL (Fin N) (Af E))) := by
+    rw [Subgroup.coe_inf]
+    exact hK.inter (GroundTheory.Automorphic.AdelicGLn.isOpen_integralFiniteGL E N)
+  have hfin := H (K ⊓ KO E N) W hK₀ hW
+  have hflat : FlatFn (absFn (E := E) N (-z)) := GlobalTheory.T.flat_absolute_character N (-z)
+  have hval : ∀ (φ : Sm E N) x, (mulChi N (GlobalTheory.CuspRep.Model.absC E (-z)) φ).1 x =
+      absFn N (-z) x * φ.1 x := fun φ x => by
+    simp only [mulChi_apply, absFn]
+    exact mul_comm _ _
+  have hfinv : ∀ (g : GA E N), ∀ u ∈ KO E N, absFn (E := E) N (-z) (g * finGL E N u) = absFn N (-z) g := by
+    intro g u hu
+    have := hflat.rinv g 1 u hu
+    simpa [cf] using this
+  have hkinv : ∀ (g : GA E N) (k : Kinf E N),
+      absFn (E := E) N (-z) (g * infGL E N (Unitary.toUnits k)) = absFn N (-z) g := by
+    intro g k
+    have := hflat.rinv g k 1 (one_mem _)
+    simpa [cf] using this
+  let L : Sm E N ≃ₗ[ℂ] Sm E N := mulChi N (GlobalTheory.CuspRep.Model.absC E (-z))
+  have hle : (typed (tw U z) K W).map (L : Sm E N →ₗ[ℂ] Sm E N) ≤ typed U (K ⊓ KO E N) W := by
+    rintro _ ⟨φ, ⟨⟨ψ, hψ, rfl⟩, hlev, htype⟩, rfl⟩
+    set φ : Sm E N := mulChi N (GlobalTheory.CuspRep.Model.absC E z) ψ with hφ
+    have hL : ∀ x, (L φ).1 x = absFn N (-z) x * φ.1 x := hval φ
+    refine ⟨?_, ?_, ?_⟩
+    · have hback : L φ = ψ := by
+        refine Subtype.ext (funext fun x => ?_)
+        have e : ∀ s : ℂ, ((chiDet N (GlobalTheory.CuspRep.Model.absC E s) x : ℂˣ) : ℂ) =
+            Complex.exp (s * GlobalTheory.Mem.Chr.CharModel.logNorm E (GeneralLinearGroup.det x)) := fun _ => rfl
+        rw [hL, hφ, mulChi_apply, absFn, e, e, mul_left_comm, ← Complex.exp_add]
+        simp
+      show L φ ∈ U
+      rw [hback]
+      exact hψ
+    · intro u hu g
+      have h2 : φ.1 (g * finGL E N u) = φ.1 g := hlev u hu.1 g
+      show (L φ).1 (g * finGL E N u) = (L φ).1 g
+      rw [hL, hL, hfinv g u hu.2, h2]
+    · intro g
+      have h3 : (fun k : Kinf E N => φ.1 (g * infGL E N (Unitary.toUnits k))) ∈ W := htype g
+      have h4 : (fun k : Kinf E N => (L φ).1 (g * infGL E N (Unitary.toUnits k))) =
+          absFn N (-z) g • (fun k : Kinf E N => φ.1 (g * infGL E N (Unitary.toUnits k))) := by
+        funext k
+        rw [hL, hkinv g k]
+        rfl
+      show (fun k : Kinf E N => (L φ).1 (g * infGL E N (Unitary.toUnits k))) ∈ W
+      rw [h4]
+      exact W.smul_mem _ h3
+  have h1 : FiniteDimensional ℂ ((typed (tw U z) K W).map (L : Sm E N →ₗ[ℂ] Sm E N)) :=
+    Submodule.finiteDimensional_of_le hle
+  exact LinearEquiv.finiteDimensional (L.submoduleMap (typed (tw U z) K W)).symm
+
+end GlobalTheory.CompanionTheory.LimV
+end
+
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
+open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finiteDimensional_typed_extension : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {N : ℕ} (U : Submodule ℂ (Sm E N)) (z : ℂ), (∀ (K : Subgroup (GL (Fin N) (Af E))) (W : Submodule ℂ (Kinf E N → ℂ)), IsOpen (K : Set (GL (Fin N) (Af E))) → FiniteDimensional ℂ W → FiniteDimensional ℂ (typed U K W)) → ∀ (K : Subgroup (GL (Fin N) (Af E))) (W : Submodule ℂ (Kinf E N → ℂ)), IsOpen (K : Set (GL (Fin N) (Af E))) → FiniteDimensional ℂ W → FiniteDimensional ℂ (typed (tw U z) K W) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LimV.typed_tw_finite
+end
+
+section
+section
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
+open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
+open scoped ContDiff
+
+namespace GlobalTheory.CompanionTheory.LimV
+
+theorem exists_finset_separating_points {A : Type} (W : Submodule ℂ (A → ℂ)) :
+    FiniteDimensional ℂ W → ∃ S : Finset A, ∀ w ∈ W, (∀ a ∈ S, w a = 0) → w = 0 :=
+  _root_.Bl.FirstLemmaH.goal1 W
+
+end GlobalTheory.CompanionTheory.LimV
+end
+
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
+open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_finite_determining_set : ∀ {A : Type} (W : Submodule ℂ (A → ℂ)), FiniteDimensional ℂ W → ∃ S : Finset A, ∀ w ∈ W, (∀ a ∈ S, w a = 0) → w = 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LimV.exists_finset_separating_points
+end
+
+section
+section
+noncomputable section
+
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
+open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
+open scoped ContDiff
+
+namespace GlobalTheory.CompanionTheory.LimV.SliceL
+
+theorem slice_typeF {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {r s : ℕ} (k : Kinf E (r + s))
+    (t : GL (Fin (r + s)) (Af E)) (K : Subgroup (GL (Fin (r + s)) (Af E))) (W : Submodule ℂ (Kinf E (r + s) → ℂ)) :
+    IsOpen (K : Set (GL (Fin (r + s)) (Af E))) → FiniteDimensional ℂ W →
+    ∃ (K₁ : Subgroup (GL (Fin r) (Af E))) (W₁ : Submodule ℂ (Kinf E r → ℂ)),
+      IsOpen (K₁ : Set (GL (Fin r) (Af E))) ∧ FiniteDimensional ℂ W₁ ∧
+      ∀ f ∈ typeF K W, ∀ y : GA E s,
+        (fun x : GA E r => f (lev (Ad E) r s (x, y) * cf (r + s) k t)) ∈ typeF K₁ W₁ := by
+  intro hK hW
+  have hcf : cf (r + s) k t = finGL E (r + s) t * infGL E (r + s) (Unitary.toUnits k) := by
+    rw [cf, infGL_comm]
+  refine ⟨Slice1.levelOne s K t,
+    W.map (LinearMap.funLeft ℂ ℂ fun κ : Kinf E r => Slice1.levK E r s κ * k),
+    Slice1.isOpen_levelOne hK t, inferInstance, ?_⟩
+  intro f hf y
+  refine ⟨fun u hu g => ?_, fun g => ?_⟩
+  · have h := Slice1.lev_finGL_right g u y t (Unitary.toUnits k)
+    have h' := hf.1 _ (Slice1.mem_levelOne.1 hu)
+      (lev (Ad E) r s (g, y) * finGL E (r + s) t * infGL E (r + s) (Unitary.toUnits k))
+    rw [← h] at h'
+    simpa only [hcf, mul_assoc] using h'
+  · refine ⟨_, hf.2 (lev (Ad E) r s (g, y) * finGL E (r + s) t), ?_⟩
+    funext κ
+    have h := Slice1.lev_infGL_right g (Unitary.toUnits κ) y t (Unitary.toUnits k)
+    have e : lev (Cinf E) r s (Unitary.toUnits κ, 1) * Unitary.toUnits k =
+        Unitary.toUnits (Slice1.levK E r s κ * k) := by
+      rw [map_mul, Slice1.toUnits_levK]
+    rw [e] at h
+    simp only [LinearMap.funLeft_apply, hcf]
+    rw [← h]
+    simp only [mul_assoc]
+
+end GlobalTheory.CompanionTheory.LimV.SliceL
+
+end
+end
+
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
+open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.typed_first_block_restriction : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {r s : ℕ} (k : Kinf E (r + s)) (t : GL (Fin (r + s)) (Af E)) (K : Subgroup (GL (Fin (r + s)) (Af E))) (W : Submodule ℂ (Kinf E (r + s) → ℂ)), IsOpen (K : Set (GL (Fin (r + s)) (Af E))) → FiniteDimensional ℂ W → ∃ (K₁ : Subgroup (GL (Fin r) (Af E))) (W₁ : Submodule ℂ (Kinf E r → ℂ)), IsOpen (K₁ : Set (GL (Fin r) (Af E))) ∧ FiniteDimensional ℂ W₁ ∧ ∀ f ∈ typeF K W, ∀ y : GA E s, (fun x : GA E r => f (lev (Ad E) r s (x, y) * cf (r + s) k t)) ∈ typeF K₁ W₁ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LimV.SliceL.slice_typeF
+end
+
+section
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
+open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.typed_second_block_restriction : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {r s : ℕ} (k : Kinf E (r + s)) (t : GL (Fin (r + s)) (Af E)) (K : Subgroup (GL (Fin (r + s)) (Af E))) (W : Submodule ℂ (Kinf E (r + s) → ℂ)), IsOpen (K : Set (GL (Fin (r + s)) (Af E))) → FiniteDimensional ℂ W → ∃ (K₂ : Subgroup (GL (Fin s) (Af E))) (W₂ : Submodule ℂ (Kinf E s → ℂ)), IsOpen (K₂ : Set (GL (Fin s) (Af E))) ∧ FiniteDimensional ℂ W₂ ∧ ∀ f ∈ typeF K W, ∀ x : GA E r, (fun y : GA E s => f (lev (Ad E) r s (x, y) * cf (r + s) k t)) ∈ typeF K₂ W₂ := by
+  first | exact @GlobalTheory.CompanionTheory.LimV.SliceR.slice_right | exact GlobalTheory.CompanionTheory.LimV.SliceR.slice_right | (intros; apply GlobalTheory.CompanionTheory.LimV.SliceR.slice_right <;> assumption)
+end
+
+section
+section
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
+open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
+open scoped ContDiff
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.LimV.FdNode
+
+section SlopeTestRemainingChoices
+
+variable {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {N r s : ℕ}
+
+theorem memInd2_of_mem_indSpan {U₁ : Submodule ℂ (Sm E r)} {U₂ : Submodule ℂ (Sm E s)} {φ : Sm E (r + s)}
+    (h : φ ∈ indSpan U₁ U₂) : MemInd2 U₁ U₂ φ := by
+  unfold indSpan at h
+  induction h using Submodule.span_induction with
+  | mem x hx => exact hx
+  | zero => exact ⟨fun _ _ => rfl, fun _ _ => (tens2 U₁ U₂).zero_mem⟩
+  | add x y _ _ hx hy =>
+    refine ⟨fun u g => ?_, fun k g => (tens2 U₁ U₂).add_mem (hx.2 k g) (hy.2 k g)⟩
+    change x.1 _ + y.1 _ = x.1 _ + y.1 _
+    rw [hx.1, hy.1]
+  | smul c x _ hx =>
+    refine ⟨fun u g => ?_, fun k g => (tens2 U₁ U₂).smul_mem c (hx.2 k g)⟩
+    change c • x.1 _ = c • x.1 _
+    rw [hx.1]
+
+def sliceMap (k : Kinf E (r + s)) (t : GL (Fin (r + s)) (Af E)) :
+    Sm E (r + s) →ₗ[ℂ] (GA E r × GA E s → ℂ) where
+  toFun φ m := φ.1 (lev (Ad E) r s m * cf (r + s) k t)
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
+
+theorem tensor_le_prodSpan (U₁ : Submodule ℂ (Sm E r)) (U₂ : Submodule ℂ (Sm E s)) :
+    tens2 U₁ U₂ ≤ prodSpan (U₁.map (Sm E r).subtype) (U₂.map (Sm E s).subtype) := by
+  refine Submodule.span_le.2 ?_
+  rintro F ⟨φ₁, h₁, φ₂, h₂, rfl⟩
+  exact Submodule.subset_span ⟨φ₁.1, ⟨φ₁, h₁, rfl⟩, φ₂.1, ⟨φ₂, h₂, rfl⟩, rfl⟩
+
+theorem fd_inf (U : Submodule ℂ (Sm E N)) (K : Subgroup (GL (Fin N) (Af E))) (W : Submodule ℂ (Kinf E N → ℂ))
+    (h : FiniteDimensional ℂ (typed U K W)) :
+    FiniteDimensional ℂ ↥(U.map (Sm E N).subtype ⊓ typeF K W) := by
+  have hle : U.map (Sm E N).subtype ⊓ typeF K W ≤ (typed U K W).map (Sm E N).subtype := by
+    rintro f ⟨⟨φ, hφ, rfl⟩, hf⟩
+    exact ⟨φ, ⟨hφ, hf⟩, rfl⟩
+  exact Submodule.finiteDimensional_of_le hle
+
+end SlopeTestRemainingChoices
+
+theorem finiteDimensional_typed_indSpan : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {r s : ℕ} (U₁ : Submodule ℂ (Sm E r)) (U₂ : Submodule ℂ (Sm E s)), (∀ (K : Subgroup (GL (Fin r) (Af E))) (W : Submodule ℂ (Kinf E r → ℂ)), IsOpen (K : Set (GL (Fin r) (Af E))) → FiniteDimensional ℂ W → FiniteDimensional ℂ (typed U₁ K W)) → (∀ (K : Subgroup (GL (Fin s) (Af E))) (W : Submodule ℂ (Kinf E s → ℂ)), IsOpen (K : Set (GL (Fin s) (Af E))) → FiniteDimensional ℂ W → FiniteDimensional ℂ (typed U₂ K W)) → ∀ (K : Subgroup (GL (Fin (r + s)) (Af E))) (W : Submodule ℂ (Kinf E (r + s) → ℂ)), IsOpen (K : Set (GL (Fin (r + s)) (Af E))) → FiniteDimensional ℂ W → FiniteDimensional ℂ (typed (indSpan U₁ U₂) K W) := by
+  intro E _ _ _ r s U₁ U₂ h₁ h₂ K W hK hW
+  obtain ⟨T, hT⟩ := GlobalTheory.CompanionTheory.CTFin.IwaAd.iwasawa_finite_cosets E r s K hK
+  obtain ⟨S, hS⟩ := GlobalTheory.T.exists_finite_determining_set W hW
+  choose K₁ W₁ oK₁ fW₁ sl₁ using
+    fun i : Kinf E (r + s) × GL (Fin (r + s)) (Af E) => GlobalTheory.T.typed_first_block_restriction i.1 i.2 K W hK hW
+  choose K₂ W₂ oK₂ fW₂ sl₂ using
+    fun i : Kinf E (r + s) × GL (Fin (r + s)) (Af E) => GlobalTheory.T.typed_second_block_restriction i.1 i.2 K W hK hW
+  let P : ↥S × ↥T → Submodule ℂ (GA E r × GA E s → ℂ) := fun i =>
+    prodSpan (U₁.map (Sm E r).subtype ⊓ typeF (K₁ (i.1.1, i.2.1)) (W₁ (i.1.1, i.2.1)))
+      (U₂.map (Sm E s).subtype ⊓ typeF (K₂ (i.1.1, i.2.1)) (W₂ (i.1.1, i.2.1)))
+  haveI : ∀ i, FiniteDimensional ℂ (P i) := fun i =>
+    GlobalTheory.T.finiteDimensional_prodSpan _ _ (fd_inf _ _ _ (h₁ _ _ (oK₁ _) (fW₁ _))) (fd_inf _ _ _ (h₂ _ _ (oK₂ _) (fW₂ _)))
+  have hmem : ∀ (i : ↥S × ↥T) (φ : typed (indSpan U₁ U₂) K W), sliceMap i.1.1 i.2.1 φ.1 ∈ P i := by
+    intro i φ
+    have hmi := memInd2_of_mem_indSpan φ.2.1
+    exact GlobalTheory.T.mem_prodSpan_inf _ _ _ _ _ (tensor_le_prodSpan U₁ U₂ (hmi.2 i.1.1 i.2.1))
+      (fun y => sl₁ (i.1.1, i.2.1) _ φ.2.2 y) (fun x => sl₂ (i.1.1, i.2.1) _ φ.2.2 x)
+  let Φ : typed (indSpan U₁ U₂) K W →ₗ[ℂ] ∀ i, P i := LinearMap.pi fun i =>
+    ((sliceMap i.1.1 i.2.1).comp (Submodule.subtype _)).codRestrict (P i) (hmem i)
+  refine FiniteDimensional.of_injective Φ ((injective_iff_map_eq_zero Φ).2 fun φ hφ => ?_)
+  have hz : ∀ a ∈ S, ∀ t ∈ T, ∀ m, φ.1.1 (lev (Ad E) r s m * cf (r + s) a t) = 0 := by
+    intro a ha t ht m
+    have e := congrArg Subtype.val (congrFun hφ (⟨a, ha⟩, ⟨t, ht⟩))
+    exact congrFun e m
+  have hmi := memInd2_of_mem_indSpan φ.2.1
+  have hty : φ.1.1 ∈ typeF K W := φ.2.2
+  refine Subtype.ext (Subtype.ext (funext fun g => ?_))
+  obtain ⟨x, m, t, k, l, ht, hl, rfl⟩ := hT g
+  have e : unip x * lev (Ad E) r s m * finGL E (r + s) t * infGL E (r + s) (Unitary.toUnits k) * finGL E (r + s) l =
+      unip x * (lev (Ad E) r s m * finGL E (r + s) t * infGL E (r + s) (Unitary.toUnits k)) * finGL E (r + s) l := by
+    simp only [mul_assoc]
+  rw [e, hty.1 l hl, hmi.1]
+  have hw := hS _ (hty.2 (lev (Ad E) r s m * finGL E (r + s) t)) (fun a ha => by
+    have h0 := hz a ha t ht m
+    rw [cf, infGL_comm, ← mul_assoc] at h0
+    exact h0)
+  exact congrFun hw k
+
+end GlobalTheory.CompanionTheory.LimV.FdNode
+
+end
+end
+
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
+open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finiteDimensional_typed_node : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {r s : ℕ} (U₁ : Submodule ℂ (Sm E r)) (U₂ : Submodule ℂ (Sm E s)), (∀ (K : Subgroup (GL (Fin r) (Af E))) (W : Submodule ℂ (Kinf E r → ℂ)), IsOpen (K : Set (GL (Fin r) (Af E))) → FiniteDimensional ℂ W → FiniteDimensional ℂ (typed U₁ K W)) → (∀ (K : Subgroup (GL (Fin s) (Af E))) (W : Submodule ℂ (Kinf E s → ℂ)), IsOpen (K : Set (GL (Fin s) (Af E))) → FiniteDimensional ℂ W → FiniteDimensional ℂ (typed U₂ K W)) → ∀ (K : Subgroup (GL (Fin (r + s)) (Af E))) (W : Submodule ℂ (Kinf E (r + s) → ℂ)), IsOpen (K : Set (GL (Fin (r + s)) (Af E))) → FiniteDimensional ℂ W → FiniteDimensional ℂ (typed (indSpan U₁ U₂) K W) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LimV.FdNode.finiteDimensional_typed_indSpan
+end
+
+section
+section
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
+open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
+open scoped ContDiff
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.LimV.NodeCarry
+
+variable {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {N r s : ℕ}
+
+theorem mul_mem_Sm {e φ : GA E N → ℂ} (he : e ∈ Sm E N) (hφ : φ ∈ Sm E N) :
+    (fun x => e x * φ x) ∈ Sm E N := by
+  intro g
+  refine ((he g).mul (hφ g)).congr fun x hx => ?_
+  have hx' : IsUnit (Matrix.of x) := hx
+  simp [chart, hx']
+
+theorem memInd2_of_mem {U₁ : Submodule ℂ (Sm E r)} {U₂ : Submodule ℂ (Sm E s)} {φ : Sm E (r + s)}
+    (h : φ ∈ indSpan U₁ U₂) : MemInd2 U₁ U₂ φ := by
+  induction h using Submodule.span_induction with
+  | mem x hx => exact hx
+  | zero => exact ⟨fun _ _ => rfl, fun _ _ => zero_mem _⟩
+  | add x y _ _ hx hy =>
+    refine ⟨fun u g => ?_, fun k g => add_mem (hx.2 k g) (hy.2 k g)⟩
+    change x.1 _ + y.1 _ = x.1 g + y.1 g
+    rw [hx.1, hy.1]
+  | smul c x _ hx =>
+    refine ⟨fun u g => ?_, fun k g => Submodule.smul_mem _ c (hx.2 k g)⟩
+    change c • x.1 _ = c • x.1 g
+    rw [hx.1]
+
+theorem carries_translate {e : GA E N → ℂ} {U U' : Submodule ℂ (Sm E N)} (hU : FinStable U) (hU' : FinStable U')
+    (hc : Carries e U U') (P : GL (Fin N) (Af E)) {a : Sm E N} (ha : a ∈ U) :
+    ∃ a' ∈ U', ∀ m, a'.1 m = e (m * finGL E N P) * a.1 m := by
+  obtain ⟨b, hb, hbe⟩ := hc _ (hU P⁻¹ a ha)
+  refine ⟨act (.fin P) b, hU' P b hb, fun m => ?_⟩
+  have e1 : (act (.fin P) b).1 m = b.1 (m * finGL E N P) := rfl
+  have e2 : (act (.fin P⁻¹) a).1 (m * finGL E N P) = a.1 (m * finGL E N P * finGL E N P⁻¹) := rfl
+  rw [e1, hbe, e2, mul_assoc, ← map_mul, mul_inv_cancel, map_one, mul_one]
+
+theorem finGL_unip (x : BlockIx (r + s) r → Af E) : finGL E (r + s) (unip x) = unip fun p => sFin E (x p) := by
+  refine ga_ext ?_ ?_
+  · rw [pInf_finGL, IwaAd.map_unip]
+    have : (fun p => pInf E (sFin E (x p))) = 0 := funext fun p => map_zero (infEq E).symm
+    rw [this]
+    exact unip_zero.symm
+  · rw [pFin_finGL, IwaAd.map_unip]
+    rfl
+
+theorem finGL_lev (p : GL (Fin r) (Af E) × GL (Fin s) (Af E)) :
+    finGL E (r + s) (lev (Af E) r s p) = lev (Ad E) r s (finGL E r p.1, finGL E s p.2) := by
+  refine ga_ext ?_ ?_
+  · rw [pInf_finGL, IwaAd.map_lev, pInf_finGL, pInf_finGL]
+    exact (map_one (lev (Cinf E) r s)).symm
+  · rw [pFin_finGL, IwaAd.map_lev, pFin_finGL, pFin_finGL]
+
+theorem nodeFn_slice {e₁ : GA E r → ℂ} {e₂ : GA E s → ℂ} (h₁ : FlatFn e₁) (h₂ : FlatFn e₂) (k : Kinf E (r + s))
+    (g : GL (Fin (r + s)) (Af E)) : ∃ p : GL (Fin r) (Af E) × GL (Fin s) (Af E), ∀ m : GA E r × GA E s,
+      nodeFn e₁ e₂ (lev (Ad E) r s m * cf (r + s) k g) = e₁ (m.1 * finGL E r p.1) * e₂ (m.2 * finGL E s p.2) := by
+  obtain ⟨xf, p, c, hc, hg⟩ := IwaFin.exists_unip_lev_integral E r s g
+  refine ⟨p, fun m => ?_⟩
+  obtain ⟨v, hv⟩ := lev_mul_unip m fun q => sFin E (xf q)
+  have e1 : cf (r + s) k g = unip (fun q => sFin E (xf q)) * lev (Ad E) r s (finGL E r p.1, finGL E s p.2) *
+      cf (r + s) k c := by
+    rw [hg, cf, cf, map_mul _ (unip xf * _) c, ← mul_assoc, infGL_comm, mul_assoc (finGL _ _ _), map_mul, finGL_unip,
+      finGL_lev]
+  rw [e1, ← mul_assoc, ← mul_assoc, hv, mul_assoc (unip v), ← map_mul]
+  exact GlobalTheory.T.node_function_levi_decomposition e₁ e₂ h₁ h₂ v _ k c hc
+
+theorem carries_nodeFn : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {r s : ℕ} (e₁ : GA E r → ℂ) (e₂ : GA E s → ℂ) (U₁ U₁' : Submodule ℂ (Sm E r)) (U₂ U₂' : Submodule ℂ (Sm E s)), FlatFn e₁ → FlatFn e₂ → FinStable U₁ → FinStable U₁' → FinStable U₂ → FinStable U₂' → Carries e₁ U₁ U₁' → Carries e₂ U₂ U₂' → Carries (nodeFn e₁ e₂) (indSpan U₁ U₂) (indSpan U₁' U₂') := by
+  intro E _ _ _ r s e₁ e₂ U₁ U₁' U₂ U₂' h₁ h₂ s₁ s₁' s₂ s₂' c₁ c₂ φ hφ
+  have hF := GlobalTheory.T.flat_node_function e₁ e₂ h₁ h₂
+  have hI := memInd2_of_mem hφ
+  refine ⟨⟨fun x => nodeFn e₁ e₂ x * φ.1 x, mul_mem_Sm hF.sm φ.2⟩,
+    Submodule.subset_span ⟨fun u g => ?_, fun k g => ?_⟩, fun _ => rfl⟩
+  · change nodeFn e₁ e₂ (unip u * g) * φ.1 (unip u * g) = nodeFn e₁ e₂ g * φ.1 g
+    rw [hI.1]
+    obtain ⟨v, m, k, c, hc, rfl⟩ := exists_iw g
+    rw [← mul_assoc, ← mul_assoc, ← D.unip_add', GlobalTheory.T.node_function_levi_decomposition e₁ e₂ h₁ h₂ _ _ _ _ hc,
+      GlobalTheory.T.node_function_levi_decomposition e₁ e₂ h₁ h₂ _ _ _ _ hc]
+  · obtain ⟨p, hp⟩ := nodeFn_slice h₁ h₂ k g
+    obtain ⟨n, ψ₁, ψ₂, u₁, u₂, hs⟩ := tensor_pair_finite_sum (hI.2 k g)
+    choose a ha hae using fun i => carries_translate s₁ s₁' c₁ p.1 (u₁ i)
+    choose b hb hbe using fun i => carries_translate s₂ s₂' c₂ p.2 (u₂ i)
+    convert A.sum_mem ha hb using 1
+    funext m
+    have hm : φ.1 (lev (Ad E) r s m * cf (r + s) k g) = ∑ i, (ψ₁ i).1 m.1 * (ψ₂ i).1 m.2 := congrFun hs m
+    change nodeFn e₁ e₂ (lev (Ad E) r s m * cf (r + s) k g) * φ.1 (lev (Ad E) r s m * cf (r + s) k g) = _
+    rw [hm, hp, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [hae, hbe]
+    ring
+
+end GlobalTheory.CompanionTheory.LimV.NodeCarry
+end
+end
+
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.InducedTensorMap
+open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.carries_induced_node : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {r s : ℕ} (e₁ : GA E r → ℂ) (e₂ : GA E s → ℂ) (U₁ U₁' : Submodule ℂ (Sm E r)) (U₂ U₂' : Submodule ℂ (Sm E s)), FlatFn e₁ → FlatFn e₂ → FinStable U₁ → FinStable U₁' → FinStable U₂ → FinStable U₂' → Carries e₁ U₁ U₁' → Carries e₂ U₂ U₂' → Carries (nodeFn e₁ e₂) (indSpan U₁ U₂) (indSpan U₁' U₂') := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LimV.NodeCarry.carries_nodeFn
+end
+
+section
 section
 noncomputable section
 
@@ -348,3 +1174,8 @@ namespace PositivityTheory.Rg.BcB.SpectralAccumulation
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.limit_vector_identity : PositivityTheory.Rg.BcB.SpectralAccumulation.LimVec := by
   atlas_forward_decl GlobalTheory.CompanionTheory.LimV.limVec
+end SpectralAccumulation
+end BcB
+end Rg
+end PositivityTheory
+end

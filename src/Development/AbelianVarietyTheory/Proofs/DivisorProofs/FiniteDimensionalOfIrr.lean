@@ -2,16 +2,790 @@ import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.BlockProductIsomorphism
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBlockDiagActEq
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.IsSimpleModuleOfFinrankEnd
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsInjectiveKernelCoindIntertwiningMap
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNeZeroCoindIntertwinerOfDoubleCoset
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPermMatrixRepParabolicDoubleCosetStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CuspidalLeviDatumPermBlocksMatch
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EquivOfNeZeroMapIsotypicSumOfCopies
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BlockGLHomConjPermMatrixOfBlocksMatch
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNeZeroIntertwiningOfCommutingIsotypicFacto
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPermOfBlockSizeBijection
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLeviGeneratedCommutingBlockGL
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsCuspidalIffCompositions
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPermMatrixRepParabolicDoubleCoset
 
+section
+section
+open Formalism.L2.DIV GlobalTheory.FinGL GlobalTheory.Parabolic GlobalTheory.IndefiniteRowSideFullHecke.BlockProductIsomorphism
+
+namespace GlobalTheory.CoindKernel
+
+variable {G : Type} [Group G] (P : Subgroup G) {V : Type} [AddCommGroup V] [Module ℂ V]
+  (σ : Representation ℂ P V)
+
+open Classical in
+
+noncomputable def delta : V →ₗ[ℂ] Representation.coindV P.subtype σ where
+  toFun v := ⟨fun x => if h : x ∈ P then σ ⟨x, h⟩ v else 0, by
+    intro p g
+    by_cases hg : g ∈ P
+    · have h1 : P.subtype p * g ∈ P := P.mul_mem p.2 hg
+      simp only [dif_pos hg, dif_pos h1]
+      have : (⟨P.subtype p * g, h1⟩ : P) = p * ⟨g, hg⟩ := rfl
+      rw [this, map_mul]; rfl
+    · have h1 : P.subtype p * g ∉ P := fun h => hg ((P.mul_mem_cancel_left p.2).1 h)
+      simp only [dif_neg hg, dif_neg h1, map_zero]⟩
+  map_add' v w := by
+    ext x
+    by_cases hx : x ∈ P <;> simp [hx]
+  map_smul' c v := by
+    ext x
+    by_cases hx : x ∈ P <;> simp [hx]
+
+open Classical in
+theorem delta_apply (v : V) (x : G) :
+    (delta P σ v).1 x = if h : x ∈ P then σ ⟨x, h⟩ v else 0 := rfl
+
+theorem coind_val (g : G) (f : Representation.coindV P.subtype σ) (x : G) :
+    (Representation.coind P.subtype σ g f).1 x = f.1 (x * g) := rfl
+
+theorem coind_delta (p : P) (v : V) :
+    Representation.coind P.subtype σ (p : G) (delta P σ v) = delta P σ (σ p v) := by
+  ext x
+  rw [coind_val, delta_apply, delta_apply]
+  by_cases hx : x ∈ P
+  · have h1 : x * (p : G) ∈ P := P.mul_mem hx p.2
+    rw [dif_pos hx, dif_pos h1]
+    have : (⟨x * (p : G), h1⟩ : P) = ⟨x, hx⟩ * p := rfl
+    rw [this, map_mul]; rfl
+  · have h1 : x * (p : G) ∉ P := fun h => hx ((P.mul_mem_cancel_right p.2).1 h)
+    rw [dif_neg hx, dif_neg h1]
+
+open Classical in
+theorem sum_delta [Fintype G] (f : Representation.coindV P.subtype σ) :
+    ∑ g : G, Representation.coind P.subtype σ g⁻¹ (delta P σ (f.1 g)) =
+      ((Finset.univ.filter (· ∈ P)).card : ℂ) • f := by
+  ext x
+  have h : ∀ g : G, (Representation.coind P.subtype σ g⁻¹ (delta P σ (f.1 g))).1 x
+      = if x * g⁻¹ ∈ P then f.1 x else 0 := by
+    intro g
+    rw [coind_val, delta_apply]
+    by_cases hx : x * g⁻¹ ∈ P
+    · rw [dif_pos hx, if_pos hx]
+      have := f.2 ⟨x * g⁻¹, hx⟩ g
+      rw [← this]
+      simp
+    · rw [dif_neg hx, if_neg hx]
+  rw [Submodule.coe_sum, Finset.sum_apply, Finset.sum_congr rfl fun g _ => h g]
+  have e := Equiv.sum_comp ((Equiv.inv G).trans (Equiv.mulLeft x))
+    (fun y : G => if y ∈ P then f.1 x else 0)
+  simp only [Equiv.trans_apply, Equiv.inv_apply, Equiv.coe_mulLeft] at e
+  rw [e, ← Finset.sum_filter, Finset.sum_const, Submodule.coe_smul, Pi.smul_apply,
+    Nat.cast_smul_eq_nsmul]
+
+variable (P' : Subgroup G) {V' : Type} [AddCommGroup V'] [Module ℂ V']
+  (σ' : Representation ℂ P' V')
+
+noncomputable def kernel :
+    Representation.IntertwiningMap (Representation.coind P.subtype σ)
+      (Representation.coind P'.subtype σ') →ₗ[ℂ] (G → V →ₗ[ℂ] V') where
+  toFun Φ g := (LinearMap.proj g ∘ₗ (Representation.coindV P'.subtype σ').subtype) ∘ₗ
+    Φ.toLinearMap ∘ₗ delta P σ
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
+
+theorem kernel_apply (Φ : Representation.IntertwiningMap (Representation.coind P.subtype σ)
+      (Representation.coind P'.subtype σ')) (g : G) (v : V) :
+    kernel P σ P' σ' Φ g v = (Φ (delta P σ v)).1 g := rfl
+
+theorem exists_kernel : ∀ (G : Type) [Group G] [Finite G] (P P' : Subgroup G) (V V' : Type) [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Module ℂ V'] (σ : Representation ℂ P V) (σ' : Representation ℂ P' V'), ∃ K : Representation.IntertwiningMap (Representation.coind P.subtype σ) (Representation.coind P'.subtype σ') →ₗ[ℂ] (G → V →ₗ[ℂ] V'), Function.Injective K ∧ ∀ (Φ : Representation.IntertwiningMap (Representation.coind P.subtype σ) (Representation.coind P'.subtype σ')) (p' : P') (g : G) (p : P), K Φ ((p' : G) * g * (p : G)) = σ' p' ∘ₗ K Φ g ∘ₗ σ p := by
+  intro G _ _ P P' V V' _ _ _ _ σ σ'
+  classical
+  haveI := Fintype.ofFinite G
+  refine ⟨kernel P σ P' σ', ?_, ?_⟩
+  · rw [injective_iff_map_eq_zero]
+    intro Φ hΦ
+    have h0 : ∀ v, Φ (delta P σ v) = 0 := by
+      intro v
+      ext g
+      have := kernel_apply P σ P' σ' Φ g v
+      rw [hΦ] at this
+      exact this.symm
+    apply Representation.IntertwiningMap.ext
+    ext1 f
+    have h1 := congrArg Φ (sum_delta P σ f)
+    rw [map_sum, map_smul, Finset.sum_eq_zero (fun g _ => by
+      rw [Φ.isIntertwining, h0, map_zero])] at h1
+    have hc : ((Finset.univ.filter (fun x : G => x ∈ P)).card : ℂ) ≠ 0 := by
+      rw [Nat.cast_ne_zero, Finset.card_ne_zero]
+      exact ⟨1, by simp [P.one_mem]⟩
+    exact (smul_eq_zero.1 h1.symm).resolve_left hc
+  · intro Φ p' g p
+    ext v
+    rw [LinearMap.comp_apply, LinearMap.comp_apply, kernel_apply, kernel_apply, ← coind_delta,
+      Φ.isIntertwining, coind_val, mul_assoc]
+    exact (Φ (delta P σ v)).2 p' (g * p)
+
+end GlobalTheory.CoindKernel
+end
+
+open Formalism.L2.DIV GlobalTheory.FinGL GlobalTheory.Parabolic GlobalTheory.IndefiniteRowSideFullHecke.BlockProductIsomorphism
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_injective_kernel_coind_intertwiningMap : ∀ (G : Type) [Group G] [Finite G] (P P' : Subgroup G) (V V' : Type) [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Module ℂ V'] (σ : Representation ℂ P V) (σ' : Representation ℂ P' V'), ∃ K : Representation.IntertwiningMap (Representation.coind P.subtype σ) (Representation.coind P'.subtype σ') →ₗ[ℂ] (G → V →ₗ[ℂ] V'), Function.Injective K ∧ ∀ (Φ : Representation.IntertwiningMap (Representation.coind P.subtype σ) (Representation.coind P'.subtype σ')) (p' : P') (g : G) (p : P), K Φ ((p' : G) * g * (p : G)) = σ' p' ∘ₗ K Φ g ∘ₗ σ p := by
+  atlas_forward_decl GlobalTheory.CoindKernel.exists_kernel
+end
+
+section
+section
+open Formalism.L2.DIV GlobalTheory.FinGL GlobalTheory.Parabolic GlobalTheory.IndefiniteRowSideFullHecke.BlockProductIsomorphism
+
+namespace GlobalTheory
+
+theorem exists_ne_zero_intertwiningMap_coind_of_doubleCoset :
+    ∀ (G : Type) [Group G] [Finite G] (P P' : Subgroup G) (V V' : Type) [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Module ℂ V'] (σ : Representation ℂ P V) (σ' : Representation ℂ P' V') (x : G) (T : V →ₗ[ℂ] V'), T ≠ 0 → (∀ (p : P) (p' : P'), (p' : G) * x = x * (p : G) → σ' p' ∘ₗ T = T ∘ₗ σ p) → ∃ Φ : Representation.IntertwiningMap (Representation.coind P.subtype σ) (Representation.coind P'.subtype σ'), Φ ≠ 0 := by
+  intro G _ _ P P' V V' _ _ _ _ σ σ' x T hT h
+  classical
+  haveI : Fintype P' := Fintype.ofFinite _
+  let L : Representation.coindV P.subtype σ →ₗ[ℂ] Representation.coindV P'.subtype σ' :=
+    { toFun := fun f => ⟨fun y => ∑ p' : P', σ' p' (T (f.1 (x⁻¹ * (p' : G)⁻¹ * y))), by
+        intro q y
+        beta_reduce
+        rw [map_sum, ← Equiv.sum_comp (Equiv.mulLeft q)
+          (fun p' : P' => σ' p' (T (f.1 (x⁻¹ * (p' : G)⁻¹ * (P'.subtype q * y)))))]
+        refine Finset.sum_congr rfl fun p' _ => ?_
+        simp [mul_assoc]⟩
+      map_add' := fun f g => by
+        ext y
+        simp [Finset.sum_add_distrib]
+      map_smul' := fun c f => by
+        ext y
+        simp [Finset.smul_sum] }
+  have hL : ∀ f y, (L f).1 y = ∑ p' : P', σ' p' (T (f.1 (x⁻¹ * (p' : G)⁻¹ * y))) :=
+    fun _ _ => rfl
+  refine ⟨⟨L, fun g => ?_⟩, fun h0 => ?_⟩
+  · ext f y
+    change (L (Representation.coind P.subtype σ g f)).1 y = (L f).1 (y * g)
+    rw [hL, hL]
+    refine Finset.sum_congr rfl fun p' _ => ?_
+    change σ' p' (T (f.1 (x⁻¹ * (p' : G)⁻¹ * y * g))) = _
+    rw [mul_assoc _ y g]
+  · obtain ⟨v, hv⟩ : ∃ v, T v ≠ 0 := by
+      by_contra hc
+      push Not at hc
+      exact hT (LinearMap.ext hc)
+    let δ : Representation.coindV P.subtype σ :=
+      ⟨fun y => if hy : y ∈ P then σ ⟨y, hy⟩ v else 0, by
+        intro q y
+        by_cases hy : y ∈ P
+        · have hqy : P.subtype q * y ∈ P := P.mul_mem q.2 hy
+          simp only [dif_pos hy, dif_pos hqy]
+          rw [← Module.End.mul_apply, ← map_mul]
+          rfl
+        · have hqy : P.subtype q * y ∉ P := fun hh => hy ((P.mul_mem_cancel_left q.2).1 hh)
+          simp only [dif_neg hy, dif_neg hqy, map_zero]⟩
+    have hL0 : L = 0 := congrArg Representation.IntertwiningMap.toLinearMap h0
+    have h1 : (L δ).1 x = 0 := by rw [hL0]; rfl
+    have h2 : ∀ p' : P', σ' p' (T (δ.1 (x⁻¹ * (p' : G)⁻¹ * x))) =
+        if x⁻¹ * (p' : G)⁻¹ * x ∈ P then T v else 0 := by
+      intro p'
+      by_cases hp : x⁻¹ * (p' : G)⁻¹ * x ∈ P
+      · have hδ : δ.1 (x⁻¹ * (p' : G)⁻¹ * x) = σ ⟨_, hp⟩ v := dif_pos hp
+        have := LinearMap.congr_fun (h ⟨_, hp⟩ p'⁻¹ (by simp [mul_assoc])) v
+        simp only [LinearMap.comp_apply] at this
+        rw [hδ, if_pos hp, ← this, ← Module.End.mul_apply, ← map_mul]
+        simp
+      · have hδ : δ.1 (x⁻¹ * (p' : G)⁻¹ * x) = 0 := dif_neg hp
+        rw [hδ, if_neg hp]
+        simp
+    rw [hL, Finset.sum_congr rfl fun p' _ => h2 p', ← Finset.sum_filter, Finset.sum_const,
+      ← Nat.cast_smul_eq_nsmul ℂ, smul_eq_zero] at h1
+    rcases h1 with h1 | h1
+    · have : (1 : P') ∈ Finset.univ.filter fun p' : P' => x⁻¹ * (p' : G)⁻¹ * x ∈ P := by
+        simp [P.one_mem]
+      exact (Finset.card_pos.2 ⟨_, this⟩).ne' (Nat.cast_eq_zero.1 h1)
+    · exact hv h1
+
+end GlobalTheory
+end
+
+open Formalism.L2.DIV GlobalTheory.FinGL GlobalTheory.Parabolic GlobalTheory.IndefiniteRowSideFullHecke.BlockProductIsomorphism
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_ne_zero_coindIntertwiner_of_doubleCoset : ∀ (G : Type) [Group G] [Finite G] (P P' : Subgroup G) (V V' : Type) [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Module ℂ V'] (σ : Representation ℂ P V) (σ' : Representation ℂ P' V') (x : G) (T : V →ₗ[ℂ] V'), T ≠ 0 → (∀ (p : P) (p' : P'), (p' : G) * x = x * (p : G) → σ' p' ∘ₗ T = T ∘ₗ σ p) → ∃ Φ : Representation.IntertwiningMap (Representation.coind P.subtype σ) (Representation.coind P'.subtype σ'), Φ ≠ 0 := by
+  atlas_forward_decl GlobalTheory.exists_ne_zero_intertwiningMap_coind_of_doubleCoset
+end
+
+section
+open Formalism.L2.DIV GlobalTheory.FinGL GlobalTheory.Parabolic GlobalTheory.IndefiniteRowSideFullHecke.BlockProductIsomorphism
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_permMatrix_rep_parabolic_doubleCoset : ∀ (F : Type) [Field F] (r : ℕ) (b b' : Fin r → ℕ), Monotone b → Monotone b' → ∀ g : GL (Fin r) F, ∃ (w : Equiv.Perm (Fin r)) (p' : blockTri (κ := F) b') (p : blockTri (κ := F) b), g = (p' : GL (Fin r) F) * permGL F w * (p : GL (Fin r) F) := by
+  first | exact @GlobalTheory.FinGL.Bruhat.exists_perm_rep_blockTri | exact GlobalTheory.FinGL.Bruhat.exists_perm_rep_blockTri | (intros; apply GlobalTheory.FinGL.Bruhat.exists_perm_rep_blockTri <;> assumption)
+end
+
+section
+section
+open Formalism.L2.DIV GlobalTheory.FinGL GlobalTheory.Parabolic GlobalTheory.IndefiniteRowSideFullHecke.BlockProductIsomorphism
+
+namespace GlobalTheory.FinGL.BlockMatch
+
+variable {F : Type} [Field F] {r : ℕ} {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
+
+theorem eq_zero_of_invariant [Finite F] {b : Fin r → ℕ} {σ : Representation ℂ (blockTri (κ := F) b) V}
+    (hσ : IsCuspDatum b σ) (S : Finset (Fin r)) (hS : ∃ i j, b i = b j ∧ i ∈ S ∧ j ∉ S) (T : V →ₗ[ℂ] W)
+    (hT : ∀ u : blockTri (κ := F) b, (∀ i j, ((u : GL (Fin r) F) : Matrix (Fin r) (Fin r) F) i j ≠
+      (1 : Matrix (Fin r) (Fin r) F) i j → b i = b j ∧ i ∈ S ∧ j ∉ S) → T ∘ₗ σ u = T) : T = 0 := by
+  classical
+  let c : Fin r → ℕ := fun k => if k ∈ S then 0 else 1
+  let U : Subgroup (blockTri (κ := F) b) :=
+    (levi F b ⊓ GlobalTheory.FiniteGL.unipRadical F c).subgroupOf (blockTri b)
+  have hU : ∀ u : blockTri (κ := F) b, u ∈ U ↔ ∀ i j, ((u : GL (Fin r) F) : Matrix (Fin r) (Fin r) F) i j ≠
+      (1 : Matrix (Fin r) (Fin r) F) i j → b i = b j ∧ i ∈ S ∧ j ∉ S := by
+    intro u
+    simp only [U, Subgroup.mem_subgroupOf, Subgroup.mem_inf, mem_levi, GlobalTheory.FiniteGL.mem_unipRadical,
+      Matrix.sub_apply, sub_eq_zero]
+    constructor
+    · rintro ⟨h1, h2⟩ i j hne
+      refine ⟨?_, ?_⟩
+      · by_contra h
+        exact hne (by rw [h1 i j h, Matrix.one_apply_ne (fun e => h (congrArg b e))])
+      · by_contra h
+        refine hne (h2 i j ?_)
+        by_cases hi : i ∈ S <;> by_cases hj : j ∈ S <;> simp_all [c]
+    · intro h
+      refine ⟨fun i j hij => ?_, fun i j hij => ?_⟩
+      · by_contra h0
+        exact hij (h i j (by rwa [Matrix.one_apply_ne (fun e => hij (congrArg b e))])).1
+      · by_contra h0
+        obtain ⟨-, hi, hj⟩ := h i j h0
+        simp [c, hi, hj] at hij
+  letI := Fintype.ofFinite U
+  have hc : (Fintype.card U : ℂ) ≠ 0 := Nat.cast_ne_zero.2 Fintype.card_ne_zero
+  ext v
+  have h0 : ∑ u : U, σ u v = 0 := by
+    refine hσ.cusp S hS _ fun n hn => ?_
+    rw [map_sum]
+    exact Fintype.sum_equiv (Equiv.mulLeft (⟨n, (hU n).2 hn⟩ : U)) _ _ fun u => by simp
+  have h1 := congrArg T h0
+  have h2 : ∀ u : U, T (σ u v) = T v := fun u => LinearMap.congr_fun (hT u ((hU u).1 u.2)) v
+  rw [map_sum, map_zero, Finset.sum_congr rfl fun u _ => h2 u, Finset.sum_const, Finset.card_univ,
+    ← Nat.cast_smul_eq_nsmul ℂ] at h1
+  exact (smul_eq_zero.1 h1).resolve_left hc
+
+theorem mem_blockTri_of_ne {b : Fin r → ℕ} {g : GL (Fin r) F}
+    (h : ∀ i j, (g : Matrix (Fin r) (Fin r) F) i j ≠ (1 : Matrix (Fin r) (Fin r) F) i j → b i < b j) :
+    g ∈ blockTri (κ := F) b := by
+  refine mem_blockTri.2 fun i j hij => ?_
+  by_contra h0
+  have := h i j (by rwa [Matrix.one_apply_ne (fun e => by rw [e] at hij; exact lt_irrefl _ hij)])
+  omega
+
+theorem blocks_match : ∀ (F : Type) [Field F] [Finite F] (r : ℕ) (b b' : Fin r → ℕ) (V V' : Type) [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Module ℂ V'] (σ : Representation ℂ (blockTri (κ := F) b) V) (σ' : Representation ℂ (blockTri (κ := F) b') V'), IsCuspDatum b σ → IsCuspDatum b' σ' → ∀ (w : Equiv.Perm (Fin r)) (T : V →ₗ[ℂ] V'), T ≠ 0 → (∀ (p : blockTri (κ := F) b) (p' : blockTri (κ := F) b'), (p' : GL (Fin r) F) * permGL F w = permGL F w * (p : GL (Fin r) F) → σ' p' ∘ₗ T = T ∘ₗ σ p) → ∀ i j : Fin r, b i = b j ↔ b' (w i) = b' (w j) := by
+  intro F _ _ r b b' V V' _ _ _ _ σ σ' hσ hσ' w T hT hint
+  have hone : ∀ k l : Fin r, (1 : Matrix (Fin r) (Fin r) F) (w k) (w l) = (1 : Matrix (Fin r) (Fin r) F) k l := by
+    intro k l
+    simp [Matrix.one_apply]
+  have A : ∀ i j, b i = b j → ¬ b' (w i) < b' (w j) := by
+    intro i j hij hlt
+    refine hT (eq_zero_of_invariant hσ (Finset.univ.filter fun k => b' (w k) ≤ b' (w i))
+      ⟨i, j, hij, by simp, by simpa using hlt⟩ T fun u hu => ?_)
+    have key : ∀ k l, ((permGL F w * u * (permGL F w)⁻¹ : GL (Fin r) F) : Matrix (Fin r) (Fin r) F) k l ≠
+        (1 : Matrix (Fin r) (Fin r) F) k l → b' k < b' l := by
+      intro k l
+      obtain ⟨k, rfl⟩ := w.surjective k
+      obtain ⟨l, rfl⟩ := w.surjective l
+      rw [conj_permGL_apply, hone]
+      intro h
+      obtain ⟨-, h1, h2⟩ := hu k l h
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at h1 h2
+      omega
+    have h1 := hint u ⟨_, mem_blockTri_of_ne key⟩ (by simp)
+    rw [hσ'.infl ⟨_, mem_blockTri_of_ne key⟩ fun k l hkl => by
+      by_contra h0
+      have := key k l h0
+      omega] at h1
+    exact h1.symm
+  have B : ∀ i j, b' (w i) = b' (w j) → ¬ b i < b j := by
+    intro i j hij hlt
+    apply hT
+    ext v
+    refine hσ'.cusp (Finset.univ.filter fun k => b (w.symm k) ≤ b i)
+      ⟨w i, w j, hij, by simp, by simpa using hlt⟩ (T v) fun u hu => ?_
+    have key : ∀ k l, (((permGL F w)⁻¹ * u * permGL F w : GL (Fin r) F) : Matrix (Fin r) (Fin r) F) k l ≠
+        (1 : Matrix (Fin r) (Fin r) F) k l → b k < b l := by
+      intro k l
+      rw [← conj_permGL_apply w, ← hone]
+      intro h
+      obtain ⟨-, h1, h2⟩ := hu (w k) (w l) (by simpa [mul_assoc] using h)
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and, Equiv.symm_apply_apply] at h1 h2
+      omega
+    have h1 := hint ⟨_, mem_blockTri_of_ne key⟩ u (by simp [mul_assoc])
+    rw [hσ.infl ⟨_, mem_blockTri_of_ne key⟩ fun k l hkl => by
+      by_contra h0
+      have := key k l h0
+      omega] at h1
+    exact LinearMap.congr_fun h1 v
+  intro i j
+  constructor
+  · intro h
+    have := A i j h
+    have := A j i h.symm
+    omega
+  · intro h
+    have := B i j h
+    have := B j i h.symm
+    omega
+
+end GlobalTheory.FinGL.BlockMatch
+end
+
+open Formalism.L2.DIV GlobalTheory.FinGL GlobalTheory.Parabolic GlobalTheory.IndefiniteRowSideFullHecke.BlockProductIsomorphism
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cuspidalLeviDatum_perm_blocks_match : ∀ (F : Type) [Field F] [Finite F] (r : ℕ) (b b' : Fin r → ℕ) (V V' : Type) [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Module ℂ V'] (σ : Representation ℂ (blockTri (κ := F) b) V) (σ' : Representation ℂ (blockTri (κ := F) b') V'), IsCuspDatum b σ → IsCuspDatum b' σ' → ∀ (w : Equiv.Perm (Fin r)) (T : V →ₗ[ℂ] V'), T ≠ 0 → (∀ (p : blockTri (κ := F) b) (p' : blockTri (κ := F) b'), (p' : GL (Fin r) F) * permGL F w = permGL F w * (p : GL (Fin r) F) → σ' p' ∘ₗ T = T ∘ₗ σ p) → ∀ i j : Fin r, b i = b j ↔ b' (w i) = b' (w j) := by
+  atlas_forward_decl GlobalTheory.FinGL.BlockMatch.blocks_match
+end
+
+section
+section
+open Formalism.L2.DIV GlobalTheory.FinGL GlobalTheory.Parabolic GlobalTheory.IndefiniteRowSideFullHecke.BlockProductIsomorphism
+
+namespace GlobalTheory.IsotypicMap
+
+open Representation
+
+variable {H V V' W : Type} [Group H] [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Module ℂ V']
+  [AddCommGroup W] [Module ℂ W]
+
+theorem exists_comp_ne_zero {τ : Representation ℂ H V} {τ' : Representation ℂ H V'} {ρ : Representation ℂ H W}
+    (h : IsIsotypicOf τ ρ) (T : IntertwiningMap τ τ') (hT : T ≠ 0) :
+    ∃ f : IntertwiningMap ρ τ, T.comp f ≠ 0 := by
+  by_contra hc
+  push Not at hc
+  apply hT
+  apply IntertwiningMap.ext
+  rw [IntertwiningMap.zero_toLinearMap, ← LinearMap.ker_eq_top, ← top_le_iff, ← (show _ = _ from h)]
+  refine iSup_le fun f => ?_
+  rintro _ ⟨w, rfl⟩
+  exact congrArg (fun g : IntertwiningMap ρ τ' => g w) (hc f)
+
+theorem exists_leftInverse [Finite H] {τ : Representation ℂ H V} {ρ : Representation ℂ H W}
+    (f : IntertwiningMap ρ τ) (hf : Function.Injective f) :
+    ∃ s : IntertwiningMap τ ρ, ∀ w, s (f w) = w := by
+  have : NeZero (Nat.card H : ℂ) := ⟨Nat.cast_ne_zero.2 Nat.card_pos.ne'⟩
+  obtain ⟨g, hg⟩ := MonoidAlgebra.exists_leftInverse_of_injective
+    (IntertwiningMap.equivLinearMapAsModule ρ τ f) (LinearMap.ker_eq_bot.2 hf)
+  exact ⟨(IntertwiningMap.equivLinearMapAsModule τ ρ).symm g, fun w => LinearMap.congr_fun hg w⟩
+
+theorem equiv_of_isotypic_map : ∀ (H : Type) [Group H] [Finite H] (V V' W W' : Type) [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Module ℂ V'] [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W'] (τ : Representation ℂ H V) (τ' : Representation ℂ H V') (ρ : Representation ℂ H W) (ρ' : Representation ℂ H W'), ρ.IsIrreducible → ρ'.IsIrreducible → IsIsotypicOf τ ρ → IsIsotypicOf τ' ρ' → ∀ T : Representation.IntertwiningMap τ τ', T ≠ 0 → Nonempty (Representation.Equiv ρ ρ') := by
+  intro H _ _ V V' W W' _ _ _ _ _ _ _ _ τ τ' ρ ρ' hρ hρ' h h' T hT
+  obtain ⟨f, hf⟩ := exists_comp_ne_zero h T hT
+  have hi := (Representation.IsIrreducible.injective_or_eq_zero (T.comp f)).resolve_right hf
+  obtain ⟨s, hs⟩ := exists_leftInverse (T.comp f) hi
+  have hs0 : s ≠ 0 := by
+    rintro rfl
+    apply hf
+    apply IntertwiningMap.ext
+    ext w
+    have hw : w = 0 := (hs w).symm
+    subst hw
+    simp
+  obtain ⟨f', hf'⟩ := exists_comp_ne_zero h' s hs0
+  have hb := (Representation.IsIrreducible.bijective_or_eq_zero (s.comp f')).resolve_right hf'
+  exact ⟨(IntertwiningMap.ofBijective _ hb).symm⟩
+
+end GlobalTheory.IsotypicMap
+end
+
+open Formalism.L2.DIV GlobalTheory.FinGL GlobalTheory.Parabolic GlobalTheory.IndefiniteRowSideFullHecke.BlockProductIsomorphism
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.equiv_of_ne_zero_map_isotypicSumOfCopies : ∀ (H : Type) [Group H] [Finite H] (V V' W W' : Type) [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Module ℂ V'] [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W'] (τ : Representation ℂ H V) (τ' : Representation ℂ H V') (ρ : Representation ℂ H W) (ρ' : Representation ℂ H W'), ρ.IsIrreducible → ρ'.IsIrreducible → IsIsotypicOf τ ρ → IsIsotypicOf τ' ρ' → ∀ T : Representation.IntertwiningMap τ τ', T ≠ 0 → Nonempty (Representation.Equiv ρ ρ') := by
+  atlas_forward_decl GlobalTheory.IsotypicMap.equiv_of_isotypic_map
+end
+
+section
+section
+open Formalism.L2.DIV GlobalTheory.FinGL GlobalTheory.Parabolic GlobalTheory.IndefiniteRowSideFullHecke.BlockProductIsomorphism
+
+namespace GlobalTheory.Proof.BlockConj
+
+theorem range_blockEnum {r d : ℕ} (b : Fin r → ℕ) (c : ℕ) (h : (block b c).card = d) (k : Fin r) :
+    k ∈ Set.range (blockEnum b c h) ↔ b k = c := by
+  have h1 : Set.range (blockEnum b c h) = (block b c : Set (Fin r)) :=
+    Finset.range_orderEmbOfFin (block b c) h
+  rw [h1]
+  simp [block]
+
+theorem blockHom_conj_permGL (F : Type) [Field F] (r : ℕ) (b b' : Fin r → ℕ) (w : Equiv.Perm (Fin r))
+    (hw : ∀ i j : Fin r, b i = b j ↔ b' (w i) = b' (w j)) (i : Fin r) :
+    (block b (b i)).card = (block b' (b' (w i))).card ∧
+    ∀ (d : ℕ) (h : (block b (b i)).card = d) (h' : (block b' (b' (w i))).card = d),
+      ∃ π : GL (Fin d) F, ∀ g : GL (Fin d) F,
+        (blockHom F b' (b' (w i)) h' (π * g * π⁻¹) : GL (Fin r) F) * permGL F w =
+          permGL F w * (blockHom F b (b i) h g : GL (Fin r) F) := by
+  refine ⟨?_, fun d h h' => ?_⟩
+  · refine Finset.card_equiv w fun k => ?_
+    simp [block, hw k i]
+  · set e := blockEnum b (b i) h with he
+    set e' := blockEnum b' (b' (w i)) h' with he'
+    have hr : ∀ k, k ∈ Set.range e ↔ w k ∈ Set.range e' := fun k => by
+      rw [he, he', range_blockEnum, range_blockEnum, hw k i]
+    have hex : ∀ a, ∃ a', e' a' = w (e a) := fun a => (hr (e a)).1 ⟨a, rfl⟩
+    choose p hp using hex
+    have hinj : Function.Injective p := fun a a' haa => by
+      apply e.injective
+      apply w.injective
+      rw [← hp, ← hp, haa]
+    let π₀ : Equiv.Perm (Fin d) := Equiv.ofBijective p (Finite.injective_iff_bijective.1 hinj)
+    have hπ : ∀ a, e' (π₀ a) = w (e a) := hp
+    refine ⟨permGL F π₀, fun g => ?_⟩
+    refine eq_mul_inv_iff_mul_eq.1 ?_
+    ext k l
+    obtain ⟨k, rfl⟩ := w.surjective k
+    obtain ⟨l, rfl⟩ := w.surjective l
+    rw [conj_permGL_apply]
+    show extendMat e' ((permGL F π₀ * g * (permGL F π₀)⁻¹ : GL (Fin d) F) : Matrix (Fin d) (Fin d) F) (w k) (w l)
+      = extendMat e (g : Matrix (Fin d) (Fin d) F) k l
+    by_cases hkl : k ∈ Set.range e ∧ l ∈ Set.range e
+    · obtain ⟨⟨a, rfl⟩, ⟨a', rfl⟩⟩ := hkl
+      rw [← hπ, ← hπ, extendMat_in, extendMat_in, conj_permGL_apply]
+    · rw [not_and_or] at hkl
+      rw [extendMat_out _ _ _ _ hkl, extendMat_out _ _ _ _ (by rwa [← hr, ← hr])]
+      simp [Matrix.one_apply]
+
+end GlobalTheory.Proof.BlockConj
+end
+
+open Formalism.L2.DIV GlobalTheory.FinGL GlobalTheory.Parabolic GlobalTheory.IndefiniteRowSideFullHecke.BlockProductIsomorphism
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.blockGLHom_conj_permMatrix_of_blocks_match : ∀ (F : Type) [Field F] (r : ℕ) (b b' : Fin r → ℕ) (w : Equiv.Perm (Fin r)), (∀ i j : Fin r, b i = b j ↔ b' (w i) = b' (w j)) → ∀ i : Fin r, (block b (b i)).card = (block b' (b' (w i))).card ∧ ∀ (d : ℕ) (h : (block b (b i)).card = d) (h' : (block b' (b' (w i))).card = d), ∃ π : GL (Fin d) F, ∀ g : GL (Fin d) F, (blockHom F b' (b' (w i)) h' (π * g * π⁻¹) : GL (Fin r) F) * permGL F w = permGL F w * (blockHom F b (b i) h g : GL (Fin r) F) := by
+  atlas_forward_decl GlobalTheory.Proof.BlockConj.blockHom_conj_permGL
+end
+
+section
+section
+open Formalism.L2.DIV GlobalTheory.FinGL GlobalTheory.Parabolic GlobalTheory.IndefiniteRowSideFullHecke.BlockProductIsomorphism
+
+namespace GlobalTheory.IsotypicFactors
+
+open Representation Module
+
+section One
+
+variable {H W V : Type} [Group H] [AddCommGroup W] [Module ℂ W] [AddCommGroup V] [Module ℂ V]
+
+theorem finiteDimensional_of_isotypic [FiniteDimensional ℂ V] [Nontrivial V]
+    (τ : Representation ℂ H V) (ρ : Representation ℂ H W) (hρ : ρ.IsIrreducible)
+    (h : IsIsotypicOf τ ρ) : FiniteDimensional ℂ W := by
+  have : ∃ g : IntertwiningMap ρ τ, g ≠ 0 := by
+    by_contra hc
+    push Not at hc
+    have : (⨆ f : IntertwiningMap ρ τ, LinearMap.range f.toLinearMap) = ⊥ := by
+      refine iSup_eq_bot.2 fun f => ?_
+      rw [hc f]
+      exact LinearMap.range_eq_bot.2 rfl
+    exact bot_ne_top (this.symm.trans h)
+  obtain ⟨g, hg⟩ := this
+  have hi := (IsIrreducible.injective_or_eq_zero g).resolve_right hg
+  exact FiniteDimensional.of_injective g.toLinearMap hi
+
+theorem classSum_scalar [Fintype H] [FiniteDimensional ℂ W] (ρ : Representation ℂ H W)
+    (hρ : ρ.IsIrreducible) (h : H) : ∃ s : ℂ, ∀ w, (∑ k, ρ (k * h * k⁻¹)) w = s • w := by
+  have hT : ∀ g v, (∑ k, ρ (k * h * k⁻¹)) (ρ g v) = ρ g ((∑ k, ρ (k * h * k⁻¹)) v) := by
+    intro g v
+    simp only [LinearMap.sum_apply, map_sum]
+    rw [← Equiv.sum_comp (Equiv.mulLeft g)]
+    refine Finset.sum_congr rfl fun s _ => ?_
+    rw [← Module.End.mul_apply, ← map_mul, ← Module.End.mul_apply, ← map_mul]
+    simp [mul_assoc]
+  obtain ⟨c, hc⟩ := (IsIrreducible.algebraMap_intertwiningMap_bijective_of_isAlgClosed (ρ := ρ)).2
+    ((∑ k, ρ (k * h * k⁻¹)).intertwiningMap_of_isIntertwiningMap ρ ρ hT)
+  refine ⟨c, fun v => ?_⟩
+  have := congrArg (fun f : IntertwiningMap ρ ρ => f v) hc
+  simpa using this.symm
+
+theorem classSum_of_isotypic [Fintype H] (τ : Representation ℂ H V) (ρ : Representation ℂ H W)
+    (hi : IsIsotypicOf τ ρ) (h : H) (s : ℂ) (hs : ∀ w, (∑ k, ρ (k * h * k⁻¹)) w = s • w) :
+    (∑ k, τ (k * h * k⁻¹)) = s • (1 : Module.End ℂ V) := by
+  have : (⊤ : Submodule ℂ V) ≤ LinearMap.eqLocus (∑ k, τ (k * h * k⁻¹)) (s • (1 : Module.End ℂ V)) := by
+    rw [← (show _ = ⊤ from hi)]
+    refine iSup_le fun f => ?_
+    rintro _ ⟨w, rfl⟩
+    rw [LinearMap.mem_eqLocus]
+    have e := congrArg f.toLinearMap (hs w)
+    simp only [LinearMap.sum_apply, map_sum, map_smul] at e
+    simp only [LinearMap.sum_apply, LinearMap.smul_apply, Module.End.one_apply, ← e]
+    exact Finset.sum_congr rfl fun k _ => (f.isIntertwining _ _ _ w).symm
+  exact LinearMap.ext fun v => this Submodule.mem_top
+
+theorem card_mul_character {M : Type} [Group M] [Fintype H] (τ : Representation ℂ M V) (f : H →* M)
+    (h : H) (s : ℂ) (hs : (∑ k, τ (f (k * h * k⁻¹))) = s • (1 : Module.End ℂ V)) (a : M)
+    (ha : ∀ k, Commute (f k) a) :
+    (Fintype.card H : ℂ) * τ.character (f h * a) = s * τ.character a := by
+  have e := congrArg (fun T => LinearMap.trace ℂ V (T * τ a)) hs
+  simp only [Finset.sum_mul, map_sum, smul_mul_assoc, one_mul, map_smul, smul_eq_mul] at e
+  have e2 : ∀ k, LinearMap.trace ℂ V (τ (f (k * h * k⁻¹)) * τ a) = τ.character (f h * a) := by
+    intro k
+    rw [← map_mul, ← char_conj τ (f h * a) (f k)]
+    have : f (k * h * k⁻¹) * a = f k * (f h * a) * (f k)⁻¹ := by
+      rw [map_mul, map_mul, mul_assoc, (ha k⁻¹).eq, map_inv]
+      simp only [mul_assoc]
+    rw [this]
+    rfl
+  simp only [e2, Finset.sum_const, Finset.card_univ, nsmul_eq_mul] at e
+  exact e
+
+end One
+
+theorem exists_ne_zero {G V W : Type} [Group G] [Finite G] [AddCommGroup V] [Module ℂ V]
+    [AddCommGroup W] [Module ℂ W] [FiniteDimensional ℂ V] [FiniteDimensional ℂ W] [Nontrivial V]
+    [Nontrivial W] (ρ : Representation ℂ G V) (σ : Representation ℂ G W)
+    (h : ∀ g, (finrank ℂ W : ℂ) * ρ.character g = (finrank ℂ V : ℂ) * σ.character g) :
+    ∃ f : IntertwiningMap ρ σ, f ≠ 0 := by
+  have := Fintype.ofFinite G
+  have : Invertible (Nat.card G : ℂ) :=
+    invertibleOfNonzero (by exact_mod_cast Nat.card_pos.ne')
+  have h1 := card_inv_mul_sum_char_mul_char_eq_finrank ρ ρ
+  have h2 := card_inv_mul_sum_char_mul_char_eq_finrank ρ σ
+  have h4 : (finrank ℂ W : ℂ) * finrank ℂ (IntertwiningMap ρ ρ)
+      = (finrank ℂ V : ℂ) * finrank ℂ (IntertwiningMap ρ σ) := by
+    rw [← h1, ← h2, mul_left_comm, mul_left_comm (finrank ℂ V : ℂ),
+      Finset.mul_sum _ _ (finrank ℂ V : ℂ), Finset.mul_sum _ _ (finrank ℂ W : ℂ)]
+    congr 1
+    refine Finset.sum_congr rfl fun g _ => ?_
+    rw [← mul_assoc, ← mul_assoc, h]
+  have : Nontrivial (IntertwiningMap ρ ρ) := by
+    obtain ⟨v, hv⟩ := exists_ne (0 : V)
+    exact ⟨⟨IntertwiningMap.id ρ, 0, fun e => hv (congrArg (fun f : IntertwiningMap ρ ρ => f v) e)⟩⟩
+  have h5 : finrank ℂ W * finrank ℂ (IntertwiningMap ρ ρ)
+      = finrank ℂ V * finrank ℂ (IntertwiningMap ρ σ) := by exact_mod_cast h4
+  have h3 : 0 < finrank ℂ (IntertwiningMap ρ σ) := by
+    have : 0 < finrank ℂ W * finrank ℂ (IntertwiningMap ρ ρ) :=
+      Nat.mul_pos Module.finrank_pos Module.finrank_pos
+    rw [h5] at this
+    exact Nat.pos_of_mul_pos_left this
+  have := Module.nontrivial_of_finrank_pos h3
+  exact exists_ne 0
+
+theorem exists_intertwining_ne_zero : ∀ (M : Type) [Group M] [Finite M] (ι : Type) [Finite ι] (H : ι → Type) [∀ c, Group (H c)] [∀ c, Finite (H c)] (f : ∀ c, H c →* M), (⨆ c, (f c).range) = ⊤ → (∀ c c', c ≠ c' → ∀ (x : H c) (y : H c'), Commute (f c x) (f c' y)) → ∀ (W : ι → Type) [∀ c, AddCommGroup (W c)] [∀ c, Module ℂ (W c)] (ρ : ∀ c, Representation ℂ (H c) (W c)), (∀ c, (ρ c).IsIrreducible) → ∀ (V V' : Type) [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V] [Nontrivial V] [AddCommGroup V'] [Module ℂ V'] [FiniteDimensional ℂ V'] [Nontrivial V'] (τ : Representation ℂ M V) (τ' : Representation ℂ M V'), (∀ c, IsIsotypicOf (show Representation ℂ (H c) V from τ.comp (f c)) (ρ c)) → (∀ c, IsIsotypicOf (show Representation ℂ (H c) V' from τ'.comp (f c)) (ρ c)) → ∃ T : Representation.IntertwiningMap τ τ', T ≠ 0 := by
+  intro M _ _ ι _ H _ _ f htop hcomm W _ _ ρ hρ V V' _ _ _ _ _ _ _ _ τ τ' hτ hτ'
+  classical
+  have := Fintype.ofFinite ι
+  have hcomm' : Pairwise fun i j : ι => ∀ (x : H i) (y : H j), Commute (f i x) (f j y) :=
+    fun i j hij => hcomm i j hij
+  refine exists_ne_zero τ τ' fun m => ?_
+  obtain ⟨h, rfl⟩ : m ∈ (MonoidHom.noncommPiCoprod f hcomm').range := by
+    rw [MonoidHom.noncommPiCoprod_range, htop]
+    exact Subgroup.mem_top m
+  have key : ∀ (S : Finset ι) (comm : (S : Set ι).Pairwise (Function.onFun Commute fun i => f i (h i))),
+      (finrank ℂ V' : ℂ) * τ.character (S.noncommProd (fun i => f i (h i)) comm)
+        = (finrank ℂ V : ℂ) * τ'.character (S.noncommProd (fun i => f i (h i)) comm) := by
+    intro S
+    induction S using Finset.induction_on with
+    | empty => intro comm; simp [mul_comm]
+    | insert c S hc ih =>
+      intro comm
+      have := Fintype.ofFinite (H c)
+      have := finiteDimensional_of_isotypic _ _ (hρ c) (hτ c)
+      obtain ⟨s, hs⟩ := classSum_scalar (ρ c) (hρ c) (h c)
+      rw [Finset.noncommProd_insert_of_notMem _ _ _ _ hc]
+      have ha : ∀ comm k, Commute (f c k) (S.noncommProd (fun i => f i (h i)) comm) := fun comm k =>
+        Finset.noncommProd_commute _ _ _ _ fun i hi => hcomm c i (fun e => hc (e ▸ hi)) _ _
+      have hcard : (Fintype.card (H c) : ℂ) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero
+      refine mul_left_cancel₀ hcard ?_
+      rw [mul_left_comm, card_mul_character τ (f c) (h c) s (classSum_of_isotypic _ _ (hτ c) _ _ hs) _ (ha _),
+        mul_left_comm (Fintype.card (H c) : ℂ),
+        card_mul_character τ' (f c) (h c) s (classSum_of_isotypic _ _ (hτ' c) _ _ hs) _ (ha _),
+        mul_left_comm, ih, mul_left_comm]
+  exact key Finset.univ fun _ _ _ _ hij => hcomm' hij _ _
+
+end GlobalTheory.IsotypicFactors
+end
+
+open Formalism.L2.DIV GlobalTheory.FinGL GlobalTheory.Parabolic GlobalTheory.IndefiniteRowSideFullHecke.BlockProductIsomorphism
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_ne_zero_intertwining_of_commuting_isotypicFactors : ∀ (M : Type) [Group M] [Finite M] (ι : Type) [Finite ι] (H : ι → Type) [∀ c, Group (H c)] [∀ c, Finite (H c)] (f : ∀ c, H c →* M), (⨆ c, (f c).range) = ⊤ → (∀ c c', c ≠ c' → ∀ (x : H c) (y : H c'), Commute (f c x) (f c' y)) → ∀ (W : ι → Type) [∀ c, AddCommGroup (W c)] [∀ c, Module ℂ (W c)] (ρ : ∀ c, Representation ℂ (H c) (W c)), (∀ c, (ρ c).IsIrreducible) → ∀ (V V' : Type) [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V] [Nontrivial V] [AddCommGroup V'] [Module ℂ V'] [FiniteDimensional ℂ V'] [Nontrivial V'] (τ : Representation ℂ M V) (τ' : Representation ℂ M V'), (∀ c, IsIsotypicOf (show Representation ℂ (H c) V from τ.comp (f c)) (ρ c)) → (∀ c, IsIsotypicOf (show Representation ℂ (H c) V' from τ'.comp (f c)) (ρ c)) → ∃ T : Representation.IntertwiningMap τ τ', T ≠ 0 := by
+  atlas_forward_decl GlobalTheory.IsotypicFactors.exists_intertwining_ne_zero
+end
+
+section
+section
+open Formalism.L2.DIV GlobalTheory.FinGL GlobalTheory.Parabolic GlobalTheory.IndefiniteRowSideFullHecke.BlockProductIsomorphism
+
+namespace GlobalTheory
+
+theorem exists_perm_of_block_bijection : ∀ (r : ℕ) (b b' : Fin r → ℕ) (R : ℕ → ℕ → Prop), (∀ c ∈ Set.range b, ∃! c', c' ∈ Set.range b' ∧ R c c') → (∀ c' ∈ Set.range b', ∃! c, c ∈ Set.range b ∧ R c c') → (∀ c ∈ Set.range b, ∀ c' ∈ Set.range b', R c c' → (block b c).card = (block b' c').card) → ∃ w : Equiv.Perm (Fin r), (∀ i, R (b i) (b' (w i))) ∧ ∀ i j : Fin r, b i = b j ↔ b' (w i) = b' (w j) := by
+  classical
+  intro r b b' R h1 h2 h3
+  have h1' : ∀ i : Fin r, ∃ c', c' ∈ Set.range b' ∧ R (b i) c' :=
+    fun i => (h1 (b i) ⟨i, rfl⟩).exists
+  choose f hf1 hf2 using h1'
+  have hiff : ∀ i c c', c ∈ Set.range b → c' ∈ Set.range b' → R c c' → (f i = c' ↔ b i = c) := by
+    intro i c c' hc hc' hR
+    constructor
+    · intro h
+      exact (h2 c' hc').unique ⟨⟨i, rfl⟩, h ▸ hf2 i⟩ ⟨hc, hR⟩
+    · intro h
+      subst h
+      exact (h1 (b i) hc).unique ⟨hf1 i, hf2 i⟩ ⟨hc', hR⟩
+  have hcard : ∀ c' : ℕ, Fintype.card {i // f i = c'} = Fintype.card {i // b' i = c'} := by
+    intro c'
+    rw [Fintype.card_subtype, Fintype.card_subtype]
+    by_cases hc' : c' ∈ Set.range b'
+    · obtain ⟨c, hc, hR⟩ := (h2 c' hc').exists
+      have h := h3 c hc c' hc' hR
+      unfold block at h
+      rw [← h]
+      congr 1
+      ext i
+      simp [hiff i c c' hc hc' hR]
+    · rw [Finset.filter_eq_empty_iff.2, Finset.filter_eq_empty_iff.2]
+      · intro i _ h
+        exact hc' ⟨i, h⟩
+      · intro i _ h
+        exact hc' (h ▸ hf1 i)
+  let e : ∀ c' : ℕ, {i // f i = c'} ≃ {i // b' i = c'} := fun c' => Fintype.equivOfCardEq (hcard c')
+  have hw : ∀ i, b' (Equiv.ofFiberEquiv e i) = f i := fun i => Equiv.ofFiberEquiv_map e i
+  refine ⟨Equiv.ofFiberEquiv e, fun i => ?_, fun i j => ?_⟩
+  · rw [hw]; exact hf2 i
+  · rw [hw, hw]
+    exact (hiff i (b j) (f j) ⟨j, rfl⟩ (hf1 j) (hf2 j)).symm
+
+end GlobalTheory
+end
+
+open Formalism.L2.DIV GlobalTheory.FinGL GlobalTheory.Parabolic GlobalTheory.IndefiniteRowSideFullHecke.BlockProductIsomorphism
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_perm_of_blockSize_bijection : ∀ (r : ℕ) (b b' : Fin r → ℕ) (R : ℕ → ℕ → Prop), (∀ c ∈ Set.range b, ∃! c', c' ∈ Set.range b' ∧ R c c') → (∀ c' ∈ Set.range b', ∃! c, c ∈ Set.range b ∧ R c c') → (∀ c ∈ Set.range b, ∀ c' ∈ Set.range b', R c c' → (block b c).card = (block b' c').card) → ∃ w : Equiv.Perm (Fin r), (∀ i, R (b i) (b' (w i))) ∧ ∀ i j : Fin r, b i = b j ↔ b' (w i) = b' (w j) := by
+  atlas_forward_decl GlobalTheory.exists_perm_of_block_bijection
+end
+
+section
+section
+noncomputable section
+
+namespace GlobalTheory.Parabolic.LeviGen
+
+open Formalism.L2.DIV GlobalTheory.FinGL GlobalTheory.Parabolic GlobalTheory.IndefiniteRowSideFullHecke.BlockProductIsomorphism Matrix
+
+variable {F : Type} [Field F] {r d d' : ℕ}
+
+theorem mem_range_blockEnum (b : Fin r → ℕ) (c : ℕ) (h : (block b c).card = d) (i : Fin r) :
+    i ∈ Set.range (blockEnum b c h) ↔ b i = c := by
+  have e : Set.range (blockEnum b c h) = (block b c : Set (Fin r)) := Finset.range_orderEmbOfFin _ h
+  rw [e]
+  simp [block]
+
+theorem extendMat_comm (e : Fin d ↪ Fin r) (e' : Fin d' ↪ Fin r) (h : ∀ a a', e a ≠ e' a')
+    (M : Matrix (Fin d) (Fin d) F) (N : Matrix (Fin d') (Fin d') F) :
+    extendMat e M * extendMat e' N = extendMat e' N * extendMat e M := by
+  have h1 : (incl F e)ᵀ * incl F e' = 0 := by
+    ext a a'
+    simp [incl, Matrix.mul_apply, Matrix.one_apply, h a a']
+  have h2 : (incl F e')ᵀ * incl F e = 0 := by
+    ext a a'
+    simp [incl, Matrix.mul_apply, Matrix.one_apply, (h a' a).symm]
+  have h3 : incl F e * (M - 1) * (incl F e)ᵀ * (incl F e' * (N - 1) * (incl F e')ᵀ) = 0 := by
+    simp only [Matrix.mul_assoc]
+    rw [← Matrix.mul_assoc (incl F e)ᵀ, h1]; simp
+  have h4 : incl F e' * (N - 1) * (incl F e')ᵀ * (incl F e * (M - 1) * (incl F e)ᵀ) = 0 := by
+    simp only [Matrix.mul_assoc]
+    rw [← Matrix.mul_assoc (incl F e')ᵀ, h2]; simp
+  simp only [extendMat, MonoidHom.coe_mk, OneHom.coe_mk]
+  simp only [add_mul, mul_add, h3, h4, one_mul, mul_one]
+  abel
+
+def leviIncl (F : Type) [Field F] (b : Fin r → ℕ) (c : ℕ) (h : (block b c).card = d) :
+    GL (Fin d) F →* levi F b :=
+  ((blockTri (κ := F) b).subtype.comp (blockHom F b c h)).codRestrict _ fun g => by
+    refine mem_levi.2 fun i j hij => ?_
+    show extendMat (blockEnum b c h) (g : Matrix (Fin d) (Fin d) F) i j = 0
+    rw [extendMat_out, Matrix.one_apply_ne (fun e => hij (congrArg b e))]
+    simp only [mem_range_blockEnum]
+    omega
+
+theorem leviIncl_val (b : Fin r → ℕ) (c : ℕ) (h : (block b c).card = d) (g : GL (Fin d) F) :
+    ((leviIncl F b c h g : GL (Fin r) F) : Matrix (Fin r) (Fin r) F) =
+      extendMat (blockEnum b c h) (g : Matrix (Fin d) (Fin d) F) := rfl
+
+def leviRes (F : Type) [Field F] (b : Fin r → ℕ) (c : ℕ) (h : (block b c).card = d) :
+    levi F b →* GL (Fin d) F :=
+  leviBlock b (blockEnum b c h) (blockEnum b c h).injective fun i j hij => by
+    rw [mem_range_blockEnum, ← hij, blockEnum_mem b c h]
+
+theorem leviRes_apply (b : Fin r → ℕ) (c : ℕ) (h : (block b c).card = d) (m : levi F b) (a a' : Fin d) :
+    (leviRes F b c h m : Matrix (Fin d) (Fin d) F) a a' =
+      ((m : GL (Fin r) F) : Matrix (Fin r) (Fin r) F) (blockEnum b c h a) (blockEnum b c h a') := rfl
+
+theorem leviRes_leviIncl (b : Fin r → ℕ) (c : ℕ) (h : (block b c).card = d) (g : GL (Fin d) F) :
+    leviRes F b c h (leviIncl F b c h g) = g := by
+  refine Units.ext (Matrix.ext fun a a' => ?_)
+  rw [leviRes_apply, leviIncl_val, extendMat_in]
+
+theorem leviRes_leviIncl_ne (b : Fin r → ℕ) {c c' : ℕ} (h : (block b c).card = d) (h' : (block b c').card = d')
+    (hc : c' ≠ c) (g : GL (Fin d) F) : leviRes F b c' h' (leviIncl F b c h g) = 1 := by
+  refine Units.ext (Matrix.ext fun a a' => ?_)
+  rw [leviRes_apply, leviIncl_val, extendMat_out]
+  · simp [Matrix.one_apply]
+  · left
+    rw [mem_range_blockEnum, blockEnum_mem b c' h']
+    exact hc
+
+theorem leviIncl_comm (b : Fin r → ℕ) {c c' : ℕ} (h : (block b c).card = d) (h' : (block b c').card = d')
+    (hc : c ≠ c') (g : GL (Fin d) F) (g' : GL (Fin d') F) :
+    Commute (leviIncl F b c h g) (leviIncl F b c' h' g') := by
+  refine Subtype.ext (Units.ext ?_)
+  refine extendMat_comm _ _ (fun a a' e => hc ?_) _ _
+  rw [← blockEnum_mem b c h a, e, blockEnum_mem b c' h']
+
+theorem iSup_range_leviIncl (b : Fin r → ℕ) (d : Set.range b → ℕ)
+    (h : ∀ c : Set.range b, (block b c).card = d c) :
+    (⨆ c : Set.range b, (leviIncl F b c (h c)).range) = ⊤ := by
+  classical
+  have key : ∀ s : Finset (Set.range b), ∀ m : levi F b,
+      (∀ c : Set.range b, c ∉ s → leviRes F b c (h c) m = 1) →
+        m ∈ ⨆ c : Set.range b, (leviIncl F b c (h c)).range := by
+    intro s
+    induction s using Finset.induction_on with
+    | empty =>
+      intro m hm
+      have : m = 1 := by
+        refine Subtype.ext (Units.ext (Matrix.ext fun i j => ?_))
+        by_cases hij : b i = b j
+        · let c : Set.range b := ⟨b i, i, rfl⟩
+          obtain ⟨a, ha⟩ := (mem_range_blockEnum b c (h c) i).2 rfl
+          obtain ⟨a', ha'⟩ := (mem_range_blockEnum b c (h c) j).2 hij.symm
+          have h1 := leviRes_apply b c (h c) m a a'
+          rw [hm c (Finset.notMem_empty _), ha, ha'] at h1
+          rw [← h1]
+          have : i = j ↔ a = a' := by rw [← (blockEnum b c (h c)).injective.eq_iff, ha, ha']
+          simp [Matrix.one_apply, this]
+        · rw [m.2 i j hij]
+          simp [Matrix.one_apply_ne (fun e => hij (congrArg b e))]
+      rw [this]
+      exact Subgroup.one_mem _
+    | insert c s _ ih =>
+      intro m hm
+      have e : m = m * leviIncl F b c (h c) (leviRes F b c (h c) m)⁻¹ *
+          leviIncl F b c (h c) (leviRes F b c (h c) m) := by simp
+      rw [e]
+      refine Subgroup.mul_mem _ (ih _ fun c' hc' => ?_) (Subgroup.mem_iSup_of_mem c ⟨_, rfl⟩)
+      by_cases hcc : c' = c
+      · subst hcc
+        rw [map_mul, leviRes_leviIncl, mul_inv_cancel]
+      · rw [map_mul, leviRes_leviIncl_ne b _ _ (fun e => hcc (Subtype.ext e)), mul_one]
+        exact hm c' (by simp [hcc, hc'])
+  have := Fintype.ofFinite (Set.range b)
+  exact eq_top_iff.2 fun m _ => key Finset.univ m fun c hc => absurd (Finset.mem_univ c) hc
+
+theorem levi_generated : ∀ (F : Type) [Field F] (r : ℕ) (b : Fin r → ℕ) (d : Set.range b → ℕ)
+    (h : ∀ c : Set.range b, (block b c).card = d c), ∃ f : ∀ c : Set.range b, GL (Fin (d c)) F →* levi F b,
+    (∀ (c : Set.range b) (g : GL (Fin (d c)) F),
+      (f c g : GL (Fin r) F) = (blockHom F b c (h c) g : GL (Fin r) F)) ∧ (⨆ c, (f c).range) = ⊤ ∧
+    ∀ c c' : Set.range b, c ≠ c' → ∀ (x : GL (Fin (d c)) F) (y : GL (Fin (d c')) F), Commute (f c x) (f c' y) :=
+  fun F _ _ b d h => ⟨fun c => leviIncl F b c (h c), fun _ _ => rfl, iSup_range_leviIncl b d h,
+    fun c c' hc x y => leviIncl_comm b (h c) (h c') (fun e => hc (Subtype.ext e)) x y⟩
+
+end GlobalTheory.Parabolic.LeviGen
+end
+end
+
+open Formalism.L2.DIV GlobalTheory.FinGL GlobalTheory.Parabolic GlobalTheory.IndefiniteRowSideFullHecke.BlockProductIsomorphism
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_levi_generated_commuting_blockGL : ∀ (F : Type) [Field F] (r : ℕ) (b : Fin r → ℕ) (d : Set.range b → ℕ) (h : ∀ c : Set.range b, (block b c).card = d c), ∃ f : ∀ c : Set.range b, GL (Fin (d c)) F →* levi F b, (∀ (c : Set.range b) (g : GL (Fin (d c)) F), (f c g : GL (Fin r) F) = (blockHom F b c (h c) g : GL (Fin r) F)) ∧ (⨆ c, (f c).range) = ⊤ ∧ ∀ c c' : Set.range b, c ≠ c' → ∀ (x : GL (Fin (d c)) F) (y : GL (Fin (d c')) F), Commute (f c x) (f c' y) := by
+  atlas_forward_decl GlobalTheory.Parabolic.LeviGen.levi_generated
+end
+
+section
 open Formalism.L2.DIV GlobalTheory.FinGL GlobalTheory.Parabolic GlobalTheory.IndefiniteRowSideFullHecke.BlockProductIsomorphism
 
 noncomputable section
@@ -271,3 +1045,5 @@ theorem irrPar : IrrPar := by
     exact ⟨Φ.ofBijective ((Representation.IsIrreducible.bijective_or_eq_zero Φ).resolve_right hΦ)⟩
 
 end GlobalTheory.FinGL.IrrProduct
+end
+end

@@ -63,18 +63,9 @@ def pmOf (M : ModelsOf F r) (k : Fin F.n) (x : Frame (M.X k).Ψ r) : (F.Di k).La
     have h : M.vec k (a + b) = M.vec k a + M.vec k b := by simp [ModelsOf.vec]
     rw [h, perFr_add]; rfl)
 
-theorem pmOf_apply (M : ModelsOf F r) (k : Fin F.n) (x : Frame (M.X k).Ψ r) (a : (F.Di k).La) (j : Fin g) :
-    pmOf M k x a j = perFr (M.X k) x (M.φ k a : Fin r → E) (relab c σ (e j).1) (e j).2 := rfl
 
 def XiSign (M : ModelsOf F r) : Prop := ∀ k, ∀ τ ∈ (M.X k).Ψ, (τ (M.X k).ξ0).im < 0
 
-theorem xiSign_of_kappa (M : ModelsOf F r) (h : ∀ k, (M.X k).κ0 = 2 * (M.X k).ξ0) : XiSign M := by
-  intro k τ hτ
-  have h1 := (M.X k).κ0_sign ⟨τ, hτ⟩
-  rw [h k] at h1
-  have h2 : τ 2 = 2 := map_ofNat τ 2
-  simp [h2] at h1
-  linarith
 
 def PerDom (M : ModelsOf F r) : Prop :=
   ∀ k, ∀ x ∈ (M.X k).dom, IsPeriod (F.Di k) (tyOf c σ e) (pmOf M k x)

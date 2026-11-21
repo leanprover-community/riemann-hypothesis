@@ -217,155 +217,23 @@ theorem mult_one (hs : Separates ι) (lam : DomWeight 2) (mu : DomWeight 1) (hn 
     conv_rhs => rw [eq_smul_one mu f, map_smul, key]
     rw [hL, smul_comm]
 
-theorem separates_id : Separates (MonoidHom.id (GL (Fin 1) ℂ)) := by
-  intro a b h
-  have := h (Matrix.GeneralLinearGroup.mkOfDetNeZero !![2] (by simp))
-  have h2 := congrArg norm this
-  simp only [MonoidHom.id_apply, norm_zpow] at h2
-  have e : ‖(Matrix.GeneralLinearGroup.mkOfDetNeZero (!![2] : Matrix (Fin 1) (Fin 1) ℂ) (by simp)) 0 0‖ = 2 := by
-    show ‖(2 : ℂ)‖ = 2
-    simp
-  rw [e] at h2
-  exact zpow_right_injective₀ (by norm_num) (by norm_num) h2
 
-theorem separates_unitary : Separates (unitaryIncl 1) := by
-  intro a b h
-  by_contra hab
-  have hr : ((a - b : ℤ) : ℝ) ≠ 0 := by exact_mod_cast sub_ne_zero.2 hab
-  set t : ℝ := Real.pi / ((a - b : ℤ) : ℝ) with ht
-  let z : ℂ := Complex.exp (t * Complex.I)
-  have hz : z * star z = 1 := by
-    have : ‖z‖ = 1 := Complex.norm_exp_ofReal_mul_I t
-    rw [Complex.star_def, Complex.mul_conj, Complex.normSq_eq_norm_sq, this]
-    simp
-  have hu : (!![z] : Matrix (Fin 1) (Fin 1) ℂ) ∈ Matrix.unitaryGroup (Fin 1) ℂ := by
-    rw [Matrix.mem_unitaryGroup_iff]
-    ext i j
-    fin_cases i; fin_cases j
-    simpa [Matrix.mul_apply] using hz
-  have h1 : z ^ a = z ^ b := h ⟨_, hu⟩
-  have hz0 : z ≠ 0 := Complex.exp_ne_zero _
-  have h2 : z ^ (a - b) = 1 := by rw [zpow_sub₀ hz0, h1, div_self (zpow_ne_zero _ hz0)]
-  have h3 : z ^ (a - b) = -1 := by
-    rw [← Complex.exp_int_mul, ← Complex.exp_pi_mul_I]
-    congr 1
-    have : ((a - b : ℤ) : ℝ) * t = Real.pi := by rw [ht]; field_simp
-    rw [← this]
-    push_cast
-    ring
-  rw [h2] at h3
-  norm_num at h3
 
-theorem mult_clause (lam : DomWeight 2) (mu : DomWeight 1) :
-    ((Interlace h12 lam mu → mult (MonoidHom.id _) h12 lam mu = 1) ∧
-      (¬ Interlace h12 lam mu → mult (MonoidHom.id _) h12 lam mu = 0)) ∧
-    ((Interlace h12 lam mu → mult (unitaryIncl 1) h12 lam mu = 1) ∧
-      (¬ Interlace h12 lam mu → mult (unitaryIncl 1) h12 lam mu = 0)) :=
-  ⟨⟨mult_one separates_id lam mu, mult_zero separates_id lam mu⟩,
-    ⟨mult_one separates_unitary lam mu, mult_zero separates_unitary lam mu⟩⟩
 
-theorem standard_values :
-    mult (unitaryIncl 1) h12 ⟨![1, 0], fun i j h => by fin_cases i <;> fin_cases j <;> simp_all⟩
-        ⟨![1], fun i j _ => by rw [Subsingleton.elim i j]⟩ = 1 ∧
-    mult (unitaryIncl 1) h12 ⟨![1, 0], fun i j h => by fin_cases i <;> fin_cases j <;> simp_all⟩
-        ⟨![0], fun i j _ => by rw [Subsingleton.elim i j]⟩ = 1 ∧
-    mult (unitaryIncl 1) h12 ⟨![1, 0], fun i j h => by fin_cases i <;> fin_cases j <;> simp_all⟩
-        ⟨![-1], fun i j _ => by rw [Subsingleton.elim i j]⟩ = 0 :=
-  ⟨mult_one separates_unitary _ _ (by simp [interlace_iff]), mult_one separates_unitary _ _ (by simp [interlace_iff]),
-    mult_zero separates_unitary _ _ (by simp [interlace_iff])⟩
 
 def expo (lam : DomWeight 2) (mu : DomWeight 1) : Fin 2 × Fin 2 →₀ ℕ :=
   Finsupp.single (0, 0) (mu.w 0 - lam.w 1).toNat + Finsupp.single (1, 0) (lam.w 0 - mu.w 0).toNat
 
-theorem below_ext {lam : DomWeight 2} {mu nu : Below h12 lam} (h : mu.1.w 0 = nu.1.w 0) : mu = nu := by
-  obtain ⟨⟨w, hw⟩, h1⟩ := mu
-  obtain ⟨⟨w', hw'⟩, h2⟩ := nu
-  have : w = w' := funext fun i => by rw [Subsingleton.elim i 0]; exact h
-  subst this
-  rfl
 
 def comps (lam : DomWeight 2) [Fintype (Below h12 lam)] [DecidableEq (Below h12 lam)] :
     nablaSq ℂ 2 lam →ₗ[ℂ] (⨁ mu : Below h12 lam, nablaSq ℂ 1 mu.1) :=
   ∑ mu : Below h12 lam, (DirectSum.lof ℂ (Below h12 lam) (fun mu => nablaSq ℂ 1 mu.1) mu).comp
     (LinearMap.smulRight ((lcoeff ℂ (expo lam mu.1)).comp (nablaSq ℂ 2 lam).subtype) (one' mu.1))
 
-theorem comps_apply (lam : DomWeight 2) [Fintype (Below h12 lam)] [DecidableEq (Below h12 lam)]
-    (f : nablaSq ℂ 2 lam) (mu : Below h12 lam) : comps lam f mu = coeff (expo lam mu.1) f.1 • one' mu.1 := by
-  simp only [comps, LinearMap.sum_apply, LinearMap.comp_apply, DirectSum.lof_eq_of]
-  rw [DFinsupp.finsetSum_apply, Finset.sum_eq_single mu]
-  · rw [DirectSum.of_eq_same]; rfl
-  · intro nu _ h
-    exact DirectSum.of_eq_of_ne _ _ _ h.symm
-  · simp
 
 theorem one_ne (mu : DomWeight 1) : one' mu ≠ 0 := fun h => one_ne_zero (congrArg Subtype.val h)
 
-theorem comps_bijective (lam : DomWeight 2) [Fintype (Below h12 lam)] [DecidableEq (Below h12 lam)] :
-    Function.Bijective (comps lam) := by
-  constructor
-  · rw [injective_iff_map_eq_zero]
-    intro f hf
-    apply Subtype.ext
-    ext m
-    by_contra hm
-    obtain ⟨h2, h3, h4⟩ := big_supp lam f m hm
-    push_cast at h2
-    let mu : Below h12 lam := ⟨⟨fun _ => lam.w 1 + m (0, 0), fun _ _ _ => le_rfl⟩, by
-      rw [interlace_iff]; simp only; omega⟩
-    have e : expo lam mu.1 = m := by
-      ext ⟨i, j⟩
-      fin_cases i <;> fin_cases j <;> simp [expo, mu] <;> omega
-    have := comps_apply lam f mu
-    rw [hf, e] at this
-    exact hm ((smul_eq_zero.1 this.symm).resolve_right (one_ne _))
-  · intro x
-    induction x using DirectSum.induction_on with
-    | zero => exact ⟨0, map_zero _⟩
-    | add x y hx hy =>
-      obtain ⟨f, rfl⟩ := hx
-      obtain ⟨g, rfl⟩ := hy
-      exact ⟨f + g, map_add _ _ _⟩
-    | of mu x =>
-      have hi := (interlace_iff _ _).1 mu.2
-      have hmono : (X (0, 0) ^ (mu.1.w 0 - lam.w 1).toNat * X (1, 0) ^ (lam.w 0 - mu.1.w 0).toNat :
-          MvPolynomial (Fin 2 × Fin 2) ℂ) = monomial (expo lam mu.1) 1 := by
-        simp [expo, X_pow_eq_monomial, monomial_mul]
-      let v : nablaSq ℂ 2 lam := ⟨_, mono_mem lam (mu.1.w 0 - lam.w 1).toNat (lam.w 0 - mu.1.w 0).toNat
-        (by push_cast; omega)⟩
-      refine ⟨coeff 0 x.1 • v, ?_⟩
-      ext1 nu
-      rw [comps_apply, Submodule.coe_smul, coeff_smul]
-      simp only [v, hmono, coeff_monomial]
-      by_cases h : nu = mu
-      · subst h
-        rw [DirectSum.of_eq_same, if_pos rfl, smul_eq_mul, mul_one, ← eq_smul_one]
-      · rw [DirectSum.of_eq_of_ne _ _ _ h, if_neg, smul_zero, zero_smul]
-        intro e
-        apply h
-        have hj := (interlace_iff _ _).1 nu.2
-        have := congrArg (fun m : Fin 2 × Fin 2 →₀ ℕ => m (0, 0)) e
-        simp [expo] at this
-        exact below_ext (by omega)
 
-theorem equiv_clause (ι : H →* GL (Fin 1) ℂ) (lam : DomWeight 2) :
-    Nonempty ((sumRep ι h12 lam).Equiv (resRep ι h12 lam)) := by
-  classical
-  letI := Fintype.ofFinite (Below h12 lam)
-  refine ⟨(Representation.Equiv.mk (ρ := resRep ι h12 lam) (σ := sumRep ι h12 lam)
-    (LinearEquiv.ofBijective (comps lam) (comps_bijective lam)) fun y => ?_).symm⟩
-  ext1 f
-  ext1 mu
-  have hi := (interlace_iff _ _).1 mu.2
-  show comps lam (resRep ι h12 lam y f) mu = smallRep ι mu.1 y (comps lam f mu)
-  have e1 : ∀ x, smallRep ι mu.1 y x = (ι y 0 0) ^ mu.1.w 0 • x := small_act mu.1 (ι y)
-  have e3 : coeff (expo lam mu.1) (resRep ι h12 lam y f).1 = _ := coeff_res lam (ι y) f.1 _
-  rw [e1, comps_apply, comps_apply, e3, mul_smul]
-  congr 2
-  simp [expo]
-  omega
 
-theorem branching_rank_two (lam : DomWeight 2) :
-    BranchesAlong (MonoidHom.id (GL (Fin 1) ℂ)) h12 lam ∧ BranchesAlong (unitaryIncl 1) h12 lam :=
-  ⟨⟨equiv_clause _ lam, fun mu => (mult_clause lam mu).1⟩, ⟨equiv_clause _ lam, fun mu => (mult_clause lam mu).2⟩⟩
 
 end GlobalTheory.Branching.RankTwo

@@ -114,11 +114,6 @@ noncomputable def unitaryPoints : Subgroup (GL ι (R ⊗[F] E)) :=
 
 variable {F E H R S T}
 
-theorem mem_unitaryPoints {g : GL ι (R ⊗[F] E)} :
-    g ∈ unitaryPoints F E H R ↔
-      ((g : Matrix ι ι (R ⊗[F] E)).map (conjBase F E R))ᵀ *
-        H.map (Algebra.TensorProduct.includeRight : E →ₐ[F] R ⊗[F] E) * g =
-      H.map (Algebra.TensorProduct.includeRight : E →ₐ[F] R ⊗[F] E) := Iff.rfl
 
 omit [Algebra.IsQuadraticExtension F E] [Fintype ι] [DecidableEq ι] in
 theorem map_includeRight_tensorMap (f : R →ₐ[F] S) :

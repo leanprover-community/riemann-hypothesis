@@ -1,8 +1,23 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.GoodTopBot
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsRowOperatorStableDualWeylAndGLSubmodulesStatement
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.HighestWeightVectorMemOfLtStableDualWeylStatement
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsRowOperatorStableDualWeylAndGLSubmodules
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.HighestWeightVectorMemOfLtStableDualWeyl
 
+section
+open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BasicNotions GlobalTheory.Alc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isRowOperatorStable_dualWeyl_and_GLSubmodules : ∀ (k : Type) [Field k] (N : ℕ) (lam : DomWeight N), Good (nablaSq k N lam) ∧ ∀ M : Submodule k (MvPolynomial (Fin N × Fin N) k), GlobalTheory.Published.IsGLSubmodule k N lam M → Good M := by
+  first | exact @GlobalTheory.Alc.good_nablaSq_and_submodules | exact GlobalTheory.Alc.good_nablaSq_and_submodules | (intros; apply GlobalTheory.Alc.good_nablaSq_and_submodules <;> assumption)
+end
+
+section
+open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BasicNotions GlobalTheory.Alc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.highestWeightVector_mem_of_lt_stable_dualWeyl : ∀ (p : ℕ), p.Prime → ∀ (k : Type) [Field k] [CharP k p] (N : ℕ) (ν : Fin N → ℕ), Antitone ν → (∀ h : 0 < N, ν ⟨N - 1, by omega⟩ = 0 ∧ ν ⟨0, h⟩ + (N - 1) ≤ p) → ∀ M M' : Submodule k (MvPolynomial (Fin N × Fin N) k), Good M → Good M' → M < M' → M' ≤ dualWeyl k N N ν → hw k le_rfl ν ∈ M' ∧ hw k le_rfl ν ∉ M := by
+  first | exact @GlobalTheory.Alc.hw_mem_of_lt | exact GlobalTheory.Alc.hw_mem_of_lt | (intros; apply GlobalTheory.Alc.hw_mem_of_lt <;> assumption)
+end
+
+section
 open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BasicNotions GlobalTheory.Alc
 
 namespace GlobalTheory.Alc
@@ -46,3 +61,4 @@ theorem inducedSimpleLowestAlcove : GlobalTheory.Published.InducedSimpleLowestAl
   exact h2 h1
 
 end GlobalTheory.Alc
+end

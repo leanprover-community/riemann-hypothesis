@@ -89,23 +89,6 @@ theorem halfCoset_eq {m n : ℕ} {e : AE D} {Λ : AddSubgroup (Mx D m n)} {k : �
 def IsCosetDatum {t : T} {p : Pair T} (k : ℕ) (d : FinDatum G t p) : Prop :=
   ∃ x₀, IsHalf d.e x₀ ∧ k • x₀ ∈ pairLat G p ∧ d.fn = (halfCoset d.e (pairLat G p) k x₀).indicator 1
 
-theorem isCosetDatum_ind (t : T) (p : Pair T) (P h e he) : IsCosetDatum 1 (FinDatum.ind G t p P h e he) := by
-  refine ⟨0, (GlobalTheory.SplitScalar.isHalf_iff e 0).2 (smul_zero e), by simp, ?_⟩
-  refine (GlobalTheory.PlaceModel.halfInd_eq_ind e (pairLat G p)).trans ?_
-  dsimp only [FinDatum.ind]
-  have hm : ∀ x, x ∈ halfCoset e (pairLat G p) 1 0 ↔ x ∈ pairLat G p ⊓ GlobalTheory.PlaceModel.half (G.pS p) (G.pT p) e := by
-    intro x
-    rw [AddSubgroup.mem_inf, GlobalTheory.PlaceModel.mem_half]
-    constructor
-    · rintro ⟨u, hu, hue, rfl⟩
-      simpa using ⟨hu, (GlobalTheory.SplitScalar.isHalf_iff e u).1 hue⟩
-    · rintro ⟨hx, hxe⟩
-      exact ⟨x, hx, (GlobalTheory.SplitScalar.isHalf_iff e x).2 hxe, by simp⟩
-  funext x
-  by_cases hx : x ∈ pairLat G p ⊓ GlobalTheory.PlaceModel.half (G.pS p) (G.pT p) e
-  · rw [Set.indicator_of_mem ((hm x).2 hx), GlobalTheory.PlaceModel.ind, if_pos hx]
-    rfl
-  · rw [Set.indicator_of_notMem (fun h' => hx ((hm x).1 h')), GlobalTheory.PlaceModel.ind, if_neg hx]
 
 theorem IsCosetDatum.fn_eq {t : T} {p : Pair T} {k : ℕ} {d d' : FinDatum G t p} (h : IsCosetDatum k d) (h' : IsCosetDatum k d')
     (he : d.e = d'.e) {x} (hx : d.fn x ≠ 0) (hx' : d'.fn x ≠ 0) : d.fn = d'.fn := by
@@ -285,23 +268,6 @@ theorem NumbersIn.mono {S : GridChoice W Set.univ} {μ₀ : T} (h : NumbersIn σ
     exact ⟨A, A', WW, X, hX, Ω, Ω', hΩ, hΩ', fun t g hg =>
       ⟨fun k hk => hσ ((hs t g hg).1 k hk), fun k hk => hσ ((hs t g hg).2 k hk)⟩⟩
 
-theorem numbersIn_id (S : GridChoice W Set.univ) (μ₀ : T) : NumbersIn (RingHom.id ℂ) S μ₀ where
-  chars :=
-    { mu0 := fun _ _ _ => ⟨_, rfl⟩
-      xi := fun _ _ _ => ⟨_, rfl⟩
-      chi := fun _ _ _ _ _ => ⟨_, rfl⟩
-      eta := fun _ _ => ⟨_, rfl⟩
-      chiPsi := fun _ _ => ⟨_, rfl⟩
-      del := fun _ _ => ⟨_, rfl⟩
-      del' := fun _ _ => ⟨_, rfl⟩ }
-  eighth := fun _ _ => ⟨_, rfl⟩
-  roots := fun _ _ _ _ _ => ⟨_, rfl⟩
-  phases := fun _ _ _ _ _ _ _ _ _ _ => ⟨_, rfl⟩
-  sqrt := fun _ _ => ⟨_, rfl⟩
-  jets := fun _ _ _ _ _ _ _ _ _ => ⟨fun _ _ _ => ⟨_, rfl⟩, fun _ _ _ => ⟨_, rfl⟩⟩
-  ratios := fun _ _ _ _ _ _ _ _ _ _ _ => ⟨_, rfl⟩
-  bottom := fun _ _ ⟨A, A', WW, X, hX⟩ =>
-    ⟨A, A', WW, X, hX, 1, 1, one_ne_zero, one_ne_zero, fun _ _ _ => ⟨fun _ _ => ⟨_, rfl⟩, fun _ _ => ⟨_, rfl⟩⟩⟩
 
 variable {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 : Type} {A : FamIn D.what₂.LL Γ Pl0 T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat D A Ks}
@@ -321,15 +287,7 @@ def HasNumberField : Prop :=
 
 variable {ch}
 
-theorem FieldIn.fieldOK (h : ch.FieldIn σ) (hσ : Set.range σ ⊆ Set.range D.what₂.embLL) : ch.FieldOK := NumbersIn.mono h hσ
 
-theorem FieldOK.hasNumberField (h : ch.FieldOK) : ch.HasNumberField := by
-  have h' : NumbersIn D.what₂.embLL ch.S.toGridChoice A.μ0 := h
-  let f : D.what₂.LL →ₐ[ℚ] ℂ := D.what₂.embLL.toRatAlgHom
-  refine ⟨f.fieldRange, LinearEquiv.finiteDimensional (AlgEquiv.ofInjectiveField f).toLinearEquiv, ?_⟩
-  refine NumbersIn.mono h' ?_
-  rintro _ ⟨y, rfl⟩
-  exact ⟨⟨D.what₂.embLL y, AlgHom.mem_fieldRange.2 ⟨y, rfl⟩⟩, rfl⟩
 
 theorem FieldOK.isRatAt (h : ch.FieldOK) {t Φ β} (hβ : β ∈ ch.S.supp t Φ) {τ}
     (hτ : IsCosetExpansion ch.S.toGridChoice t Φ β (expDepth ch.S.toGridChoice t Φ β) τ) {d} (hd : d ∈ τ.support)

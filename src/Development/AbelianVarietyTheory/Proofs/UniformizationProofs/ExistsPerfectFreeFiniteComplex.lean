@@ -10,9 +10,72 @@ import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ThreeTer
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.CechLBHomologyFiniteOfAffineCover
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsProjByBaseChange
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.UnifPreGenericFibreSurjectiveAppTopAndIsIntegral
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.CechLBExactAtOfDimLt
+import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.IsScalarTowerOfAlgebraMapEq
+import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.ExistsAwayFracOfMemHomLoc
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.CubeTotalComplexAcyclicOfSlicesInductionOnCard
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.RingKrullDimLeOfQuasiFinite
+import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.CechLBHomologyEquivOfAffineCoversStatement
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.CechComplexAcyclicPrimitiveNontrivialAlgClosedStatement
 
+section
+open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.UU
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+
+namespace GlobalTheory.AffineCover
+
+theorem exists_cover_of_isProjBy_of_infinite (K : Type) [Field K] [Infinite K] (X : Scheme.{0})
+    (f : X ⟶ Spec (CommRingCat.of K)) (g : ℕ) (hf : SmoothOfRelativeDimension g f) (hp : IsProjBy f) :
+    ∃ D : Fin (g + 1) → X.Opens, (∀ i, IsAffineOpen (D i)) ∧ ⨆ i, D i = ⊤ := by
+  obtain ⟨H, hH, m, s, hc, hs⟩ := hp
+  have : Smooth f := SmoothOfRelativeDimension.smooth g f
+  have : IsLocallyNoetherian X := LocallyOfFiniteType.isLocallyNoetherian f
+  have : CompactSpace X := ⟨by
+    have e : (Set.univ : Set X) = ⋃ i, (nonzeroLocus (s i) : Set X) := by
+      rw [← TopologicalSpace.Opens.coe_iSup, hc]
+      rfl
+    rw [e]
+    exact isCompact_iUnion fun i => (hs i).1.isCompact⟩
+  have : IsNoetherian X := ⟨⟩
+  obtain ⟨D, hD, h⟩ := exists_affine_le_coheight (X := X) (fun F hF =>
+    exists_isAffineOpen_of_finite (cst f ⊤) hH s hc (fun i => (hs i).1) F hF) (g + 1)
+  refine ⟨D, hD, top_le_iff.1 fun x _ => not_not.1 fun hx => ?_⟩
+  have := (h x hx).trans (coheight_le_of_smooth f hf x)
+  exact Nat.not_succ_le_self _ (by exact_mod_cast this)
+
+theorem exists_cover_of_isProjBy :
+    ∀ (K : Type) [Field K] [IsAlgClosed K] (X : Scheme.{0}) [IsIntegral X] (f : X ⟶ Spec (CommRingCat.of K)) (g : ℕ), SmoothOfRelativeDimension g f → IsProjBy f → ∃ D : Fin (g + 1) → X.Opens, (∀ i, IsAffineOpen (D i)) ∧ ⨆ i, D i = ⊤ :=
+  fun K _ _ X _ f g hf hp => exists_cover_of_isProjBy_of_infinite K X f g hf hp
+
+end GlobalTheory.AffineCover
+end
+
+section
+open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry DirectSum TensorProduct
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory GlobalTheory.AbLaw GlobalTheory.UU ReciprocityTheory.ChartRestriction.G.Geo.Tor
+
+namespace GlobalTheory.AbLaw
+
+theorem cechLB_exactAt_of_dim_lt :
+    ∀ (K : Type) [Field K] [IsAlgClosed K] (Y : Scheme.{0}) [IsIntegral Y] (f : Y ⟶ Spec (CommRingCat.of K)) (g : ℕ) (M : LB Y), SmoothOfRelativeDimension g f → IsProjBy f → IsSeparated f → M.IsLB → ∀ (κ : Type) [LinearOrder κ] [Fintype κ] (D : κ → Y.Opens), (∀ i, IsAffineOpen (D i)) → ⨆ i, D i = ⊤ → ∀ n, g < n → (cechLB f M D).ExactAt n := by
+  intro K _ _ Y _ f g M hf hp hs hM κ _ _ D hD hc n hn
+  obtain ⟨E, hE, hEc⟩ := GlobalTheory.AffineCover.exists_cover_of_isProjBy K Y f g hf hp
+  obtain ⟨e⟩ := GlobalTheory.T.nonempty_cechLB_homology_equiv_of_affine_covers K Y f M κ D (Fin (g + 1)) E hM hs hD hc hE hEc n
+  have hz : IsZero ((cechLB f M E).X n) := isZero_cechLB_X f M E (by simpa using hn)
+  have hE0 : IsZero ((cechLB f M E).homology n) :=
+    (HomologicalComplex.exactAt_iff_isZero_homology _ _).1
+      (HomologicalComplex.ExactAt.of_isZero hz)
+  have : Subsingleton ((cechLB f M E).homology n) := ModuleCat.isZero_iff_subsingleton.1 hE0
+  exact (HomologicalComplex.exactAt_iff_isZero_homology _ _).2
+    (ModuleCat.isZero_iff_subsingleton.2 e.toEquiv.subsingleton)
+
+end GlobalTheory.AbLaw
+end
+
+section
 noncomputable section
 namespace GlobalTheory.KernelYoneda
 open Matrix
@@ -399,3 +462,5 @@ theorem exists_free_complex_of_primitive : ∀ (A : Type) [CommRing A] [IsNoethe
       _ _ ha hc i
 
 end GlobalTheory.AbLaw
+end
+end

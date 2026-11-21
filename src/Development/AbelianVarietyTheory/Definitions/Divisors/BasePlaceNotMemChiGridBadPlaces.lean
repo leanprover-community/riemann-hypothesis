@@ -92,11 +92,6 @@ theorem mem_S0_of_sum_eq {v : Pl D.host.F} : v ∈ P.S0 ↔ v = P.v0 ∨ v ∈ S
 
 theorem under_w {v : Pl D.host.F} (h : v ∈ P.S0) : (P.w v).under (𝓞 D.host.F) = v := P.w_over v h
 
-theorem card_chosenPlaces_eq : P.W0.card = P.S0.card := by
-  classical
-  unfold W0
-  convert Finset.card_image_of_injOn fun v hv v' hv' h =>
-    (P.under_w hv).symm.trans ((congrArg _ h).trans (P.under_w hv'))
 
 theorem depth_pos (sc : Consts) (v : Pl D.host.F) : 0 < P.depth sc v := by
   unfold depth depth0; split_ifs <;> omega
@@ -104,12 +99,6 @@ theorem depth_pos (sc : Consts) (v : Pl D.host.F) : 0 < P.depth sc v := by
 theorem modul_ne_bot (sc : Consts) : P.modul sc ≠ ⊥ :=
   Finset.prod_ne_zero_iff.2 fun v _ => pow_ne_zero _ (P.w v).ne_bot
 
-theorem stairId_st (sc : Consts) (c : ℕ) (p : Fin c) : stairId (P.stA sc) (P.stAbar sc) c p =
-    stairId D.host.AA D.host.AAbar c p *
-      ((P.modul sc : Ideal (𝓞 D.host.E)) : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) ^ (p.1 + 1) *
-      (((P.modulBar sc : Ideal (𝓞 D.host.E)) : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) ^ (c - p.1))⁻¹ := by
-  simp only [stairId, stA, stAbar, mul_pow, inv_pow, mul_inv, inv_inv]
-  ring
 
 end Places
 
@@ -286,8 +275,6 @@ def ori : Pair T → Orientation
 theorem InRange.small {m : ℕ} {p : Pair T} (h : p.InRange m) : p.small.InRange m := by
   cases p <;> simp only [InRange, Node.InRange] at h ⊢ <;> omega
 
-theorem rank_big (p : Pair T) : p.big.rank D = p.small.rank D + p.len D := by
-  cases p <;> simp only [Node.rank, len, rankV, rankP, rankX] <;> ring
 
 end Pair
 
@@ -326,8 +313,6 @@ namespace Arrow
   | .coreDown i => .core i
   | .col _ j => .top (j + 1)
 
-theorem src_tgt (a : Arrow T) : (a.src = a.pair.small ∧ a.tgt = a.pair.big) ∨ (a.src = a.pair.big ∧ a.tgt = a.pair.small) := by
-  cases a <;> simp
 
 end Arrow
 
@@ -356,7 +341,6 @@ abbrev modul : Ideal (𝓞 D.host.E) := G.pl.modul sc
 
 theorem node_zero_zero : G.node (.grid 0 0) = ⟨Yc D 0, L.ΛY 0⟩ := rfl
 
-theorem node_top_zero : G.node (.top 0) = G.node (.core D.R.m) := rfl
 
 theorem isV {X : Node} (h : X.InRange D.R.m) (h0 : ∀ j, X ≠ .grid 0 j) : (G.node X).IsV (X.rank D) (X.neg D.R.m) := by
   rcases X with ⟨_ | i, j⟩ | i | _ | j
@@ -395,7 +379,6 @@ abbrev Kplus : Subgroup (GL (Fin (G.V (.top 0)).rank) (Formalism.IndefR.Lev.EAf 
 
 abbrev ClPlus : Type := Cl D.sp.cm (G.V (.top 0)).gram G.Kplus
 
-theorem levCong_le (X : Node) : G.levCong X ≤ G.levMax X := congLev_mono le_top
 
 @[reducible] def pS : Pair T → HSp D
   | .chi i j => negSp (G.V (.grid (i + 1) j))
@@ -541,8 +524,6 @@ def kerA : ∀ a : Arrow T, (WO (G.pS a.pair) (G.pT a.pair) → ℂ) → GA D (G
   | .coreDown i, f, g, h => W.ker (.core i) f h g
   | .col t j, f, g, h => W.ker (.top t j) f g h
 
-theorem kerA_coreUp (i : ℕ) (f : WO (G.pS (.core i)) (G.pT (.core i)) → ℂ) (g : GA D (G.V (.core i)))
-    (h : GA D (G.V (.core (i + 1)))) : W.kerA (.coreUp i) f g h = star (W.kerA (.coreDown i) f h g) := rfl
 
 def IsVac (p : Pair T) (f : WO (G.pS p) (G.pT p) → ℂ) : Prop :=
   IsVacO W.ψ W.θ _ _ (G.cartS W.cart p) (G.onT W.cart p) (G.latS p : Set _) (G.latT p : Set _) f

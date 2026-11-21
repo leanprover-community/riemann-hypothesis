@@ -1,5 +1,52 @@
-import Development.EtaleCohomology.EtaleSheaves.LocGlueEtPf
+import Development.EtaleCohomology.EtaleSheaves.LeafLocStalkPf
 
+section
+noncomputable section
+open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC LateralTheory.E.E4 LateralTheory.E.LeafLocStalkPf
+
+namespace LateralTheory.E.LocSurjPf
+
+def bcMap {Y X V : Scheme.{0}} (f : Y ⟶ X) (v : V ⟶ X) : cech (pullback.snd f v) ⟶ cech f :=
+  Arrow.mapCechNerve (Arrow.homMk (f := Arrow.mk (yoneda.map (pullback.snd f v))) (g := Arrow.mk (yoneda.map f))
+    (yoneda.map (pullback.fst f v)) (yoneda.map v)
+    (by simp only [Arrow.mk_hom, ← Functor.map_comp, pullback.condition]))
+
+def EtLift (q : ℕ) [NeZero q] {Y X : Scheme.{0}} (f : Y ⟶ X) (i m : ℤ) (y : Ht q (cech f) m i) : Prop :=
+  ∃ (V : Scheme.{0}) (v : V ⟶ X), Etale v ∧ Surjective v ∧
+    ∃ z : Ht q (sch.obj V) m i, pull (ZMod q) (cechAug (pullback.snd f v)) (tw q i) m z = pull (ZMod q) (bcMap f v) (tw q i) m y
+
+def LocLiftEt : Prop := Hyps → ∀ (q : ℕ) [NeZero q] (n : ℤ), (∀ m < n, QAll q m) →
+  ∀ {Y X : Scheme.{0}} (f : Y ⟶ X) [IsProper f], IsUnit (q : Γ(X, ⊤)) → ∀ i : ℤ, StalkH q f i →
+    ∀ m : ℤ, m + 1 = n → ∀ y : Ht q (cech f) m i, EtLift q f i m y
+
+def LocGlueEt : Prop := Hyps → ∀ (q : ℕ) [NeZero q] (n : ℤ), (∀ m < n, QAll q m) →
+  ∀ {Y X : Scheme.{0}} (f : Y ⟶ X) [IsProper f], IsUnit (q : Γ(X, ⊤)) → ∀ i : ℤ, StalkH q f i →
+    ∀ m : ℤ, m + 1 = n → ∀ y : Ht q (cech f) m i, EtLift q f i m y →
+      y ∈ Set.range (pull (ZMod q) (cechAug f) (tw q i) m)
+
+end LateralTheory.E.LocSurjPf
+end
+end
+
+section
+noncomputable section
+open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC LateralTheory.E.E4 LateralTheory.E.LeafLocStalkPf LateralTheory.E.LocSurjPf
+
+namespace LateralTheory.E.LocGlueEtPf
+
+def StalkBC : Prop := Hyps → ∀ (q : ℕ) [NeZero q] {Y X W : Scheme.{0}} (f : Y ⟶ X) (w : W ⟶ X), Etale w → ∀ i : ℤ,
+  StalkH q f i → StalkH q (pullback.snd f w) i
+
+def GlueRel : Prop := Hyps → ∀ (q : ℕ) [NeZero q] (n : ℤ) (i : ℤ) {Y X : Scheme.{0}} (f : Y ⟶ X),
+  (∀ (W : Scheme.{0}) (w : W ⟶ X), Etale w → ∀ m' < n, RelZS (ZMod q) (tw q i) m' (cechAug (pullback.snd f w))) →
+    ∀ m : ℤ, m + 1 = n → ∀ y : Ht q (cech f) m i, EtLift q f i m y →
+      y ∈ Set.range (pull (ZMod q) (cechAug f) (tw q i) m)
+
+end LateralTheory.E.LocGlueEtPf
+end
+end
+
+section
 noncomputable section
 open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC LateralTheory.E.E4 LateralTheory.E.LeafLocStalkPf LateralTheory.E.LocSurjPf
   LateralTheory.E.LocGlueEtPf CochainComplex.HomComplex
@@ -17,13 +64,7 @@ def EdgeInj : Prop := Hyps → ∀ (q : ℕ) [NeZero q] (n i : ℤ) {Y X : Schem
   ∀ (V : Scheme.{0}) (v : V ⟶ X), Etale v → Surjective v → ∀ m : ℤ, m + 1 = n → ∀ y : Ht q (cech f) m i,
     obs q (cechAug (pullback.snd f v)) i m (pull (ZMod q) (bcMap f v) (tw q i) m y) = 0 → obs q (cechAug f) i m y = 0
 
-theorem GlueRel_of (hC : ConeExact) (hE : EdgeInj) : GlueRel := by
-  intro h q _ n i Y X f hb m hm y hy
-  obtain ⟨V, v, hv, hs, z, hz⟩ := hy
-  have h1 : obs q (cechAug (pullback.snd f v)) i m (pull (ZMod q) (bcMap f v) (tw q i) m y) = 0 := by
-    rw [← hz]
-    exact (hC (ZMod q) ((chains (ZMod q)).map (cechAug (pullback.snd f v))) (tw q i) m).apply_apply_eq_zero z
-  have h2 := hE h q n i f hb V v hv hs m hm y h1
-  exact (hC (ZMod q) ((chains (ZMod q)).map (cechAug f)) (tw q i) m y).1 h2
 
 end LateralTheory.E.GlueRelPf
+end
+end

@@ -236,11 +236,6 @@ theorem HasPeriod.unique [Algebra B Q] {θ : B →+* O} (h : IsFrame p Q θ) {t 
   obtain ⟨b', hb'⟩ := h2.2 n z q hz hq
   exact ⟨b' - b, by linear_combination h.inj (hb.symm.trans hb')⟩
 
-theorem hasPeriod_X_iff [Algebra B Q] {θ : B →+* O} (h : IsFrame p Q θ) (t : G.Tate) (i : Fin d)
-    (y : B) : c.HasPeriod θ t (X i : MvPowerSeries (Fin d) Q) y ↔ y = 0 := by
-  have h0 : c.HasPeriod θ t (X i : MvPowerSeries (Fin d) Q) (0 : B) :=
-    (c.hasPeriod_iff h t _ 0).2 fun n z _ => ⟨_, HasVal.var z i, z i, by simp⟩
-  exact ⟨fun H => H.unique h h0, fun H => H ▸ h0⟩
 
 theorem isLie_iff [Algebra O Q] (h : Function.Injective (algebraMap O Q))
     (f : MvPowerSeries (Fin d) Q) (l : G.dual.Lie) :
@@ -329,30 +324,6 @@ def IsNil {B O ι : Type} [CommRing B] [CommRing O] [Fintype ι] (θ : B →+* O
     (M : Matrix ι ι B) : Prop :=
   ∃ N : ℕ, ∀ (v : ι → B) (i : ι), ¬IsUnit (θ ((fun w : ι → B => M.mulVec fun j => σ (w j))^[N] v i))
 
-theorem isFrame_padic (p : ℕ) [Fact p.Prime] : IsFrame p ℚ_[p] (RingHom.id ℤ_[p]) where
-  surj := Function.surjective_id
-  inj := Subtype.val_injective
-  denom q := by
-    obtain ⟨⟨a, ⟨b, hb⟩⟩, h⟩ := IsLocalization.surj (nonZeroDivisors ℤ_[p]) q
-    have hb0 : b ≠ 0 := nonZeroDivisors.ne_zero hb
-    refine ⟨b.valuation, (PadicInt.unitCoeff hb0)⁻¹.val * a, ?_⟩
-    have h1 := congrArg (algebraMap ℤ_[p] ℚ_[p]) (PadicInt.unitCoeff_spec hb0)
-    have h2 : algebraMap ℤ_[p] ℚ_[p] (PadicInt.unitCoeff hb0)⁻¹.val *
-        algebraMap ℤ_[p] ℚ_[p] (PadicInt.unitCoeff hb0).val = 1 := by
-      rw [← map_mul, Units.inv_mul, map_one]
-    simp only [map_mul, map_pow, map_natCast] at h1 h ⊢
-    rw [← h, h1]
-    linear_combination (-(p : ℚ_[p]) ^ b.valuation * q) * h2
-  unit_p := (Nat.cast_ne_zero.2 (Fact.out : p.Prime).ne_zero).isUnit
-  unit_coprime n h := by
-    rw [PadicInt.isUnit_iff]
-    refine le_antisymm (PadicInt.norm_le_one _) (not_lt.1 fun hl => ?_)
-    have := (PadicInt.norm_int_lt_one_iff_dvd (p := p) n).1 (by simpa using hl)
-    exact (Fact.out : p.Prime).coprime_iff_not_dvd.1 h.symm (Int.natCast_dvd_natCast.1 this)
-  pd x hx := ⟨0, rfl, by
-    rw [show x = 0 from hx, zero_pow (Fact.out : p.Prime).ne_zero, mul_zero]⟩
-  sat a h := (mul_eq_zero.1 h).resolve_left (Nat.cast_ne_zero.2 (Fact.out : p.Prime).ne_zero)
-  complete := PadicInt.maximalIdeal_eq_span_p (p := p) ▸ inferInstance
 
 example (p : ℕ) [hp : Fact p.Prime] (G : PDivGroup p ℤ_[p]) (d : ℕ) (c : Chart G d)
     (l : G.dual.Lie) : ¬c.IsLie (C (p : ℚ_[p])⁻¹ : MvPowerSeries (Fin d) ℚ_[p]) l := by

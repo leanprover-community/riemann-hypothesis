@@ -80,14 +80,6 @@ theorem formulaAt_of_steps (hL : R.toLevCh.Is A.μ0) (hC : R.IsChain) (ch : Choi
   have e5 := congrArg (Bplus ch.W ch.M (colFn ch a)) (hfl M hMt (R.jX t x)).2
   exact final_calc (hze t) (z t).ne_zero (z' t).ne_zero hct (e1.trans (e5.trans (bplus_smul_right _ _ _ _ _))) e2 e3 e4
 
-theorem formula2K_of_steps (hP : StepProj) (hF : StepFlip) (hU : StepUnfold) (hJ : StepJets) (hc : ConstK) (hS : SumOKK) :
-    Formula2K := by
-  obtain ⟨C0, H⟩ := ((((hP.and hF).and hU).and hJ).and hc).and hS
-  refine ⟨C0, fun ε CF h => ?_⟩
-  obtain ⟨x₀, H⟩ := H ε CF h
-  refine ⟨x₀, fun D large₂ e hx Γ _ _ Pl0 T A Ks _ _ _ R F s ch i j hK => ?_⟩
-  obtain ⟨⟨⟨⟨⟨a, b⟩, c⟩, d⟩, f⟩, g⟩ := H D large₂ e hx Γ Pl0 T A Ks R F s ch i j
-  exact formulaAt_of_steps s.core.lev s.core.chain ch a b c d (fun i j t => (f i j t).2) g hK
 
 theorem exists_isTermVol {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {U : Set T} (S : GridChoice W U) {μ₀ : T}
     (hL : L.Is μ₀) (t : T) (Φ : G.Datum) (β : CosFam G t) : ∃ M, IsTermVol t S Φ β M := by

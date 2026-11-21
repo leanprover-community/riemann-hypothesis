@@ -88,8 +88,6 @@ variable (T) in
 def RapidMeas (G : GA D T → ℂ) : Prop :=
   (∀ γ ∈ GQ T, ∀ h, G (γ * h) = G h) ∧ Measurable G ∧ ∀ N : ℕ, ∃ C : ℝ, ∀ h, ‖G h‖ * quotHeight T h ^ N ≤ C
 
-theorem rapidMeas_of_rapidDec {G : GA D T → ℂ} (h : RapidDec T G) : RapidMeas T G :=
-  ⟨h.1, h.2.1.measurable, h.2.2⟩
 
 def weightInt (A : ℕ) (ν : Measure (GA D T)) (𝓖 : Set (GA D T)) (G : GA D T → ℂ) : ℝ≥0∞ :=
   ∫⁻ h in 𝓖, ENNReal.ofReal (quotHeight T h ^ A) * ‖G h‖ₑ ∂ν
@@ -204,25 +202,7 @@ variable {A d : ℕ} {S T : HSp D} {ψ : AddChar (AF D.host.F) ℂ} {om : GA D S
 example (f : WO S T → ℂ) : semi ψ θ S T μ 𝓕 0 f = eLpNorm f 2 (μ.restrict 𝓕) := by
   simp [semi, semiOn, wordOp]
 
-theorem PairBounds.rder_lift (H : PairBounds A d ψ om θ μ 𝓕) {τ : D.what₂.Tau} {X : Matrix (Fin S.rank) (Fin S.rank) ℂ}
-    (hX : X ∈ lieAt S τ) {f : WO S T → ℂ} (hf : IsThetaFunO ψ S T f) {ν : Measure (GA D T)} {𝓖 : Set (GA D T)}
-    (hν : ν.IsHaarMeasure) (h𝓖 : IsFundamentalDomain (GQ T) 𝓖 ν) {G : GA D T → ℂ} (hG : RapidMeas T G) :
-    Rder θ S τ X (lift om ν 𝓖 f G) = lift om ν 𝓖 (dOm om θ τ X f) G :=
-  funext fun g => (H.lift_deriv τ X hX f hf ν 𝓖 hν h𝓖 G hG g).deriv
 
-theorem PairBounds.modGrowthExp_lift (H : PairBounds A d ψ om θ μ 𝓕) {f : WO S T → ℂ} (hf : IsThetaFunO ψ S T f)
-    {ν : Measure (GA D T)} {𝓖 : Set (GA D T)} (hν : ν.IsHaarMeasure) (h𝓖 : IsFundamentalDomain (GQ T) 𝓖 ν)
-    {G : GA D T → ℂ} (hG : RapidMeas T G) : ModGrowthExp S A (lift om ν 𝓖 f G) := by
-  obtain ⟨U, hU, hfU⟩ := hf.level
-  obtain ⟨C, hC⟩ := H.lift_le U hU
-  have h1 := H.semi_ne_top d f hf
-  have h2 := H.weight_ne_top ν 𝓖 hν h𝓖 G hG
-  refine ⟨(C * semi ψ θ S T μ 𝓕 d f * weightInt A ν 𝓖 G).toReal, fun g => ?_⟩
-  have h3 := (hC f hf hfU ν 𝓖 hν h𝓖 G hG g).2
-  rw [mul_right_comm] at h3
-  have h4 := ENNReal.toReal_mono (ENNReal.mul_ne_top
-    (ENNReal.mul_ne_top (ENNReal.mul_ne_top ENNReal.coe_ne_top h1) h2) ENNReal.ofReal_ne_top) h3
-  rwa [toReal_enorm, ENNReal.toReal_mul, ENNReal.toReal_ofReal (pow_pos (height_pos S g) A).le] at h4
 
 end Basic₂
 

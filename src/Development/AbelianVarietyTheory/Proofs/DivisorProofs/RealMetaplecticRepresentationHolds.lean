@@ -1,5 +1,0 @@
-import Mathlib
-import CompanionTheory.ThickeningEstimates.LieGroupReduction.MetaplecticRepresentation.RealMetaplecticRepresentationHolds
-
-theorem GlobalTheory.Published.realMetaplecticRepresentation_holds : GlobalTheory.Published.RealMetaplecticRepresentation :=
-  CompanionTheory.ThKR.realMetaplecticRepresentation_holds

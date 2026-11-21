@@ -112,9 +112,6 @@ instance (τ : InfinitePlace E) : FiniteDimensional ℂ (S.FibSp τ) :=
 
 def pt (τ : InfinitePlace E) (v : S.V) : S.FibSp τ := (1 : CAt τ.embedding) ⊗ₜ[E] v
 
-theorem inner_at (τ : InfinitePlace E) (v w : S.V) :
-    inner ℂ (S.pt τ v) (S.pt τ w) =
-      (S.form τ).inner ((1 : CAt τ.embedding) ⊗ₜ[E] v) ((1 : CAt τ.embedding) ⊗ₜ[E] w) := rfl
 
 def pair (y y' : S.V) : ℝ := ∑ τ : InfinitePlace E, (inner ℂ (S.pt τ y) (S.pt τ y')).re
 
@@ -608,11 +605,6 @@ def hypFrame : SelfDualFrame F E where
   θ_isometry τ u v := flip_isometry τ u v
   majorant τ y y' := flip_majorant τ y y'
 
-theorem hypForm_isotropic :
-    (hypForm (F := F) (E := E)).toSesq ![1, 1] ![1, 1] = 0 ∧ (![1, 1] : Fin 2 → E) ∈ stdLat E 2 := by
-  refine ⟨?_, (mem_stdLat_iff _).2 fun i => ⟨1, by fin_cases i <;> simp⟩⟩
-  rw [hypForm_apply, Fin.sum_univ_two]
-  simp [signs]
 
 end Frame2
 

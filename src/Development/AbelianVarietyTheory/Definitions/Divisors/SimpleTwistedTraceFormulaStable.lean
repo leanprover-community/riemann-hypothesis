@@ -289,18 +289,12 @@ def BaseChangeSph : Prop :=
 def TransferInert : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ (n : ℕ) (w : Pl E), ¬ IsSplitAt w → HasTransfer n w
 
-theorem baseChangeSph_of_bcCore : BCCore → BaseChangeSph := fun H E _ _ _ hE _ n hn π hπ hu =>
-  H E hE n hn π hπ fun w hw => Or.inl (hu w hw)
 
-theorem oddInert_iff (E : Type) [Field E] [NumberField E] [IsCMField E] :
-    OddInert E ↔ ∀ w : Pl E, (2 : 𝓞 E) ∈ w.asIdeal → IsSplitAt w :=
-  ⟨fun H w h2 => by_contra fun hs => H w hs h2, fun H w hs h2 => hs (H w h2)⟩
 
 def BCCoreOdd : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → OddInert E → ∀ n : ℕ, 1 ≤ n →
     ∀ π : Submodule ℂ (UA E n → ℂ), IsAutRepU π → (∀ w, ¬ IsSplitAt w → IsUnramU π w ∨ HasTransfer n w) → HasBC π
 
-theorem bcCoreOdd_of_bcCore : BCCore → BCCoreOdd := fun H E _ _ _ hE _ => H E hE
 
 example (H : BCCore) (T : TransferInert) (E : Type) [Field E] [NumberField E] [IsCMField E] (hE : Unr E) (n : ℕ)
     (hn : 1 ≤ n) (π : Submodule ℂ (UA E n → ℂ)) (hπ : IsAutRepU π) : HasBC π :=

@@ -100,21 +100,7 @@ def serS (S : Subring ℂ_[p]) : Subring (PowerSeries ℂ_[p]) where
   neg_mem' {f} hf n := by
     rw [map_neg]; exact S.neg_mem (hf n)
 
-theorem X_mem_serS (S : Subring ℂ_[p]) : (PowerSeries.X : PowerSeries ℂ_[p]) ∈ serS S := by
-  intro n
-  rw [PowerSeries.coeff_X]
-  split_ifs
-  · exact S.one_mem
-  · exact S.zero_mem
 
-theorem C_mem_serS {S : Subring ℂ_[p]} {a : ℂ_[p]} (ha : a ∈ S) :
-    algebraMap ℂ_[p] (PowerSeries ℂ_[p]) a ∈ serS S := by
-  intro n
-  rw [PowerSeries.algebraMap_apply]
-  simp only [Algebra.algebraMap_self, RingHom.id_apply, PowerSeries.coeff_C]
-  split_ifs
-  · exact ha
-  · exact S.zero_mem
 
 theorem dX_eq_derivative (f : PowerSeries ℂ_[p]) : dX f = PowerSeries.derivative ℂ_[p] f := by
   ext n
@@ -136,62 +122,7 @@ def vInv (W : WeierstrassCurve ℂ_[p]) (wq : PowerSeries ℂ_[p]) : PowerSeries
     2 * algebraMap ℂ_[p] (PowerSeries ℂ_[p]) W.a₄ * PowerSeries.X * (PowerSeries.X ^ 3 * wq) +
     3 * algebraMap ℂ_[p] (PowerSeries ℂ_[p]) W.a₆ * (PowerSeries.X ^ 3 * wq) ^ 2)
 
-theorem vInv_mul_omega {W : WeierstrassCurve ℂ_[p]} {wq : PowerSeries ℂ_[p]} (h : IsWq W wq) :
-    vInv W wq * omegaW W wq = 1 := by
-  have hc := wq_const h
-  simp only [IsWq] at h
-  have hd : PowerSeries.derivative ℂ_[p] wq =
-      algebraMap ℂ_[p] (PowerSeries ℂ_[p]) W.a₁ * (wq + PowerSeries.X * PowerSeries.derivative ℂ_[p] wq) +
-      algebraMap ℂ_[p] (PowerSeries ℂ_[p]) W.a₂ *
-        (2 * PowerSeries.X * wq + PowerSeries.X ^ 2 * PowerSeries.derivative ℂ_[p] wq) +
-      algebraMap ℂ_[p] (PowerSeries ℂ_[p]) W.a₃ *
-        (3 * PowerSeries.X ^ 2 * wq ^ 2 + 2 * PowerSeries.X ^ 3 * wq * PowerSeries.derivative ℂ_[p] wq) +
-      algebraMap ℂ_[p] (PowerSeries ℂ_[p]) W.a₄ *
-        (4 * PowerSeries.X ^ 3 * wq ^ 2 + 2 * PowerSeries.X ^ 4 * wq * PowerSeries.derivative ℂ_[p] wq) +
-      algebraMap ℂ_[p] (PowerSeries ℂ_[p]) W.a₆ *
-        (6 * PowerSeries.X ^ 5 * wq ^ 3 + 3 * PowerSeries.X ^ 6 * wq ^ 2 * PowerSeries.derivative ℂ_[p] wq) := by
-    conv_lhs => rw [h]
-    simp only [map_add, Derivation.leibniz, Derivation.leibniz_pow, Derivation.map_algebraMap,
-      PowerSeries.derivative_X, Derivation.map_one_eq_zero, smul_eq_mul, nsmul_eq_mul]
-    norm_num
-    ring
-  have hden : PowerSeries.constantCoeff (wq * (algebraMap ℂ_[p] (PowerSeries ℂ_[p]) W.a₁ * PowerSeries.X +
-      algebraMap ℂ_[p] (PowerSeries ℂ_[p]) W.a₃ * PowerSeries.X ^ 3 * wq - 2)) ≠ 0 := by
-    simp [hc]
-    rw [map_ofNat]
-    norm_num
-  have key : vInv W wq * (-(2 : PowerSeries ℂ_[p]) * wq - PowerSeries.X * dX wq) =
-      wq * (algebraMap ℂ_[p] (PowerSeries ℂ_[p]) W.a₁ * PowerSeries.X +
-      algebraMap ℂ_[p] (PowerSeries ℂ_[p]) W.a₃ * PowerSeries.X ^ 3 * wq - 2) := by
-    rw [dX_eq_derivative]
-    simp only [vInv]
-    linear_combination (-(PowerSeries.X : PowerSeries ℂ_[p])) * hd
-  simp only [omegaW]
-  rw [← mul_assoc, key, PowerSeries.mul_inv_cancel _ hden]
 
-theorem vInv_mem {W : WeierstrassCurve ℂ_[p]} {wq : PowerSeries ℂ_[p]}
-    (h1 : IsIntP W.a₁) (h2 : IsIntP W.a₂) (h3 : IsIntP W.a₃) (h4 : IsIntP W.a₄) (h6 : IsIntP W.a₆)
-    (h : IsWq W wq) : vInv W wq ∈ serS (intS p) := by
-  have hw : wq ∈ serS (intS p) := wq_mem (S := intS p) h1 h2 h3 h4 h6 h
-  have hX := X_mem_serS (intS p)
-  have c1 := C_mem_serS (S := intS p) h1
-  have c2 := C_mem_serS (S := intS p) h2
-  have c3 := C_mem_serS (S := intS p) h3
-  have c4 := C_mem_serS (S := intS p) h4
-  have c6 := C_mem_serS (S := intS p) h6
-  have t2 : (2 : PowerSeries ℂ_[p]) ∈ serS (intS p) := by
-    exact_mod_cast natCast_mem (serS (intS p)) 2
-  have t3 : (3 : PowerSeries ℂ_[p]) ∈ serS (intS p) := by
-    exact_mod_cast natCast_mem (serS (intS p)) 3
-  have hw3 : PowerSeries.X ^ 3 * wq ∈ serS (intS p) := Subring.mul_mem _ (Subring.pow_mem _ hX 3) hw
-  simp only [vInv]
-  refine Subring.sub_mem _ (Subring.one_mem _) ?_
-  refine Subring.add_mem _ (Subring.add_mem _ (Subring.add_mem _ (Subring.add_mem _ ?_ ?_) ?_) ?_) ?_
-  · exact Subring.mul_mem _ c1 hX
-  · exact Subring.mul_mem _ c2 (Subring.pow_mem _ hX 2)
-  · exact Subring.mul_mem _ (Subring.mul_mem _ t2 c3) hw3
-  · exact Subring.mul_mem _ (Subring.mul_mem _ (Subring.mul_mem _ t2 c4) hX) hw3
-  · exact Subring.mul_mem _ (Subring.mul_mem _ t3 c6) (Subring.pow_mem _ hw3 2)
 
 theorem inverse_omega_holds : InvOmega :=
   _root_.UpperTheory.Reformulated.B.Gwa1.inverse_omega_holds

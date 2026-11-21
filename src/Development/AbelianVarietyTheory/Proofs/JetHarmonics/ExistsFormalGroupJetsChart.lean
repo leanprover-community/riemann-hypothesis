@@ -1,12 +1,25 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Jets.TwoPlaces
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ConnectionKillsSeries
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsUniversalJetCoordinatesPullbackStatement
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsUniversalJetCoordinatesPullback
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.UniversalStatement
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IntegralChartFormalBiext
 import Development.AbelianVarietyTheory.Counterexamples.LevelGroupExamples.JetTruncNotInjective
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FBMapPf
 
+section
+open AlgebraicGeometry CategoryTheory NumberField IsDedekindDomain IsLocalRing
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ Formalism.L2.Pj
+open ReciprocityTheory.ChartRestriction.G.Pdiv.ChartF ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs
+open GlobalTheory.CharDepth TensorProduct
+attribute [local instance] Over.cartesianMonoidalCategory
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_universalJetCoordinates_pullback : ∀ (V V' : Type) [CommRing V] [IsLocalRing V] [CommRing V'] (φ : V →+* V') (G : Over (Sp V)) [GrpObj G] (G' : Over (Sp V')) [GrpObj G'] (F : G'.left ⟶ G.left), IsGrpPullback G' G (spMap φ) F → ∀ (κ : Type) (z : GlobalTheory.PowGerm.JetPts G κ), GlobalTheory.PowGerm.IsUnivJ G κ z → ∃ z' : GlobalTheory.PowGerm.JetPts G' κ, GlobalTheory.PowGerm.IsUnivJ G' κ z' ∧ ∀ m, (z' m).left ≫ F = spMap (jetCoef φ κ m) ≫ (z m).left := by
+  first | exact @GlobalTheory.UnivJetBaseChange.exists_univ_pullback | exact GlobalTheory.UnivJetBaseChange.exists_univ_pullback | (intros; apply GlobalTheory.UnivJetBaseChange.exists_univ_pullback <;> assumption)
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -299,3 +312,5 @@ theorem GlobalTheory.integralChart_baseChange : ∀ (E : Type) [Field E] [Number
       (fun j => by rw [← hF]; rfl) (Ch.chartT.law m)
   · exact act_bc φ Ch.I.G.G t'.G mp.cm.F mp.cart Ch.xT z' hz m (Ch.I.G.act.act a) (t'.act.act a) (mp.act a)
       (Ch.actT a) (hA ▸ BT.A.const a) _ _ (fun j => by rw [← hA]; rfl) (Ch.chartT.act m a)
+end
+end

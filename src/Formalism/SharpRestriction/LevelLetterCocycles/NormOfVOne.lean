@@ -1,8 +1,33 @@
 import Mathlib
-import Formalism.SharpRestriction.LevelLetterCocycles.T2SpaceLatticeVOfGoodSituation
+import Formalism.SharpRestriction.LevelLetterCocycles.InvariantsIsoOfGenerators
 import Formalism.SharpRestriction.LevelLetterCocycles.ZlWCbInjective
 import Formalism.SharpRestriction.LevelLetterCocycles.NormLtOneIffToZMod
 
+section
+noncomputable section
+
+namespace Formalism.MainNotions.InvariantsGenerators.InvariantsFromGenerators
+
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.tableLineDegreeTwo Formalism.MainNotions.LocalSituation TensorProduct
+
+def PGen (S : Sit) : Set S.G :=
+  {g | S.W.resΓ g ∈ Subgroup.closure (insert S.W.gamK (S.W.DelF : Set S.W.Gam))}
+
+variable {l : ℕ} [Fact l.Prime]
+
+instance contMulLL (LL : FinExt l) : ContinuousMul ↥LL.1 :=
+  ⟨continuous_induced_rng.2 ((continuous_subtype_val.comp continuous_fst).mul
+    (continuous_subtype_val.comp continuous_snd))⟩
+
+instance contAddLL (LL : FinExt l) : ContinuousAdd ↥LL.1 :=
+  ⟨continuous_induced_rng.2 ((continuous_subtype_val.comp continuous_fst).add
+    (continuous_subtype_val.comp continuous_snd))⟩
+
+end Formalism.MainNotions.InvariantsGenerators.InvariantsFromGenerators
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.MainNotions.InvariantsGenerators.InvariantsFromGenerators
@@ -50,3 +75,5 @@ theorem chiQ_norm (P : LocPrime l) (h : GQ l) : ‖(P.χQ h : ℚ_[l])‖ = 1 :=
   exact le_antisymm h1 (by nlinarith [norm_nonneg (P.χQ h : ℚ_[l]), norm_nonneg (P.χQ h⁻¹ : ℚ_[l])])
 
 end Formalism.MainNotions.InvariantsGenerators.InvariantsFromGenerators
+end
+end

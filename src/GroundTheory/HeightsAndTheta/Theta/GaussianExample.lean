@@ -43,11 +43,7 @@ theorem conj_gaussQ (z : GaussQ) : conj ℚ GaussQ z = star z := by
   · simp only [QuadraticAlgebra.re_sub, gauss_algebraMap_re, QuadraticAlgebra.re_star]; ring
   · simp only [QuadraticAlgebra.im_sub, gauss_algebraMap_im, QuadraticAlgebra.im_star]; ring
 
-theorem conj_gaussQ_re (z : GaussQ) : (conj ℚ GaussQ z).re = z.re := by
-  rw [conj_gaussQ]; simp
 
-theorem conj_gaussQ_im (z : GaussQ) : (conj ℚ GaussQ z).im = -z.im := by
-  rw [conj_gaussQ]; simp
 
 noncomputable def gramAniso : Matrix (Fin 2) (Fin 2) GaussQ := Matrix.diagonal ![1, -3]
 
@@ -56,50 +52,14 @@ noncomputable def gramIso : Matrix (Fin 2) (Fin 2) GaussQ := Matrix.diagonal ![1
 noncomputable def gaussValue (H : Matrix (Fin 2) (Fin 2) GaussQ) (x : Fin 2 → GaussQ) : GaussQ :=
   (fun i => conj ℚ GaussQ (x i)) ⬝ᵥ (H *ᵥ x)
 
-theorem gaussValue_diagonal (d : Fin 2 → GaussQ) (x : Fin 2 → GaussQ) :
-    gaussValue (Matrix.diagonal d) x =
-      d 0 * (x 0 * conj ℚ GaussQ (x 0)) + d 1 * (x 1 * conj ℚ GaussQ (x 1)) := by
-  simp only [gaussValue, Matrix.mulVec_diagonal, dotProduct, Fin.sum_univ_two]
-  ring
 
-theorem isUnit_det_gramAniso : IsUnit gramAniso.det := by
-  rw [gramAniso, Matrix.det_diagonal, Fin.prod_univ_two]
-  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, one_mul]
-  exact (neg_ne_zero.mpr (three_ne_zero)).isUnit
 
-theorem isUnit_det_gramIso : IsUnit gramIso.det := by
-  rw [gramIso, Matrix.det_diagonal, Fin.prod_univ_two]
-  simp
 
-theorem isHermitianFor_gramAniso : IsHermitianFor (conjHom ℚ GaussQ) gramAniso := by
-  unfold IsHermitianFor gramAniso
-  rw [Matrix.diagonal_map (map_zero _), Matrix.diagonal_transpose]
-  congr 1
-  ext i : 1
-  fin_cases i <;> simp [conjHom, map_neg, map_ofNat]
 
-theorem isHermitianFor_gramIso : IsHermitianFor (conjHom ℚ GaussQ) gramIso := by
-  unfold IsHermitianFor gramIso
-  rw [Matrix.diagonal_map (map_zero _), Matrix.diagonal_transpose]
-  congr 1
-  ext i : 1
-  fin_cases i <;> simp [conjHom, map_neg]
 
-theorem signature_gramAniso :
-    gaussValue gramAniso ![1, 0] = algebraMap ℚ GaussQ 1 ∧
-      gaussValue gramAniso ![0, 1] = algebraMap ℚ GaussQ (-3) ∧ (0 : ℚ) < 1 ∧ (-3 : ℚ) < 0 := by
-  refine ⟨?_, ?_, by norm_num, by norm_num⟩
-  · rw [gramAniso, gaussValue_diagonal]
-    simp
-  · rw [gramAniso, gaussValue_diagonal]
-    simp
 
 noncomputable def gaussPairing (H : Matrix (Fin 2) (Fin 2) GaussQ) (x y : Fin 2 → GaussQ) : GaussQ :=
   (fun i => conj ℚ GaussQ (x i)) ⬝ᵥ (H *ᵥ y)
 
-theorem isotropic_gramIso : (![1, 1] : Fin 2 → GaussQ) ≠ 0 ∧ gaussValue gramIso ![1, 1] = 0 := by
-  refine ⟨fun h => one_ne_zero (congrFun h 0), ?_⟩
-  rw [gramIso, gaussValue_diagonal]
-  simp
 
 end GroundTheory.Heights₂.Theta

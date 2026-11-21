@@ -23,19 +23,11 @@ theorem intAA_X (s : σ) : IntAA (R := R) k (X s : MvPowerSeries σ k) := by
 theorem intAA_C (r : R) : IntAA (R := R) k (C (algebraMap R k r) : MvPowerSeries σ k) := by
   simpa using intAA_map (k := k) (C r : MvPowerSeries σ R)
 
-theorem intAA_iff_exists_map {f : MvPowerSeries σ k} :
-    IntAA (R := R) k f ↔ ∃ g : MvPowerSeries σ R, MvPowerSeries.map (algebraMap R k) g = f := by
-  refine ⟨fun h => ?_, fun ⟨g, hg⟩ => hg ▸ intAA_map g⟩
-  choose g hg using h
-  exact ⟨g, MvPowerSeries.ext fun n => (coeff_map _ _ _).trans (hg n)⟩
 
 theorem intAA_add {f g : MvPowerSeries σ k} (hf : IntAA (R := R) k f) (hg : IntAA (R := R) k g) :
     IntAA (R := R) k (f + g) := fun n => by
   rw [map_add]; exact Subring.add_mem _ (hf n) (hg n)
 
-theorem intAA_neg {f : MvPowerSeries σ k} (hf : IntAA (R := R) k f) :
-    IntAA (R := R) k (-f) := fun n => by
-  rw [map_neg]; exact Subring.neg_mem _ (hf n)
 
 theorem intAA_sub {f g : MvPowerSeries σ k} (hf : IntAA (R := R) k f) (hg : IntAA (R := R) k g) :
     IntAA (R := R) k (f - g) := fun n => by
@@ -47,9 +39,6 @@ theorem intAA_mul {f g : MvPowerSeries σ k} (hf : IntAA (R := R) k f) (hg : Int
   rw [coeff_mul]
   exact Subring.sum_mem _ fun p _ => Subring.mul_mem _ (hf _) (hg _)
 
-theorem intAA_smul (r : R) {f : MvPowerSeries σ k} (hf : IntAA (R := R) k f) :
-    IntAA (R := R) k (algebraMap R k r • f) := fun n => by
-  rw [map_smul, smul_eq_mul]; exact Subring.mul_mem _ ⟨r, rfl⟩ (hf n)
 
 theorem intAA_pow {f : MvPowerSeries σ k} (hf : IntAA (R := R) k f) (m : ℕ) :
     IntAA (R := R) k (f ^ m) := by

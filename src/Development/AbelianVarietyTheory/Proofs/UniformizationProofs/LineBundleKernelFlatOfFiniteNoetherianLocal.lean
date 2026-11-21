@@ -6,10 +6,284 @@ import Development.AbelianVarietyTheory.Definitions.Uniformization.ExistsInKNeOn
 import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.NonemptyPerfectSectionsComplexOfSmoothProj
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.InKIffTrivialTwist
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.FlatKernelPolarisationCosetsOverDVR
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.FlatQuotientOfEquivCokerDualMapOfExactFibres
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExactDualMapOfExactFibresOfIsRegularLocalRing
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.FlatCokerOfInjectiveModMaximalIdeal
+import BuildAid.ForwardExisting
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.StalkOfSmoothLocalStatement
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.FlatClosedSubschemeFiniteOverLocalRingStatement
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FlatOfFormallyUnramifiedGrpEnd
 
+section
+open CategoryTheory CategoryTheory.Limits TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flat_quotient_range_of_injective_mod_maximal : ∀ (V A : Type) [CommRing V] [IsNoetherianRing V] [IsLocalRing V] [CommRing A] [IsNoetherianRing A] [IsLocalRing A] [Algebra V A] [IsLocalHom (algebraMap V A)] (M N : Type) [AddCommGroup M] [Module A M] [Module.Finite A M] [AddCommGroup N] [Module A N] [Module V N] [IsScalarTower V A N] [Module.Flat V N] (u : M →ₗ[A] N), (∀ x : M, u x ∈ (((IsLocalRing.maximalIdeal V).map (algebraMap V A)) • ⊤ : Submodule A N) → x ∈ (((IsLocalRing.maximalIdeal V).map (algebraMap V A)) • ⊤ : Submodule A M)) → Module.Flat V (N ⧸ LinearMap.range u) := by
+  first | exact @GlobalTheory.flat_coker_of_injective_mod_maximalIdeal | exact GlobalTheory.flat_coker_of_injective_mod_maximalIdeal | (intros; apply GlobalTheory.flat_coker_of_injective_mod_maximalIdeal <;> assumption)
+end
+
+section
+open CategoryTheory CategoryTheory.Limits TensorProduct
+
+namespace GlobalTheory
+
+theorem flat_coker_of_complex_exact_mod_maximalIdeal : ∀ (V A : Type) [CommRing V] [IsNoetherianRing V] [IsLocalRing V] [CommRing A] [IsNoetherianRing A] [IsLocalRing A] [Algebra V A] [IsLocalHom (algebraMap V A)] (D : ℕ → Type) [∀ i, AddCommGroup (D i)] [∀ i, Module A (D i)] [∀ i, Module.Finite A (D i)] [∀ i, Module V (D i)] [∀ i, IsScalarTower V A (D i)] [∀ i, Module.Flat V (D i)] (d : ∀ i, D (i + 1) →ₗ[A] D i), (∀ i x, d i (d (i + 1) x) = 0) → (∃ n, ∀ i, n < i → Subsingleton (D i)) → (∀ i (x : D (i + 1)), d i x ∈ (((IsLocalRing.maximalIdeal V).map (algebraMap V A)) • ⊤ : Submodule A (D i)) → x ∈ LinearMap.range (d (i + 1)) ⊔ (((IsLocalRing.maximalIdeal V).map (algebraMap V A)) • ⊤ : Submodule A (D (i + 1)))) → Module.Flat V (D 0 ⧸ LinearMap.range (d 0)) := by
+  intro V A _ _ _ _ _ _ _ _ D _ _ _ _ _ _ d hdd _ hex
+  set J : Ideal A := (IsLocalRing.maximalIdeal V).map (algebraMap V A) with hJ
+  have hle : LinearMap.range (d 1) ≤ LinearMap.ker (d 0) := by
+    rintro _ ⟨x, rfl⟩
+    exact hdd 0 x
+  let u : (D 1 ⧸ LinearMap.range (d 1)) →ₗ[A] D 0 := (LinearMap.range (d 1)).liftQ (d 0) hle
+  have hr : LinearMap.range u = LinearMap.range (d 0) := Submodule.range_liftQ _ _ _
+  have h := GlobalTheory.T.flat_quotient_range_of_injective_mod_maximal V A (D 1 ⧸ LinearMap.range (d 1)) (D 0) u (by
+    intro x hx
+    obtain ⟨y, rfl⟩ := Submodule.Quotient.mk_surjective _ x
+    have hy : y ∈ LinearMap.range (d 1) ⊔ (J • ⊤ : Submodule A (D 1)) := hex 0 y hx
+    obtain ⟨a, ha, b, hb, rfl⟩ := Submodule.mem_sup.mp hy
+    have ha0 : (Submodule.Quotient.mk a : D 1 ⧸ LinearMap.range (d 1)) = 0 :=
+      (Submodule.Quotient.mk_eq_zero _).mpr ha
+    rw [Submodule.Quotient.mk_add, ha0, zero_add]
+    have : (LinearMap.range (d 1)).mkQ b ∈ (J • ⊤ : Submodule A (D 1)).map (LinearMap.range (d 1)).mkQ :=
+      Submodule.mem_map_of_mem hb
+    rw [Submodule.map_smul''] at this
+    exact Submodule.smul_mono le_rfl le_top this)
+  rwa [hr] at h
+
+end GlobalTheory
+end
+
+section
+section
+open CategoryTheory CategoryTheory.Limits TensorProduct Function
+
+namespace GlobalTheory
+namespace DualCokernelFlat
+
+section Modules
+
+variable {A B : Type} [CommRing A] [CommRing B] [Algebra A B]
+
+theorem dual_baseChange_surjective (hs : Surjective (algebraMap A B)) (M : Type) [AddCommGroup M]
+    [Module A M] [Module.Projective A M] :
+    Surjective (Module.Dual.baseChange B : Module.Dual A M → Module.Dual B (B ⊗[A] M)) := by
+  intro g
+  obtain ⟨f, hf⟩ := Module.projective_lifting_property (Algebra.linearMap A B)
+    (g.restrictScalars A ∘ₗ TensorProduct.mk A B M 1) hs
+  refine ⟨f, ?_⟩
+  ext x
+  have := LinearMap.congr_fun hf x
+  simpa [Algebra.algebraMap_eq_smul_one] using this
+
+theorem dual_baseChange_eq_zero_iff (M : Type) [AddCommGroup M]
+    [Module A M] [Module.Free A M] [Module.Finite A M] (f : Module.Dual A M) :
+    Module.Dual.baseChange B f = 0 ↔
+      f ∈ (RingHom.ker (algebraMap A B) • ⊤ : Submodule A (Module.Dual A M)) := by
+  constructor
+  · intro h
+    let b := Module.Free.chooseBasis A M
+    rw [← b.sum_dual_apply_smul_coord f]
+    refine Submodule.sum_mem _ fun i _ => Submodule.smul_mem_smul ?_ trivial
+    have := LinearMap.congr_fun h (1 ⊗ₜ b i)
+    simpa [RingHom.mem_ker, Algebra.algebraMap_eq_smul_one] using this
+  · intro h
+    refine Submodule.smul_induction_on h (fun r hr x _ => ?_) (fun x y hx hy => ?_)
+    · rw [map_smul, ← algebraMap_smul B r, RingHom.mem_ker.mp hr, zero_smul]
+    · rw [map_add, hx, hy, add_zero]
+
+theorem dual_baseChange_dualMap {M N : Type} [AddCommGroup M] [Module A M] [AddCommGroup N]
+    [Module A N] (a : M →ₗ[A] N) (f : Module.Dual A N) :
+    Module.Dual.baseChange B (a.dualMap f) =
+      (a.baseChange B).dualMap (Module.Dual.baseChange B f) := by
+  ext x
+  simp
+
+theorem mem_sup_of_exact (hs : Surjective (algebraMap A B)) {M₀ M₁ M₂ : Type}
+    [AddCommGroup M₀] [Module A M₀] [Module.Free A M₀] [Module.Finite A M₀]
+    [AddCommGroup M₁] [Module A M₁] [Module.Free A M₁] [Module.Finite A M₁]
+    [AddCommGroup M₂] [Module A M₂] [Module.Free A M₂] (a : M₀ →ₗ[A] M₁) (b : M₁ →ₗ[A] M₂)
+    (h : Exact (b.baseChange B).dualMap (a.baseChange B).dualMap) (x : Module.Dual A M₁)
+    (hx : a.dualMap x ∈ (RingHom.ker (algebraMap A B) • ⊤ : Submodule A (Module.Dual A M₀))) :
+    x ∈ LinearMap.range b.dualMap ⊔
+      (RingHom.ker (algebraMap A B) • ⊤ : Submodule A (Module.Dual A M₁)) := by
+  rw [← dual_baseChange_eq_zero_iff, dual_baseChange_dualMap] at hx
+  obtain ⟨y, hy⟩ := (h _).1 hx
+  obtain ⟨y, rfl⟩ := dual_baseChange_surjective hs M₂ y
+  have : x = b.dualMap y + (x - b.dualMap y) := by abel
+  rw [this]
+  refine Submodule.add_mem_sup ⟨y, rfl⟩ ?_
+  rw [← dual_baseChange_eq_zero_iff, map_sub, dual_baseChange_dualMap, hy, sub_self]
+
+end Modules
+
+theorem mem_sup_of_exact_fibres {A B : Type} [CommRing A] [IsLocalRing A] [CommRing B]
+    [IsRegularLocalRing B] (π : A →+* B) (hs : Surjective π) (g : ℕ) (hg : ringKrullDim B = g)
+    (C : CochainComplex (ModuleCat.{0} A) ℕ)
+    (hF : ∀ i, Module.Free A (C.X i) ∧ Module.Finite A (C.X i))
+    (hn : ∃ n, ∀ i, n < i → IsZero (C.X i))
+    (hex : ∀ p : PrimeSpectrum A, RingHom.ker π ≤ p.asIdeal → ∃ (K : Type) (_ : Field K)
+      (φ : A →+* K), RingHom.ker φ = p.asIdeal ∧
+        ∀ i, (p.asIdeal ≠ IsLocalRing.maximalIdeal A ∨ g < i) →
+          (((ModuleCat.extendScalars φ).mapHomologicalComplex _).obj C).ExactAt i)
+    (i : ℕ) (x : Module.Dual A (C.X (i + 1)))
+    (hx : (C.d i (i + 1)).hom.dualMap x ∈
+      (RingHom.ker π • ⊤ : Submodule A (Module.Dual A (C.X i)))) :
+    x ∈ LinearMap.range (C.d (i + 1) (i + 1 + 1)).hom.dualMap ⊔
+      (RingHom.ker π • ⊤ : Submodule A (Module.Dual A (C.X (i + 1)))) := by
+  have hfree := fun i => (hF i).1
+  have hfin := fun i => (hF i).2
+  let := π.toAlgebra
+  have key := GlobalTheory.exact_dualMap_of_exact_fibres_of_isRegularLocalRing B g hg (((ModuleCat.extendScalars π).mapHomologicalComplex _).obj C)
+    (fun i => ⟨inferInstanceAs (Module.Free B (B ⊗[A] C.X i)),
+      inferInstanceAs (Module.Finite B (B ⊗[A] C.X i))⟩)
+    (hn.imp fun n h i hi => (ModuleCat.extendScalars π).map_isZero (h i hi)) (fun q => ?_) i
+  · exact mem_sup_of_exact (B := B) hs _ _ key x hx
+  obtain ⟨K, _, φ, hφ, hK⟩ := hex (q.comap π) (by
+    rw [RingHom.ker_eq_comap_bot]
+    exact Ideal.comap_mono bot_le)
+  have hle : RingHom.ker π ≤ RingHom.ker φ := by
+    rw [hφ, RingHom.ker_eq_comap_bot]
+    exact Ideal.comap_mono bot_le
+  obtain ⟨ψ, rfl⟩ : ∃ ψ : B →+* K, ψ.comp π = φ :=
+    ⟨π.liftOfSurjective hs ⟨φ, hle⟩, π.liftOfSurjective_comp hs _⟩
+  refine ⟨K, inferInstance, ψ, ?_, fun j hj => ?_⟩
+  · apply Ideal.comap_injective_of_surjective π hs
+    rw [RingHom.comap_ker, hφ]
+    rfl
+  · refine (hK j (hj.imp_left fun h h' => h ?_)).of_iso
+      ((NatIso.mapHomologicalComplex (ModuleCat.extendScalarsComp π ψ) _).app C)
+    have hm : (q.asIdeal.comap π).IsMaximal := by
+      have : q.asIdeal.comap π = IsLocalRing.maximalIdeal A := h'
+      rw [this]
+      infer_instance
+    have := (Ideal.comap_isMaximal_of_surjective π hs (K := IsLocalRing.maximalIdeal B))
+    apply Ideal.comap_injective_of_surjective π hs
+    rw [IsLocalRing.eq_maximalIdeal hm, IsLocalRing.eq_maximalIdeal this]
+
+end DualCokernelFlat
+
+open DualCokernelFlat in
+
+theorem flat_quotient_of_equiv_coker_dualMap_of_exact_fibres :
+    ∀ (V A : Type) [CommRing V] [IsNoetherianRing V] [IsLocalRing V] [CommRing A]
+      [IsNoetherianRing A] [IsLocalRing A] [Algebra V A] [IsLocalHom (algebraMap V A)]
+      [Module.Flat V A] (g : ℕ),
+      IsRegularLocalRing (A ⧸ ((IsLocalRing.maximalIdeal V).map (algebraMap V A))) →
+      ringKrullDim (A ⧸ ((IsLocalRing.maximalIdeal V).map (algebraMap V A))) = g →
+      ∀ C : CochainComplex (ModuleCat.{0} A) ℕ,
+      (∀ i, Module.Free A (C.X i) ∧ Module.Finite A (C.X i)) → (∃ n, ∀ i, n < i → IsZero (C.X i)) →
+      (∀ p : PrimeSpectrum A, ((IsLocalRing.maximalIdeal V).map (algebraMap V A)) ≤ p.asIdeal →
+        ∃ (K : Type) (_ : Field K) (φ : A →+* K), RingHom.ker φ = p.asIdeal ∧
+          ∀ i, (p.asIdeal ≠ IsLocalRing.maximalIdeal A ∨ g < i) →
+            (((ModuleCat.extendScalars φ).mapHomologicalComplex _).obj C).ExactAt i) →
+      ∀ I : Ideal A, Nonempty ((Module.Dual A (C.X 0) ⧸
+        LinearMap.range (C.d 0 1).hom.dualMap) ≃ₗ[A] (A ⧸ I)) → Module.Flat V (A ⧸ I) := by
+  intro V A _ _ _ _ _ _ _ _ _ g hreg hg C hF hn hex I ⟨e⟩
+  have hfree := fun i => (hF i).1
+  have hfin := fun i => (hF i).2
+  have hflat : ∀ i, Module.Flat V (Module.Dual A (C.X i)) := fun i => Module.Flat.trans V A _
+  have key := mem_sup_of_exact_fibres (Ideal.Quotient.mk _) Ideal.Quotient.mk_surjective g hg C hF
+    hn (by rw [Ideal.mk_ker]; exact hex)
+  rw [Ideal.mk_ker] at key
+  have h := GlobalTheory.flat_coker_of_complex_exact_mod_maximalIdeal V A (fun i => Module.Dual A (C.X i))
+    (fun i => (C.d i (i + 1)).hom.dualMap) (fun i f => ?_) (hn.imp fun n h i hi => ?_) key
+  · exact Module.Flat.of_linearEquiv (e.restrictScalars V).symm
+  · ext x
+    rw [LinearMap.dualMap_apply, LinearMap.dualMap_apply, ← LinearMap.comp_apply (C.d _ _).hom,
+      ← ModuleCat.hom_comp, C.d_comp_d]
+    simp
+  · have := ModuleCat.subsingleton_of_isZero (h i hi)
+    infer_instance
+
+end GlobalTheory
+end
+
+open CategoryTheory CategoryTheory.Limits TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flat_quotient_of_equiv_coker_dualMap_of_exact_fibres_alt : ∀ (V A : Type) [CommRing V] [IsNoetherianRing V] [IsLocalRing V] [CommRing A] [IsNoetherianRing A] [IsLocalRing A] [Algebra V A] [IsLocalHom (algebraMap V A)] [Module.Flat V A] (g : ℕ), IsRegularLocalRing (A ⧸ ((IsLocalRing.maximalIdeal V).map (algebraMap V A))) → ringKrullDim (A ⧸ ((IsLocalRing.maximalIdeal V).map (algebraMap V A))) = g → ∀ C : CochainComplex (ModuleCat.{0} A) ℕ, (∀ i, Module.Free A (C.X i) ∧ Module.Finite A (C.X i)) → (∃ n, ∀ i, n < i → IsZero (C.X i)) → (∀ p : PrimeSpectrum A, ((IsLocalRing.maximalIdeal V).map (algebraMap V A)) ≤ p.asIdeal → ∃ (K : Type) (_ : Field K) (φ : A →+* K), RingHom.ker φ = p.asIdeal ∧ ∀ i, (p.asIdeal ≠ IsLocalRing.maximalIdeal A ∨ g < i) → (((ModuleCat.extendScalars φ).mapHomologicalComplex _).obj C).ExactAt i) → ∀ I : Ideal A, Nonempty ((Module.Dual A (C.X 0) ⧸ LinearMap.range (C.d 0 1).hom.dualMap) ≃ₗ[A] (A ⧸ I)) → Module.Flat V (A ⧸ I) := by
+  atlas_forward_decl GlobalTheory.flat_quotient_of_equiv_coker_dualMap_of_exact_fibres
+end
+
+section
+open CategoryTheory AlgebraicGeometry
+
+namespace GlobalTheory.StabFlat
+
+theorem eq_ker_stalkMap_of_points {X H : Scheme.{0}} (j : H ⟶ X) [IsClosedImmersion j] (h : H)
+    (I : Ideal (X.presheaf.stalk (j h)))
+    (hI : ∀ (R : Type) [CommRing R] [IsLocalRing R] (φ : X.presheaf.stalk (j h) →+* R),
+      (∃ y : Spec (CommRingCat.of R) ⟶ H, y ≫ j = Spec.map (CommRingCat.ofHom φ) ≫ X.fromSpecStalk (j h)) ↔
+        I ≤ RingHom.ker φ) : I = RingHom.ker (j.stalkMap h).hom := by
+  have h₁ : I ≤ RingHom.ker (j.stalkMap h).hom :=
+    (hI (H.presheaf.stalk h) (j.stalkMap h).hom).1
+      ⟨H.fromSpecStalk h, (Scheme.SpecMap_stalkMap_fromSpecStalk j).symm⟩
+  have : Nontrivial (X.presheaf.stalk (j h) ⧸ I) := Ideal.Quotient.nontrivial_iff.2
+    (ne_top_of_le_ne_top (RingHom.ker_ne_top _) h₁)
+  have : IsLocalRing (X.presheaf.stalk (j h) ⧸ I) :=
+    IsLocalRing.of_surjective' (Ideal.Quotient.mk I) Ideal.Quotient.mk_surjective
+  obtain ⟨y, hy⟩ := (hI (X.presheaf.stalk (j h) ⧸ I) (Ideal.Quotient.mk I)).2 Ideal.mk_ker.ge
+  have hl : IsLocalHom (Ideal.Quotient.mk I) := IsLocalHom.of_surjective _ Ideal.Quotient.mk_surjective
+  have e : y (IsLocalRing.closedPoint _) = h := by
+    apply j.isClosedEmbedding.injective
+    refine (congrArg (fun q => q (IsLocalRing.closedPoint _)) hy).trans ?_
+    exact (congrArg (X.fromSpecStalk (j h)) (IsLocalRing.comap_closedPoint (Ideal.Quotient.mk I))).trans
+      Scheme.fromSpecStalk_closedPoint
+  let ψ := H.presheaf.stalkSpecializes (specializes_of_eq e) ≫ Scheme.stalkClosedPointTo y
+  have hψ : j.stalkMap h ≫ ψ = CommRingCat.ofHom (Ideal.Quotient.mk I) := by
+    apply Spec.map_injective
+    rw [← cancel_mono (X.fromSpecStalk (j h)), ← hy, Spec.map_comp, Category.assoc,
+      Scheme.SpecMap_stalkMap_fromSpecStalk, Spec.map_comp, Category.assoc,
+      Scheme.SpecMap_stalkSpecializes_fromSpecStalk_assoc, Scheme.Spec_stalkClosedPointTo_fromSpecStalk_assoc]
+  have hψ' : ∀ a, ψ.hom ((j.stalkMap h).hom a) = Ideal.Quotient.mk I a := fun a => congrArg (fun q => q.hom a) hψ
+  refine le_antisymm h₁ fun a ha => Ideal.Quotient.eq_zero_iff_mem.1 ?_
+  rw [← hψ', RingHom.mem_ker.1 ha, map_zero]
+
+theorem flat_of_isFinite_of_ideals : ∀ (V : Type) [CommRing V] [IsLocalRing V] (X H : Scheme.{0}) (f : X ⟶ Spec (CommRingCat.of V)) (j : H ⟶ X), IsClosedImmersion j → IsFinite (j ≫ f) → (∀ (h : H) (σ : V →+* X.presheaf.stalk (j h)), X.fromSpecStalk (j h) ≫ f = Spec.map (CommRingCat.ofHom σ) → IsLocalHom σ → ∃ I : Ideal (X.presheaf.stalk (j h)), ((Ideal.Quotient.mk I).comp σ).Flat ∧ ∀ (R : Type) [CommRing R] [IsLocalRing R] (φ : X.presheaf.stalk (j h) →+* R), (∃ y : Spec (CommRingCat.of R) ⟶ H, y ≫ j = Spec.map (CommRingCat.ofHom φ) ≫ X.fromSpecStalk (j h)) ↔ I ≤ RingHom.ker φ) → Flat (j ≫ f) := by
+  intro V _ _ X H f j hj hfin hI
+  refine Flat.of_stalkMap _ fun h' => ?_
+  obtain ⟨h, hh, hc⟩ : ∃ h : H, h' ⤳ h ∧ (j ≫ f) h = IsLocalRing.closedPoint V := by
+    have hcl : IsClosed ((j ≫ f) '' closure {h'}) := (j ≫ f).isClosedMap _ isClosed_closure
+    have hm : IsLocalRing.closedPoint V ∈ (j ≫ f) '' closure {h'} :=
+      (IsLocalRing.specializes_closedPoint ((j ≫ f) h')).mem_closed hcl ⟨h', subset_closure rfl, rfl⟩
+    obtain ⟨h, hh, e⟩ := hm
+    exact ⟨h, specializes_iff_mem_closure.2 hh, e⟩
+  refine UnramifiedEndFlat.flat_stalkMap_of_specializes _ hh ?_
+  obtain ⟨σ, hσ⟩ := Spec.map_surjective (X.fromSpecStalk (j h) ≫ f)
+  have hloc : IsLocalHom σ.hom := by
+    refine (IsLocalRing.isLocalHom_iff_comap_closedPoint σ.hom).2 ?_
+    refine (congrArg (fun q => q (IsLocalRing.closedPoint _)) hσ).trans ?_
+    exact (congrArg f Scheme.fromSpecStalk_closedPoint).trans hc
+  obtain ⟨I, hr, hI⟩ := hI h σ.hom hσ.symm hloc
+  obtain rfl := eq_ker_stalkMap_of_points j h I hI
+  have fl : (σ ≫ j.stalkMap h).hom.Flat :=
+    hr.comp (RingHom.Flat.of_bijective
+      (f := (RingHom.quotientKerEquivOfSurjective (j.stalkMap_surjective h)).toRingHom)
+      (RingHom.quotientKerEquivOfSurjective (j.stalkMap_surjective h)).bijective)
+  have e : σ ≫ j.stalkMap h = StructureSheaf.toStalk V ((j ≫ f) h) ≫ (j ≫ f).stalkMap h := by
+    apply Spec.map_injective
+    refine Eq.trans ?_ (Spec.map_comp _ _).symm
+    refine Eq.trans ?_ (congrArg (_ ≫ ·) (Spec.fromSpecStalk_eq' (CommRingCat.of V) ((j ≫ f) h)))
+    rw [Spec.map_comp, hσ, Scheme.SpecMap_stalkMap_fromSpecStalk_assoc]
+    exact (Scheme.SpecMap_stalkMap_fromSpecStalk (j ≫ f)).symm
+  let S := (Spec (CommRingCat.of V)).presheaf.stalk ((j ≫ f) h)
+  letI : Algebra V S := StructureSheaf.stalkAlgebra V ((j ≫ f) h)
+  have : ((j ≫ f) h).asIdeal.IsPrime := PrimeSpectrum.isPrime (R := V) _
+  have : IsLocalization.AtPrime S ((j ≫ f) h).asIdeal := StructureSheaf.IsLocalization.to_stalk V _
+  letI : Algebra V (H.presheaf.stalk h) := (σ ≫ j.stalkMap h).hom.toAlgebra
+  letI : Algebra S (H.presheaf.stalk h) := ((j ≫ f).stalkMap h).hom.toAlgebra
+  have : IsScalarTower V S (H.presheaf.stalk h) := IsScalarTower.of_algebraMap_eq' (congrArg (·.hom) e)
+  exact (Module.flat_iff_of_isLocalization S ((j ≫ f) h).asIdeal.primeCompl (H.presheaf.stalk h)).2 fl
+
+end GlobalTheory.StabFlat
+end
+
+section
+open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.UU
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flat_closedSubscheme_finite_over_localRing : ∀ (V : Type) [CommRing V] [IsLocalRing V] (X H : Scheme.{0}) (f : X ⟶ Spec (CommRingCat.of V)) (j : H ⟶ X), IsClosedImmersion j → IsFinite (j ≫ f) → (∀ (h : H) (σ : V →+* X.presheaf.stalk (j h)), X.fromSpecStalk (j h) ≫ f = Spec.map (CommRingCat.ofHom σ) → IsLocalHom σ → ∃ I : Ideal (X.presheaf.stalk (j h)), ((Ideal.Quotient.mk I).comp σ).Flat ∧ ∀ (R : Type) [CommRing R] [IsLocalRing R] (φ : X.presheaf.stalk (j h) →+* R), (∃ y : Spec (CommRingCat.of R) ⟶ H, y ≫ j = Spec.map (CommRingCat.ofHom φ) ≫ X.fromSpecStalk (j h)) ↔ I ≤ RingHom.ker φ) → Flat (j ≫ f) := by
+  atlas_forward_decl GlobalTheory.StabFlat.flat_of_isFinite_of_ideals
+end
+
+section
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.UU
 open scoped CategoryTheory.Obj
@@ -151,3 +425,5 @@ theorem flat_of_isFinite : GlobalFnsSt → ∀ (V : Type) [CommRing V] [IsNoethe
     rfl
 
 end GlobalTheory.StabFlatLocal
+end
+end

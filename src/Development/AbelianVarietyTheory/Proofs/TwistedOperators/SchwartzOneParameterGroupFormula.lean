@@ -1,9 +1,130 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsHasDerivAtZeroOfMapAddMul
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TendstoSlopeMetaplecticLiftSchwartz
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IteratedLineDerivMemWeylAlg
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SchwartzUnitaryIntertwinerScalarStatement
 
+section
+section
+open MeasureTheory
+
+namespace GlobalTheory
+
+theorem continuous_of_map_add_mul_of_continuousAt_zero (ν : ℝ → ℂ)
+    (hm : ∀ s t, ν (s + t) = ν s * ν t) (hc : ContinuousAt ν 0) : Continuous ν := by
+  rw [continuous_iff_continuousAt]
+  intro x
+  have h1 : ν = fun y => ν x * ν (y - x) := by
+    funext y
+    rw [← hm]
+    congr 1
+    ring
+  rw [h1]
+  refine continuousAt_const.mul ?_
+  have h2 : ContinuousAt (fun y : ℝ => y - x) x := by fun_prop
+  exact ContinuousAt.comp (f := fun y : ℝ => y - x) (by simpa using hc) h2
+
+theorem exists_hasDerivAt_zero_of_map_add_mul :
+    ∀ ν : ℝ → ℂ, ν 0 = 1 → (∀ s t, ν (s + t) = ν s * ν t) → ContinuousAt ν 0 →
+      ∃ a : ℂ, HasDerivAt ν a 0 := by
+  intro ν h0 hm hc0
+  have hc := continuous_of_map_add_mul_of_continuousAt_zero ν hm hc0
+  set F : ℝ → ℂ := fun u => ∫ x in (0:ℝ)..u, ν x with hF
+  have hd : ∀ u, HasDerivAt F (ν u) u := fun u => (hc.deriv_integral ν 0 u ▸
+    (hc.integral_hasStrictDerivAt 0 u).hasDerivAt.differentiableAt.hasDerivAt)
+  have hex : ∃ δ, F δ ≠ 0 := by
+    by_contra hne
+    push_neg at hne
+    have hz : F = fun _ => 0 := funext hne
+    have h1 := hd 0
+    rw [hz, h0] at h1
+    exact one_ne_zero (h1.unique (hasDerivAt_const (0:ℝ) (0:ℂ)))
+  obtain ⟨δ, hδ⟩ := hex
+  have key : ∀ t, ν t = (F (t + δ) - F t) / F δ := by
+    intro t
+    rw [eq_div_iff hδ]
+    have e1 : F (t + δ) - F t = ∫ x in t..(t + δ), ν x := by
+      simp only [hF]
+      exact intervalIntegral.integral_interval_sub_left (hc.intervalIntegrable _ _)
+        (hc.intervalIntegrable _ _)
+    have e2 : ∫ x in t..(t + δ), ν x = ∫ x in (0:ℝ)..δ, ν (t + x) := by
+      rw [intervalIntegral.integral_comp_add_left ν t, add_zero]
+    rw [e1, e2]
+    simp only [hm, hF]
+    rw [intervalIntegral.integral_const_mul]
+  have h1 : HasDerivAt (fun t => F (t + δ)) (ν (0 + δ)) 0 := (hd (0 + δ)).comp_add_const 0 δ
+  refine ⟨(ν (0 + δ) - ν 0) / F δ, ?_⟩
+  have h2 := (h1.sub (hd 0)).div_const (F δ)
+  have h3 : ν = fun t => (F (t + δ) - F t) / F δ := funext key
+  conv => arg 1; rw [h3]
+  exact h2
+
+end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_hasDerivAt_zero_of_map_add_mul' : ∀ ν : ℝ → ℂ, ν 0 = 1 → (∀ s t, ν (s + t) = ν s * ν t) → ContinuousAt ν 0 → ∃ a : ℂ, HasDerivAt ν a 0 := by
+  atlas_forward_decl GlobalTheory.exists_hasDerivAt_zero_of_map_add_mul
+end
+
+section
+section
+open scoped Matrix
+
+namespace GlobalTheory.RealWeil
+
+theorem tendsto_slope_omS_schwartz :
+    ∀ (l : Type) [Fintype l] [DecidableEq l] (G : Type) [Group G] (pr : G →* Matrix.symplecticGroup l ℝ)
+    (om : G →* (GlobalTheory.RealWeil.L2 l ≃ₗᵢ[ℂ] GlobalTheory.RealWeil.L2 l)) (omS : G →* (GlobalTheory.RealWeil.Sch l →L[ℂ] GlobalTheory.RealWeil.Sch l)),
+    (∀ (g : G) (w : l ⊕ l → ℝ) (f : GlobalTheory.RealWeil.L2 l),
+      om g (GlobalTheory.RealWeil.rho w f) = GlobalTheory.RealWeil.rho ((pr g : Matrix (l ⊕ l) (l ⊕ l) ℝ) *ᵥ w) (om g f)) →
+    (∀ (g : G) (f : GlobalTheory.RealWeil.Sch l), om g (f.toLp 2) = (omS g f).toLp 2) →
+    ∀ X ∈ LieAlgebra.Symplectic.sp l ℝ, ∀ γ : ℝ → G, γ 0 = 1 →
+    (∀ t, (pr (γ t) : Matrix (l ⊕ l) (l ⊕ l) ℝ) = NormedSpace.exp (t • X)) →
+    (∀ f : GlobalTheory.RealWeil.Sch l, HasDerivAt (fun t => om (γ t) (f.toLp 2)) ((GlobalTheory.RealWeil.quad X f).toLp 2) 0) →
+    ∀ f : GlobalTheory.RealWeil.Sch l,
+      Filter.Tendsto (fun t : ℝ => t⁻¹ • (omS (γ t) f - f)) (nhdsWithin 0 {0}ᶜ) (nhds (GlobalTheory.RealWeil.quad X f)) := by
+  intro l _ _ G _ pr om omS h3 h4 X hX γ h0 hγ h6 f
+  rw [(schwartz_withSeminorms ℂ (EuclideanSpace ℝ l) ℂ).tendsto_nhds]
+  rintro ⟨k, n⟩ ε hε
+  obtain ⟨A, hA, hb⟩ := exists_seminorm_le (l := l) k n
+  have key : ∀ r, Filter.Tendsto
+      (fun t : ℝ => ‖schwartzToL2 l (A r (t⁻¹ • (omS (γ t) f - f) - quad X f))‖) (nhdsWithin 0 {0}ᶜ) (nhds 0) := by
+    intro r
+    have h := hasDerivAt_iff_tendsto_slope_zero.1 (hasDerivAt_toLp_omS h3 h4 hX h0 hγ h6 (hA r) f)
+    rw [tendsto_iff_norm_sub_tendsto_zero] at h
+    refine h.congr fun t => ?_
+    have e : ∀ (B : Sch l →L[ℂ] L2 l) (u v w : Sch l) (s : ℝ), B (s • (u - v) - w) = s • (B u - B v) - B w := by
+      intro B u v w s
+      rw [B.map_sub, B.map_smul_of_tower, B.map_sub]
+    have e1 : omS (γ 0) f = f := by rw [h0, omS.map_one]; rfl
+    rw [zero_add, e1]
+    exact congrArg norm (e ((schwartzToL2 l).comp (A r)) _ _ _ _).symm
+  have hs := tendsto_finset_sum Finset.univ fun r _ => key r
+  rw [Finset.sum_const_zero] at hs
+  filter_upwards [hs.eventually (gt_mem_nhds hε)] with t ht
+  rw [SchwartzMap.schwartzSeminormFamily_apply]
+  exact (hb _).trans_lt ht
+
+end GlobalTheory.RealWeil
+end
+
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tendsto_slope_metaplecticLift_schwartz : ∀ (l : Type) [Fintype l] [DecidableEq l] (G : Type) [Group G] (pr : G →* Matrix.symplecticGroup l ℝ)
+    (om : G →* (GlobalTheory.RealWeil.L2 l ≃ₗᵢ[ℂ] GlobalTheory.RealWeil.L2 l)) (omS : G →* (GlobalTheory.RealWeil.Sch l →L[ℂ] GlobalTheory.RealWeil.Sch l)),
+    (∀ (g : G) (w : l ⊕ l → ℝ) (f : GlobalTheory.RealWeil.L2 l),
+      om g (GlobalTheory.RealWeil.rho w f) = GlobalTheory.RealWeil.rho ((pr g : Matrix (l ⊕ l) (l ⊕ l) ℝ) *ᵥ w) (om g f)) →
+    (∀ (g : G) (f : GlobalTheory.RealWeil.Sch l), om g (f.toLp 2) = (omS g f).toLp 2) →
+    ∀ X ∈ LieAlgebra.Symplectic.sp l ℝ, ∀ γ : ℝ → G, γ 0 = 1 →
+    (∀ t, (pr (γ t) : Matrix (l ⊕ l) (l ⊕ l) ℝ) = NormedSpace.exp (t • X)) →
+    (∀ f : GlobalTheory.RealWeil.Sch l, HasDerivAt (fun t => om (γ t) (f.toLp 2)) ((GlobalTheory.RealWeil.quad X f).toLp 2) 0) →
+    ∀ f : GlobalTheory.RealWeil.Sch l,
+      Filter.Tendsto (fun t : ℝ => t⁻¹ • (omS (γ t) f - f)) (nhdsWithin 0 {0}ᶜ) (nhds (GlobalTheory.RealWeil.quad X f)) := by
+  atlas_forward_decl GlobalTheory.RealWeil.tendsto_slope_omS_schwartz
+end
+
+section
 open scoped Matrix
 
 noncomputable section
@@ -213,3 +334,5 @@ theorem main : GlobalTheory.FunPr.Hypotheses₂ → ∀ (l : Type) [Fintype l] [
   · exact main_nonempty hP l Z hZ T hT0 hTadd hTrho hTiso hTcont
 
 end GlobalTheory.MetaplecticScalarDeriv
+end
+end

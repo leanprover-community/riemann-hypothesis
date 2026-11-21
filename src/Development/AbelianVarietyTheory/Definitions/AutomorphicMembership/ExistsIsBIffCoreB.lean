@@ -119,23 +119,9 @@ theorem IsB.ind {K : Ctx} {R : ∀ D : D7, Obj2 D → Prop}
   cases e
   exact h B f T w Z b
 
-theorem IsB.ind_obj {K : Ctx} {R : ∀ D : D7, Obj D → Prop}
-    (h : ∀ (B : Base) (f : Fr B.toPre) (T : TwDat B) (w : ColW B f T) (Z : w.Lt) (b : CoreB K w Z) (O : Obj (w.D Z)),
-      ofObj O = b.obj → R (w.D Z) O)
-    {D : D7} {O : Obj D} (hD : IsB K D (ofObj O)) : R D O :=
-  IsB.ind (R := fun D O' => ∀ O : Obj D, ofObj O = O' → R D O) h hD O rfl
 
-theorem IsB.ind_lay {K : Ctx} {R : ∀ D : D7, Lay D → Prop}
-    (h : ∀ (B : Base) (f : Fr B.toPre) (T : TwDat B) (w : ColW B f T) (Z : w.Lt) (b : CoreB K w Z) (Y : Lay (w.D Z)),
-      layObj Y = b.obj → R (w.D Z) Y)
-    {D : D7} {Y : Lay D} (hD : IsB K D (layObj Y)) : R D Y :=
-  IsB.ind (R := fun D O' => ∀ Y : Lay D, layObj Y = O' → R D Y) h hD Y rfl
 
-theorem exists_isB_iff_coreB (K : Ctx) : (∃ (D : D7) (O : Obj2 D), IsB K D O) ↔
-    ∃ (B : Base) (f : Fr B.toPre) (T : TwDat B) (w : ColW B f T) (Z : w.Lt), Nonempty (CoreB K w Z) :=
-  ⟨fun ⟨_, _, B, f, T, w, Z, b, _⟩ => ⟨B, f, T, w, Z, ⟨b⟩⟩, fun ⟨_, _, _, _, _, ⟨b⟩⟩ => ⟨_, _, b.isB⟩⟩
 
-theorem CoreB.pinU {K : Ctx} {w : ColW B f T} {Z : w.Lt} (b : CoreB K w Z) : PinU K B f T w := ⟨⟨b.pin⟩, b.untw⟩
 
 theorem CoreB.muAt_eq {K : Ctx} {w : ColW B f T} {Z : w.Lt} (b : CoreB K w Z) (v : (w.D Z).what₂.places.Pl) :
     (w.D Z).what₂.muAt v = (w.D Z).what₂.mu0 := b.mu.off v (Set.notMem_empty v)
@@ -144,13 +130,10 @@ theorem CoreB.over {K : Ctx} {w : ColW B f T} {Z : w.Lt} (b : CoreB K w Z) : Ove
   obtain ⟨sp, hT, hY, hA, hV, hz, h, -⟩ := b.isOver
   exact ⟨sp, hT, hY, hA, hV, hz, w.st Z, h, rfl⟩
 
-theorem CoreB.volTied {K : Ctx} {w : ColW B f T} {Z : w.Lt} (b : CoreB K w Z) : Formalism.L2.Herm.VolumeCompatible (w.D Z) := b.t.full.1.vol
 
 theorem ForVol.mono {w : ColW B f T} {P Q : w.Lt → Prop} (h : ForVol w P) (hPQ : ∀ Z, P Z → Q Z) : ForVol w Q :=
   fun vol cd hp ht => let ⟨Z, a, b, p⟩ := h vol cd hp ht; ⟨Z, a, b, hPQ Z p⟩
 
-theorem HasB.forVol_isB {K : Ctx} {w : ColW B f T} (h : HasB K B f T w) : ForVol w fun Z => ∃ O, IsB K (w.D Z) O :=
-  ForVol.mono h fun _ ⟨b⟩ => ⟨_, b.isB⟩
 
 section Layers
 
@@ -182,7 +165,6 @@ def CoreB.lay (b : CoreB K w Z) (hv : StandardLattice.VolumeEqMass₂ (w.D Z)) :
 
 theorem CoreB.layObj_lay (b : CoreB K w Z) (hv : StandardLattice.VolumeEqMass₂ (w.D Z)) : layObj (b.lay hv) = b.obj := rfl
 
-theorem CoreB.isB_lay (b : CoreB K w Z) (hv : StandardLattice.VolumeEqMass₂ (w.D Z)) : IsB K (w.D Z) (layObj (b.lay hv)) := b.isB
 
 theorem CoreB.tupUsed (b : CoreB K w Z) : DQ.TupUsedAt (w.D Z) := by
   intro μ

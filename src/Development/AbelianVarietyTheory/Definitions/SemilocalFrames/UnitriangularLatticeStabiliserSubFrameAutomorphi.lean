@@ -30,10 +30,6 @@ theorem adapt_mapLF {T : D.host.E} (F : LFlag (VS D) D.R.rS T) (g : GV D) (hg : 
     refine Fin.lastCases ?_ (fun i => ?_) a <;> simp
   rw [this]; simp
 
-theorem adapt_zero {T : D.host.E} {F G : LFlag (VS D) D.R.rS T} {g : GV D} (h : Adapt g F G) :
-    g (frame F 0) = frame G 0 := by
-  have := h.2 0
-  simpa [Xflag, FlagG.Xa, sub_eq_zero] using this
 
 theorem unitriangular_lattice_stabiliser_sub_frame_automorphisms {T : D.host.E} (F : LFlag (VS D) D.R.rS T) (Λ : LV D) : NLam Λ F ⊆ Aut0 F Λ := by
   rintro n ⟨⟨h1, h2⟩, h3, h4⟩
@@ -169,7 +165,6 @@ theorem lrel_equivalence : Equivalence (LRel F F') := by
     refine ⟨k * h, (StabilizingSubgroup F F').mul_mem hk hh, ?_⟩
     rw [gmap_mul, gdat_congr F F' hk e, e']
 
-theorem lrel_gmap (Λ : LV D) {h : GV D} (hh : h ∈ H0 F F') : LRel F F' Λ (Formalism.HermitianLatticesTheory.gmap h Λ) := ⟨h, hh, rfl⟩
 
 variable {Z : LocDat D} {FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS}
 
@@ -196,8 +191,6 @@ theorem moves_one {p : PlF D} (d : LocNG.Datum (FP p)) : LocNG.Datum.Moves 1 d d
 theorem one_mem_stabY (y : Dat Z FP) : (1 : GV D) ∈ stabY F F' y :=
   ⟨(StabilizingSubgroup F F').one_mem, fun p => ⟨1, fun _ => rfl, moves_one _⟩⟩
 
-theorem inGen_self (y : Dat Z FP) : InGen y y :=
-  ⟨fun p => ⟨1, Subgroup.one_mem _, moves_one _⟩, by simp⟩
 
 theorem weight_le_one (y : Dat Z FP) : (((stabY F F' y).encard : ℝ≥0∞))⁻¹ ≤ 1 := by
   rw [ENNReal.inv_le_one]
@@ -297,12 +290,7 @@ end
 
 section
 variable {X : HidaSetting D} {Y : Full X} {u u' : D.what₂.Word}
-theorem tg_self (t : TauC Y u u') : TG (lf D (X.Fu u)) t.frame t t.lam :=
-  ⟨1, adapt_one _, adapt_one _, (gmap_one _).symm⟩
 
-theorem clsRow_row (TS : Set (TauC Y u u')) : ClsRow TS (Y.tO u u').rowOf := fun _ _ _ _ _ => Iff.rfl
-theorem clsRow_key (TS : Set (TauC Y u u')) : ClsRow TS key := fun t _ t' _ h => by
-  simp [key, h]
 end
 
 end GlobalTheory.Unfold.Model

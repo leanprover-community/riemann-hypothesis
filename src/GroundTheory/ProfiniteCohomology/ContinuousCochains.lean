@@ -98,9 +98,6 @@ noncomputable def cochainsComplex (A : Rep.{u} k G) [IsDiscreteRep A] :
   CochainComplex.of (fun n => ModuleCat.of k (locallyConstantCochains A n))
     (fun n => dLocallyConstant A n) fun n => dLocallyConstant_comp A n
 
-theorem cochainsComplex_X (A : Rep.{u} k G) [IsDiscreteRep A] (n : ℕ) :
-    (cochainsComplex A).X n = ModuleCat.of k (locallyConstantCochains A n) :=
-  rfl
 
 theorem cochainsComplex_d (A : Rep.{u} k G) [IsDiscreteRep A] (n : ℕ) :
     (cochainsComplex A).d n (n + 1) = dLocallyConstant A n := by

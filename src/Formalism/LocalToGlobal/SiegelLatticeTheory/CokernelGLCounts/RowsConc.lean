@@ -1,6 +1,6 @@
 import Mathlib
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.PoincareConstantEq
-import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RowsOther
+import Formalism.HermitianCurvature.StatementPN
 import Formalism.SharpRestriction.CuspSpanNormBounds.NonGenericAndKTwoTheorems
 import Formalism.SharpRestriction.CuspSpanNormBounds.PlaceDegreeData
 import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
@@ -9,6 +9,196 @@ import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarP
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.MassDataConc
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.LocalAdditiveCharContinuous
 
+section
+noncomputable section
+
+open scoped Classical
+
+namespace Formalism.L2.SG.RowsOther
+
+open Formalism.FourierDecayAlt
+
+section Gen
+
+variable {τ Rw I H H₁ : Type} [Fintype I] [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+  [NormedAddCommGroup H₁] [InnerProductSpace ℂ H₁] (X : PB.Terms τ Rw I H H₁)
+
+def KppTermZero : Prop := ∀ t ∈ X.degSet, X.op t = 0
+
+def KppOff : Prop := X.part X.degSet = 0
+
+def KppDiag (du : ℝ) (k f : ℕ) : Prop :=
+  ‖X.part X.degSet‖ ^ 2 ≤ du * Real.exp (-((k : ℝ) * f * Real.log k))
+
+def PairsDeg (Pg du : ℝ) (k f : ℕ) : Prop :=
+  Pg * X.pairAbs (X.allPairs X.degSet) ≤ du * Real.exp (-((k : ℝ) * f * Real.log k))
+
+theorem kppOff_of_termZero (h : KppTermZero X) : KppOff X := by
+  unfold KppOff PB.Terms.part
+  have h0 : X.degSet.indicator X.op = 0 := by
+    funext t
+    exact Set.indicator_apply_eq_zero.2 (fun ht => h t ht)
+  rw [h0]
+  exact tsum_zero
+
+theorem kppDiag_of_pairs [CompleteSpace H₁] (hP : PB.NormSqBoundOfEqualIota) (hE : PB.GramSumLeOfPosSemidef) (hS : PB.PairSplit)
+    (hSub : PB.SubFamily) (Pg du : ℝ) (k f : ℕ) (hPg : 0 ≤ Pg) (hAbs : X.AbsConv) (hO : X.RowOrth)
+    (hC : X.CorankPos) (hN : X.NormExpansionOn X.degSet) (hG : X.GGBound Pg)
+    (hB : PairsDeg X Pg du k f) : KppDiag X du k f := by
+  unfold KppDiag
+  have h1 := hP hE τ Rw I H H₁ X Pg X.degSet hN hG
+  rw [((hS τ Rw I H H₁ X hAbs hO hC).1 X.degSet)] at h1
+  have h3 := (hSub τ Rw I H H₁ X hAbs _ _ (subset_refl (X.allPairs X.degSet))).2
+  calc ‖X.part X.degSet‖ ^ 2 ≤ Pg * X.pairSum (X.allPairs X.degSet) := h1
+    _ ≤ Pg * X.pairAbs (X.allPairs X.degSet) :=
+        mul_le_mul_of_nonneg_left ((le_abs_self _).trans h3) hPg
+    _ ≤ _ := hB
+
+def IdOne (one : H) : Prop := X.part X.idSet = one
+
+def DiagRow (one : H) (Gm dd : ℝ) : Prop := ‖X.K0 - one‖ ^ 2 ≤ Gm * dd
+
+def noId : PB.Terms τ Rw I H H₁ := { X with isId := fun _ => False }
+
+theorem noId_idSet : (noId X).idSet = ∅ := by
+  ext t
+  simp [PB.Terms.idSet, noId]
+
+theorem noId_idZero : (noId X).IdZero := by
+  unfold PB.Terms.IdZero PB.Terms.part
+  rw [noId_idSet]
+  simp
+
+theorem nonIdentity_K0 (one : H) (h : IdOne X one) : (noId X).K0 = X.K0 - one := by
+  have h0 : (noId X).part (noId X).idSet = 0 := noId_idZero X
+  have hg : (noId X).part (noId X).genSet = X.part X.genSet := rfl
+  have hn : (noId X).part (noId X).ngSet = X.part X.ngSet := rfl
+  unfold IdOne at h
+  simp only [PB.Terms.K0]
+  rw [h0, hg, hn, h]
+  abel
+
+theorem diag_of_abstract [CompleteSpace H₁] (hA : PB.PairBoundAbstract) (hP : PB.NormSqBoundOfEqualIota)
+    (hE : PB.GramSumLeOfPosSemidef) (hS : PB.PairSplit) (hSub : PB.SubFamily) (one : H) (Pg A ε ε' dd : ℝ)
+    (hPg : 0 ≤ Pg) (hdd : 0 ≤ dd) (hAbs : X.AbsConv)
+    (hN : X.NormExpansionOn X.genSet ∧ X.NormExpansionOn X.ngSet) (hG : X.GGBound Pg)
+    (hO : X.RowOrth) (hC : X.CorankPos) (hI : IdOne X one) (h1 : X.RowBig ε dd)
+    (h2 : X.RowNotScalar ε dd) (h3 : X.RowMain A dd) (h4 : X.RowNG ε' dd) :
+    DiagRow X one ((√(Pg * (A + 2 * ε)) + √(Pg * (ε + ε'))) ^ 2) dd := by
+  unfold DiagRow
+  rw [← nonIdentity_K0 X one hI]
+  exact hA hP hE hS hSub τ Rw I H H₁ (noId X) Pg A ε ε' dd hPg hdd hAbs hN hG hO hC (noId_idZero X) h1 h2 h3 h4
+
+section Loops
+
+def PP : Set (τ × τ) := X.big X.nzSet ∪ X.nsc X.genSet
+
+def ampSum (Q : Set (τ × τ)) : ℝ := ∑' p : τ × τ, Q.indicator (fun p => ‖X.vec p.1‖ * ‖X.vec p.2‖) p
+
+theorem pairAbs_le_ampSum (hG : 0 ≤ X.Gam1) (Q : Set (τ × τ))
+    (hs : Summable (Q.indicator (fun p : τ × τ => ‖X.vec p.1‖ * ‖X.vec p.2‖))) :
+    X.pairAbs Q ≤ X.Gam1 * ampSum X Q := by
+  unfold PB.Terms.pairAbs ampSum
+  refine mul_le_mul_of_nonneg_left ?_ hG
+  have hle : ∀ p, Q.indicator (fun p : τ × τ => ‖inner ℂ (X.vec p.1) (X.vec p.2)‖) p ≤
+      Q.indicator (fun p : τ × τ => ‖X.vec p.1‖ * ‖X.vec p.2‖) p := by
+    intro p
+    by_cases hp : p ∈ Q
+    · simp only [Set.indicator_of_mem hp]
+      exact norm_inner_le_norm _ _
+    · simp [Set.indicator_apply, hp]
+  have hnn : ∀ p, 0 ≤ Q.indicator (fun p : τ × τ => ‖inner ℂ (X.vec p.1) (X.vec p.2)‖) p :=
+    fun p => Set.indicator_nonneg (fun _ _ => norm_nonneg _) p
+  exact Summable.tsum_le_tsum hle (hs.of_nonneg_of_le hnn hle) hs
+
+def LoopsAmp (A C : ℝ) (k r f : ℕ) (b g v Gam : ℝ) (Xi : ℕ → ℝ) (dd : ℝ) : Prop :=
+  Summable ((PP X).indicator (fun p : τ × τ => ‖X.vec p.1‖ * ‖X.vec p.2‖)) ∧
+  X.Gam1 * ampSum X (PP X) ≤
+    A * (∑ s ∈ Finset.Icc 2 k, Formalism.HermitianLatticeCounting.LatticeSumBounds.ndRow C k (2 * r + 2) f s b g v Gam Xi +
+      Gam ^ 2 * ∑ s ∈ Finset.Icc 2 k, Formalism.HermitianLatticeCounting.LatticeSumBounds.degRow C k (2 * r + 2) f s b g v Gam Xi +
+      C ^ f * Formalism.HermitianLatticeCounting.LatticeSumBounds.bigH C (2 * r + 2) f b ^ (C * ((2 * r + 2 : ℕ) : ℝ) ^ 3) * Gam *
+        Real.exp (C * ((2 * r + 2 : ℕ) : ℝ) ^ 6 * f * Real.log b) *
+        Real.sqrt ((C * g⁻¹ ^ (2 * r + 1) * ((k : ℝ) ^ r)⁻¹) ^ (k * f))) * dd
+
+theorem loopsInput_of_amp (hG : 0 ≤ X.Gam1) (A C : ℝ) (k r f : ℕ) (b g v Gam : ℝ) (Xi : ℕ → ℝ) (dd : ℝ)
+    (h : LoopsAmp X A C k r f b g v Gam Xi dd) : PB.LoopsInput X A C k r f b g v Gam Xi dd :=
+  (pairAbs_le_ampSum X hG (PP X) h.1).trans h.2
+
+def PairsDegAmp (Pg du : ℝ) (k f : ℕ) : Prop :=
+  Summable ((X.allPairs X.degSet).indicator (fun p : τ × τ => ‖X.vec p.1‖ * ‖X.vec p.2‖)) ∧
+  Pg * (X.Gam1 * ampSum X (X.allPairs X.degSet)) ≤ du * Real.exp (-((k : ℝ) * f * Real.log k))
+
+theorem pairsDeg_of_amp (hG : 0 ≤ X.Gam1) (Pg du : ℝ) (k f : ℕ) (hPg : 0 ≤ Pg) (h : PairsDegAmp X Pg du k f) :
+    PairsDeg X Pg du k f :=
+  (mul_le_mul_of_nonneg_left (pairAbs_le_ampSum X hG _ h.1) hPg).trans h.2
+
+end Loops
+
+section NG
+
+variable {E : Type} [Field E] [NumberField E] {r : ℕ} {Cl Nu : Type} (N : PN.NGData τ E r Cl Nu)
+
+def NGFin (k f C1 C0 : ℕ) (rd g TT AAre e1 : ℝ) : Prop :=
+  PN.ClassInput X N ∧ PN.AmpInput X N ∧ PN.NormalsInput X N (rd ^ (12 * r * (r + 1) * f) * TT ^ (6 * f)) ∧
+  PN.PointsInput X N ∧ PN.LocalInput X N C1 C0 k ∧ PN.GenMassInput X N AAre e1 ∧ PN.HeightInput X N (g ^ f)
+
+def NGReal (f A : ℕ) (CB b cSt Ire : ℝ) : Prop :=
+  PN.MeasureInput X N cSt ∧
+  PN.PointSumInput X N (A * (r + 1) ^ 2) (Real.exp (CB * ((2 * r + 2 : ℕ) : ℝ) ^ 5 * f * Real.log b) * Ire)
+
+theorem ngInputs_iff (k f C1 C0 A : ℕ) (CB b rd g TT cSt AAre e1 Ire : ℝ) :
+    PN.NGInputs X N k f C1 C0 A CB b rd g TT cSt AAre e1 Ire ↔
+      NGFin X N k f C1 C0 rd g TT AAre e1 ∧ NGReal X N f A CB b cSt Ire := by
+  unfold PN.NGInputs NGFin NGReal
+  tauto
+
+end NG
+
+end Gen
+
+theorem rowLoops_of_input (hL : PN.LoopCores) (hSub : PB.SubFamily) (C : ℝ) (hC : 1 ≤ C) :
+    ∃ K₀ : ℝ, ∀ (τ Rw I H H₁ : Type) [Fintype I] [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+      [NormedAddCommGroup H₁] [InnerProductSpace ℂ H₁] (X : PB.Terms τ Rw I H H₁) (k r f : ℕ)
+      (A b g v NT Gam : ℝ) (Xi : ℕ → ℝ) (dd : ℝ), 1 ≤ A →
+      Formalism.HermitianLatticeCounting.LatticeSumBounds.Params C K₀ k (2 * r + 2) f b g v NT Gam →
+      Formalism.HermitianLatticeCounting.LatticeSumBounds.XiHyp C k (2 * r + 2) f b v NT Xi →
+      6 * Real.log (3 * A) ≤ (k : ℝ) * f * Real.log k → 0 ≤ dd → X.AbsConv →
+      PB.LoopsInput X A C k r f b g v Gam Xi dd →
+      X.RowBig (Real.exp (-((1 / 3 : ℝ) * k * f * Real.log k))) dd ∧
+      X.RowNotScalar (Real.exp (-((1 / 3 : ℝ) * k * f * Real.log k))) dd := by
+  obtain ⟨h1, h2, h3, h4, h5, hJ, hGR⟩ := hL
+  obtain ⟨K₀, hK⟩ := hJ h1 h2 h3 h4 h5 C hC
+  refine ⟨K₀, ?_⟩
+  intro τ Rw I H H₁ _ _ _ _ _ X k r f A b g v NT Gam Xi dd hA hPar hXi hlog hdd hAbs hIn
+  exact hGR hSub τ Rw I H H₁ X _ dd hAbs (hK τ Rw I H H₁ X k r f A b g v NT Gam Xi dd hA hPar hXi hlog hdd hIn)
+
+theorem rowNG_of_cut (hR : PN.RowNGJoint) (hC : PN.NGChain) (C1 C0 A : ℕ) (CB CSt Cg CT : ℝ)
+    (h1 : 0 ≤ CB) (h2 : 0 ≤ CSt) (h3 : 0 ≤ Cg) (h4 : 0 ≤ CT) (hA : C1 + C0 + 38 ≤ A) :
+    ∃ Cn : ℝ, 0 ≤ Cn ∧
+    ∀ (E : Type) [Field E] [NumberField E] [NumberField.IsTotallyComplex E] (τ Rw I H H₁ : Type) [Fintype I]
+      [NormedAddCommGroup H] [InnerProductSpace ℂ H] [NormedAddCommGroup H₁] [InnerProductSpace ℂ H₁]
+      [CompleteSpace H₁] (X : PB.Terms τ Rw I H H₁) (r k : ℕ) (Cl Nu : Type) (N : PN.NGData τ E r Cl Nu)
+      (P : Type) [Fintype P] (B : S3.MassData P) (b rd g TT cSt e1 Irat Ire : ℝ),
+      X.AbsConv → X.Gam1 = B.Gam1 → PN.NormInputs B →
+      PN.FrameInputs B rd g r k (Fintype.card (NumberField.InfinitePlace E)) Irat Ire →
+      PN.NGSizes Cg CT CSt r (Fintype.card (NumberField.InfinitePlace E)) b rd g TT cSt e1 →
+      NGFin X N k (Fintype.card (NumberField.InfinitePlace E)) C1 C0 rd g TT
+        (PN.abelian₂ rd r k (Fintype.card (NumberField.InfinitePlace E)) * B.AA) e1 →
+      NGReal X N (Fintype.card (NumberField.InfinitePlace E)) A CB b cSt Ire →
+      X.RowNG (((2 : ℝ) ^ (k - 2 * r - 5))⁻¹ *
+        Real.exp (Cn * ((2 * r + 2 : ℕ) : ℝ) ^ 5 * (Fintype.card (NumberField.InfinitePlace E) : ℕ) * Real.log b))
+        (B.d * B.d' / B.Dstar) := by
+  obtain ⟨Cn, hCn, hmain⟩ := hR hC C1 C0 A CB CSt Cg CT h1 h2 h3 h4 hA
+  refine ⟨Cn, hCn, ?_⟩
+  intro E _ _ _ τ Rw I H H₁ _ _ _ _ _ _ X r k Cl Nu N P _ B b rd g TT cSt e1 Irat Ire hAbs hGam hNI hFI hSz hFin hReal
+  exact hmain E τ Rw I H H₁ X r k Cl Nu N P B b rd g TT cSt e1 Irat Ire hAbs hGam hNI hFI hSz
+    (by rw [ngInputs_iff]; exact ⟨hFin, hReal⟩)
+
+end Formalism.L2.SG.RowsOther
+end
+end
+
+section
 noncomputable section
 
 open scoped Classical
@@ -115,9 +305,6 @@ theorem dd_nonneg (h : ConcTie X Y) (u u' : D.what₂.Word) : 0 ≤ ddC X Y u u'
   have h2 : 0 ≤ duC X Y u' := Nat.cast_nonneg _
   exact div_nonneg (mul_nonneg h1 h2) (dst_pos h u).le
 
-theorem cu_fd (h : ConcTie X Y) (u : D.what₂.Word) (hC : Formalism.L2.SG.PoincareInHH.Cut.ClassFin X u Y.hK) :
-    FiniteDimensional ℂ (Cu X u Y.hK) :=
-  (Formalism.L2.SG.PoincareInHH.Cut.cols_dim_of_neat X u Y.hK (h.2.1 u) hC).1
 
 end Facts
 
@@ -169,17 +356,6 @@ def LoopsCutC : Prop :=
         Formalism.L2.SG.RowsOther.LoopsAmp (Y.tO u u') Al C D.R.k D.R.rS D.R.f large₂.sc.b (X.B.g : ℝ) D.host.v Gam Xi
           (ddC X Y u u')
 
-theorem rowLoopsC_of_cut (hL : PN.LoopCores) (hSub : PB.SubFamily) (hc : LoopsCutC) :
-    RowLoopsC := by
-  intro Cg cb Cw cT CT C0 A
-  obtain ⟨C, hC, hK⟩ := hc Cg cb Cw cT CT C0 A
-  obtain ⟨K₀, hJ⟩ := Formalism.L2.SG.RowsOther.rowLoops_of_input hL hSub C hC
-  obtain ⟨C'₀, Cl₀, h⟩ := hK K₀
-  refine ⟨C'₀, Cl₀, fun C' Cl h1 h2 D large₂ X Y u u' hH hT ha => ?_⟩
-  obtain ⟨Al, NT, Gam, Xi, hA1, hP, hX, h6, hAmp⟩ := h C' Cl h1 h2 D large₂ X Y u u' hH hT
-  exact hJ _ _ _ _ _ (Y.tO u u') D.R.k D.R.rS D.R.f Al large₂.sc.b (X.B.g : ℝ) D.host.v NT Gam Xi (ddC X Y u u')
-    hA1 hP hX h6 (dd_nonneg hT u u') ha
-    (Formalism.L2.SG.RowsOther.loopsInput_of_amp _ ha.2.2.le _ _ _ _ _ _ _ _ _ _ _ hAmp)
 
 def PairsDegCutC : Prop :=
   ∀ Cg cb Cw cT CT C0 : ℝ, ∃ C'₀ Cl₀ : ℝ, ∀ C' Cl : ℝ, C'₀ ≤ C' → Cl₀ ≤ Cl →
@@ -210,41 +386,6 @@ def DiagNumC : Prop :=
       max CB C4 + 1 ≤ large₂.CGam →
       (√(PgC Y * (gamB D large₂ CB + 2 * epsL D)) + √(PgC Y * (epsL D + epsNG D large₂ C4))) ^ 2 ≤ (D.mem u).A.GamP
 
-theorem diagC_of_rows (hA : PB.PairBoundAbstract) (hP : PB.NormSqBoundOfEqualIota) (hE : PB.GramSumLeOfPosSemidef) (hS : PB.PairSplit)
-    (hSub : PB.SubFamily) (hGG : Formalism.L2.SG.GGMirabolic.TermsGGBound)
-    (hNS : NormExpSatTied) (hC : CorankPosC) (hId : IdOneC) (hL : RowLoopsC) (hNG : RowNGC) (hM : RowMainEqC)
-    (hNum : DiagNumC) : DiagC := by
-  intro Cg cb Cw cT CT C0 A
-  obtain ⟨CB, hCB, C'₁, Cl₁, hM'⟩ := hM Cg cb Cw cT CT C0 A
-  obtain ⟨C4, hC4, C'₂, Cl₂, hNG'⟩ := hNG Cg cb Cw cT CT C0
-  obtain ⟨C'₃, Cl₃, hL'⟩ := hL Cg cb Cw cT CT C0 A
-  obtain ⟨C'₄, Cl₄, hNum'⟩ := hNum Cg cb Cw cT CT C0 A CB C4 hCB hC4
-  refine ⟨CB, C4, hCB, hC4, max (max C'₁ C'₂) (max C'₃ C'₄), max (max Cl₁ Cl₂) (max Cl₃ Cl₄),
-    fun C' Cl h1 h2 D large₂ X Y u hH hK2 hT ha hG => ?_⟩
-  have a1 : C'₁ ≤ C' := le_trans (le_trans (le_max_left _ _) (le_max_left _ _)) h1
-  have a2 : C'₂ ≤ C' := le_trans (le_trans (le_max_right _ _) (le_max_left _ _)) h1
-  have a3 : C'₃ ≤ C' := le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) h1
-  have a4 : C'₄ ≤ C' := le_trans (le_trans (le_max_right _ _) (le_max_right _ _)) h1
-  have b1 : Cl₁ ≤ Cl := le_trans (le_trans (le_max_left _ _) (le_max_left _ _)) h2
-  have b2 : Cl₂ ≤ Cl := le_trans (le_trans (le_max_right _ _) (le_max_left _ _)) h2
-  have b3 : Cl₃ ≤ Cl := le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) h2
-  have b4 : Cl₄ ≤ Cl := le_trans (le_trans (le_max_right _ _) (le_max_right _ _)) h2
-  have h0 : Formalism.MainNotions.S.Cnt.Hyp0 D large₂ C' Cl Cg cb Cw cT CT C0 := hH.1
-  have hs : Formalism.MainNotions.S.Cnt.Stand D u u := hH.2.1
-  have hPg : 0 ≤ PgC Y := Finset.prod_nonneg fun v _ => by positivity
-  have hdd := dd_nonneg hT u u
-  obtain ⟨r1, r2⟩ := hL' C' Cl a3 b3 D large₂ X Y u u hH hT ha
-  have r3 := hM' C' Cl a1 b1 D large₂ X Y u hH hT ha
-  have r4 := hNG' C' Cl a2 b2 D large₂ X Y u u h0 hs hT ha
-  have hGB : (Y.tO u u).GGBound (PgC Y) :=
-    Formalism.L2.SG.TermOp.ggBound Y.TR (Y.cs u) (Y.cs u) (Y.FN u) (Y.FN u) hGG Y.psi_ne
-      (fun v => card_ge_three hK2 Y.TR v)
-  have hD := Formalism.L2.SG.RowsOther.diag_of_abstract (Y.tO u u) hA hP hE hS hSub (oneC X Y u) (PgC Y)
-    (gamB D large₂ CB) (epsL D) (epsNG D large₂ C4) (ddC X Y u u) hPg hdd ha (hNS D X Y u u hT) hGB
-    (Formalism.L2.SG.TermOp.rowOrth Y.TR (Y.cs u) (Y.cs u) (Y.FN u) (Y.FN u)) (hC D X Y u u hT) (hId D X Y u hT)
-    r1 r2 r3 r4
-  unfold Formalism.L2.SG.RowsOther.DiagRow at hD ⊢
-  exact hD.trans (mul_le_mul_of_nonneg_right (hNum' C' Cl a4 b4 D large₂ X Y u hH hK2 hT hG) hdd)
 
 end Cut
 
@@ -259,13 +400,6 @@ theorem absConvTied_of_full (hFo : FoldOKC) (hF : FundExistsC) (hO : OOIntAllC)
   have f2 := hFo D X Y u' hT.1 hT.2.2.2.2.1
   exact hA D X Y u u' f1 f2 (hF D X Y u u') (hO D X Y u u' f1 f2 (hF D X Y u u'))
 
-theorem normExpSatTied_of_full (hFo : FoldOKC) (hF : FundExistsC) (hO : OOIntAllC)
-    (hA : AbsConvC) (hAW : AmpWellDefC) (hCh : ChiNIndepC) (hN : NormExpSatC) : NormExpSatTied := by
-  intro D X Y u u' hT
-  have f1 := hFo D X Y u hT.1 hT.2.2.2.2.1
-  have f2 := hFo D X Y u' hT.1 hT.2.2.2.2.1
-  have hOO := hO D X Y u u' f1 f2 (hF D X Y u u')
-  exact hN D X Y u u' (hAW D X Y u u' hOO) (hCh D X Y u u') (absConvTied_of_full hFo hF hO hA D X Y u u' hT)
 
 theorem hasSum_hsEmb {ι : Type*} {W : Type} [NormedAddCommGroup W] [InnerProductSpace ℂ W] [FiniteDimensional ℂ W]
     {f : ι → W →L[ℂ] W} {a : W →L[ℂ] W} (h : HasSum f a) :
@@ -440,20 +574,9 @@ def NGCutC : Prop :=
           (((Tu D u : ℕ) : ℝ) * ((Tu D u' : ℕ) : ℝ)) (PN.abelian₂ (2 * D.host.v) D.R.rS D.R.k D.R.f * B.AA) e1 ∧
         Formalism.L2.SG.RowsOther.NGReal (Y.tO u u') (NOf Y u u') D.R.f A CB large₂.sc.b cSt Ire
 
-theorem rowNGC_of_cut (hR : PN.RowNGJoint) (hC : PN.NGChain) (hc : NGCutC) : RowNGC := by
-  intro Cg cb Cw cT CT C0
-  obtain ⟨C1, C0n, A, CB, CSt, Cgs, CTs, h1, h2, h3, h4, hA, C'₀, Cl₀, h⟩ := hc Cg cb Cw cT CT C0
-  obtain ⟨Cn, hCn, hK⟩ := Formalism.L2.SG.RowsOther.rowNG_of_cut hR hC C1 C0n A CB CSt Cgs CTs h1 h2 h3 h4 hA
-  refine ⟨Cn, hCn, C'₀, Cl₀, fun C' Cl a b D large₂ X Y u u' h0 hs hT ha => ?_⟩
-  obtain ⟨P, iP, B, cSt, e1, Irat, Ire, hG, hdd, hN, hF, hS, hFin, hRe⟩ := h C' Cl a b D large₂ X Y u u' h0 hs hT
-  have hcard := Formalism.MainNotions.LatticeGluingRadicals.d_card D
-  have key := hK D.host.E (TauC Y u u') _ _ _ _ (Y.tO u u') D.R.rS D.R.k (Set (TauC Y u u')) (TauC Y u u')
-    (NOf Y u u') P B large₂.sc.b (2 * D.host.v) (X.B.g : ℝ) (((Tu D u : ℕ) : ℝ) * ((Tu D u' : ℕ) : ℝ)) cSt e1 Irat Ire
-  rw [hcard] at key
-  have r := key ha hG hN hF hS hFin hRe
-  rw [hdd] at r
-  exact r
 
 end NGCut
 
 end Formalism.L2.SG.RowsConc
+end
+end

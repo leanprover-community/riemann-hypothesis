@@ -119,19 +119,6 @@ section Clauses
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {c : Coeff l}
 
-theorem isBaseChange_iff {V V' : CDVR} {io : c.F →+* V.Fr} (i : V.Fr →+* V'.Fr) (y : IntFr Xo c V io)
-    (y' : IntFr Xo c V' (i.comp io)) :
-    IsBaseChange i y y' ↔
-      letI := io.toAlgebra
-      letI := (i.comp io).toAlgebra
-      ∃ φ : V.Fr →ₐ[c.F] V'.Fr, φ.toRingHom = i ∧ FrMap φ y.1 y'.1 := by
-  letI := io.toAlgebra
-  letI := (i.comp io).toAlgebra
-  refine ⟨fun h => ⟨extAlg io i, rfl, h⟩, ?_⟩
-  rintro ⟨φ, hφ, h⟩
-  have : φ = extAlg io i := AlgHom.ext fun a => RingHom.congr_fun hφ a
-  rw [this] at h
-  exact h
 
 variable [StarRing (𝓞 E)]
 
@@ -270,38 +257,5 @@ theorem comparison :
   ⟨firstForm_iff_secondForm, first_iff.trans (firstForm_iff_secondForm _),
     second_iff.trans (firstForm_iff_secondForm _).symm, first_of_second, valuation_form_of_first⟩
 
-theorem second_of_inputs (hFin : ThValFinExtSplitSt) (hCI : Formalism.MainNotions.ModuliIntegralCharts.H1.ChartIndepSt2) (hG : GermChartSplitFibre) :
-    ThetaValueIdentity := by
-  refine second_iff.2 ((firstForm_iff_secondForm _).1 ?_)
-  intro D T h j hj _ nab hnab w x P hP f hf Tc io yI e la ho hy hM
-  obtain ⟨Tc', iT, e', he', hval, yI', hy', hsplit, hrest⟩ :=
-    hFin D T h j hj nab ⟨inferInstance, hnab⟩ w x P hP f hf Tc io yI hy
-  letI := io.toAlgebra
-  letI := (iT.comp io).toAlgebra
-  obtain ⟨φ, F, hφ, hmap, hV, hth⟩ := hrest
-  have ho' : OverLa la Tc'.V (iT.comp io) (e' * e) := (overLa_iff ho hy iT _).2 ⟨e', ⟨he', hval⟩, rfl⟩
-  obtain ⟨C₀, hgerm₀, hval₀⟩ := hnab.2 Tc'.Fr yI'.1
-  obtain ⟨C, g, hgG, hgI⟩ := hG D T h j hj hnab.1 Tc' (iT.comp io) yI' (e' * e) la ho' hy' hM hsplit x F hV
-  choose g₀ hg₀ using fun b => hgerm₀ (T.Q.l.M ^ 2) (zCast (T.Q.Xo j).univ.t.G (natCast_sq T.Q.l.M) (F b))
-  have hci := hCI D.host.E T.Q.H (T.Q.Dw j) T.Q.l (T.Q.Xo j) T.Q.c hnab.1 Tc'.Fr yI'.1 C₀ C.ch (T.Q.l.M ^ 2) w.n
-    (fun b => zCast (T.Q.Xo j).univ.t.G (natCast_sq T.Q.l.M) (F b)) g₀ g hg₀ hgG (wtA w) P hP
-  have hte : thExpr (T.Q.Xo j) T.Q.c nab yI'.1 P F =
-      algebraMap T.Q.c.F Tc'.Fr (((T.Q.l.M : T.Q.c.F) ^ P.totalDegree)⁻¹) *
-        Formalism.MainNotions.ModuliIntegralCharts.H1.chartVal C₀ (T.Q.l.M ^ 2) g₀ P := by
-    unfold thExpr Formalism.MainNotions.ModuliIntegralCharts.H1.chartVal
-    congr 1
-    refine Finset.sum_congr rfl fun m _ => ?_
-    congr 1
-    refine Finset.prod_congr rfl fun b _ => ?_
-    exact (nab_zCast nab yI'.1 (natCast_sq T.Q.l.M) (F b) (colOf m b)).trans (hval₀ _ _ _ (hg₀ b) _)
-  refine ⟨Tc', iT, e' * e, yI', ho', hy', ⟨(isBaseChange_iff iT yI yI').2 ⟨φ, hφ, hmap⟩, hsplit⟩, C, F, g, hV, hgG,
-    hgI, ?_⟩
-  rw [hth, hte, hci]
-  refine congrArg _ ?_
-  unfold Formalism.MainNotions.ModuliIntegralCharts.H1.chartVal
-  rw [MvPolynomial.support_map_of_injective P (iT.comp io).injective]
-  refine Finset.sum_congr rfl fun m _ => ?_
-  rw [MvPolynomial.coeff_map]
-  rfl
 
 end GlobalTheory.ThetaValueIdentityCompare

@@ -10,9 +10,6 @@ def IsCounitDerivation (φ : H →ₗ[k] k) : Prop :=
   ∀ a b : H, φ (a * b) =
     Coalgebra.counit (R := k) a * φ b + Coalgebra.counit (R := k) b * φ a
 
-theorem isCounitDerivation_iff (φ : H →ₗ[k] k) :
-    IsCounitDerivation φ ↔ ∀ a b : H, φ (a * b) =
-      Coalgebra.counit (R := k) a * φ b + Coalgebra.counit (R := k) b * φ a := Iff.rfl
 
 noncomputable def contrRight (φ : H →ₗ[k] k) : H ⊗[k] H →ₗ[k] H :=
   (TensorProduct.rid k H).toLinearMap ∘ₗ LinearMap.lTensor H φ
@@ -76,21 +73,7 @@ theorem contrRight_one (φ : H →ₗ[k] k) : contrRight φ 1 = φ 1 • (1 : H)
 theorem contrLeft_one (φ : H →ₗ[k] k) : contrLeft φ 1 = φ 1 • (1 : H) := by
   rw [Algebra.TensorProduct.one_def, contrLeft_tmul]
 
-theorem counit_contrRight (φ : H →ₗ[k] k) (s : H ⊗[k] H) :
-    Coalgebra.counit (R := k) (contrRight φ s) =
-      φ (contrLeft (Coalgebra.counit (R := k)) s) := by
-  induction s using TensorProduct.induction_on with
-  | zero => simp
-  | tmul a b => simp [mul_comm]
-  | add x y hx hy => simp only [map_add, hx, hy]
 
-theorem counit_contrLeft (φ : H →ₗ[k] k) (s : H ⊗[k] H) :
-    Coalgebra.counit (R := k) (contrLeft φ s) =
-      φ (contrRight (Coalgebra.counit (R := k)) s) := by
-  induction s using TensorProduct.induction_on with
-  | zero => simp
-  | tmul a b => simp [mul_comm]
-  | add x y hx hy => simp only [map_add, hx, hy]
 
 section Ring
 
@@ -118,29 +101,10 @@ noncomputable def derivLeft (φ : H →ₗ[k] k) (hφ : IsCounitDerivation φ) :
     simp only [LinearMap.comp_apply, Bialgebra.comul_mul, contrLeft_mul hφ,
       contrLeft_counit_comul, smul_eq_mul]
 
-theorem derivRight_apply (φ : H →ₗ[k] k) (hφ : IsCounitDerivation φ) (y : H) :
-    derivRight φ hφ y =
-      TensorProduct.rid k H (LinearMap.lTensor H φ (Coalgebra.comul (R := k) y)) := rfl
 
-theorem derivLeft_apply (φ : H →ₗ[k] k) (hφ : IsCounitDerivation φ) (y : H) :
-    derivLeft φ hφ y =
-      TensorProduct.lid k H (LinearMap.rTensor H φ (Coalgebra.comul (R := k) y)) := rfl
 
-theorem counit_derivRight (φ : H →ₗ[k] k) (hφ : IsCounitDerivation φ) (y : H) :
-    Coalgebra.counit (R := k) (derivRight φ hφ y) = φ y := by
-  have h : derivRight φ hφ y = contrRight φ (Coalgebra.comul (R := k) y) := rfl
-  rw [h, counit_contrRight, contrLeft_counit_comul]
 
-theorem counit_derivLeft (φ : H →ₗ[k] k) (hφ : IsCounitDerivation φ) (y : H) :
-    Coalgebra.counit (R := k) (derivLeft φ hφ y) = φ y := by
-  have h : derivLeft φ hφ y = contrLeft φ (Coalgebra.comul (R := k) y) := rfl
-  rw [h, counit_contrLeft, contrRight_counit_comul]
 
-theorem isCounitDerivation_counit_comp (D : Derivation k H H) :
-    IsCounitDerivation (Coalgebra.counit (R := k) ∘ₗ D.toLinearMap) := by
-
-  intro a b
-  simp [Derivation.leibniz, Bialgebra.counit_mul]
 
 end Ring
 

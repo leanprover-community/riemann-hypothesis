@@ -1,10 +1,592 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Theta.EisensteinZeta.AdicFrames.SwmConeStatements
+import GroundTheory.GlobalFields.LocalAtPlace
+import GroundTheory.HeightsAndTheta.Theta.EisensteinZeta.AdicFrames.IsHermitianForExH
 import GroundTheory.HeightsAndTheta.Theta.EisensteinZeta.AdicFrames.InstSecondCountableTopologyFrameSp
 import GroundTheory.HeightsAndTheta.Theta.EisensteinZeta.AdicFrames.FramePairAddRight
-import GroundTheory.HeightsAndTheta.Theta.EisensteinZeta.AdicFrames.ContinuousFramePairLeft
 import GroundTheory.HeightsAndTheta.Theta.SchroedingerTranslates.WmSysEquivDet
 
+section
+set_option linter.unusedSectionVars false
+
+noncomputable section
+
+namespace GroundTheory.Heights₂.Theta
+
+namespace SwmCone
+
+open MeasureTheory Topology Filter Matrix TensorProduct NumberField IsDedekindDomain
+  GroundTheory.Automorphic GroundTheory.Heights₂.Theta.IsoFrames
+open scoped ENNReal NNReal
+
+attribute [local instance] IsoFrames.scTop
+
+section Local
+
+variable {K E : Type*} [Field K] [Field E] [Algebra K E] [Algebra.IsQuadraticExtension K E]
+variable {R : Type*} [CommRing R] [Algebra K R] [TopologicalSpace R]
+variable {ι : Type*} [Fintype ι] [DecidableEq ι] {n : ℕ}
+
+variable (K E R) in
+
+def cTr {m l : Type*} (g : Matrix m l (R ⊗[K] E)) : Matrix l m (R ⊗[K] E) :=
+  (g.map (conjBase K E R))ᵀ
+
+def frameMul (X : FrameSp K E R ι n) (g : Matrix (Fin n) (Fin n) (R ⊗[K] E)) :
+    FrameSp K E R ι n :=
+  show Matrix ι (Fin n) (R ⊗[K] E) from (show Matrix ι (Fin n) (R ⊗[K] E) from X) * g
+
+def frameSMul (h : Matrix ι ι (R ⊗[K] E)) (X : FrameSp K E R ι n) : FrameSp K E R ι n :=
+  show Matrix ι (Fin n) (R ⊗[K] E) from h * (show Matrix ι (Fin n) (R ⊗[K] E) from X)
+
+variable (K E R ι) in
+
+def gramFibre (Q : Matrix ι ι E) (T : HermSp K E R n) : Set (FrameSp K E R ι n) :=
+  {X | IsoFrames.gram K E R Q (show Matrix ι (Fin n) (R ⊗[K] E) from X) = T.mat}
+
+variable (R) in
+
+def modE [IsTopologicalRing R] [LocallyCompactSpace R] (z : (R ⊗[K] E)ˣ) : ℝ≥0 :=
+  distribHaarChar R (Units.map (Algebra.norm R : R ⊗[K] E →* R) z)
+
+def IsGramDensity (Q : Matrix ι ι E) (dX : Measure (FrameSp K E R ι n))
+    (dS : Measure (HermSp K E R n)) (φ : FrameSp K E R ι n → ℂ) (Om : Set (HermSp K E R n))
+    (δ : HermSp K E R n → ℂ) : Prop :=
+  IsOpen Om ∧ ContinuousOn δ Om ∧
+    ∀ f : Matrix (Fin n) (Fin n) (R ⊗[K] E) → ℂ, Continuous f → HasCompactSupport f →
+      tsupport (fun S : HermSp K E R n ↦ f S.mat) ⊆ Om →
+      ∫ X, f (IsoFrames.gram K E R Q (show Matrix ι (Fin n) (R ⊗[K] E) from X)) * φ X ∂dX =
+        ∫ S, f S.mat * δ S ∂dS
+
+def IsFibreMeasure (Q : Matrix ι ι E) (dX : Measure (FrameSp K E R ι n))
+    (dS : Measure (HermSp K E R n)) (T : HermSp K E R n) (μ : Measure (FrameSp K E R ι n)) :
+    Prop :=
+  IsFiniteMeasureOnCompacts μ ∧ μ (gramFibre K E R ι Q T)ᶜ = 0 ∧
+    (∀ h : unitaryPoints K E Q R,
+      μ.map (frameSMul ((h : GL ι (R ⊗[K] E)) : Matrix ι ι (R ⊗[K] E))) = μ) ∧
+    ∀ φ : FrameSp K E R ι n → ℂ, Continuous φ → HasCompactSupport φ →
+      ∃ (Om : Set (HermSp K E R n)) (δ : HermSp K E R n → ℂ),
+        T ∈ Om ∧ IsGramDensity Q dX dS φ Om δ ∧ δ T = ∫ X, φ X ∂μ
+
+variable [IsTopologicalRing R] [LocallyCompactSpace R]
+
+def ConeChart (Q : Matrix ι ι E) (dX : Measure (FrameSp K E R ι n))
+    (dS : Measure (HermSp K E R n)) (T : HermSp K E R n) (B : Set (GL (Fin n) (R ⊗[K] E)))
+    (μ : Measure (FrameSp K E R ι n)) : Prop :=
+  ∃ (Om : Set (HermSp K E R n)) (e : B ≃ₜ Om), IsOpen Om ∧ T ∈ Om ∧
+    (∀ g : B, (e g : HermSp K E R n).mat =
+      cTr K E R ((g : GL (Fin n) (R ⊗[K] E)) : Matrix (Fin n) (Fin n) (R ⊗[K] E)) * T.mat *
+        ((g : GL (Fin n) (R ⊗[K] E)) : Matrix (Fin n) (Fin n) (R ⊗[K] E))) ∧
+    (∃ e₂ : (gramFibre K E R ι Q T) × B ≃ₜ (gramPre Q Om : Set (FrameSp K E R ι n)),
+      ∀ p, (e₂ p : FrameSp K E R ι n) = frameMul (p.1 : FrameSp K E R ι n)
+        ((p.2 : GL (Fin n) (R ⊗[K] E)) : Matrix (Fin n) (Fin n) (R ⊗[K] E))) ∧
+    ∀ φ : FrameSp K E R ι n → ℂ, Continuous φ → HasCompactSupport φ →
+      ∃ δ : HermSp K E R n → ℂ, IsGramDensity Q dX dS φ Om δ ∧
+        ∀ g : B, δ (e g) =
+          (((modE R (Matrix.GeneralLinearGroup.det (g : GL (Fin n) (R ⊗[K] E))) : ℝ) ^
+              ((Fintype.card ι : ℤ) - n) : ℝ) : ℂ) *
+            ∫ X, φ (frameMul X ((g : GL (Fin n) (R ⊗[K] E)) : Matrix (Fin n) (Fin n) (R ⊗[K] E))) ∂μ
+
+def GeneralTAt (Q : Matrix ι ι E) (dX : Measure (FrameSp K E R ι n))
+    (dS : Measure (HermSp K E R n)) : Prop :=
+  ∀ T : HermSp K E R n, IsUnit T.mat.det →
+    (∃ μ, IsFibreMeasure Q dX dS T μ) ∧
+    ∀ (g₀ : GL (Fin n) (R ⊗[K] E)) (T' : HermSp K E R n),
+      T'.mat = cTr K E R (g₀ : Matrix (Fin n) (Fin n) (R ⊗[K] E)) * T.mat * g₀ →
+      ∀ μ μ' : Measure (FrameSp K E R ι n), IsFibreMeasure Q dX dS T μ →
+        IsFibreMeasure Q dX dS T' μ' →
+        μ' = ((modE R (Matrix.GeneralLinearGroup.det g₀)) ^ ((Fintype.card ι : ℤ) - n) : ℝ≥0) •
+          μ.map (fun X ↦ frameMul X (g₀ : Matrix (Fin n) (Fin n) (R ⊗[K] E)))
+
+end Local
+
+section Groups
+
+variable {K E : Type*} [Field K] [NumberField K] [Field E] [Algebra K E]
+  [Algebra.IsQuadraticExtension K E]
+
+variable (E) in
+
+def realConeGroup (w : InfinitePlace K) (hw : w.IsReal) (n : ℕ) :
+    Set (GL (Fin n) (w.Completion ⊗[K] E)) :=
+  {g | (∀ i j, j < i → (g : Matrix (Fin n) (Fin n) (w.Completion ⊗[K] E)) i j = 0) ∧
+    ∀ i, ∃ u : w.Completion, 0 < InfinitePlace.Completion.extensionEmbeddingOfIsReal hw u ∧
+      (g : Matrix (Fin n) (Fin n) (w.Completion ⊗[K] E)) i i = algebraMap _ _ u}
+
+variable (E) in
+
+def finiteConeGroup (v : HeightOneSpectrum (𝓞 K)) (k n : ℕ) :
+    Set (GL (Fin n) (v.adicCompletion K ⊗[K] E)) :=
+  {g | (∀ i j, j < i → (g : Matrix (Fin n) (Fin n) (v.adicCompletion K ⊗[K] E)) i j = 0) ∧
+    (∀ i, ∃ u : v.adicCompletion K, ‖u - 1‖ ≤ ((Ideal.absNorm v.asIdeal : ℝ)⁻¹) ^ k ∧
+      (g : Matrix (Fin n) (Fin n) (v.adicCompletion K ⊗[K] E)) i i = algebraMap _ _ u) ∧
+    ∀ i j, i < j →
+      ‖Algebra.trace (v.adicCompletion K) (v.adicCompletion K ⊗[K] E)
+          ((g : Matrix (Fin n) (Fin n) (v.adicCompletion K ⊗[K] E)) i j)‖ ≤
+          ((Ideal.absNorm v.asIdeal : ℝ)⁻¹) ^ k ∧
+        ‖Algebra.norm (v.adicCompletion K)
+          ((g : Matrix (Fin n) (Fin n) (v.adicCompletion K ⊗[K] E)) i j)‖ ≤
+          ((Ideal.absNorm v.asIdeal : ℝ)⁻¹) ^ (2 * k)}
+
+end Groups
+
+section Statements
+
+def ConeReal.Statement : Prop :=
+  ∀ (K E : Type) [Field K] [NumberField K] [Field E] [Algebra K E]
+    [Algebra.IsQuadraticExtension K E] (w : InfinitePlace K) (hw : w.IsReal)
+    (ι : Type) [Fintype ι] [DecidableEq ι] (n : ℕ) (Q : Matrix ι ι E),
+    GroundTheory.Automorphic.IsHermitianFor (GroundTheory.Automorphic.conjHom K E) Q → IsUnit Q.det →
+    ∀ (dX : Measure (FrameSp K E w.Completion ι n)) [dX.IsAddHaarMeasure]
+      (dS : Measure (HermSp K E w.Completion n)) [dS.IsAddHaarMeasure]
+      (T : HermSp K E w.Completion n) (t : Fin n → w.Completion), (∀ i, t i ≠ 0) →
+      T.mat = Matrix.diagonal (fun i ↦ algebraMap w.Completion (w.Completion ⊗[K] E) (t i)) →
+      ∃ μ : Measure (FrameSp K E w.Completion ι n),
+        IsFibreMeasure Q dX dS T μ ∧ ConeChart Q dX dS T (realConeGroup E w hw n) μ
+
+def ConeFinite.Statement : Prop :=
+  ∀ (K E : Type) [Field K] [NumberField K] [Field E] [Algebra K E]
+    [Algebra.IsQuadraticExtension K E] (v : HeightOneSpectrum (𝓞 K))
+    (ι : Type) [Fintype ι] [DecidableEq ι] (n : ℕ) (Q : Matrix ι ι E),
+    GroundTheory.Automorphic.IsHermitianFor (GroundTheory.Automorphic.conjHom K E) Q → IsUnit Q.det →
+    ∀ (dX : Measure (FrameSp K E (v.adicCompletion K) ι n)) [dX.IsAddHaarMeasure]
+      (dS : Measure (HermSp K E (v.adicCompletion K) n)) [dS.IsAddHaarMeasure]
+      (T : HermSp K E (v.adicCompletion K) n) (t : Fin n → v.adicCompletion K), (∀ i, t i ≠ 0) →
+      T.mat = Matrix.diagonal
+        (fun i ↦ algebraMap (v.adicCompletion K) (v.adicCompletion K ⊗[K] E) (t i)) →
+      ∃ μ : Measure (FrameSp K E (v.adicCompletion K) ι n),
+        IsFibreMeasure Q dX dS T μ ∧
+        ∀ k : ℕ, ((Ideal.absNorm v.asIdeal : ℝ)⁻¹) ^ k < ‖(2 : v.adicCompletion K)‖ →
+          ConeChart Q dX dS T (finiteConeGroup E v k n) μ
+
+def ConeGeneral.Statement : Prop :=
+  ∀ (K E : Type) [Field K] [NumberField K] [Field E] [Algebra K E]
+    [Algebra.IsQuadraticExtension K E] (ι : Type) [Fintype ι] [DecidableEq ι] (n : ℕ)
+    (Q : Matrix ι ι E),
+    GroundTheory.Automorphic.IsHermitianFor (GroundTheory.Automorphic.conjHom K E) Q → IsUnit Q.det →
+    (∀ (w : InfinitePlace K), w.IsReal →
+      ∀ (dX : Measure (FrameSp K E w.Completion ι n)) [dX.IsAddHaarMeasure]
+        (dS : Measure (HermSp K E w.Completion n)) [dS.IsAddHaarMeasure],
+        GeneralTAt Q dX dS) ∧
+    ∀ (v : HeightOneSpectrum (𝓞 K))
+      (dX : Measure (FrameSp K E (v.adicCompletion K) ι n)) [dX.IsAddHaarMeasure]
+      (dS : Measure (HermSp K E (v.adicCompletion K) n)) [dS.IsAddHaarMeasure],
+      GeneralTAt Q dX dS
+
+end Statements
+
+section Ties
+
+variable {K E : Type*} [Field K] [NumberField K] [Field E] [Algebra K E]
+  [Algebra.IsQuadraticExtension K E]
+
+variable (R : Type*) [CommRing R] [Algebra K R] [TopologicalSpace R]
+
+def hermOne (n : ℕ) : HermSp K E R n :=
+  ⟨1, by
+    show ((1 : Matrix (Fin n) (Fin n) (R ⊗[K] E)).map (conjBase K E R))ᵀ = 1
+    rw [Matrix.map_one _ (map_zero _) (map_one _), Matrix.transpose_one]⟩
+
+end Ties
+
+end SwmCone
+
+end GroundTheory.Heights₂.Theta
+end
+end
+
+section
+namespace GroundTheory.Heights₂.Theta
+
+namespace FibreMeasure
+
+open MeasureTheory
+
+section Shear
+
+variable {G P : Type*} [AddCommGroup G] [MeasurableSpace G] [MeasurableAdd₂ G]
+  [AddCommGroup P] [MeasurableSpace P] [MeasurableAdd₂ P] [MeasurableNeg P]
+
+theorem measurePreserving_shear (μ : Measure G) [μ.IsAddLeftInvariant] [SFinite μ]
+    (ν : Measure P) [ν.IsAddLeftInvariant] [SFinite ν] {B : Set P} (hB : MeasurableSet B)
+    (hB0 : ν B ≠ 0) (hBt : ν B ≠ ⊤) (ζ : P →+ G) (hζ : Measurable ζ) (t : G → P)
+    (ht : Measurable t) (htζ : ∀ X d, t (X + ζ d) = t X) :
+    MeasurePreserving (fun X ↦ X + ζ (t X)) μ μ := by
+  have hf : Measurable (fun X ↦ X + ζ (t X)) := measurable_id.add (hζ.comp ht)
+  refine ⟨hf, ?_⟩
+  set ρ : P → ENNReal := B.indicator (fun _ ↦ (ν B)⁻¹) with hρdef
+  have hρ : Measurable ρ := measurable_const.indicator hB
+  have hρ1 : ∫⁻ d, ρ d ∂ν = 1 := by
+    rw [hρdef, lintegral_indicator hB, setLIntegral_const, ENNReal.inv_mul_cancel hB0 hBt]
+  have hρsh : ∀ c : P, ∫⁻ d, ρ (d - c) ∂ν = 1 := fun c ↦ by
+    rw [← hρ1]
+    simp_rw [sub_eq_add_neg]
+    exact lintegral_add_right_eq_self ρ (-c)
+  have key : ∀ g : G → ENNReal, Measurable g →
+      ∫⁻ X, g (X + ζ (t X)) ∂μ = ∫⁻ X, g X ∂μ := by
+    intro g hg
+    have hm1 : Measurable (Function.uncurry fun (d : P) (X : G) ↦ ρ d * g (X + ζ (d + t X))) := by
+      refine (hρ.comp measurable_fst).mul (hg.comp ?_)
+      exact measurable_snd.add (hζ.comp (measurable_fst.add (ht.comp measurable_snd)))
+    have hm2 : Measurable (Function.uncurry fun (X : G) (d : P) ↦ ρ (d - t X) * g (X + ζ d)) := by
+      refine (hρ.comp (measurable_snd.sub (ht.comp measurable_fst))).mul (hg.comp ?_)
+      exact measurable_fst.add (hζ.comp measurable_snd)
+    have hm3 : Measurable (Function.uncurry fun (d : P) (X : G) ↦ ρ (d - t X) * g X) := by
+      exact (hρ.comp (measurable_fst.sub (ht.comp measurable_snd))).mul (hg.comp measurable_snd)
+    calc ∫⁻ X, g (X + ζ (t X)) ∂μ
+        = ∫⁻ d, ρ d * ∫⁻ X, g (X + ζ (t X)) ∂μ ∂ν := by
+          rw [lintegral_mul_const _ hρ, hρ1, one_mul]
+      _ = ∫⁻ d, ∫⁻ X, ρ d * g (X + ζ (d + t X)) ∂μ ∂ν := by
+          refine lintegral_congr fun d ↦ ?_
+          have h1 : ∫⁻ X, g (X + ζ (d + t X)) ∂μ = ∫⁻ X, g (X + ζ (t X)) ∂μ := by
+            rw [← lintegral_add_right_eq_self (μ := μ) (fun X ↦ g (X + ζ (t X))) (ζ d)]
+            refine lintegral_congr fun X ↦ ?_
+            simp only [htζ, map_add]
+            congr 1
+            abel
+          rw [lintegral_const_mul (ρ d) (f := fun X ↦ g (X + ζ (d + t X)))
+            (hg.comp (measurable_id.add (hζ.comp (measurable_const.add ht)))), h1]
+      _ = ∫⁻ X, ∫⁻ d, ρ d * g (X + ζ (d + t X)) ∂ν ∂μ :=
+          lintegral_lintegral_swap hm1.aemeasurable
+      _ = ∫⁻ X, ∫⁻ d, ρ (d - t X) * g (X + ζ d) ∂ν ∂μ := by
+          refine lintegral_congr fun X ↦ ?_
+          rw [← lintegral_add_right_eq_self (μ := ν) (fun d ↦ ρ (d - t X) * g (X + ζ d)) (t X)]
+          simp
+      _ = ∫⁻ d, ∫⁻ X, ρ (d - t X) * g (X + ζ d) ∂μ ∂ν :=
+          lintegral_lintegral_swap hm2.aemeasurable
+      _ = ∫⁻ d, ∫⁻ X, ρ (d - t X) * g X ∂μ ∂ν := by
+          refine lintegral_congr fun d ↦ ?_
+          have := lintegral_add_right_eq_self (μ := μ) (fun X ↦ ρ (d - t X) * g X) (ζ d)
+          simp only [htζ] at this
+          exact this
+      _ = ∫⁻ X, ∫⁻ d, ρ (d - t X) * g X ∂ν ∂μ :=
+          lintegral_lintegral_swap hm3.aemeasurable
+      _ = ∫⁻ X, g X ∂μ := by
+          refine lintegral_congr fun X ↦ ?_
+          rw [lintegral_mul_const (r := g X) (f := fun d ↦ ρ (d - t X))
+            (hρ.comp (measurable_id.sub measurable_const)), hρsh, one_mul]
+  ext A hA
+  rw [Measure.map_apply hf hA, ← lintegral_indicator_one (hf hA), ← lintegral_indicator_one hA]
+  exact key (A.indicator 1) (measurable_one.indicator hA)
+
+end Shear
+
+end FibreMeasure
+
+end GroundTheory.Heights₂.Theta
+end
+
+section
+set_option linter.unusedSectionVars false
+
+namespace GroundTheory.Heights₂.Theta
+
+namespace FibreMeasure
+
+open MeasureTheory Topology Filter Set
+
+section Chart
+
+variable {G T : Type*}
+  [AddCommGroup G] [TopologicalSpace G] [IsTopologicalAddGroup G] [LocallyCompactSpace G]
+  [T2Space G] [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G]
+  [AddCommGroup T] [TopologicalSpace T] [IsTopologicalAddGroup T] [LocallyCompactSpace T]
+  [T2Space T] [SecondCountableTopology T] [MeasurableSpace T] [BorelSpace T]
+
+structure IsTransChart (dX : Measure G) (Γ : G → T) (Ω : Set G) (σ : T → G → G) : Prop where
+  isOpen : IsOpen Ω
+  continuousOn : ContinuousOn (fun q : T × G ↦ σ q.1 q.2) (univ ×ˢ Ω)
+  mapsTo : ∀ s X, X ∈ Ω → σ s X ∈ Ω
+  zero : ∀ X ∈ Ω, σ 0 X = X
+  add : ∀ s t X, X ∈ Ω → σ s (σ t X) = σ (s + t) X
+  shift : ∀ s X, X ∈ Ω → Γ (σ s X) = Γ X + s
+  pres : ∀ s, MeasurePreserving (σ s) (dX.restrict Ω) (dX.restrict Ω)
+
+variable {dX : Measure G} {Γ : G → T} {Ω : Set G} {σ : T → G → G}
+
+variable (Γ σ) in
+
+def chartProj (X : G) : G := σ (-Γ X) X
+
+variable (Γ Ω σ) in
+
+noncomputable def chartProjM : G → G := by
+  classical exact Ω.piecewise (chartProj Γ σ) id
+
+namespace IsTransChart
+
+variable (h : IsTransChart dX Γ Ω σ)
+include h
+
+theorem Γ_chartProj {X : G} (hX : X ∈ Ω) : Γ (chartProj Γ σ X) = 0 := by
+  rw [chartProj, h.shift _ _ hX, add_neg_cancel]
+
+theorem σ_Γ_chartProj {X : G} (hX : X ∈ Ω) : σ (Γ X) (chartProj Γ σ X) = X := by
+  rw [chartProj, h.add _ _ _ hX, add_neg_cancel, h.zero _ hX]
+
+theorem chartProj_σ (s : T) {X : G} (hX : X ∈ Ω) :
+    chartProj Γ σ (σ s X) = chartProj Γ σ X := by
+  rw [chartProj, chartProj, h.shift _ _ hX, h.add _ _ _ hX]
+  congr 1
+  abel
+
+theorem chartProj_of_Γ_eq_zero {X : G} (hX : X ∈ Ω) (h0 : Γ X = 0) : chartProj Γ σ X = X := by
+  rw [chartProj, h0, neg_zero, h.zero _ hX]
+
+end IsTransChart
+
+end Chart
+
+end FibreMeasure
+
+end GroundTheory.Heights₂.Theta
+end
+
+section
+set_option linter.unusedSectionVars false
+
+namespace GroundTheory.Heights₂.Theta
+
+namespace IsoFrames
+
+namespace Chart
+
+open MeasureTheory Topology Filter Set Matrix TensorProduct GroundTheory.Automorphic FibreMeasure
+
+noncomputable section
+
+variable {K E : Type*} [Field K] [Field E] [Algebra K E] [Algebra.IsQuadraticExtension K E]
+variable {R : Type*} [CommRing R] [Algebra K R] [TopologicalSpace R] [IsTopologicalRing R]
+  [LocallyCompactSpace R] [T2Space R] [SecondCountableTopology R]
+variable {ι : Type*} [Fintype ι] [DecidableEq ι] {p : ℕ} {H : Matrix ι ι E}
+
+attribute [local instance] scTop finite_of_isQuadraticExtension isModuleTopology_tensor
+  isTopologicalRing_tensor
+
+local infixl:70 " ⬝ " => @HMul.hMul _ _ _ instHMulOfFintypeOfMulOfAddCommMonoid
+
+def toM {κ : Type*} [Fintype κ] [DecidableEq κ] (X : FrameSp K E R κ p) : Matrix κ (Fin p) (R ⊗[K] E) := X
+
+def ofM {κ : Type*} [Fintype κ] [DecidableEq κ] (M : Matrix κ (Fin p) (R ⊗[K] E)) : FrameSp K E R κ p := M
+
+variable (R p) in
+
+def gramH (hH : IsHermitianFor (conjHom K E) H) (X : FrameSp K E R ι p) : HermSp K E R p :=
+  ⟨gram K E R H (toM X), cT_framePair hH _ _⟩
+
+theorem continuous_toM {κ : Type*} [Fintype κ] [DecidableEq κ] :
+    Continuous (toM : FrameSp K E R κ p → Matrix κ (Fin p) (R ⊗[K] E)) := continuous_id
+
+theorem continuous_ofM {κ : Type*} [Fintype κ] [DecidableEq κ] :
+    Continuous (ofM : Matrix κ (Fin p) (R ⊗[K] E) → FrameSp K E R κ p) := continuous_id
+
+theorem continuous_framePair_left {q : ℕ} (Z : Matrix ι (Fin q) (R ⊗[K] E)) :
+    Continuous (fun X : FrameSp K E R ι p ↦ framePair K E R H Z (toM X)) := by
+  simp only [framePair_eq]
+  exact continuous_const.matrix_mul continuous_toM
+
+theorem continuous_gram :
+    Continuous (fun X : FrameSp K E R ι p ↦ gram K E R H (toM X)) := by
+  simp only [gram, framePair_eq]
+  exact (((continuous_toM.matrix_map (continuous_conjBase R)).matrix_transpose).matrix_mul
+    continuous_const).matrix_mul continuous_toM
+
+theorem continuous_gramH (hH : IsHermitianFor (conjHom K E) H) :
+    Continuous (gramH R p hH) :=
+  continuous_gram.subtype_mk _
+
+variable (R p H) in
+
+def chartSet (Z : Matrix ι (Fin p) (R ⊗[K] E)) : Set (FrameSp K E R ι p) :=
+  {X | IsUnit (framePair K E R H Z (toM X)).det}
+
+variable (H) in
+
+def chartShift (Z : Matrix ι (Fin p) (R ⊗[K] E)) (S : HermSp K E R p) :
+    FrameSp K E R ι p → FrameSp K E R (Fin p) p := by
+  classical exact (chartSet R p H Z).piecewise (fun X ↦ ofM (shiftT (H := H) Z (toM X) S.mat)) 0
+
+variable (H) in
+
+def chartAct (Z : Matrix ι (Fin p) (R ⊗[K] E)) (S : HermSp K E R p) (X : FrameSp K E R ι p) :
+    FrameSp K E R ι p :=
+  ofM (toM X + Z ⬝ toM (chartShift H Z S X))
+
+variable {Z : Matrix ι (Fin p) (R ⊗[K] E)}
+
+theorem chartShift_of_mem {S : HermSp K E R p} {X : FrameSp K E R ι p}
+    (hX : X ∈ chartSet R p H Z) :
+    toM (chartShift H Z S X) = shiftT (H := H) Z (toM X) S.mat := by
+  classical
+  simp only [chartShift, Set.piecewise, hX, if_true]
+  rfl
+
+theorem chartShift_of_notMem {S : HermSp K E R p} {X : FrameSp K E R ι p}
+    (hX : X ∉ chartSet R p H Z) : chartShift H Z S X = 0 := by
+  classical
+  simp only [chartShift, Set.piecewise, hX, if_false]
+  rfl
+
+theorem toM_chartAct (S : HermSp K E R p) (X : FrameSp K E R ι p) :
+    toM (chartAct H Z S X) = toM X + Z ⬝ toM (chartShift H Z S X) := rfl
+
+theorem framePair_chartAct (hZ : gram K E R H Z = 0) (S : HermSp K E R p) (X : FrameSp K E R ι p) :
+    framePair K E R H Z (toM (chartAct H Z S X)) = framePair K E R H Z (toM X) := by
+  rw [toM_chartAct]
+  exact framePair_add_iso hZ _ _
+
+theorem mem_chartSet_chartAct (hZ : gram K E R H Z = 0) (S : HermSp K E R p)
+    (X : FrameSp K E R ι p) : chartAct H Z S X ∈ chartSet R p H Z ↔ X ∈ chartSet R p H Z := by
+  show IsUnit _ ↔ IsUnit _
+  rw [framePair_chartAct hZ]
+
+theorem continuousAt_mulM {X : Type*} [TopologicalSpace X] {m n l : Type*} [Fintype n]
+    {f : X → Matrix m n (R ⊗[K] E)} {g : X → Matrix n l (R ⊗[K] E)} {x : X}
+    (hf : ContinuousAt f x) (hg : ContinuousAt g x) : ContinuousAt (fun y ↦ f y ⬝ g y) x :=
+  ((continuous_fst.matrix_mul continuous_snd :
+    Continuous fun q : Matrix m n (R ⊗[K] E) × Matrix n l (R ⊗[K] E) ↦ q.1 ⬝ q.2).continuousAt).comp
+    (hf.prodMk hg)
+
+variable (hRu : IsOpen {r : R | IsUnit r}) (hRi : ∀ r : R, IsUnit r → ContinuousAt Ring.inverse r)
+
+include hRu in
+theorem isOpen_chartSet : IsOpen (chartSet R p H Z) :=
+  (isOpen_isUnit_det hRu).preimage (continuous_framePair_left Z)
+
+theorem shiftT_add (X : Matrix ι (Fin p) (R ⊗[K] E)) (S T : Matrix (Fin p) (Fin p) (R ⊗[K] E)) :
+    shiftT (H := H) Z X (S + T) = shiftT (H := H) Z X S + shiftT (H := H) Z X T := by
+  rw [shiftT, shiftT, shiftT, smul_add, Matrix.mul_add]
+
+theorem shiftT_zero (X : Matrix ι (Fin p) (R ⊗[K] E)) : shiftT (H := H) Z X 0 = 0 := by
+  rw [shiftT, smul_zero, Matrix.mul_zero]
+
+theorem shiftT_add_iso (hZ : gram K E R H Z = 0) (X : Matrix ι (Fin p) (R ⊗[K] E))
+    (d : Matrix (Fin p) (Fin p) (R ⊗[K] E)) (S : Matrix (Fin p) (Fin p) (R ⊗[K] E)) :
+    shiftT (H := H) Z (X + Z ⬝ d) S = shiftT (H := H) Z X S := by
+  rw [shiftT, shiftT, framePair_add_iso hZ]
+
+theorem chartShift_add_iso (hZ : gram K E R H Z = 0) (S : HermSp K E R p) (X : FrameSp K E R ι p)
+    (d : FrameSp K E R (Fin p) p) :
+    chartShift H Z S (ofM (toM X + Z ⬝ toM d)) = chartShift H Z S X := by
+  have hmem : ofM (toM X + Z ⬝ toM d) ∈ chartSet R p H Z ↔ X ∈ chartSet R p H Z := by
+    show IsUnit _ ↔ IsUnit _
+    rw [show toM (ofM (toM X + Z ⬝ toM d) : FrameSp K E R ι p) = toM X + Z ⬝ toM d from rfl,
+      framePair_add_iso hZ]
+  by_cases hX : X ∈ chartSet R p H Z
+  · have h1 := chartShift_of_mem (S := S) hX
+    have h2 := chartShift_of_mem (S := S) (hmem.2 hX)
+    rw [show toM (ofM (toM X + Z ⬝ toM d) : FrameSp K E R ι p) = toM X + Z ⬝ toM d from rfl,
+      shiftT_add_iso hZ, ← h1] at h2
+    exact h2
+  · rw [chartShift_of_notMem hX, chartShift_of_notMem (fun h ↦ hX (hmem.1 h))]
+
+include hRu hRi in
+theorem continuousOn_shiftT (S : HermSp K E R p) :
+    ContinuousOn (fun X : FrameSp K E R ι p ↦
+      (ofM (shiftT (H := H) Z (toM X) S.mat) : FrameSp K E R (Fin p) p)) (chartSet R p H Z) := by
+  intro X hX
+  refine ContinuousAt.continuousWithinAt ?_
+  have hu : IsUnit (cT K E R (framePair K E R H Z (toM X))).det := by
+    rw [det_cT]
+    exact hX.map _
+  have hc : Continuous (fun X : FrameSp K E R ι p ↦ cT K E R (framePair K E R H Z (toM X))) :=
+    ((continuous_framePair_left Z).matrix_map (continuous_conjBase R)).matrix_transpose
+  have hinv : ContinuousAt (fun X : FrameSp K E R ι p ↦ (cT K E R (framePair K E R H Z (toM X)))⁻¹) X :=
+    ContinuousAt.comp (g := Inv.inv) (continuousAt_matrix_inv_A hRu hRi _ hu) hc.continuousAt
+  exact continuous_ofM.continuousAt.comp (continuousAt_mulM hinv continuousAt_const)
+
+include hRu hRi in
+theorem measurable_chartShift (S : HermSp K E R p) : Measurable (chartShift H Z S) := by
+  classical
+  exact ContinuousOn.measurable_piecewise (γ := FrameSp K E R (Fin p) p)
+    (continuousOn_shiftT hRu hRi S) continuousOn_const (isOpen_chartSet hRu).measurableSet
+
+include hRu hRi in
+
+theorem isTransChart_chart [CharZero K] (hH : IsHermitianFor (conjHom K E) H)
+    (hZ : gram K E R H Z = 0) (dX : Measure (FrameSp K E R ι p)) [dX.IsAddHaarMeasure] :
+    IsTransChart dX (gramH R p hH) (chartSet R p H Z) (chartAct H Z) := by
+  have hΩ : IsOpen (chartSet R p H Z) := isOpen_chartSet hRu
+  refine ⟨hΩ, ?_, fun S X hX ↦ (mem_chartSet_chartAct hZ S X).2 hX, ?_, ?_, ?_, ?_⟩
+  ·
+    intro q hq
+    refine ContinuousAt.continuousWithinAt ?_
+    have hu : IsUnit (cT K E R (framePair K E R H Z (toM q.2))).det := by
+      rw [det_cT]
+      exact hq.2.map _
+    have hc : Continuous (fun q : HermSp K E R p × FrameSp K E R ι p ↦
+        cT K E R (framePair K E R H Z (toM q.2))) :=
+      (((continuous_framePair_left Z).comp continuous_snd).matrix_map
+        (continuous_conjBase R)).matrix_transpose
+    have hinv : ContinuousAt (fun q : HermSp K E R p × FrameSp K E R ι p ↦
+        (cT K E R (framePair K E R H Z (toM q.2)))⁻¹) q :=
+      ContinuousAt.comp (g := Inv.inv) (continuousAt_matrix_inv_A hRu hRi _ hu) hc.continuousAt
+    have hS : Continuous (fun q : HermSp K E R p × FrameSp K E R ι p ↦ (2 : K)⁻¹ • q.1.mat) :=
+      (continuous_hermSpMat.comp continuous_fst).const_smul ((2 : K)⁻¹)
+    have hf : ContinuousAt (fun q : HermSp K E R p × FrameSp K E R ι p ↦
+        ofM (toM q.2 + Z ⬝ ((cT K E R (framePair K E R H Z (toM q.2)))⁻¹ ⬝
+            ((2 : K)⁻¹ • q.1.mat))) : HermSp K E R p × FrameSp K E R ι p → FrameSp K E R ι p) q :=
+      continuous_ofM.continuousAt.comp ((continuous_toM.comp continuous_snd).continuousAt.add
+        (continuousAt_mulM continuousAt_const (continuousAt_mulM hinv hS.continuousAt)))
+    refine hf.congr ?_
+    filter_upwards [(isOpen_univ.prod hΩ).mem_nhds hq] with q' hq'
+    show _ = ofM (toM q'.2 + Z ⬝ toM (chartShift H Z q'.1 q'.2))
+    rw [chartShift_of_mem hq'.2]
+    rfl
+  ·
+    intro X hX
+    show ofM (toM X + Z ⬝ toM (chartShift H Z 0 X)) = X
+    rw [chartShift_of_mem hX]
+    show ofM (toM X + Z ⬝ shiftT (H := H) Z (toM X) 0) = X
+    rw [shiftT_zero, Matrix.mul_zero, add_zero]
+    rfl
+  ·
+    intro S T X hX
+    have hX' := (mem_chartSet_chartAct hZ T X).2 hX
+    show ofM (toM (chartAct H Z T X) + Z ⬝ toM (chartShift H Z S (chartAct H Z T X))) =
+      ofM (toM X + Z ⬝ toM (chartShift H Z (S + T) X))
+    rw [chartShift_of_mem hX', chartShift_of_mem hX, toM_chartAct, chartShift_of_mem hX,
+      shiftT_add_iso hZ]
+    show ofM (toM X + Z ⬝ shiftT (H := H) Z (toM X) T.mat + Z ⬝ shiftT (H := H) Z (toM X) S.mat) =
+      ofM (toM X + Z ⬝ shiftT (H := H) Z (toM X) (S.mat + T.mat))
+    rw [shiftT_add, Matrix.mul_add]
+    congr 1
+    abel
+  ·
+    intro S X hX
+    apply Subtype.ext
+    show gram K E R H (toM X + Z ⬝ toM (chartShift H Z S X)) = gram K E R H (toM X) + S.mat
+    rw [chartShift_of_mem hX]
+    exact gram_add_shiftT hH hZ hX S.2
+  ·
+    intro S
+    obtain ⟨B, hBc, hB0⟩ := exists_compact_mem_nhds (0 : FrameSp K E R (Fin p) p)
+    let ν : Measure (FrameSp K E R (Fin p) p) := Measure.addHaar
+    let ζ : FrameSp K E R (Fin p) p →+ FrameSp K E R ι p :=
+      { toFun := fun d ↦ ofM (Z ⬝ toM d)
+        map_zero' := Matrix.mul_zero Z
+        map_add' := fun d d' ↦ Matrix.mul_add Z _ _ }
+    have hζ : Continuous ζ :=
+      continuous_ofM.comp (continuous_const.matrix_mul continuous_toM)
+    have hsh := measurePreserving_shear dX ν hBc.measurableSet
+      (Measure.measure_pos_of_mem_nhds ν hB0).ne' hBc.measure_lt_top.ne ζ hζ.measurable
+      (chartShift H Z S) (measurable_chartShift hRu hRi S) (fun X d ↦ chartShift_add_iso hZ S X d)
+    have hpre : (fun X ↦ X + ζ (chartShift H Z S X)) ⁻¹' chartSet R p H Z = chartSet R p H Z := by
+      ext X
+      exact mem_chartSet_chartAct hZ S X
+    have := hsh.restrict_preimage (isOpen_chartSet (H := H) (Z := Z) hRu).measurableSet
+    rw [hpre] at this
+    exact this
+
+end
+
+end Chart
+
+end IsoFrames
+
+end GroundTheory.Heights₂.Theta
+end
+
+section
 set_option linter.unusedSectionVars false
 
 noncomputable section
@@ -48,10 +630,6 @@ theorem frameMulLinA_apply (g : Matrix (Fin n) (Fin n) (R ⊗[K] E)) (X : ι →
   rw [← Matrix.vecMul_transpose, Matrix.transpose_transpose]
   rfl
 
-theorem det_frameMulLinA (g : Matrix (Fin n) (Fin n) (R ⊗[K] E)) :
-    LinearMap.det (frameMulLinA K E R ι n g) = g.det ^ Fintype.card ι := by
-  rw [frameMulLinA, LinearMap.det_pi, LinearMap.det_toLin', Matrix.det_transpose,
-    Finset.prod_const, Finset.card_univ]
 
 variable (K E R ι n) in
 
@@ -63,12 +641,6 @@ theorem frameMulLin_apply (g : Matrix (Fin n) (Fin n) (R ⊗[K] E)) (X : FrameSp
     frameMulLin K E R ι n g X = frameMul X g :=
   frameMulLinA_apply g X
 
-theorem det_frameMulLin (g : Matrix (Fin n) (Fin n) (R ⊗[K] E)) :
-    LinearMap.det (frameMulLin K E R ι n g) = Algebra.norm R g.det ^ Fintype.card ι := by
-  have h := LinearMap.det_restrictScalars (R := R) (S := R ⊗[K] E)
-    (f := frameMulLinA K E R ι n g)
-  rw [det_frameMulLinA, map_pow] at h
-  exact h
 
 end Linear
 
@@ -86,38 +658,14 @@ theorem absF_mul (a b : F) :
   simp only [IndefiniteRowSideFullHecke.WmSys.absF, dif_neg ha, dif_neg hb, dif_neg hab]
   rw [show Units.mk0 (a * b) hab = Units.mk0 a ha * Units.mk0 b hb from Units.ext rfl, map_mul]
 
-theorem absF_one : IndefiniteRowSideFullHecke.WmSys.absF (1 : F) = 1 := by
-  simp only [IndefiniteRowSideFullHecke.WmSys.absF, dif_neg (one_ne_zero (α := F))]
-  rw [show Units.mk0 (1 : F) one_ne_zero = 1 from Units.ext rfl, map_one]
 
-theorem absF_pow (a : F) (k : ℕ) : IndefiniteRowSideFullHecke.WmSys.absF (a ^ k) = IndefiniteRowSideFullHecke.WmSys.absF a ^ k := by
-  induction k with
-  | zero => rw [pow_zero, pow_zero, absF_one]
-  | succ k ih => rw [pow_succ, pow_succ, absF_mul, ih]
 
 variable {K E : Type*} [Field K] [Field E] [Algebra K E] [Algebra.IsQuadraticExtension K E]
 variable [Algebra K F]
 
-theorem modE_eq_absF (z : (F ⊗[K] E)ˣ) :
-    modE F z = IndefiniteRowSideFullHecke.WmSys.absF (Algebra.norm F (z : F ⊗[K] E)) := by
-  have hz : Algebra.norm F (z : F ⊗[K] E) ≠ 0 :=
-    (Units.map (Algebra.norm F : F ⊗[K] E →* F) z).ne_zero
-  simp only [IndefiniteRowSideFullHecke.WmSys.absF, dif_neg hz, modE]
-  congr 1
-  exact Units.ext rfl
 
-theorem modE_mul (z w : (F ⊗[K] E)ˣ) : modE F (z * w) = modE F z * modE F w := by
-  simp only [modE, map_mul]
 
-theorem modE_one : modE F (1 : (F ⊗[K] E)ˣ) = 1 := by
-  simp only [modE, map_one]
 
-theorem modE_pos (z : (F ⊗[K] E)ˣ) : 0 < modE F z := by
-  rw [modE_eq_absF]
-  have hz : Algebra.norm F (z : F ⊗[K] E) ≠ 0 :=
-    (Units.map (Algebra.norm F : F ⊗[K] E →* F) z).ne_zero
-  simp only [IndefiniteRowSideFullHecke.WmSys.absF, dif_neg hz]
-  exact distribHaarChar_pos
 
 end Modulus
 
@@ -162,16 +710,6 @@ theorem frameMulHom_apply (g : GL (Fin n) (R ⊗[K] E)) (X : FrameSp K E R ι n)
 
 variable [LocallyCompactSpace R] [T2Space R] [SecondCountableTopology R]
 
-theorem addEquivAddHaarChar_frameMulHom (hR : ¬ DiscreteTopology R) (g : GL (Fin n) (R ⊗[K] E)) :
-    addEquivAddHaarChar (frameMulHom K E R ι n g) =
-      modE R (Matrix.GeneralLinearGroup.det g) ^ Fintype.card ι := by
-  rw [WmSysEquiv.addEquivAddHaarChar_eq_absF_det hR (frameMulLinEquiv K E R ι n g)
-    (frameMulHom K E R ι n g) (fun _ ↦ rfl)]
-  rw [show ((frameMulLinEquiv K E R ι n g : FrameSp K E R ι n ≃ₗ[R] FrameSp K E R ι n) :
-      FrameSp K E R ι n →ₗ[R] FrameSp K E R ι n) =
-      frameMulLin K E R ι n (g : Matrix (Fin n) (Fin n) (R ⊗[K] E)) from rfl,
-    det_frameMulLin, absF_pow, modE_eq_absF]
-  rfl
 
 end FrameMul
 
@@ -203,11 +741,6 @@ theorem rowMulLinA_apply {S : Type*} [CommRing S] {m κ : Type*} [Fintype m] [Fi
   rw [← Matrix.vecMul_transpose, Matrix.transpose_transpose]
   rfl
 
-theorem det_rowMulLinA {S : Type*} [CommRing S] {m κ : Type*} [Fintype m] [DecidableEq m]
-    [Fintype κ] [DecidableEq κ] (g : Matrix κ κ S) :
-    LinearMap.det (rowMulLinA m g) = g.det ^ Fintype.card m := by
-  rw [rowMulLinA, LinearMap.det_pi, LinearMap.det_toLin', Matrix.det_transpose,
-    Finset.prod_const, Finset.card_univ]
 
 def colMulLinA {S : Type*} [CommRing S] {m : Type*} (κ : Type*) [Fintype m] [DecidableEq m]
     [Fintype κ] (h : Matrix m m S) : (m → κ → S) →ₗ[S] (m → κ → S) :=
@@ -223,13 +756,6 @@ theorem colMulLinA_apply {S : Type*} [CommRing S] {m κ : Type*} [Fintype m] [De
   simp only [Matrix.mul_apply, Matrix.transpose_apply, Matrix.of_apply]
   exact Finset.sum_congr rfl fun k _ ↦ mul_comm _ _
 
-theorem det_colMulLinA {S : Type*} [CommRing S] {m κ : Type*} [Fintype m] [DecidableEq m]
-    [Fintype κ] [DecidableEq κ] (h : Matrix m m S) :
-    LinearMap.det (colMulLinA κ h) = h.det ^ Fintype.card κ := by
-  have hc := LinearMap.det_conj (rowMulLinA κ hᵀ) (transposePi S m κ).symm
-  rw [LinearEquiv.symm_symm, det_rowMulLinA, Matrix.det_transpose] at hc
-  rw [colMulLinA, LinearMap.comp_assoc]
-  exact hc
 
 variable (K E R ι n) in
 
@@ -240,12 +766,6 @@ theorem frameSMulLin_apply (h : Matrix ι ι (R ⊗[K] E)) (X : FrameSp K E R ι
     frameSMulLin K E R ι n h X = frameSMul h X :=
   colMulLinA_apply h X
 
-theorem det_frameSMulLin (h : Matrix ι ι (R ⊗[K] E)) :
-    LinearMap.det (frameSMulLin K E R ι n h) = Algebra.norm R h.det ^ n := by
-  have hd := LinearMap.det_restrictScalars (R := R) (S := R ⊗[K] E)
-    (f := colMulLinA (m := ι) (Fin n) h)
-  rw [det_colMulLinA, map_pow, Fintype.card_fin] at hd
-  exact hd
 
 theorem frameSMul_frameSMul (h h' : Matrix ι ι (R ⊗[K] E)) (X : FrameSp K E R ι n) :
     frameSMul h (frameSMul h' X) = frameSMul (h * h') X :=
@@ -282,16 +802,6 @@ theorem frameSMulHom_apply (h : GL ι (R ⊗[K] E)) (X : FrameSp K E R ι n) :
 
 variable [LocallyCompactSpace R] [T2Space R] [SecondCountableTopology R]
 
-theorem addEquivAddHaarChar_frameSMulHom_eq (hR : ¬ DiscreteTopology R) (h : GL ι (R ⊗[K] E)) :
-    addEquivAddHaarChar (frameSMulHom K E R ι n h) =
-      modE R (Matrix.GeneralLinearGroup.det h) ^ n := by
-  rw [WmSysEquiv.addEquivAddHaarChar_eq_absF_det hR (frameSMulLinEquiv K E R ι n h)
-    (frameSMulHom K E R ι n h) (fun _ ↦ rfl)]
-  rw [show ((frameSMulLinEquiv K E R ι n h : FrameSp K E R ι n ≃ₗ[R] FrameSp K E R ι n) :
-      FrameSp K E R ι n →ₗ[R] FrameSp K E R ι n) =
-      frameSMulLin K E R ι n (h : Matrix ι ι (R ⊗[K] E)) from rfl,
-    det_frameSMulLin, absF_pow, modE_eq_absF]
-  rfl
 
 end FrameSMul
 
@@ -306,50 +816,12 @@ variable (K E R) in
 def conjBaseAlgEquiv : (R ⊗[K] E) ≃ₐ[R] (R ⊗[K] E) :=
   Algebra.TensorProduct.congr (AlgEquiv.refl : R ≃ₐ[R] R) (conj K E)
 
-theorem conjBaseAlgEquiv_apply (z : R ⊗[K] E) : conjBaseAlgEquiv K E R z = conjBase K E R z := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp
-  | tmul r e => rfl
-  | add x y hx hy => simp only [map_add, hx, hy]
 
-theorem norm_conjBase (z : R ⊗[K] E) :
-    Algebra.norm R (conjBase K E R z) = Algebra.norm R z := by
-  rw [← conjBaseAlgEquiv_apply, Algebra.norm_eq_of_algEquiv]
 
-theorem conjBase_det_mul_det_eq_one {Q : Matrix ι ι E} (hQ : IsUnit Q.det)
-    (h : GL ι (R ⊗[K] E)) (hh : h ∈ unitaryPoints K E Q R) :
-    conjBase K E R (h : Matrix ι ι (R ⊗[K] E)).det * (h : Matrix ι ι (R ⊗[K] E)).det = 1 := by
-  have hm := congrArg Matrix.det (mem_unitaryPoints.1 hh)
-  rw [Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, ← RingHom.mapMatrix_apply,
-    ← RingHom.map_det] at hm
-  have hu : IsUnit (Q.map (Algebra.TensorProduct.includeRight : E →ₐ[K] R ⊗[K] E)).det := by
-    rw [show Q.map (Algebra.TensorProduct.includeRight : E →ₐ[K] R ⊗[K] E) =
-      (Algebra.TensorProduct.includeRight : E →ₐ[K] R ⊗[K] E).toRingHom.mapMatrix Q from rfl,
-      ← RingHom.map_det]
-    exact hQ.map _
-  have hm' : (conjBase K E R (h : Matrix ι ι (R ⊗[K] E)).det * (h : Matrix ι ι (R ⊗[K] E)).det) *
-      (Q.map (Algebra.TensorProduct.includeRight : E →ₐ[K] R ⊗[K] E)).det =
-      1 * (Q.map (Algebra.TensorProduct.includeRight : E →ₐ[K] R ⊗[K] E)).det := by
-    linear_combination hm
-  exact hu.mul_right_cancel hm'
 
 variable [TopologicalSpace R] [IsTopologicalRing R] [LocallyCompactSpace R]
 
-theorem modE_conj (z w : (R ⊗[K] E)ˣ) (hw : (w : R ⊗[K] E) = conjBase K E R z) :
-    modE R w = modE R z := by
-  rw [modE_eq_absF, modE_eq_absF, hw, norm_conjBase]
 
-theorem modE_det_unitary {Q : Matrix ι ι E} (hQ : IsUnit Q.det) (h : GL ι (R ⊗[K] E))
-    (hh : h ∈ unitaryPoints K E Q R) : modE R (Matrix.GeneralLinearGroup.det h) = 1 := by
-  have h1 := congrArg (Algebra.norm R) (conjBase_det_mul_det_eq_one hQ h hh)
-  rw [map_mul, norm_conjBase, map_one] at h1
-  have h2 := congrArg IndefiniteRowSideFullHecke.WmSys.absF h1
-  rw [absF_mul, absF_one] at h2
-  rw [modE_eq_absF]
-  set x := IndefiniteRowSideFullHecke.WmSys.absF (Algebra.norm R (h : Matrix ι ι (R ⊗[K] E)).det)
-  have h3 : (x : ℝ) * x = 1 := by exact_mod_cast h2
-  have h4 : (x : ℝ) = 1 := by nlinarith [x.2]
-  exact NNReal.eq h4
 
 end Unitary
 
@@ -366,30 +838,8 @@ theorem gram_mul_right (Q : Matrix ι ι E) (X : Matrix ι (Fin n) (R ⊗[K] E))
     Matrix.mul_assoc]
   rfl
 
-theorem gram_mul_left_unitary {Q : Matrix ι ι E} (h : GL ι (R ⊗[K] E))
-    (hh : h ∈ unitaryPoints K E Q R) (X : Matrix ι (Fin n) (R ⊗[K] E)) :
-    IsoFrames.gram K E R Q ((h : Matrix ι ι (R ⊗[K] E)) * X) = IsoFrames.gram K E R Q X := by
-  have hm := mem_unitaryPoints.1 hh
-  rw [IsoFrames.gram, IsoFrames.gram, Chart.framePair_eq, Chart.framePair_eq, Chart.cT_mul]
-  calc Chart.cT K E R X * Chart.cT K E R (h : Matrix ι ι (R ⊗[K] E)) * Chart.Hm K R Q *
-        ((h : Matrix ι ι (R ⊗[K] E)) * X)
-      = Chart.cT K E R X * (Chart.cT K E R (h : Matrix ι ι (R ⊗[K] E)) * Chart.Hm K R Q *
-          (h : Matrix ι ι (R ⊗[K] E))) * X := by simp only [Matrix.mul_assoc]
-    _ = Chart.cT K E R X * Chart.Hm K R Q * X := by
-        rw [show Chart.cT K E R (h : Matrix ι ι (R ⊗[K] E)) * Chart.Hm K R Q *
-          (h : Matrix ι ι (R ⊗[K] E)) = Chart.Hm K R Q from hm]
 
-theorem gram_frameMul (Q : Matrix ι ι E) (X : FrameSp K E R ι n)
-    (g : Matrix (Fin n) (Fin n) (R ⊗[K] E)) :
-    IsoFrames.gram K E R Q (frameMul X g : Matrix ι (Fin n) (R ⊗[K] E)) =
-      cTr K E R g * IsoFrames.gram K E R Q (X : Matrix ι (Fin n) (R ⊗[K] E)) * g :=
-  gram_mul_right Q X g
 
-theorem gram_frameSMul {Q : Matrix ι ι E} (h : GL ι (R ⊗[K] E))
-    (hh : h ∈ unitaryPoints K E Q R) (X : FrameSp K E R ι n) :
-    IsoFrames.gram K E R Q (frameSMul (h : Matrix ι ι (R ⊗[K] E)) X : Matrix ι (Fin n) (R ⊗[K] E)) =
-      IsoFrames.gram K E R Q (X : Matrix ι (Fin n) (R ⊗[K] E)) :=
-  gram_mul_left_unitary h hh X
 
 end Gram
 
@@ -400,10 +850,6 @@ variable {R : Type*} [Field R] [Algebra K R] [TopologicalSpace R] [IsTopological
   [LocallyCompactSpace R] [T2Space R] [SecondCountableTopology R]
 variable {ι : Type*} [Fintype ι] [DecidableEq ι] {n : ℕ}
 
-theorem addEquivAddHaarChar_frameSMulHom (hR : ¬ DiscreteTopology R) {Q : Matrix ι ι E}
-    (hQ : IsUnit Q.det) (h : GL ι (R ⊗[K] E)) (hh : h ∈ unitaryPoints K E Q R) :
-    addEquivAddHaarChar (frameSMulHom K E R ι n h) = 1 := by
-  rw [addEquivAddHaarChar_frameSMulHom_eq hR, modE_det_unitary hQ h hh, one_pow]
 
 end UnitaryHaar
 
@@ -487,25 +933,9 @@ def congrAll (g : GL (Fin n) (R ⊗[K] E)) :
     FrameSp K E R (Fin n) n ≃ₜ+ FrameSp K E R (Fin n) n :=
   (frameSMulHom K E R (Fin n) n (ctGL K E R n g)).trans (frameMulHom K E R (Fin n) n g)
 
-theorem congrAll_apply (g : GL (Fin n) (R ⊗[K] E)) (X : FrameSp K E R (Fin n) n) :
-    Chart.toM (congrAll g X) =
-      cTr K E R (g : Matrix (Fin n) (Fin n) (R ⊗[K] E)) * Chart.toM X *
-        (g : Matrix (Fin n) (Fin n) (R ⊗[K] E)) := by
-  show Chart.toM (frameMulHom K E R (Fin n) n g (frameSMulHom K E R (Fin n) n (ctGL K E R n g) X)) = _
-  rw [frameMulHom_apply, frameSMulHom_apply]
-  rfl
 
 variable [LocallyCompactSpace R] [T2Space R] [SecondCountableTopology R]
 
-theorem addEquivAddHaarChar_congrAll (hR : ¬ DiscreteTopology R) (g : GL (Fin n) (R ⊗[K] E)) :
-    addEquivAddHaarChar (congrAll g) =
-      modE R (Matrix.GeneralLinearGroup.det g) ^ n * modE R (Matrix.GeneralLinearGroup.det g) ^ n := by
-  rw [congrAll, addEquivAddHaarChar_trans, addEquivAddHaarChar_frameSMulHom_eq hR,
-    addEquivAddHaarChar_frameMulHom hR, Fintype.card_fin]
-  congr 2
-  refine modE_conj _ _ ?_
-  show (cTr K E R (g : Matrix (Fin n) (Fin n) (R ⊗[K] E))).det = _
-  exact Chart.det_cT _
 
 end Congr
 
@@ -652,13 +1082,6 @@ def splitHom : (HermSp K E R n × HermSp K E R n) ≃ₜ+ FrameSp K E R (Fin n) 
 theorem splitHom_apply (p : HermSp K E R n × HermSp K E R n) :
     Chart.toM (splitHom K E R n p) = p.1.mat + (epsU K E R : R ⊗[K] E) • p.2.mat := rfl
 
-theorem splitHom_congr (g : GL (Fin n) (R ⊗[K] E)) (p : HermSp K E R n × HermSp K E R n) :
-    splitHom K E R n (congrHom K E R n g p.1, congrHom K E R n g p.2) =
-      congrAll g (splitHom K E R n p) := by
-  apply (show Function.Injective (Chart.toM : FrameSp K E R (Fin n) n → _) from fun _ _ h ↦ h)
-  rw [congrAll_apply, splitHom_apply, splitHom_apply]
-  dsimp only
-  rw [congrHom_mat, congrHom_mat, Matrix.mul_add, Matrix.add_mul, Matrix.mul_smul, Matrix.smul_mul]
 
 variable (K E R n) in
 
@@ -702,21 +1125,6 @@ theorem addEquivAddHaarChar_congrPair (g : GL (Fin n) (R ⊗[K] E)) :
   · rw [hpre, Measure.prod_prod, Measure.prod_prod, ← hs, ENNReal.coe_pow]
     ring
 
-theorem addEquivAddHaarChar_congrHom (hR : ¬ DiscreteTopology R) (g : GL (Fin n) (R ⊗[K] E)) :
-    addEquivAddHaarChar (congrHom K E R n g) = modE R (Matrix.GeneralLinearGroup.det g) ^ n := by
-  have hconj : ((splitHom K E R n).symm.trans (congrPair K E R n g)).trans (splitHom K E R n) =
-      congrAll g := by
-    ext X
-    show splitHom K E R n (congrPair K E R n g ((splitHom K E R n).symm X)) = congrAll g X
-    rw [show congrPair K E R n g ((splitHom K E R n).symm X) =
-      (congrHom K E R n g ((splitHom K E R n).symm X).1,
-        congrHom K E R n g ((splitHom K E R n).symm X).2) from rfl, splitHom_congr,
-      ContinuousAddEquiv.apply_symm_apply]
-  have h1 := WmSysEquiv.addEquivAddHaarChar_conj (splitHom K E R n) (congrPair K E R n g)
-  rw [hconj, addEquivAddHaarChar_congrAll hR, addEquivAddHaarChar_congrPair] at h1
-  have h2 := congrArg NNReal.sqrt h1
-  rw [← pow_two, NNReal.sqrt_sq, NNReal.sqrt_sq] at h2
-  exact h2.symm
 
 end Split
 
@@ -726,36 +1134,12 @@ variable {K E : Type*} [Field K] [Field E] [Algebra K E] [Algebra.IsQuadraticExt
 variable {R : Type*} [Field R] [Algebra K R] [TopologicalSpace R] [IsTopologicalRing R]
 variable {ι : Type*} [Fintype ι] [DecidableEq ι] {n : ℕ}
 
-theorem continuous_frameMul_joint :
-    Continuous (fun p : Matrix (Fin n) (Fin n) (R ⊗[K] E) × FrameSp K E R ι n ↦ frameMul p.2 p.1) :=
-  (show Continuous (fun p : Matrix (Fin n) (Fin n) (R ⊗[K] E) × FrameSp K E R ι n ↦
-    (p.2 : Matrix ι (Fin n) (R ⊗[K] E))) from continuous_snd).matrix_mul continuous_fst
 
-theorem continuous_frameSMul_joint :
-    Continuous (fun p : Matrix ι ι (R ⊗[K] E) × FrameSp K E R ι n ↦ frameSMul p.1 p.2) :=
-  continuous_fst.matrix_mul
-    (show Continuous (fun p : Matrix ι ι (R ⊗[K] E) × FrameSp K E R ι n ↦
-      (p.2 : Matrix ι (Fin n) (R ⊗[K] E))) from continuous_snd)
 
-theorem continuous_congrPt_joint :
-    Continuous (fun p : Matrix (Fin n) (Fin n) (R ⊗[K] E) × HermSp K E R n ↦ congrPt p.1 p.2) := by
-  have hc : Continuous (fun S : HermSp K E R n ↦ S.mat) := continuous_induced_dom
-  have hct : Continuous (fun g : Matrix (Fin n) (Fin n) (R ⊗[K] E) ↦ cTr K E R g) :=
-    (continuous_id.matrix_map (continuous_conjBase R)).matrix_transpose
-  exact continuous_induced_rng.2 (((hct.comp continuous_fst).matrix_mul (hc.comp continuous_snd)).matrix_mul
-    continuous_fst)
 
 variable [LocallyCompactSpace R] [T2Space R] [SecondCountableTopology R]
 
-theorem gramH_frameMul {Q : Matrix ι ι E} (hQ : IsHermitianFor (conjHom K E) Q)
-    (X : FrameSp K E R ι n) (g : Matrix (Fin n) (Fin n) (R ⊗[K] E)) :
-    Chart.gramH R n hQ (frameMul X g) = congrPt g (Chart.gramH R n hQ X) :=
-  HermSp.ext' (gram_mul_right Q (Chart.toM X) g)
 
-theorem gramH_frameSMul {Q : Matrix ι ι E} (hQ : IsHermitianFor (conjHom K E) Q)
-    (h : GL ι (R ⊗[K] E)) (hh : h ∈ unitaryPoints K E Q R) (X : FrameSp K E R ι n) :
-    Chart.gramH R n hQ (frameSMul (h : Matrix ι ι (R ⊗[K] E)) X) = Chart.gramH R n hQ X :=
-  HermSp.ext' (gram_mul_left_unitary h hh (Chart.toM X))
 
 end Joint
 
@@ -763,32 +1147,9 @@ section Places
 
 open NumberField IsDedekindDomain
 
-theorem not_discreteTopology_of_norm_lt_one {F : Type*} [NormedField F] {x : F} (hx0 : x ≠ 0)
-    (hx1 : ‖x‖ < 1) : ¬ DiscreteTopology F := by
-  intro hd
-  have ho : IsOpen ({0} : Set F) := isOpen_discrete _
-  obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 ho 0 rfl
-  obtain ⟨k, hk⟩ := exists_pow_lt_of_lt_one hε hx1
-  have hmem : x ^ k ∈ Metric.ball (0 : F) ε := by
-    rw [Metric.mem_ball, dist_zero_right, norm_pow]
-    exact hk
-  exact pow_ne_zero k hx0 (hball hmem)
 
 variable {K : Type*} [Field K] [NumberField K]
 
-theorem not_discreteTopology_infinitePlace (w : InfinitePlace K) : ¬ DiscreteTopology w.Completion := by
-  have h2 : ‖(2 : w.Completion)‖ = 2 := by
-    have := (InfinitePlace.Completion.isometry_extensionEmbedding w).norm_map_of_map_zero
-      (map_zero _) 2
-    rw [← this, map_ofNat]
-    norm_num
-  have h20 : (2 : w.Completion) ≠ 0 := by
-    intro h0
-    rw [h0, norm_zero] at h2
-    norm_num at h2
-  refine not_discreteTopology_of_norm_lt_one (x := (2 : w.Completion)⁻¹) (inv_ne_zero h20) ?_
-  rw [norm_inv, h2]
-  norm_num
 
 theorem not_discreteTopology_adicCompletion (v : HeightOneSpectrum (𝓞 K)) :
     ¬ DiscreteTopology (v.adicCompletion K) := by
@@ -802,9 +1163,6 @@ theorem not_discreteTopology_adicCompletion (v : HeightOneSpectrum (𝓞 K)) :
   exact Set.infinite_of_injective_forall_mem hinj
     (fun k ↦ natCast_mem (v.adicCompletionIntegers K) k) hfin
 
-theorem secondCountableTopology_infinitePlace (w : InfinitePlace K) :
-    SecondCountableTopology w.Completion :=
-  locField_secondCountable (not_discreteTopology_infinitePlace w)
 
 theorem secondCountableTopology_adicCompletion (v : HeightOneSpectrum (𝓞 K)) :
     SecondCountableTopology (v.adicCompletion K) :=
@@ -815,3 +1173,5 @@ end Places
 end SwmCone
 
 end GroundTheory.Heights₂.Theta
+end
+end

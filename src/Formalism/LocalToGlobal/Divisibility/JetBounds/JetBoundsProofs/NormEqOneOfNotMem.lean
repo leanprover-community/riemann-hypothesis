@@ -60,7 +60,6 @@ theorem cMul (x y : 𝓞 K) : ((x * y : 𝓞 K) : K) = (x : K) * (y : K) := map_
 
 theorem cZero : ((0 : 𝓞 K) : K) = 0 := map_zero (algebraMap (𝓞 K) K)
 
-theorem cNat (n : ℕ) : ((n : 𝓞 K) : K) = (n : K) := by simp
 
 theorem mem_pow_iff (w : HeightOneSpectrum (𝓞 K)) (x : 𝓞 K) (hx : x ≠ 0) (m : ℕ) :
     x ∈ w.asIdeal ^ m ↔ (m : ℤ) ≤ vw w (x : K) := by
@@ -154,19 +153,5 @@ def normIdeal (σ : K →+* ℂ_[l]) : Ideal (𝓞 K) where
 
 end EmbeddingLemmas
 
-theorem embeddingForces_holds : EmbForces := by
-  intro K _ _ _ w l hlp ι h
-  by_contra hne
-  have hnot : (l : 𝓞 K) ∉ w.asIdeal := by
-    intro hmem
-    rw [← Ideal.Quotient.eq_zero_iff_mem, map_natCast] at hmem
-    have hdvd : plc w ∣ l := (ringChar.spec (𝓞 K ⧸ w.asIdeal) l).1 hmem
-    exact hne ((Nat.prime_dvd_prime_iff_eq (Formalism.EigenvalueLevelCeiling.ramBasic K w).1 hlp.out).1 hdvd)
-  have hv : vw w (l : K) = 0 := by
-    have h2 := ValuationZeroReduction.vw_eq_zero_of_not_mem w (l : 𝓞 K) hnot
-    rwa [EmbeddingLemmas.cNat] at h2
-  have h3 := h (l : K) (Nat.cast_ne_zero.2 hlp.out.ne_zero)
-  rw [map_natCast, hv, Int.cast_zero, zero_div, Real.rpow_zero] at h3
-  exact absurd h3 (norm_l_lt_one l).ne
 
 end Formalism.L2.DIV

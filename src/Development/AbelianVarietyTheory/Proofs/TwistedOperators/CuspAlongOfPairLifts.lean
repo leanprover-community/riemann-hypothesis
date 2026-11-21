@@ -4,22 +4,652 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasInfExpOfOrder
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LowestKTypesJointShapeBlockInUnitaryS
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RealThetaRuleExchangePairMembers
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SignedUnitaryGroupCompatStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DiscreteSeriesModelConjugateTransfer
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockVectorFrameChangeSameCartanStatement
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DiscreteSeriesModelOfDualParameter
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ComplexConjugationMapsMultiplicitySpace
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockVectorFrameChangeSameCartan
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HermitianAdjointLawsStandardCharacterStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsNegatedSpaceDiscreteSeriesModelTransportStatement
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsNegatedSpaceDiscreteSeriesModelTransport
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsConjWeilDatumExchangedPairStatement
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockVectorsConjAdjointPullbackBijectionStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RealThetaIntertwinerAdjointIsRealThetaIntertwineStatement
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RealThetaIntertwinerAdjointIsRealThetaIntertwine
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LowerTowerLiftsVanishOnFockStatement
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LowerTowerLiftsVanishOfVanishOnFockStatement
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaLiftsCuspidalOfLowerTowerLiftsVanishStatement
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PairThetaLiftFactorsThroughIntertwinerStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContragredientThetaParamsAddBlockArrowStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContragredientThetaParamsRemoveBlockArrowStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContragredientThetaParamsColumnArrowsStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContragredientThetaParamsLastRowArrows
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContragredientThetaParamsAddBlockArrow
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContragredientThetaParamsRemoveBlockArrow
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContragredientThetaParamsColumnArrows
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsRealThetaParameterPairThetaPartnerSignedParameStatement
+import Development.AbelianVarietyTheory.Definitions.Divisors.LeastSplitAuxiliaryPrimeThetaChainSpec
 
+section
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
+open MeasureTheory Matrix GlobalTheory.Chain GlobalTheory.ChainFr GlobalTheory.Grid
+open scoped TensorProduct InnerProductSpace
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.PairLift
+
+namespace GlobalTheory.ConjModelTr
+
+def Tw (X : Type) : Type := X
+
+instance (X : Type) [AddCommGroup X] : AddCommGroup (Tw X) := inferInstanceAs (AddCommGroup X)
+instance (X : Type) [AddCommGroup X] [Module ℂ X] : Module ℂ (Tw X) := Module.compHom X (starRingEnd ℂ)
+
+section Gen
+
+variable {ι : Type} [Fintype ι] {X₁ X : ι → Type} [∀ i, AddCommGroup (X₁ i)] [∀ i, Module ℂ (X₁ i)]
+  [∀ i, AddCommGroup (X i)] [∀ i, Module ℂ (X i)]
+
+theorem comp_update [DecidableEq ι] (c : ∀ i, X₁ i ≃ₛₗ[starRingEnd ℂ] X i) (v : ∀ i, X₁ i) (i : ι) (x : X₁ i) :
+    (fun j => c j (Function.update v i x j)) = Function.update (fun j => c j (v j)) i (c i x) :=
+  funext fun j => Function.apply_update (fun j => (c j : X₁ j → X j)) v i x j
+
+def cmul (c : ∀ i, X₁ i ≃ₛₗ[starRingEnd ℂ] X i) : MultilinearMap ℂ X₁ (Tw (⨂[ℂ] i, X i)) where
+  toFun v := (PiTensorProduct.tprod ℂ (fun i => c i (v i)) : ⨂[ℂ] i, X i)
+  map_update_add' v i x y := by
+    classical
+    show PiTensorProduct.tprod ℂ (fun j => c j (Function.update v i (x + y) j)) =
+      PiTensorProduct.tprod ℂ (fun j => c j (Function.update v i x j)) +
+        PiTensorProduct.tprod ℂ (fun j => c j (Function.update v i y j))
+    rw [comp_update, comp_update, comp_update, map_add, MultilinearMap.map_update_add]
+  map_update_smul' v i a x := by
+    classical
+    show PiTensorProduct.tprod ℂ (fun j => c j (Function.update v i (a • x) j)) =
+      (starRingEnd ℂ a) • PiTensorProduct.tprod ℂ (fun j => c j (Function.update v i x j))
+    rw [comp_update, comp_update, map_smulₛₗ, MultilinearMap.map_update_smul]
+
+def kapF (c : ∀ i, X₁ i ≃ₛₗ[starRingEnd ℂ] X i) : (⨂[ℂ] i, X₁ i) →+ ⨂[ℂ] i, X i where
+  toFun x := (PiTensorProduct.lift (cmul c) x : Tw (⨂[ℂ] i, X i))
+  map_zero' := map_zero (PiTensorProduct.lift (cmul c))
+  map_add' x y := map_add (PiTensorProduct.lift (cmul c)) x y
+
+theorem kapF_tprod (c : ∀ i, X₁ i ≃ₛₗ[starRingEnd ℂ] X i) (v : ∀ i, X₁ i) :
+    kapF c (PiTensorProduct.tprod ℂ v) = PiTensorProduct.tprod ℂ (fun i => c i (v i)) := by
+  show (PiTensorProduct.lift (cmul c) (PiTensorProduct.tprod ℂ v) : Tw (⨂[ℂ] i, X i)) = _
+  rw [PiTensorProduct.lift.tprod]
+  rfl
+
+theorem kapF_smul (c : ∀ i, X₁ i ≃ₛₗ[starRingEnd ℂ] X i) (r : ℂ) (x : ⨂[ℂ] i, X₁ i) :
+    kapF c (r • x) = starRingEnd ℂ r • kapF c x := by
+  show (PiTensorProduct.lift (cmul c) (r • x) : Tw (⨂[ℂ] i, X i)) = _
+  rw [map_smul]
+  rfl
+
+theorem kapF_symm (c : ∀ i, X₁ i ≃ₛₗ[starRingEnd ℂ] X i) (x : ⨂[ℂ] i, X₁ i) :
+    kapF (fun i => (c i).symm) (kapF c x) = x := by
+  induction x using PiTensorProduct.induction_on with
+  | smul_tprod r f => rw [kapF_smul, kapF_smul, kapF_tprod, kapF_tprod]; simp
+  | add x y hx hy => rw [map_add, map_add, hx, hy]
+
+def kap (c : ∀ i, X₁ i ≃ₛₗ[starRingEnd ℂ] X i) : (⨂[ℂ] i, X₁ i) ≃+ ⨂[ℂ] i, X i where
+  toFun := kapF c
+  invFun := kapF fun i => (c i).symm
+  left_inv := kapF_symm c
+  right_inv y := by
+    have := kapF_symm (fun i => (c i).symm) y
+    simpa using this
+  map_add' := map_add (kapF c)
+
+theorem kap_tprod (c : ∀ i, X₁ i ≃ₛₗ[starRingEnd ℂ] X i) (v : ∀ i, X₁ i) :
+    kap c (PiTensorProduct.tprod ℂ v) = PiTensorProduct.tprod ℂ (fun i => c i (v i)) := kapF_tprod c v
+
+theorem kap_smul (c : ∀ i, X₁ i ≃ₛₗ[starRingEnd ℂ] X i) (r : ℂ) (x : ⨂[ℂ] i, X₁ i) :
+    kap c (r • x) = starRingEnd ℂ r • kap c x := kapF_smul c r x
+
+end Gen
+
+section Model
+
+open GlobalTheory.ConjDS
+
+variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar}
+
+def cM (M : DSModel V S) (τ : D.what₂.Tau) : (conjModel M).H τ ≃ₗᵢ⋆[ℂ] M.H τ := GlobalTheory.ConjDS.cj (M.H τ)
+
+theorem rep_conjModel (M : DSModel V S) (τ : D.what₂.Tau) (g : Matrix (Fin V.rank) (Fin V.rank) ℂ)
+    (w : (conjModel M).H τ) : cM M τ ((conjModel M).rep τ g w) = M.rep τ g (cM M τ w) := by
+  have e : rv ((M.fr τ).submatrix Fin.revPerm (Equiv.refl _) * g *
+      ((M.fr τ).submatrix Fin.revPerm (Equiv.refl _))⁻¹) = M.fr τ * g * (M.fr τ)⁻¹ := by
+    rw [inv_submatrix_equiv]
+    have : (M.fr τ).submatrix Fin.revPerm (Equiv.refl _) * g * (M.fr τ)⁻¹.submatrix (Equiv.refl _) Fin.revPerm =
+        rv (M.fr τ * g * (M.fr τ)⁻¹) := by
+      ext i j
+      simp [rv, Matrix.mul_apply]
+    rw [this, rv_rv]
+  show M.σ τ (rv ((M.fr τ).submatrix Fin.revPerm (Equiv.refl _) * g *
+      ((M.fr τ).submatrix Fin.revPerm (Equiv.refl _))⁻¹)) (cM M τ w) = M.σ τ (M.fr τ * g * (M.fr τ)⁻¹) (cM M τ w)
+  rw [e]
+
+theorem sm_iff (θ : InfFam D) (M : DSModel V S) (τ : D.what₂.Tau) (w : (conjModel M).H τ) :
+    w ∈ (conjModel M).sm τ ↔ cM M τ w ∈ M.sm τ :=
+  (GlobalTheory.ConjMult.conj_mult θ M (conjModel M) (cM M) (fun τ g _ w => rep_conjModel M τ g w)).1 τ w
+
+def csm (θ : InfFam D) (M : DSModel V S) (τ : D.what₂.Tau) : (conjModel M).sm τ ≃ₗ⋆[ℂ] M.sm τ where
+  toFun w := ⟨cM M τ (w : (conjModel M).H τ), (sm_iff θ M τ w).1 w.2⟩
+  invFun w := ⟨(cM M τ).symm (w : M.H τ), (sm_iff θ M τ _).2 (by simpa using w.2)⟩
+  map_add' x y := Subtype.ext (map_add (cM M τ) _ _)
+  map_smul' a x := Subtype.ext (map_smulₛₗ (cM M τ) _ _)
+  left_inv x := Subtype.ext (by simp)
+  right_inv x := Subtype.ext (by simp)
+
+theorem csm_val (θ : InfFam D) (M : DSModel V S) (τ : D.what₂.Tau) (w : (conjModel M).sm τ) :
+    ((csm θ M τ w : M.sm τ) : M.H τ) = cM M τ (w : (conjModel M).H τ) := rfl
+
+def chs (M : DSModel V S) (τ : D.what₂.Tau) : (conjModel M).H τ ≃ₗ⋆[ℂ] M.H τ := (cM M τ).toLinearEquiv
+
+theorem incl_kap (θ : InfFam D) (M : DSModel V S) (x : SmT (conjModel M)) :
+    inclT M (kap (csm θ M) x) = kap (chs M) (inclT (conjModel M) x) := by
+  induction x using PiTensorProduct.induction_on with
+  | smul_tprod r f =>
+    rw [kap_smul, map_smul, map_smul, kap_smul, kap_tprod, inclT, inclT, PiTensorProduct.map_tprod,
+      PiTensorProduct.map_tprod, kap_tprod]
+    rfl
+  | add x y hx hy => rw [map_add, map_add, map_add, map_add, hx, hy]
+
+theorem act_kap (M : DSModel V S) (τ : D.what₂.Tau) (g : Matrix (Fin V.rank) (Fin V.rank) ℂ)
+    (z : ⨂[ℂ] ρ, (conjModel M).H ρ) :
+    kap (chs M) (actT (conjModel M) τ g z) = actT M τ g (kap (chs M) z) := by
+  classical
+  induction z using PiTensorProduct.induction_on with
+  | smul_tprod r f =>
+    rw [map_smul, kap_smul, kap_smul, map_smul, actT, actT, PiTensorProduct.map_tprod, kap_tprod, kap_tprod,
+      PiTensorProduct.map_tprod]
+    congr 2
+    funext ρ
+    by_cases h : ρ = τ
+    · subst h
+      simp only [Function.update_self]
+      exact rep_conjModel M ρ g (f ρ)
+    · simp only [Function.update_of_ne h]
+      rfl
+  | add x y hx hy => rw [map_add, map_add, map_add, map_add, hx, hy]
+
+theorem ell_kap (M : DSModel V S) (w₁ : ∀ τ, (conjModel M).H τ) (z : ⨂[ℂ] ρ, (conjModel M).H ρ) :
+    ellT (conjModel M) w₁ z = starRingEnd ℂ (ellT M (fun τ => cM M τ (w₁ τ)) (kap (chs M) z)) := by
+  induction z using PiTensorProduct.induction_on with
+  | smul_tprod r f =>
+    rw [map_smul, kap_smul, map_smul, kap_tprod, ellT, ellT, PiTensorProduct.lift.tprod, PiTensorProduct.lift.tprod]
+    simp only [MultilinearMap.compLinearMap_apply, MultilinearMap.mkPiAlgebra_apply, smul_eq_mul,
+      map_mul, map_prod, Complex.conj_conj]
+    congr 1
+    refine Finset.prod_congr rfl fun ρ _ => ?_
+    change ⟪(cM M ρ (f ρ) : M.H ρ), cM M ρ (w₁ ρ)⟫_ℂ = starRingEnd ℂ ⟪(cM M ρ (w₁ ρ) : M.H ρ), cM M ρ (f ρ)⟫_ℂ
+    exact (inner_conj_symm (𝕜 := ℂ) _ _).symm
+  | add x y hx hy => rw [map_add, map_add, map_add, map_add, hx, hy]
+
+end Model
+
+section Main
+
+open GlobalTheory.ConjDS
+
+variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar}
+
+theorem cart_conjModel (M : DSModel V S) (τ : D.what₂.Tau) : cart (conjModel M) τ = cart M τ := by
+  unfold cart
+  show ((M.fr τ).submatrix Fin.revPerm (Equiv.refl _))⁻¹ * Formalism.REAL.Jm (fun a => M.ε τ a.rev) *
+      (M.fr τ).submatrix Fin.revPerm (Equiv.refl _) = (M.fr τ)⁻¹ * Formalism.REAL.Jm (M.ε τ) * M.fr τ
+  rw [inv_submatrix_equiv, ← rv_Jm (ε := fun a => M.ε τ a.rev) (ε' := M.ε τ) (fun a => by simp), rv,
+    submatrix_mul_equiv, submatrix_mul_equiv]
+  simp
+
+theorem act_iff (θ : InfFam D) (M : DSModel V S) (τ : D.what₂.Tau) (g : Matrix (Fin V.rank) (Fin V.rank) ℂ)
+    (x y : SmT (conjModel M)) :
+    inclT (conjModel M) y = actT (conjModel M) τ g (inclT (conjModel M) x) ↔
+      inclT M (kap (csm θ M) y) = actT M τ g (inclT M (kap (csm θ M) x)) := by
+  rw [incl_kap, incl_kap, ← act_kap]
+  exact (kap (chs M)).injective.eq_iff.symm
+
+theorem ell_inv (M : DSModel V S) (w : ∀ τ, M.H τ) (z : ⨂[ℂ] ρ, (conjModel M).H ρ) :
+    ellT M w (kap (chs M) z) = starRingEnd ℂ (ellT (conjModel M) (fun τ => (cM M τ).symm (w τ)) z) := by
+  rw [ell_kap, Complex.conj_conj]
+  congr 2
+
+theorem der_iff (θ : InfFam D) (M : DSModel V S) (τ : D.what₂.Tau) (Y : Matrix (Fin V.rank) (Fin V.rank) ℂ)
+    (x y : SmT (conjModel M)) : DerT (conjModel M) τ Y x y ↔ DerT M τ Y (kap (csm θ M) x) (kap (csm θ M) y) := by
+  unfold DerT
+  constructor
+  · intro h w
+    have e1 : (fun t : ℝ => ellT M w (actT M τ (NormedSpace.exp (t • Y)) (inclT M (kap (csm θ M) x)))) =
+        fun t : ℝ => star (ellT (conjModel M) (fun τ => (cM M τ).symm (w τ))
+          (actT (conjModel M) τ (NormedSpace.exp (t • Y)) (inclT (conjModel M) x))) := by
+      funext t
+      rw [incl_kap, ← act_kap, ell_inv]
+      rfl
+    have e2 : ellT M w (inclT M (kap (csm θ M) y)) =
+        star (ellT (conjModel M) (fun τ => (cM M τ).symm (w τ)) (inclT (conjModel M) y)) := by
+      rw [incl_kap, ell_inv]
+      rfl
+    rw [e1, e2]
+    exact (h _).star
+  · intro h w₁
+    have e1 : (fun t : ℝ => ellT (conjModel M) w₁ (actT (conjModel M) τ (NormedSpace.exp (t • Y)) (inclT (conjModel M) x))) =
+        fun t : ℝ => star (ellT M (fun τ => cM M τ (w₁ τ))
+          (actT M τ (NormedSpace.exp (t • Y)) (inclT M (kap (csm θ M) x)))) := by
+      funext t
+      rw [ell_kap, act_kap, ← incl_kap]
+      rfl
+    have e2 : ellT (conjModel M) w₁ (inclT (conjModel M) y) =
+        star (ellT M (fun τ => cM M τ (w₁ τ)) (inclT M (kap (csm θ M) y))) := by
+      rw [ell_kap, ← incl_kap]
+      rfl
+    rw [e1, e2]
+    exact (h _).star
+
+theorem ell_field (θ : InfFam D) (M : DSModel V S) (w₁ : ∀ τ, (conjModel M).H τ) :
+    ∃ w : ∀ τ, M.H τ, ∀ x, ellT (conjModel M) w₁ (inclT (conjModel M) x) =
+      starRingEnd ℂ (ellT M w (inclT M (kap (csm θ M) x))) :=
+  ⟨fun τ => cM M τ (w₁ τ), fun x => by rw [ell_kap, incl_kap]⟩
+
+theorem mult_fw (θ : InfFam D) (M : DSModel V S) : ∀ F ∈ MultT θ M ∅ 1, ∃ F₁ ∈ MultT θ (conjModel M) ∅ 1,
+    ∀ x g, F₁ x g = starRingEnd ℂ (F (kap (csm θ M) x) g) := by
+  intro F hF
+  have hT := (mem_multT θ M ∅ 1 F).1 hF
+  obtain ⟨T', hT', hv⟩ :=
+    (GlobalTheory.ConjMult.conj_mult θ M (conjModel M) (cM M) (fun τ g _ w => rep_conjModel M τ g w)).2 ∅ 1 _ hT
+  have e1 : (fun k => star ((1 : GA D V → ℂ) k)) = 1 := by funext k; simp
+  rw [e1] at hT'
+  refine ⟨PiTensorProduct.lift T', (mem_multT θ _ ∅ 1 _).2 (by simpa using hT'), fun x g => ?_⟩
+  induction x using PiTensorProduct.induction_on with
+  | smul_tprod r f =>
+    rw [map_smul, kap_smul, map_smul, PiTensorProduct.lift.tprod, kap_tprod]
+    simp only [LinearMap.smul_apply, Pi.smul_apply, smul_eq_mul, map_mul, Complex.conj_conj]
+    rw [hv f (fun i => csm θ M i (f i)) (fun τ => rfl) g]
+    rfl
+  | add x y hx hy =>
+    rw [map_add, map_add, map_add]
+    simp only [Pi.add_apply, LinearMap.add_apply, map_add, hx, hy]
+
+theorem mult_bw (θ : InfFam D) (M : DSModel V S) : ∀ F₁ ∈ MultT θ (conjModel M) ∅ 1, ∃ F ∈ MultT θ M ∅ 1,
+    ∀ x g, F₁ x g = starRingEnd ℂ (F (kap (csm θ M) x) g) := by
+  intro F₁ hF
+  have hT := (mem_multT θ (conjModel M) ∅ 1 F₁).1 hF
+  have hc : ∀ τ, ∀ g ∈ Formalism.QuantumDeterminants.UH (gramAt D V τ), ∀ w,
+      (cM M τ).symm (M.rep τ g w) = (conjModel M).rep τ g ((cM M τ).symm w) := by
+    intro τ g _ w
+    apply (cM M τ).injective
+    rw [LinearIsometryEquiv.apply_symm_apply, rep_conjModel, LinearIsometryEquiv.apply_symm_apply]
+  obtain ⟨T', hT', hv⟩ :=
+    (GlobalTheory.ConjMult.conj_mult θ (conjModel M) M (fun τ => (cM M τ).symm) hc).2 ∅ 1 _ hT
+  have e1 : (fun k => star ((1 : GA D V → ℂ) k)) = 1 := by funext k; simp
+  rw [e1] at hT'
+  refine ⟨PiTensorProduct.lift T', (mem_multT θ _ ∅ 1 _).2 (by simpa using hT'), fun x g => ?_⟩
+  induction x using PiTensorProduct.induction_on with
+  | smul_tprod r f =>
+    rw [map_smul, kap_smul, map_smul, kap_tprod, PiTensorProduct.lift.tprod]
+    simp only [LinearMap.smul_apply, Pi.smul_apply, smul_eq_mul, map_mul, Complex.conj_conj]
+    rw [hv (fun i => csm θ M i (f i)) f (fun τ => by simp [csm_val]) g]
+    simp [PiTensorProduct.lift_symm]
+  | add x y hx hy =>
+    rw [map_add, map_add, map_add]
+    simp only [Pi.add_apply, LinearMap.add_apply, map_add, hx, hy]
+
+theorem modelTr_conjModel (θ : InfFam D) (M : DSModel V S) :
+    ModelTr (starRingEnd ℂ) false θ (V := V) (conjModel M) M (kap (csm θ M)) where
+  smul c x := kap_smul _ c x
+  cart τ := cart_conjModel M τ
+  act τ g _ x y := act_iff θ M τ g x y
+  der τ Y _ x y := der_iff θ M τ Y x y
+  ell w₁ := ell_field θ M w₁
+  vec v₁ := ⟨fun τ => csm θ M τ (v₁ τ), kap_tprod _ _, fun τ => rfl⟩
+  mult := mult_fw θ M
+  mult' := mult_bw θ M
+
+end Main
+
+theorem exists_conjModelTr : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : HSp D) (S : D.what₂.Tau → SPar)
+    (M : DSModel V S), ∃ (M₁ : DSModel (sgn false V) fun τ => dualPar (S τ)) (κ : SmT M₁ ≃+ SmT M),
+      ModelTr (starRingEnd ℂ) false θ M₁ M κ := by
+  intro D θ _ V S M
+  exact ⟨GlobalTheory.ConjDS.conjModel M, kap (csm θ M), modelTr_conjModel θ M⟩
+
+end GlobalTheory.ConjModelTr
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
+open MeasureTheory Matrix GlobalTheory.Chain GlobalTheory.ChainFr GlobalTheory.Grid
+open scoped TensorProduct InnerProductSpace
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.PairLift
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.discrete_series_model_conjugate_transfer : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S), ∃ (M₁ : DSModel (sgn false V) fun τ => dualPar (S τ)) (κ : SmT M₁ ≃+ SmT M), ModelTr (starRingEnd ℂ) false θ M₁ M κ := by
+  atlas_forward_decl GlobalTheory.ConjModelTr.exists_conjModelTr
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
+open MeasureTheory Matrix GlobalTheory.Chain GlobalTheory.ChainFr GlobalTheory.Grid
+open scoped TensorProduct InnerProductSpace
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.PairLift
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fockVector_frameChange_same_cartan : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D), IsStdChar D ψ (-1) → IsInfFam θ → ∀ (V W : HSp D) (A A' : Fr V) (B B' : Fr W), (∀ τ, A'.cart τ = A.cart τ) → (∀ τ, B'.cart τ = B.cart τ) → ∃ j : PolF D W.rank V.rank ≃ₗ[ℂ] PolF D W.rank V.rank, ∀ f, IsThetaFunO ψ V W f → ∀ P, ptF ψ θ A' B' f (j P) = ptF ψ θ A B f P := by
+  first | exact @GlobalTheory.FrameChange.ptF_frame_change | exact GlobalTheory.FrameChange.ptF_frame_change | (intros; apply GlobalTheory.FrameChange.ptF_frame_change <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
+open MeasureTheory Matrix GlobalTheory.Chain GlobalTheory.ChainFr GlobalTheory.Grid
+open scoped TensorProduct InnerProductSpace
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.PairLift
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_negatedSpace_discreteSeriesModelTransport : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S), ∃ (M₁ : DSModel (sgn true V) fun τ => GlobalTheory.SignedHC.flip (S τ)) (κ : SmT M₁ ≃+ SmT M), ModelTr (RingHom.id ℂ) true θ M₁ M κ := by
+  first | exact @GlobalTheory.negModel_tr | exact GlobalTheory.negModel_tr | (intros; apply GlobalTheory.negModel_tr <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
+open MeasureTheory Matrix GlobalTheory.Chain GlobalTheory.ChainFr GlobalTheory.Grid
+open scoped TensorProduct InnerProductSpace
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.PairLift
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.realThetaIntertwiner_adjoint_isRealThetaIntertwiner : ∀ (D : D7) (V W : HSp D) (S S' : D.what₂.Tau → SPar) (M : DSModel V S) (M' : DSModel W S') (Z P : Type) [AddCommGroup P] [Module ℂ P] (θ : InfFam D) (ω : GA D V × GA D W →* Module.End ℂ (Z → ℂ)) (ω' : GA D W × GA D V →* Module.End ℂ (Z → ℂ)) (pt : P → Z → ℂ) (It : P →ₗ[ℂ] SmT M →ₗ[ℂ] SmT M') (Tp : P → SmT M' →ₗ[ℂ] SmT M), (∀ g h, ω' (h, g) = ω (g, h)) → GlobalTheory.Grid.IsIntw θ M' M ω' pt It → (∀ (p : P) (v : M.Vec) (w : M'.Vec), ellT M' (fun τ => w τ) (inclT M' (It p (PiTensorProduct.tprod ℂ v))) = starRingEnd ℂ (ellT M (fun τ => v τ) (inclT M (Tp p (PiTensorProduct.tprod ℂ w))))) → IsIntwF θ M M' ω pt Tp := by
+  first | exact @GlobalTheory.Adopt.realThetaIntertwiner_adjoint_isRealThetaIntertwiner | exact GlobalTheory.Adopt.realThetaIntertwiner_adjoint_isRealThetaIntertwiner | (intros; apply GlobalTheory.Adopt.realThetaIntertwiner_adjoint_isRealThetaIntertwiner <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
+open MeasureTheory Matrix GlobalTheory.Chain GlobalTheory.ChainFr GlobalTheory.Grid
+open scoped TensorProduct InnerProductSpace
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.PairLift
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.contragredientThetaParams_addBlockArrow : ∀ D : D7, GlobalTheory.IndefiniteRowSideFullHecke.CuspAlongSmoothLifts.Sizes D → ∀ (i j : ℕ) (τ : D.what₂.Tau), i < D.R.m → j ≤ D.R.m → PairPar (GlobalTheory.SignedHC.flip (parV D (i + 1) j τ)) (parV D i j τ) (att (cen D τ (D.R.m - i)) (rkV D (i + 1) j)) (att (cen D τ (D.R.m - i)) (rkV D i j)) := by
+  first | exact @GlobalTheory.GridParD.pairPar_X | exact GlobalTheory.GridParD.pairPar_X | (intros; apply GlobalTheory.GridParD.pairPar_X <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
+open MeasureTheory Matrix GlobalTheory.Chain GlobalTheory.ChainFr GlobalTheory.Grid
+open scoped TensorProduct InnerProductSpace
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.PairLift
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.contragredientThetaParams_removeBlockArrow : ∀ D : D7, GlobalTheory.IndefiniteRowSideFullHecke.CuspAlongSmoothLifts.Sizes D → ∀ (i j : ℕ) (τ : D.what₂.Tau), i ≤ D.R.m → ∀ hj : j < D.R.m, PairPar (parV D i j τ) (parV D i (j + 1) τ) (att (-(D.hc τ).e ⟨j, hj⟩) (rkV D i j)) (att (-(D.hc τ).e ⟨j, hj⟩) (rkV D i (j + 1))) := by
+  first | exact @GlobalTheory.RemoveBlock.removeBlock_pairPar | exact GlobalTheory.RemoveBlock.removeBlock_pairPar | (intros; apply GlobalTheory.RemoveBlock.removeBlock_pairPar <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
+open MeasureTheory Matrix GlobalTheory.Chain GlobalTheory.ChainFr GlobalTheory.Grid
+open scoped TensorProduct InnerProductSpace
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.PairLift
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.contragredientThetaParams_columnArrows : ∀ D : D7, GlobalTheory.IndefiniteRowSideFullHecke.CuspAlongSmoothLifts.Sizes D → ∀ (i : ℕ) (τ : D.what₂.Tau), i < D.R.m → PairPar (dualPar (GlobalTheory.SignedHC.flip (parP D (i + 1) τ))) (dualPar (parP D i τ)) (cen D τ (D.R.m - i)) (cen D τ (D.R.m - i)) ∧ PairPar (dualPar (parP D i τ)) (dualPar (GlobalTheory.SignedHC.flip (parP D (i + 1) τ))) (cen D τ (D.R.m - i)) (cen D τ (D.R.m - i)) := by
+  first | exact @GlobalTheory.ParPairArrows.parPi_pairPar | exact GlobalTheory.ParPairArrows.parPi_pairPar | (intros; apply GlobalTheory.ParPairArrows.parPi_pairPar <;> assumption)
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
+open MeasureTheory Matrix GlobalTheory.Chain GlobalTheory.ChainFr GlobalTheory.Grid
+open scoped TensorProduct InnerProductSpace
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.PairLift
+
+noncomputable section
+
+namespace GlobalTheory.TopPair
+
+open GlobalTheory.SignedHC Finset
+
+variable (D : D7) (τ : D.what₂.Tau)
+
+local notation "Γ" => grid D τ
+
+theorem grid_e {l : ℕ} (h1 : 1 ≤ l) (h2 : l ≤ D.R.m) : (((Γ).e l : ℤ) : ℚ) = (D.hc τ).e ⟨l - 1, by omega⟩ := by
+  obtain ⟨l, rfl⟩ : ∃ l', l = l' + 1 := ⟨l - 1, by omega⟩
+  exact GridData.extend_cast 1 (D.hc τ).e_int ⟨l, by omega⟩
+
+theorem grid_b {l : ℕ} (h1 : 1 ≤ l) (h2 : l ≤ D.R.m) : (((Γ).b l : ℤ) : ℚ) = (D.hc τ).b ⟨l - 1, by omega⟩ := by
+  obtain ⟨l, rfl⟩ : ∃ l', l = l' + 1 := ⟨l - 1, by omega⟩
+  exact GridData.extend_cast 1 (D.hc τ).b_int ⟨l, by omega⟩
+
+theorem grid_v {i : ℕ} (h1 : 2 ≤ i) (h2 : i ≤ D.R.k) : (((Γ).v i : ℤ) : ℚ) = (D.hc τ).v ⟨i - 2, by omega⟩ := by
+  obtain ⟨i, rfl⟩ : ∃ i', i = i' + 2 := ⟨i - 2, by omega⟩
+  exact GridData.extend_cast 2 (D.hc τ).v_int ⟨i, by omega⟩
+
+theorem grid_be {l : ℕ} (h1 : 1 ≤ l) (h2 : l ≤ D.R.m) : ((D.R.t : ℚ) + 3) / 2 ≤ ((Γ).e l : ℚ) - (Γ).b l := by
+  rw [grid_e D τ h1 h2, grid_b D τ h1 h2]
+  exact (D.hc τ).gap_be _
+
+theorem grid_eb {l : ℕ} (h1 : 1 ≤ l) (h2 : l + 1 ≤ D.R.m) : ((D.R.t : ℚ) + 3) / 2 ≤ ((Γ).b (l + 1) : ℚ) - (Γ).e l := by
+  rw [grid_e D τ h1 (by omega), grid_b D τ (by omega) h2]
+  obtain ⟨l, rfl⟩ : ∃ l', l = l' + 1 := ⟨l - 1, by omega⟩
+  exact (D.hc τ).gap_eb ⟨l, by omega⟩ (by simpa using (by omega : l + 1 < D.R.m))
+
+theorem grid_e_lt {l l' : ℕ} (h1 : 1 ≤ l) (h : l < l') (h2 : l' ≤ D.R.m) : (D.R.t : ℚ) + 3 + (Γ).e l ≤ (Γ).e l' := by
+  induction l', h using Nat.le_induction with
+  | base =>
+    linarith [grid_be D τ (l := l + 1) (by omega) h2, grid_eb D τ h1 h2]
+  | succ n hn ih =>
+    have := ih (by omega)
+    have e1 := grid_be D τ (l := n + 1) (by omega) h2
+    have e2 := grid_eb D τ (l := n) (by omega) h2
+    have : (0 : ℚ) ≤ D.R.t := by positivity
+    linarith
+
+theorem grid_cloud {i : ℕ} (h1 : 2 ≤ i) (h2 : i ≤ D.R.k) : -((Γ).b 1 : ℚ) + 1 ≤ (Γ).v i := by
+  have hm : 1 ≤ D.R.m := by have := D.R.two_le_m; omega
+  have hk : 2 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+  have base : -((Γ).b 1 : ℚ) < (Γ).v D.R.k := by
+    rw [grid_v D τ hk le_rfl, grid_b D τ le_rfl hm]
+    have e1 := (D.hc τ).u_last_gt (by omega) (by omega)
+    have e2 := (D.hc τ).v_gt_u ⟨D.R.k - 2, by omega⟩
+    have e3 : (⟨D.R.k - 2 + 1, by omega⟩ : Fin D.R.k) = ⟨D.R.k - 1, by omega⟩ := Fin.ext (by simp only; omega)
+    simp only [e3] at e2
+    exact e1.trans e2
+  have base' : -((Γ).b 1) < (Γ).v D.R.k := by exact_mod_cast base
+  have step : (Γ).v D.R.k ≤ (Γ).v i := by
+    rcases h2.eq_or_lt with rfl | h
+    · exact le_rfl
+    · exact ((Γ).v_anti i D.R.k h1 h le_rfl).le
+  have : -((Γ).b 1) + 1 ≤ (Γ).v i := by omega
+  exact_mod_cast this
+
+theorem grid_a_le {i j : ℕ} (h : i ≤ j) : (Γ).a j ≤ (Γ).a i := by
+  rcases h.eq_or_lt with rfl | h
+  · exact le_rfl
+  · have : (0 : ℚ) ≤ (Γ).ga := by positivity
+    linarith [GlobalTheory.ChiGrid.a_add_le (G := Γ) h]
+
+theorem grid_blockMPlus_bd {l : ℕ} {x : ℚ} (h : x ∈ (Γ).blockMPlus l) :
+    -((Γ).e l : ℚ) - (D.R.t : ℚ) / 2 ≤ x ∧ x ≤ -((Γ).e l : ℚ) + (D.R.t : ℚ) / 2 := by
+  have := abs_le.1 (abs_sub_le_of_mem_block h)
+  have e : (((Γ).t + 1 : ℕ) : ℚ) = D.R.t + 1 := by push_cast; rfl
+  rw [e] at this
+  constructor <;> linarith [this.1, this.2]
+
+theorem grid_s_lt_gap : (Γ).s < (Γ).ga := by
+  have := (isLeast_gap D).1.2.1
+  show sLen D < gap D
+  omega
+
+theorem grid_length_odd : Odd (Γ).s := GlobalTheory.ChiGrid.odd_sLen D
+
+theorem grid_weightX_above {j : ℕ} (hj : j + 1 ≤ D.R.m) {x y : ℚ} (hx : x ∈ (Γ).weightX j)
+    (hy : y ∈ (Γ).blockMPlus (j + 1)) : y < x := by
+  have hm : 1 ≤ D.R.m := by omega
+  have hk : 2 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+  have ht : (0 : ℚ) ≤ D.R.t := by positivity
+  have hg : (0 : ℚ) ≤ (Γ).ga := by positivity
+  obtain ⟨y1, y2⟩ := grid_blockMPlus_bd D τ hy
+  have hbe := grid_be D τ (l := 1) le_rfl hm
+  have he1 : ((Γ).e 1 : ℚ) ≤ (Γ).e (j + 1) := by
+    rcases Nat.eq_zero_or_pos j with rfl | h
+    · exact le_rfl
+    · linarith [grid_e_lt D τ (l := 1) (l' := j + 1) le_rfl (by omega) hj]
+  have hlow : y < -((Γ).b 1 : ℚ) := by linarith
+  have hc2 := grid_cloud D τ (i := 2) le_rfl hk
+  have ham : (Γ).a (Γ).m = (Γ).v 2 + (Γ).ga + 1 / 2 := (Γ).a_m
+  rcases GridData.mem_weightX.1 hx with h | h | ⟨i, h1, h2, h⟩ | ⟨l, h1, h2, h⟩
+  · obtain ⟨i, hi, rfl⟩ := GridData.mem_tops.1 h
+    linarith [grid_a_le D τ hi]
+  · obtain ⟨i, h1, h2, rfl⟩ := GridData.mem_cloudHalf.1 h
+    have := grid_cloud D τ h1 h2
+    simp only [GridData.vHalf]
+    linarith
+  · have := (GlobalTheory.ChiGrid.blockC'_between (grid_nearMid D τ) (grid_length_odd D τ).pos (grid_s_lt_gap D τ) h1 h2 h).1
+    linarith [grid_a_le D τ h2]
+  · have := grid_e_lt D τ h1 (by omega : l < j + 1) hj
+    have := (grid_blockMPlus_bd D τ h).1
+    linarith
+
+theorem grid_inCoset_weightX {j : ℕ} : InCoset (1 / 2) ((Γ).weightX j) := by
+  induction j with
+  | zero => exact GlobalTheory.ChiGrid.inCoset_weightX_zero (grid_length_odd D τ)
+  | succ j ih =>
+    rw [(Γ).weightX_succ]
+    intro x hx
+    rcases mem_union.1 hx with h | h
+    · exact ih x h
+    · obtain ⟨a, -, rfl⟩ := mem_block.1 h
+      obtain ⟨u, hu⟩ := D.R.t_odd
+      have e : ((Γ).t : ℚ) = 2 * u + 1 := by
+        have : ((Γ).t : ℚ) = D.R.t := rfl
+        rw [this, hu]; push_cast; ring
+      refine ⟨-(Γ).e (j + 1) + u - a, ?_⟩
+      push_cast
+      rw [e]
+      ring
+
+theorem grid_card_weightX_le (j : ℕ) : ((Γ).weightX j).card ≤ D.R.k + D.R.m * sLen D + j * (D.R.t + 1) := by
+  have c1 : (Γ).tops.card ≤ D.R.m + 1 := by
+    unfold GridData.tops
+    exact card_image_le.trans (by simp; rfl)
+  have c2 : (Γ).cloudHalf.card ≤ D.R.k - 1 := by
+    unfold GridData.cloudHalf
+    refine card_image_le.trans ?_
+    rw [Nat.card_Icc]
+    show D.R.k + 1 - 2 ≤ D.R.k - 1
+    omega
+  have c3 : ((Icc 1 (Γ).m).biUnion (Γ).blockC').card ≤ D.R.m * (sLen D - 1) := by
+    refine card_biUnion_le.trans ?_
+    simp only [GridData.blockC', card_block, sum_const, Nat.card_Icc, smul_eq_mul]
+    show (D.R.m + 1 - 1) * (sLen D - 1) ≤ _
+    simp
+  have c4 : ((Icc 1 j).biUnion (Γ).blockMPlus).card ≤ j * (D.R.t + 1) := by
+    refine card_biUnion_le.trans ?_
+    simp only [GridData.blockMPlus, card_block, sum_const, Nat.card_Icc, smul_eq_mul]
+    show (j + 1 - 1) * (D.R.t + 1) ≤ _
+    simp
+  have hs : 1 ≤ sLen D := (grid_length_odd D τ).pos
+  have hk : 2 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+  have e : D.R.m * sLen D = D.R.m * (sLen D - 1) + D.R.m := by
+    rw [Nat.mul_sub_one, Nat.sub_add_cancel (Nat.le_mul_of_pos_right _ hs)]
+  rw [GridData.weightX, GridData.entries_lam]
+  refine (card_union_le _ _).trans ?_
+  refine (Nat.add_le_add_right ((card_union_le _ _).trans (Nat.add_le_add_right (card_union_le _ _) _)) _).trans ?_
+  omega
+
+theorem pairPar_top : ∀ D : D7, GlobalTheory.IndefiniteRowSideFullHecke.CuspAlongSmoothLifts.Sizes D → ∀ (j : ℕ) (τ : D.what₂.Tau) (hj : j < D.R.m),
+    PairPar (dualPar (parXp D (j + 1) τ)) (dualPar (parXp D j τ)) (-(D.hc τ).e ⟨j, hj⟩) (-(D.hc τ).e ⟨j, hj⟩) := by
+  intro D hS j τ hj
+  set G := grid D τ with hG
+  have hj' : j + 1 ≤ D.R.m := hj
+  have hce : (D.hc τ).e ⟨j, hj⟩ = ((G.e (j + 1) : ℤ) : ℚ) := by
+    have := grid_e D τ (l := j + 1) (by omega) hj'
+    simp only [Nat.add_sub_cancel] at this
+    exact this.symm
+  set c : ℚ := -(D.hc τ).e ⟨j, hj⟩ with hc
+  have hblock : G.blockMPlus (j + 1) = TPar.block c (D.R.t + 1) := by
+    rw [hc, hce]; rfl
+
+  have habove : ∀ x ∈ G.weightX j, c + (D.R.t : ℚ) / 2 + 1 ≤ x := by
+    intro x hx
+    have htop : c + (D.R.t : ℚ) / 2 ∈ TPar.block c (D.R.t + 1) :=
+      mem_block.2 ⟨0, by omega, by push_cast; ring⟩
+    have hlt := grid_weightX_above D τ hj' hx (hblock ▸ htop)
+    obtain ⟨z, hz⟩ := grid_inCoset_weightX D τ (j := j) x hx
+    obtain ⟨u, hu⟩ := D.R.t_odd
+    have ht : (D.R.t : ℚ) = 2 * u + 1 := by rw [hu]; push_cast; ring
+    obtain ⟨w, hw⟩ : ∃ w : ℤ, c = w := ⟨-(G.e (j + 1)), by rw [hc, hce]; push_cast; ring⟩
+    rw [hz, hw, ht] at hlt ⊢
+    have : (w : ℚ) + u < z := by linarith
+    have h2 : w + u < z := by exact_mod_cast this
+    have h3 : ((w + u + 1 : ℤ) : ℚ) ≤ z := by exact_mod_cast Int.add_one_le_iff.2 h2
+    push_cast at h3
+    linarith
+  have hX : parXp D j τ = G.parX j := rfl
+  have hX' : parXp D (j + 1) τ = G.parX (j + 1) := rfl
+  have hpart : partner (D.R.t + 1) true c c (G.parX j) = G.parX (j + 1) := by
+    unfold partner
+    have h1 : ((G.parX j).image fun x : ℚ × Bool => (x.1 - c + c, if x.1 < c then !x.2 else x.2)) = G.parX j := by
+      rw [← image_id (s := G.parX j)]
+      rw [image_image]
+      refine image_congr fun x hx => ?_
+      have hx1 : x.1 ∈ G.weightX j := (mem_plus.1 hx).1
+      have := habove _ hx1
+      have ht : (0 : ℚ) ≤ D.R.t := by positivity
+      have hn : ¬ x.1 < c := by linarith
+      simp [hn]
+    rw [h1, GridData.parX, GridData.parX, GridData.weightX_succ, plus_union, hblock]
+    rfl
+  have hT : (((D.R.t + 1 : ℕ) : ℚ) + 1) / 2 = (D.R.t : ℚ) / 2 + 1 := by push_cast; ring
+  have hne : (G.parX j).Nonempty := by
+    refine ⟨(G.a 0, true), mem_plus.2 ⟨GridData.mem_weightX.2 (Or.inl (GridData.mem_tops.2 ⟨0, by omega, rfl⟩)), rfl⟩⟩
+  have hcos : InCoset (c + (((D.R.t + 1 : ℕ) : ℚ) + 1) / 2) (entries (G.parX j)) := by
+    rw [GridData.parX, entries_plus, hT]
+    intro x hx
+    obtain ⟨z, hz⟩ := grid_inCoset_weightX D τ (j := j) x hx
+    obtain ⟨u, hu⟩ := D.R.t_odd
+    have ht : (D.R.t : ℚ) = 2 * u + 1 := by rw [hu]; push_cast; ring
+    obtain ⟨w, hw⟩ : ∃ w : ℤ, c = w := ⟨-(G.e (j + 1)), by rw [hc, hce]; push_cast; ring⟩
+    refine ⟨z - w - u - 1, ?_⟩
+    rw [hz, hw, ht]; push_cast; ring
+  have hfar : FarFrom c ((((D.R.t + 1 : ℕ) : ℚ) + 1) / 2) (G.parX j) := by
+    rw [hT]
+    intro x hx
+    rw [GridData.parX, entries_plus] at hx
+    have := habove x hx
+    have h0 : (0 : ℚ) ≤ D.R.t := by positivity
+    rw [abs_of_nonneg (by linarith)]
+    linarith
+  have hcard : (G.parX j).card + (D.R.t + 1) ≤ bigN D := by
+    rw [GridData.parX, ← (isRegular_plus _).card_entries, entries_plus]
+    have := grid_card_weightX_le D τ j
+    have e : bigN D = D.R.k + D.R.m * (D.R.t + sLen D + 1) := rfl
+    have : (j + 1) * (D.R.t + 1) ≤ D.R.m * (D.R.t + 1) := Nat.mul_le_mul_right _ hj'
+    rw [e]
+    nlinarith
+  have hN : 1800 < bigN D := by
+    have h1 := hS.1
+    have e : bigN D = D.R.k + D.R.m * (D.R.t + sLen D + 1) := rfl
+    have : D.R.m ≤ D.R.m * (D.R.t + sLen D + 1) := Nat.le_mul_of_pos_right _ (by omega)
+    unfold Ranks.r at h1
+    omega
+  have hgap : ∀ E : Finset ℚ, GapOver (plus E) (2 * (bigN D : ℚ) ^ 3) := by
+    intro E x hx y hy hxy
+    exact absurd ((mem_plus.1 hx).2.trans (mem_plus.1 hy).2.symm) hxy
+  have key := GlobalTheory.T.isRealThetaParameterPair_thetaPartnerSignedParameter (D.R.t + 1) true c c (G.parX j) (bigN D) (by omega) hne (isRegular_plus _) hcos hfar hcard hN
+    (hgap _) (by rw [hpart]; exact hgap _)
+  rw [hpart] at key
+  exact ⟨D.R.t + 1, parXp D (j + 1) τ, parXp D j τ, rfl, rfl, Or.inr key⟩
+
+end GlobalTheory.TopPair
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
+open MeasureTheory Matrix GlobalTheory.Chain GlobalTheory.ChainFr GlobalTheory.Grid
+open scoped TensorProduct InnerProductSpace
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.PairLift
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.contragredientThetaParams_lastRowArrows : ∀ D : D7, GlobalTheory.IndefiniteRowSideFullHecke.CuspAlongSmoothLifts.Sizes D → ∀ (j : ℕ) (τ : D.what₂.Tau) (hj : j < D.R.m), PairPar (dualPar (parXp D (j + 1) τ)) (dualPar (parXp D j τ)) (-(D.hc τ).e ⟨j, hj⟩) (-(D.hc τ).e ⟨j, hj⟩) := by
+  atlas_forward_decl GlobalTheory.TopPair.pairPar_top
+end
+
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
@@ -466,4 +1096,5 @@ theorem liftsCuspidal (X : ProvA) (hX : GlobalTheory.Chain.RealIt.ChosenSeries X
 
 end GlobalTheory.PairLift
 
+end
 end

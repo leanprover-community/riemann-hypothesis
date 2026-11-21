@@ -1,8 +1,38 @@
-import Formalism.ThetaLogCoordinates.TraceIsometryWeights.FinalP
+import Formalism.ThetaLogCoordinates.TraceIsometryWeights.SchurTraceProofs.InvInv
+import Formalism.ThetaLogCoordinates.TraceIsometryWeights.SchurTraceProofs.InvInt
+import Formalism.ThetaLogCoordinates.TraceIsometryWeights.SchurTraceProofs.HomRelationHolds
+import Formalism.ThetaLogCoordinates.TraceIsometryWeights.SchurTraceProofs.SchurTraceOfHomInv
+import Formalism.ThetaLogCoordinates.TraceIsometryWeights.SchurTraceProofs.TypeInt
+import Formalism.ThetaLogCoordinates.TraceIsometryWeights.SchurTraceProofs.LatticeBasisPolynomial
+import Formalism.ThetaLogCoordinates.TraceIsometryWeights.SchurTraceProofs.OrthogonalIsomorphismHolds
+import Formalism.ThetaLogCoordinates.TraceIsometryWeights.SchurTraceProofs.CommProjectionHolds
+import Formalism.ThetaLogCoordinates.TraceIsometryWeights.SchurTraceProofs.PolLeISupIsoW
+import Formalism.ThetaLogCoordinates.TraceIsometryWeights.SchurTraceProofs.Discharge
 import Formalism.ThetaLogCoordinates.TraceIsometryWeights.SchurTraceProofs.WeylInt
 import Formalism.ThetaLogCoordinates.TraceIsometryWeights.SchurTraceProofs.ZpClosedToAddSubgroup
 import Formalism.ThetaLogCoordinates.TraceIsometryWeights.SchurTraceProofs.CompEqZeroOfNotDle
 
+section
+namespace Formalism.InvariantFactorPaths.PW.Top
+
+theorem invInv : InvInv := invariant_inverse_holds
+theorem invNat : InvNat := invariant_natural_holds
+theorem homInv : HomInv := homInv_of invInv
+theorem schurTrace : SchurTrace := schurTrace_of invInv
+theorem typeInt : TypeInt := typeInt_of invNat homInv schurTrace
+theorem fockAdj : FockAdj := fischerAdjointness_holds
+theorem divInt : DivInt := divided_integral_holds
+theorem latBasisPol : LatBasisPol := lattice_basis_polynomial
+theorem orthIso : OrthIso := orthogonal_isomorphism_holds
+theorem projP : ProjP := projection_lattice_holds
+theorem commP : CommP := comm_projection_holds
+theorem intP : IntP := intP_of typeInt latBasisPol
+theorem dischargeP : DischargeP := dischargeP_of projP commP intP
+
+end Formalism.InvariantFactorPaths.PW.Top
+end
+
+section
 namespace Formalism.InvariantFactorPaths.PW.Top
 
 theorem weylInt : WeylInt := weyl_integral_holds
@@ -15,7 +45,6 @@ private theorem intP_statement : IntP := by
 theorem extP : ExtP := extP_of intP_statement
 theorem dischargeW : DischargeW := dischargeW_of weylP
 theorem dischargeE : DischargeE := dischargeE_of extP
-theorem discharge_height_bound : HeightBoundImplication :=
-  discharge_of_pwe (dischargeP_of projection_lattice_holds comm_projection_holds intP_statement) dischargeW dischargeE
 
 end Formalism.InvariantFactorPaths.PW.Top
+end

@@ -86,13 +86,5 @@ theorem post_nsmul (K : Cx R) {F G : Shv R} (f : F ⟶ G) (n : ℤ) (k : ℕ) (x
   | zero => rw [zero_nsmul, zero_nsmul, post_zero]
   | succ k ih => rw [succ_nsmul, succ_nsmul, post_add, ih]
 
-theorem post_nsmul_id (K : Cx R) (F : Shv R) (n : ℤ) (k : ℕ) (x : HK R K F n) : HK.post R K (k • 𝟙 F) n x = k • x := by
-  induction k with
-  | zero =>
-    rw [zero_nsmul, zero_nsmul]
-    have h := post_add K (0 : F ⟶ F) 0 n x
-    rw [add_zero] at h
-    exact add_left_cancel (h.symm.trans (add_zero _).symm)
-  | succ k ih => rw [succ_nsmul, succ_nsmul, post_add, ih, post_id]
 
 end CrystallineSemistableComparison.PostcompositionHomotopy

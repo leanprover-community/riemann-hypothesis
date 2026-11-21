@@ -1,5 +1,252 @@
-import ReciprocityTheory.SemistableReduction.IntCoresB
+import ReciprocityTheory.SemistableReduction.SphereLogIntegrableStatement
 
+section
+noncomputable section
+
+namespace ReciprocityTheory.MultiplicativeHeights
+
+open MeasureTheory Metric
+
+theorem continuous_spherePoint (n : ℕ) : Continuous (spherePoint : UnitSphereC n → Fin n → ℂ) := by
+  unfold spherePoint
+  fun_prop
+
+theorem sphere_zero_null (hSJ : SJStatement) {n a : ℕ} (g : MvPolynomial (Fin n) ℂ)
+    (hg : g.IsHomogeneous a) (u : EuclideanSpace ℂ (Fin n)) (hu : ‖u‖ = 1)
+    (hgu : MvPolynomial.eval (WithLp.ofLp u) g ≠ 0) :
+    sphereProb n {z | MvPolynomial.eval (spherePoint z) g = 0} = 0 := by
+  classical
+  have hn : 0 < n := by
+    rcases Nat.eq_zero_or_pos n with rfl | h
+    · simp [EuclideanSpace.norm_eq] at hu
+    · exact h
+  haveI : Nontrivial (EuclideanSpace ℂ (Fin n)) :=
+    Module.nontrivial_of_finrank_pos (R := ℂ) (by simp [hn])
+  have h0 : (volume : Measure (EuclideanSpace ℂ (Fin n))).toSphere Set.univ ≠ 0 := by
+    rw [Measure.toSphere_apply_univ]
+    refine mul_ne_zero ?_ (measure_ball_pos _ _ one_pos).ne'
+    exact_mod_cast Module.finrank_pos.ne'
+  have htop : (volume : Measure (EuclideanSpace ℂ (Fin n))).toSphere Set.univ ≠ ⊤ := by
+    rw [Measure.toSphere_apply_univ]
+    exact ENNReal.mul_ne_top (ENNReal.natCast_ne_top _) measure_ball_lt_top.ne
+  haveI : IsProbabilityMeasure (sphereProb n) :=
+    ProbabilityTheory.cond_isProbabilityMeasure_of_finite h0 htop
+  set μ := sphereProb n with hμ
+  set Z := {z : UnitSphereC n | MvPolynomial.eval (spherePoint z) g = 0} with hZdef
+  have hZ : MeasurableSet Z :=
+    (isClosed_eq ((MvPolynomial.continuous_eval g).comp (continuous_spherePoint n))
+      continuous_const).measurableSet
+  obtain ⟨hint, -⟩ := hSJ n a g u hg hu hgu
+  have key : ∀ c : ℂ, c ≠ 0 → (μ Z).toReal * Real.log ‖c‖ ≤
+      (∫ z, Real.log ‖MvPolynomial.eval (spherePoint z) g‖ ∂μ) -
+        Real.log ‖MvPolynomial.eval (WithLp.ofLp u) g‖ + (a : ℝ) / 2 * (harmonic (n - 1) : ℝ) := by
+    intro c hc
+    have hgc : (MvPolynomial.C c * g).IsHomogeneous a := by
+      simpa using (MvPolynomial.isHomogeneous_C (Fin n) c).mul hg
+    obtain ⟨-, hle⟩ := hSJ n a (MvPolynomial.C c * g) u hgc hu (by simp [hc, hgu])
+    simp only [MvPolynomial.eval_mul, MvPolynomial.eval_C] at hle
+    have hpt : ∀ z : UnitSphereC n, Real.log ‖c * MvPolynomial.eval (spherePoint z) g‖ =
+        Zᶜ.indicator (fun _ ↦ Real.log ‖c‖) z + Real.log ‖MvPolynomial.eval (spherePoint z) g‖ := by
+      intro z
+      by_cases hz : MvPolynomial.eval (spherePoint z) g = 0
+      · have hzZ : z ∈ Z := hz
+        simp [Set.indicator_apply, hzZ, hz]
+      · have hzZ : z ∈ Zᶜ := hz
+        rw [Set.indicator_of_mem hzZ, norm_mul,
+          Real.log_mul (norm_ne_zero_iff.mpr hc) (norm_ne_zero_iff.mpr hz)]
+    have hI : ∫ z, Real.log ‖c * MvPolynomial.eval (spherePoint z) g‖ ∂μ =
+        (μ Zᶜ).toReal * Real.log ‖c‖ + ∫ z, Real.log ‖MvPolynomial.eval (spherePoint z) g‖ ∂μ := by
+      simp_rw [hpt]
+      rw [integral_add ((integrable_const _).indicator hZ.compl) hint,
+        integral_indicator_const _ hZ.compl, smul_eq_mul]
+      try rfl
+    have hcomp : (μ Zᶜ).toReal = 1 - (μ Z).toReal := by
+      rw [prob_compl_eq_one_sub hZ, ENNReal.toReal_sub_of_le prob_le_one ENNReal.one_ne_top,
+        ENNReal.toReal_one]
+    have hL : Real.log ‖c * MvPolynomial.eval (WithLp.ofLp u) g‖ =
+        Real.log ‖c‖ + Real.log ‖MvPolynomial.eval (WithLp.ofLp u) g‖ := by
+      rw [norm_mul, Real.log_mul (norm_ne_zero_iff.mpr hc) (norm_ne_zero_iff.mpr hgu)]
+    rw [hI, hcomp, hL] at hle
+    linarith
+  obtain ⟨K, hK⟩ : ∃ K : ℝ, ∀ c : ℂ, c ≠ 0 → (μ Z).toReal * Real.log ‖c‖ ≤ K := ⟨_, key⟩
+  by_contra hne
+  have hp : 0 < (μ Z).toReal := ENNReal.toReal_pos hne (measure_ne_top _ _)
+  have h1 := hK ((Real.exp ((|K| + 1) / (μ Z).toReal) : ℝ) : ℂ)
+    (Complex.ofReal_ne_zero.mpr (Real.exp_pos _).ne')
+  rw [Complex.norm_real, Real.norm_of_nonneg (Real.exp_pos _).le, Real.log_exp] at h1
+  have h2 : (μ Z).toReal * ((|K| + 1) / (μ Z).toReal) = |K| + 1 := by
+    field_simp
+  linarith [le_abs_self K]
+
+end ReciprocityTheory.MultiplicativeHeights
+end
+end
+
+section
+noncomputable section
+
+namespace ReciprocityTheory.MultiplicativeHeights
+
+open MeasureTheory Metric
+
+def BlockPoly (k n : ℕ) (a : Fin k → ℕ) (F : (Fin k → Fin n → ℂ) → ℂ) : Prop :=
+  Continuous F ∧ ∀ (b : Fin k) (p : Fin k → Fin n → ℂ), ∃ g : MvPolynomial (Fin n) ℂ,
+    g.IsHomogeneous (a b) ∧ ∀ w, F (Function.update p b w) = MvPolynomial.eval w g
+
+def onSpheres {k n : ℕ} (F : (Fin k → Fin n → ℂ) → ℂ) (z : Fin k → UnitSphereC n) : ℂ :=
+  F fun b => spherePoint (z b)
+
+theorem BlockPoly.restrict {k n : ℕ} {a : Fin (k + 1) → ℕ} {F : (Fin (k + 1) → Fin n → ℂ) → ℂ}
+    (hF : BlockPoly (k + 1) n a F) (v : Fin n → ℂ) :
+    BlockPoly k n (fun j => a j.succ) (fun p => F (Fin.cons v p)) := by
+  refine ⟨hF.1.comp (continuous_const.finCons continuous_id), fun b p => ?_⟩
+  obtain ⟨g, hg, hgF⟩ := hF.2 b.succ (Fin.cons v p)
+  refine ⟨g, hg, fun w => ?_⟩
+  simp only
+  rw [Fin.cons_update]
+  exact hgF w
+
+theorem blockPoly_claim (hSJ : SJStatement) (n : ℕ) : ∀ (k : ℕ) (a : Fin k → ℕ)
+    (F : (Fin k → Fin n → ℂ) → ℂ), BlockPoly k n a F → ∀ z0 : Fin k → UnitSphereC n,
+    onSpheres F z0 ≠ 0 →
+    Integrable (fun z => Real.log ‖onSpheres F z‖) (Measure.pi fun _ : Fin k => sphereProb n) ∧
+      Measure.pi (fun _ : Fin k => sphereProb n) {z | onSpheres F z = 0} = 0 := by
+  haveI : IsFiniteMeasure (sphereProb n) := by unfold sphereProb; infer_instance
+  intro k
+  induction k with
+  | zero =>
+    intro a F hF z0 hz0
+    have hconst : ∀ z : Fin 0 → UnitSphereC n, onSpheres F z = onSpheres F z0 := by
+      intro z
+      unfold onSpheres
+      congr 1
+      funext b
+      exact b.elim0
+    refine ⟨?_, ?_⟩
+    · simp_rw [hconst]
+      exact integrable_const _
+    · simp_rw [hconst]
+      simp [hz0]
+  | succ k ih =>
+    intro a F hF z0 hz0
+    set μ := sphereProb n with hμ
+    set ν := Measure.pi fun _ : Fin k => sphereProb n with hν
+    let e := MeasurableEquiv.piFinSuccAbove (fun _ : Fin (k + 1) => UnitSphereC n) 0
+    have mp : MeasurePreserving e (Measure.pi fun _ : Fin (k + 1) => sphereProb n) (μ.prod ν) :=
+      measurePreserving_piFinSuccAbove (fun _ => sphereProb n) 0
+    let e2 := e.trans MeasurableEquiv.prodComm
+    have mp2 : MeasurePreserving e2 (Measure.pi fun _ : Fin (k + 1) => sphereProb n) (ν.prod μ) :=
+      (Measure.measurePreserving_swap).comp mp
+    have hcont : Continuous (onSpheres F : (Fin (k + 1) → UnitSphereC n) → ℂ) :=
+      hF.1.comp (continuous_pi fun b => (continuous_spherePoint n).comp (continuous_apply b))
+    let H : (Fin k → UnitSphereC n) × UnitSphereC n → ℂ := fun q => onSpheres F (e2.symm q)
+    have hHm : Measurable H := hcont.measurable.comp e2.symm.measurable
+    have hsymm : ∀ z' w, e2.symm (z', w) = Fin.cons w z' := by
+      intro z' w
+      simp [e2, e, MeasurableEquiv.piFinSuccAbove_symm_apply, Fin.insertNth_zero']
+      rfl
+    have hH : ∀ z' w, H (z', w) = F (Fin.cons (spherePoint w) (fun b => spherePoint (z' b))) := by
+      intro z' w
+      simp only [H, onSpheres, hsymm]
+      congr 1
+      funext b
+      refine Fin.cases ?_ (fun j => ?_) b <;> simp
+    have hcomp : ∀ z, onSpheres F z = H (e2 z) := by
+      intro z
+      simp only [H, MeasurableEquiv.symm_apply_apply]
+    set v0 := spherePoint (z0 0) with hv0
+    have hR := hF.restrict v0
+    have hG : ∀ z', onSpheres (fun p => F (Fin.cons v0 p)) z' = H (z', z0 0) := by
+      intro z'
+      rw [hH]
+      rfl
+    have hz0' : onSpheres (fun p => F (Fin.cons v0 p)) (fun j => z0 j.succ) ≠ 0 := by
+      simp only [onSpheres] at hz0 ⊢
+      convert hz0 using 2
+      funext b
+      refine Fin.cases ?_ (fun j => ?_) b <;> simp [v0]
+    obtain ⟨ihInt, ihNull⟩ := ih _ _ hR _ hz0'
+    simp_rw [hG] at ihInt ihNull
+    have hgood : ∀ᵐ z' ∂ν, H (z', z0 0) ≠ 0 := by
+      rw [ae_iff]
+      simpa using ihNull
+    have hslice : ∀ z', H (z', z0 0) ≠ 0 →
+        Integrable (fun w => Real.log ‖H (z', w)‖) μ ∧
+        Real.log ‖H (z', z0 0)‖ - (a 0 : ℝ) / 2 * (harmonic (n - 1) : ℝ) ≤
+          ∫ w, Real.log ‖H (z', w)‖ ∂μ ∧ μ {w | H (z', w) = 0} = 0 := by
+      intro z' hz'
+      obtain ⟨g, hg, hgF⟩ := hF.2 0 (Fin.cons 0 (fun b => spherePoint (z' b)))
+      have hHw : ∀ w, H (z', w) = MvPolynomial.eval (spherePoint w) g := by
+        intro w
+        rw [hH, ← hgF, Fin.update_cons_zero]
+      have hu : ‖(z0 0 : EuclideanSpace ℂ (Fin n))‖ = 1 := norm_eq_of_mem_sphere _
+      have hgu : MvPolynomial.eval (WithLp.ofLp (z0 0 : EuclideanSpace ℂ (Fin n))) g ≠ 0 := by
+        rw [hHw] at hz'
+        exact hz'
+      obtain ⟨hI, hL⟩ := hSJ n (a 0) g _ hg hu hgu
+      have hN := sphere_zero_null hSJ g hg _ hu hgu
+      simp_rw [hHw]
+      exact ⟨hI, hL, hN⟩
+    obtain ⟨C, hC⟩ : ∃ C, ∀ z, ‖onSpheres F z‖ ≤ C := by
+      obtain ⟨C, hC⟩ := isCompact_univ.exists_bound_of_continuousOn hcont.continuousOn
+      exact ⟨C, fun z => hC z (Set.mem_univ _)⟩
+    set M := Real.log (max C 1) with hMdef
+    have hM0 : 0 ≤ M := Real.log_nonneg (le_max_right _ _)
+    have hLM : ∀ q, Real.log ‖H q‖ ≤ M := by
+      intro q
+      rcases (norm_nonneg (H q)).eq_or_lt with h0 | hpos
+      · rw [← h0, Real.log_zero]
+        exact hM0
+      · exact Real.log_le_log hpos ((hC _).trans (le_max_left _ _))
+    have habs : ∀ q, ‖Real.log ‖H q‖‖ ≤ 2 * M - Real.log ‖H q‖ := by
+      intro q
+      rw [Real.norm_eq_abs]
+      have := hLM q
+      rcases le_total 0 (Real.log ‖H q‖) with h | h
+      · rw [abs_of_nonneg h]; linarith
+      · rw [abs_of_nonpos h]; linarith
+    have hfm : AEStronglyMeasurable (fun q => Real.log ‖H q‖) (ν.prod μ) :=
+      (Real.measurable_log.comp hHm.norm).aestronglyMeasurable
+    have hInt2 : Integrable (fun q => Real.log ‖H q‖) (ν.prod μ) := by
+      rw [integrable_prod_iff hfm]
+      refine ⟨hgood.mono fun z' hz' => (hslice z' hz').1, ?_⟩
+      refine Integrable.mono'
+        (g := fun z' => ∫ _w, (2 * M) ∂μ -
+          (Real.log ‖H (z', z0 0)‖ - (a 0 : ℝ) / 2 * (harmonic (n - 1) : ℝ)))
+        ((integrable_const _).sub (ihInt.sub (integrable_const _)))
+        hfm.norm.integral_prod_right' ?_
+      filter_upwards [hgood] with z' hz'
+      obtain ⟨hI, hL, -⟩ := hslice z' hz'
+      rw [Real.norm_eq_abs, abs_of_nonneg (integral_nonneg fun _ => norm_nonneg _)]
+      calc ∫ w, ‖Real.log ‖H (z', w)‖‖ ∂μ ≤ ∫ w, (2 * M - Real.log ‖H (z', w)‖) ∂μ :=
+            integral_mono hI.norm ((integrable_const _).sub hI) (fun w => habs _)
+        _ = ∫ _w, (2 * M) ∂μ - ∫ w, Real.log ‖H (z', w)‖ ∂μ :=
+            integral_sub (integrable_const _) hI
+        _ ≤ _ := by linarith
+    have hNull2 : (ν.prod μ) {q | H q = 0} = 0 := by
+      have hms : MeasurableSet {q | H q = 0} := hHm (measurableSet_singleton 0)
+      rw [Measure.measure_prod_null hms]
+      filter_upwards [hgood] with z' hz'
+      simpa [Set.preimage] using (hslice z' hz').2.2
+    refine ⟨?_, ?_⟩
+    · have h1 : (fun z => Real.log ‖onSpheres F z‖) = (fun q => Real.log ‖H q‖) ∘ e2 := by
+        funext z
+        simp only [Function.comp_apply]
+        rw [hcomp z]
+      rw [h1, mp2.integrable_comp_emb e2.measurableEmbedding]
+      exact hInt2
+    · have h1 : {z | onSpheres F z = 0} = e2 ⁻¹' {q | H q = 0} := by
+        ext z
+        simp only [Set.mem_setOf_eq, Set.mem_preimage]
+        rw [hcomp z]
+      rw [h1, mp2.measure_preimage_emb e2.measurableEmbedding]
+      exact hNull2
+
+end ReciprocityTheory.MultiplicativeHeights
+end
+end
+
+section
 noncomputable section
 
 namespace ReciprocityTheory.MultiplicativeHeights
@@ -63,3 +310,5 @@ theorem sphereLogIntegrable_holds (hSJ : SJStatement) : SphereLogIntegrableState
     exact integrable_zero _ _ _
 
 end ReciprocityTheory.MultiplicativeHeights
+end
+end

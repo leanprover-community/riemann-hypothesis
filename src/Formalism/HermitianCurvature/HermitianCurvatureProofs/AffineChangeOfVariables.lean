@@ -24,10 +24,6 @@ theorem integral_comp_mul (α : ℂ) (hα : α ≠ 0) (G : ℂ → ℂ) :
     (Homeomorph.mulLeft₀ α hα).measurableEmbedding
   rw [← he.integral_map, h, integral_smul_measure, ENNReal.toReal_ofReal (by positivity)]
 
-theorem integral_comp_conj (G : ℂ → ℂ) :
-    ∫ ξ : ℂ, G ((starRingEnd ℂ) ξ) = ∫ η : ℂ, G η :=
-  (Complex.conjLIE.measurePreserving).integral_comp
-    Complex.conjLIE.toHomeomorph.measurableEmbedding G
 
 noncomputable def al (β : ℂ) : ℂ := -((starRingEnd ℂ) β) * (((2 * Real.pi)⁻¹ : ℝ) : ℂ)
 
@@ -64,36 +60,7 @@ theorem inner_int (β ξ : ℂ) (f : ℂ → ℂ) :
   simp only [phase1, psi, smul_eq_mul]
   rw [mul_comm (f x), mul_comm Complex.I]
 
-theorem double_vol (β : ℂ) (hβ : β ≠ 0) (f : SchwartzMap ℂ ℂ) (w : ℂ) :
-    ∫ ξ : ℂ, (∫ x : ℂ, f x * psi β (ξ * x)) * psi β (w * ξ) =
-      (((‖β‖ / (2 * Real.pi)) ^ 2)⁻¹ : ℝ) • f (-w) := by
-  have hα : al β ≠ 0 := by
-    rw [← norm_pos_iff, norm_al]
-    have := norm_pos_iff.mpr hβ
-    positivity
-  have hinv : 𝓕⁻ (𝓕 (f : ℂ → ℂ)) = f :=
-    f.continuous.fourierInv_fourier_eq f.integrable (𝓕 f).integrable
-  set G : ℂ → ℂ := fun η =>
-    Complex.exp ((↑(2 * Real.pi * ⟪η, -w⟫) * Complex.I)) • 𝓕 (f : ℂ → ℂ) η with hG
-  have h1 : ∀ ξ : ℂ, (∫ x : ℂ, f x * psi β (ξ * x)) * psi β (w * ξ) =
-      G (al β * (starRingEnd ℂ) ξ) := by
-    intro ξ
-    rw [inner_int, hG]
-    simp only [phase2, psi, smul_eq_mul]
-    rw [mul_comm, mul_comm Complex.I]
-  simp_rw [h1]
-  rw [integral_comp_conj (fun η => G (al β * η)), integral_comp_mul _ hα, norm_al, hG,
-    ← Real.fourierInv_eq', hinv]
 
-theorem double_smul (β : ℂ) (hβ : β ≠ 0) (κ : NNReal) (f : SchwartzMap ℂ ℂ) (w : ℂ) :
-    ∫ ξ : ℂ, (∫ x : ℂ, f x * psi β (ξ * x) ∂(κ • (volume : Measure ℂ))) * psi β (w * ξ)
-        ∂(κ • (volume : Measure ℂ)) =
-      (((κ : ℝ) ^ 2 * ((‖β‖ / (2 * Real.pi)) ^ 2)⁻¹ : ℝ) : ℂ) * f (-w) := by
-  simp only [integral_smul_nnreal_measure, NNReal.smul_def, Complex.real_smul, mul_assoc]
-  rw [integral_const_mul, double_vol β hβ]
-  simp only [Complex.real_smul]
-  push_cast
-  ring
 
 theorem exists_schwartz : ∃ f : SchwartzMap ℂ ℂ, f 0 = 1 := by
   let b : ContDiffBump (0 : ℂ) := ⟨1, 2, one_pos, one_lt_two⟩
@@ -139,32 +106,7 @@ end Formalism.FourierDecayAlt.P.G3
 namespace Formalism.FourierDecayAlt.P
 open Formalism.FourierDecayAlt.P.G3
 
-theorem self_dual_measure : Formalism.FourierDecayAlt.G.SelfDual := by
-  intro β hβ f w
-  unfold mu
-  rw [double_smul β hβ]
-  have hc : 0 < ‖β‖ / (2 * Real.pi) := by
-    have := norm_pos_iff.mpr hβ
-    positivity
-  rw [Real.coe_toNNReal _ hc.le, mul_inv_cancel₀ (by positivity)]
-  simp
 
-theorem self_dual_measure_unique : Formalism.FourierDecayAlt.G.SelfDualUnique := by
-  intro β hβ κ h
-  obtain ⟨f, hf⟩ := exists_schwartz
-  have h0 := h f 0
-  rw [double_smul β hβ, neg_zero, hf, mul_one] at h0
-  have hc : 0 < ‖β‖ / (2 * Real.pi) := by
-    have := norm_pos_iff.mpr hβ
-    positivity
-  have h1 : (κ : ℝ) ^ 2 * ((‖β‖ / (2 * Real.pi)) ^ 2)⁻¹ = 1 := by exact_mod_cast h0
-  have h2 : (κ : ℝ) ^ 2 = (‖β‖ / (2 * Real.pi)) ^ 2 := by
-    field_simp at h1
-    field_simp
-    linarith
-  have h3 : (κ : ℝ) = ‖β‖ / (2 * Real.pi) := by
-    exact (pow_left_inj₀ κ.coe_nonneg hc.le two_ne_zero).mp h2
-  rw [← h3, Real.toNNReal_coe]
 
 theorem affine_change_of_variables : Formalism.FourierDecayAlt.G.AffineChange := by
   intro β α γ hα

@@ -50,8 +50,6 @@ theorem lmulM_cont {k r : ℕ} (a : Mat k r) : Continuous (lmulM a : Mt k r → 
   have hof : Continuous (fun x : Mt k r => (Matrix.of x : Mat k r)) := continuous_id
   exact (continuous_const (y := a)).matrix_mul hof
 
-theorem volCrude : VolCrude :=
-  _root_.UpperTheory.Reformulated.B.LiftingTheory.volCrude
 
 theorem shellInt : ShellInt := by
   intro X _ μ N C d A hN h1 hd hV hA
@@ -115,11 +113,6 @@ namespace Formalism.FourierDecayAlt.P
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2 Formalism.FourierDecayAlt.P.NormBallVolumes
 
-theorem norm_power_integrable_crude_of_volume : Formalism.FourierDecayAlt.B2.GNIntCrudeFromVol := by
-  intro hS hL hV k r μG A hμ hA
-  obtain ⟨C, hC⟩ := hV k r μG hμ
-  refine hS (Mt k r) μG (fun g => gN (Matrix.of g)) C _ A (gN_meas k r) ?_ (by positivity) hC hA
-  filter_upwards [ae_mem hμ] with g hg using hL k r _ hg
 
 theorem matrix_coefficient_bound_by_norm : Formalism.FourierDecayAlt.B2.CCFromGN := by
   intro k r Wp Wq _ _ _ _ D A h F c _ hb
@@ -144,61 +137,7 @@ theorem matrix_coefficient_integrable_of_parts : Formalism.FourierDecayAlt.B2.As
   intro h1 h2 k r Wp Wq _ _ _ _ D A hA
   exact h1 k r Wp Wq D A (h2 k r D.μG A D.haarG hA)
 
-theorem matrix_coefficient_integrable_double : Formalism.FourierDecayAlt.B2.CCIntDouble := by
-  intro hX k r Wp Wq _ _ _ _ _ _ D A hA
-  by_cases hT : ∃ T : Wq →L[ℂ] Wp, T ≠ 0
-  · obtain ⟨T, hT0⟩ := hT
-    apply matrix_coefficient_bound_by_norm k r Wp Wq D A
-    have hA1 : AB k r ≤ A / 2 := by linarith
-    obtain ⟨Ξ, ⟨C, hC⟩, _⟩ := hX k r Wp Wq D (A / 2) hA1
-    set F : Mat k r → (Wq →L[ℂ] Wp) := fun g => ((gN g ^ (-(A / 2)) : ℝ) : ℂ) • T with hF
-    have hm : AEStronglyMeasurable (fun g : Mt k r => F (Matrix.of g)) D.μG := by
-      have h1 : Measurable fun g : Mt k r => ((gN (Matrix.of g) ^ (-(A / 2)) : ℝ) : ℂ) :=
-        Complex.measurable_ofReal.comp ((gN_meas k r).pow_const _)
-      exact h1.aestronglyMeasurable.smul_const T
-    have hn : ∀ g : Mat k r, 0 < gN g → ‖F g‖ = gN g ^ (-(A / 2)) * ‖T‖ := by
-      intro g hg
-      simp only [hF, norm_smul, Complex.norm_real]
-      rw [Real.norm_of_nonneg (Real.rpow_nonneg hg.le _)]
-    have hb : ∀ g ∈ GV k r, gN g ^ (A / 2) * ‖F g‖ ≤ ‖T‖ := by
-      intro g hg
-      have hpos : 0 < gN g := lt_of_lt_of_le one_pos (gnLower k r g hg)
-      rw [hn g hpos, ← mul_assoc, ← Real.rpow_add hpos]
-      simp
-    have hmain := hC F F ‖T‖ ‖T‖ hm hm hb hb 1 (one_mem k r) 1 (one_mem k r)
-    have key : ∀ᵐ g ∂D.μG, ‖T‖ₑ * ‖T‖ₑ * ENNReal.ofReal (gN (Matrix.of g) ^ (-A)) =
-        ‖F ((1 : Mat k r)⁻¹ * Matrix.of g * 1)‖ₑ * ‖F (Matrix.of g)‖ₑ := by
-      filter_upwards [ae_mem D.haarG] with g hg
-      have hpos : 0 < gN (Matrix.of g) := lt_of_lt_of_le one_pos (gnLower k r _ hg)
-      have e1 : (1 : Mat k r)⁻¹ * Matrix.of g * 1 = Matrix.of g := by simp
-      rw [e1, ← ofReal_norm (F (Matrix.of g)), hn _ hpos, ← ofReal_norm T,
-        ← ENNReal.ofReal_mul (norm_nonneg T), ← ENNReal.ofReal_mul (by positivity),
-        ← ENNReal.ofReal_mul (by positivity)]
-      congr 1
-      have : gN (Matrix.of g) ^ (-A) = gN (Matrix.of g) ^ (-(A / 2)) * gN (Matrix.of g) ^ (-(A / 2)) := by
-        rw [← Real.rpow_add hpos]; congr 1; ring
-      rw [this]; ring
-    have hfin : (∫⁻ g : Mt k r, ‖T‖ₑ * ‖T‖ₑ * ENNReal.ofReal (gN (Matrix.of g) ^ (-A)) ∂D.μG) < ∞ := by
-      rw [lintegral_congr_ae key]
-      refine lt_of_le_of_lt hmain ?_
-      exact ENNReal.mul_lt_top (ENNReal.mul_lt_top ENNReal.ofReal_lt_top ENNReal.coe_lt_top) ENNReal.coe_lt_top
-    have hc : ‖T‖ₑ * ‖T‖ₑ ≠ ∞ := ENNReal.mul_ne_top enorm_ne_top enorm_ne_top
-    rw [lintegral_const_mul' _ _ hc] at hfin
-    rcases ENNReal.mul_lt_top_iff.mp hfin with h | h | h
-    · exact h.2
-    · exfalso
-      have : ‖T‖ₑ = 0 := by
-        rcases mul_eq_zero.mp h with h | h <;> exact h
-      exact hT0 (enorm_eq_zero.mp this)
-    · rw [h]; exact ENNReal.zero_lt_top
-  · simp only [not_exists, not_not] at hT
-    intro F c _ _
-    simp [hT]
 
-theorem matrix_coefficient_integrable_crude_all : Formalism.FourierDecayAlt.B2.CCIntCrudeAll := by
-  intro k r Wp Wq _ _ _ _ D A hA
-  exact matrix_coefficient_bound_by_norm k r Wp Wq D A
-    (norm_power_integrable_crude_of_volume shellInt gnLower volCrude k r D.μG A D.haarG hA)
 
 end Formalism.FourierDecayAlt.P
 

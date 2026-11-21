@@ -1,7 +1,301 @@
 import Mathlib
-import GroundTheory.AutomorphicForms.GL2.GJLocalFECoeff
+import GroundTheory.AutomorphicForms.GL2.GJFEDefs
 import GroundTheory.AutomorphicForms.WhittakerCriterion
 
+section
+noncomputable section
+
+namespace GroundTheory.Automorphic
+
+namespace GodementJacquet
+
+open Matrix GLnLocal Parabolic MeasureTheory Measures GJMatrix
+open scoped NNReal ENNReal Pointwise
+
+variable {F : Type*} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
+  {n : ℕ}
+
+section Fourier
+
+variable [MeasurableSpace F] [BorelSpace F]
+
+theorem measurePreserving_of_distribHaarChar_eq_one {ι : Type*} [Fintype ι]
+    {L : (ι → F) ≃ₗ[F] (ι → F)} (hL : distribHaarChar (ι → F) L = 1)
+    (μ₀ : Measure (ι → F)) [μ₀.IsAddHaarMeasure] : MeasurePreserving L μ₀ μ₀ := by
+  have hm : Measurable (L : (ι → F) → (ι → F)) := (L.toLinearMap.continuous_on_pi).measurable
+  refine ⟨hm, ?_⟩
+  ext s hs
+  rw [Measure.map_apply hm hs]
+  have h1 : (L : (ι → F) → (ι → F)) ⁻¹' s = L⁻¹ • s := by
+    rw [← Set.preimage_smul]
+    rfl
+  rw [h1, ← distribHaarChar_mul, map_inv, hL, inv_one, ENNReal.coe_one, one_mul]
+
+variable (F n) in
+
+def mulMulEntries (a b : GL (Fin n) F) : (Fin n × Fin n → F) ≃ₗ[F] (Fin n × Fin n → F) :=
+  (entries F n).symm.trans (((Units.mulLeftLinearEquiv F _ a).trans
+    (Units.mulRightLinearEquiv F b)).trans (entries F n))
+
+omit [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F]
+  [BorelSpace F] in
+theorem mulMulEntries_apply (a b : GL (Fin n) F) (z : Fin n × Fin n → F) :
+    mulMulEntries F n a b z = entries F n ((a : Matrix (Fin n) (Fin n) F) * (entries F n).symm z *
+      (b : Matrix (Fin n) (Fin n) F)) := rfl
+
+omit [MeasurableSpace F] [BorelSpace F] in
+theorem distribHaarChar_mulMulEntries {a b : GL (Fin n) F} (ha : a ∈ integralGL F n)
+    (hb : b ∈ integralGL F n) :
+    distribHaarChar (Fin n × Fin n → F) (mulMulEntries F n a b) = 1 := by
+  have key : ∀ {a b : GL (Fin n) F}, a ∈ integralGL F n → b ∈ integralGL F n →
+      ∀ x ∈ box F (Fin n × Fin n), mulMulEntries F n a b x ∈ box F (Fin n × Fin n) := by
+    intro a b ha hb x hx
+    rw [mem_box] at hx ⊢
+    intro ij
+    rw [mulMulEntries_apply, entries_apply]
+    exact mul_mul_apply_mem_integer ((mem_integralGL_iff F n).1 ha).1 (fun i j => hx (i, j))
+      ((mem_integralGL_iff F n).1 hb).1 _ _
+  refine distribHaarChar_eq_one_of_mapsTo_box (key ha hb) fun x hx => ?_
+  have : (mulMulEntries F n a b).symm x = mulMulEntries F n a⁻¹ b⁻¹ x := by
+    rw [LinearEquiv.symm_apply_eq, mulMulEntries_apply, mulMulEntries_apply]
+    ext ij
+    simp [← mul_assoc]
+  rw [this]
+  exact key (inv_mem ha) (inv_mem hb) x hx
+
+theorem measurePreserving_mul_mul (μF : Measure F) [μF.IsAddHaarMeasure] {a b : GL (Fin n) F}
+    (ha : a ∈ integralGL F n) (hb : b ∈ integralGL F n) :
+    MeasurePreserving (fun X : Matrix (Fin n) (Fin n) F =>
+      (a : Matrix (Fin n) (Fin n) F) * X * (b : Matrix (Fin n) (Fin n) F))
+      (matrixMeasure μF) (matrixMeasure μF) := by
+  have hL := measurePreserving_of_distribHaarChar_eq_one (distribHaarChar_mulMulEntries ha hb)
+    (Measure.pi fun _ : Fin n × Fin n => μF)
+  let E : Matrix (Fin n) (Fin n) F ≃ᵐ (Fin n × Fin n → F) :=
+    (matrixCoordHomeomorph (Fin n) F).toMeasurableEquiv
+  have hE : MeasurePreserving E (matrixMeasure μF) (Measure.pi fun _ => μF) :=
+    measurePreserving_matrixCoord (n := Fin n) μF
+  have hcomp := (hE.symm E).comp (hL.comp hE)
+  convert hcomp using 1
+  funext X
+  ext i j
+  rfl
+
+theorem localMatrixFourier_mul_mul (ψ : AddChar F Circle) {a b : GL (Fin n) F}
+    (ha : a ∈ integralGL F n) (hb : b ∈ integralGL F n) (Φ : Matrix (Fin n) (Fin n) F → ℂ)
+    (y : Matrix (Fin n) (Fin n) F) :
+    localMatrixFourier ψ (fun X => Φ ((a : Matrix (Fin n) (Fin n) F) * X * (b : Matrix (Fin n) (Fin n) F))) y =
+      localMatrixFourier ψ Φ (((b⁻¹ : GL (Fin n) F) : Matrix (Fin n) (Fin n) F) * y *
+        ((a⁻¹ : GL (Fin n) F) : Matrix (Fin n) (Fin n) F)) := by
+  have hT := measurePreserving_mul_mul (LocalField.selfDualMeasure ψ) ha hb
+  have hmeas : ∀ c d : GL (Fin n) F, Measurable (fun X : Matrix (Fin n) (Fin n) F =>
+      (c : Matrix (Fin n) (Fin n) F) * X * (d : Matrix (Fin n) (Fin n) F)) := fun c d =>
+    ((continuous_const.matrix_mul continuous_id).matrix_mul continuous_const).measurable
+  have hemb : MeasurableEmbedding (fun X : Matrix (Fin n) (Fin n) F =>
+      (a : Matrix (Fin n) (Fin n) F) * X * (b : Matrix (Fin n) (Fin n) F)) := by
+    refine MeasurableEmbedding.of_measurable_inverse (hmeas a b) ?_ (hmeas a⁻¹ b⁻¹) ?_
+    · have : Set.range (fun X : Matrix (Fin n) (Fin n) F =>
+          (a : Matrix (Fin n) (Fin n) F) * X * (b : Matrix (Fin n) (Fin n) F)) = Set.univ :=
+        Set.eq_univ_of_forall fun Y => ⟨((a⁻¹ : GL (Fin n) F) : Matrix (Fin n) (Fin n) F) * Y *
+          ((b⁻¹ : GL (Fin n) F) : Matrix (Fin n) (Fin n) F), by
+            simp only [Matrix.mul_assoc]
+            rw [Units.inv_mul, Matrix.mul_one, ← Matrix.mul_assoc, Units.mul_inv, Matrix.one_mul]⟩
+      rw [this]
+      exact MeasurableSet.univ
+    · intro X
+      simp only [Matrix.mul_assoc]
+      rw [Units.mul_inv, Matrix.mul_one, ← Matrix.mul_assoc, Units.inv_mul, Matrix.one_mul]
+  rw [localMatrixFourier, localMatrixFourier]
+  conv_rhs => rw [← hT.integral_comp hemb]
+  congr 1
+  funext X
+  have htr : trace ((a : Matrix (Fin n) (Fin n) F) * X * (b : Matrix (Fin n) (Fin n) F) *
+      (((b⁻¹ : GL (Fin n) F) : Matrix (Fin n) (Fin n) F) * y *
+        ((a⁻¹ : GL (Fin n) F) : Matrix (Fin n) (Fin n) F))) = trace (X * y) := by
+    simp only [Matrix.mul_assoc]
+    rw [← Matrix.mul_assoc (b : Matrix (Fin n) (Fin n) F), Units.mul_inv, Matrix.one_mul,
+      Matrix.trace_mul_comm, Matrix.mul_assoc, Matrix.mul_assoc, Units.inv_mul, Matrix.mul_one]
+  rw [htr]
+
+theorem localMatrixFourier_inv_mul (ψ : AddChar F Circle) {x : GL (Fin n) F}
+    (hx : x ∈ integralGL F n) (Φ : Matrix (Fin n) (Fin n) F → ℂ) (y : Matrix (Fin n) (Fin n) F) :
+    localMatrixFourier ψ (fun X => Φ (((x⁻¹ : GL (Fin n) F) : Matrix (Fin n) (Fin n) F) * X)) y =
+      localMatrixFourier ψ Φ (y * (x : Matrix (Fin n) (Fin n) F)) := by
+  have h := localMatrixFourier_mul_mul ψ (inv_mem hx) (one_mem _) Φ y
+  simp only [Units.val_one, Matrix.mul_one, inv_one, Matrix.one_mul, inv_inv] at h
+  exact h
+
+theorem localMatrixFourier_invariant (ψ : AddChar F Circle) {K : Subgroup (GL (Fin n) F)}
+    (hK0 : ∀ k ∈ K, k ∈ integralGL F n) {Φ : Matrix (Fin n) (Fin n) F → ℂ}
+    (hΦK : ∀ k ∈ K, ∀ X, Φ ((k : Matrix (Fin n) (Fin n) F) * X) = Φ X ∧
+      Φ (X * (k : Matrix (Fin n) (Fin n) F)) = Φ X) :
+    ∀ k ∈ K, ∀ Y, localMatrixFourier ψ Φ ((k : Matrix (Fin n) (Fin n) F) * Y) =
+      localMatrixFourier ψ Φ Y ∧
+      localMatrixFourier ψ Φ (Y * (k : Matrix (Fin n) (Fin n) F)) = localMatrixFourier ψ Φ Y := by
+  intro k hk Y
+  constructor
+  · have h := localMatrixFourier_mul_mul ψ (one_mem _) (hK0 k hk) Φ ((k : Matrix _ _ F) * Y)
+    have hfun : (fun X => Φ (((1 : GL (Fin n) F) : Matrix (Fin n) (Fin n) F) * X *
+        (k : Matrix (Fin n) (Fin n) F))) = Φ := by
+      funext X
+      rw [Units.val_one, Matrix.one_mul, (hΦK k hk X).2]
+    rw [hfun, inv_one, Units.val_one, Matrix.mul_one, ← Matrix.mul_assoc, Units.inv_mul,
+      Matrix.one_mul] at h
+    exact h
+  · have h := localMatrixFourier_mul_mul ψ (hK0 k hk) (one_mem _) Φ (Y * (k : Matrix _ _ F))
+    have hfun : (fun X => Φ ((k : Matrix (Fin n) (Fin n) F) * X *
+        ((1 : GL (Fin n) F) : Matrix (Fin n) (Fin n) F))) = Φ := by
+      funext X
+      rw [Units.val_one, Matrix.mul_one, (hΦK k hk X).1]
+    rw [hfun, inv_one, Units.val_one, Matrix.one_mul, Matrix.mul_assoc, Units.mul_inv,
+      Matrix.mul_one] at h
+    exact h
+
+theorem exists_localMatrixFourier_eq {ψ : AddChar F Circle} (hψ : Continuous ψ) (hψ1 : ψ ≠ 1)
+    {Φ' : Matrix (Fin n) (Fin n) F → ℂ} (hΦ' : IsSchwartzBruhat Φ') :
+    ∃ Φ : Matrix (Fin n) (Fin n) F → ℂ, IsSchwartzBruhat Φ ∧ localMatrixFourier ψ Φ = Φ' := by
+  have hΘ : IsSchwartzBruhat (fun X : Matrix (Fin n) (Fin n) F => Φ' (-X)) :=
+    ⟨hΦ'.1.comp_continuous continuous_neg, hΦ'.2.comp_homeomorph (Homeomorph.neg _)⟩
+  refine ⟨localMatrixFourier ψ (fun X => Φ' (-X)), hΘ.localMatrixFourier hψ hψ1, ?_⟩
+  funext X
+  rw [localMatrixFourier_localMatrixFourier hψ hψ1 hΘ, neg_neg]
+
+end Fourier
+
+section Decomposition
+
+variable {α : Type*} [LinearOrder α] {β : Fin n → α} {W : Type*} [AddCommGroup W] [Module ℂ W]
+  {σ : Representation ℂ (levi F n β) W} [MeasurableSpace (GL (Fin n) F)]
+  [BorelSpace (GL (Fin n) F)]
+
+theorem integrable_and_integral_mul_coeff_eq (μ : Measure (GL (Fin n) F)) [μ.IsHaarMeasure]
+    {K : Subgroup (GL (Fin n) F)} (hKc : IsCompact (K : Set (GL (Fin n) F)))
+    (hKo : IsOpen (K : Set (GL (Fin n) F))) (hK0 : ∀ k ∈ K, k ∈ integralGL F n)
+    {lam : Module.Dual ℂ (parabolicIndSpace F n β σ)}
+    (hlam : ∀ k ∈ K, ∀ ψ, lam (parabolicInd F n β σ k ψ) = lam ψ)
+    {φ : parabolicIndSpace F n β σ} (hφ : φ ∈ fixedVectors (parabolicInd F n β σ) K)
+    {R : Finset (GL (Fin n) F)} {ℓ : GL (Fin n) F → Module.Dual ℂ W}
+    (hdec : ∀ ψ ∈ fixedVectors (parabolicInd F n β σ) K,
+      lam ψ = ∑ x ∈ R, ℓ x ((ψ : GL (Fin n) F → W) x))
+    {H : GL (Fin n) F → ℂ} (hHl : ∀ k ∈ K, ∀ g, H (k * g) = H g)
+    (hHr : ∀ k ∈ K, ∀ g, H (g * k) = H g)
+    (hHc : ∀ j : ℤ, HasCompactSupport ({g : GL (Fin n) F | ordDet g = j}.indicator H))
+    (hint : ∀ x ∈ R, Integrable (fun g => H g * ℓ x ((φ : GL (Fin n) F → W) (x * g))) μ) :
+    Integrable (fun g => H g * lam (parabolicInd F n β σ g φ)) μ ∧
+      ∫ g, H g * lam (parabolicInd F n β σ g φ) ∂μ =
+        ∑ x ∈ R, ∫ g, H g * ℓ x ((φ : GL (Fin n) F → W) (x * g)) ∂μ := by
+  classical
+  set h : ℤ → GL (Fin n) F → ℂ := fun j => {g : GL (Fin n) F | ordDet g = j}.indicator H
+    with hhdef
+  have hordl : ∀ k ∈ K, ∀ g, ordDet (k * g) = ordDet g := fun k hk g => by
+    rw [ordDet_mul, ordDet_of_mem_integralGL (hK0 k hk), zero_add]
+  have hordr : ∀ k ∈ K, ∀ g, ordDet (g * k) = ordDet g := fun k hk g => by
+    rw [ordDet_mul, ordDet_of_mem_integralGL (hK0 k hk), add_zero]
+  have hhl : ∀ j, ∀ k ∈ K, ∀ g, h j (k * g) = h j g := fun j k hk g => by
+    simp only [h, Set.indicator_apply, Set.mem_ofPred_eq, hordl k hk, hHl k hk]
+  have hhr : ∀ j, ∀ k ∈ K, ∀ g, h j (g * k) = h j g := fun j k hk g => by
+    simp only [h, Set.indicator_apply, Set.mem_ofPred_eq, hordr k hk, hHr k hk]
+  have hcont : ∀ G' : GL (Fin n) F → ℂ, (∀ g, ∀ k ∈ K, G' (g * k) = G' g) → Continuous G' :=
+    fun G' hG' => (isLocallyConstant_of_mul_right hKo hG').continuous
+  have hfr : ∀ g, ∀ k ∈ K, lam (parabolicInd F n β σ (g * k) φ) =
+      lam (parabolicInd F n β σ g φ) := fun g k hk => by
+    rw [map_mul, Module.End.mul_apply, show parabolicInd F n β σ k φ = φ from hφ k hk]
+  have hφr : ∀ x g, ∀ k ∈ K, (φ : GL (Fin n) F → W) (x * (g * k)) =
+      (φ : GL (Fin n) F → W) (x * g) := fun x g k hk => by
+    have := congrArg (fun ψ : parabolicIndSpace F n β σ => (ψ : GL (Fin n) F → W) (x * g))
+      (hφ k hk)
+    simp only [coe_indRep_apply] at this
+    rw [← mul_assoc, this]
+  have hhf : ∀ j, Integrable (fun g => ‖h j g * lam (parabolicInd F n β σ g φ)‖) μ := fun j =>
+    ((hcont _ fun g k' hk' => by rw [hhr j k' hk', hfr g k' hk']).norm).integrable_of_hasCompactSupport
+      (hHc j).mul_right.norm
+  have hhint : ∀ j, ∀ x ∈ R, Integrable (fun g => ‖h j g‖ *
+      ‖ℓ x ((φ : GL (Fin n) F → W) (x * g))‖) μ := fun j x _ =>
+    ((hcont _ fun g k' hk' => by rw [hhr j k' hk']).norm.mul
+      (hcont _ fun g k' hk' => by rw [hφr x g k' hk']).norm).integrable_of_hasCompactSupport
+      (hHc j).norm.mul_right
+
+  have hInt : Integrable (fun g => H g * lam (parabolicInd F n β σ g φ)) μ := by
+    refine ⟨(hcont _ fun g k hk => by rw [hHr k hk, hfr g k hk]).aestronglyMeasurable, ?_⟩
+    rw [HasFiniteIntegral]
+    simp_rw [← ofReal_norm]
+    rw [lintegral_eq_tsum_shell]
+    have hterm : ∀ j : ℤ, ∫⁻ g in {g : GL (Fin n) F | ordDet g = j},
+        ENNReal.ofReal ‖H g * lam (parabolicInd F n β σ g φ)‖ ∂μ ≤
+        ∑ x ∈ R, ∫⁻ g in {g : GL (Fin n) F | ordDet g = j},
+          ENNReal.ofReal ‖H g * ℓ x ((φ : GL (Fin n) F → W) (x * g))‖ ∂μ := by
+      intro j
+      have e1 : ∀ g, {g : GL (Fin n) F | ordDet g = j}.indicator (fun g =>
+          ENNReal.ofReal ‖H g * lam (parabolicInd F n β σ g φ)‖) g =
+          ENNReal.ofReal ‖h j g * lam (parabolicInd F n β σ g φ)‖ := by
+        intro g
+        by_cases hg : g ∈ {g : GL (Fin n) F | ordDet g = j}
+        · simp [h, Set.indicator_of_mem hg]
+        · simp [h, Set.indicator_of_notMem hg]
+      have e2 : ∀ x g, {g : GL (Fin n) F | ordDet g = j}.indicator (fun g =>
+          ENNReal.ofReal ‖H g * ℓ x ((φ : GL (Fin n) F → W) (x * g))‖) g =
+          ENNReal.ofReal (‖h j g‖ * ‖ℓ x ((φ : GL (Fin n) F → W) (x * g))‖) := by
+        intro x g
+        by_cases hg : g ∈ {g : GL (Fin n) F | ordDet g = j}
+        · simp [h, Set.indicator_of_mem hg]
+        · simp [h, Set.indicator_of_notMem hg]
+      rw [← lintegral_indicator (measurableSet_shell j), lintegral_congr e1]
+      simp_rw [← lintegral_indicator (measurableSet_shell j), e2]
+      exact lintegral_norm_mul_coeff_le μ hKc hKo hlam hφ hdec (hHc j) (hhl j) (hhr j) (hhf j)
+        (hhint j)
+    calc ∑' j : ℤ, ∫⁻ g in {g : GL (Fin n) F | ordDet g = j},
+          ENNReal.ofReal ‖H g * lam (parabolicInd F n β σ g φ)‖ ∂μ
+        ≤ ∑' j : ℤ, ∑ x ∈ R, ∫⁻ g in {g : GL (Fin n) F | ordDet g = j},
+            ENNReal.ofReal ‖H g * ℓ x ((φ : GL (Fin n) F → W) (x * g))‖ ∂μ :=
+          ENNReal.tsum_le_tsum hterm
+      _ = ∑ x ∈ R, ∫⁻ g, ENNReal.ofReal ‖H g * ℓ x ((φ : GL (Fin n) F → W) (x * g))‖ ∂μ := by
+          rw [Summable.tsum_finsetSum fun _ _ => ENNReal.summable]
+          exact Finset.sum_congr rfl fun x _ => (lintegral_eq_tsum_shell μ _).symm
+      _ < ⊤ := by
+          refine ENNReal.sum_lt_top.2 fun x hx => ?_
+          have := (hint x hx).2
+          simpa [HasFiniteIntegral, ofReal_norm] using this
+  refine ⟨hInt, ?_⟩
+  have hZsum := hasSum_integral_shell μ hInt
+  have hTsum : ∀ x ∈ R, HasSum (fun j : ℤ => ∫ g in {g : GL (Fin n) F | ordDet g = j},
+      H g * ℓ x ((φ : GL (Fin n) F → W) (x * g)) ∂μ)
+      (∫ g, H g * ℓ x ((φ : GL (Fin n) F → W) (x * g)) ∂μ) := fun x hx =>
+    hasSum_integral_shell μ (hint x hx)
+  have hsum := hasSum_sum hTsum
+  have hshell_eq : ∀ j : ℤ, ∫ g in {g : GL (Fin n) F | ordDet g = j},
+      H g * lam (parabolicInd F n β σ g φ) ∂μ =
+      ∑ x ∈ R, ∫ g in {g : GL (Fin n) F | ordDet g = j},
+        H g * ℓ x ((φ : GL (Fin n) F → W) (x * g)) ∂μ := by
+    intro j
+    rw [← integral_indicator (measurableSet_shell j)]
+    simp_rw [Set.indicator_mul_left _ H]
+    rw [integral_mul_coeff_eq μ hKc hKo hφ hdec (hHc j) (hhl j) (hhr j)]
+    refine Finset.sum_congr rfl fun x _ => ?_
+    rw [← integral_indicator (measurableSet_shell j)]
+    simp_rw [Set.indicator_mul_left _ H]
+  refine hZsum.unique ?_
+  convert hsum using 1
+  funext j
+  exact hshell_eq j
+
+end Decomposition
+
+section Reduction
+
+universe u
+
+variable {V : Type u} [AddCommGroup V] [Module ℂ V] {π : Representation ℂ (GL (Fin n) F) V}
+  [MeasurableSpace F] [BorelSpace F] [MeasurableSpace (GL (Fin n) F)] [BorelSpace (GL (Fin n) F)]
+
+
+end Reduction
+
+end GodementJacquet
+
+end GroundTheory.Automorphic
+end
+end
+
+section
 noncomputable section
 
 namespace GroundTheory.Automorphic
@@ -39,11 +333,6 @@ theorem IsGammaFactor.smul_measure {μ : Measure (GL (Fin n) F)} {ψ : AddChar F
   · rw [zetaIntegral, zetaIntegral, integral_smul_nnreal_measure, NNReal.smul_def,
       Complex.real_smul]
 
-theorem IsGammaFactor.of_isHaarMeasure {μ ν : Measure (GL (Fin n) F)} [μ.IsHaarMeasure]
-    [ν.IsHaarMeasure] {ψ : AddChar F Circle} {γ : RatFunc ℂ} (h : IsGammaFactor F π μ ψ γ) :
-    IsGammaFactor F π ν ψ γ := by
-  rw [Measure.isMulLeftInvariant_eq_smul ν μ]
-  exact h.smul_measure _
 
 theorem IsGammaFactor.unique [π.IsIrreducible] (hπ : IsAdmissible π) {μ : Measure (GL (Fin n) F)}
     [μ.IsHaarMeasure] {ψ : AddChar F Circle} {γ γ' : RatFunc ℂ} (h : IsGammaFactor F π μ ψ γ)
@@ -74,62 +363,9 @@ def gammaFactor (ψ : AddChar F Circle) : RatFunc ℂ := by
   exact if h : ∃ γ : RatFunc ℂ, IsGammaFactor F π (Measure.haar : Measure (GL (Fin n) F)) ψ γ
     then h.choose else 0
 
-theorem isGammaFactor_gammaFactor [π.IsIrreducible] (hπ : IsAdmissible π)
-    {μ : Measure (GL (Fin n) F)} [μ.IsHaarMeasure] {ψ : AddChar F Circle} {γ : RatFunc ℂ}
-    (hγ : IsGammaFactor F π μ ψ γ) : IsGammaFactor F π μ ψ (gammaFactor F π ψ) := by
-  classical
-  have hH : IsGammaFactor F π (Measure.haar : Measure (GL (Fin n) F)) ψ γ :=
-    hγ.of_isHaarMeasure
-  have hex : ∃ γ : RatFunc ℂ, IsGammaFactor F π (Measure.haar : Measure (GL (Fin n) F)) ψ γ :=
-    ⟨γ, hH⟩
-  have hg : gammaFactor F π ψ = γ := by
-    rw [gammaFactor, dif_pos hex]
-    exact IsGammaFactor.unique hπ hex.choose_spec hH
-  rw [hg]
-  exact hγ
 
-theorem functionalEquation_of_inducedFE [π.IsIrreducible] (hπ : IsAdmissible π)
-    (μ : Measure (GL (Fin n) F)) [μ.IsHaarMeasure] {ψ : AddChar F Circle} (hψ : Continuous ψ)
-    (hψ1 : ψ ≠ 1)
-    (hI : ∀ (β : Fin n → ℕ) (W : Type u) [AddCommGroup W] [Module ℂ W]
-      (σ : Representation ℂ (levi F n β) W), IsAdmissible σ → σ.IsIrreducible → IsCuspidal σ →
-        ∃ γ, InducedFE F σ μ ψ γ) :
-    ∀ Φ : Matrix (Fin n) (Fin n) F → ℂ, IsSchwartzBruhat Φ → ∀ v : V,
-      ∀ ℓ ∈ smoothVectors (Representation.dual π),
-        (∃ s₁ : ℝ, ∀ s : ℂ, s₁ < s.re → Integrable (fun g : GL (Fin n) F =>
-          Φ (g : Matrix (Fin n) (Fin n) F) * matrixCoeff π v ℓ g *
-            detPow g (s + ((n : ℂ) - 1) / 2)) μ) ∧
-        (∃ s₁ : ℝ, ∀ s : ℂ, s.re < s₁ → Integrable (fun g : GL (Fin n) F =>
-          localMatrixFourier ψ Φ (g : Matrix (Fin n) (Fin n) F) * matrixCoeff π v ℓ g⁻¹ *
-            detPow g ((1 - s) + ((n : ℂ) - 1) / 2)) μ) ∧
-        RatFE F (gammaFactor F π ψ) (zetaIntegral μ Φ (matrixCoeff π v ℓ))
-          (fun s => zetaIntegral μ (localMatrixFourier ψ Φ) (fun g => matrixCoeff π v ℓ g⁻¹)
-            (1 - s)) := by
-  obtain ⟨γ, hγ⟩ := exists_coeffFE_of_inducedFE hπ μ hψ hψ1 hI
-  have hG : IsGammaFactor F π μ ψ γ := fun Φ hΦ v ℓ hℓ => (hγ Φ hΦ v ℓ hℓ).2.2
-  have heq : gammaFactor F π ψ = γ := IsGammaFactor.unique hπ (isGammaFactor_gammaFactor hπ hG) hG
-  intro Φ hΦ v ℓ hℓ
-  rw [heq]
-  exact hγ Φ hΦ v ℓ hℓ
 
-theorem isGammaFactor_gammaFactor_of_inducedFE [π.IsIrreducible] (hπ : IsAdmissible π)
-    (μ : Measure (GL (Fin n) F)) [μ.IsHaarMeasure] {ψ : AddChar F Circle} (hψ : Continuous ψ)
-    (hψ1 : ψ ≠ 1)
-    (hI : ∀ (β : Fin n → ℕ) (W : Type u) [AddCommGroup W] [Module ℂ W]
-      (σ : Representation ℂ (levi F n β) W), IsAdmissible σ → σ.IsIrreducible → IsCuspidal σ →
-        ∃ γ, InducedFE F σ μ ψ γ) :
-    IsGammaFactor F π μ ψ (gammaFactor F π ψ) := fun Φ hΦ v ℓ hℓ =>
-  (functionalEquation_of_inducedFE hπ μ hψ hψ1 hI Φ hΦ v ℓ hℓ).2.2
 
-theorem existsUnique_isGammaFactor_of_inducedFE [π.IsIrreducible] (hπ : IsAdmissible π)
-    (μ : Measure (GL (Fin n) F)) [μ.IsHaarMeasure] {ψ : AddChar F Circle} (hψ : Continuous ψ)
-    (hψ1 : ψ ≠ 1)
-    (hI : ∀ (β : Fin n → ℕ) (W : Type u) [AddCommGroup W] [Module ℂ W]
-      (σ : Representation ℂ (levi F n β) W), IsAdmissible σ → σ.IsIrreducible → IsCuspidal σ →
-        ∃ γ, InducedFE F σ μ ψ γ) :
-    ∃! γ : RatFunc ℂ, IsGammaFactor F π μ ψ γ :=
-  ⟨gammaFactor F π ψ, isGammaFactor_gammaFactor_of_inducedFE hπ μ hψ hψ1 hI, fun _ h =>
-    IsGammaFactor.unique hπ h (isGammaFactor_gammaFactor_of_inducedFE hπ μ hψ hψ1 hI)⟩
 
 variable (F) in
 
@@ -290,88 +526,9 @@ variable [π.IsIrreducible] (hπ : IsAdmissible π) {μ : Measure (GL (Fin n) F)
   (hγ : IsGammaFactor F π μ ψ γ)
 include hπ hψ hψ1 hγ
 
-theorem exists_mem_zetaSet_contragredient {R : RatFunc ℂ} (hR : R ∈ zetaSet π μ) :
-    ∃ R' ∈ zetaSet (contragredient π) μ, γ * R = dualSubst F R' := by
-  have := Whittaker.isIrreducible_contragredient hπ
-  have hπ' := isAdmissible_contragredient hπ
-  obtain ⟨Φ, v, ℓ, hΦ, hℓ, s₀, hZ⟩ := hR
-  obtain ⟨R₁, s₁, hA, hB⟩ := hγ Φ hΦ v ℓ hℓ
-  have hR₁ : R₁ = R := eq_of_eval_qs_eq_right (F := F) (s₁ := max s₀ s₁) fun s hs => by
-    rw [max_lt_iff] at hs
-    rw [← hA s hs.2, hZ s hs.1]
-  subst hR₁
-  have hΦh := hΦ.localMatrixFourier hψ hψ1
-  obtain ⟨s₂, hrat⟩ := exists_ratFunc_zetaIntegral (π := contragredient π) hπ' μ
-  obtain ⟨R', hR'⟩ := hrat _ hΦh ⟨ℓ, hℓ⟩ (evalSmooth π v) (evalSmooth_mem (hπ.1 v))
-  refine ⟨R', ⟨_, ⟨ℓ, hℓ⟩, evalSmooth π v, hΦh, evalSmooth_mem (hπ.1 v), s₂, hR'⟩, ?_⟩
-  obtain ⟨t, ht⟩ := exists_denom_ne_zero_right (F := F) R'
-  refine eq_of_eval_qs_eq_left (F := F) (s₁ := min (-s₁) (min (1 - s₂) (1 - t))) fun s hs => ?_
-  simp only [lt_min_iff] at hs
-  have h1 : s₂ < (1 - s).re := by rw [Complex.sub_re, Complex.one_re]; linarith
-  have h2 : t < (1 - s).re := by rw [Complex.sub_re, Complex.one_re]; linarith
-  rw [← hB s hs.1, eval_dualSubst R' (qs_ne_zero s) (by rw [← qs_one_sub]; exact ht _ h2),
-    ← qs_one_sub, ← hR' _ h1]
-  rfl
 
-theorem exists_mem_zetaSet_of_contragredient {R' : RatFunc ℂ}
-    (hR' : R' ∈ zetaSet (contragredient π) μ) :
-    ∃ R ∈ zetaSet π μ, dualSubst F R' = γ * R := by
-  obtain ⟨Φ', x, Λ, hΦ', hΛ, s₀, hZ'⟩ := hR'
-  obtain ⟨v, hv⟩ := (toDoubleContragredient_bijective hπ).2 ⟨Λ, hΛ⟩
-  have hΛv : Λ = evalSmooth π v := (congrArg Subtype.val hv).symm
-  subst hΛv
-  obtain ⟨Φ, hΦ, rfl⟩ := exists_localMatrixFourier_eq hψ hψ1 hΦ'
-  obtain ⟨s₂, hrat⟩ := exists_ratFunc_zetaIntegral hπ μ
-  obtain ⟨R, hR⟩ := hrat Φ hΦ v x.1 x.2
-  refine ⟨R, ⟨Φ, v, x.1, hΦ, x.2, s₂, hR⟩, ?_⟩
-  obtain ⟨R₁, s₁, hA, hB⟩ := hγ Φ hΦ v x.1 x.2
-  have hR₁ : R₁ = R := eq_of_eval_qs_eq_right (F := F) (s₁ := max s₂ s₁) fun s hs => by
-    rw [max_lt_iff] at hs
-    rw [← hA s hs.2, hR s hs.1]
-  subst hR₁
-  obtain ⟨t, ht⟩ := exists_denom_ne_zero_right (F := F) R'
-  refine eq_of_eval_qs_eq_left (F := F) (s₁ := min (-s₁) (min (1 - s₀) (1 - t))) fun s hs => ?_
-  simp only [lt_min_iff] at hs
-  have h1 : s₀ < (1 - s).re := by rw [Complex.sub_re, Complex.one_re]; linarith
-  have h2 : t < (1 - s).re := by rw [Complex.sub_re, Complex.one_re]; linarith
-  rw [eval_dualSubst R' (qs_ne_zero s) (by rw [← qs_one_sub]; exact ht _ h2), ← qs_one_sub,
-    ← hZ' _ h1, ← hB s hs.1]
-  rfl
 
-theorem exists_mem_zetaIdeal_contragredient {R : RatFunc ℂ} (hR : R ∈ zetaIdeal π μ) :
-    ∃ R' ∈ zetaIdeal (contragredient π) μ, γ * R = dualSubst F R' := by
-  induction hR using Submodule.span_induction with
-  | mem R hR =>
-    obtain ⟨R', hR', h⟩ := exists_mem_zetaSet_contragredient hπ hψ hψ1 hγ hR
-    exact ⟨R', Submodule.subset_span hR', h⟩
-  | zero => exact ⟨0, zero_mem _, by simp⟩
-  | add R₁ R₂ _ _ h₁ h₂ =>
-    obtain ⟨R'₁, hm₁, e₁⟩ := h₁
-    obtain ⟨R'₂, hm₂, e₂⟩ := h₂
-    exact ⟨R'₁ + R'₂, add_mem hm₁ hm₂, by rw [mul_add, e₁, e₂, map_add]⟩
-  | smul c R _ h =>
-    obtain ⟨R', hm, e⟩ := h
-    refine ⟨c • R', Submodule.smul_mem _ c hm, ?_⟩
-    rw [Algebra.smul_def, Algebra.smul_def, map_mul, AlgHom.commutes, ← e]
-    ring
 
-theorem exists_mem_zetaIdeal_of_contragredient {R' : RatFunc ℂ}
-    (hR' : R' ∈ zetaIdeal (contragredient π) μ) :
-    ∃ R ∈ zetaIdeal π μ, dualSubst F R' = γ * R := by
-  induction hR' using Submodule.span_induction with
-  | mem R' hR' =>
-    obtain ⟨R, hR, h⟩ := exists_mem_zetaSet_of_contragredient hπ hψ hψ1 hγ hR'
-    exact ⟨R, Submodule.subset_span hR, h⟩
-  | zero => exact ⟨0, zero_mem _, by simp⟩
-  | add R₁ R₂ _ _ h₁ h₂ =>
-    obtain ⟨S₁, hm₁, e₁⟩ := h₁
-    obtain ⟨S₂, hm₂, e₂⟩ := h₂
-    exact ⟨S₁ + S₂, add_mem hm₁ hm₂, by rw [map_add, e₁, e₂, mul_add]⟩
-  | smul c R' _ h =>
-    obtain ⟨S, hm, e⟩ := h
-    refine ⟨c • S, Submodule.smul_mem _ c hm, ?_⟩
-    rw [Algebra.smul_def, Algebra.smul_def, map_mul, AlgHom.commutes, e]
-    ring
 
 end Contragredient
 
@@ -382,104 +539,9 @@ def epsilonFactor (ψ : AddChar F Circle) : RatFunc ℂ :=
     dualSubst F (algebraMap ℂ[X] (RatFunc ℂ) (LPolynomial (contragredient π))) /
       algebraMap ℂ[X] (RatFunc ℂ) (LPolynomial π)
 
-theorem exists_epsilonFactor_eq_of_inducedFE [NeZero n] [π.IsIrreducible] (hπ : IsAdmissible π)
-    (μ : Measure (GL (Fin n) F)) [μ.IsHaarMeasure] {ψ : AddChar F Circle} (hψ : Continuous ψ)
-    (hψ1 : ψ ≠ 1)
-    (hI : ∀ (β : Fin n → ℕ) (W : Type u) [AddCommGroup W] [Module ℂ W]
-      (σ : Representation ℂ (levi F n β) W), IsAdmissible σ → σ.IsIrreducible → IsCuspidal σ →
-        ∃ γ, InducedFE F σ μ ψ γ) :
-    ∃ c : ℂ, c ≠ 0 ∧ ∃ k : ℤ, epsilonFactor F π ψ = RatFunc.C c * RatFunc.X ^ k ∧
-      ∀ s : ℂ, (LPolynomial π).eval (qs F s) ≠ 0 →
-        (LPolynomial (contragredient π)).eval (qs F (1 - s)) ≠ 0 →
-          (gammaFactor F π ψ).eval (RingHom.id ℂ) (qs F s) * LFunction π s /
-            LFunction (contragredient π) (1 - s) = c * qs F s ^ k := by
-  have hγ := isGammaFactor_gammaFactor_of_inducedFE hπ μ hψ hψ1 hI
-  have := Whittaker.isIrreducible_contragredient hπ
-  have hπ' := isAdmissible_contragredient hπ
-  obtain ⟨hP0, hP⟩ := LPolynomial_spec hπ μ
-  obtain ⟨hP'0, hP'⟩ := LPolynomial_spec hπ' μ
-  have hPpoly : LPolynomial π ≠ 0 := fun h => by
-    rw [h, eval_zero] at hP0
-    exact zero_ne_one hP0
-  have hP'poly : LPolynomial (contragredient π) ≠ 0 := fun h => by
-    rw [h, eval_zero] at hP'0
-    exact zero_ne_one hP'0
-  have hPne : algebraMap ℂ[X] (RatFunc ℂ) (LPolynomial π) ≠ 0 := RatFunc.algebraMap_ne_zero hPpoly
-  have hθne : dualSubst F (algebraMap ℂ[X] (RatFunc ℂ) (LPolynomial (contragredient π))) ≠ 0 := by
-    rw [dualSubst_algebraMap]
-    exact aeval_dualVar_ne_zero hP'poly
-
-  obtain ⟨R', hR'mem, hR'⟩ := exists_mem_zetaIdeal_contragredient hπ hψ hψ1 hγ
-    ((hP _).2 ⟨1, one_mem _, rfl⟩)
-  obtain ⟨L₁, hL₁, rfl⟩ := (hP' R').1 hR'mem
-  have hε1 : epsilonFactor F π ψ = dualSubst F L₁ := by
-    rw [map_div₀] at hR'
-    rw [epsilonFactor]
-    field_simp
-    field_simp at hR'
-    rw [hR']
-
-  obtain ⟨R, hRmem, hR⟩ := exists_mem_zetaIdeal_of_contragredient hπ hψ hψ1 hγ
-    ((hP' _).2 ⟨1, one_mem _, rfl⟩)
-  obtain ⟨L₂, hL₂, rfl⟩ := (hP R).1 hRmem
-  have hγne : gammaFactor F π ψ ≠ 0 := by
-    intro h0
-    rw [h0, zero_mul, map_div₀, map_one] at hR
-    exact one_div_ne_zero hθne hR
-  have hε2 : (epsilonFactor F π ψ)⁻¹ = L₂ := by
-    rw [map_div₀, map_one] at hR
-    rw [epsilonFactor]
-    field_simp
-    field_simp at hR
-    rw [hR]
-    ring
-  have hεne : epsilonFactor F π ψ ≠ 0 := by
-    rw [epsilonFactor]
-    exact div_ne_zero (mul_ne_zero hγne hθne) hPne
-  obtain ⟨r, i, a, hr, hεeq⟩ := exists_eq_C_mul_X_pow_of_mem
-    (hε1 ▸ dualSubst_mem_laurentSubalgebra hL₁) (hε2 ▸ hL₂) hεne
-  have hX : (RatFunc.X : RatFunc ℂ) ≠ 0 := RatFunc.X_ne_zero
-  refine ⟨r, hr, (i : ℤ) - a, ?_, fun s hPs hP's => ?_⟩
-  · rw [hεeq, map_mul, RatFunc.algebraMap_C, map_pow, map_pow, RatFunc.algebraMap_X,
-      zpow_sub₀ hX, zpow_natCast, zpow_natCast, mul_div_assoc]
-  · have hx : qs F s ≠ 0 := qs_ne_zero s
-    have hθ : dualSubst F (algebraMap ℂ[X] (RatFunc ℂ) (LPolynomial (contragredient π))) =
-        algebraMap ℂ[X] (RatFunc ℂ) (dualPoly F (LPolynomial (contragredient π))) /
-          algebraMap ℂ[X] (RatFunc ℂ) (X ^ (LPolynomial (contragredient π)).natDegree) := by
-      rw [dualSubst_algebraMap, aeval_dualVar]
-    have hQ'ne : algebraMap ℂ[X] (RatFunc ℂ) (dualPoly F (LPolynomial (contragredient π))) ≠ 0 := by
-      intro h
-      apply hθne
-      rw [hθ, h, zero_div]
-    have hXa : algebraMap ℂ[X] (RatFunc ℂ) (X ^ a) ≠ 0 := by
-      rw [map_pow, RatFunc.algebraMap_X]
-      exact pow_ne_zero _ hX
-    have hXd : algebraMap ℂ[X] (RatFunc ℂ) (X ^ (LPolynomial (contragredient π)).natDegree) ≠ 0 := by
-      rw [map_pow, RatFunc.algebraMap_X]
-      exact pow_ne_zero _ hX
-    have hγeq : gammaFactor F π ψ = algebraMap ℂ[X] (RatFunc ℂ)
-        (C r * X ^ i * LPolynomial π * X ^ (LPolynomial (contragredient π)).natDegree) /
-        algebraMap ℂ[X] (RatFunc ℂ) (X ^ a * dualPoly F (LPolynomial (contragredient π))) := by
-      have h1 : gammaFactor F π ψ = epsilonFactor F π ψ * algebraMap ℂ[X] (RatFunc ℂ) (LPolynomial π) /
-          dualSubst F (algebraMap ℂ[X] (RatFunc ℂ) (LPolynomial (contragredient π))) := by
-        rw [epsilonFactor]
-        field_simp
-      rw [h1, hεeq, hθ]
-      simp only [map_mul]
-      field_simp
-    have hQ'x : (dualPoly F (LPolynomial (contragredient π))).eval (qs F s) =
-        qs F s ^ (LPolynomial (contragredient π)).natDegree *
-          (LPolynomial (contragredient π)).eval (qs F (1 - s)) := by
-      rw [qs_one_sub]
-      exact eval_dualPoly _ hx
-    have hden : (X ^ a * dualPoly F (LPolynomial (contragredient π))).eval (qs F s) ≠ 0 := by
-      rw [eval_mul, eval_pow, eval_X, hQ'x]
-      exact mul_ne_zero (pow_ne_zero _ hx) (mul_ne_zero (pow_ne_zero _ hx) hP's)
-    rw [hγeq, eval_div_algebraMap _ _ hden]
-    simp only [LFunction, eval_mul, eval_pow, eval_X, eval_C, hQ'x]
-    rw [zpow_sub₀ hx, zpow_natCast, zpow_natCast]
-    field_simp
 
 end GodementJacquet
 
 end GroundTheory.Automorphic
+end
+end

@@ -1,23 +1,674 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.DenomBound
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.PolarConjTranspose
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.HasSmoothLogNearOneOfIsUnitaryLieExpDataStatement
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.SmoothInExponentialCoordsIffFirstSecondKindStatement
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.HasSmoothLogNearOneOfIsUnitaryLieExpData
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.SmoothInExponentialCoordsIffFirstSecondKind
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.CommutingAlgebrasFiniteSpanStatement
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.UnitaryLieGeneratorsRepStatement
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsEnvelopingAlgHomUnitaryLieAlgebraStatement
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.EnvelopingMapSurjective
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.AdelicUnitaryRealPointsStructureRealPlacesStatement
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.UnitaryAdelicHeightCosetLeNormInfPowStatement
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.NormInfSubmultiplicativeLeAdelicHeightStatement
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.UnitaryLatticeDenominatorHeightBoundProofStatement
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsFiniteCosetsAdelicUnitaryBoundedDenominatoStatement
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.UnitaryLieGeneratorsRep
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.AdelicUnitaryRealPointsStructureRealPlaces
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.UnitaryAdelicHeightCosetLeNormInfPow
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.NormInfSubmultiplicativeLeAdelicHeight
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.UnitaryLatticeDenominatorHeightBoundProof
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsCompactAdeleRingModNumberField
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsAdeleRingTensorEquivInfiniteProdFinite
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.UnitaryReductionPolynomialHeightBoundStatement
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.OrthogonalAnisotropicFrameBoundedCM
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsLieDataCircle
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.ShortLatticeVectorBoundedSizeOfOrthogonalFrame
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.AnisotropicFiniteLengthsOfShortLatticeVector
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.OrthogonalFrameOfAnisotropicFiniteLengths
+import Development.AbelianVarietyTheory.PublishedTheorems.AdelicLattices₂.ExistsIntMulIsIntegralOfTrace
 
+section
+open GlobalTheory.SmoothForms NumberField Matrix
+open scoped ContDiff Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hasSmoothLogNearOne_of_isUnitaryLieExpData : ∀ (𝔸 L G : Type) [NormedRing 𝔸] [NormedAlgebra ℝ 𝔸] [FiniteDimensional ℝ 𝔸] [NormedAddCommGroup L] [NormedSpace ℝ L] [Group G] (σ : 𝔸 →ₗ[ℝ] 𝔸) (j : L →ₗ[ℝ] 𝔸) (s : 𝔸 → G), IsLieData σ j s → HasLog σ j := by
+  first | exact @GlobalTheory.SmoothForms.hasLog_of_isLieData | exact GlobalTheory.SmoothForms.hasLog_of_isLieData | (intros; apply GlobalTheory.SmoothForms.hasLog_of_isLieData <;> assumption)
+end
+
+section
+open GlobalTheory.SmoothForms NumberField Matrix
+open scoped ContDiff Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.smoothInExponentialCoords_iff_first_second_kind : ∀ (𝔸 L G : Type) [NormedRing 𝔸] [NormedAlgebra ℝ 𝔸] [FiniteDimensional ℝ 𝔸] [NormedAddCommGroup L] [NormedSpace ℝ L] [Group G] (σ : 𝔸 →ₗ[ℝ] 𝔸) (j : L →ₗ[ℝ] 𝔸) (s : 𝔸 → G), IsLieData σ j s → HasLog σ j → ∀ T : Set L, Submodule.span ℝ T = ⊤ → ∀ φ : G → ℂ, Sm (expMap j s) φ ↔ ∀ (k : ℕ) (Y : Fin k → L), (∀ i, Y i ∈ T) → ∀ g, ContDiff ℝ ∞ fun t : Fin k → ℝ => φ (g * (List.ofFn fun i => expMap j s (t i • Y i)).prod) := by
+  first | exact @GlobalTheory.SmoothForms.SecondKind.main | exact GlobalTheory.SmoothForms.SecondKind.main | (intros; apply GlobalTheory.SmoothForms.SecondKind.main <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta GlobalTheory.SmoothForms Matrix
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+attribute [local instance 100] LieRing.ofAssociativeRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_lie_generators_rep : ∀ (n : ℕ) (J : Matrix (Fin n) (Fin n) ℂ), Jᴴ = J → IsUnit J.det → ∃ P Q : Fin n → Fin n → GlobalTheory.IndefiniteRowSideFullHecke.LieAlgebraExponentialFamilies.lieU J, (∀ a b, (P a b).1 = (1 / 2 : ℂ) • (Matrix.single a b 1 + -(J⁻¹ * (Matrix.single a b (1 : ℂ))ᴴ * J)) ∧ (Q a b).1 = (1 / (2 * Complex.I)) • (Matrix.single a b 1 - -(J⁻¹ * (Matrix.single a b (1 : ℂ))ᴴ * J))) ∧ ∀ (A : Type) [Ring A] [Algebra ℂ A] (ρ : GlobalTheory.IndefiniteRowSideFullHecke.LieAlgebraExponentialFamilies.lieU J → A), (∀ X Y, ρ (X + Y) = ρ X + ρ Y) → (∀ (c : ℝ) X, ρ (c • X) = (c : ℂ) • ρ X) → (∀ X Y Z : GlobalTheory.IndefiniteRowSideFullHecke.LieAlgebraExponentialFamilies.lieU J, Z.1 = X.1 * Y.1 - Y.1 * X.1 → ρ Z = ρ X * ρ Y - ρ Y * ρ X) → Formalism.REAL.GlRel (fun a b => ρ (P a b) + Complex.I • ρ (Q a b)) ∧ ∀ X, ρ X ∈ Submodule.span ℂ (Set.range fun p : Fin n × Fin n => ρ (P p.1 p.2) + Complex.I • ρ (Q p.1 p.2)) := by
+  first | exact @GlobalTheory.UnitaryLieComplexification.glRel_and_span | exact GlobalTheory.UnitaryLieComplexification.glRel_and_span | (intros; apply GlobalTheory.UnitaryLieComplexification.glRel_and_span <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta GlobalTheory.SmoothForms Matrix
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+attribute [local instance 100] LieRing.ofAssociativeRing
+
+noncomputable section
+
+namespace GlobalTheory.EnvelopingExtension
+
+theorem exists_algHom_of_real (L : Type) [LieRing L] [LieAlgebra ℝ L] (A : Type) [Ring A] [Algebra ℂ A] (ρ : L → A)
+    (hadd : ∀ X Y, ρ (X + Y) = ρ X + ρ Y) (hsmul : ∀ (c : ℝ) X, ρ (c • X) = (c : ℂ) • ρ X)
+    (hbr : ∀ X Y, ρ ⁅X, Y⁆ = ρ X * ρ Y - ρ Y * ρ X) :
+    ∃ π : UniversalEnvelopingAlgebra ℂ (ℂ ⊗[ℝ] L) →ₐ[ℂ] A,
+      ∀ X, π (UniversalEnvelopingAlgebra.ι ℂ ((1 : ℂ) ⊗ₜ[ℝ] X)) = ρ X := by
+  let f : L →ₗ[ℝ] A :=
+    { toFun := ρ
+      map_add' := hadd
+      map_smul' := fun c X => by
+        rw [hsmul]
+        exact Complex.coe_smul c (ρ X) }
+  let F : ℂ ⊗[ℝ] L →ₗ[ℂ] A := f.liftBaseChange ℂ
+  have hF : ∀ (a : ℂ) (x : L), F (a ⊗ₜ x) = a • ρ x := fun a x => by
+    simp [F, f, LinearMap.liftBaseChange_tmul]
+  have hlie : ∀ u v : ℂ ⊗[ℝ] L, F ⁅u, v⁆ = ⁅F u, F v⁆ := by
+    intro u v
+    induction u using TensorProduct.induction_on with
+    | zero => simp
+    | add u₁ u₂ h₁ h₂ => rw [add_lie, map_add, h₁, h₂, map_add, add_lie]
+    | tmul a x =>
+      induction v using TensorProduct.induction_on with
+      | zero => simp
+      | add v₁ v₂ h₁ h₂ => rw [lie_add, map_add, h₁, h₂, map_add, lie_add]
+      | tmul b y =>
+        rw [LieAlgebra.ExtendScalars.bracket_tmul, hF, hF, hF, hbr, Ring.lie_def,
+          smul_mul_smul_comm, smul_mul_smul_comm, mul_comm b a, smul_sub]
+  let G : ℂ ⊗[ℝ] L →ₗ⁅ℂ⁆ A := { F with map_lie' := fun {u v} => hlie u v }
+  refine ⟨UniversalEnvelopingAlgebra.lift ℂ G, fun X => ?_⟩
+  rw [UniversalEnvelopingAlgebra.lift_ι_apply]
+  change F ((1 : ℂ) ⊗ₜ X) = ρ X
+  rw [hF, one_smul]
+
+theorem exists_algHom_unitary : ∀ (n : ℕ) (J : Matrix (Fin n) (Fin n) ℂ) (A : Type) [Ring A] [Algebra ℂ A] (ρ : GlobalTheory.IndefiniteRowSideFullHecke.LieAlgebraExponentialFamilies.lieU J → A), (∀ X Y, ρ (X + Y) = ρ X + ρ Y) → (∀ (c : ℝ) X, ρ (c • X) = (c : ℂ) • ρ X) → (∀ X Y Z : GlobalTheory.IndefiniteRowSideFullHecke.LieAlgebraExponentialFamilies.lieU J, Z.1 = X.1 * Y.1 - Y.1 * X.1 → ρ Z = ρ X * ρ Y - ρ Y * ρ X) → ∃ π : UniversalEnvelopingAlgebra ℂ (ℂ ⊗[ℝ] GlobalTheory.IndefiniteRowSideFullHecke.LieAlgebraExponentialFamilies.lieU J) →ₐ[ℂ] A, ∀ X, π (UniversalEnvelopingAlgebra.ι ℂ ((1 : ℂ) ⊗ₜ[ℝ] X)) = ρ X := by
+  intro n J A _ _ ρ hadd hsmul hbr
+  exact exists_algHom_of_real _ A ρ hadd hsmul fun X Y => hbr X Y ⁅X, Y⁆ (by
+    rw [LieSubalgebra.coe_bracket, Ring.lie_def])
+
+end GlobalTheory.EnvelopingExtension
+
+end
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta GlobalTheory.SmoothForms Matrix
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+attribute [local instance 100] LieRing.ofAssociativeRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_envelopingAlgHom_unitaryLieAlgebra : ∀ (n : ℕ) (J : Matrix (Fin n) (Fin n) ℂ) (A : Type) [Ring A] [Algebra ℂ A] (ρ : GlobalTheory.IndefiniteRowSideFullHecke.LieAlgebraExponentialFamilies.lieU J → A), (∀ X Y, ρ (X + Y) = ρ X + ρ Y) → (∀ (c : ℝ) X, ρ (c • X) = (c : ℂ) • ρ X) → (∀ X Y Z : GlobalTheory.IndefiniteRowSideFullHecke.LieAlgebraExponentialFamilies.lieU J, Z.1 = X.1 * Y.1 - Y.1 * X.1 → ρ Z = ρ X * ρ Y - ρ Y * ρ X) → ∃ π : UniversalEnvelopingAlgebra ℂ (ℂ ⊗[ℝ] GlobalTheory.IndefiniteRowSideFullHecke.LieAlgebraExponentialFamilies.lieU J) →ₐ[ℂ] A, ∀ X, π (UniversalEnvelopingAlgebra.ι ℂ ((1 : ℂ) ⊗ₜ[ℝ] X)) = ρ X := by
+  first | exact @GlobalTheory.EnvelopingExtension.exists_algHom_unitary | exact GlobalTheory.EnvelopingExtension.exists_algHom_unitary | (intros; apply GlobalTheory.EnvelopingExtension.exists_algHom_unitary <;> assumption)
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta GlobalTheory.SmoothForms Matrix
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+attribute [local instance 100] LieRing.ofAssociativeRing
+
+namespace GlobalTheory.EnvWords
+
+theorem mem_span_words (L : Type) [LieRing L] [LieAlgebra ℝ L] (u : UniversalEnvelopingAlgebra ℂ (ℂ ⊗[ℝ] L)) :
+    u ∈ Submodule.span ℂ (Set.range fun l : List L =>
+      (l.map fun X => UniversalEnvelopingAlgebra.ι ℂ ((1 : ℂ) ⊗ₜ[ℝ] X)).prod) := by
+  have hs : Function.Surjective (UniversalEnvelopingAlgebra.mkAlgHom ℂ (ℂ ⊗[ℝ] L)) :=
+    fun u => Quotient.exists_rep u
+  obtain ⟨t, rfl⟩ := hs u
+  induction t using TensorAlgebra.induction with
+  | algebraMap r =>
+    rw [AlgHom.commutes, Algebra.algebraMap_eq_smul_one]
+    exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨[], rfl⟩)
+  | ι x =>
+    change UniversalEnvelopingAlgebra.ι ℂ x ∈ _
+    induction x using TensorProduct.induction_on with
+    | zero => rw [map_zero]; exact Submodule.zero_mem _
+    | tmul z X =>
+      have h : z ⊗ₜ[ℝ] X = z • ((1 : ℂ) ⊗ₜ[ℝ] X) := by
+        rw [TensorProduct.smul_tmul', smul_eq_mul, mul_one]
+      rw [h, map_smul]
+      exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨[X], by simp⟩)
+    | add x y hx hy => rw [map_add]; exact Submodule.add_mem _ hx hy
+  | mul a b ha hb =>
+    rw [map_mul]
+    have h := Submodule.mul_mem_mul ha hb
+    rw [Submodule.span_mul_span] at h
+    refine Submodule.span_mono ?_ h
+    rintro _ ⟨_, ⟨l, rfl⟩, _, ⟨m, rfl⟩, rfl⟩
+    exact ⟨l ++ m, by simp only [List.map_append, List.prod_append]⟩
+  | add a b ha hb => rw [map_add]; exact Submodule.add_mem _ ha hb
+
+theorem envOf_surjective : ∀ (D : D7) (V : HSp D) (τ : D.what₂.Tau),
+    Function.Surjective (GlobalTheory.IndefiniteRowSideFullHecke.LieAlgebraExponentialFamilies.envOf V τ) := by
+  intro D V τ u
+  exact (Finsupp.mem_span_range_iff_exists_finsupp).1 (mem_span_words (GlobalTheory.IndefiniteRowSideFullHecke.LieAlgebraExponentialFamilies.LieAt V τ) u)
+
+end GlobalTheory.EnvWords
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta GlobalTheory.SmoothForms Matrix
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+attribute [local instance 100] LieRing.ofAssociativeRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.enveloping_map_surjective : ∀ (D : D7) (V : HSp D) (τ : D.what₂.Tau), Function.Surjective (GlobalTheory.IndefiniteRowSideFullHecke.LieAlgebraExponentialFamilies.envOf V τ) := by
+  atlas_forward_decl GlobalTheory.EnvWords.envOf_surjective
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta GlobalTheory.SmoothForms Matrix
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+attribute [local instance 100] LieRing.ofAssociativeRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adelicUnitary_realPoints_structure_realPlaces : ∀ D : D7, (∀ θ θ' : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ), IsInfFam θ → IsInfFam θ' → θ = θ') ∧ ∀ θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ), IsInfFam θ → ∀ V : HSp D, RealPoints θ V := by
+  first | exact @GlobalTheory.SmoothForms.RealPts.realPoints | exact GlobalTheory.SmoothForms.RealPts.realPoints | (intros; apply GlobalTheory.SmoothForms.RealPts.realPoints <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta GlobalTheory.SmoothForms Matrix
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+attribute [local instance 100] LieRing.ofAssociativeRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitaryAdelicHeight_coset_le_normInf_pow : ∀ (D : D7) (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)) (V : HSp D), ∃ M : ℕ, ∀ x : GA D V, ∃ C : ℝ, ∀ g ∈ GinfC V, (GlobalTheory.IndefiniteRowSideFullHecke.LieAlgebraExponentialFamilies.height θ V (x * g) : ℝ) ≤ C * normInf θ V g ^ M := by
+  first | exact @GlobalTheory.SmoothForms.HeightCoset.height_le_normInf_pow | exact GlobalTheory.SmoothForms.HeightCoset.height_le_normInf_pow | (intros; apply GlobalTheory.SmoothForms.HeightCoset.height_le_normInf_pow <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta GlobalTheory.SmoothForms Matrix
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+attribute [local instance 100] LieRing.ofAssociativeRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.normInf_submultiplicative_le_adelicHeight : ∀ (D : D7) (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)) (V : HSp D), (∀ g h : GA D V, normInf θ V (g * h) ≤ normInf θ V g * normInf θ V h) ∧ ∃ C : ℝ, ∀ g : GA D V, normInf θ V g ≤ C * (GlobalTheory.IndefiniteRowSideFullHecke.LieAlgebraExponentialFamilies.height θ V g : ℝ) := by
+  first | exact @GlobalTheory.SmoothForms.normInf_mul_le_and_le_height | exact GlobalTheory.SmoothForms.normInf_mul_le_and_le_height | (intros; apply GlobalTheory.SmoothForms.normInf_mul_le_and_le_height <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta GlobalTheory.SmoothForms Matrix
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+attribute [local instance 100] LieRing.ofAssociativeRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitaryLatticeDenominatorHeightBound_proof : ∀ (D : D7) (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)) (V : HSp D), DenomBound θ V := by
+  first | exact @GlobalTheory.SmoothForms.denomBound | exact GlobalTheory.SmoothForms.denomBound | (intros; apply GlobalTheory.SmoothForms.denomBound <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta GlobalTheory.SmoothForms Matrix
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+attribute [local instance 100] LieRing.ofAssociativeRing
+
+namespace GlobalTheory.SmoothForms.Cover
+
+open NumberField IsDedekindDomain Topology
+
+theorem exists_finset_of_compact {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
+    (H : Subgroup G) (U : Subgroup H) (hU : IsOpen (U : Set H)) (K : Set G) (hK : IsCompact K)
+    (Ω : Set H) (hΩ : ∀ k ∈ Ω, (k : G) ∈ K) :
+    ∃ S : Finset H, (∀ x ∈ S, x ∈ Ω) ∧ ∀ k ∈ Ω, ∃ x ∈ S, x⁻¹ * k ∈ U := by
+  classical
+  obtain ⟨W, hW, hWU⟩ := isOpen_induced_iff.1 hU
+  have h1 : (1 : G) ∈ W := by
+    have : (1 : H) ∈ (U : Set H) := U.one_mem
+    rw [← hWU] at this
+    exact this
+  have hc : Continuous fun p : G × G => p.1⁻¹ * p.2 := by fun_prop
+  have h2 : (fun p : G × G => p.1⁻¹ * p.2) ⁻¹' W ∈ 𝓝 ((1, 1) : G × G) :=
+    (hW.preimage hc).mem_nhds (by simpa using h1)
+  obtain ⟨A, hA, B, hB, hAB⟩ := mem_nhds_prod_iff.1 h2
+  obtain ⟨t, -, ht⟩ := hK.elim_nhds_subcover (fun x => (fun y => x⁻¹ * y) ⁻¹' (A ∩ B)) (fun x _ => by
+    have : Continuous fun y : G => x⁻¹ * y := by fun_prop
+    exact this.continuousAt.preimage_mem_nhds (by simpa using ⟨hA, hB⟩))
+  have hch : ∀ x : G, (∃ s ∈ Ω, x⁻¹ * (s : G) ∈ A ∩ B) → ∃ s ∈ Ω, x⁻¹ * (s : G) ∈ A ∩ B := fun _ h => h
+  choose f hf hf' using hch
+  refine ⟨(t.filter fun x => ∃ s ∈ Ω, x⁻¹ * (s : G) ∈ A ∩ B).attach.image
+    fun x => f x.1 (by have h := x.2; rw [Finset.mem_filter] at h; exact h.2), ?_, ?_⟩
+  · intro x hx
+    obtain ⟨y, -, rfl⟩ := Finset.mem_image.1 hx
+    exact hf _ _
+  · intro k hk
+    obtain ⟨x, hx, hxk⟩ := Set.mem_iUnion₂.1 (ht (hΩ k hk))
+    have hex : ∃ s ∈ Ω, x⁻¹ * (s : G) ∈ A ∩ B := ⟨k, hk, hxk⟩
+    refine ⟨f x hex, Finset.mem_image.2 ⟨⟨x, Finset.mem_filter.2 ⟨hx, hex⟩⟩, Finset.mem_attach _ _, rfl⟩, ?_⟩
+    have h3 := hAB (Set.mk_mem_prod (hf' x hex).1 hxk.2)
+    have h4 : (x⁻¹ * (f x hex : G))⁻¹ * (x⁻¹ * (k : G)) = (((f x hex)⁻¹ * k : H) : G) := by
+      push_cast; group
+    change _ ∈ (U : Set H)
+    rw [← hWU]
+    change _ ∈ W
+    rw [← h4]
+    exact h3
+
+theorem isCompact_GL {A : Type} [CommRing A] [TopologicalSpace A] [IsTopologicalRing A] [T2Space A] {n : ℕ}
+    (C : Fin n → Fin n → Set A) (hC : ∀ i j, IsCompact (C i j)) :
+    IsCompact {g : GL (Fin n) A | ∀ i j, g.1 i j ∈ C i j ∧ (g⁻¹).1 i j ∈ C i j} := by
+  have h1 : IsCompact {m : Matrix (Fin n) (Fin n) A | ∀ i j, m i j ∈ C i j} :=
+    isCompact_pi_infinite fun i => isCompact_pi_infinite (hC i)
+  have h2 := (Units.isClosedEmbedding_embedProduct (α := Matrix (Fin n) (Fin n) A)).isCompact_preimage
+    (h1.prod (h1.image MulOpposite.continuous_op))
+  convert h2 using 1
+  ext g
+  simp only [Set.mem_setOf_eq, Set.mem_preimage, Units.embedProduct_apply, Set.mem_prod, Set.mem_image,
+    MulOpposite.op_inj, exists_eq_right, forall_and]
+
+theorem exists_compact_denom (D : D7) (d : ℕ) (hd : 0 < d) :
+    ∃ C : Set (Af D.host.F ⊗[D.host.F] D.host.E), IsCompact C ∧ ∀ y, d • y ∈ intAE D → y ∈ C := by
+  classical
+  haveI : IsModuleTopology (Af D.host.F) (Af D.host.F ⊗[D.host.F] D.host.E) := ⟨rfl⟩
+  haveI : Module.Finite D.host.F D.host.E := Module.Finite.of_restrictScalars_finite ℚ _ _
+  haveI : IsTopologicalRing (Af D.host.F ⊗[D.host.F] D.host.E) :=
+    IsModuleTopology.isTopologicalRing (Af D.host.F) _
+  let b := RingOfIntegers.basis D.host.E
+  let O : AddSubgroup (Af D.host.F) :=
+    { carrier := {a | ∀ v, a v ∈ v.adicCompletionIntegers D.host.F}
+      zero_mem' := fun v => zero_mem _
+      add_mem' := fun ha hb v => add_mem (ha v) (hb v)
+      neg_mem' := fun ha v => neg_mem (ha v) }
+  let φ : (Module.Free.ChooseBasisIndex ℤ (𝓞 D.host.E) → Af D.host.F) →+
+      Af D.host.F ⊗[D.host.F] D.host.E :=
+    { toFun := fun a => ∑ i, a i • ((1 : Af D.host.F) ⊗ₜ[D.host.F] (b i : D.host.E))
+      map_zero' := by simp
+      map_add' := fun x y => by simp [add_smul, Finset.sum_add_distrib] }
+  have hφ : Continuous φ :=
+    continuous_finset_sum _ fun i _ => (continuous_apply i).fun_smul continuous_const
+  have hle : intAE D ≤ (AddSubgroup.pi Set.univ fun _ => O).map φ := by
+    refine (AddSubgroup.closure_le _).2 ?_
+    rintro y ⟨a, ha, x, rfl⟩
+    refine ⟨fun i => b.repr x i • a, fun i _ => zsmul_mem (show a ∈ O from ha) _, ?_⟩
+    change ∑ i, (b.repr x i • a) • ((1 : Af D.host.F) ⊗ₜ[D.host.F] (b i : D.host.E)) = _
+    conv_rhs => rw [← b.sum_repr x]
+    change _ = a ⊗ₜ[D.host.F] (algebraMap (𝓞 D.host.E) D.host.E _)
+    rw [map_sum, TensorProduct.tmul_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [map_zsmul, smul_assoc, TensorProduct.smul_tmul', smul_eq_mul, mul_one]
+    exact (map_zsmul (TensorProduct.mk D.host.F (Af D.host.F) D.host.E a) _ _).symm
+  have hO : IsCompact (Set.pi Set.univ fun _ : Module.Free.ChooseBasisIndex ℤ (𝓞 D.host.E) =>
+      (O : Set (Af D.host.F))) :=
+    isCompact_univ_pi fun _ => GlobalTheory.AdeleCocompact.isCompact_integral D.host.F
+  let c : Af D.host.F := algebraMap D.host.F (Af D.host.F) (d : D.host.F)⁻¹
+  have hcs : Continuous fun y : Af D.host.F ⊗[D.host.F] D.host.E => c • y :=
+    (continuous_const (y := c)).fun_smul continuous_id
+  refine ⟨(fun y => c • y) '' (φ '' _), (hO.image hφ).image hcs, fun y hy => ?_⟩
+  refine ⟨d • y, hle hy, ?_⟩
+  have : (d : D.host.F) ≠ 0 := Nat.cast_ne_zero.mpr hd.ne'
+  change c • d • y = y
+  rw [← Nat.cast_smul_eq_nsmul (Af D.host.F), smul_smul,
+    ← map_natCast (algebraMap D.host.F (Af D.host.F)) d, ← map_mul, inv_mul_cancel₀ this, map_one, one_smul]
+
+theorem exists_finset_cover : ∀ (D : D7) (V : HSp D) (U : Subgroup (GA D V)), IsOpen (U : Set (GA D V)) → ∀ d : ℕ, 0 < d → ∃ S : Finset (GA D V), ∀ k ∈ GfC V, BddDen V d k → ∃ x ∈ S, x⁻¹ * k ∈ U ∧ x⁻¹ * k ∈ GfC V := by
+  intro D V U hU d hd
+  haveI : IsModuleTopology (AF D.host.F) (AE D) := ⟨rfl⟩
+  haveI : Module.Finite D.host.F D.host.E := Module.Finite.of_restrictScalars_finite ℚ _ _
+  haveI : IsTopologicalRing (AE D) := IsModuleTopology.isTopologicalRing (AF D.host.F) _
+  haveI := GlobalTheory.AdelicUnitaryTop.t2Space_adeleRing_numberField D.host.F
+  obtain ⟨e0⟩ := GlobalTheory.AdelicUnitaryTop.nonempty_homeomorph (F := D.host.F) (E := D.host.E) (AF D.host.F)
+  haveI : T2Space (AE D) := e0.isEmbedding.t2Space
+  obtain ⟨C, hC, hCd⟩ := exists_compact_denom D d hd
+  obtain ⟨e, he, -, hc⟩ := GlobalTheory.AdSplit.exists_adele_equiv D.host.F D.host.E
+  let C' : Fin V.rank → Fin V.rank → Set (AE D) := fun i j =>
+    e.symm '' ({(1 : Matrix (Fin V.rank) (Fin V.rank) (Ainf D.host.F ⊗[D.host.F] D.host.E)) i j} ×ˢ C)
+  have hC' : ∀ i j, IsCompact (C' i j) := fun i j => (isCompact_singleton.prod hC).image hc
+  have key : ∀ k ∈ GfC V, (∀ i j, d • finMat D.sp.cm.sig V.gram k i j ∈ intAE D) →
+      ∀ i j, (matHom V k).1 i j ∈ C' i j := by
+    intro k hk h i j
+    refine ⟨e ((matHom V k).1 i j), ⟨?_, ?_⟩, e.symm_apply_apply _⟩
+    · rw [(he _).1]
+      have h1 : (infHom V k).1 i j = _ := congrArg (fun g => g.1 i j) (MonoidHom.mem_ker.1 hk)
+      exact h1
+    · rw [(he _).2]
+      exact hCd _ (h i j)
+  obtain ⟨S, hS, hS'⟩ := exists_finset_of_compact (HR (AF D.host.F) D.sp.cm.sig V.gram) U hU _
+    (isCompact_GL C' hC') {k : GA D V | k ∈ GfC V ∧ BddDen V d k} (fun k hk i j =>
+      ⟨key k hk.1 (fun i j => (hk.2 i j).1) i j, key k⁻¹ (inv_mem hk.1) (fun i j => (hk.2 i j).2) i j⟩)
+  refine ⟨S, fun k hk hb => ?_⟩
+  obtain ⟨x, hx, hxk⟩ := hS' k ⟨hk, hb⟩
+  exact ⟨x, hx, hxk, mul_mem (inv_mem (hS x hx).1) hk⟩
+
+end GlobalTheory.SmoothForms.Cover
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta GlobalTheory.SmoothForms Matrix
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+attribute [local instance 100] LieRing.ofAssociativeRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_finite_cosets_adelicUnitary_bounded_denominator : ∀ (D : D7) (V : HSp D) (U : Subgroup (GA D V)), IsOpen (U : Set (GA D V)) → ∀ d : ℕ, 0 < d → ∃ S : Finset (GA D V), ∀ k ∈ GfC V, BddDen V d k → ∃ x ∈ S, x⁻¹ * k ∈ U ∧ x⁻¹ * k ∈ GfC V := by
+  first | exact @GlobalTheory.SmoothForms.Cover.exists_finset_cover | exact GlobalTheory.SmoothForms.Cover.exists_finset_cover | (intros; apply GlobalTheory.SmoothForms.Cover.exists_finset_cover <;> assumption)
+end
+
+section
+section
+open GlobalTheory.SmoothForms NumberField Matrix
+open scoped ContDiff Topology
+
+namespace GlobalTheory.SmoothForms
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E]
+
+theorem exists_small_anisotropic_mem {V : Type} [AddCommGroup V] [Module E V] {h : V →ₗ[E] V →ₗ⋆[E] E}
+    {Λ : Submodule ℤ V} {N : ℤ} {ν : V → ℝ} {B₀ : ℝ} (H : Sized h Λ N ν B₀) {B : ℝ} (hB : 2 ≤ B)
+    {W : Submodule E V} (hW : W ≠ ⊥) (hnd : ∀ y ∈ W, (∀ x ∈ W, h y x = 0) → y = 0)
+    (hsp : W ≤ Submodule.span E {x | x ∈ Λ ∧ x ∈ W ∧ ν x ≤ B}) :
+    ∃ v, v ∈ Λ ∧ v ∈ W ∧ h v v ≠ 0 ∧ ν v ≤ B ^ 4 := by
+  have hB1 : B ≤ B ^ 4 := le_self_pow₀ (by linarith) (by norm_num)
+  obtain ⟨x, ⟨hx1, hx2, hx3⟩, hx0⟩ : ∃ x ∈ {x | x ∈ Λ ∧ x ∈ W ∧ ν x ≤ B}, x ≠ 0 := by
+    by_contra hc
+    push Not at hc
+    exact hW (le_bot_iff.1 (hsp.trans (Submodule.span_eq_bot.2 hc).le))
+  obtain ⟨y, ⟨hy1, hy2, hy3⟩, hxy⟩ : ∃ y ∈ {x | x ∈ Λ ∧ x ∈ W ∧ ν x ≤ B}, h x y ≠ 0 := by
+    by_contra hc
+    push Not at hc
+    refine hx0 (hnd x hx2 fun z hz => ?_)
+    have : Submodule.span E {x | x ∈ Λ ∧ x ∈ W ∧ ν x ≤ B} ≤ LinearMap.ker (h x) :=
+      Submodule.span_le.2 fun z hz => hc z hz
+    exact this (hsp hz)
+  by_cases hxx : h x x = 0
+  swap
+  · exact ⟨x, hx1, hx2, hxx, hx3.trans hB1⟩
+  by_cases hyy : h y y = 0
+  swap
+  · exact ⟨y, hy1, hy2, hyy, hy3.trans hB1⟩
+  refine ⟨x + h x y • y, Λ.add_mem hx1 (H.stable _ (H.int x hx1 y hy1) y hy1),
+    W.add_mem hx2 (W.smul_mem _ hy2), ?_, ?_⟩
+  · have : h (x + h x y • y) (x + h x y • y) = 2 * (h x y * star (h x y)) := by
+      simp only [map_add, LinearMap.add_apply, map_smulₛₗ, LinearMap.smul_apply, hxx, hyy, H.symm x y,
+        smul_eq_mul, RingHom.id_apply, starRingEnd_apply]
+      ring
+    rw [this]
+    exact mul_ne_zero two_ne_zero (mul_ne_zero hxy (star_ne_zero.2 hxy))
+  · have h0 : (0 : ℝ) ≤ B := by linarith
+    have h1 : house (h x y) ≤ B * B := (H.form_le x y).trans (mul_le_mul hx3 hy3 (H.nonneg _) h0)
+    have h2 : ν (h x y • y) ≤ B * B * B :=
+      (H.smul_le _ _).trans (mul_le_mul h1 hy3 (H.nonneg _) (by positivity))
+    have h3 : B ≤ B ^ 3 := le_self_pow₀ (by linarith) (by norm_num)
+    have h4 : 2 * B ^ 3 ≤ B * B ^ 3 := mul_le_mul_of_nonneg_right hB (by positivity)
+    have := H.add_le x (h x y • y)
+    nlinarith
+
+theorem exists_small_frame_mem (n : ℕ) : ∃ k : ℕ, ∀ (V : Type) [AddCommGroup V] [Module E V] [FiniteDimensional E V]
+    (h : V →ₗ[E] V →ₗ⋆[E] E) (Λ : Submodule ℤ V) (N : ℤ) (ν : V → ℝ) (B₀ : ℝ), Sized h Λ N ν B₀ →
+    ∀ B : ℝ, 2 ≤ B → ∀ W : Submodule E V, Module.finrank E W = n → (∀ y ∈ W, (∀ x ∈ W, h y x = 0) → y = 0) →
+    W ≤ Submodule.span E {x | x ∈ Λ ∧ x ∈ W ∧ ν x ≤ B} →
+    ∃ v : Fin n → V, (∀ i, v i ∈ Λ ∧ v i ∈ W) ∧ (∀ i j, i ≠ j → h (v i) (v j) = 0) ∧
+      ∀ i, h (v i) (v i) ≠ 0 ∧ ν (v i) ≤ B ^ k := by
+  induction n with
+  | zero => exact ⟨0, fun V _ _ _ h Λ N ν B₀ H B hB W hn hnd hsp =>
+      ⟨Fin.elim0, fun i => i.elim0, fun i => i.elim0, fun i => i.elim0⟩⟩
+  | succ n ih =>
+    obtain ⟨k, ih⟩ := ih
+    refine ⟨10 * k + 4, fun V _ _ _ h Λ N ν B₀ H B hB W hn hnd hsp => ?_⟩
+    have hW : W ≠ ⊥ := by
+      rintro rfl
+      simp at hn
+    have h0 : (0 : ℝ) ≤ B := by linarith
+    have hB1 : (1 : ℝ) ≤ B := by linarith
+    obtain ⟨v, hv1, hv2, hv3, hv4⟩ := exists_small_anisotropic_mem H hB hW hnd hsp
+    let g : W →ₗ[E] E := (h.flip v).domRestrict W
+    let W' : Submodule E V := (LinearMap.ker g).map W.subtype
+    have hmem : ∀ x, x ∈ W' ↔ x ∈ W ∧ h x v = 0 := fun x => by
+      constructor
+      · rintro ⟨y, hy, rfl⟩
+        exact ⟨y.2, hy⟩
+      · rintro ⟨h1, h2⟩
+        exact ⟨⟨x, h1⟩, h2, rfl⟩
+    have hrank : Module.finrank E W' = n := by
+      have h1 := g.finrank_range_add_finrank_ker
+      have h2 : LinearMap.range g = ⊤ := by
+        rw [eq_top_iff]
+        intro c _
+        refine ⟨(c / h v v) • ⟨v, hv2⟩, ?_⟩
+        rw [map_smul]
+        change (c / h v v) * h v v = c
+        field_simp
+      rw [h2, hn, finrank_top, Module.finrank_self] at h1
+      rw [Submodule.finrank_map_subtype_eq]
+      omega
+    let P : V →ₗ[E] V := h v v • LinearMap.id - (h.flip v).smulRight v
+    have hP : ∀ x, P x = h v v • x + (-h x v) • v := fun x => by
+      simp [P, sub_eq_add_neg]
+    have hPW : ∀ x ∈ W, P x ∈ W' := fun x hx => by
+      rw [hmem, hP]
+      refine ⟨W.add_mem (W.smul_mem _ hx) (W.smul_mem _ hv2), ?_⟩
+      simp only [map_add, LinearMap.add_apply, map_smul, LinearMap.smul_apply, smul_eq_mul]
+      ring
+    have hnd' : ∀ y ∈ W', (∀ x ∈ W', h y x = 0) → y = 0 := fun y hy hy0 => by
+      obtain ⟨hy1, hy2⟩ := (hmem y).1 hy
+      refine hnd y hy1 fun x hx => ?_
+      have h1 := hy0 _ (hPW x hx)
+      rw [hP] at h1
+      simp only [map_add, map_smulₛₗ, hy2, smul_eq_mul, mul_zero, add_zero, starRingEnd_apply] at h1
+      exact (mul_eq_zero.1 h1).resolve_left (star_ne_zero.2 hv3)
+    have hsp' : W' ≤ Submodule.span E {x | x ∈ Λ ∧ x ∈ W' ∧ ν x ≤ B ^ 10} := by
+      have h1 : Submodule.span E {x | x ∈ Λ ∧ x ∈ W ∧ ν x ≤ B} ≤
+          (Submodule.span E {x | x ∈ Λ ∧ x ∈ W' ∧ ν x ≤ B ^ 10}).comap P := by
+        refine Submodule.span_le.2 ?_
+        rintro x ⟨hx1, hx2, hx3⟩
+        refine Submodule.subset_span ⟨?_, hPW x hx2, ?_⟩
+        · rw [hP]
+          exact Λ.add_mem (H.stable _ (H.int v hv1 v hv1) x hx1) (H.stable _ (H.int x hx1 v hv1).neg v hv1)
+        · rw [hP]
+          have a1 : house (h v v) ≤ B ^ 4 * B ^ 4 :=
+            (H.form_le v v).trans (mul_le_mul hv4 hv4 (H.nonneg _) (by positivity))
+          have a2 : house (-h x v) ≤ B * B ^ 4 := by
+            have : house (-h x v) = house (h x v) := by simp [house]
+            rw [this]
+            exact (H.form_le x v).trans (mul_le_mul hx3 hv4 (H.nonneg _) h0)
+          have a3 : ν (h v v • x) ≤ B ^ 4 * B ^ 4 * B :=
+            (H.smul_le _ _).trans (mul_le_mul a1 hx3 (H.nonneg _) (by positivity))
+          have a4 : ν ((-h x v) • v) ≤ B * B ^ 4 * B ^ 4 :=
+            (H.smul_le _ _).trans (mul_le_mul a2 hv4 (H.nonneg _) (by positivity))
+          have a5 : 2 * B ^ 9 ≤ B * B ^ 9 := mul_le_mul_of_nonneg_right hB (by positivity)
+          calc _ ≤ _ := H.add_le _ _
+            _ ≤ _ := add_le_add a3 a4
+            _ = 2 * B ^ 9 := by ring
+            _ ≤ B * B ^ 9 := a5
+            _ = B ^ 10 := by ring
+      intro x hx
+      obtain ⟨hx1, hx2⟩ := (hmem x).1 hx
+      have h2 : P x ∈ Submodule.span E {x | x ∈ Λ ∧ x ∈ W' ∧ ν x ≤ B ^ 10} := h1 (hsp hx1)
+      rw [hP, hx2, neg_zero, zero_smul, add_zero] at h2
+      exact (Submodule.smul_mem_iff _ hv3).1 h2
+    obtain ⟨w, hw1, hw2, hw3⟩ := ih V h Λ N ν B₀ H (B ^ 10)
+      (hB.trans (le_self_pow₀ hB1 (by norm_num))) W' hrank hnd' hsp'
+    have hwv : ∀ i, h (w i) v = 0 := fun i => ((hmem _).1 (hw1 i).2).2
+    refine ⟨Fin.cons v w, ?_, ?_, ?_⟩
+    · intro i
+      refine Fin.cases ⟨hv1, hv2⟩ (fun i => ?_) i
+      exact ⟨(hw1 i).1, ((hmem _).1 (hw1 i).2).1⟩
+    · intro i j
+      refine Fin.cases ?_ (fun i => ?_) i <;> refine Fin.cases ?_ (fun j => ?_) j
+      · intro hij; exact absurd rfl hij
+      · intro _
+        simp only [Fin.cons_zero, Fin.cons_succ]
+        rw [H.symm, hwv, star_zero]
+      · intro _
+        simpa using hwv i
+      · intro hij
+        simpa using hw2 i j fun e => hij (by rw [e])
+    · intro i
+      refine Fin.cases ⟨hv3, hv4.trans (pow_le_pow_right₀ hB1 (by omega))⟩ (fun i => ?_) i
+      refine ⟨(hw3 i).1, (hw3 i).2.trans ?_⟩
+      rw [← pow_mul]
+      exact pow_le_pow_right₀ hB1 (by omega)
+
+theorem frameSmall : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], FrameSmall E := by
+  intro E _ _ _ n
+  obtain ⟨k, hk⟩ := exists_small_frame_mem (E := E) n
+  refine ⟨k, fun V _ _ _ h Λ N ν B hn H => ?_⟩
+  obtain ⟨v, h1, h2, h3⟩ := hk V h Λ N ν B H B H.two_le ⊤ (by rw [finrank_top, hn])
+    (fun y _ hy => H.nondeg y fun x => hy x trivial) (by simp [H.span])
+  exact ⟨v, fun i => (h1 i).1, h2, h3⟩
+
+end GlobalTheory.SmoothForms
+end
+
+open GlobalTheory.SmoothForms NumberField Matrix
+open scoped ContDiff Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.orthogonalAnisotropicFrame_bounded_CM : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], FrameSmall E := by
+  atlas_forward_decl GlobalTheory.SmoothForms.frameSmall
+end
+
+section
+section
+open GlobalTheory.SmoothForms NumberField Matrix
+open scoped ContDiff Topology
+
+namespace GlobalTheory.SmoothForms
+
+open Module Submodule
+
+theorem Sized.proj_le {E : Type} [Field E] [NumberField E] [IsCMField E] {V : Type} [AddCommGroup V] [Module E V]
+    {h : V →ₗ[E] V →ₗ⋆[E] E} {Λ : Submodule ℤ V} {N : ℤ} {ν : V → ℝ} {B : ℝ} (H : Sized h Λ N ν B)
+    {T : ℝ} (hT : 2 ≤ T) {v x : V} (hv : ν v ≤ T) (hx : ν x ≤ T) :
+    ν (h v v • x - h x v • v) ≤ T ^ 4 := by
+  have hneg : house (-(h x v)) = house (h x v) := by simp [house]
+  have h0 : 0 ≤ T := by linarith
+  have h1 : house (h v v) ≤ T * T := (H.form_le v v).trans (mul_le_mul hv hv (H.nonneg _) h0)
+  have h2 : house (h x v) ≤ T * T := (H.form_le x v).trans (mul_le_mul hx hv (H.nonneg _) h0)
+  have h3 : ν (h v v • x) ≤ T * T * T :=
+    (H.smul_le _ _).trans (mul_le_mul h1 hx (H.nonneg _) (by positivity))
+  have h4 : ν ((-(h x v)) • v) ≤ T * T * T :=
+    (H.smul_le _ _).trans (by rw [hneg]; exact mul_le_mul h2 hv (H.nonneg _) (by positivity))
+  rw [sub_eq_add_neg, ← neg_smul]
+  have h5 : 2 * (T * T * T) ≤ T * (T * T * T) := mul_le_mul_of_nonneg_right hT (by positivity)
+  refine (H.add_le _ _).trans ?_
+  calc _ ≤ 2 * (T * T * T) := by linarith
+    _ ≤ _ := h5
+    _ = _ := by ring
+
+theorem orthoSmall_of_anisoSmall (E : Type) [Field E] [NumberField E] [IsCMField E] (HA : AnisoSmall E) :
+    OrthoSmall E := by
+  intro n
+  induction n with
+  | zero =>
+    intro N _
+    exact ⟨∅, 0, Set.finite_empty, by simp, fun V _ _ _ _ _ _ _ _ _ =>
+      ⟨Fin.elim0, fun i => i.elim0, fun i => i.elim0, fun i => i.elim0⟩⟩
+  | succ n ih =>
+    intro N hN
+    obtain ⟨S₁, k₁, hS₁, h0₁, H₁⟩ := HA (n + 1) n.succ_ne_zero N hN
+    obtain ⟨M, hM, hMS⟩ := GlobalTheory.HermClass.exists_int_mul_isIntegral E (hS₁.image fun a => a⁻¹)
+    obtain ⟨S₂, k₂, hS₂, h0₂, H₂⟩ := ih _ (mul_ne_zero hM hN)
+    refine ⟨S₁ ∪ S₂, k₁ + (k₁ + 1) * 4 * k₂, hS₁.union hS₂, by simp [h0₁, h0₂], ?_⟩
+    intro V _ _ _ h Λ ν B hV H
+    obtain ⟨v, hv, hvS, hvν⟩ := H₁ V h Λ ν B hV H
+    have hs := H.symm
+    have hO := H.stable
+    have hint := H.int
+    have hB1 : 1 ≤ B := by linarith [H.two_le]
+    have hBT : B ≤ B ^ (k₁ + 1) := le_self_pow₀ hB1 (Nat.succ_ne_zero _)
+    have hT2 : 2 ≤ B ^ (k₁ + 1) := H.two_le.trans hBT
+    have hvT : ν v ≤ B ^ (k₁ + 1) := hvν.trans (pow_le_pow_right₀ hB1 (Nat.le_succ _))
+    have hproj : ∀ x, ν x ≤ B → ν (h v v • x - h x v • v) ≤ (B ^ (k₁ + 1)) ^ 4 := fun x hx =>
+      H.proj_le hT2 hvT (hx.trans hBT)
+    set a := h v v with ha
+    have ha0 : a ≠ 0 := fun h0 => h0₁ (h0 ▸ hvS)
+    have hai : IsIntegral ℤ a := hint v hv v hv
+    have has : star a = a := (hs v v).symm
+    let W : Submodule E V := LinearMap.ker (h.flip v)
+    have hW : ∀ x, x ∈ W ↔ h x v = 0 := fun x => Iff.rfl
+    have hWr : finrank E W = n := by
+      have h1 := LinearMap.finrank_range_add_finrank_ker (h.flip v)
+      have h2 : LinearMap.range (h.flip v) = ⊤ := by
+        rw [eq_top_iff]
+        intro c _
+        exact ⟨(c / a) • v, by simp [← ha, ha0]⟩
+      rw [h2, finrank_top, finrank_self, hV] at h1
+      change 1 + finrank E W = _ at h1
+      omega
+    let p : V →ₗ[E] W := LinearMap.codRestrict W
+      (a • LinearMap.id - (h.flip v).smulRight v) fun x => by
+        rw [hW]; simp [← ha, mul_comm]
+    have hp : ∀ x, (p x : V) = a • x - h x v • v := fun x => rfl
+    let Λ' : Submodule ℤ W := Λ.comap (W.subtype.restrictScalars ℤ)
+    have hΛ' : ∀ x : W, x ∈ Λ' ↔ (x : V) ∈ Λ := fun x => Iff.rfl
+    have hpΛ : ∀ x ∈ Λ, p x ∈ Λ' := fun x hx => by
+      rw [hΛ', hp]; exact sub_mem (hO _ hai _ hx) (hO _ (hint x hx v hv) _ hv)
+    have hyp : ∀ (y : W) (x : V), h y (p x) = a * h y x := fun y x => by
+      have : h y v = 0 := y.2
+      simp [hp, starRingEnd_apply, has, this]
+    have H' : Sized (h.domRestrict₁₂ W W) Λ' (M * N) (fun w : W => ν w) ((B ^ (k₁ + 1)) ^ 4) :=
+      { symm := fun x y => hs x y
+        nondeg := fun y hy => Subtype.ext (H.nondeg y fun x => by
+          have h1 : h y (p x) = 0 := hy (p x)
+          rw [hyp] at h1
+          exact (mul_eq_zero.1 h1).resolve_left ha0)
+        fg := by
+          apply Submodule.fg_of_fg_map_injective (W.subtype.restrictScalars ℤ) W.subtype_injective
+          exact H.fg.of_le (map_comap_le _ _)
+        stable := fun c hc x hx => hO c hc x hx
+        int := fun x hx y hy => hint x hx y hy
+        dual := fun y hy => by
+          have h1 : (N : E) • a • (y : V) ∈ Λ := H.dual _ fun x hx => by
+            rw [map_smul, LinearMap.smul_apply, smul_eq_mul, ← hyp]
+            exact hy _ (hpΛ x hx)
+          have h2 := hO _ (hMS _ ⟨a, hvS, rfl⟩) _ h1
+          rw [smul_smul, smul_smul] at h2
+          rw [hΛ', Submodule.coe_smul]
+          convert h2 using 2
+          push_cast; field_simp
+        two_le := hT2.trans (le_self_pow₀ (by linarith) (by norm_num))
+        nonneg := fun x => H.nonneg x
+        add_le := fun x y => H.add_le x y
+        smul_le := fun c x => H.smul_le c x
+        form_le := fun x y => H.form_le x y
+        span := by
+          rw [eq_top_iff]
+          intro w _
+          have h1 : span E {x | x ∈ Λ ∧ ν x ≤ B} ≤
+              (span E {x : W | x ∈ Λ' ∧ ν x ≤ (B ^ (k₁ + 1)) ^ 4}).comap p :=
+            span_le.2 fun x hx => subset_span ⟨hpΛ x hx.1, hproj x hx.2⟩
+          have h2 : p w ∈ span E {x : W | x ∈ Λ' ∧ ν x ≤ (B ^ (k₁ + 1)) ^ 4} := h1 (H.span ▸ mem_top)
+          have h3 : w = a⁻¹ • p w := Subtype.ext (by
+            have : h w v = 0 := w.2
+            simp [hp, this, ha0])
+          rw [h3]; exact smul_mem _ _ h2 }
+    obtain ⟨u, huΛ, huo, huS⟩ := H₂ W (h.domRestrict₁₂ W W) Λ' _ _ hWr H'
+    refine ⟨Fin.cons v fun i => u i, fun i => ?_, fun i j hij => ?_, fun i => ?_⟩
+    · cases i using Fin.cases with
+      | zero => exact hv
+      | succ i => exact huΛ i
+    · cases i using Fin.cases with
+      | zero =>
+        cases j using Fin.cases with
+        | zero => exact (hij rfl).elim
+        | succ j =>
+          have : h (u j) v = 0 := (u j).2
+          simp only [Fin.cons_zero, Fin.cons_succ]
+          rw [hs, this, star_zero]
+      | succ i =>
+        cases j using Fin.cases with
+        | zero => exact (u i).2
+        | succ j => exact huo i j fun h0 => hij (congrArg _ h0)
+    · cases i using Fin.cases with
+      | zero => exact ⟨Or.inl hvS, hvν.trans (pow_le_pow_right₀ hB1 (Nat.le_add_right _ _))⟩
+      | succ i =>
+        refine ⟨Or.inr (huS i).1, (huS i).2.trans ?_⟩
+        rw [← pow_mul, ← pow_mul, ← mul_assoc]
+        exact pow_le_pow_right₀ hB1 (Nat.le_add_left _ _)
+
+end GlobalTheory.SmoothForms
+end
+
+open GlobalTheory.SmoothForms NumberField Matrix
+open scoped ContDiff Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.orthogonalFrame_of_anisotropicFiniteLengths : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], AnisoSmall E → OrthoSmall E := by
+  atlas_forward_decl GlobalTheory.SmoothForms.orthoSmall_of_anisoSmall
+end
+
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta GlobalTheory.IndefiniteRowSideFullHecke.LieAlgebraExponentialFamilies Matrix
@@ -581,4 +1232,5 @@ theorem compare (D : D7) :
 
 end GlobalTheory.SmoothForms
 
+end
 end

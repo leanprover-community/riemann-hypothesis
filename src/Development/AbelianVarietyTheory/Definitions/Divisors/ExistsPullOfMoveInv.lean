@@ -43,11 +43,6 @@ theorem pull_inj {d : DeltaDat Xo c 0} (hd : d.IsLev) {f f' : Rul Xo c} {g : Rul
   obtain ⟨y₂, hy⟩ := hd.2.2.2.2.2.2.1 k hk y
   exact (h k hk y₂ y hy).symm.trans (h' k hk y₂ y hy)
 
-theorem not_pull_zero_one {d : DeltaDat Xo c 0} (hd : d.IsLev) (k : Type) [Field k] [IsAlgClosed k] [Algebra c.F k]
-    (y : FrPt Xo c k) : ¬ Pull d 0 1 := fun h => by
-  have e := pull_inj hd h (pull_one d) k y
-  rw [GlobalTheory.RawSpan.evR_one_field k y] at e
-  exact zero_ne_one ((evalAt_zero _ _ y).symm.trans e)
 
 theorem pull_id (nab : NabV Xo c) {a : (E →+* ℂ) × ℕ → ℕ} {n : ℕ} {f : Rul Xo c} (hf : f ∈ sec Xo c a n) :
     Pull (GlobalTheory.RawSpan.idCover nab 0) f f := by
@@ -61,16 +56,7 @@ theorem pull_id (nab : NabV Xo c) {a : (E →+* ℂ) × ℕ → ℕ} {n : ℕ} {
   refine this.trans ?_
   simp [wchar]
 
-theorem exists_pull_of_moveInv (d : DeltaDat Xo c 0) (hd : d.IsLev) {a : (E →+* ℂ) × ℕ → ℕ} {n : ℕ}
-    (g : Rul d.Xo₂ d.c₂) (hg : g ∈ sec d.Xo₂ d.c₂ a n) (hi : GlobalTheory.ThetaSumDescent.MoveInv d g) :
-    ∃ f ∈ sec Xo c a n, Pull d f g := by
-  obtain ⟨f, hf, h⟩ := GlobalTheory.ThetaSumDescent.exists_sec_of_moveInv d hd g hg hi
-  exact ⟨f, hf, fun k _ _ _ _ hk y₂ y ho => (h k hk y y₂ ho).symm⟩
 
-theorem fibConst_of_moveInv (d : DeltaDat Xo c 0) (hd : d.IsLev) {a : (E →+* ℂ) × ℕ → ℕ} {n : ℕ}
-    (g : Rul d.Xo₂ d.c₂) (hg : g ∈ sec d.Xo₂ d.c₂ a n) (hi : GlobalTheory.ThetaSumDescent.MoveInv d g) : FibConst d g := by
-  obtain ⟨f, -, h⟩ := exists_pull_of_moveInv d hd g hg hi
-  exact h.fibConst
 
 theorem intAt_zero : IntAt Xo c 0 := by
   rintro la _ ⟨y, rfl⟩
@@ -85,7 +71,6 @@ theorem intAt_mul {f g : Rul Xo c} (hf : IntAt Xo c f) (hg : IntAt Xo c g) : Int
   rw [vAtV_mul]
   exact add_nonneg (hf la _ ⟨y, rfl⟩) (hg la _ ⟨y, rfl⟩)
 
-theorem laQ_eq : LaQ Dw l = LevQ Dw l := rfl
 
 theorem exists_isLift : ∃ lift : Gam Dw l → Dw.La →ₗ[𝓞 E] Dw.La, IsLift lift := by
   have := Dw.proj
@@ -130,47 +115,7 @@ theorem finite_gam : Finite (Gam Dw l) := by
   have := finite_laQ (Dw := Dw) (l := l)
   exact Finite.of_injective (fun γ : Gam Dw l => (γ : LaQ Dw l → LaQ Dw l)) DFunLike.coe_injective
 
-theorem mb_ne_top : l.Mb ≠ ⊤ := fun h => by
-  have e := l.prod
-  rw [h, Ideal.map_top, Ideal.top_mul, eq_comm, Ideal.span_singleton_eq_top] at e
-  have h1 := (e.map (Algebra.norm ℤ))
-  have h2 : Algebra.norm ℤ ((l.M : 𝓞 E)) = (l.M : ℤ) ^ Module.finrank ℤ (𝓞 E) := by
-    rw [← Algebra.norm_algebraMap (R := ℤ) (S := 𝓞 E) (l.M : ℤ)]; simp
-  rw [h2, isUnit_pow_iff (Module.finrank_pos (R := ℤ) (M := 𝓞 E)).ne', Int.isUnit_iff] at h1
-  have := l.three_le
-  omega
 
-theorem nontrivial_laQ (hr : 1 ≤ Dw.p + Dw.q) : Nontrivial (LaQ Dw l) := by
-  have := Dw.fin
-  have := Dw.proj
-  rw [Submodule.Quotient.nontrivial_iff]
-  intro h
-  obtain ⟨r, hr1, hr0⟩ := Submodule.exists_sub_one_mem_and_smul_eq_zero_of_fg_of_le_smul l.Mb (⊤ : Submodule (𝓞 E) Dw.La)
-    Module.Finite.fg_top h.ge
-  have hne : r ≠ 0 := by
-    rintro rfl
-    exact mb_ne_top ((Ideal.eq_top_iff_one _).2 (by simpa using l.Mb.neg_mem hr1))
-  have : Nontrivial Dw.La := Module.nontrivial_of_finrank_pos (R := 𝓞 E) (by rw [Dw.rank]; omega)
-  obtain ⟨x, hx⟩ := exists_ne (0 : Dw.La)
-  exact hx ((smul_eq_zero.1 (hr0 x trivial)).resolve_left hne)
 
-theorem nontrivial_gam (hr : 1 ≤ Dw.p + Dw.q) : Nontrivial (Gam Dw l) := by
-  have := nontrivial_laQ (l := l) hr
-  refine ⟨LinearEquiv.neg _, 1, fun h => ?_⟩
-  obtain ⟨q, hq⟩ := exists_ne (0 : LaQ Dw l)
-  have h2 : -q = q := LinearEquiv.congr_fun h q
-  have hM : (l.M : 𝓞 E) • q = 0 := by
-    obtain ⟨a, rfl⟩ := Submodule.Quotient.mk_surjective _ q
-    rw [← Submodule.Quotient.mk_smul, Submodule.Quotient.mk_eq_zero]
-    refine Submodule.smul_mem_smul ?_ trivial
-    have e : (l.M : 𝓞 E) ∈ l.Mb * l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E) := by
-      rw [l.prod]; exact Ideal.mem_span_singleton_self _
-    exact Ideal.mul_le_left e
-  obtain ⟨m, hm⟩ := l.odd
-  have h3 : (2 : 𝓞 E) • q = 0 := by rw [two_smul]; nth_rewrite 1 [← h2]; exact neg_add_cancel q
-  rw [hm] at hM
-  push_cast at hM
-  rw [add_smul, one_smul, mul_comm, mul_smul, h3, smul_zero, zero_add] at hM
-  exact hq hM
 
 end GlobalTheory.LevPullModel

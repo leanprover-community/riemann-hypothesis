@@ -131,9 +131,7 @@ def coeffRt : c.F := IntermediateField.inclusion c.le (baseKA l).ρ
 
 def coeffZeta : c.F := IntermediateField.inclusion c.le (baseKA l).ζ
 
-lemma coeffRt_val : ((coeffRt c : c.F) : ℂ) = H.rt0 := rfl
 
-lemma coeffZeta_val : ((coeffZeta c : c.F) : ℂ) = zeta l.A := rfl
 
 variable {c}
 
@@ -196,8 +194,6 @@ namespace ArcInput
 variable {D : Datum H} {l : Level H} {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F}
   {O' : Type} [CommRing O'] [IsDomain O'] {b : O →+* O'}
 
-lemma gam_unique (x x' : ArcInput D c β O' b) : x.gam = x'.gam :=
-  x.frac.ext fun a => by rw [x.gam_over, x'.gam_over]
 
 lemma gam_rt (x : ArcInput D c β O' b) (r : O) (hr : ((β r : c.F) : ℂ) = H.rt0) :
     x.gam (coeffRt c) = algebraMap O' (FractionRing O') (b r) := by

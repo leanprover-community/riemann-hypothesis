@@ -48,7 +48,6 @@ theorem lift_sum {ι : Type} (s : Finset ι) (f : ι → Af D.host.F ⊗[D.host.
 
 theorem lift_neg (y : Af D.host.F ⊗[D.host.F] D.host.E) : lift (D := D) (-y) = -lift y := map_neg (LinearMap.rTensor D.host.E (inrL D.host.F)) y
 
-theorem lift_nsmul (k : ℕ) (y : Af D.host.F ⊗[D.host.F] D.host.E) : lift (D := D) (k • y) = k • lift y := map_nsmul (LinearMap.rTensor D.host.E (inrL D.host.F)) k y
 
 theorem finPart_lift (y : Af D.host.F ⊗[D.host.F] D.host.E) : finPart D (lift y) = y := by
   induction y using TensorProduct.induction_on with
@@ -147,9 +146,6 @@ theorem mt_mul_inv (V : HSp D) (g : GA D V) : mt V g * mt V g⁻¹ = 1 := by
 def frG (V : HSp D) (β : GL (Fin V.rank) (EAf D)) (g : GA D V) : GL (Fin V.rank) (EAf D) :=
   β⁻¹ * Lev.finE V g * β
 
-theorem frG_mul (V : HSp D) (β : GL (Fin V.rank) (EAf D)) (g g' : GA D V) : frG V β (g * g') = frG V β g * frG V β g' := by
-  simp only [frG, map_mul]
-  group
 
 theorem frG_inv (V : HSp D) (β : GL (Fin V.rank) (EAf D)) (g : GA D V) : frG V β g⁻¹ = (frG V β g)⁻¹ := by
   simp only [frG, map_inv]
@@ -159,9 +155,6 @@ theorem gl_cancel_left {R : Type} [CommRing R] {n m : ℕ} (A : GL (Fin n) R) (X
     (A : Matrix (Fin n) (Fin n) R) * (((A⁻¹ : GL (Fin n) R) : Matrix (Fin n) (Fin n) R) * X) = X := by
   rw [← Matrix.mul_assoc, ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.one_mul]
 
-theorem gl_cancel_left' {R : Type} [CommRing R] {n m : ℕ} (A : GL (Fin n) R) (X : Matrix (Fin n) (Fin m) R) :
-    (((A⁻¹ : GL (Fin n) R) : Matrix (Fin n) (Fin n) R)) * ((A : Matrix (Fin n) (Fin n) R) * X) = X := by
-  rw [← Matrix.mul_assoc, ← Units.val_mul, inv_mul_cancel, Units.val_one, Matrix.one_mul]
 
 theorem frG_coe (V : HSp D) (β : GL (Fin V.rank) (EAf D)) (g : GA D V) :
     ((frG V β g : GL (Fin V.rank) (EAf D)) : Matrix (Fin V.rank) (Fin V.rank) (EAf D)) =
@@ -248,8 +241,6 @@ theorem isIntM_add {a b : ℕ} {N M : Matrix (Fin b) (Fin a) (EAf D)} (hN : IsIn
   rw [Matrix.add_apply]
   exact add_mem (hN i j) (hM i j)
 
-theorem intM_eq {n : ℕ} (y : Matrix (Fin n) (Fin n) ↥(Formalism.L2.Herm.intAf D.host.F D.host.E)) :
-    y.map Subtype.val = y.map (Formalism.L2.Herm.intAf D.host.F D.host.E).subtype := rfl
 
 theorem intM_mul_inv {n : ℕ} (y : GL (Fin n) ↥(Formalism.L2.Herm.intAf D.host.F D.host.E)) : intM (D := D) y * intM y⁻¹ = 1 := by
   show ((y : Matrix (Fin n) (Fin n) ↥(Formalism.L2.Herm.intAf D.host.F D.host.E)) : Matrix (Fin n) (Fin n) ↥(Formalism.L2.Herm.intAf D.host.F D.host.E)).map (SubringClass.subtype (Formalism.L2.Herm.intAf D.host.F D.host.E)) *
@@ -330,20 +321,6 @@ theorem redM_intM_mul (PP : Formalism.L2.DIV.Pl D.host.E) {a b : ℕ} {N : Matri
         rw [Matrix.mul_apply]
         exact Finset.sum_congr rfl fun k _ => by rw [← redM_of_int PP hN k j]; rfl
 
-theorem frG_of_St (V : HSp D) (β : GL (Fin V.rank) (EAf D)) (g : GA D V) (hg : Lev.finE V g ∈ Formalism.L2.DIV.St β) :
-    ∃ y : GL (Fin V.rank) ↥(Formalism.L2.Herm.intAf D.host.F D.host.E),
-      (frG V β g : Matrix (Fin V.rank) (Fin V.rank) (EAf D)) = intM y ∧
-      ∀ PP, Formalism.L2.DIV.redFn β PP (Lev.finE V g) = Formalism.UG.bc (Formalism.L2.DIV.resS D.host.F PP) y := by
-  obtain ⟨y, hy⟩ := hg
-  refine ⟨y, ?_, fun PP => ?_⟩
-  · unfold frG
-    rw [← hy]
-    show ((β⁻¹ * (β * Formalism.L2.DIV.intGL D.host.F D.host.E V.rank y * β⁻¹) * β : GL (Fin V.rank) (EAf D)) :
-      Matrix (Fin V.rank) (Fin V.rank) (EAf D)) = _
-    rw [show β⁻¹ * (β * Formalism.L2.DIV.intGL D.host.F D.host.E V.rank y * β⁻¹) * β =
-      Formalism.L2.DIV.intGL D.host.F D.host.E V.rank y by group]
-    rfl
-  · rw [← hy]; exact Formalism.L2.DIV.redFn_frGL β PP y
 
 section Lat
 
@@ -726,17 +703,6 @@ theorem isHalf_actO_iff (e : AE D) (g : GA D S) (h : GA D T) (t : WO S T) :
   have := isHalf_actO e g⁻¹ h⁻¹ ht
   rwa [actO_actO, inv_mul_cancel, inv_mul_cancel, actO_one] at this
 
-theorem frG_eq_of_St (V : HSp D) (β : GL (Fin V.rank) (EAf D)) (g : GA D V) (hg : Lev.finE V g ∈ Formalism.L2.DIV.St β) :
-    ∃ y : GL (Fin V.rank) ↥(Formalism.L2.Herm.intAf D.host.F D.host.E),
-      frG V β g = Formalism.L2.DIV.intGL D.host.F D.host.E V.rank y ∧
-      ∀ PP, Formalism.L2.DIV.redFn β PP (Lev.finE V g) = Formalism.UG.bc (Formalism.L2.DIV.resS D.host.F PP) y := by
-  obtain ⟨y, hy⟩ := hg
-  refine ⟨y, ?_, fun PP => ?_⟩
-  · unfold frG
-    rw [← hy]
-    show β⁻¹ * (β * Formalism.L2.DIV.intGL D.host.F D.host.E V.rank y * β⁻¹) * β = _
-    group
-  · rw [← hy]; exact Formalism.L2.DIV.redFn_frGL β PP y
 
 theorem intGL_coe {n : ℕ} (y : GL (Fin n) ↥(Formalism.L2.Herm.intAf D.host.F D.host.E)) :
     ((Formalism.L2.DIV.intGL D.host.F D.host.E n y : GL (Fin n) (EAf D)) : Matrix (Fin n) (Fin n) (EAf D)) = intM y := rfl
@@ -1206,8 +1172,6 @@ abbrev GIE (V : HSp D) : Matrix (Fin V.rank) (Fin V.rank) (EAf D) := (V.gram⁻�
 theorem GIE_GE (V : HSp D) : GIE V * GE V = 1 := by
   rw [← Matrix.map_mul, Matrix.nonsing_inv_mul _ (isUnit_iff_ne_zero.mpr (gram_det_ne V)), Matrix.map_one _ (map_zero _) (map_one _)]
 
-theorem GE_GIE (V : HSp D) : GE V * GIE V = 1 := by
-  rw [← Matrix.map_mul, Matrix.mul_nonsing_inv _ (isUnit_iff_ne_zero.mpr (gram_det_ne V)), Matrix.map_one _ (map_zero _) (map_one _)]
 
 theorem GE_sR (V : HSp D) : (GE V).map (sR D) = (GE V)ᵀ := by
   ext i j
@@ -1269,14 +1233,10 @@ theorem frMapAdj_genE {βS : GL (Fin S.rank) (EAf D)} {βT : GL (Fin T.rank) (EA
     funext k; exact sR_sR _
   rw [e1, Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, Matrix.mul_assoc, GIE_GE, Matrix.mul_one]
 
-theorem adjO_add (x y : WO S T) : adjO S T (x + y) = adjO S T x + adjO S T y := by
-  simp [adjO, Matrix.mul_add, Matrix.add_mul, Matrix.map_add, Matrix.transpose_add]
 
 theorem adjO_zero : adjO S T 0 = 0 := by
   simp [adjO]
 
-theorem adjO_neg (x : WO S T) : adjO S T (-x) = -adjO S T x := by
-  simp [adjO, Matrix.map_neg, Matrix.mul_neg, Matrix.neg_mul, Matrix.transpose_neg]
 
 theorem frMapAdj_add {βS : GL (Fin S.rank) (EAf D)} {βT : GL (Fin T.rank) (EAf D)} (x y : WO S T) :
     frMapAdj S T βS βT (x + y) = frMapAdj S T βS βT x + frMapAdj S T βS βT y := by

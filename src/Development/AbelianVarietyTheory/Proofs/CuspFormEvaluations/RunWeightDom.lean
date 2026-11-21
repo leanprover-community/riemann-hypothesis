@@ -8,8 +8,26 @@ import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.Maxim
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ThExprUniqOfChartIndep2
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.SupBoundPageRows
 import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ComponentModelWeightDimensionDictionary
-import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsThetaWeightData
 
+section
+namespace GlobalTheory.ThetaWeight
+
+open Finset
+
+variable {ι : Type*} [Fintype ι]
+
+def size (m : ℤ) (G : (ι → ℤ) × ℤ) : ℤ := ∑ i, |G.1 i| + m * G.2 + 1
+
+theorem one_le_size {m : ℤ} (hm : 0 ≤ m) {G : (ι → ℤ) × ℤ} (hG : 0 ≤ G.2) : 1 ≤ size m G := by
+  have h1 : 0 ≤ ∑ i, |G.1 i| := sum_nonneg fun i _ => abs_nonneg _
+  have h2 := mul_nonneg hm hG
+  unfold size
+  linarith
+
+end GlobalTheory.ThetaWeight
+end
+
+section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.WeightAlgebra Formalism.MainNotions.Gaps Formalism.MainNotions.Gaps.EtaleWeightGaps Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.RunIn GlobalTheory.Shares
 
 namespace GlobalTheory.RunWeightDom
@@ -276,3 +294,4 @@ theorem run_weight_dom : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (hj : 
       linarith
 
 end GlobalTheory.RunWeightDom
+end

@@ -57,62 +57,8 @@ theorem firstColumnSplit_bijective (m : ℕ) : Function.Bijective (phi0 m) := by
   refine ⟨hinj, ?_⟩
   simp [Fintype.card_perm, Fintype.card_prod, Nat.factorial_succ]
 
-theorem rowExpFirst {A : Type*} [Ring A] [Algebra ℂ A] {n t : ℕ} (E : Fin n → Fin n → A)
-    (a b : Fin (t + 1) → Fin n) (u : ℂ) :
-    qminorRow E a b u = ∑ l : Fin (t + 1), (((-1 : ℤ) ^ (l : ℕ) : ℤ) : A) *
-        (Tm E (u - (t : ℂ)) (a 0) (b l) * qminorRow E (a ∘ Fin.succ) (b ∘ l.succAbove) u) := by
-  unfold qminorRow
-  rw [(Fintype.sum_bijective _ (firstColumnSplit_bijective t) _ _ (fun _ => rfl)).symm, Fintype.sum_prod_type]
-  refine Finset.sum_congr rfl (fun j _ => ?_)
-  rw [Finset.mul_sum, Finset.mul_sum]
-  refine Finset.sum_congr rfl (fun τ _ => ?_)
-  rw [List.ofFn_succ, List.prod_cons]
-  simp only [sign_insert_perm, firstColumnSplit_zero, firstColumnSplit_succ, Function.comp, Fin.val_zero, Fin.val_succ]
-  have e1 : u - ((t + 1 : ℕ) : ℂ) + 1 + ((0 : ℕ) : ℂ) = u - (t : ℂ) := by push_cast; ring
-  have e2 : ∀ i : Fin t, u - ((t + 1 : ℕ) : ℂ) + 1 + (((i : ℕ) + 1 : ℕ) : ℂ) = u - (t : ℂ) + 1 + ((i : ℕ) : ℂ) := by
-    intro i; push_cast; ring
-  simp only [e1, e2]
-  have hc : ∀ x : A, ((Equiv.Perm.sign τ : ℤ) : A) * x = x * ((Equiv.Perm.sign τ : ℤ) : A) :=
-    fun x => (Int.cast_commute _ _).eq
-  push_cast
-  simp only [mul_assoc]
-  rw [← mul_assoc (Tm E (u - (t : ℂ)) (a 0) (b j)), ← hc, mul_assoc]
 
-theorem rowExpLast {A : Type*} [Ring A] [Algebra ℂ A] {n t : ℕ} (E : Fin n → Fin n → A)
-    (a b : Fin (t + 1) → Fin n) (u : ℂ) :
-    qminorRow E a b u = ∑ l : Fin (t + 1), (((-1 : ℤ) ^ (t + (l : ℕ)) : ℤ) : A) *
-        (qminorRow E (a ∘ Fin.castSucc) (b ∘ l.succAbove) (u - 1) * Tm E u (a (Fin.last t)) (b l)) := by
-  unfold qminorRow
-  rw [(Fintype.sum_bijective _ (lastColumnSplit_bijective t) _ _ (fun _ => rfl)).symm, Fintype.sum_prod_type]
-  refine Finset.sum_congr rfl (fun j _ => ?_)
-  rw [Finset.sum_mul, Finset.mul_sum]
-  refine Finset.sum_congr rfl (fun τ _ => ?_)
-  rw [List.ofFn_succ', List.concat_eq_append, List.prod_append, List.prod_singleton]
-  simp only [lastColumnSplit, Equiv.Perm.sign_mul, sign_cycleToLast, sign_extendLast, Equiv.Perm.mul_apply,
-    extendLast_castSucc, cycleToLast_castSucc, extendLast_last, cycleToLast_last, Fin.val_castSucc, Fin.val_last,
-    Function.comp]
-  have e1 : u - ((t + 1 : ℕ) : ℂ) + 1 + (t : ℂ) = u := by push_cast; ring
-  have e2 : ∀ i : Fin t, u - ((t + 1 : ℕ) : ℂ) + 1 + ((i : ℕ) : ℂ) = u - 1 - (t : ℂ) + 1 + ((i : ℕ) : ℂ) := by
-    intro i; push_cast; ring
-  simp only [e1, e2]
-  have hj : (j : ℕ) ≤ t := Nat.lt_succ_iff.mp j.isLt
-  have hs : (-1 : ℤ) ^ (t + (j : ℕ)) = (-1) ^ (t - (j : ℕ)) := by
-    rw [show t + (j : ℕ) = (t - (j : ℕ)) + 2 * (j : ℕ) by omega, pow_add, pow_mul, neg_one_sq, one_pow, mul_one]
-  rw [hs]
-  push_cast
-  simp only [mul_assoc]
 
-theorem expRows : ExpRowsFromRowForm := by
-  intro hRF
-  refine ⟨?_, ?_⟩
-  · intro A _ _ n t E hE a b u
-    rw [hRF A n (t + 1) E hE a b u, rowExpFirst E a b u]
-    refine Finset.sum_congr rfl (fun l _ => ?_)
-    rw [hRF A n t E hE (a ∘ Fin.succ) (b ∘ l.succAbove) u]
-  · intro A _ _ n t E hE a b u
-    rw [hRF A n (t + 1) E hE a b u, rowExpLast E a b u]
-    refine Finset.sum_congr rfl (fun l _ => ?_)
-    rw [hRF A n t E hE (a ∘ Fin.castSucc) (b ∘ l.succAbove) (u - 1)]
 
 end
 
@@ -579,9 +525,6 @@ theorem borderFull_of (hFC : ExpFirstCol) (hLC : ExpLastCol) (hFR : ExpFirstRow)
   rw [L1, L2, L3, R5]
   abel
 
-theorem borderFromExpansions : BorderFromExpansions := by
-  intro hFC hLC hFR hLR hSk
-  exact ⟨borderE_of hFC hLR hSk, borderS_of hLC hFR hSk, borderFull_of hFC hLC hFR hLR hSk⟩
 
 end
 
@@ -2047,11 +1990,7 @@ end Formalism.FourierDecayAlt.P.Qx6
 
 namespace Formalism.FourierDecayAlt.P
 
-theorem line_expansions_from_line_form : Formalism.FourierDecayAlt.Q.ExpRowsFromRowForm := by
-  exact Qx6.expRows
 
-theorem border_from_expansions : Formalism.FourierDecayAlt.Q.BorderFromExpansions := by
-  exact Qx6.borderFromExpansions
 
 theorem chain_recursion_from_single_descent : Formalism.FourierDecayAlt.Q.ChainFromStep := by
   exact Qx6.chainFromStep

@@ -12,11 +12,7 @@ namespace GlobalTheory.ArInt.Model
 def IsConst (L : HermLB (𝟙 (Sp ℤ))) (t : ℝ) : Prop :=
   ∀ i, (∀ x, x ∈ L.B.U i) ∧ ∀ σ y, (L.φ σ).φ i y = 2 * t
 
-theorem isConst_trivShift (t : ℝ) : IsConst (trivShift t) t :=
-  fun _ => ⟨fun _ => trivial, fun _ _ => zero_add _⟩
 
-theorem isConst_triv : IsConst (HermLB.triv _) 0 :=
-  fun _ => ⟨fun _ => trivial, fun _ _ => (mul_zero _).symm⟩
 
 variable {L M : HermLB (𝟙 (Sp ℤ))} {s t : ℝ}
 
@@ -37,12 +33,6 @@ theorem IsConst.zp (h : IsConst L s) (n : ℤ) : IsConst (zp L n) (n * s) := by
   rw [show (n : ℝ) * s = n.toNat * s + -((-n).toNat * s) by rw [← sub_eq_add_neg, ← sub_mul, ← e]]
   exact this
 
-theorem isConst_comb {ι : Type} [Fintype ι] {L : ι → HermLB (𝟙 (Sp ℤ))} {t : ι → ℝ} (h : ∀ i, IsConst (L i) (t i))
-    (n : ι → ℤ) : IsConst (comb L n) (∑ i, n i * t i) := by
-  rw [← Finset.sum_map_toList, comb]
-  induction (Finset.univ : Finset ι).toList with
-  | nil => exact isConst_triv
-  | cons a l ih => exact ((h a).zp _).tens ih
 
 open Classical in
 
@@ -99,30 +89,8 @@ theorem IsConst.isSelfInter (h : IsConst L t) : L.IsSelfInter t :=
 def linFun {ι : Type} [Fintype ι] (t : ι → ℝ) : MvPolynomial ι ℝ →ₗ[ℝ] ℝ :=
   ∑ i, t i • lcoeff ℝ (Finsupp.single i 1)
 
-theorem isArFun_trivShift {ι : Type} [Fintype ι] (t : ι → ℝ) : IsArFun (fun i => trivShift (t i)) 0 (linFun t) := by
-  classical
-  refine ⟨fun n => ?_, fun P d hd hP => ?_⟩
-  · convert (isConst_comb (fun i => isConst_trivShift (t i)) n).isSelfInter using 1
-    simp only [linFun, lin, zero_add, pow_one, LinearMap.sum_apply, LinearMap.smul_apply, lcoeff_apply, coeff_sum,
-      coeff_C_mul, coeff_X', Finsupp.single_left_inj one_ne_zero]
-    simp [mul_comm]
-  · simp only [linFun, LinearMap.sum_apply, LinearMap.smul_apply, lcoeff_apply]
-    refine Finset.sum_eq_zero fun i _ => ?_
-    rw [hP.coeff_eq_zero (by simpa using hd.symm), smul_zero]
 
-theorem linFun_X {ι : Type} [Fintype ι] (t : ι → ℝ) (i : ι) : linFun t (MvPolynomial.X i) = t i := by
-  classical
-  simp [linFun, coeff_X', Finsupp.single_left_inj]
 
-theorem isAlgPt_generic : IsAlgPt (genericPoint (Sp ℤ)) := by
-  refine ⟨?_, ?_⟩
-  · have : CharZero (Sp ℤ).functionField := by
-      have := isArithVar_int.charZero
-      exact ((fnOf ⊤ (Opens.mem_top (genericPoint (Sp ℤ)))).charZero_iff (fnOf_injective ⊤ _)).1 this
-    exact ((algebraMap (Sp ℤ).functionField ((Sp ℤ).residueField (genericPoint _))).charZero_iff
-      (RingHom.injective _)).1 this
-  · rw [(genericPoint_spec (Sp ℤ)).def]
-    exact (IsHomeomorph.topologicalKrullDim_eq _ (Homeomorph.Set.univ _).isHomeomorph).trans isArithVar_int.dim_eq
 
 theorem arVol_nonneg {k : Type} [CommRing k] {X : Scheme.{0}} {p : X ⟶ Sp k} (L : HermLB p) (D : ℕ) : 0 ≤ arVol L D := by
   refine le_limsup_of_frequently_le (Frequently.of_forall fun m => ?_)
@@ -268,118 +236,11 @@ theorem isGeoFun_unique {k : Type} [CommRing k] {X : Scheme.{0}} {p : X ⟶ Sp k
   sub_eq_zero.1 (eq_zero_of_pow D _ (fun n => sub_eq_zero.2 ((h.1 n).trans (h'.1 n).symm))
     fun P e he hP => sub_eq_zero.2 ((h.2 P e he hP).trans (h'.2 P e he hP).symm))
 
-theorem IsConst.isPtHt (h : IsConst L t) : IsPtHt L (genericPoint (Sp ℤ)) t := by
-  refine ⟨_, h.isArithHeight, (if_pos genericPoint_asIdeal).trans ?_⟩
-  have := isAlgPt_generic.1
-  have hA := functionField_isFractionRing_of_isAffineOpen (Sp ℤ) ⊤ (isAffineOpen_top _)
-  let e := RingEquiv.ofBijective (Int.castRingHom Γ(Sp ℤ, ⊤))
-      ⟨have := isArithVar_int.charZero; Int.cast_injective, surjective_intCast (𝟙 _)⟩
-  have hs : Function.Surjective (algebraMap ℚ ((Sp ℤ).residueField (genericPoint (Sp ℤ)))) := fun x => by
-    obtain ⟨f, rfl⟩ := IsLocalRing.residue_surjective x
-    obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective (A := Γ(Sp ℤ, ⊤)) (K := (Sp ℤ).functionField) f
-    obtain ⟨a, rfl⟩ := e.surjective a
-    obtain ⟨b, rfl⟩ := e.surjective b
-    refine ⟨a / b, ?_⟩
-    have (n : ℤ) : e n = n := rfl
-    rw [this, this, map_intCast, map_intCast, map_div₀, map_intCast, map_intCast]
-    exact ((map_div₀ (IsLocalRing.residue (Sp ℤ).functionField) _ _).trans (by rw [map_intCast, map_intCast]; rfl)).symm
-  let q := RingEquiv.ofBijective _ ⟨RingHom.injective _, hs⟩
-  have : Nat.card ((Sp ℤ).residueField (genericPoint (Sp ℤ)) →+* ℂ) = 1 := by
-    refine Nat.card_eq_one_iff_unique.2 ⟨⟨fun f g => RingHom.ext fun x => ?_⟩, ⟨(Rat.castHom ℂ).comp q.symm⟩⟩
-    obtain ⟨a, rfl⟩ := hs x
-    simp
-  rw [this, Nat.cast_one, mul_one]
 
-theorem IsConst.encard_smallSec (h : IsConst L t) [Subsingleton L.B.ι] :
-    L.smallSec.encard = {n : ℤ | |(n : ℝ)| ≤ Real.exp t}.encard := by
-  let e := RingEquiv.ofBijective (Int.castRingHom Γ(Sp ℤ, ⊤))
-      ⟨have := isArithVar_int.charZero; Int.cast_injective, surjective_intCast (𝟙 _)⟩
-  have hU (i) : L.B.U i = ⊤ := top_le_iff.1 fun x _ => (h i).1 x
-  have hb (U : (Sp ℤ).Opens) (hU : U = ⊤) : Function.Bijective (Int.cast : ℤ → Γ(Sp ℤ, U)) := by
-    subst hU; exact e.bijective
-  let s (n : ℤ) : L.B.Sec := ⟨fun i => n, fun i j => by
-    obtain rfl : i = j := Subsingleton.elim _ _
-    have := LB.resG_g_self L.isLB i (le_refl _)
-    rw [map_intCast, show ((L.B.g i i : Γ(Sp ℤ, L.B.U i ⊓ L.B.U i))) = 1 by simpa [resG] using this, one_mul]⟩
-  let σ := Int.castRingHom ℂ
-  let y₀ : CxPts (𝟙 (Sp ℤ)) σ := ⟨spMap σ, Category.comp_id _⟩
-  let i₀ := pick L.isLB y₀
-  have hs : Function.Bijective s := ⟨fun a b hab => (hb _ (hU i₀)).1 (congrArg (·.f i₀) hab), fun u => by
-    obtain ⟨n, hn⟩ := (hb _ (hU i₀)).2 (u.f i₀)
-    exact ⟨n, DVR.SecOps.sec_ext fun i => by obtain rfl : i = i₀ := Subsingleton.elim _ _; exact hn⟩⟩
-  have hn (n : ℤ) (τ) (y : CxPts (𝟙 (Sp ℤ)) τ) : (L.φ τ).nsq (secVal _ τ (s n)) y ≤ 1 ↔ |(n : ℝ)| ≤ Real.exp t := by
-    rw [Weight.nsq, (h _).2, secVal_apply, ev_eq (mem_pick _ y)]
-    simp only [s, map_intCast, Complex.norm_intCast]
-    rw [Real.exp_neg, mul_inv_le_iff₀ (Real.exp_pos _), one_mul, show 2 * t = (2 : ℕ) * t by norm_num, Real.exp_nat_mul,
-      pow_le_pow_iff_left₀ (abs_nonneg _) (Real.exp_pos _).le two_ne_zero]
-  rw [← hs.1.encard_image]
-  congr 1
-  ext u
-  obtain ⟨n, rfl⟩ := hs.2 u
-  rw [hs.1.mem_set_image]
-  exact ⟨fun H => (hn n σ y₀).1 (H σ y₀), fun H τ y => (hn n τ y).2 H⟩
 
-theorem arVol_trivShift (ht : 0 ≤ t) : arVol (trivShift t) 0 = (t : EReal) := by
-  have hc (m : ℕ) : ((trivShift t).pow m).smallSec.encard = (2 * ⌊Real.exp (m * t)⌋₊ + 1 : ℕ) := by
-    have : Subsingleton ((trivShift t).pow m).B.ι := inferInstanceAs (Subsingleton (PUnit → PUnit))
-    rw [((isConst_trivShift t).pow m).encard_smallSec]
-    have : {n : ℤ | |(n : ℝ)| ≤ Real.exp (m * t)} =
-        (Finset.Icc (-(⌊Real.exp (m * t)⌋₊ : ℤ)) ⌊Real.exp (m * t)⌋₊ : Finset ℤ) := by
-      ext n
-      rw [Finset.coe_Icc, Set.mem_Icc, ← abs_le, Int.natCast_floor_eq_floor (Real.exp_pos _).le, Int.le_floor,
-        Int.cast_abs, Set.mem_setOf_eq]
-    rw [this, Set.encard_coe_eq_coe_finsetCard, Int.card_Icc]
-    congr 1
-    omega
-  have hl : Tendsto (fun m : ℕ => Real.log (2 * ⌊Real.exp (m * t)⌋₊ + 1 : ℕ) * (1 / m)) atTop (𝓝 t) := by
-    have h3 : Tendsto (fun m : ℕ => t + Real.log 3 / m) atTop (𝓝 t) := by
-      simpa using (tendsto_const_div_atTop_nhds_zero_nat (Real.log 3)).const_add t
-    refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds h3 ?_ ?_ <;>
-      filter_upwards [eventually_gt_atTop 0] with m hm
-    all_goals
-      have hm' : (0 : ℝ) < m := by exact_mod_cast hm
-      have h1 : 1 ≤ Real.exp (m * t) := Real.one_le_exp (by positivity)
-      have h2 := Nat.floor_le (Real.exp_pos (m * t)).le
-      have h4 := Nat.lt_floor_add_one (Real.exp (m * t))
-      have h5 : (0 : ℝ) ≤ ⌊Real.exp (m * t)⌋₊ := Nat.cast_nonneg _
-      push_cast
-      rw [mul_one_div]
-    · rw [le_div_iff₀ hm', Real.le_log_iff_exp_le (by positivity), mul_comm t]
-      linarith
-    · rw [div_le_iff₀ hm', add_mul, div_mul_cancel₀ _ hm'.ne', Real.log_le_iff_le_exp (by positivity), Real.exp_add,
-        Real.exp_log (by norm_num), mul_comm t]
-      linarith
-  refine Tendsto.limsup_eq ((EReal.tendsto_coe.2 hl).congr fun m => ?_)
-  rw [hc, EReal.coe_mul, ENat.toENNReal_coe, ← ENNReal.ofReal_natCast, ENNReal.log_ofReal_of_pos (by positivity)]
-  simp
 
-theorem isSelfInter_fnB (u : ℝ) :
-    (fnB (p := 𝟙 (Sp ℤ)) (fun _ _ => u) (fun _ => cInfAt_const u) fun _ _ _ _ _ _ _ => rfl).IsSelfInter (u / 2) :=
-  IsConst.isSelfInter fun _ => ⟨fun _ => trivial, fun _ _ => show u = _ by ring⟩
 
-theorem chInt_const (L : HermLB (𝟙 (Sp ℤ))) (u : ℝ) : chInt L 0 (fun _ _ => u) = u := by
-  let σ := Int.castRingHom ℂ
-  let y : CxPts (𝟙 (Sp ℤ)) σ := ⟨spMap σ, Category.comp_id _⟩
-  have : Subsingleton (CxPts (𝟙 (Sp ℤ)) σ) :=
-    ⟨fun a b => Subtype.ext ((cancel_mono (𝟙 _)).1 (a.2.trans b.2.symm))⟩
-  obtain ⟨R⟩ := genSmooth_of_smooth (𝟙 (Sp ℤ)) 0 σ
-  obtain ⟨a, ha⟩ := R.cover y
-  have hm (ε : ℤˣ) : (L.φ σ).chernPart 0 ε Set.univ = ENNReal.ofReal (ε : ℤ) := by
-    rw [Weight.chernPart_apply (L.cInf σ) ε (R.chart a) MeasurableSet.univ fun z _ => Subsingleton.elim y z ▸ ha]
-    simp only [AlgChart.chernDens_zero, mul_one]
-    rw [show (R.chart a).e '' Set.univ = Set.univ from
-      Set.eq_univ_of_forall fun v => ⟨y, trivial, Subsingleton.elim _ _⟩]
-    have hv : (MeasureTheory.volume : MeasureTheory.Measure (ReciprocityTheory.L2DbarEstimates.V 0)) Set.univ = 1 := by
-      have := (stdOrthonormalBasis ℝ (ReciprocityTheory.L2DbarEstimates.V 0)).volume_parallelepiped
-      rwa [Set.eq_univ_of_forall (s := parallelepiped _) fun v =>
-        (mem_parallelepiped_iff _ _).2 ⟨0, ⟨le_rfl, zero_le_one⟩, Subsingleton.elim _ _⟩] at this
-    simp [hv]
-  rw [chInt, finsum_eq_single _ σ fun σ' h => absurd (RingHom.ext_int _ _) h, Weight.chernInt]
-  simp [MeasureTheory.Measure.real, hm, ENNReal.toReal_ofReal']
 
-theorem gdeg_eq_one (L : HermLB (𝟙 (Sp ℤ))) : gdeg L 0 = 1 := chInt_const L 1
 
-theorem isGeoFun_int {ι : Type} [Fintype ι] (L : ι → HermLB (𝟙 (Sp ℤ))) : IsGeoFun L 0 (lcoeff ℝ 0) :=
-  ⟨fun n => by simp [gdeg_eq_one], fun P d hd hP => hP.coeff_eq_zero (by simpa using hd.symm)⟩
 
 end GlobalTheory.ArInt.Model

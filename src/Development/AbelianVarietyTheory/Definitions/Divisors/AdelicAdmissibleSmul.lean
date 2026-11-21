@@ -387,32 +387,7 @@ theorem exists_three : ∃ (_ : Invertible (2 : ZMod 3)) (ψ : AddChar (ZMod 3) 
     rwa [AddChar.mulShift_one] at h
   · rw [if_pos (norm_onto a)]; simp
 
-theorem isQuad_complex : IsQuad (Complex.conjAe : ℂ →ₐ[ℝ] ℂ) Complex.I where
-  unit := IsUnit.mk0 _ Complex.I_ne_zero
-  anti := by simp
-  basis := ⟨Complex.basisOneI, by simp, by simp⟩
 
-theorem om_split_real {ι : Type} [Fintype ι] [DecidableEq ι] [Invertible (2 : ℝ)] (ψ : AddChar ℝ ℂ) (lam : ℝˣ →* ℂ)
-    (J : Matrix ι ι (ℝ × ℝ)) (hJ : IsHerm (sw ℝ) J) :
-    IsSplitting realClass ψ (darb J hJ) (actB (sw ℝ)) (om lam J) := by
-  have key : ∀ g : UG (sw ℝ) J, ∃ T : SchwartzMap (ι → ℝ) ℂ →L[ℂ] SchwartzMap (ι → ℝ) ℂ,
-      ∀ f : SchwartzMap (ι → ℝ) ℂ, om lam J g (f : (ι → ℝ) → ℂ) = T f := by
-    intro g
-    let e : (ι → ℝ) ≃L[ℝ] (ι → ℝ) := (Matrix.GeneralLinearGroup.toLin (g₁ J g)⁻¹).toLinearEquiv.toContinuousLinearEquiv
-    refine ⟨lam (Matrix.GeneralLinearGroup.det (g₁ J g)) • SchwartzMap.compCLMOfContinuousLinearEquiv ℂ e, fun f => ?_⟩
-    funext x
-    rfl
-  refine ⟨fun g φ hφ => ?_, fun g w φ _ => om_impl ψ lam J hJ g w φ, fun g l hl => ?_⟩
-  · obtain ⟨T, hT⟩ := key g
-    refine Submodule.span_induction (p := fun φ _ => om lam J g φ ∈ schFun (ι → ℝ)) ?_ ?_ ?_ ?_ hφ
-    · rintro _ ⟨f, rfl⟩
-      exact Submodule.subset_span ⟨T f, (hT f).symm⟩
-    · simp
-    · intro a b _ _ ha hb; rw [map_add]; exact Submodule.add_mem _ ha hb
-    · intro a b _ hb; rw [map_smul]; exact Submodule.smul_mem _ _ hb
-  · obtain ⟨T, hT⟩ := key g
-    obtain ⟨S, hS⟩ := hl
-    exact ⟨S.comp T, fun f => by rw [LinearMap.comp_apply, hT, hS]; rfl⟩
 
 end GlobalTheory.WeilM.SplitModel
 
@@ -569,79 +544,8 @@ theorem siegel_char_unique {C : TestClass R} (hC : HasDiagForm C κ) {ψ : AddCh
 
 end Forms
 
-theorem hasDiagForm_sb (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
-    (κ : Type) [Fintype κ] : HasDiagForm (sbClass F) κ := by
-  have := SplitWeil.t2Space F
-  have := SplitWeil.secondCountable F
-  borelize (κ → F)
-  let μ : Measure (κ → F) := Measure.addHaar
-  have hi : ∀ f : SB (κ → F), Integrable f.1 μ := fun f => f.2.1.continuous.integrable_of_hasCompactSupport f.2.2
-  let m : SB (κ → F) →ₗ[ℂ] ℂ :=
-    { toFun := fun f => ∫ x, f.1 x ∂μ
-      map_add' := fun f g => integral_add (hi f) (hi g)
-      map_smul' := fun a f => integral_smul a f.1 }
-  let K : ∀ ι : Type, Set (ι → F) := fun ι => Set.univ.pi fun _ => (𝒪[F] : Set F)
-  have hKc : ∀ ι, IsCompact (K ι) := fun ι => isCompact_univ_pi fun _ => SplitWeil.isCompact_int F
-  have hK : ∀ ι [Fintype ι], IsClopen (K ι) := fun ι _ =>
-    ⟨(hKc ι).isClosed, isOpen_set_pi Set.finite_univ fun _ _ => SplitWeil.isOpen_int F⟩
-  refine hasDiagForm_of _ (SB (κ → F)) m (fun φ h => diag_mem_SB h) (fun f a => ⟨⟨f.2.1.comp_continuous (by fun_prop),
-    f.2.2.comp_homeomorph (Homeomorph.addRight a)⟩, integral_add_right_eq_self f.1 a⟩) ⟨(K (κ ⊕ κ)).indicator 1,
-    ⟨(LocallyConstant.indicator (1 : LocallyConstant _ ℂ) (hK _)).isLocallyConstant,
-      HasCompactSupport.intro (hKc _) fun x hx => Set.indicator_of_notMem hx _⟩, ?_⟩ fun _ _ => Set.mem_univ _
-  show ∫ x, (K (κ ⊕ κ)).indicator (1 : (κ ⊕ κ → F) → ℂ) (Sum.elim x x) ∂μ ≠ 0
-  have e : (fun x : κ → F => (K (κ ⊕ κ)).indicator (1 : (κ ⊕ κ → F) → ℂ) (Sum.elim x x)) = (K κ).indicator fun _ => 1 := by
-    funext x
-    have : Sum.elim x x ∈ K (κ ⊕ κ) ↔ x ∈ K κ := by simp [K]
-    by_cases hx : x ∈ K κ <;> simp [hx, this]
-  rw [e, integral_indicator_const _ (hK κ).isOpen.measurableSet]
-  have h1 := ((hK κ).isOpen.measure_pos μ ⟨0, fun _ _ => zero_mem _⟩).ne'
-  have h2 := ((hKc κ).measure_lt_top (μ := μ)).ne
-  simp [Measure.real, ENNReal.toReal_eq_zero_iff, h1, h2]
 
-theorem mem_schFun {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] {φ : V → ℂ} :
-    φ ∈ schFun V ↔ ∃ f : SchwartzMap V ℂ, (f : V → ℂ) = φ := by
-  refine ⟨fun h => ?_, fun ⟨f, hf⟩ => Submodule.subset_span ⟨f, hf⟩⟩
-  refine Submodule.span_induction (p := fun φ _ => ∃ f : SchwartzMap V ℂ, (f : V → ℂ) = φ) (fun _ h => h) ⟨0, rfl⟩ ?_ ?_ h
-  · rintro _ _ _ _ ⟨f, rfl⟩ ⟨g, rfl⟩; exact ⟨f + g, rfl⟩
-  · rintro a _ _ ⟨f, rfl⟩; exact ⟨a • f, rfl⟩
 
-theorem hasDiagForm_real (κ : Type) [Fintype κ] : HasDiagForm realClass κ := by
-  let D : (κ → ℝ) →L[ℝ] (κ ⊕ κ → ℝ) := ContinuousLinearMap.pi fun k => ContinuousLinearMap.proj (k.elim id id)
-  have hD : ∀ u, D u = Sum.elim u u := fun u => by ext (k | k) <;> rfl
-  have hanti : AntilipschitzWith 1 D := AddMonoidHomClass.antilipschitz_of_bound D fun u => by
-    rw [NNReal.coe_one, one_mul]
-    exact (pi_norm_le_iff_of_nonneg (norm_nonneg _)).mpr fun k => norm_le_pi_norm (D u) (Sum.inl k)
-  let T := SchwartzMap.compCLMOfAntilipschitz ℂ (F := ℂ) D.hasTemperateGrowth hanti
-  have hT : ∀ f, (T f : (κ → ℝ) → ℂ) = fun u => f (Sum.elim u u) := fun f => funext fun u => congrArg f (hD u)
-  have hi : ∀ f : schFun (κ → ℝ), Integrable f.1 := fun f => by
-    obtain ⟨g, hg⟩ := mem_schFun.mp f.2
-    exact hg ▸ g.integrable
-  let m : schFun (κ → ℝ) →ₗ[ℂ] ℂ :=
-    { toFun := fun f => ∫ x, f.1 x
-      map_add' := fun f g => integral_add (hi f) (hi g)
-      map_smul' := fun a f => integral_smul a f.1 }
-  refine hasDiagForm_of _ (schFun (κ → ℝ)) m (fun φ h => ?_) (fun f a => ⟨?_, integral_add_right_eq_self f.1 a⟩) ?_
-    fun l hl => ⟨(SchwartzMap.integralCLM ℂ volume).comp T, fun f => ?_⟩
-  · obtain ⟨f, rfl⟩ := mem_schFun.mp h
-    exact mem_schFun.mpr ⟨T f, hT f⟩
-  · obtain ⟨g, hg⟩ := mem_schFun.mp f.2
-    refine mem_schFun.mpr ⟨SchwartzMap.compCLMOfAntilipschitz ℂ (F := ℂ) (g := fun u => u + a) (K := 1) (by fun_prop)
-      (isometry_add_right a).antilipschitz g, ?_⟩
-    rw [← hg]; rfl
-  · let b : ContDiffBump (0 : κ ⊕ κ → ℝ) := default
-    have hb : HasCompactSupport fun x => (b x : ℂ) := b.hasCompactSupport.comp_left (g := Complex.ofReal) rfl
-    refine ⟨_, mem_schFun.mpr ⟨hb.toSchwartzMap (Complex.ofRealCLM.contDiff.comp b.contDiff), rfl⟩, ?_⟩
-    show ∫ x, (b (Sum.elim x x) : ℂ) ≠ 0
-    rw [integral_complex_ofReal, Complex.ofReal_ne_zero]
-    simp only [← hD]
-    have hs : HasCompactSupport fun x => b (D x) :=
-      b.hasCompactSupport.comp_isClosedEmbedding (hanti.isClosedEmbedding D.uniformContinuous)
-    refine (Continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero (x := 0) (b.continuous.comp D.continuous) hs
-      (fun x => b.nonneg) ?_).ne'
-    rw [Function.comp, map_zero, b.one_of_mem_closedBall (Metric.mem_closedBall_self b.rIn_pos.le)]
-    exact one_ne_zero
-  · rw [hl _ (mem_schFun.mpr ⟨f, rfl⟩), ContinuousLinearMap.comp_apply, SchwartzMap.integralCLM_apply, hT]
-    rfl
 
 section RankZero
 
@@ -700,12 +604,7 @@ theorem isUWeilB_rank_zero (hC : ∀ (κ : Type) [Fintype κ] (a : ℂ), ∀ l �
 
 end RankZero
 
-theorem real_admissible_smul (κ : Type) [Fintype κ] (a : ℂ) : ∀ l ∈ realClass.adm κ, a • l ∈ realClass.adm κ :=
-  fun _ ⟨T, hT⟩ => ⟨a • T, fun f => congrArg (a • ·) (hT f)⟩
 
-theorem adelic_admissible_smul (F : Type) [Field F] [NumberField F] [LocallyCompactSpace (AdeleRing (𝓞 F) F)] (κ : Type) [Fintype κ]
-    (a : ℂ) : ∀ l ∈ (adeleClass F).adm κ, a • l ∈ (adeleClass F).adm κ :=
-  fun _ h g hg => (h g hg).elim fun T hT => ⟨a • T, fun f => congrArg (a • ·) (hT f)⟩
 
 def argC : ℂˣ →* Circle where
   toFun z := ⟨z / ‖(z : ℂ)‖, by simp [Submonoid.unitSphere, z.ne_zero]⟩
@@ -714,46 +613,10 @@ def argC : ℂˣ →* Circle where
     show ((z * w : ℂˣ) : ℂ) / ‖((z * w : ℂˣ) : ℂ)‖ = z / ‖(z : ℂ)‖ * (w / ‖(w : ℂ)‖)
     simp [mul_div_mul_comm])
 
-theorem argC_apply (z : ℂˣ) : (argC z : ℂ) = z / ‖(z : ℂ)‖ := rfl
 
-theorem continuous_argC : Continuous argC :=
-  Continuous.subtype_mk (Units.continuous_val.div (Complex.continuous_ofReal.comp Units.continuous_val.norm)
-    fun z => by simp) _
 
-theorem argC_h90_conj_eq_sq (z : ℂˣ) : argC (h90 (Complex.conjAe : ℂ →ₐ[ℝ] ℂ) z) = argC z ^ 2 := by
-  apply Circle.ext
-  have h := Complex.mul_conj' (z : ℂ)
-  have h1 : (starRingEnd ℂ) (z : ℂ) ≠ 0 := by simp
-  have h2 : (‖(z : ℂ)‖ : ℂ) ≠ 0 := by simp
-  simp [argC_apply, h90]
-  field_simp
-  linear_combination -h
 
-theorem isUWeilB_complex [Invertible (2 : ℝ)] [IsModuleTopology ℝ ℂ] (ψ : AddChar ℝ ℂ) {β : Type} [Fintype β] [DecidableEq β]
-    {JB : Matrix β β ℂ} (hB : IsHerm (Complex.conjAe : ℂ →ₐ[ℝ] ℂ) JB) (k : ℤ) :
-    IsUWeilB (Complex.conjAe : ℂ →ₐ[ℝ] ℂ) realClass ψ Complex.I (1 : Matrix Empty Empty ℂ) JB (darbZero _ _ _ Empty)
-      (argC ^ (2 * k)) (detOm (argC ^ k) JB _) := by
-  have e : argC ^ (2 * k) = (argC ^ k).comp (h90 (Complex.conjAe : ℂ →ₐ[ℝ] ℂ)) := by
-    ext1 z
-    rw [MonoidHom.comp_apply, MonoidHom.zpow_apply, MonoidHom.zpow_apply, argC_h90_conj_eq_sq, _root_.zpow_mul, zpow_ofNat]
-  rw [e]
-  exact isUWeilB_rank_zero real_admissible_smul ψ hB _ (continuous_argC.zpow k)
 
-theorem resEtaPow_argC : ResEtaPow (⊥ : Subgroup ℝˣ) argC 1 := by
-  intro a
-  have : a ∈ (⊥ : Subgroup ℝˣ) ⊔ (Units.map (Algebra.norm ℝ : ℂ →* ℝ)).range ↔ 0 < (a : ℝ) := by
-    rw [bot_sup_eq]
-    constructor
-    · rintro ⟨z, rfl⟩
-      simp [Algebra.norm_complex_apply, Complex.normSq_pos]
-    · intro h
-      refine ⟨Units.mk0 (√a : ℝ) (by simp [Real.sqrt_ne_zero', h]), Units.ext ?_⟩
-      simp [Algebra.norm_complex_apply, h.le]
-  rw [this]
-  have h0 : ((a : ℝ) : ℂ) ≠ 0 := by simp
-  split_ifs with h
-  · simp [argC_apply, abs_of_pos h]
-  · simp [argC_apply, abs_of_nonpos (not_lt.mp h)]
 
 open scoped Pointwise in
 
@@ -765,28 +628,7 @@ theorem real_modu (a : ℝˣ) : (realClass.modu a : ℝ) = |(a : ℝ)| := by
       simp [← Real.enorm_eq_ofReal_abs, enorm_eq_nnnorm])]
   rfl
 
-theorem isUWeilB_adele (F : Type) [Field F] [NumberField F] :
-    ∃ (_ : LocallyCompactSpace (AdeleRing (𝓞 F) F)) (_ : Invertible (2 : AdeleRing (𝓞 F) F)),
-      IsQuad (swapA (AdeleRing (𝓞 F) F)) (1, -1) ∧ ∀ (ψ : AddChar (AdeleRing (𝓞 F) F) ℂ)
-      (lam : (AdeleRing (𝓞 F) F × AdeleRing (𝓞 F) F)ˣ →* Circle), Continuous lam →
-      IsUWeilB (swapA (AdeleRing (𝓞 F) F)) (adeleClass F) ψ (1, -1) (1 : Matrix Empty Empty _) (1 : Matrix Unit Unit _)
-        (darbZero _ _ _ Empty) (lam.comp (h90 (swapA _))) (detOm lam _ _) := by
-  have hL := AdelicUnitaryTop.locallyCompact_adele (F := F)
-  have h2 : IsUnit (2 : AdeleRing (𝓞 F) F) := by
-    simpa [map_ofNat] using (Ne.isUnit (two_ne_zero : (2 : F) ≠ 0)).map (algebraMap F (AdeleRing (𝓞 F) F))
-  let _ := h2.invertible
-  exact ⟨hL, inferInstance, isQuad_split, fun ψ lam hl =>
-    isUWeilB_rank_zero (adelic_admissible_smul F) ψ ⟨fun i j => by simp, by simp⟩ _ hl⟩
 
-theorem split_char_unique {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
-    [Invertible (2 : F)] {α κ : Type} [Fintype α] [DecidableEq α] [Fintype κ] (ψ : AddChar F ℂ) (hψ : Continuous ψ)
-    (hψ1 : ψ ≠ 1) {JA : Matrix α α (F × F)} {JB : Matrix Unit Unit (F × F)} (hA : IsHerm (swapA F) JA)
-    (hB : IsHerm (swapA F) JB) (σ : κ ≃ α × Unit) (χ χ' : (F × F)ˣ →* Circle) (hc : Continuous χ)
-    (hχ : ResEtaPow (⊥ : Subgroup Fˣ) χ (Fintype.card α)) :
-    IsUWeilSplit (swapA F) (sbClass F) ψ (1, -1) JA (dbl JB) (splitDarboux hA hB.dbl (dblNum σ)) χ' (diagCols Unit)
-      (splitOm (distribHaarChar F) χ (dbl JB) (dblNum σ)) ↔ χ' = χ :=
-  ⟨fun h => siegel_char_unique (hasDiagForm_sb F κ) isQuad_split (isDblCoord_split hA hB σ) h.2.2
-    (isUWeilSplit_split ψ hψ hψ1 hA hB σ χ hc hχ).2.2, fun h => h ▸ isUWeilSplit_split ψ hψ hψ1 hA hB σ χ hc hχ⟩
 
 end GlobalTheory.WeilM.SiegelModel
 end

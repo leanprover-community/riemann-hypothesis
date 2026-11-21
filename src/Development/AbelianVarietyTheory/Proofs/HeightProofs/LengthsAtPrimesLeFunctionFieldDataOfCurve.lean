@@ -10,14 +10,711 @@ import Formalism.LocalToGlobal.ProjectiveLattices.AxHInst
 import Formalism.LocalToGlobal.ProjectiveLattices.SupNDataOfNonneg
 import Formalism.LocalToGlobal.ProjectiveLattices.CombAlgOfCombBound
 import Development.AbelianVarietyTheory.Proofs.AlgebraicCurves.PlacesRestrictInjective
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.RangeMulStep
+import Formalism.LocalToGlobal.ProjectiveLattices.PtOfSPf
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.RealisationValuesEqValuedPointOrders
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.LengthQuotientLeOfOrderBound
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.ValuationEqOrdAndEqZero
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsIntegralIffMemSpanOneTmulIntegralClosure
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.FlatLength
+import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.MapSpanBaseChangeEquivSubmoduleOf
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.MemIntegralClosureOfMemSpan
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.GaussRingCompletionRename
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsRingHomTensorOmSOfPoint
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsSectionMaps
+import Development.AbelianVarietyTheory.Proofs.AlgebraicCurves.AlgebraicIndependentFreeVar
+import Formalism.LocalToGlobal.ProjectiveLattices.ValuedUnif
 
+section
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 4000000
+
+noncomputable section
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.WeightAlgebra Formalism.MainNotions.Gaps.EtaleWeightGaps Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open ReciprocityTheory.ChartRestriction.G.T0
+
+namespace GlobalTheory.SecPoint
+
+section Rec
+
+variable {D : D7} {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} {j : ℕ} (X : PJ D B P j) (la : HeightOneSpectrum (𝓞 B.KO))
+  (N : ℕ) {wL : WeightFamilies.Wt D j} (w : Fin N → B.Cusp j wL)
+
+theorem range_mul_step {m : ℕ} {x y : X.Forms} (hx : x ∈ LinearMap.range (X.inc (addL (wt0 D j) wL m)))
+    (hy : y ∈ LinearMap.range (X.inc wL)) : x * y ∈ LinearMap.range (X.inc (addL (wt0 D j) wL (m + 1))) := by
+  obtain ⟨F, rfl⟩ := hx
+  obtain ⟨G, rfl⟩ := hy
+  obtain ⟨H, hH⟩ := X.inc_mul wL _ G F
+  rw [← wadd_addL, mul_comm, hH]
+  exact ⟨H, rfl⟩
+
+theorem range_pow {m : ℕ} {y x : X.Forms} (hy : y ∈ LinearMap.range (X.inc (addL (wt0 D j) wL m)))
+    (hx : x ∈ LinearMap.range (X.inc wL)) (e : ℕ) :
+    y * x ^ e ∈ LinearMap.range (X.inc (addL (wt0 D j) wL (m + e))) := by
+  induction e with
+  | zero => simpa using hy
+  | succ e ih =>
+    rw [pow_succ, ← mul_assoc, ← add_assoc]
+    exact range_mul_step X ih hx
+
+theorem range_prod (d : Fin N →₀ ℕ) {m : ℕ} {y : X.Forms}
+    (hy : y ∈ LinearMap.range (X.inc (addL (wt0 D j) wL m))) (s : Finset (Fin N)) :
+    y * ∏ i ∈ s, X.inc wL (w i) ^ d i ∈ LinearMap.range (X.inc (addL (wt0 D j) wL (m + ∑ i ∈ s, d i))) := by
+  classical
+  refine Finset.induction_on s (by rwa [Finset.prod_empty, Finset.sum_empty, mul_one, add_zero]) ?_
+  intro a s ha ih
+  rw [Finset.prod_insert ha, Finset.sum_insert ha]
+  have e1 : y * (X.inc wL (w a) ^ d a * ∏ i ∈ s, X.inc wL (w i) ^ d i) =
+      (y * ∏ i ∈ s, X.inc wL (w i) ^ d i) * X.inc wL (w a) ^ d a := by ring
+  have e2 : m + (d a + ∑ i ∈ s, d i) = m + ∑ i ∈ s, d i + d a := by ring
+  rw [e1, e2]
+  exact range_pow X ih ⟨w a, rfl⟩ (d a)
+
+theorem range_aeval {k : ℕ} (Pw : MvPolynomial (Fin N) B.KO) (hPw : Pw.IsHomogeneous k) {m : ℕ} {y : X.Forms}
+    (hy : y ∈ LinearMap.range (X.inc (addL (wt0 D j) wL m))) :
+    y * MvPolynomial.aeval (fun i => X.inc wL (w i)) Pw ∈ LinearMap.range (X.inc (addL (wt0 D j) wL (m + k))) := by
+  classical
+  rw [Pw.as_sum, map_sum, Finset.mul_sum]
+  refine Submodule.sum_mem _ fun d hd => ?_
+  rw [MvPolynomial.aeval_monomial, mul_left_comm, ← Algebra.smul_def]
+  refine Submodule.smul_mem _ _ ?_
+  have hdeg : ∑ i ∈ d.support, d i = k := by
+    have := hPw (MvPolynomial.mem_support_iff.mp hd)
+    simpa [Finsupp.weight_apply, Finsupp.sum] using this
+  have h := range_prod X N w d hy d.support
+  rw [hdeg] at h
+  exact h
+
+theorem exists_ratio {Ω : Type} [Field Ω] [Algebra B.KO Ω] (gF : X.Forms →ₐ[B.KO] Ω)
+    (hB : CurveLoc.BirAt X N w gF) (hk : ∃ k, gF (X.inc wL (w k)) ≠ 0) (a : Ω) :
+    ∃ (m : ℕ) (p q : B.Cusp j (addL (wt0 D j) wL m)), gF (X.inc _ p) ≠ 0 ∧ a * gF (X.inc _ p) = gF (X.inc _ q) := by
+  obtain ⟨k0, hk0⟩ := hk
+  obtain ⟨k, g, Pw, hPw, hne, he⟩ := hB a
+  have h1 : X.inc wL (w k0) ∈ LinearMap.range (X.inc (addL (wt0 D j) wL 1)) := by
+    rw [add_zero_weight_one_eq]; exact ⟨_, rfl⟩
+  obtain ⟨p, hp⟩ := range_aeval X N w Pw hPw h1
+  have hG : X.inc wL (w k0) * X.inc (wsmul k wL) g ∈ LinearMap.range (X.inc (addL (wt0 D j) wL (1 + k))) := by
+    obtain ⟨H, hH⟩ := X.inc_mul wL _ (w k0) g
+    rw [add_comm, ← wadd_addL, addL, zero_weight_add, hH]
+    exact ⟨H, rfl⟩
+  obtain ⟨q, hq⟩ := hG
+  have hPv : gF (MvPolynomial.aeval (fun i => X.inc wL (w i)) Pw) =
+      MvPolynomial.aeval (fun i => gF (X.inc wL (w i))) Pw :=
+    MvPolynomial.comp_aeval_apply (fun i => X.inc wL (w i)) gF Pw
+  refine ⟨1 + k, p, q, ?_, ?_⟩
+  · rw [hp, map_mul, hPv]
+    exact mul_ne_zero hk0 hne
+  · rw [hp, hq, map_mul, map_mul, hPv, ← he]
+    ring
+
+def evK {F : Type} [Field F] (ev : Rp X la N →+* F) : Kp X la N →+* F :=
+  ev.comp (algebraMap (Kp X la N) (Rp X la N))
+
+theorem ev_smul {F : Type} [Field F] (ev : Rp X la N →+* F) (c : Kp X la N) (g : Rp X la N) :
+    ev (c • g) = evK X la N ev c * ev g := by
+  rw [Algebra.smul_def, map_mul]; rfl
+
+theorem lift_algKp {F : Type} [Field F] (ev : Rp X la N →+* F) (hu : IsUnit (ev (sec X la w 0))) (c : Kp X la N) :
+    IsLocalization.Away.lift (sec X la w 0) hu
+      ((algebraMap (Kp X la N) ↥(Frac0 X la w) c : ↥(Frac0 X la w)) : Lw X la w) = evK X la N ev c := by
+  show IsLocalization.Away.lift (sec X la w 0) hu (algebraMap (Kp X la N) (Lw X la w) c) = _
+  rw [IsScalarTower.algebraMap_apply (Kp X la N) (Rp X la N) (Lw X la w), liftEv_alg]
+  rfl
+
+section Fam
+
+variable {ι : Type} (Ω : ι → Type) [∀ Z, Field (Ω Z)] [∀ Z, Algebra B.KO (Ω Z)] (gF : ∀ Z, X.Forms →ₐ[B.KO] Ω Z)
+
+theorem exists_point [Finite ι]
+    (hinj : ∀ (u : WeightFamilies.Wt D j) (G : B.Cusp j u), (∀ Z, gF Z (X.inc u G) = 0) → G = 0)
+    (hsplit : ∀ (Z : ι) (k : Fin N), ∃ g : B.Cusp j wL, gF Z (X.inc wL g) = gF Z (X.inc wL (w k)) ∧
+      ∀ Z', Z' ≠ Z → gF Z' (X.inc wL g) = 0)
+    (hB : ∀ Z, CurveLoc.BirAt X N w (gF Z)) (hC : ∀ Z, CurveLoc.CountQAt X la N w (gF Z))
+    {F : Type} [Field F] (ev : Rp X la N →+* F) (hu : IsUnit (ev (sec X la w 0)))
+    (honS : ∀ i : Fin (WeightFamilies.dimY D j), ev (sec X la w i.succ) = 0) :
+    ∃ (Z : ι) (τ : Ω Z →+* F) (σ : F), σ ≠ 0 ∧
+      (∀ (u : WeightFamilies.Wt D j) (G : B.Cusp j u), gF Z (X.inc u G) = 0 → ev (emb X la N (X.inc u G)) = 0) ∧
+      (∀ a : B.KO, τ (algebraMap B.KO (Ω Z) a) =
+        evK X la N ev (algebraMap (X.Kl la) (Kp X la N) (algebraMap B.KO (X.Kl la) a))) ∧
+      ∀ (k : ℕ) (G : X.Forms), emb X la N G ∈ Vw X la N (addL (wt0 D j) wL k) →
+        ev (emb X la N G) = τ (gF Z G) * σ ^ k := by
+  classical
+  have := Fintype.ofFinite ι
+  letI : Algebra (Kp X la N) F := (evK X la N ev).toAlgebra
+  let ψ : ↥(Frac0 X la w) →ₐ[Kp X la N] F :=
+    { (IsLocalization.Away.lift (sec X la w 0) hu).comp (Frac0 X la w).val.toRingHom with
+      commutes' := fun c => lift_algKp X la N w ev hu c }
+  have hψ : ∀ (x : ↥(Frac0 X la w)) (k : ℕ) (g : Rp X la N), (x : Lw X la w) = frac X la w k g →
+      ψ x = ev g * (ev (sec X la w 0))⁻¹ ^ k := fun x k g hx => by
+    show IsLocalization.Away.lift (sec X la w 0) hu (x : Lw X la w) = _
+    rw [hx, liftEv_frac]
+  have hQ : (RingHom.ker ψ).IsPrime := RingHom.ker_isPrime _
+  have hJ : Jid X la w ≤ RingHom.ker ψ := by
+    refine Ideal.span_le.2 ?_
+    rintro _ ⟨i, rfl⟩
+    rw [SetLike.mem_coe, RingHom.mem_ker, hψ _ 1 _ (coe_sfr X la w i.succ), honS, zero_mul]
+  have hinf : (Finset.univ : Finset ι).inf (fun Z => RingHom.ker (phiZ X la N (Ω Z) (gF Z) w)) ≤ RingHom.ker ψ := by
+    intro f hf
+    have hf' : ∀ Z, phiZ X la N (Ω Z) (gF Z) w f = 0 := fun Z =>
+      RingHom.mem_ker.1 (Finset.inf_le (f := fun Z => RingHom.ker (phiZ X la N (Ω Z) (gF Z) w))
+        (Finset.mem_univ Z) hf)
+    rw [CurveInj.fraction_zero_injective X la N Ω gF w hinj f hf']
+    exact Ideal.zero_mem _
+  obtain ⟨Z, -, hZ⟩ := (Ideal.IsPrime.inf_le' hQ).1 hinf
+  obtain ⟨χ, hχ⟩ := pos_factor (phiZ X la N (Ω Z) (gF Z) w) ψ
+    (fun f hf => RingHom.mem_ker.1 (hZ (RingHom.mem_ker.2 hf))) (fun r => by
+      obtain ⟨a, p, hp, hr⟩ := CurveLoc.loc_of_bir X la N w (gF Z) (hB Z) (hC Z) r
+      exact ⟨a, p, fun h0 => hp _ hQ hJ hZ (RingHom.mem_ker.2 h0), hr⟩)
+  have hs := pos_sec_ne X la N w (gF Z) χ
+  have hs0 := hu.ne_zero
+  refine ⟨Z, χ.toRingHom.comp (CurveLoc.psiZ X la N w (gF Z)), ev (sec X la w 0) *
+    (χ (algebraMap (RZ X la N (Ω Z)) (RZs X la N (Ω Z) (gF Z) w) (rzMap X la N (Ω Z) (gF Z) (sec X la w 0))))⁻¹,
+    mul_ne_zero hs0 (inv_ne_zero hs), fun u G h0 => ?_,
+    fun a => (congrArg χ (pos_psiZ_alg X la N w (gF Z) a)).trans (χ.commutes _), fun k G hG => ?_⟩
+  · choose g hg using hsplit Z
+    have hmem : frac X la w 1 (CurveLoc.secOf X la N g) ∈ Frac0 X la w :=
+      Algebra.subset_adjoin (frac_mem_Hfr X la w (by rw [add_zero_weight_one_eq]; exact CurveLoc.secOf_mem X la N g))
+    have h1 : (⟨_, hmem⟩ : ↥(Frac0 X la w)) - 1 ∈ RingHom.ker (phiZ X la N (Ω Z) (gF Z) w) := by
+      rw [RingHom.mem_ker, map_sub, map_one, CurveLoc.phiZ_of_eq X la N w (gF Z) _ 1 _ rfl,
+        CurveLoc.rzMap_secOf X la N (gF Z) g w (fun k => (hg k).1), CurveLoc.secOf_self, pow_one,
+        CurveLoc.weight_zero_section_mul_inv, sub_self]
+    have h2 := hZ h1
+    rw [RingHom.mem_ker, map_sub, map_one, hψ _ 1 _ rfl, pow_one, sub_eq_zero] at h2
+    have he : ev (CurveLoc.secOf X la N g) ≠ 0 := left_ne_zero_of_mul_eq_one h2
+    have hHe : emb X la N (X.inc u G) * CurveLoc.secOf X la N g = 0 :=
+      CurveInj.vw_inj X la N Ω gF (wadd u wL) (hinj _)
+        (mul_mem_Vw X la N (emb_mem_Vw X la N u G) (CurveLoc.secOf_mem X la N g))
+        fun Z' => by
+          rw [map_mul]
+          by_cases hZ' : Z' = Z
+          · subst hZ'
+            rw [rzMap_emb, h0, TensorProduct.tmul_zero, TensorProduct.tmul_zero, zero_mul]
+          · rw [CurveLoc.rzMap_secOf_zero X la N (gF Z') g (fun k => (hg k).2 Z' hZ'), mul_zero]
+    have h3 := congrArg ev hHe
+    rw [map_mul, map_zero] at h3
+    exact (mul_eq_zero.1 h3).resolve_right he
+  · have h1 := ((hχ _).trans (hψ _ k _ rfl)).symm.trans (phi_fraction_base_value X la N w (gF Z) χ k G hG)
+    show _ = χ (CurveLoc.psiZ X la N w (gF Z) (gF Z G)) * _
+    rw [mul_pow, mul_left_comm, ← h1, mul_left_comm, ← mul_pow, mul_inv_cancel₀ hs0, one_pow, mul_one]
+
+end Fam
+
+section One
+
+variable {Ω : Type} [Field Ω] [Algebra B.KO Ω] (gF : X.Forms →ₐ[B.KO] Ω)
+
+theorem ev_sec {F : Type} [Field F] (ev : Rp X la N →+* F) (τ : Ω →+* F) (σ : F)
+    (hc : ∀ (k : ℕ) (G : X.Forms), emb X la N G ∈ Vw X la N (addL (wt0 D j) wL k) →
+      ev (emb X la N G) = τ (gF G) * σ ^ k) (i : Fin (WeightFamilies.dimY D j + 1)) :
+    ev (sec X la w i) = (∑ k, evK X la N ev (algebraMap (Op X la N) (Kp X la N) (Tv X la N (i, k))) *
+      τ (gF (X.inc wL (w k)))) * σ := by
+  unfold Formalism.MainNotions.Gaps.EtaleWeightGaps.sec
+  rw [map_sum, Finset.sum_mul]
+  refine Finset.sum_congr rfl fun k _ => ?_
+  rw [ev_smul, hc 1 _ (by rw [add_zero_weight_one_eq]; exact emb_mem_Vw X la N wL (w k)), pow_one, mul_assoc]
+
+end One
+
+end Rec
+
+end GlobalTheory.SecPoint
+end
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.WeightAlgebra Formalism.MainNotions.Gaps.EtaleWeightGaps Formalism.L2.Pj
+open scoped TensorProduct
+
+namespace GlobalTheory
+
+theorem mem_span_one_tmul_of_order_bound (R R' F F' : Type) [CommRing R] [IsDomain R]
+    [IsDiscreteValuationRing R] [CommRing R'] [IsDomain R'] [IsDiscreteValuationRing R']
+    [Algebra R R'] [Module.Flat R R'] [IsLocalHom (algebraMap R R')] [Field F] [Algebra R F]
+    [IsFractionRing R F] [Field F'] [Algebra R' F'] [IsFractionRing R' F'] [Algebra F F']
+    [Algebra R F'] [IsScalarTower R F F'] [IsScalarTower R R' F']
+    (hmax : Ideal.map (algebraMap R R') (IsLocalRing.maximalIdeal R) = IsLocalRing.maximalIdeal R')
+    (hres : Function.Surjective (IsLocalRing.ResidueField.map (algebraMap R R')))
+    (L : Type) [Field L] [Algebra F L] [FiniteDimensional F L] [Algebra.IsSeparable F L]
+    [Algebra R L] [IsScalarTower R F L] (n : AddValuation L (WithTop ℤ) → ℤ) (η : L) (hη0 : η ≠ 0)
+    (hη : ∀ w ∈ ReciprocityTheory.ChartRestriction.G.T0.ValPl.PlacesOver R L, w η = ((n w : ℤ) : WithTop ℤ))
+    (x : F' ⊗[F] L)
+    (hx : ∀ w ∈ ReciprocityTheory.ChartRestriction.G.T0.ValPl.PlacesOver R L,
+      ∀ u : AddValuation (F' ⊗[F] L) (WithTop ℤ), (∀ g : L, u ((1 : F') ⊗ₜ[F] g) = w g) →
+        (∀ r : R', 0 ≤ u (algebraMap R' F' r ⊗ₜ[F] (1 : L))) →
+          0 ≤ u x + ((n w : ℤ) : WithTop ℤ)) :
+    x ∈ Submodule.span R' ((fun l : L => (1 : F') ⊗ₜ[F] l) ''
+      {l | ∀ w ∈ ReciprocityTheory.ChartRestriction.G.T0.ValPl.PlacesOver R L, 0 ≤ w l + ((n w : ℤ) : WithTop ℤ)}) := by
+  have hB := isIntegral_iff_mem_span_one_tmul_integralClosure R R' F F' hmax hres L
+  obtain ⟨w', h1, h2, -, -⟩ := exists_unique_place_baseChange R R' F F' hmax hres L hB
+  have hint : IsIntegral R' (x * (1 : F') ⊗ₜ[F] η) := by
+    rw [h2]
+    intro w
+    rw [AddValuation.map_mul, h1, hη w.1 w.2]
+    refine hx w.1 w.2 (w' w) (h1 w) fun r => ?_
+    exact (h2 _).1 (isIntegral_algebraMap (R := R') (A := F' ⊗[F] L) (x := r)) w
+  have hmem := (hB _).1 hint
+  haveI := integralClosure.isDedekindDomain R F L
+  haveI := integralClosure.isFractionRing_of_finite_extension (A := R) F L
+  have hxe : x = (x * (1 : F') ⊗ₜ[F] η) * (1 : F') ⊗ₜ[F] η⁻¹ := by
+    rw [mul_assoc, Algebra.TensorProduct.tmul_mul_tmul, mul_one, mul_inv_cancel₀ hη0,
+      ← Algebra.TensorProduct.one_def, mul_one]
+  rw [hxe]
+  generalize x * (1 : F') ⊗ₜ[F] η = y at hmem
+  induction hmem using Submodule.span_induction with
+  | mem y hy =>
+    obtain ⟨b, hb, rfl⟩ := hy
+    refine Submodule.subset_span ⟨b * η⁻¹, fun w hw => ?_, ?_⟩
+    · rw [← hη w hw, ← AddValuation.map_mul, inv_mul_cancel_right₀ hη0]
+      exact (ReciprocityTheory.ChartRestriction.G.T0.HDiscVal.mem_integralClosure_iff R F b).1 hb w hw
+    · simp only [Algebra.TensorProduct.tmul_mul_tmul, mul_one]
+  | zero => simp
+  | add a b _ _ ha hb => rw [add_mul]; exact Submodule.add_mem _ ha hb
+  | smul a b _ hb => rw [smul_mul_assoc]; exact Submodule.smul_mem _ _ hb
+
+theorem length_subquot_le_of_injective {A M V : Type} [Ring A] [AddCommGroup M] [Module A M]
+    [AddCommGroup V] [Module A V] (Φ : M →ₗ[A] V) (hΦ : Function.Injective Φ)
+    (M₀ T : Submodule A M) (N B : Submodule A V) (hN : ∀ a ∈ M₀, Φ a ∈ N) (hB : T.map Φ = B) :
+    Module.length A (↥M₀ ⧸ T.comap M₀.subtype) ≤ Module.length A (↥N ⧸ B.comap N.subtype) := by
+  have hc : T.comap M₀.subtype = (B.comap N.subtype).comap (Φ.restrict hN) := by
+    ext a
+    simp only [Submodule.mem_comap, Submodule.subtype_apply, LinearMap.coe_restrict_apply, ← hB]
+    exact ⟨fun h => ⟨_, h, rfl⟩, fun ⟨y, hy, h⟩ => hΦ h ▸ hy⟩
+  refine Module.length_le_of_injective
+    (Submodule.mapQ _ (B.comap N.subtype) (Φ.restrict hN) hc.le) ?_
+  rw [← LinearMap.ker_eq_bot, Submodule.ker_mapQ, ← hc, Submodule.mkQ_map_self]
+
+theorem length_quotient_le_of_order_bound :
+    ∀ (R R' F F' : Type) [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [CommRing R'] [IsDomain R'] [IsDiscreteValuationRing R'] [Algebra R R'] [Module.Flat R R'] [IsLocalHom (algebraMap R R')] [Field F] [Algebra R F] [IsFractionRing R F] [Field F'] [Algebra R' F'] [IsFractionRing R' F'] [Algebra F F'] [Algebra R F'] [IsScalarTower R F F'] [IsScalarTower R R' F'], Ideal.map (algebraMap R R') (IsLocalRing.maximalIdeal R) = IsLocalRing.maximalIdeal R' → Function.Surjective (IsLocalRing.ResidueField.map (algebraMap R R')) → ∀ (ι : Type) [Fintype ι] (L : ι → Type) [∀ c, Field (L c)] [∀ c, Algebra F (L c)] [∀ c, FiniteDimensional F (L c)] [∀ c, Algebra.IsSeparable F (L c)] [∀ c, Algebra R (L c)] [∀ c, IsScalarTower R F (L c)] (n : ∀ c, AddValuation (L c) (WithTop ℤ) → ℤ), (∀ c, ∃ η : L c, η ≠ 0 ∧ ∀ w ∈ ReciprocityTheory.ChartRestriction.G.T0.ValPl.PlacesOver R (L c), w η = ((n c w : ℤ) : WithTop ℤ)) → ∀ (δ δ' : Type) (e : δ ≃ δ') (b : δ → ∀ c, L c) (M : Type) [AddCommGroup M] [Module R' M] (M₀ : Submodule R' M) (t : δ' → M) (Ψ : M →ₗ[R'] ∀ c, F' ⊗[F] L c), Function.Injective Ψ → (∀ k c, Ψ (t (e k)) c = (1 : F') ⊗ₜ[F] b k c) → (∀ a ∈ M₀, ∀ c, ∀ w ∈ ReciprocityTheory.ChartRestriction.G.T0.ValPl.PlacesOver R (L c), ∀ u : AddValuation (F' ⊗[F] L c) (WithTop ℤ), (∀ g : L c, u ((1 : F') ⊗ₜ[F] g) = w g) → (∀ r : R', 0 ≤ u (algebraMap R' F' r ⊗ₜ[F] (1 : L c))) → 0 ≤ u (Ψ a c) + ((n c w : ℤ) : WithTop ℤ)) → ∀ S : Set (∀ c, L c), (∀ y : ∀ c, L c, (∀ c, ∀ w ∈ ReciprocityTheory.ChartRestriction.G.T0.ValPl.PlacesOver R (L c), 0 ≤ w (y c) + ((n c w : ℤ) : WithTop ℤ)) → y ∈ S) → Module.length R' (↥M₀ ⧸ (Submodule.span R' (Set.range t)).comap M₀.subtype) ≤ Module.length R (↥(Submodule.span R S) ⧸ (Submodule.span R (Set.range b)).comap (Submodule.span R S).subtype) := by
+  intro R R' F F' _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ hmax hres ι _ L _ _ _ _ _ _ n hη δ δ' e b
+    M _ _ M₀ t Ψ hΨ ht hM₀ S hS
+  classical
+  let E : (F' ⊗[F] (∀ c, L c)) ≃ₗ[R'] (∀ c, F' ⊗[F] L c) :=
+    (TensorProduct.piRight F F' F' L).restrictScalars R'
+  have hE : ∀ v : ∀ c, L c, E ((1 : F') ⊗ₜ[F] v) = fun c => (1 : F') ⊗ₜ[F] v c := fun v => rfl
+  have hspan : ∀ X : Set (∀ c, L c),
+      Submodule.span R' ((fun v : (∀ c, L c) => (1 : F') ⊗ₜ[F] v) '' (Submodule.span R X : Set _))
+        = Submodule.span R' ((fun v : (∀ c, L c) => (1 : F') ⊗ₜ[F] v) '' X) := by
+    intro X
+    refine le_antisymm (Submodule.span_le.2 ?_)
+      (Submodule.span_mono (Set.image_mono Submodule.subset_span))
+    rintro _ ⟨v, hv, rfl⟩
+    induction hv using Submodule.span_induction with
+    | mem v hv => exact Submodule.subset_span ⟨v, hv, rfl⟩
+    | zero => simp
+    | add a b _ _ ha hb =>
+      simp only [TensorProduct.tmul_add]
+      exact Submodule.add_mem _ ha hb
+    | smul r v _ hv =>
+      have : (1 : F') ⊗ₜ[F] (r • v) = algebraMap R R' r • ((1 : F') ⊗ₜ[F] v) := by
+        rw [TensorProduct.smul_tmul', ← IsScalarTower.algebraMap_smul F r v,
+          ← TensorProduct.smul_tmul, Algebra.smul_def, Algebra.smul_def,
+          ← IsScalarTower.algebraMap_apply, ← IsScalarTower.algebraMap_apply]
+      simp only [this]
+      exact Submodule.smul_mem _ _ hv
+  refine le_trans (length_subquot_le_of_injective (E.symm.toLinearMap ∘ₗ Ψ)
+    (E.symm.injective.comp hΨ) M₀ _
+    (Submodule.span R' ((fun v : (∀ c, L c) => (1 : F') ⊗ₜ[F] v) '' (Submodule.span R S : Set _)))
+    (Submodule.span R' ((fun v : (∀ c, L c) => (1 : F') ⊗ₜ[F] v) ''
+      (Submodule.span R (Set.range b) : Set _))) ?_ ?_) (le_of_eq ?_)
+  · intro a ha
+    rw [hspan, LinearMap.comp_apply, ← Finset.univ_sum_single (Ψ a), map_sum]
+    refine Submodule.sum_mem _ fun c _ => ?_
+    obtain ⟨η, hη0, hη⟩ := hη c
+    have hx := mem_span_one_tmul_of_order_bound R R' F F' hmax hres (L c) (n c) η hη0 hη
+      (Ψ a c) (hM₀ a ha c)
+    generalize Ψ a c = x at hx
+    induction hx using Submodule.span_induction with
+    | mem x hx =>
+      obtain ⟨l, hl, rfl⟩ := hx
+      refine Submodule.subset_span ⟨Pi.single c l, hS _ fun c' w hw => ?_, ?_⟩
+      · rcases eq_or_ne c' c with rfl | hc
+        · rw [Pi.single_eq_same]; exact hl w hw
+        · rw [Pi.single_eq_of_ne hc, AddValuation.map_zero, top_add]; exact le_top
+      · refine (LinearEquiv.eq_symm_apply E).2 ?_
+        rw [hE]
+        funext c'
+        rcases eq_or_ne c' c with rfl | hc
+        · simp only [Pi.single_eq_same]
+        · simp only [Pi.single_eq_of_ne hc, TensorProduct.tmul_zero]
+    | zero => simp
+    | add x y _ _ hx hy => rw [Pi.single_add, map_add]; exact Submodule.add_mem _ hx hy
+    | smul r x _ hx => rw [Pi.single_smul, map_smul]; exact Submodule.smul_mem _ _ hx
+  · rw [hspan, Submodule.map_span, ← Set.range_comp, ← Set.range_comp,
+      ← e.surjective.range_comp]
+    congr 2
+    funext k
+    refine (LinearEquiv.symm_apply_eq E).2 ?_
+    funext c
+    exact ht k c
+  · exact (spanBaseChangeSubquotEquiv F R' F' (Submodule.span R S)
+      (Submodule.span R (Set.range b))).length_eq.symm.trans
+      (ReciprocityTheory.ChartRestriction.G.T0.length_baseChange_eq hmax _)
+
+end GlobalTheory
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.WeightAlgebra Formalism.MainNotions.Gaps.EtaleWeightGaps Formalism.L2.Pj
+open scoped TensorProduct
+
+namespace GlobalTheory.OrdVal
+
+variable {O A : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CommRing A] [Algebra O A]
+
+omit [IsDomain O] [IsDiscreteValuationRing O] in
+
+theorem nonneg_of_isIntegral (u : AddValuation A (WithTop ℤ))
+    (hu : ∀ r : O, 0 ≤ u (algebraMap O A r)) {x : A} (hx : IsIntegral O x) : 0 ≤ u x := by
+  let v : Valuation A (Multiplicative (WithTop ℤ)ᵒᵈ) := u
+  let f : O →+* v.integer := (algebraMap O A).codRestrict v.integer (fun r => hu r)
+  have h1 : IsIntegral v.integer x := by
+    obtain ⟨p, hp, hz⟩ := hx
+    refine ⟨p.map f, hp.map f, ?_⟩
+    rw [Polynomial.eval₂_map]
+    exact hz
+  exact (Valuation.integer.integers v).mem_of_integral h1
+
+def centre (u : AddValuation A (WithTop ℤ)) (hu : ∀ a : ↥(As O A), 0 ≤ u (a : A)) :
+    Ideal ↥(As O A) where
+  carrier := {a | 0 < u (a : A)}
+  zero_mem' := by simp
+  add_mem' := fun {a b} ha hb => by
+    have := u.map_add (a : A) b
+    exact lt_of_lt_of_le (lt_min ha hb) this
+  smul_mem' := fun c a ha => by
+    change 0 < u ((c : A) * a)
+    rw [u.map_mul]
+    exact lt_of_lt_of_le ha (le_add_of_nonneg_left (hu c))
+
+theorem centre_isPrime (u : AddValuation A (WithTop ℤ)) (hu : ∀ a : ↥(As O A), 0 ≤ u (a : A)) :
+    (centre u hu).IsPrime := by
+  refine ⟨fun h => ?_, fun {a b} h => ?_⟩
+  · have : (1 : ↥(As O A)) ∈ centre u hu := h ▸ Submodule.mem_top
+    change 0 < u (1 : A) at this
+    simp at this
+  · change 0 < u ((a : A) * b) at h
+    by_contra hn
+    rw [not_or] at hn
+    have ha : u (a : A) = 0 := le_antisymm (not_lt.1 hn.1) (hu a)
+    have hb : u (b : A) = 0 := le_antisymm (not_lt.1 hn.2) (hu b)
+    rw [u.map_mul, ha, hb] at h
+    simp at h
+
+theorem centre_isMaximal (u : AddValuation A (WithTop ℤ)) (hu : ∀ a : ↥(As O A), 0 ≤ u (a : A))
+    {ϖ : O} (hϖ : Irreducible ϖ) (hpos : 0 < u (algebraMap O A ϖ)) :
+    (centre u hu).IsMaximal := by
+  haveI := centre_isPrime u hu
+  refine Ideal.isMaximal_of_isIntegral_of_isMaximal_comap (R := O) _ ?_
+  have hle : IsLocalRing.maximalIdeal O ≤ (centre u hu).comap (algebraMap O ↥(As O A)) := by
+    rw [hϖ.maximalIdeal_eq, Ideal.span_singleton_le_iff_mem]
+    exact hpos
+  have := (IsLocalRing.maximalIdeal.isMaximal O).eq_of_le (Ideal.IsPrime.ne_top inferInstance) hle
+  rw [← this]
+  infer_instance
+
+theorem le_of_vL_le (u : AddValuation A (WithTop ℤ)) (hu : ∀ a : ↥(As O A), 0 ≤ u (a : A))
+    (ζ : Pts O A) [IsDVRAt ζ] (hζ : ∀ a : ↥(As O A), a ∉ ζ.asIdeal → u (a : A) = 0)
+    {a b : ↥(As O A)} (hab : vL ζ a ≤ vL ζ b) : u (a : A) ≤ u (b : A) := by
+  rw [vL_eq_addVal, vL_eq_addVal, IsDiscreteValuationRing.addVal_le_iff_dvd] at hab
+  obtain ⟨z, hz⟩ := hab
+  obtain ⟨⟨x, s⟩, hs⟩ := IsLocalization.surj ζ.asIdeal.primeCompl z
+  have h1 : algebraMap _ (Loc ζ) (b * s) = algebraMap _ (Loc ζ) (a * x) := by
+    simp only at hs
+    rw [map_mul, map_mul, hz, mul_assoc, hs]
+  obtain ⟨c, hc⟩ := (IsLocalization.eq_iff_exists ζ.asIdeal.primeCompl (Loc ζ)).1 h1
+  have h2 : ((c : ↥(As O A)) : A) * ((b : A) * ((s : ↥(As O A)) : A))
+      = ((c : ↥(As O A)) : A) * ((a : A) * (x : A)) := congrArg Subtype.val hc
+  have h3 := congrArg u h2
+  rw [u.map_mul, u.map_mul, u.map_mul, u.map_mul, hζ _ c.2, hζ _ s.2, zero_add, zero_add,
+    add_zero] at h3
+  rw [h3]
+  exact le_add_of_nonneg_right (hu x)
+
+theorem exists_vL_eq_one (ζ : Pts O A) [IsDVRAt ζ] : ∃ a : ↥(As O A), vL ζ a = 1 := by
+  obtain ⟨π, hπ⟩ := IsDiscreteValuationRing.exists_irreducible (Loc ζ)
+  obtain ⟨⟨x, s⟩, hs⟩ := IsLocalization.surj ζ.asIdeal.primeCompl π
+  refine ⟨x, ?_⟩
+  have h0 := (vL_eq_zero_iff ζ s).2 s.2
+  rw [vL_eq_addVal] at h0
+  simp only at hs
+  rw [vL_eq_addVal, ← hs, IsDiscreteValuationRing.addVal_mul, h0,
+    IsDiscreteValuationRing.addVal_uniformizer hπ, add_zero]
+
+theorem exists_ord_eq [∀ ζ : Pts O A, IsDVRAt ζ] {ϖ : O} (h : IsUnif A ϖ)
+    (u : AddValuation A (WithTop ℤ)) (hO : ∀ r : O, 0 ≤ u (algebraMap O A r))
+    (hpos : 0 < u (algebraMap O A ϖ)) (hone : ∃ a, u a = 1) :
+    ∃ ζ : Pts O A, ∀ a : A, Formalism.MainNotions.Gaps.EtaleWeightGaps.ord ϖ ζ a = u a := by
+  have hu : ∀ a : ↥(As O A), 0 ≤ u (a : A) := fun a => nonneg_of_isIntegral u hO a.2
+  let ζ : Pts O A := ⟨centre u hu, centre_isMaximal u hu h.irreducible hpos⟩
+  have hζ : ∀ a : ↥(As O A), a ∉ ζ.asIdeal → u (a : A) = 0 :=
+    fun a ha => le_antisymm (not_lt.1 ha) (hu a)
+  obtain ⟨a₀, ha₀⟩ := exists_vL_eq_one ζ
+  have hfin : ∀ (b : ↥(As O A)) (m : ℕ), vL ζ b = m → u (b : A) = m • u (a₀ : A) := by
+    intro b m hb
+    have e : vL ζ (a₀ ^ m) = vL ζ b := by rw [vL_pow, ha₀, hb]; simp
+    have := le_antisymm (le_of_vL_le u hu ζ hζ e.ge) (le_of_vL_le u hu ζ hζ e.le)
+    rw [this, SubmonoidClass.coe_pow, u.map_pow]
+  have htop : ∀ b : ↥(As O A), vL ζ b = ⊤ → u (b : A) = ⊤ := by
+    intro b hb
+    have := le_of_vL_le u hu ζ hζ (a := 0) (b := b) (by rw [hb]; exact le_top)
+    simpa using this
+  have hϖ : u (algebraMap O A ϖ) = ep ϖ ζ • u (a₀ : A) :=
+    hfin (algebraMap O ↥(As O A) ϖ) _ (coe_ep ζ h).symm
+  have hϖfin : u (algebraMap O A ϖ) ≠ ⊤ := by
+    obtain ⟨y, hy⟩ := h.isUnit.exists_right_inv
+    intro ht
+    have := congrArg u hy
+    rw [u.map_mul, ht, u.map_one] at this
+    simp at this
+  have ha₀fin : u (a₀ : A) ≠ ⊤ := by
+    intro ht
+    obtain ⟨k, hk⟩ := Nat.exists_eq_succ_of_ne_zero (ep_pos ζ h).ne'
+    rw [hϖ, ht, hk, succ_nsmul] at hϖfin
+    simp at hϖfin
+  obtain ⟨q, hq⟩ := WithTop.ne_top_iff_exists.1 ha₀fin
+  have hq0 : 0 ≤ q := by
+    have := hu a₀
+    rw [← hq] at this
+    exact_mod_cast this
+  have key : ∀ x : A, (Formalism.MainNotions.Gaps.EtaleWeightGaps.ord ϖ ζ x = ⊤ ∧ u x = ⊤) ∨
+      ∃ k : ℤ, Formalism.MainNotions.Gaps.EtaleWeightGaps.ord ϖ ζ x = (k : WithTop ℤ) ∧ u x = ((k * q : ℤ) : WithTop ℤ) := by
+    intro x
+    obtain ⟨n, hn⟩ := h.denom x
+    have e1 : u (ϖ ^ n • x) = ((n * (ep ϖ ζ * q) : ℤ) : WithTop ℤ) + u x := by
+      rw [Algebra.smul_def, map_pow, u.map_mul, u.map_pow, hϖ, ← hq, ← WithTop.coe_nsmul,
+        ← WithTop.coe_nsmul, nsmul_eq_mul, nsmul_eq_mul]
+    rw [ord_eq ζ h hn, ordAt]
+    cases hv : vL ζ ⟨ϖ ^ n • x, hn⟩ with
+    | top =>
+      left
+      refine ⟨by simp, ?_⟩
+      have := htop _ hv
+      change u (ϖ ^ n • x) = ⊤ at this
+      rw [e1, WithTop.add_eq_top] at this
+      exact this.resolve_left WithTop.coe_ne_top
+    | coe m =>
+      right
+      refine ⟨m + -(n * ep ϖ ζ), by rw [ENat.map_natCast, ← WithTop.coe_add], ?_⟩
+      have := hfin _ m hv
+      change u (ϖ ^ n • x) = _ at this
+      rw [e1, ← hq, ← WithTop.coe_nsmul, nsmul_eq_mul] at this
+      have hx : u x ≠ ⊤ := by
+        intro ht
+        rw [ht, add_top] at this
+        exact WithTop.top_ne_coe this
+      obtain ⟨t, ht⟩ := WithTop.ne_top_iff_exists.1 hx
+      rw [← ht, ← WithTop.coe_add, WithTop.coe_inj] at this
+      rw [← ht, WithTop.coe_inj]
+      linarith
+  have hq1 : q = 1 := by
+    obtain ⟨a, ha⟩ := hone
+    rcases key a with ⟨_, h2⟩ | ⟨k, _, h2⟩
+    · rw [ha] at h2
+      exact absurd h2 WithTop.one_ne_top
+    · rw [ha, ← WithTop.coe_one, WithTop.coe_inj] at h2
+      exact Int.eq_one_of_mul_eq_one_left hq0 h2.symm
+  refine ⟨ζ, fun a => ?_⟩
+  rcases key a with ⟨h1, h2⟩ | ⟨k, h1, h2⟩
+  · rw [h1, h2]
+  · rw [h1, h2, hq1, mul_one]
+
+theorem eq_zero_of_ord_eq_top [∀ ζ : Pts O A, IsDVRAt ζ] {ϖ : O} (h : IsUnif A ϖ) (a : A)
+    (ha : ∀ ζ : Pts O A, Formalism.MainNotions.Gaps.EtaleWeightGaps.ord ϖ ζ a = ⊤) : a = 0 := by
+  obtain ⟨n, hn⟩ := h.denom a
+  have key : (⟨ϖ ^ n • a, hn⟩ : ↥(As O A)) ∈ (⊥ : Ideal ↥(As O A)) := by
+    have h0 : ∀ ζ : Pts O A, algebraMap ↥(As O A) (Loc ζ) ⟨ϖ ^ n • a, hn⟩ ∈
+        Ideal.map (algebraMap ↥(As O A) (Loc ζ)) ⊥ := by
+      intro ζ
+      have h1 := ha ζ
+      rw [ord_eq ζ h hn, ordAt, WithTop.add_eq_top] at h1
+      have h2 : vL ζ ⟨ϖ ^ n • a, hn⟩ = ⊤ := by
+        simpa using h1.resolve_right WithTop.coe_ne_top
+      rw [(vL_eq_top_iff ζ _).1 h2]
+      exact Submodule.zero_mem _
+    exact Ideal.mem_of_localization_maximal (fun P hP => h0 ⟨P, hP⟩)
+  have h2 : ϖ ^ n • a = 0 := congrArg Subtype.val (Ideal.mem_bot.1 key)
+  rw [Algebra.smul_def, map_pow] at h2
+  exact ((h.isUnit.pow n).mul_right_eq_zero).1 h2
+
+theorem valuation_eq_ord_and_eq_zero :
+    ∀ (O A : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CommRing A] [Algebra O A] [∀ ζ : Pts O A, IsDVRAt ζ] (ϖ : O), IsUnif A ϖ → (∀ u : AddValuation A (WithTop ℤ), (∀ r : O, 0 ≤ u (algebraMap O A r)) → 0 < u (algebraMap O A ϖ) → (∃ a, u a = 1) → ∃ ζ : Pts O A, ∀ a : A, Formalism.MainNotions.Gaps.EtaleWeightGaps.ord ϖ ζ a = u a) ∧ ∀ a : A, (∀ ζ : Pts O A, Formalism.MainNotions.Gaps.EtaleWeightGaps.ord ϖ ζ a = ⊤) → a = 0 :=
+  fun _ _ _ _ _ _ _ _ _ h => ⟨exists_ord_eq h, eq_zero_of_ord_eq_top h⟩
+
+end GlobalTheory.OrdVal
+end
+
+section
+open scoped TensorProduct
+
+namespace GlobalTheory
+
+theorem exists_ringHom_tensor_OmS_of_point :
+    ∀ (K Ω K' U : Type) [Field K] [Field Ω] [Algebra K Ω] [Field K'] [Field U] (D N : ℕ) (j₀ : Fin (N + 1)) (x : Fin N → Ω) [Algebra (ReciprocityTheory.ChartRestriction.G.T0.KTf K D N) (ReciprocityTheory.ChartRestriction.G.T0.OmS Ω D N)] [Algebra (ReciprocityTheory.ChartRestriction.G.T0.KTf K D N) K'] (κ : K' →+* U) (τ : Ω →+* U) (T : ReciprocityTheory.ChartRestriction.G.T0.TVar D N → K'), Algebra.trdeg K Ω = D → (∀ p : ReciprocityTheory.ChartRestriction.G.T0.KTp K D N, algebraMap (ReciprocityTheory.ChartRestriction.G.T0.KTf K D N) (ReciprocityTheory.ChartRestriction.G.T0.OmS Ω D N) (algebraMap (ReciprocityTheory.ChartRestriction.G.T0.KTp K D N) (ReciprocityTheory.ChartRestriction.G.T0.KTf K D N) p) = ReciprocityTheory.ChartRestriction.G.T0.sHom j₀ x p) → (∀ p, algebraMap (ReciprocityTheory.ChartRestriction.G.T0.KTf K D N) K' (algebraMap (ReciprocityTheory.ChartRestriction.G.T0.KTp K D N) (ReciprocityTheory.ChartRestriction.G.T0.KTf K D N) (MvPolynomial.X p)) = T p) → (∀ a : K, τ (algebraMap K Ω a) = κ (algebraMap (ReciprocityTheory.ChartRestriction.G.T0.KTf K D N) K' (algebraMap (ReciprocityTheory.ChartRestriction.G.T0.KTp K D N) (ReciprocityTheory.ChartRestriction.G.T0.KTf K D N) (MvPolynomial.C a)))) → (∀ i : Fin D, κ (T (i.succ, j₀)) + ∑ k, κ (T (i.succ, j₀.succAbove k)) * τ (x k) = 0) → ∃ χ : K' ⊗[ReciprocityTheory.ChartRestriction.G.T0.KTf K D N] ReciprocityTheory.ChartRestriction.G.T0.OmS Ω D N →+* U, (∀ a : K', χ (a ⊗ₜ 1) = κ a) ∧ ∀ ω : Ω, χ (1 ⊗ₜ algebraMap Ω (ReciprocityTheory.ChartRestriction.G.T0.OmS Ω D N) ω) = τ ω := by
+  intro K Ω K' U _ _ _ _ _ D N j₀ x _ _ κ τ T hD hS hT hC hrel
+  classical
+  letI : Algebra K U := (τ.comp (algebraMap K Ω)).toAlgebra
+  have hKU : ∀ a : K, algebraMap K U a = τ (algebraMap K Ω a) := fun _ => rfl
+  let φ : Ω →ₐ[K] U := { τ with commutes' := fun _ => rfl }
+  let g : ReciprocityTheory.ChartRestriction.G.T0.KTp K D N →+* U :=
+    κ.comp ((algebraMap (ReciprocityTheory.ChartRestriction.G.T0.KTf K D N) K').comp
+      (algebraMap (ReciprocityTheory.ChartRestriction.G.T0.KTp K D N) (ReciprocityTheory.ChartRestriction.G.T0.KTf K D N)))
+  have hg : Function.Injective g :=
+    κ.injective.comp ((algebraMap (ReciprocityTheory.ChartRestriction.G.T0.KTf K D N) K').injective.comp
+      (IsFractionRing.injective (ReciprocityTheory.ChartRestriction.G.T0.KTp K D N) (ReciprocityTheory.ChartRestriction.G.T0.KTf K D N)))
+  have hgC : ∀ a : K, g (MvPolynomial.C a) = τ (algebraMap K Ω a) := fun a => (hC a).symm
+  have hgX : ∀ p, g (MvPolynomial.X p) = κ (T p) := fun p => congrArg κ (hT p)
+  have hind : AlgebraicIndependent K (fun p => κ (T p)) := by
+    rw [algebraicIndependent_iff_injective_aeval]
+    have : (MvPolynomial.aeval (fun p => κ (T p)) :
+        ReciprocityTheory.ChartRestriction.G.T0.KTp K D N →ₐ[K] U).toRingHom = g := by
+      apply MvPolynomial.ringHom_ext
+      · intro a
+        rw [hgC]
+        simp [hKU]
+      · intro p
+        rw [hgX]
+        simp
+    have h2 : Function.Injective (MvPolynomial.aeval (fun p => κ (T p)) :
+        ReciprocityTheory.ChartRestriction.G.T0.KTp K D N →ₐ[K] U).toRingHom := this ▸ hg
+    exact h2
+  obtain ⟨P, ⟨hP1, hP2⟩, -⟩ :=
+    GlobalTheory.existsUnique_ringHom_OmS K Ω U D N j₀ x (fun p => κ (T p)) φ hD hind hrel
+  have hP1' : ∀ a : Ω, P (algebraMap Ω (ReciprocityTheory.ChartRestriction.G.T0.OmS Ω D N) a) = τ a := hP1
+  have key : P.comp (algebraMap (ReciprocityTheory.ChartRestriction.G.T0.KTf K D N) (ReciprocityTheory.ChartRestriction.G.T0.OmS Ω D N)) =
+      κ.comp (algebraMap (ReciprocityTheory.ChartRestriction.G.T0.KTf K D N) K') := by
+    apply IsFractionRing.ringHom_ext (A := ReciprocityTheory.ChartRestriction.G.T0.KTp K D N)
+    intro q
+    have : P.comp (ReciprocityTheory.ChartRestriction.G.T0.sHom (K := K) (D := D) j₀ x).toRingHom = g := by
+      apply MvPolynomial.ringHom_ext
+      · intro a
+        rw [hgC, ← hP1', ← IsScalarTower.algebraMap_apply]
+        simp [ReciprocityTheory.ChartRestriction.G.T0.sHom]
+      · intro p
+        rw [hgX, ← hP2]
+        simp [ReciprocityTheory.ChartRestriction.G.T0.sHom]
+    rw [RingHom.comp_apply, hS]
+    exact DFunLike.congr_fun this q
+  letI : Algebra (ReciprocityTheory.ChartRestriction.G.T0.KTf K D N) U :=
+    (κ.comp (algebraMap (ReciprocityTheory.ChartRestriction.G.T0.KTf K D N) K')).toAlgebra
+  let κ' : K' →ₐ[ReciprocityTheory.ChartRestriction.G.T0.KTf K D N] U := { κ with commutes' := fun _ => rfl }
+  let P' : ReciprocityTheory.ChartRestriction.G.T0.OmS Ω D N →ₐ[ReciprocityTheory.ChartRestriction.G.T0.KTf K D N] U :=
+    { P with commutes' := fun r => DFunLike.congr_fun key r }
+  refine ⟨(Algebra.TensorProduct.productMap κ' P').toRingHom, fun a => ?_, fun ω => ?_⟩
+  · change Algebra.TensorProduct.productMap κ' P' (a ⊗ₜ 1) = κ a
+    rw [Algebra.TensorProduct.productMap_apply_tmul, map_one, mul_one]
+    rfl
+  · change Algebra.TensorProduct.productMap κ' P' (1 ⊗ₜ _) = τ ω
+    rw [Algebra.TensorProduct.productMap_apply_tmul, map_one, one_mul]
+    exact hP1' ω
+
+end GlobalTheory
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.WeightAlgebra Formalism.MainNotions.Gaps.EtaleWeightGaps Formalism.L2.Pj
+open scoped TensorProduct
+
+namespace GlobalTheory.SecEval
+
+theorem exists_quot_maps {K L C : Type*} [CommRing K] [CommRing L] [CommRing C] [Algebra K L] [Algebra K C]
+    (A : Subalgebra K L) (J : Ideal A) (H : Submodule A L) (Λ : L →ₐ[K] C) (hJ : ∀ r ∈ J, Λ (r : L) = 0) :
+    ∃ (ψ : (A ⧸ J) →ₐ[K] C) (Ψ : (H ⧸ J • (⊤ : Submodule A H)) →ₗ[K] C),
+      (∀ x : A, ψ (Ideal.Quotient.mk J x) = Λ x) ∧ ∀ y : H, Ψ (Submodule.Quotient.mk y) = Λ y := by
+  have hH : ∀ z ∈ J • (⊤ : Submodule A H), Λ (z : L) = 0 := by
+    intro z hz
+    refine Submodule.smul_induction_on (p := fun z : H => Λ (z : L) = 0) hz ?_ ?_
+    · intro r hr m _
+      rw [Submodule.coe_smul, Algebra.smul_def, map_mul]
+      have : Λ (algebraMap A L r) = 0 := hJ r hr
+      rw [this, zero_mul]
+    · intro x y hx hy
+      rw [Submodule.coe_add, map_add, hx, hy, add_zero]
+  let l : H →ₗ[K] C := Λ.toLinearMap ∘ₗ (H.subtype.restrictScalars K)
+  refine ⟨Ideal.Quotient.liftₐ J (Λ.comp A.val) hJ,
+    (((J • (⊤ : Submodule A H)).restrictScalars K).liftQ l (fun z hz => hH z hz)) ∘ₗ
+      (Submodule.Quotient.restrictScalarsEquiv K (J • (⊤ : Submodule A H))).symm.toLinearMap,
+    fun x => rfl, fun y => rfl⟩
+
+variable {D : D7} {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} {j : ℕ}
+
+theorem exists_evalRp (X : PJ D B P j) (la : HeightOneSpectrum (𝓞 B.KO)) (N : ℕ)
+    (C : Type) [CommRing C] [Algebra (Kp X la N) C] (χ : X.Forms →+* C)
+    (hχ : ∀ (a : B.KO) (f : X.Forms), χ (a • f) =
+      algebraMap (Kp X la N) C (algebraMap (X.Kl la) (Kp X la N) (algebraMap B.KO (X.Kl la) a)) * χ f) :
+    ∃ Θ : Rp X la N →ₐ[Kp X la N] C, ∀ F, Θ (Formalism.MainNotions.Gaps.EtaleWeightGaps.emb X la N F) = χ F := by
+  letI : Algebra (X.Kl la) C := ((algebraMap (Kp X la N) C).comp (algebraMap (X.Kl la) (Kp X la N))).toAlgebra
+  letI : Algebra B.KO C := ((algebraMap (Kp X la N) C).comp
+    ((algebraMap (X.Kl la) (Kp X la N)).comp (algebraMap B.KO (X.Kl la)))).toAlgebra
+  haveI : IsScalarTower B.KO (X.Kl la) C := IsScalarTower.of_algebraMap_eq fun _ => rfl
+  haveI : IsScalarTower (X.Kl la) (Kp X la N) C := IsScalarTower.of_algebraMap_eq fun _ => rfl
+  let g : X.Forms →ₐ[B.KO] C :=
+    { χ with
+      commutes' := fun a => by
+        show χ (algebraMap B.KO X.Forms a) = _
+        rw [Algebra.algebraMap_eq_smul_one, hχ, map_one, mul_one]
+        rfl }
+  let vl : X.Vl la →ₐ[X.Kl la] C :=
+    Algebra.TensorProduct.lift (Algebra.ofId (X.Kl la) C) g (fun _ _ => Commute.all _ _)
+  refine ⟨Algebra.TensorProduct.lift (Algebra.ofId (Kp X la N) C) vl (fun _ _ => Commute.all _ _), fun F => ?_⟩
+  rw [emb_apply]
+  erw [Algebra.TensorProduct.lift_tmul, Algebra.TensorProduct.lift_tmul]
+  erw [map_one, map_one, one_mul, one_mul]
+  rfl
+
+theorem exists_section_maps : ∀ (D : D7) (B : WeightFamilies.Prov D) (P : ModuliIntegralCharts.Prov D) (j : ℕ) (X : PJ D B P j) (la : HeightOneSpectrum (𝓞 B.KO)) (N : ℕ) (wL u : WeightFamilies.Wt D j) (w : Fin N → B.Cusp j wL) (C : Type) [CommRing C] [Algebra (Kp X la N) C] (χ : X.Forms →+* C), (∀ (a : B.KO) (f : X.Forms), χ (a • f) = algebraMap (Kp X la N) C (algebraMap (X.Kl la) (Kp X la N) (algebraMap B.KO (X.Kl la) a)) * χ f) → (∀ i : Fin (WeightFamilies.dimY D j), ∑ k, algebraMap (Kp X la N) C (algebraMap (Formalism.MainNotions.Gaps.EtaleWeightGaps.Op X la N) (Kp X la N) (Tv X la N (i.succ, k))) * χ (X.inc wL (w k)) = 0) → IsUnit (∑ k, algebraMap (Kp X la N) C (algebraMap (Formalism.MainNotions.Gaps.EtaleWeightGaps.Op X la N) (Kp X la N) (Tv X la N (0, k))) * χ (X.inc wL (w k))) → ∃ (Θ : Rp X la N →ₐ[Kp X la N] C) (ψ : OsK X la w →ₐ[Kp X la N] C) (Ψ : SectionSheafQuotient X la w u →ₗ[Kp X la N] C), (∀ F, Θ (Formalism.MainNotions.Gaps.EtaleWeightGaps.emb X la N F) = χ F) ∧ IsUnit (Θ (Formalism.MainNotions.Gaps.EtaleWeightGaps.sec X la w 0)) ∧ (∀ (x : OsK X la w) (a : SectionSheafQuotient X la w u), Ψ (x • a) = ψ x * Ψ a) ∧ (∀ (k : ℕ) (g : ↥(Vw X la N (addL (wt0 D j) wL k))), ψ (toOsK X la w (fr0 X la w k g)) * Θ (Formalism.MainNotions.Gaps.EtaleWeightGaps.sec X la w 0) ^ k = Θ g) ∧ ∀ f : ↥(Vw X la N u), Ψ (rho0 X la w u f) = Θ f := by
+  intro D B P j X la N wL u w C _ _ χ hχ h0 h1
+  obtain ⟨Θ, hΘ⟩ := exists_evalRp X la N C χ hχ
+  have hsec : ∀ i, Θ (Formalism.MainNotions.Gaps.EtaleWeightGaps.sec X la w i) = ∑ k, algebraMap (Kp X la N) C
+      (algebraMap (Formalism.MainNotions.Gaps.EtaleWeightGaps.Op X la N) (Kp X la N) (Tv X la N (i, k))) * χ (X.inc wL (w k)) := by
+    intro i
+    unfold Formalism.MainNotions.Gaps.EtaleWeightGaps.sec
+    rw [map_sum]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    rw [map_smul, hΘ, Algebra.smul_def]
+  have hu : IsUnit (Θ (Formalism.MainNotions.Gaps.EtaleWeightGaps.sec X la w 0)) := by rw [hsec]; exact h1
+  have hu' : IsUnit ((Θ : Rp X la N →+* C) (Formalism.MainNotions.Gaps.EtaleWeightGaps.sec X la w 0)) := hu
+  let Λ₀ : Lw X la w →+* C := IsLocalization.Away.lift (Formalism.MainNotions.Gaps.EtaleWeightGaps.sec X la w 0) hu'
+  have hΛ₀ : ∀ r, Λ₀ (algebraMap (Rp X la N) (Lw X la w) r) = Θ r := fun r => IsLocalization.lift_eq _ r
+  let Λ : Lw X la w →ₐ[Kp X la N] C :=
+    { Λ₀ with
+      commutes' := fun c => by
+        show Λ₀ (algebraMap (Kp X la N) (Lw X la w) c) = _
+        rw [IsScalarTower.algebraMap_apply (Kp X la N) (Rp X la N) (Lw X la w), hΛ₀, AlgHom.commutes] }
+  have hΛ : ∀ r, Λ (algebraMap (Rp X la N) (Lw X la w) r) = Θ r := hΛ₀
+  have hinv : Θ (Formalism.MainNotions.Gaps.EtaleWeightGaps.sec X la w 0) * Λ (w0inv X la w) = 1 := by
+    rw [← hΛ, ← map_mul, section_mul_inverse_eq_one, map_one]
+  have hfr : ∀ (k : ℕ) (g : Rp X la N),
+      Λ (frac X la w k g) * Θ (Formalism.MainNotions.Gaps.EtaleWeightGaps.sec X la w 0) ^ k = Θ g := by
+    intro k g
+    rw [frac_apply, map_mul, map_pow, hΛ, mul_assoc, ← mul_pow, mul_comm (Λ _), hinv, one_pow, mul_one]
+  have hJ : ∀ r ∈ Jid X la w, Λ (r : Lw X la w) = 0 := by
+    intro r hr
+    induction hr using Submodule.span_induction with
+    | mem x hx =>
+      obtain ⟨i, rfl⟩ := hx
+      rw [coe_sfr, frac_apply, map_mul, hΛ, hsec, h0 i, zero_mul]
+    | zero => simp
+    | add x y _ _ hx hy => rw [Subalgebra.coe_add, map_add, hx, hy, add_zero]
+    | smul a x _ hx => rw [smul_eq_mul, Subalgebra.coe_mul, map_mul, hx, mul_zero]
+  obtain ⟨ψ₀, Ψ₀, hψ₀, hΨ₀⟩ := exists_quot_maps (Frac0 X la w) (Jid X la w) (HK X la w u) Λ hJ
+  let ψ : OsK X la w →ₐ[Kp X la N] C := ψ₀
+  let Ψ : SectionSheafQuotient X la w u →ₗ[Kp X la N] C := Ψ₀
+  have hψ : ∀ x, ψ (toOsK X la w x) = Λ x := hψ₀
+  have hΨ : ∀ y, Ψ (toA0K X la w u y) = Λ y := hΨ₀
+  refine ⟨Θ, ψ, Ψ, hΘ, hu, ?_, ?_, ?_⟩
+  · intro x a
+    obtain ⟨x, rfl⟩ := toOsK_surjective X la w x
+    obtain ⟨y, rfl⟩ := reductionMap_surjective X la w u a
+    have e : toOsK X la w x • toA0K X la w u y = toA0K X la w u (x • y) := by
+      rw [map_smul]
+      exact algebraMap_smul (OsK X la w) x _
+    rw [e, hΨ, hΨ, hψ, Submodule.coe_smul, Algebra.smul_def, map_mul]
+    rfl
+  · intro k g
+    rw [hψ, coe_weightZeroFraction, hfr]
+  · intro f
+    rw [restriction_apply_eq_reduction, hΨ, coe_toHK0, hΛ]
+
+end GlobalTheory.SecEval
+end
+
+section
 section
 noncomputable section
 
@@ -562,3 +1259,4 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.lengths_at_primes_le_functionField_data_of_curve : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (hj : InR D j) (hG : GenFrEx (T.Q.Xo j) T.Q.c) [Fintype (Comp (T.Q.Xo j) T.Q.c)] (ka wL wF : WeightFamilies.Wt D j) (G : GlobalFamilyData (recPlus h j hj) ka wL wF) (S : Scal (recB h.toLawsCore)) (g0 : (recB h.toLawsCore).Cusp j wF), CurveHyp h j hj hG ka wL wF G S g0 → GenValInjSt h j hG → CompSplitSt h j hG → BIRSt h j hj hG G → ∀ (y : ∀ la, PtsG G la → (extAll h j hj).Pt' la) (hw : ∀ la ζ, FromW (E := extAll h j hj) (hM := intAtExt_extAll h j hj) ζ (y la ζ)), (∀ la, (secQ (E := extAll h j hj) (hM := intAtExt_extAll h j hj) (y la) (fun ζ => (hw la ζ).toSecPt) g0).InCurve) → (∀ la, (secQ (E := extAll h j hj) (hM := intAtExt_extAll h j hj) (y la) (fun ζ => (hw la ζ).toSecPt) g0).InTie S) → ∀ (δ : ∀ Z : Comp (T.Q.Xo j) T.Q.c, AddValuation (Om Z) (WithTop ℤ) → Ix (T.Q.Dw j) → ℤ), OrdTie hG δ (trivialClassCondition (T.Q.Xo j) T.Q.c) (fun _ => Unit) (fun _ _ _ _ _ => True) → ∀ (d : ReciprocityTheory.ChartRestriction.G.T0.Data T.Q.c.F (Comp (T.Q.Xo j) T.Q.c) (fun Z => Om Z) (WTZ D.host.E) (fun Z => AC Z)) (hd : d.AxH (fun Z => AG Z)) (hs : d.S1) (eN : Fin (d.N + 1) ≃ Fin G.N), d.D = WeightFamilies.dimY D j → (∀ Z v, d.ord Z v = ordC (δ Z v) v) → d.wL = wtZ (wtA wL) wL.n → d.wF = wtZ (wtA wF) wF.n → (∀ k, d.w k = valC hG (wtA wL) wL.n (G.w (eN k)).1) → ∀ (eD : Fin d.del ≃ Fin G.del), (∀ k, d.thp (hd.sel k) = valC hG (wtA wF) wF.n (G.th' (eD k)).1) → ∀ (Gc PH Prw Pet : ℝ), IlaTie (B := (recB h.toLawsCore)) d hd hs G (fun la => (secQ (E := extAll h j hj) (hM := intAtExt_extAll h j hj) (y la) (fun ζ => (hw la ζ).toSecPt) g0)) Gc PH Prw Pet := by
   atlas_forward_decl GlobalTheory.LengthTie.ilaTie_of_curveHyp
+end

@@ -88,10 +88,6 @@ variable {K : Type} [Field K] [NumberField K]
 
 local notation "Ow" => Formalism.L2.Col.Ow
 
-theorem nb_mk'_smul {V : Type} [AddCommGroup V] [Module (𝓞 K) V] (w : HeightOneSpectrum (𝓞 K)) [Module (Ow w) V]
-    [IsScalarTower (𝓞 K) (Ow w) V] (a : 𝓞 K) (t : w.asIdeal.primeCompl) (x : V) :
-    (t : 𝓞 K) • ((IsLocalization.mk' (Ow w) a t) • x) = a • x := by
-  rw [← algebraMap_smul (Ow w) (t : 𝓞 K), smul_smul, IsLocalization.mk'_spec', algebraMap_smul]
 
 theorem nb_mem_span_ow {V : Type} [AddCommGroup V] [Module (𝓞 K) V] (w : HeightOneSpectrum (𝓞 K)) [Module (Ow w) V]
     [IsScalarTower (𝓞 K) (Ow w) V] (T : Set V) (x : V) :

@@ -192,8 +192,6 @@ theorem IsLevel.inf {K N N' : Subgroup H} (h : IsLevel K N) (h' : IsLevel K N') 
   ⟨by simpa using h.1.inter h'.1, inf_le_left.trans h.2.1,
     fun κ hκ n hn => ⟨h.2.2 κ hκ n hn.1, h'.2.2 κ hκ n hn.2⟩⟩
 
-theorem isLevel_self {K : Subgroup H} (h : IsOpen (K : Set H)) : IsLevel K K :=
-  ⟨h, le_rfl, fun _ hκ _ hn => K.mul_mem (K.mul_mem hκ hn) (K.inv_mem hκ)⟩
 
 def Reached (ρ : Representation ℂ H (SB X)) (K : Subgroup H) (x₀ : X) (f : SB X) : Prop :=
   ∃ N : Subgroup H, IsLevel K N ∧ ∃ v : SB X, (∀ x, v.1 x = (orb N x₀).indicator (fun _ => (1 : ℂ)) x) ∧

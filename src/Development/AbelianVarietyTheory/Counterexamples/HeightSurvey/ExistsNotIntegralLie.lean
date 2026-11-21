@@ -23,9 +23,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : D
 theorem spread_holds : SpreadSt Xo c :=
   GlobalTheory.Frames.framedPoint_field_fromTest GlobalTheory.abelianSchemeLaws_all.1.secBaseChange E H Dw l Xo c
 
-theorem all_hold : IntFramesSt Xo c ∧ LieFreeSt Xo c ∧ SpreadSt Xo c :=
-  ⟨intFrames Xo c Out.CubePf.cubePull (lieFree Xo c) (thetaFrame_of Xo c GlobalTheory.abelianSchemeLaws_all.2.secTwist)
-    (spread_holds Xo c), lieFree Xo c, spread_holds Xo c⟩
 
 variable {Xo c}
 

@@ -28,8 +28,6 @@ theorem iotaF_coe (a : X.B.I.F) : ((iotaF X a : D.host.F) : D.host.E) = X.ιE (a
 def trA : X.B.I.E ⊗[X.B.I.F] Formalism.MainNotions.S.Af X.B.I.F →ₗ[X.B.I.F] Formalism.MainNotions.S.Af X.B.I.F :=
   TensorProduct.lift ((LinearMap.lsmul X.B.I.F (Formalism.MainNotions.S.Af X.B.I.F)).comp (Algebra.trace X.B.I.F X.B.I.E))
 
-theorem trA_tmul (x : X.B.I.E) (c : Formalism.MainNotions.S.Af X.B.I.F) :
-    trA X (x ⊗ₜ[X.B.I.F] c) = Algebra.trace X.B.I.F X.B.I.E x • c := rfl
 
 def IsAdTransport (τ : Formalism.MainNotions.S.Af X.B.I.F ≃+* Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af D.host.F) : Prop :=
   (∀ a : X.B.I.F, τ (algebraMap X.B.I.F (Formalism.MainNotions.S.Af X.B.I.F) a) =

@@ -18,10 +18,6 @@ variable {R : Type} [CommRing R] {G : Over (Spec (CommRingCat.of R))} [GrpObj G]
 def eigLat {O : Type} (act : O → (G ⟶ G)) [∀ a, IsMonHom (act a)] (χ : O → R) : Submodule R (Fin n → R) :=
   ⨅ a, LinearMap.ker (tmap hx (act a) - χ a • LinearMap.id)
 
-theorem eigLat_basis [IsDomain R] [IsPrincipalIdealRing R] {O : Type} (act : O → (G ⟶ G)) [∀ a, IsMonHom (act a)]
-    (χ : O → R) : ∃ k, Nonempty (Module.Basis (Fin k) R (eigLat hx act χ)) := by
-  obtain ⟨k, bk⟩ := Submodule.basisOfPid (Pi.basisFun R (Fin n)) (eigLat hx act χ)
-  exact ⟨k, ⟨bk⟩⟩
 
 def dualMapR {R R' : Type} [CommRing R] [CommRing R'] (φ : R →+* R') : DualNumber R →+* DualNumber R' where
   toFun a := TrivSqZeroExt.inl (φ a.fst) + TrivSqZeroExt.inr (φ a.snd)

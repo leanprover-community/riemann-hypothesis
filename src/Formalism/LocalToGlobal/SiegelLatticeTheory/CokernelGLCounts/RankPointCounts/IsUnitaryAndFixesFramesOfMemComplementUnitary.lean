@@ -1,6 +1,86 @@
 import Mathlib
-import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.GoodFamilyMassFormula
+import Formalism.SharpRestriction.CuspSpanNormBounds.IsTermOver
+import Formalism.SharpRestriction.CuspSpanNormBounds.KappaEndpoints
 
+section
+noncomputable section
+
+open scoped Classical
+
+namespace Formalism.L2.SG.GoodFamilyMass
+
+open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG
+
+def StepDataOne (k r : ℕ) : Prop :=
+  ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F]
+    (E : Type) [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
+    (M : Model F E), M.OK →
+    ∀ (V : Type) [AddCommGroup V] [Module E V] (H : HermSp M V),
+      Module.finrank E V = k + 2 * r + 1 → 4 * r + 7 ≤ k →
+      ∀ P : FPair H r, P.RelG (theta M) → P.PrimeTo →
+        ∀ (d d' : Datum P) (t t' : Term V M r), IsTermOver P d t → IsTermOver P d' t' → Datum.Rel d d'
+
+def StepDataMove (k r : ℕ) : Prop :=
+  ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F]
+    (E : Type) [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
+    (M : Model F E), M.OK →
+    ∀ (V : Type) [AddCommGroup V] [Module E V] (H : HermSp M V),
+      Module.finrank E V = k + 2 * r + 1 → 4 * r + 7 ≤ k →
+      ∀ P : FPair H r, P.RelG (theta M) → P.PrimeTo →
+        ∀ (d d' : Datum P), Datum.Rel d d' → (∃ t : Term V M r, IsTermOver P d' t) →
+          ∃ t : Term V M r, IsTermOver P d t
+
+def StepTermOne (k r : ℕ) : Prop :=
+  ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F]
+    (E : Type) [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
+    (M : Model F E), M.OK →
+    ∀ (V : Type) [AddCommGroup V] [Module E V] (H : HermSp M V),
+      Module.finrank E V = k + 2 * r + 1 → 4 * r + 7 ≤ k →
+      ∀ P : FPair H r, P.RelG (theta M) → P.PrimeTo →
+        ∀ (d : Datum P) (t t' : Term V M r), IsTermOver P d t → IsTermOver P d t' → TRel P t t'
+
+def StepMuPos (k r : ℕ) : Prop :=
+  ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F]
+    (E : Type) [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
+    (M : Model F E), M.OK →
+    ∀ (V : Type) [AddCommGroup V] [Module E V] (H : HermSp M V),
+      Module.finrank E V = k + 2 * r + 1 → 4 * r + 7 ≤ k →
+      ∀ P : FPair H r, P.RelG (theta M) → P.PrimeTo →
+        ∀ (d : Datum P) (t : Term V M r), IsTermOver P d t → 0 < mu P t
+
+def StepWtPos (k r : ℕ) : Prop :=
+  ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F]
+    (E : Type) [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
+    (M : Model F E), M.OK →
+    ∀ (V : Type) [AddCommGroup V] [Module E V] (H : HermSp M V),
+      Module.finrank E V = k + 2 * r + 1 → 4 * r + 7 ≤ k →
+      ∀ P : FPair H r, P.RelG (theta M) → P.PrimeTo →
+        ∀ (d0 d : Datum P) (t : Term V M r), IsTermOver P d t → 0 < Datum.wt d0 d
+
+def GoodFamilyMassFormula (k r : ℕ) : Prop :=
+  ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F]
+    (E : Type) [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
+    (M : Model F E), M.OK →
+    ∀ (V : Type) [AddCommGroup V] [Module E V] (H : HermSp M V),
+      Module.finrank E V = k + 2 * r + 1 → 4 * r + 7 ≤ k →
+      ∀ P : FPair H r, P.RelG (theta M) → P.PrimeTo → (∃ (d : Datum P) (t : Term V M r), IsTermOver P d t) →
+        ∀ (R : Reps P) (d0 : Datum P), 0 < nn R d0 ∧ nn R d0 ≠ ⊤
+
+section Idx
+
+variable {G : Type*} [Group G]
+
+end Idx
+
+variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
+  {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
+  {M : Model F E} {V : Type} [AddCommGroup V] [Module E V] {H : HermSp M V} {r : ℕ}
+
+end Formalism.L2.SG.GoodFamilyMass
+end
+end
+
+section
 noncomputable section
 
 open scoped Classical
@@ -155,69 +235,7 @@ theorem N_perp (Fr : FrameD H r) {s : V ≃ₗ[E] V} (hs : s ∈ Fr.N) {v : V} (
   obtain ⟨_, _, _, hsP, _⟩ := hQ s hs
   exact ⟨inPerp s hsP v hv, hsP v hv⟩
 
-theorem fixX_perp (f : Fin (r + 1) → V) {g : V ≃ₗ[E] V} (hgu : IsUnitary H g) (hgX : ∀ x ∈ H.X f, g x = x)
-    {v : V} (hv : v ∈ H.perp (H.X f)) : g v ∈ H.perp (H.X f) := by
-  intro x hx
-  rw [← hgX x hx, hgu v x]
-  exact hv x hx
 
-theorem lset_move (Fr : FrameD H r) {g s : V ≃ₗ[E] V} (hgu : IsUnitary H g) (hgX : ∀ x ∈ H.X Fr.f, g x = x)
-    (hs : s ∈ Fr.N) {Λ Λ' : Submodule M.L.O V} (he : Λ' = img g (img s Λ)) (x y : ↥(H.perp (H.X Fr.f)))
-    (hxy : (y : V) = g x) :
-    H.mkW Fr.f x ∈ H.Lset Λ Fr.f ↔ H.mkW Fr.f y ∈ H.Lset Λ' Fr.f := by
-  have hsN : ∀ w, w ∈ H.Lset Λ Fr.f ↔ w ∈ H.Lset (img s Λ) Fr.f := by
-    intro w
-    constructor
-    · rintro ⟨x, hxΛ, rfl⟩
-      obtain ⟨h1, h2⟩ := N_perp Fr hs x.2
-      refine ⟨⟨s x, h1⟩, ⟨x, hxΛ, rfl⟩, ?_⟩
-      rw [mkW_eq_iff]
-      exact h2
-    · rintro ⟨y, ⟨x, hxΛ, hxy⟩, rfl⟩
-      have hsi : s⁻¹ ∈ Fr.N := Fr.N.inv_mem hs
-      obtain ⟨h1, h2⟩ := N_perp Fr hsi y.2
-      have hx : (s⁻¹ : V ≃ₗ[E] V) y = x := by
-        rw [LinearEquiv.coe_inv, ← hxy]
-        exact s.symm_apply_apply x
-      refine ⟨⟨x, hx ▸ h1⟩, hxΛ, ?_⟩
-      rw [mkW_eq_iff]
-      show x - (y : V) ∈ H.X Fr.f
-      rw [← hx]
-      exact h2
-  rw [he, hsN]
-  have hgi_u : IsUnitary H g⁻¹ := fun u v => by
-    rw [LinearEquiv.coe_inv, ← hgu (g.symm u) (g.symm v), LinearEquiv.apply_symm_apply,
-      LinearEquiv.apply_symm_apply]
-  have hgi_X : ∀ z ∈ H.X Fr.f, g⁻¹ z = z := fun z hz => by
-    rw [LinearEquiv.coe_inv, LinearEquiv.symm_apply_eq]
-    exact (hgX z hz).symm
-  constructor
-  · rintro ⟨x', hx'Θ, hx'eq⟩
-    rw [mkW_eq_iff] at hx'eq
-    refine ⟨⟨g x', fixX_perp Fr.f hgu hgX x'.2⟩, ⟨x', hx'Θ, rfl⟩, ?_⟩
-    rw [mkW_eq_iff]
-    show g x' - (y : V) ∈ H.X Fr.f
-    rw [hxy, ← map_sub, hgX _ hx'eq]
-    exact hx'eq
-  · rintro ⟨y', ⟨x'', hx''Θ, hx''y⟩, hy'eq⟩
-    rw [mkW_eq_iff] at hy'eq
-    have hgx : g x'' = y' := hx''y
-    have hx''perp : x'' ∈ H.perp (H.X Fr.f) := by
-      have h1 := fixX_perp Fr.f hgi_u hgi_X y'.2
-      have h4 : (g⁻¹ : V ≃ₗ[E] V) y' = x'' := by
-        rw [LinearEquiv.coe_inv, ← hgx]
-        exact g.symm_apply_apply x''
-      rwa [h4] at h1
-    refine ⟨⟨x'', hx''perp⟩, hx''Θ, ?_⟩
-    rw [mkW_eq_iff]
-    show x'' - (x : V) ∈ H.X Fr.f
-    have h2 : g (x'' - x) ∈ H.X Fr.f := by
-      rw [map_sub, hgx, ← hxy]
-      exact hy'eq
-    have h3 : g⁻¹ (g (x'' - x)) = x'' - x := by
-      rw [LinearEquiv.coe_inv, LinearEquiv.symm_apply_apply]
-    rw [← h3, hgi_X _ h2]
-    exact h2
 
 section Lset
 
@@ -419,27 +437,8 @@ def StepOrbitLat (k r : ℕ) : Prop :=
         ∀ (d d' : Datum P) (t t' : Term V M r), IsTermOver P d t → IsTermOver P d' t' →
           ∃ g ∈ P.UW0, ∃ s ∈ P.St, t'.abelian₂ = img g (img s t.abelian₂)
 
-theorem moves_of (hsp : M.split = none) {P : FPair H r} {d d' : Datum P} {t t' : Term V M r}
-    (ht : IsTermOver P d t) (ht' : IsTermOver P d' t') {g s : V ≃ₗ[E] V} (hg : g ∈ P.UW0) (hs : s ∈ P.St)
-    (he : t'.abelian₂ = img g (img s t.abelian₂)) : Datum.Moves g d d' := by
-  obtain ⟨hA, hB⟩ := lset_term ht
-  obtain ⟨hA', hB'⟩ := lset_term ht'
-  obtain ⟨hgu, hgf⟩ := isUnitary_and_fixes_frames_of_mem_complementUnitary hg
-  have hsA : s ∈ P.A.N := (Subgroup.mem_inf.1 hs).1
-  have hsB : s ∈ P.B.N := (Subgroup.mem_inf.1 hs).2
-  have hgXA : ∀ x ∈ H.X P.A.f, g x = x := fun x hx => fix_X P.A.f (fun b => (hgf b).1) hx
-  have hgXB : ∀ x ∈ H.X P.B.f, g x = x := fun x hx => fix_X P.B.f (fun b => (hgf b).2) hx
-  refine ⟨fun x y hxy => ?_, fun x y hxy => ?_, fun x' y' x y _ _ => ?_⟩
-  · rw [hA, hA']
-    exact lset_move P.A hgu hgXA hsA he x y hxy
-  · rw [hB, hB']
-    exact lset_move P.B hgu hgXB hsB he x y hxy
-  · rw [d.io_L hsp, d'.io_L hsp]
-    simp
 
-theorem stepDataOne_of (k r : ℕ) (h : StepOrbitLat k r) : StepDataOne k r := by
-  intro F _ _ _ E _ _ _ _ M hOK V _ _ H hrk hk P hR hP d d' t t' ht ht'
-  obtain ⟨g, hg, s, hs, he⟩ := h F E M hOK V H hrk hk P hR hP d d' t t' ht ht'
-  exact ⟨g, hg, moves_of hP.1 ht ht' hg hs he⟩
 
 end Formalism.L2.SG.GoodFamilyMass
+end
+end

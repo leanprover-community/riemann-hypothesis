@@ -2,9 +2,19 @@ import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.Archim
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.PairDoubleCosetFiniteSupport
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.RExpReadOf
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.IsOpenChiMu
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.RReadLev
+import Mathlib
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RealReadLevi
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.SphericalEmbeddings.Imports
 
+section
+namespace PositivityTheory.Rg.BcB.F.Tail.Levb
+
+theorem rReadLev : PositivityTheory.Rg.BcB.F.Tail.RReadLev := GlobalTheory.T.real_read_levi
+
+end PositivityTheory.Rg.BcB.F.Tail.Levb
+end
+
+section
 namespace PositivityTheory.Rg.BcB.F.CandPlug
 
 open PositivityTheory.Rg.BcB.F
@@ -21,3 +31,4 @@ theorem candTOut : CandTOut :=
   candTOut_of (candS_of readS) candT (PCandLh.candLev_of readLev readT expRead RS.joinSat_holds)
 
 end PositivityTheory.Rg.BcB.F.CandPlug
+end

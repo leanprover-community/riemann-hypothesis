@@ -4,8 +4,43 @@ import GroundTheory.GlobalFields.Artin.OneDimL
 import GroundTheory.GlobalFields.Artin.OneDimExistence
 import GroundTheory.GlobalFields.Artin.AbelianHecke
 import GroundTheory.GlobalFields.Artin.Regular
-import GroundTheory.GlobalFields.AnalyticClassNumber.ClassNumberFormula
+import GroundTheory.GlobalFields.TateThesis.DedekindZetaContinuation
 import GroundTheory.LocalFields.ArtinConductor
+
+section
+set_option maxSynthPendingDepth 1
+
+open NumberField InfinitePlace NumberField.Units Complex Topology Filter Set
+open scoped Real
+
+namespace GroundTheory.Global
+
+noncomputable section
+
+theorem Gammaℂ_residue_zero : Tendsto (fun s ↦ s * Gammaℂ s) (𝓝[≠] 0) (𝓝 2) := by
+  have h' : Tendsto (fun s : ℂ ↦ 2 * (2 * (π : ℂ)) ^ (-s)) (𝓝[≠] 0) (𝓝 2) := by
+    rw [(by simp : 𝓝 (2 : ℂ) = 𝓝 (2 * (2 * (π : ℂ)) ^ (-(0 : ℂ))))]
+    refine Tendsto.mono_left (ContinuousAt.tendsto ?_) nhdsWithin_le_nhds
+    exact continuousAt_const.mul ((continuousAt_const_cpow
+      (mul_ne_zero two_ne_zero (ofReal_ne_zero.mpr Real.pi_ne_zero))).comp (by fun_prop))
+  have h := h'.mul tendsto_self_mul_Gamma_nhds_zero
+  rw [mul_one] at h
+  refine h.congr fun z ↦ ?_
+  rw [Gammaℂ]
+  ring
+
+variable (K : Type*) [Field K] [NumberField K]
+
+
+
+
+
+end
+
+end GroundTheory.Global
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 noncomputable section
@@ -191,11 +226,6 @@ theorem LFunction_kronecker_one :
   show _ = (s - 1) * continuedDedekindZeta K s
   rw [continuedDedekindZeta_eq_mul K hs, mul_assoc]
 
-theorem LFunction_kronecker_one_pos :
-    0 < (DirichletCharacter.LFunction (kronecker K) 1).re ∧
-      (DirichletCharacter.LFunction (kronecker K) 1).im = 0 := by
-  rw [LFunction_kronecker_one, Complex.ofReal_re, Complex.ofReal_im]
-  exact ⟨dedekindZeta_residue_pos K, rfl⟩
 
 theorem nrRealPlaces_add_two_mul : nrRealPlaces K + 2 * nrComplexPlaces K = 2 := by
   rw [card_add_two_mul_card_eq_rank, Algebra.IsQuadraticExtension.finrank_eq_two]
@@ -209,14 +239,6 @@ theorem places_of_discr_neg (hd : discr K < 0) : nrRealPlaces K = 0 ∧ nrComple
     norm_num at hs
   · omega
 
-theorem places_of_discr_pos (hd : 0 < discr K) : nrRealPlaces K = 2 ∧ nrComplexPlaces K = 0 := by
-  have h2 := nrRealPlaces_add_two_mul K
-  have hs := sign_discr K
-  rw [Int.sign_eq_one_of_pos hd] at hs
-  rcases (by omega : nrComplexPlaces K = 0 ∨ nrComplexPlaces K = 1) with h | h
-  · omega
-  · rw [h, pow_one] at hs
-    norm_num at hs
 
 theorem regulator_eq_one_of_card_eq_one {F : Type*} [Field F] [NumberField F]
     (h : nrRealPlaces F + nrComplexPlaces F = 1) : regulator F = 1 := by
@@ -264,18 +286,9 @@ theorem classNumber_eq_of_discr_neg (hd : discr K < 0) :
   push_cast
   field_simp
 
-theorem classNumber_mul_regulator_eq_of_discr_pos (hd : 0 < discr K) :
-    ((classNumber K * regulator K : ℝ) : ℂ) = Real.sqrt (discr K : ℝ) *
-      DirichletCharacter.LFunction (kronecker K) 1 / 2 := by
-  obtain ⟨h1, h2⟩ := places_of_discr_pos K hd
-  have hw : torsionOrder K = 2 := torsionOrder_eq_two_of_nrRealPlaces_pos (by omega)
-  have hd' : (0 : ℝ) < discr K := Int.cast_pos.2 hd
-  rw [LFunction_kronecker_one, dedekindZeta_residue_def, h1, h2, hw, abs_of_pos hd']
-  have hd0 : ((Real.sqrt (discr K : ℝ) : ℝ) : ℂ) ≠ 0 :=
-    Complex.ofReal_ne_zero.2 (Real.sqrt_pos.2 hd').ne'
-  push_cast
-  field_simp
 
 end Quadratic
 
 end GroundTheory.Global
+end
+end

@@ -1,9 +1,222 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemCutQGrp
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.AdelicLatticeCompletionLocalGlobal
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnitaryLastRowDivisibleStabilizesLattices
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PlaceProjectionEqBasePiMulIntegral
+import Formalism.LocalToGlobal.Columns.RecLevelLocK
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PlaceProjectionZeroIntegralIffComponentsAbove
 
+section
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.UG Formalism.L2.Col Formalism.L2.DIV Matrix
+open scoped TensorProduct
+
+noncomputable section
+
+namespace GlobalTheory
+
+section Loc
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
+variable (hc : Formalism.BasicNotions.CMData F E) (n : ℕ) [NeZero n] {ST : Finset (Pl E)} {π : 𝓞 E} (v : HeightOneSpectrum (𝓞 F))
+
+local notation "Rv" => E ⊗[F] v.adicCompletion F
+local notation "ιv" => inclE (F := F) (E := E) (v.adicCompletion F)
+local notation "𝒪v" => Formalism.BasicNotions.intV E v
+local notation "pE" => algebraMap (𝓞 E) E π
+
+def OffRow (g : GL (Fin n) Rv) : Prop :=
+  (∀ i j, (g : Matrix (Fin n) (Fin n) Rv) i j ∈ 𝒪v) ∧
+    ∀ j, j ≠ lastIdx n → ∃ s ∈ 𝒪v, (g : Matrix (Fin n) (Fin n) Rv) (lastIdx n) j = ιv pE * s
+
+theorem offRow_col {g : GL (Fin n) Rv} (hg : g ∈ UPts hc.sig (1 : Matrix (Fin n) (Fin n) E) (v.adicCompletion F))
+    (hi : OffRow n (π := π) v g⁻¹) (i : Fin n) (hne : i ≠ lastIdx n) :
+    ∃ s ∈ 𝒪v, (g : Matrix (Fin n) (Fin n) Rv) i (lastIdx n) = ιv (star pE) * s := by
+  have h1 := rll_inv_entry hc n v (Subgroup.inv_mem _ hg) i (lastIdx n)
+  rw [inv_inv] at h1
+  obtain ⟨s, hs, e⟩ := hi.2 i hne
+  refine ⟨_, rll_sigV_mem hc v hs, ?_⟩
+  rw [h1, e, map_mul, rll_sigV_incl]
+
+variable (h : BasePi ST π)
+include h
+
+theorem offRow_maps_L {g : GL (Fin n) Rv} (hg : OffRow n (π := π) v g) (z : Fin n → Rv)
+    (hz : z ∈ Formalism.L2.Herm.locL v (rll_dLat n pE⁻¹)) :
+    (g : Matrix (Fin n) (Fin n) Rv) *ᵥ z ∈ Formalism.L2.Herm.locL v (rll_dLat n pE⁻¹) := by
+  rw [rll_mem_loc_dLat n v _ (inv_ne_zero h.coe_ne_zero)] at hz ⊢
+  obtain ⟨h1, h2⟩ := hz
+  have hzi : ∀ j, z j ∈ 𝒪v := fun j => by
+    by_cases hj : j = lastIdx n
+    · subst hj
+      rw [← rll_p_mul_pinv v h (z (lastIdx n))]
+      exact mul_mem (rll_incl_int v π) h2
+    · exact h1 j hj
+  refine ⟨fun i _ => ?_, ?_⟩
+  · show ∑ j, (g : Matrix (Fin n) (Fin n) Rv) i j * z j ∈ 𝒪v
+    exact sum_mem fun j _ => mul_mem (hg.1 i j) (hzi j)
+  show ιv pE⁻¹ * ∑ j, (g : Matrix (Fin n) (Fin n) Rv) (lastIdx n) j * z j ∈ 𝒪v
+  rw [Finset.mul_sum]
+  refine sum_mem fun j _ => ?_
+  by_cases hj : j = lastIdx n
+  · subst hj
+    rw [mul_left_comm]; exact mul_mem (hg.1 _ _) h2
+  · obtain ⟨s, hs, e⟩ := hg.2 j hj
+    rw [e, mul_assoc, rll_pinv_mul v h]
+    exact mul_mem hs (h1 j hj)
+
+theorem offRow_maps_Ker {g : GL (Fin n) Rv} (hg : OffRow n (π := π) v g)
+    (hcol : ∀ i, i ≠ lastIdx n → ∃ s ∈ 𝒪v, (g : Matrix (Fin n) (Fin n) Rv) i (lastIdx n) = ιv (star pE) * s)
+    (z : Fin n → Rv) (hz : z ∈ Formalism.L2.Herm.locL v (rll_dLat n (star pE / pE))) :
+    (g : Matrix (Fin n) (Fin n) Rv) *ᵥ z ∈ Formalism.L2.Herm.locL v (rll_dLat n (star pE / pE)) := by
+  have hq : star pE / pE ≠ 0 := div_ne_zero h.star_ne_zero h.coe_ne_zero
+  have key : ιv (star pE) = ιv (star pE / pE) * ιv pE := by
+    rw [← map_mul, div_mul_cancel₀ _ h.coe_ne_zero]
+  have hcp : ιv (star pE) ∈ 𝒪v := rll_incl_int v (cO E π)
+  rw [rll_mem_loc_dLat n v _ hq] at hz ⊢
+  obtain ⟨h1, h2⟩ := hz
+  constructor
+  · intro i hi
+    show ∑ j, (g : Matrix (Fin n) (Fin n) Rv) i j * z j ∈ 𝒪v
+    refine sum_mem fun j _ => ?_
+    by_cases hj : j = lastIdx n
+    · subst hj
+      obtain ⟨s, hs, e⟩ := hcol i hi
+      have e2 : (g : Matrix (Fin n) (Fin n) Rv) i (lastIdx n) * z (lastIdx n) =
+          ιv pE * s * (ιv (star pE / pE) * z (lastIdx n)) := by
+        rw [e, key]; ring
+      rw [e2]
+      exact mul_mem (mul_mem (rll_incl_int v π) hs) h2
+    · exact mul_mem (hg.1 i j) (h1 j hj)
+  · show ιv (star pE / pE) * ∑ j, (g : Matrix (Fin n) (Fin n) Rv) (lastIdx n) j * z j ∈ 𝒪v
+    rw [Finset.mul_sum]
+    refine sum_mem fun j _ => ?_
+    by_cases hj : j = lastIdx n
+    · subst hj
+      rw [mul_left_comm]; exact mul_mem (hg.1 _ _) h2
+    · obtain ⟨s, hs, e⟩ := hg.2 j hj
+      have e2 : ιv (star pE / pE) * ((g : Matrix (Fin n) (Fin n) Rv) (lastIdx n) j * z j) = ιv (star pE) * (s * z j) := by
+        rw [e, key]; ring
+      rw [e2]
+      exact mul_mem hcp (mul_mem hs (h1 j hj))
+
+end Loc
+
+theorem unitary_offRow_stab_three :
+    ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E] (hc : Formalism.BasicNotions.CMData F E) (n : ℕ) [NeZero n] {ST : Finset (Pl E)} {π : 𝓞 E}, BasePi ST π → ∀ (v : HeightOneSpectrum (𝓞 F)) (g : GL (Fin n) (E ⊗[F] v.adicCompletion F)), g ∈ UPts hc.sig (1 : Matrix (Fin n) (Fin n) E) (v.adicCompletion F) → ((∀ i j, (g : Matrix (Fin n) (Fin n) (E ⊗[F] v.adicCompletion F)) i j ∈ intV E v) ∧ ∀ j, j ≠ lastIdx n → ∃ s ∈ intV E v, (g : Matrix (Fin n) (Fin n) (E ⊗[F] v.adicCompletion F)) (lastIdx n) j = inclE (F := F) (v.adicCompletion F) (algebraMap (𝓞 E) E π) * s) → ((∀ i j, ((g⁻¹ : GL (Fin n) (E ⊗[F] v.adicCompletion F)) : Matrix (Fin n) (Fin n) (E ⊗[F] v.adicCompletion F)) i j ∈ intV E v) ∧ ∀ j, j ≠ lastIdx n → ∃ s ∈ intV E v, ((g⁻¹ : GL (Fin n) (E ⊗[F] v.adicCompletion F)) : Matrix (Fin n) (Fin n) (E ⊗[F] v.adicCompletion F)) (lastIdx n) j = inclE (F := F) (v.adicCompletion F) (algebraMap (𝓞 E) E π) * s) → g ∈ stabGL (Formalism.L2.Herm.locL v (baseLb E n ST)) ∧ g ∈ stabGL (baseDualV hc n ST v) ∧ g ∈ stabGL (latS (F := F) (v.adicCompletion F) (intV E v) (baseKer E n ST)) := by
+  intro F E _ _ _ _ _ _ hc n _ ST π h v g hU h1 h2
+  have hr1 : OffRow n (π := π) v g := h1
+  have hr2 : OffRow n (π := π) v g⁻¹ := h2
+  have hUi := Subgroup.inv_mem _ hU
+  have hcol := offRow_col hc n v hU hr2
+  have hcol' := offRow_col hc n v hUi (by rw [inv_inv]; exact hr1)
+  refine ⟨?_, ?_, ?_⟩
+  · rw [rll_baseLb_eq n h]
+    exact rll_stab_of_maps _ g (offRow_maps_L n v h hr1) (offRow_maps_L n v h hr2)
+  · rw [rll_dualV_eq hc n v h]
+    exact rll_stab_of_maps _ g (rll_maps_Sh n v h hr1.1 hcol) (rll_maps_Sh n v h hr2.1 hcol')
+  · rw [rll_baseKer_eq n h]
+    exact rll_stab_of_maps _ g (offRow_maps_Ker n v h hr1 hcol) (offRow_maps_Ker n v h hr2 hcol')
+
+end GlobalTheory
+end
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.UG Formalism.L2.Col Formalism.L2.DIV Matrix
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_lastRowDivisible_stabilizes_lattices : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E] (hc : Formalism.BasicNotions.CMData F E) (n : ℕ) [NeZero n] {ST : Finset (Pl E)} {π : 𝓞 E}, BasePi ST π → ∀ (v : HeightOneSpectrum (𝓞 F)) (g : GL (Fin n) (E ⊗[F] v.adicCompletion F)), g ∈ UPts hc.sig (1 : Matrix (Fin n) (Fin n) E) (v.adicCompletion F) → ((∀ i j, (g : Matrix (Fin n) (Fin n) (E ⊗[F] v.adicCompletion F)) i j ∈ intV E v) ∧ ∀ j, j ≠ lastIdx n → ∃ s ∈ intV E v, (g : Matrix (Fin n) (Fin n) (E ⊗[F] v.adicCompletion F)) (lastIdx n) j = inclE (F := F) (v.adicCompletion F) (algebraMap (𝓞 E) E π) * s) → ((∀ i j, ((g⁻¹ : GL (Fin n) (E ⊗[F] v.adicCompletion F)) : Matrix (Fin n) (Fin n) (E ⊗[F] v.adicCompletion F)) i j ∈ intV E v) ∧ ∀ j, j ≠ lastIdx n → ∃ s ∈ intV E v, ((g⁻¹ : GL (Fin n) (E ⊗[F] v.adicCompletion F)) : Matrix (Fin n) (Fin n) (E ⊗[F] v.adicCompletion F)) (lastIdx n) j = inclE (F := F) (v.adicCompletion F) (algebraMap (𝓞 E) E π) * s) → g ∈ stabGL (Formalism.L2.Herm.locL v (baseLb E n ST)) ∧ g ∈ stabGL (baseDualV hc n ST v) ∧ g ∈ stabGL (latS (F := F) (v.adicCompletion F) (intV E v) (baseKer E n ST)) := by
+  atlas_forward_decl GlobalTheory.unitary_offRow_stab_three
+end
+
+section
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.UG Formalism.L2.Col Formalism.L2.DIV GlobalTheory.Mem.Col2 Matrix
+open scoped TensorProduct
+
+namespace GlobalTheory.Mem.Col2.PiDiv
+
+theorem le_exp_neg_one_of_lt_one {x : WithZero (Multiplicative ℤ)} (h : x < 1) : x ≤ WithZero.exp (-1) := by
+  by_cases h0 : x = 0
+  · rw [h0]; exact zero_le'
+  · rw [← WithZero.exp_log h0] at h ⊢
+    rw [← WithZero.exp_zero, WithZero.exp_lt_exp] at h
+    rw [WithZero.exp_le_exp]
+    omega
+
+variable {E : Type} [Field E] [NumberField E] [StarRing E] {ST : Finset (Pl E)} {π : 𝓞 E}
+
+theorem notMem_of_notMem (h : BasePi ST π) {w : Pl E} (hw : w ∉ ST) : π ∉ w.asIdeal := by
+  intro hπ
+  have hle : ST.inf (fun P : Pl E => P.asIdeal) ≤ w.asIdeal := by
+    intro x hx
+    have hx' : ∀ P ∈ ST, x ∈ P.asIdeal := fun P hP => (Finset.inf_le hP : ST.inf (fun P : Pl E => P.asIdeal) ≤ P.asIdeal) hx
+    obtain ⟨c, rfl⟩ := (h.dvd x).1 hx'
+    exact Ideal.mul_mem_right _ _ hπ
+  obtain ⟨P, hP, hPw⟩ := (Ideal.IsPrime.inf_le' w.isPrime).1 hle
+  have e : P.asIdeal = w.asIdeal := P.isMaximal.eq_of_le w.isPrime.ne_top hPw
+  exact hw (HeightOneSpectrum.ext e ▸ hP)
+
+theorem exp_neg_one_le (h : BasePi ST π) {w : Pl E} (hw : w ∈ ST) : WithZero.exp (-1) ≤ w.intValuation π := by
+  classical
+  obtain ⟨b, hb⟩ := w.intValuation_exists_uniformizer
+  obtain ⟨a, ha⟩ := crtPl ST (fun P => if P = w then 1 else 0)
+  have haw : a ∉ w.asIdeal := by
+    intro haw
+    have h1 := ha w hw
+    rw [if_pos rfl] at h1
+    exact w.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 (by simpa using Ideal.sub_mem _ haw h1))
+  have hbw : b ∈ w.asIdeal := (w.intValuation_lt_one_iff_mem b).1 (by rw [hb, ← WithZero.exp_zero, WithZero.exp_lt_exp]; norm_num)
+  have hab : ∀ P ∈ ST, a * b ∈ P.asIdeal := by
+    intro P hP
+    by_cases hPw : P = w
+    · subst hPw; exact Ideal.mul_mem_left _ _ hbw
+    · have h1 := ha P hP
+      rw [if_neg hPw, sub_zero] at h1
+      exact Ideal.mul_mem_right _ _ h1
+  obtain ⟨c, hc⟩ := (h.dvd _).1 hab
+  have hv : w.intValuation (a * b) = WithZero.exp (-1) := by
+    rw [map_mul, hb, HeightOneSpectrum.intValuation_eq_one_iff.2 haw, one_mul]
+  rw [← hv, hc, map_mul]
+  exact mul_le_of_le_one_right' (w.intValuation_le_one c)
+
+variable {F : Type} [Field F] [NumberField F] [Algebra F E]
+
+theorem prV_inclE (v : HeightOneSpectrum (𝓞 F)) (x : E) :
+    prV (E := E) v (inclE (F := F) (FiniteAdeleRing (𝓞 F) F) x) = inclE (F := F) (v.adicCompletion F) x := by
+  simp [prV, inclE, Algebra.TensorProduct.map_tmul]
+
+end GlobalTheory.Mem.Col2.PiDiv
+
+open GlobalTheory.Mem.Col2.PiDiv in
+
+theorem GlobalTheory.Mem.Col2.prV_eq_pi_mul : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E] {ST : Finset (Pl E)} {π : 𝓞 E}, BasePi ST π → ∀ (v : HeightOneSpectrum (𝓞 F)) (z : E ⊗[F] FiniteAdeleRing (𝓞 F) F), z ∈ Formalism.L2.Herm.intAf F E → (∀ P ∈ ST, Valued.v (adAt F P z) < 1) → ∃ s ∈ intV E v, prV (E := E) v z = inclE (F := F) (v.adicCompletion F) (algebraMap (𝓞 E) E π) * s := by
+  intro F E _ _ _ _ _ _ ST π hπ v z hz hP
+  set e : E := algebraMap (𝓞 E) E π with he_def
+  have he : e ≠ 0 := hπ.coe_ne_zero
+  have hzR : z ∈ RInt F E := hz
+  refine ⟨prV (E := E) v (inclE (F := F) (FiniteAdeleRing (𝓞 F) F) e⁻¹ * z), ?_, ?_⟩
+  · refine (GlobalTheory.Mem.Col2.AdComp.prV_zero_int_iff F E v _).2.2 fun w _ => ?_
+    rw [map_mul, adAt_inclE, map_mul, valued_algebraMap, map_inv₀]
+    have hz1 : Valued.v (adAt F w z) ≤ 1 := by rw [adAt_apply]; exact (mem_rInt_iff F E z).1 hzR w
+    have hv0 : 0 < w.valuation E e := by
+      rw [zero_lt_iff]; exact (Valuation.ne_zero_iff _).2 he
+    rw [inv_mul_le_one₀ hv0]
+    have hve : w.valuation E e = w.intValuation π := HeightOneSpectrum.valuation_of_algebraMap w π
+    by_cases hw : w ∈ ST
+    · exact (le_exp_neg_one_of_lt_one (hP w hw)).trans (hve ▸ exp_neg_one_le hπ hw)
+    · rw [hve, HeightOneSpectrum.intValuation_eq_one_iff.2 (notMem_of_notMem hπ hw)]
+      exact hz1
+  · rw [map_mul, prV_inclE, ← mul_assoc, ← map_mul, mul_inv_cancel₀ he, map_one, one_mul]
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.UG Formalism.L2.Col Formalism.L2.DIV GlobalTheory.Mem.Col2 Matrix
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.placeProjection_eq_basePi_mul_integral : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E] {ST : Finset (Pl E)} {π : 𝓞 E}, BasePi ST π → ∀ (v : HeightOneSpectrum (𝓞 F)) (z : E ⊗[F] FiniteAdeleRing (𝓞 F) F), z ∈ Formalism.L2.Herm.intAf F E → (∀ P ∈ ST, Valued.v (adAt F P z) < 1) → ∃ s ∈ intV E v, prV (E := E) v z = inclE (F := F) (v.adicCompletion F) (algebraMap (𝓞 E) E π) * s := by
+  atlas_forward_decl GlobalTheory.Mem.Col2.prV_eq_pi_mul
+end
+
+section
 section
 noncomputable section
 
@@ -187,3 +400,4 @@ attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Ho
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.admissibleBasePoint_unitary_normalisesLevel : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E] (hc : Formalism.BasicNotions.CMData F E) (n : ℕ) [NeZero n] {ST : Finset (Pl E)} {π : 𝓞 E}, BasePi ST π → ∀ (k : GL (Fin n) (AfE F E)) (c : DiaG E ST), (∃ p₀ : DecoF E n ∅ ∅ ∅, IsPtOf hc k p₀ ∧ p₀.deco.1.N = stdLat E n) → (∀ (P : ST) (r j : Fin n), r.1 + 1 = n → HasRes P.1 (adAt F P.1 ((k⁻¹ : GL (Fin n) (AfE F E)).1 r j)) (if j = r then (c P : 𝓞 E ⧸ P.1.asIdeal) else 0)) → k ∈ UAd hc n ∧ (∀ v, bc (prV (E := E) v) k ∈ levelVL hc.sig (1 : Matrix (Fin n) (Fin n) E) v (baseLb E n ST)) ∧ (∀ x : Fin n → E ⊗[F] FiniteAdeleRing (𝓞 F) F, k.1 *ᵥ x ∈ latS (F := F) (FiniteAdeleRing (𝓞 F) F) (tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (intOE E) (intAd F)) (baseLb E n ST) ↔ x ∈ latS (F := F) (FiniteAdeleRing (𝓞 F) F) (tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (intOE E) (intAd F)) (baseLb E n ST)) ∧ ∀ v, v ∈ plUnder F ST → (levelVL hc.sig (1 : Matrix (Fin n) (Fin n) E) v (baseLb E n ST) ⊓ stabFun (baseDualV hc n ST v) (fLoc hc n ST v)).map (MulAut.conj (bc (prV (E := E) v) k)).toMonoidHom = levelVL hc.sig (1 : Matrix (Fin n) (Fin n) E) v (baseLb E n ST) ⊓ stabFun (baseDualV hc n ST v) (fLoc hc n ST v) := by
   atlas_forward_decl GlobalTheory.Mem.Col2.ChEx.basePt_facts
+end

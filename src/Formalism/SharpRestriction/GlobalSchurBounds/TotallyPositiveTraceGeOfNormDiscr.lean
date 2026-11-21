@@ -668,204 +668,12 @@ open scoped nonZeroDivisors
 
 variable {E : Type} [Field E] [NumberField E]
 
-theorem one_le_norm_mul_absNorm_discr (β : E) (hβ : β ≠ 0) (J : Ideal (𝓞 E)) (hJ : J ≠ ⊥)
-    (h : ∀ a ∈ J, algebraMap (𝓞 E) E a * β ∈ FractionalIdeal.dual ℤ ℚ (1 : FractionalIdeal (𝓞 E)⁰ E)) :
-    (1 : ℚ) ≤ |Algebra.norm ℚ β| * (Ideal.absNorm J : ℚ) * ((discr E).natAbs : ℚ) := by
-  set dd : FractionalIdeal (𝓞 E)⁰ E := ((differentIdeal ℤ (𝓞 E) : Ideal (𝓞 E)) : FractionalIdeal (𝓞 E)⁰ E) with hdd
-  have hdual0 : FractionalIdeal.dual ℤ ℚ (1 : FractionalIdeal (𝓞 E)⁰ E) ≠ 0 :=
-    FractionalIdeal.dual_ne_zero ℤ ℚ one_ne_zero
-  have hinv : dd = (FractionalIdeal.dual ℤ ℚ (1 : FractionalIdeal (𝓞 E)⁰ E))⁻¹ :=
-    coeIdeal_differentIdeal ℤ ℚ E (𝓞 E)
-  have hdd0 : dd ≠ 0 := by
-    rw [hinv]
-    exact inv_ne_zero hdual0
-  have hJ0 : (J : FractionalIdeal (𝓞 E)⁰ E) ≠ 0 := FractionalIdeal.coeIdeal_ne_zero.mpr hJ
-  have h1 : FractionalIdeal.spanSingleton (𝓞 E)⁰ β * (J : FractionalIdeal (𝓞 E)⁰ E) ≤
-      FractionalIdeal.dual ℤ ℚ 1 := by
-    rw [FractionalIdeal.mul_le]
-    intro i hi j hj
-    obtain ⟨z, rfl⟩ := (FractionalIdeal.mem_spanSingleton _).mp hi
-    obtain ⟨δ, hδ, rfl⟩ := (FractionalIdeal.mem_coeIdeal _).mp hj
-    have h2 := h δ hδ
-    have e : z • β * algebraMap (𝓞 E) E δ = z • (algebraMap (𝓞 E) E δ * β) := by
-      rw [smul_mul_assoc, mul_comm]
-    rw [e]
-    exact Submodule.smul_mem _ z h2
-  have h2 : FractionalIdeal.spanSingleton (𝓞 E)⁰ β * (J : FractionalIdeal (𝓞 E)⁰ E) * dd ≤ 1 := by
-    calc FractionalIdeal.spanSingleton (𝓞 E)⁰ β * (J : FractionalIdeal (𝓞 E)⁰ E) * dd
-        ≤ FractionalIdeal.dual ℤ ℚ 1 * dd := mul_le_mul_left h1 dd
-      _ = 1 := by rw [hinv, mul_inv_cancel₀ hdual0]
-  obtain ⟨I', hI'⟩ := FractionalIdeal.le_one_iff_exists_coeIdeal.mp h2
-  have hne : FractionalIdeal.spanSingleton (𝓞 E)⁰ β * (J : FractionalIdeal (𝓞 E)⁰ E) * dd ≠ 0 :=
-    mul_ne_zero (mul_ne_zero (FractionalIdeal.spanSingleton_ne_zero_iff.mpr hβ) hJ0) hdd0
-  have hI0 : I' ≠ ⊥ := by
-    rintro rfl
-    apply hne
-    rw [← hI']
-    simp
-  have hn := congrArg FractionalIdeal.absNorm hI'
-  rw [FractionalIdeal.coeIdeal_absNorm, map_mul, map_mul, FractionalIdeal.absNorm_span_singleton, hdd,
-    FractionalIdeal.coeIdeal_absNorm, FractionalIdeal.coeIdeal_absNorm, absNorm_differentIdeal E] at hn
-  have h3 : 1 ≤ Ideal.absNorm I' := Nat.one_le_iff_ne_zero.mpr (by rwa [Ne, Ideal.absNorm_eq_zero_iff])
-  have h4 : (1 : ℚ) ≤ (Ideal.absNorm I' : ℚ) := by exact_mod_cast h3
-  rw [hn] at h4
-  exact h4
 
-theorem totally_positive_trace_ge_of_norm_bound (β : E) (hpos : ∀ τ : E →+* ℂ, ∃ c : ℝ, 0 < c ∧ τ β = c) (Q : ℝ) (hQ : 0 < Q)
-    (hN : 1 ≤ |((Algebra.norm ℚ β : ℚ) : ℝ)| * Q) :
-    (finrank ℚ E : ℝ) / Q ^ ((1 : ℝ) / (finrank ℚ E : ℝ)) ≤ ((Algebra.trace ℚ E β : ℚ) : ℝ) := by
-  classical
-  choose c hc0 hc using fun σ : E →ₐ[ℚ] ℂ => hpos σ.toRingHom
-  have hc' : ∀ σ : E →ₐ[ℚ] ℂ, σ β = (c σ : ℂ) := hc
-  have hT : ((Algebra.trace ℚ E β : ℚ) : ℝ) = ∑ σ, c σ := by
-    have h1 : (algebraMap ℚ ℂ) (Algebra.trace ℚ E β) = ∑ σ : E →ₐ[ℚ] ℂ, σ β := trace_eq_sum_embeddings ℂ
-    simp only [hc', eq_ratCast] at h1
-    have h2 : (((Algebra.trace ℚ E β : ℚ) : ℝ) : ℂ) = ((∑ σ, c σ : ℝ) : ℂ) := by
-      push_cast
-      exact h1
-    exact_mod_cast h2
-  have hNm : ((Algebra.norm ℚ β : ℚ) : ℝ) = ∏ σ, c σ := by
-    have h1 : (algebraMap ℚ ℂ) (Algebra.norm ℚ β) = ∏ σ : E →ₐ[ℚ] ℂ, σ β := Algebra.norm_eq_prod_embeddings ℚ ℂ β
-    simp only [hc', eq_ratCast] at h1
-    have h2 : (((Algebra.norm ℚ β : ℚ) : ℝ) : ℂ) = ((∏ σ, c σ : ℝ) : ℂ) := by
-      push_cast
-      exact h1
-    exact_mod_cast h2
-  set P : ℝ := ∏ σ, c σ with hP
-  have hP0 : 0 < P := Finset.prod_pos fun σ _ => hc0 σ
-  set n : ℝ := (finrank ℚ E : ℝ) with hn
-  have hn0 : 0 < n := by
-    rw [hn]
-    exact_mod_cast finrank_pos
-  rw [hNm, abs_of_pos hP0] at hN
-  have hcard : (∑ _σ : E →ₐ[ℚ] ℂ, (1 : ℝ)) = n := by
-    simp [hn, AlgHom.card ℚ E ℂ]
-  have hAG := Real.geom_mean_le_arith_mean (Finset.univ : Finset (E →ₐ[ℚ] ℂ)) (fun _ => 1) c
-    (fun _ _ => zero_le_one) (by rw [hcard]; exact hn0) (fun σ _ => (hc0 σ).le)
-  simp only [Real.rpow_one, one_mul, hcard] at hAG
-  rw [← hP, ← hT] at hAG
-  have hr0 : 0 < Q ^ ((1 : ℝ) / n) := Real.rpow_pos_of_pos hQ _
-  have h5 : 1 ≤ P ^ (n⁻¹) * Q ^ ((1 : ℝ) / n) := by
-    rw [one_div, ← Real.mul_rpow hP0.le hQ.le]
-    exact Real.one_le_rpow hN (inv_nonneg.mpr hn0.le)
-  rw [div_le_iff₀ hr0]
-  rw [le_div_iff₀ hn0] at hAG
-  calc n = 1 * n := (one_mul n).symm
-    _ ≤ P ^ (n⁻¹) * Q ^ ((1 : ℝ) / n) * n := mul_le_mul_of_nonneg_right h5 hn0.le
-    _ = P ^ (n⁻¹) * n * Q ^ ((1 : ℝ) / n) := by ring
-    _ ≤ _ := mul_le_mul_of_nonneg_right hAG hr0.le
 
 variable [StarRing E]
 
-theorem exists_ideal_index_dual_to_lattice (S : HSpace E) (L : Submodule (𝓞 E) S.V) (q : ℕ) (hq0 : q ≠ 0) (hLat : LatT S q L) (x : S.V)
-    (I : Ideal (𝓞 E)) (hI0 : Ideal.absNorm I ≠ 0) (hI : ∀ a ∈ I, a • x ∈ dualSub S L) :
-    ∃ J : Ideal (𝓞 E), J ≠ ⊥ ∧ (∀ a ∈ J, a • x ∈ L) ∧ Ideal.absNorm J ≤ q * Ideal.absNorm I := by
-  let f : 𝓞 E →ₗ[𝓞 E] S.V := LinearMap.toSpanSingleton (𝓞 E) S.V x
-  let J : Ideal (𝓞 E) := L.comap f ⊓ I
-  have hJeq : J.toAddSubgroup = (L.toAddSubgroup.comap f.toAddMonoidHom) ⊓ I.toAddSubgroup := by
-    ext a
-    exact Iff.rfl
-  have hrel : J.toAddSubgroup.relIndex I.toAddSubgroup =
-      L.toAddSubgroup.relIndex (I.toAddSubgroup.map f.toAddMonoidHom) := by
-    rw [← AddSubgroup.relIndex_comap, hJeq]
-    exact AddSubgroup.inf_relIndex_right _ _
-  have hle : I.toAddSubgroup.map f.toAddMonoidHom ≤ dualSub S L := by
-    rintro _ ⟨a, ha, rfl⟩
-    exact hI a ha
-  have hq : L.toAddSubgroup.relIndex (dualSub S L) ≠ 0 := by rw [hLat.2]; exact hq0
-  have hrel1 : J.toAddSubgroup.relIndex I.toAddSubgroup ≤ q := by
-    rw [hrel, ← hLat.2]
-    exact AddSubgroup.relIndex_le_of_le_right hle hq
-  have hrel0 : J.toAddSubgroup.relIndex I.toAddSubgroup ≠ 0 := by
-    rw [hrel]
-    exact fun h0 => hq (AddSubgroup.relIndex_eq_zero_of_le_right hle h0)
-  have hidx : Ideal.absNorm J = J.toAddSubgroup.relIndex I.toAddSubgroup * Ideal.absNorm I := by
-    rw [Ideal.absNorm_eq_index, Ideal.absNorm_eq_index]
-    exact (AddSubgroup.relIndex_mul_index (show J.toAddSubgroup ≤ I.toAddSubgroup from fun a ha => ha.2)).symm
-  refine ⟨J, ?_, fun a ha => ha.1, ?_⟩
-  · intro h0
-    have h1 : Ideal.absNorm J = 0 := by rw [h0]; simp
-    rw [hidx] at h1
-    exact (Nat.mul_ne_zero hrel0 hI0) h1
-  · rw [hidx]
-    exact Nat.mul_le_mul_right _ hrel1
 
-theorem dual_lattice_vector_trace_lower_bound (S : HSpace E)
-    (hpos : ∀ (τ : E →+* ℂ) (x : S.V), x ≠ 0 → ∃ c : ℝ, 0 < c ∧ τ (S.hT x x) = (c : ℂ))
-    (L : Submodule (𝓞 E) S.V) (q : ℕ) (hq0 : q ≠ 0) (hLat : LatT S q L) (x : S.V) (hx : x ≠ 0)
-    (hd : ∀ y ∈ L.toAddSubgroup, ∃ z : ℤ, Algebra.trace ℚ E (S.hT x y) = z) :
-    (finrank ℚ E : ℝ) / (|(discr E : ℝ)| ^ 2 * q) ^ ((1 : ℝ) / (finrank ℚ E : ℝ)) ≤
-      ((Algebra.trace ℚ E (S.hT x x) : ℚ) : ℝ) := by
-  have hD : ∀ y ∈ L, S.hT x y ∈ FractionalIdeal.dual ℤ ℚ (1 : FractionalIdeal (𝓞 E)⁰ E) := by
-    intro y hy
-    rw [FractionalIdeal.mem_dual (one_ne_zero : (1 : FractionalIdeal (𝓞 E)⁰ E) ≠ 0)]
-    intro a ha
-    obtain ⟨o, rfl⟩ := (FractionalIdeal.mem_one_iff _).mp ha
-    obtain ⟨z, hz⟩ := hd (o • y) (L.smul_mem o hy)
-    rw [Algebra.traceForm_apply]
-    refine ⟨z, ?_⟩
-    rw [← algebraMap_smul E o y, map_smul, smul_eq_mul, mul_comm] at hz
-    rw [hz]
-    simp
-  have hβ0 : S.hT x x ≠ 0 := by
-    intro h0
-    obtain ⟨c, hc0, hc⟩ := hpos (Classical.arbitrary (E →+* ℂ)) x hx
-    rw [h0, map_zero] at hc
-    have : c = 0 := by exact_mod_cast hc.symm
-    linarith
-  have hI1 : ∀ a ∈ differentIdeal ℤ (𝓞 E), a • x ∈ dualSub S L := by
-    intro a ha l hl
-    rw [← algebraMap_smul E a x, map_smul, smul_eq_mul, ← S.herm.eq x l]
-    exact different_mul_dual_mem_range a ha _ (star_mem_inverseDifferent _ (hD l hl))
-  have hdisc0 : (discr E).natAbs ≠ 0 := Int.natAbs_ne_zero.mpr (discr_ne_zero E)
-  obtain ⟨J, hJ, hJL, hJn⟩ := exists_ideal_index_dual_to_lattice S L q hq0 hLat x (differentIdeal ℤ (𝓞 E))
-    (by rw [absNorm_differentIdeal E (𝒪 := 𝓞 E)]; exact hdisc0) hI1
-  rw [absNorm_differentIdeal E (𝒪 := 𝓞 E)] at hJn
-  have hN := one_le_norm_mul_absNorm_discr (S.hT x x) hβ0 J hJ (by
-    intro a ha
-    have h1 := hD (a • x) (hJL a ha)
-    rwa [← algebraMap_smul E a x, map_smul, smul_eq_mul] at h1)
-  have hDd : (((discr E).natAbs : ℕ) : ℝ) = |(discr E : ℝ)| := by
-    rw [Nat.cast_natAbs]
-    push_cast
-    rfl
-  have hDpos : 0 < |(discr E : ℝ)| := abs_pos.mpr (Int.cast_ne_zero.mpr (discr_ne_zero E))
-  have hqpos : (0 : ℝ) < q := by exact_mod_cast Nat.pos_of_ne_zero hq0
-  apply totally_positive_trace_ge_of_norm_bound _ (fun τ => hpos τ x hx) _ (by positivity)
-  have hN' : ((1 : ℚ) : ℝ) ≤ ((|Algebra.norm ℚ (S.hT x x)| * (Ideal.absNorm J : ℚ) * ((discr E).natAbs : ℚ) : ℚ) : ℝ) := by
-    exact_mod_cast hN
-  push_cast at hN'
-  rw [hDd] at hN'
-  have hr1 : ((Ideal.absNorm J : ℕ) : ℝ) ≤ q * |(discr E : ℝ)| := by
-    rw [← hDd]
-    exact_mod_cast hJn
-  have habs : 0 ≤ |((Algebra.norm ℚ (S.hT x x) : ℚ) : ℝ)| := abs_nonneg _
-  calc (1 : ℝ) ≤ _ := hN'
-    _ = |((Algebra.norm ℚ (S.hT x x) : ℚ) : ℝ)| * (((Ideal.absNorm J : ℕ) : ℝ) * |(discr E : ℝ)|) := by ring
-    _ ≤ |((Algebra.norm ℚ (S.hT x x) : ℚ) : ℝ)| * ((q * |(discr E : ℝ)|) * |(discr E : ℝ)|) := by
-      apply mul_le_mul_of_nonneg_left _ habs
-      exact mul_le_mul_of_nonneg_right hr1 hDpos.le
-    _ = _ := by ring
 
-theorem exists_short_basis_lattice (hT : PI.TransferenceMinima) (S : HSpace E)
-    (hpos : ∀ (τ : E →+* ℂ) (x : S.V), x ≠ 0 → ∃ c : ℝ, 0 < c ∧ τ (S.hT x x) = (c : ℂ))
-    (L : Submodule (𝓞 E) S.V) (hL : Submodule.IsLattice E L) (q : ℕ) (hq0 : q ≠ 0) (hLat : LatT S q L)
-    (hrk : 0 < S.rank) :
-    ∃ y : Fin S.rank → S.V, (∀ a, y a ∈ L) ∧ LinearIndependent E y ∧
-      ∀ a, ((Algebra.trace ℚ E (S.hT (y a) (y a)) : ℚ) : ℝ) ≤
-        (finrank ℚ E : ℝ) * (S.rank : ℝ) ^ 2 * (|(discr E : ℝ)| ^ 2 * q) ^ ((1 : ℝ) / (finrank ℚ E : ℝ)) := by
-  have hn0 : (0 : ℝ) < (finrank ℚ E : ℝ) := by exact_mod_cast finrank_pos
-  have hDpos : 0 < |(discr E : ℝ)| := abs_pos.mpr (Int.cast_ne_zero.mpr (discr_ne_zero E))
-  have hqpos : (0 : ℝ) < q := by exact_mod_cast Nat.pos_of_ne_zero hq0
-  have hr0 : 0 < (|(discr E : ℝ)| ^ 2 * q) ^ ((1 : ℝ) / (finrank ℚ E : ℝ)) :=
-    Real.rpow_pos_of_pos (by positivity) _
-  have hfg : (AddSubgroup.toIntSubmodule L.toAddSubgroup).FG :=
-    (dualSub_toIntSubmodule_fg_of_isLattice S L hL).of_le (fun x hx => hLat.1 x hx)
-  obtain ⟨y, h1, h2, h3⟩ := exists_short_basis_of_dual_lower hT S hpos L.toAddSubgroup hfg L hL (fun x hx => hx) hrk
-    ((finrank ℚ E : ℝ) / (|(discr E : ℝ)| ^ 2 * q) ^ ((1 : ℝ) / (finrank ℚ E : ℝ))) (by positivity)
-    (fun x hx hz => dual_lattice_vector_trace_lower_bound S hpos L q hq0 hLat x hx hz)
-  refine ⟨y, h1, h2, fun a => (h3 a).trans_eq ?_⟩
-  field_simp
 
 end LemTi
 
@@ -873,48 +681,6 @@ section LemTiP
 
 open Module NumberField Formalism.BasicNotions
 
-theorem exists_short_basis_lattice_pow {E : Type} [Field E] [NumberField E] [StarRing E] (hT : PI.TransferenceMinima) (S : HSpace E)
-    (hpos : ∀ (τ : E →+* ℂ) (x : S.V), x ≠ 0 → ∃ c : ℝ, 0 < c ∧ τ (S.hT x x) = (c : ℂ))
-    (L : Submodule (𝓞 E) S.V) (hL : Submodule.IsLattice E L) (q T f : ℕ) (hf : finrank ℚ E = 2 * f)
-    (hq0 : q ≠ 0) (hqT : q ≤ T ^ (2 * f)) (hLat : LatT S q L) (hrk : 0 < S.rank) :
-    ∃ y : Fin S.rank → S.V, (∀ a, y a ∈ L) ∧ LinearIndependent E y ∧
-      ∀ a, ((Algebra.trace ℚ E (S.hT (y a) (y a)) : ℚ) : ℝ) / (2 * f) ≤
-        (S.rank : ℝ) ^ 2 * T * (|(discr E : ℝ)| ^ ((1 : ℝ) / (finrank ℚ E : ℝ))) ^ 2 := by
-  obtain ⟨y, h1, h2, h3⟩ := exists_short_basis_lattice hT S hpos L hL q hq0 hLat hrk
-  refine ⟨y, h1, h2, fun a => ?_⟩
-  have hN0 : 2 * f ≠ 0 := by
-    rw [← hf]
-    exact finrank_pos.ne'
-  have hNr : (0 : ℝ) < 2 * (f : ℝ) := by
-    have : 0 < 2 * f := Nat.pos_of_ne_zero hN0
-    exact_mod_cast this
-  have hDd0 : 0 ≤ |(discr E : ℝ)| := abs_nonneg _
-  have hfr : (finrank ℚ E : ℝ) = ((2 * f : ℕ) : ℝ) := by rw [hf]
-  have hle : (|(discr E : ℝ)| ^ 2 * q) ^ ((1 : ℝ) / (finrank ℚ E : ℝ)) ≤
-      (|(discr E : ℝ)| ^ ((1 : ℝ) / (finrank ℚ E : ℝ))) ^ 2 * T := by
-    have hq' : (q : ℝ) ≤ (T : ℝ) ^ (2 * f) := by exact_mod_cast hqT
-    calc (|(discr E : ℝ)| ^ 2 * q) ^ ((1 : ℝ) / (finrank ℚ E : ℝ))
-        ≤ (|(discr E : ℝ)| ^ 2 * (T : ℝ) ^ (2 * f)) ^ ((1 : ℝ) / (finrank ℚ E : ℝ)) := by
-          apply Real.rpow_le_rpow (by positivity) (mul_le_mul_of_nonneg_left hq' (by positivity))
-          positivity
-      _ = (|(discr E : ℝ)| ^ 2) ^ ((1 : ℝ) / (finrank ℚ E : ℝ)) *
-          ((T : ℝ) ^ (2 * f)) ^ ((1 : ℝ) / (finrank ℚ E : ℝ)) := Real.mul_rpow (by positivity) (by positivity)
-      _ = _ := by
-          congr 1
-          · rw [← Real.rpow_natCast, ← Real.rpow_natCast, ← Real.rpow_mul hDd0, ← Real.rpow_mul hDd0, mul_comm]
-          · rw [hfr, one_div]
-            exact Real.pow_rpow_inv_natCast (Nat.cast_nonneg _) hN0
-  have h4 := h3 a
-  rw [div_le_iff₀ hNr]
-  have hfr' : (finrank ℚ E : ℝ) = 2 * (f : ℝ) := by rw [hfr]; push_cast; ring
-  calc _ ≤ _ := h4
-    _ ≤ (finrank ℚ E : ℝ) * (S.rank : ℝ) ^ 2 *
-        ((|(discr E : ℝ)| ^ ((1 : ℝ) / (finrank ℚ E : ℝ))) ^ 2 * T) :=
-          mul_le_mul_of_nonneg_left hle (by positivity)
-    _ = _ := by
-      generalize (|(discr E : ℝ)| ^ ((1 : ℝ) / (finrank ℚ E : ℝ))) = r
-      rw [hfr']
-      ring
 
 end LemTiP
 
@@ -951,15 +717,10 @@ theorem shortDual_holds (D : D7) : ShortDual D := by
   calc _ ≤ _ := h1
     _ = _ := by ring
 
-theorem slopeMaxC_of' (D : D7) (hG : SlopeMaxGiven D) : SlopeMaxC D := slopeMaxC_of D (shortDual_holds D) hG
 
 theorem slope_bound_of_max_slope (hH : HookBound) (D : D7) (hG : SlopeMaxGiven D) : SlopeMaxOpenPart D 4 :=
   slope_max_open_four_of_hookBound hH D (shortDual_holds D) hG
 
-theorem family_slope_bound_of_max_slope (hH : HookBound) {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (h : fam0 Fm SlopeMaxGiven) :
-    FamilySlopeMaxOpenPart Fm 4 := by
-  obtain ⟨x0, hx⟩ := h
-  exact ⟨x0, fun x hx0 hx1 i => slope_bound_of_max_slope hH _ (hx x hx0 hx1 i)⟩
 
 end Rec
 
@@ -1114,64 +875,7 @@ section F7
 
 open Module NumberField Formalism.BasicNotions IsDedekindDomain
 
-theorem mean_log_places_eq_log_norm {LL E : Type} [Field LL] [NumberField LL] [IsTotallyComplex LL] [Field E] [NumberField E]
-    (ρ : E →+* LL) (β : E) (hβ : β ≠ 0) :
-    (1 / (Formalism.HN.nPl LL : ℝ)) * ∑ v : InfinitePlace LL, Real.log (v (ρ β)) =
-      (1 / (finrank ℚ E : ℝ)) * Real.log |((Algebra.norm ℚ β : ℚ) : ℝ)| := by
-  let _ : Algebra E LL := ρ.toAlgebra
-  have hρ : ∀ x, ρ x = algebraMap E LL x := fun _ => rfl
-  have hz : ρ β ≠ 0 := (map_ne_zero ρ).mpr hβ
-  have hN : Algebra.norm ℚ (ρ β) = (Algebra.norm ℚ β) ^ (finrank E LL) := by
-    rw [← Algebra.norm_norm (S := E), hρ, Algebra.norm_algebraMap, map_pow]
-  have hprod := InfinitePlace.prod_eq_abs_norm (ρ β)
-  simp only [IsTotallyComplex.mult_eq] at hprod
-  have hlog : 2 * ∑ v : InfinitePlace LL, Real.log (v (ρ β)) =
-      (finrank E LL : ℝ) * Real.log |((Algebra.norm ℚ β : ℚ) : ℝ)| := by
-    have h1 := congrArg Real.log hprod
-    rw [Real.log_prod (fun v _ => pow_ne_zero _ ((InfinitePlace.pos_iff.mpr hz).ne'))] at h1
-    simp only [Real.log_pow] at h1
-    rw [← Finset.mul_sum] at h1
-    rw [hN] at h1
-    push_cast at h1
-    rw [abs_pow, Real.log_pow] at h1
-    exact h1
-  have hn := nPl_two_mul LL
-  have hmul : (finrank ℚ LL : ℝ) = (finrank ℚ E : ℝ) * (finrank E LL : ℝ) := by
-    exact_mod_cast (finrank_mul_finrank ℚ E LL).symm
-  have hE0 : (0 : ℝ) < (finrank ℚ E : ℝ) := by exact_mod_cast finrank_pos
-  have hEL0 : (0 : ℝ) < (finrank E LL : ℝ) := by exact_mod_cast finrank_pos
-  have hP0 : (0 : ℝ) < (Formalism.HN.nPl LL : ℝ) := by
-    have : (0 : ℝ) < (finrank ℚ LL : ℝ) := by exact_mod_cast finrank_pos
-    linarith
-  have hS : ∑ v : InfinitePlace LL, Real.log (v (ρ β)) =
-      (finrank E LL : ℝ) * Real.log |((Algebra.norm ℚ β : ℚ) : ℝ)| / 2 := by linarith
-  have hP : (Formalism.HN.nPl LL : ℝ) = (finrank ℚ E : ℝ) * (finrank E LL : ℝ) / 2 := by linarith
-  rw [hS, hP]
-  field_simp
 
-theorem ColValG.lcvInf_eq {LL : Type} [Field LL] [NumberField LL] [StarRing LL] {Pl : Rows.Places LL}
-    {Tau : Type} [Fintype Tau] {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {f n T q : ℕ}
-    {C : Type} [Fintype C] {Lc : C → Submodule (𝓞 E) S.V} {lam : Tau → DomWeight n} {A : HLat LL}
-    (hH : ColHyp Pl S f n T Lc) (h : ColValG Pl Tau S n q C Lc lam A) (c : C) (τ : Tau)
-    {j : ℕ} (x : Fin j → S.V) (hdet : (Matrix.of fun a b => S.hT (x a) (x b)).det ≠ 0)
-    (hpos : ∀ v : InfinitePlace LL, ∃ r : ℝ, 0 < r ∧
-      v.embedding (h.rho τ (Matrix.of fun a b => S.hT (x a) (x b)).det) = (r : ℂ)) :
-    Formalism.LFunctionChainParameters.LLcv.lcvInf (h.Q c τ).b (h.Q c τ).X (fun a => h.bc c τ (x a)) =
-      (1 / (finrank ℚ E : ℝ)) *
-        Real.log |((Algebra.norm ℚ (Matrix.of fun a b => S.hT (x a) (x b)).det : ℚ) : ℝ)| := by
-  have := hH.tc
-  rw [← mean_log_places_eq_log_norm (h.rho τ) _ hdet]
-  unfold Formalism.LFunctionChainParameters.LLcv.lcvInf
-  congr 1
-  refine Finset.sum_congr rfl fun v _ => ?_
-  have h1 : Formalism.HN.gramPl (h.Q c τ).b (h.Q c τ).X v (fun a => h.bc c τ (x a)) =
-      (v.embedding.comp (h.rho τ)).mapMatrix (Matrix.of fun a b => S.hT (x a) (x b)) := by
-    ext a b
-    simp only [Formalism.HN.gramPl, Matrix.of_apply, RingHom.mapMatrix_apply, Matrix.map_apply, RingHom.comp_apply]
-    exact h.gram_eq hH c τ v (x a) (x b)
-  rw [h1, ← RingHom.map_det, RingHom.comp_apply]
-  obtain ⟨r, hr0, hr⟩ := hpos v
-  rw [hr, Complex.ofReal_re, ← InfinitePlace.norm_embedding_eq v, hr, Complex.norm_real, Real.norm_of_nonneg hr0.le]
 
 end F7
 
@@ -1213,40 +917,9 @@ theorem columnHypotheses (D : D7) (u : D.what₂.Word) :
   pos := fun τ x hx => D.X_form_pos 0 (Nat.zero_le _) τ x hx
   lat := D.clsLat_lat u 0
 
-theorem sum_weight_eq_colAbs (D : D7) (u : D.what₂.Word) (τ : D.what₂.Tau) :
-    (∑ i : Fin (D.R.N 0), ((((D.fm u).lam 0 τ).w i : ℤ) : ℝ)) = colAbs D u τ := by
-  rw [Finset.sum_congr rfl (fun i _ => weight_eq_lamCol D u τ i)]
-  rw [Fin.sum_univ_eq_sum_range (fun i => ((lamCol D u τ i : ℚ) : ℝ)) (D.R.N 0), Ranks.N_zero]
-  rfl
 
-theorem detShift_eq_lamCol_last (D : D7) (u : D.what₂.Word) (τ : D.what₂.Tau) :
-    ((((D.fm u).lam 0 τ).detShift : ℤ) : ℝ) = (lamCol D u τ (D.R.k - 1) : ℝ) := by
-  unfold DomWeight.detShift
-  rw [dif_pos (rank_zero_pos D), weight_eq_lamCol]
-  simp only [Ranks.N_zero]
 
-theorem colSlopeEq_of_abs (h : ColSlopeAbs) (D : D7) : ColSlopeEq D := by
-  intro u hu
-  obtain ⟨μs, h1, h2⟩ := h _ _ _ _ _ _ _ _ _ _ _ _ (columnHypotheses D u) hu.toG
-  refine ⟨μs, h1, ?_⟩
-  rw [h2]
-  congr 2
-  refine Finset.sum_congr rfl fun τ _ => ?_
-  rw [sum_weight_eq_colAbs, Ranks.N_zero]
 
-theorem slopeMaxC_of_abs (h : SlopeMaxAbs) (D : D7) : SlopeMaxC D := by
-  intro u hu
-  have hv : |(discr D.host.E : ℝ)| ^ ((1 : ℝ) / (Module.finrank ℚ D.host.E : ℝ)) = 2 * D.host.v := by
-    unfold Host.v Host.rdE
-    ring
-  have h1 := h _ _ _ _ _ _ _ _ _ _ _ _ (columnHypotheses D u) hu.toG (fun c => by
-    obtain ⟨y, hy1, hy2, hy3⟩ := shortDual_holds D u c (hu.latT c)
-    refine ⟨y, hy1, hy2, fun a => ?_⟩
-    rw [hv, Ranks.N_zero]
-    exact hy3 a)
-  refine h1.trans_eq (Finset.sum_congr rfl fun τ _ => ?_)
-  have hNk : ((D.R.N 0 : ℕ) : ℝ) = D.R.k := by rw [Ranks.N_zero]
-  rw [sum_natWeight_eq_colAbsShifted, detShift_eq_lamCol_last, hv, hNk, mul_div_cancel_left₀ _ (two_ne_zero)]
 
 end ColRec
 
@@ -1261,41 +934,15 @@ theorem msCount_holds (D : D7) : MsCount D 90 :=
       ⟨(Formalism.L2.GlobalTheoryTheory.TraceIntegrality.shortFrame_record D u).2,
         (Formalism.L2.GlobalTheoryTheory.TraceIntegrality.coordCount_record D u 90 (by norm_num)).2⟩⟩
 
-theorem msCountF_holds {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : MsCountF Fm 90 :=
-  ⟨0, fun _ _ _ _ => msCount_holds _⟩
 
-theorem family_mass_count_bound {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : ConclusionF1 Fm :=
-  familyMass_of_massCount Fm 90 (by norm_num) (msCountF_holds Fm)
 
-theorem family_first_bound_of_theta {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (a2 : admF2 Fm) : ConclusionF2 Fm :=
-  familyOpNorm_of_theta_mass Fm a2 (family_mass_count_bound Fm)
 
-theorem theorem_three_family_large_constant {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : ConclusionF3 Fm := Formalism.L2.GlobalTheoryTheory.TraceIntegrality.branching_link_all_families eps Fm
 
-theorem family_bound_of_period_theta_lowering {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (a1 : admF1 Fm) (a2 : admF2 Fm) (a6 : admF6 Fm) : FamilyEstimateFour Fm :=
-  familyPropZ_first_of_admissible Fm a1 a2 (family_first_bound_of_theta Fm a2) (stmtFP_holds Fm a6)
 
-theorem family_second_bound_of_column_slope {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (h : fam0 Fm ColSlopeEq) : ConclusionF5 Fm :=
-  familySlopeLower_of_open Fm (familySlopeLowerOpen_of_std stdSlopeLow_holds hookBound_holds Fm h)
 
-theorem family_third_bound_of_max_slope {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (h : fam0 Fm SlopeMaxGiven) : ConclusionF6 Fm :=
-  familySlopeMax_of_open Fm 4 (family_slope_bound_of_max_slope hookBound_holds Fm h)
 
-theorem open_of_col (D : D7) (h1 : ColSlopeEq D) (h2 : SlopeMaxGiven D) : Open D 90 4 :=
-  ⟨msCount_holds D, Formalism.L2.GlobalTheoryTheory.TraceIntegrality.branching_link_all D, slopeLowerOpen_of_std_hook stdSlopeLow_holds hookBound_holds D h1,
-    slope_bound_of_max_slope hookBound_holds D h2⟩
 
-theorem stmtF_of_col {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (h1 : fam0 Fm ColSlopeEq) (h2 : fam0 Fm SlopeMaxGiven) :
-    KudlaFamilyStatement Fm :=
-  stmtF_of_open Fm 90 4 (by norm_num)
-    ⟨msCountF_holds Fm, Formalism.L2.GlobalTheoryTheory.TraceIntegrality.branching_link_all_families eps Fm,
-      familySlopeLowerOpen_of_std stdSlopeLow_holds hookBound_holds Fm h1, family_slope_bound_of_max_slope hookBound_holds Fm h2⟩
 
-theorem stmtF_of_abs (hA : ColSlopeAbs) (hB : SlopeMaxAbs) {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : KudlaFamilyStatement Fm :=
-  stmtF_of_open Fm 90 4 (by norm_num)
-    ⟨msCountF_holds Fm, Formalism.L2.GlobalTheoryTheory.TraceIntegrality.branching_link_all_families eps Fm,
-      familySlopeLowerOpen_of_std stdSlopeLow_holds hookBound_holds Fm ⟨0, fun _ _ _ _ => colSlopeEq_of_abs hA _⟩,
-      familySlopeMaxOpen_of_hook hookBound_holds Fm ⟨0, fun _ _ _ _ => slopeMaxC_of_abs hB _⟩⟩
 
 end Fin23
 

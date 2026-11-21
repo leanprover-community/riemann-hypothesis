@@ -296,72 +296,19 @@ theorem ker_genPt (R : Type*) [CommRing R] [IsDomain R] :
     RingHom.ker (genPt R ι) = ⊥ :=
   (RingHom.injective_iff_ker_eq_bot _).1 (IsFractionRing.injective _ _)
 
-theorem isProjVarF_line (F : Type*) [Field F] :
-    IsProjVarF (⊥ : Ideal (MRingOver F (fun _ : Unit => Fin 2))) 1 := by
-  refine ⟨⟨Ideal.isPrime_bot, ⟨∅, by simp, by simp⟩, fun k => ⟨0, by simp [X_ne_zero]⟩⟩, ?_⟩
-  rw [ringKrullDim_eq_of_ringEquiv (RingEquiv.quotientBot _),
-    MvPolynomial.ringKrullDim_of_isNoetherianRing, ringKrullDim_eq_zero_of_field]
-  simp
 
-theorem ProjectiveBundleNumbers.hyp_inhabited (F : Type*) [Field F] :
-    IsProjVarF (⊥ : Ideal (MRingOver F (fun _ : Unit => Fin 2))) 1 ∧
-      RingHom.ker (genPt F (fun _ : Unit => Fin 2)) = ⊥ ∧ 1 ≤ 2 ∧
-      IsFlagGrading (genPt F (fun _ : Unit => Fin 2))
-        (trivBundle F (segreVec (genPt F (fun _ : Unit => Fin 2))) 2) (Pi.basisFun _ (Fin 2)) 0 1 ∧
-      IsTwistedForms (genPt F (fun _ : Unit => Fin 2))
-        (trivBundle F (segreVec (genPt F (fun _ : Unit => Fin 2))) 2)
-        (fun t : Fin 2 => (LinearMap.proj t : (Fin 2 → _) →ₗ[_] _)) 0 ∧ 1 ≤ 2 - 1 + 1 :=
-  ⟨isProjVarF_line F, ker_genPt F, by norm_num, trivBundle_isFlagGrading _ 2,
-    trivBundle_isTwistedForms _ 2, by norm_num⟩
 
 section DVR
 
 variable {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
 
-theorem trivBundle_isFlagPair (N : ℕ) :
-    IsFlagPair (genPt O ι) ⊥ (trivBundle O (segreVec (genPt O ι)) N)
-      (trivBundle O (segreVec (genPt O ι)) N) (Pi.basisFun _ (Fin N)) 0 0 1 1 1 1 := by
-  refine ⟨trivBundle_isFlagGrading _ N, trivBundle_isFlagGrading _ N, fun l => ⟨?_, ?_, rfl⟩⟩
-  · exact ⟨0, 0, by simpa using isMultiHomog_C (ι := ι) (1 : O),
-      by simpa using isMultiHomog_C (ι := ι) (1 : O), by simp⟩
-  · exact Ideal.isPrime_bot.one_notMem
 
 def unifPair (ϖ : O) : VPair K O ι := ⟨0, 0, C ϖ, 1⟩
 
 end DVR
 
-theorem isHomogeneous_esymm_int (σ : Type*) [Fintype σ] (n : ℕ) :
-    (esymm σ ℤ n).IsHomogeneous n := by
-  unfold esymm
-  refine IsHomogeneous.sum _ _ _ fun t ht => ?_
-  have := IsHomogeneous.prod t (fun i => (X i : MvPolynomial σ ℤ)) (fun _ => 1)
-    fun i _ => isHomogeneous_X ℤ i
-  simpa [(Finset.mem_powersetCard.1 ht).2] using this
 
-theorem TwoExpansionsAgree.hyp_inhabited :
-    Irreducible ((2 : ℕ) : ℤ_[2]) ∧
-      IsModelOver (⊥ : Ideal (MRingOver ℤ_[2] (fun _ : Unit => Fin 2))) 1 ∧
-      RingHom.ker (genPt ℤ_[2] (fun _ : Unit => Fin 2)) = ⊥ ∧
-      SameGenericFibre ((2 : ℕ) : ℤ_[2])
-        (trivBundle ℤ_[2] (segreVec (genPt ℤ_[2] (fun _ : Unit => Fin 2))) 2)
-        (trivBundle ℤ_[2] (segreVec (genPt ℤ_[2] (fun _ : Unit => Fin 2))) 2) ∧
-      IsFlagPair (genPt ℤ_[2] (fun _ : Unit => Fin 2)) ⊥
-        (trivBundle ℤ_[2] (segreVec (genPt ℤ_[2] (fun _ : Unit => Fin 2))) 2)
-        (trivBundle ℤ_[2] (segreVec (genPt ℤ_[2] (fun _ : Unit => Fin 2))) 2)
-        (Pi.basisFun _ (Fin 2)) 0 0 1 1 1 1 ∧
-      (esymm (Fin 2) ℤ 2).IsSymmetric ∧ (esymm (Fin 2) ℤ 2).IsHomogeneous (1 + 1) :=
-  ⟨PadicInt.irreducible_p, isModelOver_line ℤ_[2], ker_genPt ℤ_[2],
-    fun _ _ _ => Iff.rfl, trivBundle_isFlagPair 2, esymm_isSymmetric _ _ _,
-    isHomogeneous_esymm_int _ 2⟩
 
-theorem TwoExpansionsAgree.withPairs_hyp_inhabited :
-    IsVerticalDiv ((2 : ℕ) : ℤ_[2]) (⊥ : Ideal (MRingOver ℤ_[2] (fun _ : Unit => Fin 2)))
-        (unifPair (ι := fun _ : Unit => Fin 2) ((2 : ℕ) : ℤ_[2])).b
-        (unifPair (ι := fun _ : Unit => Fin 2) ((2 : ℕ) : ℤ_[2])).f
-        (unifPair (ι := fun _ : Unit => Fin 2) ((2 : ℕ) : ℤ_[2])).g ∧
-      1 ≤ 1 + 1 ∧ (esymm (Fin 2) ℤ 1).IsSymmetric ∧ (esymm (Fin 2) ℤ 1).IsHomogeneous (1 + 1 - 1) :=
-  ⟨isVerticalDiv_unif _ Ideal.isPrime_bot, by norm_num, esymm_isSymmetric _ _ _,
-    isHomogeneous_esymm_int _ 1⟩
 
 end Inhabitants
 

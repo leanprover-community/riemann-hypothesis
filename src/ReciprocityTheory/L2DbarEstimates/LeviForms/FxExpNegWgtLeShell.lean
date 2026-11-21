@@ -1,6 +1,324 @@
-import ReciprocityTheory.L2DbarEstimates.LeviForms.FixedB
-import ReciprocityTheory.L2DbarEstimates.LeviForms.FixedC
+import ReciprocityTheory.L2DbarEstimates.LeviForms.FixedA
 
+section
+namespace ReciprocityTheory.L2DbarEstimates.I
+
+open MeasureTheory Metric Filter Topology Set
+open scoped ENNReal ContDiff
+
+noncomputable section
+
+theorem fx_lintegral_ball_translate {n : ℕ} (y₀ : V n) (ρ : ℝ) (Φ : V n → ℝ≥0∞) :
+    ∫⁻ y in ball (0 : V n) ρ, Φ (y₀ + y) = ∫⁻ y in ball y₀ ρ, Φ y := by
+  rw [← lintegral_indicator measurableSet_ball, ← lintegral_indicator measurableSet_ball]
+  have h : ∀ y, (ball (0 : V n) ρ).indicator (fun y => Φ (y₀ + y)) y =
+      (ball y₀ ρ).indicator Φ (y₀ + y) := fun y => by
+    simp [Set.indicator, mem_ball, dist_eq_norm]
+  simp_rw [h]
+  exact lintegral_add_left_eq_self ((ball y₀ ρ).indicator Φ) y₀
+
+theorem fx_tendsto_zero_of_weighted {M : Type*} [TopologicalSpace M] [SecondCountableTopology M]
+    [MeasurableSpace M] [BorelSpace M] (n : ℕ) (hn : 1 ≤ n) (hV : VanishStatement n)
+    (z : M → V n) (hz : IsLocalHomeomorph z) (e : OpenPartialHomeomorph M (V n))
+    (he : IsChart n z e) (p : M) (hp : p ∈ e.source) (ρ : ℝ) (hρ : 0 < ρ)
+    (hball : ball (z p) ρ ⊆ e.target) (c₀ C' Cb : ℝ) (hc₀ : 0 < c₀) (hC' : 0 < C')
+    (δ : ℕ → ℝ) (hδ : Tendsto δ atTop (𝓝[>] 0)) (u : ℕ → M → ℂ) (w : ℕ → M → ℝ)
+    (hu : ∀ k, Measurable (u k)) (hw : ∀ k, Measurable (w k))
+    (hdiff : ∀ k, DifferentiableOn ℂ (fun y => u k (e.symm y)) (ball (z p) ρ))
+    (hlow : ∀ k, ∀ y ∈ ball (z p) ρ,
+      c₀ * (C' * ‖y - z p‖ ^ 2 + δ k) ^ (-(n : ℝ)) ≤ w k (e.symm y))
+    (hint : ∀ k, ∫⁻ x, ENNReal.ofReal (‖u k x‖ ^ 2 * w k x) ∂vol n z ≤ ENNReal.ofReal Cb) :
+    Tendsto (fun k => u k p) atTop (𝓝 0) := by
+  have hzp : e.symm (z p) = p := by rw [he hp]; exact e.left_inv hp
+  have key := hV hn ρ C' (c₀⁻¹ * Cb) δ (fun k y => u k (e.symm (z p + y))) hρ hC' hδ ?_ ?_
+  · simpa [hzp] using key
+  · intro k
+    refine (hdiff k).comp ((differentiableOn_const _).add differentiableOn_id) fun y hy => ?_
+    simpa [mem_ball, dist_eq_norm] using hy
+  · intro k
+    have h1 := fx_lintegral_ball_translate (z p) ρ
+      (fun y => ENNReal.ofReal (‖u k (e.symm y)‖ ^ 2 * (C' * ‖y - z p‖ ^ 2 + δ k) ^ (-(n : ℝ))))
+    simp only [add_sub_cancel_left] at h1
+    rw [h1]
+    set f' : M → ℝ≥0∞ := e.source.indicator fun x => ENNReal.ofReal (‖u k x‖ ^ 2 * w k x)
+      with hf'
+    have hf'm : Measurable f' :=
+      (ENNReal.measurable_ofReal.comp (((hu k).norm.pow_const 2).mul (hw k))).indicator
+        e.open_source.measurableSet
+    have hchart := lintegral_vol_chart n z hz e he f' hf'm
+      (fun x hx => by simp [hf', hx])
+    calc ∫⁻ y in ball (z p) ρ,
+          ENNReal.ofReal (‖u k (e.symm y)‖ ^ 2 * (C' * ‖y - z p‖ ^ 2 + δ k) ^ (-(n : ℝ)))
+        ≤ ∫⁻ y in ball (z p) ρ, ENNReal.ofReal c₀⁻¹ * f' (e.symm y) := by
+          refine setLIntegral_mono' measurableSet_ball fun y hy => ?_
+          have hs : e.symm y ∈ e.source := e.map_target (hball hy)
+          rw [hf', Set.indicator_of_mem hs, ← ENNReal.ofReal_mul (inv_nonneg.mpr hc₀.le)]
+          refine ENNReal.ofReal_le_ofReal ?_
+          have h2 := hlow k y hy
+          have h3 : (C' * ‖y - z p‖ ^ 2 + δ k) ^ (-(n : ℝ)) ≤ c₀⁻¹ * w k (e.symm y) := by
+            rw [le_inv_mul_iff₀ hc₀]; exact h2
+          calc ‖u k (e.symm y)‖ ^ 2 * (C' * ‖y - z p‖ ^ 2 + δ k) ^ (-(n : ℝ))
+              ≤ ‖u k (e.symm y)‖ ^ 2 * (c₀⁻¹ * w k (e.symm y)) :=
+                mul_le_mul_of_nonneg_left h3 (by positivity)
+            _ = _ := by ring
+      _ = ENNReal.ofReal c₀⁻¹ * ∫⁻ y in ball (z p) ρ, f' (e.symm y) :=
+          lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+      _ ≤ ENNReal.ofReal c₀⁻¹ * ∫⁻ y in e.target, f' (e.symm y) := by
+          gcongr
+      _ = ENNReal.ofReal c₀⁻¹ * ∫⁻ x, f' x ∂vol n z := by rw [hchart]
+      _ ≤ ENNReal.ofReal c₀⁻¹ * ENNReal.ofReal Cb := by
+          gcongr
+          refine (lintegral_mono fun x => ?_).trans (hint k)
+          exact Set.indicator_le_self _ _ x
+      _ = ENNReal.ofReal (c₀⁻¹ * Cb) := (ENNReal.ofReal_mul (inv_nonneg.mpr hc₀.le)).symm
+
+theorem fx_exists_ball_bounds {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n)
+    (hz : IsLocalHomeomorph z) (g : Fin n → M → ℂ) (hg : ∀ i, Holo n z (g i)) (ph ph2 : M → ℝ)
+    (hph : SmoothR n z ph) (hph2 : SmoothR n z ph2) (r : ℝ) (hr : 0 < r) (j : ℕ) (ε : ℝ)
+    (hε : 0 < ε) (p : M) (hp : p ∈ zeroSet n g) (U : Set M) (hU : IsOpen U) (hpU : p ∈ U) :
+    ∃ e : OpenPartialHomeomorph M (V n), IsChart n z e ∧ p ∈ e.source ∧
+      ∃ ρ > 0, ∃ C1 > 0, ∃ A : ℝ, ball (z p) ρ ⊆ e.target ∧ ∀ y ∈ ball (z p) ρ,
+        e.symm y ∈ U ∧ ev n g ph r (e.symm y) ≤ ε ^ 2 / 2 ∧
+        ev n g ph r (e.symm y) ≤ C1 * ‖y - z p‖ ^ 2 ∧
+        ph2 (e.symm y) + ((n : ℝ) + j) * ph (e.symm y) ≤ A := by
+  obtain ⟨e, he, hpe⟩ := exists_chart n z hz p
+  have hzp : z p ∈ e.target := by rw [he hpe]; exact e.map_source hpe
+  have hsp : e.symm (z p) = p := by rw [he hpe]; exact e.left_inv hpe
+  have hcs : ContinuousAt e.symm (z p) := e.continuousAt_symm hzp
+  have hre : ∀ f : M → ℝ, SmoothR n z f → Continuous f := fun f hf =>
+    (Complex.continuous_re.comp (Smooth.continuous n z hz _ hf)).congr fun x => by simp
+  have hev0 : ev n g ph r p = 0 := fx_ev_eq_zero n g ph r p hp
+
+  have hlip : ∀ i, ∃ c : ℝ, ∀ᶠ y in 𝓝 (z p), ‖g i (e.symm y)‖ ≤ c * ‖y - z p‖ := by
+    intro i
+    have hd : DifferentiableAt ℂ (fun y => g i (e.symm y)) (z p) :=
+      (hg i e he).differentiableAt (e.open_target.mem_nhds hzp)
+    obtain ⟨c, hc⟩ := hd.hasFDerivAt.isBigO_sub.bound
+    refine ⟨c, hc.mono fun y hy => ?_⟩
+    have h0 : g i (e.symm (z p)) = 0 := by rw [hsp]; exact hp i
+    simpa [h0] using hy
+  choose c hc using hlip
+  have h1 : ∀ᶠ y in 𝓝 (z p), y ∈ e.target := e.open_target.mem_nhds hzp
+  have h2 : ∀ᶠ y in 𝓝 (z p), e.symm y ∈ U := hcs.preimage_mem_nhds (by rw [hsp]; exact hU.mem_nhds hpU)
+  have hevc : ContinuousAt (fun y => ev n g ph r (e.symm y)) (z p) :=
+    (fx_continuous_ev n z hz g hg ph hph r).continuousAt.comp hcs
+  have h3 : ∀ᶠ y in 𝓝 (z p), ev n g ph r (e.symm y) < ε ^ 2 / 2 := by
+    refine hevc.eventually (gt_mem_nhds ?_)
+    show ev n g ph r (e.symm (z p)) < _
+    rw [hsp, hev0]; positivity
+  have hψc : ContinuousAt (fun y => ph2 (e.symm y) + ((n : ℝ) + j) * ph (e.symm y)) (z p) :=
+    (((hre _ hph2).add (continuous_const.mul (hre _ hph))).continuousAt).comp hcs
+  have h4 : ∀ᶠ y in 𝓝 (z p), ph2 (e.symm y) + ((n : ℝ) + j) * ph (e.symm y) <
+      ph2 p + ((n : ℝ) + j) * ph p + 1 := by
+    refine hψc.eventually (gt_mem_nhds ?_)
+    simp only [hsp]; linarith
+  have hxc : ContinuousAt (fun y => Real.exp (-ph (e.symm y))) (z p) :=
+    ((Real.continuous_exp.comp (hre _ hph).neg).continuousAt).comp hcs
+  have h5 : ∀ᶠ y in 𝓝 (z p), Real.exp (-ph (e.symm y)) < Real.exp (-ph p) + 1 := by
+    refine hxc.eventually (gt_mem_nhds ?_)
+    simp only [hsp]; linarith
+  have h6 : ∀ᶠ y in 𝓝 (z p), ∀ i, ‖g i (e.symm y)‖ ≤ c i * ‖y - z p‖ :=
+    Filter.eventually_all.2 hc
+  obtain ⟨ρ, hρ, hall⟩ := Metric.eventually_nhds_iff_ball.1 (h1.and (h2.and (h3.and (h4.and (h5.and h6)))))
+  set C1 : ℝ := (∑ i, c i ^ 2) * (Real.exp (-ph p) + 1) / r ^ 2 + 1 with hC1
+  have hC1pos : 0 < C1 := by positivity
+  refine ⟨e, he, hpe, ρ, hρ, C1, hC1pos, ph2 p + ((n : ℝ) + j) * ph p + 1,
+    fun y hy => (hall y hy).1, fun y hy => ?_⟩
+  obtain ⟨-, hU', h3', h4', h5', h6'⟩ := hall y hy
+  refine ⟨hU', h3'.le, ?_, h4'.le⟩
+  have hs : ∑ i, ‖g i (e.symm y)‖ ^ 2 ≤ (∑ i, c i ^ 2) * ‖y - z p‖ ^ 2 := by
+    rw [Finset.sum_mul]
+    refine Finset.sum_le_sum fun i _ => ?_
+    rw [← mul_pow]
+    exact pow_le_pow_left₀ (norm_nonneg _) (h6' i) 2
+  have hr2 : 0 < r ^ 2 := by positivity
+  unfold ev
+  rw [div_le_iff₀ hr2]
+  have hsum0 : 0 ≤ ∑ i, c i ^ 2 := Finset.sum_nonneg fun i _ => sq_nonneg _
+  calc (∑ i, ‖g i (e.symm y)‖ ^ 2) * Real.exp (-ph (e.symm y))
+      ≤ ((∑ i, c i ^ 2) * ‖y - z p‖ ^ 2) * (Real.exp (-ph p) + 1) :=
+        mul_le_mul hs h5'.le (Real.exp_pos _).le (by positivity)
+    _ ≤ C1 * ‖y - z p‖ ^ 2 * r ^ 2 := by
+        rw [hC1, add_mul, add_mul, div_mul_eq_mul_div, div_mul_eq_mul_div, mul_div_cancel_right₀ _ hr2.ne']
+        nlinarith [sq_nonneg ‖y - z p‖, sq_nonneg r, mul_nonneg hsum0 (sq_nonneg ‖y - z p‖)]
+
+end
+
+end ReciprocityTheory.L2DbarEstimates.I
+end
+
+section
+universe u
+
+namespace ReciprocityTheory.L2DbarEstimates.I
+
+open MeasureTheory Metric Filter Topology Set
+open scoped ENNReal ContDiff
+
+noncomputable section
+
+theorem fx_lp_norm_sq_eq {α : Type*} [MeasurableSpace α] (μ : Measure α) (v : Lp ℂ 2 μ)
+    (G : α → ℂ) (h : (v : α → ℂ) =ᵐ[μ] G) :
+    eLpNorm G 2 μ ^ (2 : ℝ) = ENNReal.ofReal (‖v‖ ^ 2) := by
+  rw [eLpNorm_congr_ae h.symm, Lp.norm_def, ENNReal.ofReal_pow ENNReal.toReal_nonneg,
+    ENNReal.ofReal_toReal (Lp.eLpNorm_ne_top v), ENNReal.rpow_two]
+
+theorem fx_exists_holo_limit {M : Type u} [TopologicalSpace M] [T2Space M]
+    [SecondCountableTopology M] [MeasurableSpace M] [BorelSpace M]
+    (n : ℕ) (X : EtaleStein n M) (ps : M → ℝ) (hps : SmoothR n X.z ps)
+    (hC : HoloClosedNeed n M) (hE : EvalNeed n M) (hCVX : CVXNeed.{u})
+    (S : Set M) (hS : S.Finite) (a : M → ℂ) (B : ℝ) (hB0 : 0 ≤ B)
+    (F : ℕ → M → ℂ) (hF : ∀ k, Holo n X.z (F k))
+    (hB : ∀ k, wint n X.z (F k) ps ≤ ENNReal.ofReal B)
+    (hlim : ∀ p ∈ S, Tendsto (fun k => F k p) atTop (𝓝 (a p))) :
+    ∃ G : M → ℂ, Holo n X.z G ∧ (∀ p ∈ S, G p = a p) ∧ wint n X.z G ps ≤ ENNReal.ofReal B := by
+  have hz := X.isLocalHomeomorph
+  have hpsc : Continuous ps := by
+    have := Complex.continuous_re.comp (Smooth.continuous n X.z hz _ hps)
+    exact this.congr fun x => by simp
+  set μ : Measure M := (vol n X.z).withDensity (fun x => ENNReal.ofReal (Real.exp (-ps x)))
+    with hμ
+  have hkey : ∀ f : M → ℂ, wint n X.z f ps = eLpNorm f 2 μ ^ (2 : ℝ) := fun f => by
+    rw [fx_wint_eq_withDensity n X.z ps hpsc.measurable f, fx_lintegral_enorm_sq_eq]
+  have hN : ∀ (v : Lp ℂ 2 μ) (G : M → ℂ), (v : M → ℂ) =ᵐ[μ] G →
+      wint n X.z G ps = ENNReal.ofReal (‖v‖ ^ 2) := fun v G h => by
+    rw [hkey, fx_lp_norm_sq_eq μ v G h]
+  have hcont : ∀ G : M → ℂ, Holo n X.z G → Continuous G := fun G hG =>
+    Smooth.continuous n X.z hz _ (Holo.smooth n X.z _ hG)
+
+  have hEv : ∀ p ∈ S, ∃ C : ℝ, 0 ≤ C ∧ ∀ (G₁ G₂ : M → ℂ), Holo n X.z G₁ → Holo n X.z G₂ →
+      ∀ w : Lp ℂ 2 μ, (w : M → ℂ) =ᵐ[μ] (fun x => G₁ x - G₂ x) → ‖G₁ p - G₂ p‖ ≤ C * ‖w‖ := by
+    intro p _
+    obtain ⟨C, hC⟩ := hE X ps p hps
+    refine ⟨Real.sqrt (max C 0), Real.sqrt_nonneg _, fun G₁ G₂ h₁ h₂ w hw => ?_⟩
+    have h := hC _ (Holo.sub n X.z _ _ h₁ h₂)
+    rw [hN w _ hw] at h
+    have h' : ENNReal.ofReal (‖G₁ p - G₂ p‖ ^ 2) ≤ ENNReal.ofReal (max C 0 * ‖w‖ ^ 2) := by
+      rw [ENNReal.ofReal_mul (le_max_right _ _)]
+      exact h.trans (mul_le_mul_left (ENNReal.ofReal_le_ofReal (le_max_left _ _)) _)
+    rw [ENNReal.ofReal_le_ofReal_iff (by positivity)] at h'
+    rw [← pow_le_pow_iff_left₀ (norm_nonneg _) (by positivity) two_ne_zero, mul_pow,
+      Real.sq_sqrt (le_max_right _ _)]
+    exact h'
+  choose! Cev hCev0 hCev using hEv
+  have hmem : ∀ k, MemLp (F k) 2 μ := fun k => by
+    refine ⟨(hcont _ (hF k)).aestronglyMeasurable, ?_⟩
+    have h := ((hkey (F k)).symm.trans_le (hB k)).trans_lt ENNReal.ofReal_lt_top
+    exact (ENNReal.rpow_lt_top_iff_of_pos (by norm_num)).mp h
+  let K : ℕ → Set (Lp ℂ 2 μ) := fun m => {v | ∃ G : M → ℂ, Holo n X.z G ∧
+    (v : M → ℂ) =ᵐ[μ] G ∧ ‖v‖ ^ 2 ≤ B + 1 / ((m : ℝ) + 1) ∧
+    ∀ p ∈ S, ‖G p - a p‖ ≤ 1 / ((m : ℝ) + 1)}
+  have hanti : Antitone K := by
+    intro m₁ m₂ h v hv
+    obtain ⟨G, hG, hvG, hn, hp⟩ := hv
+    have : 1 / ((m₂ : ℝ) + 1) ≤ 1 / ((m₁ : ℝ) + 1) := by
+      gcongr
+    exact ⟨G, hG, hvG, hn.trans (by linarith), fun p hp' => (hp p hp').trans this⟩
+  have hne : ∀ m, (K m).Nonempty := by
+    intro m
+    have hev : ∀ᶠ k in atTop, ∀ p ∈ S, ‖F k p - a p‖ ≤ 1 / ((m : ℝ) + 1) := by
+      refine (Filter.eventually_all_finite hS).2 fun p hp => ?_
+      have := (Metric.tendsto_nhds.mp (hlim p hp)) (1 / ((m : ℝ) + 1)) (by positivity)
+      filter_upwards [this] with k hk
+      rw [← dist_eq_norm]; exact hk.le
+    obtain ⟨k, hk⟩ := hev.exists
+    refine ⟨(hmem k).toLp (F k), F k, hF k, MemLp.coeFn_toLp _, ?_, hk⟩
+    have h := (hN ((hmem k).toLp (F k)) (F k) (MemLp.coeFn_toLp (hmem k))).symm.trans_le (hB k)
+    rw [ENNReal.ofReal_le_ofReal_iff hB0] at h
+    have : (0 : ℝ) ≤ 1 / ((m : ℝ) + 1) := by positivity
+    linarith
+  have hclosed : ∀ m, IsClosed (K m) := by
+    intro m
+    refine IsSeqClosed.isClosed fun vs v hvs hlimv => ?_
+    have hvs' : ∀ i, ∃ G : M → ℂ, Holo n X.z G ∧
+        (vs i : M → ℂ) =ᵐ[μ] G ∧ ‖vs i‖ ^ 2 ≤ B + 1 / ((m : ℝ) + 1) ∧
+        ∀ p ∈ S, ‖G p - a p‖ ≤ 1 / ((m : ℝ) + 1) := hvs
+    choose G hG hvG hnG hpG using hvs'
+    have hvm : Measurable (v : M → ℂ) := (Lp.stronglyMeasurable v).measurable
+    have hd : ∀ i, (⇑(vs i - v) : M → ℂ) =ᵐ[μ] fun x => G i x - (v : M → ℂ) x := fun i => by
+      filter_upwards [Lp.coeFn_sub (vs i) v, hvG i] with x h1 h2
+      rw [h1, Pi.sub_apply, h2]
+    have hlim0 : Tendsto (fun i => ‖vs i - v‖) atTop (𝓝 0) :=
+      tendsto_iff_norm_sub_tendsto_zero.mp hlimv
+    have hw : Tendsto (fun i => wint n X.z (fun x => G i x - (v : M → ℂ) x) ps) atTop (𝓝 0) := by
+      have he : (fun i => wint n X.z (fun x => G i x - (v : M → ℂ) x) ps) =
+          fun i => ENNReal.ofReal (‖vs i - v‖ ^ 2) := funext fun i => hN _ _ (hd i)
+      rw [he]
+      have : Tendsto (fun i => ENNReal.ofReal (‖vs i - v‖ ^ 2)) atTop
+          (𝓝 (ENNReal.ofReal ((0 : ℝ) ^ 2))) :=
+        (ENNReal.continuous_ofReal.tendsto _).comp (hlim0.pow 2)
+      simpa using this
+    obtain ⟨Gl, hGl, hfG⟩ := hC X ps G (v : M → ℂ) hps hG hvm hw
+    have hvGl : (v : M → ℂ) =ᵐ[μ] Gl := (withDensity_absolutelyContinuous _ _).ae_le hfG
+    refine ⟨Gl, hGl, hvGl, ?_, fun p hp => ?_⟩
+    · exact le_of_tendsto (((continuous_norm.tendsto v).comp hlimv).pow 2)
+        (Eventually.of_forall hnG)
+    · have hd2 : ∀ i, (⇑(vs i - v) : M → ℂ) =ᵐ[μ] fun x => G i x - Gl x := fun i => by
+        filter_upwards [hd i, hvGl] with x h1 h2
+        rw [h1, h2]
+      have hb : ∀ i, ‖Gl p - a p‖ ≤ Cev p * ‖vs i - v‖ + 1 / ((m : ℝ) + 1) := fun i => by
+        have h1 := hCev p hp (G i) Gl (hG i) hGl _ (hd2 i)
+        calc ‖Gl p - a p‖ ≤ ‖Gl p - G i p‖ + ‖G i p - a p‖ :=
+              norm_sub_le_norm_sub_add_norm_sub _ _ _
+          _ = ‖G i p - Gl p‖ + ‖G i p - a p‖ := by rw [norm_sub_rev (Gl p)]
+          _ ≤ _ := add_le_add h1 (hpG i p hp)
+      have ht : Tendsto (fun i => Cev p * ‖vs i - v‖ + 1 / ((m : ℝ) + 1)) atTop
+          (𝓝 (Cev p * 0 + 1 / ((m : ℝ) + 1))) := (hlim0.const_mul _).add_const _
+      simpa using ge_of_tendsto' ht hb
+  have hmid : ∀ m, ∀ v ∈ K m, ∀ w ∈ K m, (2 : ℂ)⁻¹ • (v + w) ∈ K m := by
+    rintro m v ⟨G, hG, hvG, hnv, hpv⟩ w ⟨G', hG', hwG, hnw, hpw⟩
+    refine ⟨fun x => (2 : ℂ)⁻¹ * (G x + G' x),
+      Holo.mul n X.z _ _ (Holo.const n X.z _) (Holo.add n X.z _ _ hG hG'), ?_, ?_, fun p hp => ?_⟩
+    · filter_upwards [Lp.coeFn_smul (2 : ℂ)⁻¹ (v + w), Lp.coeFn_add v w, hvG, hwG]
+        with x h1 h2 h3 h4
+      rw [h1, Pi.smul_apply, h2, Pi.add_apply, h3, h4, smul_eq_mul]
+    · have h1 : ‖(2 : ℂ)⁻¹ • (v + w)‖ ≤ (‖v‖ + ‖w‖) / 2 := by
+        rw [norm_smul, norm_inv, Complex.norm_two]
+        have := norm_add_le v w
+        linarith
+      have h0 : 0 ≤ ‖(2 : ℂ)⁻¹ • (v + w)‖ := norm_nonneg _
+      nlinarith [sq_nonneg (‖v‖ - ‖w‖), mul_le_mul h1 h1 h0 (by positivity),
+        norm_nonneg v, norm_nonneg w]
+    · calc ‖(2 : ℂ)⁻¹ * (G p + G' p) - a p‖ = ‖(2 : ℂ)⁻¹ * ((G p - a p) + (G' p - a p))‖ := by
+            congr 1; ring
+        _ ≤ 2⁻¹ * (‖G p - a p‖ + ‖G' p - a p‖) := by
+            rw [norm_mul, norm_inv, Complex.norm_two]
+            exact mul_le_mul_of_nonneg_left (norm_add_le _ _) (by norm_num)
+        _ ≤ 1 / ((m : ℝ) + 1) := by linarith [hpv p hp, hpw p hp]
+  have hbdd : Bornology.IsBounded (K 0) := by
+    refine (Metric.isBounded_closedBall (x := (0 : Lp ℂ 2 μ)) (r := B + 2)).subset ?_
+    rintro v ⟨G, -, -, hn, -⟩
+    rw [Metric.mem_closedBall, dist_zero_right]
+    norm_num at hn
+    nlinarith [norm_nonneg v, sq_nonneg (‖v‖ - 1)]
+  obtain ⟨v, hv⟩ := hCVX (Lp ℂ 2 μ) K hanti hne hclosed hmid hbdd
+  obtain ⟨G, hG, hvG, -, -⟩ := hv 0
+  refine ⟨G, hG, fun p hp => ?_, ?_⟩
+  · have hb : ∀ m : ℕ, ‖G p - a p‖ ≤ 1 / ((m : ℝ) + 1) := fun m => by
+      obtain ⟨G', hG', hvG', -, hp'⟩ := hv m
+      have h0 : (⇑(0 : Lp ℂ 2 μ) : M → ℂ) =ᵐ[μ] fun x => G x - G' x := by
+        filter_upwards [Lp.coeFn_zero ℂ 2 μ, hvG, hvG'] with x h1 h2 h3
+        rw [h1, Pi.zero_apply, ← h2, ← h3, sub_self]
+      have h1 := hCev p hp G G' hG hG' 0 h0
+      rw [norm_zero, mul_zero] at h1
+      calc ‖G p - a p‖ ≤ ‖G p - G' p‖ + ‖G' p - a p‖ := norm_sub_le_norm_sub_add_norm_sub _ _ _
+        _ ≤ 0 + 1 / ((m : ℝ) + 1) := add_le_add h1 (hp' p hp)
+        _ = _ := zero_add _
+    have h := ge_of_tendsto' tendsto_one_div_add_atTop_nhds_zero_nat hb
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h)
+  · rw [hN v G hvG]
+    refine ENNReal.ofReal_le_ofReal ?_
+    have hb : ∀ m : ℕ, ‖v‖ ^ 2 ≤ B + 1 / ((m : ℝ) + 1) := fun m => (hv m).choose_spec.2.2.1
+    have ht : Tendsto (fun m : ℕ => B + 1 / ((m : ℝ) + 1)) atTop (𝓝 (B + 0)) :=
+      tendsto_one_div_add_atTop_nhds_zero_nat.const_add B
+    simpa using ge_of_tendsto' ht hb
+
+end
+
+end ReciprocityTheory.L2DbarEstimates.I
+end
+
+section
 universe u
 
 namespace ReciprocityTheory.L2DbarEstimates.I
@@ -263,3 +581,4 @@ theorem fixed (n : ℕ) (M : Type u) [TopologicalSpace M] [T2Space M] [SecondCou
 end
 
 end ReciprocityTheory.L2DbarEstimates.I
+end

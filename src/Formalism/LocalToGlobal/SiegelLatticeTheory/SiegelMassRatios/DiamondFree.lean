@@ -103,9 +103,6 @@ def IsDiamondFreeWord (u : Pr.Word) : Prop :=
 
 theorem card_places (hPr : Pr.Ok) (u : Pr.Word) : (Pr.vT u).card = X.f := hPr.vT_card u
 
-theorem diaFreeCols_holds (hX : X.Ok) (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) (u : Pr.Word) :
-    DiaFreeCols W Ch u :=
-  colDiaFree W Ch hX hPr hbig u
 
 open Classical in
 theorem fixedDimCols_holds (hX : X.Ok) (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) (u : Pr.Word)
@@ -146,9 +143,6 @@ theorem fixedDimCols_holds (hX : X.Ok) (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.
   unfold FixedDimCols
   rw [σ.split.finrank_eq, ← h1, ← card_resU hPr u P, Nat.card_eq_fintype_card]
 
-theorem diamondFree_holds (hX : X.Ok) (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) (u : Pr.Word) :
-    IsDiamondFreeWord W Ch u :=
-  ⟨diaFreeCols_holds W Ch hX hPr hbig u, fun P => fixedDimCols_holds W Ch hX hPr hbig u P⟩
 
 end Cols
 

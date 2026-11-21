@@ -268,52 +268,13 @@ theorem exists_ampFrames [IsProper G.hom] [Flat G.hom] [GeometricallyIntegral G.
 theorem abLocus_eq_univ [IsProper G.hom] : abLocus G = Set.univ :=
   Set.eq_univ_of_forall fun _ _ _ _ _ _ => inferInstance
 
-theorem cDvr_padicInt (p : ℕ) [Fact p.Prime] : CDvr ℤ_[p] := ⟨inferInstance, inferInstance, inferInstance⟩
 
 def constFamily {R : Type} [CommRing R] (C : _root_.WeierstrassCurve R) : Over (PSpace R 1) :=
   Over.mk (pullback.snd (WeierstrassCurve.toSpec C) (PSpace.str R 1))
 
-theorem nonempty_point_chart (R : Type) [CommRing R] (d : ℕ) (i : Fin (d + 1)) :
-    Nonempty (Sp R ⟶ (ProjSpace.chart R d i).toScheme) :=
-  ⟨spMap (MvPolynomial.eval (fun _ => (0 : R))) ≫ IsOpenImmersion.lift (ProjSpace.chart R d i).ι (ProjSpace.chartι R d i)
-    (by rw [Scheme.Opens.range_ι, ← ProjSpace.opensRange_chartι]; rfl)⟩
 
-theorem twistingSheaf_transition_ne_one (R : Type) [CommRing R] [IsDomain R] :
-    (ProjSpace.O1 R 1).g (0 : Fin 2) (1 : Fin 2) ≠ 1 := by
-  intro h
-  letI := MvPolynomial.gradedAlgebra (σ := Fin (1 + 1)) (R := R)
-  let x : Proj (ProjSpace.grading R 1) := ⟨⊥, Ideal.isPrime_bot, fun hle =>
-    MvPolynomial.X_ne_zero (R := R) (0 : Fin (1 + 1))
-      (hle (HomogeneousIdeal.mem_irrelevant_of_mem _ one_pos (ProjSpace.X_mem R 1 0)))⟩
-  have hx : x ∈ ProjSpace.chart R 1 0 ⊓ ProjSpace.chart R 1 1 :=
-    ⟨MvPolynomial.X_ne_zero (R := R) (0 : Fin (1 + 1)), MvPolynomial.X_ne_zero (R := R) (1 : Fin (1 + 1))⟩
-  have e := ProjFrac.ev_frac_mul_den (ha := ProjSpace.X_mem R 1 1) (hb := ProjSpace.X_mem R 1 0)
-    (hU := (inf_le_left : ProjSpace.chart R 1 0 ⊓ ProjSpace.chart R 1 1 ≤ _)) x hx
-  have h' : ProjFrac.frac _ (ProjSpace.chart R 1 0 ⊓ ProjSpace.chart R 1 1) _ _ (ProjSpace.X_mem R 1 1)
-      (ProjSpace.X_mem R 1 0) inf_le_left = 1 := congrArg Units.val h
-  rw [h', map_one, _root_.one_mul] at e
-  haveI := ProjFrac.isPrime_point _ x
-  exact absurd (MvPolynomial.X_injective (IsLocalization.injective _
-    (Ideal.primeCompl_le_nonZeroDivisors x.asHomogeneousIdeal.toIdeal) e)) (by decide)
 
-theorem ampFrames_constFamily {R : Type} [CommRing R] (C : _root_.WeierstrassCurve R) :
-    (∃ F : AmpFrames (constFamily C) ((ProjSpace.O1 R 1).pull (constFamily C).hom) N,
-      F.A = ProjSpace.O1 R 1 ∧ F.n = 1 ∧ F.r = -1 - N ∧ F.s = 1) ∧ abLocus (constFamily C) = Set.univ := by
-  obtain ⟨h₁, h₂, -, h₃, -⟩ := WeierstrassCurve.proper_flat_geometricallyIntegral_smooth C
-  have : IsProper (constFamily C).hom := inferInstanceAs (IsProper (pullback.snd _ _))
-  have : Flat (constFamily C).hom := inferInstanceAs (Flat (pullback.snd _ _))
-  have : GeometricallyIntegral (constFamily C).hom := inferInstanceAs (GeometricallyIntegral (pullback.snd _ _))
-  exact ⟨exists_ampFrames (constFamily C) _ N (isAmple_projective_O_one R 1), abLocus_eq_univ _⟩
 
-theorem exists_ampFrames_nontrivial (p : ℕ) [Fact p.Prime] (C : _root_.WeierstrassCurve ℤ_[p]) :
-    ∃ F : AmpFrames (constFamily C) ((ProjSpace.O1 ℤ_[p] 1).pull (constFamily C).hom) N,
-      F.n = 1 ∧ F.r = -1 - N ∧ F.s = 1 ∧ (∃ i j, F.A.g i j ≠ 1) ∧ CDvr ℤ_[p] ∧
-      ∀ i, ∃ χ : Sp ℤ_[p] ⟶ (F.A.U i).toScheme, Set.range (jK ℤ_[p] ≫ χ ≫ (F.A.U i).ι) ⊆ abLocus (constFamily C) := by
-  obtain ⟨⟨F, hA, hn, hr, hs⟩, hab⟩ := ampFrames_constFamily N C
-  refine ⟨F, hn, hr, hs, ?_, cDvr_padicInt p, ?_⟩
-  · rw [hA]; exact ⟨_, _, twistingSheaf_transition_ne_one _⟩
-  · rw [hA, hab]
-    exact fun i => (nonempty_point_chart _ 1 i).elim fun χ => ⟨χ, Set.subset_univ _⟩
 
 theorem exists_isFrame [IsProper G.hom] [Flat G.hom] [GeometricallyIntegral G.hom] (hA : A.IsLB) (i : A.ι)
     (hi : ∀ z, z ∈ A.U i) {R₁ : Type} [CommRing R₁] [IsDomain R₁] (x : Sp (FractionRing R₁) ⟶ Z) :
@@ -330,23 +291,8 @@ theorem exists_isFrame [IsProper G.hom] [Flat G.hom] [GeometricallyIntegral G.ho
     lin_of G A N hA _ (fun _ => hi _) (fun _ => hi _) he hs _ rfl _ h1,
     lin_of G A N hA _ (fun _ => hi _) (fun _ => hi _) he' hs _ rfl _ h1⟩⟩
 
-theorem not_basisAlong_of_isEmpty (L : LB G.left) [IsEmpty L.ι] {T T' : Over Z} (h : T' ⟶ T) [Nontrivial Γ(T'.left, ⊤)]
-    (b : Fin 1 → LB.Sec (LPow G L (N : ℤ) T)) : ¬ BasisAlong G L N h b := by
-  intro H
-  have hE : IsEmpty (LPow G L (N : ℤ) T').ι := ⟨fun j => isEmptyElim (j (0 : Fin 1))⟩
-  obtain ⟨c, -, hc⟩ := H ⟨fun j => hE.elim j, fun j => hE.elim j⟩
-  have v : ∀ c', Lin G L N h b c' ⟨fun j => hE.elim j, fun j => hE.elim j⟩ := fun c' z J _ =>
-    isEmptyElim (J (snd T' G).left)
-  exact zero_ne_one (congrFun ((hc (fun _ => 0) (v _)).trans (hc (fun _ => 1) (v _)).symm) 0)
 
-theorem admissible_padicInt_maximalIdeal (p : ℕ) [Fact p.Prime] : admitted ℤ_[p] (IsLocalRing.maximalIdeal ℤ_[p]) := by
-  refine ⟨⟨inferInstance, inferInstance, inferInstance, inferInstance⟩, inferInstance, inferInstance, inferInstance, ?_⟩
-  letI := Ideal.Quotient.field (IsLocalRing.maximalIdeal ℤ_[p])
-  infer_instance
 
-theorem arcBase_examples (p : ℕ) [Fact p.Prime] : ArcBase ℚ 1 ∧ ArcBase ℤ_[p] (p : ℤ_[p]) :=
-  ⟨.inl ⟨Field.toIsField ℚ, rfl⟩, .inr ⟨inferInstance, PadicInt.irreducible_p, by
-    rw [← PadicInt.maximalIdeal_eq_span_p]; infer_instance⟩⟩
 
 end Frames
 

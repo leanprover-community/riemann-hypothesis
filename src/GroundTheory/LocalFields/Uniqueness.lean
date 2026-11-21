@@ -125,9 +125,6 @@ theorem valuativeExtension_algHom (f : L →ₐ[K] M) :
   letI := f.toRingHom.toAlgebra
   ⟨vle_map_iff f⟩
 
-theorem valuativeExtension_of_isScalarTower [Algebra L M] [IsScalarTower K L M] :
-    ValuativeExtension L M :=
-  ⟨vle_map_iff (IsScalarTower.toAlgHom K L M)⟩
 
 end Maps
 
@@ -250,8 +247,6 @@ theorem valuation_algEquiv_apply (σ : L ≃ₐ[K] L) (x : L) : valuation L (σ 
   · refine (key σ.symm (σ x) ?_).elim
     simpa using h
 
-theorem vle_algEquiv_iff (σ : L ≃ₐ[K] L) (x y : L) : σ x ≤ᵥ σ y ↔ x ≤ᵥ y :=
-  vle_map_iff σ.toAlgHom x y
 
 def continuousAlgEquiv (σ : L ≃ₐ[K] L) : L ≃A[K] L where
   toAlgEquiv := σ

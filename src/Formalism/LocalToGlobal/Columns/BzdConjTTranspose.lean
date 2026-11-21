@@ -39,22 +39,5 @@ def stdGramAt (v : InfinitePlace K) : Matrix (VVIdx (oneW lam)) (VVIdx (oneW lam
 
 end Std
 
-theorem hlat_mu_of_dual {K : Type} [Field K] [NumberField K] [StarRing K] [IsTotallyComplex K] (A : HLat K) (hG : A.Good)
-    (hr : 0 < A.rank) (L' : Submodule (𝓞 K) A.V) (hL' : L'.FG) (ψ : A.V →ₗ[K] Module.Dual K A.V) (hψ : Function.Injective ψ)
-    (hmap : L'.map (ψ.restrictScalars (𝓞 K)) = A.dualL)
-    (hnorm : ∀ v x, Formalism.HermitianLatticesTheory.normAt A.dualB A.dualX v (ψ x) = Formalism.HermitianLatticesTheory.normAt A.b A.X v x) :
-    (withL A L').mu = -A.mu := by
-  have hX'' : ∀ v, IsUnit (A.dualX v).det := fun v => by
-    show IsUnit (((A.X v).transpose)⁻¹).det
-    rw [Matrix.det_nonsing_inv, Matrix.det_transpose]
-    exact (hG.1 v).ringInverse
-  obtain ⟨-, -, h3, -, -, -, -⟩ := Formalism.HN.rerealize K A.V A.ι (Module.Dual K A.V) A.ι A.b A.X A.dualB A.dualX ψ hG.1 hX''
-    hψ hnorm L' hL'
-  rw [hmap] at h3
-  have hd := (dual_numbers K A hG hr).1
-  rw [← hd]
-  show Formalism.HN.muDef A.b A.X L' = Formalism.HN.muDef A.dualB A.dualX A.dualL
-  unfold Formalism.HN.muDef
-  rw [h3]
 
 end Formalism.L2.Col

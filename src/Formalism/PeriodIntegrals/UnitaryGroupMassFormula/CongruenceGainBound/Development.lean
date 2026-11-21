@@ -98,17 +98,5 @@ def S5 : Prop :=
         - ∑ s, ((r1 : ℝ) * (lg p (al TT nu s) : ℝ) + (r0 : ℝ) * (r1 : ℝ) * (lg p (low rb TT nu s) : ℝ))
         - ∑ s ∈ TT, ∑ e ∈ range N, (lg p (ih s e) : ℝ)
 
-theorem gain_bound_of_parts (hL : SLin) (hS : SStruct) (hV : SVal) : StatementFormalValuationAllFields := by
-  intro p Kc _ Oc Sh rb nu vp Th hSet hMM TT I
-  have hmem := hL p Kc Oc Sh rb nu vp Th I (AddSubgroup.closure (Gen p Oc vp Sh rb nu TT)) hSet hMM
-    (fun u hu i g hg => hS p Kc Oc Sh rb nu vp hSet u hu i g hg TT I)
-  have key : ∀ y ∈ AddSubgroup.closure (Gen p Oc vp Sh rb nu TT), gaussGe p Oc y (formalValuationLowerBound p Sh rb nu TT) := by
-    intro y hy
-    induction hy using AddSubgroup.closure_induction with
-    | mem y hy => exact hV p Kc Oc Sh rb nu vp hSet TT y hy
-    | zero => intro n; simpa using geV_zero p Oc _
-    | add x y _ _ hx hy => intro n; simpa using geV_add p Oc hSet.valR (hx n) (hy n)
-    | neg x _ hx => intro n; simpa using geV_neg p Oc (hx n)
-  exact key _ hmem
 
 end PI.UnitaryGroupMassFormula.PadicGainBound

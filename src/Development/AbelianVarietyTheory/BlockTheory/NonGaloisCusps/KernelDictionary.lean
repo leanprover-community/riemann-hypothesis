@@ -141,8 +141,5 @@ def Dictionary (P : LocPrime l) (H : LocHW l P) (K LL : FinExt l) (h : Good K 1 
 def DictionaryAll (P : LocPrime l) (H : LocHW l P) : Prop :=
   ∀ (K LL : FinExt l) (h : Good K 1 LL), Dictionary P H K LL h
 
-theorem ne_two_of_good {K LL : FinExt l} (h : Good K 1 LL) : l ≠ 2 := fun h2 => by
-  have := h.2.1 h2
-  omega
 
 end GlobalTheory.IndefiniteRowSideFullHecke.KernelDictionary

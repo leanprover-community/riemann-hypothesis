@@ -146,12 +146,6 @@ def projectiveLineEnergyData : EnergyStep.Data p1 projectiveLineKaehler where
   f_smooth i := Fin.elim0 i
   f_psh i := Fin.elim0 i
 
-theorem projectiveLine_energy_inequality :
-    mInt p1 (Fin.cons (projectiveLineKaehler.pot + LocPot.ofFun projectiveLineEnergyData.v) projectiveLineEnergyData.T)
-        (fun x => -projectiveLineEnergyData.w x) ≤
-      mInt p1 (Fin.cons projectiveLineKaehler.pot projectiveLineEnergyData.T) (fun x => -projectiveLineEnergyData.w x) +
-        projectiveLineEnergyData.M * projectiveLineKaehler.vol :=
-  EnergyStep.proof p1 projectiveLineKaehler projectiveLineEnergyData
 
 end
 

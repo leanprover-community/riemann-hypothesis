@@ -75,8 +75,6 @@ theorem volDens_pos (hω : NowhereZero ω) (a : AlgChart p σ D) {y : CxPts p σ
   rw [volDens_eq K ω a hy hi hj]
   positivity
 
-theorem volMeasure_compl : volMeasure K φ ω (ptsIn p σ O)ᶜ = 0 := by
-  rw [volMeasure, Measure.restrict_apply (isOpen_ptsIn O).measurableSet.compl, compl_inter_self, measure_empty]
 
 variable [SecondCountableTopology (CxPts p σ)]
 
@@ -101,10 +99,6 @@ theorem volMeasure_of_add {s : ℝ} (h : ∀ j, ∀ y ∈ ptsIn p σ O, y ∈ pt
   congr 1
   field_simp
 
-theorem volMeasure_congr (h : ∀ j, ∀ y ∈ ptsIn p σ O, y ∈ ptsIn p σ (L.U j) → φ'.φ j y = φ.φ j y) :
-    volMeasure K φ' ω = volMeasure K φ ω := by
-  rw [volMeasure_of_add K ω (φ := φ) (s := 0) (by simpa using h)]
-  simp
 
 theorem volMeasure_pos (hω : NowhereZero ω) (hφ : ∀ j, ContinuousOn (φ.φ j) (ptsIn p σ O ∩ ptsIn p σ (L.U j)))
     {y : CxPts p σ} (hy : y ∈ ptsIn p σ O) : 0 < volMeasure K φ ω univ := by
@@ -200,15 +194,6 @@ theorem goodPt_map {q : T ⟶ Sp c.F} {f : T ⟶ Y} {z : CxPts q σ} {y : CxPts 
   · rw [goodPt_of_good hσ, goodPt_of_good hσ, h]
   · rw [goodPt_of_not hσ, goodPt_of_not hσ, h, Category.assoc]
 
-theorem goodPt_conj {y : CxPts p σ} {y' : CxPts p ((starRingEnd ℂ).comp σ)}
-    (h : y'.1 = spMap (starRingEnd ℂ) ≫ y.1) : (goodPt y').1 = (goodPt y).1 := by
-  by_cases hσ : GoodEmb c σ
-  · rw [goodPt_of_good hσ, goodPt_of_not (CompHt.not_goodEmb_conj hσ), h, ← Category.assoc, spMap, ← Spec.map_comp]
-    refine (congrArg (fun f => Spec.map f ≫ y.1) (?_ : _ = 𝟙 _)).trans (by rw [Spec.map_id, Category.id_comp])
-    exact CommRingCat.hom_ext (RingHom.ext fun z => Complex.conj_conj z)
-  · have h' := goodEmb_goodOf c σ
-    rw [goodOf, if_neg hσ] at h'
-    rw [goodPt_of_good h', goodPt_of_not hσ, h]
 
 def atGood (φ : Weight p (goodOf c σ) B) : Weight p σ B where
   isLB := φ.isLB
@@ -216,13 +201,6 @@ def atGood (φ : Weight p (goodOf c σ) B) : Weight p σ B where
   trans i j y hi hj := by
     rw [φ.trans i j _ (goodPt_mem hi) (goodPt_mem hj), CxPts.gv, norm_ev_goodPt (mem_ptsIn_inf.2 ⟨hi, hj⟩), CxPts.gv]
 
-theorem isConj_atGood (φ : ∀ τ, Weight p τ B) (σ : c.F →+* ℂ) :
-    (atGood (φ (goodOf c σ))).IsConj (atGood (φ (goodOf c ((starRingEnd ℂ).comp σ)))) := fun i y y' h _ => by
-  have key : ∀ (τ τ' : c.F →+* ℂ) (z : CxPts p τ) (z' : CxPts p τ'), τ' = τ → z'.1 = z.1 →
-      (φ τ').φ i z' = (φ τ).φ i z := by
-    rintro τ _ z z' rfl e
-    rw [Subtype.ext e]
-  exact key _ _ _ _ (CompHt.goodOf_conj σ) (goodPt_conj h)
 
 end Good
 
@@ -234,11 +212,7 @@ open Classical in
 
 def diagChar (e : Ix Dw → ℤ) (t : Ix Dw → (CAt σ)ˣ) : ℂ := toC (∏ ix, t ix ^ e ix).val
 
-theorem diagChar_ne_zero (e : Ix Dw → ℤ) (t : Ix Dw → (CAt σ)ˣ) : diagChar e t ≠ 0 := Units.ne_zero (M₀ := ℂ) _
 
-theorem diagChar_mul (e : Ix Dw → ℤ) (t t' : Ix Dw → (CAt σ)ˣ) : diagChar e (t * t') = diagChar e t * diagChar e t' := by
-  simp only [diagChar, Pi.mul_apply, mul_zpow, Finset.prod_mul_distrib, Units.val_mul]
-  rfl
 
 theorem diagChar_add (e e' : Ix Dw → ℤ) (t : Ix Dw → (CAt σ)ˣ) : diagChar (e + e') t = diagChar e t * diagChar e' t := by
   simp only [diagChar, Pi.add_apply, zpow_add, Finset.prod_mul_distrib, Units.val_mul]
@@ -248,15 +222,10 @@ theorem diagChar_one (e : Ix Dw → ℤ) : diagChar (σ := σ) e 1 = 1 := by
   simp only [diagChar, Pi.one_apply, one_zpow, Finset.prod_const_one, Units.val_one]
   rfl
 
-theorem diagChar_zero (t : Ix Dw → (CAt σ)ˣ) : diagChar 0 t = 1 := by
-  simp only [diagChar, Pi.zero_apply, zpow_zero, Finset.prod_const_one, Units.val_one]
-  rfl
 
 def homFac (la : AllWt.Weight Dw) (k : U.Comp) (w : (U.X k).dom) : ℝ :=
   lieFacZ Dw x (wtOf Dw la 0) * (U.X k).nfac (modelWt U (wtOf Dw la 0) k) w.1
 
-theorem homFac_pos (la : AllWt.Weight Dw) (k : U.Comp) (w : (U.X k).dom) : 0 < homFac U x la k w :=
-  mul_pos (AllWt.lieFacZ_pos _ _) (BoundedSectionAlgebra.nfac_pos _ w.2 _)
 
 theorem homFac_add (a b : AllWt.Weight Dw) (k : U.Comp) (w : (U.X k).dom) :
     homFac U x (a + b) k w = homFac U x a k w * homFac U x b k w := by
@@ -275,8 +244,6 @@ theorem homN_eq_homFac (la : AllWt.Weight Dw) (f : Rul Xo c) (k : U.Comp) (w : (
 def genNorm (la : AllWt.Weight Dw) (k : U.Comp) (w : (U.X k).dom) (t : Ix Dw → (CAt σ)ˣ) : ℝ :=
   homFac U x la k w * ‖diagChar (exOf Dw la 0) t‖
 
-theorem genNorm_pos (la : AllWt.Weight Dw) (k : U.Comp) (w : (U.X k).dom) (t : Ix Dw → (CAt σ)ˣ) :
-    0 < genNorm U x la k w t := mul_pos (homFac_pos _ _ _ _ _) (norm_pos_iff.2 (diagChar_ne_zero _ _))
 
 theorem genNorm_add (a b : AllWt.Weight Dw) (k : U.Comp) (w : (U.X k).dom) (t : Ix Dw → (CAt σ)ˣ) :
     genNorm U x (a + b) k w t = genNorm U x a k w t * genNorm U x b k w t := by
@@ -285,34 +252,6 @@ theorem genNorm_add (a b : AllWt.Weight Dw) (k : U.Comp) (w : (U.X k).dom) (t : 
 
 variable {U}
 
-theorem homFac_frBor (hσ : GoodEmb c σ) (hU : IsUnf U) (la : AllWt.Weight Dw) {k k' : U.Comp} {w : (U.X k).dom}
-    {w' : (U.X k').dom} {t : Ix Dw → (CAt σ)ˣ} (ht : FrBor t (U.un k w) (U.un k' w')) :
-    homFac U x la k' w' * ‖diagChar (exOf Dw la 0) t‖ = homFac U x la k w := by
-  classical
-  obtain ⟨γ, hγ, b, hb, e⟩ := (hU.2.2.2.1 k k' w w').1 ⟨t, ht⟩
-  obtain rfl : k' = k := congrArg Sigma.fst e
-  obtain ⟨w', hw'⟩ := w'
-  obtain rfl : w' = rmul (lact γ w.1) b := eq_of_heq (Sigma.mk.inj e).2
-  have hd := BorelDiag.norm_diag_eq_norm_bdiag E H Dw l Xo c σ r U hσ hU k' w γ hγ b hb hw' t ht
-  have nat : ∀ a : (E →+* ℂ) × ℕ → ℕ, ‖diagChar (exZ Dw (wtZ a 0)) t‖ = ‖bchar (modelWt U (wtZ a 0) k') b‖ := fun a => by
-    have h1 : diagChar (exZ Dw (wtZ a 0)) t =
-        ∏ τ : E →+* ℂ, ∏ i : Fin (Dw.mult τ), toC (t (some ⟨τ, i⟩) : CAt σ) ^ a (τ, i) := by
-      simp only [diagChar, AllWt.exZ_wtZ, zpow_natCast, Fintype.prod_option, Fintype.prod_sigma, ex, pow_zero, one_mul,
-        Units.coe_prod, Units.val_pow_eq_pow_val]
-      rfl
-    rw [AllWt.modelWt_wtZ, BorelChar.bchar_laU_eq U hσ hU k' b hb a 0 0 rfl, h1]
-    simp only [pow_zero, one_mul, norm_pow, norm_prod, hd]
-  have hG : wtOf Dw la 0 + wtZ (fun i => (-(wtOf Dw la 0).1 i).toNat) 0 = wtZ (fun i => ((wtOf Dw la 0).1 i).toNat) 0 :=
-    Prod.ext (funext fun i => by simp only [wtZ, Prod.fst_add, Pi.add_apply]; omega) rfl
-  have h₁ := nat fun i => ((wtOf Dw la 0).1 i).toNat
-  have h₂ := nat fun i => (-(wtOf Dw la 0).1 i).toNat
-  rw [← hG, AllWt.modelWt_add U (AllWt.even_wtOf la 0) ⟨0, rfl⟩, BoundedSectionAlgebra.bchar_add _ hb, funext (exZ_add _ _),
-    norm_mul, ← h₂] at h₁
-  have h₃ := mul_right_cancel₀ (norm_ne_zero_iff.2 (diagChar_ne_zero _ t))
-    (((norm_mul _ _).symm.trans (congrArg _ (diagChar_add _ _ t).symm)).trans h₁)
-  have hγw := dom_lact (U.X k') w.2 ((U.X k').Γ_stab γ hγ)
-  rw [homFac, homFac, exOf, h₃, mul_assoc, mul_comm (Data.nfac _ _ _),
-    NormFactor.norm_bchar_mul_nfac_rmul _ _ hγw hb, NormFactor.nfacLact_holds r _ _ γ hγ _ w.2]
 
 end Fac
 

@@ -34,11 +34,7 @@ theorem GroundTheory.Heights₂.Heights.AutoClose.RestCutCaseCompare : GroundThe
 theorem GroundTheory.Heights₂.Heights.AutoClose.PtsGenericCount : GroundTheory.Heights₂.Heights.PtsGenericCount.Statement :=
   @GroundTheory.Heights₂.Heights.PtsGenericCount.proof GroundTheory.Heights₂.Heights.AutoClose.GoodChartModel GroundTheory.Heights₂.Heights.ComponentsGenericCount.proof GroundTheory.Heights₂.Heights.SheetLift.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.Targets_ProjFullRankMeetsRegular : GroundTheory.Heights₂.Heights.Targets.ProjFullRankMeetsRegular.Statement :=
-  @GroundTheory.Heights₂.Heights.Targets.ProjFullRankMeetsRegular.of_found GroundTheory.Heights₂.Heights.AutoClose.Targets_ProjRankTransfer GroundTheory.Heights₂.Heights.Targets.ProjMaxRankMeetsPsi0.proof GroundTheory.Heights₂.Heights.Targets.ProjMaxRankRegular.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.Targets_CurveVertPointMultChart : GroundTheory.Heights₂.Heights.Targets.CurveVertPointMultChart.Statement :=
-  @GroundTheory.Heights₂.Heights.Targets.CurveVertPointMultChart.proof GroundTheory.Heights₂.Heights.AutoClose.Targets_CurveVertPointChart GroundTheory.Heights₂.Heights.AutoClose.Targets_CurveVertPointNagata
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.Targets_ChartDivisorLength : GroundTheory.Heights₂.Heights.Targets.ChartDivisorLength.Statement :=
   @GroundTheory.Heights₂.Heights.Targets.ChartDivisorLength.proof GroundTheory.Heights₂.Heights.Targets.ChartSectionNotMem.proof GroundTheory.Heights₂.Heights.AutoClose.Targets_ChartDivisorComponents GroundTheory.Heights₂.Heights.AutoClose.Targets_ChartSectionLength

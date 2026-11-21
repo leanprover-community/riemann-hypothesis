@@ -122,9 +122,6 @@ theorem ipOf_coord (h : S.Ok) (s : S.Sec) (φ ψ : S.EqFun) :
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   ring
 
-theorem finrank_EqFun (h : S.Ok) (s : S.Sec) : finrank K S.EqFun = (S.toCSDOf h s).dim := by
-  unfold CSD.dim
-  exact (S.resOf h s).finrank_eq
 
 theorem finiteDimensional_EqFun (h : S.Ok) : FiniteDimensional K S.EqFun := by
   letI := h.fintypeCl
@@ -141,32 +138,12 @@ theorem ipOf_indep (h : S.Ok) (s s' : S.Sec) (φ ψ : S.EqFun) : S.ipOf h s φ �
   obtain ⟨g, hg⟩ := Sec.exists_smul s s' c
   rw [← hg, φ.2, ψ.2, h.inv, card_stab_smul]
 
-theorem ipOf_eq_ip (h : S.Ok) (s : S.Sec) (φ ψ : S.EqFun) : S.ipOf h s φ ψ = S.ip h φ ψ := by
-  exact (S.ipOf_indep h s S.outSec φ ψ).trans rfl
 
-theorem dim_indep (h : S.Ok) (s s' : S.Sec) : (S.toCSDOf h s).dim = (S.toCSDOf h s').dim := by
-  unfold CSD.dim
-  exact ((S.resOf h s).symm.trans (S.resOf h s')).finrank_eq
 
 def chgSec (h : S.Ok) (s s' : S.Sec) : (S.toCSDOf h s).Forms ≃ₗ[K] (S.toCSDOf h s').Forms :=
   (S.resOf h s).symm.trans (S.resOf h s')
 
-theorem chgSec_csum (h : S.Ok) (s s' : S.Sec) (f f' : (S.toCSDOf h s).Forms) :
-    (S.toCSDOf h s').csum (S.chgSec h s s' f).1 (S.chgSec h s s' f').1 = (S.toCSDOf h s).csum f.1 f'.1 := by
-  have e1 := S.ipOf_indep h s s' ((S.resOf h s).symm f) ((S.resOf h s).symm f')
-  have e2 : ∀ g : (S.toCSDOf h s).Forms,
-      (fun c => (((S.resOf h s).symm g : S.EqFun) : S.D → S.V) (s.rep c)) = (g : S.Cl → S.V) :=
-    fun g => congrArg Subtype.val ((S.resOf h s).apply_symm_apply g)
-  unfold ipOf at e1
-  rw [e2 f, e2 f'] at e1
-  exact e1.symm
 
-theorem chgSec_nab (h : S.Ok) (s s' : S.Sec) (f : (S.toCSDOf h s).Forms) :
-    (∀ c, (S.chgSec h s s' f).1 c ∈ S.Nab (s'.rep c)) ↔ ∀ c, f.1 c ∈ S.Nab (s.rep c) := by
-  have e2 : f.1 = fun c => (((S.resOf h s).symm f : S.EqFun) : S.D → S.V) (s.rep c) :=
-    (congrArg Subtype.val ((S.resOf h s).apply_symm_apply f)).symm
-  rw [e2]
-  exact (S.mem_intNab_iff h s' ((S.resOf h s).symm f)).symm.trans (S.mem_intNab_iff h s ((S.resOf h s).symm f))
 
 end GSD
 
@@ -183,19 +160,8 @@ theorem term_smul (φ : S.EqFun) (g : S.G) (d : S.D) (d' : S'.D) :
   rw [h1, φ.2]
   simp only [LinearMap.comp_apply, Module.End.one_apply, e1]
 
-theorem appOf_indep (h : S.Ok) (s s' : S.Sec) (φ : S.EqFun) : A.appOf h s φ = A.appOf h s' φ := by
-  funext d'
-  unfold appOf
-  refine Finset.sum_congr rfl fun c _ => ?_
-  obtain ⟨g, hg⟩ := GSD.Sec.exists_smul s s' c
-  rw [S.wt_eq h s c, S.wt_eq h s' c, ← hg, S.card_stab_smul, A.term_smul]
 
-theorem opOf_indep (h : S.Ok) (s s' : S.Sec) : A.opOf h s = A.opOf h s' := by
-  exact LinearMap.ext fun φ => Subtype.ext (A.appOf_indep h s s' φ)
 
-theorem resOf_opOf (h : S.Ok) (h' : S'.Ok) (s : S.Sec) (s' : S'.Sec) (φ : S.EqFun) :
-    (S'.resOf h' s' (A.opOf h s φ)).1 = letI := h.fintypeCl
-      Formalism.ThetaLiftIndependence.kerOpM (fun c => (((S.toCSDOf h s).wt c : K))⁻¹) (A.atReps s s') (S.resOf h s φ).1 := rfl
 
 end ClsKer
 
@@ -224,31 +190,7 @@ def resFree (h : S.Ok) (s : S.Sec) (hf : S.Free) : S.EqFun ≃ₗ[K] (S.Cl → S
 theorem resFree_apply (h : S.Ok) (s : S.Sec) (hf : S.Free) (φ : S.EqFun) (c : S.Cl) :
     S.resFree h s hf φ c = (φ : S.D → S.V) (s.rep c) := rfl
 
-theorem ipOf_free (h : S.Ok) (s : S.Sec) (hf : S.Free) (φ ψ : S.D → S.V) :
-    S.ipOf h s φ ψ = letI := h.fintypeCl
-      ∑ c : S.Cl, S.pair (φ (s.rep c)) (ψ (s.rep c)) := by
-  rw [S.ipOf_eq_sum h s]
-  refine Finset.sum_congr rfl fun c _ => ?_
-  rw [← S.wt_eq h s c, S.wt_eq_one h s hf c]
-  simp only [Nat.cast_one, inv_one, one_mul]
 
-theorem map_intNab_free (h : S.Ok) (s : S.Sec) (hf : S.Free) :
-    S.intNab.map ((S.resFree h s hf : S.EqFun →ₗ[K] (S.Cl → S.V)).restrictScalars (𝓞 K)) =
-      Submodule.pi Set.univ fun c => S.Nab (s.rep c) := by
-  ext f
-  constructor
-  · intro hx
-    obtain ⟨φ, hφ, rfl⟩ := Submodule.mem_map.mp hx
-    rw [Submodule.mem_pi]
-    intro c _
-    exact hφ (s.rep c)
-  · intro hx
-    refine Submodule.mem_map.mpr ⟨(S.resFree h s hf).symm f, ?_, ?_⟩
-    · rw [S.mem_intNab_iff h s]
-      intro c
-      rw [← S.resFree_apply h s hf, LinearEquiv.apply_symm_apply]
-      exact (Submodule.mem_pi.mp hx) c (Set.mem_univ c)
-    · simp
 
 theorem map_intDel_free (h : S.Ok) (s : S.Sec) (hf : S.Free) :
     S.intDel.map ((S.resFree h s hf : S.EqFun →ₗ[K] (S.Cl → S.V)).restrictScalars (𝓞 K)) =
@@ -385,15 +327,7 @@ theorem hform_coord (h : S.Ok) (h' : S'.Ok) (s : S.Sec) (s' : S'.Sec) (x y : Fin
   rw [e.ipOf_onForms h h' s s'] at e1
   exact e1.symm.trans e2
 
-theorem coord_mem_nabLat (h : S.Ok) (h' : S'.Ok) (s : S.Sec) (s' : S'.Sec) (x : Fin (S.toCSDOf h s).dim → K) :
-    e.coord h h' s s' x ∈ (S'.toCSDOf h' s').nabLat ↔ x ∈ (S.toCSDOf h s).nabLat := by
-  show S'.coordOf h' s' (e.onForms ((S.coordOf h s).symm x)) ∈ _ ↔ _
-  rw [S'.coordOf_mem_nabLat h' s', e.mem_intNab, ← S.coordOf_mem_nabLat h s, LinearEquiv.apply_symm_apply]
 
-theorem coord_mem_delLat (h : S.Ok) (h' : S'.Ok) (s : S.Sec) (s' : S'.Sec) (x : Fin (S.toCSDOf h s).dim → K) :
-    e.coord h h' s s' x ∈ (S'.toCSDOf h' s').delLat ↔ x ∈ (S.toCSDOf h s).delLat := by
-  show S'.coordOf h' s' (e.onForms ((S.coordOf h s).symm x)) ∈ _ ↔ _
-  rw [S'.coordOf_mem_delLat h' s', e.mem_intDel, ← S.coordOf_mem_delLat h s, LinearEquiv.apply_symm_apply]
 
 def refl (S : GSD K) : GSD.Iso S S where
   eG := MulEquiv.refl _
@@ -507,21 +441,6 @@ theorem conj_eq_zero_iff (g : S.G) (g' : S'.G) (k : S.V →ₗ[K] S'.V) :
   · rintro rfl
     simp
 
-theorem ker_eq_zero_iff (A : LocOp S S') (B : LocOp S' S) (hn : S.pair.Nondegenerate)
-    (hn' : S'.pair.Nondegenerate)
-    (hadj : ∀ d d' x y, S'.pair (A.ker d' d x) y = S.pair x (B.ker d d' y)) (d : S.D) (d' : S'.D) :
-    A.ker d' d = 0 ↔ B.ker d d' = 0 := by
-  constructor
-  · intro hA
-    ext y
-    rw [LinearMap.zero_apply]
-    refine hn.2 _ fun x => ?_
-    rw [← hadj, hA, LinearMap.zero_apply, map_zero, LinearMap.zero_apply]
-  · intro hB
-    ext x
-    rw [LinearMap.zero_apply]
-    refine hn'.1 _ fun y => ?_
-    rw [hadj, hB, LinearMap.zero_apply, map_zero]
 
 theorem adjoint (A : LocOp S S') (B : LocOp S' S) (h : S.Ok) (h' : S'.Ok) (e : S.G ≃* S'.G)
     (hB : ∀ g, B.tr g = e g)
@@ -595,53 +514,7 @@ theorem adjoint (A : LocOp S S') (B : LocOp S' S) (h : S.Ok) (h' : S'.Ok) (e : S
     unfold app
     rw [Finsupp.sum, map_sum]
 
-theorem adjoint_of_nondeg (A : LocOp S S') (B : LocOp S' S) (h : S.Ok) (h' : S'.Ok) (e : S.G ≃* S'.G)
-    (hB : ∀ g, B.tr g = e g) (hn : S.pair.Nondegenerate)
-    (hn' : S'.pair.Nondegenerate)
-    (hadj : ∀ d d' x y, S'.pair (A.ker d' d x) y = S.pair x (B.ker d d' y))
-    (s : S.Sec) (s' : S'.Sec) (φ : S.EqFun) (ψ : S'.EqFun) :
-    S'.ipOf h' s' (A.app φ) ψ = S.ipOf h s φ (B.app ψ) := by
-  exact A.adjoint B h h' e hB (fun d d' => A.ker_eq_zero_iff B hn hn' hadj d d') hadj s s' φ ψ
 
-theorem ofNbr_adjoint (h : S.Ok) (h' : S'.Ok) (e : S.G ≃* S'.G)
-    (nb : S'.D → Finset S.D) (nb' : S.D → Finset S'.D) (T : S.V →ₗ[K] S'.V) (T' : S'.V →ₗ[K] S.V)
-    (hn : ∀ g d' d, (e.symm : S'.G →* S.G) g • d ∈ nb (g • d') ↔ d ∈ nb d')
-    (hT : ∀ g x, T (S.ρ ((e.symm : S'.G →* S.G) g) x) = S'.ρ g (T x))
-    (hn' : ∀ g d d', (e : S.G →* S'.G) g • d' ∈ nb' (g • d) ↔ d' ∈ nb' d)
-    (hT' : ∀ g x, T' (S'.ρ ((e : S.G →* S'.G) g) x) = S.ρ g (T' x))
-    (htr : ∀ d d', d ∈ nb d' ↔ d' ∈ nb' d) (h0 : T = 0 ↔ T' = 0)
-    (hadj : ∀ x y, S'.pair (T x) y = S.pair x (T' y))
-    (s : S.Sec) (s' : S'.Sec) (φ : S.EqFun) (ψ : S'.EqFun) :
-    S'.ipOf h' s' ((ofNbr (e.symm : S'.G →* S.G) nb T hn hT).op φ) ψ =
-      S.ipOf h s φ ((ofNbr (e : S.G →* S'.G) nb' T' hn' hT').op ψ) := by
-  classical
-  have hk : ∀ d d', (ofNbr (e.symm : S'.G →* S.G) nb T hn hT).ker d' d = if d ∈ nb d' then T else 0 := by
-    intro d d'
-    show Finsupp.indicator (nb d') (fun _ _ => T) d = _
-    rw [Finsupp.indicator_apply]
-    by_cases hd : d ∈ nb d'
-    · rw [dif_pos hd, if_pos hd]
-    · rw [dif_neg hd, if_neg hd]
-  have hk' : ∀ d d', (ofNbr (e : S.G →* S'.G) nb' T' hn' hT').ker d d' = if d ∈ nb d' then T' else 0 := by
-    intro d d'
-    show Finsupp.indicator (nb' d) (fun _ _ => T') d' = _
-    rw [Finsupp.indicator_apply]
-    by_cases hd : d ∈ nb d'
-    · rw [dif_pos ((htr d d').mp hd), if_pos hd]
-    · rw [dif_neg (fun H => hd ((htr d d').mpr H)), if_neg hd]
-  refine adjoint _ _ h h' e (fun _ => rfl) ?_ ?_ s s' φ ψ
-  · intro d d'
-    rw [hk, hk']
-    by_cases hd : d ∈ nb d'
-    · rw [if_pos hd, if_pos hd, h0]
-    · rw [if_neg hd, if_neg hd]
-      exact ⟨fun _ => rfl, fun _ => rfl⟩
-  · intro d d' x y
-    rw [hk, hk']
-    by_cases hd : d ∈ nb d'
-    · rw [if_pos hd, if_pos hd, hadj]
-    · rw [if_neg hd, if_neg hd]
-      simp
 
 end LocOp
 
@@ -836,9 +709,6 @@ theorem split_mem_intOf (N : S.D → Submodule (𝓞 K) S.V) (hN : ∀ (b : A) (
     rw [inv_smul_smul, hN] at h1
     exact h1
 
-theorem split_mem_intNab (hN : ∀ (b : A) (d : S.D), S.Nab (b • d) = S.Nab d) (φ : S.EqFun) :
-    φ ∈ S.intNab ↔ ∀ b, σ.split φ b ∈ (S.restr σ.T).intNab := by
-  exact σ.split_mem_intOf S.Nab hN φ
 
 theorem split_mem_intDel (hN : ∀ (b : A) (d : S.D), S.Del (b • d) = S.Del d) (φ : S.EqFun) :
     φ ∈ S.intDel ↔ ∀ b, σ.split φ b ∈ (S.restr σ.T).intDel := by
@@ -886,18 +756,6 @@ def sec (sT : (S.restr σ.T).Sec) : S.Sec where
   rep := fun c => ((σ.clEquiv sT).symm c).1 • ((sT.rep ((σ.clEquiv sT).symm c).2 : σ.T) : S.D)
   spec := fun c => (σ.clEquiv sT).apply_symm_apply c
 
-theorem ipOf_split [Fintype A] (h : S.Ok) (s : S.Sec) (sT : (S.restr σ.T).Sec) (φ ψ : S.EqFun) :
-    S.ipOf h s φ ψ = ∑ b : A, (S.restr σ.T).ipOf (S.restr_ok h σ.T) sT (σ.split φ b) (σ.split ψ b) := by
-  let _ := h.fintypeCl
-  let _ := (S.restr_ok h σ.T).fintypeCl
-  rw [S.ipOf_indep h s (σ.sec sT), GSD.ipOf_eq_sum]
-  simp only [GSD.ipOf_eq_sum]
-  rw [← Fintype.sum_prod_type']
-  refine Fintype.sum_equiv (σ.clEquiv sT).symm _ _ fun c => ?_
-  show ((Nat.card (MulAction.stabilizer S.G
-      (((σ.clEquiv sT).symm c).1 • ((sT.rep ((σ.clEquiv sT).symm c).2 : σ.T) : S.D))) : K))⁻¹ * _ = _
-  rw [card_stab_smul', ← S.restr_card_stab σ.T]
-  rfl
 
 end Slice
 
@@ -970,93 +828,19 @@ theorem fibre_card_stab (x : D₀) (y : fibre pr hpr x) :
 
 end Fib
 
-theorem GSD.triv_point_ip (K : Type) [Field K] [NumberField K] [StarRing K] (G : Type) [Group G]
-    (h : (GSD.triv K G PUnit).Ok) :
-    (GSD.triv K G PUnit).ip h (GSD.trivOne K G PUnit) (GSD.trivOne K G PUnit) = ((Nat.card G : K))⁻¹ := by
-  let _ := h.fintypeCl
-  unfold GSD.ip
-  rw [GSD.ipOf_eq_sum]
-  have hs : Subsingleton (GSD.triv K G PUnit).Cl := by
-    refine ⟨fun a b => ?_⟩
-    induction a using Quotient.inductionOn' with
-    | h x =>
-    induction b using Quotient.inductionOn' with
-    | h y => rfl
-  rw [Fintype.sum_subsingleton _ ((GSD.triv K G PUnit).cls PUnit.unit)]
-  have h2 : ∀ x : PUnit, Nat.card (MulAction.stabilizer G x) = Nat.card G := by
-    intro x
-    have h1 : MulAction.stabilizer G x = ⊤ := by
-      rw [eq_top_iff]
-      intro g _
-      rfl
-    rw [h1]
-    exact Subgroup.card_top
-  have h3 := h2 ((GSD.triv K G PUnit).outSec.rep ((GSD.triv K G PUnit).cls PUnit.unit))
-  refine Eq.trans (congrArg (fun n : ℕ => ((n : K))⁻¹ * _) h3) ?_
-  show ((Nat.card G : K))⁻¹ * (star (1 : K) * 1) = _
-  simp
 
-theorem LocOp.op_mem_intOf {S S' : GSD K} (A : LocOp S S') (N : S.D → Submodule (𝓞 K) S.V)
-    (N' : S'.D → Submodule (𝓞 K) S'.V) (hk : ∀ d' d, ∀ x ∈ N d, A.ker d' d x ∈ N' d') (φ : S.EqFun)
-    (hφ : φ ∈ S.intOf N) : A.op φ ∈ S'.intOf N' := by
-  intro d'
-  show ∑ d ∈ (A.ker d').support, (A.ker d' d) ((φ : S.D → S.V) d) ∈ N' d'
-  exact sum_mem fun d _ => hk d' d _ (hφ d)
 
-theorem ClsKer.opOf_mem_intOf {S S' : GSD K} (A : ClsKer S S') (h : S.Ok) (s : S.Sec)
-    (N : S.D → Submodule (𝓞 K) S.V) (N' : S'.D → Submodule (𝓞 K) S'.V)
-    (hk : ∀ d d', ∀ x ∈ N d, A.k d d' x ∈ N' d') (n : ℕ) (hn : ∀ c, (S.toCSDOf h s).wt c ∣ n) (φ : S.EqFun)
-    (hφ : φ ∈ S.intOf N) : (n : 𝓞 K) • A.opOf h s φ ∈ S'.intOf N' := by
-  intro d'
-  show (n : 𝓞 K) • A.appOf h s φ d' ∈ N' d'
-  unfold ClsKer.appOf
-  rw [Finset.smul_sum]
-  refine Submodule.sum_mem _ fun c _ => ?_
-  obtain ⟨m, hm⟩ := hn c
-  have hw : (((S.toCSDOf h s).wt c : ℕ) : K) ≠ 0 := Nat.cast_ne_zero.mpr (by unfold CSD.wt; exact @Fintype.card_ne_zero _ ((S.toCSDOf h s).finGam c) ⟨1⟩)
-  have e1 : ((n : 𝓞 K) • ((((S.toCSDOf h s).wt c : ℕ) : K))⁻¹) = ((m : ℕ) : K) := by
-    rw [Algebra.smul_def, map_natCast, hm, Nat.cast_mul, mul_comm, ← mul_assoc, inv_mul_cancel₀ hw, one_mul]
-  rw [← smul_assoc, e1, Nat.cast_smul_eq_nsmul]
-  exact (N' d').nsmul_mem (hk _ d' _ (hφ _)) m
 
-theorem ClsKer.opOf_mem_intOf_DGam {S S' : GSD K} (A : ClsKer S S') (h : S.Ok) (s : S.Sec)
-    (N : S.D → Submodule (𝓞 K) S.V) (N' : S'.D → Submodule (𝓞 K) S'.V)
-    (hk : ∀ d d', ∀ x ∈ N d, A.k d d' x ∈ N' d') (φ : S.EqFun) (hφ : φ ∈ S.intOf N) :
-    ((S.toCSDOf h s).DGam : 𝓞 K) • A.opOf h s φ ∈ S'.intOf N' := by
-  letI := h.fintypeCl
-  exact A.opOf_mem_intOf h s N N' hk _ (fun c => by unfold CSD.DGam; exact Finset.dvd_lcm (Finset.mem_univ c)) φ hφ
 
 namespace GSD
 
 variable (S : GSD K)
 
-theorem csOf_indep (h : S.Ok) (s s' : S.Sec) {M : Type} [AddCommGroup M] [Module K M] (F : S.D → M)
-    (hF : ∀ (g : S.G) (d : S.D), F (g • d) = F d) : S.csOf h s F = S.csOf h s' F := by
-  unfold csOf
-  refine Finset.sum_congr rfl fun c _ => ?_
-  obtain ⟨g, hg⟩ := Sec.exists_smul s s' c
-  rw [S.wt_eq h s c, S.wt_eq h s' c, ← hg, S.card_stab_smul, hF]
 
-theorem ipOf_eq_csOf (h : S.Ok) (s : S.Sec) (φ ψ : S.D → S.V) :
-    S.ipOf h s φ ψ = S.csOf h s fun d => S.pair (φ d) (ψ d) := rfl
 
-theorem csOf_mem (h : S.Ok) (s : S.Sec) {M : Type} [AddCommGroup M] [Module K M] [Module (𝓞 K) M]
-    [IsScalarTower (𝓞 K) K M] (N : Submodule (𝓞 K) M) (F : S.D → M) (hF : ∀ d, F d ∈ N) (n : ℕ)
-    (hn : ∀ c, (S.toCSDOf h s).wt c ∣ n) : (n : 𝓞 K) • S.csOf h s F ∈ N := by
-  unfold csOf
-  rw [Finset.smul_sum]
-  refine Submodule.sum_mem _ fun c _ => ?_
-  obtain ⟨m, hm⟩ := hn c
-  have hw : (((S.toCSDOf h s).wt c : ℕ) : K) ≠ 0 := Nat.cast_ne_zero.mpr (by unfold CSD.wt; exact @Fintype.card_ne_zero _ ((S.toCSDOf h s).finGam c) ⟨1⟩)
-  have e1 : ((n : 𝓞 K) • ((((S.toCSDOf h s).wt c : ℕ) : K))⁻¹) = ((m : ℕ) : K) := by
-    rw [Algebra.smul_def, map_natCast, hm, Nat.cast_mul, mul_comm, ← mul_assoc, inv_mul_cancel₀ hw, one_mul]
-  rw [← smul_assoc, e1, Nat.cast_smul_eq_nsmul]
-  exact N.nsmul_mem (hF _) m
 
 end GSD
 
-theorem ClsKer.appOf_eq_csOf {S S' : GSD K} (A : ClsKer S S') (h : S.Ok) (s : S.Sec) (φ : S.D → S.V) (d' : S'.D) :
-    A.appOf h s φ d' = S.csOf h s fun d => A.k d d' (φ d) := rfl
 
 namespace BiPair
 
@@ -1067,20 +851,10 @@ theorem term_smul (φ : S.EqFun) (ψ : S'.EqFun) (g : S'.G) (d' : S'.D) :
       P.B ((φ : S.D → S.V) (P.p d')) ((ψ : S'.D → S'.V) d') := by
   rw [P.hp, φ.2, ψ.2, P.inv]
 
-theorem sumOf_indep (h' : S'.Ok) (s s' : S'.Sec) (φ : S.EqFun) (ψ : S'.EqFun) :
-    P.sumOf h' s φ ψ = P.sumOf h' s' φ ψ := by
-  unfold sumOf
-  exact S'.csOf_indep h' s s' _ (fun g d' => P.term_smul φ ψ g d')
 
 theorem formOf_apply (h' : S'.Ok) (s' : S'.Sec) (φ : S.EqFun) (ψ : S'.EqFun) :
     P.formOf h' s' φ ψ = P.sumOf h' s' φ ψ := rfl
 
-theorem sumOf_mem (h' : S'.Ok) (s' : S'.Sec) (N : S.D → Submodule (𝓞 K) S.V) (N' : S'.D → Submodule (𝓞 K) S'.V)
-    (hB : ∀ d', ∀ x ∈ N (P.p d'), ∀ y ∈ N' d', P.B x y ∈ (1 : Submodule (𝓞 K) K)) (n : ℕ)
-    (hn : ∀ c, (S'.toCSDOf h' s').wt c ∣ n) (φ : S.EqFun) (hφ : φ ∈ S.intOf N) (ψ : S'.EqFun)
-    (hψ : ψ ∈ S'.intOf N') : (n : 𝓞 K) • P.sumOf h' s' φ ψ ∈ (1 : Submodule (𝓞 K) K) := by
-  unfold sumOf
-  exact S'.csOf_mem h' s' 1 _ (fun d' => hB d' _ (hφ (P.p d')) _ (hψ d')) n hn
 
 end BiPair
 
@@ -1144,11 +918,6 @@ theorem ipOf_coord (h : F.Ok) (s : ∀ b, (F.mem b).Sec) (φ ψ : F.Forms) :
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   ring
 
-theorem dim_eq_sum (h : F.Ok) (s : ∀ b, (F.mem b).Sec) :
-    (F.toCSDOf h s).dim = ∑ b, finrank K (F.mem b).EqFun := by
-  unfold CSD.dim
-  haveI : ∀ b, Module.Finite K (F.mem b).EqFun := fun b => (F.mem b).finiteDimensional_EqFun (h b)
-  rw [← (F.resOf h s).finrank_eq, Module.finrank_pi_fintype]
 
 def Good (n : ℕ) : Prop := ∀ b, (F.mem b).Good n
 
@@ -1174,23 +943,7 @@ theorem Mat.opOf_apply {F F' : GFam K} (M : Mat F F') (h : F.Ok) (s : ∀ b, (F.
     (b' : F'.β) : M.opOf h s φ b' = ∑ b, (M b b').opOf (h b) (s b) (φ b) := by
   simp only [Mat.opOf, LinearMap.pi_apply, LinearMap.sum_apply, LinearMap.comp_apply, LinearMap.proj_apply]
 
-theorem Mat.opOf_indep {F F' : GFam K} (M : Mat F F') (h : F.Ok) (s s' : ∀ b, (F.mem b).Sec) :
-    M.opOf h s = M.opOf h s' := by
-  refine LinearMap.ext fun φ => funext fun b' => ?_
-  rw [M.opOf_apply h s, M.opOf_apply h s']
-  exact Finset.sum_congr rfl fun b _ => by rw [(M b b').opOf_indep (h b) (s b) (s' b)]
 
-theorem Mat.resOf_opOf {F F' : GFam K} (M : Mat F F') (h : F.Ok) (h' : F'.Ok) (s : ∀ b, (F.mem b).Sec)
-    (s' : ∀ b', (F'.mem b').Sec) (φ : F.Forms) :
-    (F'.resOf h' s' (M.opOf h s φ)).1 = letI := h.fintypeCl
-      Formalism.ThetaLiftIndependence.kerOpM (fun c => (((F.toCSDOf h s).wt c : K))⁻¹) (M.atReps s s') (F.resOf h s φ).1 := by
-  funext c'
-  letI : ∀ b, Fintype (F.mem b).Cl := fun b => (h b).fintypeCl
-  show ((M.opOf h s φ c'.1 : (F'.mem c'.1).EqFun) : (F'.mem c'.1).D → F'.V) ((s' c'.1).rep c'.2) = _
-  rw [M.opOf_apply h s φ c'.1, Submodule.coe_sum, Finset.sum_apply]
-  simp only [Formalism.ThetaLiftIndependence.kerOpM]
-  rw [← Finset.univ_sigma_univ, Finset.sum_sigma]
-  rfl
 
 end GFam
 
@@ -1275,11 +1028,6 @@ def twForm : (tw K).EqFun := ⟨fun d => match d with
     rw [twSgn_apply]
     simp⟩
 
-theorem twForm_mem : twForm K ∈ (tw K).intDel := by
-  intro d
-  cases d with
-  | none => exact zero_mem _
-  | some g => exact Submodule.mem_one.mpr ⟨((g : ℤ) : 𝓞 K), map_intCast _ _⟩
 
 def twEquiv : (tw K).EqFun ≃ₗ[K] K where
   toFun φ := (φ.1 : Option ℤˣ → K) (some 1)
@@ -1303,42 +1051,11 @@ def twEquiv : (tw K).EqFun ≃ₗ[K] K where
     show a * (((1 : ℤˣ) : ℤ) : K) = a
     simp
 
-theorem tw_finrank : finrank K (tw K).EqFun = 1 := by
-  exact (twEquiv K).finrank_eq.trans (Module.finrank_self K)
 
-theorem tw_dim : ((tw K).toCSD (tw_ok K)).dim = 1 := by
-  exact ((tw K).finrank_EqFun (tw_ok K) (tw K).outSec).symm.trans (tw_finrank K)
 
-theorem triv_rat (G D : Type) [Group G] [MulAction G D] : (GSD.triv K G D).Rat where
-  pair_rat := by
-    intro (i : Unit) (j : Unit)
-    show CSD.pairOne K ((Basis.singleton Unit K) i) ((Basis.singleton Unit K) j) ∈ cmMax K
-    rw [CSD.pairOne_apply, Basis.singleton_apply, star_one, one_mul]
-    exact (cmMax K).one_mem
-  act_rat := by
-    intro g (i : Unit) (j : Unit)
-    show (Basis.singleton Unit K).repr ((1 : Module.End K K) ((Basis.singleton Unit K) j)) i ∈ cmMax K
-    rw [Module.End.one_apply, Basis.repr_self]
-    cases i; cases j
-    simp
-  pos := by
-    intro v
-    have : ((GSD.triv K G D).gramV.map v.embedding) = (1 : Matrix Unit Unit ℂ) := by
-      ext (i : Unit) (j : Unit)
-      show v.embedding (CSD.pairOne K ((Basis.singleton Unit K) i) ((Basis.singleton Unit K) j)) = _
-      rw [CSD.pairOne_apply, Basis.singleton_apply, star_one, one_mul, map_one]
-      rfl
-    rw [this]
-    exact Matrix.PosDef.one
 
 abbrev tv : GSD K := GSD.triv K ℤˣ (Option ℤˣ)
 
-theorem tv_ok : (tv K).Ok := by
-  refine ⟨inferInstance, fun _ => inferInstance, fun g _ => ?_, fun g _ => ?_, fun g x y => rfl⟩
-  · rw [MonoidHom.one_apply]
-    exact (Submodule.map_id _).symm
-  · rw [MonoidHom.one_apply]
-    exact (Submodule.map_id _).symm
 
 def isS : (tv K).Cl → Bool := Quotient.lift Option.isSome (by
   rintro a b ⟨g, rfl⟩
@@ -1363,33 +1080,9 @@ def eCl : (tv K).Cl ≃ Bool := Equiv.ofBijective (isS K) ⟨by
   · exact ⟨(tv K).cls none, rfl⟩
   · exact ⟨(tv K).cls (some 1), rfl⟩⟩
 
-theorem card_rep (s : (tv K).Sec) (d : Option ℤˣ) :
-    Nat.card (MulAction.stabilizer ℤˣ (s.rep ((tv K).cls d))) = Nat.card (MulAction.stabilizer ℤˣ d) := by
-  obtain ⟨g, hg⟩ := ((tv K).cls_eq_iff _ _).mp (s.spec ((tv K).cls d))
-  rw [← hg]
-  exact (tv K).card_stab_smul g d
 
-theorem card_none : Nat.card (MulAction.stabilizer ℤˣ (none : Option ℤˣ)) = 2 := by
-  rw [show MulAction.stabilizer ℤˣ (none : Option ℤˣ) = ⊤ from (Subgroup.eq_top_iff' _).mpr fun g => rfl,
-    Subgroup.card_top, Nat.card_eq_fintype_card]
-  first | rfl | decide | simp
 
-theorem card_some : Nat.card (MulAction.stabilizer ℤˣ (some 1 : Option ℤˣ)) = 1 := by
-  have hb : MulAction.stabilizer ℤˣ (some 1 : Option ℤˣ) = ⊥ := by
-    refine (Subgroup.eq_bot_iff_forall _).mpr fun g hg => ?_
-    have h1 : (some (g • (1 : ℤˣ)) : Option ℤˣ) = some 1 := hg
-    simpa using h1
-  rw [hb, Subgroup.card_bot]
 
-theorem triv_mass : (tv K).ip (tv_ok K) (fun _ => (1 : K)) (fun _ => (1 : K)) = 3 / 2 := by
-  unfold GSD.ip
-  rw [GSD.ipOf_eq_sum]
-  let _ := (tv_ok K).fintypeCl
-  rw [← (eCl K).symm.sum_comp, Fintype.sum_bool]
-  have e1 : (eCl K).symm true = (tv K).cls (some 1) := (eCl K).symm_apply_eq.mpr rfl
-  have e0 : (eCl K).symm false = (tv K).cls none := (eCl K).symm_apply_eq.mpr rfl
-  rw [e1, e0, card_rep, card_rep, card_none, card_some, CSD.pairOne_apply]
-  norm_num
 
 theorem stab_inj {Γ H D : Type} [Group Γ] [Group H] [MulAction (Γ × H) D]
     (free : ∀ (h : H) (d : D), ((1, h) : Γ × H) • d = d → h = 1) (d : D) :

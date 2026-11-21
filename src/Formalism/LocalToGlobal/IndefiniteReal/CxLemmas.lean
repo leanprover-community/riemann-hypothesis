@@ -201,22 +201,6 @@ theorem majAt_zero_left {n : ℕ} (X : InfinitePlace K → Matrix (Fin n) (Fin n
   rw [hv, Matrix.mulVec_zero]
   simp
 
-theorem majAt_sum_right {n : ℕ} (X : InfinitePlace K → Matrix (Fin n) (Fin n) ℂ) (v : InfinitePlace K)
-    (x : Fin n → K) {ι : Type} (s : Finset ι) (y : ι → Fin n → K) :
-    Formalism.HermitianLatticesTheory.majAt (Pi.basisFun K (Fin n)) X v x (∑ q ∈ s, y q) =
-      ∑ q ∈ s, Formalism.HermitianLatticesTheory.majAt (Pi.basisFun K (Fin n)) X v x (y q) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty =>
-    have hv : Formalism.HermitianLatticesTheory.vecAt (Pi.basisFun K (Fin n)) v 0 = 0 := by
-      funext i
-      simp [Formalism.HermitianLatticesTheory.vecAt]
-    simp only [Finset.sum_empty]
-    unfold Formalism.HermitianLatticesTheory.majAt Formalism.HermitianLatticesTheory.fcoord
-    rw [hv, Matrix.mulVec_zero]
-    simp
-  | insert a s ha ih =>
-    rw [Finset.sum_insert ha, Finset.sum_insert ha, majAt_add_right, ih]
 
 end SlopeTestRemainingChoices
 
@@ -527,21 +511,7 @@ def cxPkg {Bs : DefBase K} {A : DefAmb Bs} {fc : DefSub A → DefFace Bs} (cr : 
                   l1e := hL.l1e }
         extra := { untw := hL.untw, level := ⟨rfl, rfl, rfl⟩, passage := hL.passage, fun0 := hL.fun0 } } }
 
-theorem cxPkg_spec {Bs : DefBase K} {A : DefAmb Bs} {fc : DefSub A → DefFace Bs} (cr : Crd A fc) (X : CxData A)
-    (Y : CxData.CxCol (fc := fc) X) (C CH : ℝ) (hL : X.CxLinks cr Y C CH) (hW : ∀ b, (lv (fc X.zs) b).WF) :
-    (cxPkg cr X Y C CH hL hW).Zs = X.zs ∧ (cxPkg cr X Y C CH hL hW).core.base.toIndefData = X.data cr false ∧
-      (cxPkg cr X Y C CH hL hW).core.cols.toIndefData = X.data cr true ∧
-      (cxPkg cr X Y C CH hL hW).core.cols.col = X.colOf cr Y ∧ (cxPkg cr X Y C CH hL hW).core.base.μ = X.μ :=
-  ⟨rfl, rfl, rfl, rfl, rfl⟩
 
-theorem cxToPkg {Bs : DefBase K} {A : DefAmb Bs} {fc : DefSub A → DefFace Bs} (cr : Crd A fc) (X : CxData A)
-    (Y : CxData.CxCol (fc := fc) X) (C CH : ℝ) (hL : X.CxLinks cr Y C CH) (hW : ∀ b, (lv (fc X.zs) b).WF) :
-    Nonempty (IndefPkg A fc C CH) := ⟨cxPkg cr X Y C CH hL hW⟩
 
-theorem cx_exists_Q {Bs : DefBase K} {A : DefAmb Bs} {fc : DefSub A → DefFace Bs} (cr : Crd A fc) (X : CxData A)
-    (Y : CxData.CxCol (fc := fc) X) (C CH : ℝ) (hL : X.CxLinks cr Y C CH) (hW : ∀ b, (lv (fc X.zs) b).WF)
-    (Q : DefSub A → (HeightOneSpectrum (𝓞 K) → Bs.Tup) → Prop) (hQ : Q X.zs X.μ) :
-    ∃ P : IndefPkg A fc C CH, Q P.Zs P.core.base.μ := by
-  exact ⟨cxPkg cr X Y C CH hL hW, hQ⟩
 
 end Formalism.IndefR.Cx

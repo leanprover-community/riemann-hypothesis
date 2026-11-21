@@ -33,16 +33,5 @@ def DensK (h : GenFrEx (Tc.Q.Xo j) Tc.Q.c) (ka : WeightFamilies.Wt D j)
         ⨆ P : PT (Ω := Om Z) sg, recNrm (Tc.U j (goodOf Tc.Q.c (sgOf (P : Om Z →+* ℂ)))) (xiR D) (wtA ka) ka.n
           (F : Tc.R j) (pt Z P).1 (pt Z P).2.1
 
-theorem supPTGe_of (h : GenFrEx (Tc.Q.Xo j) Tc.Q.c)
-    (fn : ∀ σ : Tc.Q.c.F →+* ℂ, FrPt (Tc.Q.Xo j) Tc.Q.c (CAt σ) → Ix (Tc.Q.Dw j) → ℝ)
-    (yP : ∀ Z : Comp (Tc.Q.Xo j) Tc.Q.c, ∀ P : Om Z →+* ℂ, FrPt (Tc.Q.Xo j) Tc.Q.c (CAt (sgOf P)))
-    (ka : WeightFamilies.Wt D j)
-    (pt : ∀ (Z : Comp (Tc.Q.Xo j) Tc.Q.c) (P : Om Z →+* ℂ), SupPtAt j (goodOf Tc.Q.c (sgOf P)))
-    (htie : NrmTieK h fn yP ka pt) (hden : DensK hL j h ka pt) :
-    SupPTGe hL j h fn yP ka := by
-  intro Z F hF hev
-  obtain ⟨F', hF', hne, hsup⟩ := hden Z F hF hev
-  refine ⟨F', hF', hne, fun sg => (hsup sg).trans (le_of_eq ?_)⟩
-  exact iSup_congr fun P => (htie Z P (F : Tc.R j)).symm
 
 end Formalism.L2.Pj

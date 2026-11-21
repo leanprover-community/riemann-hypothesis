@@ -162,63 +162,10 @@ theorem ObjC.and_q0Pt {Q : PtProp} (h : ObjC Q) : ObjC (Q.and twistingGlobalPoin
   · rw [Real.log_le_iff_le_exp (by exact_mod_cast hs.1.pos)]
     exact hX.le.trans hXb
 
-theorem objC_withObj_iff (Q : PtProp) : ObjC (withObj Q) ↔ ObjC (Q.and (TamePt.and (MinkPt.and TwPt))) :=
-  ⟨fun h => h.imp fun _ _ hp => ⟨hp.1.1, hp.2⟩, fun h => h.and_q0Pt.imp fun _ _ hp => ⟨⟨hp.1.1, hp.2⟩, hp.1.2⟩⟩
 
-theorem hostWW_of_hostExQW_weightEx {la : ℝ} {P : HostReq} (hH : HostExQW la P) (hW : WeightEx) : HostWW la P := by
-  refine ⟨1, one_pos, fun eps he _ he1 => ?_⟩
-  obtain ⟨CT2, C8, C5, c6, Cb, xH, h8, h5, h6, hb, S, hH⟩ := hH eps he he1
-  obtain ⟨KW, hW⟩ := hW eps C8 he he1
-  refine ⟨CT2, C8, C5, c6, Cb, KW, h8, h5, h6, hb, fun C hC _ _ hL => ⟨0, fun cD hcD => ⟨0, fun ch _ => ?_⟩⟩⟩
-  obtain ⟨xW, hW⟩ := hW C hC hL cD ch hcD
-  refine ⟨max xH xW, S, fun s hs hx hm => ?_⟩
-  simp only [max_le_iff] at hx
-  obtain ⟨R, H, q0, hRV, hT, hG, hq, hp⟩ := hH s hs hx.1 hm
-  obtain ⟨a, b, h0, h1, h2⟩ := hW s R H hs hx.2 hRV hG.1
-  exact ⟨R, H, q0, a, b, hRV, hT, hG, hq, h0, h1, h2, hp⟩
 
-theorem hostW_of_hostExQ_weightEx (hH : HostExQ) (hW : WeightEx) : HostW :=
-  let ⟨la, h1, h2⟩ := hH
-  ⟨la, h1, hostWW_of_hostExQW_weightEx (HostExW.imp h2 fun _ _ _ _ _ h => ⟨h, trivial⟩) hW⟩
 
-theorem not_objC_false (hHost : HostW) : ¬ ObjC (fun _ _ _ _ _ _ _ _ _ => False) := by
-  rintro ⟨εO, hεO, hObj⟩
-  obtain ⟨la, hla, εH, hεH, hHost⟩ := hHost
-  obtain ⟨eps, he, e1, e2, he1⟩ : ∃ eps : ℝ, 0 < eps ∧ eps ≤ εH ∧ eps ≤ εO ∧ eps < 1 / 52 :=
-    ⟨min (min εH εO) (1 / 53), by positivity, (min_le_left _ _).trans (min_le_left _ _),
-      (min_le_left _ _).trans (min_le_right _ _), (min_le_right _ _).trans_lt (by norm_num)⟩
-  obtain ⟨CT2, C8, C5, c6, Cb, KW, h8, -, -, -, hHost⟩ := hHost eps he e1 he1
-  obtain ⟨KO, hObj⟩ := hObj eps C8 C5 c6 Cb he e2 he1 h8
-  obtain ⟨C, hC, hT, hP, hLW, hLO, -⟩ := exists_std_large KW KO CT2 C8 h8
-  obtain ⟨c1, hObj⟩ := hObj C hC hP hLO
-  obtain ⟨c1', hHost⟩ := hHost C hC hT hP hLW
-  obtain ⟨c2, hObj⟩ := hObj _ (le_max_left c1 c1')
-  obtain ⟨c2', hHost⟩ := hHost _ (le_max_right c1 c1')
-  obtain ⟨xO, hObj⟩ := hObj _ (le_max_left c2 c2')
-  obtain ⟨xH, S, hHost⟩ := hHost _ (le_max_right c2 c2')
-  have hmid := hC.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1
-  obtain ⟨xC, hCode⟩ := exists_injective_words eps C.CGam C.P.CF he he1
-    (zero_le_one.trans (hmid _ (by simp [FC.cMid]))) (zero_le_one.trans (hmid _ (by simp [FC.cMid])))
-  obtain ⟨s, hs, hx, hm⟩ := S.exists_mem hla.le he he1 (max xO (max xH xC))
-  simp only [max_le_iff] at hx
-  obtain ⟨R, H, q0, a, b, hRV, hHT, hH, hq, -, hWin, -⟩ := hHost s hs hx.2.1 hm
-  obtain ⟨c, hc, -⟩ := hCode s R hs hx.2.2 hRV
-  obtain ⟨p, -, -, -, -, -, hp⟩ := hObj s R H q0 a b _ c 0 hs hx.1 hRV (hHT.trans hT.symm) hH hq hWin rfl hc
-    R.ord_pos
-  exact hp
 
-theorem not_kitC_false : ¬ KitC (fun _ _ _ _ _ _ _ _ _ => False) := by
-  rintro ⟨la, hla, ε0, h0, h⟩
-  obtain ⟨eps, he, e1, he1⟩ : ∃ eps : ℝ, 0 < eps ∧ eps ≤ ε0 ∧ eps < 1 / 52 :=
-    ⟨min ε0 (1 / 53), by positivity, min_le_left _ _, (min_le_right _ _).trans_lt (by norm_num)⟩
-  obtain ⟨CT2, C8, K0, h8, h⟩ := h eps he e1 he1
-  obtain ⟨C, hC, hT, hP, hL, -⟩ := exists_std_large K0 K0 CT2 C8 h8
-  obtain ⟨c1, h⟩ := h C hC hT hP hL
-  obtain ⟨c2, h⟩ := h c1 le_rfl
-  obtain ⟨C5, Cb, x0, -, -, S, h⟩ := h c2 le_rfl
-  obtain ⟨s, hs, hx, hm⟩ := S.exists_mem hla.le he he1 x0
-  obtain ⟨k, hk⟩ := h s hs hx hm
-  exact k.ne.elim fun i => (hk i).1
 
 end GlobalTheory.EX.DC
 

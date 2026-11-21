@@ -53,23 +53,7 @@ section Domain
 
 variable {R : Type*} [CommRing R] [IsDomain R]
 
-theorem emultiplicity_pow_sub_one_of_not_dvd {p u : R} (hp : Prime p) (hu : p ∣ u - 1)
-    {n : ℕ} (hn : ¬ p ∣ (n : R)) : emultiplicity p (u ^ n - 1) = emultiplicity p (u - 1) := by
-  have hx : ¬ p ∣ u := by
-    intro h
-    have : p ∣ u - (u - 1) := dvd_sub h hu
-    rw [sub_sub_cancel] at this
-    exact hp.not_isUnit (isUnit_of_dvd_one this)
-  have := emultiplicity_pow_sub_pow_of_prime hp (y := 1) (by simpa using hu) hx hn
-  simpa using this
 
-theorem nuStar_eq_nuStar_one {p : R} (hp : Prime p) {U : Set R} (hU : ∀ u ∈ U, p ∣ u - 1)
-    {tr : ℕ} (htr : ¬ p ∣ (tr : R)) : nuStar p U tr = nuStar p U 1 := by
-  unfold nuStar
-  congr 1
-  refine Set.image_congr fun u hu => ?_
-  rw [pow_one]
-  exact emultiplicity_pow_sub_one_of_not_dvd hp (hU u hu) htr
 
 end Domain
 

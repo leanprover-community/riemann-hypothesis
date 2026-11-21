@@ -1,7 +1,90 @@
-import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.CoefWfPhAt
+import Formalism.SharpRestriction.GlobalSchurBounds.GL3Theta
+import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.StmtEndIntWOfOkp
+import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.ExpIntW
 import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.TestVectorMemSchwartzBruhat
 import Formalism.SharpRestriction.GlobalSchurBounds.StatementTranslationInvariantSeventh
 
+section
+open Formalism.MainNotions.GL3Theta Formalism.MainNotions.TaylorLogMetric Formalism.BasicNotions
+
+namespace Formalism.MainNotions.Ext
+
+def PtW {p : ℕ} [Fact p.Prime] {σ : Type} (a : MvPowerSeries σ ℂ_[p]) : Prop :=
+  IntegralW a ∧ MvPowerSeries.constantCoeff a = 0
+
+def AddPtW : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (g : G1 p), g.Ok → IntegralW (g.add (Xv 0) (Xv 1) : MvPowerSeries (Fin 2) ℂ_[p]) →
+    ∀ (σ : Type) (a b : MvPowerSeries σ ℂ_[p]), PtW a → PtW b → PtW (g.add a b)
+
+def MulPtW : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (g : G1 p), g.Ok → ∀ c : ℂ_[p], IntegralW (g.mulBy c (Xv ()) : MvPowerSeries Unit ℂ_[p]) →
+    ∀ (σ : Type) (a : MvPowerSeries σ ℂ_[p]), PtW a → PtW (g.mulBy c a)
+
+def LinPtW : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (g : G1 p), g.Ok → IntegralW (g.add (Xv 0) (Xv 1) : MvPowerSeries (Fin 2) ℂ_[p]) →
+    ∀ (ι : Type) [Fintype ι] (c : ι → ℂ_[p]), (∀ j, IntegralW (g.mulBy (c j) (Xv ()) : MvPowerSeries Unit ℂ_[p])) →
+    ∀ (σ : Type) (a : ι → MvPowerSeries σ ℂ_[p]), (∀ j, PtW (a j)) → PtW (g.lin c a)
+
+end Formalism.MainNotions.Ext
+end
+
+section
+namespace Formalism.MainNotions.GL3Theta
+
+theorem readW_holds : readW := expIntegralWitt
+
+end Formalism.MainNotions.GL3Theta
+end
+
+section
+namespace Formalism.MainNotions.Ext
+
+open Formalism.BasicNotions Formalism.MainNotions.GL3Theta Formalism.MainNotions.TaylorLogMetric
+
+section
+
+variable {p : ℕ} [Fact p.Prime]
+
+theorem ptW_X {σ : Type} (i : σ) : PtW (Xv i : MvPowerSeries σ ℂ_[p]) := by
+  classical
+  unfold PtW
+  constructor
+  · intro n
+    rw [MvPowerSeries.coeff_X]
+    split_ifs
+    · exact Subring.one_mem _
+    · exact Subring.zero_mem _
+  · simp
+
+theorem coefWf_add {σ : Type} {f g : MvPowerSeries σ ℂ_[p]} (hf : CoefWf f) (hg : CoefWf g) : CoefWf (f + g) := (coefWfRing_holds p σ f g hf hg).1
+
+theorem coefWf_sub {σ : Type} {f g : MvPowerSeries σ ℂ_[p]} (hf : CoefWf f) (hg : CoefWf g) : CoefWf (f - g) := (coefWfRing_holds p σ f g hf hg).2.1
+
+theorem coefWf_phAt (g : G1 p) (hph : CoefWf g.ph) {σ : Type} {a : MvPowerSeries σ ℂ_[p]} (ha : PtW a) : CoefWf (g.phAt a) := by
+  obtain ⟨ha1, ha2⟩ := ha
+  exact substWf_holds p σ g.ph a hph ha1 ha2
+
+theorem coefWf_be (HA : AddPtW) (g : G1 p) (hOk : g.Ok) (hF : IntegralW (g.add (Xv 0) (Xv 1) : MvPowerSeries (Fin 2) ℂ_[p]))
+    (hph : CoefWf g.ph) {σ : Type} {a b : MvPowerSeries σ ℂ_[p]} (ha : PtW a) (hb : PtW b) : CoefWf (g.be a b) := by
+  have hab : PtW (g.add a b) := HA p g hOk hF σ a b ha hb
+  show CoefWf (g.phAt (g.add a b) - g.phAt a - g.phAt b)
+  exact coefWf_sub (coefWf_sub (coefWf_phAt g hph hab) (coefWf_phAt g hph ha)) (coefWf_phAt g hph hb)
+
+theorem simeqW_of {σ : Type} {f g : MvPowerSeries σ ℂ_[p]} (hf : CoefWf f) (hg : CoefWf g) (h : Simeq f g) : SimeqW f g := by
+
+  obtain ⟨h0, hI⟩ := h
+  have hr : SimeqW (f - g) 0 :=
+    readW_holds p σ (f - g) (coefWf_sub hf hg) (And.intro (by simpa using h0) (by simpa using hI))
+  obtain ⟨r0, rI⟩ := hr
+  exact And.intro (by simpa using r0) (by simpa using rI)
+
+end
+
+
+end Formalism.MainNotions.Ext
+end
+
+section
 namespace Formalism.MainNotions.Ext
 
 open Formalism.BasicNotions Formalism.MainNotions.GL3Theta Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.GL3r7
@@ -10,57 +93,11 @@ section
 
 variable {p : ℕ} [Fact p.Prime]
 
-theorem coefWf_zero {σ : Type} : CoefWf (0 : MvPowerSeries σ ℂ_[p]) := fun n => ⟨0, by
-  rw [map_zero, mul_zero]; exact (Wp p).zero_mem⟩
 
-theorem coefWf_sum {σ ι : Type} (s : Finset ι) (f : ι → MvPowerSeries σ ℂ_[p]) (h : ∀ i ∈ s, CoefWf (f i)) :
-    CoefWf (∑ i ∈ s, f i) :=
-  Finset.sum_induction f CoefWf (fun _ _ => coefWf_add) coefWf_zero h
 
 end
 
-theorem phDualW_of (HA : AddPtW) (HL : LinPtW) (D : D7) : StatementPhaseDualWitt D := by
-  intro hph _ ha he hd p _ cc δ g hA h5 hI hW κ ι _ _ b b' hb hb' hdu
-  have hOk := hA.2.2.2.2
-  have hP : CoefWf g.ph := hph p cc δ g hA h5 hI hW
-  have hF := (ha p cc δ g hA).2 hW
-  have hmem : ∀ (e : ι ⊕ ι) (k : κ), Sum.elim b b' e k ∈ OKp D g.lam := by
-    rintro (e | e) k
-    · exact hb e k
-    · exact hb' e k
-  have h1 : CoefWf (g.PhOn (Sum.elim b b')) :=
-    coefWf_sum _ _ fun k _ => coefWf_phAt g hP
-      (HL p g hOk hF _ _ (fun e => he p cc δ g hA h5 hI hW _ (hmem e k)) _ _ fun e => ptW_X e)
-  have h2 : CoefWf (g.beSum ι) :=
-    coefWf_sum _ _ fun e _ => coefWf_be HA g hOk hF hP (ptW_X _) (ptW_X _)
-  exact ⟨h1, simeqW_of h1 h2 (hd p cc δ g hA (by omega) κ ι b b' hb hb' hdu)⟩
 
-theorem sDiffW_of (HA : AddPtW) (HM : MulPtW) (HL : LinPtW) (D : D7) : StatementSymmetricDifferenceWitt D := by
-  intro hph _ hadd he hd p _ cc δ g hA h5 hI hW κ ι ι' _ _ _ a a' ha hb
-  have hOk := hA.2.2.2.2
-  have hP : CoefWf g.ph := hph p cc δ g hA h5 hI hW
-  have hF := (hadd p cc δ g hA).2 hW
-  have hE := he p cc δ g hA h5 hI hW
-  have hmem : ∀ (e : ι ⊕ ι') (k : κ), Sum.elim a a' e k ∈ OKp D g.lam := by
-    rintro (e | e) k
-    · exact hb' a ha e k
-    · exact hb' a' hb e k
-  have hV : ∀ {ι₀ : Type} [Fintype ι₀] (c : ι₀ → κ → ℂ_[p] × ℂ_[p]), (∀ e k, c e k ∈ OKp D g.lam) →
-      ∀ w : ι₀ → MvPowerSeries (ι ⊕ ι') ℂ_[p], (∀ e, PtW (w e)) → CoefWf (PhV g c w) := fun c hc w hw =>
-    coefWf_sum _ _ fun k _ => coefWf_phAt g hP (HL p g hOk hF _ _ (fun e => hE _ (hc e k)) _ _ hw)
-  have h1 : CoefWf (sdL g a a') :=
-    coefWf_sub (coefWf_sub (hV _ hmem _ fun e => ptW_X e) (hV a ha _ fun e => ptW_X _)) (hV a' hb _ fun e => ptW_X _)
-  have h2 : CoefWf (sdR g a a') :=
-    coefWf_sum _ _ fun f _ => coefWf_sum _ _ fun f' _ =>
-      coefWf_be HA g hOk hF hP (HM p g hOk _ (hE _ (okp_hP D g.lam _ _ (ha f) (hb f'))) _ _ (ptW_X _)) (ptW_X _)
-  have h3 : CoefWf (sdR' g a a') :=
-    coefWf_sum _ _ fun f _ => coefWf_sum _ _ fun f' _ =>
-      coefWf_be HA g hOk hF hP (ptW_X _)
-        (HM p g hOk _ (hE _ (okp_swap D g.lam _ (okp_hP D g.lam _ _ (ha f) (hb f')))) _ _ (ptW_X _))
-  obtain ⟨d1, d2⟩ := hd p cc δ g hA (by omega) κ ι ι' a a' ha hb
-  exact ⟨h1, simeqW_of h1 h2 d1, simeqW_of h1 h3 d2⟩
-where
-  hb' {p : ℕ} [Fact p.Prime] {lam : Qbar →+* ℂ_[p]} {ι₀ κ : Type} (c : ι₀ → κ → ℂ_[p] × ℂ_[p])
-      (h : ∀ e, InOKp D lam (c e)) (e : ι₀) (k : κ) : c e k ∈ OKp D lam := h e k
 
 end Formalism.MainNotions.Ext
+end

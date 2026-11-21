@@ -1,5 +1,54 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Theta.EisensteinZeta.MirabolicInduction.CfunOmEtaLogPeriodNegConjPf
+import GroundTheory.HeightsAndTheta.Theta.EisensteinZeta.MirabolicInduction.CfunOmStatements
+
+section
+set_option maxSynthPendingDepth 1
+
+noncomputable section
+
+namespace GroundTheory.Heights₂.Theta
+
+open UpperHalfPlane ModularForm Complex
+open scoped Real
+
+theorem qParam_neg_conj (h : ℝ) (z : ℂ) :
+    Function.Periodic.qParam h (-(starRingEnd ℂ) z) =
+      starRingEnd ℂ (Function.Periodic.qParam h z) := by
+  unfold Function.Periodic.qParam
+  rw [← Complex.exp_conj]
+  congr 1
+  simp only [map_div₀, map_mul, Complex.conj_ofReal, Complex.conj_I, map_ofNat]
+  ring
+
+theorem eta_negConj (τ : ℍ) : η (negConj τ : ℂ) = starRingEnd ℂ (η (τ : ℂ)) := by
+  have hc : ((negConj τ : ℍ) : ℂ) = -(starRingEnd ℂ) (τ : ℂ) := rfl
+  have hq1 : ‖Function.Periodic.qParam 1 (τ : ℂ)‖ < 1 :=
+    Function.Periodic.norm_qParam_lt_one one_pos τ.im_pos
+  have hm := (multipliable_one_sub_pow hq1).hasProd.map (starRingEnd ℂ) Complex.continuous_conj
+  have hprod : ∏' n : ℕ, (1 - eta_q n ((negConj τ : ℍ) : ℂ)) =
+      starRingEnd ℂ (∏' n : ℕ, (1 - eta_q n (τ : ℂ))) := by
+    rw [← hm.tprod_eq]
+    congr 1
+    funext n
+    simp [hc, eta_q, qParam_neg_conj]
+  unfold ModularForm.eta
+  rw [hprod, hc, qParam_neg_conj, map_mul]
+
+theorem EtaLogPeriodNegConj.proof : EtaLogPeriodNegConj.Statement := by
+  intro τ
+  have him : (negConj τ).im = τ.im := by
+    show (-(starRingEnd ℂ) (τ : ℂ)).im = (τ : ℂ).im
+    simp
+  unfold etaLogPeriod etaPeriod
+  rw [him, eta_negConj, Complex.norm_conj]
+
+example : 0 < etaPeriod (negConj UpperHalfPlane.I) := etaPeriod_pos _
+
+end GroundTheory.Heights₂.Theta
+end
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 noncomputable section
@@ -181,107 +230,16 @@ theorem isLatticeParam_conj {Λ : Set ℂ} {τ : ℍ} (h : IsLatticeParam Λ τ)
   rw [map_mul]
   field_simp
 
-theorem negConj_mem_fd {τ : ℍ} (h : τ ∈ 𝒟) : negConj τ ∈ 𝒟 := by
-  have hneg : ((negConj τ : ℍ) : ℂ) = -(starRingEnd ℂ (τ : ℂ)) := rfl
-  obtain ⟨h1, h2⟩ := h
-  refine ⟨?_, ?_⟩
-  · rw [hneg, Complex.normSq_neg, Complex.normSq_conj]
-    exact h1
-  · change |((negConj τ : ℍ) : ℂ).re| ≤ 1 / 2
-    rw [hneg, Complex.neg_re, Complex.conj_re, abs_neg]
-    exact h2
 
-theorem negConj_mem_classReducedParams (hK : finrank ℚ K = 2) (σ : K →+* ℂ)
-    (hσ : ∃ x : K, (σ x).im ≠ 0) (A : ClassGroup (𝓞 K)) {τ : ℍ}
-    (hτ : τ ∈ classReducedParams σ A) : negConj τ ∈ classReducedParams σ A⁻¹ := by
-  obtain ⟨I, hIA, hfd, hpar⟩ := hτ
-  obtain ⟨w, hw, hset⟩ := exists_inv_eq_conj hK σ hσ I
-  refine ⟨I⁻¹, by rw [map_inv, hIA], negConj_mem_fd hfd, ?_⟩
-  rw [hset]
-  exact isLatticeParam_conj hpar hw
 
-theorem exists_eq_mul_of_mk_eq {J J' : (FractionalIdeal (𝓞 K)⁰ K)ˣ}
-    (h : ClassGroup.mk K J' = ClassGroup.mk K J) :
-    ∃ x : K, x ≠ 0 ∧ ((J' : FractionalIdeal (𝓞 K)⁰ K) : Set K) =
-      (fun y => x * y) '' ((J : FractionalIdeal (𝓞 K)⁰ K) : Set K) := by
-  have h1 : ClassGroup.mk K (J' * J⁻¹) = 1 := by
-    rw [map_mul, map_inv, h, mul_inv_cancel]
-  obtain ⟨⟨x, hx⟩⟩ := ClassGroup.mk_eq_one_iff.mp h1
-  have hP : ((J' * J⁻¹ : (FractionalIdeal (𝓞 K)⁰ K)ˣ) : FractionalIdeal (𝓞 K)⁰ K) =
-      FractionalIdeal.spanSingleton (𝓞 K)⁰ x := by
-    apply FractionalIdeal.coeToSubmodule_injective
-    dsimp only
-    rw [FractionalIdeal.coe_spanSingleton]
-    exact hx
-  have hJ' : (J' : FractionalIdeal (𝓞 K)⁰ K) =
-      FractionalIdeal.spanSingleton (𝓞 K)⁰ x * (J : FractionalIdeal (𝓞 K)⁰ K) := by
-    rw [← hP, Units.val_mul, mul_assoc, ← Units.val_mul, inv_mul_cancel, Units.val_one, mul_one]
-  have hx0 : x ≠ 0 := by
-    rintro rfl
-    apply J'.ne_zero
-    rw [hJ', FractionalIdeal.spanSingleton_zero, zero_mul]
-  refine ⟨x, hx0, ?_⟩
-  ext y
-  rw [hJ', SetLike.mem_coe, FractionalIdeal.mem_singleton_mul, Set.mem_image]
-  constructor
-  · rintro ⟨z, hz, rfl⟩
-    exact ⟨z, hz, rfl⟩
-  · rintro ⟨z, hz, rfl⟩
-    exact ⟨z, hz, rfl⟩
 
-theorem isLatticeParam_mul {Λ : Set ℂ} {τ : ℍ} (h : IsLatticeParam Λ τ) {w : ℂ} (hw : w ≠ 0) :
-    IsLatticeParam ((fun z => w * z) '' Λ) τ := by
-  obtain ⟨c, hc, hΛ⟩ := h
-  refine ⟨c / w, div_ne_zero hc hw, ?_⟩
-  rw [← hΛ, Set.image_image]
-  refine Set.image_congr fun x _ => ?_
-  field_simp
 
-theorem isLatticeParam_of_mem_classReducedParams (σ : K →+* ℂ) {A : ClassGroup (𝓞 K)} {τ : ℍ}
-    (hτ : τ ∈ classReducedParams σ A) {J : (FractionalIdeal (𝓞 K)⁰ K)ˣ} (hJ : ClassGroup.mk K J = A) :
-    IsLatticeParam (σ '' ((J : FractionalIdeal (𝓞 K)⁰ K) : Set K)) τ := by
-  obtain ⟨J', hJ'A, -, hpar⟩ := hτ
-  obtain ⟨x, hx, hset⟩ := exists_eq_mul_of_mk_eq (hJ'A.trans hJ.symm)
-  have hx' : σ x⁻¹ ≠ 0 := (map_ne_zero σ).mpr (inv_ne_zero hx)
-  have hJset : σ '' ((J : FractionalIdeal (𝓞 K)⁰ K) : Set K) =
-      (fun z => σ x⁻¹ * z) '' (σ '' ((J' : FractionalIdeal (𝓞 K)⁰ K) : Set K)) := by
-    rw [hset]
-    simp only [Set.image_image]
-    refine Set.image_congr fun y _ => ?_
-    rw [← map_mul, ← mul_assoc, inv_mul_cancel₀ hx, one_mul]
-  rw [hJset]
-  exact isLatticeParam_mul hpar hx'
 
-theorem etaPeriod_negConj (τ : ℍ) : etaPeriod (negConj τ) = etaPeriod τ :=
-  Real.log_injOn_pos (etaPeriod_pos _) (etaPeriod_pos _) (EtaLogPeriodNegConj.proof τ)
 
-theorem of_classReducedParamsNonempty_classFunctionsWellDefined
-    (hne : ClassReducedParamsNonempty.Statement) (hwd : ClassFunctionsWellDefined.Statement) :
-    ClassPeriodInv.Statement := by
-  intro K _ _ hK σ hσ A
-  have hA : classTau σ A ∈ classReducedParams σ A := Classical.epsilon_spec (hne K hK σ hσ A)
-  have hB : classTau σ A⁻¹ ∈ classReducedParams σ A⁻¹ :=
-    Classical.epsilon_spec (hne K hK σ hσ A⁻¹)
-  have h := (hwd K hK σ hσ A⁻¹ _ _ hB (negConj_mem_classReducedParams hK σ hσ A hA)).2
-  unfold classPeriod
-  rw [h, etaPeriod_negConj]
 
-theorem of_classReducedParamsNonempty_etaPeriodLatticeClass
-    (hne : ClassReducedParamsNonempty.Statement) (hlc : EtaPeriodLatticeClass.Statement) :
-    ClassPeriodInv.Statement := by
-  intro K _ _ hK σ hσ A
-  have hA : classTau σ A ∈ classReducedParams σ A := Classical.epsilon_spec (hne K hK σ hσ A)
-  have hB : classTau σ A⁻¹ ∈ classReducedParams σ A⁻¹ :=
-    Classical.epsilon_spec (hne K hK σ hσ A⁻¹)
-  obtain ⟨I, hIA, -⟩ := hA
-  have hI' : ClassGroup.mk K I⁻¹ = A⁻¹ := by rw [map_inv, hIA]
-  have h1 := isLatticeParam_of_mem_classReducedParams σ hB hI'
-  have h2 := isLatticeParam_of_mem_classReducedParams σ
-    (negConj_mem_classReducedParams hK σ hσ A (Classical.epsilon_spec (hne K hK σ hσ A))) hI'
-  unfold classPeriod
-  rw [hlc _ _ _ h1 h2, etaPeriod_negConj]
-  rfl
 
 end ClassPeriodInv
 
 end GroundTheory.Heights₂.Theta
+end
+end

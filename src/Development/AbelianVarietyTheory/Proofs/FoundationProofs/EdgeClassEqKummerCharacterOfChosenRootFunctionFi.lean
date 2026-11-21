@@ -3,9 +3,34 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.IsTopWTopWOfExis
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EdgeCupProps
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.KummerGeneratorOfChar
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUnitMulPowOfKummerVanishesOnInertiaCurve
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EdgeEqZeroOfInert
+import Development.AbelianVarietyTheory.Definitions.Foundations.CobOn
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InertFixesRootOfUnitRatio
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.KummerExponentOfGaloisElementIsKummerCharacter
 
+section
+open GlobalTheory.KEdge GlobalTheory.NeedB Polynomial
+
+namespace GlobalTheory.EdgeUnr
+variable {K Ω : Type} [Field K] [Field Ω] [Algebra K Ω]
+
+theorem val_lt_one_iff (B : ValuationSubring Ω) (z : Ω) : B.valuation z < 1 ↔ z = 0 ∨ z⁻¹ ∉ B := by
+  by_cases hz : z = 0
+  · simp [hz]
+  · simp only [hz, false_or, ← ValuationSubring.valuation_le_one_iff, map_inv₀, not_le]
+    have : 0 < B.valuation z := by
+      rw [zero_lt_iff]; exact (Valuation.ne_zero_iff _).mpr hz
+    constructor
+    · intro h; exact one_lt_inv₀ this |>.mpr h
+    · intro h; exact (one_lt_inv₀ this).mp h
+
+end GlobalTheory.EdgeUnr
+
+namespace GlobalTheory.EdgeUnr
+
+end GlobalTheory.EdgeUnr
+end
+
+section
 open GlobalTheory.K4 GlobalTheory.KEdge GlobalTheory.NeedB Polynomial
 
 namespace GlobalTheory.K4.TopSpec
@@ -163,3 +188,4 @@ theorem _root_.GlobalTheory.K4.isTopW_topW : ∀ (k K Ω F : Type) [Field k]
     obtain ⟨g', rfl⟩ := _root_.GlobalTheory.K4.TopSpec.exists_res hg
     apply _root_.GlobalTheory.NeedB.kum_eq_of hζ hθ0
     exact hθ g' (by rw [IntermediateField.fixingSubgroup_bot]; exact Subgroup.mem_top _)
+end

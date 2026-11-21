@@ -169,15 +169,5 @@ theorem exists_of_mem_KOne {n : ℕ} {m : GL (Fin n) (w.adicCompletion E)}
   rw [hk']
   simp
 
-theorem map_ker_red (n : ℕ) :
-    ((red g n).ker.map (inc g n)).map (Matrix.GeneralLinearGroup.map i.toRingHom) =
-      KOne (w.adicCompletion E) (Fin n) := by
-  ext m
-  constructor
-  · rintro ⟨_, ⟨k, hk, rfl⟩, rfl⟩
-    exact map_mem_KOne i hi k (MonoidHom.mem_ker.1 hk)
-  · intro hm
-    obtain ⟨k, hk, rfl⟩ := exists_of_mem_KOne i hi hm
-    exact ⟨_, ⟨k, MonoidHom.mem_ker.2 hk, rfl⟩, rfl⟩
 
 end DiscreteGroups.sglob.DzIso

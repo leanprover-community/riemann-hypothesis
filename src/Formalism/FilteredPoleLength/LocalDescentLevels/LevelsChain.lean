@@ -1,72 +1,96 @@
 import Formalism.FilteredPoleLength.ReducedBasisBounds.LengthBaseChangeLocal
 import Formalism.FilteredPoleLength.LocalDescentLevels.MemSpanBasisFun
 import Formalism.IncomingBounds.FlowDegreeBounds.IndexLastReductionHolds
-import Formalism.FilteredPoleLength.LocalDescentLevels.FilIntegerStep
-import Formalism.FilteredPoleLength.LocalDescentLevels.BCount
+import Formalism.FilteredPoleLength.ReducedBasisBounds.ReductionQuotient
 
+section
+namespace Formalism.LatticeBaseChangeAlt
+
+
+theorem poleOrderGood : PoleOrderGood := by
+  intro ep T ν νs c' vet e hep hc hv hν ⟨n, hn⟩ he
+  have hepR : (1 : ℝ) ≤ ep := by exact_mod_cast hep
+  have hT0 : (0 : ℝ) ≤ T := by positivity
+  have hy : 0 ≤ (ep : ℝ) * (T * c' * vet) := by positivity
+  rw [div_le_iff₀ (by linarith)]
+  have hint : (ep : ℝ) * ((T : ℝ) * ν - e) = (((T : ℤ) * n - ep * e : ℤ) : ℝ) := by
+    push_cast; rw [← hn]; ring
+  rw [hint, Int.ceil_intCast, Int.cast_max]
+  apply max_le
+  · simpa [mul_comm] using hy
+  · rw [← hint]
+    have : (T : ℝ) * ν - e ≤ T * c' * vet := by nlinarith
+    nlinarith
+
+theorem poleOrderBad : PoleOrderBad := by
+  intro ep T ν νs c' vet hep hT hc hv hν e
+  have hepR : (1 : ℝ) ≤ ep := by exact_mod_cast hep
+  have hTR : (1 : ℝ) ≤ T := by exact_mod_cast hT
+  have he : (T : ℝ) * (νs + 1) ≤ (e : ℝ) := Int.le_ceil _
+  have hy : 0 ≤ (ep : ℝ) * (T * c' * vet) := by positivity
+  rw [div_le_iff₀ (by linarith)]
+  have hx : (ep : ℝ) * ((T : ℝ) * ν - e) ≤ (ep : ℝ) * (T * c' * vet) - ep := by
+    have : (T : ℝ) * ν - e ≤ T * c' * vet - 1 := by nlinarith
+    nlinarith
+  have hc1 : ((⌈(ep : ℝ) * ((T : ℝ) * ν - e)⌉ : ℤ) : ℝ) < (ep : ℝ) * ((T : ℝ) * ν - e) + 1 :=
+    Int.ceil_lt_add_one _
+  rw [Int.cast_max]
+  apply max_le
+  · simpa [mul_comm] using hy
+  · nlinarith
+
+
+
+
+
+end Formalism.LatticeBaseChangeAlt
+end
+
+section
+namespace Formalism.LatticeBaseChangeAlt
+
+open Finset
+
+theorem levelsSum : LevelsSum := by
+  intro ι _ ep f mm v T c' h
+  rw [Finset.mul_sum]
+  refine Finset.sum_le_sum fun z _ => ?_
+  have hf : (0 : ℝ) ≤ (f z : ℝ) := Nat.cast_nonneg _
+  calc (mm z : ℝ) * f z ≤ (ep z * T * c' * v z) * f z := mul_le_mul_of_nonneg_right (h z) hf
+    _ = T * c' * ((ep z : ℝ) * f z * v z) := by ring
+
+noncomputable def slackEquiv (D k : ℕ) :
+    {α : Fin D → ℕ // ∑ i, α i ≤ k} ≃ {β : Fin (D + 1) → ℕ // ∑ i, β i = k} where
+  toFun α := ⟨Fin.cons (k - ∑ i, α.1 i) α.1, by
+    have := α.2
+    rw [Fin.sum_univ_succ]
+    simp only [Fin.cons_zero, Fin.cons_succ]
+    omega⟩
+  invFun β := ⟨Fin.tail β.1, by
+    have := β.2
+    rw [Fin.sum_univ_succ] at this
+    simp only [Fin.tail]
+    omega⟩
+  left_inv α := by
+    apply Subtype.ext
+    simp only [Fin.tail_cons]
+  right_inv β := by
+    apply Subtype.ext
+    have h := β.2
+    rw [Fin.sum_univ_succ] at h
+    have h0 : k - ∑ i, Fin.tail β.1 i = β.1 0 := by
+      simp only [Fin.tail]
+      omega
+    simp only [h0, Fin.cons_self_tail]
+
+end Formalism.LatticeBaseChangeAlt
+end
+
+section
 namespace Formalism.LatticeBaseChangeAlt
 
 open Module
 
-theorem localStep : LocalStep := by
-  intro O K V W _ _ _ _ _ _ _ _ _ _ _ _ _ ϖ hϖ M Θ N₁ Z Zm N' e be n th c AA AA' N₁' ρ a a' X NK
-    hMl hΘl hNΘ hthM hthΘ hker hcM ha ha' hdet hXN hN₁ hZ hZm hρ hkρ himg hN₁' hAA hf1 hf2 hf3 V'
-  have hp0 : algebraMap O K ϖ ≠ 0 :=
-    (map_ne_zero_iff _ (IsFractionRing.injective O K)).2 hϖ.ne_zero
-  have hsm : ∀ v : V, (algebraMap O K ϖ) ^ e • v = ϖ ^ e • v := by
-    intro v
-    rw [← map_pow, algebraMap_smul]
-
-  have hIdx := Formalism.IncomingBounds.index_last_reduction_holds O K V ϖ hϖ (e : ℤ) M Θ hMl hΘl V'
-  have hbridge : M.map ((((algebraMap O K ϖ) ^ (e : ℤ)) • LinearMap.id : V →ₗ[K] V).restrictScalars O)
-      = X := by
-    ext x
-    simp only [Submodule.mem_map, LinearMap.restrictScalars_apply, LinearMap.smul_apply,
-      LinearMap.id_coe, id_eq, zpow_natCast, X, LinearMap.smul_apply]
-    constructor
-    · rintro ⟨y, hy, rfl⟩; exact ⟨y, hy, (hsm y).symm⟩
-    · rintro ⟨y, hy, rfl⟩; exact ⟨y, hy, hsm y⟩
-  rw [hbridge] at hIdx
-
-  have hLA := localAssembly O K V W ϖ hϖ M Θ N₁ Z Zm N' e be n th c AA AA' N₁' ρ a a'
-    hNΘ hthM hthΘ hker hcM ha ha' hdet hXN hN₁ hZ hZm hρ hkρ himg hN₁' hAA
-
-  have hthX : ∀ j, (algebraMap O K ϖ) ^ e • th j ∈ X := by
-    intro j
-    rw [hsm]
-    exact ⟨th j, hthM j, rfl⟩
-  have hcX : ∀ x ∈ X, ∀ i, ∃ u : O,
-      c x i = (algebraMap O K ϖ) ^ ((e : ℤ) - (be : ℤ)) * algebraMap O K u := by
-    rintro _ ⟨y, hy, rfl⟩ i
-    obtain ⟨u, hu⟩ := hcM y hy i
-    refine ⟨u, ?_⟩
-    show c (ϖ ^ e • y) i = _
-    rw [← hsm, map_smul, Pi.smul_apply, hu, smul_eq_mul, ← mul_assoc, sub_eq_add_neg,
-      zpow_add₀ hp0, zpow_natCast]
-  obtain ⟨m, -, hmle⟩ := quotientLength O K V ϖ hϖ n c _ hker X e be th hcX hthX a a' ha ha' hdet
-  set q : ℤ := ((IsDiscreteValuationRing.addVal O a).toNat : ℤ) -
-      ((IsDiscreteValuationRing.addVal O a').toNat : ℤ) + (n : ℤ) * (be : ℤ) with hqdef
-  have hq : 0 ≤ q := le_trans (Int.natCast_nonneg m) hmle
-
-  set L1 := Module.length O (↥AA' ⧸ AA.comap AA'.subtype)
-  set L2 := Module.length O (↥AA ⧸ N₁'.comap AA.subtype)
-  set L3 := Module.length O (↥Zm ⧸ Z.comap Zm.subtype)
-  set L := Formalism.LatticeIndexTer.qlen O V (X ⊔ Θ) Θ with hL
-  have hLA' : L ≤ L1 + L2 + L3 + ((q.toNat : ℕ) : ℕ∞) := hLA
-  have hsum : L1 + L2 + L3 + ((q.toNat : ℕ) : ℕ∞) =
-      ((L1.toNat + L2.toNat + L3.toNat + q.toNat : ℕ) : ℕ∞) := by
-    rw [← ENat.natCast_toNat hf1, ← ENat.natCast_toNat hf2, ← ENat.natCast_toNat hf3]
-    simp only [ENat.toNat_natCast]
-    push_cast; rfl
-  rw [hsum] at hLA'
-  have hLt : L.toNat ≤ L1.toNat + L2.toNat + L3.toNat + q.toNat := by
-    have hLne : L ≠ ⊤ := ne_top_of_le_ne_top (by simp) hLA'
-    rw [← ENat.natCast_toNat hLne] at hLA'
-    exact_mod_cast hLA'
-  have hqt : ((q.toNat : ℕ) : ℤ) = q := Int.toNat_of_nonneg hq
-  have : ((L.toNat : ℕ) : ℤ) ≤ (L1.toNat : ℤ) + (L2.toNat : ℤ) + (L3.toNat : ℤ) + q := by
-    rw [← hqt]; exact_mod_cast hLt
-  linarith
 
 theorem levelsChain : LevelsChain := by
   intro ι _ ep f ν v νs c' T e hep hT hc' hv hν hcase
@@ -82,3 +106,4 @@ theorem levelsChain : LevelsChain := by
   linarith
 
 end Formalism.LatticeBaseChangeAlt
+end

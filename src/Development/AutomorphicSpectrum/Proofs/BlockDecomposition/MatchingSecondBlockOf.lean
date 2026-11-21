@@ -495,29 +495,6 @@ theorem matching_at_T (hMT : MT.MatchT) (hLin : MT.MatchLin) (hU : Unr E) (hm : 
 
 end T
 
-theorem matchLMB2Of : MatchLMB2Of := by
-  intro hMT hLin hMS hBS hBI _ _ E _ _ _ hU n d hd hm a ha m w hw
-  have hdisj := hd.disj
-  have hc : w ∈ d.T ∨ w ∈ d.S₀ ∨ w ∈ d.Bad := by
-    simpa [LocData.B, or_assoc] using hw
-  rcases hc with hT | hS | hB
-  · have hS : w ∉ d.S₀ := fun h => Finset.disjoint_left.1 hdisj.1 hT h
-    have hB : w ∉ d.Bad := fun h => Finset.disjoint_left.1 hdisj.2.1 hT h
-    have hμ : muAt d w = 1 := by simp [muAt, hS, hB]
-    rw [hμ]
-    exact matching_at_T d ha hMT hLin hU hm hT m
-  · have hT : w ∉ d.T := fun h => Finset.disjoint_left.1 hdisj.1 h hS
-    have hμ : muAt d w = d.μ w := by simp [muAt, hS]
-    rw [hμ]
-    exact matching_at_S0 d ha hMS hU hd hm hT hS m
-  · have hS : w ∉ d.S₀ := fun h => Finset.disjoint_left.1 hdisj.2.2 h hB
-    by_cases hs : IsSplitAt w
-    · have hμ : muAt d w = d.μ w := by simp [muAt, hB, hs]
-      rw [hμ]
-      exact bad_split hBS d hd hm ha hB hs m
-    · have hμ : muAt d w = 1 := by simp [muAt, hS, hs]
-      rw [hμ]
-      exact bad_inert hBI hU d hd hm ha hB hs m
 
 end GlobalTheory.CompanionTheory.MatchLMPlaces
 

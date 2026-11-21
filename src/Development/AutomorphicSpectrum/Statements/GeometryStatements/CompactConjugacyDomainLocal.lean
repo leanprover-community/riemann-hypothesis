@@ -79,33 +79,6 @@ theorem exists_constants {Ω : Type} [Field Ω] {K : Type} [Fintype K] {J : K �
   have h1 : IsAlgebraic L x := ⟨f, hf, hx⟩
   exact ⟨⟨x, mem_algebraicClosure_iff.2 (h1.restrictScalars F)⟩, rfl⟩
 
-theorem orders_const {X : Scheme.{0}} {Ω : Type} [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) {F' : Type} [Field F']
-    [NumberField F'] (ψ : F' →+* Ω) {a : F'} (ha : a ≠ 0) {e : Ω} (he : e ≠ 0) :
-    ∃ r : HeightOneSpectrum (𝓞 F') →₀ ℚ, (∀ v, r v = (-WithZero.log (v.valuation F' a) : ℤ)) ∧
-      ∀ (v : HeightOneSpectrum (𝓞 F')) (π : F'), v.valuation F' π = WithZero.exp (-1 : ℤ) →
-        ∃ (m : ℕ) (k : ℤ), 0 < m ∧ (k : ℚ) = m * r v ∧ ∀ p : Cpt ξ,
-          (∀ b : F', v.valuation F' b ≤ 1 → ψ b ∈ regAt ξ p) →
-          OrderAt (fun p => Submodule.span (regAt ξ p) {e} : Lat ξ Ω) (ψ a * e) (ψ π) m k p := by
-  have hfin : (Function.support fun v : HeightOneSpectrum (𝓞 F') =>
-      ((-WithZero.log (v.valuation F' a) : ℤ) : ℚ)).Finite := by
-    refine ((HeightOneSpectrum.Support.finite (𝓞 F') a).union
-      (HeightOneSpectrum.Support.finite (𝓞 F') a⁻¹)).subset fun v hv => ?_
-    by_contra hn
-    simp only [HeightOneSpectrum.Support, Set.mem_union, Set.mem_ofPred_eq, not_or, not_lt, map_inv₀] at hn
-    have h0 : 0 < v.valuation F' a := zero_lt_iff.2 (by simpa using ha)
-    have : v.valuation F' a = 1 := le_antisymm hn.1 ((inv_le_one₀ h0).1 hn.2)
-    exact hv (by simp [this])
-  refine ⟨Finsupp.ofSupportFinite _ hfin, fun _ => rfl, fun v π hπ =>
-    ⟨1, -WithZero.log (v.valuation F' a), one_pos, by rw [Nat.cast_one, one_mul]; rfl, fun p hp => ?_⟩⟩
-  have hπ0 : π ≠ 0 := by rintro rfl; simp at hπ; exact WithZero.exp_ne_zero hπ.symm
-  have hu : v.valuation F' (a / π ^ (-WithZero.log (v.valuation F' a))) = 1 := by
-    rw [map_div₀, map_zpow₀, hπ, ← WithZero.exp_zsmul]
-    simp only [smul_eq_mul, mul_neg, mul_one, neg_neg]
-    rw [WithZero.exp_log (by simpa using ha), div_self (by simpa using ha)]
-  refine ⟨e, ψ a, he, rfl, rfl, ?_⟩
-  rw [pow_one, ← map_zpow₀, ← map_div₀]
-  exact ⟨(map_ne_zero ψ).2 (div_ne_zero ha (zpow_ne_zero _ hπ0)), hp _ hu.le,
-    by rw [← map_inv₀]; exact hp _ (by rw [map_inv₀, hu, inv_one])⟩
 
 example (hI : CptFlatInputs) (hG : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l)
     (c : Coeff l) (O : Type) [CommRing O] (β : O →+* c.F) (Y : Model Xo c β) (S : Finset ℕ) (Ω : Type) [Field Ω]

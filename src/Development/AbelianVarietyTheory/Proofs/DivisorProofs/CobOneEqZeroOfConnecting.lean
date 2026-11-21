@@ -1,17 +1,560 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RigOfOmegaInjectiveOfEqZero
 import Development.AbelianVarietyTheory.Definitions.Divisors.PrismaticDieudonnePerfdIff
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BialgebraPullbackTwoConvMulSymmetricCocycleStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPullbackMulPOfPTorsionInvariant
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoboundaryTranslationInvariantPTorsion
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemSymmetricCocyclesOfPullbackMulP
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsExtensionAdditiveFnPDivGroup
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PDivCocycleMemRangeCobOfPullbackMulPStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BialgebraPullbackTwoConvMulSymmetricCocycle
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsMulPEqOfTranslInvariantStatement
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TranslCoactionFreeCoassocCounital
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.FiniteFaithfullyFlatKer
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PDivCocycleMemRangeCobOfPullbackMulP
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdditiveFunctionCartierDualTangentBijective
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OmegaBaseChangeBijectiveOfPEqZeroStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdditiveFunctionsFlatBaseChangeBijective
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PrimitiveSemilinearLiftBaseChangeBijective
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OmegaBaseChangeBijectiveOfPEqZero
 
+section
+open TensorProduct Coalgebra Bialgebra CategoryTheory WithConv GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.bialgebraPullbackTwo_convMul_symmetricCocycle : ∀ {R A B : Type} [CommRing R] [CommRing A] [CommRing B] [Bialgebra R A] [Bialgebra R B] [IsCocomm R A] (f g : A →ₐc[R] B) (c : A ⊗[R] A), c ∈ symCocycles R A → pullbackTwo (toConv f * toConv g).ofConv c = pullbackTwo f c + pullbackTwo g c + cobOne R B (LinearMap.mul' R B (TensorProduct.map (f : A →ₗ[R] B) (g : A →ₗ[R] B) c)) := by
+  first | exact @GlobalTheory.PDiv.pullTwo_convMul | exact GlobalTheory.PDiv.pullTwo_convMul | (intros; apply GlobalTheory.PDiv.pullTwo_convMul <;> assumption)
+end
+
+section
+section
+set_option autoImplicit false
+
+open TensorProduct Coalgebra Bialgebra CategoryTheory WithConv GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
+
+namespace GlobalTheory
+
+theorem exists_tensor_map_eq_of_exact {R M N P : Type} [CommRing R] [AddCommGroup M] [Module R M]
+    [AddCommGroup N] [Module R N] [AddCommGroup P] [Module R P] [Module.Flat R M]
+    [Module.Flat R N] [Module.Flat R P] (f : M →ₗ[R] N) (g : N →ₗ[R] P)
+    (hf : Function.Injective f) (h : Function.Exact f g) (F : N ⊗[R] N)
+    (h₁ : g.rTensor N F = 0) (h₂ : g.lTensor N F = 0) :
+    ∃ c : M ⊗[R] M, TensorProduct.map f f c = F := by
+  obtain ⟨F', rfl⟩ := (Module.Flat.lTensor_exact N h F).1 h₂
+  have h₃ : g.rTensor M F' = 0 := by
+    apply Module.Flat.lTensor_preserves_injective_linearMap (M := P) f hf
+    rw [map_zero, ← h₁, ← LinearMap.comp_apply, ← LinearMap.comp_apply,
+      LinearMap.lTensor_comp_rTensor, LinearMap.rTensor_comp_lTensor]
+  obtain ⟨c, rfl⟩ := (Module.Flat.rTensor_exact M h F').1 h₃
+  exact ⟨c, by rw [← LinearMap.comp_apply, LinearMap.lTensor_comp_rTensor]⟩
+
+theorem PDivGroup.exists_tensorSquare_mulP_eq {p : ℕ} {R : Type} [CommRing R] (G : PDivGroup p R)
+    (n : ℕ) (F : G.A (n + 1) ⊗[R] G.A (n + 1))
+    (h₁ : ((G.transl n).toLinearMap -
+      (TensorProduct.mk R (G.A (n + 1)) (G.A 1)).flip 1).rTensor (G.A (n + 1)) F = 0)
+    (h₂ : ((G.transl n).toLinearMap -
+      (TensorProduct.mk R (G.A (n + 1)) (G.A 1)).flip 1).lTensor (G.A (n + 1)) F = 0) :
+    ∃ c : G.A n ⊗[R] G.A n, pullbackTwo (G.mulP n) c = F := by
+  refine exists_tensor_map_eq_of_exact (G.mulP n : G.A n →ₗ[R] G.A (n + 1)) _
+    (Test.mulP_injective G n) (fun a => ⟨fun ha => ?_, ?_⟩) F h₁ h₂
+  · exact GlobalTheory.T.exists_mulP_eq_of_transl_invariant G n a (sub_eq_zero.1 ha)
+  · rintro ⟨e, rfl⟩
+    exact sub_eq_zero.2 (G.transl_mulP n e)
+
+end GlobalTheory
+end
+
+open TensorProduct Coalgebra Bialgebra CategoryTheory WithConv GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_pullback_mulP_of_pTorsion_invariant : ∀ {p : ℕ} {R : Type} [CommRing R] (G : PDivGroup p R) (n : ℕ) (F : G.A (n + 1) ⊗[R] G.A (n + 1)), ((G.transl n).toLinearMap - (TensorProduct.mk R (G.A (n + 1)) (G.A 1)).flip 1).rTensor (G.A (n + 1)) F = 0 → ((G.transl n).toLinearMap - (TensorProduct.mk R (G.A (n + 1)) (G.A 1)).flip 1).lTensor (G.A (n + 1)) F = 0 → ∃ c : G.A n ⊗[R] G.A n, pullbackTwo (G.mulP n) c = F := by
+  atlas_forward_decl GlobalTheory.PDivGroup.exists_tensorSquare_mulP_eq
+end
+
+section
+section
+set_option autoImplicit false
+
+open TensorProduct Coalgebra Bialgebra CategoryTheory WithConv GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
+
+namespace GlobalTheory
+
+namespace PDivGroup
+
+variable {p : ℕ} {R : Type} [CommRing R] (G : PDivGroup p R)
+
+theorem lTensor_transl_comul (n : ℕ) (x : G.A (n + 1)) :
+    (G.transl n).toLinearMap.lTensor (G.A (n + 1)) (comul (R := R) x) =
+      TensorProduct.assoc R _ _ _ ((comul (R := R)).rTensor (G.A 1) (G.transl n x)) := by
+  have h1 : (G.transl n).toLinearMap =
+      (G.resOne n : G.A (n + 1) →ₗ[R] G.A 1).lTensor _ ∘ₗ comul :=
+    LinearMap.ext fun a => G.transl_apply n a
+  have h2 : ∀ t : (G.A (n + 1) ⊗[R] G.A (n + 1)) ⊗[R] G.A (n + 1),
+      ((G.resOne n : G.A (n + 1) →ₗ[R] G.A 1).lTensor _).lTensor _ (TensorProduct.assoc R _ _ _ t) =
+        TensorProduct.assoc R _ _ _ ((G.resOne n : G.A (n + 1) →ₗ[R] G.A 1).lTensor _ t) := by
+    intro t
+    induction t with
+    | zero => simp
+    | add x y hx hy => simp only [map_add, hx, hy]
+    | tmul u c =>
+      induction u with
+      | zero => simp
+      | add x y hx hy => simp only [add_tmul, map_add, hx, hy]
+      | tmul a b => simp
+  rw [h1, LinearMap.lTensor_comp_apply, ← coassoc_apply, h2, transl_apply]
+  congr 1
+  generalize comul (R := R) x = t
+  induction t with
+  | zero => simp
+  | add x y hx hy => simp only [map_add, hx, hy]
+  | tmul a b => simp
+
+theorem lTensor_transl_sub_cobOne (n : ℕ) (x : G.A (n + 1)) (b : G.A 1)
+    (h : G.transl n x = x ⊗ₜ[R] 1 + 1 ⊗ₜ[R] b) :
+    ((G.transl n).toLinearMap - (TensorProduct.mk R (G.A (n + 1)) (G.A 1)).flip 1).lTensor
+      (G.A (n + 1)) (cobOne R (G.A (n + 1)) x) = 0 := by
+  have h1 : ∀ t : G.A (n + 1) ⊗[R] G.A (n + 1), TensorProduct.assoc R _ _ _ (t ⊗ₜ (1 : G.A 1)) =
+      ((TensorProduct.mk R (G.A (n + 1)) (G.A 1)).flip 1).lTensor _ t := fun t => by
+    induction t with
+    | zero => simp
+    | tmul a b => simp
+    | add x y hx hy => simp only [add_tmul, map_add, hx, hy]
+  have h2 : comul (R := R) (1 : G.A (n + 1)) = 1 ⊗ₜ 1 := by simp [Algebra.TensorProduct.one_def]
+  have h3 : G.transl n 1 = 1 ⊗ₜ 1 := by rw [map_one, Algebra.TensorProduct.one_def]
+  rw [LinearMap.lTensor_sub, LinearMap.sub_apply, cobOne_apply]
+  simp only [map_sub, lTensor_transl_comul, h, map_add, LinearMap.rTensor_tmul,
+    LinearMap.lTensor_tmul, h1, h2, h3, AlgHom.toLinearMap_apply, LinearMap.flip_apply, mk_apply,
+    assoc_tmul, tmul_add]
+  abel
+
+theorem cobOne_transl_invariant {p : ℕ} {R : Type} [CommRing R] (G : PDivGroup p R) (n : ℕ)
+    (x : G.A (n + 1)) (b : G.A 1) (h : G.transl n x = x ⊗ₜ[R] 1 + 1 ⊗ₜ[R] b) :
+    ((G.transl n).toLinearMap - (TensorProduct.mk R (G.A (n + 1)) (G.A 1)).flip 1).rTensor
+      (G.A (n + 1)) (cobOne R (G.A (n + 1)) x) = 0 ∧
+    ((G.transl n).toLinearMap - (TensorProduct.mk R (G.A (n + 1)) (G.A 1)).flip 1).lTensor
+      (G.A (n + 1)) (cobOne R (G.A (n + 1)) x) = 0 := by
+  have h2 := G.lTensor_transl_sub_cobOne n x b h
+  refine ⟨?_, h2⟩
+  rw [← (mem_symCocycles.1 (cobOne_mem x)).2, LinearMap.rTensor_comm, h2, map_zero]
+
+end PDivGroup
+
+end GlobalTheory
+end
+
+open TensorProduct Coalgebra Bialgebra CategoryTheory WithConv GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coboundary_translation_invariant_pTorsion : ∀ {p : ℕ} {R : Type} [CommRing R] (G : PDivGroup p R) (n : ℕ) (x : G.A (n + 1)) (b : G.A 1), G.transl n x = x ⊗ₜ[R] 1 + 1 ⊗ₜ[R] b → ((G.transl n).toLinearMap - (TensorProduct.mk R (G.A (n + 1)) (G.A 1)).flip 1).rTensor (G.A (n + 1)) (cobOne R (G.A (n + 1)) x) = 0 ∧ ((G.transl n).toLinearMap - (TensorProduct.mk R (G.A (n + 1)) (G.A 1)).flip 1).lTensor (G.A (n + 1)) (cobOne R (G.A (n + 1)) x) = 0 := by
+  atlas_forward_decl GlobalTheory.PDivGroup.cobOne_transl_invariant
+end
+
+section
+section
+set_option autoImplicit false
+
+open TensorProduct Coalgebra Bialgebra CategoryTheory WithConv GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
+
+namespace GlobalTheory
+
+namespace PDivGroup
+
+theorem mem_symCocycles_of_pullTwo_mulP {p : ℕ} {R : Type} [CommRing R] (G : PDivGroup p R) (n : ℕ)
+    (c : G.A n ⊗[R] G.A n) (h : pullbackTwo (G.mulP n) c ∈ symCocycles R (G.A (n + 1))) :
+    c ∈ symCocycles R (G.A n) := by
+  rw [mem_symCocycles] at h ⊢
+  have h3 : Function.Injective
+      (TensorProduct.map (G.mulP n : G.A n →ₗ[R] G.A (n + 1)) (pullbackTwo (G.mulP n))) :=
+    TensorProduct.map_injective_of_flat_flat _ _ (Test.mulP_injective G n)
+      (G.pullbackTwo_mulP_injective n)
+  refine ⟨h3 ?_, G.pullbackTwo_mulP_injective n ?_⟩
+  · rw [← cobTwo_pullTwo, h.1, map_zero]
+  · rw [← h.2]
+    exact TensorProduct.map_comm _ _ c
+
+end PDivGroup
+
+end GlobalTheory
+end
+
+open TensorProduct Coalgebra Bialgebra CategoryTheory WithConv GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_symmetricCocycles_of_pullback_mulP : ∀ {p : ℕ} {R : Type} [CommRing R] (G : PDivGroup p R) (n : ℕ) (c : G.A n ⊗[R] G.A n), pullbackTwo (G.mulP n) c ∈ symCocycles R (G.A (n + 1)) → c ∈ symCocycles R (G.A n) := by
+  atlas_forward_decl GlobalTheory.PDivGroup.mem_symCocycles_of_pullTwo_mulP
+end
+
+section
+open TensorProduct Coalgebra Bialgebra CategoryTheory WithConv GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.transl_coaction_free_coassoc_counital : ∀ {p : ℕ} {R : Type} [CommRing R] (G : PDivGroup p R) (n : ℕ), (∀ a, TensorProduct.assoc R (G.A (n + 1)) (G.A 1) (G.A 1) ((G.transl n).toLinearMap.rTensor (G.A 1) (G.transl n a)) = (Coalgebra.comul (R := R) (A := G.A 1)).lTensor (G.A (n + 1)) (G.transl n a)) ∧ (∀ a, TensorProduct.rid R (G.A (n + 1)) ((Coalgebra.counit (R := R) (A := G.A 1)).lTensor (G.A (n + 1)) (G.transl n a)) = a) ∧ Function.Surjective (Algebra.TensorProduct.productMap (Algebra.TensorProduct.includeLeft : G.A (n + 1) →ₐ[R] G.A (n + 1) ⊗[R] G.A 1) (G.transl n)) := by
+  first | exact @GlobalTheory.PDivGroup.transl_free | exact GlobalTheory.PDivGroup.transl_free | (intros; apply GlobalTheory.PDivGroup.transl_free <;> assumption)
+end
+
+section
+section
+open TensorProduct Coalgebra Bialgebra CategoryTheory WithConv GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
+
+namespace GlobalTheory.HopfQuot
+
+section
+variable {R Λ B : Type} [CommRing R] [CommRing Λ] [HopfAlgebra R Λ] [CommRing B] [Algebra R B]
+
+theorem ev_mulRight_comul_of_primitive (l : Λ →ₗ[R] R)
+    (hl : ∀ x, ev Λ l (Coalgebra.comul x) = algebraMap R Λ (l x)) (b : Λ)
+    (hb : Coalgebra.comul (R := R) b = b ⊗ₜ[R] 1 + 1 ⊗ₜ[R] b) (u : Λ) :
+    ev Λ (l ∘ₗ LinearMap.mulRight R b) (Coalgebra.comul u) =
+      l (u * b) • (1 : Λ) - l u • b := by
+  have h1 : ∀ w : Λ ⊗[R] Λ, ev Λ l (w * (b ⊗ₜ[R] 1 + 1 ⊗ₜ[R] b)) =
+      ev Λ l w * b + ev Λ (l ∘ₗ LinearMap.mulRight R b) w := by
+    intro w
+    induction w with
+    | zero => simp
+    | add u v hu hv =>
+      simp only [add_mul, map_add, hu, hv]
+      ring
+    | tmul u v => simp [mul_add]
+  have h2 := hl (u * b)
+  rw [Bialgebra.comul_mul, hb, h1, hl, ← Algebra.smul_def, Algebra.algebraMap_eq_smul_one] at h2
+  rw [← h2]
+  ring
+
+theorem coact_ev_mulRight_of_primitive (ρ : B →ₐ[R] B ⊗[R] Λ)
+    (hassoc : ∀ a, TensorProduct.assoc R B Λ Λ (ρ.toLinearMap.rTensor Λ (ρ a)) =
+      (Coalgebra.comul (R := R) (A := Λ)).lTensor B (ρ a))
+    (l : Λ →ₗ[R] R) (hl : ∀ x, ev Λ l (Coalgebra.comul x) = algebraMap R Λ (l x)) (b : Λ)
+    (hb : Coalgebra.comul (R := R) b = b ⊗ₜ[R] 1 + 1 ⊗ₜ[R] b) (f : B) :
+    ρ (ev B (l ∘ₗ LinearMap.mulRight R b) (ρ f)) =
+      ev B (l ∘ₗ LinearMap.mulRight R b) (ρ f) ⊗ₜ[R] 1 - ev B l (ρ f) ⊗ₜ[R] b := by
+  set l' := l ∘ₗ LinearMap.mulRight R b with hl'
+  let F : B ⊗[R] (Λ ⊗[R] Λ) →ₗ[R] B ⊗[R] Λ := ((ev Λ l').restrictScalars R).lTensor B
+  have h1 : ∀ w : B ⊗[R] Λ, ρ (ev B l' w) =
+      F (TensorProduct.assoc R B Λ Λ (ρ.toLinearMap.rTensor Λ w)) := by
+    intro w
+    induction w with
+    | zero => simp
+    | add a b ha hb => simp only [map_add, ha, hb]
+    | tmul a b =>
+      rw [ev_tmul, map_smul, LinearMap.rTensor_tmul, AlgHom.toLinearMap_apply]
+      generalize ρ a = w
+      induction w with
+      | zero => simp
+      | add u v hu hv => simp only [map_add, smul_add, add_tmul, hu, hv]
+      | tmul u v => simp [F]
+  have h2 : ∀ w : B ⊗[R] Λ, F ((Coalgebra.comul (R := R)).lTensor B w) =
+      ev B l' w ⊗ₜ 1 - ev B l w ⊗ₜ b := by
+    intro w
+    induction w with
+    | zero => simp
+    | add a c ha hc =>
+      simp only [map_add, add_tmul, ha, hc]
+      abel
+    | tmul a c =>
+      have := ev_mulRight_comul_of_primitive l hl b hb c
+      rw [← hl'] at this
+      simp only [F, LinearMap.lTensor_tmul, LinearMap.restrictScalars_apply, this, ev_tmul,
+        tmul_sub, smul_tmul]
+      rfl
+  rw [h1, hassoc, h2]
+
+end
+
+theorem exists_coact_eq_add_of_primitive : ∀ {R Λ B : Type} [CommRing R] [CommRing Λ] [HopfAlgebra R Λ] [Module.Finite R Λ] [Module.Projective R Λ] [CommRing B] [Algebra R B] (ρ : B →ₐ[R] B ⊗[R] Λ), (∀ a, TensorProduct.assoc R B Λ Λ (ρ.toLinearMap.rTensor Λ (ρ a)) = (Coalgebra.comul (R := R) (A := Λ)).lTensor B (ρ a)) → (∀ a, TensorProduct.rid R B ((Coalgebra.counit (R := R) (A := Λ)).lTensor B (ρ a)) = a) → Function.Surjective (Algebra.TensorProduct.productMap (Algebra.TensorProduct.includeLeft : B →ₐ[R] B ⊗[R] Λ) ρ) → ∀ b : Λ, cobOne R Λ b = 0 → ∃ x : B, ρ x = x ⊗ₜ[R] 1 + 1 ⊗ₜ[R] b := by
+  intro R Λ B _ _ _ _ _ _ _ ρ hassoc hcounit hsurj b hb0
+  have hb : Coalgebra.comul (R := R) b = b ⊗ₜ[R] 1 + 1 ⊗ₜ[R] b := by
+    rw [cobOne_apply, sub_sub, sub_eq_zero] at hb0
+    exact hb0
+  obtain ⟨-, -, hff, -⟩ := finite_faithfullyFlat_ker ρ hassoc hcounit hsurj
+  set B₀ := AlgHom.equalizer ρ (Algebra.TensorProduct.includeLeft : B →ₐ[R] B ⊗[R] Λ) with hB₀
+  let I : Ideal B₀ :=
+    { carrier := {y | ∃ x : B, ρ x = x ⊗ₜ[R] 1 + (y : B) ⊗ₜ[R] b}
+      add_mem' := by
+        rintro y z ⟨x, hx⟩ ⟨x', hx'⟩
+        refine ⟨x + x', ?_⟩
+        rw [map_add, hx, hx', Subalgebra.coe_add, add_tmul, add_tmul]
+        abel
+      zero_mem' := ⟨0, by simp⟩
+      smul_mem' := by
+        rintro t y ⟨x, hx⟩
+        have ht : ρ t = (t : B) ⊗ₜ 1 := t.2
+        refine ⟨t * x, ?_⟩
+        rw [map_mul, ht, hx]
+        simp [mul_add] }
+  obtain ⟨n, l, T, hl, hT⟩ := exists_integrals R Λ
+  have hmem : ∀ k f, ev B (l k) (ρ f) ∈ I.map (algebraMap B₀ B) := by
+    intro k f
+    refine Ideal.mem_map_of_mem (algebraMap B₀ B)
+      (x := ⟨ev B (l k) (ρ f), ev_mem_equalizer ρ hassoc _ (hl k) f⟩) ?_
+    refine ⟨-ev B (l k ∘ₗ LinearMap.mulRight R b) (ρ f), ?_⟩
+    rw [map_neg, coact_ev_mulRight_of_primitive ρ hassoc _ (hl k) b hb, neg_tmul]
+    abel
+  have hall : ∀ k z, ev B (l k) z ∈ I.map (algebraMap B₀ B) := by
+    intro k z
+    obtain ⟨w, rfl⟩ := hsurj z
+    induction w with
+    | zero => simp
+    | add u v hu hv =>
+      rw [map_add, map_add]
+      exact add_mem hu hv
+    | tmul u v =>
+      have : (Algebra.TensorProduct.includeLeft : B →ₐ[R] B ⊗[R] Λ) u * ρ v = u • ρ v := by
+        rw [Algebra.smul_def]
+        rfl
+      rw [Algebra.TensorProduct.productMap_apply_tmul, this, map_smul]
+      exact Ideal.mul_mem_left _ _ (hmem k v)
+  have h1 : (1 : B) ∈ I.map (algebraMap B₀ B) := by
+    have : (1 : B) = ∑ k, ev B (l k) (1 ⊗ₜ T k) := by
+      have h := hT 1
+      simp only [mul_one, Bialgebra.counit_one] at h
+      simp [← Finset.sum_smul, h]
+    rw [this]
+    exact Ideal.sum_mem _ fun k _ => hall k _
+  have h2 : (1 : B₀) ∈ I := by
+    rw [← Ideal.comap_map_eq_self_of_faithfullyFlat (B := B) I, Ideal.mem_comap, map_one]
+    exact h1
+  exact h2
+
+end GlobalTheory.HopfQuot
+end
+
+open TensorProduct Coalgebra Bialgebra CategoryTheory WithConv GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_coaction_eq_add_of_primitive : ∀ {R Λ B : Type} [CommRing R] [CommRing Λ] [HopfAlgebra R Λ] [Module.Finite R Λ] [Module.Projective R Λ] [CommRing B] [Algebra R B] (ρ : B →ₐ[R] B ⊗[R] Λ), (∀ a, TensorProduct.assoc R B Λ Λ (ρ.toLinearMap.rTensor Λ (ρ a)) = (Coalgebra.comul (R := R) (A := Λ)).lTensor B (ρ a)) → (∀ a, TensorProduct.rid R B ((Coalgebra.counit (R := R) (A := Λ)).lTensor B (ρ a)) = a) → Function.Surjective (Algebra.TensorProduct.productMap (Algebra.TensorProduct.includeLeft : B →ₐ[R] B ⊗[R] Λ) ρ) → ∀ b : Λ, cobOne R Λ b = 0 → ∃ x : B, ρ x = x ⊗ₜ[R] 1 + 1 ⊗ₜ[R] b := by
+  atlas_forward_decl GlobalTheory.HopfQuot.exists_coact_eq_add_of_primitive
+end
+
+section
+section
+set_option autoImplicit false
+
+open TensorProduct Coalgebra Bialgebra CategoryTheory WithConv GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
+
+namespace GlobalTheory
+
+namespace PDivGroup
+
+variable {p : ℕ} {R : Type} [CommRing R] (G : PDivGroup p R)
+
+theorem exists_res_eq_of_transl_eq_add {b : G.A 1} (hb : cobOne R (G.A 1) b = 0) (n : ℕ)
+    (x : G.A (n + 1)) (hx : G.transl n x = x ⊗ₜ[R] 1 + 1 ⊗ₜ[R] b) :
+    ∃ y : G.A (n + 2), G.transl (n + 1) y = y ⊗ₜ[R] 1 + 1 ⊗ₜ[R] b ∧ G.res (n + 1) y = x := by
+  obtain ⟨h1, h2, h3⟩ := GlobalTheory.T.transl_coaction_free_coassoc_counital G (n + 1)
+  obtain ⟨x', hx'⟩ := GlobalTheory.T.exists_coaction_eq_add_of_primitive (G.transl (n + 1)) h1 h2 h3 b hb
+  have hr : G.transl n (G.res (n + 1) x') = G.res (n + 1) x' ⊗ₜ[R] 1 + 1 ⊗ₜ[R] b := by
+    rw [transl_res, hx', map_add, LinearMap.rTensor_tmul, LinearMap.rTensor_tmul]
+    simp
+  obtain ⟨e, he⟩ := GlobalTheory.T.exists_mulP_eq_of_transl_invariant G n (G.res (n + 1) x' - x) (by
+    rw [map_sub, hr, hx, sub_tmul]
+    abel)
+  obtain ⟨e', rfl⟩ := G.res_surjective n e
+  refine ⟨x' - G.mulP (n + 1) e', ?_, ?_⟩
+  · rw [map_sub, hx', transl_mulP, sub_tmul]
+    abel
+  · rw [map_sub, res_mulP, ← mulP_res, he, sub_sub_cancel]
+
+theorem exists_funs_transl_eq_add {p : ℕ} {R : Type} [CommRing R] (G : PDivGroup p R)
+    (b : G.A 1) (hb : cobOne R (G.A 1) b = 0) :
+    ∃ B : G.funs, B.1 1 = b ∧
+      ∀ n, G.transl n (B.1 (n + 1)) = B.1 (n + 1) ⊗ₜ[R] 1 + 1 ⊗ₜ[R] b := by
+  choose f hf hres using G.exists_res_eq_of_transl_eq_add hb
+  have h0 : G.transl 0 b = b ⊗ₜ[R] 1 + 1 ⊗ₜ[R] b := by
+    have h : (G.resOne 0 : G.A 1 →ₗ[R] G.A 1) = LinearMap.id := rfl
+    rw [transl_apply, h, LinearMap.lTensor_id, LinearMap.id_apply]
+    rw [cobOne_apply, sub_sub, sub_eq_zero] at hb
+    exact hb
+  let s : ∀ n, {x : G.A (n + 1) // G.transl n x = x ⊗ₜ[R] 1 + 1 ⊗ₜ[R] b} := fun n =>
+    Nat.rec (motive := fun n => {x : G.A (n + 1) // G.transl n x = x ⊗ₜ[R] 1 + 1 ⊗ₜ[R] b})
+      ⟨b, h0⟩ (fun n x => ⟨f n x.1 x.2, hf n x.1 x.2⟩) n
+  refine ⟨⟨fun n => Nat.casesOn (motive := fun n => G.A n) n (G.res 0 b) fun n => (s n).1, ?_⟩,
+    rfl, fun n => (s n).2⟩
+  rintro (_ | n)
+  · rfl
+  · exact hres n (s n).1 (s n).2
+
+end PDivGroup
+
+end GlobalTheory
+end
+
+open TensorProduct Coalgebra Bialgebra CategoryTheory WithConv GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_extension_additive_fn_pDivGroup : ∀ {p : ℕ} {R : Type} [CommRing R] (G : PDivGroup p R) (b : G.A 1), cobOne R (G.A 1) b = 0 → ∃ B : G.funs, B.1 1 = b ∧ ∀ n, G.transl n (B.1 (n + 1)) = B.1 (n + 1) ⊗ₜ[R] 1 + 1 ⊗ₜ[R] b := by
+  atlas_forward_decl GlobalTheory.PDivGroup.exists_funs_transl_eq_add
+end
+
+section
+open TensorProduct Coalgebra Bialgebra CategoryTheory WithConv GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pDivCocycle_mem_range_cob_of_pullback_mulP : ∀ {p : ℕ} [Fact p.Prime] {R : Type} [CommRing R] (G : PDivGroup p R) (c : G.cocycles) (B : G.funs), G.cob B = cocyclesMap ((p : ℤ_[p]) • 𝟙 G) c → B.1 1 = 0 → c ∈ LinearMap.range G.cob := by
+  first | exact @GlobalTheory.cocycle_mem_range_cob_of_pullback_mulP | exact GlobalTheory.cocycle_mem_range_cob_of_pullback_mulP | (intros; apply GlobalTheory.cocycle_mem_range_cob_of_pullback_mulP <;> assumption)
+end
+
+section
+open TensorProduct Coalgebra Bialgebra CategoryTheory WithConv GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.omega_baseChange_bijective_of_p_eq_zero : ∀ {p : ℕ} {R : Type} [CommRing R] (G : PDivGroup p R) (R' : Type) [CommRing R'] [Algebra R R'], (p : R) = 0 → Function.Bijective (liftSemi (G.toBase R').omega) := by
+  first | exact @GlobalTheory.PDivGroup.omega_baseChange_bijective | exact GlobalTheory.PDivGroup.omega_baseChange_bijective | (intros; apply GlobalTheory.PDivGroup.omega_baseChange_bijective <;> assumption)
+end
+
+section
+section
+open TensorProduct Coalgebra Bialgebra CategoryTheory WithConv GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
+
+namespace GlobalTheory.PDiv
+
+variable {R A : Type} (R' : Type) [CommRing R] [CommRing A] [Bialgebra R A] [CommRing R']
+  [Algebra R R']
+
+theorem cobOne_baseChange :
+    cobOne R' (R' ⊗[R] A) = (AlgebraTensorModule.distribBaseChange R R' A A).toLinearMap ∘ₗ
+      (cobOne R A).baseChange R' := by
+  refine AlgebraTensorModule.ext fun r a => ?_
+  rw [← mul_one r, ← smul_eq_mul, ← smul_tmul', map_smul, map_smul]
+  congr 1
+  have h : ∀ c : A ⊗[R] A, AlgebraTensorModule.tensorTensorTensorComm R R' R R' R' R' A A
+      (comul (R := R') (1 : R') ⊗ₜ[R] c) = AlgebraTensorModule.distribBaseChange R R' A A (1 ⊗ₜ c) := by
+    intro c
+    induction c with
+    | zero => simp
+    | add x y hx hy => simp only [tmul_add, map_add, hx, hy]
+    | tmul x y => simp [Bialgebra.comul_one, Algebra.TensorProduct.one_def]
+  simp only [cobOne_apply, LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply,
+    LinearMap.baseChange_tmul, tmul_sub, map_sub, TensorProduct.comul_tmul, h,
+    AlgebraTensorModule.distribBaseChange_tmul, Algebra.TensorProduct.one_def]
+
+end GlobalTheory.PDiv
+
+namespace GlobalTheory.PDiv
+
+theorem liftSemi_prim_baseChange_bijective {R A : Type} (R' : Type) [CommRing R] [CommRing A]
+    [Bialgebra R A] [CommRing R'] [Algebra R R'] [Module.Flat R R'] :
+    Function.Bijective (liftSemi (toBaseChange R R' A).prim) := by
+  set K := LinearMap.ker (cobOne R A)
+  have hsub : ∀ y : R' ⊗[R] K,
+      (liftSemi (toBaseChange R R' A).prim y).1 = K.subtype.lTensor R' y := by
+    intro y
+    induction y with
+    | zero => simp
+    | add x y hx hy => simp only [map_add, Submodule.coe_add, hx, hy]
+    | tmul r b =>
+      rw [liftSemi_tmul, Submodule.coe_smul, SemiBialgHom.prim_val, toBaseChange_apply,
+        LinearMap.lTensor_tmul, Submodule.subtype_apply, smul_tmul', smul_eq_mul, mul_one]
+  have hex := Module.Flat.lTensor_exact R' (LinearMap.exact_subtype_ker_map (cobOne R A))
+  refine ⟨fun x y h => ?_, fun z => ?_⟩
+  · refine Module.Flat.lTensor_preserves_injective_linearMap (M := R') K.subtype
+      K.injective_subtype ?_
+    rw [← hsub, ← hsub, h]
+  · obtain ⟨x, hx⟩ := z
+    have hz : (cobOne R A).lTensor R' x = 0 := by
+      have h0 : cobOne R' (R' ⊗[R] A) x = 0 := hx
+      rw [cobOne_baseChange, LinearMap.comp_apply, LinearEquiv.coe_coe,
+        LinearEquiv.map_eq_zero_iff, LinearMap.baseChange_eq_ltensor] at h0
+      exact h0
+    obtain ⟨y, hy⟩ := (hex x).1 hz
+    exact ⟨y, Subtype.ext ((hsub y).trans hy)⟩
+
+end GlobalTheory.PDiv
+end
+
+open TensorProduct Coalgebra Bialgebra CategoryTheory WithConv GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.additiveFunctions_flatBaseChange_bijective : ∀ {R A : Type} (R' : Type) [CommRing R] [CommRing A] [Bialgebra R A] [CommRing R'] [Algebra R R'] [Module.Flat R R'], Function.Bijective (liftSemi (toBaseChange R R' A).prim) := by
+  atlas_forward_decl GlobalTheory.PDiv.liftSemi_prim_baseChange_bijective
+end
+
+section
+section
+open TensorProduct Coalgebra Bialgebra CategoryTheory WithConv
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory
+
+namespace PDiv
+
+section PrimBaseChange
+
+variable {R A : Type} (R' : Type) [CommRing R] [CommRing A] [Bialgebra R A] [Module.Finite R A]
+  [Module.Projective R A] [IsCocomm R A] [CommRing R'] [Algebra R R']
+
+theorem counit_comp_cartierBaseChange :
+    (counitAlgHom R' (CartierDual R' (R' ⊗[R] A))).comp
+        ((CartierDual.baseChange R R' A).toAlgEquiv : R' ⊗[R] CartierDual R A →ₐ[R'] _) =
+      AugCot.baseChangeAug R' (counitAlgHom R (CartierDual R A)) := by
+  refine AlgHom.ext fun x => ?_
+  induction x with
+  | zero => simp
+  | add x y hx hy => simp only [map_add, hx, hy]
+  | tmul r φ =>
+    simp [Algebra.TensorProduct.one_def, Algebra.smul_def, mul_comm]
+
+def cotBaseChange :
+    Cot R' (CartierDual R' (R' ⊗[R] A)) ≃ₗ[R'] R' ⊗[R] Cot R (CartierDual R A) :=
+  ((AugCot.baseChangeEquiv R' (counitAlgHom R (CartierDual R A))).trans
+    (AugCot.congr (CartierDual.baseChange R R' A).toAlgEquiv
+      (counit_comp_cartierBaseChange R'))).symm
+
+theorem cotBaseChange_d (φ : CartierDual R A) :
+    cotBaseChange R' (dUnit R' (CartierDual.baseChange R R' A ((1 : R') ⊗ₜ φ))) =
+      (1 : R') ⊗ₜ dUnit R φ := by
+  rw [cotBaseChange, LinearEquiv.symm_apply_eq, LinearEquiv.trans_apply,
+    AugCot.baseChangeEquiv_tmul_d, one_smul, AugCot.congr_d]
+  rfl
+
+theorem cotBaseChange_hom_ext {N : Type} [AddCommGroup N] [Module R' N]
+    {f g : Cot R' (CartierDual R' (R' ⊗[R] A)) →ₗ[R'] N}
+    (h : ∀ φ : CartierDual R A, f (dUnit R' (CartierDual.baseChange R R' A ((1 : R') ⊗ₜ φ))) =
+      g (dUnit R' (CartierDual.baseChange R R' A ((1 : R') ⊗ₜ φ)))) : f = g := by
+  refine AugCot.hom_ext fun ψ => ?_
+  obtain ⟨x, rfl⟩ := EquivLike.surjective (CartierDual.baseChange R R' A) ψ
+  induction x with
+  | zero => simp
+  | add x y hx hy => simp only [map_add, hx, hy]
+  | tmul r φ =>
+    have e : r ⊗ₜ[R] φ = r • ((1 : R') ⊗ₜ[R] φ) := by simp [smul_tmul']
+    rw [e, map_smul, map_smul, map_smul, map_smul]
+    exact congrArg (r • ·) (h φ)
+
+end PrimBaseChange
+
+theorem liftSemi_prim_toBaseChange_bijective {R A : Type} (R' : Type) [CommRing R] [CommRing A]
+    [Bialgebra R A] [Module.Finite R A] [Module.Projective R A] [IsCocomm R A] [CommRing R']
+    [Algebra R R'] (hC : Module.Projective R (Cot R (CartierDual R A))) :
+    Function.Bijective (liftSemi (toBaseChange R R' A).prim) := by
+  let u := (CartierDual.toDual R (Cot R (CartierDual R A))).symm.toLinearMap ∘ₗ primTangent R A
+  have hu : Function.Bijective u :=
+    (CartierDual.toDual R _).symm.bijective.comp (GlobalTheory.T.additiveFunctionCartierDualTangent_bijective (R := R) (A := A))
+  have key : ⇑(primTangent R' (R' ⊗[R] A)) ∘ ⇑(liftSemi (toBaseChange R R' A).prim) =
+      ⇑(CartierDual.toDual R' _) ∘
+        ⇑(CartierDual.transpose (cotBaseChange (R := R) (A := A) R').toLinearMap) ∘
+        ⇑(CartierDual.baseChangeLinear R R' (Cot R (CartierDual R A))) ∘
+        ⇑(LinearMap.lTensor R' u) := by
+    funext x
+    induction x with
+    | zero => simp
+    | add x y hx hy => simp only [Function.comp_apply, map_add] at hx hy ⊢; rw [hx, hy]
+    | tmul r b =>
+      refine cotBaseChange_hom_ext R' fun φ => ?_
+      have h1 : primTangent R' (R' ⊗[R] A) (liftSemi (toBaseChange R R' A).prim (r ⊗ₜ b))
+          (dUnit R' (CartierDual.baseChange R R' A ((1 : R') ⊗ₜ φ))) = φ b.1 • r := by
+        rw [liftSemi_tmul, map_smul, LinearMap.smul_apply, primTangent_d, SemiBialgHom.prim_val,
+          toBaseChange_apply, CartierDual.baseChange_tmul_tmul, smul_comm, mul_one, smul_eq_mul,
+          mul_one]
+      refine h1.trans (Eq.symm ?_)
+      change CartierDual.baseChangeLinear R R' (Cot R (CartierDual R A)) (r ⊗ₜ u b)
+        (cotBaseChange R' (dUnit R' (CartierDual.baseChange R R' A ((1 : R') ⊗ₜ φ)))) = _
+      rw [cotBaseChange_d, CartierDual.baseChangeLinear_tmul_tmul, mul_one]
+      exact congrArg (· • r) (primTangent_d b φ)
+  refine (Function.Bijective.of_comp_iff' (GlobalTheory.T.additiveFunctionCartierDualTangent_bijective (R := R') (A := R' ⊗[R] A)) _).1 ?_
+  rw [key]
+  exact (CartierDual.toDual R' _).bijective.comp <|
+    (CartierDual.transpose_bijective (cotBaseChange R').bijective).comp <|
+    (CartierDual.baseChangeLinear_bijective R').comp
+      (LinearEquiv.lTensor R' (LinearEquiv.ofBijective u hu)).bijective
+
+end PDiv
+
+end GlobalTheory
+end
+end
+
+open TensorProduct Coalgebra Bialgebra CategoryTheory WithConv GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.primitive_semilinearLift_baseChange_bijective : ∀ {R A : Type} (R' : Type) [CommRing R] [CommRing A] [Bialgebra R A] [Module.Finite R A] [Module.Projective R A] [IsCocomm R A] [CommRing R'] [Algebra R R'], Module.Projective R (Cot R (CartierDual R A)) → Function.Bijective (liftSemi (toBaseChange R R' A).prim) := by
+  atlas_forward_decl GlobalTheory.PDiv.liftSemi_prim_toBaseChange_bijective
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -335,3 +878,5 @@ end BaseChange
 end PDivGroup
 
 end GlobalTheory
+end
+end

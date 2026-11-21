@@ -4,7 +4,33 @@ import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.CompIncAAl
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsVTOver
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ParahoricLevelLiftsExist
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LevelPlacesNotIsConjPlaceRealDat
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Imports
+
+section
+namespace GlobalTheory.ExistsPrimeMem
+
+theorem exists_prime_mem {A : Type} [inst : CommRing A] (P : Ideal A) (hP : Ideal.IsPrime P) :
+    ∀ (n : ℕ), n ≠ (0 : ℕ) → (↑n : A) ∈ P → ∃ (ℓ : ℕ), Nat.Prime ℓ ∧ (↑ℓ : A) ∈ P := by
+  intro n
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+    intro hn hnP
+    by_cases h1 : n = 1
+    · subst h1
+      exact absurd ((Ideal.eq_top_iff_one P).2 (by simpa using hnP)) hP.ne_top
+    · have hp := Nat.minFac_prime h1
+      have hpos : 0 < n := Nat.pos_of_ne_zero hn
+      have hsplit : ((n : ℕ) : A) = (n.minFac : A) * ((n / n.minFac : ℕ) : A) := by
+        rw [← Nat.cast_mul, Nat.mul_div_cancel' (Nat.minFac_dvd n)]
+      rw [hsplit] at hnP
+      rcases hP.mem_or_mem hnP with h | h
+      · exact ⟨n.minFac, hp, h⟩
+      · exact ih (n / n.minFac) (Nat.div_lt_self hpos hp.one_lt)
+          (Nat.div_pos (Nat.minFac_le hpos) (Nat.minFac_pos n)).ne' h
+
+end GlobalTheory.ExistsPrimeMem
+end
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.SeeSaw GlobalTheory.StepData GlobalTheory.SymChain GlobalTheory.LocMod GlobalTheory.MiS GlobalTheory.MiTop GlobalTheory.Fam GlobalTheory.Mem.Col2 ValuativeRel IsLocalRing
 open scoped TensorProduct Classical
@@ -93,3 +119,5 @@ theorem GlobalTheory.XGeoPlace.exists_place : ∀ {B : GlobalTheory.Mem.Base} {X
   rw [e1]
   rw [map_inv₀] at hin2
   exact le_antisymm hin1 ((inv_le_one₀ (zero_lt_iff.2 ((map_ne_zero _).2 hne))).1 hin2)
+end
+end

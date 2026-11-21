@@ -1,9 +1,33 @@
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.FmTools
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.LocalActionPowers.ProdF
+import Mathlib
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LevOpParabEqLevOpCt
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteLevelFacts
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegralOfTwistConjugatePlace
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousMapGLSpl
 
+section
+noncomputable section
+
+open GlobalTheory.BCT
+
+namespace PositivityTheory.Rg.BcB.F.FA.Abs
+
+variable {Γ ι : Type} [Group Γ] [DecidableEq ι] {M : ι → Type} [∀ i, Group (M i)]
+
+def prodF (p : ∀ i, Γ →* M i) (φ : ∀ i, M i → ℂ) (x : Γ) : ℂ := ∏ᶠ j, φ j (p j x)
+
+def iter (e : ∀ i, M i →* Γ) (KH : ∀ i, Subgroup (M i)) (φ : ∀ i, M i → ℂ) (Ψ : Γ → ℂ) : List ι → Γ → ℂ
+  | [] => Ψ
+  | i :: l => fun y => hint (KH i) fun m => φ i m * iter e KH φ Ψ l (y * e i m)
+
+def kerD (p : ∀ i, Γ →* M i) (D : Set ι) : Subgroup Γ := ⨅ j ∈ D, (p j).ker
+
+end PositivityTheory.Rg.BcB.F.FA.Abs
+
+end
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix MeasureTheory Filter
@@ -27,20 +51,10 @@ def φS (φ₁ φ₂ : ∀ w : Pl E, LF a b w) : ∀ i : Slot S, GLw a i.pl × G
   | .inl w => φ₁ w.1
   | .inr w => φ₂ w.1
 
-theorem cpH_apply (i : Slot S) (x : Hf E a b) : cpH a b i x = i.cp a b x := by
-  cases i <;> rfl
 
-theorem cpH_inl (w : {w // w ∈ S}) (x : Hf E a b) :
-    cpH a b (.inl w : Slot S) x = GlobalTheory.CompanionTheory.SuppFinTw.atH a b w.1 x := rfl
 
-theorem cpH_inr (w : {w // w ∈ S ∧ IsSplitAt w}) (x : Hf E a b) :
-    cpH a b (.inr w : Slot S) x = GlobalTheory.CompanionTheory.SuppFinTw.atH a b w.1 (thP E a b x) := rfl
 
-theorem eH_inl (w : {w // w ∈ S}) (m : GLw a w.1 × GLw b w.1) :
-    eH a b (.inl w : Slot S) m = ((locGL E a w.1 m.1, locGL E b w.1 m.2) : Hf E a b) := rfl
 
-theorem eH_inr (w : {w // w ∈ S ∧ IsSplitAt w}) (m : GLw a w.1 × GLw b w.1) :
-    eH a b (.inr w : Slot S) m = thP E a b ((locGL E a w.1 m.1, locGL E b w.1 m.2) : Hf E a b) := rfl
 
 theorem atH_loc_self (w : Pl E) (m : GLw a w × GLw b w) :
     GlobalTheory.CompanionTheory.SuppFinTw.atH a b w ((locGL E a w m.1, locGL E b w m.2) : Hf E a b) = m :=
@@ -88,13 +102,6 @@ theorem actS_eq (φ₁ φ₂ : ∀ w : Pl E, LF a b w) (i : Slot S) (G : H E a b
     congr 2
     exact Prod.ext (GlobalTheory.ThetaPull.thetaA_finGL _) (GlobalTheory.ThetaPull.thetaA_finGL _)
 
-theorem continuous_eH (i : Slot S) : Continuous (eH (E := E) a b i) := by
-  have h0 : ∀ w : Pl E, Continuous fun m : GLw a w × GLw b w => ((locGL E a w m.1, locGL E b w m.2) : Hf E a b) :=
-    fun w => ((GlobalTheory.EulerTw.continuous_locGL_spl E a w).comp continuous_fst).prodMk
-      ((GlobalTheory.EulerTw.continuous_locGL_spl E b w).comp continuous_snd)
-  rcases i with w | w
-  · exact h0 w.1
-  · exact GlobalTheory.CompanionTheory.FinLevelTw.continuous_thP.comp (h0 w.1)
 
 theorem continuous_cpH (i : Slot S) : Continuous (cpH (E := E) a b i) := by
   rcases i with w | w
@@ -145,4 +152,5 @@ theorem finFn_eq (hS : IsSection S) (φ₁ φ₂ : ∀ w : Pl E, LF a b w) (h₁
 
 end PositivityTheory.Rg.BcB.F.FA.Sl
 
+end
 end

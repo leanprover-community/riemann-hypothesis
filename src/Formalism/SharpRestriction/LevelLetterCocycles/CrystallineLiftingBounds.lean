@@ -119,40 +119,6 @@ def aux₃ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (CA CB CK : �
 
 def Stmt (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (CA CB CK : ℝ) : Prop := admitted D HW F Cm → aux₃ D HW F CA CB CK
 
-theorem lifting_bounds_of_wach_theorem (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (C CA CB CK : ℝ) (h : Formalism.MainNotions.LiftingTheory.aux₃ D HW F C CA CB CK) :
-    aux₃ D HW F CA CB CK := by
-  obtain ⟨-, ⟨hX, hB, hA, -⟩, -, -, -, -, -, hL⟩ := h
-  unfold aux₃ Conclusion1 Conclusion2
-  exact ⟨⟨hX, hB, hA⟩, hL⟩
 
-theorem lifting_hyps_of_wach_properties (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (h : Formalism.MainNotions.DeltaInvariantLattices.ConclusionL D.loc HW D.locA F Cm) (h17 : adm17 D HW F) (h18 : adm18 D HW F)
-    (h19 : adm19 D HW F) (h20 : adm20 D HW F) (h21 : adm21 D HW F) (h22 : adm22 D HW F) (h23 : adm23 D HW F) : admitted D HW F Cm := by
-  unfold admitted
-  unfold Formalism.MainNotions.DeltaInvariantLattices.ConclusionL at h
-  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, h17, h18, h19, h20, h21, h22, h23⟩
-  all_goals intro l _ K s LL hg
-  all_goals obtain ⟨⟨h1, h2, h3, h4, h5, h6, h7, h8, h9, h10⟩, hc, ⟨ha, hb, hcc, hd⟩, hl⟩ := h l K s LL hg
-  · intro T hT
-    obtain ⟨a, -, -⟩ := h1
-    exact a T hT
-  · exact h2
-  · exact h3
-  · exact h4
-  · exact h5
-  · exact h6
-  · exact h7
-  · exact h8
-  · exact h9
-  · intro T hT
-    obtain ⟨a, -⟩ := h10
-    exact a T hT
-  · intro T hT
-    obtain ⟨-, a, -⟩ := hc T hT
-    exact a
-  · exact ha
-  · exact hb
-  · exact hcc
-  · exact hd
-  · exact hl
 
 end Formalism.MainNotions.CrystallineLiftingBounds

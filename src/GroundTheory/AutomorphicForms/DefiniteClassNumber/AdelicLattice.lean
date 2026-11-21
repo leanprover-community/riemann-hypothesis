@@ -1,8 +1,471 @@
 import Mathlib
-import GroundTheory.AutomorphicForms.DefiniteClassNumber.Places
+import GroundTheory.AutomorphicForms.AdelicUnitaryGroups.Anisotropic
 import GroundTheory.AutomorphicForms.AdelicUnitaryGroups.LatticeCompact
 import GroundTheory.AutomorphicForms.StrongApproximationSLDense
 
+section
+noncomputable section
+
+namespace GroundTheory.Automorphic
+
+open Module Matrix TensorProduct
+
+variable {K E : Type*} [Field K] [CommRing E] [Algebra K E] [Algebra.IsQuadraticExtension K E]
+variable {ι : Type*} [Fintype ι] (H : Matrix ι ι E)
+
+section Trace
+
+variable (K E) (R : Type*) [CommRing R] [Algebra K R]
+
+def baseTrace : R ⊗[K] E →ₗ[R] R :=
+  (Algebra.TensorProduct.rid K R R).toLinearMap ∘ₗ (Algebra.trace K E).baseChange R
+
+variable {K E R}
+
+omit [Algebra.IsQuadraticExtension K E] in
+theorem baseTrace_tmul (r : R) (e : E) :
+    baseTrace K E R (r ⊗ₜ e) = algebraMap K R (Algebra.trace K E e) * r := by
+  simp [baseTrace, Algebra.smul_def]
+
+theorem baseTrace_conjBase (z : R ⊗[K] E) : baseTrace K E R (conjBase K E R z) = baseTrace K E R z := by
+  induction z using TensorProduct.induction_on with
+  | zero => simp
+  | tmul r e =>
+    rw [conjBase_tmul, baseTrace_tmul, baseTrace_tmul, conj_apply, map_sub,
+      trace_algebraMap_quadratic]
+    congr 2
+    ring
+  | add x y hx hy => rw [map_add, map_add, map_add, hx, hy]
+
+theorem baseTrace_algebraMap (t : R) : baseTrace K E R (algebraMap R (R ⊗[K] E) t) = 2 * t := by
+  have h1 : Algebra.trace K E 1 = 2 := by
+    simpa using trace_algebraMap_quadratic (F := K) (E := E) 1
+  rw [Algebra.TensorProduct.algebraMap_apply, Algebra.algebraMap_self, RingHom.id_apply,
+    baseTrace_tmul, h1, map_ofNat]
+
+omit [Algebra.IsQuadraticExtension K E] in
+
+theorem baseTrace_tensorMap {S : Type*} [CommRing S] [Algebra K S] (f : R →ₐ[K] S)
+    (z : R ⊗[K] E) : baseTrace K E S (tensorMap E f z) = f (baseTrace K E R z) := by
+  induction z using TensorProduct.induction_on with
+  | zero => simp
+  | tmul r e => rw [tensorMap_tmul, baseTrace_tmul, baseTrace_tmul, map_mul, AlgHom.commutes]
+  | add x y hx hy => rw [map_add, map_add, hx, hy, map_add, map_add]
+
+end Trace
+
+section Pairing
+
+variable (K) (R : Type*) [CommRing R] [Algebra K R]
+
+def hermPair (x y : ι → R ⊗[K] E) : R ⊗[K] E :=
+  (fun i => conjBase K E R (x i)) ⬝ᵥ (baseMatrix K H R *ᵥ y)
+
+def hermTrace (x y : ι → R ⊗[K] E) : R := baseTrace K E R (hermPair K H R x y)
+
+variable {K H R}
+
+theorem hermPair_self (x : ι → R ⊗[K] E) : hermPair K H R x x = hermValue K H R x := rfl
+
+omit [Fintype ι] in
+theorem conjBase_vec_add (x x' : ι → R ⊗[K] E) :
+    (fun i => conjBase K E R ((x + x') i)) =
+      (fun i => conjBase K E R (x i)) + fun i => conjBase K E R (x' i) :=
+  funext fun _ => map_add _ _ _
+
+theorem hermPair_add_left (x x' y : ι → R ⊗[K] E) :
+    hermPair K H R (x + x') y = hermPair K H R x y + hermPair K H R x' y := by
+  unfold hermPair
+  rw [conjBase_vec_add, add_dotProduct]
+
+theorem hermPair_add_right (x y y' : ι → R ⊗[K] E) :
+    hermPair K H R x (y + y') = hermPair K H R x y + hermPair K H R x y' := by
+  unfold hermPair
+  rw [mulVec_add, dotProduct_add]
+
+theorem hermPair_smul_left (c : R ⊗[K] E) (x y : ι → R ⊗[K] E) :
+    hermPair K H R (c • x) y = conjBase K E R c * hermPair K H R x y := by
+  unfold hermPair
+  have : (fun i => conjBase K E R ((c • x) i)) = conjBase K E R c • fun i => conjBase K E R (x i) :=
+    funext fun i => by simp [Pi.smul_apply, smul_eq_mul, map_mul]
+  rw [this, smul_dotProduct, smul_eq_mul]
+
+theorem hermPair_smul_right (c : R ⊗[K] E) (x y : ι → R ⊗[K] E) :
+    hermPair K H R x (c • y) = c * hermPair K H R x y := by
+  unfold hermPair
+  rw [mulVec_smul, dotProduct_smul, smul_eq_mul]
+
+theorem conjBase_algebraMap (c : R) :
+    conjBase K E R (algebraMap R (R ⊗[K] E) c) = algebraMap R (R ⊗[K] E) c := by
+  rw [Algebra.TensorProduct.algebraMap_apply, Algebra.algebraMap_self, RingHom.id_apply,
+    conjBase_tmul, map_one]
+
+theorem conjBase_conjBase (z : R ⊗[K] E) : conjBase K E R (conjBase K E R z) = z := by
+  induction z using TensorProduct.induction_on with
+  | zero => simp
+  | tmul r e => rw [conjBase_tmul, conjBase_tmul, conj_conj]
+  | add x y hx hy => rw [map_add, map_add, hx, hy]
+
+theorem hermTrace_add_left (x x' y : ι → R ⊗[K] E) :
+    hermTrace K H R (x + x') y = hermTrace K H R x y + hermTrace K H R x' y := by
+  rw [hermTrace, hermPair_add_left, map_add]; rfl
+
+theorem hermTrace_add_right (x y y' : ι → R ⊗[K] E) :
+    hermTrace K H R x (y + y') = hermTrace K H R x y + hermTrace K H R x y' := by
+  rw [hermTrace, hermPair_add_right, map_add]; rfl
+
+theorem hermTrace_smul_left (c : R) (x y : ι → R ⊗[K] E) :
+    hermTrace K H R (c • x) y = c * hermTrace K H R x y := by
+  rw [hermTrace, ← algebraMap_smul (R ⊗[K] E) c x, hermPair_smul_left, conjBase_algebraMap,
+    ← Algebra.smul_def, map_smul, smul_eq_mul]; rfl
+
+theorem hermTrace_smul_right (c : R) (x y : ι → R ⊗[K] E) :
+    hermTrace K H R x (c • y) = c * hermTrace K H R x y := by
+  rw [hermTrace, ← algebraMap_smul (R ⊗[K] E) c y, hermPair_smul_right, ← Algebra.smul_def,
+    map_smul, smul_eq_mul]; rfl
+
+variable (K H R) in
+
+def hermTraceBilin : (ι → R ⊗[K] E) →ₗ[R] (ι → R ⊗[K] E) →ₗ[R] R :=
+  LinearMap.mk₂ R (hermTrace K H R) hermTrace_add_left hermTrace_smul_left hermTrace_add_right
+    hermTrace_smul_right
+
+@[simp]
+theorem hermTraceBilin_apply (x y : ι → R ⊗[K] E) : hermTraceBilin K H R x y = hermTrace K H R x y :=
+  rfl
+
+section Invariance
+
+variable [DecidableEq ι]
+
+theorem hermPair_mulVec (g : unitaryPoints K E H R) (x y : ι → R ⊗[K] E) :
+    hermPair K H R (unitaryMat g *ᵥ x) (unitaryMat g *ᵥ y) = hermPair K H R x y := by
+  have hg : ((unitaryMat g).map (conjBase K E R))ᵀ * baseMatrix K H R * unitaryMat g =
+      baseMatrix K H R := g.2
+  have h1 : (fun i => conjBase K E R ((unitaryMat g *ᵥ x) i)) =
+      (unitaryMat g).map (conjBase K E R) *ᵥ (fun i => conjBase K E R (x i)) := by
+    funext i
+    exact RingHom.map_mulVec _ _ _ i
+  unfold hermPair
+  rw [h1, Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec, ← Matrix.vecMul_transpose,
+    Matrix.vecMul_vecMul, ← Matrix.mul_assoc, hg, Matrix.dotProduct_mulVec]
+
+theorem hermTrace_mulVec (g : unitaryPoints K E H R) (x y : ι → R ⊗[K] E) :
+    hermTrace K H R (unitaryMat g *ᵥ x) (unitaryMat g *ᵥ y) = hermTrace K H R x y := by
+  rw [hermTrace, hermPair_mulVec]; rfl
+
+end Invariance
+
+theorem hermPair_swap (hH : IsHermitianFor (conjHom K E) H) (x y : ι → R ⊗[K] E) :
+    hermPair K H R y x = conjBase K E R (hermPair K H R x y) := by
+  have hHb : (baseMatrix K H R).map (conjBase K E R) = (baseMatrix K H R)ᵀ := by
+    ext i j
+    have := congrFun (congrFun hH j) i
+    simp only [transpose_apply, map_apply] at this
+    simp only [map_apply, transpose_apply, baseMatrix, Algebra.TensorProduct.includeRight_apply,
+      conjBase_tmul, ← this]
+    rfl
+  unfold hermPair
+  rw [RingHom.map_dotProduct]
+  have h1 : (conjBase K E R) ∘ (fun i => conjBase K E R (x i)) = x :=
+    funext fun i => conjBase_conjBase (x i)
+  have h2 : (conjBase K E R) ∘ (baseMatrix K H R *ᵥ y) =
+      (baseMatrix K H R).map (conjBase K E R) *ᵥ fun i => conjBase K E R (y i) :=
+    funext fun i => RingHom.map_mulVec _ _ _ i
+  rw [h1, h2, hHb, Matrix.mulVec_transpose, dotProduct_comm x, Matrix.dotProduct_mulVec]
+
+theorem hermTrace_comm (hH : IsHermitianFor (conjHom K E) H) (x y : ι → R ⊗[K] E) :
+    hermTrace K H R y x = hermTrace K H R x y := by
+  simp only [hermTrace]
+  rw [hermPair_swap hH x y, baseTrace_conjBase]
+
+theorem tensorMap_hermPair {S : Type*} [CommRing S] [Algebra K S] (f : R →ₐ[K] S)
+    (x y : ι → R ⊗[K] E) :
+    tensorMap E f (hermPair K H R x y) =
+      hermPair K H S (fun i => tensorMap E f (x i)) (fun i => tensorMap E f (y i)) := by
+  unfold hermPair
+  have h := RingHom.map_dotProduct (tensorMap E f : R ⊗[K] E →+* S ⊗[K] E)
+    (fun i => conjBase K E R (x i)) (baseMatrix K H R *ᵥ y)
+  simp only [RingHom.coe_coe] at h
+  rw [h]
+  congr 1
+  · funext i
+    exact tensorMap_conjBase f (x i)
+  · funext i
+    have := RingHom.map_mulVec (tensorMap E f : R ⊗[K] E →+* S ⊗[K] E) (baseMatrix K H R) y i
+    simp only [RingHom.coe_coe] at this
+    rw [Function.comp_apply, this]
+    have h2 := map_includeRight_tensorMap (H := H) f
+    simp only [RingHom.coe_coe] at h2
+    rw [h2]
+    rfl
+
+theorem hermTrace_tensorMap {S : Type*} [CommRing S] [Algebra K S] (f : R →ₐ[K] S)
+    (x y : ι → R ⊗[K] E) :
+    f (hermTrace K H R x y) =
+      hermTrace K H S (fun i => tensorMap E f (x i)) (fun i => tensorMap E f (y i)) := by
+  rw [hermTrace, hermTrace, ← tensorMap_hermPair, baseTrace_tensorMap]
+
+theorem hermTrace_self_of_hermValue {x : ι → R ⊗[K] E} {t : R}
+    (ht : hermValue K H R x = algebraMap R (R ⊗[K] E) t) : hermTrace K H R x x = 2 * t := by
+  rw [hermTrace, hermPair_self, ht, baseTrace_algebraMap]
+
+theorem hermPair_smul_smul (c : R ⊗[K] E) (x y : ι → R ⊗[K] E) :
+    hermPair K H R (c • x) (c • y) = (conjBase K E R c * c) * hermPair K H R x y := by
+  rw [hermPair_smul_left, hermPair_smul_right, mul_assoc]
+
+end Pairing
+
+section Coordinates
+
+variable [DecidableEq ι] (R : Type*) [CommRing R] [Algebra K R]
+variable {κ : Type*} [Fintype κ] (b : Basis κ K E)
+
+def vecCoords (x : ι → R ⊗[K] E) (a : ι × κ) : R :=
+  (Algebra.TensorProduct.basis R b).repr (x a.1) a.2
+
+def stdVec (a : ι × κ) : ι → R ⊗[K] E := Pi.single a.1 ((1 : R) ⊗ₜ b a.2)
+
+variable {R}
+
+omit [Algebra.IsQuadraticExtension K E] in
+
+theorem sum_coords_smul_stdVec (x : ι → R ⊗[K] E) :
+    ∑ a : ι × κ, vecCoords R b x a • stdVec R b a = x := by
+  funext i
+  rw [Finset.sum_apply, Fintype.sum_prod_type]
+  simp only [stdVec, Pi.smul_apply, Pi.single_apply, smul_ite, smul_zero]
+  conv_rhs => rw [← (Algebra.TensorProduct.basis R b).sum_repr (x i)]
+  simp [vecCoords, Algebra.TensorProduct.basis_apply]
+
+omit [Algebra.IsQuadraticExtension K E] [Fintype ι] [Fintype κ] in
+
+theorem tensorMap_stdVec (a : ι × κ) :
+    (fun i => tensorMap E (Algebra.ofId K R) (stdVec K b a i)) = stdVec R b a := by
+  funext i
+  simp only [stdVec, Pi.single_apply]
+  split_ifs with h
+  · subst h
+    simp
+  · simp
+
+theorem hermTrace_eq_sum (x y : ι → R ⊗[K] E) :
+    hermTrace K H R x y = ∑ a : ι × κ, ∑ c : ι × κ, vecCoords R b x a *
+      vecCoords R b y c * algebraMap K R (hermTrace K H K (stdVec K b a) (stdVec K b c)) := by
+  have hval : ∀ a c : ι × κ, algebraMap K R (hermTrace K H K (stdVec K b a) (stdVec K b c)) =
+      hermTrace K H R (stdVec R b a) (stdVec R b c) := by
+    intro a c
+    rw [← tensorMap_stdVec (R := R) b a, ← tensorMap_stdVec (R := R) b c]
+    exact hermTrace_tensorMap (Algebra.ofId K R) _ _
+  simp only [hval]
+  conv_lhs => rw [← sum_coords_smul_stdVec b x, ← sum_coords_smul_stdVec b y]
+  rw [← hermTraceBilin_apply]
+  simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul,
+    hermTraceBilin_apply, Finset.mul_sum]
+  rw [Finset.sum_comm]
+  exact Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun c _ => by ring
+
+end Coordinates
+
+end GroundTheory.Automorphic
+end
+end
+
+section
+noncomputable section
+
+namespace GroundTheory.Automorphic
+
+open Module Matrix TensorProduct NumberField NumberField.InfinitePlace
+
+variable {K : Type*} [Field K] [NumberField K]
+
+section TotallyReal
+
+abbrev realEmb (hreal : ∀ w : InfinitePlace K, w.IsReal) (w : InfinitePlace K) : K →+* ℝ :=
+  embedding_of_isReal (hreal w)
+
+omit [NumberField K] in
+theorem realEmb_eq_extension (hreal : ∀ w : InfinitePlace K, w.IsReal) (w : InfinitePlace K)
+    (k : K) : Completion.extensionEmbeddingOfIsReal (hreal w) (algebraMap K w.Completion k) =
+      realEmb hreal w k := by
+  rw [Completion.algebraMap_apply]
+  exact Completion.extensionEmbeddingOfIsReal_coe (hreal w) _
+
+def embeddingsEquivPlaces (hreal : ∀ w : InfinitePlace K, w.IsReal) :
+    (K →+* ℂ) ≃ InfinitePlace K where
+  toFun := InfinitePlace.mk
+  invFun w := w.embedding
+  left_inv φ := by
+    show (InfinitePlace.mk φ).embedding = φ
+    rcases embedding_mk_eq φ with h | h
+    · exact h
+    · have hr := isReal_iff.1 (hreal (InfinitePlace.mk φ))
+      rw [ComplexEmbedding.isReal_iff, h] at hr
+      have hφ : ComplexEmbedding.conjugate (ComplexEmbedding.conjugate φ) = φ := star_star φ
+      rw [h]
+      exact hr.symm.trans hφ
+  right_inv w := mk_embedding w
+
+theorem trace_eq_sum_realEmb (hreal : ∀ w : InfinitePlace K, w.IsReal) (t : K) :
+    (Algebra.trace ℚ K t : ℝ) = ∑ w, realEmb hreal w t := by
+  have h1 := trace_eq_sum_embeddings ℂ (K := ℚ) (L := K) (x := t)
+  have h2 : ∑ σ : K →ₐ[ℚ] ℂ, σ t = ∑ φ : K →+* ℂ, φ t :=
+    (Fintype.sum_equiv (RingHom.equivRatAlgHom K ℂ) _ _ fun φ => rfl).symm
+  have h3 : ∑ φ : K →+* ℂ, φ t = ∑ w : InfinitePlace K, w.embedding t :=
+    Fintype.sum_equiv (embeddingsEquivPlaces hreal) _ _ fun φ => by
+      have := (embeddingsEquivPlaces hreal).left_inv φ
+      exact (congrFun (congrArg DFunLike.coe this) t).symm
+  apply Complex.ofReal_injective
+  rw [Complex.ofReal_ratCast, ← eq_ratCast (algebraMap ℚ ℂ), h1, h2, h3, Complex.ofReal_sum]
+  exact Finset.sum_congr rfl fun w _ => (embedding_of_isReal_apply (hreal w) t).symm
+
+
+end TotallyReal
+
+section Form
+
+variable {E : Type*} [CommRing E] [Algebra K E] [Algebra.IsQuadraticExtension K E]
+variable {ι : Type*} [Fintype ι] [DecidableEq ι] (H : Matrix ι ι E)
+variable {κ : Type*} [Fintype κ] (b : Basis κ K E)
+
+def traceGram : Matrix (ι × κ) (ι × κ) K :=
+  fun a c => hermTrace K H K (stdVec K b a) (stdVec K b c)
+
+variable (R : Type*) [CommRing R] [Algebra K R]
+
+def vecOfCoords (c : ι × κ → R) : ι → R ⊗[K] E :=
+  fun i => (Algebra.TensorProduct.basis R b).equivFun.symm fun k => c (i, k)
+
+omit [NumberField K] [Algebra.IsQuadraticExtension K E] [Fintype ι] [DecidableEq ι] in
+theorem vecCoords_vecOfCoords (c : ι × κ → R) : vecCoords R b (vecOfCoords b R c) = c := by
+  funext a
+  simp only [vecCoords, vecOfCoords]
+  rw [← Basis.equivFun_apply, LinearEquiv.apply_symm_apply]
+
+omit [NumberField K] [Algebra.IsQuadraticExtension K E] [Fintype ι] [DecidableEq ι] in
+theorem vecOfCoords_vecCoords (x : ι → R ⊗[K] E) : vecOfCoords b R (vecCoords R b x) = x := by
+  funext i
+  simp only [vecCoords, vecOfCoords]
+  conv_rhs => rw [← (Algebra.TensorProduct.basis R b).equivFun.symm_apply_apply (x i)]
+  rfl
+
+variable {H b}
+
+omit [NumberField K] in
+
+theorem hermTrace_eq_sum_traceGram (x y : ι → R ⊗[K] E) :
+    hermTrace K H R x y = ∑ a : ι × κ, ∑ c : ι × κ, vecCoords R b x a * vecCoords R b y c *
+      algebraMap K R (traceGram H b a c) :=
+  hermTrace_eq_sum H b x y
+
+omit [NumberField K] in
+
+theorem exists_sign_traceGram {w : InfinitePlace K} (hw : w.IsReal)
+    (hdef : IsHermDefiniteAt H w hw) :
+    ∃ ε : ℝ, ε ≠ 0 ∧ ∀ v : ι × κ → ℝ, v ≠ 0 →
+      0 < ε * ∑ a, ∑ c, v a * v c * embedding_of_isReal hw (traceGram H b a c) := by
+  let ψ := Completion.ringEquivRealOfIsReal hw
+  have key : ∀ v : ι × κ → ℝ, ψ (hermTrace K H w.Completion (vecOfCoords b w.Completion
+      (fun a => ψ.symm (v a))) (vecOfCoords b w.Completion (fun a => ψ.symm (v a)))) =
+      ∑ a, ∑ c, v a * v c * embedding_of_isReal hw (traceGram H b a c) := by
+    intro v
+    rw [hermTrace_eq_sum_traceGram (H := H) (b := b) w.Completion,
+      vecCoords_vecOfCoords b w.Completion (fun a => ψ.symm (v a)), map_sum]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    rw [map_sum]
+    refine Finset.sum_congr rfl fun c _ => ?_
+    rw [map_mul, map_mul, RingEquiv.apply_symm_apply, RingEquiv.apply_symm_apply]
+    congr 1
+    rw [Completion.ringEquivRealOfIsReal_apply, Completion.algebraMap_apply]
+    exact Completion.extensionEmbeddingOfIsReal_coe hw _
+  have hne : ∀ v : ι × κ → ℝ, v ≠ 0 →
+      vecOfCoords b w.Completion (fun a => ψ.symm (v a)) ≠ 0 := by
+    intro v hv h
+    apply hv
+    funext a
+    have := congrFun (vecCoords_vecOfCoords b w.Completion (fun a => ψ.symm (v a))) a
+    rw [h] at this
+    have h0 : vecCoords w.Completion b (0 : ι → w.Completion ⊗[K] E) a = 0 := by
+      simp [vecCoords]
+    rw [h0] at this
+    have := congrArg ψ this
+    rw [RingEquiv.apply_symm_apply, map_zero] at this
+    exact this.symm
+  rcases hdef with hpos | hneg
+  · refine ⟨1, one_ne_zero, fun v hv => ?_⟩
+    obtain ⟨t, ht, htpos⟩ := hpos _ (hne v hv)
+    rw [one_mul, ← key, hermTrace_self_of_hermValue ht, map_mul, map_ofNat]
+    have : ψ t = Completion.extensionEmbeddingOfIsReal hw t := rfl
+    rw [this]
+    positivity
+  · refine ⟨-1, by norm_num, fun v hv => ?_⟩
+    obtain ⟨t, ht, htneg⟩ := hneg _ (hne v hv)
+    rw [← key, hermTrace_self_of_hermValue ht, map_mul, map_ofNat]
+    have : ψ t = Completion.extensionEmbeddingOfIsReal hw t := rfl
+    rw [this]
+    linarith
+
+
+omit [NumberField K] [Fintype κ] in
+
+theorem traceGram_transpose (hH : IsHermitianFor (conjHom K E) H) :
+    (traceGram H b)ᵀ = traceGram H b := by
+  ext a c
+  exact hermTrace_comm hH _ _
+
+theorem realEmb_mul_hermTrace_pos {θ : K}
+    (hθ : ∀ (w : InfinitePlace K) (hw : w.IsReal) (v : ι × κ → ℝ), v ≠ 0 →
+      0 < ∑ a, ∑ c, v a * v c * embedding_of_isReal hw (θ * traceGram H b a c))
+    {w : InfinitePlace K} (hw : w.IsReal) {x : ι → K ⊗[K] E} (hx : x ≠ 0) :
+    0 < embedding_of_isReal hw (θ * hermTrace K H K x x) := by
+  have hv : (fun a => embedding_of_isReal hw (vecCoords K b x a)) ≠ 0 := by
+    intro h
+    apply hx
+    rw [← vecOfCoords_vecCoords b K x]
+    have : vecCoords K b x = 0 := by
+      funext a
+      have := congrFun h a
+      simpa using this
+    rw [this]
+    funext i
+    simp [vecOfCoords]
+  have := hθ w hw _ hv
+  convert this using 1
+  rw [hermTrace_eq_sum_traceGram (H := H) (b := b) K, Finset.mul_sum, map_sum]
+  refine Finset.sum_congr rfl fun a _ => ?_
+  rw [Finset.mul_sum, map_sum]
+  refine Finset.sum_congr rfl fun c _ => ?_
+  rw [Algebra.algebraMap_self, RingHom.id_apply]
+  simp only [map_mul]
+  ring
+
+
+variable (H b) in
+
+def ratGram (θ : K) :
+    Matrix ((ι × κ) × Free.ChooseBasisIndex ℤ (𝓞 K)) ((ι × κ) × Free.ChooseBasisIndex ℤ (𝓞 K)) ℚ :=
+  fun j j' => Algebra.trace ℚ K (θ * integralBasis K j.2 * integralBasis K j'.2 * traceGram H b j.1 j'.1)
+
+omit [Fintype κ] in
+theorem ratGram_transpose (hH : IsHermitianFor (conjHom K E) H) (θ : K) :
+    (ratGram H b θ)ᵀ = ratGram H b θ := by
+  ext j j'
+  simp only [transpose_apply, ratGram]
+  have := congrFun (congrFun (traceGram_transpose (b := b) hH) j.1) j'.1
+  rw [transpose_apply] at this
+  rw [this]
+  ring_nf
+
+
+
+end Form
+
+end GroundTheory.Automorphic
+end
+end
+
+section
 noncomputable section
 
 namespace GroundTheory.Automorphic
@@ -566,3 +1029,5 @@ theorem exists_int_smul_includeRight_mem (β : E) : ∃ D : ℤ, D ≠ 0 ∧
 end Generation
 
 end GroundTheory.Automorphic
+end
+end

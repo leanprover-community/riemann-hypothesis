@@ -1,6 +1,22 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.RationalSupMetrics.AevalEqZeroOfMem
+import Development.AutomorphicSpectrum.Definitions.MetricPeriods.HasMultiplier
 
+section
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo GlobalTheory.CompanionTheory.Ar.Small Filter Topology
+
+namespace MultiProjectiveCoordinates
+
+variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
+
+theorem isOpen_blocks : IsOpen {z : (Σ k, ι k) → ℂ | ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0} := by
+  simp only [Set.setOf_forall, Set.setOf_exists]
+  exact isOpen_iInter_of_finite fun k => isOpen_iUnion fun i =>
+    isOpen_ne_fun (continuous_apply _) continuous_const
+
+end MultiProjectiveCoordinates
+end
+
+section
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo GlobalTheory.CompanionTheory.Ar.Small Filter Topology
 
 theorem MultiProjectiveCoordinates.levi_shift {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] (A : HermLine ι) (t : ℝ)
@@ -33,3 +49,4 @@ theorem MultiProjectiveCoordinates.shiftH_smooth_nef_gen : ∀ (K : Type) [Finty
   refine ⟨a, ha, fun z hz μ hμ => (hm z hz μ hμ).trans_eq ?_⟩
   show Λ * A.h z = Λ * Real.exp (-t) * (Real.exp t * A.h z)
   rw [mul_assoc, ← mul_assoc (Real.exp (-t)), ← Real.exp_add, neg_add_cancel, Real.exp_zero, one_mul]
+end

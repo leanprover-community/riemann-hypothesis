@@ -45,12 +45,6 @@ theorem uAt_mul (v : Pl F) {g h : UA σ W.J} (hg : g ∈ UAt σ W (evFin F v)) (
   show u • (mat (g * h) - 1) = 0
   rw [e, smul_add, ← Matrix.smul_mul, hg u hu, hh u hu, Matrix.zero_mul, add_zero]
 
-theorem uAt_inv (v : Pl F) {h : UA σ W.J} (hh : h ∈ UAt σ W (evFin F v)) : h⁻¹ ∈ UAt σ W (evFin F v) := by
-  intro u hu
-  have e : mat h⁻¹ - 1 = -(mat h⁻¹ * (mat h - 1)) := by
-    rw [Matrix.mul_sub, mat_inv_mul, Matrix.mul_one]; abel
-  show u • (mat h⁻¹ - 1) = 0
-  rw [e, smul_neg, ← Matrix.mul_smul, hh u hu, Matrix.mul_zero, neg_zero]
 
 end Grp
 

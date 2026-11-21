@@ -24,9 +24,6 @@ structure IsBalancedGauge (B : FB R d O) (h : PS k 2 d) : Prop where
   ad : ∀ a : O, FB.toK k (B.ad a) = FB.expS k (ev (n := 2) ![comp1 (B.actK k a) (pt k d 0), pt k d 1] h -
     ev (n := 2) ![pt k d 0, comp1 (B.actK k (star a)) (pt k d 1)] h)
 
-theorem isBalancedGauge_of_canon (B : FB R d O) (h : PS k 2 d) (hh : B.IsCanonGauge k h) :
-    IsBalancedGauge k B h :=
-  ⟨hh.ax0, hh.ax1, hh.ph1, hh.ph2, hh.ad⟩
 
 end Frames
 

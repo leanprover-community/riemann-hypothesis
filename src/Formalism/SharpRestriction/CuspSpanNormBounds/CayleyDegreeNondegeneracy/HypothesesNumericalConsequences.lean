@@ -1,8 +1,43 @@
-import Formalism.SharpRestriction.CuspSpanNormBounds.CayleyDegreeNondegeneracy.IsPositiveDefiniteForm
+import Mathlib
+import Formalism.SharpRestriction.CuspSpanNormBounds.CntPartners
 import Formalism.SharpRestriction.CuspSpanNormBounds.MassAndBranchingHypotheses
 import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.MinkowskiDividesFactorialOfBound
 import Formalism.FlagUnipotentLattices.CardSubgroupsOfIndexLe
 
+section
+noncomputable section
+
+namespace Formalism.MainNotions.BridgeLemma₂
+
+open NumberField Module Formalism.BasicNotions Formalism.MainNotions.S.Lat
+
+def IsCMFieldViaStar (E : Type) [Field E] [NumberField E] [StarRing E] : Prop :=
+  (∀ (σ : E →+* ℂ) (a : E), σ (star a) = (starRingEnd ℂ) (σ a)) ∧ NumberField.IsTotallyComplex E
+
+def IsPositiveDefiniteForm {E : Type} [Field E] [NumberField E] [StarRing E] (S : HSpace E) : Prop :=
+  ∀ (σ : E →+* ℂ) (x : S.V), x ≠ 0 → 0 < (σ (S.hT x x)).re
+
+def numInfinitePlaces (E : Type) [Field E] [NumberField E] : ℕ := Fintype.card (InfinitePlace E)
+
+def ShortVectorCountBound : Prop :=
+  ∀ (E : Type) [Field E] [NumberField E] [StarRing E] (S : HSpace E), IsCMFieldViaStar E → IsPositiveDefiniteForm S →
+    ∀ L : Submodule (𝓞 E) S.V, Formalism.HermitianLatticesTheory.IsIntegralLat S.hT L → ∀ c : ℝ, 1 ≤ c →
+      {y : S.V | y ∈ L ∧ ∀ σ : E →+* ℂ, (σ (S.hT y y)).re ≤ c}.Finite ∧
+      ({y : S.V | y ∈ L ∧ ∀ σ : E →+* ℂ, (σ (S.hT y y)).re ≤ c}.ncard : ℝ) ≤
+        9 ^ (S.rank * numInfinitePlaces E) * (c ^ numInfinitePlaces E) ^ S.rank
+
+def ShortVectorExists : Prop :=
+  ∀ (E : Type) [Field E] [NumberField E] [StarRing E] (S : HSpace E), IsCMFieldViaStar E → IsPositiveDefiniteForm S →
+    ∀ M₀ : Submodule (𝓞 E) S.V, M₀.FG → finrank E (Submodule.span E (M₀ : Set S.V)) = 1 →
+      ∃ y ∈ M₀, y ≠ 0 ∧ ∀ σ : E →+* ℂ,
+        (σ (S.hT y y)).re ≤ (|(discr E : ℝ)| ^ ((1 : ℝ) / 2) * latDetH S.hT M₀) ^ ((1 : ℝ) / numInfinitePlaces E)
+
+end Formalism.MainNotions.BridgeLemma₂
+
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.MainNotions.BridgeLemma₂
@@ -15,14 +50,6 @@ section Frame
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
 
-theorem mass_eq_sum_inv_aut_card (h : V →ₗ⋆[K] V →ₗ[K] K) (L : Submodule (𝓞 K) V) (s : Finset (Submodule (𝓞 K) V))
-    (hs : Formalism.ThetaLiftIndependence.IsClassReps h L s) :
-    Formalism.HermitianLatticesTheory.mass h L = ∑ M ∈ s, ((Nat.card (Formalism.ThetaLiftIndependence.autL h M) : ℕ) : ℝ)⁻¹ := by
-  have hex : ∃ s, Formalism.ThetaLiftIndependence.IsClassReps h L s := ⟨s, hs⟩
-  rw [Formalism.HermitianLatticesTheory.massBasic_mass_eq h L hex]
-  apply Complex.ofReal_injective
-  rw [Formalism.HermitianLatticesTheory.massBasic_sum_cast, Formalism.HermitianLatticesTheory.massBasic_sum_cast]
-  exact Formalism.ThetaLiftIndependence.latLiftIndep K V h L _ _ (fun _ _ _ => rfl) (fun _ _ _ => rfl) _ _ hex.choose_spec hs
 
 end Frame
 
@@ -34,4 +61,5 @@ end Rec
 
 end Formalism.MainNotions.BridgeLemma₂
 
+end
 end

@@ -1,5 +1,25 @@
-import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.FockR
+import Formalism.GradedWeylDivisibility.StatementE
 
+section
+open MvPolynomial
+
+noncomputable section
+
+namespace Formalism.L2.G.Model.TS
+
+open Formalism.GradedWeylDivisibility
+
+def fockR {σ R : Type*} [CommRing R] (f g : MvPolynomial σ R) : R :=
+  ∑ m ∈ f.support, f.coeff m * g.coeff m * ((∏ k ∈ m.support, (m k).factorial : ℕ) : R)
+
+def toK (O K : Type*) [CommRing O] [CommRing K] [Algebra O K] {σ : Type*} : MvPolynomial σ O →ₗ[O] MvPolynomial σ K :=
+  (mapAlgHom (Algebra.ofId O K)).toLinearMap
+
+end Formalism.L2.G.Model.TS
+end
+end
+
+section
 open MvPolynomial
 open scoped Classical
 
@@ -53,3 +73,5 @@ def LowerTriK : Prop :=
     ((∀ e : Fin r × Fin n →₀ ℕ, LowerTri e → coeff e Q = 0) → Q = 0)
 
 end Formalism.L2.G.Model.TS
+end
+end

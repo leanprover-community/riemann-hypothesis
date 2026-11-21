@@ -240,24 +240,6 @@ def levelGrp : Subgroup (Equiv.Perm (LQ D K)) where
 theorem mem_levelGrp {a : Equiv.Perm (LQ D K)} :
     a ∈ levelGrp D N K ↔ (∃ t : SimSys D N K, t.Lifts a) ∧ ∃ t : SimSys D N K, t.Lifts a⁻¹ := Iff.rfl
 
-theorem mem_levelGrp_of_lifts (hK : 0 < K) {a : Equiv.Perm (LQ D K)} {t : SimSys D N K} (ht : t.Lifts a) :
-    a ∈ levelGrp D N K := by
-  refine ⟨⟨t, ht⟩, ?_⟩
-  have hpow : ∀ j : ℕ, ∃ s : SimSys D N K, s.Lifts (a ^ j) := by
-    intro j
-    induction j with
-    | zero => exact ⟨SimSys.id, SimSys.lifts_one⟩
-    | succ j ih =>
-      obtain ⟨s, hs⟩ := ih
-      rw [pow_succ]
-      exact ⟨s.comp t, hs.comp ht⟩
-  have := LQ.finite_aut (D := D) hK
-  have ho := (isOfFinOrder_of_finite a).orderOf_pos
-  have e : a⁻¹ = a ^ (orderOf a - 1) := by
-    refine (eq_inv_of_mul_eq_one_left ?_).symm
-    rw [← pow_succ, Nat.sub_add_cancel ho, pow_orderOf_eq_one]
-  rw [e]
-  exact hpow _
 
 theorem levelGrp.finite (hK : 0 < K) : Finite (levelGrp D N K) := by
   have := LQ.finite_aut (D := D) hK
@@ -297,10 +279,6 @@ theorem relMap_eq {b : Base D R} (hK : 0 < K) (hKp : K.Coprime p) (F : RepFam b 
   (F.rep F.X F.s (F.univ.resim hK hKp (levelGrp.sys a))).unique
     ⟨hf, ⟨m.congrLift hK hKp ht (levelGrp.sys_lifts a)⟩⟩ (relMap_spec hK hKp F a)
 
-theorem relMap_one {b : Base D R} (hK : 0 < K) (hKp : K.Coprime p) (F : RepFam b K) :
-    relMap hK hKp F (1 : levelGrp D N K) = 𝟙 _ :=
-  (relMap_eq hK hKp F 1 SimSys.id SimSys.lifts_one (𝟙 _) (by simp)
-    (Classical.choice (RepFamModel.objMap_refl F.univ))).symm
 
 theorem relMap_mul {b : Base D R} (hK : 0 < K) (hKp : K.Coprime p) (F : RepFam b K) (a c : levelGrp D N K) :
     relMap hK hKp F (a * c) = relMap hK hKp F a ≫ relMap hK hKp F c := by
@@ -310,17 +288,5 @@ theorem relMap_mul {b : Base D R} (hK : 0 < K) (hKp : K.Coprime p) (F : RepFam b
     ((levelGrp.sys_lifts a).comp (levelGrp.sys_lifts c)) _ (by rw [Category.assoc, hc, ha])
     (MapComp.comp (ma.resim hK hKp (levelGrp.sys c)) mc)).symm
 
-theorem relMap_lower {b : Base D R} {M₁ : ℕ} (hN : 0 < N) (hM : 0 < M₁) (hc : (N * M₁).Coprime p)
-    (F : RepFam b (N * M₁)) (a : levelGrp D N (N * M₁)) :
-    Nonempty (ObjMap (F.univ.lower hN hM hc) (F.univ.lower hN hM hc) (relMap (Nat.mul_pos hN hM) hc F a)) := by
-  obtain ⟨-, ⟨m⟩⟩ := relMap_spec (Nat.mul_pos hN hM) hc F a
-  refine ⟨{ m with eta := fun y => ?_ }⟩
-  obtain ⟨z, hz⟩ := (levelGrp.sys a).one y
-  have e : F.univ.eta ((levelGrp.sys a).g (N * M₁) (M₁ • y)) = F.univ.eta (M₁ • y) := by
-    refine F.univ.eta_congr (LQ.mk_eq_mk.2 ⟨z, ?_⟩)
-    rw [map_nsmul, hz, smul_add, smul_smul, Nat.mul_comm M₁ N]
-  have h := m.eta (M₁ • y)
-  rw [Obj.resim_eta, e] at h
-  exact h
 
 end GlobalTheory.UPel.HT

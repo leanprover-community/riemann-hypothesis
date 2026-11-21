@@ -5,7 +5,17 @@ import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.Ex
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExplChi
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.LogDerOne
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DirichletLZerosInWindowFiniteAndPosOrderStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DirichletLZeroSymmetryStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DirichletLZeroSymmetry
+
+section
+open Finset ArithmeticFunction NumberField IsDedekindDomain Filter Topology GlobalTheory.Mem.An Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab
+open scoped nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dirichlet_L_zero_symmetry : ∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q), χ.IsPrimitive → ∀ ρ : ℂ, 0 < ρ.re → ρ.re < 1 → ((DirichletCharacter.LFunction χ ρ = 0 ↔ DirichletCharacter.LFunction χ⁻¹ (1 - ρ) = 0) ∧ zmult χ ρ = zmult χ⁻¹ (1 - ρ)) := by
+  first | exact @GlobalTheory.Mem.An.zeros_symm_one_sub | exact GlobalTheory.Mem.An.zeros_symm_one_sub | (intros; apply GlobalTheory.Mem.An.zeros_symm_one_sub <;> assumption)
+end
+
+section
 open Finset ArithmeticFunction NumberField IsDedekindDomain Filter Topology GlobalTheory.Mem.An Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab
 open scoped nonZeroDivisors
 
@@ -181,3 +191,4 @@ theorem explicit_formula_used : GlobalTheory.Mem.An.ExplZeta → GlobalTheory.Me
       mul_nonneg a1 hL0, mul_nonneg a1 hlq, mul_nonneg a2 hlq]
 
 end GlobalTheory.Mem.An.ExplUsed
+end

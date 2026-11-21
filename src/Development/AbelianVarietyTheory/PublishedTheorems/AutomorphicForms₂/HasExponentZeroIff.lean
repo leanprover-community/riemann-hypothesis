@@ -104,32 +104,7 @@ def HasPairEps (ψ : AddChar k Circle) (π : Representation ℂ (GL (Fin (m + 1)
         I (fun g => l (π (tilde (corner g)) v) * l' (τ (tilde g) v')) =
           (ω (-1) : ℂ) ^ m * e * I (fun g => l (π (corner g) v) * l' (τ g v'))
 
-theorem isInvIntegral_zero : IsInvIntegral (LinearMap.proj (1 : GL (Fin 0) k) : (GL (Fin 0) k → ℂ) →ₗ[ℂ] ℂ) :=
-  fun f _ _ => congrArg f (Units.ext (Subsingleton.elim _ _))
 
-theorem hasPairEps_zero_iff (ψ : AddChar k Circle) (χ : kˣ →* ℂˣ) (e : ℂ) :
-    HasPairEps ψ (detRep (Fin (0 + 1)) χ) (detRep (Fin 0) 1) e ↔ e = 1 := by
-  have h0 : ∀ g : GL (Fin 0) k, g = 1 := fun g => Units.ext (Subsingleton.elim _ _)
-  have h1 : corner (1 : GL (Fin 0) k) = 1 := map_one (emb₂ k (stdSum (rfl : 0 + 1 = 0 + 1)))
-  have h2 : tilde (1 : GL (Fin (0 + 1)) k) = 1 := by
-    rw [tilde, map_one, mul_one]
-    ext i j
-    fin_cases i; fin_cases j
-    simp [longElt]
-  have key : ∀ (l l' : Module.Dual ℂ ℂ) (v v' : ℂ),
-      (fun g : GL (Fin 0) k => l (detRep (Fin (0 + 1)) χ (tilde (corner g)) v) * l' (detRep (Fin 0) 1 (tilde g) v')) =
-        fun g => l (detRep (Fin (0 + 1)) χ (corner g) v) * l' (detRep (Fin 0) 1 g v') := fun l l' v v' => by
-    funext g
-    rw [h0 (tilde g), h0 g, h1, h2]
-  constructor
-  · intro H
-    have := H 1 (fun z v => by simp [detRep]) LinearMap.id LinearMap.id
-      (fun u hu v => by simp [detRep, superDiag, det_eq_one_of_mem_unipRad k hu])
-      (fun u hu v => by simp [detRep, superDiag]) _ isInvIntegral_zero 1 1
-    rw [key] at this
-    simpa [h1] using this.symm
-  · rintro rfl ω _ l l' _ _ I _ v v'
-    rw [key]; simp
 
 end Pairs
 

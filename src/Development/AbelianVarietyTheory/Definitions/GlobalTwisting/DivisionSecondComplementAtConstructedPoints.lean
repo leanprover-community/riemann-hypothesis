@@ -33,11 +33,6 @@ structure All (𝒜 : FamClass) : Prop where
   hInstR : H_hInstR 𝒜
   aC2 : DivisionSecondComplementAdmissible 𝒜
 
-theorem row_all {Bd : BdT} {Q : V4.Slot} {Lk : LkT Bd}
-    (hh : HeightConditionAtConstructedPoints Q Lk) (hInstR : InstanceRankAtConstructedPoints Q Lk) (aC2 : DivisionSecondComplementAtConstructedPoints Q Lk) :
-    Row Q Lk fun 𝒜 _ => All 𝒜 :=
-  Row.imp (Row.and hh (Row.and hInstR aC2))
-    fun _ _ _ ⟨a0, a1, a2⟩ => ⟨a0, a1, a2⟩
 
 end GlobalTheory.Fc.ClassTwoEntries
 

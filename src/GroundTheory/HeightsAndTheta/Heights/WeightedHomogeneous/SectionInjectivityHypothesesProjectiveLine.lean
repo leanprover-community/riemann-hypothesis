@@ -253,19 +253,6 @@ def blockPowLine (k₀ : ι) (e : ℕ) : HermLine n where
     simp
   metric_smooth := (contDiffOn_l2Norm_block k₀).pow e
 
-theorem powBlock_lift_not_mem (k₀ : ι) (e : ℕ) (c : (k : ι) → Fin (n k + 1))
-    (j : Fin (n k₀ + 1)) :
-    (powBlock n k₀ e).lift ((powChartForms n k₀ e).g c j) ∉ (powBlock n k₀ e).ext := by
-  intro h
-  unfold AddBlockData.ext ReciprocityTheory.ChartRestriction.G.Geo.mCoordIdeal at h
-  rw [RingHom.mem_ker] at h
-  simp only [AddBlockData.lift, ReciprocityTheory.ChartRestriction.G.Geo.mConeMap, aeval_rename, powChartForms,
-    chartMonomial, map_mul, map_prod, map_pow, aeval_X, Function.comp_apply] at h
-  simp only [mul_eq_zero, Finset.prod_eq_zero_iff, pow_eq_zero_iff', C_eq_zero, X_ne_zero,
-    or_false] at h
-  rcases h with ⟨k, -, h, -⟩ | ⟨h, -⟩
-  · exact genPt_whole_ne_zero n _ h
-  · exact genPt_whole_ne_zero n _ h
 
 end Examples
 
@@ -364,20 +351,7 @@ section ExamplesT1
 
 variable (n)
 
-theorem chartForms_hypotheses_block_power (k₀ : ι) :
-    (blockPowLine n k₀ 1).deg = (powBlock n k₀ 1).deg ∧
-      ∀ c j, (powBlock n k₀ 1).lift ((powChartForms n k₀ 1).g c j) ∉ (powBlock n k₀ 1).ext :=
-  ⟨rfl, fun c j ↦ powBlock_lift_not_mem n k₀ 1 c j⟩
 
-theorem smallSections_hypotheses_block_power (k₀ : ι) :
-    (MvPolynomial.IsHomogeneous (1 : MvPolynomial (Fin ((powBlock n k₀ 1).m + 1)) ℤ) 0) ∧
-    (∀ w ∈ conePoints (powBlock n k₀ 1).ext ℂ,
-      ‖eval₂ (Int.castRingHom ℂ) (newPart w) (1 : MvPolynomial (Fin ((powBlock n k₀ 1).m + 1)) ℤ)‖ ≤
-        hPlus (powChartForms n k₀ 1) (wholeGens n) (blockPowLine n k₀ 1) w ^ 0) ∧
-    val (ArithVariety.whole n) 1 =
-      aeval (powBlock n k₀ 1).x (1 : MvPolynomial (Fin ((powBlock n k₀ 1).m + 1)) ℤ) *
-        val (ArithVariety.whole n) 1 :=
-  ⟨isHomogeneous_one _ _, fun w _ ↦ by simp, by simp [val]⟩
 
 end ExamplesT1
 
@@ -625,104 +599,12 @@ abbrev projectivePointSizes : Unit → ℕ := fun _ ↦ 0
 def exSection : IntegralSection (ArithVariety.whole projectiveLineSizes) (powDivStd (HermLine.standard projectiveLineSizes) 1).deg :=
   constSection _ _ fun _ ↦ by simp [powDivStd, HermLine.standard]
 
-theorem exSection_supNormLE :
-    IntegralSection.SupNormLE (powDivStd (HermLine.standard projectiveLineSizes) 1) exSection 0 := by
-  intro z hz c d e' he _
-  obtain ⟨-, hmem⟩ := he
-  have h0 : e' = chartMonomial c d := by
-    have := (Submodule.mem_bot _).mp hmem
-    simpa [exSection, constSection, sub_eq_zero] using this
-  subst h0
-  have hS := ((HermLine.standard projectiveLineSizes).metric_pos z hz.1).ne'
-  have hm : (powDivStd (HermLine.standard projectiveLineSizes) 1).metric z = 1 := by
-    change (HermLine.standard projectiveLineSizes).metric z ^ 1 / (HermLine.standard projectiveLineSizes).metric z = 1
-    rw [pow_one, div_self hS]
-  rw [hm, mul_one, Real.exp_zero]
-  exact div_self_le_one _
 
-theorem sectionInjectivity_hypotheses_projectiveLine :
-    1 < 2 ∧ 1 ≤ 1 ∧ exSection.num ∉ (ArithVariety.whole projectiveLineSizes).ideal ∧
-      IntegralSection.SupNormLE (powDivStd (HermLine.standard projectiveLineSizes) 1) exSection 0 ∧
-      (powBlock projectiveLineSizes () 2).deg = (twistPow (HermLine.standard projectiveLineSizes) (2 - 1) 1 0).deg := by
-  refine ⟨by norm_num, le_rfl, ?_, exSection_supNormLE, ?_⟩
-  · intro h
-    have := (Submodule.mem_bot _).mp h
-    simp [exSection, constSection] at this
-  · funext b
-    simp [powBlock, twistPow, HermLine.standard]
 
-theorem monomialMap_hypotheses_point :
-    (∀ k, (HermLine.standard projectivePointSizes).deg k = ((fun _ ↦ 1 : Unit → ℕ) k : ℤ)) ∧
-      MonomialsBoundedBy (ArithVariety.whole projectivePointSizes) (HermLine.standard projectivePointSizes) (fun _ ↦ 1) ∧ 0 < 1 ∧
-      (∀ k, ∑ i, (fun _ ↦ 1 : Coord projectivePointSizes → ℕ) ⟨k, i⟩ = 1) ∧
-      val (ArithVariety.whole projectivePointSizes) (monomialOf (fun _ ↦ 1)) ≠ 0 := by
-  refine ⟨fun _ ↦ rfl, ?_, Nat.one_pos, fun _ ↦ by simp, ?_⟩
-  · intro z _ μ hμ
-    have hv : ∀ v : Coord projectivePointSizes, v = ⟨(), 0⟩ := by
-      rintro ⟨⟨⟩, i⟩
-      rw [Fin.fin_one_eq_zero i]
-    have h1 : μ ⟨(), 0⟩ = 1 := by
-      have := hμ ()
-      simp only [projectivePointSizes, Fin.sum_univ_succ, Fin.sum_univ_zero, add_zero] at this
-      exact this
-    have he : evalCone z (monomialOf μ) = z () 0 := by
-      simp only [monomialOf, evalCone]
-      rw [Fintype.prod_eq_single ⟨(), 0⟩ (fun v hv' ↦ absurd (hv v) hv'), h1, pow_one, eval₂_X]
-    rw [he]
-    change ‖z () 0‖ ≤ ∏ k, l2Norm (z k)
-    rw [Fintype.prod_unique]
-    exact norm_le_l2Norm (z ()) 0
-  · rw [val_monomialOf]
-    exact Finset.prod_ne_zero_iff.mpr fun v _ ↦ pow_ne_zero _ (genPt_whole_ne_zero projectivePointSizes v)
 
-theorem weightedDegree_hypotheses_point :
-    ringKrullDim (MvPolynomial (Coord projectivePointSizes) ℤ ⧸ (ArithVariety.whole projectivePointSizes).ideal) =
-      ((0 + 1 + Fintype.card Unit : ℕ) : WithBot ℕ∞) ∧ Nat.Prime 2 := by
-  refine ⟨?_, Nat.prime_two⟩
-  rw [show (ArithVariety.whole projectivePointSizes).ideal = ⊥ from rfl,
-    ringKrullDim_eq_of_ringEquiv (RingEquiv.quotientBot _),
-    MvPolynomial.ringKrullDim_of_isNoetherianRing,
-    IsPrincipalIdealRing.ringKrullDim_eq_one ℤ Int.not_isField]
-  have hc : Nat.card (Coord projectivePointSizes) = 1 := by
-    rw [Nat.card_eq_fintype_card, Fintype.card_sigma]
-    simp
-  rw [hc, Fintype.card_unit]
-  norm_cast
 
-theorem hadamardGram_hypotheses_unit_basis :
-    LinearIndependent ℝ (EuclideanSpace.basisFun (Fin 1) ℝ) ∧
-      (∀ i, ‖EuclideanSpace.basisFun (Fin 1) ℝ i‖ ≤ 1) ∧
-      ∀ i, EuclideanSpace.basisFun (Fin 1) ℝ i ∈
-        AddSubgroup.closure (Set.range (EuclideanSpace.basisFun (Fin 1) ℝ)) :=
-  ⟨(EuclideanSpace.basisFun (Fin 1) ℝ).orthonormal.linearIndependent,
-    fun i ↦ ((EuclideanSpace.basisFun (Fin 1) ℝ).orthonormal.1 i).le,
-    fun i ↦ AddSubgroup.subset_closure (Set.mem_range_self i)⟩
 
-theorem latticePointCount_hypotheses_unit :
-    (0 : ℝ) < 1 ∧ LinearIndependent ℝ (EuclideanSpace.basisFun (Fin 1) ℝ) ∧
-      (∀ s ∈ ({EuclideanSpace.basisFun (Fin 1) ℝ 0} : Finset (EuclideanSpace ℝ (Fin 1))), ‖s‖ ≤ 1) ∧
-      AddSubgroup.closure
-          (({EuclideanSpace.basisFun (Fin 1) ℝ 0} : Finset (EuclideanSpace ℝ (Fin 1))) :
-            Set (EuclideanSpace ℝ (Fin 1))) =
-        AddSubgroup.closure (Set.range (EuclideanSpace.basisFun (Fin 1) ℝ)) := by
-  refine ⟨one_pos, (EuclideanSpace.basisFun (Fin 1) ℝ).orthonormal.linearIndependent, ?_, ?_⟩
-  · intro s hs
-    rw [Finset.mem_singleton] at hs
-    subst hs
-    exact ((EuclideanSpace.basisFun (Fin 1) ℝ).orthonormal.1 0).le
-  · rw [Finset.coe_singleton, Set.range_unique]
-    rfl
 
-theorem latticePacking_hypotheses_integers :
-    (0 : ℝ) ≤ 0 ∧ (∀ x y : ℤ, |((x + y : ℤ) : ℝ)| ≤ |(x : ℝ)| + |(y : ℝ)|) ∧
-      (∀ k x : ℤ, |((k • x : ℤ) : ℝ)| = |(k : ℝ)| * |(x : ℝ)|) ∧
-      ∀ x : ℤ, x ≠ 0 → Real.exp (-0) ≤ |(x : ℝ)| := by
-  refine ⟨le_rfl, fun x y ↦ ?_, fun k x ↦ by simp [abs_mul], fun x hx ↦ ?_⟩
-  · push_cast
-    exact abs_add_le _ _
-  · rw [neg_zero, Real.exp_zero]
-    have : (1 : ℤ) ≤ |x| := Int.one_le_abs hx
-    exact_mod_cast this
 
 end ExamplesRest
 
@@ -744,41 +626,6 @@ def pairEquiv : Fin 1 × Fin 1 ≃ Fin (0 + 1) := finProdFinEquiv.trans (finCong
 
 def stdPhi : (HermitianBundle.standard ℚ 1).carrier ≃ₗ[𝓞 ℚ] (Fin 1 → 𝓞 ℚ) := LinearEquiv.refl _ _
 
-theorem pointHeightDegree_hypotheses_example :
-    (∀ σ : ℚ →+* ℂ, ((fun _ : ℚ →+* ℂ ↦ (1 : Matrix (Fin 1) (Fin 1) ℂ)) σ).PosDef) ∧
-    (∀ σ : ℚ →+* ℂ, (fun _ ↦ (1 : Matrix (Fin 1) (Fin 1) ℂ)) (ComplexEmbedding.conjugate σ) =
-      (1 : Matrix (Fin 1) (Fin 1) ℂ).map (starRingEnd ℂ)) ∧
-    (∀ u, (HermLine.standard (fun _ : Unit ↦ 0)).deg u = 1) ∧
-    (∀ (σ : ℚ →+* ℂ) (w : Fin 1 → ℂ), w ≠ 0 →
-      (HermLine.standard (fun _ : Unit ↦ 0)).metric
-          (fun _ t ↦ σ (ratBasis (pairEquiv.symm t).1 : ℚ) *
-            w (pairEquiv.symm t).2) =
-        hermNorm 1 w) ∧
-    (∀ (σ' : ℚ →+* ℂ) (x y : (HermitianBundle.standard ℚ 1).carrier),
-      ((HermitianBundle.standard ℚ 1).metric.form σ').inner ((1 : ComplexAt σ') ⊗ₜ[𝓞 ℚ] x)
-          ((1 : ComplexAt σ') ⊗ₜ[𝓞 ℚ] y) =
-        star (fun j ↦ σ' (stdPhi x j : ℚ)) ⬝ᵥ
-          ((1 : Matrix (Fin 1) (Fin 1) ℂ) *ᵥ fun j ↦ σ' (stdPhi y j : ℚ))) ∧
-    (fun _ ↦ (1 : 𝓞 ℚ) : Fin 1 → 𝓞 ℚ) ≠ 0 := by
-  refine ⟨fun _ ↦ Matrix.PosDef.one, fun _ ↦ by simp, fun _ ↦ rfl, ?_, ?_, ?_⟩
-  · intro σ w _
-    change ∏ k : Unit, l2Norm _ = _
-    rw [Fintype.prod_unique]
-    generalize hp : (pairEquiv.symm 0).2 = t
-    rw [Fin.fin_one_eq_zero t] at hp
-    simp [l2Norm, hermNorm, ratBasis_apply, dotProduct, Complex.conj_mul', hp]
-    rw [← Complex.ofReal_pow, Complex.ofReal_re, Real.sqrt_sq (norm_nonneg _)]
-  · intro σ' x y
-    refine (HermitianMetric.standard_inner (K := ℚ) (Fin 1) σ'
-      ((1 : ComplexAt σ') ⊗ₜ[𝓞 ℚ] (x : Fin 1 → 𝓞 ℚ))
-      ((1 : ComplexAt σ') ⊗ₜ[𝓞 ℚ] (y : Fin 1 → 𝓞 ℚ))).trans ?_
-    show ∑ i : Fin 1, starRingEnd ℂ (σ' ((x : Fin 1 → 𝓞 ℚ) i : ℚ) * (ofComplex σ').symm 1) *
-        (σ' ((y : Fin 1 → 𝓞 ℚ) i : ℚ) * (ofComplex σ').symm 1) = _
-    simp [dotProduct, stdPhi, mul_comm]
-    rfl
-  · intro h
-    have := congrFun h 0
-    exact one_ne_zero this
 
 end ExamplesOneBlock
 

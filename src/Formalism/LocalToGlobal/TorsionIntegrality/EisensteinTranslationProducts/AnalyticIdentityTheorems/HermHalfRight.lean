@@ -19,11 +19,7 @@ lemma herm_neg_left (L : PeriodPair) (x w : ℂ) : herm L (-x) w = -herm L x w :
 lemma herm_zero_left (L : PeriodPair) (w : ℂ) : herm L 0 w = 0 := by
   simp [herm]
 
-lemma herm_half_right (L : PeriodPair) (x w : ℂ) : herm L x (w / 2) = herm L x w / 2 := by
-  simp only [herm, map_div₀, map_ofNat]; ring
 
-lemma herm_half_left (L : PeriodPair) (x w : ℂ) : herm L (x / 2) w = herm L x w / 2 := by
-  simp only [herm]; ring
 
 lemma herm_conj (L : PeriodPair) (x y : ℂ) : herm L x y = conj (herm L y x) := by
   simp only [herm, map_div₀, map_mul, Complex.conj_conj, Complex.conj_ofReal]; ring

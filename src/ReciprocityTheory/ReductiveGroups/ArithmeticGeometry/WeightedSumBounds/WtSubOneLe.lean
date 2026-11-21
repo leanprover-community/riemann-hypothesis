@@ -1,8 +1,729 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.TypicalCurveStructureConstants
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.CoeffLgPcurveTop
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.GeomSumRoot
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.CardToMultisetEqDegree
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.TangentEqLcZero
 
+section
+namespace ReciprocityTheory.ChartRestriction.G.Sh.PTb
+
+open MvPowerSeries ReciprocityTheory.PGsh
+
+noncomputable section
+
+variable {C : Type} [Field C] {v : AddValuation C (WithTop ℝ)} {d : ℕ}
+
+def tmat (γ : Fin d → Fin d → PowerSeries C) : Matrix (Fin d) (Fin d) C :=
+  Matrix.of fun a b => tangent (γ a) b
+
+theorem sum_smul_tangent (γ : Fin d → Fin d → PowerSeries C) (x : Fin d → C) :
+    ∑ b, x b • tangent (γ b) = Matrix.vecMul x (tmat γ) := by
+  funext c
+  simp [Matrix.vecMul, dotProduct, tmat, Finset.sum_apply]
+
+theorem tmat_det_ne_zero {γ : Fin d → Fin d → PowerSeries C} (hdet : v (tmat γ).det = 0) :
+    (tmat γ).det ≠ 0 := by
+  intro h
+  rw [h] at hdet
+  simp at hdet
+
+theorem tmat_isUnit_det {γ : Fin d → Fin d → PowerSeries C} (hdet : v (tmat γ).det = 0) :
+    IsUnit (tmat γ).det := isUnit_iff_ne_zero.mpr (tmat_det_ne_zero hdet)
+
+theorem isIntV_tmat_inv {γ : Fin d → Fin d → PowerSeries C} (hγ : ∀ a, IsCurve v (γ a))
+    (hdet : v (tmat γ).det = 0) (i j : Fin d) : IsIntV v ((tmat γ)⁻¹ i j) := by
+  let S : Subring C :=
+    { carrier := {x | 0 ≤ v x}
+      mul_mem' := fun {a b} ha hb => by
+        simp only [Set.mem_setOf_eq, AddValuation.map_mul] at *
+        exact add_nonneg ha hb
+      one_mem' := by simp
+      add_mem' := fun {a b} ha hb => le_trans (le_min ha hb) (AddValuation.map_add v a b)
+      zero_mem' := by simp
+      neg_mem' := fun {a} ha => by simpa [AddValuation.map_neg] using ha }
+  have hent : ∀ a b, tmat γ a b ∈ S := fun a b => by
+    show 0 ≤ v (tmat γ a b)
+    exact (hγ a b).2 1
+  let M' : Matrix (Fin d) (Fin d) S := fun a b => ⟨tmat γ a b, hent a b⟩
+  have hM : tmat γ = S.subtype.mapMatrix M' := by
+    ext a b
+    rfl
+  have hadj : ∀ i j, (tmat γ).adjugate i j ∈ S := by
+    intro i j
+    rw [hM, ← RingHom.map_adjugate]
+    first
+    | exact (M'.adjugate i j).2
+    | simp
+  have hdet_inv : v ((tmat γ).det⁻¹) = 0 := by
+    have h1 : v ((tmat γ).det⁻¹ * (tmat γ).det) = 0 := by
+      rw [inv_mul_cancel₀ (tmat_det_ne_zero hdet), AddValuation.map_one]
+    rwa [AddValuation.map_mul, hdet, add_zero] at h1
+  show 0 ≤ v ((tmat γ)⁻¹ i j)
+  rw [Matrix.inv_def, Ring.inverse_eq_inv, Matrix.smul_apply, smul_eq_mul, AddValuation.map_mul,
+    hdet_inv, zero_add]
+  exact hadj i j
+
+theorem vecMul_inv_tmat {γ : Fin d → Fin d → PowerSeries C} (hdet : v (tmat γ).det = 0)
+    (w : Fin d → C) : Matrix.vecMul (Matrix.vecMul w (tmat γ)⁻¹) (tmat γ) = w := by
+  rw [Matrix.vecMul_vecMul, Matrix.nonsing_inv_mul _ (tmat_isUnit_det hdet), Matrix.vecMul_one]
+
+theorem eq_zero_of_vecMul_tmat {γ : Fin d → Fin d → PowerSeries C} (hdet : v (tmat γ).det = 0)
+    {x : Fin d → C} (h : Matrix.vecMul x (tmat γ) = 0) : x = 0 := by
+  have h2 := congrArg (fun w => Matrix.vecMul w (tmat γ)⁻¹) h
+  simp only [Matrix.vecMul_vecMul, Matrix.mul_nonsing_inv _ (tmat_isUnit_det hdet),
+    Matrix.vecMul_one, Matrix.zero_vecMul] at h2
+  exact h2
+
+theorem isIntV_vecMul_inv {γ : Fin d → Fin d → PowerSeries C} (hγ : ∀ a, IsCurve v (γ a))
+    (hdet : v (tmat γ).det = 0) {w : Fin d → C} (hw : ∀ c, IsIntV v (w c)) (b : Fin d) :
+    IsIntV v (Matrix.vecMul w (tmat γ)⁻¹ b) := by
+  let S : Subring C :=
+    { carrier := {x | 0 ≤ v x}
+      mul_mem' := fun {a b} ha hb => by
+        simp only [Set.mem_setOf_eq, AddValuation.map_mul] at *
+        exact add_nonneg ha hb
+      one_mem' := by simp
+      add_mem' := fun {a b} ha hb => le_trans (le_min ha hb) (AddValuation.map_add v a b)
+      zero_mem' := by simp
+      neg_mem' := fun {a} ha => by simpa [AddValuation.map_neg] using ha }
+  have hmem : Matrix.vecMul w (tmat γ)⁻¹ b ∈ S := by
+    simp only [Matrix.vecMul, dotProduct]
+    exact S.sum_mem fun c _ => S.mul_mem (hw c) (isIntV_tmat_inv hγ hdet c b)
+  exact hmem
+
+theorem vecMul_tmat_support {h : ℕ} (ty : Fin d → ZMod h) {γ : Fin d → Fin d → PowerSeries C}
+    (hdet : v (tmat γ).det = 0) (ht : ∀ b c, ty c ≠ ty b → tangent (γ b) c = 0)
+    (x : Fin d → C) (τ : ZMod h) (hw : ∀ c, ty c ≠ τ → Matrix.vecMul x (tmat γ) c = 0) :
+    ∀ b, ty b ≠ τ → x b = 0 := by
+  intro b hb
+  set x' : Fin d → C := fun b => if ty b ≠ τ then x b else 0 with hx'
+  have hz : Matrix.vecMul x' (tmat γ) = 0 := by
+    funext c
+    simp only [Matrix.vecMul, dotProduct, Pi.zero_apply]
+    by_cases hc : ty c = τ
+    · apply Finset.sum_eq_zero
+      intro b' _
+      by_cases hb' : ty b' ≠ τ
+      · have h0 : tangent (γ b') c = 0 := ht b' c (by rw [hc]; exact fun h => hb' h.symm)
+        simp [hx', hb', tmat, h0]
+      · simp [hx', hb']
+    · have h0 := hw c hc
+      simp only [Matrix.vecMul, dotProduct] at h0
+      rw [← h0]
+      apply Finset.sum_congr rfl
+      intro b' _
+      by_cases hb' : ty b' ≠ τ
+      · simp [hx', hb']
+      · have hb2 : ty b' = τ := not_not.mp hb'
+        have h1 : tangent (γ b') c = 0 := ht b' c (by rw [hb2]; exact hc)
+        simp [hx', hb', tmat, h1]
+  have h3 := congrFun (eq_zero_of_vecMul_tmat hdet hz) b
+  simpa [hx', hb] using h3
+
+end
+
+end ReciprocityTheory.ChartRestriction.G.Sh.PTb
+end
+
+section
+namespace ReciprocityTheory.ChartRestriction.G.Sh.PTb
+
+open MvPowerSeries ReciprocityTheory.PGsh
+
+noncomputable section
+
+variable {C : Type} [Field C] {v : AddValuation C (WithTop ℝ)} {d : ℕ}
+
+def ptx (G : LogFGL v d) (p : ℕ) (γ : Fin d → Fin d → PowerSeries C)
+    (ga : Fin d → PowerSeries C) (n : ℕ) : Fin d → C :=
+  Matrix.vecMul (G.lc p ga n - ∑ s : Fin n, ∑ b,
+    (ptx G p γ ga s b) ^ (p ^ (n - s)) • G.lc p (γ b) (n - s)) (tmat γ)⁻¹
+termination_by n
+decreasing_by exact s.isLt
+
+def ptw (G : LogFGL v d) (p : ℕ) (γ : Fin d → Fin d → PowerSeries C)
+    (ga : Fin d → PowerSeries C) (n : ℕ) : Fin d → C :=
+  G.lc p ga n - ∑ s ∈ Finset.range n, ∑ b,
+    (ptx G p γ ga s b) ^ (p ^ (n - s)) • G.lc p (γ b) (n - s)
+
+theorem ptx_eq (G : LogFGL v d) (p : ℕ) (γ : Fin d → Fin d → PowerSeries C)
+    (ga : Fin d → PowerSeries C) (n : ℕ) :
+    ptx G p γ ga n = Matrix.vecMul (ptw G p γ ga n) (tmat γ)⁻¹ := by
+  rw [ptx, ptw, Finset.sum_range]
+
+private theorem lgCurve_zero' (G : LogFGL v d) (a : Fin d) :
+    G.lgCurve (fun _ => (0 : PowerSeries C)) a = 0 := by
+  have h0 : HasSubst (fun _ : Fin d => (0 : PowerSeries C)) := by
+    first
+    | exact MvPowerSeries.hasSubst_of_constantCoeff_zero (fun _ => by simp)
+    | exact MvPowerSeries.HasSubst.of_constantCoeff_zero' (fun _ => by simp)
+  ext j
+  rw [map_zero]
+  change MvPowerSeries.coeff (Finsupp.single () j) (subst _ (G.lg a)) = 0
+  rw [MvPowerSeries.coeff_subst h0]
+  apply finsum_eq_zero_of_forall_eq_zero
+  intro e
+  by_cases he : e = 0
+  · subst he
+    rw [coeff_zero_eq_constantCoeff_apply, G.lg_const a, zero_smul]
+  · obtain ⟨s, hs⟩ : ∃ s, e s ≠ 0 := by
+      by_contra hcon
+      push_neg at hcon
+      exact he (Finsupp.ext hcon)
+    rw [Finsupp.prod, Finset.prod_eq_zero (Finsupp.mem_support_iff.mpr hs) (by simp [hs]),
+      map_zero, smul_zero]
+
+alias _root_.SharedProofs.LgCurvePcurve.lgCurve_zero' := lgCurve_zero'
+
+private theorem lc_at_zero_eq_tangent (G : LogFGL v d) (p : ℕ) (ga : Fin d → PowerSeries C)
+    (h0 : ∀ b, PowerSeries.constantCoeff (ga b) = 0) : G.lc p ga 0 = tangent ga := by
+  funext a
+  have hk : ∀ b, (PowerSeries.X : PowerSeries C) ^ 1 ∣ ga b - (fun _ => (0 : PowerSeries C)) b := by
+    intro b
+    show (PowerSeries.X : PowerSeries C) ^ 1 ∣ ga b - 0
+    rw [pow_one, sub_zero]
+    exact PowerSeries.X_dvd_iff.mpr (h0 b)
+  have h1 := lgCurve_sub_dvd (β := fun _ => (0 : PowerSeries C)) G h0 (fun _ => by simp) 1 hk a
+  simp only [lgCurve_zero', sub_zero] at h1
+  have h2 := PowerSeries.X_pow_dvd_iff.mp h1 1 (by norm_num)
+  rw [map_sub, sub_eq_zero] at h2
+  show PowerSeries.coeff (p ^ 0) (G.lgCurve ga a) = PowerSeries.coeff 1 (ga a)
+  rw [pow_zero, h2]
+
+theorem ptx_rel (G : LogFGL v d) (p : ℕ) {γ : Fin d → Fin d → PowerSeries C}
+    (hγ : ∀ a, IsCurve v (γ a)) (hdet : v (tmat γ).det = 0) (ga : Fin d → PowerSeries C)
+    (n : ℕ) :
+    G.lc p ga n = ∑ s ∈ Finset.range (n + 1), ∑ b,
+      (ptx G p γ ga s b) ^ (p ^ (n - s)) • G.lc p (γ b) (n - s) := by
+  have hlast : ∑ b, (ptx G p γ ga n b) ^ (p ^ (n - n)) • G.lc p (γ b) (n - n) =
+      ptw G p γ ga n := by
+    simp only [Nat.sub_self, pow_zero, pow_one]
+    rw [Finset.sum_congr rfl (fun b _ => by rw [lc_at_zero_eq_tangent G p (γ b) (fun c => (hγ b c).1)]),
+      sum_smul_tangent, ptx_eq, vecMul_inv_tmat hdet]
+  rw [Finset.sum_range_succ, hlast, ptw]
+  abel
+
+def pcurve (G : LogFGL v d) (p : ℕ) (γ : Fin d → Fin d → PowerSeries C) (x : ℕ → Fin d → C) :
+    ℕ → Fin d → PowerSeries C
+  | 0 => 0
+  | s + 1 => G.add (pcurve G p γ x s) (G.sumF fun b => expC (p ^ s) (rescaleCurve (x s b) (γ b)))
+
+private theorem hasSubst_of_constantCoeff_eq_zero_weighted_sum_bounds {σ τ : Type} [Finite σ] (a : σ → MvPowerSeries τ C)
+    (ha : ∀ s, constantCoeff (a s) = 0) : HasSubst a := by
+  first
+  | exact MvPowerSeries.hasSubst_of_constantCoeff_zero ha
+  | exact MvPowerSeries.HasSubst.of_constantCoeff_zero' ha
+
+private theorem constantCoeff_subst_eq_zero_of_constantCoeff_eq_zero {σ : Type} [Finite σ] (a : σ → PowerSeries C)
+    (ha : ∀ s, PowerSeries.constantCoeff (a s) = 0) (f : MvPowerSeries σ C)
+    (hf : constantCoeff f = 0) : PowerSeries.constantCoeff (subst a f) = 0 := by
+  have hA : HasSubst a := hasSubst_of_constantCoeff_eq_zero_weighted_sum_bounds a (fun s => ha s)
+  have key : PowerSeries.coeff 0 (subst a f) = 0 := by
+    change MvPowerSeries.coeff (Finsupp.single () 0) (subst a f) = 0
+    rw [MvPowerSeries.coeff_subst hA]
+    apply finsum_eq_zero_of_forall_eq_zero
+    intro e
+    by_cases he : e = 0
+    · subst he
+      rw [coeff_zero_eq_constantCoeff_apply, hf, zero_smul]
+    · obtain ⟨s, hs⟩ : ∃ s, e s ≠ 0 := by
+        by_contra hcon
+        push_neg at hcon
+        exact he (Finsupp.ext hcon)
+      have hdvd : (PowerSeries.X : PowerSeries C) ∣ e.prod (fun s n => a s ^ n) := by
+        rw [Finsupp.prod]
+        exact (dvd_pow (PowerSeries.X_dvd_iff.mpr (ha s)) hs).trans
+          (Finset.dvd_prod_of_mem (fun s => a s ^ e s) (Finsupp.mem_support_iff.mpr hs))
+      have h0 : PowerSeries.coeff 0 (e.prod (fun s n => a s ^ n)) = 0 := by
+        rw [PowerSeries.coeff_zero_eq_constantCoeff_apply]
+        exact PowerSeries.X_dvd_iff.mp hdvd
+      have h0' : MvPowerSeries.coeff (Finsupp.single () 0) (e.prod (fun s n => a s ^ n)) = 0 := h0
+      rw [h0', smul_zero]
+  rwa [PowerSeries.coeff_zero_eq_constantCoeff_apply] at key
+
+private theorem lgCurve_add' (G : LogFGL v d) (ga gb : Fin d → PowerSeries C)
+    (hga : ∀ c, PowerSeries.constantCoeff (ga c) = 0)
+    (hgb : ∀ c, PowerSeries.constantCoeff (gb c) = 0) (a : Fin d) :
+    G.lgCurve (G.add ga gb) a = G.lgCurve ga a + G.lgCurve gb a := by
+  have hE : HasSubst (Sum.elim ga gb) := hasSubst_of_constantCoeff_eq_zero_weighted_sum_bounds _ (fun s => by
+    cases s with
+    | inl c => exact hga c
+    | inr c => exact hgb c)
+  have hF : HasSubst G.F := hasSubst_of_constantCoeff_eq_zero_weighted_sum_bounds _ (fun c => G.F_const c)
+  have hL : HasSubst (fun b : Fin d => (X (Sum.inl b) : MvPowerSeries (Fin d ⊕ Fin d) C)) :=
+    hasSubst_of_constantCoeff_eq_zero_weighted_sum_bounds _ (fun b => by simp)
+  have hR : HasSubst (fun b : Fin d => (X (Sum.inr b) : MvPowerSeries (Fin d ⊕ Fin d) C)) :=
+    hasSubst_of_constantCoeff_eq_zero_weighted_sum_bounds _ (fun b => by simp)
+  show subst (fun c => subst (Sum.elim ga gb) (G.F c)) (G.lg a) =
+    subst ga (G.lg a) + subst gb (G.lg a)
+  rw [← MvPowerSeries.subst_comp_subst_apply hF hE, G.lg_F, MvPowerSeries.subst_add hE,
+    MvPowerSeries.subst_comp_subst_apply hL hE, MvPowerSeries.subst_comp_subst_apply hR hE]
+  simp only [MvPowerSeries.subst_X hE, Sum.elim_inl, Sum.elim_inr]
+
+private theorem constantCoeff_sumList_and_lgCurve_sumList (G : LogFGL v d) : ∀ l : List (Fin d → PowerSeries C),
+    (∀ g ∈ l, ∀ c, PowerSeries.constantCoeff (g c) = 0) →
+      (∀ c, PowerSeries.constantCoeff (G.sumList l c) = 0) ∧
+        ∀ a, G.lgCurve (G.sumList l) a = (l.map fun g => G.lgCurve g a).sum := by
+  intro l
+  induction l with
+  | nil =>
+    intro _
+    refine ⟨fun c => by simp [LogFGL.sumList], fun a => ?_⟩
+    simp only [LogFGL.sumList, List.map_nil, List.sum_nil]
+    exact lgCurve_zero' G a
+  | cons g l ih =>
+    intro h
+    have hg : ∀ c, PowerSeries.constantCoeff (g c) = 0 := h g (by simp)
+    obtain ⟨h1, h2⟩ := ih (fun g' hg' => h g' (by simp [hg']))
+    refine ⟨fun c => ?_, fun a => ?_⟩
+    · simp only [LogFGL.sumList]
+      exact constantCoeff_subst_eq_zero_of_constantCoeff_eq_zero _ (fun s => by
+        cases s with
+        | inl c' => exact hg c'
+        | inr c' => exact h1 c') _ (G.F_const c)
+    · simp only [LogFGL.sumList]
+      rw [lgCurve_add' G _ _ hg h1, h2 a, List.map_cons, List.sum_cons]
+
+private theorem lgCurve_rescaleCurve (G : LogFGL v d) (x : C) (ga : Fin d → PowerSeries C)
+    (h0 : ∀ c, PowerSeries.constantCoeff (ga c) = 0) (a : Fin d) :
+    G.lgCurve (rescaleCurve x ga) a = PowerSeries.rescale x (G.lgCurve ga a) := by
+  have hA : HasSubst ga := hasSubst_of_constantCoeff_eq_zero_weighted_sum_bounds _ (fun c => h0 c)
+  have hB : HasSubst (rescaleCurve x ga) := hasSubst_of_constantCoeff_eq_zero_weighted_sum_bounds _ (fun c => by
+    show PowerSeries.constantCoeff (PowerSeries.rescale x (ga c)) = 0
+    rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, PowerSeries.coeff_rescale, pow_zero,
+      one_mul, PowerSeries.coeff_zero_eq_constantCoeff_apply, h0 c])
+  ext n
+  rw [PowerSeries.coeff_rescale]
+  change MvPowerSeries.coeff (Finsupp.single () n) (subst (rescaleCurve x ga) (G.lg a)) =
+    x ^ n * MvPowerSeries.coeff (Finsupp.single () n) (subst ga (G.lg a))
+  rw [MvPowerSeries.coeff_subst hA, MvPowerSeries.coeff_subst hB,
+    mul_finsum _ _]
+  apply finsum_congr
+  intro e
+  have hp : e.prod (fun s m => rescaleCurve x ga s ^ m) =
+      PowerSeries.rescale x (e.prod (fun s m => ga s ^ m)) := by
+    first
+    | rw [map_finsuppProd]
+    | rw [Finsupp.prod, Finsupp.prod, map_prod]
+    simp only [map_pow]
+    try rfl
+  have hc : PowerSeries.coeff n (PowerSeries.rescale x (e.prod (fun s m => ga s ^ m))) =
+      x ^ n * PowerSeries.coeff n (e.prod (fun s m => ga s ^ m)) := by
+    rw [PowerSeries.coeff_rescale]
+  have hc' : MvPowerSeries.coeff (Finsupp.single () n)
+      (PowerSeries.rescale x (e.prod (fun s m => ga s ^ m))) =
+      x ^ n * MvPowerSeries.coeff (Finsupp.single () n) (e.prod (fun s m => ga s ^ m)) := hc
+  rw [hp, hc', smul_eq_mul, smul_eq_mul]
+  ring
+
+private theorem exists_subring_iff_isIntV : ∃ S : Subring C, ∀ x, x ∈ S ↔ IsIntV v x :=
+  ⟨{ carrier := {x | 0 ≤ v x}
+     mul_mem' := fun {a b} ha hb => by
+       simp only [Set.mem_setOf_eq, AddValuation.map_mul] at *
+       exact add_nonneg ha hb
+     one_mem' := by simp
+     add_mem' := fun {a b} ha hb => le_trans (le_min ha hb) (AddValuation.map_add v a b)
+     zero_mem' := by simp
+     neg_mem' := fun {a} ha => by simpa [AddValuation.map_neg] using ha }, fun _ => Iff.rfl⟩
+
+alias _root_.SharedProofs.LgCurvePcurve.exists_subring_iff_isIntV := exists_subring_iff_isIntV
+
+private theorem exists_subring_powerSeries_mem_iff_psIsInt : ∃ T : Subring (PowerSeries C), ∀ f, f ∈ T ↔ PsIsInt v f := by
+  obtain ⟨S, hS⟩ := exists_subring_iff_isIntV (v := v)
+  refine ⟨{ carrier := {f | PsIsInt v f}
+            mul_mem' := fun {f g} hf hg => by
+              have hf' : PsIsInt v f := hf
+              have hg' : PsIsInt v g := hg
+              show PsIsInt v (f * g)
+              intro n
+              rw [← hS, PowerSeries.coeff_mul]
+              exact S.sum_mem fun ij _ => S.mul_mem ((hS _).2 (hf' _)) ((hS _).2 (hg' _))
+            one_mem' := by
+              show PsIsInt v 1
+              intro n
+              rw [← hS, PowerSeries.coeff_one]
+              split_ifs
+              exacts [S.one_mem, S.zero_mem]
+            add_mem' := fun {f g} hf hg => by
+              have hf' : PsIsInt v f := hf
+              have hg' : PsIsInt v g := hg
+              show PsIsInt v (f + g)
+              intro n
+              rw [← hS, map_add]
+              exact S.add_mem ((hS _).2 (hf' n)) ((hS _).2 (hg' n))
+            zero_mem' := by
+              show PsIsInt v 0
+              intro n
+              rw [← hS, map_zero]
+              exact S.zero_mem
+            neg_mem' := fun {f} hf => by
+              have hf' : PsIsInt v f := hf
+              show PsIsInt v (-f)
+              intro n
+              rw [← hS, map_neg]
+              exact S.neg_mem ((hS _).2 (hf' n)) }, fun _ => Iff.rfl⟩
+
+private theorem psIsInt_subst_of_mvIsInt {σ : Type} [Finite σ] (a : σ → PowerSeries C)
+    (ha : ∀ s, PowerSeries.constantCoeff (a s) = 0) (hai : ∀ s, PsIsInt v (a s))
+    (f : MvPowerSeries σ C) (hf : MvIsInt v f) : PsIsInt v (subst a f) := by
+  obtain ⟨S, hS⟩ := exists_subring_iff_isIntV (v := v)
+  obtain ⟨T, hT⟩ := exists_subring_powerSeries_mem_iff_psIsInt (v := v)
+  have hA : HasSubst a := hasSubst_of_constantCoeff_eq_zero_weighted_sum_bounds a (fun s => ha s)
+  intro n
+  rw [← hS]
+  change MvPowerSeries.coeff (Finsupp.single () n) (subst a f) ∈ S
+  rw [MvPowerSeries.coeff_subst hA]
+  refine finsum_induction (p := fun z => z ∈ S) S.zero_mem (fun x y hx hy => S.add_mem hx hy)
+    (fun e => ?_)
+  have hprod : e.prod (fun s m => a s ^ m) ∈ T := by
+    rw [Finsupp.prod]
+    exact T.prod_mem fun s _ => T.pow_mem ((hT _).2 (hai s)) _
+  rw [smul_eq_mul]
+  exact S.mul_mem ((hS _).2 (hf e)) ((hS _).2 (((hT _).1 hprod) n))
+
+theorem isCurve_pcurve (G : LogFGL v d) {p : ℕ} (hp : p ≠ 0) {γ : Fin d → Fin d → PowerSeries C}
+    (hγ : ∀ a, IsCurve v (γ a)) (x : ℕ → Fin d → C) :
+    ∀ n, (∀ s < n, ∀ b, IsIntV v (x s b)) → IsCurve v (pcurve G p γ x n)
+  | 0, _ => isCurve_zero
+  | n + 1, hx => isCurve_add G (isCurve_pcurve G hp hγ x n fun s hs b => hx s (by omega) b)
+      (isCurve_sumF G _ fun b => isCurve_expC (pow_ne_zero _ hp)
+        (isCurve_rescale (hx n (by omega) b) (hγ b)))
+
+theorem lgCurve_pcurve (G : LogFGL v d) {p : ℕ} (hp : p ≠ 0) {γ : Fin d → Fin d → PowerSeries C}
+    (hγ : ∀ a, IsCurve v (γ a)) (x : ℕ → Fin d → C) :
+    ∀ n, (∀ s < n, ∀ b, IsIntV v (x s b)) → ∀ a, G.lgCurve (pcurve G p γ x n) a =
+      ∑ s ∈ Finset.range n, ∑ b, PowerSeries.expand (p ^ s) (pow_ne_zero _ hp)
+        (PowerSeries.rescale (x s b) (G.lgCurve (γ b) a))
+  | 0, _, a => by simp [pcurve, lgCurve_zero]
+  | n + 1, hx, a => by
+      have hx' : ∀ s < n, ∀ b, IsIntV v (x s b) := fun s hs b => hx s (by omega) b
+      have hc : ∀ b, IsCurve v (expC (p ^ n) (rescaleCurve (x n b) (γ b))) := fun b =>
+        isCurve_expC (pow_ne_zero _ hp) (isCurve_rescale (hx n (by omega) b) (hγ b))
+      rw [pcurve, lgCurve_add G (fun b => (isCurve_pcurve G hp hγ x n hx' b).1)
+        (fun b => (isCurve_sumF G _ hc b).1), lgCurve_pcurve G hp hγ x n hx' a,
+        lgCurve_sumF G _ hc, Finset.sum_range_succ]
+      congr 1
+      refine Finset.sum_congr rfl fun b _ => ?_
+      rw [lgCurve_expC G (pow_ne_zero _ hp) (fun c => (isCurve_rescale (hx n (by omega) b) (hγ b) c).1),
+        lgCurve_rescale G _ (fun c => (hγ b c).1)]
+
+end
+
+end ReciprocityTheory.ChartRestriction.G.Sh.PTb
+end
+
+section
+namespace ReciprocityTheory.ChartRestriction.G.Sh.PTb
+
+open MvPowerSeries ReciprocityTheory.PGsh
+
+noncomputable section
+
+variable {C : Type} [Field C] {v : AddValuation C (WithTop ℝ)} {d : ℕ}
+
+theorem coeff_lg_pcurve (G : LogFGL v d) {p : ℕ} (hp : p ≠ 0)
+    {γ : Fin d → Fin d → PowerSeries C} (hγ : ∀ a, IsCurve v (γ a)) (x : ℕ → Fin d → C) (n : ℕ)
+    (hx : ∀ s < n, ∀ b, IsIntV v (x s b)) (a : Fin d) (m : ℕ) :
+    PowerSeries.coeff m (G.lgCurve (pcurve G p γ x n) a) = ∑ s ∈ Finset.range n, ∑ b,
+      if p ^ s ∣ m then x s b ^ (m / p ^ s) * PowerSeries.coeff (m / p ^ s) (G.lgCurve (γ b) a)
+      else 0 := by
+  rw [lgCurve_pcurve G hp hγ x n hx a, map_sum]
+  apply Finset.sum_congr rfl
+  intro s _
+  rw [map_sum]
+  apply Finset.sum_congr rfl
+  intro b _
+  rw [coeff_expand_rescale]
+
+theorem lg_agree (G : LogFGL v d) {p : ℕ} (hp : p.Prime) {γ : Fin d → Fin d → PowerSeries C}
+    (hγ : ∀ a, IsCurve v (γ a)) (hγt : ∀ b, G.IsPTypical p (γ b)) (hdet : v (tmat γ).det = 0)
+    (ga : Fin d → PowerSeries C) (hga : G.IsPTypical p ga) (n : ℕ)
+    (hx : ∀ s < n, ∀ b, IsIntV v (ptx G p γ ga s b)) :
+    ∀ a, ∀ j < p ^ n, PowerSeries.coeff j (G.lgCurve ga a) =
+      PowerSeries.coeff j (G.lgCurve (pcurve G p γ (ptx G p γ ga) n) a) := by
+  intro a j hj
+  rw [coeff_lg_pcurve G hp.ne_zero hγ _ n hx a j]
+  by_cases hpow : ∃ m, j = p ^ m
+  · obtain ⟨m, rfl⟩ := hpow
+    have hmn : m < n := by
+      by_contra h
+      push_neg at h
+      exact absurd hj (not_lt.mpr (Nat.pow_le_pow_right hp.pos h))
+    have hrel := congrFun (ptx_rel G p hγ hdet ga m) a
+    change G.lc p ga m a = _
+    rw [hrel]
+    simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+    rw [← Finset.sum_range_add_sum_Ico _ (show m + 1 ≤ n by omega)]
+    have hzero : ∑ s ∈ Finset.Ico (m + 1) n, ∑ b, (if p ^ s ∣ p ^ m then
+        ptx G p γ ga s b ^ (p ^ m / p ^ s) * PowerSeries.coeff (p ^ m / p ^ s) (G.lgCurve (γ b) a)
+        else 0) = 0 := by
+      apply Finset.sum_eq_zero
+      intro s hs
+      have hs' : m < s := by
+        rw [Finset.mem_Ico] at hs
+        omega
+      apply Finset.sum_eq_zero
+      intro b _
+      rw [if_neg]
+      intro hd
+      have hle : s ≤ m := by
+        first
+        | exact (Nat.pow_dvd_pow_iff_le_right hp.one_lt).mp hd
+        | exact (Nat.pow_dvd_pow_iff_le_right' ).mp hd
+      omega
+    rw [hzero, add_zero]
+    apply Finset.sum_congr rfl
+    intro s hs
+    have hsm : s ≤ m := Nat.lt_succ_iff.mp (Finset.mem_range.mp hs)
+    apply Finset.sum_congr rfl
+    intro b _
+    rw [if_pos (pow_dvd_pow p hsm), Nat.pow_div hsm hp.pos]
+    rfl
+  · push_neg at hpow
+    rw [hga a j hpow]
+    symm
+    apply Finset.sum_eq_zero
+    intro s _
+    apply Finset.sum_eq_zero
+    intro b _
+    split_ifs with hd
+    · obtain ⟨k, hk⟩ := hd
+      have hk' : j / p ^ s = k := by
+        rw [hk, Nat.mul_div_cancel_left _ (pow_pos hp.pos s)]
+      have hnp : ∀ m', k ≠ p ^ m' := by
+        intro m' hm'
+        apply hpow (s + m')
+        rw [hk, hm', pow_add]
+      rw [hk', hγt b a k hnp, mul_zero]
+    · rfl
+
+theorem coeff_lg_pcurve_top (G : LogFGL v d) {p : ℕ} (hp : p.Prime)
+    {γ : Fin d → Fin d → PowerSeries C} (hγ : ∀ a, IsCurve v (γ a)) (x : ℕ → Fin d → C) (n : ℕ)
+    (hx : ∀ s < n, ∀ b, IsIntV v (x s b)) (a : Fin d) :
+    PowerSeries.coeff (p ^ n) (G.lgCurve (pcurve G p γ x n) a) =
+      (∑ s ∈ Finset.range n, ∑ b, (x s b) ^ (p ^ (n - s)) • G.lc p (γ b) (n - s)) a := by
+  rw [coeff_lg_pcurve G hp.ne_zero hγ x n hx a (p ^ n)]
+  simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+  apply Finset.sum_congr rfl
+  intro s hs
+  have hsn : s ≤ n := (Finset.mem_range.mp hs).le
+  apply Finset.sum_congr rfl
+  intro b _
+  rw [if_pos (pow_dvd_pow p hsn), Nat.pow_div hsn hp.pos]
+  rfl
+
+private theorem exists_subring_mem_iff_isIntV : ∃ S : Subring C, ∀ x, x ∈ S ↔ IsIntV v x :=
+  by
+  apply _root_.SharedProofs.LgCurvePcurve.exists_subring_iff_isIntV <;> assumption
+
+theorem ptx_int (G : LogFGL v d) {p : ℕ} (hp : p.Prime) {γ : Fin d → Fin d → PowerSeries C}
+    (hγ : ∀ a, IsCurve v (γ a)) (hγt : ∀ b, G.IsPTypical p (γ b)) (hdet : v (tmat γ).det = 0)
+    (ga : Fin d → PowerSeries C) (hgaC : IsCurve v ga) (hga : G.IsPTypical p ga) :
+    ∀ n b, IsIntV v (ptx G p γ ga n b) := by
+  obtain ⟨S, hS⟩ := exists_subring_mem_iff_isIntV (v := v)
+  intro n
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+    intro b
+    have hx : ∀ s < n, ∀ b, IsIntV v (ptx G p γ ga s b) := fun s hs b => ih s hs b
+    have hagree := lg_agree G hp hγ hγt hdet ga hga n hx
+    have hα : ∀ c, PowerSeries.constantCoeff (ga c) = 0 := fun c => (hgaC c).1
+    have hpcC := isCurve_pcurve G hp.ne_zero hγ (ptx G p γ ga) n hx
+    have hβ : ∀ c, PowerSeries.constantCoeff (pcurve G p γ (ptx G p γ ga) n c) = 0 :=
+      fun c => (hpcC c).1
+    have hw : ∀ c, IsIntV v (ptw G p γ ga n c) := by
+      intro c
+      have h1 := coeff_lgCurve_sub_eq G hα hβ (p ^ n) hagree c
+      have h2 := coeff_lg_pcurve_top G hp hγ (ptx G p γ ga) n hx c
+      have e : ptw G p γ ga n c =
+          PowerSeries.coeff (p ^ n) (ga c - pcurve G p γ (ptx G p γ ga) n c) := by
+        rw [← h1, map_sub, h2]
+        simp only [ptw, Pi.sub_apply]
+        rfl
+      rw [e, ← hS, map_sub]
+      exact S.sub_mem ((hS _).2 ((hgaC c).2 _)) ((hS _).2 ((hpcC c).2 _))
+    rw [ptx_eq]
+    exact isIntV_vecMul_inv hγ hdet hw b
+
+private theorem lgCurve_const_zero (G : LogFGL v d) (a : Fin d) :
+    G.lgCurve (fun _ => (0 : PowerSeries C)) a = 0 := by
+  apply _root_.SharedProofs.LgCurvePcurve.lgCurve_zero' (G := G) (a := a) <;> assumption
+
+private theorem lc_zero_eq_tangent_of_constantCoeff_eq_zero (G : LogFGL v d) (p : ℕ) (ga : Fin d → PowerSeries C)
+    (h0 : ∀ b, PowerSeries.constantCoeff (ga b) = 0) : G.lc p ga 0 = tangent ga := by
+  funext a
+  have hk : ∀ b, (PowerSeries.X : PowerSeries C) ^ 1 ∣ ga b - (fun _ => (0 : PowerSeries C)) b := by
+    intro b
+    show (PowerSeries.X : PowerSeries C) ^ 1 ∣ ga b - 0
+    rw [pow_one, sub_zero]
+    exact PowerSeries.X_dvd_iff.mpr (h0 b)
+  have h1 := lgCurve_sub_dvd (β := fun _ => (0 : PowerSeries C)) G h0 (fun _ => by simp) 1 hk a
+  simp only [lgCurve_const_zero, sub_zero] at h1
+  have h2 := PowerSeries.X_pow_dvd_iff.mp h1 1 (by norm_num)
+  rw [map_sub, sub_eq_zero] at h2
+  show PowerSeries.coeff (p ^ 0) (G.lgCurve ga a) = PowerSeries.coeff 1 (ga a)
+  rw [pow_zero, h2]
+
+theorem ptx_type {h : ℕ} (ty : Fin d → ZMod h) (G : LogFGL v d) {p : ℕ} (hp : p.Prime)
+    {γ : Fin d → Fin d → PowerSeries C} (hγ : ∀ a, IsCurve v (γ a)) (hdet : v (tmat γ).det = 0)
+    (hγty : ∀ b, G.IsOfType p ty (ty b) (γ b)) (ga : Fin d → PowerSeries C) (i : ZMod h)
+    (hga : G.IsOfType p ty i ga) :
+    ∀ n b, ptx G p γ ga n b ≠ 0 → ty b = i + n := by
+  have ht : ∀ b c, ty c ≠ ty b → tangent (γ b) c = 0 := by
+    intro b c hc
+    have h0 := (hγty b).2 0 c (by simpa using hc)
+    rwa [lc_zero_eq_tangent_of_constantCoeff_eq_zero G p (γ b) (fun c' => (hγ b c').1)] at h0
+  intro n
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+    have hw : ∀ c, ty c ≠ i + n → Matrix.vecMul (ptx G p γ ga n) (tmat γ) c = 0 := by
+      intro c hc
+      rw [ptx_eq, vecMul_inv_tmat hdet]
+      simp only [ptw, Pi.sub_apply, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+      rw [hga.2 n c hc, zero_sub, neg_eq_zero]
+      apply Finset.sum_eq_zero
+      intro s hs
+      have hsn : s < n := Finset.mem_range.mp hs
+      apply Finset.sum_eq_zero
+      intro b _
+      by_cases hx0 : ptx G p γ ga s b = 0
+      · rw [hx0, zero_pow (pow_ne_zero _ hp.ne_zero), zero_mul]
+      · have htb := ih s hsn b hx0
+        have hlc : G.lc p (γ b) (n - s) c = 0 := by
+          apply (hγty b).2 (n - s) c
+          rw [htb, Nat.cast_sub hsn.le]
+          intro h'
+          apply hc
+          rw [h']
+          ring
+        rw [hlc, mul_zero]
+    intro b hb
+    by_contra hne
+    exact hb (vecMul_tmat_support ty hdet ht (ptx G p γ ga n) (i + n) hw b hne)
+
+end
+
+end ReciprocityTheory.ChartRestriction.G.Sh.PTb
+end
+
+section
+namespace ReciprocityTheory.ChartRestriction.G.Sh.PTb
+
+open MvPowerSeries ReciprocityTheory.PGsh
+
+noncomputable section
+
+variable {C : Type} [Field C] {v : AddValuation C (WithTop ℝ)} {d : ℕ}
+
+theorem geom_sum_root {p : ℕ} {ζ : C} (hζ : IsPrimitiveRoot ζ p) (m : ℕ) :
+    ∑ j ∈ Finset.range p, (ζ ^ m) ^ j = if p ∣ m then (p : C) else 0 := by
+  split_ifs with h
+  · obtain ⟨k, rfl⟩ := h
+    rw [pow_mul, hζ.pow_eq_one, one_pow]
+    simp
+  · have hne : ζ ^ m ≠ 1 := fun h1 => h (hζ.dvd_of_pow_eq_one m h1)
+    rw [geom_sum_eq hne, pow_right_comm, hζ.pow_eq_one, one_pow, sub_self, zero_div]
+
+theorem exists_average (G : LogFGL v d) {p : ℕ} (hp : p.Prime) {ζ : C}
+    (hζ : IsPrimitiveRoot ζ p) {ga : Fin d → PowerSeries C} (hga : IsCurve v ga) :
+    ∃ δ : Fin d → PowerSeries C, IsCurve v δ ∧ ∀ c j, PowerSeries.coeff j (G.lgCurve δ c) =
+      (p : C) * PowerSeries.coeff (p * j) (G.lgCurve ga c) := by
+  classical
+  have hp0 : p ≠ 0 := hp.ne_zero
+  have h0 : ∀ b, PowerSeries.constantCoeff (ga b) = 0 := fun b => (hga b).1
+  have hζv : ∀ j : ℕ, IsIntV v (ζ ^ j) := fun j => by
+    unfold IsIntV
+    rw [v_eq_zero_of_pow_eq_one (v := v) hp0
+      (by rw [← pow_mul, mul_comm, pow_mul, hζ.pow_eq_one, one_pow])]
+
+  obtain ⟨g, hgdef⟩ : ∃ g : Fin p → Fin d → PowerSeries C,
+      ∀ u, g u = rescaleCurve (ζ ^ (u : ℕ)) ga := ⟨fun u => rescaleCurve (ζ ^ (u : ℕ)) ga, fun u => rfl⟩
+  have hg : ∀ u, IsCurve v (g u) := fun u => by
+    rw [hgdef]
+    exact isCurve_rescale (hζv u) hga
+  obtain ⟨ε, hεdef⟩ : ∃ ε : Fin d → PowerSeries C, ε = G.sumF g := ⟨_, rfl⟩
+  have hε : IsCurve v ε := by
+    rw [hεdef]
+    exact isCurve_sumF G g hg
+  have hεc : ∀ b, PowerSeries.constantCoeff (ε b) = 0 := fun b => (hε b).1
+  have hsum : ∀ m : ℕ, ∑ u : Fin p, (ζ ^ (u : ℕ)) ^ m = if p ∣ m then (p : C) else 0 := by
+    intro m
+    rw [← geom_sum_root hζ m, Fin.sum_univ_eq_sum_range (fun j => (ζ ^ j) ^ m) p]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [← pow_mul, ← pow_mul, mul_comm]
+  have hlgε : ∀ c m, PowerSeries.coeff m (G.lgCurve ε c) =
+      if p ∣ m then (p : C) * PowerSeries.coeff m (G.lgCurve ga c) else 0 := by
+    intro c m
+    rw [hεdef, lgCurve_sumF G g hg c, map_sum]
+    simp only [hgdef, lgCurve_rescale G _ h0, PowerSeries.coeff_rescale]
+    rw [← Finset.sum_mul, hsum m]
+    split_ifs <;> simp
+
+  have hinv : ∀ a, rescaleCurve ζ ε a = ε a := by
+    have hζ1 : IsIntV v ζ := by simpa using hζv 1
+    have hεζc : ∀ b, PowerSeries.constantCoeff (rescaleCurve ζ ε b) = 0 :=
+      fun b => (isCurve_rescale hζ1 hε b).1
+    intro a
+    have hdvd : ∀ N, (PowerSeries.X : PowerSeries C) ^ N ∣ rescaleCurve ζ ε a - ε a := fun N =>
+      dvd_of_lgCurve_low G hεζc hεc N (fun a' j _ => by
+        rw [lgCurve_rescale G ζ hεc, PowerSeries.coeff_rescale, hlgε]
+        split_ifs with h
+        · obtain ⟨k, rfl⟩ := h
+          rw [pow_mul, hζ.pow_eq_one, one_pow, one_mul]
+        · rw [mul_zero]) a
+    rw [← sub_eq_zero]
+    ext m
+    have := (PowerSeries.X_pow_dvd_iff.mp (hdvd (m + 1))) m (Nat.lt_succ_self m)
+    simpa using this
+  have hoff : ∀ a m, ¬ p ∣ m → PowerSeries.coeff m (ε a) = 0 := by
+    intro a m hm
+    have h1 := congrArg (PowerSeries.coeff m) (hinv a)
+    simp only [rescaleCurve, PowerSeries.coeff_rescale] at h1
+    have hne : ζ ^ m ≠ 1 := fun h => hm (hζ.dvd_of_pow_eq_one m h)
+    have h2 : (ζ ^ m - 1) * PowerSeries.coeff m (ε a) = 0 := by
+      rw [sub_mul, one_mul, h1, sub_self]
+    exact (mul_eq_zero.mp h2).resolve_left (sub_ne_zero.mpr hne)
+
+  obtain ⟨δ, hδdef⟩ : ∃ δ : Fin d → PowerSeries C,
+      ∀ a, δ a = PowerSeries.mk fun j => PowerSeries.coeff (p * j) (ε a) :=
+    ⟨fun a => PowerSeries.mk fun j => PowerSeries.coeff (p * j) (ε a), fun a => rfl⟩
+  have hexpand : ∀ (f : PowerSeries C) (m : ℕ), PowerSeries.coeff m (PowerSeries.expand p hp0 f) =
+      if p ∣ m then PowerSeries.coeff (m / p) f else 0 := by
+    intro f m
+    have h := coeff_expand_rescale p hp0 1 f m
+    rw [PowerSeries.rescale_one, RingHom.id_apply] at h
+    rw [h]
+    split_ifs <;> simp
+  have hexp : ∀ a, PowerSeries.expand p hp0 (δ a) = ε a := by
+    intro a
+    ext m
+    rw [hexpand]
+    split_ifs with h
+    · rw [hδdef, PowerSeries.coeff_mk, Nat.mul_div_cancel' h]
+    · exact (hoff a m h).symm
+  have hδ : IsCurve v δ := fun a => by
+    refine ⟨?_, fun j => ?_⟩
+    · rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, hδdef, PowerSeries.coeff_mk, mul_zero,
+        PowerSeries.coeff_zero_eq_constantCoeff_apply]
+      exact hεc a
+    · rw [hδdef, PowerSeries.coeff_mk]
+      exact (hε a).2 (p * j)
+  have hεδ : expC p δ = ε := funext fun a => by
+    rw [expC_apply hp0]
+    exact hexp a
+  refine ⟨δ, hδ, fun c j => ?_⟩
+  have h1 := lgCurve_expC G hp0 (fun b => (hδ b).1) c
+  rw [hεδ] at h1
+  have h2 := congrArg (PowerSeries.coeff (p * j)) h1
+  rw [hlgε, if_pos (dvd_mul_right p j), hexpand, if_pos (dvd_mul_right p j),
+    Nat.mul_div_cancel_left j hp.pos] at h2
+  exact h2.symm
+
+end
+
+end ReciprocityTheory.ChartRestriction.G.Sh.PTb
+end
+
+section
 namespace ReciprocityTheory.ChartRestriction.G.Sh
 
 open MvPowerSeries ReciprocityTheory.PGsh ReciprocityTheory.ChartRestriction.G.Sh.PTb
@@ -191,3 +912,4 @@ theorem pt5v' : TypicalCurveValuationBounds := by
 end
 
 end ReciprocityTheory.ChartRestriction.G.Sh
+end

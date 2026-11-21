@@ -304,21 +304,6 @@ theorem ros_pair (hG : GlobalFnsSt) (hA : IsAbelianScheme A) (f g : A ⟶ A) [Is
   rw [hy, u₂, _root_.one_mul] at b'
   rw [a', b', mul_inv, _root_.mul_mul_mul_comm, mul_inv_cancel, _root_.mul_one]
 
-theorem weilAdjoint (hG : GlobalFnsSt) (hC : CubeSt) : WeilAdjoint := by
-  intro S _ P O _ _ o k T x y a e hx hy
-  have := P.isAb.comm
-  have := o.hom a
-  have := o.hom (star a)
-  obtain ⟨r, hr⟩ := P.rigid
-  obtain ⟨⟨c⟩, -⟩ := hC S P ⟨P.L, r, P.isLB, hr⟩ rfl
-  obtain ⟨u, hu, n⟩ := exists_ros hG P.isAb P.isLB _ _ (o.rosati a)
-  have hx' : (x ≫ o.act a) ^ k = 1 := by rw [← MonObj.pow_comp, hx, MonObj.one_comp]
-  have hy' : (y ≫ o.act (star a)) ^ k = 1 := by rw [← MonObj.pow_comp, hy, MonObj.one_comp]
-  obtain ⟨w, hw⟩ := exists_weil c hx' hy
-  refine (weilIs_iff c hG P.isAb hx' hy hw e).trans (weilIs_iff c hG P.isAb hx hy' (fun T' σ z J hJ => ?_) e).symm
-  rw [hw T' σ z J hJ, ← Category.assoc, ← Category.assoc]
-  exact ros_pair c hG P.isAb _ _ u hu n hJ (by rw [← MonObj.comp_pow, hx, MonObj.comp_one])
-    (by rw [← MonObj.comp_pow, hy, MonObj.comp_one])
 
 end
 section
@@ -364,40 +349,8 @@ theorem pairing_weilMove (hW : Out.WeilSt) {S S' X : Scheme.{0}} [IsLocallyNoeth
   rw [hcc]
   exact hall' θx' θy' h₁ h₂
 
-theorem pairing_isoPullback {S : Scheme.{0}} (B : Out.PolAV S) (θ : B.A ≅ B.A) (hθ : IsMonHom θ.hom) :
-    IsGrpPullback B.A B.A (𝟙 S) θ.hom.left := by
-  have := hθ
-  refine ⟨?_, fun T x y x₀ y₀ hx hy => ?_⟩
-  · have : IsIso θ.hom.left := (inferInstance : IsIso ((Over.forget S).map θ.hom))
-    exact IsPullback.of_horiz_isIso ⟨by rw [Over.w θ.hom, Category.comp_id]⟩
-  · let i : Over.mk (T.hom ≫ 𝟙 S) ⟶ T := Over.homMk (𝟙 _) (by simp)
-    have ex : x₀ = i ≫ x ≫ θ.hom := Over.OverMorphism.ext (by simp [i, hx])
-    have ey : y₀ = i ≫ y ≫ θ.hom := Over.OverMorphism.ext (by simp [i, hy])
-    rw [ex, ey, ← MonObj.comp_mul, ← MonObj.mul_comp]
-    simp [i]
 
-theorem pairing_weilTheta (hW : Out.WeilSt) {S X : Scheme.{0}} [IsLocallyNoetherian S] (hX : Subsingleton X)
-    (B : Out.PolAV S) (θ : B.A ≅ B.A) (hθ : IsMonHom θ.hom) (wθ : LB.Iso B.L (B.L.pull θ.hom.left))
-    (hwθ : wθ.IsGen) {t : X ⟶ S} (n : ℕ) (x y : Over.mk t ⟶ B.A) (hx : x ^ n = 1) (hy : y ^ n = 1)
-    (c : Γ(X, ⊤)ˣ) (h : Out.WeilIs B.A B.L n (x ≫ θ.hom) (y ≫ θ.hom) c) : Out.WeilIs B.A B.L n x y c :=
-  pairing_weilMove hW hX B.isLB B (pairing_isoPullback B θ hθ) wθ hwθ (tS := t) (t₀ := t)
-    (Category.comp_id t).symm n x y hx hy (x ≫ θ.hom) (y ≫ θ.hom) rfl rfl c h
 
-theorem pairing_weilInv (hW : Out.WeilSt) {S : Scheme.{0}} [IsLocallyNoetherian S] (B : Out.PolAV S) {T : Over S}
-    (n : ℕ) (p z : T ⟶ B.A) (hp : p ^ n = 1) (hz : z ^ n = 1) (c : Γ(T.left, ⊤)ˣ)
-    (h : Out.WeilIs B.A B.L n p z c) : Out.WeilIs B.A B.L n p⁻¹ z c⁻¹ := by
-  obtain ⟨d, hd, -⟩ := (hW S B n T).1 p⁻¹ z (by rw [inv_pow, hp, inv_one]) hz
-  obtain ⟨e, he, hu⟩ := (hW S B n T).1 1 z (one_pow n) hz
-  have he1 : e = 1 := by
-    have h2 := (hW S B n T).2.1 1 1 z e e he he
-    rw [_root_.one_mul] at h2
-    have h3 := hu _ h2
-    exact mul_left_cancel (a := e) (by rw [_root_.mul_one]; exact h3)
-  have h4 := (hW S B n T).2.1 p p⁻¹ z c d h hd
-  rw [mul_inv_cancel] at h4
-  have h5 : c * d = 1 := (hu _ h4).trans he1
-  rw [← eq_inv_of_mul_eq_one_right h5]
-  exact hd
 
 theorem pairing_nondeg (hW : Out.WeilSt) (hND : Out.WeilNondegSt) (hBC : Out.PolBaseChangeSt)
     {S : Scheme.{0}} (B : Out.PolAV S) (F : Type) [Field F] [IsAlgClosed F]
@@ -457,25 +410,10 @@ section Act
 
 variable {S : Scheme.{0}} {B : Out.PolAV S} {O : Type} [Ring O] [StarRing O] (o : B.OAct O) {T : Over S}
 
-theorem pairing_act_add (z : T ⟶ B.A) (a b : O) : z ≫ o.act (a + b) = (z ≫ o.act a) * (z ≫ o.act b) := by
-  rw [o.map_add, H1.comp_padd]
 
-theorem pairing_act_zero (z : T ⟶ B.A) : z ≫ o.act 0 = 1 := by
-  have h := pairing_act_add o z 0 0
-  rw [add_zero] at h
-  exact mul_left_cancel (a := z ≫ o.act 0) (by rw [_root_.mul_one]; exact h.symm)
 
-theorem pairing_act_nat (z : T ⟶ B.A) (n : ℕ) : z ≫ o.act (n : O) = z ^ n := by
-  induction n with
-  | zero => rw [Nat.cast_zero, pow_zero, pairing_act_zero]
-  | succ n ih => rw [Nat.cast_succ, pairing_act_add, ih, o.map_one, Category.comp_id, pow_succ]
 
-theorem pairing_act_mul (z : T ⟶ B.A) (a b : O) : z ≫ o.act (a * b) = (z ≫ o.act b) ≫ o.act a := by
-  rw [o.map_mul, Category.assoc]
 
-theorem pairing_act_kill (z : T ⟶ B.A) (n : ℕ) (hz : z ^ n = 1) (r : O) : z ≫ o.act (r * n) = 1 := by
-  have := o.hom r
-  rw [pairing_act_mul, pairing_act_nat, hz, MonObj.one_comp]
 
 end Act
 
@@ -484,90 +422,6 @@ theorem pairing_tors {S : Scheme.{0}} {G G' : Over S} [GrpObj G] [GrpObj G'] {T 
   have := hf
   rw [← MonObj.pow_comp, hz, MonObj.one_comp]
 
-theorem halfToFullTorsion (hR : WeilAdjoint) (hW : Out.WeilSt) (hND : Out.WeilNondegSt) (hBC : Out.PolBaseChangeSt) :
-    HalfToFullTorsion := by
-  intro E _ _ _ H D l c k _ bF a P _ oP φ₁ φ₂ he₁ he₂ w₁ w₂ e₁ e₂ d₁ d₂ F _ _ _ hfix x hx
-  letI := H.starRing
-  obtain ⟨θ, wθ, -, hθm, hθφ, hθact, -, hwθ, -, -⟩ :=
-    exists_comparison E H D l c k bF a P oP φ₁ φ₂ he₁ he₂ w₁ w₂ e₁ e₂ d₁ d₂
-  have := hθm
-
-  have hMk : (l.M : k) ≠ 0 := by
-    have h0 : l.M ≠ 0 := by have := l.three_le; omega
-    rw [← map_natCast bF]
-    exact (map_ne_zero bF).2 (Nat.cast_ne_zero.mpr h0)
-  have hM0 : (l.M : F) ≠ 0 := by
-    have hC : (PowerSeries.C (l.M : k)) ≠ 0 := by
-      intro h
-      have := congrArg PowerSeries.constantCoeff h
-      simp only [PowerSeries.constantCoeff_C, map_zero] at this
-      exact hMk this
-    have hfr : algebraMap (PowerSeries k) (FractionRing (PowerSeries k)) (PowerSeries.C (l.M : k)) ≠ 0 :=
-      (map_ne_zero_iff _ (IsFractionRing.injective (PowerSeries k) (FractionRing (PowerSeries k)))).2 hC
-    have e : (l.M : F) = algebraMap (FractionRing (PowerSeries k)) F
-        (algebraMap (PowerSeries k) (FractionRing (PowerSeries k)) (PowerSeries.C (l.M : k))) := by
-      simp
-    rw [e]
-    exact (map_ne_zero _).2 hfr
-
-  have inj : ∀ y y' : Over.mk (Out.jFK (R := PowerSeries k) F ≫ Out.jK (PowerSeries k)) ⟶ P.toPre.P.A,
-      y.left ≫ φ₂ = y'.left ≫ φ₂ → y = y' := fun y y' h =>
-    Over.OverMorphism.ext (d₂.1.1.hom_ext h (by rw [Over.w y, Over.w y']))
-  have fixMb : ∀ z : Over.mk (Out.jFK (R := PowerSeries k) F ≫ Out.jK (PowerSeries k)) ⟶ P.toPre.P.A,
-      (∀ m ∈ l.Mb, z ≫ oP.onB.act m = 1) → z ≫ θ.hom = z := fun z hz =>
-    inj _ _ (by rw [Over.comp_left, Category.assoc, hθφ]; exact hfix z hz)
-
-  have h1mem : (1 : 𝓞 E) ∈ l.Mb ⊔ l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E) := by
-    rw [l.coprime]; exact Submodule.mem_top
-  obtain ⟨m1, hm1, m2, hm2, hm12⟩ := Submodule.mem_sup.mp h1mem
-  have kill : ∀ z : Over.mk (Out.jFK (R := PowerSeries k) F ≫ Out.jK (PowerSeries k)) ⟶ P.toPre.P.A,
-      z ^ l.M = 1 → ∀ m ∈ l.Mb, ∀ m' ∈ l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E), z ≫ oP.onB.act (m * m') = 1 := by
-    intro z hz m hm m' hm'
-    have hmm := Ideal.mul_mem_mul hm hm'
-    rw [l.prod] at hmm
-    obtain ⟨r, hr⟩ := Ideal.mem_span_singleton'.mp hmm
-    rw [← hr]
-    exact pairing_act_kill oP.onB z l.M hz r
-  have hs : star m1 ∈ l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E) := Ideal.mem_map_of_mem _ hm1
-  have hxθ : (x ≫ θ.hom) ^ l.M = 1 := pairing_tors x θ.hom hθm l.M hx
-  have hx2 : (x ≫ oP.onB.act m1) ^ l.M = 1 := pairing_tors x _ (oP.onB.hom m1) l.M hx
-  have hx2θ : ((x ≫ oP.onB.act m1) ≫ θ.hom) ^ l.M = 1 := pairing_tors _ θ.hom hθm l.M hx2
-
-  have hfix1 : (x ≫ oP.onB.act m2) ≫ θ.hom = x ≫ oP.onB.act m2 := fixMb _ fun m hm => by
-    rw [← pairing_act_mul]; exact kill x hx m hm m2 hm2
-
-  have hpair : ∀ z : Over.mk (Out.jFK (R := PowerSeries k) F ≫ Out.jK (PowerSeries k)) ⟶ P.toPre.P.A,
-      z ^ l.M = 1 → Out.WeilIs P.toPre.P.A P.toPre.P.L l.M
-        (((x ≫ oP.onB.act m1) ≫ θ.hom) * (x ≫ oP.onB.act m1)⁻¹) z 1 := by
-    intro z hz
-    have hwt : (z ≫ oP.onB.act (star m1)) ^ l.M = 1 := pairing_tors z _ (oP.onB.hom (star m1)) l.M hz
-    have hwfix : (z ≫ oP.onB.act (star m1)) ≫ θ.hom = z ≫ oP.onB.act (star m1) := fixMb _ fun m hm => by
-      rw [← pairing_act_mul]; exact kill z hz m hm (star m1) hs
-    obtain ⟨cv, hcv, huniq⟩ := (hW _ P.toPre.P l.M _).1 x (z ≫ oP.onB.act (star m1)) hx hwt
-    obtain ⟨cv', hcv', -⟩ := (hW _ P.toPre.P l.M _).1 (x ≫ θ.hom) (z ≫ oP.onB.act (star m1)) hxθ hwt
-    have hcvx : Out.WeilIs P.toPre.P.A P.toPre.P.L l.M x (z ≫ oP.onB.act (star m1)) cv' :=
-      pairing_weilTheta hW inferInstance P.toPre.P θ hθm wθ hwθ l.M x _ hx hwt cv' (by rw [hwfix]; exact hcv')
-    have hcc : cv' = cv := huniq cv' hcvx
-    rw [hcc] at hcv'
-    have h1 : Out.WeilIs P.toPre.P.A P.toPre.P.L l.M ((x ≫ oP.onB.act m1) ≫ θ.hom) z cv := by
-      rw [Category.assoc, hθact m1, ← Category.assoc]
-      exact (hR _ P.toPre.P (𝓞 E) oP.onB l.M _ (x ≫ θ.hom) z m1 cv hxθ hz).2 hcv'
-    have h2 : Out.WeilIs P.toPre.P.A P.toPre.P.L l.M (x ≫ oP.onB.act m1) z cv :=
-      (hR _ P.toPre.P (𝓞 E) oP.onB l.M _ x z m1 cv hx hz).2 hcv
-    have h3 := pairing_weilInv hW P.toPre.P l.M _ z hx2 hz cv h2
-    have h4 := (hW _ P.toPre.P l.M _).2.1 _ _ z cv cv⁻¹ h1 h3
-    rwa [mul_inv_cancel] at h4
-  have hu : ((x ≫ oP.onB.act m1) ≫ θ.hom) * (x ≫ oP.onB.act m1)⁻¹ = 1 :=
-    pairing_nondeg hW hND hBC P.toPre.P F _ l.M hM0 _
-      (by rw [mul_pow, inv_pow, hx2θ, hx2, inv_one, _root_.one_mul]) hpair
-  have hfix2 : (x ≫ oP.onB.act m1) ≫ θ.hom = x ≫ oP.onB.act m1 := mul_inv_eq_one.mp hu
-  have hsplit : (x ≫ oP.onB.act m1) * (x ≫ oP.onB.act m2) = x := by
-    rw [← pairing_act_add, hm12, oP.onB.map_one, Category.comp_id]
-  have hθx : x ≫ θ.hom = x := by
-    calc x ≫ θ.hom = ((x ≫ oP.onB.act m1) * (x ≫ oP.onB.act m2)) ≫ θ.hom := by rw [hsplit]
-      _ = ((x ≫ oP.onB.act m1) ≫ θ.hom) * ((x ≫ oP.onB.act m2) ≫ θ.hom) := MonObj.mul_comp _ _ _
-      _ = x := by rw [hfix1, hfix2, hsplit]
-  rw [← hθφ, ← Category.assoc, ← Over.comp_left, hθx]
 
 end
 section
@@ -867,16 +721,7 @@ end
 section
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
-theorem fixesHalfTorsion : FixesHalfTorsion := by
-  intro E _ _ _ H D l c k _ bF a t P _ φ₁ φ₂ he₁ he₂ w₁ w₂ e₁ hin F _ _ _ x _
-  obtain ⟨d₁, d₂, hl⟩ := hin
-  rw [(GlobalTheory.DataRigid.dataRigid E H D l c k bF a P.D P.oD φ₁ φ₂ he₁ he₂ w₁ w₂ e₁ e₁ d₁ d₂ hl).1]
 
-theorem all_four : FixesHalfTorsion ∧ HalfToFullTorsion ∧ SerreFromPoints ∧ WeilAdjoint :=
-  have hL : Out.Laws := GlobalTheory.abelianSchemeLaws_all.1
-  have hR : WeilAdjoint := weilAdjoint hL.globalFns hL.cube
-  ⟨fixesHalfTorsion, halfToFullTorsion hR hL.weil hL.weilNondeg hL.polBaseChange,
-    serreFromPoints hL.serre hL.mulN hL.polBaseChange, hR⟩
 
 end
 

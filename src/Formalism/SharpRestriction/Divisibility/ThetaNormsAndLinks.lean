@@ -293,32 +293,12 @@ section Joint
 
 variable (D : D7) (L : SizeData₂ D) {nch : NChoice D} (X : LiftErrorLocal.Loc D nch)
 
-theorem joint1 : Conclusion1 D X = LiftErrorLocal.adm1 D X := rfl
-theorem joint2 : Conclusion2 D X = LiftErrorLocal.adm2 D X := rfl
-theorem joint3b (CRd : ℝ) : CoveringRadiusFunction D X CRd = LiftErrorLocal.adm3b D X CRd := rfl
-theorem joint5 : Conclusion5 D nch = LiftErrorLocal.adm5 D nch := rfl
-theorem joint6 : Conclusion6 D nch = LiftErrorLocal.adm6 D nch := rfl
-theorem joint6b : ShareLatticeRanks D nch = LiftErrorLocal.TorsionSectionsReflex D nch := rfl
-theorem linkConditions_eq : LinkConditions D X = LiftErrorLocal.adm10 D X := rfl
-theorem runConditions_eq (H : WeightAlgebra.KHyp) (C2 A2 CR CT CRd : ℝ) :
-    RunConditions D L X H C2 A2 CR CT CRd = LiftErrorLocal.adm11 D L X H C2 A2 CR CT CRd := rfl
 
 theorem gg_of_everyPlace (C : NChoice D) (h : GGEveryPlace D C) : Conclusion5 D C := fun _ w _ => h w
 theorem share_of_everyPlace (C : NChoice D) (h : ShareEveryPlace D C) : Conclusion6 D C := fun _ w _ => h w
 theorem shareRank_of_everyPlace (C : NChoice D) (h : ShareRankEveryPlace D C) : ShareLatticeRanks D C := fun _ w _ => h w
 
-theorem offTypePrime_of {Xd : DivX D} (O : PDVN.ONObj D nch Xd) (h5 : GGEveryPlace D nch) (h6 : ShareEveryPlace D nch) (h6b : ShareRankEveryPlace D nch)
-    (hL : LinkLatticesEveryPlace D O.X) (hL' : LinkLatticesEveryPlace D O.X') : PDVN.OffTypePrimeConditions O :=
-  fun w _ _ => ⟨h5 w, h6 w, h6b w, fun _ => hL w, fun _ => hL' w⟩
 
-theorem supGroupStable_of (E : IntegralHeckeForms.XD D) (h : IntegralHeckeForms.adm3 D E) (hO : SupStableOffPairs D) : SupLatticeGroupStable D := fun i j hj b g => by
-  by_cases hi : D.ntw.NonzeroIndexPlace i
-  · exact (h i hi j hj b).1 g
-  · exact hO i hi j hj b g
-theorem supSpans_of (E : IntegralHeckeForms.XD D) (h : IntegralHeckeForms.adm3 D E) (hO : SupSpansOffPairs D) : SupSpansPsiPart D := fun i j hj b => by
-  by_cases hi : D.ntw.NonzeroIndexPlace i
-  · exact (h i hi j hj b).2.2.1
-  · exact hO i hi j hj b
 
 end Joint
 
@@ -787,11 +767,7 @@ def AdmLAF : Prop :=
 def FamilyConclusionLA : Prop :=
   ∃ x0 : ℝ, ∀ x (hx : Fm.x1 < x), x0 ≤ x → ∀ i : Fm.Ix x, Conclusion1 (Fm.D x i) (XF x hx i) ∧ Conclusion2 (Fm.D x i) (XF x hx i)
 
-theorem jointLAF : FamilyConclusionLA Fm XF = LiftErrorLocal.AdmLAF Fm XF := rfl
 
-theorem stmtLAF (h : AdmLAF Fm XF ZF) : FamilyConclusionLA Fm XF := by
-  obtain ⟨x0, h⟩ := h
-  exact ⟨x0, fun x hx h0 i => ⟨stmt1 _ _ _ (h x hx h0 i).1, stmt2 _ _ (h x hx h0 i).2⟩⟩
 
 end Fam
 
@@ -810,11 +786,6 @@ theorem familyStatement_of_pointwise {H : WeightAlgebra.KHyp} {C2h A2 CR CRd : �
   rintro XF ZF ⟨x0, h0⟩
   exact ⟨x0, fun x hx hx0 i => h _ _ _ _ _ _ hC (h0 x hx hx0 i)⟩
 
-theorem closedStatement_of_pointwise (𝒞 : Formalism.MainNotions.FamClass)
-    (h : ∀ (H : WeightAlgebra.KHyp) (C2h A2 CR CRd : ℝ), 2 ≤ CRd → ∀ (D : D7) (L : SizeData₂ D) (nch : NChoice D) (X : LiftErrorLocal.Loc D nch)
-      (Z : Loc8 X) (CT : ℝ), Stmt D L X Z H C2h A2 CR CT CRd) : ClosedAbsoluteShare 𝒞 :=
-  ⟨1, one_pos, fun _ _ _ => ⟨⟨0, fun _ => 0, fun _ => 0, fun _ => 0⟩, fun Fm CH _ _ H C2h A2 CR CRd hC =>
-    familyStatement_of_pointwise hC (h H C2h A2 CR CRd hC) Fm CH⟩⟩
 
 end Formalism.MainNotions.ThetaNormsAndLinks
 

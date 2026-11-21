@@ -4,14 +4,928 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocallyIntegrableRe
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BoundedAutomorphicHasRepresentative
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalSobolevInequalityAdelicUnitary
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NcardRationalPointsTranslatedCompactLePowStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RepresentativeParametricIntegralContinuousFamily
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsContinuousRepresentativeAverage
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFixedAverageApproxOfSubgroupFixed
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEvaluationExtensionClosureRepresentatives
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqSumIntegralCubeDerivatives
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothAlongCurveProductsStable
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FundamentalDomainL2Bound
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SobolevIteratedOneParameterSubgroups
 
+section
+section
+open MeasureTheory
+open scoped ContDiff
+
+namespace GlobalTheory.LocRep
+
+theorem rep_parametric_integral : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G] [MeasurableSpace G] [BorelSpace G] (μ : Measure G) [μ.IsHaarMeasure] (K : Type) [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K] (ι : K → G → ℂ), (∀ C, IsCompact C → ∃ M : ℝ, ∀ v, IntegrableOn (ι v) C μ ∧ ∫ x in C, ‖ι v x‖ ∂μ ≤ M * ‖v‖) → (∀ (a : ℂ) v w, ι (a • v + w) =ᵐ[μ] fun x => a * ι v x + ι w x) → ∀ (T : Type) [TopologicalSpace T] [SecondCountableTopology T] [T2Space T] [MeasurableSpace T] [BorelSpace T] (ν : Measure T) [IsLocallyFiniteMeasure ν] (Q : Set T) (w : T → K) (φ : T → G → ℂ), IsCompact Q → Continuous w → Continuous (Function.uncurry φ) → (∀ t, ι (w t) =ᵐ[μ] φ t) → (Continuous fun x => ∫ t in Q, φ t x ∂ν) ∧ ι (∫ t in Q, w t ∂ν) =ᵐ[μ] fun x => ∫ t in Q, φ t x ∂ν := by
+  intro G _ _ _ _ _ _ _ _ μ _ K _ _ _ ι hloc hlin T _ _ _ _ _ ν _ Q w φ hQ hw hφ hrep
+  have hcont : Continuous fun x => ∫ t in Q, φ t x ∂ν :=
+    continuous_parametric_integral_of_continuous (f := fun x t => φ t x)
+      (hφ.comp continuous_swap) hQ
+  refine ⟨hcont, rep_of_pairing hloc hcont.locallyIntegrable fun C hC => ?_⟩
+  obtain ⟨Λ, hΛ⟩ := exists_pairing hloc hlin hC
+  have hwi : IntegrableOn w Q ν := hw.continuousOn.integrableOn_compact hQ
+  have hint : Integrable (Function.uncurry φ) ((ν.restrict Q).prod (μ.restrict C)) := by
+    rw [Measure.prod_restrict]
+    exact hφ.continuousOn.integrableOn_compact (hQ.prod hC)
+  rw [← hΛ, ← Λ.integral_comp_comm hwi, ← integral_integral_swap hint]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+  simp only
+  rw [hΛ]
+  exact integral_congr_ae (ae_restrict_of_ae (hrep t))
+
+end GlobalTheory.LocRep
+end
+
+open MeasureTheory
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.representative_parametric_integral_continuous_family : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G] [MeasurableSpace G] [BorelSpace G] (μ : Measure G) [μ.IsHaarMeasure] (K : Type) [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K] (ι : K → G → ℂ), (∀ C, IsCompact C → ∃ M : ℝ, ∀ v, IntegrableOn (ι v) C μ ∧ ∫ x in C, ‖ι v x‖ ∂μ ≤ M * ‖v‖) → (∀ (a : ℂ) v w, ι (a • v + w) =ᵐ[μ] fun x => a * ι v x + ι w x) → ∀ (T : Type) [TopologicalSpace T] [SecondCountableTopology T] [T2Space T] [MeasurableSpace T] [BorelSpace T] (ν : Measure T) [IsLocallyFiniteMeasure ν] (Q : Set T) (w : T → K) (φ : T → G → ℂ), IsCompact Q → Continuous w → Continuous (Function.uncurry φ) → (∀ t, ι (w t) =ᵐ[μ] φ t) → (Continuous fun x => ∫ t in Q, φ t x ∂ν) ∧ ι (∫ t in Q, w t ∂ν) =ᵐ[μ] fun x => ∫ t in Q, φ t x ∂ν := by
+  atlas_forward_decl GlobalTheory.LocRep.rep_parametric_integral
+end
+
+section
+section
+open MeasureTheory
+open scoped ContDiff
+
+namespace GlobalTheory.LocRep
+
+open MeasureTheory in
+open scoped ContDiff Pointwise in
+
+theorem _root_.GlobalTheory.LocRep.exists_continuous_rep_average : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G] [MeasurableSpace G] [BorelSpace G] (μ : Measure G) [μ.IsHaarMeasure] (K : Type) [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K] (ι : K → G → ℂ), (∀ C, IsCompact C → ∃ M : ℝ, ∀ v, IntegrableOn (ι v) C μ ∧ ∫ x in C, ‖ι v x‖ ∂μ ≤ M * ‖v‖) → (∀ (a : ℂ) v w, ι (a • v + w) =ᵐ[μ] fun x => a * ι v x + ι w x) → ∀ (ρ : G →* (K →L[ℂ] K)), (∀ g v, ‖ρ g v‖ = ‖v‖) → (∀ v, Continuous fun g => ρ g v) → (∀ g v, ι (ρ g v) =ᵐ[μ] fun x => ι v (x * g)) → ∀ (η : G → ℂ) (v : K), Continuous η → HasCompactSupport η → ∃ φ : G → ℂ, Continuous φ ∧ ι (∫ y, η y • ρ y v ∂μ) =ᵐ[μ] φ := by
+  intro G _ _ _ _ _ _ _ _ μ _ K _ _ _ ι hloc hlin ρ hnorm hcont htrans η v hηc hηs
+  have hιv : LocallyIntegrable (ι v) μ := _root_.GlobalTheory.LocRep.locallyIntegrable_rep hloc v
+  obtain ⟨B, hB⟩ := hηc.bounded_above_of_compact_support hηs
+  set φ : G → ℂ := fun x => ∫ y, η y * ι v (x * y) ∂μ with hφdef
+  have hφeq : φ = fun x => ∫ z, η (x⁻¹ * z) * ι v z ∂μ := by
+    funext x
+    rw [hφdef, ← integral_mul_left_eq_self (fun z => η (x⁻¹ * z) * ι v z) x]
+    simp
+  have hφc : Continuous φ := by
+    rw [hφeq, continuous_iff_continuousAt]
+    intro x₀
+    obtain ⟨V, hV, hVn⟩ := exists_compact_mem_nhds x₀
+    have hL : IsCompact (V * tsupport η) := hV.mul hηs
+    refine continuousAt_of_dominated (bound := (V * tsupport η).indicator fun z => B * ‖ι v z‖)
+      (Filter.Eventually.of_forall fun x =>
+        ((hηc.comp (continuous_const.mul continuous_id)).aestronglyMeasurable).mul
+          hιv.aestronglyMeasurable) ?_ ?_
+      (Filter.Eventually.of_forall fun z =>
+        ((hηc.comp (continuous_id.inv.mul continuous_const)).mul continuous_const).continuousAt)
+    · filter_upwards [hVn] with x hx
+      refine Filter.Eventually.of_forall fun z => ?_
+      by_cases hz : η (x⁻¹ * z) = 0
+      · rw [hz, zero_mul, norm_zero]
+        exact Set.indicator_nonneg
+          (fun _ _ => mul_nonneg ((norm_nonneg _).trans (hB 1)) (norm_nonneg _)) _
+      have hzL : z ∈ V * tsupport η := by
+        have := Set.mul_mem_mul hx (subset_tsupport η hz)
+        rwa [mul_inv_cancel_left] at this
+      rw [Set.indicator_of_mem hzL, norm_mul]
+      exact mul_le_mul_of_nonneg_right (hB _) (norm_nonneg _)
+    · exact IntegrableOn.integrable_indicator
+        ((hιv.integrableOn_isCompact hL).norm.const_mul B) hL.measurableSet
+  refine ⟨φ, hφc, _root_.GlobalTheory.LocRep.rep_of_pairing hloc hφc.locallyIntegrable ?_⟩
+  intro C hC
+  obtain ⟨Λ, hΛ⟩ := _root_.GlobalTheory.LocRep.exists_pairing hloc hlin hC
+  obtain ⟨M, hM⟩ := hloc C hC
+  have hint : Integrable (fun y => η y • ρ y v) μ :=
+    (hηc.smul (hcont v)).integrable_of_hasCompactSupport hηs.smul_right
+  have hηI : Integrable η μ := hηc.integrable_of_hasCompactSupport hηs
+  have hrestr : μ.prod (μ.restrict C) = (μ.prod μ).restrict (Set.univ ×ˢ C) := by
+    rw [← Measure.prod_restrict, Measure.restrict_univ]
+  have hmeas : AEStronglyMeasurable (fun p : G × G => η p.1 * ι v (p.2 * p.1))
+      (μ.prod (μ.restrict C)) := by
+    have h1 : AEStronglyMeasurable (fun p : G × G => ι v (p.2 * p.1)) (μ.prod μ) :=
+      (hιv.aestronglyMeasurable.comp_snd (μ := μ)).comp_measurePreserving
+        (measurePreserving_prod_mul_swap μ μ)
+    rw [hrestr]
+    exact ((hηc.comp continuous_fst).aestronglyMeasurable).mul h1.restrict
+  have hslice : ∀ y, IntegrableOn (fun x => ι v (x * y)) C μ ∧
+      ∫ x in C, ‖ι v (x * y)‖ ∂μ ≤ M * ‖v‖ := by
+    intro y
+    have hae : ι (ρ y v) =ᵐ[μ.restrict C] fun x => ι v (x * y) := ae_restrict_of_ae (htrans y v)
+    obtain ⟨h1, h2⟩ := hM (ρ y v)
+    refine ⟨h1.congr_fun_ae hae, ?_⟩
+    rw [← hnorm y v]
+    refine le_of_eq_of_le (integral_congr_ae (hae.mono fun x hx => ?_)).symm h2
+    simp only [hx]
+  have hprod : Integrable (Function.uncurry fun y x => η y * ι v (x * y))
+      (μ.prod (μ.restrict C)) := by
+    refine (integrable_prod_iff hmeas).2 ⟨Filter.Eventually.of_forall fun y =>
+      (hslice y).1.const_mul (η y), ?_⟩
+    refine Integrable.mono' (hηI.norm.mul_const (M * ‖v‖)) hmeas.norm.integral_prod_right' ?_
+    refine Filter.Eventually.of_forall fun y => ?_
+    simp only [norm_mul, Function.uncurry_apply_pair]
+    rw [Real.norm_of_nonneg (integral_nonneg fun _ => by positivity), integral_const_mul]
+    exact mul_le_mul_of_nonneg_left (hslice y).2 (norm_nonneg _)
+  calc ∫ x in C, ι (∫ y, η y • ρ y v ∂μ) x ∂μ = Λ (∫ y, η y • ρ y v ∂μ) := (hΛ _).symm
+    _ = ∫ y, Λ (η y • ρ y v) ∂μ := (Λ.integral_comp_comm hint).symm
+    _ = ∫ y, ∫ x in C, η y * ι v (x * y) ∂μ ∂μ := by
+        refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
+        simp only
+        rw [map_smul, hΛ, smul_eq_mul, ← integral_const_mul]
+        refine integral_congr_ae ?_
+        filter_upwards [ae_restrict_of_ae (htrans y v)] with x hx
+        rw [hx]
+    _ = ∫ x in C, φ x ∂μ := integral_integral_swap hprod
+
+end GlobalTheory.LocRep
+end
+
+open MeasureTheory
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_continuous_representative_average : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G] [MeasurableSpace G] [BorelSpace G] (μ : Measure G) [μ.IsHaarMeasure] (K : Type) [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K] (ι : K → G → ℂ), (∀ C, IsCompact C → ∃ M : ℝ, ∀ v, IntegrableOn (ι v) C μ ∧ ∫ x in C, ‖ι v x‖ ∂μ ≤ M * ‖v‖) → (∀ (a : ℂ) v w, ι (a • v + w) =ᵐ[μ] fun x => a * ι v x + ι w x) → ∀ (ρ : G →* (K →L[ℂ] K)), (∀ g v, ‖ρ g v‖ = ‖v‖) → (∀ v, Continuous fun g => ρ g v) → (∀ g v, ι (ρ g v) =ᵐ[μ] fun x => ι v (x * g)) → ∀ (η : G → ℂ) (v : K), Continuous η → HasCompactSupport η → ∃ φ : G → ℂ, Continuous φ ∧ ι (∫ y, η y • ρ y v ∂μ) =ᵐ[μ] φ := by
+  atlas_forward_decl GlobalTheory.LocRep.exists_continuous_rep_average
+end
+
+section
+section
+open MeasureTheory
+open scoped ContDiff
+
+namespace GlobalTheory
+
+open MeasureTheory in
+open scoped ContDiff in
+
+theorem _root_.GlobalTheory.exists_average_fixed_approx_of_fixed :
+    ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G] [MeasurableSpace G] [BorelSpace G] (μ : Measure G) [μ.IsHaarMeasure] (K : Type) [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K], ∀ (ρ : G →* (K →L[ℂ] K)), (∀ g v, ‖ρ g v‖ = ‖v‖) → (∀ v, Continuous fun g => ρ g v) → ∀ (H U : Subgroup G), IsOpen (U : Set G) → (∀ y ∈ U, ∀ k ∈ H, y⁻¹ * k * y ∈ H) → ∀ v : K, (∀ k ∈ H, ρ k v = v) → ∀ ε : ℝ, 0 < ε → ∃ η : G → ℂ, Continuous η ∧ HasCompactSupport η ∧ (∀ k ∈ H, ρ k (∫ y, η y • ρ y v ∂μ) = ∫ y, η y • ρ y v ∂μ) ∧ ‖v - ∫ y, η y • ρ y v ∂μ‖ < ε := by
+  intro G _ _ _ _ _ _ _ _ μ _ K _ _ _ ρ _ hcont H U hU hconj v hv ε hε
+  set W : Set G := (U : Set G) ∩ {y | ‖ρ y v - v‖ < ε / 2} with hW
+  have hWo : IsOpen W :=
+    hU.inter (isOpen_lt ((hcont v).sub continuous_const).norm continuous_const)
+  have h1W : (1 : G) ∈ W := ⟨U.one_mem, by simp [half_pos hε]⟩
+  obtain ⟨f, hf1, hf0, hfc, hfI⟩ := exists_continuous_one_zero_of_isCompact
+    (isCompact_singleton (x := (1 : G))) hWo.isClosed_compl
+    (Set.disjoint_singleton_left.2 fun h => h h1W)
+  have hf1' : f 1 = 1 := by simpa using hf1 (Set.mem_singleton (1 : G))
+  have hfpos : 0 < ∫ y, f y ∂μ :=
+    f.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero hfc (fun x => (hfI x).1)
+      (x := 1) (by rw [hf1']; norm_num)
+  set c := ∫ y, f y ∂μ with hc
+  set η : G → ℂ := fun y => ((c⁻¹ * f y : ℝ) : ℂ) with hηdef
+  have hηc : Continuous η :=
+    Complex.continuous_ofReal.comp (continuous_const.mul f.continuous)
+  have hηs : HasCompactSupport η :=
+    hfc.comp_left (g := fun r : ℝ => ((c⁻¹ * r : ℝ) : ℂ)) (by simp)
+  have hηW : ∀ y, η y ≠ 0 → y ∈ W := by
+    intro y hy
+    by_contra hyW
+    exact hy (by simp [hηdef, hf0 hyW])
+  have hηI : Integrable η μ := hηc.integrable_of_hasCompactSupport hηs
+  have hint : Integrable (fun y => η y • ρ y v) μ :=
+    (hηc.smul (hcont v)).integrable_of_hasCompactSupport hηs.smul_right
+  have hnormη : (fun y => ‖η y‖) = fun y => c⁻¹ * f y := by
+    funext y
+    simp only [hηdef, Complex.norm_real, Real.norm_eq_abs]
+    exact abs_of_nonneg (mul_nonneg (inv_nonneg.2 hfpos.le) (hfI y).1)
+  have hη1 : ∫ y, η y ∂μ = 1 := by
+    simp only [hηdef]
+    rw [integral_complex_ofReal, integral_const_mul, inv_mul_cancel₀ hfpos.ne', Complex.ofReal_one]
+  refine ⟨η, hηc, hηs, ?_, ?_⟩
+  · intro k hk
+    rw [← ContinuousLinearMap.integral_comp_comm _ hint]
+    refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
+    simp only [map_smul]
+    by_cases hy : η y = 0
+    · simp [hy]
+    have hyU : y ∈ U := (hηW y hy).1
+    congr 1
+    have hky : k * y = y * (y⁻¹ * k * y) := by group
+    calc ρ k (ρ y v) = ρ (k * y) v := by rw [map_mul]; rfl
+      _ = ρ (y * (y⁻¹ * k * y)) v := by rw [hky]
+      _ = ρ y (ρ (y⁻¹ * k * y) v) := by rw [map_mul]; rfl
+      _ = ρ y v := by rw [hv _ (hconj y hyU k hk)]
+  · have hsplit : v - ∫ y, η y • ρ y v ∂μ = ∫ y, η y • (v - ρ y v) ∂μ := by
+      simp_rw [smul_sub]
+      rw [integral_sub (hηI.smul_const v) hint, integral_smul_const, hη1, one_smul]
+    rw [hsplit]
+    calc ‖∫ y, η y • (v - ρ y v) ∂μ‖ ≤ ∫ y, ‖η y‖ * (ε / 2) ∂μ := by
+          refine norm_integral_le_of_norm_le (hηI.norm.mul_const _)
+            (Filter.Eventually.of_forall fun y => ?_)
+          rw [norm_smul]
+          by_cases hy : η y = 0
+          · simp [hy]
+          exact mul_le_mul_of_nonneg_left
+            (by rw [norm_sub_rev]; exact (hηW y hy).2.le) (norm_nonneg _)
+      _ = ε / 2 := by
+          rw [integral_mul_const, hnormη, integral_const_mul, inv_mul_cancel₀ hfpos.ne', one_mul]
+      _ < ε := half_lt_self hε
+
+end GlobalTheory
+end
+
+open MeasureTheory
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_fixed_average_approx_of_subgroup_fixed : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G] [MeasurableSpace G] [BorelSpace G] (μ : Measure G) [μ.IsHaarMeasure] (K : Type) [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K], ∀ (ρ : G →* (K →L[ℂ] K)), (∀ g v, ‖ρ g v‖ = ‖v‖) → (∀ v, Continuous fun g => ρ g v) → ∀ (H U : Subgroup G), IsOpen (U : Set G) → (∀ y ∈ U, ∀ k ∈ H, y⁻¹ * k * y ∈ H) → ∀ v : K, (∀ k ∈ H, ρ k v = v) → ∀ ε : ℝ, 0 < ε → ∃ η : G → ℂ, Continuous η ∧ HasCompactSupport η ∧ (∀ k ∈ H, ρ k (∫ y, η y • ρ y v ∂μ) = ∫ y, η y • ρ y v ∂μ) ∧ ‖v - ∫ y, η y • ρ y v ∂μ‖ < ε := by
+  atlas_forward_decl GlobalTheory.exists_average_fixed_approx_of_fixed
+end
+
+section
+section
+open MeasureTheory Filter Topology
+open scoped ContDiff
+
+namespace GlobalTheory.LocRep
+
+open MeasureTheory Filter Topology in
+open scoped ContDiff in
+
+theorem _root_.GlobalTheory.LocRep.exists_eval_closure (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
+    [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G] [MeasurableSpace G] [BorelSpace G]
+    (μ : Measure G) [μ.IsHaarMeasure] (K : Type) [NormedAddCommGroup K] [InnerProductSpace ℂ K]
+    [CompleteSpace K] (ι : K → G → ℂ)
+    (hloc : ∀ C, IsCompact C → ∃ M : ℝ, ∀ v, IntegrableOn (ι v) C μ ∧ ∫ x in C, ‖ι v x‖ ∂μ ≤ M * ‖v‖)
+    (hlin : ∀ (a : ℂ) v w, ι (a • v + w) =ᵐ[μ] fun x => a * ι v x + ι w x)
+    (A : K →L[ℂ] K) (E : Submodule ℂ K)
+    (hE : ∀ v ∈ E, ∃ φ : G → ℂ, Continuous φ ∧ ι (A v) =ᵐ[μ] φ)
+    (hB : ∀ B, IsCompact B → ∃ C : ℝ, ∀ v ∈ E, ∀ φ : G → ℂ, Continuous φ → ι (A v) =ᵐ[μ] φ →
+      ∀ x ∈ B, ‖φ x‖ ≤ C * ‖v‖) :
+    ∃ Λ : G → (K →L[ℂ] ℂ), ∀ v ∈ closure (E : Set K),
+      (Continuous fun x => Λ x v) ∧ ι (A v) =ᵐ[μ] fun x => Λ x v := by
+  have hE' : ∀ w : E, ∃ φ : G → ℂ, Continuous φ ∧ ι (A w) =ᵐ[μ] φ := fun w => hE w w.2
+  choose ψ hψc hψae using hE'
+  have hadd : ∀ w w' : E, ψ (w + w') = fun x => ψ w x + ψ w' x := fun w w' =>
+    (Continuous.ae_eq_iff_eq μ (hψc _) ((hψc w).add (hψc w'))).1 (by
+      filter_upwards [hψae (w + w'), _root_.GlobalTheory.LocRep.rep_add hlin (A w) (A w'), hψae w, hψae w']
+        with x h0 h1 h2 h3
+      show ψ (w + w') x = ψ w x + ψ w' x
+      rw [← h0, ← h2, ← h3, ← h1]
+      simp)
+  have hsmul : ∀ (a : ℂ) (w : E), ψ (a • w) = fun x => a * ψ w x := fun a w =>
+    (Continuous.ae_eq_iff_eq μ (hψc _) (continuous_const.mul (hψc w))).1 (by
+      filter_upwards [hψae (a • w), _root_.GlobalTheory.LocRep.rep_smul hlin a (A w), hψae w] with x h0 h1 h2
+      show ψ (a • w) x = a * ψ w x
+      rw [← h0, ← h2, ← h1]
+      simp)
+  let L : G → E →L[ℂ] ℂ := fun x => LinearMap.mkContinuousOfExistsBound
+    { toFun := fun w => ψ w x
+      map_add' := fun w w' => congrFun (hadd w w') x
+      map_smul' := fun a w => by simpa using congrFun (hsmul a w) x } (by
+      obtain ⟨c, hc⟩ := hB {x} isCompact_singleton
+      exact ⟨c, fun w => hc w w.2 _ (hψc w) (hψae w) x rfl⟩)
+  have hext : ∀ x, ∃ g : K →L[ℂ] ℂ, (∀ w : E, g w = L x w) ∧ ‖g‖ = ‖L x‖ :=
+    fun x => exists_extension_norm_eq E (L x)
+  choose Λ hΛext hΛnorm using hext
+  have hbound : ∀ B, IsCompact B → ∃ c : ℝ, 0 ≤ c ∧ ∀ x ∈ B, ‖Λ x‖ ≤ c := by
+    intro B hBc
+    obtain ⟨c, hc⟩ := hB B hBc
+    refine ⟨max c 0, le_max_right _ _, fun x hx => ?_⟩
+    rw [hΛnorm]
+    refine ContinuousLinearMap.opNorm_le_bound _ (le_max_right _ _) fun w => ?_
+    exact (hc w w.2 _ (hψc w) (hψae w) x hx).trans
+      (mul_le_mul_of_nonneg_right (le_max_left _ _) (norm_nonneg _))
+  refine ⟨Λ, fun v hv => ?_⟩
+  obtain ⟨u, hun, hu⟩ := mem_closure_iff_seq_limit.1 hv
+  have hcont : ∀ n, Continuous fun x => Λ x (u n) := fun n => by
+    have h : (fun x => Λ x (u n)) = ψ ⟨u n, hun n⟩ := funext fun x => hΛext x ⟨u n, hun n⟩
+    rw [h]
+    exact hψc _
+  have hunif : ∀ B, IsCompact B →
+      TendstoUniformlyOn (fun n x => Λ x (u n)) (fun x => Λ x v) atTop B := by
+    intro B hBc
+    obtain ⟨c, hc0, hc⟩ := hbound B hBc
+    rw [Metric.tendstoUniformlyOn_iff]
+    intro ε hε
+    have hu' := (Metric.tendsto_nhds.1 hu) (ε / (c + 1)) (by positivity)
+    filter_upwards [hu'] with n hn x hx
+    rw [dist_eq_norm, ← map_sub]
+    calc ‖Λ x (v - u n)‖ ≤ ‖Λ x‖ * ‖v - u n‖ := (Λ x).le_opNorm _
+      _ ≤ c * (ε / (c + 1)) := by
+          refine mul_le_mul (hc x hx) ?_ (norm_nonneg _) hc0
+          rw [← dist_eq_norm, dist_comm]
+          exact hn.le
+      _ < ε := by
+          rw [mul_div_assoc', div_lt_iff₀ (by positivity)]
+          nlinarith
+  have hcontv : Continuous fun x => Λ x v :=
+    (tendstoLocallyUniformly_iff_forall_isCompact.2 hunif).continuous
+      (Eventually.of_forall hcont).frequently
+  have hint : ∀ C, IsCompact C → ∫ x in C, ι (A v) x ∂μ = ∫ x in C, Λ x v ∂μ := by
+    intro C hC
+    obtain ⟨Pr, hPr⟩ := _root_.GlobalTheory.LocRep.exists_pairing hloc hlin hC
+    obtain ⟨c, hc0, hc⟩ := hbound C hC
+    have h1 : Tendsto (fun n => Pr (A (u n))) atTop (𝓝 (Pr (A v))) :=
+      ((Pr.continuous.comp A.continuous).tendsto v).comp hu
+    have h2 : ∀ n, Pr (A (u n)) = ∫ x in C, Λ x (u n) ∂μ := fun n => by
+      rw [hPr]
+      refine integral_congr_ae (ae_restrict_of_ae ?_)
+      filter_upwards [hψae ⟨u n, hun n⟩] with x hx
+      rw [hx]
+      exact (hΛext x ⟨u n, hun n⟩).symm
+    have h3 : Tendsto (fun n => ∫ x in C, Λ x (u n) ∂μ) atTop (𝓝 (∫ x in C, Λ x v ∂μ)) := by
+      rw [tendsto_iff_norm_sub_tendsto_zero]
+      refine squeeze_zero (fun n => norm_nonneg _) (g := fun n => c * ‖u n - v‖ * (μ C).toReal)
+        (fun n => ?_) ?_
+      · rw [← integral_sub ((hcont n).locallyIntegrable.integrableOn_isCompact hC)
+          (hcontv.locallyIntegrable.integrableOn_isCompact hC)]
+        refine norm_setIntegral_le_of_norm_le_const hC.measure_lt_top fun x hx => ?_
+        rw [← map_sub]
+        exact ((Λ x).le_opNorm _).trans (mul_le_mul_of_nonneg_right (hc x hx) (norm_nonneg _))
+      · have h4 : Tendsto (fun n => ‖u n - v‖) atTop (𝓝 0) :=
+          tendsto_iff_norm_sub_tendsto_zero.1 hu
+        simpa using (h4.const_mul c).mul_const (μ C).toReal
+    rw [← hPr]
+    exact tendsto_nhds_unique (h1.congr h2) h3
+  exact ⟨hcontv, _root_.GlobalTheory.LocRep.rep_of_pairing hloc hcontv.locallyIntegrable hint⟩
+
+end GlobalTheory.LocRep
+end
+
+open MeasureTheory
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_evaluation_extension_closure_representatives : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G] [MeasurableSpace G] [BorelSpace G] (μ : Measure G) [μ.IsHaarMeasure] (K : Type) [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K] (ι : K → G → ℂ), (∀ C, IsCompact C → ∃ M : ℝ, ∀ v, IntegrableOn (ι v) C μ ∧ ∫ x in C, ‖ι v x‖ ∂μ ≤ M * ‖v‖) → (∀ (a : ℂ) v w, ι (a • v + w) =ᵐ[μ] fun x => a * ι v x + ι w x) → ∀ (A : K →L[ℂ] K) (E : Submodule ℂ K), (∀ v ∈ E, ∃ φ : G → ℂ, Continuous φ ∧ ι (A v) =ᵐ[μ] φ) → (∀ B, IsCompact B → ∃ C : ℝ, ∀ v ∈ E, ∀ φ : G → ℂ, Continuous φ → ι (A v) =ᵐ[μ] φ → ∀ x ∈ B, ‖φ x‖ ≤ C * ‖v‖) → ∃ Λ : G → (K →L[ℂ] ℂ), ∀ v ∈ closure (E : Set K), (Continuous fun x => Λ x v) ∧ ι (A v) =ᵐ[μ] fun x => Λ x v := by
+  atlas_forward_decl GlobalTheory.LocRep.exists_eval_closure
+end
+
+section
+section
+open MeasureTheory
+open scoped ContDiff
+
+namespace GlobalTheory.CubeTaylor
+
+variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
+  {K : Type} [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K]
+
+open MeasureTheory in
+open scoped ContDiff in
+private theorem integral_cube_succ_eq_iterated {K : Type} [NormedAddCommGroup K]
+    [InnerProductSpace ℂ K] [CompleteSpace K] (N : ℕ) (s : ℝ) (F : (Fin (N + 1) → ℝ) → K)
+    (hF : Continuous F) :
+    ∫ t in Set.univ.pi (fun _ : Fin (N + 1) => Set.Icc (0 : ℝ) s), F t =
+      ∫ t in Set.univ.pi (fun _ : Fin N => Set.Icc (0 : ℝ) s),
+        ∫ r in Set.Icc (0 : ℝ) s, F (Fin.snoc t r) := by
+  have hsnoc : Continuous fun p : (Fin N → ℝ) × ℝ => (Fin.snoc p.1 p.2 : Fin (N + 1) → ℝ) :=
+    Continuous.finSnoc (A := fun _ => ℝ) continuous_fst continuous_snd
+  have hF' : Continuous fun p : (Fin N → ℝ) × ℝ => F (Fin.snoc p.1 p.2) := hF.comp hsnoc
+  have hG : Continuous fun t : Fin N → ℝ => ∫ r in Set.Icc (0 : ℝ) s, F (Fin.snoc t r) :=
+    continuous_parametric_integral_of_continuous (f := fun t r => F (Fin.snoc t r)) hF'
+      isCompact_Icc
+  have hcube : IsCompact (Set.univ.pi fun _ : Fin (N + 1) => Set.Icc (0 : ℝ) s) :=
+    isCompact_univ_pi fun _ => isCompact_Icc
+  have hcube' : IsCompact (Set.univ.pi fun _ : Fin N => Set.Icc (0 : ℝ) s) :=
+    isCompact_univ_pi fun _ => isCompact_Icc
+  set X := ∫ t in Set.univ.pi (fun _ : Fin (N + 1) => Set.Icc (0 : ℝ) s), F t with hX
+  set Y := ∫ t in Set.univ.pi (fun _ : Fin N => Set.Icc (0 : ℝ) s),
+    ∫ r in Set.Icc (0 : ℝ) s, F (Fin.snoc t r) with hY
+  have key : ∀ e : K, (inner ℂ e X).re = (inner ℂ e Y).re := by
+    intro e
+    let L : K →L[ℝ] ℝ := Complex.reCLM.comp ((innerSL ℂ e).restrictScalars ℝ)
+    have hL : ∀ x, L x = (inner ℂ e x).re := fun x => rfl
+    rw [← hL, ← hL, hX, hY,
+      ← L.integral_comp_comm (hF.continuousOn.integrableOn_compact hcube),
+      ← L.integral_comp_comm (hG.continuousOn.integrableOn_compact hcube'),
+      (_root_.GlobalTheory.integral_cube_succ_last N s (fun t => L (F t)) (L.continuous.comp hF)).2]
+    refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+    exact L.integral_comp_comm
+      ((hF.comp (Continuous.finSnoc (A := fun _ => ℝ) continuous_const continuous_id)).continuousOn.integrableOn_compact
+        isCompact_Icc)
+  have h := key (X - Y)
+  have h2 : ‖X - Y‖ ^ 2 = 0 := by
+    rw [← inner_self_eq_norm_sq (𝕜 := ℂ), inner_sub_right, map_sub]
+    simp only [RCLike.re_to_complex]
+    rw [h, sub_self]
+  exact sub_eq_zero.1 (norm_eq_zero.1 (pow_eq_zero_iff two_ne_zero |>.1 h2))
+
+open MeasureTheory in
+open scoped ContDiff in
+private theorem eq_interval_average_sub_weighted_deriv
+    {G : Type} [Group G] [TopologicalSpace G] {K : Type} [NormedAddCommGroup K] [InnerProductSpace ℂ K]
+    [CompleteSpace K] (ρ : G →* (K →L[ℂ] K)) (hcont : ∀ v, Continuous fun g => ρ g v)
+    {s : ℝ} (hs : 0 < s) (c : ℝ → G) (hc : Continuous c) (hc0 : c 0 = 1)
+    (hadd : ∀ a b, c (a + b) = c a * c b) (w w' : K)
+    (hd : HasDerivAt (fun t : ℝ => ρ (c t) w) w' 0) :
+    w = (∫ r in Set.Icc 0 s, ((1 / s : ℝ) : ℂ) • ρ (c r) w) -
+      ∫ r in Set.Icc 0 s, (((s - r) / s : ℝ) : ℂ) • ρ (c r) w' := by
+  have hg : ∀ r, HasDerivAt (fun t => ρ (c t) w) (ρ (c r) w') r := by
+    intro r
+    have h1 : HasDerivAt (fun t => ρ (c (t - r)) w) w' r := by
+      have := hd
+      rw [← sub_self r] at this
+      exact this.comp_sub_const r r
+    have h2 := ((ρ (c r)).restrictScalars ℝ).hasFDerivAt.comp_hasDerivAt r h1
+    refine h2.congr_of_eventuallyEq (Filter.Eventually.of_forall fun t => ?_)
+    simp only [Function.comp_apply, ContinuousLinearMap.coe_restrictScalars']
+    rw [← ContinuousLinearMap.mul_apply, ← map_mul, ← hadd, add_sub_cancel]
+  have hb : ∀ r : ℝ, HasDerivAt (fun t : ℝ => (((s - t) / s : ℝ) : ℂ)) (((-(1 / s)) : ℝ) : ℂ) r := by
+    intro r
+    have : HasDerivAt (fun t : ℝ => (s - t) / s) (-(1 / s)) r := by
+      simpa [neg_div] using ((hasDerivAt_id r).const_sub s).div_const s
+    exact this.ofReal_comp
+  have hh : ∀ r ∈ Set.uIcc 0 s, HasDerivAt (fun t => (((s - t) / s : ℝ) : ℂ) • ρ (c t) w)
+      ((((s - r) / s : ℝ) : ℂ) • ρ (c r) w' + (((-(1 / s)) : ℝ) : ℂ) • ρ (c r) w) r :=
+    fun r _ => (hb r).smul (hg r)
+  have hgc : Continuous fun t => ρ (c t) w := (hcont w).comp hc
+  have hg'c : Continuous fun t => ρ (c t) w' := (hcont w').comp hc
+  have hA : Continuous fun r : ℝ => (((s - r) / s : ℝ) : ℂ) • ρ (c r) w' := by
+    exact (Complex.continuous_ofReal.comp ((continuous_const.sub continuous_id).div_const s)).smul hg'c
+  have hB : Continuous fun r : ℝ => (((-(1 / s)) : ℝ) : ℂ) • ρ (c r) w :=
+    continuous_const.smul hgc
+  have hE := intervalIntegral.integral_eq_sub_of_hasDerivAt hh
+    ((hA.add hB).intervalIntegrable 0 s)
+  rw [intervalIntegral.integral_add (hA.intervalIntegrable 0 s) (hB.intervalIntegrable 0 s),
+    intervalIntegral.integral_of_le hs.le, intervalIntegral.integral_of_le hs.le] at hE
+  simp only [sub_self, zero_div, Complex.ofReal_zero, zero_smul, sub_zero, div_self hs.ne',
+    Complex.ofReal_one, one_smul, hc0, map_one, ContinuousLinearMap.one_apply] at hE
+  rw [integral_Icc_eq_integral_Ioc, integral_Icc_eq_integral_Ioc]
+  have hneg : ∫ r in Set.Ioc 0 s, (((-(1 / s)) : ℝ) : ℂ) • ρ (c r) w =
+      -∫ r in Set.Ioc 0 s, ((1 / s : ℝ) : ℂ) • ρ (c r) w := by
+    rw [← integral_neg]
+    congr 1
+    funext r
+    rw [Complex.ofReal_neg, neg_smul]
+  rw [hneg] at hE
+  have key : ∀ x A B : K, A + -B = 0 - x → x = B - A := by
+    intro x A B h
+    calc x = -(0 - x) := by abel
+      _ = -(A + -B) := by rw [h]
+      _ = B - A := by abel
+  exact key _ _ _ hE
+
+open MeasureTheory in
+open scoped ContDiff in
+variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
+  {K : Type} [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K] in
+
+theorem _root_.GlobalTheory.CubeTaylor.eq_sum_integral_cube_derivatives : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (K : Type) [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K], ∀ (ρ : G →* (K →L[ℂ] K)), (∀ g v, ‖ρ g v‖ = ‖v‖) → (∀ v, Continuous fun g => ρ g v) → ∀ (s : ℝ), 0 < s → ∀ (N : ℕ) (c : Fin N → ℝ → G), (∀ i, Continuous (c i) ∧ c i 0 = 1 ∧ ∀ a b, c i (a + b) = c i a * c i b) → ∃ (J : Type) (_ : Fintype J) (κ : J → (Fin N → ℝ) → ℂ) (l : J → List (Fin N)), (∀ j, Continuous (κ j)) ∧ ∀ (d : Fin N → K → K) (S : Set K), (∀ v ∈ S, ∀ i, d i v ∈ S ∧ HasDerivAt (fun t : ℝ => ρ (c i t) v) (d i v) 0) → ∀ v ∈ S, v = ∑ j, ∫ t in Set.pi Set.univ (fun _ : Fin N => Set.Icc (0 : ℝ) s), κ j t • ρ (List.ofFn fun i => c i (t i)).prod ((l j).foldr d v) := by
+  intro G _ _ _ K _ _ _ ρ _ hcont s hs N
+  induction N with
+  | zero =>
+    intro c hc
+    refine ⟨Unit, inferInstance, fun _ _ => 1, fun _ => [], fun _ => continuous_const, ?_⟩
+    intro d S hS v hv
+    simp [Measure.real, Real.volume_Icc_pi]
+  | succ N ih =>
+    intro c hc
+    obtain ⟨J, hJ, κ, l, hκ, hrep⟩ := ih (fun i => c (Fin.castSucc i)) (fun i => hc _)
+    have hinit : Continuous (fun t : Fin (N + 1) → ℝ => Fin.init t) :=
+      continuous_pi fun i => continuous_apply (Fin.castSucc i)
+    refine ⟨J × Bool, inferInstance,
+      fun p t => κ p.1 (Fin.init t) * (if p.2 then ((1 / s : ℝ) : ℂ)
+        else -(((s - t (Fin.last N)) / s : ℝ) : ℂ)),
+      fun p => if p.2 then (l p.1).map Fin.castSucc else Fin.last N :: (l p.1).map Fin.castSucc,
+      ?_, ?_⟩
+    · rintro ⟨j, _ | _⟩
+      · simp only [Bool.false_eq_true, if_false]
+        exact ((hκ j).comp hinit).mul (by fun_prop)
+      · simp only [if_true]
+        exact ((hκ j).comp hinit).mul continuous_const
+    intro d S hS v hv
+    have hS' : ∀ v ∈ S, ∀ i : Fin N, d (Fin.castSucc i) v ∈ S ∧
+        HasDerivAt (fun t : ℝ => ρ (c (Fin.castSucc i) t) v) (d (Fin.castSucc i) v) 0 :=
+      fun v hv i => hS v hv _
+    have h1 := hrep (fun i => d (Fin.castSucc i)) S hS' v hv
+    have hmem : ∀ l' : List (Fin N), l'.foldr (fun i => d (Fin.castSucc i)) v ∈ S := by
+      intro l'
+      induction l' with
+      | nil => exact hv
+      | cons a l' ihl => exact (hS _ ihl _).1
+    have hfold : ∀ l' : List (Fin N),
+        (l'.map Fin.castSucc).foldr d v = l'.foldr (fun i => d (Fin.castSucc i)) v := by
+      intro l'
+      rw [List.foldr_map]
+    have hPc : ∀ x : K, Continuous fun t : Fin N → ℝ =>
+        ρ (List.ofFn fun i => c (Fin.castSucc i) (t i)).prod x := fun x =>
+      (hcont x).comp (_root_.GlobalTheory.continuous_prod_ofFn_curves N _ fun i => (hc _).1)
+    have hcF : ∀ (f : (Fin (N + 1) → ℝ) → ℂ) (x : K), Continuous f →
+        Continuous fun t => f t • ρ (List.ofFn fun i => c i (t i)).prod x := fun f x hf =>
+      hf.smul ((hcont x).comp (_root_.GlobalTheory.continuous_prod_ofFn_curves _ c fun i => (hc i).1))
+    have hprod : ∀ (t : Fin N → ℝ) (r : ℝ),
+        (List.ofFn fun i => c i ((Fin.snoc t r : Fin (N + 1) → ℝ) i)).prod =
+          (List.ofFn fun i => c (Fin.castSucc i) (t i)).prod * c (Fin.last N) r := by
+      intro t r
+      rw [List.ofFn_succ', List.prod_concat]
+      simp
+    rw [Fintype.sum_prod_type]
+    refine h1.trans (Finset.sum_congr rfl fun j _ => ?_)
+    simp only [Fintype.sum_bool, if_true, Bool.false_eq_true, if_false, List.foldr_cons, hfold]
+    rw [integral_cube_succ_eq_iterated N s _ (hcF (fun t => κ j (Fin.init t) * ((1 / s : ℝ) : ℂ)) _
+        (((hκ j).comp hinit).mul continuous_const)),
+      integral_cube_succ_eq_iterated N s _
+        (hcF (fun t => κ j (Fin.init t) * -(((s - t (Fin.last N)) / s : ℝ) : ℂ)) _
+        (((hκ j).comp hinit).mul (by fun_prop)))]
+    simp only [Fin.init_snoc, Fin.snoc_last, hprod, map_mul, ContinuousLinearMap.mul_apply]
+    set u := (l j).foldr (fun i => d (Fin.castSucc i)) v with hu_def
+    have hu : u ∈ S := hmem _
+    set cl := c (Fin.last N) with hcl
+    have hA := eq_interval_average_sub_weighted_deriv ρ hcont hs cl (hc _).1 (hc _).2.1
+      (hc _).2.2 u (d (Fin.last N) u) (hS u hu _).2
+    have hI1 : IntegrableOn (fun r => ((1 / s : ℝ) : ℂ) • ρ (cl r) u) (Set.Icc 0 s) :=
+      (continuous_const.smul ((hcont u).comp (hc _).1)).continuousOn.integrableOn_compact
+        isCompact_Icc
+    have hI2 : IntegrableOn (fun r => (((s - r) / s : ℝ) : ℂ) • ρ (cl r) (d (Fin.last N) u))
+        (Set.Icc 0 s) :=
+      ((Complex.continuous_ofReal.comp ((continuous_const.sub continuous_id).div_const s)).smul
+        ((hcont _).comp (hc _).1)).continuousOn.integrableOn_compact isCompact_Icc
+    have e1 : ∀ t : Fin N → ℝ, ∫ r in Set.Icc (0 : ℝ) s, (κ j t * ((1 / s : ℝ) : ℂ)) •
+        ρ (List.ofFn fun i => c (Fin.castSucc i) (t i)).prod (ρ (cl r) u) =
+        κ j t • ρ (List.ofFn fun i => c (Fin.castSucc i) (t i)).prod
+          (∫ r in Set.Icc 0 s, ((1 / s : ℝ) : ℂ) • ρ (cl r) u) := by
+      intro t
+      rw [← ContinuousLinearMap.integral_comp_comm _ hI1, ← integral_smul]
+      congr 1
+      funext r
+      rw [map_smul, smul_smul]
+    have e2 : ∀ t : Fin N → ℝ, ∫ r in Set.Icc (0 : ℝ) s, (κ j t * -(((s - r) / s : ℝ) : ℂ)) •
+        ρ (List.ofFn fun i => c (Fin.castSucc i) (t i)).prod (ρ (cl r) (d (Fin.last N) u)) =
+        -(κ j t • ρ (List.ofFn fun i => c (Fin.castSucc i) (t i)).prod
+          (∫ r in Set.Icc 0 s, (((s - r) / s : ℝ) : ℂ) • ρ (cl r) (d (Fin.last N) u))) := by
+      intro t
+      rw [← ContinuousLinearMap.integral_comp_comm _ hI2, ← integral_smul, ← integral_neg]
+      congr 1
+      funext r
+      rw [map_smul, smul_smul, mul_neg, neg_smul]
+    simp only [e1, e2]
+    have hcube : IsCompact (Set.univ.pi fun _ : Fin N => Set.Icc (0 : ℝ) s) :=
+      isCompact_univ_pi fun _ => isCompact_Icc
+    have hi : ∀ x : K, IntegrableOn (fun t : Fin N → ℝ =>
+        κ j t • ρ (List.ofFn fun i => c (Fin.castSucc i) (t i)).prod x)
+        (Set.univ.pi fun _ => Set.Icc (0 : ℝ) s) := fun x =>
+      ((hκ j).smul (hPc x)).continuousOn.integrableOn_compact hcube
+    rw [integral_neg, ← sub_eq_add_neg, ← integral_sub (hi _) (hi _)]
+    refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+    simp only
+    rw [← smul_sub, ← map_sub, ← hA]
+
+end GlobalTheory.CubeTaylor
+end
+
+open MeasureTheory
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eq_sum_integral_cube_derivatives_alt : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (K : Type) [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K], ∀ (ρ : G →* (K →L[ℂ] K)), (∀ g v, ‖ρ g v‖ = ‖v‖) → (∀ v, Continuous fun g => ρ g v) → ∀ (s : ℝ), 0 < s → ∀ (N : ℕ) (c : Fin N → ℝ → G), (∀ i, Continuous (c i) ∧ c i 0 = 1 ∧ ∀ a b, c i (a + b) = c i a * c i b) → ∃ (J : Type) (_ : Fintype J) (κ : J → (Fin N → ℝ) → ℂ) (l : J → List (Fin N)), (∀ j, Continuous (κ j)) ∧ ∀ (d : Fin N → K → K) (S : Set K), (∀ v ∈ S, ∀ i, d i v ∈ S ∧ HasDerivAt (fun t : ℝ => ρ (c i t) v) (d i v) 0) → ∀ v ∈ S, v = ∑ j, ∫ t in Set.pi Set.univ (fun _ : Fin N => Set.Icc (0 : ℝ) s), κ j t • ρ (List.ofFn fun i => c i (t i)).prod ((l j).foldr d v) := by
+  atlas_forward_decl GlobalTheory.CubeTaylor.eq_sum_integral_cube_derivatives
+end
+
+section
+section
+open MeasureTheory
+open scoped ContDiff
+
+namespace GlobalTheory
+namespace CurveProductSmooth
+
+variable {G : Type} [Group G] {K : Type} [NormedAddCommGroup K] [InnerProductSpace ℂ K]
+  (ρ : G →* (K →L[ℂ] K)) {P : Type} (A : Set P) (e : P → ℝ → G)
+
+def JointlySmooth {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] (Φ : E → K) : Prop :=
+  ∀ (F : Type) [NormedAddCommGroup F] [NormedSpace ℝ F] (g : F → E), ContDiff ℝ ∞ g →
+    ∀ l : List (P × (F → ℝ)), (∀ a ∈ l, a.1 ∈ A ∧ ContDiff ℝ ∞ a.2) →
+      ContDiff ℝ ∞ fun x : F => ρ (l.map fun a => e a.1 (a.2 x)).prod (Φ (g x))
+
+variable {ρ A e}
+
+theorem JointlySmooth.translate {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] {Φ : E → K}
+    (h : JointlySmooth ρ A e Φ) (m : List (P × (E → ℝ)))
+    (hm : ∀ a ∈ m, a.1 ∈ A ∧ ContDiff ℝ ∞ a.2) :
+    JointlySmooth ρ A e fun t => ρ (m.map fun a => e a.1 (a.2 t)).prod (Φ t) := by
+  intro F _ _ g hg l hl
+  have h1 := h F g hg (l ++ m.map fun a => (a.1, a.2 ∘ g)) (by
+    intro a ha
+    rcases List.mem_append.1 ha with ha | ha
+    · exact hl a ha
+    · obtain ⟨b, hb, rfl⟩ := List.mem_map.1 ha
+      exact ⟨(hm b hb).1, (hm b hb).2.comp hg⟩)
+  simp only [List.map_append, List.prod_append, map_mul, List.map_map] at h1
+  exact h1
+
+theorem JointlySmooth.extra {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] {Φ : E → K}
+    (h : JointlySmooth ρ A e Φ) {p : P} (hp : p ∈ A)
+    (F : Type) [NormedAddCommGroup F] [NormedSpace ℝ F] (g : F → E) (hg : ContDiff ℝ ∞ g)
+    (l : List (P × (F → ℝ))) (hl : ∀ a ∈ l, a.1 ∈ A ∧ ContDiff ℝ ∞ a.2) :
+    ContDiff ℝ ∞ fun y : F × ℝ =>
+      ρ (l.map fun a => e a.1 (a.2 y.1)).prod (ρ (e p y.2) (Φ (g y.1))) := by
+  have h1 := h (F × ℝ) (g ∘ Prod.fst) (hg.comp contDiff_fst)
+    ((l.map fun a => (a.1, a.2 ∘ Prod.fst)) ++ [(p, Prod.snd)]) (by
+    intro a ha
+    rcases List.mem_append.1 ha with ha | ha
+    · obtain ⟨b, hb, rfl⟩ := List.mem_map.1 ha
+      exact ⟨(hl b hb).1, (hl b hb).2.comp contDiff_fst⟩
+    · obtain rfl := List.mem_singleton.1 ha
+      exact ⟨hp, contDiff_snd⟩)
+  simp only [List.map_append, List.prod_append, map_mul, List.map_map, List.map_cons,
+    List.map_nil, List.prod_cons, List.prod_nil, mul_one] at h1
+  exact h1
+
+theorem JointlySmooth.deriv {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] {Φ : E → K}
+    (h : JointlySmooth ρ A e Φ) {p : P} (hp : p ∈ A) :
+    JointlySmooth ρ A e fun t => deriv (fun r : ℝ => ρ (e p r) (Φ t)) 0 := by
+  intro F _ _ g hg l hl
+  have h1 := h.extra hp F g hg l hl
+  have h0 := h.extra hp F g hg [] (by simp)
+  simp only [List.map_nil, List.prod_nil, map_one, one_apply_eq_self] at h0
+  have hd : ∀ x : F, DifferentiableAt ℝ (fun r : ℝ => ρ (e p r) (Φ (g x))) 0 := fun x =>
+    ((h0.comp (contDiff_const.prodMk contDiff_id : ContDiff ℝ ∞ fun r : ℝ => (x, r))).differentiable
+      (by simp)) 0
+  have h2 : ContDiff ℝ ∞ fun x : F => fderiv ℝ (fun r : ℝ =>
+      ρ (l.map fun a => e a.1 (a.2 x)).prod (ρ (e p r) (Φ (g x)))) 0 :=
+    ContDiff.fderiv (f := fun (x : F) (r : ℝ) =>
+      ρ (l.map fun a => e a.1 (a.2 x)).prod (ρ (e p r) (Φ (g x)))) (g := fun _ => (0 : ℝ))
+      (m := ∞) h1 contDiff_const (by simp)
+  have h3 := h2.clm_apply (contDiff_const (c := (1 : ℝ)))
+  convert h3 using 2 with x
+  have h4 := ((ρ (l.map fun a => e a.1 (a.2 x)).prod).restrictScalars ℝ).hasFDerivAt.comp_hasDerivAt
+    (0 : ℝ) (hd x).hasDerivAt
+  exact h4.deriv.symm
+
+theorem JointlySmooth.foldr {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] {Φ : E → K}
+    (h : JointlySmooth ρ A e Φ) (l : List P) (hl : ∀ p ∈ l, p ∈ A) :
+    JointlySmooth ρ A e fun t =>
+      l.foldr (fun p w => _root_.deriv (fun r : ℝ => ρ (e p r) w) 0) (Φ t) := by
+  induction l with
+  | nil => exact h
+  | cons p l ih =>
+    exact (ih fun q hq => hl q (List.mem_cons_of_mem _ hq)).deriv (hl p List.mem_cons_self)
+
+end CurveProductSmooth
+
+open MeasureTheory in
+open scoped ContDiff in
+variable {G : Type} [Group G] {K : Type} [NormedAddCommGroup K] [InnerProductSpace ℂ K]
+  (ρ : G →* (K →L[ℂ] K)) {P : Type} (A : Set P) (e : P → ℝ → G) in
+variable {ρ A e} in
+private theorem contDiff_prod_ofFn_apply_of_jointlySmooth {k : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {Φ : E → K} (h : _root_.GlobalTheory.CurveProductSmooth.JointlySmooth ρ A e Φ) {g : (Fin k → ℝ) → E}
+    (hg : ContDiff ℝ ∞ g) (ps : Fin k → P) (hps : ∀ i, ps i ∈ A) :
+    ContDiff ℝ ∞ fun t : Fin k → ℝ => ρ (List.ofFn fun i => e (ps i) (t i)).prod (Φ (g t)) := by
+  have h1 := h (Fin k → ℝ) g hg (List.ofFn fun i => (ps i, fun t : Fin k → ℝ => t i)) (by
+    intro a ha
+    rw [List.mem_ofFn] at ha
+    obtain ⟨i, rfl⟩ := ha
+    exact ⟨hps i, contDiff_apply ℝ ℝ i⟩)
+  simpa [List.map_ofFn, Function.comp_def] using h1
+
+open MeasureTheory in
+open scoped ContDiff in
+variable {G : Type} [Group G] {K : Type} [NormedAddCommGroup K] [InnerProductSpace ℂ K]
+  (ρ : G →* (K →L[ℂ] K)) {P : Type} (A : Set P) (e : P → ℝ → G) in
+variable {ρ A e} in
+private theorem deriv_continuousLinearMap_comp_eq (T : K →L[ℂ] K) (f : ℝ → K) (hf : DifferentiableAt ℝ f 0) :
+    deriv (fun r => T (f r)) 0 = T (deriv f 0) :=
+  ((T.restrictScalars ℝ).hasFDerivAt.comp_hasDerivAt (0 : ℝ) hf.hasDerivAt).deriv
+
+open MeasureTheory in
+open scoped ContDiff in
+variable {G : Type} [Group G] {K : Type} [NormedAddCommGroup K] [InnerProductSpace ℂ K]
+  (ρ : G →* (K →L[ℂ] K)) {P : Type} (A : Set P) (e : P → ℝ → G) in
+variable {ρ A e} in
+private theorem jointlySmooth_deriv_action {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] {Φ : E → K}
+    (h : _root_.GlobalTheory.CurveProductSmooth.JointlySmooth ρ A e Φ) {p : P} (hp : p ∈ A) :
+    _root_.GlobalTheory.CurveProductSmooth.JointlySmooth ρ A e fun t => deriv (fun r : ℝ => ρ (e p r) (Φ t)) 0 := by
+  intro F _ _ g hg l hl
+  have hf : ∀ y : E, ContDiff ℝ ∞ fun r : ℝ => ρ (e p r) (Φ y) := fun y => by
+    simpa using h ℝ (fun _ => y) contDiff_const [(p, id)] (by simp [hp, contDiff_id])
+  let H : F × ℝ → K := fun z =>
+    ρ (((l.map fun a : P × (F → ℝ) => (a.1, a.2 ∘ Prod.fst)) ++ [(p, Prod.snd)]).map
+      fun a : P × (F × ℝ → ℝ) => e a.1 (a.2 z)).prod
+      (Φ (g z.1))
+  have hH : ContDiff ℝ ∞ H := h (F × ℝ) (g ∘ Prod.fst) (hg.comp contDiff_fst) _ (by
+    intro a ha
+    rcases List.mem_append.1 ha with ha | ha
+    · obtain ⟨b, hb, rfl⟩ := List.mem_map.1 ha
+      exact ⟨(hl b hb).1, (hl b hb).2.comp contDiff_fst⟩
+    · rw [List.mem_singleton] at ha
+      subst ha
+      exact ⟨hp, contDiff_snd⟩)
+  have hHx : ∀ x r, H (x, r) = ρ (l.map fun a => e a.1 (a.2 x)).prod (ρ (e p r) (Φ (g x))) := by
+    intro x r
+    simp [H, List.map_append, List.map_map, Function.comp_def, map_mul]
+  have hder : ∀ x, ρ (l.map fun a => e a.1 (a.2 x)).prod (deriv (fun r : ℝ => ρ (e p r) (Φ (g x))) 0)
+      = fderiv ℝ H (x, 0) (0, 1) := by
+    intro x
+    rw [← deriv_continuousLinearMap_comp_eq _ _ ((hf (g x)).differentiable (by simp)).differentiableAt]
+    have h2 : HasDerivAt (fun r : ℝ => H (x, r)) (fderiv ℝ H (x, 0) (0, 1)) 0 :=
+      (hH.differentiable (by simp)).differentiableAt.hasFDerivAt.comp_hasDerivAt (0 : ℝ)
+        ((hasDerivAt_const (0 : ℝ) x).prodMk (hasDerivAt_id (0 : ℝ)))
+    rw [← h2.deriv]
+    simp only [hHx]
+  have hfin : ContDiff ℝ ∞ fun x : F => fderiv ℝ H (x, 0) (0, 1) :=
+    ((contDiff_infty_iff_fderiv.1 hH).2.comp (contDiff_id.prodMk contDiff_const)).clm_apply
+      contDiff_const
+  convert hfin using 1
+  funext x
+  exact hder x
+
+open MeasureTheory in
+open scoped ContDiff in
+variable {G : Type} [Group G] {K : Type} [NormedAddCommGroup K] [InnerProductSpace ℂ K]
+  (ρ : G →* (K →L[ℂ] K)) {P : Type} (A : Set P) (e : P → ℝ → G) in
+variable {ρ A e} in
+private theorem jointlySmooth_const' {v : K}
+    (hv : ∀ (k : ℕ) (ps : Fin k → P), (∀ i, ps i ∈ A) →
+      ContDiff ℝ ∞ fun t : Fin k → ℝ => ρ (List.ofFn fun i => e (ps i) (t i)).prod v)
+    {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] :
+    _root_.GlobalTheory.CurveProductSmooth.JointlySmooth ρ A e (fun _ : E => v) := by
+  intro F _ _ g _ l hl
+  have h1 := hv l.length (fun i => l[i].1) (fun i => (hl _ (List.getElem_mem _)).1)
+  have h2 : ContDiff ℝ ∞ fun x : F => fun i : Fin l.length => l[i].2 x :=
+    contDiff_pi.2 fun i => (hl _ (List.getElem_mem _)).2
+  have h3 := h1.comp h2
+  convert h3 using 1
+  funext x
+  simp only [Function.comp_apply]
+  have hlist : (l.map fun a : P × (F → ℝ) => e a.1 (a.2 x)) =
+      List.ofFn fun i : Fin l.length => e l[i].1 (l[i].2 x) :=
+    List.ext_getElem (by simp) (by simp)
+  rw [hlist]
+
+open MeasureTheory in
+open scoped ContDiff in
+variable {G : Type} [Group G] {K : Type} [NormedAddCommGroup K] [InnerProductSpace ℂ K]
+  (ρ : G →* (K →L[ℂ] K)) {P : Type} (A : Set P) (e : P → ℝ → G) in
+variable {ρ A e} in
+private theorem jointlySmooth_prod_map_action {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {Φ : E → K} (h : _root_.GlobalTheory.CurveProductSmooth.JointlySmooth ρ A e Φ) (m : List (P × (E → ℝ)))
+    (hm : ∀ a ∈ m, a.1 ∈ A ∧ ContDiff ℝ ∞ a.2) :
+    _root_.GlobalTheory.CurveProductSmooth.JointlySmooth ρ A e fun y => ρ (m.map fun a => e a.1 (a.2 y)).prod (Φ y) := by
+  intro F _ _ g hg l hl
+  have h1 := h F g hg (l ++ m.map fun a => (a.1, a.2 ∘ g)) (by
+    intro a ha
+    rcases List.mem_append.1 ha with ha | ha
+    · exact hl a ha
+    · obtain ⟨b, hb, rfl⟩ := List.mem_map.1 ha
+      exact ⟨(hm b hb).1, (hm b hb).2.comp hg⟩)
+  convert h1 using 1
+  funext x
+  simp [List.map_append, List.prod_append, map_mul, List.map_map, Function.comp_def]
+
+open MeasureTheory in
+open scoped ContDiff in
+variable {G : Type} [Group G] {K : Type} [NormedAddCommGroup K] [InnerProductSpace ℂ K]
+  (ρ : G →* (K →L[ℂ] K)) {P : Type} (A : Set P) (e : P → ℝ → G) in
+variable {ρ A e} in
+private theorem jointlySmooth_foldr_deriv_action {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {Φ : E → K} (h : _root_.GlobalTheory.CurveProductSmooth.JointlySmooth ρ A e Φ) (l : List P) (hl : ∀ p ∈ l, p ∈ A) :
+    _root_.GlobalTheory.CurveProductSmooth.JointlySmooth ρ A e fun t =>
+      l.foldr (fun p w => deriv (fun r : ℝ => ρ (e p r) w) 0) (Φ t) := by
+  induction l with
+  | nil => exact h
+  | cons q l ih =>
+    exact jointlySmooth_deriv_action (ih fun p hp => hl p (List.mem_cons_of_mem _ hp)) (hl q (by simp))
+
+open scoped ContDiff in
+
+theorem _root_.GlobalTheory.smooth_along_curve_products_stable : ∀ (G : Type) [Group G] (K : Type) [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K] (ρ : G →* (K →L[ℂ] K)) (P : Type) (A : Set P) (e : P → ℝ → G) (v : K), (∀ (k : ℕ) (ps : Fin k → P), (∀ i, ps i ∈ A) → ContDiff ℝ ∞ fun t : Fin k → ℝ => ρ (List.ofFn fun i => e (ps i) (t i)).prod v) → (∀ p ∈ A, ∀ (k : ℕ) (ps : Fin k → P), (∀ i, ps i ∈ A) → ContDiff ℝ ∞ fun t : Fin k → ℝ => ρ (List.ofFn fun i => e (ps i) (t i)).prod (deriv (fun r : ℝ => ρ (e p r) v) 0)) ∧ (∀ (m : ℕ) (qs : Fin m → P) (r : Fin m → ℝ), (∀ i, qs i ∈ A) → ∀ (k : ℕ) (ps : Fin k → P), (∀ i, ps i ∈ A) → ContDiff ℝ ∞ fun t : Fin k → ℝ => ρ (List.ofFn fun i => e (ps i) (t i)).prod (ρ (List.ofFn fun i => e (qs i) (r i)).prod v)) ∧ ∀ l : List P, (∀ p ∈ l, p ∈ A) → ∀ (k : ℕ) (ps : Fin k → P), (∀ i, ps i ∈ A) → ContDiff ℝ ∞ fun t : Fin k → ℝ => l.foldr (fun p w => deriv (fun r : ℝ => ρ (e p r) w) 0) (ρ (List.ofFn fun i => e (ps i) (t i)).prod v) := by
+  intro G _ K _ _ _ ρ P A e v hv
+  refine ⟨fun p hp k ps hps => ?_, fun m qs r hqs k ps hps => ?_, fun l hl k ps hps => ?_⟩
+  · exact contDiff_prod_ofFn_apply_of_jointlySmooth
+      (jointlySmooth_deriv_action (jointlySmooth_const' hv (E := ℝ)) hp) (g := fun _ => 0) contDiff_const ps hps
+  · have h1 := jointlySmooth_prod_map_action (jointlySmooth_const' hv (E := ℝ))
+      (List.ofFn fun i => (qs i, fun _ : ℝ => r i)) (by
+        intro a ha
+        rw [List.mem_ofFn] at ha
+        obtain ⟨i, rfl⟩ := ha
+        exact ⟨hqs i, contDiff_const⟩)
+    simpa [List.map_ofFn, Function.comp_def] using
+      contDiff_prod_ofFn_apply_of_jointlySmooth h1 (g := fun _ => 0) contDiff_const ps hps
+  · have h1 := jointlySmooth_prod_map_action (jointlySmooth_const' hv (E := Fin k → ℝ))
+      (List.ofFn fun i => (ps i, fun t : Fin k → ℝ => t i)) (by
+        intro a ha
+        rw [List.mem_ofFn] at ha
+        obtain ⟨i, rfl⟩ := ha
+        exact ⟨hps i, contDiff_apply ℝ ℝ i⟩)
+    have h2 := jointlySmooth_foldr_deriv_action h1 l hl (Fin k → ℝ) id contDiff_id [] (by simp)
+    simpa [List.map_ofFn, Function.comp_def] using h2
+
+end GlobalTheory
+end
+
+open MeasureTheory
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.smooth_along_curve_products_stable_alt : ∀ (G : Type) [Group G] (K : Type) [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K] (ρ : G →* (K →L[ℂ] K)) (P : Type) (A : Set P) (e : P → ℝ → G) (v : K), (∀ (k : ℕ) (ps : Fin k → P), (∀ i, ps i ∈ A) → ContDiff ℝ ∞ fun t : Fin k → ℝ => ρ (List.ofFn fun i => e (ps i) (t i)).prod v) → (∀ p ∈ A, ∀ (k : ℕ) (ps : Fin k → P), (∀ i, ps i ∈ A) → ContDiff ℝ ∞ fun t : Fin k → ℝ => ρ (List.ofFn fun i => e (ps i) (t i)).prod (deriv (fun r : ℝ => ρ (e p r) v) 0)) ∧ (∀ (m : ℕ) (qs : Fin m → P) (r : Fin m → ℝ), (∀ i, qs i ∈ A) → ∀ (k : ℕ) (ps : Fin k → P), (∀ i, ps i ∈ A) → ContDiff ℝ ∞ fun t : Fin k → ℝ => ρ (List.ofFn fun i => e (ps i) (t i)).prod (ρ (List.ofFn fun i => e (qs i) (r i)).prod v)) ∧ ∀ l : List P, (∀ p ∈ l, p ∈ A) → ∀ (k : ℕ) (ps : Fin k → P), (∀ i, ps i ∈ A) → ContDiff ℝ ∞ fun t : Fin k → ℝ => l.foldr (fun p w => deriv (fun r : ℝ => ρ (e p r) w) 0) (ρ (List.ofFn fun i => e (ps i) (t i)).prod v) := by
+  atlas_forward_decl GlobalTheory.smooth_along_curve_products_stable
+end
+
+section
+section
+open MeasureTheory Set
+open scoped ENNReal
+
+namespace GlobalTheory.QuotLocInt
+
+variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G]
+  [BorelSpace G] {μ : Measure G} [μ.IsMulLeftInvariant] {Γ : Subgroup G} [Countable Γ] {𝓕 : Set G}
+
+open MeasureTheory Set in
+open scoped ENNReal in
+private theorem lintegral_compact_le_mul_lintegral_fundamentalDomain (G : Type) [Group G] [TopologicalSpace G]
+    [IsTopologicalGroup G] [T2Space G] [MeasurableSpace G] [BorelSpace G] (μ : Measure G)
+    [μ.IsHaarMeasure] (Γ : Subgroup G) [Countable Γ] (𝓕 : Set G) (h𝓕 : IsFundamentalDomain Γ 𝓕 μ)
+    (C : Set G) (hC : IsCompact C) (n : ℝ)
+    (hn : ∀ y : G, {γ : G | γ ∈ Γ ∧ γ * y ∈ C}.Finite ∧
+      (({γ : G | γ ∈ Γ ∧ γ * y ∈ C}.ncard : ℕ) : ℝ) ≤ n)
+    (g : G → ℝ≥0∞) (hg : Measurable g) (hinv : ∀ (γ : Γ) x, g (γ • x) = g x) :
+    ∫⁻ x in C, g x ∂μ ≤ ENNReal.ofReal n * ∫⁻ x in 𝓕, g x ∂μ := by
+  have hCm : MeasurableSet C := hC.isClosed.measurableSet
+  have hcount : ∀ x : G, ∑' γ : Γ, C.indicator (1 : G → ℝ≥0∞) (γ • x) ≤ ENNReal.ofReal n := by
+    intro x
+    have hS : ∑' γ : Γ, C.indicator (1 : G → ℝ≥0∞) (γ • x) =
+        ∑' γ : Γ, {γ : Γ | (γ : G) * x ∈ C}.indicator 1 γ := rfl
+    rw [hS, ← tsum_subtype]
+    simp only [Pi.one_apply]
+    rw [ENNReal.tsum_set_one]
+    obtain ⟨hfin, hle⟩ := hn x
+    have hE : ({γ : Γ | (γ : G) * x ∈ C}).encard ≤
+        (({γ : G | γ ∈ Γ ∧ γ * x ∈ C}.ncard : ℕ) : ℕ∞) := by
+      rw [hfin.cast_ncard_eq, ← Subtype.val_injective.encard_image]
+      apply Set.encard_le_encard
+      rintro _ ⟨γ, hγ, rfl⟩
+      exact ⟨γ.2, hγ⟩
+    calc ((({γ : Γ | (γ : G) * x ∈ C}).encard : ℕ∞) : ℝ≥0∞)
+        ≤ (((({γ : G | γ ∈ Γ ∧ γ * x ∈ C}.ncard : ℕ) : ℕ∞)) : ℝ≥0∞) := ENat.toENNReal_le.mpr hE
+      _ = (({γ : G | γ ∈ Γ ∧ γ * x ∈ C}.ncard : ℕ) : ℝ≥0∞) := by simp
+      _ ≤ ENNReal.ofReal n := by
+          rw [← ENNReal.ofReal_natCast]
+          exact ENNReal.ofReal_le_ofReal hle
+  calc ∫⁻ x in C, g x ∂μ = ∫⁻ x, C.indicator g x ∂μ := (lintegral_indicator hCm _).symm
+    _ = ∑' γ : Γ, ∫⁻ x in 𝓕, C.indicator g (γ⁻¹ • x) ∂μ := h𝓕.lintegral_eq_tsum' _
+    _ = ∑' γ : Γ, ∫⁻ x in 𝓕, C.indicator (1 : G → ℝ≥0∞) (γ⁻¹ • x) * g x ∂μ := by
+        congr 1; funext γ; congr 1; funext x
+        by_cases hx : γ⁻¹ • x ∈ C <;> simp [hx, hinv]
+    _ = ∫⁻ x in 𝓕, ∑' γ : Γ, C.indicator (1 : G → ℝ≥0∞) (γ⁻¹ • x) * g x ∂μ := by
+        rw [lintegral_tsum]
+        intro γ
+        exact (((measurable_one.indicator hCm).comp (measurable_const_smul _)).mul hg).aemeasurable
+    _ = ∫⁻ x in 𝓕, (∑' γ : Γ, C.indicator (1 : G → ℝ≥0∞) (γ • x)) * g x ∂μ := by
+        congr 1; funext x
+        rw [ENNReal.tsum_mul_right]
+        congr 1
+        exact (Equiv.inv Γ).tsum_eq (fun γ => C.indicator (1 : G → ℝ≥0∞) (γ • x))
+    _ ≤ ∫⁻ x in 𝓕, ENNReal.ofReal n * g x ∂μ :=
+        lintegral_mono fun x => by gcongr ?_ * _; exact hcount x
+    _ = _ := lintegral_const_mul _ hg
+
+open MeasureTheory Set in
+open scoped ENNReal in
+variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G]
+  [BorelSpace G] {μ : Measure G} [μ.IsMulLeftInvariant] {Γ : Subgroup G} [Countable Γ] {𝓕 : Set G} in
+
+theorem _root_.GlobalTheory.QuotLocInt.integrableOn_compact : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [T2Space G]
+    [MeasurableSpace G] [BorelSpace G] (μ : Measure G) [μ.IsHaarMeasure] (Γ : Subgroup G) [Countable Γ]
+    (𝓕 : Set G), IsFundamentalDomain Γ 𝓕 μ → ∀ C : Set G, IsCompact C → ∀ n : ℝ,
+    (∀ y : G, {γ : G | γ ∈ Γ ∧ γ * y ∈ C}.Finite ∧
+      (({γ : G | γ ∈ Γ ∧ γ * y ∈ C}.ncard : ℕ) : ℝ) ≤ n) →
+    ∃ M : ℝ, ∀ F : Lp ℂ 2 ((μ.restrict 𝓕).map (Quotient.mk (QuotientGroup.rightRel Γ))),
+      IntegrableOn (fun x => F (Quotient.mk _ x)) C μ ∧
+        ∫ x in C, ‖F (Quotient.mk _ x)‖ ∂μ ≤ M * ‖F‖ := by
+  intro G _ _ _ _ _ _ μ _ Γ _ 𝓕 h𝓕 C hC n hn
+  refine ⟨(ENNReal.ofReal n ^ (1/2 : ℝ) * μ C ^ (1/2 : ℝ)).toReal, fun F => ?_⟩
+  have hπ : Measurable (Quotient.mk (QuotientGroup.rightRel Γ)) := fun _ hs => hs
+  have hF := Lp.stronglyMeasurable F
+  have hf : StronglyMeasurable fun x => F (Quotient.mk (QuotientGroup.rightRel Γ) x) :=
+    hF.comp_measurable hπ
+  have hL2 : eLpNorm (fun x => F (Quotient.mk (QuotientGroup.rightRel Γ) x)) 2 (μ.restrict C) ≤
+      ENNReal.ofReal n ^ (1/2 : ℝ) *
+        eLpNorm F 2 ((μ.restrict 𝓕).map (Quotient.mk (QuotientGroup.rightRel Γ))) := by
+    rw [eLpNorm_eq_lintegral_rpow_enorm two_ne_zero ENNReal.ofNat_ne_top,
+      eLpNorm_eq_lintegral_rpow_enorm two_ne_zero ENNReal.ofNat_ne_top]
+    simp only [ENNReal.toReal_ofNat]
+    rw [← ENNReal.mul_rpow_of_nonneg _ _ (by norm_num : (0 : ℝ) ≤ 1 / 2)]
+    refine ENNReal.rpow_le_rpow ?_ (by norm_num)
+    calc ∫⁻ x in C, ‖F (Quotient.mk (QuotientGroup.rightRel Γ) x)‖ₑ ^ (2 : ℝ) ∂μ
+        ≤ ENNReal.ofReal n * ∫⁻ x in 𝓕, ‖F (Quotient.mk (QuotientGroup.rightRel Γ) x)‖ₑ ^ (2 : ℝ) ∂μ :=
+          lintegral_compact_le_mul_lintegral_fundamentalDomain G μ Γ 𝓕 h𝓕 C hC n hn _
+            ((hF.measurable.enorm.pow_const _).comp hπ) fun γ x => by
+              rw [show Quotient.mk (QuotientGroup.rightRel Γ) (γ • x) = Quotient.mk _ x from
+                Quotient.sound (QuotientGroup.rightRel_apply.2 (by simp [Subgroup.smul_def, mul_inv_rev]))]
+      _ = _ := by rw [lintegral_map (hF.measurable.enorm.pow_const _) hπ]
+  have hL1 : eLpNorm (fun x => F (Quotient.mk (QuotientGroup.rightRel Γ) x)) 1 (μ.restrict C) ≤
+      ENNReal.ofReal n ^ (1/2 : ℝ) * μ C ^ (1/2 : ℝ) *
+        eLpNorm F 2 ((μ.restrict 𝓕).map (Quotient.mk (QuotientGroup.rightRel Γ))) := by
+    refine (eLpNorm_le_eLpNorm_mul_rpow_measure_univ (p := 1) (q := 2) (by norm_num) hf.aestronglyMeasurable).trans ?_
+    rw [Measure.restrict_apply_univ]
+    simp only [ENNReal.toReal_one, ENNReal.toReal_ofNat]
+    rw [show (1 / 1 - 1 / 2 : ℝ) = 1 / 2 by norm_num]
+    calc _ ≤ ENNReal.ofReal n ^ (1/2 : ℝ) *
+          eLpNorm F 2 ((μ.restrict 𝓕).map (Quotient.mk (QuotientGroup.rightRel Γ))) *
+            μ C ^ (1/2 : ℝ) := by gcongr
+      _ = _ := by ring
+  have hfin : ENNReal.ofReal n ^ (1/2 : ℝ) * μ C ^ (1/2 : ℝ) *
+      eLpNorm F 2 ((μ.restrict 𝓕).map (Quotient.mk (QuotientGroup.rightRel Γ))) < ⊤ := by
+    refine ENNReal.mul_lt_top (ENNReal.mul_lt_top ?_ ?_) (Lp.eLpNorm_lt_top F)
+    · exact ENNReal.rpow_lt_top_of_nonneg (by norm_num) ENNReal.ofReal_ne_top
+    · exact ENNReal.rpow_lt_top_of_nonneg (by norm_num) hC.measure_lt_top.ne
+  refine ⟨memLp_one_iff_integrable.1 ⟨hf.aestronglyMeasurable, hL1.trans_lt hfin⟩, ?_⟩
+  rw [integral_norm_eq_lintegral_enorm hf.aestronglyMeasurable, ← eLpNorm_one_eq_lintegral_enorm,
+    Lp.norm_def, ← ENNReal.toReal_mul]
+  exact ENNReal.toReal_mono hfin.ne hL1
+
+end GlobalTheory.QuotLocInt
+end
+
+open MeasureTheory
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fundamental_domain_L2_bound : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [T2Space G] [MeasurableSpace G] [BorelSpace G] (μ : Measure G) [μ.IsHaarMeasure] (Γ : Subgroup G) [Countable Γ] (𝓕 : Set G), IsFundamentalDomain Γ 𝓕 μ → ∀ C : Set G, IsCompact C → ∀ n : ℝ, (∀ y : G, {γ : G | γ ∈ Γ ∧ γ * y ∈ C}.Finite ∧ (({γ : G | γ ∈ Γ ∧ γ * y ∈ C}.ncard : ℕ) : ℝ) ≤ n) → ∃ M : ℝ, ∀ F : Lp ℂ 2 ((μ.restrict 𝓕).map (Quotient.mk (QuotientGroup.rightRel Γ))), IntegrableOn (fun x => F (Quotient.mk _ x)) C μ ∧ ∫ x in C, ‖F (Quotient.mk _ x)‖ ∂μ ≤ M * ‖F‖ := by
+  atlas_forward_decl GlobalTheory.QuotLocInt.integrableOn_compact
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.SmoothRep
@@ -327,3 +1241,5 @@ theorem exists_smooth_repr : ∀ (D : D7) (θ : InfFam D) (V : HSp D), IsInfFam 
     exact ⟨(hR _ i1 i2).1, (hR _ i1 i2).2.1⟩
 
 end GlobalTheory.SmoothRep
+end
+end

@@ -1,6 +1,10 @@
 import Mathlib
-import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.DeterminantRepresentations.SchurLine
 
+section
+open Polynomial Matrix
+end
+
+section
 open Polynomial Matrix
 
 theorem UpperTheory.V.AlgebraTools.Det.signLemma :
@@ -57,3 +61,4 @@ theorem UpperTheory.V.AlgebraTools.Det.signLemma :
       · exact absurd (sub_eq_zero.mp h).symm hcc
       · exact h
     left; rw [h0, transpose_zero]
+end

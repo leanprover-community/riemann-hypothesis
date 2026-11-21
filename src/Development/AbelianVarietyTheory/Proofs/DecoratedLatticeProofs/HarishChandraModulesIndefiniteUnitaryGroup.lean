@@ -4,8 +4,15 @@ import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AnalyticInter
 import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AnalyticIntertwiners.BoundedOperators
 import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AnalyticIntertwiners.LogNormEstimates
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.AdmissibleCasimirScalars.CasScalar
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.DenseKFiniteVectorsUnitaryGroupRepStatement
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.DenseKFiniteVectorsUnitaryGroupRep
 
+section
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dense_kFinite_vectors_unitaryGroupRep : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)), Formalism.MainNotions.S.IsURepOn (Formalism.MainNotions.S.UJset ε) σ → Dense {v : H | Formalism.MainNotions.S.IsKFin ε σ v} := by
+  first | exact @GlobalTheory.CompactRep.dense_isKFin | exact GlobalTheory.CompactRep.dense_isKFin | (intros; apply GlobalTheory.CompactRep.dense_isKFin <;> assumption)
+end
+
+section
 noncomputable section
 
 theorem GlobalTheory.HcPort.kfinDense_UJC {n : ℕ} {ε : Fin n → Bool} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
@@ -494,4 +501,6 @@ theorem print_harishChandraModules : GlobalTheory.Published.HarishChandraModules
 
 end GlobalTheory.HcPort
 
+end
+end
 end

@@ -36,10 +36,6 @@ def mixed (ε : PreTilt O p) (h : ℕ) (S : Finset (Fin h)) : Datum ε h (Fin h 
     intro a
     simp [diagonal_map (map_zero _), diagonal_mul_diagonal, mul_comm]
 
-theorem mixed_al (ε : PreTilt O p) (hμ : fontaineTheta O p (mu ε) = 0) (h : ℕ) (S : Finset (Fin h))
-    (x : Fin h → O) (i : Fin h) : (mixed ε h S).al x i = if i ∈ S then 0 else x i := by
-  simp only [Datum.al, mixed, diagonal_map (map_zero _), toLin'_apply, mulVec_diagonal]
-  split_ifs <;> simp [hμ]
 
 theorem mixed_bb (ε : PreTilt O p) (hμ : fontaineTheta O p (mu ε) = 0) (h : ℕ) (S : Finset (Fin h))
     (x : Fin h → O) (i : Fin h) : (mixed ε h S).bb x i = if i ∈ S then x i else 0 := by
@@ -66,18 +62,6 @@ theorem mem_mixed_Lie (ε : PreTilt O p) (hμ : fontaineTheta O p (mu ε) = 0) (
     · rfl
     · exact (H i hi).symm
 
-theorem mem_mixed_Tsub (ε : PreTilt O p) (h : ℕ) (S : Finset (Fin h)) (i : Fin h) (x : Fin h → O) :
-    x ∈ (mixed ε h S).Tsub ((padicToO p O).comp (Pi.evalRingHom _ i)) ↔ ∀ j ≠ i, x j = 0 := by
-  simp only [Datum.Tsub, Submodule.mem_iInf, Module.End.mem_eigenspace_iff, mixed,
-    toLin'_apply, funext_iff]
-  constructor
-  · intro H j hj
-    have := H (Pi.single j 1) j
-    simpa [diagonal_map (map_zero _), mulVec_diagonal, Pi.single_apply, hj.symm] using this
-  · intro H a j
-    by_cases hj : j = i
-    · subst hj; simp [diagonal_map (map_zero _), mulVec_diagonal]
-    · simp [diagonal_map (map_zero _), mulVec_diagonal, H j hj]
 
 section Field
 
@@ -118,29 +102,9 @@ theorem F_mul_G : D.F * D.G = mu ε • (1 : Matrix (Fin h) (Fin h) (Ainf p O)) 
     congrFun (congrFun h2 i) j
   exact (mul_eq_zero.1 h3).resolve_left hd
 
-theorem al_bb (x : Fin h → O) : D.al (D.bb x) = 0 := by
-  simp only [Datum.al, Datum.bb, toLin'_apply, mulVec_mulVec, ← Matrix.map_mul, F_mul_G hv hε D]
-  ext i; simp [mulVec, dotProduct, theta_mu hv hε]
 
-theorem bb_al (x : Fin h → O) : D.bb (D.al x) = 0 := by
-  simp only [Datum.al, Datum.bb, toLin'_apply, mulVec_mulVec, ← Matrix.map_mul, D.G_mul_F]
-  ext i; simp [mulVec, dotProduct, theta_mu hv hε]
 
-theorem lie_inf_tsub_le_W (τ : Λ →+* O) : D.Lie ⊓ D.Tsub τ ≤ D.W τ := by
-  rintro x ⟨⟨y, rfl⟩, hx⟩
-  exact ⟨hx, al_bb hv hε D y⟩
 
-theorem map_al_le (τ : Λ →+* O) : (D.Tsub τ).map D.al ≤ D.Fil ⊓ D.Hsub τ := by
-  rintro _ ⟨x, hx, rfl⟩
-  refine ⟨bb_al hv hε D x, ?_⟩
-  simp only [Datum.Tsub, Datum.Hsub, SetLike.mem_coe, Submodule.mem_iInf,
-    Module.End.mem_eigenspace_iff, toLin'_apply] at hx ⊢
-  intro a
-  have := congrArg (fun M => M.map (fontaineTheta O p)) (D.F_act a)
-  simp only [Matrix.map_mul, Matrix.map_map] at this
-  rw [Datum.al, toLin'_apply, mulVec_mulVec, ← this, ← mulVec_mulVec]
-  change _ *ᵥ ((D.ρT a).map (padicToO p O) *ᵥ x) = _
-  rw [hx a, mulVec_smul]
 
 theorem bound_aux (X Y : Matrix (Fin h) (Fin h) (Ainf p O)) (hXY : X * Y = mu ε • 1)
     (x : Fin h → O) (hx : Y.map (fontaineTheta O p) *ᵥ x = 0) :
@@ -167,13 +131,7 @@ theorem bound_aux (X Y : Matrix (Fin h) (Fin h) (Ainf p O)) (hXY : X * Y = mu ε
   refine ⟨fontaineTheta O p ∘ c, funext fun i => ?_⟩
   rw [← RingHom.map_mulVec, h3, map_mul, hm]; rfl
 
-theorem smul_Fil_le (x : Fin h → O) (hx : x ∈ D.Fil) :
-    fontaineTheta O p (nu ε) • x ∈ LinearMap.range D.al :=
-  bound_aux hv hε D.F D.G (F_mul_G hv hε D) x hx
 
-theorem smul_ker_le (x : Fin h → O) (hx : x ∈ LinearMap.ker D.al) :
-    fontaineTheta O p (nu ε) • x ∈ D.Lie :=
-  bound_aux hv hε D.G D.F D.G_mul_F x hx
 
 end Field
 

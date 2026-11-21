@@ -1,6 +1,52 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MeasurableFh
+import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.KFiniteVectors.LocallyConstantMajorants.GammaSplitting.UnipotentTateFunctionalEquation
 
+section
+noncomputable section
+
+open MeasureTheory Matrix Filter Topology
+open Ad3 Ad3.K Ad3.K.LC Ad3.K.LC.C
+
+namespace GlobalTheory.CompanionTheory.PuBndC
+
+def rr (h : M22) : ℝ := ‖h 0 0‖ ^ 2 + ‖h 1 0‖ ^ 2
+
+def dd (h : M22) : ℝ := ‖(Matrix.of h).det‖
+
+def yy (h : M22) : ℝ := dd h ^ 2 / rr h ^ 2
+
+def Fh (σ : ℝ) (h : M22) : ℝ :=
+  rr h ^ (σ - 2) * dd h ^ (-2 * σ) * (1 + |Real.log (yy h)|) / ((1 + yy h) ^ 2 * (1 + ‖h‖) ^ 6)
+
+def Sx (h : M22) (x : Fin 2 → ℂ) : ℝ :=
+  1 + ‖h 0 0 * x 0 + h 0 1 * x 1‖ + ‖h 1 0 * x 0 + h 1 1 * x 1‖
+
+def gx (σ : ℝ) (h : M22) (x : Fin 2 → ℂ) : ℝ := ‖x 1‖ ^ (2 * σ - 2) / Sx h x ^ 6
+
+def Ah (h : M22) : ℝ := (rr h)⁻¹ * (1 + |Real.log (yy h)|) / ((1 + yy h) ^ 2 * (1 + ‖h‖) ^ 6)
+
+end GlobalTheory.CompanionTheory.PuBndC
+end
+end
+
+section
+noncomputable section
+
+open MeasureTheory Matrix Filter Topology
+open Ad3 Ad3.K Ad3.K.LC Ad3.K.LC.C
+
+namespace GlobalTheory.CompanionTheory.PuBndC
+
+def Vw (σ : ℝ) (T : ℂ) : ℝ := ‖T‖ ^ (-2 * σ) * (1 + |Real.log (‖T‖ ^ 2)|) / (1 + ‖T‖ ^ 2) ^ 2
+
+def Bh (σ : ℝ) (h : M22) : ℝ :=
+  ‖h 0 0‖ ^ (-2 * σ - 4) * Vw σ ((Matrix.of h).det / h 0 0 ^ 2) / ((1 + ‖h 0 0‖) ^ 3 * (1 + ‖h 0 1‖) ^ 3)
+
+end GlobalTheory.CompanionTheory.PuBndC
+end
+end
+
+section
 noncomputable section
 
 open MeasureTheory Matrix Filter Topology
@@ -35,40 +81,12 @@ def rowSwapEquiv : M22 ≃ᵐ M22 where
   measurable_toFun := measurePreserving_rowSwap.measurable
   measurable_invFun := measurePreserving_rowSwap.measurable
 
-theorem rr_rowSwap (h : M22) : rr (rowSwap h) = rr h := by
-  simp [rr, add_comm]
 
-theorem dd_rowSwap (h : M22) : dd (rowSwap h) = dd h := by
-  unfold dd
-  simp only [Matrix.det_fin_two, Matrix.of_apply, rowSwap_zero, rowSwap_one]
-  rw [← norm_neg]
-  congr 1
-  ring
 
-theorem yy_rowSwap (h : M22) : yy (rowSwap h) = yy h := by
-  simp [yy, rr_rowSwap, dd_rowSwap]
 
-theorem norm_rowSwap (h : M22) : ‖rowSwap h‖ = ‖h‖ := by
-  apply le_antisymm
-  · exact (pi_norm_le_iff_of_nonneg (norm_nonneg h)).2 fun i => norm_le_pi_norm h _
-  · refine (pi_norm_le_iff_of_nonneg (norm_nonneg (rowSwap h))).2 fun i => ?_
-    have := norm_le_pi_norm (rowSwap h) (Equiv.swap 0 1 i)
-    simpa [rowSwap] using this
 
-theorem Fh_rowSwap (σ : ℝ) (h : M22) : Fh σ (rowSwap h) = Fh σ h := by
-  simp only [Fh, rr_rowSwap, dd_rowSwap, yy_rowSwap, norm_rowSwap]
 
-theorem integrable_Fh_of_half : ∀ σ : ℝ, IntegrableOn (Fh σ) {h : M22 | ‖h 1 0‖ ≤ ‖h 0 0‖} → Integrable (Fh σ) := by
-  intro σ hS
-  have h2 : IntegrableOn (Fh σ ∘ rowSwap) (rowSwap ⁻¹' {h : M22 | ‖h 1 0‖ ≤ ‖h 0 0‖}) :=
-    (measurePreserving_rowSwap.integrableOn_comp_preimage rowSwapEquiv.measurableEmbedding).2 hS
-  have e : Fh σ ∘ rowSwap = Fh σ := funext (Fh_rowSwap σ)
-  rw [e] at h2
-  have hu : {h : M22 | ‖h 1 0‖ ≤ ‖h 0 0‖} ∪ rowSwap ⁻¹' {h : M22 | ‖h 1 0‖ ≤ ‖h 0 0‖} = Set.univ := by
-    ext h
-    simpa using le_total ‖h 1 0‖ ‖h 0 0‖
-  have := hS.union h2
-  rw [hu] at this
-  exact integrableOn_univ.1 this
 
 end GlobalTheory.CompanionTheory.PuBndC.RowSwap
+end
+end

@@ -531,17 +531,6 @@ theorem semiHom_baseChange :
 def baseChangeIso {G' : PDivGroup p O'} (t' : G'.TorsionTower A') : G' ≅ G.baseChange O' :=
   t'.uniqueIso (t.baseChange h)
 
-theorem baseChangeIso_hom {G' : PDivGroup p O'} (t' : G'.TorsionTower A') :
-    (t.baseChangeIso h t').hom = (t'.semiHom t (grpMor_of_isGrpPullback h)).lift := by
-  refine baseChange_hom_ext fun n a => ?_
-  rw [SemiHom.lift_app, one_smul]
-  have h1 : ∀ n, spMap ((SemiHom.ofHom (t.baseChangeIso h t').hom).app n).toRingHom ≫
-      ((t.baseChange h).y n).left = (t'.y n).left ≫ 𝟙 _ := fun n =>
-    congrArg Over.Hom.left (t'.map_y (t.baseChange h) (𝟙 A') n)
-  have h2 : ∀ n, spMap ((t'.semiHom t (grpMor_of_isGrpPullback h)).app n).toRingHom ≫
-      (t.y n).left = (t'.y n).left ≫ 𝟙 _ ≫ φ := fun n => by
-    rw [Category.id_comp]; exact t'.semiOf_y t _ n
-  exact ((t.baseChange h).semiOf_semiOf t t' (t.toBase_y h) h1 h2 n a).symm
 
 end BaseChange
 
@@ -786,16 +775,6 @@ section Values
 
 variable (p O) [Fact p.Prime]
 
-theorem lieCorr_muLieGen [IsAdicComplete (Ideal.span {(p : O)}) O] :
-    (muTower p O).LieCorr (muLieGen p O) (Diag.lieVec
-      ((Int.castAddHom O).comp (AddEquiv.ulift : ULift.{0} ℤ ≃+ ℤ).toAddMonoidHom)) := by
-  refine ((muTower p O).lieCorr_iff (Diag.isTangent_lieVec _) _).2 fun n w => ?_
-  obtain ⟨c, rfl⟩ := (toSpanSingleton_dlogT_bijective p O).2 w
-  rw [LinearMap.toSpanSingleton_apply, map_smul, muLieGen_dlogT, smul_eq_mul, _root_.mul_one]
-  refine Eq.trans ?_ (map_smul ((muTower p O).tanDer _ n) c (dUnit O (muT O (p ^ n)))).symm
-  rw [TorsionTower.tanDer_d, ← gmCoord_muTower, TorsionTower.tanPt_y, gmCoord_comp, gmCoord,
-    Diag.charVal_lieVec, snd_epsTo]
-  simp [Algebra.smul_def, show AddEquiv.ulift (ULift.up (1 : ℤ)) = 1 from rfl]
 
 example (k : ℕ) [IsMonHom (𝟙 (Gm (Sp O)) ^ k)] :
     (muTower p O).map (muTower p O) (𝟙 _ ^ k) = (k : ℤ_[p]) • 𝟙 (mu p O) :=

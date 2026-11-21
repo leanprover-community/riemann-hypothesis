@@ -29,19 +29,6 @@ theorem isMonomialTau_of_tauIn {Q : Data V} {τ₀ : Gens Q} {N : ℕ} {s : Fin 
   obtain ⟨hg, k, hk, hv⟩ := h a b
   exact ⟨k, hk, Exists.intro (τ₀ a b) ⟨hg, hv⟩⟩
 
-theorem tate_tauIn (k : ℤ) :
-    ∃ τ₀ : Gens (Wit.tate k), TauIn (Wit.tate k) τ₀ ![PowerSeries.X] ![k • mulForm] :=
-  exists_tauIn (Wit.tate_isMonomialTau k)
 
-theorem defOver_top {K : Type} [Field K] {Y : Scheme.{0}} (P : Sp K ⟶ Y) : DefOver (⊤ : Subfield K) P := by
-  refine ⟨spMap ((Subfield.topEquiv (K := K)).symm : K →+* (⊤ : Subfield K)) ≫ P, ?_⟩
-
-  have hid : (⊤ : Subfield K).subtype.comp ((Subfield.topEquiv (K := K)).symm : K →+* (⊤ : Subfield K)) =
-      RingHom.id K := by
-    ext x
-    rfl
-  rw [← Category.assoc]
-  unfold spMap
-  rw [← Spec.map_comp, ← CommRingCat.ofHom_comp, hid, CommRingCat.ofHom_id, Spec.map_id, Category.id_comp]
 
 end GlobalTheory.Poinc.Sep.Model

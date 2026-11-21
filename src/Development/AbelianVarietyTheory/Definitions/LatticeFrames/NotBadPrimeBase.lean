@@ -315,12 +315,6 @@ theorem not_badPrime_base (W : RealPack ex) (u : D.what₂.Word) (p : ℕ) : ¬ 
   rw [show W.Q.Rl.xiH W.P.A3.A.μ0 = 1 from lev.xi_base]
   rfl
 
-theorem exists_badPrime (W : RealPack ex) (u : D.what₂.Word) (t : W.P.T) (h : ((pk W).Q t).Nonempty) :
-    ∃ p : ℕ, p.Prime ∧ badPrime W u t p := by
-  obtain ⟨PP, hP⟩ := h
-  refine ⟨Formalism.EigenvalueLevelCeiling.plc PP, Formalism.EigenvalueLevelCeiling.plc_prime PP, PP, hP, ?_⟩
-  have := (ringChar.spec ((𝓞 D.host.E) ⧸ PP.asIdeal) (Formalism.EigenvalueLevelCeiling.plc PP)).2 dvd_rfl
-  exact Ideal.Quotient.eq_zero_iff_mem.1 (by simpa using this)
 
 open Formalism.L2.Host Formalism.L2 Formalism.L2.Rows in
 

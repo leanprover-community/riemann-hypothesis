@@ -1,5 +1,20 @@
-import Formalism.SharpRestriction.DFam
+import Formalism.LocalRingCardinality.DataParams₂
 
+section
+noncomputable section
+
+namespace Formalism.MainNotions
+
+open Formalism.BasicNotions
+
+def DFam : Type 1 := ∀ ε : ℝ, 0 < ε → ε < 1 / 52 → Fam ε
+
+end Formalism.MainNotions
+
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.MainNotions
@@ -44,25 +59,6 @@ theorem wt_self {D : D7} (L : SizeData₂ D) (TTn : Finset ℕ) (bTop : ℝ) (hT
     have e := hinj _ _ h.choose_spec
     refine ⟨?_, ?_⟩ <;> simp only [dif_pos h, e]
 
-theorem coverS_of_cover {Ix : Type} {D : Ix → D7} (L : ∀ i, SizeData₂ (D i)) (TTn : Finset ℕ) (bTop : ℝ)
-    (hTT : ∀ i, (D i).host.TT.image Formalism.HC.Frame.A.val = TTn) (hb : ∀ i (t : (D i).host.TT), ((L i).bT t : ℝ) ≤ bTop)
-    (cov : ∀ (i0 : Ix) (u0 : ℕ) (a b : ℕ → ℤ), u0 < (D i0).R.n →
-      (∀ t ∈ TTn, aWin (L i0) (a t) ∧ (L i0).sc.b' ≤ (b t : ℝ) ∧ (b t : ℝ) ≤ bTop) →
-      ∃ i : Ix, (D i).host.u0.val = u0 ∧
-        ∀ t : (D i).host.TT, (L i).aT t = a (t : (D i).R.A).val ∧
-          (L i).bT t = b (t : (D i).R.A).val)
-    (i0 : Ix) (u0 : ℕ) (hu : u0 < (D i0).R.n) :
-    ∃ i : Ix, (D i).host.u0.val = u0 ∧
-      ∀ (t : (D i).host.TT) (t0 : (D i0).host.TT),
-        (t : (D i).R.A).val = (t0 : (D i0).R.A).val →
-          (L i).aT t = (L i0).aT t0 ∧ (L i).bT t = (L i0).bT t0 := by
-  obtain ⟨a, b, hwin, hag⟩ := wt_self (L i0) TTn bTop (hTT i0) (hb i0)
-  obtain ⟨i, hi, hcov⟩ := cov i0 u0 a b hu hwin
-  refine ⟨i, hi, fun t t0 hv => ?_⟩
-  obtain ⟨h1, h2⟩ := hcov t
-  obtain ⟨h3, h4⟩ := hag t0
-  rw [h1, h2, hv, h3, h4]
-  exact ⟨rfl, rfl⟩
 
 def artNum {φ : Formalism.HC.Frame} (H : Formalism.HC.HostRaw φ) (p : ℕ) : Formalism.FrobeniusOrbits.G0 × ℕ :=
   if h : Nat.Coprime p H.condN then
@@ -160,22 +156,6 @@ theorem FamCore.level_primes_admissible {eps : ℝ} (Fm : FamCore eps) (x : ℝ)
   ⟨((Fm.D x i).mem u).A.T_prime, ((Fm.D x i).T_win u).1, ((Fm.D x i).T_win u).2, (Fm.D x i).T_norm u,
     ((Fm.D x i).T_ne_pde u).1, ((Fm.D x i).T_ne_pde u).2⟩
 
-theorem FamCore.b'_le_bTop {eps : ℝ} (Fm : FamCore eps) (x : ℝ) (hx : Fm.x1 < x) (i : Fm.Ix x) :
-    (Fm.L x i).sc.b' ≤ Fm.bTop x := by
-  have h := Fm.bTop_ge x hx i
-  have hx0 : 0 < x := by linarith [Fm.one_lt_family_threshold]
-  have hs0 : 0 < (Fm.L x i).sc.x := lt_trans zero_lt_one (Fm.L x i).sc.one_lt_alt
-  have hb' : 0 ≤ (Fm.L x i).sc.b' := by
-    unfold Formalism.BasicNotions.Scale.b' Formalism.BasicNotions.Scale.a Formalism.BasicNotions.Scale.b Formalism.BasicNotions.Scale.X'
-    exact div_nonneg (mul_nonneg hs0.le (Real.exp_pos _).le) (Real.exp_pos _).le
-  have hd : 0 ≤ (Fm.L x i).sc.delta1 := by
-    unfold Formalism.BasicNotions.Scale.delta1
-    exact Real.rpow_nonneg hs0.le _
-  have hterm : 0 ≤ 2 * ((Fm.D x i).R.n : ℝ) * (Fm.L x i).sc.delta1 * x ^ (2 * eps) *
-      (Fm.L x i).sc.b' / ((Fm.D x i).R.k : ℝ) :=
-    div_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (by norm_num) (Nat.cast_nonneg _)) hd)
-      (Real.rpow_nonneg hx0.le _)) hb') (Nat.cast_nonneg _)
-  linarith
 
 def FamCore.CoverAll {eps : ℝ} (Fm : FamCore eps) : Prop :=
   ∀ x, Fm.x1 < x → ∀ (i0 : Fm.Ix x) (u0 : ℕ) (a b : ℕ → ℤ), u0 < (Fm.D x i0).R.n →
@@ -215,4 +195,5 @@ def DFamCore : Type 1 := ∀ ε : ℝ, 0 < ε → ε < 1 / 52 → FamCore ε
 
 end Formalism.MainNotions
 
+end
 end

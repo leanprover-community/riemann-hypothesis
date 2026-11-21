@@ -284,7 +284,6 @@ def DomAt (D : D7) (large₂ : SizeData₂ D) (j nW : ℕ) (CP : ℝ) : Prop :=
 
 def DomHyp (D : D7) (large₂ : SizeData₂ D) (j nW : ℕ) : Prop := ∃ CP : ℝ, DomAt D large₂ j nW CP
 
-theorem DomAt.domHyp {D : D7} {large₂ : SizeData₂ D} {j nW : ℕ} {CP : ℝ} (h : DomAt D large₂ j nW CP) : DomHyp D large₂ j nW := ⟨CP, h⟩
 
 theorem DomAt.mono {D : D7} {large₂ : SizeData₂ D} {j nW : ℕ} {CP C2 : ℝ} (h : DomAt D large₂ j nW CP) (hle : CP ≤ C2)
     (hZ : C2 ^ 20 ≤ Zb D large₂) : DomAt D large₂ j nW C2 := by
@@ -430,22 +429,6 @@ def Concl (X : PJ D B P j) (S : Scal B) (ka wL wF : WeightFamilies.Wt D j) (T : 
           (X.loc la (X.Theta S ka wL wF T) ⊓ X.ofK la V')).toNat : ℝ) ≤
         (e : ℝ) * (Module.finrank (X.Kl la) V' : ℝ) + r la
 
-theorem Concl.at_eLa {X : PJ D B P j} {S : Scal B} {ka wL wF : WeightFamilies.Wt D j} {T : ℕ}
-    {nus : HeightOneSpectrum (𝓞 B.KO) → ℝ} {β : ℝ} (h : Concl X S ka wL wF T nus β) :
-    ∃ r : HeightOneSpectrum (𝓞 B.KO) → ℝ, (∀ la, 0 ≤ r la) ∧
-    Summable (fun la => r la * X.lN la) ∧ (∑' la, r la * X.lN la) ≤ β ∧
-    ∀ la (V' : Submodule (X.Kl la) (X.Vl la)), V' ≤ X.locK la (X.Msup ka) →
-      X.qlen la (X.loc la (X.Msup ka) ⊓ X.ofK la V')
-        (X.loc la (X.Theta S ka wL wF T) ⊓ X.ofK la V') ≠ ⊤ ∧
-      ((X.qlen la (X.loc la (X.Msup ka) ⊓ X.ofK la V')
-          (X.loc la (X.Theta S ka wL wF T) ⊓ X.ofK la V')).toNat : ℝ) ≤
-        (X.eLa T nus la : ℝ) * (Module.finrank (X.Kl la) V' : ℝ) + r la := by
-  obtain ⟨r, hr0, hrs, hrb, hr⟩ := h
-  refine ⟨r, hr0, hrs, hrb, fun la V' hV' => hr la (X.eLa T nus la) ?_ V' hV'⟩
-  unfold PJ.eLa
-  refine le_trans ?_ (Int.le_ceil _)
-  apply mul_le_mul_of_nonneg_left _ (Nat.cast_nonneg T)
-  split_ifs <;> linarith
 
 def Hyp (large₂ : SizeData₂ D) (X : PJ D B P j) (H : KHyp) (C2 A2 CR Bx CT : ℝ) (S : Scal B)
     (ka wL wF : WeightFamilies.Wt D j) (T nP nW : ℕ) (h0 : ℝ) (nus : HeightOneSpectrum (𝓞 B.KO) → ℝ) : Prop :=
@@ -455,24 +438,6 @@ def Hyp (large₂ : SizeData₂ D) (X : PJ D B P j) (H : KHyp) (C2 A2 CR Bx CT :
 
 end J
 
-theorem dP_sq_le {large₂ : SizeData₂ D} {CA CRm : ℝ} (h : ParA large₂ CA) (hC : 2 ≤ CRm) (j : ℕ) :
-    ((WeightFamilies.dP D j : ℕ) : ℝ) ^ 2 ≤ WeightFamilies.RRv D CRm := by
-  obtain ⟨-, -, -, -, -, -, -, -, -, hm⟩ := h
-  have hn : WeightFamilies.dP D j ≤ 2 * D.R.f * D.R.m := by
-    unfold WeightFamilies.dP WeightFamilies.rho
-    exact Nat.mul_le_mul le_rfl (Nat.sub_le D.R.m j)
-  have hcast : ((WeightFamilies.dP D j : ℕ) : ℝ) ≤ 2 * (D.R.f : ℝ) * D.R.m := by exact_mod_cast hn
-  have hle : ((WeightFamilies.dP D j : ℕ) : ℝ) ≤ D.host.rdE := hcast.trans hm
-  have h0r : (0 : ℝ) ≤ D.host.rdE := (Nat.cast_nonneg _).trans hle
-  unfold WeightFamilies.RRv
-  rcases Nat.eq_zero_or_pos (WeightFamilies.dP D j) with h0 | hpos
-  · rw [h0]
-    calc ((0 : ℕ) : ℝ) ^ 2 = 0 := by simp
-      _ ≤ D.host.rdE ^ CRm := Real.rpow_nonneg h0r _
-  · have h1 : (1 : ℝ) ≤ D.host.rdE := le_trans (by exact_mod_cast hpos) hle
-    calc ((WeightFamilies.dP D j : ℕ) : ℝ) ^ 2 ≤ D.host.rdE ^ 2 := by gcongr
-      _ = D.host.rdE ^ (2 : ℝ) := (Real.rpow_two _).symm
-      _ ≤ D.host.rdE ^ CRm := Real.rpow_le_rpow_of_exponent_le h1 hC
 
 def Conclusion1 (large₂ : SizeData₂ D) (X : Prov D B P) (H : KHyp) (C2 A2 CR CT : ℝ) : Prop :=
   ∀ j (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) (S : Scal B) (ka wL wF : WeightFamilies.Wt D j) (T nP nW : ℕ) (h0 : ℝ)
@@ -621,34 +586,7 @@ theorem ClosedFixedPowerForm.fixed {𝒪 : ObjClass} {𝒞 : Formalism.MainNotio
   obtain ⟨Kt, hKt⟩ := hc eps he1 he2
   exact ⟨Kt, fun Fm CH hC hL => hKt Fm CH hC hL K H Cq Aq hK⟩
 
-theorem closed_first_form_of_uniform {𝒪 : ObjClass} (h : UniformClosedFormStatement 𝒪) (𝒞 : Formalism.MainNotions.FamClass) :
-    ClosedSupNormFirstForm 𝒪 𝒞 := by
-  obtain ⟨s, hs⟩ := h
-  refine ⟨s, ?_⟩
-  unfold Formalism.MainNotions.Closed
-  refine ⟨1 / 53, by norm_num, fun eps he1 he2 => ⟨⟨0, fun _ => 0, fun _ => 0, fun _ => 0⟩, fun Fm CH _ _ => ?_⟩⟩
-  intro K H Cq Aq hK BF PF XF hO hAd
-  obtain ⟨x0, hx0⟩ := hs K H Cq Aq hK (Fm.Ct + 1) eps he1 (by linarith)
-  obtain ⟨x0', hx0'⟩ := hAd
-  refine ⟨max x0 x0', fun x hx hxx i => ?_⟩
-  exact hx0 (Fm.D x i) (Fm.L x i) (BF x hx i) (PF x hx i) (XF x hx i) (hO x hx i) (Fm.L_eps x i)
-    (by rw [Fm.L_x x i hx]; exact le_trans (le_max_left _ _) hxx)
-    (hx0' x hx (le_trans (le_max_right _ _) hxx) i)
 
-theorem closed_fixed_power_of_uniform {𝒪 : ObjClass} (h : ClosedFormProjectorBound 𝒪) (𝒞 : Formalism.MainNotions.FamClass) :
-    ClosedFixedPowerForm 𝒪 𝒞 := by
-  intro A
-  obtain ⟨s, hs⟩ := h A
-  refine ⟨s, ?_⟩
-  unfold Formalism.MainNotions.Closed
-  refine ⟨1 / 53, by norm_num, fun eps he1 he2 => ⟨⟨0, fun _ => 0, fun _ => 0, fun _ => 0⟩, fun Fm CH _ _ => ?_⟩⟩
-  intro K H Cq Aq hK BF PF XF hO hAd
-  obtain ⟨x0, hx0⟩ := hs K H Cq Aq hK (Fm.Ct + 1) eps he1 (by linarith)
-  obtain ⟨x0', hx0'⟩ := hAd
-  refine ⟨max x0 x0', fun x hx hxx i => ?_⟩
-  exact hx0 (Fm.D x i) (Fm.L x i) (BF x hx i) (PF x hx i) (XF x hx i) (hO x hx i) (Fm.L_eps x i)
-    (by rw [Fm.L_x x i hx]; exact le_trans (le_max_left _ _) hxx)
-    (hx0' x hx (le_trans (le_max_right _ _) hxx) i)
 
 def PageAt (large₂ : SizeData₂ D) (C2 A2 : ℝ) : Prop :=
   ∃ (Q : ParameterChoice' D large₂) (PT : ParamsT D large₂ Q), Formalism.MainNotions.SizesAt large₂ ∧ PT.CP = C2 ∧ PT.eP = A2
@@ -657,34 +595,9 @@ def TieC (K : KAdm) (H : KHyp) (Ch Ah _Cq Aq C2 A2 CR : ℝ) : Prop :=
   H.C1 = C2 ∧ H.A1 = A2 ∧ H.Cc = C2 ∧ H.Ac = A2 ∧ H.CRc = 7 ∧ CR = 7 ∧ K.CRm = 7 ∧ 12 ≤ A2 ∧
     K.AG ≤ 2 ∧ K.Af ≤ 2 ∧ K.AW ≤ 2 ∧ K.AL ≤ 4 ∧ 1 ≤ Ch ∧ 4 ≤ Ah ∧ Aq ≤ 11
 
-theorem tieC_inhabited (CK CA CG Cf CW CL Cq C2 A2 : ℝ) (h : 12 ≤ A2) :
-    TieC ⟨CG, 2, Cf, 2, CW, 2, CL, 4, 7⟩ ⟨CK, CA, C2, A2, C2, A2, 7⟩ 1 4 Cq 11 C2 A2 7 :=
-  ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, h, le_rfl, le_rfl, le_rfl, le_rfl, le_rfl, le_rfl, le_rfl⟩
 
-theorem cc_tie {K : KAdm} {H : KHyp} {Ch Ah Cq Aq C2 A2 CR : ℝ} (ht : TieC K H Ch Ah Cq Aq C2 A2 CR) (large₂ : SizeData₂ D) {j : ℕ}
-    (wL : WeightFamilies.Wt D j) :
-    cc D large₂ H.Cc H.Ac H.CRc wL = WeightFamilies.RRv D CR * WeightFamilies.PPv D large₂ C2 A2 * (DF wL : ℝ) ^ 2 / (qq D : ℝ) := by
-  obtain ⟨-, -, h1, h2, h3, h4, -⟩ := ht
-  simp only [cc, h1, h2, h3, h4]
 
-theorem pageAt_PP {large₂ : SizeData₂ D} {C2 A2 : ℝ} (h : PageAt large₂ C2 A2) :
-    ∃ (Q : ParameterChoice' D large₂) (PT : ParamsT D large₂ Q), WeightFamilies.PPv D large₂ C2 A2 = PT.PP := by
-  obtain ⟨Q, PT, -, hC, hA⟩ := h
-  refine ⟨Q, PT, ?_⟩
-  unfold WeightFamilies.PPv
-  rw [PT.PP_eq, hC, hA]
 
-theorem pageAt_fam {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) {C2 A2 : ℝ} (hC : Fm.CP = C2) (hA : Fm.eP = A2) (x : ℝ) (hx : Fm.x1 < x)
-    (i : Fm.Ix x) : PageAt (Fm.L x i) C2 A2 := by
-  refine ⟨Fm.params x hx i, Fm.parT x hx i, Fm.sizes x hx i, ?_, ?_⟩
-  · rw [← hC]
-    unfold Formalism.MainNotions.FamP.CP
-    rw [← Fm.parT_K x hx i]
-    rfl
-  · rw [← hA]
-    unfold Formalism.MainNotions.FamP.eP
-    rw [← Fm.parT_K x hx i]
-    rfl
 
 def RankScaledBoundOfParametersCondition (large₂ : SizeData₂ D) (X : Prov D B P) (H : KHyp) (C2 A2 CR CT : ℝ) : Prop :=
   ∀ j (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) (S : Scal B) (ka wL wF : WeightFamilies.Wt D j) (T nP nW : ℕ) (h0 : ℝ)
@@ -693,15 +606,7 @@ def RankScaledBoundOfParametersCondition (large₂ : SizeData₂ D) (X : Prov D 
     Concl (X j h1 h2) S ka wL wF T nus
       ((X j h1 h2).rk ka (B.Mlat j ka) * D.R.f * D.R.m * large₂.sc.b * large₂.de2)
 
-theorem page_form_of_theorem_zero {large₂ : SizeData₂ D} {X : Prov D B P} {H : KHyp} {C2 A2 CR CT : ℝ}
-    (h : Conclusion1 large₂ X H C2 A2 CR CT) : RankScaledBoundOfParametersCondition large₂ X H C2 A2 CR CT := by
-  intro j h1 h2 S ka wL wF T nP nW h0 nus hH _
-  exact h j h1 h2 S ka wL wF T nP nW h0 nus hH
 
-theorem theorem_zero_of_page_form {large₂ : SizeData₂ D} {X : Prov D B P} {H : KHyp} {C2 A2 CR CT : ℝ} (hp : PageAt large₂ C2 A2)
-    (h : RankScaledBoundOfParametersCondition large₂ X H C2 A2 CR CT) : Conclusion1 large₂ X H C2 A2 CR CT := by
-  intro j h1 h2 S ka wL wF T nP nW h0 nus hH
-  exact h j h1 h2 S ka wL wF T nP nW h0 nus hH hp
 
 section FamilyT
 
@@ -712,15 +617,7 @@ variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (BF : WeightFamilies.
 def RankScaledBoundFamily (H : KHyp) (C2 A2 CR : ℝ) : Prop :=
   ∃ x0 : ℝ, ∀ x (hx : Fm.x1 < x), x0 ≤ x → ∀ i : Fm.Ix x, RankScaledBoundOfParametersCondition (Fm.L x i) (XF x hx i) H C2 A2 CR (Fm.Ct + 1)
 
-theorem page_form_family_of_theorem_zero (H : KHyp) (C2 A2 CR : ℝ) (h : ConclusionF1 Fm BF PF XF H C2 A2 CR) :
-    RankScaledBoundFamily Fm BF PF XF H C2 A2 CR := by
-  obtain ⟨x0, hx0⟩ := h
-  exact ⟨x0, fun x hx hxx i => page_form_of_theorem_zero (hx0 x hx hxx i)⟩
 
-theorem theorem_zero_family_of_page_form (H : KHyp) {C2 A2 : ℝ} (CR : ℝ) (hC : Fm.CP = C2) (hA : Fm.eP = A2)
-    (h : RankScaledBoundFamily Fm BF PF XF H C2 A2 CR) : ConclusionF1 Fm BF PF XF H C2 A2 CR := by
-  obtain ⟨x0, hx0⟩ := h
-  exact ⟨x0, fun x hx hxx i => theorem_zero_of_page_form (pageAt_fam Fm hC hA x hx i) (hx0 x hx hxx i)⟩
 
 end FamilyT
 
@@ -732,32 +629,12 @@ def RankScaledBoundConstrainedFamily (𝒪 : ObjClass) (K : KAdm) (H : KHyp) (Ch
     (∀ x hx i, 𝒪 (Fm.L x i) (BF x hx i) (PF x hx i) (XF x hx i)) →
     AdmF Fm BF PF XF K H Ch Ah Cq Aq → RankScaledBoundFamily Fm BF PF XF H C2 A2 CR
 
-theorem constrained_family_of_theorem_zero {𝒪 : ObjClass} {K : KAdm} {H : KHyp} {Ch Ah Cq Aq C2 A2 CR : ℝ} {eps : ℝ}
-    {Fm : Formalism.MainNotions.FamP eps} {CH : ℝ} (h : PeriodFamilyStatement 𝒪 K H Ch Ah Cq Aq C2 A2 CR Fm CH) :
-    RankScaledBoundConstrainedFamily 𝒪 K H Ch Ah Cq Aq C2 A2 CR Fm CH := by
-  intro _ BF PF XF hO hAd
-  exact page_form_family_of_theorem_zero Fm BF PF XF H C2 A2 CR (h BF PF XF hO hAd)
 
-theorem theorem_zero_family_of_constrained {𝒪 : ObjClass} {K : KAdm} {H : KHyp} {Ch Ah Cq Aq C2 A2 CR : ℝ} {eps : ℝ}
-    {Fm : Formalism.MainNotions.FamP eps} {CH : ℝ} (ht : TieC K H Ch Ah Cq Aq C2 A2 CR) (hC : Fm.CP = C2) (hA : Fm.eP = A2)
-    (h : RankScaledBoundConstrainedFamily 𝒪 K H Ch Ah Cq Aq C2 A2 CR Fm CH) : PeriodFamilyStatement 𝒪 K H Ch Ah Cq Aq C2 A2 CR Fm CH := by
-  intro BF PF XF hO hAd
-  exact theorem_zero_family_of_page_form Fm BF PF XF H CR hC hA (h ht BF PF XF hO hAd)
 
 def ClosedConstrainedRankScaledBound (𝒪 : ObjClass) (𝒞 : Formalism.MainNotions.FamClass) : Prop :=
   Formalism.MainNotions.Closed 𝒞 (fun Fm CH => ∀ (K : KAdm) (H : KHyp) (Ch Ah Cq Aq : ℝ),
     RankScaledBoundConstrainedFamily 𝒪 K H Ch Ah Cq Aq Fm.CP Fm.eP 7 Fm CH)
 
-theorem ClosedConstrainedRankScaledBound.closed_constrained_gives_family {𝒪 : ObjClass} {𝒞 : Formalism.MainNotions.FamClass} (h : ClosedConstrainedRankScaledBound 𝒪 𝒞) :
-    Formalism.MainNotions.Closed 𝒞 (fun Fm CH => ∀ (K : KAdm) (H : KHyp) (Ch Ah Cq Aq : ℝ), TieC K H Ch Ah Cq Aq Fm.CP Fm.eP 7 →
-      PeriodFamilyStatement 𝒪 K H Ch Ah Cq Aq Fm.CP Fm.eP 7 Fm CH) := by
-  unfold ClosedConstrainedRankScaledBound at h
-  unfold Formalism.MainNotions.Closed at h ⊢
-  obtain ⟨ε1, hε1, hc⟩ := h
-  refine ⟨ε1, hε1, fun eps he1 he2 => ?_⟩
-  obtain ⟨Kt, hKt⟩ := hc eps he1 he2
-  exact ⟨Kt, fun Fm CH hC hL K H Ch Ah Cq Aq ht =>
-    theorem_zero_family_of_constrained ht rfl rfl (hKt Fm CH hC hL K H Ch Ah Cq Aq)⟩
 
 end Formalism.MainNotions.WeightAlgebra
 

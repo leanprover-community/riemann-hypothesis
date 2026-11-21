@@ -13,7 +13,6 @@ theorem first_level_from_universal_law : FirstLevelFromUniversal := first_level_
 
 theorem jetsAll : JetsAll := all_jets_integral
 
-theorem gramFormula : GramFormula := gram_formula
 
 theorem logDerivInt : LogDerivInt := log_derivative_integral'
 theorem derivation_cube_integral_jet : ThirdJetIntegral := third_jet_integral

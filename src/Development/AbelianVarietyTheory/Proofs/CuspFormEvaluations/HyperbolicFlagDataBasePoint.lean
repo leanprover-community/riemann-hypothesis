@@ -224,7 +224,6 @@ theorem hyperbolicFlagData_base_point : flagData.p0 = 1 := exists_flagData.choos
 theorem flagData_Λ : flagData.Λ = lat := exists_flagData.choose_spec.2.2.2.1
 theorem flagData_ξ0 : flagData.ξ0 = ii / 2 := exists_flagData.choose_spec.2.2.2.2.1
 theorem flagData_κ0 : flagData.κ0 = -ii := exists_flagData.choose_spec.2.2.2.2.2.1
-theorem flagData_m : flagData.m = 3 := exists_flagData.choose_spec.2.2.2.2.2.2.1
 theorem mem_flagData_Γ (γ : GL (Fin 2) E4) : γ ∈ flagData.Γ ↔ IsUStab gm lat γ ∧
     (∀ v ∈ lat, ∃ w ∈ lat, Matrix.mulVec (γ : Matrix (Fin 2) (Fin 2) E4) v = v + 3 • w) :=
   exists_flagData.choose_spec.2.2.2.2.2.2.2.1 γ
@@ -291,30 +290,10 @@ theorem isIso_one : flagData.IsIso ![1, 1] := by
   · rw [flagData_Gm, herm_gm]
     simp
 
-theorem map_transvMat (v : Fin 2 → E4) (b : E4) (τ : flagData.Ψ) :
-    (transvMat flagData.Gm v ((flagData.m : E4) * b * flagData.κ0)).map τ.1 =
-      flagData.flowMat v τ (((3 : ℝ) : ℂ) * τ.1 b) := by
-  have hc : flagData.c τ = 1 := by rw [Data.c, norm_ξ0]; norm_num
-  ext a k
-  simp only [transvMat, Data.flowMat, Matrix.map_apply, Matrix.of_apply, hc, flagData_m,
-    flagData_κ0, map_add, map_mul, map_sum, map_neg, emb_cc, emb_ii_eq, map_natCast,
-    apply_ite τ.1, map_one, map_zero]
-  push_cast
-  ring
 
 end
 
 end HyperbolicCusp
 
-theorem exists_cuspData_hyperbolic : ∃ (X : DataX E4 2) (M : ℝ),
-    X.p0 = 1 ∧ X.dom.Nonempty ∧ (∃ ξ, X.IsIso ξ) ∧ 0 < M ∧ X.Λ = X.L' ∧
-    (∀ la, ∀ v ∈ X.L', herm X.Gm v v = 0 → ∀ b : E4, cc b = b → IsIntegral ℤ b →
-      ∃ γ ∈ X.Γ, X.χ la γ = 1 ∧ ∀ τ : X.Ψ, (γ : Matrix (Fin 2) (Fin 2) E4).map τ.1 = X.flowMat v τ ((M : ℂ) * τ.1 b)) := by
-  refine ⟨HyperbolicCusp.cuspData, 3, HyperbolicCusp.hyperbolicFlagData_base_point, HyperbolicCusp.dom_nonempty,
-    ⟨_, HyperbolicCusp.isIso_one⟩, by norm_num, HyperbolicCusp.flagData_Λ,
-    fun la v hv hiso b hb hbi => ?_⟩
-  obtain ⟨γ, hγ, e⟩ := HyperbolicCusp.flagData.transv v (HyperbolicCusp.flagData_Λ ▸ hv) hiso b hb hbi
-  exact ⟨γ, hγ, HyperbolicCusp.flagData_χ la γ, fun τ => by
-    rw [e]; exact HyperbolicCusp.map_transvMat v b τ⟩
 
 end GlobalTheory

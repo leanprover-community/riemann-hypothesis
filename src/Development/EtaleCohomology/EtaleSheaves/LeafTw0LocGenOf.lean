@@ -1,5 +1,124 @@
-import Development.EtaleCohomology.EtaleSheaves.Geo
+import Development.EtaleCohomology.EtaleSheaves.LeafTw0LocSplitOf
 
+section
+noncomputable section
+open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC
+
+namespace LateralTheory.E.LeafTw0LocGenPfA
+
+theorem pow_q_eq_one {q : ℕ} {B : Type} [CommRing B] (x : B)
+    (hx : Polynomial.aeval x (Polynomial.cyclotomic q ℤ) = 0) : x ^ q = 1 := by
+  obtain ⟨p, hp⟩ := Polynomial.cyclotomic.dvd_X_pow_sub_one q ℤ
+  have := congrArg (Polynomial.aeval x) hp
+  simp only [map_sub, map_pow, Polynomial.aeval_X, map_one, map_mul, hx, zero_mul] at this
+  exact sub_eq_zero.1 this
+
+theorem local_eq {q : ℕ} [NeZero q] {B : Type} [CommRing B] [IsLocalRing B] (hq : IsUnit (q : B)) {x y : B}
+    (hx : x ^ q = 1) (hy : y ^ q = 1) (hr : IsLocalRing.residue B x = IsLocalRing.residue B y) : x = y := by
+  have hg := geom_sum₂_mul x y q
+  rw [hx, hy, sub_self] at hg
+  have hyu : IsUnit y := IsUnit.of_pow_eq_one hy (NeZero.ne q)
+  have hres : IsLocalRing.residue B (∑ i ∈ Finset.range q, x ^ i * y ^ (q - 1 - i)) =
+      IsLocalRing.residue B ((q : B) * y ^ (q - 1)) := by
+    rw [map_sum, map_mul, map_pow, map_natCast]
+    rw [Finset.sum_congr rfl (g := fun _ => IsLocalRing.residue B y ^ (q - 1))]
+    · simp
+    · intro i hi
+      rw [map_mul, map_pow, map_pow, hr, ← pow_add]
+      congr 1; have := Finset.mem_range.1 hi; omega
+  have hu' : IsUnit (∑ i ∈ Finset.range q, x ^ i * y ^ (q - 1 - i)) := by
+    have h1 : IsUnit (IsLocalRing.residue B ((q : B) * y ^ (q - 1))) := (hq.mul (hyu.pow _)).map _
+    rw [← hres] at h1
+    exact (isUnit_map_iff (IsLocalRing.residue B) _).1 h1
+  exact sub_eq_zero.1 ((IsUnit.mul_right_eq_zero hu').1 hg)
+
+theorem res_root {q : ℕ} {B : Type} [CommRing B] [IsLocalRing B] (z : B)
+    (hz : Polynomial.aeval z (Polynomial.cyclotomic q ℤ) = 0) :
+    Polynomial.IsRoot (Polynomial.cyclotomic q (IsLocalRing.ResidueField B)) (IsLocalRing.residue B z) := by
+  have h := Polynomial.aeval_algHom_apply (IsLocalRing.residue B).toIntAlgHom z (Polynomial.cyclotomic q ℤ)
+  rw [hz, map_zero] at h
+  rw [← Polynomial.map_cyclotomic_int, Polynomial.IsRoot.def, Polynomial.eval_map]
+  rw [Polynomial.aeval_def, algebraMap_int_eq] at h
+  exact h
+
+theorem local_pow {q : ℕ} [NeZero q] {B : Type} [CommRing B] [IsLocalRing B] (hq : IsUnit (q : B)) {ζ ξ : B}
+    (hζ : Polynomial.aeval ζ (Polynomial.cyclotomic q ℤ) = 0) (hξ : Polynomial.aeval ξ (Polynomial.cyclotomic q ℤ) = 0) :
+    ∃ a : (ZMod q)ˣ, ξ = ζ ^ (a : ZMod q).val := by
+  have : NeZero ((q : ℕ) : IsLocalRing.ResidueField B) :=
+    ⟨by simpa [map_natCast] using (hq.map (IsLocalRing.residue B)).ne_zero⟩
+  have root : ∀ z : B, Polynomial.aeval z (Polynomial.cyclotomic q ℤ) = 0 →
+      IsPrimitiveRoot (IsLocalRing.residue B z) q := fun z hz =>
+    Polynomial.isRoot_cyclotomic_iff.1 (res_root z hz)
+  obtain ⟨i, hi, hpow⟩ := (root ζ hζ).eq_pow_of_pow_eq_one ((root ξ hξ).pow_eq_one)
+  have hc : i.Coprime q :=
+    ((root ζ hζ).pow_iff_coprime (Nat.pos_of_ne_zero (NeZero.ne q)) i).1 (hpow ▸ root ξ hξ)
+  refine ⟨ZMod.unitOfCoprime i hc, ?_⟩
+  have hval : ((ZMod.unitOfCoprime i hc : (ZMod q)ˣ) : ZMod q).val = i := by
+    rw [ZMod.coe_unitOfCoprime, ZMod.val_natCast, Nat.mod_eq_of_lt hi]
+  rw [hval]
+  refine local_eq hq (pow_q_eq_one ξ hξ) ?_ ?_
+  · rw [← pow_mul, mul_comm, pow_mul, pow_q_eq_one ζ hζ, one_pow]
+  · rw [map_pow]; exact hpow.symm
+
+end LateralTheory.E.LeafTw0LocGenPfA
+end
+end
+
+section
+noncomputable section
+open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC
+
+namespace LateralTheory.E.LeafTw0LocGenPfB
+open LateralTheory.E.LeafTw0LocGenPfA
+
+theorem geo {q : ℕ} [NeZero q] (V : Scheme.{0}) (ζ ξ : Prim q Γ(V, ⊤)) :
+    Loc V fun W h => ∃ a : (ZMod q)ˣ, h.appTop ξ.1 = (h.appTop ζ.1) ^ (a : ZMod q).val := by
+  classical
+  have key : ∀ x : V, ∃ (Wx : V.Opens) (_ : x ∈ Wx) (a : (ZMod q)ˣ),
+      V.presheaf.map (homOfLE le_top : Wx ⟶ ⊤).op ξ.1 =
+        V.presheaf.map (homOfLE le_top : Wx ⟶ ⊤).op (ζ.1 ^ (a : ZMod q).val) := by
+    intro x
+    have hq : IsUnit ((q : V.presheaf.stalk x)) := by
+      simpa using ζ.2.1.map (V.presheaf.germ ⊤ x trivial).hom
+    have hr : ∀ z : Γ(V, ⊤), Polynomial.aeval z (Polynomial.cyclotomic q ℤ) = 0 →
+        Polynomial.aeval ((V.presheaf.germ ⊤ x trivial).hom z) (Polynomial.cyclotomic q ℤ) = 0 := by
+      intro z hz
+      have h := Polynomial.aeval_algHom_apply (V.presheaf.germ ⊤ x trivial).hom.toIntAlgHom z (Polynomial.cyclotomic q ℤ)
+      rw [hz, map_zero] at h
+      exact h
+    obtain ⟨a, ha⟩ := local_pow hq (hr _ ζ.2.2) (hr _ ξ.2.2)
+    have h2 : (V.presheaf.germ ⊤ x trivial).hom ξ.1 = (V.presheaf.germ ⊤ x trivial).hom (ζ.1 ^ (a : ZMod q).val) := by
+      rw [map_pow]; exact ha
+    obtain ⟨Wx, hx, i1, i2, he⟩ := TopCat.Presheaf.germ_eq V.presheaf (U := ⊤) (V := ⊤) x trivial trivial _ _ h2
+    refine ⟨Wx, hx, a, ?_⟩
+    have e1 : i1 = homOfLE le_top := Subsingleton.elim _ _
+    have e2 : i2 = homOfLE le_top := Subsingleton.elim _ _
+    subst e1 e2
+    exact he
+  choose Wx hx a ha using key
+  have fin : ∀ (x : V) {W : Scheme.{0}} (g' : W ⟶ (Wx x).toScheme),
+      (g' ≫ (Wx x).ι).appTop ξ.1 = ((g' ≫ (Wx x).ι).appTop ζ.1) ^ (a x : ZMod q).val := by
+    intro x W g'
+    have hle : (Wx x).ι ''ᵁ ⊤ ≤ Wx x := by simp
+    have hW : ∀ z : Γ(V, ⊤), (Wx x).ι.appTop z =
+        V.presheaf.map (homOfLE hle).op (V.presheaf.map (homOfLE le_top : Wx x ⟶ ⊤).op z) := by
+      intro z
+      rw [Scheme.Opens.ι_appTop, ← ConcreteCategory.comp_apply, ← Functor.map_comp]
+      rfl
+    rw [Scheme.Hom.comp_appTop, ConcreteCategory.comp_apply, ConcreteCategory.comp_apply, hW, hW, ha x]
+    simp only [map_pow]
+    exact map_pow (ConcreteCategory.hom (Scheme.Hom.appTop g')) _ _
+  let 𝒰 : V.Cover (Scheme.precoverage @Etale) :=
+    Scheme.Cover.mkOfCovers V (fun x => (Wx x).toScheme) (fun x => (Wx x).ι) (fun x => ⟨x, ⟨x, hx x⟩, rfl⟩)
+  refine ⟨_, Scheme.Cover.mem_grothendieckTopology 𝒰, fun W h hh => ?_⟩
+  obtain ⟨x, g, rfl⟩ := (Sieve.mem_ofArrows_iff _ _ _).1 hh
+  exact ⟨a x, fin x g⟩
+
+end LateralTheory.E.LeafTw0LocGenPfB
+end
+end
+
+section
 noncomputable section
 open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC
 
@@ -84,3 +203,5 @@ theorem LeafTw0LocGen_of : LateralTheory.E.LeafTw0LocSplitPf.LeafTw0LocGen := by
       exact relq _ _ b hb
 
 end LateralTheory.E.LeafTw0LocGenPf
+end
+end

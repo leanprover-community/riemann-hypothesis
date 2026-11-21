@@ -3,14 +3,332 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.T
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HeckeKer
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RigidSys
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.Splits
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsIsoOfDensePartOfIsIntegral
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.CompPowEqOneOfPullbackHom
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.FiniteTorsionSemiAbelian
+import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.FlatImageOfOverFractionFieldOfValuationRing
+import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.IsOpenOfMemIrreducibleComponentsOfFinite
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.BijectiveAlgebraMapIntegralClosureOfBirational
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsIsoStalkMapOfFlatOfSurjectiveOnStalks
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LocallyQuasiFiniteOfFiniteGeometricPoints
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SABBaseChangeSt
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsUniqueOfIsAdicComplete
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.SemiAbelianTorsionFiniteAndClosedPointFiniteOrde
+import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.FiniteFibrePoints
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsLiftOfIsReducedOfRangeSubset
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RangeAlgebraMapEqIInfDiscreteValuationSubring
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsLiftOfSchemeTheoreticallyDominant
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.IsIsoOfIsFiniteOfUniqueLiftOfClassicalPoints
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.FiniteOfIsClosedOfFiniteInterClosedPoints
 
+section
+open CategoryTheory Limits AlgebraicGeometry TopologicalSpace
+
+namespace GlobalTheory.HomExt
+
+theorem exists_lift_of_range_subset {X U T : Scheme.{0}} (j : U ⟶ X) [IsPreimmersion j] [Flat j]
+    (x : T ⟶ X) (h : Set.range x ⊆ Set.range j) : ∃ y : T ⟶ U, y ≫ j = x := by
+  have hs : Function.Surjective (pullback.fst x j) := by
+    rw [← Set.range_eq_univ, Scheme.Pullback.range_fst, Set.eq_univ_iff_forall]
+    exact fun t ↦ h ⟨t, rfl⟩
+  have hp : IsPreimmersion (pullback.fst x j) := inferInstance
+  have : IsIso (pullback.fst x j) := by
+    rw [isIso_iff_isIso_stalkMap]
+    refine ⟨?_, isIso_stalkMap_of_flat_of_surjectiveOnStalks _⟩
+    exact TopCat.isIso_of_bijective_of_isOpenMap _ ⟨hp.isEmbedding.injective, hs⟩
+      (hp.isEmbedding.isInducing.isOpenMap (by rw [hs.range_eq]; exact isOpen_univ))
+  exact ⟨inv (pullback.fst x j) ≫ pullback.snd x j, by
+    rw [Category.assoc, ← pullback.condition, IsIso.inv_hom_id_assoc]⟩
+
+theorem field_point_comp_eq_iff {Z Y : Scheme.{0}} (g g' : Z ⟶ Y) {k : Type} [Field k]
+    (c : Spec (.of k) ⟶ Z) (z : Z) (hz : z ∈ Set.range c) :
+    c ≫ g = c ≫ g' ↔ Z.fromSpecResidueField z ≫ g = Z.fromSpecResidueField z ≫ g' := by
+  obtain ⟨⟨w, φ⟩, rfl⟩ := (Scheme.SpecToEquivOfField k Z).symm.surjective c
+  simp only [Scheme.SpecToEquivOfField_symm_apply] at hz ⊢
+  obtain rfl : z = w := by
+    obtain ⟨t, rfl⟩ := hz
+    exact (Scheme.Hom.comp_apply _ _ t).trans (Scheme.fromSpecResidueField_apply w _)
+  have : Flat (Spec.map φ) := by
+    rw [HasRingHomProperty.Spec_iff (P := @Flat)]
+    letI := φ.hom.toAlgebra
+    exact RingHom.flat_algebraMap_iff.mpr inferInstance
+  have : Surjective (Spec.map φ) := ⟨fun t ↦ ⟨default, Subsingleton.elim _ _⟩⟩
+  have : Epi (Spec.map φ) := Flat.epi_of_flat_of_surjective _
+  rw [Category.assoc, Category.assoc, cancel_epi]
+
+theorem finite_preimage_of_finite_lifts {X Y : Scheme.{0}} (f : X ⟶ Y) [LocallyOfFiniteType f]
+    {Ω : Type} [Field Ω] [IsAlgClosed Ω] (y : Spec (.of Ω) ⟶ Y)
+    (h : Finite {x : Spec (.of Ω) ⟶ X // x ≫ f = y}) : (f ⁻¹' Set.range y).Finite := by
+  have hP : Finite ↥(pullback f y) := by
+    refine finite_of_finite_sections (pullback.snd f y) ?_
+    refine Finite.of_injective (β := {x : Spec (.of Ω) ⟶ X // x ≫ f = y})
+      (fun x ↦ ⟨x.1 ≫ pullback.fst f y, by
+        rw [Category.assoc, pullback.condition, ← Category.assoc, x.2, Category.id_comp]⟩) ?_
+    intro a b hab
+    apply Subtype.ext
+    apply pullback.hom_ext
+    · exact congrArg Subtype.val hab
+    · rw [a.2, b.2]
+  rw [← Scheme.Pullback.range_fst]
+  exact Set.finite_range _
+
+theorem isIso_of_densePart_of_isIntegral {W Γ Y : Scheme.{0}} (i : W ⟶ Γ) (p : Γ ⟶ Y)
+    [IsSeparated p] [QuasiCompact p] [LocallyOfFiniteType p] [LocallyQuasiFinite p] [Surjective p]
+    [IsIntegral Y] [IsNormalScheme Y] [IsReduced Γ]
+    [IsPreimmersion i] [Flat i] [IsDominant i]
+    [IsPreimmersion (i ≫ p)] [Flat (i ≫ p)] [IsDominant (i ≫ p)] [QuasiCompact (i ≫ p)] :
+    IsIso p := by
+  obtain ⟨w₀, hw₀⟩ := genericPoints_subset_range_of_isDominant (i ≫ p)
+    (show genericPoint Y ∈ genericPoints Y by simp [genericPoints_eq_singleton])
+  have hgen : IsGenericPoint (i w₀) (Set.univ : Set Γ) := by
+    refine Set.eq_univ_of_univ_subset ?_
+    rw [← i.denseRange.closure_range]
+    refine closure_minimal ?_ isClosed_closure
+    rintro _ ⟨w, rfl⟩
+    have h : w₀ ⤳ w := by
+      rw [← (i ≫ p).isEmbedding.isInducing.specializes_iff, hw₀]
+      exact genericPoint_specializes _
+    exact specializes_iff_mem_closure.mp (h.map i.continuous)
+  have : IrreducibleSpace Γ := (irreducibleSpace_def Γ).mpr hgen.isIrreducible
+  have : IsIntegral Γ := isIntegral_of_irreducibleSpace_of_isReduced Γ
+  have he : i w₀ = genericPoint Γ := hgen.eq (genericPoint_spec Γ)
+  have : IsIso (p.stalkMap (genericPoint Γ)) := by
+    rw [← he]
+    have h₁ := isIso_stalkMap_of_flat_of_surjectiveOnStalks (i ≫ p) w₀
+    have h₂ := isIso_stalkMap_of_flat_of_surjectiveOnStalks i w₀
+    rw [Scheme.Hom.stalkMap_comp] at h₁
+    exact @IsIso.of_isIso_comp_right _ _ _ _ _ _ (i.stalkMap w₀) h₂ h₁
+  have := isOpenImmersion_of_quasiFinite_of_isIso_stalkMap p (fun y ↦ inferInstance)
+  exact (isIso_iff_isOpenImmersion_and_surjective p).mpr ⟨inferInstance, inferInstance⟩
+
+theorem isIso_of_densePart {W Γ Y : Scheme.{0}} (i : W ⟶ Γ) (p : Γ ⟶ Y)
+    [IsSeparated p] [QuasiCompact p] [LocallyOfFiniteType p] [LocallyQuasiFinite p] [Surjective p]
+    [IsLocallyNoetherian Y] [IsNormalScheme Y] [IsReduced Γ]
+    [IsPreimmersion i] [Flat i] [IsDominant i]
+    [IsPreimmersion (i ≫ p)] [Flat (i ≫ p)] [IsDominant (i ≫ p)] [QuasiCompact (i ≫ p)] :
+    IsIso p := by
+  let V : Y → Y.Opens := fun y ↦ ⟨irreducibleComponent y,
+    IsNormalScheme.isOpen_of_mem_irreducibleComponents
+      (irreducibleComponent_mem_irreducibleComponents y)⟩
+  have hV : iSup V = ⊤ := by
+    rw [eq_top_iff]
+    exact fun y _ ↦ Opens.mem_iSup.mpr ⟨y, mem_irreducibleComponent⟩
+  refine (IsZariskiLocalAtTarget.iff_of_iSup_eq_top (P := MorphismProperty.isomorphisms Scheme)
+    V hV).mpr fun y ↦ ?_
+  have : IrreducibleSpace (V y).toScheme :=
+    Subtype.irreducibleSpace (isIrreducible_irreducibleComponent (x := y))
+  have : IsIntegral (V y).toScheme := IsNormalScheme.isIntegral_of_irreducibleSpace _
+  have e : (i ≫ p) ∣_ V y = i ∣_ (p ⁻¹ᵁ V y) ≫ p ∣_ V y := morphismRestrict_comp _ _ _
+  have : IsPreimmersion (i ∣_ (p ⁻¹ᵁ V y)) := IsZariskiLocalAtTarget.restrict ‹_› _
+  have : IsDominant (i ∣_ (p ⁻¹ᵁ V y)) := IsZariskiLocalAtTarget.restrict ‹_› _
+  have : IsPreimmersion (i ∣_ (p ⁻¹ᵁ V y) ≫ p ∣_ V y) := e ▸ IsZariskiLocalAtTarget.restrict ‹_› _
+  have : IsDominant (i ∣_ (p ⁻¹ᵁ V y) ≫ p ∣_ V y) := e ▸ IsZariskiLocalAtTarget.restrict ‹_› _
+  have : Flat (i ∣_ (p ⁻¹ᵁ V y) ≫ p ∣_ V y) :=
+    e ▸ MorphismProperty.of_isPullback (isPullback_morphismRestrict (i ≫ p) (V y)).flip ‹_›
+  have : QuasiCompact (i ∣_ (p ⁻¹ᵁ V y) ≫ p ∣_ V y) :=
+    e ▸ MorphismProperty.of_isPullback (isPullback_morphismRestrict (i ≫ p) (V y)).flip ‹_›
+  have : Surjective (p ∣_ V y) := IsZariskiLocalAtTarget.restrict ‹_› _
+  have : LocallyQuasiFinite (p ∣_ V y) :=
+    MorphismProperty.of_isPullback (isPullback_morphismRestrict p (V y)).flip ‹_›
+  exact isIso_of_densePart_of_isIntegral (i ∣_ (p ⁻¹ᵁ V y)) (p ∣_ V y)
+
+end GlobalTheory.HomExt
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj
+
+namespace GlobalTheory.HomExt
+
+theorem comp_pow_eq_one_of_pullback_hom {X T Z : Scheme.{0}} (g : T ⟶ X) {G G' Γ : Over X}
+    [GrpObj G] [GrpObj G'] (F : (Over.pullback g).obj G ⟶ (Over.pullback g).obj G') [IsMonHom F]
+    (p : Γ ⟶ G) (q : Γ ⟶ G') (c : Z ⟶ Γ.left) (s : Z ⟶ pullback G.hom g)
+    (h₁ : s ≫ pullback.fst G.hom g = c ≫ p.left)
+    (h₂ : s ≫ F.left ≫ pullback.fst G'.hom g = c ≫ q.left) (n : ℕ)
+    (h : c ≫ (p ^ n).left = c ≫ (1 : Γ ⟶ G).left) :
+    c ≫ (q ^ n).left = c ≫ (1 : Γ ⟶ G').left := by
+
+  let pc : Over.mk (c ≫ Γ.hom) ⟶ Γ := Over.homMk c
+  let ps : Over.mk (s ≫ pullback.snd G.hom g) ⟶ (Over.pullback g).obj G := Over.homMk s
+  have ht : (Over.mk (s ≫ pullback.snd G.hom g)).hom ≫ g = c ≫ Γ.hom := by
+    simp only [Over.mk_hom, Category.assoc, ← pullback.condition, reassoc_of% h₁, Over.w]
+  have hp : GlobalTheory.TorsionLift.ptsEquiv g G _ _ ht ps = pc ≫ p := by
+    apply Over.OverMorphism.ext
+    rw [GlobalTheory.TorsionLift.ptsEquiv_left]
+    simpa [ps, pc] using h₁
+  have hq : GlobalTheory.TorsionLift.ptsEquiv g G' _ _ ht (ps ≫ F) = pc ≫ q := by
+    apply Over.OverMorphism.ext
+    rw [GlobalTheory.TorsionLift.ptsEquiv_left]
+    simpa [ps, pc] using h₂
+  have h1 : (1 : Over.mk (c ≫ Γ.hom) ⟶ G) = pc ≫ 1 := (MonObj.comp_one pc).symm
+  have hpn : (pc ≫ p) ^ n = 1 := by
+    rw [← MonObj.comp_pow, h1]
+    apply Over.OverMorphism.ext
+    exact h
+  have hps : ps ^ n = 1 := by
+    apply (GlobalTheory.TorsionLift.ptsEquiv g G _ _ ht).injective
+    rw [map_pow, hp, hpn, map_one]
+  have hqn : (pc ≫ q) ^ n = 1 := by
+    rw [← hq, ← map_pow, ← MonObj.pow_comp, hps, MonObj.one_comp, map_one]
+  have key : pc ≫ q ^ n = pc ≫ 1 := by
+    rw [MonObj.comp_pow, hqn, MonObj.comp_one]
+  exact congrArg (fun x => Over.Hom.left x) key
+
+theorem exists_iso_pullback_pullback {X T Z : Scheme.{0}} (p : Z ⟶ T) (f : T ⟶ X) (r : Z ⟶ X)
+    (h : p ≫ f = r) (G : Over X) [GrpObj G] :
+    ∃ e : (Over.pullback r).obj G ≅ (Over.pullback p).obj ((Over.pullback f).obj G),
+      IsMonHom e.hom ∧ e.hom.left ≫ pullback.fst (pullback.snd G.hom f) p ≫ pullback.fst G.hom f =
+        pullback.fst G.hom r := by
+  subst h
+  refine ⟨ReciprocityTheory.ChartRestriction.G.Geo.Tor.pullCompIso p f G, inferInstance, ?_⟩
+  have key := congrArg (fun x => Over.Hom.left x)
+    (conjugateEquiv_counit (Over.mapPullbackAdj (p ≫ f))
+      ((Over.mapPullbackAdj p).comp (Over.mapPullbackAdj f)) (Over.mapComp p f).symm.hom G)
+  have e : (ReciprocityTheory.ChartRestriction.G.Geo.Tor.pullCompIso p f G).hom.left =
+      ((conjugateEquiv (Over.mapPullbackAdj (p ≫ f))
+        ((Over.mapPullbackAdj p).comp (Over.mapPullbackAdj f)) (Over.mapComp p f).symm.hom).app
+          G).left := rfl
+  rw [e]
+  simpa [Adjunction.comp_counit_app] using key
+
+private lemma pullback_map_left_comp_fst {S S' : Scheme.{0}} (φ : S' ⟶ S) {A B : Over S} (F : A ⟶ B) :
+    ((Over.pullback φ).map F).left ≫ pullback.fst B.hom φ = pullback.fst A.hom φ ≫ F.left := by
+  simp
+  exact pullback.lift_fst _ _ _
+
+theorem exists_hom_along_dvr
+    (H : ∀ (T K : Type) [CommRing T] [IsDomain T] [IsDiscreteValuationRing T] [Field K]
+      [Algebra T K] [IsFractionRing T K] (G G' : Over (Sp T)) [GrpObj G] [GrpObj G'],
+      IsSemiAbelian G → IsSemiAbelian G' →
+      ∀ f : (Over.pullback (spMap (algebraMap T K))).obj G ⟶
+        (Over.pullback (spMap (algebraMap T K))).obj G', IsMonHom f →
+      ∃! F : G ⟶ G', IsMonHom F ∧ (Over.pullback (spMap (algebraMap T K))).map F = f)
+    {X U : Scheme.{0}} (j : U ⟶ X) {G G' : Over X} [GrpObj G] [GrpObj G']
+    (hG : IsSemiAbelian G) (hG' : IsSemiAbelian G')
+    (f : (Over.pullback j).obj G ⟶ (Over.pullback j).obj G') [IsMonHom f]
+    (T K : Type) [CommRing T] [IsDomain T] [IsDiscreteValuationRing T] [Field K]
+    [Algebra T K] [IsFractionRing T K] (a : Sp T ⟶ G.left) (c : Sp K ⟶ pullback G.hom j)
+    (hc : c ≫ pullback.fst G.hom j = spMap (algebraMap T K) ≫ a) :
+    ∃ (F : (Over.pullback (a ≫ G.hom)).obj G ⟶ (Over.pullback (a ≫ G.hom)).obj G')
+      (s : Sp T ⟶ pullback G.hom (a ≫ G.hom)), IsMonHom F ∧
+      s ≫ pullback.fst G.hom (a ≫ G.hom) = a ∧ s ≫ pullback.snd G.hom (a ≫ G.hom) = 𝟙 _ ∧
+      spMap (algebraMap T K) ≫ s ≫ F.left ≫ pullback.fst G'.hom (a ≫ G.hom) =
+        c ≫ f.left ≫ pullback.fst G'.hom j := by
+  have huj : (c ≫ pullback.snd G.hom j) ≫ j = spMap (algebraMap T K) ≫ (a ≫ G.hom) := by
+    rw [Category.assoc, ← pullback.condition, reassoc_of% hc]
+  obtain ⟨e₁, he₁, hf₁⟩ := exists_iso_pullback_pullback (c ≫ pullback.snd G.hom j) j _ huj G
+  obtain ⟨e₁', he₁', hf₁'⟩ := exists_iso_pullback_pullback (c ≫ pullback.snd G.hom j) j _ huj G'
+  obtain ⟨e₂, he₂, hf₂⟩ :=
+    exists_iso_pullback_pullback (spMap (algebraMap T K)) (a ≫ G.hom) _ rfl G
+  obtain ⟨e₂', he₂', hf₂'⟩ :=
+    exists_iso_pullback_pullback (spMap (algebraMap T K)) (a ≫ G.hom) _ rfl G'
+  let fK := e₂.inv ≫ e₁.hom ≫ (Over.pullback (c ≫ pullback.snd G.hom j)).map f ≫ e₁'.inv ≫ e₂'.hom
+  have hfK : IsMonHom fK := inferInstance
+  obtain ⟨F, ⟨hF, hFK⟩, -⟩ := H T K ((Over.pullback (a ≫ G.hom)).obj G)
+    ((Over.pullback (a ≫ G.hom)).obj G')
+    (ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsSemiAbelian.pullback (a ≫ G.hom) G hG)
+    (ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsSemiAbelian.pullback (a ≫ G.hom) G' hG') fK hfK
+  have hs : a ≫ G.hom = 𝟙 _ ≫ a ≫ G.hom := (Category.id_comp _).symm
+  refine ⟨F, pullback.lift a (𝟙 _) hs, hF, pullback.lift_fst _ _ _, pullback.lift_snd _ _ _, ?_⟩
+
+  have hK : (spMap (algebraMap T K) ≫ pullback.lift a (𝟙 _) hs) ≫
+      ((Over.pullback (a ≫ G.hom)).obj G).hom = 𝟙 _ ≫ spMap (algebraMap T K) := by
+    show (spMap (algebraMap T K) ≫ pullback.lift a (𝟙 _) hs) ≫ pullback.snd G.hom (a ≫ G.hom) = _
+    rw [Category.assoc, pullback.lift_snd, Category.comp_id, Category.id_comp]
+  set σK := pullback.lift _ _ hK with hσK
+  have inv_fst₁' : e₁'.inv.left ≫ pullback.fst G'.hom (spMap (algebraMap T K) ≫ a ≫ G.hom) =
+      pullback.fst (pullback.snd G'.hom j) (c ≫ pullback.snd G.hom j) ≫ pullback.fst G'.hom j := by
+    rw [← hf₁', ← Category.assoc, ← Over.comp_left, e₁'.inv_hom_id]
+    simp
+  have inv_fst₂ : e₂.inv.left ≫ pullback.fst G.hom (spMap (algebraMap T K) ≫ a ≫ G.hom) =
+      pullback.fst (pullback.snd G.hom (a ≫ G.hom)) (spMap (algebraMap T K)) ≫
+        pullback.fst G.hom (a ≫ G.hom) := by
+    rw [← hf₂, ← Category.assoc, ← Over.comp_left, e₂.inv_hom_id]
+    simp
+  have hpt : σK ≫ e₂.inv.left ≫ e₁.hom.left ≫ pullback.fst _ _ = c := by
+    apply pullback.hom_ext
+    · simp only [Category.assoc]
+      erw [hf₁]
+      rw [inv_fst₂, hσK]
+      erw [pullback.lift_fst_assoc]
+      rw [Category.assoc, pullback.lift_fst, hc]
+    · have hcond : pullback.fst (((Over.pullback j).obj G).hom) (c ≫ pullback.snd G.hom j) ≫
+          pullback.snd G.hom j = pullback.snd _ _ ≫ c ≫ pullback.snd G.hom j := pullback.condition
+      have hw₁ : e₁.hom.left ≫
+          pullback.snd (((Over.pullback j).obj G).hom) (c ≫ pullback.snd G.hom j) =
+          pullback.snd G.hom (spMap (algebraMap T K) ≫ a ≫ G.hom) := Over.w e₁.hom
+      have hw₂ : e₂.inv.left ≫ pullback.snd G.hom (spMap (algebraMap T K) ≫ a ≫ G.hom) =
+          pullback.snd (((Over.pullback (a ≫ G.hom)).obj G).hom) (spMap (algebraMap T K)) :=
+        Over.w e₂.inv
+      simp only [Category.assoc]
+      rw [hcond, reassoc_of% hw₁, reassoc_of% hw₂, hσK, pullback.lift_snd_assoc,
+        Category.id_comp]
+  have step : spMap (algebraMap T K) ≫ pullback.lift a (𝟙 _) hs ≫ F.left =
+      σK ≫ fK.left ≫ pullback.fst _ _ := by
+    rw [← hFK, hσK, pullback_map_left_comp_fst, pullback.lift_fst_assoc, Category.assoc]
+  have hmap : ((Over.pullback (c ≫ pullback.snd G.hom j)).map f).left ≫
+      pullback.fst (pullback.snd G'.hom j) (c ≫ pullback.snd G.hom j) =
+      pullback.fst (((Over.pullback j).obj G).hom) (c ≫ pullback.snd G.hom j) ≫ f.left :=
+    pullback_map_left_comp_fst _ f
+  rw [reassoc_of% step]
+  simp only [fK, Over.comp_left, Category.assoc]
+  erw [hf₂']
+  rw [inv_fst₁', reassoc_of% hmap, reassoc_of% hpt]
+
+end GlobalTheory.HomExt
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj
+
+namespace GlobalTheory.TorsionFinite
+
+theorem finite_torsion_semiAbelian_of_abelian :
+    (∀ (K : Type) [Field K] [IsAlgClosed K] (B : Over (Sp K)) [GrpObj B], IsAbelianScheme B → ∀ n : ℕ, 1 ≤ n → Finite {x : 𝟙_ (Over (Sp K)) ⟶ B // x ^ n = 1}) → ∀ (k : Type) [Field k] [IsAlgClosed k] (G : Over (Sp k)) [GrpObj G], IsSemiAbelian G → ∀ n : ℕ, 0 < n → Finite {x : 𝟙_ (Over (Sp k)) ⟶ G // x ^ n = 1} := by
+  intro hB k _ _ G _ hG n hn
+  haveI := hG.comm
+  let t : Sp k ⟶ Sp k := 𝟙 _
+  have h := (semiAbelian_torsion_finite_and_closedPoint_finiteOrder hB).1 k
+    ((Over.pullback t).obj G) (hG.fibres k t) n hn
+  have hp := isGrpPullback_pullback G t
+  have hbij : Function.Bijective (pushHom hp (𝟙_ (Over (Sp k)))) := by
+    constructor
+    · intro x y hxy
+      have e : x.left ≫ pullback.fst G.hom t = y.left ≫ pullback.fst G.hom t :=
+        congrArg (fun z => z.left) hxy
+      exact Over.OverMorphism.ext (hp.1.hom_ext e ((Over.w x).trans (Over.w y).symm))
+    · intro y
+      refine ⟨Over.homMk (hp.1.lift y.left (𝟙_ (Over (Sp k))).hom (Over.w y))
+        (hp.1.lift_snd _ _ _), ?_⟩
+      exact Over.OverMorphism.ext (hp.1.lift_fst _ _ _)
+  let e := MulEquiv.ofBijective _ hbij
+  have h2 : Finite {x : Over.mk ((𝟙_ (Over (Sp k))).hom ≫ t) ⟶ G // x ^ n = 1} := by
+    refine Finite.of_equiv _ (e.toEquiv.subtypeEquiv (p := fun x => x ^ n = 1) fun x => ?_)
+    show x ^ n = 1 ↔ e x ^ n = 1
+    rw [← map_pow, MulEquiv.map_eq_one_iff]
+  have h3 : (𝟙_ (Over (Sp k))).hom ≫ t = t := Category.id_comp t
+  rw [h3] at h2
+  exact h2
+
+end GlobalTheory.TorsionFinite
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj TensorProduct Pointwise
+
+namespace GlobalTheory
+
+theorem finite_torsion_semiAbelian :
+    ∀ (k : Type) [Field k] [IsAlgClosed k] (G : Over (Sp k)) [GrpObj G], IsSemiAbelian G → ∀ n : ℕ, 0 < n → Finite {x : 𝟙_ (Over (Sp k)) ⟶ G // x ^ n = 1} :=
+  TorsionFinite.finite_torsion_semiAbelian_of_abelian AbTorsionFinite.finite_torsion
+
+end GlobalTheory
+end
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj TensorProduct Pointwise
@@ -213,3 +531,4 @@ theorem GlobalTheory.existsUnique_hom_extension_semiAbelian_normal :
   refine ⟨F, ⟨?_, hF⟩, fun F' hF' ↦ pullback_map_injective_of_flat j (hF'.2.trans hF.symm)⟩
   have : IsMonHom ((Over.pullback j).map F) := hF ▸ hf
   exact isMonHom_of_pullback_of_flat j F
+end

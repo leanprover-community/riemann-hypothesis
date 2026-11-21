@@ -47,23 +47,6 @@ theorem mp_add_const (β : ℂ) {ι : Type} [Fintype ι] (c : ι → ℂ) :
   refine ⟨measurable_add_const c, ?_⟩
   rw [muPi_eq, Measure.map_smul, map_add_right_eq_self]
 
-theorem map_smul_muPi (β z : ℂ) (ι : Type) [Fintype ι] (hz : z ≠ 0) :
-    Measure.map (fun v : ι → ℂ => z • v) (muPi β ι) =
-      Real.toNNReal ((‖z‖ ^ (2 * Fintype.card ι))⁻¹) • muPi β ι := by
-  classical
-  have hdet : LinearMap.det ((z • (LinearMap.id : (ι → ℂ) →ₗ[ℂ] (ι → ℂ))).restrictScalars ℝ) =
-      ‖z‖ ^ (2 * Fintype.card ι) := by
-    rw [LinearMap.det_restrictScalars, LinearMap.det_smul, LinearMap.det_id, mul_one,
-      Algebra.norm_complex_apply, Complex.normSq_eq_norm_sq, norm_pow, ← pow_mul, mul_comm]
-    simp
-  have hpos : (0 : ℝ) < ‖z‖ ^ (2 * Fintype.card ι) := by positivity
-  have h2 := Measure.map_linearMap_addHaar_eq_smul_addHaar (volume : Measure (ι → ℂ))
-    (f := (z • (LinearMap.id : (ι → ℂ) →ₗ[ℂ] (ι → ℂ))).restrictScalars ℝ) (by rw [hdet]; exact hpos.ne')
-  rw [hdet, abs_of_pos (inv_pos.2 hpos)] at h2
-  have h3 : Measure.map (fun v : ι → ℂ => z • v) volume =
-      ENNReal.ofReal ((‖z‖ ^ (2 * Fintype.card ι))⁻¹) • volume := h2
-  rw [muPi_eq, Measure.map_smul, h3, smul_comm]
-  rfl
 
 theorem wMat_mul_self (d : ℕ) : wMat d * wMat d = 1 := by
   ext i j
@@ -107,8 +90,6 @@ theorem card_UT (n : ℕ) : Fintype.card (UT n) = ∑ i ∈ Finset.range n, i :=
   simp_rw [this]
   exact Fin.sum_univ_eq_sum_range (fun i => i) n
 
-theorem two_card_UT (n : ℕ) : 2 * Fintype.card (UT n) = n * (n - 1) := by
-  rw [card_UT, mul_comm]; exact Finset.sum_range_id_mul_two n
 
 theorem mp_shear (n : ℕ) (β : ℂ) :
     MeasurePreserving (fun p : BlockCoord n => ((p.1 ᵥ* (wMat n * upper p.2.1), p.2.1, p.2.2) : BlockCoord n))
@@ -400,27 +381,6 @@ namespace Formalism.FourierDecayAlt.P
 
 open Formalism.FourierDecayAlt.G Formalism.FourierDecayAlt.P.G5
 
-theorem jacobian_formula : Formalism.FourierDecayAlt.G.Jacobian := by
-  intro n β t ht
-  have hcomp : coordMap n t = (Prod.map (fun v : Fin n → ℂ => t • v)
-      (Prod.map (fun v : UT n → ℂ => t • v) (fun v : Fin n → ℂ => t • v))) ∘
-      (fun p : BlockCoord n => ((p.1 ᵥ* (wMat n * upper p.2.1), p.2.1, p.2.2) : BlockCoord n)) := by
-    funext p
-    rfl
-  have hm1 : ∀ ι : Type, Measurable (fun v : ι → ℂ => t • v) := fun ι => measurable_const_smul t
-  rw [hcomp, ← Measure.map_map ((hm1 _).prodMap ((hm1 _).prodMap (hm1 _))) (mp_shear n β).measurable,
-    (mp_shear n β).map_eq]
-  unfold muBlock
-  rw [← Measure.map_prod_map _ _ (hm1 _) ((hm1 _).prodMap (hm1 _)), ← Measure.map_prod_map _ _ (hm1 _) (hm1 _),
-    map_smul_muPi β t _ ht, map_smul_muPi β t _ ht, Measure.prod_smul_left, Measure.prod_smul_left,
-    Measure.prod_smul_right, Measure.prod_smul_right, Measure.prod_smul_right, smul_smul, smul_smul]
-  congr 1
-  rw [← Real.toNNReal_mul (by positivity), ← Real.toNNReal_mul (by positivity), ← mul_inv, ← mul_inv,
-    ← pow_add, ← pow_add, two_card_UT, Fintype.card_fin]
-  congr 3
-  cases n with
-  | zero => rfl
-  | succ k => simp only [Nat.add_sub_cancel]; ring
 
 theorem quotient_measure : Formalism.FourierDecayAlt.G.QuotientMeasure := by
   intro n β

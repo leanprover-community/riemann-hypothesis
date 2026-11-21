@@ -178,27 +178,6 @@ theorem isLift_fam (z : Fin Λ.A.gB → ℂ) (α : Λ.A.X) :
   · change (Λ.u.ex z ≫ toUnit _ ≫ η[a.D₀.P.A]).left = (Λ.u.ex 0).left
     rw [h, ex_zero]
 
-theorem fn_mem_Theta (j : ℕ) (α : Λ.A.X) (s : a.D₀.SecB j (Λ.ε α)) : Λ.fn j α s ∈ Λ.A.Theta j α := by
-  refine ⟨?_, fun m z => ?_⟩
-  · have := differentiable_secVal (u := Λ.u) a.D₀.P.isLB s (𝟙 _) (q := id) differentiable_id
-      (z := fun z => ![z, z + Λ.A.ct α, Λ.A.ct α, 0]) (fun k => by fin_cases k <;> simp <;> fun_prop)
-      (fun w => by rw [id, Category.comp_id]; exact isLift_fam Λ w α)
-    simp only [id, Category.comp_id] at this
-    exact this
-  · let m' : Λ.u.Λ := ⟨m, Λ.lam.ge m.2⟩
-    have e₁ : Λ.u.ex (z + m) = Λ.u.ex z := by rw [Λ.u.ex_add, (Λ.u.ker m).2 m'.2, _root_.mul_one]
-    have e₂ : ![z + m, z + m + Λ.A.ct α, Λ.A.ct α, 0] = fun k => ![z, z + Λ.A.ct α, Λ.A.ct α, 0] k +
-        ((![m', m', 0, 0] : Fin 4 → Λ.u.Λ) k : Fin Λ.A.gB → ℂ) := by
-      funext k
-      fin_cases k <;> simp [m'] <;> abel
-    rw [GtAn.fn, GtAn.fn, e₁, e₂, secVal_add_period _ Λ.ah s (isLift_fam Λ z α)]
-    congr 1
-    have n := Λ.A.ah_ne_zero m z
-    simp only [Fin.prod_univ_four, Out.DegPre.famε, Matrix.cons_val, ahFactor_zero a.D₀.P.isLB Λ.ah]
-    change Λ.A.ah m z ^ ((j : ℤ) - 1) * Λ.A.ah m (z + Λ.A.ct α) ^ (1 : ℤ) * _ * _ = _
-    rw [AnArc.ah_add, zpow_sub₀ n]
-    simp
-    field_simp
 
 theorem analyticTorusPoint_base_eq_holUnif_ex (v : Λ.A.V) : (Λ.ex0 v).b = toUnit _ ≫ Λ.u.ex v.2 := by
   haveI := isScalarTower Λ
@@ -566,23 +545,6 @@ section Test
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {l : Level H} (c : Coeff l)
   [Algebra (FractionRing ℂ) ℂ] [IsScalarTower ℂ (FractionRing ℂ) ℂ]
 
-theorem rep_eta (v : HypLattice H) : letI := H.starRing
-    (model c c.F.val.toRingHom).Rep l.M ((arcIn c ℂ c.F.val.toRingHom).eta v)
-      (AnArc.La.mk (A := splitArc l) v.1 (ConjDual.toDual H v.2).toAddMonoidHom 0) := by
-  letI := H.starRing
-  let ζ : ℂˣ := Units.mk0 (zeta l.M) (Complex.exp_ne_zero _)
-  have h : (ζ : ℂ) = algebraMap (FractionRing ℂ) ℂ (arcRoot c ℂ c.F.val.toRingHom (Nat.dvd_lcm_left l.M l.A)) :=
-    IsScalarTower.algebraMap_apply ℂ (FractionRing ℂ) ℂ _
-  have hζ : ζ ^ l.M = 1 := Units.ext ((Units.val_pow_eq_pow_val _ _).trans
-    (isPrimitiveRoot_zeta (lt_of_lt_of_le three_pos l.three_le)).pow_eq_one)
-  intro q hq
-  obtain rfl := (qkExt_qkPt ℂ (isPrimitiveRoot_arcRoot c ℂ c.F.val.toRingHom (Nat.dvd_lcm_left l.M l.A)).pow_eq_one
-    (algebraMap (FractionRing ℂ) ℂ) (RingHom.ext fun _ => rfl) hζ h v q).1 hq
-  refine ⟨rfl, congrArg (pt _ ℂ) (MonoidHom.ext fun x => Units.ext ?_)⟩
-  change ((ζ ^ ConjDual.toDual H v.2 x.toAdd : ℂˣ) : ℂ) =
-    eTwoPi ((l.M : ℂ)⁻¹ * (0 + (ConjDual.toDual H v.2 x.toAdd : ℤ) - (splitArc l).H 0 0 / (2 * Complex.I)))
-  rw [Units.val_zpow_eq_zpow_val, AnArc.H_zero_left, zero_div, sub_zero, zero_add, AnArc.e_mul_intCast]
-  rfl
 
 example : letI := H.starRing
     ¬ (model c c.F.val.toRingHom).Rep l.M ((arcIn c ℂ c.F.val.toRingHom).eta ((1, 0) : HypLattice H)) 0 := by

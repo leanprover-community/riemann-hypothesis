@@ -140,19 +140,6 @@ theorem LabCover.exists_trait (C : LabCover D) (W : Type) [CommRing W] [IsDomain
       cart := hc, D' := D', A := A', U := U', hD := hD, ℓ := ℓ, ℓ_gen := hℓ, lab := hlab }, hi, hf, rfl, rfl⟩
   rw [Category.assoc, hξ, ← Spec.map_comp]; rfl
 
-theorem Trait.exists_toric_rank_one : ∃ (D : DegData (PowerSeries ℚ) (maximalIdeal (PowerSeries ℚ))) (C : LabCover D)
-    (W : Type) (_ : CommRing W) (_ : IsDomain W) (_ : IsLocalRing W), Module.finrank ℤ D.toPre.X = 1 ∧ Nonempty (Trait C W) := by
-  obtain ⟨D, hr, h, -, -⟩ := LabCover.exists_toric_rank_one
-  have hu : IsUnit ((3 : ℕ) : PowerSeries ℚ) := by
-    rw [← map_natCast (algebraMap ℚ (PowerSeries ℚ))]
-    exact (IsUnit.mk0 _ (by norm_num)).map _
-  obtain ⟨C, h₁, -⟩ := h.labCover base_powerSeries 3 Nat.prime_three (by decide) hu
-  have hW : GlobalTheory.LN.CDvr (PowerSeries ℚ) := ⟨inferInstance, base_powerSeries.1.2.2.2, base_powerSeries.2⟩
-  have hx : ∃ ξ : Sp (PowerSeries ℚ) ⟶ C.toModif.S, ξ ≫ C.toModif.π = spMap (RingHom.id _) := by
-    rw [h₁]; exact ⟨spMap (RingHom.id _), Category.comp_id _⟩
-  obtain ⟨ξ, hξ⟩ := hx
-  obtain ⟨W', _, _, _, io, T, -⟩ := C.exists_trait _ hW (RingHom.id _) ξ Function.injective_id inferInstance hξ
-  exact ⟨D, C, W', _, _, _, hr, ⟨T⟩⟩
 
 open ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.DVR.TG in
 
@@ -177,12 +164,6 @@ theorem IntFam.exists_lead_of_unif {V : Type} [CommRing V] [IsDomain V] [IsDiscr
   rw [e', Scheme.Hom.comp_app] at h'
   exact h'
 
-theorem IntFam.exists_toric_rank_one : ∃ (D : DegData (PowerSeries ℚ) (maximalIdeal (PowerSeries ℚ)))
-    (F : IntFam (maximalIdeal (PowerSeries ℚ)) D.toPre 1), Module.finrank ℤ D.toPre.X = 1 ∧ F.Lead 0 (F.f 0) ∧
-      ¬ VanMod (maximalIdeal (PowerSeries ℚ)) (F.f 0) 0 := by
-  obtain ⟨A, G, _, _, D, U, -, -, hr, -⟩ := GlobalTheory.TateUnif.exists_unif_rank_one
-  obtain ⟨F, h⟩ := IntFam.exists_lead_of_unif U
-  exact ⟨D, F, hr, h⟩
 
 example (D : DegPre (PowerSeries ℚ)) : Nonempty (Ext D) := inferInstance
 

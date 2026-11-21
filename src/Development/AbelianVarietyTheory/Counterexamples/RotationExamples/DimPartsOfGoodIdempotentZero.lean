@@ -84,41 +84,11 @@ def recMatching {Pg : Finset (Pl D.host.E)} (h : IsRecPlaces D Pg) : Matching D 
       rw [← hab]
       exact Ideal.add_mem _ (Ideal.mul_mem_left _ _ h3) (Ideal.mul_mem_left _ _ h2)
 
-theorem recMatching_eCoef {Pg : Finset (Pl D.host.E)} (h : IsRecPlaces D Pg) : (recMatching h).eCoef = eCoef h := rfl
 
-theorem dimParts_of_anyMatching (H : DimPartsAnyMatching) : DimParts := fun D h1 h2 Pg h ψ hψ =>
-  (dimPartsAt_iff h _).2 (recMatching_eCoef h ▸ H D h1 h2 Pg (recMatching h) ψ hψ)
 
-theorem eLin_zero (V : HSp D) (β : GL (Fin V.rank) (Lev.EAf D)) (L : LevDat D.host.E ℂ V.rank) : eLin V β L 0 = 0 := by
-  ext F x
-  simp [eLin, Lev.eAct]
 
-theorem goodPart_zero {V : HSp D} {S : D.what₂.Tau → SPar} (θ : InfFam D) (M : Mult.DSModel V S) (J : Set (GA D V))
-    (χ : GA D V → ℂ) : Mult.goodPart θ M J χ 0 = ⊥ := by
-  rw [eq_bot_iff]
-  intro T hT
-  have h := hT.2
-  have h0 : Mult.postOn M (0 : (GA D V → ℂ) →ₗ[ℂ] (GA D V → ℂ)) T = 0 := by
-    ext v; simp [Mult.postOn]
-  simp only [SetLike.mem_coe, LinearMap.mem_ker, LinearMap.sub_apply, h0, LinearMap.id_apply, zero_sub, neg_eq_zero] at h
-  simpa using h
 
-theorem dimAtWith_zero {Pg : Finset (Pl D.host.E)} (P : LevelP Pg D.R.r ℂ) : DimAtWith 0 P := by
-  intro θ _ j h1 h2 M₀ M₁ β₀ β₁ _ _ S _ _ c A B
-  have hA : A = ⊥ := by
-    simp only [A, Mult.EEpart, Mult.EErec, Mult.EE]
-    erw [eLin_zero, goodPart_zero]; simp
-  have hB : B = ⊥ := by
-    simp only [B, Mult.Wpart, Mult.WgoodRec, Mult.Wgood]
-    erw [eLin_zero, goodPart_zero]; simp
-  rw [hA, hB]
-  exact ⟨inferInstance, inferInstance, by simp⟩
 
-theorem dimParts_of_good_idempotent_zero (h0 : D.ntypes.e0 = 0) : DimensionDecompositionAtBasePrime D := by
-  intro Pg h ψ _
-  have : eCoef h = 0 := by simp [eCoef, h0]
-  rw [dimPartsAt_iff, this]
-  exact dimAtWith_zero _
 
 theorem paramGap_of_params (L : SizeData₂ D) (Pm : ParameterChoice' D L) : ParamGap D := by
   intro τ n hn

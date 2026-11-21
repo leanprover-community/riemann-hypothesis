@@ -132,23 +132,5 @@ theorem product_of_jets : JetsProductBound := by
     positivity
   · exact Formalism.LogVandermondeBounds.flipTwoThree.jet_exponential_bound (n τ) g₀ hg
 
-theorem block_operator_norm_bound : BlockOperatorNormBound := by
-  intro X X' V V' _ _ _ _ _ _ A φ β hβ
-  have hφ : 0 ≤ ∑ x, ‖φ x‖ ^ 2 := Finset.sum_nonneg (fun x _ => by positivity)
-  have h1 : ∑ x', ‖∑ x, A x' x (φ x)‖ ^ 2 ≤ (∑ x', ∑ x, ‖A x' x‖ ^ 2) * ∑ x, ‖φ x‖ ^ 2 := by
-    rw [Finset.sum_mul]
-    refine Finset.sum_le_sum (fun x' _ => ?_)
-    have h2 : ‖∑ x, A x' x (φ x)‖ ≤ ∑ x, ‖A x' x‖ * ‖φ x‖ :=
-      (norm_sum_le _ _).trans (Finset.sum_le_sum (fun x _ => (A x' x).le_opNorm (φ x)))
-    calc ‖∑ x, A x' x (φ x)‖ ^ 2 ≤ (∑ x, ‖A x' x‖ * ‖φ x‖) ^ 2 :=
-          pow_le_pow_left₀ (norm_nonneg _) h2 2
-      _ ≤ (∑ x, ‖A x' x‖ ^ 2) * ∑ x, ‖φ x‖ ^ 2 :=
-          Finset.sum_mul_sq_le_sq_mul_sq _ _ _
-  refine ⟨h1, h1.trans (mul_le_mul_of_nonneg_right ?_ hφ)⟩
-  calc ∑ x', ∑ x, ‖A x' x‖ ^ 2 ≤ ∑ _x' : X', ∑ _x : X, β :=
-        Finset.sum_le_sum (fun x' _ => Finset.sum_le_sum (fun x _ => hβ x' x))
-    _ = (Fintype.card X' : ℝ) * Fintype.card X * β := by
-        simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
-        ring
 
 end Formalism.HermitianLattices.TraceIntegrality

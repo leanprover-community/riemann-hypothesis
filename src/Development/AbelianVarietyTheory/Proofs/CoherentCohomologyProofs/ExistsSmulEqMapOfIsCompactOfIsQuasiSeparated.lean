@@ -233,9 +233,6 @@ theorem isLocalizedModule_of_ringHom_of_qcqs (hU : IsCompact (U : Set X))
   · obtain ⟨n, hn⟩ := exists_pow_smul_eq_zero_of_isCompact F hU (φ a) h hV t (by rw [← hl, ht])
     exact ⟨n, by rw [hsU, map_pow, hn]⟩
 
-theorem isLocalizedModule_resBasicOpen_top [CompactSpace X] [QuasiSeparatedSpace X]
-    (f : Γ(X, ⊤)) : IsLocalizedModule.Away f (resBasicOpen F f) :=
-  isLocalizedModule_resBasicOpen_of_qcqs F isCompact_univ (isQuasiSeparated_univ) f
 
 end BasicOpen
 
@@ -257,50 +254,7 @@ def appLinearOver (h : V ≤ U) :
     map_add' := map_add _
     map_smul' := fun _ s ↦ φ.app_smul _ s }
 
-theorem exists_smul_eq_zero_of_app_eq_zero (hU : IsCompact (U : Set X)) (S : Submonoid Γ(X, U))
-    (hker : ∀ (V : X.Opens) (h : V ≤ U), IsAffineOpen V → ∀ a : Γ(F, V), φ.app V a = 0 →
-      ∃ s ∈ S, X.presheaf.map (homOfLE h).op s • a = 0)
-    (a : Γ(F, U)) (ha : φ.app U a = 0) : ∃ s ∈ S, s • a = 0 := by
-  letI (W : Set.Iic U) : Module Γ(X, U) Γ(F, W.1) := resModule F W.2
-  letI (W : Set.Iic U) : Module Γ(X, U) Γ(G, W.1) := resModule G W.2
-  obtain ⟨s, hs, e⟩ := exists_smul_eq_zero_of_isCompact S U
-    (A := fun W ↦ Γ(F, W.1)) (B := fun W ↦ Γ(G, W.1))
-    (fun {W₁ W₂} h' ↦ resLinearOver F W₂.2 W₁.2 h')
-    (fun {W₁ W₂} h' ↦ resLinearOver G W₂.2 W₁.2 h')
-    (fun W ↦ appLinearOver φ W.2)
-    (fun h' a ↦ app_res φ h' a)
-    (fun W hW ↦ subsingleton_sections_of_eq_bot F hW)
-    (fun h₁ h₂ h₃ ↦ section_eq_zero_of_res₂ F h₁ h₂ h₃)
-    (fun W hW ↦ hker W.1 W.2 hW) ⟨U, Set.self_mem_Iic⟩ hU a ha
-  refine ⟨s, hs, ?_⟩
-  rw [← res_self_ring le_rfl s]
-  exact e
 
-theorem exists_smul_eq_app (hU : IsCompact (U : Set X)) (hU' : IsQuasiSeparated (U : Set X))
-    (S : Submonoid Γ(X, U))
-    (hker : ∀ (V : X.Opens) (h : V ≤ U), IsAffineOpen V → ∀ a : Γ(F, V), φ.app V a = 0 →
-      ∃ s ∈ S, X.presheaf.map (homOfLE h).op s • a = 0)
-    (hsurj : ∀ (V : X.Opens) (h : V ≤ U), IsAffineOpen V → ∀ b : Γ(G, V),
-      ∃ s ∈ S, ∃ a : Γ(F, V), X.presheaf.map (homOfLE h).op s • b = φ.app V a)
-    (b : Γ(G, U)) : ∃ s ∈ S, ∃ a : Γ(F, U), s • b = φ.app U a := by
-  letI (W : Set.Iic U) : Module Γ(X, U) Γ(F, W.1) := resModule F W.2
-  letI (W : Set.Iic U) : Module Γ(X, U) Γ(G, W.1) := resModule G W.2
-  obtain ⟨s, hs, a, e⟩ := exists_smul_eq_map_of_isCompact_of_isQuasiSeparated S U
-    (A := fun W ↦ Γ(F, W.1)) (B := fun W ↦ Γ(G, W.1))
-    (fun {W₁ W₂} h' ↦ resLinearOver F W₂.2 W₁.2 h')
-    (fun {W₁ W₂} h' ↦ resLinearOver G W₂.2 W₁.2 h')
-    (fun W ↦ appLinearOver φ W.2)
-    (fun h' a ↦ app_res φ h' a)
-    (fun h₁ h₂ b ↦ res_res G _ _ b)
-    (fun W hW ↦ subsingleton_sections_of_eq_bot F hW)
-    (fun W hW ↦ subsingleton_sections_of_eq_bot G hW)
-    (fun h₁ h₂ h₃ ↦ section_eq_zero_of_res₂ F h₁ h₂ h₃)
-    (fun h₁ h₂ h₃ ↦ section_eq_zero_of_res₂ G h₁ h₂ h₃)
-    (fun h₁ h₂ h₃ ↦ exists_section_glue₂ F h₁ h₂ h₃)
-    (fun W hW ↦ hker W.1 W.2 hW) (fun W hW ↦ hsurj W.1 W.2 hW) ⟨U, Set.self_mem_Iic⟩ hU hU' b
-  refine ⟨s, hs, a, ?_⟩
-  rw [← res_self_ring le_rfl s]
-  exact e
 
 end Hom
 

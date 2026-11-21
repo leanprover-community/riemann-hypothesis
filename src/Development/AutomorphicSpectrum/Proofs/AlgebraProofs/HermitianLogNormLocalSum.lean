@@ -14,19 +14,7 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Fl.LocalSum
 
-theorem finsum_lin {α : Type} {f g : α → ℝ} (hf : {x | f x ≠ 0}.Finite)
-    (hg : {x | g x ≠ 0}.Finite) (a b : ℝ) :
-    (∑ᶠ x, (a * f x + b * g x)) = a * (∑ᶠ x, f x) + b * ∑ᶠ x, g x := by
-  rw [mul_finsum, mul_finsum, finsum_add_distrib]
-  · exact hf.subset fun x hx h => hx (by simp [h])
-  · exact hg.subset fun x hx h => hx (by simp [h])
 
-theorem finite_lin {α : Type} {f g : α → ℝ} (hf : {x | f x ≠ 0}.Finite)
-    (hg : {x | g x ≠ 0}.Finite) (a b : ℝ) : {x | a * f x + b * g x ≠ 0}.Finite :=
-  (hf.union hg).subset fun x hx => by
-    by_contra h
-    simp only [Set.mem_union, Set.mem_setOf_eq, not_or, not_not] at h
-    exact hx (by simp [h.1, h.2])
 
 theorem finsum_linear_combination_four {α : Type} {f g h i : α → ℝ} (hf : {x | f x ≠ 0}.Finite)
     (hg : {x | g x ≠ 0}.Finite) (hh : {x | h x ≠ 0}.Finite) (hi : {x | i x ≠ 0}.Finite)

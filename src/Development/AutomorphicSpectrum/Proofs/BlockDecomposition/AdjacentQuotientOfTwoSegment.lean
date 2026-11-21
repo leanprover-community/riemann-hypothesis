@@ -199,11 +199,6 @@ end Two
 
 section Concat
 
-theorem deg_sum_append {a b c : ℕ} {x : Fin a → IrrGL k} {y : Fin b → IrrGL k} {z : Fin c → IrrGL k}
-    (h : List.ofFn z = List.ofFn x ++ List.ofFn y) : ∑ i, (x i).1 + ∑ i, (y i).1 = ∑ i, (z i).1 := by
-  have := congrArg (fun l : List (IrrGL k) => (l.map Sigma.fst).sum) h
-  simp only [List.map_append, List.sum_append, List.map_ofFn, List.sum_ofFn, Function.comp_def] at this
-  exact this.symm
 
 unseal GlobalTheory.ProdFlatten.one GlobalTheory.ProdFlatten.two GlobalTheory.ProdFlatten.mp GlobalTheory.ProdFlatten.pr GlobalTheory.ProdFlatten.Iso in
 
@@ -222,55 +217,9 @@ theorem nonempty_prodIrr_congr {a b N : ℕ} {x : Fin a → IrrGL k} {z : Fin b 
 
 end Concat
 
-theorem hasNGQuot_left (hG : GlobalTheory.BZSeg.GenericProdIff k) {a b c r t N : ℕ} (x : Fin a → IrrGL k)
-    (y : Fin b → IrrGL k) (z : Fin c → IrrGL k) (h : List.ofFn z = List.ofFn x ++ List.ofFn y) (ha : a ≠ 0)
-    (hx : ∑ i, (x i).1 = r) (hy : ∑ i, (y i).1 = t) (hz : ∑ i, (z i).1 = N) (H : HasNGQuot (prodIrr x hx)) :
-    HasNGQuot (prodIrr z hz) := by
-  have e : r + t = N := by rw [← hx, ← hy, ← hz]; exact deg_sum_append h
-  exact H.of_ind₂_left hG e (isSmooth_prodIrr _ _) (isSmooth_prodIrr y hy) (nontrivial_prodIrr y hy)
-    (nonempty_prodIrr_append x y z h (Or.inl ha) hx hy hz e)
 
-theorem hasNGQuot_right (hG : GlobalTheory.BZSeg.GenericProdIff k) {a b c r t N : ℕ} (x : Fin a → IrrGL k)
-    (y : Fin b → IrrGL k) (z : Fin c → IrrGL k) (h : List.ofFn z = List.ofFn x ++ List.ofFn y) (ha : a ≠ 0)
-    (hx : ∑ i, (x i).1 = r) (hy : ∑ i, (y i).1 = t) (hz : ∑ i, (z i).1 = N) (H : HasNGQuot (prodIrr y hy)) :
-    HasNGQuot (prodIrr z hz) := by
-  have e : r + t = N := by rw [← hx, ← hy, ← hz]; exact deg_sum_append h
-  exact H.of_ind₂_right hG e (isSmooth_prodIrr _ _) (isSmooth_prodIrr x hx) (nontrivial_prodIrr x hx)
-    (nonempty_prodIrr_append x y z h (Or.inl ha) hx hy hz e)
 
-theorem hasNGQuot_of_pair (hG : GlobalTheory.BZSeg.GenericProdIff k) {h N : ℕ} (x : Fin h → IrrGL k)
-    (hd : ∑ a, (x a).1 = N) (j : ℕ) (hj : j + 1 < h) (P : Fin 2 → IrrGL k) (hP0 : P 0 = x ⟨j, by omega⟩)
-    (hP1 : P 1 = x ⟨j + 1, hj⟩) (hM : HasNGQuot (prodIrr P rfl)) : HasNGQuot (prodIrr x hd) := by
-  have hS := ofFn_split x j (by omega)
-  generalize hxR : (fun i : Fin (h - j) => x ⟨j + i, by omega⟩) = xR at hS
-  have hLR : ∃ xB : Fin (h - j - 2) → IrrGL k, List.ofFn xR = List.ofFn P ++ List.ofFn xB := by
-    refine ⟨fun i => xR ⟨2 + i, by omega⟩, ?_⟩
-    have h2 := ofFn_split xR 2 (by omega)
-    have key : ∀ i : Fin 2, x ⟨j + i, by omega⟩ = P i := Fin.forall_fin_two.2 ⟨hP0.symm, hP1.symm⟩
-    have h3 : (fun i : Fin 2 => xR ⟨i, by omega⟩) = P := by
-      funext i
-      subst hxR
-      exact key i
-    rw [h3] at h2
-    exact h2
-  obtain ⟨xB, hLR⟩ := hLR
-  have hR : ∀ {M : ℕ} (hM' : ∑ i, (xR i).1 = M), HasNGQuot (prodIrr xR hM') := fun hM' =>
-    hasNGQuot_left hG P xB xR hLR two_ne_zero rfl rfl hM' hM
-  rcases Nat.eq_zero_or_pos j with rfl | hj0
-  · have hS' : List.ofFn x = List.ofFn xR := by simpa using hS
-    have hN : ∑ i, (xR i).1 = N := by
-      have := congrArg (fun l : List (IrrGL k) => (l.map Sigma.fst).sum) hS'
-      simp only [List.map_ofFn, List.sum_ofFn, Function.comp_def] at this
-      exact this.symm.trans hd
-    obtain ⟨φ⟩ := nonempty_prodIrr_congr hS' hd hN
-    exact (hR hN).of_equiv φ
-  · exact hasNGQuot_right hG (fun i : Fin j => x ⟨i, by omega⟩) xR x hS hj0.ne' rfl rfl hd (hR rfl)
 
-theorem adjQuot : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k],
-    GlobalTheory.BZSeg.TwoSegNonGenQuot k → GlobalTheory.BZSeg.GenericProdIff k → GlobalTheory.BZSeg.AdjQuot k := by
-  intro k _ _ _ _ hT hG h N Δ x hd j hj hL hP
-  have hM := hT (Δ ⟨j, by omega⟩) (Δ ⟨j + 1, hj⟩) (x ⟨j, by omega⟩) (x ⟨j + 1, hj⟩) _ rfl hP (hL _) (hL _)
-  exact hasNGQuot_of_pair hG x hd j hj _ rfl rfl hM
 
 end GlobalTheory.CompanionTheory.AdjQuot
 end

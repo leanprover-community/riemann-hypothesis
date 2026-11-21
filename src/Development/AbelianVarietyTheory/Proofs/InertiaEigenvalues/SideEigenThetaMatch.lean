@@ -7,9 +7,41 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SideMultipli
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EventuallyConjunctionMonoStatement
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SideEigenRationalityStatement
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SideEigenHeckeMatchStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DutiesOfLargeStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ThetaLocusDecomposesOverCoefRingOfChebotarev
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DutiesOfLarge
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsWildInertiaCyclotomicElement
+import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverStd
+import BuildAid.ForwardExisting
 
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 NumberField IsDedekindDomain Polynomial GlobalTheory.EtaJoin GlobalTheory.CoefDuty
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.duties_of_large_of_cheb : GlobalTheory.TwSys.Cheb → ∀ D : D7, Large D → SumRepresentations.Conclusion41 D → AutomorphicSideWildInertia.ResidualIrreducibleGood D → Duties D := by
+  first | exact @GlobalTheory.CoefDuty.duties_of_large | exact GlobalTheory.CoefDuty.duties_of_large | (intros; apply GlobalTheory.CoefDuty.duties_of_large <;> assumption)
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 NumberField IsDedekindDomain Polynomial GlobalTheory.EtaJoin GlobalTheory.CoefDuty
+
+namespace GlobalTheory.ZDecompAt
+
+theorem zDecomp_of_cheb : GlobalTheory.TwSys.Cheb → ∀ (D : D7), GlobalTheory.BlockComplement.GaloisRepsCusp D →
+    ∀ i : D.nd.Loc, ZDecomp D.nd i := by
+  intro hC D hG i π hπ r hr
+  obtain ⟨ρ, hρ⟩ := GlobalTheory.BlockComplement.complement_at hC D hG i π hπ r hr
+  obtain ⟨e, he⟩ := hρ.rho
+  exact ⟨ρ, e, fun g u => he g u⟩
+
+end GlobalTheory.ZDecompAt
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 NumberField IsDedekindDomain Polynomial GlobalTheory.EtaJoin GlobalTheory.CoefDuty
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.thetaLocusDecomposesOverCoefRing_of_chebotarev : GlobalTheory.TwSys.Cheb → ∀ (D : D7), GlobalTheory.BlockComplement.GaloisRepsCusp D → ∀ i : D.nd.Loc, ZDecomp D.nd i := by
+  atlas_forward_decl GlobalTheory.ZDecompAt.zDecomp_of_cheb
+end
+
+section
 section
 noncomputable section
 
@@ -59,3 +91,4 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.side_eigen_theta_match : GlobalTheory.TwSys.Cheb → ∀ (D : D7) (cf : CharFrame D) (jE : D.host.E →+* Qb) (A : SideA D cf jE) (low : Finset ℕ) (Pq : HeightOneSpectrum (𝓞 (maximalRealSubfield D.host.E)) → PlE D.host) (S : RatDat D.ntw) (hL : ∀ j, ℕ → PlE D.host → Module.End D.what₂.LL (S.WL j)) (eig : ℕ → D.what₂.FT → ℕ → PlE D.host → ↥D.LL0) (θ : ∀ kk : Fin 2, Multiplicative (ZMod (D.host.g kk)) →* (↥D.LL0)ˣ) (Bs : SideB D cf A.row low Pq S hL eig θ) (M : MtFam D) (C : NChoice D) (tp : TupTied D cf C), ChoiceSide D cf M Bs.exp C tp → MtInput D M tp.tup C.Q → (∀ x : D.LL0, star (x : D.what₂.LL) ∈ D.LL0) → (∀ j g, ∃ z : ℤ, eExp D j g = z) → (∀ v, v ∈ placesOver D.host.E D.host.pde ∨ v ∈ placesOver D.host.E D.host.pde' → IsSplitPl D.host v) → GlobalTheory.RowTie.ChebSplit D.nd → BuiltEx A M C tp.tup → EvO A M C tp.tup (fun D' => (SumRepresentations.hypO D' → SumRepresentations.Conclusion41 D' ∧ AutomorphicSideWildInertia.ResidualIrreducibleGood D') ∧ GlobalTheory.BlockComplement.GaloisRepsCusp D') → EvO A M C tp.tup (fun D' => Large D' ∧ Duties D') ∧ ∀ (big₀ : D.what₂.places.Pl → Finset ℂ), ∃ (big : D.what₂.places.Pl → Finset ℂ) (L : LocAll (lay0 D)), (∀ w, big₀ w ⊆ big w) ∧ Built A M C tp.tup big L ∧ Large (withLoc L) ∧ Duties (withLoc L) := by
   atlas_forward_decl GlobalTheory.CoefDuty.large_and_duties_of_large_rings
+end

@@ -65,14 +65,5 @@ namespace Formalism.BasicNotions.Examples₂
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc LB
 
-theorem locBridge_nonempty (l : ℕ) [Fact l.Prime] (E Ω : Type) [Field E] [NumberField E] [Field Ω]
-    [Algebra E Ω] [IsAlgClosure E Ω] (A : ValuationSubring Ω) (hA : A.valuation ((l : ℕ) : Ω) < 1) :
-    ∃ (j : Ω →+* Om l) (_ : ∀ x, x ∈ A ↔ ‖j x‖ ≤ 1), ∀ LL : FinExt l,
-      (∀ (τ : ↥(KwF (E := E) j) →ₐ[ℚ_[l]] Om l) (x : ↥(KwF (E := E) j)), τ x ∈ LL.1) →
-      ∃ B : LocBridge l E Ω (Dec (F := E) A) ↥(OL LL), B.j = j ∧ B.LL = LL ∧ B.Kw.1 = KwF (E := E) j := by
-  haveI : CharZero Ω := charZero_of_injective_algebraMap (algebraMap E Ω).injective
-  haveI : IsAlgClosure ℚ Ω := isAlgClosureQ E Ω
-  obtain ⟨j, hj⟩ := exists_emb (l := l) A hA
-  exact ⟨j, hj, fun LL hLL => ⟨bridgeOf hj LL hLL, rfl, rfl, rfl⟩⟩
 
 end Formalism.BasicNotions.Examples₂

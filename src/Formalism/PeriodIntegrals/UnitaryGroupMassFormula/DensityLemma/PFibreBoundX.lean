@@ -1,7 +1,121 @@
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DensityLemma.PFibreBoundHH
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DensityLemma.PFibreBoundW
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DensityLemma.PFibreBoundVDefs
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ConjugationContinuousOnInvertible
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DensityLemma.PFibreBoundV
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
 
+section
+open MeasureTheory Matrix Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.C6
+open scoped ENNReal NNReal
+
+noncomputable section
+
+namespace PI.UnitaryGroupMassFormula.DLm
+
+def skewOf {r : ℕ} (T : Fin r → Fin r → ℝ) : Matrix (Fin r) (Fin r) ℂ :=
+  Matrix.of fun a b => ((T a b - T b a : ℝ) : ℂ) + Complex.I * ((T a b + T b a : ℝ) : ℂ)
+
+def Pz (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ :=
+  1 - ((∑ j, Complex.normSq (zW k r z j) : ℝ) : ℂ)⁻¹ • Matrix.vecMulVec (zW k r z) (star (zW k r z))
+
+def psiZ (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (p : (Fin r → Fin (k + 1) → ℂ) × (Fin r → Fin r → ℝ)) : Mt k r :=
+  unipotentBlockMatrix k r (Matrix.of p.1 * Pz k r z) (skewOf p.2)
+
+def rhoZ (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (B0 : Fin r → Fin (k + 1) → ℂ) : ℝ≥0∞ :=
+  ENNReal.ofReal (Real.exp (-(∑ a, Complex.normSq ((Matrix.of B0 *ᵥ zW k r z) a))))
+
+def nuZ (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) : Measure (Mt k r) :=
+  (((volume : Measure (Fin r → Fin (k + 1) → ℂ)).withDensity (rhoZ k r z)).prod
+    (volume : Measure (Fin r → Fin r → ℝ))).map (psiZ k r z)
+
+def UnipotentHaarMultipleExplicit : Prop :=
+  ∀ (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (μ0 : Measure (Mt k r)), 1 ≤ k → 1 ≤ r → C2.StdZ k r z →
+    B.IsHaarOn (C2.N0set k r z) μ0 → ∃ c : ℝ≥0, 0 < c ∧ nuZ k r z = c • μ0
+
+def ExplicitUnipotentVolumeBound : Prop :=
+  ∃ C : ℕ, ∀ (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ), 1 ≤ k → 1 ≤ r → C2.StdZ k r z →
+    ∀ ε : ℝ, 0 < ε → ∃ K : ℝ, 0 ≤ K ∧
+      ∀ v : Fin (r + 1) → Fin (2 * r + k + 1) → ℂ, ε ≤ Complex.normSq (Mf k r z v).det → ∀ R : ℝ, 0 ≤ R →
+        nuZ k r z {x | (Matrix.of x : B.Mat k r) ∈ C2.N0set k r z ∧
+            tN (fun b => (Matrix.of x : B.Mat k r)⁻¹ *ᵥ v b) ≤ R} ≤
+          ENNReal.ofReal (K * (1 + zN (Mf k r z v)) ^ ((C : ℝ) * XF k r) * (1 + R) ^ ((C : ℝ) * XF k r))
+
+end PI.UnitaryGroupMassFormula.DLm
+end
+end
+
+section
+open MeasureTheory Matrix Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.C6
+open scoped ENNReal NNReal
+
+noncomputable section
+
+namespace PI.UnitaryGroupMassFormula.DLm
+
+def UnipotentSetIsClosedSubgroup : Prop := ∀ (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ), C2.StdZ k r z → B2.IsClosedSubgroup (C2.N0set k r z)
+
+def NuConc : Prop :=
+  ∀ (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ), 1 ≤ k → C2.StdZ k r z → nuZ k r z (C2.N0set k r z)ᶜ = 0
+
+def NuLeft : Prop :=
+  ∀ (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ), 1 ≤ k → C2.StdZ k r z →
+    ∀ a ∈ C2.N0set k r z, (nuZ k r z).map (lmulM a) = nuZ k r z
+
+def NuFin : Prop :=
+  ∀ (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ), 1 ≤ k → C2.StdZ k r z →
+    ∀ K : Set (Mt k r), IsCompact K → nuZ k r z K < ∞
+
+def NuNeZero : Prop := ∀ (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ), C2.StdZ k r z → nuZ k r z ≠ 0
+
+end PI.UnitaryGroupMassFormula.DLm
+end
+end
+
+section
+open MeasureTheory Matrix Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.C6
+
+noncomputable section
+
+namespace PI.UnitaryGroupMassFormula.DLm
+
+namespace NBk
+
+variable {k r : ℕ}
+
+lemma mul_diagonal_conjTranspose_apply (P Q : Matrix (Fin r) (Fin (k + 1)) ℂ) (a b : Fin r) :
+    (P * Matrix.diagonal (hW k) * Qᴴ) a b = ∑ j, P a j * hW k j * star (Q b j) := by
+  rw [Matrix.mul_apply]; simp only [Matrix.mul_diagonal, Matrix.conjTranspose_apply]
+
+lemma nbm_cm (Ba B : Matrix (Fin r) (Fin (k + 1)) ℂ) (Sa S : Matrix (Fin r) (Fin r) ℂ) (a b : Fin r) :
+    cmOf k r (Ba + B) (Sa + S + (1 / 2 : ℂ) •
+        (B * Matrix.diagonal (hW k) * Baᴴ - Ba * Matrix.diagonal (hW k) * Bᴴ)) a b =
+      cmOf k r B S a b + -(Ba * Matrix.diagonal (hW k) * Bᴴ) a b + cmOf k r Ba Sa a b := by
+  unfold cmOf
+  simp only [Matrix.conjTranspose_add, Matrix.add_mul, Matrix.mul_add, Matrix.add_apply, Matrix.sub_apply,
+    Matrix.smul_apply, smul_eq_mul]
+  ring
+
+theorem nbm_mul (Ba B : Matrix (Fin r) (Fin (k + 1)) ℂ) (Sa S : Matrix (Fin r) (Fin r) ℂ) :
+    unipotentBlockMatrix k r Ba Sa * unipotentBlockMatrix k r B S =
+      unipotentBlockMatrix k r (Ba + B) (Sa + S + (1 / 2 : ℂ) •
+        (B * Matrix.diagonal (hW k) * Baᴴ - Ba * Matrix.diagonal (hW k) * Bᴴ)) := by
+  ext p q
+  rw [Matrix.mul_apply, sum_split]
+  induction p using cases3 <;> induction q using cases3 <;>
+    simp only [nb_ee, nb_we, nb_se, nb_ew, nb_ww, nb_sw, nb_es, nb_ws, nb_ss, zero_mul, mul_zero,
+      Finset.sum_const_zero, add_zero, zero_add, ite_mul, mul_ite, one_mul, mul_one, Finset.sum_ite_eq,
+      Finset.sum_ite_eq', Finset.mem_univ, if_true, Matrix.add_apply, star_add]
+  all_goals first
+    | done
+    | (rw [nbm_cm, mul_diagonal_conjTranspose_apply, ← Finset.sum_neg_distrib]; ring)
+    | ring
+
+end NBk
+
+end PI.UnitaryGroupMassFormula.DLm
+end
+end
+
+section
 open MeasureTheory Matrix Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.C6
 open scoped ENNReal NNReal
 
@@ -125,3 +239,5 @@ theorem unipotent_integral_closed : UnipotentSetIsClosedSubgroup := by
     exact Matrix.isUnit_det_of_right_inverse (key Ba Sa)
 
 end PI.UnitaryGroupMassFormula.DLm
+end
+end

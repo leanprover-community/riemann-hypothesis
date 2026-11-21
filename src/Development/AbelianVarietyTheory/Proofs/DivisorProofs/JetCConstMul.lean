@@ -1,18 +1,440 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JetMapCoeffSpaceOfJetStepPartitionTriples
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JetOperatorBoundAtEmbeddingOfComplexOpNormSqStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DerivAtZeroReindexEqTaylorCoefficientStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JetFinsetLinearCombination
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAlgebraicNumbersExtensionConjVacuumNormSq
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConjTorsionTranslateCombinationEntireGaussianGroStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PresentationClosedUnderBoundedCombination
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianLatticeTransportPreservesSelfDualStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CosetIndicatorThetaTorsionTranslatesStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteSemilocalHomLatticeClassesModStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatSumThIndRegroup
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsVacuumMovedThetaVacuumStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoefficientGramPosSemidefAndNormAtPlaceStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CosetRefinement
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsMulOfApprox
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JetOperatorBoundAtEmbeddingOfComplexOpNormSq
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DerivAtZeroReindexEqTaylorCoefficient
+import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DifferentiableOnOfTendstoLocallyUniformlyOn
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntegralJAndAlgebraicData
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InducedTypeThetaGenusOnePermutes
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.VacuumTranslateConjugateJetBound
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsTwoTorsionCMPointAllConjugates
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaTaylorCoeffsAlgebraicAtComplexMultiplicatio
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.VacuumNormConjCmPointsAllEmbeddings
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConjTorsionTranslateCombinationEntireGaussianGro
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianLatticeTransportPreservesSelfDual
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CosetIndicatorThetaTorsionTranslates
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteSemilocalHomLatticeClassesMod
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsVacuumMovedThetaVacuum
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoefficientGramPosSemidefAndNormAtPlace
 
+section
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.PlaceLogThetaBounds GlobalTheory.ColNorms
+open scoped ComplexOrder
+
+namespace GlobalTheory.ColNorms
+
+theorem jetInVV_of_stepWeights : ∀ (K : Type) [Field K] [CharZero K] (ι : Type) [Fintype ι] (a b : ℕ), a < b → ∀ (lam nu : ι → DomWeight a) (lam' : ι → DomWeight b), (∀ τ, GlobalTheory.IndefiniteRowSideFullHecke.PaddedLastEntry.StepWeights (lam τ) (nu τ) (lam' τ)) → JetInVV K lam lam' fun τ => GlobalTheory.IndefiniteRowSideFullHecke.PaddedLastEntry.lastEntry (nu τ) := by
+  intro K _ _ ι _ a b hlt lam ν lam' hw J P hP
+  choose s' hs' using fun τ => (hw τ).2.1
+  choose s hs using fun τ => (hw τ).2.2
+  refine GlobalTheory.JetPoint.jetMap_mem hlt.le _ _ _ (fun ap => ?_) J
+  refine GlobalTheory.SubstMem.substAdj_sharp_mem K ι a b hlt lam lam' s (fun τ => if 0 < a then s' τ else 0) _
+    ⟨fun τ i => ?_, fun τ j hj => ?_, fun τ => ?_⟩ ap _ hP
+  · have h := hs τ (Fin.castLE hlt.le i)
+    have h0 := hs' τ i
+    simp only [GlobalTheory.IndefiniteRowSideFullHecke.PaddedLastEntry.padZero, Fin.val_castLE, i.2, dif_pos, Fin.eta] at h
+    simp only [Fin.pos i, if_true]
+    omega
+  · have h := hs τ j
+    simp only [GlobalTheory.IndefiniteRowSideFullHecke.PaddedLastEntry.padZero, dif_neg (not_lt.2 hj)] at h
+    omega
+  · unfold GlobalTheory.IndefiniteRowSideFullHecke.PaddedLastEntry.lastEntry DomWeight.detShift
+    split_ifs with h
+    · have h0 := hs' τ ⟨a - 1, by omega⟩
+      have h1 := (hw τ).1 ⟨a - 1, by omega⟩
+      simp only
+      omega
+    · simp
+
+end GlobalTheory.ColNorms
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.PlaceLogThetaBounds GlobalTheory.ColNorms
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.jetMap_coeffSpace_of_jetStepPartitionTriples : ∀ (K : Type) [Field K] [CharZero K] (ι : Type) [Fintype ι] (a b : ℕ), a < b → ∀ (lam nu : ι → DomWeight a) (lam' : ι → DomWeight b), (∀ τ, GlobalTheory.IndefiniteRowSideFullHecke.PaddedLastEntry.StepWeights (lam τ) (nu τ) (lam' τ)) → JetInVV K lam lam' fun τ => GlobalTheory.IndefiniteRowSideFullHecke.PaddedLastEntry.lastEntry (nu τ) := by
+  atlas_forward_decl GlobalTheory.ColNorms.jetInVV_of_stepWeights
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.PlaceLogThetaBounds GlobalTheory.ColNorms
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.jetOperatorBound_at_embedding_of_complexOpNormSq : ∀ (K : Type) [Field K] [CharZero K] [StarRing K] (σ : K →+* ℂ) (ι : Type) [Fintype ι] (a b : ℕ) (lam nu : ι → DomWeight a) (lam' : ι → DomWeight b), (∀ τ, GlobalTheory.IndefiniteRowSideFullHecke.PaddedLastEntry.StepWeights (lam τ) (nu τ) (lam' τ)) → (JetInVV K lam lam' fun τ => GlobalTheory.IndefiniteRowSideFullHecke.PaddedLastEntry.lastEntry (nu τ)) → (JetInVV ℂ lam lam' fun τ => GlobalTheory.IndefiniteRowSideFullHecke.PaddedLastEntry.lastEntry (nu τ)) → ∀ (J : (DVar ι a b →₀ ℕ) → K) (J' : (DVar ι a b →₀ ℕ) → ℂ), (∀ e, (∀ τ, ((degAt e τ : ℕ) : ℤ) = ∑ i, (nu τ).w i) → σ (J e) = J' e) → ∀ t : ℝ, GlobalTheory.IndefiniteRowSideFullHecke.PaddedLastEntry.OpNormSqLe lam lam' (jetOp lam lam' J' fun τ => GlobalTheory.IndefiniteRowSideFullHecke.PaddedLastEntry.lastEntry (nu τ)) t → CoefOpLe σ lam lam' (jetOp lam lam' J fun τ => GlobalTheory.IndefiniteRowSideFullHecke.PaddedLastEntry.lastEntry (nu τ)) t := by
+  first | exact @GlobalTheory.coefOpLe_jetOp_of_opNormSqLe | exact GlobalTheory.coefOpLe_jetOp_of_opNormSqLe | (intros; apply GlobalTheory.coefOpLe_jetOp_of_opNormSqLe <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.PlaceLogThetaBounds GlobalTheory.ColNorms
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.derivAtZero_reindex_eq_taylor_coefficient : ∀ (D : D7) (ι : Type) [Fintype ι] (e : ι ≃ D.what₂.Tau) (a b : ℕ) (F : TaylorLogMetric.VC D a b → ℂ), Differentiable ℂ F → ∀ m : DVar ι a b →₀ ℕ, derivAt0 (fun z : VCx ι a b => F fun τ => z (e.symm τ)) m = (m.prod fun _ n => (n.factorial : ℂ)) * TaylorLogMetric.taylor D F (Finsupp.equivMapDomain (e.prodCongr (Equiv.refl (Fin b × Fin a))) m) := by
+  first | exact @GlobalTheory.DerivReindex.derivAt0_reindex | exact GlobalTheory.DerivReindex.derivAt0_reindex | (intros; apply GlobalTheory.DerivReindex.derivAt0_reindex <;> assumption)
+end
+
+section
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.PlaceLogThetaBounds GlobalTheory.ColNorms
+open scoped ComplexOrder
+
+theorem GlobalTheory.ColNorms.jetC_sum_mul : ∀ (ι : Type) [Fintype ι] (a b : ℕ) (cD : ι → ℂ) (α : Type) (R : Finset α) (c : α → ℂ) (F : α → VCx ι a b → ℂ), (∀ x ∈ R, Differentiable ℂ (F x)) → ∀ m, jetC cD (fun z => ∑ x ∈ R, c x * F x z) m = ∑ x ∈ R, c x * jetC cD (F x) m := by
+  intro ι _ a b cD α R c F hF m
+  have key : ∀ (k : ℕ) (v : Fin k → VCx ι a b),
+      iteratedFDeriv ℂ k (fun w => ∑ i ∈ R, c i * F i w) 0 v =
+        ∑ i ∈ R, c i * iteratedFDeriv ℂ k (F i) 0 v := by
+    intro k v
+    have hC : ∀ i ∈ R, ContDiff ℂ k (F i) := fun i hi =>
+      GlobalTheory.SCV.contDiff_of_differentiable (hF i hi) _
+    have h1 := iteratedFDeriv_sum (𝕜 := ℂ) (f := fun i w => c i * F i w) (u := R) (i := k)
+      (fun i hi => contDiff_const.mul (hC i hi))
+    rw [h1, Finset.sum_apply, ContinuousMultilinearMap.sum_apply]
+    refine Finset.sum_congr rfl fun i hi => ?_
+    have h2 := iteratedFDeriv_const_smul_apply' (𝕜 := ℂ) (a := c i) (f := F i) (i := k) (x := 0)
+      (hC i hi).contDiffAt
+    simp only [smul_eq_mul] at h2
+    rw [h2]
+    simp
+  unfold jetC derivAt0
+  rw [key, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  ring
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.PlaceLogThetaBounds GlobalTheory.ColNorms
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.jet_finset_linear_combination : ∀ (ι : Type) [Fintype ι] (a b : ℕ) (cD : ι → ℂ) (α : Type) (R : Finset α) (c : α → ℂ) (F : α → VCx ι a b → ℂ), (∀ x ∈ R, Differentiable ℂ (F x)) → ∀ m, jetC cD (fun z => ∑ x ∈ R, c x * F x z) m = ∑ x ∈ R, c x * jetC cD (F x) m := by
+  atlas_forward_decl GlobalTheory.ColNorms.jetC_sum_mul
+end
+
+section
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.PlaceLogThetaBounds GlobalTheory.ColNorms
+open scoped ComplexOrder
+
+namespace GlobalTheory.ConjVacuumNorm
+
+theorem area_lamConj_pos (D : D7) (cc : Ideal (𝓞 D.host.K)) (dl : ℂ) (hc : StandardLatticesGL3.Crv D cc dl)
+    (M : IntermediateField ℚ ℂ) (ρ : M →ₐ[ℚ] ℂ) (hD : TaylorLogMetric.DataIn D (TaylorLogMetric.tor0 D cc dl) M) :
+    0 < TaylorLogMetric.area (TaylorLogMetric.lamConj M ρ (TaylorLogMetric.lamOf D cc dl)) := by
+  have g1 := (GlobalTheory.InducedType.induced_type D).1
+  obtain ⟨hK | hK, hT, -⟩ := GlobalTheory.ThetaConj.useBar_holds D cc dl hc M ρ hD
+  · obtain ⟨cc', δ', hc', -, hl⟩ :=
+      GlobalTheory.ConjCurve.galCurve_holds D cc dl hc M ρ hK hD.2.1 hD.2.2 1 one_pos
+    rw [hl]
+    exact GlobalTheory.ConjJet.area_pos D g1 cc' δ' hc'
+  · obtain ⟨cc', δ', hc', -, hl⟩ :=
+      GlobalTheory.ConjCurve.galCurve_holds D cc dl hc M _ hK hD.2.1 hD.2.2 1 one_pos
+    have hL : TaylorLogMetric.lamConj M (StandardLatticesGL3.rhoBar M ρ) (TaylorLogMetric.lamOf D cc dl) =
+        (TaylorLogMetric.lamConj M ρ (TaylorLogMetric.lamOf D cc dl)).map (starRingEnd ℂ).toAddMonoidHom :=
+      congrArg TaylorLogMetric.Tor.abelian₂ hT
+    rw [← GlobalTheory.ConjJet.area_conj, ← hL, hl]
+    exact GlobalTheory.ConjJet.area_pos D g1 cc' δ' hc'
+
+theorem exists_extension_normSq_eq : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (dl : ℂ) (t0 : ℂ), StandardLatticesGL3.Crv D cc dl → GL3Theta.IsTwoTorsionPointUnkilled D (TaylorLogMetric.lamOf D cc dl) t0 → ∀ (M : IntermediateField ℚ ℂ) [FiniteDimensional ℚ M] (ρ : M →ₐ[ℚ] ℂ), TaylorLogMetric.DataIn D (TaylorLogMetric.tor0 D cc dl) M → ∃ ρ' : TaylorLogMetric.Qbar →ₐ[ℚ] ℂ, (∀ x ∈ M, x ∈ TaylorLogMetric.Qbar ∧ StandardLatticesGL3.cj TaylorLogMetric.Qbar ρ' x = StandardLatticesGL3.cj M ρ x) ∧ TaylorLogMetric.lamConj TaylorLogMetric.Qbar ρ' (TaylorLogMetric.lamOf D cc dl) = TaylorLogMetric.lamConj M ρ (TaylorLogMetric.lamOf D cc dl) ∧ 0 < TaylorLogMetric.area (TaylorLogMetric.lamConj M ρ (TaylorLogMetric.lamOf D cc dl)) ∧ ∀ (a b : ℕ) (L : Submodule (𝓞 D.host.E) (Fin a → D.host.E)) (L' : Submodule (𝓞 D.host.E) (Fin b → D.host.E)) (L₀ : Submodule (𝓞 D.host.E) (Fin a → D.host.E)) (L₀' : Submodule (𝓞 D.host.E) (Fin b → D.host.E)), StandardLatticesGL3.SD D L → StandardLatticesGL3.SD D L' → StandardLatticesGL3.SD D L₀ → StandardLatticesGL3.SD D L₀' → Even (a * b) → ∀ F F₀ : TaylorLogMetric.VC D a b → ℂ, StandardLatticesGL3.ThetaVectorUpToUnits D (TaylorLogMetric.tor0 D cc dl) t0 L L' F → StandardLatticesGL3.ThetaVectorUpToUnits D (TaylorLogMetric.tor0 D cc dl) t0 L₀ L₀' F₀ → TaylorLogMetric.CoefIn D F₀ M → TaylorLogMetric.normSq D (TaylorLogMetric.torConj D (TaylorLogMetric.tor0 D cc dl) TaylorLogMetric.Qbar ρ') (TaylorLogMetric.La D (TaylorLogMetric.torConj D (TaylorLogMetric.tor0 D cc dl) TaylorLogMetric.Qbar ρ') L L') (TaylorLogMetric.fnConj D TaylorLogMetric.Qbar ρ' F) = TaylorLogMetric.normSq D (TaylorLogMetric.torConj D (TaylorLogMetric.tor0 D cc dl) M ρ) (TaylorLogMetric.La D (TaylorLogMetric.torConj D (TaylorLogMetric.tor0 D cc dl) M ρ) L₀ L₀') (TaylorLogMetric.fnConj D M ρ F₀) := by
+  intro D cc dl t0 hc ht M _ ρ hD
+  have g1 := (GlobalTheory.InducedType.induced_type D).1
+  obtain ⟨ρ', hρ'⟩ := GlobalTheory.ThetaConj.exists_cj_Qbar_eq M ρ
+  have hle : ∀ x ∈ M, x ∈ TaylorLogMetric.Qbar := fun x hx =>
+    mem_algebraicClosure_iff.mpr
+      ((Algebra.IsAlgebraic.isAlgebraic (R := ℚ) (⟨x, hx⟩ : M)).algHom M.val)
+  have he : ∀ x ∈ M, ρ' (TaylorLogMetric.liftM TaylorLogMetric.Qbar x) = ρ (TaylorLogMetric.liftM M x) := fun x hx =>
+    (hρ' x (hle x hx) hx).symm
+  have hl : TaylorLogMetric.lamConj TaylorLogMetric.Qbar ρ' (TaylorLogMetric.lamOf D cc dl) = TaylorLogMetric.lamConj M ρ (TaylorLogMetric.lamOf D cc dl) := by
+    unfold TaylorLogMetric.lamConj
+    rw [he (TaylorLogMetric.g2 (TaylorLogMetric.lamOf D cc dl)) hD.2.1, he (TaylorLogMetric.g3 (TaylorLogMetric.lamOf D cc dl)) hD.2.2]
+  refine ⟨ρ', fun x hx => ⟨hle x hx, he x hx⟩, hl, area_lamConj_pos D cc dl hc M ρ hD, ?_⟩
+  intro a b L L' L₀ L₀' h1 h2 h3 h4 hev F F₀ hF hF₀ hC
+  obtain ⟨hQ, -⟩ := (GlobalTheory.CurveAlgebraic.integral_j_and_algebraic_data D g1).2 cc dl hc
+  obtain ⟨hA, -⟩ := GlobalTheory.ThetaAlgebraic.taylor_algebraic D cc dl hc t0 ht a b L L' h1 h2 hev F hF
+  obtain ⟨t', ht'⟩ := (GlobalTheory.TwoTorsionPt.exists_point D cc dl hc).2 M ρ hD.2.1 hD.2.2
+  obtain ⟨n1, -⟩ := GlobalTheory.ConjNorm.useNorm_all D cc dl hc t0 ht a b L L' h1 h2 hev F hF
+    TaylorLogMetric.Qbar ρ' hQ hA t' (hl ▸ ht')
+  obtain ⟨n2, -⟩ := GlobalTheory.ConjNorm.useNorm_all D cc dl hc t0 ht a b L₀ L₀' h3 h4 hev F₀ hF₀
+    M ρ hD hC t' ht'
+  rw [n1, n2, hl]
+
+end GlobalTheory.ConjVacuumNorm
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.PlaceLogThetaBounds GlobalTheory.ColNorms
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_algebraicNumbers_extension_conj_vacuum_normSq : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (dl : ℂ) (t0 : ℂ), StandardLatticesGL3.Crv D cc dl → GL3Theta.IsTwoTorsionPointUnkilled D (TaylorLogMetric.lamOf D cc dl) t0 → ∀ (M : IntermediateField ℚ ℂ) [FiniteDimensional ℚ M] (ρ : M →ₐ[ℚ] ℂ), TaylorLogMetric.DataIn D (TaylorLogMetric.tor0 D cc dl) M → ∃ ρ' : TaylorLogMetric.Qbar →ₐ[ℚ] ℂ, (∀ x ∈ M, x ∈ TaylorLogMetric.Qbar ∧ StandardLatticesGL3.cj TaylorLogMetric.Qbar ρ' x = StandardLatticesGL3.cj M ρ x) ∧ TaylorLogMetric.lamConj TaylorLogMetric.Qbar ρ' (TaylorLogMetric.lamOf D cc dl) = TaylorLogMetric.lamConj M ρ (TaylorLogMetric.lamOf D cc dl) ∧ 0 < TaylorLogMetric.area (TaylorLogMetric.lamConj M ρ (TaylorLogMetric.lamOf D cc dl)) ∧ ∀ (a b : ℕ) (L : Submodule (𝓞 D.host.E) (Fin a → D.host.E)) (L' : Submodule (𝓞 D.host.E) (Fin b → D.host.E)) (L₀ : Submodule (𝓞 D.host.E) (Fin a → D.host.E)) (L₀' : Submodule (𝓞 D.host.E) (Fin b → D.host.E)), StandardLatticesGL3.SD D L → StandardLatticesGL3.SD D L' → StandardLatticesGL3.SD D L₀ → StandardLatticesGL3.SD D L₀' → Even (a * b) → ∀ F F₀ : TaylorLogMetric.VC D a b → ℂ, StandardLatticesGL3.ThetaVectorUpToUnits D (TaylorLogMetric.tor0 D cc dl) t0 L L' F → StandardLatticesGL3.ThetaVectorUpToUnits D (TaylorLogMetric.tor0 D cc dl) t0 L₀ L₀' F₀ → TaylorLogMetric.CoefIn D F₀ M → TaylorLogMetric.normSq D (TaylorLogMetric.torConj D (TaylorLogMetric.tor0 D cc dl) TaylorLogMetric.Qbar ρ') (TaylorLogMetric.La D (TaylorLogMetric.torConj D (TaylorLogMetric.tor0 D cc dl) TaylorLogMetric.Qbar ρ') L L') (TaylorLogMetric.fnConj D TaylorLogMetric.Qbar ρ' F) = TaylorLogMetric.normSq D (TaylorLogMetric.torConj D (TaylorLogMetric.tor0 D cc dl) M ρ) (TaylorLogMetric.La D (TaylorLogMetric.torConj D (TaylorLogMetric.tor0 D cc dl) M ρ) L₀ L₀') (TaylorLogMetric.fnConj D M ρ F₀) := by
+  atlas_forward_decl GlobalTheory.ConjVacuumNorm.exists_extension_normSq_eq
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.PlaceLogThetaBounds GlobalTheory.ColNorms
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.conj_torsionTranslateCombination_entire_gaussianGrowth : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (dl : ℂ) (t0 : ℂ), StandardLatticesGL3.Crv D cc dl → GL3Theta.IsTwoTorsionPointUnkilled D (TaylorLogMetric.lamOf D cc dl) t0 → ∀ (a b : ℕ) (L : Submodule (𝓞 D.host.E) (Fin a → D.host.E)) (L' : Submodule (𝓞 D.host.E) (Fin b → D.host.E)), StandardLatticesGL3.SD D L → StandardLatticesGL3.SD D L' → Even (a * b) → ∀ (F₀ F : TaylorLogMetric.VC D a b → ℂ) (n : ℝ), StandardLatticesGL3.ThetaVectorUpToUnits D (TaylorLogMetric.tor0 D cc dl) t0 L L' F₀ → Pres D (TaylorLogMetric.tor0 D cc dl) L L' F₀ F n → ∀ ρ : TaylorLogMetric.Qbar →ₐ[ℚ] ℂ, Differentiable ℂ F ∧ TaylorLogMetric.CoefIn D F TaylorLogMetric.Qbar ∧ ∃ F' : TaylorLogMetric.VC D a b → ℂ, Differentiable ℂ F' ∧ (∀ α, TaylorLogMetric.taylor D F' α = StandardLatticesGL3.cj TaylorLogMetric.Qbar ρ (TaylorLogMetric.taylor D F α)) ∧ ∀ z, ‖F' z‖ ^ 2 ≤ n ^ 2 * (supConst D a b * TaylorLogMetric.normSq D (TaylorLogMetric.torConj D (TaylorLogMetric.tor0 D cc dl) TaylorLogMetric.Qbar ρ) (TaylorLogMetric.La D (TaylorLogMetric.torConj D (TaylorLogMetric.tor0 D cc dl) TaylorLogMetric.Qbar ρ) L L') (TaylorLogMetric.fnConj D TaylorLogMetric.Qbar ρ F₀) * Real.exp (Real.pi * (∑ τ, ∑ i, ∑ j, ‖z τ i j‖ ^ 2) / TaylorLogMetric.area (TaylorLogMetric.lamConj TaylorLogMetric.Qbar ρ (TaylorLogMetric.lamOf D cc dl)))) := by
+  first | exact @GlobalTheory.ConjComb.conj_pres | exact GlobalTheory.ConjComb.conj_pres | (intros; apply GlobalTheory.ConjComb.conj_pres <;> assumption)
+end
+
+section
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.PlaceLogThetaBounds GlobalTheory.ColNorms
+open scoped ComplexOrder
+
+namespace GlobalTheory.PresSum
+
+theorem cj_mul_of_mem (M : IntermediateField ℚ ℂ) (ρ : M →ₐ[ℚ] ℂ) {a b : ℂ} (ha : a ∈ M) (hb : b ∈ M) :
+    StandardLatticesGL3.cj M ρ (a * b) = StandardLatticesGL3.cj M ρ a * StandardLatticesGL3.cj M ρ b := by
+  unfold StandardLatticesGL3.cj TaylorLogMetric.liftM
+  rw [dif_pos ha, dif_pos hb, dif_pos (mul_mem ha hb), ← map_mul]
+  rfl
+
+variable {D : D7} {T : TaylorLogMetric.Tor D} {a b : ℕ} {L : Submodule (𝓞 D.host.E) (Fin a → D.host.E)}
+  {L' : Submodule (𝓞 D.host.E) (Fin b → D.host.E)} {F₀ : TaylorLogMetric.VC D a b → ℂ}
+
+theorem pres_zero : Pres D T L L' F₀ (fun _ => 0) 0 :=
+  ⟨0, Fin.elim0, Fin.elim0, fun i => i.elim0, fun i => i.elim0, fun _ => by simp, by
+    funext z; simp [StandardLatticesGL3.comb]⟩
+
+theorem pres_add {F G : TaylorLogMetric.VC D a b → ℂ} {n m : ℝ} (hF : Pres D T L L' F₀ F n) (hG : Pres D T L L' F₀ G m) :
+    Pres D T L L' F₀ (fun z => F z + G z) (n + m) := by
+  obtain ⟨k, r, y, h1, h2, h3, rfl⟩ := hF
+  obtain ⟨k', r', y', h1', h2', h3', rfl⟩ := hG
+  refine ⟨k + k', Fin.append r r', Fin.append y y', ?_, ?_, ?_, ?_⟩
+  · intro i
+    refine Fin.addCases (fun j => ?_) (fun j => ?_) i
+    · rw [Fin.append_left]; exact h1 j
+    · rw [Fin.append_right]; exact h1' j
+  · intro i
+    refine Fin.addCases (fun j => ?_) (fun j => ?_) i
+    · rw [Fin.append_left]; exact h2 j
+    · rw [Fin.append_right]; exact h2' j
+  · intro ρ
+    rw [Fin.sum_univ_add]
+    simp only [Fin.append_left, Fin.append_right]
+    exact add_le_add (h3 ρ) (h3' ρ)
+  · funext z
+    simp only [StandardLatticesGL3.comb, Fin.sum_univ_add, Fin.append_left, Fin.append_right]
+
+theorem pres_smul {F : TaylorLogMetric.VC D a b → ℂ} {n β : ℝ} {c : ℂ} (hβ : 0 ≤ β) (hF : Pres D T L L' F₀ F n)
+    (hc : c ∈ TaylorLogMetric.Qbar) (hb : ∀ ρ : TaylorLogMetric.Qbar →ₐ[ℚ] ℂ, ‖StandardLatticesGL3.cj TaylorLogMetric.Qbar ρ c‖ ≤ β) :
+    Pres D T L L' F₀ (fun z => c * F z) (β * n) := by
+  obtain ⟨k, r, y, h1, h2, h3, rfl⟩ := hF
+  refine ⟨k, fun i => c * r i, y, fun i => mul_mem hc (h1 i), h2, fun ρ => ?_, ?_⟩
+  · simp only [fun i => cj_mul_of_mem TaylorLogMetric.Qbar ρ hc (h1 i), norm_mul]
+    rw [← Finset.mul_sum]
+    exact mul_le_mul (hb ρ) (h3 ρ) (Finset.sum_nonneg fun _ _ => norm_nonneg _) hβ
+  · funext z
+    simp only [StandardLatticesGL3.comb, Finset.mul_sum, mul_assoc]
+
+theorem pres_sum : ∀ (D : D7) (T : TaylorLogMetric.Tor D) (a b : ℕ) (L : Submodule (𝓞 D.host.E) (Fin a → D.host.E)) (L' : Submodule (𝓞 D.host.E) (Fin b → D.host.E)) (F₀ : TaylorLogMetric.VC D a b → ℂ) (α : Type) (R : Finset α) (c : α → ℂ) (F : α → TaylorLogMetric.VC D a b → ℂ) (n β : ℝ), 0 ≤ β → (∀ x ∈ R, Pres D T L L' F₀ (F x) n) → (∀ x ∈ R, c x ∈ TaylorLogMetric.Qbar ∧ ∀ ρ : TaylorLogMetric.Qbar →ₐ[ℚ] ℂ, ‖StandardLatticesGL3.cj TaylorLogMetric.Qbar ρ (c x)‖ ≤ β) → Pres D T L L' F₀ (fun z => ∑ x ∈ R, c x * F x z) (R.card * β * n) := by
+  intro D T a b L L' F₀ α R c F n β hβ hF hc
+  classical
+  induction R using Finset.induction_on with
+  | empty => simpa using pres_zero
+  | insert x s hx ih =>
+    have h1 := pres_smul hβ (hF x (Finset.mem_insert_self _ _)) (hc x (Finset.mem_insert_self _ _)).1
+      (hc x (Finset.mem_insert_self _ _)).2
+    have h2 := ih (fun y hy => hF y (Finset.mem_insert_of_mem hy)) (fun y hy => hc y (Finset.mem_insert_of_mem hy))
+    have h3 := pres_add h1 h2
+    have e : ((insert x s).card : ℝ) * β * n = β * n + s.card * β * n := by
+      rw [Finset.card_insert_of_notMem hx]; push_cast; ring
+    rw [e]
+    simpa only [Finset.sum_insert hx] using h3
+
+end GlobalTheory.PresSum
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.PlaceLogThetaBounds GlobalTheory.ColNorms
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.presentation_closed_under_bounded_combination : ∀ (D : D7) (T : TaylorLogMetric.Tor D) (a b : ℕ) (L : Submodule (𝓞 D.host.E) (Fin a → D.host.E)) (L' : Submodule (𝓞 D.host.E) (Fin b → D.host.E)) (F₀ : TaylorLogMetric.VC D a b → ℂ) (α : Type) (R : Finset α) (c : α → ℂ) (F : α → TaylorLogMetric.VC D a b → ℂ) (n β : ℝ), 0 ≤ β → (∀ x ∈ R, Pres D T L L' F₀ (F x) n) → (∀ x ∈ R, c x ∈ TaylorLogMetric.Qbar ∧ ∀ ρ : TaylorLogMetric.Qbar →ₐ[ℚ] ℂ, ‖StandardLatticesGL3.cj TaylorLogMetric.Qbar ρ (c x)‖ ≤ β) → Pres D T L L' F₀ (fun z => ∑ x ∈ R, c x * F x z) (R.card * β * n) := by
+  atlas_forward_decl GlobalTheory.PresSum.pres_sum
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.PlaceLogThetaBounds GlobalTheory.ColNorms
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermitianLatticeTransport_preserves_selfDual : ∀ (D : D7) (X : Fields) (s : Seam D X), s.Ok → ∀ (n : ℕ), StandardLatticesGL3.SD D (StandardLatticesGL3.stdL D n) ∧ ∀ L : Submodule (𝓞 X.E) (Sp X.E n), IsSdLat L → StandardLatticesGL3.SD D (s.lat L) := by
+  first | exact @GlobalTheory.SeamSelfDual.seam_selfDual | exact GlobalTheory.SeamSelfDual.seam_selfDual | (intros; apply GlobalTheory.SeamSelfDual.seam_selfDual <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.PlaceLogThetaBounds GlobalTheory.ColNorms
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cosetIndicatorTheta_torsionTranslates : ∀ (D : D7) (X : Fields) (s : Seam D X) (cc : Ideal (𝓞 D.host.K)) (dl : ℂ) (B : Base D cc dl) (χ : TaylorLogMetric.IdE D → ℂ) (cD : D.what₂.Tau → ℂ), X.Ok → s.Ok → StandardLatticesGL3.Crv D cc dl → ∀ (a b : ℕ) (S : Finset (HeightOneSpectrum (𝓞 X.E))) (L : Submodule (𝓞 X.E) (Sp X.E a)) (L' : Submodule (𝓞 X.E) (Sp X.E b)) (c : ℕ) (x : HomE X.E a b), IsSdLat L → IsSdLat L' → 0 < c → Pres D (TaylorLogMetric.tor0 D cc dl) (s.lat L) (s.lat L') (B.thMoved a b (s.lat L) (s.lat L')) (toHost s fun z => ((ambOf s B χ cD).chiF a b L L')⁻¹ * (ambOf s B χ cD).thInd S L L' c x z) ((c : ℝ) ^ (Module.finrank ℚ X.E * a * b)) := by
+  first | exact @GlobalTheory.ColNorms.IndPres.pres_thInd | exact GlobalTheory.ColNorms.IndPres.pres_thInd | (intros; apply GlobalTheory.ColNorms.IndPres.pres_thInd <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.PlaceLogThetaBounds GlobalTheory.ColNorms
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_semilocal_hom_lattice_classes_mod : ∀ (E : Type) [Field E] [NumberField E] [StarRing E] (a b : ℕ) (S : Finset (HeightOneSpectrum (𝓞 E))) (L : Submodule (𝓞 E) (Sp E a)) (L' : Submodule (𝓞 E) (Sp E b)) (cA c : ℕ), Submodule.IsLattice E L → Submodule.IsLattice E L' → 0 < cA → 0 < c → Finite (↥(divLat cA (homAt S L L')) ⧸ (mulLat c (homAt S L L')).comap (divLat cA (homAt S L L')).subtype) ∧ Nat.card (↥(divLat cA (homAt S L L')) ⧸ (mulLat c (homAt S L L')).comap (divLat cA (homAt S L L')).subtype) ≤ (cA * c) ^ (Module.finrank ℚ E * a * b) := by
+  first | exact @GlobalTheory.SemilocalClasses.finite_card_classes | exact GlobalTheory.SemilocalClasses.finite_card_classes | (intros; apply GlobalTheory.SemilocalClasses.finite_card_classes <;> assumption)
+end
+
+section
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.PlaceLogThetaBounds GlobalTheory.ColNorms
+open scoped ComplexOrder
+
+namespace GlobalTheory
+
+theorem latSum_tower_reps (E : Type) [Field E] [NumberField E] (W : Type) [AddCommGroup W] [Module (𝓞 E) W]
+    (D G C B : Submodule (𝓞 E) W) (hBC : B ≤ C) (hCG : C ≤ G) (hGD : G ≤ D)
+    (hfin : Finite (↥D ⧸ B.comap D.subtype)) :
+    ∃ R : Finset W, (∀ x ∈ R, x ∈ G) ∧ R.card = Nat.card (↥G ⧸ C.comap G.subtype) ∧
+      ∀ f : W → ℂ, (∀ x, f x ≠ 0 → x ∈ G) → (∀ x y, x - y ∈ B → f x = f y) →
+        latSum D B f = ∑ x ∈ R, latSum C B fun y => f (x + y) := by
+  classical
+  have key : ∀ (P Q : Submodule (𝓞 E) W) (t u : ↥P),
+      (Submodule.Quotient.mk t : ↥P ⧸ Q.comap P.subtype) = Submodule.Quotient.mk u ↔ (t : W) - u ∈ Q := by
+    intro P Q t u
+    rw [Submodule.Quotient.eq, Submodule.mem_comap]
+    rfl
+  set r : (↥G ⧸ C.comap G.subtype) → ↥G :=
+    Function.surjInv (Submodule.Quotient.mk_surjective (C.comap G.subtype)) with hr
+  set s : (↥C ⧸ B.comap C.subtype) → ↥C :=
+    Function.surjInv (Submodule.Quotient.mk_surjective (B.comap C.subtype)) with hs
+  set t : (↥D ⧸ B.comap D.subtype) → ↥D :=
+    Function.surjInv (Submodule.Quotient.mk_surjective (B.comap D.subtype)) with ht
+  have hr' : ∀ z, Submodule.Quotient.mk (r z) = z := fun z => Function.surjInv_eq _ z
+  have hs' : ∀ z, Submodule.Quotient.mk (s z) = z := fun z => Function.surjInv_eq _ z
+  have ht' : ∀ z, Submodule.Quotient.mk (t z) = z := fun z => Function.surjInv_eq _ z
+  have hmem : ∀ p : (↥G ⧸ C.comap G.subtype) × (↥C ⧸ B.comap C.subtype), (r p.1 : W) + s p.2 ∈ D :=
+    fun p => hGD (G.add_mem (r p.1).2 (hCG (s p.2).2))
+  let φ : (↥G ⧸ C.comap G.subtype) × (↥C ⧸ B.comap C.subtype) → (↥D ⧸ B.comap D.subtype) :=
+    fun p => Submodule.Quotient.mk ⟨_, hmem p⟩
+  have hinj : Function.Injective φ := by
+    rintro ⟨x, j⟩ ⟨x', j'⟩ h
+    have h1 : (r x : W) + s j - (r x' + s j') ∈ B := (key D B _ _).1 h
+    have h2 : x = x' := by
+      rw [← hr' x, ← hr' x', key]
+      have : (r x : W) - r x' = ((r x : W) + s j - (r x' + s j')) + (s j' - s j) := by abel
+      rw [this]
+      exact C.add_mem (hBC h1) (C.sub_mem (s j').2 (s j).2)
+    subst h2
+    have h3 : j = j' := by
+      rw [← hs' j, ← hs' j', key]
+      simpa using h1
+    rw [h3]
+  haveI hprod : Finite ((↥G ⧸ C.comap G.subtype) × (↥C ⧸ B.comap C.subtype)) := Finite.of_injective φ hinj
+  haveI : Finite (↥G ⧸ C.comap G.subtype) := Finite.prod_left (↥C ⧸ B.comap C.subtype)
+  haveI : Finite (↥C ⧸ B.comap C.subtype) := Finite.prod_right (↥G ⧸ C.comap G.subtype)
+  letI := Fintype.ofFinite (↥G ⧸ C.comap G.subtype)
+  letI := Fintype.ofFinite (↥C ⧸ B.comap C.subtype)
+  letI := Fintype.ofFinite (↥D ⧸ B.comap D.subtype)
+  have hrinj : Function.Injective fun z => (r z : W) := by
+    intro z w h
+    rw [← hr' z, ← hr' w, Subtype.ext h]
+  refine ⟨Finset.univ.image fun z => (r z : W), ?_, ?_, ?_⟩
+  · intro x hx
+    obtain ⟨z, -, rfl⟩ := Finset.mem_image.1 hx
+    exact (r z).2
+  · rw [Finset.card_image_of_injective _ hrinj, Nat.card_eq_fintype_card, Finset.card_univ]
+  · intro f hf0 hf
+    rw [Finset.sum_image fun _ _ _ _ h => hrinj h]
+    unfold latSum
+    simp only [finsum_eq_sum_of_fintype]
+    rw [← Fintype.sum_prod_type']
+    symm
+    refine Fintype.sum_of_injective φ hinj _ _ ?_ ?_
+    · intro z hz
+      by_contra hne
+      have hG : (t z : W) ∈ G := hf0 _ hne
+      apply hz
+      have h1 : (r (Submodule.Quotient.mk ⟨_, hG⟩) : W) - t z ∈ C := (key G C _ ⟨_, hG⟩).1 (hr' _)
+      have h1' : (t z : W) - r (Submodule.Quotient.mk ⟨_, hG⟩) ∈ C := by
+        simpa using C.neg_mem h1
+      have h2 : (s (Submodule.Quotient.mk ⟨_, h1'⟩) : W) - ((t z : W) - r (Submodule.Quotient.mk ⟨_, hG⟩)) ∈ B :=
+        (key C B _ ⟨_, h1'⟩).1 (hs' _)
+      refine ⟨(Submodule.Quotient.mk ⟨_, hG⟩, Submodule.Quotient.mk ⟨_, h1'⟩), ?_⟩
+      refine Eq.trans ?_ (ht' z)
+      refine (key D B _ _).2 ?_
+      convert h2 using 1
+      simp only
+      abel
+    · intro p
+      apply hf
+      exact (key D B ⟨_, hmem p⟩ _).1 (ht' _).symm
+
+theorem thInd_congr_of_sub_mem {X : Fields} (A : Amb X) {a b : ℕ} (S : Finset (HeightOneSpectrum (𝓞 X.E)))
+    (L : Submodule (𝓞 X.E) (Sp X.E a)) (L' : Submodule (𝓞 X.E) (Sp X.E b)) (c : ℕ) (x y : HomE X.E a b)
+    (h : x - y ∈ mulLat c (homAt S L L')) : A.thInd S L L' c x = A.thInd S L L' c y := by
+  have h1 : A.IsLift S L L' c x = A.IsLift S L L' c y := by
+    funext s
+    unfold Amb.IsLift
+    congr 1
+    apply propext
+    constructor
+    · intro hs
+      simpa using Submodule.add_mem _ hs h
+    · intro hs
+      simpa using Submodule.sub_mem _ hs h
+  unfold Amb.thInd Amb.liftW
+  rw [h1]
+
+theorem latSum_thInd_regroup : ∀ (X : Fields) (A : Amb X) (a b : ℕ) (S : Finset (HeightOneSpectrum (𝓞 X.E))) (L : Submodule (𝓞 X.E) (Sp X.E a)) (L' : Submodule (𝓞 X.E) (Sp X.E b)) (cA c c' : ℕ) (Ξ : HomE X.E a b → ℂ), A.IndAdd a b S (cA * (c * c')) → IsSdLat L → IsSdLat L' → 0 < cA → 0 < c → 0 < c' → (∀ x, Ξ x ≠ 0 → x ∈ homAt S L L') → (∀ x, ∀ y ∈ mulLat c (homAt S L L'), Ξ (x + y) = Ξ x) → ∃ R : Finset (HomE X.E a b), R.card ≤ c ^ (Module.finrank ℚ X.E * a * b) ∧ ∀ z, latSum (divLat cA (homAt S L L')) (mulLat (c * c') (homAt S L L')) (fun x => Ξ x * A.thInd S L L' (c * c') x z) = ∑ x ∈ R, Ξ x * A.thInd S L L' c x z := by
+  intro X A a b S L L' cA c c' Ξ hadd hL hL' hcA hc hc' hsupp hinv
+  have hdiv : ∀ (n : ℕ) x, x ∈ homAt S L L' → x ∈ divLat n (homAt S L L') := fun n x hx =>
+    Submodule.smul_mem (homAt S L L') (n : 𝓞 X.E) hx
+  have hone : ∀ x, x ∈ divLat 1 (homAt S L L') → x ∈ homAt S L L' := fun x hx => by
+    simpa [divLat] using hx
+  have hBC : mulLat (c * c') (homAt S L L') ≤ mulLat c (homAt S L L') := by
+    rintro _ ⟨x, hx, rfl⟩
+    refine ⟨(c' : 𝓞 X.E) • x, Submodule.smul_mem _ _ hx, ?_⟩
+    simp only [LinearMap.smul_apply, LinearMap.id_apply, Nat.cast_mul, mul_smul]
+  have hCG : mulLat c (homAt S L L') ≤ divLat 1 (homAt S L L') := by
+    rintro _ ⟨x, hx, rfl⟩
+    exact hdiv 1 _ (Submodule.smul_mem (homAt S L L') (c : 𝓞 X.E) hx)
+  have hfin := (GlobalTheory.SemilocalClasses.finite_card_classes X.E a b S L L' cA (c * c') hL.1 hL'.1 hcA (Nat.mul_pos hc hc')).1
+  have hcard := (GlobalTheory.SemilocalClasses.finite_card_classes X.E a b S L L' 1 c hL.1 hL'.1 Nat.one_pos hc).2
+  obtain ⟨R, hR, hRc, hsum⟩ := latSum_tower_reps X.E (HomE X.E a b) (divLat cA (homAt S L L'))
+    (divLat 1 (homAt S L L')) (mulLat c (homAt S L L')) (mulLat (c * c') (homAt S L L')) hBC hCG
+    (fun x hx => hdiv cA x (hone x hx)) hfin
+  refine ⟨R, by rw [hRc]; simpa using hcard, fun z => ?_⟩
+  rw [hsum]
+  · refine Finset.sum_congr rfl fun x hx => ?_
+    rw [hadd L L' c c' x hc hc' ⟨hL, hL', Nat.mul_pos hc hc', Dvd.intro_left _ rfl, hdiv _ x (hone x (hR x hx))⟩ z]
+    unfold latSum
+    rw [mul_finsum]
+    exact finsum_congr fun q => by beta_reduce; rw [hinv x _ (Subtype.property _)]
+  · intro x hx
+    exact hdiv 1 x (hsupp x (left_ne_zero_of_mul hx))
+  · intro x y hxy
+    rw [thInd_congr_of_sub_mem A S L L' (c * c') x y hxy]
+    have := hinv y _ (hBC hxy)
+    rw [add_sub_cancel] at this
+    rw [this]
+
+end GlobalTheory
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.PlaceLogThetaBounds GlobalTheory.ColNorms
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_finset_latSum_thInd_eq_sum : ∀ (X : Fields) (A : Amb X) (a b : ℕ) (S : Finset (HeightOneSpectrum (𝓞 X.E))) (L : Submodule (𝓞 X.E) (Sp X.E a)) (L' : Submodule (𝓞 X.E) (Sp X.E b)) (cA c c' : ℕ) (Ξ : HomE X.E a b → ℂ), A.IndAdd a b S (cA * (c * c')) → IsSdLat L → IsSdLat L' → 0 < cA → 0 < c → 0 < c' → (∀ x, Ξ x ≠ 0 → x ∈ homAt S L L') → (∀ x, ∀ y ∈ mulLat c (homAt S L L'), Ξ (x + y) = Ξ x) → ∃ R : Finset (HomE X.E a b), R.card ≤ c ^ (Module.finrank ℚ X.E * a * b) ∧ ∀ z, latSum (divLat cA (homAt S L L')) (mulLat (c * c') (homAt S L L')) (fun x => Ξ x * A.thInd S L L' (c * c') x z) = ∑ x ∈ R, Ξ x * A.thInd S L L' c x z := by
+  atlas_forward_decl GlobalTheory.latSum_thInd_regroup
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.PlaceLogThetaBounds GlobalTheory.ColNorms
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.thetaVectorUpToUnits_thMoved_of_thZero : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (dl : ℂ) (B : Base D cc dl) (t0 : ℂ), StandardLatticesGL3.Crv D cc dl → GL3Theta.IsTwoTorsionPointUnkilled D (TaylorLogMetric.lamOf D cc dl) t0 → ∀ (a b : ℕ) (L : Submodule (𝓞 D.host.E) (Fin a → D.host.E)) (L' : Submodule (𝓞 D.host.E) (Fin b → D.host.E)), StandardLatticesGL3.SD D L → StandardLatticesGL3.SD D L' → StandardLatticesGL3.ThetaVectorUpToUnits D (TaylorLogMetric.tor0 D cc dl) t0 (StandardLatticesGL3.stdL D a) (StandardLatticesGL3.stdL D b) (B.thZero a b) → StandardLatticesGL3.ThetaVectorUpToUnits D (TaylorLogMetric.tor0 D cc dl) t0 L L' (B.thMoved a b L L') := by
+  first | exact @GlobalTheory.MovedVacuum.isVacuum_movedThetaVacuum | exact GlobalTheory.MovedVacuum.isVacuum_movedThetaVacuum | (intros; apply GlobalTheory.MovedVacuum.isVacuum_movedThetaVacuum <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.PlaceLogThetaBounds GlobalTheory.ColNorms
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coefficientGram_posSemidef_and_normAtPlace : ∀ (E K : Type) [Field E] [NumberField E] [Field K] [NumberField K] [StarRing K] (ι : Type) [Fintype ι] (emb : ι → E →+* K) (n : ℕ) (lam : ι → DomWeight n) (σ : K →+* ℂ), ((Matrix.of fun i j => pairVr emb lam 1 (bVV K lam i) (bVV K lam j)).map σ).PosSemidef ∧ ∀ x : Formalism.L2.DIV.VV K lam, (∑ i, ∑ j, starRingEnd ℂ ((InfinitePlace.mk σ).embedding ((bVV K lam).repr x i)) * (InfinitePlace.mk σ).embedding (pairVr emb lam 1 (bVV K lam i) (bVV K lam j)) * (InfinitePlace.mk σ).embedding ((bVV K lam).repr x j)).re = sqAt σ lam x := by
+  first | exact @GlobalTheory.ColNorms.gram_posSemidef_and_sqAt | exact GlobalTheory.ColNorms.gram_posSemidef_and_sqAt | (intros; apply GlobalTheory.ColNorms.gram_posSemidef_and_sqAt <;> assumption)
+end
+
+section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.PlaceLogThetaBounds GlobalTheory.ColNorms
 open scoped ComplexOrder
 
@@ -234,3 +656,5 @@ theorem block : GlobalTheory.IndefiniteRowSideFullHecke.PaddedLastEntry.BlockBou
   exact pow_le_one₀ (norm_nonneg _) hsc
 
 end GlobalTheory.ColNorms
+end
+end

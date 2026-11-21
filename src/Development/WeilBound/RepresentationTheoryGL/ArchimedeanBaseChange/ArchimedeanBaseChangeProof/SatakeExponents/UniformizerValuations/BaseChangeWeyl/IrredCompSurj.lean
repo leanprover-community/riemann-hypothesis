@@ -1,6 +1,19 @@
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.BaseChangeWeyl.BcWeyl
+import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.SatIndepOf
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FixedPlaceUnitaryLocalPointsEquivLocalUnitaryGro
 
+section
+noncomputable section
+
+namespace PositivityTheory.Rg.BcB.F.LemB
+
+theorem bcWeyl : BcWeyl := fun _ _ _ h => GlobalTheory.LGrp.bcParam_of_weylConj h
+
+end PositivityTheory.Rg.BcB.F.LemB
+
+end
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix
@@ -71,4 +84,5 @@ theorem irred_comp_surj {H H' X : Type} [Group H] [Group H'] [AddCommGroup X] [M
 
 end PositivityTheory.Rg.BcB.F.LemB
 
+end
 end

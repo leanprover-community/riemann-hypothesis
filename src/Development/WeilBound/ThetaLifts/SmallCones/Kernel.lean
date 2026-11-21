@@ -1,7 +1,820 @@
-import Development.WeilBound.ThetaLifts.SmallCones.ConstantTermRationalUnipotentInvariant
-import Development.WeilBound.ThetaLifts.SmallCones.ContinuousEvI
+import Development.WeilBound.ThetaLifts.SmallCones.KerPol
+import Development.WeilBound.ThetaLifts.SmallCones.KerGeo
+import Development.WeilBound.ThetaLifts.SmallCones.MatCancel
+import Development.WeilBound.ThetaLifts.TowerModels.PlaneForm
+import Development.WeilBound.ThetaLifts.SmallCones.ExpAlg
+import Development.WeilBound.ThetaLifts.SmallCones.ThetaUniq
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNatMulIntegralOfIsCompact
 import Development.WeilBound.ThetaLifts.SmallCones.ThetaKernelGeneralIdentity
 
+section
+set_option linter.unusedSectionVars false
+
+noncomputable section
+
+namespace PositivityTheory.ThKCT.Ker
+
+open scoped TensorProduct NNReal ENNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK PositivityTheory.ThKEst PositivityTheory.ThKG PositivityTheory.ThKG.Tow PositivityTheory.Mix
+open GlobalTheory.Doubling (absE)
+open Matrix (vecMulVec)
+
+section Alg
+
+variable {R : Type} [CommRing R] {n k : ℕ} {c : R →+* R} {J : Matrix (Fin n) (Fin n) R} {ε : R} {x y : Fin n → R}
+  {ι : Matrix (Fin n) (Fin k) R}
+
+def eich (c : R →+* R) (J : Matrix (Fin n) (Fin n) R) (ε : R) (x v : Fin n → R) (a : R) : Matrix (Fin n) (Fin n) R :=
+  1 + ε • vecMulVec (v + a • x) (J *ᵥ fun i => c (x i)) + (-1 : R) • vecMulVec x (J *ᵥ fun i => c (v i))
+
+theorem eich_apply (v : Fin n → R) (a : R) (w) :
+    eich c J ε x v a *ᵥ w = w + (ε * bf c J w x) • (v + a • x) + (-bf c J w v) • x := by
+  simp only [eich, Matrix.add_mulVec, Matrix.one_mulVec, Matrix.smul_mulVec, Matrix.vecMulVec_mulVec, bf, dotProduct_comm w,
+    op_smul_eq_smul, smul_smul, neg_one_mul]
+
+variable (h : PlaneOK c J ε x y ι)
+include h
+
+theorem eich_alt (z a) : eich c J ε x (ι *ᵥ z) a *ᵥ x = x := by rw [eich_apply, h.xx, h.xi]; module
+theorem eich_y (z a) : eich c J ε x (ι *ᵥ z) a *ᵥ y = y + ι *ᵥ z + a • x := by rw [eich_apply, h.yx, h.yi, h.ee]; module
+theorem eich_i (z a w) : eich c J ε x (ι *ᵥ z) a *ᵥ (ι *ᵥ w) = ι *ᵥ w + (-bf c J (ι *ᵥ w) (ι *ᵥ z)) • x := by
+  rw [eich_apply, h.ix]; module
+
+theorem eich_mul (z a) : eich c J ε x (ι *ᵥ z) a * eich c J ε x (ι *ᵥ (-z)) (-a - bf c J (ι *ᵥ z) (ι *ᵥ z)) = 1 := by
+  have e : ι *ᵥ (-z) = (-1 : R) • (ι *ᵥ z) := by rw [Matrix.mulVec_neg, neg_one_smul]
+  refine h.ext ?_ ?_ fun w => ?_
+  · rw [← Matrix.mulVec_mulVec, eich_alt h, eich_alt h, Matrix.one_mulVec]
+  · rw [← Matrix.mulVec_mulVec, eich_y h, Matrix.mulVec_add, Matrix.mulVec_add, Matrix.mulVec_smul, eich_alt h, eich_y h, eich_i h,
+      Matrix.one_mulVec, e, bf_smul_l]
+    module
+  · rw [← Matrix.mulVec_mulVec, eich_i h, Matrix.mulVec_add, Matrix.mulVec_smul, eich_alt h, eich_i h, Matrix.one_mulVec, e, bf_smul_r,
+      map_neg, map_one]
+    module
+
+theorem eich_unit (z a) (ha : bf c J (ι *ᵥ z) (ι *ᵥ z) + a + ε * c a = 0) :
+    (eich c J ε x (ι *ᵥ z) a)ᵀ * J * (eich c J ε x (ι *ᵥ z) a).map c = J := by
+  ext i j
+  rw [← bf_single (c := c) (J := _ * J * _), ← bf_mulVec, ← bf_single (c := c) (J := J) i j]
+  obtain ⟨s, t, u, e⟩ := h.span (Pi.single i 1)
+  obtain ⟨s', t', u', e'⟩ := h.span (Pi.single j 1)
+  rw [e, e']
+  simp only [Matrix.mulVec_add, Matrix.mulVec_smul, eich_alt h, eich_y h, eich_i h, bf_add_l, bf_add_r, bf_smul_l, bf_smul_r, h.xx, h.xy,
+    h.yx, h.yy, h.ix, h.iy, h.xi, h.yi, map_neg, h.symm (ι *ᵥ u') (ι *ᵥ z)]
+  linear_combination (t * c t') * ha
+
+theorem coef_y {M : Matrix (Fin n) (Fin n) R} (hu : Mᵀ * J * M.map c = J) (hx : M *ᵥ x = x) {s t : R} {z}
+    (e : M *ᵥ y = s • x + ι *ᵥ z + t • y) : t = 1 := by
+  have e1 : bf c J (M *ᵥ y) (M *ᵥ x) = ε := by rw [bf_mulVec, hu, h.yx]
+  rw [hx, e] at e1
+  simp only [bf_add_l, bf_smul_l, h.xx, h.ix, h.yx] at e1
+  linear_combination ε * e1 - (t - 1) * h.ee
+
+end Alg
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
+variable {n d n₁ d₁ m : ℕ} {B : Base F E} {X : Spc F E n} {W : Spc F E d} {X₁ : Spc F E n₁} {W₁ : Spc F E d₁}
+variable {H : Plane E d d₁} {ε : ℤ}
+
+theorem exists_eich (h : PG σ W W₁ H ε) (z : Fin d₁ → AE F E) (a : AE F E)
+    (ha : bf (cA σ).toRingHom (incM F W.J) (incM F H.ι *ᵥ z) (incM F H.ι *ᵥ z) + a + ε * cA σ a = 0) :
+    ∃ u : unip σ W H, mat u.1⁻¹ = eich (cA σ).toRingHom (incM F W.J) ε (incV F H.x) (incM F H.ι *ᵥ z) a := by
+  obtain ⟨g, hg⟩ := PositivityTheory.ThKG.Tow.Levi.exists_UA (σ := σ) (eich_mul h.ad z a) (eich_unit h.ad z a ha)
+  refine ⟨⟨g, Fr.mem_unip.2 ⟨hg ▸ eich_alt h.ad z a, fun w => ⟨_, hg ▸ eich_i h.ad z a w⟩⟩⟩⁻¹, ?_⟩
+  simpa using hg
+
+theorem unip_y (h : PG σ W W₁ H ε) {u : UA σ W.J} (hu : u ∈ unip σ W H) :
+    ∃ (a : AE F E) (z : Fin d₁ → AE F E), mat u *ᵥ incV F H.y = a • incV F H.x + incM F H.ι *ᵥ z + incV F H.y := by
+  obtain ⟨s, t, z, e⟩ := h.ad.span (mat u *ᵥ incV F H.y)
+  exact ⟨s, z, by rw [e, coef_y h.ad u.2 (Fr.mem_unip.1 hu).1 e, one_smul]⟩
+
+theorem incV_smul (a : E) (x : Fin n → E) : incV F (a • x) = inclR (F := F) (AF F) a • incV F x := funext fun _ => map_mul _ _ _
+
+theorem incV_add (x y : Fin n → E) : incV F (x + y) = incV F x + incV F y := funext fun _ => map_add _ _ _
+
+theorem unip_y_rat (h : PG σ W W₁ H ε) {u : UA σ W.J} (hu : u ∈ unip σ W H) (hr : u ∈ ratU σ W.J) :
+    ∃ (a : E) (z : Fin d₁ → E), mat u *ᵥ incV F H.y = incV F (a • H.x) + incV F (H.ι *ᵥ z) + incV F H.y := by
+  obtain ⟨D, hD⟩ := Fr.mem_ratU.1 hr
+  obtain ⟨s, t, z, e⟩ := h.rat.span (D *ᵥ H.y)
+  have e' : mat u *ᵥ incV F H.y = inclR (F := F) (AF F) s • incV F H.x + incM F H.ι *ᵥ incV F z +
+      inclR (F := F) (AF F) t • incV F H.y := by
+    rw [hD, inc_mulVec, e, incV_add, incV_add, incV_smul, incV_smul, inc_mulVec]
+  exact ⟨s, z, by rw [e', coef_y h.ad u.2 (Fr.mem_unip.1 hu).1 e', one_smul, incV_smul, inc_mulVec]⟩
+
+section Mean
+
+variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G] [BorelSpace G]
+
+theorem mean_zero (Γ : Subgroup G) [Countable Γ] (μ : Measure G) [μ.IsMulLeftInvariant] [μ.IsMulRightInvariant] {𝓕 : Set G}
+    (h : IsFundamentalDomain Γ 𝓕 μ) {f : G → ℂ} (hl : ∀ γ ∈ Γ, ∀ x, f (γ * x) = f x) {g : G} {c : ℂ} (hc : c ≠ 1)
+    (hr : ∀ x, f (x * g) = c * f x) : ∫ x in 𝓕, f x ∂μ = 0 := by
+  have hm : MeasurePreserving (fun x => x * g) μ μ := measurePreserving_mul_right μ g
+  have h2 : IsFundamentalDomain Γ ((fun x => x * g) ⁻¹' 𝓕) μ :=
+    h.preimage_of_equiv hm.quasiMeasurePreserving (e := id) Function.bijective_id fun γ x => mul_assoc _ _ _
+  have e1 := hm.setIntegral_preimage_emb (MeasurableEquiv.mulRight g).measurableEmbedding f 𝓕
+  have e2 := h2.setIntegral_eq h (f := f) fun γ x => hl γ.1 γ.2 x
+  simp only [hr, integral_const_mul, e2] at e1
+  have : (c - 1) * ∫ x in 𝓕, f x ∂μ = 0 := by rw [sub_mul, e1, one_mul, sub_self]
+  exact (mul_eq_zero.1 this).resolve_left (sub_ne_zero.2 hc)
+
+omit [Group G] [IsTopologicalGroup G] in
+
+theorem mean_hasSum {ι : Type} [Countable ι] (μ : Measure G) {𝓕 : Set G} (h1 : μ 𝓕 = 1) {f : ι → G → ℂ} (hf : ∀ i, Continuous (f i))
+    {b : ι → ℝ} (hb : Summable b) (hfb : ∀ i x, ‖f i x‖ ≤ b i) {s : G → ℂ} (hs : ∀ x, HasSum (fun i => f i x) (s x)) :
+    HasSum (fun i => ∫ x in 𝓕, f i x ∂μ) (∫ x in 𝓕, s x ∂μ) := by
+  haveI : IsProbabilityMeasure (μ.restrict 𝓕) := ⟨by rw [Measure.restrict_apply_univ, h1]⟩
+  have hi : ∀ i, Integrable (f i) (μ.restrict 𝓕) := fun i =>
+    Integrable.of_bound (hf i).aestronglyMeasurable (b i) (Eventually.of_forall (hfb i))
+  have := hasSum_integral_of_summable_integral_norm hi (hb.of_nonneg_of_le (fun i => integral_nonneg fun _ => norm_nonneg _) fun i => by
+    simpa using integral_mono (hi i).norm (integrable_const (b i)) (hfb i))
+  simpa only [(hs _).tsum_eq] using this
+
+end Mean
+
+theorem psi_rat {ψ : AddChar (AF F) ℂ} (h : IsStd ψ) (x y : Matrix (Fin n) (Fin d) E) :
+    ψ (-(⅟(2 : AF F) * sy σ X W (incM F x) (incM F y))) = 1 := by
+  rw [sy_inc, show ⅟(2 : AF F) = algebraMap F (AF F) (2⁻¹ : F) from
+    invOf_eq_right_inv (by rw [← map_ofNat (algebraMap F (AF F)) 2, ← map_mul]; norm_num), ← map_mul, ← map_neg, h.2.1]
+
+theorem half_sy (hB : B.IsGood σ) {x y : Ten F E n d} {a : AF F}
+    (h : hTens (cA σ) (incM F X.J) (incM F W.J) x y = algebraMap (AF F) (AE F E) a) : -(⅟(2 : AF F) * sy σ X W x y) = a := by
+  have e : Algebra.trace (AF F) (AE F E) 1 = 2 := by
+    rw [← map_one (inclR (F := F) (E := E) (AF F)), tr_inc, ← map_one (algebraMap F E), Algebra.trace_algebraMap, hB.cm.2.2.1]
+    simp [map_ofNat]
+  rw [sy, symp, h, neg_one_mul, map_neg, Algebra.algebraMap_eq_smul_one, map_smul, e, smul_eq_mul, mul_neg, neg_neg, mul_comm a,
+    invOf_mul_cancel_left]
+
+variable {M : Model σ X W} {M₁ : Model σ X₁ W₁} {e : Fn F n d →ₗ[ℂ] Fn F n₁ d₁} {ι : Matrix (Fin n) (Fin n₁) E}
+  {ι' : Matrix (Fin d) (Fin d₁) E} {I : Set (Ten F E n d)}
+
+theorem rho_split (M : Model σ X W) (ψ : AddChar (AF F) ℂ) (a b : Ten F E n d) (Φ) :
+    M.co.rho ψ (a + b) Φ = ψ (-(⅟(2 : AF F) * sy σ X W a b)) • M.co.rho ψ a (M.co.rho ψ b Φ) := by
+  rw [rho_rho, smul_smul, ← AddChar.map_add_eq_mul, neg_add_cancel, AddChar.map_zero_eq_one, one_smul]
+
+theorem ev_I (h : IsStd B.ψ) (he : IsEv B M M₁ ι ι' I e) {a} (ha : a ∈ I) (b) {Φ} (hΦ : Φ ∈ schA F (Fin n × Fin d)) :
+    e (M.co.rho B.ψ (a + b) Φ) = B.ψ (-(⅟(2 : AF F) * sy σ X W a b)) • e (M.co.rho B.ψ b Φ) := by
+  rw [rho_split, map_smul, he.inv a ha _ (rho_mem M h b hΦ)]
+
+theorem ev_mid (h : IsStd B.ψ) (he : IsEv B M M₁ ι ι' I e) (w : Ten F E n₁ d₁) (b) {Φ} (hΦ : Φ ∈ schA F (Fin n × Fin d)) :
+    e (M.co.rho B.ψ (incM F ι * w * (incM F ι')ᵀ + b) Φ) =
+      B.ψ (-(⅟(2 : AF F) * sy σ X W (incM F ι * w * (incM F ι')ᵀ) b)) • M₁.co.rho B.ψ w (e (M.co.rho B.ψ b Φ)) := by
+  rw [rho_split, map_smul, he.Heisenberg₂ w _ (rho_mem M h b hΦ)]
+
+theorem theta_rho_rat (h : IsStd B.ψ) (hM : M.IsGood B.ψ) (x : Matrix (Fin n) (Fin d) E) (Φ) :
+    thetaSum F (M.co.rho B.ψ (incM F x) Φ) = thetaSum F Φ := by
+  obtain ⟨a, b, hab⟩ := hM.rat x
+  rw [Darboux.rho, hab, theta_schr_rat h]
+
+theorem theta_smul {κ : Type} (c : ℂ) (Φ : (κ → AF F) → ℂ) : thetaSum F (c • Φ) = c * thetaSum F Φ := by
+  simp only [thetaSum, Pi.smul_apply, smul_eq_mul, tsum_mul_left]
+
+variable {χX χW : Chr F E} {om : Rep σ X W} {r s r' s' : ℕ}
+
+theorem om_mem (hp : IsPair B M χX χW om r s r' s') (x) {Φ} (hΦ : Φ ∈ schA F (Fin n × Fin d)) : om x Φ ∈ schA F _ :=
+  (IsUWeilPair.isUSplitting hp.weil).pres x Φ hΦ
+
+theorem om_om (om : Rep σ X W) (x y) (Φ) : om x (om y Φ) = om (x * y) Φ := by rw [map_mul]; rfl
+
+theorem om_rho (hp : IsPair B M χX χW om r s r' s') (g h) (U : Ten F E n d) {Φ} (hΦ : Φ ∈ schA F (Fin n × Fin d)) :
+    om (g, h) (M.co.rho B.ψ U Φ) = M.co.rho B.ψ (mat g * U * (mat h)ᵀ) (om (g, h) Φ) :=
+  (IsUWeilPair.isUSplitting hp.weil).impl (g, h) U Φ hΦ
+
+theorem rho_om (hp : IsPair B M χX χW om r s r' s') (h) (U : Ten F E n d) {Φ} (hΦ : Φ ∈ schA F (Fin n × Fin d)) :
+    M.co.rho B.ψ U (om (1, h) Φ) = om (1, h) (M.co.rho B.ψ (U * (mat h⁻¹)ᵀ) Φ) := by
+  rw [om_rho hp _ _ _ hΦ, Fr.mat_one, Matrix.one_mul, Matrix.mul_assoc, ← Matrix.transpose_mul, ← Fr.mat_mul, mul_inv_cancel,
+    Fr.mat_one, Matrix.transpose_one, Matrix.mul_one]
+
+end PositivityTheory.ThKCT.Ker
+
+end
+end
+
+section
+set_option linter.unusedSectionVars false
+
+noncomputable section
+
+namespace PositivityTheory.ThKCT.Ker
+
+open scoped TensorProduct NNReal ENNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK PositivityTheory.ThKEst PositivityTheory.ThKG PositivityTheory.ThKG.Tow PositivityTheory.Mix
+open GlobalTheory.Doubling (absE)
+open Matrix (vecMulVec)
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
+variable {n d n₁ d₁ m : ℕ} {B : Base F E} {X : Spc F E n} {W : Spc F E d} {X₁ : Spc F E n₁} {W₁ : Spc F E d₁}
+variable {H : Plane E n n₁} {H' : Plane E d d₁} {M : Model σ X W} {χX χW : Chr F E} {om : Rep σ X W} {r s r' s' : ℕ}
+
+def tm (B : Base F E) (M : Model σ X W) (om : Rep σ X W) (H' : Plane E d d₁) {n₂ d₂ : ℕ} (e : Fn F n d →ₗ[ℂ] Fn F n₂ d₂)
+    (U : Matrix (Fin n) (Fin d) E) (Φ : Fn F n d) (u : unip σ W H') : ℂ :=
+  thetaSum F (e (M.co.rho B.ψ (incM F U) (om (1, u.1) Φ)))
+
+section Gen
+
+variable {n₂ d₂ : ℕ} {X₂ : Spc F E n₂} {W₂ : Spc F E d₂} {M₂ : Model σ X₂ W₂} {e : Fn F n d →ₗ[ℂ] Fn F n₂ d₂}
+  {ι : Matrix (Fin n) (Fin n₂) E} {ι' : Matrix (Fin d) (Fin d₂) E} {I : Set (Ten F E n d)}
+
+theorem tm_cont (hA : EvAdm) (hp : IsPair B M χX χW om r s r' s') (hM₂ : M₂.IsGood B.ψ) (he : IsEv B M M₂ ι ι' I e) (U) {Φ}
+    (hΦ : Φ ∈ schA F (Fin n × Fin d)) : Continuous (tm B M om H' e U Φ) := by
+  obtain ⟨⟨l, hl, hθ⟩, -, h⟩ := hA F E σ B n d n₂ d₂ X W X₂ W₂ M M₂ hp.base hp.good hM₂
+  obtain ⟨l', hl', h'⟩ := h ι ι' I e he (incM F U) l hl
+  have hc := ((IsUWeilPair.isUSplitting hp.weil).cont l' hl' Φ hΦ).comp
+    (f := fun u : unip σ W H' => ((1 : UA σ X.J), u.1)) (continuous_const.prodMk continuous_subtype_val)
+  refine hc.congr fun u => ?_
+  rw [Function.comp_apply, h' _ (om_mem hp _ hΦ), hθ _ (he.maps _ (rho_mem M hp.base.std _ (om_mem hp _ hΦ)))]
+  rfl
+
+theorem tm_eq (hp : IsPair B M χX χW om r s r' s') (hi : ∀ u ∈ unip σ W H', ∀ Φ ∈ schA F (Fin n × Fin d), e (om (1, u) Φ) = e Φ)
+    (U) {Φ} (hΦ : Φ ∈ schA F (Fin n × Fin d)) (u : unip σ W H') :
+    tm B M om H' e U Φ u = thetaSum F (e (M.co.rho B.ψ (incM F U * (mat u.1⁻¹)ᵀ) Φ)) := by
+  rw [tm, rho_om hp _ _ hΦ, hi _ u.2 _ (rho_mem M hp.base.std _ hΦ)]
+
+theorem tm_mul (U) (Φ) (u v : unip σ W H') : tm B M om H' e U Φ (u * v) = tm B M om H' e U (om (1, v.1) Φ) u := by
+  rw [tm, tm, om_om]
+  simp
+
+theorem tm_one (U) (Φ) : tm B M om H' e U Φ 1 = thetaSum F (e (M.co.rho B.ψ (incM F U) Φ)) := by
+  rw [tm, show ((1 : UA σ X.J), (1 : unip σ W H').1) = 1 from rfl, map_one]
+  rfl
+
+end Gen
+
+variable (σ W H') in
+
+structure MeanOK (μ : Measure (unip σ W H')) (𝓕 : Set (unip σ W H')) : Prop where
+  haar : μ.IsHaarMeasure
+  right : μ.IsMulRightInvariant
+  dom : IsFundamentalDomain ((ratU σ W.J).subgroupOf (unip σ W H')) 𝓕 μ
+  one : μ 𝓕 = 1
+  cnt : Countable (ratU σ W.J)
+
+variable {μ : Measure (unip σ W H')} {𝓕 : Set (unip σ W H')}
+
+theorem MeanOK.zero (h : MeanOK σ W H' μ 𝓕) {f : unip σ W H' → ℂ} (hl : ∀ γ : unip σ W H', γ.1 ∈ ratU σ W.J → ∀ x, f (γ * x) = f x)
+    {g} {c : ℂ} (hc : c ≠ 1) (hr : ∀ x, f (x * g) = c * f x) : ∫ x in 𝓕, f x ∂μ = 0 := by
+  have : BorelSpace (UA σ W.J) := ⟨rfl⟩
+  have : IsTopologicalRing (AE F E) := IsModuleTopology.isTopologicalRing (AF F) _
+  have : IsTopologicalGroup (UA σ W.J) := Subgroup.instIsTopologicalGroupSubtypeMem _
+  have := h.haar
+  have := h.right
+  have := h.cnt
+  have : Countable ((ratU σ W.J).subgroupOf (unip σ W H')) :=
+    Function.Injective.countable (f := fun x => (⟨x.1.1, x.2⟩ : ratU σ W.J)) fun a b e =>
+      Subtype.ext (Subtype.ext (congrArg (fun y : ratU σ W.J => y.1) e))
+  exact mean_zero _ μ h.dom hl hc hr
+
+theorem MeanOK.sum (h : MeanOK σ W H' μ 𝓕) {ι : Type} [Countable ι] {f : ι → unip σ W H' → ℂ} (hf : ∀ i, Continuous (f i))
+    {b : ι → ℝ} (hb : Summable b) (hfb : ∀ i x, ‖f i x‖ ≤ b i) {s : unip σ W H' → ℂ} (hs : ∀ x, HasSum (fun i => f i x) (s x)) :
+    HasSum (fun i => ∫ x in 𝓕, f i x ∂μ) (∫ x in 𝓕, s x ∂μ) := by
+  have : BorelSpace (UA σ W.J) := ⟨rfl⟩
+  have : IsTopologicalRing (AE F E) := IsModuleTopology.isTopologicalRing (AF F) _
+  have : IsTopologicalGroup (UA σ W.J) := Subgroup.instIsTopologicalGroupSubtypeMem _
+  have hb' : BorelSpace (unip σ W H') := Subtype.borelSpace _
+  exact @mean_hasSum (unip σ W H') _ _ hb' _ _ μ _ h.one _ hf _ hb hfb _ hs
+
+theorem MeanOK.const (h : MeanOK σ W H' μ 𝓕) (c : ℂ) : ∫ _x in 𝓕, c ∂μ = c := by
+  rw [setIntegral_const, Measure.real, h.one, ENNReal.toReal_one, one_smul]
+
+theorem exists_psi {ψ : AddChar (AF F) ℂ} (h : IsStd ψ) : ∃ a, ψ a ≠ 1 := by
+  obtain ⟨a, ha⟩ := DFunLike.ne_iff.1 (std_ne_one h)
+  exact ⟨a, by simpa using ha⟩
+
+theorem bf0 {R : Type} [CommRing R] {c : R →+* R} {J : Matrix (Fin n) (Fin n) R} (u) : bf c J u 0 = 0 := by
+  simpa using bf_smul_r (c := c) (J := J) 0 u 0
+
+theorem mid_vv (a : Fin n → AE F E) (z : Fin d₁ → AE F E) : vecMulVec a (incM F H'.ι *ᵥ z) =
+    incM F (1 : Matrix (Fin n) (Fin n) E) * vecMulVec a z * (incM F H'.ι)ᵀ := by
+  rw [incM_one, Matrix.one_mul, vv_mul_r]
+
+section Zero
+
+variable {M₁ : Model σ X W₁} {e₀ : Fn F n d →ₗ[ℂ] Fn F n d₁}
+
+theorem constant_term_norm_eq_theta (hp : IsPair B M χX χW om r s r' s') (h' : PG σ W W₁ H' (-1)) (he : IsEv B M M₁ 1 H'.ι (iso0 n H') e₀)
+    (hi : ∀ u ∈ unip σ W H', ∀ Φ ∈ schA F (Fin n × Fin d), e₀ (om (1, u) Φ) = e₀ Φ) (x : Fin n → E) {Φ}
+    (hΦ : Φ ∈ schA F (Fin n × Fin d)) (u : unip σ W H') : ∃ w, ‖tm B M om H' e₀ (vecMulVec x H'.y) Φ u‖ =
+      ‖thetaSum F (M₁.co.rho B.ψ w (e₀ (M.co.rho B.ψ (incM F (vecMulVec x H'.y)) Φ)))‖ := by
+  obtain ⟨a, z, e⟩ := unip_y h' (inv_mem u.2)
+  have h := hp.base.std
+  refine ⟨vecMulVec (incV F x) z, ?_⟩
+  rw [tm_eq hp hi _ hΦ, incM_vv, vv_mul_r, e, Matrix.vecMulVec_add, Matrix.vecMulVec_add, add_assoc,
+    ev_I h he ⟨a • incV F x, by rw [Matrix.vecMulVec_smul, Matrix.smul_vecMulVec]⟩ _ hΦ, mid_vv, ev_mid h he _ _ hΦ,
+    theta_smul, theta_smul, norm_mul, norm_mul, std_norm h, std_norm h, one_mul, one_mul]
+
+theorem constant_term_rational_unipotent_invariant (hp : IsPair B M χX χW om r s r' s') (h' : PG σ W W₁ H' (-1)) (hM₁ : M₁.IsGood B.ψ)
+    (he : IsEv B M M₁ 1 H'.ι (iso0 n H') e₀)
+    (hi : ∀ u ∈ unip σ W H', ∀ Φ ∈ schA F (Fin n × Fin d), e₀ (om (1, u) Φ) = e₀ Φ) (x : Fin n → E) {Φ}
+    (hΦ : Φ ∈ schA F (Fin n × Fin d)) (γ : unip σ W H') (hγ : γ.1 ∈ ratU σ W.J) (u : unip σ W H') :
+    tm B M om H' e₀ (vecMulVec x H'.y) Φ (γ * u) = tm B M om H' e₀ (vecMulVec x H'.y) Φ u := by
+  obtain ⟨a, z, e⟩ := unip_y_rat h' (inv_mem γ.2) (inv_mem hγ)
+  have h := hp.base.std
+  have hΨ := om_mem hp (1, u.1) hΦ
+  have e1 : vecMulVec (incV F x) (incV F (H'.ι *ᵥ z)) =
+      incM F (1 : Matrix (Fin n) (Fin n) E) * incM F (vecMulVec x z) * (incM F H'.ι)ᵀ := by rw [← inc_mulVec, mid_vv, incM_vv]
+  rw [tm_mul, tm_eq hp hi _ hΨ, incM_vv, vv_mul_r, e, Matrix.vecMulVec_add, Matrix.vecMulVec_add, add_assoc,
+    ev_I h he ⟨inclR (F := F) (AF F) a • incV F x, by rw [incV_smul, Matrix.vecMulVec_smul, Matrix.smul_vecMulVec]⟩ _ hΨ,
+    ← incM_vv, ← incM_vv, ← incM_vv, ← incM_add, psi_rat h, one_smul, incM_add, incM_vv x (H'.ι *ᵥ z), e1, ev_mid h he _ _ hΨ, ← e1,
+    ← incM_vv, psi_rat h, one_smul, theta_rho_rat h hM₁]
+  rfl
+
+theorem constant_term_anisotropic_integral_zero (hm : MeanOK σ W H' μ 𝓕) (hp : IsPair B M χX χW om r s r' s') (h' : PG σ W W₁ H' (-1)) (hM₁ : M₁.IsGood B.ψ)
+    (he : IsEv B M M₁ 1 H'.ι (iso0 n H') e₀)
+    (hi : ∀ u ∈ unip σ W H', ∀ Φ ∈ schA F (Fin n × Fin d), e₀ (om (1, u) Φ) = e₀ Φ) {x : Fin n → E} (hx : form σ X.J x x ≠ 0) {Φ}
+    (hΦ : Φ ∈ schA F (Fin n × Fin d)) : ∫ u in 𝓕, tm B M om H' e₀ (vecMulVec x H'.y) Φ u ∂μ = 0 := by
+  have h := hp.base.std
+  obtain ⟨a, ha⟩ := exists_psi h
+  have hq : σ (form σ X.J x x) = form σ X.J x x := by
+    rw [PositivityTheory.ThKG.Tow.Pln.form_swap hp.base.cm (ε := 1) (fun i j => by rw [hp.herm.herm, one_mul]), one_mul]
+  set c : AE F E := algebraMap (AF F) (AE F E) a * inclR (F := F) (AF F) (form σ X.J x x)⁻¹ with hc
+  obtain ⟨g, hg⟩ := exists_eich h' 0 c (by
+    rw [hc, map_mul, AlgHom.commutes, cA_inc, map_inv₀ σ, hq, Matrix.mulVec_zero, bf0]
+    push_cast
+    ring)
+  refine hm.zero (constant_term_rational_unipotent_invariant hp h' hM₁ he hi x hΦ) (g := g) ha fun u => ?_
+  obtain ⟨b, z, e⟩ := unip_y h' (inv_mem u.2)
+  have e2 : mat (u * g).1⁻¹ *ᵥ incV F H'.y = c • incV F H'.x + mat u.1⁻¹ *ᵥ incV F H'.y := by
+    rw [Subgroup.coe_mul, mul_inv_rev, Fr.mat_mul, ← Matrix.mulVec_mulVec, hg, eich_apply, e]
+    simp only [Matrix.mulVec_zero, bf_add_l, bf_smul_l, h'.ad.xx, h'.ad.ix, h'.ad.yx, mul_zero, zero_add, h'.ad.ee, one_smul, bf0,
+      neg_zero, zero_smul, add_zero]
+    exact add_comm _ _
+  rw [tm_eq hp hi _ hΦ, tm_eq hp hi _ hΦ, incM_vv, vv_mul_r, vv_mul_r, e2, Matrix.vecMulVec_add,
+    ev_I h he ⟨c • incV F x, by rw [Matrix.vecMulVec_smul, Matrix.smul_vecMulVec]⟩ _ hΦ, theta_smul, half_sy hp.base (a := a)]
+  rw [hT_vv, e, bf_inc]
+  simp only [bf_add_r, bf_smul_l, bf_smul_r, h'.ad.xx, h'.ad.xi, h'.ad.xy, mul_zero, zero_add, mul_one]
+  rw [hc, mul_left_comm, ← map_mul, mul_inv_cancel₀ hx, map_one, mul_one]
+
+end Zero
+
+section Cone
+
+variable {M₂ : Model σ X₁ W₁} {e : Fn F n d →ₗ[ℂ] Fn F n₁ d₁}
+
+theorem tA_eig (hp : IsPair B M χX χW om r s r' s') (h' : PG σ W W₁ H' (-1)) (he : IsEv B M M₂ H.ι H'.ι (sumA H H') e)
+    (hi : ∀ u ∈ unip σ W H', ∀ Φ ∈ schA F (Fin n × Fin d), e (om (1, u) Φ) = e Φ) (w : Fin d₁ → E) {Φ}
+    (hΦ : Φ ∈ schA F (Fin n × Fin d)) (u : unip σ W H') : tm B M om H' e (vA H.y H'.y H'.ι (H.x, w)) Φ u =
+      B.ψ (-(⅟(2 : AF F) * sy σ X W (incM F (vA H.y H'.y H'.ι (H.x, w)) * (mat u.1⁻¹)ᵀ - incM F (vA H.y H'.y H'.ι (H.x, w)))
+        (incM F (vA H.y H'.y H'.ι (H.x, w))))) * tm B M om H' e (vA H.y H'.y H'.ι (H.x, w)) Φ 1 := by
+  obtain ⟨a, z, e1⟩ := unip_y h' (inv_mem u.2)
+  obtain ⟨b, e2⟩ := (Fr.mem_unip.1 (inv_mem u.2)).2 (incV F w)
+  rw [tm_eq hp hi _ hΦ, tm_one, ← theta_smul, ← ev_I hp.base.std he ?_ _ hΦ, sub_add_cancel]
+  refine ⟨a • incV F H.x + b • incV F H.y, z, ?_⟩
+  rw [vA_apply, incM_add, incM_vv, incM_vv, Matrix.add_mul, vv_mul_r, vv_mul_r, ← inc_mulVec, e1, e2]
+  simp only [Matrix.vecMulVec_add, Matrix.add_vecMulVec, Matrix.vecMulVec_smul, Matrix.smul_vecMulVec]
+  abel
+
+theorem tA_zero (hm : MeanOK σ W H' μ 𝓕) (hp : IsPair B M χX χW om r s r' s') (h : PG σ X X₁ H 1) (h' : PG σ W W₁ H' (-1))
+    (he : IsEv B M M₂ H.ι H'.ι (sumA H H') e)
+    (hi : ∀ u ∈ unip σ W H', ∀ Φ ∈ schA F (Fin n × Fin d), e (om (1, u) Φ) = e Φ) {w : Fin d₁ → E} (hw : w ≠ 0) {Φ}
+    (hΦ : Φ ∈ schA F (Fin n × Fin d)) : ∫ u in 𝓕, tm B M om H' e (vA H.y H'.y H'.ι (H.x, w)) Φ u ∂μ = 0 := by
+  have hψ := hp.base.std
+  obtain ⟨a, ha⟩ := exists_psi hψ
+  obtain ⟨z₀, hz₀⟩ : ∃ z, bf σ.toRingHom W.J (H'.ι *ᵥ z) (H'.ι *ᵥ w) ≠ 0 := by
+    by_contra h0
+    push Not at h0
+    exact hw (h'.nd_low w h0)
+  set i2 : AE F E := algebraMap (AF F) (AE F E) (⅟2) with hi2
+  have h2 : i2 * 2 = 1 := by rw [hi2, ← map_ofNat (algebraMap (AF F) (AE F E)) 2, ← map_mul, invOf_mul_self, map_one]
+  have hc2 : cA σ i2 = i2 := AlgHom.commutes _ _
+  set z : Fin d₁ → AE F E := (i2 * algebraMap (AF F) (AE F E) a) • incV F ((bf σ.toRingHom W.J (H'.ι *ᵥ z₀) (H'.ι *ᵥ w))⁻¹ • z₀) with hz
+  have hb : bf (cA σ).toRingHom (incM F W.J) (incM F H'.ι *ᵥ z) (incM F H'.ι *ᵥ incV F w) = i2 * algebraMap (AF F) (AE F E) a := by
+    rw [hz, Matrix.mulVec_smul, bf_smul_l, inc_mulVec, inc_mulVec, bf_inc, Matrix.mulVec_smul]
+    rw [show form σ W.J _ _ = 1 from (bf_smul_l (c := σ.toRingHom) _ _ _).trans (inv_mul_cancel₀ hz₀), map_one, mul_one]
+  have hb' : bf (cA σ).toRingHom (incM F W.J) (incM F H'.ι *ᵥ incV F w) (incM F H'.ι *ᵥ z) = -(i2 * algebraMap (AF F) (AE F E) a) := by
+    rw [h'.ad.symm, hb, map_mul]
+    change _ * (cA σ _ * cA σ _) = _
+    rw [hc2, AlgHom.commutes]
+    push_cast
+    ring
+  clear_value z
+  obtain ⟨g, hg⟩ := exists_eich h' z (-(i2 * bf (cA σ).toRingHom (incM F W.J) (incM F H'.ι *ᵥ z) (incM F H'.ι *ᵥ z))) (by
+    have := h'.ad.symm (incM F H'.ι *ᵥ z) (incM F H'.ι *ᵥ z)
+    rw [map_neg, map_mul, hc2]
+    change _ = _ * cA σ _ at this
+    linear_combination i2 * this - bf (cA σ).toRingHom (incM F W.J) (incM F H'.ι *ᵥ z) (incM F H'.ι *ᵥ z) * h2)
+  have hgc : tm B M om H' e (vA H.y H'.y H'.ι (H.x, w)) Φ g = B.ψ a * tm B M om H' e (vA H.y H'.y H'.ι (H.x, w)) Φ 1 := by
+    rw [tA_eig hp h' he hi w hΦ g, half_sy hp.base (a := a)]
+    rw [vA_apply, incM_add, incM_vv, incM_vv, Matrix.add_mul, vv_mul_r, vv_mul_r, ← inc_mulVec, hg, eich_y h'.ad, eich_i h'.ad, hb',
+      sub_eq_add_neg, ← neg_one_smul (AE F E) (vecMulVec _ _ + vecMulVec _ _)]
+    simp only [hT_add_l, hT_add_r, hT_smul_l, hT_vv, bf_add_l, bf_smul_l, h.ad.xx, h.ad.xy, h.ad.yx, h.ad.yy, h'.ad.xi, h'.ad.yi,
+      h'.ad.xy, h'.ad.yy, h'.ad.iy, hb]
+    push_cast
+    linear_combination algebraMap (AF F) (AE F E) a * h2
+  refine hm.zero (fun γ hγ u => ?_) (g := g) ha fun u => ?_
+  · obtain ⟨D, hD⟩ := Fr.mem_ratU.1 (inv_mem hγ)
+    rw [tm_mul, tA_eig hp h' he hi w (om_mem hp _ hΦ), hD,
+      show ∀ U : Matrix (Fin n) (Fin d) E, incM F U * (incM F D)ᵀ - incM F U = incM F (U * Dᵀ - U) from fun U => by
+        simp only [incM, Matrix.map_sub _ (map_sub _), Matrix.map_mul, Matrix.transpose_map],
+      psi_rat hψ, one_mul, ← tm_mul, one_mul]
+  · rw [tm_mul, tA_eig hp h' he hi w (om_mem hp _ hΦ), ← tm_mul, one_mul, hgc, tA_eig hp h' he hi w hΦ u]
+    ring
+
+end Cone
+
+end PositivityTheory.ThKCT.Ker
+
+end
+end
+
+section
+noncomputable section
+
+namespace PositivityTheory.ThKCT
+
+open scoped TensorProduct Matrix Classical
+open NumberField IsDedekindDomain Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK PositivityTheory.ThKEst
+
+theorem summable_lat_wt {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
+    (L : Submodule ℤ V) [DiscreteTopology L] {k : ℕ} (hk : Module.finrank ℤ L < k) :
+    Summable fun z : L => ((1 + ‖z‖)⁻¹) ^ k := by
+  refine Summable.of_nonneg_of_le (fun z => by positivity) (fun z => ?_)
+    ((ZLattice.summable_norm_pow_inv L k hk).add (hasSum_ite_eq (0 : L) (1 : ℝ)).summable)
+  by_cases hz : z = 0
+  · subst hz
+    simp only [if_pos rfl, norm_zero, add_zero, inv_one, one_pow]
+    exact le_add_of_nonneg_left (by positivity)
+  · have h0 : 0 < ‖z‖ := norm_pos_iff.2 hz
+    simp only [hz, if_false, add_zero]
+    gcongr
+    linarith
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
+
+def sz {κ : Type} [Fintype κ] (y : κ → AF F) : ℝ := 1 + ∑ j, ∑ w : InfinitePlace F, mixedEmbedding.normAtPlace w (evI F (y j))
+
+theorem norm_le_sz {κ : Type} [Fintype κ] (y : κ → AF F) : 1 + ‖fun j => evI F (y j)‖ ≤ sz y := by
+  have h0 : ∀ j, 0 ≤ ∑ w : InfinitePlace F, mixedEmbedding.normAtPlace w (evI F (y j)) := fun j =>
+    Finset.sum_nonneg fun w _ => mixedEmbedding.normAtPlace_nonneg _ _
+  refine add_le_add_right ((pi_norm_le_iff_of_nonneg (Finset.sum_nonneg fun j _ => h0 j)).2 fun j => ?_) 1
+  refine le_trans ?_ (Finset.single_le_sum (fun j _ => h0 j) (Finset.mem_univ j))
+  rw [mixedEmbedding.norm_eq_sup'_normAtPlace]
+  exact Finset.sup'_le _ _ fun w _ => Finset.single_le_sum (f := fun w => mixedEmbedding.normAtPlace w (evI F (y j)))
+    (fun w _ => mixedEmbedding.normAtPlace_nonneg _ _) (Finset.mem_univ w)
+
+theorem sz_pos {κ : Type} [Fintype κ] (y : κ → AF F) : 0 < sz y := lt_of_lt_of_le (by positivity) (norm_le_sz y)
+
+theorem summable_wt {κ : Type} [Fintype κ] {C : Set (κ → Af F)} (hC : IsCompact C) : ∃ N : ℕ, Summable fun ξ : κ → F =>
+    if (fun j => (algebraMap F (AF F) (ξ j)).2) ∈ C then (sz (fun j => algebraMap F (AF F) (ξ j)) ^ N)⁻¹ else 0 := by
+  obtain ⟨N, hN, hK⟩ := exists_nat_mul_integral_of_isCompact F hC
+  haveI := discreteTopology_denomLattice F κ hN
+  refine ⟨Module.finrank ℤ (denomLattice F κ N) + 1, ?_⟩
+  let S : Set (κ → F) := {ξ | (fun i => mixedEmbedding F (ξ i)) ∈ denomLattice F κ N}
+  refine ((Subtype.val_injective (p := fun ξ => ξ ∈ S)).summable_iff ?_).1 ?_
+  · intro ξ hξ
+    refine if_neg fun h0 => hξ ⟨⟨ξ, fun i => ?_⟩, rfl⟩
+    obtain ⟨y, hy⟩ := (GlobalTheory.IntegralFinAdele.integral_finiteAdele_properties F).2.2.2.1 ((N : F) * ξ i) fun v => by
+      rw [map_mul, map_natCast]
+      exact hK _ h0 i v
+    refine ⟨y, ?_⟩
+    have h2 := congrArg (mixedEmbedding F) hy
+    rw [← nsmul_eq_mul, map_nsmul, ← Nat.cast_smul_eq_nsmul ℝ] at h2
+    exact h2.symm
+  · let j : S → denomLattice F κ N := fun ξ => ⟨_, ξ.2⟩
+    have hj : Function.Injective j := fun a b h => Subtype.ext (funext fun i =>
+      mixedEmbedding_injective F (congrFun (congrArg Subtype.val h) i))
+    refine Summable.of_nonneg_of_le (fun ξ => ?_) (fun ξ => ?_)
+      ((summable_lat_wt (denomLattice F κ N) (Nat.lt_succ_self _)).comp_injective hj)
+    · simp only [Function.comp_apply]
+      split_ifs
+      · exact inv_nonneg.2 (pow_pos (sz_pos _) _).le
+      · exact le_rfl
+    · simp only [Function.comp_apply]
+      split_ifs
+      · rw [inv_pow]
+        refine inv_anti₀ (by positivity) (pow_le_pow_left₀ (by positivity) ?_ _)
+        have h := norm_le_sz (fun i => algebraMap F (AF F) (ξ.1 i))
+        have e : (fun i => evI F (algebraMap F (AF F) (ξ.1 i))) = fun i => mixedEmbedding F (ξ.1 i) :=
+          funext fun i => (InfiniteAdeleRing.mixedEmbedding_eq_algebraMap_comp F).symm
+        rw [e] at h
+        exact h
+      · positivity
+
+variable {n d n₁ d₁ m : ℕ} {B : Base F E} {X : Spc F E n} {W : Spc F E d} {X₁ : Spc F E n₁} {W₁ : Spc F E d₁}
+  {M : Model σ X W} {M₁ : Model σ X₁ W₁} {ι : Matrix (Fin n) (Fin n₁) E} {ι' : Matrix (Fin d) (Fin d₁) E}
+  {I : Set (Ten F E n d)} {e : Fn F n d →ₗ[ℂ] Fn F n₁ d₁} {u z : Fin m → Matrix (Fin n) (Fin d) E}
+
+theorem slice_bound (hS : Slice) (hB : B.IsGood σ) (hM : M.IsGood B.ψ) (hM₁ : M₁.IsGood B.ψ) (he : IsEv B M M₁ ι ι' I e)
+    (hD : Dual σ X W I u z) {l} (hl : l ∈ (adeleClass F).adm (Fin n₁ × Fin d₁)) {φ} (hφ : φ ∈ SB (Fin n × Fin d → Af F)) :
+    ∃ (wt : (Fin m → F) → ℝ) (P : SInf F (Fin n × Fin d) → ℝ), Summable wt ∧ Continuous P ∧ P 0 = 0 ∧
+      ∀ y (f : SInf F (Fin n × Fin d)),
+        ‖l (e (M.co.rho B.ψ (lin u fun j => algebraMap F (AF F) (y j)) (pureA F f φ)))‖ ≤ P f * wt y := by
+  obtain ⟨r, φ₁, C, A, h1, hC, -, h2, h3, h4⟩ := hS F E σ B n d n₁ d₁ X W X₁ W₁ M M₁ hB hM hM₁ ι ι' I e he m u z hD φ hφ
+  obtain ⟨N, hN⟩ := summable_wt hC
+  choose T hT using fun i => hl (φ₁ i) (h1 i)
+  choose p hp hq using fun i => h4 ((normSeminorm ℂ ℂ).comp (T i).toLinearMap) N (T i).continuous.norm
+  refine ⟨_, fun f => ∑ i, p i f, hN, continuous_finset_sum _ fun i _ => hp i, by simp, fun y f => ?_⟩
+  rw [h2, map_sum]
+  simp only [hT]
+  split_ifs with hy
+  · rw [Finset.sum_mul]
+    refine norm_sum_le_of_le _ fun i _ => ?_
+    rw [← div_eq_mul_inv, le_div_iff₀ (pow_pos (sz_pos _) _)]
+    exact hq i i _ f
+  · simp [h3 _ _ hy]
+
+end PositivityTheory.ThKCT
+end
+end
+
+section
+noncomputable section
+
+namespace PositivityTheory.ThKCT
+
+open scoped TensorProduct Matrix
+open NumberField IsDedekindDomain Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK PositivityTheory.ThKEst
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
+  {n d n₁ d₁ m : ℕ} {B : Base F E} {X : Spc F E n} {W : Spc F E d} {X₁ : Spc F E n₁} {W₁ : Spc F E d₁}
+  {M : Model σ X W} {M₁ : Model σ X₁ W₁} {ι : Matrix (Fin n) (Fin n₁) E} {ι' : Matrix (Fin d) (Fin d₁) E}
+  {I : Set (Ten F E n d)} {e : Fn F n d →ₗ[ℂ] Fn F n₁ d₁} {u z : Fin m → Matrix (Fin n) (Fin d) E}
+
+def rhoL (B : Base F E) (M : Model σ X W) (w : Ten F E n d) : Fn F n d →ₗ[ℂ] Fn F n d where
+  toFun := M.co.rho B.ψ w
+  map_add' := rho_add _ _ _
+  map_smul' := rho_smul _ _ _
+
+theorem slice_summable (hS : Slice) (hB : B.IsGood σ) (hM : M.IsGood B.ψ) (hM₁ : M₁.IsGood B.ψ) (he : IsEv B M M₁ ι ι' I e)
+    (hD : Dual σ X W I u z) {l} (hl : l ∈ (adeleClass F).adm (Fin n₁ × Fin d₁)) {Φ} (hΦ : Φ ∈ schA F (Fin n × Fin d)) :
+    Summable fun y : Fin m → F => l (e (rhoL B M (lin u fun j => algebraMap F (AF F) (y j)) Φ)) := by
+  induction hΦ using Submodule.span_induction with
+  | mem Φ h =>
+    obtain ⟨f, g, hg, rfl⟩ := h
+    obtain ⟨wt, P, h1, -, -, h2⟩ := slice_bound hS hB hM hM₁ he hD hl hg
+    exact Summable.of_norm_bounded (h1.mul_left (P f)) fun y => h2 y f
+  | zero => simpa using summable_zero
+  | add Φ Ψ _ _ h1 h2 => simpa only [map_add] using h1.add h2
+  | smul c Φ _ h => simpa only [map_smul, smul_eq_mul] using h.mul_left c
+
+theorem slice_adm (hS : Slice) (hB : B.IsGood σ) (hM : M.IsGood B.ψ) (hM₁ : M₁.IsGood B.ψ) (he : IsEv B M M₁ ι ι' I e)
+    (hD : Dual σ X W I u z) {l} (hl : l ∈ (adeleClass F).adm (Fin n₁ × Fin d₁)) :
+    ∃ L ∈ (adeleClass F).adm (Fin n × Fin d), ∀ Φ ∈ schA F (Fin n × Fin d),
+      HasSum (fun y : Fin m → F => l (e (M.co.rho B.ψ (lin u fun j => algebraMap F (AF F) (y j)) Φ))) (L Φ) := by
+  let L₀ : schA F (Fin n × Fin d) →ₗ[ℂ] ℂ :=
+    { toFun := fun Φ => ∑' y : Fin m → F, l (e (rhoL B M (lin u fun j => algebraMap F (AF F) (y j)) Φ.1))
+      map_add' := fun Φ Ψ => by
+        simp only [Submodule.coe_add, map_add]
+        exact (slice_summable hS hB hM hM₁ he hD hl Φ.2).tsum_add (slice_summable hS hB hM hM₁ he hD hl Ψ.2)
+      map_smul' := fun c Φ => by
+        simp only [Submodule.coe_smul, map_smul, smul_eq_mul, RingHom.id_apply]
+        exact tsum_mul_left }
+  obtain ⟨L, hL⟩ := LinearMap.exists_extend L₀
+  have hL' : ∀ Φ ∈ schA F (Fin n × Fin d),
+      HasSum (fun y : Fin m → F => l (e (M.co.rho B.ψ (lin u fun j => algebraMap F (AF F) (y j)) Φ))) (L Φ) := fun Φ hΦ => by
+    rw [show L Φ = L₀ ⟨Φ, hΦ⟩ from LinearMap.congr_fun hL ⟨Φ, hΦ⟩]
+    exact (slice_summable hS hB hM hM₁ he hD hl hΦ).hasSum
+  refine ⟨L, fun g hg => ?_, hL'⟩
+  obtain ⟨wt, P, h1, h2, h3, h4⟩ := slice_bound hS hB hM hM₁ he hD hl hg
+  let T : SInf F (Fin n × Fin d) →ₗ[ℂ] ℂ :=
+    { toFun := fun f => L (pureA F f g)
+      map_add' := fun f₁ f₂ => by
+        rw [← map_add]; congr 1; funext x; simp [pureA, add_mul]
+      map_smul' := fun c f => by
+        rw [RingHom.id_apply, ← map_smul]; congr 1; funext x; simp [pureA, mul_assoc] }
+  refine ⟨⟨T, continuous_of_continuousAt_zero T ?_⟩, fun f => rfl⟩
+  rw [ContinuousAt, map_zero]
+  refine squeeze_zero_norm (a := fun f => P f * ∑' y, wt y) (fun f => ?_) ?_
+  · exact (hL' _ (Submodule.subset_span ⟨f, g, hg, rfl⟩)).norm_le_of_bounded (h1.hasSum.mul_left (P f)) fun y => h4 y f
+  · simpa [h3] using (h2.tendsto 0).mul_const (∑' y, wt y)
+
+theorem term_zero (h : IsStd B.ψ) (a : (Fin m → F) → Fn F n d → ℂ)
+    (ha : ∀ y t, ∀ Φ ∈ schA F (Fin n × Fin d), a y (M.co.rho B.ψ (lin z t) Φ) =
+      B.ψ (-((fun j => algebraMap F (AF F) (y j)) ⬝ᵥ t)) * a y Φ)
+    (h0 : ∀ Φ ∈ schA F (Fin n × Fin d), HasSum (fun y => a y Φ) 0) (y) {Φ} (hΦ : Φ ∈ schA F (Fin n × Fin d)) : a y Φ = 0 := by
+  refine fourier_uniq h (fun y => a y Φ) (h0 Φ hΦ).summable (fun t => ?_) y
+  rw [← (h0 _ (rho_mem M h (lin z (-t)) hΦ)).tsum_eq]
+  exact tsum_congr fun y => by rw [ha y _ Φ hΦ, dotProduct_neg, neg_neg, mul_comm]
+
+theorem thetaExp_of (hS : Slice) : ThetaExp := by
+  intro F E _ _ _ _ _ σ B n d n₁ d₁ X W X₁ W₁ M M₁ hB hM hM₁ ι ι' I e he m u z hP
+  have h := hB.std
+  obtain ⟨l, hl, hθ⟩ := (GlobalTheory.CompanionTheory.ThetaAdm.theta_adm F (Fin n₁ × Fin d₁)).2.1
+  obtain ⟨L, hL, hs⟩ := slice_adm hS hB hM hM₁ he hP.toDual hl
+  have hs' : ∀ Φ ∈ schA F (Fin n × Fin d), HasSum (fun y : Fin m → F =>
+      thetaSum F (e (M.co.rho B.ψ (lin u fun j => algebraMap F (AF F) (y j)) Φ))) (L Φ) := fun Φ hΦ => by
+    simpa only [hθ _ (he.maps _ (rho_mem M h _ hΦ))] using hs Φ hΦ
+  have hu : ∀ a : Fin m → F, ∀ Φ ∈ schA F (Fin n × Fin d),
+      L (M.co.rho B.ψ (lin u fun j => algebraMap F (AF F) (a j)) Φ) = L Φ := fun a Φ hΦ => by
+    refine (hs' _ (rho_mem M h _ hΦ)).unique ?_
+    have := (Equiv.addRight a).hasSum_iff.2 (hs' Φ hΦ)
+    convert this using 2 with y
+    rw [rho_rho_of _ _ _ _ (sy_lin_uu M hP _ _), ← lin_add]
+    simp only [Function.comp_apply, Equiv.coe_addRight, Pi.add_apply, map_add]
+    rfl
+  have hz : ∀ b : Fin m → F, ∀ Φ ∈ schA F (Fin n × Fin d),
+      L (M.co.rho B.ψ (lin z fun j => algebraMap F (AF F) (b j)) Φ) = L Φ := fun b Φ hΦ => by
+    refine (hs' _ (rho_mem M h _ hΦ)).unique ?_
+    convert hs' Φ hΦ using 2 with y
+    rw [ev_rho_uz h he hP _ _ hΦ,
+      show -((fun j => algebraMap F (AF F) (y j)) ⬝ᵥ fun j => algebraMap F (AF F) (b j)) = algebraMap F (AF F) (-(y ⬝ᵥ b)) by
+        simp [dotProduct], h.2.1, one_smul]
+  have hm : ∀ x₁ : Matrix (Fin n₁) (Fin d₁) E, ∀ Φ ∈ schA F (Fin n × Fin d),
+      L (M.co.rho B.ψ (incM F ι * incM F x₁ * (incM F ι')ᵀ) Φ) = L Φ := fun x₁ Φ hΦ => by
+    refine (hs' _ (rho_mem M h _ hΦ)).unique ?_
+    convert hs' Φ hΦ using 2 with y
+    obtain ⟨a, b, hab⟩ := hM₁.rat x₁
+    rw [ev_rho_um h he hP _ _ hΦ, Darboux.rho, hab, theta_schr_rat h]
+  obtain ⟨c, hc⟩ := thetaUniq_of F (Fin n × Fin d) B.ψ h L hL fun ξ η Φ hΦ => by
+    obtain ⟨x, hx⟩ := rat_surj hB.cm.2.2.1 M.co.e hM.rat ξ η
+    obtain ⟨a, b, x₁, hr⟩ := rho_rat (M := M) h hP x
+    rw [← hx, ← Darboux.rho, hr, hu _ _ (rho_mem M h _ (rho_mem M h _ hΦ)), hz _ _ (rho_mem M h _ hΦ), hm _ _ hΦ]
+  have hc0 : c ≠ 0 := by
+    rintro rfl
+    obtain ⟨Φ, hΦ, hne⟩ := ev_ne_zero hM hM₁ he
+    refine hne (thetaInj_of F _ B.ψ h _ (he.maps Φ hΦ) fun w => ?_)
+    obtain ⟨w, rfl⟩ := M₁.co.e.surjective w
+    have := term_zero (M := M) (z := z) h
+      (fun y Φ => thetaSum F (e (M.co.rho B.ψ (lin u fun j => algebraMap F (AF F) (y j)) Φ)))
+      (fun y t Φ hΦ => by rw [ev_rho_uz h he hP _ _ hΦ, thetaSum_smul])
+      (fun Φ hΦ => by simpa only [hc Φ hΦ, zero_mul] using hs' Φ hΦ) 0 (rho_mem M h (incM F ι * w * (incM F ι')ᵀ) hΦ)
+    rwa [show (fun j => algebraMap F (AF F) ((0 : Fin m → F) j)) = 0 from funext fun j => map_zero _, lin_zero, rho_zero,
+      he.Heisenberg₂ _ _ hΦ] at this
+  refine ⟨c⁻¹, inv_ne_zero hc0, fun Φ hΦ => ?_⟩
+  simpa only [hc Φ hΦ, inv_mul_cancel_left₀ hc0] using (hs' Φ hΦ).mul_left c⁻¹
+
+theorem evUniq_of (hE : ThetaExp) : EvUniq := by
+  intro F E _ _ _ _ _ σ B n d n₁ d₁ X W X₁ W₁ M M₁ hB hM hM₁ ι ι' I e e' he he' m u z hP
+  have h := hB.std
+  obtain ⟨C, hC, hs⟩ := hE F E σ B n d n₁ d₁ X W X₁ W₁ M M₁ hB hM hM₁ ι ι' I e he m u z hP
+  obtain ⟨C', hC', hs'⟩ := hE F E σ B n d n₁ d₁ X W X₁ W₁ M M₁ hB hM hM₁ ι ι' I e' he' m u z hP
+  refine ⟨C'⁻¹ * C, mul_ne_zero (inv_ne_zero hC') hC, fun Φ hΦ => ?_⟩
+  have key : C • e Φ + (-C') • e' Φ = 0 := by
+    refine thetaInj_of F _ B.ψ h _ (add_mem (Submodule.smul_mem _ _ (he.maps Φ hΦ)) (Submodule.smul_mem _ _ (he'.maps Φ hΦ)))
+      fun w => ?_
+    obtain ⟨w, rfl⟩ := M₁.co.e.surjective w
+    have := term_zero (M := M) (z := z) h
+      (fun y Φ => C * thetaSum F (e (M.co.rho B.ψ (lin u fun j => algebraMap F (AF F) (y j)) Φ)) -
+        C' * thetaSum F (e' (M.co.rho B.ψ (lin u fun j => algebraMap F (AF F) (y j)) Φ)))
+      (fun y t Φ hΦ => by rw [ev_rho_uz h he hP _ _ hΦ, ev_rho_uz h he' hP _ _ hΦ, thetaSum_smul, thetaSum_smul]; ring)
+      (fun Φ hΦ => by simpa only [sub_self] using (hs Φ hΦ).sub (hs' Φ hΦ)) 0 (rho_mem M h (incM F ι * w * (incM F ι')ᵀ) hΦ)
+    rw [show (fun j => algebraMap F (AF F) ((0 : Fin m → F) j)) = 0 from funext fun j => map_zero _, lin_zero, rho_zero,
+      he.Heisenberg₂ _ _ hΦ, he'.Heisenberg₂ _ _ hΦ] at this
+    rw [← Darboux.rho, rho_add, rho_smul, rho_smul,
+      thetaSum_add F (Submodule.smul_mem _ _ (rho_mem M₁ h _ (he.maps Φ hΦ))) (Submodule.smul_mem _ _ (rho_mem M₁ h _ (he'.maps Φ hΦ))),
+      thetaSum_smul, thetaSum_smul, ← this]
+    ring
+  rw [mul_smul, eq_neg_of_add_eq_zero_left key, neg_smul, neg_neg, smul_smul, inv_mul_cancel₀ hC', one_smul]
+
+end PositivityTheory.ThKCT
+end
+end
+
+section
+set_option linter.unusedSectionVars false
+
+noncomputable section
+
+namespace PositivityTheory.ThKCT.Ker
+
+open scoped TensorProduct NNReal ENNReal Matrix Classical
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK PositivityTheory.ThKEst PositivityTheory.ThKG PositivityTheory.ThKG.Tow
+open GlobalTheory.Doubling (absE)
+open Matrix (vecMulVec)
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
+
+theorem continuous_evI : Continuous (evI F) := by
+  have : Continuous (InfiniteAdeleRing.ringEquiv_mixedSpace F) := by
+    change Continuous fun x : InfiniteAdeleRing F =>
+      ((fun (v : {w : InfinitePlace F // w.IsReal}) => InfinitePlace.Completion.extensionEmbeddingOfIsReal v.2 (x v)),
+       (fun (v : {w : InfinitePlace F // w.IsComplex}) => InfinitePlace.Completion.extensionEmbedding v.1 (x v)))
+    refine Continuous.prodMk (continuous_pi fun v => ?_) (continuous_pi fun v => ?_)
+    · exact (InfinitePlace.Completion.isometry_extensionEmbeddingOfIsReal v.2).continuous.comp (continuous_apply _)
+    · exact (InfinitePlace.Completion.isometry_extensionEmbedding v.1).continuous.comp (continuous_apply _)
+  exact this.comp continuous_fst
+
+theorem sz_le {κ : Type} [Fintype κ] (y : κ → AF F) :
+    PositivityTheory.ThKCT.sz y ≤ (1 + Fintype.card κ * Fintype.card (InfinitePlace F)) * (1 + ‖fun j => evI F (y j)‖) := by
+  have h : ∑ j, ∑ w : InfinitePlace F, mixedEmbedding.normAtPlace w (evI F (y j)) ≤
+      ∑ _j : κ, ∑ _w : InfinitePlace F, ‖fun j => evI F (y j)‖ :=
+    Finset.sum_le_sum fun j _ => Finset.sum_le_sum fun w _ => by
+      refine le_trans ?_ (norm_le_pi_norm (fun j => evI F (y j)) j)
+      rw [mixedEmbedding.norm_eq_sup'_normAtPlace]
+      exact Finset.le_sup' (fun w => mixedEmbedding.normAtPlace w (evI F (y j))) (Finset.mem_univ w)
+  simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul] at h
+  have h0 := norm_nonneg fun j => evI F (y j)
+  have h1 : (0 : ℝ) ≤ Fintype.card κ * Fintype.card (InfinitePlace F) := by positivity
+  unfold PositivityTheory.ThKCT.sz
+  nlinarith
+
+theorem theta_unif {κ : Type} [Fintype κ] {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ) {g : (κ → Af F) → ℂ} (hg : g ∈ SB (κ → Af F)) :
+    ∃ p : Seminorm ℂ (SInf F κ), Continuous p ∧ ∀ (f : SInf F κ) w, ‖thetaSum F (schr ψ w (pureA F f g))‖ ≤ p f := by
+  obtain ⟨K, hK, hc⟩ := GlobalTheory.AdeleCocompact.exists_compact_adele F
+  obtain ⟨G, hG⟩ := hg.1.continuous.bounded_above_of_compact_support hg.2
+  have hG0 : 0 ≤ G := (norm_nonneg _).trans (hG 0)
+  have hKp : IsCompact (Set.univ.pi fun _ : κ => K) := isCompact_univ_pi fun _ => hK
+  obtain ⟨A, hA⟩ := hKp.exists_bound_of_continuousOn
+    (f := fun k : κ → AF F => fun j => evI F (k j)) (continuous_pi fun j => continuous_evI.comp (continuous_apply j)).continuousOn
+  have hC : IsCompact ((fun x : (κ → Af F) × (κ → AF F) => x.1 - fun j => (x.2 j).2) '' (tsupport g ×ˢ Set.univ.pi fun _ : κ => K)) :=
+    (hg.2.isCompact.prod hKp).image (continuous_fst.sub (continuous_pi fun j => ((continuous_apply j).comp continuous_snd).snd))
+  obtain ⟨N, hN⟩ := summable_wt hC
+  set C := (fun x : (κ → Af F) × (κ → AF F) => x.1 - fun j => (x.2 j).2) '' (tsupport g ×ˢ Set.univ.pi fun _ : κ => K) with hCd
+  set wt : (κ → F) → ℝ := fun ξ => if (fun j => (algebraMap F (AF F) (ξ j)).2) ∈ C then
+    (PositivityTheory.ThKCT.sz (fun j => algebraMap F (AF F) (ξ j)) ^ N)⁻¹ else 0 with hwt
+  have hw0 : ∀ ξ, 0 ≤ wt ξ := fun ξ => by
+    rw [hwt]; dsimp only; split_ifs
+    · exact inv_nonneg.2 (pow_pos (sz_pos _) _).le
+    · exact le_rfl
+  set c : ℝ := (1 + Fintype.card κ * Fintype.card (InfinitePlace F)) * (1 + |A|) with hcdef
+  have hc0 : 0 < c := by positivity
+  let q : Seminorm ℂ (SInf F κ) := (Finset.Iic (N, 0)).sup (schwartzSeminormFamily ℂ _ ℂ)
+  have hq : Continuous q := Seminorm.continuous_finsetSup fun i _ => (schwartz_withSeminorms ℂ _ ℂ).continuous_seminorm i
+  let D : ℝ≥0 := ⟨2 ^ N * G * c ^ N * ∑' ξ, wt ξ, mul_nonneg (by positivity) (tsum_nonneg hw0)⟩
+  refine ⟨D • q, hq.const_smul D, fun f w => ?_⟩
+  choose a ha using fun j => hc (w.1 j)
+  set k : κ → AF F := fun j => w.1 j - algebraMap F (AF F) (a j) with hk
+  have hkK : k ∈ Set.univ.pi fun _ : κ => K := fun j _ => ha j
+  have key : ∀ ξ : κ → F, ‖schr ψ w (pureA F f g) fun i => algebraMap F (AF F) (ξ i)‖ ≤ (2 ^ N * G * c ^ N * q f) * wt (ξ + a) := by
+    intro ξ
+    have e : (fun i => algebraMap F (AF F) (ξ i)) + w.1 = (fun i => algebraMap F (AF F) ((ξ + a) i)) + k := by
+      funext i; simp [hk]
+    rw [schr, norm_mul, std_norm hψ, one_mul, e]
+    set η := ξ + a
+    set y : κ → AF F := fun i => algebraMap F (AF F) (η i)
+    change ‖f (fun i => evI F ((y + k) i)) * g (fun i => ((y + k) i).2)‖ ≤ _
+    by_cases h0 : g (fun i => ((y + k) i).2) = 0
+    · rw [h0, mul_zero, norm_zero]
+      exact mul_nonneg (by positivity) (hw0 _)
+    have hm : wt η = (PositivityTheory.ThKCT.sz y ^ N)⁻¹ := if_pos ⟨(_, k), ⟨subset_tsupport g h0, hkK⟩, by
+      funext i
+      change (y i).2 + (k i).2 - (k i).2 = _
+      rw [add_sub_cancel_right]⟩
+    set v : κ → mixedEmbedding.mixedSpace F := fun i => evI F ((y + k) i)
+    have h1 := SchwartzMap.one_add_le_sup_seminorm_apply (𝕜 := ℂ) (m := (N, 0)) (k := N) (n := 0) le_rfl le_rfl f v
+    rw [norm_iteratedFDeriv_zero] at h1
+    have h2 : PositivityTheory.ThKCT.sz y ≤ c * (1 + ‖v‖) := by
+      refine (sz_le y).trans ?_
+      rw [hcdef, mul_assoc]
+      refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+      have e2 : (fun j => evI F (y j)) = v - fun j => evI F (k j) := funext fun j =>
+        eq_sub_of_add_eq (map_add (InfiniteAdeleRing.ringEquiv_mixedSpace F) (y j).1 (k j).1).symm
+      have := norm_sub_le v fun j => evI F (k j)
+      have h3 := (hA k hkK).trans (le_abs_self A)
+      rw [e2]
+      nlinarith [norm_nonneg v, abs_nonneg A]
+    rw [hm, ← div_eq_mul_inv, le_div_iff₀ (pow_pos (sz_pos _) _), norm_mul]
+    calc _ ≤ ‖f v‖ * G * (c * (1 + ‖v‖)) ^ N :=
+          mul_le_mul (mul_le_mul_of_nonneg_left (hG _) (norm_nonneg _)) (pow_le_pow_left₀ (sz_pos _).le h2 N) (pow_pos (sz_pos _) _).le
+            (by positivity)
+      _ = G * c ^ N * ((1 + ‖v‖) ^ N * ‖f v‖) := by rw [mul_pow]; ring
+      _ ≤ G * c ^ N * (2 ^ N * q f) := mul_le_mul_of_nonneg_left h1 (by positivity)
+      _ = _ := by ring
+  have hs : HasSum (fun ξ => wt (ξ + a)) (∑' ξ, wt ξ) := (Equiv.addRight a).hasSum_iff.2 hN.hasSum
+  refine (tsum_of_norm_bounded (hs.mul_left _) key).trans_eq ?_
+  change _ = (2 ^ N * G * c ^ N * ∑' ξ, wt ξ) * q f
+  ring
+
+variable {n d n₁ d₁ m : ℕ} {B : Base F E} {X : Spc F E n} {W : Spc F E d} {X₁ : Spc F E n₁} {W₁ : Spc F E d₁}
+  {M : Model σ X W} {M₁ : Model σ X₁ W₁} {ι : Matrix (Fin n) (Fin n₁) E} {ι' : Matrix (Fin d) (Fin d₁) E}
+  {I : Set (Ten F E n d)} {e : Fn F n d →ₗ[ℂ] Fn F n₁ d₁} {u z : Fin m → Matrix (Fin n) (Fin d) E}
+
+theorem slice_unif (hS : Slice) (hB : B.IsGood σ) (hM : M.IsGood B.ψ) (hM₁ : M₁.IsGood B.ψ) (he : IsEv B M M₁ ι ι' I e)
+    (hD : Dual σ X W I u z) {Φ} (hΦ : Φ ∈ schA F (Fin n × Fin d)) : ∃ b : (Fin m → F) → ℝ, Summable b ∧ ∀ y w,
+      ‖thetaSum F (M₁.co.rho B.ψ w (e (M.co.rho B.ψ (lin u fun j => algebraMap F (AF F) (y j)) Φ)))‖ ≤ b y := by
+  obtain ⟨l, -, hl⟩ := (GlobalTheory.CompanionTheory.ThetaAdm.theta_adm F (Fin n₁ × Fin d₁)).2.1
+  have h := hB.std
+  suffices ∃ b : (Fin m → F) → ℝ, Summable b ∧ ∀ y w,
+      ‖l (rhoL B M₁ w (e (rhoL B M (lin u fun j => algebraMap F (AF F) (y j)) Φ)))‖ ≤ b y by
+    obtain ⟨b, h1, h2⟩ := this
+    exact ⟨b, h1, fun y w => by rw [← hl _ (rho_mem M₁ h _ (he.maps _ (rho_mem M h _ hΦ)))]; exact h2 y w⟩
+  induction hΦ using Submodule.span_induction with
+  | mem Φ h0 =>
+    obtain ⟨f, φ, hφ, rfl⟩ := h0
+    obtain ⟨r, φ₁, C, A, h1, hC, -, h2, h3, h4⟩ := hS F E σ B n d n₁ d₁ X W X₁ W₁ M M₁ hB hM hM₁ ι ι' I e he m u z hD φ hφ
+    obtain ⟨N, hN⟩ := summable_wt hC
+    choose q hq hb using fun i => theta_unif h (h1 i)
+    choose p hp hpq using fun i => h4 (q i) N (hq i)
+    refine ⟨_, hN.mul_left (∑ i, p i f), fun y w => ?_⟩
+    rw [show e (rhoL B M _ _) = _ from h2 _ f, map_sum, map_sum]
+    have hb' : ∀ i (f' : SInf F (Fin n₁ × Fin d₁)), ‖l (rhoL B M₁ w (pureA F f' (φ₁ i)))‖ ≤ q i f' := fun i f' =>
+      (congrArg norm (hl _ (rho_mem M₁ h w (Submodule.subset_span ⟨f', _, h1 i, rfl⟩)))).trans_le (hb i f' _)
+    split_ifs with hy
+    · rw [Finset.sum_mul]
+      refine norm_sum_le_of_le _ fun i _ => (hb' i _).trans ?_
+      rw [← div_eq_mul_inv, le_div_iff₀ (pow_pos (sz_pos _) _)]
+      exact hpq i i _ f
+    · refine (norm_sum_le_of_le _ fun i _ => hb' i _).trans ?_
+      simp [h3 _ _ hy]
+  | zero => exact ⟨0, summable_zero, fun y w => by simp⟩
+  | add Φ Ψ _ _ h1 h2 =>
+    obtain ⟨a, a1, a2⟩ := h1
+    obtain ⟨b, b1, b2⟩ := h2
+    exact ⟨a + b, a1.add b1, fun y w => by
+      simp only [map_add]; exact (norm_add_le _ _).trans (add_le_add (a2 y w) (b2 y w))⟩
+  | smul c Φ _ h1 =>
+    obtain ⟨a, a1, a2⟩ := h1
+    exact ⟨fun y => ‖c‖ * a y, a1.mul_left _, fun y w => by
+      simp only [map_smul, norm_smul]; exact mul_le_mul_of_nonneg_left (a2 y w) (norm_nonneg c)⟩
+
+end PositivityTheory.ThKCT.Ker
+
+end
+end
+
+section
 set_option linter.unusedSectionVars false
 
 noncomputable section
@@ -178,4 +991,5 @@ theorem ctKernel_of (hE : ThetaExp) (hQ : EvUniq) (hS : Slice) (hA : EvAdm) (hW 
 
 end PositivityTheory.ThKCT
 
+end
 end

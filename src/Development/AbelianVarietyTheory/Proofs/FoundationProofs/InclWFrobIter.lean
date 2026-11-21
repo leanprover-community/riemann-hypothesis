@@ -102,9 +102,6 @@ theorem act_π (hO : Function.Injective (algebraMap O LL)) (g : G) :
   rw [h1, map_mul, h3] at h2
   exact ⟨_, h2⟩
 
-theorem sc_X_Q (hO : Function.Injective (algebraMap O LL)) {x : RW} (hx : sc E W.X = x) :
-    x * sc E W.Q = φR x := by
-  rw [← hx, ← sc_φ E hO, W.φA_X, map_mul]
 
 theorem jD_sc {T : LocLat G Qp LL O} (a : LetA O n) (x : W.DD T) :
     E.jD T (a • x) = sc E a • E.jD T x := by
@@ -257,33 +254,7 @@ theorem sc_iter_π (j : ℕ) (hj : j ≤ s) :
       show s - j = (s - (j + 1)) + 1 by omega, ← frob_piS (s - (j + 1)), inclW_frob]
     rfl
 
-theorem isUnit_piS_one : IsUnit (inclW l (piS AI 1)) := by
-  apply WittVector.isUnit_of_coeff_zero_ne_zero
-  rw [inclW, WittVector.map_coeff]
-  have h0 : (piS AI 1).coeff 0 = AI.ε1 - 1 := by
-    change WittVector.constantCoeff (piS AI 1) = _
-    rw [piS, map_sub, map_one]
-    rfl
-  rw [h0]
-  intro hz
-  have hz' : AI.ε1 - 1 = 0 := (IsFractionRing.injective (OCb l) (Cb l)) (by rw [hz, map_zero])
-  apply AI.ε_ne_one
-  rw [← frobeniusEquiv_symm_pow_p (OCb l) l AI.ε]
-  change AI.ε1 ^ l = 1
-  rw [sub_eq_zero.mp hz', one_pow]
 
-theorem sc_Q (hs : W.s = s) : sc E W.Q = (1 : ↥(OL LL)) ⊗ₜ[ℤ_[l]] inclW l AI.ξ := by
-  have h1 := W.s_pos
-  have hX : sc E W.X = (1 : ↥(OL LL)) ⊗ₜ[ℤ_[l]] inclW l (piS AI 1) := by
-    rw [LocWach.X, sc_iter_π E _ (by omega), show s - (W.s - 1) = 1 by omega]
-  have h2 := sc_X_Q E Subtype.val_injective hX
-  have hu : IsUnit ((1 : ↥(OL LL)) ⊗ₜ[ℤ_[l]] inclW l (piS AI 1) : RW LL) :=
-    isUnit_piS_one.map (Algebra.TensorProduct.includeRight : WCb l →ₐ[ℤ_[l]] RW LL)
-  have h3 : ((1 : ↥(OL LL)) ⊗ₜ[ℤ_[l]] inclW l (piS AI 1) : RW LL) * sc E W.Q =
-      (1 : ↥(OL LL)) ⊗ₜ[ℤ_[l]] frobW l (inclW l (piS AI 1)) := h2
-  apply hu.mul_left_cancel
-  rw [h3, Algebra.TensorProduct.tmul_mul_tmul, one_mul, ← map_mul (inclW l), ← inclW_frob, frob_piS]
-  exact congrArg (fun x => ((1 : ↥(OL LL)) ⊗ₜ[ℤ_[l]] inclW l x : RW LL)) AI.μ_eq
 
 end Situation
 

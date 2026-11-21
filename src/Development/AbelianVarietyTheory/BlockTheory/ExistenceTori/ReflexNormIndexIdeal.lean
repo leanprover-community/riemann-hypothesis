@@ -93,12 +93,7 @@ theorem beIdeal_spec (hK : ReflexLe Dw c) (𝔞 : Ideal (𝓞 E)) (h𝔞 : 𝔞 
 
 theorem be_spec (hK : ReflexLe Dw c) (Λ : Lat E n) : IsBeLat Dw c Λ (be hK Λ) := beIdeal_spec hK _ _
 
-theorem be_std (hK : ReflexLe Dw c) : be hK (Lat.std E n) = 1 := by
-  simp [be, beIdeal, latIdeal_std]
 
-theorem be_congr (hK : ReflexLe Dw c) {n' : ℕ} {Λ : Lat E n} {Λ' : Lat E n'} (h : latIdeal Λ = latIdeal Λ') :
-    be hK Λ = be hK Λ' := by
-  simp only [be, h]
 
 variable (Dw c)
 

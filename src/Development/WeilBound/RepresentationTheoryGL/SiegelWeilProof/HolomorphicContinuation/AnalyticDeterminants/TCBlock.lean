@@ -1,7 +1,57 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.AnalyticDeterminants.TCHeights
-import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.AnalyticDeterminants.TCBlockC
+import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.AnalyticDeterminants.TCBlockA
 
+section
+noncomputable section
+
+open Matrix Filter Topology
+open scoped ContDiff
+
+namespace PositivityTheory.Rg.Sw.LVs.TC
+
+open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.LVs
+
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+
+theorem iter_cast {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] (f : V → ℂ) (x : V) {m m' : ℕ} (h : m = m')
+    (v : Fin m → V) : iteratedFDeriv ℂ m f x v = iteratedFDeriv ℂ m' f x (v ∘ Fin.cast h.symm) := by
+  subst h
+  rfl
+
+end PositivityTheory.Rg.Sw.LVs.TC
+end
+end
+
+section
+noncomputable section
+
+open Matrix
+
+namespace PositivityTheory.Rg.Sw.LVs.TC
+
+open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.LVs
+
+variable {n : ℕ}
+
+def eBq (j : ℕ) : {x // x ∈ blkB (n := n) j} ≃ {x // ¬ x ∈ blkA (n := n) j} :=
+  Equiv.subtypeEquivRight (fun x => mem_blkB j x)
+
+def piP (j : ℕ) (σA : Equiv.Perm (blkA (n := n) j)) (τ : Equiv.Perm (blkB (n := n) j)) : Equiv.Perm (Fin n) :=
+  Equiv.Perm.subtypeCongr σA ((eBq j).permCongr τ)
+
+def resA (j : ℕ) (σ : Equiv.Perm (Fin n)) (h : ∀ r, r ∈ blkA (n := n) j ↔ σ r ∈ blkA (n := n) j) :
+    Equiv.Perm (blkA (n := n) j) :=
+  σ.subtypePerm fun r => (h r).symm
+
+def resB (j : ℕ) (σ : Equiv.Perm (Fin n)) (h : ∀ r, r ∈ blkA (n := n) j ↔ σ r ∈ blkA (n := n) j) :
+    Equiv.Perm (blkB (n := n) j) :=
+  (eBq j).symm.permCongr (σ.subtypePerm (p := fun x => ¬ x ∈ blkA (n := n) j) fun r => not_congr (h r).symm)
+
+end PositivityTheory.Rg.Sw.LVs.TC
+end
+end
+
+section
 noncomputable section
 
 open Matrix Filter Topology
@@ -263,3 +313,5 @@ theorem detDBlock_of (hA : IterAffine) (hS : IterSymm) (hN : IterNested) : DetDB
     exact Subsingleton.elim _ _
 
 end PositivityTheory.Rg.Sw.LVs.TC
+end
+end

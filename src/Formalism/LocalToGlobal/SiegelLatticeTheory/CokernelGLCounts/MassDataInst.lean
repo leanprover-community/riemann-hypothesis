@@ -189,10 +189,6 @@ def massDataOf : Formalism.FourierDecayAlt.S3.MassData (TypP F g1 g2) :=
     n0c := (massDataPre σ J Λ k P P' Kpp Kpp1 Kpp2 MG MW MW' X0 g1 g2 du du' dπ dπ' vH vH' vN vN' L A).AA /
       (massDataPre σ J Λ k P P' Kpp Kpp1 Kpp2 MG MW MW' X0 g1 g2 du du' dπ dπ' vH vH' vN vN' L A).ρ0 }
 
-theorem inMass_massDataOf (h : massH σ J Λ P ≠ 0) :
-    (massDataOf σ J Λ k P P' Kpp Kpp1 Kpp2 MG MW MW' X0 g1 g2 du du' dπ dπ' vH vH' vN vN' L A).InMass := by
-  unfold Formalism.FourierDecayAlt.S3.MassData.InMass
-  exact div_mul_cancel₀ _ h
 
 end Gen
 

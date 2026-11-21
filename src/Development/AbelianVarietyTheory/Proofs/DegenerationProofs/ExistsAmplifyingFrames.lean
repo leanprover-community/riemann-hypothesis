@@ -61,14 +61,6 @@ theorem exists_isFrame (hL : L.IsLB) {n : ℕ} (b : Fin n → LB.Sec (LPow G L (
   obtain ⟨s, hs⟩ := exists_pull hL y (b i)
   exact ⟨s, IsPull.lin _ (hom_unique _ _) (hf i) hs, IsPull.lin _ (hom_unique _ _) (hb' i) hs⟩
 
-theorem ampFrames_and_isFrame : Laws → Laws2 → ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] [IsNoetherianRing R]
-    (P : PolAV (Sp R)) (N : ℕ), 1 ≤ N →
-    Nonempty (AmpFrames P.A P.L N) ∧ ∃ (n : ℕ) (f : Fin n → _), IsFrame P.A P.L N (jK R) f := by
-  intro hL _ R _ _ _ _ P N hN
-  refine ⟨⟨(PolFrames.exists_ampFrames_local N hL.secBaseChange R P hN).choose⟩, N ^ P.g, ?_⟩
-  obtain ⟨U, hU, b, hb⟩ := PolFrames.exists_local_basisAlong N hL.secBaseChange P hN (IsLocalRing.closedPoint R)
-  obtain rfl : U = ⊤ := DVR.eq_top_of_closedPoint_mem U hU
-  exact exists_isFrame P.isLB b hb (jK R)
 
 end GlobalTheory.LN.LocalFrames
 end

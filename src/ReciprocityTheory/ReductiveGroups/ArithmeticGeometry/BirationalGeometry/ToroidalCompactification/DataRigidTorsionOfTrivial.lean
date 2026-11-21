@@ -85,39 +85,7 @@ def GammaModMSt : Prop :=
     (e₁ e₂ : a.D₀.X ≃ₗ[𝓞 E] P.D.toPre.X), RigidIn a P φ₁ φ₂ he₁ he₂ w₁ w₂ e₁ e₂ →
     ∀ y, ∃ z, e₂.symm (e₁ y) = y + (l.M : ℤ) • z
 
-theorem dataRigid_torsion_of_trivial (hΓ : GammaTrivSt) (hΘ : ThetaTrivSt) (hW : WTrivSt) : DataRigidTorsion := by
-  intro E _ _ _ H D l c k _ bF a t P hP φ₁ φ₂ he₁ he₂ w₁ w₂ e₁ e₂ hw₁ hw₂ hq
-  have hR : RigidIn a P φ₁ φ₂ he₁ he₂ w₁ w₂ e₁ e₂ := And.intro hw₁ (And.intro hw₂ hq)
 
-  have he : e₁ = e₂ := hΓ E H D l c k bF a t P hP φ₁ φ₂ he₁ he₂ w₁ w₂ e₁ e₂ hR
-  subst he
-
-  have hφ : φ₁ = φ₂ := hΘ E H D l c k bF a t P hP φ₁ φ₂ he₁ he₂ w₁ w₂ e₁ hR
-  subst hφ
-
-  exact ⟨rfl, rfl, heq_of_eq (hW E H D l c k bF a P.D P.oD φ₁ he₁ w₁ w₂ e₁ hw₁ hw₂)⟩
-
-theorem gammaTriv (hBe : GammaBetaSt) (hMo : GammaModMSt) (hF : LatFinOrdSt) (hK : LatMinkowskiSt) : GammaTrivSt := by
-  intro E _ _ _ H D l c k _ bF a t P hP φ₁ φ₂ he₁ he₂ w₁ w₂ e₁ e₂ hR
-  have hR0 := hR
-  obtain ⟨hw₁, hw₂, -⟩ := hR0
-  have hβ := hBe E H D l c k bF a P.D P.oD φ₁ φ₂ he₁ he₂ w₁ w₂ e₁ e₂ hw₁ hw₂
-  have hM := hMo E H D l c k bF a t P hP φ₁ φ₂ he₁ he₂ w₁ w₂ e₁ e₂ hR
-
-  let σ : a.D₀.X ≃ₗ[ℤ] a.D₀.X := (e₁.trans e₂.symm).toAddEquiv.toIntLinearEquiv
-  have hσapp : ∀ y, σ y = e₂.symm (e₁ y) := fun y => rfl
-  obtain ⟨n, hn, hσn⟩ := hF a.D₀.X a.be a.be_symm a.be_pos σ
-    (fun y z => by rw [hσapp, hσapp]; exact hβ y z)
-  have hσ : σ = 1 := by
-    refine hK a.D₀.X σ n l.M hn hσn l.three_le (fun y => ?_)
-    obtain ⟨z, hz⟩ := hM y
-    refine ⟨z, ?_⟩
-    rw [hσapp, hz]
-    simp
-  ext y
-  have h1 : σ y = y := by rw [hσ]; rfl
-  rw [hσapp] at h1
-  exact (LinearEquiv.symm_apply_eq e₂).mp h1
 
 def ThetaFixMbSt : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (c : Coeff l)
@@ -167,14 +135,5 @@ def WeilRosatiSt : Prop :=
     (k : ℕ) (T : Over S) (x y : T ⟶ P.A) (a : O) (c : Γ(T.left, ⊤)ˣ), x ^ k = 1 → y ^ k = 1 →
     (Out.WeilIs P.A P.L k (x ≫ o.act a) y c ↔ Out.WeilIs P.A P.L k x (y ≫ o.act (star a)) c)
 
-theorem thetaTriv (h1 : ThetaFixMbSt) (h2 : ThetaWeilSt) (h3 : SerreAllSt) : ThetaTrivSt := by
-  intro E _ _ _ H D l c k _ bF a t P hP φ₁ φ₂ he₁ he₂ w₁ w₂ e₁ hR
-  have hR0 := hR
-  obtain ⟨hw₁, hw₂, -⟩ := hR0
-
-  have hMb := h1 E H D l c k bF a t P hP φ₁ φ₂ he₁ he₂ w₁ w₂ e₁ hR
-  refine h3 E H D l c k bF a P.D P.oD φ₁ φ₂ he₁ he₂ w₁ w₂ e₁ e₁ hw₁ hw₂ ?_
-  intro F _ _ _ x hx
-  exact h2 E H D l c k bF a P.D P.oD φ₁ φ₂ he₁ he₂ w₁ w₂ e₁ e₁ hw₁ hw₂ F (hMb F) x hx
 
 end ReciprocityTheory.ChartRestriction.G.Geo.Tor

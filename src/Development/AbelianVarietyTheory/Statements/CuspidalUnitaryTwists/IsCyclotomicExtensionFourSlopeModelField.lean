@@ -264,57 +264,7 @@ theorem hypotheses_inhabited (a : ℕ) (ha : 1 ≤ a) (k : ℕ) :
   · rw [g2]; exact hm.2
   · rw [g2]; exact hm.1
 
-theorem hypothesesK (n : ℕ) :
-    IsDefGram (1 : Matrix (Fin n) (Fin n) K) ∧ IsSelfDualK (1 : Matrix (Fin n) (Fin n) K) (stdLat K n) := by
-  refine ⟨⟨Matrix.conjTranspose_one, fun a b => ?_, fun φ => ?_⟩, stdLat_isLattice K n, ?_⟩
-  · rw [Matrix.one_apply]
-    split_ifs
-    · exact one_mem _
-    · exact zero_mem _
-  · rw [Matrix.map_one _ (map_zero _) (map_one _)]
-    exact Matrix.PosDef.one
-  · have hm : ∀ x : K, x ∈ (1 : Submodule (𝓞 K) K) ↔ IsIntegral ℤ x := fun x => by
-      rw [Submodule.mem_one]
-      exact ⟨fun ⟨y, hy⟩ => hy ▸ y.isIntegral_coe, fun h => ⟨⟨x, h⟩, rfl⟩⟩
-    ext x
-    change (∀ y ∈ stdLat K n, star y ⬝ᵥ ((1 : Matrix (Fin n) (Fin n) K) *ᵥ x) ∈ (1 : Submodule (𝓞 K) K)) ↔ _
-    simp only [Matrix.one_mulVec, hm]
-    refine ⟨fun h => mem_stdLat.2 fun i => ?_, fun hx y hy => ?_⟩
-    · have := h _ (single_mem_stdLat i)
-      simpa [Pi.star_single] using this
-    · exact IsIntegral.sum _ fun i _ =>
-        ((mem_stdLat.1 hy i).map (starRingEnd K).toIntAlgHom).mul (mem_stdLat.1 hx i)
 
-theorem muDef_std [IsTotallyComplex K] (hN : 0 < N) :
-    Formalism.HN.muDef (Pi.basisFun K (Fin N)) (fun _ => (1 : Matrix (Fin N) (Fin N) ℂ))
-      (Submodule.span (𝓞 K) (Set.range (Pi.basisFun K (Fin N)))) = 0 := by
-  have hX : ∀ v : InfinitePlace K, IsUnit ((fun _ => (1 : Matrix (Fin N) (Fin N) ℂ)) v).det := fun _ => by simp
-  have hne : Submodule.span (𝓞 K) (Set.range (Pi.basisFun K (Fin N))) ≠ ⊥ := by
-    intro h
-    have := Submodule.subset_span (R := 𝓞 K) (Set.mem_range_self (f := Pi.basisFun K (Fin N)) ⟨0, hN⟩)
-    rw [h, SetLike.mem_coe, Submodule.mem_bot] at this
-    exact (Pi.basisFun K (Fin N)).ne_zero _ this
-  have h1 := (Formalism.HN.sizeMu K (Fin N → K) (Fin N) (Pi.basisFun K (Fin N)) _ hX _
-    (Submodule.fg_span (Set.finite_range _)) hne).2.1
-  have h2 := (Formalism.HN.htGram K (Fin N → K) (Fin N) (Pi.basisFun K (Fin N)) _ hX N (Pi.basisFun K (Fin N))
-    (Pi.basisFun K (Fin N)).linearIndependent).1
-  have h3 : ∀ v : InfinitePlace K, Formalism.HN.gramPl (Pi.basisFun K (Fin N)) (fun _ => (1 : Matrix (Fin N) (Fin N) ℂ)) v
-      (Pi.basisFun K (Fin N)) = 1 := by
-    intro v
-    ext a c
-    simp only [Formalism.HN.gramPl, Formalism.HermitianLatticesTheory.majAt, Formalism.HermitianLatticesTheory.fcoord, Formalism.HermitianLatticesTheory.vecAt, Matrix.of_apply, inv_one,
-      Matrix.one_mulVec, Module.Basis.repr_self, Finsupp.single_apply, Matrix.one_apply]
-    rw [Finset.sum_eq_single a]
-    · by_cases h : a = c
-      · simp [h]
-      · simp [h, Ne.symm h]
-    · intro b _ hb
-      simp [Ne.symm hb]
-    · simp
-  rw [h1, Formalism.HN.size, h2]
-  simp [h3]
 
-theorem bound_edges (f ν : ℕ) (R : ℝ) : bound f 0 R = 0 ∧ bound 0 ν R = 0 ∧ bound f 1 1 = 0 := by
-  simp [bound]
 
 end GlobalTheory.TestLat.SlopeModel

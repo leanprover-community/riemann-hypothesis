@@ -2,10 +2,291 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.QuotientAverageTranslateInvariantStatement
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.QuotientAverageMapLatticeEquivStatement
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ContinuousQuotientAveragePeriodicFamily
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.QuotientAverageSumIndexFubini
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.QuotientAverageAdelicRationalPointsComm
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PosMApplyNeZero
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.QuotientAverageProdFubini
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFundamentalDomainMassOneCocompactLatticeStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnipotentBlockColumnIndex
 
+section
+section
+noncomputable section
+
+open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.CuspRep GlobalTheory.CuspGeneric
+
+namespace GlobalTheory.CuspGeneric
+
+def sumArrowAddHomeo (A ι κ : Type) [AddCommGroup A] [TopologicalSpace A] :
+    ((ι → A) × (κ → A)) ≃ₜ+ (ι ⊕ κ → A) where
+  toFun p := Sum.elim p.1 p.2
+  invFun f := (fun i => f (Sum.inl i), fun j => f (Sum.inr j))
+  left_inv _ := rfl
+  right_inv f := by ext (i | j) <;> rfl
+  map_add' p q := by ext (i | j) <;> rfl
+  continuous_toFun := by
+    refine continuous_pi fun s => ?_
+    rcases s with i | j
+    · exact (continuous_apply i).comp continuous_fst
+    · exact (continuous_apply j).comp continuous_snd
+  continuous_invFun :=
+    (continuous_pi fun i => continuous_apply _).prodMk (continuous_pi fun j => continuous_apply _)
+
+theorem sum_elim_mem_ratV (E : Type) [Field E] [NumberField E] (ι κ : Type) (x : ι → Ad E) (y : κ → Ad E) :
+    Sum.elim x y ∈ ratV E (ι ⊕ κ) ↔ x ∈ ratV E ι ∧ y ∈ ratV E κ := by
+  constructor
+  · rintro ⟨c, hc⟩
+    exact ⟨⟨fun i => c (Sum.inl i), funext fun i => congrFun hc (Sum.inl i)⟩,
+      ⟨fun j => c (Sum.inr j), funext fun j => congrFun hc (Sum.inr j)⟩⟩
+  · rintro ⟨⟨c, rfl⟩, ⟨d, rfl⟩⟩
+    refine ⟨Sum.elim c d, funext fun s => ?_⟩
+    rcases s with i | j <;> rfl
+
+theorem avg_sum_index : ∀ (E : Type) [Field E] [NumberField E] (ι κ : Type) [Fintype ι] [Fintype κ]
+    (Φ : (ι ⊕ κ → Ad E) → ℂ), Per (ratV E (ι ⊕ κ)) Φ →
+    avg (ratV E (ι ⊕ κ)) Φ = avg (ratV E ι) (fun x => avg (ratV E κ) (fun y => Φ (Sum.elim x y))) := by
+  intro E _ _ ι κ _ _ Φ hΦ
+  have hι := isCoLat_ratV E ι
+  have hκ := isCoLat_ratV E κ
+  have hs := isCoLat_ratV E (ι ⊕ κ)
+  have hp : IsCoLat ((ratV E ι).prod (ratV E κ)) := by
+    obtain ⟨d₁, K₁, hK₁, c₁⟩ := hι
+    obtain ⟨d₂, K₂, hK₂, c₂⟩ := hκ
+    refine ⟨?_, K₁ ×ˢ K₂, hK₁.prod hK₂, fun x => ?_⟩
+    · let f : ↥((ratV E ι).prod (ratV E κ)) → ratV E ι × ratV E κ := fun p => (⟨p.1.1, p.2.1⟩, ⟨p.1.2, p.2.2⟩)
+      have hf : Continuous f :=
+        (continuous_subtype_val.fst.subtype_mk _).prodMk (continuous_subtype_val.snd.subtype_mk _)
+      refine DiscreteTopology.of_continuous_injective hf fun p q h => ?_
+      have e₁ := congrArg (fun r => (r.1 : ι → Ad E)) h
+      have e₂ := congrArg (fun r => (r.2 : κ → Ad E)) h
+      exact Subtype.ext (Prod.ext e₁ e₂)
+    · obtain ⟨γ₁, m₁, k₁⟩ := c₁ x.1
+      obtain ⟨γ₂, m₂, k₂⟩ := c₂ x.2
+      exact ⟨(γ₁, γ₂), ⟨m₁, m₂⟩, k₁, k₂⟩
+  let e := sumArrowAddHomeo (Ad E) ι κ
+  have he : ∀ p, e p ∈ ratV E (ι ⊕ κ) ↔ p ∈ (ratV E ι).prod (ratV E κ) := fun p =>
+    (sum_elim_mem_ratV E ι κ p.1 p.2).trans AddSubgroup.mem_prod.symm
+  have hper : Per ((ratV E ι).prod (ratV E κ)) (fun p => Φ (e p)) := by
+    refine ⟨hΦ.1.comp e.continuous_toFun, fun γ hγ x => ?_⟩
+    have : e (γ + x) = e γ + e x := map_add e γ x
+    simp only [this]
+    exact hΦ.2 _ ((he γ).2 hγ) _
+  have h1 := GlobalTheory.T.quotientAverage_map_lattice_equiv _ _ _ _ hp hs e he Φ hΦ
+  have h2 := GlobalTheory.T.quotientAverage_prod_fubini _ _ _ _ hι hκ _ hper
+  rw [← h1, h2]
+  rfl
+
+end GlobalTheory.CuspGeneric
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.CuspRep GlobalTheory.CuspGeneric
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.quotientAverage_sum_index_fubini : ∀ (E : Type) [Field E] [NumberField E] (ι κ : Type) [Fintype ι] [Fintype κ] (Φ : (ι ⊕ κ → Ad E) → ℂ), Per (ratV E (ι ⊕ κ)) Φ → avg (ratV E (ι ⊕ κ)) Φ = avg (ratV E ι) (fun x => avg (ratV E κ) (fun y => Φ (Sum.elim x y))) := by
+  atlas_forward_decl GlobalTheory.CuspGeneric.avg_sum_index
+end
+
+section
+section
+noncomputable section
+
+open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.CuspRep GlobalTheory.CuspGeneric
+
+namespace GlobalTheory.CuspGeneric
+
+section General
+
+variable {G₁ G₂ : Type} [AddCommGroup G₁] [TopologicalSpace G₁] [AddCommGroup G₂] [TopologicalSpace G₂]
+
+variable [IsTopologicalAddGroup G₁] [LocallyCompactSpace G₁] [SecondCountableTopology G₁] [T2Space G₁]
+  [IsTopologicalAddGroup G₂] [LocallyCompactSpace G₂] [SecondCountableTopology G₂] [T2Space G₂]
+
+def swapEquiv (G₁ G₂ : Type) [AddCommGroup G₁] [TopologicalSpace G₁] [AddCommGroup G₂] [TopologicalSpace G₂] :
+    (G₂ × G₁) ≃ₜ+ (G₁ × G₂) :=
+  { AddEquiv.prodComm with
+    continuous_toFun := continuous_swap
+    continuous_invFun := continuous_swap }
+
+theorem avg_comm_of_isCoLat {Γ₁ : AddSubgroup G₁} {Γ₂ : AddSubgroup G₂} (h₁ : IsCoLat Γ₁) (h₂ : IsCoLat Γ₂)
+    (Φ : G₁ × G₂ → ℂ) (hΦ : Per (Γ₁.prod Γ₂) Φ) :
+    avg Γ₁ (fun x => avg Γ₂ (fun y => Φ (x, y))) = avg Γ₂ (fun y => avg Γ₁ (fun x => Φ (x, y))) := by
+  have hs : Per (Γ₂.prod Γ₁) (fun p : G₂ × G₁ => Φ (p.2, p.1)) := by
+    refine ⟨hΦ.1.comp continuous_swap, fun γ hγ x => ?_⟩
+    exact hΦ.2 (γ.2, γ.1) ⟨hγ.2, hγ.1⟩ (x.2, x.1)
+  have a := GlobalTheory.T.quotientAverage_prod_fubini G₁ G₂ Γ₁ Γ₂ h₁ h₂ Φ hΦ
+  have b := GlobalTheory.T.quotientAverage_prod_fubini G₂ G₁ Γ₂ Γ₁ h₂ h₁ _ hs
+  have c := GlobalTheory.T.quotientAverage_map_lattice_equiv (G₂ × G₁) (G₁ × G₂) (Γ₂.prod Γ₁) (Γ₁.prod Γ₂) (isCoLat_prod h₂ h₁) (isCoLat_prod h₁ h₂) (swapEquiv G₁ G₂)
+    (fun x => ⟨fun h => ⟨h.2, h.1⟩, fun h => ⟨h.2, h.1⟩⟩) Φ hΦ
+  exact a.symm.trans (c.symm.trans b)
+
+end General
+
+theorem avg_comm (E : Type) [Field E] [NumberField E] (ι κ : Type) [Fintype ι] [Fintype κ]
+    (Φ : (ι → Ad E) × (κ → Ad E) → ℂ) (hΦ : Per ((ratV E ι).prod (ratV E κ)) Φ) :
+    avg (ratV E ι) (fun x => avg (ratV E κ) (fun y => Φ (x, y))) =
+      avg (ratV E κ) (fun y => avg (ratV E ι) (fun x => Φ (x, y))) :=
+  avg_comm_of_isCoLat (isCoLat_ratV E ι) (isCoLat_ratV E κ) Φ hΦ
+
+end GlobalTheory.CuspGeneric
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.CuspRep GlobalTheory.CuspGeneric
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.quotientAverage_adelicRationalPoints_comm : ∀ (E : Type) [Field E] [NumberField E] (ι κ : Type) [Fintype ι] [Fintype κ] (Φ : (ι → Ad E) × (κ → Ad E) → ℂ), Per ((ratV E ι).prod (ratV E κ)) Φ → avg (ratV E ι) (fun x => avg (ratV E κ) (fun y => Φ (x, y))) = avg (ratV E κ) (fun y => avg (ratV E ι) (fun x => Φ (x, y))) := by
+  atlas_forward_decl GlobalTheory.CuspGeneric.avg_comm
+end
+
+section
+noncomputable section
+
+open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.CuspRep GlobalTheory.CuspGeneric
+
+namespace GlobalTheory.CuspGeneric.ColSplit
+
+abbrev HiIx (a r k : ℕ) : Type := {t : UnipotentBlockColumnIndex a k k // r ≤ (t.1.1 : ℕ)}
+
+abbrev LoIx (a r k : ℕ) : Type := {t : UnipotentBlockColumnIndex a k k // ¬ r ≤ (t.1.1 : ℕ)}
+
+def colEquiv (a r k : ℕ) : HiIx a r k ⊕ LoIx a r k ≃ UnipotentBlockColumnIndex a k k := Equiv.sumCompl _
+
+def blkEquiv (a r m : ℕ) (hr : r ≤ m + 1) : UnipotentBlockColumnIndex a r m ⊕ LoIx a r (m + 1) ≃ UnipotentBlockColumnIndex a r (m + 1) where
+  toFun := Sum.elim (fun s : UnipotentBlockColumnIndex a r m => ⟨s.1, s.2.1, s.2.2.1, by have := s.2.2.2; omega⟩)
+    (fun l : LoIx a r (m + 1) => ⟨l.1.1, by have := l.2; omega, by have := l.1.2; omega, by have := l.1.2; omega⟩)
+  invFun := fun t => if h : (t.1.2 : ℕ) ≤ m then Sum.inl ⟨t.1, t.2.1, t.2.2.1, h⟩
+    else Sum.inr ⟨⟨t.1, by have := t.2; omega, by have := t.2; omega, by have := t.2; omega⟩,
+      show ¬ r ≤ (t.1.1 : ℕ) by have := t.2; omega⟩
+  left_inv := by
+    rintro (s | l)
+    · simp [s.2.2.2]
+    · have h1 := l.1.2
+      have h2 : ¬ ((l.1.1.2 : ℕ) ≤ m) := by omega
+      simp [h2]
+  right_inv := by
+    intro t
+    by_cases h : (t.1.2 : ℕ) ≤ m
+    · simp [h]
+    · simp [h]
+
+section Mat
+
+variable {R : Type} [CommRing R] {a : ℕ}
+
+theorem posM_apply_ne_zero {ι : Type} [Fintype ι] {p : ι → Fin a × Fin a} {x : ι → R} {i k : Fin a}
+    (h : posM p x i k ≠ 0) : ∃ t, p t = (i, k) := by
+  simp only [posM, Matrix.sum_apply] at h
+  obtain ⟨t, -, ht⟩ := Finset.exists_ne_zero_of_sum_ne_zero h
+  refine ⟨t, ?_⟩
+  rw [Matrix.single_apply] at ht
+  split_ifs at ht with hc
+  · exact Prod.ext hc.1 hc.2
+  · exact absurd rfl ht
+
+theorem posM_eq_of_support {ι : Type} [Fintype ι] {p : ι → Fin a × Fin a} (hp : Function.Injective p)
+    (M : Matrix (Fin a) (Fin a) R) (hM : ∀ i k, M i k ≠ 0 → ∃ t, p t = (i, k)) :
+    posM p (fun t => M (p t).1 (p t).2) = M := by
+  ext i k
+  simp only [posM, Matrix.sum_apply, Matrix.single_apply]
+  by_cases h : ∃ t, p t = (i, k)
+  · obtain ⟨t, ht⟩ := h
+    rw [Finset.sum_eq_single t]
+    · simp [ht]
+    · intro t' _ ht'
+      rw [if_neg]
+      rintro ⟨e1, e2⟩
+      exact ht' (hp (by rw [ht]; exact Prod.ext e1 e2))
+    · simp
+  · have h0 : M i k = 0 := by
+      by_contra h1
+      exact h (hM i k h1)
+    rw [h0]
+    refine Finset.sum_eq_zero fun t _ => ?_
+    rw [if_neg]
+    rintro ⟨e1, e2⟩
+    exact h ⟨t, Prod.ext e1 e2⟩
+
+theorem posM_comp_symm {ι κ : Type} [Fintype ι] [Fintype κ] (p : ι → Fin a × Fin a) (τ : κ ≃ ι) (w : κ → R) :
+    posM p (w ∘ τ.symm) = posM (p ∘ τ) w := by
+  simp only [posM]
+  exact (Fintype.sum_equiv τ.symm _ _ (fun t => by simp)).trans rfl
+
+theorem posM_sumElim {ι κ : Type} [Fintype ι] [Fintype κ] (p : ι ⊕ κ → Fin a × Fin a) (z : ι → R) (y : κ → R) :
+    posM p (Sum.elim z y) = posM (p ∘ Sum.inl) z + posM (p ∘ Sum.inr) y := by
+  simp only [posM, Fintype.sum_sum_type, Sum.elim_inl, Sum.elim_inr, Function.comp]
+
+theorem posM_sub {ι : Type} [Fintype ι] (p : ι → Fin a × Fin a) (x y : ι → R) :
+    posM p (x - y) = posM p x - posM p y := by
+  rw [eq_sub_iff_add_eq, ← posM_add, sub_add_cancel]
+
+theorem posM_zero' {ι : Type} [Fintype ι] (p : ι → Fin a × Fin a) : posM p (0 : ι → R) = 0 := by
+  simp [posM]
+
+theorem posM_mul_eq_zero {ι κ : Type} [Fintype ι] [Fintype κ] {p : ι → Fin a × Fin a} {q : κ → Fin a × Fin a}
+    (h : ∀ s t, (p s).2 ≠ (q t).1) (x : ι → R) (y : κ → R) : posM p x * posM q y = 0 := by
+  simp only [posM, Finset.sum_mul, Finset.mul_sum]
+  refine Finset.sum_eq_zero fun s _ => Finset.sum_eq_zero fun t _ => ?_
+  exact Matrix.single_mul_single_of_ne _ _ _ _ (h _ _) _
+
+def corr {r m : ℕ} (n : UnipotentBlockColumnIndex a r m → R) (z : HiIx a r (m + 1) → R) : LoIx a r (m + 1) → R := fun l =>
+  (posM Subtype.val n * posM (fun t : HiIx a r (m + 1) => t.1.1) z) l.1.1.1 l.1.1.2
+
+theorem posM_corr {r m : ℕ} (n : UnipotentBlockColumnIndex a r m → R) (z : HiIx a r (m + 1) → R) :
+    posM (fun l : LoIx a r (m + 1) => l.1.1) (corr n z) =
+      posM Subtype.val n * posM (fun t : HiIx a r (m + 1) => t.1.1) z := by
+  refine posM_eq_of_support (fun l l' e => Subtype.ext (Subtype.ext e)) _ fun i k hik => ?_
+  obtain ⟨l, hl⟩ : ∃ l, posM Subtype.val n i l * posM (fun t : HiIx a r (m + 1) => t.1.1) z l k ≠ 0 := by
+    rw [Matrix.mul_apply] at hik
+    obtain ⟨l, -, hl⟩ := Finset.exists_ne_zero_of_sum_ne_zero hik
+    exact ⟨l, hl⟩
+  obtain ⟨s, hs⟩ := posM_apply_ne_zero (left_ne_zero_of_mul hl)
+  obtain ⟨t, ht⟩ := posM_apply_ne_zero (right_ne_zero_of_mul hl)
+  have s2 := s.2
+  have t2 := t.1.2
+  rw [hs] at s2
+  rw [ht] at t2
+  simp only at s2 t2
+  exact ⟨⟨⟨(i, k), show (i : ℕ) < m + 1 by omega, show m + 1 ≤ (k : ℕ) by omega, show (k : ℕ) ≤ m + 1 by omega⟩,
+    show ¬ r ≤ (i : ℕ) by omega⟩, rfl⟩
+
+end Mat
+
+section Id
+
+variable {R : Type} [CommRing R] {a : ℕ}
+
+theorem blkU_col_mul_blkU {r m : ℕ} (hr : r ≤ m + 1) (n : UnipotentBlockColumnIndex a r m → R) (z : HiIx a r (m + 1) → R)
+    (y : LoIx a r (m + 1) → R) :
+    blkU (Sum.elim z y ∘ (colEquiv a r (m + 1)).symm) * blkU n =
+      blkU (Sum.elim n (y - corr n z) ∘ (blkEquiv a r m hr).symm) *
+        blkU (Sum.elim z 0 ∘ (colEquiv a r (m + 1)).symm) := by
+  apply Units.ext
+  change (1 + posM Subtype.val (Sum.elim z y ∘ (colEquiv a r (m + 1)).symm)) * (1 + posM Subtype.val n) =
+    (1 + posM Subtype.val (Sum.elim n (y - corr n z) ∘ (blkEquiv a r m hr).symm)) *
+      (1 + posM Subtype.val (Sum.elim z 0 ∘ (colEquiv a r (m + 1)).symm))
+  simp only [posM_comp_symm, posM_sumElim, posM_sub, posM_zero', add_zero]
+  have e1 : ((Subtype.val ∘ colEquiv a r (m + 1)) ∘ Sum.inl) = fun t : HiIx a r (m + 1) => t.1.1 := rfl
+  have e2 : ((Subtype.val ∘ colEquiv a r (m + 1)) ∘ Sum.inr) = fun t : LoIx a r (m + 1) => t.1.1 := rfl
+  have e3 : ((Subtype.val ∘ blkEquiv a r m hr) ∘ Sum.inl) = (Subtype.val : UnipotentBlockColumnIndex a r m → Fin a × Fin a) := rfl
+  have e4 : ((Subtype.val ∘ blkEquiv a r m hr) ∘ Sum.inr) = fun t : LoIx a r (m + 1) => t.1.1 := rfl
+  rw [e1, e2, e3, e4, posM_corr]
+  set P := posM (fun t : HiIx a r (m + 1) => t.1.1) z
+  set Q := posM (fun t : LoIx a r (m + 1) => t.1.1) y
+  set N := posM (Subtype.val : UnipotentBlockColumnIndex a r m → Fin a × Fin a) n
+  have hPN : P * N = 0 := posM_mul_eq_zero (fun s t => by
+    have := s.1.2; have := t.2; omega) _ _
+  have hQN : Q * N = 0 := posM_mul_eq_zero (fun s t => by
+    have := s.1.2; have := t.2; omega) _ _
+  have hQP : Q * P = 0 := posM_mul_eq_zero (fun s t => by
+    have := s.1.2; have := t.1.2; omega) _ _
+  have hNPP : N * P * P = 0 := by
+    rw [mul_assoc, posM_mul_eq_zero (fun s t => by have := s.1.2; have := t.1.2; omega) z z, mul_zero]
+  simp only [mul_add, add_mul, mul_one, one_mul, mul_sub, sub_mul, hPN, hQN, hQP, hNPP]
+  abel
+
+end Id
+
+end GlobalTheory.CuspGeneric.ColSplit
+end
+end
+
+section
 section
 noncomputable section
 
@@ -249,3 +530,4 @@ open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.CuspRep Glob
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.quotientAverage_unipotentBlock_columnTransform_eq_zero : ∀ (E : Type) [Field E] [NumberField E] (a : ℕ) (ψ : AddChar (Ad E) ℂ), StdPsi ψ → ∀ (m : ℕ) (f : GA E a → ℂ), m + 1 < a → Good ψ (m + 1) f → ∀ r, 0 < r → r ≤ m → ∀ g : GA E a, avg (ratV E (UnipotentBlockColumnIndex a r m)) (fun n => colT ψ (m + 1) f (blkU n * g)) = 0 := by
   atlas_forward_decl GlobalTheory.CuspGeneric.avg_colT_blk_eq_zero
+end

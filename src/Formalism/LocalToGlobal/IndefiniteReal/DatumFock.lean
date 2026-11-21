@@ -57,23 +57,6 @@ theorem polySubst_X (p : D.what₂.Tau → ℕ) (k₁ : complexSquareMatrixFamil
     polySubst p k₁ k₂ h (MvPolynomial.X x) = substVar p k₁ k₂ h x := by
   simp [polySubst]
 
-theorem substVar_one (p : D.what₂.Tau → ℕ) :
-    substVar (m := m) (n := n) p (fun τ => (1 : Matrix (Fin (p τ)) (Fin (p τ)) ℂ))
-      (fun τ => (1 : Matrix (Fin (m - p τ)) (Fin (m - p τ)) ℂ)) (fun _ => 1) = MvPolynomial.X := by
-  funext ⟨τ, i, c⟩
-  have hi := i.isLt
-  have e : ∀ k : ℕ, Matrix.map (1 : Matrix (Fin k) (Fin k) ℂ)
-      (MvPolynomial.C : ℂ →+* MvPolynomial (FVar D m n) ℂ) = 1 :=
-    fun k => Matrix.map_one _ (map_zero _) (map_one _)
-  by_cases hx : (i : ℕ) < p τ
-  · simp [substVar, hx, zPlusS, zPlus, varF, e, hi]
-  · have h3 : p τ + ((i : ℕ) - p τ) < m := by omega
-    simp only [substVar, hx, zMinusS, zMinus, varF, e, dif_neg, not_false_eq_true, transpose_one, Matrix.map_one,
-      map_zero, map_one, Matrix.one_mul, Matrix.mul_one, Matrix.of_apply]
-    rw [dif_pos (by omega)]
-    congr 1
-    simp only [Prod.mk.injEq, Fin.ext_iff, true_and, and_true]
-    omega
 
 def dExp (m : ℕ) (p : D.what₂.Tau → ℕ) (e : D.what₂.Tau → ℤ) (τ : D.what₂.Tau) : ℤ := (p τ : ℤ) - ((m + 1) / 2 : ℕ) - e τ
 

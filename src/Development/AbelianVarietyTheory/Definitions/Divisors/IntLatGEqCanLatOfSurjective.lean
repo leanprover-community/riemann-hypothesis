@@ -1,6 +1,78 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.FormalCanLat
+import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ToroidalCompactification
+import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ToroidalCompactificationBis
 
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.LogKS GlobalTheory.LogDR
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan
+open scoped CategoryTheory.Obj
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+namespace GlobalTheory.CanExtM
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X : Scheme.{0}} {t : SAB H X} {V : X.Opens}
+
+def IsBdd (c : Chart t V) (h : HdR c.A) : Prop :=
+  ∃ v, IsTanAtG t (chart c.U) v ∧ c.HasImage h v
+
+def canSet {K : Type} [CommRing K] (s : X ⟶ Sp K) (c : Chart t V) : Set (HdR c.A) :=
+  {h | IsBdd c h ∧ ∀ D ∈ logDer s (Scheme.IdealSheafData.vanishingIdeal V.compl) c.U, ∀ D' : Derivation ℤ c.S c.S,
+    (∀ r, D' (algebraMap Γ(X, c.U.1) c.S r) = algebraMap Γ(X, c.U.1) c.S (D r)) → ∀ k, IsNabla D' h k → IsBdd c k}
+
+def canLat {K : Type} [CommRing K] (s : X ⟶ Sp K) (c : Chart t V) : Submodule Γ(X, c.U.1) (HdR c.A) :=
+  Submodule.span Γ(X, c.U.1) (canSet s c)
+
+def IsCanAt {K : Type} [CommRing K] (s : X ⟶ Sp K) (t : SAB H X) (V : X.Opens) (x : X) : Prop :=
+  ∃ c : Chart t V, x ∈ c.U.1 ∧ IsCanLattice s c (canLat s c)
+
+variable {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {cf : Coeff l}
+
+def GoodModel (Y : Model Xo cf (RingHom.id cf.F)) : Prop :=
+  SmoothOfRelativeDimension Dw.dim Y.s ∧ ReciprocityTheory.AnForm.R.FinalTheorems.Snc (boundary Y) ∧ HasLogKS Y.t Y.s (interior Y) ∧
+    ∀ x ∈ genBd Y, GlobalTheory.MumfordChart.HasChart Y x
+
+def CanExtOfCharts : Prop :=
+  ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H), 1 ≤ Dw.p + Dw.q →
+    ∀ (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (Y : Model Xo c (RingHom.id c.F)), GoodModel Y →
+      ∃ L : ∀ ch : Chart Y.t (interior Y), Submodule Γ(Y.X, ch.U.1) (HdR ch.A), IsCanExt Y.s L
+
+end GlobalTheory.CanExtM
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.LogKS GlobalTheory.LogDR GlobalTheory.CanExtM
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+
+namespace GlobalTheory.CanExtM
+
+def FormalCanLat : Prop :=
+  ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (l : Level H) (k : Type) [Field k] [CharZero k]
+    (m d : ℕ) (t : SAB H (Sp (ChartRing k m d))) (P : PELUnif (IsLocalRing.maximalIdeal (ChartRing k m d)) t)
+    (gam : Fin m → levelForms H l.M' P.D.toPre.X),
+    IsMonomial P.D.toPre (bdParam k m d) (fun i => gam i) → IsPartOfBasis gam →
+    ∃ (c : GlobalTheory.LogDR.Chart t (show (Sp (ChartRing k m d)).Opens from PrimeSpectrum.basicOpen (∏ i, bdParam k m d i)))
+      (L : Submodule Γ(Sp (ChartRing k m d), c.U.1) (HdR c.A)),
+      c.U.1 = ⊤ ∧ IsCanLattice (spMap (Int.castRingHom (ChartRing k m d))) c L
+
+end GlobalTheory.CanExtM
+end
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -40,39 +112,10 @@ def rangeSub : Submodule Γ(X, c.U.1) c.S where
   add_mem' := by rintro _ _ ⟨a, rfl⟩ ⟨b, rfl⟩; exact ⟨a + b, map_add _ a b⟩
   smul_mem' := by rintro r _ ⟨a, rfl⟩; exact ⟨r * a, by rw [map_mul, Algebra.smul_def]⟩
 
-theorem mem_rangeSub {x : c.S} : x ∈ rangeSub c ↔ x ∈ Set.range (algebraMap Γ(X, c.U.1) c.S) := Iff.rfl
 
-theorem mem_intLatG_of {h : HdR c.A} (hh : h ∈ canSet s c)
-    (hi : ∀ c₀, IsIntClass c c₀ → h c₀ ∈ Set.range (algebraMap Γ(X, c.U.1) c.S)) : h ∈ intLatG s c :=
-  Submodule.subset_span ⟨hh, hi⟩
 
-theorem mem_intLat_of {h : HdR c.A} (hh : h ∈ canSet s c)
-    (hi : ∀ ψ : LinearMap.BilinForm c.S (HdR c.A), IsPolForm (dp0 c.S) (𝟙 _) c.A (t.PP.L.pull c.φ) ψ →
-      ∀ w ∈ intLatG s c, ψ h w ∈ Set.range (algebraMap Γ(X, c.U.1) c.S)) : h ∈ intLat s c :=
-  Submodule.subset_span ⟨hh, hi⟩
 
-theorem intLatG_apply_mem {h : HdR c.A} (hh : h ∈ intLatG s c) {c₀ : primDR c.A} (hc : IsIntClass c c₀) :
-    h c₀ ∈ Set.range (algebraMap Γ(X, c.U.1) c.S) := by
-  induction hh using Submodule.span_induction with
-  | mem x hx => exact hx.2 c₀ hc
-  | zero => exact ⟨0, by simp⟩
-  | add x y _ _ hx hy => exact (rangeSub c).add_mem hx hy
-  | smul r x _ hx =>
-    rw [← algebraMap_smul c.S r x, LinearMap.smul_apply, smul_eq_mul]
-    obtain ⟨a, ha⟩ := hx
-    exact ⟨r * a, by rw [map_mul, ha]⟩
 
-theorem intLat_pair_mem {h : HdR c.A} (hh : h ∈ intLat s c) {ψ : LinearMap.BilinForm c.S (HdR c.A)}
-    (hψ : IsPolForm (dp0 c.S) (𝟙 _) c.A (t.PP.L.pull c.φ) ψ) {w : HdR c.A} (hw : w ∈ intLatG s c) :
-    ψ h w ∈ Set.range (algebraMap Γ(X, c.U.1) c.S) := by
-  induction hh using Submodule.span_induction with
-  | mem x hx => exact hx.2 ψ hψ w hw
-  | zero => exact ⟨0, by simp⟩
-  | add x y _ _ hx hy => rw [map_add, LinearMap.add_apply]; exact (rangeSub c).add_mem hx hy
-  | smul r x _ hx =>
-    rw [← algebraMap_smul c.S r x, map_smul, LinearMap.smul_apply, smul_eq_mul]
-    obtain ⟨a, ha⟩ := hx
-    exact ⟨r * a, by rw [map_mul, ha]⟩
 
 theorem intLatG_le_canLat : intLatG s c ≤ canLat s c := Submodule.span_mono fun _ hh => hh.1
 
@@ -105,3 +148,5 @@ example (hs : Function.Surjective (algebraMap Γ(X, c.U.1) c.S)) : intLat s c = 
 example (ψ : LinearMap.BilinForm c.S (HdR c.A)) (w : HdR c.A) : ψ 0 w = algebraMap Γ(X, c.U.1) c.S 0 := by simp
 
 end Examples
+end
+end

@@ -205,10 +205,6 @@ theorem exists_sec_pow {X : Scheme.{0}} (L : LB X) (hL : L.IsLB) (f : Y ⟶ X) (
   have hmem2 := e ▸ hmem
   exact (mem_nonzeroLocus s' y).2 ⟨_, hmem2.2⟩
 
-lemma nonzeroLocus_cast {X : Scheme.{0}} (L : LB X) {K : Type} [Fintype K] {φ φ' : K → (Y ⟶ X)} (ε : K → ℤ)
-    (h : φ = φ') (s : LB.Sec (LB.LinComb L φ ε)) : nonzeroLocus (h ▸ s) = nonzeroLocus s := by
-  subst h
-  rfl
 
 end NZ
 
@@ -216,36 +212,6 @@ section Main
 
 variable {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V]
 
-theorem genK_ample (hLaws : Laws) {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E]
-    {H : Geo.Tor.Host E} {t : Geo.Tor.SAB H (Spec (CommRingCat.of V))}
-    (P : Geo.Tor.PELUnif (IsLocalRing.maximalIdeal V) t) {k : ℕ} (hk : 4 ≤ k) :
-    ⨆ s : P.U.SecK k, nonzeroLocus s = ⊤ := by
-  classical
-  obtain ⟨hgen, -⟩ := hLaws.ample (Spec (CommRingCat.of (FractionRing V))) P.A k hk
-  obtain ⟨M, s, hs⟩ := hgen ⊤ (isAffineOpen_top _)
-  obtain ⟨w, hw⟩ := P.U.ext
-  set ι := (P.A.A.hom ⁻¹ᵁ (⊤ : (Spec (CommRingCat.of (FractionRing V))).Opens)).ι with hι
-  have hrange : Set.range P.U.gen.hom.left.base ⊆ Set.range ι.base := by
-    rintro _ ⟨x, rfl⟩
-    rw [Scheme.Opens.range_ι]
-    trivial
-  set ψ := IsOpenImmersion.lift ι P.U.gen.hom.left hrange with hψdef
-  have hψ : ψ ≫ ι = P.U.gen.hom.left := IsOpenImmersion.lift_fac _ _ _
-  rw [eq_top_iff]
-  intro y _
-  have hy : ψ y ∈ (⨆ i, nonzeroLocus (s i)) := by rw [hs]; trivial
-  obtain ⟨i, hi⟩ := TopologicalSpace.Opens.mem_iSup.1 hy
-  let t1 := pullSec P.A.L (fun _ : Fin k => ι) (fun _ => 1) (s i) ψ
-  have h1 : y ∈ nonzeroLocus t1 := nonzeroLocus_pullSec P.A.L _ _ (s i) ψ hi
-  let t1' : LB.Sec (LB.LinComb P.A.L (fun _ : Fin k => P.U.gen.hom.left) (fun _ => 1)) :=
-    (funext fun _ => hψ : (fun _ : Fin k => ψ ≫ ι) = fun _ => P.U.gen.hom.left) ▸ t1
-  have h1' : y ∈ nonzeroLocus t1' := by rw [nonzeroLocus_cast]; exact h1
-  obtain ⟨t2, ht2⟩ := exists_sec_pow P.A.L P.A.isLB P.U.gen.hom.left k (by omega) t1'
-  let t3 : P.U.SecK k := secOfIso (u := flatIso P.A.L P.U.LG.L P.U.gen.hom.left (Limits.pullback.fst t.G.hom (jK V)) w
-      (fun _ : Fin 1 => (k : ℤ))) t2 (flatIso_isGen _ _ _ _ w hw _) (linComb_isLB _ P.U.LG.isLB _ _)
-      (linComb_isLB _ P.A.isLB _ _)
-  have h3 : y ∈ nonzeroLocus t3 := nonzeroLocus_secOfIso _ _ _ _ _ (ht2 h1')
-  exact TopologicalSpace.Opens.mem_iSup.2 ⟨t3, h3⟩
 
 end Main
 

@@ -14,26 +14,6 @@ section Phi
 
 variable (D : D7) (i : D.nd.Loc) (w : HeightOneSpectrum (𝓞 D.host.E)) (hw : w ∈ placesOver D.host.E (D.nd.l i))
 
-theorem stdG_span (O K : Type) [CommRing O] [Field K] [Algebra O K] (k : ℕ) :
-    stdG O K k = Submodule.span O (Set.range fun j : Fin k => (Pi.single j 1 : Fin k → K)) := by
-  apply le_antisymm
-  · rintro _ ⟨u, rfl⟩
-    have : (LinearMap.compLeft (Algebra.linearMap O K) (Fin k)) u = ∑ j, u j • (Pi.single j 1 : Fin k → K) := by
-      funext a
-      rw [Finset.sum_apply, Finset.sum_eq_single a]
-      · simp [Algebra.smul_def]
-      · intro b _ hb
-        simp [Pi.single_eq_of_ne (Ne.symm hb)]
-      · simp
-    rw [this]
-    exact Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
-  · rw [Submodule.span_le]
-    rintro _ ⟨j, rfl⟩
-    refine ⟨Pi.single j 1, ?_⟩
-    funext a
-    by_cases h : a = j
-    · subst h; simp
-    · simp [Pi.single_eq_of_ne h]
 
 set_option synthInstance.maxHeartbeats 400000 in
 
@@ -80,29 +60,6 @@ theorem phi_act {k : ℕ} (M : Gw D.nd w →* Matrix (Fin k) (Fin k) (D.nd.O i))
 
 end Phi
 
-theorem lenUnit_le {O : Type} [CommRing O] (l : ℕ) (M : Type) [AddCommGroup M] [Module O M] (n c : ℕ)
-    (h : Module.length O M ≤ (n : ℕ∞) * (c : ℕ∞) * Module.length O (O ⧸ Ideal.span {(l : O)})) :
-    (lenUnit (O := O) l M : ℝ) ≤ (n : ℝ) * (c : ℝ) := by
-  unfold lenUnit
-  set A := Module.length O M
-  set B := Module.length O (O ⧸ Ideal.span {(l : O)})
-  have hnc : (0 : ℝ) ≤ (n : ℝ) * (c : ℝ) := by positivity
-  by_cases hB : B.toNat = 0
-  · rw [hB, Nat.cast_zero, div_zero]
-    simpa using hnc
-  · have hBt : B ≠ ⊤ := fun h => hB (by rw [h]; rfl)
-    obtain ⟨m, hm⟩ := ENat.ne_top_iff_exists.1 hBt
-    rw [← hm] at h hB ⊢
-    have h' : A ≤ ((n * c * m : ℕ) : ℕ∞) := by simpa using h
-    have h1 : A.toNat ≤ n * c * m := by
-      have := ENat.toNat_le_toNat h' (ENat.coe_ne_top _)
-      simpa using this
-    simp only [ENat.toNat_coe] at hB ⊢
-    have hBpos : (0 : ℚ) < (m : ℚ) := by exact_mod_cast Nat.pos_of_ne_zero hB
-    have h2 : ((A.toNat : ℚ) / (m : ℚ)) ≤ (n : ℚ) * (c : ℚ) := by
-      rw [div_le_iff₀ hBpos]
-      exact_mod_cast h1
-    exact_mod_cast h2
 
 def wLat (D : D7) (i : D.nd.Loc) (ρ : D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i))) (π : D.nd.X i)
     (u : HeightOneSpectrum (𝓞 D.host.E)) (hu : u ∈ placesOver D.host.E (D.nd.l i))

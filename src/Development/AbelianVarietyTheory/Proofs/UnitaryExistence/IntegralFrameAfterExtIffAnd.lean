@@ -109,59 +109,6 @@ theorem exists_overLa {K : Type} [Field K] [NumberField K] (T : CDVR) (io : K �
   simp only [vV, smul_eq_mul] at h2 ⊢
   linarith
 
-theorem finite_of_finite_residueField {V K W L : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V]
-    [IsAdicComplete (maximalIdeal V) V] [Field K] [Algebra V K] [IsFractionRing V K] [CommRing W] [IsDomain W]
-    [IsDiscreteValuationRing W] [Field L] [Algebra W L] [IsFractionRing W L] (i : K →+* L) {r : ℕ} (hr : 0 < r)
-    (hi : ∀ z, vV W (i z) = (r : ℤ) * vV V z) (h' : Finite (ResidueField W)) : i.Finite := by
-  have hint : ∀ a : V, ∃ v : W, algebraMap W L v = i (algebraMap V K a) := fun a =>
-    Formalism.L2.PjFree.mem_range_of_vV_nonneg (by rw [hi]; exact mul_nonneg (by positivity) (vV_nonneg a))
-  choose g0 hg0 using hint
-  have hinj := IsFractionRing.injective W L
-  let g : V →+* W :=
-    { toFun := g0
-      map_one' := hinj (by simp [hg0])
-      map_mul' := fun a b => hinj (by simp [hg0])
-      map_zero' := hinj (by simp [hg0])
-      map_add' := fun a b => hinj (by simp [hg0]) }
-  have hg : ∀ a, algebraMap W L (g a) = i (algebraMap V K a) := hg0
-  letI : Algebra V W := g.toAlgebra
-  letI : Algebra K L := i.toAlgebra
-  letI : Algebra V L := ((algebraMap W L).comp g).toAlgebra
-  have : IsScalarTower V W L := IsScalarTower.of_algebraMap_eq fun _ => rfl
-  have : IsScalarTower V K L := IsScalarTower.of_algebraMap_eq fun a => hg a
-  have hgi : Function.Injective (algebraMap V W) := fun a b hab => by
-    apply IsFractionRing.injective V K
-    apply i.injective
-    rw [← hg, ← hg]
-    exact congrArg _ hab
-  have : FaithfulSMul V W := (faithfulSMul_iff_algebraMap_injective _ _).2 hgi
-  have hle : (maximalIdeal V).map (algebraMap V W) ≤ maximalIdeal W := by
-    rw [Ideal.map_le_iff_le_comap]
-    intro a ha
-    by_cases h0 : a = 0
-    · simp [h0]
-    rw [Ideal.mem_comap, mem_maximalIdeal]
-    intro hu
-    have h1 : valV W (algebraMap W L (g a)) = 1 := (valV_eq_one_iff_isUnit _).2 hu
-    have h2 := hi (algebraMap V K a)
-    have h3 : (0 : ℤ) < r * vV V (algebraMap V K a) := mul_pos (by exact_mod_cast hr) (vV_pos h0 ha)
-    rw [← h2, ← hg, vV, h1] at h3
-    simp at h3
-  have hne : (maximalIdeal V).map (algebraMap V W) ≠ ⊥ := by
-    rw [Ne, Ideal.map_eq_bot_iff_of_injective hgi]
-    exact IsDiscreteValuationRing.not_a_field V
-  have htop : (maximalIdeal V).map (algebraMap V W) ≠ ⊤ :=
-    ne_top_of_le_ne_top (maximalIdeal.isMaximal W).ne_top hle
-  have : IsHausdorff ((maximalIdeal V).map (algebraMap V W)) W := IsHausdorff.of_isDomain _ htop
-  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible W
-  obtain ⟨n, hn⟩ := IsDiscreteValuationRing.ideal_eq_span_pow_irreducible hne hϖ
-  have : Finite (W ⧸ (maximalIdeal V).map (algebraMap V W)) := by
-    rw [hn, ← Ideal.span_singleton_pow, ← hϖ.maximalIdeal_eq]
-    have : Finite (W ⧸ maximalIdeal W) := h'
-    exact Ideal.finite_quotient_pow (IsNoetherian.noetherian _) n
-  have : Module.Finite V (W ⧸ (maximalIdeal V).map (algebraMap V W)) := Module.Finite.of_finite
-  have : Module.Finite V W := GlobalTheory.FormalIsogeny.finite_of_finite_quotient_map (maximalIdeal V)
-  exact Module.Finite.of_isLocalization V W (nonZeroDivisors V)
 
 theorem exists_testRing_factor {K : Type} [Field K] (p : TRing K) {S : Type} [Field S] [Algebra K S]
     (φ : p.R →ₐ[K] S) {J : Type} [Fintype J] (g : J → S) :

@@ -10,7 +10,6 @@ namespace UpperTheory.V.Af.Sol
 
 def RC (F : Type) [Field F] [NumberField F] : Prop := IsTotallyReal F ∨ IsCMField F
 
-theorem rc_rat : RC ℚ := Or.inl inferInstance
 
 section Defs
 

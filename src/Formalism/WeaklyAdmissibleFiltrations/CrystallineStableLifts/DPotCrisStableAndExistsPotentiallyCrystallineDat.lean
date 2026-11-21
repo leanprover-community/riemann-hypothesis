@@ -113,16 +113,7 @@ theorem pc_Dpcris_stable (g : G) {x : V ⊗[Qp] B} (hx : x ∈ PC.Dpcris ρ) :
 
 end Stable
 
-theorem pc_dpcrisStable : DpcrisStable := by
-  intros
-  apply pc_Dpcris_stable
-  all_goals assumption
 
-theorem pc_exPC : ExPC := by
-  unfold ExPC
-  intros
-  exact ⟨PotCrysData.pcOfTop _, rfl, rfl⟩
 
-theorem dPotCrisStable_and_existsPotentiallyCrystallineData : DpcrisStable ∧ ExPC := ⟨pc_dpcrisStable, pc_exPC⟩
 
 end Formalism.WeaklyAdmissibleFiltrations

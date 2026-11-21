@@ -18,13 +18,388 @@ import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ValuationsTo
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ProductOfSectionsExpandsToConvolutionStatement
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.UniformisationTorsionMapsCompatibleInLevel
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExpansionPullbackSectionEndomorphismStatement
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.SumVRootOfConvolutionPow
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsActValue
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsSecNeZero
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.CoefFe
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.GenVOfPow
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsIntegralSectionUnitAt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ExistsValGenHasVal
+import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ValuationThetaRatioEqBilinear
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsFamCoefVal
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.PullMulValue
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsGenMulPullPowUnif
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.MulPullOfCubeOfSymm
+
+section
+open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry IsLocalRing
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.DVR
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.UT
+
+namespace GlobalTheory.UT
+
+theorem le_v_sum_sub_sum {F : Type} [Field F] (v : AddValuation F (WithTop ℚ)) {Ix : Type} {x : Ix → F}
+    (q : ℚ) {S T : Finset Ix} (hST : S ⊆ T) (hS : ∀ i, i ∉ S → (q : WithTop ℚ) ≤ v (x i)) :
+    (q : WithTop ℚ) ≤ v (∑ i ∈ T, x i - ∑ i ∈ S, x i) := by
+  classical
+  rw [← Finset.sum_sdiff hST, add_sub_cancel_right]
+  exact v.map_le_sum fun i hi => hS i (Finset.mem_sdiff.1 hi).2
+
+theorem partial_sum_convolution {F : Type} [Field F] (v : AddValuation F (WithTop ℚ)) {X : Type} [AddCommGroup X]
+    {a b c : X → F} (ha : NullV v a) (hb : NullV v b)
+    (hc : ∀ α, SumV v (fun χ => a χ * b (α - χ)) (c α)) (q : ℚ) :
+    ∀ᶠ T : Finset X in Filter.atTop,
+      (q : WithTop ℚ) ≤ v (∑ i ∈ T, c i - (∑ i ∈ T, a i) * ∑ i ∈ T, b i) := by
+  classical
+  obtain ⟨ma, hma⟩ := nullV_bdd v ha
+  obtain ⟨mb, hmb⟩ := nullV_bdd v hb
+  set Sa := (ha (q - mb)).toFinset with hSa
+  set Sb := (hb (q - ma)).toFinset with hSb
+  have hSa' : ∀ χ, χ ∉ Sa → ((q - mb : ℚ) : WithTop ℚ) ≤ v (a χ) := fun χ hχ =>
+    not_lt.1 fun h => hχ ((Set.Finite.mem_toFinset _).2 h)
+  have hSb' : ∀ β, β ∉ Sb → ((q - ma : ℚ) : WithTop ℚ) ≤ v (b β) := fun β hβ =>
+    not_lt.1 fun h => hβ ((Set.Finite.mem_toFinset _).2 h)
+  filter_upwards [Filter.eventually_ge_atTop Sa, Filter.eventually_ge_atTop Sb,
+    Filter.eventually_ge_atTop (Finset.image₂ (· + ·) Sa Sb)] with T hTa hTb hTU
+  have h1 : ∀ α, (q : WithTop ℚ) ≤ v (c α - ∑ χ ∈ Sa, a χ * b (α - χ)) := fun α =>
+    sumV_tail v (hc α) q Sa fun χ hχ => le_v_mul v (hSa' χ hχ) (hmb _) (by ring)
+  have h4 : (q : WithTop ℚ) ≤ v (∑ α ∈ T, (c α - ∑ χ ∈ Sa, a χ * b (α - χ))) :=
+    v.map_le_sum fun α _ => h1 α
+  have h5 : ∀ χ ∈ Sa, ((q - ma : ℚ) : WithTop ℚ) ≤ v (∑ α ∈ T, b (α - χ) - ∑ α ∈ T, b α) := by
+    intro χ hχ
+    have e : ∑ α ∈ T, b (α - χ) = ∑ β ∈ T.image (· - χ), b β :=
+      (Finset.sum_image (f := b) (g := (· - χ)) fun x _ y _ h => sub_left_injective h).symm
+    have hsub : Sb ⊆ T.image (· - χ) := fun β h =>
+      Finset.mem_image.2 ⟨χ + β, hTU (Finset.mem_image₂.2 ⟨χ, hχ, β, h, rfl⟩), by simp⟩
+    have := v.map_le_sub (le_v_sum_sub_sum v _ hsub hSb') (le_v_sum_sub_sum v _ hTb hSb')
+    rwa [sub_sub_sub_cancel_right, ← e] at this
+  have h6 : (q : WithTop ℚ) ≤ v (∑ χ ∈ Sa, a χ * (∑ α ∈ T, b (α - χ) - ∑ α ∈ T, b α)) :=
+    v.map_le_sum fun χ hχ => le_v_mul v (hma χ) (h5 χ hχ) (by ring)
+  have h7 : (q : WithTop ℚ) ≤ v ((∑ i ∈ T, a i - ∑ i ∈ Sa, a i) * ∑ i ∈ T, b i) :=
+    le_v_mul v (le_v_sum_sub_sum v _ hTa hSa') (v.map_le_sum fun i _ => hmb i) (by ring)
+  have h8 := v.map_le_sub (v.map_le_add h4 h6) h7
+  have e : ∑ i ∈ T, c i - (∑ i ∈ T, a i) * ∑ i ∈ T, b i =
+      ∑ α ∈ T, (c α - ∑ χ ∈ Sa, a χ * b (α - χ)) +
+        ∑ χ ∈ Sa, a χ * (∑ α ∈ T, b (α - χ) - ∑ α ∈ T, b α) -
+        (∑ i ∈ T, a i - ∑ i ∈ Sa, a i) * ∑ i ∈ T, b i := by
+    have e2 : ∑ α ∈ T, ∑ χ ∈ Sa, a χ * b (α - χ) = ∑ χ ∈ Sa, a χ * ∑ α ∈ T, b (α - χ) := by
+      rw [Finset.sum_comm]
+      simp only [Finset.mul_sum]
+    simp only [Finset.sum_sub_distrib, mul_sub, ← Finset.sum_mul]
+    rw [e2]
+    ring
+  rw [e]
+  exact h8
+
+theorem partial_sum_convolution_pow {F : Type} [Field F] (v : AddValuation F (WithTop ℚ)) {X : Type}
+    [AddCommGroup X] {a : X → F} {c : ℕ → X → F} (h0 : c 0 = a) (hn : ∀ j, NullV v (c j))
+    (hc : ∀ j α, SumV v (fun χ => c j χ * a (α - χ)) (c (j + 1) α)) (j : ℕ) (q : ℚ) :
+    ∀ᶠ T : Finset X in Filter.atTop,
+      (q : WithTop ℚ) ≤ v (∑ i ∈ T, c j i - (∑ i ∈ T, a i) ^ (j + 1)) := by
+  have ha : NullV v a := h0 ▸ hn 0
+  obtain ⟨ma, hma⟩ := nullV_bdd v ha
+  induction j generalizing q with
+  | zero => exact Filter.Eventually.of_forall fun T => by simp [h0]
+  | succ j ih =>
+    filter_upwards [ih (q - ma), partial_sum_convolution v (hn j) ha (hc j) q] with T h1 h2
+    have h3 : (q : WithTop ℚ) ≤ v ((∑ i ∈ T, c j i - (∑ i ∈ T, a i) ^ (j + 1)) * ∑ i ∈ T, a i) :=
+      le_v_mul v h1 (v.map_le_sum fun i _ => hma i) (by ring)
+    have h4 := v.map_le_add h2 h3
+    convert h4 using 2
+    ring
+
+theorem v_multiset_prod_le {F : Type} [Field F] (v : AddValuation F (WithTop ℚ)) (Q : ℚ) (s : Multiset F)
+    (h : ∀ x ∈ s, v x ≤ (Q : WithTop ℚ)) : v s.prod ≤ (((s.card : ℚ) * Q : ℚ) : WithTop ℚ) := by
+  induction s using Multiset.induction_on with
+  | empty => simp
+  | cons x s ih =>
+    rw [Multiset.prod_cons, v.map_mul, Multiset.card_cons]
+    have e : (((s.card + 1 : ℕ) : ℚ) * Q : ℚ) = Q + (s.card : ℚ) * Q := by push_cast; ring
+    rw [e, WithTop.coe_add]
+    exact add_le_add (h x (Multiset.mem_cons_self _ _)) (ih fun y hy => h y (Multiset.mem_cons_of_mem hy))
+
+theorem sumV_root_of_convolution_pow : ∀ (F : Type) [Field F] [IsAlgClosed F] (v : AddValuation F (WithTop ℚ)) (X : Type) [AddCommGroup X] (a : X → F) (c : ℕ → X → F), c 0 = a → (∀ j, NullV v (c j)) → (∀ j α, SumV v (fun χ => c j χ * a (α - χ)) (c (j + 1) α)) → ∀ (m : ℕ) (β : F), SumV v (c m) β → ∃ r : F, SumV v a r ∧ r ^ (m + 1) = β := by
+  classical
+  intro F _ _ v X _ a c h0 hn hc m β hβ
+  have ha : NullV v a := h0 ▸ hn 0
+  by_contra hcon
+  set p : Polynomial F := Polynomial.X ^ (m + 1) - Polynomial.C β with hp
+  have hmon : p.Monic := Polynomial.monic_X_pow_sub_C β (Nat.succ_ne_zero m)
+  have hroot : ∀ r ∈ p.roots, r ^ (m + 1) = β := by
+    intro r hr
+    have := (Polynomial.mem_roots hmon.ne_zero).1 hr
+    simpa [hp, sub_eq_zero] using this
+  have hfar : ∀ r : F, ∃ q : ℚ, r ∈ p.roots →
+      ∀ᶠ T : Finset X in Filter.atTop, v (∑ i ∈ T, a i - r) ≤ (q : WithTop ℚ) := by
+    intro r
+    by_cases hr : r ∈ p.roots
+    · have h1 : ¬ SumV v a r := fun h => hcon ⟨r, h, hroot r hr⟩
+      obtain ⟨q, hq⟩ := not_forall.1 h1
+      refine ⟨q, fun _ => ?_⟩
+      filter_upwards [Filter.eventually_ge_atTop (ha q).toFinset] with T hT
+      by_contra hlt
+      refine hq ⟨T, fun T' hT' => ?_⟩
+      have h2 := le_v_sum_sub_sum v q hT' (x := a) fun i hi =>
+        not_lt.1 fun h => hi (hT ((Set.Finite.mem_toFinset _).2 h))
+      have h3 := v.map_le_add h2 (not_le.1 hlt).le
+      rw [sub_add_sub_cancel, v.map_sub_swap] at h3
+      exact h3
+    · exact ⟨0, fun h => absurd h hr⟩
+  choose qf hqf using hfar
+  obtain ⟨Q, hQ⟩ := (p.roots.toFinset.image qf).finite_toSet.bddAbove
+  have hQ' : ∀ r ∈ p.roots, qf r ≤ Q := fun r hr =>
+    hQ (Finset.mem_coe.2 (Finset.mem_image_of_mem _ (Multiset.mem_toFinset.2 hr)))
+  have e1 : ∀ᶠ T : Finset X in Filter.atTop, ∀ r ∈ p.roots.toFinset,
+      v (∑ i ∈ T, a i - r) ≤ (qf r : WithTop ℚ) :=
+    (Filter.eventually_all_finset _).2 fun r hr => hqf r (Multiset.mem_toFinset.1 hr)
+  set q : ℚ := (p.roots.card : ℚ) * Q + 1 with hq
+  have e2 := partial_sum_convolution_pow v h0 hn hc m q
+  have e3 : ∀ᶠ T : Finset X in Filter.atTop, (q : WithTop ℚ) ≤ v (β - ∑ i ∈ T, c m i) :=
+    Filter.eventually_atTop.2 (hβ q)
+  obtain ⟨T, h1, h2, h3⟩ := (e1.and (e2.and e3)).exists
+  have h4 := v.map_le_add h3 h2
+  rw [sub_add_sub_cancel, v.map_sub_swap] at h4
+  have h5 : (∑ i ∈ T, a i) ^ (m + 1) - β = (p.roots.map fun r => ∑ i ∈ T, a i - r).prod := by
+    have := (IsAlgClosed.splits p).eval_eq_prod_roots_of_monic hmon (∑ i ∈ T, a i)
+    simpa [hp] using this
+  have h6 := v_multiset_prod_le v Q (p.roots.map fun r => ∑ i ∈ T, a i - r) (by
+    intro x hx
+    obtain ⟨r, hr, rfl⟩ := Multiset.mem_map.1 hx
+    exact (h1 r (Multiset.mem_toFinset.2 hr)).trans (WithTop.coe_le_coe.2 (hQ' r hr)))
+  rw [← h5, Multiset.card_map] at h6
+  have h7 := WithTop.coe_le_coe.1 (h4.trans h6)
+  linarith
+
+end GlobalTheory.UT
+end
+
+section
+open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry IsLocalRing
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.DVR
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.UT
+
+noncomputable section
+namespace GlobalTheory.UT.NonVan
+open GlobalTheory.UT.CoefBasic
+
+theorem val_powFrame {S : Scheme.{0}} {A : Over S} (L : LB A.left) {T : Over S} (x : T ⟶ A)
+    (τ : LB.Gen (LB.LinComb L (Y := T.left) (K := Fin 1) (fun _ => x.left) (fun _ => 1))) (k : ℤ)
+    {Z : Scheme.{0}} (r : Z ⟶ T.left) (z : Z) (J) :
+    val (powFrame A L x τ k) r z J = val τ r z J ^ k :=
+  map_zpow _ _ _
+
+theorem exists_sec_ne_zero : LL → ∀ (R : Type) [CommRing R] [IsDomain R] (A : PolAV (Spec (CommRingCat.of (FractionRing R)))) (F : Type) [Field F] [Algebra (FractionRing R) F] (k : ℕ), 4 ≤ k → ∀ (x : TFK (R := R) F ⟶ A.A) (e : LB.Gen (LB.LinComb A.L (Y := (TFK (R := R) F).left) (K := Fin 1) (fun _ => x.left) (fun _ => 1))), e.IsGen → ∃ (t : SecA A F k) (c : F), c ≠ 0 ∧ (∀ z J, Good A.L z J → sA t (ptSecT A.A x).left z J = @id ((TFK (R := R) F).left.presheaf.stalk z) (cst (R := R) F z c) * (val (powFrame A.A A.L x e k) (𝟙 _) z J).val) := by
+  intro hL R _ _ A F _ _ k hk x e he
+  obtain ⟨z⟩ := exists_pt (R := R) (F := F)
+  obtain ⟨J', hJ'⟩ := exists_good' A.isLB (Z := (TFK (R := R) F).left) z
+  obtain ⟨t, ht⟩ := GlobalTheory.TwistUnit.unitAt_pow hL.1.ample A k hk (snd (TFK (R := R) F) A.A).left
+    ((ptSecT A.A x).left z)
+  have hu := GlobalTheory.TwistUnit.isUnit_sval_of A.isLB t (ptSecT A.A x).left z ht J' hJ'
+  obtain ⟨c, hc⟩ := cstH_surj z (hu.unit * (val e (𝟙 _) z J' ^ (k : ℤ))⁻¹).val
+  refine ⟨t, c, fun h => ?_, fun z' J hJ => ?_⟩
+  · rw [h, map_zero] at hc
+    exact Units.ne_zero _ hc.symm
+  · obtain rfl := pt_eq (R := R) z z'
+    have a₁ := sval_tr t (ptSecT A.A x).left hJ hJ'
+    have a₂ := val_tr he (𝟙 _) hJ hJ'
+    have hx : (ptSecT A.A x).left ≫ (snd (TFK (R := R) F) A.A).left = x.left := by
+      rw [← Over.comp_left, ptSecT, lift_snd]
+    rw [Fin.prod_univ_one, hx, ← hu.unit_spec] at a₁
+    rw [Fin.prod_univ_one, Category.id_comp, zpow_one] at a₂
+    have a₃ : @id ((TFK (R := R) F).left.presheaf.stalk z) (cst (R := R) F z c) =
+        (hu.unit * (val e (𝟙 _) z J' ^ (k : ℤ))⁻¹).val := (cst_eq z c).trans hc
+    refine a₁.trans ?_
+    rw [a₃, val_powFrame, a₂, ← Units.val_mul, ← Units.val_mul]
+    congr 1
+    apply Additive.ofMul.injective
+    simp only [ofMul_mul, ofMul_inv, ofMul_zpow]
+    module
+
+end GlobalTheory.UT.NonVan
+end
+end
+
+section
+open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry IsLocalRing
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.DVR
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.UT
+
+noncomputable section
+namespace GlobalTheory.UT.CoefFE
+open GlobalTheory.UT.CoefBasic
+
+theorem coef_fe : LL → ∀ (R : Type) [CommRing R] [IsDomain R] (D : DegPre R) (F : Type) [Field F] [Algebra (FractionRing R) F] (k : ℕ) (y : D.X) (h o : GtPtF D F), GtPtF.IsIota y h → o.IsZero → ∀ (w : Frm D F k h.b) (w₁ : Frm D F k o.b), w.IsGen → FrmOne w₁ → (∀ z J, Good D.P.L z J → val w (𝟙 _) z J = (@id ((TF (R := R) F).left.presheaf.stalk z)ˣ (val (D.psi y) (jFK (R := R) F) z J) * rigV D (TF (R := R) F).hom z J) ^ k) → ∀ (s : Fam D F k) (α : D.X), coef s o w₁ (α + k • y) = coef s h w α := by
+  intro hL R _ _ D F _ _ k y h o hh ho w w₁ hw hw₁ vw s α
+  obtain ⟨hb, hs⟩ := (isIota_iff _ _).1 hh
+  obtain ⟨ob, os⟩ := (isZero_iff _).1 ho
+  obtain ⟨⟨u, hu, hc⟩, -⟩ := gen_fe (D := D) (F := F) hL.1.globalFns k y α
+  refine coef_eq fun z J hJ => ?_
+  have e := (secRel_iff D.P.isLB _ _ _ _ _ _ _ _ _ u).1 (s.fe y α u hu hc) _ (DegPre.zF D F).left z J hJ
+  have u₀ := val_corr hJ hc (𝟙 _)
+  rw [val_pull hJ, Category.id_comp] at u₀
+  have m := val_famMult (𝟙 (TF (R := R) F)) hJ k y α
+  have p₁ : val (GeneratorPullback.powGen D.P.L _ _ (D.psi y) k) ((𝟙 (TF (R := R) F) : _ ⟶ _).left ≫ jFK (R := R) F) z J =
+      val (D.psi y) ((𝟙 (TF (R := R) F) : _ ⟶ _).left ≫ jFK (R := R) F) z J ^ k := map_pow _ _ _
+  have p₂ : val (GeneratorPullback.powGen D.P.L _ _ D.rigK k) ((𝟙 (TF (R := R) F) : _ ⟶ _).left ≫ jFK (R := R) F) z J =
+      val D.rigK ((𝟙 (TF (R := R) F) : _ ⟶ _).left ≫ jFK (R := R) F) z J ^ k := map_pow _ _ _
+  rw [p₁, p₂, Over.id_left, Category.id_comp] at m
+  have r : val D.rigK (jFK (R := R) F) z J = rigV D (TF (R := R) F).hom z J := val_pull hJ _ _ _
+  have z₁ : lift (𝟙 (TF (R := R) F)) o.b = DegPre.zF D F := by rw [ob]; rfl
+  have z₂ : DegPre.zF D F ≫ DegPre.trF D F y = lift (𝟙 (TF (R := R) F)) h.b := by
+    have a₁ : DegPre.zF D F ≫ fst _ _ = 𝟙 _ := lift_fst _ _
+    have a₂ : DegPre.zF D F ≫ DegPre.prB D F = 1 := lift_snd _ _
+    rw [trF_eq]
+    apply CartesianMonoidalCategory.hom_ext
+    · rw [Category.assoc, tr_fst, a₁, lift_fst]
+    · rw [lift_snd, hb, Category.assoc]
+      refine (congrArg (_ ≫ ·) (tr_pr D F _)).trans ?_
+      rw [MonObj.comp_mul, a₂, ← Category.assoc, a₁, Category.id_comp, _root_.one_mul]
+  rw [← Over.comp_left, z₂, u₀] at e
+  have t := hs α z J hJ
+  rw [Category.id_comp] at t
+  rw [isCoef_coef h hw α s z J hJ, z₁, e, os _ z J hJ, hw₁.2 z J hJ, t, vw z J hJ]
+  have m' := congrArg Units.val m
+  rw [r] at m'
+  simp only [Units.val_one, _root_.mul_one, id, mul_pow, _root_.mul_assoc]
+  exact congrArg₂ (· * ·) rfl m'.symm
+
+end GlobalTheory.UT.CoefFE
+end
+end
+
+section
+open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry IsLocalRing
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.DVR
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.UT
+
+noncomputable section
+namespace GlobalTheory.UT.FrameVal
+open GlobalTheory.UT.CoefBasic GlobalTheory.UT.CoefUnit
+
+theorem genV_of_pow : AllDV fun {V} _ _ _ {ϖ} hϖ D Q {F} _ _ {v} hv => ∀ (n : ℕ), 1 ≤ n → ∀ (p : QkPt D.toPre F n) (w₁ : Frm D.toPre F 1 p.g.b), w₁.IsGen → ∀ κ : LB.Gen (kapLB D.toPre (𝟙 D.toPre.P.A ^ n) (4 * n ^ 2) 4), κ.IsGen → (∀ z J, Good D.toPre.P.L z J → val w₁ (𝟙 _) z J ^ (4 * n ^ 2) * val κ p.g.b.left z J = (@id ((TF (R := V) F).left.presheaf.stalk z)ˣ (val (D.toPre.psi p.y) (jFK (R := V) F) z J) * rigV D.toPre (TF (R := V) F).hom z J) ^ 4) → GenV hϖ hv w₁ ((Q p.y : ℚ) / (n : ℚ) ^ 2) := by
+  intro V _ _ _ _ _ ϖ hϖ D Q hQ F _ _ _ v hv n hn p w hw κ hκ H
+  have hL := D.toPre.P.isLB
+  obtain ⟨m, hm⟩ := TWM.exists_liftO hϖ hv (D := D) p.g.b
+  have hmy : cP D.toPre (TWM.TO hϖ hv) p.y = m ^ n := TWM.liftO_unique hϖ hv _ _ (by
+    rw [comp_cP, cPoint_y, ← hm]; exact (map_pow (preHom (TWM.ιS hϖ hv)) m n).symm)
+  obtain ⟨t₀, ht₀⟩ := exists_gen_of_local D.toPre.P.L hL (TWM.lineφO hϖ hv m) (DegPre.lineε 1)
+  have hl : ∀ i, DegPre.lineφ D.toPre F p.g.b i = (TWM.ιS hϖ hv).left ≫ TWM.lineφO hϖ hv m i := by
+    intro i; fin_cases i
+    · show (DegPre.zeroF D.toPre F).left = (TWM.ιS hϖ hv).left ≫ (1 : TWM.TO hϖ hv ⟶ D.toPre.P.A).left
+      rw [← Over.comp_left, MonObj.comp_one]; rfl
+    · show p.g.b.left = (TWM.ιS hϖ hv).left ≫ m.left
+      rw [← Over.comp_left, hm]
+  obtain ⟨x, hx0, hx⟩ := TWM.exists_ratio hL w hw (LB.pullGen D.toPre.P.L _ _ t₀ (TWM.ιS hϖ hv).left)
+    (pullGen_isGen _ _ _ _ ht₀ _) (fun U _ h => Finset.prod_congr rfl fun i _ => by rw [hl])
+  have hx' : ∀ z J, Good D.toPre.P.L z J → (val w (𝟙 _) z J).val =
+      cst (R := V) F z x * (val t₀ (TWM.ιS hϖ hv).left z J).val := fun z J hJ => by
+    have e := hx _ (𝟙 _) z J hJ
+    rw [val_pull hJ] at e
+    exact e
+  refine ⟨TWM.lineφO hϖ hv m, hl, t₀, ht₀, x, ?_, hx'⟩
+  obtain ⟨e, c, he, hc, hce⟩ := SectionScalarValuation.exists_val_genHasVal (hQ p.y)
+  obtain ⟨u, hu, eu⟩ := exists_ratio_zero hϖ hv hL (fun U _ h => by
+      have q : (TWM.TO hϖ hv).hom ≫ eSec D.toPre.P.A = (1 : TWM.TO hϖ hv ⟶ D.toPre.P.A).left := rfl
+      have q₁ : (TWM.TO hϖ hv).hom ≫ (D.toPre.c p.y).left = (m ^ n).left := hmy ▸ rfl
+      have q₂ : m.left ≫ (𝟙 D.toPre.P.A ^ n).left = (m ^ n).left :=
+        congrArg (·.left) ((map_pow (preHom m) (𝟙 D.toPre.P.A) n).trans (congrArg (· ^ n) (Category.comp_id m)))
+      have q₃ : m.left ≫ (1 : D.toPre.P.A ⟶ D.toPre.P.A).left = (1 : TWM.TO hϖ hv ⟶ D.toPre.P.A).left :=
+        congrArg (·.left) (MonObj.comp_one (M := D.toPre.P.A) m)
+      rw [Fintype.prod_sum_type, Fintype.prod_sum_type]
+      simp only [Sum.elim_inl, Sum.elim_inr]
+      rw [Fintype.prod_unique (_ : PUnit → U), Fintype.prod_unique (_ : PUnit → U), q, q₁, Fin.prod_univ_two,
+        Fin.prod_univ_three]
+      simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two, Matrix.head_cons, Matrix.tail_cons,
+        TWM.lineφO, DegPre.lineε, q₂, q₃, Category.comp_id]
+      apply Additive.ofMul.injective
+      simp only [ofMul_mul, ofMul_zpow]
+      module)
+    (LB.mulGen _ _ _ _ _ (GeneratorPullback.powGen _ _ _ t₀ (4 * n ^ 2)) (LB.pullGen _ _ _ κ m.left))
+    (mulGen_isGen _ _ _ _ _ _ _ (DVR.powGen_isGen _ _ _ _ ht₀ _) (DVR.pullGen_isGen _ _ _ _ hκ _))
+    (GeneratorPullback.powGen _ _ _ (LB.mulGen _ _ _ _ _ (LB.pullGen _ _ _ e (TWM.TO hϖ hv).hom)
+      (LB.pullGen D.toPre.P.L (fun _ : PUnit => eSec D.toPre.P.A) (fun _ => 1) D.toPre.rig (TWM.TO hϖ hv).hom)) 4)
+    (DVR.powGen_isGen _ _ _ _ (mulGen_isGen _ _ _ _ _ _ _ (DVR.pullGen_isGen _ _ _ _ he _)
+      (DVR.pullGen_isGen _ _ _ _ D.toPre.rig_gen _)) _)
+  obtain ⟨z⟩ := exists_pt (R := V) (F := F)
+  obtain ⟨J, hJ⟩ := exists_good' hL z
+  have a := eu z J hJ
+  rw [val_mul hJ, RatioVal.val_powGen, RatioVal.val_powGen, val_mul hJ, val_pull hJ, val_pull hJ, val_pull hJ,
+    Over.w (TWM.ιS hϖ hv), ← Over.comp_left, hm] at a
+  have b := congrArg Units.val (H z J hJ)
+  have d : (@id ((TF (R := V) F).left.presheaf.stalk z)ˣ (val (D.toPre.psi p.y) (jFK (R := V) F) z J)).val =
+      cstH z (algebraMap (FractionRing V) F c) * (val e (TF (R := V) F).hom z J).val :=
+    (hce _ (jFK (R := V) F) z J hJ).trans (congrArg (· * _) (RatioVal.gs_scal _ z c))
+  have key : x ^ (4 * n ^ 2) * u = algebraMap (FractionRing V) F c ^ 4 := by
+    apply cstH_inj (R := V) z
+    apply ((val e (TF (R := V) F).hom z J * rigV D.toPre (TF (R := V) F).hom z J) ^ 4).isUnit.mul_right_cancel
+    simp only [Units.val_mul, Units.val_pow_eq_pow_val, d, hx' z J hJ, cst_eq, rigV, map_mul, map_pow, mul_pow] at a b ⊢
+    linear_combination b - cstH z x ^ (4 * n ^ 2) * a
+  have k := congrArg v key
+  obtain ⟨q, hq⟩ := TWM.wt_coe_of_ne (v := v) hx0
+  rw [AddValuation.map_mul, AddValuation.map_pow, AddValuation.map_pow, hu, hv _ _ hc, hq] at k
+  have k' : (4 * n ^ 2) • q + 0 = 4 • ((Q p.y : ℤ) : ℚ) := by exact_mod_cast k
+  have hn0 : (n : ℚ) ≠ 0 := by exact_mod_cast (by omega : n ≠ 0)
+  rw [hq, WithTop.coe_inj, eq_div_iff (pow_ne_zero 2 hn0)]
+  simp only [nsmul_eq_mul] at k'
+  push_cast at k'
+  linarith
+
+end GlobalTheory.UT.FrameVal
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry IsLocalRing
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.DVR
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.UT
+
+namespace GlobalTheory.UT
+
+theorem exists_gen_mulPull_pow_unif : ∀ (R : Type) [CommRing R] [IsDomain R] (I : Ideal R) (D : DegData R I) (A : PolAV (Spec (CommRingCat.of (FractionRing R)))) (G : Over (Spec (CommRingCat.of R))) [GrpObj G] [IsCommMonObj G] (U : UnifPre I D A G) (n k k' : ℕ), k' = k * n ^ 2 → ∃ β : LB.Gen (LB.LinComb U.LG.L (K := Fin 2) ![𝟙 _, (𝟙 G ^ n).left] ![(k' : ℤ), -(k : ℤ)]), β.IsGen := by
+  intro R _ _ I D A G _ _ U n k k' hk
+  have hL := U.LG.isLB
+  have hcube : GlobalTheory.MulPull.HasGen U.LG.L (thφ G (x3 G)) thε := ⟨U.cubG.t, U.cubG.isGen⟩
+  have hrig : GlobalTheory.MulPull.HasGen U.LG.L (K := PUnit) (fun _ => eSec G) (fun _ => 1) :=
+    ⟨U.LG.rig, U.LG.rigGen⟩
+  have hneg : GlobalTheory.MulPull.HasGen U.LG.L (K := Fin 2) ![(ι[G]).left, 𝟙 G.left] ![1, -1] :=
+    ⟨U.symG, U.symG_gen⟩
+  have main : GlobalTheory.MulPull.HasGen U.LG.L (K := Fin 2) ![(𝟙 G : G ⟶ G).left, (𝟙 G ^ n).left]
+      ![(n : ℤ) ^ 2, -1] := by
+    refine GlobalTheory.MulPull.hasGen_pow hL hcube (𝟙 G) ?_ ?_ n
+    · refine (hrig.pull (toUnit G).left).of_formEq hL (fun W _ h => ?_)
+      simp only [Finset.univ_unique, Finset.prod_singleton, Fin.prod_univ_succ, Fin.prod_univ_zero,
+        Matrix.cons_val_zero, _root_.mul_one]
+      rfl
+    · refine hneg.inv.of_formEq hL (fun W _ h => ?_)
+      have e : ((𝟙 G : G ⟶ G)⁻¹) = ι[G] := Category.id_comp _
+      rw [e]
+      simp only [Fin.prod_univ_succ, Fin.prod_univ_zero, Matrix.cons_val_zero, Matrix.cons_val_succ,
+        _root_.mul_one, neg_neg]
+      exact _root_.mul_comm _ _
+  obtain ⟨t, ht⟩ := main
+  have hp : GlobalTheory.MulPull.HasGen U.LG.L (K := Fin 2) ![(𝟙 G : G ⟶ G).left, (𝟙 G ^ n).left]
+      (fun i => (k : ℤ) * (![(n : ℤ) ^ 2, -1] : Fin 2 → ℤ) i) := ⟨_, powGen_isGen _ _ _ t ht k⟩
+  refine hp.of_formEq hL (fun W _ h => ?_)
+  subst hk
+  simp only [Fin.prod_univ_succ, Fin.prod_univ_zero, Matrix.cons_val_zero, Matrix.cons_val_succ,
+    _root_.mul_one, mul_neg]
+  push_cast
+  rfl
+
+end GlobalTheory.UT
+end
+end
+
+section
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry IsLocalRing
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.DVR
 open scoped CategoryTheory.Obj
@@ -357,4 +732,5 @@ theorem value_at_torsion : LL → TwistBCSpanStatement → TWM.VRatioGtStatement
     rw [← hWv z J hJ]; exact hκv z J hJ
 
 end GlobalTheory.UT.TorsionValue
+end
 end

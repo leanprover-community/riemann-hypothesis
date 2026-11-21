@@ -28,14 +28,6 @@ def rowEmbAt {B : Base} {X : PreX B.toPre} (I : TC B X) (l : I.Laws) (u : B.Word
   (z : MtildeV (Pr := B.primes X) B.wts I.Ch I.sel (I.tup a) I.Ps) : (I.per l u a).Mt :=
   GlobalTheory.PeriodOnStep.rowEmb (Pr := B.primes X) B.wts I.Ch I.sel (I.tup a) I.Ps (I := I.chIn u a) (I.perIn u a).b0 (I.perIn u a).til (I.perIn u a).ext (I.perIn u a).tz (I.perIn u a).H hd B.embLL z
 
-theorem rowVal_rowEmbAt {B : Base} {X : PreX B.toPre} (I : TC B X) (l : I.Laws) (u : B.Word) (a : I.ι)
-  (hd : Disjoint (B.primes X).vGs (QE I.sel (I.tup a : Chr B.fields.F B.fields.E B.fields.K)))
-  (z : MtildeV (Pr := B.primes X) B.wts I.Ch I.sel (I.tup a) I.Ps) (hz : z ∈ MtildeL (Pr := B.primes X) B.wts I.Ch I.sel (I.tup a) I.Ps) : GlobalTheory.PerQ.RowVal I l u a (rowEmbAt I l u a hd z) := by
-  intro c
-  obtain ⟨y, hy, e⟩ := mtildeL_rep_mem (Pr := B.primes X) B.wts I.Ch I.sel (I.tup a) I.Ps z hz c
-  refine ⟨y, hy, ?_⟩
-  rw [e]
-  rfl
 
 open GlobalTheory.PerQ
 variable {B : Base} {X : PreX B.toPre} (I : TC B X) (l : I.Laws)
@@ -151,15 +143,7 @@ theorem eq_top_of_rowEmb_mem (hX : X.Ok) (T : Submodule ℂ ((perOn W Ch sel mu 
       (congrArg (· ∈ T) (Subtype.ext (funext fun b => funext fun p => (h.2 b p).trans (e b p).symm) : F' = F)).mp h.1
 end G
 
-theorem span_rowVal (a) (hd : Disjoint (B.primes X).vGs (QE I.sel (I.tup a : Chr B.fields.F B.fields.E B.fields.K))) (hX : B.fields.Ok) (u) :
-    Submodule.span ℂ {G : (I.per l u a).Mt | RowVal I l u a G} = ⊤ :=
-    eq_top_of_rowEmb_mem (Pr := B.primes X) B.wts I.Ch I.sel (I.tup a) I.Ps (I := I.chIn u a) (I.perIn u a).b0 (I.perIn u a).til (I.perIn u a).ext (I.perIn u a).tz hd B.embLL hX (Submodule.span ℂ {G : (I.per l u a).Mt | RowVal I l u a G}) fun z hz => (Submodule.subset_span (rowVal_rowEmbAt I l u a hd z hz) : rowEmbAt I l u a hd z ∈ Submodule.span ℂ {G : (I.per l u a).Mt | RowVal I l u a G})
 
-theorem exists_trueCols_rowInt : ∃ (B : Base) (X : PreX B.toPre) (I : TC B X) (l : I.Laws) (Z : TC.Later B (I.cols l)), I.Ok ∧ I.muStar ≠ I.mu0 ∧ RowInt I l Z := by
-  obtain ⟨B, X, I, hL, h, hP, hs⟩ := TrueColsTest.exists_ok_pins
-  obtain ⟨Z, hZ⟩ := exists_rowInt_of_span I (TrueColsTest.laws h) hL fun a => span_rowVal I _ a
-    (Finset.disjoint_of_subset_right (ColIn.Q_subset_SQ I a) (GlobalTheory.Mem.LevTwist.levOk_twists B X I h).2.1) (base_fields_primes_ok B X).1 _
-  exact ⟨B, X, I, _, Z, h, hs, hZ⟩
 
 end GlobalTheory.PerQ.RowIntModel
 end

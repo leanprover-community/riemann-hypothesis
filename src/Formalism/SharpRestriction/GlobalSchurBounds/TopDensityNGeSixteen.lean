@@ -1693,100 +1693,8 @@ def EstimatesAtScale (Fm : FamP eps) (x Cord e K : ℝ) : Prop :=
 def SmallOrderPrimes (Fm : FamP eps) : Prop :=
   ∀ Cord : ℝ, 0 ≤ Cord → ∃ e K x0 : ℝ, ∀ x ≥ x0, x ∈ Fm.Win → EstimatesAtScale Fm x Cord e K
 
-theorem lossF_of_core (Fm : FamP eps) (h : SmallOrderPrimes Fm) : LossF Fm 0 := by
-  obtain ⟨Cord, hC0, hJ⟩ := joint_bound_eventually
-  obtain ⟨e, K, x0, hx⟩ := h Cord hC0
-  have heps : 0 < eps := by
-    obtain ⟨i⟩ := Fm.Ix_zero
-    rw [← Fm.L_eps 0 i]
-    exact (Fm.L 0 i).sc.eps_pos
-  have heps4 : eps < 1 / 4 := by
-    obtain ⟨i⟩ := Fm.Ix_zero
-    have := (Fm.L 0 i).sc.eps_lt
-    rw [Fm.L_eps 0 i] at this
-    linarith
-  obtain ⟨x1, hJ'⟩ := hJ eps e K heps heps4
-  refine ⟨3 * |K| + 13, max x0 (max x1 (Fm.x1 + 1)), by positivity, fun x hxx hw => ?_⟩
-  have e0 : x ≥ x0 := le_trans (le_max_left _ _) hxx
-  have e1 : x1 ≤ x := le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) hxx
-  have e2 : Fm.x1 < x := by
-    have := le_trans (le_trans (le_max_right x1 (Fm.x1 + 1)) (le_max_right _ _)) hxx
-    linarith
-  obtain ⟨P, ι, κ, τ, U, Ω, iΩ, π, Ps, s, sB, J, TT, BAD, Sig, io, D, i0, av, bv, hPx, hPe, hPC, hW, hS, hadm,
-    hties⟩ := hx x e0 hw
-  obtain ⟨o, -, hc1, hc2⟩ := hJ' P hPe hPC (by rw [hPx]; exact e1) hW ι κ τ U Ω π Ps s sB J TT BAD Sig io D hS
-  refine ⟨i0, av o, bv o, hadm o, fun i hi => ?_⟩
-  obtain ⟨hJc, hTc, υ, hGa, hIo, hAsk⟩ := hties o i hi
-  have hPC0 : 0 ≤ P.C := hW.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1
-  have hPCK : P.C ≤ K := hW.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1
-  have hb : P.b = (Fm.L x i).sc.b := by
-    show Real.exp (P.x ^ P.ε) = Real.exp ((Fm.L x i).sc.x ^ (Fm.L x i).sc.eps)
-    rw [hPx, hPe, Fm.L_x x i e2, Fm.L_eps x i]
-  have hU : unitU P J.card TT.card =
-      ((Fm.D x i).host.TT.card : ℝ) * (Fm.D x i).R.m * (Fm.L x i).sc.b := by
-    unfold unitU; rw [hJc, hTc, hb]
-  have hU0 : 0 ≤ ((Fm.D x i).host.TT.card : ℝ) * (Fm.D x i).R.m * (Fm.L x i).sc.b :=
-    mul_nonneg (mul_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)) (Real.exp_pos _).le
-  have hone : (Fm.L x i).sc.x ^ ((0 : ℝ) * (Fm.L x i).sc.eps) = 1 := by rw [zero_mul, Real.rpow_zero]
-  have hKabs : K ≤ |K| := le_abs_self K
-  have hbig : (3 * P.C + 13) * (((Fm.D x i).host.TT.card : ℝ) * (Fm.D x i).R.m * (Fm.L x i).sc.b) ≤
-      (3 * |K| + 13) * (Fm.D x i).host.TT.card * (Fm.D x i).R.m * (Fm.L x i).sc.b *
-        (Fm.L x i).sc.x ^ ((0 : ℝ) * (Fm.L x i).sc.eps) := by
-    rw [hone, mul_one]
-    have := mul_le_mul_of_nonneg_right (show 3 * P.C + 13 ≤ 3 * |K| + 13 by linarith) hU0
-    simpa [mul_assoc] using this
-  have hsmall : ((Fm.D x i).host.TT.card : ℝ) * (Fm.D x i).R.m * (Fm.L x i).sc.b ≤
-      (3 * P.C + 13) * (((Fm.D x i).host.TT.card : ℝ) * (Fm.D x i).R.m * (Fm.L x i).sc.b) := by
-    have := mul_le_mul_of_nonneg_right (show (1 : ℝ) ≤ 3 * P.C + 13 by linarith) hU0
-    linarith
-  constructor
-  · have h2 := hc2 υ
-    rw [hIo, hU] at h2
-    linarith
-  · intro e' m' AD N TT' a w hr hAD hcut
-    rw [hAsk e' m' AD N TT' a w hr hAD hcut]
-    have h1 := hc1 υ
-    rw [hGa, hU] at h1
-    linarith
 
-theorem lossF_mono (Fm : FamP eps) {eL eL' : ℝ} (hle : eL ≤ eL') (h : LossF Fm eL) : LossF Fm eL' := by
-  obtain ⟨C, x0, hC, hx⟩ := h
-  refine ⟨C, x0, hC, fun x hxx hw => ?_⟩
-  obtain ⟨i0, av, bv, hadm, hl⟩ := hx x hxx hw
-  refine ⟨i0, av, bv, hadm, fun i hi => ?_⟩
-  obtain ⟨h1, h2⟩ := hl i hi
-  have hsx := (Fm.L x i).sc.one_lt_alt
-  have hpow : (Fm.L x i).sc.x ^ (eL * (Fm.L x i).sc.eps) ≤ (Fm.L x i).sc.x ^ (eL' * (Fm.L x i).sc.eps) :=
-    Real.rpow_le_rpow_of_exponent_le hsx.le (mul_le_mul_of_nonneg_right hle (Fm.L x i).sc.eps_pos.le)
-  have hU0 : 0 ≤ C * ((Fm.D x i).host.TT.card : ℝ) * (Fm.D x i).R.m * (Fm.L x i).sc.b :=
-    mul_nonneg (mul_nonneg (mul_nonneg hC (Nat.cast_nonneg _)) (Nat.cast_nonneg _)) (Real.exp_pos _).le
-  have hm := mul_le_mul_of_nonneg_left hpow hU0
-  exact ⟨le_trans h1 hm, fun e m AD N TT a w hr hAD hcut => le_trans (h2 e m AD N TT a w hr hAD hcut) hm⟩
 
-theorem tops_clause {D : D7} {L : SizeData₂ D} (X : G.Inst D L) (Cb m : ℝ) (hCb : 0 ≤ Cb) (hm : 0 ≤ m)
-    (h1 : ChTT_at L) (h2 : ChBad_at X Cb) :
-    ∑ p ∈ largeOrderResiduePrimes L, 4 * m * L.sc.a * (Real.log p / p) * ((badTops X p).card : ℝ) ≤
-      32 * (Cb * L.sc.x ^ (-2 : ℝ)) * m * L.sc.a * D.host.TT.card * ∑ p ∈ largeOrderResiduePrimes L, Real.log p / p := by
-  have hx : 0 < L.sc.x := lt_trans one_pos L.sc.one_lt_alt
-  have ha : 0 ≤ L.sc.a := (sc_a_pos L.sc).le
-  have hβ : 0 ≤ Cb * L.sc.x ^ (-2 : ℝ) := mul_nonneg hCb (Real.rpow_nonneg hx.le _)
-  have hS : 0 ≤ ∑ p ∈ largeOrderResiduePrimes L, Real.log (p : ℝ) / p :=
-    Finset.sum_nonneg fun p _ => div_nonneg (Real.log_natCast_nonneg p) (Nat.cast_nonneg p)
-  have e1 : ∑ p ∈ largeOrderResiduePrimes L, 4 * m * L.sc.a * (Real.log p / p) * ((badTops X p).card : ℝ) =
-      4 * m * L.sc.a * ∑ p ∈ largeOrderResiduePrimes L, Real.log p / p * ((badTops X p).card : ℝ) := by
-    rw [Finset.mul_sum]
-    exact Finset.sum_congr rfl fun p _ => by ring
-  rw [e1]
-  have h3 : L.sc.delta1 * D.R.n ≤ 2 * (D.host.TT.card : ℝ) := by have := h1.1; linarith
-  have h4 : 4 * (Cb * L.sc.x ^ (-2 : ℝ)) * L.sc.delta1 * D.R.n * ∑ p ∈ largeOrderResiduePrimes L, Real.log (p : ℝ) / p ≤
-      8 * (Cb * L.sc.x ^ (-2 : ℝ)) * D.host.TT.card * ∑ p ∈ largeOrderResiduePrimes L, Real.log (p : ℝ) / p := by
-    apply mul_le_mul_of_nonneg_right _ hS
-    have := mul_le_mul_of_nonneg_left h3 (mul_nonneg (by norm_num : (0 : ℝ) ≤ 4) hβ)
-    linarith
-  have h5 := mul_le_mul_of_nonneg_left (le_trans h2 h4) (mul_nonneg (mul_nonneg (by norm_num : (0 : ℝ) ≤ 4) hm) ha)
-  calc _ ≤ 4 * m * L.sc.a * (8 * (Cb * L.sc.x ^ (-2 : ℝ)) * D.host.TT.card *
-        ∑ p ∈ largeOrderResiduePrimes L, Real.log (p : ℝ) / p) := h5
-    _ = _ := by ring
 
 theorem ioP_le {D : D7} {L : SizeData₂ D} (X : G.Inst D L) (K : G.Consts) (p : ℕ)
     (hS : ∀ t0 ∈ G.VV X K (G.aL L) (G.bL L) p,
@@ -1910,14 +1818,6 @@ def StatementsAtPointsLargeScales (Fm : FamP eps) : Prop :=
     (ld : Fm.Ix x → LD ι κ τ),
     (P.x = x ∧ P.ε = eps ∧ P.Cord = Cord ∧ Windows P e K) ∧ StatementsAtPoints Fm x i0 P Ps s sB J TT BAD Sig ioP ld
 
-theorem estimates_of_points_family (Fm : FamP eps) (hCov : Fm.CoverAll) (h : StatementsAtPointsLargeScales Fm) : SmallOrderPrimes Fm := by
-  intro Cord hC
-  obtain ⟨e, K, x0, hx⟩ := h Cord hC
-  refine ⟨e, K, max x0 (Fm.x1 + 1), fun x hxx hw => ?_⟩
-  have e0 : x ≥ x0 := le_trans (le_max_left _ _) hxx
-  have e1 : Fm.x1 < x := by have := le_trans (le_max_right x0 (Fm.x1 + 1)) hxx; linarith
-  obtain ⟨i0, P, ι, κ, τ, Ps, s, sB, J, TT, BAD, Sig, ioP, ld, hP, hpts⟩ := hx x e0 hw
-  exact estimates_at_scale_of_points hCov e1 P Ps s sB J TT BAD Sig ioP ld Cord e K hP hpts
 
 end Formalism.MainNotions.Lnk
 

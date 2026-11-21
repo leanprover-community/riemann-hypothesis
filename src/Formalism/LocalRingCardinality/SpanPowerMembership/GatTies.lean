@@ -109,9 +109,6 @@ theorem of_cls (h : H.cls p = .inertClass) : p ∉ H.small ∧ p ≠ H.q ∧ p �
     cases h
   exact ⟨h1, h2, h3, h4, h5⟩
 
-theorem of_cls_q (hp : p.Prime) (h : H.cls p = .inertClass) : jacobiSym (-(H.q : ℤ)) p ≠ 1 := by
-  rw [← H.psAt_prime hp (not_dvd_conductor_of_inert hp h)]
-  exact (of_cls H p h).2.2.2.2
 
 theorem coprime_two_pow (hp : p.Prime) (h2 : p ≠ 2) : p.Coprime (2 ^ (R.e + 2)) :=
   Nat.Coprime.pow_right _ ((Nat.coprime_primes hp Nat.prime_two).mpr h2)
@@ -149,13 +146,6 @@ theorem frob_val (hp : p.Prime) (hc : H.cls p = .inertClass) (P : Ideal (𝓞 H.
   · show (H.gal σ).2 = hOf H p
     rw [hOf_of_coprime H p hco, h4]
 
-theorem hH_hOf (hp : p.Prime) (hN : ¬ p ∣ H.condN) (h2 : p ≠ 2) :
-    R.hH (hOf H p) = hcl R.e (ZMod.unitOfCoprime p (coprime_two_pow (R := R) p hp h2)) := by
-  have hco := hp.coprime_iff_not_dvd.2 hN
-  rw [hOf_of_coprime H p hco]
-  refine H.art_h _ _ ?_
-  rw [ZMod.coe_unitOfCoprime]
-  exact ((ZMod.natCast_eq_natCast_iff _ _ _).2 ((H.val_unitOfCoprime hco).of_dvd H.tower_dvd_condN)).symm
 
 open Ideal in
 theorem exists_frob (hp : p.Prime) (hc : H.cls p = .inertClass) :
@@ -175,12 +165,6 @@ theorem hOf_even (hp : p.Prime) (hc : H.cls p = .inertClass) (hn : HNeZero H p) 
   have h1 := @hn P hP hL σ hσ
   rwa [@frob_val R H p hp hc P hP hL σ hσ] at h1
 
-theorem hOf_ne_one (hp : p.Prime) (hc : H.cls p = .inertClass) (hn : HNeZero H p) :
-    hOf H p ≠ 1 := by
-  intro h
-  have h1 := hOf_even H p hp hc hn
-  rw [h, orderOf_one] at h1
-  exact Nat.not_even_one h1
 
 def inPsi (φ : Formalism.HC.Frame) : φ.MA →* ↥φ.Psi :=
   (MonoidHom.inr G0 φ.MA).codRestrict φ.Psi (fun _ => rfl)
@@ -307,25 +291,8 @@ def gatTies : GatTies (withGat D h0 rOf bs) where
     @position_succ_eq_mul_frobenius _ D.host _ (served_of h) (bs u (D.what₂.places.resChar w)) _ D.eTau v s P hP hL σ hσ
   gat_lam := fun _ _ _ _ _ _ => rfl
 
-theorem withGat_r (u w h) :
-    ((withGat D h0 rOf bs).gat u w h).P.r = rOf u (D.what₂.places.resChar w) := rfl
 
-theorem withGat_n' (u w h v) :
-    ((withGat D h0 rOf bs).gat u w h).P.n' v = orderOf (gPsi (H := D.host) (served_of h)) := rfl
 
-theorem gatTies_pos (u w h v s) :
-    D.eTau ((gatTies D h0 rOf bs).gat_pos u w h ⟨v, s⟩) =
-      posPsi (served_of h) (bs u (D.what₂.places.resChar w)) ⟨v, s⟩ :=
-  D.eTau.apply_symm_apply _
 
-theorem gatTies_pos_base (u) (w : D.what₂.places.Pl)
-    (h : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w))
-    (hT : Set.InjOn (fun x => (QuotientGroup.mk x : Quo (gPsi (H := D.host) (served_of h))))
-      (bs u (D.what₂.places.resChar w)))
-    {x : ↥(D.R.Psi)} (hx : x ∈ bs u (D.what₂.places.resChar w))
-    (s : Fin (orderOf (gPsi (H := D.host) (served_of h)))) :
-    D.eTau ((gatTies D h0 rOf bs).gat_pos u w h ⟨orbIdx (gPsi (served_of h)) x, s⟩) =
-      x * gPsi (served_of h) ^ (s : ℕ) := by
-  exact (gatTies_pos D h0 rOf bs u w h _ s).trans (orbEquiv_idx (gPsi (served_of h)) _ hT hx s)
 
 end Formalism.BasicNotions.Examples₂

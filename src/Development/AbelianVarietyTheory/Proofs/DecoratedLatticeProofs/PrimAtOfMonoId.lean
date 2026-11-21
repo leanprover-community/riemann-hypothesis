@@ -15,9 +15,6 @@ namespace GlobalTheory.SeeSaw.PrimSplit
 
 variable {D : D7}
 
-theorem dI_ne_zero (D : D7) : dI D ≠ 0 := by
-  refine mul_ne_zero (mul_ne_zero ?_ (GlobalTheory.CuspCharLattice.host_AA_ne_zero _)) (GlobalTheory.Member.LatSelfDual.AAbar_ne_zero D)
-  simpa [FractionalIdeal.spanSingleton_eq_zero_iff] using (GlobalTheory.LocFrame.cmHost_imaginaryGenerator_ne_zero (D := D))
 
 theorem pX_colMul {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) (i : Fin ρ) (a : AE D) :
     (d.pX *ᵥ colMul d.jX i a) i = a := by

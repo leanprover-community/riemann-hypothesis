@@ -24,8 +24,6 @@ theorem valF_eq_valR {F : Type} [Field F] (x : Sp F ⟶ X) (U : X.Opens) (f : Γ
 
 theorem valAt'_eq_valR (x : Sp ℂ ⟶ X) (U : X.Opens) (f : Γ(X, U)) : valAt' x U f = valR x U f := rfl
 
-theorem valAt_eq_valR (x : Sp ℂ ⟶ X) (U : X.Opens) (h : ⊤ ≤ x ⁻¹ᵁ U) (f : Γ(X, U)) :
-    valAt x U h f = valR x U f := (valR_eq x U h f).symm
 
 theorem le_preimage_mono (x : Sp C ⟶ X) {U V : X.Opens} (e : V ≤ U) (h : ⊤ ≤ x ⁻¹ᵁ V) : ⊤ ≤ x ⁻¹ᵁ U :=
   fun _ hz => e (h hz)
@@ -206,15 +204,6 @@ instance topology (C : Type) [CommRing C] [TopologicalSpace C] (X : Scheme.{0}) 
     TopologicalSpace (Sp C ⟶ X) :=
   generateFrom {S | ∃ (U : X.Opens) (f : Γ(X, U)) (O : Set C), IsOpen O ∧ S = basicSet U f O}
 
-theorem topology_complex (X : Scheme.{0}) : topology ℂ X =
-    generateFrom {S | ∃ (U : X.Opens) (f : Γ(X, U)) (O : Set ℂ), IsOpen O ∧
-      S = {x : Sp ℂ ⟶ X | ∃ h : ⊤ ≤ x ⁻¹ᵁ U, valAt x U h f ∈ O}} := by
-  have : ∀ (U : X.Opens) (f : Γ(X, U)) (O : Set ℂ),
-      basicSet U f O = {x : Sp ℂ ⟶ X | ∃ h : ⊤ ≤ x ⁻¹ᵁ U, valAt x U h f ∈ O} := by
-    intro U f O
-    ext x
-    simp only [basicSet, Set.mem_setOf_eq, valAt_eq_valR, exists_prop]
-  simp only [topology, this]
 
 theorem isOpen_basicSet (U : X.Opens) (f : Γ(X, U)) {O : Set C} (hO : IsOpen O) :
     IsOpen (basicSet U f O) :=
@@ -568,12 +557,6 @@ theorem isClosedEmbedding_comp [T1Space C] (i : X ⟶ Y) [IsClosedImmersion i] :
   filter_upwards [(isOpen_basicSet V f (isOpen_compl_singleton (x := (0 : C)))).mem_nhds ⟨hyV, hne⟩]
     with z hz hz' using hz.2 ((mem_range_comp_iff_of_isClosedImmersion i hV z hz.1).1 hz' f hf)
 
-theorem isEmbedding_comp (i : X ⟶ Y) [IsImmersion i] : IsEmbedding fun x : Sp C ⟶ X => x ≫ i := by
-  have h := (isOpenEmbedding_comp (C := C) i.coborderRange.ι).isEmbedding.comp
-    (isEmbedding_comp_of_isClosedImmersion i.liftCoborder)
-  convert h using 1
-  ext1 x
-  simp only [Function.comp_apply, Category.assoc, Scheme.Hom.liftCoborder_ι]
 
 theorem PtsOver.isClosedEmbedding_map [T1Space C] {S : Scheme.{0}} {p : X ⟶ S} {q : Y ⟶ S} (i : X ⟶ Y)
     [IsClosedImmersion i] (hi : i ≫ q = p) (s : Sp C ⟶ S) : IsClosedEmbedding (PtsOver.map i hi s) :=
@@ -581,9 +564,6 @@ theorem PtsOver.isClosedEmbedding_map [T1Space C] {S : Scheme.{0}} {p : X ⟶ S}
     rw [PtsOver.range_map]
     exact (isClosedEmbedding_comp i).isClosed_range.preimage continuous_subtype_val⟩
 
-theorem PtsOver.isEmbedding_map_of_isImmersion {S : Scheme.{0}} {p : X ⟶ S} {q : Y ⟶ S} (i : X ⟶ Y)
-    [IsImmersion i] (hi : i ≫ q = p) (s : Sp C ⟶ S) : IsEmbedding (PtsOver.map i hi s) :=
-  PtsOver.isEmbedding_map i hi s (isEmbedding_comp i)
 
 theorem isEmbedding_of_isPullback {P S : Scheme.{0}} {fst : P ⟶ X} {snd : P ⟶ Y} {f : X ⟶ S} {g : Y ⟶ S}
     (hP : IsPullback fst snd f g) : IsEmbedding fun z : Sp C ⟶ P => (z ≫ fst, z ≫ snd) := by
@@ -716,10 +696,6 @@ def ptsOverEquivAlgHom {t : Sp C ⟶ Sp R} (ht : t = spMap (algebraMap R C)) :
     rw [Spec.preimage_map]
     rfl
 
-theorem ptsOverEquivAlgHom_apply {t : Sp C ⟶ Sp R} (ht : t = spMap (algebraMap R C))
-    (x : PtsOver (spMap (algebraMap R A)) t) (a : A) :
-    ptsOverEquivAlgHom A ht x a = valR x.1 ⊤ ((Scheme.ΓSpecIso (CommRingCat.of A)).inv.hom a) :=
-  preimage_apply (A := CommRingCat.of A) x.1 a
 
 @[simp] theorem ptsOverEquivAlgHom_symm_val {t : Sp C ⟶ Sp R} (ht : t = spMap (algebraMap R C))
     (φ : A →ₐ[R] C) : ((ptsOverEquivAlgHom A ht).symm φ).1 = spMap φ.toRingHom := rfl
@@ -811,10 +787,6 @@ def zeroSetHomeomorph {t : Sp C ⟶ Sp R} (ht : t = spMap (algebraMap R C)) {σ 
     rw [range_coord ht _ ha]
     simp only [aeval_mk_X, Ideal.Quotient.eq_zero_iff_mem]))
 
-theorem zeroSetHomeomorph_apply {t : Sp C ⟶ Sp R} (ht : t = spMap (algebraMap R C)) {σ : Type}
-    (I : Ideal (MvPolynomial σ R)) (x : PtsOver (spMap (algebraMap R (MvPolynomial σ R ⧸ I))) t) (i : σ) :
-    (zeroSetHomeomorph ht I x : σ → C) i =
-      ptsOverEquivAlgHom _ ht x (Ideal.Quotient.mk I (MvPolynomial.X i)) := rfl
 
 def zeroLocusHomeomorph {F : Type} [Field F] [TopologicalSpace F] [IsTopologicalDivisionRing F] [T1Space F]
     {σ : Type} (I : Ideal (MvPolynomial σ F)) :
@@ -831,9 +803,6 @@ def affineSpaceHomeomorph {t : Sp C ⟶ Sp R} (ht : t = spMap (algebraMap R C)) 
     rw [MvPolynomial.aeval_X_left_apply] at hq
     rw [hq, map_zero])
 
-theorem affineSpaceHomeomorph_apply {t : Sp C ⟶ Sp R} (ht : t = spMap (algebraMap R C)) (σ : Type)
-    (x : PtsOver (spMap (algebraMap R (MvPolynomial σ R))) t) (i : σ) :
-    affineSpaceHomeomorph ht σ x i = ptsOverEquivAlgHom _ ht x (MvPolynomial.X i) := rfl
 
 end Algebra
 
@@ -937,8 +906,6 @@ def PtsOver.conjHomeomorph {S : Scheme.{0}} (p : X ⟶ S) (s : Sp ℂ ⟶ S) :
 def ptsEquivCPt (p : X ⟶ Sp ℂ) [LocallyOfFiniteType p] : Pts p ≃ CPt X :=
   pointEquivClosedPoint p
 
-theorem ptsEquivCPt_val (p : X ⟶ Sp ℂ) [LocallyOfFiniteType p] (x : Pts p) :
-    (ptsEquivCPt p x).1 = x.1 (IsLocalRing.closedPoint ℂ) := rfl
 
 theorem ptsEquivCPt_mem_iff (p : X ⟶ Sp ℂ) [LocallyOfFiniteType p] (x : Pts p) (U : X.Opens) :
     (ptsEquivCPt p x).1 ∈ U ↔ ⊤ ≤ x.1 ⁻¹ᵁ U := (le_preimage_iff x.1 U).symm
@@ -968,10 +935,6 @@ theorem valR_eq_val (p : X ⟶ Sp ℂ) [LocallyOfFiniteType p] (x : Pts p) (U : 
   rw [← hψ U h f]
   exact (congrFun h2 _).symm
 
-theorem valAt_eq_val (p : X ⟶ Sp ℂ) [LocallyOfFiniteType p] (x : Pts p) (U : X.Opens)
-    (h : ⊤ ≤ x.1 ⁻¹ᵁ U) (f : Γ(X, U)) :
-    valAt x.1 U h f = val p f (ptsEquivCPt p x).1 ((ptsEquivCPt_mem_iff p x U).2 h) :=
-  (valAt_eq_valR x.1 U h f).trans (valR_eq_val p x U _ f)
 
 def resolutionHomeomorph {K : Type} [Fintype K] [Nonempty K] {ι : K → Type} [∀ k, Fintype (ι k)]
     {P D : Ideal (MvPolynomial (Σ k, ι k) ℂ)} {hP : IsMultiHomogIdeal P} (w : WData P D hP) :
@@ -1011,9 +974,6 @@ def resolutionHomeomorph {K : Type} [Fintype K] [Nonempty K] {ι : K → Type} [
         h3.congr fun z hz => by rw [← hval c _ (hm z hz), e.apply_symm_apply]
       exact h4.continuousAt hn }
 
-theorem resolutionHomeomorph_val {K : Type} [Fintype K] [Nonempty K] {ι : K → Type} [∀ k, Fintype (ι k)]
-    {P D : Ideal (MvPolynomial (Σ k, ι k) ℂ)} {hP : IsMultiHomogIdeal P} (w : WData P D hP)
-    (x : Pts (w.π ≫ toSpecC hP)) : (resolutionHomeomorph w x).1 = x.1 (IsLocalRing.closedPoint ℂ) := rfl
 
 end Complex
 

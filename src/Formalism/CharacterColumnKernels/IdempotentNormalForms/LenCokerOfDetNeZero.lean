@@ -18,29 +18,10 @@ def evalGens (n : g → NN) : (NN →ₗ[R] M) →ₗ[O] (g → M) where
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
 
-theorem evalGens_mem (Θ : Matrix g g R) (n : g → NN) (hrel : ∀ i, ∑ j, Θ i j • n j = 0)
-    (φ : NN →ₗ[R] M) : (fun j => φ (n j)) ∈ LinearMap.ker (relMap O M Θ) := by
-  classical
-  rw [LinearMap.mem_ker]
-  funext i
-  rw [relMap_apply', Pi.zero_apply]
-  simp_rw [← LinearMap.map_smul]
-  rw [← map_sum, hrel i, map_zero]
 
-theorem evalGens_inj (n : g → NN) (hspan : Submodule.span R (Set.range n) = ⊤) :
-    Function.Injective (fun (φ : NN →ₗ[R] M) (j : g) => φ (n j)) := by
-  intro φ ψ h
-  exact LinearMap.ext_on_range hspan fun j => congrFun h j
 
 end HomQuotAux
 
-theorem homQuot : StatHomQuot := by
-  intro R O M NN _ _ _ _ _ _ _ _ g _ _ Θ n hspan hrel
-  refine ⟨evalGens_mem Θ n hrel, evalGens_inj n hspan, ?_⟩
-  exact Module.length_le_of_injective
-    (LinearMap.codRestrict (LinearMap.ker (relMap O M Θ)) (evalGens (O := O) (M := M) n)
-      (evalGens_mem Θ n hrel))
-    fun φ ψ h => evalGens_inj n hspan (congrArg Subtype.val h)
 
 section KerHomAux
 
@@ -58,31 +39,10 @@ def uncurryEquiv : (g → LatQ O d ρ) ≃ₗ[O] (g × d → KO O) where
 
 variable [SMulCommClass R O (LatQ O d ρ)]
 
-theorem uncurry_relMap (Θ : Matrix g g R) (v : g → LatQ O d ρ) :
-    uncurryEquiv ρ (relMap O (LatQ O d ρ) Θ v) = matQ O (bigMat ρ Θ) (uncurryEquiv ρ v) := by
-  funext p
-  obtain ⟨i, a⟩ := p
-  show (∑ j, Θ i j • v j : LatQ O d ρ) a = ∑ q : g × d, ρ (Θ i q.1) a q.2 • v q.1 q.2
-  rw [Fintype.sum_prod_type]
-  have hsum : (∑ j, Θ i j • v j : LatQ O d ρ) a = ∑ j, ((Θ i j • v j : LatQ O d ρ) : d → KO O) a :=
-    Finset.sum_apply (M := fun _ : d => KO O) a univ (fun j => (Θ i j • v j : LatQ O d ρ))
-  rw [hsum]
-  rfl
 
-theorem ker_map_uncurry (Θ : Matrix g g R) :
-    (LinearMap.ker (relMap O (LatQ O d ρ) Θ)).map (uncurryEquiv (g := g) ρ).toLinearMap =
-      LinearMap.ker (matQ O (bigMat ρ Θ)) := by
-  ext w
-  rw [Submodule.mem_map_equiv, LinearMap.mem_ker, LinearMap.mem_ker,
-    ← (uncurryEquiv (g := g) ρ).map_eq_zero_iff, uncurry_relMap, LinearEquiv.apply_symm_apply]
 
 end KerHomAux
 
-theorem kerHomBlock : StatKerHomBlock := by
-  intro R O _ _ _ _ g d _ _ _ _ ρ _ Θ
-  obtain ⟨e⟩ := homCoker R O (LatQ O d ρ) g g Θ
-  rw [e.length_eq, ← ker_map_uncurry ρ Θ]
-  exact (Submodule.equivMapOfInjective _ (uncurryEquiv (g := g) ρ).injective _).length_eq.symm
 
 section LenCokerAux
 

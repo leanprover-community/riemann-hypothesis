@@ -170,12 +170,6 @@ theorem isCPMap_iff_exists {f : S' ⟶ S} {F : G'.left ⟶ G.left} (hw : F ≫ G
   ⟨fun h => ⟨h.mul, (isCPMap_iff (cubeMapOf h.mul) P' P w).1 h⟩,
     fun ⟨mul, h⟩ => (isCPMap_iff (cubeMapOf mul) P' P w).2 h⟩
 
-theorem cubeMapOf_cubeMap_mul (m : CubeMap G' G) : cubeMapOf (cubeMap_mul m) = m := by
-  have e : (cubeMapOf (cubeMap_mul m)).F3 = m.F3 := hom_ext_triple _ fun i =>
-    (cubeMap_comp_proj_three _ i).trans (cubeMap_comp_proj_three m i).symm
-  obtain ⟨F, F3, e₀, h₁, h₂⟩ := m
-  simp only [cubeMapOf] at e ⊢
-  congr
 
 end Maps
 
@@ -517,9 +511,6 @@ def tqEquiv (G : Over S) [GrpObj G] [IsCommMonObj G] (X : Type) [AddCommGroup X]
   left_inv _ := rfl
   right_inv _ := rfl
 
-theorem isLocalWeightGen_iff {i : splitTorus S X ⟶ G} {q : G ⟶ B} (h : IsTorusExt i q) (χ : X) (V : B.left.Opens)
-    (u : Γ(G.left, q.left ⁻¹ᵁ V)ˣ) : IsLocalWeightGen i q χ V u ↔ IsWt i _ u.val χ :=
-  (isWeight_iff i χ _ u.val).trans (and_iff_right (h.isStable V))
 
 end Ext
 

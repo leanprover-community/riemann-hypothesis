@@ -77,8 +77,6 @@ def T3 (l : ℕ) : Prop :=
 
 theorem card_U (i : ZMod n) : Multiset.card (D.U i) = r := D.card_eq i
 
-theorem card_Ut (i : ZMod n) : Multiset.card (D.Ut i) = r + D.t := by
-  rw [Ut, Multiset.card_add, card_U, B, card_block]
 
 theorem mem_Ut (i : ZMod n) {u : ℤ} (hu : u ∈ D.Ut i) : 1 ≤ u ∧ u ≤ (D.h i : ℤ) - 1 := D.range i u hu
 
@@ -319,20 +317,8 @@ theorem Ea_apply (z : ↥(Z1 (twCoef W χ X) ⊤)) (g : G) (m : M ⊗[O] X) (y :
   rw [Ea, twistRep_apply, extRep_apply, ← twist_twCoef W χ X, twistRep_apply, Prod.smul_mk, smul_add, smul_smul]
   rfl
 
-theorem Ea_inl (z : ↥(Z1 (twCoef W χ X) ⊤)) (g : G) (m : M ⊗[O] X) :
-    Ea W χ hc z g (m, 0) = (coefRep W X g m, 0) := by
-  have h := Ea_apply W χ hc z g m 0
-  simpa using h
 
-theorem Ea_gen (z : ↥(Z1 (twCoef W χ X) ⊤)) (g : G) :
-    Ea W χ hc z g (0, 1) = (χ g : O) • (((0 : M ⊗[O] X), (1 : O ⧸ Ideal.span {c})) + ((z : G → M ⊗[O] X) g, 0)) := by
-  have h := Ea_apply W χ hc z g 0 1
-  simp only [map_one, map_zero, zero_add, mul_one] at h
-  rw [h]
-  simp [Algebra.smul_def]
 
-theorem Ea_snd (z : ↥(Z1 (twCoef W χ X) ⊤)) (g : G) (x : (M ⊗[O] X) × (O ⧸ Ideal.span {c})) :
-    (Ea W χ hc z g x).2 = (χ g : O) • x.2 := rfl
 
 theorem Ea_equiv_of_class_eq {z z' : ↥(Z1 (twCoef W χ X) ⊤)}
     (h : (Submodule.Quotient.mk z : H1 (twCoef W χ X) ⊤) = Submodule.Quotient.mk z') :
@@ -629,19 +615,7 @@ theorem Admissible.of_equiv {M M' : Type} [AddCommGroup M] [Module O M] [AddComm
   · simp [hg, he]
   · simp [hk]
 
-theorem admissible_zero [IsTopologicalRing LL] {M : Type} [AddCommGroup M] [Module O M] [Subsingleton M]
-    (π : Representation O G M) : Admissible PD emb Γ t Ut π := by
-  have hV : Subsingleton (zeroLat G Qp LL O).V := inferInstanceAs (Subsingleton (Fin 0 → LL))
-  refine ⟨inferInstance, 0, zeroLat G Qp LL O, ⟨Fin.elim0, fun j => j.elim0, LinearEquiv.ofSubsingleton _ _,
-    fun _ _ j => j.elim0⟩, (zeroLat G Qp LL O).L, 0, le_rfl, fun y => ⟨0, Subsingleton.elim _ _⟩,
-    fun _ _ => Subsingleton.elim _ _, fun x => ⟨fun _ => x.2, fun _ => rfl⟩⟩
 
-theorem admissible_quotient {μ : ℕ} {T : LocLat G Qp LL O} (hT : SumFull PD emb Γ t Ut μ T)
-    (L₂ : Lattice (O := O) T.ρ) (hle : L₂.T ≤ T.L.T) [Finite (↥T.L.T ⧸ L₂.T.comap T.L.T.subtype)] :
-    Admissible PD emb Γ t Ut
-      ((latRep T.L).quotient (L₂.T.comap T.L.T.subtype) (fun g x hx => L₂.stable g x hx)) :=
-  ⟨‹_›, μ, T, hT, L₂, Submodule.mkQ _, hle, Submodule.mkQ_surjective _, fun _ _ => rfl,
-    fun _ => Submodule.Quotient.mk_eq_zero _⟩
 
 variable (PD emb Γ t Ut)
 variable {M : Type} [AddCommGroup M] [Module O M] (W : Representation O G M)

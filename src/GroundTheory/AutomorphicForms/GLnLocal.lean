@@ -231,11 +231,6 @@ theorem conj_mem_congruenceSubgroup {m : ℕ} {k x : GL (Fin n) F} (hk : k ∈ i
   obtain ⟨y, hy, rfl⟩ := hx
   exact ⟨u * y * u⁻¹, (reduction F n m).normal_ker.conj_mem y hy u, by simp [map_mul, map_inv]⟩
 
-theorem congruenceSubgroup_normal (m : ℕ) :
-    ((congruenceSubgroup F n m).subgroupOf (integralGL F n)).Normal :=
-  ⟨fun x hx k => by
-    rw [Subgroup.mem_subgroupOf] at hx ⊢
-    simpa using conj_mem_congruenceSubgroup F n k.2 hx⟩
 
 theorem isOpen_congruenceSubgroup (m : ℕ) :
     IsOpen (congruenceSubgroup F n m : Set (GL (Fin n) F)) := by

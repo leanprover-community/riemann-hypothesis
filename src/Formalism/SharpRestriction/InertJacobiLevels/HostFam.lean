@@ -237,14 +237,12 @@ theorem arith_nonempty (B N : ℕ) : Nonempty (Arith B N) := by
 
 theorem frame2_inj : Function.Injective (Formalism.HC.cyclicFrame 2).h := Formalism.HC.frameCyc_h_injective 2 1
 
-theorem Rt_h_injective (s : ℕ) : Function.Injective (Rt s).toFrame.h := frame2_inj
 
 abbrev Arith.QS {B N : ℕ} (_ : Arith B N) : ℕ := 16
 
 def Arith.ax {B N : ℕ} (A : Arith B N) : Formalism.HC.HostAx (Formalism.HC.cyclicFrame 2) :=
   Formalism.HC.D7.hostAx (Formalism.HC.cyclicFrame 2) frame2_inj A.hyp le_rfl A.layer
 
-theorem Arith.ax_QS {B N : ℕ} (A : Arith B N) : A.ax.QS = A.QS := rfl
 
 private theorem coprime_sixteen_of_mod {g q d : ℕ} (h : g ≡ 1 [MOD 16 * q * d]) : Nat.Coprime g 16 := by
   have h1 : g ≡ 1 [MOD 16] := (h.of_mul_right _).of_mul_right _
@@ -258,7 +256,6 @@ theorem Arith.cm_nonempty : A.ax.cmType.Nonempty := by
   have := (Formalism.HC.cyclicFrame 2).ord_pos
   omega
 
-theorem Arith.ax_cm_nonempty : A.ax.toHostRaw.cmType.Nonempty := A.cm_nonempty
 
 theorem Arith.bb_ex : ∃ 𝔟 : Ideal (𝓞 A.ax.E),
     differentIdeal (𝓞 A.ax.K) (𝓞 A.ax.E) = 𝔟 * (A.ax.conj • 𝔟) ∧ 𝔟 ⊔ A.ax.conj • 𝔟 = ⊤ ∧
@@ -336,22 +333,9 @@ def hostOf (u0 : (Rt s).A) (T Lw : ℕ) : Host (Rt s) where
     exact absurd (h₁.trans h₂.symm) h12
   CT2 := 0
 
-theorem hostOf_levelPrimes (u0 : (Rt s).A) (T Lw : ℕ) : (hostOf A u0 T Lw).levelPrimes =
-    {31, 61, A.g0, A.g1} ∪ ({T} : Finset ℕ).filter (fun p => Nat.Coprime p 16) := rfl
 
-theorem hostOf_T_level (u0 : (Rt s).A) {T : ℕ} (Lw : ℕ) (hT : Odd T) : T ∈ (hostOf A u0 T Lw).levelPrimes :=
-  Finset.mem_union_right _ (Finset.mem_filter.2 ⟨Finset.mem_singleton_self T,
-    Nat.Coprime.pow_right 4 (Nat.coprime_two_right.2 hT)⟩)
 
-theorem hostOf_levelPrimes_of_odd (u0 : (Rt s).A) {T : ℕ} (Lw : ℕ) (hT : Odd T) :
-    (hostOf A u0 T Lw).levelPrimes = {31, 61, A.g0, A.g1, T} := by
-  have hc : Nat.Coprime T 16 := Nat.Coprime.pow_right 4 (Nat.coprime_two_right.2 hT)
-  rw [hostOf_levelPrimes, Finset.filter_singleton, if_pos hc]
-  ext p
-  simp [or_assoc]
 
-theorem hostOf_mem_level (u0 : (Rt s).A) {T : ℕ} (Lw : ℕ) (hT : Odd T) :
-    T ∈ (hostOf A u0 T Lw).levelPrimes := hostOf_T_level A u0 Lw hT
 
 end Formalism.MainNotions.Inhab
 

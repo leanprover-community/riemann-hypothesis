@@ -118,29 +118,8 @@ def ThetaLaws (ι : ℂ ≃+* ℂ_[q]) (d : ℕ) (ω : ℂ_[q]) (θ : ℂ → �
 namespace Basic
 open Filter Topology
 
-theorem logS_eq : (logS : ℂ_[q]⟦X⟧) = PowerSeries.log ℂ_[q] := by
-  ext n; simp [logS, coeff_log]
 
-theorem mulS_eq (a : ℤ_[q]) :
-    mulS a = PowerSeries.map ((algebraMap ℚ_[q] ℂ_[q]).comp PadicInt.Coe.ringHom) (binomialSeries ℤ_[q] a) - 1 := by
-  ext n
-  rw [map_sub, coeff_map, binomialSeries_coeff, smul_eq_mul, mul_one, mulS, coeff_mk, coeff_one]
-  rcases n with _ | n
-  · simp
-  · simp only [Nat.succ_ne_zero, if_false, sub_zero]; rfl
 
-theorem eis_eq {d : ℕ} {L : PeriodPair} (h : IsOK d L) {k : ℕ} (hk : 0 < k) : eis d k = L.G (2 * k) := by
-  have h1 : eis d k = ∑' w : ({w : ℂ | InOK d w ∧ w ≠ 0} : Set ℂ), (fun z : ℂ => (z ^ (2 * k))⁻¹) w := by
-    simp only [eis, one_div]; rfl
-  have h2 : L.G (2 * k) = ∑' w : (L.lattice : Set ℂ), (fun z : ℂ => (z ^ (2 * k))⁻¹) w := rfl
-  rw [h1, h2, tsum_subtype _ fun z : ℂ => (z ^ (2 * k))⁻¹, tsum_subtype _ fun z : ℂ => (z ^ (2 * k))⁻¹]
-  refine tsum_congr fun z => ?_
-  by_cases hz : z = 0
-  · subst hz; simp [Set.indicator, hk.ne']
-  · have e : z ∈ {w : ℂ | InOK d w ∧ w ≠ 0} ↔ z ∈ (L.lattice : Set ℂ) := by simp [hz, h z]
-    by_cases hL : z ∈ (L.lattice : Set ℂ)
-    · rw [Set.indicator_of_mem hL, Set.indicator_of_mem (e.2 hL)]
-    · rw [Set.indicator_of_notMem hL, Set.indicator_of_notMem (fun h' => hL (e.1 h'))]
 
 open PowerSeries in
 open scoped ComplexConjugate in
@@ -475,12 +454,6 @@ theorem _root_.GlobalTheory.MomOne.Basic.cmLatticeHermitianForm_mul_left (d : �
     _root_.GlobalTheory.MomOne.h1 d (a * z) w = a * _root_.GlobalTheory.MomOne.h1 d z w := by
   unfold _root_.GlobalTheory.MomOne.h1; ring
 
-theorem riemannForm_im_eq_neg_one {d : ℕ} (hd : 0 < d) : (h1 d 1 (wK d)).im = -1 := by
-  have hs : Real.sqrt d ≠ 0 := by positivity
-  rw [h1, Complex.im_ofReal_mul, one_mul, Complex.conj_im]
-  have : (wK d).im = Real.sqrt d / 2 := by simp [wK]
-  rw [this]
-  field_simp
 
 example : Split 7 2 := Or.inl ⟨rfl, rfl⟩
 

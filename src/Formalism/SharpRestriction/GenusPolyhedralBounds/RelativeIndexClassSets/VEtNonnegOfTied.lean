@@ -35,12 +35,6 @@ theorem phiC_le_vEt (Q : LocalPointData G la) (ζ : PtsG G la)
   · unfold PJ.phiC
     rw [if_neg hj]
 
-theorem vEt_nonneg (Q : LocalPointData G la) (ζ : PtsG G la)
-    (hfin : j < D.R.m → X.vAt la (Q.y ζ) (X.inc _ G.et) ≠ ⊤)
-    (hEt : j < D.R.m → 0 < G.iet ∧
-      ∀ y : X.Pt la, ((2 * G.iet * X.phiC la y : ℝ) : EReal) ≤ X.vAt la y (X.inc _ G.et)) :
-    0 ≤ vEt Q ζ :=
-  (Formalism.MainNotions.Gaps.T0.phiC_nonneg X la (Q.y ζ)).trans (phiC_le_vEt Q ζ hfin hEt)
 
 theorem nu_le_of {large₂ : SizeData₂ D} {H : KHyp} {S : Scal B} {nus : HeightOneSpectrum (𝓞 B.KO) → ℝ}
     (hH1 : H1 large₂ X H S wL nus) (Q : LocalPointData G la) (ζ : PtsG G la) (c : ℝ) (hc : cc D large₂ H.Cc H.Ac H.CRc wL ≤ c)
@@ -65,10 +59,6 @@ theorem tied_et {large₂ : SizeData₂ D} {S : Scal B} {CRm : ℝ} {T : ℕ} {c
       ∀ y : X.Pt la, ((2 * G.iet * X.phiC la y : ℝ) : EReal) ≤ X.vAt la y (X.inc _ G.et) := fun hj =>
   ⟨(hT.2.2.2.2.2.2.2.2.2.2.2.2.2 hj).1, fun y => (hT.2.2.2.2.2.2.2.2.2.2.2.2.2 hj).2.2.2.1 la y⟩
 
-theorem vEt_nonneg_of_tied {large₂ : SizeData₂ D} {S : Scal B} {CRm : ℝ} {T : ℕ} {c Gc Prw Ch Ah Cf Af : ℝ}
-    (hT : G.Tied large₂ S CRm T c Gc Prw Ch Ah Cf Af) (Q : LocalPointData G la) (hTie : Q.InTie S) (ζ : PtsG G la) :
-    0 ≤ vEt Q ζ :=
-  vEt_nonneg Q ζ (hTie ζ).2.2.1 (tied_et hT la)
 
 theorem nu_le {large₂ : SizeData₂ D} {K : KAdm} {H : KHyp} {S : Scal B} {nus : HeightOneSpectrum (𝓞 B.KO) → ℝ}
     {C2 A2 CR Ch Ah Cq Aq Gc PH Prw Pet Pd CRm c Cf Af : ℝ} {T : ℕ}

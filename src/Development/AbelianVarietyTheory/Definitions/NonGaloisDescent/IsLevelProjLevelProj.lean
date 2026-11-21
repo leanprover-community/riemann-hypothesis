@@ -53,12 +53,7 @@ def IsLevelProj (π : Representation ℂ G V) (K : Subgroup G) (A : V →ₗ[ℂ
 def HasLevelTrace (π : Representation ℂ G V) (K : Subgroup G) (A : V →ₗ[ℂ] V) (c : ℂ) : Prop :=
   FiniteDimensional ℂ (fixed π K) ∧ ∃ T, IsLevelProj π K A T ∧ LinearMap.trace ℂ _ T = c
 
-theorem isLevelProj_id (π : Representation ℂ G V) (K : Subgroup G) :
-    IsLevelProj π K LinearMap.id LinearMap.id := fun v => by simp
 
-theorem hasLevelTrace_id (π : Representation ℂ G V) (K : Subgroup G) [FiniteDimensional ℂ (fixed π K)] :
-    HasLevelTrace π K LinearMap.id (Module.finrank ℂ (fixed π K)) :=
-  ⟨inferInstance, _, isLevelProj_id π K, LinearMap.trace_id ℂ _⟩
 
 end Traces
 
@@ -144,36 +139,11 @@ def IsLBCCl (s : k' ≃ₐ[k] k') (x : IrrGL k) (y : IrrGL k') : Prop :=
   ∃ (m : ℕ) (π : IrrRep (GL (Fin m) k)) (P : IrrRep (GL (Fin m) k')), x = ⟨m, π.cl⟩ ∧ y = ⟨m, P.cl⟩ ∧
     IsLBC s π.ρ P.ρ
 
-theorem isTwInt_of_triv (s : k' ≃ₐ[k] k') (hd : 0 < Module.finrank k k') {P : Representation ℂ (GL (Fin n) k') ℂ}
-    (hP : ∀ g, P g = LinearMap.id) : IsTwInt k s P LinearMap.id :=
-  ⟨fun g => by rw [hP, hP], hd, one_pow _⟩
 
-theorem hasLevelTrace_of_triv {G : Type} [Group G] {P : Representation ℂ G ℂ} (hP : ∀ g, P g = LinearMap.id)
-    (K : Subgroup G) : HasLevelTrace P K LinearMap.id 1 := by
-  have htop : fixed P K = ⊤ := by
-    ext v; simp [fixed, eig, hP]
-  have h1 : Module.finrank ℂ (fixed P K) = 1 := by
-    rw [htop, finrank_top, Module.finrank_self]
-  have := hasLevelTrace_id P K
-  rwa [h1, Nat.cast_one] at this
 
-theorem charVal_of_triv {P : Representation ℂ (GL (Fin n) k) ℂ} (hP : ∀ g, P g = LinearMap.id) (γ : GL (Fin n) k) :
-    CharVal P γ 1 :=
-  ⟨Set.univ, Filter.univ_mem, fun K _ _ _ => by rw [hP]; exact hasLevelTrace_of_triv hP K⟩
 
-theorem twCharVal_of_triv (s : k' ≃ₐ[k] k') {P : Representation ℂ (GL (Fin n) k') ℂ} (hP : ∀ g, P g = LinearMap.id)
-    (g' : GL (Fin n) k') : TwCharVal k s P LinearMap.id g' 1 :=
-  ⟨Set.univ, Filter.univ_mem, fun K _ _ _ _ => by rw [hP]; exact hasLevelTrace_of_triv hP K⟩
 
-theorem ofChar_one_apply {G : Type} [Group G] (g : G) : SmGL.ofChar (1 : G →* ℂˣ) g = LinearMap.id := by
-  ext; simp [SmGL.ofChar]
 
-theorem isLBC_one (s : k' ≃ₐ[k] k') (hd : 0 < Module.finrank k k') :
-    IsLBC s (SmGL.ofChar (1 : GL (Fin n) k →* ℂˣ)) (SmGL.ofChar (1 : GL (Fin n) k' →* ℂˣ)) :=
-  ⟨(isSmooth_ofChar_iff _).2 isSmoothChar_one, isIrreducible_ofChar _,
-    (isSmooth_ofChar_iff _).2 isSmoothChar_one, isIrreducible_ofChar _, LinearMap.id,
-    isTwInt_of_triv s hd ofChar_one_apply, fun g' _ γ _ =>
-      ⟨1, twCharVal_of_triv s ofChar_one_apply g', charVal_of_triv ofChar_one_apply γ⟩⟩
 
 end Lift
 

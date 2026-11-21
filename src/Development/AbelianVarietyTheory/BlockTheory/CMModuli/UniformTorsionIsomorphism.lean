@@ -86,8 +86,6 @@ variable (F : Type) [Field F] [Algebra (FractionRing R) F]
 
 def ptA (x : TF (R := R) F ⟶ t.G) : TFK (R := R) F ⟶ u.A.A := toGen x ≫ u.U.gen.hom
 
-lemma ptA_injective : Function.Injective (u.ptA F) := fun _ _ h =>
-  toGen_injective ((cancel_mono u.U.gen.hom).1 h)
 
 def ToAk (k : ℕ) (p : QkPt Δ.D.toPre F k) (x : TF (R := R) F ⟶ t.G) : Prop :=
   QkToAkU u.U.toUnifPre F k p (u.ptA F x)

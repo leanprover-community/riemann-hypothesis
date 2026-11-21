@@ -1,8 +1,51 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.Subsingleton
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsKSValueOneOfRetraction
-import Development.AbelianVarietyTheory.Definitions.Divisors.ChainComp
 
+section
+noncomputable section
+
+namespace GlobalTheory.SSG
+
+def stdStep {C : Type} [CommRing C] (ϖ : C) {n : ℕ} (i : Fin n) : (Fin n → C) →ₗ[C] (Fin n → C) where
+  toFun v j := if j = i then ϖ * v j else v j
+  map_add' v w := by
+    funext j
+    by_cases h : j = i <;> simp [h, mul_add]
+  map_smul' c v := by
+    funext j
+    by_cases h : j = i <;> simp [h, smul_eq_mul, mul_left_comm]
+
+structure LMPoint (C : Type) [CommRing C] (ϖ : C) (n : ℕ) [NeZero n] where
+
+  ℓ : Fin n → Submodule C (Fin n → C)
+
+  line : ∀ i, ∃ v : Fin n → C, ℓ i = Submodule.span C {v} ∧ Ideal.span (Set.range v) = ⊤
+
+  step : ∀ i, (ℓ i).map (stdStep ϖ i) ≤ ℓ (i + 1)
+
+def LMPoint.worst {C : Type} [CommRing C] (n : ℕ) [NeZero n] : LMPoint C 0 n where
+  ℓ i := Submodule.span C {Pi.single i 1}
+  line i := ⟨Pi.single i 1, rfl, by
+    rw [eq_top_iff, ← Ideal.span_singleton_one]
+    exact Ideal.span_mono (by rintro _ rfl; exact ⟨i, by simp⟩)⟩
+  step i := by
+    rw [Submodule.map_span, Set.image_singleton]
+    have : stdStep (0 : C) i (Pi.single i 1) = 0 := by
+      funext j; by_cases h : j = i <;> simp [stdStep, h]
+    rw [this, Submodule.span_singleton_eq_bot.2 rfl]
+    exact bot_le
+
+def chainComp {C : Type} [CommRing C] {n : ℕ} {M : Fin (n + 1) → Type} [∀ i, AddCommGroup (M i)] [∀ i, Module C (M i)]
+    (f : ∀ i : Fin n, M i.castSucc →ₗ[C] M i.succ) : ∀ i : Fin (n + 1), M 0 →ₗ[C] M i :=
+  Fin.induction LinearMap.id (fun i g => f i ∘ₗ g)
+
+end GlobalTheory.SSG
+
+end
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -44,7 +87,6 @@ def comp (X : DRChain.{u} C n) : ∀ i : Fin (n + 1), X.M 0 →ₗ[C] X.M i :=
 @[simp] theorem comp_succ (X : DRChain.{u} C n) (i : Fin n) :
     X.comp i.succ = X.f i ∘ₗ X.comp i.castSucc := rfl
 
-theorem comp_eq_chainComp (X : DRChain.{0} C n) : X.comp = chainComp X.f := rfl
 
 def ofLMPoint {ϖ : C} [NeZero n] (P : LMPoint C ϖ n) : DRChain.{0} C n where
   M _ := Fin n → C
@@ -155,10 +197,6 @@ def pullPart {ρ : RingAct B O} {ρ' : RingAct B' O} {K : Type} [CommRing K] [Al
       rw [← hy]
       exact (LinearMap.congr_fun (primPull_tensorPull hu ε) y).symm
 
-theorem pullPart_apply {ρ : RingAct B O} {ρ' : RingAct B' O} {K : Type} [CommRing K] [Algebra K O]
-    (χ : K →+* C) (ε : C ⊗[ℤ] O) (u : B' ⟶ B) (hu : GlobalTheory.IwLevel.IsLin ρ' ρ u) (h : epsPart ρ χ ε) :
-    haveI := hu.hom
-    (pullPart χ ε u hu h : primDR B') = primPull (dp0 C) (𝟙 _) u h := rfl
 
 end GlobalTheory.DeRham
 
@@ -303,3 +341,5 @@ example {o : Obj b N (spMap σ)} {w : Ideal (𝓞 D.F)} (c : HTIw o w) (i : Fin 
       GlobalTheory.DeRham.primPull (GlobalTheory.Cris.dp0 C) (𝟙 _) (Chain.stepRev c j) (h : GlobalTheory.DeRham.primDR _) := rfl
 
 end ExampleHT
+end
+end

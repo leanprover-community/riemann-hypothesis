@@ -1,6 +1,288 @@
-import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.MfacMapDomainAdd
+import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.RestRankLProved
 import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.BlockValuationZpOfLatticeInclusion
 
+section
+noncomputable section
+
+namespace Formalism.MainNotions.G.SymmetricFormBlocks
+
+open MvPolynomial Finset
+
+section Level
+
+variable (p : ℕ) [Fact p.Prime] {N r : ℕ} [NeZero r] (G : Formalism.GM.M.BlockData N)
+
+def RestPlusAW (j : Fin G.T.t → ℕ) (jp : ℕ) (D : ℤ) : Prop :=
+  Formalism.GM.M.goodCount p (fun F F' => Formalism.GM.M.fockN p (G.lettersAt j jp) (G.T.phis p (r := r) (G.lettersAt j jp) F) F')
+            (Formalism.GM.M.YZ p (r := r) (G.lettersAt j jp) G.T.J G.T.thr) D * dXi r (G.B - jp) ≤
+    Formalism.GM.M.goodCount p (bePhi p (r := r) G j jp) (Ljj p (r := r) G j jp) D
+
+theorem plusA_of (j : Fin G.T.t → ℕ) (jp : ℕ) (D : ℤ) (h : RestPlusAW p (r := r) G j jp D) :
+    Formalism.GM.M.bad p (bePhi p (r := r) G j jp) (Ljj p (r := r) G j jp) D ≤ badY p (r := r) G j jp D * dXi r (G.B - jp) := by
+  have h1 := finrank_Ljj_le p (r := r) G j jp
+  have hY : Module.finrank ℤ_[p] (Formalism.GM.M.YZ p (r := r) (G.lettersAt j jp) G.T.J G.T.thr) = dimY p (r := r) G j jp :=
+    Formalism.CountingSumsFrames.finrank_lattice _ _ inf_le_left
+  unfold badY
+  simp only [Formalism.GM.M.bad]
+  rw [hY, Nat.sub_mul]
+  unfold RestPlusAW at h
+  omega
+
+end Level
+
+variable (C0 CE1 CE2 : ℝ) (X : flipOneThree.Inst)
+
+def RestPlusAWI (CM : ℝ) : Prop :=
+  ∀ dl ∈ CountingStatementReduction.clSet C0 CE1 CE2 X, ∀ aTop ∈ cbox C0 CE1 CE2 X dl, ∀ x ∈ idx C0 CE1 CE2 X dl aTop,
+    RestPlusAW X.p (r := X.r) (gB C0 CE1 CE2 X aTop 0 x.1) x.2.1 x.2.2 ⌊D1r C0 CE1 CE2 X CM⌋
+
+theorem restPlusA_of (CM : ℝ) (h : RestPlusAWI C0 CE1 CE2 X CM) : RestPlusA C0 CE1 CE2 X CM := by
+  intro dl hdl aTop ha x hx
+  exact plusA_of X.p (r := X.r) (gB C0 CE1 CE2 X aTop 0 x.1) x.2.1 x.2.2 _ (h dl hdl aTop ha x hx)
+
+end Formalism.MainNotions.G.SymmetricFormBlocks
+
+end
+end
+
+section
+noncomputable section
+
+namespace Formalism.MainNotions.G.SymmetricFormBlocks
+
+open MvPolynomial
+
+section Free
+
+variable {k σ : Type} [Field k] {r : ℕ}
+
+theorem tieE_mul_free (w e : Fin r → σ) (F m : MvPolynomial σ k) :
+    Formalism.GM.tieE w e (F * m) = Formalism.GM.tieE w e F * m := by
+  simp only [Formalism.GM.tieE, LinearMap.mulLeft_apply, mul_assoc]
+
+theorem tieF_mul_free (w e : Fin r → σ) (F m : MvPolynomial σ k) (hw : ∀ c, pderiv (w c) m = 0)
+    (he : ∀ c, pderiv (e c) m = 0) : Formalism.GM.tieF w e (F * m) = Formalism.GM.tieF w e F * m := by
+  have key : ∀ (v : σ) (G : MvPolynomial σ k), pderiv v m = 0 → pderiv v (G * m) = pderiv v G * m := by
+    intro v G hv
+    rw [Derivation.leibniz, hv, smul_zero, zero_add, smul_eq_mul, mul_comm]
+  unfold Formalism.GM.tieF
+  rw [LinearMap.sum_apply, LinearMap.sum_apply, Finset.sum_mul]
+  refine Finset.sum_congr rfl fun c _ => ?_
+  show pderiv (w c) (pderiv (e c) (F * m)) = pderiv (w c) (pderiv (e c) F) * m
+  rw [key _ _ (he c), key _ _ (hw c)]
+
+theorem tiePhi_mul_free (w e : Fin r → σ) (o n z : ℕ) (F m : MvPolynomial σ k) (hw : ∀ c, pderiv (w c) m = 0)
+    (he : ∀ c, pderiv (e c) m = 0) : Formalism.GM.tiePhi w e o n z (F * m) = Formalism.GM.tiePhi w e o n z F * m := by
+  have hE : ∀ (j : ℕ) (G : MvPolynomial σ k),
+      ((Formalism.GM.tieE w e) ^ j) (G * m) = ((Formalism.GM.tieE w e) ^ j) G * m := by
+    intro j
+    induction j with
+    | zero => intro G; rfl
+    | succ j ih =>
+      intro G
+      rw [pow_succ']
+      show Formalism.GM.tieE w e (((Formalism.GM.tieE w e) ^ j) (G * m)) =
+        Formalism.GM.tieE w e (((Formalism.GM.tieE w e) ^ j) G) * m
+      rw [ih, tieE_mul_free]
+  have hF : ∀ (j : ℕ) (G : MvPolynomial σ k),
+      ((Formalism.GM.tieF w e) ^ j) (G * m) = ((Formalism.GM.tieF w e) ^ j) G * m := by
+    intro j
+    induction j with
+    | zero => intro G; rfl
+    | succ j ih =>
+      intro G
+      rw [pow_succ']
+      show Formalism.GM.tieF w e (((Formalism.GM.tieF w e) ^ j) (G * m)) =
+        Formalism.GM.tieF w e (((Formalism.GM.tieF w e) ^ j) G) * m
+      rw [ih, tieF_mul_free w e _ m hw he]
+  unfold Formalism.GM.tiePhi
+  rw [LinearMap.sum_apply, LinearMap.sum_apply, Finset.sum_mul]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  rw [LinearMap.smul_apply, LinearMap.smul_apply, LinearMap.comp_apply, LinearMap.comp_apply, hF, hE,
+    smul_mul_assoc]
+
+theorem foldr_mul_free {ι : Type*} (l : List ι) (f : ι → MvPolynomial σ k →ₗ[k] MvPolynomial σ k) (m : MvPolynomial σ k)
+    (h : ∀ i ∈ l, ∀ F, f i (F * m) = f i F * m) (F : MvPolynomial σ k) :
+    (l.foldr (fun i acc => f i ∘ₗ acc) LinearMap.id) (F * m) = (l.foldr (fun i acc => f i ∘ₗ acc) LinearMap.id) F * m := by
+  induction l with
+  | nil => rfl
+  | cons i l ih =>
+    simp only [List.foldr_cons, LinearMap.comp_apply]
+    rw [ih (fun j hj => h j (List.mem_cons_of_mem _ hj)), h i (by simp)]
+
+theorem foldr_rename {τ : Type} {ι : Type*} (l : List ι) (em : σ → τ)
+    (f : ι → MvPolynomial σ k →ₗ[k] MvPolynomial σ k) (g : ι → MvPolynomial τ k →ₗ[k] MvPolynomial τ k)
+    (h : ∀ i ∈ l, ∀ F, g i (rename em F) = rename em (f i F)) (F : MvPolynomial σ k) :
+    (l.foldr (fun i acc => g i ∘ₗ acc) LinearMap.id) (rename em F) =
+      rename em ((l.foldr (fun i acc => f i ∘ₗ acc) LinearMap.id) F) := by
+  induction l with
+  | nil => rfl
+  | cons i l ih =>
+    simp only [List.foldr_cons, LinearMap.comp_apply]
+    rw [ih (fun j hj => h j (List.mem_cons_of_mem _ hj)), h i (by simp)]
+
+end Free
+
+section Level
+
+variable (p : ℕ) [Fact p.Prime] {N r : ℕ} [NeZero r] (G : Formalism.GM.M.BlockData N)
+
+theorem phisB_rename_mul (hB : G.BlockOK) (j : Fin G.T.t → ℕ) (jp : ℕ) (y : MvPolynomial (Fin N × Fin r) ℚ_[p])
+    (m : MvPolynomial (Formalism.GM.M.BVar N r G.T.t) ℚ_[p])
+    (hm : ∀ (a : Fin N) (c : Fin r), pderiv (Sum.inl (Fin.castSucc a, c)) m = 0) :
+    phisB p (r := r) G j jp (rename (Formalism.GM.M.chainEmb N r G.T.t) y * m) =
+      rename (Formalism.GM.M.chainEmb N r G.T.t) (G.T.phis p (r := r) (G.lettersAt j jp) y) * m := by
+  obtain ⟨-, hpos, -, hN⟩ := hB
+  have hlt : ∀ i : Fin G.T.t, G.T.pos i + 1 < N := fun i => by have := hpos i; omega
+  have hfin0 : ∀ i : Fin G.T.t, Formalism.GM.M.finPos N (G.T.pos i) =
+      Fin.castSucc (⟨G.T.pos i, by have := hlt i; omega⟩ : Fin N) := by
+    intro i
+    apply Fin.ext
+    simp only [Formalism.GM.M.finPos, Fin.coe_castSucc]
+    have := hlt i
+    omega
+  have hfin1 : ∀ i : Fin G.T.t, Formalism.GM.M.finPos N (G.T.pos i + 1) =
+      Fin.castSucc (⟨G.T.pos i + 1, hlt i⟩ : Fin N) := by
+    intro i
+    apply Fin.ext
+    simp only [Formalism.GM.M.finPos, Fin.coe_castSucc]
+    have := hlt i
+    omega
+  have hlet0 : ∀ i : Fin G.T.t, G.letterAt (G.T.pos i) = (⟨G.T.pos i, by have := hlt i; omega⟩ : Fin N) := by
+    intro i
+    apply Fin.ext
+    simp only [Formalism.GM.M.BlockData.letterAt]
+    have := hlt i
+    omega
+  have hlet1 : ∀ i : Fin G.T.t, G.letterAt (G.T.pos i + 1) = (⟨G.T.pos i + 1, hlt i⟩ : Fin N) := by
+    intro i
+    apply Fin.ext
+    simp only [Formalism.GM.M.BlockData.letterAt]
+    have := hlt i
+    omega
+  have hinj : Function.Injective (Formalism.GM.M.chainEmb N r G.T.t) := by
+    intro x y h
+    simp only [Formalism.GM.M.chainEmb, Sum.inl.injEq, Prod.mk.injEq, Fin.castSucc_inj] at h
+    exact Prod.ext h.1 h.2
+  unfold phisB
+  rw [foldr_mul_free]
+  · congr 1
+    unfold Formalism.GM.M.TieData.phis
+    refine foldr_rename _ _ _ _ (fun i _ F => ?_) y
+    simp only [Formalism.GM.M.TieData.phi, dif_pos (hlt i), Formalism.GM.M.tiePhiAt]
+    rw [hfin0, hfin1, hlet0, hlet1]
+    exact Formalism.CountingSumsFrames.TO.tiePhi_rename (Formalism.GM.M.chainEmb N r G.T.t) hinj
+      (fun c : Fin r => ((⟨G.T.pos i, by have := hlt i; omega⟩ : Fin N), c))
+      (fun c : Fin r => ((⟨G.T.pos i + 1, hlt i⟩ : Fin N), c)) _ _ _ F
+  · intro i _ F
+    exact tiePhi_mul_free _ _ _ _ _ F m (fun c => by rw [hfin0]; exact hm _ c)
+      (fun c => by rw [hfin1]; exact hm _ c)
+
+end Level
+
+end Formalism.MainNotions.G.SymmetricFormBlocks
+
+end
+end
+
+section
+noncomputable section
+
+namespace Formalism.MainNotions.G.SymmetricFormBlocks
+
+open MvPolynomial Finset Formalism.GM.ProjS
+
+section Disj
+
+variable {k σ τ : Type} [Field k] [DecidableEq σ] [DecidableEq τ]
+
+theorem mapDomain_add_inj (e : τ → σ) (he : Function.Injective e) (a b : τ →₀ ℕ) (β β' : σ →₀ ℕ)
+    (hβ : ∀ x, β (e x) = 0) (hβ' : ∀ x, β' (e x) = 0)
+    (h : Finsupp.mapDomain e a + β = Finsupp.mapDomain e b + β') : a = b ∧ β = β' := by
+  have ha : a = b := by
+    ext x
+    have h1 := DFunLike.congr_fun h (e x)
+    simpa [Finsupp.mapDomain_apply he, hβ, hβ'] using h1
+  subst ha
+  exact ⟨rfl, add_left_cancel h⟩
+
+theorem mfac_mapDomain_add (e : τ → σ) (he : Function.Injective e) (a : τ →₀ ℕ) (β : σ →₀ ℕ)
+    (hβ : ∀ x, β (e x) = 0) : (mfac (Finsupp.mapDomain e a + β) : k) = mfac a * mfac β := by
+  unfold mfac
+  have hd : Disjoint (Finsupp.mapDomain e a).support β.support := by
+    rw [Finset.disjoint_left]
+    intro x hx hx'
+    obtain ⟨y, _, rfl⟩ := Finset.mem_image.1 (Finsupp.mapDomain_support hx)
+    exact (Finsupp.mem_support_iff.1 hx') (hβ y)
+  rw [Finsupp.prod_add_index_of_disjoint hd, Finsupp.prod_mapDomain_index_inj he]
+
+theorem fockK_rename_mul (e : τ → σ) (he : Function.Injective e) (A B : MvPolynomial τ k) (β β' : σ →₀ ℕ) (c : k)
+    (hβ : ∀ x, β (e x) = 0) (hβ' : ∀ x, β' (e x) = 0) :
+    Formalism.GM.M.fockK (rename e A * monomial β 1) (rename e B * monomial β' c) =
+      if β = β' then c * mfac β * Formalism.GM.M.fockK A B else 0 := by
+  classical
+  set F := rename e A * monomial β (1 : k) with hF
+  set G := rename e B * monomial β' c with hG
+  have hcF : ∀ m, F.coeff (Finsupp.mapDomain e m + β) = A.coeff m := by
+    intro m
+    rw [hF, MvPolynomial.coeff_mul_monomial, MvPolynomial.coeff_rename_mapDomain e he, mul_one]
+  have hcF0 : ∀ n, F.coeff n ≠ 0 → ∃ m, n = Finsupp.mapDomain e m + β ∧ A.coeff m ≠ 0 := by
+    intro n hn
+    rw [hF, MvPolynomial.coeff_mul_monomial'] at hn
+    split_ifs at hn with hle
+    · rw [mul_one] at hn
+      obtain ⟨u, hu, hu0⟩ := MvPolynomial.coeff_rename_ne_zero e A (n - β) hn
+      refine ⟨u, ?_, hu0⟩
+      rw [hu]
+      exact (tsub_add_cancel_of_le hle).symm
+    · exact absurd rfl hn
+  have hcG : ∀ m, G.coeff (Finsupp.mapDomain e m + β) = if β = β' then B.coeff m * c else 0 := by
+    intro m
+    split_ifs with hb
+    · subst hb
+      rw [hG, MvPolynomial.coeff_mul_monomial, MvPolynomial.coeff_rename_mapDomain e he]
+    · by_contra hne
+      rw [hG, MvPolynomial.coeff_mul_monomial'] at hne
+      split_ifs at hne with hle
+      · have h1 : (rename e B).coeff (Finsupp.mapDomain e m + β - β') ≠ 0 := fun h0 => hne (by rw [h0, zero_mul])
+        obtain ⟨u, hu, -⟩ := MvPolynomial.coeff_rename_ne_zero e B _ h1
+        have h2 : Finsupp.mapDomain e m + β = Finsupp.mapDomain e u + β' := by
+          rw [hu]
+          exact (tsub_add_cancel_of_le hle).symm
+        exact hb (mapDomain_add_inj e he m u β β' hβ hβ' h2).2
+      · exact hne rfl
+  have hmf : ∀ m : τ →₀ ℕ, ((Finsupp.mapDomain e m + β).prod fun _ j => (j.factorial : k)) =
+      (m.prod fun _ j => (j.factorial : k)) * (β.prod fun _ j => (j.factorial : k)) :=
+    fun m => mfac_mapDomain_add e he m β hβ
+  unfold Formalism.GM.M.fockK
+  have hsub : F.support ⊆ A.support.image (fun m => Finsupp.mapDomain e m + β) := by
+    intro n hn
+    obtain ⟨m, rfl, hm⟩ := hcF0 n (MvPolynomial.mem_support_iff.1 hn)
+    exact Finset.mem_image.2 ⟨m, MvPolynomial.mem_support_iff.2 hm, rfl⟩
+  rw [Finset.sum_subset hsub (fun n _ hn => by
+    rw [MvPolynomial.mem_support_iff, not_not] at hn
+    rw [hn]
+    ring)]
+  have hinj : Set.InjOn (fun m => Finsupp.mapDomain e m + β) A.support :=
+    fun a _ b _ hab => (mapDomain_add_inj e he a b β β hβ hβ hab).1
+  rw [Finset.sum_image hinj]
+  simp only [hcF, hcG, hmf]
+  split_ifs with hb
+  · rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro x _
+    unfold mfac
+    ring
+  · simp
+
+end Disj
+
+end Formalism.MainNotions.G.SymmetricFormBlocks
+
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.MainNotions.G.SymmetricFormBlocks
@@ -150,4 +432,5 @@ end Level
 
 end Formalism.MainNotions.G.SymmetricFormBlocks
 
+end
 end

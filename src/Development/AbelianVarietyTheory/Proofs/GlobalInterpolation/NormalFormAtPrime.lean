@@ -98,14 +98,6 @@ theorem nf_iff (j : ℕ) (P : HeightOneSpectrum (𝓞 X.E)) (h : AutY X R j) :
   rw [nfLat_eq]
   exact SetLike.coe_set_eq (p := gmap h (lamYat (Pr := Pr) (R := R) j P))
 
-theorem incl_iff : IndefiniteRowSideFullHecke.SandwichNormalForm.InclAt Pr R ↔ IndefiniteRowSideFullHecke.NormalFormInclusion.NFIncl X Pr R := by
-  constructor
-  · intro H j P hP h hh k hk
-    obtain ⟨h1, h2⟩ := H j P hP h k ((nf_iff j P h).2 hh) hk
-    exact ⟨fun x hx => h1 x hx, h2⟩
-  · intro H j P hP h k hh hk
-    obtain ⟨h1, h2⟩ := H j P hP h ((nf_iff j P h).1 hh) k hk
-    exact ⟨fun x hx => h1 hx, h2⟩
 
 theorem sameDC_refl (sharp : Bool) (j : ℕ) (P : HeightOneSpectrum (𝓞 X.E)) (h : AutY X R j) : SameDC (Pr := Pr) sharp j P h h :=
   ⟨1, one_mem _, 1, one_mem _, by simp⟩
@@ -173,10 +165,6 @@ theorem rep_iff (hd : TwistDegOne Pr sel mu) :
       ⟨cst.D P, hc.psi_add P, hint⟩ hE
     exact ⟨h', hs', (nf_iff _ _ _).2 hn'⟩
 
-theorem idxNF_iff (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K))) :
-    IndefiniteRowSideFullHecke.SandwichNormalForm.IdxNF sel mu L ↔ IndefiniteRowSideFullHecke.NormalFormInclusion.IdxNF sel mu L :=
-  forall_congr' fun _ => forall_congr' fun _ => forall_congr' fun _ => forall_congr' fun _ => forall_congr' fun _ =>
-    forall_congr' fun _ => nf_iff _ _ _
 
 variable {Ch sel mu}
 
@@ -201,81 +189,10 @@ theorem ok_mono {cst : LocCst X (rowSG Pr sel mu)} {L : ChIdx X Pr R (QE sel (mu
     psiSuppX := fun al P x y hx s l => intAt_pow_mono hA (H.psiSuppX al P x y hx s l)
     psiInvX := fun al P x z y hz => H.psiInvX al P x z y fun s l => intAt_inv_pow_anti hB (hz s l) }
 
-theorem ok_reindex {cst : LocCst X (rowSG Pr sel mu)} {L L' : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K))} {G : ChGlob X R.m}
-    {m2 : ℕ} (H : L'.Ok Ch sel mu cst G m2) (e : ∀ j, L.β j ≃ L'.β j) (hG : ∀ j (b : L.β j), L'.levG j (e j b) = L.levG j b) :
-    ChIdx.Ok Ch sel mu cst { L with h := fun j b => L'.h j (e j b), levQ := fun j b => L'.levQ j (e j b) } G m2 where
-  hm := H.hm
-  cst_ok := H.cst_ok
-  xiUnitAtPrime := H.xiUnitAtPrime
-  weil := H.weil
-  muqQ := H.muqQ
-  muqG := H.muqG
-  mu0G := H.mu0G
-  psi0 := H.psi0
-  deep := fun A B h1 h2 i hi al be P => H.deep A B h1 h2 i hi (e _ al) (e _ be) P
-  zero_uniq := by
-    obtain ⟨b, hb⟩ := H.zero_uniq
-    exact ⟨(e 0).symm b, fun b' => (e 0).eq_symm_apply.2 (hb _)⟩
-  zero_h := fun b P => H.zero_h (e _ b) P
-  zero_G := fun b => (hG 0 b).symm.trans (H.zero_G (e _ b))
-  zero_Q := fun b => H.zero_Q (e _ b)
-  last_uniq := by
-    obtain ⟨b, hb⟩ := H.last_uniq
-    exact ⟨(e _).symm b, fun b' => (e _).eq_symm_apply.2 (hb _)⟩
-  last_h := fun b P => H.last_h (e _ b) P
-  nonvan := fun i hi b P => by
-    obtain ⟨al, hal⟩ := H.nonvan i hi (e _ b) P
-    obtain ⟨al, rfl⟩ := (e i).surjective al
-    exact ⟨al, hal⟩
-  inj := fun i hi b b' hb => (e _).injective (H.inj i hi (e _ b) (e _ b') hb)
-  surj := fun i hi hh h1 h2 h3 => by
-    obtain ⟨b, hb⟩ := H.surj i hi hh h1 h2 fun P => (h3 P).elim fun al hal => ⟨e i al, hal⟩
-    obtain ⟨b, rfl⟩ := (e (i + 1)).surjective b
-    exact ⟨b, hb⟩
-  stabG := fun j b P => H.stabG j (e _ b) P
-  depthG := H.depthG
-  depthQ := H.depthQ
-  depthQ' := H.depthQ'
-  boundQ := fun j b P => H.boundQ j (e _ b) P
-  psiSupp := fun al => H.psiSupp (e _ al)
-  psiInv := fun al => H.psiInv (e _ al)
-  xiSupp := fun i hi al be => H.xiSupp i hi (e _ al) (e _ be)
-  xiInv := fun i hi al be => H.xiInv i hi (e _ al) (e _ be)
-  psiSuppX := fun al => H.psiSuppX (e _ al)
-  psiInvX := fun al => H.psiInvX (e _ al)
-  int := fun j b => H.int j (e _ b)
-  grpQ := fun j b => H.grpQ j (e _ b)
-  chrQ := fun j b => H.chrQ j (e _ b)
-  grpG := fun j b => by
-    have := H.grpG j (e _ b)
-    rw [hG] at this
-    exact this
-  chrG := fun j b => by
-    have := H.chrG j (e _ b)
-    rw [hG] at this
-    exact this
 
 variable (Ch sel mu)
 
-theorem choice_iff (hd : TwistDegOne Pr sel mu) :
-    IndefiniteRowSideFullHecke.SandwichNormalForm.ChoiceAt Ch sel mu ↔ ∀ cst : LocCst X (rowSG Pr sel mu), IndefiniteRowSideFullHecke.NormalFormInclusion.ChoiceExists Ch sel mu cst := by
-  refine forall_congr' fun cst => ?_
-  constructor
-  · intro H _ G m2 L hL
-    obtain ⟨A', B', L', e, -, -, hok, hnf, hdc, hg, hlev⟩ := H G m2 L hL
-    refine ⟨fun j b => L'.h j (e j b), fun j b => L'.levQ j (e j b), A', B', hdc, hg, ?_, fun A'' B'' h1 h2 => ?_⟩
-    · exact fun j h1 h2 b P hP => (nf_iff _ _ _).1 (hnf j h1 h2 (e j b) P hP)
-    · exact ok_mono (ok_reindex hok e hlev) h1 h2
-  · intro H G m2 L hL
-    obtain ⟨h', lq, A₀, B₀, hdc, hg, hnf, hok⟩ := H hd G m2 L hL
-    exact ⟨max A₀ cst.A, max B₀ cst.B, { L with h := h', levQ := lq }, fun _ => Equiv.refl _, le_max_right _ _, le_max_right _ _,
-      hok _ _ (le_max_left _ _) (le_max_left _ _), (idxNF_iff sel mu _).2 hnf, hdc, hg, fun _ _ => rfl⟩
 
-theorem body_iff (hd : TwistDegOne Pr sel mu) :
-    (IndefiniteRowSideFullHecke.SandwichNormalForm.InclAt Pr R ∧ IndefiniteRowSideFullHecke.SandwichNormalForm.RepAt Ch sel mu ∧ IndefiniteRowSideFullHecke.SandwichNormalForm.ChoiceAt Ch sel mu) ↔
-      (IndefiniteRowSideFullHecke.NormalFormInclusion.NFIncl X Pr R ∧ ∀ cst : LocCst X (rowSG Pr sel mu),
-        IndefiniteRowSideFullHecke.NormalFormInclusion.RepExists Ch sel mu cst ∧ IndefiniteRowSideFullHecke.NormalFormInclusion.ChoiceExists Ch sel mu cst) := by
-  rw [incl_iff, rep_iff Ch sel mu hd, choice_iff Ch sel mu hd, ← forall_and]
 
 def NormalFormAtQGuarded : Prop :=
   ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (Ch : Chars X Pr R.m)
@@ -284,21 +201,5 @@ def NormalFormAtQGuarded : Prop :=
     IndefiniteRowSideFullHecke.NormalFormInclusion.NFIncl X Pr R ∧ ∀ cst : LocCst X (rowSG Pr sel mu),
       IndefiniteRowSideFullHecke.NormalFormInclusion.RepExists Ch sel mu cst ∧ IndefiniteRowSideFullHecke.NormalFormInclusion.ChoiceExists Ch sel mu cst
 
-theorem normalForm_equiv :
-    (∀ (X : Fields) (Pr : Primes X) (R : Ranks) (Ch : Chars X Pr R.m)
-      (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (S : Set ℕ) (mu : Tup X.F X.E X.K S),
-      Module.finrank X.F X.E = 2 → IsSel X sel →
-      ((IndefiniteRowSideFullHecke.SandwichNormalForm.InclAt Pr R ↔ IndefiniteRowSideFullHecke.NormalFormInclusion.NFIncl X Pr R) ∧
-        (IndefiniteRowSideFullHecke.SandwichNormalForm.RepAt Ch sel mu ↔ ∀ cst : LocCst X (rowSG Pr sel mu), IndefiniteRowSideFullHecke.NormalFormInclusion.RepExists Ch sel mu cst) ∧
-        (IndefiniteRowSideFullHecke.SandwichNormalForm.ChoiceAt Ch sel mu ↔ ∀ cst : LocCst X (rowSG Pr sel mu), IndefiniteRowSideFullHecke.NormalFormInclusion.ChoiceExists Ch sel mu cst))) ∧
-    (IndefiniteRowSideFullHecke.SandwichNormalForm.NormalForm ↔ NormalFormAtQGuarded) ∧
-    (IndefiniteRowSideFullHecke.NormalFormInclusion.NormalFormAtQ → IndefiniteRowSideFullHecke.SandwichNormalForm.NormalForm) := by
-  have h : IndefiniteRowSideFullHecke.SandwichNormalForm.NormalForm ↔ NormalFormAtQGuarded :=
-    forall_congr' fun X => forall_congr' fun Pr => forall_congr' fun R => forall_congr' fun Ch => forall_congr' fun sel =>
-      forall_congr' fun S => forall_congr' fun mu => forall_congr' fun h2 => forall_congr' fun hs =>
-        body_iff Ch sel mu (twistDegOne_of_isSel sel mu h2 hs)
-  refine ⟨fun X Pr R Ch sel S mu h2 hs => ⟨incl_iff, rep_iff Ch sel mu (twistDegOne_of_isSel sel mu h2 hs),
-    choice_iff Ch sel mu (twistDegOne_of_isSel sel mu h2 hs)⟩, h, fun H => h.2 fun X Pr R Ch sel S mu _ _ =>
-      ⟨(H X Pr R).1, fun cst => (H X Pr R).2 Ch sel S mu cst⟩⟩
 
 end GlobalTheory.Proof.NormalFormAtPrime

@@ -118,20 +118,8 @@ theorem dyadic_idempotent_mul_place_idempotent (hdy : DyadIdem D) {v : HeightOne
     rintro rfl
     exact h ((Set.Finite.mem_toFinset (dyad_finite D)).1 hb)
 
-theorem infPart_eDy (hdy : DyadIdem D) (v : HeightOneSpectrum (𝓞 D.host.F)) : infPart D (eDy (D := D) v) = 0 := by
-  by_cases h2 : (2 : 𝓞 D.host.F) ∈ v.asIdeal
-  · obtain ⟨⟨he, hc, -⟩, -, ε, hε, hs⟩ := eDy_spec hdy v h2
-    exact infPart_idem he hc hε hs
-  · rw [eDy_of_not v h2, map_zero]
 
-theorem infinite_part_dyadic_idempotent (hdy : DyadIdem D) : infPart D (e2 D) = 0 := by
-  unfold e2; rw [map_sum]; exact Finset.sum_eq_zero fun v _ => infPart_eDy hdy v
 
-theorem dyadic_idempotent_integral (hdy : DyadIdem D) : finPart D (e2 D) ∈ intAE D := by
-  unfold e2; rw [map_sum]
-  refine AddSubgroup.sum_mem _ fun v hv => ?_
-  have h2 : (2 : 𝓞 D.host.F) ∈ v.asIdeal := (Set.Finite.mem_toFinset (dyad_finite D)).1 hv
-  exact (eDy_spec hdy v h2).2.1
 
 theorem finPart_algebraMap (r : AF D.host.F) :
     finPart D (algebraMap (AF D.host.F) (AE D) r) = sndA D.host.F r ⊗ₜ[D.host.F] (1 : D.host.E) := rfl
@@ -195,9 +183,6 @@ theorem hO_smul_right (a : AE D) (x y : WO S T) : hO S T x (a • y) = cA D a * 
     Finset.sum_congr rfl fun _ _ => ?_
   ring
 
-theorem symplO_smul_adj (a : AE D) (x y : WO S T) : symplO S T (a • x) y = symplO S T x (cA D a • y) := by
-  unfold symplO
-  rw [hO_smul_left, hO_smul_right, cA_cA']
 
 theorem symplO_alg_left (r : AF D.host.F) (x y : WO S T) :
     symplO S T (algebraMap (AF D.host.F) (AE D) r • x) y = r * symplO S T x y := by
@@ -218,23 +203,8 @@ theorem two_halfE : (2 : AF D.host.F) * algebraMap D.host.F (AF D.host.F) (1 / 2
 theorem symplOH_add_self (x y : WO S T) : symplOH S T x y + symplOH S T x y = symplO S T x y :=
   Formalism.IndefR.Fin.symplOH_two S T x y
 
-theorem symplO_re_fi (r z : WO S T) (hr : ∀ i j, finPart D (r i j) = 0) (hz : ∀ i j, infPart D (z i j) = 0) :
-    symplO S T r z = 0 ∧ symplO S T z r = 0 := by
-  obtain ⟨h1, h2⟩ := Fock.DRho.symplOH_real_fin S T r z hr hz
-  constructor
-  · rw [← symplOH_add_self, h1, add_zero]
-  · rw [← symplOH_add_self, h2, add_zero]
 
-theorem smul_re_eq_zero (a : AE D) (ha : infPart D a = 0) (r : WO S T) (hr : ∀ i j, finPart D (r i j) = 0) :
-    a • r = 0 := by
-  ext i j
-  rw [Matrix.smul_apply, smul_eq_mul, Matrix.zero_apply]
-  refine Fock.DRho.eq_zero_of_parts D _ ?_ ?_
-  · rw [map_mul, ha, zero_mul]
-  · rw [map_mul, hr i j, mul_zero]
 
-theorem isFi_smul (a : AE D) (ha : infPart D a = 0) (z : WO S T) : ∀ i j, infPart D ((a • z) i j) = 0 := by
-  intro i j; rw [Matrix.smul_apply, smul_eq_mul, map_mul, ha, zero_mul]
 
 end Sym
 
@@ -283,38 +253,7 @@ theorem symplOH_rat (a b : Matrix (Fin T.rank) (Fin S.rank) D.host.E) :
   obtain ⟨q, hq⟩ := Formalism.IndefR.Fin.symplO_rat S T a b
   exact ⟨1 / 2 * q, by unfold symplOH; rw [hq, map_mul]⟩
 
-theorem thS_quasi (ψ : AddChar (AF D.host.F) ℂ) (hψF : ∀ a : D.host.F, ψ (algebraMap D.host.F (AF D.host.F) a) = 1)
-    (Φ : WO S T → ℂ) (γ₀ : Matrix (Fin T.rank) (Fin S.rank) D.host.E) (w : WO S T) :
-    thS S T ψ Φ (ratW T S γ₀ + w) = ψ (-(symplOH S T (ratW T S γ₀) w)) * thS S T ψ Φ w := by
-  unfold thS
-  rw [← tsum_mul_left, ← (Equiv.subRight γ₀).tsum_eq]
-  refine tsum_congr fun γ => ?_
-  simp only [Equiv.subRight_apply]
-  have hsub : ratW T S (γ - γ₀) = ratW T S γ - ratW T S γ₀ := by
-    rw [sub_eq_add_neg, Formalism.IndefR.Fin.ratW_add, Formalism.IndefR.Fin.ratW_neg, ← sub_eq_add_neg]
-  rw [hsub, show ratW T S γ - ratW T S γ₀ + (ratW T S γ₀ + w) = ratW T S γ + w by abel]
-  obtain ⟨q, hq⟩ := symplOH_rat S T γ γ₀
-  obtain ⟨q', hq'⟩ := symplOH_rat S T γ₀ γ₀
-  have e : symplOH S T (ratW T S γ - ratW T S γ₀) (ratW T S γ₀ + w) =
-      algebraMap D.host.F (AF D.host.F) (q - q') + (-(symplOH S T (ratW T S γ₀) w) + symplOH S T (ratW T S γ) w) := by
-    rw [sub_eq_add_neg, Formalism.IndefR.Fin.symplOH_add_left, Formalism.IndefR.Fin.symplOH_add_right,
-      Formalism.IndefR.Fin.symplOH_add_right, map_sub, ← hq, ← hq']
-    have hn : ∀ x y, symplOH S T (-x) y = -symplOH S T x y := by
-      intro x y; unfold symplOH; rw [Formalism.IndefR.Fin.symplO_neg_left, mul_neg]
-    rw [hn, hn]
-    ring
-  rw [e, AddChar.map_add_eq_mul, hψF, one_mul, AddChar.map_add_eq_mul]
-  ring
 
-theorem thS_heis (ψ : AddChar (AF D.host.F) ℂ) (Φ : WO S T → ℂ) (u w : WO S T) :
-    heisO ψ S T u (thS S T ψ Φ) w = thS S T ψ (heisO ψ S T u Φ) w := by
-  unfold heisO thS
-  rw [← tsum_mul_left]
-  refine tsum_congr fun γ => ?_
-  dsimp only
-  rw [← add_assoc, Formalism.IndefR.Fin.symplOH_add_right, Formalism.IndefR.Fin.symplOH_add_left,
-    AddChar.map_add_eq_mul, AddChar.map_add_eq_mul]
-  ring
 
 end Phi
 
@@ -329,30 +268,10 @@ structure LatHyp (ψ : AddChar (AF D.host.F) ℂ) (Λ : AddSubgroup (WO S T)) : 
 
 variable {S T}
 
-theorem phase_expand (hdy : DyadIdem D) (x r z : WO S T) (hr : ∀ i j, finPart D (r i j) = 0)
-    (hx : ∀ i j, infPart D (x i j) = 0) (hz : ∀ i j, infPart D (z i j) = 0) :
-    symplOH S T (r + x) z + symplOH S T (e2 D • (r + x + z)) (r + x + z) =
-      symplOH S T (e2 D • (r + x)) (r + x) +
-        (symplOH S T x z + symplOH S T (e2 D • x) z + symplOH S T (e2 D • z) x + symplOH S T (e2 D • z) z) := by
-  have he : e2 D • r = 0 := smul_re_eq_zero S T (e2 D) (infinite_part_dyadic_idempotent hdy) r hr
-  have h1 : symplOH S T r z = 0 := (Fock.DRho.symplOH_real_fin S T r z hr hz).1
-  have hz2 : ∀ i j, infPart D ((e2 D • z) i j) = 0 := isFi_smul S T (e2 D) (infinite_part_dyadic_idempotent hdy) z
-  have h2 : symplOH S T (e2 D • z) r = 0 := (Fock.DRho.symplOH_real_fin S T r _ hr hz2).2
-  simp only [smul_add, he, zero_add, Formalism.IndefR.Fin.symplOH_add_left, Formalism.IndefR.Fin.symplOH_add_right, h1, h2]
-  ring
 
-theorem psi_one_of_mem (ψ : AddChar (AF D.host.F) ℂ) {Λ : AddSubgroup (WO S T)} (hL : LatHyp S T ψ Λ) {a b : WO S T}
-    (ha : a ∈ Λ) (hb : b ∈ Λ) : ψ (symplO S T a b) = 1 := hL.pair a ha b hb
 
-theorem symplO_smul_right_adj (c : AE D) (a b : WO S T) : symplO S T a (c • b) = symplO S T (cA D c • a) b := by
-  rw [symplO_smul_adj, cA_cA']
 
-theorem symplOH_smul_right_adj (c : AE D) (a b : WO S T) :
-    symplOH S T a (c • b) = symplOH S T (cA D c • a) b := by
-  rw [symplOH_eq, symplOH_eq, symplO_smul_right_adj, smul_comm]
 
-theorem symplOH_sub_left (a b c : WO S T) : symplOH S T (a - b) c = symplOH S T a c - symplOH S T b c := by
-  unfold symplOH; rw [symplO_sub_left, mul_sub]
 
 theorem beta_int (hdy : DyadIdem D) {v : HeightOneSpectrum (𝓞 D.host.F)} {ε : AF D.host.F} (hε : IsPlaceIdem D v ε) :
     finPart D (halfE D * (algebraMap (AF D.host.F) (AE D) ε * (1 + e2 D - cA D (e2 D)))) ∈ intAE D := by
@@ -382,76 +301,7 @@ theorem beta_int (hdy : DyadIdem D) {v : HeightOneSpectrum (𝓞 D.host.F)} {ε 
     rw [← map_mul]
     exact half_mem_int h2 hε
 
-theorem phi_heis_two (hdy : DyadIdem D) (ψ : AddChar (AF D.host.F) ℂ) {Λ : AddSubgroup (WO S T)}
-    (hL : LatHyp S T ψ Λ) (g : WO S T → ℂ) (hg : ∀ y u : WO S T, (∀ i j, infPart D (u i j) = 0) → g (y + u) = g y)
-    (u : WO S T) (hu : u ∈ Λ) : heisO ψ S T (2 • u) (phiV S T ψ Λ g) = phiV S T ψ Λ g := by
-  funext y
-  unfold heisO phiV
-  have h2u : 2 • u ∈ U0 S T Λ := (U0 S T Λ).nsmul_mem (le_open_neighbourhood S T hu) 2
-  have hfi2 : ∀ i j, infPart D ((2 • u) i j) = 0 := by
-    intro i j; rw [two_nsmul, Matrix.add_apply, map_add, hL.fi u hu i j, add_zero]
-  by_cases hy : y ∈ U0 S T Λ
-  · rw [if_pos ((U0 S T Λ).add_mem hy h2u), if_pos hy, hg y _ hfi2]
-    obtain ⟨x, hx, hr⟩ := hy
-    have hyx : y = (y - x) + x := by abel
-    rw [← mul_assoc, ← AddChar.map_add_eq_mul, hyx, phase_expand hdy x (y - x) (2 • u) hr (hL.fi x hx) hfi2,
-      AddChar.map_add_eq_mul, ← hyx]
-    have hex : e2 D • x ∈ Λ := hL.int _ (dyadic_idempotent_integral hdy) x hx
-    have heu : e2 D • u ∈ Λ := hL.int _ (dyadic_idempotent_integral hdy) u hu
-    have key : symplOH S T x (2 • u) + symplOH S T (e2 D • x) (2 • u) + symplOH S T (e2 D • (2 • u)) x +
-        symplOH S T (e2 D • (2 • u)) (2 • u) =
-        symplO S T x u + symplO S T (e2 D • x) u + symplO S T (e2 D • u) x +
-          (symplO S T (e2 D • u) u + symplO S T (e2 D • u) u) := by
-      simp only [two_nsmul, smul_add, Formalism.IndefR.Fin.symplOH_add_left, Formalism.IndefR.Fin.symplOH_add_right,
-        ← symplOH_add_self]
-      try ring
-    rw [key, AddChar.map_add_eq_mul, AddChar.map_add_eq_mul, AddChar.map_add_eq_mul, AddChar.map_add_eq_mul,
-      hL.pair _ hx _ hu, hL.pair _ hex _ hu, hL.pair _ heu _ hx, hL.pair _ heu _ hu]
-    try ring
-  · have : y + 2 • u ∉ U0 S T Λ := fun h => hy (by simpa using (U0 S T Λ).sub_mem h h2u)
-    rw [if_neg this, if_neg hy, mul_zero]
 
-theorem phi_heis_half (hdy : DyadIdem D) (ψ : AddChar (AF D.host.F) ℂ) {Λ : AddSubgroup (WO S T)}
-    (hL : LatHyp S T ψ Λ) (g : WO S T → ℂ) (hg : ∀ y u : WO S T, (∀ i j, infPart D (u i j) = 0) → g (y + u) = g y)
-    (e : AE D) (he : IsSplitIdem D e) (u : WO S T) (hu : u ∈ Λ) (hh : IsHalf e u) :
-    heisO ψ S T u (phiV S T ψ Λ g) = phiV S T ψ Λ g := by
-  obtain ⟨hee, hec, v, ε, hε, hs⟩ := he
-  have hue : e • u = u := by ext i j; exact hh i j
-  have heps : algebraMap (AF D.host.F) (AE D) ε • u = u := by
-    conv_lhs => rw [← hue, smul_smul, mul_comm, idem_mul_eps hee hec hs, hue]
-  funext y
-  unfold heisO phiV
-  have hfi : ∀ i j, infPart D (u i j) = 0 := hL.fi u hu
-  by_cases hy : y ∈ U0 S T Λ
-  · rw [if_pos ((U0 S T Λ).add_mem hy (le_open_neighbourhood S T hu)), if_pos hy, hg y _ hfi]
-    obtain ⟨x, hx, hr⟩ := hy
-    have hyx : y = (y - x) + x := by abel
-    rw [← mul_assoc, ← AddChar.map_add_eq_mul, hyx, phase_expand hdy x (y - x) u hr (hL.fi x hx) hfi,
-      AddChar.map_add_eq_mul, ← hyx]
-
-    have hiso : symplOH S T (e2 D • u) u = 0 := by
-      have h1 : e2 D • u = e • (e2 D • u) := by rw [smul_comm, hue]
-      have h2 : symplOH S T (e • (e2 D • u)) (e • u) = 0 := by
-        rw [symplOH_eq, smul_comm (halfE D) e, symplO_smul_adj, smul_smul (cA D e) e u,
-          show cA D e * e = 0 by rw [mul_comm]; exact hec, zero_smul]
-        unfold symplO hO; simp
-      calc symplOH S T (e2 D • u) u = symplOH S T (e • (e2 D • u)) (e • u) := by rw [← h1, hue]
-        _ = 0 := h2
-    have hβ := beta_int hdy hε
-    have hβx : (halfE D * (algebraMap (AF D.host.F) (AE D) ε * (1 + e2 D - cA D (e2 D)))) • x ∈ Λ :=
-      hL.int _ hβ x hx
-    have key : symplOH S T x u + symplOH S T (e2 D • x) u + symplOH S T (e2 D • u) x =
-        symplO S T ((halfE D * (algebraMap (AF D.host.F) (AE D) ε * (1 + e2 D - cA D (e2 D)))) • x) u := by
-      rw [Formalism.IndefR.Fin.symplOH_swap S T x (e2 D • u), symplOH_smul_right_adj]
-      have h1 : symplOH S T x u + symplOH S T (e2 D • x) u + -symplOH S T (cA D (e2 D) • x) u =
-          symplOH S T ((1 + e2 D - cA D (e2 D)) • x) u := by
-        rw [sub_smul, add_smul, one_smul, symplOH_sub_left, Formalism.IndefR.Fin.symplOH_add_left]; ring
-      rw [h1]
-      conv_lhs => rw [← heps, symplOH_smul_right_adj, PHeisTh.cA_algebraMap, smul_smul, symplOH_eq, smul_smul]
-    rw [hiso, add_zero, key, hL.pair _ hβx _ hu]
-    ring
-  · have : y + u ∉ U0 S T Λ := fun h => hy (by simpa using (U0 S T Λ).sub_mem h (le_open_neighbourhood S T hu))
-    rw [if_neg this, if_neg hy, mul_zero]
 
 end Lat
 

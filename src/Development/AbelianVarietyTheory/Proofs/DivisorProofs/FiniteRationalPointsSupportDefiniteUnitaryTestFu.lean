@@ -2,12 +2,299 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KernSum
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PlaceConjugationPropertiesCmField
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DefiniteUnitaryClassSetFinite
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DefiniteUnitaryLocalComponentMemIntegralGLCofini
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalTestFactorNeZeroOfGlobalProductNeZero
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GlAdicCompletionEntriesBoundedOfIsCompact
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormComplexEmbeddingEntryDefiniteUnitaryRational
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteOfValuationBoundedNormLeOne
+import BuildAid.ForwardExisting
 
+section
+section
+open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
+open scoped Classical TensorProduct
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+namespace GlobalTheory.BCT.SuppFin
+
+theorem cLoc_mem_KGL_cofinite : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (y : UA E n),
+    ∀ᶠ w in cofinite, cLoc w y ∈ GlobalTheory.LFun.KGL w n := by
+  intro E _ _ _ n y
+  set P : GL (Fin n) (Af E) := GeneralLinearGroup.map (pFin E) (y : GA E n) with hP
+  have h1 : ∀ᶠ w in cofinite, ∀ i j, (P.val i j) w ∈ HeightOneSpectrum.adicCompletionIntegers E w := by
+    rw [eventually_all]; intro i; rw [eventually_all]; intro j
+    exact (P.val i j).2
+  have h2 : ∀ᶠ w in cofinite, ∀ i j, ((P⁻¹).val i j) w ∈ HeightOneSpectrum.adicCompletionIntegers E w := by
+    rw [eventually_all]; intro i; rw [eventually_all]; intro j
+    exact ((P⁻¹).val i j).2
+  filter_upwards [h1, h2] with w hw1 hw2
+  have hmul : ∀ (A B : GL (Fin n) (Af E)), A * B = 1 →
+      (A.val.map (pLoc E w)) * (B.val.map (pLoc E w)) = 1 := by
+    intro A B h
+    rw [← Matrix.map_mul, ← Units.val_mul, h, Units.val_one, Matrix.map_one _ (map_zero _) (map_one _)]
+  let M : Matrix (Fin n) (Fin n) (Ov E w) := Matrix.of fun i j => ⟨(P.val i j) w, hw1 i j⟩
+  let N : Matrix (Fin n) (Fin n) (Ov E w) := Matrix.of fun i j => ⟨((P⁻¹).val i j) w, hw2 i j⟩
+  have hM : M.map (Ov E w).subtype = P.val.map (pLoc E w) := Matrix.ext fun i j => rfl
+  have hN : N.map (Ov E w).subtype = (P⁻¹).val.map (pLoc E w) := Matrix.ext fun i j => rfl
+  have hinj : Function.Injective (fun A : Matrix (Fin n) (Fin n) (Ov E w) => A.map (Ov E w).subtype) :=
+    Matrix.map_injective Subtype.val_injective
+  let k : GL (Fin n) (Ov E w) :=
+    { val := M
+      inv := N
+      val_inv := hinj (by
+        simp only
+        rw [Matrix.map_mul, hM, hN, Matrix.map_one _ (map_zero _) (map_one _)]
+        exact hmul _ _ (mul_inv_cancel P))
+      inv_val := hinj (by
+        simp only
+        rw [Matrix.map_mul, hM, hN, Matrix.map_one _ (map_zero _) (map_one _)]
+        exact hmul _ _ (inv_mul_cancel P)) }
+  exact ⟨k, Units.ext (Matrix.ext fun i j => rfl)⟩
+
+end GlobalTheory.BCT.SuppFin
+end
+
+open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
+open scoped Classical TensorProduct
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.definiteUnitaryLocalComponent_mem_integralGL_cofinite : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (y : UA E n), ∀ᶠ w in cofinite, cLoc w y ∈ GlobalTheory.LFun.KGL w n := by
+  atlas_forward_decl GlobalTheory.BCT.SuppFin.cLoc_mem_KGL_cofinite
+end
+
+section
+section
+open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
+open scoped Classical TensorProduct
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+noncomputable section
+
+namespace GlobalTheory.BCT.SuppFin
+
+theorem factor_ne_zero_of_globFn_ne_zero : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (S : Set (Pl E)) (K' : ∀ w : Pl E, Subgroup (UL n w)) (f : ∀ w : Pl E, UL n w → ℂ), IsTest (KL n) K' f → ∀ y : finU E n, (∀ᶠ w in cofinite, cLoc w y.1 ∈ GlobalTheory.LFun.KGL w n) → globFn S f y ≠ 0 → ∀ w ∈ S, f w (toSub _ (cLoc w y.1)) ≠ 0 := by
+  intro E _ _ _ n S K' f hT y hy hne w hw h0
+  set F : Pl E → ℂ := fun w => f w (toSub _ (cLoc w y.1)) with hF
+  have hev : ∀ᶠ v in cofinite, F v = 1 := by
+    filter_upwards [hT.2, hy] with v hv hyv
+    simp only [hF, hv]
+    have hmem : toSub (UL n v) (cLoc v y.1) ∈ KL n v := by
+      unfold toSub
+      split_ifs with h
+      · exact (Subgroup.mem_subgroupOf).2 hyv
+      · exact Subgroup.one_mem _
+    exact Set.indicator_of_mem (show toSub (UL n v) (cLoc v y.1) ∈ ((KL n v : Subgroup (UL n v)) : Set (UL n v)) from hmem) _
+  have hfin : (Function.mulSupport F).Finite := by
+    have := Filter.eventually_cofinite.1 hev
+    exact this
+  have hfin' : (S ∩ Function.mulSupport F).Finite := hfin.subset Set.inter_subset_right
+  apply hne
+  show ∏ᶠ v ∈ S, F v = 0
+  rw [← finprod_mem_inter_mulSupport, finprod_mem_eq_finite_toFinset_prod F hfin']
+  apply Finset.prod_eq_zero (i := w)
+  · rw [Set.Finite.mem_toFinset]
+    refine ⟨hw, ?_⟩
+    rw [Function.mem_mulSupport]
+    change f w (toSub _ (cLoc w y.1)) ≠ 1
+    rw [h0]; exact zero_ne_one
+  · exact h0
+
+end GlobalTheory.BCT.SuppFin
+end
+end
+
+open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
+open scoped Classical TensorProduct
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.localTestFactor_ne_zero_of_globalProduct_ne_zero : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (S : Set (Pl E)) (K' : ∀ w : Pl E, Subgroup (UL n w)) (f : ∀ w : Pl E, UL n w → ℂ), IsTest (KL n) K' f → ∀ y : finU E n, (∀ᶠ w in cofinite, cLoc w y.1 ∈ GlobalTheory.LFun.KGL w n) → globFn S f y ≠ 0 → ∀ w ∈ S, f w (toSub _ (cLoc w y.1)) ≠ 0 := by
+  atlas_forward_decl GlobalTheory.BCT.SuppFin.factor_ne_zero_of_globFn_ne_zero
+end
+
+section
+section
+open NumberField IsDedekindDomain Filter
+
+noncomputable section
+
+namespace GlobalTheory.BCT.SuppFin
+
+variable {E : Type} [Field E] [NumberField E]
+
+theorem isOpen_vle (w : HeightOneSpectrum (𝓞 E)) (m : ℤ) :
+    IsOpen {y : w.adicCompletion E | Valued.v y ≤ WithZero.exp m} := by
+  obtain ⟨c, hc⟩ := HeightOneSpectrum.valuedAdicCompletion_surjective E w (WithZero.exp m)
+  have hc0 : c ≠ 0 := by
+    rintro rfl
+    rw [map_zero] at hc
+    exact WithZero.exp_ne_zero hc.symm
+  have : {y : w.adicCompletion E | Valued.v y ≤ WithZero.exp m} =
+      {y | Valued.v.restrict y ≤ Valued.v.restrict c} := by
+    ext y
+    simp only [Set.mem_ofPred_eq, Valuation.restrict_le_iff, hc]
+  rw [this]
+  exact Valued.isOpen_closedBall _ (by simp [hc0])
+
+theorem exists_bound_of_isCompact (w : HeightOneSpectrum (𝓞 E)) {K : Set (w.adicCompletion E)}
+    (hK : IsCompact K) : ∃ N : ℤ, ∀ z ∈ K, Valued.v z ≤ WithZero.exp N := by
+  have hcov : K ⊆ ⋃ N : ℤ, {y : w.adicCompletion E | Valued.v y ≤ WithZero.exp N} := by
+    intro z _
+    rw [Set.mem_iUnion]
+    by_cases hz : Valued.v z = 0
+    · exact ⟨0, by simp [hz]⟩
+    · exact ⟨WithZero.log (Valued.v z), by simp [WithZero.exp_log hz]⟩
+  obtain ⟨N, hN⟩ := hK.elim_directed_cover _ (fun N => isOpen_vle w N) hcov
+    (Monotone.directed_le fun a b hab y hy => le_trans hy (WithZero.exp_le_exp.2 hab))
+  exact ⟨N, fun z hz => hN hz⟩
+
+theorem gl_entries_bounded_of_isCompact : ∀ (E : Type) [Field E] [NumberField E]
+    (w : HeightOneSpectrum (𝓞 E)) (n : ℕ) (D : Set (GL (Fin n) (w.adicCompletion E))),
+    IsCompact D → ∃ N : ℤ, ∀ h ∈ D, ∀ i j,
+      Valued.v (h.val i j) ≤ WithZero.exp N ∧ Valued.v ((h⁻¹).val i j) ≤ WithZero.exp N := by
+  intro E _ _ w n D hD
+  have h1 : ∀ i j, ∃ N : ℤ, ∀ h ∈ D, Valued.v (h.val i j) ≤ WithZero.exp N := by
+    intro i j
+    obtain ⟨N, hN⟩ := exists_bound_of_isCompact w
+      (hD.image (Units.continuous_val.matrix_elem i j))
+    exact ⟨N, fun h hh => hN _ ⟨h, hh, rfl⟩⟩
+  have h2 : ∀ i j, ∃ N : ℤ, ∀ h ∈ D, Valued.v ((h⁻¹).val i j) ≤ WithZero.exp N := by
+    intro i j
+    obtain ⟨N, hN⟩ := exists_bound_of_isCompact w
+      (hD.image ((Units.continuous_coe_inv).matrix_elem i j))
+    exact ⟨N, fun h hh => hN _ ⟨h, hh, rfl⟩⟩
+  choose N1 hN1 using h1
+  choose N2 hN2 using h2
+  refine ⟨((Finset.univ.sup (fun p : Fin n × Fin n => (N1 p.1 p.2).toNat) : ℕ) : ℤ) ⊔
+      ((Finset.univ.sup (fun p : Fin n × Fin n => (N2 p.1 p.2).toNat) : ℕ) : ℤ), ?_⟩
+  intro h hh i j
+  have a1 : N1 i j ≤ ((Finset.univ.sup (fun p : Fin n × Fin n => (N1 p.1 p.2).toNat) : ℕ) : ℤ) :=
+    (Int.self_le_toNat _).trans (Int.ofNat_le.2
+      (Finset.le_sup (f := fun p : Fin n × Fin n => (N1 p.1 p.2).toNat) (Finset.mem_univ (i, j))))
+  have a2 : N2 i j ≤ ((Finset.univ.sup (fun p : Fin n × Fin n => (N2 p.1 p.2).toNat) : ℕ) : ℤ) :=
+    (Int.self_le_toNat _).trans (Int.ofNat_le.2
+      (Finset.le_sup (f := fun p : Fin n × Fin n => (N2 p.1 p.2).toNat) (Finset.mem_univ (i, j))))
+  exact ⟨(hN1 i j h hh).trans (WithZero.exp_le_exp.2 (a1.trans le_sup_left)),
+    (hN2 i j h hh).trans (WithZero.exp_le_exp.2 (a2.trans le_sup_right))⟩
+
+end GlobalTheory.BCT.SuppFin
+end
+end
+
+open NumberField IsDedekindDomain Filter
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gl_adicCompletion_entries_bounded_of_isCompact : ∀ (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (n : ℕ) (D : Set (GL (Fin n) (w.adicCompletion E))), IsCompact D → ∃ N : ℤ, ∀ h ∈ D, ∀ i j, Valued.v (h.val i j) ≤ WithZero.exp N ∧ Valued.v ((h⁻¹).val i j) ≤ WithZero.exp N := by
+  atlas_forward_decl GlobalTheory.BCT.SuppFin.gl_entries_bounded_of_isCompact
+end
+
+section
+section
+open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
+open scoped Classical TensorProduct
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+namespace GlobalTheory.BCT.SuppFin
+
+theorem norm_emb_entry_le_one (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (γ : UE E n)
+    (τ : E →+* ℂ) (i j : Fin n) : ‖τ (γ.1.val i j)‖ ≤ 1 := by
+  have h : (γ.1.val.map (IsCMField.complexConj E).toRingEquiv.toRingHom)ᵀ * 1 * γ.1.val = 1 := γ.2
+  have hjj := congrFun (congrFun h j) j
+  simp only [Matrix.mul_one, Matrix.mul_apply, Matrix.transpose_apply, Matrix.map_apply,
+    Matrix.one_apply_eq] at hjj
+  have h2 : ∑ k, ((‖τ (γ.1.val k j)‖ ^ 2 : ℝ) : ℂ) = 1 := by
+    have := congrArg τ hjj
+    rw [map_sum, map_one] at this
+    rw [← this]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    rw [map_mul]
+    change _ = τ ((IsCMField.complexConj E) (γ.1.val k j)) * _
+    rw [IsCMField.complexEmbedding_complexConj, Complex.conj_mul']
+    push_cast; rfl
+  have h3 : ∑ k, ‖τ (γ.1.val k j)‖ ^ 2 = 1 := by exact_mod_cast h2
+  have h4 : ‖τ (γ.1.val i j)‖ ^ 2 ≤ 1 := by
+    rw [← h3]
+    exact Finset.single_le_sum (f := fun k => ‖τ (γ.1.val k j)‖ ^ 2) (fun k _ => by positivity) (Finset.mem_univ i)
+  nlinarith [norm_nonneg (τ (γ.1.val i j))]
+
+end GlobalTheory.BCT.SuppFin
+end
+
+open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
+open scoped Classical TensorProduct
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.norm_complexEmbedding_entry_definiteUnitaryRational_le_one : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (γ : UE E n) (τ : E →+* ℂ) (i j : Fin n), ‖τ (γ.1.val i j)‖ ≤ 1 := by
+  atlas_forward_decl GlobalTheory.BCT.SuppFin.norm_emb_entry_le_one
+end
+
+section
+section
+open NumberField IsDedekindDomain Filter
+
+namespace GlobalTheory.BCT.SuppFin
+
+theorem exists_ne_zero_intValuation_le_of_finset {E : Type} [Field E] [NumberField E]
+    (T : Finset (HeightOneSpectrum (𝓞 E))) (n : HeightOneSpectrum (𝓞 E) → ℕ) :
+    ∃ d : 𝓞 E, d ≠ 0 ∧ ∀ v ∈ T, v.intValuation d ≤ WithZero.exp (-(n v : ℤ)) := by
+  classical
+  have hJ : (∏ v ∈ T, v.asIdeal ^ n v) ≠ ⊥ := by
+    rw [← Ideal.zero_eq_bot, Finset.prod_ne_zero_iff]
+    exact fun v _ => pow_ne_zero _ (by rw [Ideal.zero_eq_bot]; exact v.ne_bot)
+  obtain ⟨d, hd, hd0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hJ
+  exact ⟨d, hd0, fun v hv => (v.intValuation_le_pow_iff_mem d (n v)).mpr
+    ((Ideal.prod_le_inf.trans (Finset.inf_le hv)) hd)⟩
+
+theorem finite_of_valuation_bounded_of_norm_le_one :
+    ∀ (E : Type) [Field E] [NumberField E] (X : Set E),
+      (∀ w : HeightOneSpectrum (𝓞 E), ∃ N : ℤ, ∀ a ∈ X, w.valuation E a ≤ WithZero.exp N) →
+      (∀ᶠ w : HeightOneSpectrum (𝓞 E) in cofinite, ∀ a ∈ X, w.valuation E a ≤ 1) →
+      (∀ a ∈ X, ∀ τ : E →+* ℂ, ‖τ a‖ ≤ 1) → X.Finite := by
+  intro E _ _ X hN hcof hτ
+  classical
+  choose N hN using hN
+  have hTf := Filter.eventually_cofinite.1 hcof
+  obtain ⟨d, hd0, hd⟩ := exists_ne_zero_intValuation_le_of_finset (E := E) hTf.toFinset
+    (fun w => (N w).toNat)
+  set d' : E := algebraMap (𝓞 E) E d with hd'
+  have hd'0 : d' ≠ 0 := by
+    rw [hd']; exact (map_ne_zero_iff _ (FaithfulSMul.algebraMap_injective (𝓞 E) E)).2 hd0
+  set B : ℝ := ∑ τ : E →+* ℂ, ‖τ d'‖ with hB
+  have hval : ∀ a ∈ X, ∀ w : HeightOneSpectrum (𝓞 E), w.valuation E (d' * a) ≤ 1 := by
+    intro a ha w
+    rw [map_mul, hd', HeightOneSpectrum.valuation_of_algebraMap]
+    by_cases hw : w ∈ hTf.toFinset
+    · have h1 := hd w hw
+      have h2 := hN w a ha
+      have h3 : w.intValuation d ≤ WithZero.exp (-(N w)) :=
+        h1.trans (WithZero.exp_le_exp.2 (by omega))
+      calc w.intValuation d * w.valuation E a ≤ WithZero.exp (-(N w)) * WithZero.exp (N w) :=
+            mul_le_mul' h3 h2
+        _ = 1 := by rw [← WithZero.exp_add]; simp
+    · have h2 : ∀ a ∈ X, w.valuation E a ≤ 1 := by
+        simpa [Set.Finite.mem_toFinset] using hw
+      exact mul_le_one' (w.intValuation_le_one d) (h2 a ha)
+  have himg : (fun x => d' * x) '' X ⊆
+      {x : E | IsIntegral ℤ x ∧ ∀ φ : E →+* ℂ, ‖φ x‖ ≤ B} := by
+    rintro _ ⟨a, ha, rfl⟩
+    refine ⟨?_, fun φ => ?_⟩
+    · obtain ⟨r, hr⟩ := HeightOneSpectrum.mem_integers_of_valuation_le_one E (d' * a) (hval a ha)
+      show IsIntegral ℤ (d' * a)
+      rw [← hr]
+      exact RingOfIntegers.isIntegral_coe r
+    · show ‖φ (d' * a)‖ ≤ B
+      rw [map_mul, norm_mul]
+      calc ‖φ d'‖ * ‖φ a‖ ≤ ‖φ d'‖ * 1 :=
+            mul_le_mul_of_nonneg_left (hτ a ha φ) (norm_nonneg _)
+        _ = ‖φ d'‖ := mul_one _
+        _ ≤ B := Finset.single_le_sum (f := fun τ : E →+* ℂ => ‖τ d'‖)
+              (fun _ _ => norm_nonneg _) (Finset.mem_univ φ)
+  exact Set.Finite.of_finite_image ((NumberField.Embeddings.finite_of_norm_le E ℂ B).subset himg)
+    (fun x _ y _ hxy => mul_left_cancel₀ hd'0 hxy)
+
+end GlobalTheory.BCT.SuppFin
+end
+
+open NumberField IsDedekindDomain Filter
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_of_valuation_bounded_norm_le_one : ∀ (E : Type) [Field E] [NumberField E] (X : Set E), (∀ w : HeightOneSpectrum (𝓞 E), ∃ N : ℤ, ∀ a ∈ X, w.valuation E a ≤ WithZero.exp N) → (∀ᶠ w : HeightOneSpectrum (𝓞 E) in cofinite, ∀ a ∈ X, w.valuation E a ≤ 1) → (∀ a ∈ X, ∀ τ : E →+* ℂ, ‖τ a‖ ≤ 1) → X.Finite := by
+  atlas_forward_decl GlobalTheory.BCT.SuppFin.finite_of_valuation_bounded_of_norm_le_one
+end
+
+section
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
@@ -235,3 +522,5 @@ theorem GlobalTheory.BCT.SuppFin.suppFin : ∀ (E : Type) [Field E] [NumberField
     rw [(hent w γ i j).1, hv] at h1
     rw [(hent w γ i j).2, hv] at h2
     exact ⟨h1, h2⟩
+end
+end

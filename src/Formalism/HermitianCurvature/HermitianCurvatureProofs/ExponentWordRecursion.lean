@@ -1,5 +1,137 @@
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.DerivativeRulesA1
+import Formalism.HermitianCurvature.FiniteOrderIntersectionInSmooth
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.DilationUnipotentWeylMeasure
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.PhiBoundPartsOfRadicalParametrisation
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.MajorantEstimate
 
+section
+open Matrix Filter Topology
+open scoped ComplexConjugate
+
+noncomputable section
+
+namespace Formalism.FourierDecayAlt.P.SmoothnessOrderArithmetic
+
+open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.B4 Formalism.FourierDecayAlt.P.Ux10
+
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+
+variable {k r : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
+
+lemma one_le_gN {g : Mat k r} (hg : g ∈ GV k r) : 1 ≤ gN g := (Formalism.FourierDecayAlt.P.norm_of_inverse k r g hg).2
+
+lemma gN_pos {g : Mat k r} (hg : g ∈ GV k r) : 0 < gN g := lt_of_lt_of_le one_pos (one_le_gN hg)
+
+lemma rpow_mono_G {g : Mat k r} (hg : g ∈ GV k r) {a b : ℝ} (h : a ≤ b) : gN g ^ a ≤ gN g ^ b :=
+  Real.rpow_le_rpow_of_exponent_le (one_le_gN hg) h
+
+lemma loss_bound_nonneg (r : ℕ) : 0 ≤ C2.B0 r := by unfold C2.B0; positivity
+
+lemma top_ge_nat (m : ℕ) : (((m : ℕ) : ℕ∞) : WithTop ℕ∞) ≤ (((⊤ : ℕ∞)) : WithTop ℕ∞) :=
+  WithTop.coe_le_coe.2 le_top
+
+lemma ckOn_top_nat {f : Mat k r → E} (hf : CkOn (⊤ : ℕ∞) (GV k r) f) (m : ℕ) :
+    CkOn ((m : ℕ) : ℕ∞) (GV k r) f := by
+  intro g₀ hg₀
+  obtain ⟨U, f', hU, hgU, hc, hff⟩ := hf g₀ hg₀
+  exact ⟨U, f', hU, hgU, hc.of_le (top_ge_nat m), hff⟩
+
+lemma top_ne_zero' : (((⊤ : ℕ∞)) : WithTop ℕ∞) ≠ 0 := by simp
+
+lemma top_succ_le : (((⊤ : ℕ∞)) : WithTop ℕ∞) + 1 ≤ (((⊤ : ℕ∞)) : WithTop ℕ∞) := by
+  exact_mod_cast (le_top : ((⊤ : ℕ∞) + 1 : ℕ∞) ≤ ⊤)
+
+lemma ckOn_op_top {f : Mat k r → E} {X : Mat k r} (b : Bool) (hf : CkOn (⊤ : ℕ∞) (GV k r) f)
+    (hX : inLie k r X) : CkOn (⊤ : ℕ∞) (GV k r) (op b X f) := by
+  intro g₀ hg₀
+  obtain ⟨U, f', hU, hgU, hc, hff⟩ := hf g₀ hg₀
+  refine ⟨U, op' b X f', hU, hgU, ?_, ?_⟩
+  · exact (hc.fderiv_of_isOpen hU top_succ_le).clm_apply (vf b X).contDiff.contDiffOn
+  · intro g hg hgG
+    have hd : DifferentiableAt ℝ f' g :=
+      (hc.differentiableOn top_ne_zero').differentiableAt (hU.mem_nhds hg)
+    exact (hasDerivAt_ext b hU hg hgG hd hff hX).deriv
+
+
+lemma right_word_eq_word (v : List (Mat k r)) (f : Mat k r → E) : Rw v f = W (lr [] v) f := by
+  rw [← dLR_eq]; rfl
+
+
+lemma allLie_lr' {u v : List (Mat k r)} (hu : ∀ X ∈ u, inLie k r X) (hv : ∀ X ∈ v, inLie k r X) :
+    AllLie (lr u v) := by
+  intro x hx
+  simp only [lr, List.mem_append, List.mem_map] at hx
+  rcases hx with ⟨X, hX, rfl⟩ | ⟨X, hX, rfl⟩
+  · exact hu X hX
+  · exact hv X hX
+
+
+
+
+lemma chart_rho {g0 x : Mat k r} (hg0 : g0 ∈ GV k r) (hx : x ∈ Sr g0) (hxG : x ∈ GV k r) :
+    chart g0 (rho g0 x) = x := by
+  have hgu : IsUnit g0.det := Formalism.QuantumDeterminants.WeylGroupFacts.isUnit_of_uh hg0
+  have hh : x * g0⁻¹ ∈ GV k r := Formalism.FourierDecayAlt.P.BetaSesquilinearity.gv_mul hxG (Formalism.FourierDecayAlt.P.BetaSesquilinearity.gv_inv hg0)
+  obtain ⟨hl, -, hk⟩ := iot_facts hh hx
+  show kap (prj (Mv (co (iot (x * g0⁻¹))))) * g0 = x
+  rw [Mv_co, prj_of_lie hl, hk, Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hgu, Matrix.mul_one]
+
+lemma rho_self {g0 : Mat k r} (hg0 : g0 ∈ GV k r) : rho g0 g0 = 0 := by
+  have hgu : IsUnit g0.det := Formalism.QuantumDeterminants.WeylGroupFacts.isUnit_of_uh hg0
+  have hg1 : g0 * g0⁻¹ = 1 := Matrix.mul_nonsing_inv _ hgu
+  funext i
+  simp only [Ux10.rho, hg1, iot, sub_self, Matrix.zero_mul]
+  exact co_zero i
+
+lemma self_mem_Sr {g0 : Mat k r} (hg0 : g0 ∈ GV k r) : g0 ∈ Sr g0 := by
+  have hgu : IsUnit g0.det := Formalism.QuantumDeterminants.WeylGroupFacts.isUnit_of_uh hg0
+  have hg1 : g0 * g0⁻¹ = 1 := Matrix.mul_nonsing_inv _ hgu
+  have h2 : (1 + 1 : Mat k r) = (2 : ℂ) • (1 : Mat k r) := by rw [two_smul]
+  show IsUnit (g0 * g0⁻¹ + 1).det
+  rw [hg1, h2, Matrix.det_smul, Matrix.det_one, mul_one]
+  exact (isUnit_iff_ne_zero.2 two_ne_zero).pow _
+
+lemma chart_comp_cd {F : Mat k r → E} {g0 : Mat k r} (hg0 : g0 ∈ GV k r) (m : ℕ)
+    (hF : CkOn ((m : ℕ) : ℕ∞) (GV k r) F) :
+    ContDiffOn ℝ ((m : ℕ) : WithTop ℕ∞) (fun Y => F (chart g0 Y)) (Dom k r) := by
+  intro Y hY
+  apply ContDiffAt.contDiffWithinAt
+  obtain ⟨U, f', hU, hcU, hcd, hff⟩ := hF _ (chart_mem hg0 hY)
+  have hchc : ContinuousAt (chart g0) Y := (chart_diff g0 hY).continuousAt
+  have h1 : ContDiffAt ℝ ((m : ℕ) : WithTop ℕ∞) (fun Y' => f' (chart g0 Y')) Y :=
+    (hcd.contDiffAt (hU.mem_nhds hcU)).comp Y
+      (((chart_cd g0).contDiffAt (dom_open.mem_nhds hY)).of_le (top_ge_nat m))
+  refine h1.congr_of_eventuallyEq ?_
+  filter_upwards [hchc.preimage_mem_nhds (hU.mem_nhds hcU), dom_open.mem_nhds hY] with Y' h1 h2
+  exact hff _ h1 (chart_mem hg0 h2)
+
+theorem ckOn_top_of_all {F : Mat k r → E} (hF : ∀ m : ℕ, CkOn ((m : ℕ) : ℕ∞) (GV k r) F) :
+    CkOn (⊤ : ℕ∞) (GV k r) F := by
+  intro g0 hg0
+  have hAL : ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun Y => F (chart g0 Y)) (Dom k r) :=
+    contDiffOn_infty.2 fun m => chart_comp_cd hg0 m (hF m)
+  set U := Sr g0 ∩ rho g0 ⁻¹' Dom k r with hUdef
+  have hUo : IsOpen U := (rho_cd g0).continuousOn.isOpen_inter_preimage (sr_open g0) dom_open
+  have hg0U : g0 ∈ U := ⟨self_mem_Sr hg0, by show rho g0 g0 ∈ Dom k r; rw [rho_self hg0]; exact zero_mem_dom⟩
+  refine ⟨U, fun x => F (chart g0 (rho g0 x)), hUo, hg0U, ?_, ?_⟩
+  · exact hAL.comp ((rho_cd g0).mono Set.inter_subset_left) (fun x hx => hx.2)
+  · intro x hx hxG
+    show F x = F (chart g0 (rho g0 x))
+    rw [chart_rho hg0 hx.1 hxG]
+
+
+
+end Formalism.FourierDecayAlt.P.SmoothnessOrderArithmetic
+
+namespace Formalism.FourierDecayAlt.P
+
+
+
+end Formalism.FourierDecayAlt.P
+end
+end
+
+section
 open Matrix Filter Topology
 open scoped ComplexConjugate
 
@@ -258,166 +390,13 @@ lemma lr_tags (u v : List (Mat k r)) :
     (lr u v).map Prod.fst = List.replicate u.length true ++ List.replicate v.length false := by
   simp [lr, Function.comp_def, List.map_const']
 
-private lemma eq_lr_take_drop_of_map_fst_eq_replicate (w' : List (Bool × Mat k r)) (a b : ℕ)
-    (h : w'.map Prod.fst = List.replicate a true ++ List.replicate b false) :
-    w' = lr ((w'.take a).map Prod.snd) ((w'.drop a).map Prod.snd) := by
-  have hta : (w'.take a).map Prod.fst = List.replicate a true := by
-    rw [List.map_take, h, List.take_left' (by simp)]
-  have hdr : (w'.drop a).map Prod.fst = List.replicate b false := by
-    rw [List.map_drop, h, List.drop_left' (by simp)]
-  have e1 : w'.take a = ((w'.take a).map Prod.snd).map (fun X => (true, X)) := by
-    rw [List.map_map]
-    conv_lhs => rw [← List.map_id (w'.take a)]
-    apply List.map_congr_left
-    intro y hy
-    have hy1 : y.1 ∈ (w'.take a).map Prod.fst := List.mem_map_of_mem hy
-    rw [hta] at hy1
-    show y = (true, y.2)
-    exact Prod.ext (List.eq_of_mem_replicate hy1) rfl
-  have e2 : w'.drop a = ((w'.drop a).map Prod.snd).map (fun X => (false, X)) := by
-    rw [List.map_map]
-    conv_lhs => rw [← List.map_id (w'.drop a)]
-    apply List.map_congr_left
-    intro y hy
-    have hy1 : y.1 ∈ (w'.drop a).map Prod.fst := List.mem_map_of_mem hy
-    rw [hdr] at hy1
-    show y = (false, y.2)
-    exact Prod.ext (List.eq_of_mem_replicate hy1) rfl
-  calc w' = w'.take a ++ w'.drop a := (List.take_append_drop a w').symm
-    _ = lr ((w'.take a).map Prod.snd) ((w'.drop a).map Prod.snd) := by
-        rw [lr, ← e1, ← e2]
 
-theorem rule_A2_of_word_expansion : C2.SmoothClassInFiniteOrder := by
-  intro k r E _ _ A F hF m
-  obtain ⟨hsm, hbd⟩ := hF
-  classical
-  let Cw : List (Bool × Mat k r) → ℝ := fun w' =>
-    if h : ∃ uv : List (Mat k r) × List (Mat k r), (∀ X ∈ uv.1, unitLie k r X) ∧
-        (∀ X ∈ uv.2, unitLie k r X) ∧ w' = lr uv.1 uv.2
-    then max (Classical.choose (hbd h.choose.1 h.choose.2 h.choose_spec.1 h.choose_spec.2.1)) 0 else 0
-  have hCw0 : ∀ w', 0 ≤ Cw w' := by
-    intro w'
-    dsimp only [Cw]
-    split_ifs
-    · exact le_max_right _ _
-    · exact le_rfl
-  have hCw : ∀ (u v : List (Mat k r)), (∀ X ∈ u, unitLie k r X) → (∀ X ∈ v, unitLie k r X) → ∀ g ∈ GV k r,
-      gN g ^ (A - C2.B0 r * ((u.length : ℝ) + v.length)) * ‖W (lr u v) F g‖ ≤ Cw (lr u v) := by
-    intro u v hu hv g hg
-    have h : ∃ uv : List (Mat k r) × List (Mat k r), (∀ X ∈ uv.1, unitLie k r X) ∧
-        (∀ X ∈ uv.2, unitLie k r X) ∧ lr u v = lr uv.1 uv.2 := ⟨(u, v), hu, hv, rfl⟩
-    dsimp only [Cw]
-    rw [dif_pos h]
-    obtain ⟨hu0, hv0, heq⟩ := h.choose_spec
-    have hlen : (u.length : ℝ) + v.length = (h.choose.1.length : ℝ) + h.choose.2.length := by
-      have h1 := congrArg List.length heq
-      simp only [lr, List.length_append, List.length_map] at h1
-      exact_mod_cast h1
-    have hW : W (lr u v) F g = dLR h.choose.1 h.choose.2 F g :=
-      (congrArg (fun w => W w F g) heq).trans (congrFun (dLR_eq _ _ F) g).symm
-    have hspec := Classical.choose_spec (hbd h.choose.1 h.choose.2 hu0 hv0) g hg
-    rw [hlen, hW]
-    exact hspec.trans (le_max_left _ _)
-  have hKc : 0 ≤ Kc k r := by linarith [one_le_Kc (k := k) (r := r)]
-  refine ⟨∑ a ∈ Finset.range (m + 1), ∑ b ∈ Finset.range (m + 1),
-    Kc k r ^ (a + b) * ((bw (k := k) (r := r) (List.replicate a true ++ List.replicate b false)).map Cw).sum,
-    ?_, ?_⟩
-  · intro g₀ hg₀
-    obtain ⟨U, f', hU, hgU, hf', heq⟩ := hsm g₀ hg₀
-    exact ⟨U, f', hU, hgU, hf'.of_le (by exact_mod_cast le_top), heq⟩
-  · intro u v hu hv huv g hg
-    have hAll : AllLie (lr u v) := by
-      intro x hx
-      simp only [lr, List.mem_append, List.mem_map] at hx
-      rcases hx with ⟨X, hX, rfl⟩ | ⟨X, hX, rfl⟩
-      · exact (hu X hX).1
-      · exact (hv X hX).1
-    have hunit : ∀ y ∈ lr u v, unitLie k r y.2 := by
-      intro y hy
-      simp only [lr, List.mem_append, List.mem_map] at hy
-      rcases hy with ⟨X, hX, rfl⟩ | ⟨X, hX, rfl⟩
-      · exact hu X hX
-      · exact hv X hX
-    have hlenlr : (lr u v).length = u.length + v.length := by simp [lr]
-    have hck : CkOn (((lr u v).length : ℕ) : ℕ∞) (GV k r) F := fun g₀ hg₀ => by
-      obtain ⟨U, f', hU, hgU, hf', heq⟩ := hsm g₀ hg₀
-      exact ⟨U, f', hU, hgU, hf'.of_le (by exact_mod_cast le_top), heq⟩
-    have hexp := W_expand (lr u v) hAll F hck g hg
-    have hgN : 1 ≤ gN g := one_le_gN hg
-    have hpos : 0 ≤ gN g ^ (A - C2.B0 r * (m : ℝ)) := Real.rpow_nonneg (by linarith) _
-    have hmono : gN g ^ (A - C2.B0 r * (m : ℝ)) ≤ gN g ^ (A - C2.B0 r * ((u.length : ℝ) + v.length)) := by
-      apply Real.rpow_le_rpow_of_exponent_le hgN
-      have hB : 0 ≤ C2.B0 r := by unfold C2.B0; positivity
-      have hle : ((u.length : ℝ) + v.length) ≤ m := by exact_mod_cast huv
-      nlinarith
-    have hterm : ∀ p ∈ expW (lr u v), gN g ^ (A - C2.B0 r * (m : ℝ)) * ‖p.1 • W p.2 F g‖ ≤
-        Kc k r ^ (u.length + v.length) * Cw p.2 := by
-      intro p hp
-      obtain ⟨hplen, hpunit⟩ := expW_mem (lr u v) p hp
-      have hcoef := expW_coef (lr u v) hunit p hp
-      rw [hlenlr] at hcoef
-      have htags : p.2.map Prod.fst = List.replicate u.length true ++ List.replicate v.length false := by
-        have hm : p.2 ∈ bw ((lr u v).map Prod.fst) := by
-          rw [← expW_snd]
-          exact List.mem_map_of_mem hp
-        rw [lr_tags] at hm
-        exact bw_tags _ p.2 hm
-      have hsplit := eq_lr_take_drop_of_map_fst_eq_replicate p.2 u.length v.length htags
-      have hu'' : ∀ X ∈ (p.2.take u.length).map Prod.snd, unitLie k r X := by
-        intro X hX
-        obtain ⟨y, hy, rfl⟩ := List.mem_map.1 hX
-        exact hpunit y (List.mem_of_mem_take hy)
-      have hv'' : ∀ X ∈ (p.2.drop u.length).map Prod.snd, unitLie k r X := by
-        intro X hX
-        obtain ⟨y, hy, rfl⟩ := List.mem_map.1 hX
-        exact hpunit y (List.mem_of_mem_drop hy)
-      have hlen'' : (((p.2.take u.length).map Prod.snd).length : ℝ) + ((p.2.drop u.length).map Prod.snd).length =
-          (u.length : ℝ) + v.length := by
-        have h1 := congrArg List.length hsplit
-        simp only [lr, List.length_append, List.length_map] at h1
-        rw [hplen, hlenlr] at h1
-        rw [List.length_map, List.length_map]
-        exact_mod_cast h1.symm
-      have hb := hCw _ _ hu'' hv'' g hg
-      rw [← hsplit, hlen''] at hb
-      rw [norm_smul, Real.norm_eq_abs]
-      calc gN g ^ (A - C2.B0 r * (m : ℝ)) * (|p.1| * ‖W p.2 F g‖) =
-            |p.1| * (gN g ^ (A - C2.B0 r * (m : ℝ)) * ‖W p.2 F g‖) := by ring
-        _ ≤ Kc k r ^ (u.length + v.length) * Cw p.2 := by
-          apply mul_le_mul hcoef _ (mul_nonneg hpos (norm_nonneg _)) (pow_nonneg hKc _)
-          exact (mul_le_mul_of_nonneg_right hmono (norm_nonneg _)).trans hb
-    rw [dLR_eq, hexp]
-    have hnn : ∀ a b, 0 ≤ Kc k r ^ (a + b) *
-        ((bw (k := k) (r := r) (List.replicate a true ++ List.replicate b false)).map Cw).sum :=
-      fun a b => mul_nonneg (pow_nonneg hKc _) (list_sum_nonneg _ _ (fun w' _ => hCw0 w'))
-    have hu' : u.length ∈ Finset.range (m + 1) := Finset.mem_range.2 (by omega)
-    have hv' : v.length ∈ Finset.range (m + 1) := Finset.mem_range.2 (by omega)
-    calc gN g ^ (A - C2.B0 r * (m : ℝ)) * ‖((expW (lr u v)).map fun p => p.1 • W p.2 F g).sum‖
-        ≤ gN g ^ (A - C2.B0 r * (m : ℝ)) * ((expW (lr u v)).map fun p => ‖p.1 • W p.2 F g‖).sum :=
-          mul_le_mul_of_nonneg_left (norm_list_sum_le _ _) hpos
-      _ = ((expW (lr u v)).map fun p => gN g ^ (A - C2.B0 r * (m : ℝ)) * ‖p.1 • W p.2 F g‖).sum :=
-          (list_sum_mul_left _ _ _).symm
-      _ ≤ ((expW (lr u v)).map fun p => Kc k r ^ (u.length + v.length) * Cw p.2).sum :=
-          list_sum_le _ _ _ hterm
-      _ = Kc k r ^ (u.length + v.length) *
-            ((bw (k := k) (r := r) (List.replicate u.length true ++ List.replicate v.length false)).map Cw).sum := by
-          rw [list_sum_mul_left, ← lr_tags, ← expW_snd, List.map_map]
-          rfl
-      _ ≤ ∑ b ∈ Finset.range (m + 1), Kc k r ^ (u.length + b) *
-            ((bw (k := k) (r := r) (List.replicate u.length true ++ List.replicate b false)).map Cw).sum :=
-          Finset.single_le_sum (f := fun b => Kc k r ^ (u.length + b) *
-            ((bw (k := k) (r := r) (List.replicate u.length true ++ List.replicate b false)).map Cw).sum)
-            (fun b _ => hnn _ _) hv'
-      _ ≤ _ :=
-          Finset.single_le_sum (f := fun a => ∑ b ∈ Finset.range (m + 1), Kc k r ^ (a + b) *
-            ((bw (k := k) (r := r) (List.replicate a true ++ List.replicate b false)).map Cw).sum)
-            (fun a _ => Finset.sum_nonneg fun b _ => hnn a b) hu'
 
 end Formalism.FourierDecayAlt.P.ListSumInequalities
 
 namespace Formalism.FourierDecayAlt.P
 
-theorem rule_A2_derivatives : C2.SmoothClassInFiniteOrder := by
-  exact ListSumInequalities.rule_A2_of_word_expansion
 
 end Formalism.FourierDecayAlt.P
+end
+end

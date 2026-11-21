@@ -22,17 +22,6 @@ noncomputable def ev (χ : Matrix (Fin ρ) (Fin ρ) E) (u u' : Fin ρ → E) : E
 noncomputable def gen (X : Data E r) (b : E) (u u' : Fin ρ → E) : Matrix (Fin ρ) (Fin ρ) E :=
   Matrix.of fun i k => X.κ0 / 2 * (b * u i * cc (u' k) + cc b * u' i * cc (u k))
 
-theorem pair_real (X : Data E r) (χ β : Matrix (Fin ρ) (Fin ρ) E) (hχ : IsHermE χ) (hβ : IsSkew β) :
-    cc (Matrix.trace (χ.transpose * β) / (X.κ0 / 2)) = Matrix.trace (χ.transpose * β) / (X.κ0 / 2) := by
-  have hk := cc_kappa X
-  have ht : cc (Matrix.trace (χ.transpose * β)) = -Matrix.trace (χ.transpose * β) := by
-    have h1 : ∀ a b, IsCMField.complexConj E (χ a b) = χ b a := hχ
-    have h2 : ∀ a b, IsCMField.complexConj E (β a b) = -β b a := hβ
-    simp only [cc, Matrix.trace, Matrix.diag, Matrix.mul_apply, Matrix.transpose_apply, map_sum,
-      map_mul, h1, h2, mul_neg, Finset.sum_neg_distrib]
-    rw [Finset.sum_comm]
-  unfold cc at hk ht ⊢
-  rw [map_div₀, map_div₀, hk, ht, map_ofNat, neg_div 2 X.κ0, neg_div_neg_eq]
 
 def cuspOfIso (X : Data E r) (ξ : Fin r → E) (h0 : ξ ≠ 0) (hi : herm X.Gm ξ ξ = 0) : CuspFD X 1 where
   e := fun _ => ξ

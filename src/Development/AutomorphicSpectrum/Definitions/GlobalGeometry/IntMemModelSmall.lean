@@ -21,9 +21,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheo
 theorem degOf_eq (u : GlobalTheory.AllWt.Weight Dw) : degOf RM u = ∑ r : RootIx Dw, (-u r.1 r.2) • RM.xdeg r := by
   simp [degOf, Top.combLine, Fintype.sum_option, nOf, Top.RootModel.line, RM.x_deg]
 
-theorem degOf_eq_sing (Or : RootOrigin Y S RM Fx) (u : GlobalTheory.AllWt.Weight Dw) :
-    degOf RM u = (Top.combLine Or.sing fun r => nOf u (some r)).a := by
-  rw [degOf_eq]; simp [Top.combLine, Or.sing_deg, nOf]
 
 theorem gauge_ne_zero (Rd : Reading Fr h Z) (u : GlobalTheory.AllWt.Weight Dw) : gauge Rd u ≠ 0 :=
   mul_ne_zero (Units.ne_zero _) (Finset.prod_ne_zero_iff.2 fun r _ => zpow_ne_zero _ (Or.lines r).1)
@@ -48,41 +45,15 @@ theorem gauge_mul (Rd : Reading Fr h Z) (u : GlobalTheory.AllWt.Weight Dw) {f : 
   rw [secZ_eq] at hf
   rw [Rd.rd_eq _ f hf, gauge]; ring
 
-theorem trOf_gauge_mul (Rd : Reading Fr h Z) (u : GlobalTheory.AllWt.Weight Dw) (a : Om Z) :
-    trOf Rd u (gauge Rd u * Rd.φ a) = Or.Fl.deg • a := by
-  letI := Rd.φ.toAlgebra
-  unfold trOf
-  rw [mul_div_cancel_left₀ _ (gauge_ne_zero Rd u), ← Rd.deg]
-  exact Algebra.trace_algebraMap a
 
-theorem isFormOff_one : Small.IsFormOff (mCoordIdeal RM.y) (1 : MRing RM.ι) := by
-  refine ⟨⟨0, ?_⟩, fun h1 => RM.arith.2.1.1.ne_top ((Ideal.eq_top_iff_one _).2 h1)⟩
-  intro m hm k
-  have : m = 0 := by simpa [MvPolynomial.support_one] using hm
-  simp [this]
 
 theorem modelSmall_mono (u : GlobalTheory.AllWt.Weight Dw) : Monotone (modelSmall Or u) := by
   rintro R R' hR s ⟨h1, w, hw, h2⟩
   refine ⟨h1, w, hw, fun z hz hz' v hv => (h2 z hz hz' v hv).trans ?_⟩
   exact mul_le_mul_of_nonneg_right hR (Finset.prod_pos fun r _ => zpow_pos ((Or.sing r).pos z hz.1) _).le
 
-theorem exTwo_vals : 2 ≤ exTwo E 2 ∧ ∀ p, p ≠ 2 → exTwo E p = GlobalTheory.CovHt.htEx E p := by
-  refine ⟨?_, fun p hp => by simp [exTwo, hp]⟩
-  have : (0 : ℝ) ≤ 40 * ((padicValNat 2 (discr E).natAbs : ℝ) / (Module.finrank ℚ E : ℝ)) := by positivity
-  simp only [exTwo, GlobalTheory.CovHt.htEx, if_true]
-  norm_num
-  linarith
 
-theorem costTwo_eq (B : ℝ) : costTwo l B = GlobalTheory.CovHt.htCost l B + Real.log 2 := by
-  classical
-  have hf := GlobalTheory.CompHt.htPrimes_finite (l := l) B
-  have h2 : 2 ∈ hf.toFinset := hf.mem_toFinset.2 ⟨Nat.prime_two, .inr (Dvd.dvd.mul_right (dvd_mul_right _ _) _)⟩
-  rw [costTwo, GlobalTheory.CovHt.htCost, finsum_mem_eq_finite_toFinset_sum _ hf, finsum_mem_eq_finite_toFinset_sum _ hf]
-  simp [exTwo, add_mul, Finset.sum_add_distrib, h2]
 
-theorem guard_sat : ∃ R : Ranks, R.m ^ 2 ≤ R.k ∧ 1 < R.m :=
-  ⟨⟨Formalism.HC.cyclicFrame 0, 6, 2, 13, by decide, by decide, by decide, by decide, by decide, by decide, by decide, by decide, by decide,
-    by decide⟩, by decide, by decide⟩
 
 section Cone
 
@@ -176,19 +147,5 @@ theorem val_int (y : (Σ k, ι k) → Ω) (n : ℤ) {z : (Σ k, ι k) → ℂ} (
 
 end Cone
 
-theorem int_mem_modelSmall (Or : RootOrigin Y S RM Fx) (n : ℤ) (R : ℝ) :
-    (n : RM.Ω) ∈ modelSmall Or 0 R ↔ |(n : ℝ)| ≤ R := by
-  have hd : degOf RM (0 : GlobalTheory.AllWt.Weight Dw) = 0 := by rw [degOf_eq]; simp
-  haveI : CharZero RM.Ω := (RingHom.charZero_iff Or.𝔐.cst.injective).1 inferInstance
-  constructor
-  · rintro ⟨-, w, hw, h2⟩
-    obtain ⟨z, hz, hz'⟩ := exists_pt RM.y RM.birational RM.arith.2.1.2.2 hw
-    have := h2 z hz hz' n (by rw [hd]; exact (val_int _ n hz _).2 rfl)
-    simpa [nOf] using this
-  · intro hR
-    refine ⟨fun cc _ => ?_, 1, isFormOff_one, fun z hz _ v hv => ?_⟩
-    · rw [hd]; simp
-    · rw [hd, val_int _ n hz] at hv
-      simpa [nOf, hv] using hR
 
 end GlobalTheory.CompanionTheory.Ar.Plug.Test

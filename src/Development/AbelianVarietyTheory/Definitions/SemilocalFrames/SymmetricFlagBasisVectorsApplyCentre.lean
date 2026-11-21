@@ -191,8 +191,6 @@ theorem wSp_comm (F F' : FlagD H r) : wSp F' F = wSp F F' := by rw [wSp, wSp, jo
 theorem wSp_eq (F F' : FlagD H r) : wSp F F' = perp H (xPlus F) ⊓ perp H (xPlus F') := by
   rw [wSp, ← xPlus_sup, perp_sup]
 
-theorem mem_norLift (F F' : FlagD H r) (y : V) :
-    y ∈ norLift F F' ↔ y ∈ V0 F F' ∧ y ∈ perp H (xPlus F) := Iff.rfl
 
 theorem X_le_norLift (F F' : FlagD H r) : F.X ≤ norLift F F' :=
   le_inf (le_sup_of_le_left le_sup_left) (X_le_perp_xPlus F)

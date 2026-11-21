@@ -1,9 +1,337 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormLtOneOfNotIsUnit
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LubinTateAction
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CharZeroAdicCompletion
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DecompositionGroupLocalGaloisIso
+import GroundTheory.LocalFields.ConductorReciprocity
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocalArtinFrobeniusAction
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalEmbeddingWeilActionFiniteExtension
 import Development.AbelianVarietyTheory.Statements.WeilDeligneCrystalline.ExistsNotInduces
 import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.IsAdicCompleteOfLe
 
+section
+section
+open NumberField IsDedekindDomain ValuativeRel Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocDict GroundTheory.LocalField GroundTheory.LocalField.FormalGroup
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+namespace GlobalTheory
+
+theorem localArtinMap_unitUniformizerPow_lubinTateTorsion
+    (K : Type) [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
+    (Ω : Type) [Field Ω] [ValuativeRel Ω] [TopologicalSpace Ω] [IsValuativeTopology Ω] [Algebra K Ω]
+    [ValuativeExtension K Ω] [IsSepClosure K Ω] {π : 𝒪[K]} (hπ : Irreducible π) {f : PowerSeries 𝒪[K]}
+    (hf : IsLubinTateSeries π f) (u : 𝒪[K]ˣ) (k : ℤ) (n : ℕ) (x : IdealPoint Ω (lubinTateFormalGroup hπ hf)) :
+    x ∈ lubinTateTorsion Ω (hπ := hπ) hf n →
+    ∃ hz : x.val ∈ maximalAbelianExtension K Ω,
+      ((localArtinMap K Ω (unitUniformizerPow hπ u k) ⟨x.val, hz⟩ : maximalAbelianExtension K Ω) : Ω) =
+        (((u⁻¹ : 𝒪[K]ˣ) : 𝒪[K]) • x).val := by
+  intro hx
+  haveI : IsSepClosed Ω := IsSepClosure.sep_closed K
+
+  have hx' : x ∈ lubinTateTorsion Ω (hπ := hπ) hf (n + 1) := by
+    rw [mem_lubinTateTorsion] at hx ⊢
+    rw [pow_succ', mul_smul, hx, smul_zero]
+  have hab : IsAbelianGalois K (lubinTateField Ω hπ hf (n + 1) ⊔ ⊥ : IntermediateField K Ω) := by
+    rw [sup_bot_eq]
+    exact isAbelianGalois_of_mul_comm _ (lubinTateField_mul_comm hπ hf (n + 1))
+  have hmem : x.val ∈ (lubinTateField Ω hπ hf (n + 1) ⊔ ⊥ : IntermediateField K Ω) :=
+    le_sup_left (a := lubinTateField Ω hπ hf (n + 1)) (val_mem_lubinTateField hπ hf hx')
+  refine ⟨le_maximalAbelianExtension _ hmem, ?_⟩
+  obtain ⟨τ, hτd, hτ⟩ := exists_lubinTate_action (Ω := Ω) hπ hf n.succ_pos u k
+  have h := restrictAb_localArtinMap_lubinTate hπ hf n.succ_pos ⊥ bot_le u k τ hτd hτ
+  have e := congrArg (fun σ => (((σ ⟨x.val, hmem⟩ :
+    (lubinTateField Ω hπ hf (n + 1) ⊔ ⊥ : IntermediateField K Ω))) : Ω)) h
+  rw [restrictAb_apply, AlgEquiv.restrictNormalHom_apply] at e
+  rw [e, ← lubinTateGalPointMap_val, hτ x hx']
+
+end GlobalTheory
+end
+
+open NumberField IsDedekindDomain ValuativeRel Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocDict GroundTheory.LocalField GroundTheory.LocalField.FormalGroup
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lubin_tate_torsion_galois_action : ∀ (K : Type) [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
+    (Ω : Type) [Field Ω] [ValuativeRel Ω] [TopologicalSpace Ω] [IsValuativeTopology Ω] [Algebra K Ω]
+    [ValuativeExtension K Ω] [IsSepClosure K Ω] {π : 𝒪[K]} (hπ : Irreducible π) {f : PowerSeries 𝒪[K]}
+    (hf : IsLubinTateSeries π f) (u : 𝒪[K]ˣ) (k : ℤ) (n : ℕ) (x : IdealPoint Ω (lubinTateFormalGroup hπ hf)),
+    x ∈ lubinTateTorsion Ω (hπ := hπ) hf n →
+    ∃ hz : x.val ∈ maximalAbelianExtension K Ω,
+      ((localArtinMap K Ω (unitUniformizerPow hπ u k) ⟨x.val, hz⟩ : maximalAbelianExtension K Ω) : Ω) =
+        (((u⁻¹ : 𝒪[K]ˣ) : 𝒪[K]) • x).val := by
+  atlas_forward_decl GlobalTheory.localArtinMap_unitUniformizerPow_lubinTateTorsion
+end
+
+section
+open NumberField IsDedekindDomain ValuativeRel Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocDict GroundTheory.LocalField GroundTheory.LocalField.FormalGroup
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_artin_frobenius_action : ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
+    (A : ValuationSubring Ω) (w : HeightOneSpectrum (𝓞 E)) (h : IsPlaceOver A w)
+    (a : Weil h →* (w.adicCompletion E)ˣ), IsLocalArtin h a → ∀ (ι : Ω →ₐ[E] Kbar w), IsLocEmb A w ι →
+    ∀ (σ : Weil h) (τ : GalLoc w), Lifts ι τ (σ : G E Ω) →
+    ∀ (z : Kbar w) (hz : z ∈ maximalAbelianExtension (w.adicCompletion E) (Kbar w)),
+      τ ((localArtinMap (w.adicCompletion E) (Kbar w) (a σ) ⟨z, hz⟩ : maximalAbelianExtension (w.adicCompletion E) (Kbar w)) : Kbar w) = z := by
+  first | exact @GlobalTheory.ArtinCompareApply.lift_localArtinMap_apply | exact GlobalTheory.ArtinCompareApply.lift_localArtinMap_apply | (intros; apply GlobalTheory.ArtinCompareApply.lift_localArtinMap_apply <;> assumption)
+end
+
+section
+section
+open NumberField IsDedekindDomain ValuativeRel Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocDict GroundTheory.LocalField GroundTheory.LocalField.FormalGroup
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+noncomputable section
+
+namespace GlobalTheory.WeilDense
+
+theorem lifts_eq_of_lifts {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
+    {w : HeightOneSpectrum (𝓞 E)} (ι : Ω →ₐ[E] Kbar w) (a b : GalLoc w) (σ : G E Ω)
+    (ha : Lifts ι a σ) (hb : Lifts ι b σ) : a = b := by
+  letI : NontriviallyNormedField (w.adicCompletion E) := Valued.toNontriviallyNormedField _ _
+  letI : NormedField (Kbar w) := spectralNorm.normedField (w.adicCompletion E) (Kbar w)
+  have : IsAlgClosed Ω := IsAlgClosure.isAlgClosed E
+  have : CharZero (w.adicCompletion E) :=
+    charZero_of_injective_algebraMap (algebraMap E (w.adicCompletion E)).injective
+  have hdE : DenseRange (algebraMap E (w.adicCompletion E)) := HeightOneSpectrum.denseRange_algebraMap E w
+  have hd : DenseRange ι := GlobalTheory.LocDec.denseRange_of_isAlgClosed (w.adicCompletion E) E Ω hdE ι
+  have hnorm : ∀ (g : GalLoc w) (y : Kbar w), ‖g y‖ = ‖y‖ := fun g y =>
+    (spectralNorm_eq_of_equiv g y).symm
+  have hcont : ∀ g : GalLoc w, Continuous g := fun g =>
+    (AddMonoidHomClass.isometry_of_norm g (hnorm g)).continuous
+  have := hd.equalizer (hcont a) (hcont b) (funext fun x => by
+    simp only [Function.comp_apply]; rw [ha x, hb x])
+  exact AlgEquiv.ext (congrFun this)
+
+theorem weil_dense : ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
+    (A : ValuationSubring Ω) (w : HeightOneSpectrum (𝓞 E)) (h : IsPlaceOver A w) (ι : Ω →ₐ[E] Kbar w),
+    IsLocEmb A w ι → ∀ (g : Dec (F := E) A) (τ : GalLoc w), Lifts ι τ (g : G E Ω) →
+    ∀ (U : Subgroup (GalLoc w)), IsOpen (U : Set (GalLoc w)) → ∀ (V : Set (Dec (F := E) A)), IsOpen V → g ∈ V →
+    ∃ (σ : Weil h) (τ' : GalLoc w), Lifts ι τ' (σ : G E Ω) ∧ τ⁻¹ * τ' ∈ U ∧
+      (⟨σ, Weil_le_Dec h σ.2⟩ : Dec (F := E) A) ∈ V := by
+  intro E Ω _ _ _ _ _ A w h ι hι g τ hτ U hU V hV hgV
+  obtain ⟨θ, hθ, hθs, hl⟩ := GlobalTheory.LocDec.decomposition_mulEquiv_galLoc E Ω A w h ι hι
+  have hτθ : τ = θ g := lifts_eq_of_lifts ι _ _ _ hτ (hl g)
+  let W : Set (GalLoc w) := θ.symm ⁻¹' V
+  have hW : IsOpen W := hV.preimage hθs
+  have hτW : τ ∈ W := by
+    show θ.symm τ ∈ V
+    rw [hτθ, MulEquiv.symm_apply_apply]; exact hgV
+  have hnhds : {x : GalLoc w | τ * x ∈ W} ∈ nhds (1 : GalLoc w) := by
+    apply (continuous_mul_left τ).continuousAt.preimage_mem_nhds
+    simpa using hW.mem_nhds hτW
+  obtain ⟨L, hL, hLs⟩ := (krullTopology_mem_nhds_one_iff _ _ _).mp hnhds
+  let H : Subgroup (GalLoc w) := U ⊓ L.fixingSubgroup
+  have hH : IsOpen (H : Set (GalLoc w)) := by
+    have h2 : IsOpen (L.fixingSubgroup : Set (GalLoc w)) := by
+      haveI := hL
+      exact IntermediateField.fixingSubgroup_isOpen L
+    exact hU.inter h2
+  obtain ⟨σ, g', hg', hmem⟩ := GlobalTheory.LocDec.exists_lifts_mul_mem A w h ι θ hθ hl τ H hH
+  refine ⟨σ, g', hg', hmem.1, ?_⟩
+  have e : g' = θ ⟨σ, Weil_le_Dec h σ.2⟩ := lifts_eq_of_lifts ι _ _ _ hg' (hl _)
+  have h3 : τ * (τ⁻¹ * g') ∈ W := hLs hmem.2
+  rw [mul_inv_cancel_left] at h3
+  have h4 : θ.symm g' ∈ V := h3
+  rwa [e, MulEquiv.symm_apply_apply] at h4
+
+end GlobalTheory.WeilDense
+end
+end
+
+open NumberField IsDedekindDomain ValuativeRel Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocDict GroundTheory.LocalField GroundTheory.LocalField.FormalGroup
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weil_group_dense_in_decomposition : ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
+    (A : ValuationSubring Ω) (w : HeightOneSpectrum (𝓞 E)) (h : IsPlaceOver A w) (ι : Ω →ₐ[E] Kbar w),
+    IsLocEmb A w ι → ∀ (g : Dec (F := E) A) (τ : GalLoc w), Lifts ι τ (g : G E Ω) →
+    ∀ (U : Subgroup (GalLoc w)), IsOpen (U : Set (GalLoc w)) → ∀ (V : Set (Dec (F := E) A)), IsOpen V → g ∈ V →
+    ∃ (σ : Weil h) (τ' : GalLoc w), Lifts ι τ' (σ : G E Ω) ∧ τ⁻¹ * τ' ∈ U ∧
+      (⟨σ, Weil_le_Dec h σ.2⟩ : Dec (F := E) A) ∈ V := by
+  atlas_forward_decl GlobalTheory.WeilDense.weil_dense
+end
+
+section
+section
+open NumberField IsDedekindDomain ValuativeRel Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocDict GroundTheory.LocalField GroundTheory.LocalField.FormalGroup
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+namespace GlobalTheory.HeckeTate
+
+theorem ord_zpow_units {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+    (x : kˣ) (n : ℤ) : GlobalTheory.SmGL.ord k (x ^ n) = n * GlobalTheory.SmGL.ord k x := by
+  let f : kˣ →* Multiplicative ℤ :=
+    { toFun := fun y => Multiplicative.ofAdd (GlobalTheory.SmGL.ord k y)
+      map_one' := by rw [GlobalTheory.SmGL.ord_eq_zero (by simp)]; rfl
+      map_mul' := fun y z => by rw [GlobalTheory.SmGL.ord_mul]; rfl }
+  have := congrArg Multiplicative.toAdd (map_zpow f x n)
+  simpa [f] using this
+
+theorem isUnit_artin_mul_zpow : ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
+    (A : ValuationSubring Ω) (w : HeightOneSpectrum (𝓞 E)) (h : IsPlaceOver A w)
+    (a : Weil h →* (w.adicCompletion E)ˣ), IsLocalArtin h a → ∀ (σ : Weil h) (π u : 𝒪[w.adicCompletion E]),
+    Irreducible π → (u : w.adicCompletion E) = (a σ : w.adicCompletion E) * (π : w.adicCompletion E) ^ deg σ →
+    IsUnit u := by
+  intro E Ω _ _ _ _ _ A w h a ha σ π u hπ hu
+  set K := w.adicCompletion E
+  have hint := Valuation.integer.integers (valuation K)
+  have hπ0 : (π : K) ≠ 0 := fun h0 => hπ.ne_zero (Subtype.ext h0)
+  have hπle : valuation K (π : K) ≤ 1 := π.2
+  have hπlt : valuation K (π : K) < 1 := by
+    have := hπ.not_isUnit
+    rw [hint.isUnit_iff_valuation_eq_one] at this
+    exact lt_of_le_of_ne hπle this
+  obtain ⟨ϖ, hϖ⟩ := GlobalTheory.Published.JacquetShalikaLocalBound.exists_uniformizer K
+  have hπv : valuation K (π : K) = uniformizer K := by
+    apply le_antisymm (le_uniformizer_iff.2 hπlt)
+    by_contra hlt
+    push_neg at hlt
+    have hϖ0 : (ϖ : K) ≠ 0 := ϖ.ne_zero
+    have hpos : (0 : ValueGroupWithZero K) < valuation K (ϖ : K) := by
+      rw [hϖ]; exact zero_lt_iff.2 uniformizer_ne_zero
+    have hq : valuation K ((π : K) * (ϖ : K)⁻¹) < 1 := by
+      rw [map_mul, map_inv₀]
+      exact (mul_inv_lt_iff₀ hpos).2 (by rw [one_mul, hϖ]; exact hlt)
+    let x : 𝒪[K] := ⟨ϖ, by show valuation K (ϖ : K) ≤ 1; rw [hϖ]; exact uniformizer_lt_one.le⟩
+    let y : 𝒪[K] := ⟨(π : K) * (ϖ : K)⁻¹, hq.le⟩
+    have hxy : π = x * y := Subtype.ext (by
+      show (π : K) = (ϖ : K) * ((π : K) * (ϖ : K)⁻¹)
+      field_simp)
+    rcases hπ.isUnit_or_isUnit hxy with hx | hy
+    · rw [hint.isUnit_iff_valuation_eq_one] at hx
+      exact uniformizer_lt_one.ne (hϖ ▸ hx)
+    · rw [hint.isUnit_iff_valuation_eq_one] at hy
+      exact hq.ne hy
+  let p : Kˣ := Units.mk0 _ hπ0
+  have hp1 : GlobalTheory.SmGL.ord K p = 1 := GlobalTheory.SmGL.ord_eq_one hπv
+  have hd := ha.ord_eq σ
+  have hz : GlobalTheory.SmGL.ord K (a σ * p ^ deg σ) = 0 := by
+    rw [GlobalTheory.SmGL.ord_mul, ord_zpow_units, hd, hp1]; ring
+  have hv := GlobalTheory.SmGL.ord_eq_zero_iff.1 hz
+  rw [hint.isUnit_iff_valuation_eq_one]
+  show valuation K (u : K) = 1
+  rw [hu]
+  simpa [p, Units.val_zpow_eq_zpow_val] using hv
+
+end GlobalTheory.HeckeTate
+end
+
+open NumberField IsDedekindDomain ValuativeRel Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocDict GroundTheory.LocalField GroundTheory.LocalField.FormalGroup
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_artin_unit_of_uniformizer : ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
+    (A : ValuationSubring Ω) (w : HeightOneSpectrum (𝓞 E)) (h : IsPlaceOver A w)
+    (a : Weil h →* (w.adicCompletion E)ˣ), IsLocalArtin h a → ∀ (σ : Weil h) (π u : 𝒪[w.adicCompletion E]),
+    Irreducible π → (u : w.adicCompletion E) = (a σ : w.adicCompletion E) * (π : w.adicCompletion E) ^ deg σ →
+    IsUnit u := by
+  atlas_forward_decl GlobalTheory.HeckeTate.isUnit_artin_mul_zpow
+end
+
+section
+open NumberField IsDedekindDomain ValuativeRel Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocDict GroundTheory.LocalField GroundTheory.LocalField.FormalGroup
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+noncomputable section
+
+namespace GlobalTheory.LTRecip
+
+theorem lubinTate_action : ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
+    (A : ValuationSubring Ω) (w : HeightOneSpectrum (𝓞 E)) (h : IsPlaceOver A w)
+    (a : Weil h →* (w.adicCompletion E)ˣ), IsLocalArtin h a → ∀ (ι : Ω →ₐ[E] Kbar w), IsLocEmb A w ι →
+    ∀ [ValuativeRel (Kbar w)] [TopologicalSpace (Kbar w)] [IsValuativeTopology (Kbar w)]
+      [ValuativeExtension (w.adicCompletion E) (Kbar w)] {π : 𝒪[w.adicCompletion E]} (hπ : Irreducible π)
+      {f : PowerSeries 𝒪[w.adicCompletion E]} (hf : IsLubinTateSeries π f)
+      (c : Dec (F := E) A →* (w.adicCompletion E)ˣ),
+      Continuous (fun g => ((c g : (w.adicCompletion E)ˣ) : w.adicCompletion E)) →
+      (∀ σ : Weil h, ((c ⟨σ, Weil_le_Dec h σ.2⟩ : (w.adicCompletion E)ˣ) : w.adicCompletion E) =
+        (a σ : w.adicCompletion E) * (π : w.adicCompletion E) ^ deg σ) →
+      ∀ (g : Dec (F := E) A) (τ : GalLoc w), Lifts ι τ (g : G E Ω) →
+      ∀ (u : 𝒪[w.adicCompletion E]), (u : w.adicCompletion E) = (c g : w.adicCompletion E) →
+      ∀ (n : ℕ), ∀ x ∈ lubinTateTorsion (Kbar w) (hπ := hπ) hf n, lubinTateGalPointMap (hπ := hπ) hf τ x = u • x := by
+  intro E Ω _ _ _ _ _ A w h a ha ι hι _ _ _ _ π hπ f hf c hc hcW g τ hτ u hu n x hx
+
+  have hWeil : ∀ (σ : Weil h) (τ' : GalLoc w), Lifts ι τ' (σ : G E Ω) → ∀ (u' : 𝒪[w.adicCompletion E]),
+      (u' : w.adicCompletion E) = (a σ : w.adicCompletion E) * (π : w.adicCompletion E) ^ deg σ →
+      lubinTateGalPointMap (hπ := hπ) hf τ' x = u' • x := by
+    intro σ τ' hτ' u' hu'
+    obtain ⟨v, hv⟩ := GlobalTheory.T.local_artin_unit_of_uniformizer E Ω A w h a ha σ π u' hπ hu'
+    have hy : unitUniformizerPow hπ v (-deg σ) = a σ := by
+      apply Units.ext
+      rw [unitUniformizerPow, Units.val_mul, Units.coe_map, Units.val_zpow_eq_zpow_val, Units.val_mk0]
+      change ((v : 𝒪[w.adicCompletion E]) : w.adicCompletion E) * _ = _
+      rw [hv, hu', zpow_neg, mul_assoc, mul_inv_cancel₀ (zpow_ne_zero _ (coe_ne_zero_of_irreducible hπ)), mul_one]
+    have hvx : (v : 𝒪[w.adicCompletion E]) • x ∈ lubinTateTorsion (Kbar w) (hπ := hπ) hf n :=
+      Submodule.smul_mem _ _ hx
+    obtain ⟨hz, hact⟩ := GlobalTheory.T.lubin_tate_torsion_galois_action (w.adicCompletion E) (Kbar w) hπ hf v (-deg σ) n _ hvx
+    have key := GlobalTheory.T.local_artin_frobenius_action E Ω A w h a ha ι hι σ τ' hτ' _ hz
+    rw [← hy, hact, smul_smul, Units.inv_mul, one_smul] at key
+    apply IdealPoint.ext
+    rw [lubinTateGalPointMap_val, key, ← hv]
+  set K := w.adicCompletion E
+  have hπ0 : (π : K) ≠ 0 := coe_ne_zero_of_irreducible hπ
+  set γ := valuation K ((π : K) ^ n) with hγ
+  have hγ0 : γ ≠ 0 := by simp [γ, hπ0]
+
+  set T := lubinTateField (Kbar w) hπ hf n
+  have hU : IsOpen (T.fixingSubgroup : Set (GalLoc w)) := T.fixingSubgroup_isOpen
+
+  set V : Set (Dec (F := E) A) :=
+    (fun g' => ((c g' : Kˣ) : K)) ⁻¹' {z : K | valuation K (z - (c g : K)) < γ} with hVdef
+  have hball : IsOpen {z : K | valuation K (z - (c g : K)) < γ} := by
+    refine isOpen_iff_mem_nhds.2 fun z hz => (IsValuativeTopology.mem_nhds_iff).2 ⟨Units.mk0 γ hγ0, ?_⟩
+    rintro _ ⟨y, hy, rfl⟩
+    have e : z + y - (c g : K) = (z - (c g : K)) + y := by ring
+    show valuation K (z + y - (c g : K)) < γ
+    rw [e]
+    exact Valuation.map_add_lt _ hz hy
+  have hV : IsOpen V := hball.preimage hc
+  have hgV : g ∈ V := by
+    show valuation K (((c g : Kˣ) : K) - (c g : K)) < γ
+    rw [sub_self, map_zero]
+    exact zero_lt_iff.2 hγ0
+  obtain ⟨σ, τ', hτ', hU', hV'⟩ := GlobalTheory.T.weil_group_dense_in_decomposition E Ω A w h ι hι g τ hτ _ hU V hV hgV
+
+  set cσ : K := ((c ⟨σ, Weil_le_Dec h σ.2⟩ : Kˣ) : K) with hcσ
+  have hclose : valuation K (cσ - (u : K)) < γ := by rw [hu]; exact hV'
+  have hγ1 : γ ≤ 1 := by
+    rw [hγ, map_pow]
+    exact pow_le_one₀ zero_le π.2
+  have huv : valuation K (u : K) ≤ 1 := u.2
+  have hcσ1 : valuation K cσ ≤ 1 := by
+    have e : cσ = (cσ - (u : K)) + (u : K) := by ring
+    rw [e]
+    exact (Valuation.map_add _ _ _).trans (max_le (hclose.le.trans hγ1) huv)
+  let uσ : 𝒪[K] := ⟨cσ, hcσ1⟩
+  have hWeil := hWeil σ τ' hτ' uσ (hcW σ)
+
+  have hxT : x.val ∈ T := val_mem_lubinTateField hπ hf hx
+  have hfix : (τ⁻¹ * τ') x.val = x.val := (IntermediateField.mem_fixingSubgroup_iff _ _).1 hU' _ hxT
+  have hττ' : τ' x.val = τ x.val := by
+    rw [AlgEquiv.mul_apply] at hfix
+    have := congrArg τ hfix
+    rwa [AlgEquiv.aut_inv, AlgEquiv.apply_symm_apply] at this
+
+  set t : K := (cσ - (u : K)) / (π : K) ^ n with ht
+  have htv : valuation K t ≤ 1 := by
+    rw [ht, map_div₀]
+    rw [div_le_one₀ (zero_lt_iff.2 hγ0)]
+    exact hclose.le
+  let t' : 𝒪[K] := ⟨t, htv⟩
+  have hsplit : uσ = u + π ^ n * t' := by
+    apply Subtype.ext
+    show cσ = (u : K) + (π : K) ^ n * t
+    rw [ht, mul_div_cancel₀ _ (pow_ne_zero n hπ0)]
+    ring
+  have hxn : π ^ n • x = 0 := (mem_lubinTateTorsion hf n x).1 hx
+  have hmod : uσ • x = u • x := by
+    rw [hsplit, add_smul, mul_comm, mul_smul, hxn, smul_zero, add_zero]
+  apply IdealPoint.ext
+  rw [lubinTateGalPointMap_val, ← hττ', ← lubinTateGalPointMap_val, hWeil, hmod]
+
+end GlobalTheory.LTRecip
+
+end
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.LTTateC
@@ -582,4 +910,5 @@ theorem main : ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E
 
 end GlobalTheory.LTTateC
 
+end
 end

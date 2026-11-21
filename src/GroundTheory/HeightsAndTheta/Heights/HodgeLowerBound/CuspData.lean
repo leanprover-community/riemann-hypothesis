@@ -260,36 +260,7 @@ theorem planeLine_saturated : IsSaturated planeLine := by
   have : n • v.2 = 0 := by simpa using h
   exact (smul_eq_zero.mp this).resolve_left hn
 
-theorem planeLine_family : ∃ ρ v, IsNzFamily planeLine ρ v := by
-  refine ⟨1, ![(1, 0)], le_rfl, fun a => by fin_cases a; exact mem_planeLine.2 rfl, ?_, ?_⟩
-  · rw [linearIndependent_unique_iff]; simp
-  · have : Submodule.span GaussianInt (Set.range ![((1, 0) : GaussianInt × GaussianInt)]) = planeLine := by
-      simp [planeLine]
-    rw [this, AddSubgroup.relIndex_self]
-    exact one_ne_zero
 
-theorem planeCusp_Nz_pos (II : IntersectionSystem)
-    (hII : ∀ W : Ideal (MRing (PBlk 2)), IsArithVar W 1 → 0 ≤ II Unit (PBlk 2) W 1 ![fsLine 2]) (z : (Σ _ : Unit, Fin 2) → ℂ) : 0 < (planeCusp II hII).Nz z planeLine := by
-  have key : ∀ ρ (w : Fin ρ → GaussianInt × GaussianInt), IsNzFamily planeLine ρ w →
-      0 < (∏ τ : Unit, ((planeCusp II hII).gramLie z τ w).det.re) /
-        ((Submodule.span GaussianInt (Set.range w)).toAddSubgroup.relIndex planeLine.toAddSubgroup : ℝ) := by
-    intro ρ w ⟨h1, hmem, hli, hidx⟩
-    have hidx' : (0 : ℝ) < ((Submodule.span GaussianInt (Set.range w)).toAddSubgroup.relIndex
-        planeLine.toAddSubgroup : ℝ) := by exact_mod_cast Nat.pos_of_ne_zero hidx
-    refine div_pos ?_ hidx'
-    have hρ := family_le_one planeLine_isIso hmem hli
-    interval_cases ρ
-    · simp only [Finset.univ_unique, Finset.prod_singleton, Matrix.det_unique]
-      simp only [CuspData.gramLie, planeCusp, Matrix.of_apply]
-      have hw0 : planeLie (w default) ≠ 0 :=
-        fun h => hli.ne_zero default (eq_zero_of_planeLie planeLine_isIso (hmem default) h)
-      show 0 < (∑ _c : Fin 1, starRingEnd ℂ (planeLie (w default)) * planeLie (w default)).re
-      rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, one_smul, ← Complex.normSq_eq_conj_mul_self,
-        Complex.ofReal_re]
-      exact Complex.normSq_pos.2 hw0
-  unfold CuspData.Nz
-  rw [dif_pos planeLine_family]
-  exact key _ _ planeLine_family.choose_spec.choose_spec
 
 end Line
 

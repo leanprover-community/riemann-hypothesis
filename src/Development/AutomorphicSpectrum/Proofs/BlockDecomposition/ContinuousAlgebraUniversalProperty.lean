@@ -1,11 +1,534 @@
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsLimHom
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EpsilonCyclotomicElementPropertiesStatement
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsContinuousEpsilonPower
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SharpEpsilonRootIdempotentSum
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IdempotentsUniqueForEpsilonRoot
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IdempotentsCoarsenToLowerLevel
 
+section
+section
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry DividedPowers GroundTheory.PAdicHodge GlobalTheory.LogCris GlobalTheory.PDA CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.PAlg CrystallineSemistableComparison.B
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.ContUniv.EtaFn
+
+section Var
+
+variable {S : Type} [CommRing S] {l : ℕ} [Fact l.Prime] {ϖ x : S}
+
+theorem pow_sub_one_mem (hl : (l : S) = 0) (hx : x - 1 ∈ Ideal.span {ϖ}) (m : ℕ) :
+    x ^ l ^ m - 1 ∈ Ideal.span {ϖ ^ l ^ m} := by
+  rcases subsingleton_or_nontrivial S with h | h
+  · rw [Subsingleton.elim (x ^ l ^ m - 1) 0]
+    exact zero_mem _
+  · haveI : CharP S l := (CharP.charP_iff_prime_eq_zero Fact.out).2 hl
+    haveI : ExpChar S l := ExpChar.prime Fact.out
+    have e : x ^ l ^ m - 1 = (x - 1) ^ l ^ m := by
+      rw [sub_pow_char_pow, one_pow]
+    rw [e, ← Ideal.span_singleton_pow]
+    exact Ideal.pow_mem_pow hx _
+
+theorem pow_sub_pow_mem (hl : (l : S) = 0) (hx : x - 1 ∈ Ideal.span {ϖ}) {a b m : ℕ}
+    (h : a ≡ b [MOD l ^ m]) : x ^ a - x ^ b ∈ Ideal.span {ϖ ^ l ^ m} := by
+  have key : ∀ a b : ℕ, a ≤ b → a ≡ b [MOD l ^ m] → x ^ b - x ^ a ∈ Ideal.span {ϖ ^ l ^ m} := by
+    intro a b hab h
+    obtain ⟨c, hc⟩ := (Nat.modEq_iff_dvd' hab).1 h
+    have hb : b = a + l ^ m * c := by omega
+    obtain ⟨d, hd⟩ : x ^ l ^ m - 1 ∣ (x ^ l ^ m) ^ c - 1 := by
+      simpa using sub_dvd_pow_sub_pow (x ^ l ^ m) 1 c
+    have e : x ^ b - x ^ a = (x ^ l ^ m - 1) * (d * x ^ a) := by
+      rw [hb, pow_add, pow_mul]
+      linear_combination x ^ a * hd
+    rw [e]
+    exact Ideal.mul_mem_right _ _ (pow_sub_one_mem hl hx m)
+  rcases le_total a b with hab | hab
+  · rw [← neg_sub]
+    exact neg_mem (key a b hab h)
+  · exact key b a hab h.symm
+
+theorem span_pow_le {k n : ℕ} (h : k ≤ n) : Ideal.span {ϖ ^ n} ≤ Ideal.span {ϖ ^ k} :=
+  Ideal.span_singleton_le_span_singleton.2 (pow_dvd_pow ϖ h)
+
+theorem le_pow (k : ℕ) : k ≤ l ^ k := (Nat.lt_pow_self (Fact.out : l.Prime).one_lt).le
+
+theorem exists_lim [IsAdicComplete (Ideal.span {ϖ}) S] (hl : (l : S) = 0)
+    (hx : x - 1 ∈ Ideal.span {ϖ}) (a : ℕ → ℕ) (ha : ∀ m m', m ≤ m' → a m' ≡ a m [MOD l ^ m]) :
+    ∃ L, ∀ m, L - x ^ a m ∈ Ideal.span {ϖ ^ l ^ m} := by
+  obtain ⟨L, hL⟩ := exists_tends (ϖ := ϖ) (fun m => x ^ a m) fun k =>
+    ⟨k, fun m hm => span_pow_le (le_pow (l := l) k) (pow_sub_pow_mem hl hx (ha k m hm))⟩
+  refine ⟨L, fun m => ?_⟩
+  obtain ⟨M, hM⟩ := hL (l ^ m)
+  have h1 := hM (max M m) (le_max_left _ _)
+  have h2 := pow_sub_pow_mem (ϖ := ϖ) hl hx (ha m (max M m) (le_max_right _ _))
+  have := sub_mem h2 h1
+  convert this using 1
+  ring
+
+theorem eq_of_forall_mem [IsHausdorff (Ideal.span {ϖ}) S] {a b : S}
+    (h : ∀ m, a - b ∈ Ideal.span {ϖ ^ l ^ m}) : a = b :=
+  Tends.unique (ϖ := ϖ) (x := fun _ => a) (tends_const a)
+    fun k => ⟨0, fun _ _ => span_pow_le (le_pow (l := l) k) (h k)⟩
+
+end Var
+
+variable {l : ℕ} [Fact l.Prime]
+
+theorem val_modEq {m m' : ℕ} (h : m ≤ m') (z : ℤ_[l]) :
+    (PadicInt.toZModPow m' z).val ≡ (PadicInt.toZModPow m z).val [MOD l ^ m] := by
+  rw [← ZMod.natCast_eq_natCast_iff, ZMod.natCast_val, ZMod.natCast_zmod_val,
+    PadicInt.cast_toZModPow _ _ h]
+
+theorem val_add_one (m : ℕ) (z : ℤ_[l]) :
+    (PadicInt.toZModPow m (z + 1)).val ≡ (PadicInt.toZModPow m z).val + 1 [MOD l ^ m] := by
+  rw [← ZMod.natCast_eq_natCast_iff, Nat.cast_add, ZMod.natCast_zmod_val, ZMod.natCast_zmod_val,
+    map_add, map_one, Nat.cast_one]
+
+theorem exists_fn (A : PAlg l) (x : A.A) (hx : x - 1 ∈ Ideal.span {A.pi}) :
+    ∃ η : (A.cont ℤ_[l]).A,
+      (∀ (m : ℕ) (z : ℤ_[l]), Hom.f (A.evCont z) η - x ^ (PadicInt.toZModPow m z).val ∈
+        Ideal.span {A.pi ^ (l ^ m)}) ∧
+      ∀ z : ℤ_[l], Hom.f (A.evCont (z + 1)) η = x * Hom.f (A.evCont z) η := by
+  haveI hc : IsAdicComplete (Ideal.span {A.pi}) A.A := A.compl
+  have hl : (l : A.A) = 0 := A.natCast_l
+  choose L hL using fun z : ℤ_[l] => exists_lim (ϖ := A.pi) hl hx
+    (fun m => (PadicInt.toZModPow m z).val) (fun m m' h => val_modEq h z)
+  refine ⟨⟨L, fun k => ?_⟩, fun m z => hL z m, fun z => ?_⟩
+  · have e : (Ideal.Quotient.mk (Ideal.span {A.pi ^ k})) ∘ L =
+        (fun c : ZMod (l ^ k) => Ideal.Quotient.mk (Ideal.span {A.pi ^ k}) (x ^ c.val)) ∘
+          PadicInt.toZModPow k := funext fun z =>
+      Ideal.Quotient.eq.2 (span_pow_le (le_pow (l := l) k) (hL z k))
+    have h : IsLocallyConstant ((Ideal.Quotient.mk (Ideal.span {A.pi ^ k})) ∘ L) := by
+      rw [e]
+      exact (GlobalTheory.CompanionTheory.PadicShift.isLocallyConstant_toZModPow l k).comp _
+    exact h
+  · refine eq_of_forall_mem (ϖ := A.pi) (l := l) fun m => ?_
+    have h1 := hL (z + 1) m
+    have h2 := Ideal.mul_mem_left _ x (hL z m)
+    have h3 := pow_sub_pow_mem (ϖ := A.pi) hl hx (val_add_one m z)
+    have := add_mem h1 (sub_mem h3 h2)
+    change L (z + 1) - x * L z ∈ _
+    convert this using 1
+    ring
+
+theorem exists_eta (ε : Eps l) : ∃ η : ((base l).cont ℤ_[l]).A,
+    (∀ (m : ℕ) (z : ℤ_[l]), Hom.f ((base l).evCont z) η - (base l).s (ε.e 0) ^ (PadicInt.toZModPow m z).val ∈ Ideal.span {(base l).pi ^ (l ^ m)}) ∧
+    Hom.f (contShift (base l)) η = ((base l).cont ℤ_[l]).s (ε.e 0) * η := by
+  have hx : (base l).s (ε.e 0) - 1 ∈ Ideal.span {(base l).pi} :=
+    ((RL.sharp_cong (base l)).2.1 _ 1).1 (by
+      rw [ε.sharp_e (base l), map_one, sub_self]
+      exact zero_mem _)
+  obtain ⟨η, h1, h2⟩ := exists_fn (base l) _ hx
+  refine ⟨η, h1, cont_ext fun z => ?_⟩
+  have e : Hom.f ((base l).evCont z) (((base l).cont ℤ_[l]).s (ε.e 0)) = (base l).s (ε.e 0) :=
+    RingHom.congr_fun (Hom.comm ((base l).evCont z)) _
+  rw [map_mul, e]
+  exact h2 z
+
+end GlobalTheory.CompanionTheory.ContUniv.EtaFn
+end
+end
+
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry DividedPowers GroundTheory.PAdicHodge GlobalTheory.LogCris GlobalTheory.PDA CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.PAlg CrystallineSemistableComparison.B
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_continuous_epsilon_power : ∀ {l : ℕ} [Fact l.Prime] (ε : Eps l), ∃ η : ((base l).cont ℤ_[l]).A,
+  (∀ (m : ℕ) (z : ℤ_[l]), Hom.f ((base l).evCont z) η - (base l).s (ε.e 0) ^ (PadicInt.toZModPow m z).val ∈ Ideal.span {(base l).pi ^ (l ^ m)}) ∧
+  Hom.f (contShift (base l)) η = ((base l).cont ℤ_[l]).s (ε.e 0) * η := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ContUniv.EtaFn.exists_eta
+end
+
+section
+section
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry DividedPowers GroundTheory.PAdicHodge GlobalTheory.LogCris GlobalTheory.PDA CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.PAlg CrystallineSemistableComparison.B
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.ContUniv
+
+section Frob
+
+variable {l : ℕ} {R : Type} [CommRing R] (φ : R →+* R)
+
+theorem mem_span_of_frob_mem (hb : Function.Bijective φ) {y p : R}
+    (h : φ y ∈ Ideal.span {φ p}) : y ∈ Ideal.span {p} := by
+  obtain ⟨c, hc⟩ := Ideal.mem_span_singleton'.1 h
+  obtain ⟨c', rfl⟩ := hb.2 c
+  exact Ideal.mem_span_singleton'.2 ⟨c', hb.1 (by rw [map_mul, hc])⟩
+
+theorem mem_span_of_pow_mem (hφ : ∀ x, φ x = x ^ l) (hb : Function.Bijective φ) {x p : R}
+    (N : ℕ) (h : x ^ l ^ N ∈ Ideal.span {p ^ l ^ N}) : x ∈ Ideal.span {p} := by
+  induction N with
+  | zero => simpa using h
+  | succ N ih =>
+    refine ih (mem_span_of_frob_mem φ hb ?_)
+    rw [hφ, hφ, ← pow_mul, ← pow_mul, ← pow_succ]
+    exact h
+
+theorem sub_pow_of_frob (hφ : ∀ x, φ x = x ^ l) (a b : R) (N : ℕ) :
+    (a - b) ^ l ^ N = a ^ l ^ N - b ^ l ^ N := by
+  induction N with
+  | zero => simp
+  | succ N ih =>
+    rw [pow_succ, pow_mul, pow_mul, pow_mul, ih, ← hφ, map_sub, hφ, hφ]
+
+end Frob
+
+theorem root_pow {l : ℕ} {T : Type} [Monoid T] {x : ℕ → T} (hx : ∀ m, x (m + 1) ^ l = x m) (m k : ℕ) :
+    x (m + k) ^ l ^ k = x m := by
+  induction k with
+  | zero => simp
+  | succ k ih =>
+    rw [pow_succ' l k, pow_mul, ← add_assoc, hx, ih]
+
+variable {l : ℕ} [Fact l.Prime]
+
+def powSum (A : PAlg l) (u : (A.cont ℤ_[l]).A) (N : ℕ) : (A.cont ℤ_[l]).A :=
+  ∑ c : ZMod (l ^ N), ind A N c * u ^ c.val
+
+theorem ev_powSum (A : PAlg l) (u : (A.cont ℤ_[l]).A) (N : ℕ) (z : ℤ_[l]) :
+    Hom.f (A.evCont z) (powSum A u N) = Hom.f (A.evCont z) u ^ (PadicInt.toZModPow N z).val := by
+  rw [powSum, map_sum]
+  simp only [map_mul, map_pow, ev_ind, ite_mul, one_mul, zero_mul]
+  rw [Finset.sum_ite_eq]
+  simp
+
+theorem sub_powSum_mem (A : PAlg l) {u ρ : ℕ → (A.cont ℤ_[l]).A} (hu : ∀ n, u (n + 1) ^ l = u n)
+    (hρ : ∀ n, ρ (n + 1) ^ l = ρ n)
+    (h0 : ∀ (m : ℕ) (z : ℤ_[l]), Hom.f (A.evCont z) (ρ 0) -
+      Hom.f (A.evCont z) (u 0) ^ (PadicInt.toZModPow m z).val ∈ Ideal.span {A.pi ^ (l ^ m)})
+    (N : ℕ) : ρ N - powSum A (u N) N ∈ Ideal.span {(A.cont ℤ_[l]).pi} := by
+  have hf : ∀ x : (A.cont ℤ_[l]).A, (A.cont ℤ_[l]).frob x = x ^ l := fun _ => rfl
+  refine mem_span_of_pow_mem (l := l) (A.cont ℤ_[l]).frob hf (A.cont ℤ_[l]).frob_bijective N ?_
+  have h1 : ρ N ^ l ^ N = ρ 0 := by simpa using root_pow hρ 0 N
+  have h2 : u N ^ l ^ N = u 0 := by simpa using root_pow hu 0 N
+  rw [sub_pow_of_frob (l := l) _ hf, h1, mem_span_pi_pow]
+  intro z
+  rw [map_sub, map_pow, ev_powSum, ← pow_mul, mul_comm, pow_mul, ← map_pow, h2]
+  exact h0 N z
+
+theorem sharp_powSum (A : PAlg l) {u : ℕ → (A.cont ℤ_[l]).A} (hu : ∀ n, u (n + 1) ^ l = u n)
+    (m k : ℕ) (hv : (A.cont ℤ_[l]).sharp (u m) ^ l ^ m = 1) :
+    (A.cont ℤ_[l]).sharp (powSum A (u (m + k)) (m + k) ^ l ^ k) =
+      ∑ c : ZMod (l ^ m), (A.cont ℤ_[l]).sharp (ind A m c) * (A.cont ℤ_[l]).sharp (u m) ^ c.val := by
+  set B := powSum A (u (m + k)) (m + k) ^ l ^ k with hB
+  set v := (A.cont ℤ_[l]).sharp (u m) with hvdef
+  set T := ∑ c : ZMod (l ^ m), (A.cont ℤ_[l]).sharp (ind A m c) * v ^ c.val with hT
+  have hle : m ≤ m + k := Nat.le_add_right m k
+  have h1 : ∀ c' : ZMod (l ^ (m + k)), ind A (m + k) c' * B = ind A (m + k) c' * u m ^ c'.val := by
+    intro c'
+    refine cont_ext fun z => ?_
+    rw [map_mul, map_mul, ev_ind]
+    split_ifs with h
+    · have hr : Hom.f (A.evCont z) (u (m + k)) ^ l ^ k = Hom.f (A.evCont z) (u m) := by
+        rw [← map_pow, root_pow hu]
+      rw [hB, map_pow, ev_powSum, map_pow, h, ← pow_mul, mul_comm c'.val, pow_mul, hr]
+    · simp
+  have h2 : ∀ (c' : ZMod (l ^ (m + k))) (c : ZMod (l ^ m)), ZMod.cast c' ≠ c →
+      ind A (m + k) c' * ind A m c = 0 := by
+    intro c' c hc
+    refine cont_ext fun z => ?_
+    rw [map_mul, ev_ind, ev_ind, map_zero]
+    split_ifs with h h'
+    · exact absurd (by rw [← h', ← h, PadicInt.cast_toZModPow m (m + k) hle]) hc
+    all_goals simp
+  have h3 : ∀ c' : ZMod (l ^ (m + k)),
+      ind A (m + k) c' * ind A m (ZMod.cast c') = ind A (m + k) c' := by
+    intro c'
+    refine cont_ext fun z => ?_
+    rw [map_mul, ev_ind, ev_ind]
+    split_ifs with h h'
+    · simp
+    · exact absurd (by rw [← h, PadicInt.cast_toZModPow m (m + k) hle]) h'
+    all_goals simp
+  have h4 : ∀ c' : ZMod (l ^ (m + k)), v ^ (ZMod.cast c' : ZMod (l ^ m)).val = v ^ c'.val := by
+    intro c'
+    rw [pow_eq_pow_mod c'.val hv, ← ZMod.natCast_val, ZMod.val_natCast]
+  have key : ∀ c' : ZMod (l ^ (m + k)), (A.cont ℤ_[l]).sharp (ind A (m + k) c') * (A.cont ℤ_[l]).sharp B =
+      (A.cont ℤ_[l]).sharp (ind A (m + k) c') * T := by
+    intro c'
+    rw [← map_mul, h1, map_mul, map_pow, hT, Finset.mul_sum, Finset.sum_eq_single (ZMod.cast c')]
+    · rw [← mul_assoc, ← map_mul, h3, h4]
+    · intro c _ hc
+      rw [← mul_assoc, ← map_mul, h2 c' c (Ne.symm hc), sharp_zero, zero_mul]
+    · simp
+  have hsum := sum_sharp_eq_one (A.cont ℤ_[l]) (coi_ind A (m + k))
+  calc (A.cont ℤ_[l]).sharp B = (∑ c', (A.cont ℤ_[l]).sharp (ind A (m + k) c')) * (A.cont ℤ_[l]).sharp B := by
+        rw [hsum, one_mul]
+    _ = (∑ c', (A.cont ℤ_[l]).sharp (ind A (m + k) c')) * T := by
+        rw [Finset.sum_mul, Finset.sum_mul]
+        exact Finset.sum_congr rfl fun c' _ => key c'
+    _ = T := by rw [hsum, one_mul]
+
+theorem sharp_roots_core (A : PAlg l) {u ρ : ℕ → (A.cont ℤ_[l]).A} (hu : ∀ n, u (n + 1) ^ l = u n)
+    (hs : (A.cont ℤ_[l]).sharp (u 0) = 1) (hρ : ∀ n, ρ (n + 1) ^ l = ρ n)
+    (h0 : ∀ (m : ℕ) (z : ℤ_[l]), Hom.f (A.evCont z) (ρ 0) -
+      Hom.f (A.evCont z) (u 0) ^ (PadicInt.toZModPow m z).val ∈ Ideal.span {A.pi ^ (l ^ m)})
+    (m : ℕ) : (A.cont ℤ_[l]).sharp (ρ m) =
+      ∑ c : ZMod (l ^ m), (A.cont ℤ_[l]).sharp (ind A m c) * (A.cont ℤ_[l]).sharp (u m) ^ c.val := by
+  have hv : (A.cont ℤ_[l]).sharp (u m) ^ l ^ m = 1 := by
+    rw [← map_pow, (by simpa using root_pow hu 0 m : u m ^ l ^ m = u 0), hs]
+  have hk : ∀ k, (A.cont ℤ_[l]).sharp (ρ m) -
+      ∑ c : ZMod (l ^ m), (A.cont ℤ_[l]).sharp (ind A m c) * (A.cont ℤ_[l]).sharp (u m) ^ c.val ∈
+      Ideal.span {(l : (A.cont ℤ_[l]).U) ^ (k + 1)} := by
+    intro k
+    have h := (RL.sharp_cong (A.cont ℤ_[l])).1 _ _ k (sub_powSum_mem A hu hρ h0 (m + k))
+    rwa [root_pow hρ, sharp_powSum A hu m k hv] at h
+  refine sub_eq_zero.1 (IsHausdorff.haus
+    (inferInstance : IsHausdorff (Ideal.span {(l : (A.cont ℤ_[l]).U)}) (A.cont ℤ_[l]).U) _ fun k => ?_)
+  refine smodEq_iff.2 ?_
+  rw [sub_zero]
+  obtain ⟨c, hc⟩ := Ideal.mem_span_singleton'.1 (hk k)
+  exact Ideal.mem_span_singleton'.2 ⟨c * l, by rw [← hc, pow_succ]; ring⟩
+
+theorem sharp_roots_universal {l : ℕ} [Fact l.Prime] (ε : Eps l) (ρ : ℕ → ((base l).cont ℤ_[l]).A)
+    (h0 : ∀ (m : ℕ) (z : ℤ_[l]), Hom.f ((base l).evCont z) (ρ 0) -
+      (base l).s (ε.e 0) ^ (PadicInt.toZModPow m z).val ∈ Ideal.span {(base l).pi ^ (l ^ m)})
+    (hρ : ∀ m, ρ (m + 1) ^ l = ρ m) (m : ℕ) : ((base l).cont ℤ_[l]).sharp (ρ m) =
+    ∑ c : ZMod (l ^ m), ((base l).cont ℤ_[l]).sharp (GlobalTheory.CompanionTheory.ContUniv.ind (base l) m c) *
+      ((base l).cont ℤ_[l]).sharp (((base l).cont ℤ_[l]).s (ε.e m)) ^ c.val := by
+  have hev : ∀ (n : ℕ) (z : ℤ_[l]),
+      Hom.f ((base l).evCont z) (((base l).cont ℤ_[l]).s (ε.e n)) = (base l).s (ε.e n) :=
+    fun n z => RingHom.congr_fun (Hom.comm ((base l).evCont z)) _
+  refine sharp_roots_core (base l) (u := fun n => ((base l).cont ℤ_[l]).s (ε.e n)) (fun n => ?_)
+    (ε.sharp_e _) hρ (fun k z => ?_) m
+  · show ((base l).cont ℤ_[l]).s (ε.e (n + 1)) ^ l = ((base l).cont ℤ_[l]).s (ε.e n)
+    rw [← map_pow, ← Units.val_pow_eq_pow_val, ε.succ]
+  · show Hom.f ((base l).evCont z) (ρ 0) -
+      Hom.f ((base l).evCont z) (((base l).cont ℤ_[l]).s (ε.e 0)) ^ _ ∈ _
+    rw [hev]
+    exact h0 k z
+
+end GlobalTheory.CompanionTheory.ContUniv
+end
+end
+
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry DividedPowers GroundTheory.PAdicHodge GlobalTheory.LogCris GlobalTheory.PDA CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.PAlg CrystallineSemistableComparison.B
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sharp_epsilon_root_idempotent_sum : ∀ {l : ℕ} [Fact l.Prime] (ε : Eps l) (ρ : ℕ → ((base l).cont ℤ_[l]).A),
+  (∀ (m : ℕ) (z : ℤ_[l]), Hom.f ((base l).evCont z) (ρ 0) - (base l).s (ε.e 0) ^ (PadicInt.toZModPow m z).val ∈ Ideal.span {(base l).pi ^ (l ^ m)}) →
+  (∀ m, ρ (m + 1) ^ l = ρ m) → ∀ m, ((base l).cont ℤ_[l]).sharp (ρ m) =
+    ∑ c : ZMod (l ^ m), ((base l).cont ℤ_[l]).sharp (GlobalTheory.CompanionTheory.ContUniv.ind (base l) m c) *
+      ((base l).cont ℤ_[l]).sharp (((base l).cont ℤ_[l]).s (ε.e m)) ^ c.val := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ContUniv.sharp_roots_universal
+end
+
+section
+section
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry DividedPowers GroundTheory.PAdicHodge GlobalTheory.LogCris GlobalTheory.PDA CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.PAlg CrystallineSemistableComparison.B
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.ContUniv
+
+theorem coi_eq_of_mul_eq_zero {R I : Type} [CommRing R] [Fintype I] {e e' : I → R}
+    (h : CompleteOrthogonalIdempotents e) (h' : CompleteOrthogonalIdempotents e')
+    (hz : ∀ c c', c ≠ c' → e c * e' c' = 0) : e = e' := by
+  classical
+  funext c
+  have h1 : e c = e c * e' c := by
+    calc e c = e c * ∑ b, e' b := by rw [h'.complete, mul_one]
+      _ = e c * e' c := by
+        rw [Finset.mul_sum]
+        exact Finset.sum_eq_single c (fun b _ hb => hz c b hb.symm) (by simp)
+  have h2 : e' c = e c * e' c := by
+    calc e' c = (∑ b, e b) * e' c := by rw [h.complete, one_mul]
+      _ = e c * e' c := by
+        rw [Finset.sum_mul]
+        exact Finset.sum_eq_single c (fun b _ hb => hz b c hb) (by simp)
+  rw [h1, ← h2]
+
+theorem one_sub_pow_dvd {O : Type} [CommRing O] [IsDomain O] {ζ : O} {n d : ℕ}
+    (hζ : IsPrimitiveRoot ζ n) (hd : 0 < d) (hdn : d < n) : 1 - ζ ^ d ∣ (n : O) := by
+  obtain ⟨k, rfl⟩ : ∃ k, n = k + 1 := ⟨n - 1, by omega⟩
+  have h := hζ.prod_one_sub_pow_eq_order
+  obtain ⟨j, rfl⟩ : ∃ j, d = j + 1 := ⟨d - 1, by omega⟩
+  have hd' : (1 - ζ ^ (j + 1)) ∣ ∏ i ∈ Finset.range k, (1 - ζ ^ (i + 1)) :=
+    Finset.dvd_prod_of_mem (fun i => 1 - ζ ^ (i + 1)) (Finset.mem_range.2 (by omega))
+  rw [h] at hd'
+  simpa using hd'
+
+theorem pow_sub_pow_dvd {O : Type} [CommRing O] [IsDomain O] {ζ : O} {n a b : ℕ}
+    (hζ : IsPrimitiveRoot ζ n) (ha : a < n) (hb : b < n) (hab : a ≠ b) :
+    ζ ^ a - ζ ^ b ∣ (n : O) := by
+  have hu : ∀ i : ℕ, IsUnit (ζ ^ i) := fun i =>
+    (hζ.isUnit (by omega)).pow i
+  have key : ∀ {a b : ℕ}, a < b → b < n → ζ ^ a - ζ ^ b ∣ (n : O) := by
+    intro a b h1 h2
+    have e : ζ ^ a - ζ ^ b = ζ ^ a * (1 - ζ ^ (b - a)) := by
+      rw [mul_sub, mul_one, ← pow_add]
+      congr 2
+      omega
+    rw [e]
+    exact (hu a).mul_left_dvd.2 (one_sub_pow_dvd hζ (by omega) (by omega))
+  rcases lt_or_gt_of_ne hab with h | h
+  · exact key h hb
+  · rw [← neg_sub, neg_dvd]
+    exact key h ha
+
+theorem mul_eq_zero_of_pow {O U : Type} [CommRing O] [IsDomain O] [CommRing U] (g : O →+* U)
+    {ζ : O} {n a b : ℕ} (hζ : IsPrimitiveRoot ζ n) (ha : a < n) (hb : b < n) (hab : a ≠ b)
+    (hn : (n : U) ∈ nonZeroDivisors U) {x S S' : U}
+    (h : S * (x - g ζ ^ a) = 0) (h' : S' * (x - g ζ ^ b) = 0) : S * S' = 0 := by
+  obtain ⟨w, hw⟩ := pow_sub_pow_dvd hζ ha hb hab
+  have e : (n : U) = (g ζ ^ a - g ζ ^ b) * g w := by
+    rw [← map_natCast g, hw, map_mul, map_sub, map_pow, map_pow]
+  have h0 : S * S' * (g ζ ^ a - g ζ ^ b) = 0 := by
+    linear_combination S * h' * 1 - S' * h
+  have h1 : (S * S') * (n : U) = 0 := by
+    rw [e, ← mul_assoc, h0, zero_mul]
+  exact (mem_nonZeroDivisors_iff_right.1 hn) _ h1
+
+variable {l : ℕ} [Fact l.Prime]
+
+theorem sharp_s_eq (t : PAlg l) (x : Ob l) :
+    t.sharp (t.s x) = t.oC (theta0 l (WittVector.teichmuller l x)) := by
+  rw [oC_theta0, sW, WittVector.map_teichmuller]
+  rfl
+
+theorem eq_zero_of_sharp (t : PAlg l) {e : t.A} (he : IsIdempotentElem e) (h : t.sharp e = 0) :
+    e = 0 :=
+  (RL.idem_au t 0 IsIdempotentElem.zero).unique ⟨he, h⟩ ⟨IsIdempotentElem.zero, sharp_zero t⟩
+
+theorem idem_unique : ∀ {l : ℕ} [Fact l.Prime] (ε : Eps l) (t : PAlg l) (m : ℕ) (x : t.U)
+    (e e' : ZMod (l ^ m) → t.A),
+    CompleteOrthogonalIdempotents e → CompleteOrthogonalIdempotents e' →
+    (∀ c, t.sharp (e c) * (x - t.sharp (t.s (ε.e m)) ^ c.val) = 0) →
+    (∀ c, t.sharp (e' c) * (x - t.sharp (t.s (ε.e m)) ^ c.val) = 0) → e = e' := by
+  intro l _ ε t m x e e' he he' h h'
+  have hζ := (GlobalTheory.T.epsilon_cyclotomic_element_properties ε).2.2.2.2 m
+  refine coi_eq_of_mul_eq_zero he he' fun c c' hc => ?_
+  have hn : ((l ^ m : ℕ) : t.U) ∈ nonZeroDivisors t.U := by
+    rw [Nat.cast_pow]
+    exact pow_mem t.l_mem_nzd_U m
+  have h1 := h c
+  have h2 := h' c'
+  rw [sharp_s_eq] at h1 h2
+  have h3 := mul_eq_zero_of_pow t.oC hζ (ZMod.val_lt c) (ZMod.val_lt c')
+    (fun hv => hc (ZMod.val_injective _ hv)) hn h1 h2
+  refine eq_zero_of_sharp t ((he.idem c).mul (he'.idem c')) ?_
+  rw [map_mul, h3]
+
+end GlobalTheory.CompanionTheory.ContUniv
+end
+end
+
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry DividedPowers GroundTheory.PAdicHodge GlobalTheory.LogCris GlobalTheory.PDA CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.PAlg CrystallineSemistableComparison.B
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.idempotents_unique_for_epsilon_root : ∀ {l : ℕ} [Fact l.Prime] (ε : Eps l) (t : PAlg l) (m : ℕ) (x : t.U) (e e' : ZMod (l ^ m) → t.A),
+  CompleteOrthogonalIdempotents e → CompleteOrthogonalIdempotents e' →
+  (∀ c, t.sharp (e c) * (x - t.sharp (t.s (ε.e m)) ^ c.val) = 0) →
+  (∀ c, t.sharp (e' c) * (x - t.sharp (t.s (ε.e m)) ^ c.val) = 0) → e = e' := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ContUniv.idem_unique
+end
+
+section
+section
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry DividedPowers GroundTheory.PAdicHodge GlobalTheory.LogCris GlobalTheory.PDA CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.PAlg CrystallineSemistableComparison.B
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.ContUniv
+
+theorem coi_fiber {R I J : Type} [CommRing R] [Fintype I] [Fintype J] [DecidableEq J]
+    (π : I → J) {e : I → R} (he : CompleteOrthogonalIdempotents e) :
+    CompleteOrthogonalIdempotents (fun c : J => ∑ c' with π c' = c, e c') := by
+  classical
+  have hmul : ∀ c d : J, (∑ c' with π c' = c, e c') * (∑ c' with π c' = d, e c') =
+      if c = d then ∑ c' with π c' = c, e c' else 0 := by
+    intro c d
+    rw [Finset.sum_mul_sum]
+    split_ifs with hcd
+    · subst hcd
+      refine Finset.sum_congr rfl fun i hi => ?_
+      rw [Finset.sum_eq_single i]
+      · exact he.idem i
+      · intro j _ hji
+        exact he.ortho hji.symm
+      · intro h; exact absurd hi h
+    · refine Finset.sum_eq_zero fun i hi => Finset.sum_eq_zero fun j hj => he.ortho ?_
+      rintro rfl
+      exact hcd ((Finset.mem_filter.1 hi).2.symm.trans (Finset.mem_filter.1 hj).2)
+  refine ⟨⟨fun c => ?_, fun c d hcd => ?_⟩, ?_⟩
+  · change _ * _ = _
+    rw [hmul, if_pos rfl]
+  · change _ * _ = _
+    rw [hmul, if_neg hcd]
+  · rw [Finset.sum_fiberwise]
+    exact he.complete
+
+theorem chain_pow {M : Type} [Monoid M] {p : ℕ} {x : ℕ → M} (h : ∀ k, x (k + 1) ^ p = x k)
+    (m d : ℕ) : x (m + d) ^ p ^ d = x m := by
+  induction d with
+  | zero => simp
+  | succ d ih =>
+    rw [pow_succ', pow_mul, ← add_assoc, h, ih]
+
+theorem mul_sub_pow {S : Type} [CommRing S] {a x y : S} (h : a * (x - y) = 0) (q : ℕ) :
+    a * (x ^ q - y ^ q) = 0 := by
+  obtain ⟨d, hd⟩ := sub_dvd_pow_sub_pow x y q
+  rw [hd, ← mul_assoc, h, zero_mul]
+
+theorem val_modEq {N M : ℕ} [NeZero N] [NeZero M] (h : M ∣ N) (c : ZMod N) :
+    c.val ≡ (ZMod.castHom h (ZMod M) c).val [MOD M] := by
+  have h0 := map_natCast (ZMod.castHom h (ZMod M)) c.val
+  rw [ZMod.natCast_zmod_val] at h0
+  rw [← ZMod.natCast_eq_natCast_iff, ZMod.natCast_zmod_val]
+  exact h0.symm
+
+variable {l : ℕ} [Fact l.Prime]
+
+theorem sharp_xi_pow (ε : Eps l) (t : PAlg l) (m d : ℕ) :
+    t.sharp (t.s (ε.e (m + d))) ^ l ^ d = t.sharp (t.s (ε.e m)) := by
+  rw [← map_pow, ← map_pow, ← Units.val_pow_eq_pow_val, chain_pow ε.succ]
+
+theorem sharp_xi_period (ε : Eps l) (t : PAlg l) (m : ℕ) :
+    t.sharp (t.s (ε.e m)) ^ l ^ m = 1 := by
+  have := sharp_xi_pow ε t 0 m
+  rw [zero_add] at this
+  rw [this]
+  exact ε.sharp_e t
+
+theorem coi_descend (ε : Eps l) (t : PAlg l) (r : ℕ → t.A) (hr : ∀ m, r (m + 1) ^ l = r m)
+    {m n : ℕ} (h : m ≤ n) (e : ZMod (l ^ n) → t.A) (he : CompleteOrthogonalIdempotents e)
+    (hc : ∀ c, t.sharp (e c) * (t.sharp (r n) - t.sharp (t.s (ε.e n)) ^ c.val) = 0) :
+    CompleteOrthogonalIdempotents
+        (fun c : ZMod (l ^ m) => ∑ c' with ZMod.castHom (pow_dvd_pow l h) (ZMod (l ^ m)) c' = c, e c') ∧
+      ∀ c : ZMod (l ^ m), t.sharp (∑ c' with ZMod.castHom (pow_dvd_pow l h) (ZMod (l ^ m)) c' = c, e c') *
+        (t.sharp (r m) - t.sharp (t.s (ε.e m)) ^ c.val) = 0 := by
+  obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le h
+  refine ⟨coi_fiber _ he, fun c => ?_⟩
+  rw [(sharp_sum t _ e (fun i _ => he.idem i) (fun i _ j _ hij => he.ortho hij)).1, Finset.sum_mul]
+  refine Finset.sum_eq_zero fun c' hc' => ?_
+  have hπ := (Finset.mem_filter.1 hc').2
+  have h1 := mul_sub_pow (hc c') (l ^ d)
+  rw [← map_pow, chain_pow hr, ← pow_mul, mul_comm c'.val, pow_mul, sharp_xi_pow] at h1
+  have h2 : t.sharp (t.s (ε.e m)) ^ c'.val = t.sharp (t.s (ε.e m)) ^ c.val := by
+    have hv := val_modEq (pow_dvd_pow l h) c'
+    rw [hπ] at hv
+    rw [pow_eq_pow_mod c'.val (sharp_xi_period ε t m), pow_eq_pow_mod c.val (sharp_xi_period ε t m)]
+    exact congrArg _ hv
+  rwa [h2] at h1
+
+end GlobalTheory.CompanionTheory.ContUniv
+end
+end
+
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry DividedPowers GroundTheory.PAdicHodge GlobalTheory.LogCris GlobalTheory.PDA CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.PAlg CrystallineSemistableComparison.B
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.idempotents_coarsen_to_lower_level : ∀ {l : ℕ} [Fact l.Prime] (ε : Eps l) (t : PAlg l) (r : ℕ → t.A), (∀ m, r (m + 1) ^ l = r m) →
+  ∀ {m n : ℕ} (h : m ≤ n) (e : ZMod (l ^ n) → t.A), CompleteOrthogonalIdempotents e →
+  (∀ c, t.sharp (e c) * (t.sharp (r n) - t.sharp (t.s (ε.e n)) ^ c.val) = 0) →
+  CompleteOrthogonalIdempotents (fun c : ZMod (l ^ m) => ∑ c' with ZMod.castHom (pow_dvd_pow l h) (ZMod (l ^ m)) c' = c, e c') ∧
+  ∀ c : ZMod (l ^ m), t.sharp (∑ c' with ZMod.castHom (pow_dvd_pow l h) (ZMod (l ^ m)) c' = c, e c') * (t.sharp (r m) - t.sharp (t.s (ε.e m)) ^ c.val) = 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ContUniv.coi_descend
+end
+
+section
 set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry DividedPowers GroundTheory.PAdicHodge GlobalTheory.LogCris GlobalTheory.PDA CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.PAlg CrystallineSemistableComparison.B
 
@@ -255,3 +778,5 @@ theorem main : ∀ {l : ℕ} [Fact l.Prime] (ε : Eps l), ∃ η : (((base l).co
   rwa [h0] at this
 
 end GlobalTheory.CompanionTheory.ContUniv
+end
+end

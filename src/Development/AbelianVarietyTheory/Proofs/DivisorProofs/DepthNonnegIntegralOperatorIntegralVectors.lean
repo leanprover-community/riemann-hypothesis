@@ -1,7 +1,16 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.PeriodValuationTheory
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.WtSubOneLe
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIntegralInvariantDerivationLogStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIntegralInvariantDerivationLog
+
+section
+open MvPowerSeries ReciprocityTheory.PGsh ReciprocityTheory.ChartRestriction.G.Sh GlobalTheory.FGDepth
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_integral_invariant_derivation_log : ∀ (C : Type) [Field C] [CharZero C] (v : AddValuation C (WithTop ℝ)) (d : ℕ) (G : LogFGL v d), ∃ D : Fin d → Fin d → MvPowerSeries (Fin d) C, (∀ k l, MvIsInt v (D k l)) ∧ ∀ (f : MvPowerSeries (Fin d) C) (k : Fin d) (α : Fin d →₀ ℕ), ((α k : C) + 1) * coeff (α + Finsupp.single k 1) (subst (expOf G) f) = coeff α (subst (expOf G) (∑ l, D k l * (show MvPowerSeries (Fin d) C from fun β => ((β l : C) + 1) * coeff (β + Finsupp.single l 1) f))) := by
+  first | exact @GlobalTheory.LogJacobian.exists_integral_invariant_derivation | exact GlobalTheory.LogJacobian.exists_integral_invariant_derivation | (intros; apply GlobalTheory.LogJacobian.exists_integral_invariant_derivation <;> assumption)
+end
+
+section
 open MvPowerSeries ReciprocityTheory.PGsh ReciprocityTheory.ChartRestriction.G.Sh GlobalTheory.FGDepth
 
 namespace GlobalTheory.DepthNonneg
@@ -35,11 +44,7 @@ theorem mfact_fintype {σ : Type} [Fintype σ] (α : σ →₀ ℕ) :
     (mfact α : C) = ∏ i, ((α i).factorial : C) :=
   Finsupp.prod_fintype _ _ (by simp)
 
-theorem mfact_mem {σ : Type} (α : σ →₀ ℕ) : (mfact α : C) ∈ intSub v :=
-  Subring.prod_mem _ fun _ _ => natCast_mem _ _
 
-theorem mvIsInt_iff {σ : Type} (g : MvPowerSeries σ C) : MvIsInt v g ↔ ∀ α, coeff α g ∈ intSub v :=
-  Iff.rfl
 
 theorem mvIsInt_mul {σ : Type} {g h : MvPowerSeries σ C} (hg : MvIsInt v g) (hh : MvIsInt v h) :
     MvIsInt v (g * h) := by
@@ -54,12 +59,7 @@ theorem mvIsInt_sum {σ ι : Type} (s : Finset ι) {g : ι → MvPowerSeries σ 
   rw [← mem_intSub, map_sum]
   exact Subring.sum_mem _ fun i _ => hg i α
 
-theorem hurInt_of_mvIsInt {σ : Type} {g : MvPowerSeries σ C} (hg : MvIsInt v g) : HurInt v g :=
-  fun α => Subring.mul_mem _ (mfact_mem α) (hg α)
 
-theorem hurInt_add {σ : Type} {g h : MvPowerSeries σ C} (hg : HurInt v g) (hh : HurInt v h) :
-    HurInt v (g + h) := fun α => by
-  rw [map_add, mul_add]; exact Subring.add_mem _ (hg α) (hh α)
 
 theorem hurInt_zero {σ : Type} : HurInt v (0 : MvPowerSeries σ C) := fun α => by simp
 
@@ -77,9 +77,6 @@ theorem hurInt_sum {σ ι : Type} (s : Finset ι) {g : ι → MvPowerSeries σ C
   rw [map_sum, Finset.mul_sum]
   exact Subring.sum_mem _ fun i hi => hg i hi α
 
-theorem hurInt_C_mul {σ : Type} {c : C} (hc : c ∈ intSub v) {g : MvPowerSeries σ C}
-    (hg : HurInt v g) : HurInt v (MvPowerSeries.C c * g) := fun α => by
-  rw [coeff_C_mul, mul_left_comm]; exact Subring.mul_mem _ hc (hg α)
 
 theorem hurInt_mul {σ : Type} [Fintype σ] {g h : MvPowerSeries σ C} (hg : HurInt v g)
     (hh : HurInt v h) : HurInt v (g * h) := by
@@ -305,3 +302,4 @@ theorem depth_nonneg : ∀ (C : Type) [Field C] [CharZero C] (v : AddValuation C
 end
 
 end GlobalTheory.DepthNonneg
+end

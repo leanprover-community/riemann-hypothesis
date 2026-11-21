@@ -256,9 +256,6 @@ theorem eq_of_from {C : FC} (p : Pt C) {R : Ranks} {H : Host R} {a b : R.A → �
   subst eR
   exact globalTwisting_congr_fact p.D.host eS eq ed ep ep' (by rw [h1, h2, Ideal.absNorm_top, Ideal.absNorm_top])
 
-theorem auxiliaryPrime_mem_avoidedPrimes (D : D7) : q0Av D ∈ avPrimes D := by
-  have h : q0Av D ≠ 0 := (globalTwisting_spec_fact D.host).1.ne_zero
-  simp [avPrimes, h]
 
 theorem not_tameDistinct_of_eq_inv {r g m : ℕ} [Fact g.Prime] (χ : Fin m → (ZMod g)ˣ) (j : Fin m) (h : χ j = (χ j)⁻¹) :
     ¬ TameDistinct r g χ := fun hd => by

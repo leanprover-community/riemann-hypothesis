@@ -1,8 +1,22 @@
 import Mathlib
 import Formalism.SharpRestriction.Divisibility.ThetaNormsAndLinks
 import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-import Formalism.SharpRestriction.Divisibility.RankTruncation.RkLemma
 
+section
+noncomputable section
+
+namespace ConditionalKappaBounds.Rk
+
+def RkProp : Prop := ∀ (dp f m r t : ℕ) (x Ct q d rd CRd : ℝ), 1 < x → 6 ≤ CRd →
+  dp ≤ 2 * f * m → f ≤ r → m ≤ r → r < t → 2 ≤ t → (t : ℝ) ≤ x ^ Ct →
+  x ^ (2 * Ct + 5) < q → x ^ (2 * Ct + 5) < d → Real.sqrt (q * d) ≤ rd →
+  (dp : ℝ) ^ 2 ≤ rd ^ (CRd - 2)
+
+end ConditionalKappaBounds.Rk
+end
+end
+
+section
 namespace ConditionalKappaBounds.Rk
 
 open Formalism.BasicNotions Formalism.MainNotions
@@ -61,3 +75,4 @@ theorem rank_admissible_of_discriminant (hc : RkProp) (D : D7) (L : SizeData₂ 
     (hT d i Z y) hft hmt L.t_win.1 L.t_win.2 P.qd_pow.2 hrd
 
 end ConditionalKappaBounds.Rk
+end

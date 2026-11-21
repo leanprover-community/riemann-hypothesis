@@ -55,40 +55,6 @@ theorem exists_root (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) :
   · refine ⟨-(H.rt : E), ?_, by rw [neg_sq, hE], fun τ hτ => by rw [map_neg, hτ]; simpa using h⟩
     rw [show cc (-(H.rt : E)) = -cc (H.rt : E) by simp [cc], hcc]
 
-theorem exists_defCase (p : ℕ) (hp : 1 ≤ p) :
-    ∃ (E : Type) (_ : Field E) (_ : NumberField E) (_ : IsCMField E) (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H)
-      (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (r : ℕ) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r) (ξ : ℝ),
-      Dw.p = p ∧ 0 < ξ ∧ Nonempty (Comp Xo c) ∧ DefCase U ξ := by
-  obtain ⟨E, i1, i2, i3, H, -, hD⟩ := GlobalTheory.exists_datum_sum_and_all_signatures.2
-  obtain ⟨D, rfl, hq⟩ := hD p 0
-  have hpq : 1 ≤ D.p + D.q := by omega
-  obtain ⟨l, hA, hg, -⟩ := GlobalTheory.exists_level_goodAt_all_primes_and_idx E H 1 one_pos
-  obtain ⟨Xo⟩ := GlobalTheory.Moduli.moduli_scheme_exists _ _ D l hpq
-  obtain ⟨c₀⟩ : Nonempty (Coeff l) := inferInstance
-  obtain ⟨-, c, -, hc⟩ := GlobalTheory.GeomIrr.compNe_and_exists_fnAlgClosed _ _ D l Xo c₀ hpq
-  obtain ⟨ξ, hξ, hsq, hneg⟩ := exists_root H
-  have hξ0 : ξ ≠ 0 := fun h => by
-    rw [h] at hsq
-    have : (H.d : E) = 0 := by linear_combination hsq
-    exact H.d_prime.ne_zero (by exact_mod_cast this)
-  obtain ⟨Gm, φ, hφ⟩ := GlobalTheory.exists_herm_coord_of_datum E H D (-ξ)
-    (by rw [show cc (-ξ) = -cc ξ by simp [cc], hξ]) (neg_ne_zero.2 hξ0) _ rfl
-  have key : ∀ σ : c.F →+* ℂ, ∃ U : Unf Xo c σ (D.p + D.q), GoodEmb c σ →
-      IsUnf U ∧ Nonempty U.Comp ∧ ∀ k, (U.X k).ξ0 = ξ := by
-    intro σ
-    by_cases hσ : GoodEmb c σ
-    · obtain ⟨U, hu, -, hk, -, hG, -⟩ := GlobalTheory.FrameUnif.exists_unf_hasPrinc E H D l Xo c σ _ ξ Gm φ hpq hσ hξ hneg hφ
-      exact ⟨U.toPj, fun _ => ⟨hu, hk, fun k => (hG k).2⟩⟩
-    · obtain ⟨U, -⟩ := GlobalTheory.T.exists_uniformisationData_nonempty_component E H D l Xo c hpq σ
-      exact ⟨U.toPj, fun h => absurd h hσ⟩
-  choose U hU using key
-  have habs : ∀ τ : E →+* ℂ, ‖τ ξ‖ = Real.sqrt H.d := fun τ => by
-    have h1 : ‖τ ξ‖ ^ 2 = H.d := by
-      rw [← norm_pow, ← map_pow, hsq, map_neg, map_natCast, norm_neg, Complex.norm_natCast]
-    rw [← h1, Real.sqrt_sq (norm_nonneg _)]
-  exact ⟨E, i1, i2, i3, H, D, l, Xo, c, _, U, Real.sqrt H.d, rfl, Real.sqrt_pos.2 (by exact_mod_cast H.d_prime.pos),
-    (GlobalTheory.GeomIrr.compNe_and_exists_fnAlgClosed _ _ D l Xo c hpq).1,
-    ⟨hq, hp, hg, hA, hc c le_rfl, fun σ h => (hU σ h).1, fun σ h k τ => by rw [(hU σ h).2.2 k]; exact habs τ⟩⟩
 
 open scoped ComplexOrder in
 
@@ -445,36 +411,13 @@ theorem deg_eq (h : DefCase U ξ) {Z : Comp Xo c} (P P' : PtData Z) (e : P.y₀ 
   · simp only [PtData.degTh, fun σ => (a σ).1, fun w => (b w).1]
   · simp only [PtData.degLie, detDeg, fun σ => (a σ).2 τ, fun w => (b w).2 τ]
 
-theorem exists_ptData (p : ℕ) (hp : 1 ≤ p) :
-    ∃ (E : Type) (_ : Field E) (_ : NumberField E) (_ : IsCMField E) (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H)
-      (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (Z : Comp Xo c), Dw.p = p ∧ Nonempty (PtData Z) := by
-  obtain ⟨E, i1, i2, i3, H, D, l, Xo, c, r, U, ξ, e, -, ⟨Z⟩, h⟩ := exists_defCase p hp
-  exact ⟨E, i1, i2, i3, H, D, l, Xo, c, Z, e, nonempty_ptData h Z⟩
 
 theorem nonempty_ptData_all : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E)
     (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (r : ℕ) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r) (ξ : ℝ),
     DefCase U ξ → ∀ Z : Comp Xo c, Nonempty (PtData Z) :=
   fun _ _ _ _ _ _ _ _ _ _ _ _ h Z => nonempty_ptData h Z
 
-theorem not_locFr_mul (hr : 1 ≤ Dw.p + Dw.q) (hg : ∀ p : ℕ, p.Prime → l.GoodAt p) {y₀ : FrPt Xo c c.F}
-    {w : HeightOneSpectrum (𝓞 c.F)} {a t : c.F} {B : Mats Dw c.F} (h : LocFr y₀ w a B) (ht : vAdd w t ≠ 0) :
-    ¬ LocFr y₀ w (t * a) B := fun h' => by
-  have e := (locFr_unique hr hg h h').1
-  have h0 : t ≠ 0 := left_ne_zero_of_mul h'.1
-  have h1 : w.valuation c.F t ≠ 0 := by simpa using h0
-  have h2 : w.valuation c.F a ≠ 0 := by simpa using h.1
-  simp only [vAdd, map_mul, WithZero.log_mul h1 h2] at e ht
-  omega
 
-theorem tval_eq_of_reads {Z : Comp Xo c} {y₀ : FrPt Xo c c.F} {a : (E →+* ℂ) × ℕ → ℕ} {n : ℕ}
-    {x x' : TIdx (part Dw a) → c.F} {f : Rul Xo c} (h : Reads Z y₀ a n x f) (h' : Reads Z y₀ a n x' f)
-    (Y : Mats Dw c.F) (hY : ∀ τ, IsUnit (Y τ).det) : tval (part Dw a) x Y = tval (part Dw a) x' Y := by
-  obtain ⟨z, hz⟩ := GlobalTheory.Frames.FramedBaseChange.exists_frMap GlobalTheory.lawsFieldsSeparately.2.1 E H Dw l Xo c c.F c.F
-    (Algebra.ofId _ _) y₀
-  obtain ⟨y, hy, -⟩ := existsUnique_frChg E H Dw l Xo c c.F z (fun τ => (Y τ)ᵀ) 1 fun τ => by
-    rw [Matrix.det_transpose]; exact hY τ
-  have e := (h.2 c.F z y Y 1 hY isUnit_one hz hy).symm.trans (h'.2 c.F z y Y 1 hY isUnit_one hz hy)
-  simpa using e
 
 end GlobalTheory.DefPt.Model
 

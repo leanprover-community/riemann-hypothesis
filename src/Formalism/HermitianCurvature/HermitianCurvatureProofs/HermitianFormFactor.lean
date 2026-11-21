@@ -1751,11 +1751,7 @@ theorem matrix_norm_ge_one : Formalism.FourierDecayAlt.B2.GNLower := by
     exact_mod_cast this
   nlinarith [sq_nonneg (B.gN (B2.Ppos k r * g * B2.Pneg k r))]
 
-theorem hilbert_schmidt_block : Formalism.FourierDecayAlt.B2.HSBlock := by
-  exact HermitianFormFactor.hsblock
 
-theorem norm_ball_volume_exact : Formalism.FourierDecayAlt.B2.VolExact := by
-  exact HermitianFormFactor.volExact
 
 theorem norm_ball_volume_sharp : Formalism.FourierDecayAlt.B2.VolSharp := by
   exact HermitianFormFactor.volSharp

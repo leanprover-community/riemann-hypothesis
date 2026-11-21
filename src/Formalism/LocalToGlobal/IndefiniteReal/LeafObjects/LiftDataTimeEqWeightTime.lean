@@ -141,19 +141,12 @@ def laZ {σ : c.F →+* ℂ} {r : ℕ} (U : Unf Xo c σ r) (a : WZ E) (k : U.Com
   fun τ j => if (U.X k).p0 ≤ (j : ℕ) then a (Function.invFun (relab c σ) τ.1, (j : ℕ) - (U.X k).p0)
     else -a (Function.invFun (relab c σ) (conjEmb τ.1), (U.X k).p0 - 1 - (j : ℕ))
 
-theorem laZ_nat {σ : c.F →+* ℂ} {r : ℕ} (U : Unf Xo c σ r) (a : (E →+* ℂ) × ℕ → ℕ) :
-    laZ U (fun x => (a x : ℤ)) = laU U a 0 := by
-  funext k τ j
-  simp [laZ, laU]
 
 variable {r : ℕ} (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r)
 
 def cuspZ (a : WZ E) : Submodule c.F (Rul Xo c) :=
   secZ Xo c a ⊓ ⨅ (σ : c.F →+* ℂ) (_ : GoodEmb c σ), (holSub (U σ).X (laZ (U σ) a)).comap (rdU (U σ))
 
-theorem cuspZ_nat (a : (E →+* ℂ) × ℕ → ℕ) : cuspZ Xo c U (fun x => (a x : ℤ)) = cusp Xo c U a 0 := by
-  unfold cuspZ cusp
-  simp only [secZ_nat, laZ_nat]
 
 variable {Xo c}
 
@@ -198,10 +191,6 @@ def jp : ℕ := D.R.m - ((i : ℕ) + 1)
 
 def pp : ℕ := (D.R.sigW ((i : ℕ) + 1)).1
 
-theorem pp_add_jp : pp D i + jp D i = D.R.r := by
-  have := i.2
-  have := D.R.m_add_three_le_k
-  simp only [pp, jp, Ranks.sigW, Ranks.r]; omega
 
 def anc : ℕ := D.R.k - 2
 
@@ -230,61 +219,8 @@ def remR (τ : D.what₂.Tau) : Fin D.R.r → ℝ :=
 def uTR (τ : D.what₂.Tau) (n : Fin D.R.r) : ℝ :=
   MeansTie.kap D.R.r (pp D i) n + (u1R D P i τ n + remR D P i τ n) + ((Dn D : ℝ) + Tn D P) * u1R D P i τ n
 
-theorem anchored_int {N : ℕ} (G : ℕ → ℝ) (hG : ∀ k, ∃ z : ℤ, G k = z) (A : ℕ) (n : Fin N) :
-    ∃ z : ℤ, anchored G A n = z := by
-  choose g hg using hG
-  unfold anchored
-  split_ifs
-  · exact ⟨∑ k ∈ Finset.Ico (n : ℕ) A, g k, by simp [hg]⟩
-  · exact ⟨-∑ k ∈ Finset.Ico A (n : ℕ), g k, by simp [hg]⟩
 
-theorem weights_int (τ : D.what₂.Tau) (n : Fin D.R.r) :
-    (∃ z : ℤ, u1R D P i τ n = z) ∧ (∃ z : ℤ, upR D P i τ n = z) ∧ ∃ z : ℤ, uTR D P i τ n = z := by
-  obtain ⟨a, ha⟩ : ∃ z : ℤ, u1R D P i τ n = z := anchored_int _ (fun _ => ⟨_, rfl⟩) _ _
-  have hk : ∀ n : Fin D.R.r, ∃ z : ℤ, MeansTie.kap D.R.r (pp D i) n = z := fun n => by
-    unfold MeansTie.kap
-    split_ifs
-    · exact ⟨(D.R.r : ℤ) - 2 * (pp D i : ℤ) + 1 + 2 * ((n : ℕ) : ℤ), by push_cast; ring⟩
-    · exact ⟨-(2 * (pp D i : ℤ)) - (D.R.r : ℤ) + 1 + 2 * ((n : ℕ) : ℤ), by push_cast; ring⟩
-  have hd : ∀ n : Fin D.R.r, ∃ z : ℤ, de D.R.r (pp D i) n = z := fun n => by
-    unfold de
-    split_ifs
-    · exact ⟨0, by simp⟩
-    · exact ⟨-1, by simp⟩
-  choose kz hkz using hk
-  choose dz hdz using hd
-  obtain ⟨b, hb⟩ : ∃ z : ℤ, remR D P i τ n = z := by
-    refine anchored_int _ (fun k => ?_) _ _
-    obtain ⟨g, hg⟩ : ∃ z : ℤ, gap (fun n => uMinus D.R.r (pp D i) (c0n D i) (uR D i τ) n - MeansTie.kap D.R.r (pp D i) n) k = z := by
-      unfold gap
-      split_ifs with h
-      · exact ⟨uZ D i τ ⟨k, by omega⟩ - (c0n D i : ℤ) * dz ⟨k, by omega⟩ - kz ⟨k, by omega⟩ -
-          (uZ D i τ ⟨k + 1, h⟩ - (c0n D i : ℤ) * dz ⟨k + 1, h⟩ - kz ⟨k + 1, h⟩), by simp [uMinus, uR, hkz, hdz]⟩
-      · exact ⟨0, by simp⟩
-    obtain ⟨w, hw⟩ : ∃ z : ℤ, firstVectorGaps D.R.r (pp D i) (Tn D P) (Dn D) (c0n D i) (uR D i τ) k = z := ⟨_, rfl⟩
-    exact ⟨g - ((Tn D P : ℤ) + (Dn D : ℤ) + 1) * w, by rw [hg, hw]; push_cast; ring⟩
-  refine ⟨⟨a, ha⟩, ⟨a - 3 * (D.R.r : ℤ) * dz n, ?_⟩, ⟨kz n + (a + b) + ((Dn D : ℤ) + (Tn D P : ℤ)) * a, ?_⟩⟩
-  · show u1R D P i τ n - 3 * (D.R.r : ℝ) * de D.R.r (pp D i) n = _
-    rw [ha, hdz]; push_cast; ring
-  · unfold uTR
-    rw [ha, hb, hkz]; push_cast; ring
 
-theorem uTR_gap (τ : D.what₂.Tau) (k : ℕ) (h : k + 1 < D.R.r) :
-    uTR D P i τ ⟨k, by omega⟩ - uTR D P i τ ⟨k + 1, h⟩ =
-      uMinus D.R.r (pp D i) (c0n D i) (uR D i τ) ⟨k, by omega⟩ - uMinus D.R.r (pp D i) (c0n D i) (uR D i τ) ⟨k + 1, h⟩ := by
-  have h1 : u1R D P i τ ⟨k, by omega⟩ - u1R D P i τ ⟨k + 1, h⟩ =
-      firstVectorGaps D.R.r (pp D i) (Tn D P) (Dn D) (c0n D i) (uR D i τ) k := anchored_gap _ _ _ h
-  have h2 := anchored_gap (N := D.R.r) (fun k => gap (fun n => uMinus D.R.r (pp D i) (c0n D i) (uR D i τ) n -
-    MeansTie.kap D.R.r (pp D i) n) k - ((Tn D P : ℝ) + Dn D + 1) *
-      firstVectorGaps D.R.r (pp D i) (Tn D P) (Dn D) (c0n D i) (uR D i τ) k) (anc D) k h
-  have h3 : gap (fun n => uMinus D.R.r (pp D i) (c0n D i) (uR D i τ) n - MeansTie.kap D.R.r (pp D i) n) k =
-      (uMinus D.R.r (pp D i) (c0n D i) (uR D i τ) ⟨k, by omega⟩ - MeansTie.kap D.R.r (pp D i) ⟨k, by omega⟩) -
-        (uMinus D.R.r (pp D i) (c0n D i) (uR D i τ) ⟨k + 1, h⟩ - MeansTie.kap D.R.r (pp D i) ⟨k + 1, h⟩) := by
-    unfold gap; rw [dif_pos h]
-  change remR D P i τ ⟨k, _⟩ - remR D P i τ ⟨k + 1, h⟩ = gap _ k - _ at h2
-  rw [h3] at h2
-  unfold uTR
-  linear_combination h2 + ((Tn D P : ℝ) + Dn D + 1) * h1
 
 def degW {Tau : Type} [Fintype Tau] {N : ℕ} (lam : Tau → Fin N → ℝ) : ℝ :=
   ∏ τ, ∏ a : Fin N, ∏ b ∈ Finset.Ioi a, (lam τ a - lam τ b)
@@ -301,24 +237,6 @@ def wtZ' (lam : D.what₂.Tau → Fin D.R.r → ℝ) : WZ D.host.E := fun x =>
 
 def Np : ℕ := 8 * ((max (D.R.f * (pp D i * (pp D i + 1) + jp D i * (jp D i + 1))) (8 * D.R.f * D.R.r + 4) + 7) / 8)
 
-theorem Np_bounds : 8 * D.R.f * D.R.r + 4 ≤ Np D i ∧ Np D i ≤ 16 * D.R.f * D.R.r ^ 2 + 8 := by
-  have h := pp_add_jp D i
-  have hk := D.R.m_add_three_le_k
-  have hr : 1 ≤ D.R.r := by unfold Ranks.r; omega
-  have hf : 1 ≤ D.R.f := by
-    have := And.intro (Nat.one_le_two_pow (n := D.R.e)) (show 0 < D.R.ord by positivity)
-    unfold Ranks.f Ranks.n; omega
-  have h1 : pp D i * (pp D i + 1) + jp D i * (jp D i + 1) ≤ 2 * D.R.r ^ 2 := by rw [← h] at hr ⊢; nlinarith
-  have h2 : D.R.f * (pp D i * (pp D i + 1) + jp D i * (jp D i + 1)) ≤ D.R.f * (2 * D.R.r ^ 2) := Nat.mul_le_mul_left _ h1
-  have h3 : D.R.f * D.R.r ≤ D.R.f * D.R.r ^ 2 := Nat.mul_le_mul_left _ (by nlinarith)
-  have h4 : 1 ≤ D.R.f * D.R.r := Nat.mul_pos hf hr
-  have e1 : D.R.f * (2 * D.R.r ^ 2) = 2 * (D.R.f * D.R.r ^ 2) := by ring
-  have e2 : 16 * D.R.f * D.R.r ^ 2 = 16 * (D.R.f * D.R.r ^ 2) := by ring
-  have e3 : 8 * D.R.f * D.R.r = 8 * (D.R.f * D.R.r) := by ring
-  unfold Np
-  rw [e2, e3]
-  rw [e1] at h2
-  omega
 
 def DF : ℝ := ∑ τ, ∑ n : Fin D.R.r,
   if (n : ℕ) < pp D i then u1R D P i τ n - (entZ (u1R D P i τ) (pp D i - 1) : ℝ) + 1
@@ -424,9 +342,7 @@ def Xn : ℝ := (pack0 D P i r4 (fun _ : Unit => 0)).X
 
 def Qccn (lmu : ℝ) : ℝ := (packOf D P i 0 (fun _ : Unit => 0) lmu (fun _ => ∅) 0).Qcc
 
-theorem base_error_constant_eq : baseErrorConstant D P i = (D.R.f : ℝ) * D.R.r * ((c0n D i : ℝ) + 4 * D.R.r) := rfl
 
-theorem Xn_eq : Xn D P i r4 = (100 + 9 * |r4|) * P.LL0 * ∑ τ, ∑ n, |upR D P i τ n| := rfl
 
 end Numbers
 
@@ -515,9 +431,6 @@ structure MbarIn where
 def slC (B : MbarIn P S i) (Z : Cmp P S i) : ℝ :=
   limUnder (𝓝[>] (0 : ℚ)) fun s => B.top Z s / (((Dn D : ℝ) + 1) * B.dg Z s)
 
-theorem slC_tendsto (B : MbarIn P S i) (Z : Cmp P S i) :
-    Tendsto (fun s => B.top Z s / (((Dn D : ℝ) + 1) * B.dg Z s)) (𝓝[>] 0) (𝓝 (slC P S i B Z)) :=
-  tendsto_nhds_limUnder (B.conv Z)
 
 def rndDown {K : Type} [Field K] (la : HeightOneSpectrum (𝓞 K)) (q : ℕ) (m : ℝ) : ℝ :=
   (⌊(multiplicity la.asIdeal (Ideal.span {((q : ℕ) : 𝓞 K)}) : ℝ) * m⌋ : ℝ) /
@@ -547,26 +460,6 @@ open Classical in
 def elocOf (q : ℕ) : Finset ℝ :=
   if hq : q.Prime then ((over_finite (K := S.c.F) hq).toFinset ×ˢ Finset.univ).image fun x => eLa P S i El q x.1 x.2 else ∅
 
-theorem elocOf_nonempty {q : ℕ} (hq : q.Prime) : (elocOf P S i El q).Nonempty := by
-  classical
-  have hu : Ideal.span {((q : ℕ) : 𝓞 S.c.F)} ≠ ⊤ := by
-    rw [Ne, Ideal.span_singleton_eq_top]
-    intro h
-    have h1 : Ideal.absNorm (Ideal.span {((q : ℕ) : 𝓞 S.c.F)}) = 1 := by
-      rw [Ideal.span_singleton_eq_top.mpr h, Ideal.absNorm_top]
-    rw [Ideal.absNorm_span_natCast] at h1
-    rcases Nat.pow_eq_one.mp h1 with h2 | h2
-    · exact hq.one_lt.ne' h2
-    · exact Module.finrank_pos.ne' h2
-  obtain ⟨m, hm, hle⟩ := Ideal.exists_le_maximal _ hu
-  have hmem : ((q : ℕ) : 𝓞 S.c.F) ∈ m := hle (Ideal.subset_span rfl)
-  have hb : m ≠ ⊥ := fun h => by
-    rw [h, Ideal.mem_bot] at hmem
-    exact hq.ne_zero (by exact_mod_cast hmem)
-  unfold elocOf
-  rw [dif_pos hq]
-  refine Finset.Nonempty.image ⟨(⟨m, hm.isPrime, hb⟩, Classical.arbitrary _), Finset.mem_product.mpr ⟨?_, Finset.mem_univ _⟩⟩ _
-  simpa using hmem
 
 theorem prime_unique {K : Type} [Field K] (la : HeightOneSpectrum (𝓞 K)) {q q' : ℕ} (hq : q.Prime) (hq' : q'.Prime)
     (h : ((q : ℕ) : 𝓞 K) ∈ la.asIdeal) (h' : ((q' : ℕ) : 𝓞 K) ∈ la.asIdeal) : q = q' := by
@@ -633,13 +526,7 @@ def packGeo : MeansPack D.what₂.Tau (Cmp P S i) :=
 
 def ccG : ℝ := (packGeo P S i El B r4 lmu).cc
 
-theorem defTie (hrd : P.rd = (dE D : ℝ) ^ ((1 : ℝ) / (2 * (D.R.f : ℝ)))) :
-    DefTie (packGeo P S i El B r4 lmu) (lvOf D P i lmu (elocOf P S i El)) :=
-  ⟨fun _ => rfl, fun _ => rfl, hrd, fun _ => rfl, fun _ => rfl, rfl, rfl, rfl, rfl, fun _ => rfl⟩
 
-theorem package_base_error_eq : (packGeo P S i El B r4 lmu).E0 = baseErrorConstant D P i := rfl
-theorem pack_X : (packGeo P S i El B r4 lmu).X = Xn D P i r4 := rfl
-theorem pack_Qcc : (packGeo P S i El B r4 lmu).Qcc = Qccn D P i lmu := rfl
 
 end Geo
 
@@ -680,75 +567,17 @@ variable (R : RealDat3 D A3 Ks) (F : Face3 D A3) (I : OnIn R.toRealDat) (J : Slo
 
 abbrev geoJ : SlopeArithmeticParameters R.toRealDat := withGeo J (faceLiftPage R F I J hd) Γ r4
 
-theorem page_geo : faceLiftPage R F I (geoJ R F I J hd Γ r4) hd = faceLiftPage R F I J hd := rfl
 
 variable (i : Fin D.R.m)
 
 theorem fac_ι : (faceLiftFactor R F I (geoJ R F I J hd Γ r4) hd i).ι = Cmp _ Γ.S i := rfl
-theorem fac_h : (faceLiftFactor R F I (geoJ R F I J hd Γ r4) hd i).h = htC _ Γ.S i := rfl
-theorem fac_sl : (faceLiftFactor R F I (geoJ R F I J hd Γ r4) hd i).sl = slC _ Γ.S i (Γ.B i) := rfl
 theorem fac_δc : (faceLiftFactor R F I (geoJ R F I J hd Γ r4) hd i).δc = delC _ Γ.S i := rfl
-theorem fac_dc : (faceLiftFactor R F I (geoJ R F I J hd Γ r4) hd i).dc = rkC _ Γ.S i := rfl
-theorem fac_degc : (faceLiftFactor R F I (geoJ R F I J hd Γ r4) hd i).degc = degC _ Γ.S i := rfl
 theorem fac_δ' : (faceLiftFactor R F I (geoJ R F I J hd Γ r4) hd i).δ' = delP _ Γ.S i := rfl
 theorem fac_ρ : (faceLiftFactor R F I (geoJ R F I J hd Γ r4) hd i).ρ = rhoB D (faceLiftPage R F I J hd) i := rfl
-theorem fac_cc : (faceLiftFactor R F I (geoJ R F I J hd Γ r4) hd i).cc = ccG _ Γ.S i (Γ.El i) (Γ.B i) r4 (Real.log (Γ.mass i)) := rfl
-theorem fac_Qcc : (faceLiftFactor R F I (geoJ R F I J hd Γ r4) hd i).Qcc = Qccn D (faceLiftPage R F I J hd) i (Real.log (Γ.mass i)) := rfl
-theorem fac_X : (faceLiftFactor R F I (geoJ R F I J hd Γ r4) hd i).X = Xn D (faceLiftPage R F I J hd) i r4 := rfl
-theorem lift_data_base_error_eq : (faceLiftFactor R F I (geoJ R F I J hd Γ r4) hd i).E0 = baseErrorConstant D (faceLiftPage R F I J hd) i := rfl
 
-theorem lift_data_time_eq_weight_time (hD : J.DY i = (Dn D : ℝ)) :
-    (faceLiftFactor R F I (geoJ R F I J hd Γ r4) hd i).T = (Tn D (faceLiftPage R F I J hd) : ℝ) := by
-  show ((⌈(faceLiftPage R F I J hd).PPT ^ 2 * J.DY i ^ 2 * (D.R.k : ℝ) / (D.R.m : ℝ)⌉ : ℤ) : ℝ) =
-    ((⌈(faceLiftPage R F I J hd).PPT ^ 2 * (Dn D : ℝ) ^ 2 * (D.R.k : ℝ) / (D.R.m : ℝ)⌉₊ : ℕ) : ℝ)
-  rw [hD, ← Int.natCast_ceil_eq_ceil (by positivity), Int.cast_natCast]
 
-theorem recTie (hD : J.DY i = (Dn D : ℝ)) (hu : ∀ τ, J.ua i τ = ∑ n, |uR D i τ n|) :
-    RecTie R F I (geoJ R F I J hd Γ r4) hd i (packGeo _ Γ.S i (Γ.El i) (Γ.B i) r4 (Real.log (Γ.mass i))) where
-  hX := rfl
-  hsl := rfl
-  hT := lift_data_time_eq_weight_time R F I J hd Γ r4 i hD
-  hLL := rfl
-  hU := Finset.sum_congr rfl fun τ _ => hu τ
-  hE := rfl
-  hcc := rfl
-  hQ := rfl
 
-theorem packPage (hD : J.DY i = (Dn D : ℝ)) :
-    PackPage r4 (packGeo _ Γ.S i (Γ.El i) (Γ.B i) r4 (Real.log (Γ.mass i))) (pgOf R F I (geoJ R F I J hd Γ r4) hd i) where
-  hN := rfl
-  hf := rfl
-  hm := rfl
-  hjp := rfl
-  hD := hD.symm
-  hT := (lift_data_time_eq_weight_time R F I J hd Γ r4 i hD).symm
-  hb := rfl
-  hx := rfl
-  hrd := rfl
-  hLp := rfl
-  hh0 := rfl
-  hc0 := rfl
-  hnc8 := Dvd.intro _ rfl
-  hnc1 := (Np_bounds D i).1
-  hnc2 := (Np_bounds D i).2
-  fourth_root_eq := rfl
 
-theorem leafTie : LeafTie (packGeo _ Γ.S i (Γ.El i) (Γ.B i) r4 (Real.log (Γ.mass i)))
-    (lvOf D (faceLiftPage R F I J hd) i (Real.log (Γ.mass i)) (elocOf _ Γ.S i (Γ.El i))) (pgOf R F I (geoJ R F I J hd Γ r4) hd i) where
-  hbigp := fun _ => by
-    show pp D i = D.R.r - jp D i
-    have := pp_add_jp D i
-    omega
-  hA := by
-    show ((D.R.k - 2 : ℕ) : ℝ) + 2 = (D.R.k : ℝ)
-    have := D.R.m_add_three_le_k
-    rw [Nat.cast_sub (by omega)]; push_cast; ring
-  heloc := fun q hq => elocOf_nonempty _ Γ.S i (Γ.El i) hq
-  heloc0 := fun q hq => by
-    show elocOf _ Γ.S i (Γ.El i) q = ∅
-    unfold elocOf
-    rw [dif_neg hq]
-  hlevel := Msh_pos _
 
 end Build
 

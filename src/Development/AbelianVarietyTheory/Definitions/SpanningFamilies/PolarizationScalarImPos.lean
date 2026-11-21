@@ -396,13 +396,6 @@ theorem exists_ctx (D : D7) (n p q : ℕ) (hn : Even n) :
 
 variable {D : D7} {S T : HSp D} (C : Ctx S T)
 
-theorem realPt_rat (y : Matrix (Fin S.rank) (Fin T.rank) D.host.E) :
-    C.realPt (ratW T S yᵀ) = embR C.X y := by
-  funext σ k a
-  obtain ⟨τ, rfl⟩ := C.m.e.surjective σ
-  show conj (C.θ (C.m.e.symm (C.m.e τ)) ((1 : Ainf D.host.F) ⊗ₜ[D.host.F] y k a)) = (C.m.e τ).1 (y k a)
-  rw [Equiv.symm_apply_apply, (C.inf τ).1, C.m.e_emb]
-  rfl
 
 theorem isONFr_xB (B : C.Bas) (h : C.IsB B) : IsONFr C.X (C.xB B) := by
   intro σ

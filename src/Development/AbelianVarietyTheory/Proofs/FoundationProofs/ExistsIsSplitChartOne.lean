@@ -2,8 +2,142 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.NotIsSplitOfIsInertAt
 import Development.AbelianVarietyTheory.Definitions.Foundations.GLintEqKOAndPrincEqKOne
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EventuallyAlgebraMapMemIntegers
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsRingEquivSplitPrime
+import Development.AbelianVarietyTheory.Definitions.Foundations.NonemptyAlgHomOfNotIsField
 
+section
+open IsDedekindDomain IsDedekindDomain.HeightOneSpectrum NumberField
+
+namespace GlobalTheory.ContinuousValuationExtension
+
+theorem continuous_of_valuation_eq {A B Γ : Type} [Field A] [Field B]
+    [LinearOrderedCommGroupWithZero Γ] [Valued A Γ] [Valued B Γ] (g : A →+* B)
+    (hs : Function.Surjective (Valued.v : A → Γ))
+    (hg : ∀ x : A, (Valued.v (g x) : Γ) = Valued.v x) : Continuous g := by
+  refine continuous_of_continuousAt_zero g ?_
+  rw [ContinuousAt, map_zero,
+    (Valued.hasBasis_nhds_zero A Γ).tendsto_iff (Valued.hasBasis_nhds_zero B Γ)]
+  intro γ _
+
+  obtain ⟨a, ha⟩ := hs (MonoidWithZeroHom.ValueGroup₀.embedding γ.1)
+  have ha0 : (Valued.v : Valuation A Γ).restrict a ≠ 0 := by
+    rw [Ne, Valuation.restrict_eq_zero_iff, ha]
+    intro h0
+    apply γ.ne_zero
+    apply MonoidWithZeroHom.ValueGroup₀.embedding_strictMono.injective
+    rw [h0, map_zero]
+  refine ⟨Units.mk0 _ ha0, trivial, fun x hx => ?_⟩
+  simp only [Set.mem_ofPred_eq, Units.val_mk0, Valuation.restrict_lt_iff, ha] at hx
+  show (Valued.v : Valuation B Γ).restrict (g x) < γ.1
+  rw [Valuation.restrict_lt_iff_lt_embedding, hg]
+  exact hx
+
+theorem valuation_eq_of_denseRange {A B Γ ι : Type} [Field A] [Field B]
+    [LinearOrderedCommGroupWithZero Γ] [Valued A Γ] [Valued B Γ] (φ : A →+* B)
+    (hφ : Continuous φ) (j : ι → A) (hj : DenseRange j)
+    (h : ∀ x : ι, (Valued.v (φ (j x)) : Γ) = Valued.v (j x)) (y : A) :
+    (Valued.v (φ y) : Γ) = Valued.v y := by
+  rcases eq_or_ne y 0 with rfl | hy
+  · simp
+  have hφy : φ y ≠ 0 := (map_ne_zero φ).2 hy
+
+  have h1 : {z : A | (Valued.v z : Γ) = Valued.v y} ∈ nhds y :=
+    Valued.locally_const ((Valuation.ne_zero_iff _).2 hy)
+  have h2 : {z : A | (Valued.v (φ z) : Γ) = Valued.v (φ y)} ∈ nhds y :=
+    hφ.continuousAt.preimage_mem_nhds (Valued.locally_const ((Valuation.ne_zero_iff _).2 hφy))
+  obtain ⟨_, ⟨x, rfl⟩, hx1, hx2⟩ := hj.inter_nhds_nonempty (Filter.inter_mem h1 h2)
+  have e1 : (Valued.v (j x) : Γ) = Valued.v y := hx1
+  have e2 : (Valued.v (φ (j x)) : Γ) = Valued.v (φ y) := hx2
+  rw [← e2, h x, e1]
+
+theorem exists_continuous_extension {K L : Type} [Field K] [NumberField K] [Field L]
+    [NumberField L] (w : HeightOneSpectrum (RingOfIntegers K))
+    (u : HeightOneSpectrum (RingOfIntegers L)) (f : K →+* adicCompletion L u)
+    (hf : ∀ x : K, (Valued.v (f x) : WithZero (Multiplicative ℤ)) = valuation K w x) :
+    ∃ φ : adicCompletion K w →+* adicCompletion L u, Continuous φ ∧
+      (∀ x : K, φ (algebraMap K (adicCompletion K w) x) = f x) ∧
+      ∀ y : adicCompletion K w,
+        (Valued.v (φ y) : WithZero (Multiplicative ℤ)) = Valued.v y := by
+  let g : WithVal (w.valuation K) →+* adicCompletion L u :=
+    f.comp (WithVal.equiv (w.valuation K)).toRingHom
+  have hgv : ∀ x : WithVal (w.valuation K),
+      (Valued.v (g x) : WithZero (Multiplicative ℤ)) = Valued.v x := fun x => hf x.ofVal
+  have hsurj : Function.Surjective
+      (Valued.v : WithVal (w.valuation K) → WithZero (Multiplicative ℤ)) := fun γ => by
+    obtain ⟨a, ha⟩ := w.valuation_surjective K γ
+    exact ⟨WithVal.toVal _ a, ha⟩
+  have hgc : Continuous g := continuous_of_valuation_eq g hsurj hgv
+
+  let φ : adicCompletion K w →+* adicCompletion L u :=
+    (UniformSpace.Completion.extensionHom g hgc).comp (adicCompletion.equiv K w).toRingHom
+  have hφc : Continuous φ :=
+    UniformSpace.Completion.continuous_extension.comp (adicCompletion.continuous_toCompletion K w)
+  have hφf : ∀ x : K, φ (algebraMap K (adicCompletion K w) x) = f x := fun x =>
+    UniformSpace.Completion.extensionHom_coe g hgc (WithVal.toVal _ x)
+  refine ⟨φ, hφc, hφf, fun y => ?_⟩
+  refine valuation_eq_of_denseRange φ hφc (algebraMap K (adicCompletion K w))
+    (denseRange_algebraMap (K := K) (v := w)) (fun x => ?_) y
+  rw [hφf x, hf x]
+  exact (adicCompletion.valued_coe K w x).symm
+
+end GlobalTheory.ContinuousValuationExtension
+end
+
+section
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+
+namespace GlobalTheory.SplitCompletion
+
+theorem continuous_of_valued_eq {A B Γ : Type*} [Ring A] [Ring B] [LinearOrderedCommGroupWithZero Γ]
+    [Valued A Γ] [Valued B Γ] (hs : Function.Surjective (Valued.v : A → Γ)) (f : A →+* B)
+    (hf : ∀ x, Valued.v (f x) = Valued.v x) : Continuous f := by
+  refine continuous_of_continuousAt_zero f ?_
+  rw [ContinuousAt, map_zero, (Valued.hasBasis_nhds_zero A _).tendsto_iff (Valued.hasBasis_nhds_zero B _)]
+  intro γ _
+  obtain ⟨a, ha⟩ := hs (MonoidWithZeroHom.ValueGroup₀.embedding γ.1)
+  have ha0 : (Valued.v : Valuation A Γ).restrict a ≠ 0 := by
+    simp [ha]
+  refine ⟨Units.mk0 _ ha0, trivial, fun x hx => ?_⟩
+  simp only [Set.mem_setOf_eq, Units.val_mk0, Valuation.restrict_lt_iff] at hx
+  simp only [Set.mem_setOf_eq, Valuation.restrict_lt_iff_lt_embedding]
+  rw [hf, ← ha]
+  exact hx
+
+open scoped WithZeroTopology in
+
+theorem exists_extension {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L]
+    (w : HeightOneSpectrum (𝓞 K)) (u : HeightOneSpectrum (𝓞 L)) (f : K →+* u.adicCompletion L)
+    (hf : ∀ x, Valued.v (f x) = w.valuation K x) :
+    ∃ φ : w.adicCompletion K →+* u.adicCompletion L, Continuous φ ∧
+      (∀ x : K, φ (algebraMap K _ x) = f x) ∧ ∀ y, Valued.v (φ y) = Valued.v y := by
+  first
+  | exact @_root_.GlobalTheory.ContinuousValuationExtension.exists_continuous_extension
+  | exact _root_.GlobalTheory.ContinuousValuationExtension.exists_continuous_extension
+  | (apply _root_.GlobalTheory.ContinuousValuationExtension.exists_continuous_extension <;> assumption)
+  | (intros; apply _root_.GlobalTheory.ContinuousValuationExtension.exists_continuous_extension <;> assumption)
+  | (intros; apply @_root_.GlobalTheory.ContinuousValuationExtension.exists_continuous_extension <;> first | assumption | infer_instance)
+  | (intros; exact _root_.GlobalTheory.ContinuousValuationExtension.exists_continuous_extension ..)
+
+theorem exists_ringEquiv_splitPrime : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+    {v : HeightOneSpectrum (𝓞 F)} (τ : E →ₐ[F] Fv F v),
+    ∃ φ : (GlobalTheory.AdelicU.splitPrime τ).adicCompletion E ≃+* Fv F v, (∀ x : E, φ (algebraMap E _ x) = τ x) ∧
+      (∀ y, Valued.v (φ y) = Valued.v y) ∧ Continuous φ ∧ Continuous φ.symm := by
+  intro F E _ _ _ _ _ v τ
+  obtain ⟨φ, hφc, hφ, hφv⟩ := exists_extension (GlobalTheory.AdelicU.splitPrime τ) v (τ : E →+* Fv F v)
+    (GlobalTheory.AdelicU.valued_apply_eq_valuation τ)
+  obtain ⟨ψ, hψc, hψ, -⟩ := exists_extension v (GlobalTheory.AdelicU.splitPrime τ)
+    ((algebraMap E _).comp (algebraMap F E)) fun a =>
+      (ReciprocityTheory.Aut.adic_valued_algebraMap _ _).trans ((GlobalTheory.AdelicU.valued_apply_eq_valuation τ _).symm.trans
+        (GlobalTheory.AdelicU.valued_apply_algebraMap τ a))
+  have hid : φ ∘ ψ = id := (HeightOneSpectrum.denseRange_algebraMap F v).equalizer (hφc.comp hψc) continuous_id
+    (funext fun a => ((congrArg φ (hψ a)).trans (hφ _)).trans (τ.commutes a))
+  let e := RingEquiv.ofBijective φ ⟨φ.injective, fun y => ⟨ψ y, congrFun hid y⟩⟩
+  refine ⟨e, hφ, hφv, hφc, continuous_of_valued_eq (v.valuedAdicCompletion_surjective F) e.symm.toRingHom fun y => ?_⟩
+  exact (hφv _).symm.trans (congrArg _ (e.apply_symm_apply y))
+
+end GlobalTheory.SplitCompletion
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.LFun.SplitChart
@@ -174,14 +308,8 @@ theorem isSplit_of_algHom (hc : IsCMExt F E σ) (τ : E →ₐ[F] Fv F v) : IsSp
   ⟨splitPrime (τ.comp σ), splitPrime τ, splitPrime_comp_ne hc τ, Ideal.ext (algebraMap_mem_splitPrime _),
     Ideal.ext (algebraMap_mem_splitPrime _)⟩
 
-theorem exists_isSplitChart_one (hc : IsCMExt F E σ) (n : ℕ) :
-    ∃ (v : HeightOneSpectrum (𝓞 F)) (w : HeightOneSpectrum (𝓞 E)) (h : w.under (𝓞 F) = v), IsSplit (E := E) v ∧
-      ∃ e, IsSplitChart σ (1 : Matrix (Fin n) (Fin n) E) (stdLattice E n) h e ∧ Continuous e ∧ Continuous e.symm := by
-  obtain ⟨v, ⟨τ⟩⟩ := exists_split_place hc
-  have hL : Submodule.IsLattice E (stdLattice E n) := isLattice_stdLattice
-  exact ⟨v, _, splitPrime_under τ, isSplit_of_algHom hc τ, exists_isSplitChart hc (isHermND_one σ n) hL.fg
-    hL.span_eq_top _ (isSplit_of_algHom hc τ) (isSelfDualAt_stdLattice_one σ v)⟩
 
 end GlobalTheory.LFun.SplitChart
 
+end
 end

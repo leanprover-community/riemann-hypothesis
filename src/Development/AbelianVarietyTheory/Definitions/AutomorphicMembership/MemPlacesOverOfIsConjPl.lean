@@ -20,18 +20,6 @@ theorem val_lt_iff {A B : ValuationSubring Ω} (c : Ω ≃+* Ω) (hc : ∀ x, x 
 
 variable {E : Type} [Field E] [NumberField E] [Algebra E Ω]
 
-theorem mem_Ine_of_transport {A B : ValuationSubring Ω} (c : Ω ≃+* Ω) (hc : ∀ x, x ∈ A ↔ c x ∈ B) {t γ : G E Ω}
-    (hγ : ∀ x, γ (c x) = c (t x)) (ht : t ∈ Ine (F := E) A) : γ ∈ Ine (F := E) B := by
-  have key : ∀ y, γ y ∈ B ↔ y ∈ B := fun y => by
-    obtain ⟨x, rfl⟩ := c.surjective y
-    rw [hγ, ← hc, ← hc, apply_mem_iff_of_mem_Dec ht.1]
-  refine ⟨?_, fun y hy => ?_⟩
-  · show γ • B = B
-    ext y
-    rw [ValuationSubring.mem_pointwise_smul_iff_inv_smul_mem, AlgEquiv.smul_def, ← key, mul_inv_apply]
-  · obtain ⟨x, rfl⟩ := c.surjective y
-    rw [hγ, ← map_sub, val_lt_iff c hc]
-    exact ht.2 x ((A.valuation_le_one_iff x).2 ((hc x).2 ((B.valuation_le_one_iff _).1 hy)))
 
 theorem exists_transport_elt (s : E ≃+* E) (c : Ω ≃+* Ω) (hs : ∀ x, c (algebraMap E Ω x) = algebraMap E Ω (s x))
     (t : G E Ω) : ∃ γ : G E Ω, ∀ x, γ (c x) = c (t x) := by
@@ -66,10 +54,6 @@ theorem eq_of_isConjPl {w₀ w₁ w : PlE H} (h₀ : IsConjPl H w₀ w) (h₁ : 
   ext x
   rw [isConjPl_iff.1 h₀, isConjPl_iff.1 h₁]
 
-theorem mem_placesOver_of_isConjPl {w₀ w : PlE H} (h : IsConjPl H w₀ w) {p : ℕ} (hp : w₀ ∈ placesOver H.E p) :
-    w ∈ placesOver H.E p := by
-  have := (isConjPl_iff.1 h _).1 hp
-  rwa [map_natCast] at this
 
 theorem exists_ext (N : NData R H what₂) {w₀ w : PlE H} (h : IsConjPl H w₀ w) : ∃ c : N.Om ≃+* N.Om,
     (∀ x : H.E, c (algebraMap H.E N.Om x) = algebraMap H.E N.Om (H.conj x)) ∧
@@ -102,28 +86,7 @@ theorem exists_place (D : D7) (k : Fin 2) :
   obtain ⟨w, hw⟩ := exists_isConjPl (D.naut.plGw k v)
   exact ⟨v, w, hw, fun v' e => D.naut.plGw_nconj k v v' (e ▸ hw)⟩
 
-theorem natDegree_labLP {D : D7} {T : GlobalTheory.RowTie.WDTie D.nd D.naut} (hL : LabConj D T) (k v) (w : PlE D.host)
-    (hw : IsConjPl D.host (D.naut.plGw k v) w) (a : D.naut.LP w) :
-    (D.naut.items₂ k w a).natDegree = (T.e w a).lpTame.lpDim := by
-  haveI : Fact (D.host.g k).Prime := ⟨D.host.g_prime k⟩
-  obtain ⟨c, γ, -, h2, h3, h4⟩ := hL k v w hw
-  rw [h4 a]
-  exact WD.natDegree_lab ⟨GlobalTheory.TameLabels.normV_eq_of_split (D.host.g_prime k) (D.nd.g_split k)
-    (mem_placesOver_of_isConjPl hw (D.naut.plGw_over k v)),
-    mem_Ine_of_transport c h2 h3 (D.ntypes.tg_mem k v), D.ntypes.teichC_inj k⟩ _
 
-theorem roots_labLP {D : D7} {T : GlobalTheory.RowTie.WDTie D.nd D.naut} (hL : LabConj D T) (k v) (w : PlE D.host)
-    (hw : IsConjPl D.host (D.naut.plGw k v) w) : ∃ (c : D.nd.Om ≃+* D.nd.Om) (γ : G D.host.E D.nd.Om),
-      γ ∈ Ine (F := D.host.E) (D.nd.plOm.1 w) ∧ (∀ x, γ (c x) = c (D.ntypes.tg k v x)) ∧ ∀ a : D.naut.LP w,
-      haveI : Fact (D.host.g k).Prime := ⟨D.host.g_prime k⟩
-      (Formalism.CyclotomicNorms.rootsBar (D.naut.items₂ k w a)).map (D.ntypes.teichC k) = (T.e w a).tameEig γ := by
-  haveI : Fact (D.host.g k).Prime := ⟨D.host.g_prime k⟩
-  obtain ⟨c, γ, -, h2, h3, h4⟩ := hL k v w hw
-  have hγ := mem_Ine_of_transport c h2 h3 (D.ntypes.tg_mem k v)
-  refine ⟨c, γ, hγ, h3, fun a => ?_⟩
-  rw [h4 a]
-  exact WD.map_rootsBar_lab ⟨GlobalTheory.TameLabels.normV_eq_of_split (D.host.g_prime k) (D.nd.g_split k)
-    (mem_placesOver_of_isConjPl hw (D.naut.plGw_over k v)), hγ, D.ntypes.teichC_inj k⟩ _
 
 theorem exists_gamma (D : D7) (k : Fin 2) : ∃ γ : PlE D.host → G D.host.E D.nd.Om,
     (∀ v, γ (D.naut.plGw k v) = D.ntypes.tg k v) ∧

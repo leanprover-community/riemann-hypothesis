@@ -26,7 +26,6 @@ noncomputable def R0 : Formalism.BasicNotions.Ranks where
 @[simp] theorem exampleRanks_f : R0.f = 8 := rfl
 @[simp] theorem exampleRanks_n : R0.n = 4 := rfl
 @[simp] theorem exampleRanks_order : R0.ord = 4 := rfl
-theorem exampleRanks_frame : R0.toFrame = Formalism.HC.cyclicFrame 2 := rfl
 theorem exampleRanks_baseRank : R0.n0 = 4 := by
   show (Formalism.HC.frameCyc 2 1).n0 = 4
   rw [Formalism.HC.frameCyclic_order]

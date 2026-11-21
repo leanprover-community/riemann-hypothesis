@@ -347,33 +347,6 @@ theorem exists_factor {V E : Type} [AddCommGroup V] [Module ℂ V] [NormedAddCom
       simpa [h1] using h v))
   exact ⟨f, fun v => (hf ⟨J v, v, rfl⟩).trans (h1 v)⟩
 
-theorem exists_sum_of_sobCont (hσ : IsURepOn (UJset ε) σ) {ℓ : H →ₗ[ℂ] ℂ} (hℓ : Sobolev₂ (lieJ ε : Set _) σ ℓ) :
-    ∃ (m : ℕ) (l : Fin m → List (Matrix (Fin n) (Fin n) ℂ)) (f : Fin m → (H →L[ℂ] ℂ)),
-      (∀ i, ∀ X ∈ l i, X ∈ lieJ ε) ∧ ∀ w ∈ smSub ε σ, ℓ w = ∑ i, f i ((l i).foldr (dRep σ) w) := by
-  obtain ⟨S, C, hS, hb⟩ := hℓ
-  have hl : ∀ i : Fin S.length, ∀ X ∈ S.get i, X ∈ lieJ ε := fun i => hS _ (List.get_mem S i)
-  choose L hL using fun i => exists_word hσ (S.get i) (hl i)
-  let J : smSub ε σ →ₗ[ℂ] (Fin S.length → H) := LinearMap.pi fun i => (smSub ε σ).subtype.comp (L i)
-  have hJ : ∀ w i, J w i = (S.get i).foldr (dRep σ) w := fun w i => hL i w
-  obtain ⟨f, hf⟩ := exists_factor J (ℓ.comp (smSub ε σ).subtype) (|C| * S.length) fun w => by
-    have h1 : (S.map fun l => ‖l.foldr (dRep σ) (w : H)‖).sum ≤ S.length * ‖J w‖ := by
-      have := List.sum_le_card_nsmul (S.map fun l => ‖l.foldr (dRep σ) (w : H)‖) ‖J w‖ (by
-        intro x hx
-        obtain ⟨l, hl, rfl⟩ := List.mem_map.1 hx
-        obtain ⟨i, rfl⟩ := List.get_of_mem hl
-        rw [← hJ]; exact norm_le_pi_norm _ i)
-      simpa using this
-    have h2 : 0 ≤ (S.map fun l => ‖l.foldr (dRep σ) (w : H)‖).sum := List.sum_nonneg (by
-      intro x hx
-      obtain ⟨l, -, rfl⟩ := List.mem_map.1 hx
-      exact norm_nonneg _)
-    refine (hb w w.2).trans ((mul_le_mul_of_nonneg_right (le_abs_self C) h2).trans ?_)
-    rw [mul_assoc]
-    exact mul_le_mul_of_nonneg_left h1 (abs_nonneg C)
-  refine ⟨S.length, S.get, fun i => f.comp (ContinuousLinearMap.single ℂ (fun _ => H) i), hl, fun w hw => ?_⟩
-  refine (hf ⟨w, hw⟩).symm.trans ?_
-  conv_lhs => rw [← Finset.univ_sum_single (J ⟨w, hw⟩), map_sum]
-  exact Finset.sum_congr rfl fun i _ => by rw [hJ]; rfl
 
 variable {φ : Matrix (Fin n) (Fin n) ℂ → ℝ}
 
@@ -395,36 +368,7 @@ theorem continuous_garding (hσ : IsURepOn (UJset ε) σ) (hφ : Continuous φ) 
   refine (norm_integral_le_integral_norm _).trans (le_of_eq ?_)
   simp only [norm_smul, fun g : Formalism.REAL.UJ ε => hσ.2.1 (umat g) g.2]
 
-theorem continuous_word_garding [CompleteSpace H] [Nontrivial H] (hσ : IsURepOn (UJset ε) σ)
-    (hirr : IsIrredOn (UJset ε) σ) (hφ : ContDiff ℝ ∞ φ) (hφc : HasCompactSupport φ)
-    {l : List (Matrix (Fin n) (Fin n) ℂ)} (hl : ∀ X ∈ l, X ∈ lieJ ε) :
-    Continuous fun w => l.foldr (dRep σ) (garding hσ hφ.continuous hφc w) := by
-  obtain ⟨L, hL⟩ := exists_word hσ l hl
-  let B : H →ₗ[ℂ] H := (smSub ε σ).subtype.comp
-    (L.comp ((garding hσ hφ.continuous hφc).codRestrict _ (garding_mem hσ hφ hφc)))
-  have hB : ∀ w, B w = l.foldr (dRep σ) (garding hσ hφ.continuous hφc w) := fun w => hL _
-  simp only [← hB]
-  refine B.continuous_of_seq_closed_graph fun u x y hu hy => ?_
-  refine Dense.eq_of_inner_right ℂ (dense_famSub hσ hirr) fun h hh => ?_
-  obtain ⟨h', hh'⟩ := exists_adjoint_word hσ l hl h (famSub_le hh)
-  have e : ∀ w, ⟪h, B w⟫_ℂ = ⟪h', garding hσ hφ.continuous hφc w⟫_ℂ := fun w => by
-    rw [hB, hh' _ (garding_mem hσ hφ hφc w)]
-  refine tendsto_nhds_unique (tendsto_const_nhds.inner (𝕜 := ℂ) (x := h) hy) ?_
-  simp only [Function.comp_def, e]
-  exact tendsto_const_nhds.inner (((continuous_garding hσ hφ.continuous hφc).tendsto x).comp hu)
 
-theorem word_garding [CompleteSpace H] [Nontrivial H] (hσ : IsURepOn (UJset ε) σ)
-    (hirr : IsIrredOn (UJset ε) σ) (hφ : ContDiff ℝ ∞ φ) (hφc : HasCompactSupport φ)
-    {l : List (Matrix (Fin n) (Fin n) ℂ)} (hl : ∀ X ∈ l, X ∈ lieJ ε) {w : H} (hw : w ∈ smSub ε σ) :
-    l.foldr (dRep σ) (garding hσ hφ.continuous hφc w)
-      = ∫ g : Formalism.REAL.UJ ε, φ (umat g) • l.foldr (dRep σ) (σ (umat g) w) ∂(Formalism.REAL.muG ε) := by
-  refine Dense.eq_of_inner_right ℂ (dense_famSub hσ hirr) fun h hh => ?_
-  obtain ⟨h', hh'⟩ := exists_adjoint_word hσ l hl h (famSub_le hh)
-  rw [hh' _ (garding_mem hσ hφ hφc w), garding_apply hσ hφ.continuous hφc w, ← integral_inner (integrable_garding hσ hφ.continuous hφc w),
-    ← integral_inner (integrable_smul hφ.continuous hφc (continuous_word_translate hσ hirr hl hw))]
-  refine integral_congr_ae (Filter.Eventually.of_forall fun g => ?_)
-  simp only [← Complex.coe_smul, inner_smul_right]
-  rw [hh' _ (translate_mem hσ hw g.2)]
 
 theorem eq_zero_of_integral {F : Formalism.REAL.UJ ε → ℂ} (hF : Continuous F)
     (h : ∀ φ : Matrix (Fin n) (Fin n) ℂ → ℝ, ContDiff ℝ ∞ φ → HasCompactSupport φ →
@@ -460,45 +404,6 @@ theorem eq_zero_of_integral {F : Formalism.REAL.UJ ε → ℂ} (hF : Continuous 
   rw [e1, norm_neg, norm_smul, Real.norm_of_nonneg hpos.le, integral_mul_const] at e2
   nlinarith [mul_pos hpos hwpos]
 
-theorem cyclic_UJ [CompleteSpace H] (hσ : IsURepOn (UJset ε) σ) (hirr : IsIrredOn (UJset ε) σ) {u : H}
-    (hu : u ∈ smSub ε σ) (hu0 : u ≠ 0) {ℓ : H →ₗ[ℂ] ℂ} (hℓ : Sobolev₂ (lieJ ε : Set _) σ ℓ)
-    (hz : ∀ g ∈ UJset ε, ℓ (σ g u) = 0) {w : H} (hw : w ∈ smSub ε σ) : ℓ w = 0 := by
-  haveI : Nontrivial H := nontrivial_of_ne u 0 hu0
-  obtain ⟨m, l, f, hl, hsum⟩ := exists_sum_of_sobCont hσ hℓ
-  have hc : ∀ v ∈ smSub ε σ, Continuous fun g : Formalism.REAL.UJ ε => ℓ (σ (umat g) v) := fun v hv => by
-    simp only [fun g : Formalism.REAL.UJ ε => hsum _ (translate_mem hσ hv g.2)]
-    exact continuous_finset_sum _ fun i _ => (f i).continuous.comp (continuous_word_translate hσ hirr (hl i) hv)
-  have key := eq_zero_of_integral (hc w hw) fun φ hφ hφc => by
-    have hint : ∀ v ∈ smSub ε σ, ℓ (garding hσ hφ.continuous hφc v)
-        = ∫ g : Formalism.REAL.UJ ε, φ (umat g) • ℓ (σ (umat g) v) ∂(Formalism.REAL.muG ε) := fun v hv => by
-      rw [hsum _ (garding_mem hσ hφ hφc v)]
-      simp only [fun g : Formalism.REAL.UJ ε => hsum _ (translate_mem hσ hv g.2), Finset.smul_sum]
-      refine Eq.trans (Finset.sum_congr rfl fun i _ => ?_) (integral_finset_sum _ fun i _ =>
-        integrable_smul hφ.continuous hφc ((f i).continuous.comp (continuous_word_translate hσ hirr (hl i) hv))).symm
-      rw [word_garding hσ hirr hφ hφc (hl i) hv, ← ContinuousLinearMap.integral_comp_comm _
-        (integrable_smul hφ.continuous hφc (continuous_word_translate hσ hirr (hl i) hv))]
-      simp only [ContinuousLinearMap.map_smul_of_tower, Function.comp_def]
-    have hcont : Continuous fun v => ℓ (garding hσ hφ.continuous hφc v) := by
-      simp only [fun v => hsum _ (garding_mem hσ hφ hφc v)]
-      exact continuous_finset_sum _ fun i _ => (f i).continuous.comp (continuous_word_garding hσ hirr hφ hφc (hl i))
-    let S : Submodule ℂ H :=
-      { carrier := {v | ∀ g ∈ UJset ε, ℓ (garding hσ hφ.continuous hφc (σ g v)) = 0}
-        add_mem' := fun ha hb g hg => by simp only [map_add, ha g hg, hb g hg, add_zero]
-        zero_mem' := fun g _ => by simp only [map_zero]
-        smul_mem' := fun c v hv g hg => by simp only [map_smul, hv g hg, smul_zero] }
-    have hone : (1 : Matrix (Fin n) (Fin n) ℂ) ∈ UJset ε := (1 : Formalism.REAL.UJ ε).2
-    have huS : u ∈ S := fun g hg => by
-      rw [hint _ (translate_mem hσ hu hg)]
-      simp only [fun x : Formalism.REAL.UJ ε => rep_mul hσ x.2 hg u, fun x : Formalism.REAL.UJ ε => hz _ (mul_memJ x.2 hg),
-        smul_zero, integral_zero]
-    have hd : Dense (S : Set H) := dense_of_stable hirr
-      (fun g hg v hv x hx => by rw [rep_mul hσ hx hg]; exact hv _ (mul_memJ hx hg))
-      ((Submodule.ne_bot_iff _).2 ⟨u, huS, hu0⟩)
-    rw [← hint w hw]
-    refine congrFun (hcont.ext_on hd continuous_const (g := fun _ => 0) fun v hv => ?_) w
-    simpa [hσ.1.1] using hv 1 hone
-  have e : umat (1 : Formalism.REAL.UJ ε) = 1 := rfl
-  simpa [e, hσ.1.1] using key
 
 section Transport
 variable {P G : Matrix (Fin n) (Fin n) ℂ}
@@ -552,25 +457,5 @@ theorem sm_eq {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel V S
   rw [← Submodule.span_eq (smSub (M.ε τ) (M.σ τ))]
   exact congrArg (Submodule.span ℂ) (Set.ext fun w => smoothVec_transport (M.fr_unit τ) (M.fr_gram τ) w)
 
-theorem smooth_cyclic (D : D7) (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S) (τ : D.what₂.Tau) (u : M.sm τ)
-    (hu : u ≠ 0) (ℓ : M.H τ →ₗ[ℂ] ℂ) (hℓ : Sobolev₂ (lieAt V τ) (M.rep τ) ℓ)
-    (hz : ∀ g ∈ Formalism.QuantumDeterminants.UH (gramAt D V τ), ∀ w : M.sm τ, (w : M.H τ) = M.rep τ g u → ℓ w = 0)
-    (w : M.sm τ) : ℓ w = 0 := by
-  obtain ⟨_, -, hσ, hirr, -⟩ := M.ds τ
-  have hus : (u : M.H τ) ∈ smSub (M.ε τ) (M.σ τ) := (sm_eq M τ).le u.2
-  refine cyclic_UJ hσ hirr hus (fun h => hu (Subtype.ext h)) (sobCont_transport (M.fr_unit τ) (M.fr_gram τ) hℓ)
-    (fun g hg => ?_) ((sm_eq M τ).le w.2)
-  have hd : IsUnit (M.fr τ).det := (Matrix.isUnit_iff_isUnit_det _).1 (M.fr_unit τ)
-  have h1 : M.fr τ * (M.fr τ)⁻¹ = 1 := Matrix.mul_nonsing_inv _ hd
-  have hg' : gᴴ * Formalism.REAL.Jm (M.ε τ) * g = Formalism.REAL.Jm (M.ε τ) := hg
-  refine hz ((M.fr τ)⁻¹ * g * M.fr τ) ?_ ⟨M.σ τ g u, (sm_eq M τ).ge (translate_mem hσ hus hg)⟩ ?_
-  · show ((M.fr τ)⁻¹ * g * M.fr τ)ᴴ * gramAt D V τ * ((M.fr τ)⁻¹ * g * M.fr τ) = gramAt D V τ
-    rw [← M.fr_gram τ]
-    calc _ = (M.fr τ)ᴴ * (gᴴ * ((M.fr τ * (M.fr τ)⁻¹)ᴴ * Formalism.REAL.Jm (M.ε τ) * (M.fr τ * (M.fr τ)⁻¹)) * g)
-          * M.fr τ := by simp only [conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [h1, conjTranspose_one, Matrix.one_mul, Matrix.mul_one, hg']
-  · show M.σ τ g u = M.σ τ (M.fr τ * ((M.fr τ)⁻¹ * g * M.fr τ) * (M.fr τ)⁻¹) u
-    simp only [← Matrix.mul_assoc, h1, Matrix.one_mul]
-    rw [Matrix.mul_assoc, h1, Matrix.mul_one]
 
 end GlobalTheory.SmoothCyclic

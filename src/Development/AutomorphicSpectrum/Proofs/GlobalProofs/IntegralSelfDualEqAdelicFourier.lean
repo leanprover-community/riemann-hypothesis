@@ -159,14 +159,6 @@ theorem joinEquiv_eq_at_reference (hNG : N * G = 1) (hGN : G * N = 1) (hs : Gᵀ
   have h7 : c = 1 := by exact_mod_cast h6
   rw [hc, h7, one_smul]
 
-theorem fou_of_coord (hNG : N * G = 1) (hGN : G * N = 1) (hs : Gᵀ = G)
-    (hχ : ∀ x y, χ x y = (adelicChar K (∑ i, e x i * (G.map (algebraMap K 𝔸[K]) *ᵥ e y) i) : ℂ))
-    (dx : Measure V) (hdx : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.SelfDual dx χ)
-    {f : V → ℂ} (hf : f ∘ e.symm ∈ schwartzBruhatPi K ι) :
-    (fun y => ∫ x, f x * χ x y ∂dx) ∘ e.symm ∈ schwartzBruhatPi K ι ∧
-      ∀ z, ∫ y, (∫ x, f x * χ x y ∂dx) * χ y z ∂dx = f (-z) := by
-  obtain rfl := joinEquiv_eq_at_reference e hNG hGN hs hχ dx hdx
-  exact ⟨fourier_selfDual_mem_schwartzBruhat e hNG hGN hχ hf, fourier_selfDual_inversion e hNG hGN hs hχ hf⟩
 
 end Transfer
 
@@ -350,47 +342,6 @@ section Main
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.Published.SiegelOneVector GlobalTheory.CompanionTheory.Hypotheses₂.OneV
 open scoped TensorProduct
 
-theorem fouV_schwartzBruhat : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-    (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), IsHermND σ J → 2 < M →
-    ∀ ψ : AddChar (AF F) ℂ, IsCharAF F ψ → ∀ dx : Measure (Fin 1 → Fin M → AF F ⊗[F] E),
-    SdW F E σ M J (AF F) ψ 1 dx → ∀ Φ : (Fin 1 → Fin M → AF F ⊗[F] E) → ℂ, IsSchwartzBruhat Φ →
-    IsSchwartzBruhat (fouV σ J ψ dx Φ) ∧ ∀ z, fouV σ J ψ dx (fouV σ J ψ dx Φ) z = Φ (-z) := by
-  intro F E _ _ _ _ _ σ hCM M J hJ _ ψ hψ dx hdx Φ hΦ
-  haveI : Module.Finite F E := Module.Finite.of_restrictScalars_finite ℚ F E
-  let b := Module.finBasis F E
-  obtain ⟨B, hsym, hdet, -, hR'⟩ := GlobalTheory.CompanionTheory.SW.TraceCoord.exists_trace_coord F E σ hCM M J hJ _ b
-  obtain ⟨ξ, hξ, hψξ⟩ := GlobalTheory.CompanionTheory.SW.CharDual.exists_eq_adelicChar_mul ψ hψ
-  obtain ⟨h1, -, -, -, -, -, -, hBor, -, -⟩ := GlobalTheory.CompanionTheory.SW.TopK.topTens_props F E σ hCM (AF F)
-  haveI := h1
-  haveI := hBor 1 M
-  have hu : IsUnit B.det := isUnit_iff_ne_zero.2 hdet
-  have hNG : (ξ⁻¹ • B⁻¹) * (ξ • B) = 1 := by
-    rw [Matrix.smul_mul, Matrix.mul_smul, smul_smul, inv_mul_cancel₀ hξ, one_smul,
-      Matrix.nonsing_inv_mul B hu]
-  have hGN : (ξ • B) * (ξ⁻¹ • B⁻¹) = 1 := by
-    rw [Matrix.smul_mul, Matrix.mul_smul, smul_smul, mul_inv_cancel₀ hξ, one_smul,
-      Matrix.mul_nonsing_inv B hu]
-  have hs : (ξ • B)ᵀ = ξ • B := by
-    rw [Matrix.transpose_smul, hsym.eq]
-  have hχ : ∀ X Y : Fin 1 → Fin M → AF F ⊗[F] E, ψ (BR (AF F) σ J X Y) =
-      (adelicChar F (∑ i, crd (AF F) b M X i *
-        ((ξ • B).map (algebraMap F (AF F)) *ᵥ crd (AF F) b M Y) i) : ℂ) := by
-    intro X Y
-    rw [hψξ]
-    congr 2
-    have e1 : (ξ • B).map (algebraMap F (AF F)) = algebraMap F (AF F) ξ • B.map (algebraMap F (AF F)) := by
-      ext i j
-      simp
-    rw [e1, Matrix.smul_mulVec]
-    simp only [Pi.smul_apply, smul_eq_mul]
-    have hh : Algebra.trace (AF F) (AF F ⊗[F] E) (hR (AF F) σ J (X 0) (Y 0)) =
-        crd (AF F) b M X ⬝ᵥ (B.map (algebraMap F (AF F)) *ᵥ crd (AF F) b M Y) := (hR' (AF F)).1 (X 0) (Y 0)
-    rw [BR, Fin.sum_univ_one, hh, dotProduct, Finset.mul_sum]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    ring
-  have hf := (isSchwartzBruhat_iff b Φ).1 hΦ
-  obtain ⟨c1, c2⟩ := fou_of_coord (crd (AF F) b M) hNG hGN hs hχ dx hdx hf
-  exact ⟨(isSchwartzBruhat_iff b _).2 c1, c2⟩
 
 end Main
 

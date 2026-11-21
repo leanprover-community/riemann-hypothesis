@@ -1,5 +1,741 @@
-import Formalism.LocalToGlobal.ProjectiveLattices.LiftModelPf
+import Formalism.LocalToGlobal.ProjectiveLattices.LiftCurveSt
+import Formalism.LocalToGlobal.ProjectiveLattices.LiftLoc
+import Formalism.LocalToGlobal.ProjectiveLattices.CurveSec
+import Formalism.LocalToGlobal.ProjectiveLattices.LiftInSt
 
+section
+noncomputable section
+
+namespace Formalism.L2.Pj
+
+open Formalism.MainNotions.WeightAlgebra Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Gaps.EtaleWeightGaps NumberField IsDedekindDomain Finset
+
+section HasseH
+
+variable {D : D7} {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} {j : ℕ} (X : PJ D B P j) (la : HeightOneSpectrum (𝓞 B.KO))
+  {N : ℕ} {wL : WeightFamilies.Wt D j} (w : Fin N → B.Cusp j wL)
+
+def hasseW (β : Idx D j N →₀ ℕ) (x : Lw X la w) : Lw X la w := hasse X la w β x
+
+
+theorem hasseW_of_mul_eq (β : Idx D j N →₀ ℕ) {s x : Rp X la N} {y : Lw X la w}
+    (h : algebraMap (Rp X la N) (Lw X la w) s * y = algebraMap (Rp X la N) (Lw X la w) x) :
+    ∑ q ∈ antidiagonal β, algebraMap (Rp X la N) (Lw X la w) (hasseRp X la N q.1 s) * hasseW X la w q.2 y =
+      algebraMap (Rp X la N) (Lw X la w) (hasseRp X la N β x) := hasse_of_mul_eq X la w β h
+
+
+theorem hasse_frac_succ_mem {u : WeightFamilies.Wt D j} {m : ℕ} {g : Rp X la N} (hg : g ∈ Vw X la N (addL u wL (m + 1)))
+    (β : Idx D j N →₀ ℕ) : hasseW X la w β (frac X la w (m + 1) g) ∈ Hfr X la w u := by
+  induction hn : Finsupp.degree β using Nat.strong_induction_on generalizing β with
+  | _ n ih =>
+  have hs0 : sec X la w 0 ^ (m + 1) ∈ Vw X la N (addL (wt0 D j) wL (m + 1)) := by
+    have h1 : sec X la w 0 ∈ Vw X la N (addL (wt0 D j) wL 1) := by
+      rw [add_zero_weight_one_eq]; exact sec_mem_Vw X la w 0
+    have := sec_pow_mul_mem X la w 0 (wt0 D j) 1 m h1
+    rwa [← pow_succ, add_comm 1 m] at this
+  have hs : algebraMap (Rp X la N) (Lw X la w) (sec X la w 0 ^ (m + 1)) * frac X la w (m + 1) g =
+      algebraMap (Rp X la N) (Lw X la w) g := by
+    rw [frac_apply, mul_comm (algebraMap _ _ g), ← mul_assoc, map_pow, ← mul_pow, section_mul_inverse_eq_one, one_pow, one_mul]
+  have hq := hasseW_of_mul_eq X la w β hs
+  have hmem : ((0 : Idx D j N →₀ ℕ), β) ∈ antidiagonal β := mem_antidiagonal.2 (zero_add β)
+  rw [← add_sum_erase _ _ hmem, hasseRp_zero] at hq
+  have hinv : w0inv X la w ^ (m + 1) * algebraMap (Rp X la N) (Lw X la w) (sec X la w 0 ^ (m + 1)) = 1 := by
+    rw [map_pow, ← mul_pow, mul_comm, section_mul_inverse_eq_one, one_pow]
+  have key : hasseW X la w β (frac X la w (m + 1) g) = w0inv X la w ^ (m + 1) *
+      (algebraMap (Rp X la N) (Lw X la w) (hasseRp X la N β g) -
+        ∑ q ∈ (antidiagonal β).erase (0, β), algebraMap (Rp X la N) (Lw X la w) (hasseRp X la N q.1 (sec X la w 0 ^ (m + 1))) *
+          hasseW X la w q.2 (frac X la w (m + 1) g)) := by
+    rw [← hq, add_sub_cancel_right, ← mul_assoc, hinv, one_mul]
+  rw [key, mul_sub, mul_sum]
+  refine Submodule.sub_mem _ ?_ (Submodule.sum_mem _ fun q hq' => ?_)
+  · rw [mul_comm, ← frac_apply]
+    exact frac_mem_Hfr X la w (hasseRp_mem_Vw X la hg β)
+  · have h12 : q.1 + q.2 = β := mem_antidiagonal.1 (mem_of_mem_erase hq')
+    have hne : q.1 ≠ 0 := by
+      intro h
+      apply ne_of_mem_erase hq'
+      exact Prod.ext h (by rw [← h12, h, zero_add])
+    have hlt : Finsupp.degree q.2 < n := by
+      rw [← hn, ← h12, map_add]
+      have : Finsupp.degree q.1 ≠ 0 := fun h => hne ((Finsupp.degree_eq_zero_iff _).1 h)
+      omega
+    have h2 := ih _ hlt q.2 rfl
+    rw [← mul_assoc, mul_comm (w0inv X la w ^ (m + 1)), ← frac_apply]
+    have hf := frac_mem_Hfr X la w (hasseRp_mem_Vw X la hs0 q.1)
+    have := mul_mem_Hfr X la w hf h2
+    rwa [zero_weight_add] at this
+
+theorem hasse_mem_Hfr {u : WeightFamilies.Wt D j} {x : Lw X la w} (hx : x ∈ Hfr X la w u) (β : Idx D j N →₀ ℕ) :
+    hasseW X la w β x ∈ Hfr X la w u := by
+  obtain ⟨k, g, hg, rfl⟩ := (mem_Hfr X la w).1 hx
+  have hg' := sec_pow_mul_mem X la w 0 u k 1 hg
+  rw [← frac_pow_mul X la w k 1 g, pow_one] at *
+  exact hasse_frac_succ_mem X la w (by simpa using hg') β
+
+end HasseH
+
+section Model
+
+variable {D : D7} {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} {j : ℕ} {X : PJ D B P j} {E : PtExt X} {hM : IntAtExt X E}
+  {ka wL wF : WeightFamilies.Wt D j} {G : GlobalFamilyData (xplus X E hM) ka wL wF} {la : HeightOneSpectrum (𝓞 B.KO)}
+  {y : PtsG G la → E.Pt' la} {hs : ∀ ζ, SecPt ζ (y ζ)} {g0 : B.Cusp j wF} {T : ℕ}
+
+namespace LiftModel
+
+variable (M : LiftModel G la y hs g0 T)
+
+def I : Ideal M.Λ :=
+  Ideal.span (Set.range fun i : Fin (WeightFamilies.dimY D j) => M.ι (sfr (xplus X E hM) la G.w i.succ : Lw (xplus X E hM) la G.w))
+
+def Low (n : ℕ) (z : M.Λ) : Prop := ∀ β : Idx D j G.N →₀ ℕ, M.hd β z ∈ M.I ^ (n - Finsupp.degree β)
+
+theorem low_zero_left (z : M.Λ) : M.Low 0 z := fun β => by simp
+
+theorem low_add {n : ℕ} {z z' : M.Λ} (hz : M.Low n z) (hz' : M.Low n z') : M.Low n (z + z') := fun β => by
+  rw [map_add]; exact Ideal.add_mem _ (hz β) (hz' β)
+
+theorem low_mul {n m : ℕ} {z z' : M.Λ} (hz : M.Low n z) (hz' : M.Low m z') : M.Low (n + m) (z * z') := fun β => by
+  rw [M.hd_mul]
+  refine Ideal.sum_mem _ fun q hq => ?_
+  have h12 := mem_antidiagonal.1 hq
+  have h := Ideal.mul_mem_mul (hz q.1) (hz' q.2)
+  rw [← pow_add] at h
+  refine Ideal.pow_le_pow_right ?_ h
+  rw [← h12, map_add]
+  omega
+
+theorem low_gen (i : Fin (WeightFamilies.dimY D j)) :
+    M.Low 1 (M.ι (sfr (xplus X E hM) la G.w i.succ : Lw (xplus X E hM) la G.w)) := fun β => by
+  by_cases hβ : β = 0
+  · subst hβ
+    rw [M.hd_zero, map_zero, Nat.sub_zero, pow_one]
+    exact Ideal.subset_span ⟨i, rfl⟩
+  · have : Finsupp.degree β ≠ 0 := fun h => hβ ((Finsupp.degree_eq_zero_iff _).1 h)
+    rw [show 1 - Finsupp.degree β = 0 by omega, pow_zero, Ideal.one_eq_top]
+    exact Submodule.mem_top
+
+theorem low_one {z : M.Λ} (hz : z ∈ M.I) : M.Low 1 z := by
+  unfold LiftModel.I at hz
+  induction hz using Submodule.span_induction with
+  | mem x hx =>
+    obtain ⟨i, rfl⟩ := hx
+    exact M.low_gen i
+  | zero => exact fun β => by rw [map_zero]; exact Ideal.zero_mem _
+  | add x y _ _ hx hy => exact M.low_add hx hy
+  | smul a x _ hx =>
+    have := M.low_mul (M.low_zero_left a) hx
+    rwa [zero_add] at this
+
+theorem hd_pow_mem (n : ℕ) {z : M.Λ} (hz : z ∈ M.I ^ n) : M.Low n z := by
+  induction n generalizing z with
+  | zero => exact M.low_zero_left z
+  | succ n ih =>
+    rw [pow_succ] at hz
+    exact Submodule.mul_induction_on hz (fun a ha b hb => M.low_mul (ih ha) (M.low_one hb))
+      (fun x y hx hy => M.low_add hx hy)
+
+theorem ev_I (ζ : PtsG G la) {z : M.Λ} (hz : z ∈ M.I) : M.ev ζ z = 0 := by
+  unfold LiftModel.I at hz
+  induction hz using Submodule.span_induction with
+  | mem x hx =>
+    obtain ⟨i, rfl⟩ := hx
+    rw [M.ev_ι]
+    exact (hs ζ).lift_Jid (sfr_succ_mem_Jid (xplus X E hM) la G.w i)
+  | zero => exact map_zero _
+  | add x y _ _ hx hy => rw [map_add, hx, hy, add_zero]
+  | smul a x _ hx => rw [smul_eq_mul, map_mul, hx, mul_zero]
+
+theorem hd_mul_e' (β : Idx D j G.N →₀ ℕ) (r : M.Λ) : M.hd β (r * M.e') = M.hd β r * M.e' := by
+  rw [M.hd_mul, sum_eq_single (β, 0)]
+  · rw [M.hd_zero]
+  · intro q hq hne
+    have h12 := mem_antidiagonal.1 hq
+    have h2 : q.2 ≠ 0 := by
+      intro h
+      apply hne
+      exact Prod.ext (by rw [← h12, h, add_zero]) h
+    rw [M.e'_hd _ h2, mul_zero]
+  · intro h
+    exact absurd (mem_antidiagonal.2 (add_zero β)) h
+
+theorem step5 {r : M.Λ} (hr : r ∈ M.RG) (x : Lw (xplus X E hM) la G.w) {n : ℕ} (hx : M.ι x - r * M.e' ∈ M.I ^ n)
+    (β : Idx D j G.N →₀ ℕ) (hβ : Finsupp.degree β < n) (ζ : PtsG G la) :
+    0 ≤ nval (hs ζ).T.V 1 ((hs ζ).lift (hasse (xplus X E hM) la G.w β x)) := by
+  have h1 := M.hd_pow_mem n hx β
+  have h2 : M.hd β (M.ι x - r * M.e') ∈ M.I := Ideal.pow_le_self (by omega) h1
+  have h3 := M.ev_I ζ h2
+  rw [map_sub, M.hd_ι, M.hd_mul_e', map_sub, sub_eq_zero, map_mul] at h3
+  have h4 := M.ev_ι ζ (hasse (xplus X E hM) la G.w β x)
+  rw [h4] at h3
+  rw [h3, nval_mul]
+  exact add_nonneg (M.RG_int ζ _ (M.RG_hd β r hr)) (M.e'_int ζ)
+
+end LiftModel
+
+end Model
+
+section Top
+
+variable {D : D7} {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} {j : ℕ} {X : PJ D B P j} {E : PtExt X} {hM : IntAtExt X E}
+  {ka wL wF : WeightFamilies.Wt D j} {G : GlobalFamilyData (xplus X E hM) ka wL wF} {la : HeightOneSpectrum (𝓞 B.KO)}
+  {y : PtsG G la → E.Pt' la} {hs : ∀ ζ, SecPt ζ (y ζ)} {g0 : B.Cusp j wF}
+
+theorem ordA_nonneg {S : Scal B} (hCurve : (secQ y hs g0).InCurve) (hTie : (secQ y hs g0).InTie S)
+    (z : ↥(HK (xplus X E hM) la G.w wF)) (ζ : PtsG G la)
+    (h : 0 ≤ nval (hs ζ).T.V 1 ((hs ζ).lift (z : Lw (xplus X E hM) la G.w))) :
+    0 ≤ (secQ y hs g0).ordA ζ (toA0K (xplus X E hM) la G.w wF z) := by
+  have hgen : IsGen (OsK (xplus X E hM) la G.w) (secQ y hs g0).e := hCurve.2.2
+  have hg0 : (hs ζ).ev (emb (xplus X E hM) la G.N (X.inc wF g0)) ≠ 0 := by
+    intro h0
+    have h5 := (hTie ζ).2.2.2.2.1
+    have hv : (xplus X E hM).vAt la ((secQ y hs g0).y ζ) ((xplus X E hM).inc wF (secQ y hs g0).g0) =
+        nval (hs ζ).T.V (ep (unifO (xplus X E hM) la G.N) ζ) ((hs ζ).ev (emb (xplus X E hM) la G.N (X.inc wF g0))) :=
+      (hs ζ).hv wF g0
+    rw [hv, h0, nval_zero, EReal.mul_top_of_pos (by exact_mod_cast (hs ζ).ep_pos)] at h5
+    exact EReal.coe_ne_top _ h5
+  set a := toA0K (xplus X E hM) la G.w wF z with ha
+  obtain ⟨f, hf⟩ := toOsK_surjective (xplus X E hM) la G.w (coord (secQ y hs g0).e a)
+  have hca : coord (secQ y hs g0).e a • (secQ y hs g0).e = a := coord_smul_self hgen a
+  have h1 : toA0K (xplus X E hM) la G.w wF (f • toHK0 (xplus X E hM) la G.w wF
+      ⟨emb (xplus X E hM) la G.N (X.inc wF g0), emb_mem_Vw (xplus X E hM) la G.N wF g0⟩) = a := by
+    rw [map_smul, ← restriction_apply_eq_reduction, ← hca, ← hf]
+    exact (algebraMap_smul (OsK (xplus X E hM) la G.w) f _).symm
+  have h2 := (Submodule.Quotient.eq _).1 h1
+  have h3 := (hs ζ).lift_JHK h2
+  rw [Submodule.coe_sub, map_sub, sub_eq_zero, Submodule.coe_smul, Algebra.smul_def, map_mul, coe_toHK0,
+    (hs ζ).lift_alg] at h3
+  have hord := (hs ζ).ord f
+  rw [hf] at hord
+  have key : toE ((secQ y hs g0).ordA ζ a) = nval (hs ζ).T.V 1 ((hs ζ).lift (z : Lw (xplus X E hM) la G.w)) := by
+    simp only [LocalPointData.ordA, ordV]
+    rw [toE_add_coe, hord, ← h3, nval_mul, nval_of_ne hg0]
+    simp only [Nat.cast_one, div_one]
+    rfl
+  rw [← key] at h
+  generalize (secQ y hs g0).ordA ζ a = o at h ⊢
+  cases o with
+  | top => exact le_top
+  | coe n =>
+    have h' : (0 : ℝ) ≤ (n : ℝ) := EReal.coe_nonneg.1 h
+    have hn : (0 : ℤ) ≤ n := by exact_mod_cast h'
+    exact_mod_cast hn
+
+theorem inLiftSec (G : GlobalFamilyData (xplus X E hM) ka wL wF) (la : HeightOneSpectrum (𝓞 B.KO)) (S : Scal B) (Gc Prw : ℝ) :
+    InLiftSecSt G la S Gc Prw := by
+  intro y hs g0 T hMod _ hCurve hTie a ha
+  obtain ⟨M⟩ := hMod
+  obtain ⟨r, hr, x1, hx1a, hx1I⟩ := M.ball a ha
+  obtain ⟨x2, hx2⟩ := M.approx r hr
+  have hex : ∃ x : ↥(HK (xplus X E hM) la G.w wF), toA0K (xplus X E hM) la G.w wF x = a ∧ ∃ n : ℕ,
+      (∀ β : Idx D j G.N →₀ ℕ, β.sum (fun _ n => n) ≤ a0 D j T - 1 → Finsupp.degree β < n) ∧
+      M.ι (x : Lw (xplus X E hM) la G.w) - r * M.e' ∈ M.I ^ n := by
+    by_cases h0 : a0 D j T = 0
+    · refine ⟨x1, hx1a, 1, fun β hβ => ?_, by rw [pow_one]; exact hx1I⟩
+      have : Finsupp.degree β = β.sum (fun _ n => n) := rfl
+      omega
+    · refine ⟨x2, ?_, a0 D j T, fun β hβ => ?_, hx2⟩
+      · rw [← hx1a, ← sub_eq_zero, ← map_sub]
+        apply M.res_ker
+        have e : M.ι ((x2 - x1 : ↥(HK (xplus X E hM) la G.w wF)) : Lw (xplus X E hM) la G.w) =
+            (M.ι (x2 : Lw (xplus X E hM) la G.w) - r * M.e') - (M.ι (x1 : Lw (xplus X E hM) la G.w) - r * M.e') := by
+          rw [Submodule.coe_sub, map_sub]; ring
+        rw [e]
+        exact Ideal.sub_mem _ (Ideal.pow_le_self h0 hx2) hx1I
+      · have : Finsupp.degree β = β.sum (fun _ n => n) := rfl
+        omega
+  obtain ⟨x, hxa, n, hn, hxI⟩ := hex
+  have hH : ∀ β : Idx D j G.N →₀ ℕ,
+      hasse (xplus X E hM) la G.w β (x : Lw (xplus X E hM) la G.w) ∈ HK (xplus X E hM) la G.w wF := fun β =>
+    (mem_HK (xplus X E hM) la G.w).2
+      (hasse_mem_Hfr (xplus X E hM) la G.w ((mem_HK (xplus X E hM) la G.w).1 x.2) β)
+  refine ⟨x, hxa, Submodule.subset_span ⟨x, ⟨fun β _ => hH β, fun β hβ ζ => ?_⟩, rfl⟩⟩
+  have := ordA_nonneg hCurve hTie ⟨_, hH β⟩ ζ (M.step5 hr _ hxI β (hn β hβ) ζ)
+  simpa using this
+
+end Top
+
+end Formalism.L2.Pj
+end
+end
+
+section
+noncomputable section
+
+namespace Formalism.L2.Pj
+
+open Formalism.MainNotions.WeightAlgebra Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Gaps.EtaleWeightGaps NumberField IsDedekindDomain Finset
+
+section Gen
+
+variable {Λ : Type*} [CommRing Λ] {σ : Type*} [DecidableEq σ] (hd : (σ →₀ ℕ) → Λ →+ Λ)
+
+def iterHd (l : List (σ →₀ ℕ)) (x : Λ) : Λ := l.foldr (fun β y => hd β y) x
+
+
+theorem iterHd_cons (β : σ →₀ ℕ) (l : List (σ →₀ ℕ)) (x : Λ) :
+    iterHd hd (β :: l) x = hd β (iterHd hd l x) := rfl
+
+theorem iterHd_add (l : List (σ →₀ ℕ)) (x y : Λ) : iterHd hd l (x + y) = iterHd hd l x + iterHd hd l y := by
+  induction l with
+  | nil => rfl
+  | cons β l ih => rw [iterHd_cons, iterHd_cons, iterHd_cons, ih, map_add]
+
+theorem iterHd_neg (l : List (σ →₀ ℕ)) (x : Λ) : iterHd hd l (-x) = -iterHd hd l x := by
+  induction l with
+  | nil => rfl
+  | cons β l ih => rw [iterHd_cons, iterHd_cons, ih, map_neg]
+
+theorem iterHd_zero (l : List (σ →₀ ℕ)) : iterHd hd l 0 = 0 := by
+  induction l with
+  | nil => rfl
+  | cons β l ih => rw [iterHd_cons, ih, map_zero]
+
+variable {hd}
+
+theorem hd_one' (hd0 : ∀ x, hd 0 x = x)
+    (hdm : ∀ β x z, hd β (x * z) = ∑ q ∈ antidiagonal β, hd q.1 x * hd q.2 z) (β : σ →₀ ℕ) (hβ : β ≠ 0) :
+    hd β 1 = 0 := by
+  induction hn : Finsupp.degree β using Nat.strong_induction_on generalizing β with
+  | _ n ih =>
+  have h := hdm β 1 1
+  rw [mul_one] at h
+  have h0 : ((0 : σ →₀ ℕ), β) ∈ antidiagonal β := mem_antidiagonal.2 (zero_add β)
+  have h1 : (β, (0 : σ →₀ ℕ)) ∈ (antidiagonal β).erase (0, β) :=
+    mem_erase.2 ⟨fun h => hβ (congrArg Prod.fst h), mem_antidiagonal.2 (add_zero β)⟩
+  rw [← add_sum_erase _ _ h0, ← add_sum_erase _ _ h1, hd0, one_mul, mul_one] at h
+  have hr : ∑ q ∈ ((antidiagonal β).erase (0, β)).erase (β, 0), hd q.1 1 * hd q.2 1 = 0 := by
+    refine sum_eq_zero fun q hq => ?_
+    have hq2 := mem_erase.1 hq
+    have hq1 := mem_erase.1 hq2.2
+    have h12 : q.1 + q.2 = β := mem_antidiagonal.1 hq1.2
+    have hne1 : q.1 ≠ 0 := fun h => hq1.1 (Prod.ext h (by rw [← h12, h, zero_add]))
+    have hne2 : q.2 ≠ 0 := fun h => hq2.1 (Prod.ext (by rw [← h12, h, add_zero]) h)
+    have hd2 : Finsupp.degree q.2 ≠ 0 := fun h => hne2 ((Finsupp.degree_eq_zero_iff _).1 h)
+    have hlt : Finsupp.degree q.1 < n := by
+      rw [← hn, ← h12, map_add]; omega
+    rw [ih _ hlt q.1 hne1 rfl, zero_mul]
+  rw [hr, add_zero] at h
+  have : hd β 1 + hd β 1 = hd β 1 + 0 := by rw [add_zero]; exact h.symm
+  exact add_left_cancel this
+
+theorem iterHd_one (hd0 : ∀ x, hd 0 x = x)
+    (hdm : ∀ β x z, hd β (x * z) = ∑ q ∈ antidiagonal β, hd q.1 x * hd q.2 z) (l : List (σ →₀ ℕ)) :
+    iterHd hd l 1 = 0 ∨ iterHd hd l 1 = 1 := by
+  induction l with
+  | nil => exact Or.inr rfl
+  | cons β l ih =>
+    rw [iterHd_cons]
+    rcases ih with h | h
+    · left; rw [h, map_zero]
+    · rw [h]
+      by_cases hβ : β = 0
+      · right; rw [hβ, hd0]
+      · left; exact hd_one' hd0 hdm β hβ
+
+theorem low_mul' (hdm : ∀ β x z, hd β (x * z) = ∑ q ∈ antidiagonal β, hd q.1 x * hd q.2 z) (I : Ideal Λ)
+    {n m : ℕ} {z z' : Λ} (hz : ∀ β, hd β z ∈ I ^ (n - Finsupp.degree β))
+    (hz' : ∀ β, hd β z' ∈ I ^ (m - Finsupp.degree β)) (β : σ →₀ ℕ) :
+    hd β (z * z') ∈ I ^ (n + m - Finsupp.degree β) := by
+  rw [hdm]
+  refine Ideal.sum_mem _ fun q hq => ?_
+  have h12 := mem_antidiagonal.1 hq
+  have h := Ideal.mul_mem_mul (hz q.1) (hz' q.2)
+  rw [← pow_add] at h
+  refine Ideal.pow_le_pow_right ?_ h
+  rw [← h12, map_add]
+  omega
+
+theorem hd_pow_mem' (hd0 : ∀ x, hd 0 x = x)
+    (hdm : ∀ β x z, hd β (x * z) = ∑ q ∈ antidiagonal β, hd q.1 x * hd q.2 z) (I : Ideal Λ) (n : ℕ) {z : Λ}
+    (hz : z ∈ I ^ n) (β : σ →₀ ℕ) : hd β z ∈ I ^ (n - Finsupp.degree β) := by
+  induction n generalizing z β with
+  | zero => simp
+  | succ n ih =>
+    rw [pow_succ] at hz
+    refine Submodule.mul_induction_on hz (fun a ha b hb => ?_) (fun x y hx hy => ?_) β
+    · intro β
+      have hb1 : ∀ β', hd β' b ∈ I ^ (1 - Finsupp.degree β') := fun β' => by
+        by_cases h : β' = 0
+        · rw [h, hd0, map_zero, Nat.sub_zero, pow_one]; exact hb
+        · have : Finsupp.degree β' ≠ 0 := fun h' => h ((Finsupp.degree_eq_zero_iff _).1 h')
+          rw [show 1 - Finsupp.degree β' = 0 by omega, pow_zero, Ideal.one_eq_top]
+          exact Submodule.mem_top
+      exact low_mul' hdm I (fun β' => ih ha β') hb1 β
+    · intro β
+      rw [map_add]
+      exact Ideal.add_mem _ (hx β) (hy β)
+
+def stabSub (hd0 : ∀ x, hd 0 x = x)
+    (hdm : ∀ β x z, hd β (x * z) = ∑ q ∈ antidiagonal β, hd q.1 x * hd q.2 z) (M : Subring Λ) : Subring Λ where
+  carrier := {r | ∀ l, iterHd hd l r ∈ M}
+  zero_mem' := fun l => by rw [iterHd_zero]; exact M.zero_mem
+  one_mem' := fun l => by
+    rcases iterHd_one hd0 hdm l with h | h <;> rw [h]
+    · exact M.zero_mem
+    · exact M.one_mem
+  add_mem' := fun ha hb l => by rw [iterHd_add]; exact M.add_mem (ha l) (hb l)
+  neg_mem' := fun ha l => by rw [iterHd_neg]; exact M.neg_mem (ha l)
+  mul_mem' := by
+    intro a b ha hb
+    let A : AddSubgroup Λ := AddSubgroup.closure {z | ∃ l₁ l₂, z = iterHd hd l₁ a * iterHd hd l₂ b}
+    have hA : ∀ β, ∀ z ∈ A, hd β z ∈ A := by
+      intro β z hz
+      refine AddSubgroup.closure_induction (fun x hx => ?_) ?_ (fun x y _ _ hx hy => ?_) (fun x _ hx => ?_) hz
+      · obtain ⟨l₁, l₂, rfl⟩ := hx
+        rw [hdm]
+        exact AddSubgroup.sum_mem _ fun q _ => AddSubgroup.subset_closure ⟨q.1 :: l₁, q.2 :: l₂, rfl⟩
+      · rw [map_zero]; exact A.zero_mem
+      · rw [map_add]; exact A.add_mem hx hy
+      · rw [map_neg]; exact A.neg_mem hx
+    have hAl : ∀ l, iterHd hd l (a * b) ∈ A := by
+      intro l
+      induction l with
+      | nil => exact AddSubgroup.subset_closure ⟨[], [], rfl⟩
+      | cons β l ih => rw [iterHd_cons]; exact hA β _ ih
+    have hAM : A ≤ M.toAddSubgroup := by
+      refine (AddSubgroup.closure_le _).2 ?_
+      rintro _ ⟨l₁, l₂, rfl⟩
+      exact M.mul_mem (ha l₁) (hb l₂)
+    exact fun l => hAM (hAl l)
+
+theorem stabSub_le (hd0 : ∀ x, hd 0 x = x)
+    (hdm : ∀ β x z, hd β (x * z) = ∑ q ∈ antidiagonal β, hd q.1 x * hd q.2 z) (M : Subring Λ) :
+    stabSub hd0 hdm M ≤ M := fun _ h => h []
+
+theorem stabSub_hd (hd0 : ∀ x, hd 0 x = x)
+    (hdm : ∀ β x z, hd β (x * z) = ∑ q ∈ antidiagonal β, hd q.1 x * hd q.2 z) (M : Subring Λ) (β : σ →₀ ℕ)
+    {r : Λ} (hr : r ∈ stabSub hd0 hdm M) : hd β r ∈ stabSub hd0 hdm M := fun l => by
+  have := hr (l ++ [β])
+  simpa [iterHd, List.foldr_append] using this
+
+def appSub {L : Type*} [CommRing L] (ι : L →+* Λ) (F : Subring L) (I : Ideal Λ) : Subring Λ where
+  carrier := {r | ∀ n : ℕ, ∃ f ∈ F, r - ι f ∈ I ^ n}
+  zero_mem' := fun n => ⟨0, F.zero_mem, by rw [map_zero, sub_zero]; exact Ideal.zero_mem _⟩
+  one_mem' := fun n => ⟨1, F.one_mem, by rw [map_one, sub_self]; exact Ideal.zero_mem _⟩
+  add_mem' := by
+    intro a b ha hb n
+    obtain ⟨f, hf, hfa⟩ := ha n
+    obtain ⟨g, hg, hgb⟩ := hb n
+    refine ⟨f + g, F.add_mem hf hg, ?_⟩
+    have : a + b - ι (f + g) = (a - ι f) + (b - ι g) := by rw [map_add]; ring
+    rw [this]; exact Ideal.add_mem _ hfa hgb
+  neg_mem' := by
+    intro a ha n
+    obtain ⟨f, hf, hfa⟩ := ha n
+    refine ⟨-f, F.neg_mem hf, ?_⟩
+    have : -a - ι (-f) = -(a - ι f) := by rw [map_neg]; ring
+    rw [this]; exact Submodule.neg_mem _ hfa
+  mul_mem' := by
+    intro a b ha hb n
+    obtain ⟨f, hf, hfa⟩ := ha n
+    obtain ⟨g, hg, hgb⟩ := hb n
+    refine ⟨f * g, F.mul_mem hf hg, ?_⟩
+    have : a * b - ι (f * g) = a * (b - ι g) + (a - ι f) * ι g := by rw [map_mul]; ring
+    rw [this]
+    exact Ideal.add_mem _ (Ideal.mul_mem_left _ _ hgb) (Ideal.mul_mem_right _ _ hfa)
+
+theorem appSub_hd (hd0 : ∀ x, hd 0 x = x)
+    (hdm : ∀ β x z, hd β (x * z) = ∑ q ∈ antidiagonal β, hd q.1 x * hd q.2 z)
+    {L : Type*} [CommRing L] (ι : L →+* Λ) (F : Subring L) (I : Ideal Λ) (hL : (σ →₀ ℕ) → L → L)
+    (hdι : ∀ β x, hd β (ι x) = ι (hL β x)) (hF : ∀ β, ∀ f ∈ F, hL β f ∈ F) (β : σ →₀ ℕ) {r : Λ}
+    (hr : r ∈ appSub ι F I) : hd β r ∈ appSub ι F I := by
+  intro n
+  obtain ⟨f, hf, hfr⟩ := hr (n + Finsupp.degree β)
+  refine ⟨hL β f, hF β f hf, ?_⟩
+  have h := hd_pow_mem' hd0 hdm I _ hfr β
+  rwa [map_sub, hdι, Nat.add_sub_cancel] at h
+
+theorem hd_inv_const (hd0 : ∀ x, hd 0 x = x)
+    (hdm : ∀ β x z, hd β (x * z) = ∑ q ∈ antidiagonal β, hd q.1 x * hd q.2 z) {u : Λ} (hu : IsUnit u)
+    (hc : ∀ β, β ≠ 0 → hd β u = 0) (β : σ →₀ ℕ) (hβ : β ≠ 0) : hd β (↑hu.unit⁻¹ : Λ) = 0 := by
+  have h := hdm β u ↑hu.unit⁻¹
+  rw [hu.mul_val_inv, hd_one' hd0 hdm β hβ] at h
+  have h0 : ((0 : σ →₀ ℕ), β) ∈ antidiagonal β := mem_antidiagonal.2 (zero_add β)
+  rw [← add_sum_erase _ _ h0, hd0] at h
+  have hr : ∑ q ∈ (antidiagonal β).erase (0, β), hd q.1 u * hd q.2 ↑hu.unit⁻¹ = 0 := by
+    refine sum_eq_zero fun q hq => ?_
+    have hq1 := mem_erase.1 hq
+    have h12 : q.1 + q.2 = β := mem_antidiagonal.1 hq1.2
+    have hne : q.1 ≠ 0 := fun h => hq1.1 (Prod.ext h (by rw [← h12, h, zero_add]))
+    rw [hc _ hne, zero_mul]
+  rw [hr, add_zero] at h
+  calc hd β (↑hu.unit⁻¹ : Λ) = ↑hu.unit⁻¹ * (u * hd β ↑hu.unit⁻¹) := by
+        rw [← mul_assoc, hu.val_inv_mul, one_mul]
+    _ = 0 := by rw [← h, mul_zero]
+
+theorem hd_mul_const (hdm : ∀ β x z, hd β (x * z) = ∑ q ∈ antidiagonal β, hd q.1 x * hd q.2 z) {a b : Λ}
+    (ha : ∀ β, β ≠ 0 → hd β a = 0) (hb : ∀ β, β ≠ 0 → hd β b = 0) (β : σ →₀ ℕ) (hβ : β ≠ 0) :
+    hd β (a * b) = 0 := by
+  rw [hdm]
+  refine sum_eq_zero fun q hq => ?_
+  by_cases h1 : q.1 = 0
+  · have h12 : q.1 + q.2 = β := mem_antidiagonal.1 hq
+    have h2 : q.2 ≠ 0 := by rw [h1, zero_add] at h12; rw [h12]; exact hβ
+    rw [hb _ h2, mul_zero]
+  · rw [ha _ h1, zero_mul]
+
+
+theorem appSub_inv {L : Type*} [CommRing L] (ι : L →+* Λ) (F : Subring L) (I : Ideal Λ) {d v : L} (hdF : d ∈ F)
+    (hvF : v ∈ F) (hz : ι (1 - d * v) ∈ I) (hu : IsUnit (ι d)) : (↑hu.unit⁻¹ : Λ) ∈ appSub ι F I := by
+  intro n
+  refine ⟨v * ∑ i ∈ range n, (1 - d * v) ^ i, F.mul_mem hvF (F.sum_mem fun i _ =>
+    F.pow_mem (F.sub_mem F.one_mem (F.mul_mem hdF hvF)) i), ?_⟩
+  have hg : 1 - d * (v * ∑ i ∈ range n, (1 - d * v) ^ i) = (1 - d * v) ^ n := by
+    linear_combination (-1 : L) * mul_neg_geom_sum (1 - d * v) n
+  have e : (↑hu.unit⁻¹ : Λ) - ι (v * ∑ i ∈ range n, (1 - d * v) ^ i) =
+      ↑hu.unit⁻¹ * ι (1 - d * (v * ∑ i ∈ range n, (1 - d * v) ^ i)) := by
+    rw [map_sub, map_one, map_mul ι d, mul_sub, mul_one, ← mul_assoc, hu.val_inv_mul, one_mul]
+  rw [e, hg, map_pow]
+  exact Ideal.mul_mem_left _ _ (Ideal.pow_mem_pow hz n)
+
+end Gen
+
+section Int
+
+lemma nval_neg_rg {T : CDVR} (e : ℕ) (x : T.Fr) : nval T.V e (-x) = nval T.V e x := by
+  by_cases hx : x = 0
+  · subst hx; rw [neg_zero]
+  · rw [nval_of_ne (neg_ne_zero.2 hx), nval_of_ne hx]
+    unfold vV; rw [Valuation.map_neg]
+
+def intSub {Λ : Type*} [CommRing Λ] {Z : Type*} (T : Z → CDVR) (ev : ∀ ζ, Λ →+* (T ζ).Fr) : Subring Λ where
+  carrier := {x | ∀ ζ, 0 ≤ nval (T ζ).V 1 (ev ζ x)}
+  zero_mem' := fun ζ => by rw [map_zero, nval_zero]; exact le_top
+  one_mem' := fun ζ => by rw [map_one, nval_of_ne one_ne_zero, vV_one']; simp
+  add_mem' := fun ha hb ζ => by
+    rw [map_add]; exact (le_min (ha ζ) (hb ζ)).trans (nval_add 1 _ _)
+  neg_mem' := fun ha ζ => by rw [map_neg, nval_neg_rg]; exact ha ζ
+  mul_mem' := fun ha hb ζ => by rw [map_mul, nval_mul]; exact add_nonneg (ha ζ) (hb ζ)
+
+end Int
+
+section Approx
+
+variable {D : D7} {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} {j : ℕ} (X : PJ D B P j) (la : HeightOneSpectrum (𝓞 B.KO))
+  {N : ℕ} {wL : WeightFamilies.Wt D j} (w : Fin N → B.Cusp j wL)
+
+theorem approx_of {Λ : Type*} [CommRing Λ] (ι : Lw X la w →+* Λ) (I : Ideal Λ) (u : WeightFamilies.Wt D j) (e' : Λ) (n : ℕ)
+    (xe : ↥(HK X la w u)) (he : ι (xe : Lw X la w) - e' ∈ I ^ n) {r : Λ}
+    (hr : r ∈ appSub ι (Frac0 X la w).toSubring I) :
+    ∃ x : ↥(HK X la w u), ι (x : Lw X la w) - r * e' ∈ I ^ n := by
+  obtain ⟨f, hf, hfr⟩ := hr n
+  refine ⟨(⟨f, hf⟩ : ↥(Frac0 X la w)) • xe, ?_⟩
+  have hc : ((((⟨f, hf⟩ : ↥(Frac0 X la w)) • xe : ↥(HK X la w u)) : Lw X la w)) = f * (xe : Lw X la w) := rfl
+  rw [hc, map_mul]
+  have : ι f * ι (xe : Lw X la w) - r * e' = ι f * (ι (xe : Lw X la w) - e') - (r - ι f) * e' := by ring
+  rw [this]
+  exact Ideal.sub_mem _ (Ideal.mul_mem_left _ _ he) (Ideal.mul_mem_right _ _ hfr)
+
+end Approx
+
+end Formalism.L2.Pj
+end
+end
+
+section
+noncomputable section
+
+namespace Formalism.L2.Pj
+
+open Formalism.MainNotions.WeightAlgebra Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Gaps.EtaleWeightGaps NumberField IsDedekindDomain
+
+variable {D : D7} {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} {j : ℕ} {X : PJ D B P j} {E : PtExt X} {hM : IntAtExt X E}
+  {ka wL wF : WeightFamilies.Wt D j} {G : GlobalFamilyData (xplus X E hM) ka wL wF} {la : HeightOneSpectrum (𝓞 B.KO)} {g0 : B.Cusp j wF}
+
+theorem isUnit_toOsK_of_lift {y : PtsG G la → E.Pt' la} (hw : ∀ ζ, FromW ζ (y ζ)) (C : CurveModel G la g0)
+    (x : ↥(Frac0 (xplus X E hM) la G.w))
+    (hx : ∀ ζ, (hw ζ).toSecPt.lift (x : Lw (xplus X E hM) la G.w) ≠ 0) :
+    IsUnit (toOsK (xplus X E hM) la G.w x) := by
+  classical
+  have : FiniteDimensional (Kp (xplus X E hM) la G.N) (OsK (xplus X E hM) la G.w) := by
+    have : FiniteDimensional (Kp (xplus X E hM) la G.N) (↥C.A' ⧸ C.JA) := C.fin
+    exact LinearEquiv.finiteDimensional C.quotEquiv.toLinearEquiv
+  have : IsReduced (OsK (xplus X E hM) la G.w) := by
+    have : IsReduced (↥C.A' ⧸ C.JA) := C.red
+    exact isReduced_of_injective C.quotEquiv.symm.toRingHom C.quotEquiv.symm.injective
+  have : IsArtinianRing (OsK (xplus X E hM) la G.w) := IsArtinianRing.of_finite (Kp (xplus X E hM) la G.N) _
+  by_contra hnu
+  set a := toOsK (xplus X E hM) la G.w x with ha
+  obtain ⟨I, hI⟩ : ∃ I : MaximalSpectrum (OsK (xplus X E hM) la G.w), a ∈ I.asIdeal := by
+    obtain ⟨M, hM, haM⟩ := Ideal.exists_le_maximal (Ideal.span {a}) (by rwa [Ne, Ideal.span_singleton_eq_top])
+    exact ⟨⟨M, hM⟩, haM (Ideal.subset_span rfl)⟩
+  let e := IsArtinianRing.equivPi (OsK (xplus X E hM) la G.w)
+  set ε := e.symm (Pi.single I 1) with hε
+  have hεa : ε * a = 0 := by
+    apply e.injective
+    rw [map_mul, map_zero, hε, e.apply_symm_apply]
+    funext m
+    by_cases hm : m = I
+    · subst hm
+      rw [Pi.mul_apply, Pi.single_eq_same, one_mul, Pi.zero_apply]
+      show Ideal.Quotient.mk m.asIdeal a = 0
+      exact Ideal.Quotient.eq_zero_iff_mem.2 hI
+    · rw [Pi.mul_apply, Pi.single_eq_of_ne hm, zero_mul, Pi.zero_apply]
+  have hεε : ε * ε = ε := by
+    apply e.injective
+    rw [map_mul, hε, e.apply_symm_apply]
+    funext m
+    by_cases hm : m = I
+    · subst hm; rw [Pi.mul_apply, Pi.single_eq_same, one_mul]
+    · rw [Pi.mul_apply, Pi.single_eq_of_ne hm, zero_mul]
+  have hε0 : ε ≠ 0 := by
+    intro h
+    have h1 := congrArg e h
+    rw [hε, e.apply_symm_apply, map_zero] at h1
+    have h2 := congrFun h1 I
+    rw [Pi.single_eq_same, Pi.zero_apply] at h2
+    have h3 : (1 : OsK (xplus X E hM) la G.w) ∈ I.asIdeal :=
+      Ideal.Quotient.eq_zero_iff_mem.1 (by rw [map_one]; exact h2)
+    exact I.isMaximal.ne_top ((Ideal.eq_top_iff_one _).2 h3)
+  have hint : IsIntegral (Op (xplus X E hM) la G.N) ε := by
+    refine ⟨Polynomial.X ^ 2 - Polynomial.X, Polynomial.monic_X_pow_sub (by rw [Polynomial.degree_X]; norm_num), ?_⟩
+    simp [pow_two, hεε]
+  let ε' : ↥(As (Op (xplus X E hM) la G.N) (OsK (xplus X E hM) la G.w)) := ⟨ε, hint⟩
+  have hnot : ¬ IsUnit (1 - ε') := by
+    intro hu
+    apply hε0
+    have h1 : ε' * (1 - ε') = 0 := by
+      apply Subtype.ext
+      show ε * (1 - ε) = 0
+      rw [mul_sub, mul_one, hεε, sub_self]
+    have h2 := (hu.mul_left_eq_zero).1 h1
+    exact congrArg Subtype.val h2
+  obtain ⟨Z, hZ, hZ1⟩ := Ideal.exists_le_maximal (Ideal.span {1 - ε'}) (by rwa [Ne, Ideal.span_singleton_eq_top])
+  let ζ : PtsG G la := ⟨Z, hZ⟩
+  have hεZ : ε' ∉ ζ.asIdeal := by
+    intro h
+    have h1 : (1 - ε') + ε' ∈ Z := Z.add_mem (hZ1 (Ideal.subset_span rfl)) h
+    rw [sub_add_cancel] at h1
+    exact hZ.ne_top ((Ideal.eq_top_iff_one _).2 h1)
+  obtain ⟨e0, he0⟩ := toOsK_surjective (xplus X E hM) la G.w ε
+  have hev := (hw ζ).evW e0 ε' he0
+  have hu : IsUnit (algebraMap ↥(As (Op (xplus X E hM) la G.N) (OsK (xplus X E hM) la G.w)) (Loc ζ) ε') :=
+    (IsLocalization.AtPrime.isUnit_to_map_iff (Loc ζ) ζ.asIdeal ε').2 hεZ
+  have hne : (hw ζ).toSecPt.lift (e0 : Lw (xplus X E hM) la G.w) ≠ 0 := by
+    rw [hev]
+    exact ((hu.map (hw ζ).ι).map (algebraMap (hw ζ).T.V (hw ζ).T.Fr)).ne_zero
+  have hJ : e0 * x ∈ Jid (xplus X E hM) la G.w := by
+    rw [← toOsK_eq_zero_iff, map_mul, he0]
+    exact hεa
+  have h0 := (hw ζ).toSecPt.lift_Jid hJ
+  rw [Subalgebra.coe_mul, map_mul] at h0
+  exact mul_ne_zero hne (hx ζ) h0
+
+end Formalism.L2.Pj
+end
+end
+
+section
+noncomputable section
+
+namespace Formalism.L2.Pj
+
+open Formalism.MainNotions.WeightAlgebra Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Gaps.EtaleWeightGaps NumberField IsDedekindDomain
+
+variable {D : D7} {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} {j : ℕ} {X : PJ D B P j} {E : PtExt X} {hM : IntAtExt X E}
+  {ka wL wF : WeightFamilies.Wt D j}
+
+def LiftModelSt (G : GlobalFamilyData (xplus X E hM) ka wL wF) (la : HeightOneSpectrum (𝓞 B.KO)) : Prop :=
+  ∀ (y : PtsG G la → E.Pt' la) (hw : ∀ ζ, FromW ζ (y ζ)) (g0 : B.Cusp j wF) (T : ℕ),
+    Nonempty (CurveModel G la g0) →
+    (∀ ζ, (hw ζ).ev (emb (xplus X E hM) la G.N (X.inc wF g0)) ≠ 0) →
+    Nonempty (LiftModel G la y (fun ζ => (hw ζ).toSecPt) g0 T)
+
+end Formalism.L2.Pj
+end
+end
+
+section
+noncomputable section
+
+namespace Formalism.L2.Pj
+
+open Formalism.MainNotions.WeightAlgebra Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Gaps.EtaleWeightGaps NumberField IsDedekindDomain Finset
+
+lemma nval_alg_nonneg {T : CDVR} (x : T.V) : 0 ≤ nval T.V 1 (algebraMap T.V T.Fr x) := by
+  by_cases hx : x = 0
+  · rw [hx, map_zero, nval_zero]; exact le_top
+  · obtain ⟨k, hk⟩ := ENat.ne_top_iff_exists.1 (mt (IsDiscreteValuationRing.addVal_eq_top_iff).1 hx)
+    have h0 : algebraMap T.V T.Fr x ≠ 0 := (map_ne_zero_iff _ (IsFractionRing.injective T.V T.Fr)).2 hx
+    rw [nval_of_ne h0, vV_alg_of_addVal hk.symm]
+    exact EReal.coe_nonneg.2 (by positivity)
+
+
+lemma toE_nonneg' {w : WithTop ℤ} (h : 0 ≤ w) : 0 ≤ toE w := by
+  cases w with
+  | top => simp [toE]
+  | coe n =>
+    simp only [toE]
+    have : (0 : ℤ) ≤ n := by exact_mod_cast h
+    exact_mod_cast this
+
+variable {D : D7} {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} {j : ℕ} {X : PJ D B P j} {E : PtExt X} {hM : IntAtExt X E}
+  {ka wL wF : WeightFamilies.Wt D j} {G : GlobalFamilyData (xplus X E hM) ka wL wF} {la : HeightOneSpectrum (𝓞 B.KO)}
+  {y : PtsG G la → E.Pt' la} (hw : ∀ ζ, FromW ζ (y ζ))
+
+abbrev hsW : ∀ ζ, SecPt ζ (y ζ) := fun ζ => (hw ζ).toSecPt
+
+def IW : Ideal (LamL (hsW hw)) := Ideal.span (Set.range fun i : Fin (WeightFamilies.dimY D j) =>
+  ιW (hsW hw) (sfr (xplus X E hM) la G.w i.succ : Lw (xplus X E hM) la G.w))
+
+def RGW : Subring (LamL (hsW hw)) :=
+  stabSub (hdL_zero (hsW hw)) (hdW_mul (hsW hw)) (intSub (fun ζ => (hsW hw ζ).T) (evL (hsW hw))) ⊓
+    appSub (ιW (hsW hw)) (Frac0 (xplus X E hM) la G.w).toSubring (IW hw)
+
+theorem ιW_Jid {z : ↥(Frac0 (xplus X E hM) la G.w)} (hz : z ∈ Jid (xplus X E hM) la G.w) :
+    ιW (hsW hw) (z : Lw (xplus X E hM) la G.w) ∈ IW hw := by
+  induction hz using Submodule.span_induction with
+  | mem x hx => obtain ⟨i, rfl⟩ := hx; exact Ideal.subset_span ⟨i, rfl⟩
+  | zero => rw [ZeroMemClass.coe_zero, map_zero]; exact Ideal.zero_mem _
+  | add x z _ _ hx hz => rw [Subalgebra.coe_add, map_add]; exact Ideal.add_mem _ hx hz
+  | smul a x _ hx => rw [smul_eq_mul, Subalgebra.coe_mul, map_mul]; exact Ideal.mul_mem_left _ _ hx
+
+theorem RGW_hd (β : Idx D j G.N →₀ ℕ) (r : LamL (hsW hw)) (hr : r ∈ RGW hw) : hdL (hsW hw) β r ∈ RGW hw :=
+  ⟨stabSub_hd _ _ _ β hr.1, appSub_hd (hdL_zero (hsW hw)) (hdW_mul (hsW hw)) (ιW (hsW hw)) _ _
+    (fun β x => hasse (xplus X E hM) la G.w β x) (hdW_ι (hsW hw))
+    (fun β f hf => (mem_Frac0 _ _ _).2 (hasse_mem_Hfr _ _ _ ((mem_Frac0 _ _ _).1 hf) β)) β hr.2⟩
+
+theorem RGW_int (ζ : PtsG G la) (r : LamL (hsW hw)) (hr : r ∈ RGW hw) :
+    0 ≤ nval (hsW hw ζ).T.V 1 (evL (hsW hw) ζ r) :=
+  stabSub_le _ _ _ hr.1 ζ
+
+theorem iterHd_ιW (l : List (Idx D j G.N →₀ ℕ)) (x : Lw (xplus X E hM) la G.w) :
+    iterHd (hdL (hsW hw)) l (ιW (hsW hw) x) =
+      ιW (hsW hw) (l.foldr (fun β z => hasse (xplus X E hM) la G.w β z) x) := by
+  induction l with
+  | nil => rfl
+  | cons β l ih => rw [iterHd_cons, ih, hdW_ι]; rfl
+
+
+theorem app_of_mem (f : ↥(Frac0 (xplus X E hM) la G.w)) :
+    ιW (hsW hw) (f : Lw (xplus X E hM) la G.w) ∈
+      appSub (ιW (hsW hw)) (Frac0 (xplus X E hM) la G.w).toSubring (IW hw) :=
+  fun n => ⟨f, f.2, by rw [sub_self]; exact Ideal.zero_mem _⟩
+
+theorem evL_inv (ζ : PtsG G la) {u : LamL (hsW hw)} (hu : IsUnit u) :
+    evL (hsW hw) ζ ↑hu.unit⁻¹ = (evL (hsW hw) ζ u)⁻¹ := by
+  refine eq_inv_of_mul_eq_one_left ?_
+  rw [← map_mul, hu.val_inv_mul, map_one]
+
+theorem inv_app {g0 : B.Cusp j wF} (C : CurveModel G la g0) (d : ↥(Frac0 (xplus X E hM) la G.w))
+    (hd : ∀ ζ, (hsW hw ζ).lift (d : Lw (xplus X E hM) la G.w) ≠ 0) :
+    (↑(isUnit_of_lift_ne (hsW hw) hd).unit⁻¹ : LamL (hsW hw)) ∈
+      appSub (ιW (hsW hw)) (Frac0 (xplus X E hM) la G.w).toSubring (IW hw) := by
+  obtain ⟨b, hb⟩ := (isUnit_toOsK_of_lift hw C d hd).exists_right_inv
+  obtain ⟨v, rfl⟩ := toOsK_surjective (xplus X E hM) la G.w b
+  have hz : (1 - d * v : ↥(Frac0 (xplus X E hM) la G.w)) ∈ Jid (xplus X E hM) la G.w := by
+    rw [← toOsK_eq_zero_iff, map_sub, map_one, map_mul, hb, sub_self]
+  have h := ιW_Jid hw hz
+  push_cast at h
+  exact appSub_inv _ _ _ d.2 v.2 h _
+
+
+
+end Formalism.L2.Pj
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.L2.Pj
@@ -269,3 +1005,5 @@ theorem liftModelSt_of (G : GlobalFamilyData (xplus X E hM) ka wL wF) (la : Heig
     approx := fun r hr => approx_of' hw g0 hsApp (a0 D j T) hr }⟩
 
 end Formalism.L2.Pj
+end
+end

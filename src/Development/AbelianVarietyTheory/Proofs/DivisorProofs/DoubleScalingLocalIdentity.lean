@@ -11,9 +11,197 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSplitPlaceAde
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicTraceSupportedAtSplitPlaceStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LinearModelUnitaryConjugate
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraceSymplecticFormUnitaryGroupActionInvariant
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilRepBijectionSchwartz
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianTensorLocalVanish
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianTensorSkewHermitianSplitSymplecticPairStatement
 
+section
+section
+open Matrix
+
+namespace GlobalTheory.SchurHeisReindex
+
+variable {k : Type} [Field k] [TopologicalSpace k] {n : ℕ} {β : Type} [Fintype β] [DecidableEq β]
+
+noncomputable def eL (k : Type) [Field k] (n : ℕ) (β : Type) [Fintype β] [DecidableEq β] :
+    Matrix (Fin n) (Fin (Fintype.card β)) k ≃ₗ[k] Matrix (Fin n) β k :=
+  Matrix.reindexLinearEquiv k k (Equiv.refl (Fin n)) (Fintype.equivFin β).symm
+
+theorem eL_apply (C : Matrix (Fin n) (Fin (Fintype.card β)) k) (i : Fin n) (b : β) :
+    eL k n β C i b = C i (Fintype.equivFin β b) := by
+  simp [eL, reindexLinearEquiv_apply, reindex_apply, submatrix_apply]
+
+theorem eL_symm_apply (D : Matrix (Fin n) β k) (i : Fin n) (j : Fin (Fintype.card β)) :
+    (eL k n β).symm D i j = D i ((Fintype.equivFin β).symm j) := by
+  simp [eL, reindexLinearEquiv_symm, reindexLinearEquiv_apply, reindex_apply, submatrix_apply]
+
+theorem continuous_eL : Continuous (eL k n β) := by
+  refine continuous_pi fun i => continuous_pi fun b => ?_
+  simp only [eL_apply]
+  exact (continuous_apply _).comp (continuous_apply i)
+
+theorem continuous_eL_symm : Continuous (eL k n β).symm := by
+  refine continuous_pi fun i => continuous_pi fun j => ?_
+  simp only [eL_symm_apply]
+  exact (continuous_apply _).comp (continuous_apply i)
+
+noncomputable def eH (k : Type) [Field k] [TopologicalSpace k] (n : ℕ) (β : Type) [Fintype β] [DecidableEq β] :
+    Matrix (Fin n) (Fin (Fintype.card β)) k ≃ₜ Matrix (Fin n) β k where
+  toEquiv := (eL k n β).toEquiv
+  continuous_toFun := continuous_eL
+  continuous_invFun := continuous_eL_symm
+
+theorem comp_mem_SB' {X Y : Type} [TopologicalSpace X] [TopologicalSpace Y] (e : Y ≃ₜ X) {f : X → ℂ}
+    (hf : f ∈ GlobalTheory.WeilM.SB X) : (f ∘ e) ∈ GlobalTheory.WeilM.SB Y :=
+  ⟨hf.1.comp_continuous e.continuous, hf.2.comp_homeomorph e⟩
+
+end GlobalTheory.SchurHeisReindex
+
+open GlobalTheory.SchurHeisReindex in
+
+theorem GlobalTheory.schur_heisenberg_linearModel_fintype : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
+    {β : Type} [Fintype β] [DecidableEq β] {Xt : Type} [AddCommGroup Xt] [Module ℂ Xt] (V : Submodule ℂ Xt)
+    (ψ0 : AddChar k ℂ), Continuous ψ0 → ψ0 ≠ 1 →
+    ∀ (ι₁ : Xt →ₗ[ℂ] (Matrix (Fin n) β k → ℂ)) (ι₂ : Xt → Matrix (Fin n) β k → ℂ),
+    Set.BijOn ι₁ (V : Set Xt) (GlobalTheory.WeilM.SB (Matrix (Fin n) β k) : Set _) →
+    (∀ x ∈ V, ∀ y ∈ V, ∀ c : ℂ, ι₂ (c • x + y) = c • ι₂ x + ι₂ y) →
+    ∀ (Tr : Matrix (Fin n) β k → Xt → Xt) (Mu : (Matrix (Fin n) β k →ₗ[k] k) → Xt → Xt),
+    (∀ C, ∀ x ∈ V, Tr C x ∈ V ∧ ι₁ (Tr C x) = (fun Y => ι₁ x (Y + C)) ∧ ι₂ (Tr C x) = fun Y => ι₂ x (Y + C)) →
+    (∀ l, ∀ x ∈ V, Mu l x ∈ V ∧ ι₁ (Mu l x) = (fun Y => ψ0 (l Y) * ι₁ x Y) ∧ ι₂ (Mu l x) = fun Y => ψ0 (l Y) * ι₂ x Y) →
+    ∃ c : ℂ, ∀ x ∈ V, ι₂ x = c • ι₁ x := by
+  intro k _ _ _ _ n β _ _ Xt _ _ V ψ0 hψc hψ1 ι₁ ι₂ hbij hlin Tr Mu hTr hMu
+  set e := eL k n β with he
+  let ι₁' : Xt →ₗ[ℂ] (Matrix (Fin n) (Fin (Fintype.card β)) k → ℂ) := LinearMap.funLeft ℂ ℂ e ∘ₗ ι₁
+  have hι₁' : ∀ x, ι₁' x = ι₁ x ∘ e := fun x => rfl
+  let ι₂' : Xt → Matrix (Fin n) (Fin (Fintype.card β)) k → ℂ := fun x => ι₂ x ∘ e
+  have hsurj : Function.Surjective e := e.surjective
+  have hbij' : Set.BijOn ι₁' (V : Set Xt) (GlobalTheory.WeilM.SB (Matrix (Fin n) (Fin (Fintype.card β)) k) : Set _) := by
+    refine ⟨fun x hx => ?_, fun x hx y hy hxy => ?_, fun f hf => ?_⟩
+    · rw [hι₁']
+      exact comp_mem_SB' (eH k n β) (hbij.1 hx)
+    · apply hbij.2.1 hx hy
+      rw [hι₁', hι₁'] at hxy
+      funext Z
+      obtain ⟨Y, rfl⟩ := hsurj Z
+      exact congrFun hxy Y
+    · have hf' : f ∘ (eH k n β).symm ∈ GlobalTheory.WeilM.SB (Matrix (Fin n) β k) := comp_mem_SB' (eH k n β).symm hf
+      obtain ⟨x, hx, hxf⟩ := hbij.2.2 hf'
+      refine ⟨x, hx, ?_⟩
+      rw [hι₁', hxf]
+      funext Y
+      show f ((eH k n β).symm (e Y)) = f Y
+      exact congrArg f ((eL k n β).symm_apply_apply Y)
+  have hlin' : ∀ x ∈ V, ∀ y ∈ V, ∀ c : ℂ, ι₂' (c • x + y) = c • ι₂' x + ι₂' y := by
+    intro x hx y hy c
+    funext Y
+    simp [ι₂', hlin x hx y hy c]
+  have hadd : ∀ Y C, e (Y + C) = e Y + e C := fun Y C => map_add e Y C
+  obtain ⟨c, hc⟩ := GlobalTheory.T.eq_smul_of_commute_heisenberg_linearModel_schwartzBruhat V ψ0 hψc hψ1 ι₁' ι₂' hbij' hlin'
+    (fun C => Tr (e C)) (fun l => Mu (l ∘ₗ e.symm.toLinearMap))
+    (fun C x hx => by
+      obtain ⟨h1, h2, h3⟩ := hTr (e C) x hx
+      refine ⟨h1, ?_, ?_⟩
+      · funext Y; simp [hι₁', h2, hadd]
+      · funext Y; simp [ι₂', h3, hadd])
+    (fun l x hx => by
+      obtain ⟨h1, h2, h3⟩ := hMu (l ∘ₗ e.symm.toLinearMap) x hx
+      refine ⟨h1, ?_, ?_⟩
+      · funext Y; simp [hι₁', h2]
+      · funext Y; simp [ι₂', h3])
+  refine ⟨c, fun x hx => ?_⟩
+  funext Z
+  obtain ⟨Y, rfl⟩ := hsurj Z
+  have := congrFun (hc x hx) Y
+  simpa [ι₂', hι₁'] using this
+end
+
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weil_rep_bijection_schwartz : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
+    {β : Type} [Fintype β] [DecidableEq β] {Xt : Type} [AddCommGroup Xt] [Module ℂ Xt] (V : Submodule ℂ Xt)
+    (ψ0 : AddChar k ℂ), Continuous ψ0 → ψ0 ≠ 1 →
+    ∀ (ι₁ : Xt →ₗ[ℂ] (Matrix (Fin n) β k → ℂ)) (ι₂ : Xt → Matrix (Fin n) β k → ℂ),
+    Set.BijOn ι₁ (V : Set Xt) (GlobalTheory.WeilM.SB (Matrix (Fin n) β k) : Set _) →
+    (∀ x ∈ V, ∀ y ∈ V, ∀ c : ℂ, ι₂ (c • x + y) = c • ι₂ x + ι₂ y) →
+    ∀ (Tr : Matrix (Fin n) β k → Xt → Xt) (Mu : (Matrix (Fin n) β k →ₗ[k] k) → Xt → Xt),
+    (∀ C, ∀ x ∈ V, Tr C x ∈ V ∧ ι₁ (Tr C x) = (fun Y => ι₁ x (Y + C)) ∧ ι₂ (Tr C x) = fun Y => ι₂ x (Y + C)) →
+    (∀ l, ∀ x ∈ V, Mu l x ∈ V ∧ ι₁ (Mu l x) = (fun Y => ψ0 (l Y) * ι₁ x Y) ∧ ι₂ (Mu l x) = fun Y => ψ0 (l Y) * ι₂ x Y) →
+    ∃ c : ℂ, ∀ x ∈ V, ι₂ x = c • ι₁ x := by
+  atlas_forward_decl GlobalTheory.schur_heisenberg_linearModel_fintype
+end
+
+section
+section
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open scoped Matrix
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+namespace GlobalTheory.DblTrace
+
+open Matrix
+
+theorem hTens_dbl {R E : Type} [CommRing R] [CommRing E] [Algebra R E] (c : E →ₐ[R] E)
+    {α β : Type} [Fintype α] [DecidableEq α] [Fintype β] [DecidableEq β] (JA : Matrix α α E) (JB : Matrix β β E)
+    (x y : Matrix α (β ⊕ β) E) :
+    hTens c JA (dbl JB) x y = hTens c JA JB x.toCols₁ y.toCols₁ + hTens c JA (-JB) x.toCols₂ y.toCols₂ := by
+  simp only [hTens, dbl, Fintype.sum_sum_type, fromBlocks_apply₁₁, fromBlocks_apply₁₂, fromBlocks_apply₂₁,
+    fromBlocks_apply₂₂, Matrix.zero_apply, mul_zero, zero_mul, Finset.sum_const_zero, add_zero, zero_add, toCols₁, toCols₂,
+    of_apply, ← Finset.sum_add_distrib]
+
+theorem rhs_dbl {K : Type} [CommRing K] {m n : Type} [Fintype m] [Fintype n] (A : Matrix m m K)
+    (X U : Matrix m (n ⊕ n) K) (B : Matrix n n K) :
+    ∑ k, ∑ l, (-(A * X * (fromBlocks B 0 0 (-B))ᵀ)) k l * U k l =
+      ∑ k, ∑ l, (-(A * X.toCols₁ * Bᵀ)) k l * U.toCols₁ k l +
+        ∑ k, ∑ l, (-(A * X.toCols₂ * (-B)ᵀ)) k l * U.toCols₂ k l := by
+  have hX : A * X = fromCols (A * X.toCols₁) (A * X.toCols₂) := by
+    conv_lhs => rw [← fromCols_toCols X]
+    rw [mul_fromCols]
+  rw [hX, fromBlocks_transpose, fromCols_mul_fromBlocks]
+  simp [Fintype.sum_sum_type, Finset.sum_add_distrib, toCols₁, toCols₂]
+  ring
+
+end GlobalTheory.DblTrace
+
+open GlobalTheory.DblTrace in
+theorem GlobalTheory.DblTrace.trace_pairing_dbl : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E},
+    IsCMExt F E σ → ∀ {v : Pl F} (τ : E →ₐ[F] Fv F v) {m n : ℕ} (JA : Matrix (Fin m) (Fin m) E)
+    (JB : Matrix (Fin n) (Fin n) E), (∀ i j, σ (JA j i) = JA i j) → (∀ i j, σ (JB j i) = -JB i j) →
+    ∀ (x u : Matrix (Fin m) (Fin n ⊕ Fin n) (AE F E)), x.map (piW τ) = 0 → u.map (piW (τ.comp σ)) = 0 →
+    piW τ (hTens (cA σ) (incM F JA) (dbl (incM F JB)) x u) + piW (τ.comp σ) (hTens (cA σ) (incM F JA) (dbl (incM F JB)) x u) =
+      ∑ k, ∑ l, (-(JA.map τ * x.map (piW (τ.comp σ)) * ((dbl JB).map τ)ᵀ)) k l * u.map (piW τ) k l := by
+  intro F E _ _ _ _ _ σ hcm v τ m n JA JB hA hB x u hx hu
+  have hneg : incM F (-JB) = -incM F JB := by
+    simp [incM, Matrix.map_neg]
+  have hB' : ∀ i j, σ ((-JB) j i) = -(-JB) i j := by
+    intro i j; simp [hB]
+  have h1 : x.toCols₁.map (piW τ) = 0 := by
+    exact Matrix.ext fun i j => congrFun (congrFun hx i) (Sum.inl j)
+  have h2 : u.toCols₁.map (piW (τ.comp σ)) = 0 := by
+    exact Matrix.ext fun i j => congrFun (congrFun hu i) (Sum.inl j)
+  have h3 : x.toCols₂.map (piW τ) = 0 := by
+    exact Matrix.ext fun i j => congrFun (congrFun hx i) (Sum.inr j)
+  have h4 : u.toCols₂.map (piW (τ.comp σ)) = 0 := by
+    exact Matrix.ext fun i j => congrFun (congrFun hu i) (Sum.inr j)
+  have hd : (dbl JB).map τ = Matrix.fromBlocks (JB.map τ) 0 0 (-(JB.map τ)) := by
+    ext i j; rcases i with i | i <;> rcases j with j | j <;> simp [dbl]
+  rw [hTens_dbl, ← hneg, map_add, map_add, add_add_add_comm, GlobalTheory.T.hermitianTensor_skewHermitian_split_symplectic_pair hcm τ JA JB hA hB _ _ h1 h2,
+    GlobalTheory.T.hermitianTensor_skewHermitian_split_symplectic_pair hcm τ JA (-JB) hA hB' _ _ h3 h4, hd, rhs_dbl]
+  have hm : (-JB).map τ = -(JB.map τ) := by ext i j; simp
+  rw [hm]
+  rfl
+end
+
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open scoped Matrix
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermitian_tensor_local_vanish : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E},
+    IsCMExt F E σ → ∀ {v : Pl F} (τ : E →ₐ[F] Fv F v) {m n : ℕ} (JA : Matrix (Fin m) (Fin m) E)
+    (JB : Matrix (Fin n) (Fin n) E), (∀ i j, σ (JA j i) = JA i j) → (∀ i j, σ (JB j i) = -JB i j) →
+    ∀ (x u : Matrix (Fin m) (Fin n ⊕ Fin n) (AE F E)), x.map (piW τ) = 0 → u.map (piW (τ.comp σ)) = 0 →
+    piW τ (hTens (cA σ) (incM F JA) (dbl (incM F JB)) x u) + piW (τ.comp σ) (hTens (cA σ) (incM F JA) (dbl (incM F JB)) x u) =
+      ∑ k, ∑ l, (-(JA.map τ * x.map (piW (τ.comp σ)) * ((dbl JB).map τ)ᵀ)) k l * u.map (piW τ) k l := by
+  atlas_forward_decl GlobalTheory.DblTrace.trace_pairing_dbl
+end
+
+section
 section
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK GlobalTheory.KSplit
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
@@ -319,3 +507,4 @@ theorem _root_.GlobalTheory.T.double_scaling_local_identity : GlobalTheory.FunPr
       IsUSplitting (adeleClass F) B.ψ dd (actB (cA σ)) omd → GlobalTheory.DblScal.LocOps omd v →
       ∀ ιd, GlobalTheory.DblScal.IsLinD B.ψ dd t b c ιd → ∃ cd : GlobalTheory.DblScal.UD σ W.J → ℂ, GlobalTheory.DblScal.IsShapeD omd t c ιd cd := by
   atlas_forward_decl GlobalTheory.DblShape.shape_dbl
+end

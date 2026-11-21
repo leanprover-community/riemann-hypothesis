@@ -1,5 +1,130 @@
-import Development.EtaleCohomology.EtaleTrace.TwZeroPfSplit
+import Development.EtaleCohomology.EtaleTrace.TorsionH0PointOfLocalTwist
 
+section
+noncomputable section
+open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC Opposite
+
+namespace LateralTheory.EtaleTrace
+
+theorem tz_sec_eq_of_loc {R : Type} [CommRing R] {F : Shv R} {U : Scheme.{0}} (y z : Sec F U)
+    (h : Loc U fun V g => Sec.res g y = Sec.res g z) : y = z := by
+  obtain ⟨S, hS, hP⟩ := h
+  exact Sheaf.isSeparated F U S hS y z (fun _ g hg => hP _ g hg)
+
+theorem tz_twGen_eq_of_pow {q : ℕ} {U : Scheme.{0}} (ζ ξ : Prim q Γ(U, ⊤)) (a : (ZMod q)ˣ)
+    (h : ξ.1 = ζ.1 ^ (a : ZMod q).val) : twGen (q := q) 0 ξ = twGen 0 ζ := by
+  unfold twGen
+  congr 1
+  refine (Submodule.Quotient.eq _).2 (Submodule.subset_span ⟨ζ, ξ, a, h, ?_⟩)
+  simp
+  rfl
+
+def PrimLoc : Prop := ∀ (q : ℕ) [NeZero q] (U : Scheme.{0}) (ζ ξ : Prim q Γ(U, ⊤)),
+  Loc U fun V g => ∃ a : (ZMod q)ˣ, (ξ.map g.appTop.hom).1 = (ζ.map g.appTop.hom).1 ^ (a : ZMod q).val
+
+theorem TwZero_of_primLoc (hTw : LateralTheory.EtaleFoundations.CongruenceLocalDecomposition.TwLoc) (hP : PrimLoc) : TwZero := by
+  intro q _ U ζ ξ
+  obtain ⟨-, -, T3⟩ := hTw q 0
+  apply tz_sec_eq_of_loc
+  obtain ⟨S, hS, hP'⟩ := hP q U ζ ξ
+  refine ⟨S, hS, fun _ g hg => ?_⟩
+  obtain ⟨a, ha⟩ := hP' _ g hg
+  rw [T3, T3]
+  exact (tz_twGen_eq_of_pow _ _ a ha).symm
+
+end LateralTheory.EtaleTrace
+end
+end
+
+section
+noncomputable section
+open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC Opposite
+
+namespace LateralTheory.EtaleTrace
+
+def PrimSplit : Prop := ∀ (q : ℕ) [NeZero q] (A : Type) [CommRing A] (ζ ξ : Prim q A), ∃ e : Fin q → A,
+  (∀ i, IsIdempotentElem (e i)) ∧ ∑ i, e i = 1 ∧ (∀ i, e i * ξ.1 = e i * ζ.1 ^ (i : ℕ)) ∧ (∀ i : Fin q, ¬ Nat.Coprime (i : ℕ) q → e i = 0)
+
+def SplitLoc : Prop := ∀ (U : Scheme.{0}) (n : ℕ) (e : Fin n → Γ(U, ⊤)), (∀ i, IsIdempotentElem (e i)) → ∑ i, e i = 1 →
+  Loc U fun V g => ∃ i, g.appTop.hom (e i) = 1
+
+theorem primLoc_of (hS : PrimSplit) (hL : SplitLoc) : PrimLoc := by
+  intro q _ U ζ ξ
+  obtain ⟨e, he, hs, hx, hc⟩ := hS q Γ(U, ⊤) ζ ξ
+  obtain ⟨S, hSc, hP⟩ := hL U q e he hs
+  refine ⟨S, hSc, fun V g hg => ?_⟩
+  obtain ⟨i, hi⟩ := hP V g hg
+  have key : g.appTop.hom ξ.1 = g.appTop.hom ζ.1 ^ (i : ℕ) := by
+    have := congrArg g.appTop.hom (hx i)
+    simpa [map_mul, map_pow, hi] using this
+  by_cases hcop : Nat.Coprime (i : ℕ) q
+  · refine ⟨ZMod.unitOfCoprime i hcop, ?_⟩
+    change g.appTop.hom ξ.1 = g.appTop.hom ζ.1 ^ _
+    rw [key, ZMod.coe_unitOfCoprime, ZMod.val_natCast, Nat.mod_eq_of_lt i.2]
+  · have h0 := hc i hcop
+    rw [h0, map_zero] at hi
+    have : Subsingleton Γ(V, ⊤) := subsingleton_of_zero_eq_one hi
+    exact ⟨1, Subsingleton.elim _ _⟩
+
+theorem TwZero_of (hTw : LateralTheory.EtaleFoundations.CongruenceLocalDecomposition.TwLoc) (hS : PrimSplit) (hL : SplitLoc) : TwZero :=
+  TwZero_of_primLoc hTw (primLoc_of hS hL)
+
+end LateralTheory.EtaleTrace
+end
+end
+
+section
+noncomputable section
+open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC Opposite
+
+namespace LateralTheory.EtaleTrace
+
+theorem tz_isUnit_ι (X : Scheme.{0}) (f : Γ(X, ⊤)) : IsUnit ((X.basicOpen f).ι.appTop.hom f) := by
+  have h := RingedSpace.isUnit_res_basicOpen X.toRingedSpace f
+  rw [Scheme.Opens.ι_appTop]
+  have e1 : (X.basicOpen f).ι ''ᵁ ⊤ = X.basicOpen f := by simp
+  have key : ∀ (W : X.Opens) (_ : W = X.basicOpen f) (hle : W ≤ ⊤), IsUnit ((X.presheaf.map (homOfLE hle).op).hom f) := by
+    rintro W rfl hle
+    exact h
+  exact key _ e1 _
+
+theorem tz_idem_one {A : Type} [CommRing A] {x : A} (h : IsIdempotentElem x) (hu : IsUnit x) : x = 1 := by
+  obtain ⟨u, rfl⟩ := hu
+  have := congrArg (· * ((u⁻¹ : Aˣ) : A)) h.eq
+  simpa [mul_assoc] using this
+
+theorem splitLoc : SplitLoc := by
+  intro U n e he hs
+  let W : Fin n → U.Opens := fun i => U.basicOpen (e i)
+  have hW : TopologicalSpace.IsOpenCover W := by
+    refine TopologicalSpace.IsOpenCover.mk (eq_top_iff.2 fun x _ => ?_)
+    rw [TopologicalSpace.Opens.mem_iSup]
+    by_contra hx
+    push Not at hx
+    have hm : ∀ i, U.presheaf.germ ⊤ x trivial (e i) ∈ IsLocalRing.maximalIdeal (U.presheaf.stalk x) := fun i =>
+      (IsLocalRing.mem_maximalIdeal _).2 (mem_nonunits_iff.2 ((Scheme.mem_basicOpen_top _ _ x).not.1 (hx i)))
+    have hsum := Ideal.sum_mem (IsLocalRing.maximalIdeal _) (t := Finset.univ) (fun i _ => hm i)
+    rw [← map_sum, hs, map_one] at hsum
+    exact (IsLocalRing.maximalIdeal.isMaximal _).ne_top ((Ideal.eq_top_iff_one _).2 hsum)
+  let 𝒰 := U.openCoverOfIsOpenCover W hW
+  refine ⟨Sieve.ofArrows 𝒰.X 𝒰.f, ?_, ?_⟩
+  · exact Scheme.zariskiTopology_le_etaleTopology _ (Scheme.Cover.mem_grothendieckTopology 𝒰)
+  · rintro V g ⟨Y, h, f, ⟨i⟩, rfl⟩
+    let j : Fin n := i
+    refine ⟨j, ?_⟩
+    have h1 : (W j).ι.appTop.hom (e i) = 1 := tz_idem_one ((he j).map _) (tz_isUnit_ι U (e j))
+    simp only [Scheme.Hom.comp_appTop, CommRingCat.hom_comp, RingHom.comp_apply]
+    change h.appTop.hom ((W j).ι.appTop.hom (e j)) = 1
+    rw [h1]; exact map_one _
+
+theorem TwZero_of_split (hTw : LateralTheory.EtaleFoundations.CongruenceLocalDecomposition.TwLoc) (hS : PrimSplit) : TwZero :=
+  TwZero_of hTw hS splitLoc
+
+end LateralTheory.EtaleTrace
+end
+end
+
+section
 noncomputable section
 open Polynomial
 
@@ -146,3 +271,5 @@ theorem ps_split {q : ℕ} [NeZero q] {A : Type} [CommRing A] {ζ ξ : A} (hq : 
 theorem PrimSplit_of : PrimSplit := fun q _ A _ ζ ξ => ps_split ζ.2.1 ζ.2.2 ξ.2.2
 
 end LateralTheory.EtaleTrace
+end
+end

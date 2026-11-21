@@ -4,17 +4,870 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ValuationLtOneO
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalEmbeddingRangeEqField
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NormSubLeOfNear
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UniformizerPropertiesResidue
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UniformizerResidueFieldFinitePower
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LubinTateSequenceNormBounds
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TeichmullerCompatibleSequenceApproximation
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TeichmullerFixedPointApproximation
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UniformizerDividesFrobeniusDifference
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TeichmullerCharacterEqResidueLift
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TeichmullerResidueCongruence
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteFieldEmbeddingsDifferFrobenius
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsGaloisExtensionOfEmbedding
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LubinTateTeichmullerSequenceCompatibility
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteQuotientPow
+import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ExistsEmbeddingCongrIntegralCharacter
 
+section
+section
+noncomputable section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
+open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal GlobalTheory.CompanionTheory.LTHodge GlobalTheory.CompanionTheory.LTPer
+open scoped Classical
+open GlobalTheory.CompanionTheory.LTPer.Tilt
+
+namespace GlobalTheory.CompanionTheory.LTPer.Tilt
+
+theorem resfield_of_irreducible : ∀ {l : ℕ} [Fact l.Prime] (K : FinExt l) (π : ↥(OL K)), Irreducible π →
+    (Ideal.span {π}).IsMaximal ∧ Finite (↥(OL K) ⧸ Ideal.span {π}) ∧ ∃ f : ℕ, 0 < f ∧ qOf π = l ^ f := by
+  intro l _ K π hπ
+  obtain ⟨⟨⟨hD, hV, -⟩, -⟩, hfin⟩ := GlobalTheory.LocalIntegers.good_integers l K
+  have hlp : l.Prime := Fact.out
+  have hinj : Function.Injective (algebraMap ℤ_[l] ↥(OL K)) := by
+    intro a b hab
+    have h1 : algebraMap ℤ_[l] ↥K.1 a = algebraMap ℤ_[l] ↥K.1 b := congrArg Subtype.val hab
+    rw [IsScalarTower.algebraMap_apply ℤ_[l] ℚ_[l] ↥K.1,
+      IsScalarTower.algebraMap_apply ℤ_[l] ℚ_[l] ↥K.1 b] at h1
+    exact IsFractionRing.injective ℤ_[l] ℚ_[l] ((algebraMap ℚ_[l] ↥K.1).injective h1)
+  have hi : Algebra.IsIntegral ℤ_[l] ↥(OL K) := integralClosure.AlgebraIsIntegral
+  have hf : FaithfulSMul ℤ_[l] ↥(OL K) := (faithfulSMul_iff_algebraMap_injective _ _).mpr hinj
+  have hl : ¬ IsUnit ((l : ℕ) : ↥(OL K)) := by
+    intro hu
+    rw [← map_natCast (algebraMap ℤ_[l] ↥(OL K))] at hu
+    exact PadicInt.irreducible_p.not_isUnit (isUnit_of_map_unit _ _ hu)
+  have hdvd : π ∣ ((l : ℕ) : ↥(OL K)) := by
+    have hm : ((l : ℕ) : ↥(OL K)) ∈ IsLocalRing.maximalIdeal ↥(OL K) := hl
+    rwa [hπ.maximalIdeal_eq, Ideal.mem_span_singleton] at hm
+  have hle : Ideal.span {((l : ℕ) : ↥(OL K)) ^ 1} ≤ Ideal.span {π} := by
+    rw [pow_one, Ideal.span_singleton_le_iff_mem, Ideal.mem_span_singleton]
+    exact hdvd
+  have hmax : (Ideal.span {π}).IsMaximal := by
+    rw [← hπ.maximalIdeal_eq]
+    exact IsLocalRing.maximalIdeal.isMaximal _
+  have hfinQ : Finite (↥(OL K) ⧸ Ideal.span {π}) := by
+    have := hfin 1
+    exact Finite.of_surjective _ (Ideal.Quotient.factor_surjective hle)
+  refine ⟨hmax, hfinQ, ?_⟩
+  letI : Field (↥(OL K) ⧸ Ideal.span {π}) := Ideal.Quotient.field _
+  haveI : Fintype (↥(OL K) ⧸ Ideal.span {π}) := Fintype.ofFinite _
+  have hz : ((l : ℕ) : ↥(OL K) ⧸ Ideal.span {π}) = 0 := by
+    rw [← map_natCast (Ideal.Quotient.mk (Ideal.span {π})), Ideal.Quotient.eq_zero_iff_mem,
+      Ideal.mem_span_singleton]
+    exact hdvd
+  haveI : CharP (↥(OL K) ⧸ Ideal.span {π}) l := (CharP.charP_iff_prime_eq_zero hlp).2 hz
+  obtain ⟨n, -, hn⟩ := FiniteField.card (↥(OL K) ⧸ Ideal.span {π}) l
+  refine ⟨n, n.pos, ?_⟩
+  rw [qOf, Nat.card_eq_fintype_card, hn]
+
+end GlobalTheory.CompanionTheory.LTPer.Tilt
+end
+end
+
+noncomputable section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
+open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal GlobalTheory.CompanionTheory.LTHodge GlobalTheory.CompanionTheory.LTPer
+open scoped Classical
+open GlobalTheory.CompanionTheory.LTPer.Tilt
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.uniformizer_residue_field_finite_power : ∀ {l : ℕ} [Fact l.Prime] (K : FinExt l) (π : ↥(OL K)), Irreducible π →
+    (Ideal.span {π}).IsMaximal ∧ Finite (↥(OL K) ⧸ Ideal.span {π}) ∧ ∃ f : ℕ, 0 < f ∧ qOf π = l ^ f := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LTPer.Tilt.resfield_of_irreducible
+end
+end
+
+section
+section
+noncomputable section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
+open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal GlobalTheory.CompanionTheory.LTHodge GlobalTheory.CompanionTheory.LTPer
+open scoped Classical
+open GlobalTheory.CompanionTheory.LTPer.Tilt
+
+namespace GlobalTheory.CompanionTheory.LTPer.Tilt.Normz
+
+theorem norm_bounds_of_rec {F : Type*} [NormedField F] [IsUltrametricDist F] (w : ℕ → F) (p : F)
+    (q : ℕ) (hq : 2 ≤ q) (hp : ‖p‖ < 1) (h0 : w 0 = 0) (h1 : w 1 ≠ 0)
+    (hr : ∀ n, w (n + 1) ^ q + p * w (n + 1) = w n) :
+    (∀ n, ‖w n‖ < 1) ∧ ∀ n, 2 ≤ n → ‖p‖ < ‖w n‖ := by
+  obtain ⟨k, rfl⟩ : ∃ k, q = k + 2 := ⟨q - 2, by omega⟩
+  have hmax : ∀ x y : F, ‖x + y‖ ≤ max ‖x‖ ‖y‖ := fun x y => IsUltrametricDist.norm_add_le_max x y
+  have hp0 : 0 ≤ ‖p‖ := norm_nonneg p
+  have hlt : ∀ n, ‖w n‖ < 1 := by
+    intro n
+    induction n with
+    | zero => simp [h0]
+    | succ n ih =>
+      by_contra hge
+      rw [not_lt] at hge
+      have hapos : 0 < ‖w (n + 1)‖ := lt_of_lt_of_le one_pos hge
+      have hq1 : ‖w (n + 1)‖ ≤ ‖w (n + 1)‖ ^ (k + 2) := by
+        calc ‖w (n + 1)‖ = ‖w (n + 1)‖ ^ 1 := (pow_one _).symm
+          _ ≤ ‖w (n + 1)‖ ^ (k + 2) := pow_le_pow_right₀ hge (by omega)
+      have key : w (n + 1) ^ (k + 2) = w n + -(p * w (n + 1)) := by linear_combination hr n
+      have h2 : ‖w (n + 1) ^ (k + 2)‖ ≤ max ‖w n‖ ‖-(p * w (n + 1))‖ := by
+        rw [key]; exact hmax _ _
+      rw [norm_pow, norm_neg, norm_mul] at h2
+      have h3 : ‖p‖ * ‖w (n + 1)‖ < ‖w (n + 1)‖ ^ (k + 2) := by
+        calc ‖p‖ * ‖w (n + 1)‖ < 1 * ‖w (n + 1)‖ := mul_lt_mul_of_pos_right hp hapos
+          _ = ‖w (n + 1)‖ := one_mul _
+          _ ≤ ‖w (n + 1)‖ ^ (k + 2) := hq1
+      have h4 : ‖w n‖ < ‖w (n + 1)‖ ^ (k + 2) := lt_of_lt_of_le ih (le_trans hge hq1)
+      exact absurd h2 (not_le.mpr (max_lt h4 h3))
+  have hrec1 : w 1 ^ (k + 2) + p * w 1 = 0 := by
+    have := hr 0
+    rw [h0] at this
+    exact this
+  have hpw : w 1 ^ (k + 1) = -p := by
+    have e : w 1 * (w 1 ^ (k + 1) + p) = 0 := by linear_combination hrec1
+    rcases mul_eq_zero.mp e with h | h
+    · exact absurd h h1
+    · linear_combination h
+  have hnorm1 : ‖w 1‖ ^ (k + 1) = ‖p‖ := by rw [← norm_pow, hpw, norm_neg]
+  have hp_pos : 0 < ‖p‖ := by
+    rw [← hnorm1]
+    exact pow_pos (norm_pos_iff.mpr h1) _
+  have hw1 : ‖p‖ ≤ ‖w 1‖ := by
+    rw [← hnorm1]
+    calc ‖w 1‖ ^ (k + 1) ≤ ‖w 1‖ ^ 1 := pow_le_pow_of_le_one (norm_nonneg _) (hlt 1).le (by omega)
+      _ = ‖w 1‖ := pow_one _
+  have hsmall : ∀ a : F, ‖a‖ ≤ ‖p‖ → ‖a ^ (k + 2) + p * a‖ ≤ ‖p‖ ^ 2 := by
+    intro a ha
+    have ha0 : 0 ≤ ‖a‖ := norm_nonneg a
+    refine le_trans (hmax _ _) (max_le ?_ ?_)
+    · rw [norm_pow]
+      calc ‖a‖ ^ (k + 2) ≤ ‖a‖ ^ 2 := pow_le_pow_of_le_one ha0 (ha.trans hp.le) (by omega)
+        _ ≤ ‖p‖ ^ 2 := by gcongr
+    · rw [norm_mul, sq]
+      exact mul_le_mul_of_nonneg_left ha hp0
+  have hstep : ∀ n, ‖p‖ ≤ ‖w n‖ → ‖p‖ < ‖w (n + 1)‖ := by
+    intro n hn
+    by_contra hc
+    rw [not_lt] at hc
+    have hb := hsmall (w (n + 1)) hc
+    rw [hr n] at hb
+    have hp2 : ‖p‖ ^ 2 < ‖p‖ := by
+      rw [sq]
+      calc ‖p‖ * ‖p‖ < 1 * ‖p‖ := mul_lt_mul_of_pos_right hp hp_pos
+        _ = ‖p‖ := one_mul _
+    linarith
+  have hge : ∀ n, ‖p‖ ≤ ‖w (n + 1)‖ := by
+    intro n
+    induction n with
+    | zero => exact hw1
+    | succ n ih => exact (hstep _ ih).le
+  refine ⟨hlt, fun n hn => ?_⟩
+  obtain ⟨m, rfl⟩ : ∃ m, n = m + 2 := ⟨n - 2, by omega⟩
+  exact hstep (m + 1) (hge m)
+
+theorem norm_z_bounds : ∀ {l : ℕ} [Fact l.Prime] (K : FinExt l) (χ : ↥(GK K) →* (↥K.1)ˣ) (π : ↥(OL K)) (z : ℕ → Om l),
+    LTData K χ π z → 2 ≤ qOf π → ‖oc K π‖ < 1 →
+    (∀ n, ‖omC (z n)‖ < 1) ∧ ∀ n, 2 ≤ n → ‖oc K π‖ < ‖omC (z n)‖ := by
+  intro l _ K χ π z hz hq hp
+  obtain ⟨_, h0, h1, hr, _⟩ := hz
+  have e : GlobalTheory.CompanionTheory.LTPer.Tilt.omC (((π : ↥K.1) : Om l)) = GlobalTheory.CompanionTheory.LTPer.Tilt.oc K π := by
+    rw [GlobalTheory.CompanionTheory.LTPer.Tilt.omC_apply, GlobalTheory.CompanionTheory.LTPer.Tilt.oc_apply]
+  refine norm_bounds_of_rec (fun n => GlobalTheory.CompanionTheory.LTPer.Tilt.omC (z n)) (GlobalTheory.CompanionTheory.LTPer.Tilt.oc K π) (qOf π) hq hp
+    (by simp [h0]) ?_ ?_
+  · show GlobalTheory.CompanionTheory.LTPer.Tilt.omC (z 1) ≠ 0
+    intro h
+    have hn := congrArg norm h
+    rw [GlobalTheory.CompanionTheory.LTPer.Tilt.norm_omC, norm_zero] at hn
+    exact h1 (norm_eq_zero.mp hn)
+  · intro n
+    show GlobalTheory.CompanionTheory.LTPer.Tilt.omC (z (n + 1)) ^ qOf π + GlobalTheory.CompanionTheory.LTPer.Tilt.oc K π * GlobalTheory.CompanionTheory.LTPer.Tilt.omC (z (n + 1))
+      = GlobalTheory.CompanionTheory.LTPer.Tilt.omC (z n)
+    have hr' : z (n + 1) ^ qOf π + ((π : ↥K.1) : Om l) * z (n + 1) = z n := hr n
+    rw [← e, ← map_pow, ← map_mul, ← map_add, hr']
+
+end GlobalTheory.CompanionTheory.LTPer.Tilt.Normz
+end
+end
+
+noncomputable section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
+open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal GlobalTheory.CompanionTheory.LTHodge GlobalTheory.CompanionTheory.LTPer
+open scoped Classical
+open GlobalTheory.CompanionTheory.LTPer.Tilt
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lubin_tate_sequence_norm_bounds : ∀ {l : ℕ} [Fact l.Prime] (K : FinExt l) (χ : ↥(GK K) →* (↥K.1)ˣ) (π : ↥(OL K)) (z : ℕ → Om l),
+    LTData K χ π z → 2 ≤ qOf π → ‖oc K π‖ < 1 →
+    (∀ n, ‖omC (z n)‖ < 1) ∧ ∀ n, 2 ≤ n → ‖oc K π‖ < ‖omC (z n)‖ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LTPer.Tilt.Normz.norm_z_bounds
+end
+end
+
+section
+section
+noncomputable section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
+open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal GlobalTheory.CompanionTheory.LTHodge GlobalTheory.CompanionTheory.LTPer
+open scoped Classical
+open GlobalTheory.CompanionTheory.LTPer.Tilt
+
+namespace GlobalTheory.CompanionTheory.LTPer.Tilt
+
+variable {l : ℕ} [Fact l.Prime]
+
+private def vv (a : ℕ → Tl l) (f n m : ℕ) : Tl l := a (n + m) ^ l ^ (f * m)
+
+private theorem vv_step (a : ℕ → Tl l) {f : ℕ} {ρ : ℝ} (h : ∀ n, ‖a (n + 1) ^ l ^ f - a n‖ ≤ ρ)
+    (n m : ℕ) : ‖vv a f n (m + 1) - vv a f n m‖ ≤ ρ ^ l ^ (f * m) := by
+  have e : vv a f n (m + 1) = (a (n + m + 1) ^ l ^ f) ^ l ^ (f * m) := by
+    rw [vv, ← pow_mul, ← pow_add, ← add_assoc, mul_add, mul_one, add_comm (f * m) f]
+  rw [e, vv, norm_sub_pow]
+  exact pow_le_pow_left₀ (norm_nonneg _) (h _) _
+
+private theorem pow_bound {f : ℕ} {ρ : ℝ} (hρ0 : 0 ≤ ρ) (hρ1 : ρ < 1) (hf : 0 < f) (m : ℕ) :
+    ρ ^ l ^ (f * m) ≤ ρ ^ m := by
+  refine pow_le_pow_of_le_one hρ0 hρ1.le ?_
+  have h2 : 2 ≤ l := (Fact.out : l.Prime).two_le
+  have h3 : m ≤ f * m := Nat.le_mul_of_pos_left m hf
+  exact h3.trans (Nat.lt_pow_self h2).le
+
+private theorem vv_near (a : ℕ → Tl l) {f : ℕ} {ρ : ℝ} (hρ0 : 0 ≤ ρ) (hρ1 : ρ < 1)
+    (h : ∀ n, ‖a (n + 1) ^ l ^ f - a n‖ ≤ ρ) (n m : ℕ) : ‖vv a f n m - a n‖ ≤ ρ := by
+  induction m with
+  | zero => simpa [vv] using hρ0
+  | succ m ih =>
+    have e : vv a f n (m + 1) - a n = (vv a f n (m + 1) - vv a f n m) + (vv a f n m - a n) := by
+      abel
+    rw [e]
+    refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le ?_ ih)
+    refine (vv_step a h n m).trans ?_
+    exact pow_le_of_le_one hρ0 hρ1.le (pow_pos (Fact.out : l.Prime).pos _).ne'
+
+theorem exists_tilt_lift_compat {l : ℕ} [Fact l.Prime] (f : ℕ) (ρ : ℝ) (hf : 0 < f)
+    (hl : ‖(l : ℂ_[l])‖ ≤ ρ) (hρ1 : ρ < 1) (Z : ℕ → ℂ_[l])
+    (hZ : ∀ n, ‖Z n‖ ≤ 1) (hc : ∀ n, ‖Z (n + 1) ^ l ^ f - Z n‖ ≤ ρ) :
+    ∃ u : ℕ → Tl l, (∀ n, u (n + 1) ^ l ^ f = u n) ∧ ∀ n, ‖sh (u n) - Z n‖ ≤ ρ := by
+  have hρ0 : 0 ≤ ρ := (norm_nonneg _).trans hl
+  choose a ha using fun n => exists_sh_near (l := l) (Z n) (hZ n)
+  have ha' : ∀ n, ‖sh (a n) - Z n‖ ≤ ρ := fun n => (ha n).trans hl
+  have hd : ∀ n, ‖a (n + 1) ^ l ^ f - a n‖ ≤ ρ := by
+    intro n
+    refine norm_sub_le_of_near hl ?_
+    have h1 := near_pow hl (hZ (n + 1)) (ha' (n + 1)) (l ^ f)
+    have e : sh (a (n + 1) ^ l ^ f) - sh (a n) =
+        (sh (a (n + 1) ^ l ^ f) - Z (n + 1) ^ l ^ f) +
+          ((Z (n + 1) ^ l ^ f - Z n) + -(sh (a n) - Z n)) := by ring
+    rw [e]
+    refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le h1 ?_)
+    refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le (hc n) ?_)
+    rw [norm_neg]
+    exact ha' n
+  have hcau : ∀ n, CauchySeq (vv a f n) := by
+    intro n
+    refine cauchySeq_of_le_geometric ρ 1 hρ1 fun m => ?_
+    rw [dist_comm, dist_eq_norm, one_mul]
+    exact (vv_step a hd n m).trans (pow_bound hρ0 hρ1 hf m)
+  choose u hu using fun n => cauchySeq_tendsto_of_complete (hcau n)
+  refine ⟨u, fun n => ?_, fun n => ?_⟩
+  · have h1 : Filter.Tendsto (fun m => vv a f (n + 1) m ^ l ^ f) Filter.atTop
+        (nhds (u (n + 1) ^ l ^ f)) := (hu (n + 1)).pow _
+    have h2 : Filter.Tendsto (fun m => vv a f n (m + 1)) Filter.atTop (nhds (u n)) :=
+      (hu n).comp (Filter.tendsto_add_atTop_nat 1)
+    have e : (fun m => vv a f (n + 1) m ^ l ^ f) = fun m => vv a f n (m + 1) := by
+      funext m
+      rw [vv, vv, ← pow_mul, ← pow_add, mul_add, mul_one, add_comm (f * m) f, add_assoc,
+        add_comm 1 m]
+    rw [e] at h1
+    exact tendsto_nhds_unique h1 h2
+  · have h1 : ‖u n - a n‖ ≤ ρ :=
+      le_of_tendsto (((hu n).sub_const (a n)).norm)
+        (Filter.Eventually.of_forall fun m => vv_near a hρ0 hρ1 hd n m)
+    have h2 := near_of_norm_sub_le hl h1
+    have e : sh (u n) - Z n = (sh (u n) - sh (a n)) + (sh (a n) - Z n) := by ring
+    rw [e]
+    exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le h2 (ha' n))
+
+end GlobalTheory.CompanionTheory.LTPer.Tilt
+end
+end
+
+noncomputable section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
+open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal GlobalTheory.CompanionTheory.LTHodge GlobalTheory.CompanionTheory.LTPer
+open scoped Classical
+open GlobalTheory.CompanionTheory.LTPer.Tilt
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.teichmuller_compatible_sequence_approximation : ∀ {l : ℕ} [Fact l.Prime] (f : ℕ) (ρ : ℝ), 0 < f → ‖(l : ℂ_[l])‖ ≤ ρ → ρ < 1 → ∀ Z : ℕ → ℂ_[l],
+    (∀ n, ‖Z n‖ ≤ 1) → (∀ n, ‖Z (n + 1) ^ l ^ f - Z n‖ ≤ ρ) →
+    ∃ u : ℕ → Tl l, (∀ n, u (n + 1) ^ l ^ f = u n) ∧ ∀ n, ‖sh (u n) - Z n‖ ≤ ρ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LTPer.Tilt.exists_tilt_lift_compat
+end
+end
+
+section
+section
+noncomputable section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
+open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal GlobalTheory.CompanionTheory.LTHodge GlobalTheory.CompanionTheory.LTPer
+open scoped Classical
+open GlobalTheory.CompanionTheory.LTPer.Tilt
+
+namespace GlobalTheory.CompanionTheory.LTPer.Tilt
+
+theorem exists_fixed_near : ∀ {l : ℕ} [Fact l.Prime] (f : ℕ) (ρ : ℝ), 0 < f → ‖(l : ℂ_[l])‖ ≤ ρ → ρ < 1 → ∀ c : ℂ_[l],
+    ‖c‖ ≤ 1 → ‖c ^ l ^ f - c‖ ≤ ρ → ∃ y : Tl l, y ^ l ^ f = y ∧ ‖sh y - c‖ ≤ ρ := by
+  intro l _ f ρ hf hρ hρ1 c hc hcf
+  have hρ0 : 0 ≤ ρ := (norm_nonneg _).trans hρ
+  obtain ⟨a, ha⟩ := exists_sh_near c hc
+  have ha' : ‖sh a - c‖ ≤ ρ := ha.trans hρ
+  have hq1 : 1 ≤ l ^ f := Nat.one_le_pow _ _ (Fact.out : l.Prime).pos
+  have hq2 : 2 ≤ l ^ f := Nat.one_lt_pow hf.ne' (Fact.out : l.Prime).one_lt
+
+  have h0 : ‖a ^ l ^ f - a‖ ≤ ρ := by
+    refine norm_sub_le_of_near hρ ?_
+    have e : sh (a ^ l ^ f) - sh a =
+        (sh (a ^ l ^ f) - c ^ l ^ f) + ((c ^ l ^ f - c) + -(sh a - c)) := by ring
+    rw [e]
+    refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le (near_pow hρ hc ha' _) ?_)
+    refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le hcf ?_)
+    rwa [norm_neg]
+  let u : ℕ → Tl l := fun n => a ^ l ^ (f * n)
+  have hstep : ∀ n, u (n + 1) = u n ^ l ^ f := by
+    intro n
+    show a ^ l ^ (f * (n + 1)) = (a ^ l ^ (f * n)) ^ l ^ f
+    rw [← pow_mul, ← pow_add, Nat.mul_succ]
+  have hdiff : ∀ n, ‖u (n + 1) - u n‖ ≤ ρ ^ (l ^ (f * n)) := by
+    intro n
+    have e : u (n + 1) - u n = (a ^ l ^ f) ^ l ^ (f * n) - a ^ l ^ (f * n) := by
+      show a ^ l ^ (f * (n + 1)) - a ^ l ^ (f * n) = _
+      rw [← pow_mul, ← pow_add, Nat.mul_succ, Nat.add_comm]
+    rw [e, norm_sub_pow]
+    exact pow_le_pow_left₀ (norm_nonneg _) h0 _
+  have hdiff1 : ∀ n, ‖u (n + 1) - u n‖ ≤ ρ := by
+    intro n
+    refine (hdiff n).trans ?_
+    have : 1 ≤ l ^ (f * n) := Nat.one_le_pow _ _ (Fact.out : l.Prime).pos
+    simpa using pow_le_pow_of_le_one hρ0 hρ1.le this
+  have hgeom : ∀ n, dist (u n) (u (n + 1)) ≤ 1 * ρ ^ n := by
+    intro n
+    rw [dist_comm, dist_eq_norm, one_mul]
+    refine (hdiff n).trans (pow_le_pow_of_le_one hρ0 hρ1.le ?_)
+    have h1 : n < l ^ n := Nat.lt_pow_self (Fact.out : l.Prime).one_lt
+    have h2 : l ^ n ≤ l ^ (f * n) :=
+      Nat.pow_le_pow_right (Fact.out : l.Prime).pos (Nat.le_mul_of_pos_left n hf)
+    omega
+  have hcau : CauchySeq u := cauchySeq_of_le_geometric ρ 1 hρ1 hgeom
+  obtain ⟨y, hy⟩ := cauchySeq_tendsto_of_complete hcau
+  have hclose : ∀ n, ‖u n - a‖ ≤ ρ := by
+    intro n
+    induction n with
+    | zero => simpa [u] using hρ0
+    | succ n ih =>
+      have e : u (n + 1) - a = (u (n + 1) - u n) + (u n - a) := by ring
+      rw [e]
+      exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le (hdiff1 n) ih)
+  have hya : ‖y - a‖ ≤ ρ :=
+    le_of_tendsto ((hy.sub_const a).norm) (Filter.Eventually.of_forall hclose)
+  refine ⟨y, ?_, ?_⟩
+  · have h1 : Filter.Tendsto (fun n => u n ^ l ^ f) Filter.atTop (nhds (y ^ l ^ f)) := hy.pow _
+    have h2 : Filter.Tendsto (fun n => u n ^ l ^ f) Filter.atTop (nhds y) := by
+      simpa only [hstep] using (Filter.tendsto_add_atTop_iff_nat 1).2 hy
+    exact tendsto_nhds_unique h1 h2
+  · have e : sh y - c = (sh y - sh a) + (sh a - c) := by ring
+    rw [e]
+    exact (IsUltrametricDist.norm_add_le_max _ _).trans
+      (max_le (near_of_norm_sub_le hρ hya) ha')
+
+end GlobalTheory.CompanionTheory.LTPer.Tilt
+end
+end
+
+noncomputable section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
+open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal GlobalTheory.CompanionTheory.LTHodge GlobalTheory.CompanionTheory.LTPer
+open scoped Classical
+open GlobalTheory.CompanionTheory.LTPer.Tilt
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.teichmuller_fixed_point_approximation : ∀ {l : ℕ} [Fact l.Prime] (f : ℕ) (ρ : ℝ), 0 < f → ‖(l : ℂ_[l])‖ ≤ ρ → ρ < 1 → ∀ c : ℂ_[l],
+    ‖c‖ ≤ 1 → ‖c ^ l ^ f - c‖ ≤ ρ → ∃ y : Tl l, y ^ l ^ f = y ∧ ‖sh y - c‖ ≤ ρ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LTPer.Tilt.exists_fixed_near
+end
+end
+
+section
+section
+noncomputable section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
+open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal GlobalTheory.CompanionTheory.LTHodge GlobalTheory.CompanionTheory.LTPer
+open scoped Classical
+open GlobalTheory.CompanionTheory.LTPer.Tilt
+
+namespace GlobalTheory.CompanionTheory.LTPer.Tilt
+
+theorem dvd_pow_qOf_sub_self : ∀ {l : ℕ} [Fact l.Prime] (K : FinExt l) (π : ↥(OL K)), (Ideal.span {π}).IsMaximal →
+    Finite (↥(OL K) ⧸ Ideal.span {π}) → ∀ c : ↥(OL K), π ∣ c ^ qOf π - c := by
+  intro l _ K π hmax hfin c
+  rw [← Ideal.mem_span_singleton, ← Ideal.Quotient.eq_zero_iff_mem, map_sub, map_pow, sub_eq_zero]
+  letI := Ideal.Quotient.field (Ideal.span {π})
+  letI := Fintype.ofFinite (↥(OL K) ⧸ Ideal.span {π})
+  rw [qOf, Nat.card_eq_fintype_card]
+  exact FiniteField.pow_card _
+
+end GlobalTheory.CompanionTheory.LTPer.Tilt
+end
+end
+
+noncomputable section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
+open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal GlobalTheory.CompanionTheory.LTHodge GlobalTheory.CompanionTheory.LTPer
+open scoped Classical
+open GlobalTheory.CompanionTheory.LTPer.Tilt
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.uniformizer_divides_frobenius_difference : ∀ {l : ℕ} [Fact l.Prime] (K : FinExt l) (π : ↥(OL K)), (Ideal.span {π}).IsMaximal →
+    Finite (↥(OL K) ⧸ Ideal.span {π}) → ∀ c : ↥(OL K), π ∣ c ^ qOf π - c := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LTPer.Tilt.dvd_pow_qOf_sub_self
+end
+end
+
+section
+section
+noncomputable section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
+open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal GlobalTheory.CompanionTheory.LTHodge GlobalTheory.CompanionTheory.LTPer
+open scoped Classical
+open GlobalTheory.CompanionTheory.LTPer.Tilt
+
+namespace GlobalTheory.CompanionTheory.LTPer.Tilt
+
+theorem isUnit_BdRp_of_thB {l : ℕ} [Fact l.Prime] {u : Formalism.Per6.BdRp l} (h : thB l u ≠ 0) :
+    IsUnit u := by
+  change IsUnit (show BDeRhamPlus (GroundTheory.PAdicHodge.normInteger ℂ_[l]) l from u)
+  by_contra hy
+  have h2 := (IsLocalRing.mem_maximalIdeal _).2 hy
+  rw [GroundTheory.PAdicHodge.IsPerfectoidField.maximalIdeal_bDeRhamPlus, RingHom.mem_ker] at h2
+  exact h h2
+
+theorem eq_of_pow_eq_self_of_thB_eq {l : ℕ} [Fact l.Prime] {q : ℕ} (hq : 2 ≤ q)
+    {a b : Formalism.Per6.BdRp l} (ha : a ^ q = a) (hb : b ^ q = b) (hab : thB l a = thB l b) :
+    a = b := by
+  set S : Formalism.Per6.BdRp l := ∑ i ∈ Finset.range q, a ^ i * b ^ (q - 1 - i) with hS
+  have hkey : (a - b) * (S - 1) = 0 := by
+    have h1 : (a - b) * S = a ^ q - b ^ q := (Commute.all a b).mul_geom_sum₂ q
+    rw [mul_sub, h1, ha, hb, mul_one, sub_self]
+  have hθS : thB l S = (q : ℂ_[l]) * thB l a ^ (q - 1) := by
+    rw [hS, map_sum, Finset.sum_congr rfl (g := fun _ => thB l a ^ (q - 1))]
+    · simp
+    · intro i hi
+      have hi' : i ≤ q - 1 := Nat.le_sub_one_of_lt (Finset.mem_range.1 hi)
+      rw [map_mul, map_pow, map_pow, ← hab, ← pow_add, Nat.add_sub_cancel' hi']
+  have hζ : thB l a ^ q = thB l a := by rw [← map_pow, ha]
+  have hne : thB l (S - 1) ≠ 0 := by
+    rw [map_sub, map_one, hθS]
+    by_cases h0 : thB l a = 0
+    · rw [h0, zero_pow (by omega)]
+      simp
+    · have h1 : thB l a ^ (q - 1) = 1 := by
+        have e : thB l a ^ (q - 1) * thB l a = 1 * thB l a := by
+          rw [← pow_succ, Nat.sub_add_cancel (by omega), hζ, one_mul]
+        exact mul_right_cancel₀ h0 e
+      rw [h1, mul_one, sub_ne_zero]
+      exact_mod_cast (by omega : q ≠ 1)
+  have hu := isUnit_BdRp_of_thB hne
+  exact sub_eq_zero.1 ((hu.mul_left_eq_zero).1 hkey)
+
+theorem tch_eq_rB_of_sh_eq : ∀ {l : ℕ} [Fact l.Prime] (q : ℕ), 2 ≤ q → l ∣ q → ∀ (x : Tl l) (y : Om l),
+    x ^ q = x → y ^ q = y → sh x = omC y → tch l x = rB l y := by
+  intro l _ q hq _ x y hx hy hxy
+  refine eq_of_pow_eq_self_of_thB_eq hq ?_ ?_ ?_
+  · rw [← tch_pow, hx]
+  · rw [← map_pow, hy]
+  · rw [thB_tch, thB_rB, hxy, omC_apply]
+
+end GlobalTheory.CompanionTheory.LTPer.Tilt
+end
+end
+
+noncomputable section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
+open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal GlobalTheory.CompanionTheory.LTHodge GlobalTheory.CompanionTheory.LTPer
+open scoped Classical
+open GlobalTheory.CompanionTheory.LTPer.Tilt
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.teichmuller_character_eq_residue_lift : ∀ {l : ℕ} [Fact l.Prime] (q : ℕ), 2 ≤ q → l ∣ q → ∀ (x : Tl l) (y : Om l),
+    x ^ q = x → y ^ q = y → sh x = omC y → tch l x = rB l y := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LTPer.Tilt.tch_eq_rB_of_sh_eq
+end
+end
+
+section
+section
+noncomputable section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
+open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal GlobalTheory.CompanionTheory.LTHodge GlobalTheory.CompanionTheory.LTPer
+open scoped Classical
+open GlobalTheory.CompanionTheory.LTPer.Tilt
+
+namespace GlobalTheory.CompanionTheory.LTPer.Tilt
+
+variable {l : ℕ} [Fact l.Prime]
+
+theorem norm_pow_sub_pow_le {a b : ℂ_[l]} (ha : ‖a‖ ≤ 1) (hb : ‖b‖ ≤ 1) (n : ℕ) :
+    ‖a ^ n - b ^ n‖ ≤ ‖a - b‖ := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    have e : a ^ (n + 1) - b ^ (n + 1) = a ^ n * (a - b) + (a ^ n - b ^ n) * b := by ring
+    rw [e]
+    refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le ?_ ?_)
+    · rw [norm_mul]
+      exact mul_le_of_le_one_left (norm_nonneg _) (by rw [norm_pow]; exact pow_le_one₀ (norm_nonneg _) ha)
+    · rw [norm_mul]
+      exact (mul_le_of_le_one_right (norm_nonneg _) hb).trans ih
+
+theorem norm_pow_prime_sub_le {a b : ℂ_[l]} (ha : ‖a‖ ≤ 1) (hb : ‖b‖ ≤ 1) {s : ℝ}
+    (hl : ‖(l : ℂ_[l])‖ ≤ s) (hs : ‖a - b‖ ≤ s) : ‖a ^ l - b ^ l‖ ≤ s * ‖a - b‖ := by
+  have hs0 : 0 ≤ s := (norm_nonneg _).trans hl
+  have hbp : ∀ n : ℕ, ‖b ^ n‖ ≤ 1 := fun n => by
+    rw [norm_pow]; exact pow_le_one₀ (norm_nonneg _) hb
+  have hap : ∀ n : ℕ, ‖a ^ n‖ ≤ 1 := fun n => by
+    rw [norm_pow]; exact pow_le_one₀ (norm_nonneg _) ha
+  have e : a ^ l - b ^ l = (∑ i ∈ Finset.range l, a ^ i * b ^ (l - 1 - i)) * (a - b) :=
+    (geom_sum₂_mul a b l).symm
+  have e2 : (∑ i ∈ Finset.range l, a ^ i * b ^ (l - 1 - i))
+      = (∑ i ∈ Finset.range l, (a ^ i * b ^ (l - 1 - i) - b ^ (l - 1))) + (l : ℂ_[l]) * b ^ (l - 1) := by
+    simp [Finset.sum_sub_distrib]
+  have h1 : ‖∑ i ∈ Finset.range l, (a ^ i * b ^ (l - 1 - i) - b ^ (l - 1))‖ ≤ s := by
+    refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg hs0 fun i hi => ?_
+    have hi' : i ≤ l - 1 := by
+      have := Finset.mem_range.1 hi
+      omega
+    have e3 : a ^ i * b ^ (l - 1 - i) - b ^ (l - 1) = (a ^ i - b ^ i) * b ^ (l - 1 - i) := by
+      rw [sub_mul, ← pow_add, Nat.add_sub_cancel' hi']
+    rw [e3, norm_mul]
+    exact (mul_le_of_le_one_right (norm_nonneg _) (hbp _)).trans
+      ((norm_pow_sub_pow_le ha hb i).trans hs)
+  have h2 : ‖(l : ℂ_[l]) * b ^ (l - 1)‖ ≤ s := by
+    rw [norm_mul]
+    exact (mul_le_of_le_one_right (norm_nonneg _) (hbp _)).trans hl
+  rw [e, norm_mul]
+  refine mul_le_mul_of_nonneg_right ?_ (norm_nonneg _)
+  rw [e2]
+  exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le h1 h2)
+
+theorem norm_pow_prime_pow_sub_le {a b : ℂ_[l]} (ha : ‖a‖ ≤ 1) (hb : ‖b‖ ≤ 1) {s : ℝ}
+    (hs1 : s ≤ 1) (hl : ‖(l : ℂ_[l])‖ ≤ s) (hs : ‖a - b‖ ≤ s) (n : ℕ) :
+    ‖a ^ l ^ n - b ^ l ^ n‖ ≤ s ^ n * ‖a - b‖ := by
+  have hs0 : 0 ≤ s := (norm_nonneg _).trans hl
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    have ha' : ‖a ^ l ^ n‖ ≤ 1 := by rw [norm_pow]; exact pow_le_one₀ (norm_nonneg _) ha
+    have hb' : ‖b ^ l ^ n‖ ≤ 1 := by rw [norm_pow]; exact pow_le_one₀ (norm_nonneg _) hb
+    have hle : ‖a ^ l ^ n - b ^ l ^ n‖ ≤ s :=
+      ih.trans ((mul_le_of_le_one_left (norm_nonneg _) (pow_le_one₀ hs0 hs1)).trans hs)
+    have h := norm_pow_prime_sub_le ha' hb' hl hle
+    rw [← pow_mul, ← pow_mul, ← pow_succ] at h
+    refine h.trans ?_
+    rw [pow_succ, mul_comm (s ^ n) s, mul_assoc]
+    exact mul_le_mul_of_nonneg_left ih hs0
+
+theorem isClosed_range_finExt (K : FinExt l) :
+    IsClosed (Set.range fun y : ↥K.1 => omC (l := l) (y : Om l)) := by
+  haveI := K.2
+  let L : ↥K.1 →ₗ[ℚ_[l]] ℂ_[l] :=
+    (IsScalarTower.toAlgHom ℚ_[l] (Om l) ℂ_[l]).toLinearMap ∘ₗ K.1.val.toLinearMap
+  have h := Submodule.closed_of_finiteDimensional (LinearMap.range L)
+  have e : (Set.range fun y : ↥K.1 => omC (l := l) (y : Om l)) = (LinearMap.range L : Set ℂ_[l]) := by
+    ext z
+    rfl
+  rw [e]
+  exact h
+
+theorem exists_int_of_norm_le (K : FinExt l) (y : ↥K.1) (hy : ‖(y : Om l)‖ ≤ 1) :
+    ∃ c : ↥(OL K), (c : ↥K.1) = y :=
+  ⟨(GlobalTheory.CompanionTheory.LTHodge.CharEx.intEquiv K).symm
+    ⟨y, (GlobalTheory.CompanionTheory.LTHodge.CharEx.mem_integer_iff K y).2 hy⟩, rfl⟩
+
+theorem sh_root_near_integer : ∀ {l : ℕ} [Fact l.Prime] (K : FinExt l) (π : ↥(OL K)) (f : ℕ), 0 < f → qOf π = l ^ f →
+    ‖(l : ℂ_[l])‖ ≤ ‖oc K π‖ → ‖oc K π‖ < 1 → π ≠ 0 → ∀ (x : Tl l) (c : ↥(OL K)), x ^ l ^ f = x →
+    ‖sh x - oc K c‖ ≤ ‖oc K π‖ → ∃ c' : ↥(OL K), sh x = oc K (c + π * c') := by
+  intro l _ K π f hf _ hl hπ1 hπ0 x c hx hc
+  set s := ‖oc K π‖ with hsdef
+  have hs0 : 0 ≤ s := norm_nonneg _
+  have hζ1 : ‖sh x‖ ≤ 1 := norm_sh_le_one x
+  have hc1 : ‖oc K c‖ ≤ 1 := norm_oc_le_one K c
+  have hfix1 : sh x ^ l ^ f = sh x := by rw [← sh_pow, hx]
+  have hfix : ∀ m : ℕ, sh x ^ (l ^ f) ^ m = sh x := by
+    intro m
+    induction m with
+    | zero => simp
+    | succ m ih => rw [pow_succ, pow_mul, ih, hfix1]
+  have hdist : ‖oc K c - sh x‖ ≤ s := by rw [norm_sub_rev]; exact hc
+  have hbound : ∀ m : ℕ, ‖oc K (c ^ (l ^ f) ^ m) - sh x‖ ≤ s ^ m := by
+    intro m
+    have h := norm_pow_prime_pow_sub_le hc1 hζ1 hπ1.le hl hdist (f * m)
+    rw [pow_mul, hfix m, ← map_pow] at h
+    refine h.trans ?_
+    have h1 : s ^ (f * m) ≤ s ^ m :=
+      pow_le_pow_of_le_one hs0 hπ1.le (Nat.le_mul_of_pos_left m hf)
+    exact (mul_le_of_le_one_right (pow_nonneg hs0 _) (hdist.trans hπ1.le)).trans h1
+  have hlim : Filter.Tendsto (fun m : ℕ => oc K (c ^ (l ^ f) ^ m)) Filter.atTop (nhds (sh x)) := by
+    rw [tendsto_iff_norm_sub_tendsto_zero]
+    exact squeeze_zero (fun _ => norm_nonneg _) hbound
+      (tendsto_pow_atTop_nhds_zero_of_lt_one hs0 hπ1)
+  have hmem : sh x ∈ Set.range fun y : ↥K.1 => omC (l := l) (y : Om l) :=
+    (isClosed_range_finExt K).mem_of_tendsto hlim
+      (Filter.Eventually.of_forall fun m => ⟨((c ^ (l ^ f) ^ m : ↥(OL K)) : ↥K.1), rfl⟩)
+  obtain ⟨y, hy⟩ := hmem
+  have hy : omC (l := l) (y : Om l) = sh x := hy
+  have hcK : oc K c = omC (l := l) ((c : ↥K.1) : Om l) := rfl
+  have hπK : oc K π = omC (l := l) ((π : ↥K.1) : Om l) := rfl
+  have hπ0' : (π : ↥K.1) ≠ 0 := fun h => hπ0 (Subtype.ext h)
+  have hπ0'' : ((π : ↥K.1) : Om l) ≠ 0 := fun h => hπ0' (Subtype.ext h)
+  have hnum : ‖((y - (c : ↥K.1) : ↥K.1) : Om l)‖ ≤ ‖((π : ↥K.1) : Om l)‖ := by
+    have : ‖sh x - oc K c‖ = ‖((y - (c : ↥K.1) : ↥K.1) : Om l)‖ := by
+      rw [← hy, hcK, ← map_sub, norm_omC]
+      rfl
+    rw [← this, ← norm_omC, ← hπK]
+    exact hc
+  have hq : ‖(((y - (c : ↥K.1)) / (π : ↥K.1) : ↥K.1) : Om l)‖ ≤ 1 := by
+    have e : (((y - (c : ↥K.1)) / (π : ↥K.1) : ↥K.1) : Om l)
+        = ((y - (c : ↥K.1) : ↥K.1) : Om l) / ((π : ↥K.1) : Om l) := rfl
+    rw [e, norm_div]
+    exact div_le_one_of_le₀ hnum (norm_nonneg _)
+  obtain ⟨c', hc'⟩ := exists_int_of_norm_le K _ hq
+  refine ⟨c', ?_⟩
+  have hsum : ((c + π * c' : ↥(OL K)) : ↥K.1) = y := by
+    have : ((c + π * c' : ↥(OL K)) : ↥K.1) = (c : ↥K.1) + (π : ↥K.1) * (c' : ↥K.1) := rfl
+    rw [this, hc']
+    field_simp
+    ring
+  rw [← hy]
+  show _ = omC (l := l) (((c + π * c' : ↥(OL K)) : ↥K.1) : Om l)
+  rw [hsum]
+
+end GlobalTheory.CompanionTheory.LTPer.Tilt
+end
+end
+
+noncomputable section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
+open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal GlobalTheory.CompanionTheory.LTHodge GlobalTheory.CompanionTheory.LTPer
+open scoped Classical
+open GlobalTheory.CompanionTheory.LTPer.Tilt
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.teichmuller_residue_congruence : ∀ {l : ℕ} [Fact l.Prime] (K : FinExt l) (π : ↥(OL K)) (f : ℕ), 0 < f → qOf π = l ^ f →
+    ‖(l : ℂ_[l])‖ ≤ ‖oc K π‖ → ‖oc K π‖ < 1 → π ≠ 0 → ∀ (x : Tl l) (c : ↥(OL K)), x ^ l ^ f = x →
+    ‖sh x - oc K c‖ ≤ ‖oc K π‖ → ∃ c' : ↥(OL K), sh x = oc K (c + π * c') := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LTPer.Tilt.sh_root_near_integer
+end
+end
+
+section
+section
+noncomputable section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
+open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal GlobalTheory.CompanionTheory.LTHodge GlobalTheory.CompanionTheory.LTPer
+open scoped Classical
+open GlobalTheory.CompanionTheory.LTPer.Tilt
+
+namespace GlobalTheory.CompanionTheory.LTPer.Tilt
+
+theorem exists_frobenius_pow_of_ringHoms : ∀ {l : ℕ} [Fact l.Prime] {k D : Type} [Field k] [Finite k] [CommRing D] [IsDomain D] [CharP D l]
+    (α β : k →+* D), ∃ i : ℕ, ∀ x, β x = α x ^ l ^ i := by
+  intro l _ k D _ _ _ _ _ α β
+  haveI : CharP k l := α.charP α.injective l
+  exact GlobalTheory.ResidueChar.exists_pow_of_finite_field l α β
+
+end GlobalTheory.CompanionTheory.LTPer.Tilt
+end
+end
+
+noncomputable section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
+open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal GlobalTheory.CompanionTheory.LTHodge GlobalTheory.CompanionTheory.LTPer
+open scoped Classical
+open GlobalTheory.CompanionTheory.LTPer.Tilt
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_field_embeddings_differ_frobenius : ∀ {l : ℕ} [Fact l.Prime] {k D : Type} [Field k] [Finite k] [CommRing D] [IsDomain D] [CharP D l]
+    (α β : k →+* D), ∃ i : ℕ, ∀ x, β x = α x ^ l ^ i := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LTPer.Tilt.exists_frobenius_pow_of_ringHoms
+end
+end
+
+section
+section
+noncomputable section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
+open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal GlobalTheory.CompanionTheory.LTHodge GlobalTheory.CompanionTheory.LTPer
+open scoped Classical
+open GlobalTheory.CompanionTheory.LTPer.Tilt
+
+namespace GlobalTheory.CompanionTheory.LTPer.Tilt
+
+theorem exists_gal_extending_embedding : ∀ {l : ℕ} [Fact l.Prime] (K : FinExt l) (μ : ↥K.1 →ₐ[ℚ_[l]] Om l),
+    ∃ g : GQ l, ∀ x : ↥K.1, g (x : Om l) = μ x := by
+  intro l _ K μ
+  obtain ⟨φ, hφ⟩ := IntermediateField.exists_algHom_of_splits (F := ℚ_[l]) (E := Om l) (K := Om l)
+    (fun s => ⟨Algebra.IsIntegral.isIntegral s, IsAlgClosed.splits _⟩) (L := K.1) μ
+  refine ⟨AlgEquiv.ofBijective φ (Algebra.IsAlgebraic.algHom_bijective φ), fun x => ?_⟩
+  exact DFunLike.congr_fun hφ x
+
+end GlobalTheory.CompanionTheory.LTPer.Tilt
+end
+end
+
+noncomputable section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
+open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal GlobalTheory.CompanionTheory.LTHodge GlobalTheory.CompanionTheory.LTPer
+open scoped Classical
+open GlobalTheory.CompanionTheory.LTPer.Tilt
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_galois_extension_of_embedding : ∀ {l : ℕ} [Fact l.Prime] (K : FinExt l) (μ : ↥K.1 →ₐ[ℚ_[l]] Om l),
+    ∃ g : GQ l, ∀ x : ↥K.1, g (x : Om l) = μ x := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LTPer.Tilt.exists_gal_extending_embedding
+end
+end
+
+section
+section
+noncomputable section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
+open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal GlobalTheory.CompanionTheory.LTHodge GlobalTheory.CompanionTheory.LTPer
+open scoped Classical
+open GlobalTheory.CompanionTheory.LTPer.Tilt
+
+namespace GlobalTheory.CompanionTheory.LTPer.Tilt.GalDiv
+
+variable {l : ℕ} [Fact l.Prime]
+
+theorem continuous_omC : Continuous (omC (l := l)) :=
+  (AddMonoidHomClass.isometry_of_norm (omC (l := l)) norm_omC).continuous
+
+theorem tail_le (K : FinExt l) (c : ℕ → ↥(OL K)) (y x : Om l) (hy : ‖omC y‖ ≤ 1)
+    (hs : HasSum (fun k : ℕ => ((c k : ↥K.1) : Om l) * y ^ k) x) (D : ℕ) :
+    ‖omC x - ∑ i ∈ Finset.range D, oc K (c i) * omC y ^ i‖ ≤ ‖omC y‖ ^ D := by
+  have ht : Filter.Tendsto (fun N => ∑ i ∈ Finset.range N, oc K (c i) * omC y ^ i)
+      Filter.atTop (nhds (omC x)) := by
+    have h1 := (continuous_omC (l := l)).continuousAt.tendsto.comp hs.tendsto_sum_nat
+    refine h1.congr fun N => ?_
+    simp only [Function.comp, map_sum, map_mul, map_pow]
+    rfl
+  have h2 := (ht.sub_const (∑ i ∈ Finset.range D, oc K (c i) * omC y ^ i)).norm
+  refine le_of_tendsto h2 ?_
+  filter_upwards [Filter.eventually_ge_atTop D] with N hN
+  rw [← Finset.sum_Ico_eq_sub _ hN]
+  refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg (by positivity) fun k hk => ?_
+  rw [norm_mul, norm_pow]
+  exact (mul_le_of_le_one_left (by positivity) (norm_oc_le_one K _)).trans
+    (pow_le_pow_of_le_one (norm_nonneg _) hy (Finset.mem_Ico.1 hk).1)
+
+theorem norm_read {ρ : ℝ} (hρ : ‖(l : ℂ_[l])‖ ≤ ρ) (a y : Tl l) (b : ℕ → Tl l)
+    (A Y : ℂ_[l]) (B : ℕ → ℂ_[l]) (D : ℕ) (hY : ‖Y‖ ≤ 1) (hA : ‖sh a - A‖ ≤ ρ)
+    (hy : ‖sh y - Y‖ ≤ ρ) (hb : ∀ i, ‖sh (b i) - B i‖ ≤ ρ) :
+    ‖a - ∑ i ∈ Finset.range D, b i * y ^ i‖ ≤
+      max ρ ‖A - ∑ i ∈ Finset.range D, B i * Y ^ i‖ := by
+  have h1 : ‖sh (∑ i ∈ Finset.range D, b i * y ^ i) - ∑ i ∈ Finset.range D, B i * Y ^ i‖ ≤ ρ :=
+    near_sum hρ _ fun i _ => near_mul (by rw [norm_pow]; exact pow_le_one₀ (norm_nonneg _) hY)
+      (hb i) (near_pow hρ hY hy i)
+  have h2 := near_sub hρ hA h1
+  rw [norm_eq_norm_sh]
+  set x := a - ∑ i ∈ Finset.range D, b i * y ^ i
+  set W := A - ∑ i ∈ Finset.range D, B i * Y ^ i
+  have e : sh x = (sh x - W) + W := by ring
+  rw [e]
+  exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le_max h2 le_rfl)
+
+theorem pow_read (N : ℕ) (a y : Tl l) (b : ℕ → Tl l) (D : ℕ) :
+    (a - ∑ i ∈ Finset.range D, b i * y ^ i) ^ l ^ N =
+      a ^ l ^ N - ∑ i ∈ Finset.range D, b i ^ l ^ N * (y ^ l ^ N) ^ i := by
+  rw [sub_pow_char_pow, sum_pow_char_pow]
+  refine congrArg _ (Finset.sum_congr rfl fun i _ => ?_)
+  rw [mul_pow, ← pow_mul, ← pow_mul, mul_comm i]
+
+theorem pow_compat {f : ℕ} {u : ℕ → Tl l} (hu : ∀ n, u (n + 1) ^ l ^ f = u n) (n m : ℕ) :
+    u (n + m) ^ l ^ (f * m) = u n := by
+  induction m with
+  | zero => simp
+  | succ m ih =>
+    rw [← add_assoc, mul_add, mul_one, add_comm (f * m) f, pow_add, pow_mul, hu, ih]
+
+theorem pow_fixed {f : ℕ} {x : Tl l} (hx : x ^ l ^ f = x) (m : ℕ) : x ^ l ^ (f * m) = x := by
+  induction m with
+  | zero => simp
+  | succ m ih => rw [mul_add, mul_one, add_comm (f * m) f, pow_add, pow_mul, hx, ih]
+
+theorem exists_pow_le {f : ℕ} (hf : 0 < f) {ρ ε : ℝ} (h0 : 0 ≤ ρ) (h1 : ρ < 1) (hε : 0 < ε) :
+    ∃ m, 2 ≤ m ∧ ρ ^ l ^ (f * m) ≤ ε := by
+  obtain ⟨N, hN⟩ := exists_pow_lt_of_lt_one hε h1
+  refine ⟨N + 2, by omega, (pow_le_pow_of_le_one h0 h1.le ?_).trans hN.le⟩
+  have h2 : N + 2 < l ^ (N + 2) := Nat.lt_pow_self (Fact.out : l.Prime).one_lt
+  have h3 : l ^ (N + 2) ≤ l ^ (f * (N + 2)) :=
+    Nat.pow_le_pow_right (Fact.out : l.Prime).pos (Nat.le_mul_of_pos_left _ hf)
+  omega
+
+theorem galdiv : ∀ {l : ℕ} [Fact l.Prime] (K : FinExt l) (π : ↥(OL K)) (z : ℕ → Om l) (f : ℕ), 0 < f →
+    ‖(l : ℂ_[l])‖ ≤ ‖oc K π‖ → ‖oc K π‖ < 1 →
+    (∀ n, ‖omC (z n)‖ < 1) → (∀ n, 2 ≤ n → ‖oc K π‖ < ‖omC (z n)‖) →
+    ∀ (u : ℕ → Tl l), (∀ n, u (n + 1) ^ l ^ f = u n) → (∀ n, ‖sh (u n) - omC (z n)‖ ≤ ‖oc K π‖) →
+    ∀ (r₀ : ↥(OL K) →+* Tl l), (∀ c, r₀ c ^ l ^ f = r₀ c) → (∀ c, ‖sh (r₀ c) - oc K c‖ ≤ ‖oc K π‖) →
+    (∀ n, u n ≠ 0) → ∀ (g : GQ l) (c : ℕ → ↥(OL K)),
+    (∀ n, HasSum (fun k : ℕ => ((c k : ↥K.1) : Om l) * z n ^ k) (g (z n))) → ∀ n D : ℕ,
+    u n ^ D ∣ actT g (u n) - ∑ i ∈ Finset.range D, r₀ (c i) * u n ^ i := by
+  intro l _ K π z f hf hl hπ hz1 hz2 u hu hun r₀ hr hrn hu0 g c hs n D
+  rw [GroundTheory.PAdicHodge.preTilt_dvd_iff_norm_le, norm_pow]
+  set ρ := ‖oc K π‖ with hρdef
+  have hρ0 : 0 ≤ ρ := norm_nonneg _
+  have hε : 0 < ‖u n‖ ^ D := pow_pos (norm_pos_iff.2 (hu0 n)) D
+  obtain ⟨m, hm, hmρ⟩ := exists_pow_le (l := l) hf hρ0 hπ hε
+  set k := n + m with hk
+  have hk2 : 2 ≤ k := by omega
+  have hzk : ‖omC (z k)‖ ≤ 1 := (hz1 k).le
+  have hnorm : ‖omC (z k)‖ ≤ ‖u k‖ := by
+    by_contra hlt
+    push_neg at hlt
+    have e : omC (z k) = sh (u k) - (sh (u k) - omC (z k)) := by ring
+    have h3 : ‖omC (z k)‖ ≤ max ‖sh (u k)‖ ρ := by
+      conv_lhs => rw [e, sub_eq_add_neg]
+      exact (IsUltrametricDist.norm_add_le_max _ _).trans
+        (max_le_max le_rfl (by rw [norm_neg]; exact hun k))
+    rcases le_max_iff.1 h3 with h4 | h4
+    · rw [← norm_eq_norm_sh] at h4; linarith
+    · linarith [hz2 k hk2]
+  have hA : ‖sh (actT g (u k)) - omC (g (z k))‖ ≤ ρ := by
+    rw [sh_actT, ← galCp_omC, ← map_sub, norm_galCp]
+    exact hun k
+  have hread := norm_read hl (actT g (u k)) (u k) (fun i => r₀ (c i)) (omC (g (z k))) (omC (z k))
+    (fun i => oc K (c i)) D hzk hA (hun k) (fun i => hrn _)
+  have htail := tail_le K c (z k) (g (z k)) hzk (hs k) D
+  have hx : ‖actT g (u k) - ∑ i ∈ Finset.range D, r₀ (c i) * u k ^ i‖ ≤ max ρ (‖u k‖ ^ D) :=
+    hread.trans (max_le_max le_rfl (htail.trans (pow_le_pow_left₀ (norm_nonneg _) hnorm D)))
+  have hpow := pow_read (f * m) (actT g (u k)) (u k) (fun i => r₀ (c i)) D
+  have hc : u k ^ l ^ (f * m) = u n := pow_compat hu n m
+  have ha : actT g (u k) ^ l ^ (f * m) = actT g (u n) := by rw [← map_pow, hc]
+  simp only [pow_fixed (hr _) m, hc, ha] at hpow
+  rw [← hpow, norm_pow]
+  have hun' : ‖u k‖ ^ l ^ (f * m) = ‖u n‖ := by rw [← norm_pow, hc]
+  refine (pow_le_pow_left₀ (norm_nonneg _) hx _).trans ?_
+  rcases le_total ρ (‖u k‖ ^ D) with h | h
+  · rw [max_eq_right h, ← pow_mul, mul_comm, pow_mul, hun']
+  · rw [max_eq_left h]; exact hmρ
+
+end GlobalTheory.CompanionTheory.LTPer.Tilt.GalDiv
+end
+end
+
+noncomputable section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
+open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal GlobalTheory.CompanionTheory.LTHodge GlobalTheory.CompanionTheory.LTPer
+open scoped Classical
+open GlobalTheory.CompanionTheory.LTPer.Tilt
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lubin_tate_teichmuller_sequence_compatibility : ∀ {l : ℕ} [Fact l.Prime] (K : FinExt l) (π : ↥(OL K)) (z : ℕ → Om l) (f : ℕ), 0 < f →
+    ‖(l : ℂ_[l])‖ ≤ ‖oc K π‖ → ‖oc K π‖ < 1 →
+    (∀ n, ‖omC (z n)‖ < 1) → (∀ n, 2 ≤ n → ‖oc K π‖ < ‖omC (z n)‖) →
+    ∀ (u : ℕ → Tl l), (∀ n, u (n + 1) ^ l ^ f = u n) → (∀ n, ‖sh (u n) - omC (z n)‖ ≤ ‖oc K π‖) →
+    ∀ (r₀ : ↥(OL K) →+* Tl l), (∀ c, r₀ c ^ l ^ f = r₀ c) → (∀ c, ‖sh (r₀ c) - oc K c‖ ≤ ‖oc K π‖) →
+    (∀ n, u n ≠ 0) → ∀ (g : GQ l) (c : ℕ → ↥(OL K)),
+    (∀ n, HasSum (fun k : ℕ => ((c k : ↥K.1) : Om l) * z n ^ k) (g (z n))) → ∀ n D : ℕ,
+    u n ^ D ∣ actT g (u n) - ∑ i ∈ Finset.range D, r₀ (c i) * u n ^ i := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LTPer.Tilt.GalDiv.galdiv
+end
+end
+
+section
 noncomputable section
 open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
 open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal GlobalTheory.CompanionTheory.LTHodge GlobalTheory.CompanionTheory.LTPer
@@ -224,3 +1077,5 @@ theorem GlobalTheory.CompanionTheory.LTPer.Tilt.tilt_period : ∀ {l : ℕ} [Fac
     show ‖thB l (tch l (u n ^ l ^ i)) - _‖ ≤ _
     rw [hi0 hμ, pow_zero, pow_one, thB_tch, ← omC_apply, ← oc_apply]
     exact hu2 n
+end
+end

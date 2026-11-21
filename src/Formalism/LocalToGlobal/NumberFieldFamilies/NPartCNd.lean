@@ -63,7 +63,6 @@ abbrev OmC : Type := AlgebraicClosure H.E
 
 def PlOverEx : Prop := ∀ v : HeightOneSpectrum (𝓞 H.E), ∃ A : ValuationSubring (OmC H), IsPlaceOver A v
 
-theorem plOverEx_holds : PlOverEx H := fun v => exists_isPlaceOver (OmC H) v
 
 def plOmC (h : PlOverEx H) : Formalism.GaloisCohomology.Places H.E (OmC H) := ⟨fun v => (h v).choose, fun v => (h v).choose_spec⟩
 
@@ -80,23 +79,11 @@ def ldatC (h : PlOverEx H) (p : ℕ) [Fact p.Prime] : Formalism.GaloisCohomology
 def TameEx (h : PlOverEx H) : Prop :=
   ∀ v : HeightOneSpectrum (𝓞 H.E), ∃ γ : G H.E (OmC H), TameGenAt ((plOmC H h).1 v) γ
 
-theorem tameEx_holds (h : PlOverEx H) : TameEx H h := fun v => by
-  obtain ⟨p, hp, hmem⟩ := Formalism.BasicNotions.Examples₂.PlacesToy.exists_prime_mem v
-  have hlt : ((plOmC H h).1 v).valuation ((p : ℕ) : OmC H) < 1 := by
-    have := (((plOmC H h).2 v) ((p : ℕ) : 𝓞 H.E)).mpr hmem
-    simpa using this
-  exact Formalism.BasicNotions.Examples₂.Tame.exists_tameGen _ p hp.ne_zero hlt
 
 def gamW (h : PlOverEx H) (v : HeightOneSpectrum (𝓞 H.E)) : G H.E (OmC H) := by
   classical
   exact if hv : ∃ γ : G H.E (OmC H), TameGenAt ((plOmC H h).1 v) γ then hv.choose else 1
 
-theorem gamW_mem (h : PlOverEx H) (v : HeightOneSpectrum (𝓞 H.E)) : gamW H h v ∈ Ine (F := H.E) ((plOmC H h).1 v) := by
-  classical
-  unfold gamW
-  split_ifs with hv
-  · exact hv.choose_spec.1
-  · exact one_mem _
 
 theorem gamW_gen (h : PlOverEx H) (ht : TameEx H h) (v : HeightOneSpectrum (𝓞 H.E)) :
     TameGenAt ((plOmC H h).1 v) (gamW H h v) := by
@@ -122,9 +109,6 @@ def PlGC (k : Fin 2) : Type :=
 
 def PlGFin : Prop := ∀ k, Finite (PlGC H k)
 
-theorem plGFin_holds : PlGFin H := fun k => by
-  haveI : Fact (H.g k).Prime := ⟨H.g_prime k⟩
-  exact (Formalism.GaloisCohomology.above_finite (F := maximalRealSubfield H.E) (H.g k)).to_subtype
 
 variable {H what₂} (B : LocBase0 H what₂)
 

@@ -87,9 +87,6 @@ def CuspFormLimitTwoPlaces : Prop :=
       (∀ w, ((l : ℕ) : 𝓞 E) ∈ w.asIdeal → Apart w w₀ → Apart w v' → (∃ B, (CG.mk π).HasSat w B) →
         ClauseAt .crys π ι r w ∧ ClauseAt .dR π ι r w)
 
-theorem sameWtOff_of_eq (ι : Qbar l ≃+* ℂ) (w₀ v' : HeightOneSpectrum (𝓞 E)) (U U' : Submodule ℂ (UA E a → ℂ))
-    (h : ∀ τ lam, HasWeightAt U τ lam ↔ HasWeightAt U' τ lam) : SameWtOff ι w₀ v' U U' :=
-  fun τ _ lam => h τ lam
 
 theorem sameWtAt_of_off (ι : Qbar l ≃+* ℂ) {w₀ v' w : HeightOneSpectrum (𝓞 E)} {U U' : Submodule ℂ (UA E a → ℂ)}
     (h : SameWtOff ι w₀ v' U U') (hw : ∀ τ : E →+* ℂ, OverPl ι τ w → ∀ u, OverPl ι τ u → u = w)

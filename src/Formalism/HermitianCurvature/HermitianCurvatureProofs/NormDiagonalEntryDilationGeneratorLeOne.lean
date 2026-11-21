@@ -530,14 +530,6 @@ theorem dilationAction_continuousOn (k r : ℕ) :
   · exact continuousOn_conj_by_dilation k r (fun q => q.1.2.2) (continuous_snd.comp (continuous_snd.comp continuous_fst))
       (fun q => q.2.2) (continuous_snd.comp continuous_snd) (fun q hq => hq.2.2)
 
-theorem dilationAction_one (p : SS k r) : dilation₂ (1, 1) p = p := by
-  have h : ∀ x : Mt k r, conjM (aDil k r 1) x = x := by
-    intro x
-    unfold conjM
-    rw [aDil_one, inv_one, Matrix.one_mul, Matrix.mul_one]
-    rfl
-  unfold dilation₂
-  simp only [h]
 
 theorem inSS_mem (D : RealPlaceData k r Wp Wq) {p : SS k r} (hp : D.inSS p) :
     (Matrix.of p.1.2 * Matrix.of p.1.1 : Mat k r) ∈ GV k r ∧ (Matrix.of p.2.2 * Matrix.of p.2.1 : Mat k r) ∈ GV k r :=

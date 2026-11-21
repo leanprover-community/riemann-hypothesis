@@ -1,6 +1,23 @@
-import Formalism.SharpRestriction.Divisibility.ChainOperators.WeightFramesOfSubgroupFrames
+import Formalism.PeriodIntegrals.NablaSpans.MinorProdSpanHasCompl
+import Formalism.SharpRestriction.Divisibility.OrbitPlaces
+import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.MinorSpanCompl
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.GenFrameSB
 
+section
+open Formalism.BasicNotions
+
+namespace Formalism.MainNotions.DIV.Lemmas
+
+
+
+
+theorem kw_of_cutSB (h : CutKW.KWsb) : CutKW.KW := h minor_span_complement
+
+
+end Formalism.MainNotions.DIV.Lemmas
+end
+
+section
 open Formalism.BasicNotions
 
 namespace Formalism.MainNotions.DIV.Lemmas
@@ -15,6 +32,6 @@ theorem generic_frames_letters : Formalism.MainNotions.product_zeroth_first_part
   intro l _ d _ N0 N1 nu Th B
   apply cutKW_holds
 
-theorem stmtW_holds (D : D7) : Formalism.MainNotions.OrbitPlaces.WeightsFromStandardBasis D := fun _ => theta_isometry_facts_hold D
 
 end Formalism.MainNotions.DIV.Lemmas
+end

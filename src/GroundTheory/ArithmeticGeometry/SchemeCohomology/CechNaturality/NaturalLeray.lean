@@ -254,9 +254,6 @@ def cechHLinearEquivH (F : X.Modules) [F.IsQuasicoherent] (n : ℕ) :
   (cechHAddEquivH U hU hUaff F n).toLinearEquiv fun a x =>
     cechHAddEquivH_naturality U hU hUaff (smulHom F (algebraMap A Γ(X, ⊤) a)) n x
 
-lemma cechHLinearEquivH_apply (F : X.Modules) [F.IsQuasicoherent] (n : ℕ)
-    (x : cechH (modulesAb F).obj U n) :
-    cechHLinearEquivH U hU hUaff A F n x = cechHAddEquivH U hU hUaff F n x := rfl
 
 theorem cechHLinearEquivH_naturality {F G : X.Modules} [F.IsQuasicoherent] [G.IsQuasicoherent]
     (φ : F ⟶ G) (n : ℕ) (x : cechH (modulesAb F).obj U n) :

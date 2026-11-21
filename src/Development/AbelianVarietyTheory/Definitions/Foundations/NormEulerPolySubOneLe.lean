@@ -465,18 +465,6 @@ theorem hasProd_dv (S : Set (HeightOneSpectrum (𝓞 F))) (a b : ℕ) {s : ℂ} 
 theorem dSfun_eq (S : Set (HeightOneSpectrum (𝓞 F))) (a b : ℕ) {s : ℂ} (hs : 0 < s.re) :
     dSfun E S a b s = ∏ i ∈ Finset.range a, etaL E S (b + i) (2 * s + a - i) := (hasProd_dv S a b hs).tprod_eq
 
-theorem dS_eq (S : Set (HeightOneSpectrum (𝓞 F))) (a : ℕ) {t : ℕ} (ht : 1 ≤ t) :
-    dS E S a (a + t) = ∏ k ∈ Finset.Icc (t + 1) (t + a), etaL E S k k ∧ dS E S a (a + t) ≠ 0 := by
-  have hc : ∀ k ∈ Finset.Icc (t + 1) (t + a), Converges S (etaFam E k) k := fun k hk =>
-    converges_etaFam S k (by
-      have := (Finset.mem_Icc.1 hk).1
-      rw [Complex.natCast_re]
-      exact_mod_cast (by omega : 1 < k))
-  have e : dS E S a (a + t) = ∏ k ∈ Finset.Icc (t + 1) (t + a), etaL E S k k := by
-    rw [dS, dSfun, show (((a + t : ℕ) : ℂ) - a) / 2 = (t : ℂ) / 2 by push_cast; ring]
-    simp only [dv_center]
-    exact (hasProd_prod fun k hk => (hc k hk).hasProd).tprod_eq
-  exact ⟨e, e ▸ Finset.prod_ne_zero_iff.2 fun k hk => (hc k hk).ne_zero⟩
 
 end Ext
 

@@ -1,6 +1,178 @@
 import Mathlib
-import Formalism.LocalToGlobal.KernelLattices.DeterminantCokernelCount.CokernelIndexFactors.IdxSmith
 
+section
+open Matrix IsLocalRing
+
+namespace DVRLatticeIndex
+
+variable {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
+
+noncomputable def scaleAt {ι : Type*} [DecidableEq ι] (j : ι) (a : O) : Matrix ι ι O :=
+  Matrix.diagonal (Function.update (fun _ => (1 : O)) j a)
+
+theorem det_scaleAt {ι : Type*} [Fintype ι] [DecidableEq ι] (j : ι) (a : O) :
+    (scaleAt j a).det = a := by
+  simp [scaleAt, Matrix.det_diagonal, Function.update_apply, Finset.prod_ite_eq']
+
+theorem range_toLin'_eq_top_of_isUnit_det {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (C : Matrix ι ι O) (h : IsUnit C.det) : LinearMap.range (Matrix.toLin' C) = ⊤ := by
+  rw [LinearMap.range_eq_top]
+  intro y
+  refine ⟨C⁻¹ *ᵥ y, ?_⟩
+  rw [Matrix.toLin'_apply, Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ h, Matrix.one_mulVec]
+
+theorem card_quot_range_of_isUnit_det {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (C : Matrix ι ι O) (h : IsUnit C.det) :
+    Nat.card ((ι → O) ⧸ LinearMap.range (Matrix.toLin' C)) = 1 := by
+  rw [range_toLin'_eq_top_of_isUnit_det C h]
+  refine Nat.card_eq_one_iff_unique.mpr ⟨⟨fun a b => ?_⟩, ⟨0⟩⟩
+  obtain ⟨x, rfl⟩ := Submodule.Quotient.mk_surjective _ a
+  obtain ⟨y, rfl⟩ := Submodule.Quotient.mk_surjective _ b
+  exact (Submodule.Quotient.eq _).mpr Submodule.mem_top
+
+theorem injective_toLin'_of_det_ne_zero {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (C : Matrix ι ι O) (h : C.det ≠ 0) : Function.Injective (Matrix.toLin' C) := by
+  rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
+  intro x hx
+  rw [Matrix.toLin'_apply] at hx
+  have h2 : C.adjugate *ᵥ (C *ᵥ x) = C.det • x := by
+    rw [Matrix.mulVec_mulVec, Matrix.adjugate_mul, Matrix.smul_mulVec, Matrix.one_mulVec]
+  rw [hx, Matrix.mulVec_zero] at h2
+  funext i
+  have h3 := congrFun h2 i
+  rw [Pi.zero_apply, Pi.smul_apply, smul_eq_mul] at h3
+  exact (mul_eq_zero.mp h3.symm).resolve_left h
+
+theorem card_quot_range_comp {M : Type*} [AddCommGroup M] [Module O M]
+    (A B : M →ₗ[O] M) (hA : Function.Injective A) :
+    Nat.card (M ⧸ LinearMap.range (A ∘ₗ B)) =
+      Nat.card (M ⧸ LinearMap.range B) * Nat.card (M ⧸ LinearMap.range A) := by
+  have h1 : (LinearMap.range (A ∘ₗ B)).toAddSubgroup =
+      (LinearMap.range B).toAddSubgroup.map A.toAddMonoidHom := by
+    rw [LinearMap.range_comp, Submodule.map_toAddSubgroup]
+    rfl
+  have h2 : A.toAddMonoidHom.range = (LinearMap.range A).toAddSubgroup := by
+    ext y
+    simp
+  change (LinearMap.range (A ∘ₗ B)).toAddSubgroup.index =
+    (LinearMap.range B).toAddSubgroup.index * (LinearMap.range A).toAddSubgroup.index
+  rw [h1, AddSubgroup.index_map_of_injective _ hA, h2]
+
+theorem card_quot_range_scaleAt {ι : Type*} [Fintype ι] [DecidableEq ι] (ϖ : O)
+    (hϖ : Irreducible ϖ) (j : ι) :
+    Nat.card ((ι → O) ⧸ LinearMap.range (Matrix.toLin' (scaleAt j ϖ))) =
+      Nat.card (IsLocalRing.ResidueField O) := by
+  classical
+  have hmax := (IsDiscreteValuationRing.irreducible_iff_uniformizer ϖ).mp hϖ
+  have hrange : LinearMap.range (Matrix.toLin' (scaleAt j ϖ)) =
+      LinearMap.ker ((Algebra.linearMap O (IsLocalRing.ResidueField O)) ∘ₗ LinearMap.proj j) := by
+    ext y
+    simp only [LinearMap.mem_range, LinearMap.mem_ker, LinearMap.comp_apply, LinearMap.proj_apply,
+      Algebra.linearMap_apply]
+    rw [IsLocalRing.ResidueField.algebraMap_eq, IsLocalRing.residue_eq_zero_iff, hmax,
+      Ideal.mem_span_singleton]
+    constructor
+    · rintro ⟨x, rfl⟩
+      rw [Matrix.toLin'_apply]
+      simp [scaleAt, Matrix.mulVec_diagonal]
+    · rintro ⟨c, hc⟩
+      refine ⟨Function.update y j c, ?_⟩
+      funext i
+      rw [Matrix.toLin'_apply]
+      simp only [scaleAt, Matrix.mulVec_diagonal, Function.update_apply]
+      split_ifs with h
+      · subst h
+        exact hc.symm
+      · simp
+  rw [hrange]
+  have hsurj : Function.Surjective ((Algebra.linearMap O (IsLocalRing.ResidueField O)) ∘ₗ
+      (LinearMap.proj j : (ι → O) →ₗ[O] O)) := by
+    intro z
+    obtain ⟨a, rfl⟩ := IsLocalRing.residue_surjective z
+    exact ⟨Pi.single j a, by simp [IsLocalRing.ResidueField.algebraMap_eq]⟩
+  exact Nat.card_congr (LinearMap.quotKerEquivOfSurjective _ hsurj).toEquiv
+
+theorem card_quot_range_toLin_clean {ι : Type*} [Fintype ι] [DecidableEq ι] (ϖ : O)
+    (hϖ : Irreducible ϖ) (C : Matrix ι ι O) (e : ℕ) (w : Oˣ) (hC : C.det = ϖ ^ e * w) :
+    Nat.card ((ι → O) ⧸ LinearMap.range (Matrix.toLin' C)) =
+      Nat.card (IsLocalRing.ResidueField O) ^ e := by
+  classical
+  induction e generalizing C w with
+  | zero =>
+    rw [pow_zero, one_mul] at hC
+    rw [pow_zero]
+    exact card_quot_range_of_isUnit_det C (by rw [hC]; exact w.isUnit)
+  | succ e ih =>
+    have hmax := (IsDiscreteValuationRing.irreducible_iff_uniformizer ϖ).mp hϖ
+    have hϖ0 : ϖ ≠ 0 := hϖ.ne_zero
+    have hres : IsLocalRing.residue O ϖ = 0 :=
+      (IsLocalRing.residue_eq_zero_iff ϖ).mpr ((IsLocalRing.mem_maximalIdeal _).mpr (mem_nonunits_iff.mpr hϖ.not_isUnit))
+    have hdetb : (C.map (IsLocalRing.residue O)).det = 0 := by
+      rw [show (C.map (IsLocalRing.residue O)).det = IsLocalRing.residue O C.det from (RingHom.map_det _ _).symm,
+        hC, map_mul, map_pow, hres, zero_pow (Nat.succ_ne_zero e), zero_mul]
+    obtain ⟨vb, hvb0, hCvb⟩ := Matrix.exists_mulVec_eq_zero_iff.mpr hdetb
+    choose vlift hvlift using fun i => IsLocalRing.residue_surjective (vb i)
+    obtain ⟨i0, hi0⟩ : ∃ i0, vb i0 ≠ 0 := by
+      by_contra h
+      push_neg at h
+      exact hvb0 (funext h)
+    have hunit : IsUnit (vlift i0) := by
+      rw [← IsLocalRing.residue_ne_zero_iff_isUnit, hvlift]
+      exact hi0
+    have hdiv : ∀ m, ϖ ∣ (C *ᵥ vlift) m := by
+      intro m
+      have h1 : IsLocalRing.residue O ((C *ᵥ vlift) m) = 0 := by
+        have h3 := congrFun hCvb m
+        rw [Pi.zero_apply] at h3
+        rw [← h3]
+        simp only [Matrix.mulVec, dotProduct, map_sum, map_mul, Matrix.map_apply, hvlift]
+      rw [IsLocalRing.residue_eq_zero_iff, hmax, Ideal.mem_span_singleton] at h1
+      exact h1
+    choose c hc using hdiv
+    set P : Matrix ι ι O := (1 : Matrix ι ι O).updateCol i0 vlift with hP
+    set C' : Matrix ι ι O := C.updateCol i0 c with hC'
+    have hdetP : P.det = vlift i0 := by
+      rw [hP, ← Matrix.cramer_apply, Matrix.cramer_one]
+      rfl
+    have hCP : C * P = C' * scaleAt i0 ϖ := by
+      refine Matrix.ext fun m b => ?_
+      rw [scaleAt, Matrix.mul_diagonal, Matrix.mul_apply]
+      by_cases hb : b = i0
+      · subst hb
+        simp only [hP, hC', Matrix.updateCol_self, Function.update_self]
+        have h2 := hc m
+        simp only [Matrix.mulVec, dotProduct] at h2
+        rw [h2, mul_comm]
+      · simp only [hP, hC', Matrix.updateCol_ne hb, Function.update_of_ne hb, mul_one]
+        rw [← Matrix.mul_apply, Matrix.mul_one]
+    have hdetC' : C'.det = ϖ ^ e * ((w * hunit.unit : Oˣ) : O) := by
+      have h1 : C'.det * ϖ = ϖ ^ (e + 1) * w * vlift i0 := by
+        have h2 : (C' * scaleAt i0 ϖ).det = C'.det * ϖ := by rw [Matrix.det_mul, det_scaleAt]
+        rw [← h2, ← hCP, Matrix.det_mul, hC, hdetP]
+      apply mul_right_cancel₀ hϖ0
+      rw [h1]
+      simp only [Units.val_mul, IsUnit.unit_spec]
+      ring
+    have hCinj := injective_toLin'_of_det_ne_zero C
+      (by rw [hC]; exact mul_ne_zero (pow_ne_zero _ hϖ0) w.ne_zero)
+    have hC'inj := injective_toLin'_of_det_ne_zero C'
+      (by rw [hdetC']; exact mul_ne_zero (pow_ne_zero _ hϖ0) (Units.ne_zero _))
+    have e1 := card_quot_range_comp (Matrix.toLin' C) (Matrix.toLin' P) hCinj
+    have e2 := card_quot_range_comp (Matrix.toLin' C') (Matrix.toLin' (scaleAt i0 ϖ)) hC'inj
+    rw [← Matrix.toLin'_mul, hCP, Matrix.toLin'_mul, e2,
+      card_quot_range_of_isUnit_det P (by rw [hdetP]; exact hunit), one_mul,
+      card_quot_range_scaleAt ϖ hϖ i0, ih C' _ hdetC'] at e1
+    rw [← e1, pow_succ']
+
+example {ι : Type*} [Fintype ι] [DecidableEq ι] (ϖ : O) (hϖ : Irreducible ϖ) (j : ι) :
+    Nat.card ((ι → O) ⧸ LinearMap.range (Matrix.toLin' (scaleAt j ϖ))) =
+      Nat.card (IsLocalRing.ResidueField O) ^ 1 :=
+  card_quot_range_toLin_clean ϖ hϖ (scaleAt j ϖ) 1 1 (by rw [det_scaleAt]; simp)
+
+end DVRLatticeIndex
+end
+
+section
 noncomputable section
 
 namespace UnitaryThetaMoves
@@ -12,80 +184,15 @@ def chiRatio (χ : Γ →* Cˣ) (M M' : ℕ) (dg dg' dg₁ dg₂ : Γ) : C :=
 
 def idxExp (M M' : ℕ) (a a' : ℤ) : ℤ := 2 * ((M' : ℤ) * a - (M : ℤ) * a')
 
-theorem norm_units_zpow (x : Cˣ) (z : ℤ) : ‖((x ^ z : Cˣ) : C)‖ = ‖(x : C)‖ ^ z := by
-  rw [Units.val_zpow_eq_zpow_val, norm_zpow]
 
-theorem norm_units_ne_zero (x : Cˣ) : ‖(x : C)‖ ≠ 0 := norm_ne_zero_iff.mpr x.ne_zero
 
 section Val
 
 variable {V : Type*} [Fintype V]
 
-theorem norm_chi_prod (χ : Γ →* Cˣ) (t : V → Γ) (Q : V → ℕ) (a : V → ℤ)
-    (ht : ∀ v, ‖((χ (t v) : Cˣ) : C)‖ = ‖(Q v : C)‖) :
-    ‖((χ (∏ v, t v ^ a v) : Cˣ) : C)‖ = ∏ v, ‖(Q v : C)‖ ^ a v := by
-  first
-  | (rw [map_prod, Units.coe_prod, norm_prod]
-     refine Finset.prod_congr rfl fun v _ => ?_
-     rw [map_zpow, norm_units_zpow, ht v])
-  | (simp [map_prod, norm_prod, norm_units_zpow, ht])
 
-theorem norm_chiRatio (χ : Γ →* Cˣ) (H : Subgroup Γ) (hχH : ∀ h ∈ H, χ h = 1)
-    (M M' : ℕ) (t : V → Γ) (Q : V → ℕ) (a a' : V → ℤ) (dg dg' dg₁ dg₂ u u' : Γ)
-    (hu : u ∈ H) (hu' : u' ∈ H)
-    (hk : dg₁ = dg * (∏ v, t v ^ a v) * u) (hk' : dg₂ = dg' * (∏ v, t v ^ a' v) * u')
-    (hQ : ∀ v, (Q v : C) ≠ 0) (ht : ∀ v, ‖((χ (t v) : Cˣ) : C)‖ = ‖(Q v : C)‖) :
-    ‖chiRatio χ M M' dg dg' dg₁ dg₂‖ = ∏ v, ‖(Q v : C)‖ ^ ((M' : ℤ) * a v - (M : ℤ) * a' v) := by
-  subst hk hk'
-  have hu1 : χ u = 1 := hχH u hu
-  have hu1' : χ u' = 1 := hχH u' hu'
-  have hQn : ∀ v, ‖(Q v : C)‖ ≠ 0 := fun v => norm_ne_zero_iff.mpr (hQ v)
-  have hα := norm_units_ne_zero (χ dg)
-  have hβ := norm_units_ne_zero (χ dg')
-  have hprod : ∏ v, ‖(Q v : C)‖ ^ ((M' : ℤ) * a v - (M : ℤ) * a' v) =
-      (∏ v, ‖(Q v : C)‖ ^ a v) ^ (M' : ℤ) * (∏ v, ‖(Q v : C)‖ ^ a' v) ^ (-(M : ℤ)) := by
-    first
-    | rw [← Finset.prod_zpow, ← Finset.prod_zpow, ← Finset.prod_mul_distrib]
-    | rw [Finset.prod_zpow, Finset.prod_zpow, ← Finset.prod_mul_distrib]
-    refine Finset.prod_congr rfl fun v _ => ?_
-    rw [← zpow_mul, ← zpow_mul, ← zpow_add₀ (hQn v)]
-    congr 1
-    ring
-  simp only [chiRatio, Units.val_div_eq_div_val, Units.val_mul, norm_div, norm_mul, norm_units_zpow,
-    map_mul, hu1, hu1', mul_one, norm_chi_prod χ t Q a ht, norm_chi_prod χ t Q a' ht]
-  rw [hprod, mul_zpow, mul_zpow]
-  first
-  | (rw [div_eq_iff (mul_ne_zero (zpow_ne_zero _ hα) (zpow_ne_zero _ hβ))]
-     ring)
-  | (field_simp
-     ring)
 
-theorem norm_sqrt_idx (M M' : ℕ) (Q : V → ℕ) (a a' : V → ℤ) (hQ : ∀ v, (Q v : C) ≠ 0)
-    (n : ℕ) (hn : (n : C) = ∏ v, (Q v : C) ^ idxExp M M' (a v) (a' v)) (s : C) (hs : s * s = n) :
-    ‖s‖ = ∏ v, ‖(Q v : C)‖ ^ ((M' : ℤ) * a v - (M : ℤ) * a' v) := by
-  have hQn : ∀ v, ‖(Q v : C)‖ ≠ 0 := fun v => norm_ne_zero_iff.mpr (hQ v)
-  have hR : 0 ≤ ∏ v, ‖(Q v : C)‖ ^ ((M' : ℤ) * a v - (M : ℤ) * a' v) :=
-    Finset.prod_nonneg fun v _ => zpow_nonneg (norm_nonneg _) _
-  have hsq : ‖s‖ * ‖s‖ = (∏ v, ‖(Q v : C)‖ ^ ((M' : ℤ) * a v - (M : ℤ) * a' v)) *
-      (∏ v, ‖(Q v : C)‖ ^ ((M' : ℤ) * a v - (M : ℤ) * a' v)) := by
-    rw [← norm_mul, hs, hn, norm_prod, ← Finset.prod_mul_distrib]
-    refine Finset.prod_congr rfl fun v _ => ?_
-    rw [norm_zpow, ← zpow_add₀ (hQn v), idxExp, two_mul]
-  first
-  | exact (mul_self_inj (norm_nonneg _) hR).1 hsq
-  | nlinarith [norm_nonneg s]
 
-theorem norm_inv_mul_charRatio (χ : Γ →* Cˣ) (H : Subgroup Γ) (hχH : ∀ h ∈ H, χ h = 1)
-    (M M' : ℕ) (t : V → Γ) (Q : V → ℕ) (a a' : V → ℤ) (dg dg' dg₁ dg₂ u u' : Γ)
-    (hu : u ∈ H) (hu' : u' ∈ H)
-    (hk : dg₁ = dg * (∏ v, t v ^ a v) * u) (hk' : dg₂ = dg' * (∏ v, t v ^ a' v) * u')
-    (hQ : ∀ v, (Q v : C) ≠ 0) (ht : ∀ v, ‖((χ (t v) : Cˣ) : C)‖ = ‖(Q v : C)‖)
-    (n : ℕ) (hn : (n : C) = ∏ v, (Q v : C) ^ idxExp M M' (a v) (a' v)) (s : C) (hs : s * s = n) :
-    ‖s⁻¹ * chiRatio χ M M' dg dg' dg₁ dg₂‖ = 1 := by
-  have hQn : ∀ v, ‖(Q v : C)‖ ≠ 0 := fun v => norm_ne_zero_iff.mpr (hQ v)
-  rw [norm_mul, norm_inv, norm_sqrt_idx M M' Q a a' hQ n hn s hs,
-    norm_chiRatio χ H hχH M M' t Q a a' dg dg' dg₁ dg₂ u u' hu hu' hk hk' hQ ht]
-  exact inv_mul_cancel₀ (Finset.prod_ne_zero_iff.mpr fun v _ => zpow_ne_zero _ (hQn v))
 
 end Val
 
@@ -117,19 +224,7 @@ def RelIndexFormula : Prop :=
       0 ≤ (N' : ℤ) * a - (N : ℤ) * a' ∧
         (matLat O K N N').relIndex (movLat O K k k') = Q ^ ((N' : ℤ) * a - (N : ℤ) * a').toNat
 
-theorem hn_of_idx {V : Type*} [Fintype V] (M₀ M₀' : ℕ) (Q : V → ℕ) (a a' : V → ℤ) (nv : V → ℕ)
-    (hpos : ∀ v, 0 ≤ idxExp M₀ M₀' (a v) (a' v))
-    (hnv : ∀ v, nv v = Q v ^ (idxExp M₀ M₀' (a v) (a' v)).toNat) :
-    (((∏ v, nv v : ℕ)) : C) = ∏ v, (Q v : C) ^ idxExp M₀ M₀' (a v) (a' v) := by
-  rw [Nat.cast_prod]
-  refine Finset.prod_congr rfl fun v _ => ?_
-  rw [hnv v, Nat.cast_pow, ← zpow_natCast, Int.toNat_of_nonneg (hpos v)]
 
-theorem idxExp_eq (M₀ M₀' : ℕ) (a a' : ℤ) :
-    idxExp M₀ M₀' a a' = ((2 * M₀' : ℕ) : ℤ) * a - ((2 * M₀ : ℕ) : ℤ) * a' := by
-  unfold idxExp
-  push_cast
-  ring
 
 end Index
 
@@ -360,75 +455,15 @@ def xiNat (χ : Γ →* Cˣ) (M₀ M₀' : ℕ) (dg₁ dg₂ : Γ) (ΞTh : F →
 def MapsToUpToSign (ΞTh : F →ₗ[C] M) (oneYP : F) (ThY : M) (s : C) : Prop :=
   ∃ ε : C, (ε = 1 ∨ ε = -1) ∧ ΞTh (s • oneYP) = ε • ThY
 
-theorem exists_norm_eq_one_scaledMap_eq {V : Type*} [Fintype V] (χ : Γ →* Cˣ) (H : Subgroup Γ) (hχH : ∀ h ∈ H, χ h = 1)
-    (M₀ M₀' : ℕ) (t : V → Γ) (Q : V → ℕ) (a a' : V → ℤ) (dg dg' dg₁ dg₂ u u' : Γ)
-    (hu : u ∈ H) (hu' : u' ∈ H)
-    (hk : dg₁ = dg * (∏ v, t v ^ a v) * u) (hk' : dg₂ = dg' * (∏ v, t v ^ a' v) * u')
-    (hQ : ∀ v, (Q v : C) ≠ 0) (ht : ∀ v, ‖((χ (t v) : Cˣ) : C)‖ = ‖(Q v : C)‖)
-    (n : ℕ) (hn : (n : C) = ∏ v, (Q v : C) ^ idxExp M₀ M₀' (a v) (a' v)) (s : C) (hs : s * s = n)
-    (ΞTh : F →ₗ[C] M) (oneYP : F) (ThY : M) (hvac : MapsToUpToSign ΞTh oneYP ThY s) :
-    ∃ κ : C, ‖κ‖ = 1 ∧ xiNat χ M₀ M₀' dg₁ dg₂ ΞTh oneYP = κ • eNat χ M₀ M₀' dg dg' ThY := by
-  obtain ⟨ε, hε, hΞ⟩ := hvac
-  have hn0 : (n : C) ≠ 0 := by
-    rw [hn]
-    exact Finset.prod_ne_zero_iff.mpr fun v _ => zpow_ne_zero _ (hQ v)
-  have hs0 : s ≠ 0 := by
-    rintro rfl
-    apply hn0
-    rw [← hs, zero_mul]
-  have hc0 : ((χ dg ^ (M₀' : ℤ) * χ dg' ^ (-(M₀ : ℤ)) : Cˣ) : C) ≠ 0 := Units.ne_zero _
-  refine ⟨ε * (s⁻¹ * chiRatio χ M₀ M₀' dg dg' dg₁ dg₂), ?_, ?_⟩
-  · rw [norm_mul, norm_inv_mul_charRatio χ H hχH M₀ M₀' t Q a a' dg dg' dg₁ dg₂ u u' hu hu' hk hk' hQ ht n hn s hs,
-      mul_one]
-    rcases hε with rfl | rfl
-    · exact norm_one
-    · rw [norm_neg, norm_one]
-  · have hx : ΞTh oneYP = s⁻¹ • ε • ThY := by
-      rw [← hΞ, map_smul, inv_smul_smul₀ hs0]
-    simp only [xiNat, eNat, chiRatio, LinearMap.smul_apply, hx, smul_smul, Units.val_div_eq_div_val]
-    congr 1
-    first
-    | (rw [mul_assoc ε, mul_assoc s⁻¹, div_mul_cancel₀ _ hc0]
-       ring)
-    | (field_simp
-       ring)
 
 end Model
 
 section Assembled
 
-theorem exists_norm_eq_one_scaledMap_eq_of_relIndex {V : Type*} [Fintype V] (OV KV : V → Type) [∀ v, CommRing (OV v)] [∀ v, IsDomain (OV v)]
-    [∀ v, IsDiscreteValuationRing (OV v)] [∀ v, Field (KV v)] [∀ v, Algebra (OV v) (KV v)]
-    [∀ v, IsFractionRing (OV v) (KV v)] (ϖ : ∀ v, OV v) (hϖ : ∀ v, Irreducible (ϖ v))
-    (χ : Γ →* Cˣ) (H : Subgroup Γ) (hχH : ∀ h ∈ H, χ h = 1) (M₀ M₀' : ℕ)
-    (k : ∀ v, GL (Fin (2 * M₀)) (KV v)) (k' : ∀ v, GL (Fin (2 * M₀')) (KV v)) (a a' : V → ℤ)
-    (wv wv' : ∀ v, (OV v)ˣ)
-    (hdk : ∀ v, (k v : Matrix (Fin (2 * M₀)) (Fin (2 * M₀)) (KV v)).det =
-      algebraMap (OV v) (KV v) (ϖ v) ^ a v * algebraMap (OV v) (KV v) (wv v : OV v))
-    (hdk' : ∀ v, (k' v : Matrix (Fin (2 * M₀')) (Fin (2 * M₀')) (KV v)).det =
-      algebraMap (OV v) (KV v) (ϖ v) ^ a' v * algebraMap (OV v) (KV v) (wv' v : OV v))
-    (hle : ∀ v, matLat (OV v) (KV v) (2 * M₀) (2 * M₀') ≤ movLat (OV v) (KV v) (k v) (k' v))
-    (t : V → Γ) (dg dg' dg₁ dg₂ u u' : Γ) (hu : u ∈ H) (hu' : u' ∈ H)
-    (hk : dg₁ = dg * (∏ v, t v ^ a v) * u) (hk' : dg₂ = dg' * (∏ v, t v ^ a' v) * u')
-    (hQ : ∀ v, ((Nat.card (IsLocalRing.ResidueField (OV v)) : ℕ) : C) ≠ 0)
-    (ht : ∀ v, ‖((χ (t v) : Cˣ) : C)‖ = ‖((Nat.card (IsLocalRing.ResidueField (OV v)) : ℕ) : C)‖)
-    (s : C) (hs : s * s = ((∏ v, (matLat (OV v) (KV v) (2 * M₀) (2 * M₀')).relIndex
-      (movLat (OV v) (KV v) (k v) (k' v)) : ℕ) : C))
-    {F M : Type*} [AddCommGroup F] [Module C F] [AddCommGroup M] [Module C M]
-    (ΞTh : F →ₗ[C] M) (oneYP : F) (ThY : M) (hvac : MapsToUpToSign ΞTh oneYP ThY s) :
-    ∃ κ : C, ‖κ‖ = 1 ∧ xiNat χ M₀ M₀' dg₁ dg₂ ΞTh oneYP = κ • eNat χ M₀ M₀' dg dg' ThY := by
-  have hR := fun v => relIndexFormula (OV v) (KV v) (ϖ v) (hϖ v) _ rfl (2 * M₀) (2 * M₀') (k v) (k' v)
-    (a v) (a' v) (wv v) (wv' v) (hdk v) (hdk' v) (hle v)
-  refine exists_norm_eq_one_scaledMap_eq χ H hχH M₀ M₀' t (fun v => Nat.card (IsLocalRing.ResidueField (OV v)))
-    a a' dg dg' dg₁ dg₂ u u' hu hu' hk hk' hQ ht _ ?_ s hs ΞTh oneYP ThY hvac
-  refine hn_of_idx M₀ M₀' _ a a' _ (fun v => ?_) (fun v => ?_)
-  · rw [idxExp_eq]
-    exact (hR v).1
-  · rw [idxExp_eq]
-    exact (hR v).2
 
 end Assembled
 
 end UnitaryThetaMoves
 
+end
 end

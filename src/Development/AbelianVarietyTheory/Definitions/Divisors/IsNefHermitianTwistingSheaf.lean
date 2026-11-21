@@ -32,51 +32,12 @@ theorem ratVal_intCast_mul {σ : k →+* ℂ} {y : CxPts p σ} {f : X.functionFi
   refine ⟨hr.mul hf, ?_⟩
   rw [ratVal_mul hr hf, h, ratVal_fnOf mem_ptsIn_top, ev_eq mem_ptsIn_top, map_intCast]
 
-theorem isBallFam_Bl (P : Pair p) (a b : ℤ) : IsBallFam (P.H a b) (P.Bl a b) where
-  subset _ _ h := h.1
-  zero_mem r hr := ⟨zero_mem _, fun σ y => by
-    have := (ratVal_intCast_mul (y := y) (regAt_zero _) 0).2
-    simp only [Int.cast_zero, zero_mul] at this
-    simpa [Pair.nu, Pair.loc, this] using hr⟩
-  sub_mem r r' f g hf hg := ⟨sub_mem hf.1 hg.1, fun σ y => by
-    have hi := mem_ptsIn.1 (mem_pick (P.L.φ σ).isLB y)
-    have hj := mem_ptsIn.1 (mem_pick (P.A.φ σ).isLB y)
-    have h₁ := hf.1 _ _ _ hi hj
-    obtain ⟨h₂, h₃⟩ := ratVal_intCast_mul (hg.1 _ _ _ hi hj) (-1)
-    refine le_trans ?_ (add_le_add (hf.2 σ y) (hg.2 σ y))
-    have e : ∀ i j, P.loc a b (f - g) i j = P.loc a b f i j + ((-1 : ℤ) : X.functionField) * P.loc a b g i j := by
-      intro i j; simp only [Pair.loc]; push_cast; ring
-    simp only [Pair.nu]
-    rw [e, ratVal_add h₁ h₂, h₃, ← add_mul]
-    refine mul_le_mul_of_nonneg_right ((norm_add_le _ _).trans (le_of_eq ?_)) (Real.exp_pos _).le
-    simp⟩
-  nsmul_iff n r f hn hf := by
-    have hn' : (0 : ℝ) < n := by exact_mod_cast hn
-    have e (σ) (y : CxPts p σ) : P.nu a b σ y (n • f) = n * P.nu a b σ y f := by
-      have hi := mem_ptsIn.1 (mem_pick (P.L.φ σ).isLB y)
-      have hj := mem_ptsIn.1 (mem_pick (P.A.φ σ).isLB y)
-      have e : ∀ i j, P.loc a b (n • f) i j = ((n : ℤ) : X.functionField) * P.loc a b f i j := by
-        intro i j; simp only [Pair.loc, nsmul_eq_mul]; push_cast; ring
-      simp only [Pair.nu]
-      rw [e, (ratVal_intCast_mul (hf _ _ _ hi hj) n).2, norm_mul]
-      simp [mul_assoc]
-    exact ⟨fun h => ⟨hf, fun σ y => (mul_le_mul_iff_right₀ hn').1 (e σ y ▸ h.2 σ y)⟩,
-      fun h => ⟨nsmul_mem hf n, fun σ y => e σ y ▸ (mul_le_mul_iff_right₀ hn').2 (h.2 σ y)⟩⟩
 
 theorem div_eq {B : LB X} {r : B.ι → X.functionFieldˣ} (hr : IsRatSec B r) {i j : B.ι}
     (h : genericPoint X ∈ B.U i ⊓ B.U j) :
     (r i : X.functionField) / r j = fnOf _ h (B.g i j : Γ(X, B.U i ⊓ B.U j)) := by
   rw [hr i j h, mul_div_cancel_right₀ _ (r j).ne_zero]
 
-theorem rep_fst (P : Pair p) : P.Rep 1 0 P.L := by
-  have e (c i j) : (P.r c : X.functionField) / P.loc 1 0 1 i j = P.r c / P.r i := by simp [Pair.loc]
-  refine ⟨P.r, P.hr, fun x c i j hc hi _ => ?_, fun σ y c i j hc hi _ => ?_⟩
-  · rw [e, div_eq P.hr (gen_mem (memInf hc hi))]
-    exact unitAt_fnOf (memInf hc hi) _ _
-  · have h := mem_ptsIn_inf.2 ⟨hc, hi⟩
-    rw [e, div_eq P.hr (gen_mem (mem_ptsIn.1 h)), ratVal_fnOf h, (P.L.φ σ).trans c i y hc hi, Real.log_pow, CxPts.gv]
-    push_cast
-    ring
 
 section Two
 
@@ -297,55 +258,9 @@ theorem rep_iff (a b : ℤ) (t : ℝ) : pair.Rep a b (ArithBase.trivShift t) ↔
   rw [h0] at h
   linarith
 
-theorem not_good_two_two : ¬ pair.Good 0 1 (2 : ℕ) (2 : ℕ) := fun h => by
-  have := charZero_functionField
-  obtain ⟨n, hn⟩ := exists_int_of_regAt (f := 1 / (2 : ℕ)) fun x => by
-    have hr := h.reg x PUnit.unit PUnit.unit trivial trivial 1 (unitAt_one x).regAt
-    erw [loc_eq, loc_eq] at hr
-    rw [one_mul, div_self h.s_ne] at hr
-    exact hr (unitAt_one x).regAt
-  have h2 : ((2 * n : ℤ) : (Sp ℤ).functionField) = (1 : ℤ) := by
-    push_cast at *; rw [← hn]; norm_num
-  have := Int.cast_injective h2
-  omega
 
 end IntValues
 
-theorem nu_sq_of_rep (P : Pair p) {a b : ℤ} {M : HermLB p} (h : P.Rep a b M) :
-    ∃ ρ : M.B.ι → X.functionFieldˣ, IsRatSec M.B ρ ∧ ∀ (v : M.B.Sec) (f : X.functionField),
-      (∀ c (hc : genericPoint X ∈ M.B.U c), f * ρ c = fnOf _ hc (v.f c)) →
-      f ∈ P.H a b ∧ ∀ σ (y : CxPts p σ), P.nu a b σ y f ^ 2 = (M.φ σ).nsq (secVal p σ v) y := by
-  obtain ⟨ρ, hρ, hu, hn⟩ := h
-  have e (f) (c i j) : P.loc a b f i j = f * ρ c * ((ρ c : X.functionField) / P.loc a b 1 i j)⁻¹ := by
-    have := (ρ c).ne_zero
-    simp only [Pair.loc]
-    field_simp
-  refine ⟨ρ, hρ, fun v f hf => ⟨fun x i j hi hj => ?_, fun σ y => ?_⟩⟩
-  · obtain ⟨c, hc⟩ := exists_chart M.isLB x
-    rw [e f c, hf c (gen_mem hc)]
-    exact (regAt_fnOf hc _ _).mul (hu x c i j hc hi hj).inv.regAt
-  · have hc := mem_pick (M.φ σ).isLB y
-    have hi := mem_pick (P.L.φ σ).isLB y
-    have hj := mem_pick (P.A.φ σ).isLB y
-    have hU := hu _ _ _ _ (mem_ptsIn.1 hc) (mem_ptsIn.1 hi) (mem_ptsIn.1 hj)
-    have hN := hn σ y _ _ _ hc hi hj
-    have hinv := ratVal_mul hU.regAt hU.inv.regAt
-    have e1 := IntExample.ratVal_nat y 1
-    rw [Nat.cast_one, Nat.cast_one] at e1
-    rw [mul_inv_cancel₀ hU.ne_zero, e1] at hinv
-    have hne := ratVal_ne_zero hU
-    rw [Weight.nsq, secVal_apply, Pair.nu, e f (pick (M.φ σ).isLB y), hf _ (gen_mem (mem_ptsIn.1 hc)),
-      ratVal_mul (regAt_fnOf (mem_ptsIn.1 hc) _ _) hU.inv.regAt, ratVal_fnOf hc, ← hN,
-      (eq_inv_of_mul_eq_one_right hinv.symm), Real.exp_sub, Real.exp_log (norm_pos_iff.2 hne), norm_mul, norm_inv,
-      mul_assoc, ← mul_div_assoc, inv_mul_cancel₀ (norm_ne_zero_iff.2 hne), mul_pow, one_div, ← Real.exp_neg,
-      ← Real.exp_nat_mul]
-    congr 2
-    push_cast
-    ring
 
-theorem not_isBallFam_discrete :
-    ¬ IsBallFam (⊤ : AddSubgroup ℤ) fun r => {x | if x = 0 then 0 ≤ r else 1 ≤ r} := fun h => by
-  have := (h.nsmul_iff 2 (1 / 2) 1 two_pos trivial).1 (by norm_num)
-  norm_num at this
 
 end GlobalTheory.VolBr.Model

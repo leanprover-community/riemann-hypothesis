@@ -1,7 +1,16 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TotallyRealSelfAnnihilatorAdeleCharacterStatement
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TotallyRealSelfAnnihilatorAdeleCharacter
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RationalVectorsAdelesFundamentalDomainMassOneStatement
 
+section
+open NumberField IsDedekindDomain MeasureTheory Topology Filter Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.GaugeEx GlobalTheory.SWQ
+open scoped TensorProduct NNReal ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.numberField_self_annihilator_adeleCharacter : ∀ (F : Type) [Field F] [NumberField F], IsTotallyReal F → ∀ ψ : AddChar (AF F) ℂ, IsCharAF F ψ → (∀ x : AF F, (∀ y, ψ (x * y) = 1) → x = 0) ∧ ∀ x : AF F, (∀ ξ : F, ψ (x * algebraMap F (AF F) ξ) = 1) → ∃ ξ : F, x = algebraMap F (AF F) ξ := by
+  first | exact @GlobalTheory.SWQ.Annihilator.self_annihilator | exact GlobalTheory.SWQ.Annihilator.self_annihilator | (intros; apply GlobalTheory.SWQ.Annihilator.self_annihilator <;> assumption)
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain MeasureTheory Topology Filter Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.GaugeEx GlobalTheory.SWQ
@@ -75,9 +84,6 @@ def liftC (hL : ∀ u, u ∈ Lat F N ↔ ∃ ξ, u = rat ξ) (f : (Fin N → AF 
     (hf : ∀ ξ u, f (rat ξ + u) = f u) (hc : Continuous f) : C(Q F N, ℂ) :=
   ⟨liftQ hL f hf, hc.quotient_lift _⟩
 
-theorem liftC_apply (hL : ∀ u, u ∈ Lat F N ↔ ∃ ξ, u = rat ξ) (f : (Fin N → AF F) → ℂ)
-    (hf : ∀ ξ u, f (rat ξ + u) = f u) (hc : Continuous f) (u : Fin N → AF F) :
-    liftC hL f hf hc (u : Q F N) = f u := rfl
 
 def chiC (a : Fin N → F) (hL : ∀ u, u ∈ Lat F N ↔ ∃ ξ, u = rat ξ) (hψ : IsCharAF F ψ) (ξ : Fin N → F) : C(Q F N, ℂ) :=
   liftC hL (chi ψ a ξ) (fun η u => chi_periodic hψ ξ η u) (hψ.1.comp (cont_Bd a _).neg)
@@ -375,3 +381,5 @@ theorem periodic_eq_zero_of_coeff : ∀ (F : Type) [Field F] [NumberField F] (N 
     (by rw [hD1]; exact ENNReal.one_ne_top) P hPc hPp hcoef
 
 end GlobalTheory.SWQ
+end
+end

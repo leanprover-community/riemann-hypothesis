@@ -512,16 +512,6 @@ theorem IsUnitaryRep.repOp_convolution [IsTopologicalGroup G] [BorelSpace G] [μ
     ← integral_mul_left_eq_self (fun y => f' (x⁻¹ * y) • π y v) x]
   simp
 
-theorem repTrace_charRep {χ : G →* Circle} (hχ : Continuous χ) (hf : Continuous f)
-    (hc : HasCompactSupport f) :
-    HasTrace (repOp (charRep χ) μ f) (∫ g, f g * (χ g : ℂ) ∂μ) := by
-  have h : repOp (charRep χ) μ f = (∫ g, f g * (χ g : ℂ) ∂μ) • ContinuousLinearMap.id ℂ ℂ := by
-    ext
-    rw [(isUnitaryRep_charRep hχ).repOp_apply hf hc]
-    simp [charRep]
-  refine ⟨isTraceClass_of_finiteDimensional _, ?_⟩
-  rw [h]
-  simp [trace_smul, trace_eq_linearMap_trace]
 
 end Unitary
 

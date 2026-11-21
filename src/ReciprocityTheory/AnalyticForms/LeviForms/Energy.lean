@@ -12,10 +12,6 @@ def MixFamZeroStatement : Prop :=
   ∀ {e : ℕ} {X : Type} [TopologicalSpace X] (Φ : LocPot X) (w : X → ℝ),
     mixFam e 0 Φ w = fun _ => Φ
 
-theorem mixFam_zero : MixFamZeroStatement := by
-  intro e X _ Φ w
-  funext k
-  simp [mixFam]
 
 def MixFamSuccStatement : Prop :=
   ∀ {e : ℕ} {X : Type} [TopologicalSpace X] (Φ : LocPot X) (w : X → ℝ) (i : ℕ) (hi : i < e),
@@ -105,22 +101,6 @@ theorem energyStep : EnergyStepStatement := by
   have h2 := mInt_update_nonpos A (mixFam (e' + 1) i Φ w) ⟨i, hi'⟩ w hw hF (fun k _ => hFp k)
   linarith
 
-theorem energySum : EnergySumStatement := by
-  intro e X _ _ _ A Φ w hΦ hw hΦp hΦwp
-  have hmono : ∀ i, i ≤ e → mInt A (mixFam e i Φ w) w ≤ mInt A (fun _ => Φ) w := by
-    intro i
-    induction i with
-    | zero => intro _; rw [mixFam_zero]
-    | succ i ih =>
-      intro hi
-      exact (energyStep A Φ w hΦ hw hΦp hΦwp i hi).trans (ih (by omega))
-  calc ∑ i ∈ Finset.range (e + 1), mInt A (mixFam e i Φ w) w
-      ≤ ∑ i ∈ Finset.range (e + 1), mInt A (fun _ => Φ) w :=
-        Finset.sum_le_sum fun i hi => hmono i (by simpa [Nat.lt_succ_iff] using hi)
-    _ = ((e : ℝ) + 1) * mInt A (fun _ => Φ) w := by
-        rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
-        push_cast
-        ring
 
 end
 

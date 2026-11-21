@@ -404,16 +404,7 @@ def _root_.UpperTheory.GalS.GaloisRepsN (D : D7) : Prop :=
   ∀ π : D.naut.CG D.R.r, D.naut.csd π → D.naut.ralg π →
     ∀ (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ), ∃ r, UpperTheory.GalS.IsGaloisRepOfN D π l ι r
 
-theorem _root_.UpperTheory.GalS.ghOf (hL : GlobalTheory.Published.LocalLanglandsGL) (hF : GlobalTheory.Published.AutomorphicFormsFiniteGL)
-    (hG : GlobalTheory.Published.GaloisRepOfPolarizedCuspidal) (hB : GlobalTheory.Published.DeRhamPotSemistable) (hGL : GlobalTheory.GalOfCusp.LocalGlobalAboveL)
-    (D : D7) (T : GlobalTheory.RowTie.WDTie D.nd D.naut) (C : CGTrue hL D T) (_ : LabTrue D T) : GalHodge D T :=
-  (GlobalTheory.T.galois_hodge_of_cuspidal hL hF hG hB hGL D T C).1
 
-theorem _root_.UpperTheory.GalS.ghOf' (hL : GlobalTheory.Published.LocalLanglandsGL) (hF : GlobalTheory.Published.AutomorphicFormsFiniteGL)
-    (hG : UpperTheory.GalS.CuspU) (hB : GlobalTheory.Published.DeRhamPotSemistable) (hGL : UpperTheory.GalS.CarU)
-    (D : D7) (T : GlobalTheory.RowTie.WDTie D.nd D.naut) (C : CGTrue hL D T) (hl : LabTrue D T) : UpperTheory.GalS.GalHodgeN D T :=
-  ⟨galHodge_of_cgTrue_alt hL hF hG hB hGL C, GlobalTheory.T.full_degree_label_forces_trivial_wild_inertia D T hl, fun π hc _ _ hw k => UpperTheory.GalS.sep_conj hL hF C π hc hw k,
-    fun _ S π w ht => UpperTheory.GalS.tm_rankOne hL C S π w ht⟩
 
 end GlobalTheory.HodgeOfTrue
 
@@ -421,28 +412,5 @@ namespace GlobalTheory.GalAway
 open GlobalTheory.TripleGal Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.BlochKatoReduction Formalism.MainNotions.BlochKatoReduction.Gen Formalism.ConjugateSelfDual ReciprocityTheory.Gal NumberField IsDedekindDomain Polynomial Neutral.B1 Formalism.L2.Host GlobalTheory.HeckeGal GlobalTheory.Pst
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.HeightCounting
 
-theorem galoisReps_of_cgTrue_alt : ∀ hL : GlobalTheory.Published.LocalLanglandsGL, GlobalTheory.Published.AutomorphicFormsFiniteGL → UpperTheory.GalS.CuspU → ∀ (D : D7) (T : GlobalTheory.RowTie.WDTie D.nd D.naut), GlobalTheory.HeightCounting.CGTrue hL D T → UpperTheory.GalS.GaloisRepsN D := by
-  intro hL hF hG D T C π hc hr l _ ι
-  have := host_isCMField D.host
-  have ha : 1 ≤ D.R.r := by
-    have := D.R.two_le_m; have := D.R.m_add_three_le_k; unfold Ranks.r; omega
-  have hr' : (C.e _ π).1.IsRegAlg := (GlobalTheory.CuspRep.CG.isRegAlg_iff _).2 fun τ => by
-    have := (D.naut.ralg_def π).1 hr τ
-    rwa [C.inf] at this
-  obtain ⟨r, h1, h2, h3⟩ := UpperTheory.GalS.exists_aw hL hF hG D.nd.Om ι ha (C.e _ π).1 ((C.csd _ π).1 hc) hr'
-  refine ⟨r, h1, h2, fun w hw => ?_⟩
-  have hl : ((l : ℕ) : 𝓞 D.host.E) ∉ w.asIdeal := hw
-  have k : UpperTheory.GalS.Aw (wdOf (D.nd.plOm.2 w) hl ι r) (T.e w (D.naut.lpTw (D.naut.locG π w) ((1 - (D.R.r : ℝ)) / 2))) := by
-    rw [T.tw, C.loc]
-    exact h3 w hl _ _
-  refine ⟨fun hg s hs => ?_, fun hu => ?_, fun hu B s hB hs => ?_⟩
-  · rw [T.inePol w _ s hs, inePol_wdOf (h := D.nd.plOm.2 w) hl ι h1 hs, WD.inePol_of_mem_Ine _ hs, WD.inePol_of_mem_Ine _ hs,
-      k.ine (UpperTheory.GalS.ncW_of_nc T ((UpperTheory.GalS.nc_tw _ _).2 (hg.nc T))) _ (deg_ineIncl _)]
-  · rw [← weilDeligneParam_monodromy_eq_zero_iff hl ι h1]
-    exact k.mono (UpperTheory.GalS.ncW_of_nc T ((UpperTheory.GalS.nc_tw _ _).2 (.of_unr hu)))
-  · have hu' := (D.naut.unr_tw _ ((1 - (D.R.r : ℝ)) / 2)).2 hu
-    have e := (k.eq_unr ((T.unr w _).1 hu')).symm
-    rw [galPol, T.frobEig w _ hu', e]
-    exact frobEig_wdOf hl ι h1 (e ▸ (T.unr w _).1 hu') hB hs
 
 end GlobalTheory.GalAway

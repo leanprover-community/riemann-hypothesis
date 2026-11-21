@@ -11,10 +11,6 @@ namespace Formalism.LFunctionChainParameters.LChain
 
 open Formalism Formalism.D5 Formalism.RankGapBounds.WeightedMeanData Formalism.LFunctionChainParameters.WeightedSlopeBounds Formalism.LFunctionChainParameters.characterSumData Formalism.LFunctionChainParameters.ThickSetMeanBounds Formalism.LFunctionChainParameters.LErr
 
-theorem proposition_hypothesis_split : GrowthHypothesesSplit := by
-  intro H _ _ _ D ell N m TT T2 a w x ε b b' η X' θ Cd CL Err
-  unfold GrowthInequalityHypotheses GrowthInequalityRemainingHyps GrowthInequalitySizes
-  tauto
 
 theorem small_costs_split : SmallCostsSplit := by
   intro x ε f b η θ Cd CL
@@ -78,12 +74,6 @@ theorem chain_at_alt : ChainAt := by
   have e : eD + eL + 3 + 3 = eD + eL + 6 := by ring
   rwa [e] at this
 
-theorem chain_weighted_mean_to_unit_weight : ChainGivesRiemannHypothesis := by
-  obtain ⟨Cd, hCd, hFin⟩ := proposition_final_minimum
-  refine ⟨Cd, hCd, fun eD eL ε₁ hε₁ h => hFin (eD + eL + 3) ε₁ hε₁ ?_⟩
-  intro ε h0 h1
-  obtain ⟨x₀, hx₀⟩ := h ε h0 h1
-  exact ⟨x₀, fun x hx => chain_top_bound Cd eD eL ε x (hx₀ x hx)⟩
 
 lemma moveCostEv (Cd CL ε : ℝ) (hε : 0 < ε) :
     ∃ x₀ : ℝ, ∀ x : ℝ, x₀ ≤ x → moveCost x Cd CL ≤ x ^ ((1 : ℝ) / 2 + ε) := by
@@ -144,15 +134,6 @@ theorem x_large_eventually : XLargeEv := by
   · exact hx₁ x (le_trans (le_trans (le_max_left _ _) (le_max_left _ _)) hx)
   · exact hx₂ x (le_trans (le_trans (le_max_right _ _) (le_max_left _ _)) hx)
 
-theorem chain_eventually : ChainEventualGivesRiemannHypothesis := by
-  obtain ⟨Cd, -, hChain⟩ := chain_weighted_mean_to_unit_weight
-  intro eD eL ε₁ hε₁ h
-  refine hChain eD eL ε₁ hε₁ ?_
-  intro ε h0 h1
-  obtain ⟨K, cHH, eK, CL, x₀, hx₀⟩ := h ε h0 h1
-  obtain ⟨x₁, hx₁⟩ := x_large_eventually K cHH eK Cd CL ε h0
-  exact ⟨max x₀ x₁, fun x hx => ⟨K, cHH, eK, CL, hx₀ x (le_trans (le_max_left _ _) hx),
-    hx₁ x (le_trans (le_max_right _ _) hx)⟩⟩
 
 section
 variable {U0 : Type} [Fintype U0] {W : U0 → Type} {Top : Type} [Fintype Top] {m f : ℕ}
@@ -201,145 +182,13 @@ def compl (D0 : Data U0 W Top m f) (C : Consts) : Data U0 (fun _ => Unit) Top m 
   etaBar := 0
   eBar := 0
 
-lemma compl_alt (D0 : Data U0 W Top m f) (C : Consts) (u0 : U0) :
-    (compl D0 C).s u0 = D0.ASK u0 - D0.LoP C := by
-  simp [Data.s, wmean, compl]
 
-lemma compl_uF (D0 : Data U0 W Top m f) (C : Consts) (u0 : U0) : (compl D0 C).uF u0 = 0 := by
-  unfold Data.uF
-  rw [compl_alt]
-  simp [compl]
 
-lemma compl_main (D0 : Data U0 W Top m f) (u0 : U0) :
-    D0.Main u0 = ∑ t, ((m : ℝ) * (ph (D0.aT t) - D0.aT t * (D0.gam - D0.LpL)) - D0.aT t * sLog D0 u0) := by
-  unfold Data.Main sLog ph
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun t _ => ?_
-  rw [← Finset.mul_sum, Finset.sum_sub_distrib]
-  simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
-  ring
 
-lemma data_completion_bounds (D0 : Data U0 W Top m f) (C : Consts) (Xpp : ℝ)
-    (hx : 0 < D0.x) (hb : 0 < D0.b) (ha : 0 ≤ D0.a) (hb' : 0 ≤ D0.b') (hk : 1 ≤ D0.k) (hLa : 0 ≤ D0.La)
-    (hB0 : 0 ≤ D0.B0) (hXpp : 0 ≤ Xpp) (hf : 0 < f) (haT : ∀ t, 0 ≤ D0.aT t) (hw : ∀ u0 j ρ, 0 < D0.w u0 j ρ)
-    (hC : 0 ≤ C.cE ∧ 0 ≤ C.cH ∧ 0 ≤ C.cCount ∧ 0 ≤ C.cSlope ∧ 0 ≤ C.cSl1 ∧ 0 ≤ C.cLoss)
-    (hS0 : ∀ u0, 0 ≤ ∑ j : Fin m, (1 / (f : ℝ)) * ∑ ρ : Fin f, Real.log (D0.w u0 j ρ))
-    (hS1 : ∀ u0, ∑ j : Fin m, (1 / (f : ℝ)) * ∑ ρ : Fin f, Real.log (D0.w u0 j ρ) ≤ C.cCount * (m : ℝ) * D0.L)
-    (hTop : ∀ u0, D0.ASK u0 ≤ D0.Main u0 + C.cDiv * D0.nT * D0.a * D0.La
-      + C.cDiv * (m : ℝ) * (D0.B0 + D0.Nc) * D0.x ^ (C.eDiv * D0.ε) + D0.LoP C) :
-    SizeData₂ (compl D0 C) C Xpp := by
-  obtain ⟨cE, cH, cCount, cSlope, cSl1, cLoss⟩ := hC
-  have hk0 : 0 < D0.k := by linarith
-  have hnT : 0 ≤ D0.nT := by unfold Data.nT; positivity
-  have hLoP : 0 ≤ D0.LoP C := by unfold Data.LoP; positivity
-  have hm : (0 : ℝ) ≤ m := Nat.cast_nonneg m
-  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
-  ·
-    exact ⟨hx, hb, ha, hb', hk0, Real.pi_pos, hf, haT, hw, fun _ _ => one_pos, fun _ _ => Real.exp_pos _,
-      fun _ _ => le_refl _, cSl1, one_pos, le_refl _, le_refl _, by norm_num [compl]⟩
-  ·
-    intro u0 u
-    have h1 := hTop u0
-    rw [compl_main] at h1
-    have h2 : (compl D0 C).logOm = D0.gam - D0.LpL := by
-      simp [Data.logOm, compl, Real.pi_ne_zero]
-    rw [h2]
-    simp only [compl, Real.log_exp, Data.nT] at h1 ⊢
-    linarith
-  ·
-    intro u0 u
-    have : 0 ≤ C.cE * (m : ℝ) * D0.B0 := by positivity
-    simpa [compl, Data.Ee] using this
-  ·
-    intro u0 u u'
-    have : 0 ≤ C.cH * (D0.nT * D0.a * D0.La + (m : ℝ) * D0.B0) := by positivity
-    simpa [compl, Data.nT] using this
-  ·
-    intro u0 u
-    refine ⟨?_, ?_, fun u' => ?_⟩
-    · have h1 : 0 ≤ C.cCount * (D0.La + (m : ℝ) ^ 2 * D0.La / D0.k) := by positivity
-      have h2 : ∀ y : ℝ, y * Real.pi / Real.pi = y := fun y => by field_simp
-      simp only [compl, Real.log_exp, h2, mul_zero, add_zero]
-      unfold sLog
-      linarith
-    · simpa [compl, sLog] using hS1 u0
-    · have : 0 ≤ C.cCount * Real.log D0.k := mul_nonneg cCount (Real.log_nonneg hk)
-      simpa [compl] using this
-  ·
-    intro u0 u
-    have h1 : 0 ≤ C.cSlope * D0.nT * D0.a * D0.La * (1 + (m : ℝ) / D0.k) := by positivity
-    have h2 : 0 ≤ C.cSlope * D0.nT * D0.a * D0.La := by positivity
-    exact ⟨by simpa [compl, Data.nT] using h1, by simpa [compl, Data.nT] using h2⟩
-  ·
-    intro u0 u
-    have h1 : 0 ≤ C.cSl1 * (m : ℝ) * D0.B0 := by positivity
-    have hS := hS0 u0
-    have h2 : 0 ≤ C.cSl1 * D0.nT * (m : ℝ) * (D0.a / D0.k + D0.b') * sLog D0 u0 :=
-      mul_nonneg (by positivity) hS
-    have h3 : 0 ≤ C.cSl1 * Xpp := by positivity
-    constructor
-    · simp only [compl, Data.Ee, Finset.sum_const_zero]
-      linarith
-    · simp only [Lo5, compl, Data.Ee, Finset.sum_const_zero, Real.log_exp, Data.nT] at h2 ⊢
-      linarith
-  ·
-    intro u0
-    have e : (compl D0 C).LoP C = D0.LoP C := rfl
-    rw [e]
-    exact ⟨by simp [compl], hLoP⟩
-  ·
-    intro u0 _ _ _ _ _ _ _
-    rw [compl_uF, compl_alt]
-    simp [compl]
-  ·
-    intro u0
-    rw [compl_alt]
-    refine ⟨?_, ?_, le_refl _⟩
-    · have : 0 ≤ D0.x ^ C.cHH * D0.b := by positivity
-      simpa [compl] using this
-    · have : 0 < D0.x ^ C.cHH * D0.b := by positivity
-      simpa [compl] using this
-  ·
-    intro u0
-    simp [compl]
 
-theorem exists_data_completion : DataCompletion := by
-  intro U0 _ W Top _ m f D0 C Xpp hx hb ha hb' hk hLa hB0 hXpp hf haT hw hC hS0 hS1 hTop
-  exact ⟨compl D0 C, ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩, rfl, rfl, rfl,
-    data_completion_bounds D0 C Xpp hx hb ha hb' hk hLa hB0 hXpp hf haT hw hC hS0 hS1 hTop⟩
 
 end
 
-theorem chain_reduction_of_top : ChainCoreOfTop := by
-  intro H i1 i2 i3 Top i6 m f D0 C Xpp eK K CL D ell N TT T2 a w eT eP η X' θ hHost hId hWin hBN hRest hCost hSize
-    hS0 hS1 hTop
-  obtain ⟨⟨w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, w14, w15, w16, w17, w18, w19, w20, w21, w22,
-    w23, w24, w25, w26, w27, wC⟩, wEta⟩ := hWin
-  have wC' := wC
-  obtain ⟨c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c17⟩ := wC'
-  have hx0 : 0 < D0.x := by linarith
-  have hb0 : 0 < D0.b := by linarith
-  have ha0 : 0 ≤ D0.a := le_trans (by positivity) w5
-  have hf : 0 < f := Fin.pos (eP.symm ⟨0, by simp [PhiSet, InPhi]⟩)
-  have hw : ∀ u0 j ρ, 0 < D0.w u0 j ρ := by
-    intro u0 j ρ
-    rw [hId.2.1 u0 j ρ]
-    exact hRest.1.2.2.2.2.2.2.1.1 u0 j _ (Finset.mem_filter.1 (eP ρ).2).2
-  have hLed := data_completion_bounds D0 C Xpp hx0 hb0 ha0 w17 w10 w15 w22 w19 hf (fun t => (w21 t).1) hw
-    ⟨c3, c5, c7, c9, c11, c13⟩ hS0 hS1 hTop
-  have hnT : 0 ≤ D0.nT := by linarith
-  refine ⟨H, i1, i2, i3, fun _ => Unit, inferInstance, inferInstance, Top, i6, m, f, compl D0 C, C, Xpp, D, ell, N,
-    TT, T2, a, w, eT, eP, η, X', θ, rfl, rfl, le_refl _, le_refl _, le_refl _, hHost, hId, hLed, ?_, hBN, hRest, hCost,
-    hSize⟩
-  refine ⟨⟨w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, w14, w15, w16, w17, w18, w19, w20, w21, w22,
-    w23, w24, ?_, le_refl _, le_refl _, wC⟩, ?_⟩
-  · show (0 : ℝ) ≤ 1 / 2
-    norm_num
-  · have h1 : 0 ≤ K * D0.x ^ D0.ε * (D0.nT * D0.a) := by
-      have hK : 0 ≤ K := le_trans c1 c2
-      positivity
-    show ((0 : ℝ) + 4 * Real.sqrt 0) * (D0.x ^ C.cHH * D0.b) ≤ K * D0.x ^ D0.ε * (D0.nT * D0.a)
-    simpa using h1
 
 namespace Model
 
@@ -461,138 +310,16 @@ def modelData : Data H (fun _ => Unit) (univ : Finset H) 1 (fM H) where
 
 def CM : Consts := ⟨1, 1, 1, 1, 1, 1, 1, 1, 1, 1⟩
 
-lemma wM_cases (u0 : H) (j : Fin 1) (ρ : E0 × H) : wM u0 j ρ = 2 ^ 60 ∨ wM u0 j ρ = 2 ^ 56 := by
-  unfold wM; split_ifs
-  · exact Or.inl rfl
-  · exact Or.inr rfl
 
-lemma log_wM (u0 : H) (j : Fin 1) (ρ : E0 × H) : 0 ≤ Real.log (wM u0 j ρ) ∧ Real.log (wM u0 j ρ) ≤ 60 := by
-  have h2 : Real.log 2 ≤ 2 - 1 := Real.log_le_sub_one_of_pos (by norm_num)
-  have h0 : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
-  rcases wM_cases u0 j ρ with h | h <;> rw [h, Real.log_pow] <;> constructor <;> push_cast <;> nlinarith
 
 lemma fM_pos : 0 < fM H := Fin.pos (ePM.symm ⟨0, by simp [PhiSet, InPhi]⟩)
 
-lemma identM : Ident (modelData (H := H)) DA 1048576 (fun _ => 0) univ aM wM (Equiv.refl _) ePM := by
-  refine ⟨fun τ => ?_, fun u0 j ρ => ?_, ?_, ?_, fun u0 => ?_⟩
-  · simp only [modelData, aM]
-  · simp only [modelData]
-  · simp only [modelData]
-  · simp only [modelData, Complex.zero_re]
-  · simp only [modelData]
 
-theorem sizesModelAt (cardHM : Fintype.card H = 65536) : SizesModelAt H := by
-  have hx : (1 : ℝ) ≤ 65536 := by norm_num
-  have hnT : (modelData (H := H)).nT = 65536 := by
-    unfold Data.nT
-    rw [Fintype.card_coe, Finset.card_univ, cardHM]
-    norm_num
-  have hcu : (univ : Finset H).card = 65536 := by rw [Finset.card_univ, cardHM]
-  refine ⟨(univ : Finset H), inferInstance, 1, fM H, modelData, CM, 0, 1, 1,
-    DA, fun _ => 0, 1048576, univ, univ, aM, wM, Equiv.refl _, ePM, 0, 2 ^ 20, 1 / 2 ^ 60,
-    hostFacts_DA, identM, ⟨?_, ?_⟩, ⟨?_, ?_⟩, ?_,
-    by positivity, ⟨?_, ?_⟩, ⟨?_, ?_, ?_, ?_, ?_⟩, ?_, ?_, ?_, ?_, ⟨?_, ?_⟩⟩
-  ·
-    refine ⟨hx, by norm_num [modelData], by norm_num [modelData], by norm_num [modelData], by norm_num [modelData], by rw [hnT]; norm_num, ?_,
-      by norm_num [modelData], by norm_num, by norm_num [modelData], by norm_num [modelData], by norm_num [modelData], by norm_num [modelData],
-      by norm_num [modelData], by norm_num [modelData], by norm_num [modelData], by norm_num [modelData], by norm_num [modelData], le_refl _,
-      by norm_num [modelData], fun _ => by norm_num [modelData], le_refl _, le_refl _, fun _ => ?_, by norm_num [modelData], le_refl _,
-      le_refl _, ?_⟩
-    · have : (1 : ℝ) ≤ (65536 : ℝ) ^ ((1 : ℝ) / 2 + 1 / 2) := Real.one_le_rpow hx (by norm_num)
-      simpa [modelData] using this
-    · have hl2 : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
-      simp only [Fintype.card_unit, Nat.cast_one, Real.log_one]
-      exact mul_nonneg (by norm_num [modelData]) hl2
-    · refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;> norm_num [CM]
-  ·
-    rw [hnT]
-    norm_num [modelData]
-  ·
-    show (0 : ℝ) ≤ _
-    have : (0 : ℝ) < (modelData (H := H)).x := by norm_num [modelData]
-    have : (0 : ℝ) < (modelData (H := H)).b := by norm_num [modelData]
-    positivity
-  ·
-    show (0 : ℝ) ≤ _
-    have : (0 : ℝ) < (modelData (H := H)).x := by norm_num [modelData]
-    have : (0 : ℝ) < (modelData (H := H)).b := by norm_num [modelData]
-    have : (0 : ℝ) < (modelData (H := H)).k := by norm_num [modelData]
-    positivity
-  ·
-    refine ⟨le_refl _, by positivity, by norm_num [modelData], by norm_num [modelData], by positivity, fun t _ => ?_,
-      ⟨fun u0 j ρ _ => ?_, fun u0 j ρ h => ?_, fun u0 j ρ _ h => ?_⟩, fun u0 j t ρ _ _ => ?_⟩
-    · norm_num [modelData, aM]
-    · rcases wM_cases u0 j ρ with h | h <;> rw [h] <;> positivity
-    · have : wM u0 j ρ = 2 ^ 60 := by unfold wM; rw [if_pos h]
-      rw [this]
-      norm_num [modelData]
-    · have : wM u0 j ρ = 2 ^ 56 := by unfold wM; rw [if_neg h]
-      rw [this]
-      norm_num [modelData]
-    · rcases wM_cases u0 j ρ with h | h <;> rw [h] <;> norm_num [aM]
-  ·
-    rw [fPl_eq, cardHM]
-    norm_num [modelData]
-  ·
-    rw [fPl_eq, cardHM]
-    norm_num [modelData]
-  · norm_num [modelData]
-  · have : (65536 : ℝ) ^ (-((1 : ℝ) / 8)) ≤ 1 := Real.rpow_le_one_of_one_le_of_nonpos hx (by norm_num)
-    rw [hcu, cardHM]
-    show (65536 : ℝ) ^ (-((1 : ℝ) / 8)) * ((65536 : ℕ) : ℝ) / 2 ≤ ((65536 : ℕ) : ℝ)
-    push_cast
-    nlinarith
-  · have : (65536 : ℝ) ^ (-(1 : ℝ)) ≤ 1 := Real.rpow_le_one_of_one_le_of_nonpos hx (by norm_num)
-    rw [hcu, cardHM]
-    show (65536 : ℝ) ^ (-(1 : ℝ)) ≤ ((65536 : ℕ) : ℝ) / ((65536 : ℕ) : ℝ)
-    rw [div_self (by norm_num)]
-    exact this
-  · have : (65536 : ℝ) ^ ((1 : ℝ) / 2 - 1) ≤ 1 := Real.rpow_le_one_of_one_le_of_nonpos hx (by norm_num)
-    show (65536 : ℝ) ^ ((1 : ℝ) / 2 - 1) ≤ ((1 : ℕ) : ℝ)
-    simpa using this
-  · have h3 : (65536 : ℝ) ^ (-1 : ℝ) ≤ (65536 : ℝ) ^ ((1 : ℝ) / 2 - 1) :=
-      Real.rpow_le_rpow_of_exponent_le hx (by norm_num)
-    rw [Real.rpow_neg_one] at h3
-    rw [cardHM]
-    show (65536 : ℝ) ≤ ((65536 : ℕ) : ℝ) ^ 2 * (65536 : ℝ) ^ ((1 : ℝ) / 2 - 1)
-    push_cast
-    have h4 : (65536 : ℝ) = 65536 ^ 2 * (65536 : ℝ)⁻¹ := by norm_num
-    calc (65536 : ℝ) = 65536 ^ 2 * (65536 : ℝ)⁻¹ := h4
-      _ ≤ 65536 ^ 2 * (65536 : ℝ) ^ ((1 : ℝ) / 2 - 1) := mul_le_mul_of_nonneg_left h3 (by norm_num)
-  ·
-    intro u0
-    refine Finset.sum_nonneg fun j _ => mul_nonneg (by positivity) (Finset.sum_nonneg fun ρ _ => ?_)
-    exact (log_wM u0 j (ePM ρ)).1
-  ·
-    intro u0
-    have hf : (0 : ℝ) < (fM H : ℝ) := by exact_mod_cast fM_pos
-    have h1 : ∀ j : Fin 1, (1 / (fM H : ℝ)) * ∑ ρ : Fin (fM H), Real.log (modelData.w u0 j ρ) ≤ 60 := by
-      intro j
-      have h2 : ∑ ρ : Fin (fM H), Real.log (modelData.w u0 j ρ) ≤ ∑ _ρ : Fin (fM H), (60 : ℝ) :=
-        Finset.sum_le_sum fun ρ _ => (log_wM u0 j (ePM ρ)).2
-      rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul] at h2
-      calc (1 / (fM H : ℝ)) * ∑ ρ : Fin (fM H), Real.log (modelData.w u0 j ρ) ≤ (1 / (fM H : ℝ)) * ((fM H : ℝ) * 60) :=
-            mul_le_mul_of_nonneg_left h2 (by positivity)
-        _ = 60 := by field_simp
-    have h3 := Finset.sum_le_sum (s := (univ : Finset (Fin 1))) fun j _ => h1 j
-    simpa [CM, modelData] using h3
-  · norm_num [modelData]
-  · refine le_rpow_26 _ _ (by norm_num [modelData]) ?_
-    have h1 : (26 : ℝ) ^ ((8 : ℝ) / (3 * 1)) ≤ (26 : ℝ) ^ ((3 : ℕ) : ℝ) :=
-      Real.rpow_le_rpow_of_exponent_le (by norm_num) (by norm_num)
-    rw [Real.rpow_natCast] at h1
-    show (26 : ℝ) ^ ((8 : ℝ) / (3 * 1)) ≤ 65536
-    linarith [h1, (by norm_num : (26 : ℝ) ^ 3 ≤ 65536)]
-  · have := Real.log_le_self (by norm_num : (0 : ℝ) ≤ 65536)
-    simpa [modelData] using this
-  · norm_num [modelData, CM, KBig]
 
 end
 
 end Model
 
-theorem chain_sizes_model : ChainSizesModel :=
-  ⟨ZMod 65536, inferInstance, inferInstance, inferInstance, Model.sizesModelAt (ZMod.card 65536)⟩
 
 end Formalism.LFunctionChainParameters.LChain
 
@@ -604,11 +331,6 @@ namespace Formalism.LFunctionChainParameters.LChain
 
 open Formalism Formalism.D5 Formalism.RankGapBounds.WeightedMeanData Formalism.LFunctionChainParameters.WeightedSlopeBounds Formalism.LFunctionChainParameters.characterSumData Formalism.LFunctionChainParameters.ThickSetMeanBounds Formalism.LFunctionChainParameters.ConditionalMainTheorem Formalism.LFunctionChainParameters.LErr
 
-theorem top_each_bound : CoreTopEach := by
-  intro H _ _ _ W _ _ Top _ m f Dd C Xpp D ell N TT a w eT eP hId hLed u0
-  obtain ⟨l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11⟩ := hLed
-  rw [← hId.2.2.2.2 u0]
-  exact each_unit_bound_statement Dd C Xpp l1 l2 l3 l4 l5 l6 l7 l8 l9 l10 l11 u0
 
 lemma errX5at_le {U0 : Type} [Fintype U0] {W : U0 → Type} [∀ u0, Fintype (W u0)] [∀ u0, Nonempty (W u0)]
     {Top : Type} [Fintype Top] {m f : ℕ} (D : Data U0 W Top m f) (C : Consts) (Xpp eK K : ℝ)
@@ -671,111 +393,12 @@ lemma errX5at_le {U0 : Type} [Fintype U0] {W : U0 → Type} [∀ u0, Fintype (W 
   unfold ErrX5at UBar5 MLo5 Data.Vvar Data.LoP ErrText
   exact this
 
-theorem top_each_bound_sized : CoreTopEachSized := by
-  intro H _ _ _ W _ _ Top _ m f Dd C Xpp eK K D ell N TT T2 a w eT eP hId hLed hWin hBN hX u0
-  have h1 := top_each_bound Dd C Xpp D ell N TT a w eT eP hId hLed u0
-  have h2 := errX5at_le Dd C Xpp eK K hWin hX u0
-  have hx : 1 ≤ Dd.x := hWin.1.1
-  have hnT : Dd.nT = (TT.card : ℝ) := by
-    unfold Data.nT
-    rw [Fintype.card_congr eT, Fintype.card_coe]
-  obtain ⟨hB0, hNc⟩ := hBN
-  have hbr : ErrText Dd
-      ≤ errorBracketSizeWindows Dd.x Dd.ε (Fintype.card H) TT.card T2.card m Dd.b Dd.k Dd.a := by
-    unfold ErrText errorBracketSizeWindows
-    rw [hnT]
-    gcongr
-  have hp : 0 ≤ Dd.x ^ (CErr C * Dd.ε) := Real.rpow_nonneg (by linarith) _
-  have := mul_le_mul_of_nonneg_left hbr hp
-  linarith
 
-lemma core_exp_nonneg {eD eL K cHH eK CL ε x : ℝ} (h : ChainCore eD eL K cHH eK CL ε x) : 0 ≤ eD ∧ 0 ≤ eL ∧ 0 < ε := by
-  obtain ⟨H, i1, i2, i3, W, i4, i5, Top, i6, m, f, Dd, C, Xpp, D, ell, N, TT, T2, a, w, eT, eP, η, X', θ,
-    hx, hε, heD, heL, hcHH, hHost, hId, hLed, hWin, hBN, hRest, hCost, hSize⟩ := h
-  obtain ⟨⟨w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, w14, w15, w16, w17, w18, w19, w20, w21, w22,
-    w23, w24, w25, w26, w27, wC⟩, wEta⟩ := hWin
-  obtain ⟨c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c17⟩ := wC
-  exact ⟨by linarith, by linarith, hε ▸ w2⟩
 
-theorem chain_epsilon_g : ChainEpsG := by
-  rintro eD eL ε ⟨K, cHH, eK, CL, x₀, h⟩
-  obtain ⟨-, -, hε⟩ := core_exp_nonneg (h x₀ (le_refl _))
-  obtain ⟨Cd, -, hAt⟩ := chain_at_alt
-  obtain ⟨x₂, hx₂⟩ := x_large_eventually K cHH eK Cd CL ε hε
-  exact ⟨max x₀ x₂, fun x hx => hAt eD eL ε x ⟨K, cHH, eK, CL, h x (le_trans (le_max_left _ _) hx),
-    hx₂ x (le_trans (le_max_right _ _) hx)⟩⟩
 
-theorem chain_epsilon_half_plane : ChainEpsHalfPlane := by
-  intro eD eL ε h s hs
-  obtain ⟨x₁, hx₁⟩ := chain_epsilon_g eD eL ε h
-  obtain ⟨K, cHH, eK, CL, x₀, h⟩ := h
-  obtain ⟨h1, h2, hε⟩ := core_exp_nonneg (h x₀ (le_refl _))
-  have hpos : 0 ≤ (eD + eL + 6) * ε := by positivity
-  by_cases hsmall : (eD + eL + 6) * ε < 1 / 2
-  · exact landau_zero_free_half_plane _ (by linarith) (by linarith) x₁ hx₁ s hs
-  · exact riemannZeta_ne_zero_of_one_le_re (by linarith)
 
-theorem chain_reduction_weak_l : ChainCoreWeakL := by
-  intro eD eL K cHH eK CL ε hε
-  have hc : 0 < (|CL| + 1)⁻¹ := by positivity
-  obtain ⟨x₀, hx₀⟩ := Filter.eventually_atTop.1
-    (((isLittleO_log_rpow_atTop hε).bound hc).and (Filter.eventually_ge_atTop (2 : ℝ)))
-  refine ⟨x₀, fun x hx h => ?_⟩
-  obtain ⟨hb, hx2⟩ := hx₀ x hx
-  have hlog : 0 < Real.log x := Real.log_pos (by linarith)
-  rw [Real.norm_of_nonneg (Real.rpow_nonneg (by linarith) _), Real.norm_of_nonneg hlog.le] at hb
-  have h1 : CL * Real.log x ≤ x ^ ε := by
-    have h2 : (|CL| + 1) * Real.log x ≤ (|CL| + 1) * ((|CL| + 1)⁻¹ * x ^ ε) := by gcongr
-    rw [mul_inv_cancel_left₀ (by positivity)] at h2
-    have h3 : CL * Real.log x ≤ |CL| * Real.log x := by gcongr; exact le_abs_self CL
-    linarith
-  obtain ⟨H, i1, i2, i3, W, i4, i5, Top, i6, m, f, Dd, C, Xpp, D, ell, N, TT, T2, a, w, eT, eP, η, X', θ,
-    hx', hε', heD, heL, hcHH, hHost, hId, hLed, hWin, hBN, ⟨r1, r2, r3⟩, hCost, hSize⟩ := h
-  refine ⟨H, i1, i2, i3, W, i4, i5, Top, i6, m, f, Dd, C, Xpp, D, ell, N, TT, T2, a, w, eT, eP, η, X', θ,
-    hx', hε', heD, heL, hcHH, hHost, hId, hLed, hWin, hBN, ⟨r1, r2, fun ψ hψ => ⟨(r3 ψ hψ).1, ?_⟩⟩, hCost, hSize⟩
-  rw [div_mul_cancel₀ _ hlog.ne']
-  exact (r3 ψ hψ).2.trans h1
 
-lemma xLargeEv_weakL (K cHH eK Cd ε : ℝ) (h0 : 0 < ε) :
-    ∃ x₀ : ℝ, ∀ x : ℝ, x₀ ≤ x → XLarge K cHH eK Cd (x ^ ε / Real.log x) ε x := by
-  obtain ⟨x₁, hx₁⟩ := x_large_eventually K cHH eK Cd 0 ε h0
-  obtain ⟨x₂, hx₂⟩ := x_large_eventually K cHH eK Cd 0 (ε / 2) (by positivity)
-  have e1 : ∀ᶠ x : ℝ in Filter.atTop, (6 : ℝ) ≤ x ^ ((1 : ℝ) / 2) :=
-    (tendsto_rpow_atTop (by norm_num)).eventually_ge_atTop _
-  have e2 : ∀ᶠ x : ℝ in Filter.atTop, (2 : ℝ) ≤ x ^ (ε / 2) :=
-    (tendsto_rpow_atTop (by positivity)).eventually_ge_atTop _
-  obtain ⟨x₃, hx₃⟩ := Filter.eventually_atTop.1 (e1.and e2)
-  refine ⟨max x₁ (max x₂ x₃), fun x hx => ?_⟩
-  have g1 : x₁ ≤ x := le_trans (le_max_left _ _) hx
-  have g2 : x₂ ≤ x := le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) hx
-  have g3 : x₃ ≤ x := le_trans (le_trans (le_max_right _ _) (le_max_right _ _)) hx
-  obtain ⟨a1, a2, a3, -⟩ := hx₁ x g1
-  obtain ⟨-, -, -, b4⟩ := hx₂ x g2
-  obtain ⟨d1, d2⟩ := hx₃ x g3
-  refine ⟨a1, a2, a3, ?_⟩
-  have hxpos : 0 < x := by linarith
-  have hlog : 0 < Real.log x := Real.log_pos (by linarith)
-  unfold moveCost at b4 ⊢
-  rw [div_mul_cancel₀ _ hlog.ne']
-  have hA : x ^ ((1 : ℝ) / 2 + ε) = x ^ ((1 : ℝ) / 2) * x ^ ε := Real.rpow_add hxpos _ _
-  have hB : x ^ ((1 : ℝ) / 2 + ε) = x ^ ((1 : ℝ) / 2 + ε / 2) * x ^ (ε / 2) := by
-    rw [← Real.rpow_add hxpos]; congr 1; ring
-  have p1 : 0 < x ^ ε := Real.rpow_pos_of_pos hxpos _
-  have p2 : 0 < x ^ ((1 : ℝ) / 2 + ε / 2) := Real.rpow_pos_of_pos hxpos _
-  have q1 : 6 * x ^ ε ≤ x ^ ((1 : ℝ) / 2 + ε) := by rw [hA]; gcongr
-  have q2 : 2 * x ^ ((1 : ℝ) / 2 + ε / 2) ≤ x ^ ((1 : ℝ) / 2 + ε) := by rw [hB]; nlinarith
-  simp only [zero_mul, add_zero] at b4
-  linarith
 
-theorem chain_eventually_weak_l : ChainWeakLogDerivGivesRiemannHyp := by
-  obtain ⟨Cd, -, hChain⟩ := chain_weighted_mean_to_unit_weight
-  intro eD eL ε₁ hε₁ h
-  refine hChain eD eL ε₁ hε₁ ?_
-  intro ε h0 h1
-  obtain ⟨K, cHH, eK, x₀, hx₀⟩ := h ε h0 h1
-  obtain ⟨x₁, hx₁⟩ := xLargeEv_weakL K cHH eK Cd ε h0
-  exact ⟨max x₀ x₁, fun x hx => ⟨K, cHH, eK, x ^ ε / Real.log x, hx₀ x (le_trans (le_max_left _ _) hx),
-    hx₁ x (le_trans (le_max_right _ _) hx)⟩⟩
 
 namespace ModelEv
 
@@ -796,48 +419,6 @@ def SizesAt (K cHH eK ε x : ℝ) : Prop :=
     (∀ u0, D0.ASK u0 ≤ D0.Main u0 + C.cDiv * D0.nT * D0.a * D0.La
       + C.cDiv * (m : ℝ) * (D0.B0 + D0.Nc) * D0.x ^ (C.eDiv * D0.ε) + D0.LoP C)
 
-theorem coreOfSizes {K cHH eK ε x : ℝ} (h : SizesAt K cHH eK ε x) : ChainCoreNoAnalytic 1 1 K cHH eK ε x := by
-  obtain ⟨H, i1, i2, i3, Top, i6, m, f, D0, C, Xpp, D, ell, N, TT, T2, a, w, eT, eP, η, X', θ, hx, hε, heD, heL, hcHH,
-    hHost, hId, hWin, hBN, hSz, hθ, hCost, hSize, hS0, hS1, hTop⟩ := h
-  subst hx hε
-  obtain ⟨⟨w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, w14, w15, w16, w17, w18, w19, w20, w21, w22,
-    w23, w24, w25, w26, w27, wC⟩, wEta⟩ := hWin
-  have wC' := wC
-  obtain ⟨c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c17⟩ := wC'
-  have hx0 : 0 < D0.x := by linarith
-  have hb0 : 0 < D0.b := by linarith
-  have ha0 : 0 ≤ D0.a := le_trans (by positivity) w5
-  have hf : 0 < f := Fin.pos (eP.symm ⟨0, by simp [PhiSet, InPhi]⟩)
-  have hw : ∀ u0 j ρ, 0 < D0.w u0 j ρ := by
-    intro u0 j ρ
-    rw [hId.2.1 u0 j ρ]
-    exact hSz.2.2.2.2.2.2.1.1 u0 j _ (Finset.mem_filter.1 (eP ρ).2).2
-  obtain ⟨D1, ⟨s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15⟩, z1, z2, z3, hLed⟩ :=
-    exists_data_completion D0 C Xpp hx0 hb0 ha0 w17 w10 w15 w22 w19 hf (fun t => (w21 t).1) hw
-      ⟨c3, c5, c7, c9, c11, c13⟩ hS0 hS1 hTop
-  have hnT : D1.nT = D0.nT := rfl
-  refine ⟨H, i1, i2, i3, fun _ => Unit, inferInstance, inferInstance, Top, i6, m, f, D1, C, Xpp, D, ell, N,
-    TT, T2, a, w, eT, eP, η, X', θ, s1, s2, heD, heL, hcHH, hHost, ?_, hLed, ?_, ?_, ?_, hθ, ?_, ?_⟩
-  · obtain ⟨j1, j2, j3, j4, j5⟩ := hId
-    exact ⟨by rw [s13]; exact j1, by rw [s14]; exact j2, by rw [s11]; exact j3, by rw [s12]; exact j4,
-      by rw [s15]; exact j5⟩
-  · refine ⟨?_, ?_⟩
-    · unfold ErrWindows0
-      rw [s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s13, z1, z2, z3, hnT]
-      exact ⟨w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, w14, w15, w16, w17, w18, w19, w20, w21, w22,
-        w23, w24, by norm_num, le_refl _, le_refl _, wC⟩
-    · rw [s1, s2, s3, s4, z2, z3, hnT]
-      have h1 : 0 ≤ K * D0.x ^ D0.ε * (D0.nT * D0.a) := by
-        have hK : 0 ≤ K := le_trans c1 c2
-        have : 0 ≤ D0.nT := by linarith
-        positivity
-      simpa using h1
-  · unfold BNBounds
-    rw [s1, s2, s4, s6, s9, s10]
-    exact hBN
-  · rw [s4, s5]; exact hSz
-  · rw [s4]; exact hCost
-  · rw [s3, s4, s6]; exact hSize
 
 section
 variable {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H]
@@ -1133,101 +714,10 @@ lemma sizesOf (x ε b : ℝ) (m N n : ℕ) (hcard : Fintype.card H = n)
 
 end
 
-theorem sizesEv : ∀ ε : ℝ, 0 < ε → ε ≤ 1 / 2 → ∃ x₀ : ℝ, ∀ x : ℝ, x₀ ≤ x →
-    SizesAt 1 1 2 ε x ∧ XLarge 1 1 2 0 0 ε x := by
-  intro ε hε0 hε2
-  obtain ⟨x₁, hx₁⟩ := x_large_eventually 1 1 2 0 0 ε hε0
-  obtain ⟨x₂, hx₂⟩ := Formalism.LFunctionChainParameters.LErr.large_x_eventually (ε / 2) 0 0 0 (by positivity)
-  refine ⟨max (max x₁ x₂) 48, fun x hx => ?_⟩
-  have hXL := hx₁ x (le_trans (le_trans (le_max_left _ _) (le_max_left _ _)) hx)
-  obtain ⟨hlog, hbig⟩ := hx₂ x (le_trans (le_trans (le_max_right _ _) (le_max_left _ _)) hx)
-  have hx48 : 48 ≤ x := le_trans (le_max_right _ _) hx
-  refine ⟨?_, hXL⟩
-  have hx0 : 0 < x := by linarith
-  have hx1 : 1 ≤ x := by linarith
-  obtain ⟨-, h26, -, -⟩ := hXL
-  set n : ℕ := ⌈x⌉₊ with hn
-  set u : ℝ := x ^ ((1 : ℝ) / 2 - ε) with hu
-  set m : ℕ := ⌈u⌉₊ with hm
-  have hnx : x ≤ n := Nat.le_ceil x
-  have hnx1 : (n : ℝ) ≤ x + 1 := (Nat.ceil_lt_add_one hx0.le).le
-  have hu1 : 1 ≤ u := Real.one_le_rpow hx1 (by linarith)
-  have hmu : u ≤ m := Nat.le_ceil u
-  have hmu1 : (m : ℝ) ≤ u + 1 := (Nat.ceil_lt_add_one (by linarith)).le
-  have h2 : (2 : ℝ) ≤ x ^ (3 * ε / 2) := by
-    have : x ^ (3 * ε / 8) ≤ x ^ (3 * ε / 2) := Real.rpow_le_rpow_of_exponent_le hx1 (by linarith)
-    linarith
-  have hsplit : x ^ ((1 : ℝ) / 2 + ε / 2) = u * x ^ (3 * ε / 2) := by
-    rw [hu, ← Real.rpow_add hx0]
-    congr 1
-    ring
-  have hm2 : (m : ℝ) ≤ x ^ ((1 : ℝ) / 2 + ε / 2) := by
-    rw [hsplit]
-    nlinarith
-  have hmx : (m : ℝ) ≤ x := by
-    have : x ^ ((1 : ℝ) / 2 + ε / 2) ≤ x ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hx1 (by linarith)
-    rw [Real.rpow_one] at this
-    linarith
-  have hk : x * m ≤ (n : ℝ) ^ 2 * u := by
-    have h3 : x * m ≤ x * (2 * u) := mul_le_mul_of_nonneg_left (by linarith) hx0.le
-    have h4 : x * 2 ≤ (n : ℝ) ^ 2 := by nlinarith
-    nlinarith
-  set b : ℝ := 12 * n * (x + 1) * x with hb
-  have hn0 : (0 : ℝ) < n := by linarith
-  have hb0 : 0 < b := by rw [hb]; positivity
-  have hb4 : b ≤ x ^ 4 := by
-    have e1 : b ≤ 12 * (x + 1) * (x + 1) * x := by
-      rw [hb]
-      have : 12 * (n : ℝ) * (x + 1) ≤ 12 * (x + 1) * (x + 1) := by nlinarith
-      nlinarith
-    have e2 : 12 * (x + 1) * (x + 1) * x ≤ 48 * x ^ 3 := by nlinarith [mul_pos hx0 hx0]
-    have e3 : 48 * x ^ 3 ≤ x ^ 4 := by
-      have : 0 ≤ x ^ 3 := by positivity
-      nlinarith
-    linarith
-  have hL : Real.log b ≤ 2 * x ^ ε := by
-    have e1 : Real.log b ≤ 4 * Real.log x := by
-      have := Real.log_le_log hb0 hb4
-      rw [Real.log_pow] at this
-      simpa using this
-    have e2 : x ^ ε = x ^ (ε / 2) * x ^ (ε / 2) := by
-      rw [← Real.rpow_add hx0]
-      congr 1
-      ring
-    have e3 : (200 : ℝ) ≤ x ^ (ε / 2) := by
-      have : KBig 0 0 0 = 200 := by norm_num [KBig]
-      rw [this] at hbig
-      exact hbig
-    rw [e2]
-    nlinarith
-  have : NeZero n := ⟨by
-    intro h0
-    rw [h0] at hn0
-    simp at hn0⟩
-  exact sizesOf (H := ZMod n) x ε b m ⌈x * b⌉₊ n (ZMod.card n) (by linarith) hε0 (by linarith) hnx hb hmu hm2 hmx hk hL
-    (Nat.le_ceil _) (by
-      rw [Real.le_log_iff_exp_le hx0]
-      have h1 : Real.exp 3 = Real.exp 1 ^ 3 := by
-        rw [← Real.exp_nat_mul]
-        norm_num
-      have h2 := Real.exp_one_lt_d9
-      have h3 : Real.exp 1 ^ 3 ≤ 2.7182818286 ^ 3 := pow_le_pow_left₀ (Real.exp_pos 1).le h2.le 3
-      rw [h1]
-      have h4 : (2.7182818286 : ℝ) ^ 3 ≤ 48 := by norm_num
-      linarith)
 
-theorem coreNoAnalyticEv : ∀ ε : ℝ, 0 < ε → ε ≤ 1 / 2 → ∃ x₀ : ℝ, ∀ x : ℝ, x₀ ≤ x →
-    ChainCoreNoAnalytic 1 1 1 1 2 ε x ∧ XLarge 1 1 2 0 0 ε x := by
-  intro ε h0 h1
-  obtain ⟨x₀, hx₀⟩ := sizesEv ε h0 h1
-  exact ⟨x₀, fun x hx => ⟨coreOfSizes (hx₀ x hx).1, (hx₀ x hx).2⟩⟩
 
 end ModelEv
 
-theorem chain_sizes_model_eventually : ChainSizesModelEv := by
-  intro ε h0 h1
-  obtain ⟨x₀, hx₀⟩ := ModelEv.coreNoAnalyticEv ε h0 h1
-  exact ⟨x₀, fun x hx => (hx₀ x hx).1⟩
 
 namespace ModelText
 
@@ -1636,21 +1126,6 @@ theorem family (ε : ℝ) (hε0 : 0 < ε) (hε1 : ε ≤ 1) : ∃ x₀ : ℝ, �
 
 end ModelText
 
-theorem chain_sizes_eventually : ChainSizesTextEv := by
-  intro ε h0 h1
-  obtain ⟨x₀, hx₀⟩ := ModelText.family ε h0 h1
-  refine ⟨x₀, fun x hx => ?_⟩
-  obtain ⟨n, i, m, TT, T2, s1, s2, s3, s4, s5, s6, g1, g2, g3, g4, g5, g6, g7, g8, g9⟩ := hx₀ x hx
-  have hc : (Fintype.card (ZMod n) : ℝ) = (n : ℝ) := by rw [ZMod.card]
-  refine ⟨n, i, TT, inferInstance, m, Model.fM (ZMod n), ModelText.textData x ε m TT T2, ModelText.CF,
-    XppTx x ε (Fintype.card (ZMod n)), Model.DA, fun _ => 0, ModelText.NF (ZMod n) x ε, TT, T2, fun _ => aTx x ε,
-    ModelText.wF x ε m TT T2, Equiv.refl _, Model.ePM, ModelText.etaTx x ε, XpTx x ε, ModelText.thTx x ε,
-    rfl, rfl, ⟨s1, s2, s3, s4, s5, s6⟩,
-    ⟨rfl, rfl, rfl, rfl, ?_, rfl, (Real.log_exp _).symm, rfl, rfl, rfl, rfl⟩, ⟨?_, ?_⟩,
-    ⟨le_refl _, le_refl _, le_refl _⟩, g1, g2, g3, g4, g5, g6, g7, g8, g9⟩
-  · rw [hc]; rfl
-  · rw [← hc]; rfl
-  · rw [← hc]; rfl
 
 end Formalism.LFunctionChainParameters.LChain
 

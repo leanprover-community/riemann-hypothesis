@@ -29,7 +29,6 @@ variable {k : Type u} [Field k] {X : Scheme.{u}} {p : X ⟶ Spec (CommRingCat.of
 
 def structureMorphism (s : SmoothCenterBlowup p I E) : s.obj ⟶ Spec (CommRingCat.of k) := s.map ≫ p
 
-theorem structureMorphism_eq (s : SmoothCenterBlowup p I E) : s.structureMorphism = s.map ≫ p := rfl
 
 def exceptionalIdeal (s : SmoothCenterBlowup p I E) : s.obj.IdealSheafData :=
   Blowup.exceptionalIdeal s.map s.center
@@ -110,8 +109,6 @@ def lastBoundary (s : IdealBlowupSequence p I E) :
     List (s.toSequenceOfBlowups.schemeAt s.toSequenceOfBlowups.length).IdealSheafData :=
   s.boundary s.toSequenceOfBlowups.length
 
-theorem lastBoundary_eq (s : IdealBlowupSequence p I E) :
-    s.lastBoundary = s.boundary s.toSequenceOfBlowups.length := rfl
 
 end IdealBlowupSequence
 

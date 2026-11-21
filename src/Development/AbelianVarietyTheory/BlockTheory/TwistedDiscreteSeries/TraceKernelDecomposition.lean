@@ -65,49 +65,12 @@ def TraceKernelUncond : Prop :=
   ∀ (D : D7) (θ : InfF D), IsInfFam θ → ∀ (V : HSp D) (μ : Measure (GA D V)) [μ.IsHaarMeasure] [μ.IsMulRightInvariant],
     TraceKernelAt θ V μ
 
-theorem TraceKernel.uncond (h : TraceKernel)
-    (hc : ∀ (D : D7) (θ : InfF D), IsInfFam θ → ∀ (V : HSp D) (μ : Measure (GA D V)) [μ.IsHaarMeasure]
-      [μ.IsMulRightInvariant], CuspTraceClass θ V μ) : TraceKernelUncond :=
-  fun D θ hθ V μ _ _ => h D θ hθ V μ (hc D θ hθ V μ)
 
 example (V : HSp D) (f : GA D V → ℂ) (x : GA D V) :
     kernelQ (GQ V) f (mk _ x) (mk _ x) = ∑' γ : GQ V, f (x⁻¹ * γ * x) := kernelQ_mk f x x
 
-theorem oneP_mem_GinfC (θ : InfF D) (V : HSp D) (τ : D.what₂.Tau) (X : Matrix (Fin V.rank) (Fin V.rank) ℂ) (t : ℝ) :
-    oneP θ V τ X t ∈ GinfC V := by
-  unfold oneP atTau
-  split_ifs with h
-  exacts [h.choose_spec.1, one_mem _]
 
-theorem isCcInf_indicator (θ : InfF D) (V : HSp D) {K : Subgroup (GA D V)} (ho : IsOpen (K : Set (GA D V)))
-    (hc : IsCompact (K : Set (GA D V))) (hK : GinfC V ≤ K) :
-    IsCcInf θ V ((K : Set (GA D V)).indicator fun _ => 1) := by
-  have hinv : ∀ k ∈ K, ∀ g, (K : Set (GA D V)).indicator (fun _ => (1 : ℂ)) (g * k) =
-      (K : Set (GA D V)).indicator (fun _ => (1 : ℂ)) g := fun k hk g => by
-    by_cases hg : g ∈ K
-    · rw [Set.indicator_of_mem (K.mul_mem hg hk), Set.indicator_of_mem hg]
-    · rw [Set.indicator_of_notMem hg, Set.indicator_of_notMem fun h => hg ((K.mul_mem_cancel_right hk).1 h)]
-  have hcl : IsClopen (K : Set (GA D V)) := ⟨K.isClosed_of_isOpen ho, ho⟩
-  refine ⟨hcl.continuous_indicator continuous_const, HasCompactSupport.intro' hc hcl.1 fun x hx => Set.indicator_of_notMem hx _,
-    ⟨K, ho, fun k hk _ => hinv k hk⟩, fun k τs Xs _ g => ?_⟩
-  have : ∀ t : Fin k → ℝ, (List.ofFn fun i => oneP θ V (τs i) (Xs i) (t i)).prod ∈ K := fun t =>
-    K.list_prod_mem fun x hx => by
-      obtain ⟨i, rfl⟩ := List.mem_ofFn.1 hx
-      exact hK (oneP_mem_GinfC θ V _ _ _)
-  simp only [hinv _ (this _)]
-  exact contDiff_const
 
-theorem exists_isCcInf (θ : InfF D) (V : HSp D) (hV : V.gram = 1) : ∃ f, IsCcInf θ V f ∧ f 1 = 1 := by
-  obtain ⟨K, hK, ho, -, hc⟩ := (GlobalTheory.Ker.CongTop.adelicUnitary_top_cong D V).2.2.2.2.2.2
-    (Submodule.span _ (Set.range (Pi.basisFun D.host.E (Fin V.rank)))) 1
-    ⟨Submodule.fg_span (Set.finite_range _), by
-      rw [Submodule.span_span_of_tower, (Pi.basisFun D.host.E (Fin V.rank)).span_eq]⟩ one_pos
-  refine ⟨_, isCcInf_indicator θ V ho (hc hV) fun k hk => (hK k).2 ?_, Set.indicator_of_mem K.one_mem _⟩
-  have h1 := (hK 1).1 K.one_mem
-  have e : (finHom V k).1 = (finHom V 1).1 := by rw [map_one, show finHom V k = 1 from hk]
-  unfold GlobalTheory.Ker.CongK at h1 ⊢
-  rw [GlobalTheory.Ker.CongTop.fmt_eq] at h1 ⊢
-  rwa [e]
 
 end GlobalTheory.IndefiniteRowSideFullHecke.TraceKernelDecomposition
 

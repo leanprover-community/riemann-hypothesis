@@ -390,13 +390,7 @@ structure ArithmeticGeometryHyps : Prop where
   discreteSeriesExists₂ : GlobalTheory.Mem.Vol.DiscreteSeriesExist
   fdeg₂ : GlobalTheory.Mem.Vol.FormalDegreeFormula₂
 
-theorem ArithmeticGeometryHyps.localGlobalAboveL_of_hypotheses (h : ArithmeticGeometryHyps) : GlobalTheory.GalOfCusp.LocalGlobalAboveL :=
-  GlobalTheory.GalOfCusp.localGlobalAboveL_of_potSemistable_of_purity h.localGlobalAboveLPst h.regularAlgebraicPurity
 
-theorem ArithmeticGeometryHyps.geometricLemma_of_cells (h : ArithmeticGeometryHyps)
-    (hc : GlobalTheory.Published.BernsteinZelevinskyFiniteness → ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
-      [IsNonarchimedeanLocalField k], GlobalTheory.SmGL.CellSemisimplification k) : GlobalTheory.Published.GeometricLemma :=
-  fun k _ _ _ _ => ⟨h.geometricLemmaFiltration k, hc h.bernsteinZelevinskyFiniteness k⟩
 
 theorem ArithmeticGeometryHyps.geometricLemma (h : ArithmeticGeometryHyps) : GlobalTheory.Published.GeometricLemma :=
   GlobalTheory.geometricLemma_of_filtration h.bernsteinZelevinskyFiniteness h.geometricLemmaFiltration

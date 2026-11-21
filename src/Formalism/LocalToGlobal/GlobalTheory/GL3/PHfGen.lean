@@ -28,8 +28,6 @@ theorem good_neg {u : ℂ} (hu : Good D u) : Good D (-u) := by
   · rw [show -a - -b = -(a - b) by ring]; exact hab.neg
   · push_cast; ring
 
-theorem HfInt_iff (T : Tor D) (La' : AddSubgroup (VC D N N')) :
-    HfInt T La' ↔ ∀ x ∈ La', ∀ y ∈ La', Good D (Hf D T x y) := Iff.rfl
 
 theorem Hf_zero_left (T : Tor D) (y : VC D N N') : Hf D T 0 y = 0 := by simp [Hf]
 
@@ -118,8 +116,6 @@ theorem HfIntRec_of_gen (h : HfGenRec) : HfIntRec := by
   rw [Hf_smul]
   exact h D cc hcc δ hδ h0 N N' L L' hA c hc c' hc' A hA' B hB'
 
-theorem LinkThIndep_of_gen (hA : HfGenRec) (hB : SelfDualRec) : LinkThIndep :=
-  LinkThIndep_of_parts (HfIntRec_of_gen hA) hB
 
 end Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity
 

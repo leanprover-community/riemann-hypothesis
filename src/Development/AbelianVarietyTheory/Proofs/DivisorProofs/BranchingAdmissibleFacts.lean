@@ -3,14 +3,634 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CapelliDeterminantF
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DualWeylEqEvalAtOneSmulExtremalOfRowWeight
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TransportedLatticeLocalizationFreeLeCoefficientS
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsBasisAtBlock
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DualWeylLeOfHighestVectorRowOperatorStableStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LastRowTopComponentDualWeylEqMonomialMul
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GeneratorsInDualWeylModule
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DualWeylSpannedByInterlacing
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DualWeylLastZeroInclusionStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockPairingLastRowMonomialReadsCoefficientStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BranchingListCharacterProductStatement
+import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.CoefficientSpaceEqSpanOrbitExtremalVector
+import Formalism.BranchSandwichDivisors.DivFromPassageAndNorm
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ColAddGenRenameCastSucc
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BranchingListCharacterProduct
 
+section
+open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BranchingDeterminantCap Formalism.BasicNotions Formalism.L2.DIV GlobalTheory.Mem.Gelf GlobalTheory.Mem.GelfCheck GlobalTheory.BrCompare
+
+namespace GlobalTheory.BrCompare
+
+theorem rowDiv_succ_rec (R : Type) [CommRing R] {r m : ℕ} (a b : Fin r) (f : MvPolynomial (Fin r × Fin m) R) (k : ℕ) :
+    ((k : MvPolynomial (Fin r × Fin m) R) + 1) * rowDiv R a b (k + 1) f +
+      (if a = b then 1 else 0) * (k : MvPolynomial (Fin r × Fin m) R) * rowDiv R a b k f =
+      rowE R r m a b (rowDiv R a b k f) := by
+  unfold rowDiv
+  induction f using MvPolynomial.induction_on generalizing k with
+  | C c =>
+    have h : rowGen R a b (C c : MvPolynomial (Fin r × Fin m) R) = Polynomial.C (C c) := by
+      simp [rowGen]
+    rw [h]
+    cases k with
+    | zero => simp [rowE_C, Polynomial.coeff_C]
+    | succ k => simp
+  | add p q hp hq =>
+    simp only [map_add, Polynomial.coeff_add, ← hp, ← hq]
+    ring
+  | mul_X p v hp =>
+    obtain ⟨c, s⟩ := v
+    set y : MvPolynomial (Fin r × Fin m) R := if b = c then X (a, s) else 0 with hy
+    have hX : rowGen R a b (X (c, s) : MvPolynomial (Fin r × Fin m) R) =
+        Polynomial.C (X (c, s)) + Polynomial.C y * Polynomial.X := by
+      rw [rowGen, aeval_X, hy]
+      by_cases h : b = c
+      · rw [if_pos h, if_pos h.symm, mul_comm]
+      · rw [if_neg h, if_neg (Ne.symm h), map_zero, zero_mul]
+    have hx : rowE R r m a b (X (c, s)) = y := rowE_X R r m a b c s
+    have hy' : rowE R r m a b y = (if a = b then 1 else 0) * y := by
+      rw [hy]
+      split_ifs with h1 h2 h2
+      · rw [rowE_X, if_pos h2.symm, one_mul]
+      · rw [rowE_X, if_neg (Ne.symm h2), zero_mul]
+      · simp
+      · simp
+    have hs : ∀ j, (rowGen R a b (p * X (c, s))).coeff (j + 1) =
+        (rowGen R a b p).coeff (j + 1) * X (c, s) + (rowGen R a b p).coeff j * y := by
+      intro j
+      rw [map_mul, hX, mul_add, ← mul_assoc, Polynomial.coeff_add, Polynomial.coeff_mul_X, Polynomial.coeff_mul_C,
+        Polynomial.coeff_mul_C]
+    have h0 : (rowGen R a b (p * X (c, s))).coeff 0 = (rowGen R a b p).coeff 0 * X (c, s) := by
+      rw [map_mul, hX, mul_add, ← mul_assoc, Polynomial.coeff_add, Polynomial.coeff_mul_X_zero, Polynomial.coeff_mul_C,
+        add_zero]
+    cases k with
+    | zero =>
+      rw [hs, h0, rowE_mul, hx, ← hp]
+      push_cast
+      ring
+    | succ k =>
+      rw [hs, hs, map_add, rowE_mul, rowE_mul, hx, hy', ← hp, ← hp]
+      push_cast
+      ring
+
+theorem rowDiv_mem_of_rowE {K : Type} [Field K] [CharZero K] {r m : ℕ} (a b : Fin r)
+    (M : Submodule K (MvPolynomial (Fin r × Fin m) K)) (h : ∀ f ∈ M, rowE K r m a b f ∈ M) (k : ℕ)
+    {f : MvPolynomial (Fin r × Fin m) K} (hf : f ∈ M) : rowDiv K a b k f ∈ M := by
+  induction k with
+  | zero => rw [(rowE_eq_rowDiv K r m a b f).2]; exact hf
+  | succ k ih =>
+    have hrec := rowDiv_succ_rec K a b f k
+    have h1 : (if a = b then 1 else 0) * (k : MvPolynomial (Fin r × Fin m) K) * rowDiv K a b k f ∈ M := by
+      split_ifs
+      · rw [one_mul, ← nsmul_eq_mul]; exact nsmul_mem ih k
+      · simp
+    have h2 : ((k + 1 : ℕ) : K) • rowDiv K a b (k + 1) f ∈ M := by
+      rw [Nat.cast_smul_eq_nsmul, nsmul_eq_mul, Nat.cast_succ, eq_sub_of_add_eq hrec]
+      exact M.sub_mem (h _ ih) h1
+    exact (M.smul_mem_iff (Nat.cast_ne_zero.2 k.succ_ne_zero)).1 h2
+
+theorem dualWeyl_le_of_rowE_stable : ∀ (K : Type) [Field K] [CharZero K] (n : ℕ) (ν : Fin n → ℕ), Antitone ν →
+    ∀ M : Submodule K (MvPolynomial (Fin n × Fin n) K), hw K le_rfl ν ∈ M →
+      (∀ a b : Fin n, ∀ f ∈ M, rowE K n n a b f ∈ M) → dualWeyl K n n ν ≤ M := by
+  intro K _ _ n ν hν M h0 hE
+  rw [Formalism.L2.Col.dualWeyl_eq_weyl K le_rfl ν hν, weyl, Submodule.span_le]
+  rintro _ ⟨w, rfl⟩
+  induction w with
+  | nil => exact h0
+  | cons x w ih => exact rowDiv_mem_of_rowE x.1 x.2.1 M (hE _ _) x.2.2 ih
+
+end GlobalTheory.BrCompare
+end
+
+section
+open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BranchingDeterminantCap Formalism.BasicNotions Formalism.L2.DIV GlobalTheory.Mem.Gelf GlobalTheory.Mem.GelfCheck GlobalTheory.BrCompare
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dualWeyl_le_of_highest_vector_rowOperator_stable : ∀ (K : Type) [Field K] [CharZero K] (n : ℕ) (ν : Fin n → ℕ), Antitone ν → ∀ M : Submodule K (MvPolynomial (Fin n × Fin n) K), hw K le_rfl ν ∈ M → (∀ a b : Fin n, ∀ f ∈ M, rowE K n n a b f ∈ M) → dualWeyl K n n ν ≤ M := by
+  first | exact @GlobalTheory.BrCompare.dualWeyl_le_of_rowE_stable | exact GlobalTheory.BrCompare.dualWeyl_le_of_rowE_stable | (intros; apply GlobalTheory.BrCompare.dualWeyl_le_of_rowE_stable <;> assumption)
+end
+
+section
+section
+open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BranchingDeterminantCap Formalism.BasicNotions Formalism.L2.DIV GlobalTheory.Mem.Gelf GlobalTheory.Mem.GelfCheck GlobalTheory.BrCompare
+
+namespace GlobalTheory.BrCompare
+
+theorem monomial_eq_zmon_mul_emb {K : Type} [Field K] {n : ℕ} (b : Fin n → ℕ) (μ : Fin (n + 1) × Fin n →₀ ℕ)
+    (hμ : ∀ s, μ (Fin.last n, s) = b s) (c : K) :
+    ∃ f, (monomial μ c : BP K n) = zmon K n b * emb K n f := by
+  refine ⟨C c * ∏ a : Fin n, ∏ s : Fin n, X (a, s) ^ μ (a.castSucc, s), ?_⟩
+  rw [monomial_eq, Finsupp.prod_fintype _ _ (fun _ => pow_zero _), Fintype.prod_prod_type, Fin.prod_univ_castSucc]
+  simp only [hμ, zmon, emb, map_mul, map_prod, map_pow, rename_X, rename_C]
+  ring
+
+theorem eq_zmon_mul_emb_of_homogeneous {K : Type} [Field K] {n : ℕ} (b : Fin n → ℕ) (H : BP K n)
+    (hH : IsWeightedHomogeneous (zW n) H (fun s => (b s : ℤ))) : ∃ f, H = zmon K n b * emb K n f := by
+  have h : ∀ μ ∈ H.support, ∃ f, (monomial μ (coeff μ H) : BP K n) = zmon K n b * emb K n f := by
+    intro μ hμ
+    refine monomial_eq_zmon_mul_emb b μ (fun s => ?_) _
+    have h1 := congrFun (hH (mem_support_iff.1 hμ)) s
+    rw [bm_weight_zW] at h1
+    exact_mod_cast h1
+  choose! g hg using h
+  refine ⟨∑ μ ∈ H.support, g μ, ?_⟩
+  rw [map_sum, Finset.mul_sum, ← Finset.sum_congr rfl hg]
+  exact H.as_sum
+
+theorem zmon_mul_emb_injective {K : Type} [Field K] {n : ℕ} (b : Fin n → ℕ) {f g : MvPolynomial (Fin n × Fin n) K}
+    (h : zmon K n b * emb K n f = zmon K n b * emb K n g) : f = g := by
+  have hz : zmon K n b ≠ 0 := Finset.prod_ne_zero_iff.2 fun s _ => pow_ne_zero _ (X_ne_zero _)
+  refine rename_injective (fun v : Fin n × Fin n => ((v.1.castSucc, v.2) : Fin (n + 1) × Fin n)) ?_
+    (mul_left_cancel₀ hz h)
+  exact (Fin.castSucc_injective n).prodMap Function.injective_id
+
+theorem zcomp_top_eq_zmon_mul_emb (K : Type) [Field K] [CharZero K] (n : ℕ) (lam : Fin n → ℕ) (G : BP K n)
+    (hG : G ∈ dualWeyl K (n + 1) n lam) (b : Fin n → ℕ) (hb : ∀ s, b s ≤ lam s)
+    (hmax : ∀ β', zcomp K n β' G ≠ 0 → omg β' ≤ omg fun s => (b s : ℤ)) :
+    ∃ f ∈ dualWeyl K n n (fun s => lam s - b s), zcomp K n (fun s => (b s : ℤ)) G = zmon K n b * emb K n f := by
+  obtain ⟨f, hf⟩ := eq_zmon_mul_emb_of_homogeneous b _ (bmD_zcomp_isWH (fun s => (b s : ℤ)) G)
+  refine ⟨f, bm_mem_dualWeyl_iff.2 ⟨fun s => ?_, fun l j hlj => ?_⟩, hf⟩
+  · have h := bmD_weight lam G hG (fun s => (b s : ℤ)) s
+    rw [hf, bmE_lead, bm_ndE_self] at h
+    apply zmon_mul_emb_injective b
+    rw [h, map_smul, mul_smul_comm, Nat.cast_sub (hb s)]
+    push_cast
+    rfl
+  · have h := bmD_raise lam G hG (fun s => (b s : ℤ)) hmax l j hlj
+    rw [hf, bmE_lead] at h
+    apply zmon_mul_emb_injective b
+    rw [h, map_zero, mul_zero]
+
+end GlobalTheory.BrCompare
+end
+
+open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BranchingDeterminantCap Formalism.BasicNotions Formalism.L2.DIV GlobalTheory.Mem.Gelf GlobalTheory.Mem.GelfCheck GlobalTheory.BrCompare
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lastRow_top_component_dualWeyl_eq_monomial_mul : ∀ (K : Type) [Field K] [CharZero K] (n : ℕ) (lam : Fin n → ℕ) (G : BP K n), G ∈ dualWeyl K (n + 1) n lam → ∀ b : Fin n → ℕ, (∀ s, b s ≤ lam s) → (∀ β', zcomp K n β' G ≠ 0 → omg β' ≤ omg fun s => (b s : ℤ)) → ∃ f ∈ dualWeyl K n n (fun s => lam s - b s), zcomp K n (fun s => (b s : ℤ)) G = zmon K n b * emb K n f := by
+  atlas_forward_decl GlobalTheory.BrCompare.zcomp_top_eq_zmon_mul_emb
+end
+
+section
+section
+open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BranchingDeterminantCap Formalism.BasicNotions Formalism.L2.DIV GlobalTheory.Mem.Gelf GlobalTheory.Mem.GelfCheck GlobalTheory.BrCompare
+
+namespace GlobalTheory.BrCompare.LiftGen
+
+open GlobalTheory.IndefiniteRowSideFullHecke.InterlacingNumerators
+
+theorem telescope {n : ℕ} (f : Fin (n + 1) → ℤ) (t : Fin (n + 1)) :
+    ∑ i : Fin n, (if t.val < i.val + 1 then f i.castSucc - f i.succ else 0) = f t - f (Fin.last n) := by
+  induction n with
+  | zero => simp [Fin.eq_zero t, Fin.last]
+  | succ m ih =>
+    rw [Fin.sum_univ_castSucc]
+    induction t using Fin.lastCases with
+    | last =>
+      rw [Finset.sum_eq_zero, if_neg (by simp)]
+      · simp
+      · intro i _
+        rw [if_neg]
+        have := i.isLt
+        simp only [Fin.val_last, Fin.val_castSucc]
+        omega
+    | cast t =>
+      have h := ih (fun j => f j.castSucc) t
+      have ht := t.isLt
+      simp only [Fin.val_castSucc, Fin.succ_castSucc, Fin.val_last, Fin.succ_last] at h ⊢
+      rw [h, if_pos (by omega)]
+      simp
+
+variable {n : ℕ} {lam : DomWeight (n + 1)} {sg : DomWeight n}
+
+theorem aNum_cast (h : GlobalTheory.IndefiniteRowSideFullHecke.InterlacingNumerators.Interlace lam sg) (i : Fin n) :
+    (aNum lam sg i : ℤ) = sg.w i - lam.w i.succ :=
+  Int.toNat_of_nonneg (sub_nonneg.2 (h i).1)
+
+theorem bNum_cast (h : GlobalTheory.IndefiniteRowSideFullHecke.InterlacingNumerators.Interlace lam sg) (i : Fin n) :
+    (bNum lam sg i : ℤ) = lam.w i.castSucc - sg.w i :=
+  Int.toNat_of_nonneg (sub_nonneg.2 (h i).2)
+
+theorem sum_ab (h : GlobalTheory.IndefiniteRowSideFullHecke.InterlacingNumerators.Interlace lam sg) (t : Fin n) :
+    ((∑ i : Fin n, (aNum lam sg i * initW n (i.val + 1) t) + ∑ i : Fin n, (bNum lam sg i * initW n (i.val + 1) t) : ℕ) : ℤ)
+      = lam.w t.castSucc - lam.w (Fin.last n) := by
+  rw [← telescope lam.w t.castSucc, ← Finset.sum_add_distrib, Nat.cast_sum]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  have ha := aNum_cast h i
+  have hb := bNum_cast h i
+  simp only [initW, Fin.val_castSucc]
+  split_ifs
+  · push_cast; linarith
+  · simp
+
+theorem sum_b_succ (b : Fin n → ℕ) (t : Fin n) :
+    ∑ i : Fin n, b i * initW n (i.val + 1) t = ∑ i : Fin n, b i * initW n i.val t + b t := by
+  have : b t = ∑ i : Fin n, if i = t then b i else 0 := by simp
+  rw [this, ← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  simp only [initW, Fin.ext_iff]
+  split_ifs <;> omega
+
+theorem lamN_eq (t : Fin n) : lamN lam t = (lam.w t.castSucc - lam.w (Fin.last n)).toNat := by
+  simp only [lamN, DomWeight.natW, DomWeight.detShift, Nat.succ_pos, dif_pos]
+  rfl
+
+theorem natW_eq (he : EqualLast lam sg) (t : Fin n) : sg.natW t = (sg.w t - lam.w (Fin.last n)).toNat := by
+  have hn : 0 < n := t.pos
+  simp only [DomWeight.natW, DomWeight.detShift, dif_pos hn]
+  rw [he ⟨n - 1, by omega⟩ (by simp only; omega)]
+
+theorem shape_lam (h : GlobalTheory.IndefiniteRowSideFullHecke.InterlacingNumerators.Interlace lam sg) :
+    (∑ i : Fin n, ∑ _k : Fin (aNum lam sg i), initW n (i.val + 1)) +
+      (∑ i : Fin n, ∑ _k : Fin (bNum lam sg i), initW n (i.val + 1)) = lamN lam := by
+  funext t
+  have := sum_ab h t
+  rw [lamN_eq, ← this, Int.toNat_natCast]
+  simp [Finset.sum_apply]
+
+theorem shape_sg (h : GlobalTheory.IndefiniteRowSideFullHecke.InterlacingNumerators.Interlace lam sg) (he : EqualLast lam sg) :
+    (∑ i : Fin n, ∑ _k : Fin (aNum lam sg i), initW n (i.val + 1)) +
+      (∑ i : Fin n, ∑ _k : Fin (bNum lam sg i), initW n i.val) = sg.natW := by
+  funext t
+  have h1 := sum_ab h t
+  rw [sum_b_succ (bNum lam sg)] at h1
+  have hb := bNum_cast h t
+  rw [natW_eq he]
+  simp only [Pi.add_apply, Finset.sum_apply, Finset.sum_const, Finset.card_univ, Fintype.card_fin, smul_eq_mul,
+    Pi.smul_apply]
+  omega
+
+theorem shape_b (h : GlobalTheory.IndefiniteRowSideFullHecke.InterlacingNumerators.Interlace lam sg) (he : EqualLast lam sg) :
+    (∑ i : Fin n, ∑ _k : Fin (aNum lam sg i), (0 : Fin n → ℕ)) +
+      (∑ i : Fin n, ∑ _k : Fin (bNum lam sg i), (Pi.single i 1 : Fin n → ℕ)) = fun s => lamN lam s - sg.natW s := by
+  funext t
+  have h1 := sum_ab h t
+  rw [sum_b_succ (bNum lam sg)] at h1
+  have hb := bNum_cast h t
+  have h2 : ((∑ i : Fin n, ∑ _k : Fin (aNum lam sg i), (0 : Fin n → ℕ)) +
+      (∑ i : Fin n, ∑ _k : Fin (bNum lam sg i), (Pi.single i 1 : Fin n → ℕ))) t = bNum lam sg t := by
+    simp [Finset.sum_apply, Pi.single_apply]
+  rw [h2, natW_eq he, lamN_eq]
+  omega
+
+theorem prod_mem (K : Type) [Field K] {r n : ℕ} {ι : Type} (S : Finset ι) (w : ι → Fin n → ℕ)
+    (g : ι → MvPolynomial (Fin r × Fin n) K) (hg : ∀ k, g k ∈ dualWeyl K r n (w k)) :
+    ∏ k ∈ S, g k ∈ dualWeyl K r n (∑ k ∈ S, w k) := by
+  classical
+  induction S using Finset.induction_on with
+  | empty => simpa using (dualWeylMul K r n 0 0 0 0).2
+  | insert a S ha ih =>
+    rw [Finset.prod_insert ha, Finset.sum_insert ha]
+    exact (dualWeylMul K r n _ _ _ _).1 (hg a) ih
+
+theorem incl_initMinor (K : Type) [Field K] {s : ℕ} (I : Fin s → Fin (n + 1)) (hs : s ≤ n) (hs' : s ≤ n + 1) :
+    incl K n (initMinor K I hs) = initMinor K I hs' := by
+  unfold initMinor
+  rw [algHom_det_of]
+  simp only [incl, rename_X]
+  rfl
+
+theorem piGen_mem_and_lift (K : Type) [Field K] (n : ℕ) (lam : DomWeight (n + 1)) (sg : DomWeight n)
+    (h : GlobalTheory.IndefiniteRowSideFullHecke.InterlacingNumerators.Interlace lam sg) (he : EqualLast lam sg) (t : Gen lam sg) :
+    piGen K lam sg t ∈ dualWeyl K n n sg.natW ∧
+      ∃ G : BP K n, bmLift K n (lamN lam) (fun s => lamN lam s - sg.natW s) (piGen K lam sg t) G ∧
+        phiGen K lam sg t = incl K n G := by
+  refine ⟨?_, ?_⟩
+  · rw [← shape_sg h he]
+    exact (dualWeylMul K n n _ _ _ _).1
+      (prod_mem K _ _ _ fun i => prod_mem K _ _ _ fun k => initMinor_mem _ _)
+      (prod_mem K _ _ _ fun i => prod_mem K _ _ _ fun k => initMinor_mem _ _)
+  · have h0 := bmG_prod (Finset.univ : Finset (Fin n)) _ _ _ _ fun i _ =>
+      bmG_prod (Finset.univ : Finset (Fin (aNum lam sg i))) _ _ _ _ fun k _ =>
+        bmLift_minor0 K n (t.1 i k) (Nat.succ_le_of_lt i.isLt)
+    have h1 := bmG_prod (Finset.univ : Finset (Fin n)) _ _ _ _ fun i _ =>
+      bmG_prod (Finset.univ : Finset (Fin (bNum lam sg i))) _ _ _ _ fun k _ =>
+        bmLift_minor1 K n (t.2 i k) (Nat.succ_le_of_lt i.isLt)
+    refine ⟨_, bmG_cast (bmLift_mul h0 h1) (shape_lam h) (shape_b h he) rfl rfl, ?_⟩
+    unfold phiGen
+    simp only [map_mul, map_prod]
+    congr 1
+    · refine Finset.prod_congr rfl fun i _ => Finset.prod_congr rfl fun k _ => ?_
+      exact (incl_initMinor K _ _ _).symm
+    · refine Finset.prod_congr rfl fun i _ => Finset.prod_congr rfl fun k _ => ?_
+      rw [incl_initMinor K _ _ (Nat.succ_le_succ i.isLt.le)]
+      refine congrArg (fun I => initMinor K I (Nat.succ_le_succ i.isLt.le)) ?_
+      funext p
+      induction p using Fin.lastCases with
+      | last => simp
+      | cast p => simp
+
+end GlobalTheory.BrCompare.LiftGen
+end
+
+open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BranchingDeterminantCap Formalism.BasicNotions Formalism.L2.DIV GlobalTheory.Mem.Gelf GlobalTheory.Mem.GelfCheck GlobalTheory.BrCompare
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.generators_in_dual_weyl_module : ∀ (K : Type) [Field K] (n : ℕ) (lam : DomWeight (n + 1)) (sg : DomWeight n), GlobalTheory.IndefiniteRowSideFullHecke.InterlacingNumerators.Interlace lam sg → GlobalTheory.IndefiniteRowSideFullHecke.InterlacingNumerators.EqualLast lam sg → ∀ t : GlobalTheory.IndefiniteRowSideFullHecke.InterlacingNumerators.Gen lam sg, GlobalTheory.IndefiniteRowSideFullHecke.InterlacingNumerators.piGen K lam sg t ∈ dualWeyl K n n sg.natW ∧ ∃ G : BP K n, bmLift K n (lamN lam) (fun s => lamN lam s - sg.natW s) (GlobalTheory.IndefiniteRowSideFullHecke.InterlacingNumerators.piGen K lam sg t) G ∧ GlobalTheory.IndefiniteRowSideFullHecke.InterlacingNumerators.phiGen K lam sg t = incl K n G := by
+  atlas_forward_decl GlobalTheory.BrCompare.LiftGen.piGen_mem_and_lift
+end
+
+section
+section
+open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BranchingDeterminantCap Formalism.BasicNotions Formalism.L2.DIV GlobalTheory.Mem.Gelf GlobalTheory.Mem.GelfCheck GlobalTheory.BrCompare
+
+noncomputable section
+
+namespace GlobalTheory.BrCompare.Surj
+
+open GlobalTheory.IndefiniteRowSideFullHecke.InterlacingNumerators
+
+variable {K : Type} [Field K]
+
+theorem rowAct_initMinor_mem {r m s : ℕ} (g : Matrix (Fin r) (Fin r) K) (I : Fin s → Fin r) (hs : s ≤ m) :
+    rowAct K g (initMinor K I hs) ∈ Submodule.span K (Set.range fun J : Fin s → Fin r => initMinor K J hs) := by
+  classical
+  have h1 : rowAct K g (initMinor K I hs) =
+      (Matrix.detRowAlternating (n := Fin s) (R := MvPolynomial (Fin r × Fin m) K)).toMultilinearMap
+        (fun p => ∑ b : Fin r, (C (g (I p) b) : MvPolynomial (Fin r × Fin m) K) •
+          fun q : Fin s => (X (b, Fin.castLE hs q) : MvPolynomial (Fin r × Fin m) K)) := by
+    unfold initMinor
+    rw [AlgHom.map_det]
+    change Matrix.det _ = Matrix.det _
+    congr 1
+    ext p q : 2
+    simp [rowAct, Finset.sum_apply]
+  rw [h1, MultilinearMap.map_sum]
+  refine Submodule.sum_mem _ fun J _ => ?_
+  rw [MultilinearMap.map_smul_univ, ← map_prod, smul_eq_mul, ← smul_eq_C_mul]
+  exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨J, rfl⟩)
+
+theorem prod_mem_span_range {A ι : Type} [CommRing A] [Algebra K A] [Fintype ι] {J : ι → Type}
+    (f : ∀ i, J i → A) (x : ι → A) (hx : ∀ i, x i ∈ Submodule.span K (Set.range (f i))) :
+    ∏ i, x i ∈ Submodule.span K (Set.range fun t : ∀ i, J i => ∏ i, f i (t i)) := by
+  classical
+  refine Submodule.span_mono ?_ (GlobalTheory.OrbitSpan.prod_mem_span_prod Finset.univ _ x hx)
+  intro y hy
+  rw [Set.mem_fintype_prod] at hy
+  obtain ⟨z, hz, rfl⟩ := hy
+  choose t ht using hz
+  exact ⟨t, Finset.prod_congr rfl fun i _ => ht i⟩
+
+theorem rowAct_piGen_mem {n : ℕ} (lam : DomWeight (n + 1)) (sg : DomWeight n) (g : Matrix (Fin n) (Fin n) K)
+    (t : Gen lam sg) : rowAct K g (piGen K lam sg t) ∈ Submodule.span K (Set.range (piGen K lam sg)) := by
+  unfold piGen
+  simp only [map_mul, map_prod]
+  have h1 := prod_mem_span_range (K := K) _ _ fun i : Fin n => prod_mem_span_range _ _
+    fun k : Fin (aNum lam sg i) => rowAct_initMinor_mem g (t.1 i k) (Nat.succ_le_of_lt i.isLt)
+  have h2 := prod_mem_span_range (K := K) _ _ fun i : Fin n => prod_mem_span_range _ _
+    fun k : Fin (bNum lam sg i) => rowAct_initMinor_mem g (t.2 i k) i.isLt.le
+  have h3 := Submodule.mul_mem_mul h1 h2
+  rw [Submodule.span_mul_span] at h3
+  refine Submodule.span_mono ?_ h3
+  rintro _ ⟨_, ⟨u, rfl⟩, _, ⟨v, rfl⟩, rfl⟩
+  exact ⟨(u, v), rfl⟩
+
+theorem prod_shift {A : Type} [CommMonoid A] {n : ℕ} (D : ℕ → A) (h0 : D 0 = 1) (b : Fin n → ℕ) :
+    ∏ i : Fin n, D i.val ^ b i = ∏ i : Fin n, D (i.val + 1) ^ nuNext b i := by
+  cases n with
+  | zero => simp
+  | succ m =>
+    rw [Fin.prod_univ_succ, Fin.prod_univ_castSucc]
+    have h1 : nuNext b (Fin.last m) = 0 := by simp [nuNext]
+    rw [h1, pow_zero, mul_one, Fin.val_zero, h0, one_pow, one_mul]
+    refine Finset.prod_congr rfl fun i _ => ?_
+    have h2 : nuNext b i.castSucc = b i.succ := by
+      unfold nuNext
+      rw [dif_pos (by simp)]
+      rfl
+    rw [h2]
+    rfl
+
+theorem aNum_add_bNext {n : ℕ} {lam : DomWeight (n + 1)} {sg : DomWeight n} (h : Interlace lam sg)
+    (he : EqualLast lam sg) (i : Fin n) :
+    aNum lam sg i + nuNext (bNum lam sg) i = sg.natW i - nuNext sg.natW i := by
+  have hn : 0 < n := Fin.pos i
+  unfold nuNext
+  simp only [aNum, bNum, DomWeight.natW, DomWeight.detShift, dif_pos hn]
+  have h1 := (h i).1
+  split_ifs with hi
+  · have h2 := (h ⟨i.val + 1, hi⟩).2
+    have h3 : (⟨i.val + 1, hi⟩ : Fin n).castSucc = i.succ := rfl
+    have h4 : sg.w ⟨n - 1, by omega⟩ ≤ sg.w ⟨i.val + 1, hi⟩ := sg.anti (by simp [Fin.le_def]; omega)
+    rw [h3] at h2 ⊢
+    omega
+  · have h2 := he i (by omega)
+    have h3 : i.succ = Fin.last n := Fin.ext (by simp; omega)
+    have h4 : (⟨n - 1, by omega⟩ : Fin n) = i := Fin.ext (by simp; omega)
+    rw [h3, h4]
+    omega
+
+theorem hw_eq_piGen {n : ℕ} {lam : DomWeight (n + 1)} {sg : DomWeight n} (h : Interlace lam sg)
+    (he : EqualLast lam sg) :
+    hw K le_rfl sg.natW = piGen K lam sg
+      (fun i _ => Fin.castLE (Nat.succ_le_of_lt i.isLt), fun i _ => Fin.castLE i.isLt.le) := by
+  let D : ℕ → MvPolynomial (Fin n × Fin n) K := fun k => if hk : k ≤ n then lpMinor K k hk hk else 1
+  have hD : ∀ k (hk : k ≤ n), initMinor K (Fin.castLE hk) hk = D k := fun k hk => by
+    simp only [D, dif_pos hk]; rfl
+  have hD' : ∀ k (hk : k ≤ n), lpMinor K k hk hk = D k := hD
+  have h0 : D 0 = 1 := by
+    rw [← hD' 0 (Nat.zero_le _)]; simp [lpMinor]
+  unfold piGen hw
+  simp only [hD, hD', Finset.prod_const, Finset.card_univ, Fintype.card_fin]
+  rw [prod_shift D h0, ← Finset.prod_mul_distrib]
+  refine Finset.prod_congr rfl fun i _ => ?_
+  rw [← pow_add, aNum_add_bNext h he]
+
+theorem dualWeyl_le_span_piGen (K : Type) [Field K] [CharZero K] (n : ℕ) (lam : DomWeight (n + 1))
+    (sg : DomWeight n) (h : Interlace lam sg) (he : EqualLast lam sg) :
+    dualWeyl K n n sg.natW ≤ Submodule.span K (Set.range (piGen K lam sg)) := by
+  refine (GlobalTheory.OrbitSpan.dualWeyl_le_span_orbit K le_rfl sg.natW (Formalism.L2.Col.natW_anti sg)).trans ?_
+  rw [Submodule.span_le]
+  rintro _ ⟨g, rfl⟩
+  beta_reduce
+  rw [hw_eq_piGen h he]
+  exact rowAct_piGen_mem lam sg _ _
+
+end GlobalTheory.BrCompare.Surj
+end
+end
+
+open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BranchingDeterminantCap Formalism.BasicNotions Formalism.L2.DIV GlobalTheory.Mem.Gelf GlobalTheory.Mem.GelfCheck GlobalTheory.BrCompare
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dual_weyl_spanned_by_interlacing : ∀ (K : Type) [Field K] [CharZero K] (n : ℕ) (lam : DomWeight (n + 1)) (sg : DomWeight n), GlobalTheory.IndefiniteRowSideFullHecke.InterlacingNumerators.Interlace lam sg → GlobalTheory.IndefiniteRowSideFullHecke.InterlacingNumerators.EqualLast lam sg → dualWeyl K n n sg.natW ≤ Submodule.span K (Set.range (GlobalTheory.IndefiniteRowSideFullHecke.InterlacingNumerators.piGen K lam sg)) := by
+  atlas_forward_decl GlobalTheory.BrCompare.Surj.dualWeyl_le_span_piGen
+end
+
+section
+open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BranchingDeterminantCap Formalism.BasicNotions Formalism.L2.DIV GlobalTheory.Mem.Gelf GlobalTheory.Mem.GelfCheck GlobalTheory.BrCompare
+
+namespace GlobalTheory.BrCompare
+
+open GlobalTheory.Branching.AddColumn in
+
+theorem exists_eq_incl_of_last_eq_zero : ∀ (K : Type) [Field K] [CharZero K] (n : ℕ) (ν : Fin (n + 1) → ℕ), ν (Fin.last n) = 0 → ∀ x ∈ dualWeyl K (n + 1) (n + 1) ν, ∃ x' ∈ dualWeyl K (n + 1) n (fun i => ν i.castSucc), x = incl K n x' := by
+  intro K _ _ n ν hν x hx
+  have hinj : Function.Injective
+      (Prod.map id Fin.castSucc : Fin (n + 1) × Fin n → Fin (n + 1) × Fin (n + 1)) :=
+    Function.injective_id.prodMap (Fin.castSucc_injective n)
+  simp only [dualWeyl, Submodule.mem_inf, Submodule.mem_iInf, LinearMap.mem_ker, LinearMap.sub_apply,
+    AlgHom.toLinearMap_apply, sub_eq_zero, mem_weightedHomogeneousSubmodule] at hx ⊢
+  obtain ⟨x', rfl⟩ := exists_rename_eq_of_vars_subset_range x _ hinj (by
+    rintro ⟨a, s⟩ hv
+    induction s using Fin.lastCases with
+    | cast s => exact ⟨(a, s), rfl⟩
+    | last =>
+      exfalso
+      obtain ⟨d, hd, hvd⟩ := (mem_vars_iff_mem_support _).1 (Finset.mem_coe.1 hv)
+      have h := congrFun (hx.1 (mem_support_iff.1 hd)) (Fin.last n)
+      rw [hν, Finsupp.weight_apply, Finsupp.sum, Finset.sum_apply, Finset.sum_eq_zero_iff] at h
+      have h2 := h _ hvd
+      simp [colW] at h2
+      exact Finsupp.mem_support_iff.1 hvd h2)
+  refine ⟨x', ⟨fun u hu => ?_, fun l j hlj => ?_⟩, rfl⟩
+  · rw [← coeff_rename_mapDomain _ hinj] at hu
+    funext i
+    rw [← (weight_mapDomain (n + 1) n u).1, hx.1 hu]
+  · have h := hx.2 l.castSucc j.castSucc (Fin.castSucc_lt_castSucc_iff.2 hlj)
+    rw [colAddGen_rename_castSucc] at h
+    apply rename_injective _ (Option.map_injective hinj)
+    rw [h, rename_rename, rename_rename]
+    rfl
+
+end GlobalTheory.BrCompare
+end
+
+section
+open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BranchingDeterminantCap Formalism.BasicNotions Formalism.L2.DIV GlobalTheory.Mem.Gelf GlobalTheory.Mem.GelfCheck GlobalTheory.BrCompare
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dual_weyl_last_zero_inclusion : ∀ (K : Type) [Field K] [CharZero K] (n : ℕ) (ν : Fin (n + 1) → ℕ), ν (Fin.last n) = 0 → ∀ x ∈ dualWeyl K (n + 1) (n + 1) ν, ∃ x' ∈ dualWeyl K (n + 1) n (fun i => ν i.castSucc), x = incl K n x' := by
+  first | exact @GlobalTheory.BrCompare.exists_eq_incl_of_last_eq_zero | exact GlobalTheory.BrCompare.exists_eq_incl_of_last_eq_zero | (intros; apply GlobalTheory.BrCompare.exists_eq_incl_of_last_eq_zero <;> assumption)
+end
+
+section
+open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BranchingDeterminantCap Formalism.BasicNotions Formalism.L2.DIV GlobalTheory.Mem.Gelf GlobalTheory.Mem.GelfCheck GlobalTheory.BrCompare
+
+noncomputable section
+
+namespace GlobalTheory.BrCoefFock
+
+variable {K : Type} [Field K] {n : ℕ}
+
+def spl (K : Type) [Field K] (n : ℕ) : BP K n →+* MvPolynomial (Unit × Fin n) (MvPolynomial (Fin n × Fin n) K) :=
+  (map (rename (Prod.snd : Unit × Fin n × Fin n → Fin n × Fin n) :
+      MvPolynomial (Unit × Fin n × Fin n) K →ₐ[K] MvPolynomial (Fin n × Fin n) K).toRingHom).comp
+    ((GlobalTheory.BranchFormula.splitLast K Unit (rfl : n + 1 = n + 1)).toRingHom.comp
+      ((rename (fun v : Fin (n + 1) × Fin (n + 1) => (((), v) : Unit × Fin (n + 1) × Fin (n + 1))) :
+        _ →ₐ[K] _).toRingHom.comp (incl K n).toRingHom))
+
+theorem coefOne_eq (b : Fin n → ℕ) (x : BP K n) :
+    coefOne K n b (incl K n x) = coeff (GlobalTheory.BranchFormula.expOf fun _ : Unit => b) (spl K n x) := by
+  unfold coefOne
+  rw [GlobalTheory.BranchFormula.coefLast_eq_coeff]
+  simp [spl, coeff_map]
+
+theorem spl_C (a : K) : spl K n (C a) = C (C a) := by
+  simp [spl, incl, GlobalTheory.BranchFormula.splitLast]
+
+theorem spl_up (a s : Fin n) : spl K n (X (a.castSucc, s)) = C (X (a, s)) := by
+  simp [spl, incl, GlobalTheory.BranchFormula.splitLast]
+
+theorem spl_last (s : Fin n) : spl K n (X (Fin.last n, s)) = X ((), s) := by
+  simp [spl, incl, GlobalTheory.BranchFormula.splitLast]
+
+def lastV (n : ℕ) (p : Unit × Fin n) : Fin (n + 1) × Fin n := (Fin.last n, p.2)
+
+theorem lastV_inj : Function.Injective (lastV n) := fun _ _ h =>
+  Prod.ext rfl (Prod.ext_iff.1 h).2
+
+theorem pderiv_rename_of_ne {σ τ : Type} (e : σ → τ) (v : τ) (h : ∀ u, e u ≠ v) (f : MvPolynomial σ K) :
+    pderiv v (rename e f) = 0 := by
+  induction f using MvPolynomial.induction_on with
+  | C a => simp
+  | add p q hp hq => simp [hp, hq]
+  | mul_X p u hp => simp [hp, pderiv_X_of_ne (h u)]
+
+theorem fockB_C_left {σ : Type} (a : K) (g : MvPolynomial σ K) : fockB (C a) g = a * constantCoeff g :=
+  @fockL_C_left K _ starRingOfComm _ a g
+
+theorem emb_inj : Function.Injective (fun v : Fin n × Fin n => ((v.1.castSucc, v.2) : Fin (n + 1) × Fin n)) :=
+  (Fin.castSucc_injective n).prodMap Function.injective_id
+
+theorem key (x : BP K n) (β : Unit × Fin n →₀ ℕ) (p : MvPolynomial (Fin n × Fin n) K) :
+    fockB x (rename (lastV n) (monomial β (1 : K)) * emb K n p) =
+      ((∏ u, (β u).factorial : ℕ) : K) * fockB (coeff β (spl K n x)) p := by
+  classical
+  induction x using MvPolynomial.induction_on generalizing β p with
+  | C a =>
+    rw [fockB_C_left, spl_C, coeff_C, map_mul, constantCoeff_rename, constantCoeff_monomial, emb, constantCoeff_rename]
+    by_cases h : β = 0
+    · subst h; simp [fockB_C_left]
+    · rw [if_neg h, if_neg (Ne.symm h), ← fockBL_apply]; simp
+  | add f g hf hg =>
+    simp only [← fockBL_apply, map_add, LinearMap.add_apply, coeff_add] at *
+    rw [hf, hg, mul_add]
+  | mul_X f v hf =>
+    obtain ⟨a, s⟩ := v
+    rw [mul_comm f, fockB_X_mul, map_mul (spl K n), Derivation.leibniz, smul_eq_mul, smul_eq_mul]
+    induction a using Fin.lastCases with
+    | cast a =>
+      rw [pderiv_rename_of_ne (lastV n) (a.castSucc, s) (fun u h => (Fin.castSucc_lt_last a).ne' (Prod.ext_iff.1 h).1),
+        mul_zero, add_zero, spl_up, coeff_C_mul, fockB_X_mul, ← hf]
+      congr 2
+      exact pderiv_rename emb_inj (a, s) p
+    | last =>
+      have h1 : pderiv (Fin.last n, s) (emb K n p) = 0 :=
+        pderiv_rename_of_ne _ _ (fun u h => (Fin.castSucc_lt_last u.1).ne (congrArg Prod.fst h)) p
+      have h2 : pderiv (Fin.last n, s) (rename (lastV n) (monomial β (1 : K))) =
+          (β ((), s) : K) • rename (lastV n) (monomial (β - Finsupp.single ((), s) 1) (1 : K)) := by
+        have := pderiv_rename (R := K) lastV_inj ((), s) (monomial β (1 : K))
+        rw [pderiv_monomial] at this
+        rw [← map_smul, smul_monomial, smul_eq_mul, mul_comm]
+        exact this
+      rw [h1, mul_zero, zero_add, h2, mul_comm, smul_mul_assoc, ← fockBL_apply, map_smul, fockBL_apply, hf,
+        spl_last, coeff_X_mul', smul_eq_mul]
+      split_ifs with h
+      · rw [← mul_assoc, ← Nat.cast_mul]
+        congr 2
+        rw [← Finset.mul_prod_erase _ _ (Finset.mem_univ ((), s)),
+          ← Finset.mul_prod_erase _ (fun u => (β u).factorial) (Finset.mem_univ ((), s)), ← mul_assoc]
+        congr 1
+        · simpa using Nat.mul_factorial_pred (Finsupp.mem_support_iff.1 h)
+        · refine Finset.prod_congr rfl fun u hu => ?_
+          simp [Finsupp.single_eq_of_ne (Finset.ne_of_mem_erase hu)]
+      · rw [Finsupp.notMem_support_iff.1 h, ← fockBL_apply (0 : MvPolynomial (Fin n × Fin n) K)]
+        simp
+
+theorem zmon_eq (b : Fin n → ℕ) :
+    zmon K n b = rename (lastV n) (monomial (GlobalTheory.BranchFormula.expOf fun _ : Unit => b) (1 : K)) := by
+  rw [monomial_eq, C_1, one_mul, Finsupp.prod_fintype _ _ (by simp), map_prod, Fintype.prod_prod_type]
+  simp [zmon, lastV]
+
+theorem spl_zmon (b : Fin n → ℕ) :
+    spl K n (zmon K n b) = monomial (GlobalTheory.BranchFormula.expOf fun _ : Unit => b) 1 := by
+  rw [monomial_eq, C_1, one_mul, Finsupp.prod_fintype _ _ (by simp), Fintype.prod_prod_type]
+  simp [zmon, spl_last]
+
+theorem spl_emb (q : MvPolynomial (Fin n × Fin n) K) : spl K n (emb K n q) = C q := by
+  induction q using MvPolynomial.induction_on with
+  | C a => rw [emb, rename_C, spl_C]
+  | add p q hp hq => simp only [map_add, hp, hq]
+  | mul_X p v hp => rw [map_mul, map_mul, hp, bmF_emb_X, spl_up, map_mul]
+
+theorem fockB_zmon_emb : ∀ (K : Type) [Field K] (n : ℕ) (b : Fin n → ℕ), (∀ (x : BP K n) (p : MvPolynomial (Fin n × Fin n) K), fockB x (zmon K n b * emb K n p) = (bfact b : K) * fockB (coefOne K n b (incl K n x)) p) ∧ ∀ p q : MvPolynomial (Fin n × Fin n) K, fockB (zmon K n b * emb K n q) (zmon K n b * emb K n p) = (bfact b : K) * fockB q p := by
+  intro K _ n b
+  have h1 : ∀ (x : BP K n) (p : MvPolynomial (Fin n × Fin n) K), fockB x (zmon K n b * emb K n p) =
+      (bfact b : K) * fockB (coefOne K n b (incl K n x)) p := by
+    intro x p
+    rw [zmon_eq, key, coefOne_eq, Fintype.prod_prod_type]
+    simp [bfact]
+  refine ⟨h1, fun p q => ?_⟩
+  rw [h1, coefOne_eq, map_mul, spl_zmon, spl_emb, mul_comm (monomial _ _), coeff_C_mul]
+  simp
+
+end GlobalTheory.BrCoefFock
+end
+end
+
+section
+open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BranchingDeterminantCap Formalism.BasicNotions Formalism.L2.DIV GlobalTheory.Mem.Gelf GlobalTheory.Mem.GelfCheck GlobalTheory.BrCompare
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fockPairing_lastRow_monomial_reads_coefficient : ∀ (K : Type) [Field K] (n : ℕ) (b : Fin n → ℕ), (∀ (x : BP K n) (p : MvPolynomial (Fin n × Fin n) K), fockB x (zmon K n b * emb K n p) = (bfact b : K) * fockB (coefOne K n b (incl K n x)) p) ∧ ∀ p q : MvPolynomial (Fin n × Fin n) K, fockB (zmon K n b * emb K n q) (zmon K n b * emb K n p) = (bfact b : K) * fockB q p := by
+  first | exact @GlobalTheory.BrCoefFock.fockB_zmon_emb | exact GlobalTheory.BrCoefFock.fockB_zmon_emb | (intros; apply GlobalTheory.BrCoefFock.fockB_zmon_emb <;> assumption)
+end
+
+section
+open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BranchingDeterminantCap Formalism.BasicNotions Formalism.L2.DIV GlobalTheory.Mem.Gelf GlobalTheory.Mem.GelfCheck GlobalTheory.BrCompare
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.branching_list_character_product : ∀ (n : ℕ) (lam : DomWeight (n + 1)) (sg : DomWeight n), GlobalTheory.IndefiniteRowSideFullHecke.InterlacingNumerators.Interlace lam sg → GlobalTheory.IndefiniteRowSideFullHecke.InterlacingNumerators.EqualLast lam sg → Formalism.BranchingDeterminantCap.Interlace (lamZ (lamN lam)) (fun i => (sg.natW i : ℤ)) ∧ (∀ u ∈ bmList (lamN lam) sg.natW, u ∈ zList lam sg) ∧ ((zList lam sg).map (bmChi (lamN lam) fun s => ((lamN lam s - sg.natW s : ℕ) : ℤ))).prod = Formalism.L2.Col.Br.cBr rfl lam sg ∧ (∀ s, (Formalism.L2.Col.Br.bBr rfl lam sg s).toNat = lamN lam s - sg.natW s) ∧ ∀ (K : Type) [Field K], Formalism.L2.Col.Br.xiBr K rfl lam sg = incl K n (xiB K (lamN lam) sg.natW) := by
+  first | exact @GlobalTheory.BrCompare.shifted_branching_list_character | exact GlobalTheory.BrCompare.shifted_branching_list_character | (intros; apply GlobalTheory.BrCompare.shifted_branching_list_character <;> assumption)
+end
+
+section
 open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BranchingDeterminantCap Formalism.BasicNotions Formalism.L2.DIV GlobalTheory.Mem.Gelf GlobalTheory.Mem.GelfCheck GlobalTheory.BrCompare
 
 noncomputable section
@@ -687,8 +1307,6 @@ def PTildeAt (lam : ι → DomWeight (n + 1)) (sg : ι → DomWeight n) : Prop :
     ∀ (t : ι → K), (∀ τ, t τ ≠ 0) →
     ∀ x : VV K lam, x ∈ delK lam (fun τ => InterlacingNumerators.extLat (M τ) (t τ)) → InterlacingNumerators.pTilde lam sg t x ∈ delK sg M
 
-theorem pTildeIntegral_iff : InterlacingNumerators.PTildeIntegral ↔ ∀ (K : Type) [Field K] [NumberField K] (ι : Type) [Fintype ι] (n : ℕ)
-    (lam : ι → DomWeight (n + 1)) (sg : ι → DomWeight n), PTildeAt K lam sg := Iff.rfl
 
 theorem conclusion_iff {lam : ι → DomWeight (n + 1)} {sg : ι → DomWeight n}
     (hI : ∀ τ, InterlacingNumerators.Interlace (lam τ) (sg τ)) (hE : ∀ τ, InterlacingNumerators.EqualLast (lam τ) (sg τ)) :
@@ -772,3 +1390,5 @@ theorem compare :
 end Compare
 
 end GlobalTheory.BrCompare
+end
+end

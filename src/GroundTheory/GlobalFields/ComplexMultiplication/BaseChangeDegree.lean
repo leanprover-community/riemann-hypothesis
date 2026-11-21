@@ -208,17 +208,7 @@ theorem _root_.GroundTheory.Arith.Abelian.Isogeny.degree_map (φ : Isogeny E E')
   rw [φ.degree_eq_max_natDegree hr, (φ.map σ).degree_eq_max_natDegree hx, h1, h2,
     natDegree_map_eq_of_injective σ.injective, natDegree_map_eq_of_injective σ.injective]
 
-theorem _root_.GroundTheory.Arith.Abelian.Isogeny.degree_mapOf {D D' : WeierstrassCurve F'}
-    [D.IsElliptic] [D'.IsElliptic] (hE : E.map σ = D) (hE' : E'.map σ = D') (φ : Isogeny E E') :
-    (φ.mapOf σ hE hE').degree = φ.degree := by
-  rw [Isogeny.mapOf, Isogeny.degree_congr, Isogeny.degree_map]
 
-theorem _root_.GroundTheory.Arith.Abelian.Isogeny.map_dual [IsAlgClosed F] [DecidableEq F]
-    [IsAlgClosed F'] [DecidableEq F'] (φ : Isogeny E E') : (φ.map σ).dual = φ.dual.map σ := by
-  symm
-  apply (φ.map σ).eq_dual_of_comp
-  rw [← Isogeny.map_comp, Isogeny.dual_comp, Isogeny.map_mulIsogeny]
-  exact mulIsogeny_congr (by rw [Isogeny.degree_map]) _ _
 
 end Degree
 

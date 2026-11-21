@@ -166,10 +166,6 @@ def Lifts : Prop :=
 
 def Statement : Prop := Complexify ∧ Lifts
 
-theorem Lifts.of_hyp (h : Lifts) (hX : X.Hyp) {s : Fin X.D → Fin X.N → E} (hs : IsChosen X E s) :
-    (∀ (τ : E →+* ℂ) (a : ℕ) (ha : a ≤ (X.baseChange E).a₀),
-      ExtensionBound τ hs.good (X.T - a) ∧ LiftBound (X := X.baseChange E) τ hs.good X.beta 1 ha) ∧ Ranks X hs.good :=
-  h F X _ _ (.of_meanHyp hX.meanHyp) E s hs
 
 example : cD 1 = 4 * Real.pi ∧ cD 2 = 8 * Real.pi ^ 2 := by
   constructor <;> norm_num [cD]

@@ -15,16 +15,6 @@ open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestrictio
 
 variable {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V]
 
-lemma const_pull {Y Z : Scheme.{0}} (φ : Y ⟶ Z) (pY : Y ⟶ Spec (CommRingCat.of V)) (pZ : Z ⟶ Spec (CommRingCat.of V))
-    (hφ : φ ≫ pZ = pY) (r : V) {U : Z.Opens} {W : Y.Opens} (h : W ≤ φ ⁻¹ᵁ U) :
-    rs h ((φ.app U).hom (resTop U (scal pZ r))) = resTop W (scal pY r) := by
-  subst hφ
-  simp only [rs, resTop, scal, Scheme.Hom.comp_appTop, CommRingCat.comp_apply]
-  have key := congrArg (fun f => (CommRingCat.Hom.hom f) ((pZ.appTop).hom ((Scheme.ΓSpecIso (CommRingCat.of V)).inv.hom r)))
-    (φ.naturality (homOfLE (le_top : U ≤ ⊤)).op)
-  simp only [CommRingCat.comp_apply] at key
-  rw [key, ← CommRingCat.comp_apply, ← Functor.map_comp]
-  rfl
 
 section Scale
 

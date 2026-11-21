@@ -1,8 +1,48 @@
-import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.PhiIterPull
+import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.VecZero
+import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.PullbackDecomposition
+import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.CrystallineAlgebraAlgebraMap
+import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.TheoryEx
+import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.AddIff
+import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.EvalExact
+import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.NatCastQb
 import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.TorsionOfVec
 import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.SplitOnOfDisj
 import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.SplitPointGeneric
-import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.MapUSharp
+import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.CrystallineComparison
+import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.TestFactsAlt
+import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.SplitsOfSplitOn
+import Development.AutomorphicArithmetic.EtaleIdempotents.ExistsOrthogonalIdempotentsSubordinateOfEtaleSec
+import Development.AutomorphicArithmetic.EtaleIdempotents.ExistsOrthogonalIdempotentsLiftThroughSharp
+import Development.AutomorphicArithmetic.EtaleIdempotents.ExistsFiniteSectionsDeterminingRingHomOfSmooth
+import Development.AutomorphicArithmetic.EtaleIdempotents.ExistsOrthogonalIdempotentsMatchingOfSameNorm
+import Development.AutomorphicArithmetic.EtaleIdempotents.CorrespondenceNormBoundOfAffineOpens
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PNormPt
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PSameNormRing
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PNormRead
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PNormInt
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PNormEx
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PMatRep
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PDetSplit
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PSplitsBC
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PInjSplit
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PRankDeg
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PSplitsField
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PSplitsEquiv
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PCoeffInt
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PLiftP
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PEtUnit
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PValPts
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PValLift
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PPtsProd
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PCongrRad
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PBaseChart
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PBaseSmooth
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PSmoothClosed
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PSmoothRed
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PEtAway
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PEtChart
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PGenChart
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.PCharts
 import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.AveragingTransferKills
 import Development.AutomorphicArithmetic.EtaleIdempotents.ExistsCrystallineLatticeExpansion
 import Development.AutomorphicArithmetic.EtaleIdempotents.HeckeCorrespondenceProduct
@@ -10,6 +50,535 @@ import Development.AutomorphicArithmetic.EtaleIdempotents.LinearCombinationTrans
 import Development.AutomorphicArithmetic.EtaleIdempotents.CrystallineExpansionRelationOfScaledEndomorphism
 import Development.AutomorphicArithmetic.EtaleIdempotents.NatCastPrimeNeZeroAndNotIsUnitIntegers
 
+section
+noncomputable section
+
+open CategoryTheory CategoryTheory.Limits
+
+namespace UpperTheory.Ru.crystallineComparison
+
+variable {C : Type 1} [Category.{0} C]
+
+private theorem sum_sec_eq_zero (Pa : Parts C) (F : Coef C) (hF : Pa.Add F) {Q P : C ⥤ Type}
+    {I : Type} [Fintype I] (a : I → ℤ) (u : I → (Q ⟶ P)) (h : Pa.LocZero a u)
+    (c : ∀ A : C, P.obj A → F.obj A) (hc : c ∈ Sec P F) (A : C) (y : Q.obj A) :
+    ∑ i, a i • c A ((u i).app A y) = 0 := by
+  have hc' : ∀ {A B : C} (φ : A ⟶ B) (y : P.obj A), (F.map φ).hom (c A y) = c B (P.map φ y) := hc
+  obtain ⟨S, hS, hs⟩ := h A y
+  apply (hF A S hS).1
+  funext s
+  show (F.map (S.f s)).hom (∑ i, a i • c A ((u i).app A y)) = (F.map (S.f s)).hom 0
+  have hnat : ∀ i, (F.map (S.f s)).hom (a i • c A ((u i).app A y)) =
+      a i • c (S.B s) ((u i).app _ (Q.map (S.f s) y)) := by
+    intro i
+    rw [map_zsmul, hc' (S.f s) _, FunctorToTypes.naturality]
+  rw [map_zero, map_sum]
+  simp only [hnat]
+  rcases hs s with h0 | h0
+  · have hL := congrArg
+      (Finsupp.liftAddHom fun p : P.obj (S.B s) => zmultiplesHom (F.obj (S.B s)) (c (S.B s) p)) h0
+    simpa [map_sum] using hL
+  · apply (hF _ _ h0).1
+    funext e
+    exact e.elim
+
+private theorem locSum_zero (Pa : Parts C) (T : Theory C) (F : Coef C) (hF : Pa.Add F)
+    {Q P : C ⥤ Type} {I : Type} [Fintype I] (a : I → ℤ) (u : I → (Q ⟶ P)) (h : Pa.LocZero a u)
+    (x : T.H P F 0) : ∑ i, a i • T.pull (u i) F 0 x = 0 := by
+  apply (T.zero Q F).injective
+  rw [map_zero]
+  apply Subtype.ext
+  funext A y
+  let E : T.H Q F 0 →+ F.obj A := AddMonoidHom.mk' (fun z => (T.zero Q F z).1 A y) (by
+    intro z w
+    simp [map_add])
+  show E (∑ i, a i • T.pull (u i) F 0 x) = 0
+  rw [map_sum]
+  have hE : ∀ i, E (a i • T.pull (u i) F 0 x) = a i • (T.zero P F x).1 A ((u i).app A y) := by
+    intro i
+    rw [map_zsmul]
+    congr 1
+    exact T.zero_pull (u i) F x A y
+  simp only [hE]
+  exact sum_sec_eq_zero Pa F hF a u h _ (T.zero P F x).2 A y
+
+private theorem locSum_shift (T : Theory C) {Q P : C ⥤ Type} {I : Type} [Fintype I] (a : I → ℤ)
+    (u : I → (Q ⟶ P)) (S : ShortComplex (Coef C)) (hS : S.ShortExact) (j : ℕ)
+    (hsub : Subsingleton (T.H P S.X₂ (j + 1)))
+    (ih : ∀ w : T.H P S.X₃ j, ∑ i, a i • T.pull (u i) S.X₃ j w = 0)
+    (x : T.H P S.X₁ (j + 1)) : ∑ i, a i • T.pull (u i) S.X₁ (j + 1) x = 0 := by
+  obtain ⟨w, rfl⟩ := (T.ex₁ P S hS j x).1 (hsub.elim _ _)
+  have hδ : ∑ i, a i • T.δ Q S hS j (T.pull (u i) S.X₃ j w) =
+      T.δ Q S hS j (∑ i, a i • T.pull (u i) S.X₃ j w) := by
+    rw [map_sum]
+    simp only [map_zsmul]
+  simp only [T.pull_δ]
+  rw [hδ, ih w, map_zero]
+
+end UpperTheory.Ru.crystallineComparison
+
+open UpperTheory.Ru.crystallineComparison in
+theorem UpperTheory.Ru.crystallineComparison.locSum :
+    UpperTheory.Ru.crystallineComparison.LocSum := by
+  intro C _ Pa T F hF Q P I _ a u h j x
+  induction j generalizing F with
+  | zero => exact locSum_zero Pa T F hF a u h x
+  | succ j ih =>
+    obtain ⟨K, ι, hm, hK, hKa⟩ := emb C Pa F hF
+    let S : ShortComplex (Coef C) := ShortComplex.mk ι (cokernel.π ι) (cokernel.condition ι)
+    have hS : S.ShortExact :=
+      { exact := ShortComplex.exact_cokernel ι, mono_f := hm, epi_g := inferInstanceAs (Epi (cokernel.π ι)) }
+    have h3 : Pa.Add S.X₃ := quotAdd C Pa S hS hF hKa
+    exact locSum_shift T a u S hS j (T.inj P K hK j) (fun w => ih S.X₃ h3 w) x
+end
+end
+
+section
+set_option backward.isDefEq.respectTransparency false
+
+noncomputable section
+
+open CategoryTheory Limits GroundTheory.PAdicHodge CrystallineSemistableComparison
+
+namespace UpperTheory.Ru.crystallineComparison
+
+private theorem bij_transport {ι X X' : Type*} {Y Y' : ι → Type*} (c : X ≃ X') (d : ∀ i, Y i ≃ Y' i)
+    (g : ∀ i, X → Y i) (f : ∀ i, X' → Y' i) (h : ∀ i x, f i (c x) = d i (g i x))
+    (hb : Function.Bijective fun x i => g i x) : Function.Bijective fun x i => f i x := by
+  obtain ⟨hi, hs⟩ := hb
+  refine ⟨fun x y hxy => ?_, fun b => ?_⟩
+  · obtain ⟨x, rfl⟩ := c.surjective x
+    obtain ⟨y, rfl⟩ := c.surjective y
+    refine congrArg c (hi (funext fun i => (d i).injective ?_))
+    have := congrFun hxy i
+    simpa only [h] using this
+  · obtain ⟨x, hx⟩ := hs fun i => (d i).symm (b i)
+    refine ⟨c x, funext fun i => ?_⟩
+    have := congrFun hx i
+    simp only at this
+    simp only [h, this, Equiv.apply_symm_apply]
+
+private theorem sum_transport {W Y I : Type*} [AddCommGroup W] [AddCommGroup Y] [Fintype I] (a : I → ℤ) (e : Y ≃+ W)
+    (f : I → Y) (g : I → W) (h : ∀ i, e (f i) = g i) (key : ∑ i, a i • g i = 0) : ∑ i, a i • f i = 0 := by
+  apply e.injective
+  rw [map_zero, map_sum]
+  simp only [map_zsmul, h]
+  exact key
+
+variable {l : ℕ} [Fact l.Prime]
+
+private theorem empty_isDec {A : Test l} (h : Subsingleton A.obj.A) :
+    IsDec (⟨Empty, fun e => e.elim, fun e => e.elim⟩ : Fam A) := by
+  refine ⟨fun x y _ => Subsingleton.elim x y, fun b => ⟨0, ?_⟩⟩
+  funext e
+  exact e.elim
+
+private theorem locZero_of {Pa : Parts (Test l)} (hPa : ∀ (A : Test l) (S : Fam A), Pa.Cov S ↔ IsDec S)
+    {Q P : PAlg l ⥤ Type} {I : Type} [Fintype I] {a : I → ℤ} {u : I → (Q ⟶ P)} (hz : TZero a u) :
+    Pa.LocZero (Q := testι l ⋙ Q) (P := testι l ⋙ P) a (fun i => Functor.whiskerLeft (testι l) (u i)) := by
+  intro A y
+  obtain ⟨S, hS, hs⟩ := hz A y
+  refine ⟨S, (hPa A S).2 hS, fun s => ?_⟩
+  rcases hs s with h0 | h0
+  · exact Or.inl h0
+  · exact Or.inr ((hPa _ _).2 (empty_isDec h0))
+
+private theorem add_of {Pa : Parts (Test l)} (hPa : ∀ (A : Test l) (S : Fam A), Pa.Cov S ↔ IsDec S)
+    (n : ℕ) (hacr : AcrAdd) (F' : Coef (Test l)) (c : ∀ A, (testι l ⋙ AcrF l n).obj A ≃+ F'.obj A)
+    (hc : ∀ {A B : Test l} (φ : A ⟶ B) (x : (testι l ⋙ AcrF l n).obj A),
+      c B (((testι l ⋙ AcrF l n).map φ).hom x) = (F'.map φ).hom (c A x)) : Pa.Add F' := by
+  intro A S hS
+  exact bij_transport (c A).toEquiv (fun i => (c (S.B i)).toEquiv) (fun i x => PAlg.mapAcr (S.f i).hom n x)
+    (fun i x => (F'.map (S.f i)).hom x) (fun i x => (hc (S.f i) x).symm) (hacr l n A S ((hPa A S).1 hS))
+
+end UpperTheory.Ru.crystallineComparison
+
+open UpperTheory.Ru.crystallineComparison in
+theorem UpperTheory.Ru.crystallineComparison.sumMH :
+    UpperTheory.Ru.crystallineComparison.SumMH := by
+  intro l _ Q P I _ a u hz n j x
+  refine (partsEx l).elim fun Pa hPa => (theoryEx (Test l)).elim fun T hT => ?_
+  refine (hT (Acris l) (testι l ⋙ AcrF l n)).elim fun F' h1 => h1.elim fun c h2 => h2.elim fun e h3 => ?_
+  have hAdd : Pa.Add F' := add_of hPa n acrAdd F' c h3.1
+  have key := locSum (Test l) Pa T F' hAdd (testι l ⋙ Q) (testι l ⋙ P) I a
+    (fun i => Functor.whiskerLeft (testι l) (u i)) (locZero_of hPa hz) j
+  have hp : ∀ i, e (testι l ⋙ Q) j (pullH (u i) n j x) =
+      T.pull (Functor.whiskerLeft (testι l) (u i)) F' j (e (testι l ⋙ P) j x) := fun i =>
+    h3.2 (Functor.whiskerLeft (testι l) (u i)) (pullMor (u i) n) rfl (fun _ _ => HEq.rfl) j x
+  exact sum_transport a (e (testι l ⋙ Q) j) _ _ hp (key (e (testι l ⋙ P) j x))
+end
+end
+
+section
+set_option backward.isDefEq.respectTransparency false
+
+noncomputable section
+
+open CategoryTheory AlgebraicGeometry GroundTheory.PAdicHodge CrystallineSemistableComparison
+
+namespace UpperTheory.Ru.crystallineComparison
+
+variable {l : ℕ} [Fact l.Prime]
+
+private theorem pull_tri {R : Type} [CommRing R] {C C' C'' : Type 1} [Category.{0} C] [Category.{0} C']
+    [Category.{0} C''] {F : C ⥤ ModuleCat.{0} R} {F' : C' ⥤ ModuleCat.{0} R} {F'' : C'' ⥤ ModuleCat.{0} R}
+    (a : CH.Mor F F' (RingHom.id R)) (b : CH.Mor F' F'' (RingHom.id R)) (c : CH.Mor F F'' (RingHom.id R)) (j : ℕ)
+    (h : ∀ z : CH.Cn F j, c.pullC j z = b.pullC j (a.pullC j z)) (x : CH.H F j) :
+    c.pull j x = b.pull j (a.pull j x) := by
+  obtain ⟨z, rfl⟩ := Submodule.mkQ_surjective _ x
+  exact congrArg (Submodule.Quotient.mk (p := ((CH.cx F'').B j).submoduleOf ((CH.cx F'').Z j))) (Subtype.ext (h z.1))
+
+private theorem pull_self {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] {F : C ⥤ ModuleCat.{0} R}
+    (c : CH.Mor F F (RingHom.id R)) (j : ℕ) (h : ∀ z : CH.Cn F j, c.pullC j z = z) (x : CH.H F j) :
+    c.pull j x = x := by
+  obtain ⟨z, rfl⟩ := Submodule.mkQ_surjective _ x
+  exact congrArg (Submodule.Quotient.mk (p := ((CH.cx F).B j).submoduleOf ((CH.cx F).Z j))) (Subtype.ext (h z.1))
+
+private theorem pullH_comp {P P' P'' : PAlg l ⥤ Type} (u : P ⟶ P') (v : P' ⟶ P'') (n j : ℕ) (x : MH P'' n j) :
+    pullH (u ≫ v) n j x = pullH u n j (pullH v n j x) :=
+  pull_tri (pullMor v n) (pullMor u n) (pullMor (u ≫ v) n) j (fun _ => funext fun _ => rfl) x
+
+private theorem pullH_id (P : PAlg l ⥤ Type) (n j : ℕ) (x : MH P n j) : pullH (𝟙 P) n j x = x :=
+  pull_self (pullMor (𝟙 P) n) j (fun _ => funext fun _ => rfl) x
+
+private theorem phi_pull' {P P' : PAlg l ⥤ Type} (u : P ⟶ P') (n j : ℕ) (x : MH P' n j) :
+    phiH P n j (pullH u n j x) = pullH u n j (phiH P' n j x) :=
+  (frEx l ℤ (Spec (CommRingCat.of ℤ)) (𝟙 _) (Int.castRingHom _) (Int.castRingHom _) 0 0 (fun _ => by simp)).2.2 P P' u n j x
+
+private theorem iter_semi {A B : Type*} (p : B → B) (r : A → A) (h : A → B) (e : ∀ x, p (h x) = h (r x))
+    (m : ℕ) (x : A) : p^[m] (h x) = h (r^[m] x) := by
+  induction m with
+  | zero => rfl
+  | succ m ih => rw [Function.iterate_succ_apply', Function.iterate_succ_apply', ih, e]
+
+private theorem iter_step {A : Type*} (p : A → A) (f k : ℕ) (x : A) : p^[f * (k + 1)] x = p^[f * k] (p^[f] x) := by
+  rw [Nat.mul_succ, Function.iterate_add_apply]
+
+private theorem phi_iter_pull {P P' : PAlg l ⥤ Type} (u : P ⟶ P') (n j m : ℕ) (x : MH P' n j) :
+    (phiH P n j)^[m] (pullH u n j x) = pullH u n j ((phiH P' n j)^[m] x) :=
+  iter_semi _ _ (pullH u n j) (phi_pull' u n j) m x
+
+private theorem itE_succ {P : PAlg l ⥤ Type} (F : P ⟶ P) (k : ℕ) : itE F (k + 1) = F ≫ itE F k := by
+  unfold itE
+  rw [pow_succ]
+  rfl
+
+private theorem phi_iter_itE {P : PAlg l ⥤ Type} (F : P ⟶ P) (f n j : ℕ) (x : MH P n j)
+    (hx : (phiH P n j)^[f] x = pullH F n j x) (k : ℕ) :
+    (phiH P n j)^[f * k] x = pullH (itE F k) n j x := by
+  induction k with
+  | zero => exact (pullH_id P n j x).symm
+  | succ k ih =>
+    refine (iter_step (phiH P n j) f k x).trans ((congrArg _ hx).trans ((phi_iter_pull F n j (f * k) x).trans
+      ((congrArg (pullH F n j) ih).trans ?_)))
+    exact (pullH_comp F (itE F k) n j x).symm.trans (congrArg (fun w : P ⟶ P => pullH w n j x) (itE_succ F k).symm)
+
+end UpperTheory.Ru.crystallineComparison
+
+open UpperTheory.Ru.crystallineComparison in
+theorem UpperTheory.Ru.crystallineComparison.siteAnn :
+    UpperTheory.Ru.crystallineComparison.SiteAnn := by
+  intro l _ O _ Y q g Q P ρ F f I _ a t k hT n j x hx
+  refine Eq.trans (Finset.sum_congr rfl fun i _ => ?_) (sumMH l Q (PQ q g) I a (fun i => t i ≫ ρ ≫ itE F (k i)) hT n j x)
+  refine congrArg (a i • ·) ?_
+  refine (congrArg (pullH (t i) n j) ((phi_iter_pull ρ n j (f * k i) x).trans
+    (congrArg (pullH ρ n j) (phi_iter_itE F f n j x hx (k i))))).trans ?_
+  exact ((congrArg (pullH (t i) n j) (pullH_comp ρ (itE F (k i)) n j x).symm).trans
+    (pullH_comp (t i) (ρ ≫ itE F (k i)) n j x).symm)
+end
+end
+
+section
+set_option backward.isDefEq.respectTransparency false
+
+noncomputable section
+
+open CategoryTheory Limits AlgebraicGeometry GroundTheory.PAdicHodge CrystallineSemistableComparison
+
+namespace UpperTheory.Ru.crystallineComparison
+
+open UpperTheory.Gal.crystallineComparison
+
+variable {l : ℕ} [Fact l.Prime]
+
+private theorem normOfPt' : NormOfPt :=
+  normPt_of (sameNormRing_of (normRead_of (normInt_of (normEx_of matRep_of detSplit_of) splitsBC_of
+    (injSplit_of (rankDeg_of splitsField_of) splitsEquiv_of) coeffInt_of liftingProperty) etUnit_of splitsField_of valPts_of)
+    valLift_of ptsProd_of congrRad_of) (baseChart_of (baseSmooth_of smoothClosed_of smoothRed_of)) secChart_of
+    (etAway_of secChart_of etChart_of) genChart_of ptChart_of
+
+private theorem wzSum {P : Type} (q n : ℕ) {I : Fin (n + 1) → Type} [∀ j, Fintype (I j)] (v : ∀ j, I j → P)
+    (h : pts (wEv q) v = pts (wOd q) v) :
+    ∑ x : (Σ j, I j), Finsupp.single (v x.1 x.2) ((-1 : ℤ) ^ (x.1 : ℕ) * ((q ^ ((x.1 : ℕ).choose 2) : ℕ) : ℤ)) = 0 := by
+  classical
+  let Φ : Multiset P →+ (P →₀ ℤ) := (Multiset.sumAddMonoidHom).comp (Multiset.mapAddMonoidHom fun p => Finsupp.single p (1 : ℤ))
+  let G : Fin (n + 1) → (P →₀ ℤ) := fun j => ∑ i, Finsupp.single (v j i) (1 : ℤ)
+  have hG : ∀ j, Φ (Finset.univ.val.map (v j)) = G j := fun j => by
+    change ((Finset.univ.val.map (v j)).map fun p => Finsupp.single p (1 : ℤ)).sum = _
+    rw [Multiset.map_map]
+    rfl
+  have key : ∀ a : Fin (n + 1) → ℕ, Φ (pts a v) = ∑ j, a j • G j := fun a => by
+    simp only [pts, map_sum, map_nsmul, hG]
+  have h0 : ∑ j, wEv q j • G j = ∑ j, wOd q j • G j := by rw [← key, ← key, h]
+  rw [Fintype.sum_sigma]
+  have e : ∀ j : Fin (n + 1), ∑ i, Finsupp.single (v j i) ((-1 : ℤ) ^ (j : ℕ) * ((q ^ ((j : ℕ).choose 2) : ℕ) : ℤ)) =
+      ((wEv q j : ℤ) - (wOd q j : ℤ)) • G j := fun j => by
+    have : (-1 : ℤ) ^ (j : ℕ) * ((q ^ ((j : ℕ).choose 2) : ℕ) : ℤ) = (wEv q j : ℤ) - (wOd q j : ℤ) := by
+      by_cases hj : Even (j : ℕ)
+      · simp [wEv, wOd, hj, hj.neg_one_pow]
+      · simp [wEv, wOd, hj, (Nat.not_even_iff_odd.1 hj).neg_one_pow]
+    rw [this, Finset.smul_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    simp [Finsupp.smul_single]
+  simp only [e, sub_smul, Finset.sum_sub_distrib, natCast_zsmul]
+  rw [h0, sub_self]
+
+private theorem wzPts {J P : Type} [Fintype J] {I : J → Type} [∀ j, Fintype (I j)] (a : J → ℕ) (v : ∀ j, I j → P) :
+    pts a v = Finset.univ.val.map (fun x : (Σ j, Fin (a j) × I j) => v x.1 x.2.2) := by
+  have hm : ∀ {K : Type} [Fintype K] (g : K → P), Finset.univ.val.map g = ∑ x, ({g x} : Multiset P) := fun {K} _ g => by
+    have := Multiset.sum_map_singleton (Finset.univ.val.map g)
+    rw [Multiset.map_map] at this
+    exact this.symm
+  simp only [pts, hm]
+  rw [Fintype.sum_sigma]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  rw [Fintype.sum_prod_type]
+  simp
+
+private theorem frob_pow' (A : PAlg l) (k : ℕ) (a : A.A) : (A.frob ^ k) a = a ^ l ^ k := by
+  induction k with
+  | zero => simp
+  | succ k ih =>
+    rw [pow_succ', RingHom.mul_def, RingHom.comp_apply, ih]
+    change (a ^ l ^ k) ^ l = _
+    rw [← pow_mul, pow_succ]
+
+private theorem wzPhi (A : PAlg l) (m : ℕ) : ∃ φ : Qb A →+* Qb A, ∀ x, φ x = x ^ l ^ m := by
+  refine ⟨Ideal.quotientMap _ (A.frob ^ m) ?_, fun x => ?_⟩
+  · rw [Ideal.span_le, Set.singleton_subset_iff, SetLike.mem_coe, Ideal.mem_comap, frob_pow']
+    exact Ideal.mem_span_singleton.2 (dvd_pow_self _ (pow_ne_zero _ (Fact.out : l.Prime).ne_zero))
+  · obtain ⟨a, rfl⟩ := Ideal.Quotient.mk_surjective x
+    rw [Ideal.quotientMap_mk, frob_pow', map_pow]
+
+private theorem wzPsi (A : PAlg l) (m : ℕ) : ∃ ψ : A.U →+* Qb A, ∀ x : A.W,
+    ψ (A.th x) = Ideal.Quotient.mk _ (x.coeff 0) ^ l ^ m := by
+  obtain ⟨φ, hφ⟩ := wzPhi A m
+  have hxi : (Ideal.Quotient.mk (Ideal.span {A.s (pFlat l)})).comp WittVector.constantCoeff A.xi = 0 := by
+    have e : WittVector.constantCoeff A.xi = - A.s (pFlat l) := by
+      rw [PAlg.xi, PAlg.sW, xi0, map_sub, map_sub, map_natCast, map_natCast, PAlg.natCast_l, WittVector.map_teichmuller]
+      simp [WittVector.constantCoeff_apply]
+    rw [RingHom.comp_apply, e, map_neg, Ideal.Quotient.eq_zero_iff_mem.2 (Ideal.mem_span_singleton_self _), neg_zero]
+  let ψ₀ : A.U →+* Qb A := Ideal.Quotient.lift _ ((Ideal.Quotient.mk _).comp WittVector.constantCoeff) (fun a ha => by
+    obtain ⟨c, rfl⟩ := Ideal.mem_span_singleton'.1 ha
+    rw [map_mul, hxi, mul_zero])
+  refine ⟨φ.comp ψ₀, fun x => ?_⟩
+  rw [RingHom.comp_apply, hφ]
+  rfl
+
+private theorem ptOf_pre {Y : Scheme.{0}} {V : Y.Opens} (hV : IsAffineOpen V) {B C : Type} [CommRing B] [CommRing C]
+    (ρ : B →+* C) (f : Γ(Y, V) →+* B) :
+    Spec.map (CommRingCat.ofHom ρ) ≫ ptOf hV B f = ptOf hV C (ρ.comp f) := by
+  simp only [ptOf, CommRingCat.ofHom_comp, Spec.map_comp, Category.assoc]
+
+private theorem wzFr {O : Type} [CommRing O] {Y : Scheme.{0}} {q : Y ⟶ Spec (CommRingCat.of O)} {g : O →+* Qo l}
+    {f : ℕ} {F : PQ q g ⟶ PQ q g} (hF : IsFr f F) (A : PAlg l) (φ : Qb A →+* Qb A) (hφ : ∀ x, φ x = x ^ l ^ f)
+    {V : Y.Opens} (hV : IsAffineOpen V) (β : Γ(Y, V) →+* Qb A) (P : (PQ q g).obj A) (hP : P.1 = ptOf hV _ β) (k : ℕ) :
+    ((itE F k).app A P).1 = ptOf hV _ ((φ ^ k).comp β) := by
+  induction k with
+  | zero =>
+    simpa [itE, RingHom.one_def] using hP
+  | succ k ih =>
+    have e : itE F (k + 1) = itE F k ≫ F := by
+      simp only [itE, pow_succ']
+      rfl
+    rw [e]
+    change (F.app A ((itE F k).app A P)).1 = _
+    rw [hF A φ hφ, ih, ptOf_pre, pow_succ', RingHom.mul_def, RingHom.comp_assoc]
+
+private theorem wzPhiPow {B : Type} [CommRing B] (φ : B →+* B) (Q : ℕ) (hφ : ∀ x, φ x = x ^ Q) (k : ℕ) (x : B) :
+    (φ ^ k) x = x ^ Q ^ k := by
+  induction k with
+  | zero => simp
+  | succ k ih =>
+    rw [pow_succ', RingHom.mul_def, RingHom.comp_apply, ih, hφ, ← pow_mul, pow_succ]
+
+private theorem wzNontriv (A : PAlg l) (h : ¬ Subsingleton A.A) : Nontrivial (Qb A) := by
+  refine Ideal.Quotient.nontrivial_iff.2 fun ht => h ⟨fun a b => ?_⟩
+  have hz : ∀ x : A.A, x = 0 := fun x => by
+    have := A.compl.toIsHausdorff
+    refine this.haus' x fun n => ?_
+    rw [ht]
+    simp [SModEq.zero, Ideal.top_pow]
+  rw [hz a, hz b]
+
+private theorem wzCore (f n : ℕ) {O : Type} [CommRing O] {Y : Scheme.{0}} (q : Y ⟶ Spec (CommRingCat.of O)) (g : O →+* Qo l)
+    {V : Y.Opens} (hV : IsAffineOpen V) (d : Fin (n + 1) → ℕ) (N : ℕ)
+    (hN : ((∑ j, wEv (l ^ f) j * d j) + 1) ^ (∑ j, wEv (l ^ f) j * d j) ≤ (l ^ f) ^ N)
+    (A : Test l) (β : ∀ j, Fin (d j) → (Γ(Y, V) →+* Qb A.obj)) (φ : Qb A.obj →+* Qb A.obj)
+    (hφ : ∀ x, φ x = x ^ l ^ f) (v : ∀ j, Fin (d j) → (PQ q g).obj A.obj)
+    (hv : ∀ j i, (v j i).1 = ptOf hV _ ((φ ^ (n - j + N)).comp (β j i)))
+    {ι : Type} [Fintype ι] (x : ι → Γ(Y, V))
+    (hx : ∀ (R : Type) [CommRing R] (f₁ f₂ : Γ(Y, V) →+* R),
+      ptOf hV R f₁ ≫ q = ptOf hV R f₂ ≫ q → (∀ i, f₁ (x i) = f₂ (x i)) → f₁ = f₂)
+    (hS : SameNorm (pts (wEv (l ^ f)) fun j i k => β j i (x k) ^ (l ^ f) ^ (n - j))
+      (pts (wOd (l ^ f)) fun j i k => β j i (x k) ^ (l ^ f) ^ (n - j))) :
+    ∃ S : Fam A, IsDec S ∧ ∀ s,
+      pts (wEv (l ^ f)) (fun j i => (PQ q g).map (S.f s).hom (v j i)) =
+        pts (wOd (l ^ f)) (fun j i => (PQ q g).map (S.f s).hom (v j i)) ∨ Subsingleton (S.B s).obj.A := by
+  classical
+  by_cases hsub : Subsingleton A.obj.A
+  · refine ⟨⟨Unit, fun _ => A, fun _ => 𝟙 A⟩, ⟨fun a b hab => congrFun hab (), fun b => ⟨b (), funext fun _ => rfl⟩⟩,
+      fun _ => Or.inr hsub⟩
+  have hnt := wzNontriv A.obj hsub
+  let c : (Σ j, Fin (wEv (l ^ f) j) × Fin (d j)) → ι → Qb A.obj := fun e k => β e.1 e.2.2 (x k) ^ (l ^ f) ^ (n - e.1)
+  let c' : (Σ j, Fin (wOd (l ^ f) j) × Fin (d j)) → ι → Qb A.obj := fun e k => β e.1 e.2.2 (x k) ^ (l ^ f) ^ (n - e.1)
+  have hS' : SameNorm (Finset.univ.val.map c) (Finset.univ.val.map c') := by
+    rw [wzPts, wzPts] at hS
+    exact hS
+  have hcI : Fintype.card (Σ j, Fin (wEv (l ^ f) j) × Fin (d j)) = ∑ j, wEv (l ^ f) j * d j := by
+    simp [Fintype.card_sigma]
+  have hcI' : Fintype.card (Σ j, Fin (wOd (l ^ f) j) × Fin (d j)) = ∑ j, wEv (l ^ f) j * d j := by
+    have := (snBasic_of (Qb A.obj) ι).2.2.1 hnt _ _ hS'
+    simp only [Multiset.card_map, Finset.card_val, Finset.card_univ] at this
+    rw [← this, hcI]
+  have hL : (l ^ f) ^ N = l ^ (f * N) := by rw [pow_mul]
+  obtain ⟨e, he, hm⟩ := UpperTheory.exists_orthogonalIdempotents_matching_of_sameNorm l A.obj A.property (f * N) _ hcI hcI' (by rw [← hL]; exact hN) c c' hS'
+  obtain ⟨B, fσ, hd, h1⟩ := decEx l A _ e he
+  refine ⟨⟨_, B, fσ⟩, hd, fun σ => Or.inl ?_⟩
+  rw [wzPts, wzPts]
+  rw [← Multiset.map_univ_val_equiv σ, Multiset.map_map]
+  refine Multiset.map_congr rfl fun i _ => ?_
+  have hi := hm σ i
+  let f₀ := (fσ σ).hom
+  change (PQ q g).map f₀ (v i.1 i.2.2) = (PQ q g).map f₀ (v (σ i).1 (σ i).2.2)
+  apply Subtype.ext
+  have hpt : ∀ (j) (t), ((PQ q g).map f₀ (v j t)).1 =
+      ptOf hV _ ((PAlg.mapQ f₀ (pFlat l)).comp ((φ ^ (n - j + N)).comp (β j t))) := fun j t => by
+    change Spec.map (CommRingCat.ofHom (PAlg.mapQ f₀ (pFlat l))) ≫ (v j t).1 = _
+    rw [hv, ptOf_pre]
+  rw [hpt, hpt]
+  refine congrArg _ (hx _ _ _ ?_ fun k => ?_)
+  · rw [← hpt, ← hpt, ((PQ q g).map f₀ (v i.1 i.2.2)).2, ((PQ q g).map f₀ (v (σ i).1 (σ i).2.2)).2]
+  · have a : ∀ (j : Fin (n + 1)) t, (φ ^ (n - j + N)) (β j t (x k)) = (β j t (x k) ^ (l ^ f) ^ (n - j)) ^ l ^ (f * N) := fun j t => by
+      rw [wzPhiPow φ (l ^ f) hφ, pow_add, pow_mul, ← hL]
+    have h1' : PAlg.mapQ f₀ (pFlat l) (Ideal.Quotient.mk _ (e σ)) = 1 := by
+      rw [PAlg.mapQ, Ideal.quotientMap_mk]
+      change Ideal.Quotient.mk _ (PAlg.Hom.f (fσ σ).hom (e σ)) = 1
+      rw [h1 σ, map_one]
+    have := congrArg (PAlg.mapQ f₀ (pFlat l)) (hi k)
+    rw [map_mul, map_mul, h1', one_mul, one_mul] at this
+    simp only [RingHom.comp_apply]
+    rw [a, a]
+    exact this
+
+private theorem mapU_sharp' {A B : PAlg l} (f : A ⟶ B) (a : A.A) : PAlg.mapU f (A.sharp a) = B.sharp (PAlg.Hom.f f a) := by
+  change B.th (PAlg.mapW f (WittVector.teichmuller l a)) = B.th (WittVector.teichmuller l (PAlg.Hom.f f a))
+  rw [PAlg.mapW, WittVector.map_teichmuller]
+
+private theorem wzChart {Y : Scheme.{0}} (hY : AffFin Y) {J : Type} [Finite J] (T : J → Corr l Y) (A : Test l)
+    (y : Spec (CommRingCat.of A.obj.U) ⟶ Y) :
+    ∃ S : Fam A, IsDec S ∧ ∀ s, ∃ U V : Y.Opens, IsAffineOpen U ∧ IsAffineOpen V ∧
+      (∀ j, (T j).p ⁻¹ᵁ U ≤ (T j).r ⁻¹ᵁ V) ∧
+      ⊤ ≤ (Spec.map (CommRingCat.ofHom (PAlg.mapU (S.f s).hom)) ≫ y) ⁻¹ᵁ U := by
+  classical
+  have hT := testFacts l A.obj A.property
+  choose U V hU hV hx hUV using charts_of l Y hY J T
+  obtain ⟨I, _, e, a, he, hea⟩ := UpperTheory.exists_orthogonalIdempotents_subordinate_of_etale_sections A.obj.U hT.2.2.2.1 Y (fun x => y ⁻¹' (U x : Set Y))
+    (fun x => (U x).isOpen.preimage y.continuous) (fun p => ⟨y p, hx _⟩)
+  obtain ⟨e₀, he₀, hs⟩ := UpperTheory.exists_orthogonalIdempotents_lift_through_sharp l A I e he
+  obtain ⟨B, f, hd, h1⟩ := decEx l A I e₀ he₀
+  refine ⟨⟨I, B, f⟩, hd, fun s => ⟨U (a s), V (a s), hU _, hV _, hUV _, fun p _ => ?_⟩⟩
+  have h2 : PAlg.mapU (f s).hom (e s) = 1 := by
+    rw [← hs, mapU_sharp']
+    change (B s).obj.sharp (PAlg.Hom.f (f s).hom (e₀ s)) = 1
+    rw [h1 s]
+    simp [PAlg.sharp]
+  have := hea s (PrimeSpectrum.comap (PAlg.mapU (f s).hom) p) (fun hmem => by
+    have h3 : PAlg.mapU (f s).hom (e s) ∈ p.asIdeal := hmem
+    rw [h2] at h3
+    exact p.2.ne_top ((Ideal.eq_top_iff_one _).2 h3))
+  exact this
+
+private theorem wzNat {C : Type 1} [Category.{0} C] {F G : C ⥤ Type} (u : F ⟶ G) {A B : C} (f : A ⟶ B) (y : F.obj A) :
+    u.app B (F.map f y) = G.map f (u.app A y) := FunctorToTypes.naturality u f y
+
+private theorem wzLocal {O : Type} [CommRing O] (f n : ℕ) {Y : Scheme.{0}} (q : Y ⟶ Spec (CommRingCat.of O)) (hq : Smooth q)
+    (ϖ : O) (T : Fin (n + 1) → Corr l Y) (hr : ∀ j, (T j).r ≫ q = (T j).p ≫ q) (κ : O →+* OC l) (g : O →+* Qo l)
+    (hg : g ϖ = 0) (m : ℕ) (F : PQ q g ⟶ PQ q g) (ρ : PX q κ ⟶ PQ q g) (hF : IsFr f F) (hρ : IsRd m ρ) (D : WDat l T)
+    (N : ℕ) (hN : ((∑ j, wEv (l ^ f) j * (T j).d) + 1) ^ (∑ j, wEv (l ^ f) j * (T j).d) ≤ (l ^ f) ^ N)
+    (A : Test l) (y : (PX (D.π ≫ q) κ).obj A.obj) {U V : Y.Opens} (hU : IsAffineOpen U) (hV : IsAffineOpen V)
+    (h : ∀ j, (T j).p ⁻¹ᵁ U ≤ (T j).r ⁻¹ᵁ V) (hy : ⊤ ≤ (y.1 ≫ D.π) ⁻¹ᵁ U)
+    (hn : NormOn l (l ^ f) n (fn q ϖ) T U V h) :
+    ∃ S : Fam A, IsDec S ∧ ∀ s,
+      ∑ x : (Σ j : Fin (n + 1), Fin (T j).d), Finsupp.single
+        ((pxMap (p := D.π ≫ q) κ (D.s x.1 x.2 ≫ (T x.1).r) (by rw [Category.assoc, hr, ← Category.assoc, D.hs]) ≫
+          ρ ≫ itE F (n - x.1 + N)).app _ ((PX (D.π ≫ q) κ).map (S.f s).hom y))
+        ((-1 : ℤ) ^ (x.1 : ℕ) * (((l ^ f) ^ ((x.1 : ℕ).choose 2) : ℕ) : ℤ)) = 0 ∨ Subsingleton (S.B s).obj.A := by
+  obtain ⟨φ, hφ⟩ := wzPhi A.obj f
+  obtain ⟨ψ, hψ⟩ := wzPsi A.obj m
+  let y' : (PX q κ).obj A.obj := ⟨y.1 ≫ D.π, by rw [Category.assoc]; exact y.2⟩
+  have hc : ∀ x : O, ψ (A.obj.oC (κ x)) = qs A.obj (g x) := by
+    have h1 := (ρ.app A.obj y').2
+    rw [hρ A.obj ψ hψ y', Category.assoc, y'.2, ← Spec.map_comp, ← CommRingCat.ofHom_comp] at h1
+    have h2 := Spec.map_injective h1
+    intro x
+    exact RingHom.congr_fun (CommRingCat.hom_ext_iff.1 h2) x
+  obtain ⟨α, hα, hnorm⟩ := UpperTheory.correspondence_norm_bound_of_affine_opens l q ϖ (l ^ f) n T κ D A y hU hV h hy hn ψ (by rw [hc, hg, map_zero])
+  obtain ⟨k, x, hx⟩ := UpperTheory.exists_finite_sections_determining_ringHom_of_smooth q hq hV
+  let u : ∀ j, Fin (T j).d → (PX (D.π ≫ q) κ ⟶ PQ q g) := fun j i =>
+    pxMap (p := D.π ≫ q) κ (D.s j i ≫ (T j).r) (by rw [Category.assoc, hr, ← Category.assoc, D.hs]) ≫
+          ρ ≫ itE F (n - j + N)
+  have hv : ∀ j i, ((u j i).app A.obj y).1 = ptOf hV _ ((φ ^ (n - j + N)).comp (ψ.comp (α j i))) := fun j i => by
+    let yy : (PX q κ).obj A.obj := (pxMap (p := D.π ≫ q) κ (D.s j i ≫ (T j).r)
+      (by rw [Category.assoc, hr, ← Category.assoc, D.hs])).app A.obj y
+    have e1 : (ρ.app A.obj yy).1 = ptOf hV _ (ψ.comp (α j i)) := by
+      rw [hρ A.obj ψ hψ yy, ← ptOf_pre, ← hα]
+      rfl
+    exact wzFr hF A.obj φ hφ hV (ψ.comp (α j i)) (ρ.app A.obj yy) e1 _
+  obtain ⟨S, hS, hs⟩ := wzCore f n q g hV (fun j => (T j).d) N hN A (fun j i => ψ.comp (α j i)) φ hφ
+    (fun j i => (u j i).app A.obj y) hv x hx (hnorm _ x)
+  refine ⟨S, hS, fun s => (hs s).imp (fun e => ?_) id⟩
+  have nat : ∀ j i, (u j i).app (S.B s).obj ((PX (D.π ≫ q) κ).map (S.f s).hom y) =
+      (PQ q g).map (S.f s).hom ((u j i).app A.obj y) :=
+    fun j i => wzNat (u j i) (S.f s).hom y
+  have e3 := wzSum (l ^ f) n (I := fun j => Fin (T j).d)
+    (fun j i => (PQ q g).map (S.f s).hom ((u j i).app A.obj y)) e
+  refine Eq.trans (Finset.sum_congr rfl fun x _ => ?_) e3
+  exact congrArg (fun w => Finsupp.single w ((-1 : ℤ) ^ (x.1 : ℕ) * (((l ^ f) ^ ((x.1 : ℕ).choose 2) : ℕ) : ℤ))) (nat x.1 x.2)
+
+theorem wZero : UpperTheory.Ru.crystallineComparison.WZero := by
+  intro l _ f n O _ _ _ ϖ hϖ hl0 hlu Y q hq hqc hY hf T hr hpt κ g hg m F ρ hF hρ _ D
+  have hl2 : 2 ≤ l ^ f := by
+    have h2 := (Fact.out : l.Prime).two_le
+    exact h2.trans (Nat.le_self_pow hf.ne' l)
+  refine ⟨((∑ j, wEv (l ^ f) j * (T j).d) + 1) ^ (∑ j, wEv (l ^ f) j * (T j).d), ?_⟩
+  intro A y
+  obtain ⟨S, hS, hch⟩ := wzChart hY T A (y.1 ≫ D.π)
+  choose U V hU hV h hy using hch
+  have hpar := fun s => wzLocal f n q hq ϖ T hr κ g hg m F ρ hF hρ D _ (Nat.lt_pow_self (by omega)).le (S.B s)
+    ((PX (D.π ≫ q) κ).map (S.f s).hom y) (hU s) (hV s) (h s)
+    (by
+      have e : ((PX (D.π ≫ q) κ).map (S.f s).hom y).1 ≫ D.π =
+          Spec.map (CommRingCat.ofHom (PAlg.mapU (S.f s).hom)) ≫ y.1 ≫ D.π := Category.assoc _ _ _
+      rw [e]; exact hy s) (normOfPt' l f n (Fact.out) O ϖ hϖ hl0 hlu Y q hq T hpt _ _ (hU s) (hV s) (h s))
+  choose R hR hz using hpar
+  obtain ⟨Pa, hPa⟩ := partsEx l
+  have hd := (hPa A _).1 (Pa.trans S R ((hPa A S).2 hS) fun s => (hPa _ _).2 (hR s))
+  refine ⟨_, hd, ?_⟩
+  rintro ⟨s, t⟩
+  have e := hz s t
+  have e2 : (PX (D.π ≫ q) κ).map (S.f s ≫ (R s).f t).hom y =
+      (PX (D.π ≫ q) κ).map ((R s).f t).hom ((PX (D.π ≫ q) κ).map (S.f s).hom y) :=
+    FunctorToTypes.map_comp_apply _ _ _ _
+  change (∑ i, _) = 0 ∨ _
+  simp only [e2]
+  exact e
+
+end UpperTheory.Ru.crystallineComparison
+end
+end
+
+section
 set_option synthInstance.maxHeartbeats 200000
 set_option backward.isDefEq.respectTransparency false
 
@@ -207,3 +776,5 @@ theorem UpperTheory.Ru.crystallineComparison.top : UpperTheory.Ru.crystallineCom
   have hκ : Fintype.card (∀ i, Equiv.Perm (Fin (T i).d)) * l ^ (a + f * (n + N0) * u) * l ^ b ≠ 0 :=
     mul_ne_zero (mul_ne_zero Fintype.card_ne_zero (pow_ne_zero _ (Fact.out : l.Prime).ne_zero)) (pow_ne_zero _ (Fact.out : l.Prime).ne_zero)
   exact UpperTheory.crystalline_expansion_relation_of_scaled_endomorphisms B M j f n (N0 + N1) r s _ hκ A v c w σ hw1 h0
+end
+end

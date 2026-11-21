@@ -46,11 +46,5 @@ theorem fock_smul_right (c : R) (f g : MvPolynomial τ R) :
 
 end
 
-theorem existsSesqForm : FockSesq := by
-  intro R τ _ _
-  exact ⟨LinearMap.mk₂'ₛₗ (RingHom.id R) (starRingEnd R) (fun f g => fock f g)
-    (fun f f' g => fock_add_left f f' g) (fun c f g => by rw [fock_smul_left]; rfl)
-    (fun f g g' => fock_add_right f g g') (fun c f g => by rw [fock_smul_right]; rfl),
-    fun f g => rfl⟩
 
 end Formalism.E

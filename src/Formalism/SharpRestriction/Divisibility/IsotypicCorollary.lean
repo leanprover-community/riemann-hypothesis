@@ -26,7 +26,6 @@ def GoodPartRankSmallLevel (C : NChoice D) : Prop :=
 
 def Stmt : Prop := TypeMultiplicityNumbers D ∧ IsotypicPartsInternal D ∧ ∀ C : NChoice D, GoodPartRankSmallLevel D C
 
-theorem goodPartRank_of_corollary (h : Stmt D) (C : NChoice D) : ThetaNormsAndLinks.EqualGoodMultiplicities D C := h.2.2 C
 
 end TypeMultiplicityNumbers₂
 

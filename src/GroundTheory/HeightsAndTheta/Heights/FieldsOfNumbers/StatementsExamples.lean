@@ -131,9 +131,6 @@ theorem contractPrime_bot {K K' : Type*} {F : Type*} [Field F] (j : K ↪ K') (�
     contractPrime j (⊥ : Ideal (MRing ι' F)) = ⊥ :=
   Ideal.comap_bot_of_injective _ (rename_injective _ (blockIncl_injective j ι'))
 
-theorem addBlockPrime_bot {K : Type*} {F : Type*} [Field F] (ι : K → Type) (N : ℕ) :
-    addBlockPrime N (⊥ : Ideal (MRing ι F)) = ⊥ :=
-  Ideal.map_bot
 
 theorem isMultiHomogIdeal_bot_projectiveSpace (N : ℕ) :
     IsMultiHomogIdeal (⊥ : Ideal (MRing (ProjIdx N) ℚ)) :=
@@ -255,59 +252,7 @@ theorem ProductWithProjectiveSpace.hypotheses_example :
       relDim (⊥ : Ideal (MRing (ProjIdx 0) ℚ)) = (0 : ℕ) ∧ 0 + 1 = 0 + 1 :=
   ⟨isMultiProjPrime_bot, relDim_projectiveSpace 0, rfl⟩
 
-theorem eq_monomial_of_isMultiHomog_point {F : Type*} [Field F] (f : MRing (ProjIdx 0) F)
-    (b : Unit → ℕ) (hf : IsMultiHomog f b) :
-    f = monomial (Finsupp.single ⟨(), 0⟩ (b ())) (coeff (Finsupp.single ⟨(), 0⟩ (b ())) f) := by
-  ext d
-  rw [coeff_monomial]
-  split_ifs with h
-  · rw [h]
-  · by_contra hne
-    have hw := hf hne
-    have hd : d = Finsupp.single ⟨(), 0⟩ (b ()) := by
-      ext i
-      obtain ⟨⟨⟩, i⟩ := i
-      have hi : i = 0 := Fin.fin_one_eq_zero i
-      subst hi
-      rw [Finsupp.single_eq_same, ← congrFun hw (), weight_projIdx,
-        Fintype.sum_eq_single ⟨(), 0⟩]
-      rintro ⟨⟨⟩, j⟩ hj
-      exact absurd (by rw [Fin.fin_one_eq_zero j]) hj
-    exact h hd.symm
 
-theorem resDeg_point (F : Type*) [Field F] : resDeg (⊥ : Ideal (MRing (ProjIdx 0) F)) = 1 := by
-  unfold resDeg
-  rw [dif_pos Ideal.isPrime_bot]
-  have hle : homFracDegZero (⊥ : Ideal (MRing (ProjIdx 0) F)) = ⊥ := by
-    refine le_antisymm ?_ bot_le
-    unfold homFracDegZero
-    rw [IntermediateField.adjoin_le_iff]
-    rintro x ⟨b, f, g, hf, hg, hgP, rfl⟩
-    rw [SetLike.mem_coe, IntermediateField.mem_bot]
-    have ef := eq_monomial_of_isMultiHomog_point f b hf
-    have eg := eq_monomial_of_isMultiHomog_point g b hg
-    rw [← C_mul_X_pow_eq_monomial] at ef eg
-    generalize coeff (Finsupp.single ⟨(), 0⟩ (b ())) f = a at ef
-    generalize coeff (Finsupp.single ⟨(), 0⟩ (b ())) g = c at eg
-    generalize b () = n at ef eg
-    set v : (Σ _ : Unit, ProjIdx 0 ()) := ⟨(), 0⟩
-    have hc : c ≠ 0 := by
-      rintro rfl
-      apply hgP
-      rw [eg, C_0, zero_mul]
-      exact Ideal.zero_mem _
-    have hY : algebraMap (MRing (ProjIdx 0) F ⧸ (⊥ : Ideal (MRing (ProjIdx 0) F)))
-        (FractionRing (MRing (ProjIdx 0) F ⧸ (⊥ : Ideal (MRing (ProjIdx 0) F))))
-        (Ideal.Quotient.mk _ (X v ^ n)) ≠ 0 := by
-      rw [Ne, map_eq_zero_iff _ (IsFractionRing.injective _ _), Ideal.Quotient.eq_zero_iff_mem,
-        Ideal.mem_bot]
-      exact pow_ne_zero _ (X_ne_zero _)
-    refine ⟨a / c, ?_⟩
-    rw [ef, eg, map_mul, map_mul, map_mul, map_mul, ← MvPolynomial.algebraMap_eq,
-      Ideal.Quotient.mk_algebraMap, Ideal.Quotient.mk_algebraMap,
-      ← IsScalarTower.algebraMap_apply, ← IsScalarTower.algebraMap_apply,
-      mul_div_mul_right _ _ hY, map_div₀]
-  rw [hle, IntermediateField.finrank_bot]
 
 end
 

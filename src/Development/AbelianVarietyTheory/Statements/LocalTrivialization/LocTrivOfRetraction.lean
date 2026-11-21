@@ -196,18 +196,6 @@ example (h : LocTrivSt) (A : Over S) [GrpObj A] (hA : IsAbelianScheme A) : Mono 
   (h S X _ A _ _ (TQ.prod X A hA).i_hom (TQ.prod X A hA).q_affine
     ((TQ.prod X A hA).locTriv_of_retraction (fst _ _) (lift_fst _ _))).1
 
-theorem TQ.locTriv_conclusion {G : Over S} [GrpObj G] (Q : TQ G X) :
-    Mono Q.i ∧ Flat Q.q.left ∧ Surjective Q.q.left ∧ (Smooth G.hom → Smooth Q.B.hom) ∧
-      ∀ (Z : Over S) (g g' : Z ⟶ G), g ≫ Q.q = g' ≫ Q.q ↔ ∃ t : Z ⟶ splitTorus S X, g' = (t ≫ Q.i) * g := by
-  have := Q.q_hom
-  refine ⟨⟨fun a b e => Q.isKernel.hom_ext e (toUnit_unique _ _)⟩, Q.q_flat, Q.q_surj, fun _ => Q.isAb.smooth,
-    fun Z g g' => ⟨fun e => ?_, ?_⟩⟩
-  · have w : (g' * g⁻¹) ≫ Q.q = toUnit Z ≫ η[Q.B] := by
-      rw [MonObj.mul_comp, GrpObj.inv_comp, e, mul_inv_cancel]
-      rfl
-    exact ⟨Q.isKernel.lift _ _ w, by rw [Q.isKernel.lift_fst, inv_mul_cancel_right]⟩
-  · rintro ⟨t, rfl⟩
-    exact (Q.act_comp t g).symm
 
 example (h : LevelTQSt) : Nonempty (TQ (splitTorus (Spec (CommRingCat.of (DualNumber ℚ))) ℤ) ℤ) :=
   (h (DualNumber ℚ) _ span_eps_nilpotent.1 ℤ (splitTorus _ ℤ) (splitTorus _ ℤ) _

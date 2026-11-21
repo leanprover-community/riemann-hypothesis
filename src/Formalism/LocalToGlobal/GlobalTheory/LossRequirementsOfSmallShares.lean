@@ -1,7 +1,41 @@
-import Formalism.LocalToGlobal.GlobalTheory.SmallShareWeightExists
+import Formalism.SharpRestriction.GlobalSchurBounds.LossesSmallShares
+import Formalism.SizeWindowBrackets.PrimeClassLossHypothesesSatisfiable
 import Formalism.SharpRestriction.GlobalSchurBounds.WeightVectorSmallSharesEight
 import Formalism.SizeWindowBrackets.ChainSlopeWindows.DiscriminantSettingSatisfied
 
+section
+noncomputable section
+
+namespace Formalism.L2.GlobalTheoryTheory.Loss7
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.LFunctionChainParameters.DeficitSplitLemmas Formalism.LFunctionChainParameters.PrimeWindowSizeBounds Formalism.LFunctionChainParameters.SmallOrderPrimeLosses Formalism.L2.GlobalTheoryTheory.Loss
+
+def LossSettingFamily : Prop :=
+  ∀ (D : D7) (L : SizeData₂ D) (X : G.Inst D L) (K : G.Consts) (Cr C bo : ℝ) (P : Par),
+    PtH X K Cr → LinkG_at X K C bo → ParTie P L K C bo Cr → 0 ≤ bo → 0 ≤ L.LaG → L.sc.p0 D.R.k ≤ L.sc.X' →
+    D.host.TT.Nonempty → ChBadp_at X → ChW_at X K →
+    PrimeClassLossHypotheses P (PsAt L) (sAt L K) (largeOrderResiduePrimes L) (SizeData₂.lifts D) (TTv D) (badAt X)
+      (fun p => G.Sig X K (G.aL L) (G.bL L) p) (fun (_ : Unit) p => G.ioP X K (G.aL L) (G.bL L) p)
+      (fun _ => ldAt X K C bo)
+
+def ThickDensitySizeWindowsForAllFamilies : Prop :=
+  ∀ (eps : ℝ) (Fm : FamP eps), ChosenTT Fm → ChosenBadp Fm → LinkG Fm → Lnk.LossesSmallShares Fm
+
+def StLoss7W : Prop :=
+  ∀ (eps : ℝ) (Fm : FamP eps), ChosenTT Fm → ChosenBadp Fm → ChosenW Fm → LinkG Fm → Lnk.LossF Fm 0
+
+def SmallShareWeightExists : Prop :=
+  ∀ (eps : ℝ) (Fm : FamP eps), LinkG Fm → ChosenW Fm
+
+def StOld7 : Prop :=
+  ∀ (eps : ℝ) (Fm : FamP eps) (C0 CH : ℝ), ChosenE Fm C0 CH → LinkG Fm → Fm.CoverAll → WeightVectorSmallSharesSeven Fm C0 CH
+
+end Formalism.L2.GlobalTheoryTheory.Loss7
+
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.L2.GlobalTheoryTheory.Loss7
@@ -163,7 +197,6 @@ end Family
 
 theorem stLoss7 : ThickDensitySizeWindowsForAllFamilies := fun _ Fm h1 h2 h3 => losses_of_small_share_weight Fm h1 h2 h3
 
-theorem stLoss7W : StLoss7W := fun _ Fm h1 h2 hW h3 => Lnk.lossF_of_7W Fm (losses_of_small_share_weight Fm h1 h2 h3) hW
 
 section Size
 
@@ -340,12 +373,11 @@ theorem loss_requirements_of_small_shares (C0 CH : ℝ) (h : ChosenE Fm C0 CH) (
 
 end Family
 
-theorem small_share_weight_exists : SmallShareWeightExists := fun _ Fm hG => chosenW_of Fm hG
 
-theorem stOld7 : StOld7 := fun _ Fm C0 CH h hG hc => loss_requirements_of_local_input Fm C0 CH h hG hc
 
 example {eps : ℝ} (Fm : FamP eps) : ChosenTT Fm → ChosenBadp Fm → LinkG Fm → Lnk.LossesSmallShares Fm := stLoss7 eps Fm
 
 end Formalism.L2.GlobalTheoryTheory.Loss7
 
+end
 end

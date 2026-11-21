@@ -25,9 +25,6 @@ structure FieldOK0 (D : D7) (p : ℕ) : Prop where
   bad : 0 ∉ D.host.levelPrimes
   split : D.host.cls p = PrimeClass.splitK
 
-theorem fieldOK_iff (D : D7) (p : ℕ) : FieldOK D p ↔ FieldOK0 D p ∧ Formalism.L2.Theta.VolTieG D :=
-  ⟨fun h => ⟨⟨h.own, h.full, h.zetaM, h.zetaP, h.curve, h.kpsi, h.bad, h.split⟩, h.vol⟩,
-    fun ⟨h, v⟩ => ⟨h.own, h.full, h.zetaM, h.zetaP, h.curve, h.kpsi, v, h.bad, h.split⟩⟩
 
 def FieldSmall (D : D7) (large₂ : SizeData₂ D) : Prop :=
   letI : NumberField (FO D) := NumberField.mk

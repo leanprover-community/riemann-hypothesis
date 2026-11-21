@@ -41,13 +41,6 @@ theorem exists_normal (q : S.D b) : ∃ g : S.G b, S.NormalFor b f (g • q) := 
   · rintro ⟨g', rfl⟩
     exact ⟨g' * g, by rw [mul_smul]⟩
 
-theorem normal_eq {b' : S.β} {f' : S.D b' → A} {q : S.D b} {q' : S.D b'} (h : S.NormalFor b f q) (h' : S.NormalFor b' f' q')
-    (e : ∀ r, (∃ g : S.G b, r = f (g • q)) ↔ ∃ g : S.G b', r = f' (g • q')) : f q = f' q' := by
-  unfold GStep.NormalFor at h h'
-  rw [h, h']
-  congr 1
-  funext r
-  exact propext (e r)
 
 end Normal
 
@@ -62,23 +55,7 @@ theorem exists_pref (u : B.Word) (a : I.ι) (j : ℕ) (hj : j ≠ B.R.m) (b : (I
   · obtain ⟨g, hg⟩ := exists_normal (I.stp0 u a j) b (fun q' : (I.stp0 u a j).D b => cosetIn q') q
     exact ⟨g, fun h => absurd h h0, fun _ => hg, fun h => absurd h hj⟩
 
-theorem pref_rep (u : B.Word) (a : I.ι) (j : ℕ) (hj : j ≠ B.R.m) (c : (I.stp u a j).Cl) : I.pref u a j c.1 ((I.stp u a j).rep c) := by
-  obtain ⟨b, c⟩ := c
-  obtain ⟨q, rfl⟩ := Quotient.exists_rep c
-  obtain ⟨g, hg⟩ := exists_pref u a j hj b q
-  have hp := @pref_prefRep _ _ _ ((I.stp0 u a j).actD b) (I.pref u a j b) _ hg
-  have e : (I.stp0 u a j).rp b = (I.stp0 u a j).rp b → Quotient.mk (@MulAction.orbitRel _ _ _ ((I.stp0 u a j).actD b))
-      ((I.stp0 u a j).act b g q) = Quotient.mk _ q := fun _ => Quotient.sound ⟨g, rfl⟩
-  rw [e rfl] at hp
-  exact hp
 
-theorem cosetIn_empty (u : B.Word) (a : I.ι) (j : ℕ) (hj : j + 1 ≠ B.R.m) (q : PtAt B.R I.sel (I.tup a) (I.cst a) u j) (P) :
-    cosetIn q P = ∅ := by
-  have h : q.1.2 ∈ (ysAt B.R I.sel (I.tup a) (I.cst a) j).ys q.1.1.deco.1.N := q.2
-  rw [ysAt_ys_of_ne I.sel (I.tup a) (I.cst a) hj] at h
-  have h' : q.1.2 = ∅ := h
-  ext z
-  simp [cosetIn, h']
 
 set_option maxHeartbeats 1600000 in
 
@@ -258,60 +235,7 @@ theorem exists_pre : ∃ (P : Pre) (X : PreX P) (f : Top.Fr P), StagesInhab.HasL
     split_ifs <;> first | rfl | omega
   exact gen _ _ a b hab
 
-theorem exists_ok_pins : ∃ (B : Base) (X : PreX B.toPre) (I : TC B X), StagesInhab.HasLetters B.toPre ∧ I.Ok ∧ TC.Pins B X ∧
-    I.muStar ≠ I.mu0 := by
-  classical
-  obtain ⟨P, X, f, hL, hX, hsp, hdu, p1, p2⟩ := exists_pre
-  obtain ⟨M, hM, -, -, m1, m2, -⟩ := FrameVal.frame_values P.R P.host _ f fun j τ => (P.hc τ).e_int j
-  obtain ⟨α, hα, gα⟩ := @DatHecke.exists_gen M hM
-  choose r hr using fun q : ℕ => IsAlgClosed.exists_pow_nat_eq (q : ℂ) (n := 2) two_pos
-  obtain ⟨Y, hY, gY⟩ := InEx.exists_holds (2 * P.R.m) ({1, f.del, f.del'} : Set (Formalism.L2.Host.HChar P.host.E))
-  obtain ⟨B, rfl, -, -, h2⟩ := BaseExt.exists_base P ∅ ∅
-    (insert α (Y ∪ Finset.univ.image fun k => r (P.host.g k))) (by simp) (by simp)
-    (fun z hz => by
-      rcases Finset.mem_insert.1 hz with rfl | hz
-      · exact hα
-      rcases Finset.mem_union.1 hz with h | h
-      · exact hY z h
-      · obtain ⟨k, -, rfl⟩ := Finset.mem_image.1 h
-        exact IsAlgebraic.of_pow two_pos (by rw [hr]; exact isAlgebraic_natCast _))
-  have i1 := gα B.LL B.embLL (h2 _ (Finset.mem_insert_self _ _))
-  have hf : ({1, f.del, f.del'} : Set (Formalism.L2.Host.HChar B.host.E)).Finite := Set.toFinite _
-  have ht : ∀ ξ ∈ ({1, f.del, f.del'} : Set (Formalism.L2.Host.HChar B.host.E)), Chr.IsTwist B.host (InEx.avoid B.toPre) ξ :=
-    fun ξ hξ => InEx.isTwist_of_mem_set B f (Top.TwDat.untw B ∅) ξ (.inl hξ)
-  obtain ⟨sel, hsel⟩ := Formalism.L2.Col.exists_sel B.fields
-  obtain ⟨J, hJ⟩ := exists_ambIn_ok B.host
-  obtain ⟨I, a1, -⟩ := InEx.exists_colIn B X f hX hsp hdu (InEx.avoid B.toPre)
-    (fun u => ⟨Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (Exists.intro u rfl))))), B.T_ne_pde u⟩)
-    (fun i => ⟨Or.inr (Or.inl (Exists.intro i rfl)), (B.host.pde_ne_g i).1.symm, (B.host.pde_ne_g i).2.symm⟩)
-    (fun _ hp h => InEx.mem_avoid_of_dvd _ hp h)
-    _ hf (.inl rfl) (.inr (.inl rfl)) (.inr (.inr rfl)) ht
-    (fun ξ hξ => gY hf B.LL B.embLL
-      (fun z hz => h2 z (Finset.mem_insert_of_mem (Finset.mem_union_left _ hz))) ξ hξ (ht ξ hξ).1)
-    (fun j => InEx.valuesIn_of (m1 j) _ i1) (InEx.valuesIn_of m2 _ i1) (fun i => by
-      obtain ⟨s, hs⟩ := h2 _ (Finset.mem_insert_of_mem
-        (Finset.mem_union_right _ (Finset.mem_image_of_mem _ (Finset.mem_univ i))))
-      exact ⟨s, B.embLL.injective (by rw [map_pow, hs, hr, map_natCast])⟩) sel hsel J hJ
-  refine ⟨B, X, I, hL, a1, ⟨p1, p2⟩, fun e => ?_⟩
-  obtain ⟨w, hw, hw'⟩ := Ideal.exists_le_maximal (Ideal.span {(B.host.pde : 𝓞 B.host.E)}) (by
-    rw [Ne, Ideal.span_singleton_eq_top]
-    intro hu
-    have h1 := hu.map (Algebra.norm ℤ)
-    rw [← map_natCast (algebraMap ℤ (𝓞 B.host.E)), Algebra.norm_algebraMap, isUnit_pow_iff Module.finrank_pos.ne', Int.isUnit_iff_natAbs_eq] at h1
-    exact B.host.pde_prime.ne_one (by simpa using h1))
-  have hm : (B.host.pde : 𝓞 B.host.E) ∈ w := hw' (Ideal.mem_span_singleton_self _)
-  have hb : w ≠ ⊥ := by
-    rintro rfl
-    exact B.host.pde_prime.ne_zero (by simpa using hm)
-  have h1 : I.C.del = 1 := by rw [← a1.xi_star, e, a1.trueColumnChoices_heckeChar_reference_eq_one]
-  have h3 := (I.C.isDel.ine ⟨w, hw.isPrime, hb⟩ hm 1).1 fun x _ => by rw [h1]; simp
-  omega
 
-theorem exists_all : ∃ (B : Base) (X : PreX B.toPre) (I : TC B X) (l : I.Laws) (Z : TC.Later B (I.cols l)),
-    I.Ok ∧ TC.Pins B X ∧ I.Law0 l ∧ I.muStar ≠ I.mu0 ∧ Nonempty (TwForms (I.rec7 l Z)) := by
-  obtain ⟨B, X, I, hL, h, hP, hs⟩ := exists_ok_pins
-  obtain ⟨Z⟩ := later (laws h) hL
-  exact ⟨B, X, I, laws h, Z, h, hP, law0 h _, hs, ⟨I.tw _ (law0 h _) Z⟩⟩
 
 end GlobalTheory.Mem.Col2.TrueColsTest
 

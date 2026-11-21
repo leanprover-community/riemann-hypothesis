@@ -5,10 +5,219 @@ import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LevelSectionsE
 import Development.AutomorphicSpectrum.Definitions.MetricPeriods.ClopenCondOnto
 import Development.AbelianVarietyTheory.Definitions.Uniformization.PointEqOfSubsingleton
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.BlowupProjections.BlowupProjStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DetMulMapDetEqOneOfSesq
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PowEqOneOfIsIntegralOfMulComplexConjEqOne
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.RootMulComplexConjEqOne
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DetOneAddCompCommField
+
+section
+open NumberField
+
+namespace GlobalTheory.CompanionTheory.Ar.Flat
+
+theorem det_mul_map_det_eq_one_of_sesq {E : Type*} [Field E] {V : Type*} [AddCommGroup V]
+    [Module E V] [FiniteDimensional E V] (σ : E →+* E) (H : V →ₗ[E] V →ₛₗ[σ] E)
+    (hH : ∀ x, (∀ y, H x y = 0) → x = 0) (g : V →ₗ[E] V)
+    (hg : ∀ x y, H (g x) (g y) = H x y) :
+    LinearMap.det g * σ (LinearMap.det g) = 1 := by
+  classical
+  let b := Module.finBasis E V
+  let S : Matrix _ _ E := Matrix.of fun i j => H (b i) (b j)
+  let G := LinearMap.toMatrix b b g
+  have hgb : ∀ j, g (b j) = ∑ i, G i j • b i := by
+    intro j
+    simp only [G, LinearMap.toMatrix_apply]
+    exact (b.sum_repr (g (b j))).symm
+  have hS : G.transpose * S * σ.mapMatrix G = S := by
+    ext i j
+    have h1 : S i j = H (g (b i)) (g (b j)) := (hg _ _).symm
+    rw [h1, hgb, hgb]
+    simp only [Matrix.mul_apply, Matrix.transpose_apply, RingHom.mapMatrix_apply,
+      Matrix.map_apply, map_sum, LinearMap.sum_apply, map_smul, LinearMap.smul_apply,
+      LinearMap.map_smulₛₗ, smul_eq_mul, S, Matrix.of_apply]
+    refine Finset.sum_congr rfl fun l _ => ?_
+    rw [mul_comm]
+  have hdet : S.det ≠ 0 := by
+    intro h0
+    obtain ⟨v, hv, hvS⟩ := Matrix.exists_vecMul_eq_zero_iff.mpr h0
+    apply hv
+    have hx : ∑ i, v i • b i = 0 := by
+      apply hH
+      have : H (∑ i, v i • b i) = 0 := by
+        apply b.ext
+        intro j
+        have := congrFun hvS j
+        simpa [Matrix.vecMul, dotProduct, S, map_sum, LinearMap.sum_apply] using this
+      intro y
+      rw [this]; rfl
+    funext i
+    exact Fintype.linearIndependent_iff.mp b.linearIndependent v hx i
+  have hd := congrArg Matrix.det hS
+  rw [Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, ← RingHom.map_det] at hd
+  have hG : G.det = LinearMap.det g := LinearMap.det_toMatrix b g
+  rw [hG] at hd
+  apply mul_left_cancel₀ hdet
+  linear_combination hd
+
+
+end GlobalTheory.CompanionTheory.Ar.Flat
+end
+
+section
+open NumberField
+
+namespace GlobalTheory.CompanionTheory.Ar.Flat
+
+theorem pow_eq_one_of_isIntegral_of_mul_complexConj_eq_one :
+    ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (u : E), IsIntegral ℤ u →
+      u * IsCMField.complexConj E u = 1 → ∃ n : ℕ, 0 < n ∧ u ^ n = 1 := by
+  intro E _ _ _ u hu h
+  have hn : ∀ s : E →+* ℂ, ‖s u‖ = 1 := by
+    intro s
+    have h1 : s u * (starRingEnd ℂ) (s u) = 1 := by
+      rw [← IsCMField.complexEmbedding_complexConj, ← map_mul, h, map_one]
+    have h2 : ‖s u‖ ^ 2 = 1 := by
+      have := congrArg norm h1
+      rw [norm_mul, Complex.norm_conj, norm_one] at this
+      rw [sq, this]
+    exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) two_ne_zero).1 h2
+  obtain ⟨n, hn0, hn1⟩ := NumberField.Embeddings.pow_eq_one_of_norm_eq_one E ℂ hu hn
+  exact ⟨n, hn0, hn1⟩
+
+end GlobalTheory.CompanionTheory.Ar.Flat
+end
+
+section
+open NumberField
+
+namespace GlobalTheory.CompanionTheory.Ar.Flat
+
+theorem root_of_unity_eq_one_of_dvd_sub_one :
+    ∀ (E : Type) [Field E] [NumberField E] (u : 𝓞 E) (n M : ℕ),
+      0 < n → u ^ n = 1 → 3 ≤ M → (M : 𝓞 E) ∣ u - 1 → u = 1 := by
+  intro E _ _ u n M hn hu hM ⟨x, hx⟩
+  have hlt : ∀ φ : E →+* ℂ, ‖φ (x : E)‖ < 1 := by
+    intro φ
+    have h1 : (φ (u : E)) ^ n = 1 := by
+      have := congrArg (fun y : 𝓞 E => φ (y : E)) hu
+      simpa using this
+    have h2 : ‖φ (u : E)‖ = 1 := by
+      have := congrArg norm h1
+      rw [norm_pow, norm_one] at this
+      exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) hn.ne').1 this
+    have h3 : φ (u : E) - 1 = (M : ℂ) * φ (x : E) := by
+      have := congrArg (fun y : 𝓞 E => φ (y : E)) hx
+      simpa using this
+    have h4 : (M : ℝ) * ‖φ (x : E)‖ ≤ 2 := by
+      have h5 := norm_sub_le (φ (u : E)) 1
+      rw [h3, norm_mul, h2, norm_one, Complex.norm_natCast] at h5
+      linarith
+    have h6 : (3 : ℝ) ≤ M := by exact_mod_cast hM
+    nlinarith [norm_nonneg (φ (x : E))]
+  by_contra hne
+  have hx0 : (x : E) ≠ 0 := by
+    intro h0
+    have : x = 0 := by exact_mod_cast h0
+    rw [this, mul_zero, sub_eq_zero] at hx
+    exact hne hx
+  obtain ⟨k, hk, hpow⟩ := NumberField.Embeddings.pow_eq_one_of_norm_le_one E ℂ hx0
+    (RingOfIntegers.isIntegral_coe x) (fun φ => (hlt φ).le)
+  obtain ⟨φ⟩ : Nonempty (E →+* ℂ) := inferInstance
+  have h7 := congrArg (fun y : E => ‖φ y‖) hpow
+  simp only [map_pow, norm_pow, map_one, norm_one] at h7
+  have h8 := (pow_eq_one_iff_of_nonneg (norm_nonneg _) hk.ne').1 h7
+  exact (hlt φ).ne h8
+
+end GlobalTheory.CompanionTheory.Ar.Flat
+end
+
+section
+open NumberField
+
+namespace GlobalTheory.CompanionTheory.Ar.Flat
+
+theorem root_mul_complexConj_eq_one {E : Type} [Field E] [NumberField E] [IsCMField E]
+    (x : E) (n : ℕ) (hn : 0 < n) (hx : x ^ n = 1) : x * IsCMField.complexConj E x = 1 := by
+  obtain ⟨φ⟩ : Nonempty (E →+* ℂ) := inferInstance
+  apply φ.injective
+  have h1 : ‖φ x‖ = 1 := by
+    have h : ‖φ x‖ ^ n = 1 := by rw [← norm_pow, ← map_pow, hx, map_one, norm_one]
+    exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) hn.ne').1 h
+  rw [map_mul, IsCMField.complexEmbedding_complexConj, map_one, Complex.mul_conj,
+    Complex.normSq_eq_norm_sq, h1]
+  simp
+
+theorem root_eq_one_of_halfLevel : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (bar : 𝓞 E ≃+* 𝓞 E), (∀ a : 𝓞 E, ((bar a : 𝓞 E) : E) = IsCMField.complexConj E (a : E)) → ∀ (I : Ideal (𝓞 E)) (M : ℕ), 3 ≤ M → I * I.map (bar : 𝓞 E →+* 𝓞 E) = Ideal.span {(M : 𝓞 E)} → I ⊔ I.map (bar : 𝓞 E →+* 𝓞 E) = ⊤ → ∀ (u : 𝓞 E) (n : ℕ), 0 < n → u ^ n = 1 → u - 1 ∈ I → u = 1 := by
+  intro E _ _ _ bar hbar I M hM hI hco u n hn hu h1
+  have hub : u * bar u = 1 := by
+    apply RingOfIntegers.ext
+    have hx : (u : E) ^ n = 1 := by
+      have := congrArg (fun a : 𝓞 E => (a : E)) hu
+      simpa using this
+    have := root_mul_complexConj_eq_one (u : E) n hn hx
+    rw [← hbar] at this
+    simpa using this
+  have h2 : bar u - 1 ∈ I.map (bar : 𝓞 E →+* 𝓞 E) := by
+    have := Ideal.mem_map_of_mem (bar : 𝓞 E →+* 𝓞 E) h1
+    simpa using this
+  have h3 : u - 1 ∈ I.map (bar : 𝓞 E →+* 𝓞 E) := by
+    have e : u - 1 = (-u) * (bar u - 1) := by linear_combination hub
+    rw [e]
+    exact Ideal.mul_mem_left _ _ h2
+  have h4 : u - 1 ∈ Ideal.span {(M : 𝓞 E)} := by
+    rw [← hI, Ideal.mul_eq_inf_of_isCoprime (Ideal.isCoprime_iff_sup_eq.2 hco)]
+    exact ⟨h1, h3⟩
+  exact GlobalTheory.CompanionTheory.Ar.Flat.root_of_unity_eq_one_of_dvd_sub_one E u n M hn hu hM (Ideal.mem_span_singleton.1 h4)
+
+end GlobalTheory.CompanionTheory.Ar.Flat
+end
+
+section
+open NumberField TensorProduct
+
+namespace GlobalTheory.CompanionTheory.Ar.Flat
+
+theorem det_one_add_comp_comm_field {K V W : Type*} [Field K] [AddCommGroup V] [Module K V]
+    [AddCommGroup W] [Module K W] [Module.Finite K V] [Module.Finite K W]
+    (A : V →ₗ[K] W) (B : W →ₗ[K] V) :
+    LinearMap.det (1 + A ∘ₗ B) = LinearMap.det (1 + B ∘ₗ A) := by
+  classical
+  let bV := Module.finBasis K V
+  let bW := Module.finBasis K W
+  rw [← LinearMap.det_toMatrix bW, ← LinearMap.det_toMatrix bV, map_add, map_add,
+    LinearMap.toMatrix_comp bW bV bW, LinearMap.toMatrix_comp bV bW bV,
+    LinearMap.toMatrix_one, LinearMap.toMatrix_one, Matrix.det_one_add_mul_comm]
+
+theorem exists_det_congr_one : ∀ (E : Type) [Field E] [NumberField E] (La : Type) [AddCommGroup La] [Module (𝓞 E) La] [Module.Finite (𝓞 E) La] [Module.Projective (𝓞 E) La] (I : Ideal (𝓞 E)) (g : La →ₗ[𝓞 E] La), (∀ a, g a - a ∈ I • (⊤ : Submodule (𝓞 E) La)) → ∃ u : 𝓞 E, u - 1 ∈ I ∧ (u : E) = LinearMap.det (g.baseChange E) := by
+  intro E _ _ La _ _ _ _ I g hg
+  classical
+  obtain ⟨n, p, i, -, -, hpi⟩ := Module.Finite.exists_comp_eq_id_of_projective (𝓞 E) La
+  set N : (Fin n → 𝓞 E) →ₗ[𝓞 E] (Fin n → 𝓞 E) := i ∘ₗ ((g - 1) ∘ₗ p) with hN
+  have key : ∀ (x : La), x ∈ I • (⊤ : Submodule (𝓞 E) La) → ∀ k, i x k ∈ I := by
+    intro x hx k
+    refine Submodule.smul_induction_on hx ?_ ?_
+    · intro r hr y _
+      rw [map_smul, Pi.smul_apply, smul_eq_mul]
+      exact I.mul_mem_right _ hr
+    · intro x y hx hy
+      rw [map_add, Pi.add_apply]
+      exact I.add_mem hx hy
+  refine ⟨LinearMap.det (1 + N), ?_, ?_⟩
+  · rw [← Ideal.Quotient.eq, ← LinearMap.det_toMatrix', RingHom.map_det, map_one]
+    have : (Ideal.Quotient.mk I).mapMatrix (LinearMap.toMatrix' (1 + N)) = 1 := by
+      rw [map_add, map_add, LinearMap.toMatrix'_one, map_one, add_eq_left]
+      ext a b
+      simp only [RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.zero_apply,
+        LinearMap.toMatrix'_apply]
+      rw [Ideal.Quotient.eq_zero_iff_mem]
+      exact key _ (hg _) _
+    rw [this, Matrix.det_one]
+  · have h1 : ((LinearMap.det (1 + N) : 𝓞 E) : E) = LinearMap.det ((1 + N).baseChange E) :=
+      (LinearMap.det_baseChange (A := E) (1 + N)).symm
+    rw [h1, LinearMap.baseChange_add, LinearMap.baseChange_one, hN, LinearMap.baseChange_comp,
+      det_one_add_comp_comm_field, ← LinearMap.baseChange_comp, LinearMap.comp_assoc, hpi,
+      LinearMap.comp_id, LinearMap.baseChange_sub, LinearMap.baseChange_one, add_sub_cancel]
+
+end GlobalTheory.CompanionTheory.Ar.Flat
+end
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl GlobalTheory.CompanionTheory.Ar.Flat Filter Topology Metric
 open scoped TensorProduct
@@ -247,3 +456,4 @@ theorem per_det_one : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H 
   simp
 
 end GlobalTheory.CompanionTheory.Ar.Flat
+end

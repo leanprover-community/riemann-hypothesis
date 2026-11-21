@@ -143,11 +143,5 @@ theorem exists_probHaar (P Q : ℕ) (h : P = 0 ∨ Q = 0) : ∃ ν : Measure (Up
   refine ⟨ν, hν, fun m => ⟨fun ⟨h1, h2⟩ => ?_, fun e => e ▸ ⟨hν, hp⟩⟩⟩
   exact Measure.isHaarMeasure_eq_of_isProbabilityMeasure m ν
 
-theorem exists_isMeasDef : ∀ (D : D7) (V : HSp D) (β : GL (Fin V.rank) (Lev.EAf D)) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)) (L : Formalism.L2.DIV.LevDat D.host.E ℂ V.rank), IsFrame β Λ → V.SigOK → (∀ τ, (V.sig (tauE D τ)).1 = 0 ∨ (V.sig (tauE D τ)).2 = 0) → ∃ μ 𝓕, IsMeasDef V (lev D.sp.cm V.gram β L) μ 𝓕 := by
-  intro D V β _ L _ hW hd
-  choose ν hν hg using fun ρ => exists_probHaar _ _ (hd ρ)
-  obtain ⟨μ, hμ⟩ := exists_isMeasLevW D V β L hW (fun _ m => m.IsHaarMeasure ∧ IsProbabilityMeasure m) ν hν hg
-  obtain ⟨𝓕, h𝓕⟩ := GlobalTheory.FundDomDiscrete.exists_fundDom D V μ hμ.1
-  exact ⟨μ, 𝓕, hμ, h𝓕⟩
 
 end GlobalTheory.Mem.DefiniteMeasure

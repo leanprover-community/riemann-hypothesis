@@ -34,12 +34,8 @@ abbrev RunData.full {J : CoreJ D} (r : RunData J) : Full D :=
 
 def RunData.ofFull (T : Full D) : RunData T.J := ⟨T.G, T.nab, T.dδ, T.xi, T.half₂⟩
 
-theorem RunData.full_ofFull (T : Full D) : (RunData.ofFull T).full = T := rfl
 
-theorem RunData.full_J {J : CoreJ D} (r : RunData J) : r.full.J = J := rfl
 
-theorem RunData.exists_full_eq_iff (J : CoreJ D) (T : Full D) : (∃ r : RunData J, r.full = T) ↔ T.J = J :=
-  ⟨by rintro ⟨r, rfl⟩; rfl, by rintro rfl; exact ⟨RunData.ofFull T, rfl⟩⟩
 
 section Cusp
 
@@ -95,18 +91,7 @@ def toFormsEquiv (h : LawsP T.toTop) (fw : FWTie T.J R κ v₀) (i : Fin D.R.m) 
     (Fin n → D.what₂.LL) ≃ₗ[D.what₂.LL] (Fin (R.nW i) → D.what₂.LL) :=
   LinearEquiv.ofBijective (toForms h fw i z) (toForms_bijective h fw i z)
 
-theorem toForms_symm (h : LawsP T.toTop) (fw : FWTie T.J R κ v₀) (i : Fin D.R.m) {n : ℕ}
-    (z : (Fin n → D.what₂.LL) ≃ₗ[D.what₂.LL] D.what₂.LL ⊗[(recB h.toLawsCore).KO] (recB h.toLawsCore).Cusp ((i : ℕ) + 1) (κ i))
-    (x : Fin (R.nW i) → D.what₂.LL) : toForms h fw i z ((toFormsEquiv h fw i z).symm x) = x :=
-  (toFormsEquiv h fw i z).apply_symm_apply x
 
-theorem exists_toForms_eq_id (h : LawsP T.toTop) (fw : FWTie T.J R κ v₀) (i : Fin D.R.m) :
-    ∃ z : (Fin (R.nW i) → D.what₂.LL) ≃ₗ[D.what₂.LL]
-      D.what₂.LL ⊗[(recB h.toLawsCore).KO] (recB h.toLawsCore).Cusp ((i : ℕ) + 1) (κ i), ∀ x, toForms h fw i z x = x := by
-  obtain ⟨m, b, -, h1, h2, h3, h4⟩ := fw.ks i
-  have hb := cusp_liftBaseChange_bijective (recB h.toLawsCore) (cuspTo h fw i) (cutTo_spec fw i).1 b h1
-    (h2.trans (cutTo_spec fw i).2.symm) h3 h4
-  exact ⟨(LinearEquiv.ofBijective _ hb).symm, fun x => (LinearEquiv.ofBijective _ hb).apply_symm_apply x⟩
 
 theorem ActionPin.exists_rep {h : LawsP T.toTop} {fw : FWTie T.J R κ v₀} {i : Fin D.R.m}
     {ℓ : G → (LaMod (T.Q.Dw ((i : ℕ) + 1)) T.Q.l ≃ₗ[𝓞 D.host.E] LaMod (T.Q.Dw ((i : ℕ) + 1)) T.Q.l)}
@@ -144,13 +129,6 @@ def classSumCoord (i : Fin D.R.m) {n : ℕ}
     (t : T0) (c : ℂ) : (Fin (srcDim A i t U ψ) → D.what₂.LL) →ₗ[D.what₂.LL] (Fin n → D.what₂.LL) :=
   if H : ClassSumRational R i t U ψ c then (toFormsEquiv h fw i z).symm.toLinearMap ∘ₗ H.choose else 0
 
-theorem isClassSum_classSumCoord (i : Fin D.R.m) {n : ℕ}
-    (z : (Fin n → D.what₂.LL) ≃ₗ[D.what₂.LL] D.what₂.LL ⊗[(recB h.toLawsCore).KO] (recB h.toLawsCore).Cusp ((i : ℕ) + 1) (κ i))
-    (t : T0) (c : ℂ) (H : ClassSumRational R i t U ψ c) :
-    IsClassSum R i t U ψ c (toForms h fw i z ∘ₗ classSumCoord h fw U ψ i z t c) := fun x =>
-  have e : classSumCoord h fw U ψ i z t c = (toFormsEquiv h fw i z).symm.toLinearMap ∘ₗ H.choose := dif_pos H
-  (congrArg (adForm R i) ((congrArg (toForms h fw i z) (LinearMap.congr_fun e x)).trans
-    (toForms_symm h fw i z (H.choose x)))).trans (H.choose_spec x)
 
 def objectActionInstance : OnObj S P oc :=
   { O with
@@ -179,38 +157,7 @@ def objectActionInstance : OnObj S P oc :=
         (LinearMap.ker (classSumCoord h fw U ψ (ι i) (z i) (R.mu v) (ph v i))))
     Mt := fun v i => (A.MtCSD (ι i) (R.mu v)).lvlNab (A.leftGroupActionLift (ι i) (R.mu v)) U ψ }
 
-theorem onTie_tiedObj
-    (hρ : ∀ i, IsLevAct T.toTop h ((ι i : ℕ) + 1) (κ (ι i)) (fun g => ℓ i (inc g)) fun g F => ρ i g F)
-    (v : HeightOneSpectrum (𝓞 D.what₂.LL)) (i : Bs.J) :
-    OnTie (T := (r v).full) (inst := inst) (R := R) (hr v) fw hinj EX (p v) (ι i) (wL i) (wF i) nT
-      (objectActionInstance h fw hinj EX r hr p ι wL wF nT inc ℓ U ψ ph ρ O z) v i (z i) (fun g F => ρ i g F) inc (ℓ i) U ψ (ph v i)
-      (LinearEquiv.refl _ _) where
-  Ms_eq := rfl
-  rho_eq := cuspRep_tmul (recB h.toLawsCore) (z i) (ρ i)
-  Th_eq := rfl
-  σ_eq := rfl
-  ThK_eq := rfl
-  act_eq := hρ i
-  U_eq := rfl
-  ψ_eq := charInt_coe inc U ψ
-  e_eq := LinearMap.ext fun _ => toForms_symm h fw (ι i) (z i) _
-  V₀_eq := rfl
-  Th0_eq := rfl
-  ThJ_eq := rfl
-  X₃_eq := rfl
-  Mt_eq := rfl
-  θ'_eq H := isClassSum_classSumCoord h fw U ψ (ι i) (z i) (R.mu v) (ph v i) H
-  eX_eq := rfl
-  pr_eq := by
-    change orthProj _ (perpOf _ (LinearMap.ker _)) = orthProj _ (perpOf _ ((LinearMap.ker _).map LinearMap.id))
-    rw [Submodule.map_id]
-    rfl
 
-theorem tiedObj_keeps :
-    let O' := objectActionInstance h fw hinj EX r hr p ι wL wF nT inc ℓ U ψ ph ρ O z
-    O'.nZ = O.nZ ∧ O'.φ = O.φ ∧ O'.Th1 = O.Th1 ∧ O'.a = O.a ∧ O'.E = O.E ∧ O'.r1 = O.r1 ∧ O'.r2 = O.r2 ∧ O'.pde = O.pde ∧
-      O'.ε0 = O.ε0 ∧ O'.nnK = O.nnK ∧ O'.Jp = O.Jp :=
-  ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
 
 end Tied
 
@@ -288,48 +235,9 @@ def EquivariantLatticeCharacterDatumExists
       ∀ v i, OnTie (T := (r v).full) (inst := inst) (R := R) (hr v) fw hinj EX (p v) (ι i) (wL i) (wF i) nT O v i (z i) (act i)
         inc (ℓ i) U ψ (ph v i) (y v i)
 
-theorem tiedRecordExists_of_rep
-    (ℓ : ∀ i, G → (LaMod (T.Q.Dw ((ι i : ℕ) + 1)) T.Q.l ≃ₗ[𝓞 D.host.E] LaMod (T.Q.Dw ((ι i : ℕ) + 1)) T.Q.l))
-    (hρ : ∀ i, ∃ ρ : Representation (recB h.toLawsCore).KO P ((recB h.toLawsCore).Cusp ((ι i : ℕ) + 1) (κ (ι i))),
-      IsLevAct T.toTop h ((ι i : ℕ) + 1) (κ (ι i)) (fun g => ℓ i (inc g)) fun g F => ρ g F)
-    (U : Subgroup G) (ψ : U →* D.what₂.LLˣ) (ph : HeightOneSpectrum (𝓞 D.what₂.LL) → Bs.J → ℂ) :
-    EquivariantLatticeCharacterDatumExists h fw hinj EX r hr p S P oc ι wL wF nT inc ℓ U ψ ph := by
-  choose ρ hρ using hρ
-  choose z _ using fun i => exists_toForms_eq_id h fw (ι i)
-  exact ⟨objectActionInstance h fw hinj EX r hr p ι wL wF nT inc ℓ U ψ ph ρ (blankObj D S P oc fun i => R.nW (ι i)) z, z,
-    fun i g F => ρ i g F, fun _ _ => LinearEquiv.refl _ _, rfl, fun _ => rfl,
-    onTie_tiedObj h fw hinj EX r hr p ι wL wF nT inc ℓ U ψ ph ρ (blankObj D S P oc fun i => R.nW (ι i)) z hρ⟩
 
-theorem tiedRecordExists_of_actionPin
-    (ℓ : ∀ i, G → (LaMod (T.Q.Dw ((ι i : ℕ) + 1)) T.Q.l ≃ₗ[𝓞 D.host.E] LaMod (T.Q.Dw ((ι i : ℕ) + 1)) T.Q.l))
-    (ha : ∀ i, ActionPin h fw (ι i) (ℓ i))
-    (U : Subgroup G) (ψ : U →* D.what₂.LLˣ) (ph : HeightOneSpectrum (𝓞 D.what₂.LL) → Bs.J → ℂ) :
-    EquivariantLatticeCharacterDatumExists h fw hinj EX r hr p S P oc ι wL wF nT inc ℓ U ψ ph :=
-  tiedRecordExists_of_rep h fw hinj EX r hr p S P oc ι wL wF nT inc ℓ (fun i => (ha i).exists_rep inc) U ψ ph
 
-theorem exists_tied_record
-    (ℓ : ∀ i, G →* (LaMod (T.Q.Dw ((ι i : ℕ) + 1)) T.Q.l ≃ₗ[𝓞 D.host.E] LaMod (T.Q.Dw ((ι i : ℕ) + 1)) T.Q.l))
-    (U : Subgroup G) (ψ : U →* D.what₂.LLˣ) (ph : HeightOneSpectrum (𝓞 D.what₂.LL) → Bs.J → ℂ) :
-    ∃ (O : OnObj S P oc) (z : ∀ i, (Fin (O.nZ i) → D.what₂.LL) ≃ₗ[D.what₂.LL]
-        D.what₂.LL ⊗[(recB h.toLawsCore).KO] (recB h.toLawsCore).Cusp ((ι i : ℕ) + 1) (κ (ι i)))
-      (act : ∀ i, P → (recB h.toLawsCore).Cusp ((ι i : ℕ) + 1) (κ (ι i)) → (recB h.toLawsCore).Cusp ((ι i : ℕ) + 1) (κ (ι i)))
-      (y : ∀ v i, (Fin (O.nX v i) → D.what₂.LL) ≃ₗ[D.what₂.LL] (Fin (srcDim A (ι i) (R.mu v) U ψ) → D.what₂.LL)),
-      O.pde = D.host.pde ∧ (∀ i, O.nZ i = R.nW (ι i)) ∧
-        ∀ v i, OnTie (T := (r v).full) (inst := inst) (R := R) (hr v) fw hinj EX (p v) (ι i) (wL i) (wF i) nT O v i (z i) (act i)
-          inc (fun g => ℓ i g) U ψ (ph v i) (y v i) :=
-  tiedRecordExists_of_rep h fw hinj EX r hr p S P oc ι wL wF nT inc (fun i g => ℓ i g)
-    (fun i => exists_rep_isLevAct D T.toTop h _ (inR_succ (ι i)) (κ (ι i)) P ((ℓ i).comp inc)) U ψ ph
 
-theorem exists_tied_record_one_run
-    (ℓ : ∀ i, G →* (LaMod (T.Q.Dw ((ι i : ℕ) + 1)) T.Q.l ≃ₗ[𝓞 D.host.E] LaMod (T.Q.Dw ((ι i : ℕ) + 1)) T.Q.l))
-    (U : Subgroup G) (ψ : U →* D.what₂.LLˣ) (ph : HeightOneSpectrum (𝓞 D.what₂.LL) → Bs.J → ℂ) :
-    ∃ (O : OnObj S P oc) (z : ∀ i, (Fin (O.nZ i) → D.what₂.LL) ≃ₗ[D.what₂.LL]
-        D.what₂.LL ⊗[(recB h.toLawsCore).KO] (recB h.toLawsCore).Cusp ((ι i : ℕ) + 1) (κ (ι i)))
-      (act : ∀ i, P → (recB h.toLawsCore).Cusp ((ι i : ℕ) + 1) (κ (ι i)) → (recB h.toLawsCore).Cusp ((ι i : ℕ) + 1) (κ (ι i)))
-      (y : ∀ v i, (Fin (O.nX v i) → D.what₂.LL) ≃ₗ[D.what₂.LL] (Fin (srcDim A (ι i) (R.mu v) U ψ) → D.what₂.LL)),
-      O.pde = D.host.pde ∧ (∀ i, O.nZ i = R.nW (ι i)) ∧
-        ∀ v i, OnTie h fw hinj EX (p v) (ι i) (wL i) (wF i) nT O v i (z i) (act i) inc (fun g => ℓ i g) U ψ (ph v i) (y v i) :=
-  exists_tied_record h fw hinj EX (fun _ => RunData.ofFull T) (fun _ => h) p S P oc ι wL wF nT inc ℓ U ψ ph
 
 end Exists
 

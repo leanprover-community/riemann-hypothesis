@@ -73,9 +73,6 @@ def htValOn (Z : Comp Xo c) (la : HeightOneSpectrum (𝓞 c.F)) : Set (Rul Xo c 
   {w | ∃ (T : CDVR) (io : c.F →+* T.Fr) (e : ℕ) (y₀ : IntFr Xo c T io),
     OverLa la T.V io e ∧ algOn Z T io y₀ ∧ w ∈ htValAt la y₀}
 
-theorem htValOn_subset (Z : Comp Xo c) (la : HeightOneSpectrum (𝓞 c.F)) : htValOn Z la ⊆ htValSet Xo c la := by
-  rintro w ⟨T, io, e, y₀, ho, hz, p, hp, ha, k, y, hy, rfl⟩
-  exact ⟨p, hp, ha, T, io, e, y₀, k, y, ho, hz.1, hy, rfl⟩
 
 def Always (Q : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
     {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {r : ℕ}, (∀ σ : c.F →+* ℂ, Unf Xo c σ r) → ℝ → Prop) : Prop :=

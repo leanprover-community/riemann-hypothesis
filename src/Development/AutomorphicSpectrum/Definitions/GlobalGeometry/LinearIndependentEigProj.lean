@@ -709,12 +709,6 @@ theorem exists_line (o : Type) [CommRing o] [IsDomain o] [Algebra Ki o] (k : Typ
     exact hσ q _
   · exact_mod_cast ((hΓ d L hL 0).1 ((degZero_hodge _ _ _ _ _ _ _ _ _ _ _).1 h Γ)).symm
 
-theorem exists_not_degZero : ∃ (X : Scheme.{0}) (Ω : Type) (_ : Field Ω) (σ : Ki →+* Ω) (ξ : Spec (CommRingCat.of Ω) ⟶ X) (ϖ : Ω)
-    (L : Lat ξ Ω) (𝓗 : HodgeLat L (scal Ω (chi σ)) cj 1), IsCptGen ξ ∧ ¬ 𝓗.DegZero σ ϖ := by
-  letI : Algebra (Polynomial Ki) Ki := (Polynomial.evalRingHom 0).toAlgebra
-  obtain ⟨Ω, _, _, σ, ξ, hξ, h⟩ := exists_line (Polynomial Ki) Ki Polynomial.X (Polynomial.eval_X (x := (0 : Ki)))
-  obtain ⟨L, 𝓗, h⟩ := h 1 one_ne_zero
-  exact ⟨_, Ω, _, σ, ξ, _, L, 𝓗, hξ, h⟩
 
 end Gauss
 

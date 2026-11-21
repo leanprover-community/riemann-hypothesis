@@ -68,50 +68,10 @@ theorem mem_act {g : GL ι k} {L : Submodule 𝒪[k] (ι → k)} {v : ι → k} 
     simpa using hw
   · exact fun h => ⟨_, h, by simp⟩
 
-theorem act_eq_smul (g : GL ι k) (L : Submodule 𝒪[k] (ι → k)) : act g L = g • L := by
-  ext v
-  rw [mem_act, mem_smul_iff]
-  rfl
 
-theorem isLattice_act (g : GL ι k) {L : Submodule 𝒪[k] (ι → k)} (h : L.IsLattice k) : (act g L).IsLattice k := by
-  rw [act_eq_smul]
-  infer_instance
 
-theorem exists_act_stdLat {L : Submodule 𝒪[k] (ι → k)} (h : L.IsLattice k) : ∃ g : GL ι k, L = act g (stdLat k ι) := by
-  obtain ⟨g, hg⟩ := exists_smul_lat (stdLat k ι) L
-  exact ⟨g, by rw [act_eq_smul, hg]⟩
 
-theorem act_stdLat_eq_iff {g : GL ι k} : act g (stdLat k ι) = stdLat k ι ↔ g ∈ KO k ι := by
-  rw [mem_KO]
-  constructor
-  · intro h
-    refine ⟨maps_stdLat_iff.1 fun y hy => ?_, maps_stdLat_iff.1 fun y hy => ?_⟩
-    · rw [← h]
-      exact ⟨y, hy, rfl⟩
-    · rw [← h] at hy
-      exact mem_act.1 hy
-  · rintro ⟨h1, h2⟩
-    ext v
-    rw [mem_act]
-    refine ⟨fun hv => ?_, fun hv => maps_stdLat_iff.2 h2 v hv⟩
-    simpa using maps_stdLat_iff.2 h1 _ hv
 
-theorem nabs_det_eq_of_act_eq {g h : GL ι k} {L : Submodule 𝒪[k] (ι → k)} (hL : L.IsLattice k)
-    (e : act g L = act h L) :
-    nabs k (Matrix.GeneralLinearGroup.det g) = nabs k (Matrix.GeneralLinearGroup.det h) := by
-  obtain ⟨u, rfl⟩ := exists_act_stdLat hL
-  have h1 : act ((h * u)⁻¹ * (g * u)) (stdLat k ι) = stdLat k ι := by
-    rw [act_mul, act_mul g, e, ← act_mul h, ← act_mul, inv_mul_cancel, act_one]
-  have h2 := valuation_det_of_mem_KO (act_stdLat_eq_iff.1 h1)
-  rw [nabs_eq_iff]
-  have : Matrix.GeneralLinearGroup.det g = Matrix.GeneralLinearGroup.det h *
-      Matrix.GeneralLinearGroup.det ((h * u)⁻¹ * (g * u)) := by
-    simp only [map_mul, map_inv]
-    rw [_root_.mul_inv_rev, mul_comm (Matrix.GeneralLinearGroup.det g)]
-    group
-    rw [mul_comm (Matrix.GeneralLinearGroup.det h)]
-    group
-  rw [this, Units.val_mul, map_mul, h2, mul_one]
 
 omit [TopologicalSpace k] [IsNonarchimedeanLocalField k] [Fintype ι] [DecidableEq ι] [DecidableEq ι'] in
 open Classical in
@@ -157,11 +117,6 @@ theorem sph_mem_SB (α : kˣ) {L' : Submodule 𝒪[k] (ι' → k)} {L : Submodul
   rw [this]
   exact latInd_mem_SB _ _
 
-theorem om_sph (μ : kˣ →* ℂˣ) (h : GL ι k) (α : kˣ) (L' : Submodule 𝒪[k] (ι' → k)) (L : Submodule 𝒪[k] (ι → k))
-    (x : Matrix ι ι' k) : om μ 1 h (sph α L' L) x = (((μ (Matrix.GeneralLinearGroup.det h))⁻¹ : ℂˣ) : ℂ) *
-      ((nabs k (Matrix.GeneralLinearGroup.det h) ^ (-(Fintype.card ι' : ℝ) / 2) : ℝ) : ℂ) * sph α L' (act h L) x := by
-  conv_rhs => rw [← act_one L', sph_act]
-  simp [om, nabs_one]
 
 end Act
 

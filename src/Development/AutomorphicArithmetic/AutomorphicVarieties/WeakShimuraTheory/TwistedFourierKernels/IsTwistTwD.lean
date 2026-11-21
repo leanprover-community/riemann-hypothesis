@@ -36,8 +36,6 @@ def twD (D : GDet n A G) (γ : G →* Aˣ) : GDet n A G where
 
 theorem isTwist_twD (D : GDet n A G) (γ : G →* Aˣ) : D.IsTwist γ (twD D γ) := fun _ _ _ _ => rfl
 
-theorem eq_twD {D D' : GDet n A G} {γ : G →* Aˣ} (h : D.IsTwist γ D') : D' = twD D γ :=
-  GDet.ext fun B _ _ y => h B y
 
 theorem chi_twD (D : GDet n A G) (γ : G →* Aˣ) (y : MonoidAlgebra A G) : (twD D γ).chi y = D.chi (twA γ A y) := by
   change D.D (Polynomial A) (twA γ (Polynomial A) _) = D.D (Polynomial A) _

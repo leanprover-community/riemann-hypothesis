@@ -7,9 +7,38 @@ import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LocClosed
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnsignedLocalTermRowLatticeIsTerm
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsDatumOfTwoCongruentFramesStatement
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RationalIsometryExtendsLocalIsometryStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocalTermDefectEqOfLatticeEq
+import Formalism.SharpRestriction.CuspSpanNormBounds.IsTermOver
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NotField
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermsCorrespond
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianDatumEqOfSameLattice
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermAtBasePointOfFrames
 
+section
+section
+open ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.Loc GlobalTheory.HL
+open scoped Pointwise ENNReal Classical
+
+namespace GlobalTheory.HL.LocDefect
+
+theorem bbne_of_lam_eq : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] (M : Model F E), M.OK → ∀ {V : Type} [AddCommGroup V] [Module E V] (H : HermSp M V) (r k : ℕ) (P : LocNG.FPair H r), Module.finrank E V = k + 2 * r + 1 → P.RelG (LocNG.theta M) → ∀ (d d' : LocNG.Datum P) (τ τ' : Term V M r), LocNG.IsTermOver P d τ → LocNG.IsTermOver P d' τ' → τ.abelian₂ = τ'.abelian₂ → (LocNG.BBne (H := H) τ ↔ LocNG.BBne (H := H) τ') := by
+  intro F _ _ _ E _ _ _ _ M hM V _ _ H r k P hk hP d d' τ τ' hτ hτ' hL
+  have hdd : d = d' := GlobalTheory.T.hermitianDatum_eq_of_same_lattice M hM H r k P hk hP d d' τ τ' hτ hτ' hL
+  subst hdd
+  obtain ⟨S, ⟨c⟩⟩ := GlobalTheory.HL.CoordExist.exists_coord M hM H r k P hk hP
+  have h := (GlobalTheory.HL.CoordTermWt.terms_correspond M hM H r k P S c).1
+  rw [(h d τ hτ).2.2, (h d τ' hτ').2.2, hL]
+
+end GlobalTheory.HL.LocDefect
+end
+
+open ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.Loc
+open scoped Pointwise ENNReal Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.localTerm_defect_eq_of_lattice_eq : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] (M : Model F E), M.OK → ∀ {V : Type} [AddCommGroup V] [Module E V] (H : HermSp M V) (r k : ℕ) (P : LocNG.FPair H r), Module.finrank E V = k + 2 * r + 1 → P.RelG (LocNG.theta M) → ∀ (d d' : LocNG.Datum P) (τ τ' : Term V M r), LocNG.IsTermOver P d τ → LocNG.IsTermOver P d' τ' → τ.abelian₂ = τ'.abelian₂ → (LocNG.BBne (H := H) τ ↔ LocNG.BBne (H := H) τ') := by
+  atlas_forward_decl GlobalTheory.HL.LocDefect.bbne_of_lam_eq
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.Unfold.GenLoc
@@ -369,3 +398,5 @@ theorem generic_iff_local : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' 
     exact h d0 τ0 hd0 hLam
 
 end GlobalTheory.Unfold.GenLoc
+end
+end

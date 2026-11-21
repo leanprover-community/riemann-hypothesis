@@ -1,13 +1,472 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.TorsTransport
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsContinuousBijectiveAbelianizationOfAlgEquiStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IdeleClassIdentityComponentIffArtinKernel
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFrobAtRestrictFiniteAbelianSubextension
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InertiaRestrictFiniteAbelianUnramifiedEqOne
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsUniformiserAtIffAdicCompletionIsUnifAt
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SupportedIdeleEqLocalIdele
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCmCurveTorsionTransportSecondPeriodStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsContinuousBijectiveAbelianizationOfAlgEqui
+import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsEqOfNatCastMulMem
+import BuildAid.ForwardExisting
+import ReciprocityTheory.ClassFieldTheory.GlobalClassField.IsFrobAtMulOfMemInertiaGroup
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCmCurveTorsionTransportSecondPeriod
 
+section
+open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.LatVal Neutral.B1
+open scoped nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_continuous_bijective_abelianization_of_algEquiv : ∀ {K : Type} [Field K] [NumberField K] {Ω : Type} [Field Ω] [Algebra K Ω] (e : Ω ≃ₐ[K] AlgebraicClosure K), ∃ φ : GlobalTheory.HeckeGal.Gab K Ω →* Field.absoluteGaloisGroupAbelianization K, Continuous φ ∧ Function.Bijective φ ∧ ∀ σ : Formalism.ConjugateSelfDual.G K Ω, φ (GlobalTheory.HeckeGal.toAb K Ω σ) = Neutral.B1.toAb K ((e.symm.trans σ).trans e) := by
+  first | exact @GlobalTheory.HeckeGal.exists_abMap_of_algEquiv | exact GlobalTheory.HeckeGal.exists_abMap_of_algEquiv | (intros; apply GlobalTheory.HeckeGal.exists_abMap_of_algEquiv <;> assumption)
+end
+
+section
+section
+open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.LatVal Neutral.B1
+open scoped nonZeroDivisors
+
+noncomputable section
+
+namespace GlobalTheory.ArtinKernel
+
+variable {K : Type} [Field K] [NumberField K] {Ω : Type} [Field Ω] [Algebra K Ω] [IsAlgClosure K Ω]
+
+theorem eq_one_of_mem_connectedComponent_one (y : GlobalTheory.HeckeGal.Gab K Ω)
+    (hy : y ∈ connectedComponent (1 : GlobalTheory.HeckeGal.Gab K Ω)) : y = 1 := by
+  by_contra hne
+  obtain ⟨x, rfl⟩ := QuotientGroup.mk_surjective y
+  let N : Subgroup (Formalism.ConjugateSelfDual.G K Ω) := (commutator (Formalism.ConjugateSelfDual.G K Ω)).topologicalClosure
+  have hN : IsClosed (N : Set (Formalism.ConjugateSelfDual.G K Ω)) := Subgroup.isClosed_topologicalClosure _
+  have hx : x ∉ N := fun h => hne ((QuotientGroup.eq_one_iff x).2 h)
+  have e := ProfiniteGrp.closedSubgroup_eq_sInf_open (G := Formalism.ConjugateSelfDual.G K Ω) ⟨N, hN⟩
+  have hx' : x ∉ sInf {M : Subgroup (Formalism.ConjugateSelfDual.G K Ω) | IsOpen (M : Set (Formalism.ConjugateSelfDual.G K Ω)) ∧ N ≤ M} := by
+    intro h
+    rw [← e] at h
+    exact hx h
+  rw [Subgroup.mem_sInf] at hx'
+  push_neg at hx'
+  obtain ⟨M, ⟨hMo, hNM⟩, hxM⟩ := hx'
+  let V : Subgroup (GlobalTheory.HeckeGal.Gab K Ω) := M.map (QuotientGroup.mk' N)
+  have hVo : IsOpen (V : Set (GlobalTheory.HeckeGal.Gab K Ω)) := by
+    have : (V : Set (GlobalTheory.HeckeGal.Gab K Ω)) = (QuotientGroup.mk : Formalism.ConjugateSelfDual.G K Ω → _) '' (M : Set _) := by
+      rw [Subgroup.coe_map]; rfl
+    rw [this]
+    exact QuotientGroup.isOpenMap_coe _ hMo
+  have hVc : IsClopen (V : Set (GlobalTheory.HeckeGal.Gab K Ω)) := ⟨Subgroup.isClosed_of_isOpen V hVo, hVo⟩
+  have hsub := hVc.connectedComponent_subset V.one_mem
+  obtain ⟨m, hm, hmx⟩ := hsub hy
+  apply hxM
+  have : m⁻¹ * x ∈ N := (QuotientGroup.eq).1 hmx
+  have := M.mul_mem hm (hNM this)
+  simpa using this
+
+theorem mk_mem_connectedComponent_iff {art : Ideles K →* GlobalTheory.HeckeGal.Gab K Ω}
+    (h : GlobalTheory.HeckeGal.IsGlobalArtin art) (s : Ideles K) :
+    (QuotientGroup.mk s : IdeleClassGroup K) ∈ connectedComponent (1 : IdeleClassGroup K) ↔ art s = 1 := by
+  have hker := h.ker
+  have hR : (diagUnits K).range ≤ art.ker := by
+    rw [hker]; exact le_trans le_sup_left (Subgroup.le_topologicalClosure _)
+  let f : IdeleClassGroup K →* GlobalTheory.HeckeGal.Gab K Ω := QuotientGroup.lift _ art hR
+  have hf : Continuous f := (QuotientGroup.isQuotientMap_mk _).continuous_iff.mpr h.quot.continuous
+  constructor
+  · intro hs
+    have := hf.image_connectedComponent_subset (1 : IdeleClassGroup K) ⟨_, hs, rfl⟩
+    rw [map_one] at this
+    exact eq_one_of_mem_connectedComponent_one _ this
+  · intro hs
+    have hs' : s ∈ ((diagUnits K).range ⊔ GlobalTheory.HeckeGal.infConn K).topologicalClosure := by
+      rw [← hker]; exact hs
+    have hC : IsClosed ((QuotientGroup.mk : Ideles K → IdeleClassGroup K) ⁻¹' connectedComponent 1) :=
+      isClosed_connectedComponent.preimage continuous_quot_mk
+    have hinl : Continuous (Units.map (MonoidHom.inl (InfiniteAdeleRing K) (FiniteAdeleRing (𝓞 K) K))) :=
+      Continuous.units_map _ (continuous_id.prodMk continuous_const)
+    have hsub : (((diagUnits K).range ⊔ GlobalTheory.HeckeGal.infConn K : Subgroup (Ideles K)) : Set (Ideles K)) ⊆
+        (QuotientGroup.mk : Ideles K → IdeleClassGroup K) ⁻¹' connectedComponent 1 := by
+      intro y hy
+      obtain ⟨a, ⟨k, rfl⟩, b, ⟨c, hc, rfl⟩, rfl⟩ := Subgroup.mem_sup.1 hy
+      have e : (QuotientGroup.mk (diagUnits K k * Units.map (MonoidHom.inl _ _) c) : IdeleClassGroup K) =
+          QuotientGroup.mk (Units.map (MonoidHom.inl (InfiniteAdeleRing K) (FiniteAdeleRing (𝓞 K) K)) c) := by
+        refine QuotientGroup.eq.2 ⟨k⁻¹, ?_⟩
+        rw [map_inv, mul_inv_rev]
+        first
+          | exact (inv_mul_cancel_comm _ _).symm
+          | (rw [mul_comm, mul_inv_cancel_left])
+          | simp [mul_comm, mul_assoc]
+      show _ ∈ connectedComponent 1
+      rw [e]
+      have hg : Continuous (fun c : (InfiniteAdeleRing K)ˣ =>
+          (QuotientGroup.mk (Units.map (MonoidHom.inl (InfiniteAdeleRing K) (FiniteAdeleRing (𝓞 K) K)) c) :
+            IdeleClassGroup K)) := continuous_quot_mk.comp hinl
+      have := hg.image_connectedComponent_subset 1 ⟨c, hc, rfl⟩
+      beta_reduce at this
+      have h1 : (QuotientGroup.mk (Units.map (MonoidHom.inl (InfiniteAdeleRing K) (FiniteAdeleRing (𝓞 K) K)) 1) :
+          IdeleClassGroup K) = 1 := by rw [map_one]; rfl
+      rw [h1] at this
+      exact this
+    have hcl := closure_minimal hsub hC
+    rw [← Subgroup.topologicalClosure_coe] at hcl
+    exact hcl hs'
+
+theorem idele_class_mem_identity_component_iff :
+    ∀ {K : Type} [Field K] [NumberField K] {Ω : Type} [Field Ω] [Algebra K Ω] [IsAlgClosure K Ω]
+      {art : Ideles K →* GlobalTheory.HeckeGal.Gab K Ω}, GlobalTheory.HeckeGal.IsGlobalArtin art → ∀ s : Ideles K,
+      (QuotientGroup.mk s : IdeleClassGroup K) ∈ connectedComponent (1 : IdeleClassGroup K) ↔ art s = 1 :=
+  fun h s => mk_mem_connectedComponent_iff h s
+
+end GlobalTheory.ArtinKernel
+end
+end
+
+open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.LatVal Neutral.B1
+open scoped nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ideleClass_identityComponent_iff_artin_kernel : ∀ {K : Type} [Field K] [NumberField K] {Ω : Type} [Field Ω] [Algebra K Ω] [IsAlgClosure K Ω] {art : Ideles K →* GlobalTheory.HeckeGal.Gab K Ω}, GlobalTheory.HeckeGal.IsGlobalArtin art → ∀ s : Ideles K, (QuotientGroup.mk s : IdeleClassGroup K) ∈ connectedComponent (1 : IdeleClassGroup K) ↔ art s = 1 := by
+  atlas_forward_decl GlobalTheory.ArtinKernel.idele_class_mem_identity_component_iff
+end
+
+section
+section
+open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.LatVal Neutral.B1
+open scoped nonZeroDivisors
+
+noncomputable section
+
+namespace GlobalTheory.FrobRestrict
+
+variable {K : Type} [Field K] [NumberField K] {Ω : Type} [Field Ω] [Algebra K Ω]
+
+def toOm (e : Ω ≃ₐ[K] AlgebraicClosure K) (L : IntermediateField K (AlgebraicClosure K)) : 𝓞 L →+* Ω :=
+  (e.symm.toRingHom.comp L.val.toRingHom).comp (algebraMap (𝓞 L) L)
+
+theorem toOm_apply (e : Ω ≃ₐ[K] AlgebraicClosure K) (L : IntermediateField K (AlgebraicClosure K)) (y : 𝓞 L) :
+    toOm e L y = e.symm ((y : L) : AlgebraicClosure K) := rfl
+
+theorem toOm_mem (e : Ω ≃ₐ[K] AlgebraicClosure K) (L : IntermediateField K (AlgebraicClosure K))
+    (A : ValuationSubring Ω) (y : 𝓞 L) : toOm e L y ∈ A :=
+  ReciprocityTheory.Gal.mem_of_isIntegral_int A ((Algebra.IsIntegral.isIntegral (R := ℤ) y).map (toOm e L).toIntAlgHom)
+
+def toA (e : Ω ≃ₐ[K] AlgebraicClosure K) (L : IntermediateField K (AlgebraicClosure K))
+    (A : ValuationSubring Ω) : 𝓞 L →+* A :=
+  (toOm e L).codRestrict A (toOm_mem e L A)
+
+def primeBelow (e : Ω ≃ₐ[K] AlgebraicClosure K) (L : IntermediateField K (AlgebraicClosure K))
+    (A : ValuationSubring Ω) : Ideal (𝓞 L) :=
+  Ideal.comap (toA e L A) (IsLocalRing.maximalIdeal A)
+
+theorem mem_primeBelow (e : Ω ≃ₐ[K] AlgebraicClosure K) (L : IntermediateField K (AlgebraicClosure K))
+    (A : ValuationSubring Ω) (y : 𝓞 L) : y ∈ primeBelow e L A ↔ A.valuation (toOm e L y) < 1 := by
+  unfold primeBelow
+  rw [Ideal.mem_comap, ValuationSubring.valuation_lt_one_iff]
+  rfl
+
+instance (e : Ω ≃ₐ[K] AlgebraicClosure K) (L : IntermediateField K (AlgebraicClosure K))
+    (A : ValuationSubring Ω) : (primeBelow e L A).IsPrime := by
+  unfold primeBelow; infer_instance
+
+theorem toOm_algebraMap (e : Ω ≃ₐ[K] AlgebraicClosure K) (L : IntermediateField K (AlgebraicClosure K)) (x : 𝓞 K) :
+    toOm e L (algebraMap (𝓞 K) (𝓞 L) x) = algebraMap K Ω (x : K) := by
+  rw [toOm_apply]
+  have h1 : (((algebraMap (𝓞 K) (𝓞 L) x : 𝓞 L) : L) : AlgebraicClosure K) = algebraMap K (AlgebraicClosure K) (x : K) := rfl
+  rw [h1, AlgEquiv.commutes]
+
+theorem liesOver_primeBelow (e : Ω ≃ₐ[K] AlgebraicClosure K) (L : IntermediateField K (AlgebraicClosure K))
+    (A : ValuationSubring Ω) (v : HeightOneSpectrum (𝓞 K)) (hA : Formalism.ConjugateSelfDual.IsPlaceOver A v) :
+    (primeBelow e L A).LiesOver v.asIdeal := by
+  constructor
+  ext x
+  rw [Ideal.mem_comap, mem_primeBelow, toOm_algebraMap]
+  exact (hA x).symm
+
+theorem isFrobAt_primeBelow (e : Ω ≃ₐ[K] AlgebraicClosure K) (L : IntermediateField K (AlgebraicClosure K))
+    [FiniteDimensional K L] [IsGalois K L]
+    (A : ValuationSubring Ω) (v : HeightOneSpectrum (𝓞 K)) (hA : Formalism.ConjugateSelfDual.IsPlaceOver A v)
+    (σ : Formalism.ConjugateSelfDual.G K Ω) (hσ : Formalism.ConjugateSelfDual.IsFrob (F := K) A (Formalism.ConjugateSelfDual.normV v) σ) :
+    IsFrobAt K L (AlgEquiv.restrictNormalHom L ((e.symm.trans σ).trans e)) (primeBelow e L A) := by
+  haveI : NumberField L := NumberField.of_module_finite K L
+  haveI := liesOver_primeBelow e L A v hA
+  rw [ReciprocityTheory.DiscreteGroups.GlobalClassField.isFrobAt_iff_forall]
+  have hu : (primeBelow e L A).under (𝓞 K) = v.asIdeal := (Ideal.LiesOver.over).symm
+  rw [hu]
+  intro y
+  rw [mem_primeBelow, map_sub, map_pow]
+  have hy : toOm e L (AlgEquiv.restrictNormalHom L ((e.symm.trans σ).trans e) • y) = σ (toOm e L y) := by
+    rw [toOm_apply, toOm_apply]
+    have h2 : (((AlgEquiv.restrictNormalHom L ((e.symm.trans σ).trans e) • y : 𝓞 L) : L) : AlgebraicClosure K)
+        = ((e.symm.trans σ).trans e) ((y : L) : AlgebraicClosure K) := by
+      rw [← AlgEquiv.restrictNormalHom_apply]; rfl
+    rw [h2]
+    simp
+  rw [hy]
+  exact hσ.2 _ ((A.valuation_le_one_iff _).mpr (toOm_mem e L A y))
+
+theorem isFrobAt_restrict : ∀ {K : Type} [Field K] [NumberField K] {Ω : Type} [Field Ω] [Algebra K Ω] [IsAlgClosure K Ω]
+    (e : Ω ≃ₐ[K] AlgebraicClosure K) (L : IntermediateField K (AlgebraicClosure K)) (h : IsFiniteAbelian K L)
+    (v : HeightOneSpectrum (𝓞 K)) (A : ValuationSubring Ω), Formalism.ConjugateSelfDual.IsPlaceOver A v → ∀ σ : Formalism.ConjugateSelfDual.G K Ω,
+    Formalism.ConjugateSelfDual.IsFrob (F := K) A (Formalism.ConjugateSelfDual.normV v) σ → ∀ Q : Ideal (𝓞 L), Q.IsPrime → Q.LiesOver v.asIdeal →
+    haveI := h.finiteDimensional; haveI := h.isGalois;
+    IsFrobAt K L (AlgEquiv.restrictNormalHom L ((e.symm.trans σ).trans e)) Q := by
+  intro K _ _ Ω _ _ _ e L h v A hA σ hσ Q hQ hQv
+  haveI := h.finiteDimensional
+  haveI := h.isGalois
+  haveI : NumberField L := NumberField.of_module_finite K L
+  haveI := liesOver_primeBelow e L A v hA
+  exact ReciprocityTheory.DiscreteGroups.GlobalClassField.isFrobAt_of_comm v (primeBelow e L A) Q h.comm _ (isFrobAt_primeBelow e L A v hA σ hσ)
+
+end GlobalTheory.FrobRestrict
+end
+end
+
+open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.LatVal Neutral.B1
+open scoped nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isFrobAt_restrict_finiteAbelian_subextension : ∀ {K : Type} [Field K] [NumberField K] {Ω : Type} [Field Ω] [Algebra K Ω] [IsAlgClosure K Ω] (e : Ω ≃ₐ[K] AlgebraicClosure K) (L : IntermediateField K (AlgebraicClosure K)) (h : IsFiniteAbelian K L) (v : HeightOneSpectrum (𝓞 K)) (A : ValuationSubring Ω), Formalism.ConjugateSelfDual.IsPlaceOver A v → ∀ σ : Formalism.ConjugateSelfDual.G K Ω, Formalism.ConjugateSelfDual.IsFrob (F := K) A (Formalism.ConjugateSelfDual.normV v) σ → ∀ Q : Ideal (𝓞 L), Q.IsPrime → Q.LiesOver v.asIdeal → haveI := h.finiteDimensional; haveI := h.isGalois; IsFrobAt K L (AlgEquiv.restrictNormalHom L ((e.symm.trans σ).trans e)) Q := by
+  atlas_forward_decl GlobalTheory.FrobRestrict.isFrobAt_restrict
+end
+
+section
+section
+open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.LatVal Neutral.B1
+open scoped nonZeroDivisors
+
+namespace GlobalTheory.InertiaRestrict
+
+theorem restrict_eq_one : ∀ {K : Type} [Field K] [NumberField K] {Ω : Type} [Field Ω] [Algebra K Ω] [IsAlgClosure K Ω] (e : Ω ≃ₐ[K] AlgebraicClosure K) (L : IntermediateField K (AlgebraicClosure K)) (h : IsFiniteAbelian K L) (v : HeightOneSpectrum (𝓞 K)), IsUnramifiedIn K v L → ∀ (A : ValuationSubring Ω), Formalism.ConjugateSelfDual.IsPlaceOver A v → ∀ σ : Formalism.ConjugateSelfDual.G K Ω, σ ∈ ReciprocityTheory.Gal.Ine (F := K) A → haveI := h.isGalois; AlgEquiv.restrictNormalHom L ((e.symm.trans σ).trans e) = 1 := by
+  intro K _ _ Ω _ _ _ e L h v hv A hA σ hσ
+  haveI := h.isGalois
+  haveI := h.finiteDimensional
+  haveI : NumberField L := NumberField.of_module_finite K L
+  have hint : ∀ y : 𝓞 L, e.symm ((y : L) : AlgebraicClosure K) ∈ A := by
+    intro y
+    have h1 : IsIntegral ℤ (e.symm ((y : L) : AlgebraicClosure K)) :=
+      map_isIntegral_int ((e.symm : AlgebraicClosure K →+* Ω).comp (algebraMap L (AlgebraicClosure K)))
+        y.isIntegral_coe
+    obtain ⟨a, ha⟩ := (IsIntegrallyClosed.isIntegral_iff (R := A) (K := Ω)).1 (h1.tower_top)
+    rw [← ha]
+    exact a.2
+  let φ : 𝓞 L →+* A :=
+    { toFun := fun y => ⟨e.symm ((y : L) : AlgebraicClosure K), hint y⟩
+      map_one' := by ext; simp
+      map_mul' := by intro a b; ext; simp
+      map_zero' := by ext; simp
+      map_add' := by intro a b; ext; simp }
+  let Q : Ideal (𝓞 L) := (IsLocalRing.maximalIdeal A).comap φ
+  have hmem : ∀ y : 𝓞 L, y ∈ Q ↔ A.valuation (e.symm ((y : L) : AlgebraicClosure K)) < 1 := fun y =>
+    ValuationSubring.valuation_lt_one_iff A (φ y)
+  haveI hQp : Q.IsPrime := Ideal.comap_isPrime _ _
+  haveI hQo : Q.LiesOver v.asIdeal := by
+    constructor
+    ext x
+    rw [Ideal.under, Ideal.mem_comap, hmem, ← hA x]
+    have : ((algebraMap (𝓞 K) (𝓞 L) x : L) : AlgebraicClosure K) = algebraMap K (AlgebraicClosure K) (x : K) := by
+      first
+        | rfl
+        | (rw [RingOfIntegers.algebraMap_coe]; rfl)
+        | simp [IsScalarTower.algebraMap_apply K L (AlgebraicClosure K)]
+    rw [this, AlgEquiv.commutes]
+  have hram : Q.ramificationIdx (𝓞 K) = 1 := hv Q hQp hQo
+  have hcard : Nat.card (Q.inertia (L ≃ₐ[K] L)) = 1 := by
+    have : IsGaloisGroup (L ≃ₐ[K] L) (𝓞 K) (𝓞 L) := IsGaloisGroup.of_isFractionRing _ _ _ K L
+    have hpr : (Q.under (𝓞 K)).IsPrime := Ideal.IsPrime.under _ Q
+    have hc := Ideal.card_inertia_eq_ramificationIdxIn (G := L ≃ₐ[K] L) (Q.under (𝓞 K)) Q
+    rwa [Ideal.ramificationIdxIn_eq_ramificationIdx (Q.under (𝓞 K)) Q (L ≃ₐ[K] L), hram] at hc
+  have hbot : Q.inertia (L ≃ₐ[K] L) = ⊥ := Subgroup.card_eq_one.1 hcard
+  have hin : AlgEquiv.restrictNormalHom L ((e.symm.trans σ).trans e) ∈ Q.inertia (L ≃ₐ[K] L) := by
+    refine AddSubgroup.mem_inertia.mpr fun y => ?_
+    change _ ∈ Q
+    rw [hmem]
+    have h2 : (((AlgEquiv.restrictNormalHom L ((e.symm.trans σ).trans e) • y - y : 𝓞 L) : L) : AlgebraicClosure K)
+        = e (σ (e.symm ((y : L) : AlgebraicClosure K))) - ((y : L) : AlgebraicClosure K) := by
+      have h3 : ((AlgEquiv.restrictNormalHom L ((e.symm.trans σ).trans e) • y : 𝓞 L) : L) =
+          AlgEquiv.restrictNormalHom L ((e.symm.trans σ).trans e) (y : L) := rfl
+      simp only [map_sub, h3, AlgEquiv.restrictNormalHom_apply]
+      have h4 := AlgEquiv.restrictNormalHom_apply L ((e.symm.trans σ).trans e) (y : L)
+      rw [AddSubgroupClass.coe_sub, h4]
+      rfl
+    rw [h2, map_sub, AlgEquiv.symm_apply_apply]
+    exact hσ.2 _ ((A.valuation_le_one_iff _).2 (hint y))
+  rw [hbot] at hin
+  exact hin
+
+end GlobalTheory.InertiaRestrict
+end
+
+open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.LatVal Neutral.B1
+open scoped nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.inertia_restrict_finiteAbelian_unramified_eq_one : ∀ {K : Type} [Field K] [NumberField K] {Ω : Type} [Field Ω] [Algebra K Ω] [IsAlgClosure K Ω] (e : Ω ≃ₐ[K] AlgebraicClosure K) (L : IntermediateField K (AlgebraicClosure K)) (h : IsFiniteAbelian K L) (v : HeightOneSpectrum (𝓞 K)), IsUnramifiedIn K v L → ∀ (A : ValuationSubring Ω), Formalism.ConjugateSelfDual.IsPlaceOver A v → ∀ σ : Formalism.ConjugateSelfDual.G K Ω, σ ∈ ReciprocityTheory.Gal.Ine (F := K) A → haveI := h.isGalois; AlgEquiv.restrictNormalHom L ((e.symm.trans σ).trans e) = 1 := by
+  atlas_forward_decl GlobalTheory.InertiaRestrict.restrict_eq_one
+end
+
+section
+section
+open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.LatVal Neutral.B1
+open scoped nonZeroDivisors
+
+noncomputable section
+namespace GlobalTheory.UnifVal
+
+variable {K : Type} [Field K] [NumberField K] (v : HeightOneSpectrum (𝓞 K))
+
+theorem isUnit_iff_v_eq_one (a : v.adicCompletionIntegers K) :
+    IsUnit a ↔ Valued.v (a : v.adicCompletion K) = 1 := by
+  constructor
+  · rintro ⟨u, rfl⟩
+    have h1 : Valued.v ((u : v.adicCompletionIntegers K) : v.adicCompletion K) ≤ 1 := (u : v.adicCompletionIntegers K).2
+    have h2 : Valued.v (((u⁻¹ : (v.adicCompletionIntegers K)ˣ) : v.adicCompletionIntegers K) : v.adicCompletion K) ≤ 1 :=
+      ((u⁻¹ : (v.adicCompletionIntegers K)ˣ) : v.adicCompletionIntegers K).2
+    have h3 : Valued.v ((u : v.adicCompletionIntegers K) : v.adicCompletion K) *
+        Valued.v (((u⁻¹ : (v.adicCompletionIntegers K)ˣ) : v.adicCompletionIntegers K) : v.adicCompletion K) = 1 := by
+      rw [← map_mul, ← Subring.coe_mul, Units.mul_inv]; simp
+    by_contra hne
+    have hlt := lt_of_le_of_ne h1 hne
+    have : Valued.v ((u : v.adicCompletionIntegers K) : v.adicCompletion K) *
+        Valued.v (((u⁻¹ : (v.adicCompletionIntegers K)ˣ) : v.adicCompletionIntegers K) : v.adicCompletion K) < 1 :=
+      mul_lt_one_of_lt_of_le hlt h2
+    rw [h3] at this; exact lt_irrefl _ this
+  · intro h
+    have ha0 : (a : v.adicCompletion K) ≠ 0 := by
+      intro h0; rw [h0, map_zero] at h; exact zero_ne_one h
+    have hmem : (a : v.adicCompletion K)⁻¹ ∈ v.adicCompletionIntegers K := by
+      show Valued.v ((a : v.adicCompletion K)⁻¹) ≤ 1
+      rw [map_inv₀, h, inv_one]
+    refine isUnit_iff_exists_inv.2 ⟨⟨_, hmem⟩, ?_⟩
+    apply Subtype.ext
+    show (a : v.adicCompletion K) * (a : v.adicCompletion K)⁻¹ = 1
+    exact mul_inv_cancel₀ ha0
+
+theorem isUniformiserAt_iff_isUnifAt (x : (v.adicCompletion K)ˣ) :
+    IsUniformiserAt K v (x : v.adicCompletion K) ↔ Formalism.L2.Host.IsUnifAt v x := by
+  unfold IsUniformiserAt Formalism.L2.Host.IsUnifAt
+  have hx0 : (x : v.adicCompletion K) ≠ 0 := x.ne_zero
+  have hv0 : Valued.v (x : v.adicCompletion K) ≠ 0 := by simpa using hx0
+  set m := WithZero.log (Valued.v (x : v.adicCompletion K)) with hm
+  have hx : Valued.v (x : v.adicCompletion K) = WithZero.exp m := (WithZero.exp_log hv0).symm
+  obtain ⟨π, hπ⟩ := HeightOneSpectrum.valuedAdicCompletion_surjective K v (WithZero.exp (-1 : ℤ))
+  have hπ0 : π ≠ 0 := by
+    rintro rfl
+    exact WithZero.exp_ne_zero (hπ.symm.trans (map_zero _))
+  constructor
+  · rintro ⟨hmem, hirr⟩
+    have hle : Valued.v (x : v.adicCompletion K) ≤ 1 := hmem
+    have hnu : Valued.v (x : v.adicCompletion K) ≠ 1 := fun h =>
+      hirr.not_isUnit ((isUnit_iff_v_eq_one v _).2 h)
+    rw [hx, ← WithZero.exp_zero, WithZero.exp_le_exp] at hle
+    rw [hx, ← WithZero.exp_zero, Ne, WithZero.exp_inj] at hnu
+    rw [hx]
+    by_contra hne
+    rw [WithZero.exp_inj] at hne
+    have hm2 : m ≤ -2 := by omega
+    have ha : π ∈ v.adicCompletionIntegers K := by
+      show Valued.v π ≤ 1
+      rw [hπ, ← WithZero.exp_zero, WithZero.exp_le_exp]; norm_num
+    have hbv : Valued.v ((x : v.adicCompletion K) / π) = WithZero.exp (m + 1) := by
+      rw [map_div₀, hx, hπ, ← WithZero.exp_sub, sub_neg_eq_add]
+    have hb : (x : v.adicCompletion K) / π ∈ v.adicCompletionIntegers K := by
+      show Valued.v ((x : v.adicCompletion K) / π) ≤ 1
+      rw [hbv, ← WithZero.exp_zero, WithZero.exp_le_exp]; omega
+    have hprod : (⟨(x : v.adicCompletion K), hmem⟩ : v.adicCompletionIntegers K) =
+        ⟨π, ha⟩ * ⟨(x : v.adicCompletion K) / π, hb⟩ := by
+      apply Subtype.ext
+      show (x : v.adicCompletion K) = π * ((x : v.adicCompletion K) / π)
+      field_simp
+    rcases hirr.isUnit_or_isUnit hprod with h | h
+    · rw [isUnit_iff_v_eq_one] at h
+      change Valued.v π = 1 at h
+      rw [hπ, ← WithZero.exp_zero, WithZero.exp_inj] at h
+      norm_num at h
+    · rw [isUnit_iff_v_eq_one] at h
+      change Valued.v ((x : v.adicCompletion K) / π) = 1 at h
+      rw [hbv, ← WithZero.exp_zero, WithZero.exp_inj] at h
+      omega
+  · intro h
+    have hmem : (x : v.adicCompletion K) ∈ v.adicCompletionIntegers K := by
+      show Valued.v (x : v.adicCompletion K) ≤ 1
+      rw [h, ← WithZero.exp_zero, WithZero.exp_le_exp]; norm_num
+    refine ⟨hmem, irreducible_iff.2 ⟨?_, ?_⟩⟩
+    · intro hu
+      rw [isUnit_iff_v_eq_one] at hu
+      change Valued.v (x : v.adicCompletion K) = 1 at hu
+      rw [h, ← WithZero.exp_zero, WithZero.exp_inj] at hu
+      norm_num at hu
+    · intro a b hab
+      have hv : Valued.v (a : v.adicCompletion K) * Valued.v (b : v.adicCompletion K) = WithZero.exp (-1 : ℤ) := by
+        have hab' : (x : v.adicCompletion K) = (a : v.adicCompletion K) * (b : v.adicCompletion K) :=
+          congrArg Subtype.val hab
+        rw [← map_mul, ← hab', h]
+      have ha0 : Valued.v (a : v.adicCompletion K) ≠ 0 := by
+        intro h0; rw [h0, zero_mul] at hv; exact WithZero.exp_ne_zero hv.symm
+      have hb0 : Valued.v (b : v.adicCompletion K) ≠ 0 := by
+        intro h0; rw [h0, mul_zero] at hv; exact WithZero.exp_ne_zero hv.symm
+      have hale : Valued.v (a : v.adicCompletion K) ≤ 1 := a.2
+      have hble : Valued.v (b : v.adicCompletion K) ≤ 1 := b.2
+      rw [← WithZero.exp_log ha0, ← WithZero.exp_zero, WithZero.exp_le_exp] at hale
+      rw [← WithZero.exp_log hb0, ← WithZero.exp_zero, WithZero.exp_le_exp] at hble
+      rw [← WithZero.exp_log ha0, ← WithZero.exp_log hb0, ← WithZero.exp_add, WithZero.exp_inj] at hv
+      by_cases hi : WithZero.log (Valued.v (a : v.adicCompletion K)) = 0
+      · left
+        rw [isUnit_iff_v_eq_one, ← WithZero.exp_log ha0, hi, WithZero.exp_zero]
+      · right
+        have hj : WithZero.log (Valued.v (b : v.adicCompletion K)) = 0 := by omega
+        rw [isUnit_iff_v_eq_one, ← WithZero.exp_log hb0, hj, WithZero.exp_zero]
+
+end GlobalTheory.UnifVal
+end
+end
+
+open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.LatVal Neutral.B1
+open scoped nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isUniformiserAt_iff_adicCompletion_isUnifAt : ∀ {K : Type} [Field K] [NumberField K] (v : HeightOneSpectrum (𝓞 K)) (x : (v.adicCompletion K)ˣ), IsUniformiserAt K v (x : v.adicCompletion K) ↔ Formalism.L2.Host.IsUnifAt v x := by
+  atlas_forward_decl GlobalTheory.UnifVal.isUniformiserAt_iff_isUnifAt
+end
+
+section
+section
+open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.LatVal Neutral.B1
+open scoped nonZeroDivisors
+
+namespace GlobalTheory.Div.SuppIdele
+
+theorem snd_apply_mul {K : Type} [Field K] [NumberField K] (v : HeightOneSpectrum (𝓞 K))
+    (a b : AdeleRing (𝓞 K) K) : (a * b).2 v = a.2 v * b.2 v := rfl
+
+theorem supported_eq_localIdele : ∀ {K : Type} [Field K] [NumberField K] {v : HeightOneSpectrum (𝓞 K)} {a : Ideles K},
+    IsSupportedAt K a v → ∃ x : (v.adicCompletion K)ˣ, (x : v.adicCompletion K) = (a : AdeleRing (𝓞 K) K).2 v ∧
+      localIdele K v x = a := by
+  intro K _ _ v a ha
+  classical
+  let x : (v.adicCompletion K)ˣ :=
+    { val := (a : AdeleRing (𝓞 K) K).2 v
+      inv := ((a⁻¹ : Ideles K) : AdeleRing (𝓞 K) K).2 v
+      val_inv := by
+        rw [← snd_apply_mul, Units.mul_inv]; rfl
+      inv_val := by
+        rw [← snd_apply_mul, Units.inv_mul]; rfl }
+  refine ⟨x, rfl, ?_⟩
+  apply Units.ext
+  apply Prod.ext
+  · funext w
+    exact (ha.1 w).symm
+  · apply RestrictedProduct.ext
+    intro w
+    by_cases hw : w = v
+    · subst hw
+      exact (localIdele_snd_self K w x).trans rfl
+    · exact ((localIdele_isSupportedAt K v x).2 w hw).trans (ha.2 w hw).symm
+
+end GlobalTheory.Div.SuppIdele
+end
+
+open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.LatVal Neutral.B1
+open scoped nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.supportedIdele_eq_localIdele : ∀ {K : Type} [Field K] [NumberField K] {v : HeightOneSpectrum (𝓞 K)} {a : Ideles K}, IsSupportedAt K a v → ∃ x : (v.adicCompletion K)ˣ, (x : v.adicCompletion K) = (a : AdeleRing (𝓞 K) K).2 v ∧ localIdele K v x = a := by
+  atlas_forward_decl GlobalTheory.Div.SuppIdele.supported_eq_localIdele
+end
+
+section
+open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.LatVal Neutral.B1
+open scoped nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_cmCurve_torsionTransport_secondPeriod : ∀ {K : Type} [Field K] [NumberField K] [IsTotallyComplex K], Module.finrank ℚ K = 2 → ∀ (ι : K →+* ℂ) (Λ₀ : PeriodPair) (Ω₀ : ℂ), GlobalTheory.IndefiniteRowSideFullHecke.LatticeNormTransport.IsLatOf ι 1 Λ₀ → Ω₀ ≠ 0 → letI : Algebra K ℂ := ι.toAlgebra; ∃ (X : WeierstrassCurve ℂ) (_ : X.IsElliptic) (ξ : (ℂ ⧸ GlobalTheory.EllipticCM.idealSub (1 : FractionalIdeal (𝓞 K)⁰ K)) ≃+ X.toAffine.Point), GlobalTheory.EllipticCM.IsAnalyticIso ξ ∧ ∀ (σ : ℂ ≃ₐ[K] ℂ) (t : (Af K)ˣ), GlobalTheory.EllipticCM.Transports σ t one_ne_zero ξ → ∃ (Λ₁ : PeriodPair) (Ω₁ : ℂ), TorsTransport ι σ.toRingEquiv t Λ₀ Λ₁ Ω₀ Ω₁ := by
+  first | exact @GlobalTheory.LatVal.CurveTransport.exists_curve_torsTransport | exact GlobalTheory.LatVal.CurveTransport.exists_curve_torsTransport | (intros; apply GlobalTheory.LatVal.CurveTransport.exists_curve_torsTransport <;> assumption)
+end
+
+section
 open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.LatVal
 open scoped nonZeroDivisors
 
@@ -101,3 +560,5 @@ theorem periodEx_of_mainTheorem : GlobalTheory.Published.EllipticMainTheoremCM �
   exact hT gK t hTr
 
 end GlobalTheory.LatVal
+end
+end

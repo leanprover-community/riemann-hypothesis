@@ -1,7 +1,327 @@
-import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.UniformTheoremBOfLocalFrame
-import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.TopLevelBesselOfHypothesis
+import Formalism.SharpRestriction.CuspSpanNormBounds.WeightedUniformRotatedOfExpansion
+import Formalism.SharpRestriction.CuspSpanNormBounds.TheoremBConstants
+import Formalism.SharpRestriction.CuspSpanNormBounds.OnePlaceExpansion
+import Formalism.SharpRestriction.CuspSpanNormBounds.BigCellDensity
 import Formalism.HermitianCurvature.StatementTBB
 
+section
+noncomputable section
+
+namespace Formalism.L2.SG.Pf.BesselExpansion
+
+open MeasureTheory Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.BasicNotions Formalism.MainNotions.BesselShellMomentBounds Formalism.MainNotions.RotatedPoints Formalism.MainNotions.S.Pv.Frames
+
+def BesselExpansionRotated : Prop :=
+  ∀ Aw Ch : ℝ, 0 ≤ Aw → ∃ (C1 C2 Cg₀ : ℝ), 2 ≤ Cg₀ ∧ ∀ Cg : ℝ, Cg₀ ≤ Cg → ∀ D : D7, ∃ (dist' : ℝ) (A : ℕ),
+    QExpAtR D Ch Cg 0 (fun _ _ _ X => ∀ v, AllGaps (X.L v).lam (Cg * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 4)) dist' A C1 5
+        (Aw * ((D.R.rS : ℝ) + 1) ^ 2) ∧
+      BpRealR D Ch Cg dist' A C2 5
+
+section Loc
+
+variable (D : D7)
+
+def PlaceOKS (Ch Cg : ℝ) (T T' : ℕ) (b dist dinf : ℝ) (v : D.what₂.Tau) (L : LocBessel D.R.k D.R.rS)
+    (f : Mx D.R.k D.R.rS → (L.Wq →L[ℂ] L.Wp)) (μsec : ℂ → Matrix (Fin (D.R.k + 1)) (Fin (D.R.k + 1)) ℂ) : Prop :=
+  PlaceOKR D Ch Cg T T' b dist v L f μsec ∧ ∀ s, |L.lam s - lamSH D.R (D.hc v) s| ≤ dinf
+
+def BpLocS (Ch Cg dist dinf : ℝ) (A : ℕ) (C : ℝ) (e : ℕ) : Prop :=
+  ∀ (T T' : ℕ) (b : ℝ) (v : D.what₂.Tau) (L : LocBessel D.R.k D.R.rS) (f : Mx D.R.k D.R.rS → (L.Wq →L[ℂ] L.Wp))
+    (μsec : ℂ → Matrix (Fin (D.R.k + 1)) (Fin (D.R.k + 1)) ℂ), PlaceOKS D Ch Cg T T' b dist dinf v L f μsec →
+    ∀ p : Point ℂ (D.R.rS + 1), Gpt (T : ℝ) (T' : ℝ) p ≠ 0 →
+      ENNReal.ofReal (ptWeight D.R.k D.R.rS (T : ℝ) (T' : ℝ) p) * orbSq L f p ≤
+        ENNReal.ofReal (b ^ (C * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ e) * max 1 (1 / Gpt (T : ℝ) (T' : ℝ) p) ^ A) *
+          jNorm2 L f μsec
+
+def BpRealS (Ch Cg dist dinf : ℝ) (A : ℕ) (C : ℝ) (e : ℕ) : Prop :=
+  ∀ (T T' : ℕ) (b : ℝ) (v : D.what₂.Tau) (L : LocBessel D.R.k D.R.rS) (f : Mx D.R.k D.R.rS → (L.Wq →L[ℂ] L.Wp))
+    (μsec : ℂ → Matrix (Fin (D.R.k + 1)) (Fin (D.R.k + 1)) ℂ), PlaceOKS D Ch Cg T T' b dist dinf v L f μsec →
+    ∀ γ : Point D.host.E (D.R.rS + 1), IsBPt D T T' γ →
+      ENNReal.ofReal (nLoc D T T' v γ) * orbSq L f (turnPt (ptLoc D v γ)) ≤
+        ENNReal.ofReal (b ^ (C * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ e) * max 1 (1 / absV D v (Gglob D T T' γ)) ^ A) *
+          jNorm2 L f μsec
+
+def QExpAtS (Ch Cg dist : ℝ) (P : ∀ (T T' : ℕ) (b : ℝ), BData D Ch Cg T T' b dist → Prop) (dist' dinf' : ℝ) (A : ℕ)
+    (C : ℝ) (e : ℕ) (p : ℝ) : Prop :=
+  ∀ (T T' : ℕ) (b : ℝ) (X : BData D Ch Cg T T' b dist), P T T' b X →
+    ∀ γ : Point D.host.E (D.R.rS + 1), IsBPt D T T' γ → ∀ v,
+    ∃ (n : ℕ) (a : Fin n → ℝ) (L' : Fin n → LocBessel D.R.k D.R.rS)
+      (f' : ∀ i, Mx D.R.k D.R.rS → ((L' i).Wq →L[ℂ] (L' i).Wp))
+      (μ' : Fin n → ℂ → Matrix (Fin (D.R.k + 1)) (Fin (D.R.k + 1)) ℂ),
+      (∀ i, 0 ≤ a i) ∧ ∑ i, a i ≤ b ^ (C * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ e) ∧
+      (∀ i, PlaceOKS D Ch Cg T T' b dist' dinf' v (L' i) (f' i) (μ' i)) ∧
+      (∀ i, jNorm2 (L' i) (f' i) (μ' i) ≤ jNorm2 (X.L v) (X.f v) (X.μsec v)) ∧
+      ENNReal.ofReal (wLoc D v γ ^ 2 * (1 + dLoc D v γ) ^ A * nLoc D T T' v γ * WLoc D T T' v γ ^ p) *
+          orbSq (X.L v) (X.f v) (turnPt (ptLoc D v γ)) ≤
+        (∑ i, ENNReal.ofReal (a i) *
+          (ENNReal.ofReal (nLoc D T T' v γ) * orbSq (L' i) (f' i) (turnPt (ptLoc D v γ))) ^ ((1 : ℝ) / 2)) ^ 2
+
+variable {D}
+
+theorem max_one_div_mul_le (α g : ℝ) (hα : 0 < α) (hg : 0 < g) :
+    max 1 (1 / (α * g)) ≤ max 1 α⁻¹ * max 1 (1 / g) := by
+  refine max_le ?_ ?_
+  · exact one_le_mul_of_one_le_of_one_le (le_max_left _ _) (le_max_left _ _)
+  · have e1 : 1 / (α * g) = α⁻¹ * (1 / g) := by field_simp
+    rw [e1]
+    exact mul_le_mul (le_max_right _ _) (le_max_right _ _) (by positivity) (le_trans zero_le_one (le_max_left _ _))
+
+theorem frame_bounds {Ch Cg : ℝ} {T T' : ℕ} {b dist : ℝ} {v : D.what₂.Tau} {L : LocBessel D.R.k D.R.rS}
+    {f : Mx D.R.k D.R.rS → (L.Wq →L[ℂ] L.Wp)} {μsec : ℂ → Matrix (Fin (D.R.k + 1)) (Fin (D.R.k + 1)) ℂ}
+    (hCg : 2 ≤ Cg) (hok : PlaceOKR D Ch Cg T T' b dist v L f μsec) :
+    2 ≤ b ∧ 1 ≤ b ^ (3 + Ch) ∧ D.host.rdE ≤ b ^ (3 + Ch) := by
+  obtain ⟨⟨hk, -, -, -, -, hStd, -, -⟩, -⟩ := hok
+  have hb2 : 2 ≤ b := by
+    have h1 := b_ge_of_StdHyp0 hk hStd.to0
+    have h2 : (1 : ℝ) ≤ ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) ^ 7 :=
+      one_le_pow₀ (by exact_mod_cast (by omega : 1 ≤ 2 * D.R.rS + D.R.k + 1))
+    nlinarith
+  have hka : 0 < kaRe D := hStd.2.2.2.1
+  have hk1 : kaRe D ≤ b ^ Ch := hStd.2.2.2.2.1
+  have hk2 : (kaRe D)⁻¹ ≤ b ^ Ch := hStd.2.2.2.2.2.1
+  have hbC : 1 ≤ b ^ Ch := by
+    rcases le_total 1 (kaRe D) with h | h
+    · exact h.trans hk1
+    · exact ((one_le_inv₀ hka).2 h).trans hk2
+  have hb0 : 0 < b := by linarith
+  have hb3 : 1 ≤ b ^ (3 + Ch) := by
+    rw [Real.rpow_add hb0]
+    have : 1 ≤ b ^ (3 : ℝ) := Real.one_le_rpow (by linarith) (by norm_num)
+    nlinarith
+  exact ⟨hb2, hb3, Formalism.MainNotions.TheoremBConstants.rdE_le D b Ch hb2 hka hk2⟩
+
+theorem ch_nonneg {Ch Cg : ℝ} {T T' : ℕ} {b dist : ℝ} {v : D.what₂.Tau} {L : LocBessel D.R.k D.R.rS}
+    {f : Mx D.R.k D.R.rS → (L.Wq →L[ℂ] L.Wp)} {μsec : ℂ → Matrix (Fin (D.R.k + 1)) (Fin (D.R.k + 1)) ℂ}
+    (hCg : 2 ≤ Cg) (hok : PlaceOKR D Ch Cg T T' b dist v L f μsec) : 0 ≤ Ch := by
+  have hb2 := (frame_bounds hCg hok).1
+  obtain ⟨⟨-, -, -, -, -, hStd, -, -⟩, -⟩ := hok
+  have hka : 0 < kaRe D := hStd.2.2.2.1
+  have hk1 : kaRe D ≤ b ^ Ch := hStd.2.2.2.2.1
+  have hk2 : (kaRe D)⁻¹ ≤ b ^ Ch := hStd.2.2.2.2.2.1
+  by_contra hc
+  push_neg at hc
+  have hlt : b ^ Ch < 1 := Real.rpow_lt_one_of_one_lt_of_neg (by linarith) hc
+  rcases le_total 1 (kaRe D) with h | h
+  · linarith
+  · have := (one_le_inv₀ hka).2 h
+    linarith
+
+theorem bound_at {Ch Cg dist C : ℝ} {A e : ℕ} {T T' : ℕ} {b : ℝ} {v : D.what₂.Tau} {L : LocBessel D.R.k D.R.rS}
+    {f : Mx D.R.k D.R.rS → (L.Wq →L[ℂ] L.Wp)} {μsec : ℂ → Matrix (Fin (D.R.k + 1)) (Fin (D.R.k + 1)) ℂ}
+    (hCg : 2 ≤ Cg) (hok : PlaceOKR D Ch Cg T T' b dist v L f μsec)
+    (γ : Point D.host.E (D.R.rS + 1)) (hγ : IsBPt D T T' γ) (p : Point ℂ (D.R.rS + 1))
+    (hGp : Gpt (T : ℝ) (T' : ℝ) p = Gpt (T : ℝ) (T' : ℝ) (ptLoc D v γ))
+    (hwp : ptWeight D.R.k D.R.rS (T : ℝ) (T' : ℝ) p = nLoc D T T' v γ)
+    (hB : Gpt (T : ℝ) (T' : ℝ) p ≠ 0 →
+      ENNReal.ofReal (ptWeight D.R.k D.R.rS (T : ℝ) (T' : ℝ) p) * orbSq L f p ≤
+        ENNReal.ofReal (b ^ (C * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ e) * max 1 (1 / Gpt (T : ℝ) (T' : ℝ) p) ^ A) *
+          jNorm2 L f μsec) :
+    ENNReal.ofReal (nLoc D T T' v γ) * orbSq L f p ≤
+      ENNReal.ofReal (b ^ (C * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ e) *
+          (((b ^ (3 + Ch)) ^ ((2 * D.R.rS + 2) ^ 2)) ^ A * max 1 (1 / absV D v (Gglob D T T' γ)) ^ A)) *
+        jNorm2 L f μsec := by
+  by_cases h0 : orbSq L f p = 0
+  · simp [h0]
+  obtain ⟨hb2, hR1, hRd⟩ := frame_bounds hCg hok
+  obtain ⟨g, hg⟩ := exists_rep_of_orbSq L f p h0
+  have hG0 := GPoint_nonneg_of_rep L p g hg
+  rw [hok.2.2.2.2.1, hok.2.2.2.2.2] at hG0
+  set α : ℝ := ((∏ i : Fin D.R.rS, alf D i) ^ 2) ^ 2 with hαdef
+  set gv : ℝ := Complex.normSq (plEmb D v (leadMinorK (ptMat γ) (D.R.rS + 1) le_rfl)) -
+    (T : ℝ) * (T' : ℝ) * Complex.normSq (plEmb D v (leadMinorK (ptMat γ) D.R.rS (Nat.le_succ _))) with hgvdef
+  have hGeq : Gpt (T : ℝ) (T' : ℝ) p = α * gv := by rw [hGp, GPoint_loc]
+  have hα : 0 < α := by
+    have := Finset.prod_pos (s := Finset.univ) (fun (i : Fin D.R.rS) _ => alf_pos D i)
+    positivity
+  have hgvC : plEmb D v (Gglob D T T' γ) = (gv : ℂ) := plEmb_Gglob D T T' v γ
+  have hgv0 : gv ≠ 0 := by
+    intro h
+    apply (map_ne_zero (plEmb D v)).2 hγ.2.1
+    rw [hgvC, h, Complex.ofReal_zero]
+  have hGne : Gpt (T : ℝ) (T' : ℝ) p ≠ 0 := by rw [hGeq]; exact mul_ne_zero hα.ne' hgv0
+  have hGpos : 0 < Gpt (T : ℝ) (T' : ℝ) p := lt_of_le_of_ne hG0 (Ne.symm hGne)
+  have hgpos : 0 < gv := by
+    by_contra hc
+    push_neg at hc
+    nlinarith
+  have habs : absV D v (Gglob D T T' γ) = gv := by
+    unfold absV
+    rw [hgvC, Complex.norm_real, Real.norm_of_nonneg hgpos.le]
+  have main := hB hGne
+  rw [hwp] at main
+  refine main.trans (mul_le_mul' (ENNReal.ofReal_le_ofReal ?_) le_rfl)
+  rw [habs, hGeq]
+  have hb0 : 0 < b := by linarith
+  have hm1 : max 1 α⁻¹ ≤ (b ^ (3 + Ch)) ^ ((2 * D.R.rS + 2) ^ 2) := by
+    refine max_le (one_le_pow₀ hR1) ?_
+    exact Formalism.MainNotions.TheoremBConstants.alfProd_inv_le D (b ^ (3 + Ch)) hR1 hRd D.R.rS (by omega)
+  have hmax := max_one_div_mul_le α gv hα hgpos
+  have hpow : max 1 (1 / (α * gv)) ^ A ≤
+      ((b ^ (3 + Ch)) ^ ((2 * D.R.rS + 2) ^ 2)) ^ A * max 1 (1 / gv) ^ A := by
+    rw [← mul_pow]
+    refine pow_le_pow_left₀ (le_trans zero_le_one (le_max_left _ _)) (hmax.trans ?_) A
+    exact mul_le_mul_of_nonneg_right hm1 (le_trans zero_le_one (le_max_left _ _))
+  have hbC : 0 ≤ b ^ (C * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ e) := Real.rpow_nonneg hb0.le _
+  exact mul_le_mul_of_nonneg_left hpow hbC
+
+
+
+
+
+end Loc
+
+def BesselExpansionLocal : Prop :=
+  ∀ Aw Ch : ℝ, 0 ≤ Aw → ∃ (C1 C2 CA Cinf Cg₀ : ℝ), 2 ≤ Cg₀ ∧ ∀ Cg : ℝ, Cg₀ ≤ Cg → ∀ D : D7,
+    ∃ (dist' : ℝ) (A : ℕ), (A : ℝ) ≤ CA * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 2 ∧
+      QExpAtS D Ch Cg 0 (fun _ _ _ X => ∀ v, AllGaps (X.L v).lam (Cg * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 4)) dist'
+          (Cinf * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 3) A C1 5 (Aw * ((D.R.rS : ℝ) + 1) ^ 2) ∧
+        BpLocS D Ch Cg dist' (Cinf * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 3) A C2 5
+
+
+end Formalism.L2.SG.Pf.BesselExpansion
+end
+end
+
+section
+noncomputable section
+
+namespace Formalism.L2.SG.Pf.BesselExpansion
+
+open MeasureTheory Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.BasicNotions Formalism.MainNotions.BesselShellMomentBounds Formalism.MainNotions.RotatedPoints Formalism.MainNotions.S.Pv.Frames
+
+section Fr
+
+variable (D : D7)
+
+def PlaceOK1 (Ch Cg b dist dinf : ℝ) (v : D.what₂.Tau) (L : LocBessel D.R.k D.R.rS)
+    (f : Mx D.R.k D.R.rS → (L.Wq →L[ℂ] L.Wp)) (μsec : ℂ → Matrix (Fin (D.R.k + 1)) (Fin (D.R.k + 1)) ℂ) : Prop :=
+  LocOk D Ch Cg L (lamSH D.R (D.hc v)) (kaRe D) b 1 ∧ l1 L.lam (lamSH D.R (D.hc v)) ≤ dist ∧
+    (∀ s, |L.lam s - lamSH D.R (D.hc v) s| ≤ dinf) ∧ IsKFinCoefH L.σ f ∧ IsSection D.R.k D.R.rS L.z L.z' μsec
+
+def BpLoc1 (Ch Cg dist dinf : ℝ) (A : ℕ) (C : ℝ) (e : ℕ) : Prop :=
+  ∀ (b : ℝ) (v : D.what₂.Tau) (L : LocBessel D.R.k D.R.rS) (f : Mx D.R.k D.R.rS → (L.Wq →L[ℂ] L.Wp))
+    (μsec : ℂ → Matrix (Fin (D.R.k + 1)) (Fin (D.R.k + 1)) ℂ), PlaceOK1 D Ch Cg b dist dinf v L f μsec →
+    ∀ p : Point ℂ (D.R.rS + 1), Gpt (Tz D.R.k D.R.rS L.z) (Tz D.R.k D.R.rS L.z') p ≠ 0 →
+      ENNReal.ofReal (ptWeight D.R.k D.R.rS (Tz D.R.k D.R.rS L.z) (Tz D.R.k D.R.rS L.z') p) * orbSq L f p ≤
+        ENNReal.ofReal (b ^ (C * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ e) *
+          max 1 (1 / Gpt (Tz D.R.k D.R.rS L.z) (Tz D.R.k D.R.rS L.z') p) ^ A) * jNorm2 L f μsec
+
+variable {D}
+
+
+theorem gap_mono {n : ℕ} {ε : Fin n → Bool} {lam : Fin n → ℝ} {h h' : ℝ} (hg : GapAtLeast ε lam h) (hh : h' ≤ h) :
+    GapAtLeast ε lam h' := fun a b hab => hh.trans (hg a b hab)
+
+
+
+
+end Fr
+
+
+def BesselExpansionLocalFrame : Prop :=
+  ∀ Aw Ch : ℝ, 0 ≤ Aw → ∃ (C1 C2 CA Cinf Cgf Cg₀ : ℝ), 2 ≤ Cg₀ ∧ (∀ D : D7, Formalism.MainNotions.FrameBoundFromBesselTorus.OneBesselTor D Cgf) ∧
+    ∀ Cg : ℝ, Cg₀ ≤ Cg → ∀ D : D7,
+    ∃ (dist' : ℝ) (A : ℕ), (A : ℝ) ≤ CA * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 2 ∧
+      QExpAtS D Ch Cg 0 (fun _ _ _ X => ∀ v, AllGaps (X.L v).lam (Cg * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 4)) dist'
+          (Cinf * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 3) A C1 5 (Aw * ((D.R.rS : ℝ) + 1) ^ 2) ∧
+        BpLoc1 D Ch Cg dist' (Cinf * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 3) A C2 5
+
+
+
+end Formalism.L2.SG.Pf.BesselExpansion
+end
+end
+
+section
+noncomputable section
+
+namespace Formalism.L2.SG.Pf.BesselExpansion
+
+open MeasureTheory Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA Formalism.MainNotions.BigCellDensity
+open scoped InnerProductSpace
+
+def TopLevelBesselHypothesis : Prop :=
+  ∀ (k0 r : ℕ) (L : LocBessel (k0 + 1) r) (Ds : Formalism.FourierDecayAlt.B.RealPlaceData (k0 + 1) r L.Wp L.Wq)
+    (ν' : Fin (2 * r + (k0 + 1) + 1) → ℂ) (m₀ : Formalism.FourierDecayAlt.B.Mat (k0 + 1) r),
+    L.c = cStd → 0 < L.κN → L.κN ≠ ⊤ → Ds.z = L.z → Ds.z' = L.z' → Ds.π = L.π → Ds.π' = L.π' →
+    Ds.μW = L.μW → Ds.μN = L.μN → Ds.μW' = L.μW' → Formalism.FourierDecayAlt.D.IsBaseFrame Ds ν' m₀ →
+      ∀ (F : ThB.Mx (k0 + 1) r → (L.Wq →L[ℂ] L.Wp)) (γ : Point ℂ (r + 1)), IsKFinCoefH L.σ F →
+        Formalism.FourierDecayAlt.B.InCC (A0 (k0 + 1) r) 1 F →
+        0 < ThB.Gpt (Tz (k0 + 1) r L.z) (Tz (k0 + 1) r L.z') γ → (∃ g, IsPtRep L γ g ∧ IsRelStab L g) →
+        ThB.orbSq L F γ = ENNReal.ofReal (Real.pi ^ (2 * pc r (γ.1.map Prod.snd)) *
+          (Formalism.FourierDecayAlt.B.hsInner (Formalism.FourierDecayAlt.D.vecV Ds ν' m₀ F (γ.1.map Prod.swap))
+            (Formalism.FourierDecayAlt.D.vecV Ds ν' m₀ F (γ.1.map Prod.swap))).re)
+
+theorem topLevelBesselHypothesis : TopLevelBesselHypothesis := by
+  have hDF := Formalism.FourierDecayAlt.P.exists_isotropic_frame
+  have hVI := Formalism.FourierDecayAlt.P.isotropic_vectors_linear_indep
+  have hPR := Formalism.FourierDecayAlt.P.relevant_points_holds
+  have hRM := root_measure_of_mu_R
+  have hQE := quotient_exists
+  have hCut := K_finite_decay
+  have hRI := repIndep_of K_finite_decay orbital_norm_independence
+  intro k0 r L Ds ν' m₀ hc hκ0' hκ1 hz hz' hπ hπ' hW hN hW' hBF
+  have hκ0 : L.κN ≠ 0 := hκ0'.ne'
+  intro F γ hK hdec hpos _
+  have hp : Formalism.FourierDecayAlt.D.IsLocPt (γ.1.map Prod.swap) (r + 1) := isLocPt_swap γ
+  have hG : 0 < Formalism.FourierDecayAlt.D.ptG (Tz (k0 + 1) r Ds.z * Tz (k0 + 1) r Ds.z') r (γ.1.map Prod.swap) := by
+    rw [ptG_eq_GPoint, hz, hz']
+    exact hpos
+  obtain ⟨g, hgG, hgZ, hgF⟩ := hDF (k0 + 1) r L.Wp L.Wq Ds ν' m₀ _ hBF hp hG
+  have hvec := hVI (k0 + 1) r L.Wp L.Wq Ds ν' m₀ F _ hp g hBF hG hgG hgZ hgF
+  have hrep : IsPtRep L γ g := ⟨hgG, by rw [← hz, ← hz', hgZ, ptMatN_swap]⟩
+  have hrelD := hPR (k0 + 1) r L.Wp L.Wq Ds _ g hp hgG hgZ
+  have hrel : IsRelStab L g := fun a ha => by
+    have h1 := hrelD.2 a ha
+    rw [hz, hz'] at h1
+    rw [hc]
+    exact h1
+  have hroot := hRM k0 r L Ds γ g hp hc hz hz' hgG hgZ
+  obtain ⟨ν, hq⟩ := hQE k0 r L γ g _ hc hκ0 hκ1 hrep hrel hroot
+  have hcard_pos : (0 : ℝ) < Real.pi⁻¹ ^ (rootPat γ).card := by positivity
+  have hl0 : ENNReal.ofReal (Real.pi⁻¹ ^ (rootPat γ).card) ≠ 0 := by
+    rw [Ne, ENNReal.ofReal_eq_zero, not_le]
+    exact hcard_pos
+  have hq' := isOrbQuot_rescale L _ ENNReal.ofReal_ne_top hq
+  have hconc : Formalism.FourierDecayAlt.D.muR Ds g (hp.2 ▸ Formalism.FourierDecayAlt.D.ptPerm (γ.1.map Prod.swap))
+      {x | Matrix.of x ∉ RStab (k0 + 1) r g} = 0 := by
+    have h1 := hroot.1
+    rw [Measure.smul_apply, smul_eq_mul] at h1
+    rcases mul_eq_zero.1 h1 with h | h
+    · exact absurd h hl0
+    · exact h
+  have hne : Formalism.FourierDecayAlt.D.muR Ds g (hp.2 ▸ Formalism.FourierDecayAlt.D.ptPerm (γ.1.map Prod.swap)) ≠ 0 := by
+    intro h0
+    apply muR_ne_zero L hc γ g _ hroot
+    rw [h0, smul_zero]
+  have : SFinite (Formalism.FourierDecayAlt.D.muR Ds g (hp.2 ▸ Formalism.FourierDecayAlt.D.ptPerm (γ.1.map Prod.swap))) := by
+    unfold Formalism.FourierDecayAlt.D.muR
+    infer_instance
+  have hcut := hCut k0 r L Ds γ g hp F hc hz hz' hπ hπ' hW hN hW' hK hdec hpos hgG hgZ
+  have hJ := orbJ_eq L Ds hc hκ0 hκ1 hz hz' hπ hπ' hW hN hW' hgG hrel hconc hne hq' F hcut
+  have hsm : OrbInt L F g (ENNReal.ofReal (Real.pi⁻¹ ^ (rootPat γ).card) • ν) =
+      (ENNReal.ofReal (Real.pi⁻¹ ^ (rootPat γ).card)).toReal • OrbInt L F g ν := by
+    unfold OrbInt
+    rw [integral_smul_measure]
+  rw [hvec, hJ, hsm,
+    orbSq_eq_of L F γ (hsNormSq (OrbInt L F g ν))
+      (fun g' μ' ν' h' => hRI k0 r L Ds F γ hc hκ0 hκ1 hz hz' hπ hπ' hW hN hW' hK hdec hpos g' μ' ν' g _ ν h' ⟨hrep, hrel, hroot, hq⟩)
+      ⟨g, _, ν, hrep, hrel, hroot, hq⟩]
+  congr 1
+  rw [show (Formalism.FourierDecayAlt.B.hsInner ((ENNReal.ofReal (Real.pi⁻¹ ^ (rootPat γ).card)).toReal • OrbInt L F g ν)
+      ((ENNReal.ofReal (Real.pi⁻¹ ^ (rootPat γ).card)).toReal • OrbInt L F g ν)).re =
+      hsNormSq ((ENNReal.ofReal (Real.pi⁻¹ ^ (rootPat γ).card)).toReal • OrbInt L F g ν) by rw [hsNormSq, hsInner_eq],
+    Formalism.MainNotions.BigCellDensity.hsNormSq_smul, ENNReal.toReal_ofReal hcard_pos.le]
+  rw [← card_rootPat γ]
+  have h1 : Real.pi ^ (2 * (rootPat γ).card) * (Real.pi⁻¹ ^ (rootPat γ).card) ^ 2 = 1 := by
+    rw [← pow_mul, mul_comm (rootPat γ).card 2, ← mul_pow, mul_inv_cancel₀ Real.pi_ne_zero, one_pow]
+  rw [← mul_assoc, h1, one_mul]
+
+end Formalism.L2.SG.Pf.BesselExpansion
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.L2.SG.Pf.BesselExpansion
@@ -91,71 +411,6 @@ def BpLoc1N (D : D7) (Ch Cg dist dinf : ℝ) (A : ℕ) (C : ℝ) (e : ℕ) : Pro
 def NScale1 : Prop :=
   ∀ (D : D7) (Ch Cg dist dinf : ℝ) (A : ℕ) (C : ℝ) (e : ℕ), BpLoc1N D Ch Cg dist dinf A C e → BpLoc1 D Ch Cg dist dinf A C e
 
-theorem theoremB_expansion_bound {r A e n' : ℕ} {b C₄ G Pc nn VV Ew : ℝ} {jN jR : ENNReal}
-    (hb2 : 2 ≤ b) (he : 4 ≤ e) (hC4 : 0 ≤ C₄) (hG : 0 < G) (hn : 0 ≤ nn) (hPc0 : 0 ≤ Pc)
-    (hPc : Pc ≤ Real.pi ^ (2 * (2 * r + 2) ^ 2)) (hA' : n' ≤ A) (hEw : Ew = nn * VV)
-    (hB : ENNReal.ofReal Ew ≤ ENNReal.ofReal (b ^ (C₄ * ((2 * r + 2 : ℕ) : ℝ) ^ 4) * G⁻¹ ^ n') * jN)
-    (hJ : jN ≤ ENNReal.ofReal (Real.pi ^ (2 * (2 * r + 2) ^ 2)) * jR) :
-    ENNReal.ofReal nn * ENNReal.ofReal (Pc * VV) ≤
-      ENNReal.ofReal (b ^ ((C₄ + 8) * ((2 * r + 2 : ℕ) : ℝ) ^ e) * max 1 (1 / G) ^ A) * jR := by
-  have hb0 : (0:ℝ) < b := by linarith
-  have hb1 : (1:ℝ) ≤ b := by linarith
-  have hX1 : (1:ℝ) ≤ ((2 * r + 2 : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ 2 * r + 2)
-  have hX4e : ((2 * r + 2 : ℕ) : ℝ) ^ 4 ≤ ((2 * r + 2 : ℕ) : ℝ) ^ e := pow_le_pow_right₀ hX1 he
-  have hX2e : ((2 * r + 2 : ℕ) : ℝ) ^ 2 ≤ ((2 * r + 2 : ℕ) : ℝ) ^ e := pow_le_pow_right₀ hX1 (by omega)
-  have hP0 : (0:ℝ) ≤ Real.pi ^ (2 * (2 * r + 2) ^ 2) := by positivity
-  have hPP : Real.pi ^ (2 * (2 * r + 2) ^ 2) * Real.pi ^ (2 * (2 * r + 2) ^ 2) ≤
-      b ^ (8 * ((2 * r + 2 : ℕ) : ℝ) ^ e) := by
-    have h1 : Real.pi ^ (2 * (2 * r + 2) ^ 2) * Real.pi ^ (2 * (2 * r + 2) ^ 2) ≤
-        (b ^ 2) ^ (4 * (2 * r + 2) ^ 2) := by
-      rw [← pow_add, show 2 * (2 * r + 2) ^ 2 + 2 * (2 * r + 2) ^ 2 = 4 * (2 * r + 2) ^ 2 by ring]
-      apply pow_le_pow_left₀ Real.pi_pos.le
-      nlinarith [Real.pi_le_four]
-    calc _ ≤ (b ^ 2) ^ (4 * (2 * r + 2) ^ 2) := h1
-      _ = b ^ (((8 * (2 * r + 2) ^ 2 : ℕ) : ℝ)) := by
-          rw [Real.rpow_natCast, ← pow_mul]; ring_nf
-      _ ≤ b ^ (8 * ((2 * r + 2 : ℕ) : ℝ) ^ e) := by
-          apply Real.rpow_le_rpow_of_exponent_le hb1
-          push_cast at hX2e ⊢
-          linarith
-  have hB1 : (0:ℝ) ≤ b ^ (C₄ * ((2 * r + 2 : ℕ) : ℝ) ^ 4) := (Real.rpow_pos_of_pos hb0 _).le
-  have hG0 : (0:ℝ) ≤ G⁻¹ ^ n' := pow_nonneg (inv_nonneg.mpr hG.le) _
-  have hBnn : (0:ℝ) ≤ b ^ (C₄ * ((2 * r + 2 : ℕ) : ℝ) ^ 4) * G⁻¹ ^ n' := mul_nonneg hB1 hG0
-  have hM1 : (1:ℝ) ≤ max 1 (1 / G) := le_max_left _ _
-  have hGM : G⁻¹ ^ n' ≤ max 1 (1 / G) ^ A := by
-    calc G⁻¹ ^ n' ≤ max 1 (1 / G) ^ n' := by
-          apply pow_le_pow_left₀ (inv_nonneg.mpr hG.le)
-          rw [one_div]; exact le_max_right _ _
-      _ ≤ max 1 (1 / G) ^ A := pow_le_pow_right₀ hM1 hA'
-  have hbC : b ^ (C₄ * ((2 * r + 2 : ℕ) : ℝ) ^ 4) ≤ b ^ (C₄ * ((2 * r + 2 : ℕ) : ℝ) ^ e) :=
-    Real.rpow_le_rpow_of_exponent_le hb1 (mul_le_mul_of_nonneg_left hX4e hC4)
-  have hreal : Pc * (b ^ (C₄ * ((2 * r + 2 : ℕ) : ℝ) ^ 4) * G⁻¹ ^ n') * Real.pi ^ (2 * (2 * r + 2) ^ 2) ≤
-      b ^ ((C₄ + 8) * ((2 * r + 2 : ℕ) : ℝ) ^ e) * max 1 (1 / G) ^ A := by
-    have hsplit : b ^ ((C₄ + 8) * ((2 * r + 2 : ℕ) : ℝ) ^ e) =
-        b ^ (8 * ((2 * r + 2 : ℕ) : ℝ) ^ e) * b ^ (C₄ * ((2 * r + 2 : ℕ) : ℝ) ^ e) := by
-      rw [← Real.rpow_add hb0]; ring_nf
-    rw [hsplit]
-    have hPcP : Pc * Real.pi ^ (2 * (2 * r + 2) ^ 2) ≤ b ^ (8 * ((2 * r + 2 : ℕ) : ℝ) ^ e) :=
-      le_trans (mul_le_mul_of_nonneg_right hPc hP0) hPP
-    have hE8 : (0:ℝ) ≤ b ^ (8 * ((2 * r + 2 : ℕ) : ℝ) ^ e) := (Real.rpow_pos_of_pos hb0 _).le
-    have hEC : (0:ℝ) ≤ b ^ (C₄ * ((2 * r + 2 : ℕ) : ℝ) ^ e) := (Real.rpow_pos_of_pos hb0 _).le
-    calc Pc * (b ^ (C₄ * ((2 * r + 2 : ℕ) : ℝ) ^ 4) * G⁻¹ ^ n') * Real.pi ^ (2 * (2 * r + 2) ^ 2)
-        = (Pc * Real.pi ^ (2 * (2 * r + 2) ^ 2)) * b ^ (C₄ * ((2 * r + 2 : ℕ) : ℝ) ^ 4) * G⁻¹ ^ n' := by ring
-      _ ≤ b ^ (8 * ((2 * r + 2 : ℕ) : ℝ) ^ e) * b ^ (C₄ * ((2 * r + 2 : ℕ) : ℝ) ^ e) *
-            max 1 (1 / G) ^ A :=
-          mul_le_mul (mul_le_mul hPcP hbC hB1 hE8) hGM hG0 (mul_nonneg hE8 hEC)
-  have hL : ENNReal.ofReal nn * ENNReal.ofReal (Pc * VV) = ENNReal.ofReal Pc * ENNReal.ofReal Ew := by
-    rw [← ENNReal.ofReal_mul hn, ← ENNReal.ofReal_mul hPc0, hEw]
-    congr 1; ring
-  rw [hL]
-  calc ENNReal.ofReal Pc * ENNReal.ofReal Ew
-      ≤ ENNReal.ofReal Pc * (ENNReal.ofReal (b ^ (C₄ * ((2 * r + 2 : ℕ) : ℝ) ^ 4) * G⁻¹ ^ n') *
-          (ENNReal.ofReal (Real.pi ^ (2 * (2 * r + 2) ^ 2)) * jR)) :=
-        by gcongr; exact hB.trans (by gcongr)
-    _ = ENNReal.ofReal (Pc * (b ^ (C₄ * ((2 * r + 2 : ℕ) : ℝ) ^ 4) * G⁻¹ ^ n') *
-          Real.pi ^ (2 * (2 * r + 2) ^ 2)) * jR := by
-        rw [ENNReal.ofReal_mul (mul_nonneg hPc0 hBnn), ENNReal.ofReal_mul hPc0]; ring
-    _ ≤ _ := by gcongr
 
 theorem pointWeight_eq_blockWeight (k r : ℕ) (T T' GG : ℝ) (hk : 1 ≤ k) : ∀ (bs : List (ℂ × ℕ)) (a : ℕ),
     (∀ b ∈ bs, 1 ≤ b.2) → a + (bs.map Prod.snd).sum = r + 1 →
@@ -203,91 +458,6 @@ theorem weightTie : WeightTie := by
   intro x hx
   simp [Formalism.FourierDecayAlt.D.ptGG, Formalism.FourierDecayAlt.D.ptLast, List.getLast?_map, hx]
 
-theorem bpLoc1_of_tbb {D : D7} {Ch Cg dist dinf C₄ Cgc : ℝ} {A e : ℕ} (hCg : 2 ≤ Cg) (he : 4 ≤ e) (hC4 : 0 ≤ C₄)
-    (hgap : Cgc * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ ((9 : ℝ) / 2) *
-        (((3 * (D.R.rS + 1) : ℕ) : ℝ) * ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) ^ 2 + ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) ^ 3) ≤
-      Cg * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ ((9 : ℝ) / 2) *
-        (((3 * (D.R.rS + 1) : ℕ) : ℝ) * ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) ^ 2 + ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) ^ 3) -
-        2 * dinf)
-    (hW : WeightTie) (hE : EnergyTie) (hCC : CoefCC1 Cgc) (hT : ThmBpTied D Ch Cg dist dinf A C₄) :
-    BpLoc1N D Ch Cg dist dinf A (C₄ + 8) e := by
-  intro b v L f μsec hok hμN p hGp
-  obtain ⟨u, u', pl, n₀, p₀, htie, hA, hbp⟩ := hT b v L f μsec hok hμN
-  by_cases h0 : orbSq L f p = 0
-  · rw [h0, mul_zero]; exact bot_le
-  by_cases hn0 : ptWeight D.R.k D.R.rS (Tz D.R.k D.R.rS L.z) (Tz D.R.k D.R.rS L.z') p < 0
-  · rw [ENNReal.ofReal_of_nonpos hn0.le, zero_mul]; exact bot_le
-  push_neg at hn0
-  obtain ⟨g, hrep, hstab⟩ := exists_relrep L f p h0
-  have hGpos : 0 < Gpt (Tz D.R.k D.R.rS L.z) (Tz D.R.k D.R.rS L.z') p :=
-    lt_of_le_of_ne (Formalism.MainNotions.BesselShellMomentBounds.GPoint_nonneg_of_rep L p g hrep) (Ne.symm hGp)
-  obtain ⟨hLoc, -, hdinf, hKfin, hsec⟩ := hok
-  obtain ⟨hk, -, hc, hκ, hκ', hstd, -, -⟩ := hLoc
-  obtain ⟨-, -, -, -, -, -, -, -, -, -, hlamb, -, -, hall, hgap0, -, -⟩ := hstd
-  have hcStd : L.c = cStd := by rw [hc]; simp [cOfDpsi, cStd]
-  have hX3 : (8:ℝ) ≤ ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 3 := by
-    have h2 : (2:ℝ) ≤ ((2 * D.R.rS + 2 : ℕ) : ℝ) := by exact_mod_cast (by omega : 2 ≤ 2 * D.R.rS + 2)
-    calc (8:ℝ) = 2 ^ 3 := by norm_num
-      _ ≤ _ := pow_le_pow_left₀ (by norm_num) h2 3
-  have hb2 : 2 ≤ b := by
-    have hn : 1 < 2 * D.R.rS + D.R.k + 1 := by omega
-    have hg := hall ⟨0, by omega⟩ ⟨1, hn⟩ (by simp [Fin.ext_iff])
-    have h1 := abs_le.mp (hlamb ⟨0, by omega⟩)
-    have h2 := abs_le.mp (hlamb ⟨1, hn⟩)
-    have h3 : |lamSH D.R (D.hc v) ⟨0, by omega⟩ - lamSH D.R (D.hc v) ⟨1, hn⟩| ≤ 2 * b :=
-      abs_le.mpr ⟨by linarith [h1.1, h1.2, h2.1, h2.2], by linarith [h1.1, h1.2, h2.1, h2.2]⟩
-    nlinarith [hX3, hCg]
-  have hInCC : Formalism.FourierDecayAlt.B.InCC (A0 D.R.k D.R.rS) 1 f := by
-    apply hCC D.R.k D.R.rS L f hk hKfin
-    intro a a' hne
-    have h0' := hgap0 a a' hne
-    have ha := abs_le.mp (hdinf a)
-    have ha' := abs_le.mp (hdinf a')
-    have e1 := le_abs_self (L.lam a - L.lam a')
-    have e2 := neg_abs_le (L.lam a - L.lam a')
-    have h5 : |lamSH D.R (D.hc v) a - lamSH D.R (D.hc v) a'| ≤ |L.lam a - L.lam a'| + 2 * dinf :=
-      abs_le.mpr ⟨by linarith [ha.1, ha.2, ha'.1, ha'.2], by linarith [ha.1, ha.2, ha'.1, ha'.2]⟩
-    linarith
-  have htie' := htie
-  obtain ⟨hz, hz', hπ, hπ', hμW, hμN', hμW'⟩ := htie'
-  have horb := tieTopXk D.R.k D.R.rS hk L pl.T.base pl.ν' pl.m₀ hcStd hκ hκ' hz hz' hπ hπ' hμW hμN' hμW'
-    pl.hF f p hKfin hInCC hGpos ⟨g, hrep, hstab⟩
-  have hTT : Formalism.FourierDecayAlt.TBB.TTp pl = Tz D.R.k D.R.rS L.z * Tz D.R.k D.R.rS L.z' := by
-    unfold Formalism.FourierDecayAlt.TBB.TTp
-    rw [hz, hz'] <;> rfl
-  have hloc : Formalism.FourierDecayAlt.D.IsLocPt (p.1.map Prod.swap) (D.R.rS + 1) := by
-    refine ⟨fun x hx => ?_, ?_⟩
-    · obtain ⟨y, hy, rfl⟩ := List.mem_map.mp hx
-      exact ⟨(p.2.1 y hy).2, (p.2.1 y hy).1⟩
-    · unfold Formalism.FourierDecayAlt.D.ptSize
-      rw [List.map_map]
-      have hfs : (Prod.fst ∘ Prod.swap : ℂ × ℕ → ℕ) = Prod.snd := rfl
-      rw [hfs]
-      exact p.2.2
-  have hGeq : Formalism.FourierDecayAlt.TBB.Gp pl (p.1.map Prod.swap) = Gpt (Tz D.R.k D.R.rS L.z) (Tz D.R.k D.R.rS L.z') p := by
-    unfold Formalism.FourierDecayAlt.TBB.Gp
-    rw [hTT]
-    show Formalism.FourierDecayAlt.D.ptG (Tz D.R.k D.R.rS L.z * Tz D.R.k D.R.rS L.z') D.R.rS (p.1.map Prod.swap) = _
-    exact Formalism.MainNotions.BigCellDensity.ptG_eq_GPoint _ _ p
-  have hGp' : 0 < Formalism.FourierDecayAlt.TBB.Gp pl (p.1.map Prod.swap) := by rw [hGeq]; exact hGpos
-  have hw := weightTie D.R.k D.R.rS (Tz D.R.k D.R.rS L.z) (Tz D.R.k D.R.rS L.z') p hk
-  have hn : 0 ≤ Formalism.FourierDecayAlt.TBB.nPt D.R.k D.R.rS (Tz D.R.k D.R.rS L.z * Tz D.R.k D.R.rS L.z')
-      (p.1.map Prod.swap) := by rw [← hw]; exact hn0
-  have hn' : 0 ≤ Formalism.FourierDecayAlt.TBB.nPt (parOfL L u u').k (parOfL L u u').r (Formalism.FourierDecayAlt.TBB.TTp pl)
-      (p.1.map Prod.swap) := by rw [hTT]; exact hn
-  have hEw := ew_top pl f (p.1.map Prod.swap) hloc hn'
-  have hB := hbp (p.1.map Prod.swap) hloc hGp'
-  rw [hGeq] at hB
-  have hJ := hE D.R.k D.R.rS L f μsec u u' pl hk hcStd hκ hκ' htie hKfin hInCC hsec
-  have hPc : Real.pi ^ (2 * Formalism.MainNotions.BigCellDensity.pc D.R.rS (p.1.map Prod.snd)) ≤
-      Real.pi ^ (2 * (2 * D.R.rS + 2) ^ 2) := by
-    apply pow_le_pow_right₀ (by linarith [Real.pi_gt_three])
-    have h1 := pc_le D.R.rS (p.1.map Prod.snd)
-    have h2 : (D.R.rS + 1) ^ 2 ≤ (2 * D.R.rS + 2) ^ 2 := Nat.pow_le_pow_left (by omega) 2
-    linarith
-  rw [horb, hw]
-  rw [hTT] at hEw
-  exact theoremB_expansion_bound hb2 he hC4 hGpos hn (by positivity) hPc hA hEw hB hJ
 
 def TheoremBLocalExpansion : Prop :=
   ∀ Aw Ch : ℝ, 0 ≤ Aw → ∃ (C1 C₄ CA Cinf Cgf Cgc Cg₀ : ℝ), 2 ≤ Cg₀ ∧ 0 ≤ C₄ ∧
@@ -298,41 +468,8 @@ def TheoremBLocalExpansion : Prop :=
           (Cinf * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 3) A C1 5 (Aw * ((D.R.rS : ℝ) + 1) ^ 2) ∧
         ThmBpTied D Ch Cg dist' (Cinf * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 3) A C₄
 
-theorem theoremBLocal_of_energy (hNS : NScale1) (hE : EnergyTie) (h : TheoremBLocalExpansion) : BesselExpansionLocalFrame := by
-  intro Aw Ch hAw
-  obtain ⟨C1, C₄, CA, Cinf, Cgf, Cgc, Cg₀, hCg₀, hC4, hOB, hCC, hmain⟩ := h Aw Ch hAw
-  refine ⟨C1, C₄ + 8, CA, Cinf, Cgf, max Cg₀ (Cgc + 2 * |Cinf|), le_trans hCg₀ (le_max_left _ _), hOB, ?_⟩
-  intro Cg hCg D
-  obtain ⟨dist', A, hA, hQ, hT⟩ := hmain Cg (le_trans (le_max_left _ _) hCg) D
-  refine ⟨dist', A, hA, hQ, hNS D Ch Cg dist' _ A (C₄ + 8) 5 ?_⟩
-  refine bpLoc1_of_tbb (le_trans hCg₀ (le_trans (le_max_left _ _) hCg)) (by norm_num) hC4 ?_ weightTie hE hCC hT
-  have hd : 2 * |Cinf| ≤ Cg - Cgc := by linarith [le_trans (le_max_right Cg₀ (Cgc + 2 * |Cinf|)) hCg]
-  have hX : (2:ℝ) ≤ ((2 * D.R.rS + 2 : ℕ) : ℝ) := by exact_mod_cast (by omega : 2 ≤ 2 * D.R.rS + 2)
-  have hX30 : (0:ℝ) ≤ ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 3 := by positivity
-  have hX3 : ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 3 ≤ ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ ((9 : ℝ) / 2) := by
-    rw [← Real.rpow_natCast]
-    exact Real.rpow_le_rpow_of_exponent_le (by linarith) (by norm_num)
-  have h1 : (1:ℝ) ≤ ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) := by
-    exact_mod_cast (by omega : 1 ≤ 2 * D.R.rS + D.R.k + 1)
-  have hQ1 : (1:ℝ) ≤ ((3 * (D.R.rS + 1) : ℕ) : ℝ) * ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) ^ 2 +
-      ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) ^ 3 := by
-    have h3 : (1:ℝ) ≤ ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) ^ 3 := one_le_pow₀ h1
-    have h4 : (0:ℝ) ≤ ((3 * (D.R.rS + 1) : ℕ) : ℝ) * ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) ^ 2 := by positivity
-    linarith
-  have ha0 : 0 ≤ Cg - Cgc := le_trans (by positivity) hd
-  have hY0 : (0:ℝ) ≤ ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ ((9 : ℝ) / 2) := le_trans hX30 hX3
-  have s1 : (Cg - Cgc) * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ ((9 : ℝ) / 2) ≤
-      (Cg - Cgc) * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ ((9 : ℝ) / 2) *
-        (((3 * (D.R.rS + 1) : ℕ) : ℝ) * ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) ^ 2 +
-          ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) ^ 3) :=
-    le_mul_of_one_le_right (mul_nonneg ha0 hY0) hQ1
-  have s2 : (Cg - Cgc) * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 3 ≤
-      (Cg - Cgc) * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ ((9 : ℝ) / 2) :=
-    mul_le_mul_of_nonneg_left hX3 ha0
-  have s3 : 2 * Cinf * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 3 ≤ (Cg - Cgc) * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 3 :=
-    mul_le_mul_of_nonneg_right (by linarith [le_abs_self Cinf]) hX30
-  nlinarith [s1, s2, s3]
 
-theorem weighted_uniform_rotated_of_expansion_alt (hNS : NScale1) (hE : EnergyTie) (h : TheoremBLocalExpansion) : Formalism.MainNotions.RotatedPoints.WeightedBoundRotatedUniform := uniformTheoremB_of_local_frame (theoremBLocal_of_energy hNS hE h)
 
 end Formalism.L2.SG.Pf.BesselExpansion
+end
+end

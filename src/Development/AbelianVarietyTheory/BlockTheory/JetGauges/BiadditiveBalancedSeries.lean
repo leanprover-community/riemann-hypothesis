@@ -28,8 +28,6 @@ structure IsBiaddBalanced (g : PS k 2 d) : Prop where
     FB.expS k (ev (n := 2) ![comp1 (B.actK k a) (pt k d 0), pt k d 1] g -
       ev (n := 2) ![pt k d 0, comp1 (B.actK k (star a)) (pt k d 1)] g)
 
-theorem IsBiaddBalanced.of_canon {g : PS k 2 d} (h : B.IsCanonGauge k g) : IsBiaddBalanced B k g :=
-  ⟨h.ax0, h.ax1, h.ph1, h.ph2, h.ad⟩
 
 end Frames
 
@@ -103,32 +101,6 @@ theorem expS_zero : FB.expS k (0 : PS k n d) = 1 := by
   · intro j hj
     simp [zero_pow hj]
 
-theorem isBiaddBalanced_XX (ty : Fin d → (O →+* k)) (i j : Fin d)
-    (hij : ∀ a, ty i a = ty j (star a)) :
-    IsBiaddBalanced (FB.triv (addLaw k d) (diagOAct ty)) k
-      (X ((0 : Fin 2), i) * X ((1 : Fin 2), j)) := by
-  have hF : (FB.triv (addLaw k d) (diagOAct ty)).FK k = (addLaw k d).F := by
-    funext l
-    simp [FB.FK, FGLaw.mapF, FB.triv]
-  have hA : ∀ a, (FB.triv (addLaw k d) (diagOAct ty)).actK k a = diagAct ty a := by
-    intro a
-    funext l
-    simp [FB.actK, FB.triv, diagOAct]
-  refine ⟨?_, ?_, ?_, ?_, fun a => ?_⟩
-  · rw [ev_XX _ _ (by simp) (cc_pt 0)]; simp
-  · rw [ev_XX _ _ (cc_pt 0) (by simp)]; simp
-  · rw [hF, addOf_addLaw _ _ (cc_pt 0) (cc_pt 1), ev_XX _ _ (cc_pt 0) (cc_pt 2),
-      ev_XX _ _ (cc_pt 1) (cc_pt 2), ev_XX _ _ (fun l => by simp [pt]) (cc_pt 2), Pi.add_apply,
-      add_mul, sub_self, expS_zero]
-    simp [FB.triv]
-  · rw [hF, addOf_addLaw _ _ (cc_pt 1) (cc_pt 2), ev_XX _ _ (cc_pt 0) (cc_pt 1),
-      ev_XX _ _ (cc_pt 0) (cc_pt 2), ev_XX _ _ (cc_pt 0) (fun l => by simp [pt]), Pi.add_apply,
-      mul_add, sub_self, expS_zero]
-    simp [FB.triv]
-  · rw [hA, hA, comp_diagonalAction _ _ _ (cc_pt 0), comp_diagonalAction _ _ _ (cc_pt 1),
-      ev_XX _ _ (fun l => by simp [pt]) (cc_pt 1), ev_XX _ _ (cc_pt 0) (fun l => by simp [pt]),
-      hij a, mul_left_comm, mul_assoc, sub_self, expS_zero]
-    simp [FB.triv]
 
 omit [CharZero k] in
 
@@ -205,14 +177,6 @@ def IsHarmonic [IsCMField E] (r : (E →+* k) → ℕ) {n : ℕ}
     ∑ b : Fin n, MvPolynomial.pderiv ((⟨τ, i⟩ : Σ τ : E →+* k, Fin (r τ)), b)
       (MvPolynomial.pderiv ((⟨conjEmb τ, i'⟩ : Σ τ : E →+* k, Fin (r τ)), b) P) = 0
 
-theorem isHarmonic_X [IsCMField E] (r : (E →+* k) → ℕ) {n : ℕ}
-    (p : (Σ τ : E →+* k, Fin (r τ)) × Fin n) :
-    IsHarmonic r (MvPolynomial.X p : MvPolynomial _ k) := by
-  classical
-  intro τ i i'
-  refine Finset.sum_eq_zero fun b _ => ?_
-  rw [MvPolynomial.pderiv_X, Pi.single_apply]
-  split_ifs <;> simp
 
 end Types
 

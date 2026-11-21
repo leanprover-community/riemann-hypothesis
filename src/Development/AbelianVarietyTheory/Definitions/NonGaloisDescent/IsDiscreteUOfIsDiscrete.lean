@@ -24,9 +24,6 @@ structure IsDiscreteU (V : Submodule ℂ (Sm E a)) : Prop where
   ne_bot : V ≠ ⊥
   irred : ∀ W ≤ V, IsStable W → W = ⊥ ∨ W = V
 
-theorem isDiscreteU_of_isDiscrete {V : Submodule ℂ (Sm E a)} (h : IsDiscrete V) : IsDiscreteU V :=
-  ⟨h.aut, ⟨0, fun φ hφ t g => by simpa using (h.sqInt φ hφ).1 t g⟩, fun φ hφ => (h.sqInt φ hφ).2, h.stable, h.ne_bot,
-    h.irred⟩
 
 def PairedGL (V V' : Submodule ℂ (Sm E a)) (s : Op E a → Op E a) : Prop :=
   ∃ B : V →ₗ[ℂ] V' →ₗ[ℂ] ℂ, (∀ φ, (∀ ψ, B φ ψ = 0) → φ = 0) ∧ (∀ ψ, (∀ φ, B φ ψ = 0) → ψ = 0) ∧
@@ -43,8 +40,6 @@ def InInd (h : ∑ i, n i = N) (V : ∀ i, Submodule ℂ (Sm E (n i))) (φ : Sm 
     ∀ (k : Kinf E N) (g : GL (Fin N) (Af E)),
       (fun m => φ.1 (leviEmb (Ad E) (stdBlocks n h) m * (infGL E N (Unitary.toUnits k) * finGL E N g))) ∈ tensorSp V
 
-theorem inInd_iff (h : ∑ i, n i = N) (π : ∀ i, CuspSub E (n i)) (φ : Sm E N) :
-    InInd h (fun i => (π i).V) φ ↔ φ ∈ indForms h π := Iff.rfl
 
 def InNormInd (h : ∑ i, n i = N) (V : ∀ i, Submodule ℂ (Sm E (n i))) (φ : Sm E N) : Prop :=
   ∃ ν : Fin c → HChar E, (∀ i, (ν i).IsAbsPow ((modExp (fun i => Fin (n i)) i : ℝ) / 2)) ∧

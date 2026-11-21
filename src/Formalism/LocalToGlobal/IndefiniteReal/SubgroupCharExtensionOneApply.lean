@@ -160,16 +160,7 @@ variable {V : HSp D} {β : GL (Fin V.rank) (EAf D)} {L : Formalism.L2.DIV.LevDat
 
 theorem mem_levA {K : Subgroup (GL (Fin V.rank) (EAf D))} {κ : GA D V} : κ ∈ levA V K ↔ κ ∈ GfC V ∧ finE V κ ∈ K := Iff.rfl
 
-theorem datY_B_eq_datX (r t m : ℕ) (Pg Q : Finset (Formalism.L2.DIV.Pl D.host.E)) (P : Formalism.L2.DIV.LevelP Pg r ℂ)
-    (χ : ℕ → ∀ PP : Formalism.L2.DIV.Pl D.host.E, (Formalism.L2.DIV.kP PP)ˣ →* ℂˣ)
-    (ξ : ∀ PP : Formalism.L2.DIV.Pl D.host.E, (Formalism.L2.DIV.kP PP)ˣ →* ℂˣ) :
-    datY (D := D) (r + m * t) r t m (Nat.le_add_right _ _) Pg Q P χ ξ Frm.B = Formalism.L2.DIV.datX r t m Pg Q P χ ξ := rfl
 
-theorem datY_A_eq_datV (r t j : ℕ) (Pg Q : Finset (Formalism.L2.DIV.Pl D.host.E)) (P : Formalism.L2.DIV.LevelP Pg r ℂ)
-    (χ : ℕ → ∀ PP : Formalism.L2.DIV.Pl D.host.E, (Formalism.L2.DIV.kP PP)ˣ →* ℂˣ)
-    (ξ : ∀ PP : Formalism.L2.DIV.Pl D.host.E, (Formalism.L2.DIV.kP PP)ˣ →* ℂˣ) :
-    datY (D := D) (r + t) r t 1 (Nat.le_add_right _ _) Pg Q P (fun _ => χ j) ξ Frm.A =
-      Formalism.L2.DIV.datV r t j Pg Q P χ ξ := rfl
 
 theorem subgroupCharExtension_one_apply {G N : Type} [Group G] [MulOneClass N] (P : Subgroup G) (x : G) :
     Formalism.L2.DIV.ext1 P (⇑(1 : P →* N)) x = 1 := by
@@ -276,11 +267,6 @@ theorem IsPLevel.hasType {P : Formalism.L2.DIV.LevelP L.Pg L.r ℂ} {F : GA D V 
   rw [hc, key]
   ring
 
-theorem level_action_unique {g0 : Formalism.L2.DIV.G0 L.Pg L.r} {F F₁ F₂ : GA D V → ℂ} (hex : ∃ κ, IsLevelLift V β L g0 κ)
-    (h₁ : IsLevelActionImage V β L g0 F F₁) (h₂ : IsLevelActionImage V β L g0 F F₂) : F₁ = F₂ := by
-  obtain ⟨κ, hκ⟩ := hex
-  funext h
-  rw [h₁ κ hκ h, h₂ κ hκ h]
 
 end API
 

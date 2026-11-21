@@ -31,21 +31,7 @@ theorem IsLevN.insert {E : ExpSet D} {N p : ℕ} (hN : IsLevN E N) (hp : p.Prime
       · exact hN.2.1 q hq h1
     · exact (Nat.squarefree_mul ((Nat.Prime.coprime_iff_not_dvd hp).2 hd)).2 ⟨hp.prime.squarefree, hN.2.2⟩
 
-theorem modN_eq_mul (E : ExpSet D) (N : ℕ) : modN E N = modN E 1 * N := by
-  simp [GlobalTheory.TowerCov.modN]
 
-theorem TowerRat.modN_ne_zero {E : ExpSet D} {O : Type} [CommRing O] {C : CoefLat E O} {Base : Set (GA D E.W → ℂ)}
-    {L1 FO : Subfield ℂ} (T : TowerRat E C Base L1 FO) : modN E 1 ≠ 0 := by
-  intro h
-  have hall : ∀ z : ℂ, z ∈ T.LQ (LevN.one E) := fun z => T.zeta _ z (by
-    show z ^ modN E 1 = 1
-    rw [h, pow_zero])
-  haveI := T.numField (LevN.one E)
-  have hc : Countable (T.LQ (LevN.one E)) :=
-    (Module.finBasis ℚ (T.LQ (LevN.one E))).equivFun.toEquiv.countable_iff.2 inferInstance
-  have hs : Function.Surjective (fun x : T.LQ (LevN.one E) => (x : ℂ)) := fun z => ⟨⟨z, hall z⟩, rfl⟩
-  have : Countable ℂ := hs.countable
-  exact not_countable (α := ℝ) Complex.re_surjective.countable
 
 def halfLat (E : ExpSet D) (e : AE D) : AddSubgroup (WO E.V E.W) where
   carrier := {x | IsHalf (cA D e) x ∧ IsIntM (frMapO E.V E.W E.βV E.βW x)}
@@ -73,23 +59,8 @@ def halfLat (E : ExpSet D) (e : AE D) : AddSubgroup (WO E.V E.W) where
 
 def halfLatInd (E : ExpSet D) (e : AE D) : WO E.V E.W → ℂ := fun x => if x ∈ halfLat E e then 1 else 0
 
-theorem halfLatInd_zero (E : ExpSet D) (e : AE D) : halfLatInd E e 0 = 1 := if_pos (zero_mem _)
 
-theorem isLevDat_halfLatInd {E : ExpSet D} {N : ℕ} {e : AE D} (P1 : Finset (Formalism.L2.DIV.Pl D.host.E))
-    (hP : ∀ L ∈ P1, ((N : ℕ) : 𝓞 D.host.E) ∈ L.asIdeal) (he : IsIdemSum e (E.Pg ∪ E.Pd ∪ P1)) :
-    IsLevDat E N e (halfLatInd E e) where
-  idem := ⟨P1, hP, he⟩
-  supp x hx := by
-    by_contra h
-    exact hx (if_neg h)
-  inv u hu hu' x := by
-    have hm : modN E N • u ∈ halfLat E e := nsmul_mem (show u ∈ halfLat E e from ⟨hu, hu'⟩) _
-    have : x + modN E N • u ∈ halfLat E e ↔ x ∈ halfLat E e := AddSubgroup.add_mem_cancel_right _ hm
-    show (if x + modN E N • u ∈ halfLat E e then (1 : ℂ) else 0) = if x ∈ halfLat E e then 1 else 0
-    simp only [this]
 
-theorem isLevDat_base (E : ExpSet D) (N : ℕ) : IsLevDat E N E.e0 (halfLatInd E E.e0) :=
-  isLevDat_halfLatInd ∅ (fun _ h => absurd h (Finset.notMem_empty _)) (by rw [Finset.union_empty]; exact E.idempotent_sum)
 
 theorem IsCompFn.const (E : ExpSet D) (N : ℕ) (z : ℂ) : IsCompFn E N fun _ => z :=
   ⟨fun _ _ _ => rfl, fun _ _ _ => rfl, fun _ _ _ => rfl, fun _ _ _ => rfl⟩

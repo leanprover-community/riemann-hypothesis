@@ -153,16 +153,6 @@ theorem SuppAt.finPart_eq {v : HeightOneSpectrum (𝓞 E)} {y : (Af E)ˣ} (h : S
   conv_lhs => rw [h.eq_single]
   rfl
 
-theorem levelLe_iff_finPart (χ : HChar E) (v : HeightOneSpectrum (𝓞 E)) (n : ℕ) :
-    χ.LevelLe v n ↔ ∀ y : (Af E)ˣ, SuppAt v y → Valued.v ((y : Af E) v) = 1 →
-      Valued.v ((y : Af E) v - 1) ≤ WithZero.exp (-(n : ℤ)) → finPart χ y = 1 := by
-  constructor
-  · intro h y hy h1 h2
-    rw [hy.finPart_eq]
-    exact h _ h1 h2
-  · intro h x hx hx'
-    rw [← finPart_single]
-    exact h _ (suppAt_single v x) (by rw [single_self]; exact hx) (by rw [single_self]; exact hx')
 
 theorem unifAt_spec (v : HeightOneSpectrum (𝓞 E)) :
     SuppAt v (unifAt v) ∧ Valued.v ((unifAt v : Af E) v) = WithZero.exp (-1 : ℤ) :=
@@ -170,18 +160,6 @@ theorem unifAt_spec (v : HeightOneSpectrum (𝓞 E)) :
 
 theorem finPart_unifAt (χ : HChar E) (v : HeightOneSpectrum (𝓞 E)) : finPart χ (unifAt v) = χ.val v := rfl
 
-theorem finPart_eq_val_zpow {χ : HChar E} {v : HeightOneSpectrum (𝓞 E)} (h : χ.UnrAt v) {y : (Af E)ˣ} (hy : SuppAt v y)
-    {n : ℤ} (hn : Valued.v ((y : Af E) v) = WithZero.exp (-n)) : finPart χ y = χ.val v ^ n := by
-  have hu : IsUnitAt v (coord v y * (atFin v (unif v) ^ n)⁻¹) := by
-    have h2 := unif_spec v
-    unfold IsUnitAt IsUnifAt at *
-    rw [Units.val_mul, Units.val_inv_eq_inv_val, Units.val_zpow_eq_zpow_val, map_mul, map_inv₀, map_zpow₀, coe_coord, hn, h2,
-      ← WithZero.exp_zsmul]
-    simp
-  have h3 := h _ hu
-  rw [map_mul, map_inv, mul_inv_eq_one, map_zpow] at h3
-  rw [hy.finPart_eq, h3]
-  rfl
 
 @[simp] theorem finPart_mul (χ χ' : HChar E) (y : (Af E)ˣ) : finPart (χ * χ') y = finPart χ y * finPart χ' y := rfl
 
@@ -219,8 +197,6 @@ theorem finPart_mul_inf (χ : HChar E) (k : Eˣ) :
   · show _ * 1 = _
     rw [mul_one]; rfl
 
-theorem hasInf_iff_two_mul (χ : HChar E) (φ : I → E →+* ℂ) (m : I → ℤ) :
-    HasInf χ φ m ↔ χ.HasInf φ (fun i => 2 * m i) := Iff.rfl
 
 theorem hasInfRatio_iff (χ : HChar E) (φ : I → E →+* ℂ) (m : I → ℤ) :
     HasInfRatio χ φ m ↔
@@ -355,9 +331,6 @@ def picMap {c c' : Ideal (OF E)} (h : c' ≤ c) : PicO c' →* PicO c :=
 @[simp] theorem picMap_mk {c c' : Ideal (OF E)} (h : c' ≤ c) (y : (Af E)ˣ) :
     picMap h (QuotientGroup.mk y) = QuotientGroup.mk y := rfl
 
-theorem picMap_surjective {c c' : Ideal (OF E)} (h : c' ≤ c) : Function.Surjective (picMap h) := fun q => by
-  obtain ⟨y, rfl⟩ := QuotientGroup.mk_surjective q
-  exact ⟨QuotientGroup.mk y, rfl⟩
 
 theorem mem_lattice {c : Ideal (OF E)} {y : (Af E)ˣ} {x : E} :
     x ∈ lattice c y ↔ algebraMap E (Af E) x * (↑y⁻¹ : Af E) ∈ hatO c := Iff.rfl

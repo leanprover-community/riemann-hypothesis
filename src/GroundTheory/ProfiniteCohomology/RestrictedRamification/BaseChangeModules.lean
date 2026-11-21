@@ -131,23 +131,7 @@ def galSUnitsResIso : Rep.res (fixingOfRestrictScalarsEq h).subtype (galSUnits S
       Additive (sUnitsOf S E) ≃ₗ[ULift.{u} ℤ] Additive (sUnitsOf (placesOver S : Set (HeightOneSpectrum (𝓞 L))) E')) fun _ =>
       LinearMap.ext fun _ => rfl)
 
-theorem galSUnitsResIso_hom_sUnitsToUnits :
-    (galSUnitsResIso h S).hom ≫ (Rep.resFunctor _).map (sUnitsToUnits (placesOver S : Set (HeightOneSpectrum (𝓞 L))) E') =
-      (Rep.resFunctor _).map (sUnitsToUnits S E) ≫ (galUnitsResIso h).hom := by
-  apply Rep.hom_ext
-  apply Representation.IntertwiningMap.ext
-  apply LinearMap.ext
-  intro _
-  rfl
 
-theorem galRootsOfUnityResIso_hom_rootsOfUnityToSUnits (n : ℕ) [NeZero n] :
-    (galRootsOfUnityResIso h n).hom ≫ (Rep.resFunctor _).map (rootsOfUnityToSUnits (placesOver S : Set (HeightOneSpectrum (𝓞 L))) E' n) =
-      (Rep.resFunctor _).map (rootsOfUnityToSUnits S E n) ≫ (galSUnitsResIso h S).hom := by
-  apply Rep.hom_ext
-  apply Representation.IntertwiningMap.ext
-  apply LinearMap.ext
-  intro _
-  rfl
 
 end Abstract
 
@@ -188,26 +172,7 @@ def gsSUnitsIso : Rep.res (gsSubtype S hL) (galSUnitsMax F Ω S) ≅
     Rep.res (gsBaseChange S hL).toMulEquiv.toMonoidHom (galSUnitsMax L Ω (placesOver S)) :=
   galSUnitsResIso (restrictScalars_maxUnramifiedOutside_eq S hL) S
 
-theorem gsSUnitsIso_hom_sUnitsToUnits :
-    (gsSUnitsIso S hL).hom ≫
-        (Rep.resFunctor _).map (sUnitsToUnits (placesOver S) (maxUnramifiedOutside L Ω (placesOver S))) =
-      (Rep.resFunctor _).map (sUnitsToUnits S (maxUnramifiedOutside F Ω S)) ≫ (gsUnitsIso S hL).hom := by
-  apply Rep.hom_ext
-  apply Representation.IntertwiningMap.ext
-  apply LinearMap.ext
-  intro _
-  rfl
 
-theorem gsRootsOfUnityIso_hom_rootsOfUnityToSUnits (n : ℕ) [NeZero n] :
-    (gsRootsOfUnityIso S hL n).hom ≫ (Rep.resFunctor _).map
-        (rootsOfUnityToSUnits (placesOver S) (maxUnramifiedOutside L Ω (placesOver S)) n) =
-      (Rep.resFunctor _).map (rootsOfUnityToSUnits S (maxUnramifiedOutside F Ω S) n) ≫
-        (gsSUnitsIso S hL).hom := by
-  apply Rep.hom_ext
-  apply Representation.IntertwiningMap.ext
-  apply LinearMap.ext
-  intro _
-  rfl
 
 instance isDiscreteRep_res_gsSubtype_galUnits :
     IsDiscreteRep (Rep.res (gsSubtype S hL) (galUnits.{u} F (maxUnramifiedOutside F Ω S))) :=

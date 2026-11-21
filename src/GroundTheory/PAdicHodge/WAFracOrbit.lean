@@ -103,7 +103,6 @@ theorem isPrimOne_frob {ξ : (𝓣).int} (hξ : (𝓣).IsPrimOne ξ) :
 def frobPt (P : (𝓣).Pt) : (𝓣).Pt :=
   ⟨⟨(frob ℂ_[p] p).φ P.1, (frob ℂ_[p] p).map_int _ P.1.2⟩, isPrimOne_frob P.2⟩
 
-theorem coe_frobPt (P : (𝓣).Pt) : ((frobPt P).1 : WC p) = (frob ℂ_[p] p).φ P.1 := rfl
 
 theorem ptRad_frobPt (P : (𝓣).Pt) : (𝓣).ptRad (frobPt P).1 = (𝓣).ptRad P.1 ^ p := by
   show ‖(𝓣).coeff ((frob ℂ_[p] p).φ P.1) 0‖ = ‖(𝓣).coeff (P.1 : WC p) 0‖ ^ p

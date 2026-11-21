@@ -195,8 +195,6 @@ def res (h : S.Ok) : S.EqFun ≃ₗ[K] (S.toCSD h).Forms := S.resOf h S.outSec
 theorem resOf_apply (h : S.Ok) (s : S.Sec) (φ : S.EqFun) (c : S.Cl) :
     ((S.resOf h s φ).1 : S.Cl → S.V) c = (φ : S.D → S.V) (s.rep c) := rfl
 
-theorem resOf_symm_apply (h : S.Ok) (s : S.Sec) (f : (S.toCSDOf h s).Forms) (d : S.D) :
-    (((S.resOf h s).symm f : S.EqFun) : S.D → S.V) d = S.ρ (s.mv d) ((f.1 : S.Cl → S.V) (S.cls d)) := rfl
 
 def ipOf (h : S.Ok) (s : S.Sec) (φ ψ : S.D → S.V) : K :=
   (S.toCSDOf h s).csum (fun c => φ (s.rep c)) (fun c => ψ (s.rep c))
@@ -447,8 +445,6 @@ def onForms : S.EqFun ≃ₗ[K] S'.EqFun where
     show e.eV (e.eV.symm ((ψ : S'.D → S'.V) (e.eD (e.eD.symm d')))) = (ψ : S'.D → S'.V) d'
     rw [LinearEquiv.apply_symm_apply, Equiv.apply_symm_apply]
 
-theorem onForms_apply (φ : S.EqFun) (d' : S'.D) :
-    ((e.onForms φ : S'.EqFun) : S'.D → S'.V) d' = e.eV ((φ : S.D → S.V) (e.eD.symm d')) := rfl
 
 def onCl : S.Cl ≃ S'.Cl where
   toFun := Quotient.map' e.eD (by
@@ -514,16 +510,7 @@ theorem triv_good (h1 : Finite (MulAction.orbitRel.Quotient G D))
 
 def trivOne : (triv K G D).EqFun := ⟨fun _ => (1 : K), fun _ _ => rfl⟩
 
-theorem trivOne_mem : trivOne K G D ∈ (triv K G D).intDel := by
-  intro d
-  show (1 : K) ∈ (1 : Submodule (𝓞 K) K)
-  exact Submodule.one_le.mp le_rfl
 
-theorem trivOne_ne_zero [Nonempty D] : trivOne K G D ≠ 0 := by
-  intro h
-  obtain ⟨d⟩ := ‹Nonempty D›
-  have h' := congrArg (fun φ : (triv K G D).EqFun => (φ : D → K) d) h
-  simp [trivOne] at h'
 
 end GSD
 

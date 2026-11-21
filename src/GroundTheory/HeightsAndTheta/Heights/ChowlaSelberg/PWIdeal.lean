@@ -1,8 +1,285 @@
 import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.ChowlaSelberg.Statements
-import GroundTheory.HeightsAndTheta.Heights.ChowlaSelberg.PWIdealField
-import GroundTheory.HeightsAndTheta.Heights.ChowlaSelberg.PWIdealPrimes
-import GroundTheory.HeightsAndTheta.Heights.ChowlaSelberg.PWIdealPrincipal
+import GroundTheory.GlobalFields.AnalyticClassNumber.QuadraticLegendre
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.ChowlaSelberg
+
+open NumberField
+
+noncomputable section
+
+theorem isIntegral_of_map {F F' : Type*} [Field F] [Field F'] (j : F →+* F') {x : F}
+    (h : IsIntegral ℤ (j x)) : IsIntegral ℤ x :=
+  (isIntegral_algHom_iff j.toIntAlgHom j.injective).1 h
+
+theorem le_of_map_le {F F' : Type*} [Field F] [NumberField F] [Field F'] [NumberField F']
+    (j : F →+* F') {A B : Ideal (𝓞 F)} (hB : B ≠ ⊥)
+    (h : A.map (RingOfIntegers.mapRingHom j) ≤ B.map (RingOfIntegers.mapRingHom j)) : A ≤ B := by
+  obtain ⟨b, hbB, hb0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hB
+  obtain ⟨B', hB'⟩ : B ∣ Ideal.span {b} :=
+    Ideal.dvd_iff_le.2 ((Ideal.span_singleton_le_iff_mem _).2 hbB)
+  have hB'0 : B' ≠ 0 := by
+    rintro rfl
+    rw [mul_zero, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot] at hB'
+    exact hb0 hB'
+  have key : A * B' ≤ B * B' := by
+    rw [← hB', Ideal.mul_le]
+    intro x hx y hy
+    have hm : RingOfIntegers.mapRingHom j (x * y) ∈
+        (Ideal.span {b}).map (RingOfIntegers.mapRingHom j) := by
+      rw [hB', Ideal.map_mul, map_mul]
+      exact Ideal.mul_mem_mul (h (Ideal.mem_map_of_mem _ hx)) (Ideal.mem_map_of_mem _ hy)
+    rw [Ideal.map_span, Set.image_singleton, Ideal.mem_span_singleton'] at hm
+    obtain ⟨z, hz⟩ := hm
+    have hbF : (b : F) ≠ 0 := by
+      intro h0
+      exact hb0 (RingOfIntegers.ext (by simpa using h0))
+    have hz' : (z : F') * j (b : F) = j ((x * y : 𝓞 F) : F) := by
+      have := congrArg (fun t : 𝓞 F' ↦ (t : F')) hz
+      simpa using this
+    have himg : j (((x * y : 𝓞 F) : F) / (b : F)) = (z : F') := by
+      rw [map_div₀, ← hz', mul_div_assoc, div_self ((map_ne_zero j).2 hbF), mul_one]
+    have hq : IsIntegral ℤ (((x * y : 𝓞 F) : F) / (b : F)) := by
+      apply isIntegral_of_map j
+      rw [himg]
+      exact RingOfIntegers.isIntegral_coe z
+    rw [Ideal.mem_span_singleton']
+    refine ⟨⟨_, hq⟩, RingOfIntegers.ext ?_⟩
+    show ((x * y : 𝓞 F) : F) / (b : F) * (b : F) = ((x * y : 𝓞 F) : F)
+    rw [div_mul_cancel₀ _ hbF]
+  have hdvd : B * B' ∣ A * B' := Ideal.dvd_iff_le.2 key
+  exact Ideal.dvd_iff_le.1 ((mul_dvd_mul_iff_right hB'0).1 hdvd)
+
+theorem eq_of_map_eq {F F' : Type*} [Field F] [NumberField F] [Field F'] [NumberField F']
+    (j : F →+* F') {A B : Ideal (𝓞 F)} (hB : B ≠ ⊥)
+    (h : A.map (RingOfIntegers.mapRingHom j) = B.map (RingOfIntegers.mapRingHom j)) : A = B := by
+  have hA : A ≠ ⊥ := by
+    rintro rfl
+    rw [Ideal.map_bot, eq_comm, Ideal.map_eq_bot_iff_of_injective] at h
+    · exact hB h
+    · intro x y hxy
+      exact RingOfIntegers.ext (j.injective (by simpa using congrArg (fun t : 𝓞 F' ↦ (t : F')) hxy))
+  exact le_antisymm (le_of_map_le j hB h.le) (le_of_map_le j hA h.ge)
+
+theorem exists_extension_mem_range {F : Type} [Field F] [NumberField F] (τ : F →+* ℂ) {z₁ z₂ : ℂ}
+    (h₁ : IsAlgebraic ℚ z₁) (h₂ : IsAlgebraic ℚ z₂) :
+    ∃ (F' : Type) (_ : Field F') (_ : NumberField F') (j : F →+* F') (τ' : F' →+* ℂ),
+      τ'.comp j = τ ∧ z₁ ∈ Set.range τ' ∧ z₂ ∈ Set.range τ' := by
+  let e := AlgEquiv.ofInjectiveField τ.toRatAlgHom
+  let E₁ : IntermediateField ℚ ℂ := τ.toRatAlgHom.fieldRange
+  let E₂ : IntermediateField ℚ ℂ := IntermediateField.adjoin ℚ {z₁, z₂}
+  have : FiniteDimensional ℚ E₁ := LinearEquiv.finiteDimensional e.toLinearEquiv
+  have : FiniteDimensional ℚ E₂ :=
+    IntermediateField.finiteDimensional_adjoin_pair h₁.isIntegral h₂.isIntegral
+  have : FiniteDimensional ℚ ↥(E₁ ⊔ E₂) := IntermediateField.finiteDimensional_sup E₁ E₂
+  have : NumberField ↥(E₁ ⊔ E₂) := NumberField.of_module_finite ℚ _
+  refine ⟨↥(E₁ ⊔ E₂), inferInstance, inferInstance,
+    ((IntermediateField.inclusion (le_sup_left : E₁ ≤ E₁ ⊔ E₂)).toRingHom.comp e.toRingEquiv.toRingHom),
+    (E₁ ⊔ E₂).val.toRingHom, ?_, ?_, ?_⟩
+  · ext x
+    rfl
+  · exact ⟨⟨z₁, (le_sup_right : E₂ ≤ E₁ ⊔ E₂)
+      (IntermediateField.subset_adjoin ℚ _ (by simp))⟩, rfl⟩
+  · exact ⟨⟨z₂, (le_sup_right : E₂ ≤ E₁ ⊔ E₂)
+      (IntermediateField.subset_adjoin ℚ _ (by simp))⟩, rfl⟩
+
+end
+
+end GroundTheory.Heights₂.Heights.ChowlaSelberg
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.ChowlaSelberg
+
+open NumberField GroundTheory.Global.Quadratic
+
+variable {K : Type} [Field K] [NumberField K] [Algebra.IsQuadraticExtension ℚ K]
+
+theorem absNorm_span_natCast_quadratic (n : ℕ) :
+    Ideal.absNorm (Ideal.span {(n : 𝓞 K)}) = n ^ 2 := by
+  rw [Ideal.absNorm_span_natCast, RingOfIntegers.rank, Algebra.IsQuadraticExtension.finrank_eq_two]
+
+theorem ramified_eq_span_sqrtDiscr {d : ℕ} (hd : d.Prime) (hdisc : discr K = -(d : ℤ))
+    (𝔭 : Ideal (𝓞 K)) [h𝔭 : 𝔭.IsPrime] (hN : (Ideal.absNorm 𝔭).Prime)
+    (h2 : 𝔭 ^ 2 = Ideal.span {((Ideal.absNorm 𝔭 : ℕ) : 𝓞 K)}) :
+    𝔭 = Ideal.span {sqrtDiscr K} := by
+  set p := Ideal.absNorm 𝔭 with hp
+  have h𝔭top : 𝔭 ≠ ⊤ := h𝔭.ne_top
+  have hconj : ∀ x ∈ 𝔭, conjRing K x ∈ 𝔭 := by
+    intro x hx
+    have hx2 : x ^ 2 ∈ Ideal.span {(p : 𝓞 K)} := by
+      rw [← h2]
+      exact Ideal.pow_mem_pow hx 2
+    obtain ⟨y, hy⟩ := Ideal.mem_span_singleton'.1 hx2
+    have hp𝔭 : (p : 𝓞 K) ∈ 𝔭 := by
+      have : (p : 𝓞 K) ∈ 𝔭 ^ 2 := by
+        rw [h2]
+        exact Ideal.mem_span_singleton_self _
+      exact Ideal.pow_le_self two_ne_zero this
+    have hsq : (conjRing K x) ^ 2 ∈ 𝔭 := by
+      have e : (conjRing K x) ^ 2 = conjRing K y * (p : 𝓞 K) := by
+        rw [← map_pow, ← hy, map_mul, map_natCast]
+      rw [e]
+      exact Ideal.mul_mem_left _ _ hp𝔭
+    exact h𝔭.mem_of_pow_mem 2 hsq
+  have hres : ∀ x : 𝓞 K, ∃ n : ℤ, x - n ∈ 𝔭 := by
+    intro x
+    have hcard : Nat.card (𝓞 K ⧸ 𝔭) = p := by
+      rw [hp, Ideal.absNorm_apply, Submodule.cardQuot_apply]
+    have : Fact (Nat.card (𝓞 K ⧸ 𝔭)).Prime := ⟨hcard ▸ hN⟩
+    have h1 : (1 : 𝓞 K ⧸ 𝔭) ≠ 0 := by
+      rw [ne_eq, ← map_one (Ideal.Quotient.mk 𝔭), Ideal.Quotient.eq_zero_iff_mem]
+      exact fun h ↦ h𝔭top ((Ideal.eq_top_iff_one _).2 h)
+    have htop : AddSubgroup.zmultiples (1 : 𝓞 K ⧸ 𝔭) = ⊤ := by
+      rcases AddSubgroup.eq_bot_or_eq_top_of_prime_card
+          (AddSubgroup.zmultiples (1 : 𝓞 K ⧸ 𝔭)) with h | h
+      · exfalso
+        apply h1
+        have : (1 : 𝓞 K ⧸ 𝔭) ∈ AddSubgroup.zmultiples (1 : 𝓞 K ⧸ 𝔭) :=
+          AddSubgroup.mem_zmultiples 1
+        rw [h] at this
+        exact (AddSubgroup.mem_bot).1 this
+      · exact h
+    have hx : Ideal.Quotient.mk 𝔭 x ∈ AddSubgroup.zmultiples (1 : 𝓞 K ⧸ 𝔭) := by
+      rw [htop]
+      trivial
+    obtain ⟨n, hn⟩ := AddSubgroup.mem_zmultiples_iff.1 hx
+    refine ⟨n, ?_⟩
+    rw [← Ideal.Quotient.eq_zero_iff_mem, map_sub, ← hn, map_intCast, zsmul_one, sub_self]
+  have hsub : ∀ x : 𝓞 K, conjRing K x - x ∈ 𝔭 := by
+    intro x
+    obtain ⟨n, hn⟩ := hres x
+    have hc := hconj _ hn
+    rw [map_sub, map_intCast] at hc
+    have := 𝔭.sub_mem hc hn
+    rwa [sub_sub_sub_cancel_right] at this
+  have hδ : sqrtDiscr K ∈ 𝔭 := by
+    have e : sqrtDiscr K = intBasis K 0 * (conjRing K (intBasis K 1) - intBasis K 1) -
+        intBasis K 1 * (conjRing K (intBasis K 0) - intBasis K 0) := by
+      rw [sqrtDiscr]
+      ring
+    rw [e]
+    exact 𝔭.sub_mem (𝔭.mul_mem_left _ (hsub _)) (𝔭.mul_mem_left _ (hsub _))
+  have hnormsq : Ideal.absNorm (Ideal.span {sqrtDiscr K}) ^ 2 = d ^ 2 := by
+    rw [← map_pow, Ideal.span_singleton_pow, sqrtDiscr_sq', hdisc, Int.cast_neg, Int.cast_natCast,
+      Ideal.span_singleton_neg, absNorm_span_natCast_quadratic]
+  have hnorm : Ideal.absNorm (Ideal.span {sqrtDiscr K}) = d :=
+    Nat.pow_left_injective two_ne_zero hnormsq
+  have hmax : (Ideal.span {sqrtDiscr K}).IsMaximal :=
+    (Ideal.isPrime_of_irreducible_absNorm (hnorm ▸ hd)).isMaximal
+      (by rw [ne_eq, Ideal.span_singleton_eq_bot]; exact sqrtDiscr_ne_zero K)
+  exact (hmax.eq_of_le h𝔭top ((Ideal.span_singleton_le_iff_mem _).2 hδ)).symm
+
+theorem prime_cases {d : ℕ} (hd : d.Prime) (hdisc : discr K = -(d : ℤ))
+    (𝔭 : Ideal (𝓞 K)) [h𝔭 : 𝔭.IsPrime] (h0 : 𝔭 ≠ ⊥) :
+    (∃ a : 𝓞 K, 𝔭 = Ideal.span {a}) ∨
+      ∃ p : ℕ, p.Prime ∧ Ideal.absNorm 𝔭 = p ∧ ∃ 𝔮 : Ideal (𝓞 K), 𝔮.IsPrime ∧
+        Ideal.absNorm 𝔮 = p ∧ 𝔭 * 𝔮 = Ideal.span {(p : 𝓞 K)} ∧ 𝔮 ≠ 𝔭 := by
+  have : 𝔭.IsMaximal := h𝔭.isMaximal h0
+  obtain ⟨p, k, hk, hpmem, hpp, hNk⟩ := Ideal.exists_prime_and_absNorm_eq_pow 𝔭
+  have hle : Ideal.span {(p : 𝓞 K)} ≤ 𝔭 := (Ideal.span_singleton_le_iff_mem _).2 hpmem
+  have hdvdN : p ^ k ∣ p ^ 2 := by
+    rw [← hNk, ← absNorm_span_natCast_quadratic (K := K)]
+    exact Ideal.absNorm_dvd_absNorm_of_le hle
+  have hk2 : k ≤ 2 := (Nat.pow_dvd_pow_iff_le_right hpp.one_lt).1 hdvdN
+  obtain ⟨𝔮, h𝔮⟩ : 𝔭 ∣ Ideal.span {(p : 𝓞 K)} := Ideal.dvd_iff_le.2 hle
+  have hN𝔮 : Ideal.absNorm 𝔭 * Ideal.absNorm 𝔮 = p ^ 2 := by
+    rw [← map_mul, ← h𝔮, absNorm_span_natCast_quadratic]
+  have hp0 : 0 < p := hpp.pos
+  interval_cases k
+  · rw [hNk, pow_one, sq] at hN𝔮
+    have hq : Ideal.absNorm 𝔮 = p := Nat.eq_of_mul_eq_mul_left hp0 hN𝔮
+    have h𝔮p : 𝔮.IsPrime := Ideal.isPrime_of_irreducible_absNorm (hq ▸ hpp)
+    by_cases he : 𝔮 = 𝔭
+    · left
+      refine ⟨sqrtDiscr K, ramified_eq_span_sqrtDiscr hd hdisc 𝔭 (by rw [hNk, pow_one]; exact hpp) ?_⟩
+      rw [hNk, pow_one, sq, h𝔮, he]
+    · right
+      exact ⟨p, hpp, by rw [hNk, pow_one], 𝔮, h𝔮p, hq, h𝔮.symm, he⟩
+  · rw [hNk] at hN𝔮
+    have hq : Ideal.absNorm 𝔮 = 1 := by
+      have h' : p ^ 2 * Ideal.absNorm 𝔮 = p ^ 2 * 1 := by rw [mul_one]; exact hN𝔮
+      exact Nat.eq_of_mul_eq_mul_left (pow_pos hp0 2) h'
+    rw [Ideal.absNorm_eq_one_iff] at hq
+    left
+    exact ⟨p, by rw [h𝔮, hq, Ideal.mul_top]⟩
+
+end GroundTheory.Heights₂.Heights.ChowlaSelberg
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.ChowlaSelberg
+
+open NumberField GroundTheory.Global GroundTheory.Global.Elliptic
+open scoped nonZeroDivisors
+
+noncomputable section
+
+theorem eisensteinSum_scale_of_ne_zero (Λ : Submodule ℤ ℂ) {c : ℂ} (hc : c ≠ 0) (n : ℕ) :
+    eisensteinSum (scaleLattice c Λ) n = (c ^ n)⁻¹ * eisensteinSum Λ n := by
+  let e : Λ ≃ₗ[ℤ] scaleLattice c Λ :=
+    Submodule.equivMapOfInjective (LinearMap.mulLeft ℤ c) (mul_right_injective₀ hc) Λ
+  rw [eisensteinSum, eisensteinSum, ← e.toEquiv.tsum_eq, ← tsum_mul_left]
+  refine tsum_congr fun l ↦ ?_
+  show ((c * (l : ℂ)) ^ n)⁻¹ = (c ^ n)⁻¹ * ((l : ℂ) ^ n)⁻¹
+  rw [mul_pow, mul_inv]
+
+theorem latticeDiscr_scale_of_ne_zero (Λ : Submodule ℤ ℂ) {c : ℂ} (hc : c ≠ 0) :
+    latticeDiscr (scaleLattice c Λ) = (c ^ 12)⁻¹ * latticeDiscr Λ := by
+  simp only [latticeDiscr, latticeG₂, latticeG₃, eisensteinSum_scale_of_ne_zero Λ hc]
+  field_simp
+
+variable {K : Type} [Field K] [NumberField K]
+
+theorem idealLattice_spanSingleton_mul (σ : K →+* ℂ) (L : PeriodPair) (hL : latticeEnd L = cmRing σ)
+    (x : K) :
+    idealLattice σ (FractionalIdeal.spanSingleton (𝓞 K)⁰ x) * L.lattice =
+      scaleLattice (σ x) L.lattice := by
+  apply le_antisymm
+  · rw [Submodule.mul_le]
+    intro m hm l hl
+    obtain ⟨y, hy, rfl⟩ := (mem_idealLattice σ).1 hm
+    obtain ⟨b, rfl⟩ := (FractionalIdeal.mem_spanSingleton _).1 hy
+    have hb : σ (algebraMap (𝓞 K) K b) ∈ latticeEnd L := by
+      rw [hL]
+      exact (mem_cmRing σ).2 ⟨b, rfl⟩
+    refine Submodule.mem_map.2 ⟨σ (algebraMap (𝓞 K) K b) * l, hb l hl, ?_⟩
+    simp only [LinearMap.mulLeft_apply, Algebra.smul_def, map_mul]
+    ring
+  · rw [scaleLattice, Submodule.map_le_iff_le_comap]
+    intro l hl
+    rw [Submodule.mem_comap, LinearMap.mulLeft_apply]
+    exact Submodule.mul_mem_mul
+      (map_mem_idealLattice σ (FractionalIdeal.mem_spanSingleton_self _ x)) hl
+
+def spanNZ (a : 𝓞 K) (ha : a ≠ 0) : (Ideal (𝓞 K))⁰ :=
+  ⟨Ideal.span {a}, mem_nonZeroDivisors_of_ne_zero (by rwa [ne_eq, Ideal.zero_eq_bot,
+    Ideal.span_singleton_eq_bot])⟩
+
+theorem discrRatio_span_singleton (σ : K →+* ℂ) (L : PeriodPair) (hL : latticeEnd L = cmRing σ)
+    (a : 𝓞 K) (ha : a ≠ 0) :
+    discrRatio σ L.lattice (FractionalIdeal.mk0 K (spanNZ a ha)) = σ (algebraMap (𝓞 K) K a) ^ 12 := by
+  have haK : algebraMap (𝓞 K) K a ≠ 0 :=
+    (map_ne_zero_iff _ (IsFractionRing.injective (𝓞 K) K)).2 ha
+  have hσ : σ (algebraMap (𝓞 K) K a) ≠ 0 := (map_ne_zero σ).2 haK
+  rw [discrRatio, Units.val_inv_eq_inv_val, FractionalIdeal.coe_mk0, spanNZ,
+    FractionalIdeal.coeIdeal_span_singleton, FractionalIdeal.spanSingleton_inv,
+    idealLattice_spanSingleton_mul σ L hL, latticeDiscr_scale_of_ne_zero _ ((map_ne_zero σ).2 (inv_ne_zero haK)),
+    map_inv₀, inv_pow, inv_inv, latticeDiscr_lattice, mul_div_assoc, div_self (discr_ne_zero L), mul_one]
+
+end
+
+end GroundTheory.Heights₂.Heights.ChowlaSelberg
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.ChowlaSelberg
@@ -223,3 +500,4 @@ theorem WIdeal.proof [Algebra.IsQuadraticExtension ℚ K] (S : PrimeDiscriminant
 end
 
 end GroundTheory.Heights₂.Heights.ChowlaSelberg
+end

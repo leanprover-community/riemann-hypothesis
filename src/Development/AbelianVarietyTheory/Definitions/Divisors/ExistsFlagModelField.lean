@@ -143,9 +143,6 @@ theorem nonempty_proj_id : Nonempty (Proj (RingHom.id c.F)) := by
   choose m a κ h using GlobalTheory.exists_eigen_projector_ringOfIntegers E c.F (embF c) hemb
   exact ⟨⟨m, a, κ, h⟩⟩
 
-theorem nonempty_proj_of_mem (p : Proj (RingHom.id c.F)) (h : ∀ σ k, p.κ σ k ∈ β.range) : Nonempty (Proj β) := by
-  choose κ hκ using h
-  exact ⟨⟨p.m, p.a, κ, fun σ => by simp only [hκ]; exact p.spec σ⟩⟩
 
 variable {Y : Model Xo c β} {S : Type} [CommRing S]
 
@@ -369,14 +366,6 @@ theorem genIn_of {O : Type} [CommRing O] {β : O →+* c.F} {Y : Model Xo c β}
   rw [ev_congr h2 _ _ (h2 ▸ hU), ev_spMap_tau]
   exact hf
 
-theorem genIn_dvr {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Algebra O c.F]
-    [IsFractionRing O c.F] (Y : Model Xo c (algebraMap O c.F)) : GenIn Y := genIn_of fun M L _ f hi => by
-  obtain ⟨α, es, -, -, hinj, ⟨e, he⟩, hes, hop, -⟩ := GlobalTheory.Reg.ChartOpens.moduli_basicOpens E H Dw l Xo c O Y M
-  have hi' : Function.Injective (f.comp α) := hi.comp hinj
-  let A : Algebra c.F L := (IsFractionRing.lift hi').toAlgebra
-  obtain ⟨y, h1, h2⟩ := (hop e he L f (RingHom.ext fun o => (IsFractionRing.lift_algebraMap hi' o).symm)
-    (IsUnit.mk0 _ ((map_ne_zero_iff _ hi).2 (hes e he)))).1
-  exact ⟨A, y, h1, h2⟩
 
 theorem spec_generic {A L : Type} [CommRing A] [Field L] (f : A →+* L) (hf : Function.Injective f)
     (q : PrimeSpectrum L) (t : PrimeSpectrum A) : PrimeSpectrum.comap f q ⤳ t := by
@@ -414,18 +403,8 @@ theorem genIn_id (Y : Model Xo c (RingHom.id c.F)) : GenIn Y := genIn_of fun M L
   rw [← e, ← Category.assoc, IsOpenImmersion.lift_fac]
   exact (spMap_ev_top _).symm
 
-theorem exists_flagModel_field (Y : Model Xo c (RingHom.id c.F)) (hp : Dw.p ≤ 1) (hq : Dw.q ≤ 1)
-    (hP : PushInvertible Y.t.G Y.t.PP.L) : ∃ X : FlagModel Y, X.YY = Y.X :=
-  nonempty_proj_id.elim fun p => exists_flagModel p hp hq (genIn_id Y) hP
 
-theorem exists_flagModel_dvr {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Algebra O c.F]
-    [IsFractionRing O c.F] (Y : Model Xo c (algebraMap O c.F)) (p : Proj (RingHom.id c.F))
-    (hint : ∀ σ k, p.κ σ k ∈ (algebraMap O c.F).range) (hp : Dw.p ≤ 1) (hq : Dw.q ≤ 1)
-    (hP : PushInvertible Y.t.G Y.t.PP.L) : ∃ X : FlagModel Y, X.YY = Y.X :=
-  (nonempty_proj_of_mem p hint).elim fun p => exists_flagModel p hp hq (genIn_dvr Y) hP
 
-theorem nonempty_of_frPt {O : Type} [CommRing O] {β : O →+* c.F} {Y : Model Xo c β} (X : FlagCover Y) {K : Type}
-    [Field K] [Algebra c.F K] (P : FrPt Xo c K) : Nonempty X.YY := ⟨X.ptY P (⊥ : PrimeSpectrum K)⟩
 
 end Gen
 

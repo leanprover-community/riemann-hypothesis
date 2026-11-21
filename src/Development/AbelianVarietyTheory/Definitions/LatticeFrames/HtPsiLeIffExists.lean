@@ -29,8 +29,6 @@ theorem isPsi_Psi (h : PsiRat D u) : IsPsi D u (Psi D u) := by
 theorem IsPsi.unique {Ψ Ψ'} (h : IsPsi D u Ψ) (h' : IsPsi D u Ψ') : Ψ = Ψ' :=
   LinearMap.ext fun x => (D.fm u).ptEmb_inj ((h x).trans (h' x).symm)
 
-theorem IsPsi.eq_Psi {Ψ} (h : IsPsi D u Ψ) : Ψ = Psi D u :=
-  IsPsi.unique D u h (isPsi_Psi D u ⟨Ψ, h⟩)
 
 def RKPsi : Prop := Module.finrank D.what₂.LL (D.div.Nu u).V < 2 * Module.finrank D.what₂.LL (LinearMap.range (Psi D u))
 
@@ -41,36 +39,11 @@ def HtPsiLe (h : ℝ) : Prop := PsiRat D u ∧ (Psi D u ≠ 0 → htPsi D u ≤ 
 def PsiInt (N : Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V) : Prop :=
   PsiRat D u ∧ ∀ x ∈ N, Psi D u x ∈ (Pt D u).L
 
-theorem psiInt_iff_exists (N : Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V) :
-    PsiInt D u N ↔ ∃ Ψ, IsPsi D u Ψ ∧ ∀ x ∈ N, Ψ x ∈ (Pt D u).L := by
-  constructor
-  · rintro ⟨h, h'⟩
-    exact ⟨_, isPsi_Psi D u h, h'⟩
-  · rintro ⟨Ψ, h, h'⟩
-    refine ⟨⟨Ψ, h⟩, ?_⟩
-    rw [← IsPsi.eq_Psi D u h]
-    exact h'
 
-theorem psiInt_iff (N : Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V) :
-    PsiInt D u N ↔ PsiRat D u ∧ ∀ x ∈ N, ∃ y ∈ (Pt D u).L,
-      (D.fm u).ptEmb y = PsiC (D.mem u).C (D.mem u).A (D.mem u).P (D.eMu u (D.jN u x)) := by
-  refine and_congr_right fun h => forall₂_congr fun x _ => ⟨fun hx => ⟨_, hx, isPsi_Psi D u h x⟩, ?_⟩
-  rintro ⟨y, hy, e⟩
-  rwa [← (D.fm u).ptEmb_inj (e.trans (isPsi_Psi D u h x).symm)]
 
 theorem PsiInt.mono {N N' : Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V} (h : PsiInt D u N) (hle : N' ≤ N) :
     PsiInt D u N' := ⟨h.1, fun x hx => h.2 x (hle hx)⟩
 
-theorem htPsiLe_iff_exists (h : ℝ) : HtPsiLe D u h ↔ ∃ Ψ, IsPsi D u Ψ ∧
-    (Ψ ≠ 0 → Formalism.HN.htMap (D.div.Nu u).b (D.div.Nu u).X (Pt D u).b (Pt D u).X Ψ ≤ h) := by
-  constructor
-  · rintro ⟨hr, h'⟩
-    exact ⟨_, isPsi_Psi D u hr, h'⟩
-  · rintro ⟨Ψ, hΨ, h'⟩
-    refine ⟨⟨Ψ, hΨ⟩, ?_⟩
-    unfold htPsi
-    rw [← IsPsi.eq_Psi D u hΨ]
-    exact h'
 
 theorem RKPsi.psi_ne_zero (h : RKPsi D u) : Psi D u ≠ 0 := by
   intro h0
@@ -78,12 +51,7 @@ theorem RKPsi.psi_ne_zero (h : RKPsi D u) : Psi D u ≠ 0 := by
   rw [h0, LinearMap.range_zero, finrank_bot] at h
   omega
 
-theorem RKPsi.psiRat (h : RKPsi D u) : PsiRat D u := by
-  by_contra h'
-  exact RKPsi.psi_ne_zero D u h (dif_neg h')
 
-theorem RKPsi.htPsi_le (h : RKPsi D u) {t : ℝ} (ht : HtPsiLe D u t) : htPsi D u ≤ t :=
-  ht.2 (RKPsi.psi_ne_zero D u h)
 
 example : PsiInt D u ⊥ ↔ PsiRat D u := by
   refine ⟨fun h => h.1, fun h => ⟨h, fun x hx => ?_⟩⟩

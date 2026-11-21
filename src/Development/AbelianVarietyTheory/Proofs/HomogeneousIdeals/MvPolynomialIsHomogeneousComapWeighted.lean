@@ -1,7 +1,39 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsOneTmulOfForallFixed
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.RestrictScalarsMapEqSpan
 
+section
+universe u_1 u_2 u_3 u_4
+
+namespace GlobalTheory.RestrictScalarsSpan
+
+theorem mul_mem_span {K : Type u_1} {L : Type u_2} {A : Type u_3} {B : Type u_4} [Field K] [Field L]
+    [Algebra K L] [Ring A] [Ring B] [Algebra K A] [Algebra K B] [Algebra L B]
+    [IsScalarTower K L B] {j : A →ₐ[K] B} (h : IsBaseChange L (AlgHom.toLinearMap j))
+    (I : Ideal A) (b x : B) (hx : x ∈ Submodule.span L ((j : A → B) '' (I : Set A))) :
+    b * x ∈ Submodule.span L ((j : A → B) '' (I : Set A)) := by
+  have key : ∀ a : A, j a * x ∈ Submodule.span L ((j : A → B) '' (I : Set A)) := by
+    intro a
+    induction hx using Submodule.span_induction with
+    | mem y hy =>
+      obtain ⟨i, hi, rfl⟩ := hy
+      exact Submodule.subset_span ⟨a * i, I.mul_mem_left a hi, map_mul j a i⟩
+    | zero => simp
+    | add y z _ _ hy hz => rw [mul_add]; exact add_mem hy hz
+    | smul l y _ hy => rw [mul_smul_comm]; exact Submodule.smul_mem _ l hy
+  refine h.inductionOn b
+    (motive := fun b => b * x ∈ Submodule.span L ((j : A → B) '' (I : Set A))) ?_ ?_ ?_ ?_
+  · simp
+  · exact key
+  · intro l b hb
+    rw [smul_mul_assoc]; exact Submodule.smul_mem _ l hb
+  · intro b c hb hc
+    rw [add_mul]; exact add_mem hb hc
+
+
+end GlobalTheory.RestrictScalarsSpan
+end
+
+section
 open TensorProduct Module
 
 namespace GlobalTheory.GaloisDescent
@@ -31,23 +63,7 @@ section Ideals
 variable {K L A B G : Type*} [Field K] [Field L] [Algebra K L] [Ring A] [Ring B] [Algebra K A]
   [Algebra K B] [Algebra L B] [IsScalarTower K L B] {j : A →ₐ[K] B}
 
-theorem restrictScalars_map_eq_span (hj : IsBaseChange L j.toLinearMap) (I : Ideal A) :
-    (I.map j).restrictScalars L =
-      Submodule.span L (j.toLinearMap '' (I.restrictScalars K : Submodule K A)) := by
-  first
-  | exact @_root_.GlobalTheory.RestrictScalarsSpan.restrictScalars_map_eq_span
-  | exact _root_.GlobalTheory.RestrictScalarsSpan.restrictScalars_map_eq_span
-  | (apply _root_.GlobalTheory.RestrictScalarsSpan.restrictScalars_map_eq_span <;> assumption)
-  | (intros; apply _root_.GlobalTheory.RestrictScalarsSpan.restrictScalars_map_eq_span <;> assumption)
-  | (intros; apply @_root_.GlobalTheory.RestrictScalarsSpan.restrictScalars_map_eq_span <;> first | assumption | infer_instance)
-  | (intros; exact _root_.GlobalTheory.RestrictScalarsSpan.restrictScalars_map_eq_span ..)
 
-theorem ideal_comap_map (hj : IsBaseChange L j.toLinearMap) (I : Ideal A) :
-    (I.map j).comap j = I := by
-  ext a
-  have := SetLike.ext_iff.1 (comap_span_image hj (I.restrictScalars K)) a
-  rw [← restrictScalars_map_eq_span hj] at this
-  exact this
 
 theorem ideal_map_comap_of_span (I : Ideal B) (N : Submodule K A)
     (h : Submodule.span L (j.toLinearMap '' N) = I.restrictScalars L) :
@@ -121,3 +137,4 @@ theorem mvPolynomial_isHomogeneous_comap {I : Ideal (MvPolynomial σ L)}
 end Polynomial
 
 end GlobalTheory.GaloisDescent
+end

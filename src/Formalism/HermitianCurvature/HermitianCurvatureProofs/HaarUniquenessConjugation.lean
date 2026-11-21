@@ -219,8 +219,6 @@ theorem vol_crude (hE : UJEmb) (hV : VolGrowth) (hC : UHConj) (hP : IsUnit P.det
         rw [e, ← ENNReal.ofReal_coe_nnreal, ← ENNReal.ofReal_mul c.coe_nonneg, mul_pow]
         congr 1; ring
 
-theorem shell_int : ShellInt :=
-  _root_.UpperTheory.Reformulated.B.LiftErrorLocal.shell_int
 
 theorem gN_meas (k r : ℕ) : Measurable fun g : Mt k r => gN (Matrix.of g) := by
   unfold gN
@@ -251,30 +249,10 @@ namespace Formalism.FourierDecayAlt.P
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
-theorem sharp_volume_of_exact : Formalism.FourierDecayAlt.B2.VolSharpFromExact := by
-  intro hE k r μG hμ
-  obtain ⟨C, -, hC⟩ := hE k r μG hμ
-  refine ⟨C, fun R hR => ?_⟩
-  have hR0 : 0 ≤ R := by linarith
-  have hsub : {g : Mt k r | gN (Matrix.of g) ≤ R} ⊆
-      {g | gN (Matrix.of g) ^ 2 ≤ ((2 * r + k + 1 : ℕ) : ℝ) + 4 * R ^ 2} := by
-    intro g hg
-    have h0 : 0 ≤ gN (Matrix.of g) := Real.sqrt_nonneg _
-    have h1 : gN (Matrix.of g) ^ 2 ≤ R ^ 2 := pow_le_pow_left₀ h0 hg 2
-    have h2 : (0 : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) := Nat.cast_nonneg _
-    show gN (Matrix.of g) ^ 2 ≤ _
-    nlinarith [sq_nonneg R]
-  refine (measure_mono hsub).trans ?_
-  rw [hC R hR0]
-  have e : R ^ (2 * ((k : ℝ) + r) * ((r : ℝ) + 1)) = R ^ (2 * (k + r) * (r + 1)) := by
-    rw [← Real.rpow_natCast]; push_cast; rfl
-  rw [e, ENNReal.ofReal_mul C.coe_nonneg, ENNReal.ofReal_coe_nnreal]
 
 theorem group_measure_from_diagonal : Formalism.FourierDecayAlt.B2.GFromDiag :=
   fun hE hU _ hV hF hC _ _ => HaarUniquenessConjugation.gFromDiag' hE hU hV hF hC
 
-theorem norm_ball_volume_crude : Formalism.FourierDecayAlt.B2.VolCrude :=
-  (HaarUniquenessConjugation.gFromDiag' uJEmb unimodular volGrowth hpkFacts uHConj).2
 
 theorem norm_power_integrable_sharp_of_volume : Formalism.FourierDecayAlt.B2.GNIntSharpFromVol := by
   intro hS hL hV k r μG A hμ hA
@@ -284,10 +262,5 @@ theorem norm_power_integrable_sharp_of_volume : Formalism.FourierDecayAlt.B2.GNI
   · filter_upwards [HaarUniquenessConjugation.ae_mem hμ] with g hg using hL k r _ hg
   · unfold AB at hA; linarith
 
-theorem norm_power_integrable_crude : Formalism.FourierDecayAlt.B2.GNIntCrude := by
-  intro k r μG A hμ hA
-  obtain ⟨C, hC⟩ := norm_ball_volume_crude k r μG hμ
-  refine HaarUniquenessConjugation.shell_int (Mt k r) μG (fun g => gN (Matrix.of g)) C _ A (HaarUniquenessConjugation.gN_meas k r) ?_ (by positivity) hC hA
-  filter_upwards [HaarUniquenessConjugation.ae_mem hμ] with g hg using HaarUniquenessConjugation.gnLower k r _ hg
 
 end Formalism.FourierDecayAlt.P

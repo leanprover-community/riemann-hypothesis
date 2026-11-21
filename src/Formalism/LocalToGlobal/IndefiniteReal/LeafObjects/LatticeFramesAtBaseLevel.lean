@@ -251,33 +251,7 @@ structure SlopeBoundConditions (Ca Cb Cf Cc C1 Cm Cn : ℝ) : Prop where
   gmin : ∀ j, (liftSlopeData R F I J hd j).q' ≠ 0 → LeafGmin (liftSlopeData R F I J hd j)
   compParams : ∀ j, (liftSlopeData R F I J hd j).q' ≠ 0 → CompParams Ca Cb (liftSlopeData R F I J hd j)
 
-theorem covol_of_leaves (Ca Cb Cf Cc C1 Cm Cn : ℝ) (hCa : 0 ≤ Ca) (hCb : 0 ≤ Cb) (hCf : 0 ≤ Cf) (hCc : 0 ≤ Cc)
-    (hC1 : 0 ≤ C1) (hCm : 0 ≤ Cm) (C CH : ℝ) (hC : C = slopeBoundConstant Ca Cb Cf Cc C1 Cm)
-    (hL : SlopeBoundConditions R F I J hd Ca Cb Cf Cc C1 Cm Cn) (hD : 0 < (Sb R F).D) (hdW : ∀ j, (Sb R F).dW j = (Sb R F).D)
-    (hF : (Sb R F).Frames) (hT : ScaleTies (F.fc (R.toCx F).zs).Z (slopeParameters R F I J hd) (liftSlopeData R F I J hd)) :
-    R.LCovol F C CH := by
-  subst hC
-  exact slope_bound_of_conditions Ca Cb Cf Cc C1 Cm Cn hCa hCb hCf hCc hC1 hCm (Sb R F) (F.fc (R.toCx F).zs).Z CH
-    (slopeParameters R F I J hd) (liftSlopeData R F I J hd) (latticeFramesAtBaseLevel R F J) hL.kl hL.cn hL.fe hL.diff hL.norm hL.page hL.fac hL.degFlat
-    hL.exportL hL.cut hL.shareBad hL.badRows hL.muN hL.lam hL.record hL.note2 hL.measure hL.def0 hL.root hL.flat hL.deg
-    hL.rho hL.share hL.small hL.means hL.hs hL.sum hL.i13 hL.eps hL.descent hL.ph hL.gmin hL.compParams hD hdW hF hT
 
-theorem scaleTies_of (hb : (F.fc (R.toCx F).zs).Z.b = (slopeParameters R F I J hd).b)
-    (hmain : ∀ j, (F.fc (R.toCx F).zs).Z.l3m j = (liftSlopeData R F I J hd j).main)
-    (hunit : (F.fc (R.toCx F).zs).Z.l3u = (slopeParameters R F I J hd).B0 * (slopeParameters R F I J hd).llx) :
-    ScaleTies (F.fc (R.toCx F).zs).Z (slopeParameters R F I J hd) (liftSlopeData R F I J hd) := by
-  refine ⟨rfl, hb, ?_, hmain, hunit, ?_, fun j => ⟨?_, rfl⟩⟩
-  · show (Fintype.card (Fin D.R.m) : ℝ) = (D.R.m : ℝ)
-    rw [Fintype.card_fin]
-  · intro a b h
-    have h' : D.R.m - ((a : ℕ) + 1) = D.R.m - ((b : ℕ) + 1) := h
-    have ha := a.2
-    have hb := b.2
-    exact Fin.ext (by omega)
-  · show ((D.R.m - ((j : ℕ) + 1) : ℕ) : ℝ) + 1 ≤ (D.R.m : ℝ)
-    have hj := j.2
-    rw [← Nat.cast_add_one, Nat.cast_le]
-    omega
 
 end Joint
 

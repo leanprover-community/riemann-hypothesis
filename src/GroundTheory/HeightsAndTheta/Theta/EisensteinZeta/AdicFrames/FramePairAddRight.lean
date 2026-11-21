@@ -152,10 +152,6 @@ theorem gram_add_shiftT [CharZero K] (hH : IsHermitianFor (conjHom K E) H)
     rw [← two_mul, mul_inv_cancel₀ (two_ne_zero)]
   rw [this, one_smul]
 
-theorem isFree_of_isUnit {Z X : Matrix ι (Fin p) (R ⊗[K] E)} (hX : IsUnit (framePair K E R H Z X).det) :
-    IsFree X := by
-  refine ⟨(framePair K E R H Z X)⁻¹ ⬝ (cT K E R Z ⬝ Hm K R H), ?_⟩
-  rw [Matrix.mul_assoc, ← framePair_eq, Matrix.nonsing_inv_mul _ hX]
 
 theorem exists_partner [CharZero K] (hH : IsHermitianFor (conjHom K E) H) (hHu : IsUnit H.det)
     {Y : Matrix ι (Fin p) (R ⊗[K] E)} (hY : IsFree Y) (hY0 : gram K E R H Y = 0) :

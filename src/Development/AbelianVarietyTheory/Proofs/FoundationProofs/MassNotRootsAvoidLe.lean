@@ -1,10 +1,246 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SquarefreeLabelTorusMassDivisorBound
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SumPrimePowerPartPowSubOneLe
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SumLeProdOfTwoLeNat
+import Development.AbelianVarietyTheory.Definitions.Foundations.SamePartIffOfNeZero
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PowPadicValEqOneOfPrimePow
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SquarefreeLabelTorusMassUnionBounds
 
+section
+open Polynomial Classical GlobalTheory.BadShare
+
+namespace GlobalTheory.BadShare
+
+theorem sum_le_prod_of_two_le {ι : Type*} (s : Finset ι) (f : ι → ℕ) (h : ∀ i ∈ s, 2 ≤ f i) :
+    ∑ i ∈ s, f i ≤ ∏ i ∈ s, f i := by
+  induction s using Finset.induction_on with
+  | empty => simp
+  | insert a s ha ih =>
+    rw [Finset.sum_insert ha, Finset.prod_insert ha]
+    have ha2 := h a (Finset.mem_insert_self a s)
+    have ih' := ih (fun i hi => h i (Finset.mem_insert_of_mem hi))
+    rcases s.eq_empty_or_nonempty with rfl | ⟨b, hb⟩
+    · simp
+    · have hne : ∏ i ∈ s, f i ≠ 0 := Finset.prod_ne_zero_iff.mpr fun i hi => by
+        have := h i (Finset.mem_insert_of_mem hi)
+        omega
+      have hP : 2 ≤ ∏ i ∈ s, f i :=
+        (h b (Finset.mem_insert_of_mem hb)).trans
+          (Nat.le_of_dvd (Nat.pos_of_ne_zero hne) (Finset.dvd_prod_of_mem f hb))
+      nlinarith
+
+private theorem prod_prime_pow_dvd_of_forall_dvd (s : Finset ℕ) (e : ℕ → ℕ) (M : ℕ)
+    (hp : ∀ l ∈ s, l.Prime) (hd : ∀ l ∈ s, l ^ e l ∣ M) : ∏ l ∈ s, l ^ e l ∣ M := by
+  induction s using Finset.induction_on with
+  | empty => simp
+  | insert a s ha ih =>
+    rw [Finset.prod_insert ha]
+    refine Nat.Coprime.mul_dvd_of_dvd_of_dvd ?_ (hd a (Finset.mem_insert_self a s))
+      (ih (fun l hl => hp l (Finset.mem_insert_of_mem hl)) (fun l hl => hd l (Finset.mem_insert_of_mem hl)))
+    refine Nat.Coprime.prod_right fun l hl => ?_
+    refine Nat.Coprime.pow _ _ ?_
+    exact (Nat.coprime_primes (hp a (Finset.mem_insert_self a s)) (hp l (Finset.mem_insert_of_mem hl))).mpr
+      (by rintro rfl; exact ha hl)
+
+theorem sum_prime_pow_le_of_dvd (s : Finset ℕ) (e : ℕ → ℕ) (M : ℕ) (hM : M ≠ 0)
+    (hp : ∀ l ∈ s, l.Prime) (he : ∀ l ∈ s, e l ≠ 0) (hd : ∀ l ∈ s, l ^ e l ∣ M) :
+    ∑ l ∈ s, l ^ e l ≤ M := by
+  have h2 : ∀ l ∈ s, 2 ≤ l ^ e l := fun l hl => le_trans (hp l hl).two_le (Nat.le_self_pow (he l hl) l)
+  exact (sum_le_prod_of_two_le s _ h2).trans
+    (Nat.le_of_dvd (Nat.pos_of_ne_zero hM) (prod_prime_pow_dvd_of_forall_dvd s e M hp hd))
+
+private theorem padicValNat_pow_sub_one_eq_add (g d l : ℕ) (hg : 2 ≤ g) (h4 : 4 ∣ g - 1) (hd : d ≠ 0)
+    (hl : l.Prime) (hlg : l ∣ g - 1) :
+    padicValNat l (g ^ d - 1) = padicValNat l (g - 1) + padicValNat l d := by
+  have := Fact.mk hl
+  have hlg' : ¬ l ∣ g := by
+    intro h
+    have h' := Nat.dvd_sub h hlg
+    have e : g - (g - 1) = 1 := by omega
+    rw [e] at h'
+    exact hl.one_lt.ne' (Nat.dvd_one.mp h')
+  rcases hl.eq_two_or_odd' with rfl | hodd
+  · have hx : ¬ (2 : ℤ) ∣ (g : ℤ) := by exact_mod_cast hlg'
+    have h4' : (4 : ℤ) ∣ (g : ℤ) - 1 := by
+      have := Int.natCast_dvd_natCast.mpr h4
+      rwa [Nat.cast_sub (by omega : 1 ≤ g), Nat.cast_one, Nat.cast_ofNat] at this
+    have key := Int.two_pow_sub_pow' d h4' hx
+    rw [one_pow] at key
+    have e1 : (g : ℤ) ^ d - 1 = ((g ^ d - 1 : ℕ) : ℤ) := by
+      rw [Nat.cast_sub (Nat.one_le_pow _ _ (by omega))]
+      push_cast
+      ring
+    have e2 : (g : ℤ) - 1 = ((g - 1 : ℕ) : ℤ) := by
+      rw [Nat.cast_sub (by omega : 1 ≤ g)]
+      push_cast
+      ring
+    have e3 : (2 : ℤ) = ((2 : ℕ) : ℤ) := rfl
+    rw [e1, e2, e3, Int.natCast_emultiplicity, Int.natCast_emultiplicity, Int.natCast_emultiplicity] at key
+    have hN : g ^ d - 1 ≠ 0 := Nat.sub_ne_zero_of_lt (Nat.one_lt_pow hd (by omega))
+    rw [← Nat.cast_inj (R := ℕ∞), Nat.cast_add, padicValNat_eq_emultiplicity hN,
+      padicValNat_eq_emultiplicity (by omega : g - 1 ≠ 0), padicValNat_eq_emultiplicity hd]
+    exact key
+  · have := padicValNat.pow_sub_pow hodd (by omega : 1 < g) hlg hlg' hd
+    rwa [one_pow] at this
+
+theorem pow_padicValNat_pow_sub_one_dvd (g d l : ℕ) (hg : 2 ≤ g) (h4 : 4 ∣ g - 1) (hd : d ≠ 0)
+    (hl : l.Prime) (hlg : l ∣ g - 1) : l ^ padicValNat l (g ^ d - 1) ∣ d * (g - 1) := by
+  rw [padicValNat_pow_sub_one_eq_add g d l hg h4 hd hl hlg, pow_add, mul_comm d]
+  exact mul_dvd_mul pow_padicValNat_dvd pow_padicValNat_dvd
+
+theorem sum_primePowerPart_pow_sub_one_le :
+    ∀ g d : ℕ, 2 ≤ g → 4 ∣ g - 1 → 2 ≤ d → (∑ l ∈ (g ^ d - 1).primeFactors, ((l ^ padicValNat l (g ^ d - 1) : ℕ) : ℝ)) ≤ d * ((g : ℝ) - 1) + ((g : ℝ) ^ d - 1) / ((g : ℝ) - 1) := by
+  intro g d hg h4 hd
+  set N := g ^ d - 1 with hN
+  have hd0 : d ≠ 0 := by omega
+  have hg1 : g - 1 ≠ 0 := by omega
+  have hdiv : g - 1 ∣ N := by simpa using Nat.sub_dvd_pow_sub_pow g 1 d
+  have hv : ∀ l ∈ N.primeFactors, padicValNat l N ≠ 0 := by
+    intro l hl
+    obtain ⟨hlp, hlN, hN0⟩ := Nat.mem_primeFactors.mp hl
+    have := Fact.mk hlp
+    exact Nat.one_le_iff_ne_zero.mp (one_le_padicValNat_of_dvd hN0 hlN)
+  have hnat : ∑ l ∈ N.primeFactors, l ^ padicValNat l N ≤ d * (g - 1) + N / (g - 1) := by
+    rw [← Finset.sum_filter_add_sum_filter_not N.primeFactors (fun l => l ∣ g - 1)]
+    refine add_le_add ?_ ?_
+    · refine sum_prime_pow_le_of_dvd _ _ _ (mul_ne_zero hd0 hg1)
+        (fun l hl => (Nat.mem_primeFactors.mp (Finset.mem_filter.mp hl).1).1)
+        (fun l hl => hv l (Finset.mem_filter.mp hl).1) (fun l hl => ?_)
+      obtain ⟨hl1, hlg⟩ := Finset.mem_filter.mp hl
+      exact pow_padicValNat_pow_sub_one_dvd g d l hg h4 hd0 (Nat.mem_primeFactors.mp hl1).1 hlg
+    · have hQ0 : N / (g - 1) ≠ 0 := by
+        intro h0
+        have hm := Nat.div_mul_cancel hdiv
+        rw [h0, zero_mul] at hm
+        have : 1 < g ^ d := Nat.one_lt_pow hd0 (by omega)
+        omega
+      refine sum_prime_pow_le_of_dvd _ _ _ hQ0
+        (fun l hl => (Nat.mem_primeFactors.mp (Finset.mem_filter.mp hl).1).1)
+        (fun l hl => hv l (Finset.mem_filter.mp hl).1) (fun l hl => ?_)
+      obtain ⟨hl1, hlg⟩ := Finset.mem_filter.mp hl
+      obtain ⟨hlp, -, -⟩ := Nat.mem_primeFactors.mp hl1
+      have hcop : Nat.Coprime (l ^ padicValNat l N) (g - 1) :=
+        Nat.Coprime.pow_left _ ((Nat.Prime.coprime_iff_not_dvd hlp).mpr hlg)
+      refine hcop.dvd_of_dvd_mul_right ?_
+      rw [Nat.div_mul_cancel hdiv]
+      exact pow_padicValNat_dvd
+  have hgR : (2 : ℝ) ≤ g := by exact_mod_cast hg
+  have hcast_g1 : ((g - 1 : ℕ) : ℝ) = (g : ℝ) - 1 := by
+    rw [Nat.cast_sub (by omega : 1 ≤ g)]
+    simp
+  have hcast_N : ((N : ℕ) : ℝ) = (g : ℝ) ^ d - 1 := by
+    rw [hN, Nat.cast_sub (Nat.one_le_pow _ _ (by omega))]
+    simp
+  have hcast_Q : ((N / (g - 1) : ℕ) : ℝ) = ((g : ℝ) ^ d - 1) / ((g : ℝ) - 1) := by
+    rw [Nat.cast_div hdiv (by rw [hcast_g1]; linarith), hcast_N, hcast_g1]
+  calc (∑ l ∈ N.primeFactors, ((l ^ padicValNat l N : ℕ) : ℝ))
+        = ((∑ l ∈ N.primeFactors, l ^ padicValNat l N : ℕ) : ℝ) := by rw [Nat.cast_sum]
+    _ ≤ ((d * (g - 1) + N / (g - 1) : ℕ) : ℝ) := by exact_mod_cast hnat
+    _ = _ := by rw [Nat.cast_add, Nat.cast_mul, hcast_g1, hcast_Q]
+
+end GlobalTheory.BadShare
+end
+
+section
+open Polynomial Classical GlobalTheory.BadShare
+
+namespace GlobalTheory.BadShare
+
+theorem sum_le_prod_of_two_le_nat {ι : Type*} (s : Finset ι) (f : ι → ℕ)
+    (h : ∀ i ∈ s, 2 ≤ f i) : ∑ i ∈ s, f i ≤ ∏ i ∈ s, f i := by
+  rcases s.eq_empty_or_nonempty with rfl | hs
+  · simp
+  have key : ∑ i ∈ s, f i ≤ ∏ i ∈ s, f i ∧ 2 ≤ ∏ i ∈ s, f i := by
+    induction hs using Finset.Nonempty.cons_induction with
+    | singleton a => simpa using h a (by simp)
+    | cons a s ha hs ih =>
+      rw [Finset.sum_cons, Finset.prod_cons]
+      obtain ⟨h1, h2⟩ := ih (fun i hi => h i (Finset.mem_cons_of_mem hi))
+      have h3 := h a (Finset.mem_cons_self _ _)
+      constructor
+      · have := Nat.add_le_mul h3 h2
+        omega
+      · nlinarith
+  exact key.1
+
+private theorem arith_four (a b c R m : ℕ) (ha : 16 ≤ a) (hb : m ≤ b) (hc : m ≤ c)
+    (hbc : 16 * m ≤ b * c) (hR : 1 ≤ R) : 4 * m * (a + b + c + R) ≤ a * b * c * R := by
+  have h1 : 16 * m * a ≤ b * c * a := Nat.mul_le_mul_right _ hbc
+  have h2 : 16 * m * b ≤ a * c * b := Nat.mul_le_mul_right _ (Nat.mul_le_mul ha hc)
+  have h3 : 16 * m * c ≤ a * b * c := Nat.mul_le_mul_right _ (Nat.mul_le_mul ha hb)
+  have h4 : 16 * m * R ≤ a * b * c * R := by
+    apply Nat.mul_le_mul_right
+    calc 16 * m ≤ b * c := hbc
+      _ ≤ a * (b * c) := Nat.le_mul_of_pos_left _ (by omega)
+      _ = a * b * c := by ring
+  have h5 : a * b * c ≤ a * b * c * R := Nat.le_mul_of_pos_right _ hR
+  nlinarith
+
+theorem sum_primePowerParts_le :
+    ∀ n q d : ℕ, 0 < n → q.Prime → d.Prime → q ≠ 2 → d ≠ 2 → q ≠ d → 16 ≤ max q d →
+      16 * q * d ∣ n → (∑ l ∈ n.primeFactors, ((l ^ padicValNat l n : ℕ) : ℝ)) ≤
+        (n : ℝ) / (4 * ((min q d : ℕ) : ℝ)) := by
+  intro n q d hn hq hd hq2 hd2 hqd hmax hdvd
+  set f : ℕ → ℕ := fun l => l ^ padicValNat l n with hf
+  have hpow : ∀ p k : ℕ, p.Prime → p ^ k ∣ n → p ^ k ≤ f p := by
+    intro p k hp hk
+    haveI := Fact.mk hp
+    exact Nat.pow_le_pow_right hp.pos ((padicValNat_dvd_iff_le hn.ne').1 hk)
+  have hge : ∀ p ∈ n.primeFactors, p ≤ f p := by
+    intro p hp
+    have := hpow p 1 (Nat.prime_of_mem_primeFactors hp)
+      (by simpa using Nat.dvd_of_mem_primeFactors hp)
+    simpa using this
+  have h16 : 2 ^ 4 ∣ n := Dvd.dvd.trans ⟨q * d, by ring⟩ hdvd
+  have hqn : q ∣ n := Dvd.dvd.trans ⟨16 * d, by ring⟩ hdvd
+  have hdn : d ∣ n := Dvd.dvd.trans ⟨16 * q, by ring⟩ hdvd
+  have m2 : 2 ∈ n.primeFactors :=
+    Nat.mem_primeFactors.2 ⟨Nat.prime_two, Dvd.dvd.trans ⟨8, by norm_num⟩ h16, hn.ne'⟩
+  have mq : q ∈ n.primeFactors := Nat.mem_primeFactors.2 ⟨hq, hqn, hn.ne'⟩
+  have md : d ∈ n.primeFactors := Nat.mem_primeFactors.2 ⟨hd, hdn, hn.ne'⟩
+  have ha : 16 ≤ f 2 := by simpa using hpow 2 4 Nat.prime_two h16
+  have hb := hge q mq
+  have hc := hge d md
+  have hsub : ({2, q, d} : Finset ℕ) ⊆ n.primeFactors := by
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+    rcases hx with rfl | rfl | rfl <;> assumption
+  have hn2 : (2 : ℕ) ∉ ({q, d} : Finset ℕ) := by
+    simp only [Finset.mem_insert, Finset.mem_singleton]; omega
+  have hprod : ∏ l ∈ n.primeFactors, f l = n := by
+    conv_rhs => rw [← Nat.factorization_prod_pow_eq_self hn.ne']
+    rw [Finsupp.prod, Nat.support_factorization]
+    refine Finset.prod_congr rfl fun p hp => ?_
+    rw [Nat.factorization_def _ (Nat.prime_of_mem_primeFactors hp)]
+  set s := n.primeFactors \ {2, q, d} with hs
+  have hs2 : ∀ i ∈ s, 2 ≤ f i := fun i hi =>
+    (Nat.prime_of_mem_primeFactors (Finset.mem_sdiff.1 hi).1).two_le.trans
+      (hge i (Finset.mem_sdiff.1 hi).1)
+  have hSP := sum_le_prod_of_two_le_nat s f hs2
+  have hR : 1 ≤ ∏ i ∈ s, f i :=
+    Finset.prod_pos (f := f) fun i hi => lt_of_lt_of_le (by norm_num) (hs2 i hi)
+  have e1 : n = f 2 * f q * f d * ∏ i ∈ s, f i := by
+    rw [← hprod, ← Finset.prod_sdiff hsub, Finset.prod_insert hn2, Finset.prod_pair hqd]
+    ring
+  have e2 : ∑ l ∈ n.primeFactors, f l = f 2 + f q + f d + ∑ i ∈ s, f i := by
+    rw [← Finset.sum_sdiff hsub, Finset.sum_insert hn2, Finset.sum_pair hqd]
+    ring
+  have hbc : 16 * min q d ≤ f q * f d := by
+    calc 16 * min q d ≤ max q d * min q d := Nat.mul_le_mul_right _ hmax
+      _ = q * d := max_mul_min q d
+      _ ≤ f q * f d := Nat.mul_le_mul hb hc
+  have key := arith_four (f 2) (f q) (f d) (∏ i ∈ s, f i) (min q d) ha
+    ((min_le_left _ _).trans hb) ((min_le_right _ _).trans hc) hbc hR
+  rw [← e1] at key
+  have key2 : (∑ l ∈ n.primeFactors, f l) * (4 * min q d) ≤ n := by
+    rw [e2, mul_comm]
+    exact (Nat.mul_le_mul_left _ (by omega)).trans key
+  have hm : 0 < min q d := lt_min hq.pos hd.pos
+  rw [le_div_iff₀ (by positivity), ← Nat.cast_sum]
+  exact_mod_cast key2
+
+end GlobalTheory.BadShare
+end
+
+section
 open Polynomial Classical GlobalTheory.BadShare
 namespace GlobalTheory.BadShare
 
@@ -191,3 +427,4 @@ theorem mass_not_rootsAvoid_le : ∀ (g : ℕ) [Fact g.Prime], ∀ (N q d : ℕ)
         linarith
 
 end GlobalTheory.BadShare
+end

@@ -101,10 +101,6 @@ theorem stdJ_basis {L : Type} [Field L] (σ : L →+* ℂ) (n : ℕ) {κ : Type}
 def trunc (a b : ℕ) : Eu a →ₗ[ℂ] Eu b :=
   Matrix.toEuclideanLin (Matrix.of fun (i : Fin b) (k : Fin a) => if (i : ℕ) = k then (1 : ℂ) else 0)
 
-theorem trunc_self (a : ℕ) (x : Eu a) : trunc a a x = x := by
-  have : (Matrix.of fun (i : Fin a) (k : Fin a) => if (i : ℕ) = k then (1 : ℂ) else 0) = 1 := by
-    ext i k; simp [Matrix.one_apply, Fin.ext_iff]
-  simp [trunc, this]
 
 theorem chain_lin {R : Ranks} {ι : Type} [Fintype ι] {hc : ι → HCParam R} (C : ColumnChain R ι hc) (j : ℕ) :
     IsLinearMap ℂ (Formalism.ThetaLiftIndependence.chainOpM C.wt C.Kmap j) := by
@@ -317,42 +313,10 @@ theorem exists_rows (C₀ : Cols B) (n n₀ a : ℕ) : ∃ (C : Cols B) (W : Row
       (GlobalTheory.MemberTorsor.mram_ne_bot B.R (Tau B.R) (B.hcW u) (B.T u) (card_Tau B.host) (two_lt_alt B.toPre u))
   · exact Bool.noConfusion
 
-theorem trunc_trunc {a b c : ℕ} (h : a = b) (x : Eu a) : trunc b c (trunc a b x) = trunc a c x := by
-  subst h; rw [trunc_self]
 
-theorem mdim_self (n j : ℕ) : mdim n n j = n := by cases j <;> rfl
 
-theorem congr_symm_eq {a b : ℕ} (h : a = b) (x : Eu b) :
-    (LinearIsometryEquiv.piLpCongrLeft 2 ℂ ℂ (finCongr h)).symm x = trunc b a x := by
-  subst h; rw [trunc_self]; rfl
 
-theorem model_buDef {C : Cols B} {d : C.Tup → ℕ} (h : Fits C d) (n₀ a : ℕ) :
-    Rows.BuDef (model h (d C.mu0) n₀ a).what₂ := by
-  have hd : ∀ j (x : Eu (mdim (d C.mu0) (d C.mu0) j)),
-      (model h (d C.mu0) n₀ a).what₂.downTo C.mu0 j x = trunc _ (d C.mu0) x := by
-    intro j
-    induction j with
-    | zero => exact fun x => (trunc_self _ x).symm
-    | succ j ih =>
-      intro x
-      exact (ih (trunc _ _ x)).trans (trunc_trunc ((mdim_self _ _).trans (mdim_self _ _).symm) x)
-  intro u φ F _
-  have hi : (model h (d C.mu0) n₀ a).what₂.iota C.mu0 F = F := by
-    refine (hd B.R.m _).trans ?_
-    erw [congr_symm_eq (mdim_m B.R (d C.mu0) (d C.mu0)) F]
-    exact (trunc_trunc (mdim_self _ _).symm _).trans (trunc_self _ _)
-  erw [hi]
-  refine ((model h (d C.mu0) n₀ a).perCol_base_eq_PtilCol u φ F).trans ?_
-  show _ = (C.mem u).P.PtilCol _ ((h.mt0 u).some.symm (trunc _ _ F))
-  erw [trunc_self]
-  rfl
 
-theorem model_lamPDef {C : Cols B} {d : C.Tup → ℕ} (h : Fits C d) (n n₀ a : ℕ) :
-    Rows.LamPDef (model h n n₀ a).what₂ := by
-  intro μ j _ _ σ x _
-  show (LinearMap.id : Eu a →ₗ[ℂ] Eu a) (LinearMap.adjoint (LinearMap.id : Eu a →ₗ[ℂ] Eu a) x) = ((1 : ℝ) : ℂ) • (show Eu a from x)
-  rw [LinearMap.adjoint_id, Complex.ofReal_one, one_smul]
-  rfl
 
 end GlobalTheory.Mem.RowsRestModel
 

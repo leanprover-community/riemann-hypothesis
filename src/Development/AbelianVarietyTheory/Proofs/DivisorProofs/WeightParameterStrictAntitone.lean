@@ -3,9 +3,210 @@ import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.Grothendie
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StrictAntiOfStep
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightBoundHoldsStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HostBoundHolds
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ShiftedWeightsDominantOfGaps
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BarGapParameterInequality
+import Development.AbelianVarietyTheory.Definitions.Divisors.CovolXOfCovol
+import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
+import Development.AbelianVarietyTheory.Definitions.Divisors.CuspIso
+import Development.AbelianVarietyTheory.Definitions.Divisors.MeanLogLeOfBounds
+import Development.AbelianVarietyTheory.Definitions.Divisors.WedgeNrmLeOfWedgeNormLe
+import Development.AbelianVarietyTheory.Definitions.Divisors.IsHomWeightHomWeight
+import Development.AbelianVarietyTheory.Definitions.Divisors.MemLevEigenIffTransl
+import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.RealCubicMeans.LogMeanShares.LogMeanStatements.HSClaim
+import Development.AbelianVarietyTheory.Definitions.Divisors.GenRatios
+import BuildAid.ForwardExisting
 
+section
+section
+open CategoryTheory AlgebraicGeometry NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Theta
+open GlobalTheory GlobalTheory.CompHS GlobalTheory.CovTop GlobalTheory.BigTop GlobalTheory.HSApp GlobalTheory.DegVal GlobalTheory.DegCmp
+open GlobalTheory.AllWt (Psi wtOf cuspOn cuspW latOn latW normOn petOn GoodOn GoodW rankOn degOn rankW)
+open GlobalTheory.CompHt (hodgeWt)
+open GlobalTheory.LevDesc (TypeFrame grpHR grpGHR latN levDet secRing transl pull KeepsCusp)
+open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
+open GlobalTheory.BadCount
+open scoped TensorProduct
+
+namespace GlobalTheory.CompHS.WtPar
+
+theorem antitone_of_step {N : ℕ} (f : Fin N → ℤ) (h : ∀ a b : Fin N, (b : ℕ) = a + 1 → f b ≤ f a) :
+    Antitone f := by
+  rintro ⟨i, hi⟩ ⟨j, hj⟩ hij
+  simp only [Fin.mk_le_mk] at hij
+  induction j, hij using Nat.le_induction with
+  | base => exact le_rfl
+  | succ k hik ih => exact (h ⟨k, by omega⟩ ⟨k + 1, hj⟩ rfl).trans (ih (by omega))
+
+theorem shifted_dominant : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} (Dw : Datum H) (P : WtPar Dw),
+    0 ≤ P.c₀ → 2 * (Dw.p + Dw.q) + CompHt.dimFlag Dw ≤ P.T →
+    (∀ (τ : Psi H) (a b : Fin (Dw.p + Dw.q)), (b : ℕ) = a + 1 →
+      ((b : ℕ) ≠ Dw.p → ((P.T : ℤ) + CompHt.dimFlag Dw + 2) * ((P.T : ℤ) + CompHt.dimFlag Dw + 2 + 2 * ((Dw.p + Dw.q : ℕ) : ℤ)) ≤
+        P.u τ a - P.u τ b + 2) ∧
+      ((b : ℕ) = Dw.p → ((P.T : ℤ) + P.c₀) * ((P.T : ℤ) + CompHt.dimFlag Dw + 1) + P.c₀ + 2 * ((Dw.p + Dw.q : ℕ) : ℤ) - 2 ≤
+        P.u τ a - P.u τ b)) →
+    ∀ s : ℕ, s ≤ 3 → ∀ τ : Psi H, Antitone (P.uMinus τ + (s * P.c₀) • hodgeWt Dw τ) ∧
+      Antitone (((P.T + CompHt.dimFlag Dw + (if s = 0 then 3 else 4) : ℕ) : ℤ) • P.u₁ τ - (P.uMinus τ + (s * P.c₀) • hodgeWt Dw τ)) := by
+  intro E _ _ _ H Dw P hc hT hgap s hs τ
+  have hD : (CompHt.dimFlag Dw : ℤ) = (FlagTan.dimFlag Dw : ℤ) := by exact_mod_cast dimFlag_eq Dw
+  have hw : ∀ i : Fin (Dw.p + Dw.q), hodgeWt Dw τ i = if (i : ℕ) < Dw.p then 0 else -1 := fun i => rfl
+  have hX : ∀ i, (P.uMinus τ + ((s : ℤ) * P.c₀) • hodgeWt Dw τ) i =
+      P.u τ i + ((s : ℤ) * P.c₀ - P.c₀) * hodgeWt Dw τ i := by
+    intro i
+    simp only [uMinus, Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul]
+    ring
+  have hsc : (s : ℤ) * P.c₀ ≤ 3 * P.c₀ := mul_le_mul_of_nonneg_right (by exact_mod_cast hs) hc
+  have hsc0 : 0 ≤ (s : ℤ) * P.c₀ := mul_nonneg (by positivity) hc
+  have hT0 : (0 : ℤ) ≤ P.T := by positivity
+  have hD0 : (0 : ℤ) ≤ CompHt.dimFlag Dw := by positivity
+  constructor
+  · refine antitone_of_step _ fun a b hab => ?_
+    rw [hX, hX, hw, hw]
+    obtain ⟨h1, h2⟩ := hgap τ a b hab
+    by_cases hb : (b : ℕ) = Dw.p
+    · have h := h2 hb
+      have hb' : ¬ (b : ℕ) < Dw.p := by omega
+      have ha' : (a : ℕ) < Dw.p := by omega
+      simp only [hb', ha', if_true, if_false]
+      have : 0 ≤ ((P.T : ℤ) + P.c₀) * ((P.T : ℤ) + CompHt.dimFlag Dw + 1) := by positivity
+      have : (2 : ℤ) ≤ ((Dw.p + Dw.q : ℕ) : ℤ) := by have := b.2; push_cast; omega
+      linarith
+    · have h := h1 hb
+      have : 2 ≤ ((P.T : ℤ) + CompHt.dimFlag Dw + 2) * ((P.T : ℤ) + CompHt.dimFlag Dw + 2 + 2 * ((Dw.p + Dw.q : ℕ) : ℤ)) := by
+        have h2 : (0 : ℤ) ≤ ((Dw.p + Dw.q : ℕ) : ℤ) := by positivity
+        nlinarith
+      by_cases ha : (a : ℕ) < Dw.p
+      · have hb' : (b : ℕ) < Dw.p := by omega
+        simp only [hb', ha, if_true]; linarith
+      · have hb' : ¬ (b : ℕ) < Dw.p := by omega
+        simp only [hb', ha, if_false]; linarith
+  · refine antitone_of_step _ fun a b hab => ?_
+    obtain ⟨h1, h2⟩ := hgap τ a b hab
+    have hk : (a : ℕ) + 1 < Dw.p + Dw.q := hab ▸ b.2
+    have hg1 := P.gap_u₁ τ hk
+    rw [P.gap_uMinus_sub_kap τ hk, gap_eq _ hab, gap_eq _ hab] at hg1
+    set G := P.u τ a - P.u τ b + (if (a : ℕ) + 1 = Dw.p then -P.c₀ - (2 * ((Dw.p + Dw.q : ℕ) : ℤ) - 2) else 2) with hG
+    have hT₁ : P.T₁ = (P.T : ℤ) + CompHt.dimFlag Dw + 1 := by rw [WtPar.T₁, hD]
+    have hT₁0 : 0 < P.T₁ := by rw [hT₁]; positivity
+    set g := G / P.T₁ with hgdef
+    have hdiv : P.T₁ * g + G % P.T₁ = G := by rw [Int.emod_def]; ring
+    have hr0 : 0 ≤ G % P.T₁ := Int.emod_nonneg _ hT₁0.ne'
+    have hr1 : G % P.T₁ < P.T₁ := Int.emod_lt_of_pos _ hT₁0
+    have hu : P.u₁ τ a = P.u₁ τ b + g := by rw [← hg1]; ring
+    simp only [Pi.sub_apply, Pi.smul_apply, smul_eq_mul, hX, hw, hu]
+    rw [hT₁] at hdiv hr1
+    have hTz : 2 * ((Dw.p + Dw.q : ℕ) : ℤ) + CompHt.dimFlag Dw ≤ P.T := by exact_mod_cast hT
+    have hN : (2 : ℤ) ≤ ((Dw.p + Dw.q : ℕ) : ℤ) := by
+      have := b.2; push_cast; omega
+    have hK : ∀ c : ℕ, ((P.T + CompHt.dimFlag Dw + c : ℕ) : ℤ) = (P.T : ℤ) + CompHt.dimFlag Dw + c := by
+      intro c; push_cast; ring
+    by_cases hb : (b : ℕ) = Dw.p
+    · have h := h2 hb
+      have hb' : ¬ (b : ℕ) < Dw.p := by omega
+      have ha' : (a : ℕ) < Dw.p := by omega
+      have hG' : G = P.u τ a - P.u τ b - P.c₀ - (2 * ((Dw.p + Dw.q : ℕ) : ℤ) - 2) := by
+        rw [hG, if_pos (by omega)]; ring
+      have hgl : (P.T : ℤ) + P.c₀ ≤ g := by
+        rw [hgdef, Int.le_ediv_iff_mul_le hT₁0, hT₁]; linarith
+      simp only [hb', ha', if_true, if_false]
+      by_cases hs0 : s = 0
+      · subst hs0
+        simp only [if_true, hK, Nat.cast_zero, zero_mul]
+        push_cast
+        linarith
+      · simp only [hs0, if_false, hK]
+        push_cast
+        linarith
+    · have h := h1 hb
+      have hG' : G = P.u τ a - P.u τ b + 2 := by
+        rw [hG, if_neg (by omega)]
+      have hgl : (P.T : ℤ) + CompHt.dimFlag Dw + 2 + 2 * ((Dw.p + Dw.q : ℕ) : ℤ) ≤ g := by
+        rw [hgdef, Int.le_ediv_iff_mul_le hT₁0, hT₁]; linarith
+      have hsame : hodgeWt Dw τ a = hodgeWt Dw τ b := by
+        rw [hw, hw]
+        by_cases ha : (a : ℕ) < Dw.p
+        · rw [if_pos ha, if_pos (by omega)]
+        · rw [if_neg ha, if_neg (by omega)]
+      simp only [← hw, hsame]
+      split_ifs <;> simp only [hK] <;> push_cast <;> linarith
+
+end GlobalTheory.CompHS.WtPar
+end
+
+open CategoryTheory AlgebraicGeometry NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Theta
+open GlobalTheory GlobalTheory.CompHS GlobalTheory.CovTop GlobalTheory.BigTop GlobalTheory.HSApp GlobalTheory.DegVal GlobalTheory.DegCmp
+open GlobalTheory.AllWt (Psi wtOf cuspOn cuspW latOn latW normOn petOn GoodOn GoodW rankOn degOn rankW)
+open GlobalTheory.CompHt (hodgeWt)
+open GlobalTheory.LevDesc (TypeFrame grpHR grpGHR latN levDet secRing transl pull KeepsCusp)
+open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
+open GlobalTheory.BadCount
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.shifted_weights_dominant_of_gaps : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} (Dw : Datum H) (P : WtPar Dw),
+    0 ≤ P.c₀ → 2 * (Dw.p + Dw.q) + CompHt.dimFlag Dw ≤ P.T →
+    (∀ (τ : Psi H) (a b : Fin (Dw.p + Dw.q)), (b : ℕ) = a + 1 →
+      ((b : ℕ) ≠ Dw.p → ((P.T : ℤ) + CompHt.dimFlag Dw + 2) * ((P.T : ℤ) + CompHt.dimFlag Dw + 2 + 2 * ((Dw.p + Dw.q : ℕ) : ℤ)) ≤
+        P.u τ a - P.u τ b + 2) ∧
+      ((b : ℕ) = Dw.p → ((P.T : ℤ) + P.c₀) * ((P.T : ℤ) + CompHt.dimFlag Dw + 1) + P.c₀ + 2 * ((Dw.p + Dw.q : ℕ) : ℤ) - 2 ≤
+        P.u τ a - P.u τ b)) →
+    ∀ s : ℕ, s ≤ 3 → ∀ τ : Psi H, Antitone (P.uMinus τ + (s * P.c₀) • hodgeWt Dw τ) ∧
+      Antitone (((P.T + CompHt.dimFlag Dw + (if s = 0 then 3 else 4) : ℕ) : ℤ) • P.u₁ τ - (P.uMinus τ + (s * P.c₀) • hodgeWt Dw τ)) := by
+  atlas_forward_decl GlobalTheory.CompHS.WtPar.shifted_dominant
+end
+
+section
+section
+namespace GlobalTheory
+
+theorem _root_.GlobalTheory.bar_gap_param_ineq : ∀ (T D c0 h0 N f m k PP : ℝ), 4 * D + 4 ≤ T → 4 * T ^ 2 ≤ h0 → PP * T * N * f ^ 2 * m ^ 2 * k * D ≤ h0 →
+    4 * (c0 + 2 * N + T + D + 1) ≤ h0 → 0 ≤ c0 → c0 ≤ 22 * f ^ 2 * N ^ 4 → D = f * (N * (N - 1) / 2) → 40 ≤ PP →
+    N + 4 ≤ 2 * k → 2 ≤ m → 6 ≤ N → 8 ≤ f →
+    (T + c0) * (T + D + 1) + c0 + 2 * N - 2 ≤ h0 ∧ 2 * N + D ≤ T := by
+  intro T D c0 h0 N f m k PP hTD hT2 hP h4 hc0 hc0u hD hPP hk hm hN hf
+  have hNN : 5 * N ≤ N * (N - 1) := by nlinarith
+  have hD1 : 4 * (N * (N - 1)) ≤ D := by
+    rw [hD]; nlinarith [mul_nonneg (sub_nonneg.2 hf) (by nlinarith : (0:ℝ) ≤ N * (N - 1))]
+  have hD0 : 0 ≤ D := by nlinarith
+  have hgap : 2 * N + D ≤ T := by nlinarith
+  refine ⟨?_, hgap⟩
+  have hT0 : 0 ≤ T := by linarith
+  have hm2 : 4 ≤ m ^ 2 := by nlinarith
+  have hk0 : 0 ≤ k := by linarith
+  have hA : 160 ≤ PP * m ^ 2 := by nlinarith [mul_nonneg (sub_nonneg.2 hPP) (sq_nonneg m)]
+  have hB : 80 * N ≤ PP * m ^ 2 * k := by
+    nlinarith [mul_nonneg (sub_nonneg.2 hA) hk0]
+  have hC : 320 * (N ^ 2 * (N - 1)) ≤ PP * m ^ 2 * k * D := by
+    nlinarith [mul_nonneg (sub_nonneg.2 hB) hD0, mul_nonneg (by linarith : (0:ℝ) ≤ 80 * N) (sub_nonneg.2 hD1)]
+  have hE : 264 * N ^ 3 ≤ PP * m ^ 2 * k * D := by
+    nlinarith [mul_nonneg (sq_nonneg N) (by linarith : (0:ℝ) ≤ 56 * N - 320)]
+  have hX : 0 ≤ T * N * f ^ 2 := by
+    have : 0 ≤ N := by linarith
+    positivity
+  have hF : 264 * N ^ 3 * (T * N * f ^ 2) ≤ PP * T * N * f ^ 2 * m ^ 2 * k * D := by
+    have := mul_le_mul_of_nonneg_right hE hX
+    calc 264 * N ^ 3 * (T * N * f ^ 2) ≤ PP * m ^ 2 * k * D * (T * N * f ^ 2) := this
+      _ = PP * T * N * f ^ 2 * m ^ 2 * k * D := by ring
+  have hcT : 12 * (c0 * T) ≤ h0 := by
+    have h1 : c0 * T ≤ 22 * f ^ 2 * N ^ 4 * T := mul_le_mul_of_nonneg_right hc0u hT0
+    nlinarith
+  have hcD : c0 * (4 * (D + 1)) ≤ c0 * T := mul_le_mul_of_nonneg_left (by linarith) hc0
+  have hTT : T * (4 * (D + 1)) ≤ T * T := mul_le_mul_of_nonneg_left (by linarith) hT0
+  have hexp : (T + c0) * (T + D + 1) + c0 + 2 * N - 2
+      = T ^ 2 + T * (D + 1) + c0 * T + c0 * (D + 1) + c0 + 2 * N - 2 := by ring
+  rw [hexp]
+  nlinarith
+
+end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.bar_gap_parameter_inequality : ∀ (T D c0 h0 N f m k PP : ℝ), 4 * D + 4 ≤ T → 4 * T ^ 2 ≤ h0 → PP * T * N * f ^ 2 * m ^ 2 * k * D ≤ h0 →
+    4 * (c0 + 2 * N + T + D + 1) ≤ h0 → 0 ≤ c0 → c0 ≤ 22 * f ^ 2 * N ^ 4 → D = f * (N * (N - 1) / 2) → 40 ≤ PP →
+    N + 4 ≤ 2 * k → 2 ≤ m → 6 ≤ N → 8 ≤ f →
+    (T + c0) * (T + D + 1) + c0 + 2 * N - 2 ≤ h0 ∧ 2 * N + D ≤ T := by
+  atlas_forward_decl GlobalTheory.bar_gap_param_ineq
+end
+
+section
 open CategoryTheory AlgebraicGeometry NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Theta
 open GlobalTheory GlobalTheory.CompHS GlobalTheory.CovTop GlobalTheory.BigTop GlobalTheory.HSApp GlobalTheory.DegVal GlobalTheory.DegCmp
@@ -147,3 +348,4 @@ theorem weights_at_point : Size → Lifts fun Fm x _ ι p i PP _ => (i : ℕ) + 
     (h2 x hx ((le_max_right _ _).trans hle) ι p hp i)
 
 end GlobalTheory.QuoWt
+end

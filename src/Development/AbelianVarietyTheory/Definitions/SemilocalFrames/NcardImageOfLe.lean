@@ -7,32 +7,6 @@ open scoped Pointwise ENNReal Classical
 
 namespace GlobalTheory.HL.ContModel
 
-theorem ncard_image_of_le {W : Type} [AddCommGroup W] {A B : AddSubgroup W} (h : B ≤ A) (S : Set W)
-    (hS : ∀ x ∈ S, ∀ a ∈ A, x + a ∈ S) :
-    ((QuotientAddGroup.mk : W → W ⧸ B) '' S).ncard
-      = ((QuotientAddGroup.mk : W → W ⧸ A) '' S).ncard * B.relIndex A := by
-  have e := AddSubgroup.quotientEquivProdOfLE h
-  have key : (AddSubgroup.quotientEquivProdOfLE h) '' ((QuotientAddGroup.mk : W → W ⧸ B) '' S)
-      = ((QuotientAddGroup.mk : W → W ⧸ A) '' S) ×ˢ Set.univ := by
-    ext ⟨u, v⟩
-    simp only [Set.mem_prod, Set.mem_univ, and_true]
-    constructor
-    · rintro ⟨_, ⟨x, hx, rfl⟩, hxy⟩
-      refine ⟨x, hx, ?_⟩
-      have := congrArg Prod.fst hxy
-      exact this
-    · rintro ⟨x, hx, rfl⟩
-      obtain ⟨z, hz⟩ := (AddSubgroup.quotientEquivProdOfLE h).surjective
-        ((QuotientAddGroup.mk x : W ⧸ A), v)
-      obtain ⟨y, rfl⟩ := QuotientAddGroup.mk_surjective z
-      refine ⟨_, ⟨y, ?_, rfl⟩, hz⟩
-      have h1 : (QuotientAddGroup.mk y : W ⧸ A) = QuotientAddGroup.mk x := congrArg Prod.fst hz
-      have h2 := QuotientAddGroup.eq.1 h1.symm
-      have := hS x hx _ h2
-      simpa using this
-  rw [← Set.ncard_image_of_injective _ (AddSubgroup.quotientEquivProdOfLE h).injective, key,
-    Set.ncard_prod, Set.ncard_univ]
-  rfl
 
 open ValuativeRel in
 open scoped Pointwise ENNReal Classical in
@@ -109,29 +83,8 @@ theorem _root_.GlobalTheory.HL.ContModel.cont_eq {W : Type} [AddCommGroup W]
   exact_mod_cast (ncard_image_mk_eq_mul_relIndex_of_le (inf_le_right : A ⊓ hS.choose ≤ hS.choose) hA'.2.2.1).symm.trans
     (ncard_image_mk_eq_mul_relIndex_of_le (inf_le_left : A ⊓ hS.choose ≤ A) hA.2.2.1)
 
-theorem cont_subgroup {W : Type} [AddCommGroup W] {W0 A : AddSubgroup W}
-    (h1 : A.relIndex W0 ≠ 0) (h2 : W0.relIndex A ≠ 0) : cont W0 (A : Set W) = relVol W0 A := by
-  have him : (QuotientAddGroup.mk : W → W ⧸ A) '' (A : Set W) = {0} := by
-    ext u
-    constructor
-    · rintro ⟨x, hx, rfl⟩
-      exact (QuotientAddGroup.eq_zero_iff x).2 hx
-    · rintro rfl
-      exact ⟨0, A.zero_mem, rfl⟩
-  have hg : GoodSub W0 A (A : Set W) :=
-    ⟨h1, h2, fun x hx a ha => A.add_mem hx ha, by rw [him]; exact Set.finite_singleton _⟩
-  rw [cont_eq hg, him]
-  simp
 
-theorem cont_self {W : Type} [AddCommGroup W] (W0 : AddSubgroup W) : cont W0 (W0 : Set W) = 1 := by
-  rw [cont_subgroup (by simp) (by simp)]
-  simp [relVol]
 
-theorem cont_even : cont (⊤ : AddSubgroup ℤ) (AddSubgroup.zmultiples (2 : ℤ) : Set ℤ) = 1 / 2 := by
-  have h : (AddSubgroup.zmultiples (2 : ℤ)).relIndex ⊤ = 2 := by
-    rw [AddSubgroup.relIndex_top_right, Int.index_zmultiples]; rfl
-  rw [cont_subgroup (by rw [h]; norm_num) (by simp)]
-  simp [relVol, h]
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
@@ -176,53 +129,7 @@ theorem _root_.GlobalTheory.HL.ContModel.gramT_rmul (L : _root_.Formalism.MainNo
   exact Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun k _ =>
     Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
 
-theorem smul_inf_of_fix (L : LocE F E) {n : ℕ} (Hm : Matrix (Fin n) (Fin n) E)
-    (Y : Submodule E (Fin n → E)) (g : fixG L Hm Y) (Λ : Submodule L.O (Fin n → E)) :
-    (g • Λ) ⊓ Y.restrictScalars L.O = Λ ⊓ Y.restrictScalars L.O := by
-  obtain ⟨g, hg⟩ := g
-  obtain ⟨_, h1, h2⟩ := hg
-  have h3 : ∀ v ∈ Y, g v = v := fun v hv => sub_eq_zero.1 (by simpa using h2 v hv)
-  ext v
-  simp only [Submodule.mem_inf, Submodule.restrictScalars_mem]
-  constructor
-  · rintro ⟨⟨w, hw, rfl⟩, hv⟩
-    have hw' : w ∈ Y := (h1 w).1 hv
-    refine ⟨?_, hv⟩
-    change g w ∈ Λ
-    rw [h3 w hw']; exact hw
-  · rintro ⟨hv, hY⟩
-    exact ⟨⟨v, hv, h3 v hY⟩, hY⟩
 
-theorem sigMass_top (L : LocE F E) {n : ℕ} (Hm : Matrix (Fin n) (Fin n) E)
-    (Λ0 Mh : Submodule L.O (Fin n → E)) :
-    sigMass L Hm ⊤ Λ0 Mh = if IsSD L Hm Mh then 1 else 0 := by
-  have hb : fixG L Hm ⊤ = ⊥ := by
-    rw [eq_bot_iff]
-    rintro g ⟨_, _, h2⟩
-    rw [Subgroup.mem_bot]
-    ext v i
-    have : g v = v := sub_eq_zero.1 (by simpa using h2 v trivial)
-    simp [this]
-  have hv : ∀ Λ, invVol (fixG L Hm ⊤ ⊓ stabL L Λ0) (fixG L Hm ⊤ ⊓ stabL L Λ) = 1 := by
-    intro Λ
-    rw [hb]; simp [invVol]
-  have hout : ∀ Λ : Submodule L.O (Fin n → E),
-      (Quotient.mk _ Λ : MulAction.orbitRel.Quotient (fixG L Hm ⊤) (Submodule L.O (Fin n → E))).out = Λ := by
-    intro Λ
-    have h := Quotient.mk_out (s := MulAction.orbitRel (fixG L Hm ⊤) (Submodule L.O (Fin n → E))) Λ
-    obtain ⟨g, hg⟩ := h
-    have := smul_inf_of_fix L Hm ⊤ g Λ
-    simp only [Submodule.restrictScalars_top, inf_top_eq] at this
-    exact hg.symm.trans this
-  unfold sigMass
-  rw [tsum_eq_single (Quotient.mk _ Mh)]
-  · rw [hout, hv]; simp
-  · intro o ho
-    rw [if_neg]
-    rintro ⟨_, h⟩
-    apply ho
-    simp only [Submodule.restrictScalars_top, inf_top_eq] at h
-    rw [← h, Quotient.out_eq]
 
 open ValuativeRel in
 open scoped Pointwise ENNReal Classical in
@@ -256,14 +163,7 @@ theorem hf_single (L : LocE F E) {n : ℕ} (Hm : Matrix (Fin n) (Fin n) E) (a b 
     hf L Hm (Pi.single a 1) (Pi.single b 1) = Hm a b := by
   simp [hf, Pi.single_apply, apply_ite L.cj]
 
-theorem gramT_std (L : LocE F E) {n : ℕ} (Hm : Matrix (Fin n) (Fin n) E) :
-    gramT L Hm (fun a => Pi.single a 1) = Hm.transpose := by
-  ext a b
-  simp [gramT, hf_single]
 
-theorem isPrimT_std (L : LocE F E) {n : ℕ} (Λ : Submodule L.O (Fin n → E))
-    (h : ∀ a, (Pi.single a 1 : Fin n → E) ∈ Λ) : IsPrimT L 1 Λ (fun a => Pi.single a 1) :=
-  ⟨h, _, h, fun a b => by rw [hf_single, Matrix.one_apply]⟩
 
 open ValuativeRel in
 open scoped Pointwise ENNReal Classical in
@@ -278,12 +178,5 @@ theorem _root_.GlobalTheory.HL.ContModel.gramT_thick (L : _root_.Formalism.MainN
   rintro x ⟨y, hy, A, hA, rfl⟩
   exact ⟨A, hA, by rw [_root_.GlobalTheory.HL.ContModel.gramT_rmul, hΩ y hy]⟩
 
-theorem primCnt_zero (L : LocE F E) (ϖ : 𝒪[F]) (n j : ℕ) (Gm : Matrix (Fin 0) (Fin 0) E) :
-    primCnt L ϖ n j Gm = 1 := by
-  unfold primCnt
-  rw [Set.ncard_eq_one]
-  refine ⟨Set.univ, ?_⟩
-  ext C
-  simp
 
 end GlobalTheory.HL.ContModel

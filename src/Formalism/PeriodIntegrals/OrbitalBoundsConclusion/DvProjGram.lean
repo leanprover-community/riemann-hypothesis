@@ -2,4 +2,3 @@ import Mathlib
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.DvProjA
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ProjectionGramMatrices.DvProjGramOf
 
-theorem projection_gram_det : PI.Dv.gram_det_kernel_base_level := PI.Dv.ProjGramW.dvProjGram_of projection_sandwich division_index_calc

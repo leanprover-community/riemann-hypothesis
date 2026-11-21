@@ -169,9 +169,6 @@ open Classical in
 def ofMod (F : Z.X.Modules) : Z.Sh :=
   if h : ∃ S : Z.Sh, Nonempty (S.toMod ≅ F) then h.choose else ⟨0, 0, 0, 0, 0⟩
 
-theorem ofMod_iso {F : Z.X.Modules} (h : ∃ S : Z.Sh, Nonempty (S.toMod ≅ F)) : Nonempty ((Z.ofMod F).toMod ≅ F) := by
-  rw [ofMod, dif_pos h]
-  exact h.choose_spec
 
 def Idl : Type := {J : Z.X.IdealSheafData // ∀ x ∈ J.support, x ∉ Z.opn}
 
@@ -228,13 +225,7 @@ theorem blowUp_spec {Z : Mdl Y i₀} {J : Z.Idl} (h : ∃ Z', IsNBlow Z J Z') : 
   rw [blowUp, dif_pos h]
   exact h.choose_spec
 
-theorem natDiagCl_spec {Z₁ Z₂ : Mdl Y i₀} (h : ∃ Z', IsNatDiag Z₁ Z₂ Z') : IsNatDiag Z₁ Z₂ (natDiagCl Z₁ Z₂) := by
-  rw [natDiagCl, dif_pos h]
-  exact h.choose_spec
 
-theorem diagCl_spec {Z₁ Z₂ : Mdl Y i₀} (h : ∃ Z', IsDiag Z₁ Z₂ Z') : IsDiag Z₁ Z₂ (diagCl Z₁ Z₂) := by
-  rw [diagCl, dif_pos h]
-  exact h.choose_spec
 
 theorem NatCorr.refl (Z : Mdl Y i₀) : NatCorr Z Z := ⟨⟨dvd_rfl, le_rfl, dvd_rfl⟩, le_rfl, fun _ _ hk _ _ => hk⟩
 
@@ -249,9 +240,6 @@ theorem IsMap.isNatMap {Z₁ Z₂ : Mdl Y i₀} {f : Z₁.X ⟶ Z₂.X} (h : IsM
 theorem IsNatMap.isMap {Z₁ Z₂ : Mdl Y i₀} {f : Z₁.X ⟶ Z₂.X} (h : IsNatMap Z₁ Z₂ f) (hty : ∀ σ, Z₂.ty σ ⊆ Z₁.ty σ) :
     IsMap Z₁ Z₂ f := ⟨⟨h.1.1, h.1.2.1, hty⟩, h.2⟩
 
-theorem isNatDiag_iff_isDiag {Z₁ Z₂ Z' : Mdl Y i₀} (hty : ∀ σ, Z₂.ty σ ⊆ Z₁.ty σ) : IsNatDiag Z₁ Z₂ Z' ↔ IsDiag Z₁ Z₂ Z' :=
-  ⟨fun ⟨a, b, f₁, f₂, c, d, e⟩ => ⟨a, b, f₁, f₂, c, d.isMap (b ▸ hty), e⟩,
-    fun ⟨a, b, f₁, f₂, c, d, e⟩ => ⟨a, b, f₁, f₂, c, d.isNatMap, e⟩⟩
 
 example : ProperLE Dw (fun σ => {0, Dw.mult σ}) (fun _ => ∅) := fun σ k hk h₀ h₁ => by
   simp only [Finset.mem_insert, Finset.mem_singleton] at hk
@@ -281,8 +269,5 @@ structure Bases (Y : LocalSystem Xo p W) (i₀ : Idx H p) : Type where
 
   ty : ∀ b σ, (X b).ty σ = ∅
 
-theorem Bases.natCorr_base (B : Bases Y i₀) (Z : Mdl Y i₀) : NatCorr Z (B.X none) := by
-  have h : (B.X none).i = i₀ := B.lvl none
-  exact ⟨by rw [h]; exact Z.dvd, by rw [h]; exact Z.le, fun σ k hk => by simp [B.ty none σ] at hk⟩
 
 end GlobalTheory.LocM

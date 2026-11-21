@@ -68,13 +68,6 @@ def CHCharSt (Y : FBChart C V O dd) (p : PairData Y d I) : Prop :=
         V.v (Matrix.of fun ρ c : Fin p.n => ∑ x, p.yOf g (χ ρ) x * w c x).det ≤
           ((((p.j : ℝ) + p.j') / ((V.l : ℝ) - 1) : ℝ) : WithTop ℝ))
 
-theorem chSt_of_char [NeZero d] (hG : CharGermSt) (Y : FBChart C V O dd) (p : PairData Y d I) (h : CHCharSt Y p)
-    (Hc : ∀ g, (Y.raw p).CartHyp V g) : RawChart.CHSt Hc := by
-  intro g a hbig w hw hw0
-  obtain ⟨χ, hχ, h1, h2⟩ := h g a hbig w hw hw0
-  refine ⟨fun ρ x => p.yOf g (χ ρ) x, fun ρ x => p.yOf_int g (hχ ρ) x, ?_, h1, h2⟩
-  intro S t ht ρ
-  exact hG C V O dd Y d I p Hc (χ ρ) (hχ ρ) g S t ht
 
 section Chart
 
@@ -91,9 +84,6 @@ def CharacterHypothesisCharts : Prop :=
     ∀ (Orb : Type) (d : ℕ) [NeZero d] (lab : Lab E Orb d) (ha : LabArith V io ι lab) (hg : LabGeo C3 ι Y lab),
     lab.RankOK Dw → ∀ o, CHCharSt Y (pairOfLab ha hg o)
 
-theorem chart_hypothesis_of_character (hG : CharGermSt) (h : CharacterHypothesisCharts Xo c) : CharacterHypothesisAllCharts Xo c := by
-  intro hs T io y C3 C _ _ V ι hemb k Y hbc Orb d _ lab ha hg hrk o Hc
-  exact chSt_of_char hG Y _ (h hs T io y C3 C V ι hemb k Y hbc Orb d lab ha hg hrk o) Hc
 
 end Chart
 

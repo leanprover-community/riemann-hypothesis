@@ -1,5 +1,17 @@
-import Development.AutomorphicArithmetic.CharacterBoxes.HalfPlane
+import Mathlib
 
+section
+def Claim.HalfPlane : Prop :=
+  ∀ (N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ N) (s : ℂ), 1 / 2 < s.re → (χ ≠ 1 ∨ s ≠ 1) → DirichletCharacter.LFunction χ s ≠ 0
+
+def Claim.Strip : Prop :=
+  ∀ (N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ N) (s : ℂ), 0 < s.re → s.re < 1 → DirichletCharacter.LFunction χ s = 0 → s.re = 1 / 2
+
+def Claim.Zeta : Prop :=
+  ∀ s : ℂ, riemannZeta s = 0 → (¬ ∃ n : ℕ, s = -2 * (n + 1)) → s ≠ 1 → s.re = 1 / 2
+end
+
+section
 open Complex
 
 namespace Claim
@@ -99,6 +111,6 @@ theorem zeta (h : HalfPlane) : Zeta := by
       rw [riemannZeta_def_of_ne_zero h1s, completedRiemannZeta_one_sub, hc, zero_div]
     exact riemannZeta_ne_zero_of_one_le_re (by rw [Complex.sub_re, Complex.one_re]; linarith) hz'
 
-theorem zeta_iff : Zeta ↔ RiemannHypothesis := Iff.rfl
 
 end Claim
+end

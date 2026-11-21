@@ -32,7 +32,6 @@ def exG {Z W : Sch R} (π : W ⟶ XX Z) : Ex π ⟶ Z := Over.homMk (pullback.sn
   change pullback.snd π.left (dg Z).left ≫ Z.hom = pullback.fst π.left (dg Z).left ≫ W.hom
   rw [← Over.w (dg Z), ← pullback.condition_assoc, Over.w π])
 
-theorem ex_comm {Z W : Sch R} (π : W ⟶ XX Z) : exI π ≫ π = exG π ≫ dg Z := Over.OverMorphism.ext pullback.condition
 
 def Coord (Z : Sch R) (U : Z.left.Opens) {D : ℕ} (u : Fin D → Sec Z U) : Prop :=
   IsAffineOpen U ∧ (MvPolynomial.aeval u : MvPolynomial (Fin D) R →ₐ[R] Sec Z U).toRingHom.Etale

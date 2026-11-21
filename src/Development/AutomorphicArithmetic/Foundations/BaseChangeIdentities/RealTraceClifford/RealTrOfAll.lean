@@ -55,9 +55,6 @@ def sig : UK n →* (kfin π →ₗ[ℂ] kfin π) where
 
 def Smo : Prop := ∀ v ∈ kfin π, ∀ w, ContDiffOn ℝ ∞ (coef π w v) (GLs n)
 
-theorem smo_of_hasInf {χ : Inf n} (h : HasInf π χ) : Smo π := by
-  rintro v ⟨S, hS, kS, hv⟩ w
-  exact (h S hS kS v hv w).1
 
 def IsDer (X : Mat n) (v u : U) : Prop := ∀ w, ∀ g ∈ GLs n, Rd X (coef π w v) g = coef π w u g
 
@@ -94,9 +91,7 @@ def Brk (D : Mat n →ₗ[ℝ] Module.End ℂ V) : Prop := ∀ X Y, D X * D Y - 
 
 def Skw (D : Mat n →ₗ[ℝ] Module.End ℂ V) : Prop := ∀ X (x y : V), ⟪D X x, y⟫_ℂ = -⟪x, D X y⟫_ℂ
 
-theorem brk_zero : Brk (0 : Mat n →ₗ[ℝ] Module.End ℂ V) := fun _ _ => by simp
 
-theorem skw_zero : Skw (0 : Mat n →ₗ[ℝ] Module.End ℂ V) := fun _ _ _ => by simp
 
 end Alg
 
@@ -107,15 +102,6 @@ def CoreAll : Prop :=
       FiniteDimensional ℂ (invA σ E) → invA σ E ≠ ⊥ →
         ∃ s : ℂ, (s = 1 ∨ s = -1) ∧ trOn (invA σ E) (flipA E A T) = s * 2 ^ n
 
-theorem core_of_all (h : CoreAll) : Core := fun n lam hl => h n lam hl.antitone
 
-theorem realTr_of_all (hP : TrPass) (hB : Bridge) (hC : CoreAll) (reg : Bool) : RealTr reg := by
-  intro n lam hlam _ E T hT _ _ μ _ U _ _ _ π A hu hirr hth hA2 hinf ⟨t, ht, ht0⟩
-  obtain ⟨V, E1, E2, σ, A', hcore, hfin, hne, htr⟩ := hB n lam U π A hu hirr hth hA2 hinf E T hT.1
-  obtain ⟨s, hs, hst⟩ := hC n lam hlam E T hT V E1 E2 σ A' hcore hfin
-    (hne ((Submodule.ne_bot_iff _).2 ⟨t, ht, ht0⟩))
-  refine ⟨s, hs, fun k val T' hk => ?_⟩
-  have h := hP n lam E T hT μ U π A hu hirr hth hA2 hinf k val T' hk
-  rwa [htr, hst, mul_comm] at h
 
 end UpperTheory.RealTr

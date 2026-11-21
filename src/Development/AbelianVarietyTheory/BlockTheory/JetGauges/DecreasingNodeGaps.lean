@@ -67,18 +67,6 @@ theorem parity_of_isShiftedIntegral (r k : ℕ) (lam : Fin (2 * r + k + 1) → �
   push_cast
   ring
 
-theorem nodeGapGe_of_noncompactGapGe (r k : ℕ) (hk : 1 ≤ k) (v : Fin (k - 1) → ℝ)
-    (b : Fin (2 * r + 2) → ℝ) (h : ℝ) (hd : IsDecreasing r k hk v b)
-    (hg : NoncompactGapGe r k hk (param r k hk v b) h) : NodeGapGe r b h := by
-  intro i hi
-  have hlt : nodeIdx r k hk ⟨i, by omega⟩ < nodeIdx r k hk ⟨i + 1, hi⟩ := by
-    simp [nodeIdx, Fin.lt_def]
-  have h1 := hd hlt
-  have h2 := hg (nodeIdx r k hk ⟨i, by omega⟩) (nodeIdx r k hk ⟨i + 1, hi⟩) (by
-    simp only [sign_node, Nat.even_add_one]
-    by_cases he : Even i <;> simp [he])
-  simp only [param_node] at h1 h2
-  rwa [abs_of_pos (by linarith)] at h2
 
 example : List.ofFn (sign 1 2 (by norm_num)) = [true, true, false, true, false] := by decide
 

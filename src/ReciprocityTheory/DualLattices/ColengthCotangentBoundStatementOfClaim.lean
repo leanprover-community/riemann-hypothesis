@@ -1,7 +1,30 @@
-import ReciprocityTheory.DualLattices.ColengthCotangentBoundStatement
+import ReciprocityTheory.DualLattices.CotangentSurjective
 import ReciprocityTheory.DualLattices.PrimeHopfOrderStatement
 import ReciprocityTheory.DualLattices.IsLocalOfIntegers
 
+section
+noncomputable section
+
+open Matrix
+
+namespace ReciprocityTheory.PGsh.Up
+
+open ReciprocityTheory.PGsh.L2
+
+def ColengthCotangentBoundStatement : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C]
+    (v : Valuation C NNReal) (R : Type) [CommRing R] [Algebra R C],
+    v.Integers R → v (p : C) < 1 →
+    ∀ (N : Type) [AddCommGroup N] [Fintype N] [DecidableEq N], (∀ x : N, p • x = 0) →
+    ∀ (AA : HopfOrder (C := C) R N) (lenN lenOm : NNReal),
+      HasColen R v AA.carrier lenN → HasLen v R (OmAA AA.carrier) lenOm →
+      lenN ^ 2 ≤ lenOm ^ Fintype.card N
+
+end ReciprocityTheory.PGsh.Up
+end
+end
+
+section
 noncomputable section
 
 namespace ReciprocityTheory.PGsh.Up
@@ -72,3 +95,5 @@ theorem colengthCotangentBoundStatement_of_claim (hcl : ∀ (p : ℕ) [Fact p.Pr
   exact colengthCotangentBound_of_claim p C v R hv (hcl p C v R hv hp) N hN AA lenN lenOm hlen hom
 
 end ReciprocityTheory.PGsh.Up
+end
+end

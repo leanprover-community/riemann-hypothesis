@@ -65,8 +65,6 @@ def bddRep (V : HSp D) : Representation ℂ (GA D V) (bddAut V) :=
 
 theorem coe_bddRep (V : HSp D) (g : GA D V) (f : bddAut V) : (bddRep V g f : GA D V → ℂ) = rTr V g f := rfl
 
-theorem const_mem_bddAut (V : HSp D) (c : ℂ) : (fun _ => c) ∈ bddAut V :=
-  ⟨continuous_const, fun _ _ _ => rfl, ‖c‖, fun _ => le_rfl⟩
 
 open Classical in
 

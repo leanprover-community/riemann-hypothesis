@@ -472,10 +472,6 @@ theorem logNorm_eq (φ : Weight q σ L) (hr : IsRatSec L r)
   push_cast
   ring
 
-theorem logNorm_addFn (φ : Weight q σ L) (u : CxPts q σ → ℝ) (r : L.ι → Z.functionFieldˣ)
-    (y : CxPts q σ) : logNorm (φ.addFn u) r y = logNorm φ r y - u y / 2 := by
-  simp only [logNorm, Weight.addFn]
-  ring
 
 theorem exists_isRatSec (hL : L.IsLB) : ∃ r, IsRatSec L r :=
   have ⟨i, hi⟩ := exists_chart hL (genericPoint Z)

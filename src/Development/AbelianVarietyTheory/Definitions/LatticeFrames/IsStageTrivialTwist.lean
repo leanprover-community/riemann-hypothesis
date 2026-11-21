@@ -24,30 +24,8 @@ theorem eq_triv {Pg : Finset (Pl D.host.E)} {r : ℕ} (P : LevelP Pg r ℂ) (h :
   ext x
   rw [Subsingleton.elim x 1]; simp
 
-theorem trivialTwist_isChain {c : Com D} (hc : c.Is) (h : c.P.H = ⊥) (ξ : ∀ PP : Pl D.host.E, (kP PP)ˣ →* ℂˣ) : (tw0 c ξ).Is c where
-  com := hc
-  union := by simp [tw0]
-  disj := by simp [tw0]
-  chiPg := fun _ _ _ => rfl
-  chiQ := fun _ _ h => by simp [tw0] at h
-  ne := fun _ h => by simp [tw0] at h
-  grp := fun g => by
-    rw [h, Subgroup.mem_bot]
-    exact ⟨fun e PP _ => by rw [e]; rfl, fun e => funext fun PP => e PP PP.2⟩
-  chr := by
-    ext x
-    have : x = 1 := Subtype.ext (Subgroup.mem_bot.1 (h ▸ x.2))
-    rw [this]; simp
 
-theorem isStage_trivialTwist {c : Com D} (h : c.P.H = ⊥) {j : ℕ} {s : PiLocalization₂ D} (hs : s.Is c j) : ∃ ξ, IsStage c (tw0 c ξ) j s := by
-  obtain ⟨hr, ξ, e⟩ := hs.lev
-  refine ⟨ξ, hr, ?_, ⟨hs.rank, hs.sigOK, hs.sig, hs.par, hs.selfDual, hs.frame, hs.base, ⟨hr, _, rfl⟩, hs.haar, hs.fund⟩⟩
-  rw [e, eq_triv c.P h]; rfl
 
-theorem isStep_trivialTwist {c : Com D} {j : ℕ} {s s' : PiLocalization₂ D} {p : Step c s s'} (hp : p.Is j) (ξ : ∀ PP : Pl D.host.E, (kP PP)ˣ →* ℂˣ) :
-    IsStep (tw0 c ξ) j p := by
-  obtain ⟨ξ', f₀, h⟩ := hp.vec
-  exact ⟨hp.weil, ⟨f₀, h⟩, hp.theta, hp.it, hp.io⟩
 
 open Classical in
 
@@ -84,10 +62,6 @@ theorem twist_is {c : Com D} (hc : c.Is) {Q : Finset (Pl D.host.E)} (hQ : Q ⊆ 
 def twStage (w : Twist D) (j : ℕ) (s : PiLocalization₂ D) (hr : D.R.r ≤ s.V.rank) : PiLocalization₂ D :=
   { s with L := Lev.datY s.V.rank D.R.r D.R.t j hr w.Pg w.Q (LevelP.triv _ _ _) w.chi w.ξ Lev.Frm.B }
 
-theorem isStage_twStage {c : Com D} (w : Twist D) {j : ℕ} {s : PiLocalization₂ D} (hs : s.Is c j) :
-    ∃ hr, IsStage c w j (twStage w j s hr) := by
-  obtain ⟨hr, -, -⟩ := hs.lev
-  exact ⟨hr, hr, rfl, ⟨hs.rank, hs.sigOK, hs.sig, hs.par, hs.selfDual, hs.frame, hs.base, ⟨hr, _, rfl⟩, hs.haar, hs.fund⟩⟩
 
 theorem one_lt_norm (PP : Pl D.host.E) : (1 : ℝ) < (Ideal.absNorm PP.asIdeal : ℝ) := by
   exact_mod_cast GlobalTheory.LFun.one_lt_absNorm PP
@@ -144,38 +118,7 @@ theorem card_qPar (c : Com D) (PP : Pl D.host.E) (x : (AE D)ˣ) (k : ℕ) :
       simp [ih, GlobalTheory.LFun.seg, Nat.succ_mul]
   simp [this]
 
-theorem locQ_zero (c : Com D) (w : Twist D) : locQ c w 0 = 1 := by
-  simp [locQ, blockL, zinv]
 
-theorem stepLam_of (h1 : SoftQ D) (h2 : UpParQ D) (h3 : UpQ D) (h4 : QOfVal D) (h5 : UpVal D) (h6 : StepExact D) (h7 : LFull D)
-    (h8 : Restore D) : StepLam D := by
-  intro hG c w hw k hk s s' hs hs' p hp ipD ip ipD' ip' hM hM' m X hX mR hmR φ v hv H₀ hH₀ hκ B hB u₁ hu hq
-  obtain ⟨H, -, hH, -, hL, hol⟩ := h7 c hw.com B hB k hk
-  obtain ⟨r1, -, r2, r3⟩ := h8 hG c w hw k hk s s' hs hs' p hp
-  have hKF : PiTensorProduct.tprod ℂ v ∈ s.KF := Submodule.subset_span ⟨v, hv.1, rfl⟩
-  have ex := fun u₂ => h6 hG c w hw k hk s s' hs hs' p hp ipD ip hM m X hX mR hmR φ v hv u₁ u₂ _ hu hq _ hol
-  simp only [const_eq w k p m X mR φ v _ H H₀ (r1 H H₀ hH hH₀) r2 r3] at ex
-  have hne : p.up φ (PiLocalization₂.val u₁ (PiTensorProduct.tprod ℂ v)) ≠ 0 := fun h0 => by
-    have e := ex u₁
-    rw [h0] at e
-    have z : s'.pet 0 0 = 0 := by simp [PiLocalization₂.pet, Lift.pet]
-    rw [z] at e
-    rcases mul_eq_zero.1 e.symm with e | e
-    · exact mul_ne_zero hκ hL ((map_eq_zero _).1 e)
-    · have := hM.pos u₁ hu.1
-      rw [e] at this
-      simp at this
-  obtain ⟨v1, v2⟩ := h5 hG c w hw k hk s s' hs hs' p hp ipD ip ipD' ip' hM hM' φ _ hKF
-  obtain ⟨w₀, hw0, hadj⟩ := v1 ⟨u₁, hne⟩
-  refine ⟨w₀, hw0, hadj, fun x₁ hx₁ => ?_⟩
-  have e1 := v2 w₀ hadj u₁ x₁ hx₁
-  refine ⟨?_, ?_, fun u₂ x₂ hx₂ => ?_⟩
-  · exact (h1 c w hw (k + 1) hk s' hs').2.2.2 x₁ w₀ _ (e1 ▸ hne) (e1 ▸ h2 hG c w hw k hk s s' hs hs' p hp u₁ _ φ hu _ hKF hne)
-  · exact (h4 c w hw (k + 1) hk s' hs').1 x₁ w₀ (e1 ▸ hne) (e1 ▸ h3 hG c w hw k hk s s' hs hs' p hp u₁ φ hq _ hKF)
-  · have e := ex u₂
-    rw [e1, v2 w₀ hadj u₂ x₂ hx₂] at e
-    rw [← e]
-    exact (hM'.schur x₁ x₂ w₀ w₀).symm
 
 end GlobalTheory.ChainTw.Check
 

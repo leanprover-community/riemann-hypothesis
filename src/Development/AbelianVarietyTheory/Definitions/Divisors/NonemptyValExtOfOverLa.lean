@@ -200,9 +200,6 @@ def fgl : LogFGL (vX_vp X) (chD Ch.ch) :=
     rw [e, MvPowerSeries.coeff_map]
     exact isIntV_jX X _
 
-theorem fgl_F (a : Fin (chD Ch.ch)) :
-    (fgl Ch X).F a = MvPowerSeries.subst (twoVars X.C _) (MvPowerSeries.map (jX X) (Ch.FT a)) := by
-  rw [← lawX_F]; rfl
 
 def actX (a : 𝓞 E) : Fin (chD Ch.ch) → MvPowerSeries (Fin (chD Ch.ch)) X.C :=
   fun i => MvPowerSeries.subst (oneVar X.C _) (MvPowerSeries.map (jX X) (Ch.actT a i))

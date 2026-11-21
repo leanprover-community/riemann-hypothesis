@@ -494,8 +494,6 @@ theorem int_iff (a : D.host.E) : a ∈ (algebraMap (𝓞 D.host.E) D.host.E).ran
     have hb' : (b : X.B.I.E) = X.ιE.symm a := hb
     rw [hb', RingEquiv.apply_symm_apply]
 
-theorem mem_latOf_Lam (h : Hfin X u) (y : (VS D).V) :
-    y ∈ latOf X u h ↔ X.crd y ∈ PIW.AdelClassFin.abelian₂ X.B.I ((h : X.B.I.Gf) * X.xu u) := Iff.rfl
 
 theorem crd_smul (c : D.host.E) (y : (VS D).V) : X.crd (c • y) = X.ιE.symm c • X.crd y := by
   conv_lhs => rw [← toV_crd X y, ← RingEquiv.apply_symm_apply X.ιE c, ← toV_smul, crd_toV]
@@ -878,9 +876,6 @@ theorem hT_hyp (α β α' β' : Fin D.R.rS → D.host.E) (p p' : (VS D).V)
   congr 1
   congr 1 <;> exact Finset.sum_congr rfl fun _ _ => mul_comm _ _
 
-theorem decomp_H (v : (VS D).V) :
-    v = ∑ a, (VS D).hT (g a) v • e a + ∑ a, (VS D).hT (e a) v • g a + prH e g v := by
-  simp only [prH]; abel
 
 end
 
@@ -1075,9 +1070,6 @@ def dltE {f' : Fin D.R.rS → (VS D).V} (hff : ∀ a b, (VS D).hT (f' a) (f' b) 
     (hef : ∀ a b, (VS D).hT (X.eX a) (f' b) = if a = b then 1 else 0) : (VS D).V ≃ₗ[D.host.E] (VS D).V :=
   LinearEquiv.ofInjectiveEndo (dlt X f') (dlt_inj X hff hef)
 
-theorem dltE_apply {f' : Fin D.R.rS → (VS D).V} (hff : ∀ a b, (VS D).hT (f' a) (f' b) = 0)
-    (hef : ∀ a b, (VS D).hT (X.eX a) (f' b) = if a = b then 1 else 0) (v : (VS D).V) :
-    dltE X hff hef v = dlt X f' v := rfl
 
 theorem dltE_stab {f' : Fin D.R.rS → (VS D).V} (hff : ∀ a b, (VS D).hT (f' a) (f' b) = 0)
     (hef : ∀ a b, (VS D).hT (X.eX a) (f' b) = if a = b then 1 else 0)

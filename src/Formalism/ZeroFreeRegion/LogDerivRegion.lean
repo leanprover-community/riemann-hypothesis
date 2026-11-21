@@ -1,4 +1,12 @@
-import Formalism.ZeroFreeRegion.FinalZFR
+import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.LogDerivBound
+import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.ZeroFactor
+import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.LandauLocalOf
+import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.ThreeFourOne
+import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.LogDerivRight
+import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.ZetaGrowth
+import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.ZetaInvBound
+import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.SmallHeight
+import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.ZeroFreeOf
 import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.SmallHeightLogDeriv
 import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.LogDerivRegionOf
 import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.Perron
@@ -7,6 +15,22 @@ import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.LaurentAtOne
 import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.RectShiftOf
 import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.GzPNTOf
 
+section
+noncomputable section
+
+namespace Formalism.ZF
+
+theorem landauLocal : LandauLocal := localZeroExpansionOfFactorization zeroFactorization logDerivBoundOnBall
+
+theorem zeroFreeRegion : ZeroFreeRegion :=
+  classicalZeroFreeRegionOfBounds mertensInequality logDerivBoundRightHalfPlane growthBound zetaInvBound_statement
+    zeroFreeBoundedHeight landauLocal
+
+end Formalism.ZF
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.ZF
@@ -21,3 +45,5 @@ theorem gzPNT : GzPNT :=
   zetaPrimeSumErrorBoundOfBounds zeroFreeRegion logDerivRegion logDerivBoundRightHalfPlane perron_formula rectShift
 
 end Formalism.ZF
+end
+end

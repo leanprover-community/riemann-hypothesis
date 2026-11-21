@@ -341,11 +341,7 @@ end three
 
 def l4 (j p : Fin 2) : ℝ := 2 + ((j : ℕ) : ℝ) + 2 * ((p : ℕ) : ℝ)
 
-theorem example_weights_pos (j p : Fin 2) : 0 < l4 j p := by unfold l4; positivity
 
-theorem example_weights_injective : Function.Injective fun x : Fin 2 × Fin 2 => l4 x.1 x.2 := by
-  rintro ⟨j, p⟩ ⟨j', p'⟩ h
-  fin_cases j <;> fin_cases p <;> fin_cases j' <;> fin_cases p' <;> simp [l4] at h ⊢ <;> norm_num at h
 
 section DiagMaps
 

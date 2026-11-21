@@ -30,8 +30,6 @@ def CSize.Strata {X : CData} (S : CSize X) : Prop :=
     (∀ x, 0 < S.tau1 x ∧ S.tau1 x ≤ 1 / 2) ∧
     ∀ J c, ∀ x ∈ S.str J c, ∀ a, S.tau1 x ≤ S.tau J c x a
 
-theorem CSize.measurableSet_Mod {X : CData} (S : CSize X) (h : S.Strata) (C₁ : ℝ) : MeasurableSet (S.Mod C₁) :=
-  measurableSet_le measurable_const h.1
 
 end Formalism.MainNotions.LeviCoordinates
 

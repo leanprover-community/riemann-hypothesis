@@ -1,7 +1,156 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraceRingOfIntegersActionSumEmbeddingsEigenspaceStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraceRingOfIntegersActionLatticeEq
+import BuildAid.ForwardExisting
 
+section
+open Matrix Polynomial
+
+namespace GlobalTheory
+
+theorem irreducible_dvd_of_dvd_charpoly_of_aeval_matrix {K : Type} [Field K] {h : ℕ}
+    (M : Matrix (Fin h) (Fin h) K) (p q : K[X]) (hp : Irreducible p)
+    (hd : p ∣ M.charpoly) (hq : aeval M q = 0) : p ∣ q := by
+  classical
+  have : Fact (Irreducible p) := ⟨hp⟩
+  let L := AdjoinRoot p
+  let M' := M.map (algebraMap K L)
+  have hM' : aeval M' q = 0 := by
+    have := Polynomial.aeval_algHom_apply ((Algebra.ofId K L).mapMatrix (m := Fin h)) M q
+    rw [hq, map_zero] at this
+    exact this
+  have hroot : M'.charpoly.IsRoot (AdjoinRoot.root p) := by
+    rw [Matrix.charpoly_map, IsRoot.def, eval_map, ← aeval_def,
+      AdjoinRoot.aeval_eq, AdjoinRoot.mk_eq_zero]
+    exact hd
+  have hs : AdjoinRoot.root p ∈ spectrum L M' := Matrix.mem_spectrum_iff_isRoot_charpoly.2 hroot
+  have h2 := spectrum.subset_polynomial_aeval M' (q.map (algebraMap K L)) ⟨_, hs, rfl⟩
+  rw [aeval_map_algebraMap, hM'] at h2
+  have hnt : Nontrivial (Matrix (Fin h) (Fin h) L) := by
+    by_contra hn
+    rw [not_nontrivial_iff_subsingleton] at hn
+    exact (spectrum.mem_iff.1 hs) (isUnit_of_subsingleton _)
+  rw [spectrum.zero_eq, Set.mem_singleton_iff] at h2
+  simp only [eval_map, ← aeval_def] at h2
+  rw [AdjoinRoot.aeval_eq, AdjoinRoot.mk_eq_zero] at h2
+  exact h2
+
+theorem charpoly_eq_pow_of_aeval_irreducible_eq_zero :
+    ∀ (K : Type) [Field K] (h N : ℕ) (M : Matrix (Fin h) (Fin h) K) (f : K[X]), f.Monic →
+      Irreducible f → Polynomial.aeval M f = 0 → h = f.natDegree * N → M.charpoly = f ^ N := by
+  intro K _ h N M f hfm hfi hf hh
+  classical
+  have hc0 : M.charpoly ≠ 0 := (Matrix.charpoly_monic M).ne_zero
+  have hmem : ∀ b ∈ UniqueFactorizationMonoid.normalizedFactors M.charpoly, b = f := by
+    intro b hb
+    have hbi := UniqueFactorizationMonoid.irreducible_of_normalized_factor b hb
+    have hbd := UniqueFactorizationMonoid.dvd_of_mem_normalizedFactors hb
+    have hbn := UniqueFactorizationMonoid.normalize_normalized_factor b hb
+    have hbm : b.Monic := by
+      rw [← hbn]; exact Polynomial.monic_normalize hbi.ne_zero
+    have hbf := irreducible_dvd_of_dvd_charpoly_of_aeval_matrix M b f hbi hbd hf
+    exact eq_of_monic_of_associated hbm hfm (hbi.associated_of_dvd hfi hbf)
+  set n := Multiset.card (UniqueFactorizationMonoid.normalizedFactors M.charpoly)
+  have hrep : UniqueFactorizationMonoid.normalizedFactors M.charpoly = Multiset.replicate n f :=
+    Multiset.eq_replicate.mpr ⟨rfl, hmem⟩
+  have hass := UniqueFactorizationMonoid.prod_normalizedFactors hc0
+  rw [hrep, Multiset.prod_replicate] at hass
+  have hcp : M.charpoly = f ^ n :=
+    (eq_of_monic_of_associated (hfm.pow n) (Matrix.charpoly_monic M) hass).symm
+  have hdeg : f.natDegree * n = f.natDegree * N := by
+    have := congrArg Polynomial.natDegree hcp
+    rw [Matrix.charpoly_natDegree_eq_dim, Fintype.card_fin, hfm.natDegree_pow] at this
+    rw [← hh]; linarith
+  have hpos : 0 < f.natDegree := Irreducible.natDegree_pos hfi
+  rw [hcp, Nat.eq_of_mul_eq_mul_left hpos hdeg]
+
+end GlobalTheory
+end
+
+section
+section
+open NumberField Polynomial IntermediateField
+
+namespace GlobalTheory.LatticeTrace
+
+theorem trace_lattice_eq : ∀ (F : Type) [Field F] [NumberField F] (O : Type) [Ring O] [Algebra (𝓞 F) O] (La : Type) [AddCommGroup La] [Module O La] [Module.Free ℤ La] [Module.Finite ℤ La] (k : ℕ), Module.finrank ℤ La = k * Module.finrank ℚ F → ∀ c : 𝓞 F, ((LinearMap.trace ℤ La (DistribMulAction.toAddMonoidHom La (algebraMap (𝓞 F) O c)).toIntLinearMap : ℤ) : ℂ) = (k : ℂ) * ∑ τ : F →+* ℂ, τ (c : F) := by
+  intro F _ _ O _ _ La _ _ _ _ k hk c
+  classical
+  set n := Module.finrank ℤ La with hn
+
+  let φ : 𝓞 F →+* Module.End ℤ La :=
+    ((addMonoidEndRingEquivInt La).toRingHom.comp (Module.toAddMonoidEnd O La)).comp (algebraMap (𝓞 F) O)
+  have hφ : φ c = (DistribMulAction.toAddMonoidHom La (algebraMap (𝓞 F) O c)).toIntLinearMap := rfl
+  let b := Module.finBasis ℤ La
+  set M := LinearMap.toMatrix b b (φ c) with hM
+  set M' := M.map (algebraMap ℤ ℚ) with hM'
+  have hx : IsIntegral ℚ (c : F) := Algebra.IsIntegral.isIntegral _
+  set f := minpoly ℚ (c : F) with hf
+  have hfmon : f.Monic := minpoly.monic hx
+  have hfirr : Irreducible f := minpoly.irreducible hx
+  have hfZ : f = (minpoly ℤ c).map (algebraMap ℤ ℚ) := by
+    rw [hf, minpoly.isIntegrallyClosed_eq_field_fractions' ℚ (RingOfIntegers.isIntegral_coe c),
+      RingOfIntegers.minpoly_coe]
+  have hT : aeval (φ c) (minpoly ℤ c) = 0 := by
+    rw [show φ c = (RingHom.toIntAlgHom φ) c from rfl, aeval_algHom_apply, minpoly.aeval, map_zero]
+  have hMz : aeval M (minpoly ℤ c) = 0 := by
+    have hMe : M = LinearMap.toMatrixAlgEquiv b (φ c) := rfl
+    rw [hMe, aeval_algHom_apply, hT, map_zero]
+  have hM'f : aeval M' f = 0 := by
+    rw [hfZ, aeval_map_algebraMap, hM', show M.map (algebraMap ℤ ℚ) = (Algebra.ofId ℤ ℚ).mapMatrix M from rfl,
+      aeval_algHom_apply, hMz, map_zero]
+
+  set r := Module.finrank ℚ⟮(c : F)⟯ F with hr
+  have hdeg : Module.finrank ℚ F = f.natDegree * r := by
+    rw [← Module.finrank_mul_finrank ℚ ℚ⟮(c : F)⟯ F, IntermediateField.adjoin.finrank hx]
+  have hsize : n = f.natDegree * (k * r) := by
+    rw [hk, hdeg]; ring
+  have hcp : M'.charpoly = f ^ (k * r) :=
+    GlobalTheory.charpoly_eq_pow_of_aeval_irreducible_eq_zero ℚ n (k * r) M' f hfmon hfirr hM'f hsize
+
+  have htr : (M'.trace : ℚ) = (k * r : ℚ) * -(f.nextCoeff) := by
+    rcases Nat.eq_zero_or_pos n with h0 | hpos
+    · have hk0 : k * r = 0 := by
+        have := hsize; rw [h0] at this
+        rcases Nat.mul_eq_zero.1 this.symm with h | h
+        · exact absurd h (Irreducible.natDegree_pos hfirr).ne'
+        · exact h
+      have : M'.trace = 0 := by
+        haveI : IsEmpty (Fin (Module.finrank ℤ La)) := by rw [← hn, h0]; infer_instance
+        simp [Matrix.trace]
+      rw [this]
+      have : (k * r : ℚ) = 0 := by exact_mod_cast hk0
+      rw [this, zero_mul]
+    · haveI : Nonempty (Fin n) := ⟨⟨0, hpos⟩⟩
+      rw [Matrix.trace_eq_neg_charpoly_coeff, hcp, Fintype.card_fin]
+      have hnd : (f ^ (k * r)).natDegree = n := by rw [hfmon.natDegree_pow, hsize]; ring
+      have hne : (f ^ (k * r)).nextCoeff = (f ^ (k * r)).coeff (n - 1) := by
+        rw [nextCoeff, hnd, if_neg hpos.ne']
+      rw [← hne, hfmon.nextCoeff_pow, nsmul_eq_mul]
+      push_cast; ring
+
+  have hTr : (∑ τ : F →+* ℂ, τ (c : F)) = algebraMap ℚ ℂ (Algebra.trace ℚ F c) := by
+    rw [trace_eq_sum_embeddings ℂ]
+    exact Fintype.sum_equiv (RingHom.equivRatAlgHom F ℂ) _ _ (fun _ => rfl)
+  have hTr2 : Algebra.trace ℚ F c = (r : ℚ) * -(f.nextCoeff) := trace_eq_finrank_mul_minpoly_nextCoeff ℚ _
+  have hL : ((LinearMap.trace ℤ La (φ c) : ℤ) : ℚ) = M'.trace := by
+    rw [LinearMap.trace_eq_matrix_trace ℤ b, hM', ← hM]
+    exact AddMonoidHom.map_trace (algebraMap ℤ ℚ) M
+  rw [← hφ, hTr, hTr2]
+  have : ((LinearMap.trace ℤ La (φ c) : ℤ) : ℂ) = algebraMap ℚ ℂ (((LinearMap.trace ℤ La (φ c) : ℤ) : ℚ)) := by simp
+  rw [this, hL, htr]
+  simp only [map_mul, map_neg, map_natCast]
+  ring
+
+end GlobalTheory.LatticeTrace
+end
+
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.trace_ringOfIntegers_action_lattice_eq : ∀ (F : Type) [Field F] [NumberField F] (O : Type) [Ring O] [Algebra (𝓞 F) O] (La : Type) [AddCommGroup La] [Module O La] [Module.Free ℤ La] [Module.Finite ℤ La] (k : ℕ), Module.finrank ℤ La = k * Module.finrank ℚ F → ∀ c : 𝓞 F, ((LinearMap.trace ℤ La (DistribMulAction.toAddMonoidHom La (algebraMap (𝓞 F) O c)).toIntLinearMap : ℤ) : ℂ) = (k : ℂ) * ∑ τ : F →+* ℂ, τ (c : F) := by
+  atlas_forward_decl GlobalTheory.LatticeTrace.trace_lattice_eq
+end
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.PELU
 open scoped Matrix
@@ -141,3 +290,5 @@ theorem _root_.GlobalTheory.UPel.HT.LieType.finrank_eigSp_add_conj_eq (p : ℕ) 
   exact_mod_cast h'
 
 end GlobalTheory.UPel.HT.LieType.DimSum
+end
+end

@@ -59,14 +59,5 @@ theorem frobenius_power_congruence_holds : FrobeniusPowerCongruence := by
         v ∈ I ^ a • (⊤ : Submodule A N)))
     (fun a v hv => hstep a v hv) b hb x
 
-theorem freeK : StatFreeK := by
-  intro ℓ _ H1K H1m H0m H0KQ H0mQ H1mQ _ _ _ _ _ _ _ _ _ _ _ _ res cup a0 a1 r0 cupQ al hc hinj htf hF y z hyz
-  obtain ⟨zm, t, hz⟩ := hF (res y)
-  refine ⟨zm, ?_⟩
-  have h1 := congrArg a1 hz
-  rw [map_smul, map_sub, map_smul, hyz, hc, map_zero, ← map_smul, ← map_sub] at h1
-  have h2 := tf_pow htf t _ h1
-  have h3 : ((ℓ : ℤ_[ℓ]) ^ al) • r0 z - a0 zm = 0 := hinj (by rw [h2, map_zero])
-  exact (sub_eq_zero.1 h3).symm
 
 end Formalism.RepresentationBoundsCohomology.TorsionBoundCyclotomic

@@ -595,8 +595,6 @@ theorem splitRed_eq_one_iff (k : stabLoc σ J L v) : splitRed h hJ hL hβ k = 1 
   rw [hβ.mem_stabLocOne_iff, and_iff_right k.2, ← splitEquivIn_apply h hJ, ← bc_stabLocEquiv h hJ hL hβ]
   exact bc_residue_eq_one_iff
 
-theorem ker_splitRed : (splitRed h hJ hL hβ).ker = (stabLocOne σ J τ L).subgroupOf (stabLoc σ J L v) :=
-  Subgroup.ext (splitRed_eq_one_iff h hJ hL hβ)
 
 end Red
 

@@ -83,14 +83,10 @@ theorem half_mem_punct (n a : ℕ) : (fun _ => (1 / 2 : ℂ)) ∈ punct n a 1 :=
   rw [mem_ball_zero_iff, pi_norm_lt_iff one_pos]
   intro i; norm_num
 
-theorem zero_notMem_punct {n a : ℕ} (ha : 0 < a) (han : a ≤ n) (ρ : ℝ) : (0 : Fin n → ℂ) ∉ punct n a ρ :=
-  fun h => h.2 ⟨0, by omega⟩ ha rfl
 
 theorem one_le_logSize {n : ℕ} (a : ℕ) (z : Fin n → ℂ) : 1 ≤ logSize a z :=
   le_add_of_nonneg_right (Finset.sum_nonneg fun _ _ => abs_nonneg _)
 
-theorem logSize_one (u : ℂ) : logSize 1 (fun _ : Fin 1 => u) = 1 + |Real.log ‖u‖| := by
-  simp [logSize]
 
 def evalHom {X : Scheme.{0}} (x : Sp ℂ ⟶ X) (U : X.Opens) (h : ⊤ ≤ x ⁻¹ᵁ U) : Γ(X, U) →+* ℂ :=
   (x.appLE U ⊤ h ≫ (Scheme.ΓSpecIso (CommRingCat.of ℂ)).hom).hom
@@ -180,12 +176,6 @@ theorem exists_chart_at_point (Xo : Moduli D l) (σ : KA l →+* ℂ) {n a : ℕ
     (fun z _ => ⟨x, Category.comp_id _, by simpa using hx⟩)
   exact ⟨C, h⟩
 
-theorem exists_chart_pos (D : Datum H) (hD : 1 ≤ D.p + D.q) (l : Level H) {n a : ℕ} (han : a ≤ n) :
-    ∃ (Xo : Moduli D l) (C : BdryChart Xo (KA l).val.toRingHom n a),
-      C.g = Module.finrank ℚ E / 2 * (D.p + D.q) := by
-  obtain ⟨Xo, y, hy, -⟩ := GlobalTheory.T.exists_moduli_nonempty_positive_dim.1 E H D hD l
-  obtain ⟨C, hC⟩ := exists_chart_at_point Xo _ han y hy
-  exact ⟨Xo, C, hC⟩
 
 variable {Xo : Moduli D l} {σ : KA l →+* ℂ} {n a : ℕ} (C : BdryChart Xo σ n a)
 
@@ -222,24 +212,6 @@ theorem isRiemannMatrix_unique {z : Fin n → ℂ} {H₁ H₂ : Matrix (Fin C.g)
   ext i j
   exact mul_left_cancel₀ (by exact_mod_cast Real.pi_ne_zero) (this i j)
 
-theorem isRiem_herm {z : Fin n → ℂ} {Hm : Matrix (Fin C.g) (Fin C.g) ℂ} (h : C.IsRiem z Hm) : Hm.IsHermitian := by
-  obtain ⟨v, hv⟩ := exists_isVal C z (fun i => Pi.single i 1)
-  obtain ⟨Q, φ, v', u, H', χ, W, -, -, hA, -, hΓ⟩ :=
-    (isRiem_frame C h v hv (Matrix.of fun i j => Real.pi * Hm i j)).2 fun _ _ => rfl
-  have e : ∀ i j, Hm i j = hermForm H' (W i) (W j) := fun i j =>
-    mul_left_cancel₀ (by exact_mod_cast Real.pi_ne_zero) (hΓ i j)
-  ext i j
-  rw [Matrix.conjTranspose_apply, e, e]
-  simp only [hermForm, dotProduct, Matrix.mulVec, star_sum, star_mul', Finset.mul_sum, Pi.star_apply, star_star]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
-  rw [hA.1.apply]; ring
 
-theorem isProper_of_isRiem {z : Fin n → ℂ} {Hm : Matrix (Fin C.g) (Fin C.g) ℂ} (h : C.IsRiem z Hm) :
-    IsProper (pullback.snd C.t.G.hom (spMap (C.ψ z))) := by
-  obtain ⟨Q, φ, -, -, -, -, -, hφ, -⟩ := (h 0 Fin.elim0 (fun i => i.elim0) 0 (fun i => i.elim0)).2 (fun i => i.elim0)
-  have := Q.isAb.proper
-  rw [← hφ.1.isoPullback_inv_snd]
-  infer_instance
 
 end GlobalTheory.CompanionTheory.Ar.Flat.BdryModel

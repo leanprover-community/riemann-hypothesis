@@ -19,8 +19,6 @@ theorem algHom_surjective : Function.Surjective p :=
 theorem flat_algebra [Module.Flat R B] : Module.Flat R A :=
   Module.Flat.of_retract s.toLinearMap p.toLinearMap (LinearMap.ext fun a ↦ congr($h a))
 
-theorem finite_algebra [Module.Finite R B] : Module.Finite R A :=
-  Module.Finite.of_surjective p.toLinearMap (algHom_surjective s p h)
 
 theorem finiteType_algebra [Algebra.FiniteType R B] : Algebra.FiniteType R A :=
   Algebra.FiniteType.of_surjective p (algHom_surjective s p h)
@@ -70,8 +68,6 @@ theorem smooth_algebra [Algebra.Smooth R B] : Algebra.Smooth R A :=
 theorem etale_algebra [Algebra.Etale R B] : Algebra.Etale R A :=
   ⟨formallyEtale_algebra s p h, finitePresentation_algebra s p h⟩
 
-theorem quasiFinite_algebra [Algebra.QuasiFinite R B] : Algebra.QuasiFinite R A :=
-  Algebra.QuasiFinite.of_surjective_algHom p (algHom_surjective s p h)
 
 end Algebra
 
@@ -225,10 +221,6 @@ theorem formallyUnramified [hg : FormallyUnramified g] : FormallyUnramified f :=
     rw [RingHom.formallyUnramified_algebraMap] at H ⊢
     exact formallyUnramified_algebra s p h) hir hr hg
 
-theorem locallyQuasiFinite [hg : LocallyQuasiFinite g] : LocallyQuasiFinite f :=
-  of_hasRingHomProperty @LocallyQuasiFinite (fun s p h H ↦ by
-    rw [RingHom.quasiFinite_algebraMap] at H ⊢
-    exact quasiFinite_algebra s p h) hir hr hg
 
 end RingHomProperty
 
@@ -290,10 +282,6 @@ theorem quasiCompact [QuasiCompact g] : QuasiCompact f := by
   rwa [Scheme.Hom.comp_base, TopCat.coe_comp, Set.preimage_comp,
     Set.image_preimage_eq _ (surjective_retraction hir).surj] at this
 
-theorem quasiSeparated [QuasiSeparated g] : QuasiSeparated f := by
-  have := mono_section hir
-  rw [← section_comp hir hr]
-  infer_instance
 
 theorem isSeparated [IsSeparated g] : IsSeparated f := by
   have := mono_section hir
@@ -333,8 +321,6 @@ theorem geometricallyConnected [hg : GeometricallyConnected g] : GeometricallyCo
 theorem geometricallyIrreducible [hg : GeometricallyIrreducible g] : GeometricallyIrreducible f :=
   ⟨geometrically hir hr _ (fun _ _ h _ ↦ irreducibleSpace h) hg.1⟩
 
-theorem geometricallyReduced [hg : GeometricallyReduced g] : GeometricallyReduced f :=
-  ⟨geometrically hir hr _ (fun _ _ h _ ↦ isReduced h) hg.1⟩
 
 theorem geometricallyIntegral [hg : GeometricallyIntegral g] : GeometricallyIntegral f :=
   ⟨geometrically hir hr _ (fun _ _ h _ ↦ isIntegral h) hg.1⟩

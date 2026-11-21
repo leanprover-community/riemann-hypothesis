@@ -292,43 +292,6 @@ theorem conj_n {z : Fin (2 * r + k + 1) → ℂ} {h n : B.Mat k r} (hh : h ∈ U
     rw [e, hd i hi, add_zero]
     simp [bvec, Pi.single_apply]
 
-theorem n_mul {n m : B.Mat k r} (hn : n ∈ Nset k r) (hm : m ∈ Nset k r) : n * m ∈ Nset k r := by
-  refine ⟨uh_mul hn.1 hm.1, ?_, ?_⟩
-  · intro a i hai
-    have hy : m *ᵥ bvec (eI k r a) - bvec (eI k r a) ∈ lowS k r a.val := by
-      intro l hl
-      rw [col_eq]
-      simp only [Pi.sub_apply]
-      rw [hm.2.1 a l hl]
-      simp [bvec, Pi.single_apply]
-    have hmaps := maps_low hn.2.1 (a := a.val) a.isLt.le
-    have hcol : (n * m) *ᵥ bvec (eI k r a) =
-        n *ᵥ bvec (eI k r a) + n *ᵥ (m *ᵥ bvec (eI k r a) - bvec (eI k r a)) := by
-      rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_add]
-      congr 1
-      abel
-    have e := congrFun hcol i
-    rw [col_eq] at e
-    simp only [Pi.add_apply] at e
-    rw [e, hmaps _ hy i hai, add_zero, col_eq]
-    exact hn.2.1 a i hai
-  · intro i j hj1 hj2 hi
-    have hy : m *ᵥ bvec j - bvec j ∈ lowS k r r := by
-      intro l hl
-      rw [col_eq]
-      simp only [Pi.sub_apply]
-      rw [hm.2.2 l j hj1 hj2 hl]
-      simp [bvec, Pi.single_apply]
-    have hmaps := maps_low hn.2.1 (a := r) le_rfl
-    have hcol : (n * m) *ᵥ bvec j = n *ᵥ bvec j + n *ᵥ (m *ᵥ bvec j - bvec j) := by
-      rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_add]
-      congr 1
-      abel
-    have e := congrFun hcol i
-    rw [col_eq] at e
-    simp only [Pi.add_apply] at e
-    rw [e, hmaps _ hy i hi, add_zero, col_eq]
-    exact hn.2.2 i j hj1 hj2 hi
 
 end Grp
 

@@ -1,8 +1,18 @@
 import Mathlib
-import Development.AutomorphicSpectrum.PublishedTheorems.PublishedGlobalResults.RegularAlgebraicPurity
+import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.RegularAlgebraicPurity
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.RegularAlgebraicPurityOfClozel
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.IsCohomologicalRankOne
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsEqMulMultOfUnits
 
+section
+namespace GlobalTheory.CompanionTheory.Published.Rd
+
+def RegularAlgebraicPurity : Prop := GlobalTheory.Published.RegularAlgebraicPurity
+
+end GlobalTheory.CompanionTheory.Published.Rd
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Topology Neutral.B1 Formalism.L2.Host GlobalTheory.CuspRep GlobalTheory.GKCoh
@@ -124,15 +134,6 @@ theorem rank_one (π : CuspSub E 1) (hr : (CG.mk π).IsRegAlg) :
   rw [CG.infChar_ofChar, CG.infChar_ofChar, Multiset.map_singleton, hn, hn, ← hw τ]
   congr 1; push_cast; ring
 
-theorem iff_two_le : GlobalTheory.CompanionTheory.Published.Rd.RegularAlgebraicPurity ↔
-    ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (a : ℕ), 2 ≤ a → ∀ π : CuspSub L a, (CG.mk π).IsRegAlg →
-      (∃ w₀ : ℤ, ∀ τ : L →+* ℂ,
-        (CG.mk π).infChar ((starRingEnd ℂ).comp τ) = ((CG.mk π).infChar τ).map fun z => (w₀ : ℂ) - z) ∧
-      IsCohomological π := by
-  refine ⟨fun H L _ _ _ a ha π hr => H L a (by omega) π hr, fun H L _ _ _ a ha π hr => ?_⟩
-  rcases ha.eq_or_lt with rfl | h
-  · exact rank_one π hr
-  · exact H L a h π hr
 
 theorem hasInfChar_of_isRegAlg {a : ℕ} (ha : 2 ≤ a) {π : CG E a} (h : π.IsRegAlg) (τ : E →+* ℂ) :
     π.HasInfChar τ (π.infChar τ) := by
@@ -146,4 +147,5 @@ theorem hasInfChar_of_isRegAlg {a : ℕ} (ha : 2 ≤ a) {π : CG E a} (h : π.Is
 
 end GlobalTheory.CompanionTheory.Published.Rd.PurityModel
 
+end
 end

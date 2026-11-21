@@ -64,8 +64,6 @@ def LevelFree (Dx : DivX D) (u : D.what₂.Word) (μ : D.what₂.Tup) (w : D.wha
   D.what₂.places.resChar w ≠ (D.mem u).A.T ∧ D.what₂.places.resChar w ∉ ({D.host.g 0, D.host.g 1} : Finset ℕ) ∧
     D.what₂.places.resChar w ∉ Dx.Qp μ
 
-theorem levelFree_iff (Dx : DivX D) (u : D.what₂.Word) (μ : D.what₂.Tup) (w : D.what₂.places.Pl) :
-    LevelFree Dx u μ w ↔ LevFree Dx u μ w := Iff.rfl
 
 def KForm (E : Ent D) (Dx : DivX D) (T : TwForms D) (sp : ℝ) : Prop :=
   DGamDef D → ∀ u μ (w : D.what₂.places.Pl), DV.Used D μ → LevelFree Dx u μ w → ∀ i < D.R.m, ∀ B : ℝ, EntGe E u μ w i B →
@@ -322,12 +320,10 @@ def Cor2 (Lo : product_zeroth_first_parts.Loc) (C6 Cd : ℝ) : Prop :=
           C6 * (∑ s, w s) / (Lo.l : ℝ) - product_zeroth_first_parts.gam Lo.l * (∑ s ∈ Lo.TT, (Lo.Wc s : ℝ)) -
           Cd * ((Lo.d : ℝ) * Lo.N0 * Lo.N1 * (Real.logb Lo.l a + 1)))
 
-theorem corollary_two_same_constant (Lo : product_zeroth_first_parts.Loc) (C : ℝ) : Cor2 Lo C C ↔ Lo.Cor C := Iff.rfl
 
 def OrbitLetterBoundsAll (C6 Cd : ℝ) : Prop :=
   (∀ Lo : product_zeroth_first_parts.Loc, Lo.AdmB → Lo.ThmA Cd ∧ Cor2 Lo C6 Cd) ∧ ∀ Lo : product_zeroth_first_parts.Loc1, Lo.AdmB → Lo.ThmOne Cd
 
-theorem twoConstantBounds_of_one {C : ℝ} (h : product_zeroth_first_parts.ExportAllConjugates C) : OrbitLetterBoundsAll C C := h
 
 def OrbitBoundWithoutOperator (E : Ent D) (X : Inst D L) (K : Consts) : Prop :=
   ∀ (w : D.what₂.places.Pl) (h : OrbOK D (D.what₂.places.resChar w)), IsResidueClassZero D (D.what₂.places.resChar w) →
@@ -450,16 +446,9 @@ def LiftIntegrality (D : D7) (Dx : DivX D) (T : TwForms D) (sp : ℝ) : Prop :=
     ∀ μ, DV.Used D μ → μ ≠ D.what₂.mu0 → D.what₂.places.resChar w ∉ Dx.Qp μ →
       KGeTw T u μ w i (-((if i = 0 then 1 - sp else 1) * vDG D u w))
 
-theorem noOperatorOrbit_iff (D : D7) (L : SizeData₂ D) (X : Inst D L) (K : Consts) (Dx : DivX D) (T : TwForms D) (lev : LevelData D)
-    (Xe : ErrX D) (ce : ErrC) (sp : ℝ) : WeilJacquetShalikaLaw.OrbitsWithoutOperator D L X K Dx T lev Xe ce sp = NoOperatorOrbitBound D L X K Dx T lev Xe ce sp := rfl
 
-theorem orbitBoundAtC_iff (D : D7) (L : SizeData₂ D) (K : Consts) (Dx : DivX D) (T : TwForms D) (lev : LevelData D)
-    (Xe : ErrX D) (ce : ErrC) (sp : ℝ) : WeilJacquetShalikaLaw.MediumInertPrimeLengthBound D L K Dx T lev Xe ce sp = JetConsequence D L K Dx T lev Xe ce sp := rfl
 
-theorem valuationAtDiscriminant_iff (D : D7) (L : SizeData₂ D) (K : Consts) (Dx : DivX D) (T : TwForms D) (lev : LevelData D)
-    (Xe : ErrX D) (ce : ErrC) (sp : ℝ) : WeilJacquetShalikaLaw.LossAtDiscriminant D L K Dx T lev Xe ce sp = ValuationAtDiscriminant D L K Dx T lev Xe ce sp := rfl
 
-theorem liftIntegrality_iff (D : D7) (Dx : DivX D) (T : TwForms D) (sp : ℝ) : WeilJacquetShalikaLaw.IsotypicPartsInternalDirectSum D Dx T sp = LiftIntegrality D Dx T sp := rfl
 
 def JetTie (E : Ent D) (Dx : DivX D) (Xp : product_zeroth_first_parts.Prov D) : Prop :=
   (∀ u μ (w : D.what₂.places.Pl) (h : OrbOK D (D.what₂.places.resChar w)), LevelFree Dx u μ w →
@@ -655,40 +644,6 @@ theorem classSum (V : ValLat M w) {i : ℕ} (hi : i < D.R.m) {s : ℝ} {n : ℕ}
 
 end Layer
 
-theorem kform_of (E : Ent D) (Dx : DivX D) (T : TwForms D) (V : Vals D Dx T) (hE : EntPair E Dx T V) (hK : KFi D T)
-    {sp : ℝ} (hsp : sp = 0 ∨ (sp = 1 ∧ Stab0 D)) : KForm E Dx T sp := by
-  intro hG u μ w hUs hL i hi B hB
-  have key0 : B - (if i = 0 then 1 - sp else 1) * vDG D u w = B - vDG D u w ∨ (i = 0 ∧ sp = 1 ∧ Stab0 D) := by
-    by_cases h0 : i = 0
-    · rcases hsp with h | h
-      · left; rw [if_pos h0, h]; ring
-      · right; exact ⟨h0, h.1, h.2⟩
-    · left; rw [if_neg h0]; ring
-  refine ⟨fun hμ => ?_, fun hμ => ?_⟩
-  · subst hμ
-    have hE' := hE.1 u w hL i hi B hB
-    rcases key0 with h | ⟨h0, h1, hS⟩
-    · rw [h]
-      exact classSum (V.v0 u w hL) hi (D.mem u).C.DGam_pos.ne' (fun c => (D.mem u).C.dvd_DGam i hi.le c) (hK.1 u i hi) hE'
-    · subst h0
-      have := classSum (V.v0 u w hL) hi one_ne_zero (fun c => by rw [hS.1 u c]) (hK.1 u 0 hi) hE'
-      have e : B - (if (0 : ℕ) = 0 then 1 - sp else 1) * vDG D u w =
-          B - (padicValNat (D.what₂.places.resChar w) 1 : ℝ) := by simp [h1]
-      rw [e]
-      exact this
-  · have hE' := hE.2 u μ hUs hμ w hL i hi B hB
-    rcases key0 with h | ⟨h0, h1, hS⟩
-    · rw [h]
-      have := classSum (V.vT u μ w hL) hi (D.chTw u μ).DGam_pos.ne' (fun c => (D.chTw u μ).dvd_DGam i hi.le c) (hK.2 u μ hUs i hi)
-        hE'
-      rw [hG.one u u μ] at this
-      exact this
-    · subst h0
-      have := classSum (V.vT u μ w hL) hi one_ne_zero (fun c => by rw [hS.2 u μ hUs c]) (hK.2 u μ hUs 0 hi) hE'
-      have e : B - (if (0 : ℕ) = 0 then 1 - sp else 1) * vDG D u w =
-          B - (padicValNat (D.what₂.places.resChar w) 1 : ℝ) := by simp [h1]
-      rw [e]
-      exact this
 
 theorem mem_intW (w : D.what₂.places.Pl) {a : D.what₂.LL} (ha : a ≠ 0) (h : 0 ≤ vAdd (D.plEq w) a) :
     a ∈ intW D.what₂.places w := by
@@ -1341,12 +1296,7 @@ theorem lift_bounds_of_essential {X : Inst D L} {K : Consts} {Dx : DivX D} {T : 
     Conclusion₂ D L X K Dx T E lev Xe ce sp C :=
   lift_bounds_of_kernelForm hA.1 hA.2 hC
 
-theorem kernelAdm_of_values {X : Inst D L} {K : Consts} {Dx : DivX D} {T : TwForms D} {E : Ent D} {V : Vals D Dx T} {ce : ErrC} {sp C6 C : ℝ}
-    (hA : AdmV D L X K Dx T E V ce sp C6 C) : admitted D L X K Dx T E ce sp C6 C :=
-  ⟨kform_of E Dx T V hA.1 hA.2.1 hA.2.2.1, hA.2.2.2⟩
 
-theorem stmtV_of_stmt {X : Inst D L} {K : Consts} {Dx : DivX D} {C6 C : ℝ} (h : Stmt D L X K Dx C6 C) : LiftBoundsWithValues D L X K Dx C6 C :=
-  fun T E _ lev Xe ce sp hsp hA => ⟨(kernelAdm_of_values hA).1, h T E lev Xe ce sp hsp (kernelAdm_of_values hA)⟩
 
 section Ker
 

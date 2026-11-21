@@ -91,22 +91,8 @@ theorem ColRep.dim_eq {D : D7} {Lv : LevelData D} {u : D.what₂.Word} (X : ColR
   push_cast
   exact Finset.prod_congr rfl fun ρ _ => hW D.R.k (uColR D u ρ) (X.H ρ) (X.π ρ) (X.π_type ρ)
 
-theorem rankMu0_of_CL (D : D7) (Lv : LevelData D) (h : LevelDataRankBound D Lv) (hW : AdmittedWeylDimension D) (u : D.what₂.Word)
-    (hs : TrivStab D Lv u) (X : ColRep D Lv u) (hX : BaseWeightColumnCondition D Lv u X) :
-    ((haveI := (D.mem u).A.Mu0_fd; Module.finrank ℂ (D.mem u).A.Mu0 : ℕ) : ℝ) =
-      (Nat.card ((D.mem u).C.cls 0) : ℝ) * ∏ ρ, dimV (uColR D u ρ) := by
-  obtain ⟨e⟩ := hX
-  have hfd : ∀ ρ, FiniteDimensional ℂ (X.H ρ) := fun ρ => (X.π_type ρ).2.1
-  rw [e.finrank_eq, h u hs X.V X.a X.ψ, ← X.dim_eq hW]
-  push_cast
-  ring
 
-theorem mu0Tie_of_CL (D : D7) (Lv : LevelData D) (h : LevelDataRankBound D Lv) (hW : AdmittedWeylDimension D) (u : D.what₂.Word)
-    (hs : TrivStab D Lv u) (X : ColRep D Lv u) (hX : BaseWeightColumnCondition D Lv u X) : Mu0Tie D u :=
-  fun _ => rankMu0_of_CL D Lv h hW u hs X hX
 
-theorem trivStab_of (D : D7) (Lv : LevelData D) (h17 : adm17 D Lv) (hp : Conclusion4p D Lv) (hg : GBig D)
-    (u : D.what₂.Word) : TrivStab D Lv u := h17 hg u (hp u)
 
 def CTHyp (D : D7) (sc : Scale) (n₀ : ℕ) (A C cb : ℝ) : Prop :=
   NumberField.discr D.host.E = NumberField.discr D.host.F ^ 2 ∧

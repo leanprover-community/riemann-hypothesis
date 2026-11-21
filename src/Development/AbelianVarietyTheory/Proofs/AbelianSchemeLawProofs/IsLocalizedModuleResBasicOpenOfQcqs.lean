@@ -391,30 +391,5 @@ theorem isAffineOpen_biInf_preimage (H : IsPullback π f' f (Spec.map (CommRingC
 
 end Cech
 
-theorem sections_over_affine_open {X : Scheme.{0}} {M : LB X} (hM : M.IsLB) :
-    (∀ V : X.Opens, IsCompact (V : Set X) → IsQuasiSeparated (V : Set X) → ∀ a : Γ(X, V),
-      IsLocalizedModule.Away a (SecOn.resBasicOpen M a)) ∧
-    (∀ V : X.Opens, IsAffineOpen V → ∀ a : Γ(X, V),
-      IsLocalizedModule.Away a (SecOn.resBasicOpen M a)) ∧
-    (∀ V : X.Opens, IsAffineOpen V → Module.Invertible Γ(X, V) (SecOn M V) ∧
-      Module.FinitePresentation Γ(X, V) (SecOn M V) ∧ Module.Projective Γ(X, V) (SecOn M V)) ∧
-    (∀ (R : Type) [CommRing R] (f : X ⟶ Spec (CommRingCat.of R)), Flat f →
-      ∀ V : X.Opens, IsAffineOpen V → Module.Flat R (SecOnR f M V)) ∧
-    (∀ (R R' : Type) [CommRing R] [CommRing R'] [Algebra R R'] (X' : Scheme.{0}) (π : X' ⟶ X)
-      (f : X ⟶ Spec (CommRingCat.of R)) (f' : X' ⟶ Spec (CommRingCat.of R'))
-      (H : IsPullback π f' f (Spec.map (CommRingCat.ofHom (algebraMap R R')))) (V : X.Opens),
-      IsAffineOpen V → Function.Bijective (SecOnR.baseChangeHom M H.w V (π ⁻¹ᵁ V) le_rfl)) ∧
-    (∀ (R R' : Type) [CommRing R] [CommRing R'] (g : R →+* R') (X' : Scheme.{0}) (π : X' ⟶ X)
-      (f : X ⟶ Spec (CommRingCat.of R)) (f' : X' ⟶ Spec (CommRingCat.of R'))
-      (H : IsPullback π f' f (Spec.map (CommRingCat.ofHom g)))
-      (κ : Type) [LinearOrder κ] [Finite κ] (D : κ → X.Opens),
-      (∀ s : Finset κ, s.Nonempty → IsAffineOpen (⨅ i ∈ s, D i)) →
-        IsIso (cechLBBaseChange M D H.w)) :=
-  ⟨fun _ => SecOn.isLocalizedModule_resBasicOpen_of_qcqs hM,
-    fun _ => SecOn.isLocalizedModule_resBasicOpen hM,
-    fun _ hV => ⟨SecOn.invertible hM hV, SecOn.finitePresentation hM hV, SecOn.projective hM hV⟩,
-    fun _ _ f _ _ hV => SecOnR.flat f hM hV,
-    fun _ _ _ _ _ _ _ _ _ H _ hV => SecOnR.baseChangeHom_bijective hM H hV rfl,
-    fun _ _ _ _ _ _ _ _ _ H _ _ _ _ hD => isIso_cechLBBaseChange hM H hD⟩
 
 end GlobalTheory.AbLaw

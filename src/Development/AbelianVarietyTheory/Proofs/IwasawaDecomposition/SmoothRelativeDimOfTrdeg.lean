@@ -1,8 +1,151 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrdegResidueFieldEq
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ResidueFieldIsAlgebraicOfEtale
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ResidueFieldIsoInvCompSpec
 
+section
+open AlgebraicGeometry CategoryTheory Limits
+
+namespace GlobalTheory.FibreMinimalPrime
+
+theorem trdeg_residueField_eq {R : Type} [CommRing R] (r : ℕ) (Q : Ideal (MvPolynomial (Fin r) R)) [Q.IsPrime]
+    (hmin : ∀ Q' : Ideal (MvPolynomial (Fin r) R), Q'.IsPrime → Q' ≤ Q →
+      Q'.comap (MvPolynomial.C : R →+* _) = Q.comap MvPolynomial.C → Q' = Q) :
+    @Algebra.trdeg (Q.comap (MvPolynomial.C : R →+* _)).ResidueField Q.ResidueField _ _
+      (Ideal.ResidueField.map (Q.comap MvPolynomial.C) Q MvPolynomial.C rfl).toAlgebra = r := by
+  classical
+  set q : Ideal R := Q.comap (MvPolynomial.C : R →+* _) with hq_def
+  let f : MvPolynomial (Fin r) R →+* MvPolynomial (Fin r) (R ⧸ q) := MvPolynomial.map (Ideal.Quotient.mk q)
+  have hfs : Function.Surjective f := MvPolynomial.map_surjective _ Ideal.Quotient.mk_surjective
+
+  have hker_prime : (RingHom.ker f).IsPrime := RingHom.ker_isPrime f
+  have hker_le : RingHom.ker f ≤ Q := by
+    show RingHom.ker (MvPolynomial.map (Ideal.Quotient.mk q)) ≤ Q
+    rw [MvPolynomial.ker_map, Ideal.mk_ker, Ideal.map_le_iff_le_comap]
+  have hker_comap : (RingHom.ker f).comap (MvPolynomial.C : R →+* _) = q := by
+    ext a
+    simp only [Ideal.mem_comap, RingHom.mem_ker, f, MvPolynomial.map_C, MvPolynomial.C_eq_zero,
+      Ideal.Quotient.eq_zero_iff_mem]
+
+  have hQ : Q = RingHom.ker f := (hmin _ hker_prime hker_le hker_comap).symm
+
+  letI algKL : Algebra q.ResidueField Q.ResidueField :=
+    (Ideal.ResidueField.map q Q MvPolynomial.C rfl).toAlgebra
+  letI algkL : Algebra (R ⧸ q) Q.ResidueField :=
+    ((algebraMap q.ResidueField Q.ResidueField).comp (algebraMap (R ⧸ q) q.ResidueField)).toAlgebra
+  haveI : IsScalarTower (R ⧸ q) q.ResidueField Q.ResidueField :=
+    IsScalarTower.of_algebraMap_eq (fun _ => rfl)
+  letI algkB : Algebra (R ⧸ q) (MvPolynomial (Fin r) R ⧸ Q) :=
+    (Ideal.quotientMap Q (MvPolynomial.C : R →+* _) le_rfl).toAlgebra
+  haveI : IsScalarTower (R ⧸ q) (MvPolynomial (Fin r) R ⧸ Q) Q.ResidueField := by
+    refine IsScalarTower.of_algebraMap_eq (fun x => ?_)
+    obtain ⟨a, rfl⟩ := Ideal.Quotient.mk_surjective x
+    show Ideal.ResidueField.map q Q MvPolynomial.C rfl
+        (algebraMap (R ⧸ q) q.ResidueField (Ideal.Quotient.mk q a)) =
+      algebraMap (MvPolynomial (Fin r) R ⧸ Q) Q.ResidueField
+        (Ideal.quotientMap Q (MvPolynomial.C : R →+* _) le_rfl (Ideal.Quotient.mk q a))
+    rw [Ideal.algebraMap_quotient_residueField_mk, Ideal.ResidueField.map_algebraMap,
+      Ideal.quotientMap_mk, Ideal.algebraMap_quotient_residueField_mk]
+  haveI : FaithfulSMul (R ⧸ q) q.ResidueField :=
+    (faithfulSMul_iff_algebraMap_injective _ _).mpr (IsFractionRing.injective _ _)
+  haveI : FaithfulSMul q.ResidueField Q.ResidueField :=
+    (faithfulSMul_iff_algebraMap_injective _ _).mpr (algebraMap q.ResidueField Q.ResidueField).injective
+  haveI : FaithfulSMul (R ⧸ q) (MvPolynomial (Fin r) R ⧸ Q) :=
+    (faithfulSMul_iff_algebraMap_injective _ _).mpr Ideal.quotientMap_injective
+  haveI : FaithfulSMul (MvPolynomial (Fin r) R ⧸ Q) Q.ResidueField :=
+    (faithfulSMul_iff_algebraMap_injective _ _).mpr (IsFractionRing.injective _ _)
+
+  let e0 : (MvPolynomial (Fin r) R ⧸ Q) ≃+* MvPolynomial (Fin r) (R ⧸ q) :=
+    (Ideal.quotEquivOfEq hQ).trans (RingHom.quotientKerEquivOfSurjective hfs)
+  let e : (MvPolynomial (Fin r) R ⧸ Q) ≃ₐ[R ⧸ q] MvPolynomial (Fin r) (R ⧸ q) :=
+    AlgEquiv.ofRingEquiv (f := e0) (fun x => by
+      obtain ⟨a, rfl⟩ := Ideal.Quotient.mk_surjective x
+      show e0 (Ideal.quotientMap Q (MvPolynomial.C : R →+* _) le_rfl (Ideal.Quotient.mk q a)) =
+        MvPolynomial.C (Ideal.Quotient.mk q a)
+      rw [Ideal.quotientMap_mk]
+      simp only [e0, RingEquiv.trans_apply, Ideal.quotEquivOfEq_mk,
+        RingHom.quotientKerEquivOfSurjective_apply_mk, f, MvPolynomial.map_C])
+  have hB : Algebra.trdeg (R ⧸ q) (MvPolynomial (Fin r) R ⧸ Q) = r := by
+    rw [e.trdeg_eq, MvPolynomial.trdeg_of_isDomain]
+    simp
+  have h0K : Algebra.trdeg (R ⧸ q) q.ResidueField = 0 := by
+    haveI := IsLocalization.isAlgebraic (R := R ⧸ q) q.ResidueField (nonZeroDivisors (R ⧸ q))
+    exact trdeg_eq_zero
+  have h0L : Algebra.trdeg (MvPolynomial (Fin r) R ⧸ Q) Q.ResidueField = 0 := by
+    haveI := IsLocalization.isAlgebraic (R := MvPolynomial (Fin r) R ⧸ Q) Q.ResidueField
+      (nonZeroDivisors _)
+    exact trdeg_eq_zero
+  have h1 := trdeg_add_eq (R ⧸ q) q.ResidueField (A := Q.ResidueField)
+  have h2 := trdeg_add_eq (R ⧸ q) (MvPolynomial (Fin r) R ⧸ Q) (A := Q.ResidueField)
+  rw [h0K, zero_add] at h1
+  rw [hB, h0L, add_zero] at h2
+  exact h1.trans h2.symm
+
+end GlobalTheory.FibreMinimalPrime
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits
+
+namespace GlobalTheory
+
+theorem residueField_isAlgebraic_of_etale :
+    ∀ {A B : Type} [CommRing A] [CommRing B] (g : A →+* B), g.Etale →
+    ∀ (P : Ideal B) [P.IsPrime],
+    @Algebra.IsAlgebraic (P.comap g).ResidueField P.ResidueField _ _
+      (Ideal.ResidueField.map (P.comap g) P g rfl).toAlgebra := by
+  intro A B _ _ g hg P _
+  letI := g.toAlgebra
+  have hE : Algebra.Etale A B := RingHom.etale_algebraMap.mp hg
+  haveI : P.LiesOver (P.comap g) := ⟨rfl⟩
+  letI := Localization.AtPrime.algebraOfLiesOver (P.comap g) P
+  haveI : Localization.AtPrime.IsLiesOverAlgebra (P.comap g) P := ⟨rfl⟩
+  haveI : Algebra.EssFiniteType A B := inferInstance
+  haveI : Algebra.IsUnramifiedAt A P := inferInstance
+  have hsep : Algebra.IsSeparable (P.comap g).ResidueField P.ResidueField := inferInstance
+  have halg := hsep.isAlgebraic
+  convert halg using 1
+  apply Algebra.algebra_ext
+  intro x
+  obtain ⟨y, rfl⟩ := IsLocalRing.residue_surjective x
+  induction y using Localization.induction_on with
+  | H y =>
+    obtain ⟨a, s⟩ := y
+    simp [Ideal.ResidueField.map, RingHom.algebraMap_toAlgebra, Localization.AtPrime.algebraOfLiesOver, Localization.mk_eq_mk']
+
+end GlobalTheory
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits
+
+namespace GlobalTheory
+
+
+
+end GlobalTheory
+
+namespace GlobalTheory
+theorem ΓSpecIso_inv_germ_residue_residueFieldMap {R B : CommRingCat.{0}} (φ : R ⟶ B) (x : Spec B) :
+    (Scheme.ΓSpecIso R).inv ≫ (Spec R).presheaf.germ ⊤ (Spec.map φ x) trivial ≫
+        (Spec R).residue (Spec.map φ x) ≫ (Spec.map φ).residueFieldMap x =
+      φ ≫ (Scheme.ΓSpecIso B).inv ≫ (Spec B).presheaf.germ ⊤ x trivial ≫ (Spec B).residue x := by
+  rw [Scheme.residue_residueFieldMap]
+  erw [Scheme.Hom.germ_stalkMap_assoc (Spec.map φ) ⊤ x trivial]
+  have hn := Scheme.ΓSpecIso_naturality φ
+  rw [← Category.assoc, ← Category.assoc φ]
+  congr 1
+  show (Scheme.ΓSpecIso R).inv ≫ (Spec.map φ).appTop = φ ≫ (Scheme.ΓSpecIso B).inv
+  rw [Iso.inv_comp_eq, ← Category.assoc, ← hn, Category.assoc, Iso.hom_inv_id, Category.comp_id]
+end GlobalTheory
+
+namespace GlobalTheory
+
+end GlobalTheory
+
+namespace GlobalTheory
+
+end GlobalTheory
+end
+
+section
 open AlgebraicGeometry CategoryTheory Limits
 
 namespace GlobalTheory.RelDimFibCrit
@@ -80,34 +223,6 @@ theorem exists_minimal_in_fibre {R B : Type} [CommRing R] [CommRing B] (φ : R �
   have := hm.eq_of_ge (y := OrderDual.toDual P') ⟨h1, h2.trans hm.prop.2.1, h3⟩ h2
   exact congrArg OrderDual.ofDual this
 
-theorem trdeg_residueFieldMap_openImmersion_square :
-    ∀ {X Y X' Y' : Scheme.{0}} (g : X' ⟶ Y') (f : X ⟶ Y) (jX : X' ⟶ X) (jY : Y' ⟶ Y)
-    [IsOpenImmersion jX] [IsOpenImmersion jY], g ≫ jY = jX ≫ f → ∀ x : X',
-    @Algebra.trdeg (Y.residueField (f (jX x))) (X.residueField (jX x)) _ _
-      (f.residueFieldMap (jX x)).hom.toAlgebra =
-    @Algebra.trdeg (Y'.residueField (g x)) (X'.residueField x) _ _
-      (g.residueFieldMap x).hom.toAlgebra := by
-  intro X Y X' Y' g f jX jY _ _ e x
-  have hpt : jY (g x) = f (jX x) := by
-    rw [← Scheme.Hom.comp_apply, e, Scheme.Hom.comp_apply]
-  have hc := Scheme.Hom.residueFieldMap_congr e x
-  rw [Scheme.residueFieldMap_comp, Scheme.residueFieldMap_comp] at hc
-  let C : Y.residueField (jY (g x)) ≅ Y.residueField (f (jX x)) := Y.residueFieldCongr hpt
-  have hc' : jY.residueFieldMap (g x) ≫ g.residueFieldMap x =
-      C.hom ≫ f.residueFieldMap (jX x) ≫ jX.residueFieldMap x := hc
-  let eU : Y.residueField (f (jX x)) ≅ Y'.residueField (g x) :=
-    C.symm ≪≫ asIso (jY.residueFieldMap (g x))
-  let eV : X.residueField (jX x) ≅ X'.residueField x := asIso (jX.residueFieldMap x)
-  refine GlobalTheory.trdeg_eq_of_ringEquiv_square _ _ eU.commRingCatIsoToRingEquiv
-    eV.commRingCatIsoToRingEquiv ?_
-  have key : C.inv ≫ jY.residueFieldMap (g x) ≫ g.residueFieldMap x =
-      f.residueFieldMap (jX x) ≫ jX.residueFieldMap x := by
-    rw [hc']; simp
-  have key2 := congrArg CommRingCat.Hom.hom key
-  simp only [CommRingCat.hom_comp] at key2
-  ext y
-  have key3 := congrArg (fun φ => φ y) key2
-  simpa [eU, eV] using key3
 
 open AlgebraicGeometry CategoryTheory Limits in
 private lemma specMap_residueFieldMap_conj_eq_ofHom_map {R S : CommRingCat.{0}} (φ : R ⟶ S)
@@ -236,3 +351,4 @@ theorem smoothOfRelativeDimension_of_trdeg : ∀ {X S : Scheme.{0}} (f : X ⟶ S
   exact hr
 
 end GlobalTheory.RelDimFibCrit
+end

@@ -62,14 +62,5 @@ def sesOfLIFT {ℓ : ℕ} [Fact ℓ.Prime] {A : Type} [CommRing A] [Algebra ℤ_
   exact := S.exact
   sat := S.sat
 
-theorem wach_lattice_nonempty_unramified : NonemptyU := by
-  intro p _ u
-  obtain ⟨B, W, hu, hN, hX⟩ := LIFT.wDNonempty_proof p u
-  subst hu
-  refine ⟨baseOfLIFT B, ofLIFT W (lift_gamma_invariant_lattice p _ B 0 _ W), rfl, hN, hX, B.γX, ?_⟩
-  obtain ⟨t, ht, h⟩ := B.γQ
-  refine ⟨1 + B.X * t, ht, ⟨t, rfl⟩, ?_⟩
-  show B.γA B.Q = (1 + B.X * t) * B.Q
-  rw [h, mul_comm]
 
 end Formalism.CoboundaryTransfers

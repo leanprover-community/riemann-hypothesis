@@ -2,9 +2,274 @@ import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsUniqueHcharOfFiniteOrder
 import GroundTheory.GlobalFields.GlobalArtinMap.Kernel
 import GroundTheory.GlobalFields.ClassFieldConsequences.RayClassFieldLocal
-import Development.WeilBound.CoreStatements.PlaceConnectedComponents.ArtinA
-import Development.WeilBound.CoreStatements.PlaceConnectedComponents.ArtinKer
+import ReciprocityTheory.GaloisValuations.Global
+import GroundTheory.GlobalFields.TateThesis.HeckeCharRayClass
 
+section
+noncomputable section
+
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal
+open scoped Pointwise
+
+namespace PositivityTheory.FamInh
+
+variable {K L Ω : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Field Ω] [Algebra K L] [Algebra L Ω]
+  [Algebra K Ω] [IsScalarTower K L Ω] [IsAlgClosure K Ω] [IsAlgClosure L Ω]
+
+omit [IsAlgClosure K Ω] in
+
+theorem exists_place_between {A : ValuationSubring Ω} {v : HeightOneSpectrum (𝓞 K)} (hA : IsPlaceOver A v) :
+    ∃ w : HeightOneSpectrum (𝓞 L), IsPlaceOver A w ∧ w.asIdeal.LiesOver v.asIdeal := by
+  let P : Ideal (𝓞 L) := (primeBelow (F := L) A).under (𝓞 L)
+  have hP : ∀ x : 𝓞 L, A.valuation (algebraMap L Ω (x : L)) < 1 ↔ x ∈ P := fun x => Iff.rfl
+  have hu : v.asIdeal = P.under (𝓞 K) := by
+    ext x
+    rw [← hA x, Ideal.under, Ideal.mem_comap, ← hP, IsScalarTower.algebraMap_apply K L Ω]
+    rfl
+  have hne : P ≠ ⊥ := by
+    intro h
+    apply v.ne_bot
+    rw [hu, h]
+    exact Ideal.comap_bot_of_injective _ (FaithfulSMul.algebraMap_injective _ _)
+  exact ⟨⟨P, inferInstance, hne⟩, hP, ⟨hu⟩⟩
+
+theorem mem_Ine_of_integral {A : ValuationSubring Ω} {σ : G K Ω} (hσ : σ ∈ Dec (F := K) A)
+    (h : ∀ b : Ω, IsIntegral ℤ b → A.valuation (σ b - b) < 1) : σ ∈ Ine (F := K) A := by
+  refine ⟨hσ, fun x hx => ?_⟩
+  obtain ⟨s, t, hs, ht, hs1, e⟩ := exists_den K A hx
+  have hσx : A.valuation (σ x) ≤ 1 := by
+    rw [A.valuation_le_one_iff, apply_mem_iff_of_mem_Dec hσ, ← A.valuation_le_one_iff]
+    exact hx
+  have he' : σ s * σ x = σ t := by rw [← map_mul, e]
+  have key : s * (σ x - x) = (σ t - t) - (σ s - s) * σ x := by
+    rw [← he', ← e]; ring
+  have hv : A.valuation (s * (σ x - x)) < 1 := by
+    rw [key]
+    apply Valuation.map_sub_lt _ (h t ht)
+    rw [Valuation.map_mul]
+    calc A.valuation (σ s - s) * A.valuation (σ x) ≤ A.valuation (σ s - s) * 1 := mul_le_mul_right hσx _
+      _ < 1 := by rw [mul_one]; exact h s hs
+  rwa [Valuation.map_mul, hs1, one_mul] at hv
+
+variable [IsGalois K L]
+
+omit [NumberField K] [NumberField L] [IsAlgClosure K Ω] [IsAlgClosure L Ω] in
+theorem coe_res_smul (σ : G K Ω) (x : 𝓞 L) :
+    algebraMap L Ω ((AlgEquiv.restrictNormalHom L σ • x : 𝓞 L) : L) = σ (algebraMap L Ω (x : L)) :=
+  AlgEquiv.restrictNormal_commutes σ L (x : L)
+
+omit [NumberField K] [NumberField L] [IsAlgClosure K Ω] [IsAlgClosure L Ω] in
+theorem res_restrictScalars (g : Ω ≃ₐ[L] Ω) : AlgEquiv.restrictNormalHom L (g.restrictScalars K : G K Ω) = 1 := by
+  ext x
+  apply (algebraMap L Ω).injective
+  exact (AlgEquiv.restrictNormal_commutes (g.restrictScalars K) L x).trans (g.commutes x)
+
+variable {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 L)}
+
+omit [IsAlgClosure K Ω] [IsAlgClosure L Ω] in
+theorem res_mem_stabilizer (hw : IsPlaceOver A w) {σ : G K Ω} (hσ : σ ∈ Dec (F := K) A) :
+    AlgEquiv.restrictNormalHom L σ ∈ MulAction.stabilizer (L ≃ₐ[K] L) w.asIdeal := by
+  rw [MulAction.mem_stabilizer_iff]
+  ext x
+  rw [Ideal.mem_pointwise_smul_iff_inv_smul_mem, ← map_inv, ← hw, ← hw, coe_res_smul,
+    valuation_apply_lt_one_iff ((Dec (F := K) A).inv_mem hσ)]
+
+omit [IsAlgClosure K Ω] [IsAlgClosure L Ω] in
+theorem val_int_le_one (A : ValuationSubring Ω) (x : 𝓞 L) : A.valuation (algebraMap L Ω (x : L)) ≤ 1 :=
+  (A.valuation_le_one_iff _).2 (mem_of_isIntegral_int A
+    (x.isIntegral_coe.map ((algebraMap L Ω).toIntAlgHom)))
+
+omit [IsAlgClosure K Ω] [IsAlgClosure L Ω] in
+theorem res_mem_inertia (hw : IsPlaceOver A w) {σ : G K Ω} (hσ : σ ∈ Ine (F := K) A) :
+    AlgEquiv.restrictNormalHom L σ ∈ w.asIdeal.inertia (L ≃ₐ[K] L) := by
+  intro x
+  show _ ∈ w.asIdeal
+  rw [← hw]
+  have := hσ.2 _ (val_int_le_one A x)
+  rw [← coe_res_smul, ← map_sub] at this
+  exact this
+
+omit [IsAlgClosure K Ω] [IsAlgClosure L Ω] in
+theorem res_isArithFrobAt {v : HeightOneSpectrum (𝓞 K)} (hw : IsPlaceOver A w) [h : w.asIdeal.LiesOver v.asIdeal]
+    {σ : G K Ω} (hσ : IsFrob (F := K) A (normV v) σ) :
+    IsArithFrobAt (𝓞 K) (AlgEquiv.restrictNormalHom L σ) w.asIdeal := by
+  intro x
+  rw [← hw, ← h.over]
+  have := hσ.2 _ (val_int_le_one A x)
+  rw [← coe_res_smul, ← map_pow, ← map_sub] at this
+  exact this
+
+theorem exists_lift_dec (hw : IsPlaceOver A w) {τ : L ≃ₐ[K] L}
+    (hτ : τ ∈ MulAction.stabilizer (L ≃ₐ[K] L) w.asIdeal) :
+    ∃ σ ∈ Dec (F := K) A, AlgEquiv.restrictNormalHom L σ = τ := by
+  obtain ⟨σ0, rfl⟩ := AlgEquiv.restrictNormalHom_surjective (F := K) (K₁ := L) (E := Ω) τ
+  have h1 : ∀ x : 𝓞 L, (σ0 • A).valuation (algebraMap L Ω (x : L)) < 1 ↔ x ∈ w.asIdeal := by
+    intro x
+    rw [smul_valuation_lt_one_iff, ← coe_res_smul, hw, map_inv, ← Ideal.mem_pointwise_smul_iff_inv_smul_mem,
+      MulAction.mem_stabilizer_iff.1 hτ]
+  obtain ⟨g, hg⟩ := exists_smul_eq_of_over (F := L) h1 hw
+  refine ⟨g.restrictScalars K * σ0, ?_, ?_⟩
+  · rw [mem_Dec, mul_smul]
+    exact hg
+  · rw [map_mul, res_restrictScalars, one_mul]
+
+def intAut (L : Type) [Field L] [NumberField L] [Algebra L Ω] (σ : G K Ω) : IntCl L Ω ≃+* IntCl L Ω where
+  toFun b := ⟨σ b, ((isIntegral_int_of_isIntegral b.2).map (σ.toAlgHom.restrictScalars ℤ)).tower_top⟩
+  invFun b := ⟨σ.symm b, ((isIntegral_int_of_isIntegral b.2).map (σ.symm.toAlgHom.restrictScalars ℤ)).tower_top⟩
+  left_inv b := Subtype.ext (σ.symm_apply_apply _)
+  right_inv b := Subtype.ext (σ.apply_symm_apply _)
+  map_mul' a b := Subtype.ext (map_mul σ _ _)
+  map_add' a b := Subtype.ext (map_add σ _ _)
+
+theorem exists_lift_ine (hw : IsPlaceOver A w) {τ : L ≃ₐ[K] L} (hτ : τ ∈ w.asIdeal.inertia (L ≃ₐ[K] L)) :
+    ∃ σ ∈ Ine (F := K) A, AlgEquiv.restrictNormalHom L σ = τ := by
+  obtain ⟨σ, hσ, rfl⟩ := exists_lift_dec hw (Ideal.inertia_le_stabilizer _ hτ)
+  letI : TopologicalSpace (IntCl L Ω) := ⊥
+  haveI : DiscreteTopology (IntCl L Ω) := ⟨rfl⟩
+  haveI := continuousSMul_intCl L Ω
+  haveI := isInvariant_intCl L Ω
+  set Q := primeBelow (F := L) A with hQ
+  haveI : Q.LiesOver w.asIdeal := ⟨(under_primeBelow hw).symm⟩
+  have hmap : Q = Q.map (intAut L σ : IntCl L Ω →+* IntCl L Ω) := by
+    rw [Ideal.map_comap_of_equiv]
+    ext b
+    rw [Ideal.mem_comap, mem_primeBelow, mem_primeBelow]
+    exact (valuation_apply_lt_one_iff ((Dec (F := K) A).inv_mem hσ) (b : Ω)).symm
+  let φ : (IntCl L Ω ⧸ Q) ≃ₐ[𝓞 L ⧸ w.asIdeal] (IntCl L Ω ⧸ Q) :=
+    AlgEquiv.ofRingEquiv (f := Ideal.quotientEquiv Q Q (intAut L σ) hmap) (by
+      intro r
+      obtain ⟨x, rfl⟩ := Ideal.Quotient.mk_surjective r
+      change Ideal.Quotient.mk Q (intAut L σ (algebraMap (𝓞 L) (IntCl L Ω) x)) =
+        Ideal.Quotient.mk Q (algebraMap (𝓞 L) (IntCl L Ω) x)
+      rw [Ideal.Quotient.eq, mem_primeBelow]
+      have h1 := (hw _).2 (hτ x)
+      change A.valuation (σ (algebraMap L Ω (x : L)) - algebraMap L Ω (x : L)) < 1
+      rw [← coe_res_smul, ← map_sub]
+      exact h1)
+  obtain ⟨⟨ρ, hρQ⟩, hρ⟩ := Ideal.Quotient.stabilizerHom_surjective_of_profinite
+    (G := Ω ≃ₐ[L] Ω) w.asIdeal Q φ
+  have hρQ' : ρ • Q = Q := hρQ
+  have hcong : ∀ b : IntCl L Ω, A.valuation (σ (b : Ω) - ρ (b : Ω)) < 1 := by
+    intro b
+    have h1 : Ideal.Quotient.mk Q (ρ • b) = Ideal.Quotient.mk Q (intAut L σ b) :=
+      DFunLike.congr_fun hρ (Ideal.Quotient.mk Q b)
+    exact Ideal.Quotient.eq.1 h1.symm
+  have hdec : ρ • A = A := by
+    refine eq_of_valuation_lt_one_iff L fun b hb => ?_
+    let b' : IntCl L Ω := ⟨b, hb.tower_top⟩
+    change b' ∈ primeBelow (F := L) (ρ • A) ↔ b' ∈ Q
+    rw [primeBelow_smul, hρQ']
+  have hρD : (ρ.restrictScalars K : G K Ω) ∈ Dec (F := K) A := hdec
+  refine ⟨(ρ.restrictScalars K)⁻¹ * σ, mem_Ine_of_integral
+    ((Dec (F := K) A).mul_mem ((Dec (F := K) A).inv_mem hρD) hσ) fun b hb => ?_, ?_⟩
+  · rw [← valuation_apply_lt_one_iff hρD, map_sub, AlgEquiv.mul_apply, mul_inv_apply]
+    exact hcong ⟨b, hb.tower_top⟩
+  · rw [map_mul, map_inv, res_restrictScalars, inv_one, one_mul]
+
+omit [IsAlgClosure K Ω] [IsAlgClosure L Ω] in
+
+theorem inertia_eq_bot_iff (v : HeightOneSpectrum (𝓞 K)) (w : HeightOneSpectrum (𝓞 L))
+    [w.asIdeal.LiesOver v.asIdeal] :
+    w.asIdeal.inertia (L ≃ₐ[K] L) = ⊥ ↔ w.asIdeal.ramificationIdx (𝓞 K) = 1 := by
+  have : v.asIdeal.IsMaximal := v.isMaximal
+  have : Finite (𝓞 K ⧸ v.asIdeal) := Ring.HasFiniteQuotients.finiteQuotient v.ne_bot
+  rw [← Subgroup.card_eq_one, Ideal.card_inertia_eq_ramificationIdxIn (G := L ≃ₐ[K] L) v.asIdeal,
+    Ideal.ramificationIdxIn_eq_ramificationIdx v.asIdeal w.asIdeal (L ≃ₐ[K] L)]
+
+end PositivityTheory.FamInh
+
+end
+end
+
+section
+noncomputable section
+
+open NumberField IsDedekindDomain Topology GroundTheory.Global GroundTheory.Global.IdeleGroup
+
+namespace PositivityTheory.FamInh
+
+theorem isOpen_connInf (E : Type) [Field E] [NumberField E] :
+    IsOpen ((Subgroup.connectedComponentOfOne (InfiniteAdeleRing E)ˣ : Subgroup (InfiniteAdeleRing E)ˣ) :
+      Set (InfiniteAdeleRing E)ˣ) := by
+  haveI : ∀ w : InfinitePlace E, LocallyConnectedSpace w.Completion := fun w => by
+    rcases w.isReal_or_isComplex with hw | hw
+    · exact (InfinitePlace.Completion.isometryEquivRealOfIsReal hw).toHomeomorph.locallyConnectedSpace
+    · exact (InfinitePlace.Completion.isometryEquivComplexOfIsComplex hw).toHomeomorph.locallyConnectedSpace
+  haveI : LocallyConnectedSpace (InfiniteAdeleRing E) :=
+    inferInstanceAs (LocallyConnectedSpace (∀ w : InfinitePlace E, w.Completion))
+  have he : IsOpenEmbedding (Units.val : (InfiniteAdeleRing E)ˣ → InfiniteAdeleRing E) :=
+    Units.isOpenEmbedding_val (R := ∀ w : InfinitePlace E, w.Completion)
+  haveI : LocallyConnectedSpace (InfiniteAdeleRing E)ˣ := he.locallyConnectedSpace
+  exact isOpen_connectedComponent
+
+theorem ofInfinite_eq_map (E : Type) [Field E] [NumberField E] (y : (InfiniteAdeleRing E)ˣ) :
+    (ofInfinite y : IdeleGroup E) =
+      Units.map (MonoidHom.inl (InfiniteAdeleRing E) (FiniteAdeleRing (𝓞 E) E)) y :=
+  Units.ext rfl
+
+theorem comap_connectedComponent (E : Type) [Field E] [NumberField E] :
+    (Subgroup.connectedComponentOfOne (GroundTheory.Global.IdeleClassGroup E)).comap (GroundTheory.Global.IdeleClassGroup.mk E) =
+      ((Neutral.B1.diagUnits E).range ⊔ GlobalTheory.HeckeGal.infConn E).topologicalClosure := by
+  apply le_antisymm
+  · intro x hx
+    have hx' : IdeleClassGroup.mk E x ∈ connectedComponent (1 : IdeleClassGroup E) := hx
+    show x ∈ closure (((Neutral.B1.diagUnits E).range ⊔ GlobalTheory.HeckeGal.infConn E : Subgroup (IdeleGroup E)) :
+      Set (IdeleGroup E))
+    rw [mem_closure_iff_nhds]
+    intro t ht
+    have hc : Continuous fun u : (FiniteAdeleRing (𝓞 E) E)ˣ => x * (ofFinite u : IdeleGroup E)⁻¹ :=
+      continuous_const.mul continuous_ofFinite.inv
+    have hW : (fun u : (FiniteAdeleRing (𝓞 E) E)ˣ => x * (ofFinite u : IdeleGroup E)⁻¹) ⁻¹' t ∈ 𝓝 1 :=
+      hc.continuousAt.preimage_mem_nhds (by simpa using ht)
+    obtain ⟨S, n, -, hn0, hsub⟩ := exists_finiteLevel_subset hW
+    have hsupp : (Function.support n).Finite :=
+      S.finite_toSet.subset fun v hv => by
+        by_contra h
+        exact hv (hn0 v h)
+    let V : Subgroup (IdeleGroup E) :=
+      (Subgroup.connectedComponentOfOne (InfiniteAdeleRing E)ˣ).comap (toInfinite E) ⊓
+        (finiteLevel n).comap (toFinite E)
+    have hV : IsOpen (V : Set (IdeleGroup E)) :=
+      ((isOpen_connInf E).preimage (continuous_toInfinite E)).inter
+        ((isOpen_finiteLevel hsupp).preimage (continuous_toFinite E))
+    have hVo : IsOpen ((V.map (IdeleClassGroup.mk E) : Subgroup (IdeleClassGroup E)) : Set (IdeleClassGroup E)) :=
+      IdeleClassGroup.isOpenMap_mk E _ hV
+    have hcl : IsClopen ((V.map (IdeleClassGroup.mk E) : Subgroup (IdeleClassGroup E)) : Set (IdeleClassGroup E)) :=
+      ⟨Subgroup.isClosed_of_isOpen _ hVo, hVo⟩
+    obtain ⟨y, hy, hyx⟩ := hcl.connectedComponent_subset (one_mem _) hx'
+    have hk : x * y⁻¹ ∈ (IdeleClassGroup.mk E).ker := by
+      rw [MonoidHom.mem_ker, map_mul, map_inv, hyx, mul_inv_cancel]
+    rw [IdeleClassGroup.ker_mk] at hk
+    refine ⟨x * (ofFinite (toFinite E y))⁻¹, hsub hy.2, ?_⟩
+    have e : x * (ofFinite (toFinite E y))⁻¹ = (x * y⁻¹) * ofInfinite (toInfinite E y) := by
+      have h := ofFinite_mul_ofInfinite y
+      generalize ofFinite (toFinite E y) = a at h ⊢
+      generalize ofInfinite (toInfinite E y) = b at h ⊢
+      subst h
+      rw [mul_inv, mul_assoc, mul_assoc, inv_mul_cancel, mul_one]
+    rw [e]
+    exact Subgroup.mul_mem_sup hk ⟨toInfinite E y, hy.1, (ofInfinite_eq_map E _).symm⟩
+  · refine Subgroup.topologicalClosure_minimal _ (sup_le ?_ ?_) ?_
+    · rintro _ ⟨k, rfl⟩
+      show IdeleClassGroup.mk E (diagonal E k) ∈ Subgroup.connectedComponentOfOne (IdeleClassGroup E)
+      rw [IdeleClassGroup.mk_diagonal]
+      exact one_mem _
+    · rintro _ ⟨y, hy, rfl⟩
+      let f : (InfiniteAdeleRing E)ˣ →* IdeleClassGroup E := (IdeleClassGroup.mk E).comp
+        (Units.map (MonoidHom.inl (InfiniteAdeleRing E) (FiniteAdeleRing (𝓞 E) E)))
+      have hf : Continuous f := (IdeleClassGroup.continuous_mk E).comp
+        (Continuous.units_map _ (continuous_id.prodMk continuous_const))
+      have h := hf.image_connectedComponent_subset 1 ⟨y, hy, rfl⟩
+      rw [map_one] at h
+      exact h
+    · exact isClosed_connectedComponent.preimage (IdeleClassGroup.continuous_mk E)
+
+end PositivityTheory.FamInh
+
+end
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Neutral.B1 Formalism.L2.Host GlobalTheory.HeckeGal
@@ -233,4 +498,5 @@ theorem globalArtin : GlobalTheory.Published.GlobalArtinReciprocity := fun E Ω 
 
 end PositivityTheory.FamInh
 
+end
 end

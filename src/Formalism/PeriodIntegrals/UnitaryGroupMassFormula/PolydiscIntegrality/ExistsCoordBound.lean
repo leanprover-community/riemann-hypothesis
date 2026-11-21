@@ -1,6 +1,38 @@
 import Mathlib
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolydiscIntegrality.Lemmas
+import Formalism.PeriodIntegrals.PolydiscInt
 
+section
+namespace PI.PolydiscIntegrality₂
+
+def Hyp (p : ℕ) [Fact p.Prime] (n : ℕ) (a : (Fin n →₀ ℕ) → ℂ_[p]) : Prop :=
+  ∀ z : Fin n → ℂ_[p], (∀ i, ‖z i‖ < 1) →
+      Summable (fun α : Fin n →₀ ℕ => a α * ∏ i, z i ^ α i) ∧
+      ‖∑' α : Fin n →₀ ℕ, a α * ∏ i, z i ^ α i‖ ≤ 1
+
+def KeyBound : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (n : ℕ) (a : (Fin n →₀ ℕ) → ℂ_[p]), Hyp p n a →
+    ∀ c : ℂ_[p], ‖c‖ < 1 → ∀ β : Fin n →₀ ℕ, ‖a β‖ * ‖c‖ ^ (∑ i, β i) ≤ 1
+
+end PI.PolydiscIntegrality₂
+end
+
+section
+namespace PI.PolydiscIntegrality₂
+
+open Filter Topology
+
+variable {p : ℕ} [Fact p.Prime]
+
+theorem norm_natCast_eq_one {N : ℕ} (h : ¬ p ∣ N) : ‖(N : ℂ_[p])‖ = 1 := by
+  have h1 := PadicComplex.norm_extends' p (N : ℚ_[p])
+  simp only [map_natCast, PadicComplex.coe_natCast] at h1
+  rw [h1]
+  exact Padic.norm_natCast_eq_one_iff.mpr (((Fact.out : p.Prime).coprime_iff_not_dvd).mpr h)
+
+end PI.PolydiscIntegrality₂
+end
+
+section
 namespace PI.PolydiscIntegrality₂
 
 open Filter Topology
@@ -15,3 +47,4 @@ theorem exists_coord_bound {n : ℕ} (S : Finset (Fin n →₀ ℕ)) :
         (fun _ _ => Nat.zero_le _) hγ
 
 end PI.PolydiscIntegrality₂
+end

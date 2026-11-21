@@ -907,33 +907,9 @@ end Pairing
 
 section Zero
 
-theorem primDR_unit (c : primDR (𝟙_ (Over (Sp R)))) : c = 0 := by
-  haveI : IsIso ((𝟙_ (Over (Sp R))).hom ≫ 𝟙 (Sp R)) := by
-    simp only [Over.tensorUnit_hom, Category.comp_id]; exact IsIso.id _
-  exact Subtype.ext (Cris.firstDeRham_base_eq_zero _ c.1)
 
-theorem HdR_unit (h : HdR (𝟙_ (Over (Sp R)))) : h = 0 := by
-  ext c
-  rw [primDR_unit c, map_zero]
-  rfl
 
-theorem lieExact_unit : LieExact (𝟙_ (Over (Sp R))) := by
-  have key : ∀ (h : HdR (𝟙_ (Over (Sp R)))) (v : epsR R ⟶ 𝟙_ (Over (Sp R))), IsLieImage h v := by
-    intro h v
-    have hv : v = 1 := toUnit_unique _ _
-    subst hv
-    rw [HdR_unit h, isLieImage_one_iff]
-    exact Submodule.zero_mem _
-  unfold LieExact
-  exact ⟨fun h ↦ ⟨1, key h 1, fun v _ ↦ toUnit_unique _ _⟩, fun v _ ↦ ⟨0, key 0 v⟩⟩
 
-theorem allPrim_unit : AllPrim (dp0 R) (𝟙 _) (𝟙_ (Over (Sp R))) := by
-  haveI : IsIso ((𝟙_ (Over (Sp R))).hom ≫ 𝟙 (Sp R)) := by
-    simp only [Over.tensorUnit_hom, Category.comp_id]; exact IsIso.id _
-  rw [AllPrim, eq_top_iff]
-  intro c _
-  rw [Cris.firstDeRham_base_eq_zero _ c]
-  exact Submodule.zero_mem _
 
 end Zero
 

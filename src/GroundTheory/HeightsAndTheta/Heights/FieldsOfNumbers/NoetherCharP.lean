@@ -1,6 +1,214 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.NoetherReduction
-import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.NoetherCharPLemmas
+
+section
+set_option maxSynthPendingDepth 1
+
+open scoped nonZeroDivisors
+
+namespace GroundTheory.Heights₂.Heights.FieldNumbers
+
+universe u
+
+theorem finite_integralClosure_of_forall_mvPolynomial
+    (k A : Type u) [Field k] [CommRing A] [IsDomain A] [Algebra k A] [Algebra.FiniteType k A]
+    (K : Type u) [Field K] [Algebra A K] [IsFractionRing A K]
+    (L : Type u) [Field L] [Algebra K L] [FiniteDimensional K L] [Algebra A L]
+    [IsScalarTower A K L]
+    (hpoly : ∀ (s : ℕ) (L' : Type u) [Field L'] [Algebra (FractionRing (MvPolynomial (Fin s) k)) L']
+      [FiniteDimensional (FractionRing (MvPolynomial (Fin s) k)) L']
+      [Algebra (MvPolynomial (Fin s) k) L']
+      [IsScalarTower (MvPolynomial (Fin s) k) (FractionRing (MvPolynomial (Fin s) k)) L'],
+      Module.Finite (MvPolynomial (Fin s) k) (integralClosure (MvPolynomial (Fin s) k) L')) :
+    Module.Finite A (integralClosure A L) := by
+  obtain ⟨s, g, hginj, hgfin⟩ := exists_finite_inj_algHom_of_fg k A
+  set B := MvPolynomial (Fin s) k
+  let : Algebra B A := g.toRingHom.toAlgebra
+  have : Module.Finite B A := hgfin
+  let : Algebra B K := ((algebraMap A K).comp (algebraMap B A)).toAlgebra
+  let : Algebra B L := ((algebraMap A L).comp (algebraMap B A)).toAlgebra
+  have : IsScalarTower B A K := IsScalarTower.of_algebraMap_eq' rfl
+  have : IsScalarTower B A L := IsScalarTower.of_algebraMap_eq' rfl
+  have : IsScalarTower B K L := IsScalarTower.of_algebraMap_eq fun x => by
+    change algebraMap A L (algebraMap B A x) = algebraMap K L (algebraMap A K (algebraMap B A x))
+    exact IsScalarTower.algebraMap_apply A K L _
+  have hinjBK : Function.Injective (algebraMap B K) :=
+    (IsFractionRing.injective A K).comp hginj
+  have : FaithfulSMul B K := (faithfulSMul_iff_algebraMap_injective B K).mpr hinjBK
+  let : Algebra (FractionRing B) K := FractionRing.liftAlgebra B K
+  let : Algebra (FractionRing B) L :=
+    ((algebraMap K L).comp (algebraMap (FractionRing B) K)).toAlgebra
+  have : IsScalarTower (FractionRing B) K L := IsScalarTower.of_algebraMap_eq' rfl
+  have : IsScalarTower B (FractionRing B) L := IsScalarTower.of_algebraMap_eq fun x => by
+    rw [IsScalarTower.algebraMap_apply (FractionRing B) K L,
+      ← IsScalarTower.algebraMap_apply B (FractionRing B) K,
+      ← IsScalarTower.algebraMap_apply B K L]
+  have : Algebra.IsIntegral B A := Algebra.IsIntegral.of_finite B A
+  have : FiniteDimensional (FractionRing B) K := by
+    obtain ⟨t, ht⟩ := (Module.Finite.fg_top : (⊤ : Submodule B A).FG)
+    let T : Set K := algebraMap A K '' t
+    have hTint : ∀ x ∈ T, IsIntegral (FractionRing B) x := by
+      rintro _ ⟨a, -, rfl⟩
+      have : IsIntegral B (algebraMap A K a) :=
+        (Algebra.IsIntegral.isIntegral a).map (IsScalarTower.toAlgHom B A K)
+      exact this.tower_top
+    have : Finite T := (t.finite_toSet.image _).to_subtype
+    have hfd := IntermediateField.finiteDimensional_adjoin hTint
+    have htop : IntermediateField.adjoin (FractionRing B) T = ⊤ := by
+      rw [eq_top_iff]
+      rintro x -
+      have hA : ∀ a : A, algebraMap A K a ∈ IntermediateField.adjoin (FractionRing B) T := by
+        intro a
+        have ha : a ∈ Submodule.span B (t : Set A) := ht ▸ Submodule.mem_top
+        induction ha using Submodule.span_induction with
+        | mem y hy => exact IntermediateField.subset_adjoin (FractionRing B) T ⟨y, hy, rfl⟩
+        | zero => simp
+        | add y z _ _ hy hz => rw [map_add]; exact add_mem hy hz
+        | smul b y _ hy =>
+          rw [Algebra.smul_def, map_mul, ← IsScalarTower.algebraMap_apply,
+            IsScalarTower.algebraMap_apply B (FractionRing B) K]
+          exact mul_mem (IntermediateField.algebraMap_mem _ _) hy
+      obtain ⟨a, b, -, rfl⟩ := IsFractionRing.div_surjective (A := A) x
+      exact div_mem (hA a) (hA b)
+    rw [htop] at hfd
+    exact (IntermediateField.topEquiv (F := FractionRing B) (E := K)).toLinearEquiv.finiteDimensional
+  have : FiniteDimensional (FractionRing B) L := Module.Finite.trans K L
+  have hB := hpoly s L
+  have hle : (integralClosure A L).toSubmodule.restrictScalars B ≤
+      (integralClosure B L).toSubmodule := fun y hy => isIntegral_trans (R := B) (A := A) y hy
+  have : IsNoetherian B (integralClosure B L).toSubmodule :=
+    isNoetherian_of_isNoetherianRing_of_finite B (integralClosure B L)
+  have : IsNoetherian B ((integralClosure A L).toSubmodule.restrictScalars B) :=
+    isNoetherian_of_le hle
+  have : Module.Finite B (integralClosure A L) :=
+    Module.IsNoetherian.finite B ((integralClosure A L).toSubmodule.restrictScalars B)
+  exact Module.Finite.of_restrictScalars_finite B A (integralClosure A L)
+
+theorem finite_integralClosure_mvPolynomial_of_isSeparable (k : Type u) [Field k] (s : ℕ)
+    (L : Type u) [Field L] [Algebra (FractionRing (MvPolynomial (Fin s) k)) L]
+    [FiniteDimensional (FractionRing (MvPolynomial (Fin s) k)) L]
+    [Algebra.IsSeparable (FractionRing (MvPolynomial (Fin s) k)) L]
+    [Algebra (MvPolynomial (Fin s) k) L]
+    [IsScalarTower (MvPolynomial (Fin s) k) (FractionRing (MvPolynomial (Fin s) k)) L] :
+    Module.Finite (MvPolynomial (Fin s) k) (integralClosure (MvPolynomial (Fin s) k) L) :=
+  IsIntegralClosure.finite (MvPolynomial (Fin s) k) (FractionRing (MvPolynomial (Fin s) k)) L
+    (integralClosure (MvPolynomial (Fin s) k) L)
+
+theorem finite_integralClosure_mvPolynomial_of_charZero (k : Type u) [Field k] [CharZero k]
+    (s : ℕ) (L : Type u) [Field L] [Algebra (FractionRing (MvPolynomial (Fin s) k)) L]
+    [FiniteDimensional (FractionRing (MvPolynomial (Fin s) k)) L]
+    [Algebra (MvPolynomial (Fin s) k) L]
+    [IsScalarTower (MvPolynomial (Fin s) k) (FractionRing (MvPolynomial (Fin s) k)) L] :
+    Module.Finite (MvPolynomial (Fin s) k) (integralClosure (MvPolynomial (Fin s) k) L) := by
+  have : CharZero (FractionRing (MvPolynomial (Fin s) k)) :=
+    (RingHom.charZero_iff ((algebraMap (MvPolynomial (Fin s) k)
+      (FractionRing (MvPolynomial (Fin s) k))).comp (algebraMap k (MvPolynomial (Fin s) k))).injective).mp
+      inferInstance
+  exact finite_integralClosure_mvPolynomial_of_isSeparable k s L
+
+theorem finite_integralClosure_of_charZero
+    (k A : Type u) [Field k] [CharZero k] [CommRing A] [IsDomain A] [Algebra k A]
+    [Algebra.FiniteType k A] (K : Type u) [Field K] [Algebra A K] [IsFractionRing A K]
+    (L : Type u) [Field L] [Algebra K L] [FiniteDimensional K L] [Algebra A L]
+    [IsScalarTower A K L] :
+    Module.Finite A (integralClosure A L) :=
+  finite_integralClosure_of_forall_mvPolynomial k A K L fun s L' _ _ _ _ _ =>
+    finite_integralClosure_mvPolynomial_of_charZero k s L'
+
+end GroundTheory.Heights₂.Heights.FieldNumbers
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.FieldNumbers
+
+open Polynomial
+
+theorem exists_pow_eq_map_expand {σ k k' : Type*} [Field k] [Field k'] [Algebra k k'] (p : ℕ)
+    [Fact p.Prime] [CharP k' p] (e : ℕ) (N : MvPolynomial σ k)
+    (hN : ∀ m, ∃ z : k', z ^ p ^ e = algebraMap k k' (N.coeff m)) :
+    ∃ N' : MvPolynomial σ k',
+      N' ^ p ^ e = MvPolynomial.map (algebraMap k k') (MvPolynomial.expand (p ^ e) N) := by
+  choose r hr using hN
+  refine ⟨∑ m ∈ N.support, MvPolynomial.monomial m (r m), ?_⟩
+  rw [← MvPolynomial.map_iterateFrobenius_expand p, map_sum, map_sum]
+  conv_rhs => rw [N.as_sum, map_sum, map_sum]
+  refine Finset.sum_congr rfl fun m _ => ?_
+  simp [MvPolynomial.expand_monomial, iterateFrobenius_def, hr]
+
+theorem finite_mapExpand (k k' : Type*) [Field k] [Field k'] [Algebra k k']
+    [FiniteDimensional k k'] (σ : Type*) [Finite σ] (q : ℕ) (hq : 0 < q) :
+    ((MvPolynomial.mapAlgHom (σ := σ) (Algebra.ofId k k')).comp
+      (MvPolynomial.expand q)).toRingHom.Finite := by
+  set θ := (MvPolynomial.mapAlgHom (σ := σ) (Algebra.ofId k k')).comp (MvPolynomial.expand q)
+  let : Algebra (MvPolynomial σ k) (MvPolynomial σ k') := θ.toRingHom.toAlgebra
+  have : IsScalarTower k (MvPolynomial σ k) (MvPolynomial σ k') :=
+    IsScalarTower.of_algebraMap_eq fun x => (θ.commutes x).symm
+  have hX : ∀ i, IsIntegral (MvPolynomial σ k) (MvPolynomial.X i : MvPolynomial σ k') := by
+    intro i
+    refine IsIntegral.of_pow hq ?_
+    have : (MvPolynomial.X i : MvPolynomial σ k') ^ q =
+        algebraMap (MvPolynomial σ k) (MvPolynomial σ k') (MvPolynomial.X i) := by
+      change _ = θ (MvPolynomial.X i)
+      simp [θ]
+    rw [this]
+    exact isIntegral_algebraMap
+  have : Algebra.IsIntegral (MvPolynomial σ k) (MvPolynomial σ k') := by
+    constructor
+    intro f
+    induction f using MvPolynomial.induction_on with
+    | C a =>
+      have h1 : IsIntegral k (algebraMap k' (MvPolynomial σ k') a) :=
+        (Algebra.IsIntegral.isIntegral (R := k) a).map (IsScalarTower.toAlgHom k k' _)
+      rw [MvPolynomial.algebraMap_eq] at h1
+      exact h1.tower_top
+    | add f g hf hg => exact hf.add hg
+    | mul_X f i hf => exact hf.mul (hX i)
+  have : Algebra.FiniteType k (MvPolynomial σ k') :=
+    Algebra.FiniteType.trans (S := k') inferInstance inferInstance
+  have : Algebra.FiniteType (MvPolynomial σ k) (MvPolynomial σ k') :=
+    Algebra.FiniteType.of_restrictScalars_finiteType k _ _
+  exact Algebra.IsIntegral.finite
+
+theorem injective_of_isIntegral {B B' Ω : Type*} [CommRing B] [Nontrivial B] [CommRing B']
+    [IsDomain B'] [CommRing Ω] [Algebra B B'] [Algebra.IsIntegral B B'] (ψ : B' →+* Ω)
+    (h : Function.Injective (ψ.comp (algebraMap B B'))) : Function.Injective ψ := by
+  have : RingHom.ker ψ = ⊥ := by
+    apply Ideal.eq_bot_of_comap_eq_bot (R := B)
+    rw [RingHom.comap_ker]
+    exact (RingHom.injective_iff_ker_eq_bot _).mp h
+  exact (RingHom.injective_iff_ker_eq_bot ψ).mpr this
+
+theorem isSeparable_of_pow_coeff {F F' Ω : Type*} [Field F] [Field F'] [Field Ω] [Algebra F Ω]
+    [Algebra F' Ω] (p : ℕ) [Fact p.Prime] [CharP Ω p] (e : ℕ) (g : F[X]) (hg : g.Separable)
+    (ω : Ω) (hω : aeval (ω ^ p ^ e) g = 0)
+    (hc : ∀ i, ∃ d : F', algebraMap F' Ω d ^ p ^ e = algebraMap F Ω (g.coeff i)) :
+    IsSeparable F' ω := by
+  choose d hd using hc
+  set h : F'[X] := ∑ i ∈ Finset.range (g.natDegree + 1), C (d i) * X ^ i
+  have hmap : (h.map (algebraMap F' Ω)).map (iterateFrobenius Ω p e) = g.map (algebraMap F Ω) := by
+    ext i
+    simp only [h, coeff_map, Polynomial.map_sum, Polynomial.map_mul, Polynomial.map_pow, map_X,
+      map_C, finsetSum_coeff, coeff_C_mul_X_pow]
+    rw [Finset.sum_ite_eq]
+    split_ifs with hi
+    · rw [iterateFrobenius_def, hd]
+    · rw [coeff_eq_zero_of_natDegree_lt (by simp at hi; omega), map_zero]
+  have hsepΩ : (h.map (algebraMap F' Ω)).Separable := by
+    rw [← separable_map (iterateFrobenius Ω p e), hmap]
+    exact hg.map
+  have hsep : h.Separable := (separable_map (algebraMap F' Ω)).mp hsepΩ
+  have hroot : aeval ω h = 0 := by
+    have : (aeval ω h) ^ p ^ e = 0 := by
+      rw [aeval_def, ← eval_map, ← iterateFrobenius_def (R := Ω) p e, ← eval₂_hom,
+        ← eval_map, hmap, eval_map, iterateFrobenius_def, ← aeval_def, hω]
+    exact pow_eq_zero_iff (pow_ne_zero _ (Fact.out : p.Prime).ne_zero) |>.mp this
+  exact hsep.of_dvd (minpoly.dvd F' ω hroot)
+
+end GroundTheory.Heights₂.Heights.FieldNumbers
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 open Polynomial
@@ -182,3 +390,4 @@ theorem finite_integralClosure_mvPolynomial_of_charP (k : Type u) [Field k] (p :
     (Submodule.fg_of_fg_map_injective φ (algebraMap L Ω).injective hfg)
 
 end GroundTheory.Heights₂.Heights.FieldNumbers
+end

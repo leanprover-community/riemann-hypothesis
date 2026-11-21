@@ -37,11 +37,6 @@ theorem exists_isWeil (hP : GlobalTheory.Published.WeilRepresentationUnitaryPair
   · exact resEta_parity r0 (by have := Nat.even_iff.1 hB.even; omega)
   · exact resEta_parity (resEta_mul r0 (resEta_inv hB.eta.2.2.1)) (by have := Nat.odd_iff.1 hB.odd; omega)
 
-theorem not_isWeil_swap {B : Base S T} (hB : B.Good) (ω : PairRep S T) :
-    ¬ IsWeilDatumO B.F.ψ S T (B.mu * B.eta⁻¹) B.mu ω := fun h => by
-  have r0 : ResEta D B.mu 0 := ⟨hB.eta.2.2.1.1, fun η _ a => by
-    rw [Base.mu, MonoidHom.mul_apply, hB.real, hB.de.real]; simp⟩
-  exact resEta_not_both r0 (resEta_parity h.resT (by have := Nat.odd_iff.1 hB.odd; omega))
 
 theorem posDef_of_good {F : Frame S T} (hF : F.Good) (τ : D.what₂.Tau) : (gramAt D S τ).PosDef := by
   obtain ⟨ε, h1, h2, -⟩ := hF.onbS τ
@@ -385,20 +380,6 @@ theorem exists_model (S T : HSp D) (hS : S.SigOK) (hpos : S.IsPosDef) (hT : T.Si
   obtain ⟨ω, hω⟩ := exists_isWeil h hB (Twist.triv_good (A := Circle) hs)
   exact ⟨ω, ω, hω, hω⟩
 
-theorem univCoef_ne_zero {k C : Type} [Field k] [Finite k] [AddCommGroup C] (β : DetBases k 1 2) (κ : kˣ →* Multiplicative C) :
-    ∃ c, univCoef β κ c (!![1, 0] : Matrix (Fin 1) (Fin 2) k) ≠ 0 := by
-  have hv : (![0, 1] : Fin 2 → k) ≠ 0 := fun h => one_ne_zero (congrFun h 1)
-  let U : Planes k 1 2 := ⟨Submodule.span k {![0, 1]}, by rw [finrank_span_singleton hv]⟩
-  have hU : Compl U.1 (!![1, 0] : Matrix (Fin 1) (Fin 2) k) := by
-    refine eq_top_iff.2 fun v _ => ?_
-    have : v = v 0 • (![1, 0] : Fin 2 → k) + v 1 • ![0, 1] := by ext i; fin_cases i <;> simp
-    rw [this]
-    exact Submodule.add_mem_sup (Submodule.smul_mem _ _ (Submodule.subset_span ⟨0, rfl⟩))
-      (Submodule.smul_mem _ _ (Submodule.subset_span rfl))
-  refine ⟨Multiplicative.toAdd (κ (Units.mk0 _ ((dU_ne_zero_iff β U _).2 hU))), ?_⟩
-  rw [univCoef_eq]
-  refine mul_ne_zero (inv_ne_zero (pow_ne_zero _ (by exact_mod_cast Nat.card_pos.ne'))) ?_
-  exact Nat.cast_ne_zero.2 (Nat.card_ne_zero.2 ⟨⟨⟨U, _, rfl, rfl⟩⟩, inferInstance⟩)
 
 end GlobalTheory.ExportSeries.Model
 

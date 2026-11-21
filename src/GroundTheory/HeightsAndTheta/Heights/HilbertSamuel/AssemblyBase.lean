@@ -10,7 +10,7 @@ import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PAnResNullForm
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBergmanDensChartSum
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBergmanDensIntegrable
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBergmanIntegrable
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBetaSum
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsLattice
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBirationalCoordinates
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBirationalModelExists
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PHeightsirationalHilb
@@ -22,7 +22,7 @@ import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockImageGenDeg
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockImageHilb
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockImageMetrics
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockMeasureChange
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockResolutionFormsIndependent
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockResolutionFormsIndependent
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockResolutionInterpIntegral
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockResolutionMetricPair
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockSectionsRank
@@ -41,7 +41,7 @@ import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PCovolumeLeGram
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PCurvePointsFinite
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PDegLTGrowth
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PDegreePositive
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PDoubleComplexVanish
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsDoubleComplexVanish
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PEmbeddingWeight
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PEventualPolyLine
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PEventualPolynomial
@@ -54,10 +54,12 @@ import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenDegMatAct
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenFibreHomog
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.GeneratedVOfGeneratedMod
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGeneratedEffectiveSection
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGeneratedMixedNonneg
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGeneratedMixedNonneg
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGeneratedProductNonneg
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGeneratedNonzeroSection
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGeneratedOne
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGeneratedPow
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGeneratedPow
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenTwistGenerated
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGeneratedProductNonneg
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGeneratedRestrict
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenericFibre
@@ -69,10 +71,9 @@ import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGraphIsometric
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGraphIsometricForms
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGridSum
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.SaturatedSaturation
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PHalving
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PHilbFnValueSpan
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PHilbertIncrement
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PHilbertModule
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsHilbert
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PHyperplaneRegularSection
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PIntNumComponents
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PIntegralAgainstPositive
@@ -83,7 +84,7 @@ import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PLiftBirationalAmple
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PLiftSpread
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PLocalBergmanBound
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PLocalRep
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PLogDetDerivative
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.HasDerivAtDet
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PMetricTransportSmooth
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PMixedTopAlgebra
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PModulesFromPrimes
@@ -98,14 +99,20 @@ import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PNonvanishingDense
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPacking
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPerturbMonomial
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPointHeightFS
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPolyNonnegAtZero
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPolyNonnegAtZero
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPolyNonvanishDense
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPolySandwich
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PProjFrameBasePtFree
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PProjFrameFibreDeg
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsProjFrameFibreDeg
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsProjFrameFibrePt
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsRatioFieldDeg
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsTranscRatioDeg
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsProjFrameGenPtRel
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsProjFrameGenPtTransc
+import GroundTheory.HeightsAndTheta.Heights.Intersections.PChartRankAdjoin
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PProjFrameGenPtRel
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PProjFrameGenPtTransc
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PProjFrameImage
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsProjFrameImage
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PQuotPartGraded
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PRatNoetherFrame
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PRatPrimeDense
@@ -116,7 +123,8 @@ import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PRelLatticeFinite
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PRelOneStep
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PRelTorsionBound
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PResVolume
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PResolutionFormsIndependent
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsResolutionFormsIndependent
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsNonvanishingDense
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PResolutionImageSup
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PResolutionInterpIntegral
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PResolutionMetricPair
@@ -126,7 +134,7 @@ import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PRootsBounded
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PRootsLiftToZeros
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PRootsNear
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PScaledFSHProps
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSecCochReduce
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSecCochReduce
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSecEq
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSecMRankBound
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionOrderAtPoint
@@ -140,7 +148,9 @@ import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSegreDimGe
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSegreHilb
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSegrePrime
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSemiampleNef
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSemiposTwist
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPerturb
+import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PFsLineLevi
+import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PFsLineSmooth
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSerreGen
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSerreGraded
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PShiftDegreePolynomial
@@ -151,7 +161,8 @@ import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSpanStepHomog
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSpanStepLocal
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSpanningExtension
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSublatticeExtension
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.LerpSelfZero
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBergman
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.BergmanNorms
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSupBoundCount
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PTopConstantTwist
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PTranscRatioDeg
@@ -205,6 +216,684 @@ import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PPtsSumMeasurable
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChartDim
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreCoordGoodProj
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegrePartition
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.HilbertSamuel
+
+open MeasureTheory
+
+theorem BetaSum.proof : BetaSum.Statement := by
+  intro D i hi
+
+  set I : ℝ := ∫ t in (0 : ℝ)..1, t ^ i * (1 - t) ^ (D - i) with hIdef
+  have hB : Complex.betaIntegral ((i : ℂ) + 1) (((D - i : ℕ) : ℂ) + 1) = (I : ℂ) := by
+    rw [Complex.betaIntegral, hIdef, ← intervalIntegral.integral_ofReal]
+    congr 1
+    ext x
+    rw [add_sub_cancel_right, add_sub_cancel_right, Complex.cpow_natCast, Complex.cpow_natCast]
+    push_cast
+    ring
+  have hG := Complex.Gamma_mul_Gamma_eq_betaIntegral (s := (i : ℂ) + 1)
+    (t := ((D - i : ℕ) : ℂ) + 1) (by simp; positivity) (by simp; positivity)
+  have hst : (i : ℂ) + 1 + (((D - i : ℕ) : ℂ) + 1) = ((D + 1 : ℕ) : ℂ) + 1 := by
+    push_cast [Nat.cast_sub hi]
+    ring
+  rw [hst, Complex.Gamma_nat_eq_factorial, Complex.Gamma_nat_eq_factorial,
+    Complex.Gamma_nat_eq_factorial, hB] at hG
+  have hR : (i.factorial : ℝ) * (D - i).factorial = (D + 1).factorial * I := by
+    exact_mod_cast hG
+
+  have hc : (D.choose i : ℝ) * i.factorial * (D - i).factorial = D.factorial := by
+    exact_mod_cast Nat.choose_mul_factorial_mul_factorial hi
+  have hf : ((D + 1).factorial : ℝ) = ((D : ℝ) + 1) * D.factorial := by
+    push_cast [Nat.factorial_succ]
+    ring
+  have hpos : (0 : ℝ) < D.factorial := by positivity
+  have hint : ∫ t in (0 : ℝ)..1, (D.choose i : ℝ) * t ^ i * (1 - t) ^ (D - i)
+      = (D.choose i : ℝ) * I := by
+    rw [hIdef, ← intervalIntegral.integral_const_mul]
+    congr 1
+    ext t
+    ring
+  rw [hint, eq_div_iff (by positivity)]
+  apply mul_right_cancel₀ hpos.ne'
+  calc (D.choose i : ℝ) * I * ((D : ℝ) + 1) * D.factorial
+      = (D.choose i : ℝ) * ((D + 1).factorial * I) := by rw [hf]; ring
+    _ = (D.choose i : ℝ) * i.factorial * (D - i).factorial := by rw [← hR]; ring
+    _ = 1 * D.factorial := by rw [hc, one_mul]
+
+end GroundTheory.Heights₂.Heights.HilbertSamuel
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.HilbertSamuel
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry SupBoundCount
+
+noncomputable section
+
+theorem BlockResolutionFormsIndependent.proof (hND : NonvanishingDense.Statement) :
+    BlockResolutionFormsIndependent.Statement := by
+  intro D K _ _ ι _ Ω _ _ d n r b hb a ha
+  choose f hf hbf using hb.1
+  obtain ⟨g, hgJ, hgP⟩ := SetLike.not_le_iff_exists.1 d.R.nondeg
+
+  set F : ((Σ k, ι k) → ℂ) → ℂ := fun z => ∑ k, a k * eval z (map (Int.castRingHom ℂ) (f k)) with hF
+  have ha' : ∀ x : d.R.X, F (blockPt d x) = 0 := by
+    intro x
+    have := ha x
+    simp only [hbf, eval_map_int_rat] at this
+    exact this
+  have hli : LinearIndependent ℤ fun k => aeval d.y (f k) := by
+    have := hb.2.1
+    simp only [hbf, aeval_map_int] at this
+    exact this
+  have hFc : Continuous F :=
+    continuous_finsetSum _ fun k _ => continuous_const.mul (continuous_eval _)
+
+  have hev : ∀ (s : MRing ι) (e : K → ℕ), IsMultiHomog s e → ∀ (c : K → ℂ) (z : (Σ k, ι k) → ℂ),
+      eval (fun p => c p.1 * z p) (map (Int.castRingHom ℂ) s) =
+        (∏ k, c k ^ e k) * eval z (map (Int.castRingHom ℂ) s) := by
+    intro s e hs c z
+    rw [eval_map, eval_map, eval₂_eq', eval₂_eq', Finset.mul_sum]
+    refine Finset.sum_congr rfl fun m hm => ?_
+    have hc : (∏ i : (Σ k, ι k), c i.1 ^ m i) = ∏ k, c k ^ e k := by
+      rw [Fintype.prod_sigma]
+      refine Finset.prod_congr rfl fun k _ => ?_
+      show ∏ i, c k ^ m ⟨k, i⟩ = _
+      rw [Finset.prod_pow_eq_pow_sum, hs m hm k]
+    simp only [mul_pow, Finset.prod_mul_distrib, hc]
+    ring
+
+  have hsmul : ∀ (c : K → ℂ) (z : (Σ k, ι k) → ℂ),
+      F (fun p => c p.1 * z p) = (∏ k, c k ^ blockDeg d.k₀ n k) * F z := by
+    intro c z
+    simp only [hF, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    rw [hev (f k) _ (hf k) c z]
+    ring
+
+  have hoff : ∀ z, z ∈ mcPts (mCoordIdeal d.y) →
+      eval z (map (Int.castRingHom ℂ) g) ≠ 0 → F z = 0 := by
+    intro z hz hgz
+    obtain ⟨x, c, hc, hxz⟩ := d.R.surj z hz (fun hJ => hgz (hJ.2 g hgJ))
+    have h1 := ha' x
+    rw [show blockPt d x = d.R.lift x x from rfl, hxz, hsmul] at h1
+    exact (mul_eq_zero.1 h1).resolve_left
+      (Finset.prod_ne_zero_iff.2 fun k _ => pow_ne_zero _ (hc k))
+
+  have hpts : ∀ z ∈ mcPts (mCoordIdeal d.y), F z = 0 := by
+    intro z hz
+    have hcl := hND K ι (mCoordIdeal d.y) (D + 1) g d.arith hgP hz
+    exact (isClosed_eq hFc continuous_const).closure_subset_iff.2 (fun z' hz' => hoff z' hz'.1 hz'.2) hcl
+  exact coeff_eq_zero hli (mcPts_nonempty d) hpts
+
+end
+
+end GroundTheory.Heights₂.Heights.HilbertSamuel
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.HilbertSamuel
+
+theorem DoubleComplexVanish.proof : DoubleComplexVanish.Statement := by
+  intro C _ P δ κ R hδP hκP hδδ hδκ hκκ hsurj hex hzero hacyc
+
+  have triv : ∀ p n, R ≤ p → ∀ x ∈ P p (n + 1), (∃ y ∈ P (p + 1) (n + 1), κ p (n + 1) y = x) →
+      ∃ w ∈ P p n, δ p n w = x ∧ ∃ w' ∈ P (p + 1) n, κ p n w' = w := by
+    rintro p n hp x - ⟨y, hy, rfl⟩
+    rw [hzero (p + 1) (n + 1) (by omega) y hy, map_zero]
+    exact ⟨0, zero_mem _, map_zero _, 0, zero_mem _, map_zero _⟩
+  have claim : ∀ k p n, R ≤ p + k → ∀ x ∈ P p (n + 1), δ p (n + 1) x = 0 →
+      (∃ y ∈ P (p + 1) (n + 1), κ p (n + 1) y = x) →
+      ∃ w ∈ P p n, δ p n w = x ∧ ∃ w' ∈ P (p + 1) n, κ p n w' = w := by
+    intro k
+    induction k with
+    | zero => exact fun p n hp x hx _ hy => triv p n (by omega) x hx hy
+    | succ k ih =>
+      intro p n hp x hx hdx hy0
+      by_cases hRp : R ≤ p
+      · exact triv p n hRp x hx hy0
+      obtain ⟨y, hy, hyx⟩ := hy0
+      have hdy : δ (p + 1) (n + 1) y ∈ P (p + 1) (n + 2) := hδP _ _ y hy
+      have hk : κ p (n + 2) (δ (p + 1) (n + 1) y) = 0 := by
+        rw [← hδκ p (n + 1) y hy, hyx, hdx]
+      obtain ⟨w, hw, hwe, w', hw', hw'e⟩ :=
+        ih (p + 1) (n + 1) (by omega) _ hdy (hδδ _ _ y hy) (hex p (n + 2) _ hdy hk)
+      have hdyw : δ (p + 1) (n + 1) (y - w) = 0 := by rw [map_sub, hwe, sub_self]
+      obtain ⟨v, hv, hve⟩ := hacyc (p + 1) (by omega) (by omega) n (y - w) (sub_mem hy hw) hdyw
+      refine ⟨κ p n v, hκP _ _ v hv, ?_, v, hv, rfl⟩
+      rw [hδκ p n v hv, hve, map_sub, hyx, ← hw'e, hκκ p (n + 1) w' hw', sub_zero]
+  intro n x hx hdx
+  obtain ⟨w, hw, hwe, -⟩ := claim R 0 n (by omega) x hx hdx (hsurj (n + 1) x hx)
+  exact ⟨w, hw, hwe⟩
+
+end GroundTheory.Heights₂.Heights.HilbertSamuel
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.HilbertSamuel
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1
+
+theorem GeneratedMixedNonneg.proof (hGP : GeneratedProductNonneg.Statement) :
+    GeneratedMixedNonneg.Statement := by
+  intro F _ K _ _ ι _ _ V n bs hV hgen
+  exact hGP F K ι (fun V _ L => NumbersDVR.intNum F V L) V n bs
+    (NumbersDVR.IntNumIsFieldIntersection.full F K ι) hV hgen
+
+end GroundTheory.Heights₂.Heights.HilbertSamuel
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.HilbertSamuel
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
+
+theorem GeneratedPow.proof : GeneratedPow.Statement := by
+  intro S _ K _ _ ι _ _ V n t hn
+  induction t with
+  | zero =>
+    have h0 := GenTwistGenerated.generated_diag (S := S) (ι := ι) (V := V) 0
+    have e : (fun _ : K => ((0 : ℕ) : ℤ)) = (0 • n : K → ℤ) := by
+      funext k
+      simp
+    rw [← e]
+    exact h0
+  | succ t ih =>
+    rw [succ_nsmul']
+    exact GenTwistGenerated.generated_add hn ih
+
+end GroundTheory.Heights₂.Heights.HilbertSamuel
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.HilbertSamuel
+
+open Filter Topology
+
+theorem Halving.eventually_le (a : ℕ → ℝ) (C : ℝ) (hC : ∀ n, |a n| ≤ C)
+    (hh : Tendsto (fun n ↦ a (2 * n) - a n / 2) atTop (𝓝 0))
+    (hs : Tendsto (fun n ↦ a (n + 1) - a n) atTop (𝓝 0)) (k : ℕ) :
+    ∀ ε > 0, ∃ N, ∀ n ≥ N, |a n| ≤ C / 2 ^ k + ε := by
+  induction k with
+  | zero =>
+    intro ε hε
+    exact ⟨0, fun n _ ↦ by simpa using (hC n).trans (by linarith)⟩
+  | succ k ih =>
+    intro ε hε
+    obtain ⟨N, hN⟩ := ih (ε / 4) (by positivity)
+    obtain ⟨M₁, hM₁⟩ := Metric.tendsto_atTop.mp hh (ε / 4) (by positivity)
+    obtain ⟨M₂, hM₂⟩ := Metric.tendsto_atTop.mp hs (ε / 4) (by positivity)
+    refine ⟨2 * (N + M₁ + M₂), fun m hm ↦ ?_⟩
+    have hpow : C / 2 ^ (k + 1) = C / 2 ^ k / 2 := by rw [pow_succ, div_div]
+
+    have even : ∀ n ≥ N + M₁ + M₂, |a (2 * n)| ≤ C / 2 ^ (k + 1) + ε / 2 := by
+      intro n hn
+      have h1 := hN n (by omega)
+      have h2 := hM₁ n (by omega)
+      rw [Real.dist_eq, sub_zero] at h2
+      have h3 : |a (2 * n)| ≤ |a (2 * n) - a n / 2| + |a n| / 2 := by
+        have := abs_add_le (a (2 * n) - a n / 2) (a n / 2)
+        rw [sub_add_cancel, abs_div, abs_two] at this
+        exact this
+      rw [hpow]
+      linarith
+    obtain ⟨n, rfl | rfl⟩ := Nat.even_or_odd' m
+    · exact (even n (by omega)).trans (by linarith)
+    · have he := even n (by omega)
+      have h4 := hM₂ (2 * n) (by omega)
+      rw [Real.dist_eq, sub_zero] at h4
+      have h5 : |a (2 * n + 1)| ≤ |a (2 * n + 1) - a (2 * n)| + |a (2 * n)| := by
+        have := abs_add_le (a (2 * n + 1) - a (2 * n)) (a (2 * n))
+        rwa [sub_add_cancel] at this
+      linarith
+
+theorem Halving.proof : Halving.Statement := by
+  intro a ⟨C, hC⟩ hh hs
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  have hC0 : 0 ≤ C := (abs_nonneg _).trans (hC 0)
+  obtain ⟨k, hk⟩ : ∃ k : ℕ, C / 2 ^ k < ε / 2 := by
+    have ht : Tendsto (fun k : ℕ ↦ C / 2 ^ k) atTop (𝓝 0) := by
+      simpa [div_eq_mul_inv, ← inv_pow] using
+        (tendsto_pow_atTop_nhds_zero_of_lt_one (by norm_num : (0 : ℝ) ≤ 2⁻¹)
+          (by norm_num)).const_mul C
+    exact (ht.eventually (gt_mem_nhds (by positivity : (0 : ℝ) < ε / 2))).exists
+  obtain ⟨N, hN⟩ := Halving.eventually_le a C hC hh hs k (ε / 4) (by positivity)
+  refine ⟨N, fun n hn ↦ ?_⟩
+  rw [Real.dist_eq, sub_zero]
+  linarith [hN n hn]
+
+end GroundTheory.Heights₂.Heights.HilbertSamuel
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.HilbertSamuel
+
+universe u v
+
+theorem HilbertModule.proof (hMP : ModulesFromPrimes.Statement.{u, v})
+    (hHP : HilbertPrime.Statement.{u}) : HilbertModule.Statement.{u, v} :=
+  fun d => hMP d fun e _ => hHP e
+
+end GroundTheory.Heights₂.Heights.HilbertSamuel
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.HilbertSamuel
+
+theorem LogDetDerivative.proof : LogDetDerivative.Statement :=
+  LogDetDerivative.intersectionNumber_baseChange
+
+end GroundTheory.Heights₂.Heights.HilbertSamuel
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.HilbertSamuel
+
+open Filter Topology
+
+theorem PolyNonnegAtZero.proof : PolyNonnegAtZero.Statement := by
+  intro d p c hc hdom hev
+  by_contra h0
+  push Not at h0
+  obtain ⟨N, hN⟩ := eventually_atTop.1 hev
+  let S : Set ℝ := {t | 0 ≤ t ∧ p.eval t ≤ 0}
+  have h0S : (0 : ℝ) ∈ S := ⟨le_rfl, h0.le⟩
+  have hbdd : BddAbove S := ⟨N, fun t ht => by
+    by_contra hlt
+    push Not at hlt
+    exact absurd ht.2 (not_le.2 (hN t hlt.le))⟩
+  have hclosed : IsClosed S :=
+    (isClosed_le continuous_const continuous_id).inter
+      (isClosed_le p.continuous continuous_const)
+  have ht0S : sSup S ∈ S := hclosed.csSup_mem ⟨0, h0S⟩ hbdd
+  obtain ⟨ht0nn, hpt0⟩ := ht0S
+  have hpos : ∀ t, sSup S < t → 0 < p.eval t := by
+    intro t ht
+    by_contra hle
+    push Not at hle
+    exact absurd (le_csSup hbdd ⟨ht0nn.trans ht.le, hle⟩) (not_le.2 ht)
+  have hlim : c * (sSup S) ^ d ≤ p.eval (sSup S) := by
+    by_contra hlt
+    push Not at hlt
+    have hcont : Continuous fun t : ℝ => p.eval t - c * t ^ d :=
+      p.continuous.sub (continuous_const.mul (continuous_pow d))
+    have hev' : ∀ᶠ t in 𝓝 (sSup S), p.eval t - c * t ^ d < 0 :=
+      hcont.continuousAt.eventually (gt_mem_nhds (by linarith))
+    obtain ⟨ε, hε, hball⟩ := Metric.eventually_nhds_iff.1 hev'
+    obtain ⟨q, hq1, hq2⟩ := exists_rat_btwn (show sSup S < sSup S + ε by linarith)
+    have hqpos : (0 : ℝ) < q := lt_of_le_of_lt ht0nn hq1
+    have hd : dist (q : ℝ) (sSup S) < ε := by
+      rw [Real.dist_eq, abs_lt]
+      constructor <;> linarith
+    have h1 := hball hd
+    have h2 := hdom q (by exact_mod_cast hqpos) (hpos q hq1)
+    linarith
+  rcases ht0nn.lt_or_eq with htpos | htz
+  · have : 0 < c * (sSup S) ^ d := mul_pos hc (pow_pos htpos d)
+    linarith
+  · have hp0 : 0 ≤ p.eval (sSup S) := le_trans (mul_nonneg hc.le (pow_nonneg ht0nn d)) hlim
+    rw [← htz] at hp0
+    linarith
+
+end GroundTheory.Heights₂.Heights.HilbertSamuel
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.HilbertSamuel
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I4
+
+noncomputable section
+
+theorem ProjFrameFibreDeg.proof (hPt : ProjFrameFibrePt.Statement) (hRel : ProjFrameGenPtRel.Statement)
+    (hTr : ProjFrameGenPtTransc.Statement) (hDeg : TranscRatioDeg.Statement) (hRat : RatioFieldDeg.Statement) :
+    ProjFrameFibreDeg.Statement := by
+  intro D Ω _ _ κ _ x e hP hF G i hi
+  obtain ⟨hc, hcoord, hrel, hrange⟩ := hRel D Ω κ x e hP hF G
+  have : CharZero G.Φ' := charZero_of_inj_zero hc
+
+  have hz : ∀ k, G.x' ⟨k.1, i k⟩ ≠ 0 := fun k h => hi k (by
+    rw [ReciprocityTheory.ChartRestriction.G.AI.I4.fibreIdeal, RingHom.mem_ker, aeval_X]; exact h)
+  have hch := Inter.ChartRankAdjoin.proof (FibreBlock (Sum.inr : Unit → Unit ⊕ Unit))
+    (fibreIdx (Sum.elim (GlobalTheory κ) (GlobalTheory (Fin (D + 1)))) Sum.inr) G.Φ G.Φ' (fun q => G.x' ⟨q.1.1, q.2⟩) i hz
+    (hPt D Ω κ x e hP hF G).1.2.1
+  let k₀ : FibreBlock (Sum.inr : Unit → Unit ⊕ Unit) := ⟨Sum.inl (), fun ⟨_, h⟩ => Sum.inr_ne_inl h⟩
+  let u : Ix κ → G.Φ' := fun p => G.x' ⟨Sum.inl p.1, p.2⟩
+  have hset : (Set.range fun q : (Σ k : FibreBlock (Sum.inr : Unit → Unit ⊕ Unit),
+      fibreIdx (Sum.elim (GlobalTheory κ) (GlobalTheory (Fin (D + 1)))) Sum.inr k) =>
+        G.x' ⟨q.1.1, q.2⟩ / G.x' ⟨q.1.1, i q.1⟩) = Set.range fun p : Ix κ => u p / u ⟨(), i k₀⟩ := by
+    ext c
+    constructor
+    · rintro ⟨⟨⟨(t | t), h⟩, j⟩, rfl⟩
+      · exact ⟨⟨(), j⟩, rfl⟩
+      · exact absurd ⟨t, rfl⟩ h
+    · rintro ⟨⟨_, j⟩, rfl⟩
+      exact ⟨⟨k₀, j⟩, rfl⟩
+  change ptDeg (RingHom.ker _) i = _
+  rw [hch, hset]
+  rw [hDeg (Ix κ) G.Φ' u D e (fun k => G.x' ⟨Sum.inr (), k⟩) ⟨(), i k₀⟩ G.Φ (hz k₀)
+    (fun k => ProjFrameGraph.genFibre_x'_ne_zero G (e k).2 (ProjFrameGraph.frame_ne_zero hF k)) hrel
+    (hTr D Ω κ x e hP hF G) hrange]
+  exact hRat (Ix κ) G.Φ' Ω u x D e hcoord
+
+end
+
+end GroundTheory.Heights₂.Heights.HilbertSamuel
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.HilbertSamuel
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.ChartRestriction.G.AI.I4
+
+noncomputable section
+
+namespace ProjFrameImage
+
+variable {D : ℕ} {Ω : Type} [Field Ω] {κ : Type} [Fintype κ]
+
+theorem linForm_projMat (e : Fin (D + 1) → Ix κ) (k : Fin (D + 1)) :
+    linForm (ι := GlobalTheory κ) (ι₂ := GlobalTheory (Fin (D + 1))) (projMat e) ⟨(), k⟩ = X (e k) := by
+  classical
+  simp only [linForm, projMat]
+  rw [Finset.sum_eq_single (e k).2]
+  · simp
+  · intro i _ hi
+    simp [Ne.symm hi]
+  · simp
+
+def coneEval (x : Ix κ → Ω) :
+    MvPolynomial Unit (MRing (GlobalTheory κ) ⧸ coordIdeal ℤ x) →+* Polynomial Ω :=
+  eval₂Hom (Ideal.Quotient.lift (coordIdeal ℤ x) (coneMap ℤ x).toRingHom
+    (fun _a ha => (RingHom.mem_ker).1 ha)) (fun _ => 1)
+
+theorem coneEval_graphMap (x : Ix κ → Ω) (e : Fin (D + 1) → Ix κ) (f : MRing (GlobalTheory (Fin (D + 1)))) :
+    coneEval x (graphMap (coordIdeal ℤ x) (linForm (ι := GlobalTheory κ) (ι₂ := GlobalTheory (Fin (D + 1))) (projMat e))
+        (rename (inrV (ι := GlobalTheory κ) (ι₂ := GlobalTheory (Fin (D + 1)))) f)) =
+      coneMap ℤ (x ∘ e) (rename (fun q : Σ _ : Unit, Fin (D + 1) => q.2) f) := by
+  induction f using MvPolynomial.induction_on with
+  | C a => simp [graphMap, coneEval, coneMap]
+  | add p q hp hq => simp only [map_add, hp, hq]
+  | mul_X p q hp =>
+    obtain ⟨⟨⟩, k⟩ := q
+    simp only [map_mul, hp, rename_X]
+    congr 1
+    simp [graphMap, inrV, coneEval, coneMap, linForm_projMat]
+
+end ProjFrameImage
+
+open ProjFrameImage in
+
+theorem ProjFrameImage.proof : ProjFrameImage.Statement := by
+  intro D Ω _ _ κ _ x e hP
+  refine le_antisymm (fun f hf => ?_) bot_le
+  have h0 : graphMap (coordIdeal ℤ x) (linForm (ι := GlobalTheory κ) (ι₂ := GlobalTheory (Fin (D + 1))) (projMat e))
+      (rename (inrV (ι := GlobalTheory κ) (ι₂ := GlobalTheory (Fin (D + 1)))) f) = 0 :=
+    (RingHom.mem_ker).1 (Ideal.mem_comap.1 hf)
+  have h1 : rename (fun q : Σ _ : Unit, Fin (D + 1) => q.2) f ∈ coordIdeal ℤ (x ∘ e) := by
+    rw [coordIdeal, RingHom.mem_ker, ← coneEval_graphMap x e f, h0, map_zero]
+  rw [hP.free, Ideal.mem_bot] at h1
+  have hinj : Function.Injective (fun q : Σ _ : Unit, Fin (D + 1) => q.2) := by
+    rintro ⟨⟨⟩, a⟩ ⟨⟨⟩, b⟩ h
+    cases h
+    rfl
+  exact (Ideal.mem_bot).2 (rename_injective _ hinj (by rw [h1, map_zero]))
+
+end
+
+end GroundTheory.Heights₂.Heights.HilbertSamuel
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.HilbertSamuel
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry MeasureTheory
+
+noncomputable section
+
+theorem ResolutionFormsIndependent.proof (hND : NonvanishingDense.Statement) :
+    ResolutionFormsIndependent.Statement := by
+  intro D Ω _ _ κ _ d n r b hb a ha
+  obtain ⟨g, hgJ, hgP⟩ := SetLike.not_le_iff_exists.1 d.R.nondeg
+  set F : (Ix κ → ℂ) → ℂ := fun z => ∑ k, a k * secFun (b k) z with hF
+  have hFc : Continuous F :=
+    continuous_finsetSum _ fun k _ => continuous_const.mul (continuous_secFun _)
+
+  have hoff : ∀ z, z ∈ mcPts (ι := GlobalTheory κ) (coordIdeal ℤ d.x) →
+      eval z (map (Int.castRingHom ℂ) g) ≠ 0 → F z = 0 := by
+    intro z hz hgz
+    obtain ⟨y, c, hc, hyz⟩ := d.R.surj z hz (fun hJ => hgz (hJ.2 g hgJ))
+    have h1 : resPt d y = c () • z := by
+      funext p
+      simp [resPt, hyz]
+    have h2 : F (resPt d y) = 0 := ha y
+    rw [h1, hF] at h2
+    simp only at h2
+    rw [sum_secFun_smul hb.1] at h2
+    exact (mul_eq_zero.1 h2).resolve_left (pow_ne_zero _ (hc ()))
+
+  have hpts : ∀ z ∈ mcPts (ι := GlobalTheory κ) (coordIdeal ℤ d.x), F z = 0 := by
+    intro z hz
+    have hcl := hND Unit (GlobalTheory κ) (coordIdeal ℤ d.x) (D + 1) g d.arith hgP hz
+    exact (isClosed_eq hFc continuous_const).closure_subset_iff.2 (fun z' hz' => hoff z' hz'.1 hz'.2) hcl
+
+  have : IsProbabilityMeasure d.dV := d.vol.1
+  obtain ⟨y₀⟩ : Nonempty d.R.X := by
+    by_contra h
+    rw [not_nonempty_iff] at h
+    have h1 := measure_univ (μ := d.dV)
+    rw [Set.univ_eq_empty_iff.2 h, measure_empty] at h1
+    exact zero_ne_one h1
+  have hz₀ : resPt d y₀ ∈ mcPts (ι := GlobalTheory κ) (coordIdeal ℤ d.x) := d.R.mem y₀ y₀ (d.R.mem_U y₀)
+  refine coeff_eq_zero_of_vanish (linIndep_rat_of_isSecBasis hb) fun z hz => ?_
+  by_cases h0 : z = 0
+  · have h1 := hpts _ hz₀
+    rw [hF] at h1
+    simp only at h1
+    rw [h0, ← zero_smul ℂ (resPt d y₀), sum_secFun_smul hb.1, h1, mul_zero]
+  · refine hpts z ⟨fun k => ?_, hz⟩
+    by_contra hk
+    push Not at hk
+    exact h0 (funext fun p => by obtain ⟨⟨⟩, i⟩ := p; exact hk i)
+
+end
+
+end GroundTheory.Heights₂.Heights.HilbertSamuel
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.HilbertSamuel
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
+
+noncomputable section
+
+theorem SecCochReduce.map_map_int {K : Type} {ι : K → Type} (p : ℕ) (f : MRing ι) :
+    MvPolynomial.map (Int.castRingHom (ZMod p)) (MvPolynomial.map (Int.castRingHom ℤ) f) =
+      MvPolynomial.map (Int.castRingHom (ZMod p)) f := by
+  rw [MvPolynomial.map_map]
+  congr 1
+
+theorem SecCochReduce.proof : SecCochReduce.Statement := by
+  intro K _ _ ι _ _ Ω _ y p a s hs
+  funext J
+  rw [FibreReduction.redCoch_apply]
+  by_cases hz : ∃ k, y ⟨k, GenOnFibres.cellChart J k⟩ = 0
+  · obtain ⟨k, h0⟩ := hz
+    have := GenOnFibres.subsingleton_loc (S := ZMod p) (GenOnFibres.cellChart_mem J k) h0
+    exact Subsingleton.elim _ _
+  · push Not at hz
+    obtain ⟨e, F, hF, _, heq⟩ := GenOnFibres.secCoch_spec (S := ℤ) hs J hz
+    have hrep : GenOnFibres.IsRep y (ZMod p) (KH.cellMon (ZMod p) J.1)
+        (FibreReduction.redLoc y p J.1 (GenOnFibres.secCoch y ℤ s a J)) (GenOnFibres.cellChart J) s a := by
+      refine ⟨e, F, hF, GenOnFibres.cmon_mem (ZMod p) (GenOnFibres.cellChart_mem J) e, ?_⟩
+      rw [heq, FibreReduction.redLoc_mk, FibreReduction.redRing_mk, SecCochReduce.map_map_int]
+      congr 1
+      exact Subtype.ext (SecCochReduce.map_map_int p _)
+    exact hrep.unique (GenOnFibres.secCoch_spec hs J hz)
+
+end
+
+end GroundTheory.Heights₂.Heights.HilbertSamuel
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.HilbertSamuel
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology
+
+noncomputable section
+
+theorem SemiposTwist.proof : SemiposTwist.Statement := by
+  intro K _ ι _ P0 P L p q hL
+  set U : Set ((Σ k, ι k) → ℂ) := {z | ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0} with hU
+  have hUo : IsOpen U := by
+    have e : U = ⋂ k, ⋃ i, {z : (Σ k, ι k) → ℂ | z ⟨k, i⟩ ≠ 0} := by
+      ext z
+      simp [hU]
+    rw [e]
+    exact isOpen_iInter_of_finite fun k =>
+      isOpen_iUnion fun i => (continuous_apply _).isOpen_preimage _ isOpen_ne
+  have hH : IsSmoothHerm (fsH ι) := FsLineSmooth.proof K ι
+  have hsm : IsSmoothHerm (HermLine.zcomb L (fsH ι) q p) := by
+    have e : (HermLine.zcomb L (fsH ι) q p).h = fun z => L.h z ^ q * (fsH ι).h z ^ p := by
+      funext z
+      show L.h z ^ (q : ℤ) * (fsH ι).h z ^ (p : ℤ) = _
+      rw [zpow_natCast, zpow_natCast]
+    unfold IsSmoothHerm
+    rw [e]
+    exact (hL.1.pow q).mul (hH.pow p)
+  refine ⟨hsm, fun z hz w hw => ?_⟩
+  have hzU : z ∈ U := hz.1
+  have hlog : ∀ A : HermLine ι, IsSmoothHerm A → ContDiffAt ℝ 2 (fun y => Real.log (A.h y)) z :=
+    fun A hA => ((hA.contDiffAt (hUo.mem_nhds hzU)).of_le (WithTop.coe_le_coe.2 le_top)).log
+      (A.pos z hzU).ne'
+  have h1 := hlog L hL.1
+  have h2 := hlog (fsH ι) hH
+  have hev : (fun y => Real.log ((HermLine.zcomb L (fsH ι) q p).h y)) =ᶠ[𝓝 z]
+      fun y => (0 + (q : ℝ) * Real.log (L.h y)) + (p : ℝ) * Real.log ((fsH ι).h y) := by
+    filter_upwards [hUo.mem_nhds hzU] with y hy
+    show Real.log (L.h y ^ (q : ℤ) * (fsH ι).h y ^ (p : ℤ)) = _
+    rw [Real.log_mul (zpow_pos (L.pos y hy) _).ne' (zpow_pos ((fsH ι).pos y hy) _).ne',
+      Real.log_zpow, Real.log_zpow]
+    push_cast
+    ring
+  have hLz : 0 ≤ ReciprocityTheory.AnForm.levi (fun y => Real.log (L.h y)) z w := hL.2 z hz w hw
+  have hHz : 0 ≤ ReciprocityTheory.AnForm.levi (fun y => Real.log ((fsH ι).h y)) z w :=
+    FsLineLevi.proof K ι z w hzU
+  have e1 := ReciprocityTheory.AnForm.levi_add_smul (f := fun y => 0 + (q : ℝ) * Real.log (L.h y))
+    (g := fun y => Real.log ((fsH ι).h y)) (p : ℝ) (contDiffAt_const.add (contDiffAt_const.mul h1)) h2 w
+  have e2 := ReciprocityTheory.AnForm.levi_add_smul (f := fun _ => (0 : ℝ))
+    (g := fun y => Real.log (L.h y)) (q : ℝ) contDiffAt_const h1 w
+  have hl0 : ReciprocityTheory.AnForm.levi (fun _ => (0 : ℝ)) z w = 0 := by simp [ReciprocityTheory.AnForm.levi]
+  change 0 ≤ ReciprocityTheory.AnForm.levi _ z w
+  rw [ReciprocityTheory.AnForm.levi_congr hev, e1, e2, hl0]
+  have a1 := mul_nonneg (Nat.cast_nonneg (α := ℝ) q) hLz
+  have a2 := mul_nonneg (Nat.cast_nonneg (α := ℝ) p) hHz
+  linarith
+
+end
+
+end GroundTheory.Heights₂.Heights.HilbertSamuel
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.HilbertSamuel
+
+open MeasureTheory Set Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M
+
+noncomputable section
+
+theorem Weight.lerp_self_zero {D : ℕ} {X : Type} [TopologicalSpace X] {A : FinHolAtlas D X}
+    {L : HolLineBundle A} (W : Weight L) : W.lerp W 0 = W := by
+  cases W
+  simp only [Weight.lerp, zero_mul, add_zero]
+
+theorem SupNormAgainstL2.proof (h : UniformBergmanBound.Statement) : SupNormAgainstL2.Statement := by
+  intro D X _ _ _ _ _ A L W dV hW
+  obtain ⟨C, hC⟩ := h A L W W dV hW hW
+  refine ⟨⟨Real.sqrt C, fun n hn s hs x => ?_⟩, fun n s hs M hM => ?_⟩
+  · set V : Submodule ℂ (Fin A.n → X → ℂ) := ℂ ∙ s
+    have hV : V ≤ L.sections n := (Submodule.span_singleton_le_iff_mem _ _).2 hs
+    have hB := hC n hn 0 ⟨le_rfl, zero_le_one⟩ V hV x
+    rw [Weight.lerp_self_zero] at hB
+    set r := ptNormSq W n s x / sectionL2NormSq W dV n s
+    have hr0 : 0 ≤ r := div_nonneg (ptNormSq_nonneg W n s x) (sectionL2NormSq_nonneg W dV n s)
+    have hbdd : BddAbove (range fun v : V => ptNormSq W n (v : Fin A.n → X → ℂ) x /
+        sectionL2NormSq W dV n v) := by
+      refine ⟨r, ?_⟩
+      rintro _ ⟨⟨v, hv⟩, rfl⟩
+      obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.1 hv
+      simp only [ptNormSq_smul, sectionL2NormSq_smul]
+      rcases eq_or_ne c 0 with rfl | hc
+      · simpa using hr0
+      · rw [mul_div_mul_left _ _ (by positivity)]
+    have hle : r ≤ bergman W dV V n x :=
+      le_ciSup hbdd (⟨s, Submodule.mem_span_singleton_self s⟩ : V)
+    have hrC : r ≤ C * (n : ℝ) ^ D := hle.trans hB
+    rcases (sectionL2NormSq_nonneg W dV n s).eq_or_lt with h0 | hpos
+    · rw [ptNormSq_eq_zero_of_l2NormSq_eq_zero W dV hs h0.symm x, Real.sqrt_zero]
+      positivity
+    · have hpt : ptNormSq W n s x ≤ C * ((n : ℝ) ^ D * sectionL2NormSq W dV n s) := by
+        rw [← mul_assoc, ← div_le_iff₀ hpos]; exact hrC
+      calc Real.sqrt (ptNormSq W n s x)
+          ≤ Real.sqrt (C * ((n : ℝ) ^ D * sectionL2NormSq W dV n s)) := Real.sqrt_le_sqrt hpt
+        _ = Real.sqrt C * Real.sqrt ((n : ℝ) ^ D) * Real.sqrt (sectionL2NormSq W dV n s) := by
+          rw [Real.sqrt_mul' _ (by positivity), Real.sqrt_mul (by positivity), mul_assoc]
+  · have := dV.isProb
+    obtain ⟨x₀⟩ := nonempty_of_isProbabilityMeasure dV.μ
+    have hM0 : 0 ≤ M := (Real.sqrt_nonneg _).trans (hM x₀)
+    have hpt : ∀ y, ptNormSq W n s y ≤ M ^ 2 := fun y => by
+      have h1 := Real.sq_sqrt (ptNormSq_nonneg W n s y)
+      have h2 := hM y
+      nlinarith [Real.sqrt_nonneg (ptNormSq W n s y)]
+    have hl2 : sectionL2NormSq W dV n s ≤ M ^ 2 := by
+      calc sectionL2NormSq W dV n s ≤ ∫ _ : X, M ^ 2 ∂dV.μ :=
+            integral_mono_of_nonneg (Eventually.of_forall fun y => ptNormSq_nonneg W n s y)
+              (integrable_const _) (Eventually.of_forall hpt)
+        _ = M ^ 2 := by simp
+    calc Real.sqrt (sectionL2NormSq W dV n s) ≤ Real.sqrt (M ^ 2) := Real.sqrt_le_sqrt hl2
+      _ = M := Real.sqrt_sq hM0
+
+end
+
+end GroundTheory.Heights₂.Heights.HilbertSamuel
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
@@ -909,3 +1598,4 @@ theorem Closed.Inter.pullbackBadImage_holds : GroundTheory.Heights₂.Heights.In
   GroundTheory.Heights₂.Heights.Inter.pullbackBadImage_holds.proof
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel
+end

@@ -101,15 +101,7 @@ def bcPt (hG : BcGenSt Xo c) (hL : BcLieSt Xo c) (p : TRing c.F) {T : Type} [Fie
   s := (hG p T ψ y).choose
   gen := (hG p T ψ y).choose_spec.2
 
-theorem frMap_bcPt (hG : BcGenSt Xo c) (hL : BcLieSt Xo c) (p : TRing c.F) {T : Type} [Field T]
-    [Algebra c.F T] (ψ : p.R →ₐ[c.F] T) (y : FrPt Xo c p.R) : FrMap ψ y (bcPt hG hL p ψ y) := by
-  exact ⟨rfl, fun _ _ => rfl, bcPm ψ.toRingHom y.x, bcPm_snd _ _, bcPm_fst _ _,
-    (hG p T ψ y).choose_spec.1⟩
 
-theorem bcEx_of (hG : BcGenSt Xo c) (hL : BcLieSt Xo c) (σ : c.F →+* ℂ) : BCEx Xo c σ := by
-  intro p y ψ
-  letI : Field (CAt σ) := inferInstanceAs (Field ℂ)
-  exact ⟨_, frMap_bcPt (T := CAt σ) hG hL p ψ y⟩
 
 variable (Xo c) in
 
@@ -153,12 +145,6 @@ theorem frMap_bcPtR (hG : BcGenRSt Xo c) (hL : BcLieRSt Xo c) (p : TRing c.F) {T
   exact ⟨rfl, fun _ _ => rfl, bcPm ψ.toRingHom y.x, bcPm_snd _ _, bcPm_fst _ _,
     (hG p T ψ y).choose_spec.1⟩
 
-theorem bcGenSt_of_R (h : BcGenRSt Xo c) : BcGenSt Xo c := by
-  intro p T _ _ ψ y
-  exact h p T ψ y
 
-theorem bcLieSt_of_R (h : BcLieRSt Xo c) : BcLieSt Xo c := by
-  intro p T _ _ ψ y τ w hw he
-  exact h p T ψ y τ w hw he
 
 end ReciprocityTheory.ChartRestriction.G.PullbackSections

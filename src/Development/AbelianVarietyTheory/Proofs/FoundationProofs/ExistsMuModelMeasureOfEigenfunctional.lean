@@ -1,11 +1,408 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Statements.CuspidalUnitaryTwists.CuspidalUnitaryTwistsClaim
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IterULevelValStable
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ZsNormCharLeOne
+import Development.AbelianVarietyTheory.Definitions.Foundations.RepL
+import Development.AbelianVarietyTheory.Statements.CuspidalUnitaryTwists.Chapter
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsModularFormCoeffSeqHeckeUAndDepletion
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DirichletCharFiniteFourierTransformProperties
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EisensteinTameWeightSecondEqCharacterSum
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsModularFormCoeffSeqEisensteinProductParity
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EisensteinProductSeriesEqDepletedEisensteinProdu
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EisensteinPeriodicWeightsIsModularForm
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ModularFormCoeffSeqMulAndQExpansion
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DirichletCharFiniteFourierTransformPropertiesStatement
 
+section
+open UpperHalfPlane Complex MeasureTheory CongruenceSubgroup GlobalTheory.EisM UpperTheory.V.Af Filter Topology
+open scoped MatrixGroups Real ComplexConjugate Manifold ModularForm
+
+namespace GlobalTheory
+
+lemma ch_periodic_of_dvd {N L : ℕ} (ε : DirichletCharacter ℂ N) (h : N ∣ L) (d : ℤ) :
+    ch ε (d + L) = ch ε d := by
+  unfold ch
+  have : ((L : ℤ) : ZMod N) = 0 := by
+    rw [Int.cast_natCast]; exact (ZMod.natCast_eq_zero_iff L N).2 h
+  rw [Int.cast_add, this, add_zero]
+
+theorem iterU_level_val_stable : ∀ (k N l m : ℕ) (ε : DirichletCharacter ℂ N) (t : ℕ → ℂ) (α : ℂ) (B : ℕ) (c a : ℕ → ℂ),
+    1 ≤ k → l.Prime → α ≠ 0 → MF k (N * l ^ (m + 1)) (ch ε) a → MF k (N * l) (ch ε) ((Uo l)^[m] a) ∧
+      (EigF k N l ε t α B c → ∀ r, m ≤ r → val B c l α r a = val B c l α m a) := by
+  intro k N l m ε t α B c a hk hl hα ha
+  have lev : ∀ m (a : ℕ → ℂ), MF k (N * l ^ (m + 1)) (ch ε) a → MF k (N * l) (ch ε) ((Uo l)^[m] a) := by
+    intro m
+    induction m with
+    | zero => intro a ha; simpa using ha
+    | succ m ih =>
+      intro a ha
+      have hU : MF k (N * l ^ (m + 1)) (ch ε) (Uo l a) := by
+        refine GlobalTheory.T.coeffHeckeUOperator_lowers_level k (N * l ^ (m + 1)) l (ch ε) a hk hl ?_ ?_ ?_
+        · exact Dvd.dvd.mul_left (dvd_pow_self l (Nat.succ_ne_zero m)) N
+        · exact ch_periodic_of_dvd ε (Dvd.intro _ rfl)
+        · simpa [pow_succ, mul_assoc] using ha
+      rw [Function.iterate_succ_apply]
+      exact ih _ hU
+  have hb := lev m a ha
+  refine ⟨hb, fun hE r hr => ?_⟩
+  have per : ∀ d, ch ε (d + ((N * l : ℕ) : ℤ)) = ch ε d := ch_periodic_of_dvd ε (Dvd.intro _ rfl)
+  have mfj : ∀ j, MF k (N * l) (ch ε) ((Uo l)^[j] ((Uo l)^[m] a)) := by
+    intro j
+    induction j with
+    | zero => simpa using hb
+    | succ j ih =>
+      rw [Function.iterate_succ_apply']
+      exact (GlobalTheory.T.isModularFormCoeffSeq_heckeU_and_depletion k (N * l) l (ch ε) _ hk hl (Dvd.intro_left _ rfl) per ih).1
+  have lamj : ∀ j, lam B c ((Uo l)^[j] ((Uo l)^[m] a)) = α ^ j * lam B c ((Uo l)^[m] a) := by
+    intro j
+    induction j with
+    | zero => simp
+    | succ j ih =>
+      rw [Function.iterate_succ_apply', hE.U _ (mfj j), ih, pow_succ]
+      ring
+  obtain ⟨j, rfl⟩ := Nat.exists_eq_add_of_le hr
+  unfold val
+  rw [add_comm m j, Function.iterate_add_apply, lamj, pow_add]
+  have hj : α ^ j ≠ 0 := pow_ne_zero _ hα
+  field_simp
+
+end GlobalTheory
+end
+
+section
+open UpperHalfPlane Complex MeasureTheory CongruenceSubgroup GlobalTheory.EisM UpperTheory.V.Af Filter Topology
+open scoped MatrixGroups Real ComplexConjugate Manifold ModularForm
+
+noncomputable section
+
+namespace GlobalTheory
+
+theorem zs_iter_Uo {R : Type*} [CommRing R] (l r : ℕ) (a : ℕ → R) (n : ℕ) :
+    (GlobalTheory.EisM.Uo l)^[r] a n = a (l ^ r * n) := by
+  induction r generalizing n with
+  | zero => simp
+  | succ r ih =>
+    rw [Function.iterate_succ_apply', GlobalTheory.EisM.Uo, ih]
+    congr 1; ring
+
+theorem zs_norm_char_le_one {l : ℕ} [Fact l.Prime] (ι : PadicAlgCl l ≃+* ℂ) {N : ℕ} (hN : 0 < N)
+    (θ : DirichletCharacter ℂ N) (z : ZMod N) : ‖ι.symm (θ z)‖ ≤ 1 := by
+  haveI : NeZero N := ⟨hN.ne'⟩
+  by_cases hz : IsUnit z
+  · obtain ⟨u, rfl⟩ := hz
+    have h1 : (θ (u : ZMod N)) ^ Fintype.card (ZMod N)ˣ = 1 := by
+      rw [← map_pow, ← Units.val_pow_eq_pow_val, pow_card_eq_one, Units.val_one, map_one]
+    have h2 : ‖ι.symm (θ (u : ZMod N))‖ ^ Fintype.card (ZMod N)ˣ = 1 := by
+      rw [← norm_pow, ← map_pow, h1, map_one, norm_one]
+    exact ((pow_eq_one_iff_of_nonneg (norm_nonneg _) Fintype.card_ne_zero).1 h2).le
+  · rw [MulChar.map_nonunit θ hz, map_zero, norm_zero]; exact zero_le_one
+
+theorem zs_norm_exp {l : ℕ} [Fact l.Prime] (ι : PadicAlgCl l ≃+* ℂ) {N : ℕ} (hN : 0 < N) (y : ℕ) (d : ℤ) :
+    ‖ι.symm (cexp (2 * π * Complex.I * (y * d) / N))‖ = 1 := by
+  have h1 : (cexp (2 * π * Complex.I * (y * d) / N)) ^ N = 1 := by
+    rw [← Complex.exp_nat_mul, Complex.exp_eq_one_iff]
+    refine ⟨(y : ℤ) * d, ?_⟩
+    have : (N : ℂ) ≠ 0 := by exact_mod_cast hN.ne'
+    push_cast
+    field_simp
+  have h2 : ‖ι.symm (cexp (2 * π * Complex.I * (y * d) / N))‖ ^ N = 1 := by
+    rw [← norm_pow, ← map_pow, h1, map_one, norm_one]
+  exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) hN.ne').1 h2
+
+theorem zs_norm_hat_le_one {l : ℕ} [Fact l.Prime] (ι : PadicAlgCl l ≃+* ℂ) {N : ℕ} (hN : 0 < N)
+    (θ : DirichletCharacter ℂ N) (d : ℤ) : ‖ι.symm (GlobalTheory.EisM.hat (fun z => θ z) d)‖ ≤ 1 := by
+  unfold GlobalTheory.EisM.hat
+  rw [map_sum]
+  refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg zero_le_one fun y _ => ?_
+  rw [map_mul, norm_mul, zs_norm_exp ι hN, mul_one]
+  exact zs_norm_char_le_one ι hN θ _
+
+end GlobalTheory
+
+namespace GlobalTheory
+
+end GlobalTheory
+
+end
+end
+
+section
+section
+open UpperHalfPlane Complex MeasureTheory CongruenceSubgroup GlobalTheory.EisM UpperTheory.V.Af Filter Topology
+open scoped MatrixGroups Real ComplexConjugate Manifold ModularForm
+
+namespace GlobalTheory.EisM
+
+theorem eisensteinTameWeightSecond_eq_character_sum :
+    ∀ (N : ℕ) (s : ℂ), 0 < N → ∀ B : ℤ,
+      tw2 N s B = ((N.totient : ℂ))⁻¹ * ∑ ν : DirichletCharacter ℂ N, (1 - s * ν (-1)) * ch ν B := by
+  intro N s hN B
+  haveI : NeZero N := ⟨hN.ne'⟩
+  have hφ : ((N.totient : ℂ)) ≠ 0 := by exact_mod_cast (Nat.totient_pos.mpr hN).ne'
+  have h1 := DirichletCharacter.sum_characters_eq ℂ (B : ZMod N)
+  have h2 := DirichletCharacter.sum_characters_eq ℂ (-(B : ZMod N))
+  have h3 : ∑ ν : DirichletCharacter ℂ N, ν (-1) * ν (B : ZMod N)
+      = ∑ ν : DirichletCharacter ℂ N, ν (-(B : ZMod N)) := by
+    refine Finset.sum_congr rfl fun ν _ => ?_
+    rw [← map_mul, neg_one_mul]
+  have h4 : (-(B : ZMod N) = 1) ↔ ((B : ZMod N) = -1) := neg_eq_iff_eq_neg
+  have hsum : ∑ ν : DirichletCharacter ℂ N, (1 - s * ν (-1)) * ch ν B
+      = ∑ ν : DirichletCharacter ℂ N, ν (B : ZMod N)
+        - s * ∑ ν : DirichletCharacter ℂ N, ν (-1) * ν (B : ZMod N) := by
+    rw [Finset.mul_sum, ← Finset.sum_sub_distrib]
+    refine Finset.sum_congr rfl fun ν _ => ?_
+    simp only [ch]
+    ring
+  rw [hsum, h3, h1, h2]
+  simp only [tw2, h4]
+  field_simp
+  split_ifs <;> ring
+
+end GlobalTheory.EisM
+end
+
+open UpperHalfPlane Complex MeasureTheory CongruenceSubgroup GlobalTheory.EisM UpperTheory.V.Af Filter Topology
+open scoped MatrixGroups Real ComplexConjugate Manifold ModularForm
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tw2_eq_inv_totient_mul_sum_characters : ∀ (N : ℕ) (s : ℂ), 0 < N → ∀ B : ℤ, tw2 N s B = ((N.totient : ℂ))⁻¹ * ∑ ν : DirichletCharacter ℂ N, (1 - s * ν (-1)) * ch ν B := by
+  atlas_forward_decl GlobalTheory.EisM.eisensteinTameWeightSecond_eq_character_sum
+end
+
+section
+section
+open UpperHalfPlane Complex MeasureTheory CongruenceSubgroup GlobalTheory.EisM UpperTheory.V.Af Filter Topology
+open scoped MatrixGroups Real ComplexConjugate Manifold ModularForm
+
+namespace GlobalTheory.EisM.ZmChar
+
+theorem ch_mul {M : ℕ} (χ : DirichletCharacter ℂ M) (x y : ℤ) : ch χ (x * y) = ch χ x * ch χ y := by
+  simp [ch]
+
+theorem ch_add_dvd {M : ℕ} (χ : DirichletCharacter ℂ M) (K : ℕ) (h : M ∣ K) (x : ℤ) : ch χ (x + K) = ch χ x := by
+  obtain ⟨t, rfl⟩ := h
+  simp [ch, ZMod.natCast_self]
+
+theorem ch_zero {M : ℕ} [Fact (1 < M)] (χ : DirichletCharacter ℂ M) : ch χ 0 = 0 := by
+  simp only [ch, Int.cast_zero]
+  exact MulChar.map_nonunit χ not_isUnit_zero
+
+theorem inv_apply_neg_one {M : ℕ} (χ : DirichletCharacter ℂ M) : χ⁻¹ (-1) = χ (-1) := by
+  rw [MulChar.inv_apply]
+  have : Ring.inverse (-1 : ZMod M) = -1 := by simpa using Ring.inverse_unit (-1 : (ZMod M)ˣ)
+  rw [this]
+
+theorem isUnit_of_coprime {M : ℕ} (d : ℤ) (h : IsCoprime d (M : ℤ)) : IsUnit (d : ZMod M) := by
+  obtain ⟨a, b, hab⟩ := h
+  have := congrArg (Int.cast : ℤ → ZMod M) hab
+  push_cast at this
+  simp [ZMod.natCast_self] at this
+  exact isUnit_iff_exists_inv.2 ⟨a, by rw [mul_comm]; exact this⟩
+
+theorem mul_inv_unit {M : ℕ} (χ : DirichletCharacter ℂ M) (d : ℤ) (h : IsUnit (d : ZMod M)) : ch χ d * ch χ⁻¹ d = 1 := by
+  show χ (d : ZMod M) * χ⁻¹ (d : ZMod M) = 1
+  rw [← MulChar.mul_apply, mul_inv_cancel]
+  exact MulChar.one_apply h
+
+end GlobalTheory.EisM.ZmChar
+
+namespace GlobalTheory.EisM.ZmChar
+
+theorem cop_dvd {d : ℤ} {A B : ℕ} (h : IsCoprime d (B : ℤ)) (hAB : A ∣ B) : IsCoprime d (A : ℤ) :=
+  h.of_isCoprime_of_dvd_right (Int.natCast_dvd_natCast.2 hAB)
+
+end GlobalTheory.EisM.ZmChar
+
+open GlobalTheory.EisM.ZmChar in
+
+theorem GlobalTheory.zm_char_mf : ∀ (k j N l m : ℕ) (ε : DirichletCharacter ℂ N) (u : ℤ → ℂ) (θ ν : DirichletCharacter ℂ N) (ψ : DirichletCharacter ℂ (l ^ m)), j + 2 ≤ k → 0 < N → l.Prime → 1 ≤ m → ¬ l ∣ N → (∀ x, u (x + N) = u x) → (∀ d x : ℤ, IsCoprime d N → u (x * d) = ch θ⁻¹ d * u x) → ε = θ⁻¹ * ν → ψ (-1) * θ (-1) = (-1) ^ (k - 1 - j) → ψ (-1) * ν (-1) = (-1) ^ (j + 1) → MF k (N * l ^ (m + 1)) (ch ε) (Zm k l u (ch ν) (fun x y => ch ψ x * ch ψ⁻¹ y * ((y : ℂ) / x) ^ j)) := by
+  intro k j N l m ε u θ ν ψ hjk hN hl hm hlN hu hmul hε hpar1 hpar2
+  have hl1 : 1 < l ^ m := Nat.one_lt_pow (by omega) hl.one_lt
+  haveI : Fact (1 < l ^ m) := ⟨hl1⟩
+  have hlm : 0 < l ^ m := by omega
+  have hup : ∀ K : ℕ, N ∣ K → ∀ x, u (x + K) = u x := by
+    intro K hK x
+    obtain ⟨t, rfl⟩ := hK
+    have e : ((N * t : ℕ) : ℤ) = (t : ℤ) * N := by push_cast; ring
+    rw [e]
+    exact (Function.Periodic.nat_mul (show Function.Periodic u (N : ℤ) from hu) t) x
+  obtain ⟨c, hE1⟩ := GlobalTheory.T.eisenstein_periodic_weights_isModularForm (k - 1 - j) (N * l ^ m) 1 (fun x => u x * ch ψ x) (fun _ => 1)
+    (fun d => ch θ⁻¹ d * ch ψ d) (fun _ => 1) (by omega) (by positivity) one_pos (by simp [ch_zero])
+    (fun x => by rw [hup _ (dvd_mul_right _ _), ch_add_dvd _ _ (dvd_mul_left _ _)]) (fun _ => rfl)
+    (fun d hd => by
+      have hdN : IsCoprime d (N : ℤ) := cop_dvd hd (by simp)
+      refine ⟨fun x => ?_, fun x => by ring⟩
+      rw [hmul d x hdN, ch_mul]
+      ring)
+    (by simp only [ch, Int.cast_neg, Int.cast_one, mul_one]; rw [inv_apply_neg_one, mul_comm, hpar1])
+  obtain ⟨c', hE2⟩ := GlobalTheory.T.eisenstein_periodic_weights_isModularForm (j + 1) (l ^ m) N (ch ψ⁻¹) (ch ν) (ch ψ⁻¹) (ch ν) (by omega) hlm hN
+    (ch_zero _) (ch_add_dvd _ _ dvd_rfl) (ch_add_dvd _ _ dvd_rfl)
+    (fun d _ => ⟨fun x => by rw [ch_mul, mul_comm], fun x => by rw [ch_mul, mul_comm]⟩)
+    (by simp only [ch, Int.cast_neg, Int.cast_one]; rw [inv_apply_neg_one, hpar2])
+  have hD1 := (GlobalTheory.T.isModularFormCoeffSeq_heckeU_and_depletion (k - 1 - j) (N * l ^ m * 1) l _ _ (by omega) hl
+    (dvd_mul_of_dvd_left (dvd_mul_of_dvd_right (dvd_pow_self l (by omega)) _) _)
+    (fun d => by rw [ch_add_dvd _ _ (dvd_mul_of_dvd_left (dvd_mul_right _ _) _),
+      ch_add_dvd _ _ (dvd_mul_of_dvd_left (dvd_mul_left _ _) _)]) hE1).2
+  have hD2 := (GlobalTheory.T.isModularFormCoeffSeq_heckeU_and_depletion (j + 1) (l ^ m * N) l _ _ (by omega) hl
+    (dvd_mul_of_dvd_left (dvd_pow_self l (by omega)) _)
+    (fun d => by rw [ch_add_dvd _ _ (dvd_mul_right _ _), ch_add_dvd _ _ (dvd_mul_left _ _)]) hE2).2
+  have hD1' := (GlobalTheory.EisM.mf_linear _ _ _).2.2.2.2.1 (N * l ^ (m + 1)) _ ⟨1, by ring⟩ hD1
+  have hD2' := (GlobalTheory.EisM.mf_linear _ _ _).2.2.2.2.1 (N * l ^ (m + 1)) _ ⟨1, by ring⟩ hD2
+  have P := GlobalTheory.EisM.mul_main.2 _ _ _ _ _ _ _ hD1' hD2'
+  rw [GlobalTheory.T.eisensteinProductSeries_eq_depleted_eisenstein_product k l j u (ch ν) (ch ψ) (ch ψ⁻¹) c c' hjk]
+  have hk : k - 1 - j + (j + 1) = k := by omega
+  rw [hk] at P
+  refine (GlobalTheory.EisM.mf_linear _ _ _).2.2.2.1 (ch ε) _ (fun d hd => ?_) P
+  have hU := mul_inv_unit ψ d (isUnit_of_coprime d (cop_dvd hd (dvd_mul_of_dvd_right (pow_dvd_pow l (by omega)) _)))
+  subst hε
+  simp only [ch, MulChar.mul_apply] at hU ⊢
+  linear_combination (θ⁻¹ (d : ZMod N) * ν (d : ZMod N)) * hU
+end
+
+open UpperHalfPlane Complex MeasureTheory CongruenceSubgroup GlobalTheory.EisM UpperTheory.V.Af Filter Topology
+open scoped MatrixGroups Real ComplexConjugate Manifold ModularForm
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.muModelProduct_isModularFormCoeffSeq_locallyAlgebraic : ∀ (k j N l m : ℕ) (ε : DirichletCharacter ℂ N) (u : ℤ → ℂ) (θ ν : DirichletCharacter ℂ N) (ψ : DirichletCharacter ℂ (l ^ m)), j + 2 ≤ k → 0 < N → l.Prime → 1 ≤ m → ¬ l ∣ N → (∀ x, u (x + N) = u x) → (∀ d x : ℤ, IsCoprime d N → u (x * d) = ch θ⁻¹ d * u x) → ε = θ⁻¹ * ν → ψ (-1) * θ (-1) = (-1) ^ (k - 1 - j) → ψ (-1) * ν (-1) = (-1) ^ (j + 1) → MF k (N * l ^ (m + 1)) (ch ε) (Zm k l u (ch ν) (fun x y => ch ψ x * ch ψ⁻¹ y * ((y : ℂ) / x) ^ j)) := by
+  atlas_forward_decl GlobalTheory.zm_char_mf
+end
+
+section
+section
+open UpperHalfPlane Complex MeasureTheory CongruenceSubgroup GlobalTheory.EisM UpperTheory.V.Af Filter Topology
+open scoped MatrixGroups Real ComplexConjugate Manifold ModularForm
+
+namespace GlobalTheory.EisM
+
+theorem zmf_congr_cop {k l : ℕ} (u v : ℤ → ℂ) (F G : ℕ → ℕ → ℂ)
+    (h : ∀ x y : ℕ, ¬ l ∣ x → ¬ l ∣ y → F x y = G x y) : Zm k l u v F = Zm k l u v G := by
+  funext n
+  unfold Zm
+  refine Finset.sum_congr rfl fun p _ => Finset.sum_congr rfl fun x hx => Finset.sum_congr rfl fun y hy => ?_
+  split_ifs with hp
+  · rfl
+  · push_neg at hp
+    rw [Nat.mem_divisorsAntidiagonal] at hx hy
+    have hx' : ¬ l ∣ x.1 := fun hd => hp.1 (hx.1 ▸ dvd_mul_of_dvd_left hd _)
+    have hy' : ¬ l ∣ y.2 := fun hd => hp.2 (hy.1 ▸ dvd_mul_of_dvd_right hd _)
+    rw [h _ _ hx' hy']
+
+theorem zmf_sum_smul {ι : Type*} (s : Finset ι) (k l : ℕ) (u v : ℤ → ℂ) (c : ι → ℂ) (G : ι → ℕ → ℕ → ℂ) :
+    Zm k l u v (fun x y => ∑ i ∈ s, c i * G i x y) = ∑ i ∈ s, c i • Zm k l u v (G i) := by
+  funext n
+  simp only [Zm, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
+  symm
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun p _ => ?_
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun x _ => ?_
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun y _ => ?_
+  split_ifs
+  · simp
+  · refine Finset.sum_congr rfl fun i _ => ?_
+    ring
+
+theorem zmf_mf_sum {ι : Type*} (s : Finset ι) (k L : ℕ) (χ : ℤ → ℂ) (g : ι → ℕ → ℂ)
+    (h : ∀ i ∈ s, MF k L χ (g i)) : MF k L χ (∑ i ∈ s, g i) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simpa using (GlobalTheory.T.modularFormCoeffSeq_linear_structure k L χ).1
+  | insert a s ha ih =>
+    rw [Finset.sum_insert ha]
+    exact ((GlobalTheory.T.modularFormCoeffSeq_linear_structure k L χ).2.1 _ _ (h a (Finset.mem_insert_self a s))
+      (ih fun i hi => h i (Finset.mem_insert_of_mem hi))).1
+
+theorem zm_fun_mf : ∀ (k N l m : ℕ) (ε θ ν : DirichletCharacter ℂ N) (f : ZMod (l ^ m) → ℂ), 3 ≤ k → Odd k → 0 < N → l.Prime → 1 ≤ m → ¬ l ∣ N → ε = θ⁻¹ * ν → ν (-1) = -θ (-1) → (∀ x, f (-x) = θ (-1) * f x) → MF k (N * l ^ (m + 1)) (ch ε) (Zm k l (hat θ) (ch ν) (fun A d => f ((A : ZMod (l ^ m)) * (d : ZMod (l ^ m))⁻¹))) := by
+  intro k N l m ε θ ν f hk hodd hN hl hm hlN hε hν hf
+  haveI : NeZero (l ^ m) := ⟨pow_ne_zero _ hl.ne_zero⟩
+  set φ : ℂ := ((l ^ m).totient : ℂ) with hφ
+  have hφ0 : φ ≠ 0 := by
+    rw [hφ]; exact_mod_cast (Nat.totient_pos.2 (Nat.pos_of_ne_zero (pow_ne_zero _ hl.ne_zero))).ne'
+  set c : DirichletCharacter ℂ (l ^ m) → ℂ := fun ψ => φ⁻¹ * ∑ u : (ZMod (l ^ m))ˣ, f u * ψ⁻¹ u with hc
+  have hinv : ∀ (ψ : DirichletCharacter ℂ (l ^ m)) (u : (ZMod (l ^ m))ˣ),
+      ψ⁻¹ (u : ZMod (l ^ m)) = ψ ((u : ZMod (l ^ m))⁻¹) := by
+    intro ψ u; rw [MulChar.inv_apply, Ring.inverse_unit, ZMod.inv_coe_unit]
+  have hexp : ∀ w : (ZMod (l ^ m))ˣ, f w = ∑ ψ, c ψ * ψ w := by
+    intro w
+    calc f w = φ⁻¹ * (f w * φ) := by field_simp
+      _ = φ⁻¹ * ∑ u : (ZMod (l ^ m))ˣ, f u * (if (u : ZMod (l ^ m)) = w then φ else 0) := by
+          congr 1
+          simp only [Units.val_inj, mul_ite, mul_zero]
+          rw [Finset.sum_ite_eq']; simp
+      _ = φ⁻¹ * ∑ u : (ZMod (l ^ m))ˣ, f u * ∑ ψ : DirichletCharacter ℂ (l ^ m), ψ ((u : ZMod (l ^ m))⁻¹) * ψ w := by
+          congr 1
+          refine Finset.sum_congr rfl fun u _ => ?_
+          rw [DirichletCharacter.sum_char_inv_mul_char_eq ℂ u.isUnit]
+      _ = ∑ ψ, c ψ * ψ w := by
+          simp only [hc, hinv, Finset.mul_sum, Finset.sum_mul]
+          rw [Finset.sum_comm]
+          refine Finset.sum_congr rfl fun ψ _ => Finset.sum_congr rfl fun u _ => ?_
+          ring
+  have hquo : Zm k l (hat θ) (ch ν) (fun A d => f ((A : ZMod (l ^ m)) * (d : ZMod (l ^ m))⁻¹)) = Zm k l (hat θ) (ch ν)
+      (fun x y => ∑ ψ : DirichletCharacter ℂ (l ^ m), c ψ * (ch ψ x * ch ψ⁻¹ y * ((y : ℂ) / x) ^ 0)) := by
+    apply zmf_congr_cop
+    intro x y hx hy
+    have cx : Nat.Coprime x (l ^ m) := (Nat.Coprime.pow_left m ((hl.coprime_iff_not_dvd).2 hx)).symm
+    have cy : Nat.Coprime y (l ^ m) := (Nat.Coprime.pow_left m ((hl.coprime_iff_not_dvd).2 hy)).symm
+    set ux := ZMod.unitOfCoprime x cx
+    set uy := ZMod.unitOfCoprime y cy
+    have ex : ((x : ℤ) : ZMod (l ^ m)) = ux := by simp [ux, ZMod.coe_unitOfCoprime]
+    have ey : ((y : ℤ) : ZMod (l ^ m)) = uy := by simp [uy, ZMod.coe_unitOfCoprime]
+    have ex' : (x : ZMod (l ^ m)) = ux := by simp [ux, ZMod.coe_unitOfCoprime]
+    have ey' : (y : ZMod (l ^ m)) = uy := by simp [uy, ZMod.coe_unitOfCoprime]
+    simp only [ch, ex, ey, ex', ey', pow_zero, mul_one, hinv]
+    rw [ZMod.inv_coe_unit, ← Units.val_mul, hexp]
+    refine Finset.sum_congr rfl fun ψ _ => ?_
+    rw [← map_mul, ← Units.val_mul]
+  rw [hquo, zmf_sum_smul]
+  apply zmf_mf_sum
+  intro ψ _
+  have hsq : ∀ {M : ℕ} (χ : DirichletCharacter ℂ M), χ (-1) * χ (-1) = 1 := by
+    intro M χ; rw [← map_mul, neg_one_mul, neg_neg, map_one]
+  have hh := (GlobalTheory.T.dirichletCharFiniteFourierTransform_properties).1 N θ hN
+  by_cases hψ : ψ (-1) = θ (-1)
+  · have h1 : ψ (-1) * θ (-1) = (-1) ^ (k - 1 - 0) := by
+      obtain ⟨r, rfl⟩ := hodd
+      rw [hψ, hsq, show 2 * r + 1 - 1 - 0 = 2 * r by omega, pow_mul]; norm_num
+    have h2 : ψ (-1) * ν (-1) = (-1) ^ (0 + 1) := by
+      rw [hψ, hν, mul_neg, hsq]; norm_num
+    exact ((GlobalTheory.T.modularFormCoeffSeq_linear_structure k _ (ch ε)).2.2.1 (c ψ) _
+      (GlobalTheory.T.muModelProduct_isModularFormCoeffSeq_locallyAlgebraic k 0 N l m ε (hat θ) θ ν ψ (by omega) hN hl hm hlN hh.1 hh.2.1 hε h1 h2)).1
+  · have hc0 : c ψ = 0 := by
+      have hpm : ∀ {M : ℕ} (χ : DirichletCharacter ℂ M), χ (-1) = 1 ∨ χ (-1) = -1 := by
+        intro M χ
+        have := hsq χ
+        have h' : (χ (-1) - 1) * (χ (-1) + 1) = 0 := by linear_combination this
+        rcases mul_eq_zero.1 h' with h | h
+        · left; linear_combination h
+        · right; linear_combination h
+      have hprod : θ (-1) * ψ⁻¹ (-1) = -1 := by
+        have hi : ψ⁻¹ (-1) = ψ (-1) := by
+          rw [MulChar.inv_apply, show (-1 : ZMod (l ^ m)) = ((-1 : (ZMod (l ^ m))ˣ) : ZMod (l ^ m)) by simp, Ring.inverse_unit, inv_neg_one]
+        rw [hi]
+        rcases hpm θ with h | h <;> rcases hpm ψ with h' | h' <;> rw [h, h'] at hψ ⊢
+        all_goals first | exact absurd rfl hψ | norm_num
+      set S := ∑ u : (ZMod (l ^ m))ˣ, f u * ψ⁻¹ u with hS
+      have hS' : S = - S := by
+        calc S = ∑ u : (ZMod (l ^ m))ˣ, f ((-u : (ZMod (l ^ m))ˣ) : ZMod (l ^ m)) * ψ⁻¹ ((-u : (ZMod (l ^ m))ˣ) : ZMod (l ^ m)) :=
+              (Fintype.sum_equiv (Equiv.neg _) _ _ (fun _ => rfl)).symm
+          _ = ∑ u : (ZMod (l ^ m))ˣ, (θ (-1) * ψ⁻¹ (-1)) * (f u * ψ⁻¹ u) := by
+              refine Finset.sum_congr rfl fun u _ => ?_
+              rw [Units.val_neg, hf, neg_eq_neg_one_mul (u : ZMod (l ^ m)), map_mul]
+              ring
+          _ = - S := by rw [← Finset.mul_sum, hprod, neg_one_mul]
+      have : S = 0 := by linear_combination hS' / 2
+      simp [hc, ← hS, this]
+    rw [hc0, zero_smul]
+    exact (GlobalTheory.T.modularFormCoeffSeq_linear_structure k _ (ch ε)).1
+
+end GlobalTheory.EisM
+end
+
+open UpperHalfPlane Complex MeasureTheory CongruenceSubgroup GlobalTheory.EisM UpperTheory.V.Af Filter Topology
+open scoped MatrixGroups Real ComplexConjugate Manifold ModularForm
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isModularFormCoeffSeq_eisensteinProduct_parity : ∀ (k N l m : ℕ) (ε θ ν : DirichletCharacter ℂ N) (f : ZMod (l ^ m) → ℂ), 3 ≤ k → Odd k → 0 < N → l.Prime → 1 ≤ m → ¬ l ∣ N → ε = θ⁻¹ * ν → ν (-1) = -θ (-1) → (∀ x, f (-x) = θ (-1) * f x) → MF k (N * l ^ (m + 1)) (ch ε) (Zm k l (hat θ) (ch ν) (fun A d => f ((A : ZMod (l ^ m)) * (d : ZMod (l ^ m))⁻¹))) := by
+  atlas_forward_decl GlobalTheory.EisM.zm_fun_mf
+end
+
+section
 open UpperHalfPlane Complex MeasureTheory CongruenceSubgroup GlobalTheory.EisM UpperTheory.V.Af Filter Topology
 open scoped MatrixGroups Real ComplexConjugate Manifold ModularForm
 
@@ -311,4 +708,5 @@ theorem measMu_of_eig : ∀ (l : ℕ) [Fact l.Prime] (ι : PadicAlgCl l ≃+* �
 
 end GlobalTheory.EisM
 
+end
 end

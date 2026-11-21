@@ -57,22 +57,6 @@ def ThLaTot (nab : NabV Xo c) (w : Cl → (Fin n → LevQ Dw l) → c.F) (La : C
   ∀ (k : Cl) (v : Vs) (S : Type) [CommRing S] [Algebra c.F S] (y : FrPt Xo c S),
     ∃! t : S, thLaValAt Xo c nab (w k) (La k) (Nc k) (io v) y t
 
-theorem existsUnique_thCls (nab : NabV Xo c) (w : Cl → (Fin n → LevQ Dw l) → c.F) (La : Cl → GenLat E n)
-    (Nc : Cl → ℕ) (gam : Cl → ℕ) (vol : c.F) (ep : Cl → c.F) (io : Vs →ₗ[c.F] MvPolynomial (LtN Dw n) c.F) (xi : Rul Xo c)
-    (h : ThLaTot Xo c nab w La Nc io) (x : Cl → Vs) :
-    ∃! f : Rul Xo c, IsThCls Xo c nab w La Nc gam vol ep io xi x f := by
-  classical
-  refine ⟨fun p y => evR Xo c xi y * ∑ k, algebraMap c.F p.R (vol * ((gam k : c.F))⁻¹ * ep k) *
-      (h k (x k) p.R y).choose, ?_, ?_⟩
-  · intro p y
-    exact ⟨fun k => (h k (x k) p.R y).choose, fun k => (h k (x k) p.R y).choose_spec.1, rfl⟩
-  · intro f' hf'
-    funext p y
-    obtain ⟨vc, hvc, hv⟩ := hf' p y
-    rw [hv]
-    congr 1
-    refine Finset.sum_congr rfl fun k _ => ?_
-    rw [(h k (x k) p.R y).choose_spec.2 (vc k) (hvc k)]
 
 def ThClsInCusp (nab : NabV Xo c) (w : Cl → (Fin n → LevQ Dw l) → c.F) (La : Cl → GenLat E n) (Nc : Cl → ℕ)
     (gam : Cl → ℕ) (vol : c.F) (ep : Cl → c.F) (io : Vs →ₗ[c.F] MvPolynomial (LtN Dw n) c.F) (xi : Rul Xo c)

@@ -12,16 +12,159 @@ import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ModuliSchemeLevelMap
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.CmModuliConsequenceOfAbelianSchemeLaws
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LevelOfSplitAndLevelCoeffExist
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsIntegralRatZetaOfCoeff
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.PointsDetectFrobeniusSectionsStatement
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.PointsDetectFrobeniusSections
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsDeltaDatumHigherLevel
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsEquivariantFunOnSpanningFamilies
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.DetEqOneOfTrivialOnHalf
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsIdempotentSectionFamily
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LevelAutomorphismPeriodFamilyStatement
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsComplexFrobeniusPointsStatement
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.DetOneReductionOfDetOne
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.DetCharacterReductionInvariantStatement
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LevelAutomorphismPeriodFamily
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsComplexFrobeniusPoints
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.DetCharacterReductionInvariant
 
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.points_detect_frobenius_sections : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l), ∀ (a : (E →+* ℂ) × ℕ → ℕ) (n : ℕ), PtsDetect (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z) (fun t y y' => FrBor t y y') (ex Dw a n) := by
+  first | exact @GlobalTheory.Frames.ptsDetect_framed | exact GlobalTheory.Frames.ptsDetect_framed | (intros; apply GlobalTheory.Frames.ptsDetect_framed <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.level_automorphism_period_family : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l), 1 ≤ Dw.p + Dw.q → l.A = 1 → ∀ (g : ℕ) (ty : Fin g → (E →+* ℂ)) (F : FamilyUnif Xo (KA l).val.toRingHom ty) (s : Sim Dw) (ρ : Xo.X ≅ Xo.X), IsTypeFn H Dw.p Dw.q ty → Xo.LevAut s ρ → (∀ i, ∃ i', ∀ P, IsPeriod (F.Di i) ty P → ∃ P', IsPeriod (F.Di i') ty P' ∧ F.u i P ≫ ρ.hom = F.u i' P') ∧ ∀ i P P', IsPeriod (F.Di i) ty P → IsPeriod (F.Di i) ty P' → F.u i P ≫ ρ.hom = F.u i P' → ∃ γ : (F.Di i).La ≃ₗ[𝓞 E] (F.Di i).La, (∀ a b, (F.Di i).EF (γ a) (γ b) = (F.Di i).EF a b) ∧ ∀ a, γ (F.t i (s.f l.M a)) - F.t i a ∈ l.Mb • (⊤ : Submodule (𝓞 E) (F.Di i).La) := by
+  first | exact @GlobalTheory.LevStab.levAut_component | exact GlobalTheory.LevStab.levAut_component | (intros; apply GlobalTheory.LevStab.levAut_component <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_complex_frobenius_points : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (k : Type) [Field k] [Algebra c.F k] (y y' : FrPt Xo c k), ∃ z z' : FrPt Xo c (CAt c.F.val.toRingHom), (∀ ρ : Xo.X ⟶ Xo.X, y'.x = y.x ≫ ρ → z'.x = z.x ≫ ρ) ∧ (∀ f ∈ sec Xo c 0 0, evR Xo c f y = 0 → evR Xo c f z = 0) ∧ ∀ f ∈ sec Xo c 0 0, ∀ a : c.F, evR Xo c f z' = algebraMap c.F (CAt c.F.val.toRingHom) a * evR Xo c f z → evR Xo c f y' = algebraMap c.F k a * evR Xo c f y := by
+  first | exact @GlobalTheory.Frames.exists_complex_framed_pair | exact GlobalTheory.Frames.exists_complex_framed_pair | (intros; apply GlobalTheory.Frames.exists_complex_framed_pair <;> assumption)
+end
+
+section
+section
+set_option autoImplicit false
+
+open scoped TensorProduct
+
+namespace GlobalTheory.DetMod
+
+theorem det_baseChange_of_rel {R S L : Type} [CommRing R] [CommRing S] [Algebra R S] [AddCommGroup L] [Module R L]
+    {r : ℕ} (x : Fin r → L) (b : Module.Basis (Fin r) S (S ⊗[R] L)) (hb : ∀ j, b j = 1 ⊗ₜ x j)
+    (γ : L →ₗ[R] L) (s : R) (a : Matrix (Fin r) (Fin r) R) (ha : ∀ j, s • γ (x j) = ∑ i, a i j • x i) :
+    algebraMap R S s ^ r * LinearMap.det (LinearMap.baseChange S γ) = algebraMap R S a.det := by
+  have h : LinearMap.toMatrix b b (algebraMap R S s • LinearMap.baseChange S γ) = (algebraMap R S).mapMatrix a := by
+    ext i j
+    have h1 : (algebraMap R S s • LinearMap.baseChange S γ) (b j) = ∑ i, algebraMap R S (a i j) • b i := by
+      rw [LinearMap.smul_apply, hb, LinearMap.baseChange_tmul, algebraMap_smul, ← TensorProduct.tmul_smul, ha,
+        TensorProduct.tmul_sum]
+      refine Finset.sum_congr rfl fun k _ => ?_
+      rw [hb, algebraMap_smul, TensorProduct.tmul_smul]
+    rw [LinearMap.toMatrix_apply, h1, b.repr_sum_self]
+    rfl
+  rw [RingHom.map_det, ← h, map_smul, Matrix.det_smul, LinearMap.det_toMatrix, Fintype.card_fin]
+
+theorem det_baseChange_quot_eq_one : ∀ (R K : Type) [CommRing R] [IsDomain R] [Field K] [Algebra R K] [IsFractionRing R K] (L : Type) [AddCommGroup L] [Module R L] [Module.Finite R L] [Module.Projective R L] (I : Ideal R) [Finite (R ⧸ I)] (γ : L →ₗ[R] L), LinearMap.det (LinearMap.baseChange K γ) = 1 → LinearMap.det (LinearMap.baseChange (R ⧸ I) γ) = 1 := by
+  intro R K _ _ _ _ _ L _ _ _ _ I _ γ hγ
+  by_cases hI : I = ⊤
+  · haveI := Ideal.Quotient.subsingleton_iff.2 hI
+    exact Subsingleton.elim _ _
+  set r := Module.finrank R L with hr
+  haveI : IsArtinianRing (R ⧸ I) := isArtinian_of_finite
+  obtain ⟨b⟩ := Module.nonempty_basis_of_flat_of_finrank_eq (R ⧸ I) ((R ⧸ I) ⊗[R] L) r (fun P => by
+    haveI := P.isMaximal
+    letI : Field ((R ⧸ I) ⧸ P.asIdeal) := Ideal.Quotient.field _
+    rw [(TensorProduct.AlgebraTensorModule.cancelBaseChange R (R ⧸ I) ((R ⧸ I) ⧸ P.asIdeal)
+      ((R ⧸ I) ⧸ P.asIdeal) L).finrank_eq]
+    have h1 := Module.rankAtStalk_baseChange (R := R) (M := L) (S := (R ⧸ I) ⧸ P.asIdeal) ⊥
+    rw [Module.rankAtStalk_eq_finrank_of_free, Module.rankAtStalk_eq, Ideal.finrank_fiber_eq_finrank] at h1
+    exact h1)
+  have hsurj : Function.Surjective (TensorProduct.mk R (R ⧸ I) L 1) :=
+    TensorProduct.mk_surjective R L (R ⧸ I) Ideal.Quotient.mk_surjective
+  choose x hx using fun j => hsurj (b j)
+  have hb : ∀ j, b j = 1 ⊗ₜ x j := fun j => (hx j).symm
+  have hsup : (⊤ : Submodule R L) ≤ Submodule.span R (Set.range x) ⊔ I • ⊤ := by
+    intro l _
+    choose c hc using fun i => Ideal.Quotient.mk_surjective (b.repr (1 ⊗ₜ l) i)
+    have h0 : ((1 : R ⧸ I) ⊗ₜ[R] (l - ∑ i, c i • x i)) = 0 := by
+      rw [TensorProduct.tmul_sub, TensorProduct.tmul_sum, sub_eq_zero, ← b.sum_repr (1 ⊗ₜ l)]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [← hc, TensorProduct.tmul_smul, ← hb, ← Ideal.Quotient.algebraMap_eq, algebraMap_smul]
+    have h1 := congrArg (TensorProduct.quotTensorEquivQuotSMul L I) h0
+    rw [map_zero, TensorProduct.quotTensorEquivQuotSMul_mk_one_tmul, Submodule.Quotient.mk_eq_zero] at h1
+    have : l = ∑ i, c i • x i + (l - ∑ i, c i • x i) := by abel
+    rw [this]
+    exact Submodule.add_mem_sup
+      (Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)) h1
+  obtain ⟨s, hs1, hs⟩ : ∃ s : R, s - 1 ∈ I ∧ ∀ l : L, s • l ∈ Submodule.span R (Set.range x) := by
+    obtain ⟨s, hs1, hs⟩ := Submodule.exists_sub_one_mem_and_smul_eq_zero_of_fg_of_le_smul I
+      (⊤ : Submodule R (L ⧸ Submodule.span R (Set.range x))) Module.Finite.fg_top (by
+        intro q _
+        obtain ⟨l, rfl⟩ := Submodule.Quotient.mk_surjective _ q
+        obtain ⟨u, hu, v, hv, rfl⟩ := Submodule.mem_sup.1 (hsup (Submodule.mem_top : l ∈ ⊤))
+        rw [Submodule.Quotient.mk_add, (Submodule.Quotient.mk_eq_zero _).2 hu, zero_add]
+        refine Submodule.smul_induction_on hv (fun a ha z _ => ?_) (fun u v hu hv => ?_)
+        · rw [Submodule.Quotient.mk_smul]; exact Submodule.smul_mem_smul ha trivial
+        · rw [Submodule.Quotient.mk_add]; exact add_mem hu hv)
+    refine ⟨s, hs1, fun l => ?_⟩
+    rw [← Submodule.Quotient.mk_eq_zero, Submodule.Quotient.mk_smul]
+    exact hs _ trivial
+  have hs0 : s ≠ 0 := by
+    rintro rfl
+    apply hI
+    rw [Ideal.eq_top_iff_one]
+    simpa using hs1
+  have hsK : algebraMap R K s ≠ 0 := fun h => hs0 (IsFractionRing.injective R K (by rw [h, map_zero]))
+  choose a ha using fun j => (Submodule.mem_span_range_iff_exists_fun R).1 (hs (γ (x j)))
+  have hspan : ⊤ ≤ Submodule.span K (Set.range fun j => (1 : K) ⊗ₜ[R] x j) := by
+    intro t ht
+    clear ht
+    induction t using TensorProduct.induction_on with
+    | zero => exact zero_mem _
+    | add u v hu hv => exact add_mem hu hv
+    | tmul k l =>
+      obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun R).1 (hs l)
+      have : k ⊗ₜ[R] l = (k * (algebraMap R K s)⁻¹) • ∑ i, algebraMap R K (c i) • ((1 : K) ⊗ₜ[R] x i) := by
+        simp only [algebraMap_smul, ← TensorProduct.tmul_smul]
+        rw [← TensorProduct.tmul_sum, hc, TensorProduct.tmul_smul, ← algebraMap_smul K s, smul_smul,
+          inv_mul_cancel_right₀ hsK, TensorProduct.smul_tmul', smul_eq_mul, mul_one]
+      rw [this]
+      exact Submodule.smul_mem _ _
+        (Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩))
+  have hrk : Fintype.card (Fin r) = Module.finrank K (K ⊗[R] L) := by
+    rw [Fintype.card_fin, hr, (IsLocalizedModule.isBaseChange (nonZeroDivisors R) K (TensorProduct.mk R K L 1)).finrank_eq]
+  have hK := det_baseChange_of_rel x (basisOfTopLeSpanOfCardEqFinrank _ hspan hrk) (fun j => by simp) γ s
+    (Matrix.of fun i j => a j i) (fun j => (ha j).symm)
+  have hQ := det_baseChange_of_rel x b hb γ s (Matrix.of fun i j => a j i) (fun j => (ha j).symm)
+  rw [hγ, mul_one, ← map_pow] at hK
+  have hs' : algebraMap R (R ⧸ I) s = 1 := by
+    rw [Ideal.Quotient.algebraMap_eq, ← map_one (Ideal.Quotient.mk I), Ideal.Quotient.eq]
+    exact hs1
+  rw [← IsFractionRing.injective R K hK, map_pow, hs', one_pow, one_mul] at hQ
+  exact hQ
+
+end GlobalTheory.DetMod
+end
+
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.det_one_reduction_of_det_one : ∀ (R K : Type) [CommRing R] [IsDomain R] [Field K] [Algebra R K] [IsFractionRing R K] (L : Type) [AddCommGroup L] [Module R L] [Module.Finite R L] [Module.Projective R L] (I : Ideal R) [Finite (R ⧸ I)] (γ : L →ₗ[R] L), LinearMap.det (LinearMap.baseChange K γ) = 1 → LinearMap.det (LinearMap.baseChange (R ⧸ I) γ) = 1 := by
+  atlas_forward_decl GlobalTheory.DetMod.det_baseChange_quot_eq_one
+end
+
+section
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.det_character_reduction_invariant : ∀ (R : Type) [CommRing R] [IsDomain R] (L L' : Type) [AddCommGroup L] [Module R L] [AddCommGroup L'] [Module R L'] [Module.Finite R L'] [Module.Projective R L'] (I : Ideal R) [Finite (R ⧸ I)] (A : Type) [CommGroup A] (ψ : ((L ⧸ (I • ⊤ : Submodule R L)) ≃ₗ[R] (L ⧸ (I • ⊤ : Submodule R L))) →* A) (t : L →ₗ[R] L') (γ : L' →ₗ[R] L') (k : (L ⧸ (I • ⊤ : Submodule R L)) ≃ₗ[R] (L ⧸ (I • ⊤ : Submodule R L))), (∀ 𝔪 : Ideal (R ⧸ I), 𝔪.IsMaximal → 4 ≤ Nat.card ((R ⧸ I) ⧸ 𝔪)) → (∀ b, ∃ a, b - t a ∈ (I • ⊤ : Submodule R L')) → (∀ a, t a ∈ (I • ⊤ : Submodule R L') → a ∈ (I • ⊤ : Submodule R L)) → LinearMap.det (LinearMap.baseChange (R ⧸ I) γ) = 1 → (∀ a, ∃ a', (Submodule.Quotient.mk a' : L ⧸ (I • ⊤ : Submodule R L)) = k (Submodule.Quotient.mk a) ∧ γ (t a') - t a ∈ (I • ⊤ : Submodule R L')) → ψ k = 1 := by
+  first | exact @GlobalTheory.char_eq_one_of_inverse_reduction_det_one | exact GlobalTheory.char_eq_one_of_inverse_reduction_det_one | (intros; apply GlobalTheory.char_eq_one_of_inverse_reduction_det_one <;> assumption)
+end
+
+section
 open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj
 
@@ -82,14 +225,6 @@ theorem exists_weight {ι A : Type} [Finite ι] [CommGroup A] (R : ι → ι →
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
 
-theorem levAut_mul {l : Level H} {Xo : Moduli Dw l} {g g' : Sim Dw} {ρ ρ' : Xo.X ≅ Xo.X} (h : Xo.LevAut g ρ)
-    (h' : Xo.LevAut g' ρ') : Xo.LevAut (SimAlg.mul g g') (ρ ≪≫ ρ') := by
-  obtain ⟨hs, ν, a, b⟩ := h
-  obtain ⟨hs', ν', a', b'⟩ := h'
-  obtain ⟨n, hn⟩ := Moduli.LevelAction.exists_comp_sabMap ν ν' (h := (ρ ≪≫ ρ').hom) rfl
-  refine ⟨by rw [Iso.trans_hom, Category.assoc, hs', hs], n, fun x => ?_, fun x => ?_⟩
-  · rw [hn, Iso.trans_hom, Category.assoc, ← a', ← Category.assoc, ← Category.assoc, ← a]; rfl
-  · rw [hn, Iso.trans_hom, Category.assoc, ← b', ← Category.assoc, ← Category.assoc, ← b]; rfl
 
 theorem natCast_mem_half {l l₂ : Level H} {pd : ℕ} {I : Ideal (𝓞 E)} (hM : l₂.M = l.M * pd)
     (hMb : l₂.Mb = l.Mb * I) : (pd : 𝓞 E) ∈ I := by
@@ -191,145 +326,8 @@ theorem char_eq_one {l l₂ : Level H} {pd : ℕ} {I : Ideal (𝓞 E)} (hp : pd.
   have := add_mem (hb ▸ nsmul_mem_smul_top hMI b) ha'
   rwa [sub_add_cancel] at this
 
-theorem exists_component_weight {l l₂ : Level H} {pd : ℕ} {I : Ideal (𝓞 E)} (hr : 1 ≤ Dw.p + Dw.q) (hp : pd.Prime)
-    (h5 : 5 ≤ pd) (hM : l₂.M = l.M * pd) (hA : l₂.A = 1) (hMb : l₂.Mb = l.Mb * I) {A : Type} [CommGroup A]
-    (ψ : ((Dw.La ⧸ (I • ⊤ : Submodule (𝓞 E) Dw.La)) ≃ₗ[𝓞 E] (Dw.La ⧸ (I • ⊤ : Submodule (𝓞 E) Dw.La))) →* A)
-    (Xo : Moduli Dw l₂) (c : Coeff l₂) {g₀ : ℕ} {ty : Fin g₀ → (E →+* ℂ)} (hty : IsTypeFn H Dw.p Dw.q ty)
-    (F : FamilyUnif Xo (KA l₂).val.toRingHom ty) (N : ℕ) (hN : ∀ k, ψ k ^ N = 1) :
-    ∃ v : Fin F.n → A, (∀ i, v i ^ N = 1) ∧ ∀ k (g : Sim Dw) (ρ : Xo.X ≅ Xo.X),
-      (∀ a, g.f l.M a - a ∈ l.Mb • (⊤ : Submodule (𝓞 E) Dw.La)) → Xo.LevAut g ρ →
-      (∀ a, Submodule.Quotient.mk (g.f l₂.M a) = k (Submodule.Quotient.mk a)) →
-      ∀ i j P P', IsPeriod (F.Di i) ty P → IsPeriod (F.Di j) ty P' → F.u i P ≫ ρ.hom = F.u j P' →
-        v j = ψ k * v i := by
-  have hper : ∀ i, ∃ P, IsPeriod (F.Di i) ty P := fun i =>
-    ((PeriodExists.typeFn_period_exist E H (F.Di i)).2.1 g₀ ty (by rw [(F.sig i).1, (F.sig i).2]; exact hty)).2
-  let R : Fin F.n → Fin F.n → A → Prop := fun i j a => ∃ (k : _) (g : Sim Dw) (ρ : Xo.X ≅ Xo.X),
-    (∀ a, g.f l.M a - a ∈ l.Mb • (⊤ : Submodule (𝓞 E) Dw.La)) ∧ Xo.LevAut g ρ ∧
-    (∀ a, Submodule.Quotient.mk (g.f l₂.M a) = k (Submodule.Quotient.mk a)) ∧ a = ψ k ∧
-    ∀ P, IsPeriod (F.Di i) ty P → ∃ P', IsPeriod (F.Di j) ty P' ∧ F.u i P ≫ ρ.hom = F.u j P'
-  suffices key : ∃ v : Fin F.n → A, (∀ i, v i ^ N = 1) ∧ ∀ i j a, R i j a → v j = a * v i by
-    obtain ⟨v, hv₀, hv⟩ := key
-    refine ⟨v, hv₀, fun k g ρ hg hρ hk i j P P' hP hP' e => hv i j _ ⟨k, g, ρ, hg, hρ, hk, rfl, ?_⟩⟩
-    obtain ⟨j', hj'⟩ := (GlobalTheory.T.level_automorphism_period_family E H Dw l₂ Xo c hr hA g₀ ty F g ρ hty hρ).1 i
-    obtain ⟨Q, hQ, e'⟩ := hj' P hP
-    obtain rfl := F.disj _ _ _ _ hQ hP' (e'.symm.trans e)
-    exact hj'
-  refine exists_weight R ?_ ?_ ?_ N (by rintro i j _ ⟨k, -, -, -, -, -, rfl, -⟩; exact hN k)
-  · rintro i j m _ _ ⟨k, g, ρ, hg, hρ, hk, rfl, h⟩ ⟨k', g', ρ', hg', hρ', hk', rfl, h'⟩
-    refine ⟨k * k', SimAlg.mul g g', ρ ≪≫ ρ', fun a => ?_, levAut_mul hρ hρ', fun a => ?_, (map_mul ψ _ _).symm,
-      fun P hP => ?_⟩
-    · have := add_mem (hg (g'.f l.M a)) (hg' a)
-      rwa [sub_add_sub_cancel] at this
-    · rw [LinearEquiv.mul_apply, ← hk', ← hk]; rfl
-    · obtain ⟨P', hP', e⟩ := h P hP
-      obtain ⟨P'', hP'', e'⟩ := h' P' hP'
-      exact ⟨P'', hP'', by rw [Iso.trans_hom, ← Category.assoc, e, e']⟩
-  · rintro i _ ⟨k, g, ρ, hg, hρ, hk, rfl, h⟩
-    obtain ⟨P, hP⟩ := hper i
-    obtain ⟨P', hP', e⟩ := h P hP
-    obtain ⟨γ, hγ, hγ'⟩ := (GlobalTheory.T.level_automorphism_period_family E H Dw l₂ Xo c hr hA g₀ ty F g ρ hty hρ).2 i P P' hP hP' e
-    exact char_eq_one hp h5 hM hA hMb ψ (F.Di i) (F.t i) (fun a => (F.t_inj i a).1) (F.t_surj i) g hg k hk γ hγ hγ'
-  · rintro i j _ ⟨k, g, ρ, hg, hρ, hk, rfl, h⟩
-    choose f hf using (GlobalTheory.T.level_automorphism_period_family E H Dw l₂ Xo c hr hA g₀ ty F g ρ hty hρ).1
-    refine ⟨f, fun m => ?_, ?_, fun x => ⟨k, g, ρ, hg, hρ, hk, rfl, hf x⟩⟩
-    · obtain ⟨Q, hQ⟩ := hper m
-      have hs : ρ.inv ≫ Xo.s = Xo.s := by rw [Iso.inv_comp_eq, hρ.1]
-      obtain ⟨x, P, hP, e⟩ := F.onto (F.u m Q ≫ ρ.inv) (by rw [Category.assoc, hs, F.over_σ m Q hQ])
-      obtain ⟨P', hP', e'⟩ := hf x P hP
-      rw [e, Category.assoc, Iso.inv_hom_id, Category.comp_id] at e'
-      exact ⟨x, (F.disj _ _ _ _ hQ hP' e').symm⟩
-    · obtain ⟨P, hP⟩ := hper i
-      obtain ⟨P', hP', e⟩ := h P hP
-      obtain ⟨P'', hP'', e'⟩ := hf i P hP
-      exact F.disj _ _ _ _ hP'' hP' (e'.symm.trans e)
 
-theorem isLev_psiTie {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {n : ℕ} (d : DeltaDat Xo c n) (hd : d.IsLev)
-    (ψ : (LaI Xo c d ≃ₗ[𝓞 E] LaI Xo c d) →* c.Fˣ) {g₀ : ℕ} {ty : Fin g₀ → (E →+* ℂ)}
-    (F : FamilyUnif d.Xo₂ (KA d.l₂).val.toRingHom ty) (χ : Fin F.n → Rul d.Xo₂ d.c₂)
-    (hχ : ∀ i, χ i ∈ sec d.Xo₂ d.c₂ 0 0)
-    (hval : ∀ i (y : FrPt d.Xo₂ d.c₂ (CAt d.c₂.F.val.toRingHom)) (i' : Fin F.n) P, IsPeriod (F.Di i') ty P →
-      y.x = F.u i' P → evR d.Xo₂ d.c₂ (χ i) y = if i' = i then 1 else 0)
-    (v : Fin F.n → c.Fˣ) (N : ℕ) (hN : ∀ i, v i ^ N = 1)
-    (hv : ∀ k (g : Sim Dw) (ρ : d.Xo₂.X ≅ d.Xo₂.X),
-      (∀ a, g.f l.M a - a ∈ l.Mb • (⊤ : Submodule (𝓞 E) Dw.La)) → d.Xo₂.LevAut g ρ →
-      (∀ a, Submodule.Quotient.mk (g.f d.l₂.M a) = k (Submodule.Quotient.mk a)) →
-      ∀ i j P P', IsPeriod (F.Di i) ty P → IsPeriod (F.Di j) ty P' → F.u i P ≫ ρ.hom = F.u j P' →
-        v j = ψ k * v i) :
-    ∃ f : Rul d.Xo₂ d.c₂, DeltaDat.IsLev { d with cδ := f } ∧ DeltaDat.PsiTie { d with cδ := f } ψ ∧ f ^ N = 1 := by
-  let f : Rul d.Xo₂ d.c₂ := ∑ i, d.eF (v i : c.F) • χ i
-  have hf : f ∈ sec d.Xo₂ d.c₂ 0 0 := Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (hχ i)
-  have hev : ∀ (y : FrPt d.Xo₂ d.c₂ (CAt d.c₂.F.val.toRingHom)) (i : Fin F.n) P, IsPeriod (F.Di i) ty P →
-      y.x = F.u i P → evR d.Xo₂ d.c₂ f y = algebraMap d.c₂.F _ (d.eF (v i : c.F)) := by
-    intro y i P hP e
-    have h1 : evR d.Xo₂ d.c₂ f y = ∑ j, d.eF (v j : c.F) • evR d.Xo₂ d.c₂ (χ j) y := by
-      change evalL (K := d.c₂.F) (fun S _ _ => FrPt d.Xo₂ d.c₂ S) (fun φ y z => FrMap φ y z) y f = _
-      rw [map_sum]
-      exact Finset.sum_congr rfl fun j _ => map_smul _ _ _
-    rw [h1, Finset.sum_eq_single i]
-    · rw [hval i y i P hP e, if_pos rfl, Algebra.smul_def, mul_one]
-    · intro j _ hj
-      rw [hval j y i P hP e, if_neg (Ne.symm hj), smul_zero]
-    · simp
-  have hon : ∀ y : FrPt d.Xo₂ d.c₂ (CAt d.c₂.F.val.toRingHom), ∃ i P, IsPeriod (F.Di i) ty P ∧ F.u i P = y.x :=
-    fun y => F.onto y.x y.x_over
-  haveI : IsDomain (CAt d.c₂.F.val.toRingHom) := inferInstanceAs (IsDomain ℂ)
-  have hne : ∀ i, algebraMap d.c₂.F (CAt d.c₂.F.val.toRingHom) (d.eF (v i : c.F)) ≠ 0 := fun i h =>
-    (v i).ne_zero (d.eF.injective ((algebraMap d.c₂.F (CAt d.c₂.F.val.toRingHom)).injective (by
-      rw [h, map_zero, map_zero])))
-  obtain ⟨h1, h2, h3, h4, h5, h6, h7, -, -⟩ := hd
-  refine ⟨f, ⟨h1, h2, h3, h4, h5, h6, h7, hf, fun k _ _ _ y h0 => ?_⟩, fun k g ρ hg _ hρ hk K _ _ _ y y' e => ?_, ?_⟩
-  · obtain ⟨z, -, -, hz, -⟩ := GlobalTheory.T.exists_complex_frobenius_points E H Dw d.l₂ d.Xo₂ d.c₂ k y y
-    obtain ⟨i, P, hP, e⟩ := hon z
-    have := hz f hf h0
-    rw [hev z i P hP e.symm] at this
-    exact hne i this
-  · obtain ⟨z, z', hρz, -, hz⟩ := GlobalTheory.T.exists_complex_frobenius_points E H Dw d.l₂ d.Xo₂ d.c₂ K y y'
-    obtain ⟨i, P, hP, e₁⟩ := hon z
-    obtain ⟨j, P', hP', e₂⟩ := hon z'
-    refine hz f hf _ ?_
-    rw [hev z i P hP e₁.symm, hev z' j P' hP' e₂.symm,
-      hv k g ρ hg.2.1 hρ hk i j P P' hP hP' (by rw [e₁, e₂]; exact (hρz _ e).symm), Units.val_mul, map_mul, map_mul]
-    rfl
-  · have hone : (1 : Rul d.Xo₂ d.c₂) ∈ sec d.Xo₂ d.c₂ 0 0 := by
-      refine ⟨fun p q φ y z _ => by simp, fun p t y y' _ => ?_⟩
-      have : wchar (ex Dw 0 0) t = 1 := by
-        unfold wchar
-        refine Finset.prod_eq_one fun i _ => ?_
-        cases i <;> simp [ex]
-      simp [this]
-    have hpow : ∀ m : ℕ, f ^ m ∈ sec d.Xo₂ d.c₂ 0 0 := by
-      intro m
-      induction m with
-      | zero => rw [pow_zero]; exact hone
-      | succ m ih => rw [pow_succ]; simpa using sec_mul d.Xo₂ d.c₂ 0 0 0 0 ih hf
-    have hs := Submodule.sub_mem _ (hpow N) hone
-    refine sub_eq_zero.1 (GlobalTheory.T.points_detect_frobenius_sections E H Dw d.l₂ d.Xo₂ d.c₂ 0 0 _ hs fun K _ _ _ y => ?_)
-    obtain ⟨z₀, z, -, -, hz⟩ := GlobalTheory.T.exists_complex_frobenius_points E H Dw d.l₂ d.Xo₂ d.c₂ K y y
-    obtain ⟨i, P, hP, e⟩ := hon z
-    have e₀ := hev z i P hP e.symm
-    have hmul : ∀ a b : Rul d.Xo₂ d.c₂, evR d.Xo₂ d.c₂ (a * b) z = evR d.Xo₂ d.c₂ a z * evR d.Xo₂ d.c₂ b z :=
-      fun a b => evalAt_mul _ _ a b z
-    have e₁ : evR d.Xo₂ d.c₂ 1 z = 1 := by
-      have := hmul f 1
-      rw [mul_one, e₀] at this
-      exact (mul_eq_left₀ (hne i)).1 this.symm
-    have e₂ : ∀ m : ℕ, evR d.Xo₂ d.c₂ (f ^ m) z = evR d.Xo₂ d.c₂ f z ^ m := by
-      intro m
-      induction m with
-      | zero => rw [pow_zero, pow_zero, e₁]
-      | succ m ih => rw [pow_succ, pow_succ, hmul, ih]
-    have e₃ : evR d.Xo₂ d.c₂ (f ^ N - 1) z = evR d.Xo₂ d.c₂ (f ^ N) z - evR d.Xo₂ d.c₂ 1 z :=
-      map_sub (evalL (K := d.c₂.F) (fun S _ _ => FrPt d.Xo₂ d.c₂ S) (fun φ y z => FrMap φ y z) z) _ _
-    have := hz _ hs 0 (by
-      rw [e₃, e₂, e₀, e₁, ← map_pow, ← map_pow, ← Units.val_pow_eq_pow_val, hN, Units.val_one, map_one, map_one,
-        map_zero, zero_mul, sub_self])
-    rwa [map_zero, zero_mul] at this
 
-theorem exists_char_subfield {G : Type} [Group G] (ψ₀ : G →* ℂˣ) (F : IntermediateField ℚ ℂ)
-    (h : ∀ k, ((ψ₀ k : ℂˣ) : ℂ) ∈ F) : ∃ ψ : G →* Fˣ, ∀ k, (((ψ k : Fˣ) : F) : ℂ) = (ψ₀ k : ℂˣ) :=
-  ⟨MonoidHom.toHomUnits
-    { toFun := fun k => (⟨(ψ₀ k : ℂˣ), h k⟩ : F)
-      map_one' := Subtype.ext (by simp)
-      map_mul' := fun a b => Subtype.ext (by simp) }, fun _ => rfl⟩
 
 end GlobalTheory.CharacterFunction
+end

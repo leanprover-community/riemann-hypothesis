@@ -16,8 +16,6 @@ abbrev singH (X : TopCat.{0}) (n : ℕ) : ModuleCat.{0} ℤ := (TopCat.toSSet.ob
 abbrev singHMap {X Y : TopCat.{0}} (f : X ⟶ Y) (n : ℕ) : singH X n ⟶ singH Y n :=
   SSet.homologyMap (TopCat.toSSet.map f) ZZ n
 
-theorem singH_eq (X : TopCat.{0}) (n : ℕ) :
-    singH X n = ((AlgebraicTopology.singularHomologyFunctor (ModuleCat.{0} ℤ) n).obj ZZ).obj X := rfl
 
 def IsAcyclicSpace (F : TopCat.{0}) : Prop :=
   PathConnectedSpace F ∧ ∀ n : ℕ, Limits.IsZero (singH F (n + 1))

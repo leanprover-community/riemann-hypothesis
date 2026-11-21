@@ -48,11 +48,6 @@ def polyWD (ℓ : ℕ) [Fact ℓ.Prime] (u : ℤ_[ℓ]ˣ) : WD (polyBase ℓ u) 
     exact ⟨c, Submodule.mem_top, by
       simp only [AlgHom.toLinearMap_apply, smul_eq_mul]; exact hc⟩
 
-theorem wDNonempty_proof : WDNonempty := by
-  intro ℓ _ u
-  refine ⟨polyBase ℓ u, polyWD ℓ u, rfl, ?_, ?_⟩
-  · exact top_ne_bot
-  · exact not_isUnit_X
 
 section Decomp
 

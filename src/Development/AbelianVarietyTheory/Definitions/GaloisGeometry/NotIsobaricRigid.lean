@@ -286,20 +286,7 @@ theorem charLaws_of_tie (T : WDTie N A) : CharLaws N A := by
   · rw [T.char _ _ _ h2, T.char _ _ _ h1, T.char _ _ _ h4, T.char _ _ _ h2, char_assoc]
   · rw [T.char _ _ _ h5, tie_lpUnr T w _ (by simp), char_one]
 
-theorem exists_not_mono0 (T : WDTie N A) (w : PlE H) : ∃ a : A.LP w, ¬ A.mono0 a ∧ A.tempered a ∧ A.lpDim a = 2 := by
-  refine ⟨(T.e w).symm (WD.lpSp _ 2), ?_, ?_, ?_⟩
-  · rw [T.mono0, Equiv.apply_symm_apply]; exact WD.not_mono0_lpSp le_rfl
-  · rw [T.tempered, Equiv.apply_symm_apply]; exact WD.tempered_lpSp 2
-  · rw [← T.dim, Equiv.apply_symm_apply]; exact WD.lpDim_lpSp 2
 
-theorem not_isobaricRigid {a : ℕ} (ha : 1 ≤ a) (π π' : A.CG a) {s : ℝ} (hs : s ≠ 0)
-    (h : ∀ w, A.locG π' w = A.lpTw (A.locG π w) s) : ¬ IsobaricRigid N A := by
-  intro hr
-  have := hr [(⟨a, π⟩, s)] [(⟨a, π'⟩, 0)] (by simpa) (by simpa)
-    (Filter.Eventually.of_forall fun w => by simp [twSum, A.lpTw_zero, h])
-  rw [List.perm_singleton] at this
-  simp at this
-  exact hs this.2
 
 end Gen
 
@@ -373,12 +360,6 @@ theorem isobaricRigid : IsobaricRigid N (wdAut N A₀ τ γ) := by
 
 end Rigid
 
-theorem label_full (N : NData R H what₂) [IsEmpty N.Loc] (A₀ : NAut N)
-    (τ : ∀ k, Fb (H.g k) (H.g_prime k) →* ℂ) (γ : Fin 2 → PlE H → G H.E N.Om) (k : Fin 2) (w : PlE H)
-    (hL : haveI : Fact (H.g k).Prime := ⟨H.g_prime k⟩; TeichmullerInertiaLabelCondition (N.plOm.1 w) w (τ k) (γ k w)) :
-    (wdAut N A₀ τ γ).items₂ k w (WD.lpSp _ 2) = (X - 1) ^ 2 :=
-  haveI : Fact (H.g k).Prime := ⟨H.g_prime k⟩
-  WD.lab_lpSp hL 2
 
 theorem exists_tie (H : Host R) (what₂ : Rows.Data R) (h : Examples₂.NHyp H what₂)
     (τ : ∀ k, Fb (H.g k) (H.g_prime k) →* ℂ) (γ : Fin 2 → PlE H → G H.E (Examples₂.ndToy H what₂ h).Om) :

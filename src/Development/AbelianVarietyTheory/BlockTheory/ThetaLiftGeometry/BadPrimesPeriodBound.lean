@@ -42,11 +42,9 @@ def badS (D : D7) : Set ℕ :=
   hostS D.host.q D.host.d (D.host.g 0) (D.host.g 1)
     ((Set.range fun u : D.what₂.Word => (D.mem u).A.T) ∪ (D.host.small : Set ℕ))
 
-theorem T_mem_badS (D : D7) (u : D.what₂.Word) : (D.mem u).A.T ∈ badS D := Or.inr (Or.inl ⟨u, rfl⟩)
 
 theorem small_mem_badS (D : D7) (l : ℕ) (h : l ∈ D.host.small) : l ∈ badS D := Or.inr (Or.inr (Finset.mem_coe.2 h))
 
-theorem g_mem_badS (D : D7) (i : Fin 2) : D.host.g i ∈ badS D := Or.inl (by fin_cases i <;> simp)
 
 abbrev Twist (D : D7) : Type := Tup (recFields D).F (recFields D).E (recFields D).K (badS D)
 

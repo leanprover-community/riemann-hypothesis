@@ -71,19 +71,6 @@ theorem Concl.scalar_pos {R : RealDat D A Ks} (h : Concl R) (t : T) (c : Eig D) 
   obtain ⟨lam, hpos, -, κ, hκ, hK⟩ := h
   exact ⟨_, mul_pos hκ (Finset.prod_pos fun j _ => hpos t j c), hK t c⟩
 
-theorem Concl.of_match {R : RealDat D A Ks} (h : Concl R) (hm : ∀ c, partE R c ≠ ⊥ → ∀ i, partW R i c ≠ ⊥) :
-    ∃ κ : ℝ, 0 < κ ∧ ∀ lam, IsLam R lam → Lift.IsKap D.R.m (dnUp R) (partE R) lam κ := by
-  obtain ⟨lam, -, hl, κ, hκ, hK⟩ := h
-  refine ⟨κ, hκ, fun lam' hl' t c x hx => ?_⟩
-  by_cases h0 : partE R c = ⊥
-  · rw [h0, Submodule.mem_bot] at hx
-    rw [hx, map_zero, smul_zero]
-  · rw [hK t c x hx]
-    congr 3
-    refine Finset.prod_congr rfl fun j hj => ?_
-    rw [Finset.mem_Icc] at hj
-    have := Lift.IsLamP.unique (hl ⟨j - 1, by omega⟩ t) (hl' ⟨j - 1, by omega⟩ t) (hm c h0 _)
-    rwa [show j - 1 + 1 = j by omega] at this
 
 end
 

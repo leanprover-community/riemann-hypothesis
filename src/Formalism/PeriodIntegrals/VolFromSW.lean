@@ -129,8 +129,5 @@ def VolStabFromSW : Prop :=
 def VolumeDegenerateFromSiegelWeil : Prop :=
   ForAllCM fun F E _ _ _ _ σ M J => SWa1 F E σ M J → SWc1 F E σ M J → VolumeIsotropicTuple F E σ M J
 
-theorem volumesFromSW_of (h1 : VolStabFromSW) (h2 : VolumeDegenerateFromSiegelWeil) : VolumesFromSW := by
-  intro F E _ _ _ _ _ σ hE M J hJ ha hc
-  exact ⟨h1 F E σ hE M J hJ ha hc, h2 F E σ hE M J hJ ha hc⟩
 
 end PI.VolFromSW

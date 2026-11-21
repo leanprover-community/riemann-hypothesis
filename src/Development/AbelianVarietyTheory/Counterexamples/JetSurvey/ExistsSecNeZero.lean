@@ -43,10 +43,5 @@ theorem exists_sec_ne_zero (hk : 1 ≤ k) (α : D.X) (R' : Type) [CommRing R'] [
     (fun j => (h _ j).trans (Finset.sum_eq_zero fun i _ => mul_eq_zero_of_right _ (h _ j)).symm)
   exact one_ne_zero (congrFun e i₀)
 
-theorem exists_degPre_ell (W : _root_.WeierstrassCurve R) [W.IsElliptic]
-    (c : 𝟙_ (Over (Spec (CommRingCat.of R))) ⟶ (GlobalTheory.WeierstrassCurve.ellPolAV W).A) :
-    ∃ (D : DegPre R) (α : D.X) (e : D.P = GlobalTheory.WeierstrassCurve.ellPolAV W), D.P.g = 1 ∧ e ▸ D.c α = c := by
-  obtain ⟨D, α, e, h⟩ := GlobalTheory.TwistCompare.exists_degPre (GlobalTheory.WeierstrassCurve.ellPolAV W) c
-  exact ⟨D, α, e, by rw [e]; rfl, h⟩
 
 end GlobalTheory.TwistSpanExample

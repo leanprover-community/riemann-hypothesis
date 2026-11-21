@@ -57,47 +57,8 @@ section SplitTorus
 
 variable (X : Type u) [AddCommGroup X]
 
-theorem flat_splitTorusAff : Flat (splitTorusAff ZU X).hom := by
-  change Flat (Spec.map (CommRingCat.ofHom (algebraMap ZU (torusRing ZU X))))
-  rw [HasRingHomProperty.Spec_iff (P := @Flat)]
-  change (algebraMap (ULift.{u} ℤ) (AddMonoidAlgebra (ULift.{u} ℤ) X)).Flat
-  rw [RingHom.flat_algebraMap_iff]
-  have : Module.Free (ULift.{u} ℤ) (AddMonoidAlgebra (ULift.{u} ℤ) X) := inferInstance
-  infer_instance
 
-theorem finitePresentation_splitTorusAff [Module.Finite ℤ X] :
-    LocallyOfFinitePresentation (splitTorusAff ZU X).hom := by
-  change LocallyOfFinitePresentation
-    (Spec.map (CommRingCat.ofHom (algebraMap ZU (torusRing ZU X))))
-  rw [HasRingHomProperty.Spec_iff (P := @LocallyOfFinitePresentation)]
-  change (algebraMap (ULift.{u} ℤ) (AddMonoidAlgebra (ULift.{u} ℤ) X)).FinitePresentation
-  rw [RingHom.finitePresentation_algebraMap]
-  have : IsNoetherianRing (ULift.{u} ℤ) :=
-    isNoetherianRing_of_ringEquiv ℤ ULift.ringEquiv.symm
-  have : AddGroup.FG X := Module.Finite.iff_addGroup_fg.1 inferInstance
-  have : AddMonoid.FG X := AddGroup.fg_iff_addMonoid_fg.1 inferInstance
-  exact Algebra.FinitePresentation.of_finiteType.1 inferInstance
 
-theorem isTorusExtension_splitTorus (k : Type u) [Field k] [Module.Free ℤ X] [Module.Finite ℤ X] :
-    IsTorusExtension (splitTorus (Spec (CommRingCat.of k)) X) := by
-  have hc : IsCommMonObj (splitTorus (Spec (CommRingCat.of k)) X) := by
-    unfold splitTorus; infer_instance
-  have h1 := flat_splitTorusAff X
-  have h2 := finitePresentation_splitTorusAff X
-  have e : (toUnit (splitTorus (Spec (CommRingCat.of k)) X)).left =
-      (splitTorus (Spec (CommRingCat.of k)) X).hom := by
-    simpa using Over.w (toUnit (splitTorus (Spec (CommRingCat.of k)) X))
-  refine ⟨hc, X, inferInstance, inferInstance, inferInstance, 𝟙_ _, inferInstance, 𝟙 _,
-    toUnit _, isAbelianScheme_unit _, inferInstance, inferInstance, ?_, ?_, ?_, ?_⟩
-  · have : IsIso (η : 𝟙_ (Over (Spec (CommRingCat.of k))) ⟶ 𝟙_ _) := by
-      rw [toUnit_unique (η : 𝟙_ (Over (Spec (CommRingCat.of k))) ⟶ 𝟙_ _) (𝟙 _)]
-      infer_instance
-    exact IsPullback.of_horiz_isIso ⟨toUnit_unique _ _⟩
-  · rw [e]; exact inferInstanceAs (Flat (pullback.snd _ _))
-  · rw [e]
-    exact ⟨fun y => ⟨(η : 𝟙_ _ ⟶ splitTorus (Spec (CommRingCat.of k)) X).left y, by
-      rw [← Scheme.Hom.comp_apply, Over.w]; rfl⟩⟩
-  · rw [e]; exact inferInstanceAs (LocallyOfFinitePresentation (pullback.snd _ _))
 
 end SplitTorus
 

@@ -1,11 +1,230 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.UpperBounds.SumNormSqWPos
 import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.LintegralFundSetInterLe
-import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.LintegralBallLtTopOfLocalInverse
-import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.IsOpenSaturation
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.WeightFunctionOnFrames
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.CuspidalExponentialDecay
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.LUStatementPf
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.OntoStatementPfB
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.InterpStatementPfH
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FourierCoefficientDomain
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.FundSetPf
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.OntoStatementPfS
 import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.OfRealRpowNegLe
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.OrthoStatementPf
 
+section
+open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.L2DbarEstimates MeasureTheory Topology
+open scoped ContDiff ENNReal Matrix
+
+namespace GlobalTheory.ChartChange
+
+open Filter
+
+theorem lintegral_ball_lt_top_of_localInverse {n : ℕ} (η θ : V n → V n) {U : Set (V n)} (hU : IsOpen U)
+    (h0 : (0 : V n) ∈ U) (hη : DifferentiableOn ℂ η U) (hθ : ContinuousAt θ 0) (hθ0 : θ 0 = 0)
+    (hηθ : ∀ᶠ z in 𝓝 (0 : V n), η (θ z) = z) (hθη : ∀ᶠ w in 𝓝 (0 : V n), θ (η w) = w)
+    (g h : V n → ℝ≥0∞) (hgh : ∀ w ∈ U, g (η w) = h w) {ρ : ℝ} (hρ : 0 < ρ)
+    (hint : ∫⁻ w in Metric.ball (0 : V n) ρ, h w < ⊤) :
+    ∃ S ∈ 𝓝 (0 : V n), ∫⁻ z in S, g z < ⊤ := by
+  have hcd : ContDiffOn ℝ ∞ η U := by
+    refine (contDiffOn_piLp 2).2 fun i => ?_
+    have hi : DifferentiableOn ℂ (fun z => η z i) U := (differentiableOn_piLp 2).1 hη i
+    exact (contDiffOn_of_differentiableOn n _ U hU hi).restrict_scalars ℝ
+  have hfc : ContinuousAt (fun w => |(fderiv ℝ η w).det|) 0 := by
+    have h1 : ContinuousOn (fderiv ℝ η) U := hcd.continuousOn_fderiv_of_isOpen hU (by simp)
+    exact (ContinuousLinearMap.continuous_det.continuousAt.comp (h1.continuousAt (hU.mem_nhds h0))).abs
+  set C : ℝ := |(fderiv ℝ η 0).det| + 1 with hC
+  have hb : ∀ᶠ w in 𝓝 (0 : V n), |(fderiv ℝ η w).det| < C := hfc.eventually_lt continuousAt_const (by simp [hC])
+  have hall : ∀ᶠ w in 𝓝 (0 : V n), w ∈ U ∧ w ∈ Metric.ball (0 : V n) ρ ∧ θ (η w) = w ∧
+      |(fderiv ℝ η w).det| < C := by
+    filter_upwards [hU.mem_nhds h0, Metric.ball_mem_nhds (0 : V n) hρ, hθη, hb] with w a b c d
+    exact ⟨a, b, c, d⟩
+  obtain ⟨δ, hδ, hB⟩ := Metric.eventually_nhds_iff_ball.1 hall
+  refine ⟨η '' Metric.ball 0 δ, ?_, ?_⟩
+  · have h1 : ∀ᶠ z in 𝓝 (0 : V n), θ z ∈ Metric.ball (0 : V n) δ :=
+      hθ.eventually (by rw [hθ0]; exact Metric.ball_mem_nhds _ hδ)
+    filter_upwards [h1, hηθ] with z hz1 hz2
+    exact ⟨θ z, hz1, hz2⟩
+  · have hd : ∀ w ∈ Metric.ball (0 : V n) δ,
+        HasFDerivWithinAt η (fderiv ℝ η w) (Metric.ball (0 : V n) δ) w := fun w hw =>
+      (((hcd.differentiableOn (by simp)).differentiableAt
+        (hU.mem_nhds (hB w hw).1)).hasFDerivAt).hasFDerivWithinAt
+    have hinj : Set.InjOn η (Metric.ball (0 : V n) δ) := fun w hw w' hw' e => by
+      rw [← (hB w hw).2.2.1, e, (hB w' hw').2.2.1]
+    rw [lintegral_image_eq_lintegral_abs_det_fderiv_mul volume measurableSet_ball hd hinj]
+    calc ∫⁻ w in Metric.ball (0 : V n) δ, ENNReal.ofReal |(fderiv ℝ η w).det| * g (η w)
+        ≤ ∫⁻ w in Metric.ball (0 : V n) δ, ENNReal.ofReal C * h w := by
+          refine setLIntegral_mono' measurableSet_ball fun w hw => ?_
+          rw [hgh w (hB w hw).1]
+          gcongr
+          exact (hB w hw).2.2.2.le
+      _ = ENNReal.ofReal C * ∫⁻ w in Metric.ball (0 : V n) δ, h w :=
+          lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+      _ ≤ ENNReal.ofReal C * ∫⁻ w in Metric.ball (0 : V n) ρ, h w := by
+          exact mul_le_mul_right (lintegral_mono_set fun w hw => (hB w hw).2.1) _
+      _ < ⊤ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top hint
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E]
+
+open ExtFPf in
+
+theorem zOf_zOf {r : ℕ} {X : Data E r} {x1 b c : Frame X.Ψ r} (D : LUData X x1) (ho : IsOrth X x1)
+    (hbc : ∀ τ, mat b τ * mat c τ = 1) {z : V (nd X)} (hz : z ∈ OmF X x1)
+    (hcz : cpt X (rmul x1 c) z ∈ cell D) :
+    D.zOf (cpt X (rmul x1 b) (D.zOf (cpt X (rmul x1 c) z))) = z := by
+  obtain ⟨-, hβ, he⟩ := D.split _ hcz.1 hcz.2
+  set w := D.zOf (cpt X (rmul x1 c) z)
+  set β := D.bOf (cpt X (rmul x1 c) z)
+  have hx1 := IW.orth_mem_dom X x1 ho
+  have key : cpt X (rmul x1 b) w = rmul (cpt X x1 z) (invF X β) := by
+    funext τ
+    have e : mat x1 τ * mat c τ * mat (nmat X z) τ = mat x1 τ * mat (nmat X w) τ * mat β τ := congrFun he τ
+    have hu : IsUnit (mat x1 τ).det := isUnit_iff_ne_zero.mpr (hx1 τ).1
+    have huβ : IsUnit (mat β τ).det := isUnit_iff_ne_zero.mpr (hβ τ).1
+    have e2 : mat c τ * mat (nmat X z) τ = mat (nmat X w) τ * mat β τ := by
+      have := congrArg (fun M => (mat x1 τ)⁻¹ * M) e
+      simpa only [Matrix.mul_assoc, Matrix.nonsing_inv_mul_cancel_left _ _ hu] using this
+    have e3 : mat (nmat X z) τ = mat b τ * mat (nmat X w) τ * mat β τ := by
+      rw [Matrix.mul_assoc, ← e2, ← Matrix.mul_assoc, hbc τ, Matrix.one_mul]
+    show mat x1 τ * mat b τ * mat (nmat X w) τ = mat x1 τ * mat (nmat X z) τ * (mat β τ)⁻¹
+    rw [e3]
+    simp only [Matrix.mul_assoc, Matrix.mul_nonsing_inv _ huβ, Matrix.mul_one]
+  rw [key]
+  exact (D.uniq z hz _ (invF_mem X hβ)).2.1
+
+open ExtFPf in
+theorem cpt_zero_cell {r : ℕ} {X : Data E r} {x1 b : Frame X.Ψ r} (D : LUData X x1) (ho : IsOrth X x1)
+    (hb : b ∈ Bor X.Ψ r) :
+    cpt X (rmul x1 b) 0 ∈ cell D ∧ D.zOf (cpt X (rmul x1 b) 0) = 0 := by
+  have h := D.uniq 0 (IW.zero_mem_OmF X x1 ho) b hb
+  rw [IW.cpt_zero] at h
+  rw [IW.cpt_zero]
+  exact ⟨⟨OrthogonalFrameDomain.rmul_mem_dom X (IW.orth_mem_dom X x1 ho) hb, h.1⟩, h.2.1⟩
+
+open ExtFPf in
+
+theorem chart_change : ∀ (r : ℕ) (X : Data E r) (x1 b : Frame X.Ψ r), IsOrth X x1 → b ∈ Bor X.Ψ r →
+    ∀ φ : Frame X.Ψ r → ℝ≥0∞, Measurable φ → (∀ x ∈ X.dom, ∀ b ∈ Bor X.Ψ r, φ (rmul x b) = φ x) →
+    ∀ ρ : ℝ, 0 < ρ → ∫⁻ z in Metric.ball (0 : V (nd X)) ρ, φ (cpt X (rmul x1 b) z) < ⊤ →
+    ∃ ρ' : ℝ, 0 < ρ' ∧ Metric.ball (0 : V (nd X)) ρ' ⊆ OmF X x1 ∧
+      ∫⁻ z in Metric.ball (0 : V (nd X)) ρ', φ (cpt X x1 z) ∂muF X x1 < ⊤ := by
+  intro r X x1 b ho hb φ _ hφ ρ hρ hint
+  obtain ⟨D⟩ := luData_of lu_holds X x1 ho
+  have hc := invF_mem X hb
+  have hop : ∀ y : Frame X.Ψ r, IsOpen (cpt X y ⁻¹' cell D) := fun y =>
+    (isOpen_cell D).preimage (OntoB.cd_cpt X y).continuous
+  have hdiff : ∀ y : Frame X.Ψ r, DifferentiableOn ℂ (fun z => D.zOf (cpt X y z)) (cpt X y ⁻¹' cell D) :=
+    fun y => D.hz.comp ((OntoB.cd_cpt X y).differentiable (by simp)).differentiableOn fun _ hz => hz
+  have h0 := IW.zero_mem_OmF X x1 ho
+  have hO := (OntoB.isOpen_OmF X x1).mem_nhds h0
+  obtain ⟨hb0, -⟩ := cpt_zero_cell D ho hb
+  obtain ⟨hc0, hc1⟩ := cpt_zero_cell D ho hc
+  obtain ⟨S, hS, hSi⟩ := lintegral_ball_lt_top_of_localInverse
+    (fun z => D.zOf (cpt X (rmul x1 b) z)) (fun z => D.zOf (cpt X (rmul x1 (invF X b)) z))
+    (hop (rmul x1 b)) hb0 (hdiff _)
+    (((hdiff _).differentiableAt ((hop _).mem_nhds hc0)).continuousAt) hc1
+    (by
+      filter_upwards [hO, (hop _).mem_nhds hc0] with z hz1 hz2
+      exact zOf_zOf D ho
+        (fun τ => Matrix.mul_nonsing_inv _ (isUnit_iff_ne_zero.mpr (hb τ).1)) hz1 hz2)
+    (by
+      filter_upwards [hO, (hop _).mem_nhds hb0] with z hz1 hz2
+      exact zOf_zOf D ho
+        (fun τ => Matrix.nonsing_inv_mul _ (isUnit_iff_ne_zero.mpr (hb τ).1)) hz1 hz2)
+    (fun z => φ (cpt X x1 z)) (fun z => φ (cpt X (rmul x1 b) z))
+    (by
+      intro w hw
+      obtain ⟨h1, h2, h3⟩ := D.split _ hw.1 hw.2
+      show φ (cpt X x1 _) = φ _
+      conv_rhs => rw [h3]
+      exact (hφ _ h1 _ h2).symm) hρ hint
+  have hdc : ContinuousAt (densF X x1) 0 := (OntoB.densF_continuousOn (X := X) (x0 := x1)).continuousAt hO
+  set C : ℝ := densF X x1 0 + 1 with hC
+  have hbd : ∀ᶠ z in 𝓝 (0 : V (nd X)), densF X x1 z < C := hdc.eventually_lt continuousAt_const (by simp [hC])
+  have hall : ∀ᶠ z in 𝓝 (0 : V (nd X)), z ∈ OmF X x1 ∧ z ∈ S ∧ densF X x1 z < C := by
+    filter_upwards [hO, hS, hbd] with w a b c
+    exact ⟨a, b, c⟩
+  obtain ⟨δ, hδ, hB⟩ := Metric.eventually_nhds_iff_ball.1 hall
+  refine ⟨δ, hδ, fun z hz => (hB z hz).1, ?_⟩
+  have hle : (muF X x1).restrict (Metric.ball 0 δ) ≤ ENNReal.ofReal C • volume.restrict S := by
+    unfold muF
+    rw [restrict_withDensity measurableSet_ball, Measure.restrict_restrict measurableSet_ball]
+    calc (volume.restrict (Metric.ball 0 δ ∩ OmF X x1)).withDensity
+          (fun z => ENNReal.ofReal (densF X x1 z))
+        ≤ (volume.restrict (Metric.ball 0 δ ∩ OmF X x1)).withDensity (fun _ => ENNReal.ofReal C) := by
+          refine withDensity_mono ?_
+          filter_upwards [ae_restrict_mem
+            (measurableSet_ball.inter (OntoB.isOpen_OmF X x1).measurableSet)] with z hz
+          exact ENNReal.ofReal_le_ofReal (hB z hz.1).2.2.le
+      _ = ENNReal.ofReal C • volume.restrict (Metric.ball 0 δ ∩ OmF X x1) := withDensity_const _
+      _ ≤ ENNReal.ofReal C • volume.restrict S := by
+          refine Measure.le_iff'.2 fun s => ?_
+          simp only [Measure.smul_apply, smul_eq_mul]
+          have hsub : Metric.ball 0 δ ∩ OmF X x1 ⊆ S := fun z hz => (hB z hz.1).2.1
+          exact mul_le_mul_right (Measure.le_iff'.1 (Measure.restrict_mono_set _ hsub) s) _
+  refine lt_of_le_of_lt (lintegral_mono' hle le_rfl) ?_
+  rw [lintegral_smul_measure]
+  exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top hSi
+
+end GlobalTheory.ChartChange
+end
+
+section
+open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.L2DbarEstimates MeasureTheory Topology
+open scoped ContDiff ENNReal Matrix
+
+namespace GlobalTheory.SatOpen
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E]
+
+theorem continuous_lact {r : ℕ} {Ψ : Finset (E →+* ℂ)} (δ : GL (Fin r) E) :
+    Continuous (lact δ : Frame Ψ r → Frame Ψ r) := by
+  refine continuous_pi fun τ => continuous_pi fun a => continuous_pi fun b => ?_
+  simp only [lact, mat, Matrix.mul_apply, Matrix.of_apply]
+  fun_prop
+
+theorem isOpen_cell {r : ℕ} (X : Data E r) {x1 : Frame X.Ψ r} (ho : IsOrth X x1)
+    {N : Set (V (nd X))} (hN : IsOpen N) (hNO : N ⊆ OmF X x1) :
+    IsOpen {x | ∃ y ∈ N, ∃ b ∈ Bor X.Ψ r, x = rmul (cpt X x1 y) b} := by
+  obtain ⟨Δ, zOf, bOf, hΔ, -, hz, -, hsplit, huniq⟩ := lu_holds r X x1 ho
+  have hU : IsOpen {x | x ∈ X.dom ∧ Δ x ≠ 0} :=
+    (FourierCoefficientDomain.isOpen_dom X).inter (isOpen_ne_fun hΔ.continuous continuous_const)
+  have heq : {x | ∃ y ∈ N, ∃ b ∈ Bor X.Ψ r, x = rmul (cpt X x1 y) b} =
+      {x | x ∈ X.dom ∧ Δ x ≠ 0} ∩ zOf ⁻¹' N := by
+    ext x
+    constructor
+    · rintro ⟨y, hy, b, hb, rfl⟩
+      obtain ⟨h1, h2, -⟩ := huniq y (hNO hy) b hb
+      refine ⟨⟨OntoS.dom_rmul X (hNO hy) hb, h1⟩, ?_⟩
+      rw [Set.mem_preimage, h2]
+      exact hy
+    · rintro ⟨⟨hx, hd⟩, hzN⟩
+      obtain ⟨-, h2, h3⟩ := hsplit x hx hd
+      exact ⟨zOf x, hzN, bOf x, h2, h3⟩
+  rw [heq]
+  exact hz.continuousOn.isOpen_inter_preimage hU hN
+
+theorem isOpen_saturation : ∀ (r : ℕ) (X : Data E r) (x1 : Frame X.Ψ r), IsOrth X x1 →
+    ∀ N : Set (V (nd X)), IsOpen N → N ⊆ OmF X x1 →
+    IsOpen {x | ∃ y ∈ N, ∃ γ ∈ X.Γ, ∃ b ∈ Bor X.Ψ r, x = lact γ (rmul (cpt X x1 y) b)} := by
+  intro r X x1 ho N hN hNO
+  have heq : {x | ∃ y ∈ N, ∃ γ ∈ X.Γ, ∃ b ∈ Bor X.Ψ r, x = lact γ (rmul (cpt X x1 y) b)} =
+      ⋃ γ ∈ X.Γ, lact γ⁻¹ ⁻¹' {x | ∃ y ∈ N, ∃ b ∈ Bor X.Ψ r, x = rmul (cpt X x1 y) b} := by
+    ext x
+    simp only [Set.mem_iUnion, Set.mem_preimage]
+    constructor
+    · rintro ⟨y, hy, γ, hγ, b, hb, rfl⟩
+      exact ⟨γ, hγ, y, hy, b, hb, FundSetPf.lact_inv _ _⟩
+    · rintro ⟨γ, hγ, y, hy, b, hb, h⟩
+      refine ⟨y, hy, γ, hγ, b, hb, ?_⟩
+      rw [← h, ← FundSetPf.lact_mul, mul_inv_cancel, FundSetPf.lact_one]
+  rw [heq]
+  exact isOpen_biUnion fun γ _ => (isOpen_cell X ho hN hNO).preimage (continuous_lact _)
+
+end GlobalTheory.SatOpen
+end
+
+section
 open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.L2DbarEstimates MeasureTheory Topology
 open scoped ContDiff ENNReal Matrix
 
@@ -224,84 +443,6 @@ theorem real_bound {e F G w s K C : ℝ} {a b : ℂ} {n : ℕ} (hn : 1 ≤ n) (h
           2 * K ^ ((n : ℝ) - 1 / 2) * (G * w ^ (-(n : ℝ))) := by rw [← h2]; ring
     _ ≤ _ := by gcongr
 
-theorem divInFF_of :
-    (NfacRmulStatement (E := E) ∧ NfacLactStatement (E := E) ∧ PnormInvStatement (E := E)) →
-      MeasInvStatement (E := E) → GlobalTheory.Up.DivInFF (E := E) := by
-  intro hN hM r X Xa Fl hfin x0 ho FF hF f g hf hg hfi ⟨C, hC⟩ hvan
-  have h2 := Xa.n_ge
-  have hT := Xa.T_ge
-  have hnT : nd X ≤ Xa.T := by nlinarith
-  have hT1 : 1 ≤ Xa.T := by omega
-  have hh : X.IsSec (Xa.Fp + Xa.T • Xa.L) (fun x => f x - g x) :=
-    ⟨hf.1.sub hg.1, fun x hx b hb => by simp only [hf.2.1 x hx b hb, hg.2.1 x hx b hb, mul_sub],
-      fun γ hγ x hx => by simp only [hf.2.2 γ hγ x hx, hg.2.2 γ hγ x hx, mul_sub]⟩
-  set φ := phi Xa Fl Xa.T (fun x => f x - g x) with hφ
-  have hφm : Measurable φ := measurable_phi Xa Fl _ hh
-  have hφi := phi_inv Xa Fl hN.1 hN.2.1 _ hh
-  have hφB : ∀ x ∈ X.dom, ∀ b ∈ Bor X.Ψ r, φ (rmul x b) = φ x := fun x hx b hb => by
-    have h := hφi 1 X.Γ.one_mem x hx b hb
-    rwa [FundSetPf.lact_one] at h
-  have hloc : ∀ j, ∃ U : Set (Frame X.Ψ r), IsOpen U ∧ Fl.xs j ∈ U ∧
-      (∀ x ∈ U, ∀ γ ∈ X.Γ, ∀ b ∈ Bor X.Ψ r, lact γ (rmul x b) ∈ U) ∧
-      ∫⁻ z in FF ∩ cpt X x0 ⁻¹' U, φ (cpt X x0 z) ∂muF X x0 < ⊤ := by
-    intro j
-    obtain ⟨ρ, hρ, hint⟩ := hvan j
-    rw [Nat.cast_sub hnT, sub_add_cancel] at hint
-    obtain ⟨ρ1, hρ1, hint1⟩ := local_int Xa Fl hT1 (fun x => f x - g x) (Fl.xs_mem j) hρ hint
-    obtain ⟨x1, ho1, b1, hb1, e1⟩ := ortho_holds r X _ (Fl.xs_mem j)
-    rw [e1] at hint1
-    obtain ⟨ρ2, hρ2, hsub, hint2⟩ := GlobalTheory.ChartChange.chart_change r X x1 b1 ho1 hb1 φ hφm hφB ρ1 hρ1 hint1
-    refine ⟨_, GlobalTheory.SatOpen.isOpen_saturation r X x1 ho1 _ Metric.isOpen_ball hsub,
-      ⟨0, Metric.mem_ball_self hρ2, 1, X.Γ.one_mem, b1, hb1, ?_⟩, ?_, ?_⟩
-    · rw [FundSetPf.lact_one, IW.cpt_zero]; exact e1
-    · rintro _ ⟨y, hy, γ, hγ, b, hb, rfl⟩ γ' hγ' b' hb'
-      refine ⟨y, hy, γ' * γ, X.Γ.mul_mem hγ' hγ, rmul b b', ExtFPf.mul_mem X hb hb', ?_⟩
-      rw [FundSetPf.lact_mul, ← ExtFPf.rmul_assoc, FundSetPf.lact_rmul γ (rmul _ b)]
-    · exact (GlobalTheory.Unfold.lintegral_fundSet_inter_le hM r X x0 x1 ho ho1 FF hF φ hφm hφi _
-        measurableSet_ball hsub).trans_lt hint2
-  choose U hUo hUx hUs hUi using hloc
-  obtain ⟨K, hK⟩ := Fl.family_le_coords (⋃ j, U j) (isOpen_iUnion hUo) (fun j => Set.mem_iUnion.2 ⟨j, hUx j⟩)
-    (fun x hx γ hγ b hb => by
-      obtain ⟨j, hj⟩ := Set.mem_iUnion.1 hx
-      exact Set.mem_iUnion.2 ⟨j, hUs j x hj γ hγ b hb⟩)
-  have hmeas : MeasurableSet (FF \ cpt X x0 ⁻¹' ⋃ j, U j) :=
-    hF.1.diff ((isOpen_iUnion hUo).preimage (FundSetPf.cont_cpt X x0)).measurableSet
-  have hoff : ∫⁻ z in FF \ cpt X x0 ⁻¹' ⋃ j, U j, φ (cpt X x0 z) ∂muF X x0 < ⊤ := by
-    set A : ℝ := 2 * |K| ^ ((Xa.T : ℝ) - 1 / 2) with hA
-    have hA0 : 0 ≤ A := by positivity
-    calc ∫⁻ z in FF \ cpt X x0 ⁻¹' ⋃ j, U j, φ (cpt X x0 z) ∂muF X x0
-        ≤ ∫⁻ z in FF \ cpt X x0 ⁻¹' ⋃ j, U j, (ENNReal.ofReal A *
-          ENNReal.ofReal (X.pnorm (Xa.Fp + Xa.T • Xa.L) f (cpt X x0 z) ^ 2 *
-            (∑ k, X.pnorm Xa.L (Xa.w k) (cpt X x0 z) ^ 2) ^ (-(Xa.T : ℝ))) +
-          ENNReal.ofReal (A * C)) ∂muF X x0 := by
-          refine setLIntegral_mono' hmeas fun z hz => ?_
-          have hx : cpt X x0 z ∈ X.dom := hF.2.1 hz.1
-          rw [hφ, phi_of_mem Xa Fl _ _ hx, ← ENNReal.ofReal_mul hA0]
-          refine le_trans (ENNReal.ofReal_le_ofReal ?_) ENNReal.ofReal_add_le
-          rw [pnorm_sq_eq_exp hx (Xa.Fp + Xa.T • Xa.L) (fun x => f x - g x)]
-          exact real_bound hT1 (Real.exp_pos _).le (pnorm_sq_eq_exp hx _ f) (pnorm_sq_eq_exp hx _ g)
-            (sum_pnorm_pos hx (Xa.w_nz _ hx)) (by positivity) (hK _ hx hz.2) (hC _ hx)
-      _ ≤ _ := lintegral_mono_set Set.diff_subset
-      _ < ⊤ := by
-          rw [lintegral_add_right _ measurable_const, lintegral_const_mul' _ _ ENNReal.ofReal_ne_top,
-            setLIntegral_const]
-          exact ENNReal.add_lt_top.2 ⟨ENNReal.mul_lt_top ENNReal.ofReal_lt_top hfi,
-            ENNReal.mul_lt_top ENNReal.ofReal_lt_top (muF_lt_top hM hfin ho hF)⟩
-  have hcov : FF ⊆ (⋃ j, FF ∩ cpt X x0 ⁻¹' U j) ∪ (FF \ cpt X x0 ⁻¹' ⋃ j, U j) := by
-    intro z hz
-    by_cases h : cpt X x0 z ∈ ⋃ j, U j
-    · obtain ⟨j, hj⟩ := Set.mem_iUnion.1 h
-      exact Or.inl (Set.mem_iUnion.2 ⟨j, hz, hj⟩)
-    · exact Or.inr ⟨hz, h⟩
-  have hall : ∫⁻ z in FF, φ (cpt X x0 z) ∂muF X x0 < ⊤ := by
-    refine ((lintegral_mono_set hcov).trans (lintegral_union_le _ _ _)).trans_lt
-      (ENNReal.add_lt_top.2 ⟨(lintegral_iUnion_le _ _).trans_lt ?_, hoff⟩)
-    rw [tsum_fintype]
-    exact ENNReal.sum_lt_top.2 fun j _ => hUi j
-  have hcongr : (fun z => ENNReal.ofReal (‖f (cpt X x0 z) - g (cpt X x0 z)‖ ^ 2) *
-      Wdiv X Xa Fl Xa.T (cpt X x0 z)) =ᵐ[(muF X x0).restrict FF] fun z => φ (cpt X x0 z) := by
-    filter_upwards [ae_restrict_mem hF.1, ae_restrict_of_ae (s := FF) (ae_exists_ne Xa Fl ho)] with z hz hs
-    exact (phi_eq Xa Fl Xa.T (fun x => f x - g x) (hF.2.1 hz) (hs (hF.2.1 hz))).symm
-  exact (lintegral_congr_ae hcongr).trans_lt hall
 
 end GlobalTheory.Up.DivInFFPf
+end

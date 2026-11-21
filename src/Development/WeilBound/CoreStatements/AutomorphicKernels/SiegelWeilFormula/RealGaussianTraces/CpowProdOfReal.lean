@@ -1,9 +1,734 @@
-import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.RealGaussianTraces.GramPreimageBox
-import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.RealGaussianTraces.ExistsSchwartzPolyGauss
-import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.RealGaussianTraces.ExistsBumpFourier
-import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.RealGaussianTraces.EqOfBox
+import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.RealGaussianTraces.SecondCountableTens
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.TraceEqAdd
+import Formalism.LocalToGlobal.NumberFieldFamilies.ThetaCJ
+import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.WhitGenOf
+import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.Integr
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.GaussianIsSchwartzFunction
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.WhitGenLowOf
 
+section
+noncomputable section
+
+namespace PositivityTheory.SiegelWeilFormula.GReal
+
+open HeckeCharacterZeroLocus.SiegelWeilU NumberField MeasureTheory PositivityTheory.PfSWUS.Loc PositivityTheory.Rg.Sw PositivityTheory.SiegelWeilFormula.Gen
+open scoped TensorProduct Matrix NNReal
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+
+theorem sig_sig (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (y : E) : σ (σ y) = y := by
+  obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
+  apply τ.injective
+  rw [hCM.2.2.2, hCM.2.2.2, star_star]
+
+theorem sig_nt (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) : ∃ x, σ x ≠ x := by
+  by_contra h
+  push Not at h
+  obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
+  have hc := hCM.2.1.isComplex (InfinitePlace.mk τ)
+  rw [← InfinitePlace.not_isReal_iff_isComplex, InfinitePlace.isReal_mk_iff] at hc
+  apply hc
+  ext x
+  simp only [ComplexEmbedding.conjugate_coe_eq]
+  have := hCM.2.2.2 τ x
+  rw [h x] at this
+  exact this.symm
+
+theorem trace_add (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (z : Ainf F ⊗[F] E) :
+    algebraMap (Ainf F) (Ainf F ⊗[F] E) (Algebra.trace (Ainf F) (Ainf F ⊗[F] E) z) = z + sigR (Ainf F) σ z := by
+  have : FiniteDimensional F E := Module.finite_of_finrank_pos (by rw [hCM.2.2.1]; omega)
+  exact Formalism.L2.Fam.ThC.alg_trace_gen σ
+    (PI.OmLocU.SdB.trace_eq_add σ (sig_sig σ hCM) (sig_nt σ hCM) hCM.2.2.1) z
+
+end PositivityTheory.SiegelWeilFormula.GReal
+end
+end
+
+section
+noncomputable section
+
+namespace PositivityTheory.SiegelWeilFormula.GReal
+
+open HeckeCharacterZeroLocus.SiegelWeilU NumberField MeasureTheory PositivityTheory.PfSWUS.Loc PositivityTheory.Rg.Sw PositivityTheory.SiegelWeilFormula.Gen
+open scoped TensorProduct Matrix NNReal
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+
+theorem th_half (θ : Ainf F ⊗[F] E →+* ℂ) :
+    θ (algebraMap (Ainf F) (Ainf F ⊗[F] E) (algebraMap F (Ainf F) (1 / 2))) = 1 / 2 := by
+  rw [← IsScalarTower.algebraMap_apply]
+  have : (θ.comp (algebraMap F (Ainf F ⊗[F] E))) (1 / 2) = 1 / 2 := by
+    rw [map_div₀, map_one, map_ofNat]
+  exact this
+
+theorem th_trPair (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (θ : Ainf F ⊗[F] E →+* ℂ)
+    (hc : ∀ z, θ (sigR (Ainf F) σ z) = star (θ z)) {n : ℕ} (S G : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)) :
+    θ (algebraMap (Ainf F) (Ainf F ⊗[F] E) (trPair (Ainf F) S G)) = (((S.map θ * G.map θ).trace.re : ℝ) : ℂ) := by
+  rw [trPair, map_mul, map_mul, th_half, trace_add σ hCM, map_add, hc]
+  have e : θ (∑ a, ∑ c, S a c * G c a) = (S.map θ * G.map θ).trace := by
+    simp [Matrix.trace, Matrix.mul_apply, map_sum, map_mul]
+  rw [e, Complex.star_def, Complex.add_conj]
+  push_cast
+  ring
+
+theorem tmul_one_eq (x : Ainf F) : (x ⊗ₜ[F] (1 : E)) = algebraMap (Ainf F) (Ainf F ⊗[F] E) x := by
+  rw [Algebra.TensorProduct.algebraMap_apply]
+  rfl
+
+theorem psi_trPair_gen (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (ψ : AddChar (AF F) ℂ) {ι : Type} [Fintype ι]
+    (θ : ι → (Ainf F ⊗[F] E →+* ℂ)) (l : ι → ℝ) (hP : IsPlaces σ ψ θ l) {n : ℕ}
+    (S G : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)) :
+    psiInf F ψ (trPair (Ainf F) S G) =
+      Complex.exp (2 * Real.pi * Complex.I * ∑ i, (l i : ℂ) * (((S.map (θ i) * G.map (θ i)).trace.re : ℝ) : ℂ)) := by
+  rw [hP.psi]
+  congr 2
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [tmul_one_eq, th_trPair σ hCM (θ i) (hP.conj i)]
+
+theorem psi_neg_trPair_gen (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (ψ : AddChar (AF F) ℂ) {ι : Type} [Fintype ι]
+    (θ : ι → (Ainf F ⊗[F] E →+* ℂ)) (l : ι → ℝ) (hP : IsPlaces σ ψ θ l) {n : ℕ}
+    (S G : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)) :
+    psiInf F ψ (-trPair (Ainf F) S G) =
+      Complex.exp (2 * Real.pi * Complex.I * ∑ i, (l i : ℂ) * (-(((S.map (θ i) * G.map (θ i)).trace.re : ℝ) : ℂ))) := by
+  rw [hP.psi]
+  congr 2
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [tmul_one_eq, map_neg, map_neg, th_trPair σ hCM (θ i) (hP.conj i)]
+
+theorem map_isHerm (σ : E →ₐ[F] E) (θ : Ainf F ⊗[F] E →+* ℂ)
+    (hc : ∀ z, θ (sigR (Ainf F) σ z) = star (θ z)) {n : ℕ} (b : HermR (Ainf F) σ n) :
+    ((b : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)).map θ).IsHermitian := by
+  ext a c
+  simp only [Matrix.conjTranspose_apply, Matrix.map_apply]
+  rw [← hc]
+  exact congrArg θ (b.2 a c)
+
+theorem gramX_eq {m n : ℕ} (ε : Fin m → Bool) (x : Matrix (Fin m) (Fin n) ℂ) :
+    gramX ε x = xᴴ * Matrix.diagonal (sgn ε) * x := by
+  ext i j
+  simp only [gramX, Qp, Qb, evX, map_sub, map_sum, map_mul, MvPolynomial.eval_X, Matrix.mul_apply,
+    Matrix.conjTranspose_apply, Matrix.diagonal_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
+    if_true, sgn]
+  simp only [Finset.sum_filter, if_true, Bool.false_eq_true, if_false]
+  rw [← Finset.sum_sub_distrib]
+  refine Finset.sum_congr rfl fun a _ => ?_
+  cases ε a <;> simp
+
+theorem gramX_isHerm {m n : ℕ} (ε : Fin m → Bool) (x : Matrix (Fin m) (Fin n) ℂ) : (gramX ε x).IsHermitian := by
+  rw [gramX_eq, Matrix.IsHermitian, Matrix.conjTranspose_mul, Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose,
+    Matrix.diagonal_conjTranspose, Matrix.mul_assoc]
+  have hs : star (sgn ε) = sgn ε := by
+    funext a
+    simp only [Pi.star_apply, sgn]
+    split_ifs <;> simp
+  rw [hs]
+
+end PositivityTheory.SiegelWeilFormula.GReal
+end
+end
+
+section
+noncomputable section
+
+namespace PositivityTheory.SiegelWeilFormula.GReal
+
+open HeckeCharacterZeroLocus.SiegelWeilU NumberField MeasureTheory PositivityTheory.PfSWUS.Loc PositivityTheory.Rg.Sw PositivityTheory.SiegelWeilFormula.Gen
+open scoped TensorProduct Matrix NNReal
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+
+theorem map_gramR (σ : E →ₐ[F] E) (θ : Ainf F ⊗[F] E →+* ℂ)
+    (hc : ∀ z, θ (sigR (Ainf F) σ z) = star (θ z)) {M n : ℕ} (J : Matrix (Fin M) (Fin M) E)
+    (Y : Fin n → Fin M → Ainf F ⊗[F] E) :
+    (gramR (Ainf F) σ J Y).map θ =
+      (Matrix.of fun a j => θ (Y j a))ᴴ * (JR (Ainf F) J).map θ * Matrix.of fun a j => θ (Y j a) := by
+  ext a b
+  simp only [Matrix.map_apply, gramR, hR, hform, map_sum, map_mul, hc, Matrix.mul_apply, Matrix.conjTranspose_apply,
+    Matrix.of_apply, Finset.sum_mul]
+  rw [Finset.sum_comm]
+
+theorem of_eq_crd {M n : ℕ} (θ : Ainf F ⊗[F] E →+* ℂ) (fr : GL (Fin M) ℂ) (g : GL (Fin n) ℂ)
+    (Y : Fin n → Fin M → Ainf F ⊗[F] E) :
+    (Matrix.of fun a j => θ (Y j a)) = fr.1 * crd θ fr g Y * (g⁻¹).1 := by
+  simp only [crd, ← Matrix.mul_assoc]
+  rw [← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.one_mul, Matrix.mul_assoc, ← Units.val_mul,
+    mul_inv_cancel, Units.val_one, Matrix.mul_one]
+
+theorem map_gramR_crd (σ : E →ₐ[F] E) (ψ : AddChar (AF F) ℂ) {ι : Type} [Fintype ι]
+    (θ : ι → (Ainf F ⊗[F] E →+* ℂ)) (l : ι → ℝ) (hP : IsPlaces σ ψ θ l) {M n : ℕ} (J : Matrix (Fin M) (Fin M) E)
+    (ε : ι → Fin M → Bool) (fr : ι → GL (Fin M) ℂ) (hfr : IsFrames J θ ε fr) (g : ι → GL (Fin n) ℂ)
+    (Y : Fin n → Fin M → Ainf F ⊗[F] E) (i : ι) :
+    (gramR (Ainf F) σ J Y).map (θ i) = (((g i)⁻¹).1)ᴴ * gramX (ε i) (crdAll θ fr g Y i) * ((g i)⁻¹).1 := by
+  rw [map_gramR σ (θ i) (hP.conj i), of_eq_crd (θ i) (fr i) (g i)]
+  have hg : gramX (ε i) (crdAll θ fr g Y i) =
+      (crd (θ i) (fr i) (g i) Y)ᴴ * Matrix.diagonal (sgn (ε i)) * crd (θ i) (fr i) (g i) Y := gramX_eq _ _
+  rw [hg, ← hfr i]
+  simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
+
+theorem trace_herm_mul {n : ℕ} (β y : WR.E n) :
+    (herm β * herm y).trace = ∑ a, ∑ b, ((β a b : ℝ) : ℂ) * ((y a b : ℝ) : ℂ) := by
+  have key : ∀ i j, herm β i j * herm y j i + herm β j i * herm y i j =
+      ((β i j : ℝ) : ℂ) * ((y i j : ℝ) : ℂ) + ((β j i : ℝ) : ℂ) * ((y j i : ℝ) : ℂ) := by
+    intro i j
+    apply Complex.ext <;> simp [herm] <;> ring
+  have h2 : (2 : ℂ) * (herm β * herm y).trace = 2 * ∑ a, ∑ b, ((β a b : ℝ) : ℂ) * ((y a b : ℝ) : ℂ) := by
+    have e1 : (herm β * herm y).trace = ∑ i, ∑ j, herm β i j * herm y j i := by
+      simp [Matrix.trace, Matrix.mul_apply]
+    have e2 : (2 : ℂ) * ∑ i, ∑ j, herm β i j * herm y j i =
+        ∑ i, ∑ j, (herm β i j * herm y j i + herm β j i * herm y i j) := by
+      rw [two_mul]
+      conv_lhs => arg 2; rw [Finset.sum_comm]
+      simp only [Finset.sum_add_distrib]
+    have e3 : (2 : ℂ) * ∑ a, ∑ b, ((β a b : ℝ) : ℂ) * ((y a b : ℝ) : ℂ) =
+        ∑ i, ∑ j, (((β i j : ℝ) : ℂ) * ((y i j : ℝ) : ℂ) + ((β j i : ℝ) : ℂ) * ((y j i : ℝ) : ℂ)) := by
+      rw [two_mul]
+      conv_lhs => arg 2; rw [Finset.sum_comm]
+      simp only [Finset.sum_add_distrib]
+    rw [e1, e2, e3]
+    simp only [key]
+  exact mul_left_cancel₀ two_ne_zero h2
+
+theorem trace_re_of_herm {n : ℕ} {A B : Matrix (Fin n) (Fin n) ℂ} (hA : A.IsHermitian) (hB : B.IsHermitian) :
+    ((((A * B).trace).re : ℝ) : ℂ) = (A * B).trace := by
+  apply Complex.conj_eq_iff_re.mp
+  change star (Matrix.trace _) = _
+  rw [← Matrix.trace_conjTranspose, Matrix.conjTranspose_mul, hA.eq, hB.eq, Matrix.trace_mul_comm]
+
+theorem herm_ybAll (σ : E →ₐ[F] E) (ψ : AddChar (AF F) ℂ) {ι : Type} [Fintype ι]
+    (θ : ι → (Ainf F ⊗[F] E →+* ℂ)) (l : ι → ℝ) (hP : IsPlaces σ ψ θ l) {n : ℕ} (g : ι → GL (Fin n) ℂ)
+    (b : HermR (Ainf F) σ n) (i : ι) :
+    herm (ybAll σ θ g b i) =
+      ((g i)⁻¹).1 * (b : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)).map (θ i) * (((g i)⁻¹).1)ᴴ :=
+  herm_hinv _ (Matrix.isHermitian_mul_mul_conjTranspose _ (map_isHerm σ (θ i) (hP.conj i) b))
+
+theorem herm_ygAll (σ : E →ₐ[F] E) (ψ : AddChar (AF F) ℂ) {ι : Type} [Fintype ι]
+    (θ : ι → (Ainf F ⊗[F] E →+* ℂ)) (l : ι → ℝ) (hP : IsPlaces σ ψ θ l) {n : ℕ} (g : ι → GL (Fin n) ℂ)
+    (b : HermR (Ainf F) σ n) (i : ι) :
+    herm (ygAll σ θ g b i) =
+      ((g i).1)ᴴ * (b : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)).map (θ i) * (g i).1 :=
+  herm_hinv _ (Matrix.isHermitian_conjTranspose_mul_mul _ (map_isHerm σ (θ i) (hP.conj i) b))
+
+end PositivityTheory.SiegelWeilFormula.GReal
+end
+end
+
+section
+noncomputable section
+
+namespace PositivityTheory.SiegelWeilFormula.GReal
+
+open HeckeCharacterZeroLocus.SiegelWeilU NumberField MeasureTheory PositivityTheory.PfSWUS.Loc PositivityTheory.Rg.Sw PositivityTheory.SiegelWeilFormula.Gen
+open scoped TensorProduct Matrix NNReal
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+
+theorem tr4 {n : ℕ} (A B C D : Matrix (Fin n) (Fin n) ℂ) : (B * (C * D * A)).trace = (A * B * C * D).trace := by
+  rw [show A * B * C * D = A * (B * C * D) by simp only [Matrix.mul_assoc], Matrix.trace_mul_comm A]
+  simp only [Matrix.mul_assoc]
+
+theorem gl_mul_inv {n : ℕ} (g : GL (Fin n) ℂ) : g.1 * (g⁻¹).1 = 1 := by
+  rw [← Units.val_mul, mul_inv_cancel, Units.val_one]
+
+theorem gl_inv_mul {n : ℕ} (g : GL (Fin n) ℂ) : (g⁻¹).1 * g.1 = 1 := by
+  rw [← Units.val_mul, inv_mul_cancel, Units.val_one]
+
+theorem gl_conj_cancel {n : ℕ} (g : GL (Fin n) ℂ) (Q : Matrix (Fin n) (Fin n) ℂ) :
+    (g.1)ᴴ * ((((g⁻¹).1)ᴴ * Q * (g⁻¹).1)) * g.1 = Q := by
+  have h1 : (g.1)ᴴ * ((g⁻¹).1)ᴴ = 1 := by rw [← Matrix.conjTranspose_mul, gl_inv_mul, Matrix.conjTranspose_one]
+  simp only [← Matrix.mul_assoc]
+  rw [h1, Matrix.one_mul, Matrix.mul_assoc, gl_inv_mul, Matrix.mul_one]
+
+theorem re_sum_cast {n : ℕ} (x y : WR.E n) :
+    ((((∑ a, ∑ b, ((x a b : ℝ) : ℂ) * ((y a b : ℝ) : ℂ)) : ℂ).re : ℝ) : ℂ) =
+      ∑ a, ∑ b, ((x a b : ℝ) : ℂ) * ((y a b : ℝ) : ℂ) := by
+  have : (∑ a, ∑ b, ((x a b : ℝ) : ℂ) * ((y a b : ℝ) : ℂ)) = ((∑ a, ∑ b, x a b * y a b : ℝ) : ℂ) := by push_cast; rfl
+  rw [this, Complex.ofReal_re]
+
+theorem gram_mem (σ : E →ₐ[F] E) (ψ : AddChar (AF F) ℂ) {ι : Type} [Fintype ι]
+    (θ : ι → (Ainf F ⊗[F] E →+* ℂ)) (l : ι → ℝ) (hP : IsPlaces σ ψ θ l) {M n : ℕ} (J : Matrix (Fin M) (Fin M) E)
+    (ε : ι → Fin M → Bool) (fr : ι → GL (Fin M) ℂ) (hfr : IsFrames J θ ε fr) (g : ι → GL (Fin n) ℂ)
+    (Y : Fin n → Fin M → Ainf F ⊗[F] E) : gramR (Ainf F) σ J Y ∈ HermR (Ainf F) σ n := by
+  intro a b
+  apply hP.bij.injective
+  funext i
+  show θ i (sigR _ σ (gramR (Ainf F) σ J Y b a)) = θ i (gramR (Ainf F) σ J Y a b)
+  rw [hP.conj]
+  have h := map_gramR_crd σ ψ θ l hP J ε fr hfr g Y i
+  have hh : ((gramR (Ainf F) σ J Y).map (θ i)).IsHermitian := by
+    rw [h]; exact Matrix.isHermitian_conjTranspose_mul_mul _ (gramX_isHerm _ _)
+  have := congrFun (congrFun hh a) b
+  simpa [Matrix.conjTranspose_apply] using this
+
+theorem phi_mul_psi (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (ψ : AddChar (AF F) ℂ) {ι : Type} [Fintype ι]
+    (θ : ι → (Ainf F ⊗[F] E →+* ℂ)) (l : ι → ℝ) (hP : IsPlaces σ ψ θ l) {M n : ℕ} (J : Matrix (Fin M) (Fin M) E)
+    (ε : ι → Fin M → Bool) (fr : ι → GL (Fin M) ℂ) (hfr : IsFrames J θ ε fr) (g : ι → GL (Fin n) ℂ) (P : ι → PX M n)
+    (b : HermR (Ainf F) σ n) (Y : Fin n → Fin M → Ainf F ⊗[F] E) :
+    phiInf θ l fr g P Y * psiInf F ψ (trPair (Ainf F) (b : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)) (gramR (Ainf F) σ J Y)) =
+      ∏ i, (evX (P i) (crdAll θ fr g Y i) * gs (2 * Real.pi * |l i|) (crdAll θ fr g Y i) *
+        Complex.exp (Complex.I * ((2 * Real.pi * l i : ℝ) : ℂ) *
+          (herm (ybAll σ θ g b i) * gramX (ε i) (crdAll θ fr g Y i)).trace)) := by
+  rw [psi_trPair_gen σ hCM ψ θ l hP, Finset.mul_sum, Complex.exp_sum]
+  unfold phiInf
+  rw [← Finset.prod_mul_distrib]
+  refine Finset.prod_congr rfl fun i _ => ?_
+  have htr : ((((b : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)).map (θ i) * (gramR (Ainf F) σ J Y).map (θ i)).trace.re : ℝ) : ℂ) =
+      (herm (ybAll σ θ g b i) * gramX (ε i) (crdAll θ fr g Y i)).trace := by
+    rw [map_gramR_crd σ ψ θ l hP J ε fr hfr g Y i, tr4, ← herm_ybAll σ ψ θ l hP g b i]
+    exact trace_re_of_herm (WR.I.herm_isHermitian _) (gramX_isHerm _ _)
+  rw [htr]
+  congr 2
+  push_cast
+  ring
+
+theorem psi_neg_trPair (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (ψ : AddChar (AF F) ℂ) {ι : Type} [Fintype ι]
+    (θ : ι → (Ainf F ⊗[F] E →+* ℂ)) (l : ι → ℝ) (hP : IsPlaces σ ψ θ l) {n : ℕ} (g : ι → GL (Fin n) ℂ)
+    (T b : HermR (Ainf F) σ n) :
+    psiInf F ψ (-trPair (Ainf F) (T : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)) (b : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E))) =
+      ∏ i, WR.chr (2 * Real.pi * l i) (ygAll σ θ g T i) (ybAll σ θ g b i) := by
+  rw [psi_neg_trPair_gen σ hCM ψ θ l hP, Finset.mul_sum, Complex.exp_sum]
+  refine Finset.prod_congr rfl fun i _ => ?_
+  have e : (herm (ygAll σ θ g T i) * herm (ybAll σ θ g b i)).trace =
+      ((T : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)).map (θ i) * (b : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)).map (θ i)).trace := by
+    rw [herm_ygAll σ ψ θ l hP g T i, herm_ybAll σ ψ θ l hP g b i]
+    have h1 : (((g i)⁻¹).1)ᴴ * ((g i).1)ᴴ = 1 := by
+      rw [← Matrix.conjTranspose_mul, gl_mul_inv, Matrix.conjTranspose_one]
+    calc (((g i).1)ᴴ * (T : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)).map (θ i) * (g i).1 *
+          (((g i)⁻¹).1 * (b : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)).map (θ i) * (((g i)⁻¹).1)ᴴ)).trace
+        = (((g i).1)ᴴ * ((T : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)).map (θ i) *
+            (b : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)).map (θ i) * (((g i)⁻¹).1)ᴴ)).trace := by
+          congr 1
+          simp only [Matrix.mul_assoc]
+          rw [← Matrix.mul_assoc (g i).1, gl_mul_inv, Matrix.one_mul]
+      _ = ((T : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)).map (θ i) *
+            (b : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)).map (θ i) * ((((g i)⁻¹).1)ᴴ * ((g i).1)ᴴ)).trace := by
+          rw [Matrix.trace_mul_comm]
+          simp only [Matrix.mul_assoc]
+      _ = _ := by rw [h1, Matrix.mul_one]
+  rw [← e, trace_herm_mul, re_sum_cast, WR.chr]
+  congr 1
+  push_cast
+  ring
+
+theorem nuInf_eq (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (ψ : AddChar (AF F) ℂ) {ι : Type} [Fintype ι]
+    (θ : ι → (Ainf F ⊗[F] E →+* ℂ)) (l : ι → ℝ) (hP : IsPlaces σ ψ θ l) {n : ℕ} (g : ι → GL (Fin n) ℂ)
+    (b : HermR (Ainf F) σ n) :
+    nuInf θ g (b : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)) = ∏ i, WR.dP (ybAll σ θ g b i) := by
+  unfold nuInf
+  refine Finset.prod_congr rfl fun i _ => ?_
+  rw [WR.dP, herm_ybAll σ ψ θ l hP g b i]
+
+theorem gram_preimage_box (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (ψ : AddChar (AF F) ℂ) {ι : Type} [Fintype ι]
+    (θ : ι → (Ainf F ⊗[F] E →+* ℂ)) (l : ι → ℝ) (hP : IsPlaces σ ψ θ l) {M n : ℕ} (J : Matrix (Fin M) (Fin M) E)
+    (hJ : IsHermND σ J) (ε : ι → Fin M → Bool) (fr : ι → GL (Fin M) ℂ) (hfr : IsFrames J θ ε fr)
+    (g : ι → GL (Fin n) ℂ) (K : ι → Set (WR.E n)) :
+    gramR (Ainf F) σ J ⁻¹' (Subtype.val '' (ygAll σ θ g ⁻¹' Set.univ.pi K)) =
+      crdAll θ fr g ⁻¹' Set.univ.pi (fun i => gramX (ε i) ⁻¹' (herm '' K i)) := by
+  ext Y
+  simp only [Set.mem_preimage, Set.mem_image, Set.mem_univ_pi]
+  constructor
+  · rintro ⟨s, hs, hsY⟩ i
+    refine ⟨ygAll σ θ g s i, hs i, ?_⟩
+    rw [herm_ygAll σ ψ θ l hP g s i, hsY, map_gramR_crd σ ψ θ l hP J ε fr hfr g Y i, gl_conj_cancel]
+  · intro h
+    refine ⟨⟨gramR (Ainf F) σ J Y, gram_mem σ ψ θ l hP J ε fr hfr g Y⟩, fun i => ?_, rfl⟩
+    obtain ⟨k, hk, hkQ⟩ := h i
+    have : ygAll σ θ g ⟨gramR (Ainf F) σ J Y, gram_mem σ ψ θ l hP J ε fr hfr g Y⟩ i = k := by
+      rw [← hinv_herm k, hkQ]
+      show hinv _ = _
+      congr 1
+      show ((g i).1)ᴴ * (gramR (Ainf F) σ J Y).map (θ i) * (g i).1 = _
+      rw [map_gramR_crd σ ψ θ l hP J ε fr hfr g Y i, gl_conj_cancel]
+    rw [this]
+    exact hk
+
+theorem psi_pairHerm (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (ψ : AddChar (AF F) ℂ) {ι : Type} [Fintype ι]
+    (θ : ι → (Ainf F ⊗[F] E →+* ℂ)) (l : ι → ℝ) (hP : IsPlaces σ ψ θ l) {n : ℕ} (g : ι → GL (Fin n) ℂ)
+    (S T : HermR (Ainf F) σ n) :
+    psiInf F ψ (pairHerm (Ainf F) σ n S T) = Complex.exp (2 * Real.pi * Complex.I *
+      ∑ i, (l i : ℂ) * ∑ a, ∑ b, ((ybAll σ θ g S i a b : ℝ) : ℂ) * ((ygAll σ θ g T i a b : ℝ) : ℂ)) := by
+  have e0 : pairHerm (Ainf F) σ n S T =
+      trPair (Ainf F) (S : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)) (T : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)) := rfl
+  rw [e0, psi_trPair_gen σ hCM ψ θ l hP]
+  congr 2
+  refine Finset.sum_congr rfl fun i _ => ?_
+  congr 1
+  have e : (herm (ybAll σ θ g S i) * herm (ygAll σ θ g T i)).trace =
+      ((S : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)).map (θ i) * (T : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)).map (θ i)).trace := by
+    rw [herm_ygAll σ ψ θ l hP g T i, herm_ybAll σ ψ θ l hP g S i]
+    have h1 : (((g i)⁻¹).1)ᴴ * ((g i).1)ᴴ = 1 := by
+      rw [← Matrix.conjTranspose_mul, gl_mul_inv, Matrix.conjTranspose_one]
+    calc (((g i)⁻¹).1 * (S : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)).map (θ i) * (((g i)⁻¹).1)ᴴ *
+          (((g i).1)ᴴ * (T : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)).map (θ i) * (g i).1)).trace
+        = (((g i)⁻¹).1 * ((S : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)).map (θ i) *
+            (T : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)).map (θ i) * (g i).1)).trace := by
+          congr 1
+          simp only [Matrix.mul_assoc]
+          rw [← Matrix.mul_assoc (((g i)⁻¹).1)ᴴ, h1, Matrix.one_mul]
+      _ = ((S : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)).map (θ i) *
+            (T : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)).map (θ i) * ((g i).1 * ((g i)⁻¹).1)).trace := by
+          rw [Matrix.trace_mul_comm]
+          simp only [Matrix.mul_assoc]
+      _ = _ := by rw [gl_mul_inv, Matrix.mul_one]
+  rw [← e, trace_herm_mul, re_sum_cast]
+
+theorem pairHerm_comm (σ : E →ₐ[F] E) {n : ℕ} (S T : HermR (Ainf F) σ n) :
+    pairHerm (Ainf F) σ n S T = pairHerm (Ainf F) σ n T S := by
+  simp only [pairHerm]
+  congr 2
+  rw [Finset.sum_comm]
+  exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => mul_comm _ _
+
+theorem det_herm_ygAll (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (ψ : AddChar (AF F) ℂ) {ι : Type} [Fintype ι]
+    (θ : ι → (Ainf F ⊗[F] E →+* ℂ)) (l : ι → ℝ) (hP : IsPlaces σ ψ θ l) {n : ℕ} (g : ι → GL (Fin n) ℂ)
+    (S : HermR (Ainf F) σ n) (hS : IsUnit (S : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)).det) (i : ι) :
+    (herm (ygAll σ θ g S i)).det ≠ 0 := by
+  rw [herm_ygAll σ ψ θ l hP g S i, Matrix.det_mul, Matrix.det_mul, Matrix.det_conjTranspose]
+  have h1 : ((S : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)).map (θ i)).det ≠ 0 := by
+    rw [show ((S : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)).map (θ i)).det =
+      θ i (S : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)).det from (RingHom.map_det _ _).symm]
+    exact (hS.map (θ i)).ne_zero
+  have h2 : ((g i).1).det ≠ 0 := ((Matrix.isUnit_iff_isUnit_det _).mp (g i).isUnit).ne_zero
+  exact mul_ne_zero (mul_ne_zero (star_ne_zero.mpr h2) h1) h2
+
+end PositivityTheory.SiegelWeilFormula.GReal
+end
+end
+
+section
+noncomputable section
+
+namespace PositivityTheory.SiegelWeilFormula.GReal
+
+open HeckeCharacterZeroLocus.SiegelWeilU NumberField MeasureTheory PositivityTheory.PfSWUS.Loc PositivityTheory.Rg.Sw PositivityTheory.SiegelWeilFormula.Gen
+open scoped TensorProduct Matrix NNReal ComplexOrder
+
+private theorem hasTemperateGrowth_evX_comp_clm {W : Type} [NormedAddCommGroup W] [NormedSpace ℝ W] {M n : ℕ}
+    (L : W →L[ℝ] (Fin M → Fin n → ℂ)) (k : Fin M × Fin n × Bool) :
+    Function.HasTemperateGrowth
+      (fun w => if k.2.2 = true then star (L w k.1 k.2.1) else L w k.1 k.2.1) := by
+  obtain ⟨a, i, b⟩ := k
+  let ℓ : W →L[ℝ] ℂ :=
+    (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin n => ℂ) i).comp
+      ((ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin M => Fin n → ℂ) a).comp L)
+  have hℓ : ∀ w, ℓ w = L w a i := fun w => rfl
+  cases b
+  · have h : (fun w => if false = true then star (L w a i) else L w a i) = ⇑ℓ := by
+      funext w
+      simp [hℓ]
+    rw [h]
+    exact ℓ.hasTemperateGrowth
+  · have h : (fun w => if true = true then star (L w a i) else L w a i) =
+        ⇑(Complex.conjCLE.toContinuousLinearMap.comp ℓ) := by
+      funext w
+      simp [hℓ]
+    rw [h]
+    exact (Complex.conjCLE.toContinuousLinearMap.comp ℓ).hasTemperateGrowth
+
+theorem hasTemperateGrowth_evX {W : Type} [NormedAddCommGroup W] [NormedSpace ℝ W] {M n : ℕ}
+    (L : W →L[ℝ] (Fin M → Fin n → ℂ)) (P : PX M n) :
+    Function.HasTemperateGrowth (fun w => evX P (L w)) := by
+  induction P using MvPolynomial.induction_on with
+  | C a =>
+    have h : (fun w => evX (MvPolynomial.C a : PX M n) (L w)) = fun _ => a := by
+      funext w
+      simp [evX]
+    rw [h]
+    exact Function.HasTemperateGrowth.const a
+  | add p q hp hq =>
+    have h : (fun w => evX (p + q : PX M n) (L w)) =
+        (fun w => evX p (L w)) + (fun w => evX q (L w)) := by
+      funext w
+      simp [evX]
+    rw [h]
+    exact hp.add hq
+  | mul_X p k hp =>
+    have h : (fun w => evX (p * MvPolynomial.X k : PX M n) (L w)) =
+        (fun w => evX p (L w)) *
+          (fun w => if k.2.2 = true then star (L w k.1 k.2.1) else L w k.1 k.2.1) := by
+      funext w
+      simp [evX]
+    rw [h]
+    exact hp.mul (hasTemperateGrowth_evX_comp_clm L k)
+
+private theorem exists_schwartz_prod_gs {ι : Type} [Fintype ι] {M n : ℕ} (c : ι → ℝ)
+    (hc : ∀ i, 0 < c i) :
+    ∃ g : SchwartzMap (ι → Fin M → Fin n → ℂ) ℂ, ∀ x, g x = ∏ i, gs (c i) (x i) := by
+  let pr : ι → Fin M → Fin n → ((ι → Fin M → Fin n → ℂ) →L[ℝ] ℂ) := fun i a j =>
+    (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin n => ℂ) j).comp
+      ((ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin M => Fin n → ℂ) a).comp
+        (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : ι => Fin M → Fin n → ℂ) i))
+  have hpr : ∀ i a j x, pr i a j x = x i a j := fun _ _ _ _ => rfl
+  let re3 : ι → Fin M → Fin n → ((ι → Fin M → Fin n → ℂ) →L[ℝ] ℝ) := fun i a j =>
+    Complex.reCLM.comp (pr i a j)
+  let im3 : ι → Fin M → Fin n → ((ι → Fin M → Fin n → ℂ) →L[ℝ] ℝ) := fun i a j =>
+    Complex.imCLM.comp (pr i a j)
+  have hre : ∀ i a j x, re3 i a j x = (x i a j).re := fun _ _ _ _ => rfl
+  have him : ∀ i a j x, im3 i a j x = (x i a j).im := fun _ _ _ _ => rfl
+  let B : (ι → Fin M → Fin n → ℂ) →L[ℝ] (ι → Fin M → Fin n → ℂ) →L[ℝ] ℝ :=
+    ∑ i, ∑ a, ∑ j, (-c i) • ((re3 i a j).smulRight (re3 i a j) + (im3 i a j).smulRight (im3 i a j))
+  have hB : ∀ x, B x x = -∑ i, c i * ∑ a, ∑ j, ‖x i a j‖ ^ 2 := by
+    intro x
+    simp only [B, ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply,
+      ContinuousLinearMap.add_apply, ContinuousLinearMap.smulRight_apply, hre, him, smul_eq_mul]
+    rw [← Finset.sum_neg_distrib]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [Finset.mul_sum, ← Finset.sum_neg_distrib]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    rw [Finset.mul_sum, ← Finset.sum_neg_distrib]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
+    ring
+  have hneg : ∀ x, x ≠ 0 → B x x < 0 := by
+    intro x hx
+    rw [hB, neg_lt_zero]
+    obtain ⟨i, hi⟩ := Function.ne_iff.mp hx
+    obtain ⟨a, ha⟩ := Function.ne_iff.mp hi
+    obtain ⟨j, hj⟩ := Function.ne_iff.mp ha
+    apply Finset.sum_pos' (fun i _ => mul_nonneg (hc i).le (by positivity)) ⟨i, Finset.mem_univ _, ?_⟩
+    apply mul_pos (hc i)
+    apply Finset.sum_pos' (fun _ _ => by positivity) ⟨a, Finset.mem_univ _, ?_⟩
+    apply Finset.sum_pos' (fun _ _ => by positivity) ⟨j, Finset.mem_univ _, ?_⟩
+    exact pow_pos (norm_pos_iff.mpr (by simpa using hj)) 2
+  obtain ⟨g, hg⟩ := GlobalTheory.GaussSchwartz.exists_schwartz_exp_diag B hneg
+  refine ⟨g, fun x => ?_⟩
+  rw [hg, hB, Complex.ofReal_exp]
+  simp only [gs]
+  rw [← Complex.exp_sum]
+  congr 1
+  push_cast
+  rw [Finset.sum_neg_distrib]
+
+theorem exists_schwartz_polyGauss {ι : Type} [Fintype ι] {M n : ℕ} (c : ι → ℝ) (hc : ∀ i, 0 < c i)
+    (P : ι → PX M n) :
+    ∃ f : SchwartzMap (ι → Fin M → Fin n → ℂ) ℂ, ∀ x, f x = ∏ i, (evX (P i) (x i) * gs (c i) (x i)) := by
+  obtain ⟨g, hg⟩ := exists_schwartz_prod_gs (M := M) (n := n) c hc
+  have hbase : ∀ i, Function.HasTemperateGrowth
+      (fun x : ι → Fin M → Fin n → ℂ => evX (P i) (x i)) := fun i =>
+    hasTemperateGrowth_evX (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : ι => Fin M → Fin n → ℂ) i) (P i)
+  have hp : Function.HasTemperateGrowth
+      (fun x : ι → Fin M → Fin n → ℂ => ∏ i, evX (P i) (x i)) := by
+    have := Finset.prod_induction (s := Finset.univ)
+      (fun i => fun x : ι → Fin M → Fin n → ℂ => evX (P i) (x i))
+      (fun f : (ι → Fin M → Fin n → ℂ) → ℂ => f.HasTemperateGrowth) (fun _ _ h1 h2 => h1.mul h2)
+      (Function.HasTemperateGrowth.const 1) (fun i _ => hbase i)
+    have h : (∏ i, fun x : ι → Fin M → Fin n → ℂ => evX (P i) (x i)) =
+        fun x => ∏ i, evX (P i) (x i) := by
+      funext x
+      simp [Finset.prod_apply]
+    rw [h] at this
+    exact this
+  refine ⟨SchwartzMap.smulLeftCLM ℂ (fun x => ∏ i, evX (P i) (x i)) g, fun x => ?_⟩
+  rw [SchwartzMap.smulLeftCLM_apply_apply hp, hg, smul_eq_mul, Finset.prod_mul_distrib]
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+
+omit [NumberField F] [NumberField E] in
+theorem isSchwartzInf_comp {ι : Type} [Fintype ι] {M n : ℕ}
+    (e0 : (Fin n → Fin M → Ainf F ⊗[F] E) ≃ₜ+ (ι → Fin M → Fin n → ℂ))
+    (f : SchwartzMap (ι → Fin M → Fin n → ℂ) ℂ) : IsSchwartzInf (fun X => f (e0 X)) := by
+  intro N e he hes
+  let A : (Fin N → ℝ) ≃+ (ι → Fin M → Fin n → ℂ) := e.symm.trans e0.toAddEquiv
+  have hA : Continuous A := e0.continuous.comp hes
+  have hAs : Continuous A.symm := he.comp e0.symm.continuous
+  let L := A.toRealLinearEquiv hA hAs
+  refine ⟨SchwartzMap.compCLMOfContinuousLinearEquiv ℂ L f, fun x => ?_⟩
+  rfl
+
+end PositivityTheory.SiegelWeilFormula.GReal
+end
+end
+
+section
+noncomputable section
+
+namespace PositivityTheory.SiegelWeilFormula.GReal
+
+open HeckeCharacterZeroLocus.SiegelWeilU NumberField MeasureTheory PositivityTheory.PfSWUS.Loc PositivityTheory.Rg.Sw PositivityTheory.SiegelWeilFormula.Gen
+open scoped TensorProduct Matrix NNReal FourierTransform ContDiff RealInnerProductSpace
+
+theorem exists_bump_fourier : ∃ φ : ℝ → ℂ, Continuous φ ∧ HasCompactSupport φ ∧ φ 0 = 1 ∧
+    Integrable (fun s : ℝ => ∫ u : ℝ, φ u * Complex.exp (2 * Real.pi * Complex.I * ((u : ℂ) * (s : ℂ)))) ∧
+    ∫ s : ℝ, (∫ u : ℝ, φ u * Complex.exp (2 * Real.pi * Complex.I * ((u : ℂ) * (s : ℂ)))) = 1 := by
+  let b : ContDiffBump (0 : ℝ) := ⟨1, 2, by norm_num, by norm_num⟩
+  have hsm : ContDiff ℝ ∞ (fun u : ℝ => ((b u : ℝ) : ℂ)) :=
+    Complex.ofRealCLM.contDiff.comp b.contDiff
+  have hcs : HasCompactSupport (fun u : ℝ => ((b u : ℝ) : ℂ)) :=
+    b.hasCompactSupport.comp_left Complex.ofReal_zero
+  let ψ : SchwartzMap ℝ ℂ := hcs.toSchwartzMap hsm
+  have hψ : ∀ u, ψ u = ((b u : ℝ) : ℂ) := fun u => rfl
+  have key : ∀ s : ℝ, (∫ u : ℝ, ((b u : ℝ) : ℂ) * Complex.exp (2 * Real.pi * Complex.I * ((u : ℂ) * (s : ℂ))))
+      = (𝓕⁻ ψ) s := by
+    intro s
+    rw [SchwartzMap.fourierInv_coe, Real.fourierInv_eq']
+    refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
+    simp only [smul_eq_mul, hψ]
+    rw [mul_comm]
+    congr 2
+    simp only [RCLike.inner_apply, conj_trivial]
+    push_cast
+    ring
+  have hb0 : b 0 = 1 := b.one_of_mem_closedBall (by simp [b])
+  refine ⟨fun u => ((b u : ℝ) : ℂ), hsm.continuous, hcs, by simp [hb0], ?_, ?_⟩
+  · simp only [key]
+    exact (𝓕⁻ ψ).integrable
+  · simp only [key]
+    have e : 𝓕 (𝓕⁻ ψ) = ψ := FourierInvPair.fourier_fourierInv_eq ψ
+    have e0 := congrArg (fun g : SchwartzMap ℝ ℂ => g 0) e
+    rw [SchwartzMap.fourier_coe, Real.fourier_eq] at e0
+    simp only [inner_zero_right, neg_zero, AddChar.map_zero_eq_one, one_smul] at e0
+    rw [e0, hψ, hb0]
+    simp
+
+theorem integral_prod3 {ι : Type} [Fintype ι] {n : ℕ} (f : ι → Fin n → Fin n → ℝ → ℂ) :
+    ∫ u : ι → WR.E n, ∏ i, ∏ a, ∏ b, f i a b (u i a b) = ∏ i, ∏ a, ∏ b, ∫ t : ℝ, f i a b t := by
+  rw [integral_fintype_prod_volume_eq_prod (fun i (v : WR.E n) => ∏ a, ∏ b, f i a b (v a b))]
+  refine Finset.prod_congr rfl fun i _ => ?_
+  rw [integral_fintype_prod_volume_eq_prod (fun a (r : Fin n → ℝ) => ∏ b, f i a b (r b))]
+  refine Finset.prod_congr rfl fun a _ => ?_
+  exact integral_fintype_prod_volume_eq_prod (fun b (t : ℝ) => f i a b t)
+
+theorem integrable_prod3 {ι : Type} [Fintype ι] {n : ℕ} (f : ι → Fin n → Fin n → ℝ → ℂ)
+    (hf : ∀ i a b, Integrable (f i a b)) :
+    Integrable (fun u : ι → WR.E n => ∏ i, ∏ a, ∏ b, f i a b (u i a b)) := by
+  have h : ∀ i, Integrable (fun v : WR.E n => ∏ a, ∏ b, f i a b (v a b)) := by
+    intro i
+    have h2 : ∀ a, Integrable (fun w : Fin n → ℝ => ∏ b, f i a b (w b)) := fun a =>
+      Integrable.fintype_prod (f := fun b t => f i a b t) (μ := fun _ => volume) (fun b => hf i a b)
+    exact Integrable.fintype_prod (f := fun a (w : Fin n → ℝ) => ∏ b, f i a b (w b))
+      (μ := fun _ => volume) h2
+  exact Integrable.fintype_prod (f := fun i (v : WR.E n) => ∏ a, ∏ b, f i a b (v a b))
+    (μ := fun _ => volume) h
+
+theorem exp_pair3 {ι : Type} [Fintype ι] {n : ℕ} (l : ι → ℝ) (u w : ι → WR.E n) :
+    Complex.exp (2 * Real.pi * Complex.I * ∑ i, (l i : ℂ) * ∑ a, ∑ b, ((u i a b : ℝ) : ℂ) * ((w i a b : ℝ) : ℂ)) =
+      ∏ i, ∏ a, ∏ b, Complex.exp (2 * Real.pi * Complex.I * (((u i a b : ℝ) : ℂ) * ((l i * w i a b : ℝ) : ℂ))) := by
+  simp_rw [Finset.mul_sum, Complex.exp_sum]
+  refine Finset.prod_congr rfl fun i _ => Finset.prod_congr rfl fun a _ => Finset.prod_congr rfl fun b _ => ?_
+  congr 1
+  push_cast
+  ring
+
+set_option maxHeartbeats 400000 in
+
+theorem selfDual_const {H : Type} [AddCommGroup H] [TopologicalSpace H] [MeasurableSpace H] [BorelSpace H]
+    {ι : Type} [Fintype ι] {n : ℕ} (l : ι → ℝ) (hl : ∀ i, l i ≠ 0)
+    (ν : Measure H) (χ : H → H → ℂ) (hsd : SelfDual ν χ)
+    (eb eg : H ≃ₜ (ι → WR.E n)) (heb0 : eb 0 = 0)
+    (hχ : ∀ x y, χ x y = Complex.exp (2 * Real.pi * Complex.I *
+      ∑ i, (l i : ℂ) * ∑ a, ∑ b, ((eb x i a b : ℝ) : ℂ) * ((eg y i a b : ℝ) : ℂ)))
+    (hsym : ∀ x y, χ x y = χ y x)
+    (cb cg : ℝ≥0) (hb : ν.map eb = cb • volume) (hg : ν.map eg = cg • volume) :
+    ((cb : ℝ) * cg) = ∏ i, |l i| ^ (n ^ 2) := by
+  obtain ⟨φ, hφc, hφs, hφ0, hFi, hF1⟩ := exists_bump_fourier
+  let F : ℝ → ℂ := fun s => ∫ u : ℝ, φ u * Complex.exp (2 * Real.pi * Complex.I * ((u : ℂ) * (s : ℂ)))
+  have hFi' : Integrable F := hFi
+  have hF1' : ∫ s, F s = 1 := hF1
+  let P : (ι → WR.E n) → ℂ := fun v => ∏ i, ∏ a, ∏ b, φ (v i a b)
+  have hPc : Continuous P := by
+    refine continuous_finset_prod _ fun i _ => continuous_finset_prod _ fun a _ =>
+      continuous_finset_prod _ fun b _ => ?_
+    exact hφc.comp ((continuous_apply b).comp ((continuous_apply a).comp (continuous_apply i)))
+  have hPs : HasCompactSupport P := by
+    refine HasCompactSupport.intro (K := Set.univ.pi fun _ : ι => Set.univ.pi fun _ : Fin n =>
+      Set.univ.pi fun _ : Fin n => tsupport φ) ?_ ?_
+    · exact isCompact_univ_pi fun _ => isCompact_univ_pi fun _ => isCompact_univ_pi fun _ => hφs.isCompact
+    · intro v hv
+      simp only [Set.mem_univ_pi, not_forall] at hv
+      obtain ⟨i, a, b, h⟩ := hv
+      exact Finset.prod_eq_zero (Finset.mem_univ i) (Finset.prod_eq_zero (Finset.mem_univ a)
+        (Finset.prod_eq_zero (Finset.mem_univ b) (image_eq_zero_of_notMem_tsupport h)))
+  have hinner : ∀ y, ∫ x, P (eb x) * χ x y ∂ν
+      = ((cb : ℝ) : ℂ) * ∏ i, ∏ a, ∏ b, F (l i * eg y i a b) := by
+    intro y
+    let Q : (ι → WR.E n) → ℂ := fun v => ∏ i, ∏ a, ∏ b, (φ (v i a b) *
+      Complex.exp (2 * Real.pi * Complex.I * (((v i a b : ℝ) : ℂ) * ((l i * eg y i a b : ℝ) : ℂ))))
+    have h1 : ∀ x, P (eb x) * χ x y = Q (eb x) := by
+      intro x
+      simp only [P, Q, hχ, exp_pair3, ← Finset.prod_mul_distrib]
+    rw [integral_congr_ae (Filter.Eventually.of_forall h1), ← eb.measurableEmbedding.integral_map Q, hb,
+      integral_smul_nnreal_measure,
+      integral_prod3 (fun i a b t => φ t * Complex.exp (2 * Real.pi * Complex.I * ((t : ℂ) * ((l i * eg y i a b : ℝ) : ℂ)))),
+      NNReal.smul_def, Complex.real_smul]
+  have hint : Integrable (fun y => ∫ x, P (eb x) * χ x y ∂ν) ν := by
+    rw [show (fun y => ∫ x, P (eb x) * χ x y ∂ν)
+      = fun y => ((cb : ℝ) : ℂ) * ∏ i, ∏ a, ∏ b, F (l i * eg y i a b) from funext hinner]
+    have hG : Integrable (fun w : ι → WR.E n => ((cb : ℝ) : ℂ) * ∏ i, ∏ a, ∏ b, F (l i * w i a b)) := by
+      refine Integrable.const_mul ?_ _
+      exact integrable_prod3 (fun i a b t => F (l i * t)) (fun i a b => hFi'.comp_mul_left' (hl i))
+    have hG' := hG.smul_measure_nnreal (c := cg)
+    rw [← hg, eg.measurableEmbedding.integrable_map_iff] at hG'
+    exact hG'
+  have hsd2 := hsd.2 (fun x => P (eb x)) (hPc.comp eb.continuous) (hPs.comp_homeomorph eb) hint 0
+  have hχ0 : ∀ y, χ y 0 = 1 := by
+    intro y
+    rw [hsym, hχ, heb0]
+    simp
+  have hP0 : P 0 = 1 := by simp [P, hφ0]
+  simp only [hχ0, mul_one, neg_zero, heb0, hinner, hP0] at hsd2
+  rw [integral_const_mul, ← eg.measurableEmbedding.integral_map
+      (fun w : ι → WR.E n => ∏ i, ∏ a, ∏ b, F (l i * w i a b)), hg, integral_smul_nnreal_measure,
+    integral_prod3 (fun i a b t => F (l i * t)), NNReal.smul_def, Complex.real_smul] at hsd2
+  simp only [Measure.integral_comp_mul_left (fun t => F t), hF1', Finset.prod_const, Finset.card_univ,
+    Fintype.card_fin, Complex.real_smul, mul_one] at hsd2
+  have hA : (∏ i, |l i| ^ (n ^ 2)) ≠ 0 :=
+    Finset.prod_ne_zero_iff.mpr fun i _ => pow_ne_zero _ (abs_ne_zero.mpr (hl i))
+  have hX : (∏ i, (((|(l i)⁻¹| : ℝ) : ℂ) ^ n) ^ n) = (((∏ i, |l i| ^ (n ^ 2) : ℝ)) : ℂ)⁻¹ := by
+    push_cast
+    rw [← Finset.prod_inv_distrib]
+    refine Finset.prod_congr rfl fun i _ => ?_
+    rw [abs_inv, Complex.ofReal_inv, ← pow_mul, ← sq, inv_pow]
+  rw [hX] at hsd2
+  have hA' : ((∏ i, |l i| ^ (n ^ 2) : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hA
+  field_simp at hsd2
+  exact_mod_cast hsd2
+
+end PositivityTheory.SiegelWeilFormula.GReal
+end
+end
+
+section
+noncomputable section
+
+namespace PositivityTheory.SiegelWeilFormula.GReal
+
+open HeckeCharacterZeroLocus.SiegelWeilU NumberField MeasureTheory PositivityTheory.PfSWUS.Loc PositivityTheory.Rg.Sw PositivityTheory.SiegelWeilFormula.Gen
+open scoped TensorProduct Matrix NNReal
+
+open Topology in
+theorem eq_of_box {X : Type} [TopologicalSpace X] [T2Space X] [MeasurableSpace X] [BorelSpace X] (ν : Measure X)
+    [ν.IsOpenPosMeasure] [IsFiniteMeasureOnCompacts ν] (B : Set X) (hB : IsOpen B) (g1 g2 : X → ℂ)
+    (h1 : ContinuousOn g1 B) (h2 : ContinuousOn g2 B) (t : X) (ht : t ∈ B)
+    (hbox : ∀ U ∈ 𝓝 t, ∃ S, IsCompact S ∧ S ⊆ U ∧ S ⊆ B ∧ S ∈ 𝓝 t ∧ ∫ x in S, g1 x ∂ν = ∫ x in S, g2 x ∂ν) :
+    g1 t = g2 t := by
+  by_contra hne
+  set c := g1 t - g2 t with hc
+  have hc0 : c ≠ 0 := sub_ne_zero.mpr hne
+  have hcpos : 0 < ‖c‖ := norm_pos_iff.mpr hc0
+  have hcont : ContinuousAt (fun x => g1 x - g2 x) t := (h1.sub h2).continuousAt (hB.mem_nhds ht)
+  have hU : {x | ‖(g1 x - g2 x) - c‖ < ‖c‖ / 2} ∈ 𝓝 t := by
+    have := hcont.eventually (Metric.ball_mem_nhds c (by positivity : (0 : ℝ) < ‖c‖ / 2))
+    filter_upwards [this] with x hx
+    simpa [Metric.mem_ball, dist_eq_norm] using hx
+  obtain ⟨S, hSc, hSU, hSB, hSt, hint⟩ := hbox _ hU
+  have hSfin : ν S < ⊤ := hSc.measure_lt_top
+  have hSpos : 0 < ν S := Measure.measure_pos_of_mem_nhds (μ := ν) hSt
+  have hSr : 0 < ν.real S := ENNReal.toReal_pos hSpos.ne' hSfin.ne
+  have hi1 : IntegrableOn g1 S ν := (h1.mono hSB).integrableOn_compact hSc
+  have hi2 : IntegrableOn g2 S ν := (h2.mono hSB).integrableOn_compact hSc
+  have hi12 : IntegrableOn (fun x => g1 x - g2 x) S ν := hi1.sub hi2
+  have hic : IntegrableOn (fun _ : X => c) S ν := integrableOn_const hSfin.ne
+  have h0 : ∫ x in S, (g1 x - g2 x - c) ∂ν = -(ν.real S • c) := by
+    rw [integral_sub hi12 hic, integral_sub hi1 hi2, hint, sub_self, setIntegral_const, zero_sub]
+  have hle : ‖∫ x in S, (g1 x - g2 x - c) ∂ν‖ ≤ ‖c‖ / 2 * ν.real S :=
+    norm_setIntegral_le_of_norm_le_const hSfin (fun x hx => (hSU hx).le)
+  rw [h0, norm_neg, norm_smul, Real.norm_of_nonneg hSr.le] at hle
+  nlinarith
+
+end PositivityTheory.SiegelWeilFormula.GReal
+end
+end
+
+section
 noncomputable section
 
 namespace PositivityTheory.SiegelWeilFormula.GReal
@@ -330,3 +1055,5 @@ theorem realWhitEq_of (hWR : WR.WRSt) : RealWhitEq := by
   exact realWhitAll_of hWR F E σ hCM M J hJ n ψ hψ ι θ l hP ε fr hfr g P μ ν hμ hν
 
 end PositivityTheory.SiegelWeilFormula.GReal
+end
+end

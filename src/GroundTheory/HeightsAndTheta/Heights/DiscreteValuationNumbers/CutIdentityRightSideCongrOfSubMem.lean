@@ -305,13 +305,6 @@ end Helpers
 
 section Examples
 
-theorem blowUpModel_hypotheses_example :
-    let S := MRing (fun _ : Unit => Fin 2) ℤ_[2]
-    IsModelOver (⊥ : Ideal S) 1 ∧ (∀ j : Fin 2, IsMultiHomog (X ⟨(), j⟩ : S) (Pi.single () 1)) ∧
-      ∃ j : Fin 2, (X ⟨(), j⟩ : S) ∉ (⊥ : Ideal S) := by
-  intro S
-  obtain ⟨hmodel, hX0, -⟩ := lemmas_hypotheses_example
-  exact ⟨hmodel, fun j => isWeightedHomogeneous_X _ _ _, 0, hX0⟩
 
 end Examples
 

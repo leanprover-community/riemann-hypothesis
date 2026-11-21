@@ -41,21 +41,7 @@ def tupOf {M d : ℕ} (b : Module.Basis (Fin d) F E) (u : Fin M × Fin d → AF 
     Fin 1 → Fin M → AF F ⊗[F] E :=
   fun _ i => ∑ k, u (i, k) • ((1 : AF F) ⊗ₜ[F] b k)
 
-theorem cv_tupOf {M d : ℕ} (b : Module.Basis (Fin d) F E) (u : Fin M × Fin d → AF F) :
-    cv (AF F) b (tupOf b u 0) = u := by
-  funext p
-  have h : (tupOf b u 0 p.1) = ∑ k, u (p.1, k) • (Algebra.TensorProduct.basis (AF F) b) k := by
-    simp only [tupOf, Algebra.TensorProduct.basis_apply]
-  simp only [cv]
-  rw [h, Module.Basis.repr_sum_self]
 
-theorem tupOf_cv {M d : ℕ} (b : Module.Basis (Fin d) F E) (X : Fin 1 → Fin M → AF F ⊗[F] E) :
-    tupOf b (cv (AF F) b (X 0)) = X := by
-  funext u i
-  obtain rfl : u = 0 := Subsingleton.elim _ _
-  simp only [tupOf, cv]
-  conv_rhs => rw [← (Algebra.TensorProduct.basis (AF F) b).sum_repr (X 0 i)]
-  simp only [Algebra.TensorProduct.basis_apply]
 
 end Link
 

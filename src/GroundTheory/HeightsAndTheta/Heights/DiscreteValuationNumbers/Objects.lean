@@ -149,28 +149,6 @@ theorem divCycle_one {R : Type*} [CommRing R] (P : Ideal (MRing ι R)) (W : Idea
     rw [Ideal.span_singleton_one, sup_top_eq]
   exact hW.ne_top (top_le_iff.mp (this ▸ h.1.2))
 
-theorem isVerticalDivisor_uniformiser {O : Type*} [CommRing O] [IsDomain O]
-    [IsDiscreteValuationRing O] (ϖ : O) (H : Ideal (MRing ι O)) [H.IsPrime]
-    (hϖ : (C ϖ : MRing ι O) ∉ H) :
-    IsVerticalDivisor H ϖ 0 (C ϖ) 1 where
-  degrees := ⟨0, 0, isWeightedHomogeneous_C _ _, isWeightedHomogeneous_one _ _, by
-    funext k; simp⟩
-  num_not_mem := hϖ
-  den_not_mem := Ideal.IsPrime.ne_top' ∘ (Ideal.eq_top_of_isUnit_mem _ · isUnit_one)
-  vertical := by
-    intro W hW
-    unfold ratDiv at hW
-    rw [divCycle_one, sub_zero] at hW
-    unfold divCycle at hW
-    split_ifs at hW with h
-    · exact h.1.1.2 (Ideal.mem_sup_right (Ideal.subset_span rfl))
-    · exact absurd rfl hW
-  unit_off_special := by
-    intro W hW _ _ hϖW
-    refine ⟨1, C ϖ, ?_, hϖW, ?_⟩
-    · exact (Ideal.ne_top_iff_one W).mp hW.ne_top
-    · rw [one_mul, mul_one, sub_self]
-      exact H.zero_mem
 
 theorem isModelOver_projectiveSpace {O : Type*} [CommRing O] [IsDomain O]
     [IsDiscreteValuationRing O] (n : ℕ) :

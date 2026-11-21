@@ -1,6 +1,318 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.AutomorphicKernels.DepthZeroCuspidal.SuperDiagUSingle
+import Development.WeilBound.CoreStatements.AutomorphicKernels.DepthZeroCuspidal.IsLevelOne
+import GroundTheory.AutomorphicForms.Iwasawa
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ApplyMemTwKerOfNormalizer
 
+section
+noncomputable section
+
+open NumberField IsDedekindDomain ValuativeRel Matrix Polynomial
+open Formalism.ConjugateSelfDual ReciprocityTheory.Gal
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.Whittaker
+
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+namespace PositivityTheory.LocalParametersCuspidal.DepthZeroGlueing
+
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+
+section Basics
+variable {m : ℕ}
+
+omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
+theorem corner_cs_cs (g : GL (Fin m) k) (i j : Fin m) :
+    (corner g : Matrix (Fin (m+1)) (Fin (m+1)) k) i.castSucc j.castSucc = (g : Matrix _ _ k) i j := by
+  simp [corner, val_emb₂, stdSum, Matrix.reindex_apply]
+
+omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
+theorem corner_cs_last (g : GL (Fin m) k) (i : Fin m) :
+    (corner g : Matrix (Fin (m+1)) (Fin (m+1)) k) i.castSucc (Fin.last m) = 0 := by
+  simp [corner, val_emb₂, stdSum, Matrix.reindex_apply]
+
+omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
+theorem corner_last_cs (g : GL (Fin m) k) (j : Fin m) :
+    (corner g : Matrix (Fin (m+1)) (Fin (m+1)) k) (Fin.last m) j.castSucc = 0 := by
+  simp [corner, val_emb₂, stdSum, Matrix.reindex_apply]
+
+omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
+theorem corner_last_last (g : GL (Fin m) k) :
+    (corner g : Matrix (Fin (m+1)) (Fin (m+1)) k) (Fin.last m) (Fin.last m) = 1 := by
+  simp [corner, val_emb₂, stdSum, Matrix.reindex_apply]
+
+omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
+theorem corner_mul (g h : GL (Fin m) k) : corner (g * h) = corner g * corner h := by
+  simp only [corner]
+  rw [← map_mul]
+  simp
+
+theorem mem_fixed_iff {V : Type} [AddCommGroup V] [Module ℂ V] {G : Type} [Group G]
+    (ρ : Representation ℂ G V) (H : Subgroup G) (x : V) :
+    x ∈ fixed ρ H ↔ ∀ h ∈ H, ρ h x = x := by
+  constructor
+  · intro hx h hh
+    have := hx ⟨h, hh⟩
+    simpa using this
+  · intro hx h
+    simpa using hx h h.2
+
+theorem rho_mul {V : Type} [AddCommGroup V] [Module ℂ V] {G : Type} [Group G]
+    (ρ : Representation ℂ G V) (a b : G) (x : V) : ρ (a * b) x = ρ a (ρ b x) := by
+  rw [map_mul, Module.End.mul_apply]
+
+def stabG {V : Type} [AddCommGroup V] [Module ℂ V] {G : Type} [Group G]
+    (ρ : Representation ℂ G V) (x : V) : Subgroup G where
+  carrier := {g | ρ g x = x}
+  mul_mem' := by
+    intro a b ha hb
+    simp only [Set.mem_ofPred_eq] at *
+    rw [rho_mul, hb, ha]
+  one_mem' := by simp
+  inv_mem' := by
+    intro a ha
+    simp only [Set.mem_ofPred_eq] at *
+    conv_lhs => rw [← ha]
+    rw [← rho_mul, inv_mul_cancel, map_one, Module.End.one_apply]
+
+
+theorem val_eq_unif {c : kˣ} (hc : ord k c = 1) : valuation k (c : k) = uniformizer k := by
+  obtain ⟨x, hx⟩ := valuation_surjective (K := k) (uniformizer k)
+  have hx0 : x ≠ 0 := by
+    rintro rfl
+    rw [map_zero] at hx
+    exact uniformizer_ne_zero hx.symm
+  set u := Units.mk0 x hx0
+  have h1 : ord k u = 1 := ord_eq_one (by simpa [u] using hx)
+  have h3 : ord k (u * u⁻¹) = 0 := by rw [mul_inv_cancel]; exact ord_eq_zero (by simp)
+  have h2 : ord k (c * u⁻¹) = 0 := by
+    rw [ord_mul] at h3 ⊢
+    omega
+  have h4 := ord_eq_zero_iff.1 h2
+  rw [Units.val_mul, map_mul, Units.val_inv_eq_inv_val, map_inv₀] at h4
+  have hu0 : valuation k (u : k) ≠ 0 := by simp [u, hx0]
+  rw [← hx]
+  have := (mul_inv_eq_one₀ hu0).1 h4
+  simpa [u] using this
+
+
+
+end Basics
+
+section Mask
+variable {N : ℕ} (P : Fin N → Fin N → Prop) [DecidableRel P]
+
+def maskM (X : Matrix (Fin N) (Fin N) k) : Matrix (Fin N) (Fin N) k := fun a b => if P a b then X a b else 0
+
+omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
+theorem maskM_mul (hP : ∀ a b c, P a b → P b c → False) (X Y : Matrix (Fin N) (Fin N) k) :
+    maskM P X * maskM P Y = 0 := by
+  ext a c
+  simp only [Matrix.mul_apply, maskM, Matrix.zero_apply]
+  refine Finset.sum_eq_zero fun b _ => ?_
+  by_cases h1 : P a b
+  · by_cases h2 : P b c
+    · exact (hP a b c h1 h2).elim
+    · simp [h2]
+  · simp [h1]
+
+omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
+theorem maskM_add (X Y : Matrix (Fin N) (Fin N) k) : maskM P (X + Y) = maskM P X + maskM P Y := by
+  ext a b
+  simp only [maskM, Matrix.add_apply]
+  split_ifs <;> simp
+
+def U (hP : ∀ a b c, P a b → P b c → False) (X : Matrix (Fin N) (Fin N) k) : GL (Fin N) k :=
+  ⟨1 + maskM P X, 1 - maskM P X, by simp [add_mul, mul_sub, maskM_mul P hP],
+    by simp [sub_mul, mul_add, maskM_mul P hP]⟩
+
+omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
+theorem U_val (hP : ∀ a b c, P a b → P b c → False) (X : Matrix (Fin N) (Fin N) k) :
+    ((U P hP X : GL (Fin N) k) : Matrix (Fin N) (Fin N) k) = 1 + maskM P X := rfl
+
+omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
+theorem U_inv_val (hP : ∀ a b c, P a b → P b c → False) (X : Matrix (Fin N) (Fin N) k) :
+    (((U P hP X)⁻¹ : GL (Fin N) k) : Matrix (Fin N) (Fin N) k) = 1 - maskM P X := rfl
+
+omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
+theorem U_mul (hP : ∀ a b c, P a b → P b c → False) (X Y : Matrix (Fin N) (Fin N) k) :
+    U P hP X * U P hP Y = U P hP (X + Y) := by
+  apply Units.ext
+  rw [Units.val_mul, U_val, U_val, U_val, maskM_add, add_mul, one_mul, mul_add, mul_one, maskM_mul P hP]
+  abel
+
+omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
+theorem U_mem_unipB (hP : ∀ a b c, P a b → P b c → False) (hlt : ∀ a b, P a b → a < b)
+    (X : Matrix (Fin N) (Fin N) k) : U P hP X ∈ unipB k (Fin N) := by
+  rw [mem_unipB]
+  refine ⟨fun i j hji => ?_, fun i => ?_⟩
+  · rw [U_val, Matrix.add_apply, Matrix.one_apply_ne (ne_of_gt hji), maskM,
+      if_neg (fun h => absurd (hlt i j h) (not_lt.2 hji.le)), add_zero]
+  · rw [U_val, Matrix.add_apply, Matrix.one_apply_eq, maskM, if_neg (fun h => lt_irrefl _ (hlt i i h)), add_zero]
+
+
+
+omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
+theorem diag_conj_U (hP : ∀ a b c, P a b → P b c → False) (X : Matrix (Fin N) (Fin N) k) (τ : Fin N → kˣ) :
+    GroundTheory.Automorphic.Iwasawa.diagGL k N τ * U P hP X * (GroundTheory.Automorphic.Iwasawa.diagGL k N τ)⁻¹ =
+      U P hP (Matrix.of fun a b => (τ a : k) * X a b * ((τ b : k))⁻¹) := by
+  apply Units.ext
+  rw [← map_inv, Units.val_mul, Units.val_mul, GroundTheory.Automorphic.Iwasawa.coe_diagGL,
+    GroundTheory.Automorphic.Iwasawa.coe_diagGL, U_val, U_val]
+  ext a b
+  rw [Matrix.mul_diagonal, Matrix.diagonal_mul]
+  simp only [Matrix.add_apply, maskM, Matrix.one_apply, Pi.inv_apply, Units.val_inv_eq_inv_val, Matrix.of_apply]
+  by_cases hab : a = b
+  · subst hab
+    split_ifs <;> field_simp
+  · split_ifs <;> simp_all
+
+end Mask
+
+section Rep
+variable {N : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
+
+
+
+omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
+theorem superDiag_U_single {M : ℕ} (p : Fin M)
+    (hP : ∀ a b c : Fin (M + 1), (a = p.castSucc ∧ b = p.succ) → (b = p.castSucc ∧ c = p.succ) → False)
+    (y : k) : superDiag (U (fun a b : Fin (M + 1) => a = p.castSucc ∧ b = p.succ) hP (Matrix.of fun _ _ => y)) = y := by
+  unfold superDiag
+  rw [Finset.sum_eq_single p.castSucc]
+  · rw [Finset.sum_eq_single p.succ]
+    · simp [U_val, maskM, Matrix.one_apply_ne (Fin.castSucc_lt_succ (i := p)).ne]
+    · intro j hj hne
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and, Fin.val_castSucc] at hj
+      exact absurd (Fin.ext (by simp [hj])) hne
+    · simp
+  · intro i _ hne
+    refine Finset.sum_eq_zero fun j hj => ?_
+    have hij : i ≠ j := by
+      rintro rfl
+      simp at hj
+    rw [U_val, Matrix.add_apply, Matrix.one_apply_ne hij, zero_add, maskM, if_neg (fun h => hne h.1)]
+  · simp
+
+
+end Rep
+
+section Parab
+variable {M : ℕ}
+
+def dTwo (p : Fin M) : Fin 2 → ℕ := ![p.val + 1, M - p.val]
+
+theorem dTwo_sum (p : Fin M) : ∑ a, dTwo p a = M + 1 := by
+  have := p.isLt
+  simp [dTwo, Fin.sum_univ_two]
+  omega
+
+def eTwo (p : Fin M) : (Σ a, Fin (dTwo p a)) ≃ Fin (M + 1) := stdBlocks (dTwo p) (dTwo_sum p)
+
+theorem eTwo_zero (p : Fin M) (i : Fin (dTwo p 0)) : ((eTwo p ⟨0, i⟩ : Fin (M + 1)) : ℕ) ≤ p.val := by
+  have h := stdBlocks_val (dTwo p) (dTwo_sum p) 0 i
+  have hi := i.isLt
+  simp only [dTwo] at hi
+  simp only [eTwo, h]
+  simp
+  simp at hi
+  omega
+
+theorem eTwo_one (p : Fin M) (j : Fin (dTwo p 1)) : p.val < ((eTwo p ⟨1, j⟩ : Fin (M + 1)) : ℕ) := by
+  have h := stdBlocks_val (dTwo p) (dTwo_sum p) 1 j
+  simp only [eTwo, h]
+  simp [dTwo]
+  omega
+
+def PB (p : Fin M) (a b : Fin (M + 1)) : Prop := a.val ≤ p.val ∧ p.val < b.val
+
+instance (p : Fin M) : DecidableRel (PB p) := fun a b => by unfold PB; infer_instance
+
+theorem hPB (p : Fin M) : ∀ a b c, PB p a b → PB p b c → False := by
+  rintro a b c ⟨-, h1⟩ ⟨h2, -⟩
+  omega
+
+
+theorem PB_e (p : Fin M) (a b : Fin 2) (i : Fin (dTwo p a)) (j : Fin (dTwo p b)) :
+    PB p (eTwo p ⟨a, i⟩) (eTwo p ⟨b, j⟩) ↔ a = 0 ∧ b = 1 := by
+  fin_cases a <;> fin_cases b
+  · have := eTwo_zero p j
+    simp [PB]
+    omega
+  · have := eTwo_zero p i
+    have := eTwo_one p j
+    simp [PB]
+    omega
+  · have := eTwo_one p i
+    simp [PB]
+    omega
+  · have := eTwo_one p i
+    simp [PB]
+    omega
+
+omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
+theorem one_e (p : Fin M) (a b : Fin 2) (i : Fin (dTwo p a)) (j : Fin (dTwo p b)) :
+    (1 : Matrix (Fin (M + 1)) (Fin (M + 1)) k) (eTwo p ⟨a, i⟩) (eTwo p ⟨b, j⟩) =
+      if (⟨a, i⟩ : Σ a, Fin (dTwo p a)) = ⟨b, j⟩ then 1 else 0 := by
+  rw [Matrix.one_apply]
+  exact if_congr (eTwo p).injective.eq_iff rfl rfl
+
+theorem fin_two_lt {a b : Fin 2} (h : b < a) : a = 1 ∧ b = 0 := by
+  fin_cases a <;> fin_cases b <;> simp_all
+
+omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
+theorem U_mem_unipRad (p : Fin M) (X : Matrix (Fin (M + 1)) (Fin (M + 1)) k) :
+    U (PB p) (hPB p) X ∈ unipRad k (eTwo p) := by
+  rw [mem_unipRad]
+  refine ⟨?_, ?_⟩
+  · rw [mem_parab_iff]
+    intro a b i j hba
+    obtain ⟨rfl, rfl⟩ := fin_two_lt hba
+    have hP' : ¬ PB p (eTwo p ⟨1, i⟩) (eTwo p ⟨0, j⟩) := by rw [PB_e]; simp
+    rw [U_val, Matrix.add_apply, one_e, maskM, if_neg hP']
+    simp
+  · intro a i j
+    have hP' : ¬ PB p (eTwo p ⟨a, i⟩) (eTwo p ⟨a, j⟩) := by rw [PB_e]; rintro ⟨rfl, h⟩; simp at h
+    rw [U_val, Matrix.add_apply, one_e, maskM, if_neg hP']
+    simp [Matrix.one_apply]
+
+omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
+theorem unipRad_eq_U (p : Fin M) {g : GL (Fin (M + 1)) k} (hg : g ∈ unipRad k (eTwo p)) :
+    (g : Matrix (Fin (M + 1)) (Fin (M + 1)) k) = 1 + maskM (PB p) (g : Matrix (Fin (M + 1)) (Fin (M + 1)) k) := by
+  obtain ⟨hpar, hdiag⟩ := mem_unipRad.1 hg
+  rw [mem_parab_iff] at hpar
+  ext x y
+  obtain ⟨⟨a, i⟩, rfl⟩ := (eTwo p).surjective x
+  obtain ⟨⟨b, j⟩, rfl⟩ := (eTwo p).surjective y
+  rw [Matrix.add_apply, one_e, maskM]
+  by_cases hab : a = b
+  · subst hab
+    have hP' : ¬ PB p (eTwo p ⟨a, i⟩) (eTwo p ⟨a, j⟩) := by rw [PB_e]; rintro ⟨rfl, h⟩; simp at h
+    rw [if_neg hP', hdiag]
+    simp [Matrix.one_apply]
+  · have hne : ¬ ((⟨a, i⟩ : Σ a, Fin (dTwo p a)) = ⟨b, j⟩) := fun h => hab (congrArg Sigma.fst h)
+    rw [if_neg hne, zero_add]
+    rcases lt_or_gt_of_ne hab with h | h
+    · have : a = 0 ∧ b = 1 := by
+        obtain ⟨h1, h2⟩ := fin_two_lt h
+        exact ⟨h2, h1⟩
+      rw [if_pos ((PB_e p a b i j).2 this)]
+    · have hP' : ¬ PB p (eTwo p ⟨a, i⟩) (eTwo p ⟨b, j⟩) := by rw [PB_e]; rintro ⟨rfl, rfl⟩; simp at h
+      rw [if_neg hP', hpar a b i j h]
+
+end Parab
+
+section Main
+
+
+
+end Main
+
+
+end PositivityTheory.LocalParametersCuspidal.DepthZeroGlueing
+
+end
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain ValuativeRel Matrix Polynomial
@@ -26,19 +338,7 @@ theorem val_invT' {R : Type} [CommRing R] (n : ℕ) (g : GL (Fin n) R) :
     ((GlobalTheory.CuspRep.invT n R g : GL (Fin n) R) : Matrix (Fin n) (Fin n) R) =
       ((g⁻¹ : GL (Fin n) R) : Matrix (Fin n) (Fin n) R)ᵀ := rfl
 
-theorem invT_map' {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) (n : ℕ) (g : GL (Fin n) R) :
-    GeneralLinearGroup.map f (GlobalTheory.CuspRep.invT n R g) = GlobalTheory.CuspRep.invT n S (GeneralLinearGroup.map f g) := by
-  ext i j
-  rw [GeneralLinearGroup.map_apply, val_invT', val_invT', ← map_inv, Matrix.transpose_apply,
-    Matrix.transpose_apply, GeneralLinearGroup.map_apply]
 
-theorem invT_mem_KOne {N : ℕ} {g : GL (Fin N) k} (hg : g ∈ KOne k (Fin N)) :
-    GlobalTheory.CuspRep.invT N k g ∈ KOne k (Fin N) := by
-  obtain ⟨x, hx, rfl⟩ := hg
-  refine ⟨GlobalTheory.CuspRep.invT N _ x, ?_, invT_map' _ _ x⟩
-  have hx' : GeneralLinearGroup.map (IsLocalRing.residue _) x = 1 := hx
-  show GeneralLinearGroup.map (IsLocalRing.residue _) (GlobalTheory.CuspRep.invT N _ x) = 1
-  rw [invT_map', hx', map_one]
 
 theorem continuous_invT' (N : ℕ) : Continuous (GlobalTheory.CuspRep.invT N k) :=
   Units.continuous_iff.2 ⟨Units.continuous_coe_inv.matrix_transpose, Units.continuous_val.matrix_transpose⟩
@@ -132,13 +432,7 @@ theorem isCuspidal_comp_invT {N : ℕ} {ρ : Representation ℂ (GL (Fin N) k) V
   refine Submodule.subset_span ⟨⟨GlobalTheory.CuspRep.invT N k n, invT_mem_unipRad e' e he' n.2⟩, v, ?_⟩
   simp [invT_invT']
 
-theorem superDiag_pairs' {N : ℕ} (g : GL (Fin N) k) :
-    superDiag g = ∑ p : Fin N × Fin N with (p.2 : ℕ) = p.1 + 1, g.val p.1 p.2 := by
-  simp only [superDiag, Finset.sum_filter, Fintype.sum_prod_type]
 
-theorem val_whitChar' (ψ : AddChar k Circle) {N : ℕ} (u : unipB k (Fin N)) :
-    ((GlobalTheory.LocGL.whitChar ψ N u : ℂˣ) : ℂ) = ψ (superDiag u.1) := by
-  rw [superDiag_pairs']; rfl
 
 theorem longElt_conj_apply {N : ℕ} (M : Matrix (Fin N) (Fin N) k) (i j : Fin N) :
     ((longElt N k : Matrix (Fin N) (Fin N) k) * M * (longElt N k : Matrix (Fin N) (Fin N) k)) i j =
@@ -153,55 +447,8 @@ theorem longElt_conj_apply {N : ℕ} (M : Matrix (Fin N) (Fin N) k) (i j : Fin N
     simp [longElt, this]
   · simp
 
-theorem isFunctional_comp_invT {N : ℕ} (ψ : AddChar k Circle) (ρ : Representation ℂ (GL (Fin N) k) V)
-    (l : Module.Dual ℂ V) (hl : IsFunctional ψ ρ l) :
-    IsFunctional ψ⁻¹ (ρ.comp (GlobalTheory.CuspRep.invT N k)) (l ∘ₗ ρ (longElt N k)) := by
-  intro u hu x
-  have hw : longElt N k * longElt N k = 1 := Units.ext (antidiag_mul_self N k)
-  have hent : ∀ i j, ((longElt N k * GlobalTheory.CuspRep.invT N k u * longElt N k : GL (Fin N) k) :
-      Matrix (Fin N) (Fin N) k) i j = ((u⁻¹ : GL (Fin N) k) : Matrix (Fin N) (Fin N) k) j.rev i.rev := by
-    intro i j
-    rw [Units.val_mul, Units.val_mul, longElt_conj_apply, val_invT', Matrix.transpose_apply]
-  have hu' := ((mem_unipB k).1 (inv_mem hu))
-  have hc : longElt N k * GlobalTheory.CuspRep.invT N k u * longElt N k ∈ unipB k (Fin N) :=
-    (mem_unipB k).2 ⟨fun i j hji => by rw [hent]; exact hu'.1 _ _ (Fin.rev_lt_rev.2 hji),
-      fun i => by rw [hent]; exact hu'.2 _⟩
-  have hsd : superDiag (longElt N k * GlobalTheory.CuspRep.invT N k u * longElt N k) = superDiag u⁻¹ := by
-    rw [superDiag_pairs', superDiag_pairs']
-    refine Finset.sum_nbij' (fun p => (p.2.rev, p.1.rev)) (fun p => (p.2.rev, p.1.rev)) ?_ ?_ ?_ ?_ ?_
-    · intro p hp
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and, Fin.val_rev] at hp ⊢
-      have := p.1.isLt; have := p.2.isLt; omega
-    · intro p hp
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and, Fin.val_rev] at hp ⊢
-      have := p.1.isLt; have := p.2.isLt; omega
-    · intro p _; simp
-    · intro p _; simp
-    · intro p _; exact hent p.1 p.2
-  have e1 : ρ (longElt N k) (ρ (GlobalTheory.CuspRep.invT N k u) x) =
-      ρ (longElt N k * GlobalTheory.CuspRep.invT N k u * longElt N k) (ρ (longElt N k) x) := by
-    calc ρ (longElt N k) (ρ (GlobalTheory.CuspRep.invT N k u) x) = ρ (longElt N k * GlobalTheory.CuspRep.invT N k u) x := by
-          rw [map_mul]; rfl
-      _ = ρ (longElt N k * GlobalTheory.CuspRep.invT N k u * longElt N k * longElt N k) x := by
-          rw [mul_assoc (longElt N k * GlobalTheory.CuspRep.invT N k u), hw, mul_one]
-      _ = _ := by rw [map_mul]; rfl
-  have hψ : (ψ (superDiag u⁻¹) : ℂ) = ((ψ⁻¹ (superDiag u) : Circle) : ℂ) := by
-    have h3 := congrArg Units.val (map_inv (GlobalTheory.LocGL.whitChar ψ N) ⟨u, hu⟩)
-    rw [val_whitChar', Units.val_inv_eq_inv_val, val_whitChar'] at h3
-    rw [show (u⁻¹ : GL (Fin N) k) = ((⟨u, hu⟩⁻¹ : unipB k (Fin N)) : GL (Fin N) k) from rfl, h3]
-    simp [AddChar.map_neg_eq_inv]
-  simp only [LinearMap.comp_apply, MonoidHom.comp_apply]
-  rw [e1, hl _ hc, hsd, hψ]
 
-theorem isLevelOne_inv {ψ : AddChar k Circle} (h : IsLevelOne ψ) : IsLevelOne ψ⁻¹ := by
-  obtain ⟨c, hc, hc1⟩ := h
-  refine ⟨c, fun x => ?_, hc1⟩
-  rw [← hc x]
-  simp only [AddChar.inv_apply', inv_eq_one]
 
-theorem mem_fixed_comp_invT {N : ℕ} {ρ : Representation ℂ (GL (Fin N) k) V} {v : V}
-    (hv : v ∈ fixed ρ (KOne k (Fin N))) : v ∈ fixed (ρ.comp (GlobalTheory.CuspRep.invT N k)) (KOne k (Fin N)) :=
-  fun g => hv ⟨_, invT_mem_KOne g.2⟩
 
 def compInvT {n : ℕ} (π : IrrRep (GL (Fin n) k)) : IrrRep (GL (Fin n) k) where
   V := π.V
@@ -209,30 +456,13 @@ def compInvT {n : ℕ} (π : IrrRep (GL (Fin n) k)) : IrrRep (GL (Fin n) k) wher
   smooth := isSmooth_comp_invT π.smooth
   irr := isIrreducible_comp_invT π.irr
 
-theorem whittaker_support_tilde_of {m : ℕ}
-    (hA1 : ∀ (π : IrrRep (GL (Fin (m + 1)) k)), IsCuspidal π.ρ → ∀ (ψ : AddChar k Circle), IsLevelOne ψ →
-      ∀ (l : Module.Dual ℂ π.V), IsFunctional ψ π.ρ l → ∀ v ∈ fixed π.ρ (KOne k (Fin (m + 1))),
-        ∀ g : GL (Fin m) k, l (π.ρ (corner g) v) ≠ 0 → valuation k ((GeneralLinearGroup.det g : kˣ) : k) = 1)
-    (π : IrrRep (GL (Fin (m + 1)) k)) (hπ : IsCuspidal π.ρ)
-    (ψ : AddChar k Circle) (hψ : IsLevelOne ψ) (l : Module.Dual ℂ π.V) (hl : IsFunctional ψ π.ρ l)
-    (v : π.V) (hv : v ∈ fixed π.ρ (KOne k (Fin (m + 1)))) (g : GL (Fin m) k)
-    (hg : l (π.ρ (tilde (corner g)) v) ≠ 0) : valuation k ((GeneralLinearGroup.det g : kˣ) : k) = 1 := by
-  refine hA1 (compInvT π) (isCuspidal_comp_invT hπ) ψ⁻¹ (isLevelOne_inv hψ) (l ∘ₗ π.ρ (longElt (m + 1) k))
-    (isFunctional_comp_invT ψ π.ρ l hl) v (mem_fixed_comp_invT hv) g ?_
-  show l (π.ρ (longElt (m + 1) k) (π.ρ (GlobalTheory.CuspRep.invT (m + 1) k (corner g)) v)) ≠ 0
-  rwa [tilde, map_mul] at hg
 
 end Tilde
 
 end WhittakerInverseTranspose
 
-theorem whittaker_support_tilde {m : ℕ} (π : IrrRep (GL (Fin (m + 1)) k)) (hπ : IsCuspidal π.ρ)
-    (ψ : AddChar k Circle) (hψ : IsLevelOne ψ) (l : Module.Dual ℂ π.V) (hl : IsFunctional ψ π.ρ l)
-    (v : π.V) (hv : v ∈ fixed π.ρ (KOne k (Fin (m + 1)))) (g : GL (Fin m) k)
-    (hg : l (π.ρ (tilde (corner g)) v) ≠ 0) : valuation k ((GeneralLinearGroup.det g : kˣ) : k) = 1 :=
-  WhittakerInverseTranspose.whittaker_support_tilde_of (fun π hπ ψ hψ l hl v hv g hg => whittaker_support π hπ ψ hψ l hl v hv g hg)
-    π hπ ψ hψ l hl v hv g hg
 
 end PositivityTheory.LocalParametersCuspidal.DepthZeroGlueing
 
+end
 end

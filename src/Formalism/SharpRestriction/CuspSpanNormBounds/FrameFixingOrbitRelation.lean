@@ -126,8 +126,6 @@ def CntTies (Z : TermLoc D X δ M u u') (O : CntOrb Z) : Prop :=
     CntMassOK Z F0 what₂ ∧ CntOnReps X F0 what₂ u' ∧ CntSurj X F0 what₂ u') ∧
   TermInj D X u u' ∧ CntCoefOK Z O
 
-theorem massDef_iff (D : D7) (X : TermTie D) (Z : TermLocs D X) :
-    MassDef D X Z ↔ ∀ δ M hA u u', ∃ F0 what₂, CntMassOK (Z δ M hA u u') F0 what₂ := Iff.rfl
 
 end Cnt
 
@@ -184,19 +182,8 @@ section FromLoc
 
 open Formalism.MainNotions.S.LocalSplitGroups
 
-theorem rel_of_at {D : D7} {X : TermTie D} {δ : ∀ p : PlF D, (D.s.atP p).Fp}
-    {M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep} {u u' : D.what₂.Word} (Z : TermLoc D X δ M u u')
-    {γ : D.s.Term u u'} {w : Point D.host.E (D.R.rS + 1)} (h : D.s.ptOf γ = w)
-    (hw : Gpt (D.mem u).A.T (D.mem u').A.T w ≠ 0) : D.s.Gterm γ ≠ 0 ∧ D.s.relevant γ := by
-  exact (Z.G_pt γ).2 (by rw [h]; exact hw)
 
-theorem massDef_of (D : D7) (X : TermTie D) (Z : TermLocs D X) : MassDef D X Z :=
-  fun δ M hA u u' => (Z δ M hA u u').mass_def
 
-theorem termInj_of {D : D7} {X : TermTie D} {δ : ∀ p : PlF D, (D.s.atP p).Fp}
-    {M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep} {u u' : D.what₂.Word} (Z : TermLoc D X δ M u u') :
-    TermInj D X u u' :=
-  Z.term_inj
 
 end FromLoc
 
@@ -212,9 +199,6 @@ def PairInj (D : D7) (X : TermTie D) (u u' : D.what₂.Word) : Prop :=
 def JtIrr (D : D7) (X : TermTie D) : Prop :=
   ∀ (u u' : D.what₂.Word) (t : D.s.Term u u'), ¬ D.s.relevant t → X.Jt t = 0
 
-theorem aTerm_irr {D : D7} {X : TermTie D} (hA : ATie D X) (hJ : JtIrr D X) (u u' : D.what₂.Word) (t : D.s.Term u u')
-    (h : ¬ D.s.relevant t) : D.s.aTerm u u' t = 0 :=
-  hA u u' t (hJ u u' t h)
 
 section Orb
 

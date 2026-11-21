@@ -1,6 +1,14 @@
 import Development.AbelianVarietyTheory.Definitions.Divisors.DivisorSupportCondition
-import Development.EtaleCohomology.TateTwists.EtaleTwistedCupProductAssociative
+import Development.AbelianVarietyTheory.Definitions.Divisors.SecClass
 
+section
+open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC
+
+def LateralTheory.EtaleFoundations.EtaleTwistedCupProductAssociative : Prop :=
+  ∀ (q : ℕ) [NeZero q] (E : Spc) {n m k i j l : ℤ} (a : Ht q E n i) (b : Ht q E m j) (c : Ht q E k l), cup q (cup q a b) c = (cup q a (cup q b c)).cast (by ring) (by ring)
+end
+
+section
 open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC
 
 namespace LateralTheory.EtaleFoundations
@@ -42,3 +50,4 @@ theorem etale_twisted_cup_assoc_of_twisted_pairing_exists_assoc (hex : t_twpair_
     rfl rfl rfl (rfl.trans hs) a b c
 
 end LateralTheory.EtaleFoundations
+end

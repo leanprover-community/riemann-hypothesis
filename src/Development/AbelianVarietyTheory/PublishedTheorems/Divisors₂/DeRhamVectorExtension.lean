@@ -80,12 +80,6 @@ theorem Family.Natural.primPull (he : e.Natural) (f : A ⟶ B) [IsMonHom f] (c :
   rw [← PDivGroup.SemiHom.ofHom_rig]
   exact k
 
-theorem Family.Natural.lie_push (he : e.Natural) (f : A ⟶ B) [IsMonHom f] (h : HdR A) :
-    e.lie hR hB u (push (dp0 R) (𝟙 _) f h) = PDivGroup.lieUnivMap (t.map u f) (e.lie hR hA t h) :=
-  LinearMap.ext fun x ↦ by
-    obtain ⟨c, rfl⟩ := (e hR hB u).surjective x
-    rw [Family.lie_apply, push_apply, ← e.lie_apply hR hA t, he.primPull hR hA hB t u]
-    rfl
 
 end DeRhamVectorExtension
 

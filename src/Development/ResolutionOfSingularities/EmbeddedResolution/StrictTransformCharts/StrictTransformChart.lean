@@ -53,8 +53,6 @@ def BlowupChart.restrict (B : BlowupChart π c S s) (V : X₁.Opens) (hV : V ≤
 @[simp] theorem BlowupChart.restrict_domain (B : BlowupChart π c S s) (V : X₁.Opens)
     (hV : V ≤ B.domain) : (B.restrict V hV).domain = V := rfl
 
-theorem BlowupChart.restrict_chart (B : BlowupChart π c S s) (V : X₁.Opens)
-    (hV : V ≤ B.domain) : (B.restrict V hV).chart = B.chart.restrict hV := rfl
 
 theorem BlowupChart.exists_isAffineOpen_mem_le_domain (B : BlowupChart π c S s) (x : X₁)
     (hx : x ∈ B.domain) :

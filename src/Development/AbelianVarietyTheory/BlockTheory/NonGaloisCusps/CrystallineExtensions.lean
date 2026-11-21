@@ -38,16 +38,6 @@ theorem IsExt.cocycle_mul {ρ : Representation LL G V} {ρ' : Representation LL 
   rw [map_add]
   exact (add_left_cancel h1).symm
 
-theorem IsExt.cocycle_sub_mem_coboundaries {ρ : Representation LL G V} {ρ' : Representation LL G W} {i : V →ₗ[LL] W}
-    {p : W →ₗ[LL] LL} (h : IsExt ρ ρ' i p) {c c' : G → V} (hc : IsCocycleOf ρ' i p c)
-    (hc' : IsCocycleOf ρ' i p c') : c - c' ∈ B1 ρ := by
-  obtain ⟨e, h1, he⟩ := hc
-  obtain ⟨e', h1', he'⟩ := hc'
-  obtain ⟨x, hx⟩ := (h.2.1 (e - e')).mp (by rw [map_sub, h1, h1', sub_self])
-  refine ⟨x, funext fun g => h.1 ?_⟩
-  change i (ρ g x - x) = i (c g - c' g)
-  rw [map_sub, map_sub, h.2.2.2.1, hx, map_sub, he, he']
-  abel
 
 variable [TopologicalSpace G] [TopologicalSpace V] [ContinuousAdd V] [ContinuousConstSMul LL V]
 

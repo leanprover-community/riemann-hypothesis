@@ -1,5 +1,232 @@
-import Formalism.LocalToGlobal.NormalizedHeckeFactors.ChiDefs
+import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.ConjugateSelfDual ReciprocityTheory.Gal NumberField IsDedekindDomain
+
+namespace Formalism.L2.NC
+
+section hecke
+
+variable {E : Type} [Field E] [NumberField E]
+
+@[ext]
+structure HC (E : Type) [Field E] [NumberField E] where
+  χ : (AdeleRing (𝓞 E) E)ˣ →* ℂˣ
+  cont : Continuous χ
+  triv : ∀ a : Eˣ, χ (Units.map (algebraMap E (AdeleRing (𝓞 E) E)).toMonoidHom a) = 1
+
+instance : Mul (HC E) where
+  mul χ ψ := ⟨χ.χ * ψ.χ, χ.cont.mul ψ.cont, fun a => by rw [MonoidHom.mul_apply, χ.triv a, ψ.triv a, one_mul]⟩
+
+instance : Inv (HC E) where
+  inv χ := ⟨χ.χ⁻¹, χ.cont.inv, fun a => by rw [MonoidHom.inv_apply, χ.triv a, inv_one]⟩
+
+instance : One (HC E) where
+  one := ⟨1, continuous_const, fun _ => rfl⟩
+
+@[simp] theorem HC.mul_χ (χ ψ : HC E) : (χ * ψ).χ = χ.χ * ψ.χ := rfl
+@[simp] theorem HC.inv_χ (χ : HC E) : (χ⁻¹).χ = χ.χ⁻¹ := rfl
+@[simp] theorem HC.one_χ : (1 : HC E).χ = 1 := rfl
+
+open scoped Classical in
+
+def locM (P : HeightOneSpectrum (𝓞 E)) : P.adicCompletion E →* AdeleRing (𝓞 E) E where
+  toFun x := ((1 : InfiniteAdeleRing E),
+    (RestrictedProduct.mulSingle (fun v : HeightOneSpectrum (𝓞 E) => v.adicCompletionIntegers E) P x :
+      FiniteAdeleRing (𝓞 E) E))
+  map_one' := by
+    show ((1 : InfiniteAdeleRing E), _) = ((1 : InfiniteAdeleRing E), (1 : FiniteAdeleRing (𝓞 E) E))
+    rw [RestrictedProduct.mulSingle_one]
+    rfl
+  map_mul' x y := by
+    show ((1 : InfiniteAdeleRing E), _) = ((1 : InfiniteAdeleRing E) * 1, _ * _)
+    rw [RestrictedProduct.mulSingle_mul, mul_one]
+    rfl
+
+def HC.At (χ : HC E) (P : HeightOneSpectrum (𝓞 E)) (α : ℂ) : Prop :=
+  (∀ u : (P.adicCompletion E)ˣ, Valued.v (u : P.adicCompletion E) = 1 → χ.χ (Units.map (locM P) u) = 1) ∧
+    ∀ ϖ : (P.adicCompletion E)ˣ, Valued.v (ϖ : P.adicCompletion E) = WithZero.exp (-1 : ℤ) →
+      ((χ.χ (Units.map (locM P) ϖ) : ℂˣ) : ℂ) = α
+
+theorem HC.At.mul {χ ψ : HC E} {P : HeightOneSpectrum (𝓞 E)} {a b : ℂ} (h : χ.At P a) (h' : ψ.At P b) :
+    (χ * ψ).At P (a * b) := by
+  refine ⟨fun u hu => ?_, fun ϖ hϖ => ?_⟩
+  · simp [h.1 u hu, h'.1 u hu]
+  · simp [← h.2 ϖ hϖ, ← h'.2 ϖ hϖ]
+
+theorem HC.At.inv {χ : HC E} {P : HeightOneSpectrum (𝓞 E)} {a : ℂ} (h : χ.At P a) : (χ⁻¹).At P a⁻¹ := by
+  refine ⟨fun u hu => ?_, fun ϖ hϖ => ?_⟩
+  · simp [h.1 u hu]
+  · simp [← h.2 ϖ hϖ]
+
+theorem exists_unif (P : HeightOneSpectrum (𝓞 E)) :
+    ∃ ϖ : (P.adicCompletion E)ˣ, Valued.v (ϖ : P.adicCompletion E) = WithZero.exp (-1 : ℤ) := by
+  obtain ⟨π, hπ⟩ := P.valuation_exists_uniformizer E
+  have hv : Valued.v (π : P.adicCompletion E) = WithZero.exp (-1 : ℤ) := by
+    rw [P.valuedAdicCompletion_eq_valuation' π, hπ]
+  have h0 : (π : P.adicCompletion E) ≠ 0 := by
+    intro h
+    rw [h, map_zero] at hv
+    exact WithZero.exp_ne_zero hv.symm
+  exact ⟨Units.mk0 _ h0, hv⟩
+
+theorem HC.At.unique {χ : HC E} {P : HeightOneSpectrum (𝓞 E)} {a b : ℂ} (ha : χ.At P a) (hb : χ.At P b) : a = b := by
+  obtain ⟨ϖ, hϖ⟩ := exists_unif P
+  rw [← ha.2 ϖ hϖ, ← hb.2 ϖ hϖ]
+
+open scoped Classical in
+
+def locInf (v : InfinitePlace E) : v.Completion →* AdeleRing (𝓞 E) E where
+  toFun x := ((Pi.mulSingle v x : InfiniteAdeleRing E), (1 : FiniteAdeleRing (𝓞 E) E))
+  map_one' := by
+    show ((Pi.mulSingle v (1 : v.Completion) : InfiniteAdeleRing E), (1 : FiniteAdeleRing (𝓞 E) E)) =
+      ((1 : InfiniteAdeleRing E), (1 : FiniteAdeleRing (𝓞 E) E))
+    rw [Pi.mulSingle_one]
+    rfl
+  map_mul' x y := by
+    show ((Pi.mulSingle v (x * y) : InfiniteAdeleRing E), (1 : FiniteAdeleRing (𝓞 E) E)) =
+      ((Pi.mulSingle v x : InfiniteAdeleRing E) * Pi.mulSingle v y, (1 : FiniteAdeleRing (𝓞 E) E) * 1)
+    rw [Pi.mulSingle_mul, mul_one]
+
+def HC.Unr (χ : HC E) (P : HeightOneSpectrum (𝓞 E)) : Prop :=
+  ∀ u : (P.adicCompletion E)ˣ, Valued.v (u : P.adicCompletion E) = 1 → χ.χ (Units.map (locM P) u) = 1
+
+def HC.IsUnitArg (χ : HC E) (τ : E →+* ℂ) : Prop :=
+  ∀ f : (InfinitePlace.mk τ).Completion →+* ℂ, Continuous f → (∀ x : E, f (x : (InfinitePlace.mk τ).Completion) = τ x) →
+    ∀ z : ((InfinitePlace.mk τ).Completion)ˣ,
+      ((χ.χ (Units.map (locInf (InfinitePlace.mk τ)) z) : ℂˣ) : ℂ) = f z / (‖f z‖ : ℂ)
+
+def HC.FinOrd (χ : HC E) : Prop := ∃ n : ℕ, 0 < n ∧ ∀ x, χ.χ x ^ n = 1
+
+end hecke
+
+section read
+
+variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω]
+
+def Read {A K L : Type} [CommRing A] [CommRing K] [CommRing L] (pl : HeightOneSpectrum (𝓞 E) → ValuationSubring Ω)
+    (φ : G E Ω →* Aˣ) (rd : A →+* K) (eL : L →+* K) (embC : L →+* ℂ) (χ : HC E) (w : ℤ) : Prop :=
+  ∃ B : Finset (HeightOneSpectrum (𝓞 E)), ∀ P ∉ B, ∃ α : ℂ, χ.At P α ∧ ∃ x : L,
+    embC x = α⁻¹ * (Real.sqrt (normV P) : ℂ) ^ w ∧
+    ∀ σ : G E Ω, IsFrob (F := E) (pl P) (normV P) σ → rd (φ σ : A) = eL x
+
+abbrev ReadC {A : Type} [CommRing A] (pl : HeightOneSpectrum (𝓞 E) → ValuationSubring Ω) (φ : G E Ω →* Aˣ)
+    (rd : A →+* ℂ) (χ : HC E) (w : ℤ) : Prop :=
+  Read pl φ rd (RingHom.id ℂ) (RingHom.id ℂ) χ w
+
+variable (E Ω) in
+
+def cycU (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] : G E Ω →* Oˣ :=
+  (Units.map (algebraMap ℤ_[l] O).toMonoidHom).comp (cycZ E Ω l)
+
+def CycFrob (pl : HeightOneSpectrum (𝓞 E) → ValuationSubring Ω) (l : ℕ) [Fact l.Prime] : Prop :=
+  ∀ P : HeightOneSpectrum (𝓞 E), ((l : ℕ) : 𝓞 E) ∉ P.asIdeal → ∀ σ : G E Ω, IsFrob (F := E) (pl P) (normV P) σ →
+    ((cycZ E Ω l σ : ℤ_[l]ˣ) : ℤ_[l]) = (normV P : ℤ_[l])
+
+theorem normV_ne_zero (P : HeightOneSpectrum (𝓞 E)) : normV P ≠ 0 := by
+  have h : normV P = Ideal.absNorm P.asIdeal := by
+    rw [Ideal.absNorm_apply, Submodule.cardQuot_apply]
+    rfl
+  rw [h]
+  exact fun h0 => P.ne_bot (Ideal.absNorm_eq_zero_iff.1 h0)
+
+theorem finite_placesOver (l : ℕ) [Fact l.Prime] :
+    {v : HeightOneSpectrum (𝓞 E) | ((l : ℕ) : 𝓞 E) ∈ v.asIdeal}.Finite := by
+  have h0 : Ideal.span {((l : ℕ) : 𝓞 E)} ≠ 0 := by
+    rw [Ne, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]
+    exact_mod_cast (Fact.out : l.Prime).ne_zero
+  refine (Ideal.finite_factors h0).subset fun v hv => ?_
+  exact Ideal.dvd_span_singleton.2 hv
+
+theorem Read.frob_eq {A K L : Type} [CommRing A] [CommRing K] [CommRing L]
+    {pl : HeightOneSpectrum (𝓞 E) → ValuationSubring Ω} {φ φ' : G E Ω →* Aˣ} {rd : A →+* K} {eL : L →+* K}
+    {embC : L →+* ℂ} {χ : HC E} {w : ℤ} (h : Read pl φ rd eL embC χ w) (h' : Read pl φ' rd eL embC χ w)
+    (hC : Function.Injective embC) :
+    ∃ B : Finset (HeightOneSpectrum (𝓞 E)), ∀ P ∉ B, ∀ σ : G E Ω, IsFrob (F := E) (pl P) (normV P) σ →
+      rd (φ σ : A) = rd (φ' σ : A) := by
+  classical
+  obtain ⟨B, hB⟩ := h
+  obtain ⟨B', hB'⟩ := h'
+  refine ⟨B ∪ B', fun P hP σ hσ => ?_⟩
+  obtain ⟨α, hα, x, hx, hs⟩ := hB P (fun h => hP (Finset.mem_union_left _ h))
+  obtain ⟨α', hα', x', hx', hs'⟩ := hB' P (fun h => hP (Finset.mem_union_right _ h))
+  have e : α = α' := hα.unique hα'
+  have ex : x = x' := hC (by rw [hx, hx', e])
+  rw [hs σ hσ, hs' σ hσ, ex]
+
+
+
+end read
+
+section rcg
+
+variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω]
+
+def UnrOut {A : Type} [Group A] (φ : G E Ω →* A) (Q : Set (HeightOneSpectrum (𝓞 E))) : Prop :=
+  ∀ v, v ∉ Q → ∀ A : ValuationSubring Ω, IsPlaceOver A v → ∀ σ ∈ Ine (F := E) A, φ σ = 1
+
+def IsRcgChar (c : Ω ≃+* Ω) (l : ℕ) (Q : Set (HeightOneSpectrum (𝓞 E))) {A : Type} [CommGroup A]
+    (φ : G E Ω →* A) : Prop :=
+  Finite A ∧ (∀ x : A, ∃ n : ℕ, x ^ (l ^ n) = 1) ∧ IsOpen (φ.ker : Set (G E Ω)) ∧ AntiHom c φ ∧ UnrOut φ Q
+
+def rcgKer (c : Ω ≃+* Ω) (l : ℕ) (Q : Set (HeightOneSpectrum (𝓞 E))) : Subgroup (G E Ω) where
+  carrier := {g | ∀ (A : Type) [CommGroup A] (φ : G E Ω →* A), IsRcgChar c l Q φ → φ g = 1}
+  one_mem' := fun A _ φ _ => map_one φ
+  mul_mem' := fun {a b} ha hb A _ φ h => by rw [map_mul, ha A φ h, hb A φ h, one_mul]
+  inv_mem' := fun {a} ha A _ φ h => by rw [map_inv, ha A φ h, inv_one]
+
+theorem mem_rcgKer {c : Ω ≃+* Ω} {l : ℕ} {Q : Set (HeightOneSpectrum (𝓞 E))} {g : G E Ω} :
+    g ∈ rcgKer c l Q ↔ ∀ (A : Type) [CommGroup A] (φ : G E Ω →* A), IsRcgChar c l Q φ → φ g = 1 := Iff.rfl
+
+instance rcgKer_normal (c : Ω ≃+* Ω) (l : ℕ) (Q : Set (HeightOneSpectrum (𝓞 E))) : (rcgKer c l Q).Normal where
+  conj_mem g hg h A _ φ hφ := by
+    rw [map_mul, map_mul, hg A φ hφ, mul_one, map_inv, mul_inv_cancel]
+
+abbrev RCGGal (c : Ω ≃+* Ω) (l : ℕ) (Q : Set (HeightOneSpectrum (𝓞 E))) : Type :=
+  G E Ω ⧸ rcgKer c l Q
+
+def artGal (c : Ω ≃+* Ω) (l : ℕ) (Q : Set (HeightOneSpectrum (𝓞 E))) : G E Ω →* RCGGal c l Q :=
+  QuotientGroup.mk' _
+
+def RcgOpen (c : Ω ≃+* Ω) (l : ℕ) (Q : Set (HeightOneSpectrum (𝓞 E))) : Prop :=
+  ∀ [IsAlgClosure E Ω], 0 < l → Q.Finite → (∀ v ∈ Q, ((l : ℕ) : 𝓞 E) ∉ v.asIdeal) →
+    IsOpen ((rcgKer c l Q : Subgroup (G E Ω)) : Set (G E Ω))
+
+instance rcgGal_comm (c : Ω ≃+* Ω) (l : ℕ) (Q : Set (HeightOneSpectrum (𝓞 E))) : CommGroup (RCGGal c l Q) :=
+  { (inferInstance : Group (RCGGal c l Q)) with
+    mul_comm := fun x y => by
+      induction x using QuotientGroup.induction_on with | H a => ?_
+      induction y using QuotientGroup.induction_on with | H b => ?_
+      rw [← QuotientGroup.mk_mul, ← QuotientGroup.mk_mul, QuotientGroup.eq]
+      refine mem_rcgKer.2 fun A _ φ _ => ?_
+      rw [map_mul, map_inv, map_mul, map_mul, mul_comm (φ b) (φ a), inv_mul_cancel] }
+
+
+
+
+
+
+theorem rcgKer_mono (c : Ω ≃+* Ω) (l : ℕ) {Q Q' : Set (HeightOneSpectrum (𝓞 E))} (h : Q' ⊆ Q) :
+    rcgKer c l Q ≤ rcgKer c l Q' := fun _ hg =>
+  mem_rcgKer.2 fun A _ φ hφ => (mem_rcgKer.1 hg) A φ
+    ⟨hφ.1, hφ.2.1, hφ.2.2.1, hφ.2.2.2.1, fun v hv => hφ.2.2.2.2 v (fun h' => hv (h h'))⟩
+
+def resGal (c : Ω ≃+* Ω) (l : ℕ) {Q Q' : Set (HeightOneSpectrum (𝓞 E))} (h : Q' ⊆ Q) :
+    RCGGal c l Q →* RCGGal c l Q' :=
+  QuotientGroup.map _ _ (MonoidHom.id _) (fun _ hg => rcgKer_mono c l h hg)
+
+
+
+
+end rcg
+
+end Formalism.L2.NC
+end
+end
+
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.ConjugateSelfDual ReciprocityTheory.Gal NumberField IsDedekindDomain
@@ -57,32 +284,6 @@ structure NormalizedCharacterCompatibility (D : D7) (K : NChiData D) : Prop wher
   lamG : ∀ s lam, Read D.nd.plOm.1 (D.ntw.lamG s lam) (algebraMap (D.ntw.O s) (FractionRing (D.ntw.O s)))
     (K.embO s (D.ntw.sideL s lam)) (complexEmbeddingRestrictedToSubfield D) (K.lamH s lam) 0
 
-theorem chi_read {D : D7} {K : NChiData D} (T : NormalizedCharacterCompatibility D K) (a : D.nd.Loc) :
-    ReadC D.nd.plOm.1 (D.nd.chi a 1) (iotaC D a) (K.chiH a) (-(D.R.r : ℤ)) := by
-  classical
-  obtain ⟨B1, h1⟩ := T.chi1 (D.ntw.twOf a) (D.nd.j a) (D.ntw.twSide a) (D.nd.j_range a).1 (D.nd.j_range a).2
-  obtain ⟨B2, h2⟩ := T.psi a
-  refine ⟨B1 ∪ B2, fun P hP => ?_⟩
-  obtain ⟨α1, hα1, x1, hx1, hσ1⟩ := h1 P (fun h => hP (Finset.mem_union_left _ h))
-  obtain ⟨α2, hα2, x2, hx2, hσ2⟩ := h2 P (fun h => hP (Finset.mem_union_right _ h))
-  refine ⟨α1 * α2, hα1.mul hα2, (α1 * α2)⁻¹ * (Real.sqrt (normV P) : ℂ) ^ (-(D.R.r : ℤ)), rfl, fun σ hσ => ?_⟩
-  have e1 := hσ1 σ hσ
-  have e2 := hσ2 σ hσ
-  simp only [RingHom.id_apply] at hx2 e2 ⊢
-  have tw := D.ntw.twO_emb a x1 _ e1
-  have hc : (D.nd.chi a 1 σ : D.nd.O a) =
-      D.ntw.twist₂ a (D.ntw.chi1 (D.ntw.twOf a) (D.nd.j a) (D.ntw.twSide a) σ : D.ntw.O0 (D.ntw.twOf a)) *
-        (D.ntw.psiL a σ : D.nd.O a) := by
-    rw [D.ntw.chi_tw a]
-    rfl
-  rw [hc, map_mul, e2, hx2]
-  have h3 : iotaC D a (D.ntw.twist₂ a (D.ntw.chi1 (D.ntw.twOf a) (D.nd.j a) (D.ntw.twSide a) σ :
-      D.ntw.O0 (D.ntw.twOf a))) = complexEmbeddingRestrictedToSubfield D x1 := by
-    simp only [iotaC, RingHom.comp_apply, complexEmbeddingRestrictedToSubfield]
-    rw [← tw]
-    exact D.naut.iota_LL a (x1 : D.what₂.LL)
-  rw [h3, hx1, zpow_zero, mul_one, mul_inv]
-  ring
 
 section rcg
 
@@ -109,15 +310,6 @@ def rcgEquiv (s : D.ntw.Tw) (Q : Finset (HeightOneSpectrum (𝓞 D.host.E)))
   (QuotientGroup.quotientKerEquivOfSurjective _ (D.ntw.art_surj s Q)).symm.trans
     (QuotientGroup.quotientMulEquivOfEq (art_ker D s Q hQ))
 
-theorem rcgEquiv_art (s : D.ntw.Tw) (Q : Finset (HeightOneSpectrum (𝓞 D.host.E)))
-    (hQ : ∀ v ∈ Q, v ∉ placesOver D.host.E (D.ntw.l s)) (g : G D.host.E D.nd.Om) :
-    rcgEquiv D s Q hQ (D.ntw.art s Q g) = artGal D.ntw.cc (D.ntw.l s) (Q : Set (HeightOneSpectrum (𝓞 D.host.E))) g := by
-  have h1 : (QuotientGroup.quotientKerEquivOfSurjective _ (D.ntw.art_surj s Q)).symm (D.ntw.art s Q g) =
-      (QuotientGroup.mk g : G D.host.E D.nd.Om ⧸ (D.ntw.art s Q).ker) := by
-    rw [MulEquiv.symm_apply_eq]
-    rfl
-  simp only [rcgEquiv, MulEquiv.trans_apply, h1]
-  rfl
 
 theorem res_eq (s : D.ntw.Tw) (Q Q' : Finset (HeightOneSpectrum (𝓞 D.host.E))) (h : Q' ⊆ Q)
     (f : D.ntw.RCG s Q →* D.ntw.RCG s Q') (hf : f.comp (D.ntw.art s Q) = D.ntw.art s Q') :
@@ -133,142 +325,19 @@ theorem res_eq (s : D.ntw.Tw) (Q Q' : Finset (HeightOneSpectrum (𝓞 D.host.E))
      rw [h1, h2])
   | rw [h1, D.ntw.res_art s Q Q' h g]
 
-theorem psiL_factor (a : D.nd.Loc) :
-    ∃ f : D.ntw.RCG (D.ntw.twOf a) (D.nd.Q a) →* (D.nd.O a)ˣ,
-      f.comp (D.ntw.art (D.ntw.twOf a) (D.nd.Q a)) = D.ntw.psiL a := by
-  have hfin : Finite (D.ntw.psiL a).range := by
-    have : Finite (G D.host.E D.nd.Om ⧸ (D.ntw.psiL a).ker) :=
-      Subgroup.quotient_finite_of_isOpen _ (D.ntw.psiL_open a)
-    exact Finite.of_equiv _ (QuotientGroup.quotientKerEquivRange (D.ntw.psiL a)).toEquiv
-  have hQ : ∀ v ∈ D.nd.Q a, v ∉ placesOver D.host.E (D.ntw.l (D.ntw.twOf a)) := by
-    intro v hv
-    rw [D.ntw.twOf_l]
-    exact D.nd.SQ_l a v (Or.inr hv)
-  have hl : ∀ x : (D.ntw.psiL a).range, ∃ n : ℕ, x ^ (D.ntw.l (D.ntw.twOf a) ^ n) = 1 := by
-    rintro ⟨_, g, rfl⟩
-    obtain ⟨n, hn⟩ := D.ntw.psiL_ord a g
-    refine ⟨n, Subtype.ext ?_⟩
-    rw [D.ntw.twOf_l]
-    simpa using hn
-  have hop : IsOpen ((D.ntw.psiL a).rangeRestrict.ker : Set (G D.host.E D.nd.Om)) := by
-    rw [MonoidHom.ker_rangeRestrict]
-    exact D.ntw.psiL_open a
-  have han : AntiHom D.ntw.cc (D.ntw.psiL a).rangeRestrict := fun g g' h =>
-    Subtype.ext (by simpa using D.ntw.psiL_anti a g g' h)
-  have hun : ∀ v, v ∉ D.nd.Q a → ∀ A : ValuationSubring D.nd.Om, IsPlaceOver A v →
-      ∀ σ ∈ Ine (F := D.host.E) A, (D.ntw.psiL a).rangeRestrict σ = 1 := by
-    intro v hv A hA σ hσ
-    apply Subtype.ext
-    simp only [MonoidHom.coe_rangeRestrict, OneMemClass.coe_one]
-    by_contra hne
-    exact hv ((D.ntw.psiL_ram a v A hA).1 ⟨σ, hσ, hne⟩)
-  obtain ⟨f, hf⟩ := D.ntw.art_univ (D.ntw.twOf a) (D.nd.Q a) hQ (D.ntw.psiL a).range hl _ hop han hun
-  refine ⟨(D.ntw.psiL a).range.subtype.comp f, ?_⟩
-  rw [MonoidHom.comp_assoc, hf]
-  rfl
 
 end rcg
 
-theorem chi_ram_Q_of_tw (D : D7) (i : D.nd.Loc) (v : HeightOneSpectrum (𝓞 D.host.E)) (hv : v ∈ D.nd.Q i) :
-    ∃ g ∈ Ine (F := D.host.E) (D.nd.plOm.1 v), D.nd.chi i 1 g ≠ 1 := by
-  have hS : v ∉ D.nd.S i := fun h => Finset.disjoint_left.1 (D.nd.SQ_disj i) h hv
-  have hl : v ∉ placesOver D.host.E (D.nd.l i) := D.nd.SQ_l i v (Or.inr hv)
-  have hg : ∀ k, v ∉ placesOver D.host.E (D.host.g k) := by
-    intro k hk
-    apply hS
-    rw [D.nd.S_def i v]
-    refine ⟨?_, hl⟩
-    fin_cases k
-    · exact Or.inl hk
-    · exact Or.inr (Or.inl hk)
-  have hpd : v ∉ D.ntw.pD (D.ntw.twOf i) := by
-    intro hp
-    have h' : v ∈ ((D.ntw.pD (D.ntw.twOf i) : Finset _) : Set (HeightOneSpectrum (𝓞 D.host.E))) := hp
-    rw [D.ntw.pD_eq, D.ntw.twOf_l] at h'
-    exact hS ((D.nd.S_def i v).2 ⟨Or.inr (Or.inr h'), hl⟩)
-  have hl' : v ∉ placesOver D.host.E (D.ntw.l (D.ntw.twOf i)) := by
-    rw [D.ntw.twOf_l]
-    exact hl
-  obtain ⟨σ, hσ, hψ⟩ := (D.ntw.psiL_ram i v (D.nd.plOm.1 v) (D.nd.plOm.2 v)).2 hv
-  refine ⟨σ, hσ, ?_⟩
-  have h1 := D.ntw.twistCharacterFamily_unramified (D.ntw.twOf i) (D.nd.j i) (D.ntw.twSide i) v hl' hg hpd (D.nd.plOm.1 v) (D.nd.plOm.2 v) σ hσ
-  rw [D.ntw.chi_tw i, MonoidHom.mul_apply, MonoidHom.comp_apply, h1, map_one, one_mul]
-  exact hψ
 
-theorem Xv_read {D : D7} {K : NChiData D} (T : NormalizedCharacterCompatibility D K) (s : D.ntw.Tw) (lam : D.ntw.abelian₂ s) :
-    ∃ B : Finset (HeightOneSpectrum (𝓞 D.host.E)), ∀ P ∉ B, ∃ α : ℂ, (K.lamH s lam).At P α ∧ ∃ x : ↥D.LL0,
-      complexEmbeddingRestrictedToSubfield D x = α⁻¹ ∧
-      ∀ σ : G D.host.E D.nd.Om, IsFrob (F := D.host.E) (D.nd.plOm.1 P) (normV P) σ →
-        algebraMap (D.ntw.O s) (FractionRing (D.ntw.O s)) (D.ntw.Xv s lam P) = K.embO s (D.ntw.sideL s lam) x := by
-  classical
-  obtain ⟨B, hB⟩ := T.lamG s lam
-  refine ⟨B ∪ D.ntw.S0 s, fun P hP => ?_⟩
-  obtain ⟨α, hα, x, hx, hσ⟩ := hB P (fun h => hP (Finset.mem_union_left _ h))
-  refine ⟨α, hα, x, by rw [hx, zpow_zero, mul_one], fun σ hσ' => ?_⟩
-  rw [D.ntw.Xv_def s lam P (fun h => hP (Finset.mem_union_right _ h)) σ hσ']
-  exact hσ σ hσ'
 
-theorem units_zpow_map {O : Type} [CommRing O] (f : O →+* ℂ) (u : Oˣ) (n : ℤ) :
-    f ((u ^ n : Oˣ) : O) = (f (u : O)) ^ n := by
-  have h2 := congrArg (fun v : ℂˣ => (v : ℂ)) (map_zpow (Units.map f.toMonoidHom) u n)
-  simp only [Units.coe_map, Units.val_zpow_eq_zpow_val, RingHom.toMonoidHom_eq_coe, MonoidHom.coe_coe] at h2
-  exact h2
 
-theorem chi_c_read {D : D7} {K : NChiData D} (T : NormalizedCharacterCompatibility D K) (a : D.nd.Loc) (c : ℕ) (h1 : 1 ≤ c) (h2 : c ≤ D.R.t) :
-    ReadC D.nd.plOm.1 (D.nd.chi a c) (iotaC D a) (K.chiH a) (-(D.R.r : ℤ) - 2 * ((c : ℤ) - 1)) := by
-  classical
-  have : IsAlgClosed D.nd.Om := IsAlgClosure.isAlgClosed D.host.E
-  have : CharZero D.nd.Om := charZero_of_injective_algebraMap (algebraMap D.host.E D.nd.Om).injective
-  have hcyc : CycFrob D.nd.plOm.1 (D.nd.l a) := cycFrob_holds D.nd.plOm.1 D.nd.plOm.2 (D.nd.l a)
-  obtain ⟨B, hB⟩ := chi_read T a
-  have hfin := finite_placesOver (E := D.host.E) (D.nd.l a)
-  refine ⟨B ∪ hfin.toFinset, fun P hP => ?_⟩
-  obtain ⟨α, hα, x, hx, hσ⟩ := hB P (fun h => hP (Finset.mem_union_left _ h))
-  have hl : ((D.nd.l a : ℕ) : 𝓞 D.host.E) ∉ P.asIdeal := fun h =>
-    hP (Finset.mem_union_right _ (hfin.mem_toFinset.2 h))
-  refine ⟨α, hα, α⁻¹ * (Real.sqrt (normV P) : ℂ) ^ (-(D.R.r : ℤ) - 2 * ((c : ℤ) - 1)), rfl, fun σ hσ' => ?_⟩
-  simp only [RingHom.id_apply] at hx hσ ⊢
-  have e := hσ σ hσ'
-  rw [hx] at e
-  have hq := hcyc P hl σ hσ'
-  have hcy : iotaC D a ((((Units.map (algebraMap ℤ_[D.nd.l a] (D.nd.O a)).toMonoidHom).comp
-      (cycZ (F := D.host.E) (Ω := D.nd.Om) (D.nd.l a))) σ : (D.nd.O a)ˣ) : D.nd.O a) = (normV P : ℂ) := by
-    simp only [MonoidHom.comp_apply, Units.coe_map, RingHom.toMonoidHom_eq_coe, MonoidHom.coe_coe, hq, map_natCast]
-  have hs : ((Real.sqrt (normV P) : ℝ) : ℂ) ≠ 0 := by
-    have : 0 < Real.sqrt (normV P) := Real.sqrt_pos.2 (Nat.cast_pos.2 (Nat.pos_of_ne_zero (normV_ne_zero P)))
-    exact_mod_cast this.ne'
-  have hsq : (normV P : ℂ) = ((Real.sqrt (normV P) : ℝ) : ℂ) ^ (2 : ℤ) := by
-    rw [zpow_two, ← Complex.ofReal_mul, Real.mul_self_sqrt (Nat.cast_nonneg _)]
-    simp
-  rw [D.nd.chi_def a c h1 h2, MonoidHom.mul_apply, Units.val_mul, map_mul, e, MonoidHom.zpow_apply,
-    units_zpow_map, hcy, hsq, ← zpow_mul, mul_assoc, ← zpow_add₀ hs]
-  congr 2
-  ring
 
-theorem rcgOpen_of_record (D : D7) (s : D.ntw.Tw) (Q : Finset (HeightOneSpectrum (𝓞 D.host.E)))
-    (hQ : ∀ v ∈ Q, v ∉ placesOver D.host.E (D.ntw.l s)) :
-    RcgOpen D.ntw.cc (D.ntw.l s) (Q : Set (HeightOneSpectrum (𝓞 D.host.E))) := by
-  intro _ _ _ _
-  rw [← art_ker D s Q hQ]
-  exact D.ntw.art_cont s Q
 
-theorem rcgGal_second (D : D7) (s : D.ntw.Tw) (Q : Finset (HeightOneSpectrum (𝓞 D.host.E)))
-    (hQ : ∀ v ∈ Q, v ∉ placesOver D.host.E (D.ntw.l s)) :
-    Finite (RCGGal D.ntw.cc (D.ntw.l s) (Q : Set (HeightOneSpectrum (𝓞 D.host.E)))) ∧
-      (∀ x : RCGGal D.ntw.cc (D.ntw.l s) (Q : Set (HeightOneSpectrum (𝓞 D.host.E))), ∃ n : ℕ, x ^ (D.ntw.l s ^ n) = 1) ∧
-      IsOpen ((artGal D.ntw.cc (D.ntw.l s) (Q : Set (HeightOneSpectrum (𝓞 D.host.E)))).ker : Set (G D.host.E D.nd.Om)) ∧
-      AntiHom D.ntw.cc (artGal D.ntw.cc (D.ntw.l s) (Q : Set (HeightOneSpectrum (𝓞 D.host.E)))) ∧
-      UnrOut (artGal D.ntw.cc (D.ntw.l s) (Q : Set (HeightOneSpectrum (𝓞 D.host.E)))) (Q : Set (HeightOneSpectrum (𝓞 D.host.E))) ∧
-      Function.Surjective (artGal D.ntw.cc (D.ntw.l s) (Q : Set (HeightOneSpectrum (𝓞 D.host.E)))) :=
-  have hO : IsOpen ((rcgKer D.ntw.cc (D.ntw.l s) (Q : Set (HeightOneSpectrum (𝓞 D.host.E))) : Subgroup _) :
-      Set (G D.host.E D.nd.Om)) := by
-    rw [← art_ker D s Q hQ]
-    exact D.ntw.art_cont s Q
-  ⟨rcgGal_finite _ _ _ hO, rcgGal_lpow _ _ _ hO, by rw [artGal_ker]; exact hO, artGal_anti _ _ _, artGal_unr _ _ _,
-    artGal_surj _ _ _⟩
 
 theorem frob_exists (D : D7) (P : HeightOneSpectrum (𝓞 D.host.E)) :
     ∃ σ : G D.host.E D.nd.Om, IsFrob (F := D.host.E) (D.nd.plOm.1 P) (normV P) σ :=
   exists_isFrob (D.nd.plOm.2 P)
 
 end Formalism.L2.NC
+end
+end

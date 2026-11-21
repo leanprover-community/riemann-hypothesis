@@ -136,11 +136,6 @@ theorem highest_weight_shift_eq_det_mul (R : Type) [CommRing R] {r : ℕ} (ν : 
     simp only [key, hl, Nat.sub_zero, hL]
     ring
 
-theorem highest_weight_ones_eq_det (R : Type) [CommRing R] (r : ℕ) :
-    hw R le_rfl (fun _ : Fin r => 1) = genericDet R r := by
-  have h := highest_weight_shift_eq_det_mul R (fun _ : Fin r => 0)
-  have h0 : hw R le_rfl (fun _ : Fin r => 0) = 1 := by simp [hw]
-  simpa [h0] using h
 
 private theorem divOp_mem_weyl (R : Type) [CommRing R] {r : ℕ} (μ : Fin r → ℕ)
     (a b : Fin r) (k : ℕ) (f : MvPolynomial (Fin r × Fin r) R)

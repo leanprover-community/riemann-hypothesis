@@ -25,8 +25,6 @@ theorem IsConjDual.trace {c : Ω ≃+* Ω} {r : G E Ω →* GL (Fin a) k} {μ : 
   rw [hP g g' hg, Matrix.trace_smul, Matrix.trace_mul_cycle, ← Units.val_mul, inv_mul_cancel, Units.val_one,
     one_mul, Matrix.trace_transpose, smul_eq_mul]
 
-theorem isConjDual_one (c : Ω ≃+* Ω) : IsConjDual c (1 : G E Ω →* GL (Fin a) k) 1 :=
-  ⟨1, fun _ _ _ => by simp⟩
 
 variable (E Ω) in
 

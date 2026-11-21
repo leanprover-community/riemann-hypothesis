@@ -90,11 +90,6 @@ def TrivialFlagRoots.exampleZMod4 : TrivialFlagRoots (ZMod 4) 2 where
       rw [Finset.powersetCard_eq_empty.mpr (by simp)]
       simp
 
-theorem TrivialFlagRoots.exampleZMod4_x_ne_zero : TrivialFlagRoots.exampleZMod4.x ≠ 0 := by
-  intro h
-  have := congrFun h 0
-  revert this
-  decide
 
 def CyclicRecursionData.exampleZMod2 : CyclicRecursionData (ZMod 2) where
   φ := Equiv.addRight 1
@@ -110,9 +105,6 @@ def CyclicRecursionData.exampleZMod2 : CyclicRecursionData (ZMod 2) where
       norm_num
     · simp [show (1 : ZMod 2) ≠ 0 by decide, show (1 : ZMod 2) + 1 = 0 by decide]
 
-theorem CyclicRecursionData.exampleZMod2_lam_nonconstant :
-    CyclicRecursionData.exampleZMod2.lam 0 ≠ CyclicRecursionData.exampleZMod2.lam 1 := by
-  simp [CyclicRecursionData.exampleZMod2, show (1 : ZMod 2) ≠ 0 by decide]
 
 def FrobeniusRecursionData.exampleZMod2 : FrobeniusRecursionData (ZMod 2) where
   toCyclicRecursionData := CyclicRecursionData.exampleZMod2
@@ -136,8 +128,6 @@ def FrobeniusRecursionData.exampleConstant : FrobeniusRecursionData (ZMod 3) whe
   one_le_k := le_rfl
   q_eq := by norm_num
 
-theorem FrobeniusRecursionData.exampleConstant_hyp :
-    ∀ σ, FrobeniusRecursionData.exampleConstant.lam σ = 2 := fun _ => rfl
 
 end
 

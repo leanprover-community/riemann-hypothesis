@@ -35,7 +35,6 @@ theorem star_kap (f : Ty P → ℂ) : star (kap P f) = kap P fun π => star (f �
   simp only [Pi.star_apply]
   exact (algebraMap_star_comm (f π)).symm
 
-theorem kap_const (c : ℂ) : (kap P fun _ => c) = algebraMap ℂ (A P) c := (kap P).commutes c
 
 theorem kap_mul (f g : Ty P → ℂ) : (kap P fun π => f π * g π) = kap P f * kap P g := map_mul (kap P) f g
 
@@ -109,13 +108,9 @@ theorem gg_ggi : ggA P * ggiA P = 1 := by
   obtain ⟨-, -, -, -, -, -, h, -, -⟩ := level_function_relations P; exact h
 theorem ggi_gg : ggiA P * ggA P = 1 := by
   obtain ⟨-, -, -, -, -, -, -, h, -⟩ := level_function_relations P; exact h
-theorem gg_def : ggA P = zA P * zbA P - algebraMap ℂ (A P) (P.TT : ℂ) := by
-  obtain ⟨-, -, -, -, -, -, -, -, h⟩ := level_function_relations P; exact h
 theorem nabla_zeta_comm : nabA P * zA P = zA P * nabA P + 1 := (level_nabla_relations P).1
 theorem nab_gg : nabA P * ggA P = ggA P * nabA P + zbA P := by
   obtain ⟨-, -, -, -, h, -, -⟩ := level_nabla_relations P; exact h
-theorem nabs_alt : nabsA P * zA P = zA P * nabsA P := by
-  obtain ⟨-, -, h, -, -, -, -⟩ := level_nabla_star_relations P; exact h
 theorem nabs_gg : nabsA P * ggA P = ggA P * nabsA P - zA P := by
   obtain ⟨-, -, -, -, h, -, -⟩ := level_nabla_star_relations P; exact h
 theorem star_alt : star (zA P) = zbA P := by
@@ -141,29 +136,8 @@ theorem raising_constant_eq_nabla_star (Y : ℂ) : m0A P Y = -nabsA P - (Y - 1 /
   unfold m0A
   rw [← Algebra.smul_def]
 
-theorem lowering_constant_zeta_comm (Y : ℂ) : l0A P Y * zA P = zA P * l0A P Y - 1 := by
-  have hc : (zbA P * ggiA P) * zA P = zA P * (zbA P * ggiA P) := by
-    have h1 : Commute (zbA P) (zA P) := by
-      unfold zbA zA zbP zP
-      exact fn_comm P _ _ _ _
-    have h2 : Commute (ggiA P) (zA P) := by
-      unfold ggiA zA ggiP zP
-      exact fn_comm P _ _ _ _
-    exact (h1.mul_left h2).eq
-  rw [l0_eq_neg_nabla_sub, sub_mul, mul_sub, neg_mul, mul_neg, nabla_zeta_comm, smul_mul_assoc, hc, mul_smul_comm]
-  abel
 
-theorem raising_constant_commute_zeta (Y : ℂ) : Commute (m0A P Y) (zA P) := by
-  rw [raising_constant_eq_nabla_star]
-  have hn : Commute (nabsA P) (zA P) := nabs_alt P
-  have h2 : Commute (zA P * ggiA P) (zA P) := (Commute.refl _).mul_left (by
-    unfold ggiA zA ggiP zP
-    exact fn_comm P _ _ _ _)
-  exact hn.neg_left.sub_left (h2.smul_left _)
 
-theorem S21_commute_scalar (Y : ℂ) (w : Pr P.r) : Commute (weightedSumBis P Y) (sc P w) := by
-  unfold weightedSumBis
-  exact Commute.sum_left _ _ _ fun l _ => (ss_sc P l w).mul_left (kap_sc P _ w)
 
 theorem upper_sum_commute_scalar (Y : ℂ) (w : Pr P.r) : Commute (S12 P Y) (sc P w) := by
   unfold S12
@@ -185,46 +159,6 @@ theorem commGroup_mul_eq_mul_mul_div {R : Type*} [Ring R] (a B c D e l z : R) (h
   simp only [mul_add]
   abel
 
-theorem qQZeta : QQZeta := by
-  intro P Y
-  have hg : Commute (ggA P) (zA P) := by
-    unfold ggA zA ggP zP
-    exact fn_comm P _ _ _ _
-  have hgi : Commute (ggiA P) (zA P) := by
-    unfold ggiA zA ggiP zP
-    exact fn_comm P _ _ _ _
-  have hx : Commute (xA P Y) (zA P) := by
-    unfold xA zA
-    exact kap_sc P _ _
-  have hW : Commute (kap P fun π => wC P π Y) (zA P) := by
-    unfold zA
-    exact kap_sc P _ _
-  have hS21 : Commute (weightedSumBis P Y) (zA P) := by
-    unfold zA
-    exact S21_commute_scalar P Y _
-  have hS12 : Commute (S12 P Y) (zA P) := by
-    unfold zA
-    exact upper_sum_commute_scalar P Y _
-  have hS4 : Commute (S4 P Y) (zA P) := by
-    unfold zA
-    exact quartic_sum_commute_scalar P Y _
-  have hm := raising_constant_commute_zeta P Y
-  have h1 := commGroup_mul_eq_mul_mul_div 0 (ggA P * xA P Y) (weightedSumBis P Y) 0 0 (l0A P Y) (zA P) (Commute.zero_left _)
-    (hg.mul_left hx) hS21 (Commute.zero_left _) (Commute.zero_left _) (lowering_constant_zeta_comm P Y)
-  simp only [zero_add, add_zero, zero_mul] at h1
-  have h2 := commGroup_mul_eq_mul_mul_div (ggiA P * kap P fun π => wC P π Y) (ggA P * xA P Y * m0A P Y)
-    (ggA P * m0A P Y * ggiA P * weightedSumBis P Y) (S12 P Y) (ggiA P * S4 P Y) (l0A P Y) (zA P)
-    (hgi.mul_left hW) ((hg.mul_left hx).mul_left hm) (((hg.mul_left hm).mul_left hgi).mul_left hS21) hS12
-    (hgi.mul_left hS4) (lowering_constant_zeta_comm P Y)
-  refine ⟨?_, ?_, ?_, ?_⟩
-  · unfold t21 t22
-    exact h1
-  · unfold t11 t12
-    exact h2
-  · unfold t12
-    exact ((hg.mul_left hx).mul_left hm).add_left hS12
-  · unfold t22
-    exact hg.mul_left hx
 
 theorem block_frame_conjugation_identity {R : Type*} [Ring R] [Algebra ℂ R] (g gi z N : R) (a e : ℂ) (h1 : g * gi = 1)
     (hN : N * g = g * N - e • z) (hzg : Commute z g) (hzgi : Commute z gi) :
@@ -539,168 +473,28 @@ theorem lead_prod (s : Finset ℕ) :
   funext π
   simp only [Polynomial.eval_prod, Polynomial.eval_add, Polynomial.eval_X, Polynomial.eval_C]
 
-theorem card_I : (Icc 1 (P.k - 1)).card = P.k - 1 := by
-  rw [Nat.card_Icc]
-  omega
 
-theorem lead_xA : Lead (P.k - 1) (1 : A P) (xA P) := (lead_prod P (Icc 1 (P.k - 1))).congr (card_I P) rfl fun Y => rfl
 
-theorem lead_xEx (ex : Finset ℕ) (m : ℕ) (hm : P.k - 1 < m) :
-    Lead m (0 : A P) fun Y => kap P fun π => xEx P ex π Y := ((lead_prod P (Icc 1 (P.k - 1) \ ex)).lt
-    (lt_of_le_of_lt ((Finset.card_le_card Finset.sdiff_subset).trans (card_I P).le) hm)).congr rfl rfl
-    fun Y => rfl
 
-theorem leading_coeff_S21 (m : ℕ) (hm : P.k - 1 < m) : Lead m (0 : A P) (weightedSumBis P) := by
-  refine (Lead.sum (Icc 1 (P.k - 1)) (fun l Y => SS P l * kap P fun π => xEx P {l} π Y)
-    fun l _ => ?_).congr rfl rfl fun Y => rfl
-  exact ((lead_xEx P {l} m hm).const_mul (SS P l)).congr rfl (mul_zero _) fun Y => rfl
 
-theorem leading_term_upper_sum (m : ℕ) (hm : P.k - 1 < m) : Lead m (0 : A P) (S12 P) := by
-  refine (Lead.sum (Icc 1 (P.k - 1)) (fun l Y => (kap P fun π => xEx P {l} π Y) * star (SS P l))
-    fun l _ => ?_).congr rfl rfl fun Y => rfl
-  exact ((lead_xEx P {l} m hm).mul_const (star (SS P l))).congr rfl (zero_mul _) fun Y => rfl
 
-theorem leading_coeff_S4 (m : ℕ) (hm : P.k - 1 < m) : Lead m (0 : A P) (S4 P) := by
-  refine (Lead.sum (Icc 1 (P.k - 1)) (fun l Y => ∑ j ∈ (Icc 1 (P.k - 1)).erase l,
-      star (SS P l) * SS P j * kap P fun π => xEx P {l, j} π Y) fun l _ => ?_).congr rfl rfl fun Y => rfl
-  refine Lead.sum _ (fun j Y => star (SS P l) * SS P j * kap P fun π => xEx P {l, j} π Y) fun j _ => ?_
-  exact ((lead_xEx P {l, j} m hm).const_mul (star (SS P l) * SS P j)).congr rfl (mul_zero _) fun Y => rfl
 
-theorem leading_coeff_l0 : Lead 1 (-(zbA P * ggiA P)) (l0A P) := by
-  refine (Lead.lin (-nabA P - (1 / 2 : ℂ) • (zbA P * ggiA P)) (-(zbA P * ggiA P))).congr rfl rfl fun Y => ?_
-  unfold l0A
-  rw [← Algebra.smul_def, add_smul, smul_neg]
-  abel
 
-theorem leading_term_lowering_constant : Lead 1 (-(zA P * ggiA P)) (m0A P) := by
-  refine (Lead.lin (-nabsA P + (1 / 2 : ℂ) • (zA P * ggiA P)) (-(zA P * ggiA P))).congr rfl rfl fun Y => ?_
-  unfold m0A
-  rw [← Algebra.smul_def, sub_smul, smul_neg]
-  abel
 
-theorem natDegree_x_polynomial (π : Ty P) : (coordinatePolynomial P π).natDegree = P.k - 1 := by
-  unfold coordinatePolynomial
-  rw [Polynomial.natDegree_prod_of_monic _ _ fun i _ => Polynomial.monic_X_add_C _]
-  simp only [Polynomial.natDegree_X_add_C, Finset.sum_const, smul_eq_mul, mul_one]
-  rw [Nat.card_Icc]
-  omega
 
-theorem wNum_deg (hk : 1 ≤ P.k) (π : Ty P) : (wNum P π).natDegree ≤ 2 * P.k ∧
-    (wNum P π).coeff (2 * P.k) = -((P.T : ℂ) * P.T') := by
-  have hm : (∏ i ∈ Icc 1 P.k, ((X + C (1 / 2 + (P.u i : ℂ))) * (X + C (1 / 2 + (P.u' i : ℂ))))).Monic :=
-    monic_prod_of_monic _ _ fun _ _ => (monic_X_add_C _).mul (monic_X_add_C _)
-  have hd : (∏ i ∈ Icc 1 P.k, ((X + C (1 / 2 + (P.u i : ℂ))) * (X + C (1 / 2 + (P.u' i : ℂ))))).natDegree
-      = 2 * P.k := by
-    rw [natDegree_prod_of_monic _ _ fun _ _ => (monic_X_add_C _).mul (monic_X_add_C _)]
-    have : ∀ i ∈ Icc 1 P.k,
-        ((X + C (1 / 2 + (P.u i : ℂ))) * (X + C (1 / 2 + (P.u' i : ℂ)))).natDegree = 2 := fun i _ => by
-      rw [(monic_X_add_C _).natDegree_mul (monic_X_add_C _), natDegree_X_add_C, natDegree_X_add_C]
-    rw [sum_congr rfl this]
-    simp [mul_comm]
-  have he : ∀ (l : ℕ) (ρ : ℕ → ℂ), (∏ j ∈ (Icc 1 (P.k - 1)).erase l, (X + C (ρ j))).natDegree ≤ P.k - 1 := by
-    intro l ρ
-    rw [natDegree_prod_of_monic _ _ fun _ _ => monic_X_add_C _]
-    simp only [natDegree_X_add_C, sum_const, smul_eq_mul, mul_one]
-    exact (card_le_card (erase_subset _ _)).trans (card_I P).le
-  have ht : (∑ l ∈ Icc 1 (P.k - 1), C ((Nrm P l π : ℝ) : ℂ) *
-      ((∏ j ∈ (Icc 1 (P.k - 1)).erase l, (X + C (rho P π j : ℂ))) *
-        ∏ j ∈ (Icc 1 (P.k - 1)).erase l, (X + C ((rho P π j : ℂ) + 1)))).natDegree ≤
-      (P.k - 1) + (P.k - 1) :=
-    natDegree_sum_le_of_forall_le _ _ fun l _ => (natDegree_C_mul_le _ _).trans
-      (natDegree_mul_le_of_le (he l _) (he l _))
-  have hq : (qP P).natDegree ≤ 2 * P.k := (natDegree_C_mul_le _ _).trans hd.le
-  constructor
-  · exact natDegree_add_le_of_degree_le hq (ht.trans (by omega))
-  · unfold wNum
-    rw [coeff_add, coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt ht (by omega)), add_zero, qP,
-      coeff_C_mul, ← hd, hm.coeff_natDegree, mul_one]
 
-theorem wq_deg (hP : P.OK) (π : Ty P) : (wNum P π /ₘ coordinatePolynomial P π).natDegree ≤ P.k + 1 ∧
-    (wNum P π /ₘ coordinatePolynomial P π).coeff (P.k + 1) = -((P.T : ℂ) * P.T') := by
-  have hk := hP.k_pos
-  have hm := coordinate_polynomial_monic P π
-  have hd := natDegree_x_polynomial P π
-  obtain ⟨h1, h2⟩ := wNum_deg P hk π
-  have h3 : (wNum P π /ₘ coordinatePolynomial P π).natDegree ≤ P.k + 1 := by
-    rw [natDegree_divByMonic _ hm, hd]; omega
-  refine ⟨h3, ?_⟩
-  have h6 := coeff_mul_add_eq_of_natDegree_le hd.le h3
-  rw [← weight_exact P hP π] at h6
-  have h7 : (coordinatePolynomial P π).coeff (P.k - 1) = 1 := by
-    have := hm.coeff_natDegree
-    rwa [hd] at this
-  have e : P.k - 1 + (P.k + 1) = 2 * P.k := by omega
-  rw [h7, one_mul, e, h2] at h6
-  exact h6.symm
 
-theorem gg_zb : ggA P * zbA P = zbA P * ggA P := by
-  unfold ggA zbA ggP zbP
-  exact fn_comm P _ _ _ _
 theorem GG_commute_z : ggA P * zA P = zA P * ggA P := by
   unfold ggA zA ggP zP
   exact fn_comm P _ _ _ _
 
-theorem gg_zb_ggi : ggA P * (zbA P * ggiA P) = zbA P := by rw [← mul_assoc, gg_zb, mul_assoc, gg_ggi, mul_one]
 
-theorem gg_z_ggi : ggA P * (zA P * ggiA P) = zA P := by rw [← mul_assoc, GG_commute_z, mul_assoc, gg_ggi, mul_one]
 
-theorem leading_coeff_t22 : Lead (P.k - 1) (ggA P) (t22 P) := ((lead_xA P).const_mul (ggA P)).congr rfl (mul_one _) fun Y => rfl
 
-theorem leading_term_lower_left (hk : 1 ≤ P.k) : Lead P.k (-zbA P) (t21 P) := by
-  have h1 := ((leading_coeff_t22 P).mul (leading_coeff_l0 P)).congr (Nat.sub_add_cancel hk) rfl fun Y => rfl
-  refine (h1.add (leading_coeff_S21 P P.k (by omega))).congr rfl ?_ fun Y => rfl
-  rw [add_zero, mul_neg, gg_zb_ggi]
 
-theorem leading_coeff_t12 (hk : 1 ≤ P.k) : Lead P.k (-zA P) (t12 P) := by
-  have h1 := ((leading_coeff_t22 P).mul (leading_term_lowering_constant P)).congr (Nat.sub_add_cancel hk) rfl fun Y => rfl
-  refine (h1.add (leading_term_upper_sum P P.k (by omega))).congr rfl ?_ fun Y => rfl
-  rw [add_zero, mul_neg, gg_z_ggi]
 
-theorem lead_coef : ggiA P * (kap P fun _ => -((P.T : ℂ) * P.T')) +
-    ggA P * 1 * -(zA P * ggiA P) * -(zbA P * ggiA P) = 1 := by
-  have h2 : zA P * ggiA P = ggiA P * zA P := by
-    unfold zA ggiA zP ggiP
-    exact fn_comm P _ _ _ _
-  have h1 : zbA P * ggiA P = ggiA P * zbA P := by
-    unfold zbA ggiA zbP ggiP
-    exact fn_comm P _ _ _ _
-  have hc : zA P * (zbA P * ggiA P) = ggiA P * (zA P * zbA P) := by
-    rw [h1, ← mul_assoc, h2, mul_assoc]
-  have hT : ((P.TT : ℝ) : ℂ) = (P.T : ℂ) * P.T' := by
-    unfold Par.TT
-    push_cast
-    ring
-  rw [kap_const, mul_one, mul_neg, mul_neg, neg_mul, neg_neg, gg_z_ggi, hc, ← ggi_gg P, gg_def, hT, mul_sub, map_neg, mul_neg]
-  abel
 
-theorem leading_coeff_t11 (hP : P.OK) : Lead (P.k + 1) (1 : A P) (t11 P) := by
-  have hk := hP.k_pos
-  have h1 : Lead (P.k + 1) (ggiA P * kap P fun _ => -((P.T : ℂ) * P.T'))
-      (fun Y => ggiA P * kap P fun π => (wNum P π /ₘ coordinatePolynomial P π).eval Y) :=
-    (lead_kap P (P.k + 1) (fun π => wNum P π /ₘ coordinatePolynomial P π) (fun _ => -((P.T : ℂ) * P.T'))
-      (fun π => (wq_deg P hP π).1) (fun π => (wq_deg P hP π).2)).const_mul (ggiA P)
-  have h2 : Lead (P.k + 1) (ggA P * 1 * -(zA P * ggiA P) * -(zbA P * ggiA P))
-      (fun Y => ggA P * xA P Y * m0A P Y * l0A P Y) :=
-    ((((lead_xA P).const_mul (ggA P)).mul (leading_term_lowering_constant P)).mul (leading_coeff_l0 P)).congr (by omega) rfl fun Y => rfl
-  have h3 : Lead (P.k + 1) (0 : A P) (fun Y => ggA P * m0A P Y * ggiA P * weightedSumBis P Y) :=
-    ((((leading_term_lowering_constant P).const_mul (ggA P)).mul_const (ggiA P)).mul (leading_coeff_S21 P P.k (by omega))).congr
-      (by omega) (mul_zero _) fun Y => rfl
-  have h4 : Lead (P.k + 1) (0 : A P) (fun Y => S12 P Y * l0A P Y) :=
-    ((leading_term_upper_sum P P.k (by omega)).mul (leading_coeff_l0 P)).congr rfl (zero_mul _) fun Y => rfl
-  have h5 : Lead (P.k + 1) (0 : A P) (fun Y => ggiA P * S4 P Y) :=
-    ((leading_coeff_S4 P (P.k + 1) (by omega)).const_mul (ggiA P)).congr rfl (mul_zero _) fun Y => rfl
-  refine ((((h1.add h2).add h3).add h4).add h5).congr rfl ?_ fun Y => rfl
-  rw [add_zero, add_zero, add_zero, lead_coef]
 
-theorem qQLeading : QQLeading := by
-  intro P hP
-  obtain ⟨a11, h11⟩ := leading_coeff_t11 P hP
-  obtain ⟨a12, h12⟩ := leading_coeff_t12 P hP.k_pos
-  obtain ⟨a21, h21⟩ := leading_term_lower_left P hP.k_pos
-  obtain ⟨a22, h22⟩ := leading_coeff_t22 P
-  refine ⟨a11, a12, a21, a22, fun Y => ⟨h11 Y, ?_, ?_, h22 Y⟩⟩
-  · rw [h12, smul_neg]
-  · rw [h21, smul_neg]
 
 theorem xC_split (j : ℕ) (hj : j ∈ Icc 1 (P.k - 1)) (π : Ty P) (Y : ℂ) :
     xC P π Y = (Y + (rho P π j : ℂ)) * xEx P {j} π Y := by
@@ -938,12 +732,8 @@ end Formalism.FourierDecayAlt.P.Mx5
 
 namespace Formalism.FourierDecayAlt.P
 
-theorem transfer_normal_alt : Formalism.FourierDecayAlt.M.QQNormal := Mx5.qQNormal_of shift_norm_relation
 
-theorem transfer_hermitian : Formalism.FourierDecayAlt.M.QQHerm := Mx5.qQHerm
 
-theorem transfer_leading : Formalism.FourierDecayAlt.M.QQLeading := Mx5.qQLeading
 
-theorem transfer_zeta : Formalism.FourierDecayAlt.M.QQZeta := Mx5.qQZeta
 
 end Formalism.FourierDecayAlt.P

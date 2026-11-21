@@ -32,14 +32,6 @@ structure TwFrame (D : D7) where
 def ConjPreservesLL0 (D : D7) : Prop :=
   ∀ x : ↥D.LL0, ∃ y : ↥D.LL0, (y : D.what₂.LL) = star (x : D.what₂.LL)
 
-theorem ll0Conj_of_normal (D : D7) (h : Normal ℚ D.LL0) : ConjPreservesLL0 D := by
-  intro x
-  let σ : D.what₂.LL →ₐ[ℚ] D.what₂.LL := (starRingEnd D.what₂.LL).toRatAlgHom
-  have hmap : D.LL0.map σ = D.LL0 := (IntermediateField.normal_iff_forall_map_eq.1 h) σ
-  have hx : σ (x : D.what₂.LL) ∈ D.LL0 := by
-    have h1 : σ (x : D.what₂.LL) ∈ D.LL0.map σ := ⟨x, x.2, rfl⟩
-    rwa [hmap] at h1
-  exact ⟨⟨σ x, hx⟩, rfl⟩
 
 def DoubleSEven (D : D7) : Prop :=
   ∀ i lam, Even (D.ntw.s2 i lam)
@@ -103,14 +95,7 @@ structure TwChoiceTied (D : D7) (c : NChoice D) : Prop where
   twOf : ∀ a, D.ntw.twOf a = c.twI (D.nd.w a)
   twSide : ∀ a, D.ntw.twSide a = c.sd (D.nd.w a)
 
-theorem pD_eq_pDC (D : D7) (i : D.ntw.Tw) : D.ntw.pD i = pDC D.host (D.ntw.l i) :=
-  Finset.coe_injective ((D.ntw.pD_eq i).trans (coe_pDC D.host _).symm)
 
-theorem NTwTied.emb0b_eq_emb0_conj {D : D7} {F : TwFrame D} (_T : NTwTied D F) (hc : ConjPreservesLL0 D) (i : D.ntw.Tw)
-    (x : ↥D.LL0) :
-    ∃ y : ↥D.LL0, (y : D.what₂.LL) = star (x : D.what₂.LL) ∧ D.ntw.emb0b i x = D.ntw.emb0 i y := by
-  obtain ⟨y, hy⟩ := hc x
-  exact ⟨y, hy, D.ntw.restX_coefficientEmbedding_conj i x y hy⟩
 
 theorem clC_mono (l : ℕ) [Fact l.Prime] {F F' : IntermediateField ℚ_[l] (PadicAlgCl l)} (h : F ≤ F') :
     clC l F ≤ clC l F' := by
@@ -123,31 +108,7 @@ theorem clC_mono (l : ℕ) [Fact l.Prime] {F F' : IntermediateField ℚ_[l] (Pad
   exact Subring.topologicalClosure_minimal _ (hm.trans (Subring.le_topologicalClosure _))
     (Subring.isClosed_topologicalClosure _) hx.1
 
-theorem l_not_unit_clC (l : ℕ) [Fact l.Prime] (F : IntermediateField ℚ_[l] (PadicAlgCl l)) :
-    ¬ IsUnit ((l : ℕ) : clC l F) := by
-  rintro ⟨u, hu⟩
-  set v : clC l F := ((u⁻¹ : (clC l F)ˣ) : clC l F) with hv
-  have h1 : v * ((l : ℕ) : clC l F) = 1 := by rw [hv, ← hu]; exact u.inv_mul
-  have h1' : (v : ℂ_[l]) * ((l : ℕ) : ℂ_[l]) = 1 := by
-    have h := congrArg (fun y : clC l F => (y : ℂ_[l])) h1
-    simp only [Subring.coe_mul, Subring.coe_one] at h
-    rw [← h]
-    congr 1
-  have h2 : Valued.v (v : ℂ_[l]) ≤ 1 := (Subring.mem_inf.mp v.2).2
-  have h3 := congrArg Valued.v h1'
-  rw [map_mul, PadicComplex.valuation_p, map_one] at h3
-  have hl : (1 : ℝ≥0) < (l : ℝ≥0) := by exact_mod_cast (Fact.out : l.Prime).one_lt
-  have h4 : Valued.v (v : ℂ_[l]) * (1 / (l : ℝ≥0)) < 1 := by
-    calc Valued.v (v : ℂ_[l]) * (1 / (l : ℝ≥0)) ≤ 1 * (1 / (l : ℝ≥0)) := by gcongr
-      _ < 1 := by rw [one_mul, div_lt_one (by positivity)]; exact hl
-  exact absurd h3 (ne_of_lt h4)
 
-theorem cc_frame (D : D7) (fr : OmFrame D) : ∃ (c : AlgebraicClosure ℚ ≃+* AlgebraicClosure ℚ) (j : AlgebraicClosure ℚ →+* ℂ),
-    (∀ x, j (c x) = starRingEnd ℂ (j x)) ∧ ∀ x, fr.eOm (D.ntw.cc x) = c (fr.eOm x) := by
-  obtain ⟨⟨j, hj⟩, _⟩ := D.ntw.cc_cm
-  refine ⟨(fr.eOm.symm.trans D.ntw.cc).trans fr.eOm, j.comp fr.eOm.symm.toRingHom, fun x => ?_, fun x => ?_⟩
-  · simp [hj]
-  · simp
 
 theorem TwChoiceTied.l_eq (D : D7) (c : NChoice D) (T : TwChoiceTied D c) (a : D.nd.Loc) :
     D.nd.l a = D.what₂.places.resChar (D.nd.w a) := by
@@ -203,10 +164,6 @@ theorem V0_eq_type_inf_range (D : D7) (i : D.ntw.Tw) (j : ℕ) (b : Bool) :
     show NForms.eG D i j b (NForms.eG D i j b z) = NForms.eG D i j b z
     rw [← Module.End.mul_apply, eG_mul_self]
 
-theorem NTwTied.range_embB_le_type_forms {D : D7} {F : TwFrame D} (T : NTwTied D F) (i : D.ntw.Tw) (j : ℕ) (b : Bool) :
-    LinearMap.range (D.nexp.embB i j b) ≤ (NForms.Fm0 D i j b).restrictScalars (D.ntw.O i) := by
-  rw [T.B_range i j b]
-  exact fun x hx => goodPart_le_typeSubspace D i j b (Submodule.mem_inf.mp hx).2
 
 theorem NTwTied.range_eq_all {D : D7} {F : TwFrame D} (T : NTwTied D F) (i : D.ntw.Tw) (j : ℕ) (b : Bool) :
     LinearMap.range (D.nexp.embB i j b) =
@@ -230,34 +187,8 @@ theorem NTwTied.mem_range_iff {D : D7} {F : TwFrame D} (T : NTwTied D F) (i : D.
   · rintro ⟨h1, h2, h3⟩
     exact ⟨⟨h1, h2⟩, f, h3⟩
 
-theorem NTwTied.smul_eG_mem {D : D7} {F : TwFrame D} (T : NTwTied D F) (i : D.ntw.Tw) (j : ℕ) (b : Bool)
-    (c : D.ntw.O i) (f : D.nexp.Fm i j b) (hf : f ∈ NForms.Fm0 D i j b)
-    (hB : c • NForms.eG D i j b f ∈ D.nexp.Bsup i j b) :
-    c • NForms.eG D i j b f ∈ LinearMap.range (D.nexp.embB i j b) := by
-  rw [T.mem_range_iff]
-  refine ⟨hB, ?_, ?_⟩
-  · rw [← algebraMap_smul (FractionRing (D.ntw.O i))]
-    exact (NForms.Fm0 D i j b).smul_mem _ (goodPart_le_typeSubspace D i j b ⟨f, hf, rfl⟩)
-  · rw [← algebraMap_smul (FractionRing (D.ntw.O i)), map_smul, ← Module.End.mul_apply, eG_mul_self]
 
-theorem NTwTied.delta_prime_places_subset_S0 {D : D7} {F : TwFrame D} (T : NTwTied D F) (i : D.ntw.Tw) :
-    placesOver D.host.E D.host.pde ∪ placesOver D.host.E D.host.pde' ⊆ ↑(D.ntw.S0 i) := by
-  rw [T.ringSpec_excludedPlaces_eq i]
-  rintro P (hP | hP)
-  · exact Or.inl (Or.inl (Or.inr hP))
-  · exact Or.inl (Or.inr hP)
 
-theorem NTwTied.S0_contains_record_minimum {D : D7} {F : TwFrame D} (T : NTwTied D F) (i : D.ntw.Tw) :
-    placesOver D.host.E (D.ntw.l i) ∪ (⋃ k, placesOver D.host.E (D.host.g k)) ∪ ↑(D.ntw.pD i) ⊆ ↑(D.ntw.S0 i) := by
-  have hpD := D.ntw.pD_eq i
-  rw [T.ringSpec_excludedPlaces_eq i]
-  rintro P ((hP | hP) | hP)
-  · exact Or.inl (Or.inl (Or.inl (Or.inl hP)))
-  · exact Or.inl (Or.inl (Or.inl (Or.inr hP)))
-  · rw [hpD] at hP
-    split_ifs at hP
-    · exact Or.inl (Or.inr hP)
-    · exact Or.inl (Or.inl (Or.inr hP))
 
 theorem NTwTied.wittCoreInclusion_mulVec_mem_latticeCompletionAtPlace {D : D7} {F : TwFrame D} (T : NTwTied D F) (i : D.ntw.Tw) (x : ↥D.LL0) :
     F.j0 i x ∈ (F.K0 i).1 := by
@@ -273,32 +204,7 @@ theorem NTwTied.wittCoreInclusion_mulVec_mem_latticeCompletionAtPlace {D : D7} {
   rw [hx]
   exact (F.K0 i).1.div_mem (F.eO0 i y).2.1 (F.eO0 i z).2.1
 
-theorem NTwTied.qs_eq {D : D7} {F : TwFrame D} (T : NTwTied D F) (h2 : DoubleSEven D) (i : D.ntw.Tw)
-    (lam : D.ntw.abelian₂ i) (P : HeightOneSpectrum (𝓞 D.host.E)) (hP : P ∉ D.ntw.S0 i) :
-    D.ntw.qs i lam P =
-      ((Ideal.absNorm P.asIdeal : ℕ) : FractionRing (D.ntw.O i)) ^ (-(D.ntw.s2 i lam / 2)) := by
-  obtain ⟨m, hm⟩ := h2 i lam
-  apply (F.iCq i).injective
-  rw [T.qs_pos i lam P hP, map_zpow₀, map_natCast, hm]
-  have e1 : (-((m + m : ℤ) : ℝ) / 2) = ((-m : ℤ) : ℝ) := by push_cast; ring
-  have e2 : (m + m) / 2 = m := by omega
-  rw [e1, Real.rpow_intCast, e2]
-  push_cast
-  rfl
 
-theorem qs_pos_of_eq (D : D7) (h2 : DoubleSEven D) (i : D.ntw.Tw) (ι : FractionRing (D.ntw.O i) →+* ℂ)
-    (lam : D.ntw.abelian₂ i) (P : HeightOneSpectrum (𝓞 D.host.E))
-    (h : D.ntw.qs i lam P =
-      ((Ideal.absNorm P.asIdeal : ℕ) : FractionRing (D.ntw.O i)) ^ (-(D.ntw.s2 i lam / 2))) :
-    ι (D.ntw.qs i lam P) =
-      ((((Ideal.absNorm P.asIdeal : ℕ) : ℝ) ^ (-(D.ntw.s2 i lam : ℝ) / 2) : ℝ) : ℂ) := by
-  obtain ⟨m, hm⟩ := h2 i lam
-  rw [h, map_zpow₀, map_natCast, hm]
-  have e1 : (-((m + m : ℤ) : ℝ) / 2) = ((-m : ℤ) : ℝ) := by push_cast; ring
-  have e2 : (m + m) / 2 = m := by omega
-  rw [e1, Real.rpow_intCast, e2]
-  push_cast
-  rfl
 
 theorem placesOver_conj (D : D7) (p : ℕ) {P P' : HeightOneSpectrum (𝓞 D.host.E)} (hP : P ∈ placesOver D.host.E p)
     (hc : IsConjPl D.host P P') : P' ∈ placesOver D.host.E p := by
@@ -319,44 +225,8 @@ theorem lowPr_ne_zero (D : D7) : ∀ p ∈ lowPr D, p ≠ 0 := by
   · exact (Nat.prime_of_mem_primeFactors hp).ne_zero
   · exact (Nat.prime_of_mem_primeFactors hp).ne_zero
 
-theorem low_prime_places_finite (D : D7) : (⋃ p ∈ (lowPr D : Set ℕ), placesOver D.host.E p).Finite :=
-  Set.Finite.biUnion (Finset.finite_toSet _) fun p hp => placesOver_finite' D.host.E p (lowPr_ne_zero D p hp)
 
-theorem S0x_enlarge_closed (D : D7) (S : Finset (HeightOneSpectrum (𝓞 D.host.E)))
-    (hS : ∀ P P', P ∈ S → IsConjPl D.host P P' → P' ∈ S) :
-    ∃ S' : Finset (HeightOneSpectrum (𝓞 D.host.E)), S ⊆ S' ∧ (∀ P P', P ∈ S' → IsConjPl D.host P P' → P' ∈ S') ∧
-      (∀ (p : ℕ), p.Prime → p ∣ Ideal.absNorm D.host.ccK → placesOver D.host.E p ⊆ ↑S') ∧
-      placesOver D.host.E (Formalism.MainNotions.AbsolutelyIrreducibleSpan.q0 D) ⊆ ↑S' ∧ placesOver D.host.E 2 ⊆ ↑S' ∧
-      (∀ (p : ℕ), p.Prime → p ∣ (NumberField.discr D.host.E).natAbs → placesOver D.host.E p ⊆ ↑S') := by
-  classical
-  have hN : Ideal.absNorm D.host.ccK ≠ 0 := by
-    rw [Ne, Ideal.absNorm_eq_zero_iff]; exact D.host.ccK_ne_bot
-  have hd : (NumberField.discr D.host.E).natAbs ≠ 0 := Int.natAbs_ne_zero.2 (NumberField.discr_ne_zero D.host.E)
-  have hmem : ∀ p ∈ lowPr D, placesOver D.host.E p ⊆ ↑(S ∪ (low_prime_places_finite D).toFinset) := by
-    intro p hp P hP
-    refine Finset.mem_union_right _ ?_
-    rw [Set.Finite.mem_toFinset]
-    exact Set.mem_biUnion hp hP
-  refine ⟨S ∪ (low_prime_places_finite D).toFinset, Finset.subset_union_left, ?_, ?_, ?_, ?_, ?_⟩
-  · intro P P' hP hc
-    rcases Finset.mem_union.1 hP with h | h
-    · exact Finset.mem_union_left _ (hS P P' h hc)
-    · refine Finset.mem_union_right _ ?_
-      rw [Set.Finite.mem_toFinset] at h ⊢
-      obtain ⟨p, hp⟩ := Set.mem_iUnion.1 h
-      obtain ⟨hp1, hp2⟩ := Set.mem_iUnion.1 hp
-      exact Set.mem_biUnion hp1 (placesOver_conj D p hp2 hc)
-  · intro p hp hdvd
-    exact hmem p (by simp [lowPr, Nat.mem_primeFactors, hp, hdvd, hN])
-  · exact hmem _ (by simp [lowPr])
-  · exact hmem _ (by simp [lowPr])
-  · intro p hp hdvd
-    exact hmem p (by simp [lowPr, Nat.mem_primeFactors, hp, hdvd, hd])
 
-theorem NTwTied.q0_places_subset_S0 {D : D7} {F : TwFrame D} (T : NTwTied D F) (i : D.ntw.Tw) :
-    placesOver D.host.E (Formalism.MainNotions.AbsolutelyIrreducibleSpan.q0 D) ⊆ ↑(D.ntw.S0 i) := by
-  rw [T.ringSpec_excludedPlaces_eq i]
-  exact fun P hP => Or.inr (T.S0x_contains_q0_places i hP)
 
 theorem NTwTied.norm_ccK_places_subset_S0 {D : D7} {F : TwFrame D} (T : NTwTied D F) (i : D.ntw.Tw) (p : ℕ) (hp : p.Prime)
     (hdvd : p ∣ Ideal.absNorm D.host.ccK) : placesOver D.host.E p ⊆ ↑(D.ntw.S0 i) := by

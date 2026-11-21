@@ -1,9 +1,218 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIntegralLimitCompatibleModPrimePowStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LimitOfApproximateCocycles
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsDotProductEqOfPrimePowApproxQbarL
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemCoefRingInvertPrimeInvOfMemNeZero
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIntegralLimitCompatibleModPrimePow
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EqZeroOfForallNormLe
 
+section
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_integral_limit_compatible_modPrimePow : ∀ (l : ℕ) [Fact l.Prime] (c : Coef l) (X : Type) (a : ℕ → X → Qbar l), (∀ n x, a n x ∈ c.O) → (∀ n x, Cg n (a (n + 1) x) (a n x)) → ∃ z : X → Qbar l, (∀ x, z x ∈ c.O) ∧ ∀ n x, Cg n (z x) (a n x) := by
+  first | exact @GlobalTheory.Ord2.exists_limit_coef | exact GlobalTheory.Ord2.exists_limit_coef | (intros; apply GlobalTheory.Ord2.exists_limit_coef <;> assumption)
+end
+
+section
+section
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2
+open scoped Matrix
+
+namespace GlobalTheory.Ord2
+
+theorem qbarLVectorCongruent_integralMatrix_mulVec {l : ℕ} [Fact l.Prime] (c : Coef l) (M : Matrix (Fin 2) (Fin 2) (Qbar l))
+    (hM : ∀ i j, M i j ∈ c.O) {n : ℕ} {v w : Fin 2 → Qbar l} (h : Cv n v w) :
+    Cv n (M *ᵥ v) (M *ᵥ w) := by
+  intro i
+  unfold Cg
+  have e : (M *ᵥ v) i - (M *ᵥ w) i = M i 0 * (v 0 - w 0) + M i 1 * (v 1 - w 1) := by
+    simp [Matrix.mulVec, dotProduct, Fin.sum_univ_two]; ring
+  rw [e]
+  refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le ?_ ?_)
+  · rw [norm_mul]
+    exact (mul_le_of_le_one_left (norm_nonneg _) (norm_le_one_of_mem_coef c (hM i 0))).trans (h 0)
+  · rw [norm_mul]
+    exact (mul_le_of_le_one_left (norm_nonneg _) (norm_le_one_of_mem_coef c (hM i 1))).trans (h 1)
+
+theorem limit_cocycle_mem_cocycles : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] (W : R2 Ω l) (c : Coef l), (∀ s i j, mat W s i j ∈ c.O) → ∀ (a : ℕ → G ℚ Ω → Fin 2 → Qbar l) (z : G ℚ Ω → Fin 2 → Qbar l), (∀ n s t, Cv n (a n (s * t)) (a n s + mat W s *ᵥ a n t)) → (∀ n s, ∀ᶠ t in nhds s, Cv n (a n t) (a n s)) → (∀ n s, Cv n (z s) (a n s)) → z ∈ Z1 (Loc.colRep W) := by
+  intro l _ Ω _ _ W c hW a z hco hloc hz
+  rw [mem_Z1_iff_cocycle]
+  refine ⟨?_, ?_⟩
+  · refine continuous_pi fun i => ?_
+    refine continuous_iff_continuousAt.2 fun s => ?_
+    have key : Filter.Tendsto (fun t => z t i) (nhds s) (@nhds (Qbar l) UniformSpace.toTopologicalSpace (z s i)) := by
+      rw [Metric.tendsto_nhds]
+      intro ε hε
+      obtain ⟨n, hn⟩ := (tendsto_norm_l_pow (l := l)).eventually (gt_mem_nhds hε) |>.exists
+      filter_upwards [hloc n s] with t ht
+      have h1 : Cg n (z t i) (z s i) :=
+        cg_trans (hz n t i) (cg_trans (ht i) (cg_symm (hz n s i)))
+      rw [dist_eq_norm]
+      exact lt_of_le_of_lt h1 hn
+    exact key
+  · intro s t
+    have hcol : ∀ v, (Loc.colRep W s) v = mat W s *ᵥ v := by
+      intro v; simp [Loc.colRep, Matrix.toLin'_apply]
+    rw [hcol]
+    funext i
+    refine eq_of_forall_cg fun n => ?_
+    have hA : Cv n (z (s * t)) (a n (s * t)) := hz n (s * t)
+    have hB := hco n s t
+    have hC : Cv n (a n s + mat W s *ᵥ a n t) (z s + mat W s *ᵥ z t) := by
+      intro j
+      have h2 := qbarLVectorCongruent_integralMatrix_mulVec c (mat W s) (hW s) (cv_symm (hz n t)) j
+      have h3 := cg_symm (hz n s j)
+      unfold Cg at h2 h3 ⊢
+      have e : (a n s + mat W s *ᵥ a n t) j - (z s + mat W s *ᵥ z t) j
+          = (a n s j - z s j) + ((mat W s *ᵥ a n t) j - (mat W s *ᵥ z t) j) := by
+        simp only [Pi.add_apply]; ring
+      rw [e]
+      exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le h3 h2)
+    exact (cv_trans hA (cv_trans hB hC)) i
+
+end GlobalTheory.Ord2
+end
+
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.limit_of_approximate_cocycles : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] (W : R2 Ω l) (c : Coef l), (∀ s i j, mat W s i j ∈ c.O) → ∀ (a : ℕ → G ℚ Ω → Fin 2 → Qbar l) (z : G ℚ Ω → Fin 2 → Qbar l), (∀ n s t, Cv n (a n (s * t)) (a n s + mat W s *ᵥ a n t)) → (∀ n s, ∀ᶠ t in nhds s, Cv n (a n t) (a n s)) → (∀ n s, Cv n (z s) (a n s)) → z ∈ Z1 (Loc.colRep W) := by
+  atlas_forward_decl GlobalTheory.Ord2.limit_cocycle_mem_cocycles
+end
+
+section
+section
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2
+open scoped Matrix
+
+namespace GlobalTheory
+
+theorem exists_dotProduct_eq_of_approx_pow {K : Type*} [NormedField K] (r : ℝ) (hr0 : 0 ≤ r)
+    (hr1 : r < 1) (X : Type*) (m : ℕ) (M : X → Fin m → K) (z : X → K)
+    (h : ∀ n : ℕ, ∃ y : Fin m → K, ∀ x, ‖z x - M x ⬝ᵥ y‖ ≤ r ^ n) :
+    ∃ y : Fin m → K, ∀ x, z x = M x ⬝ᵥ y := by
+  classical
+  let T : (X →₀ K) →ₗ[K] (Fin m → K) := Finsupp.linearCombination K M
+  let φ : Module.Dual K (X →₀ K) := Finsupp.linearCombination K z
+  have hker : φ ∈ (LinearMap.ker T).dualAnnihilator := by
+    rw [Submodule.mem_dualAnnihilator]
+    intro c hc
+    have hc' : ∑ x ∈ c.support, c x • M x = 0 := by
+      simpa [T, Finsupp.linearCombination_apply, Finsupp.sum] using hc
+    have hφ : φ c = ∑ x ∈ c.support, c x * z x := by
+      simp [φ, Finsupp.linearCombination_apply, Finsupp.sum]
+    have hb : ∀ n : ℕ, ‖φ c‖ ≤ (∑ x ∈ c.support, ‖c x‖) * r ^ n := by
+      intro n
+      obtain ⟨y, hy⟩ := h n
+      have h0 : ∑ x ∈ c.support, c x * (M x ⬝ᵥ y) = 0 := by
+        have := congrArg (· ⬝ᵥ y) hc'
+        simpa [sum_dotProduct, smul_dotProduct] using this
+      have : φ c = ∑ x ∈ c.support, c x * (z x - M x ⬝ᵥ y) := by
+        simp only [mul_sub, Finset.sum_sub_distrib, h0, sub_zero, hφ]
+      rw [this, Finset.sum_mul]
+      refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun x _ => ?_)
+      rw [norm_mul]
+      exact mul_le_mul_of_nonneg_left (hy x) (norm_nonneg _)
+    have hlim : Filter.Tendsto (fun n : ℕ => (∑ x ∈ c.support, ‖c x‖) * r ^ n) Filter.atTop
+        (nhds 0) := by
+      simpa using (tendsto_pow_atTop_nhds_zero_of_lt_one hr0 hr1).const_mul
+        (∑ x ∈ c.support, ‖c x‖)
+    exact norm_le_zero_iff.mp (ge_of_tendsto' hlim hb)
+  rw [← LinearMap.range_dualMap_eq_dualAnnihilator_ker] at hker
+  obtain ⟨g, hg⟩ := hker
+  refine ⟨fun i => g (fun j => if i = j then 1 else 0), fun x => ?_⟩
+  have h1 := congrArg (fun f : Module.Dual K (X →₀ K) => f (Finsupp.single x 1)) hg
+  simp only [LinearMap.dualMap_apply, T, φ, Finsupp.linearCombination_single, one_smul,
+    smul_eq_mul, one_mul] at h1
+  rw [← h1, LinearMap.pi_apply_eq_sum_univ g (M x)]
+  simp [dotProduct]
+
+theorem exists_dotProduct_eq_of_approx_prime_pow :
+    ∀ (l : ℕ) [Fact l.Prime] (X : Type) (m : ℕ) (M : X → Fin m → Qbar l) (z : X → Qbar l), (∀ n : ℕ, ∃ y : Fin m → Qbar l, ∀ x, ‖z x - M x ⬝ᵥ y‖ ≤ ‖((l : ℕ) : Qbar l) ^ n‖) → ∃ y : Fin m → Qbar l, ∀ x, z x = M x ⬝ᵥ y := by
+  intro l _ X m M z h
+  have hl : ‖((l : ℕ) : Qbar l)‖ < 1 := by
+    have e : ((l : ℕ) : Qbar l) = algebraMap ℚ_[l] (Qbar l) (l : ℚ_[l]) := by simp
+    rw [e, norm_algebraMap']
+    exact Padic.norm_p_lt_one
+  refine exists_dotProduct_eq_of_approx_pow _ (norm_nonneg _) hl X m M z fun n => ?_
+  simpa only [norm_pow] using h n
+
+end GlobalTheory
+end
+
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_dotProduct_eq_of_primePow_approx_qbarL : ∀ (l : ℕ) [Fact l.Prime] (X : Type) (m : ℕ) (M : X → Fin m → Qbar l) (z : X → Qbar l), (∀ n : ℕ, ∃ y : Fin m → Qbar l, ∀ x, ‖z x - M x ⬝ᵥ y‖ ≤ ‖((l : ℕ) : Qbar l) ^ n‖) → ∃ y : Fin m → Qbar l, ∀ x, z x = M x ⬝ᵥ y := by
+  atlas_forward_decl GlobalTheory.exists_dotProduct_eq_of_approx_prime_pow
+end
+
+section
+section
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2
+open scoped Matrix
+
+noncomputable section
+
+namespace GlobalTheory.Ord2
+
+theorem memE_inv_of_mem : ∀ (l : ℕ) [Fact l.Prime] (c : Coef l) (d : Qbar l), d ∈ c.O → d ≠ 0 → MemE c d⁻¹ := by
+  intro l _ c d hd hd0
+  set x : c.O := ⟨d, hd⟩ with hxdef
+  have hx0 : x ≠ 0 := fun h => hd0 (congrArg Subtype.val h)
+  set L : c.O := ((l : ℕ) : c.O) with hLdef
+  have hLval : (L : Qbar l) = ((l : ℕ) : Qbar l) := by simp [hLdef]
+  have hL0 : L ≠ 0 := by
+    intro h
+    have : ((l : ℕ) : Qbar l) = 0 := by rw [← hLval, h]; rfl
+    have h1 := (norm_natCast_l (l := l))
+    rw [this, norm_zero] at h1
+    have : (0:ℝ) < (l:ℝ)⁻¹ := inv_pos.2 (by exact_mod_cast (Fact.out : l.Prime).pos)
+    linarith
+  have hLnu : ¬ IsUnit L := by
+    rintro ⟨u, hu⟩
+    have h1 : ((u : c.O) : Qbar l) * ((u⁻¹ : c.Oˣ) : c.O) = 1 := by
+      rw [← Subalgebra.coe_mul, Units.mul_inv]; rfl
+    have hn2 : ‖(((u⁻¹ : c.Oˣ) : c.O) : Qbar l)‖ ≤ 1 := norm_le_one_of_mem_coef c (SetLike.coe_mem _)
+    have hu' : ((u : c.O) : Qbar l) = ((l : ℕ) : Qbar l) := by rw [hu, hLval]
+    rw [hu'] at h1
+    have h2 := congrArg norm h1
+    rw [norm_mul, norm_one] at h2
+    have h3 := norm_natCast_l_lt_one (l := l)
+    have h4 : ‖((l : ℕ) : Qbar l)‖ * ‖(((u⁻¹ : c.Oˣ) : c.O) : Qbar l)‖ < 1 :=
+      lt_of_le_of_lt (mul_le_of_le_one_right (norm_nonneg _) hn2) h3
+    linarith
+  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible c.O
+  obtain ⟨v, u, hxu⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible hx0 hϖ
+  obtain ⟨m, u', hLu⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible hL0 hϖ
+  have hm : m ≠ 0 := by
+    rintro rfl
+    apply hLnu
+    rw [hLu, pow_zero, mul_one]; exact u'.isUnit
+  have hϖL : ϖ ∣ L := by
+    rw [hLu]
+    exact Dvd.dvd.mul_left (dvd_pow_self ϖ hm) _
+  have hdiv : x ∣ L ^ v := by
+    rw [hxu]
+    exact (Units.mul_left_dvd).2 (pow_dvd_pow_of_dvd hϖL v)
+  obtain ⟨q, hq⟩ := hdiv
+  refine ⟨v, ?_⟩
+  have hq' : ((l : ℕ) : Qbar l) ^ v = d * (q : Qbar l) := by
+    have := congrArg (fun y : c.O => (y : Qbar l)) hq
+    simpa [hLval, hxdef] using this
+  rw [hq', mul_comm d, mul_assoc, mul_inv_cancel₀ hd0, mul_one]
+  exact q.2
+
+end GlobalTheory.Ord2
+
+end
+end
+
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.memCoefRingInvertPrime_inv_of_mem_ne_zero : ∀ (l : ℕ) [Fact l.Prime] (c : Coef l) (d : Qbar l), d ∈ c.O → d ≠ 0 → MemE c d⁻¹ := by
+  atlas_forward_decl GlobalTheory.Ord2.memE_inv_of_mem
+end
+
+section
 section
 noncomputable section
 
@@ -119,3 +328,4 @@ open scoped Matrix
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.nonzero_ordinary_class_of_compatible_cocycles_mod_pow : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (S : Finset Pl) (A : ValuationSubring Ω) (W : R2 Ω l) (c : Coef l), Continuous W → (∀ s i j, mat W s i j ∈ c.O) → (∃ g, (mat W g - 1).det ≠ 0) → ∀ (a : ℕ → G ℚ Ω → Fin 2 → Qbar l) (N : ℕ), (∀ n s i, a n s i ∈ c.O) → (∀ n s t, Cv n (a n (s * t)) (a n s + mat W s *ᵥ a n t)) → (∀ n s, ∀ᶠ t in nhds s, Cv n (a n t) (a n s)) → (∀ n s, Cv n (a (n + 1) s) (a n s)) → (∀ n, ∀ b ∈ (toGS Ω (S : Set Pl)).ker, Cv n (a n b) 0) → (∀ n, ∀ q ∈ S, ((l : ℕ) : 𝓞 ℚ) ∉ q.asIdeal → ∀ B : ValuationSubring Ω, IsPlaceOver B q → ∃ y : Fin 2 → Qbar l, VecE c y ∧ ∀ s ∈ Ine (F := ℚ) B, Cv n (a n s) (mat W s *ᵥ y - y)) → (∀ n, ∃ y : Qbar l, MemE c y ∧ ∀ s ∈ Dec (F := ℚ) A, Cg n (a n s 1) (mat W s 1 1 * y - y)) → (¬ ∃ y : Fin 2 → Qbar l, VecE c y ∧ ∀ s, Cv N (a N s) (mat W s *ᵥ y - y)) → ¬ GrZero W A := by
   atlas_forward_decl GlobalTheory.Ord2.limit_nonzero_ordinary_class
+end

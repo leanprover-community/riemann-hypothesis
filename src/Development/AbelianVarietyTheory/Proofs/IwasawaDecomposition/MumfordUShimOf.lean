@@ -30,9 +30,5 @@ theorem src (h : GlobalTheory.Published.MumfordProportionality) {D : D7} {A : Am
   congr 1
   exact flagDeg_reindex L.ψ _ fun τ i => (la τ i : ℝ)
 
-theorem mumfordU_shimOf : GlobalTheory.Published.MumfordProportionality → ∀ (D : D7) (A : Amb D) (F : SrcFam A) (L : CmList A)
-    (C : CxSt D.what₂.LL) (K : CutSt C) (R : ResSt C) (jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW p →+* ℂ))
-    (ng : NgPkg) (k : Kits F L C jC ng) (w : Dat D (Lv A)), MumfordU (shimOf K R k w) :=
-  fun h _ _ F L _ _ _ _ _ k w c la => src h (F.at w) L (k.at w).Φ c la
 
 end GlobalTheory.ShFam.Mumford

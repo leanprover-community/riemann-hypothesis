@@ -6,8 +6,16 @@ import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.Ex
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.OneSubPhiOntoOfFilZero
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BhattScholzeCrystallineLattices
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.RationalDualityOfAllCoefficients
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BaseChangePartitionsPermStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BaseChangePartitionsPerm
 
+section
+open Formalism Formalism.MainNotions Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Module GlobalTheory.Pass
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.base_change_partitions_perm : ∀ D : D7, SumRepresentations.tie0 D → SumRepresentations.adm2 D → SumRepresentations.adm5 D → ∀ (i : D.nd.Loc) (x : D.nd.X i) (P0 PI : D.naut.AV i) (Pa0 Pa : List (Part D.naut.CG)), D.naut.ptV i P0 = some x → D.naut.ptV i PI = some x → IsBCV D.nd D.naut i P0 Pa0 → IsBCV D.nd D.naut i PI Pa → Pa0.Perm Pa := by
+  first | exact @GlobalTheory.BCPerm.main | exact GlobalTheory.BCPerm.main | (intros; apply GlobalTheory.BCPerm.main <;> assumption)
+end
+
+section
 noncomputable section
 
 open Formalism Formalism.MainNotions Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Module GlobalTheory.Pass Formalism.MainNotions.PairedCharacterCondition Formalism.MainNotions.PairedCharacterCondition.CongruenceModules
@@ -104,12 +112,6 @@ variable (D : D7) (μ : D.what₂.Tup) (j : ℕ)
 
 local notation "CZ" => Subalgebra.center ℂ (MonoidAlgebra ℂ (G0g D.nd))
 
-theorem onMt_mul {a b : MonoidAlgebra ℂ (G0g D.nd)} (ha : a ∈ CZ) (hb : b ∈ CZ) :
-    D.ntypes.onMt μ j (a * b) = D.ntypes.onMt μ j a * D.ntypes.onMt μ j b := by
-  unfold NTypes.onMt
-  rw [dif_pos (Subalgebra.mul_mem _ ha hb), dif_pos ha, dif_pos hb]
-  have e : (⟨a * b, Subalgebra.mul_mem _ ha hb⟩ : ↥CZ) = ⟨a, ha⟩ * ⟨b, hb⟩ := Subtype.ext rfl
-  rw [e, map_mul]
 
 theorem onMt_add {a b : MonoidAlgebra ℂ (G0g D.nd)} (ha : a ∈ CZ) (hb : b ∈ CZ) :
     D.ntypes.onMt μ j (a + b) = D.ntypes.onMt μ j a + D.ntypes.onMt μ j b := by
@@ -142,15 +144,6 @@ theorem onMt_sum {ι : Type} (S : Finset ι) (a : ι → MonoidAlgebra ℂ (G0g 
         (Subalgebra.sum_mem _ fun x hx => ha x (Finset.mem_insert_of_mem hx)),
       ih fun x hx => ha x (Finset.mem_insert_of_mem hx)]
 
-theorem onMt_prod (L : List (MonoidAlgebra ℂ (G0g D.nd))) (hL : ∀ a ∈ L, a ∈ CZ) :
-    D.ntypes.onMt μ j L.prod = (L.map (D.ntypes.onMt μ j)).prod ∧ L.prod ∈ CZ := by
-  induction L with
-  | nil => exact ⟨onMt_one D μ j, Subalgebra.one_mem _⟩
-  | cons a L ih =>
-    obtain ⟨h1, h2⟩ := ih fun b hb => hL b (List.mem_cons_of_mem a hb)
-    have ha := hL a List.mem_cons_self
-    rw [List.prod_cons, List.map_cons, List.prod_cons, onMt_mul D μ j ha h2, h1]
-    exact ⟨rfl, Subalgebra.mul_mem _ ha h2⟩
 
 end OnMt
 
@@ -508,4 +501,5 @@ theorem main : ∀ (D : D7) (P : Pend D), GlobalTheory.TypeLeaf.SerLoc D → adm
 
 end GlobalTheory.CutAtGood
 
+end
 end

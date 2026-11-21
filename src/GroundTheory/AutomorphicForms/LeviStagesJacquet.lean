@@ -176,9 +176,6 @@ theorem sqrtModularLeviPar_mul_inv (q : leviPar F n β γ) :
     sqrtModularLeviPar F n β γ q * invSqrtModularLeviPar F n β γ q = 1 :=
   mul_inv_cancel₀ (sqrtModularLeviPar_ne_zero q)
 
-theorem sqrtModular_ne_zero {α : Type*} [LinearOrder α] {β : Fin n → α} (p : blockUpper F n β) :
-    sqrtModular F n β p ≠ 0 :=
-  left_ne_zero_of_mul_eq_one (sqrtModular_mul_invSqrtModular p)
 
 theorem sqrtModular_refine (h : Refines β γ) (q : leviPar F n β γ) :
     sqrtModular F n γ ⟨q, q.2.2⟩ =
@@ -333,9 +330,6 @@ theorem jacquetStagesMap_mk_mk (h : Refines β γ) (v : V) :
     jacquetStagesMap π h (Representation.Coinvariants.mk _ (Representation.Coinvariants.mk _ v)) =
       Representation.Coinvariants.mk _ v := rfl
 
-theorem jacquetStagesInv_mk (h : Refines β γ) (v : V) :
-    jacquetStagesInv π h (Representation.Coinvariants.mk _ v) =
-      Representation.Coinvariants.mk _ (Representation.Coinvariants.mk _ v) := rfl
 
 def jacquetStagesLinearEquiv (h : Refines β γ) :
     LeviJacquetModule β γ (jacquetRep F n β π) ≃ₗ[ℂ] JacquetModule F n γ π :=
@@ -360,9 +354,6 @@ def jacquetStages (h : Refines β γ) :
     rw [mul_comm]
     exact key.symm
 
-theorem jacquetStages_mk (h : Refines β γ) (v : V) :
-    jacquetStages π h (Representation.Coinvariants.mk _ (Representation.Coinvariants.mk _ v)) =
-      Representation.Coinvariants.mk _ v := rfl
 
 end Stages
 

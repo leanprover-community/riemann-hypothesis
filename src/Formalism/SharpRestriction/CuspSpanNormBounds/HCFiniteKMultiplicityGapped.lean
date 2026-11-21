@@ -17,7 +17,6 @@ theorem lowest_K_type_mult_one_gapped [Fact Formalism.MainNotions.DiscreteSeries
 
 theorem discrete_series_unique_gapped [Fact Formalism.MainNotions.BridgeLemma₂.deg_DSUniqG] : BridgeLemma₂.deg_DSUniqG := Fact.out
 
-theorem discrete_series_unique_bessel [Fact Formalism.MainNotions.LeviCoordinates.DiscreteSeriesUniqueBesselGapped] : LeviCoordinates.DiscreteSeriesUniqueBesselGapped := Fact.out
 
 theorem HC_finite_K_multiplicity_gapped [Fact Formalism.MainNotions.BridgeCPX.HCMultDSG] : BridgeCPX.HCMultDSG := Fact.out
 

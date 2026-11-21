@@ -78,11 +78,6 @@ theorem isZeroAtImInfty_of_integral_vadd_eq_zero {F : ℍ → ℂ} {M : ℝ} (hM
   rw [hint', norm_neg, norm_smul, Real.norm_eq_abs, sub_zero, abs_of_pos hM] at hle
   exact le_of_mul_le_mul_left (by linarith [hle] : M * ‖c‖ ≤ M * ε) hM
 
-theorem isZeroAtImInfty_iff_integral_vadd_eq_zero {F : ℍ → ℂ} {M : ℝ} (hM : 0 < M)
-    (hper : ∀ z : ℍ, F (M +ᵥ z) = F z) (hhol : MDiff F) (hbdd : IsBoundedAtImInfty F) :
-    IsZeroAtImInfty F ↔ ∀ z : ℍ, ∫ t in (0 : ℝ)..M, F (t +ᵥ z) = 0 :=
-  ⟨fun h z => integral_vadd_eq_zero hhol hM hper h z,
-    isZeroAtImInfty_of_integral_vadd_eq_zero hM hper hhol hbdd⟩
 
 variable {N : ℕ} [NeZero N] {k : ℤ}
 
@@ -196,14 +191,6 @@ theorem exists_cuspForm_of_isCuspidal_liftEquiv (f : ModularForm (Gamma0 N : Sub
   obtain ⟨F, hF⟩ := isCuspForm_of_isCuspidal_liftEquiv f hcusp
   exact ⟨F, congrArg (fun g : ModularForm (Gamma0 N : Subgroup (GL (Fin 2) ℝ)) k => (g : ℍ → ℂ)) hF⟩
 
-theorem isCuspidal_liftEquiv_iff_isCuspForm (f : ModularForm (Gamma0 N : Subgroup (GL (Fin 2) ℝ)) k) :
-    IsCuspidal (liftEquiv N k f.toSlashInvariantForm : AdelicGL ℚ 2 → ℂ) ↔ IsCuspForm f := by
-  refine ⟨isCuspForm_of_isCuspidal_liftEquiv f, fun ⟨F, hF⟩ => ?_⟩
-  have e : f.toSlashInvariantForm = F.toSlashInvariantForm := by
-    subst hF
-    rfl
-  rw [e]
-  exact isCuspidal_liftEquiv_cuspForm F
 
 end GL2Classical
 

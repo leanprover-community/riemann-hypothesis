@@ -1,8 +1,215 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ISupMonomialHolderLogConvexStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CocyclePartialSumIterateSucc
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsGaussGCTarget
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsGauss
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AcrisGaussNormEventuallyMonomial
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.CrystallinePeriods.CrisMapsLoc
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GaussNormAcrisRadiusPosDefinite
 
+section
+section
+noncomputable section
+
+open scoped Formalism.Per
+open Filter Topology
+
+namespace GlobalTheory.PMon.Gauss
+
+theorem abs_sub_le_of_le_max {a b t : ℝ} (ht : 0 ≤ t) (ha : 0 ≤ a) (hb : 0 ≤ b) (hab : a ≤ max b t) (hba : b ≤ max a t) :
+    |a - b| ≤ t := by
+  rcases le_total a b with h | h
+  · rw [abs_of_nonpos (sub_nonpos.2 h)]
+    rcases le_max_iff.1 hba with h' | h'
+    · linarith
+    · linarith
+  · rw [abs_of_nonneg (sub_nonneg.2 h)]
+    rcases le_max_iff.1 hab with h' | h'
+    · linarith
+    · linarith
+
+variable {l : ℕ} [Fact l.Prime]
+
+theorem isGauss_natCast {ρ : ℝ} (hρ : 0 ≤ ρ) {N : Formalism.Per.Acris l → ℝ} (hN : IsGauss l ρ N) :
+    N (l : Formalism.Per.Acris l) = ρ := by
+  rw [← map_natCast (algebraMap (Formalism.Per.Ainf l) (Formalism.Per.Acris l)) l, hN.2.2.2.2]
+  exact GlobalTheory.GaussSlope.gauss_l l hρ
+
+theorem isGauss_pow_mul {ρ : ℝ} (hρ : 0 ≤ ρ) {N : Formalism.Per.Acris l → ℝ} (hN : IsGauss l ρ N)
+    (k : ℕ) (x : Formalism.Per.Acris l) : N ((l : Formalism.Per.Acris l) ^ k * x) = ρ ^ k * N x := by
+  rw [GlobalTheory.GaussSlope.map_pow_mul N hN.2.2.2.1, isGauss_natCast hρ hN]
+
+theorem isGauss_eq_on_acris0 {ρ : ℝ} (hρ : 0 < ρ) {N N' : Formalism.Per.Acris l → ℝ} (hN : IsGauss l ρ N)
+    (hN' : IsGauss l ρ N') (s : Formalism.Per.Acris0 l) :
+    N (algebraMap (Formalism.Per.Acris0 l) (Formalism.Per.Acris l) s) =
+      N' (algebraMap (Formalism.Per.Acris0 l) (Formalism.Per.Acris l) s) := by
+  obtain ⟨k, a, ha⟩ := GlobalTheory.GaussSlope.exists_pow_mul_eq l s
+  have h1 := congrArg N ha
+  have h2 := congrArg N' ha
+  rw [isGauss_pow_mul hρ.le hN, hN.2.2.2.2] at h1
+  rw [isGauss_pow_mul hρ.le hN', hN'.2.2.2.2] at h2
+  have hk : ρ ^ k ≠ 0 := pow_ne_zero _ hρ.ne'
+  exact mul_left_cancel₀ hk (h1.trans h2.symm)
+
+theorem isGauss_abs_sub_le {ρ : ℝ} (hρ : 0 ≤ ρ) {N : Formalism.Per.Acris l → ℝ} (hN : IsGauss l ρ N)
+    (s z : Formalism.Per.Acris l) (r : ℕ) : |N (s + (l : Formalism.Per.Acris l) ^ r * z) - N s| ≤ ρ ^ r := by
+  obtain ⟨h01, hadd, hneg, -, -⟩ := id hN
+  have hz : N ((l : Formalism.Per.Acris l) ^ r * z) ≤ ρ ^ r := by
+    rw [isGauss_pow_mul hρ hN]
+    exact mul_le_of_le_one_right (pow_nonneg hρ _) (h01 z).2
+  apply abs_sub_le_of_le_max (pow_nonneg hρ _) (h01 _).1 (h01 _).1
+  · exact (hadd _ _).trans (max_le_max le_rfl hz)
+  · have := hadd (s + (l : Formalism.Per.Acris l) ^ r * z) (-((l : Formalism.Per.Acris l) ^ r * z))
+    rw [add_neg_cancel_right, hneg] at this
+    exact this.trans (max_le_max le_rfl hz)
+
+theorem isGauss_unique : ∀ (l : ℕ) [Fact l.Prime] (ρ : ℝ) (N N' : Formalism.Per.Acris l → ℝ), (l : ℝ)⁻¹ ≤ ρ → ρ < 1 →
+    IsGauss l ρ N → IsGauss l ρ N' → N = N' := by
+  intro l _ ρ N N' hρl hρ1 hN hN'
+  have hl : (0 : ℝ) < l := by exact_mod_cast (Fact.out : l.Prime).pos
+  have hρ : 0 < ρ := (inv_pos.2 hl).trans_le hρl
+  funext x
+  have hb : ∀ r : ℕ, |N x - N' x| ≤ 2 * ρ ^ r := by
+    intro r
+    obtain ⟨s, z, hx⟩ := (GlobalTheory.MemLoc.acris_basic l).2.2.1 x r
+    have e := isGauss_eq_on_acris0 hρ hN hN' s
+    have h1 := isGauss_abs_sub_le hρ.le hN (algebraMap (Formalism.Per.Acris0 l) (Formalism.Per.Acris l) s) z r
+    have h2 := isGauss_abs_sub_le hρ.le hN' (algebraMap (Formalism.Per.Acris0 l) (Formalism.Per.Acris l) s) z r
+    rw [← hx] at h1 h2
+    rw [e] at h1
+    calc |N x - N' x| = |(N x - N' (algebraMap (Formalism.Per.Acris0 l) (Formalism.Per.Acris l) s)) -
+          (N' x - N' (algebraMap (Formalism.Per.Acris0 l) (Formalism.Per.Acris l) s))| := by ring_nf
+      _ ≤ _ := abs_sub _ _
+      _ ≤ 2 * ρ ^ r := by linarith
+  have ht : Tendsto (fun r : ℕ => 2 * ρ ^ r) atTop (𝓝 (2 * 0)) :=
+    (tendsto_pow_atTop_nhds_zero_of_lt_one hρ.le hρ1).const_mul 2
+  rw [mul_zero] at ht
+  have h0 : |N x - N' x| ≤ 0 := ge_of_tendsto' ht hb
+  exact sub_eq_zero.1 (abs_nonpos_iff.1 h0)
+
+end GlobalTheory.PMon.Gauss
+
+end
+end
+
+open GlobalTheory.PMon.Gauss
+open scoped Formalism.Per
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gaussNormAcris_unique : ∀ (l : ℕ) [Fact l.Prime] (ρ : ℝ) (N N' : Formalism.Per.Acris l → ℝ), (l : ℝ)⁻¹ ≤ ρ → ρ < 1 → IsGauss l ρ N → IsGauss l ρ N' → N = N' := by
+  atlas_forward_decl GlobalTheory.PMon.Gauss.isGauss_unique
+end
+
+section
+section
+noncomputable section
+
+open scoped Formalism.Per
+
+namespace GlobalTheory.PMon.Gauss
+
+variable {l : ℕ} [Fact l.Prime]
+
+theorem iSup_pow_eq {f : ℕ → ℝ} (h0 : ∀ n, 0 ≤ f n) (hb : BddAbove (Set.range f)) (k : ℕ) :
+    (⨆ n, f n ^ k) = (⨆ n, f n) ^ k := by
+  have hS : 0 ≤ ⨆ n, f n := le_ciSup_of_le hb 0 (h0 0)
+  have hle : ∀ n, f n ^ k ≤ (⨆ n, f n) ^ k := fun n => pow_le_pow_left₀ (h0 n) (le_ciSup hb n) k
+  have hb' : BddAbove (Set.range fun n => f n ^ k) := ⟨_, Set.forall_mem_range.2 hle⟩
+  refine le_antisymm (ciSup_le hle) ?_
+  rcases Nat.eq_zero_or_pos k with rfl | hk
+  · simp
+  by_contra hlt
+  push_neg at hlt
+  set T := ⨆ n, f n ^ k
+  have hT : 0 ≤ T := le_ciSup_of_le hb' 0 (pow_nonneg (h0 0) k)
+  have hroot : T ^ ((1 : ℝ) / k) < ⨆ n, f n := by
+    have := Real.rpow_lt_rpow hT hlt (by positivity : (0 : ℝ) < 1 / k)
+    rwa [← Real.rpow_natCast, ← Real.rpow_mul hS, mul_one_div_cancel (by positivity), Real.rpow_one] at this
+  obtain ⟨n, hn⟩ := exists_lt_of_lt_ciSup hroot
+  have h1 := pow_lt_pow_left₀ hn (Real.rpow_nonneg hT _) hk.ne'
+  rw [← Real.rpow_natCast, ← Real.rpow_mul hT, one_div_mul_cancel (by positivity), Real.rpow_one] at h1
+  exact absurd (le_ciSup hb' n) (not_le.2 h1)
+
+theorem gA_phi (ρ : ℝ) (hρ0 : 0 ≤ ρ) (hρ1 : ρ ≤ 1) (a : Formalism.Per.Ainf l) :
+    gA l ρ (Formalism.Per.φA l a) = gA l (ρ ^ ((1 : ℝ) / l)) a ^ l := by
+  have hl : (0 : ℝ) < l := by exact_mod_cast (Fact.out : l.Prime).pos
+  set σ := ρ ^ ((1 : ℝ) / l)
+  have hσ0 : 0 ≤ σ := Real.rpow_nonneg hρ0 _
+  have hσ1 : σ ≤ 1 := Real.rpow_le_one hρ0 hρ1 (by positivity)
+  have hσl : σ ^ l = ρ := by
+    rw [← Real.rpow_natCast, ← Real.rpow_mul hρ0, one_div_mul_cancel hl.ne', Real.rpow_one]
+  set f : ℕ → ℝ := fun n => ‖(((a.coeff n).untilt : Formalism.Per.OC l) : ℂ_[l])‖ ^ ((1 : ℝ) / (l : ℝ) ^ n) * σ ^ n
+  have hf0 : ∀ n, 0 ≤ f n := fun n => by positivity
+  have hf1 : ∀ n, f n ≤ 1 := fun n =>
+    mul_le_one₀ (Real.rpow_le_one (norm_nonneg _) ((GlobalTheory.RingBasics.mem_OC _).1 (Subtype.prop _)) (by positivity))
+      (pow_nonneg hσ0 _) (pow_le_one₀ hσ0 hσ1)
+  have hterm : ∀ n, ‖((((Formalism.Per.φA l a).coeff n).untilt : Formalism.Per.OC l) : ℂ_[l])‖ ^ ((1 : ℝ) / (l : ℝ) ^ n) * ρ ^ n
+      = f n ^ l := by
+    intro n
+    have hc : (Formalism.Per.φA l a).coeff n = a.coeff n ^ l := by
+      rw [GlobalTheory.RingBasics.φA_apply, WittVector.coeff_frobenius_charP]
+    rw [hc, map_pow, SubmonoidClass.coe_pow, norm_pow, ← hσl, mul_pow, ← pow_mul, ← pow_mul, mul_comm n l, pow_mul]
+    congr 1
+    rw [← Real.rpow_natCast_mul (norm_nonneg _), ← Real.rpow_mul_natCast (norm_nonneg _), mul_comm]
+  simp only [gA]
+  simp_rw [hterm]
+  exact iSup_pow_eq hf0 ⟨1, Set.forall_mem_range.2 hf1⟩ l
+
+theorem isGauss_phi (ρ : ℝ) (h0 : (l : ℝ)⁻¹ ≤ ρ) (h1 : ρ < 1) :
+    IsGauss l (ρ ^ ((1 : ℝ) / l)) (fun x => gC l ρ (φc l x) ^ ((1 : ℝ) / l)) := by
+  have hl : (0 : ℝ) < l := by exact_mod_cast (Fact.out : l.Prime).pos
+  have hρ0 : 0 ≤ ρ := (inv_nonneg.2 hl.le).trans h0
+  obtain ⟨e1, e2, e3, e4, e5⟩ := isGauss_gC_of_le l ρ h0 h1
+  have hpos : (0 : ℝ) < 1 / l := by positivity
+  refine ⟨fun x => ⟨Real.rpow_nonneg (e1 _).1 _, Real.rpow_le_one (e1 _).1 (e1 _).2 hpos.le⟩, fun x y => ?_,
+    fun x => ?_, fun x y => ?_, fun a => ?_⟩
+  · simp only [map_add]
+    refine (Real.rpow_le_rpow (e1 _).1 (e2 _ _) hpos.le).trans ?_
+    rcases le_total (gC l ρ (φc l x)) (gC l ρ (φc l y)) with h | h
+    · rw [max_eq_right h, max_eq_right (Real.rpow_le_rpow (e1 _).1 h hpos.le)]
+    · rw [max_eq_left h, max_eq_left (Real.rpow_le_rpow (e1 _).1 h hpos.le)]
+  · simp only [map_neg, e3]
+  · simp only [map_mul, e4]
+    exact Real.mul_rpow (e1 _).1 (e1 _).1
+  · simp only
+    have ha : φc l (algebraMap (Formalism.Per.Ainf l) (Formalism.Per.Acris l) a) =
+        algebraMap (Formalism.Per.Ainf l) (Formalism.Per.Acris l) (Formalism.Per.φA l a) := (GlobalTheory.CrisMaps.phiA_extends l).alg a
+    rw [ha, e5, gA_phi ρ hρ0 h1.le, ← Real.rpow_natCast, ← Real.rpow_mul, mul_one_div_cancel hl.ne', Real.rpow_one]
+    exact le_ciSup_of_le ⟨1, by
+      rintro _ ⟨n, rfl⟩
+      exact mul_le_one₀ (Real.rpow_le_one (norm_nonneg _) ((GlobalTheory.RingBasics.mem_OC _).1 (Subtype.prop _)) (by positivity))
+        (pow_nonneg (Real.rpow_nonneg hρ0 _) _) (pow_le_one₀ (Real.rpow_nonneg hρ0 _)
+          (Real.rpow_le_one hρ0 h1.le (by positivity)))⟩ 0 (by positivity)
+
+theorem gC_phi : ∀ (l : ℕ) [Fact l.Prime] (ρ : ℝ), (l : ℝ)⁻¹ ≤ ρ → ρ < 1 → ∀ x : Formalism.Per.Acris l,
+    gC l ρ (φc l x) = gC l (ρ ^ ((1 : ℝ) / l)) x ^ l := by
+  intro l _ ρ h0 h1 x
+  have hl1 : (1 : ℝ) < l := by exact_mod_cast (Fact.out : l.Prime).one_lt
+  have hl : (0 : ℝ) < l := by linarith
+  have hρ0 : 0 ≤ ρ := (inv_nonneg.2 hl.le).trans h0
+  have hσ0 : ρ ≤ ρ ^ ((1 : ℝ) / l) := by
+    conv_lhs => rw [← Real.rpow_one ρ]
+    exact Real.rpow_le_rpow_of_exponent_ge' hρ0 h1.le (by positivity)
+      (by rw [div_le_one hl]; exact hl1.le)
+  have hσ1 : ρ ^ ((1 : ℝ) / l) < 1 := Real.rpow_lt_one hρ0 h1 (by positivity)
+  have e := GlobalTheory.T.gaussNormAcris_unique l (ρ ^ ((1 : ℝ) / l)) _ _ (h0.trans hσ0) hσ1 (isGauss_phi ρ h0 h1)
+    (isGauss_gC_of_le l _ (h0.trans hσ0) hσ1)
+  have ex : gC l ρ (φc l x) ^ ((1 : ℝ) / l) = gC l (ρ ^ ((1 : ℝ) / l)) x := congrFun e x
+  rw [← ex, ← Real.rpow_natCast, ← Real.rpow_mul ((isGauss_gC_of_le l ρ h0 h1).1 _).1,
+    one_div_mul_cancel hl.ne', Real.rpow_one]
+
+end GlobalTheory.PMon.Gauss
+
+end
+end
+
+open GlobalTheory.PMon.Gauss
+open scoped Formalism.Per
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gaussNormAcris_frobenius_eq_pow_root_radius : ∀ (l : ℕ) [Fact l.Prime] (ρ : ℝ), (l : ℝ)⁻¹ ≤ ρ → ρ < 1 → ∀ x : Formalism.Per.Acris l, gC l ρ (φc l x) = gC l (ρ ^ ((1 : ℝ) / l)) x ^ l := by
+  atlas_forward_decl GlobalTheory.PMon.Gauss.gC_phi
+end
+
+section
 section
 noncomputable section
 
@@ -94,3 +301,4 @@ open scoped Formalism.Per
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.acrisValuation_radius_laws : ∀ (l : ℕ) [Fact l.Prime] (r : ℝ), 0 < r → r ≤ 1 → (∀ x y : Formalism.Per.Acris l, x ≠ 0 → y ≠ 0 → vr l r (x * y) = vr l r x + vr l r y) ∧ (∀ x : Formalism.Per.Acris l, x ≠ 0 → φc l x ≠ 0 ∧ vr l r (φc l x) = l * vr l (r / l) x) ∧ (∀ (x : Formalism.Per.Acris l) (n : ℕ), x ≠ 0 → vr l r ((l : Formalism.Per.Acris l) ^ n * x) = n * r + vr l r x) ∧ ∀ x : Formalism.Per.Acris l, x ≠ 0 → vr l r x = -Real.logb l (gC l ((l : ℝ) ^ (-r)) x) := by
   atlas_forward_decl GlobalTheory.PMon.Gauss.vr_laws
+end

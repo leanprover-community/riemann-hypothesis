@@ -99,21 +99,6 @@ theorem exists_point {K : Type} [Zero K] {n : ℕ} (w : Equiv.Perm (Fin n)) (d :
 
 variable {E : Type} [Field E]
 
-theorem exists_lo_mono_up {n : ℕ} {Z : Matrix (Fin n) (Fin n) E} (hZ : Z.det ≠ 0) :
-    ∃ (l u : Matrix (Fin n) (Fin n) E) (w : Equiv.Perm (Fin n)) (d : Fin n → E), IsLo l ∧ IsUp u ∧
-      (∀ a, d a ≠ 0) ∧ Z = l * (Matrix.of fun a b => if a = w b then d b else 0) * u := by
-  have h : (Z.submatrix Fin.revPerm id).det ≠ 0 := by
-    rw [Matrix.det_permute]
-    rcases Int.units_eq_one_or (Equiv.Perm.sign (Fin.revPerm : Equiv.Perm (Fin n))) with e | e <;> simpa [e] using hZ
-  obtain ⟨m, v, hv, u, hu, e⟩ := GlobalTheory.FinGL.Bruhat.exists_decomp (Matrix.GeneralLinearGroup.mkOfDetNeZero _ h)
-  refine ⟨(v : Matrix (Fin n) (Fin n) E).submatrix Fin.rev Fin.rev, u, m.1.trans Fin.revPerm,
-    fun b => m.2 b, fun i j => ⟨fun h => Formalism.L2.DIV.unip_lower hv (by simpa using h),
-      fun h => h ▸ Formalism.L2.DIV.unip_diag hv _⟩, fun i j => ⟨fun h => Formalism.L2.DIV.unip_lower hu h,
-      fun h => h ▸ Formalism.L2.DIV.unip_diag hu _⟩, fun b => (m.2 b).ne_zero, ?_⟩
-  ext a b
-  have := congrFun (congrFun e a.rev) b
-  simp only [Matrix.GeneralLinearGroup.mkOfDetNeZero, Matrix.mul_apply] at this
-  simpa [Matrix.mul_apply, GlobalTheory.FinGL.Bruhat.mono] using this
 
 section Lie
 
@@ -131,12 +116,6 @@ theorem cT_add {a b : Type} (M N : Matrix a b E) : cT σ (M + N) = cT σ M + cT 
 theorem det_cT (Z : Matrix (Fin n) (Fin n) E) : (cT σ Z).det = σ Z.det := by
   rw [cT, Matrix.det_transpose, RingHom.map_det]; rfl
 
-theorem TF_mul_strict (hA : IsStrict A) : TF r T * A = 0 ∧ cT σ A * TF r T = 0 := by
-  constructor
-  · ext i j
-    by_cases h : i = Fin.last r <;> simp [TF, h, hA _ _ (Fin.le_last _)]
-  · ext i j
-    by_cases h : j = Fin.last r <;> simp [TF, cT, h, hA _ _ (Fin.le_last _)]
 
 theorem det_gram_ne_zero (hZ : Z.det ≠ 0) (hG : Gq σ T T' Z ≠ 0) :
     (Matrix.fromBlocks (TF r T) Z (cT σ Z) (TF r T')).det ≠ 0 := by
@@ -172,92 +151,7 @@ theorem det_gram_ne_zero (hZ : Z.det ≠ 0) (hG : Gq σ T T' Z ≠ 0) :
     Matrix.eq_zero_of_mulVec_eq_zero (by rw [det_cT]; simpa using hZ) e2]
   simp
 
-theorem mem_spanX_of_perp (hZ : Z.det ≠ 0) (hA : IsStrict A) (h : cT σ A * Z + Z * A' = 0)
-    {x : Fin n → E} (hx : x ∈ perpX σ J P) {c c' : Fin (r + 1) → E}
-    (e : TF r T *ᵥ c + Z *ᵥ c' = (cT σ P * J) *ᵥ x) :
-    P *ᵥ (A *ᵥ c) + P' *ᵥ (A' *ᵥ c') ∈ spanX P := by
-  have h1 : cT σ A *ᵥ ((cT σ P * J) *ᵥ x) = 0 := by
-    ext i
-    rw [Matrix.mulVec, dotProduct, Fin.sum_univ_castSucc]
-    have k (a : Fin r) : ((cT σ P * J) *ᵥ x) a.castSucc = 0 := congrFun ((mem_perpX P x).1 hx) a
-    simp only [k, mul_zero, Finset.sum_const_zero, zero_add]
-    simp [cT, hA _ _ (Fin.le_last _)]
-  have h2 : A' *ᵥ c' = 0 := by
-    refine Matrix.eq_zero_of_mulVec_eq_zero hZ ?_
-    rw [← e, Matrix.mulVec_add, Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, (TF_mul_strict hA).2,
-      Matrix.zero_mulVec, zero_add, eq_neg_of_add_eq_zero_left h, Matrix.neg_mulVec, neg_eq_zero] at h1
-    rwa [Matrix.mulVec_mulVec]
-  rw [h2, Matrix.mulVec_zero, add_zero]
-  refine ⟨fun a => (A *ᵥ c) a.castSucc, (Iota.eOf_mulVec P _).trans (congrArg _ ?_)⟩
-  ext i
-  induction i using Fin.lastCases
-  · simp [Matrix.mulVec, dotProduct, hA _ _ (Fin.le_last _)]
-  · simp
 
-theorem exists_lieN (hσ : ∀ x, σ (σ x) = x) (hJ : cT σ J = J) (hP : IsFrame σ J T P) (hP' : IsFrame σ J T' P')
-    (eZ : Z = pairM σ J P' P) (hZ : Z.det ≠ 0) (hG : Gq σ T T' Z ≠ 0)
-    (hA : IsStrict A) (hA' : IsStrict A') (h : cT σ A * Z + Z * A' = 0) :
-    ∃ Y, LieN σ J P Y A ∧ LieN σ J P' Y A' := by
-  have h' : cT σ A' * cT σ Z + cT σ Z * A = 0 := by
-    have := congrArg (cT σ) h
-    rw [cT_add, cT_mul, cT_mul, cT_cT hσ] at this
-    exact (add_comm _ _).trans <| this.trans (by ext; simp [cT])
-  have eZ' : cT σ Z = pairM σ J P P' := by
-    rw [eZ, pairM, pairM, cT_mul, cT_mul, cT_cT hσ, hJ, Matrix.mul_assoc]
-  set Q := Matrix.fromCols P P' with hQ
-  set B := Matrix.fromBlocks A 0 0 A' with hB
-  set Γ := Matrix.fromBlocks (TF r T) Z (cT σ Z) (TF r T') with hΓ
-  have hu : IsUnit Γ.det := (det_gram_ne_zero hZ hG).isUnit
-  have cQ : cT σ Q = Matrix.fromRows (cT σ P) (cT σ P') := by
-    ext (i | i) j <;> rfl
-  have cB : cT σ B = Matrix.fromBlocks (cT σ A) 0 0 (cT σ A') := by
-    ext (i | i) (j | j) <;> simp [hB, cT]
-  have g : cT σ Q * J * Q = Γ := by
-    rw [cQ, Matrix.fromRows_mul, hQ, Matrix.fromRows_mul_fromCols, hΓ, eZ', eZ, ← hP.2, ← hP'.2]
-    rfl
-  have cΓ : cT σ Γ = Γ := by rw [← g, cT_mul, cT_mul, cT_cT hσ, hJ, Matrix.mul_assoc]
-  have cΓi : cT σ Γ⁻¹ = Γ⁻¹ := by
-    refine (Matrix.inv_eq_left_inv ?_).symm
-    conv_lhs => enter [2]; rw [← cΓ]
-    rw [← cT_mul, Matrix.mul_nonsing_inv _ hu]
-    ext i j
-    simp [cT, Matrix.one_apply, eq_comm]
-  have sk : cT σ B * Γ + Γ * B = 0 := by
-    rw [cB, hΓ, hB, Matrix.fromBlocks_multiply, Matrix.fromBlocks_multiply, Matrix.fromBlocks_add]
-    simp [TF_mul_strict hA (σ := σ), TF_mul_strict hA' (σ := σ), h, h']
-  have sk' : Γ⁻¹ * cT σ B + B * Γ⁻¹ = 0 := by
-    have := congrArg (fun M => Γ⁻¹ * M * Γ⁻¹) sk
-    simpa only [Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, Matrix.mul_nonsing_inv _ hu,
-      Matrix.nonsing_inv_mul_cancel_left _ _ hu, Matrix.mul_one, Matrix.mul_zero, Matrix.zero_mul] using this
-  set Y := Q * B * Γ⁻¹ * (cT σ Q * J) with hY
-  have y1 : cT σ Y * J + J * Y = 0 := by
-    have := congrArg (fun M => J * Q * M * (cT σ Q * J)) sk'
-    simp only [hY, cT_mul, cT_cT hσ, hJ, cΓi]
-    simpa only [Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, Matrix.mul_zero, Matrix.zero_mul] using this
-  have y2 : Matrix.fromCols (Y * P) (Y * P') = Matrix.fromCols (P * A) (P' * A') := by
-    rw [← Matrix.mul_fromCols, ← hQ, hY, Matrix.mul_assoc, g, Matrix.nonsing_inv_mul_cancel_right _ _ hu, hQ, hB,
-      Matrix.fromCols_mul_fromBlocks]
-    simp
-  have y3 (x : Fin n → E) : ∃ c c', Y *ᵥ x = P *ᵥ (A *ᵥ c) + P' *ᵥ (A' *ᵥ c') ∧
-      TF r T *ᵥ c + Z *ᵥ c' = (cT σ P * J) *ᵥ x ∧ TF r T' *ᵥ c' + cT σ Z *ᵥ c = (cT σ P' * J) *ᵥ x := by
-    obtain ⟨v, hv⟩ : ∃ v, v = Γ⁻¹ *ᵥ ((cT σ Q * J) *ᵥ x) := ⟨_, rfl⟩
-    have e : Γ *ᵥ v = (cT σ Q * J) *ᵥ x := by
-      rw [hv, Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ hu, Matrix.one_mulVec]
-    rw [hΓ, Matrix.fromBlocks_mulVec, cQ, Matrix.fromRows_mul, Matrix.fromRows_mulVec] at e
-    refine ⟨v ∘ Sum.inl, v ∘ Sum.inr, ?_, funext fun i => congrFun e (Sum.inl i),
-      (add_comm _ _).trans (funext fun i => congrFun e (Sum.inr i))⟩
-    rw [hY, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, ← hv, ← Matrix.mulVec_mulVec, hB,
-      Matrix.fromBlocks_mulVec, hQ, Matrix.fromCols_mulVec_sumElim]
-    simp
-  obtain ⟨y4, y5⟩ := Matrix.fromCols_ext_iff .. |>.1 y2
-  refine ⟨Y, ⟨y1, hA, y4, fun x hx => ?_⟩, y1, hA', y5, fun x hx => ?_⟩
-  · obtain ⟨c, c', e1, e2, -⟩ := y3 x
-    rw [e1]
-    exact mem_spanX_of_perp hZ hA h hx e2
-  · obtain ⟨c, c', e1, -, e2⟩ := y3 x
-    rw [e1, add_comm]
-    refine mem_spanX_of_perp (by rw [det_cT]; simpa using hZ) hA' ?_ hx e2
-    exact h'
 
 end Lie
 
@@ -266,97 +160,11 @@ section Generic
 variable {σ : E →+* E} {n r : ℕ} {J : Matrix (Fin n) (Fin n) E} {T T' : E}
   {P P' : Matrix (Fin n) (Fin (r + 1)) E} {Z A A' : Matrix (Fin (r + 1)) (Fin (r + 1)) E}
 
-theorem simpleSum_single (a b : Fin (r + 1)) (x : E) :
-    simpleSum (Matrix.single a b x) = if (b : ℕ) = a + 1 then x else 0 := by
-  rw [simpleSum]
-  split_ifs with h
-  · rw [Finset.sum_eq_single (⟨a, by have := b.2; omega⟩ : Fin r) _ (by simp)]
-    · rw [Matrix.single_apply, if_pos ⟨rfl, Fin.ext h⟩]
-    · intro k _ hk
-      rw [Matrix.single_apply, if_neg]
-      rintro ⟨rfl, -⟩
-      exact hk rfl
-  · refine Finset.sum_eq_zero fun k _ => ?_
-    rw [Matrix.single_apply, if_neg]
-    rintro ⟨rfl, rfl⟩
-    exact h rfl
 
-theorem isStrict_single {m : ℕ} {a b : Fin m} (h : a < b) (x : E) : IsStrict (Matrix.single a b x) := by
-  intro i j hij
-  rw [Matrix.single_apply, if_neg]
-  rintro ⟨rfl, rfl⟩
-  exact h.not_ge hij
 
 variable [CharZero E]
 
-theorem inversion_of_relevant (hσ : ∀ x, σ (σ x) = x) (hJ : cT σ J = J) (hP : IsFrame σ J T P)
-    (hP' : IsFrame σ J T' P') {w : Equiv.Perm (Fin (r + 1))} {d : Fin (r + 1) → E} (hd : ∀ a, d a ≠ 0)
-    (eZ : Z = pairM σ J P' P) (hM : Z = Matrix.of fun a b => if a = w b then d b else 0) (hZ : Z.det ≠ 0)
-    (hG : Gq σ T T' Z ≠ 0) (hR : Relevant σ J P P') {a b : Fin (r + 1)} (hab : a < b)
-    (hw : (w a : ℕ) = w b + 1) : (b : ℕ) = a + 1 ∧ d a = -d b := by
-  have key (c : E) : c * (d a + if (b : ℕ) = a + 1 then d b else 0) +
-      σ (c * (d a + if (b : ℕ) = a + 1 then d b else 0)) = 0 := by
-    obtain ⟨Y, h1, h2⟩ := exists_lieN hσ hJ hP hP' eZ hZ hG
-      (isStrict_single (a := w b) (b := w a) (by rw [Fin.lt_def]; omega) (σ (-(c * d a))))
-      (isStrict_single hab (c * d b)) (by
-        have e : cT σ (Matrix.single (w b) (w a) (σ (-(c * d a)))) = Matrix.single (w a) (w b) (-(c * d a)) := by
-          ext i j
-          simp only [cT, Matrix.transpose_apply, Matrix.map_apply, Matrix.single_apply, apply_ite σ, hσ, map_zero,
-            and_comm]
-        rw [e, hM]
-        ext i j
-        simp only [Matrix.add_apply, Matrix.mul_apply, Matrix.single_apply, Matrix.of_apply, Matrix.zero_apply]
-        rw [Finset.sum_eq_single (w b) (fun k _ hk => by simp [hk.symm]) (by simp),
-          Finset.sum_eq_single a (fun k _ hk => by simp [hk.symm]) (by simp)]
-        by_cases h1 : w a = i <;> by_cases h2 : b = j
-        · subst h1 h2; simp; ring
-        · simp [h2]
-        · simp [h1, Ne.symm h1]
-        · simp [h2])
-    have := hR _ _ _ h1 h2
-    rw [simpleSum_single, simpleSum_single, if_pos hw] at this
-    split_ifs at this ⊢ <;> simp only [map_sub, map_neg, map_mul, map_add, map_zero, hσ] at this ⊢ <;>
-      linear_combination -this
-  have h0 : (d a + if (b : ℕ) = a + 1 then d b else 0) = 0 := by
-    by_contra h
-    have := key (d a + if (b : ℕ) = a + 1 then d b else 0)⁻¹
-    rw [inv_mul_cancel₀ h, map_one] at this
-    norm_num at this
-  by_cases h : (b : ℕ) = a + 1
-  · rw [if_pos h] at h0
-    exact ⟨h, eq_neg_of_add_eq_zero_left h0⟩
-  · rw [if_neg h, add_zero] at h0
-    exact absurd h0 (hd a)
 
-theorem exists_liesAt (hσ : ∀ x, σ (σ x) = x) (hJ : IsHermU σ J) (hP : IsFrame σ J T P)
-    (hP' : IsFrame σ J T' P') (eZ : Z = pairM σ J P' P) (hZ : Z.det ≠ 0) (hG : Gq σ T T' Z ≠ 0)
-    (hR : Relevant σ J P P') : ∃ w, LiesAt w Z := by
-  obtain ⟨l, u, w, d, hl, hu, hd, e⟩ := exists_lo_mono_up hZ
-  set M : Matrix (Fin (r + 1)) (Fin (r + 1)) E := Matrix.of fun a b => if a = w b then d b else 0 with hM
-  have hv : IsUp (cT σ l) := fun i j =>
-    ⟨fun h => by simp [cT, (hl j i).1 h], fun h => by simp [cT, (hl j i).2 h.symm]⟩
-  have e1 : cT σ (cT σ l)⁻¹ * l = 1 := by
-    conv_lhs => enter [2]; rw [← cT_cT hσ l]
-    rw [← cT_mul, up_mul_inv hv]
-    ext i j
-    simp [cT, Matrix.one_apply, eq_comm]
-  have e2 : M = pairM σ J (P' * u⁻¹) (P * (cT σ l)⁻¹) := by
-    rw [pairM_mul, ← eZ, e, ← Matrix.mul_assoc, ← Matrix.mul_assoc, e1, Matrix.one_mul, Matrix.mul_assoc,
-      up_mul_inv hu, Matrix.mul_one]
-  have h1 : M.det ≠ 0 := fun h => hZ (by rw [e, Matrix.det_mul, Matrix.det_mul, h, mul_zero, zero_mul])
-  have h2 : Gq σ T T' M ≠ 0 := by rwa [e, Gq_mul T T' hl hu] at hG
-  obtain ⟨p, hp⟩ := exists_point w (fun b => d b * (-1) ^ (r - (b : ℕ)))
-    (fun a => mul_ne_zero (hd a) (pow_ne_zero _ (neg_ne_zero.2 one_ne_zero))) fun a b hab hw => by
-      obtain ⟨k1, k2⟩ := inversion_of_relevant hσ hJ.1 (isFrame_mul hP (up_inv hv)) (isFrame_mul hP' (up_inv hu))
-        hd e2 hM h1 h2 (hR.mul (up_inv hv) (up_inv hu)) hab hw
-      refine ⟨k1, ?_⟩
-      rw [k2, show r - (a : ℕ) = r - (b : ℕ) + 1 by have := b.2; omega, pow_succ]
-      ring
-  refine ⟨p, e ▸ LiesAt.mul ⟨1, 1, fun _ _ => ⟨fun h => Matrix.one_apply_ne h.ne,
-    fun h => h ▸ Matrix.one_apply_eq _⟩, up_one, ?_⟩ hl hu⟩
-  rw [hp, Matrix.one_mul, Matrix.mul_one]
-  ext i j
-  simp [eps, hM]
 
 end Generic
 
@@ -366,63 +174,6 @@ open scoped ComplexOrder
 
 variable {n r p : ℕ}
 
-theorem det_ne_zero_complex {J : Matrix (Fin n) (Fin n) ℂ} (hJ : cT (starRingEnd ℂ) J = J)
-    (hs : Formalism.UG.HasSignature J p (r + 1)) {T T' : ℂ} (hT : 0 ≤ T) (hT' : 0 ≤ T')
-    {P P' : Matrix (Fin n) (Fin (r + 1)) ℂ} (hP : IsFrame (starRingEnd ℂ) J T P)
-    (hP' : IsFrame (starRingEnd ℂ) J T' P')
-    (hG : Gq (starRingEnd ℂ) T T' (pairM (starRingEnd ℂ) J P' P) ≠ 0) :
-    (pairM (starRingEnd ℂ) J P' P).det ≠ 0 := by
-  intro h
-  obtain ⟨a, ha, e⟩ := Matrix.exists_mulVec_eq_zero_iff.2 h
-  obtain ⟨ε, Q, hQ⟩ := hs
-  let co : (Fin n → ℂ) →ₗ[ℂ] (Fin p ⊕ Fin (r + 1) → ℂ) :=
-    (Q⁻¹ : GL _ ℂ).1.mulVecLin ∘ₗ LinearMap.funLeft ℂ ℂ ε.symm
-  have hco (x : Fin n → ℂ) : x ∘ ε.symm = Q.1 *ᵥ co x := by
-    change _ = Q.1 *ᵥ ((Q⁻¹ : GL _ ℂ).1 *ᵥ (x ∘ ε.symm))
-    rw [Matrix.mulVec_mulVec, Units.mul_inv, Matrix.one_mulVec]
-  have hq (x : Fin n → ℂ) : star x ⬝ᵥ J *ᵥ x = star (co x) ⬝ᵥ Formalism.UG.Jpq p (r + 1) *ᵥ co x := by
-    rw [← hQ, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, ← hco, Matrix.dotProduct_mulVec (star (co x)),
-      show Formalism.UG.cT (starRingEnd ℂ) Q.1 = Q.1ᴴ from rfl, ← Matrix.star_mulVec, ← hco, Matrix.reindex_apply,
-      Matrix.submatrix_mulVec_equiv]
-    rw [← comp_equiv_symm_dotProduct]
-    congr 1
-    · ext i; simp
-    · congr 1; ext i; simp
-  let f : ((Fin (r + 1) → ℂ) × ℂ) →ₗ[ℂ] (Fin (r + 1) → ℂ) :=
-    LinearMap.funLeft ℂ ℂ Sum.inr ∘ₗ co ∘ₗ (P.mulVecLin.coprod (LinearMap.toSpanSingleton ℂ _ (P' *ᵥ a)))
-  obtain ⟨⟨c, t⟩, h0, hne⟩ := (Submodule.ne_bot_iff _).1 (LinearMap.ker_ne_bot_of_finrank_lt (f := f) (by simp))
-  obtain ⟨x, hx⟩ : ∃ x, x = P *ᵥ c + P' *ᵥ (t • a) := ⟨_, rfl⟩
-  have h1 : co x ∘ Sum.inr = 0 := by rw [hx, Matrix.mulVec_smul]; exact h0
-  have h2 : star x ⬝ᵥ J *ᵥ x = star (co x ∘ Sum.inl) ⬝ᵥ (co x ∘ Sum.inl) := by
-    rw [hq, Formalism.UG.Jpq, Matrix.fromBlocks_mulVec, h1]
-    simp [dotProduct]
-  have pr (A B : Matrix (Fin n) (Fin (r + 1)) ℂ) (y z : Fin (r + 1) → ℂ) :
-      star (A *ᵥ y) ⬝ᵥ J *ᵥ (B *ᵥ z) = star y ⬝ᵥ pairM (starRingEnd ℂ) J B A *ᵥ z := by
-    rw [Matrix.star_mulVec, ← Matrix.dotProduct_mulVec, Matrix.mulVec_mulVec, Matrix.mulVec_mulVec]
-    rfl
-  have tf (S : ℂ) (hS : 0 ≤ S) (y : Fin (r + 1) → ℂ) : star y ⬝ᵥ TF r S *ᵥ y ≤ 0 := by
-    have : star y ⬝ᵥ TF r S *ᵥ y = -(S * (star (y (Fin.last r)) * y (Fin.last r))) := by
-      simp [TF, dotProduct, Matrix.mulVec_diagonal]
-      ring
-    rw [this, neg_nonpos]
-    exact mul_nonneg hS (star_mul_self_nonneg _)
-  have eZ : pairM (starRingEnd ℂ) J P P' = (pairM (starRingEnd ℂ) J P' P)ᴴ := by
-    change _ = cT (starRingEnd ℂ) (pairM (starRingEnd ℂ) J P' P)
-    rw [pairM, pairM, cT_mul, cT_mul, cT_cT (σ := starRingEnd ℂ) star_star, hJ, Matrix.mul_assoc]
-  have h3 : star x ⬝ᵥ J *ᵥ x ≤ 0 := by
-    rw [hx, star_add, Matrix.mulVec_add, add_dotProduct, dotProduct_add, dotProduct_add, pr, pr, pr, pr,
-      hP.2, hP'.2, eZ, Matrix.dotProduct_mulVec _ _ᴴ, ← Matrix.star_mulVec, Matrix.mulVec_smul, e]
-    simpa using add_nonpos (tf T hT c) (tf T' hT' (t • a))
-  have h4 : co x ∘ Sum.inl = 0 :=
-    dotProduct_star_self_eq_zero.1 (le_antisymm (h2 ▸ h3) (dotProduct_star_self_nonneg _))
-  have h5 : x = 0 := by
-    have := hco x
-    rw [← Sum.elim_comp_inl_inr (co x), h1, h4, Sum.elim_zero_zero, Matrix.mulVec_zero] at this
-    ext i
-    simpa using congrFun this (ε i)
-  obtain ⟨k1, k2⟩ := Iota.indep_of_Gq_ne_zero (σ := starRingEnd ℂ) star_star hJ ⟨hP, hP', rfl⟩ hG c (t • a)
-    (hx.symm.trans h5)
-  exact hne (Prod.ext k1 ((smul_eq_zero.1 k2).resolve_right ha))
 
 variable {σ : E →+* E} {J : Matrix (Fin n) (Fin n) E} {T T' : E} {P P' : Matrix (Fin n) (Fin (r + 1)) E}
   {τ : E →+* ℂ}
@@ -442,19 +193,6 @@ theorem isFrame_map (hτ : ∀ x, τ (σ x) = starRingEnd ℂ (τ x)) (hP : IsFr
   ext i j
   simp [TF, Matrix.diagonal_apply, apply_ite τ]
 
-theorem det_ne_zero_of_signature (hτ : ∀ x, τ (σ x) = starRingEnd ℂ (τ x)) (hJ : cT σ J = J)
-    (hs : Formalism.UG.HasSignature (J.map τ) p (r + 1)) (hT : 0 ≤ τ T) (hT' : 0 ≤ τ T') (hP : IsFrame σ J T P)
-    (hP' : IsFrame σ J T' P') (hG : Gq σ T T' (pairM σ J P' P) ≠ 0) : (pairM σ J P' P).det ≠ 0 := by
-  have h := det_ne_zero_complex (J := J.map τ) (by
-    conv_rhs => rw [← hJ]
-    ext i j
-    simp [cT, hτ]) hs hT hT' (isFrame_map hτ hP) (isFrame_map hτ hP') (by
-    rw [pairM_map hτ]
-    refine fun h => hG ((map_eq_zero τ).1 (Eq.trans ?_ h))
-    simp only [Gq, SgAlg.lead, map_sub, map_mul, hτ, RingHom.map_det τ]
-    rfl)
-  rw [pairM_map hτ] at h
-  exact fun e => h ((RingHom.map_det τ _).symm.trans (by rw [e, map_zero]))
 
 end Signature
 
@@ -467,18 +205,7 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {u u' : D.what₂.Word}
 
-theorem det_Zhat_ne_zero (t : RecTerm D u u') (hG : t.G ≠ 0) : t.Zhat.det ≠ 0 := by
-  obtain ⟨τ⟩ : Nonempty (D.host.E →+* ℂ) := inferInstance
-  have hs := D.sp.Y_sig 0 τ
-  rw [D.sp.baseSpace_signature_eq τ] at hs
-  rw [Term.G, normOf_eq (isFrame_recFrame D u)] at hG
-  exact det_ne_zero_of_signature (D.sp.cm.cmUnram.2.1 τ) (isHermU_gram _).1 hs (by simp) (by simp)
-    (isFrame_recFrame D u) t.adm.1.1 hG
 
-theorem at_ptOf_of_relevant (t : RecTerm D u u') (hR : t.relevant) (hG : t.G ≠ 0) : t.At t.ptOf := by
-  have hZ := det_Zhat_ne_zero t hG
-  rw [Term.G, normOf_eq (isFrame_recFrame D u)] at hG
-  exact t.at_ptOf (exists_liesAt star_star (isHermU_gram _) (isFrame_recFrame D u) t.adm.1.1 rfl hZ hG hR)
 
 end Record
 

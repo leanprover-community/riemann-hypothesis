@@ -3,8 +3,184 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.T
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.AlWellDefSt
 import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.PowObjGeometricallyConnected
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.HomBaseChangeBijectiveOfLeNilradical
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsEquivariantToBidual
+import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.LocallyOfFinitePresentationDiagMap
+import Development.AbelianVarietyTheory.Definitions.Divisors.IsAffineOpenAndIsPushout
 
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Opposite Limits MonoidalCategory
+  CartesianMonoidalCategory MonObj
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory.LB (resG_resG resG_self)
+open GlobalTheory.Twist (resM resM_resM resM_self resM_smul app_resM)
+open GlobalTheory.QCoh (IsFiniteQC pullbackSections)
+open GlobalTheory.DualPull (adj adj_app pull_ext appLE_resG resG_appLE theta toCut ofCut cutEquiv)
+open GlobalTheory.VB GlobalTheory.Conormal
+
+namespace GlobalTheory.LieVB
+
+section Eigen
+
+variable {X Y : Scheme.{0}} {F G : X.Modules} {O : Type} [CommRing O] {ρ : O →+* End F}
+  {ρ' : O →+* End G} (σ : O →+* Γ(X, ⊤))
+
+def eigenQuotMap {φ : F ⟶ G} (h : IsEquivariant ρ ρ' φ) : eigenQuot ρ σ ⟶ eigenQuot ρ' σ :=
+  eigenDesc (φ ≫ eigenπ ρ' σ) fun a => by
+    rw [← Category.assoc, h a, Category.assoc, act_eigenπ, Linear.comp_smul]
+
+@[reassoc (attr := simp)] theorem eigenπ_eigenQuotMap {φ : F ⟶ G} (h : IsEquivariant ρ ρ' φ) :
+    eigenπ ρ σ ≫ eigenQuotMap σ h = φ ≫ eigenπ ρ' σ := eigenπ_desc _ _ _ _
+
+theorem isEquivariant_inv {φ : F ≅ G} (h : IsEquivariant ρ ρ' φ.hom) :
+    IsEquivariant ρ' ρ φ.inv := fun a => by
+  rw [Iso.comp_inv_eq, Category.assoc, h a, Iso.inv_hom_id_assoc]
+
+@[simps] def eigenIso {φ : F ≅ G} (h : IsEquivariant ρ ρ' φ.hom) : eigen ρ σ ≅ eigen ρ' σ where
+  hom := eigenMap σ h
+  inv := eigenMap σ (isEquivariant_inv h)
+  hom_inv_id := by rw [← cancel_mono (eigenι _ _)]; simp
+  inv_hom_id := by rw [← cancel_mono (eigenι _ _)]; simp
+
+@[simps] def eigenQuotIso {φ : F ≅ G} (h : IsEquivariant ρ ρ' φ.hom) :
+    eigenQuot ρ σ ≅ eigenQuot ρ' σ where
+  hom := eigenQuotMap σ h
+  inv := eigenQuotMap σ (isEquivariant_inv h)
+  hom_inv_id := by rw [← cancel_epi (eigenπ _ _)]; simp
+  inv_hom_id := by rw [← cancel_epi (eigenπ _ _)]; simp
+
+variable (ρ)
+
+theorem eigenι_comp_act {c : O →+* O} (hc : Function.Involutive c) (a : O) :
+    eigenι (ρ.comp c) σ ≫ act ρ a = σ.comp c a • eigenι (ρ.comp c) σ := by
+  have := eigenι_act (ρ.comp c) σ (c a)
+  rwa [act, RingHom.comp_apply, hc] at this
+
+def eigenConjIso {c : O →+* O} (hc : Function.Involutive c) :
+    eigen (ρ.comp c) σ ≅ eigen ρ (σ.comp c) where
+  hom := eigenLift (eigenι _ _) (eigenι_comp_act ρ σ hc)
+  inv := eigenLift (eigenι _ _) fun a => by
+    have := eigenι_act ρ (σ.comp c) (c a)
+    rwa [RingHom.comp_apply, hc] at this
+  hom_inv_id := by
+    rw [← cancel_mono (eigenι _ _), Category.assoc, eigenLift_ι, eigenLift_ι, Category.id_comp]
+  inv_hom_id := by
+    rw [← cancel_mono (eigenι _ _), Category.assoc, eigenLift_ι, eigenLift_ι, Category.id_comp]
+
+@[reassoc (attr := simp)] theorem eigenConjIso_hom_ι {c : O →+* O} (hc : Function.Involutive c) :
+    (eigenConjIso ρ σ hc).hom ≫ eigenι _ _ = eigenι _ _ :=
+  eigenLift_ι ρ _ _ (eigenι_comp_act ρ σ hc)
+
+def eigenQuotConjIso {c : O →+* O} (hc : Function.Involutive c) :
+    eigenQuot (ρ.comp c) σ ≅ eigenQuot ρ (σ.comp c) where
+  hom := eigenDesc (eigenπ _ _) fun a => by
+    have := act_eigenπ ρ (σ.comp c) (c a)
+    rwa [RingHom.comp_apply, hc] at this
+  inv := eigenDesc (eigenπ _ _) fun a => by
+    have := act_eigenπ (ρ.comp c) σ (c a)
+    rwa [act, RingHom.comp_apply, hc] at this
+  hom_inv_id := by rw [← cancel_epi (eigenπ _ _)]; simp
+  inv_hom_id := by rw [← cancel_epi (eigenπ _ _)]; simp
+
+@[reassoc (attr := simp)] theorem eigenπ_eigenQuotConjIso_hom {c : O →+* O}
+    (hc : Function.Involutive c) : eigenπ _ _ ≫ (eigenQuotConjIso ρ σ hc).hom = eigenπ _ _ := by
+  simp only [eigenQuotConjIso, eigenπ_desc]
+
+theorem smul_eq_smulHom_comp (a : Γ(X, ⊤)) (φ : F ⟶ G) : a • φ = smulHom F a ≫ φ :=
+  (smulHom_comp φ a).symm
+
+theorem dualMap_smul (a : Γ(X, ⊤)) (φ : F ⟶ G) : dualMap (a • φ) = a • dualMap φ := by
+  rw [smul_eq_smulHom_comp, dualMap_comp, dualMap_smulHom]
+  rfl
+
+def dualQuotHom : dual (eigenQuot ρ σ) ⟶ eigen (dualAct ρ) σ :=
+  eigenLift (dualMap (eigenπ ρ σ)) fun a => by
+    rw [act_dualAct, ← dualMap_comp, act_eigenπ, dualMap_smul]
+
+instance isIso_dualQuotHom : IsIso (dualQuotHom ρ σ) := by
+  refine Twist.isIso_of_bijective _ fun V => ⟨Function.Injective.of_comp
+    (f := (eigenι (dualAct ρ) σ).app V) (QCoh.injective_app_of_mono (dualMap (eigenπ ρ σ)) V),
+    fun s => ?_⟩
+  let l := (eigenι (dualAct ρ) σ).app V s
+  have hl (a : O) : act ρ a ≫ toCut l = σ a • toCut l := by
+    ext W t
+    apply (cutEquiv V W).injective
+    have := congrArg (fun m => dualApp m (DualPull.cutO_le' V W) (resM F (DualPull.cutO_le V W) t))
+      (mem_eigenSub_iff.1 ((eigenSub (dualAct ρ) σ).incl_app_mem s) a)
+    refine ((DualPull.toCut_app l W _).trans ?_).trans (DualPull.cutEquiv_smul V W _ _).symm
+    refine (congrArg _ (app_resM (act ρ a) _ t).symm).trans (this.trans ?_)
+    rw [dualApp_smul, resG_resG]
+    exact congrArg₂ (fun x y : Γ(X, DualPull.cutO V W) => x * y) (resG_resG _ _ _).symm rfl
+  refine ⟨ofCut (eigenDesc _ hl), (eigenSub (dualAct ρ) σ).incl_app_injective V
+    (dual_ext fun W h t => ?_)⟩
+  refine (DualPull.dualApp_ofCut _ h ((eigenπ ρ σ).app W t)).trans ?_
+  rw [show (eigenDesc _ hl).app W ((eigenπ ρ σ).app W t) = (toCut l).app W t from
+    congr(($(eigenπ_desc ρ σ _ hl)).app W t), DualPull.toCut_app, ← dualApp_resM, resM_resM,
+    resM_self]
+  rfl
+
+def dualQuotIso : dual (eigenQuot ρ σ) ≅ eigen (dualAct ρ) σ := asIso (dualQuotHom ρ σ)
+
+@[reassoc (attr := simp)] theorem dualQuotIso_hom_ι :
+    (dualQuotIso ρ σ).hom ≫ eigenι _ _ = dualMap (eigenπ ρ σ) := by
+  simp only [dualQuotIso, asIso_hom, dualQuotHom, eigenLift_ι]
+
+theorem isEquivariant_toBidual : IsEquivariant ρ (dualAct (dualAct ρ)) (cartierDualToBidual F) := fun a =>
+  toBidual_naturality_dualSheafTranspose (act ρ a)
+
+def pullbackQuotIso (f : Y ⟶ X) : eigenQuot (pullAct ρ f) (f.appTop.hom.comp σ) ≅
+    (Scheme.Modules.pullback f).obj (eigenQuot ρ σ) where
+  hom := eigenDesc ((Scheme.Modules.pullback f).map (eigenπ ρ σ)) fun a => by
+    rw [act_pullAct, ← Functor.map_comp, act_eigenπ, pullback_map_smul]; rfl
+  inv := adj f (eigenDesc ((Scheme.Modules.pullbackPushforwardAdjunction f).homEquiv _ _
+    (eigenπ (pullAct ρ f) (f.appTop.hom.comp σ))) fun a => by
+      rw [← Adjunction.homEquiv_naturality_left, smul_eq_smulHom_comp,
+        ← Adjunction.homEquiv_naturality_left, pullback_map_smulHom, ← smul_eq_smulHom_comp]
+      exact congrArg _ (act_eigenπ (pullAct ρ f) _ a))
+  hom_inv_id := by
+    rw [← cancel_epi (eigenπ _ _), eigenπ_desc_assoc, Category.comp_id, adj,
+      ← Adjunction.homEquiv_naturality_left_symm, eigenπ_desc, Equiv.symm_apply_apply]
+  inv_hom_id := by
+    rw [← cancel_epi ((Scheme.Modules.pullback f).map (eigenπ ρ σ)), ← Category.assoc, adj,
+      ← Adjunction.homEquiv_naturality_left_symm, eigenπ_desc, Equiv.symm_apply_apply, eigenπ_desc,
+      Category.comp_id]
+
+@[reassoc (attr := simp)] theorem eigenπ_pullbackQuotIso_hom (f : Y ⟶ X) :
+    eigenπ _ _ ≫ (pullbackQuotIso ρ σ f).hom = (Scheme.Modules.pullback f).map (eigenπ ρ σ) := by
+  simp only [pullbackQuotIso, eigenπ_desc]
+
+theorem hom_ext_of_isFrame {κ : Type} [Fintype κ] {e : κ → Γ(F, ⊤)} (he : IsFrame e)
+    {φ ψ : F ⟶ G} (h : ∀ i, φ.app ⊤ (e i) = ψ.app ⊤ (e i)) : φ = ψ := by
+  ext V s
+  refine congr($((he.basis le_top).ext (f₁ := QCoh.appLinear φ V) (f₂ := QCoh.appLinear ψ V)
+    fun i => ?_) s)
+  rw [IsFrame.basis_apply]
+  exact (app_resM φ _ _).trans ((congrArg _ (h i)).trans (app_resM ψ _ _).symm)
+
+end Eigen
+
+theorem isFrame_d_Spec {R A : CommRingCat.{0}} [Algebra R A] (ε : A →ₐ[R] R)
+    {π : Spec A ⟶ Spec R} {e : Spec R ⟶ Spec A} (he : e ≫ π = 𝟙 _)
+    (hπ : π = Spec.map (CommRingCat.ofHom (algebraMap R A)))
+    (hε : e = Spec.map (CommRingCat.ofHom ε.toRingHom)) {κ : Type} [Fintype κ]
+    (b : Module.Basis κ R (AugCot ε)) (a : κ → A) (hb : ∀ i, b i = AugCot.d ε (a i)) :
+    IsFrame fun i => d he (W := ⊤) (V := ⊤) le_top ((Scheme.ΓSpecIso A).inv (a i)) := by
+  subst hπ hε
+  exact IsChart.isFrame_d he ⟨isAffineOpen_top _, isAffineOpen_top _, le_top, le_top⟩ ε
+    (Scheme.ΓSpecIso R).inv.hom (Scheme.ΓSpecIso A).inv.hom
+    (IsPushout.of_vert_isIso (g := (Scheme.ΓSpecIso R).inv) (inl := (Scheme.ΓSpecIso A).inv)
+      ⟨Scheme.ΓSpecIso_inv_naturality _⟩)
+    (fun x => congr($(Scheme.ΓSpecIso_inv_naturality (CommRingCat.ofHom ε.toRingHom)) x).symm)
+    b a hb
+
+end GlobalTheory.LieVB
+end
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -41,8 +217,6 @@ theorem mono_toBidual_of_isVectorBundle {r : ℕ} (h : IsVB F r) : Mono (cartier
 def IsRegularFn (D : Γ(X, ⊤)) : Prop :=
   ∀ (V : X.Opens) (a : Γ(X, V)), resG X (le_top : V ≤ ⊤) D * a = 0 → a = 0
 
-theorem isRegularFn_of_isUnit {D : Γ(X, ⊤)} (h : IsUnit D) : IsRegularFn D :=
-  fun _ _ e => (h.map _).mul_right_eq_zero.1 e
 
 theorem isRegularFn_of_ne_zero [IsIntegral X] {D : Γ(X, ⊤)} (h : D ≠ 0) : IsRegularFn D := by
   intro V a e
@@ -66,19 +240,6 @@ theorem IsRegularFn.hom_eq_zero {D : Γ(X, ⊤)} (h : IsRegularFn D) [Mono (cart
   ext V s : 3
   exact h.eq_zero_of_smul congr(($e).app V s)
 
-theorem isTorsionFree_of_mono_toBidual [IsIntegral X] [Mono (cartierDualToBidual F)] : IsTorsionFree F := by
-  refine IsTorsionFree.of_mono (fun V hV l hl => dual_ext fun W h s => ?_) (cartierDualToBidual F)
-  rcases eq_or_ne W ⊥ with rfl | hW'
-  · exact Subsingleton.elim _ _
-  obtain ⟨x, hx⟩ := (Opens.ne_bot_iff_nonempty _).1 hW'
-  have hW := genericPoint_mem hx
-  obtain ⟨T, hT, i₁, i₂, e⟩ := (dual (dual F)).presheaf.germ_eq _ hW hW (resM _ h l) 0
-    (by rw [Twist.germ_resM, hl, map_zero])
-  have : Nonempty T := ⟨⟨_, hT⟩⟩
-  refine map_injective_of_isIntegral X i₁ ?_
-  have e' : resM _ i₁.le (resM _ h l) = 0 := e.trans (map_zero _)
-  have := congrArg (fun m => dualApp m le_rfl (resM _ i₁.le s)) e'
-  exact (dualApp_resM l h i₁.le s).symm.trans (this.trans (map_zero _).symm)
 
 section Im
 
@@ -86,9 +247,6 @@ variable (ρ : O →+* End F) (σ : O →+* Γ(X, ⊤))
 
 def eigenEval : F ⟶ dual (eigen (dualAct ρ) σ) := cartierDualToBidual F ≫ dualMap (eigenι (dualAct ρ) σ)
 
-theorem dualApp_eigenEval {V W : X.Opens} (s : Γ(F, V)) (h : W ≤ V)
-    (l : Γ(eigen (dualAct ρ) σ, W)) : dualApp ((eigenEval ρ σ).app V s) h l =
-      dualApp ((eigenι (dualAct ρ) σ).app W l) le_rfl (resM F h s) := rfl
 
 theorem eigenEval_eq : eigenEval ρ σ =
     eigenπ ρ σ ≫ cartierDualToBidual _ ≫ dualMap (dualQuotIso ρ σ).inv := by
@@ -111,8 +269,6 @@ instance mono_eigenImι : Mono (eigenImι ρ σ) := inferInstanceAs (Mono (image
 instance mono_toBidual_eigenImage : Mono (cartierDualToBidual (eigenIm ρ σ)) :=
   mono_toBidual_of_mono (eigenImι ρ σ)
 
-theorem isTorsionFree_eigenIm [IsIntegral X] : IsTorsionFree (eigenIm ρ σ) :=
-  isTorsionFree_of_mono_toBidual
 
 theorem eigenImπ_app_eq_zero_iff {V : X.Opens} {s : Γ(F, V)} : (eigenImπ ρ σ).app V s = 0 ↔
     ∀ (W : X.Opens) (h : W ≤ V) (l : Γ(dual F, W)), l ∈ (eigenSub (dualAct ρ) σ).sec W →
@@ -233,8 +389,6 @@ theorem isIso_eigenImι {r : ℕ} (h : IsVB (eigenIm ρ σ) r) : IsIso (eigenIm�
   rw [eigenImι_eq]
   exact inferInstanceAs (IsIso (_ ≫ (dualIso (dualImIso ρ σ).symm).hom))
 
-theorem isVB_eigen_dualAct {r : ℕ} (h : IsVB (eigenIm ρ σ) r) : IsVB (eigen (dualAct ρ) σ) r :=
-  h.dual.of_iso (dualImIso ρ σ)
 
 theorem isIso_eigenImι_of_epi {r : ℕ} (h : IsVB F r) [Epi (dualMap (eigenι (dualAct ρ) σ))] :
     IsIso (eigenImι ρ σ) :=
@@ -249,8 +403,6 @@ theorem isIso_quotToIm_iff : IsIso (quotToIm ρ σ) ↔ Mono (cartierDualToBidua
   have := mono_of_mono_fac (quotToIm_ι ρ σ)
   exact isIso_of_mono_of_epi _
 
-theorem isIso_quotToIm {r : ℕ} (h : IsVB (eigenQuot ρ σ) r) : IsIso (quotToIm ρ σ) :=
-  (isIso_quotToIm_iff ρ σ).2 (mono_toBidual_of_isVectorBundle h)
 
 theorem isIso_quotToIm_of_isIso [Mono (cartierDualToBidual F)] [IsIso (eigenι ρ σ ≫ eigenπ ρ σ)] :
     IsIso (quotToIm ρ σ) :=
@@ -304,39 +456,8 @@ structure IsEigenProj (ε : F ⟶ F) (D : Γ(X, ⊤)) : Prop where
 
 variable {ρ σ}
 
-theorem isEigenProj_of_tensor {R : Type} [CommRing R] (β : R →+* Γ(X, ⊤)) (χ : O →+* R)
-    (t : R ⊗[ℤ] O →+* End F) (ht : ∀ c a, act t (c ⊗ₜ a) = β c • act ρ a) (v : R ⊗[ℤ] O →+ R)
-    (hv : ∀ c a, v (c ⊗ₜ a) = c * χ a) {x : R ⊗[ℤ] O} (hx : ∀ a, (1 ⊗ₜ a) * x = χ a • x) :
-    IsEigenProj ρ (β.comp χ) (act t x) (β (v x)) where
-  act_comp a := by
-    have e : x * (1 ⊗ₜ a) = (χ a ⊗ₜ 1) * x := by
-      rw [mul_comm, hx, Algebra.smul_def]; rfl
-    have := congrArg t e
-    rw [map_mul, map_mul] at this
-    change act t _ ≫ act t x = act t x ≫ act t _ at this
-    rw [ht, ht, map_one, one_smul, Linear.comp_smul, act, act, act, map_one] at this
-    exact this.trans (congrArg _ (Category.comp_id _))
-  exists_sum := by
-    obtain ⟨n, c, b, rfl⟩ := TensorProduct.exists_sum_tmul_eq x
-    refine ⟨n, fun i => β (c i), b, ?_, ?_⟩
-    · exact (map_sum t _ _).trans (Finset.sum_congr rfl fun i _ => ht _ _)
-    · simp [hv]
 
-theorem exists_isEigenProj_of_tensor (ρ : O →+* End F) {R : Type} [CommRing R] (β : R →+* Γ(X, ⊤))
-    (χ : O →+* R) (v : R ⊗[ℤ] O →+ R) (hv : ∀ c a, v (c ⊗ₜ a) = c * χ a) {x : R ⊗[ℤ] O}
-    (hx : ∀ a, (1 ⊗ₜ a) * x = χ a • x) : ∃ ε, IsEigenProj ρ (β.comp χ) ε (β (v x)) :=
-  letI : Algebra ℤ (End F) := Ring.toIntAlgebra _
-  ⟨_, isEigenProj_of_tensor β χ (Algebra.TensorProduct.lift ((smulEnd F).comp β).toIntAlgHom
-    ρ.toIntAlgHom fun _ a => (smulHom_comp (act ρ a) _).symm).toRingHom (fun _ _ => rfl) v hv hx⟩
 
-theorem isEigenProj_idem {k κ : Type} [Field k] [Algebra k Γ(X, ⊤)] [DecidableEq κ]
-    {τ : κ → (O →+* k)} (hτ : IsSplitBy τ) (j : κ) :
-    IsEigenProj ρ (scal X (τ j)) (act (tensorAct k ρ) (hτ.idem j)) 1 := by
-  have := isEigenProj_of_tensor (ρ := ρ) (algebraMap k Γ(X, ⊤)) (τ j) (tensorAct k ρ)
-    (act_tensorAct_tmul ρ) ((Pi.evalAddMonoidHom _ j).comp (splitMap τ).toAddMonoidHom)
-    (fun _ _ => rfl) (x := hτ.idem j) fun a => by
-      rw [hτ.tmul_mul_idem, Algebra.smul_def]; rfl
-  simpa using this
 
 namespace IsEigenProj
 
@@ -430,12 +551,6 @@ theorem eigenImπ_app_eq_zero_iff {V : X.Opens} {s : Γ(F, V)} :
   · refine congr(($(h.comp_eq_smul (act_eigenImπ ρ σ))).app V s).symm.trans ?_
     exact (congrArg ((eigenImπ ρ σ).app V) e).trans (map_zero _)
 
-theorem quotToIm_app_eq_zero_iff {V : X.Opens} {s : Γ(eigenQuot ρ σ, V)} :
-    (quotToIm ρ σ).app V s = 0 ↔ resG X (le_top : V ≤ ⊤) D • s = 0 := by
-  refine ⟨fun e => ?_, fun e => hD.eq_zero_of_smul ?_⟩
-  · refine congr(($(h.quotToIm_imToSub_ι_eigenπ)).app V s).symm.trans ?_
-    exact (congrArg ((h.imToSub ≫ eigenι ρ σ ≫ eigenπ ρ σ).app V) e).trans (map_zero _)
-  · rw [← Scheme.Modules.Hom.app_smul, e, map_zero]
 
 theorem mono_imToSub : Mono h.imToSub :=
   Preadditive.mono_of_cancel_zero _ fun g hg => hD.hom_eq_zero (by
@@ -457,13 +572,7 @@ def imIsoImage : eigenIm ρ σ ≅ image ε :=
   have := strongEpi_of_epi (eigenImπ ρ σ)
   image.isoStrongEpiMono_hom_comp_ι _ _ h.eigenImπ_imToSub_ι
 
-theorem isQuasicoherent_eigenIm [F.IsQuasicoherent] : (eigenIm ρ σ).IsQuasicoherent :=
-  have := h.mono_imToSub hD
-  QCoh.isQuasicoherent_of_epi_of_mono (eigenImπ ρ σ) (h.imToSub ≫ eigenι ρ σ)
 
-theorem isFiniteQC_eigenIm [IsFiniteQC F] : IsFiniteQC (eigenIm ρ σ) :=
-  have := h.isQuasicoherent_eigenIm hD
-  .of_epi (eigenImπ ρ σ)
 
 omit hD
 
@@ -490,14 +599,6 @@ theorem pullbackImHom_comp : h.pullbackImHom f hf ≫ (h.pullback f).imToSub ≫
     map_eigenImπ_pullbackImHom_assoc, eigenImπ_imToSub_ι_assoc, ← Functor.map_comp,
     h.comp_eq_smul (act_eigenImπ ρ σ), pullback_map_smul, Linear.comp_smul, Category.comp_id]
 
-theorem pullbackImHom_app_eq_zero_iff {V : Y.Opens}
-    {s : Γ((Scheme.Modules.pullback f).obj (eigenIm ρ σ), V)} :
-    (h.pullbackImHom f hf).app V s = 0 ↔ resG Y (le_top : V ≤ ⊤) (f.appTop D) • s = 0 := by
-  refine ⟨fun e => ?_, fun e => hf.eq_zero_of_smul ?_⟩
-  · refine congr(($(h.pullbackImHom_comp f hf)).app V s).symm.trans ?_
-    exact (congrArg (((h.pullback f).imToSub ≫ eigenι _ _ ≫
-      (Scheme.Modules.pullback f).map (eigenImπ ρ σ)).app V) e).trans (map_zero _)
-  · rw [← Scheme.Modules.Hom.app_smul, e, map_zero]
 
 theorem isIso_pullbackImHom {r : ℕ} (hr : IsVB (eigenIm ρ σ) r) : IsIso (h.pullbackImHom f hf) :=
   have := mono_toBidual_of_isVectorBundle (hr.pullback f)
@@ -594,3 +695,5 @@ example : let L := structureModule (Spec (.of ℤ))
 end Examples₂
 
 end GlobalTheory.LieVB
+end
+end

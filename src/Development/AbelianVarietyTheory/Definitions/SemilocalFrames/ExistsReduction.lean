@@ -482,9 +482,6 @@ theorem exists_frame (I : AutInst) (hI : ∀ y, y ∈ I.Lf ↔ ∀ i, y i ∈ In
     · rw [map_smulₛₗ, RingHom.mem_ker.1 ha, zero_smul]
     · rw [map_add, hx, hy, add_zero]
 
-theorem rank_eq_of_std {I : AutInst} (hI : ∀ y, y ∈ I.Lf ↔ ∀ i, y i ∈ IntAf I.F I.E) {N p : ℕ}
-    {w : HeightOneSpectrum (𝓞 I.E)} (fr : PlFrame I N p w) : N = I.n :=
-  fr.rank_unique (exists_frame I hI p fr.prime w fr.absNorm_eq).choose
 
 theorem exists_choice (I : AutInst) (g : Fin 2 → ℕ) (hg : ∀ k, (g k).Prime) (hne : g 0 ≠ g 1)
     (hsp : ∀ k (v : HeightOneSpectrum (𝓞 I.E)), ((g k : ℕ) : 𝓞 I.E) ∈ v.asIdeal →

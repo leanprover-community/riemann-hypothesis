@@ -82,58 +82,8 @@ def IsParametersCompatibleWithCharFrame (L : SizeData₂ D) (EX : ErrX D) (J : C
       ∀ (mu : HeightOneSpectrum (𝓞 D.what₂.LL) → T0) (S : Finset (HeightOneSpectrum (𝓞 D.what₂.LL))),
         CoreTies L EX J { R with mu := mu, twPl := S }
 
-theorem exists_core_coreTies (D : D7) (L : SizeData₂ D) (EX : ErrX D) (C : Formalism.L2.Host.CharFrame D)
-    (h₁ : FieldOK0 D D.host.pde) (h₂ : FieldOK0 D D.host.pde') (hs : FieldSmall D L)
-    (hE : ∀ k, barE D (EX.piG k) ∈ (C.P.pb k).asIdeal.map (algebraMap (𝓞 D.host.K) (𝓞 D.host.E)))
-    (hd : ∀ x, ((C.del.1 x : ℂˣ) : ℂ) ∈ FO D) (hd' : ∀ x, ((C.del'.1 x : ℂˣ) : ℂ) ∈ FO D)
-    (chi₀ : ℕ → (Formalism.L2.Theta.AE D)ˣ →* Circle) (hchi : ChiOK D chi₀) :
-    ∃ J : CoreJ D, LawsJ J ∧ LawsCore J.toCore ∧ J.Q.Canon ∧ (∀ j, 1 ≤ (J.Q.Dw j).p + (J.Q.Dw j).q) ∧ HalfEX J.toCore EX ∧
-      J.pb = C.P.pb ∧ (∀ j, J.chiW j J.σ₀ = chi₀ j) ∧ (∃ a : Algebra J.Q.c.F D.what₂.LL, @AlgTie D J a) ∧ IsParametersCompatibleWithCharFrame L EX J C := by
-  obtain ⟨J, hJ, hc, hcan, hpb, hr, hχ⟩ := exists_coreJ_of_chiOK_noVol D h₁.full h₁.zetaM C.P.pb C.P.pb_over chi₀ hchi
-  have hH : HalfEX J.toCore EX := fun i => by
-    show barE D (EX.piG i) ∈ (J.pb i).asIdeal.map _
-    rw [hpb]
-    exact hE i
-  refine ⟨J, hJ, hc, hcan, hr, hH, hpb, hχ, ⟨_, algTie_algTop J hJ.pins.2.2.1⟩, ?_⟩
-  rintro _ G _ _ Pl0 T0 A R μ0 rfl hL
-  exact ⟨coreTies_of_is hL hpb hc hcan hr hH h₁ h₂ hs hd hd', fun mu S =>
-    coreTies_of_is (R := { R with mu := mu, twPl := S }) hL hpb hc hcan hr hH h₁ h₂ hs hd hd'⟩
 
-theorem exists_frame_of_richRec (D : D7) (EX : ErrX D) (h : RichRec D) (h₁ : FieldOK0 D D.host.pde)
-    (h₂ : FieldOK0 D D.host.pde') : ∃ C : Formalism.L2.Host.CharFrame D,
-      (∀ k, barE D (EX.piG k) ∈ (C.P.pb k).asIdeal.map (algebraMap (𝓞 D.host.K) (𝓞 D.host.E))) ∧
-      (∀ x, ((C.del.1 x : ℂˣ) : ℂ) ∈ FO D) ∧ (∀ x, ((C.del'.1 x : ℂˣ) : ℂ) ∈ FO D) ∧
-      ∃ Lc : LevCh D (Option Bool), Lc.C = C ∧ Lc.Is none ∧ Lc.xiH (some false) = C.del ∧ Lc.xiH (some true) = C.del' ∧
-        (∃ PP ∈ Lc.Q (some false), ((D.host.pde : ℕ) : 𝓞 D.host.E) ∈ PP.asIdeal) ∧
-        ∃ PP ∈ Lc.Q (some true), ((D.host.pde' : ℕ) : 𝓞 D.host.E) ∈ PP.asIdeal := by
-  choose pb g1 g2 using exists_prime_bar_piG D EX
-  obtain ⟨C, hC⟩ := exists_charFrame D ⟨pb, g1⟩ h.1 h.2.1 h.2.2.1
-  obtain ⟨P₁, hP₁⟩ := GlobalTheory.exists_heightOneSpectrum_natCast_mem D.host.K D.host.pde_prime
-  obtain ⟨P₂, hP₂⟩ := GlobalTheory.exists_heightOneSpectrum_natCast_mem D.host.K D.host.pde'_prime
-  obtain ⟨Lc, a1, a2, a3, a4, a5, a6⟩ := exists_levCh_twisted C h.1 h.2.1 h₁.split h₂.split P₁ P₂ hP₁ hP₂
-  obtain ⟨w₁, hw₁⟩ := aboveK_nonempty P₁
-  obtain ⟨w₂, hw₂⟩ := aboveK_nonempty P₂
-  exact ⟨C, by rw [hC]; exact g2, isDelta_mem C.isDel h.2.2.2, isDelta_mem C.isDel' h.2.2.2, Lc, a1, a2, a3, a4,
-    ⟨w₁, a5 ▸ hw₁, overP_of_under hP₁ (mem_aboveK.1 hw₁)⟩, w₂, a6 ▸ hw₂, overP_of_under hP₂ (mem_aboveK.1 hw₂)⟩
 
-theorem exists_coreTies_of_zeroFreeRegion : GlobalTheory.Mem.An.ExplZeta → GlobalTheory.Mem.An.ExplChi → GlobalTheory.Mem.An.LogDerOne → GlobalTheory.Mem.An.ZeroCount →
-    Formalism.ZeroFreeDirichlet.ZFRDirichlet → GlobalTheory.Mem.An.TZRat → GlobalTheory.Mem.An.PageThm → GlobalTheory.Mem.An.Jutila → GlobalTheory.Mem.An.QuadraticHeckeZeroEstimates → GlobalTheory.NT.RayField →
-    ∀ x : ℝ, ∃ (D : D7) (L : SizeData₂ D) (Pm : ParameterChoice' D L) (Tp : ParamsT D L Pm) (EX : ErrX D) (C : Formalism.L2.Host.CharFrame D)
-      (J : CoreJ D), RecOK D x ∧ DV.KapDef D ∧ PageNum Tp x ∧ FieldSmall D L ∧
-      ReciprocityTheory.ChartRestriction.G.Geo.Tor.zeta (15 * classNumber D.host.E) ∈ FO D ∧
-      (∀ y, ((C.del.1 y : ℂˣ) : ℂ) ∈ FO D) ∧ (∀ y, ((C.del'.1 y : ℂˣ) : ℂ) ∈ FO D) ∧
-      (∃ Lc : LevCh D (Option Bool), Lc.C = C ∧ Lc.Is none ∧ Lc.xiH (some false) = C.del ∧ Lc.xiH (some true) = C.del' ∧
-        (∃ PP ∈ Lc.Q (some false), ((D.host.pde : ℕ) : 𝓞 D.host.E) ∈ PP.asIdeal) ∧
-        ∃ PP ∈ Lc.Q (some true), ((D.host.pde' : ℕ) : 𝓞 D.host.E) ∈ PP.asIdeal) ∧
-      LawsJ J ∧ LawsCore J.toCore ∧ J.Q.Canon ∧ HalfEX J.toCore EX ∧ J.pb = C.P.pb ∧
-      (∃ a : Algebra J.Q.c.F D.what₂.LL, @AlgTie D J a) ∧ IsParametersCompatibleWithCharFrame L EX J C := by
-  intro p1 p2 p3 p4 p5 p6 p7 p8 p9 p10 x
-  obtain ⟨D, hD, hR⟩ := exists_richRec_of_zeroFreeRegion p1 p2 p3 p4 p5 p6 p7 p8 p9 p10 x
-  obtain ⟨EX⟩ := hD.err
-  obtain ⟨L, Pm, Tp, n1, n2, n3, n4, n5, n6, n7, n8⟩ := hD.num
-  obtain ⟨C, c1, c2, c3, c4⟩ := exists_frame_of_richRec D EX hR hD.one hD.two
-  obtain ⟨J, j1, j2, j3, -, j5, j6, -, j8, j9⟩ := exists_core_coreTies D L EX C hD.one hD.two n8 c1 c2 c3 _ (chiOK_one D)
-  exact ⟨D, L, Pm, Tp, EX, C, J, hD, n1, ⟨n2, n3, n4, n5, n6, n7⟩, n8, hR.2.2.2, c2, c3, c4, j1, j2, j3, j5, j6, j8, j9⟩
 
 end GlobalTheory.BigOn
 

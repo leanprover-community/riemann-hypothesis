@@ -41,9 +41,6 @@ def translates {H : Type} [Mul H] (z : H →₀ ℂ) (φ : H → ℂ) : H → �
 
 def zdeg {H : Type} (z : H →₀ ℂ) : ℂ := z.sum fun _ c => c
 
-theorem translates_one {H : Type} [MulOneClass H] (φ : H → ℂ) :
-    translates (Finsupp.single 1 1) φ = φ ∧ zdeg (Finsupp.single (1 : H) 1) = 1 :=
-  ⟨funext fun u => by simp [translates], by simp [zdeg]⟩
 
 variable (G) in
 
@@ -98,11 +95,6 @@ theorem exists_matched (i j : ℕ) (b : (Unit × PolF D (G.V (.grid i (j + 1))).
   obtain ⟨a, rfl⟩ := toTens_surjective x
   exact ⟨a, fun _ => hx⟩
 
-theorem exists_not_rel_zero (i j : ℕ) : ∃ a, (a, 0) ∉ ρ.rel i j := by
-  by_contra! h
-  refine ρ.proper i j (eq_top_iff.2 fun x _ => ?_)
-  obtain ⟨a, ha⟩ := ρ.onto_small i j x.2
-  simpa using add_mem ha (h (x.1 - a))
 
 end RealMatch
 
@@ -230,12 +222,6 @@ theorem IsSquareConst.unique (h : SquareNonzero W B ρ t i j) {c c' : ℂ} (hc :
   obtain ⟨M, hM, Θ, Θ', hΘ, z, g, g₁, hz, h0⟩ := h
   exact mul_right_cancel₀ h0 ((hc M hM Θ Θ' hΘ z g g₁ hz).symm.trans (hc' M hM Θ Θ' hΘ z g g₁ hz))
 
-theorem IsSquareConst.of_integrable {c : ℂ} (hc : IsSquareConst W B ρ t i j c) {M : Vol G} (hM : M.Is t) {Θ Θ'}
-    (hΘ : IsMatched B t ρ i j Θ Θ') {g g₁} (h : IntegrableOn (kerBig W Θ g g₁) (M.fd _) (M.ν _))
-    (h' : IntegrableOn (kerSmall W Θ' g g₁) (M.fd _) (M.ν _)) :
-    ∫ u in M.fd _, kerBig W Θ g g₁ u ∂M.ν _ = c * ∫ u in M.fd _, kerSmall W Θ' g g₁ u ∂M.ν _ := by
-  have := hc M hM Θ Θ' hΘ (Finsupp.single 1 1) g g₁ ⟨h, by rwa [(translates_one _).1]⟩
-  rwa [(translates_one _).1, (translates_one (fun _ => 0)).2, one_mul] at this
 
 example (t : T) : (routeSmall t 0 0).arrows = [.down t 0 0, .right 0 0] ∧
     (routeBig t 0 0).arrows = [.right 0 1, .down t 1 0] := ⟨rfl, rfl⟩

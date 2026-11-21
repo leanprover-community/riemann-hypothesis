@@ -822,9 +822,6 @@ theorem col_split_maj (u : Pr.Word) (j : ℕ) (σ : (colGSD W Ch u j).Slice (Dia
   rw [latH_maj, σ.ipAt_split (colRat W Ch hX u j) (colOk W Ch hX u j)]
   exact Finset.sum_congr rfl fun c _ => (((colRat W Ch hX u j).restr σ.T).maj_eq _ v _ _).symm
 
-theorem col_split_mem (u : Pr.Word) (j : ℕ) (σ : (colGSD W Ch u j).Slice (DiaG X.E (Pr.vT u))) (φ : ColV W Ch u j) :
-    φ ∈ ColL W Ch u j ↔ ∀ c, σ.split φ c ∈ ((colGSD W Ch u j).restr σ.T).intDel :=
-  σ.split_mem_intDel (colDel_dia W Ch u j) φ
 
 include hX in
 theorem integral_delta_ne_bot (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) (u : Pr.Word) :
@@ -867,74 +864,11 @@ theorem MramH_mu (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) (u : Pr.Word)
   rw [(MramH_numbers W Ch hX u).1]
   exact key
 
-theorem log_ratio_nonneg {T : ℕ} (hT : 2 < T) : 0 ≤ Real.log ((T : ℝ) - 1) / ((T : ℝ) - 2) := by
-  have hT' : (3 : ℝ) ≤ T := by exact_mod_cast (hT : 3 ≤ T)
-  apply div_nonneg
-  · apply Real.log_nonneg
-    linarith
-  · linarith
 
-theorem MramH_mu_le (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) (u : Pr.Word) (hT : 2 < Pr.T u) :
-    (MramH W Ch hX u).mu ≤ (Mu0H W Ch hX u).mu := by
-  rw [MramH_mu W Ch hX hPr hbig u hT]
-  have h := log_ratio_nonneg hT
-  have hf : (0 : ℝ) ≤ X.f := Nat.cast_nonneg _
-  have : 0 ≤ (X.f : ℝ) * Real.log ((Pr.T u : ℝ) - 1) / ((Pr.T u : ℝ) - 2) := by
-    rw [mul_div_assoc]
-    exact mul_nonneg hf h
-  linarith
 
-theorem Mu0H_sub_MramH_le (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) (u : Pr.Word) (hT : 2 < Pr.T u) :
-    (Mu0H W Ch hX u).mu - (MramH W Ch hX u).mu ≤ (X.f : ℝ) := by
-  rw [MramH_mu W Ch hX hPr hbig u hT]
-  have hT' : (3 : ℝ) ≤ Pr.T u := by exact_mod_cast (hT : 3 ≤ Pr.T u)
-  have hlog : Real.log ((Pr.T u : ℝ) - 1) ≤ (Pr.T u : ℝ) - 2 := by
-    have := Real.log_le_sub_one_of_pos (show (0 : ℝ) < (Pr.T u : ℝ) - 1 by linarith)
-    linarith
-  have hpos : (0 : ℝ) < (Pr.T u : ℝ) - 2 := by linarith
-  have hf : (0 : ℝ) ≤ X.f := Nat.cast_nonneg _
-  have : (X.f : ℝ) * Real.log ((Pr.T u : ℝ) - 1) / ((Pr.T u : ℝ) - 2) ≤ X.f := by
-    rw [div_le_iff₀ hpos]
-    nlinarith
-  linarith
 
-theorem ramified_slope_clauses (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) (u : Pr.Word) (hT : 2 < Pr.T u) :
-    (Fintype.card (MramH W Ch hX u).ι : ℝ) =
-      (Fintype.card (Mu0H W Ch hX u).ι : ℝ) * (1 - 1 / ((Pr.T u : ℝ) - 1)) ^ X.f ∧
-    Formalism.HN.muDef (MramH W Ch hX u).b (MramH W Ch hX u).X (MramH W Ch hX u).L =
-      Formalism.HN.muDef (Mu0H W Ch hX u).b (Mu0H W Ch hX u).X (Mu0H W Ch hX u).L -
-        (X.f : ℝ) * Real.log ((Pr.T u : ℝ) - 1) / ((Pr.T u : ℝ) - 2) ∧
-    Formalism.HN.muMaxDef (MramH W Ch hX u).b (MramH W Ch hX u).X (MramH W Ch hX u).L ≤
-      Formalism.HN.muMaxDef (Mu0H W Ch hX u).b (Mu0H W Ch hX u).X (Mu0H W Ch hX u).L :=
-  ⟨card_MramH_eq W Ch hX hPr hbig u hT, MramH_mu W Ch hX hPr hbig u hT, MramH_muMax_le W Ch hX hPr hbig u hT⟩
 
 end Cols
 
-theorem ramified_slope_nonvacuous : ∃ (X : Fields) (Pr : Primes X) (W : Wts X Pr.Word Examples₂.R0) (Ch : Chars X Pr Examples₂.R0.m)
-    (hX : X.Ok) (u : Pr.Word),
-      (MramH W Ch hX u).mu = (Mu0H W Ch hX u).mu - Real.log 14145788200 / 14145788199 ∧
-      (MramH W Ch hX u).mu < (Mu0H W Ch hX u).mu := by
-  have : Algebra.IsAlgebraic ℚ Formalism.L2.Host.Qb := AlgebraicClosure.isAlgebraic ℚ
-  let ι : Formalism.L2.Host.Qb →+* ℂ := (IsAlgClosed.lift (R := ℚ) (M := ℂ) (S := Formalism.L2.Host.Qb)).toRingHom
-  have hX := quadFields_ok 1 ι (Formalism.L2.Host.cycQ 780) gaussian_field_le_cyclotomic one_pos
-  have hPr := gaussianPrimesSmall_ok ι (Formalism.L2.Host.cycQ 780) gaussian_field_le_cyclotomic
-  have hbig := gaussianSmallPrime_gt_twice_rank ι (Formalism.L2.Host.cycQ 780) gaussian_field_le_cyclotomic
-  have hT : 2 < (gaussianPrimesSmall ι (Formalism.L2.Host.cycQ 780) gaussian_field_le_cyclotomic).T () := by
-    show 2 < 14145788201
-    norm_num
-  have hf : (gaussFields ι (Formalism.L2.Host.cycQ 780) gaussian_field_le_cyclotomic).f = 1 := gauss_f ι (Formalism.L2.Host.cycQ 780) gaussian_field_le_cyclotomic
-  let Ch : Chars (gaussFields ι (Formalism.L2.Host.cycQ 780) gaussian_field_le_cyclotomic)
-      (gaussianPrimesSmall ι (Formalism.L2.Host.cycQ 780) gaussian_field_le_cyclotomic) Examples₂.R0.m :=
-    ⟨fun _ => 1, fun _ _ => 1, fun _ _ => 1, fun _ => 1⟩
-  have h1 := MramH_mu (exampleWeights _ _) Ch hX hPr hbig () hT
-  have h2 : (((gaussianPrimesSmall ι (Formalism.L2.Host.cycQ 780) gaussian_field_le_cyclotomic).T () : ℕ) : ℝ) = 14145788201 := by
-    show ((14145788201 : ℕ) : ℝ) = 14145788201
-    norm_num
-  rw [hf, h2] at h1
-  norm_num at h1
-  refine ⟨_, _, exampleWeights _ _, Ch, hX, (), h1, ?_⟩
-  rw [h1]
-  have h3 : 0 < Real.log 14145788200 / 14145788199 := div_pos (Real.log_pos (by norm_num)) (by norm_num)
-  linarith
 
 end Formalism.L2.Col

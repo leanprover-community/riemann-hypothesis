@@ -129,42 +129,6 @@ theorem tauOne_hyp (θ : (ZMod g)ˣ →* ℂˣ) : IsRegularChar g 1 θ ∧ IsCus
       simpa using (sub_eq_zero.1 hz).symm)
     rw [tauOne_character, this]; simp
 
-theorem hyp_exist (hL : LocalLanglandsGL) (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (p : Nat.Primes) : haveI : Fact p.1.Prime := ⟨p.2⟩
-    ∃ (w : HeightOneSpectrum (𝓞 ℚ)) (A : ValuationSubring Ω) (h : IsPlaceOver (F := ℚ) A w)
-      (rc : IrrGL (w.adicCompletion ℚ) → WD h) (i : ℚ_[p.1] ≃+* w.adicCompletion ℚ)
-      (a : Weil h →* (w.adicCompletion ℚ)ˣ) (red : 𝓞 ℚ →+* ZMod p.1),
-      IsRec h rc ∧ Continuous i ∧ ((p.1 : ℕ) : 𝓞 ℚ) ∉ w.asIdeal ^ 2 ∧ normV w = p.1 ^ 1 ∧ IsLocalArtin h a ∧
-      Function.Surjective red ∧ RingHom.ker red = w.asIdeal ∧ ∀ θ : (ZMod p.1)ˣ →* ℂˣ,
-      ∃ σ : GlobalTheory.SmGL.IrrRep (GL (Fin 1) (w.adicCompletion ℚ)),
-        Inflates (σ.ρ.comp (Matrix.GeneralLinearGroup.map i.toRingHom)) (tauOne θ) := by
-  obtain ⟨w, rfl⟩ := (Rat.HeightOneSpectrum.primesEquiv (R := 𝓞 ℚ)).surjective p
-  have : Fact (Rat.HeightOneSpectrum.primesEquiv w).1.Prime := ⟨(Rat.HeightOneSpectrum.primesEquiv w).2⟩
-  obtain ⟨A, hA⟩ := exists_isPlaceOver Ω w
-  let e := Rat.HeightOneSpectrum.adicCompletion.padicEquiv w
-  obtain ⟨rc, ⟨a, ha, ε, hε, hl⟩, -⟩ := hL.1 ℚ Ω A w hA
-  let f := Rat.IsIntegralClosure.intEquiv (𝓞 ℚ)
-  have hs := Rat.HeightOneSpectrum.span_natGenerator (R := 𝓞 ℚ) w
-  have hmem : ∀ x : 𝓞 ℚ, x ∈ w.asIdeal ↔ ((Rat.HeightOneSpectrum.natGenerator w : ℕ) : ℤ) ∣ f x := fun x => by
-    rw [← Ideal.mem_span_singleton, hs, Ideal.apply_mem_of_equiv_iff]
-  let red : 𝓞 ℚ →+* ZMod (Rat.HeightOneSpectrum.natGenerator w) := (Int.castRingHom _).comp f.toRingHom
-  have hsur : Function.Surjective red := (ZMod.ringHom_surjective _)
-  have hker : RingHom.ker red = w.asIdeal := by
-    ext x; rw [hmem, RingHom.mem_ker, ← ZMod.intCast_zmod_eq_zero_iff_dvd]; rfl
-  refine ⟨w, A, hA, rc, e.symm.toAlgEquiv.toRingEquiv, a, red, ⟨a, ha, ε, hε, hl⟩, e.symm.continuous, ?_, ?_, ha,
-    hsur, hker, fun θ => ?_⟩
-  · intro hc
-    have h1 := Ideal.mem_map_of_mem f hc
-    rw [Ideal.map_pow, ← hs, Ideal.span_singleton_pow, Ideal.mem_span_singleton, map_natCast] at h1
-    have hp := Rat.HeightOneSpectrum.prime_natGenerator w
-    change ((Rat.HeightOneSpectrum.natGenerator w : ℕ) : ℤ) ^ 2 ∣ ((Rat.HeightOneSpectrum.natGenerator w : ℕ) : ℤ) at h1
-    have h2 : (Rat.HeightOneSpectrum.natGenerator w) ^ 2 ∣ Rat.HeightOneSpectrum.natGenerator w := by exact_mod_cast h1
-    have := Nat.le_of_dvd hp.pos h2
-    nlinarith [hp.two_le]
-  · have := Nat.card_congr (RingHom.quotientKerEquivOfSurjective hsur).toEquiv
-    rw [hker, Nat.card_zmod] at this
-    rw [pow_one]; exact this
-  · obtain ⟨χ, hχ, hθ⟩ := exists_char e.symm.toAlgEquiv.toRingEquiv e.continuous θ
-    exact ⟨_, inflates_one _ θ χ hχ hθ⟩
 
 theorem apply_one (H : DepthZeroTypeInertia) {rc : IrrGL (w.adicCompletion E) → WD h} (hr : IsRec h rc)
     (i : ℚ_[g] ≃+* w.adicCompletion E) (hi : Continuous i) (h1 : ((g : ℕ) : 𝓞 E) ∉ w.asIdeal ^ 2) (h2 : normV w = g ^ 1)

@@ -1,6 +1,54 @@
 import Mathlib
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OddDualWeylJacobian.DualSub
+import Formalism.PeriodIntegrals.OddDualWeyl
 
+section
+open MvPolynomial Matrix
+
+noncomputable section
+
+namespace PI.OddDualWeyl
+
+def genM (R : Type*) [CommRing R] (k : ℕ) : Matrix (Fin k) (Fin k) (MvPolynomial (Fin k × Fin k) R) :=
+  Matrix.of fun a s => X (a, s)
+
+def dualM (R : Type*) [CommRing R] (k : ℕ) : Matrix (Fin k) (Fin k) (MvPolynomial (Fin k × Fin k) R) :=
+  Matrix.of fun i j => adjugate (genM R k) (Fin.rev j) i
+
+def dualSub (R : Type*) [CommRing R] (k : ℕ) :
+    MvPolynomial (Fin k × Fin k) R →ₐ[R] MvPolynomial (Fin k × Fin k) R :=
+  aeval fun v => dualM R k v.1 v.2
+
+def Rel (R : Type*) [CommRing R] (k M : ℕ) (f f' : MvPolynomial (Fin k × Fin k) R) : Prop :=
+  dualSub R k f' = (genM R k).det ^ M * f
+
+def pMinor (R : Type*) [CommRing R] {k : ℕ} (σ : Equiv.Perm (Fin k)) (s : ℕ) (hs : s ≤ k) :
+    MvPolynomial (Fin k × Fin k) R :=
+  (Matrix.of fun p q : Fin s =>
+    (X (σ (Fin.castLE hs p), Fin.castLE hs q) : MvPolynomial (Fin k × Fin k) R)).det
+
+def pw (R : Type*) [CommRing R] {k : ℕ} (σ : Equiv.Perm (Fin k)) (ν : Fin k → ℕ) :
+    MvPolynomial (Fin k × Fin k) R :=
+  ∏ s : Fin k, pMinor R σ (s.val + 1) s.isLt ^ (ν s - nuNext ν s)
+
+def low (R : Type*) [CommRing R] {k : ℕ} (ν : Fin k → ℕ) : MvPolynomial (Fin k × Fin k) R :=
+  pw R Fin.revPerm ν
+
+def degW {k : ℕ} (ν : Fin k → ℕ) : ℕ := ∑ s : Fin k, (s.val + 1) * (ν s - nuNext ν s)
+
+def expM {m : ℕ} (lam : Fin (m + 1) → ℤ) : ℕ := m * nuOf lam 0 - ∑ t, nuOf lam t
+
+def rowW {k : ℕ} (a : Fin k) : Fin k × Fin k → ℕ := fun v => if v.1 = a then 1 else 0
+
+def MH (R : Type*) [CommRing R] {k : ℕ} (f : MvPolynomial (Fin k × Fin k) R) : Prop :=
+  ∀ a : Fin k, ∃ d : ℕ, IsWeightedHomogeneous (rowW a) f d
+
+def sgnK (K : Type) [Field K] (m : ℕ) : K := (revCol (1 : Matrix (Fin (m + 1)) (Fin (m + 1)) K)).det
+
+end PI.OddDualWeyl
+end
+end
+
+section
 open MvPolynomial Matrix
 
 noncomputable section
@@ -68,3 +116,5 @@ def GStep : Prop := ∀ (O K : Type) [CommRing O] [Field K] [Algebra O K] (m : �
     Rel K (m + 1) (expM lam) F F' ∧ IsHomogeneous F' (degW (nuOf (lamStar lam)))
 
 end PI.OddDualWeyl
+end
+end

@@ -1,8 +1,10 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.TopShape
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LabelDatum
-import Development.AutomorphicArithmetic.CharacterBoxes.DesWin
-import Development.AutomorphicArithmetic.CharacterBoxes.ZeroFreeAllOfTopG
+import Formalism.SharpRestriction.SmoothDesignExistence.DesignExistsDes
+import Development.AutomorphicArithmetic.CharacterBoxes.DivinNOfHypV
+import Development.AutomorphicArithmetic.CharacterBoxes.Supply
+import Development.AutomorphicArithmetic.PrimitiveCosets.LevelGmLeOnFamilyScales
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LinkEx
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LinkG
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LinkEta
@@ -15,6 +17,77 @@ import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SelectionClos
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LinkBrest
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.WireSel
 
+section
+noncomputable section
+
+namespace UpperTheory.Top
+
+open Formalism.BasicNotions Formalism.MainNotions
+
+theorem topDesWin (𝒞 𝒞' ℰ : FamClass) (Cabs C0 eD eL : ℝ) (hEx : DesignExists (WithTw (WithSm 𝒞')) C0)
+    (h1 : ∀ {eps : ℝ} (Fm : FamP eps), 𝒞' Fm → 𝒞 Fm) (h2 : ∀ {eps : ℝ} (Fm : FamP eps), 𝒞' Fm → ℰ Fm)
+    (hV : ∀ {eps : ℝ} (Fm : FamP eps), ℰ Fm → HypV Fm.toFamCore)
+    (hN : Closed (Des 𝒞 C0) fun Fm _ => LinkN Fm)
+    (hEta : Closed (Des 𝒞 C0) fun Fm _ => LinkEta Fm)
+    (hIRR : Closed (Des 𝒞 C0) fun Fm _ => LinkIRR Fm)
+    (hZ : Closed (Des 𝒞 C0) fun Fm _ => SmallLevelRankEq Fm)
+    (hDIV : Closed (Des 𝒞 C0) fun Fm CH => TuSize Fm → DGamSize Fm → LinkDIVt Fm Cabs CH)
+    (hRk : Closed (Des 𝒞 C0) fun Fm CH => ChosenE Fm C0 CH → NuFullF Fm ∧ J.MuRank Fm)
+    (hG : Closed (Des 𝒞 C0) fun Fm _ => LinkG Fm)
+    (hS : Closed (Des 𝒞 C0) fun Fm _ => TuSize Fm → LinkS Fm C0)
+    (hGL : Closed (Des 𝒞 C0) fun Fm CH => TuSize Fm → DGamSize Fm → LinkGLOBAL Fm Cabs CH C0 eD eL) : FamilyClassConnected ℰ := by
+  obtain ⟨ε1, hε1, hA⟩ := hN.and (hDIV.and (hEta.and (hIRR.and (hZ.and (hRk.and (hG.and (hS.and hGL)))))))
+  obtain ⟨ε3, hε3, hEx⟩ := hEx
+  refine ⟨eD, eL, min ε1 ε3, lt_min hε1 hε3, fun ε h0 hlt => ?_⟩
+  obtain ⟨K, hK⟩ := hA ε h0 (le_of_lt (lt_of_lt_of_le hlt (min_le_left _ _)))
+  obtain ⟨Fm, CH, hc, -, hL, hCh, hT, hDG⟩ := hEx ε h0 (le_of_lt (lt_of_lt_of_le hlt (min_le_right _ _))) K
+  obtain ⟨aN, aD, aE, aI, aZ, aR, aG, aS, aGL⟩ := hK Fm CH ⟨⟨⟨h1 Fm hc.1.1, hc.1.2⟩, hc.2⟩, ⟨CH, hCh⟩, hT, hDG⟩ hL
+  have hD := aD hT hDG aE (divinN_of_hypV Fm h0 (hV Fm (h2 Fm hc.1.1)) aN aZ)
+  exact ⟨Fm, h2 Fm hc.1.1, aGL hT hDG hCh ⟨aG, aS hT, aI, hD,
+    J.linkMu_of_linkDIV Fm hD (aR hCh).1 (aR hCh).2 (muTu_of_tuSize Fm h0 hT) (J.muDGam_of_fact Fm hDG)⟩⟩
+
+end UpperTheory.Top
+
+end
+end
+
+section
+noncomputable section
+
+namespace UpperTheory.Top
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.HC GlobalTheory.EX
+
+def TopG : Prop :=
+  ∀ (la : ℝ) (G : FReq), 1 < la → HostExW la G.req →
+    (∀ {eps : ℝ} (Fm : FamP eps), G.cls la Fm → HypV Fm.toFamCore) → FamilyClassConnected (G.cls la)
+
+theorem hypV_of_cls (ψ : PChar) (la : ℝ) {eps : ℝ} (Fm : FamP eps) (h : (GChi ψ).cls la Fm) : HypV Fm.toFamCore :=
+  ⟨Fm.x1 + 1, fun x hx i => (h.2 x (by linarith) i).2⟩
+
+theorem eFamC_of_cls (ψ : PChar) (la : ℝ) {eps : ℝ} (Fm : FamP eps) (h : (GChi ψ).cls la Fm) :
+    EFamC (Level.cyc ψ) Fm.toFamCore := by
+  refine ⟨4, Fm.x1 + 1, fun x hx i => ?_⟩
+  have h1 := (h.2 x (by linarith) i).1
+  rw [Fm.L_x x i (by linarith), Fm.L_eps x i] at h1
+  exact h1
+
+theorem zeroFreeAll_of_topG {la : ℝ} (hla : 1 < la) (h : TopG) (hS : ∀ ψ : PChar, HostExW la (GChi ψ).req) : ZeroFreeAll := by
+  have key : ZeroFreeOn fun _ => True :=
+    zeroFreeOn_of_tiedWin_cyc (Fam := FamP) (core := fun Fm => Fm.toFamCore) (Tied := fun Fm => ChainTied Fm) hla
+      (fun ψ _ => UpperTheory.Comparison₂.level_gm_le_on_family_scales _) (fun ψ _ => UpperTheory.Comparison₂.formB _) fun ψ _ => by
+        obtain ⟨eD, eL, ε₁, h1, h2⟩ := h la (GChi ψ) hla (hS ψ) (hypV_of_cls ψ la)
+        refine ⟨eD, eL, ε₁, h1, fun eps a b => ?_⟩
+        obtain ⟨Fm, c, d⟩ := h2 eps a b
+        exact ⟨Fm, eFamC_of_cls ψ la Fm c, c.1, d⟩
+  exact key
+
+end UpperTheory.Top
+
+end
+end
+
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Pk Formalism.MainNotions.Lnk Formalism.MainNotions.GlobalTheoryTheory Formalism.L2.GlobalTheoryTheory Formalism.MainNotions.RT Formalism.L2.Top3 Formalism.L2.Top4
@@ -45,4 +118,5 @@ theorem UpperTheory.Top.shapeWin : GlobalTheory.GLq.Green → GlobalTheory.Fc.To
     (GlobalTheory.Top.Irr.link_irr hGreen 𝒜 sel cIc hcI irrC) (GlobalTheory.Top.smallLevelRankEq_closed_of_levelProjection_surjective 𝒜 sel selS selP selDH selC selB hPA hLamP hDivG zL) hDIV hgl.1 (GlobalTheory.Top.link_g 𝒜 sel hduty)
     (GlobalTheory.Top.link_alt 𝒜 sel selS hWu hRF hTF c30 hc30 sTy sNG sM sLp sO h30 hInstR) hgl.2
 
+end
 end

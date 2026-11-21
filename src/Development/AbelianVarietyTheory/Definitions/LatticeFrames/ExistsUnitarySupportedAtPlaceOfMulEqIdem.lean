@@ -111,13 +111,7 @@ theorem Place.isChar_ofSplitPt (q : GlobalTheory.FinPl.SplitPt D k) {ψ : AddCha
   rw [Circle.ext_iff, hχ, key]
   rfl
 
-theorem Place.down_ofSplitPt {q : GlobalTheory.FinPl.SplitPt D k} {S T : HSp D} {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n']
-    [DecidableEq n'] (α : GlobalTheory.FinPl.Frame q S n') (β : GlobalTheory.FinPl.Frame q T n) (t : WO S T) :
-    (Place.ofSplitPt q).down (Frame.ofFinPl α) (Frame.ofFinPl β) t = GlobalTheory.FinPl.rd α β t := rfl
 
-theorem Place.isLoc_ofSplitPt {q : GlobalTheory.FinPl.SplitPt D k} {S : HSp D} {n : Type} [Fintype n] [DecidableEq n]
-    (F : GlobalTheory.FinPl.Frame q S n) (g : GL n k) : (Place.ofSplitPt q).IsLoc (Frame.ofFinPl F) (F.gl g) g :=
-  ⟨F.gl_supp g, F.gl_mat g⟩
 
 example {n : Type} [Fintype n] [DecidableEq n] (B : BesLev D 1) (s : k) (FA : Frame k B.A.rank n)
     (F : Frame k B.V.rank (n ⊕ Fin 3)) (h : p.IsBesFrame B s FA F) (r) :
@@ -515,41 +509,8 @@ theorem exists_isLoc (F : Frame k S.rank Y) (gk : GL Y k) : ∃ g, p.IsLoc F g g
   obtain ⟨g, g1, g2⟩ := exists_unitary_supportedAt_place_of_mul_eq_idem p _ _ hba
   exact ⟨g, g1, g2.trans hπa⟩
 
-theorem hyp_flatBF {ψ : AddChar (AF D.host.F) ℂ} {ρ : ℕ} (B : BesLev D ρ) (J : JacLev D ρ) (st : StepBF ψ B J)
-    {s : k} (hs : s ≠ 0) (FA : Frame k B.A.rank Y') (G₀ : Frame k J.W₀.rank Y) :
-    ∃ (ψk : AddChar k Circle) (F₀ : Frame k B.V₀.rank (Y' ⊕ Unit)) (FV : Frame k B.V.rank (Y' ⊕ Fin (2 * ρ + 1)))
-      (FW : Frame k J.W.rank (Y ⊕ Fin (2 * ρ))),
-      p.IsChar ψ ψk ∧ p.IsCoreFrame B s FA F₀ ∧ p.IsBesFrame B s FA FV ∧ p.IsJacFrame J s (p.hz B) G₀ FW ∧
-        ∃ Tm, p.IsModel ψ FV FW Tm ∧ Tm ≠ 0 := by
-  obtain ⟨ψk, h0⟩ := exists_isChar p st.weil.std
-  obtain ⟨F₀, h1⟩ := exists_core p B hs FA
-  obtain ⟨FV, h2⟩ := exists_bes p B hs FA
-  obtain ⟨FW, h3⟩ := exists_jac p J hs (hz_ne p B) G₀
-  exact ⟨ψk, F₀, FV, FW, h0, h1, h2, h3, exists_isModel p FV FW st.weil.std⟩
 
-theorem hyp_flatFB {ψ : AddChar (AF D.host.F) ℂ} {σ : ℕ} (J : JacLev D (σ + 1)) (B : BesLev D σ) (st : StepFB ψ J B)
-    {s : k} (hs : s ≠ 0) (G₀ : Frame k J.W₀.rank Y') (FA : Frame k B.A.rank Y) :
-    ∃ (ψk : AddChar k Circle) (FW : Frame k J.W.rank (Y' ⊕ Fin (2 * σ + 1 + 1))) (F₀ : Frame k B.V₀.rank (Y ⊕ Unit))
-      (FV : Frame k B.V.rank (Y ⊕ Fin (2 * σ + 1))),
-      p.IsChar ψ ψk ∧ p.IsJacFrame J s (-p.xi ^ 2 * p.hz B) G₀ FW ∧ p.IsCoreFrame B (s * p.xi) FA F₀ ∧
-        p.IsBesFrame B (s * p.xi) FA FV ∧ ∃ Tm, p.IsModel ψ FW FV Tm ∧ Tm ≠ 0 := by
-  obtain ⟨ψk, h0⟩ := exists_isChar p st.weil.std
-  have hx := xi_ne p
-  obtain ⟨F₀, h1⟩ := exists_core p B (mul_ne_zero hs hx) FA
-  obtain ⟨FV, h2⟩ := exists_bes p B (mul_ne_zero hs hx) FA
-  obtain ⟨FW, h3⟩ := exists_jac p J hs (mul_ne_zero (neg_ne_zero.2 (pow_ne_zero 2 hx)) (hz_ne p B)) G₀
-  exact ⟨ψk, FW, F₀, FV, h0, h3, h1, h2, exists_isModel p FW FV st.weil.std⟩
 
-theorem hyp_contr {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) {ρ σ : ℕ} (B : BesLev D ρ) (B' : BesLev D σ)
-    {s : k} (hs : s ≠ 0) {Z : Type} [Fintype Z] [DecidableEq Z] (FA : Frame k B.A.rank Y') (FA' : Frame k B'.A.rank Z)
-    (F : Frame k S.rank Y) :
-    ∃ (ψk : AddChar k Circle) (F₀ : Frame k B.V₀.rank (Y' ⊕ Unit)) (F₀' : Frame k B'.V₀.rank (Z ⊕ Unit)),
-      p.IsChar ψ ψk ∧ p.IsCoreFrame B s FA F₀ ∧ p.IsCoreFrame B' (s * p.xi) FA' F₀' ∧
-        (∃ T₁, p.IsModel ψ F₀ F T₁ ∧ T₁ ≠ 0) ∧ ∃ T₂, p.IsModel ψ F F₀' T₂ ∧ T₂ ≠ 0 := by
-  obtain ⟨ψk, h0⟩ := exists_isChar p hψ
-  obtain ⟨F₀, h1⟩ := exists_core p B hs FA
-  obtain ⟨F₀', h2⟩ := exists_core p B' (mul_ne_zero hs (xi_ne p)) FA'
-  exact ⟨ψk, F₀, F₀', h0, h1, h2, exists_isModel p F₀ F hψ, exists_isModel p F F₀' hψ⟩
 
 theorem exists_haar (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     [MeasurableSpace k] [BorelSpace k] : ∃ ν : Measure k, ν.IsAddHaarMeasure :=
@@ -629,16 +590,6 @@ theorem Witness.exists_prod {X X' U U' : Type} [TopologicalSpace X] [Topological
   rw [h] at this
   exact mul_ne_zero hu hv this.symm
 
-theorem Witness.exists_isBiModel {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) {A S A' : HSp D} {n n' n'' : Type}
-    [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fintype n''] [DecidableEq n''] (FA : Frame k A.rank n')
-    (FS : Frame k S.rank n) (FA' : Frame k A'.rank n'') : ∃ Λ, p.IsBiModel ψ FA FS FA' Λ ∧ Λ ≠ 0 := by
-  obtain ⟨T₁, h₁, n₁⟩ := Witness.exists_isModel p FA FS hψ
-  obtain ⟨T₂, h₂, n₂⟩ := Witness.exists_isModel p FS FA' hψ
-  obtain ⟨Λ, h0, key⟩ := Witness.exists_prod T₁ T₂ n₁ n₂
-  refine ⟨Λ, ⟨fun Ξ₂ v => ⟨_, Witness.isModel_smul p h₁ (T₂ Ξ₂ v), fun Ξ₁ Ξ e u => ?_⟩,
-    fun Ξ₁ u => ⟨_, Witness.isModel_smul p h₂ (T₁ Ξ₁ u), fun Ξ₂ Ξ e v => ?_⟩⟩, h0⟩
-  · rw [key _ _ _ e, mul_comm, LinearMap.smul_apply, Pi.smul_apply, smul_eq_mul]
-  · rw [key _ _ _ e, LinearMap.smul_apply, Pi.smul_apply, smul_eq_mul]
 
 def ContrLoc (D : D7) : Prop :=
   ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (p : Place D k) (ν : Measure k), ν.IsAddHaarMeasure →

@@ -277,8 +277,6 @@ theorem quadChar_sq (t : Kˣ) : quadChar K E t ^ 2 = 1 := by
   · simp [quadChar_apply_of_mem ht]
   · simp [quadChar_apply_of_notMem ht]
 
-theorem quadChar_mul_self (t : Kˣ) : quadChar K E (t * t) = 1 := by
-  rw [map_mul, ← sq, quadChar_sq]
 
 theorem quadChar_ne_one : quadChar K E ≠ 1 := by
   intro h

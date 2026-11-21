@@ -210,12 +210,6 @@ def qmL (k r : ℕ) {t : ℕ} (p q : Fin t → Fin (2 * r + k + 1)) (u : ℂ) : 
   (Finset.univ.toList : List (Equiv.Perm (Fin t))).flatMap fun σ =>
     (foldL k r (tsOf p q u σ)).map fun cw => ((((Equiv.Perm.sign σ : ℤ) : ℂ)) * cw.1, cw.2)
 
-theorem qmL_ok {t : ℕ} (p q : Fin t → Fin (2 * r + k + 1)) (u : ℂ) : WOK (qmL k r p q u) t := by
-  intro cw hcw
-  simp only [qmL, List.mem_flatMap, List.mem_map] at hcw
-  obtain ⟨σ, -, cw', hcw', rfl⟩ := hcw
-  obtain ⟨h1, h2⟩ := foldL_ok (k := k) (r := r) (tsOf p q u σ) cw' hcw'
-  exact ⟨h1, by simpa [tsOf] using h2⟩
 
 theorem qminor_rep {O : Set (Mat k r)} (hO : IsOpen O) {t : ℕ} (p q : Fin t → Fin (2 * r + k + 1)) (u : ℂ)
     (f : Mat k r → E) (hf : CkOn (t : ℕ∞) (O ∩ GV k r) f) (g : Mat k r) (hgO : g ∈ O) (hgG : g ∈ GV k r) :
@@ -235,132 +229,26 @@ theorem qminor_rep {O : Set (Mat k r)} (hO : IsOpen O) {t : ℕ} (p q : Fin t �
 def unitL (L : List (ℂ × List (Mat k r))) : List (ℂ × List (Mat k r)) :=
   L.map fun cw => ((((cw.2.map nz).prod : ℝ) : ℂ) * cw.1, cw.2.map nrm)
 
-theorem wsum_unitL (L : List (ℂ × List (Mat k r))) (f : Mat k r → E) (g : Mat k r) :
-    wsum (unitL L) f g = wsum L f g := by
-  induction L with
-  | nil => simp [unitL, wsum]
-  | cons cw L ih =>
-    simp only [unitL, List.map_cons] at ih ⊢
-    rw [wsum_cons, wsum_cons, ih, Rw_scale cw.2 f, mul_smul, smul_comm]
 
-theorem unitL_ok {L : List (ℂ × List (Mat k r))} {j : ℕ} (hL : WOK L j) :
-    ∀ cw ∈ unitL L, (∀ X ∈ cw.2, unitLie k r X) ∧ cw.2.length ≤ j := by
-  intro cw hcw
-  simp only [unitL, List.mem_map] at hcw
-  obtain ⟨cw', hcw', rfl⟩ := hcw
-  obtain ⟨h1, h2⟩ := hL cw' hcw'
-  refine ⟨?_, by simpa using h2⟩
-  intro X hX
-  simp only [List.mem_map] at hX
-  obtain ⟨Y, hY, rfl⟩ := hX
-  exact nrm_unit (h1 Y hY)
 
 end WS
 
 theorem mdim0 : Q.mdim k r 0 = 2 * r + k + 1 := by
   rfl
 
-theorem cvWordSum : JF.CVWordSum := by
-  intro k r Y
-  refine ⟨unitL (qmL k r (Q.posL k r 0) (Q.posL k r 0) (Q.uC k r 0 Y)), ?_, ?_⟩
-  · intro cw hcw
-    have := unitL_ok (qmL_ok (k := k) (r := r) (Q.posL k r 0) (Q.posL k r 0) (Q.uC k r 0 Y)) cw hcw
-    exact ⟨this.1, this.2.trans (le_of_eq mdim0)⟩
-  · intro E _ _ UU f hf g hgU hgG
-    obtain ⟨U, f', hU, hgU', hc, hff⟩ := hf g hgU
-    have hf2 : CkOn ((Q.mdim k r 0 : ℕ) : ℕ∞) (U ∩ GV k r) f := by
-      intro g₁ hg₁
-      exact ⟨U, f', hU, hg₁.1, by rw [mdim0]; exact hc, hff⟩
-    have := qminor_rep hU (Q.posL k r 0) (Q.posL k r 0) (Q.uC k r 0 Y) f hf2 g hgU' hgG
-    show qminorOp (Q.EH k r) (Q.posL k r 0) (Q.posL k r 0) (Q.uC k r 0 Y) f g = _
-    rw [this, ← wsum_unitL]
-    rfl
 
-theorem integral_list_smul {α V : Type*} [MeasurableSpace α] {μ : Measure α} [NormedAddCommGroup V]
-    [NormedSpace ℂ V] [CompleteSpace V] {ι : Type*} (l : List ι) (c : ι → ℂ) (φ : ι → α → V)
-    (h : ∀ i ∈ l, Integrable (φ i) μ) :
-    Integrable (fun p => (l.map fun i => c i • φ i p).sum) μ ∧
-      (∫ p, (l.map fun i => c i • φ i p).sum ∂μ) = (l.map fun i => c i • ∫ p, φ i p ∂μ).sum := by
-  induction l with
-  | nil => simp
-  | cons i l ih =>
-    have hi : Integrable (φ i) μ := h i (by simp)
-    obtain ⟨hl1, hl2⟩ := ih (fun j hj => h j (by simp [hj]))
-    have hadd := integral_add (hi.smul (c i)) hl1
-    simp only [Pi.smul_apply] at hadd
-    simp only [List.map_cons, List.sum_cons]
-    refine ⟨(hi.smul (c i)).add hl1, ?_⟩
-    rw [hadd, integral_smul, hl2]
 
-theorem list_smul_sum {V : Type*} [NormedAddCommGroup V] [NormedSpace ℂ V] {ι : Type*} (a : ℂ) (l : List ι)
-    (c : ι → ℂ) (φ : ι → V) :
-    a • (l.map fun i => c i • φ i).sum = (l.map fun i => c i • (a • φ i)).sum := by
-  induction l with
-  | nil => simp
-  | cons i l ih => simp [smul_add, ih, smul_comm a (c i)]
 
 theorem glev0 {g : Mat k r} (hg : g ∈ GV k r) : g ∈ Q.Glev k r 0 := by
   exact ⟨hg, fun a ha => by simp at ha⟩
 
-theorem cvUnderInt_of (hJ : JF.JWords) (hW : JF.CVWordSum) (hR : JF.RwRho) : JF.CVUnderInt := by
-  intro k r Wp Wq _ _ _ _ _ _ D A m F Y hnm hThr hCC g hg
-  obtain ⟨hCk, hJW⟩ := hJ k r Wp Wq D A m F hThr hCC
-  obtain ⟨L, hLw, hL⟩ := hW k r Y
-  have hgG : g ∈ GV k r := hg.1
-  obtain ⟨c0, hc0⟩ := hCC
-  have hFm : CkOn ((m : ℕ) : ℕ∞) (GV k r) F := hc0.1
-  have hFn : CkOn ((2 * r + k + 1 : ℕ) : ℕ∞) (GV k r) F := sCkOn_mono (by exact_mod_cast hnm) hFm
-  have hJck : CkOn ((2 * r + k + 1 : ℕ) : ℕ∞) (JF.Om k r D.z D.z') (B.JF D F) := by
-    intro g₀ hg₀
-    obtain ⟨U, F', hU, hg₀U, hc, hff⟩ := hCk g₀ ⟨glev0 hg₀.1, hg₀.2⟩
-    refine ⟨U, F', hU, hg₀U, hc.of_le ?_, fun g hgU hgG => hff g hgU (glev0 hgG)⟩
-    exact_mod_cast hnm
-  have hcw : ∀ cw ∈ L,
-      Integrable (fun p => JF.xiP D p • B.rho D p (Rw (cw.2.map (JF.AdR p)) F) g) D.μSS ∧
-        Rw cw.2 (B.JF D F) g = ∫ p, JF.xiP D p • B.rho D p (Rw (cw.2.map (JF.AdR p)) F) g ∂D.μSS := by
-    intro cw hcw
-    have := hJW [] cw.2 (by simp) (hLw cw hcw).1 (by simpa using (hLw cw hcw).2.trans hnm) g hg
-    simpa [B.dLR] using this
-  rw [hL _ _ _ hJck g hg hgG]
-  have e1 : (L.map fun cw => cw.1 • Rw cw.2 (B.JF D F) g).sum =
-      (L.map fun cw => cw.1 • ∫ p, JF.xiP D p • B.rho D p (Rw (cw.2.map (JF.AdR p)) F) g ∂D.μSS).sum := by
-    congr 1
-    apply List.map_congr_left
-    intro cw h
-    rw [(hcw cw h).2]
-  rw [e1, ← (integral_list_smul L (fun cw => cw.1)
-    (fun cw p => JF.xiP D p • B.rho D p (Rw (cw.2.map (JF.AdR p)) F) g) (fun cw h => (hcw cw h).1)).2]
-  apply integral_congr_ae
-  filter_upwards [Formalism.FourierDecayAlt.P.B5.ae_inSS D] with p hp
-  have hrho : CkOn ((2 * r + k + 1 : ℕ) : ℕ∞) (GV k r) (B.rho D p F) := Formalism.FourierDecayAlt.P.B5.ckOn_rho D hp hFn
-  rw [hL _ (GV k r) _ hrho g hgG hgG, list_smul_sum]
-  congr 1
-  apply List.map_congr_left
-  intro cw h
-  have this : Rw cw.2 (B.rho D p F) g = B.rho D p (Rw (cw.2.map (JF.AdR p)) F) g :=
-    hR k r Wp Wq D m F p hp hFm [] cw.2 (by simp) (fun X hX => ((hLw cw h).1 X hX).1)
-      (by simpa using (hLw cw h).2.trans hnm) g hgG
-  rw [this]
 
 end Formalism.FourierDecayAlt.P.JFxB
 
-theorem Formalism.FourierDecayAlt.P.capelli_left_translation : Formalism.FourierDecayAlt.JF.CVLeft := Formalism.FourierDecayAlt.P.JFxB.cvLeft
 
-theorem Formalism.FourierDecayAlt.P.capelli_post_composition : Formalism.FourierDecayAlt.JF.CVPost := Formalism.FourierDecayAlt.P.JFxB.cvPost
 
-theorem Formalism.FourierDecayAlt.P.capelli_rho_of_parts : Formalism.FourierDecayAlt.JF.CVRhoOfParts := Formalism.FourierDecayAlt.P.JFxB.cvRhoOfParts
 
-theorem Formalism.FourierDecayAlt.P.JFxB.jf_cVWordSum_alt : Formalism.FourierDecayAlt.JF.CVWordSum := Formalism.FourierDecayAlt.P.JFxB.cvWordSum
 
-theorem Formalism.FourierDecayAlt.P.JFxB.jf_cVUnderIntOfParts_alt : Formalism.FourierDecayAlt.JF.CVUnderIntOfParts := by
-  intro hJ hW hR
-  exact Formalism.FourierDecayAlt.P.JFxB.cvUnderInt_of hJ hW hR
 
-theorem Formalism.FourierDecayAlt.P.jf_cVUnderInt_of : Formalism.FourierDecayAlt.JF.JWords → Formalism.FourierDecayAlt.JF.RwRho → Formalism.FourierDecayAlt.JF.CVUnderInt :=
-  fun hJ hR => Formalism.FourierDecayAlt.P.JFxB.cvUnderInt_of hJ Formalism.FourierDecayAlt.P.JFxB.cvWordSum hR
 
-theorem Formalism.FourierDecayAlt.P.jf_cVRight_of : Formalism.FourierDecayAlt.P.JFxB.CapAdInv → Formalism.FourierDecayAlt.JF.CVRight :=
-  fun hA => Formalism.FourierDecayAlt.P.JFxB.cvRight_of hA
 
-theorem Formalism.FourierDecayAlt.P.jf_cVRho_of : Formalism.FourierDecayAlt.P.JFxB.CapAdInv → Formalism.FourierDecayAlt.JF.CVRho :=
-  fun hA => Formalism.FourierDecayAlt.P.JFxB.cvRho_of hA

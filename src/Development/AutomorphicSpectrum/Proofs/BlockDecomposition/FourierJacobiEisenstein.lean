@@ -1,15 +1,1050 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.ThetaIdempotents.HeckeEta
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CountableMatricesAndCosets
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FourierJacobiTermsSummable
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SectionLeftInvariantRationalParabolicStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaFourierJacobiLatticeSwap
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StronglyMeasurableCoefficientComposition
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ShAdd
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CentreCharacterProperties
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TsumMeas
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BlockMatrixInjective
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PartialConstantTermBound
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CoefficientHeisenbergEquivariance
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SectionLeftInvariantRationalParabolic
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FourierZeroHolds
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FourierJacobiExpansionBounded
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeTransformInvariance
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeTwistedSumPeriodic
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwistedLatticeSumsBoundedProduct
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeisenbergCharacterBilinearLawsStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StronglyMeasurableTwistedLatticeSum
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegralEqFundamentalDomainLatticeSum
 
+section
+section
+noncomputable section
+
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory Filter
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS PositivityTheory.Rg.Rsw
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.CompanionTheory.FJE.Transport
+
+open GlobalTheory.StdUnn.Model (submatrix_fromBlocks_mul)
+open GlobalTheory.CompanionTheory.ThTw (block_mul₂ bl_add mat_nzx_sh block_matrix_injective adj_sub')
+open GlobalTheory.CompanionTheory.PcB (mat_mul' rational_map_block_matrix rat_one' rat_zero' rat_neg')
+open GlobalTheory.CompanionTheory.FourierN (mat_injective)
+
+variable {D : D7} {n ρ p : ℕ} {hn : ρ + p = n}
+
+theorem adelicConjTranspose_blockMatrixTwoByTwoFin {k : ℕ} (a b c d : Mx D k k) :
+    adj (blk4 a b c d) = blk4 (adj a) (adj c) (adj b) (adj d) := by
+  simp only [adj, blk4]
+  rw [← Matrix.submatrix_map, Matrix.transpose_submatrix, Matrix.fromBlocks_map, Matrix.fromBlocks_transpose]
+
+theorem block_matrix_diagonal_one_eq_one {k : ℕ} : blk4 (1 : Mx D k k) 0 0 1 = 1 := by
+  simp only [blk4, Matrix.fromBlocks_one, Matrix.submatrix_one_equiv]
+
+theorem jr_eq {k : ℕ} : JR (AF D.host.F) (Jst D k) = (blk4 0 1 (-1) 0 : Mx D (k + k) (k + k)) := by
+  show rat (blk4 0 1 (-1) 0) = _
+  rw [rational_map_block_matrix, rat_one', rat_zero', rat_neg', rat_one']
+
+theorem rel_left {k : ℕ} (g : G D k) {a b c d : Mx D k k} (h : mat g = blk4 a b c d) :
+    adj d ⬝ a - adj b ⬝ c = 1 ∧ adj a ⬝ c = adj c ⬝ a ∧ adj b ⬝ d = adj d ⬝ b ∧ adj a ⬝ d - adj c ⬝ b = 1 := by
+  have h2 : adj (mat g) * JR (AF D.host.F) (Jst D k) * mat g = JR (AF D.host.F) (Jst D k) := g.2
+  rw [jr_eq, h, adelicConjTranspose_blockMatrixTwoByTwoFin, submatrix_fromBlocks_mul, submatrix_fromBlocks_mul] at h2
+  obtain ⟨e1, e2, e3, e4⟩ := block_matrix_injective h2
+  simp only [Matrix.mul_zero, Matrix.zero_mul, Matrix.mul_one, Matrix.mul_neg, add_zero, zero_add, Matrix.neg_mul] at e1 e2 e3 e4
+  refine ⟨?_, (neg_add_eq_zero.1 e1).symm, (neg_add_eq_zero.1 e4).symm, ?_⟩
+  · have : adj d ⬝ a - adj b ⬝ c = -(-(adj d ⬝ a) + adj b ⬝ c) := by abel
+    rw [this, e3, neg_neg]
+  · rw [sub_eq_neg_add, e2]
+
+theorem rel_right {k : ℕ} (g : G D k) {a b c d : Mx D k k} (h : mat g = blk4 a b c d) :
+    a ⬝ adj d - b ⬝ adj c = 1 ∧ c ⬝ adj d = d ⬝ adj c ∧ b ⬝ adj a = a ⬝ adj b ∧ d ⬝ adj a - c ⬝ adj b = 1 := by
+  obtain ⟨l1, l2, l3, l4⟩ := rel_left g h
+  have hL : (blk4 (adj d) (-adj b) (-adj c) (adj a) : Mx D (k + k) (k + k)) * blk4 a b c d = 1 := by
+    rw [submatrix_fromBlocks_mul, ← block_matrix_diagonal_one_eq_one]
+    congr 1
+    · rw [Matrix.neg_mul, ← sub_eq_add_neg, l1]
+    · rw [Matrix.neg_mul, ← sub_eq_add_neg, l3, sub_self]
+    · rw [Matrix.neg_mul, l2, neg_add_cancel]
+    · rw [Matrix.neg_mul, ← sub_eq_neg_add, l4]
+  have hR := mul_eq_one_comm.1 hL
+  rw [submatrix_fromBlocks_mul, ← block_matrix_diagonal_one_eq_one] at hR
+  obtain ⟨e1, e2, e3, e4⟩ := block_matrix_injective hR
+  simp only [Matrix.mul_neg] at e1 e2 e3 e4
+  refine ⟨by rw [sub_eq_add_neg, e1], sub_eq_zero.1 (by rw [sub_eq_add_neg, e3]),
+    (neg_add_eq_zero.1 e2).symm, by rw [sub_eq_neg_add, e4]⟩
+
+theorem exists_rat_blocks {k : ℕ} (γ : G D k) (h : γ ∈ GF D k) :
+    ∃ a b c d : Matrix (Fin k) (Fin k) D.host.E, mat γ = blk4 (rat a) (rat b) (rat c) (rat d) := by
+  obtain ⟨x, -, hxe⟩ := h
+  have hm : mat γ = rat x.1 := (congrArg Units.val hxe).symm
+  refine ⟨(x.1.submatrix finSumFinEquiv finSumFinEquiv).toBlocks₁₁,
+    (x.1.submatrix finSumFinEquiv finSumFinEquiv).toBlocks₁₂,
+    (x.1.submatrix finSumFinEquiv finSumFinEquiv).toBlocks₂₁,
+    (x.1.submatrix finSumFinEquiv finSumFinEquiv).toBlocks₂₂, ?_⟩
+  rw [hm, ← rational_map_block_matrix]
+  congr 1
+  simp only [blk4, Matrix.fromBlocks_toBlocks, Matrix.submatrix_submatrix, Equiv.self_comp_symm, Matrix.submatrix_id_id]
+
+theorem comb_sub (a b : Mx D ρ p) (P Q R S U V : Mx D p p) :
+    (a ⬝ P - b ⬝ Q) ⬝ R + (b ⬝ S - a ⬝ U) ⬝ V = a ⬝ (P ⬝ R - U ⬝ V) + b ⬝ (S ⬝ V - Q ⬝ R) := by
+  simp only [Matrix.sub_mul, Matrix.mul_sub, Matrix.mul_assoc]
+  abel
+
+theorem comb_add (a b : Mx D ρ p) (P Q R S U V : Mx D p p) :
+    (a ⬝ P + b ⬝ Q) ⬝ R - (a ⬝ S + b ⬝ U) ⬝ V = a ⬝ (P ⬝ R - S ⬝ V) + b ⬝ (Q ⬝ R - U ⬝ V) := by
+  simp only [Matrix.add_mul, Matrix.mul_sub, Matrix.mul_assoc]
+  abel
+
+theorem cont_rmul (c : Mx D p p) : Continuous fun v : Mx D ρ p => v ⬝ c :=
+  continuous_id.matrix_mul continuous_const
+
+theorem cont_sub {X : Type*} [TopologicalSpace X] {f g : X → Mx D ρ p} (hf : Continuous f) (hg : Continuous g) :
+    Continuous fun v => f v - g v := by
+  have h₁ : IsTopologicalRing (AE D) := inferInstance
+  have h₂ : IsTopologicalAddGroup (AE D) := inferInstance
+  have h₃ : ContinuousSub (AE D) := IsTopologicalAddGroup.to_continuousSub
+  exact continuous_matrix fun i j => (hf.matrix_elem i j).sub (hg.matrix_elem i j)
+
+theorem cont_add {X : Type*} [TopologicalSpace X] {f g : X → Mx D ρ p} (hf : Continuous f) (hg : Continuous g) :
+    Continuous fun v => f v + g v :=
+  continuous_matrix fun i j => (hf.matrix_elem i j).add (hg.matrix_elem i j)
+
+def tEquiv (a b c d : Mx D p p)
+    (l1 : adj d ⬝ a - adj b ⬝ c = 1) (l2 : adj a ⬝ c = adj c ⬝ a) (l3 : adj b ⬝ d = adj d ⬝ b)
+    (l4 : adj a ⬝ d - adj c ⬝ b = 1)
+    (r1 : a ⬝ adj d - b ⬝ adj c = 1) (r2 : c ⬝ adj d = d ⬝ adj c) (r3 : b ⬝ adj a = a ⬝ adj b)
+    (r4 : d ⬝ adj a - c ⬝ adj b = 1) :
+    (Mx D ρ p × Mx D ρ p) ≃ₜ+ (Mx D ρ p × Mx D ρ p) where
+  toFun v := (v.1 ⬝ adj d - v.2 ⬝ adj c, v.2 ⬝ adj a - v.1 ⬝ adj b)
+  invFun v := (v.1 ⬝ a + v.2 ⬝ c, v.1 ⬝ b + v.2 ⬝ d)
+  left_inv v := by
+    refine Prod.ext ?_ ?_
+    · show (v.1 ⬝ adj d - v.2 ⬝ adj c) ⬝ a + (v.2 ⬝ adj a - v.1 ⬝ adj b) ⬝ c = v.1
+      rw [comb_sub, l1, l2, sub_self, Matrix.mul_one, Matrix.mul_zero, add_zero]
+    · show (v.1 ⬝ adj d - v.2 ⬝ adj c) ⬝ b + (v.2 ⬝ adj a - v.1 ⬝ adj b) ⬝ d = v.2
+      rw [comb_sub, l4, l3, sub_self, Matrix.mul_one, Matrix.mul_zero, zero_add]
+  right_inv v := by
+    refine Prod.ext ?_ ?_
+    · show (v.1 ⬝ a + v.2 ⬝ c) ⬝ adj d - (v.1 ⬝ b + v.2 ⬝ d) ⬝ adj c = v.1
+      rw [comb_add, r1, r2, sub_self, Matrix.mul_one, Matrix.mul_zero, add_zero]
+    · show (v.1 ⬝ b + v.2 ⬝ d) ⬝ adj a - (v.1 ⬝ a + v.2 ⬝ c) ⬝ adj b = v.2
+      rw [comb_add, r3, r4, sub_self, Matrix.mul_one, Matrix.mul_zero, zero_add]
+  map_add' u v := by
+    refine Prod.ext ?_ ?_
+    · show (u.1 + v.1) ⬝ adj d - (u.2 + v.2) ⬝ adj c = (u.1 ⬝ adj d - u.2 ⬝ adj c) + (v.1 ⬝ adj d - v.2 ⬝ adj c)
+      simp only [Matrix.add_mul]
+      abel
+    · show (u.2 + v.2) ⬝ adj a - (u.1 + v.1) ⬝ adj b = (u.2 ⬝ adj a - u.1 ⬝ adj b) + (v.2 ⬝ adj a - v.1 ⬝ adj b)
+      simp only [Matrix.add_mul]
+      abel
+  continuous_toFun := by
+    refine Continuous.prodMk ?_ ?_
+    · exact cont_sub ((cont_rmul _).comp continuous_fst) ((cont_rmul _).comp continuous_snd)
+    · exact cont_sub ((cont_rmul _).comp continuous_snd) ((cont_rmul _).comp continuous_fst)
+  continuous_invFun := by
+    refine Continuous.prodMk ?_ ?_
+    · exact cont_add ((cont_rmul _).comp continuous_fst) ((cont_rmul _).comp continuous_snd)
+    · exact cont_add ((cont_rmul _).comp continuous_fst) ((cont_rmul _).comp continuous_snd)
+
+set_option maxHeartbeats 1000000 in
+
+theorem emb_conj (M : Maps D hn) (g : G D p) {a b c d : Mx D p p} (hg : mat g = blk4 a b c d)
+    (z' : hermA D ρ) (x y x' y' : Mx D ρ p)
+    (h1 : y' ⬝ a + x' ⬝ c = y) (h2 : y' ⬝ b + x' ⬝ d = x)
+    (h3 : adj x' = a ⬝ adj x - b ⬝ adj y) (h4 : adj y' = d ⬝ adj y - c ⬝ adj x)
+    (h5 : z'.1 - x' ⬝ (d ⬝ adj y - c ⬝ adj x) = -(x ⬝ adj y)) :
+    M.emb g * (M.nzx 0 x * M.sh y) = M.nzx z' x' * M.sh y' * M.emb g := by
+  have hE := M.emb_mat g _ _ _ _ hg
+  apply mat_injective
+  rw [mat_mul' (M.emb g), mat_mul' _ (M.emb g), mat_nzx_sh, mat_nzx_sh, hE, submatrix_fromBlocks_mul, submatrix_fromBlocks_mul]
+  simp only [Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, block_mul₂, bl_add, Matrix.one_mul, Matrix.mul_one,
+    Matrix.mul_neg, Matrix.neg_mul, neg_zero, h1, h2, h3, h4, h5, neg_sub, AddSubgroup.coe_zero, zero_sub,
+    sub_eq_add_neg (a ⬝ adj x), sub_eq_add_neg (c ⬝ adj x)]
+
+def zTv (a b c d : Mx D p p) (x y : Mx D ρ p) : Mx D ρ ρ :=
+  x ⬝ ((adj c ⬝ b) ⬝ adj y) + y ⬝ ((adj b ⬝ c) ⬝ adj x) - x ⬝ ((adj a ⬝ c) ⬝ adj x) - y ⬝ ((adj b ⬝ d) ⬝ adj y)
+
+theorem zTv_herm {a b c d : Mx D p p} (l2 : adj a ⬝ c = adj c ⬝ a) (l3 : adj b ⬝ d = adj d ⬝ b) (x y : Mx D ρ p) :
+    adj (zTv a b c d x y) = zTv a b c d x y := by
+  simp only [zTv, adj_sub', adj_add, adj_mul, adj_adj, ← l2, ← l3]
+  simp only [Matrix.mul_assoc]
+  abel
+
+theorem zTv_eq {a b c d : Mx D p p} (l4 : adj a ⬝ d - adj c ⬝ b = 1) (x y : Mx D ρ p) :
+    zTv a b c d x y - (x ⬝ adj a - y ⬝ adj b) ⬝ (d ⬝ adj y - c ⬝ adj x) = -(x ⬝ adj y) := by
+  have e : ∀ w : Mx D p ρ, adj a ⬝ (d ⬝ w) = w + adj c ⬝ (b ⬝ w) := fun w => by
+    rw [← Matrix.mul_assoc, sub_eq_iff_eq_add.1 l4, Matrix.add_mul, Matrix.one_mul, Matrix.mul_assoc]
+  simp only [zTv, Matrix.sub_mul, Matrix.mul_sub, Matrix.mul_assoc, e, Matrix.mul_add]
+  abel
+
+theorem rational_map_sub {k l : ℕ} (u v : Matrix (Fin k) (Fin l) D.host.E) : rat (D := D) (u - v) = rat u - rat v := by
+  ext i j
+  exact map_sub (incA D) _ _
+
+theorem rational_map_add {k l : ℕ} (u v : Matrix (Fin k) (Fin l) D.host.E) : rat (D := D) (u + v) = rat u + rat v := by
+  ext i j
+  exact map_add (incA D) _ _
+
+theorem transport {D : D7} {n ρ p : ℕ} {hn : ρ + p = n} (M : Maps D hn) (γ : G D p) (hγ : γ ∈ GF D p) :
+    ∃ T : (Mx D ρ p × Mx D ρ p) ≃ₜ+ (Mx D ρ p × Mx D ρ p),
+      (∀ ξ₁ ξ₂ : Matrix (Fin ρ) (Fin p) D.host.E, ∃ ξ₁' ξ₂' : Matrix (Fin ρ) (Fin p) D.host.E,
+        T (GlobalTheory.CompanionTheory.FJE.rt ξ₁, GlobalTheory.CompanionTheory.FJE.rt ξ₂) = (GlobalTheory.CompanionTheory.FJE.rt ξ₁', GlobalTheory.CompanionTheory.FJE.rt ξ₂')) ∧
+      (∀ ξ₁ ξ₂ : Matrix (Fin ρ) (Fin p) D.host.E, ∃ ξ₁' ξ₂' : Matrix (Fin ρ) (Fin p) D.host.E,
+        T.symm (GlobalTheory.CompanionTheory.FJE.rt ξ₁, GlobalTheory.CompanionTheory.FJE.rt ξ₂) = (GlobalTheory.CompanionTheory.FJE.rt ξ₁', GlobalTheory.CompanionTheory.FJE.rt ξ₂')) ∧
+      ∀ y x : Mx D ρ p, ∃ z' : hermA D ρ,
+        M.emb γ * (M.nzx 0 x * M.sh y) = M.nzx z' (T (y, x)).2 * M.sh (T (y, x)).1 * M.emb γ := by
+  obtain ⟨a, b, c, d, hm⟩ := exists_rat_blocks γ hγ
+  obtain ⟨l1, l2, l3, l4⟩ := rel_left γ hm
+  obtain ⟨r1, r2, r3, r4⟩ := rel_right γ hm
+  refine ⟨tEquiv (ρ := ρ) _ _ _ _ l1 l2 l3 l4 r1 r2 r3 r4, ?_, ?_, ?_⟩
+  · intro ξ₁ ξ₂
+    refine ⟨ξ₁ * dᴴ - ξ₂ * cᴴ, ξ₂ * aᴴ - ξ₁ * bᴴ, ?_⟩
+    show (rat ξ₁ ⬝ adj (rat d) - rat ξ₂ ⬝ adj (rat c), rat ξ₂ ⬝ adj (rat a) - rat ξ₁ ⬝ adj (rat b)) =
+      (rat (ξ₁ * dᴴ - ξ₂ * cᴴ), rat (ξ₂ * aᴴ - ξ₁ * bᴴ))
+    simp only [rational_map_sub, rat_mul, rat_conjTranspose]
+  · intro ξ₁ ξ₂
+    refine ⟨ξ₁ * a + ξ₂ * c, ξ₁ * b + ξ₂ * d, ?_⟩
+    show (rat ξ₁ ⬝ rat a + rat ξ₂ ⬝ rat c, rat ξ₁ ⬝ rat b + rat ξ₂ ⬝ rat d) =
+      (rat (ξ₁ * a + ξ₂ * c), rat (ξ₁ * b + ξ₂ * d))
+    simp only [rational_map_add, rat_mul]
+  · intro y x
+    refine ⟨⟨zTv (rat a) (rat b) (rat c) (rat d) x y, zTv_herm l2 l3 x y⟩, ?_⟩
+    refine emb_conj M γ hm _ x y _ _ ?_ ?_ ?_ ?_ (zTv_eq l4 x y)
+    · show (y ⬝ adj (rat d) - x ⬝ adj (rat c)) ⬝ rat a + (x ⬝ adj (rat a) - y ⬝ adj (rat b)) ⬝ rat c = y
+      rw [comb_sub, l1, l2, sub_self, Matrix.mul_one, Matrix.mul_zero, add_zero]
+    · show (y ⬝ adj (rat d) - x ⬝ adj (rat c)) ⬝ rat b + (x ⬝ adj (rat a) - y ⬝ adj (rat b)) ⬝ rat d = x
+      rw [comb_sub, l4, l3, sub_self, Matrix.mul_one, Matrix.mul_zero, zero_add]
+    · show adj (x ⬝ adj (rat a) - y ⬝ adj (rat b)) = _
+      rw [adj_sub', adj_mul, adj_mul, adj_adj, adj_adj]
+    · show adj (y ⬝ adj (rat d) - x ⬝ adj (rat c)) = _
+      rw [adj_sub', adj_mul, adj_mul, adj_adj, adj_adj]
+
+end GlobalTheory.CompanionTheory.FJE.Transport
+end
+end
+
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory Filter
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS PositivityTheory.Rg.Rsw
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lattice_translation_preserved : ∀ {D : D7} {n ρ p : ℕ} {hn : ρ + p = n} (M : Maps D hn) (γ : G D p), γ ∈ GF D p → ∃ T : (Mx D ρ p × Mx D ρ p) ≃ₜ+ (Mx D ρ p × Mx D ρ p), (∀ ξ₁ ξ₂ : Matrix (Fin ρ) (Fin p) D.host.E, ∃ ξ₁' ξ₂' : Matrix (Fin ρ) (Fin p) D.host.E, T (GlobalTheory.CompanionTheory.FJE.rt ξ₁, GlobalTheory.CompanionTheory.FJE.rt ξ₂) = (GlobalTheory.CompanionTheory.FJE.rt ξ₁', GlobalTheory.CompanionTheory.FJE.rt ξ₂')) ∧ (∀ ξ₁ ξ₂ : Matrix (Fin ρ) (Fin p) D.host.E, ∃ ξ₁' ξ₂' : Matrix (Fin ρ) (Fin p) D.host.E, T.symm (GlobalTheory.CompanionTheory.FJE.rt ξ₁, GlobalTheory.CompanionTheory.FJE.rt ξ₂) = (GlobalTheory.CompanionTheory.FJE.rt ξ₁', GlobalTheory.CompanionTheory.FJE.rt ξ₂')) ∧ ∀ y x : Mx D ρ p, ∃ z' : hermA D ρ, M.emb γ * (M.nzx 0 x * M.sh y) = M.nzx z' (T (y, x)).2 * M.sh (T (y, x)).1 * M.emb γ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FJE.Transport.transport
+end
+
+section
+section
+noncomputable section
+
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory Filter
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS PositivityTheory.Rg.Rsw
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.CompanionTheory.FJE.Domination
+
+theorem summable_tsum_le_of_shift {ι : Type*} [AddCommGroup ι] {F c : ι → ℝ} (ζ : ι) (hF : ∀ i, 0 ≤ F i)
+    (h : ∀ i, F (i + ζ) ≤ c i) (hc : Summable c) : Summable F ∧ ∑' i, F i ≤ ∑' i, c i := by
+  have hs : Summable (F ∘ Equiv.addRight ζ) := Summable.of_nonneg_of_le (fun _ => hF _) h hc
+  refine ⟨(Equiv.addRight ζ).summable_iff.1 hs, ?_⟩
+  rw [← (Equiv.addRight ζ).tsum_eq F]
+  exact hs.tsum_le_tsum h hc
+
+variable {D : D7} {n ρ p : ℕ} {hn : ρ + p = n}
+
+theorem rt_add_add (η ζ : Matrix (Fin ρ) (Fin p) D.host.E) (y : Mx D ρ p) :
+    GlobalTheory.CompanionTheory.FJE.rt (η + ζ) + y = GlobalTheory.CompanionTheory.FJE.rt η + (GlobalTheory.CompanionTheory.FJE.rt ζ + y) := by
+  have : GlobalTheory.CompanionTheory.FJE.rt (η + ζ) = GlobalTheory.CompanionTheory.FJE.rt η + GlobalTheory.CompanionTheory.FJE.rt ζ := by
+    ext i j
+    exact map_add (incA D) _ _
+  rw [this, add_assoc]
+
+theorem norm_Wz_shift (M : Maps D hn) (m : Meas D ρ p) (ψ : AddChar (AF D.host.F) ℂ) (hψ : IsCharAF D.host.F ψ)
+    (b₀ : HermE D ρ) (χ : (AE D)ˣ →* Circle) (s : ℂ) (f : G D n → ℂ) (hf : IsLaw χ s f) (g : G D n) (e : G D p)
+    (η ζ₂ : Matrix (Fin ρ) (Fin p) D.host.E) (y' x₀ y₀ : Mx D ρ p) (z' : hermA D ρ)
+    (hz : M.emb e * (M.nzx 0 x₀ * M.sh y₀) = M.nzx z' (GlobalTheory.CompanionTheory.FJE.rt ζ₂) * M.sh y' * M.emb e) :
+    ‖Wz M m ψ b₀ f (M.sh (GlobalTheory.CompanionTheory.FJE.rt η + y') * M.emb e * g)‖ =
+      ‖Wz M m ψ b₀ f (M.sh (η.map (incA D)) * M.emb e * (M.nzx 0 x₀ * (M.sh y₀ * g)))‖ := by
+  have e1 : M.sh (η.map (incA D)) * M.emb e * (M.nzx 0 x₀ * (M.sh y₀ * g)) =
+      M.sh (GlobalTheory.CompanionTheory.FJE.rt η) * (M.nzx z' (GlobalTheory.CompanionTheory.FJE.rt ζ₂) * (M.sh y' * M.emb e * g)) := by
+    calc _ = M.sh (η.map (incA D)) * (M.emb e * (M.nzx 0 x₀ * M.sh y₀)) * g := by
+          simp only [mul_assoc]
+      _ = _ := by
+          rw [hz]
+          simp only [mul_assoc]
+  have e2 : M.sh (GlobalTheory.CompanionTheory.FJE.rt η + y') * M.emb e * g =
+      M.sh (GlobalTheory.CompanionTheory.FJE.rt η) * (M.sh y' * M.emb e * g) := by
+    rw [← GlobalTheory.CompanionTheory.FJE.sh_add]
+    simp only [mul_assoc]
+  have hv : ‖GlobalTheory.CompanionTheory.FJE.chv ψ b₀ (GlobalTheory.CompanionTheory.FJE.rt ζ₂) (GlobalTheory.CompanionTheory.FJE.rt η)‖ = 1 := hψ.2.1 _
+  rw [e1, e2, GlobalTheory.T.coefficient_heisenberg_equivariance M m ψ hψ b₀ χ s f hf, norm_mul, norm_mul,
+    (GlobalTheory.CompanionTheory.FJE.CentralChar.chz_facts ψ hψ b₀).2.1, hv, one_mul, one_mul]
+
+theorem apply_add_symm {A : Type*} [TopologicalSpace A] [AddCommGroup A] (T : (A × A) ≃ₜ+ (A × A)) {a₁ a₂ b₁ b₂ y : A}
+    (h : T (a₁, a₂) = (b₁, b₂)) : T (a₁ + (T.symm (y, 0)).1, a₂ + (T.symm (y, 0)).2) = (b₁ + y, b₂) := by
+  have e : (a₁ + (T.symm (y, 0)).1, a₂ + (T.symm (y, 0)).2) = (a₁, a₂) + T.symm (y, 0) := rfl
+  rw [e, map_add, h, T.apply_symm_apply]
+  simp
+
+set_option maxHeartbeats 1000000 in
+
+theorem domination : ∀ {D : D7} {n ρ p : ℕ} {hn : ρ + p = n} (M : Maps D hn) (m : Meas D ρ p)
+    (ψ : AddChar (AF D.host.F) ℂ), IsCharAF D.host.F ψ → ∀ (b₀ : HermE D ρ) (χ : (AE D)ˣ →* Circle) (s : ℂ)
+    (f : G D n → ℂ), IsLaw χ s f → ∀ g : G D n,
+    (∀ C : Set (G D n), IsCompact C →
+      ∃ c : GlobalTheory.Eis.Cosets (P D p) (GF D p) × Matrix (Fin ρ) (Fin p) D.host.E → ℝ, Summable c ∧
+        ∀ g ∈ C, ∀ u, ‖Wz M m ψ b₀ f (M.sh (u.2.map (incA D)) * M.emb (u.1.out : GF D p) * g)‖ ≤ c u) →
+    ∃ t : GlobalTheory.Eis.Cosets (P D p) (GF D p) → ℝ, Summable t ∧
+      ∀ (q : GlobalTheory.Eis.Cosets (P D p) (GF D p)) (y : Mx D ρ p),
+        Summable (fun η : Matrix (Fin ρ) (Fin p) D.host.E =>
+          ‖Wz M m ψ b₀ f (M.sh (GlobalTheory.CompanionTheory.FJE.rt η + y) * M.emb (q.out : GF D p) * g)‖) ∧
+        ∑' η : Matrix (Fin ρ) (Fin p) D.host.E,
+          ‖Wz M m ψ b₀ f (M.sh (GlobalTheory.CompanionTheory.FJE.rt η + y) * M.emb (q.out : GF D p) * g)‖ ≤ t q := by
+  intro D n ρ p hn M m ψ hψ b₀ χ s f hf g hdom
+  obtain ⟨i1, i2, i3, i4, i5, K, hK, hKc⟩ := lattice_Mx D ρ p
+  have hΦ : Continuous fun v : Mx D ρ p × Mx D ρ p => M.nzx 0 v.2 * (M.sh v.1 * g) := by
+    have h1 : Continuous fun v : Mx D ρ p × Mx D ρ p => M.nzx 0 v.2 :=
+      M.nzx_cont.comp (continuous_const.prodMk continuous_snd)
+    have h2 : Continuous fun v : Mx D ρ p × Mx D ρ p => M.sh v.1 := M.sh_cont.comp continuous_fst
+    exact h1.mul (h2.mul continuous_const)
+  obtain ⟨c, hc, hb⟩ := hdom _ ((hK.prod hK).image hΦ)
+  refine ⟨fun q => ∑' η, c (q, η), hc.prod, fun q y => ?_⟩
+  obtain ⟨T, hT1, -, hT3⟩ := GlobalTheory.T.lattice_translation_preserved M ((q.out : GF D p) : G D p) (q.out : GF D p).2
+  obtain ⟨a₁, ha₁, hy⟩ := hKc (T.symm (y, 0)).1
+  obtain ⟨a₂, ha₂, hx⟩ := hKc (T.symm (y, 0)).2
+  obtain ⟨ξ₁, rfl⟩ : ∃ ξ, GlobalTheory.CompanionTheory.FJE.rt ξ = a₁ := ha₁
+  obtain ⟨ξ₂, rfl⟩ : ∃ ξ, GlobalTheory.CompanionTheory.FJE.rt ξ = a₂ := ha₂
+  obtain ⟨ζ₁, ζ₂, hζ⟩ := hT1 ξ₁ ξ₂
+  have hTv := apply_add_symm (y := y) T hζ
+  obtain ⟨z', hz'⟩ := hT3 (GlobalTheory.CompanionTheory.FJE.rt ξ₁ + (T.symm (y, 0)).1) (GlobalTheory.CompanionTheory.FJE.rt ξ₂ + (T.symm (y, 0)).2)
+  rw [hTv] at hz'
+  refine summable_tsum_le_of_shift ζ₁ (fun _ => norm_nonneg _) (fun η => ?_) (hc.prod_factor q)
+  rw [rt_add_add, norm_Wz_shift M m ψ hψ b₀ χ s f hf g _ η ζ₂ _ _ _ z' hz']
+  exact hb _ ⟨(_, _), ⟨hy, hx⟩, rfl⟩ (q, η)
+
+end GlobalTheory.CompanionTheory.FJE.Domination
+end
+end
+
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory Filter
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS PositivityTheory.Rg.Rsw
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fourier_jacobi_terms_summable : ∀ {D : D7} {n ρ p : ℕ} {hn : ρ + p = n} (M : Maps D hn) (m : Meas D ρ p) (ψ : AddChar (AF D.host.F) ℂ), IsCharAF D.host.F ψ → ∀ (b₀ : HermE D ρ) (χ : (AE D)ˣ →* Circle) (s : ℂ) (f : G D n → ℂ), IsLaw χ s f → ∀ g : G D n, (∀ C : Set (G D n), IsCompact C → ∃ c : GlobalTheory.Eis.Cosets (P D p) (GF D p) × Matrix (Fin ρ) (Fin p) D.host.E → ℝ, Summable c ∧ ∀ g ∈ C, ∀ u, ‖Wz M m ψ b₀ f (M.sh (u.2.map (incA D)) * M.emb (u.1.out : GF D p) * g)‖ ≤ c u) → ∃ t : GlobalTheory.Eis.Cosets (P D p) (GF D p) → ℝ, Summable t ∧ ∀ (q : GlobalTheory.Eis.Cosets (P D p) (GF D p)) (y : Mx D ρ p), Summable (fun η : Matrix (Fin ρ) (Fin p) D.host.E => ‖Wz M m ψ b₀ f (M.sh (GlobalTheory.CompanionTheory.FJE.rt η + y) * M.emb (q.out : GF D p) * g)‖) ∧ ∑' η : Matrix (Fin ρ) (Fin p) D.host.E, ‖Wz M m ψ b₀ f (M.sh (GlobalTheory.CompanionTheory.FJE.rt η + y) * M.emb (q.out : GF D p) * g)‖ ≤ t q := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FJE.Domination.domination
+end
+
+section
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory Filter
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS PositivityTheory.Rg.Rsw
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.section_left_invariant_rational_parabolic : ∀ {D : D7} {n : ℕ} (χ : (AE D)ˣ →* Circle) (s : ℂ) (f : G D n → ℂ), IsHeckeChar D χ → IsLaw χ s f → LeftInv (P D n ⊓ GF D n) f := by
+  first | exact @GlobalTheory.CompanionTheory.FJE.leftInv_of_isLaw | exact GlobalTheory.CompanionTheory.FJE.leftInv_of_isLaw | (intros; apply GlobalTheory.CompanionTheory.FJE.leftInv_of_isLaw <;> assumption)
+end
+
+section
+section
+noncomputable section
+
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory Filter
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS PositivityTheory.Rg.Rsw
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.CompanionTheory.FJE
+
+theorem term_after : ∀ {D : D7} {n ρ p : ℕ} {hn : ρ + p = n} (M : Maps D hn) (m : Meas D ρ p) (ψ : AddChar (AF D.host.F) ℂ), IsCharAF D.host.F ψ → ∀ b₀ : HermE D ρ, b₀.1.det ≠ 0 → ThTwist → ∀ (χ' : (AE D)ˣ →* Circle), IsHeckeChar D χ' → ∀ θ : InfFam D, IsInfFam θ → ∀ Ω, IsTh ψ χ' θ b₀ m.μ Ω → ∀ (χ : (AE D)ˣ →* Circle) (s : ℂ) (f : G D n → ℂ), IsLaw χ s f → ∀ (g γ : _), γ ∈ GF D p → ∀ (T : Mx D ρ p × Mx D ρ p → Mx D ρ p × Mx D ρ p), (∀ y x : Mx D ρ p, ∃ z' : hermA D ρ, M.emb γ * (M.nzx 0 x * M.sh y) = M.nzx z' (T (y, x)).2 * M.sh (T (y, x)).1 * M.emb γ) → ∀ v : Mx D ρ p × Mx D ρ p, (∀ η : Matrix (Fin ρ) (Fin p) D.host.E, ‖Wz M m ψ b₀ f (M.sh (GlobalTheory.CompanionTheory.FJE.rt η) * M.emb γ * (M.nzx 0 v.2 * (M.sh v.1 * g)))‖ = ‖Wz M m ψ b₀ f (M.sh (GlobalTheory.CompanionTheory.FJE.rt η + (T v).1) * M.emb γ * g)‖) ∧ (∑' η : Matrix (Fin ρ) (Fin p) D.host.E, Wz M m ψ b₀ f (M.sh (GlobalTheory.CompanionTheory.FJE.rt η) * M.emb γ * (M.nzx 0 v.2 * (M.sh v.1 * g)))) * conj (th ψ b₀ (Ω 1) 0 v.2 v.1) = GlobalTheory.CompanionTheory.FJE.Ap ψ b₀ (fun y => Wz M m ψ b₀ f (M.sh y * M.emb γ * g)) (Ω γ) (T v) := by
+  intro D n ρ p hn M m ψ hψ b₀ hb₀ hTw χ' hχ' θ hθ Ω hΩ χ s f hf g γ hγ T hT v
+  obtain ⟨z', hz'⟩ := hT v.1 v.2
+  have hz : M.emb γ * (M.nzx 0 v.2 * M.sh v.1) = M.nzx z' (T v).2 * M.sh (T v).1 * M.emb γ := hz'
+  have hterm : ∀ η : Matrix (Fin ρ) (Fin p) D.host.E,
+      Wz M m ψ b₀ f (M.sh (rt η) * M.emb γ * (M.nzx 0 v.2 * (M.sh v.1 * g))) =
+        chz ψ b₀ z' * (chv ψ b₀ (T v).2 (rt η) * Wz M m ψ b₀ f (M.sh (rt η + (T v).1) * M.emb γ * g)) := by
+    intro η
+    have e1 : M.sh (rt η) * M.emb γ * (M.nzx 0 v.2 * (M.sh v.1 * g)) =
+        M.sh (rt η) * (M.nzx z' (T v).2 * (M.sh (T v).1 * M.emb γ * g)) := by
+      calc M.sh (rt η) * M.emb γ * (M.nzx 0 v.2 * (M.sh v.1 * g))
+          = M.sh (rt η) * ((M.emb γ * (M.nzx 0 v.2 * M.sh v.1)) * g) := by simp only [mul_assoc]
+        _ = M.sh (rt η) * (M.nzx z' (T v).2 * (M.sh (T v).1 * M.emb γ * g)) := by
+            rw [hz]; simp only [mul_assoc]
+    have e2 : M.sh (rt η) * (M.sh (T v).1 * M.emb γ * g) = M.sh (rt η + (T v).1) * M.emb γ * g := by
+      rw [← sh_add M (rt η) (T v).1]; simp only [mul_assoc]
+    rw [e1, GlobalTheory.T.coefficient_heisenberg_equivariance M m ψ hψ b₀ χ s f hf (rt η) z' (T v).2 _, e2, mul_assoc]
+  obtain ⟨-, hnorm, -, -⟩ := GlobalTheory.CompanionTheory.FJE.CentralChar.chz_facts ψ hψ b₀
+  have hchv : ∀ x y : Mx D ρ p, ‖chv ψ b₀ x y‖ = 1 := fun x y => hψ.2.1 _
+  have hth : th ψ b₀ (Ω 1) 0 v.2 v.1 = chz ψ b₀ z' * dsum ψ b₀ (Ω γ) (T v).2 (T v).1 := by
+    rw [hTw D n ρ p hn M m ψ hψ b₀ hb₀ χ' hχ' θ hθ Ω hΩ γ hγ 0 v.2 v.1 z' (T v).2 (T v).1 hz]
+    rfl
+  have hcc : chz ψ b₀ z' * conj (chz ψ b₀ z') = 1 := by
+    rw [Complex.mul_conj, Complex.normSq_eq_norm_sq, hnorm]; simp
+  refine ⟨fun η => ?_, ?_⟩
+  · rw [hterm η, norm_mul, norm_mul, hnorm, hchv, one_mul, one_mul]
+  · simp_rw [hterm]
+    rw [tsum_mul_left, hth, map_mul, Ap]
+    have hd : (∑' η : Matrix (Fin ρ) (Fin p) D.host.E,
+        chv ψ b₀ (T v).2 (rt η) * Wz M m ψ b₀ f (M.sh (rt η + (T v).1) * M.emb γ * g)) =
+        dsum ψ b₀ (fun y => Wz M m ψ b₀ f (M.sh y * M.emb γ * g)) (T v).2 (T v).1 := rfl
+    rw [hd]
+    calc _ = (chz ψ b₀ z' * conj (chz ψ b₀ z')) *
+          (dsum ψ b₀ (fun y => Wz M m ψ b₀ f (M.sh y * M.emb γ * g)) (T v).2 (T v).1 *
+            conj (dsum ψ b₀ (Ω γ) (T v).2 (T v).1)) := by ring
+      _ = _ := by rw [hcc, one_mul]
+
+end GlobalTheory.CompanionTheory.FJE
+end
+end
+
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory Filter
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS PositivityTheory.Rg.Rsw
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.theta_fourier_jacobi_lattice_swap : ∀ {D : D7} {n ρ p : ℕ} {hn : ρ + p = n} (M : Maps D hn) (m : Meas D ρ p) (ψ : AddChar (AF D.host.F) ℂ), IsCharAF D.host.F ψ → ∀ b₀ : HermE D ρ, b₀.1.det ≠ 0 → ThTwist → ∀ (χ' : (AE D)ˣ →* Circle), IsHeckeChar D χ' → ∀ θ : InfFam D, IsInfFam θ → ∀ Ω, IsTh ψ χ' θ b₀ m.μ Ω → ∀ (χ : (AE D)ˣ →* Circle) (s : ℂ) (f : G D n → ℂ), IsLaw χ s f → ∀ (g γ : _), γ ∈ GF D p → ∀ (T : Mx D ρ p × Mx D ρ p → Mx D ρ p × Mx D ρ p), (∀ y x : Mx D ρ p, ∃ z' : hermA D ρ, M.emb γ * (M.nzx 0 x * M.sh y) = M.nzx z' (T (y, x)).2 * M.sh (T (y, x)).1 * M.emb γ) → ∀ v : Mx D ρ p × Mx D ρ p, (∀ η : Matrix (Fin ρ) (Fin p) D.host.E, ‖Wz M m ψ b₀ f (M.sh (GlobalTheory.CompanionTheory.FJE.rt η) * M.emb γ * (M.nzx 0 v.2 * (M.sh v.1 * g)))‖ = ‖Wz M m ψ b₀ f (M.sh (GlobalTheory.CompanionTheory.FJE.rt η + (T v).1) * M.emb γ * g)‖) ∧ (∑' η : Matrix (Fin ρ) (Fin p) D.host.E, Wz M m ψ b₀ f (M.sh (GlobalTheory.CompanionTheory.FJE.rt η) * M.emb γ * (M.nzx 0 v.2 * (M.sh v.1 * g)))) * conj (th ψ b₀ (Ω 1) 0 v.2 v.1) = GlobalTheory.CompanionTheory.FJE.Ap ψ b₀ (fun y => Wz M m ψ b₀ f (M.sh y * M.emb γ * g)) (Ω γ) (T v) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FJE.term_after
+end
+
+section
+section
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory Filter
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS PositivityTheory.Rg.Rsw
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.FJE
+
+set_option synthInstance.maxHeartbeats 400000 in
+set_option maxHeartbeats 2000000 in
+
+theorem Wz_stronglyMeasurable : ∀ {D : D7} {n ρ p : ℕ} {hn : ρ + p = n} (M : Maps D hn) (m : Meas D ρ p) (ψ : AddChar (AF D.host.F) ℂ), IsCharAF D.host.F ψ → ∀ (b₀ : HermE D ρ) (f : G D n → ℂ), Continuous f → ∀ {X : Type} [TopologicalSpace X] [SecondCountableTopology X] [MeasurableSpace X] [BorelSpace X] (c : X → G D n), Continuous c → StronglyMeasurable fun v => Wz M m ψ b₀ f (c v) := by
+  intro D n ρ p hn M m ψ hψ b₀ f hf X _ _ _ _ c hc
+  obtain ⟨i1, i2, i3, i4, -, -⟩ := lattice_Mx D ρ ρ
+  haveI : IsTopologicalAddGroup (Mx D ρ ρ) := i1
+  haveI : LocallyCompactSpace (Mx D ρ ρ) := i2
+  haveI : SecondCountableTopology (Mx D ρ ρ) := i3
+  haveI : T2Space (Mx D ρ ρ) := i4
+  haveI : BorelSpace (Mx D ρ ρ) := ⟨rfl⟩
+  haveI : BorelSpace (hermA D ρ) := Subtype.borelSpace _
+  haveI : SecondCountableTopology (hermA D ρ) := Topology.IsInducing.subtypeVal.secondCountableTopology
+  haveI : T2Space (hermA D ρ) := Topology.IsEmbedding.subtypeVal.t2Space
+  haveI : LocallyCompactSpace (hermA D ρ) :=
+    (GlobalTheory.CompanionTheory.FourierN.isClosed_hermA (D := D) (n := ρ)).isClosedEmbedding_subtypeVal.locallyCompactSpace
+  haveI := m.hz.1
+  haveI : SFinite m.lz := inferInstance
+  have hchz : Continuous fun z : hermA D ρ => conj (chz ψ b₀ z) :=
+    Complex.continuous_conj.comp
+      (hψ.1.comp ((GlobalTheory.CompanionTheory.FourierN.continuous_pr b₀.1).comp continuous_subtype_val))
+  have hcont : Continuous fun u : X × hermA D ρ => f (M.w * M.nzx u.2 0 * c u.1) * conj (chz ψ b₀ u.2) := by
+    refine (hf.comp ((continuous_const.mul ?_).mul (hc.comp continuous_fst))).mul (hchz.comp continuous_snd)
+    exact M.nzx_cont.comp (continuous_snd.prodMk continuous_const)
+  exact hcont.stronglyMeasurable.integral_prod_right
+
+end GlobalTheory.CompanionTheory.FJE
+end
+end
+
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory Filter
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS PositivityTheory.Rg.Rsw
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.stronglyMeasurable_coefficient_composition : ∀ {D : D7} {n ρ p : ℕ} {hn : ρ + p = n} (M : Maps D hn) (m : Meas D ρ p) (ψ : AddChar (AF D.host.F) ℂ), IsCharAF D.host.F ψ → ∀ (b₀ : HermE D ρ) (f : G D n → ℂ), Continuous f → ∀ {X : Type} [TopologicalSpace X] [SecondCountableTopology X] [MeasurableSpace X] [BorelSpace X] (c : X → G D n), Continuous c → StronglyMeasurable fun v => Wz M m ψ b₀ f (c v) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FJE.Wz_stronglyMeasurable
+end
+
+section
+section
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory Filter
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS PositivityTheory.Rg.Rsw
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+open scoped Pointwise
+
+namespace GlobalTheory.CompanionTheory.FJE.TransportInt
+
+theorem isAddFundamentalDomain_prod {X : Type*} [AddCommGroup X] [MeasurableSpace X]
+    (Γ : AddSubgroup X) {μ : Measure X} [SFinite μ] {F : Set X}
+    (h : IsAddFundamentalDomain Γ F μ) :
+    IsAddFundamentalDomain (Γ.prod Γ) (F ×ˢ F) (μ.prod μ) := by
+  refine ⟨h.nullMeasurableSet.prod h.nullMeasurableSet, ?_, ?_⟩
+  · have h1 : ∀ᵐ z ∂(μ.prod μ), ∃ g : Γ, g +ᵥ z.1 ∈ F :=
+      Measure.quasiMeasurePreserving_fst.ae h.ae_covers
+    have h2 : ∀ᵐ z ∂(μ.prod μ), ∃ g : Γ, g +ᵥ z.2 ∈ F :=
+      Measure.quasiMeasurePreserving_snd.ae h.ae_covers
+    filter_upwards [h1, h2] with z a b
+    obtain ⟨g, hg⟩ := a
+    obtain ⟨g', hg'⟩ := b
+    exact ⟨⟨(g.1, g'.1), g.2, g'.2⟩, hg, hg'⟩
+  · intro g g' hne
+    have key : ∀ k : Γ.prod Γ, (k +ᵥ (F ×ˢ F)) =
+        (((⟨k.1.1, k.2.1⟩ : Γ)) +ᵥ F) ×ˢ (((⟨k.1.2, k.2.2⟩ : Γ)) +ᵥ F) := by
+      intro k
+      ext z
+      simp only [Set.mem_vadd_set_iff_neg_vadd_mem, Set.mem_prod]
+      rfl
+    show μ.prod μ ((g +ᵥ (F ×ˢ F)) ∩ (g' +ᵥ (F ×ˢ F))) = 0
+    rw [key, key, Set.prod_inter_prod, Measure.prod_prod]
+    by_cases h1 : g.1.1 = g'.1.1
+    · have h2 : g.1.2 ≠ g'.1.2 := fun h2 => hne (Subtype.ext (Prod.ext h1 h2))
+      have : ((⟨g.1.2, g.2.2⟩ : Γ)) ≠ ⟨g'.1.2, g'.2.2⟩ := fun h3 => h2 (congrArg Subtype.val h3)
+      have h4 := h.aedisjoint this
+      simp only [Function.onFun] at h4
+      rw [show μ _ = 0 from h4, mul_zero]
+    · have : ((⟨g.1.1, g.2.1⟩ : Γ)) ≠ ⟨g'.1.1, g'.2.1⟩ := fun h3 => h1 (congrArg Subtype.val h3)
+      have h4 := h.aedisjoint this
+      simp only [Function.onFun] at h4
+      rw [show μ _ = 0 from h4, zero_mul]
+
+section Generic
+
+variable {G : Type*} [AddCommGroup G] [TopologicalSpace G] [IsTopologicalAddGroup G]
+  [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G] [MeasurableSpace G] [BorelSpace G]
+
+theorem map_eq_of_fundamentalDomain (L : AddSubgroup G) [Countable L] (ν : Measure G)
+    [ν.IsAddHaarMeasure] {F : Set G} (hF : IsAddFundamentalDomain L F ν) (h0 : ν F ≠ 0)
+    (hT0 : ν F ≠ ∞) (T : G ≃ₜ+ G) (hr : ∀ x, T x ∈ L ↔ x ∈ L) :
+    ν.map T = ν ∧ IsAddFundamentalDomain L (T '' F) ν := by
+  have hemb : MeasurableEmbedding T := T.toHomeomorph.measurableEmbedding
+  haveI hH : (ν.map T).IsAddHaarMeasure :=
+    T.toAddEquiv.isAddHaarMeasure_map ν T.continuous T.symm.continuous
+  have e := Measure.isAddLeftInvariant_eq_smul (ν.map T) ν
+  have hF2 : IsAddFundamentalDomain L F (ν.map T) :=
+    hF.mono (by rw [e]; exact Measure.smul_absolutelyContinuous)
+  have hF3 : IsAddFundamentalDomain L (T '' F) (ν.map T) := by
+    let g : L ≃ L :=
+      { toFun := fun γ => ⟨T.symm γ, (hr _).1 (by rw [T.apply_symm_apply]; exact γ.2)⟩
+        invFun := fun γ => ⟨T γ, (hr _).2 γ.2⟩
+        left_inv := fun γ => Subtype.ext (T.apply_symm_apply _)
+        right_inv := fun γ => Subtype.ext (T.symm_apply_apply _) }
+    refine hF.image_of_equiv T.toEquiv ?_ g fun γ x => ?_
+    · refine ⟨(T.symm.continuous.measurable : Measurable (T.symm : G → G)), ?_⟩
+      have : (ν.map T).map T.symm = ν := by
+        have hs : Measurable (T.symm : G → G) := T.symm.continuous.measurable
+        have ht : Measurable (T : G → G) := T.continuous.measurable
+        rw [Measure.map_map hs ht]
+        have : (T.symm ∘ T : G → G) = id := funext T.symm_apply_apply
+        rw [this, Measure.map_id]
+      exact this.absolutelyContinuous
+    · change T (T.symm γ + x) = γ + T x
+      rw [map_add, T.apply_symm_apply]
+  have h3 : ν.map T F = ν.map T (T '' F) := hF2.measure_eq hF3
+  have h4 : ν.map T (T '' F) = ν F := by
+    rw [hemb.map_apply, Set.preimage_image_eq _ T.injective]
+  have hc : Measure.addHaarScalarFactor (ν.map T) ν = 1 := by
+    have h5 : ν.map T F = ν F := h3.trans h4
+    rw [e, Measure.smul_apply, ENNReal.smul_def, smul_eq_mul] at h5
+    have h6 := (ENNReal.mul_eq_right h0 hT0).1 h5
+    simpa using h6
+  have hm : ν.map T = ν := by rw [e, hc, one_smul]
+  refine ⟨hm, ?_⟩
+  rwa [hm] at hF3
+
+theorem setIntegral_comp_eq (L : AddSubgroup G) [Countable L] (ν : Measure G)
+    [ν.IsAddHaarMeasure] {F : Set G} (hF : IsAddFundamentalDomain L F ν) (h0 : ν F ≠ 0)
+    (hT0 : ν F ≠ ∞) (T : G ≃ₜ+ G) (hr : ∀ x, T x ∈ L ↔ x ∈ L) (A : G → ℂ)
+    (hA : ∀ γ ∈ L, ∀ v, A (γ + v) = A v) :
+    ∫ v in F, A (T v) ∂ν = ∫ v in F, A v ∂ν := by
+  obtain ⟨hm, hF3⟩ := map_eq_of_fundamentalDomain L ν hF h0 hT0 T hr
+  have hemb : MeasurableEmbedding T := T.toHomeomorph.measurableEmbedding
+  have h1 : ∫ v in T '' F, A v ∂(ν.map T) = ∫ v in F, A (T v) ∂ν := by
+    rw [hemb.setIntegral_map, Set.preimage_image_eq _ T.injective]
+  rw [← h1, hm]
+  exact hF3.setIntegral_eq hF fun γ a => hA γ γ.2 a
+
+end Generic
+
+end GlobalTheory.CompanionTheory.FJE.TransportInt
+
+namespace GlobalTheory.CompanionTheory.FJE.TransportInt
+
+theorem transport_int : ∀ {D : D7} {ρ p : ℕ} (m : Meas D ρ p) (T : (Mx D ρ p × Mx D ρ p) ≃ₜ+ (Mx D ρ p × Mx D ρ p)), (∀ ξ₁ ξ₂ : Matrix (Fin ρ) (Fin p) D.host.E, ∃ ξ₁' ξ₂' : Matrix (Fin ρ) (Fin p) D.host.E, T (GlobalTheory.CompanionTheory.FJE.rt ξ₁, GlobalTheory.CompanionTheory.FJE.rt ξ₂) = (GlobalTheory.CompanionTheory.FJE.rt ξ₁', GlobalTheory.CompanionTheory.FJE.rt ξ₂')) → (∀ ξ₁ ξ₂ : Matrix (Fin ρ) (Fin p) D.host.E, ∃ ξ₁' ξ₂' : Matrix (Fin ρ) (Fin p) D.host.E, T.symm (GlobalTheory.CompanionTheory.FJE.rt ξ₁, GlobalTheory.CompanionTheory.FJE.rt ξ₂) = (GlobalTheory.CompanionTheory.FJE.rt ξ₁', GlobalTheory.CompanionTheory.FJE.rt ξ₂')) → ∀ A : Mx D ρ p × Mx D ρ p → ℂ, (∀ (ξ₁ ξ₂ : Matrix (Fin ρ) (Fin p) D.host.E) v, A (v + (GlobalTheory.CompanionTheory.FJE.rt ξ₁, GlobalTheory.CompanionTheory.FJE.rt ξ₂)) = A v) → ∫ v in m.𝓕 ×ˢ m.𝓕, A (T v) ∂(m.μ.prod m.μ) = ∫ v in m.𝓕 ×ˢ m.𝓕, A v ∂(m.μ.prod m.μ) := by
+  intro D ρ p m T h1 h2 A hA
+  obtain ⟨i1, i2, i3, i4, i5, -⟩ := lattice_Mx D ρ p
+  haveI : BorelSpace (Mx D ρ p) := ⟨rfl⟩
+  haveI : Countable (ratMx D ρ p) := TopologicalSpace.separableSpace_iff_countable.1 inferInstance
+  obtain ⟨hμ, hF, hone⟩ := m.hμ
+  haveI : Countable ((ratMx D ρ p).prod (ratMx D ρ p)) :=
+    (Function.Injective.countable (f := fun g : (ratMx D ρ p).prod (ratMx D ρ p) =>
+      ((⟨g.1.1, g.2.1⟩ : ratMx D ρ p), (⟨g.1.2, g.2.2⟩ : ratMx D ρ p))) fun a b h =>
+        Subtype.ext (Prod.ext (congrArg (fun z => z.1.1) h) (congrArg (fun z => z.2.1) h)))
+  have hv : m.μ.prod m.μ (m.𝓕 ×ˢ m.𝓕) = 1 := by rw [Measure.prod_prod, hone, one_mul]
+  have mem : ∀ z : Mx D ρ p × Mx D ρ p, z ∈ (ratMx D ρ p).prod (ratMx D ρ p) ↔
+      ∃ ξ₁ ξ₂ : Matrix (Fin ρ) (Fin p) D.host.E, z = (GlobalTheory.CompanionTheory.FJE.rt ξ₁, GlobalTheory.CompanionTheory.FJE.rt ξ₂) := by
+    rintro ⟨a, b⟩
+    constructor
+    · rintro ⟨⟨ξ₁, h₁⟩, ⟨ξ₂, h₂⟩⟩
+      exact ⟨ξ₁, ξ₂, Prod.ext h₁.symm h₂.symm⟩
+    · rintro ⟨ξ₁, ξ₂, h⟩
+      obtain ⟨rfl, rfl⟩ := Prod.mk.inj h
+      exact ⟨⟨ξ₁, rfl⟩, ⟨ξ₂, rfl⟩⟩
+  have hr : ∀ x, T x ∈ (ratMx D ρ p).prod (ratMx D ρ p) ↔ x ∈ (ratMx D ρ p).prod (ratMx D ρ p) := by
+    intro x
+    constructor
+    · intro h
+      obtain ⟨ξ₁, ξ₂, e⟩ := (mem _).1 h
+      obtain ⟨ξ₁', ξ₂', e'⟩ := h2 ξ₁ ξ₂
+      refine (mem _).2 ⟨ξ₁', ξ₂', ?_⟩
+      rw [← e', ← e, T.symm_apply_apply]
+    · intro h
+      obtain ⟨ξ₁, ξ₂, e⟩ := (mem _).1 h
+      obtain ⟨ξ₁', ξ₂', e'⟩ := h1 ξ₁ ξ₂
+      exact (mem _).2 ⟨ξ₁', ξ₂', by rw [e, e']⟩
+  refine setIntegral_comp_eq _ (m.μ.prod m.μ) (isAddFundamentalDomain_prod _ hF)
+    (by rw [hv]; exact one_ne_zero) (by rw [hv]; exact ENNReal.one_ne_top) T hr A ?_
+  intro γ hγ v
+  obtain ⟨ξ₁, ξ₂, e⟩ := (mem _).1 hγ
+  rw [e, add_comm]
+  exact hA ξ₁ ξ₂ v
+
+end GlobalTheory.CompanionTheory.FJE.TransportInt
+end
+
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory Filter
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS PositivityTheory.Rg.Rsw
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lattice_transform_invariance : ∀ {D : D7} {ρ p : ℕ} (m : Meas D ρ p) (T : (Mx D ρ p × Mx D ρ p) ≃ₜ+ (Mx D ρ p × Mx D ρ p)), (∀ ξ₁ ξ₂ : Matrix (Fin ρ) (Fin p) D.host.E, ∃ ξ₁' ξ₂' : Matrix (Fin ρ) (Fin p) D.host.E, T (GlobalTheory.CompanionTheory.FJE.rt ξ₁, GlobalTheory.CompanionTheory.FJE.rt ξ₂) = (GlobalTheory.CompanionTheory.FJE.rt ξ₁', GlobalTheory.CompanionTheory.FJE.rt ξ₂')) → (∀ ξ₁ ξ₂ : Matrix (Fin ρ) (Fin p) D.host.E, ∃ ξ₁' ξ₂' : Matrix (Fin ρ) (Fin p) D.host.E, T.symm (GlobalTheory.CompanionTheory.FJE.rt ξ₁, GlobalTheory.CompanionTheory.FJE.rt ξ₂) = (GlobalTheory.CompanionTheory.FJE.rt ξ₁', GlobalTheory.CompanionTheory.FJE.rt ξ₂')) → ∀ A : Mx D ρ p × Mx D ρ p → ℂ, (∀ (ξ₁ ξ₂ : Matrix (Fin ρ) (Fin p) D.host.E) v, A (v + (GlobalTheory.CompanionTheory.FJE.rt ξ₁, GlobalTheory.CompanionTheory.FJE.rt ξ₂)) = A v) → ∫ v in m.𝓕 ×ˢ m.𝓕, A (T v) ∂(m.μ.prod m.μ) = ∫ v in m.𝓕 ×ˢ m.𝓕, A v ∂(m.μ.prod m.μ) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FJE.TransportInt.transport_int
+end
+
+section
+section
+noncomputable section
+
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory Filter
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS PositivityTheory.Rg.Rsw
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.CompanionTheory.FJE
+
+variable {D : D7} {ρ p : ℕ}
+
+theorem rt_add_periodic (ξ ξ' : Matrix (Fin ρ) (Fin p) D.host.E) :
+    rt (ξ + ξ') = (rt ξ + rt ξ' : Mx D ρ p) := by
+  ext i j
+  simp [rt, Matrix.map_apply, Matrix.add_apply, map_add]
+
+theorem dsum_add_rt (ψ : AddChar (AF D.host.F) ℂ) (hψ : IsCharAF D.host.F ψ) (b₀ : HermE D ρ)
+    (Φ : Mx D ρ p → ℂ) (ξ : Matrix (Fin ρ) (Fin p) D.host.E) (x y : Mx D ρ p) :
+    dsum ψ b₀ Φ x (y + rt ξ) = conj (chv ψ b₀ x (rt ξ)) * dsum ψ b₀ Φ x y := by
+  obtain ⟨-, h2, h3, -, -, -⟩ := GlobalTheory.T.heisenberg_character_bilinear_laws (D := D) (ρ := ρ) (p := p) ψ hψ b₀
+  unfold dsum
+  rw [← tsum_mul_left, ← (Equiv.addRight ξ).tsum_eq
+    (fun η : Matrix (Fin ρ) (Fin p) D.host.E =>
+      conj (chv ψ b₀ x (rt ξ)) * (chv ψ b₀ x (rt η) * Φ (rt η + y)))]
+  refine tsum_congr fun η => ?_
+  have hn : conj (chv ψ b₀ x (rt ξ)) * chv ψ b₀ x (rt ξ) = 1 := by
+    rw [mul_comm, Complex.mul_conj, Complex.normSq_eq_norm_sq, h3]
+    simp
+  simp only [Equiv.coe_addRight]
+  rw [rt_add_periodic, h2, show rt η + rt ξ + y = rt η + (y + rt ξ) by abel]
+  linear_combination (-(chv ψ b₀ x (rt η) * Φ (rt η + (y + rt ξ)))) * hn
+
+theorem dsum_add_rt_left (ψ : AddChar (AF D.host.F) ℂ) (hψ : IsCharAF D.host.F ψ) (b₀ : HermE D ρ)
+    (Φ : Mx D ρ p → ℂ) (ξ : Matrix (Fin ρ) (Fin p) D.host.E) (x y : Mx D ρ p) :
+    dsum ψ b₀ Φ (x + rt ξ) y = dsum ψ b₀ Φ x y := by
+  obtain ⟨h1, -, -, -, h5, -⟩ := GlobalTheory.T.heisenberg_character_bilinear_laws (D := D) (ρ := ρ) (p := p) ψ hψ b₀
+  unfold dsum
+  refine tsum_congr fun η => ?_
+  rw [h1, h5, mul_one]
+
+theorem ap_periodic (ψ : AddChar (AF D.host.F) ℂ) (hψ : IsCharAF D.host.F ψ) (b₀ : HermE D ρ)
+    (Φ φ : Mx D ρ p → ℂ) (ξ₁ ξ₂ : Matrix (Fin ρ) (Fin p) D.host.E)
+    (v : Mx D ρ p × Mx D ρ p) :
+    Ap ψ b₀ Φ φ (v + (rt ξ₁, rt ξ₂)) = Ap ψ b₀ Φ φ v := by
+  obtain ⟨-, -, h3, -, -, -⟩ := GlobalTheory.T.heisenberg_character_bilinear_laws (D := D) (ρ := ρ) (p := p) ψ hψ b₀
+  obtain ⟨y, x⟩ := v
+  show dsum ψ b₀ Φ (x + rt ξ₂) (y + rt ξ₁) * conj (dsum ψ b₀ φ (x + rt ξ₂) (y + rt ξ₁)) =
+    dsum ψ b₀ Φ x y * conj (dsum ψ b₀ φ x y)
+  have hn : conj (chv ψ b₀ x (rt ξ₁)) * chv ψ b₀ x (rt ξ₁) = 1 := by
+    rw [mul_comm, Complex.mul_conj, Complex.normSq_eq_norm_sq, h3]
+    simp
+  rw [dsum_add_rt_left ψ hψ, dsum_add_rt_left ψ hψ, dsum_add_rt ψ hψ, dsum_add_rt ψ hψ, map_mul,
+    Complex.conj_conj]
+  linear_combination (dsum ψ b₀ Φ x y * conj (dsum ψ b₀ φ x y)) * hn
+
+theorem ap_periodic_all : ∀ {D : D7} {ρ p : ℕ} (ψ : AddChar (AF D.host.F) ℂ), IsCharAF D.host.F ψ →
+    ∀ (b₀ : HermE D ρ) (Φ φ : Mx D ρ p → ℂ) (ξ₁ ξ₂ : Matrix (Fin ρ) (Fin p) D.host.E)
+      (v : Mx D ρ p × Mx D ρ p),
+      GlobalTheory.CompanionTheory.FJE.Ap ψ b₀ Φ φ (v + (GlobalTheory.CompanionTheory.FJE.rt ξ₁, GlobalTheory.CompanionTheory.FJE.rt ξ₂)) = GlobalTheory.CompanionTheory.FJE.Ap ψ b₀ Φ φ v :=
+  fun ψ hψ b₀ Φ φ ξ₁ ξ₂ v => ap_periodic ψ hψ b₀ Φ φ ξ₁ ξ₂ v
+
+end GlobalTheory.CompanionTheory.FJE
+end
+end
+
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory Filter
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS PositivityTheory.Rg.Rsw
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lattice_twisted_sum_periodic : ∀ {D : D7} {ρ p : ℕ} (ψ : AddChar (AF D.host.F) ℂ), IsCharAF D.host.F ψ → ∀ (b₀ : HermE D ρ) (Φ φ : Mx D ρ p → ℂ) (ξ₁ ξ₂ : Matrix (Fin ρ) (Fin p) D.host.E) (v : Mx D ρ p × Mx D ρ p), GlobalTheory.CompanionTheory.FJE.Ap ψ b₀ Φ φ (v + (GlobalTheory.CompanionTheory.FJE.rt ξ₁, GlobalTheory.CompanionTheory.FJE.rt ξ₂)) = GlobalTheory.CompanionTheory.FJE.Ap ψ b₀ Φ φ v := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FJE.ap_periodic_all
+end
+
+section
+section
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory Filter
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS PositivityTheory.Rg.Rsw
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.FJE
+
+variable {D : D7} {ρ p : ℕ}
+
+open scoped Pointwise
+
+theorem trace_single_mul_eq {R : Type} [CommRing R] {a b : ℕ} (j : Fin a) (i : Fin b) (w : R)
+    (M : Matrix (Fin b) (Fin a) R) : Matrix.trace (Matrix.single j i w * M) = w * M i j := by
+  simp [Matrix.trace, Matrix.mul_apply, Matrix.single_apply, ite_and, Finset.sum_ite_eq, Finset.sum_ite_eq']
+
+theorem trA_algebraMap_half [Nontrivial (AF D.host.F)] (t : AF D.host.F) :
+    trA (D := D) (algebraMap (AF D.host.F) (AE D) (algebraMap D.host.F (AF D.host.F) (1 / 2) * t)) = t := by
+  have h2 : Module.finrank D.host.F D.host.E = 2 := Algebra.IsQuadraticExtension.finrank_eq_two _ _
+  show Algebra.trace (AF D.host.F) (AE D) (algebraMap (AF D.host.F) (AE D)
+    (algebraMap D.host.F (AF D.host.F) (1 / 2) * t)) = t
+  rw [Algebra.trace_algebraMap, Module.finrank_baseChange, h2, two_nsmul, ← add_mul, ← map_add]
+  norm_num
+
+theorem exists_chv_ne_one (ψ : AddChar (AF D.host.F) ℂ) (hψ : IsCharAF D.host.F ψ) (b₀ : HermE D ρ)
+    (hdet : b₀.1.det ≠ 0) (ζ : Matrix (Fin ρ) (Fin p) D.host.E) (hζ : ζ ≠ 0) :
+    ∃ x₀ : Mx D ρ p, chv ψ b₀ x₀ (rt ζ) ≠ 1 := by
+  obtain ⟨-, -, -, t, ht⟩ := hψ
+  have hB : b₀.1 * ζ ≠ 0 := by
+    intro h0
+    apply hζ
+    have hu : IsUnit b₀.1.det := isUnit_iff_ne_zero.2 hdet
+    calc ζ = b₀.1⁻¹ * (b₀.1 * ζ) := by
+          rw [← Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hu, Matrix.one_mul]
+      _ = 0 := by rw [h0, Matrix.mul_zero]
+  obtain ⟨i, j, hij⟩ : ∃ i j, (b₀.1 * ζ) i j ≠ 0 := by
+    by_contra hc
+    push_neg at hc
+    exact hB (Matrix.ext hc)
+  obtain ⟨c, hc⟩ : ∃ c : AE D, c = algebraMap (AF D.host.F) (AE D)
+      (algebraMap D.host.F (AF D.host.F) (1 / 2) * t) * incA D ((b₀.1 * ζ) i j)⁻¹ := ⟨_, rfl⟩
+  refine ⟨adj (Matrix.single j i c), ?_⟩
+  have key : Matrix.trace (pr b₀ (adj (Matrix.single j i c)) (rt ζ)) =
+      algebraMap (AF D.host.F) (AE D) (algebraMap D.host.F (AF D.host.F) (1 / 2) * t) := by
+    show Matrix.trace (adj (adj (Matrix.single j i c)) ⬝ (b₀.1.map (incA D) ⬝ rt ζ)) = _
+    rw [adj_adj, show b₀.1.map (incA D) ⬝ rt ζ = rat (b₀.1 * ζ) from (rat_mul _ _).symm,
+      trace_single_mul_eq]
+    show c * incA D ((b₀.1 * ζ) i j) = _
+    rw [hc, mul_assoc, ← map_mul, inv_mul_cancel₀ hij, map_one, mul_one]
+  show ψ (trA (Matrix.trace (pr b₀ _ (rt ζ)))) ≠ 1
+  haveI : Nontrivial (AF D.host.F) :=
+    nontrivial_of_ne t 0 (fun h => ht (by rw [h, AddChar.map_zero_eq_one]))
+  rw [key, trA_algebraMap_half]
+  exact ht
+
+theorem integral_chv_rt_eq_zero {D : D7} {ρ p : ℕ} (m : Meas D ρ p) (ψ : AddChar (AF D.host.F) ℂ)
+    (hψ : IsCharAF D.host.F ψ) (b₀ : HermE D ρ) (hdet : b₀.1.det ≠ 0)
+    (ζ : Matrix (Fin ρ) (Fin p) D.host.E) (hζ : ζ ≠ 0) :
+    ∫ x in m.𝓕, chv ψ b₀ x (rt ζ) ∂m.μ = 0 := by
+  obtain ⟨x₀, hx₀⟩ := exists_chv_ne_one ψ hψ b₀ hdet ζ hζ
+  obtain ⟨hadd, -, -, -, hrat, -⟩ := GlobalTheory.T.heisenberg_character_bilinear_laws ψ hψ b₀
+  have hper : ∀ γ ∈ ratMx D ρ p, ∀ a, chv ψ b₀ (γ + a) (rt ζ) = chv ψ b₀ a (rt ζ) := by
+    intro γ hγ a
+    obtain ⟨g, rfl⟩ := mem_ratMx.1 hγ
+    rw [hadd, show rat g = rt g from rfl, hrat, one_mul]
+  have h := covolOne_integral_add m.hμ (fun x => chv ψ b₀ x (rt ζ)) hper x₀
+  simp only [hadd] at h
+  rw [MeasureTheory.integral_mul_const] at h
+  have h2 : (∫ x in m.𝓕, chv ψ b₀ x (rt ζ) ∂m.μ) * (chv ψ b₀ x₀ (rt ζ) - 1) = 0 := by
+    rw [mul_sub, mul_one, h, sub_self]
+  exact (mul_eq_zero.1 h2).resolve_right (sub_ne_zero.2 hx₀)
+
+end GlobalTheory.CompanionTheory.FJE
+end
+end
+
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory Filter
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS PositivityTheory.Rg.Rsw
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heisenberg_character_integral_vanishes : ∀ {D : D7} {ρ p : ℕ} (m : Meas D ρ p) (ψ : AddChar (AF D.host.F) ℂ), IsCharAF D.host.F ψ → ∀ b₀ : HermE D ρ, b₀.1.det ≠ 0 → ∀ ζ : Matrix (Fin ρ) (Fin p) D.host.E, ζ ≠ 0 → ∫ x in m.𝓕, GlobalTheory.CompanionTheory.FJE.chv ψ b₀ x (GlobalTheory.CompanionTheory.FJE.rt ζ) ∂m.μ = 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FJE.integral_chv_rt_eq_zero
+end
+
+section
+section
+noncomputable section
+
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory Filter
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS PositivityTheory.Rg.Rsw
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.CompanionTheory.FJE
+
+theorem integral_mul_tsum_unimod {ι X : Type} [Countable ι] [MeasurableSpace X] (ν : Measure X) [IsFiniteMeasure ν]
+    {c : ι → X → ℂ} {h : X → ℂ} {a : ι → ℂ} (hc : ∀ i, AEStronglyMeasurable (c i) ν)
+    (hc1 : ∀ i x, ‖c i x‖ = 1) (hh : AEStronglyMeasurable h ν) {B : ℝ} (hB : ∀ x, ‖h x‖ ≤ B)
+    (ha : Summable fun i => ‖a i‖) :
+    ∫ x, h x * ∑' i, c i x * a i ∂ν = ∑' i, (∫ x, h x * c i x ∂ν) * a i := by
+  have hbd : ∀ i x, ‖h x * (c i x * a i)‖ ≤ B * ‖a i‖ := fun i x => by
+    rw [norm_mul, norm_mul, hc1, one_mul]
+    exact mul_le_mul_of_nonneg_right (hB x) (norm_nonneg _)
+  have hint : ∀ i, Integrable (fun x => h x * (c i x * a i)) ν := fun i =>
+    Integrable.of_bound (hh.mul ((hc i).mul aestronglyMeasurable_const)) (B * ‖a i‖)
+      (Eventually.of_forall (hbd i))
+  have hsum : Summable fun i => ∫ x, ‖h x * (c i x * a i)‖ ∂ν := by
+    refine Summable.of_nonneg_of_le (fun i => integral_nonneg fun x => norm_nonneg _) (fun i => ?_)
+      ((ha.mul_left B).mul_left (ν.real Set.univ))
+    calc ∫ x, ‖h x * (c i x * a i)‖ ∂ν ≤ ∫ _, B * ‖a i‖ ∂ν :=
+          integral_mono (hint i).norm (integrable_const _) (hbd i)
+      _ = ν.real Set.univ * (B * ‖a i‖) := by simp [integral_const]
+  have key := hasSum_integral_of_summable_integral_norm hint hsum
+  have e1 : ∀ x, ∑' i, h x * (c i x * a i) = h x * ∑' i, c i x * a i := fun x => tsum_mul_left
+  have e2 : ∀ i, ∫ x, h x * (c i x * a i) ∂ν = (∫ x, h x * c i x ∂ν) * a i := fun i => by
+    rw [← integral_mul_const]
+    exact integral_congr_ae (Eventually.of_forall fun x => by simp only [mul_assoc])
+  simp only [e1, e2] at key
+  exact key.tsum_eq.symm
+
+theorem parseval {D : D7} {ρ p : ℕ} (m : Meas D ρ p) (ψ : AddChar (AF D.host.F) ℂ) (hψ : IsCharAF D.host.F ψ)
+    (b₀ : HermE D ρ) (hb₀ : b₀.1.det ≠ 0) (a b : Matrix (Fin ρ) (Fin p) D.host.E → ℂ)
+    (ha : Summable (fun η => ‖a η‖)) (hb : Summable (fun η => ‖b η‖)) :
+    ∫ x in m.𝓕, (∑' η : Matrix (Fin ρ) (Fin p) D.host.E, chv ψ b₀ x (rt η) * a η) *
+        conj (∑' ξ : Matrix (Fin ρ) (Fin p) D.host.E, chv ψ b₀ x (rt ξ) * b ξ) ∂m.μ =
+      ∑' η : Matrix (Fin ρ) (Fin p) D.host.E, a η * conj (b η) := by
+  classical
+  obtain ⟨-, hadd, hnorm, hneg, -, hcont⟩ := GlobalTheory.T.heisenberg_character_bilinear_laws (p := p) ψ hψ b₀
+  haveI : BorelSpace (Mx D ρ p) := ⟨rfl⟩
+  haveI : Countable (Matrix (Fin ρ) (Fin p) D.host.E) :=
+    inferInstanceAs (Countable (Fin ρ → Fin p → D.host.E))
+  haveI : IsProbabilityMeasure (m.μ.restrict m.𝓕) :=
+    ⟨by rw [Measure.restrict_apply_univ]; exact m.hμ.2.2⟩
+  have hcm : ∀ η : Matrix (Fin ρ) (Fin p) D.host.E,
+      StronglyMeasurable (fun x : Mx D ρ p => chv ψ b₀ x (rt η)) := fun η =>
+    (hcont.comp (Continuous.prodMk continuous_id continuous_const)).stronglyMeasurable
+  have hcm' : ∀ ξ : Matrix (Fin ρ) (Fin p) D.host.E,
+      StronglyMeasurable (fun x : Mx D ρ p => conj (chv ψ b₀ x (rt ξ))) := fun ξ =>
+    Complex.continuous_conj.comp_stronglyMeasurable (hcm ξ)
+  have hc1 : ∀ (η : Matrix (Fin ρ) (Fin p) D.host.E) (x : Mx D ρ p), ‖chv ψ b₀ x (rt η)‖ = 1 :=
+    fun η x => hnorm x _
+  have hc1' : ∀ (ξ : Matrix (Fin ρ) (Fin p) D.host.E) (x : Mx D ρ p),
+      ‖conj (chv ψ b₀ x (rt ξ))‖ = 1 := fun ξ x => by rw [RCLike.norm_conj]; exact hc1 ξ x
+  have horth : ∀ ξ η : Matrix (Fin ρ) (Fin p) D.host.E,
+      ∫ x in m.𝓕, conj (chv ψ b₀ x (rt ξ)) * chv ψ b₀ x (rt η) ∂m.μ = if η = ξ then 1 else 0 := by
+    intro ξ η
+    by_cases h : η = ξ
+    · subst h
+      have e : ∀ x : Mx D ρ p, conj (chv ψ b₀ x (rt η)) * chv ψ b₀ x (rt η) = 1 := fun x => by
+        rw [Complex.conj_mul', hc1]; simp
+      simp [e]
+    · have e : ∀ x : Mx D ρ p, conj (chv ψ b₀ x (rt ξ)) * chv ψ b₀ x (rt η) =
+          chv ψ b₀ x (rt (η - ξ)) := fun x => by
+        have hr : (rt (η - ξ) : Mx D ρ p) = rt η + -rt ξ := by
+          rw [← sub_eq_add_neg]; exact rat_sub η ξ
+        rw [hr, hadd, hneg, mul_comm]
+      simp only [e, if_neg h]
+      exact GlobalTheory.T.heisenberg_character_integral_vanishes m ψ hψ b₀ hb₀ (η - ξ) (sub_ne_zero.2 h)
+  have hs : ∀ x : Mx D ρ p, Summable fun η => chv ψ b₀ x (rt η) * a η := fun x =>
+    Summable.of_norm (by simpa only [norm_mul, hc1, one_mul] using ha)
+  have hfm : StronglyMeasurable fun x : Mx D ρ p => ∑' η, chv ψ b₀ x (rt η) * a η :=
+    tsum_meas (fun η => (hcm η).mul_const _) hs
+  have hfB : ∀ x : Mx D ρ p, ‖∑' η, chv ψ b₀ x (rt η) * a η‖ ≤ ∑' η, ‖a η‖ := fun x => by
+    have h1 := norm_tsum_le_tsum_norm (f := fun η => chv ψ b₀ x (rt η) * a η)
+      (by simpa only [norm_mul, hc1, one_mul] using ha)
+    simpa only [norm_mul, hc1, one_mul] using h1
+  have hcoef : ∀ ξ : Matrix (Fin ρ) (Fin p) D.host.E,
+      ∫ x in m.𝓕, (∑' η, chv ψ b₀ x (rt η) * a η) * conj (chv ψ b₀ x (rt ξ)) ∂m.μ = a ξ := by
+    intro ξ
+    have h1 := integral_mul_tsum_unimod (m.μ.restrict m.𝓕)
+      (c := fun (η : Matrix (Fin ρ) (Fin p) D.host.E) (x : Mx D ρ p) => chv ψ b₀ x (rt η))
+      (h := fun x => conj (chv ψ b₀ x (rt ξ))) (a := a) (B := 1)
+      (fun η => (hcm η).aestronglyMeasurable) hc1 (hcm' ξ).aestronglyMeasurable
+      (fun x => (hc1' ξ x).le) ha
+    simp only [horth, ite_mul, one_mul, zero_mul, tsum_ite_eq] at h1
+    rw [← h1]
+    exact integral_congr_ae (Eventually.of_forall fun x => mul_comm _ _)
+  have hconj : ∀ x : Mx D ρ p, conj (∑' ξ, chv ψ b₀ x (rt ξ) * b ξ) =
+      ∑' ξ, conj (chv ψ b₀ x (rt ξ)) * conj (b ξ) := fun x => by
+    rw [Complex.conj_tsum]; simp only [map_mul]
+  have h2 := integral_mul_tsum_unimod (m.μ.restrict m.𝓕)
+    (c := fun (ξ : Matrix (Fin ρ) (Fin p) D.host.E) (x : Mx D ρ p) => conj (chv ψ b₀ x (rt ξ)))
+    (h := fun x => ∑' η, chv ψ b₀ x (rt η) * a η) (a := fun ξ => conj (b ξ))
+    (fun ξ => (hcm' ξ).aestronglyMeasurable) hc1' hfm.aestronglyMeasurable hfB
+    (by simpa only [RCLike.norm_conj] using hb)
+  simp only [hconj, h2, hcoef]
+
+end GlobalTheory.CompanionTheory.FJE
+end
+end
+
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory Filter
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS PositivityTheory.Rg.Rsw
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heisenberg_character_orthogonality : ∀ {D : D7} {ρ p : ℕ} (m : Meas D ρ p) (ψ : AddChar (AF D.host.F) ℂ), IsCharAF D.host.F ψ → ∀ b₀ : HermE D ρ, b₀.1.det ≠ 0 → ∀ a b : Matrix (Fin ρ) (Fin p) D.host.E → ℂ, Summable (fun η => ‖a η‖) → Summable (fun η => ‖b η‖) → ∫ x in m.𝓕, (∑' η : Matrix (Fin ρ) (Fin p) D.host.E, GlobalTheory.CompanionTheory.FJE.chv ψ b₀ x (GlobalTheory.CompanionTheory.FJE.rt η) * a η) * conj (∑' ξ : Matrix (Fin ρ) (Fin p) D.host.E, GlobalTheory.CompanionTheory.FJE.chv ψ b₀ x (GlobalTheory.CompanionTheory.FJE.rt ξ) * b ξ) ∂m.μ = ∑' η : Matrix (Fin ρ) (Fin p) D.host.E, a η * conj (b η) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FJE.parseval
+end
+
+section
+section
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory Filter
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS PositivityTheory.Rg.Rsw
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.CompanionTheory.FJE
+
+set_option synthInstance.maxHeartbeats 400000 in
+set_option maxHeartbeats 1000000 in
+
+theorem fold_parseval : ∀ {D : D7} {ρ p : ℕ} (m : Meas D ρ p) (ψ : AddChar (AF D.host.F) ℂ), IsCharAF D.host.F ψ → ∀ b₀ : HermE D ρ, b₀.1.det ≠ 0 → ∀ (Φ φ : Mx D ρ p → ℂ) (B₁ B₂ : ℝ), StronglyMeasurable Φ → StronglyMeasurable φ → (∀ y, Summable (fun ξ : Matrix (Fin ρ) (Fin p) D.host.E => ‖Φ (GlobalTheory.CompanionTheory.FJE.rt ξ + y)‖) ∧ ∑' ξ : Matrix (Fin ρ) (Fin p) D.host.E, ‖Φ (GlobalTheory.CompanionTheory.FJE.rt ξ + y)‖ ≤ B₁) → (∀ y, Summable (fun ξ : Matrix (Fin ρ) (Fin p) D.host.E => ‖φ (GlobalTheory.CompanionTheory.FJE.rt ξ + y)‖) ∧ ∑' ξ : Matrix (Fin ρ) (Fin p) D.host.E, ‖φ (GlobalTheory.CompanionTheory.FJE.rt ξ + y)‖ ≤ B₂) → ∫ v in m.𝓕 ×ˢ m.𝓕, GlobalTheory.CompanionTheory.FJE.Ap ψ b₀ Φ φ v ∂(m.μ.prod m.μ) = ∫ y, Φ y * conj (φ y) ∂m.μ := by
+  intro D ρ p m ψ hψ b₀ hb Φ φ B₁ B₂ hΦ hφ h1 h2
+  haveI := m.hμ.1
+  have hfd : IsAddFundamentalDomain (ratMx D ρ p) m.𝓕 m.μ := m.hμ.2.1
+  have hfin : m.μ m.𝓕 = 1 := m.hμ.2.2
+  haveI : BorelSpace (Mx D ρ p) := ⟨rfl⟩
+  haveI : Countable D.host.E := (Module.finBasis ℚ D.host.E).equivFun.injective.countable
+  haveI : Countable (Matrix (Fin ρ) (Fin p) D.host.E) :=
+    inferInstanceAs (Countable (Fin ρ → Fin p → D.host.E))
+  haveI : Countable (ratMx D ρ p) := by
+    unfold GlobalTheory.MixModel.ratMx
+    exact (AddMonoidHom.rangeRestrict_surjective _).countable
+  haveI : MeasurableConstVAdd (ratMx D ρ p) (Mx D ρ p) :=
+    ⟨fun c => (continuous_const.add continuous_id).measurable⟩
+  haveI : SFinite m.μ := by
+    have hs := hfd.sum_restrict
+    open scoped Pointwise in
+    haveI : ∀ g : ratMx D ρ p, IsFiniteMeasure (m.μ.restrict (g +ᵥ m.𝓕)) := fun g =>
+      ⟨by rw [Measure.restrict_apply_univ, measure_vadd, hfin]; exact ENNReal.one_lt_top⟩
+    rw [← hs]
+    infer_instance
+  haveI : IsFiniteMeasure (m.μ.restrict m.𝓕) :=
+    ⟨by rw [Measure.restrict_apply_univ, hfin]; exact ENNReal.one_lt_top⟩
+  have hds : ∀ (Ψ : Mx D ρ p → ℂ) (B : ℝ),
+      (∀ y, Summable (fun ξ : Matrix (Fin ρ) (Fin p) D.host.E => ‖Ψ (rt ξ + y)‖) ∧
+        ∑' ξ : Matrix (Fin ρ) (Fin p) D.host.E, ‖Ψ (rt ξ + y)‖ ≤ B) →
+      ∀ x y, ‖dsum ψ b₀ Ψ x y‖ ≤ B := by
+    intro Ψ B hB x y
+    refine (norm_tsum_le_tsum_norm ?_).trans ?_
+    · simpa [norm_mul, chv_norm ψ hψ] using (hB y).1
+    · simpa [norm_mul, chv_norm ψ hψ] using (hB y).2
+  have hB₁ : 0 ≤ B₁ := (tsum_nonneg (fun _ => norm_nonneg _)).trans (h1 0).2
+  have hB₂ : 0 ≤ B₂ := (tsum_nonneg (fun _ => norm_nonneg _)).trans (h2 0).2
+  have hm : StronglyMeasurable (Ap ψ b₀ Φ φ) :=
+    (dsum_stronglyMeasurable ψ hψ b₀ Φ hΦ (fun y => (h1 y).1)).mul
+      (Complex.continuous_conj.comp_stronglyMeasurable
+        (dsum_stronglyMeasurable ψ hψ b₀ φ hφ (fun y => (h2 y).1)))
+  have hint : Integrable (Ap ψ b₀ Φ φ) ((m.μ.restrict m.𝓕).prod (m.μ.restrict m.𝓕)) := by
+    refine Integrable.of_bound hm.aestronglyMeasurable (B₁ * B₂) (ae_of_all _ (fun v => ?_))
+    rw [Ap, norm_mul, Complex.norm_conj]
+    exact mul_le_mul (hds Φ B₁ h1 _ _) (hds φ B₂ h2 _ _) (norm_nonneg _) hB₁
+  have hP : StronglyMeasurable (fun y => Φ y * conj (φ y)) :=
+    hΦ.mul (Complex.continuous_conj.comp_stronglyMeasurable hφ)
+  have hsum : ∀ y, ∑' ξ : Matrix (Fin ρ) (Fin p) D.host.E, ‖Φ (rt ξ + y) * conj (φ (rt ξ + y))‖ₑ
+      ≤ ENNReal.ofReal (B₁ * B₂) := by
+    intro y
+    calc ∑' ξ : Matrix (Fin ρ) (Fin p) D.host.E, ‖Φ (rt ξ + y) * conj (φ (rt ξ + y))‖ₑ
+        ≤ ∑' ξ : Matrix (Fin ρ) (Fin p) D.host.E,
+            ‖Φ (rt ξ + y)‖ₑ * ∑' η : Matrix (Fin ρ) (Fin p) D.host.E, ‖φ (rt η + y)‖ₑ := by
+          refine ENNReal.tsum_le_tsum (fun ξ => ?_)
+          rw [enorm_mul, ← ofReal_norm (conj _), Complex.norm_conj, ofReal_norm]
+          gcongr
+          exact ENNReal.le_tsum (f := fun η => ‖φ (rt η + y)‖ₑ) ξ
+      _ = (∑' ξ : Matrix (Fin ρ) (Fin p) D.host.E, ‖Φ (rt ξ + y)‖ₑ) *
+            ∑' η : Matrix (Fin ρ) (Fin p) D.host.E, ‖φ (rt η + y)‖ₑ := ENNReal.tsum_mul_right
+      _ ≤ ENNReal.ofReal B₁ * ENNReal.ofReal B₂ := by
+          gcongr
+          · simp only [← ofReal_norm]
+            rw [← ENNReal.ofReal_tsum_of_nonneg (fun _ => norm_nonneg _) (h1 y).1]
+            exact ENNReal.ofReal_le_ofReal (h1 y).2
+          · simp only [← ofReal_norm]
+            rw [← ENNReal.ofReal_tsum_of_nonneg (fun _ => norm_nonneg _) (h2 y).1]
+            exact ENNReal.ofReal_le_ofReal (h2 y).2
+      _ = ENNReal.ofReal (B₁ * B₂) := (ENNReal.ofReal_mul hB₁).symm
+  have hPint : Integrable (fun y => Φ y * conj (φ y)) m.μ := by
+    refine ⟨hP.aestronglyMeasurable, ?_⟩
+    unfold HasFiniteIntegral
+    rw [hfd.lintegral_eq_tsum'']
+    beta_reduce
+    rw [← lintegral_tsum (f := fun (g : ratMx D ρ p) (x : Mx D ρ p) => ‖Φ (g +ᵥ x) * conj (φ (g +ᵥ x))‖ₑ)
+      (fun g => ((hP.measurable.comp (measurable_const_vadd g)).enorm).aemeasurable)]
+    calc ∫⁻ x in m.𝓕, ∑' g : ratMx D ρ p, ‖Φ (g +ᵥ x) * conj (φ (g +ᵥ x))‖ₑ ∂m.μ
+        ≤ ∫⁻ _ in m.𝓕, ENNReal.ofReal (B₁ * B₂) ∂m.μ := by
+          refine lintegral_mono (fun x => ?_)
+          refine (ENNReal.tsum_le_tsum_comp_of_surjective
+            (AddMonoidHom.rangeRestrict_surjective
+              (Formalism.L2.Theta.incA D).toAddMonoidHom.mapMatrix) _).trans ?_
+          exact hsum x
+      _ < ⊤ := by
+          rw [lintegral_const, Measure.restrict_apply_univ, hfin, mul_one]
+          exact ENNReal.ofReal_lt_top
+  rw [← Measure.prod_restrict, integral_prod _ hint, integral_fold m _ hPint]
+  refine integral_congr_ae (ae_of_all _ (fun y => ?_))
+  exact GlobalTheory.T.heisenberg_character_orthogonality m ψ hψ b₀ hb (fun η => Φ (rt η + y)) (fun η => φ (rt η + y)) (h1 y).1 (h2 y).1
+
+end GlobalTheory.CompanionTheory.FJE
+end
+
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory Filter
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS PositivityTheory.Rg.Rsw
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.twisted_lattice_sums_bounded_product : ∀ {D : D7} {ρ p : ℕ} (m : Meas D ρ p) (ψ : AddChar (AF D.host.F) ℂ), IsCharAF D.host.F ψ → ∀ b₀ : HermE D ρ, b₀.1.det ≠ 0 → ∀ (Φ φ : Mx D ρ p → ℂ) (B₁ B₂ : ℝ), StronglyMeasurable Φ → StronglyMeasurable φ → (∀ y, Summable (fun ξ : Matrix (Fin ρ) (Fin p) D.host.E => ‖Φ (GlobalTheory.CompanionTheory.FJE.rt ξ + y)‖) ∧ ∑' ξ : Matrix (Fin ρ) (Fin p) D.host.E, ‖Φ (GlobalTheory.CompanionTheory.FJE.rt ξ + y)‖ ≤ B₁) → (∀ y, Summable (fun ξ : Matrix (Fin ρ) (Fin p) D.host.E => ‖φ (GlobalTheory.CompanionTheory.FJE.rt ξ + y)‖) ∧ ∑' ξ : Matrix (Fin ρ) (Fin p) D.host.E, ‖φ (GlobalTheory.CompanionTheory.FJE.rt ξ + y)‖ ≤ B₂) → ∫ v in m.𝓕 ×ˢ m.𝓕, GlobalTheory.CompanionTheory.FJE.Ap ψ b₀ Φ φ v ∂(m.μ.prod m.μ) = ∫ y, Φ y * conj (φ y) ∂m.μ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FJE.fold_parseval
+end
+
+section
 section
 noncomputable section
 
@@ -132,3 +1167,4 @@ open PositivityTheory.Rg.Rsw
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.fourier_jacobi_eisenstein : ZUnfold → ThTwist → FJEis := by
   atlas_forward_decl GlobalTheory.CompanionTheory.FJE.fjEis
+end

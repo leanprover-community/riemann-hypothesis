@@ -90,7 +90,6 @@ def prMap {T T' : C} (φ : T ⟶ T') : Φ.Pr T →ₗ[ℤ[X]] Φ.Pr T' :=
     · exact Subtype.ext (map_zero _)
     · exact Subtype.ext (map_smul _ _ _)
 
-theorem prMap_apply {T T' : C} (φ : T ⟶ T') (x : Φ.Pr T) (r : ℕ) : (Φ.prMap φ x r).1 = (F.map φ).hom (x r).1 := rfl
 
 def rees : C ⥤ ModuleCat.{w} ℤ[X] where
   obj T := ModuleCat.of _ (Φ.Pr T)
@@ -107,9 +106,7 @@ def comap (G : C' ⥤ C) : Flt (G ⋙ F) where
   μ := Φ.μ
   mul r T := Φ.mul r (G.obj T)
 
-theorem comap_rees (G : C' ⥤ C) : (Φ.comap G).rees = G ⋙ Φ.rees := rfl
 
-theorem comap_fn (G : C' ⥤ C) (r : ℕ) : ((Φ.comap G).S r).fn = G ⋙ (Φ.S r).fn := rfl
 
 def FAcyc {T T' : C} (i : T ⟶ T') (g : T' ⟶ T') : Prop :=
   Function.Injective (F.map i).hom ∧

@@ -298,11 +298,6 @@ def conjPrime₂ (M : TRep R G) (N : Subgroup G) [N.Normal] (s : G) : Pair (M.re
     rw [← map_mul, ← map_mul]
     congr 2; group
 
-theorem partialProd_coe {N : Subgroup G} {n : ℕ} (g : Fin n → N) (j : Fin (n + 1)) :
-    Fin.partialProd (fun i => (g i : G)) j = ((Fin.partialProd g j : N) : G) := by
-  induction j using Fin.induction with
-  | zero => simp [Fin.partialProd_zero]
-  | succ j ih => simp [Fin.partialProd_succ, ih]
 
 theorem retr_conj (N : Subgroup G) [N.Normal] (s h : G) (hh : h ∈ N) :
     (retr N (s * h) : G) = s * h * (rep N s)⁻¹ := by

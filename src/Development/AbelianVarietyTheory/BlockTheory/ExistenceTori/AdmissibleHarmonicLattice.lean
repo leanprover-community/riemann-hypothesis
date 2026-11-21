@@ -180,13 +180,5 @@ theorem std_stdAt (s : ℕ) : (Lat.std E n).StdAt s := by
   have h1 : ¬ p ∣ 1 := fun h => hp.one_lt.ne' (Nat.dvd_one.1 h)
   exact ⟨fun x hx => ⟨1, h1, by rw [one_smul]; exact hx⟩, fun x hx => ⟨1, h1, by rw [one_smul]; exact hx⟩⟩
 
-theorem std_admissible {H : Host E} (l : Level H) : (Lat.std E n).Admissible l.M l.M := by
-  refine ⟨l.odd, dvd_rfl, ?_⟩
-  intro x hx
-  change x ∈ stdMod E n ⊓ stdMod E n
-  rw [inf_idem]
-  rw [mulStd, Submodule.mem_smul_pointwise_iff_exists] at hx
-  obtain ⟨y, hy, rfl⟩ := hx
-  exact (stdMod E n).smul_mem _ hy
 
 end GlobalTheory.IndefiniteRowSideFullHecke.AdmissibleHarmonicLattice

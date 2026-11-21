@@ -1,6 +1,131 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.RoundDown
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MapCSmulMulVec
 
+section
+noncomputable section
+
+open PowerSeries
+
+namespace GlobalTheory.NB
+
+namespace Fr
+
+variable {l : ℕ} {O : Type} [CommRing O] (R : Fr l O)
+
+def pt (k : ℕ) (τ : Fin R.e) : O⟦X⟧ := (R.φ ^ k) (X - C (R.ϖ τ))
+
+def OrdGe (π : O⟦X⟧) (i : ℤ) (x : R.EE) : Prop :=
+  ∃ (f g : O⟦X⟧) (a y : ℕ), (l : O⟦X⟧) ^ y ∈ Ideal.span {f, π} ∧ 0 ≤ (a : ℤ) + i ∧
+    R.ι (f * π ^ a) * x = R.ι (π ^ ((a : ℤ) + i).toNat * g)
+
+def ConstMod (π : O⟦X⟧) (i : ℤ) (x : R.EE) : Prop :=
+  ∃ (y : ℕ) (c : O), R.OrdGe π i ((l : R.EE) ^ y * x - algebraMap O R.EE c)
+
+def cst {r : ℕ} (a : Fin r → O) : Fin r → R.EE := fun k => algebraMap O R.EE (a k)
+
+def γv {r : ℕ} : (Fin r → R.EE) →ₗ[O] (Fin r → R.EE) := R.γE.toLinearMap.compLeft (Fin r)
+
+variable [IsDomain O]
+
+def toD (_R : Fr l O) {r : ℕ} (a : Fin r → O) : Fin r → FractionRing O :=
+  fun k => algebraMap O (FractionRing O) (a k)
+
+def InLev {r : ℕ} (π : O⟦X⟧) (Fl : ℤ → Submodule (FractionRing O) (Fin r → FractionRing O))
+    (g : Fin r → R.EE) : Prop :=
+  ∃ (y N : ℕ) (u : Fin N → ℤ) (a : Fin N → Fin r → O) (x : Fin N → R.EE),
+    (∀ t, R.toD (a t) ∈ Fl (u t) ∧ R.OrdGe π (-(u t)) (x t)) ∧
+      (l ^ y : ℕ) • g = ∑ t, x t • R.cst (a t)
+
+def InLevC {r : ℕ} (π : O⟦X⟧) (Fl : ℤ → Submodule (FractionRing O) (Fin r → FractionRing O))
+    (g : Fin r → R.EE) : Prop :=
+  ∃ (y : ℕ) (a : Fin r → O), R.InLev π Fl ((l ^ y : ℕ) • g - R.cst a)
+
+end Fr
+
+def roundUp {K V : Type} [Field K] [AddCommGroup V] [Module K V] (b : ℕ) (Cs : Submodule K V)
+    (u : ℤ) : Submodule K V := if u ≤ 0 then ⊤ else if u ≤ b then Cs else ⊥
+
+def roundDown {K V : Type} [Field K] [AddCommGroup V] [Module K V] (b : ℕ) (Fs : Submodule K V)
+    (u : ℤ) : Submodule K V := if u ≤ -(b : ℤ) then ⊤ else if u ≤ 0 then Fs else ⊥
+
+def winU (b S η : ℕ) : Set ℤ := Set.Icc (b : ℤ) (b + S) ∪ Set.Icc (-(η : ℤ)) η
+
+def winD (b S η : ℕ) : Set ℤ := Set.Icc (-((b : ℤ) + S)) (-(b : ℤ)) ∪ Set.Icc (-(η : ℤ)) η
+
+def win (up : Bool) (b S η : ℕ) : Set ℤ := if up then winU b S η else winD b S η
+
+def IsCuts {n : ℕ} (cut : ZMod n → Prop) (len : ZMod n → ℕ) : Prop :=
+  (∃ c, cut c) ∧ ∀ c, cut c → 1 ≤ len c ∧ len c ≤ n ∧ cut (c - (len c : ZMod n)) ∧
+    ∀ k, 0 < k → k < len c → ¬ cut (c - (k : ZMod n))
+
+namespace Fr
+
+variable {l : ℕ} {O : Type} [CommRing O] (R : Fr l O)
+
+def Star (j : ℕ) (f : O⟦X⟧) (g : ℕ) : Prop :=
+  ∀ y, 1 ≤ y → InId ((l : O) ^ eF l y) f ((l : O⟦X⟧) ^ g * (R.φ ^ j) X ^ y)
+
+def IsMon (j : ℕ) (f : O⟦X⟧) : Prop := ∃ (m : ℕ) (a : ℕ → ℕ), f = X ^ m * R.pp j a
+
+end Fr
+
+namespace Sys
+
+variable {l : ℕ} {O : Type} [CommRing O] {R : Fr l O} {n r : ℕ} (S : Sys R n r)
+
+def IsFrame (i : ZMod n) (ρ k : ℕ) (H : Matrix (Fin r) (Fin r) O⟦X⟧) : Prop :=
+  (∀ a b, X ∣ (H - (l : O⟦X⟧) ^ k • (1 : Matrix (Fin r) (Fin r) O⟦X⟧)) a b) ∧
+    ∀ a b, X ^ ρ ∣ (S.G i * H.map R.γ - H) a b
+
+def Coord (c' : ZMod n) (m : ℕ) (f : O⟦X⟧) (x g : Fin r → R.EE) : Prop :=
+  ∃ (ρ k y : ℕ) (H : Matrix (Fin r) (Fin r) O⟦X⟧), S.IsFrame c' ρ k H ∧
+    InMul f (R.N0 r) (((R.φ ^ m) X) ^ ρ • g) ∧
+    InMul f (S.P c' m) ((l ^ y : ℕ) • ((l ^ k : ℕ) • x - ∑ j, g j • S.φit c' m (fun a => R.ι (H a j))))
+
+variable [IsDomain O]
+
+def FilArc (c' : ZMod n) (m s : ℕ) (τ : Fin R.e) (u : ℤ) :
+    Submodule (FractionRing O) (Fin r → FractionRing O) :=
+  (S.Fil (c' + ((m - s : ℕ) : ZMod n)) τ u).comap (S.φ0it c' (m - s)).mulVecLin
+
+def InNN (c' : ZMod n) (m : ℕ) (g : Fin r → R.EE) : Prop :=
+  ∀ s < m, ∀ τ, R.InLev (R.pt s τ) (S.FilArc c' m s τ) g
+
+def Wid (i : ZMod n) (a b : ℕ) : Prop := ∀ τ, S.JumpsIn i τ (Set.Icc (-(a : ℤ)) b)
+
+def Lat (c : ZMod n) (j : ℕ) : Submodule O (Fin r → FractionRing O) :=
+  (D0 O r).map ((S.φ0it c j).mulVecLin.restrictScalars O)
+
+end Sys
+
+def ExtK {l : ℕ} {O : Type} [CommRing O] {R : Fr l O} {n r : ℕ} (S : Sys R n r)
+    (K : ZMod n → O⟦X⟧ → Prop) : Prop :=
+  ∀ (g : ℕ) (pr : Fin g → DD R n r × DD R n r), (∀ k, pr k ∈ S.Zf) →
+    ∃ (Y : Sys R n (r + g)) (F : Hom S Y) (F' : Hom Y (Sys.one R n g)), F.IsSES F' ∧
+      (∀ k, F.IsClassOf F' (Pi.single k 1) (pr k)) ∧ (∀ i f, K i f → F'.Kills i f) ∧
+      ∀ i, ∃ a : ℕ, F'.Kills i ((l : O⟦X⟧) ^ a)
+
+namespace Hom
+
+variable {l : ℕ} {O : Type} [CommRing O] {R : Fr l O} {n r r' : ℕ} {S : Sys R n r} {S' : Sys R n r'}
+  (F : Hom S S')
+
+def F0 (i : ZMod n) : Matrix (Fin r') (Fin r) O := (F.F i).map constantCoeff
+
+def Good : Prop := F.Onto ∧ ∀ i, ∃ a : ℕ, F.Kills i ((l : O⟦X⟧) ^ a)
+
+def LiftsAt (c' : ZMod n) (m : ℕ) (Λ : O⟦X⟧) (e : ℕ) (g : Fin r' → R.EE) : Prop :=
+  ∃ (w₁ : Fin r → R.EE) (v : Fin r' → R.EE), w₁ ∈ S.I (c' + (m : ZMod n)) ∧ Sys.Poles w₁ ∧
+    Λ • v ∈ S'.P c' m ∧ S'.Coord c' m (X * Λ) v ((l ^ e : ℕ) • g) ∧
+    Sys.InMul X (R.N0 r') (F.fl (c' + (m : ZMod n)) w₁ - v)
+
+end Hom
+
+end GlobalTheory.NB
+end
+end
+
+section
 noncomputable section
 
 open PowerSeries
@@ -186,32 +311,8 @@ theorem typed_iff {up : ZMod n → Fin R.e → Bool} {b : ZMod n → Fin R.e →
   ⟨fun H => ⟨⟨H.good.1, H.jumps, H.size, H.le_h, H.low⟩, H.good.2⟩,
     fun H => ⟨⟨H.1.onto, H.2⟩, H.1.jumps, H.1.size, H.1.le_h, H.1.low⟩⟩
 
-theorem cHyp_iff [NeZero n] {b : ZMod n → ℕ} {Sn η m h : ℕ} :
-    CHyp F b Sn η m h ↔ CSet F b Sn η m h ∧ (∀ i, ∃ a : ℕ, F.Kills i ((l : O⟦X⟧) ^ a)) ∧
-      ∀ i, F.Kills i (R.E ^ aC l (h + η)) :=
-  ⟨fun H => ⟨⟨H.isA, H.l_ge, Nat.pos_of_ne_zero (NeZero.ne n), H.even, (typed_iff.1 H.typed).1,
-      H.big, H.half⟩, H.typed.good.2, H.kills⟩,
-    fun H => ⟨H.1.isA, H.1.l_ge, H.1.even, typed_iff.2 ⟨H.1.typed, H.2.1⟩, H.1.big, H.1.half,
-      H.2.2⟩⟩
 
-theorem bHyp_iff [NeZero n] {up : ZMod n → Bool} {sz : ZMod n → ℕ} {b w Sn η m h : ℕ}
-    {A ρ : ZMod n → ℕ} :
-    BHyp F up sz b w Sn η m h A ρ ↔ BSet F up sz b w Sn η m h ∧ CutBounds F sz w Sn η h A ρ :=
-  ⟨fun H => ⟨⟨H.isA, H.l_ge, Nat.pos_of_ne_zero (NeZero.ne n), (typed_iff.1 H.typed).1, H.w_pos,
-      H.small, H.thick_or, H.some_thin, H.h_def⟩,
-      H.killX, H.killL, H.killCut, H.A_le, H.a_le, H.A_next, H.A_cut⟩,
-    fun ⟨H, h1, h2, h3, h4, h5, h6, h7⟩ => ⟨H.isA, H.l_ge, typed_iff.2 ⟨H.typed, fun i => ⟨_, h2 i⟩⟩,
-      H.w_pos, H.small, H.thick_or, H.some_thin, H.h_def, h1, h2, h3, h4, h5, h6, h7⟩⟩
 
-theorem TypedOnto.jumps_width {up : ZMod n → Fin R.e → Bool} {b : ZMod n → Fin R.e → ℕ}
-    {Sn η m h : ℕ} (H : TypedOnto F up b Sn η m h) (i : ZMod n) (τ : Fin R.e) :
-    S₁.JumpsIn i τ (Set.Icc (-((if up i τ then η else b i τ + Sn : ℕ) : ℤ))
-      ((if up i τ then b i τ + Sn else η : ℕ) : ℤ)) := by
-  intro a ha
-  have h1 := H.jumps i τ a ha
-  have h2 := H.size i τ
-  unfold win winU winD at h1
-  cases hu : up i τ <;> simp [hu] at h1 ⊢ <;> omega
 
 theorem BSet.lt_iff {up : ZMod n → Bool} {sz : ZMod n → ℕ} {b w Sn η m h : ℕ}
     (H : BSet F up sz b w Sn η m h) (i : ZMod n) : sz i < b ↔ sz i ≤ w := by
@@ -254,3 +355,5 @@ example : secondSignatureConstant 11 100 = 3 ∧ cDC 11 100 = 11 ∧ MC 11 100 =
     MB 11 100 = 21 := by decide
 
 end GlobalTheory.NB
+end
+end

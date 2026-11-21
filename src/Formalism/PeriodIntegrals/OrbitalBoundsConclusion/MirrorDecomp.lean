@@ -1,7 +1,7 @@
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MirrorDecomposition.MirrorDecompOf
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.StabPairs
-import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.EichlerTau
-import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.LowUniSplit
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialProperness.FvecCastSucc
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialProperness.MXMulVecMid
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialProperness.HermitianXiOrthogonal
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LowerUnipotentSplit.SecondFactorMemLowerTriangular
 
-theorem mirrorDecomp : Formalism.FourierDecayAlt.C2.MirrorDecomp :=
-  PI.MirrorSection₂.mirrorDecomp_of stabPairs eichlerTau lowUniSplit

@@ -63,10 +63,6 @@ theorem oneHLat_good : (oneHLat K).Good := by
   rw [show (oneHLat K).X _ = 1 from rfl, Matrix.det_one]
   exact isUnit_one
 
-theorem oneHLat_rank : (oneHLat K).rank = 1 := by
-  show Module.finrank K (Submodule.span K ((oneHLat K).L : Set (oneHLat K).V)) = 1
-  rw [oneHLat_span, finrank_top]
-  exact (Module.finrank_fin_fun K)
 
 variable {K} (σ : K →+* ℂ)
 
@@ -221,10 +217,6 @@ theorem trivialColumns_ramified_top (hT2 : T ≠ 2) (Dst : ℝ) (hD : 0 < Dst) :
   unfold ColumnsAtT.Mram
   simp only [trivialColumns_norm_zero Tau T hT2, LinearMap.ker_zero, iInf_top, inf_top_eq]
 
-theorem trivialColumns_du_eq_one (hT2 : T ≠ 2) (Dst : ℝ) (hD : 0 < Dst) : (baseColumnsAt Tau T Dst hD).du = 1 := by
-  unfold ColumnsAtT.du
-  rw [trivialColumns_ramified_top Tau T hT2, finrank_top]
-  exact (cst.finrank_eq).symm.trans (Module.finrank_self ℂ)
 
 abbrev period1 : PeriodMap R0 (chain1 Tau) where
   Mt := Z0
@@ -240,8 +232,6 @@ abbrev member1 (Dst : ℝ) (hD : 0 < Dst) : Member R0 Tau (fun _ => hc0) :=
 def eMu1 (hT2 : T ≠ 2) (Dst : ℝ) (hD : 0 < Dst) : ℂ ≃ₗ[ℂ] (baseColumnsAt Tau T Dst hD).Mram :=
   cst.trans (LinearEquiv.ofTop _ (trivialColumns_ramified_top Tau T hT2 Dst hD)).symm
 
-theorem eMu1_coe (hT2 : T ≠ 2) (Dst : ℝ) (hD : 0 < Dst) (z : ℂ) :
-    ((eMu1 Tau T hT2 Dst hD z : (baseColumnsAt Tau T Dst hD).Mram) : FU) = fun _ _ => z := rfl
 
 section Forms
 
@@ -326,10 +316,6 @@ def forms1 : MemberForms LL embLL Pl Tau (fun _ => hc0) (chain1 Tau) (baseColumn
   thFree := fun _ _ _ _ => 1
   thFree_nonneg := fun _ _ _ _ => zero_le_one
 
-theorem forms1_ipC (φ ψ : FU) :
-    (forms1 Tau T embLL Pl hTau Dst hD).ipC 0 φ ψ = starRingEnd ℂ (φ () ()) * ψ () () := by
-  show ∑ c : Unit, (chain1 Tau).wt 0 c * ip1 (φ c) (ψ c) = _
-  simp only [chain1_wt, one_mul, Finset.univ_unique, Finset.sum_singleton, trivialInner_apply]
 
 end Forms
 

@@ -96,9 +96,6 @@ def osmul (T : LocLat G Qp LL O) (o : O) (x : TW R T) : TW R T :=
 
 end Generic
 
-theorem inf_inf_eq_of_inf_eq {α : Type} [SemilatticeInf α] {a b c d : α} (h : a ⊓ c = a ⊓ d) :
-    a ⊓ b ⊓ c = a ⊓ b ⊓ d := by
-  rw [inf_right_comm, h, inf_right_comm]
 
 section Hyp
 
@@ -149,19 +146,7 @@ open Classical in
 def jumpsAt (P : LocPrime l) (T : Lat K LL) (τ : ↥K.1 →ₐ[ℚ_[l]] ↥LL.1) (M₀ h₀ : ℕ) : Finset ℤ :=
   (Finset.Icc (-(M₀ : ℤ)) (h₀ : ℤ)).filter fun u => IsJumpV (P.PD K) T.ρ τ u
 
-theorem isJumpAll_of_isJumpV (P : LocPrime l) (T : Lat K LL) (τ : ↥K.1 →ₐ[ℚ_[l]] ↥LL.1) (u : ℤ)
-    (h : IsJumpV (P.PD K) T.ρ τ u) : IsJumpAll P T u := by
-  intro h'
-  apply h
-  exact inf_inf_eq_of_inf_eq h'
 
-theorem mem_jumpsAt {s : ℕ} {hK : K.1 ≤ Ks K s} {M₀ h₀ : ℕ} {T : Lat K LL}
-    (hW : HypW AI s hK M₀ h₀ T) (τ : ↥K.1 →ₐ[ℚ_[l]] ↥LL.1) (u : ℤ) :
-    u ∈ jumpsAt P T τ M₀ h₀ ↔ IsJumpV (P.PD K) T.ρ τ u := by
-  classical
-  unfold jumpsAt
-  rw [Finset.mem_filter, Finset.mem_Icc]
-  exact ⟨fun h => h.2, fun h => ⟨hW.2.1 u (isJumpAll_of_isJumpV P T τ u h), h⟩⟩
 
 end Hyp
 
@@ -184,10 +169,6 @@ theorem InvariantsKilledAllCoeff.good {D : D7} (h : InvariantsKilledAllCoeff D) 
     InvariantsKilled D :=
   fun l _ K s LL hg => h l K s LL hg.1 hg.2.1 hg.2.2.1
 
-theorem nZero_eq_zero (l : ℕ) [Fact l.Prime] (H₀ : ℕ) (h : H₀ ≤ l - 1) : nZero l H₀ = 0 := by
-  unfold nZero
-  rw [Nat.find_eq_zero]
-  simpa using h
 
 theorem piS_mem {P : LocPrime l} (AI : LocAinf l P) (K : FinExt l) (s : ℕ) :
     piS AI s ∈ ringAs AI K s := fun _ =>

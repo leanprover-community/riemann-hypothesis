@@ -315,19 +315,9 @@ def Prov.loc1 {D : Formalism.BasicNotions.D7} (X : Prov D) (i : D.jet.Sit1) : Lo
   nu := X.nu1 i
   nu_rows := X.oneLetterPartitionColumnBound i
 
-theorem Prov.loc_even {D : Formalism.BasicNotions.D7} (X : Prov D) (i : D.jet.Sit) : Even ((X.loc i).N0 * (X.loc i).N1) := by
-  show Even ((D.jet.loc i).N0 * (D.jet.loc i).N1)
-  rw [D.jet.N0_eq i]
-  exact (N_even D.R _).mul_right _
 
-theorem Prov.one_letter_local_even_product {D : Formalism.BasicNotions.D7} (X : Prov D) (i : D.jet.Sit1) : Even ((X.loc1 i).N0 * (X.loc1 i).N1) := by
-  show Even ((D.jet.loc1 i).N0 * (D.jet.loc1 i).N1)
-  rw [D.jet.firstJet_lowerRank_eq i]
-  exact (N_even D.R _).mul_right _
 
-theorem Prov.loc_inp {D : Formalism.BasicNotions.D7} (X : Prov D) (i : D.jet.Sit) : (X.loc i).Inp := ⟨(D.jet.loc i).five_le_l, X.loc_even i⟩
 
-theorem Prov.one_letter_local_input {D : Formalism.BasicNotions.D7} (X : Prov D) (i : D.jet.Sit1) : (X.loc1 i).Inp := ⟨(D.jet.loc1 i).five_le_l, X.one_letter_local_even_product i⟩
 
 section OneRecord
 
@@ -349,11 +339,6 @@ def PointsLemma (C : ℝ) : Prop := ∀ i, 5 ≤ (X.loc1 i).l → (X.loc1 i).Thm
 
 def Stmt (C : ℝ) : Prop := admitted D X → Conclusion1 D X C ∧ Conclusion2 D X C ∧ PointsLemma D X C ∧ Conclusion4
 
-theorem statement_of_all_bounds {C : ℝ} (h : ExportAllConjugates C) (h4 : Conclusion4) : Stmt D X C := by
-  unfold Stmt admitted adm1 adm3 Conclusion1 Conclusion2 PointsLemma
-  rintro ⟨h1, -, h3⟩
-  refine ⟨fun i hl => (h.1 _ (h1 i ⟨hl, X.loc_even i⟩)).1, fun i hl => (h.1 _ (h1 i ⟨hl, X.loc_even i⟩)).2,
-    fun i hl => h.2 _ (h3 i ⟨hl, X.one_letter_local_even_product i⟩), h4⟩
 
 end OneRecord
 
@@ -376,15 +361,6 @@ def ErrorExponentStatement (C : ℝ) : Prop :=
   adm2 → (∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), admitted (Fm.D x i) (XF x hx i) →
     Conclusion1 (Fm.D x i) (XF x hx i) C ∧ Conclusion2 (Fm.D x i) (XF x hx i) C ∧ PointsLemma (Fm.D x i) (XF x hx i) C) ∧ Conclusion4
 
-theorem ErrorExponentStatement.of_AdmF {Fm : Formalism.MainNotions.FamP eps} {XF : ProvF Fm} {C : ℝ} (h : ErrorExponentStatement Fm XF C) (hadm : AdmF Fm XF) :
-    Conclusion1Family Fm XF C ∧ Conclusion2Family Fm XF C ∧ Conclusion3Family Fm XF C ∧ Conclusion4 := by
-  unfold ErrorExponentStatement at h
-  unfold AdmF at hadm
-  unfold Conclusion1Family Conclusion2Family Conclusion3Family
-  obtain ⟨h2, hall⟩ := hadm
-  obtain ⟨hrec, h4⟩ := h h2
-  exact ⟨fun x hx i => (hrec x hx i (hall x hx i)).1, fun x hx i => (hrec x hx i (hall x hx i)).2.1,
-    fun x hx i => (hrec x hx i (hall x hx i)).2.2, h4⟩
 
 end Family
 
@@ -394,17 +370,7 @@ def KudlaFamilyStatement (C : ℝ) {eps : ℝ} (Fm : Formalism.MainNotions.FamP 
 def ClosedAbsoluteShare (𝒞 : Formalism.MainNotions.FamClass) : Prop :=
   ∃ C : ℝ, Formalism.MainNotions.Closed 𝒞 (fun Fm CH => KudlaFamilyStatement C Fm CH)
 
-theorem family_statement_of_all_bounds {C : ℝ} (h : ExportAllConjugates C) (h4 : Conclusion4) {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (CH : ℝ) :
-    KudlaFamilyStatement C Fm CH := by
-  unfold KudlaFamilyStatement ErrorExponentStatement
-  intro XF _
-  refine ⟨fun x hx i hadm => ?_, h4⟩
-  obtain ⟨a, b, c, _⟩ := statement_of_all_bounds (Fm.D x i) (XF x hx i) h h4 hadm
-  exact ⟨a, b, c⟩
 
-theorem closed_statement_of_all_local (h : RealisationStatementAll) (hSB : MinorProdSpanHasCompl) (𝒞 : Formalism.MainNotions.FamClass) : ClosedAbsoluteShare 𝒞 := by
-  obtain ⟨⟨C, hC⟩, h4⟩ := h hSB
-  refine ⟨C, 1, one_pos, fun eps _ _ => ⟨⟨0, fun _ => 0, fun _ => 0, fun _ => 0⟩, fun Fm CH _ _ => family_statement_of_all_bounds hC h4 Fm CH⟩⟩
 
 end Formalism.MainNotions.product_zeroth_first_parts
 

@@ -14,71 +14,16 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} {I : TC B X} {l : I.Laws} {Z : TC.Later B (I.cols l)} {u : B.Word} {a : I.ι}
 
-theorem live_id {Ch₀ : ℕ → Type} (A : TwDat I l Z u a Ch₀) : A.Live (fun _ => id) :=
-  ⟨fun _ => Function.injective_id, Function.surjective_id, Function.surjective_id,
-    fun _ _ γ h => absurd ⟨γ, rfl⟩ h⟩
 
 def Reached {Ch₀ : ℕ → Type} (A : TwDat I l Z u a Ch₀) : ∀ j, Ch₀ j → Prop
   | 0, _ => True
   | j + 1, β => j + 1 = B.R.m ∨ ∃ (hj : j + 1 ≤ B.R.m) (α : Ch₀ j), ∃ z, A.xi j hj α β z ≠ 0
 
-theorem live_reached {Ch₀ : ℕ → Type} (A : TwDat I l Z u a Ch₀) :
-    A.Live (Ch := fun j => {β // Reached A j β}) (fun _ => Subtype.val) := by
-  refine ⟨fun _ => Subtype.val_injective, fun β => ⟨⟨β, trivial⟩, rfl⟩, ?_, ?_⟩
-  · have key : ∀ n, n = B.R.m → ∀ β : Ch₀ n, Reached A n β := by
-      intro n hn β
-      cases n with
-      | zero => trivial
-      | succ n => exact Or.inl hn
-    exact fun β => ⟨⟨β, key _ rfl β⟩, rfl⟩
-  · intro j hj γ hγ α z
-    by_contra h
-    exact hγ ⟨⟨γ, Or.inr ⟨hj, α, z, h⟩⟩, rfl⟩
 
-theorem reached_mem {Ch₀ Ch : ℕ → Type} {A : TwDat I l Z u a Ch₀} {ι : ∀ j, Ch j → Ch₀ j} (h : A.Live ι) :
-    ∀ j (β : Ch₀ j), Reached A j β → β ∈ Set.range (ι j)
-  | 0, β, _ => h.first β
-  | j + 1, β, Or.inl e => by
-      have key : ∀ n, B.R.m = n → Function.Surjective (ι n) := by rintro _ rfl; exact h.last
-      exact key _ e.symm β
-  | j + 1, β, Or.inr ⟨hj, α, z, hz⟩ => by
-      by_contra hn
-      exact hz (h.dead j hj β hn α z)
 
-theorem ramL_first {Ch₀ Ch : ℕ → Type} {A : TwDat I l Z u a Ch₀} {ι : ∀ j, Ch j → Ch₀ j} (h : A.Live ι) (φ) :
-    A.RamL ι 0 φ ↔ RamT 0 φ := ⟨fun h => h.1, fun h' => ⟨h', fun _ hc => absurd (h.first _) hc⟩⟩
 
-theorem ramL_last {Ch₀ Ch : ℕ → Type} {A : TwDat I l Z u a Ch₀} {ι : ∀ j, Ch j → Ch₀ j} (h : A.Live ι) (φ) :
-    A.RamL ι B.R.m φ ↔ RamT B.R.m φ := ⟨fun h => h.1, fun h' => ⟨h', fun _ hc => absurd (h.last _) hc⟩⟩
 
-theorem pinColL_of_pinColT {Ch₀ Ch : ℕ → Type} {A : TwDat I l Z u a Ch₀} {ι : ∀ j, Ch j → Ch₀ j} (hι : A.Live ι)
-    {ψ θ x vac c₀ kom dd w Ram rd cK} (h : PinColT A ψ θ x vac c₀ kom dd w Ram rd cK) :
-    PinColL A ι ψ θ x vac c₀ kom (fun j α γ => dd j (ι j α) (ι (j + 1) γ)) (fun j α γ => w j (ι j α) (ι (j + 1) γ))
-      (fun j => {φ | A.RamL ι j φ}) (fun j β => rd j (ι j β)) cK :=
-  ⟨h.is, hι, h.om, fun j hj _ _ => h.dat j hj _ _, fun j hj _ _ _ => h.cst j hj _ _, fun _ _ _ => Iff.rfl,
-    fun j hj _ φ y => h.rdq j hj _ φ y⟩
 
-theorem pinColT_of_pinColL {Ch₀ : ℕ → Type} {A : TwDat I l Z u a Ch₀} {ψ θ x vac c₀ kom dd w Ram rd cK}
-    (h : PinColL A (fun _ => id) ψ θ x vac c₀ kom dd w Ram rd cK) (hc : ∀ j, j < B.R.m → c₀ j ≠ 0)
-    (hv : ∀ j, j < B.R.m → ∀ α, volLev (x j).vol (A.U j α) ≠ 0) :
-    ∃ w', PinColT A ψ θ x vac c₀ kom dd w' Ram rd cK := by
-  have hd : ∀ j, j < B.R.m → ∀ α γ, (volLev (x j).vol (A.U j α) : ℂ) * c₀ j * (A.chr (j + 1) (A.xr j α) : ℂ) *
-      (A.chr (j + 1) (A.xr (j + 1) γ) : ℂ)⁻¹ ≠ 0 := fun j hj α γ =>
-    mul_ne_zero (mul_ne_zero (mul_ne_zero (by exact_mod_cast hv j hj α) (hc j hj)) (Circle.coe_ne_zero _))
-      (inv_ne_zero (Circle.coe_ne_zero _))
-  refine ⟨fun j α γ => cK j / ((volLev (x j).vol (A.U j α) : ℂ) * c₀ j * (A.chr (j + 1) (A.xr j α) : ℂ) *
-      (A.chr (j + 1) (A.xr (j + 1) γ) : ℂ)⁻¹), h.is, h.om, fun j hj α γ => ⟨(h.dat j hj α γ).1, ?_⟩, fun j hj α γ => ?_,
-    fun j hj φ => (h.ram j hj φ).trans ⟨fun h => h.1, fun h' => ⟨h', fun c hc => absurd ⟨_, rfl⟩ hc⟩⟩, h.rdq⟩
-  · have h2 := (h.dat j hj α γ).2
-    convert h2 using 2 with z
-    by_cases hz : A.xi j hj α γ z = 0
-    · simp only [id]; rw [hz, mul_zero, mul_zero]
-    · have e := h.cst j hj α γ ⟨z, hz⟩
-      simp only [id] at e ⊢
-      congr 1
-      rw [div_eq_iff (hd j hj α γ), e]; ring
-  · have := hd j hj α γ
-    rw [show ∀ p q r s t : ℂ, p * q * r * s * t = q * (p * r * s * t) from fun _ _ _ _ _ => by ring, div_mul_cancel₀ _ this]
 
 theorem w_ne_zero {Ch₀ Ch : ℕ → Type} {A : TwDat I l Z u a Ch₀} {ι : ∀ j, Ch j → Ch₀ j}
     {ψ θ x vac c₀ kom dd w Ram rd cK} (h : PinColL A ι ψ θ x vac c₀ kom dd w Ram rd cK) (j) (hj : j + 1 ≤ B.R.m)
@@ -103,28 +48,8 @@ theorem pinTopL_withTop (h : IsEmbTop (D := I.rec7 l Z) (TC.z0 X u) ((g.oT B.R.m
     show (MulAut.conj g.bT⁻¹) h ∈ levG _ R.βX (datXP R P t) ↔ _
     rw [MulAut.conj_apply, inv_inv]; rfl, fun _ _ _ => rfl, rfl⟩
 
-theorem pinChL_withTop (ε : ℂ) {c₀} {Ch₀ : ℕ → Type} {A : TwDat I l Z u a Ch₀} {ι w} (h : PinChL R g k c₀ A ι w) :
-    PinChL R g (withTop R g P t k ε) c₀ A ι w := h
 
-theorem pinTopL_lev {UT ε} (h : PinTopL R g P (t := t) k UT ε) : UT = movedLev R g P t := by
-  ext x
-  rw [h.lev]
-  show _ ↔ (MulAut.conj g.bT⁻¹) x ∈ levG _ R.βX (datXP R P t)
-  rw [MulAut.conj_apply, inv_inv]; rfl
 
-theorem top_subsingleton {Ch₀ : ℕ → Type} {A : TwDat I l Z u a Ch₀} (h : A.Is) (β β' : Ch₀ B.R.m) : β = β' := by
-  have hr := h.reads _ le_rfl
-  obtain ⟨c, rfl⟩ := hr.onto β
-  obtain ⟨c', rfl⟩ := hr.onto β'
-  refine (hr.key c c').2 ⟨(Idx.eq_top c.1 le_rfl).trans (Idx.eq_top c'.1 le_rfl).symm, ?_⟩
-  have e : ∀ q : PtAt B.R I.sel (I.tup a) (I.cst a) u B.R.m, cosetIn q = fun _ => ∅ := fun q => by
-    have h2 := q.2
-    have h3 : q.1.2 = ∅ := by
-      have := ysAt_ys_of_ne (R := B.R) I.sel (I.tup a) (I.cst a) (j := B.R.m) (Nat.succ_ne_self _) q.1.1.deco.1.N
-      exact Set.mem_singleton_iff.1 (this ▸ h2)
-    funext P
-    simp [cosetIn, h3]
-  exact (e _).trans (e _).symm
 
 section Emb
 open GlobalTheory.MixModel

@@ -1,6 +1,98 @@
-import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.FatouOm
+import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.EFinSmulEqOfFinPart
+import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.SobSym
+import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.IpTheta
 import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.ContinuousSplitInv
 
+section
+namespace Formalism.IndefR.Eqv
+
+open scoped ContDiff
+open Filter Topology
+
+section MD
+
+variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V]
+
+noncomputable def md (φ : V → ℂ) : (n : ℕ) → (Fin n → V) → ℝ → V → ℂ
+  | 0, _, _, a => φ a
+  | n + 1, v, h, a => (md φ n (Fin.tail v) h (a + h • v 0) - md φ n (Fin.tail v) h a) / h
+
+
+end MD
+
+section MD2
+
+variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V]
+
+
+
+theorem contDiff_fderiv_apply {φ : V → ℂ} (hφ : ContDiff ℝ ∞ φ) (w : V) : ContDiff ℝ ∞ (fun y => fderiv ℝ φ y w) :=
+  (ContinuousLinearMap.apply ℝ ℂ w).contDiff.comp (hφ.fderiv_right (m := ∞) (by simp))
+
+
+end MD2
+
+section MD3
+
+variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V]
+
+
+
+
+end MD3
+
+end Formalism.IndefR.Eqv
+end
+
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory
+  IsDedekindDomain NumberField Filter Topology
+open scoped TensorProduct ContDiff
+
+namespace Formalism.IndefR.Eqv
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+variable {D : D7} {S T : HSp D} {k : ℕ}
+
+def actOAdd (g : GA D S) (h : GA D T) : WO S T →+ WO S T := AddMonoidHom.mk' (actO S T g h) (actO_add g h)
+
+theorem continuous_actO (g : GA D S) (h : GA D T) : Continuous (actO S T g h) := by
+  unfold actO
+  exact (continuous_const.matrix_mul continuous_id).matrix_mul continuous_const
+
+
+
+end Formalism.IndefR.Eqv
+
+end
+end
+
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory
+  IsDedekindDomain NumberField Filter Topology
+open scoped TensorProduct ContDiff
+
+namespace Formalism.IndefR.Eqv
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+variable {D : D7} {S T : HSp D} {k : ℕ}
+
+
+
+
+
+end Formalism.IndefR.Eqv
+
+end
+end
+
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory
@@ -13,42 +105,44 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {S T : HSp D} {k : ℕ}
 
-theorem dH_comp_bound {ψ : AddChar (AF D.host.F) ℂ} {f : WO S T → ℂ} {L M : (Fin k → ℝ) →+ WO S T}
-    (A : (Fin k → ℝ) →L[ℝ] (Fin k → ℝ)) (hMA : ∀ t, M t = L (A t)) (x : WO S T)
-    (hs : ContDiff ℝ ∞ (Gf ψ L f x)) {n : ℕ} (l : Fin n → Fin k) :
-    ‖dH ψ M l f x‖ ≤ ‖A‖ ^ n * ∑ l' : Fin n → Fin k, ‖dH ψ L l' f x‖ := by
-  unfold dH
-  have hs' : ContDiff ℝ ∞ (fun t => heisO ψ S T (L t) f x) := hs
-  have hcomp : (fun t => heisO ψ S T (M t) f x) = (fun t => heisO ψ S T (L t) f x) ∘ A := by
-    funext t
-    simp only [Function.comp_apply, hMA]
-  rw [hcomp, ContinuousLinearMap.iteratedFDeriv_comp_right A hs' 0
-      (by exact_mod_cast (le_top : (n : ℕ∞) ≤ ⊤)),
-    ContinuousMultilinearMap.compContinuousLinearMap_apply, map_zero]
-  set Dg := iteratedFDeriv ℝ n (fun t => heisO ψ S T (L t) f x) 0 with hDg
-  have hexp : ∀ v : Fin k → ℝ, v = ∑ j, v j • Pi.single j (1 : ℝ) := fun v => by
-    ext m
-    simp [Finset.sum_apply, Pi.single_apply]
-  have he1 : ∀ j : Fin k, ‖(Pi.single j (1 : ℝ) : Fin k → ℝ)‖ ≤ 1 := fun j => by
-    refine (pi_norm_le_iff_of_nonneg zero_le_one).mpr fun m => ?_
-    by_cases h : m = j
-    · subst h
-      simp
-    · simp [Pi.single_apply, h]
-  have hc : ∀ i j, ‖(A (Pi.single (l i) (1 : ℝ))) j‖ ≤ ‖A‖ := fun i j =>
-    (norm_le_pi_norm _ j).trans ((A.le_opNorm _).trans
-      (by simpa using mul_le_mul_of_nonneg_left (he1 (l i)) (norm_nonneg A)))
-  rw [show (fun i => A (Pi.single (l i) (1 : ℝ))) =
-      fun i => ∑ j, (A (Pi.single (l i) (1 : ℝ))) j • Pi.single j (1 : ℝ) from funext fun i => hexp _,
-    ContinuousMultilinearMap.map_sum]
-  simp only [ContinuousMultilinearMap.map_smul_univ]
-  rw [Finset.mul_sum]
-  refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun r _ => ?_)
-  rw [norm_smul, norm_prod]
-  refine mul_le_mul_of_nonneg_right ?_ (norm_nonneg _)
-  calc ∏ i, ‖(A (Pi.single (l i) (1 : ℝ))) (r i)‖ ≤ ∏ _i : Fin n, ‖A‖ :=
-        Finset.prod_le_prod (fun i _ => norm_nonneg _) fun i _ => hc i (r i)
-    _ = ‖A‖ ^ n := by simp
+
+end Formalism.IndefR.Eqv
+
+end
+end
+
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory
+  IsDedekindDomain NumberField Filter Topology
+open scoped TensorProduct ContDiff ENNReal
+
+namespace Formalism.IndefR.Eqv
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+variable {D : D7} {S T : HSp D} {k : ℕ}
+
+
+end Formalism.IndefR.Eqv
+
+end
+end
+
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory
+  IsDedekindDomain NumberField Filter Topology
+open scoped TensorProduct ContDiff ENNReal
+
+namespace Formalism.IndefR.Eqv
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+variable {D : D7} {S T : HSp D} {k : ℕ}
+
 
 theorem continuous_psiT (τ : D.what₂.Tau) : Continuous (psiT D τ) := by
   have heq : (psiT D τ : AE D → ℂ) = fun x => gW D (plW D τ) (fstA D.host.F ((basAF D).repr x 0)) +
@@ -69,4 +163,5 @@ theorem continuous_psiT (τ : D.what₂.Tau) : Continuous (psiT D τ) := by
 
 end Formalism.IndefR.Eqv
 
+end
 end

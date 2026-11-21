@@ -1,8 +1,201 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsResidueEval
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LinIndepDescent
+import Development.AbelianVarietyTheory.Definitions.Divisors.NoCommonZeroCombVal
 import BuildAid.ForwardExisting
 
+section
+open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.ClosedPt
+
+open ReciprocityTheory.ChartRestriction.G.DVR.FlatBC (algX)
+open GlobalTheory.CxPts TopologicalSpace
+
+theorem exists_residue_eval : ∀ (F : Type) [Field F] (Y : Scheme.{0}) (p : Y ⟶ Sp F) (σ : F →+* ℂ),
+    LocallyOfFiniteType p → ∀ (B : LB Y), B.IsLB → ∀ z : Y, IsClosed ({z} : Set Y) →
+    ∃ (K : Type) (_ : Field K) (_ : Algebra F K) (_ : FiniteDimensional F K) (e : B.Sec →+ K),
+      (∀ (a : F) (s : B.Sec), e (ReciprocityTheory.ChartRestriction.G.DVR.FlatBC.algX p ⊤ a • s) = algebraMap F K a * e s) ∧
+      (∀ s : B.Sec, z ∈ ReciprocityTheory.ChartRestriction.G.Out.nonzeroLocus s → e s ≠ 0) ∧
+      ∀ τ : K →+* ℂ, τ.comp (algebraMap F K) = σ → ∃ (y : GlobalTheory.CxPts p σ) (i : B.ι),
+        y.1 (IsLocalRing.closedPoint ℂ) = z ∧ ∀ s : B.Sec, GlobalTheory.CxPts.secVal p σ s i y = τ (e s) := by
+  intro F _ Y p σ hp B hB z hz
+  obtain ⟨i, hzi⟩ : ∃ i, z ∈ B.U i := Opens.mem_iSup.1 (by rw [hB.cover]; trivial)
+  obtain ⟨U, hU, hzU, hUi⟩ := Opens.isBasis_iff_nbhd.1 Y.isBasis_affineOpens hzi
+  replace hU : IsAffineOpen U := hU
+  letI : Algebra F Γ(Y, U) := (algX p U).toAlgebra
+  have hft : (algX p U).FiniteType :=
+    (HasRingHomProperty.appLE @LocallyOfFiniteType p ‹_› ⟨⊤, isAffineOpen_top _⟩ ⟨U, hU⟩ le_top).comp
+      (RingHom.FiniteType.of_surjective _
+        (Scheme.ΓSpecIso (CommRingCat.of F)).symm.commRingCatIsoToRingEquiv.surjective)
+  have hftA : Algebra.FiniteType F Γ(Y, U) := hft
+  set x0 := hU.primeIdealOf ⟨z, hzU⟩ with hx0
+  have hfx : hU.fromSpec x0 = z := hU.fromSpec_primeIdealOf ⟨z, hzU⟩
+  have hcl : IsClosed ({x0} : Set (PrimeSpectrum Γ(Y, U))) := by
+    have h1 : IsClosed (hU.fromSpec.base ⁻¹' {z}) := hz.preimage hU.fromSpec.base.hom.continuous
+    have h2 : hU.fromSpec.base ⁻¹' {z} = {x0} := by
+      ext q
+      simp only [Set.mem_preimage, Set.mem_singleton_iff]
+      constructor
+      · intro hq
+        exact hU.fromSpec.isOpenEmbedding.injective (hq.trans hfx.symm)
+      · rintro rfl; exact hfx
+    rw [h2] at h1
+    exact h1
+  have hmax : x0.asIdeal.IsMaximal := (PrimeSpectrum.isClosed_singleton_iff_isMaximal _).1 hcl
+  let P := x0.asIdeal
+  letI : Field (Γ(Y, U) ⧸ P) := Ideal.Quotient.field P
+  have : Algebra.FiniteType F (Γ(Y, U) ⧸ P) :=
+    Algebra.FiniteType.of_surjective (Ideal.Quotient.mkₐ F P) Ideal.Quotient.mk_surjective
+  have hfin : Module.Finite F (Γ(Y, U) ⧸ P) := finite_of_finite_type_of_isJacobsonRing F _
+  have hmem : ∀ f : Γ(Y, U), z ∈ Y.basicOpen f ↔ f ∉ P := by
+    intro f
+    have h1 : x0 ∈ hU.fromSpec ⁻¹ᵁ Y.basicOpen f ↔ hU.fromSpec x0 ∈ Y.basicOpen f := Iff.rfl
+    rw [hfx, hU.fromSpec_preimage_basicOpen] at h1
+    exact h1.symm.trans (PrimeSpectrum.mem_basicOpen _ _)
+  let e : B.Sec →+ Γ(Y, U) ⧸ P :=
+    { toFun := fun s => Ideal.Quotient.mk P (resG Y hUi (s.f i))
+      map_zero' := by simp
+      map_add' := fun s t => by simp only [GlobalTheory.LB.add_f, map_add] }
+  refine ⟨Γ(Y, U) ⧸ P, inferInstance, inferInstance, hfin, e, ?_, ?_, ?_⟩
+  · intro a s
+    change Ideal.Quotient.mk P (resG Y hUi ((algX p ⊤ a • s).f i)) = _ * Ideal.Quotient.mk P _
+    have hres : resG Y (hUi.trans le_top) (algX p ⊤ a) = algX p U a :=
+      RingHom.congr_fun (GlobalTheory.TopForm.resG_comp_algX p (hUi.trans le_top)) a
+    rw [GlobalTheory.LB.smul_f, map_mul, map_mul, GlobalTheory.LB.resG_resG, hres]
+    rfl
+  · intro s hs
+    obtain ⟨k, hk⟩ := Opens.mem_iSup.1 hs
+    have hki : z ∈ B.U i ⊓ B.U k := ⟨hzi, Y.basicOpen_le _ hk⟩
+    have hrel := GlobalTheory.LB.sec_rel s i k (inf_le_left : B.U i ⊓ B.U k ≤ B.U i) inf_le_right le_rfl
+    have h1 : z ∈ Y.basicOpen (resG Y (inf_le_left : B.U i ⊓ B.U k ≤ B.U i) (s.f i)) := by
+      rw [hrel, Scheme.basicOpen_mul, Y.basicOpen_of_isUnit
+        ((B.g i k).isUnit.map (resG Y le_rfl))]
+      refine ⟨hki, ?_⟩
+      have : resG Y (inf_le_right : B.U i ⊓ B.U k ≤ B.U k) (s.f k) =
+          Y.presheaf.map (homOfLE (inf_le_right : B.U i ⊓ B.U k ≤ B.U k)).op (s.f k) := rfl
+      rw [this, Scheme.basicOpen_res]
+      exact ⟨hki, hk⟩
+    have h2 : z ∈ Y.basicOpen (s.f i) := by
+      have : resG Y (inf_le_left : B.U i ⊓ B.U k ≤ B.U i) (s.f i) =
+          Y.presheaf.map (homOfLE (inf_le_left : B.U i ⊓ B.U k ≤ B.U i)).op (s.f i) := rfl
+      rw [this, Scheme.basicOpen_res] at h1
+      exact h1.2
+    have h3 : z ∈ Y.basicOpen (resG Y hUi (s.f i)) := by
+      have : resG Y hUi (s.f i) = Y.presheaf.map (homOfLE hUi).op (s.f i) := rfl
+      rw [this, Scheme.basicOpen_res]
+      exact ⟨hzU, h2⟩
+    change Ideal.Quotient.mk P _ ≠ 0
+    rw [Ne, Ideal.Quotient.eq_zero_iff_mem]
+    exact (hmem _).1 h3
+  · intro τ hτ
+    let φ : Γ(Y, U) →+* ℂ := τ.comp (Ideal.Quotient.mk P)
+    have hφ : ∀ a, φ (algX p U a) = σ a := fun a => by
+      rw [← hτ]; rfl
+    refine ⟨ofHom hU φ hφ, i, ?_, fun s => ?_⟩
+    · have hker : RingHom.ker φ = P := by
+        rw [RingHom.ker_comp_of_injective _ τ.injective]
+        exact Ideal.mk_ker
+      have hpt : (Spec.map (CommRingCat.ofHom φ)) (IsLocalRing.closedPoint ℂ) = x0 := by
+        apply PrimeSpectrum.ext
+        change Ideal.comap φ (IsLocalRing.maximalIdeal ℂ) = P
+        rw [IsLocalRing.maximalIdeal_eq_bot]
+        exact hker
+      change hU.fromSpec ((Spec.map (CommRingCat.ofHom φ)) (IsLocalRing.closedPoint ℂ)) = z
+      rw [hpt, hfx]
+    · rw [secVal_apply, ← ev_res hUi (ofHom_mem hU φ hφ), ev_ofHom]
+      rfl
+
+end GlobalTheory.CompanionTheory.Ar.ClosedPt
+end
+end
+
+section
+open Matrix
+
+namespace GlobalTheory.CompanionTheory.Arith.DedekindDescent
+
+theorem single_ext (F K : Type) [Field F] [Field K] [Algebra F K] [FiniteDimensional F K]
+    (σ : F →+* ℂ) {κ : Type} [Fintype κ] (b : κ → ℂ)
+    (hb : ∀ c : κ → F, ∑ k, σ (c k) * b k = 0 → c = 0) (x : κ → K)
+    (h : ∀ τ : K →+* ℂ, τ.comp (algebraMap F K) = σ → ∑ k, b k * τ (x k) = 0) : x = 0 := by
+  let _ : Algebra F ℂ := σ.toAlgebra
+  have : CharZero F := ⟨fun a b hab => Nat.cast_injective (R := ℂ) (by
+    have := congrArg σ hab
+    simpa only [map_natCast] using this)⟩
+  have key : ∀ y : K, ∑ k, σ (Algebra.trace F K (x k * y)) * b k = 0 := by
+    intro y
+    have htr : ∀ k, σ (Algebra.trace F K (x k * y)) = ∑ φ : K →ₐ[F] ℂ, φ (x k * y) :=
+      fun k => trace_eq_sum_embeddings ℂ (x := x k * y)
+    simp only [htr, Finset.sum_mul]
+    rw [Finset.sum_comm]
+    refine Finset.sum_eq_zero fun φ _ => ?_
+    have hφ := h (φ : K →+* ℂ) φ.comp_algebraMap
+    have hsplit : ∑ k, φ (x k * y) * b k = φ y * ∑ k, b k * (φ : K →+* ℂ) (x k) := by
+      rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl fun k _ => ?_
+      rw [map_mul, AlgHom.coe_toRingHom]
+      ring
+    rw [hsplit, hφ, mul_zero]
+  funext k0
+  by_contra hne
+  have h0 := congrFun (hb _ (key (x k0)⁻¹)) k0
+  simp only [Pi.zero_apply] at h0 hne
+  rw [mul_inv_cancel₀ hne, ← map_one (algebraMap F K), Algebra.trace_algebraMap, nsmul_eq_mul,
+    mul_one, Nat.cast_eq_zero] at h0
+  exact (Module.finrank_pos (R := F) (M := K)).ne' h0
+
+theorem linIndep_descent : ∀ (F : Type) [Field F] (σ : F →+* ℂ) (J : Type) (K : J → Type) [∀ j, Field (K j)] [∀ j, Algebra F (K j)] [∀ j, FiniteDimensional F (K j)] (ι : Type) [Fintype ι] (v : ι → ∀ j, K j), (∀ a : ι → F, (∀ j, ∑ l, algebraMap F (K j) (a l) * v l j = 0) → a = 0) → ∀ d : ι → ℂ, (∀ j (τ : K j →+* ℂ), τ.comp (algebraMap F (K j)) = σ → ∑ l, d l * τ (v l j) = 0) → d = 0 := by
+  intro F _ σ J K _ _ _ ι _ v hv d hd
+  let _ : Algebra F ℂ := σ.toAlgebra
+  let S := Submodule.span F (Set.range d)
+  have : FiniteDimensional F S := FiniteDimensional.span_of_finite F (Set.finite_range d)
+  let B := Module.finBasis F S
+  have hmem : ∀ l, d l ∈ S := fun l => Submodule.subset_span ⟨l, rfl⟩
+  have hval : ∀ e : Fin (Module.finrank F S) → F,
+      ((∑ k, e k • B k : S) : ℂ) = ∑ k, σ (e k) * (B k : ℂ) := by
+    intro e
+    simp only [AddSubmonoidClass.coe_finsetSum, Submodule.coe_smul, Algebra.smul_def,
+      RingHom.algebraMap_toAlgebra]
+  have hdc : ∀ l, d l = ∑ k, σ (B.repr ⟨d l, hmem l⟩ k) * (B k : ℂ) := by
+    intro l
+    rw [← hval]
+    exact (congrArg Subtype.val (B.sum_repr ⟨d l, hmem l⟩)).symm
+  have hbind : ∀ e : Fin (Module.finrank F S) → F, ∑ k, σ (e k) * (B k : ℂ) = 0 → e = 0 := by
+    intro e he
+    have h1 : ∑ k, e k • B k = 0 := by
+      apply Subtype.ext
+      rw [hval, he]
+      rfl
+    funext k
+    exact Fintype.linearIndependent_iff.1 B.linearIndependent e h1 k
+  have hx : ∀ j k, ∑ l, algebraMap F (K j) (B.repr ⟨d l, hmem l⟩ k) * v l j = 0 := by
+    intro j
+    have hτ' : ∀ τ : K j →+* ℂ, τ.comp (algebraMap F (K j)) = σ →
+        ∀ a, τ (algebraMap F (K j) a) = σ a := fun τ hτ a => by rw [← hτ]; rfl
+    have := single_ext F (K j) σ (fun k => (B k : ℂ)) hbind
+      (fun k => ∑ l, algebraMap F (K j) (B.repr ⟨d l, hmem l⟩ k) * v l j) (fun τ hτ => by
+        refine Eq.trans ?_ (hd j τ hτ)
+        simp only [map_sum, map_mul, hτ' τ hτ]
+        rw [Finset.sum_congr rfl fun l _ => congrArg (· * τ (v l j)) (hdc l)]
+        simp only [Finset.mul_sum, Finset.sum_mul]
+        rw [Finset.sum_comm]
+        exact Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => by ring)
+    intro k
+    exact congrFun this k
+  have hc0 : ∀ k, (fun l => B.repr ⟨d l, hmem l⟩ k) = 0 := fun k => hv _ fun j => hx j k
+  funext l
+  rw [hdc l, Pi.zero_apply]
+  refine Finset.sum_eq_zero fun k _ => ?_
+  have := congrFun (hc0 k) l
+  simp only [Pi.zero_apply] at this
+  rw [this, map_zero, zero_mul]
+
+end GlobalTheory.CompanionTheory.Arith.DedekindDescent
+end
+
+section
 section
 set_option autoImplicit false
 
@@ -115,3 +308,4 @@ open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Semi 
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.complex_section_finite_combination : ∀ (F : Type) [Field F] (Y : Scheme.{0}) (p : Y ⟶ Sp F) (σ : F →+* ℂ), LocallyOfFiniteType p → ∀ (B : ReciprocityTheory.ChartRestriction.G.Semi.LB Y), B.IsLB → ∀ (O : Y.Opens) (x : GlobalTheory.SecC p σ B), (∀ i y, y ∉ GlobalTheory.CxPts.ptsIn p σ O → GlobalTheory.SecC.val x i y = 0) → ∃ (m : ℕ) (as : Fin m → ℂ) (ss : Fin m → B.Sec), (∀ j, ReciprocityTheory.ChartRestriction.G.Out.nonzeroLocus (ss j) ≤ O) ∧ GlobalTheory.SecC.val x = ∑ j, as j • GlobalTheory.CxPts.secVal p σ (ss j) := by
   atlas_forward_decl GlobalTheory.CompanionTheory.VanDescent.vanish_descent
+end

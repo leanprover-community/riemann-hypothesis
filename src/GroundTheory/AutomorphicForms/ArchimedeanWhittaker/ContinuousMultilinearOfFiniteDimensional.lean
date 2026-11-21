@@ -354,22 +354,6 @@ theorem continuous_wordOp_map (hπ : ∀ g, ‖π g‖ ≤ 1) {v : E} (hv : h.Is
   refine continuous_apply_apply π hπ continuous_id (Φ.cont.comp ?_)
   exact continuous_pi fun i => (h.continuous_Ad_apply (Y i)).comp continuous_inv
 
-theorem exists_norm_wordOp_map_le (hπ : ∀ g, ‖π g‖ ≤ 1) {v : E} (hv : h.IsSmoothVector π v)
-    {k : ℕ} (Y : Fin k → 𝔤) : ∃ C, ∀ g : G, ‖h.wordOp π Y (π g v)‖ ≤ C * ‖h.AdL g⁻¹‖ ^ k := by
-  obtain ⟨Φ, hΦ⟩ := h.exists_wordOp_cml π hv k
-  refine ⟨‖Φ‖ * ∏ i, ‖Y i‖, fun g => ?_⟩
-  rw [h.wordOp_map π hv, ← hΦ]
-  calc ‖π g (Φ (fun i => h.Ad g⁻¹ (Y i)))‖ ≤ ‖π g‖ * ‖Φ (fun i => h.Ad g⁻¹ (Y i))‖ :=
-        ContinuousLinearMap.le_opNorm _ _
-    _ ≤ 1 * ‖Φ (fun i => h.Ad g⁻¹ (Y i))‖ := by gcongr; exact hπ _
-    _ = ‖Φ (fun i => h.Ad g⁻¹ (Y i))‖ := one_mul _
-    _ ≤ ‖Φ‖ * ∏ i, ‖h.Ad g⁻¹ (Y i)‖ := Φ.le_opNorm _
-    _ ≤ ‖Φ‖ * ∏ i, (‖h.AdL g⁻¹‖ * ‖Y i‖) := by
-        gcongr with i
-        exact (h.AdL g⁻¹).le_opNorm (Y i)
-    _ = (‖Φ‖ * ∏ i, ‖Y i‖) * ‖h.AdL g⁻¹‖ ^ k := by
-        rw [Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ, Fintype.card_fin]
-        ring
 
 end IsExpLieAlgebra
 

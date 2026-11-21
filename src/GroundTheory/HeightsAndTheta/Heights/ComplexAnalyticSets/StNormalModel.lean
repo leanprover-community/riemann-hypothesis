@@ -83,11 +83,6 @@ theorem const_mem_zeroSetIn_lineDiagonal (c : ℂ) :
     (fun _ => c : Fin 1 ⊕ Fin 1 → ℂ) ∈ zeroSetIn lineDiagonalIdeal :=
   fun q hq => eval_const_of_lineDiagonalMap_eq_zero c q hq
 
-theorem X_inl_not_mem_lineDiagonalIdeal :
-    (X (Sum.inl 0) : MvPolynomial (Fin 1 ⊕ Fin 1) ℂ) ∉ lineDiagonalIdeal := by
-  intro hX
-  have h1 : lineDiagonalMap (X (Sum.inl 0)) = 0 := hX
-  simp [lineDiagonalMap] at h1
 
 end
 

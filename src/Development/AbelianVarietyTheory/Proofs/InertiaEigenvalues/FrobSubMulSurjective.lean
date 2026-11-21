@@ -1,5 +1,14 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsAlgClosedTiltFieldAndValuationRingStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsAlgClosedTiltFieldAndValuationRing
+
+section
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isAlgClosed_tiltField_and_valuationRing : ∀ (l : ℕ) [Fact l.Prime], IsAlgClosed (Cb l) ∧ ValuationRing (OCb l) := by
+  first | exact @GlobalTheory.TiltAlgClosed.isAlgClosed_tilt_and_valuationRing | exact GlobalTheory.TiltAlgClosed.isAlgClosed_tilt_and_valuationRing | (intros; apply GlobalTheory.TiltAlgClosed.isAlgClosed_tilt_and_valuationRing <;> assumption)
+end
+
+section
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation
 
 namespace GlobalTheory.ArtinSchreierWitt
@@ -90,3 +99,4 @@ theorem main : ∀ (l : ℕ) [Fact l.Prime], (∀ y : WCb l, ∃ b, frobW l b - 
   · exact frob_sub_mul_surjective l (OCb l) (exists_root_ring l (K := Cb l)) c p
 
 end GlobalTheory.ArtinSchreierWitt
+end

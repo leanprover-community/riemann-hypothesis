@@ -3,10 +3,44 @@ import Formalism.LocalToGlobal.Columns.PolyFnLemmas
 import Formalism.LocalToGlobal.Columns.CoefficientsModP.PairingNondegenerateHolds
 import Formalism.LocalToGlobal.Columns.InputsWeyl
 import Formalism.SharpRestriction.GlobalSchurBounds.TheoremThreeFamilyOfFormalDegreeInput
-import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.LwRankTies
+import Formalism.SharpRestriction.GlobalSchurBounds.MainSup
+import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.CountHypothesesIffText
+import Formalism.SharpRestriction.AdmissibleParameterJoins.SfromGLu
+import Formalism.SharpRestriction.AdmissibleParameterJoins.DIVfromGLz
 import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.LwAdmWeyl
 import Formalism.SharpRestriction.GlobalSchurBounds.LinkTied
 
+section
+noncomputable section
+
+namespace Formalism.MainNotions.Ext.Lw
+
+open Formalism.BasicNotions Formalism.MainNotions
+
+theorem splitsF_g_all (D : D7) : ∀ j, StandardLattice.SplitsF D (D.host.g j) := fun j => J.splitsF_g D j
+
+theorem splitsF_T_all (D : D7) (u : D.what₂.Word) : StandardLattice.SplitsF D (D.mem u).A.T := J.level_prime_splits_totally_real D u
+
+theorem rank_conditions_iff_lowest_space {eps : ℝ} (Fm : FamP eps) :
+    RankTiesF Fm ↔ ∃ x0 : ℝ, ∀ x ≥ x0, ∀ (i : Fm.Ix x) (u : (Fm.D x i).what₂.Word), StandardLattice.Mu0Tie (Fm.D x i) u := by
+  unfold RankTiesF
+  constructor
+  · rintro ⟨x0, hx0⟩
+    exact ⟨x0, fun x hx i u => ((hx0 x hx i).2 u).2⟩
+  · rintro ⟨x0, hx0⟩
+    exact ⟨x0, fun x hx i => ⟨splitsF_g_all (Fm.D x i), fun u => ⟨splitsF_T_all (Fm.D x i) u, hx0 x hx i u⟩⟩⟩
+
+theorem rank_conditions_of_lowest_space {eps : ℝ} (Fm : FamP eps)
+    (h : ∃ x0 : ℝ, ∀ x ≥ x0, ∀ (i : Fm.Ix x) (u : (Fm.D x i).what₂.Word), StandardLattice.Mu0Tie (Fm.D x i) u) : RankTiesF Fm :=
+  (rank_conditions_iff_lowest_space Fm).2 h
+
+
+end Formalism.MainNotions.Ext.Lw
+
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.MainNotions.Ext.Lw
@@ -289,20 +323,11 @@ end Rec
 
 section Fam
 
-theorem rank_conditions_of_layer_two {eps : ℝ} (Fm : FamP eps) (h : RealPlaceSecondLayerConditions Fm) : RankTiesF Fm := by
-  obtain ⟨x0, h⟩ := h
-  exact rank_conditions_of_lowest_space Fm ⟨x0, fun x hx i u => mu0Tie_of_sym (h x hx i).2.choose u⟩
 
-theorem rankTiesF_of_col' {eps : ℝ} (Fm : FamP eps)
-    (h : ∃ x0 : ℝ, ∀ x (hx : Fm.x1 < x), x0 ≤ x → ∀ i : Fm.Ix x, ∀ u : (Fm.D x i).what₂.Word,
-      ∃ X : StandardLattice.ColRep (Fm.D x i) (Fm.ex x hx i).lev u, StandardLattice.BaseWeightColumnCondition (Fm.D x i) (Fm.ex x hx i).lev u X) :
-    RankTiesF Fm := by
-  obtain ⟨x0, h⟩ := h
-  exact rankTiesF_of_col Fm ⟨x0, fun x hx h0 i =>
-    ⟨StandardLattice.HarishChandraReduction.content_bound_clause _ _, StandardLattice.HarishChandraReduction.levels_pro_g_on_columns _ _, weyl_dimension_formula_holds _, h x hx h0 i⟩⟩
 
 end Fam
 
 end Formalism.MainNotions.Ext.Lw
 
+end
 end

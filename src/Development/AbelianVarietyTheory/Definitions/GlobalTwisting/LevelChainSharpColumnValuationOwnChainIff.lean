@@ -136,7 +136,6 @@ def KT (i : ℕ) : Fn X i →ₗ[ℂ] Fn X (i + 1) := X.C.Klin i
 
 def colT : Fn X 0 → Fn X D.R.m := X.C.col
 
-theorem KT_apply (i : ℕ) (φ : Fn X i) : KT X i φ = X.C.K i φ := rfl
 
 abbrev Wt (τ : D.what₂.Tau) : ℕ := TauWeight X τ
 
@@ -389,8 +388,6 @@ def EveryLevelLiftProperties : Prop :=
   (∀ φ ∈ X.fm.Fi D.R.m, Pt X φ ∈ X.fm.ptC) ∧
   ∃ h : X.fm.PRat, X.fm.PtilIntegral h
 
-theorem everyLevelPart_of_full (h : Conclusion6 X) : EveryLevelLiftProperties X :=
-  ⟨h.1, h.2.1, h.2.2.1, h.2.2.2.1.elim fun hP hh => ⟨hP, hh.1⟩⟩
 
 def BaseDet (cl : letI := D.host.cmStar; ∀ i, X.C.cls i → Submodule (𝓞 D.host.E) (D.sp.X i).V)
     (dt : ∀ i, X.C.cls i → D.Dt) : Prop :=
@@ -424,13 +421,6 @@ def NatComp (cl : letI := D.host.cmStar; ∀ i, X.C.cls i → Submodule (𝓞 D.
       ∀ (c : X.C.cls i) y, co y ∈ (O.lat i c).1 ↔
         ∃ a ∈ cl i c, ∃ b ∈ Formalism.HermitianLatticesTheory.dual (D.sp.X i).hT (cl i c), y = a + D.host.conj (π : D.host.E) • b
 
-theorem admissibleBasis_of_naturalComparison (cl : letI := D.host.cmStar; ∀ i, X.C.cls i → Submodule (𝓞 D.host.E) (D.sp.X i).V)
-    (hcl : letI := D.host.cmStar; ∀ i c, Submodule.IsLattice D.host.E (cl i c))
-    (O : Formalism.MainNotions.GL3Theta.LiftObj D X.C) (h : NatComp X cl O) : admB X cl O.mt O.dt := by
-  obtain ⟨π, h1, h2, h3, h4⟩ := h
-  refine ⟨hcl, O.c13, π, h1, h2, h3, fun i hi => ?_⟩
-  obtain ⟨co, a, b, c⟩ := h4 i hi
-  exact ⟨co, O.L0 i, a, b, fun d => ⟨O.lat i d, c d, O.dt_lat i d⟩⟩
 
 section Indep
 
@@ -449,22 +439,12 @@ theorem Wt_indep (τ : D.what₂.Tau) : Wt X τ = Wt Y τ := by
 theorem ETpi_indep : ETpi X = ETpi Y := by
   unfold ETpi; simp only [Wt_indep X Y]
 
-theorem aTop_indep : X.fm.aTop = Y.fm.aTop :=
-  funext fun τ => lam_indep X Y 0 (Nat.zero_le _) τ _
 
 theorem bTop_indep : X.fm.bTop = Y.fm.bTop := by
   funext τ
   unfold MemberForms.bTop DomWeight.detShift
   rw [dif_pos (D.R.N_pos 0), dif_pos (D.R.N_pos 0), lam_indep X Y 0 (Nat.zero_le _)]
 
-theorem levelSetting_indep_chain (hT : X.A.T = Y.A.T) : HidaSetting X ↔ HidaSetting Y := by
-  have hA : Alcove X ↔ Alcove Y := by
-    unfold Alcove
-    refine forall_congr' fun j => forall_congr' fun hj => forall_congr' fun τ => forall_congr' fun a =>
-      forall_congr' fun b => ?_
-    rw [lam_indep X Y j hj τ a, lam_indep X Y j hj τ b, hT]
-  unfold HidaSetting amax
-  rw [hA, hT, aTop_indep X Y, bTop_indep X Y]
 
 end Indep
 
@@ -478,28 +458,12 @@ def UComm : Prop :=
   (∀ v, ∀ φ ∈ X.fm.Fi 0, Uop X 0 v φ ∈ X.fm.Fi 0) ∧
   ∀ v v', v ≠ v' → ∀ φ ∈ X.fm.Fi 0, Uop X 0 v (Uop X 0 v' φ) = Uop X 0 v' (Uop X 0 v φ)
 
-theorem upCommute_of_firstProperty (h : Conclusion1 X) : UComm X :=
-  ⟨fun v φ hφ => (h.1 0 (Nat.zero_le _) v φ hφ).1, h.2.1 0 (Nat.zero_le _)⟩
 
 def Ulist (l : List X.A.vT) : Fn X 0 →ₗ[ℂ] Fn X 0 := l.foldr (fun v g => (Uop X 0 v).comp g) LinearMap.id
 
 variable {X}
 
-theorem Ulist_mem (h : UComm X) (l : List X.A.vT) {φ : Fn X 0} (hφ : φ ∈ X.fm.Fi 0) : Ulist X l φ ∈ X.fm.Fi 0 := by
-  induction l with
-  | nil => exact hφ
-  | cons v l ih => exact h.1 v _ ih
 
-theorem Ulist_perm (h : UComm X) {l l' : List X.A.vT} (p : l.Perm l') {φ : Fn X 0} (hφ : φ ∈ X.fm.Fi 0) :
-    Ulist X l φ = Ulist X l' φ := by
-  induction p with
-  | nil => rfl
-  | cons v _ ih => exact congrArg (Uop X 0 v) ih
-  | swap v v' l =>
-    by_cases hv : v' = v
-    · subst hv; rfl
-    · exact h.2 v' v hv _ (Ulist_mem h l hφ)
-  | trans _ _ ih1 ih2 => exact ih1.trans ih2
 
 structure SharedBy (X Y : Ch D u) (e : Fn X 0 ≃ₗ[ℂ] Fn Y 0) (eL : Vl X 0 ≃ₗ[D.what₂.LL] Vl Y 0)
     (ev : X.A.vT ≃ Y.A.vT) (eF : ∀ v, X.A.Fv v ≃+* Y.A.Fv (ev v)) : Prop where
@@ -540,8 +504,6 @@ variable {Y : Ch D u} {e : Fn X 0 ≃ₗ[ℂ] Fn Y 0} {eL : Vl X 0 ≃ₗ[D.what
   {ev : X.A.vT ≃ Y.A.vT} {eF : ∀ v, X.A.Fv v ≃+* Y.A.Fv (ev v)} (h : SharedBy X Y e eL ev eF)
 include h
 
-theorem overT_iff (w : D.what₂.places.Pl) : OverT Y w ↔ OverT X w := by
-  unfold OverT; rw [h.T_eq]
 
 theorem S_iff (w : D.what₂.places.Pl) (x : Vl X 0) : eL x ∈ Y.fm.S 0 w ↔ x ∈ X.fm.S 0 w := by
   constructor
@@ -565,22 +527,8 @@ theorem S_iff (w : D.what₂.places.Pl) (x : Vl X 0) : eL x ∈ Y.fm.S 0 w ↔ x
       rw [Subring.smul_def, map_smul]
       exact Submodule.smul_mem _ r ha
 
-theorem Nm_eq (v : X.A.vT) {φ : Fn X 0} (hφ : φ ∈ X.fm.Fi 0) : e (Nm X 0 v φ) = Nm Y 0 (ev v) (e φ) := by
-  unfold Nm
-  rw [LinearMap.sum_apply, LinearMap.sum_apply, map_sum]
-  exact Fintype.sum_equiv (Units.mapEquiv (eF v).toMulEquiv).toEquiv _ _ fun a => h.dia_eq v a φ hφ
 
-theorem ramSub_iff (x : Vl X 0) : eL x ∈ Y.fm.ramSub ↔ x ∈ X.fm.ramSub := by
-  show Y.fm.emb 0 (eL x) ∈ Y.A.Mram ↔ X.fm.emb 0 x ∈ X.A.Mram
-  rw [← MramI_zero X, ← MramI_zero Y]
-  unfold MramI
-  simp only [Submodule.mem_inf, Submodule.mem_iInf, LinearMap.mem_ker, emb_mem_Fi, true_and]
-  rw [h.emb_eq, ← ev.forall_congr_right]
-  refine forall_congr' fun v => ?_
-  rw [← h.Nm_eq v (emb_mem_Fi X 0 x), e.map_eq_zero_iff]
 
-theorem Sram_iff (w : D.what₂.places.Pl) (x : Vl X 0) : eL x ∈ Sram Y w ↔ x ∈ Sram X w :=
-  and_congr (h.S_iff w x) (h.ramSub_iff x)
 
 theorem VVT_eq {w : D.what₂.places.Pl} (hw : OverT X w) : VVT Y w = (VVT X w).map ev.toEmbedding := by
   unfold VVT
@@ -599,181 +547,68 @@ theorem expT_eq {w : D.what₂.places.Pl} (hw : OverT X w) : expT Y w = expT X w
 theorem ET_eq {w : D.what₂.places.Pl} (hw : OverT X w) : ET Y w = ET X w := by
   unfold ET; rw [h.seen_eq w hw, ETpi_indep Y X]
 
-theorem Ulist_eq (hU : UComm X) (l : List X.A.vT) {φ : Fn X 0} (hφ : φ ∈ X.fm.Fi 0) :
-    e (Ulist X l φ) = Ulist Y (l.map ev) (e φ) := by
-  induction l with
-  | nil => rfl
-  | cons v l ih => exact (h.U_eq v _ (Ulist_mem hU l hφ)).trans (congrArg (Uop Y 0 (ev v)) ih)
 
-theorem Uprod_eq (hU : UComm X) {w : D.what₂.places.Pl} (hw : OverT X w) {φ : Fn X 0} (hφ : φ ∈ X.fm.Fi 0) :
-    e (Uprod X 0 w φ) = Uprod Y 0 w (e φ) := by
-  have p : (VVT X w).toList.Perm ((VVT Y w).toList.map ev.symm) := by
-    rw [← Multiset.coe_eq_coe, ← Multiset.map_coe, Finset.coe_toList, Finset.coe_toList, h.VVT_eq hw]
-    simp [Multiset.map_map]
-  show e (Ulist X _ φ) = Ulist Y _ (e φ)
-  rw [Ulist_perm hU p hφ, h.Ulist_eq hU _ hφ, List.map_map]
-  simp
 
-theorem Uprod_pow_eq (hU : UComm X) {w : D.what₂.places.Pl} (hw : OverT X w) (n : ℕ) {φ : Fn X 0}
-    (hφ : φ ∈ X.fm.Fi 0) : e ((Uprod X 0 w ^ n) φ) = (Uprod Y 0 w ^ n) (e φ) := by
-  induction n generalizing φ with
-  | zero => rfl
-  | succ n ih =>
-    rw [pow_succ, pow_succ, Module.End.mul_apply, Module.End.mul_apply, ← h.Uprod_eq hU hw hφ]
-    exact ih (Ulist_mem hU _ hφ)
 
-theorem Nlam_iff (hU : UComm X) {w : D.what₂.places.Pl} (hw : OverT X w) (x : Vl X 0) :
-    eL x ∈ Nlam Y w ↔ x ∈ Nlam X w := by
-  have key : ∀ z : Vl X 0, Y.fm.emb 0 (eL x) = (((Y.A.T : ℂ) ^ expT Y w) • (Uprod Y 0 w) ^ D.R.m) (Y.fm.emb 0 (eL z)) ↔
-      X.fm.emb 0 x = (((X.A.T : ℂ) ^ expT X w) • (Uprod X 0 w) ^ D.R.m) (X.fm.emb 0 z) := by
-    intro z
-    rw [h.emb_eq, h.emb_eq, LinearMap.smul_apply, LinearMap.smul_apply, ← h.Uprod_pow_eq hU hw _ (emb_mem_Fi X 0 z),
-      h.T_eq, h.expT_eq hw, ← map_smul, e.injective.eq_iff]
-  constructor
-  · rintro ⟨y, hy, hh⟩
-    obtain ⟨z, rfl⟩ := eL.surjective y
-    exact ⟨z, (h.Sram_iff w z).mp hy, (key z).mp hh⟩
-  · rintro ⟨z, hz, hh⟩
-    exact ⟨eL z, (h.Sram_iff w z).mpr hz, (key z).mpr hh⟩
 
 end SharedBy
 
 def TwTie (Tw : TwForms D) (u : D.what₂.Word) (μ : D.what₂.Tup) : Prop :=
   Shared (own D u) (tw Tw u μ) (D.e0Tw u μ) (Tw.e0 u μ)
 
-theorem TwTie.of_copy (Tw : TwForms D) (μ : D.what₂.Tup) (h : tw Tw u μ = own D u)
-    (he : ∀ φ, HEq (D.e0Tw u μ φ) φ) : TwTie Tw u μ :=
-  Shared.of_eq h _ _ he (Tw.embed_mul_block_embedding u μ)
 
-theorem Wt_tw (Tw : TwForms D) (μ : D.what₂.Tup) (τ : D.what₂.Tau) : Wt (tw Tw u μ) τ = Wtau D u τ :=
-  Wt_indep (tw Tw u μ) (own D u) τ
 
-theorem levelSetting_twist_iff (Tw : TwForms D) (μ : D.what₂.Tup) : HidaSetting (tw Tw u μ) ↔ Formalism.MainNotions.product_first_zeroth_parts.HidaSetting D u :=
-  levelSetting_indep_chain (tw Tw u μ) (own D u) (Tw.A_T u μ)
 
-theorem OverT_tw (Tw : TwForms D) (μ : D.what₂.Tup) (w : D.what₂.places.Pl) :
-    OverT (tw Tw u μ) w ↔ Formalism.MainNotions.product_first_zeroth_parts.OverT D u w := by
-  show D.what₂.places.resChar w = (Tw.A u μ).T ↔ _
-  rw [Tw.A_T]; rfl
 
 theorem TwTie.ET_eq {Tw : TwForms D} {μ : D.what₂.Tup} (h : TwTie Tw u μ) {w : D.what₂.places.Pl}
     (hw : Formalism.MainNotions.product_first_zeroth_parts.OverT D u w) : ET (tw Tw u μ) w = EatT D u w :=
   h.elim fun _ h => h.elim fun _ h => h.ET_eq hw
 
-theorem TwTie.Nlam_iff {Tw : TwForms D} {μ : D.what₂.Tup} (h : TwTie Tw u μ) (hU : UComm (own D u))
-    {w : D.what₂.places.Pl} (hw : Formalism.MainNotions.product_first_zeroth_parts.OverT D u w) (x : ((D.fm u).lat 0).V) :
-    Tw.e0 u μ x ∈ Nlam (tw Tw u μ) w ↔ x ∈ LT.Nlam D u w :=
-  h.elim fun _ h => h.elim fun _ h => h.Nlam_iff hU hw x
 
-theorem TwTie.Nlam_eq_map {Tw : TwForms D} {μ : D.what₂.Tup} (h : TwTie Tw u μ) (hU : UComm (own D u))
-    {w : D.what₂.places.Pl} (hw : Formalism.MainNotions.product_first_zeroth_parts.OverT D u w) :
-    Nlam (tw Tw u μ) w = (LT.Nlam D u w).map ((Tw.e0 u μ).toLinearMap.restrictScalars (Ow D w)) := by
-  ext y
-  obtain ⟨x, rfl⟩ := (Tw.e0 u μ).surjective y
-  rw [h.Nlam_iff hU hw x]
-  constructor
-  · exact fun hx => ⟨x, hx, rfl⟩
-  · rintro ⟨z, hz, e⟩
-    obtain rfl : z = x := (Tw.e0 u μ).injective e
-    exact hz
 
-theorem TwTie.sharpBound_twist_iff {Tw : TwForms D} {μ : D.what₂.Tup} (h : TwTie Tw u μ) (hU : UComm (own D u)) :
-    Conclusion5Sharp (tw Tw u μ) ↔ TupleChainSharpColumnValuation Tw u μ := by
-  refine forall_congr' fun w => ?_
-  rw [OverT_tw]
-  refine forall_congr' fun hw => forall_congr' fun c => forall_congr' fun n => forall_congr' fun _ => ?_
-  rw [h.ET_eq hw]
-  refine forall_congr' fun _ => ?_
-  constructor
-  · intro H x hx
-    obtain ⟨y, hy, e⟩ := H (Tw.e0 u μ x) ((h.Nlam_iff hU hw x).mpr hx)
-    exact ⟨y, hy, by rw [← Tw.embed_mul_block_embedding]; exact e⟩
-  · intro H x' hx
-    obtain ⟨x, rfl⟩ := (Tw.e0 u μ).surjective x'
-    obtain ⟨y, hy, e⟩ := H x ((h.Nlam_iff hU hw x).mp hx)
-    rw [← Tw.embed_mul_block_embedding] at e
-    exact ⟨y, hy, e⟩
 
 section Reformulated
 
 variable (D u)
 
-theorem Alcove_own : Alcove (own D u) ↔ Formalism.MainNotions.product_first_zeroth_parts.Alcove D u := Iff.rfl
 
-theorem levelSetting_chain_iff : HidaSetting (own D u) ↔ Formalism.MainNotions.product_first_zeroth_parts.HidaSetting D u := Iff.rfl
 
-theorem upDownIncidence_chain_iff : UpDownIncidenceInverse (own D u) ↔ Formalism.MainNotions.product_first_zeroth_parts.UpDownIncidenceInverse D u := Iff.rfl
 
-theorem stabilizersTrivial_chain_iff : admS (own D u) ↔ Formalism.MainNotions.product_first_zeroth_parts.admS D u := Iff.rfl
 
-theorem RoundUp_own : RoundUp (own D u) ↔ Formalism.MainNotions.product_first_zeroth_parts.RoundUp D u := Iff.rfl
 
-theorem RoundDn_own : RoundDn (own D u) ↔ Formalism.MainNotions.product_first_zeroth_parts.RoundDn D u := Iff.rfl
 
-theorem TrIso_own : TrIso (own D u) ↔ Formalism.MainNotions.product_first_zeroth_parts.TrIso D u := Iff.rfl
 
-theorem DiaMul_own : DiaMul (own D u) ↔ Formalism.MainNotions.product_first_zeroth_parts.DiaMul D u := Iff.rfl
 
-theorem admissibleTorus_chain_iff : admT (own D u) ↔ Formalism.MainNotions.product_first_zeroth_parts.admT D u := Iff.rfl
 
-theorem firstProperty_chain_iff : Conclusion1 (own D u) ↔ Formalism.MainNotions.product_first_zeroth_parts.Conclusion1 D u := Iff.rfl
 
-theorem secondProperty_chain_iff : Conclusion2 (own D u) ↔ Formalism.MainNotions.product_first_zeroth_parts.Conclusion2 D u := Iff.rfl
 
-theorem fourthPropertyExtended_chain_iff : LevelChainUOperatorCommutation (own D u) ↔ Formalism.MainNotions.product_first_zeroth_parts.LevelChainUOperatorCommutation D u := Iff.rfl
 
 theorem levelChainSharpColumnValuation_ownChain_iff : Conclusion5Sharp (own D u) ↔ Formalism.MainNotions.product_first_zeroth_parts.Conclusion5Sharp D u := Iff.rfl
 
-theorem sixthProperty_chain_iff : Conclusion6 (own D u) ↔ Formalism.MainNotions.product_first_zeroth_parts.Conclusion6 D u := Iff.rfl
 
-theorem seventhProperty_chain_iff : division_rows_rational_lattice (own D u) ↔ Formalism.MainNotions.product_first_zeroth_parts.division_rows_rational_lattice D u := Iff.rfl
 
-theorem thirdProperty_chain_iff (C : ℝ) : PointsLemma (own D u) C ↔ Formalism.MainNotions.product_first_zeroth_parts.PointsLemma D u C := Iff.rfl
 
-theorem fourthProperty_chain_iff (C : ℝ) : Conclusion4 (own D u) C ↔ Formalism.MainNotions.product_first_zeroth_parts.Conclusion4 D u C := Iff.rfl
 
-theorem fifthProperty_chain_iff (C : ℝ) : Conclusion5 (own D u) C ↔ Formalism.MainNotions.product_first_zeroth_parts.Conclusion5 D u C := Iff.rfl
 
-theorem weightBudget_chain_iff (L : SizeData₂ D) (C : ℝ) : WeightBudgetBound (own D u) L C ↔ Formalism.MainNotions.product_first_zeroth_parts.WeightBudgetBound D u L C := Iff.rfl
 
-theorem OverT_own (w) : OverT (own D u) w ↔ Formalism.MainNotions.product_first_zeroth_parts.OverT D u w := Iff.rfl
 
-theorem BaseDet_own : BaseDet (own D u) (D.clsLat u) (D.detCls u) ↔ Formalism.MainNotions.product_first_zeroth_parts.admB D u := Iff.rfl
 
-theorem Nlam_own (w) : Nlam (own D u) w = LT.Nlam D u w := rfl
 
-theorem Sram_own (w) : Sram (own D u) w = LT.Sram D u w := rfl
 
-theorem VVT_own (w) : VVT (own D u) w = LT.VVT D u w := rfl
 
-theorem expT_own (w) : expT (own D u) w = LT.expT D u w := rfl
 
-theorem ET_own (w) : ET (own D u) w = EatT D u w := rfl
 
-theorem Wt_own (τ) : Wt (own D u) τ = Wtau D u τ := rfl
 
-theorem Uop_own (i v) : Uop (own D u) i v = LT.Uop D u i v := rfl
 
-theorem Uprod_own (i w) : Uprod (own D u) i w = LT.Uprod D u i w := rfl
 
-theorem Dop_own (i v) : Dop (own D u) i v = Formalism.MainNotions.product_first_zeroth_parts.Dop D u i v := rfl
 
-theorem dia_own (i v a) : dia (own D u) i v a = Formalism.MainNotions.product_first_zeroth_parts.dia D u i v a := rfl
 
-theorem Nm_own (i v) : Nm (own D u) i v = Formalism.MainNotions.product_first_zeroth_parts.Nm D u i v := rfl
 
-theorem trp_own (i v) : trp (own D u) i v = Formalism.MainNotions.product_first_zeroth_parts.trp D u i v := rfl
 
-theorem FFop_own (i v) : FFop (own D u) i v = Formalism.MainNotions.product_first_zeroth_parts.FFop D u i v := rfl
 
-theorem Gs_own (i v) : Gs (own D u) i v = Formalism.MainNotions.product_first_zeroth_parts.Gs D u i v := rfl
 
-theorem GsD_own (i v) : GsD (own D u) i v = Formalism.MainNotions.product_first_zeroth_parts.GsD D u i v := rfl
 
-theorem MramI_own (i) : MramI (own D u) i = Formalism.MainNotions.product_first_zeroth_parts.MramI D u i := rfl
 
-theorem admissibleBasis_chain_iff : admB (own D u) (D.clsLat u) D.muTil (D.detCls u) ↔ Formalism.MainNotions.product_first_zeroth_parts.admB D u :=
-  ⟨fun h => h.2.2, fun h => ⟨D.clsLat_lat u, Formalism.MainNotions.GL3Theta.member_chain_has_characters D u, h⟩⟩
 
 end Reformulated
 

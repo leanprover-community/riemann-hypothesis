@@ -317,29 +317,10 @@ theorem pt_injective : Function.Injective ρ.pt := by
     (by rw [← MonObj.comp_pow, ht, MonObj.comp_one])
   exact (hc a rfl).trans (hc b (by rw [hab])).symm
 
-theorem N_odd (ρ : S.Real) : Odd S.N ∧ 81 ≤ S.N := by
-  refine ⟨ρ.N_eq ▸ (ρ.n_odd.pow).pow, ?_⟩
-  have h3 : 3 ≤ ρ.n := by
-    have := ρ.n_prime.two_le
-    obtain ⟨t, ht⟩ := ρ.n_odd
-    omega
-  have h9 : 9 ≤ ρ.n ^ ρ.k :=
-    le_trans (Nat.pow_le_pow_left h3 2) (Nat.pow_le_pow_right (by omega) ρ.two_le)
-  rw [ρ.N_eq]; exact Nat.pow_le_pow_left h9 2
 variable {ρ} {p : ℕ} [Fact p.Prime] {y₀ : S.R →+* PadicAlgCl p} {u : ρ.UTest p y₀}
 
-theorem lab_q_unique (l l' : u.Lab) : l.q = l'.q := by
-  ext χ
-  have := psiNorm_unique u χ (l.q_eq χ) (l'.q_eq χ)
-  exact neg_injective (Real.exp_injective this)
 
-theorem lab_ker_unique (l l' : u.Lab) : l.yy.ker = l'.yy.ker := by
-  ext a; rw [l.ker_iff, l'.ker_iff]
 
-theorem lab_wt_eq (l : u.Lab) (α : u.D.toPre.X) : ∃ x : S.Gam, ∀ t : S.perp l.yy.ker,
-    l.wt α t = ZMod.castHom (dvd_mul_left S.N S.r) (ZMod S.N) (eStd S.g _ t x) := by
-  obtain ⟨x, hx⟩ := l.yy_onto (QuotientAddGroup.mk α)
-  exact ⟨x, l.wt_eq x α hx⟩
 end More
 
 theorem big_one (S : ThetaSys o Ω) (hg : S.g = 1) (hN : S.N = 81) :

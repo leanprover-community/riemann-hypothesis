@@ -30,32 +30,6 @@ theorem norm_pair (x : R × R) : Algebra.norm R x = x.1 * x.2 := by
   rw [Algebra.norm_eq_matrix_det (Module.Basis.finTwoProd R), Matrix.det_fin_two]
   simp [Algebra.leftMulMatrix_eq_repr_mul]
 
-theorem isQuad_split [Invertible (2 : R)] : IsQuad (swapA R) ((1, -1) : R × R) where
-  unit := IsUnit.of_mul_eq_one ((1, -1) : R × R) (by ext <;> simp)
-  anti := by ext <;> simp [swapA_apply]
-  basis := by
-    have hli : LinearIndependent R ![(1 : R × R), (1, -1)] := by
-      rw [LinearIndependent.pair_iff]
-      intro s t hst
-      have h1 := congrArg Prod.fst hst
-      have h2 := congrArg Prod.snd hst
-      simp only [Prod.fst_add, Prod.snd_add, Prod.smul_fst, Prod.smul_snd, Prod.fst_one, Prod.snd_one,
-        smul_eq_mul, mul_one, mul_neg, Prod.fst_zero, Prod.snd_zero] at h1 h2
-      have hs : s = 0 := by
-        have h3 : (2 : R) * s = 0 := by linear_combination h1 + h2
-        simpa using congrArg (⅟(2 : R) * ·) h3
-      exact ⟨hs, by rw [hs] at h1; simpa using h1⟩
-    have hsp : ⊤ ≤ Submodule.span R (Set.range ![(1 : R × R), (1, -1)]) := by
-      intro z _
-      rw [Matrix.range_cons, Matrix.range_cons, Matrix.range_empty, Set.union_empty,
-        Set.singleton_union, Submodule.mem_span_pair]
-      refine ⟨⅟(2 : R) * (z.1 + z.2), ⅟(2 : R) * (z.1 - z.2), ?_⟩
-      ext
-      · simp only [Prod.fst_add, Prod.smul_fst, Prod.fst_one, smul_eq_mul, mul_one]
-        linear_combination z.1 * (invOf_mul_self (2 : R))
-      · simp only [Prod.snd_add, Prod.smul_snd, Prod.snd_one, smul_eq_mul, mul_one, mul_neg]
-        linear_combination z.2 * (invOf_mul_self (2 : R))
-    exact ⟨Module.Basis.mk hli hsp, by rw [Module.Basis.mk_apply]; rfl, by rw [Module.Basis.mk_apply]; rfl⟩
 
 def complexDarboux : Darboux (R := ℝ) (symp (Complex.conjAe : ℂ →ₐ[ℝ] ℂ) Complex.I (1 : Matrix Unit Unit ℂ)
     (1 : Matrix Unit Unit ℂ)) Unit where
@@ -150,9 +124,6 @@ def splitDarboux {JA : Matrix α α (R × R)} {JB : Matrix β β (R × R)} (hA :
     exact Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ =>
       Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
 
-theorem splitDarboux_e {JA : Matrix α α (R × R)} {JB : Matrix β β (R × R)} (hA : IsHerm (swapA R) JA)
-    (hB : IsHerm (swapA R) JB) (σ : κ ≃ α × β) (x : Matrix α β (R × R)) :
-    (splitDarboux hA hB σ).e x = (flat σ (cmp₁ x), flat σ (cmp₁ JA * cmp₂ x * (cmp₁ JB)ᵀ)) := rfl
 
 def ugFst (J : Matrix β β (R × R)) : UG (swapA R) J →* GL β R :=
   (GeneralLinearGroup.map (RingHom.fst R R)).comp (UG (swapA R) J).subtype
@@ -196,51 +167,6 @@ theorem splitOm_apply (m : Rˣ →* ℝ≥0) (χ : (R × R)ˣ →* Circle) (J : 
     splitOm m χ J σ h φ u = splitChar m χ (Fintype.card α) (GeneralLinearGroup.det (ugFst J h)) *
       φ (flat σ ((flat σ).symm u * ((ugFst J h)⁻¹).valᵀ)) := rfl
 
-theorem splitOm_rho [Invertible (2 : R)] (m : Rˣ →* ℝ≥0) (χ : (R × R)ˣ →* Circle) {JA : Matrix α α (R × R)}
-    {JB : Matrix β β (R × R)} (hA : IsHerm (swapA R) JA) (hB : IsHerm (swapA R) JB) (σ : κ ≃ α × β) (ψ : AddChar R ℂ)
-    (h : UG (swapA R) JB) (w : Matrix α β (R × R)) (φ : (κ → R) → ℂ) :
-    splitOm m χ JB σ h ((splitDarboux hA hB σ).rho ψ w φ) =
-      (splitDarboux hA hB σ).rho ψ (actB (swapA R) h w) (splitOm m χ JB σ h φ) := by
-  funext u
-  have rel := ug_rel h
-  have hv := ugFst_val h
-  have hmul : (ugFst JB h).val * ((ugFst JB h)⁻¹).val = 1 := by simp
-  have hinv : ((ugFst JB h)⁻¹).val * (ugFst JB h).val = 1 := by simp
-  have c1 : cmp₁ (actB (swapA R) h w) = cmp₁ w * (ugFst JB h).valᵀ := by
-    rw [hv]; simp [actB, Matrix.map_mul, Matrix.transpose_map]; rfl
-  have c2 : cmp₂ (actB (swapA R) h w) = cmp₂ w * (cmp₂ ((h : GL β (R × R)) : Matrix β β (R × R)))ᵀ := by
-    simp [actB, Matrix.map_mul, Matrix.transpose_map]; rfl
-  simp only [splitOm_apply, Darboux.rho, schr, splitDarboux_e, c1, c2]
-
-  have key1 : cmp₁ JB * cmp₂ ((h : GL β (R × R)) : Matrix β β (R × R)) = ((ugFst JB h)⁻¹).valᵀ * cmp₁ JB := by
-    calc cmp₁ JB * cmp₂ ((h : GL β (R × R)) : Matrix β β (R × R))
-        = ((ugFst JB h).val * ((ugFst JB h)⁻¹).val)ᵀ * cmp₁ JB * cmp₂ ((h : GL β (R × R)) : Matrix β β (R × R)) := by
-          rw [hmul, Matrix.transpose_one, Matrix.one_mul]
-      _ = ((ugFst JB h)⁻¹).valᵀ * ((ugFst JB h).valᵀ * cmp₁ JB * cmp₂ ((h : GL β (R × R)) : Matrix β β (R × R))) := by
-          rw [Matrix.transpose_mul]; simp only [Matrix.mul_assoc]
-      _ = _ := by rw [rel]
-  have rel' : ∀ X : Matrix β α R, (ugFst JB h).valᵀ * (cmp₁ JB * (cmp₂ ((h : GL β (R × R)) : Matrix β β (R × R)) * X)) = cmp₁ JB * X := by
-    intro X; rw [← Matrix.mul_assoc, ← Matrix.mul_assoc, rel]
-  have m1 : (flat σ).symm u * (cmp₁ JA * (cmp₂ w * (cmp₂ ((h : GL β (R × R)) : Matrix β β (R × R)))ᵀ) * (cmp₁ JB)ᵀ)ᵀ =
-      (flat σ).symm u * ((ugFst JB h)⁻¹).valᵀ * (cmp₁ JA * cmp₂ w * (cmp₁ JB)ᵀ)ᵀ := by
-    simp only [Matrix.transpose_mul, Matrix.transpose_transpose, Matrix.mul_assoc]
-    rw [← Matrix.mul_assoc (cmp₁ JB) (cmp₂ ((h : GL β (R × R)) : Matrix β β (R × R))), key1, Matrix.mul_assoc]
-  have m2 : cmp₁ w * (ugFst JB h).valᵀ * (cmp₁ JA * (cmp₂ w * (cmp₂ ((h : GL β (R × R)) : Matrix β β (R × R)))ᵀ) * (cmp₁ JB)ᵀ)ᵀ =
-      cmp₁ w * (cmp₁ JA * cmp₂ w * (cmp₁ JB)ᵀ)ᵀ := by
-    simp only [Matrix.transpose_mul, Matrix.transpose_transpose, Matrix.mul_assoc]
-    rw [rel']
-  have eX : flat σ ((flat σ).symm (u + flat σ (cmp₁ w * (ugFst JB h).valᵀ)) * ((ugFst JB h)⁻¹).valᵀ) =
-      flat σ ((flat σ).symm u * ((ugFst JB h)⁻¹).valᵀ) + flat σ (cmp₁ w) := by
-    rw [map_add, LinearEquiv.symm_apply_apply, Matrix.add_mul, Matrix.mul_assoc, ← Matrix.transpose_mul, hinv,
-      Matrix.transpose_one, Matrix.mul_one, map_add]
-  have eP : u ⬝ᵥ flat σ (cmp₁ JA * (cmp₂ w * (cmp₂ ((h : GL β (R × R)) : Matrix β β (R × R)))ᵀ) * (cmp₁ JB)ᵀ) +
-        ⅟2 * flat σ (cmp₁ w * (ugFst JB h).valᵀ) ⬝ᵥ flat σ (cmp₁ JA * (cmp₂ w * (cmp₂ ((h : GL β (R × R)) : Matrix β β (R × R)))ᵀ) * (cmp₁ JB)ᵀ) =
-      flat σ ((flat σ).symm u * ((ugFst JB h)⁻¹).valᵀ) ⬝ᵥ flat σ (cmp₁ JA * cmp₂ w * (cmp₁ JB)ᵀ) +
-        ⅟2 * flat σ (cmp₁ w) ⬝ᵥ flat σ (cmp₁ JA * cmp₂ w * (cmp₁ JB)ᵀ) := by
-    conv_lhs => rw [← LinearEquiv.apply_symm_apply (flat σ) u]
-    rw [flat_dot, flat_dot, flat_dot, flat_dot, m1, m2]
-  rw [eX, eP]
-  ring
 
 omit [DecidableEq α] [Fintype κ] in
 theorem splitOm_mem_SB [TopologicalSpace R] [IsTopologicalRing R] (m : Rˣ →* ℝ≥0) (χ : (R × R)ˣ →* Circle)
@@ -268,13 +194,6 @@ theorem splitOm_mem_SB [TopologicalSpace R] [IsTopologicalRing R] (m : Rˣ →* 
   rw [hs]
   exact (SB (κ → R)).smul_mem _ hφe
 
-theorem isSplitting_splitOm [Invertible (2 : R)] [TopologicalSpace R] [IsTopologicalRing R] [LocallyCompactSpace R]
-    (m : Rˣ →* ℝ≥0) (χ : (R × R)ˣ →* Circle) {JA : Matrix α α (R × R)}
-    {JB : Matrix β β (R × R)} (hA : IsHerm (swapA R) JA) (hB : IsHerm (swapA R) JB) (σ : κ ≃ α × β) (ψ : AddChar R ℂ) :
-    IsSplitting (sbClass R) ψ (splitDarboux hA hB σ) (actB (swapA R)) (splitOm m χ JB σ) where
-  pres g _ hφ := splitOm_mem_SB m χ JB σ g hφ
-  impl g w φ _ := splitOm_rho m χ hA hB σ ψ g w φ
-  adm _ _ _ := Set.mem_univ _
 
 theorem IsHerm.dbl {E : Type} [CommRing E] [Algebra R E] {c : E →ₐ[R] E} {J : Matrix β β E} (h : IsHerm c J) :
     IsHerm c (dbl J) := by
@@ -293,17 +212,6 @@ theorem flat_fromCols (σ : κ ≃ α × β) (X Y : Matrix α β R) :
   funext k
   cases k <;> rfl
 
-theorem isDblCoord_split {JA : Matrix α α (R × R)} {JB : Matrix β β (R × R)} (hA : IsHerm (swapA R) JA)
-    (hB : IsHerm (swapA R) JB) (σ : κ ≃ α × β) :
-    IsDblCoord (swapA R) (1, -1) JA JB (splitDarboux hA hB σ) (splitDarboux hA hB.dbl (dblNum σ)) := by
-  intro w₁ w₂
-  have hd : (cmp₁ (dbl JB))ᵀ = fromBlocks (cmp₁ JB)ᵀ 0 0 (-(cmp₁ JB)ᵀ) := by
-    ext (i | i) (j | j) <;> simp [dbl]
-  simp only [splitDarboux_e]
-  rw [hd]
-  simp only [Matrix.fromCols_map, Matrix.mul_fromCols, Matrix.fromCols_mul_fromBlocks, flat_fromCols,
-    Matrix.mul_zero, add_zero, zero_add, Matrix.mul_neg, map_neg]
-  try rfl
 
 theorem det_siegel {JB : Matrix β β (R × R)} (hB : IsHerm (swapA R) JB) (p : UG (swapA R) (dbl JB))
     (t : Matrix β β (R × R))

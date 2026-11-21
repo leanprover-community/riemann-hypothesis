@@ -143,8 +143,6 @@ theorem Lw_add (la la' : GlobalTheory.AllWt.Weight Dw) : C.Lw (la + la') = C.Lw 
   rw [add_zero] at h
   rw [Lw, h, map_add, Lw, Lw]
 
-theorem LEx_congr {a b : Ix Dw → ℤ} (h : ∀ x, a (some x) = b (some x)) : C.LEx a = C.LEx b := by
-  simp only [LEx, AddMonoidHom.coe_mk, ZeroHom.coe_mk, h]
 
 open Classical in
 
@@ -192,9 +190,6 @@ theorem exKey_two_mul (a : (E →+* ℂ) × ℕ → ℕ) (m : ℕ) :
   cases i <;> simp [exKey, keyEx, ex, exZ]
   ring
 
-theorem FlagCpt.LEx_exKey {Z : Model Xo c β} {e : F ≃+* c.F} (C : FlagCpt Z e) (a : (E →+* ℂ) × ℕ → ℕ) (m : ℕ) :
-    C.LEx (exKey Dw a (2 * m)) = C.Lw (GlobalTheory.AllWt.weightOf Dw (fun x => (a x : ℤ)) m) := by
-  rw [exKey_two_mul, FlagCpt.Lw]
 
 theorem KeySec.pow_mem (κ : KeySec Xo c) (m : ℕ) :
     (κ.ρ : Rul Xo c) ^ m ∈ GlobalTheory.AllWt.secZ Xo c (fun i => (m : ℤ) * keyEx Dw i) := by

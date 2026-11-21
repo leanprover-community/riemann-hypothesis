@@ -272,13 +272,6 @@ theorem exists_family (D : D7) (r : ℕ) : ∃ (ψ : AddChar (AF D.host.F) ℂ) 
   refine ⟨ψ, S, Q, hψ, r₀, r₁, r₂, fun i j h => ?_, hS⟩
   exact Fin.ext (e.injective (Subtype.ext ((hQ i).symm.trans (h.trans (hQ j)))))
 
-theorem volJ_ne_zero {ψ : AddChar (AF D.host.F) ℂ} {σ : ℕ} {S : Dbl2 ψ σ} (Q : QStep S) : Q.volJ ≠ 0 := by
-  have key : ∀ {Y : Type} [Fintype Y] [DecidableEq Y] (J : Subgroup (GL Y Q.k)), IsOpen (J : Set (GL Y Q.k)) →
-      J.relIndex (KO Q.k Y) ≠ 0 := fun {Y} _ _ J hJ => by
-    haveI : CompactSpace (KO Q.k Y) := isCompact_iff_compactSpace.1 SplitFlip.isCompact_KO
-    haveI := Subgroup.quotient_finite_of_isOpen (J.subgroupOf (KO Q.k Y)) (hJ.preimage continuous_subtype_val)
-    exact Subgroup.index_ne_zero_of_finite
-  exact inv_ne_zero (mul_ne_zero (Nat.cast_ne_zero.2 (key _ Q.co₁.1)) (Nat.cast_ne_zero.2 (key _ Q.co₂.1)))
 
 theorem w_ne_zero {ψ : AddChar (AF D.host.F) ℂ} {σ : ℕ} {S : Dbl2 ψ σ} (Q : QStep S) (γ : Q.A₁) (β : Q.A₂) :
     Q.w₁ γ ≠ 0 ∧ Q.w₂ β ≠ 0 := by

@@ -277,17 +277,7 @@ def upperHalfPlaneFamily : SiegelFamily 1 1 1 where
   f_analytic := fun _ _ => analyticOnNhd_const
   f_rank := fun _ _ => by simp [Matrix.rank_one]
 
-theorem example_schurQuotient_hyp :
-    (Matrix.diagonal (Sum.elim (fun _ : Fin 1 => (1 : ℝ)) (fun _ : Fin 1 => 2))).PosDef :=
-  Matrix.posDef_diagonal_iff.mpr fun k => by cases k <;> norm_num
 
-theorem example_schurQuotientPeriod_hyp :
-    let τ : Matrix (Fin 1 ⊕ Fin 1) (Fin 1 ⊕ Fin 1) ℂ :=
-      Matrix.diagonal (Sum.elim (fun _ => Complex.I) (fun _ => 1 + 2 * Complex.I))
-    τᵀ = τ ∧ (τ.map Complex.im).PosDef := by
-  refine ⟨Matrix.diagonal_transpose _, ?_⟩
-  rw [Matrix.diagonal_map (by simp)]
-  exact Matrix.posDef_diagonal_iff.mpr fun k => by cases k <;> simp
 
 end
 

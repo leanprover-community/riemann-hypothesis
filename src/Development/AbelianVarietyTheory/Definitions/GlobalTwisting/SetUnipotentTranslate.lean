@@ -353,11 +353,8 @@ def ptO (QO : ∀ D : D7, Obj D → Prop) : PtProp := fun D L gatT Gx Gy K X cX 
 
 def objO (Q : PtProp) : ∀ D : D7, Obj D → Prop := fun D O => Q D O.L O.gatT O.Gx O.Gy O.K O.X O.cX O.ex
 
-theorem ptO_objO (Q : PtProp) : ptO (objO Q) = Q := rfl
 
-theorem objO_ptO (QO : ∀ D : D7, Obj D → Prop) : objO (ptO QO) = QO := rfl
 
-theorem has_ptO {C : FC} (p : Pt C) (QO : ∀ D : D7, Obj D → Prop) : p.Has (ptO QO) ↔ QO p.D (Obj.ofPt p) := Iff.rfl
 
 def LedPart.extra {C : FC} {D : D7} {Y : Lay D} (p : LedPart C Y) : Extra D p.L Y.gatT p.ta.Gx Y.Gy C.GK Y.X C.cX :=
   { Y with
@@ -397,11 +394,8 @@ def pt : Pt C where
       h_eq := fun _ => rfl
       ex := extraTr (nPrime p.L) p.ht p.extra }
 
-theorem pt_D : p.pt.D = setDiv D (nPrime p.L) p.ht := rfl
 
-theorem pt_sc : p.pt.L.sc = p.L.sc := rfl
 
-theorem ofPt_pt : Obj.ofPt p.pt = (Y.obj p).tr (nPrime p.L) p.ht := rfl
 
 theorem pt_wtEq {φ : Formalism.HC.Frame} {a b : φ.A → ℤ} (H : WtEq p.L a b) : WtEq p.pt.L a b := H
 
@@ -409,9 +403,6 @@ theorem pt_val {cD ch : ℝ} (H : Val C cD ch p.L) : Val C cD ch p.pt.L := { H w
 
 theorem pt_canon (H : CanonInst p.ta.Gx) : CanonInst p.pt.ta.Gx := H
 
-theorem pt_has {s : Scale} {cD : ℝ} {Q : PtProp} (hR : RecOK s C cD D) (hT : LocalQuadraticParts.TWAt D Y.nch Y.xd) (h0 : DC.GlobalTwistingFacts p.L)
-    (hQ : p.pt.Has Q) : p.pt.Has (DC.withObj Q) :=
-  ⟨⟨hQ, h0⟩, hR.tame, hR.mink, twAt_tr (nPrime p.L) p.ht hT⟩
 
 end LedPart
 
@@ -453,7 +444,6 @@ def Lay.ofPt {C : FC} (p : Pt C) : Lay p.D :=
 def LedPart.ofPt {C : FC} (p : Pt C) : LedPart C (Lay.ofPt p) :=
   { p.xa.ex with L := p.L, ta := p.ta, Gy_eq := rfl, nuDef := p.xa.nuDef }
 
-theorem obj_ofPt {C : FC} (p : Pt C) : (Lay.ofPt p).obj (LedPart.ofPt p) = Obj.ofPt p := rfl
 
 theorem pt_ofPt {C : FC} (p : Pt C) :
     (LedPart.ofPt p).pt.D.div.Nu = p.D.div.Nu ∧ (LedPart.ofPt p).pt.D.div.h = p.D.div.h := by
@@ -461,8 +451,6 @@ theorem pt_ofPt {C : FC} (p : Pt C) :
   show ({ p.D.div.Nu u with L := nPrime p.L u } : HLat _) = p.D.div.Nu u
   rw [show nPrime p.L u = (p.D.div.Nu u).L from (p.xa.nprimeDef u).symm]
 
-theorem nonempty_ledPart_iff (C : FC) : (∃ (D : D7) (Y : Lay D), Nonempty (LedPart C Y)) ↔ Nonempty (Pt C) :=
-  ⟨fun ⟨_, _, ⟨p⟩⟩ => ⟨p.pt⟩, fun ⟨p⟩ => ⟨_, _, ⟨LedPart.ofPt p⟩⟩⟩
 
 theorem leastOff_eq_rPrH {R : Ranks} (H : Host R) (hc : H.ccK = ⊤) :
     leastOff (H.QS * H.q * H.d * (H.pde - 1) * (H.pde' - 1)) = DC.rPrH H := by

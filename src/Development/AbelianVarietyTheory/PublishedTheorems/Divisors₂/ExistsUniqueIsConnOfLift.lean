@@ -205,8 +205,6 @@ variable {T T' : Type} [CommRing T] [Algebra T R] [Module T M] [IsScalarTower T 
 def IsDPDer (κ : DividedPowers I) (D : Derivation T R M) : Prop :=
   ∀ (n : ℕ), ∀ a ∈ I, D (κ.dpow (n + 1) a) = κ.dpow n a • D a
 
-theorem isDPDerivation_zero_ideal (D : Derivation T R M) : IsDPDer (dp0 R) D := fun n a ha ↦ by
-  rw [Ideal.mem_bot.1 ha, dpow_eval_zero _ n.succ_ne_zero, map_zero, smul_zero]
 
 theorem isDPDer_of_map {J : Ideal T} {δ : DividedPowers J} {κ : DividedPowers I}
     (h : IsDPMorphism δ κ (algebraMap T R)) (hI : I ≤ J.map (algebraMap T R)) (D : Derivation T R M) :
@@ -339,46 +337,8 @@ theorem IsConn.pull (h : IsConn t A hD c ω) {κ' : DividedPowers I'} {t' : S' �
       ext <;> simp [extMap]
   rw [IsConn, ← k₁, h, map_add, k₀, k₂]
 
-theorem isConn_const {J : Ideal T} {δ : DividedPowers J} {S₀ : Scheme.{0}} {s : S₀ ⟶ Sp T} {B : Over S₀} [GrpObj B]
-    {b : S ⟶ S₀} {φ : A.left ⟶ B.left} (m : GrpMor δ s B κ t A (algebraMap T R) b φ) (hD : IsDPDer κ D)
-    (c : prim δ s B) : IsConn t A hD (m.pull c) 0 := by
-  rw [IsConn, inrPull_zero, add_zero]
-  exact (GrpMor.pull_pull m _ (m.comp (inlMor M κ t A))
-    (fun r ↦ (derSec D).commutes r) rfl c).trans (GrpMor.pull_pull _ _ _ (fun _ ↦ rfl) rfl c).symm
 
-theorem isConn_smul_const {J : Ideal T} {δ : DividedPowers J} {S₀ : Scheme.{0}} {s : S₀ ⟶ Sp T} {B : Over S₀}
-    [GrpObj B] {b : S ⟶ S₀} {φ : A.left ⟶ B.left} (m : GrpMor δ s B κ t A (algebraMap T R) b φ) (hD : IsDPDer κ D)
-    (r : R) (c : prim δ s B) : IsConn t A hD (r • m.pull c) (D r ⊗ₜ m.pull c) := by
-  simpa using (isConn_const m hD c).smul r
 
-theorem existsUnique_isConn (H : (inlMor M κ t A).IsBC) (hD : IsDPDer κ D) (c : prim κ t A) :
-    ∃! ω, IsConn t A hD c ω := by
-  have inj : Function.Injective ((inrHom R M).rTensor (prim κ t A)) :=
-    Function.LeftInverse.injective (g := (sndHom R M).rTensor _) fun ω ↦ by
-      rw [← LinearMap.rTensor_comp_apply, show sndHom R M ∘ₗ inrHom R M = LinearMap.id from rfl,
-        LinearMap.rTensor_id_apply]
-  refine existsUnique_of_exists_of_unique ?_ fun ω ω' h h' ↦ inj (H.1 (add_left_cancel (h.symm.trans h')))
-  obtain ⟨z, hz⟩ := H.2 ((secMor κ t A hD.isDPMorphism (fst_derSec D)).pull c - (inlMor M κ t A).pull c)
-  have p : ∀ {σ : R →+* TrivSqZeroExt R M} (hσ : IsDPMorphism κ (extDP M κ) σ) (e : ∀ r, (σ r).fst = r) (c),
-      (prMor M κ t A).pull ((secMor κ t A hσ e).pull c) = c := fun hσ e c ↦
-    (GrpMor.pull_pull _ _ (homMor κ t (𝟙 A)) e (by simp) c).trans (Subtype.ext (IsMor.pullCohomologyOne_id _ _))
-  have p₀ : ∀ c, (prMor M κ t A).pull ((inlMor M κ t A).pull c) = c := p (isDPMorphism_inl M κ) fun _ ↦ rfl
-  have d : ∀ z, liftSemi (inlMor M κ t A).pull z =
-      (inlMor M κ t A).pull ((prMor M κ t A).pull (liftSemi (inlMor M κ t A).pull z)) +
-        inrPull κ t A ((sndHom R M).rTensor _ z) := fun z ↦ by
-    induction z with
-    | zero => simp only [map_zero, inrPull_zero, add_zero]
-    | add a b ha hb =>
-      simp only [map_add, inrPull_add]
-      rw [add_add_add_comm, ← ha, ← hb]
-    | tmul x c =>
-      rw [liftSemi_tmul, LinearMap.map_smulₛₗ, p₀, LinearMap.map_smulₛₗ, LinearMap.rTensor_tmul, inrPull_tmul,
-        ← add_smul]
-      exact congrArg (· • _) (inl_fst_add_inr_snd_eq x).symm
-  refine ⟨(sndHom R M).rTensor _ z, ?_⟩
-  have e := d z
-  rw [hz, map_sub, p hD.isDPMorphism (fst_derSec D), p₀, sub_self, map_zero, zero_add] at e
-  exact sub_eq_iff_eq_add'.1 e
 
 end Conn
 
@@ -425,28 +385,7 @@ theorem isBC_of_lift [Algebra R R'] (H : AbelianDeRham) (hA : IsAbelianScheme A)
   rw [show liftSemi m.pull ∘ _ = _ ∘ _ from funext sq]
   exact b₁.comp b₂
 
-theorem existsUnique_isConn_of_lift (H : AbelianDeRham) (hA : IsAbelianScheme A)
-    (hg : SmoothOfRelativeDimension g A.hom) (hκ : IsNilDP κ) (hπ : Function.Surjective π) (hI : RingHom.ker π = I)
-    (h : IsGrpPullback A₀ A (spMap π) i) {D : Derivation T R M} (hD : IsDPDer κ D) (c : prim κ (spMap π) A₀) :
-    ∃! ω, IsConn (spMap π) A₀ hD c ω := by
-  refine existsUnique_isConn ?_ hD c
-  have e : spMap π ≫ spMap (pr R M) = spMap (π.comp (pr R M)) := (Cris.spMap_comp _ _).symm
-  have m := inlMor M κ (spMap π) A₀
-  change GrpMor.IsBC m
-  revert m
-  rw [e]
-  exact fun m ↦ isBC_of_lift H hA hg hκ hπ hI h (isDPNilpotent_extend M hκ) (hπ.comp fun r ↦ ⟨inl r, rfl⟩)
-    (by rw [← RingHom.comap_ker, hI]) m (isGrpPullback_refl A₀)
 
-theorem existsUnique_gaussManin (H : AbelianDeRham) (hA : IsAbelianScheme A)
-    (hg : SmoothOfRelativeDimension g A.hom) (D : Derivation T R M) (c : primDR A) :
-    ∃! ω, IsConn (𝟙 _) A (isDPDerivation_zero_ideal D) c ω := by
-  have := existsUnique_isConn_of_lift H hA hg (isDPNilpotent_bot R) (π := RingHom.id R) Function.surjective_id
-    ((RingHom.injective_iff_ker_eq_bot _).1 Function.injective_id)
-    ((isGrpPullback_refl A).congr (Cris.spMap_id R).symm rfl) (isDPDerivation_zero_ideal D)
-  revert this
-  rw [Cris.spMap_id]
-  exact fun h ↦ h c
 
 end Abelian
 

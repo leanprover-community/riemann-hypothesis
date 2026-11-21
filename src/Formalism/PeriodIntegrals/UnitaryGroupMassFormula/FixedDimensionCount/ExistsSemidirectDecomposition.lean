@@ -22,17 +22,8 @@ def dk {G : Type} [Group G] (K D : Subgroup G) (hN : Normalises D K) : Subgroup 
 theorem mem_dk {G : Type} [Group G] (K D : Subgroup G) (hN : Normalises D K) {g : G} :
     g ∈ dk K D hN ↔ ∃ δ ∈ D, ∃ κ ∈ K, g = δ * κ := Iff.rfl
 
-theorem le_dk {G : Type} [Group G] (K D : Subgroup G) (hN : Normalises D K) : K ≤ dk K D hN :=
-  fun κ hκ => (mem_dk K D hN).2 ⟨1, D.one_mem, κ, hκ, by simp⟩
 
-theorem D_le_dk {G : Type} [Group G] (K D : Subgroup G) (hN : Normalises D K) : D ≤ dk K D hN :=
-  fun δ hδ => (mem_dk K D hN).2 ⟨δ, hδ, 1, K.one_mem, by simp⟩
 
-theorem dk_le {G : Type} [Group G] (K D K₀ : Subgroup G) (hN : Normalises D K) (hK : K ≤ K₀)
-    (hD : D ≤ K₀) : dk K D hN ≤ K₀ := by
-  intro g hg
-  obtain ⟨δ, hδ, κ, hκ, rfl⟩ := (mem_dk K D hN).1 hg
-  exact K₀.mul_mem (hD hδ) (hK hκ)
 
 theorem exists_semidirect_decomposition {G : Type} [Group G] {K D : Subgroup G} {hN : Normalises D K}
     (g : dk K D hN) : ∃ p : D × K, (g : G) = (p.1 : G) * (p.2 : G) := by
@@ -86,36 +77,7 @@ def chi1 {G : Type} [Group G] {K D : Subgroup G} (hN : Normalises D K) (k : Type
     exact hinv δ'⁻¹ (D.inv_mem hδ') ⟨κ, hκ⟩ κc
       (by show δ'⁻¹ * κ * δ' = δ'⁻¹ * κ * δ'⁻¹⁻¹; rw [inv_inv])
 
-theorem mem_AMFChi {G : Type} [Group G] (k : Type) [Field k] {W : Type} [AddCommGroup W]
-    [Module k W] (Γ K : Subgroup G) (ρ : Representation k Γ W) (χ : K →* kˣ) (f : G → W) :
-    f ∈ AMFChi k Γ K ρ χ ↔
-      ∀ γ : Γ, ∀ g : G, ∀ κ : K, f ((γ : G) * g * κ) = ((χ κ : kˣ) : k) • ρ γ (f g) := Iff.rfl
 
-theorem fixAt_eq {G : Type} [Group G] (k : Type) [Field k] (W : Type) [AddCommGroup W]
-    [Module k W] (Γ K D : Subgroup G) (hN : Normalises D K) (ρ : Representation k Γ W)
-    (χ : K →* kˣ) (hinv : ∀ δ ∈ D, ∀ κ κ' : K, (κ' : G) = δ * κ * δ⁻¹ → χ κ' = χ κ)
-    (htriv : ∀ κ : K, (κ : G) ∈ D → χ κ = 1) :
-    FixAt k Γ K ρ χ D = AMFChi k Γ (dk K D hN) ρ (chi1 hN k χ hinv htriv) := by
-  ext f
-  rw [mem_FixAt, mem_AMFChi, mem_AMFChi]
-  constructor
-  · rintro ⟨hA, hD⟩ γ g κ₁
-    obtain ⟨δ, hδ, κ, hκ, e⟩ := (mem_dk K D hN).1 κ₁.2
-    have hc : chi1 hN k χ hinv htriv κ₁ = χ ⟨κ, hκ⟩ := chi1Fun_eq k χ htriv κ₁ hδ ⟨κ, hκ⟩ e
-    rw [hc, e, show (γ : G) * g * (δ * κ) = (γ : G) * (g * δ) * κ by group]
-    rw [hA γ (g * δ) ⟨κ, hκ⟩, hD δ hδ g]
-  · intro h
-    refine ⟨fun γ g κ => ?_, fun δ hδ g => ?_⟩
-    · have hc : chi1 hN k χ hinv htriv ⟨κ, le_dk K D hN κ.2⟩ = χ κ :=
-        chi1Fun_eq k χ htriv _ D.one_mem κ (by simp)
-      have := h γ g ⟨κ, le_dk K D hN κ.2⟩
-      rw [hc] at this
-      exact this
-    · have hc : chi1 hN k χ hinv htriv ⟨δ, D_le_dk K D hN hδ⟩ = 1 :=
-        (chi1Fun_eq k χ htriv _ hδ 1 (by simp)).trans (map_one χ)
-      have := h 1 g ⟨δ, D_le_dk K D hN hδ⟩
-      rw [hc] at this
-      simpa using this
 
 theorem neat_one {G : Type} [Group G] {Γ K₀ : Subgroup G} (hn : IsNeat Γ K₀) {x γ : G}
     (hγ : γ ∈ Γ) (h : x⁻¹ * γ * x ∈ K₀) : γ = 1 := by
@@ -128,33 +90,7 @@ theorem stabTriv_of {G : Type} [Group G] (Γ K₁ K₀ : Subgroup G) (h : K₁ �
   intro x γ hx
   exact Subtype.ext (neat_one hn γ.2 (h hx))
 
-theorem amf_dim {G : Type} [Group G] (k : Type) [Field k] (W : Type) [AddCommGroup W]
-    [Module k W] [FiniteDimensional k W] (Γ K₁ : Subgroup G)
-    (hst : Formalism.L2.SG.ColsDim.StabTriv Γ.subtype K₁) (hfin : Finite (ClassSet Γ K₁))
-    (ρ : Representation k Γ W) (χ : K₁ →* kˣ) :
-    finrank k (AMFChi k Γ K₁ ρ χ) = finrank k W * Nat.card (ClassSet Γ K₁) := by
-  have hr : Γ.subtype.range = Γ := Subgroup.range_subtype Γ
-  have : Finite (Formalism.L2.SG.ColsDim.Classes Γ.subtype K₁) := by
-    show Finite (ClassSet Γ.subtype.range K₁)
-    rw [hr]; exact hfin
-  have := (Formalism.L2.SG.ColsDim.equi_dim Γ.subtype K₁ hst ρ χ).2
-  rw [Formalism.L2.SG.ColsDim.equi_subtype] at this
-  rw [this]
-  show finrank k W * Nat.card (ClassSet Γ.subtype.range K₁) = _
-  rw [hr]
 
-theorem finite_dk {G : Type} [Group G] (Γ K D : Subgroup G) (hN : Normalises D K)
-    (hfin : Finite (ClassSet Γ K)) : Finite (ClassSet Γ (dk K D hN)) := by
-  refine Finite.of_surjective
-    (fun c : ClassSet Γ K => DoubleCoset.mk Γ (dk K D hN) (Quotient.out c)) ?_
-  intro c₁
-  refine ⟨DoubleCoset.mk Γ K (Quotient.out c₁), ?_⟩
-  obtain ⟨γ, hγ, κ, hκ, e⟩ := (DoubleCoset.eq Γ K
-    (Quotient.out (DoubleCoset.mk Γ K (Quotient.out c₁))) (Quotient.out c₁)).1
-    (DoubleCoset.out_eq' Γ K (DoubleCoset.mk Γ K (Quotient.out c₁)))
-  refine Eq.trans ?_ (DoubleCoset.out_eq' Γ (dk K D hN) c₁)
-  show DoubleCoset.mk Γ (dk K D hN) (Quotient.out (DoubleCoset.mk Γ K (Quotient.out c₁))) = _
-  exact (DoubleCoset.eq Γ (dk K D hN) _ _).2 ⟨γ, hγ, κ, le_dk K D hN hκ, e⟩
 
 def phiMap {G : Type} [Group G] (Γ K D : Subgroup G) (hN : Normalises D K)
     (p : ClassSet Γ (dk K D hN) × (D ⧸ K.subgroupOf D)) : ClassSet Γ K :=
@@ -227,12 +163,5 @@ theorem card_classes {G : Type} [Group G] (Γ K K₀ D : Subgroup G) (hN : Norma
     ⟨phiMap_inj Γ K K₀ D hN hK hD hn, phiMap_surj Γ K D hN⟩), Nat.card_prod,
     Subgroup.relIndex, Subgroup.index_eq_card]
 
-theorem fixedDim : Formalism.L2.SG.ClassAct.FixedDim := by
-  intro G _ Γ K K₀ D k _ W _ _ _ ρ χ hK hD hn hN hinv htriv hfin
-  have hst1 := stabTriv_of Γ (dk K D hN) K₀ (dk_le K D K₀ hN hK hD) hn
-  have hst := stabTriv_of Γ K K₀ hK hn
-  have hfin1 := finite_dk Γ K D hN hfin
-  rw [fixAt_eq k W Γ K D hN ρ χ hinv htriv, amf_dim k W Γ (dk K D hN) hst1 hfin1,
-    amf_dim k W Γ K hst hfin, card_classes Γ K K₀ D hN hK hD hn, mul_assoc]
 
 end PI.UnitaryGroupMassFormula.DiaFixDim.Main

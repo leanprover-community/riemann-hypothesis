@@ -60,10 +60,6 @@ def HasChars (χ χ' : HChar D.host.E) : Prop :=
 theorem mem_hatId_top {x : AE D} (h : x ∈ OhE D) : x ∈ hatId D ⊤ :=
   AddSubgroup.subset_closure ⟨1, trivial, x, h, by simp⟩
 
-theorem skewLat_top (N : ℕ) : skewLat D ⊤ N = stdL D N := by
-  have : (D.host.conj • ⊤ : Ideal (𝓞 D.host.E)) = ⊤ := by
-    rw [← Ideal.one_eq_top, smul_one]
-  simp [skewLat, stdL, this]
 
 theorem pt_unitBlock_mem (δ : ℂ) (o a d : ℕ) : pt D (tor0 D ⊤ δ) δ (unitBlock D o a d) ∈ La0 D (tor0 D ⊤ δ) a d := by
   refine AddSubgroup.subset_closure ⟨δ, AddSubgroup.subset_closure ⟨1, trivial, by simp⟩, _, ?_, rfl⟩
@@ -79,19 +75,6 @@ theorem pt_unitBlock_mem (δ : ℂ) (o a d : ℕ) : pt D (tor0 D ⊤ δ) δ (uni
       · simp [unitBlock, h]
     exact this
 
-theorem isStdDatum_top (P : Pair D ⊤ δ t0 Q) (hF : P.F = P.e0) (hJ : P.J = intG D P.d) (o a : ℕ) :
-    IsStdDatum P ⊤ o ∧ IsBlockLevel P ⊤ a := by
-  have h1 := (GlobalTheory.InducedType.induced_type D).1
-  have e : cosetVec P ⊤ o = P.e0 := by
-    rw [cosetVec, skewLat_top, show La D _ _ _ = La0 D (tor0 D ⊤ δ) P.a P.d from rfl, VacMove.iop_self D _ (La0 D _ _ _) P.vac.1,
-      VacMove.wd_fix h1 P.crv (VacMove.klat _ (VacMove.moves_one D _) (VacMove.moves_one D _)) P.vac.1
-        (pt_unitBlock_mem δ o _ _)]
-    simp
-  refine ⟨⟨{1}, by simp, fun k hk => ⟨1, ⟨by simp, fun i j => mem_hatId_top ?_⟩, fun r hr => by simpa using hr.1⟩, ?_⟩,
-    fun h => ⟨fun hh => ⟨hJ ▸ hh, fun i j _ _ => mem_hatId_top (((mem_intG h).1 (hJ ▸ hh)) i j).1⟩, fun hh => hJ ▸ hh.1⟩⟩
-  · rw [inv_one, one_mul, Matrix.sub_apply]
-    exact sub_mem ((mem_intG k).1 hk i j).1 ((mem_intG 1).1 (one_mem _) i j).1
-  · rw [Finset.sum_singleton, e, P.W.one _ (VacMove.vac_TT h1 P.crv P.vac.1), hF]
 
 end Std
 
@@ -127,12 +110,6 @@ theorem IsMinPol.ne_zero {β : ℂ} {p : K[X]} (h : IsMinPol σ β p) (h0 : β �
     (irreducible_X.associated_of_dvd h.2.1 (X_dvd_iff.2 hc)).symm
   simpa [e] using h.2.2
 
-theorem meanVal_of_mem {b : K} {p : K[X]} (h : IsMinPol σ (σ b) p) (w : Formalism.PairingDivisionLocalBalance.Pl K) : meanVal_vw w p = vw w b := by
-  have h' : IsMinPol σ (σ b) (X - C b) := ⟨monic_X_sub_C b, irreducible_X_sub_C b, by simp⟩
-  have e : FractionalIdeal.spanSingleton (𝓞 K)⁰ (-b) = FractionalIdeal.spanSingleton (𝓞 K)⁰ b :=
-    FractionalIdeal.spanSingleton_eq_spanSingleton.2 ⟨-1, by simp⟩
-  rw [h.eq_minpoly.trans h'.eq_minpoly.symm]
-  simp [meanVal_vw, vw, e]
 
 theorem prime_unique {w : Formalism.PairingDivisionLocalBalance.Pl K} {l l' : ℕ} (hl : l.Prime) (hl' : l'.Prime) (h : (l : 𝓞 K) ∈ w.asIdeal)
     (h' : (l' : 𝓞 K) ∈ w.asIdeal) : l = l' := by
@@ -235,7 +212,6 @@ def alphaH (L : LevCh D T) (t : T) (i j : Fin D.R.m) : HChar D.host.E := L.C.mu0
 
 def betaH : HChar D.host.E := G.ch.chiH (D.R.m - i) * L.C.eta ^ (rankV D i j % 2)
 
-theorem alphaH_div_betaH : alphaH L t i j / betaH G i j = nuH G t i j := mul_div_mul_right_eq_div _ _ _
 
 open Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum in
 

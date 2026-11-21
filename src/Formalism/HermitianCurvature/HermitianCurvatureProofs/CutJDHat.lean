@@ -252,46 +252,6 @@ theorem hReal_sub {X Y : MA.A (D.parOf S v) (MA.DQ (D.parOf S v))} (hX : HReal C
 
 end realise
 
-theorem jDHatOp_of_hatLeaves (hA : JDOpA) (hR : JDOpR) (hG : JDGaugeQQ) (h1 : ResidueSplittingModelAlgebra) (h2 : MirrorResidueSplittingModelAlgebra)
-    (h3 : JDHatLagrange) (h4 : JDHatNodes) : JDHatOp := by
-  obtain ⟨KA, hKA0, hA⟩ := hA
-  obtain ⟨KR, -, hR⟩ := hR
-  refine ⟨max KA KR, le_max_of_le_left hKA0, ?_⟩
-  intro E _ _ _ Wp Wq _ _ _ _ _ _ S T f χ ν' m₀ top A₀ hB v e L hFr hGa hL X hX
-  have hQQ := hG (max KA KR) E Wp Wq S T f χ ν' m₀ top A₀ hB v e hFr hGa
-  have hA' := hA (max KA KR) (le_max_left _ _) E Wp Wq S T f χ ν' m₀ top A₀ hB v e L hFr hL
-  have hR' := hR (max KA KR) (le_max_right _ _) E Wp Wq S T f χ ν' m₀ top A₀ hB v e L hFr hQQ hL
-  suffices hH : HReal (max KA KR) S T v e L X by
-    obtain ⟨ts, hts, hJ⟩ := hH
-    exact ⟨ts, hts, hJ⟩
-  have rA : ∀ y : ℂ, HReal (max KA KR) S T v e L (L.Ahat y) := fun y => by
-    obtain ⟨Θ, Θv, hΘ, -, h⟩ := hA' y
-    exact hReal_op Θ hΘ fun J hJ => (h J hJ).1
-  have rAv : ∀ y : ℂ, HReal (max KA KR) S T v e L (L.Ahatv y) := fun y => by
-    obtain ⟨Θ, Θv, -, hΘv, h⟩ := hA' y
-    exact hReal_op Θv hΘv fun J hJ => (h J hJ).2
-  have rR : ∀ y : ℝ, HReal (max KA KR) S T v e L (RhM (D.parOf S v) L y) := fun y => by
-    obtain ⟨Θ, Θv, hΘ, -, h⟩ := hR' y
-    exact hReal_op Θ hΘ fun J hJ => (h J hJ).1
-  have rRv : ∀ y : ℝ, HReal (max KA KR) S T v e L (RhvM (D.parOf S v) L y) := fun y => by
-    obtain ⟨Θ, Θv, -, hΘv, h⟩ := hR' y
-    exact hReal_op Θv hΘv fun J hJ => (h J hJ).2
-  obtain ⟨ν, hinj, hreg⟩ := h4 (D.parOf S v)
-  rcases hX with (((⟨y, rfl⟩ | ⟨y, rfl⟩) | ⟨y, rfl⟩) | ⟨y, rfl⟩)
-  · exact rA y
-  · rw [(h3 (D.parOf S v) L ν hinj y).1]
-    refine hReal_sum _ _ fun j _ => hReal_smul _ ?_
-    rw [h1 (D.parOf S v) L hL (ν j) (hreg j)]
-    refine hReal_sub (hReal_mul (jdh_kap_mem _ L _) (rR (ν j))) (hReal_sum _ _ fun l hl => ?_)
-    refine hReal_mul ?_ (rA _)
-    exact Submonoid.mul_mem _ (Submonoid.mul_mem _ (jdh_kap_mem _ L _) (jdh_SSn_mem _ L l hl)) (jdh_kap_mem _ L _)
-  · exact rAv y
-  · rw [(h3 (D.parOf S v) L ν hinj y).2]
-    refine hReal_sum _ _ fun j _ => hReal_smul _ ?_
-    rw [h2 (D.parOf S v) L hL (ν j) (hreg j)]
-    refine hReal_sub (hReal_mul (jdh_kap_mem _ L _) (rRv (ν j))) (hReal_sum _ _ fun l hl => ?_)
-    refine hReal_mul ?_ (rAv _)
-    exact Submonoid.mul_mem _ (Submonoid.mul_mem _ (jdh_kap_mem _ L _) (jdh_kap_mem _ L _)) (jdh_SSns_mem _ L l hl)
 
 end
 

@@ -1,6 +1,55 @@
 import Formalism.LocalToGlobal.GaloisLevelStructure.DefsLevel
-import Formalism.LocalToGlobal.AdelicCompactOpens.GLintCompactOpen
+import Mathlib
 
+section
+namespace Formalism.L2.Props
+
+open Matrix
+
+def GLintCompactOpen : Prop :=
+  ∀ (R : Type) [CommRing R] [TopologicalSpace R] [IsTopologicalRing R] [T2Space R] (O : Subring R),
+    IsOpen (O : Set R) → IsCompact (O : Set R) → ∀ n : ℕ,
+      IsOpen {g : GL (Fin n) R | (∀ a b, (g : Matrix (Fin n) (Fin n) R) a b ∈ O) ∧
+          ∀ a b, ((g⁻¹ : GL (Fin n) R) : Matrix (Fin n) (Fin n) R) a b ∈ O} ∧
+      IsCompact {g : GL (Fin n) R | (∀ a b, (g : Matrix (Fin n) (Fin n) R) a b ∈ O) ∧
+          ∀ a b, ((g⁻¹ : GL (Fin n) R) : Matrix (Fin n) (Fin n) R) a b ∈ O}
+
+section uni
+
+variable {K : Type} [Field K] [Valued K (WithZero (Multiplicative ℤ))] {n : ℕ}
+
+def ParaR (r : ℕ) (h : GL (Fin n) K) : Prop :=
+  (∀ a b, Valued.v ((h : Matrix (Fin n) (Fin n) K) a b) ≤ 1) ∧
+    (∀ a b, Valued.v (((h⁻¹ : GL (Fin n) K) : Matrix (Fin n) (Fin n) K) a b) ≤ 1) ∧
+    ∀ a b : Fin n, r ≤ a.val → b.val < r → Valued.v ((h : Matrix (Fin n) (Fin n) K) a b) < 1
+
+def UniR (r : ℕ) (h : GL (Fin n) K) : Prop :=
+  ParaR r h ∧ ∀ a b : Fin n, a.val < r → b.val < r →
+    (b.val < a.val → Valued.v ((h : Matrix (Fin n) (Fin n) K) a b) < 1) ∧
+    (a = b → Valued.v ((h : Matrix (Fin n) (Fin n) K) a b - 1) < 1)
+
+def detDDR (r : ℕ) (h : GL (Fin n) K) : K :=
+  (Matrix.of fun a b : {x : Fin n // r ≤ x.val} => (h : Matrix (Fin n) (Fin n) K) a.1 b.1).det
+
+def supDiagR (r : ℕ) (h : GL (Fin n) K) : K :=
+  ∑ a : Fin n, ∑ b : Fin n, if a.val + 1 = b.val ∧ b.val < r then (h : Matrix (Fin n) (Fin n) K) a b else 0
+
+end uni
+
+def ParaDetUnit : Prop :=
+  ∀ (K : Type) [Field K] [Valued K (WithZero (Multiplicative ℤ))] (n r : ℕ) (h : GL (Fin n) K), ParaR r h → Valued.v (detDDR r h) = 1
+
+def UniCharMul : Prop :=
+  ∀ (K : Type) [Field K] [Valued K (WithZero (Multiplicative ℤ))] (n r : ℕ) (ψ₀ : AddChar K ℂ) (ξ : Kˣ →* ℂˣ),
+    (∀ x : K, Valued.v x < 1 → ψ₀ x = 1) → (∀ u : Kˣ, Valued.v ((u : K) - 1) < 1 → ξ u = 1) →
+    ∀ (g h : GL (Fin n) K) (ug uh ugh : Kˣ), UniR r g → UniR r h →
+      (ug : K) = detDDR r g → (uh : K) = detDDR r h → (ugh : K) = detDDR r (g * h) →
+      ψ₀ (supDiagR r (g * h)) * (ξ ugh : ℂ) = (ψ₀ (supDiagR r g) * (ξ ug : ℂ)) * (ψ₀ (supDiagR r h) * (ξ uh : ℂ))
+
+end Formalism.L2.Props
+end
+
+section
 namespace Formalism.L2.Props
 
 open NumberField IsDedekindDomain Formalism.L2.NG ReciprocityTheory.Aut
@@ -38,26 +87,9 @@ def HWExists : Prop := ∀ (a : AlgWt L n) (τ : L →+* ℂ), ∃ lam, a.HWAt �
 
 variable {L n}
 
-theorem uniR_of_uniRT {s : SplitPlace L} {r : ℕ} {h : GL (Fin n) (s.v.adicCompletion L⁺)} (hh : UniRT s r h) :
-    UniR r h := by
-  unfold UniR
-  refine ⟨?_, hh.2⟩
-  unfold ParaR
-  obtain ⟨⟨g, hg⟩, hlow⟩ := hh.1
-  refine ⟨?_, ?_, hlow⟩
-  · intro a b
-    rw [← hg]
-    exact (g.val a b).2
-  · intro a b
-    rw [← hg, ← map_inv]
-    exact (g⁻¹.val a b).2
 
-theorem uniCharMul_ng (H : UniCharMul) : UniCharMulNG L n := by
-  unfold UniCharMul at H
-  intro s r ψ₀ ξ hψ hξ g h ug uh ugh hg hh hug huh hugh
-  exact @H (s.v.adicCompletion L⁺) _ _ n r ψ₀ ξ hψ.1 hξ g h ug uh ugh (uniR_of_uniRT hg)
-    (uniR_of_uniRT hh) hug huh hugh
 
 end
 
 end Formalism.L2.Props
+end

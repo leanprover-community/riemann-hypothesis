@@ -18,18 +18,869 @@ import Development.AbelianVarietyTheory.Proofs.FlagMeasures.EventuallyLocalLatti
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IndicatorCompletedLatticeEqFinprodLocal
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsSelfDualLatticeCompletionMaxOrder
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsSplitPlOfTwoMem
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsLocalComponentAdelicAddCharStatement
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.AdicIntegersCharacterDualIndexEqResidueCardZpow
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsRealAdeleCoordinatesCmType
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsRealAdelicHermitianSignatureCoordinates
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SelfDualSumPairingMapEqPi
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsFibreMeasureFamilyMapHomeomorph
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.FibreIntegralPiProdEqProdFibreIntegralStatement
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsOrthogonalComplementUnitaryFrameOfMatrix
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsUnitarySignatureStabiliserCosetCutoff
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.UnitaryQuotientIntegralProdOverPlaces
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.HermitianNormFibreLintegralNeZeroOfPos
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsLocalComponentAdelicAddChar
+import Formalism.SharpRestriction.GlobalSchurBounds.StandardLattice
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ProductLocalDensitiesAdeleCharacter
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.InfAdeleTensorBijective
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsArchAdeleTensorEquivComplexCmType
+import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LintegralFintypeProd
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsBorelSectionUnitaryOrbitQuadric
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.HaarUpqIsMulRightInvariant
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UpqLocallyCompactGroup
 
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke
+open scoped ENNReal TensorProduct
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_localComponent_adelicAddChar : ∀ (F : Type) [Field F] [NumberField F] (ψ : AddChar (AF F) ℂ), IsCharAF F ψ → ∀ v : HeightOneSpectrum (𝓞 F), LocalAdditiveCharacterDual.IndexFinite F ψ v → ∃ χ : AddChar (Fv F v) ℂ, PlaceSplittingTypes.IsLocalChar F v χ ∧ ∀ t, χ t = psiV F ψ v t := by
+  first | exact @GlobalTheory.LocalComponentChar.exists_localChar | exact GlobalTheory.LocalComponentChar.exists_localChar | (intros; apply GlobalTheory.LocalComponentChar.exists_localChar <;> assumption)
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke
+open scoped ENNReal TensorProduct
+
+namespace GlobalTheory.DualIndexPow
+
+theorem nIdx_eq_zpow : ∀ (F : Type) [Field F] [NumberField F] (ψ : AddChar (AF F) ℂ) (v : HeightOneSpectrum (𝓞 F)) (c : ℤ), (∀ t : Fv F v, (∀ s ∈ v.adicCompletionIntegers F, psiV F ψ v (t * s) = 1) ↔ Valued.v t ≤ WithZero.exp c) → LocalAdditiveCharacterDual.nIdx F ψ v = (PlaceSplittingTypes.resCard F v : ℝ) ^ c := by
+  intro F _ _ ψ v c h
+  obtain ⟨a, ha⟩ := IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_surjective F v
+    (WithZero.exp (-c))
+  have ha0 : a ≠ 0 := by
+    rintro rfl
+    rw [map_zero] at ha
+    exact WithZero.exp_ne_zero ha.symm
+  have hu : ∀ hx : WithZero.exp (-c) ≠ 0, Multiplicative.toAdd (WithZero.unzero hx) = -c :=
+    fun _ => rfl
+
+  have hd : GlobalTheory.IndefiniteRowSideFullHecke.LocalAdditiveCharacterDual.psiDual F ψ v = GlobalTheory.LocalDensityProduct.colonV v a := by
+    ext t
+    rw [GlobalTheory.LocalDensityProduct.mem_colonV]
+    change (∀ s ∈ v.adicCompletionIntegers F, psiV F ψ v (t * s) = 1) ↔ _
+    rw [h t, IsDedekindDomain.HeightOneSpectrum.mem_adicCompletionIntegers, map_mul, ha,
+      WithZero.exp_neg, mul_inv_le_iff₀ (by simp), one_mul]
+  have hi : GlobalTheory.IndefiniteRowSideFullHecke.LocalAdditiveCharacterDual.intV F v = GlobalTheory.IndefiniteRowSideFullHecke.LocalDualIndex.intV F v := rfl
+  unfold GlobalTheory.IndefiniteRowSideFullHecke.LocalAdditiveCharacterDual.nIdx
+  rw [hd, hi, (GlobalTheory.LocalDensityProduct.index_colonV v a ha0).2,
+    NumberField.FinitePlace.norm_def, ha,
+    WithZeroMulInt.toNNReal_neg_apply _ WithZero.exp_ne_zero]
+  simp only [GlobalTheory.IndefiniteRowSideFullHecke.PlaceSplittingTypes.resCard]
+  rw [← Submodule.cardQuot_apply, ← Ideal.absNorm_apply, hu]
+  simp [_root_.zpow_neg]
+
+end GlobalTheory.DualIndexPow
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke
+open scoped ENNReal TensorProduct
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adicIntegersCharacterDualIndex_eq_residue_card_zpow : ∀ (F : Type) [Field F] [NumberField F] (ψ : AddChar (AF F) ℂ) (v : HeightOneSpectrum (𝓞 F)) (c : ℤ), (∀ t : Fv F v, (∀ s ∈ v.adicCompletionIntegers F, psiV F ψ v (t * s) = 1) ↔ Valued.v t ≤ WithZero.exp c) → LocalAdditiveCharacterDual.nIdx F ψ v = (PlaceSplittingTypes.resCard F v : ℝ) ^ c := by
+  atlas_forward_decl GlobalTheory.DualIndexPow.nIdx_eq_zpow
+end
+
+section
+section
+noncomputable section
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke
+open scoped ENNReal TensorProduct
+
+namespace GlobalTheory.RealAdeleCoord
+
+theorem bijective_place {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+    (σ : E →ₐ[F] E) (h : IsCMExt F E σ) {T : Type} (τ : T → (E →+* ℂ))
+    (hτ : Function.Bijective fun ρ => InfinitePlace.mk (τ ρ)) :
+    Function.Bijective fun ρ => InfinitePlace.mk ((τ ρ).comp (algebraMap F E)) := by
+  obtain ⟨hF, hE, h2, hσ⟩ := h
+  haveI : FiniteDimensional F E := Module.finite_of_finrank_pos (by omega)
+  let c : E ≃ₐ[F] E := AlgEquiv.ofBijective σ (Algebra.IsAlgebraic.algHom_bijective σ)
+  have hc' : ∀ (τ : E →+* ℂ) x, τ (c x) = starRingEnd ℂ (τ x) := hσ
+  have hnr : ∀ φ : E →+* ℂ, ComplexEmbedding.conjugate φ ≠ φ := fun φ hφ =>
+    IsTotallyComplex.complexEmbedding_not_isReal φ (ComplexEmbedding.isReal_iff.2 hφ)
+  have hc : c ≠ 1 := by
+    intro h1
+    obtain ⟨φ⟩ : Nonempty (E →+* ℂ) := inferInstance
+    refine hnr φ (RingHom.ext fun x => ?_)
+    rw [ComplexEmbedding.conjugate_coe_eq, ← hc', h1]
+    rfl
+  obtain ⟨δ, h0, hcδ, hs⟩ := GlobalTheory.InfAdeleCM.exists_delta c h2 hc hc'
+  constructor
+  · intro i j hij
+    apply hτ.1
+    rcases GlobalTheory.InfAdeleCM.eq_or_conj c hc' h0 hcδ hs _ _ (GlobalTheory.InfAdeleCM.mk_eq_iff hij) with e | e
+    · simp only [e]
+    · simp only [e, InfinitePlace.mk_conjugate_eq]
+  · intro w
+    obtain ⟨i, hi⟩ := hτ.2 (InfinitePlace.mk (ComplexEmbedding.lift E w.embedding))
+    refine ⟨i, ?_⟩
+    have := congrArg (fun v : InfinitePlace E => v.comap (algebraMap F E)) hi
+    simp only [InfinitePlace.comap_mk, ComplexEmbedding.lift_comp_algebraMap, InfinitePlace.mk_embedding] at this
+    exact this
+
+theorem exists_realCoord : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (T : Type) [Fintype T] (τ : T → (E →+* ℂ)) (θ : T → (Ainf F ⊗[F] E →+* ℂ)), (Function.Bijective fun ρ => InfinitePlace.mk (τ ρ)) → (∀ ρ, IsInfEmb (τ ρ) (θ ρ)) → ∃ r : Ainf F ≃+* (T → ℝ), Continuous r ∧ Continuous r.symm ∧ (∀ a ρ, ((r a ρ : ℝ) : ℂ) = θ ρ (a ⊗ₜ[F] (1 : E))) ∧ (∀ a, LocalAdditiveCharacterDual.stdInf F a = Complex.exp (2 * Real.pi * Complex.I * (((-1 : ℝ) * ∑ ρ, r a ρ : ℝ) : ℂ))) ∧ ∀ a, (∀ w, a w ≠ 0) ↔ ∀ ρ, r a ρ ≠ 0 := by
+  intro F E _ _ _ _ _ σ h T _ τ θ hτ hθ
+  haveI hF := h.1
+  let u : T ≃ InfinitePlace F := Equiv.ofBijective _ (bijective_place σ h τ hτ)
+  let s : ∀ w : InfinitePlace F, w.Completion ≃+* ℝ := fun w =>
+    InfinitePlace.Completion.ringEquivRealOfIsReal (IsTotallyReal.isReal w)
+  have hs : ∀ w, Continuous (s w) := fun w =>
+    (InfinitePlace.Completion.isometryEquivRealOfIsReal (IsTotallyReal.isReal w)).continuous
+  have hs' : ∀ w, Continuous (s w).symm := fun w =>
+    (InfinitePlace.Completion.isometryEquivRealOfIsReal (IsTotallyReal.isReal w)).symm.continuous
+  have hsc : ∀ w x, ((s w x : ℝ) : ℂ) = InfinitePlace.Completion.extensionEmbedding w x := fun w x =>
+    InfinitePlace.Completion.extensionEmbeddingOfIsReal_apply (IsTotallyReal.isReal w) x
+  let r : Ainf F ≃+* (T → ℝ) :=
+    { toFun := fun a ρ => s (u ρ) (a (u ρ))
+      invFun := fun y w => (s w).symm (y (u.symm w))
+      left_inv := fun a => funext fun w => by
+        obtain ⟨ρ, rfl⟩ := u.surjective w
+        show (s (u ρ)).symm (s (u (u.symm (u ρ))) (a (u (u.symm (u ρ))))) = _
+        rw [u.symm_apply_apply, RingEquiv.symm_apply_apply]
+      right_inv := fun y => funext fun ρ => by
+        show s (u ρ) ((s (u ρ)).symm (y (u.symm (u ρ)))) = _
+        rw [RingEquiv.apply_symm_apply, u.symm_apply_apply]
+      map_mul' := fun a b => funext fun ρ => map_mul (s (u ρ)) (a (u ρ)) (b (u ρ))
+      map_add' := fun a b => funext fun ρ => map_add (s (u ρ)) (a (u ρ)) (b (u ρ)) }
+  have hr : ∀ a ρ, r a ρ = s (u ρ) (a (u ρ)) := fun _ _ => rfl
+  refine ⟨r, continuous_pi fun ρ => (hs _).comp (continuous_apply (u ρ)),
+    continuous_pi fun w => (hs' w).comp (continuous_apply (u.symm w)), fun a ρ => ?_, fun a => ?_, fun a => ?_⟩
+  · rw [GlobalTheory.InfAdeleCM.hom_tmul _ _ (hθ ρ).1 (hθ ρ).2, map_one, mul_one, hr, hsc]
+    rfl
+  · unfold LocalAdditiveCharacterDual.stdInf
+    rw [← Complex.exp_sum, ← u.sum_comp]
+    congr 1
+    simp only [← hsc, ← hr, Complex.ofReal_re]
+    push_cast
+    rw [← Finset.mul_sum]
+    ring
+  · constructor
+    · intro ha ρ
+      rw [hr]
+      exact (map_ne_zero _).2 (ha _)
+    · intro ha w
+      obtain ⟨ρ, rfl⟩ := u.surjective w
+      exact (map_ne_zero (s (u ρ))).1 (ha ρ)
+
+end GlobalTheory.RealAdeleCoord
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke
+open scoped ENNReal TensorProduct
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_realAdele_coordinates_cmType : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (T : Type) [Fintype T] (τ : T → (E →+* ℂ)) (θ : T → (Ainf F ⊗[F] E →+* ℂ)), (Function.Bijective fun ρ => InfinitePlace.mk (τ ρ)) → (∀ ρ, IsInfEmb (τ ρ) (θ ρ)) → ∃ r : Ainf F ≃+* (T → ℝ), Continuous r ∧ Continuous r.symm ∧ (∀ a ρ, ((r a ρ : ℝ) : ℂ) = θ ρ (a ⊗ₜ[F] (1 : E))) ∧ (∀ a, LocalAdditiveCharacterDual.stdInf F a = Complex.exp (2 * Real.pi * Complex.I * (((-1 : ℝ) * ∑ ρ, r a ρ : ℝ) : ℂ))) ∧ ∀ a, (∀ w, a w ≠ 0) ↔ ∀ ρ, r a ρ ≠ 0 := by
+  atlas_forward_decl GlobalTheory.RealAdeleCoord.exists_realCoord
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke
+open scoped ENNReal TensorProduct
+
+namespace GlobalTheory.RealSpaceCoord
+
+theorem herm_eq_dot {P Q : ℕ} (x y : ActionCoordinates.Wsp P Q) :
+    ActionCoordinates.herm y x = star x ⬝ᵥ (Formalism.UG.Jpq P Q *ᵥ y) := by
+  simp [ActionCoordinates.herm, ActionCoordinates.sgn, Formalism.UG.Jpq, Fintype.sum_sum_type, dotProduct, fromBlocks_mulVec, neg_mulVec,
+    mul_comm]
+
+theorem form_eq {M P Q : ℕ} (A : Matrix (Fin P ⊕ Fin Q) (Fin M) ℂ) (x y : Fin M → ℂ) :
+    ∑ i, ∑ j, star (x i) * (Aᴴ * Formalism.UG.Jpq P Q * A) i j * y j = ActionCoordinates.herm (A *ᵥ y) (A *ᵥ x) := by
+  rw [herm_eq_dot, star_mulVec, ← dotProduct_mulVec, mulVec_mulVec, mulVec_mulVec]
+  simp only [dotProduct, mulVec, Finset.mul_sum, mul_assoc, Pi.star_apply]
+
+theorem exists_coord : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (T : Type) [Fintype T] (τ : T → (E →+* ℂ)) (θ : T → (Ainf F ⊗[F] E →+* ℂ)), (Function.Bijective fun ρ => InfinitePlace.mk (τ ρ)) → (∀ ρ, IsInfEmb (τ ρ) (θ ρ)) → ∀ (M P Q : ℕ), P + Q = M → ∀ J : Matrix (Fin M) (Fin M) E, IsHermND σ J → ∀ A : T → Matrix (Fin P ⊕ Fin Q) (Fin M) ℂ, (∀ ρ, (A ρ)ᴴ * Formalism.UG.Jpq P Q * A ρ = J.map (τ ρ)) → ∃ e : (Fin 1 → Fin M → Ainf F ⊗[F] E) ≃ₜ+ (T → ActionCoordinates.Wsp P Q), (∀ X ρ, e X ρ = A ρ *ᵥ fun i => θ ρ (X 0 i)) ∧ ∀ X Y ρ, θ ρ (hR (Ainf F) σ J (X 0) (Y 0)) = ActionCoordinates.herm (e Y ρ) (e X ρ) := by
+  intro F E _ _ _ _ _ σ h T _ τ θ hτ hθ M P Q hM J hJ A hA
+  obtain ⟨e0, he, hc, hc', hs⟩ := GlobalTheory.Mem.VolInfIso.exists_infAdele_equiv F E σ T τ θ h hτ hθ
+  let B : T → Matrix (Fin M) (Fin P ⊕ Fin Q) ℂ := fun ρ => (J.map (τ ρ))⁻¹ * ((A ρ)ᴴ * Formalism.UG.Jpq P Q)
+  have hBA : ∀ ρ, B ρ * A ρ = 1 := fun ρ => by
+    have hd : (J.map (τ ρ)).det = τ ρ J.det := ((τ ρ).map_det J).symm
+    simp only [B]
+    rw [Matrix.mul_assoc, hA, Matrix.nonsing_inv_mul]
+    rw [hd]
+    exact ((map_ne_zero (τ ρ)).2 hJ.2).isUnit
+  have hAB : ∀ ρ, A ρ * B ρ = 1 := fun ρ =>
+    (Matrix.mul_eq_one_comm_of_card_eq _ _ _ (by simp [hM])).2 (hBA ρ)
+  have he' : ∀ z ρ, θ ρ (e0.symm z) = z ρ := fun z ρ => by rw [← he, e0.apply_symm_apply]
+  refine ⟨{ toFun := fun X ρ => A ρ *ᵥ fun i => θ ρ (X 0 i)
+            invFun := fun z _ i => e0.symm fun ρ => (B ρ *ᵥ z ρ) i
+            left_inv := fun X => ?_
+            right_inv := fun z => ?_
+            map_add' := fun X Y => ?_
+            continuous_toFun := ?_
+            continuous_invFun := ?_ }, fun _ _ => rfl, fun X Y ρ => ?_⟩
+  · funext k i
+    obtain rfl : k = 0 := Subsingleton.elim _ _
+    simp only [mulVec_mulVec, hBA, one_mulVec]
+    rw [RingEquiv.symm_apply_eq]
+    funext ρ
+    rw [he]
+  · funext ρ
+    simp only [he']
+    rw [mulVec_mulVec, hAB, one_mulVec]
+  · funext ρ
+    refine Eq.trans ?_ (mulVec_add (A ρ) (fun i => θ ρ (X 0 i)) (fun i => θ ρ (Y 0 i)))
+    congr 1
+    funext i
+    simp
+  · refine continuous_pi fun ρ => continuous_const.matrix_mulVec (continuous_pi fun i => ?_)
+    simp only [← he]
+    exact (continuous_apply ρ).comp (hc.comp ((continuous_apply i).comp (continuous_apply 0)))
+  · exact continuous_pi fun _ => continuous_pi fun i => hc'.comp (continuous_pi fun ρ =>
+      (continuous_apply i).comp (continuous_const.matrix_mulVec (continuous_apply ρ)))
+  · refine Eq.trans ?_ (form_eq (A ρ) (fun i => θ ρ (X 0 i)) (fun i => θ ρ (Y 0 i)))
+    rw [hA]
+    simp only [hR, Formalism.UG.hform, map_sum, map_mul]
+    refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+    rw [GlobalTheory.Mem.VolInfIso.infEmb_sigR σ (τ ρ) (θ ρ) h (hθ ρ)]
+    congr 2
+    exact (hθ ρ).1 _
+
+end GlobalTheory.RealSpaceCoord
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke
+open scoped ENNReal TensorProduct
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_realAdelicHermitian_signature_coordinates : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (T : Type) [Fintype T] (τ : T → (E →+* ℂ)) (θ : T → (Ainf F ⊗[F] E →+* ℂ)), (Function.Bijective fun ρ => InfinitePlace.mk (τ ρ)) → (∀ ρ, IsInfEmb (τ ρ) (θ ρ)) → ∀ (M P Q : ℕ), P + Q = M → ∀ J : Matrix (Fin M) (Fin M) E, IsHermND σ J → ∀ A : T → Matrix (Fin P ⊕ Fin Q) (Fin M) ℂ, (∀ ρ, (A ρ)ᴴ * Formalism.UG.Jpq P Q * A ρ = J.map (τ ρ)) → ∃ e : (Fin 1 → Fin M → Ainf F ⊗[F] E) ≃ₜ+ (T → ActionCoordinates.Wsp P Q), (∀ X ρ, e X ρ = A ρ *ᵥ fun i => θ ρ (X 0 i)) ∧ ∀ X Y ρ, θ ρ (hR (Ainf F) σ J (X 0) (Y 0)) = ActionCoordinates.herm (e Y ρ) (e X ρ) := by
+  atlas_forward_decl GlobalTheory.RealSpaceCoord.exists_coord
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke
+open scoped ENNReal TensorProduct
+
+namespace GlobalTheory.SelfDualProduct
+
+theorem exists_test (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V] :
+    ∃ Φ : SchwartzMap V ℂ, HasCompactSupport Φ ∧ Φ 0 = 1 := by
+  let b : ContDiffBump (0 : V) := ⟨1, 2, one_pos, one_lt_two⟩
+  have h1 : HasCompactSupport (fun x => ((b x : ℝ) : ℂ)) :=
+    b.hasCompactSupport.comp_left (g := fun r : ℝ => (r : ℂ)) (by simp)
+  refine ⟨h1.toSchwartzMap (Complex.ofRealCLM.contDiff.comp b.contDiff), h1, ?_⟩
+  change ((b 0 : ℝ) : ℂ) = 1
+  rw [b.one_of_mem_closedBall (Metric.mem_closedBall_self zero_le_one)]
+  simp
+
+theorem integral_prod_exp {T V : Type} [Fintype T] [MeasurableSpace V] (ε : ℝ) (β : V → V → ℝ)
+    (μ₀ : Measure V) [SigmaFinite μ₀] (f : V → ℂ) (y : T → V) :
+    ∫ x : T → V, (∏ ρ, f (x ρ)) *
+        Complex.exp (2 * Real.pi * Complex.I * ((ε * ∑ ρ, β (x ρ) (y ρ) : ℝ) : ℂ))
+        ∂(Measure.pi fun _ : T => μ₀) = ∏ ρ, ActionCoordinates.fourierT ε β μ₀ f (y ρ) := by
+  unfold ActionCoordinates.fourierT
+  rw [← integral_fintype_prod_eq_prod (fun ρ (x : V) => f x *
+    Complex.exp (2 * Real.pi * Complex.I * ((ε * β x (y ρ) : ℝ) : ℂ)))]
+  refine integral_congr_ae (ae_of_all _ fun x => ?_)
+  simp only [Finset.prod_mul_distrib, ← Complex.exp_sum]
+  congr 2
+  rw [Finset.mul_sum, Complex.ofReal_sum, Finset.mul_sum]
+
+theorem map_eq_pi : ∀ (T V W : Type) [Fintype T] [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [AddCommGroup W] [TopologicalSpace W] [MeasurableSpace W] [BorelSpace W] (e : W ≃ₜ+ (T → V)) (ε : ℝ) (β : V → V → ℝ) (μ₀ : Measure V), μ₀.IsAddHaarMeasure → ActionCoordinates.IsSelfDualFor ε β μ₀ → ∀ (μ : Measure W) (χ : W → W → ℂ), (∀ x y, χ x y = Complex.exp (2 * Real.pi * Complex.I * ((ε * ∑ ρ, β (e x ρ) (e y ρ) : ℝ) : ℂ))) → SelfDual μ χ → μ.map e = Measure.pi fun _ : T => μ₀ := by
+  intro T V W _ _ _ _ _ _ _ _ _ _ e ε β μ₀ hμ₀ hsd μ χ hχ hμ
+  haveI : IsTopologicalAddGroup W :=
+    Topology.IsInducing.topologicalAddGroup (e : W →+ (T → V)) e.toHomeomorph.isInducing
+  haveI := hμ.1
+  haveI : (μ.map e).IsAddHaarMeasure := e.isAddHaarMeasure_map μ
+  set ν : Measure (T → V) := Measure.pi fun _ : T => μ₀ with hν
+  haveI : ν.IsAddHaarMeasure := Measure.pi.isAddHaarMeasure _
+  have h0 : μ.map e = Measure.addHaarScalarFactor (μ.map e) ν • ν :=
+    Measure.isAddLeftInvariant_eq_smul _ _
+  set c : NNReal := Measure.addHaarScalarFactor (μ.map e) ν
+  have hemb : MeasurableEmbedding e := e.toHomeomorph.measurableEmbedding
+  have hint : ∀ F : (T → V) → ℂ, ∫ x, F (e x) ∂μ = (c : ℂ) * ∫ x, F x ∂ν := fun F => by
+    rw [← hemb.integral_map, h0, integral_smul_nnreal_measure, NNReal.smul_def, Complex.real_smul]
+  have hF : ∀ (f : V → ℂ) (y : W), ∫ x, (∏ ρ, f (e x ρ)) * χ x y ∂μ =
+      (c : ℂ) * ∏ ρ, ActionCoordinates.fourierT ε β μ₀ f (e y ρ) := fun f y => by
+    rw [← integral_prod_exp, ← hint]
+    simp only [hχ]
+  obtain ⟨φ, hφs, hφ0⟩ := exists_test V
+  obtain ⟨-, hI, hinv⟩ := hsd φ
+  have hc1 : Continuous fun x : T → V => ∏ ρ, φ (x ρ) :=
+    continuous_finset_prod _ fun ρ _ => φ.continuous.comp (continuous_apply ρ)
+  have hs1 : HasCompactSupport fun x : T → V => ∏ ρ, φ (x ρ) := by
+    refine HasCompactSupport.intro (isCompact_univ_pi fun _ : T => hφs.isCompact) fun x hx => ?_
+    rw [Set.mem_univ_pi, not_forall] at hx
+    obtain ⟨ρ, hρ⟩ := hx
+    exact Finset.prod_eq_zero (Finset.mem_univ ρ) (image_eq_zero_of_notMem_tsupport hρ)
+  have hI1 : Integrable (fun y : T → V => (c : ℂ) * ∏ ρ, ActionCoordinates.fourierT ε β μ₀ φ (y ρ))
+      (μ.map e) := by
+    rw [h0]
+    exact ((Integrable.fintype_prod (f := fun _ : T => ActionCoordinates.fourierT ε β μ₀ φ)
+      fun _ => hI).const_mul _).smul_measure_nnreal
+  have key := hμ.2 (fun x => ∏ ρ, φ (e x ρ)) (hc1.comp e.continuous)
+    (hs1.comp_homeomorph e.toHomeomorph) (by
+      simp only [hF]
+      exact (hemb.integrable_map_iff).1 hI1) 0
+  simp only [hF, mul_assoc] at key
+  rw [integral_const_mul, hF] at key
+  simp only [hinv, map_zero, neg_zero, Pi.zero_apply, hφ0, Finset.prod_const_one, mul_one] at key
+  have h5 : c * c = 1 := by exact_mod_cast key
+  have h6 : c = 1 := by
+    have : (c : ℝ) * c = 1 := by exact_mod_cast h5
+    have h7 : (c : ℝ) = 1 := by nlinarith [c.coe_nonneg]
+    exact_mod_cast h7
+  rw [h0, h6, one_smul]
+
+end GlobalTheory.SelfDualProduct
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke
+open scoped ENNReal TensorProduct
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.selfDual_sumPairing_map_eq_pi : ∀ (T V W : Type) [Fintype T] [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [AddCommGroup W] [TopologicalSpace W] [MeasurableSpace W] [BorelSpace W] (e : W ≃ₜ+ (T → V)) (ε : ℝ) (β : V → V → ℝ) (μ₀ : Measure V), μ₀.IsAddHaarMeasure → ActionCoordinates.IsSelfDualFor ε β μ₀ → ∀ (μ : Measure W) (χ : W → W → ℂ), (∀ x y, χ x y = Complex.exp (2 * Real.pi * Complex.I * ((ε * ∑ ρ, β (e x ρ) (e y ρ) : ℝ) : ℂ))) → SelfDual μ χ → μ.map e = Measure.pi fun _ : T => μ₀ := by
+  atlas_forward_decl GlobalTheory.SelfDualProduct.map_eq_pi
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke
+open scoped ENNReal TensorProduct
+
+namespace GlobalTheory
+
+theorem isFibreFamily_map_homeomorph : ∀ (V V' X X' : Type) [TopologicalSpace V] [MeasurableSpace V] [BorelSpace V] [TopologicalSpace V'] [MeasurableSpace V'] [BorelSpace V'] [TopologicalSpace X] [MeasurableSpace X] [BorelSpace X] [TopologicalSpace X'] [MeasurableSpace X'] [BorelSpace X'] (e : V ≃ₜ V') (r : X ≃ₜ X') (μ : Measure V) (ν : Measure X) (f : V → X) (f' : V' → X') (B : Set X) (fib : X → Measure V), (∀ v, f' (e v) = r (f v)) → IsFibreFamily μ f id Set.univ ν B fib → IsFibreFamily (μ.map e) f' id Set.univ (ν.map r) (r '' B) fun b => (fib (r.symm b)).map e := by
+  intro V V' X X' _ _ _ _ _ _ _ _ _ _ _ _ e r μ ν f f' B fib hf h
+  obtain ⟨h1, h2, h3⟩ := h
+  have he : MeasurableEmbedding e := e.measurableEmbedding
+  have hr : MeasurableEmbedding r := r.measurableEmbedding
+  refine ⟨fun b => ?_, fun φ hφ => ?_, fun φ hφ hc _ => ?_⟩
+  · rw [he.map_apply]
+    convert h1 (r.symm b) using 2
+    ext v
+    simp only [Set.mem_preimage, Set.mem_compl_iff, Set.inter_univ, Set.mem_singleton_iff, id, hf]
+    exact not_congr r.eq_symm_apply.symm
+  · have := h2 (fun v => φ (e v)) (hφ.comp he.measurable)
+    rw [Measure.restrict_univ] at this ⊢
+    rw [he.lintegral_map, hr.lintegral_map, this]
+    refine lintegral_congr fun b => ?_
+    rw [he.lintegral_map, r.symm_apply_apply]
+  · obtain ⟨h4, h5⟩ := h3 (φ ∘ e) (hφ.comp e.continuous) (hc.comp_homeomorph e) (Set.subset_univ _)
+    refine ⟨?_, ?_⟩
+    · rintro _ ⟨b, hb, rfl⟩
+      rw [he.integrable_map_iff, r.symm_apply_apply]
+      exact h4 b hb
+    · have h6 := h5.comp (s := r '' B) r.symm.continuous.continuousOn (by
+        rintro _ ⟨b, hb, rfl⟩
+        rw [r.symm_apply_apply]
+        exact hb)
+      refine h6.congr fun b _ => ?_
+      simp only [Function.comp]
+      rw [he.integral_map]
+
+end GlobalTheory
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke
+open scoped ENNReal TensorProduct
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isFibreMeasureFamily_map_homeomorph : ∀ (V V' X X' : Type) [TopologicalSpace V] [MeasurableSpace V] [BorelSpace V] [TopologicalSpace V'] [MeasurableSpace V'] [BorelSpace V'] [TopologicalSpace X] [MeasurableSpace X] [BorelSpace X] [TopologicalSpace X'] [MeasurableSpace X'] [BorelSpace X'] (e : V ≃ₜ V') (r : X ≃ₜ X') (μ : Measure V) (ν : Measure X) (f : V → X) (f' : V' → X') (B : Set X) (fib : X → Measure V), (∀ v, f' (e v) = r (f v)) → IsFibreFamily μ f id Set.univ ν B fib → IsFibreFamily (μ.map e) f' id Set.univ (ν.map r) (r '' B) fun b => (fib (r.symm b)).map e := by
+  atlas_forward_decl GlobalTheory.isFibreFamily_map_homeomorph
+end
+
+section
+open MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Set Topology
+open scoped ENNReal
+
+namespace GlobalTheory.FibreProd
+
+theorem le_of_lintegral_ball_eq {X : Type} [PseudoMetricSpace X] [ProperSpace X] [MeasurableSpace X]
+    [BorelSpace X] (ν : Measure X) [ν.IsOpenPosMeasure] [IsFiniteMeasureOnCompacts ν]
+    (G H : X → ℝ≥0∞) (b : X) (hG : ContinuousAt G b) (hH : ContinuousAt H b)
+    (h : ∀ r > 0, ∫⁻ x in Metric.ball b r, G x ∂ν = ∫⁻ x in Metric.ball b r, H x ∂ν) :
+    H b ≤ G b := by
+  by_contra hlt
+  push_neg at hlt
+  obtain ⟨c, hc1, hc2⟩ := exists_between hlt
+  obtain ⟨d, hd1, hd2⟩ := exists_between hc2
+  have e : ∀ᶠ x in 𝓝 b, G x < c ∧ d < H x :=
+    (hG.eventually (gt_mem_nhds hc1)).and (hH.eventually (lt_mem_nhds hd2))
+  obtain ⟨r, hr, hb⟩ := Metric.eventually_nhds_iff_ball.1 e
+  have h1 : ∫⁻ x in Metric.ball b r, G x ∂ν ≤ c * ν (Metric.ball b r) := by
+    rw [← setLIntegral_const]
+    exact setLIntegral_mono' measurableSet_ball fun x hx => (hb x hx).1.le
+  have h2 : d * ν (Metric.ball b r) ≤ ∫⁻ x in Metric.ball b r, H x ∂ν := by
+    rw [← setLIntegral_const]
+    exact setLIntegral_mono' measurableSet_ball fun x hx => (hb x hx).2.le
+  have h3 : c * ν (Metric.ball b r) < d * ν (Metric.ball b r) :=
+    ENNReal.mul_lt_mul_left (Metric.measure_ball_pos ν b hr).ne' measure_ball_lt_top.ne hd1
+  exact absurd (h2.trans ((h r hr).symm.le.trans h1)) h3.not_ge
+
+theorem lintegral_preimage {V X : Type} [TopologicalSpace V] [MeasurableSpace V]
+    [BorelSpace V] [TopologicalSpace X] [MeasurableSpace X] {μ : Measure V} {ν : Measure X}
+    {f : V → X} {U : Set V} {B : Set X} {fib : X → Measure V}
+    (hf : Measurable f) (hU : IsOpen U) (h : IsFibreFamily μ f id U ν B fib)
+    (φ : V → ℝ≥0∞) (hφ : Measurable φ) (hs : ∀ v, v ∉ U → φ v = 0)
+    (S : Set X) (hS : MeasurableSet S) :
+    ∫⁻ v, (f ⁻¹' S).indicator φ v ∂μ = ∫⁻ b in S, ∫⁻ v, φ v ∂(fib b) ∂ν := by
+  have h2 := h.2.1 ((f ⁻¹' S).indicator φ) (hφ.indicator (hf hS))
+  have e1 : ∫⁻ v, (f ⁻¹' S).indicator φ v ∂μ = ∫⁻ v in U, (f ⁻¹' S).indicator φ v ∂μ := by
+    rw [← lintegral_indicator hU.measurableSet]
+    congr 1
+    funext v
+    by_cases hv : v ∈ U
+    · rw [indicator_of_mem hv]
+    · rw [indicator_of_notMem hv]
+      exact indicator_apply_eq_zero.2 fun _ => hs v hv
+  rw [e1, h2, ← lintegral_indicator hS]
+  congr 1
+  funext b
+  have hb : ∀ᵐ v ∂(fib b), f v = b := by
+    have : ∀ᵐ v ∂(fib b), v ∈ f ⁻¹' {id b} ∩ U := h.1 b
+    filter_upwards [this] with v hv using hv.1
+  by_cases hbS : b ∈ S
+  · rw [indicator_of_mem hbS]
+    apply lintegral_congr_ae
+    filter_upwards [hb] with v hv
+    exact indicator_of_mem (by simpa [hv] using hbS) _
+  · rw [indicator_of_notMem hbS, ← lintegral_zero (μ := fib b)]
+    apply lintegral_congr_ae
+    filter_upwards [hb] with v hv
+    exact indicator_of_notMem (by simpa [hv] using hbS) _
+
+theorem lintegral_fibre_prod : ∀ (T V : Type) [Fintype T] [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] (μ₀ : Measure V) [SigmaFinite μ₀] (q : V → ℝ), Continuous q → ∀ U : Set V, IsOpen U → ∀ fib : ℝ → Measure V, IsFibreFamily μ₀ q id U (volume : Measure ℝ) Set.univ fib → ∀ B : Set (T → ℝ), IsOpen B → ∀ Fib : (T → ℝ) → Measure (T → V), IsFibreFamily (Measure.pi fun _ : T => μ₀) (fun x ρ => q (x ρ)) id Set.univ (volume : Measure (T → ℝ)) B Fib → ∀ b ∈ B, ∀ φ : T → V → ℝ, (∀ ρ, Continuous (φ ρ) ∧ HasCompactSupport (φ ρ) ∧ tsupport (φ ρ) ⊆ U ∧ ∀ y, 0 ≤ φ ρ y) → ∫⁻ x, ∏ ρ, ENNReal.ofReal (φ ρ (x ρ)) ∂(Fib b) = ∏ ρ, ∫⁻ y, ENNReal.ofReal (φ ρ y) ∂(fib (b ρ)) := by
+  intro T V _ _ _ _ _ _ μ₀ _ q hq U hU fib hfib B hB Fib hFib b hb φ hφ
+  classical
+  haveI : ProperSpace V := FiniteDimensional.proper_real V
+  have hΦc : Continuous fun x : T → V => ∏ ρ, φ ρ (x ρ) :=
+    continuous_finset_prod _ fun ρ _ => (hφ ρ).1.comp (continuous_apply ρ)
+  have hΦs : HasCompactSupport fun x : T → V => ∏ ρ, φ ρ (x ρ) := by
+    refine HasCompactSupport.intro (isCompact_univ_pi fun ρ => (hφ ρ).2.1) fun x hx => ?_
+    rw [mem_univ_pi, not_forall] at hx
+    obtain ⟨ρ, hρ⟩ := hx
+    exact Finset.prod_eq_zero (Finset.mem_univ ρ) (image_eq_zero_of_notMem_tsupport hρ)
+  obtain ⟨hI, hC⟩ := hFib.2.2 _ hΦc hΦs (subset_univ _)
+  have hm : ∀ ρ, Measurable fun y => ENNReal.ofReal (φ ρ y) := fun ρ =>
+    ENNReal.measurable_ofReal.comp (hφ ρ).1.measurable
+  have hGc : ContinuousOn (fun b => ∫⁻ x, ∏ ρ, ENNReal.ofReal (φ ρ (x ρ)) ∂(Fib b)) B := by
+    refine (ENNReal.continuous_ofReal.comp_continuousOn hC).congr fun b hb => ?_
+    have := ofReal_integral_eq_lintegral_ofReal (hI b hb)
+      (Filter.Eventually.of_forall fun x => Finset.prod_nonneg fun ρ _ => (hφ ρ).2.2.2 _)
+    simp only [Function.comp_apply]
+    rw [this]
+    congr 1
+    funext x
+    rw [ENNReal.ofReal_prod_of_nonneg fun ρ _ => (hφ ρ).2.2.2 _]
+  have hg : ∀ ρ t, ∫⁻ y, ENNReal.ofReal (φ ρ y) ∂(fib t) = ENNReal.ofReal (∫ y, φ ρ y ∂(fib t)) :=
+    fun ρ t => (ofReal_integral_eq_lintegral_ofReal
+      ((hfib.2.2 _ (hφ ρ).1 (hφ ρ).2.1 (hφ ρ).2.2.1).1 t (mem_univ _))
+      (Filter.Eventually.of_forall (hφ ρ).2.2.2)).symm
+  have hgc : ∀ ρ, Continuous fun t => ∫ y, φ ρ y ∂(fib t) := fun ρ =>
+    continuousOn_univ.1 (hfib.2.2 _ (hφ ρ).1 (hφ ρ).2.1 (hφ ρ).2.2.1).2
+  have hgm : ∀ ρ, Measurable fun t => ∫⁻ y, ENNReal.ofReal (φ ρ y) ∂(fib t) := fun ρ => by
+    simp only [hg]
+    exact ENNReal.measurable_ofReal.comp (hgc ρ).measurable
+  have hHc : Continuous fun b : T → ℝ => ∏ ρ, ∫⁻ y, ENNReal.ofReal (φ ρ y) ∂(fib (b ρ)) := by
+    have : (fun b : T → ℝ => ∏ ρ, ∫⁻ y, ENNReal.ofReal (φ ρ y) ∂(fib (b ρ))) =
+        fun b => ENNReal.ofReal (∏ ρ, ∫ y, φ ρ y ∂(fib (b ρ))) := by
+      funext b
+      rw [ENNReal.ofReal_prod_of_nonneg fun ρ _ => integral_nonneg (hφ ρ).2.2.2]
+      simp only [hg]
+    rw [this]
+    exact ENNReal.continuous_ofReal.comp
+      (continuous_finset_prod _ fun ρ _ => (hgc ρ).comp (continuous_apply ρ))
+  have key : ∀ r > 0, ∫⁻ c in Metric.ball b r, ∫⁻ x, ∏ ρ, ENNReal.ofReal (φ ρ (x ρ)) ∂(Fib c) =
+      ∫⁻ c in Metric.ball b r, ∏ ρ, ∫⁻ y, ENNReal.ofReal (φ ρ y) ∂(fib (c ρ)) := by
+    intro r hr
+    have hQ : Measurable fun (x : T → V) ρ => q (x ρ) :=
+      (continuous_pi fun ρ => hq.comp (continuous_apply ρ)).measurable
+    rw [← lintegral_preimage hQ isOpen_univ hFib (fun x => ∏ ρ, ENNReal.ofReal (φ ρ (x ρ)))
+      (Finset.measurable_prod _ fun ρ _ => (hm ρ).comp (measurable_pi_apply ρ))
+      (fun v hv => absurd (mem_univ v) hv) _ measurableSet_ball,
+      ← lintegral_indicator measurableSet_ball, ball_pi b hr]
+    have e1 : ∀ x : T → V, ((fun (x : T → V) ρ => q (x ρ)) ⁻¹'
+        (Set.pi univ fun ρ => Metric.ball (b ρ) r)).indicator
+        (fun x => ∏ ρ, ENNReal.ofReal (φ ρ (x ρ))) x =
+        ∏ ρ, (q ⁻¹' Metric.ball (b ρ) r).indicator (fun y => ENNReal.ofReal (φ ρ y)) (x ρ) := by
+      intro x
+      by_cases hx : ∀ ρ, x ρ ∈ q ⁻¹' Metric.ball (b ρ) r
+      · rw [indicator_of_mem (by simpa using hx)]
+        exact Finset.prod_congr rfl fun ρ _ => by rw [indicator_of_mem (hx ρ)]
+      · rw [indicator_of_notMem (by simpa using hx)]
+        obtain ⟨ρ, hρ⟩ := not_forall.1 hx
+        exact (Finset.prod_eq_zero (Finset.mem_univ ρ) (indicator_of_notMem hρ _)).symm
+    have e2 : ∀ c : T → ℝ, (Set.pi univ fun ρ => Metric.ball (b ρ) r).indicator
+        (fun c => ∏ ρ, ∫⁻ y, ENNReal.ofReal (φ ρ y) ∂(fib (c ρ))) c =
+        ∏ ρ, (Metric.ball (b ρ) r).indicator
+          (fun t => ∫⁻ y, ENNReal.ofReal (φ ρ y) ∂(fib t)) (c ρ) := by
+      intro c
+      by_cases hx : ∀ ρ, c ρ ∈ Metric.ball (b ρ) r
+      · rw [indicator_of_mem (by simpa using hx)]
+        exact Finset.prod_congr rfl fun ρ _ => by rw [indicator_of_mem (hx ρ)]
+      · rw [indicator_of_notMem (by simpa using hx)]
+        obtain ⟨ρ, hρ⟩ := not_forall.1 hx
+        exact (Finset.prod_eq_zero (Finset.mem_univ ρ) (indicator_of_notMem hρ _)).symm
+    simp only [e1, e2]
+    rw [volume_pi, GlobalTheory.SnMass.Push.lintegral_fintype_prod
+        (fun ρ => (q ⁻¹' Metric.ball (b ρ) r).indicator (fun y => ENNReal.ofReal (φ ρ y)))
+        (fun ρ => (hm ρ).indicator (hq.measurable measurableSet_ball)),
+      GlobalTheory.SnMass.Push.lintegral_fintype_prod
+        (fun ρ => (Metric.ball (b ρ) r).indicator
+          (fun t => ∫⁻ y, ENNReal.ofReal (φ ρ y) ∂(fib t)))
+        (fun ρ => (hgm ρ).indicator measurableSet_ball)]
+    refine Finset.prod_congr rfl fun ρ _ => ?_
+    rw [lintegral_indicator (s := Metric.ball (b ρ) r) measurableSet_ball]
+    refine lintegral_preimage hq.measurable hU hfib _ (hm ρ) (fun v hv => ?_) _ measurableSet_ball
+    rw [image_eq_zero_of_notMem_tsupport fun h => hv ((hφ ρ).2.2.1 h), ENNReal.ofReal_zero]
+  have hGb := hGc.continuousAt (hB.mem_nhds hb)
+  exact le_antisymm
+    (le_of_lintegral_ball_eq volume _ _ b hHc.continuousAt hGb fun r hr => (key r hr).symm)
+    (le_of_lintegral_ball_eq volume _ _ b hGb hHc.continuousAt key)
+
+end GlobalTheory.FibreProd
+end
+
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke
+open scoped ENNReal TensorProduct
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fibreIntegral_pi_prod_eq_prod_fibreIntegral : ∀ (T V : Type) [Fintype T] [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] (μ₀ : Measure V) [SigmaFinite μ₀] (q : V → ℝ), Continuous q → ∀ U : Set V, IsOpen U → ∀ fib : ℝ → Measure V, IsFibreFamily μ₀ q id U (volume : Measure ℝ) Set.univ fib → ∀ B : Set (T → ℝ), IsOpen B → ∀ Fib : (T → ℝ) → Measure (T → V), IsFibreFamily (Measure.pi fun _ : T => μ₀) (fun x ρ => q (x ρ)) id Set.univ (volume : Measure (T → ℝ)) B Fib → ∀ b ∈ B, ∀ φ : T → V → ℝ, (∀ ρ, Continuous (φ ρ) ∧ HasCompactSupport (φ ρ) ∧ tsupport (φ ρ) ⊆ U ∧ ∀ y, 0 ≤ φ ρ y) → ∫⁻ x, ∏ ρ, ENNReal.ofReal (φ ρ (x ρ)) ∂(Fib b) = ∏ ρ, ∫⁻ y, ENNReal.ofReal (φ ρ y) ∂(fib (b ρ)) := by
+  atlas_forward_decl GlobalTheory.FibreProd.lintegral_fibre_prod
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke
+open scoped ENNReal TensorProduct
+
+namespace GlobalTheory.PerpFrameOfMatrix
+
+theorem herm_eq_dot {P Q : ℕ} (u v : ActionCoordinates.Wsp P Q) :
+    ActionCoordinates.herm u v = star v ⬝ᵥ Formalism.UG.Jpq P Q *ᵥ u := by
+  simp [ActionCoordinates.herm, ActionCoordinates.sgn, Formalism.UG.Jpq, fromBlocks_mulVec, dotProduct, Fintype.sum_sum_type,
+    mul_comm, neg_mulVec]
+
+theorem isPerpFrame_of_matrix : ∀ (P Q P' Q' : ℕ), P' + Q' + 1 = P + Q → ∀ x : ActionCoordinates.Wsp P Q, ActionCoordinates.qf x ≠ 0 → ∀ C : Matrix (Fin P ⊕ Fin Q) (Fin P' ⊕ Fin Q') ℂ, Cᴴ * Formalism.UG.Jpq P Q * C = Formalism.UG.Jpq P' Q' → (Cᴴ * Formalism.UG.Jpq P Q) *ᵥ x = 0 → ∀ ι : UpqT P' Q' → UpqT P Q, (∀ b, UpqT.mat (ι b) * C = C * UpqT.mat b ∧ UpqT.mat (ι b) *ᵥ x = x) → ActionCoordinates.IsPerpFrame x (Matrix.toLin' C) ι := by
+  intro P Q P' Q' hc x hx C h1 h2 ι hι
+  have hx' : star x ⬝ᵥ Formalism.UG.Jpq P Q *ᵥ x ≠ 0 := by
+    rw [← herm_eq_dot, ActionCoordinates.herm_self]; exact_mod_cast hx
+  have hperp : ∀ v, star x ⬝ᵥ Formalism.UG.Jpq P Q *ᵥ (C *ᵥ v) = 0 := fun v => by
+    have h3 : star x ᵥ* (Formalism.UG.Jpq P Q * C) = 0 := by
+      have := congrArg star h2
+      rwa [star_mulVec, conjTranspose_mul, conjTranspose_conjTranspose,
+        GlobalTheory.UnfoldingCompare.Jpq_conjTranspose, star_zero] at this
+    rw [mulVec_mulVec, dotProduct_mulVec, h3, zero_dotProduct]
+  refine ⟨fun v w => ?_, fun y => ⟨fun hy => ?_, ?_⟩, fun g => ⟨(hι g).2, fun v => ?_⟩⟩
+  · rw [herm_eq_dot, herm_eq_dot, toLin'_apply, toLin'_apply, star_mulVec, mulVec_mulVec,
+      ← dotProduct_mulVec, mulVec_mulVec, ← Matrix.mul_assoc, h1]
+  · obtain ⟨N, B, -, hN, -⟩ := GlobalTheory.UnfoldingCompare.exists_frame_inv hc hx' h1 h2
+    have e : y = C *ᵥ ((N *ᵥ y) ∘ Sum.inl) + (N *ᵥ y) (Sum.inr ()) • x := by
+      conv_lhs => rw [← one_mulVec y, ← hN, ← mulVec_mulVec, fromCols_mulVec]
+      congr 1
+      funext i
+      simp [mulVec, dotProduct, mul_comm]
+    have ha : (N *ᵥ y) (Sum.inr ()) = 0 := by
+      rw [herm_eq_dot, e, mulVec_add, mulVec_smul, dotProduct_add, hperp, zero_add,
+        dotProduct_smul, smul_eq_mul] at hy
+      exact (mul_eq_zero.1 hy).resolve_right hx'
+    refine ⟨(N *ᵥ y) ∘ Sum.inl, ?_⟩
+    rw [ha, zero_smul, add_zero] at e
+    rw [toLin'_apply, ← e]
+  · rintro ⟨v, rfl⟩
+    rw [herm_eq_dot, toLin'_apply, hperp]
+  · simp only [ActionCoordinates.act, toLin'_apply, mulVec_mulVec, (hι g).1]
+
+end GlobalTheory.PerpFrameOfMatrix
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke
+open scoped ENNReal TensorProduct
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isOrthogonalComplementUnitaryFrame_of_matrix : ∀ (P Q P' Q' : ℕ), P' + Q' + 1 = P + Q → ∀ x : ActionCoordinates.Wsp P Q, ActionCoordinates.qf x ≠ 0 → ∀ C : Matrix (Fin P ⊕ Fin Q) (Fin P' ⊕ Fin Q') ℂ, Cᴴ * Formalism.UG.Jpq P Q * C = Formalism.UG.Jpq P' Q' → (Cᴴ * Formalism.UG.Jpq P Q) *ᵥ x = 0 → ∀ ι : UpqT P' Q' → UpqT P Q, (∀ b, UpqT.mat (ι b) * C = C * UpqT.mat b ∧ UpqT.mat (ι b) *ᵥ x = x) → ActionCoordinates.IsPerpFrame x (Matrix.toLin' C) ι := by
+  atlas_forward_decl GlobalTheory.PerpFrameOfMatrix.isPerpFrame_of_matrix
+end
+
+section
+section
+noncomputable section
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke
+open scoped ENNReal TensorProduct
+
+namespace GlobalTheory.StabiliserCutoff
+
+variable {P Q : ℕ}
+
+theorem qf_eq (x : ActionCoordinates.Wsp P Q) : ActionCoordinates.qf x = PerpendicularEmbedding.qf x := by
+  have h : ActionCoordinates.herm x x = PerpendicularEmbedding.herm x x := by
+    simp [ActionCoordinates.herm, PerpendicularEmbedding.herm, ActionCoordinates.sgn, Fintype.sum_sum_type, sub_eq_add_neg]
+  rw [ActionCoordinates.qf, h, PerpendicularEmbedding.herm_self, Complex.ofReal_re]
+
+theorem qf_act (g : UpqT P Q) (x : PerpendicularEmbedding.Sp P Q) : PerpendicularEmbedding.qf (ActionCoordinates.act g x) = PerpendicularEmbedding.qf x := by
+  have h : (PerpendicularEmbedding.qf (ActionCoordinates.act g x) : ℂ) = PerpendicularEmbedding.qf x := by
+    rw [← GlobalTheory.QuadricSection.form_self, ← GlobalTheory.QuadricSection.form_self, ActionCoordinates.act, star_mulVec,
+      mulVec_mulVec, ← dotProduct_mulVec, mulVec_mulVec, ← Matrix.mul_assoc,
+      GlobalTheory.UpqTopology.mat_unitary]
+  exact_mod_cast h
+
+theorem act_mul (g h : UpqT P Q) (x : ActionCoordinates.Wsp P Q) :
+    ActionCoordinates.act (g * h) x = ActionCoordinates.act g (ActionCoordinates.act h x) := by
+  unfold ActionCoordinates.act
+  rw [Matrix.mulVec_mulVec]; rfl
+
+theorem act_one (x : ActionCoordinates.Wsp P Q) : ActionCoordinates.act (1 : UpqT P Q) x = x := Matrix.one_mulVec x
+
+theorem continuous_act (x : ActionCoordinates.Wsp P Q) : Continuous fun g : UpqT P Q => ActionCoordinates.act g x :=
+  GlobalTheory.UpqTopology.continuous_mat.matrix_mulVec continuous_const
+
+theorem eq_zero_of_herm {v : ActionCoordinates.Wsp P Q} (h : ∀ w, ActionCoordinates.herm v w = 0) : v = 0 := by
+  funext i
+  have := h (Pi.single i 1)
+  rcases i with i | i <;>
+    simpa [ActionCoordinates.herm, ActionCoordinates.sgn, Pi.single_apply, apply_ite] using this
+
+theorem exists_cutoff : ∀ (c : CDHaar) (P Q P' Q' : ℕ) (x₀ : ActionCoordinates.Wsp P Q), ActionCoordinates.qf x₀ ≠ 0 →
+    ∀ (j : ActionCoordinates.Wsp P' Q' →ₗ[ℂ] ActionCoordinates.Wsp P Q) (ι : UpqT P' Q' → UpqT P Q),
+    ActionCoordinates.IsPerpFrame x₀ j ι → Set.range ι = {g | ActionCoordinates.act g x₀ = x₀} →
+    ∃ u : UpqT P Q → ℝ≥0∞, Measurable u ∧
+      ∀ g, Measurable (fun h => u (ι h * g)) ∧ ∫⁻ h, u (ι h * g) ∂(c.cd P' Q') = 1 := by
+  intro c P Q P' Q' x₀ h0 j ι hι hr
+  obtain ⟨i1, i2, i3, i4, i5, -⟩ := GlobalTheory.UpqTopology.upq_lcsc P Q
+  obtain ⟨k1, k2, k3, k4, k5, -⟩ := GlobalTheory.UpqTopology.upq_lcsc P' Q'
+  haveI := c.haar P' Q'
+  haveI := GlobalTheory.UpqUnimodular.isMulRightInvariant_of_isHaarMeasure P' Q' _ (c.haar P' Q')
+  obtain ⟨s, hsm, hs⟩ := GlobalTheory.QuadricSection.exists_isSection P Q _ x₀ (qf_eq x₀ ▸ h0) rfl
+  obtain ⟨L, hL⟩ := j.exists_leftInverse_of_injective (LinearMap.ker_eq_bot'.2 fun v hv =>
+    eq_zero_of_herm fun w => by rw [← hι.1, hv]; simp [ActionCoordinates.herm])
+  have hL' : ∀ v, L (j v) = v := fun v => LinearMap.congr_fun hL v
+  let Φ : UpqT P' Q' → (Fin P' ⊕ Fin Q') → ActionCoordinates.Wsp P' Q' :=
+    fun h b => ActionCoordinates.act h (Pi.single b 1)
+  let π : UpqT P Q → (Fin P' ⊕ Fin Q') → ActionCoordinates.Wsp P' Q' :=
+    fun g b => L (ActionCoordinates.act g (j (Pi.single b 1)))
+  have hΦ : Continuous Φ := continuous_pi fun b => continuous_act _
+  have hπ : Continuous π := continuous_pi fun b =>
+    L.continuous_of_finiteDimensional.comp (continuous_act _)
+  have hΦi : Function.Injective Φ := fun a b hab =>
+    GlobalTheory.UpqTopology.isClosedEmbedding_mat.injective (by
+      ext x y
+      simpa [Φ, ActionCoordinates.act] using congrFun (congrFun hab y) x)
+  have hπι : ∀ a b, π (ι a * ι b) = Φ (a * b) := fun a b => by
+    funext x
+    simp only [π, Φ, act_mul, (hι.2.2 _).2, hL']
+  obtain ⟨K, hK, hK1⟩ := exists_compact_mem_nhds (1 : UpqT P' Q')
+  have hpos : c.cd P' Q' K ≠ 0 := (Measure.measure_pos_of_mem_nhds _ hK1).ne'
+  have hfin : c.cd P' Q' K ≠ ⊤ := hK.measure_lt_top.ne
+  have hO : MeasurableSet (Φ '' K) := (hK.image hΦ).isClosed.measurableSet
+  let F : ((Fin P' ⊕ Fin Q') → ActionCoordinates.Wsp P' Q') → ℝ≥0∞ :=
+    (Φ '' K).indicator fun _ => (c.cd P' Q' K)⁻¹
+  have hF : Measurable F := measurable_const.indicator hO
+  have hFΦ : ∀ h, F (Φ h) = K.indicator (fun _ => (c.cd P' Q' K)⁻¹) h := fun h => by
+    by_cases hh : h ∈ K
+    · simp only [F, Set.indicator_of_mem hh, Set.indicator_of_mem (Set.mem_image_of_mem Φ hh)]
+    · simp only [F, Set.indicator_of_notMem hh,
+        Set.indicator_of_notMem (mt hΦi.mem_set_image.1 hh)]
+  refine ⟨fun g => F (π (g * s (ActionCoordinates.act g⁻¹ x₀))), ?_, fun g => ?_⟩
+  · exact hF.comp (hπ.measurable.comp (measurable_id.mul
+      (hsm.comp ((continuous_act x₀).comp continuous_inv).measurable)))
+  · obtain ⟨h₀, hh₀⟩ : g * s (ActionCoordinates.act g⁻¹ x₀) ∈ Set.range ι := by
+      rw [hr]
+      change ActionCoordinates.act (g * s (ActionCoordinates.act g⁻¹ x₀)) x₀ = x₀
+      have e : ActionCoordinates.act (s (ActionCoordinates.act g⁻¹ x₀)) x₀ = ActionCoordinates.act g⁻¹ x₀ := hs _ (qf_act _ _)
+      rw [act_mul, e, ← act_mul, mul_inv_cancel, act_one]
+    have e : ∀ h, F (π (ι h * g * s (ActionCoordinates.act (ι h * g)⁻¹ x₀))) = F (Φ (h * h₀)) := fun h => by
+      have e1 : ActionCoordinates.act (ι h)⁻¹ x₀ = x₀ := by
+        conv_lhs => rw [← (hι.2.2 h).1, ← act_mul, inv_mul_cancel, act_one]
+      rw [_root_.mul_inv_rev, act_mul, e1, mul_assoc, ← hh₀, hπι]
+    simp only [e]
+    refine ⟨hF.comp (hΦ.measurable.comp (measurable_mul_const h₀)), ?_⟩
+    rw [lintegral_mul_right_eq_self (fun h => F (Φ h)) h₀]
+    simp only [hFΦ]
+    rw [lintegral_indicator_const hK.isClosed.measurableSet, ENNReal.inv_mul_cancel hpos hfin]
+
+end GlobalTheory.StabiliserCutoff
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke
+open scoped ENNReal TensorProduct
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_unitarySignatureStabiliserCosetCutoff : ∀ (c : CDHaar) (P Q P' Q' : ℕ) (x₀ : ActionCoordinates.Wsp P Q), ActionCoordinates.qf x₀ ≠ 0 → ∀ (j : ActionCoordinates.Wsp P' Q' →ₗ[ℂ] ActionCoordinates.Wsp P Q) (ι : UpqT P' Q' → UpqT P Q), ActionCoordinates.IsPerpFrame x₀ j ι → Set.range ι = {g | ActionCoordinates.act g x₀ = x₀} → ∃ u : UpqT P Q → ℝ≥0∞, Measurable u ∧ ∀ g, Measurable (fun h => u (ι h * g)) ∧ ∫⁻ h, u (ι h * g) ∂(c.cd P' Q') = 1 := by
+  atlas_forward_decl GlobalTheory.StabiliserCutoff.exists_cutoff
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke
+open scoped ENNReal TensorProduct
+
+noncomputable section
+
+namespace GlobalTheory.RealQuotProd
+
+variable {P Q P' Q' : ℕ}
+
+theorem act_mul (g h : UpqT P Q) (x : ActionCoordinates.Wsp P Q) :
+    ActionCoordinates.act (g * h) x = ActionCoordinates.act g (ActionCoordinates.act h x) := by
+  unfold ActionCoordinates.act
+  rw [Matrix.mulVec_mulVec]; rfl
+
+theorem act_one (x : ActionCoordinates.Wsp P Q) : ActionCoordinates.act (1 : UpqT P Q) x = x := Matrix.one_mulVec x
+
+theorem act_mul_inv {a : UpqT P Q} {x : ActionCoordinates.Wsp P Q} (ha : ActionCoordinates.act a x = x) (g : UpqT P Q) :
+    ActionCoordinates.act (a * g)⁻¹ x = ActionCoordinates.act g⁻¹ x := by
+  have : ActionCoordinates.act a⁻¹ x = x := by
+    conv_lhs => rw [← ha]
+    rw [← act_mul, inv_mul_cancel, act_one]
+  rw [_root_.mul_inv_rev, act_mul, this]
+
+theorem measurable_act_inv (x : ActionCoordinates.Wsp P Q) :
+    Measurable fun g : UpqT P Q => ActionCoordinates.act g⁻¹ x := by
+  obtain ⟨i1, i2, i3, i4, i5, -⟩ := GlobalTheory.UpqTopology.upq_lcsc P Q
+  exact ((GlobalTheory.UpqTopology.continuous_mat.comp continuous_inv).matrix_mulVec
+    continuous_const).measurable
+
+theorem sigmaFinite_cd (c : CDHaar) (P Q : ℕ) : SigmaFinite (c.cd P Q) := by
+  obtain ⟨i1, i2, i3, i4, i5, -⟩ := GlobalTheory.UpqTopology.upq_lcsc P Q
+  haveI : (c.cd P Q).IsHaarMeasure := c.haar P Q
+  infer_instance
+
+theorem one_place (H : ActionCoordinates.QuotientMeasure) (c : CDHaar) {β : ℝ} (hβ : β = 1 ∨ β = -1)
+    {x : ActionCoordinates.Wsp P Q} (hx : ActionCoordinates.qf x = β) {k : ActionCoordinates.Wsp P' Q' →ₗ[ℂ] ActionCoordinates.Wsp P Q}
+    {ι : UpqT P' Q' → UpqT P Q} (hk : ActionCoordinates.IsPerpFrame x k ι) {u : UpqT P Q → ℝ≥0∞}
+    (hu : Measurable u) (hu' : ∀ g, Measurable (fun h => u (ι h * g)) ∧
+      ∫⁻ h, u (ι h * g) ∂(c.cd P' Q') = 1)
+    {fib : ℝ → Measure (ActionCoordinates.Wsp P Q)} (hfib : ActionCoordinates.IsDxDq β fib)
+    {φ : ActionCoordinates.Wsp P Q → ℝ≥0∞} (hφ : Measurable φ) :
+    ∫⁻ g, φ (ActionCoordinates.act g⁻¹ x) * u g ∂(c.cd P Q) =
+      (ActionCoordinates.cM (P + Q))⁻¹ * ∫⁻ y, φ y ∂(fib β) := by
+  classical
+  obtain ⟨h1, -, h3⟩ := H P Q β hβ x hx
+  choose! s hs using h1
+  have hae : ∀ᵐ y ∂(fib β), ActionCoordinates.qf y = β := by
+    obtain ⟨U, B, -, -, -, hF⟩ := hfib
+    have h1 : ∀ᵐ y ∂(fib β), y ∈ ActionCoordinates.qf ⁻¹' {id β} ∩ U := hF.1 β
+    filter_upwards [h1] with y hy using hy.1
+  rw [(h3 P' Q' k ι hk).2 c fib hfib s hs (fun g => φ (ActionCoordinates.act g⁻¹ x) * u g)
+    ((hφ.comp (measurable_act_inv x)).mul hu),
+    Measure.restrict_eq_self_of_ae_mem (s := {y | ActionCoordinates.qf y = β}) hae]
+  congr 1
+  refine lintegral_congr_ae (hae.mono fun y hy => ?_)
+  have e : ∀ h, φ (ActionCoordinates.act (ι h * s y)⁻¹ x) = φ y := fun h => by
+    rw [act_mul_inv (hk.2.2 h).1, hs y hy]
+  simp only [e]
+  rw [lintegral_const_mul _ (hu' _).1, (hu' _).2, mul_one]
+
+theorem quot_integral_prod : ActionCoordinates.QuotientMeasure → ∀ (c : CDHaar) (T : Type) [Fintype T] (P Q P' Q' : ℕ) (β : ℝ), (β = 1 ∨ β = -1) → ∀ x : T → ActionCoordinates.Wsp P Q, (∀ ρ, ActionCoordinates.qf (x ρ) = β) → ∀ (k : T → (ActionCoordinates.Wsp P' Q' →ₗ[ℂ] ActionCoordinates.Wsp P Q)) (ι : T → UpqT P' Q' → UpqT P Q), (∀ ρ, ActionCoordinates.IsPerpFrame (x ρ) (k ρ) (ι ρ)) → ∀ u : T → UpqT P Q → ℝ≥0∞, (∀ ρ, Measurable (u ρ) ∧ ∀ g, Measurable (fun h => u ρ (ι ρ h * g)) ∧ ∫⁻ h, u ρ (ι ρ h * g) ∂(c.cd P' Q') = 1) → ∀ j : (T → UpqT P' Q') →* (T → UpqT P Q), (∀ b ρ, j b ρ = ι ρ (b ρ)) → ∀ ν : Measure (LatticeTensorUnfolding.RCosets j), LatticeTensorUnfolding.IsQuotMeasure j (Measure.pi fun _ => c.cd P Q) (Measure.pi fun _ => c.cd P' Q') ν → ∀ fib : ℝ → Measure (ActionCoordinates.Wsp P Q), ActionCoordinates.IsDxDq β fib → ∀ φ : T → ActionCoordinates.Wsp P Q → ℝ≥0∞, (∀ ρ, Measurable (φ ρ)) → ∫⁻ s : LatticeTensorUnfolding.RCosets j, ∏ ρ, φ ρ (ActionCoordinates.act (s.out ρ)⁻¹ (x ρ)) ∂ν = ∏ ρ, (ActionCoordinates.cM (P + Q))⁻¹ * ∫⁻ y, φ ρ y ∂(fib β) := by
+  intro H c T _ P Q P' Q' β hβ x hx k ι hk u hu j hj ν hν fib hfib φ hφ
+  haveI := sigmaFinite_cd c P Q
+  haveI := sigmaFinite_cd c P' Q'
+  let f : T → UpqT P Q → ℝ≥0∞ := fun ρ g => φ ρ (ActionCoordinates.act g⁻¹ (x ρ)) * u ρ g
+  have hf : ∀ ρ, Measurable (f ρ) := fun ρ =>
+    ((hφ ρ).comp (measurable_act_inv (x ρ))).mul (hu ρ).1
+  have key := hν (fun g => ∏ ρ, f ρ (g ρ))
+    (Finset.measurable_prod _ fun ρ _ => (hf ρ).comp (measurable_pi_apply ρ))
+  rw [GlobalTheory.SnMass.Push.lintegral_fintype_prod f hf] at key
+  rw [← Finset.prod_congr rfl fun ρ _ =>
+    one_place H c hβ (hx ρ) (hk ρ) (hu ρ).1 (hu ρ).2 hfib (hφ ρ)]
+  refine Eq.trans (lintegral_congr fun s => ?_) key.symm
+  have e : ∀ h : T → UpqT P' Q', ∏ ρ, f ρ ((j h * s.out) ρ) =
+      ∏ ρ, (fun ρ b => φ ρ (ActionCoordinates.act (s.out ρ)⁻¹ (x ρ)) * u ρ (ι ρ b * s.out ρ)) ρ (h ρ) :=
+    fun h => Finset.prod_congr rfl fun ρ _ => by
+      simp only [f, Pi.mul_apply, hj]
+      rw [act_mul_inv ((hk ρ).2.2 _).1]
+  rw [lintegral_congr e, GlobalTheory.SnMass.Push.lintegral_fintype_prod
+    (fun ρ b => φ ρ (ActionCoordinates.act (s.out ρ)⁻¹ (x ρ)) * u ρ (ι ρ b * s.out ρ))
+    (fun ρ => (((hu ρ).2 _).1).const_mul _)]
+  refine Finset.prod_congr rfl fun ρ _ => ?_
+  rw [lintegral_const_mul _ ((hu ρ).2 _).1, ((hu ρ).2 _).2, mul_one]
+
+end GlobalTheory.RealQuotProd
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke
+open scoped ENNReal TensorProduct
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitaryQuotientIntegral_prod_over_places : ActionCoordinates.QuotientMeasure → ∀ (c : CDHaar) (T : Type) [Fintype T] (P Q P' Q' : ℕ) (β : ℝ), (β = 1 ∨ β = -1) → ∀ x : T → ActionCoordinates.Wsp P Q, (∀ ρ, ActionCoordinates.qf (x ρ) = β) → ∀ (k : T → (ActionCoordinates.Wsp P' Q' →ₗ[ℂ] ActionCoordinates.Wsp P Q)) (ι : T → UpqT P' Q' → UpqT P Q), (∀ ρ, ActionCoordinates.IsPerpFrame (x ρ) (k ρ) (ι ρ)) → ∀ u : T → UpqT P Q → ℝ≥0∞, (∀ ρ, Measurable (u ρ) ∧ ∀ g, Measurable (fun h => u ρ (ι ρ h * g)) ∧ ∫⁻ h, u ρ (ι ρ h * g) ∂(c.cd P' Q') = 1) → ∀ j : (T → UpqT P' Q') →* (T → UpqT P Q), (∀ b ρ, j b ρ = ι ρ (b ρ)) → ∀ ν : Measure (LatticeTensorUnfolding.RCosets j), LatticeTensorUnfolding.IsQuotMeasure j (Measure.pi fun _ => c.cd P Q) (Measure.pi fun _ => c.cd P' Q') ν → ∀ fib : ℝ → Measure (ActionCoordinates.Wsp P Q), ActionCoordinates.IsDxDq β fib → ∀ φ : T → ActionCoordinates.Wsp P Q → ℝ≥0∞, (∀ ρ, Measurable (φ ρ)) → ∫⁻ s : LatticeTensorUnfolding.RCosets j, ∏ ρ, φ ρ (ActionCoordinates.act (s.out ρ)⁻¹ (x ρ)) ∂ν = ∏ ρ, (ActionCoordinates.cM (P + Q))⁻¹ * ∫⁻ y, φ ρ y ∂(fib β) := by
+  atlas_forward_decl GlobalTheory.RealQuotProd.quot_integral_prod
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke
+open scoped ENNReal TensorProduct
+
+namespace GlobalTheory.FibrePositive
+
+theorem act_mul {P Q : ℕ} (g h : UpqT P Q) (x : ActionCoordinates.Wsp P Q) :
+    ActionCoordinates.act (g * h) x = ActionCoordinates.act g (ActionCoordinates.act h x) := by
+  have : UpqT.mat (g * h) = UpqT.mat g * UpqT.mat h := rfl
+  simp only [ActionCoordinates.act, this, Matrix.mulVec_mulVec]
+
+theorem act_one {P Q : ℕ} (x : ActionCoordinates.Wsp P Q) : ActionCoordinates.act (1 : UpqT P Q) x = x := by
+  have : UpqT.mat (1 : UpqT P Q) = 1 := rfl
+  simp only [ActionCoordinates.act, this, Matrix.one_mulVec]
+
+theorem act_inv_of_fix {P Q : ℕ} {g : UpqT P Q} {x : ActionCoordinates.Wsp P Q} (h : ActionCoordinates.act g x = x) :
+    ActionCoordinates.act g⁻¹ x = x := by
+  conv_lhs => rw [← h]
+  rw [← act_mul, inv_mul_cancel, act_one]
+
+theorem fibre_lintegral_ne_zero : ActionCoordinates.QuotientMeasure → CDHaar → ∀ (P Q : ℕ) (β : ℝ), (β = 1 ∨ β = -1) → ∀ x₀ : ActionCoordinates.Wsp P Q, ActionCoordinates.qf x₀ = β → ∀ fib : ℝ → Measure (ActionCoordinates.Wsp P Q), ActionCoordinates.IsDxDq β fib → ∀ φ : ActionCoordinates.Wsp P Q → ℝ, Continuous φ → 0 < φ x₀ → ∫⁻ y, ENNReal.ofReal (φ y) ∂(fib β) ≠ 0 := by
+  intro hQ c P Q β hβ x₀ hx₀ fib hfib φ hφ hpos h0
+  obtain ⟨h1, ⟨P', Q', j, ι, -, -, hfr⟩, h3⟩ := hQ P Q β hβ x₀ hx₀
+  obtain ⟨htop, -, -, -, hbor, hcl⟩ := GlobalTheory.UpqTopology.upq_lcsc P Q
+  classical
+  choose s0 hs0 using h1
+  let s : ActionCoordinates.Wsp P Q → UpqT P Q := fun y => if h : ActionCoordinates.qf y = β then s0 y h else 1
+  have hs : ∀ y, ActionCoordinates.qf y = β → ActionCoordinates.act (s y)⁻¹ x₀ = y := by
+    intro y hy
+    simp only [s, dif_pos hy]
+    exact hs0 y hy
+  have hc : Continuous fun g : UpqT P Q => ActionCoordinates.act g⁻¹ x₀ :=
+    (hcl.continuous.comp continuous_inv).matrix_mulVec continuous_const
+  have hfc : Continuous fun g : UpqT P Q => ENNReal.ofReal (φ (ActionCoordinates.act g⁻¹ x₀)) :=
+    ENNReal.continuous_ofReal.comp (hφ.comp hc)
+  have key := (h3 P' Q' j ι hfr).2 c fib hfib s hs _ hfc.measurable
+  have hφm : Measurable fun y => ENNReal.ofReal (φ y) :=
+    (ENNReal.continuous_ofReal.comp hφ).measurable
+  have hae := (lintegral_eq_zero_iff hφm).1 h0
+  have hqm : MeasurableSet {y : ActionCoordinates.Wsp P Q | ActionCoordinates.qf y = β} := by
+    have : Continuous (ActionCoordinates.qf : ActionCoordinates.Wsp P Q → ℝ) := by
+      unfold ActionCoordinates.qf ActionCoordinates.herm
+      fun_prop
+    exact (isClosed_eq this continuous_const).measurableSet
+  have hR : ∫⁻ y in {y | ActionCoordinates.qf y = β}, (∫⁻ g', ENNReal.ofReal (φ (ActionCoordinates.act (ι g' * s y)⁻¹ x₀))
+      ∂(c.cd P' Q')) ∂(fib β) = 0 := by
+    refine lintegral_eq_zero_of_ae_eq_zero ?_
+    filter_upwards [ae_restrict_of_ae hae, ae_restrict_mem hqm] with y hy hq
+    have : ∀ g', ENNReal.ofReal (φ (ActionCoordinates.act (ι g' * s y)⁻¹ x₀)) = 0 := by
+      intro g'
+      rw [_root_.mul_inv_rev, act_mul, act_inv_of_fix (hfr.2.2 g').1, hs y hq]
+      exact hy
+    simp only [this, lintegral_zero, Pi.zero_apply]
+  rw [hR, mul_zero] at key
+  have := c.haar P Q
+  have hz := (hfc.ae_eq_iff_eq (c.cd P Q) continuous_const).1 ((lintegral_eq_zero_iff hfc.measurable).1 key)
+  have h1 : ENNReal.ofReal (φ (ActionCoordinates.act (1 : UpqT P Q)⁻¹ x₀)) = 0 := congrFun hz 1
+  rw [inv_one, act_one, ENNReal.ofReal_eq_zero] at h1
+  linarith
+
+end GlobalTheory.FibrePositive
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke
+open scoped ENNReal TensorProduct
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermitianNormFibre_lintegral_ne_zero_of_pos : ActionCoordinates.QuotientMeasure → CDHaar → ∀ (P Q : ℕ) (β : ℝ), (β = 1 ∨ β = -1) → ∀ x₀ : ActionCoordinates.Wsp P Q, ActionCoordinates.qf x₀ = β → ∀ fib : ℝ → Measure (ActionCoordinates.Wsp P Q), ActionCoordinates.IsDxDq β fib → ∀ φ : ActionCoordinates.Wsp P Q → ℝ, Continuous φ → 0 < φ x₀ → ∫⁻ y, ENNReal.ofReal (φ y) ∂(fib β) ≠ 0 := by
+  atlas_forward_decl GlobalTheory.FibrePositive.fibre_lintegral_ne_zero
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke
@@ -419,3 +1270,5 @@ theorem volumeRatio_of_unfolding (hL5 : PlaceSplittingTypes.SelfDualLatticeDensi
       rwa [← hinj e]
 
 end GlobalTheory.VolRatioUnfold
+end
+end

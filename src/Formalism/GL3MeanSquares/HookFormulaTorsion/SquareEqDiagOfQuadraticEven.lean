@@ -7,8 +7,6 @@ namespace Formalism.HermitianLattices.WeilRepresentation.CocycleEighthPower
 
 open Formalism.HermitianLattices.WeilRepresentation Formalism.HermitianLattices.IntegralLatticeDensity
 
-theorem t_swap : ModelCocycleTwoSwapped := by
-  intro δ a b h; field_simp; ring
 
 theorem t_heis : HeisenbergCocycle := by
   intro V _ H hadd hherm F x y z
@@ -147,7 +145,6 @@ end Formalism.HermitianLattices.WeilRepresentation.CocycleEighthPower
 
 namespace Formalism.HermitianLattices.WeilRepresentation
 
-theorem model_cocycle_two_swapped : ModelCocycleTwoSwapped := CocycleEighthPower.t_swap
 theorem heisenberg_cocycle : HeisenbergCocycle := CocycleEighthPower.t_heis
 theorem gram_expansion : GramExpansion := CocycleEighthPower.rv_gram
 

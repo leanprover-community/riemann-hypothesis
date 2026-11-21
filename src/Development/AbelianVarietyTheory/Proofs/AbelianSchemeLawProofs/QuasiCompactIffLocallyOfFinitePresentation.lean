@@ -112,17 +112,6 @@ theorem quasiCompact_iff_locallyOfFinitePresentation [Module.Finite ℤ X] [IsMo
         (have := Diag.isAffineHom_hom S X; inferInstance)
     exact @quasiCompact_of_isPullback _ _ _ _ _ _ _ _ sq hs q.left.isOpenMap h₁
 
-theorem geometricallyConnected_quotient [Module.Free ℤ X] [IsMonHom q]
-    (hk : IsPullback i (toUnit _) q η[B]) [hs : Surjective q.left] :
-    GeometricallyConnected q.left := by
-  have sq := (isPullback_torsor i q hk).map (Over.forget _)
-  have : TwoUniqueSums X := by
-    let b := Module.Free.chooseBasis ℤ X
-    exact TwoUniqueSums.of_injective_addHom b.repr.toAddEquiv.toAddHom b.repr.injective inferInstance
-  have h₁ : GeometricallyConnected ((Over.forget _).map (snd (Semi.splitTorus S X) G)) :=
-    MorphismProperty.of_isPullback (P := @GeometricallyConnected) (IsPullback.of_hasPullback _ _)
-      (Diag.geometricallyConnected_hom S X)
-  exact @geometricallyConnected_of_isPullback _ _ _ _ _ _ _ _ sq hs h₁
 
 end Exact
 
@@ -176,19 +165,6 @@ theorem isTorusExtension_iff :
       isShortExact_of_torusExtension E⟩,
     fun ⟨_, _, _, _, _, _, _, _, hB, h⟩ => ⟨torusExtensionOfIsShortExact hB h⟩⟩
 
-theorem geometricallyConnected_of_torusExtension (E : Semi.TorusExtension G) :
-    GeometricallyConnected G.hom := by
-  letI := E.addCommGroup; letI := E.grpB
-  have := E.free
-  have := E.q_hom
-  have := E.q_flat
-  have := E.q_surjective
-  have := (isShortExact_of_torusExtension E).2.finitePresentation
-  have := E.isAbelian.smooth
-  have := E.isAbelian.geomConnected
-  have := geometricallyConnected_quotient E.isKernel
-  rw [← Over.w E.q]
-  exact GeometricallyConnected.comp _ _
 
 end Field
 
@@ -202,27 +178,7 @@ theorem isCommMonObj_of_torusExtension {k : Type} [Field k] {G : Over (Spec (Com
   rw [mul_inv_eq_one, Hom.mul_def, Hom.mul_def, lift_fst_snd, Category.id_comp, lift_snd_fst] at h
   exact ⟨h.symm⟩
 
-theorem nonempty_torusExtension_iff {k : Type} [Field k] (G : Over (Spec (CommRingCat.of k)))
-    [GrpObj G] : Nonempty (Semi.TorusExtension G) ↔ IndefiniteRowSideFullHecke.SemiAbelianSchemes.IsTorusExtension G :=
-  ⟨fun ⟨E⟩ => (isTorusExtension_iff G).1 ⟨isCommMonObj_of_torusExtension E, ⟨E⟩⟩,
-    fun h => ((isTorusExtension_iff G).2 h).2⟩
 
-theorem isSemiAbelian_iff {S : Scheme.{u}} (G : Over S) [GrpObj G] :
-    Semi.IsSemiAbelian G ↔ IndefiniteRowSideFullHecke.SemiAbelianSchemes.IsSemiAbelianScheme G := by
-  constructor
-  · intro h
-    have := h.smooth
-    have := h.comm
-    exact ⟨h.smooth, h.separated, inferInstance, h.quasiCompact, h.comm,
-      fun k _ _ s => (isTorusExtension_iff _).1 ⟨inferInstance, h.fibres k s⟩⟩
-  · intro h
-    have hf := fun (k : Type u) [Field k] [IsAlgClosed k] (s : Spec (CommRingCat.of k) ⟶ S) =>
-      ((isTorusExtension_iff _).2 (h.geometricFibre k s)).2
-    refine ⟨h.comm, h.smooth, h.separated, h.quasiCompact,
-      geometricallyConnected_of_isAlgClosed _ fun k _ _ s => ?_, hf⟩
-    obtain ⟨E⟩ := hf k s
-    have := geometricallyConnected_of_torusExtension E
-    exact GeometricallyConnected.connectedSpace_of_subsingleton ((Over.pullback s).obj G).hom
 
 end GlobalTheory.SemiAbelianCompare
 
@@ -230,29 +186,5 @@ namespace GlobalTheory
 
 open SemiAbelianCompare
 
-theorem semiAbelian_notions_equiv :
-    (∀ (S : Scheme.{u}) (A : Over S) [GrpObj A],
-      Semi.IsAbelianScheme A ↔ IndefiniteRowSideFullHecke.SemiAbelianSchemes.IsAbelianScheme A) ∧
-    (∀ (k : Type u) [Field k] (G : Over (Spec (CommRingCat.of k))) [GrpObj G]
-      (X : Type u) [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X]
-      (B : Over (Spec (CommRingCat.of k))) [GrpObj B]
-      (i : Semi.splitTorus (Spec (CommRingCat.of k)) X ⟶ G) (q : G ⟶ B),
-      (Semi.IsAbelianScheme B ∧ IsMonHom q ∧ Flat q.left ∧ Surjective q.left ∧
-          QuasiCompact q.left ∧ IsMonHom i ∧ IsPullback i (toUnit _) q (η : 𝟙_ _ ⟶ B)) ↔
-        (IndefiniteRowSideFullHecke.SemiAbelianSchemes.IsAbelianScheme B ∧ IndefiniteRowSideFullHecke.SemiAbelianSchemes.IsShortExact i q)) ∧
-    (∀ (k : Type u) [Field k] (G : Over (Spec (CommRingCat.of k))) [GrpObj G],
-      IsCommMonObj G ∧ Nonempty (Semi.TorusExtension G) ↔ IndefiniteRowSideFullHecke.SemiAbelianSchemes.IsTorusExtension G) ∧
-    (∀ (k : Type) [Field k] (G : Over (Spec (CommRingCat.of k))) [GrpObj G],
-      Nonempty (Semi.TorusExtension G) ↔ IndefiniteRowSideFullHecke.SemiAbelianSchemes.IsTorusExtension G) ∧
-    (∀ (S : Scheme.{u}) (G : Over S) [GrpObj G],
-      Semi.IsSemiAbelian G ↔ IndefiniteRowSideFullHecke.SemiAbelianSchemes.IsSemiAbelianScheme G) := by
-  refine ⟨fun _ A _ => isAbelianScheme_iff A, fun k _ G _ X _ _ _ B _ i q => ⟨?_, ?_⟩,
-    fun _ _ G _ => isTorusExtension_iff G, fun _ _ G _ => nonempty_torusExtension_iff G,
-    fun _ G _ => isSemiAbelian_iff G⟩
-  · rintro ⟨h₁, h₂, h₃, h₄, h₅, h₆, h₇⟩
-    exact isShortExact_of_torusExtension ⟨X, B, h₁, q, h₂, h₃, h₄, h₅, i, h₆, h₇⟩
-  · rintro ⟨hB, h⟩
-    let E := torusExtensionOfIsShortExact hB h
-    exact ⟨E.isAbelian, E.q_hom, E.q_flat, E.q_surjective, E.q_quasiCompact, E.i_hom, E.isKernel⟩
 
 end GlobalTheory

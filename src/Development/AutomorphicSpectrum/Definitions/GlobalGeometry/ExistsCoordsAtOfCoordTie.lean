@@ -69,36 +69,7 @@ theorem spec_all (q : Spec (CommRingCat.of A)) : genPt (gen A Ω) ⤳ q := by
   change (pr A (genPt (gen A Ω))).asIdeal ≤ (pr A q).asIdeal
   rw [genPt_asIdeal]; exact bot_le
 
-theorem genMap_inj (p : Cpt (gen A Ω)) : Function.Injective (genMap (gen A Ω) p) := by
-  letI := (toSt A p.1).toAlgebra
-  haveI := isLoc A p.1
-  rw [injective_iff_map_eq_zero]
-  intro t ht
-  obtain ⟨⟨r, s⟩, h⟩ := IsLocalization.surj ((pr A p.1).asIdeal).primeCompl t
-  have h' := congrArg (genMap (gen A Ω) p) h
-  rw [map_mul, ht, zero_mul] at h'
-  have : algebraMap A Ω r = 0 := by rw [← genMap_toSt A Ω p]; exact h'.symm
-  have hr : r = 0 := by simpa using this
-  subst hr
-  simp only [map_zero] at h
-  exact (IsLocalization.map_units _ s).mul_left_eq_zero.1 h
 
-theorem isCptGen : IsCptGen (gen A Ω) := by
-  refine ⟨?_, genMap_inj A Ω⟩
-  have e : genMap (gen A Ω) ⟨genPt (gen A Ω), specializes_rfl⟩ = (Scheme.stalkClosedPointTo (gen A Ω)).hom := by
-    unfold genMap
-    erw [TopCat.Presheaf.stalkSpecializes_refl, Category.id_comp]
-    rfl
-  have hb : Function.Bijective (genMap (gen A Ω) ⟨genPt (gen A Ω), specializes_rfl⟩) := by
-    refine ⟨genMap_inj A Ω _, fun a => ?_⟩
-    obtain ⟨r, s, hs, rfl⟩ := IsFractionRing.div_surjective (A := A) a
-    refine (mem_regAt A Ω ⟨genPt (gen A Ω), specializes_rfl⟩ _).2 ⟨r, s, ?_, ?_⟩
-    · change s ∉ (pr A (genPt (gen A Ω))).asIdeal
-      rw [genPt_asIdeal]; simpa using nonZeroDivisors.ne_zero hs
-    · have : algebraMap A Ω s ≠ 0 := by simpa using nonZeroDivisors.ne_zero hs
-      field_simp
-  rw [e] at hb
-  exact hb
 
 omit [IsDomain A] [IsFractionRing A Ω] in
 theorem inv_mem {κ : Type} {x : κ → A} (hx : Ideal.span (Set.range x) = ⊤) (c : κ) (S : Subring Ω)
@@ -133,97 +104,9 @@ theorem inChart_iff {κ : Type} {x : κ → A} (hx : Ideal.span (Set.range x) = 
       exact hc (this ▸ Ideal.zero_mem _)
     exact ⟨h0, fun j => (mem_regAt A Ω p _).2 ⟨x j, x c, hc, by field_simp⟩⟩
 
-theorem coordTie (o : Type) [CommRing o] [Algebra o A] [Algebra o Ω] [IsScalarTower o A Ω]
-    {κ : Type} {x : κ → A} (hx : Ideal.span (Set.range x) = ⊤)
-    (hA : ∀ c, x c ≠ 0 → ∀ a : A, algebraMap A Ω a ∈
-      Algebra.adjoin o (Set.range fun j => algebraMap A Ω (x j) / algebraMap A Ω (x c))) :
-    CoordTie o (gen A Ω) (fun j => algebraMap A Ω (x j)) where
-  gen := isCptGen A Ω
-  cover p := by
-    by_contra h
-    push Not at h
-    refine (pr A p.1).isPrime.ne_top (top_le_iff.1 (hx ▸ Ideal.span_le.2 ?_))
-    rintro _ ⟨c, rfl⟩
-    by_contra hc
-    exact h c ((inChart_iff A Ω hx c p).2 hc)
-  affine c _ := by
-    refine ⟨_, IsAffineOpen.Spec_basicOpen (R := CommRingCat.of A) (x c), fun q => ?_⟩
-    exact ⟨fun hq => ⟨spec_all A Ω q, (inChart_iff A Ω hx c _).2 hq⟩,
-      fun ⟨h, hq⟩ => (inChart_iff A Ω hx c ⟨q, h⟩).1 hq⟩
-  ring c hc a := by
-    have hc' : x c ≠ 0 := fun h => hc (by simp [h])
-    constructor
-    · intro ha p hp
-      induction ha using Algebra.adjoin_induction with
-      | mem a h => obtain ⟨j, rfl⟩ := h; exact hp.2 j
-      | algebraMap r => rw [IsScalarTower.algebraMap_apply o A Ω]; exact algebraMap_mem_regAt A Ω p _
-      | add a b _ _ ha hb => exact Subring.add_mem _ ha hb
-      | mul a b _ _ ha hb => exact Subring.mul_mem _ ha hb
-    · intro h
-      let I : Ideal A :=
-        { carrier := {s | ∃ r, a * algebraMap A Ω s = algebraMap A Ω r}
-          add_mem' := by
-            rintro s t ⟨r, hr⟩ ⟨r', hr'⟩
-            exact ⟨r + r', by rw [map_add, map_add, mul_add, hr, hr']⟩
-          zero_mem' := ⟨0, by simp⟩
-          smul_mem' := by
-            rintro t s ⟨r, hr⟩
-            exact ⟨t * r, by rw [smul_eq_mul, map_mul, map_mul, ← hr]; ring⟩ }
-      have hrad : x c ∈ I.radical := by
-        rw [Ideal.radical_eq_sInf, Submodule.mem_sInf]
-        rintro J ⟨hIJ, hJ⟩
-        by_contra hxc
-        let q : Spec (CommRingCat.of A) := (⟨J, hJ⟩ : PrimeSpectrum A)
-        obtain ⟨r, s, hs, e⟩ := (mem_regAt A Ω ⟨q, spec_all A Ω q⟩ a).1
-          (h _ ((inChart_iff A Ω hx c _).2 hxc))
-        exact hs (hIJ ⟨r, e⟩)
-      obtain ⟨n, r, e⟩ := hrad
-      have hi := inv_mem A Ω hx c (Algebra.adjoin o
-        (Set.range fun j => algebraMap A Ω (x j) / algebraMap A Ω (x c))).toSubring (hA c hc')
-        (fun j => Algebra.subset_adjoin ⟨j, rfl⟩)
-      have : a = algebraMap A Ω r * (algebraMap A Ω (x c))⁻¹ ^ n := by
-        rw [← e, map_pow, mul_assoc, ← mul_pow, mul_inv_cancel₀ hc, one_pow, mul_one]
-      rw [this]
-      exact Subalgebra.mul_mem _ (hA c hc' r) (Subalgebra.pow_mem _ hi n)
 
-theorem coordTie_two_three : CoordTie ℤ (gen ℤ ℚ) (fun j => algebraMap ℤ ℚ (![2, 3] j)) := by
-  refine coordTie ℤ ℚ ℤ ?_ fun c _ a => Subalgebra.algebraMap_mem _ a
-  rw [Ideal.eq_top_iff_one]
-  have h := Ideal.sub_mem (Ideal.span (Set.range (![2, 3] : Fin 2 → ℤ)))
-    (Ideal.subset_span ⟨1, rfl⟩) (Ideal.subset_span ⟨0, rfl⟩)
-  simpa using h
 
-theorem not_coordTie_rat : ¬ CoordTie ℤ (gen ℚ ℚ) (fun _ : Unit => (1 : ℚ)) := by
-  intro h
-  have h2 := (h.ring () one_ne_zero (1 / 2)).2 fun p _ => algebraMap_mem_regAt ℚ ℚ p (1 / 2)
-  have hle : Algebra.adjoin ℤ (Set.range fun _ : Unit => (1 : ℚ) / 1) ≤ ⊥ := by
-    rw [Algebra.adjoin_le_iff]
-    rintro _ ⟨_, rfl⟩
-    simpa using Subalgebra.one_mem _
-  obtain ⟨n, hn⟩ := Algebra.mem_bot.1 (hle h2)
-  have : (2 * n : ℤ) = 1 := by
-    have h' : (n : ℚ) = 1 / 2 := by simpa using hn
-    have : ((2 * n : ℤ) : ℚ) = 1 := by push_cast; rw [h']; norm_num
-    exact_mod_cast this
-  omega
 
-theorem inFibre_iff (p : ℕ) (q : Cpt (gen A Ω)) : InFibre (gen A Ω) p q ↔ (p : A) ∈ (pr A q.1).asIdeal := by
-  have hp : (p : Ω) = algebraMap A Ω p := by simp
-  unfold InFibre unitAt
-  rw [hp, ← not_iff_not, not_not]
-  constructor
-  · rintro ⟨h0, -, h⟩ hc
-    obtain ⟨r, s, hs, e⟩ := (mem_regAt A Ω q _).1 h
-    have : s = p * r := by
-      apply IsFractionRing.injective A Ω
-      rw [map_mul, ← e]; field_simp
-    exact hs (this ▸ Ideal.mul_mem_right _ _ hc)
-  · intro hc
-    have h0 : algebraMap A Ω p ≠ 0 := by
-      intro h
-      have : (p : A) = 0 := IsFractionRing.injective A Ω (by rw [h, map_zero])
-      exact hc (this ▸ Ideal.zero_mem _)
-    exact ⟨h0, algebraMap_mem_regAt A Ω q _, (mem_regAt A Ω q _).2 ⟨1, p, hc, by rw [map_one]; field_simp⟩⟩
 
 section General
 
@@ -274,36 +157,8 @@ theorem exists_coordsAt {K : Type} {ι : K → Type} (y : (Σ k, ι k) → Ω) (
     convert h3 using 1
     field_simp
 
-theorem coordsAt_unique {K : Type} {ι : K → Type} {y : (Σ k, ι k) → Ω} (hξ : IsCptGen ξ) {w w' : (Σ k, ι k) → R}
-    (h : CoordsAt ξ y z w) (h' : CoordsAt ξ y z w') (k : K) : ∃ u : Rˣ, ∀ i, w' ⟨k, i⟩ = u * w ⟨k, i⟩ := by
-  obtain ⟨c, hc⟩ := h.1 k
-  obtain ⟨d, hd⟩ := h'.1 k
-  obtain ⟨hc0, hv⟩ := h.2 k c hc
-  obtain ⟨hd0, hv'⟩ := h'.2 k d hd
-  obtain ⟨r, hr, -⟩ := hv d
-  obtain ⟨r', hr', e'⟩ := hv' c
-  have h1 : ValAt ξ z 1 1 := ⟨hr.1, 1, map_one _, map_one _⟩
-  have h2 := valAt_mul hr hr'
-  rw [show y ⟨k, d⟩ / y ⟨k, c⟩ * (y ⟨k, c⟩ / y ⟨k, d⟩) = 1 by field_simp] at h2
-  have hu : IsUnit (w' ⟨k, c⟩) := by
-    rw [e']
-    exact (IsUnit.of_mul_eq_one_right r (valAt_unique hξ h2 h1)).mul hd
-  obtain ⟨-, hv''⟩ := h'.2 k c hu
-  refine ⟨hu.unit * hc.unit⁻¹, fun i => ?_⟩
-  obtain ⟨s, hs, es⟩ := hv i
-  obtain ⟨s', hs', es'⟩ := hv'' i
-  rw [es, es', valAt_unique hξ hs' hs, Units.val_mul, IsUnit.unit_spec, mul_assoc, mul_left_comm _ s,
-    IsUnit.val_inv_mul, mul_one, mul_comm]
 
-theorem not_coordTie_zero (o : Type) [CommRing o] [Algebra o Ω] {κ : Type} : ¬ CoordTie o ξ (0 : κ → Ω) := by
-  intro h
-  obtain ⟨c, hc⟩ := h.cover ⟨genPt ξ, specializes_rfl⟩
-  exact hc.1 rfl
 
-theorem exists_coordsAt_of_coordTie {o : Type} [CommRing o] [Algebra o Ω] {κ : Type} {x : κ → Ω}
-    (h : CoordTie o ξ x) (hz : genPt ξ ⤳ centre z) :
-    ∃ w, CoordsAt ξ (K := Unit) (ι := fun _ => κ) (fun j => x j.2) z w :=
-  exists_coordsAt _ hz (fun _ => h.cover _) h.gen
 
 end General
 

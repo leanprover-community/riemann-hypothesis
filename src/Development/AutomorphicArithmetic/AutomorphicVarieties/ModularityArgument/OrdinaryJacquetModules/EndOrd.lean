@@ -1,8 +1,79 @@
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.OrdinaryJacquetModules.CoreOrd
-import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.OrdinaryJacquetModules.FiniteOverL
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.OrdinaryJacquetModules.SpehInfLenOne
+import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.AuTeichEx
 import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.WtBridge
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.DeterminantRepresentations.BnRepLin
 
+section
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.N Polynomial ValuativeRel IsLocalRing GlobalTheory.CuspRep GlobalTheory.WeilDeligne
+open GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.UnitaryBC GlobalTheory.PRep UpperTheory.V UpperTheory.V.Hi UpperTheory.V.Hi.CaseU
+open UpperTheory.V.W (Plc Lp HidaSetting Vl Resid LamObj UniversalOrdinaryDeterminantRing Pair)
+open UpperTheory.V.HV (Coef)
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+set_option synthInstance.maxHeartbeats 200000
+open UpperTheory.V.Z UpperTheory.V.Z.Ord
+
+open private au_isTeich au_open from Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.AuTeichEx
+
+private theorem finite_over_l (L : Type) [Field L] [NumberField L] (l : ℕ) [hl : Fact l.Prime] :
+    {w : Plc L | ((l : ℕ) : 𝓞 L) ∈ w.asIdeal}.Finite := by
+  have h0 : Ideal.span {((l : ℕ) : 𝓞 L)} ≠ 0 := by
+    simp [hl.out.ne_zero]
+  exact (Ideal.finite_factors h0).subset fun w hw =>
+    Ideal.dvd_iff_le.2 ((Ideal.span_singleton_le_iff_mem _).2 hw)
+
+private theorem split_l {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω]
+    [IsAlgClosure L Ω] (s : HidaSetting l L Ω) (v : Vl l L) : IsSplitAt (s.w v.1) :=
+  UpperTheory.isSplitAt_of_decomposition_le_restriction_range L Ω _ _ (s.hA v.1) (s.split _ (Or.inl v.2)) _
+    (HeightOneSpectrum.ext (Ideal.ext fun x =>
+      (show _ ↔ _ from (s.hw v.1) (algebraMap (𝓞 (Lp L)) (𝓞 L) x)).symm.trans (s.hA v.1 x)))
+
+section
+
+variable {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω]
+  {s : HidaSetting l L Ω} {n : ℕ} {V : s.Lev} (Q : QData V) {c : Coef l} {m : ℕ} (τ₀ : KT n (wt s) →* GL (Fin m) c.O) (ι : Qbar l ≃+* ℂ)
+
+private def PO (lam : Wt L l n) (d : ℕ) (ξ : GV n (hset Q τ₀).Sl →* GL (Fin d) ℂ) (Y : (hset Q τ₀).Part ι lam ξ) : Prop :=
+  Af.IsIrr (Y.r.comp V.pr) → ∃ π : CuspSub L n, (CG.mk π).IsRegAlg ∧ GlobalTheory.ContraPair.DualIsConj π ∧
+    Af.AttC ι (Y.r.comp V.pr) π ∧ ∀ v, π.IsLocComp ((hset Q τ₀).Sl v) (Y.σl v)
+
+private theorem po_of (hP : Af.HypothesesH) (hn : 1 ≤ n) {lam : Wt L l n} {d : ℕ} {ξ : GV n (hset Q τ₀).Sl →* GL (Fin d) ℂ}
+    (Y : (hset Q τ₀).Part ι lam ξ) (σ : Submodule ℂ (UA L n → ℂ)) (hσ : IsAutRepU σ)
+    (hcomp : ∀ v : V.frame.Vl, IsCompAlong σ (locU n (s.w v.1)) ((cLoc (s.w v.1)).comp (locU n (s.w v.1)).subtype) (Y.σl v).ρ)
+    (hLG : ∀ w, IsSplitAt w → ∀ τ : SmIrr (GLw n w), IsCompAlong σ (locU n w) ((cLoc w).comp (locU n w).subtype) τ.ρ →
+      Af.LocGlob ι (Y.r.comp V.pr) w τ) : PO Q τ₀ ι lam d ξ Y := fun hi => by
+  have hc : Continuous (Y.r.comp V.pr) := Y.cont.comp (V.pr_cont W.continuous_resP)
+  obtain ⟨π, p1, p2, p3, p4⟩ := linkU hP L Ω (UpperTheory.isUnramifiedAt_totallyReal_of_inertia_le_restriction_range L Ω s.unr) l s.odd ι n hn σ hσ (Y.r.comp V.pr) hc hi
+    ((Filter.eventually_cofinite.2 (by simpa using finite_over_l L l)).mono fun w hw hsp τ hτc B hB =>
+      Af.satFrob hP.toClassicalTheorems L Ω l ι n _ hc w hw τ B hB fun A h rc hrc => (hLG w hsp τ hτc A h rc hrc).1 hw)
+  exact ⟨π, p1, p2, p3, fun v => p4 _ (split_l s v) _ (hcomp v)⟩
+
+end
+
+private theorem autPO (hP : Af.HypothesesH) (l : ℕ) [Fact l.Prime] (L Ω : Type) [Field L] [NumberField L] [IsCMField L] [Field Ω]
+    [Algebra L Ω] [IsAlgClosure L Ω] (s : HidaSetting l L Ω) (n : ℕ) (hn : 1 ≤ n) (V : s.Lev) (Q : QData V) (c : Coef l)
+    (r : Resid V.frame c.O n) (ι : Qbar l ≃+* ℂ) (m : ℕ) (τ₀ : KT n (wt s) →* GL (Fin m) c.O) (hτ : TypeFor r ι τ₀) :
+    AutY (hset Q τ₀) ι (PO Q τ₀ ι) := by
+  intro lam _ d ξ hξ F hF hK hI
+  obtain ⟨e, he⟩ := hξ
+  obtain ⟨t, ht⟩ := au_isTeich c r
+  have hop : IsOpen (τ₀.ker : Set (KT n (wt s))) :=
+    au_open _ (ι.injective.comp Subtype.val_injective) τ₀ (hτ t ht).1
+  have h1 := decompU l L Ω s n hn V Q c m τ₀ ι hop lam d e ξ he F hF hK hI
+  refine SetLike.le_def.1 (iSup_le fun σ => ?_) h1
+  by_cases h0 : YOf Q ι τ₀ e ξ σ.1 = ⊥
+  · rw [h0]; exact bot_le
+  · obtain ⟨Y, hY, -, hcomp, hLG⟩ := partU hP l L Ω s n hn V Q c r ι m τ₀ hτ lam d e ξ he σ.1 σ.2 h0
+    rw [← hY]
+    exact le_iSup (fun Y : {Y : (hset Q τ₀).Part ι lam ξ // PO Q τ₀ ι lam d ξ Y} => Y.1.Y)
+      ⟨Y, po_of Q τ₀ ι hP hn Y σ.1 σ.2 hcomp hLG⟩
+
+theorem UpperTheory.V.Z.Ord.autUO :
+    Af.HypothesesH → AutUO := fun hP l _ L Ω _ _ _ _ _ _ s n hn V Q c r ι m τ₀ hτ =>
+  autPO hP l L Ω s n hn V Q c r ι m τ₀ hτ
+end
+
+section
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.N Polynomial ValuativeRel IsLocalRing GlobalTheory.CuspRep GlobalTheory.WeilDeligne
 open GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.UnitaryBC GlobalTheory.PRep UpperTheory.V UpperTheory.V.Hi UpperTheory.V.Hi.CaseU
 open UpperTheory.V.W (Plc Lp HidaSetting Vl Resid LamObj UniversalOrdinaryDeterminantRing Pair)
@@ -16,45 +87,10 @@ section SlopeTestRemainingChoices
 
 variable {Γ Γ' k : Type} [Group Γ] [Group Γ'] [Field k] {n : ℕ}
 
-private theorem inv_comp {φ : Γ' →* Γ} (hφ : Function.Surjective φ) (r : Γ →* GL (Fin n) k) (M : Submodule k (Fin n → k)) :
-    IsInv (r.comp φ) M ↔ IsInv r M :=
-  ⟨fun h g => by obtain ⟨g, rfl⟩ := hφ g; exact h g, fun h g => h (φ g)⟩
 
-private theorem ss_comp {φ : Γ' →* Γ} (hφ : Function.Surjective φ) {r : Γ →* GL (Fin n) k} (h : IsSSRep r) :
-    IsSSRep (r.comp φ) := fun M hM => by
-  obtain ⟨M', h1, h2⟩ := h M ((inv_comp hφ r M).1 hM)
-  exact ⟨M', (inv_comp hφ r M').2 h1, h2⟩
 
-private theorem ss_of_irr {r : Γ →* GL (Fin n) k} (h : Af.IsIrr r) : IsSSRep r := fun M hM => by
-  rcases h.2.2 M le_top hM with rfl | rfl
-  · exact ⟨⊤, h.2.1, isCompl_bot_top⟩
-  · refine ⟨⊥, fun g v hv => ?_, isCompl_top_bot⟩
-    rw [(Submodule.mem_bot k).1 hv]
-    simp
 
-private theorem irr_iso {r r' : Γ →* GL (Fin n) k} (e : Af.RepIso r r') (h : Af.IsIrr r) : Af.IsIrr r' := by
-  obtain ⟨P, hP⟩ := e
-  refine ⟨h.1, fun _ _ _ => Submodule.mem_top, fun M _ hM => ?_⟩
-  let E : (Fin n → k) ≃ₗ[k] (Fin n → k) := (Matrix.GeneralLinearGroup.toLin P).toLinearEquiv
-  have hE : ∀ v, E v = (P : Matrix (Fin n) (Fin n) k).mulVec v := fun v => rfl
-  have hi : IsInv r (M.comap (E : (Fin n → k) →ₗ[k] (Fin n → k))) := fun g v hv => by
-    have := hM g _ hv
-    change (r' g : Matrix (Fin n) (Fin n) k).mulVec ((P : Matrix (Fin n) (Fin n) k).mulVec v) ∈ M at this
-    change (P : Matrix (Fin n) (Fin n) k).mulVec _ ∈ M
-    rwa [Matrix.mulVec_mulVec, ← Units.val_mul, hP, inv_mul_cancel_right, Units.val_mul, ← Matrix.mulVec_mulVec] at this
-  have hm : M = (M.comap (E : (Fin n → k) →ₗ[k] (Fin n → k))).map (E : (Fin n → k) →ₗ[k] (Fin n → k)) :=
-    (Submodule.map_comap_eq_of_surjective E.surjective M).symm
-  rcases h.2.2 _ le_top hi with h0 | h0
-  · left; rw [hm, h0, Submodule.map_bot]
-  · right; rw [hm, h0, Submodule.map_top, LinearEquiv.range]
 
-private theorem iso_of_det {r r' : Γ →* GL (Fin n) k} (h : IsSSRep r) (h' : IsSSRep r')
-    (e : W.GDet.ofRep (W.mat r) = W.GDet.ofRep (W.mat r')) : Af.RepIso r' r := by
-  obtain ⟨P, hP⟩ := AlgebraTools.Det.bnRep (W.mat r) (W.mat r') h h' fun g => by
-    rw [← (AlgebraTools.Det.repApi (W.mat r)).2.1 g, ← (AlgebraTools.Det.repApi (W.mat r')).2.1 g, e]
-  refine ⟨P, fun g => ?_⟩
-  rw [eq_mul_inv_iff_mul_eq]
-  exact Units.ext (hP g).symm
 
 private theorem factor {O A T K : Type} [CommRing O] [CommRing A] [CommRing T] [CommRing K] [Algebra O A] [Algebra O T]
     [Algebra O K] (f : A →ₐ[O] T) (hf : Function.Surjective f) (x : A →ₐ[O] K) (hx : RingHom.ker f ≤ RingHom.ker x) :
@@ -123,3 +159,4 @@ private theorem core (H : Af.HypothesesH) {l : ℕ} [Fact l.Prime] {L Ω : Type}
   change x.D.comap V.pr = _
   rw [hD]
   exact (AlgebraTools.Det.repApi (W.mat Y.r)).2.2.2.2.2.2.1 V.pr
+end

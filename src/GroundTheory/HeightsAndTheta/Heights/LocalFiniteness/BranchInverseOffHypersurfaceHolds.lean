@@ -29,8 +29,6 @@ import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.FiniteTwistsDegreeF
 import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PFramePlaneGraph
 set_option maxSynthPendingDepth 1
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.model_change_very_ample_holds : GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ModelChangeVeryAmple.Statement :=
-  @GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ModelChangeVeryAmple.proof GroundTheory.Heights₂.Heights.AutoClose.model_change_generated_holds
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.DivisorRegularGeneric : GroundTheory.Heights₂.Heights.DivisorRegularGeneric.Statement :=
   @GroundTheory.Heights₂.Heights.DivisorRegularGeneric.proof GroundTheory.Heights₂.Heights.AutoClose.FrameGraphGeneric

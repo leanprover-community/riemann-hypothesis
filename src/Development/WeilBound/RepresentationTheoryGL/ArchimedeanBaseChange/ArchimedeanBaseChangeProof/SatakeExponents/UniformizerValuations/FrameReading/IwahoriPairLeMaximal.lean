@@ -1,8 +1,44 @@
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameBoundSpaces.FrameBound
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.MconvZeroRight
+import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameL
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryLevelSubgroupProperties
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegralPointsOpenCompactStatement
 
+section
+noncomputable section
+
+set_option maxHeartbeats 1000000
+
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.BCT PositivityTheory.Rg.BcB.E PositivityTheory.RgBcC PositivityTheory.Rg.BcB.CG PositivityTheory.Rg.BcB.G8
+open PositivityTheory.Rg.BcB.SpectralAccumulation (Hf)
+open PositivityTheory.Rg.BcN.F2 (mconv)
+open scoped Classical
+
+namespace PositivityTheory.Rg.BcB.F.Rd
+
+attribute [local instance] PositivityTheory.Rg.BcB.F.borelF
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E]
+
+private def fac {κ : Pl E → Type} {a b : ℕ} (P : Finset (Pl E)) (L : LM κ a b) (x y : ∀ w : P, κ w) (h : Hf E a b)
+    (w : Pl E) : ℂ :=
+  L.ent P x y w (atW w h) * if IsSplitAt w then L.t w (atW w (thP E a b h)) else 1
+
+theorem levCof {n : ℕ} (d : LocData E n) (a : ℕ) :
+    ∀ᶠ w : Pl E in cofinite, d.lev a w = K2 a (n - a) w ∧ d.lev₂ a w = K2 a (n - a) w := by
+  refine Filter.eventually_cofinite.2 ((d.T ∪ d.S₀ ∪ d.Bad).finite_toSet.subset fun w hw => ?_)
+  by_contra hc
+  simp only [Finset.coe_union, Set.mem_union, Finset.mem_coe, not_or] at hc
+  apply hw
+  unfold LocData.lev LocData.lev₂
+  simp [hc.1.1, hc.1.2, hc.2]
+
+end PositivityTheory.Rg.BcB.F.Rd
+
+end
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix Filter
@@ -213,15 +249,8 @@ theorem g₂_oc (hSl : Slots) {Sec : Set (Pl E)} (hS : IsSection Sec) (d : LocDa
   rw [g₂_coe] at hg
   exact (Subgroup.mem_prod.1 (gSet_sub hSl hS d hd a ha hg)).2
 
-theorem gSet_oc (hSl : Slots) {Sec : Set (Pl E)} (hS : IsSection Sec) (d : LocData E n) (hd : d.Ok) (a : ℕ)
-    (ha : a ≤ n) : IsOpen (gSet Sec d a) ∧ IsCompact (gSet Sec d a) := by
-  have ho := gSet_open hSl hS d hd a ha
-  refine ⟨ho, ?_⟩
-  have hc : IsCompact (((Kf E a).prod (Kf E (n - a)) : Subgroup (Hf E a (n - a))) : Set (Hf E a (n - a))) := by
-    rw [Subgroup.coe_prod]
-    exact (GlobalTheory.T.finite_kernel_compact_open E a).2.prod (GlobalTheory.T.finite_kernel_compact_open E (n - a)).2
-  exact hc.of_isClosed_subset (Subgroup.isClosed_of_isOpen (levSub Sec d a) ho) (gSet_sub hSl hS d hd a ha)
 
 end PositivityTheory.Rg.BcB.F.Rd.LevOC
 
+end
 end

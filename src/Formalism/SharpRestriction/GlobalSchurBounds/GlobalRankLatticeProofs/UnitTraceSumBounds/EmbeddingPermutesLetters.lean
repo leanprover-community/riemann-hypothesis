@@ -1,8 +1,34 @@
-import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.TraceSum
+import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
 import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.InducedCmType
 import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.LemmaTwoThreeOfSiegelBound
 import Formalism.SharpRestriction.GlobalSchurBounds.ThickPlacesCorollaryOfAnyTranslate
 
+section
+open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 NumberField
+
+namespace Formalism.MainNotions.Ext
+
+def TraceSum : Prop :=
+  ∀ (E : Type) [Field E] [NumberField E] (K : IntermediateField ℚ E) (φ₀ : E →+* ℂ) (S : Type) [Fintype S]
+    (emb : S → E →+* ℂ), Function.Injective emb → (∀ (s : S) (a : K), emb s (a : E) = φ₀ (a : E)) →
+    Fintype.card S = Module.finrank K E →
+    ∀ y : E, ∑ s, emb s y = φ₀ ((Algebra.trace K E y : K) : E)
+
+def PermEmb : Prop :=
+  ∀ (E : Type) [Field E] [NumberField E] (K : IntermediateField ℚ E) (φ₀ : E →+* ℂ) (S : Type) [Fintype S]
+    (emb : S → E →+* ℂ), Function.Injective emb → (∀ (s : S) (a : K), emb s (a : E) = φ₀ (a : E)) →
+    Fintype.card S = Module.finrank K E →
+    ∀ (M : IntermediateField ℚ ℂ) (ρ : M →ₐ[ℚ] ℂ),
+      (∀ a : K, φ₀ (a : E) ∈ M ∧ cj M ρ (φ₀ (a : E)) = φ₀ (a : E)) → (∀ s x, emb s x ∈ M) →
+      ∃ π : Equiv.Perm S, ∀ s x, cj M ρ (emb s x) = emb (π s) x
+
+def CharExt : Prop :=
+  ∀ (G : Type) [CommGroup G] (H : Subgroup G) (χ : H →* ℂˣ), ∃ ψ : G →* ℂˣ, ∀ h : H, ψ (h : G) = χ h
+
+end Formalism.MainNotions.Ext
+end
+
+section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric
 
 namespace Formalism.MainNotions.Ext
@@ -21,8 +47,6 @@ theorem card_Tau_eq (D : D7) : Fintype.card D.what₂.Tau = Module.finrank D.hos
 theorem trace_sum_over_letters (H : TraceSum) (D : D7) : StandardLatticesGL3.TraceMapNormalisation D :=
   H D.host.E D.host.K D.host.φ₀ D.what₂.Tau (embT D) (embT_injective D) (GL3Theta.induced_cm_type D) (card_Tau_eq D)
 
-theorem embedding_permutes_letters (H : PermEmb) (D : D7) : StandardLatticesGL3.EmbeddingPermutesTypes D :=
-  fun M ρ hK hM => H D.host.E D.host.K D.host.φ₀ D.what₂.Tau (embT D) (embT_injective D) (GL3Theta.induced_cm_type D)
-    (card_Tau_eq D) M ρ hK hM
 
 end Formalism.MainNotions.Ext
+end

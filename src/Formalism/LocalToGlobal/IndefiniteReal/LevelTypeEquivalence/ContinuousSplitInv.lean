@@ -68,35 +68,8 @@ theorem atH_one (τ : D.what₂.Tau) : atH D V τ 1 (unitary_one D V τ) = 1 := 
   show atM D V τ 1 = 1
   rw [atM_one]
 
-theorem atH_mul (τ : D.what₂.Tau) {g g' : Matrix (Fin V.rank) (Fin V.rank) ℂ}
-    (hg : gᴴ * gramAt D V τ * g = gramAt D V τ) (hg' : g'ᴴ * gramAt D V τ * g' = gramAt D V τ) :
-    atH D V τ (g * g') (unitary_mul D V τ hg hg') = atH D V τ g hg * atH D V τ g' hg' := by
-  apply Subtype.ext
-  apply Units.ext
-  show atM D V τ (g * g') = atM D V τ g * atM D V τ g'
-  rw [atM_mul]
 
-theorem continuous_atH (τ : D.what₂.Tau) :
-    Continuous fun u : {g : Matrix (Fin V.rank) (Fin V.rank) ℂ // gᴴ * gramAt D V τ * g = gramAt D V τ} =>
-      atH D V τ u.1 u.2 := by
-  refine continuous_induced_rng.2 ?_
-  refine Units.continuous_iff.2 ⟨?_, ?_⟩
-  · exact (continuous_atM D V τ).comp continuous_subtype_val
-  · have hi : Continuous fun g : Matrix (Fin V.rank) (Fin V.rank) ℂ => ginv D V τ g :=
-      (continuous_const.matrix_mul continuous_id.matrix_conjTranspose).matrix_mul continuous_const
-    exact (continuous_atM D V τ).comp (hi.comp continuous_subtype_val)
 
-theorem atTauHom_holds : AtTauHom D := by
-  intro θ hθ V τ
-  rw [eq_thetaC D hθ]
-  refine ⟨?_, fun g g' hg hg' => ?_, ?_⟩
-  · rw [atTau_eq D V τ 1 (unitary_one D V τ), atH_one]
-  · rw [atTau_eq D V τ _ (unitary_mul D V τ hg hg'), atTau_eq D V τ g hg, atTau_eq D V τ g' hg', atH_mul]
-  · rw [continuousOn_iff_continuous_domRestrict]
-    have e : Set.domRestrict {g | gᴴ * gramAt D V τ * g = gramAt D V τ} (atTau (thetaC D) V τ) =
-        fun u => atH D V τ u.1 u.2 := funext fun u => atTau_eq D V τ u.1 u.2
-    rw [e]
-    exact continuous_atH D V τ
 
 section Line
 
@@ -153,14 +126,6 @@ theorem lineAtExists_holds : Datum.LineAtExists D := by
   rw [eq_thetaC D hθ]
   exact ⟨lineL D τ z, isLineAt_lineL D τ z⟩
 
-theorem lineAtUnique_holds : Datum.LineAtUnique D := by
-  intro θ hθ m n τ z L L' h h'
-  rw [eq_thetaC D hθ] at h h'
-  ext1 t
-  apply mat_ext D
-  · intro τ'
-    rw [← compAt_thetaC, ← compAt_thetaC, h.2.2 t τ', h'.2.2 t τ']
-  · rw [h.2.1 t, h'.2.1 t]
 
 section Fam
 

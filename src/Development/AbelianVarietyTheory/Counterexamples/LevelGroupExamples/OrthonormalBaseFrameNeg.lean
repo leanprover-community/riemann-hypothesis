@@ -31,12 +31,6 @@ theorem xiR_pos (D : D7) : 0 < xiR D := by
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
-theorem lminor_sgn (p0 : ℕ) (i : Fin (r + 1)) :
-    lminor (Matrix.diagonal fun a : Fin r => ((sgn p0 (a : ℕ) : ℝ) : ℂ)) i = ((psgn p0 i : ℝ) : ℂ) := by
-  unfold lminor psgn
-  rw [Matrix.submatrix_diagonal _ _ (Fin.castLE_injective _), Matrix.det_diagonal, Complex.ofReal_prod,
-    ← Fin.prod_univ_eq_prod_range (fun a => ((sgn p0 a : ℝ) : ℂ))]
-  rfl
 
 theorem psgn_sq (p0 i : ℕ) : psgn p0 i * psgn p0 i = 1 := by
   unfold psgn
@@ -50,29 +44,6 @@ theorem gram_eq (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (P : Matrix (F
   ext a b
   simp [gram, hermC, col, Matrix.mul_apply, Finset.mul_sum, mul_assoc]
 
-theorem unit_of_x0Orth (X : Data E r) (x₀ : (E →+* ℂ) → Matrix (Fin r) (Fin r) ℂ) (h : IsOrthogonalFrame X x₀) :
-    (fun τ : X.Ψ => (x₀ τ.1 : Fin r → Fin r → ℂ)) ∈ X.dom ∧
-      ∀ τ i, ‖dmin X.Gm (fun τ : X.Ψ => (x₀ τ.1 : Fin r → Fin r → ℂ)) τ i‖ = 1 := by
-  have hd : ∀ (τ : X.Ψ) i, dmin X.Gm (fun τ : X.Ψ => (x₀ τ.1 : Fin r → Fin r → ℂ)) τ i =
-      ((psgn X.p0 i : ℝ) : ℂ) := fun τ i => by
-    rw [← lminor_sgn, ← h τ.1 τ.2]
-    rfl
-  refine ⟨fun τ => ⟨?_, fun i => ?_⟩, fun τ i => ?_⟩
-  · show (x₀ τ.1).det ≠ 0
-    intro h0
-    have h1 := congrArg Matrix.det (h τ.1 τ.2)
-    rw [gram_eq, Matrix.det_mul, Matrix.det_transpose, h0, zero_mul, Matrix.det_diagonal] at h1
-    refine Finset.prod_ne_zero_iff.2 (fun a _ => ?_) h1.symm
-    unfold sgn
-    split_ifs <;> simp
-  · rw [hd, Complex.ofReal_re, psgn_sq]
-    exact one_pos
-  · rw [hd, Complex.norm_real]
-    have h := congrArg abs (psgn_sq X.p0 i)
-    rw [abs_mul, abs_one] at h
-    have h0 := abs_nonneg (psgn X.p0 i)
-    rw [Real.norm_eq_abs]
-    nlinarith
 
 variable {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {l : Level H}
 

@@ -162,57 +162,21 @@ noncomputable def kaehlerCoeff (t : K) (ω : Ω[K⁄k]) : K :=
   haveI := Classical.propDecidable
   if h : ∃ c : K, c • D k K t = ω then h.choose else 0
 
-theorem kaehlerCoeff_smul_D {t : K} (ht : D k K t ≠ 0) (ω : Ω[K⁄k]) :
-    kaehlerCoeff t ω • D k K t = ω := by
-  have hω : ω ∈ Submodule.span K {D k K t} := by rw [span_D_eq_top_of_ne_zero ht]; trivial
-  have h := Submodule.mem_span_singleton.mp hω
-  classical
-  rw [kaehlerCoeff, dif_pos h]
-  exact h.choose_spec
 
-theorem kaehlerCoeff_eq {t : K} (ht : D k K t ≠ 0) {ω : Ω[K⁄k]} {c : K} (h : c • D k K t = ω) :
-    kaehlerCoeff t ω = c :=
-  smul_left_injective K ht ((kaehlerCoeff_smul_D ht ω).trans h.symm)
 
-theorem kaehlerCoeff_smul {t : K} (ht : D k K t ≠ 0) (f : K) (ω : Ω[K⁄k]) :
-    kaehlerCoeff t (f • ω) = f * kaehlerCoeff t ω :=
-  kaehlerCoeff_eq ht (by rw [mul_smul, kaehlerCoeff_smul_D ht])
 
-theorem kaehlerCoeff_add {t : K} (ht : D k K t ≠ 0) (ω₁ ω₂ : Ω[K⁄k]) :
-    kaehlerCoeff t (ω₁ + ω₂) = kaehlerCoeff t ω₁ + kaehlerCoeff t ω₂ :=
-  kaehlerCoeff_eq ht (by rw [add_smul, kaehlerCoeff_smul_D ht, kaehlerCoeff_smul_D ht])
 
-theorem kaehlerCoeff_ne_zero {t : K} (ht : D k K t ≠ 0) {ω : Ω[K⁄k]} (hω : ω ≠ 0) :
-    kaehlerCoeff t ω ≠ 0 := by
-  intro h
-  have := kaehlerCoeff_smul_D ht ω
-  rw [h, zero_smul] at this
-  exact hω this.symm
 
-theorem kaehlerCoeff_D_self {t : K} (ht : D k K t ≠ 0) : kaehlerCoeff t (D k K t) = 1 :=
-  kaehlerCoeff_eq ht (one_smul _ _)
 
-theorem kaehlerCoeff_trans {t t' : K} (ht : D k K t ≠ 0) (ht' : D k K t' ≠ 0) (ω : Ω[K⁄k]) :
-    kaehlerCoeff t ω = kaehlerCoeff t' ω * kaehlerCoeff t (D k K t') := by
-  refine kaehlerCoeff_eq ht ?_
-  rw [mul_smul, kaehlerCoeff_smul_D ht, kaehlerCoeff_smul_D ht']
 
 noncomputable def kaehlerUniformizer (v : Place k K) : K :=
   (exists_ord_eq_one_D_ne_zero v).choose
 
-theorem ord_kaehlerUniformizer (v : Place k K) : v.ord (kaehlerUniformizer v) = 1 :=
-  (exists_ord_eq_one_D_ne_zero v).choose_spec.1
 
-theorem D_kaehlerUniformizer_ne_zero (v : Place k K) : D k K (kaehlerUniformizer v) ≠ 0 :=
-  (exists_ord_eq_one_D_ne_zero v).choose_spec.2
 
 noncomputable def kaehlerOrd (v : Place k K) (ω : Ω[K⁄k]) : ℤ :=
   v.ord (kaehlerCoeff (kaehlerUniformizer v) ω)
 
-theorem kaehlerOrd_smul (v : Place k K) {f : K} (hf : f ≠ 0) {ω : Ω[K⁄k]} (hω : ω ≠ 0) :
-    kaehlerOrd v (f • ω) = v.ord f + kaehlerOrd v ω := by
-  rw [kaehlerOrd, kaehlerCoeff_smul (D_kaehlerUniformizer_ne_zero v),
-    v.ord_mul hf (kaehlerCoeff_ne_zero (D_kaehlerUniformizer_ne_zero v) hω), kaehlerOrd]
 
 end Order
 

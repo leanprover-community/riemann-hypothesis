@@ -207,17 +207,6 @@ theorem IsTripleOf.hkFrob (h : IsTripleOf Y) (hi : X.NonzeroIndexPlace i) (s : X
   let ⟨_, h1, _, _, _, _, _, _, h2⟩ := h.triple hi s
   h2.hkFrob h.artin h1
 
-theorem IsTripleOf.hecke_polynomial (h : IsTripleOf Y) (hi : X.NonzeroIndexPlace i) (s : X.Sig i) {P : PlE D.host} (hS : P ∉ X.S0 i)
-    (hP : IsSplitPl D.host P) {g : GalE D} (hF : IsFrob (F := D.host.E) (D.nd.plOm.1 P) (normV P) g⁻¹) :
-    ∑ k ∈ Finset.range (D.R.r + 1), monomial k ((-1 : X.O i) ^ k * ((normV P : ℕ) : X.O i) ^ (k * (k - 1) / 2) *
-      X.hEig i s k P) = (matW s g).charpolyRev.map (algebraMap (X.O0 i) (X.O i)) := by
-  have hd : ((matW s g).charpolyRev.map (algebraMap (X.O0 i) (X.O i))).natDegree < D.R.r + 1 := by
-    rw [← Matrix.reverse_charpoly, Nat.lt_succ_iff]
-    exact natDegree_map_le.trans ((reverse_natDegree_le _).trans
-      (by rw [Matrix.charpoly_natDegree_eq_dim, Fintype.card_fin]))
-  rw [as_sum_range' _ _ hd]
-  refine Finset.sum_congr rfl fun k hk => ?_
-  rw [h.hkFrob hi s P hS hP g hF k (Nat.lt_succ_iff.1 (Finset.mem_range.1 hk)), coeff_map, matW_eq]
 
 theorem IsTripleOf.adm8 (h : IsTripleOf Y) : adm8 X Y := by
   intro i hi s _

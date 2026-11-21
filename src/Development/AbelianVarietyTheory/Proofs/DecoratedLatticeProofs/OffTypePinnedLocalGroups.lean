@@ -17,10 +17,381 @@ import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.BesselColu
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ConjugateSymmetricUnipotentPatternStatement
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SplitPlaceReductionsConjOfNestedFrameStabilisers
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsReductionIffPatternStatement
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ReductionUniqueOfMaximal
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LevelZeroTypeFrameLocality
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.TypeFrameConjugationDecomposition
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LambdaZeroEqProduct
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MemLevelIffSymmetricPositionEntryPattern
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IdempotentSubMulComplementEqComplement
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsFiniteAdeleProjectionIntegralReductionStatement
+import BuildAid.ForwardExisting
 
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.S Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes MeasureTheory IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.AutomorphicEvaluation Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.RowDict Formalism.L2.SG.RowsJoinPinned GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.Core.Rk GlobalTheory.Core.Mi
+open scoped TensorProduct InnerProductSpace Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.LocMod GlobalTheory.StepData ValuativeRel
+
+namespace GlobalTheory.LevelComb
+
+variable {D : D7} {u : D.what₂.Word} {d : GlobalTheory.SeeSaw.Dat D u} {τ : ∀ j h, Matrix (Fin (d.bes j 0 h).L.rank) (Fin d.Lz.rank) D.host.E}
+  {PP : Formalism.L2.DIV.Pl D.host.E}
+
+theorem mem_of_rho_lt (G : GAt d τ PP) {z : 𝓞 D.host.E} (hz : valuation G.k (rho G z) < 1) : z ∈ PP.asIdeal := by
+  by_cases h0 : z = 0
+  · subst h0; exact PP.asIdeal.zero_mem
+  have h0' : rho G z ≠ 0 := (map_ne_zero (G.q.pr.comp (incA D))).2 (RingOfIntegers.coe_ne_zero_iff.2 h0)
+  refine (G.idem.2 z h0).2 ?_
+  rw [← G.q.sec_pr, ← G.q.int_iff]
+  change (G.q.pr.comp (incA D)) _ ∉ _
+  rw [map_inv₀, Valuation.mem_integer_iff, map_inv₀, not_le]
+  exact (one_lt_inv₀ (zero_lt_iff.2 ((map_ne_zero _).2 h0'))).2 hz
+
+end GlobalTheory.LevelComb
+
+theorem GlobalTheory.LevelComb.red_uniq : ∀ (D : D7) (u : D.what₂.Word) (d : GlobalTheory.SeeSaw.Dat D u) (τ : ∀ j h, Matrix (Fin (d.bes j 0 h).L.rank) (Fin d.Lz.rank) D.host.E) (PP : Formalism.L2.DIV.Pl D.host.E) (G : GlobalTheory.LocMod.GAt d τ PP) (x x' : G.S.P.J) (g g' : GL (Fin D.R.r) (Formalism.L2.DIV.kP PP)), G.Red x g → G.Red x' g' → GlobalTheory.StepData.MaxM ((x' : GL (Fin D.R.k ⊕ Fin (G.s + 1)) G.k).val - (x : GL (Fin D.R.k ⊕ Fin (G.s + 1)) G.k).val) → g' = g := by
+  intro D u d τ PP G x x' g g' hx hx' hm
+  rw [GlobalTheory.LevelComb.red_iff] at hx hx'
+  ext a' b'
+  obtain ⟨a, rfl⟩ := (GlobalTheory.LevelComb.pos G).surjective a'
+  obtain ⟨b, rfl⟩ := (GlobalTheory.LevelComb.pos G).surjective b'
+  have h := (valuation G.k).map_sub_lt ((valuation G.k).map_add_lt (hx a b) (hm a b)) (hx' a b)
+  have e : ((x : GL (Fin D.R.k ⊕ Fin (G.s + 1)) G.k).val - GlobalTheory.LevelComb.lift G g.val) a b +
+      (((x' : GL (Fin D.R.k ⊕ Fin (G.s + 1)) G.k).val - (x : GL (Fin D.R.k ⊕ Fin (G.s + 1)) G.k).val) a b) -
+      ((x' : GL (Fin D.R.k ⊕ Fin (G.s + 1)) G.k).val - GlobalTheory.LevelComb.lift G g'.val) a b =
+      GlobalTheory.LevelComb.rho G (GlobalTheory.LevelComb.out (g'.val (GlobalTheory.LevelComb.pos G a) (GlobalTheory.LevelComb.pos G b)) -
+        GlobalTheory.LevelComb.out (g.val (GlobalTheory.LevelComb.pos G a) (GlobalTheory.LevelComb.pos G b))) := by
+    simp only [Matrix.sub_apply, GlobalTheory.LevelComb.lift, map_sub]; ring
+  rw [e] at h
+  have hm' := GlobalTheory.LevelComb.mem_of_rho_lt G h
+  rw [← GlobalTheory.LevelComb.mk_out (g'.val _ _), ← GlobalTheory.LevelComb.mk_out (g.val _ _)]
+  exact (Ideal.Quotient.eq.2 hm')
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.S Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes MeasureTheory IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.AutomorphicEvaluation Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.RowDict Formalism.L2.SG.RowsJoinPinned GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.Core.Rk GlobalTheory.Core.Mi
+open scoped TensorProduct InnerProductSpace Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.reduction_unique_of_maximal : ∀ (D : D7) (u : D.what₂.Word) (d : GlobalTheory.SeeSaw.Dat D u) (τ : ∀ j h, Matrix (Fin (d.bes j 0 h).L.rank) (Fin d.Lz.rank) D.host.E) (PP : Formalism.L2.DIV.Pl D.host.E) (G : GlobalTheory.LocMod.GAt d τ PP) (x x' : G.S.P.J) (g g' : GL (Fin D.R.r) (Formalism.L2.DIV.kP PP)), G.Red x g → G.Red x' g' → GlobalTheory.StepData.MaxM ((x' : GL (Fin D.R.k ⊕ Fin (G.s + 1)) G.k).val - (x : GL (Fin D.R.k ⊕ Fin (G.s + 1)) G.k).val) → g' = g := by
+  atlas_forward_decl GlobalTheory.LevelComb.red_uniq
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.S Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes MeasureTheory IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.AutomorphicEvaluation Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.RowDict Formalism.L2.SG.RowsJoinPinned GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.Core.Rk GlobalTheory.Core.Mi
+open scoped TensorProduct InnerProductSpace Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open ValuativeRel
+
+namespace GlobalTheory.ReadAtBase
+
+theorem mat_read {k : Type} [CommRing k] {N Y : Type} [Fintype N] [DecidableEq N] [Fintype Y] [DecidableEq Y] (σ : N ≃ Y)
+    (β' βi' W Mi M0 : Matrix N N k) (Fb : Matrix N Y k) (Fg : Matrix Y N k) (bs bi X : Matrix Y Y k)
+    {Yy G : Matrix _ _ k} (h1 : β' * W * βi' = Mi * Yy * M0) (hY : Yy = Fb * G * Fg) (hG : G = bs * X * bi) (h2 : βi' * β' = 1) (h3 : M0 * Mi = 1)
+    (h4 : Fg * Fb = 1) (h5 : bi * bs = 1) (h6 : β' = (Mi * Fb * bs).submatrix id σ) :
+    W = X.submatrix σ σ := by
+  subst hY hG
+  have hs : ∀ (M : Matrix N N k) (P : Matrix N Y k), M * P.submatrix id σ = (M * P).submatrix id σ := fun M P => by
+    ext i j; simp [Matrix.mul_apply]
+  have hA : β' * W = β' * X.submatrix σ σ := by
+    have e1 : β' * W = β' * W * βi' * β' := by rw [Matrix.mul_assoc (β' * W), h2, Matrix.mul_one]
+    rw [e1, h1, h6, hs, Matrix.submatrix_mul_equiv _ _ _ σ]
+    congr 1
+    simp only [Matrix.mul_assoc]
+    rw [← Matrix.mul_assoc M0 Mi, h3, Matrix.one_mul, ← Matrix.mul_assoc Fg Fb, h4, Matrix.one_mul,
+      h5, Matrix.mul_one]
+  calc W = βi' * β' * W := by rw [h2, Matrix.one_mul]
+    _ = βi' * β' * X.submatrix σ σ := by rw [Matrix.mul_assoc, hA, ← Matrix.mul_assoc]
+    _ = X.submatrix σ σ := by rw [h2, Matrix.one_mul]
+
+end GlobalTheory.ReadAtBase
+
+namespace GlobalTheory.ReadAtBase
+
+theorem map_mt_conj {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+    (p : GlobalTheory.LocMod.Place D k) (V : HSp D) (t y : GA D V) :
+    (Formalism.L2.Theta.mt V (t⁻¹ * y * t)).map p.π =
+      (Formalism.L2.Theta.mt V t⁻¹).map p.π * (Formalism.L2.Theta.mt V y).map p.π * (Formalism.L2.Theta.mt V t).map p.π := by
+  simp only [Formalism.L2.Theta.mt, map_mul, Units.val_mul, Matrix.map_mul]
+
+theorem map_mt_inv {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+    (p : GlobalTheory.LocMod.Place D k) (V : HSp D) (t : GA D V) :
+    (Formalism.L2.Theta.mt V t).map p.π * (Formalism.L2.Theta.mt V t⁻¹).map p.π = 1 := by
+  rw [← Matrix.map_mul]
+  simp [Formalism.L2.Theta.mt]
+
+theorem map_inv_mul {R k : Type} [CommRing R] [CommRing k] {n : ℕ} (f : R →+* k) (β : GL (Fin n) R) :
+    (β⁻¹).val.map f * β.val.map f = 1 := by
+  rw [← Matrix.map_mul, ← Units.val_mul, inv_mul_cancel, Units.val_one, Matrix.map_one _ (map_zero _) (map_one _)]
+
+theorem bc_apply {A B : Type} [CommRing A] [CommRing B] {n : ℕ} (f : A →+* B) (g : GL (Fin n) A) (i j : Fin n) :
+    (Formalism.UG.bc f g).val i j = f (g.val i j) := rfl
+
+theorem intGL_apply {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
+    (w : GL (Fin n) (Formalism.L2.Herm.intAf F E)) (i j : Fin n) :
+    (intGL F E n w).val i j = (w.val i j : E ⊗[F] Formalism.L2.Herm.Af F) := rfl
+end GlobalTheory.ReadAtBase
+
+set_option maxHeartbeats 1000000 in
+
+theorem GlobalTheory.ReadAtBase.red_of_isLoc : ∀ (D : D7) (u : D.what₂.Word) (d : GlobalTheory.SeeSaw.Dat D u) (τ : ∀ j h, Matrix (Fin (d.bes j 0 h).L.rank) (Fin d.Lz.rank) D.host.E) (PP : Formalism.L2.DIV.Pl D.host.E) (G : GlobalTheory.LocMod.GAt d τ PP) (hr : D.R.r ≤ (d.st 0).V.rank) (hc : 0 + (G.s + 1) = G.s + 1) (x : G.S.P.J) (y : GA D (d.st 0).V), (GlobalTheory.LocMod.ofSplit G.q).IsLoc (G.FY 0 (G.s + 1) hc) y ((GlobalTheory.StepData.typeFrame G.S.ϖ (GlobalTheory.StepData.stdOrd (Fin D.R.k) (Fin D.R.t) 0 (G.s + 1) hc)).conj (GlobalTheory.StepData.reGL (GlobalTheory.StepData.ixZero (Fin D.R.k ⊕ Fin (G.s + 1)) (Fin D.R.t)) (x : GL (Fin D.R.k ⊕ Fin (G.s + 1)) G.k))) → Formalism.IndefR.Lev.finE (d.st 0).V ((d.t 0)⁻¹ * y * d.t 0) ∈ Formalism.L2.DIV.St (d.st 0).β → G.Red x (Formalism.L2.DIV.upperLeftBlock hr (Formalism.L2.DIV.redFn (d.st 0).β PP (Formalism.IndefR.Lev.finE (d.st 0).V ((d.t 0)⁻¹ * y * d.t 0)))) := by
+  intro D u d τ PP G hr hc x y hL hSt
+  obtain ⟨π', hπ, hred, -, -⟩ := GlobalTheory.T.exists_finiteAdele_projection_integral_reduction D G.k G.q PP G.idem
+  have hπ' : ∀ a, π' (toEAf D a) = (GlobalTheory.LocMod.ofSplit G.q).π a := hπ
+  obtain ⟨w, hw⟩ := hSt
+  rw [← hw, Formalism.L2.DIV.redFn_frGL]
+  obtain ⟨e, he, hmv⟩ := G.frame 0 (G.s + 1) hc
+  have hβ := GlobalTheory.LocMod.StepVec.map_eq_of_movedTo (GlobalTheory.LocMod.ofSplit G.q) (G.FY 0 (G.s + 1) hc) hπ' _ _ hmv
+  have hn : (d.st 0).V.rank ≤ D.R.r := by
+    have h1 := Fintype.card_congr e
+    simp only [Fintype.card_sum, Fintype.card_prod, Fintype.card_fin, Fintype.card_fin, zero_mul, add_zero] at h1
+    have h2 := G.hs
+    unfold Formalism.BasicNotions.Ranks.r
+    omega
+  intro a b a' b' ha hb z hz
+  have hrb : ((upperLeftBlock hr ((Formalism.UG.bc (resS D.host.F PP)) w)) : Matrix (Fin D.R.r) (Fin D.R.r) (kP PP)) =
+      (((Formalism.UG.bc (resS D.host.F PP)) w) : Matrix _ _ (kP PP)).submatrix (Fin.castLE hr) (Fin.castLE hr) := by
+    refine upper_block_val_submatrix hr ?_
+    intro i j hij
+    exfalso
+    have hi : blk2 D.R.r i = 0 := by simp [blk2, show i.val < D.R.r from lt_of_lt_of_le i.2 hn]
+    rw [hi] at hij
+    exact Nat.not_lt_zero _ hij
+  rw [hrb] at hz
+  have hpos : ∀ (c : Fin D.R.k ⊕ Fin (G.s + 1)) (c' : Fin D.R.r), c'.val = IndefiniteRowSideFullHecke.FramePositiveSum.framePos D.R.k (G.s + 1) c →
+      Fin.castLE hr c' = e (StepData.ixZero _ _ c) := by
+    intro c c' hc'
+    ext
+    rw [Fin.val_castLE, he, hc']
+    rcases c with c | c <;> rfl
+  rw [Matrix.submatrix_apply, hpos a a' ha, hpos b b' hb] at hz
+  have e1 : frGL (d.st 0).β w = (d.st 0).β * Formalism.L2.DIV.intGL _ _ _ w * ((d.st 0).β)⁻¹ := rfl
+  have e2 := congrArg Units.val (e1.symm.trans hw)
+  rw [Units.val_mul, Units.val_mul] at e2
+  have h1 := congrArg (Matrix.map · π') e2
+  simp only [Matrix.map_mul] at h1
+  have e4 : (finE (d.st 0).V ((d.t 0)⁻¹ * y * d.t 0)).val.map π' =
+      (Formalism.L2.Theta.mt (d.st 0).V ((d.t 0)⁻¹ * y * d.t 0)).map (GlobalTheory.LocMod.ofSplit G.q).π := by
+    ext i j
+    exact hπ' _
+  have h1' := (h1.trans e4).trans (GlobalTheory.ReadAtBase.map_mt_conj (GlobalTheory.LocMod.ofSplit G.q) _ (d.t 0) y)
+  have hG : ((StepData.typeFrame G.S.ϖ (StepData.stdOrd (Fin D.R.k) (Fin D.R.t) 0 (G.s + 1) hc)).conj
+      ((StepData.reGL (StepData.ixZero (Fin D.R.k ⊕ Fin (G.s + 1)) (Fin D.R.t))) x)).val =
+      ((G.S.T (Fin D.R.t)).bas 0 (G.s + 1) hc).val *
+        (StepData.reGL (StepData.stdOrd (Fin D.R.k) (Fin D.R.t) 0 (G.s + 1) hc)
+          (StepData.reGL (StepData.ixZero (Fin D.R.k ⊕ Fin (G.s + 1)) (Fin D.R.t)) (x : GL (Fin D.R.k ⊕ Fin (G.s + 1)) G.k))).val *
+        (((G.S.T (Fin D.R.t)).bas 0 (G.s + 1) hc)⁻¹).val := rfl
+  have hW := GlobalTheory.ReadAtBase.mat_read ((e.symm).trans (StepData.stdOrd (Fin D.R.k) (Fin D.R.t) 0 (G.s + 1) hc)) _ _ _ _ _ _ _ _ _ _ h1' hL.2
+    hG (GlobalTheory.ReadAtBase.map_inv_mul _ _)
+    (GlobalTheory.ReadAtBase.map_mt_inv _ _ _) (G.FY 0 (G.s + 1) hc).γβ (Units.inv_mul _) hβ
+  have h := congrFun (congrFun hW (e (StepData.ixZero _ _ a))) (e (StepData.ixZero _ _ b))
+  simp only [Matrix.map_apply, Matrix.submatrix_apply, Equiv.trans_apply, Equiv.symm_apply_apply, StepData.reGL_val] at h
+  simp only [GlobalTheory.ReadAtBase.intGL_apply] at h
+  simp only [GlobalTheory.ReadAtBase.bc_apply] at hz
+  have hz0 : resS D.host.F PP (w.val (e (StepData.ixZero _ _ a)) (e (StepData.ixZero _ _ b)) - oToS D.host.F D.host.E z) = 0 := by
+    rw [map_sub, resS_oToS, hz]
+    exact sub_self _
+  have hv := (hred.ker _).1 hz0
+  simp only [RingHom.comp_apply, Subring.coe_subtype, AddSubgroupClass.coe_sub, map_sub, h] at hv
+  have e8 : π' ((oToS _ _ z : Formalism.L2.Herm.intAf D.host.F D.host.E) : Datum.EAf D) =
+      (GlobalTheory.LocMod.ofSplit G.q).pr (z : D.host.E) := hπ' (incA D (z : D.host.E))
+  rw [e8] at hv
+  exact hv
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.S Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes MeasureTheory IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.AutomorphicEvaluation Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.RowDict Formalism.L2.SG.RowsJoinPinned GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.Core.Rk GlobalTheory.Core.Mi
+open scoped TensorProduct InnerProductSpace Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.level_zero_type_frame_locality : ∀ (D : D7) (u : D.what₂.Word) (d : GlobalTheory.SeeSaw.Dat D u) (τ : ∀ j h, Matrix (Fin (d.bes j 0 h).L.rank) (Fin d.Lz.rank) D.host.E) (PP : Formalism.L2.DIV.Pl D.host.E) (G : GlobalTheory.LocMod.GAt d τ PP) (hr : D.R.r ≤ (d.st 0).V.rank) (hc : 0 + (G.s + 1) = G.s + 1) (x : G.S.P.J) (y : GA D (d.st 0).V), (GlobalTheory.LocMod.ofSplit G.q).IsLoc (G.FY 0 (G.s + 1) hc) y ((GlobalTheory.StepData.typeFrame G.S.ϖ (GlobalTheory.StepData.stdOrd (Fin D.R.k) (Fin D.R.t) 0 (G.s + 1) hc)).conj (GlobalTheory.StepData.reGL (GlobalTheory.StepData.ixZero (Fin D.R.k ⊕ Fin (G.s + 1)) (Fin D.R.t)) (x : GL (Fin D.R.k ⊕ Fin (G.s + 1)) G.k))) → Formalism.IndefR.Lev.finE (d.st 0).V ((d.t 0)⁻¹ * y * d.t 0) ∈ Formalism.L2.DIV.St (d.st 0).β → G.Red x (Formalism.L2.DIV.upperLeftBlock hr (Formalism.L2.DIV.redFn (d.st 0).β PP (Formalism.IndefR.Lev.finE (d.st 0).V ((d.t 0)⁻¹ * y * d.t 0)))) := by
+  atlas_forward_decl GlobalTheory.ReadAtBase.red_of_isLoc
+end
+
+section
+section
+open ValuativeRel Matrix
+
+noncomputable section
+namespace GlobalTheory.SymDec
+open GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.SymChain
+
+section
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+
+theorem intM_adjugate {n : Type} [Fintype n] [DecidableEq n] {A : Matrix n n k} (h : IntM A) : IntM A.adjugate := by
+  let B : Matrix n n 𝒪[k] := fun i j => ⟨A i j, h i j⟩
+  have hB : A = (algebraMap 𝒪[k] k).mapMatrix B := by ext i j; rfl
+  intro i j
+  rw [hB, ← RingHom.map_adjugate]
+  exact (B.adjugate i j).2
+
+theorem mem_KO_of_intM_det {n : Type} [Fintype n] [DecidableEq n] {g : GL n k} (h : IntM g.val) (hd : g.val.det = 1) :
+    g ∈ KO k n := by
+  refine mem_KO.2 ⟨h, ?_⟩
+  have : (g⁻¹).val = g.val.adjugate := by
+    rw [Matrix.coe_units_inv, Matrix.inv_def, hd]; simp
+  rw [this]; exact intM_adjugate h
+end
+
+section Frame
+variable {k : Type} [Field k] {ι n : Type} [Fintype n] [DecidableEq n] {c : ℕ}
+
+def dg (ϖ : kˣ) : n ⊕ Fin c → k := Sum.elim (fun _ => 1) (fun i => (ϖ : k) ^ (i.val + 1))
+
+theorem dg_ne_zero (ϖ : kˣ) (r : n ⊕ Fin c) : dg ϖ r ≠ 0 := by
+  rcases r with r | r <;> simp [dg]
+
+theorem typeFrame_bas_val (ϖ : kˣ) (ord : ι ≃ n ⊕ Fin c) :
+    (typeFrame ϖ ord).bas.val = diagonal (dg ϖ) := by
+  ext (i | i) (j | j) <;> simp [typeFrame, embA, SplitFlip.diagGL, dg, diagonal, fromBlocks, Matrix.one_apply]
+
+theorem typeFrame_bas_inv_val (ϖ : kˣ) (ord : ι ≃ n ⊕ Fin c) :
+    ((typeFrame ϖ ord).bas⁻¹).val = diagonal fun r => (dg ϖ r)⁻¹ := by
+  refine Units.inv_eq_of_mul_eq_one_right ?_
+  rw [typeFrame_bas_val, diagonal_mul_diagonal]
+  rw [← diagonal_one]; congr 1; funext r; exact mul_inv_cancel₀ (dg_ne_zero ϖ r)
+
+theorem conj_entry [Fintype ι] [DecidableEq ι] (ϖ : kˣ) (ord : ι ≃ n ⊕ Fin c) (g : GL ι k) (r s : n ⊕ Fin c) :
+    ((typeFrame ϖ ord).conj g).val r s = dg ϖ r * g.val (ord.symm r) (ord.symm s) * (dg ϖ s)⁻¹ := by
+  rw [LatFrame.conj_apply, Units.val_mul, Units.val_mul, typeFrame_bas_inv_val, typeFrame_bas_val,
+    mul_diagonal, diagonal_mul, reGL_val]
+  rfl
+end Frame
+
+section Zero
+variable {k : Type} [Field k] {κ c : ℕ} (t : Type) [Fintype t] [DecidableEq t]
+
+def ordZ (hc : 0 + c = c) : Fin κ ⊕ Fin c ≃ XIx (Fin κ) t 0 ⊕ Fin c :=
+  (ixZero (Fin κ ⊕ Fin c) t).trans (stdOrd (Fin κ) t 0 c hc)
+
+theorem ordZ_inl (hc : 0 + c = c) (i : Fin κ) : ordZ t hc (Sum.inl i) = Sum.inl (Sum.inl (Sum.inl i)) := rfl
+
+theorem ordZ_inr (hc : 0 + c = c) (i : Fin c) : ordZ (κ := κ) t hc (Sum.inr i) = Sum.inr i := by
+  have h := standardOrderExtendedBasis_apply_low_block (Fin κ) t 0 c hc i
+  simp only [Fin.eta] at h
+  exact h
+
+def epsZ : Fin κ ≃ XIx (Fin κ) t 0 :=
+  (Equiv.sumEmpty (Fin κ) (Fin 0)).symm.trans (Equiv.sumEmpty (Fin κ ⊕ Fin 0) (Fin 0 × t)).symm
+
+theorem lev_ordZ_symm (hc : 0 + c = c) (p : ℕ) (z : XIx (Fin κ) t 0 ⊕ Fin c) :
+    lev p ((ordZ t hc).symm z) = lev p z := by
+  obtain ⟨w, rfl⟩ := (ordZ t hc).surjective z
+  rw [Equiv.symm_apply_apply]
+  rcases w with i | i
+  · rw [ordZ_inl]; rfl
+  · rw [ordZ_inr]; rfl
+
+variable [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+
+theorem conj_reGL_val (ϖ : kˣ) (hc : 0 + c = c) (g : GL (Fin κ ⊕ Fin c) k) (r s : XIx (Fin κ) t 0 ⊕ Fin c) :
+    ((typeFrame ϖ (stdOrd (Fin κ) t 0 c hc)).conj (reGL (ixZero (Fin κ ⊕ Fin c) t) g)).val r s =
+      dg ϖ r * g.val ((ordZ t hc).symm r) ((ordZ t hc).symm s) * (dg ϖ s)⁻¹ := by
+  rw [conj_entry, reGL_val]; rfl
+
+theorem conj_inN (ϖ : kˣ) (hc : 0 + c = c) (p : ℕ) {g : GL (Fin κ ⊕ Fin c) k} (hg : InN p g) :
+    InN p ((typeFrame ϖ (stdOrd (Fin κ) t 0 c hc)).conj (reGL (ixZero (Fin κ ⊕ Fin c) t) g)) := by
+  intro r s hrs
+  rw [conj_reGL_val, hg _ _ (by rw [lev_ordZ_symm, lev_ordZ_symm]; exact hrs)]
+  by_cases h : r = s
+  · subst h; simp [Matrix.one_apply, mul_inv_cancel₀ (dg_ne_zero ϖ r)]
+  · have h' : (ordZ t hc).symm r ≠ (ordZ t hc).symm s := fun e => h ((ordZ t hc).symm.injective e)
+    simp [Matrix.one_apply, h, h']
+
+theorem conj_embX (ϖ : kˣ) (hc : 0 + c = c) (γ : GL (Fin κ) k) :
+    (typeFrame ϖ (stdOrd (Fin κ) t 0 c hc)).conj (reGL (ixZero (Fin κ ⊕ Fin c) t) (embX c γ)) =
+      embX c (reGL (epsZ t) γ) := by
+  have hs1 : ∀ i : Fin κ, (ordZ t hc).symm (Sum.inl (Sum.inl (Sum.inl i))) = Sum.inl i := fun i =>
+    (ordZ t hc).symm_apply_eq.2 (ordZ_inl t hc i).symm
+  have hs2 : ∀ i : Fin c, (ordZ t hc).symm (Sum.inr i) = Sum.inr i := fun i =>
+    (ordZ t hc).symm_apply_eq.2 (ordZ_inr (κ := κ) t hc i).symm
+  ext r s
+  rw [conj_reGL_val, Radical.embX_val, Radical.embX_val, reGL_val]
+  rcases r with ((i | i) | ⟨i, _⟩) | i
+  · rcases s with ((j | j) | ⟨j, _⟩) | j
+    · rw [hs1, hs1]; simp [dg]; rfl
+    · exact j.elim0
+    · exact j.elim0
+    · rw [hs1, hs2]; simp [dg]
+  · exact i.elim0
+  · exact i.elim0
+  · rcases s with ((j | j) | ⟨j, _⟩) | j
+    · rw [hs2, hs1]; simp [dg]
+    · exact j.elim0
+    · exact j.elim0
+    · rw [hs2, hs2]
+      by_cases h : i = j
+      · subst h; simp [dg, Matrix.one_apply]
+      · simp [dg, Matrix.one_apply, h]
+end Zero
+
+end GlobalTheory.SymDec
+
+open GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.SymChain
+
+theorem GlobalTheory.SymChain.SymData.exists_N_mul_embX_congr : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] (s κ : ℕ) (S : GlobalTheory.SymChain.SymData k s κ) (t : Type) [Fintype t] [DecidableEq t]
+    (hc : 0 + (s + 1) = s + 1) (x : S.P.J), ∃ (a b : S.P.J) (γ : GL (GlobalTheory.StepData.XIx (Fin κ) t 0) k),
+    (GlobalTheory.StepData.typeFrame S.ϖ (GlobalTheory.StepData.stdOrd (Fin κ) t 0 (s + 1) hc)).conj
+      (GlobalTheory.StepData.reGL (GlobalTheory.StepData.ixZero (Fin κ ⊕ Fin (s + 1)) t) (a : GL (Fin κ ⊕ Fin (s + 1)) k)) ∈
+        GlobalTheory.RootEx.N k (GlobalTheory.StepData.XIx (Fin κ) t 0) (s + 1) (S.ρ + 1) ∧
+    (GlobalTheory.StepData.typeFrame S.ϖ (GlobalTheory.StepData.stdOrd (Fin κ) t 0 (s + 1) hc)).conj
+      (GlobalTheory.StepData.reGL (GlobalTheory.StepData.ixZero (Fin κ ⊕ Fin (s + 1)) t) (b : GL (Fin κ ⊕ Fin (s + 1)) k)) =
+        GlobalTheory.RootEx.embX (s + 1) γ ∧
+    GlobalTheory.StepData.MaxM (((a * b : S.P.J) : GL (Fin κ ⊕ Fin (s + 1)) k).val - (x : GL (Fin κ ⊕ Fin (s + 1)) k).val) := by
+  classical
+  intro k _ _ _ _ s κ S t _ _ hc x
+  have hx := (SymData.mem_J_iff_pattern k s κ S x).1 x.2
+  let M : Matrix (Fin κ ⊕ Fin (s + 1)) (Fin κ ⊕ Fin (s + 1)) k := fun a b =>
+    if FreeTop S.ρ a b then (x : GL _ k).val a b else (1 : Matrix _ _ k) a b
+  have hM : MaxM (M - (x : GL _ k).val) := by
+    intro a b
+    rw [Matrix.sub_apply]
+    simp only [M]
+    split_ifs with h
+    · simp
+    · rw [← neg_sub, Valuation.map_neg]; exact hx.2 a b h
+  obtain ⟨x', hx'J, hx'M⟩ := S.P.exists_of_congr x.2 hM
+  obtain ⟨u, hu, γ₀, hγ₀, e⟩ := GlobalTheory.SymPattern.exists_of_pat S.ρ x' (fun a b hab => by
+    rw [hx'M]; simp [M, hab])
+  have hγv : ∀ i j, γ₀.val i j = x'.val (Sum.inl i) (Sum.inl j) := by
+    intro i j
+    rw [e, Units.val_mul, Radical.embX_val, GlobalTheory.SymPattern.mul_fromBlocks_inl]
+    have e1 : ∀ t, u.val (Sum.inl i) (Sum.inl t) = (1 : Matrix (Fin κ) (Fin κ) k) i t := by
+      intro t; rw [hu _ _ (by simp [lev])]; simp [Matrix.one_apply]
+    simp only [e1]; rw [← Matrix.mul_apply, Matrix.one_mul]
+  have hxInt := intM_of_mem_KO hx.1
+  have hγInt : IntM γ₀.val := by
+    intro i j; rw [hγv, hx'M]; simp only [M]; split_ifs
+    · exact hxInt _ _
+    · exact intM_one _ _
+  have hdet : γ₀.val.det = 1 := Radical.Uni.det (b := Fin.val) hγ₀
+  have hbKO : embX (s + 1) γ₀ ∈ KO k (Fin κ ⊕ Fin (s + 1)) := by
+    refine GlobalTheory.SymDec.mem_KO_of_intM_det ?_ ?_
+    · rw [Radical.embX_val]
+      exact intM_fromBlocks.2 ⟨hγInt, intM_zero, intM_zero, intM_one⟩
+    · rw [Radical.embX_val, det_fromBlocks_zero₂₁, det_one, mul_one, hdet]
+  have hbJ : embX (s + 1) γ₀ ∈ S.P.J := by
+    refine (SymData.mem_J_iff_pattern k s κ S _).2 ⟨hbKO, fun a b hab => ?_⟩
+    have h1 : InN (S.ρ + 1) (1 : GL (Fin κ ⊕ Fin (s + 1)) k) := fun r s _ => rfl
+    have := GlobalTheory.SymPattern.pat_of_mul S.ρ 1 h1 γ₀ hγ₀ a b hab
+    rw [one_mul] at this
+    rw [this, sub_self, map_zero]; exact zero_lt_one
+  have hue : u = x' * (embX (s + 1) γ₀)⁻¹ := by rw [e]; group
+  have huJ : u ∈ S.P.J := by rw [hue]; exact S.P.J.mul_mem hx'J (S.P.J.inv_mem hbJ)
+  refine ⟨⟨u, huJ⟩, ⟨embX (s + 1) γ₀, hbJ⟩, reGL (GlobalTheory.SymDec.epsZ t) γ₀, ?_, ?_, ?_⟩
+  · exact (Radical.mem_N_iff _).2 (GlobalTheory.SymDec.conj_inN t S.ϖ hc (S.ρ + 1) hu)
+  · exact GlobalTheory.SymDec.conj_embX t S.ϖ hc γ₀
+  · change MaxM ((u * embX (s + 1) γ₀).val - (x : GL _ k).val)
+    rw [← e, hx'M]; exact hM
+end
+end
+
+open ValuativeRel Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.type_frame_conjugation_decomposition : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (s κ : ℕ) (S : GlobalTheory.SymChain.SymData k s κ) (t : Type) [Fintype t] [DecidableEq t] (hc : 0 + (s + 1) = s + 1) (x : S.P.J), ∃ (a b : S.P.J) (γ : GL (GlobalTheory.StepData.XIx (Fin κ) t 0) k), (GlobalTheory.StepData.typeFrame S.ϖ (GlobalTheory.StepData.stdOrd (Fin κ) t 0 (s + 1) hc)).conj (GlobalTheory.StepData.reGL (GlobalTheory.StepData.ixZero (Fin κ ⊕ Fin (s + 1)) t) (a : GL (Fin κ ⊕ Fin (s + 1)) k)) ∈ GlobalTheory.RootEx.N k (GlobalTheory.StepData.XIx (Fin κ) t 0) (s + 1) (S.ρ + 1) ∧ (GlobalTheory.StepData.typeFrame S.ϖ (GlobalTheory.StepData.stdOrd (Fin κ) t 0 (s + 1) hc)).conj (GlobalTheory.StepData.reGL (GlobalTheory.StepData.ixZero (Fin κ ⊕ Fin (s + 1)) t) (b : GL (Fin κ ⊕ Fin (s + 1)) k)) = GlobalTheory.RootEx.embX (s + 1) γ ∧ GlobalTheory.StepData.MaxM (((a * b : S.P.J) : GL (Fin κ ⊕ Fin (s + 1)) k).val - (x : GL (Fin κ ⊕ Fin (s + 1)) k).val) := by
+  atlas_forward_decl GlobalTheory.SymChain.SymData.exists_N_mul_embX_congr
+end
+
+section
 section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.S Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes MeasureTheory IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.AutomorphicEvaluation Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.RowDict Formalism.L2.SG.RowsJoinPinned GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.Core.Rk GlobalTheory.Core.Mi
 open scoped TensorProduct InnerProductSpace Classical
@@ -317,3 +688,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.off_type_pinned_local_groups : ∀ (D : D7) (u : D.what₂.Word) (F₀ : ∀ u, Formalism.L2.Forms.Forms0 D u) (S : STrue D F₀) (d : GlobalTheory.SeeSaw.Dat D u) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ι : Type) (o : GlobalTheory.FinPl.OffDat d k ι) (G : ∀ PP : d.c.Pg, GlobalTheory.LocMod.GAt d o.τ PP.1) (h0 : 0 + 2 * D.R.rS + 2 = D.R.m), GlobalTheory.Core.Mi.IdE S.X → d.Base → IsTypePlaces d.c.Pg → GlobalTheory.FinPl.PinOff o → GlobalTheory.LocMod.PinGBy G o.cG → (∀ z, z ∈ (d.x 0).L ↔ z ∈ (F₀ u).cls0.lev.Lb.map ((LinearEquiv.funCongrLeft D.host.E D.host.E (finCongr (Formalism.L2.Forms.rankN D 0 (Nat.zero_le _)))).toLinearMap.restrictScalars (𝓞 D.host.E))) → LevX (F₀ u) d h0 → ∀ (B : SBes S.X S.inst u d.c.ψ (D.sp.X 0)), B.lev = d.B 0 D.R.rS h0 → B.Adapted (S.tr u).wt → ∀ a₀ : GA D (D.sp.X 0), IsTransportAdelicCorrection (S.tr u) a₀ → ∀ a ∈ GfC (D.sp.X 0), a ∈ Subgroup.center (GA D (D.sp.X 0)) → (∀ κ : GA D (D.sp.Y 0), (κ ∈ GfC (D.sp.Y 0) ∧ finE (D.sp.Y 0) κ ∈ St (finE (D.sp.Y 0) (((iotaX S.X S.inst).symm (1, S.X.xu u))⁻¹ * embA B.d B.o (a₀ * a) * (show GA D (D.sp.Y 0) from d.t 0)) * d.bot.β)) ↔ ((iotaX S.X S.inst κ).1 = 1 ∧ (iotaX S.X S.inst κ).2 ∈ S.X.B.I.Kset)) → ∀ (hr : D.R.r ≤ (D.sp.Y 0).rank) (κ : GA D (D.sp.Y 0)), κ ∈ GfC (D.sp.Y 0) → finE (D.sp.Y 0) κ ∈ St (finE (D.sp.Y 0) (((iotaX S.X S.inst).symm (1, S.X.xu u))⁻¹ * embA B.d B.o (a₀ * a) * (show GA D (D.sp.Y 0) from d.t 0)) * d.bot.β) → ((iotaX S.X S.inst κ).2 ∈ S.X.K2 ↔ (fun PP : d.c.Pg => upperLeftBlock hr (redFn (finE (D.sp.Y 0) (((iotaX S.X S.inst).symm (1, S.X.xu u))⁻¹ * embA B.d B.o (a₀ * a) * (show GA D (D.sp.Y 0) from d.t 0)) * d.bot.β) PP.1 (finE (D.sp.Y 0) κ))) ∈ d.c.P.H) := by
   atlas_forward_decl GlobalTheory.Core.Mi.memMatch
+end

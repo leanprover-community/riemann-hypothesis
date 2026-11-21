@@ -1,13 +1,489 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.HarmonicChartValues
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.DifBijectiveOfParam
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.SecondCubicalLawIffClause
+import Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.SymmetricAdjointUnits
+import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.FrameBiextDictionarySecondPartialLaw
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsGermGIffExistsFrame
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.NilpotentSubOrigin
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsProjBySmoothIsProperGeometricallyIntegral
+import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.MemNonzeroLocusIffPowFn
+import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsCoprimeTwoSubRtTwoAddRt
+import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDPf
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpTie
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ThExprUniqOfChartIndep2
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.GEWick
 
+section
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory.FrameCompare
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.DVR
+open GlobalTheory.IndefiniteRowSideFullHecke.JetChartLaws GlobalTheory.IndefiniteRowSideFullHecke.RigidAdjointFrameLaws
+open Formalism.MainNotions.ModuliIntegralCharts.H1 Formalism.MainNotions.ModuliIntegralCharts.H1.GermD GlobalTheory.FrameBiextId
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ (PS Pt ev pt FGLaw)
+open MvPolynomial (X)
+
+section Gen
+
+variable {X Y Z : Scheme.{0}} {L : LB X} {K K' : Type} [Fintype K] [Fintype K']
+
+theorem corr_iff (hL : L.IsLB) {φ : K → (Y ⟶ X)} {ε : K → ℤ} {φ' : K' → (Y ⟶ X)} {ε' : K' → ℤ}
+    (t : LB.Gen (LB.LinComb L φ ε)) (t' : LB.Gen (LB.LinComb L φ' ε')) :
+    LB.Gen.Corr L φ ε φ' ε' t t' ↔ ∀ y J, Good L y J → val t (𝟙 Y) y J = val t' (𝟙 Y) y J :=
+  ⟨fun h _ _ hJ => val_corr hJ h _, corr_of_val hL⟩
+
+theorem val_unitGen {B : Type} [CommRing B] (u : Bˣ) (r : Z ⟶ Sp B) {z : Z} {J : (Z ⟶ X) → L.ι} (hJ : Good L z J) :
+    val (unitGen L u) r z J = gm r z ⊤ (unitΓ u) :=
+  gm_res r z le_top (hJ.mem (PEmpty.elim : PEmpty → (Sp B ⟶ X)) r) _
+
+def genIso (φ : K → (Y ⟶ X)) (ε : K → ℤ) (φ' : K' → (Y ⟶ X)) (ε' : K' → ℤ)
+    (w : LB.Gen (LB.LinComb L (K := K' ⊕ K) (Sum.elim φ' φ) (Sum.elim ε' fun k => -ε k))) :
+    LB.Iso (LB.LinComb L φ ε) (LB.LinComb L φ' ε') where
+  s := fun p => res (fun _ hy => Set.mem_iInter.2 fun k => by
+      rcases k with k | k
+      exacts [Set.mem_iInter.1 hy.1 k, Set.mem_iInter.1 hy.2 k] :
+    LB.wchart L φ' p.1 ⊓ LB.wchart L φ p.2 ≤ LB.wchart L (Sum.elim φ' φ) (Sum.elim p.1 p.2)) (w.s (Sum.elim p.1 p.2))
+
+theorem isoGen_genIso (φ : K → (Y ⟶ X)) (ε : K → ℤ) (φ' : K' → (Y ⟶ X)) (ε' : K' → ℤ)
+    (w : LB.Gen (LB.LinComb L (K := K' ⊕ K) (Sum.elim φ' φ) (Sum.elim ε' fun k => -ε k))) :
+    isoGen L φ ε φ' ε' (genIso φ ε φ' ε' w) = w := by
+  have key : ∀ (j j' : K' ⊕ K → L.ι) (y : Y), j = j' →
+      gm (𝟙 Y) y (LB.wchart L (Sum.elim φ' φ) j) (w.s j) = gm (𝟙 Y) y (LB.wchart L (Sum.elim φ' φ) j') (w.s j') := by
+    rintro j _ y rfl; rfl
+  refine congrArg LB.Gen.mk (funext fun j => unit_ext fun y hy => ?_)
+  have h2 : (𝟙 Y : Y ⟶ Y) y ∈ LB.wchart L φ' (j ∘ Sum.inl) ⊓ LB.wchart L φ (j ∘ Sum.inr) :=
+    ⟨Set.mem_iInter.2 fun k => Set.mem_iInter.1 hy (Sum.inl k), Set.mem_iInter.2 fun k => Set.mem_iInter.1 hy (Sum.inr k)⟩
+  exact (gm_res _ y _ hy _).trans ((gm_res _ y _ h2 _).trans (key _ _ y (Sum.elim_comp_inl_inr j)))
+
+theorem genIso_isoGen (φ : K → (Y ⟶ X)) (ε : K → ℤ) (φ' : K' → (Y ⟶ X)) (ε' : K' → ℤ)
+    (w : LB.Iso (LB.LinComb L φ ε) (LB.LinComb L φ' ε')) :
+    genIso φ ε φ' ε' (isoGen L φ ε φ' ε' w) = w := by
+  refine congrArg LB.Gen.mk (funext fun p => unit_ext fun y hy => ?_)
+  have h2 : (𝟙 Y : Y ⟶ Y) y ∈ LB.wchart L (Sum.elim φ' φ) (Sum.elim p.1 p.2) := Set.mem_iInter.2 fun k => by
+    rcases k with k | k
+    exacts [Set.mem_iInter.1 hy.1 k, Set.mem_iInter.1 hy.2 k]
+  exact (gm_res _ y _ hy _).trans (gm_res _ y _ h2 _)
+
+def isoEquiv (φ : K → (Y ⟶ X)) (ε : K → ℤ) (φ' : K' → (Y ⟶ X)) (ε' : K' → ℤ) :
+    LB.Iso (LB.LinComb L φ ε) (LB.LinComb L φ' ε') ≃
+      LB.Gen (LB.LinComb L (K := K' ⊕ K) (Sum.elim φ' φ) (Sum.elim ε' fun k => -ε k)) :=
+  ⟨isoGen L φ ε φ' ε', genIso φ ε φ' ε', genIso_isoGen φ ε φ' ε', isoGen_genIso φ ε φ' ε'⟩
+
+theorem genIso_isGen (φ : K → (Y ⟶ X)) (ε : K → ℤ) (φ' : K' → (Y ⟶ X)) (ε' : K' → ℤ)
+    (w : LB.Gen (LB.LinComb L (K := K' ⊕ K) (Sum.elim φ' φ) (Sum.elim ε' fun k => -ε k))) (hw : w.IsGen) :
+    (genIso φ ε φ' ε' w).IsGen := fun p q => unit_ext fun y hy => by
+  have le : ∀ p : (K' → L.ι) × (K → L.ι), LB.wchart L φ' p.1 ⊓ LB.wchart L φ p.2 ≤
+      LB.wchart L (Sum.elim φ' φ) (Sum.elim p.1 p.2) := fun p _ hy => Set.mem_iInter.2 fun k => by
+    rcases k with k | k
+    exacts [Set.mem_iInter.1 hy.1 k, Set.mem_iInter.1 hy.2 k]
+  have h := gen_trans hw (𝟙 Y) y (le p hy.1) (le q hy.2)
+  refine (gm_res _ y _ hy _).trans ((gm_res _ y _ hy.1 _).trans (h.trans (Eq.trans ?_ ((map_mul _ _ _).trans
+    (congrArg₂ (· * ·) (GermB.gm_divLC L φ' ε' φ ε p q y hy.1 hy.2)
+      ((gm_res _ y _ hy _).trans (gm_res _ y _ hy.2 _)))).symm)))
+  refine congrArg₂ (· * ·) ?_ rfl
+  rw [trF, Fintype.prod_sum_type]
+  simp only [trF, Sum.elim_inl, Sum.elim_inr, zpow_neg, Finset.prod_inv_distrib]
+  rfl
+
+theorem isoGen_isGen_iff (φ : K → (Y ⟶ X)) (ε : K → ℤ) (φ' : K' → (Y ⟶ X)) (ε' : K' → ℤ)
+    (w : LB.Iso (LB.LinComb L φ ε) (LB.LinComb L φ' ε')) : (isoGen L φ ε φ' ε' w).IsGen ↔ w.IsGen :=
+  ⟨fun h => by simpa only [genIso_isoGen] using genIso_isGen φ ε φ' ε' _ h, GermB.divLin_isGen L φ' ε' φ ε w⟩
+
+end Gen
+
+section Jets
+
+variable {S : Type} [CommRing S] {d : ℕ}
+
+theorem jetSubstP_congr {κ κ' : Type} (m : ℕ) {φ ψ : κ → MvPolynomial κ' S}
+    (h : ∀ s, (Ideal.Quotient.mk _ (φ s) : Jet S κ' m) = Ideal.Quotient.mk _ (ψ s)) : jetSubstP m φ = jetSubstP m ψ :=
+  jet_hom_ext fun s => by
+    have aug : ∀ P : MvPolynomial κ' S, (jetAug : Jet S κ' m →ₐ[S] S) (Ideal.Quotient.mk _ P) =
+        MvPolynomial.constantCoeff P := fun P => by
+      show MvPolynomial.aeval (fun _ => (0 : S)) P = _
+      rw [MvPolynomial.aeval_zero']; rfl
+    have hc : MvPolynomial.constantCoeff (φ s) = MvPolynomial.constantCoeff (ψ s) := by rw [← aug, ← aug, h]
+    rw [jetSubstP, jetSubstP, jetMap_mk, jetMap_mk, MvPolynomial.aeval_X, MvPolynomial.aeval_X, map_sub, map_sub, h, hc]
+
+theorem subst2_eq {n : ℕ} (m : ℕ) (a b : Pt S n d) (φ ψ : Fin d → MvPolynomial (Fin n × Fin d) S)
+    (ha : ∀ i, (Ideal.Quotient.mk _ (φ i) : Jet S (Fin n × Fin d) m) = psJet m (a i))
+    (hb : ∀ i, (Ideal.Quotient.mk _ (ψ i) : Jet S (Fin n × Fin d) m) = psJet m (b i)) :
+    subst2 m a b = jetSubstP m fun p : Fin 2 × Fin d => (![φ, ψ] : Fin 2 → _) p.1 p.2 :=
+  jetSubstP_congr m (φ := fun p : Fin 2 × Fin d => psTrunc m ((![a, b] : Fin 2 → Pt S n d) p.1 p.2)) (by
+    rintro ⟨l, i⟩
+    fin_cases l
+    exacts [(ha i).symm, (hb i).symm])
+
+theorem mk_X {n : ℕ} (m : ℕ) (k : Fin n) (i : Fin d) :
+    (Ideal.Quotient.mk _ (X (k, i)) : Jet S (Fin n × Fin d) m) = psJet m (pt S d k i) := (psJet_X m _).symm
+
+theorem mk_zero {n : ℕ} (m : ℕ) (i : Fin d) :
+    (Ideal.Quotient.mk _ 0 : Jet S (Fin n × Fin d) m) = psJet m ((0 : Pt S n d) i) :=
+  (map_zero _).trans (psJet_zero m).symm
+
+theorem mk_add {n : ℕ} (m : ℕ) (F : Fin d → PS S 2 d) (k k' : Fin n) (i : Fin d) :
+    (Ideal.Quotient.mk _ (psIn d m ![k, k'] (F i)) : Jet S (Fin n × Fin d) m) =
+      psJet m (Germ.addOf F (pt S d k) (pt S d k') i) :=
+  (mk_psIn m _ _).trans (congrArg (psJet m) ((sb_apply _ _).trans
+    (congrArg (ev · (F i)) (funext fun l => by fin_cases l <;> rfl))))
+
+theorem mk_comp {n : ℕ} (m : ℕ) (A : Pt S 1 d) (k : Fin n) (i : Fin d) :
+    (Ideal.Quotient.mk _ (psIn d m ![k] (A i)) : Jet S (Fin n × Fin d) m) = psJet m (Germ.comp1 A (pt S d k) i) :=
+  (mk_psIn m _ _).trans (congrArg (psJet m) ((sb_apply _ _).trans
+    (congrArg (ev · (A i)) (funext fun l => by fin_cases l; rfl))))
+
+end Jets
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X0 : Scheme.{0}} (t : SAB H X0)
+variable {S : Type} [CommRing S] (x0 : Sp S ⟶ X0) {d : ℕ}
+
+def ptsOf (j : JetPts t.G x0 d) : ∀ m, jOG x0 d m 1 ⟶ t.G := fun m => jPt t.G x0 j 1 m 0
+
+def ptsEquiv : JetPts t.G x0 d ≃ ∀ m, jOG x0 d m 1 ⟶ t.G where
+  toFun := ptsOf t x0
+  invFun := fun x m => homAt x0 (jetMap (fun p : Fin 1 × Fin d => X p.2) fun _ => X_mem_orig _) ≫ x m
+  left_inv := fun j => funext fun m => by
+    show homAt x0 _ ≫ homAt x0 _ ≫ j m = j m
+    rw [← Category.assoc, homAt_comp]
+    have : (jetMap (fun p : Fin 1 × Fin d => X p.2) fun _ => X_mem_orig _ :
+        Jet S (Fin 1 × Fin d) m →ₐ[S] Jet S (Fin d) m).comp (jetIn (0 : Fin 1)) = AlgHom.id S _ :=
+      jet_hom_ext fun s => by
+        rw [AlgHom.comp_apply, jetIn, jetMap_mk, MvPolynomial.aeval_X, jetMap_mk, MvPolynomial.aeval_X]; rfl
+    rw [this]
+    exact (congrArg (· ≫ j m) (Over.OverMorphism.ext (Spec.map_id _) : homAt x0 (AlgHom.id S _) = 𝟙 _)).trans
+      (Category.id_comp _)
+  right_inv := fun x => funext fun m => by
+    show homAt x0 _ ≫ homAt x0 _ ≫ x m = x m
+    rw [← Category.assoc, homAt_comp]
+    have : (jetIn (0 : Fin 1) : Jet S (Fin d) m →ₐ[S] _).comp
+        (jetMap (fun p : Fin 1 × Fin d => X p.2) fun _ => X_mem_orig _) = AlgHom.id S _ :=
+      jet_hom_ext fun s => by
+        obtain ⟨k, s⟩ := s
+        obtain rfl := Subsingleton.elim k 0
+        rw [AlgHom.comp_apply, jetIn, jetMap_mk, MvPolynomial.aeval_X, jetMap_mk, MvPolynomial.aeval_X]; rfl
+    rw [this]
+    exact (congrArg (· ≫ x m) (Over.OverMorphism.ext (Spec.map_id _) : homAt x0 (AlgHom.id S _) = 𝟙 _)).trans
+      (Category.id_comp _)
+
+theorem jptG_ptsOf (j : JetPts t.G x0 d) {n : ℕ} (m : ℕ) (k : Fin n) :
+    jptG t x0 d (ptsOf t x0 j) m k = jPt t.G x0 j n m k := by
+  show homAt x0 _ ≫ homAt x0 _ ≫ j m = homAt x0 _ ≫ j m
+  rw [← Category.assoc, homAt_comp]
+  refine congrArg (fun g => homAt x0 g ≫ j m) (jet_hom_ext fun s => ?_)
+  rw [AlgHom.comp_apply, jetIn, jetIn, jetCopy, jetMap_mk, MvPolynomial.aeval_X, jetMap_mk, MvPolynomial.aeval_X,
+    jetMap_mk, MvPolynomial.aeval_X]
+
+theorem pair_eq (j : JetPts t.G x0 d) (m : ℕ) : jPt t.G x0 j 2 m =
+    ![jptG t x0 d (ptsOf t x0 j) m (0 : Fin 2), jptG t x0 d (ptsOf t x0 j) m (1 : Fin 2)] :=
+  funext fun k => by fin_cases k <;> exact (jptG_ptsOf t x0 j m _).symm
+
+def castGen {T : Over X0} {p q : Fin 2 → (T ⟶ t.G)} (h : p = q) :
+    LB.Gen (cubeLB t.G p t.PP.L) ≃ LB.Gen (cubeLB t.G q t.PP.L) :=
+  Equiv.cast (congrArg (fun p => LB.Gen (cubeLB t.G p t.PP.L)) h)
+
+theorem castGen_isGen {T : Over X0} {p q : Fin 2 → (T ⟶ t.G)} (h : p = q) (g : LB.Gen (cubeLB t.G p t.PP.L)) :
+    (castGen t h g).IsGen ↔ g.IsGen := by subst h; rfl
+
+theorem val_castGen {T : Over X0} {p q : Fin 2 → (T ⟶ t.G)} (h : p = q) (g : LB.Gen (cubeLB t.G p t.PP.L))
+    {Z : Scheme.{0}} (r : Z ⟶ T.left) (z : Z) (J : (Z ⟶ t.G.left) → t.PP.L.ι) :
+    val (L := t.PP.L) (φ := cφG t q) (ε := cε 2) (castGen t h g) r z J =
+      val (L := t.PP.L) (φ := lamφ t.G p) (ε := lamε) g r z J := by subst h; rfl
+
+attribute [irreducible] castGen
+
+def frEquiv (j : JetPts t.G x0 d) : FrameFam t.G x0 t.PP.L j ≃ ∀ m, FrTyG t x0 d (ptsOf t x0 j) m where
+  toFun := fun e m => castGen t (pair_eq t x0 j m) (e m)
+  invFun := fun e m => (castGen t (pair_eq t x0 j m)).symm (e m)
+  left_inv := fun e => funext fun m => (castGen t (pair_eq t x0 j m)).symm_apply_apply (e m)
+  right_inv := fun e => funext fun m => (castGen t (pair_eq t x0 j m)).apply_symm_apply (e m)
+
+theorem frEquiv_apply (j : JetPts t.G x0 d) (e : FrameFam t.G x0 t.PP.L j) (m : ℕ) :
+    frEquiv t x0 j e m = castGen t (pair_eq t x0 j m) (e m) := rfl
+
+variable {t x0} {j : JetPts t.G x0 d} (e : FrameFam t.G x0 t.PP.L j)
+
+theorem val_frEquiv (m : ℕ) {Z : Scheme.{0}} (r : Z ⟶ (jOG x0 d m 2).left) (z : Z) (J : (Z ⟶ t.G.left) → t.PP.L.ι) :
+    val (L := t.PP.L) (φ := cφG t ![jptG t x0 d (ptsOf t x0 j) m (0 : Fin 2), jptG t x0 d (ptsOf t x0 j) m (1 : Fin 2)])
+      (ε := cε 2) (frEquiv t x0 j e m) r z J =
+      val (L := t.PP.L) (φ := lamφ t.G (jPt t.G x0 j 2 m)) (ε := lamε) (e m) r z J := by
+  rw [frEquiv_apply]
+  exact val_castGen t (pair_eq t x0 j m) (e m) r z J
+
+theorem val_frAt {n : ℕ} (m : ℕ) (a b : Pt S n d) (φ ψ : Fin d → MvPolynomial (Fin n × Fin d) S)
+    (ha : ∀ i, (Ideal.Quotient.mk _ (φ i) : Jet S (Fin n × Fin d) m) = psJet m (a i))
+    (hb : ∀ i, (Ideal.Quotient.mk _ (ψ i) : Jet S (Fin n × Fin d) m) = psJet m (b i))
+    {Z : Scheme.{0}} (r : Z ⟶ (jOG x0 d m n).left) {z : Z} {J : (Z ⟶ t.G.left) → t.PP.L.ι} (hJ : Good t.PP.L z J) :
+    val (peG t x0 d (ptsOf t x0 j) (frEquiv t x0 j e) m ![φ, ψ]) r z J = val (frAt e m a b) r z J := by
+  refine (val_pull hJ _ _ _).trans (Eq.trans ?_ (val_pull hJ _ _ _).symm)
+  rw [subst2_eq m a b φ ψ ha hb]
+  exact val_frEquiv e m _ z J
+
+theorem val_scale' {Y Z : Scheme.{0}} {K : Type} [Fintype K] {φ : K → (Y ⟶ t.G.left)} {ε : K → ℤ} (u : Γ(Y, ⊤)ˣ)
+    (g : LB.Gen (LB.LinComb t.PP.L φ ε)) (r : Z ⟶ Y) {z : Z} {J : (Z ⟶ t.G.left) → t.PP.L.ι} (hJ : Good t.PP.L z J) :
+    val (scaleGenG t φ ε u g) r z J = gm r z ⊤ u * val g r z J :=
+  (map_mul _ _ _).trans (congrArg₂ (· * ·) (gm_res r z le_top (hJ.mem φ r) u) rfl)
+
+
+theorem gen_iff : (∀ m, (e m).IsGen) ↔ ∀ m, (frEquiv t x0 j e m).IsGen :=
+  forall_congr' fun m => by rw [frEquiv_apply]; exact (castGen_isGen t (pair_eq t x0 j m) (e m)).symm
+
+theorem isFrame_iff : IndefiniteRowSideFullHecke.RigidAdjointFrameLaws.IsFrame e ↔ (∀ m, (frEquiv t x0 j e m).IsGen) ∧
+    FrTrunc t x0 d (ptsOf t x0 j) (frEquiv t x0 j e) ∧ FrAxes t x0 d (ptsOf t x0 j) (frEquiv t x0 j e) := by
+  have hL := t.PP.isLB
+  refine and_congr (gen_iff e) (and_congr (forall_congr' fun m => ?_) ?_)
+  · refine (corr_iff hL _ _).trans (Iff.trans (forall₃_congr fun y J hJ => ?_) (corr_iff hL _ _).symm)
+    exact Eq.congr ((val_pull hJ _ _ _).trans ((val_pull hJ _ _ _).trans (val_frEquiv e (m + 1) _ y J)).symm)
+      (val_frEquiv e m _ y J).symm
+  · refine forall_and.symm.trans (forall_congr' fun m => and_congr ?_ ?_)
+    · refine (corr_iff hL _ _).trans (Iff.trans (forall₃_congr fun y J hJ => ?_) (corr_iff hL _ _).symm)
+      exact Eq.congr (val_frAt e m _ _ _ _ (mk_zero m) (mk_X m 0) _ hJ).symm rfl
+    · refine (corr_iff hL _ _).trans (Iff.trans (forall₃_congr fun y J hJ => ?_) (corr_iff hL _ _).symm)
+      exact Eq.congr (val_frAt e m _ _ _ _ (mk_X m 0) (mk_zero m) _ hJ).symm rfl
+
+section Clauses
+
+variable (t x0 d) (x : ∀ m, jOG x0 d m 1 ⟶ t.G) (e' : ∀ m, FrTyG t x0 d x m)
+
+def Ph1Clause (F : Fin d → PS S 2 d) (ph1 : PS S 3 d) : Prop :=
+  ∀ m, ∃ u : (Jet S (Fin 3 × Fin d) m)ˣ, (u : Jet S (Fin 3 × Fin d) m) = psJet m ph1 ∧
+    LB.Gen.Corr t.PP.L _ _ _ _
+      (LB.pullGen t.PP.L (thφ t.G (x3 t.G)) thε t.cub.t
+        (lift (jptG t x0 d x m (0 : Fin 3)) (lift (jptG t x0 d x m (1 : Fin 3)) (jptG t x0 d x m (2 : Fin 3)))).left)
+      (scaleGenG t _ _ (unitΓ u) (LB.mulGen t.PP.L _ _ _ _
+        (peG t x0 d x e' m ![fun j => psIn d m ![0, 1] (F j), fun j => X ((2 : Fin 3), j)])
+        (LB.mulGen t.PP.L _ _ _ _
+          (LB.invGen t.PP.L _ _ (peG t x0 d x e' m ![fun j => X ((0 : Fin 3), j), fun j => X ((2 : Fin 3), j)]))
+          (LB.invGen t.PP.L _ _ (peG t x0 d x e' m ![fun j => X ((1 : Fin 3), j), fun j => X ((2 : Fin 3), j)])))))
+
+def Ph2Clause (F : Fin d → PS S 2 d) (ph2 : PS S 3 d) : Prop :=
+  ∀ m, ∃ u : (Jet S (Fin 3 × Fin d) m)ˣ, (u : Jet S (Fin 3 × Fin d) m) = psJet m ph2 ∧
+    LB.Gen.Corr t.PP.L _ _ _ _
+      (LB.pullGen t.PP.L (thφ t.G (x3 t.G)) thε t.cub.t
+        (lift (jptG t x0 d x m (1 : Fin 3)) (lift (jptG t x0 d x m (2 : Fin 3)) (jptG t x0 d x m (0 : Fin 3)))).left)
+      (scaleGenG t _ _ (unitΓ u) (LB.mulGen t.PP.L _ _ _ _
+        (peG t x0 d x e' m ![fun j => X ((0 : Fin 3), j), fun j => psIn d m ![1, 2] (F j)])
+        (LB.mulGen t.PP.L _ _ _ _
+          (LB.invGen t.PP.L _ _ (peG t x0 d x e' m ![fun j => X ((0 : Fin 3), j), fun j => X ((1 : Fin 3), j)]))
+          (LB.invGen t.PP.L _ _ (peG t x0 d x e' m ![fun j => X ((0 : Fin 3), j), fun j => X ((2 : Fin 3), j)])))))
+
+def SyClause (sy : PS S 2 d) : Prop :=
+  ∀ m, ∃ u : (Jet S (Fin 2 × Fin d) m)ˣ, (u : Jet S (Fin 2 × Fin d) m) = psJet m sy ∧
+    LB.Gen.Corr t.PP.L _ _ _ _ (e' m)
+      (scaleGenG t _ _ (unitΓ u⁻¹) (peG t x0 d x e' m ![fun j => X ((1 : Fin 2), j), fun j => X ((0 : Fin 2), j)]))
+
+abbrev AdTy (a : 𝓞 E) : Type :=
+  LB.Gen (LB.LinComb t.PP.L
+    (Sum.elim (cφG t ![fst t.G t.G, snd t.G t.G ≫ t.act.act (H.bar a)])
+      (cφG t ![fst t.G t.G ≫ t.act.act a, snd t.G t.G]))
+    (Sum.elim (cε 2) fun I => -cε 2 I))
+
+def AdClause (act : 𝓞 E → Pt S 1 d) (a : 𝓞 E) (wL : AdTy t a) (ad : PS S 2 d) : Prop :=
+  ∀ m, ∃ u : (Jet S (Fin 2 × Fin d) m)ˣ, (u : Jet S (Fin 2 × Fin d) m) = psJet m ad ∧
+    LB.Gen.Corr t.PP.L _ _ _ _
+      (LB.mulGen t.PP.L _ _ _ _
+        (LB.pullGen t.PP.L _ _ wL (lift (jptG t x0 d x m (0 : Fin 2)) (jptG t x0 d x m (1 : Fin 2))).left)
+        (peG t x0 d x e' m ![fun j => psIn d m ![0] (act a j), fun j => X ((1 : Fin 2), j)]))
+      (scaleGenG t _ _ (unitΓ u)
+        (peG t x0 d x e' m ![fun j => X ((0 : Fin 2), j), fun j => psIn d m ![1] (act (H.bar a) j)]))
+
+def AdRigid (a : 𝓞 E) (wL : AdTy t a) : Prop :=
+  LB.Gen.Corr t.PP.L _ _ (Y := t.G.left) _ _
+      (LB.pullGen t.PP.L _ _ wL (lift (𝟙 t.G) (1 : t.G ⟶ t.G)).left) (LB.oneGen t.PP.L) ∧
+    LB.Gen.Corr t.PP.L _ _ (Y := t.G.left) _ _
+      (LB.pullGen t.PP.L _ _ wL (lift (1 : t.G ⟶ t.G) (𝟙 t.G)).left) (LB.oneGen t.PP.L)
+
+set_option maxHeartbeats 1000000 in
+
+theorem isFrameG_iff (F : Fin d → PS S 2 d) (act : 𝓞 E → Pt S 1 d) (ph1 ph2 : PS S 3 d) (sy : PS S 2 d)
+    (ad : 𝓞 E → PS S 2 d) : IsFrameG t x0 d x F act ph1 ph2 sy ad e' ↔
+      (∀ m, (e' m).IsGen) ∧ Ph1Clause t x0 d x e' F ph1 ∧ Ph2Clause t x0 d x e' F ph2 ∧ SyClause t x0 d x e' sy ∧
+        ∀ a, ∃ wL : AdTy t a, wL.IsGen ∧ AdClause t x0 d x e' act a wL (ad a) :=
+  ⟨fun h => ⟨h.gen, h.ph1, h.ph2, h.sy, h.ad⟩, fun h => ⟨h.1, h.2.1, h.2.2.1, h.2.2.2.1, h.2.2.2.2⟩⟩
+
+end Clauses
+
+
+
+
+theorem sym_iff (sy : PS S 2 d) : SymIs e sy ↔ SyClause t x0 d (ptsOf t x0 j) (frEquiv t x0 j e) sy := by
+  have hL := t.PP.isLB
+  refine forall_congr' fun m => exists_congr fun u => and_congr_right fun _ => ?_
+  refine (corr_iff hL _ _).trans (Iff.trans (forall₃_congr fun y J hJ => ?_) (corr_iff hL _ _).symm)
+  refine (Eq.congr rfl ((val_mul hJ _ _ _).trans (congrArg₂ (· * ·) (val_unitGen u _ hJ) rfl))).trans
+    (Iff.trans ?_ (Eq.congr (val_frEquiv e m _ y J) ((val_scale' _ _ _ hJ).trans (congrArg₂ (· * ·)
+      ((congrArg _ (map_inv (Units.map (toΓ _).toMonoidHom) u)).trans (map_inv _ _))
+      (val_frAt e m _ _ _ _ (mk_X m 1) (mk_X m 0) _ hJ)))).symm)
+  exact eq_comm.trans eq_inv_mul_iff_mul_eq.symm
+
+def adEquiv (a : 𝓞 E) : LB.Iso (cubeLB t.G ![fst t.G t.G ≫ t.act.act a, snd t.G t.G] t.PP.L)
+    (cubeLB t.G ![fst t.G t.G, snd t.G t.G ≫ t.act.act (H.bar a)] t.PP.L) ≃ AdTy t a :=
+  isoEquiv (L := t.PP.L) (lamφ t.G ![fst t.G t.G ≫ t.act.act a, snd t.G t.G]) lamε
+    (lamφ t.G ![fst t.G t.G, snd t.G t.G ≫ t.act.act (H.bar a)]) lamε
+
+theorem adjVia_iff (A : 𝓞 E → Pt S 1 d) (a : 𝓞 E)
+    (w : LB.Iso (cubeLB t.G ![fst t.G t.G ≫ t.act.act a, snd t.G t.G] t.PP.L)
+      (cubeLB t.G ![fst t.G t.G, snd t.G t.G ≫ t.act.act (H.bar a)] t.PP.L)) (ad : PS S 2 d) :
+    AdjVia e w (A a) (A (H.bar a)) ad ↔
+      AdClause t x0 d (ptsOf t x0 j) (frEquiv t x0 j e) A a (adEquiv a w) ad := by
+  have hL := t.PP.isLB
+  refine forall_congr' fun m => exists_congr fun u => and_congr_right fun _ => ?_
+  refine (corr_iff hL _ _).trans (Iff.trans (forall₃_congr fun y J hJ => ?_) (corr_iff hL _ _).symm)
+  refine Eq.congr ((val_mul hJ _ _ _).trans (Eq.trans ?_ ((val_mul hJ _ _ _).trans (congrArg₂ (· * ·) (val_pull hJ _ _ _)
+      (val_frAt e m _ _ _ _ (mk_comp m (A a) 0) (mk_X m 1) _ hJ))).symm))
+    (((val_mul hJ _ _ _).trans (congrArg₂ (· * ·) (val_unitGen u _ hJ) rfl)).trans ((val_scale' _ _ _ hJ).trans
+      (congrArg₂ (· * ·) rfl (val_frAt e m _ _ _ _ (mk_X m 0) (mk_comp m (A (H.bar a)) 1) _ hJ))).symm)
+  refine congrArg₂ (· * ·) ((val_pull hJ _ _ _).trans ?_) rfl
+  rw [jptG_ptsOf, jptG_ptsOf]
+  rfl
+
+theorem isRigAdj_iff (a : 𝓞 E) (w : LB.Iso (cubeLB t.G ![fst t.G t.G ≫ t.act.act a, snd t.G t.G] t.PP.L)
+      (cubeLB t.G ![fst t.G t.G, snd t.G t.G ≫ t.act.act (H.bar a)] t.PP.L)) :
+    IsRigAdj t.G t.PP.L (t.act.act a) (t.act.act (H.bar a)) w ↔ (adEquiv a w).IsGen ∧ AdRigid t a (adEquiv a w) :=
+  and_congr (isoGen_isGen_iff (L := t.PP.L) (lamφ t.G ![fst t.G t.G ≫ t.act.act a, snd t.G t.G]) lamε
+    (lamφ t.G ![fst t.G t.G, snd t.G t.G ≫ t.act.act (H.bar a)]) lamε w).symm Iff.rfl
+
+theorem adj_iff (A : 𝓞 E → Pt S 1 d) (a : 𝓞 E) (ad : PS S 2 d) :
+    AdjIs e (t.act.act a) (t.act.act (H.bar a)) (A a) (A (H.bar a)) ad ↔ ∃ wL : AdTy t a, (wL.IsGen ∧ AdRigid t a wL) ∧
+      AdClause t x0 d (ptsOf t x0 j) (frEquiv t x0 j e) A a wL ad :=
+  (adEquiv a).exists_congr fun w => and_congr (isRigAdj_iff a w) (adjVia_iff e A a w ad)
+
+
+
+section Rigid
+
+variable (t)
+
+theorem prod_ad (a : 𝓞 E) {T : Over X0} (p q : T ⟶ t.G) (U : Type) [CommGroup U] (h : (T.left ⟶ t.G.left) → U) :
+    ∏ i, h ((lift p q).left ≫ Sum.elim (cφG t ![fst t.G t.G, snd t.G t.G ≫ t.act.act (H.bar a)])
+      (cφG t ![fst t.G t.G ≫ t.act.act a, snd t.G t.G]) i) ^ Sum.elim (cε 2) (fun I => -cε 2 I) i =
+    h (p * (q ≫ t.act.act (H.bar a))).left * (h p.left)⁻¹ * (h (q ≫ t.act.act (H.bar a)).left)⁻¹ *
+      ((h ((p ≫ t.act.act a) * q).left)⁻¹ * h (p ≫ t.act.act a).left * h q.left) := by
+  have e₁ := prod_cube₂ (fst t.G t.G) (snd t.G t.G ≫ t.act.act (H.bar a)) fun r => h ((lift p q).left ≫ r)
+  have e₂ := prod_neg _ _ (prod_cube₂ (fst t.G t.G ≫ t.act.act a) (snd t.G t.G) fun r => h ((lift p q).left ≫ r))
+  rw [Fintype.prod_sum_type]
+  refine (congrArg₂ (· * ·) e₁ e₂).trans ?_
+  simp only [← Over.comp_left, MonObj.comp_mul, MonObj.comp_one, lift_fst, lift_snd, lift_fst_assoc, lift_snd_assoc]
+  apply Additive.ofMul.injective
+  simp only [ofMul_mul, ofMul_inv]
+  abel
+
+
+variable {t} {x : ∀ m, jOG x0 d m 1 ⟶ t.G} {e' : ∀ m, FrTyG t x0 d x m} {G : FGLaw S d} {A : Germ.OAct (𝓞 E) G}
+  (hz : ∀ m, homAt x0 (jetAug : Jet S (Fin 1 × Fin d) m →ₐ[S] S) ≫ x m = 1)
+include hz
+
+
+
+
+
+end Rigid
+
+
+
+
+
+end GlobalTheory.FrameCompare
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory.FrameCompatOfGerms
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.DVR
+open ReciprocityTheory.ChartRestriction.G.H1 Formalism.MainNotions.ModuliIntegralCharts.H1 Formalism.MainNotions.ModuliIntegralCharts.H1.GermD Formalism.MainNotions.ModuliIntegralCharts.H1.GermFun GlobalTheory.FrameBiextId
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ (PS Pt ev pt FGLaw)
+
+theorem exists_sec_ne_zero {X0 : Scheme.{0}} {G : Over X0} [GrpObj G] [IsProper G.hom] {L : LB G.left} (hL : L.IsLB)
+    (hA : RelAmple G L) {S : Type} [CommRing S] (x0 : Sp S ⟶ X0) (q : (Over.mk x0 ⊗ G).left) :
+    ∃ k : ℕ, 0 < k ∧ ∃ F : LB.Sec (LPow G L k (Over.mk x0)), q ∈ nonzeroLocus F := by
+  let π := (snd (Over.mk x0) G).left
+  let f : (Over.mk x0 ⊗ G).left ⟶ Sp S := (fst (Over.mk x0) G).left
+  have hp : IsPullback π f G.hom x0 := (IsPullback.of_hasPullback x0 G.hom).flip
+  obtain ⟨N, hN, M, s, hcov, -⟩ := AmpleBaseChange.relAmple_of_isPullback hL hA hp ⊤ (isAffineOpen_top _)
+  obtain ⟨h, hh⟩ : ∃ h : (Over.mk x0 ⊗ G).left ⟶ (f ⁻¹ᵁ ⊤).toScheme, h ≫ (f ⁻¹ᵁ ⊤).ι = 𝟙 _ :=
+    ⟨IsOpenImmersion.lift _ (𝟙 _) (by rw [Scheme.Opens.range_ι]; exact fun _ _ => trivial),
+      IsOpenImmersion.lift_fac _ _ _⟩
+  have hy : ∀ y, (f ⁻¹ᵁ ⊤).ι (h y) = y := fun y => congrArg (fun g => g y) hh
+  have le : ∀ j : Fin 1 → L.ι, (LPow G L N (Over.mk x0)).U j ≤
+      h ⁻¹ᵁ (powOver (Over.mk f) (L.pull π) ⊤ N).U (fun _ _ => j 0) := fun j y hj =>
+    Set.mem_iInter.2 fun _ => mem_pull.2 (by
+      show π ((f ⁻¹ᵁ ⊤).ι (h y)) ∈ L.U (j 0)
+      rw [hy]; exact Set.mem_iInter.1 hj 0)
+  let a : ChartPull (LPow G L N (Over.mk x0)) (powOver (Over.mk f) (L.pull π) ⊤ N) h :=
+    { idx := fun j _ _ => j 0
+      le := le
+      g := fun y j j' hj hj' => by
+        refine (gm_linComb L (fun _ : Fin 1 => π) (fun _ => (N : ℤ)) (𝟙 _) y j j' hj hj').trans
+          (Eq.trans ?_ (gm_linComb (L.pull π) (fun _ : Fin N => (f ⁻¹ᵁ ⊤).ι) (fun _ => 1) h y _ _
+            (le j hj) (le j' hj')).symm)
+        rw [Fin.prod_univ_one, Finset.prod_const, Finset.card_univ, Fintype.card_fin, zpow_one, zpow_natCast, hh]
+        exact congrArg (· ^ N) (gm_pull_g L π (𝟙 _) y (fun _ => j 0) (fun _ => j' 0)
+          (mem_pull.2 (Set.mem_iInter.1 hj 0)) (mem_pull.2 (Set.mem_iInter.1 hj' 0))).symm }
+  obtain ⟨i, hi⟩ := TopologicalSpace.Opens.mem_iSup.1 (show h q ∈ ⨆ i, nonzeroLocus (s i) by rw [hcov]; trivial)
+  refine ⟨N, hN, chartSec a (s i), (nonzeroLocus_chartSec a (s i) fun y _ _ => ?_).ge hi⟩
+  obtain ⟨i, hi⟩ := exists_chart hL (π y)
+  exact ⟨fun _ => i, Set.mem_iInter.2 fun _ => hi⟩
+
+theorem val_stalk {X Y Z W : Scheme.{0}} {L : LB X} {K : Type} [Fintype K] {φ : K → (Y ⟶ X)} {ε : K → ℤ}
+    (t : LB.Gen (LB.LinComb L φ ε)) (κ : W ⟶ Z) (r : Z ⟶ Y) {w : W} {J : (W ⟶ X) → L.ι} (hJ : Good L w J) :
+    Units.map (κ.stalkMap w).hom.toMonoidHom (val t r (κ w) fun ψ => J (κ ≫ ψ)) = val t (κ ≫ r) w J := by
+  rw [val_of t (κ ≫ r) w J (fun k => J (κ ≫ r ≫ φ k)) fun k => by rw [Category.assoc]]
+  have h : r (κ w) ∈ LB.wchart L φ fun k => J (κ ≫ r ≫ φ k) := Set.mem_iInter.2 fun k => hJ (κ ≫ r ≫ φ k)
+  exact Units.ext ((congrArg (κ.stalkMap w).hom (gm_val r (κ w) _ h _)).trans
+    ((Scheme.Hom.germ_stalkMap_apply κ (r ⁻¹ᵁ (LB.wchart L φ fun k => J (κ ≫ r ≫ φ k))) w h _).trans (gm_val (κ ≫ r) w _ h _).symm))
+
+theorem eq_one_of_pow {R : Type} [CommRing R] {r : R} {k : ℕ} (hk : IsUnit (k : R)) (hn : IsNilpotent (r - 1))
+    (h : r ^ k = 1) : r = 1 := by
+  have h1 : r - 1 ∣ (∑ i ∈ Finset.range k, r ^ i) - k := by
+    have : (∑ i ∈ Finset.range k, r ^ i) - k = ∑ i ∈ Finset.range k, (r ^ i - 1) := by
+      rw [Finset.sum_sub_distrib]; simp
+    rw [this]
+    exact Finset.dvd_sum fun i _ => by simpa using sub_dvd_pow_sub_pow r 1 i
+  obtain ⟨c, hc⟩ := h1
+  have hu : IsUnit (∑ i ∈ Finset.range k, r ^ i) := by
+    rw [sub_eq_iff_eq_add.1 hc]
+    exact ((Commute.all _ _).isNilpotent_mul_right hn).isUnit_add_right_of_commute hk (Commute.all _ _)
+  have := geom_sum_mul r k
+  rw [h, sub_self] at this
+  exact sub_eq_zero.1 (hu.mul_right_eq_zero.1 this)
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X0 : Scheme.{0}} {t : SAB H X0}
+variable {S : Type} [CommRing S] {x0 : Sp S ⟶ X0} {d n : ℕ} {x : ∀ m, jOG x0 d m 1 ⟶ t.G}
+
+
+variable (x0 d) in
+
+abbrev tr (m n : ℕ) : jOG x0 d m n ⟶ jOG x0 d (m + 1) n :=
+  homAt x0 (jetTrunc : Jet S (Fin n × Fin d) (m + 1) →ₐ[S] Jet S (Fin n × Fin d) m)
+
+
+
+
+
+
+def cstHom {V : Type} [CommRing V] (y : Sp V) : V →+* (Sp V).presheaf.stalk y :=
+  ((Sp V).presheaf.germ ⊤ y trivial).hom.comp (toΓ V)
+
+theorem cst_eq {V : Type} [CommRing V] (y : Sp V) (a : V) : cst (𝟙 _) y a = cstHom y a := gs_eq (𝟙 _) y ⊤ trivial _
+
+
+variable {G : FGLaw S d} {A : Germ.OAct (𝓞 E) G} {κ : Type} [Fintype κ] {tg : κ → (Sp (DualNumber S) ⟶ t.G.left)}
+  {uvec : κ → Fin d → S} {e : ∀ m, FrTyG t x0 d x m} {ph1 ph2 : PS S 3 d} {sy : PS S 2 d} {ad : 𝓞 E → PS S 2 d}
+
+
+end GlobalTheory.FrameCompatOfGerms
+end
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -24,16 +500,6 @@ section General
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X0 : Scheme.{0}} {t : SAB H X0}
 variable {S : Type} [CommRing S] {x0 : Sp S ⟶ X0} {d : ℕ} {j : JetPts t.G x0 d}
 
-theorem frameEquiv_eq (e : FrameFam t.G x0 t.PP.L j) : frameEquiv t x0 j e = FrameCompare.frEquiv t x0 j e := by
-  have key : ∀ {T : Over X0} {p q : Fin 2 → (T ⟶ t.G)} (h : p = q) (h' : lamφ t.G p = lamφ t.G q)
-      (g : LB.Gen (cubeLB t.G p t.PP.L)), genCast (L := t.PP.L) lamε h' g = FrameCompare.castGen t h g := by
-    intro T p q h h' g
-    subst h
-    unfold FrameCompare.castGen
-    exact genCast_rfl (L := t.PP.L) lamε g
-  funext m
-  rw [frameEquiv_apply, FrameCompare.frEquiv_apply]
-  exact key (FrameCompare.pair_eq t x0 j m) _ (e m)
 
 theorem powFrame_isGen {T : Over X0} (z : T ⟶ t.G)
     (e : LB.Gen (LB.LinComb t.PP.L (Y := T.left) (K := Fin 1) (fun _ => z.left) (fun _ => 1)))
@@ -45,142 +511,11 @@ theorem powFrame_isGen {T : Over X0} (z : T ⟶ t.G)
   simp only [LB.LinComb, Fintype.prod_unique, zpow_one]
   rfl
 
-theorem isGermIn_unique (eL : FrameL t.G x0 t.PP.L j) (k : ℤ) (F : LB.Sec (LPow t.G t.PP.L k (Over.mk x0)))
-    (f f' : Germ.PS S 1 d) (hf : IsGermIn eL k F f) (hf' : IsGermIn eL k F f') : f = f' := by
-  refine psJet_inj fun m => ?_
-  obtain ⟨F₁, hP₁, hV₁⟩ := hf m
-  obtain ⟨F₂, hP₂, hV₂⟩ := hf' m
-  have hF := pull_unique _ _ _ _ _ _ _ _ hP₁ hP₂
-  subst hF
-  exact toΓ_injective _ (value_unique _ _ t.PP.isLB _ _ _ _ _ _ hV₁ hV₂)
 
 def zeroSec (t : SAB H X0) (k : ℤ) (T : Over X0) : LB.Sec (LPow t.G t.PP.L k T) := ⟨fun _ => 0, fun i j => by simp⟩
 
-theorem isGermIn_zero (eL : FrameL t.G x0 t.PP.L j) (k : ℤ) : IsGermIn eL k (zeroSec t k _) 0 := by
-  intro m
-  refine ⟨zeroSec t k _, fun i => ?_, fun i => ?_⟩
-  · simp only [zeroSec, map_zero]
-  · have h : funOn (psJet m (0 : Germ.PS S 1 d)) = 0 := by
-      have : psJet m (0 : Germ.PS S 1 d) = 0 := by simp [psJet, psTrunc]
-      rw [this]; exact map_zero _
-    rw [h]
-    simp only [zeroSec, map_zero]
-    exact ((congrArg _ (map_zero _)).trans (map_zero _)).trans (zero_mul _).symm
 
-theorem exists_isGermIn (eL : FrameL t.G x0 t.PP.L j) (hg : ∀ m, (eL m).IsGen)
-    (hx : ∀ m, ρT x0 d m ≫ chartEquiv t x0 j (m + 1) = chartEquiv t x0 j m)
-    (htr : ∀ m y J, Good t.PP.L y J → val (eL (m + 1)) (ρT x0 d m).left y J = val (eL m) (𝟙 _) y J)
-    (k : ℤ) (Fs : LB.Sec (LPow t.G t.PP.L k (Over.mk x0))) : ∃ f, IsGermIn eL k Fs f := by
-  have hL := t.PP.isLB
-  let x : ∀ m, jOG x0 d m 1 ⟶ t.G := chartEquiv t x0 j
-  let τ : ∀ m, LB.Gen (LB.LinComb t.PP.L (Y := (jOG x0 d m 1).left) (K := Fin 1) (fun _ => (x m).left)
-      fun _ => k) := fun m => powFrame t.G t.PP.L (x m) (eL m) k
-  have hτg : ∀ m, (τ m).IsGen := fun m => powFrame_isGen (x m) (eL m) (hg m) k
-  choose F' hF' using fun m =>
-    exists_pullSec t.G t.PP.L k (jBaseG x0 d m 1 ▷ t.G) (whiskerRight_snd _ _) Fs
-  choose v hv using fun m => exists_value t.G t.PP.L hL k (F' m) (x m) (τ m) (hτg m)
-  have hvc : ∀ m, v m = (ρT x0 d m).left.appTop.hom (v (m + 1)) := by
-    intro m
-    refine fn_ext (V := ⊤) fun y _ => ?_
-    obtain ⟨i, hi⟩ := exists_chart hL ((x m).left y)
-    have hρx : (ρT x0 d m).left ≫ (x (m + 1)).left = (x m).left := by
-      rw [← Over.comp_left, hx m]
-    have hm : (𝟙 _ : (jOG x0 d m 1).left ⟶ _) y ∈ LB.wchart t.PP.L (fun _ : Fin 1 => (x m).left) (fun _ => i) :=
-      Set.mem_iInter.2 fun _ => hi
-    have app_eq : ∀ {A B C : Scheme.{0}} (f : A ⟶ B) (g : B ⟶ C) (h : A ⟶ C), f ≫ g = h → ∀ a, g (f a) = h a :=
-      fun f g h e a => congrArg (fun q => q a) e
-    have hps0 : (𝟙 _ ≫ (ptSecT t.G (x m)).left) ≫ (snd (jOG x0 d m 1) t.G).left = (x m).left := by
-      rw [Category.id_comp, ← Over.comp_left, ptSecT, lift_snd]
-    have hps1 : ((ρT x0 d m).left ≫ (ptSecT t.G (x (m + 1))).left) ≫ (snd (jOG x0 d (m + 1) 1) t.G).left =
-        (x m).left := by
-      rw [Category.assoc, ← Over.comp_left, ptSecT, lift_snd, hρx]
-    have hm1 : (ρT x0 d m).left y ∈ LB.wchart t.PP.L (fun _ : Fin 1 => (x (m + 1)).left) (fun _ => i) := by
-      refine Set.mem_iInter.2 fun _ => ?_
-      show (x (m + 1)).left ((ρT x0 d m).left y) ∈ (t.PP.L.U i : Set t.G.left)
-      rw [app_eq _ _ _ hρx]
-      exact hi
-    have mem0 : (𝟙 _ ≫ (ptSecT t.G (x m)).left) y ∈ (LPow t.G t.PP.L k (jOG x0 d m 1)).U (fun _ => i) := by
-      refine Set.mem_iInter.2 fun _ => ?_
-      show (snd (jOG x0 d m 1) t.G).left ((𝟙 _ ≫ (ptSecT t.G (x m)).left) y) ∈ (t.PP.L.U i : Set t.G.left)
-      rw [app_eq _ _ _ hps0]
-      exact hi
-    have mem1 : ((ρT x0 d m).left ≫ (ptSecT t.G (x (m + 1))).left) y ∈
-        (LPow t.G t.PP.L k (jOG x0 d (m + 1) 1)).U (fun _ => i) := by
-      refine Set.mem_iInter.2 fun _ => ?_
-      show (snd (jOG x0 d (m + 1) 1) t.G).left (((ρT x0 d m).left ≫ (ptSecT t.G (x (m + 1))).left) y) ∈
-        (t.PP.L.U i : Set t.G.left)
-      rw [app_eq _ _ _ hps1]
-      exact hi
-    have e0 := value_stalk t.G t.PP.L hL k (hv m) (𝟙 _) y (fun _ => i) hm
-    have e1 := value_stalk t.G t.PP.L hL k (hv (m + 1)) (ρT x0 d m).left y (fun _ => i) hm1
-    have l0 := pullSec_stalk t.G t.PP.L k (hF' m) (𝟙 _ ≫ (ptSecT t.G (x m)).left) y (fun _ => i) mem0
-    have l1 := pullSec_stalk t.G t.PP.L k (hF' (m + 1)) ((ρT x0 d m).left ≫ (ptSecT t.G (x (m + 1))).left) y
-      (fun _ => i) mem1
-    have hmor : (𝟙 _ ≫ (ptSecT t.G (x m)).left) ≫ (jBaseG x0 d m 1 ▷ t.G).left =
-        ((ρT x0 d m).left ≫ (ptSecT t.G (x (m + 1))).left) ≫ (jBaseG x0 d (m + 1) 1 ▷ t.G).left := by
-      rw [Category.id_comp, Category.assoc]
-      simp only [← Over.comp_left]
-      refine congrArg (fun f => Over.Hom.left f) ?_
-      simp only [ptSecT, lift_whiskerRight, comp_lift, Category.id_comp]
-      rw [jBase_trunc, hx m]
-    obtain ⟨J, hJ, hJi⟩ := exists_good t.PP.L hL y (fun _ : Fin 1 => (x m).left) (fun _ => i) (fun _ _ _ => rfl)
-      (fun _ => hi)
-    have p0 : val (τ m) (𝟙 _) y J = val (eL m) (𝟙 _) y J ^ k := map_zpow _ _ _
-    have p1 : val (τ (m + 1)) (ρT x0 d m).left y J = val (eL (m + 1)) (ρT x0 d m).left y J ^ k := map_zpow _ _ _
-    have hunit : gm (𝟙 _) y (LB.wchart t.PP.L (fun _ : Fin 1 => (x m).left) (fun _ => i)) ((τ m).s (fun _ => i)) =
-        gm (ρT x0 d m).left y (LB.wchart t.PP.L (fun _ : Fin 1 => (x (m + 1)).left) (fun _ => i))
-          ((τ (m + 1)).s (fun _ => i)) :=
-      (val_of (τ m) (𝟙 _) y J (fun _ => i) (fun _ => by rw [Category.id_comp]; exact hJi 0)).symm.trans
-        (p0.trans ((congrArg (· ^ k) (htr m y J hJ)).symm.trans (p1.symm.trans
-          (val_of (τ (m + 1)) _ y J (fun _ => i) (fun _ => by rw [hρx]; exact hJi 0)))))
-    have hmain := e0.symm.trans (l0.trans ((congrArg (fun r => gs r y _ (Fs.f (fun _ => i))) hmor).trans
-      (l1.symm.trans e1)))
-    have h2 := (Units.mul_left_inj (gm (𝟙 _) y _ ((τ m).s (fun _ => i)))).1
-      (hmain.trans (congrArg (fun u => gs (ρT x0 d m).left y ⊤ (v (m + 1)) * (u : (_ : Type)ˣ).val) hunit.symm))
-    have h3 := gs_pull (𝟙 _) (ρT x0 d m).left y ⊤ (by trivial) (v (m + 1))
-    rw [Category.id_comp] at h3
-    exact h2.trans h3.symm
-  choose a ha using fun m => (⟨_, congrArg (fun f => CommRingCat.Hom.hom f (v m))
-    (Iso.hom_inv_id (Scheme.ΓSpecIso (CommRingCat.of (Jet S (Fin 1 × Fin d) m))))⟩ :
-      ∃ b, toΓ (Jet S (Fin 1 × Fin d) m) b = v m)
-  have hac : ∀ m, (jetTrunc : Jet S (Fin 1 × Fin d) (m + 1) →ₐ[S] _) (a (m + 1)) = a m := by
-    intro m
-    apply toΓ_injective
-    rw [ha m, hvc m, ← ha (m + 1)]
-    exact congrArg (fun f => CommRingCat.Hom.hom f (a (m + 1)))
-      (Scheme.ΓSpecIso_inv_naturality (CommRingCat.ofHom ((jetTrunc : Jet S (Fin 1 × Fin d) (m + 1) →ₐ[S] _) :
-        Jet S (Fin 1 × Fin d) (m + 1) →+* Jet S (Fin 1 × Fin d) m)))
-  obtain ⟨f, hf⟩ := exists_ps_of_jets a hac
-  refine ⟨f, fun m => ⟨F' m, hF' m, ?_⟩⟩
-  rw [funOn_eq, hf m, ha m]
-  exact hv m
 
-theorem isRigAtZero_iff (eL : FrameL t.G x0 t.PP.L j)
-    (htr : ∀ m y J, Good t.PP.L y J → val (eL (m + 1)) (ρT x0 d m).left y J = val (eL m) (𝟙 _) y J)
-    {act : 𝓞 E → Germ.Pt S 1 d} {e : ∀ m, FrTyG t x0 d (chartEquiv t x0 j) m} {wP : PrimTyG t}
-    (h0 : LB.Gen.Corr t.PP.L _ _ _ _ (eL 0) (eLG t x0 d (chartEquiv t x0 j) act e wP 0)) :
-    IsRigAtZero t.PP eL ↔ Rig0G t x0 d (chartEquiv t x0 j) act e wP := by
-  have hL := t.PP.isLB
-  have k0 : ∀ y J, Good t.PP.L y J →
-      val (LB.pullGen t.PP.L _ _ (eL 0) (algMap x0 (jetAug : Jet S (Fin 1 × Fin d) 0 →ₐ[S] S)).left) (𝟙 _) y J =
-      val (LB.pullGen t.PP.L _ _ (eLG t x0 d (chartEquiv t x0 j) act e wP 0)
-        (homAt x0 (jetAug : Jet S (Fin 1 × Fin d) 0 →ₐ[S] S)).left) (𝟙 _) y J := fun y J hJ =>
-    (val_pull hJ _ _ _).trans ((val_corr hJ h0 _).trans (val_pull hJ _ _ _).symm)
-  refine ⟨fun h => corr_of_val hL fun y J hJ => (k0 y J hJ).symm.trans (val_corr hJ (h 0) _), fun h m => ?_⟩
-  induction m with
-  | zero => exact corr_of_val hL fun y J hJ => (k0 y J hJ).trans (val_corr hJ h _)
-  | succ m ih =>
-    have hc : LB.Gen.Corr t.PP.L _ _ _ _ (LB.pullGen t.PP.L _ _ (eL (m + 1)) (ρT x0 d m).left) (eL m) :=
-      corr_of_val hL fun y J hJ => (val_pull hJ _ _ _).trans
-        ((congrArg (fun r => val (eL (m + 1)) r y J) (Category.id_comp _)).trans (htr m y J hJ))
-    have ha : homAt x0 (jetAug : Jet S (Fin 1 × Fin d) m →ₐ[S] S) ≫ ρT x0 d m =
-        homAt x0 (jetAug : Jet S (Fin 1 × Fin d) (m + 1) →ₐ[S] S) := by
-      rw [homAt_comp]
-      exact congrArg (homAt x0) (jet_hom_ext fun s => rfl)
-    refine corr_of_val hL fun y J hJ => Eq.trans ?_ (val_corr hJ ih _)
-    refine (val_pull hJ _ _ _).trans (Eq.trans ?_ ((val_pull hJ _ _ _).trans (val_corr hJ hc _).symm).symm)
-    refine Eq.trans (congrArg (fun r => val (eL (m + 1)) r y J) ?_) (val_pull hJ _ _ _).symm
-    rw [Category.assoc, algMap_eq, algMap_eq, ← Over.comp_left, ha]
 
 end General
 
@@ -208,50 +543,7 @@ abbrev Compat (C : BarChart y) : Prop :=
 variable {d : ℕ} {j : JetPts Xo.univ.t.G y.x d} {e : FrameFam Xo.univ.t.G y.x Xo.univ.t.PP.L j} {B : FBar H S d}
   {cf : Lt1 Dw → Fin d → S} {h : Germ.PS S 2 d} {eL : FrameL Xo.univ.t.G y.x Xo.univ.t.PP.L j}
 
-theorem isGaugedChart_iff : IsGaugedChart y j e B cf h eL ↔
-    letI := H.starRing
-    letI := ratAlg c S
-    ∃ wP : PrimTyG Xo.univ.t,
-      (IsChartG Xo.univ.t y.x d B.G.F B.A.act (fun ℓ : Lt1 Dw => y.u ℓ.1 ℓ.2) cf (chartEquiv _ y.x j) ∧
-        IsFrameG Xo.univ.t y.x d (chartEquiv _ y.x j) B.G.F B.A.act B.ph1 B.ph2 B.sy B.ad (frameEquiv _ y.x j e) ∧
-        IsPrimG Xo.univ.t wP ∧ B.IsCanonGauge S h ∧
-        Rig0G Xo.univ.t y.x d (chartEquiv _ y.x j) B.A.act (frameEquiv _ y.x j e) wP) ∧
-      FrTrunc Xo.univ.t y.x d (chartEquiv _ y.x j) (frameEquiv _ y.x j e) ∧
-      ∀ m, (eL m).IsGen ∧ LB.Gen.Corr Xo.univ.t.PP.L _ _ _ _ (eL m)
-        (eLG Xo.univ.t y.x d (chartEquiv _ y.x j) B.A.act (frameEquiv _ y.x j e) wP m) := by
-  letI := H.starRing
-  letI := ratAlg c S
-  have tr : ∀ wP : PrimTyG Xo.univ.t,
-      IsChartG Xo.univ.t y.x d B.G.F B.A.act (fun ℓ : Lt1 Dw => y.u ℓ.1 ℓ.2) cf (chartEquiv _ y.x j) →
-      FrTrunc Xo.univ.t y.x d (chartEquiv _ y.x j) (frameEquiv _ y.x j e) →
-      (∀ m, (eL m).IsGen ∧ LB.Gen.Corr Xo.univ.t.PP.L _ _ _ _ (eL m)
-        (eLG Xo.univ.t y.x d (chartEquiv _ y.x j) B.A.act (frameEquiv _ y.x j e) wP m)) →
-      ∀ m z J, Good Xo.univ.t.PP.L z J → val (eL (m + 1)) (ρT y.x d m).left z J = val (eL m) (𝟙 _) z J :=
-    fun wP hc ht hL m z J hJ => (val_corr hJ (hL (m + 1)).2 _).trans
-      ((val_eL_trunc hc _ wP ht m z J hJ).trans (val_corr hJ (hL m).2 _).symm)
-  constructor
-  · rintro ⟨hc, hr, hg, ⟨-, w, hw, hL⟩, h0⟩
-    have hc' := (ChartCompare.isChartOf_iff_framed y j B.G B.A cf).1 hc
-    obtain ⟨-, hf, ht⟩ := (FrameCompare.realises_iff e B).1 hr
-    rw [← frameEquiv_eq] at hf ht
-    have hL' := ((isFrameLVia_iff B.A.act e w eL).1 hL).2.2
-    exact ⟨_, ⟨hc', hf, (isPrim_iff_isPrimG _ w).1 hw, hg,
-      (isRigAtZero_iff eL (tr _ hc' ht hL') (hL' 0).2).1 h0⟩, ht, hL'⟩
-  · rintro ⟨wP, ⟨hc', hf, hw, hg, h0⟩, ht, hL'⟩
-    obtain ⟨w, rfl⟩ := (primEquiv Xo.univ.t).surjective wP
-    have hc := (ChartCompare.isChartOf_iff_framed y j B.G B.A cf).2 hc'
-    have hr : Realises Xo.univ.t y.x j e B := (FrameCompare.realises_iff e B).2
-      ⟨⟨fun _ => rfl, hc.1, hc.2.1, hc.2.2.1⟩, by rw [← frameEquiv_eq]; exact ⟨hf, ht⟩⟩
-    exact ⟨hc, hr, hg, ⟨hc.1, w, (isPrim_iff_isPrimG _ w).2 hw,
-      (isFrameLVia_iff B.A.act e w eL).2 ⟨hr.2.2.2.2.1, hc.2.2.1 H.w0, hL'⟩⟩,
-      (isRigAtZero_iff eL (tr _ hc' ht hL') (hL' 0).2).2 h0⟩
 
-theorem existsUnique_germ (hg : IsGaugedChart y j e B cf h eL) (k : ℤ) (F : SecAt y k) :
-    ∃! f, IsGermIn eL k F f := by
-  obtain ⟨wP, ⟨hc, -⟩, ht, hL⟩ := isGaugedChart_iff.1 hg
-  obtain ⟨f, hf⟩ := exists_isGermIn eL (fun m => (hL m).1) hc.trunc (fun m z J hJ =>
-    (val_corr hJ (hL (m + 1)).2 _).trans ((val_eL_trunc hc _ wP ht m z J hJ).trans (val_corr hJ (hL m).2 _).symm)) k F
-  exact ⟨f, hf, fun f' hf' => isGermIn_unique eL k F f' f hf' hf⟩
 
 variable (j e B cf h eL) in
 
@@ -262,30 +554,7 @@ def SameData (C : BarChart y) : Prop :=
     ∀ m, (eL m).IsGen ∧ LB.Gen.Corr Xo.univ.t.PP.L _ _ _ _ (eL m)
       (eLG Xo.univ.t y.x d (chartEquiv _ y.x j) B.A.act (frameEquiv _ y.x j e) wP m)
 
-theorem isGaugedChart_iff_chartAt : IsGaugedChart y j e B cf h eL ↔
-    ∃ C : BarChart y, SameData j e B cf h eL C ∧ Compat C := by
-  letI := H.starRing
-  letI := ratAlg c S
-  refine isGaugedChart_iff.trans ⟨?_, ?_⟩
-  · rintro ⟨wP, ⟨hc, hf, hp, hg, hr⟩, ht, hL⟩
-    exact ⟨_, ⟨wP, (isChart_iff y d _ _ _ _).2 hc, (Formalism.L2.Pj.isFrame_iff y d _ _ _ _ _ _ _ _).2 hf, hp, hg, hr,
-      rfl, hL⟩, ht⟩
-  · rintro ⟨_, ⟨wP, hc, hf, hp, hg, hr, rfl, hL⟩, ht⟩
-    exact ⟨wP, ⟨(isChart_iff y d _ _ _ _).1 hc, (Formalism.L2.Pj.isFrame_iff y d _ _ _ _ _ _ _ _).1 hf, hp, hg, hr⟩, ht, hL⟩
 
-theorem exists_sameData (C : BarChart y) :
-    letI := H.starRing
-    letI := ratAlg c S
-    ∃ j e eL, SameData j e C.B C.uvec C.h eL C := by
-  letI := H.starRing
-  letI := ratAlg c S
-  obtain ⟨d, B, cf, x, e, wP, h, hc, hf, hp, hg, hr⟩ := C
-  obtain ⟨j, rfl⟩ := (chartEquiv Xo.univ.t y.x).surjective x
-  obtain ⟨e, rfl⟩ := (frameEquiv Xo.univ.t y.x j).surjective e
-  obtain ⟨w, rfl⟩ := (primEquiv Xo.univ.t).surjective wP
-  obtain ⟨eL, hL⟩ := exists_frameL B.A.act e w ((isGen_primEquiv _ w).1 hp.1)
-    (fun m => (isGen_frameEquiv e m).1 (hf.gen m)) (fun m => hc.act m H.w0)
-  exact ⟨j, e, eL, _, hc, hf, hp, hg, hr, rfl, hL⟩
 
 def ComputesNat (C : BarChart y) (v : ∀ k : ℤ, SecAt y k → (Lt1 Dw →₀ ℕ) → S) : Prop :=
   letI := H.starRing
@@ -295,51 +564,8 @@ def ComputesNat (C : BarChart y) (v : ∀ k : ℤ, SecAt y k → (Lt1 Dw →₀ 
       Formalism.L2.Pj.IsGerm y C.d C.x C.B.A.act C.e C.wP k F f →
         ∀ α : Lt1 Dw →₀ ℕ, v k F α = C.B.nabVal S C.h H.w0 k f C.uvec (MvPolynomial.monomial α 1)
 
-theorem computesNat_iff {C : BarChart y} (hC : SameData j e B cf h eL C)
-    (v : ∀ k : ℤ, SecAt y k → (Lt1 Dw →₀ ℕ) → S) : ComputesNat C v ↔
-    ∀ (k : ℕ) (F : SecAt y k), ∃ f, IsGermIn eL k F f ∧ ∀ α, v k F α = IndefiniteRowSideFullHecke.HarmonicChartValues.chartVal c B cf h k f α := by
-  letI := H.starRing
-  letI := ratAlg c S
-  obtain ⟨wP, hc, hf, hp, hg, hr, rfl, hL⟩ := hC
-  obtain ⟨w, rfl⟩ := (primEquiv Xo.univ.t).surjective wP
-  have g := fun k F f => (isGermIn_iff B.A.act e w eL (fun m => (hL m).2) k F f).trans
-    (isGerm_iff y d _ _ _ _ k F f).symm
-  have n : ∀ (k : ℕ) f α, IndefiniteRowSideFullHecke.HarmonicChartValues.chartVal c B cf h k f α =
-      B.nabVal S h H.w0 k f cf (MvPolynomial.monomial α 1) := fun k f α => monVal_natCast B h H.w0 k f cf α
-  constructor
-  · rintro ⟨h1, h2⟩ k F
-    obtain ⟨f, hf⟩ := h1 k F
-    exact ⟨f, (g k F f).2 hf, fun α => (h2 k F f hf α).trans (n k f α).symm⟩
-  · refine fun hv => ⟨fun k F => (hv k F).imp fun f hf => (g k F f).1 hf.1, fun k F f hf α => ?_⟩
-    obtain ⟨f', h1, h2⟩ := hv k F
-    obtain rfl := isGermIn_unique eL k F f f' ((g k F f).2 hf) h1
-    exact (h2 α).trans (n k f α)
 
-theorem computesNat_iff_extends (v : ∀ k : ℤ, SecAt y k → (Lt1 Dw →₀ ℕ) → S) :
-    (∃ C : BarChart y, Compat C ∧ ComputesNat C v) ↔
-      ∃ v', IsNablaAt y v' ∧ ∀ (k : ℕ) F α, v k F α = v' k F α := by
-  constructor
-  · rintro ⟨C, ht, hv⟩
-    obtain ⟨j, e, eL, hC⟩ := exists_sameData C
-    have hg := isGaugedChart_iff_chartAt.2 ⟨C, hC, ht⟩
-    choose f hf hu using existsUnique_germ hg
-    refine ⟨fun k F α => IndefiniteRowSideFullHecke.HarmonicChartValues.chartVal c _ _ _ k (f k F) α,
-      ⟨_, j, e, _, _, _, eL, hg, fun k F => ⟨f k F, hf k F, fun _ => rfl⟩⟩, fun k F α => ?_⟩
-    obtain ⟨f', h1, h2⟩ := (computesNat_iff hC v).1 hv k F
-    rw [h2 α, hu k F f' h1]
-  · rintro ⟨v', ⟨d, j, e, B, cf, h, eL, hg, hv⟩, hvv⟩
-    obtain ⟨C, hC, ht⟩ := isGaugedChart_iff_chartAt.1 hg
-    exact ⟨C, ht, (computesNat_iff hC v).2 fun k F =>
-      (hv k F).imp fun f hf => ⟨hf.1, fun α => (hvv k F α).trans (hf.2 α)⟩⟩
 
-theorem isNablaAt_zero {v : ∀ k : ℤ, SecAt y k → (Lt1 Dw →₀ ℕ) → S} (hv : IsNablaAt y v) (k : ℤ)
-    (α : Lt1 Dw →₀ ℕ) : v k (zeroSec _ k _) α = 0 := by
-  obtain ⟨d, j, e, B, cf, h, eL, -, hv⟩ := hv
-  obtain ⟨f, h1, h2⟩ := hv k (zeroSec _ k _)
-  obtain rfl := isGermIn_unique eL k _ f 0 h1 (isGermIn_zero eL k)
-  letI := H.starRing
-  letI := ratAlg c S
-  rw [h2, IndefiniteRowSideFullHecke.HarmonicChartValues.chartVal, monVal, zero_mul, ReciprocityTheory.ChartRestriction.G.TB.GE.dmonOf_zero, map_zero]
 
 end Chart
 
@@ -358,69 +584,16 @@ def IsNabCompat [StarRing (𝓞 E)] (nab : NabV Xo c) : Prop :=
 
 variable {Xo c}
 
-theorem compat_of_germs [StarRing (𝓞 E)] {S : Type} [CommRing S] [Algebra c.F S] [Algebra ℚ S] {y : FrPt Xo c S}
-    (C : ChartAt Xo c y)
-    (h : ∀ (k : ℕ) (F : SecAt y k), ∃ f, Formalism.L2.Pj.IsGerm y C.d C.x C.B.A.act C.e C.wP k F f) : FrTruncC y C :=
-  haveI := Xo.univ.proper
-  FrameCompatOfGerms.frTrunc_of_germs Xo.univ.ample ((isChart_iff y C.d _ _ _ _).1 C.chart)
-    ((Formalism.L2.Pj.isFrame_iff y C.d _ _ _ _ _ _ _ _).1 C.frame) (wP := C.wP)
-    fun k F => (h k F).imp fun f hf => (isGerm_iff y C.d _ _ _ _ k F f).1 hf
 
 def AgreeNat (nab nab' : NabV Xo c) : Prop :=
   ∀ (S : Type) [CommRing S] [Algebra c.F S] (y : FrPt Xo c S) (k : ℕ) (F : SecAt y k) (α : Lt1 Dw →₀ ℕ),
     nab y k F α = nab' y k F α
 
-theorem IsNabCompat.isNab [StarRing (𝓞 E)] {nab : NabV Xo c} (h : IsNabCompat Xo c nab) : IsNab Xo c nab :=
-  ⟨h.1, fun S _ _ _ y => (h.2 S y).imp fun _ hC => hC.2⟩
 
-theorem isNab_iff_compat [StarRing (𝓞 E)] (nab : NabV Xo c) :
-    IsNab Xo c nab ↔ IsNabCompat Xo c nab :=
-  ⟨fun h => ⟨h.1, fun S _ _ _ y => (h.2 S y).imp fun C hC => ⟨compat_of_germs C hC.1, hC⟩⟩, IsNabCompat.isNab⟩
 
-theorem isNabCompat_iff [st : StarRing (𝓞 E)] (nab : NabV Xo c) :
-    IsNabCompat Xo c nab ↔
-      (∀ a : 𝓞 E, star a = H.bar a) ∧ ∃ nab' : NabV Xo c, IsNablaPin Xo c nab' ∧ AgreeNat nab nab' := by
-  refine and_congr_right fun hs => ?_
-  obtain rfl := starRing_eq st hs
-  constructor
-  · intro h
-    have h' : ∀ (S : Type) [CommRing S] [Algebra c.F S] (y : FrPt Xo c S),
-        ∃ v', IsNablaAt y v' ∧ ∀ (k : ℕ) F α, nab y k F α = v' k F α := fun S _ _ y =>
-      (computesNat_iff_extends fun k F α => nab y k F α).1 (@h S _ _ (ratAlg c S) y)
-    choose v hv using h'
-    exact ⟨fun y => v _ y, fun S _ _ y => (hv S y).1, fun S _ _ y => (hv S y).2⟩
-  · rintro ⟨nab', h, ha⟩ S _ _ q y
-    obtain rfl : q = ratAlg c S := Subsingleton.elim _ _
-    exact (computesNat_iff_extends fun k F α => nab y k F α).2 ⟨_, h S y, ha S y⟩
 
-theorem isNab_of_isNablaPin [StarRing (𝓞 E)] (hs : ∀ a : 𝓞 E, star a = H.bar a) {nab : NabV Xo c}
-    (h : IsNablaPin Xo c nab) : IsNab Xo c nab :=
-  ((isNabCompat_iff nab).2 ⟨hs, nab, h, fun _ _ _ _ _ _ _ => rfl⟩).isNab
 
-theorem isNab_iff [StarRing (𝓞 E)] (nab : NabV Xo c) :
-    IsNab Xo c nab ↔
-      (∀ a : 𝓞 E, star a = H.bar a) ∧ ∃ nab' : NabV Xo c, IsNablaPin Xo c nab' ∧ AgreeNat nab nab' :=
-  (isNab_iff_compat nab).trans (isNabCompat_iff nab)
 
-theorem isNab_iff_nat [StarRing (𝓞 E)] (nab : NabV Xo c) :
-    IsNab Xo c nab ↔ (∀ a : 𝓞 E, star a = H.bar a) ∧
-      ∀ (S : Type) [CommRing S] [Algebra c.F S] (y : FrPt Xo c S),
-        ∃ (d : ℕ) (j : JetPts Xo.univ.t.G y.x d) (e : FrameFam Xo.univ.t.G y.x Xo.univ.t.PP.L j) (B : FBar H S d)
-          (cf : Lt1 Dw → Fin d → S) (h : Germ.PS S 2 d) (eL : FrameL Xo.univ.t.G y.x Xo.univ.t.PP.L j),
-          IsGaugedChart y j e B cf h eL ∧ ∀ (k : ℕ) (F : SecAt y k), ∃ f : Germ.PS S 1 d, IsGermIn eL k F f ∧
-            ∀ α : Lt1 Dw →₀ ℕ, nab y k F α = IndefiniteRowSideFullHecke.HarmonicChartValues.chartVal c B cf h k f α := by
-  refine (isNab_iff nab).trans (and_congr_right fun _ => ⟨?_, fun h => ?_⟩)
-  · rintro ⟨nab', h, ha⟩ S _ _ y
-    obtain ⟨d, j, e, B, cf, g, eL, hg, hv⟩ := h S y
-    exact ⟨d, j, e, B, cf, g, eL, hg, fun k F =>
-      (hv k F).imp fun f hf => ⟨hf.1, fun α => (ha S y k F α).trans (hf.2 α)⟩⟩
-  · have h' : ∀ (S : Type) [CommRing S] [Algebra c.F S] (y : FrPt Xo c S),
-        ∃ v', IsNablaAt y v' ∧ ∀ (k : ℕ) F α, nab y k F α = v' k F α := fun S _ _ y => by
-      obtain ⟨d, j, e, B, cf, g, eL, hg, hv⟩ := h S y
-      obtain ⟨C, hC, ht⟩ := isGaugedChart_iff_chartAt.1 hg
-      exact (computesNat_iff_extends fun k F α => nab y k F α).1 ⟨C, ht, (computesNat_iff hC _).2 hv⟩
-    choose v hv using h'
-    exact ⟨fun y => v _ y, fun S _ _ y => (hv S y).1, fun S _ _ y => (hv S y).2⟩
 
 theorem AgreeNat.thExpr_eq {nab nab' : NabV Xo c} (h : AgreeNat nab nab') {S : Type} [CommRing S] [Algebra c.F S]
     (y : FrPt Xo c S) {n : ℕ} (P : MvPolynomial (LtN Dw n) c.F) (F : Fin n → SecAt y ((l.M : ℤ) ^ 2)) :
@@ -431,22 +604,10 @@ theorem AgreeNat.thExpr_eq {nab nab' : NabV Xo c} (h : AgreeNat nab nab') {S : T
     exact h S y k
   simp only [thExpr, key _ (sq_nonneg _)]
 
-theorem polyVal_eq_of_chartIndep (hC : ChartIndepSt2) [StarRing (𝓞 E)] {nab nab' : NabV Xo c} (h : IsNab Xo c nab)
-    (h' : IsNablaPin Xo c nab') {S : Type} [CommRing S] [Algebra c.F S] (y : FrPt Xo c S) (k n : ℕ)
-    (F : Fin n → SecAt y k) (a : (E →+* ℂ) × ℕ → ℕ) (P : MvPolynomial (LtN Dw n) c.F) (hP : P ∈ harmA c a n) :
-    polyVal c P (fun b => nab y k (F b)) = polyVal c P fun b => nab' y k (F b) :=
-  letI := ratAlg c S
-  thExprUniq_of_chartIndep2 hC E H Dw l Xo c nab nab' h (isNab_of_isNablaPin h.1 h') S y k n F a P hP
 
-theorem exists_isNab_not_isNablaPin [StarRing (𝓞 E)] {nab : NabV Xo c} (h : IsNab Xo c nab)
-    {S : Type} [CommRing S] [Nontrivial S] [Algebra c.F S] (y : FrPt Xo c S) :
-    ∃ nab' : NabV Xo c, IsNab Xo c nab' ∧ AgreeNat nab' nab ∧ ¬ IsNablaPin Xo c nab' := by
-  let nab' : NabV Xo c := fun y k F α => if k < 0 then 1 else nab y k F α
-  have ha : AgreeNat nab' nab := fun _ _ _ _ k _ _ => if_neg (not_lt.2 (Int.natCast_nonneg k))
-  refine ⟨nab', ⟨h.1, fun T _ _ _ z => (h.2 T z).imp fun C hC =>
-    ⟨hC.1, fun k F f hf α => (ha T z k F α).trans (hC.2 k F f hf α)⟩⟩, ha, fun hp => ?_⟩
-  exact one_ne_zero ((if_pos (by decide)).symm.trans (isNablaAt_zero (hp S y) (-1) 0))
 
 end Pin
 
 end GlobalTheory.NablaPinCompare
+end
+end

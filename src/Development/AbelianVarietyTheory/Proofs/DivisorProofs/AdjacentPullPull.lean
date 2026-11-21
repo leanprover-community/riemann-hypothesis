@@ -3,12 +3,538 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsFlagModelHerm
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EqOfIsometricTrivShift
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdjacentRefl
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BcDensEqOfGram
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFlagCh2FlagPull
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ResidueDegreeOfIsOpenImmersion
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NontrivialIsomClassInt
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsAffineOpenPreimageOfIsPullback
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChartDensityChangeFormula
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GradedMetricPullbackIsometric
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ComplexPointsOffOpenFinite
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleFibreEmbeddingsCard
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleCoordinateNearGenericPoint
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteAffineNeighbourhoodExists
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsArithVarEffCartier
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsSubbundleKernelOfLocallyPrincipal
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsImagePrincipalOfEffCartier
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GenericPointNotMemSupportCokernelOfNeZero
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIdealSheafAwayFromP
 
+section
+open MeasureTheory Topology
+open scoped ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.glueMeas_univ_eq_mul_of_fibre_encard_eq : ∀ (n : ℕ), n ≠ 0 → ∀ (A B ι κ : Type) [TopologicalSpace A] [TopologicalSpace B] [T2Space A] [T2Space B] [SecondCountableTopology A] [SecondCountableTopology B] [MeasurableSpace A] [BorelSpace A] [MeasurableSpace B] [BorelSpace B] (e : ι → OpenPartialHomeomorph A (ReciprocityTheory.L2DbarEstimates.V n)) (ρ : ι → A → ℝ≥0∞) (e' : κ → OpenPartialHomeomorph B (ReciprocityTheory.L2DbarEstimates.V n)) (ρ' : κ → B → ℝ≥0∞), (∀ i j, DifferentiableOn ℂ (e j ∘ (e i).symm) (ReciprocityTheory.L2DbarEstimates.Y.ovl e i j)) → (∀ i j y, y ∈ (e i).source → y ∈ (e j).source → ρ i y = ENNReal.ofReal (‖GlobalTheory.ChartGlue.transDet (e i) (e j) y‖ ^ 2) * ρ j y) → (∀ i j, DifferentiableOn ℂ (e' j ∘ (e' i).symm) (ReciprocityTheory.L2DbarEstimates.Y.ovl e' i j)) → (∀ i j y, y ∈ (e' i).source → y ∈ (e' j).source → ρ' i y = ENNReal.ofReal (‖GlobalTheory.ChartGlue.transDet (e' i) (e' j) y‖ ^ 2) * ρ' j y) → ∀ (m : B → A), Continuous m → ∀ T : Set A, T.Finite → (m ⁻¹' T).Finite → ∀ d : ℕ, d ≠ 0 → (∀ x ∉ T, (m ⁻¹' {x}).encard = d) → (∀ z, m z ∉ T → ∃ i j, z ∈ (e' j).source ∧ m z ∈ (e i).source ∧ ∀ w ∈ (e' j).source, m w ∈ (e i).source → e' j w = e i (m w) ∧ ρ' j w = ρ i (m w)) → GlobalTheory.ChartGlue.glueMeas e' ρ' Set.univ = d * GlobalTheory.ChartGlue.glueMeas e ρ Set.univ := by
+  first | exact @GlobalTheory.GlueCover.glueMeas_univ_of_cover | exact GlobalTheory.GlueCover.glueMeas_univ_of_cover | (intros; apply GlobalTheory.GlueCover.glueMeas_univ_of_cover <;> assumption)
+end
+
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.CxPts GlobalTheory.VB
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.graded_metric_pullback_isometric : ∀ (k : Type) [CommRing k] (X Y : Scheme.{0}) (p : X ⟶ Sp k) (q : Y ⟶ Sp k) (E : X.Modules) (r : ℕ) (h : VMetric p E r) (H : h.IsCInf) (fl : Vert.Flag E r) (π : Y ⟶ X) (hπ : π ≫ p = q) (i : Fin r), (VMetric.grLB (fl.pull π) i (H.pull π hπ)).Isometric ((VMetric.grLB fl i H).pull π hπ) := by
+  first | exact @GlobalTheory.VMetric.isometric_grLB_pull | exact GlobalTheory.VMetric.isometric_grLB_pull | (intros; apply GlobalTheory.VMetric.isometric_grLB_pull <;> assumption)
+end
+
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.CxPts GlobalTheory.VB
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.complex_points_off_open_finite : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) (p : X ⟶ Sp k) [IsIntegral X], IsArithVar p 1 → ∀ U : X.Opens, genericPoint X ∈ U → ∀ σ : k →+* ℂ, (ptsIn p σ U)ᶜ.Finite := by
+  first | exact @GlobalTheory.SurfacePoints.finite_compl_ptsIn | exact GlobalTheory.SurfacePoints.finite_compl_ptsIn | (intros; apply GlobalTheory.SurfacePoints.finite_compl_ptsIn <;> assumption)
+end
+
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.CxPts GlobalTheory.VB
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.etale_fibre_embeddings_card : ∀ (A B : Type) [CommRing A] [IsDomain A] [CommRing B] (f : A →+* B), f.Finite → f.Etale → ∀ φ : A →+* ℂ, {ψ : B →+* ℂ | ψ.comp f = φ}.encard = (letI := f.toAlgebra; Module.finrank A B : ℕ) := by
+  first | exact @GlobalTheory.EtaleFibre.encard_points_eq_finrank | exact GlobalTheory.EtaleFibre.encard_points_eq_finrank | (intros; apply GlobalTheory.EtaleFibre.encard_points_eq_finrank <;> assumption)
+end
+
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.CxPts GlobalTheory.VB
+open ReciprocityTheory.ChartRestriction.G.DVR.FlatBC (algX)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.etale_coordinate_near_generic_point : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) (p : X ⟶ Sp k) [IsIntegral X], IsArithVar p 1 → ∃ (U : X.Opens) (x : Fin 1 → Γ(X, U)), IsAffineOpen U ∧ genericPoint X ∈ U ∧ (MvPolynomial.eval₂Hom (algX p U) x).Etale := by
+  first | exact @GlobalTheory.GenericEtale.exists_etale_coord_surface | exact GlobalTheory.GenericEtale.exists_etale_coord_surface | (intros; apply GlobalTheory.GenericEtale.exists_etale_coord_surface <;> assumption)
+end
+
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.CxPts GlobalTheory.VB
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_affine_neighbourhood_exists : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) (p : X ⟶ Sp k) [IsIntegral X] (Y : Scheme.{0}) [IsIntegral Y] (q : Y ⟶ Sp k), IsArithVar p 1 → IsArithVar q 1 → ∀ (π : Y ⟶ X), π ≫ p = q → π (genericPoint Y) = genericPoint X → π.residueDegree (genericPoint Y) ≠ 0 → ∀ U₀ : X.Opens, genericPoint X ∈ U₀ → ∃ U : X.Opens, U ≤ U₀ ∧ IsAffineOpen U ∧ genericPoint X ∈ U ∧ IsAffineOpen (π ⁻¹ᵁ U) ∧ (π.app U).hom.Finite ∧ (π.app U).hom.Etale ∧ (letI := (π.app U).hom.toAlgebra; Module.finrank Γ(X, U) Γ(Y, π ⁻¹ᵁ U)) = π.residueDegree (genericPoint Y) := by
+  first | exact @GlobalTheory.GenFiniteEtale.exists_finite_etale | exact GlobalTheory.GenFiniteEtale.exists_finite_etale | (intros; apply GlobalTheory.GenFiniteEtale.exists_finite_etale <;> assumption)
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Set Filter Topology Matrix
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory.Points GlobalTheory.CxPts GlobalTheory.VB GlobalTheory.HermFrame GlobalTheory.ChartGlue
+open GlobalTheory.Twist (resM resM_resM resM_self app_resM)
+open GlobalTheory.QCoh (pullbackSections)
+open GlobalTheory.VBExt (AdaptedChart)
+open ReciprocityTheory.L2DbarEstimates (V)
+open Limits (cokernel)
+
+namespace GlobalTheory.FlagPull
+
+open ReciprocityTheory.ChartRestriction.G.DVR.FlatBC (algX)
+open MeasureTheory VMetric
+open scoped ENNReal
+
+theorem exists_open_finite_etale : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) (p : X ⟶ Sp k) [IsIntegral X] (Y : Scheme.{0})
+    [IsIntegral Y] (q : Y ⟶ Sp k), IsArithVar p 1 → IsArithVar q 1 → ∀ (π : Y ⟶ X), π ≫ p = q →
+    π (genericPoint Y) = genericPoint X → π.residueDegree (genericPoint Y) ≠ 0 →
+    ∃ (U : X.Opens) (x : Fin 1 → Γ(X, U)), IsAffineOpen U ∧ genericPoint X ∈ U ∧
+      (MvPolynomial.eval₂Hom (algX p U) x).Etale ∧ IsAffineOpen (π ⁻¹ᵁ U) ∧ (π.app U).hom.Finite ∧
+      (π.app U).hom.Etale ∧
+      (letI := (π.app U).hom.toAlgebra; Module.finrank Γ(X, U) Γ(Y, π ⁻¹ᵁ U)) =
+        π.residueDegree (genericPoint Y) := by
+  intro k _ X p _ Y _ q hp hq π hπ hg hd
+  obtain ⟨U₁, x, hU₁, hg₁, hx⟩ := GlobalTheory.T.etale_coordinate_near_generic_point k X p hp
+  obtain ⟨U, hle, hU, hgU, hV, h₁, h₂, h₃⟩ := GlobalTheory.T.finite_affine_neighbourhood_exists k X p Y q hp hq π hπ hg hd U₁ hg₁
+  have hres := Scheme.Hom.etale_appLE (𝟙 X) hU₁ hU hle
+  refine ⟨U, fun a => (Scheme.Hom.appLE (𝟙 X) U₁ U hle).hom (x a), hU, hgU, ?_, hV, h₁, h₂, h₃⟩
+  have hw : 𝟙 X ≫ p = p ≫ spMap (RingHom.id k) := by
+    rw [show spMap (RingHom.id k) = 𝟙 _ from Spec.map_id _, Category.comp_id, Category.id_comp]
+  have e : (MvPolynomial.eval₂Hom (algX p U) fun a => (Scheme.Hom.appLE (𝟙 X) U₁ U hle).hom (x a)) =
+      (Scheme.Hom.appLE (𝟙 X) U₁ U hle).hom.comp (MvPolynomial.eval₂Hom (algX p U₁) x) := by
+    refine MvPolynomial.ringHom_ext (fun a => ?_) fun a => ?_
+    · have := RingHom.congr_fun (TopForm.appLE_comp_algX (p := p) (p' := p) (φ := 𝟙 X)
+        (σ := RingHom.id k) hw (V := U₁) (W := U) hle) a
+      simpa using this.symm
+    · simp
+  rw [e]
+  exact RingHom.Etale.stableUnderComposition _ _ hx hres
+
+theorem exists_finite_exceptional : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) (p : X ⟶ Sp k) [IsIntegral X] (Y : Scheme.{0})
+    [IsIntegral Y] (q : Y ⟶ Sp k), IsArithVar p 1 → IsArithVar q 1 → ∀ (π : Y ⟶ X) (hπ : π ≫ p = q),
+    π (genericPoint Y) = genericPoint X → π.residueDegree (genericPoint Y) ≠ 0 → ∀ σ : k →+* ℂ,
+    ∃ T : Set (CxPts p σ), T.Finite ∧ (PtsOver.map π hπ (spMap σ) ⁻¹' T).Finite ∧
+      (∀ x ∉ T, (PtsOver.map π hπ (spMap σ) ⁻¹' {x}).encard = π.residueDegree (genericPoint Y)) ∧
+      ∀ z, PtsOver.map π hπ (spMap σ) z ∉ T → ∃ (c : AlgChart p σ 1) (c' : AlgChart q σ 1),
+        z ∈ c'.e.source ∧ PtsOver.map π hπ (spMap σ) z ∈ c.e.source ∧
+        ∀ w ∈ c'.e.source, PtsOver.map π hπ (spMap σ) w ∈ c.e.source →
+          c'.e w = c.e (PtsOver.map π hπ (spMap σ) w) := by
+  intro k _ X p _ Y _ q hp hq π hπ hg hd σ
+  obtain ⟨U, x, hU, hgU, hx, hV, hfin, het, hr⟩ := exists_open_finite_etale k X p Y q hp hq π hπ hg hd
+  have : Nonempty U := ⟨⟨_, hgU⟩⟩
+  have hgV : genericPoint Y ∈ π ⁻¹ᵁ U := show π (genericPoint Y) ∈ U from hg ▸ hgU
+  set m := PtsOver.map π hπ (spMap σ) with hm
+  have hmem (z : CxPts q σ) : z ∈ ptsIn q σ (π ⁻¹ᵁ U) ↔ m z ∈ ptsIn p σ U := Iff.rfl
+  have hCx (a : k) : algX q (π ⁻¹ᵁ U) a = (π.app U).hom (algX p U a) := by
+    have hw : π ≫ p = q ≫ spMap (RingHom.id k) := by
+      rw [hπ, show spMap (RingHom.id k) = 𝟙 _ from Spec.map_id _, Category.comp_id]
+    have := RingHom.congr_fun (TopForm.appLE_comp_algX (p := p) (p' := q) (φ := π)
+      (σ := RingHom.id k) hw (V := U) (W := π ⁻¹ᵁ U) le_rfl) a
+    simpa [Scheme.Hom.app_eq_appLE] using this.symm
+  have hcx : (MvPolynomial.eval₂Hom (algX q (π ⁻¹ᵁ U)) fun a => π.app U (x a)) =
+      (π.app U).hom.comp (MvPolynomial.eval₂Hom (algX p U) x) := by
+    refine MvPolynomial.ringHom_ext (fun a => ?_) fun a => ?_
+    · simp [hCx]
+    · simp
+  have hx' : (MvPolynomial.eval₂Hom (algX q (π ⁻¹ᵁ U)) fun a => π.app U (x a)).Etale := by
+    rw [hcx]
+    exact RingHom.Etale.stableUnderComposition _ _ hx het
+  refine ⟨(ptsIn p σ U)ᶜ, GlobalTheory.T.complex_points_off_open_finite k X p hp U hgU σ, GlobalTheory.T.complex_points_off_open_finite k Y q hq _ hgV σ, fun y hy => ?_, fun z hz => ?_⟩
+  · have hy' : y ∈ ptsIn p σ U := not_not.1 hy
+    have hc := GlobalTheory.T.etale_fibre_embeddings_card Γ(X, U) Γ(Y, π ⁻¹ᵁ U) (π.app U).hom hfin het (evHom hy')
+    rw [hr] at hc
+    rw [← hc]
+    have hz (z : m ⁻¹' {y}) : z.1 ∈ ptsIn q σ (π ⁻¹ᵁ U) := (hmem z.1).2 (by rw [z.2]; exact hy')
+    have hev (z : m ⁻¹' {y}) (a) : ev q σ _ ((π.app U).hom a) z.1 = ev p σ U a y := by
+      exact (ev_app π hπ U a z.1).trans (congrArg _ z.2)
+    refine Set.encard_congr (Equiv.ofBijective (fun z => ⟨evHom (hz z), RingHom.ext fun a => ?_⟩) ⟨?_, ?_⟩)
+    · simp only [RingHom.comp_apply, ← ev_eq]
+      exact hev z a
+    · intro z z' h
+      refine Subtype.ext (Subtype.ext (ext_of_valR hV (hz z) (hz z') fun a => ?_))
+      have := RingHom.congr_fun (congrArg Subtype.val h) a
+      exact (ev_eq (hz z) a).trans (this.trans (ev_eq (hz z') a).symm)
+    · rintro ⟨ψ, hψ⟩
+      have hC (a : k) : ψ (algX q (π ⁻¹ᵁ U) a) = σ a := by
+        have e₁ : algX q (π ⁻¹ᵁ U) a = (π.app U).hom (algX p U a) := hCx a
+        rw [e₁]
+        exact (RingHom.congr_fun hψ _).trans ((ev_eq hy' _).symm.trans (ev_algX hy' a))
+      have hzz := ofHom_mem hV ψ hC
+      have hy₂ : m (ofHom hV ψ hC) = y := by
+        refine Subtype.ext (ext_of_valR hU hzz hy' fun a => ?_)
+        exact ((ev_app π hπ U a _).symm.trans (ev_ofHom hV ψ hC _)).trans
+          ((RingHom.congr_fun hψ a).trans (ev_eq hy' a).symm)
+      refine ⟨⟨ofHom hV ψ hC, hy₂⟩, Subtype.ext (RingHom.ext fun a => ?_)⟩
+      exact (ev_eq hzz a).symm.trans (ev_ofHom hV ψ hC a)
+  · have hz' : z ∈ ptsIn q σ (π ⁻¹ᵁ U) := not_not.1 hz
+    obtain ⟨c, hc, hcU, hcx⟩ := AlgChart.exists_of_etale hU x hx (σ := σ) (hmem z |>.1 hz')
+    obtain ⟨c', hc', hcU', hcx'⟩ := AlgChart.exists_of_etale hV _ hx' hz'
+    refine ⟨c, c', hc', hc, fun w hw hw' => ?_⟩
+    have key₁ : ∀ (U' : X.Opens) (h : U' = U) (x' : Fin 1 → Γ(X, U')), x' = h ▸ x → ∀ a y,
+        ev p σ U' (x' a) y = ev p σ U (x a) y := by
+      rintro U' rfl x' rfl a y
+      rfl
+    have key₂ : ∀ (U' : Y.Opens) (h : U' = π ⁻¹ᵁ U) (x' : Fin 1 → Γ(Y, U')),
+        x' = h ▸ (fun a => π.app U (x a)) → ∀ a y,
+        ev q σ U' (x' a) y = ev q σ (π ⁻¹ᵁ U) (π.app U (x a)) y := by
+      rintro U' rfl x' rfl a y
+      rfl
+    ext a
+    rw [c'.apply_eq w hw a, c.apply_eq _ hw' a, key₂ _ hcU' _ hcx', key₁ _ hcU _ hcx]
+    exact ev_app π hπ U _ w
+
+theorem bcMeas_pullStep {k : Type} [CommRing k] {X Y : Scheme.{0}} {p : X ⟶ Sp k} [IsIntegral X]
+    {q : Y ⟶ Sp k} [IsIntegral Y] (hp : IsArithVar p 1) (hq : IsArithVar q 1) (π : Y ⟶ X) (hπ : π ≫ p = q)
+    (hg : π (genericPoint Y) = genericPoint X) (hd : π.residueDegree (genericPoint Y) ≠ 0)
+    {E : X.Modules} {r : ℕ} {h : VMetric p E r} (H : h.IsCInf) (fl : Vert.Flag E r) (i : Fin r) (σ : k →+* ℂ) :
+    (((h.pull π hπ).stepMet (fl.pull π) i).met σ).bcMeas (stepSeq_shortExact (fl.pull π) i)
+        ((fl.pull π).isVB i.castSucc) ((fl.pull π).isVB_gr i) univ =
+      π.residueDegree (genericPoint Y) * ((h.stepMet fl i).met σ).bcMeas (stepSeq_shortExact fl i)
+        (fl.isVB i.castSucc) (fl.isVB_gr i) univ := by
+  obtain ⟨T, hT, hT', hf, hc⟩ := exists_finite_exceptional k X p Y q hp hq π hπ hg hd σ
+  have H₁ : (h.stepMet fl i).IsCInf := H.restrict _ _
+  have H₂ : ((h.pull π hπ).stepMet (fl.pull π) i).IsCInf := (H.pull π hπ).restrict _ _
+  have := CxPts.t2Space_cxPts_of_isProjOver σ hp.isProjOver
+  have := CxPts.t2Space_cxPts_of_isProjOver σ hq.isProjOver
+  have := CxPts.secondCountableTopology_of_isProjOver (σ := σ) hp.isProjOver
+  have := CxPts.secondCountableTopology_of_isProjOver (σ := σ) hq.isProjOver
+  refine GlobalTheory.T.glueMeas_univ_eq_mul_of_fibre_encard_eq 1 one_ne_zero (CxPts p σ) (CxPts q σ) (AlgChart p σ 1) (AlgChart q σ 1) _ _ _ _
+    (fun c c' => c.holo_trans c') (fun c c' y hy hy' => ?_)
+    (fun c c' => c.holo_trans c') (fun c c' y hy hy' => ?_)
+    _ (PtsOver.continuous_map π hπ _) T hT hT' _ hd hf fun z hz => ?_
+  · rw [Met.bcDens_trans _ _ _ c c' (H₁ σ) hy hy', ENNReal.ofReal_mul (sq_nonneg _)]
+  · rw [Met.bcDens_trans _ _ _ c c' (H₂ σ) hy hy', ENNReal.ofReal_mul (sq_nonneg _)]
+  · obtain ⟨c, c', h₁, h₂, h₃⟩ := hc z hz
+    exact ⟨c, c', h₁, h₂, fun w hw hw' => ⟨h₃ w hw hw', congrArg _ (bcDens_pullStep H hπ c c' hw hw' h₃)⟩⟩
+
+theorem exists_isSelfInter (hA : Published.ArCalc) {k : Type} [CommRing k] {X : Scheme.{0}} [IsIntegral X]
+    {p : X ⟶ Sp k} (hp : IsArithVar p 1) (L : HermLB p) : ∃ x, L.IsSelfInter x := by
+  obtain ⟨Φ, hΦ⟩ := ((hA.arExists k X p 1 hp).2 PUnit fun _ => L).1
+  exact ⟨_, ((hA.arIso k X p 1 hp).2 PUnit _ Φ hΦ).1 PUnit.unit⟩
+
+theorem isFlagCh2_pull : GlobalTheory.Published.ArCalc → ∀ (k : Type) [CommRing k] (X : Scheme.{0}) (p : X ⟶ Sp k) [IsIntegral X] (Y : Scheme.{0}) [IsIntegral Y] (q : Y ⟶ Sp k), IsArithVar p 1 → IsArithVar q 1 → ∀ (π : Y ⟶ X) (hπ : π ≫ p = q), π (genericPoint Y) = genericPoint X → π.residueDegree (genericPoint Y) ≠ 0 → ∀ (E : X.Modules) (r : ℕ) (h : VMetric p E r) (H : h.IsCInf) (fl : Vert.Flag E r), ∃ fl' : Vert.Flag ((Scheme.Modules.pullback π).obj E) r, ∀ a : ℝ, VMetric.IsFlagCh2 H fl a ↔ VMetric.IsFlagCh2 (H.pull π hπ) fl' (π.residueDegree (genericPoint Y) * a) := by
+  intro hA k _ X p _ Y _ q hp hq π hπ hg hd E r h H fl
+  refine ⟨fl.pull π, fun a => ?_⟩
+  set d := π.residueDegree (genericPoint Y) with hd'
+  have hd0 : (d : ℝ) ≠ 0 := Nat.cast_ne_zero.2 hd
+  have hdE₀ : (d : ENNReal) ≠ 0 := Nat.cast_ne_zero.2 hd
+  have hdE₁ : (d : ENNReal) ≠ ⊤ := ENNReal.natCast_ne_top d
+  have hm := fun i σ => bcMeas_pullStep hp hq π hπ hg hd H fl i σ
+  have hfin : h.FlagBcFinite fl ↔ (h.pull π hπ).FlagBcFinite (fl.pull π) := by
+    have key (x : ENNReal) : x ≠ ⊤ ↔ (d : ENNReal) * x ≠ ⊤ := by
+      simp [ENNReal.mul_eq_top, hdE₀, hdE₁]
+    refine forall_congr' fun i => forall_congr' fun σ => ?_
+    rw [hm i σ]
+    exact key _
+  have := hp.finite_emb
+  have := Fintype.ofFinite (k →+* ℂ)
+  have hbc : (h.pull π hπ).flagBc (fl.pull π) = d * h.flagBc fl := by
+    rw [flagBc, flagBc, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [bcInt, bcInt, finsum_eq_sum_of_fintype, finsum_eq_sum_of_fintype, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun σ _ => ?_
+    rw [hm i σ, ENNReal.toReal_mul, ENNReal.toReal_natCast]
+  have hx : ∀ (i : Fin r) (x : ℝ), (grLB fl i H).IsSelfInter x →
+      (grLB (fl.pull π) i (H.pull π hπ)).IsSelfInter (d * x) := fun i x hx =>
+    (GlobalTheory.T.graded_metric_pullback_isometric k X Y p q E r h H fl π hπ i).symm.isSelfInter hq ((hA.arProj k X Y p q 1 hp hq π hπ hg hd).1 _ x hx)
+  refine ⟨?_, ?_⟩
+  · rintro ⟨h₁, x, h₂, rfl⟩
+    refine ⟨hfin.1 h₁, fun i => d * x i, fun i => hx i _ (h₂ i), ?_⟩
+    rw [hbc, mul_sub, Finset.mul_sum]
+    simp only [mul_div_assoc]
+  · rintro ⟨h₁, x', h₂, e⟩
+    choose x hx₀ using fun i => exists_isSelfInter hA hp (grLB fl i H)
+    refine ⟨hfin.2 h₁, x, hx₀, mul_left_cancel₀ hd0 (e.trans ?_)⟩
+    have e' (i) : x' i = d * x i := (h₂ i).unique hq (hx i _ (hx₀ i))
+    rw [hbc, mul_sub, Finset.mul_sum]
+    simp only [e', mul_div_assoc]
+
+end GlobalTheory.FlagPull
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.CxPts GlobalTheory.VB
+
+namespace GlobalTheory.FlagPull
+
+open VMetric
+
+theorem isFlagCh2_flag_pull : GlobalTheory.Published.ArCalc → ∀ (k : Type) [CommRing k] (X : Scheme.{0}) (p : X ⟶ Sp k) [IsIntegral X] (Y : Scheme.{0}) [IsIntegral Y] (q : Y ⟶ Sp k), IsArithVar p 1 → IsArithVar q 1 → ∀ (π : Y ⟶ X) (hπ : π ≫ p = q), π (genericPoint Y) = genericPoint X → π.residueDegree (genericPoint Y) ≠ 0 → ∀ (E : X.Modules) (r : ℕ) (h : VMetric p E r) (H : h.IsCInf) (fl : Vert.Flag E r) (a : ℝ), VMetric.IsFlagCh2 H fl a ↔ VMetric.IsFlagCh2 (H.pull π hπ) (fl.pull π) (π.residueDegree (genericPoint Y) * a) := by
+  intro hA k _ X p _ Y _ q hp hq π hπ hg hd E r h H fl a
+  set d := π.residueDegree (genericPoint Y) with hd'
+  have hd0 : (d : ℝ) ≠ 0 := Nat.cast_ne_zero.2 hd
+  have hdE₀ : (d : ENNReal) ≠ 0 := Nat.cast_ne_zero.2 hd
+  have hdE₁ : (d : ENNReal) ≠ ⊤ := ENNReal.natCast_ne_top d
+  have hm := fun i σ => bcMeas_pullStep hp hq π hπ hg hd H fl i σ
+  have hfin : h.FlagBcFinite fl ↔ (h.pull π hπ).FlagBcFinite (fl.pull π) := by
+    have key (x : ENNReal) : x ≠ ⊤ ↔ (d : ENNReal) * x ≠ ⊤ := by
+      simp [ENNReal.mul_eq_top, hdE₀, hdE₁]
+    refine forall_congr' fun i => forall_congr' fun σ => ?_
+    rw [hm i σ]
+    exact key _
+  have := hp.finite_emb
+  have := Fintype.ofFinite (k →+* ℂ)
+  have hbc : (h.pull π hπ).flagBc (fl.pull π) = d * h.flagBc fl := by
+    rw [flagBc, flagBc, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [bcInt, bcInt, finsum_eq_sum_of_fintype, finsum_eq_sum_of_fintype, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun σ _ => ?_
+    rw [hm i σ, ENNReal.toReal_mul, ENNReal.toReal_natCast]
+  have hx : ∀ (i : Fin r) (x : ℝ), (grLB fl i H).IsSelfInter x →
+      (grLB (fl.pull π) i (H.pull π hπ)).IsSelfInter (d * x) := fun i x hx =>
+    (GlobalTheory.T.graded_metric_pullback_isometric k X Y p q E r h H fl π hπ i).symm.isSelfInter hq ((hA.arProj k X Y p q 1 hp hq π hπ hg hd).1 _ x hx)
+  refine ⟨?_, ?_⟩
+  · rintro ⟨h₁, x, h₂, rfl⟩
+    refine ⟨hfin.1 h₁, fun i => d * x i, fun i => hx i _ (h₂ i), ?_⟩
+    rw [hbc, mul_sub, Finset.mul_sum]
+    simp only [mul_div_assoc]
+  · rintro ⟨h₁, x', h₂, e⟩
+    choose x hx₀ using fun i => exists_isSelfInter hA hp (grLB fl i H)
+    refine ⟨hfin.2 h₁, x, hx₀, mul_left_cancel₀ hd0 (e.trans ?_)⟩
+    have e' (i) : x' i = d * x i := (h₂ i).unique hq (hx i _ (hx₀ i))
+    rw [hbc, mul_sub, Finset.mul_sum]
+    simp only [e', mul_div_assoc]
+
+end GlobalTheory.FlagPull
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.CxPts GlobalTheory.VB
+open GlobalTheory.Twist (resM resM_resM resM_smul app_resM)
+
+namespace GlobalTheory.VB
+
+theorem isFrame_of_epi_mono_principal {Y : Scheme.{0}} [IsIntegral Y] {E M L : Y.Modules}
+    [E.IsQuasicoherent] [M.IsQuasicoherent] (π : E ⟶ M) (m : M ⟶ L) [Epi π] [Mono m]
+    {V : Y.Opens} {l : Fin 1 → Γ(L, V)} {g : Γ(Y, V)} {t : Γ(E, V)} (hl : IsFrame l) (hg : g ≠ 0)
+    (ht : (π ≫ m).app V t = g • l 0)
+    (hs : ∀ (W : Y.Opens) (h : W ≤ V) (s : Γ(E, W)), ∃ a : Γ(Y, W),
+      (π ≫ m).app W s = a • resM L h (g • l 0)) :
+    IsFrame (fun _ : Fin 1 => π.app V t) := by
+  have hc (W : Y.Opens) (s : Γ(E, W)) : (π ≫ m).app W s = m.app W (π.app W s) := rfl
+  refine isFrame_of_forall_exists fun V' h x hx => ?_
+  obtain ⟨W, hW, hxW, hle⟩ := QCoh.exists_affine_mem_le x hx
+  refine ⟨W, hle, hxW, ?_⟩
+  have hWV : W ≤ V := hle.trans h
+  have : Nonempty W := ⟨⟨x, hxW⟩⟩
+  have hm (a : Fin 1 → Γ(Y, W)) :
+      m.app W (Fintype.linearCombination Γ(Y, W) (fun _ : Fin 1 => resM M hWV (π.app V t)) a) =
+        a 0 • resM L hWV (g • l 0) := by
+    rw [Fintype.linearCombination_apply, Fin.sum_univ_one, Scheme.Modules.Hom.app_smul, app_resM,
+      ← hc, ht]
+  constructor
+  · refine (injective_iff_map_eq_zero _).2 fun a ha => ?_
+    have h1 := hm a
+    rw [ha, map_zero, resM_smul, smul_smul] at h1
+    have h2 := (hl W hWV).1 (a₁ := fun _ => a 0 * resG Y hWV g) (a₂ := 0) (by
+      rw [map_zero, Fintype.linearCombination_apply, Fin.sum_univ_one]
+      exact h1.symm)
+    have h3 : a 0 * resG Y hWV g = 0 := congrFun h2 0
+    have h4 : resG Y hWV g ≠ 0 := fun h0 =>
+      hg (map_injective_of_isIntegral Y (homOfLE hWV) (h0.trans (map_zero _).symm))
+    funext i
+    rw [Subsingleton.elim i 0]
+    exact (mul_eq_zero.1 h3).resolve_right h4
+  · intro s
+    obtain ⟨u, rfl⟩ := QCoh.surjective_app_of_epi π hW s
+    obtain ⟨a, ha⟩ := hs W hWV u
+    refine ⟨fun _ => a, QCoh.injective_app_of_mono m W ?_⟩
+    rw [hm, ← hc, ha]
+
+theorem isSubbundle_kernel_of_locally_principal :
+    ∀ (Y : Scheme.{0}) [IsIntegral Y] (E L : Y.Modules) (ψ : E ⟶ L) (n : ℕ), IsVB E (n + 1) →
+      IsVB L 1 → (∀ y : Y, ∃ (V : Y.Opens) (l : Fin 1 → Γ(L, V)) (g : Γ(Y, V)) (t : Γ(E, V)),
+        y ∈ V ∧ IsFrame l ∧ g ≠ 0 ∧ (ψ).app V t = g • l 0 ∧
+        ∀ (W : Y.Opens) (h : W ≤ V) (s : Γ(E, W)), ∃ a : Γ(Y, W),
+          (ψ).app W s = a • GlobalTheory.Twist.resM (L) h (g • l 0)) →
+      IsSubbundle (Limits.kernel.ι ψ) ∧ IsVB (Limits.kernel ψ) n := by
+  intro Y _ E L ψ n hE hL H
+  have := hE.isQuasicoherent
+  have := hL.isQuasicoherent
+  have hM : IsVB (cokernel (kernel.ι ψ)) 1 := by
+    intro y
+    obtain ⟨V, l, g, t, hy, hl, hg, ht, hs⟩ := H y
+    have e : cokernel.π (kernel.ι ψ) ≫ Abelian.factorThruCoimage ψ = ψ := Abelian.coimage.fac ψ
+    exact ⟨V, _, hy, isFrame_of_epi_mono_principal (cokernel.π (kernel.ι ψ))
+      (Abelian.factorThruCoimage ψ) hl hg (by rw [e]; exact ht) (by rw [e]; exact hs)⟩
+  refine ⟨⟨inferInstance, 1, hM⟩, ?_⟩
+  have hS : (ShortComplex.mk _ _ (cokernel.condition (kernel.ι ψ))).ShortExact :=
+    { exact := ShortComplex.exact_cokernel _ }
+  exact isVB_X₁_of_shortExact Y _ n 1 hS hE hM
+
+end GlobalTheory.VB
+end
+end
+
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.CxPts GlobalTheory.VB
+
+open GlobalTheory.Twist (resM resM_resM resM_smul app_resM)
+
+namespace GlobalTheory.VB
+
+theorem mem_annihilator_cokernel_iff {X : Scheme.{0}} {E L : X.Modules} (φ : E ⟶ L)
+    [SheafOfModules.IsQuasicoherent E] [SheafOfModules.IsQuasicoherent L]
+    [QCoh.IsFiniteQC (Limits.cokernel φ)] {U : X.Opens} (hU : IsAffineOpen U)
+    {l : Fin 1 → Γ(L, U)} (hl : IsFrame l) (a : Γ(X, U)) :
+    a ∈ Module.annihilator Γ(X, U) Γ(Limits.cokernel φ, U) ↔ ∃ u, φ.app U u = a • l 0 := by
+  have hex : Function.Exact (φ.app U) ((Limits.cokernel.π φ).app U) :=
+    QCoh.exact_app_of_exact (S := ShortComplex.mk φ (Limits.cokernel.π φ)
+      (Limits.cokernel.condition φ)) (ShortComplex.exact_cokernel φ) hU
+  have hsur := QCoh.surjective_app_of_epi (Limits.cokernel.π φ) hU
+  have hsm (b : Γ(X, U)) (s : Γ(L, U)) :
+      (Limits.cokernel.π φ).app U (b • s) = b • (Limits.cokernel.π φ).app U s :=
+    (QCoh.appLinear (Limits.cokernel.π φ) U).map_smul b s
+  rw [Module.mem_annihilator]
+  constructor
+  · intro H
+    refine (hex _).1 ?_
+    rw [hsm]
+    exact H _
+  · rintro ⟨u, hu⟩ m
+    obtain ⟨s, rfl⟩ := hsur m
+    have h0 : a • (Limits.cokernel.π φ).app U (l 0) = 0 := by
+      rw [← hsm]
+      exact (hex _).2 ⟨u, hu⟩
+    have hs := (hl.basis le_rfl).sum_repr s
+    rw [Fin.sum_univ_one, IsFrame.basis_apply, Twist.resM_self] at hs
+    rw [← hs, hsm, smul_comm, h0, smul_zero]
+
+theorem exists_image_principal_of_effCartier : ∀ (X Y : Scheme.{0}) [IsIntegral Y] (ρ : Y ⟶ X) (E L : X.Modules) (φ : E ⟶ L) (r : ℕ) [GlobalTheory.QCoh.IsFiniteQC (Limits.cokernel φ)], IsVB E r → IsVB L 1 → ReciprocityTheory.AnForm.R.FinalTheorems.EffCartier ((GlobalTheory.QCoh.annihilatorSheaf (Limits.cokernel φ)).comap ρ) → ∀ y : Y, ∃ (V : Y.Opens) (l : Fin 1 → Γ((Scheme.Modules.pullback ρ).obj L, V)) (g : Γ(Y, V)) (t : Γ((Scheme.Modules.pullback ρ).obj E, V)), y ∈ V ∧ IsFrame l ∧ g ≠ 0 ∧ ((Scheme.Modules.pullback ρ).map φ).app V t = g • l 0 ∧ ∀ (W : Y.Opens) (h : W ≤ V) (s : Γ((Scheme.Modules.pullback ρ).obj E, W)), ∃ a : Γ(Y, W), ((Scheme.Modules.pullback ρ).map φ).app W s = a • GlobalTheory.Twist.resM ((Scheme.Modules.pullback ρ).obj L) h (g • l 0) := by
+  intro X Y _ ρ E L φ r _ hE hL hC y
+  haveI := hE.isQuasicoherent
+  haveI := hL.isQuasicoherent
+  obtain ⟨U₀, l₀, hyU₀, hl₀⟩ := hL (ρ y)
+  obtain ⟨U, e, hU, hyU, hle, he⟩ := hE.exists_affine hyU₀
+  have hl := hl₀.res hle
+  set l : Fin 1 → Γ(L, U) := fun i => resM L hle (l₀ i) with hldef
+  obtain ⟨U', f, hyU', hf, hI⟩ := hC y
+  obtain ⟨h, hhle, hyh⟩ := U'.2.exists_basicOpen_le (V := ρ ⁻¹ᵁ U) ⟨y, hyU⟩ hyU'
+  let A : Y.affineOpens := Y.affineBasicOpen h
+  have hAU : (A : Y.Opens) ≤ ρ ⁻¹ᵁ U := hhle
+  have hAU' : A ≤ U' := Y.basicOpen_le h
+  have hyA : y ∈ (A : Y.Opens) := hyh
+  let g : Γ(Y, A) := Y.presheaf.map (homOfLE hAU').op f
+  have hI1 : ((QCoh.annihilatorSheaf (Limits.cokernel φ)).comap ρ).ideal A = Ideal.span {g} := by
+    rw [← Scheme.IdealSheafData.map_ideal _ hAU', hI, Ideal.map_span, Set.image_singleton]
+  have hI2 := Principalise.comapIdealAffine (QCoh.annihilatorSheaf (Limits.cokernel φ)) ρ
+    ⟨U, hU⟩ A hAU
+  rw [hI1, QCoh.annihilatorSheaf_ideal] at hI2
+  have hg : g ≠ 0 := by
+    haveI : Nonempty (A : Y.Opens) := ⟨⟨y, hyA⟩⟩
+    haveI : Nonempty (U' : Y.Opens) := ⟨⟨y, hyU'⟩⟩
+    intro h0
+    refine nonZeroDivisors.ne_zero hf ?_
+    apply map_injective_of_isIntegral Y (homOfLE (show (A : Y.Opens) ≤ U' from hAU'))
+    rw [map_zero]
+    exact h0
+  have hres (F : X.Modules) (s : Γ(F, U)) :
+      resM _ hAU (QCoh.pullbackSections ρ F le_rfl s) = QCoh.pullbackSections ρ F hAU s :=
+    QCoh.res_pullbackSections ρ F le_rfl hAU s
+  have hl' : IsFrame fun i => QCoh.pullbackSections ρ L hAU (l i) := by
+    simpa only [hres] using (hl.pullback ρ).res hAU
+  have he' : IsFrame fun i => QCoh.pullbackSections ρ E hAU (e i) := by
+    simpa only [hres] using (he.pullback ρ).res hAU
+  set l' := QCoh.pullbackSections ρ L hAU (l 0) with hl'def
+  let ψ := (Scheme.Modules.pullback ρ).map φ
+  have key (u : Γ(E, U)) (a : Γ(X, U)) (hu : φ.app U u = a • l 0) :
+      ψ.app A (QCoh.pullbackSections ρ E hAU u) = ρ.appLE U A hAU a • l' := by
+    rw [QCoh.pullback_map_app_pullbackSections, hu, QCoh.pullbackSections_smul]
+  let J : Ideal Γ(Y, A) := (LinearMap.range (QCoh.appLinear ψ A)).comap
+    (LinearMap.toSpanSingleton Γ(Y, A) _ l')
+  have hgJ : g ∈ J := by
+    have : Ideal.span {g} ≤ J := by
+      rw [hI2, Ideal.map_le_iff_le_comap]
+      intro a ha
+      obtain ⟨u, hu⟩ := (mem_annihilator_cokernel_iff φ hU hl a).1 ha
+      exact ⟨_, key u a hu⟩
+    exact this (Ideal.subset_span rfl)
+  obtain ⟨t, ht⟩ := hgJ
+  have hei (i : Fin r) : ∃ c : Γ(Y, A),
+      ψ.app A (QCoh.pullbackSections ρ E hAU (e i)) = c • (g • l') := by
+    have hs := (hl.basis le_rfl).sum_repr (φ.app U (e i))
+    rw [Fin.sum_univ_one, IsFrame.basis_apply, Twist.resM_self] at hs
+    have hm : ρ.appLE U A hAU ((hl.basis le_rfl).repr (φ.app U (e i)) 0) ∈ Ideal.span {g} := by
+      rw [hI2]
+      exact Ideal.mem_map_of_mem _ ((mem_annihilator_cokernel_iff φ hU hl _).2 ⟨_, hs.symm⟩)
+    obtain ⟨c, hc⟩ := Ideal.mem_span_singleton'.1 hm
+    exact ⟨c, by rw [key _ _ hs.symm, ← hc, mul_smul]⟩
+  choose c hc using hei
+  refine ⟨A, _, g, t, hyA, hl', hg, ht, fun W hW s => ?_⟩
+  refine ⟨∑ i, (he'.basis hW).repr s i * resG Y hW (c i), ?_⟩
+  have hs := (he'.basis hW).sum_repr s
+  calc ψ.app W s = QCoh.appLinear ψ W (∑ i, (he'.basis hW).repr s i • he'.basis hW i) := by
+        rw [hs]; rfl
+    _ = _ := by
+      rw [map_sum, Finset.sum_smul]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [map_smul, IsFrame.basis_apply, QCoh.appLinear_apply, app_resM, hc, resM_smul, mul_smul]
+
+end GlobalTheory.VB
+end
+
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.CxPts GlobalTheory.VB
+
+namespace GlobalTheory.VB
+
+theorem genericPoint_notMem_support_cokernel_of_ne_zero :
+    ∀ (X : Scheme.{0}) [IsIntegral X] (E L : X.Modules) (φ : E ⟶ L), IsVB L 1 → φ ≠ 0 → genericPoint X ∉ GlobalTheory.QCoh.support (Limits.cokernel φ) := by
+  intro X _ E L φ hL h0
+  have hex : ∃ (V : X.Opens) (s : Γ(E, V)), φ.app V s ≠ 0 := by
+    by_contra hc
+    push Not at hc
+    apply h0
+    ext V s
+    exact (hc V s).trans rfl
+  obtain ⟨V, s, hs⟩ := hex
+  have hV : genericPoint X ∈ V := by
+    by_contra hη
+    refine hs (QCoh.section_eq_zero_of_germ _ fun x hx => ?_)
+    exact absurd (VB.genericPoint_mem hx) hη
+  have hg : L.presheaf.germ V _ hV (φ.app V s) ≠ 0 := fun h => hs (hL.isTorsionFree V hV _ h)
+  have hr : Module.finrank X.functionField (genStalk L) = 1 := hL.genRank_eq
+  have hsurj : Function.Surjective (QCoh.stalkLinear φ (genericPoint X)) := by
+    intro w
+    obtain ⟨c, hc⟩ := (finrank_eq_one_iff_of_nonzero' _ hg).1 hr w
+    refine ⟨c • E.presheaf.germ V _ hV s, ?_⟩
+    rw [map_smul, QCoh.stalkLinear_germ]
+    exact hc
+  have hexact := (QCoh.exact_iff_stalkLinear _).1 (ShortComplex.exact_cokernel φ) (genericPoint X)
+  refine QCoh.notMem_support_iff.2 ⟨fun a b => ?_⟩
+  have key : ∀ y, y = (0 : ((Limits.cokernel φ).presheaf.stalk (genericPoint X) :)) := by
+    intro y
+    obtain ⟨t, rfl⟩ := QCoh.stalkLinear_surjective (Limits.cokernel.π φ) (genericPoint X) y
+    obtain ⟨u, rfl⟩ := hsurj t
+    exact (hexact _).2 ⟨u, rfl⟩
+  rw [key a, key b]
+
+end GlobalTheory.VB
+end
+
+section
 set_option autoImplicit false
 
 open CategoryTheory Limits AlgebraicGeometry TopologicalSpace
@@ -305,3 +831,4 @@ theorem exists_chain : GlobalTheory.Published.ArCalc → ∀ (k : Type) [CommRin
     exact FlagPull.isFlagCh2_flag_pull hA k X p _ _ hX hC.1 _ rfl hC.2.1 hC.2.2 E r h H fl' a
 
 end GlobalTheory.FlagChain
+end

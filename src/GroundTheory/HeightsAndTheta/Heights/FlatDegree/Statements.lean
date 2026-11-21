@@ -169,16 +169,7 @@ theorem FlatNormConstant.hypotheses_example :
   fin_cases k
   exact Submodule.mem_span_singleton_self exW
 
-theorem FlatNormConstant.at_example (h : FlatNormConstant.Statement) :
-    hodgeNormSq exPoint ![![1, 0]] ![exW] =
-      Complex.normSq (frameMatrix ![![1, 0]] ![exW]).det * |exH.det.re| :=
-  h 1 1 exH exH_isHermitian exPoint _ _ FlatNormConstant.hypotheses_example.2
 
-theorem DifferentNorms.at_example (h : DifferentNorms.Statement) :
-    (Ideal.absNorm (differentIdeal (𝓞 ℚ) (𝓞 (CyclotomicField 4 ℚ))) : ℝ) ^
-        ((Module.finrank ℚ (CyclotomicField 4 ℚ) : ℝ)⁻¹) =
-      rootDiscr (CyclotomicField 4 ℚ) / rootDiscr ℚ :=
-  (h ℚ (CyclotomicField 4 ℚ)).1
 
 theorem FlatDegreeBound.hypotheses_example :
     let c : ℝ := -((((2 : ℕ) : ℝ) - ((1 : ℕ) : ℝ)) / 2 * 1 +
@@ -188,13 +179,6 @@ theorem FlatDegreeBound.hypotheses_example :
         ((1 : ℕ) : ℝ) * (2 * Real.log (rootDiscr ℚ) -
           Real.log (rootDiscr (CyclotomicField 4 ℚ)))) := rfl
 
-theorem FlatDegreeBound.at_example (h : FlatDegreeBound.Statement) :
-    |-((((2 : ℕ) : ℝ) - ((1 : ℕ) : ℝ)) / 2 * 1 +
-        ((1 : ℕ) : ℝ) * (2 * Real.log (rootDiscr ℚ) -
-          Real.log (rootDiscr (CyclotomicField 4 ℚ)))) +
-        (((2 : ℕ) : ℝ) - ((1 : ℕ) : ℝ)) / 2 * 1| ≤
-      ((1 : ℕ) : ℝ) * Real.log (rootDiscr (CyclotomicField 4 ℚ)) :=
-  h ℚ (CyclotomicField 4 ℚ) 2 1 1 _ FlatDegreeBound.hypotheses_example
 
 end Examples
 

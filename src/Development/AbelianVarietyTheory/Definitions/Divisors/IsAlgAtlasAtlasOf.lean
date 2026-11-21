@@ -81,8 +81,6 @@ theorem isBd_fsPot (σ : F →+* ℂ) : IsBd (atlasOf Y σ) ∅ (fun _ => Real.e
     (((ProjPos.fubiniStudy_weight_pullback_isSmooth _ _ (AnRead.all Y.str σ Y.dim)).isPosPot_iff (isAlgAtlas_atlasOf σ)).2
       (ProjPos.fubiniStudy_weight_pullback_closed_immersion_strictPos _ _ _))
 
-theorem exists_manIs (Y : Var F) : ∃ M : Man Y.dim, Nonempty (ManIs M Y) :=
-  ⟨_, ⟨manIsOf _ _ _ isBd_fsPot⟩⟩
 
 section Norms
 
@@ -144,13 +142,6 @@ def ManIs.FormOf {e : ℕ} {M : Man e} (I : ManIs M Y) {ι : Type} [Fintype ι] 
   ∀ a, ∃ Q : ι → LocPot (M.X a), (∀ i, IsPot (I.pt a) (m i _) (Q i) ∧ IsPotential (M.A a) (Q i)) ∧
     ∀ j, ∀ y ∈ ((M.A a).chart j).target, ∀ w, leviAt (M.A a) (P a) j y w = ∑ i, t i * leviAt (M.A a) (Q i) j y w
 
-theorem formOf_ofWeight {Z : ∀ σ, Set (Pts Y σ)} {r : ∀ σ, Pts Y σ → ℝ} {Om : ∀ σ, LocPot (Pts Y σ)}
-    (h : ∀ σ, IsBd (atlasOf Y σ) (Z σ) (r σ) (Om σ)) {Δ : Y.Dv} {L : LB Y.X} {g : L.ι → Y.Fnˣ} (hL : Presents Δ L g)
-    (φ : ∀ σ, Weight Y.str σ L) (hφ : ∀ σ, (φ σ).IsCInf) :
-    (manIsOf Z r Om h).FormOf (fun (_ : Unit) σ => C.ofWeight Y σ Δ L g hL (φ σ)) (fun _ => 1) fun _ => (φ _).locPot :=
-  fun a => ⟨fun _ => (φ _).locPot, fun _ => ⟨isPot_ofWeight hL _,
-    ((Weight.isCInf_iff_isSmooth (AnRead.all Y.str _ Y.dim)).1 (hφ _)).isPotential (isAlgAtlas_atlasOf _)⟩,
-    fun j y _ w => by simp⟩
 
 def ManIs.Lists {e : ℕ} {M : Man e} (I : ManIs M Y) (x : Y.X) {d : ℕ} (z : ∀ a, Fin d → M.X a) : Prop :=
   ∀ a, Function.Injective (z a) ∧ Set.range (z a) = {w | under (I.pt a w) = x}

@@ -101,30 +101,6 @@ def ThetaMt (Q : Finset (PlE D.host)) (ψ : GE N →* (X.Ok i k)ˣ) : Submodule 
   Submodule.span O' ((fun f => incl Y i j b O' k (Y.thP i j b k Q ψ f)) ''
     (Y.MtLat i j b k Q ψ : Set (Y.MtV i j b k Q ψ)))
 
-theorem thetaPsi_one : ThetaPsi Y i j b O' k ∅ 1 = ThetaExt Y i j b O' := by
-  have hi : ∀ x : Y.Fm i j b, incl Y i j b O' k ((1 : X.Ok i k) ⊗ₜ[X.O i] x) =
-      (1 : FractionRing O') ⊗ₜ[X.O i] x := by
-    intro x; simp [incl]
-  apply le_antisymm
-  · refine Submodule.span_le.2 ?_
-    intro y hy
-    simp only [Set.mem_iUnion, Y.thPsi_one, Set.image_singleton, Set.mem_singleton_iff, hi] at hy
-    obtain ⟨d, -, rfl⟩ := hy
-    exact Submodule.subset_span ⟨_, Submodule.subset_span ⟨d, rfl⟩, rfl⟩
-  · refine Submodule.span_le.2 ?_
-    rintro _ ⟨x, hx, rfl⟩
-    simp only [SetLike.mem_coe] at hx ⊢
-    induction hx using Submodule.span_induction with
-    | mem x hx =>
-      obtain ⟨d, rfl⟩ := hx
-      refine Submodule.subset_span ?_
-      simp only [Set.mem_iUnion, Y.thPsi_one, Set.image_singleton, Set.mem_singleton_iff, hi]
-      exact ⟨d, by simp, rfl⟩
-    | zero => simp
-    | add x y _ _ hx hy => rw [TensorProduct.tmul_add]; exact Submodule.add_mem _ hx hy
-    | smul a x _ hx =>
-      rw [TensorProduct.tmul_smul, ← algebraMap_smul O' a]
-      exact Submodule.smul_mem _ _ hx
 
 end Lattices
 
@@ -169,13 +145,6 @@ def exportAt (N0 : X.Tw → ℕ) (i : X.Tw) : Prop :=
           partBAt bkP.ex i j b k' Q (psiAt b ((ψ' ^ a).comp (X.art i Q))) (epsB j b)) ∧
         partC N0 i Q k' (ψ' ^ a) eps' ∧ partD i Q k' (ψ' ^ a) eps'
 
-theorem projectionDerivative_of_exportAt (N0 : X.Tw → ℕ) (i : X.Tw) (h : exportAt bkP N0 i) : ProjectionDerivativeEstimate bkP N0 i := by
-  intro hs eps' he A
-  obtain ⟨n, d, -, H⟩ := h hs
-  obtain ⟨Q, k', ψ', epsB, h1, -, -, -, -, h2⟩ := H eps' he A
-  obtain ⟨ha, hat, -, hc, hd⟩ := h2 1 isCoprime_one_left
-  rw [zpow_one] at ha hat hc hd
-  exact ⟨Q, k', ψ', h1, ha, hat, hc, hd⟩
 
 end Statement
 

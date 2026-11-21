@@ -1,5 +1,553 @@
-import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.GlobalGaussLaws.DBoundA
+import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.GlobalGaussLaws.SmulOneConj
 
+section
+noncomputable section
+
+open Matrix
+open scoped ComplexOrder
+
+namespace PositivityTheory.Rg.Sw.Glob
+
+namespace DSiegH
+
+variable {n : ℕ} {A B C D : Matrix (Fin n) (Fin n) ℂ}
+
+theorem cross_form_linear_fractional_eq_conjTranspose_sub (h1 : Aᴴ * C = Cᴴ * A) (h2 : Bᴴ * D = Dᴴ * B) (h3 : Aᴴ * D - Cᴴ * B = 1) (h4 : Bᴴ * C - Dᴴ * A = -1)
+    (W : Matrix (Fin n) (Fin n) ℂ) : (A * W + B)ᴴ * (C * W + D) - (C * W + D)ᴴ * (A * W + B) = Wᴴ - W := by
+  have e : (A * W + B)ᴴ * (C * W + D) - (C * W + D)ᴴ * (A * W + B) =
+      Wᴴ * (Aᴴ * C - Cᴴ * A) * W + Wᴴ * (Aᴴ * D - Cᴴ * B) + (Bᴴ * C - Dᴴ * A) * W + (Bᴴ * D - Dᴴ * B) := by
+    simp only [conjTranspose_add, conjTranspose_mul]
+    noncomm_ring
+  rw [e, sub_eq_zero.2 h1, h3, h4, sub_eq_zero.2 h2]
+  noncomm_ring
+
+theorem det_ne (h1 : Aᴴ * C = Cᴴ * A) (h2 : Bᴴ * D = Dᴴ * B) (h3 : Aᴴ * D - Cᴴ * B = 1) (h4 : Bᴴ * C - Dᴴ * A = -1)
+    (W : Matrix (Fin n) (Fin n) ℂ) (hW : ∀ v : Fin n → ℂ, v ≠ 0 → star v ⬝ᵥ ((Wᴴ - W) *ᵥ v) ≠ 0) :
+    (C * W + D).det ≠ 0 := by
+  intro h0
+  obtain ⟨v, hv, hQv⟩ := Matrix.exists_mulVec_eq_zero_iff.2 h0
+  have key := congrArg (fun M : Matrix (Fin n) (Fin n) ℂ => star v ⬝ᵥ (M *ᵥ v)) (cross_form_linear_fractional_eq_conjTranspose_sub h1 h2 h3 h4 W)
+  simp only [Matrix.sub_mulVec, ← Matrix.mulVec_mulVec, hQv, Matrix.mulVec_zero, zero_sub, dotProduct_neg] at key
+  have e : star v ⬝ᵥ ((C * W + D)ᴴ *ᵥ ((A * W + B) *ᵥ v)) = 0 := by
+    rw [Matrix.dotProduct_mulVec, ← Matrix.star_mulVec, hQv, star_zero, zero_dotProduct]
+  rw [e, neg_zero] at key
+  exact hW v hv (by rw [Matrix.sub_mulVec] at *; simpa [dotProduct_sub] using key.symm)
+
+theorem im_formula (h1 : Aᴴ * C = Cᴴ * A) (h2 : Bᴴ * D = Dᴴ * B) (h3 : Aᴴ * D - Cᴴ * B = 1) (h4 : Bᴴ * C - Dᴴ * A = -1)
+    (W : Matrix (Fin n) (Fin n) ℂ) (hQ : IsUnit (C * W + D).det) :
+    (A * W + B) * (C * W + D)⁻¹ - ((A * W + B) * (C * W + D)⁻¹)ᴴ =
+      ((C * W + D)⁻¹)ᴴ * (W - Wᴴ) * (C * W + D)⁻¹ := by
+  set P := A * W + B
+  set Q := C * W + D
+  have hQQ : Q * Q⁻¹ = 1 := Matrix.mul_nonsing_inv _ hQ
+  have hQh : (Q⁻¹)ᴴ * Qᴴ = 1 := by rw [← conjTranspose_mul, hQQ, conjTranspose_one]
+  have hc : Pᴴ * Q - Qᴴ * P = Wᴴ - W := cross_form_linear_fractional_eq_conjTranspose_sub h1 h2 h3 h4 W
+  have e1 : P * Q⁻¹ = (Q⁻¹)ᴴ * (Qᴴ * P) * Q⁻¹ := by rw [← Matrix.mul_assoc, hQh, Matrix.one_mul]
+  have e2 : (P * Q⁻¹)ᴴ = (Q⁻¹)ᴴ * (Pᴴ * Q) * Q⁻¹ := by
+    rw [conjTranspose_mul, Matrix.mul_assoc, Matrix.mul_assoc, hQQ, Matrix.mul_one]
+  rw [e2, e1, ← Matrix.sub_mul, ← Matrix.mul_sub]
+  congr 2
+  have : Qᴴ * P - Pᴴ * Q = -(Pᴴ * Q - Qᴴ * P) := by abel
+  rw [this, hc]
+  abel
+
+theorem siegel_of (h1 : Aᴴ * C = Cᴴ * A) (h2 : Bᴴ * D = Dᴴ * B) (h3 : Aᴴ * D - Cᴴ * B = 1) (h4 : Bᴴ * C - Dᴴ * A = -1)
+    (W : Matrix (Fin n) (Fin n) ℂ) (hQ : IsUnit (C * W + D).det) (a : ℂ)
+    (hW : (a • (W - Wᴴ)).PosDef) :
+    (a • ((A * W + B) * (C * W + D)⁻¹ - ((A * W + B) * (C * W + D)⁻¹)ᴴ)).PosDef := by
+  rw [im_formula h1 h2 h3 h4 W hQ]
+  have e : a • (((C * W + D)⁻¹)ᴴ * (W - Wᴴ) * (C * W + D)⁻¹) =
+      ((C * W + D)⁻¹)ᴴ * (a • (W - Wᴴ)) * (C * W + D)⁻¹ := by
+    rw [Matrix.mul_smul, Matrix.smul_mul]
+  rw [e]
+  exact hW.conjTranspose_mul_mul_same
+    (Matrix.mulVec_injective_iff_isUnit.2 ((Matrix.isUnit_iff_isUnit_det _).2 (Matrix.isUnit_nonsing_inv_det _ hQ)))
+
+theorem posDef_diag_re (w : Fin n → ℂ) (hw : ∀ j, 0 < (w j).re) (a : ℂ)
+    (s : ℂ) (hs : s = Complex.I ∨ s = -Complex.I) (hsa : a * s * 2 = 1) :
+    (a • (s • diagonal w - (s • diagonal w)ᴴ)).PosDef := by
+  have e : a • (s • diagonal w - (s • diagonal w)ᴴ) = diagonal fun j => ((w j).re : ℂ) := by
+    rw [conjTranspose_smul, diagonal_conjTranspose]
+    ext i j
+    by_cases hij : i = j
+    · subst hij
+      have hst : star s = -s := by
+        rcases hs with rfl | rfl <;> simp [Complex.conj_I]
+      simp only [Matrix.smul_apply, Matrix.sub_apply, diagonal_apply_eq, smul_eq_mul, hst, Pi.star_apply]
+      have hw' : (w i : ℂ) + star (w i) = 2 * ((w i).re : ℂ) := by
+        rw [Complex.star_def, Complex.add_conj]; push_cast; ring
+      calc a * (s * w i - -s * star (w i)) = a * s * ((w i : ℂ) + star (w i)) := by ring
+        _ = a * s * (2 * ((w i).re : ℂ)) := by rw [hw']
+        _ = ((w i).re : ℂ) := by linear_combination ((w i).re : ℂ) * hsa
+    · simp [hij]
+  rw [e, Matrix.posDef_diagonal_iff]
+  intro j
+  exact_mod_cast hw j
+
+theorem det_ne_of_posDef (h1 : Aᴴ * C = Cᴴ * A) (h2 : Bᴴ * D = Dᴴ * B) (h3 : Aᴴ * D - Cᴴ * B = 1)
+    (h4 : Bᴴ * C - Dᴴ * A = -1) (W : Matrix (Fin n) (Fin n) ℂ) (a : ℂ) (ha : a ≠ 0) (hX : (a • (W - Wᴴ)).PosDef) :
+    (C * W + D).det ≠ 0 := by
+  refine det_ne h1 h2 h3 h4 W fun v hv => ?_
+  have e : Wᴴ - W = (-a⁻¹) • (a • (W - Wᴴ)) := by
+    rw [smul_smul, neg_mul, inv_mul_cancel₀ ha, neg_one_smul, neg_sub]
+  rw [e, Matrix.smul_mulVec, dotProduct_smul, smul_eq_mul]
+  exact mul_ne_zero (neg_ne_zero.2 (inv_ne_zero ha)) (hX.dotProduct_mulVec_pos hv).ne'
+
+end DSiegH
+
+open DRealH DSiegH in
+theorem dSieg : DSieg := by
+  intro n y X z hz
+  obtain ⟨h1, h2, h3, h4⟩ := blocks_of_inG (g := mR y) y.2
+  set A := (mR y).toBlocks₁₁ with hA
+  set B := (mR y).toBlocks₁₂ with hB
+  set C := (mR y).toBlocks₂₁ with hC
+  set D := (mR y).toBlocks₂₂ with hD
+  set w : Fin n → ℂ := fun j => Complex.exp (2 * z * X j) with hwdef
+  set E : Matrix (Fin n) (Fin n) ℂ := diagonal fun j => Complex.exp (z * X j) with hE
+  set F : Matrix (Fin n) (Fin n) ℂ := diagonal fun j => Complex.exp (-(z * X j)) with hF
+  have hwre : ∀ j, 0 < (w j).re := by
+    intro j
+    simp only [hwdef, Complex.exp_re]
+    refine mul_pos (Real.exp_pos _) (Real.cos_pos_of_mem_Ioo ⟨?_, ?_⟩)
+    all_goals
+      have hj := hz j
+      have him : (2 * z * (X j : ℂ)).im = 2 * (z.im * X j) := by simp [Complex.mul_im]; ring
+      rw [him]
+      rw [abs_lt] at hj
+      linarith [hj.1, hj.2]
+  have hM : mR y * aC X z = fromBlocks (A * E) (B * F) (C * E) (D * F) := by
+    have e : mR y = fromBlocks A B C D := (fromBlocks_toBlocks _).symm
+    rw [e]
+    unfold aC
+    rw [fromBlocks_multiply]
+    simp only [Matrix.mul_zero, add_zero, zero_add, hE, hF]
+  have hFu : IsUnit F.det := by
+    rw [hF, det_diagonal]
+    exact isUnit_iff_ne_zero.2 (Finset.prod_ne_zero_iff.2 fun j _ => Complex.exp_ne_zero _)
+  have hFF : F * F⁻¹ = 1 := Matrix.mul_nonsing_inv _ hFu
+  have hWF : ∀ s : ℂ, E * (s • 1) = (s • diagonal w) * F := by
+    intro s
+    rw [hE, hF, Matrix.smul_mul, diagonal_mul_diagonal, Matrix.mul_smul, Matrix.mul_one]
+    congr 1
+    congr 1
+    funext j
+    rw [hwdef, ← Complex.exp_add]
+    congr 1; ring
+  have hblk : ∀ s : ℂ, ((mR y * aC X z).toBlocks₂₁ * (s • 1) + (mR y * aC X z).toBlocks₂₂) = (C * (s • diagonal w) + D) * F ∧
+      ((mR y * aC X z).toBlocks₁₁ * (s • 1) + (mR y * aC X z).toBlocks₁₂) = (A * (s • diagonal w) + B) * F := by
+    intro s
+    rw [hM]
+    simp only [toBlocks_fromBlocks₁₁, toBlocks_fromBlocks₁₂, toBlocks_fromBlocks₂₁, toBlocks_fromBlocks₂₂]
+    constructor
+    · rw [Matrix.mul_assoc, hWF, Matrix.add_mul, Matrix.mul_assoc]
+    · rw [Matrix.mul_assoc, hWF, Matrix.add_mul, Matrix.mul_assoc]
+  have hpt : ∀ s : ℂ, ptZ y X z s = (A * (s • diagonal w) + B) * (C * (s • diagonal w) + D)⁻¹ := by
+    intro s
+    simp only [ptZ]
+    rw [(hblk s).1, (hblk s).2, Matrix.mul_inv_rev, ← Matrix.mul_assoc, Matrix.mul_assoc _ F, hFF, Matrix.mul_one]
+  have hI2 : -(Complex.I / 2) ≠ 0 := by simp [Complex.I_ne_zero]
+  have hI2' : Complex.I / 2 ≠ 0 := by simp [Complex.I_ne_zero]
+  have hX1 : ((-(Complex.I / 2)) • ((Complex.I • diagonal w) - (Complex.I • diagonal w)ᴴ)).PosDef :=
+    posDef_diag_re w hwre _ Complex.I (Or.inl rfl) (by ring_nf; rw [Complex.I_sq]; ring)
+  have hX2 : ((Complex.I / 2) • (((-Complex.I) • diagonal w) - ((-Complex.I) • diagonal w)ᴴ)).PosDef :=
+    posDef_diag_re w hwre _ (-Complex.I) (Or.inr rfl) (by ring_nf; rw [Complex.I_sq]; ring)
+  have hQ1 := det_ne_of_posDef h1 h2 h3 h4 _ _ hI2 hX1
+  have hQ2 := det_ne_of_posDef h1 h2 h3 h4 _ _ hI2' hX2
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · unfold IsSiegel
+    rw [hpt]
+    exact siegel_of h1 h2 h3 h4 _ (isUnit_iff_ne_zero.2 hQ1) _ hX1
+  · unfold IsSiegel
+    rw [hpt, conjTranspose_conjTranspose]
+    have e : ∀ Z : Matrix (Fin n) (Fin n) ℂ, (-(Complex.I / 2)) • (Zᴴ - Z) = (Complex.I / 2) • (Z - Zᴴ) := by
+      intro Z; rw [← neg_sub, smul_neg, neg_smul, neg_neg]
+    rw [e]
+    exact siegel_of h1 h2 h3 h4 _ (isUnit_iff_ne_zero.2 hQ2) _ hX2
+  · rw [(hblk _).1, det_mul]; exact mul_ne_zero hQ1 (isUnit_iff_ne_zero.1 hFu)
+  · rw [(hblk _).1, det_mul]; exact mul_ne_zero hQ2 (isUnit_iff_ne_zero.1 hFu)
+
+end PositivityTheory.Rg.Sw.Glob
+end
+end
+
+section
+noncomputable section
+
+open Matrix Topology
+open scoped ComplexOrder
+
+namespace PositivityTheory.Rg.Sw.Glob
+
+def famPQ {m n : ℕ} (ε : Fin m → Bool) (t c : ℝ) (e : ℤ) (p q : ℕ) (y : GR n) (X : Fin n → ℝ) (z : ℂ)
+    (u : Fin m → Fin n → ℂ) : ℂ :=
+  jC e p q y X z * gC ε t c (ptZ y X z Complex.I) (ptZ y X z (-Complex.I)) u
+
+namespace DBoundH
+
+variable {n : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι]
+
+def EntD (S : Set ℂ) (f : ℂ → Matrix ι ι ℂ) : Prop := ∀ i j, DifferentiableOn ℂ (fun z => f z i j) S
+
+theorem entD_const (S : Set ℂ) (A : Matrix ι ι ℂ) : EntD S (fun _ => A) := fun _ _ => differentiableOn_const _
+
+theorem entD_add {S : Set ℂ} {f g : ℂ → Matrix ι ι ℂ} (hf : EntD S f) (hg : EntD S g) :
+    EntD S (fun z => f z + g z) := fun i j => by
+  simp only [Matrix.add_apply]
+  exact (hf i j).fun_add (hg i j)
+
+theorem entD_mul {S : Set ℂ} {f g : ℂ → Matrix ι ι ℂ} (hf : EntD S f) (hg : EntD S g) :
+    EntD S (fun z => f z * g z) := fun i j => by
+  simp only [Matrix.mul_apply]
+  exact DifferentiableOn.fun_sum fun k _ => (hf i k).mul (hg k j)
+
+theorem det_diff {S : Set ℂ} {f : ℂ → Matrix ι ι ℂ} (hf : EntD S f) :
+    DifferentiableOn ℂ (fun z => (f z).det) S := by
+  simp only [Matrix.det_apply]
+  refine DifferentiableOn.fun_sum fun σ _ => ?_
+  simp only [Units.smul_def, zsmul_eq_mul]
+  exact (differentiableOn_const _).mul (DifferentiableOn.fun_finsetProd fun i _ => hf _ _)
+
+theorem entD_adjugate {S : Set ℂ} {f : ℂ → Matrix ι ι ℂ} (hf : EntD S f) :
+    EntD S (fun z => (f z).adjugate) := fun i j => by
+  simp only [Matrix.adjugate_apply]
+  refine det_diff (f := fun z => (f z).updateRow j (Pi.single i 1)) (fun a b => ?_)
+  by_cases hab : a = j
+  · subst hab; simp only [Matrix.updateRow_self]; exact differentiableOn_const _
+  · simp only [Matrix.updateRow_ne hab]; exact hf a b
+
+theorem entD_inv {S : Set ℂ} {f : ℂ → Matrix ι ι ℂ} (hf : EntD S f) (h0 : ∀ z ∈ S, (f z).det ≠ 0) :
+    EntD S (fun z => (f z)⁻¹) := fun i j => by
+  simp only [Matrix.inv_def, Matrix.smul_apply, smul_eq_mul, Ring.inverse_eq_inv']
+  exact ((det_diff hf).inv h0).mul (entD_adjugate hf i j)
+
+theorem trace_diff {S : Set ℂ} {f : ℂ → Matrix ι ι ℂ} (hf : EntD S f) :
+    DifferentiableOn ℂ (fun z => (f z).trace) S := by
+  simp only [Matrix.trace, Matrix.diag]
+  exact DifferentiableOn.fun_sum fun i _ => hf i i
+
+theorem entD_aC (X : Fin n → ℝ) (S : Set ℂ) : EntD S (aC X) := by
+  intro i j
+  rcases i with i | i <;> rcases j with j | j
+  · by_cases h : i = j
+    · subst h
+      simpa [aC] using (by fun_prop : Differentiable ℂ (fun z : ℂ => Complex.exp (z * (X i : ℂ)))).differentiableOn
+    · simpa [aC, h] using differentiableOn_const (c := (0 : ℂ))
+  · simpa [aC] using differentiableOn_const (c := (0 : ℂ))
+  · simpa [aC] using differentiableOn_const (c := (0 : ℂ))
+  · by_cases h : i = j
+    · subst h
+      simpa [aC] using (by fun_prop : Differentiable ℂ (fun z : ℂ => Complex.exp (-(z * (X i : ℂ))))).differentiableOn
+    · simpa [aC, h] using differentiableOn_const (c := (0 : ℂ))
+
+theorem entD_toBlocks₁₁ {S : Set ℂ} {f : ℂ → Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fin n) ℂ}
+    (hf : EntD S f) : EntD S (fun z => (f z).toBlocks₁₁) :=
+  fun i j => hf (Sum.inl i) (Sum.inl j)
+
+theorem entD_toBlocks₁₂ {S : Set ℂ} {f : ℂ → Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fin n) ℂ}
+    (hf : EntD S f) : EntD S (fun z => (f z).toBlocks₁₂) :=
+  fun i j => hf (Sum.inl i) (Sum.inr j)
+
+theorem entD_toBlocks₂₁ {S : Set ℂ} {f : ℂ → Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fin n) ℂ}
+    (hf : EntD S f) : EntD S (fun z => (f z).toBlocks₂₁) :=
+  fun i j => hf (Sum.inr i) (Sum.inl j)
+
+theorem entD_toBlocks₂₂ {S : Set ℂ} {f : ℂ → Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fin n) ℂ}
+    (hf : EntD S f) : EntD S (fun z => (f z).toBlocks₂₂) :=
+  fun i j => hf (Sum.inr i) (Sum.inr j)
+
+theorem bigM_diff (y : GR n) (X : Fin n → ℝ) (S : Set ℂ) : EntD S (fun z => mR y * aC X z) :=
+  entD_mul (entD_const _ _) (entD_aC X S)
+
+theorem det_aC (X : Fin n → ℝ) (z : ℂ) : (aC X z).det = 1 := by
+  unfold aC
+  rw [Matrix.det_fromBlocks_zero₂₁, det_diagonal, det_diagonal, ← Finset.prod_mul_distrib]
+  exact Finset.prod_eq_one fun j _ => by rw [← Complex.exp_add]; simp
+
+theorem det_bigM_ne (y : GR n) (X : Fin n → ℝ) (z : ℂ) : (mR y * aC X z).det ≠ 0 := by
+  rw [det_mul, det_aC, mul_one]
+  exact ((Matrix.isUnit_iff_isUnit_det _).1 y.1.isUnit).ne_zero
+
+end DBoundH
+
+namespace DBoundH
+
+variable {ι : Type} [Fintype ι] [DecidableEq ι]
+
+theorem famPQ_holo {m n : ℕ} (ε : Fin m → Bool) (t c : ℝ) (e : ℤ) (p q : ℕ) (X : Fin n → ℝ) (y : GR n)
+    (u : Fin m → Fin n → ℂ) : DifferentiableOn ℂ (fun z => famPQ ε t c e p q y X z u) (stripS X) := by
+  set S := stripS X
+  have hM := bigM_diff y X S
+  have hQ : ∀ s : ℂ, EntD S (fun z => (mR y * aC X z).toBlocks₂₁ * (s • 1) + (mR y * aC X z).toBlocks₂₂) :=
+    fun s => entD_add (entD_mul (entD_toBlocks₂₁ hM) (entD_const _ _)) (entD_toBlocks₂₂ hM)
+  have hP : ∀ s : ℂ, EntD S (fun z => (mR y * aC X z).toBlocks₁₁ * (s • 1) + (mR y * aC X z).toBlocks₁₂) :=
+    fun s => entD_add (entD_mul (entD_toBlocks₁₁ hM) (entD_const _ _)) (entD_toBlocks₁₂ hM)
+  have hd1 : ∀ z ∈ S, ((mR y * aC X z).toBlocks₂₁ * (Complex.I • 1) + (mR y * aC X z).toBlocks₂₂).det ≠ 0 :=
+    fun z hz => (dSieg n y X z hz).2.2.1
+  have hd2 : ∀ z ∈ S, ((mR y * aC X z).toBlocks₂₁ * ((-Complex.I) • 1) + (mR y * aC X z).toBlocks₂₂).det ≠ 0 :=
+    fun z hz => (dSieg n y X z hz).2.2.2
+  have hZ1 : EntD S (fun z => ptZ y X z Complex.I) := entD_mul (hP _) (entD_inv (hQ _) hd1)
+  have hZ2 : EntD S (fun z => ptZ y X z (-Complex.I)) := entD_mul (hP _) (entD_inv (hQ _) hd2)
+  have hj : DifferentiableOn ℂ (fun z => jC e p q y X z) S := by
+    unfold jC
+    refine (((det_diff hM).zpow (Or.inl fun z _ => det_bigM_ne y X z)).mul
+      ((det_diff (hQ _)).zpow (Or.inl fun z hz => hd1 z hz))).mul ((det_diff (hQ _)).zpow (Or.inl fun z hz => hd2 z hz))
+  have hg : DifferentiableOn ℂ (fun z => gC ε t c (ptZ y X z Complex.I) (ptZ y X z (-Complex.I)) u) S := by
+    unfold gC
+    refine DifferentiableOn.cexp ?_
+    exact ((trace_diff (entD_mul hZ1 (entD_const _ _))).const_mul _).sub
+      ((trace_diff (entD_mul hZ2 (entD_const _ _))).const_mul _)
+  exact hj.mul hg
+
+variable {n : ℕ} {T : Type} [TopologicalSpace T]
+
+def EntC (S : Set T) (f : T → Matrix ι ι ℂ) : Prop := ∀ i j, ContinuousOn (fun x => f x i j) S
+
+omit [Fintype ι] [DecidableEq ι] in
+theorem entC_const (S : Set T) (A : Matrix ι ι ℂ) : EntC S (fun _ => A) := fun _ _ => continuousOn_const
+
+omit [Fintype ι] [DecidableEq ι] in
+theorem entC_add {S : Set T} {f g : T → Matrix ι ι ℂ} (hf : EntC S f) (hg : EntC S g) :
+    EntC S (fun z => f z + g z) := fun i j => by
+  simp only [Matrix.add_apply]
+  exact (hf i j).add (hg i j)
+
+omit [DecidableEq ι] in
+theorem entC_mul {S : Set T} {f g : T → Matrix ι ι ℂ} (hf : EntC S f) (hg : EntC S g) :
+    EntC S (fun z => f z * g z) := fun i j => by
+  simp only [Matrix.mul_apply]
+  exact continuousOn_finset_sum _ fun k _ => (hf i k).mul (hg k j)
+
+theorem det_cont {S : Set T} {f : T → Matrix ι ι ℂ} (hf : EntC S f) :
+    ContinuousOn (fun z => (f z).det) S := by
+  simp only [Matrix.det_apply]
+  refine continuousOn_finset_sum _ fun σ _ => ?_
+  simp only [Units.smul_def, zsmul_eq_mul]
+  exact continuousOn_const.mul (continuousOn_finset_prod _ fun i _ => hf _ _)
+
+theorem entC_adjugate {S : Set T} {f : T → Matrix ι ι ℂ} (hf : EntC S f) :
+    EntC S (fun z => (f z).adjugate) := fun i j => by
+  simp only [Matrix.adjugate_apply]
+  refine det_cont (f := fun z => (f z).updateRow j (Pi.single i 1)) (fun a b => ?_)
+  by_cases hab : a = j
+  · subst hab; simp only [Matrix.updateRow_self]; exact continuousOn_const
+  · simp only [Matrix.updateRow_ne hab]; exact hf a b
+
+theorem entC_inv {S : Set T} {f : T → Matrix ι ι ℂ} (hf : EntC S f) (h0 : ∀ z ∈ S, (f z).det ≠ 0) :
+    EntC S (fun z => (f z)⁻¹) := fun i j => by
+  simp only [Matrix.inv_def, Matrix.smul_apply, smul_eq_mul, Ring.inverse_eq_inv']
+  exact ((det_cont hf).inv₀ h0).mul (entC_adjugate hf i j)
+
+omit [DecidableEq ι] in
+theorem trace_cont {S : Set T} {f : T → Matrix ι ι ℂ} (hf : EntC S f) :
+    ContinuousOn (fun z => (f z).trace) S := by
+  simp only [Matrix.trace, Matrix.diag]
+  exact continuousOn_finset_sum _ fun i _ => hf i i
+
+theorem mR_cont : Continuous fun y : GR n => mR y :=
+  Units.continuous_val.comp continuous_subtype_val
+
+theorem gramB_cont {m : ℕ} (ε : Fin m → Bool) (b : Bool) (i j : Fin n) :
+    Continuous fun u : Fin m → Fin n → ℂ => gramB ε b u i j := by
+  unfold gramB evX
+  exact (MvPolynomial.continuous_eval _).comp (continuous_pi fun k => by
+    split_ifs
+    · exact continuous_star.comp ((continuous_apply _).comp (continuous_apply _))
+    · exact (continuous_apply _).comp (continuous_apply _))
+
+theorem famPQ_cont {m : ℕ} (ε : Fin m → Bool) (t c : ℝ) (e : ℤ) (p q : ℕ) (X : Fin n → ℝ) :
+    ContinuousOn (fun p' : GR n × ℂ × (Fin m → Fin n → ℂ) => famPQ ε t c e p q p'.1 X p'.2.1 p'.2.2)
+      (Set.univ ×ˢ (stripS X ×ˢ Set.univ)) := by
+  set S : Set (GR n × ℂ × (Fin m → Fin n → ℂ)) := Set.univ ×ˢ (stripS X ×ˢ Set.univ) with hS
+  have hzS : ∀ p' ∈ S, p'.2.1 ∈ stripS X := fun p' hp => hp.2.1
+  have hY : EntC S (fun p' : GR n × ℂ × (Fin m → Fin n → ℂ) => mR p'.1) := fun i j =>
+    (((continuous_apply j).comp ((continuous_apply i).comp mR_cont)).comp continuous_fst).continuousOn
+  have hA : EntC S (fun p' : GR n × ℂ × (Fin m → Fin n → ℂ) => aC X p'.2.1) := by
+    intro i j
+    have := (entD_aC X Set.univ i j).continuousOn
+    exact (this.comp_continuous (continuous_fst.comp continuous_snd) (fun _ => Set.mem_univ _)).continuousOn
+  have hM : EntC S (fun p' : GR n × ℂ × (Fin m → Fin n → ℂ) => mR p'.1 * aC X p'.2.1) := entC_mul hY hA
+  have hM' : ∀ i j, ContinuousOn (fun p' : GR n × ℂ × (Fin m → Fin n → ℂ) => (mR p'.1 * aC X p'.2.1) i j) S := hM
+  have projected_block_lower_sum : EntC S (fun p' : GR n × ℂ × (Fin m → Fin n → ℂ) => (mR p'.1 * aC X p'.2.1).toBlocks₂₁) :=
+    fun i j => hM' (Sum.inr i) (Sum.inl j)
+  have lowerDiagonalBlockAsGL : EntC S (fun p' : GR n × ℂ × (Fin m → Fin n → ℂ) => (mR p'.1 * aC X p'.2.1).toBlocks₂₂) :=
+    fun i j => hM' (Sum.inr i) (Sum.inr j)
+  have upper_block_rank_one_update : EntC S (fun p' : GR n × ℂ × (Fin m → Fin n → ℂ) => (mR p'.1 * aC X p'.2.1).toBlocks₁₁) :=
+    fun i j => hM' (Sum.inl i) (Sum.inl j)
+  have projected_block_upper_sum : EntC S (fun p' : GR n × ℂ × (Fin m → Fin n → ℂ) => (mR p'.1 * aC X p'.2.1).toBlocks₁₂) :=
+    fun i j => hM' (Sum.inl i) (Sum.inr j)
+  have hQ : ∀ s : ℂ, EntC S (fun p' : GR n × ℂ × (Fin m → Fin n → ℂ) =>
+      (mR p'.1 * aC X p'.2.1).toBlocks₂₁ * (s • 1) + (mR p'.1 * aC X p'.2.1).toBlocks₂₂) :=
+    fun s => entC_add (entC_mul projected_block_lower_sum (entC_const _ _)) lowerDiagonalBlockAsGL
+  have hP : ∀ s : ℂ, EntC S (fun p' : GR n × ℂ × (Fin m → Fin n → ℂ) =>
+      (mR p'.1 * aC X p'.2.1).toBlocks₁₁ * (s • 1) + (mR p'.1 * aC X p'.2.1).toBlocks₁₂) :=
+    fun s => entC_add (entC_mul upper_block_rank_one_update (entC_const _ _)) projected_block_upper_sum
+  have hd1 : ∀ p' ∈ S, ((mR p'.1 * aC X p'.2.1).toBlocks₂₁ * (Complex.I • 1) + (mR p'.1 * aC X p'.2.1).toBlocks₂₂).det ≠ 0 :=
+    fun p' hp => (dSieg n p'.1 X p'.2.1 (hzS p' hp)).2.2.1
+  have hd2 : ∀ p' ∈ S, ((mR p'.1 * aC X p'.2.1).toBlocks₂₁ * ((-Complex.I) • 1) + (mR p'.1 * aC X p'.2.1).toBlocks₂₂).det ≠ 0 :=
+    fun p' hp => (dSieg n p'.1 X p'.2.1 (hzS p' hp)).2.2.2
+  have hZ1 : EntC S (fun p' : GR n × ℂ × (Fin m → Fin n → ℂ) => ptZ p'.1 X p'.2.1 Complex.I) :=
+    entC_mul (hP _) (entC_inv (hQ _) hd1)
+  have hZ2 : EntC S (fun p' : GR n × ℂ × (Fin m → Fin n → ℂ) => ptZ p'.1 X p'.2.1 (-Complex.I)) :=
+    entC_mul (hP _) (entC_inv (hQ _) hd2)
+  have hG : ∀ b : Bool, EntC S (fun p' : GR n × ℂ × (Fin m → Fin n → ℂ) => gramB (epsT t ε) b p'.2.2) := fun b i j =>
+    ((gramB_cont (epsT t ε) b i j).comp (continuous_snd.comp continuous_snd)).continuousOn
+  have hj : ContinuousOn (fun p' : GR n × ℂ × (Fin m → Fin n → ℂ) => jC e p q p'.1 X p'.2.1) S := by
+    unfold jC
+    exact (((det_cont hM).zpow₀ _ fun p' _ => Or.inl (det_bigM_ne p'.1 X p'.2.1)).mul
+      ((det_cont (hQ _)).zpow₀ _ fun p' hp => Or.inl (hd1 p' hp))).mul
+      ((det_cont (hQ _)).zpow₀ _ fun p' hp => Or.inl (hd2 p' hp))
+  have hg : ContinuousOn (fun p' : GR n × ℂ × (Fin m → Fin n → ℂ) =>
+      gC ε t c (ptZ p'.1 X p'.2.1 Complex.I) (ptZ p'.1 X p'.2.1 (-Complex.I)) p'.2.2) S := by
+    unfold gC
+    refine ContinuousOn.cexp ?_
+    exact (continuousOn_const.mul (trace_cont (entC_mul hZ1 (hG true)))).sub
+      (continuousOn_const.mul (trace_cont (entC_mul hZ2 (hG false))))
+  exact hj.mul hg
+
+end DBoundH
+
+end PositivityTheory.Rg.Sw.Glob
+end
+end
+
+section
+noncomputable section
+
+open Matrix Topology Filter
+open scoped ComplexOrder
+
+namespace PositivityTheory.Rg.Sw.Glob
+
+namespace DBoundAH
+
+variable {n : ℕ}
+
+def rowC {m : ℕ} (u : Fin m → Fin n → ℂ) (a : Fin m) : Fin n → ℂ := fun j => star (u a j)
+
+theorem trace_gramB {m : ℕ} (Z : Matrix (Fin n) (Fin n) ℂ) (ε : Fin m → Bool) (b : Bool) (u : Fin m → Fin n → ℂ) :
+    (Z * gramB ε b u).trace = ∑ a ∈ Finset.univ.filter (fun a => ε a = b),
+      star (rowC u a) ⬝ᵥ (Z *ᵥ rowC u a) := by
+  simp only [Matrix.trace, Matrix.diag, Matrix.mul_apply, gramB, evX, Qb, map_sum, map_mul, MvPolynomial.eval_X,
+    dotProduct, Matrix.mulVec, rowC, Pi.star_apply, star_star, Finset.mul_sum, Finset.sum_mul]
+  simp only [Bool.true_eq_false, if_true, if_false]
+  conv_rhs => rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl (fun i _ => ?_)
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl (fun k _ => Finset.sum_congr rfl (fun a _ => ?_))
+  simp only [Bool.false_eq_true, if_false]
+  ring
+
+theorem star_dot_conjTranspose (Z : Matrix (Fin n) (Fin n) ℂ) (w : Fin n → ℂ) :
+    star w ⬝ᵥ (Zᴴ *ᵥ w) = star (star w ⬝ᵥ (Z *ᵥ w)) := by
+  simp only [dotProduct, mulVec, conjTranspose_apply, Pi.star_apply, star_sum, star_mul', star_star, Finset.mul_sum]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+  ring
+
+theorem im_eq_re (Z : Matrix (Fin n) (Fin n) ℂ) (w : Fin n → ℂ) :
+    (star w ⬝ᵥ (Z *ᵥ w)).im = (star w ⬝ᵥ (((-(Complex.I / 2)) • (Z - Zᴴ)) *ᵥ w)).re := by
+  rw [Matrix.smul_mulVec, Matrix.sub_mulVec, dotProduct_smul, dotProduct_sub, star_dot_conjTranspose]
+  simp only [smul_eq_mul, Complex.mul_re, Complex.neg_re, Complex.neg_im, Complex.div_ofNat_re,
+    Complex.div_ofNat_im, Complex.I_re, Complex.I_im, Complex.sub_re, Complex.sub_im, Complex.star_def,
+    Complex.conj_re, Complex.conj_im]
+  ring
+
+private theorem norm_star_dotProduct_mulVec_le_sum_norm_mul (M : Matrix (Fin n) (Fin n) ℂ) (w : Fin n → ℂ) :
+    ‖star w ⬝ᵥ (M *ᵥ w)‖ ≤ (∑ i, ∑ j, ‖M i j‖) * ∑ j, ‖w j‖ ^ 2 := by
+  have hS : ∀ i j, ‖w i‖ * ‖w j‖ ≤ ∑ k, ‖w k‖ ^ 2 := by
+    intro i j
+    have hi : ‖w i‖ ^ 2 ≤ ∑ k, ‖w k‖ ^ 2 :=
+      Finset.single_le_sum (f := fun k => ‖w k‖ ^ 2) (fun k _ => by positivity) (Finset.mem_univ i)
+    have hj : ‖w j‖ ^ 2 ≤ ∑ k, ‖w k‖ ^ 2 :=
+      Finset.single_le_sum (f := fun k => ‖w k‖ ^ 2) (fun k _ => by positivity) (Finset.mem_univ j)
+    nlinarith [sq_nonneg (‖w i‖ - ‖w j‖), norm_nonneg (w i), norm_nonneg (w j)]
+  calc ‖star w ⬝ᵥ (M *ᵥ w)‖ = ‖∑ i, ∑ j, star (w i) * (M i j * w j)‖ := by
+        simp [dotProduct, Matrix.mulVec, Finset.mul_sum]
+    _ ≤ ∑ i, ∑ j, ‖star (w i) * (M i j * w j)‖ :=
+        (norm_sum_le _ _).trans (Finset.sum_le_sum fun i _ => norm_sum_le _ _)
+    _ = ∑ i, ∑ j, ‖M i j‖ * (‖w i‖ * ‖w j‖) :=
+        Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by
+          rw [norm_mul, norm_mul, norm_star]
+          ring
+    _ ≤ ∑ i, ∑ j, ‖M i j‖ * ∑ k, ‖w k‖ ^ 2 :=
+        Finset.sum_le_sum fun i _ => Finset.sum_le_sum fun j _ =>
+          mul_le_mul_of_nonneg_left (hS i j) (norm_nonneg _)
+    _ = (∑ i, ∑ j, ‖M i j‖) * ∑ k, ‖w k‖ ^ 2 := by simp [Finset.sum_mul]
+
+private theorem exists_pos_mul_sum_sq_le_re_of_posDef (H0 : Matrix (Fin n) (Fin n) ℂ) (h0 : H0.PosDef) :
+    ∃ c > 0, ∀ w : Fin n → ℂ, c * ∑ j, ‖w j‖ ^ 2 ≤ (star w ⬝ᵥ (H0 *ᵥ w)).re := by
+  classical
+  have hA := h0.1
+  have hspec : H0 = (hA.eigenvectorUnitary : Matrix (Fin n) (Fin n) ℂ) *
+      Matrix.diagonal (fun i => ((hA.eigenvalues i : ℝ) : ℂ)) * star (hA.eigenvectorUnitary : Matrix (Fin n) (Fin n) ℂ) := by
+    have := hA.spectral_theorem
+    rw [Unitary.conjStarAlgAut_apply] at this
+    exact this
+  obtain ⟨c, hc, hcle⟩ : ∃ c > 0, ∀ i, c ≤ hA.eigenvalues i := by
+    rcases isEmpty_or_nonempty (Fin n) with hn | hn
+    · exact ⟨1, one_pos, fun i => (IsEmpty.false i).elim⟩
+    · obtain ⟨i0, _, hi0⟩ := Finset.exists_min_image Finset.univ hA.eigenvalues Finset.univ_nonempty
+      exact ⟨hA.eigenvalues i0, h0.eigenvalues_pos i0, fun i => hi0 i (Finset.mem_univ i)⟩
+  refine ⟨c, hc, fun w => ?_⟩
+  have hsv : star w ᵥ* (hA.eigenvectorUnitary : Matrix (Fin n) (Fin n) ℂ) =
+      star (star (hA.eigenvectorUnitary : Matrix (Fin n) (Fin n) ℂ) *ᵥ w) := by
+    rw [Matrix.star_mulVec, Matrix.star_eq_conjTranspose, Matrix.conjTranspose_conjTranspose]
+  have h1 : star w ⬝ᵥ (H0 *ᵥ w) = ∑ i, ((hA.eigenvalues i : ℝ) : ℂ) *
+      (star ((star (hA.eigenvectorUnitary : Matrix (Fin n) (Fin n) ℂ) *ᵥ w) i) *
+        ((star (hA.eigenvectorUnitary : Matrix (Fin n) (Fin n) ℂ) *ᵥ w) i)) := by
+    conv_lhs => rw [hspec]
+    rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec, hsv]
+    simp only [dotProduct, Matrix.mulVec_diagonal, Pi.star_apply]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    ring
+  have h2 : star (star (hA.eigenvectorUnitary : Matrix (Fin n) (Fin n) ℂ) *ᵥ w) ⬝ᵥ
+      (star (hA.eigenvectorUnitary : Matrix (Fin n) (Fin n) ℂ) *ᵥ w) = star w ⬝ᵥ w := by
+    rw [← hsv, ← Matrix.dotProduct_mulVec, Matrix.mulVec_mulVec, Unitary.mul_star_self_of_mem (hA.eigenvectorUnitary).2, Matrix.one_mulVec]
+  have hre : ∀ z : ℂ, (star z * z).re = ‖z‖ ^ 2 := by
+    intro z
+    rw [Complex.star_def, Complex.conj_mul']
+    norm_cast
+  have h2' : ∑ i, ‖(star (hA.eigenvectorUnitary : Matrix (Fin n) (Fin n) ℂ) *ᵥ w) i‖ ^ 2 = ∑ j, ‖w j‖ ^ 2 := by
+    have := congrArg Complex.re h2
+    simp only [dotProduct, Pi.star_apply, Complex.re_sum, hre] at this
+    exact this
+  rw [h1, Complex.re_sum, ← h2', Finset.mul_sum]
+  refine Finset.sum_le_sum fun i _ => ?_
+  rw [Complex.re_ofReal_mul, hre]
+  exact mul_le_mul_of_nonneg_right (hcle i) (by positivity)
+
+theorem posDef_unif {P : Type} [TopologicalSpace P] {p₀ : P} (H : P → Matrix (Fin n) (Fin n) ℂ)
+    (hH : ∀ i j, ContinuousAt (fun p => H p i j) p₀) (h0 : (H p₀).PosDef) :
+    ∃ δ > 0, ∀ᶠ p in 𝓝 p₀, ∀ w : Fin n → ℂ, δ * ∑ j, ‖w j‖ ^ 2 ≤ (star w ⬝ᵥ (H p *ᵥ w)).re := by
+  obtain ⟨c, hc, hcoer⟩ := exists_pos_mul_sum_sq_le_re_of_posDef (H p₀) h0
+  have hf : Tendsto (fun p => ∑ i, ∑ j, ‖H p i j - H p₀ i j‖) (𝓝 p₀) (𝓝 0) := by
+    have h00 : (0 : ℝ) = ∑ i : Fin n, ∑ j : Fin n, ‖H p₀ i j - H p₀ i j‖ := by simp
+    rw [h00]
+    exact tendsto_finset_sum _ fun i _ => tendsto_finset_sum _ fun j _ =>
+      ((hH i j).tendsto.sub tendsto_const_nhds).norm
+  have hev := (tendsto_order.1 hf).2 (c / 2) (by positivity)
+  refine ⟨c / 2, by positivity, hev.mono fun p hp w => ?_⟩
+  have hb := norm_star_dotProduct_mulVec_le_sum_norm_mul (H p - H p₀) w
+  have hsplit : (star w ⬝ᵥ (H p *ᵥ w)).re =
+      (star w ⬝ᵥ (H p₀ *ᵥ w)).re + (star w ⬝ᵥ ((H p - H p₀) *ᵥ w)).re := by
+    rw [Matrix.sub_mulVec, dotProduct_sub]
+    simp
+  have hlow : -‖star w ⬝ᵥ ((H p - H p₀) *ᵥ w)‖ ≤ (star w ⬝ᵥ ((H p - H p₀) *ᵥ w)).re :=
+    (abs_le.mp (Complex.abs_re_le_norm _)).1
+  have hS : 0 ≤ ∑ j, ‖w j‖ ^ 2 := Finset.sum_nonneg fun j _ => by positivity
+  have hcw := hcoer w
+  have hp' : ∑ i, ∑ j, ‖(H p - H p₀) i j‖ < c / 2 := by simpa [Matrix.sub_apply] using hp
+  have hK := mul_le_mul_of_nonneg_right hp'.le hS
+  linarith
+
+end DBoundAH
+
+end PositivityTheory.Rg.Sw.Glob
+end
+end
+
+section
 noncomputable section
 
 open Matrix Topology Filter
@@ -184,3 +732,5 @@ theorem dBound : DBound := by
   exact dBoundPQ m n ε t c e (cnt (epsT t ε) true) (cnt (epsT t ε) false) X hc ht
 
 end PositivityTheory.Rg.Sw.Glob
+end
+end

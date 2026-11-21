@@ -182,32 +182,6 @@ theorem minorIJ_block_zero {R : Type} [CommRing R] {j : ℕ} {i : Fin N} {h : Ma
 def genBlock (Ω : Type) [Field Ω] (N j : ℕ) : Matrix (Fin N) (Fin N) (MvPolynomial (Fin N × Fin N) Ω) :=
   fun a b => if ((a : ℕ) < N - j ↔ (b : ℕ) < N - j) then X (a, b) else 0
 
-theorem isBlockDiag_inv {F : Type} [Field F] {j : ℕ} {T : Matrix (Fin N) (Fin N) F} (hT : IsBlockDiag j T)
-    (hd : T.det ≠ 0) : IsBlockDiag j T⁻¹ := by
-  classical
-  haveI : Invertible T := Matrix.invertibleOfIsUnitDet T (isUnit_iff_ne_zero.mpr hd)
-  have h1 : T.BlockTriangular (fun a : Fin N => if (a : ℕ) < N - j then 0 else 1) := by
-    intro a b hab
-    refine hT a b fun hiff => ?_
-    simp only [hiff] at hab
-    exact lt_irrefl _ hab
-  have h2 : T.BlockTriangular (fun a : Fin N => if (a : ℕ) < N - j then 1 else 0) := by
-    intro a b hab
-    refine hT a b fun hiff => ?_
-    simp only [hiff] at hab
-    exact lt_irrefl _ hab
-  have i1 := Matrix.blockTriangular_inv_of_blockTriangular h1
-  have i2 := Matrix.blockTriangular_inv_of_blockTriangular h2
-  intro a b hab
-  by_cases ha : (a : ℕ) < N - j
-  · have hb : ¬ (b : ℕ) < N - j := fun hb => hab (iff_of_true ha hb)
-    refine i2 ?_
-    simp [ha, hb]
-  · have hb : (b : ℕ) < N - j := by
-      by_contra hb
-      exact hab (iff_of_false ha hb)
-    refine i1 ?_
-    simp [ha, hb]
 
 end Minors
 

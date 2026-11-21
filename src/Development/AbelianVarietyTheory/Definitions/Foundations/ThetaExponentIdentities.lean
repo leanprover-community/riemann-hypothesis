@@ -19,17 +19,8 @@ def zetaLogDeriv {n : ℕ} [NeZero n] (χ : DirichletCharacter ℂ n) : ℝ :=
 def maxLift (D : D7) (g : ℕ → ℝ) : ℝ :=
   (Icc 1 D.R.m).sup' ⟨1, mem_Icc.2 ⟨le_rfl, le_trans one_le_two D.R.two_le_m⟩⟩ g
 
-theorem le_maxLift {D : D7} (g : ℕ → ℝ) {j : ℕ} (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) : g j ≤ maxLift D g :=
-  le_sup' g (mem_Icc.2 ⟨h1, h2⟩)
 
-theorem maxLift_le_iff {D : D7} {g : ℕ → ℝ} {a : ℝ} : maxLift D g ≤ a ↔ ∀ j, 1 ≤ j → j ≤ D.R.m → g j ≤ a := by
-  refine (sup'_le_iff _ _).trans ?_
-  simp only [mem_Icc, and_imp]
 
-theorem exists_eq_maxLift (D : D7) (g : ℕ → ℝ) : ∃ j, 1 ≤ j ∧ j ≤ D.R.m ∧ maxLift D g = g j := by
-  obtain ⟨j, hj, h⟩ := exists_mem_eq_sup' (s := Icc 1 D.R.m)
-    ⟨1, mem_Icc.2 ⟨le_rfl, le_trans one_le_two D.R.two_le_m⟩⟩ g
-  exact ⟨j, (mem_Icc.1 hj).1, (mem_Icc.1 hj).2, h⟩
 
 variable {D : D7} {L : SizeData₂ D} {P : ParameterChoice' D L} (Q : ParamsT D L P)
 
@@ -61,18 +52,11 @@ def pageOf : SlopeBoundParameters where
   Nr := D.R.r
   g12 := (D.host.g 0 : ℝ) * D.host.g 1
 
-theorem pageOf_L : (pageOf Q).L = L.sc.L := rfl
 
-theorem pageOf_b : (pageOf Q).b = L.sc.b := rfl
 
-theorem pageOf_lrd : (pageOf Q).lrd = lrd D := rfl
 
-theorem pageOf_Lc : (pageOf Q).Lc = L.logDerivativeAtOne := L.logDerivative_at_one_eq.symm
 
-theorem log_derivative_at_zero : (pageOf Q).L0 = dlogL D 0 := rfl
 
-theorem pageOf_LL0_eq_placeRankTwoOne_LL0 : (pageOf Q).LL0 = placeRankTwoOne.LL0 D L := by
-  rw [SlopeBoundParameters.LL0, pageOf_Lc]; rfl
 
 theorem ppTsq_nonneg : 0 ≤ ppTsq Q := le_max_of_le_left (by positivity)
 
@@ -85,13 +69,8 @@ theorem T_eq {K : Type} [Field K] [NumberField K] [StarRing K] (F : SlopeBoundLi
   · have := ppTsq_nonneg Q
     positivity
 
-theorem PPp_le {j : ℕ} (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) : (numAt Q j).PPp ≤ (pageOf Q).PPp :=
-  le_maxLift (fun j => (numAt Q j).PPp) h1 h2
 
-theorem PPpp_le {j : ℕ} (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) : (numAt Q j).PPpp ≤ (pageOf Q).PPpp :=
-  le_maxLift (fun j => (numAt Q j).PPpp) h1 h2
 
-theorem leafDiff_pageOf : LeafDiff (pageOf Q) := rfl
 
 example : 2 * (pageOf Q).v = (pageOf Q).rd ∧ (Fintype.card (pageOf Q).Pl : ℝ) = (pageOf Q).f :=
   ⟨by show 2 * (D.host.rdE / 2) = D.host.rdE; ring, congrArg Nat.cast D.what₂.card_Tau⟩
@@ -119,41 +98,12 @@ def uCan (j : ℕ) (τ : D.what₂.Tau) (i : ℕ) : ℤ := canW D j i + uTwo Q j
 
 def uTop (j : ℕ) (τ : D.what₂.Tau) (i : ℕ) : ℤ := uCan Q j τ i + (tN Q : ℤ) * uOne Q j τ i
 
-theorem kapMinus_add_twW (j : ℕ) : kapMinus D j + twW D j = kap D j := by
-  funext τ i; simp [kapMinus, twW]
 
-theorem kapMinus_eq (j : ℕ) (τ : D.what₂.Tau) (i : ℕ) : kapMinus D j τ i = uMinus D j τ i + wAn D j τ := by
-  simp only [kapMinus, uMinus, uAn]; ring
 
-theorem remW_anchor (j : ℕ) (τ : D.what₂.Tau) : remW Q j τ (D.R.k - 2) = 0 := by
-  simp [remW, uOne_anchor]
 
-theorem uOne_gap (j : ℕ) (τ : D.what₂.Tau) (i : ℕ) : uOne Q j τ i - uOne Q j τ (i + 1) = gapOne Q j τ i := by
-  unfold uOne
-  rcases lt_or_ge i (D.R.k - 2) with h | h
-  · rw [sum_eq_sum_Ico_succ_bot h, Ico_eq_empty_of_le h.le, Ico_eq_empty_of_le (Nat.succ_le_of_lt h)]; simp
-  · rw [Ico_eq_empty_of_le h, Ico_eq_empty_of_le (h.trans (Nat.le_succ i)), sum_Ico_succ_top h]; simp
 
-theorem remW_gap (j : ℕ) (τ : D.what₂.Tau) (i : ℕ) :
-    0 ≤ remW Q j τ i - remW Q j τ (i + 1) ∧ remW Q j τ i - remW Q j τ (i + 1) ≤ tN Q + placeRankTwoOne.dimY D := by
-  have hp : (0 : ℤ) < ((tN Q + placeRankTwoOne.dimY D + 1 : ℕ) : ℤ) := by exact_mod_cast Nat.succ_pos _
-  have e : remW Q j τ i - remW Q j τ (i + 1) =
-      (aW D j τ i - aW D j τ (i + 1)) % ((tN Q + placeRankTwoOne.dimY D + 1 : ℕ) : ℤ) := by
-    have h := uOne_gap Q j τ i
-    rw [gapOne] at h
-    rw [Int.emod_def, ← h, remW, remW]; ring
-  rw [e]
-  have h2 := Int.emod_lt_of_pos (aW D j τ i - aW D j τ (i + 1)) hp
-  exact ⟨Int.emod_nonneg _ hp.ne', by push_cast at h2 ⊢; omega⟩
 
-theorem uTop_eq (j : ℕ) (τ : D.what₂.Tau) (i : ℕ) : uTop Q j τ i = uMinus D j τ i - aW D j τ (D.R.k - 2) := by
-  simp only [uTop, uCan, uTwo, remW, uMinus, aW]; push_cast; ring
 
-theorem aW_anchor {j : ℕ} (h1 : 1 ≤ j) (τ : D.what₂.Tau) : aW D j τ (D.R.k - 2) = -canW D j (D.R.k - 2) := by
-  have h : D.R.k - 2 < pp D j := by
-    have := D.R.m_add_three_le_k
-    simp only [pp, Ranks.sigW]; omega
-  simp [aW, uAn_anchor, deW, h]
 
 end Weights
 
@@ -234,10 +184,6 @@ theorem toWt_add (v v' : D.what₂.Tau → ℕ → ℤ) : toWt Dw (v + v') = toW
   simp only [toWt, Pi.add_apply, ← sum_add_distrib]
   exact sum_congr rfl fun t _ => by split_ifs <;> simp
 
-theorem toWt_smul (n : ℤ) (v : D.what₂.Tau → ℕ → ℤ) : toWt Dw (n • v) = n • toWt Dw v := by
-  funext τ i
-  simp only [toWt, Pi.smul_apply, smul_eq_mul, mul_sum]
-  exact sum_congr rfl fun t _ => by split_ifs <;> simp
 
 def psiOf {T : Par D} (h : T.PinHost) (t : D.what₂.Tau) : Psi T.H := ⟨DV.tauEmb D t, h.2.2.2 t⟩
 
@@ -267,32 +213,9 @@ theorem dimFlag_eq (h : T.Pins) (hj : InR D j) : dimFlag (T.Dw j) = placeRankTwo
   rw [dimFlag, Formalism.DegreeFormula.dimFl, (sig_eq h hj).2.2, ← Fintype.card_of_bijective (psiOf_bijective h), D.what₂.card_Tau,
     placeRankTwoOne.dimY, Nat.choose_two_right]
 
-theorem toWt_deW (h : T.Pins) (hj : InR D j) : toWt (T.Dw j) (fun _ => deW D j) = hodgeWt (T.Dw j) := by
-  funext τ i
-  obtain ⟨t, rfl⟩ := (psiOf_bijective h).2 τ
-  rw [toWt_psiOf, hodgeWt, barWt, deW, ← (sig_eq h hj).1]
 
-theorem toWt_uPr (h : T.Pins) (hj : InR D j) : toWt (T.Dw j) (uPr Q j) = uPrime (T.Dw j) (toWt (T.Dw j) (uOne Q j)) := by
-  funext τ i
-  rw [uPrime, ← toWt_deW h hj]
-  obtain ⟨t, rfl⟩ := (psiOf_bijective h).2 τ
-  simp only [Pi.sub_apply, Pi.smul_apply, toWt_psiOf, uPr, smul_eq_mul, (sig_eq h hj).2.2]
 
-theorem vdm_toWt (h : T.Pins) (hj : InR D j) (v : D.what₂.Tau → ℕ → ℤ) : ((vdm (toWt (T.Dw j) v) : ℤ) : ℝ) = GlobalTheory.IndefiniteRowSideFullHecke.DescentConstants.degW D v := by
-  rw [vdm, GlobalTheory.IndefiniteRowSideFullHecke.DescentConstants.degW, ← (psiOf_bijective h).prod_comp, Int.cast_prod]
-  refine prod_congr rfl fun t _ => ?_
-  simp only [toWt_psiOf]
-  rw [← (sig_eq h hj).2.2]
-  generalize (T.Dw j).p + (T.Dw j).q = N
-  rw [prod_comm' (t' := univ) (s' := fun l => Iio l) (by simp), ← Fin.prod_univ_eq_prod_range
-    (fun l => ∏ i ∈ range l, ((v t i : ℝ) - v t l)), Int.cast_prod]
-  refine prod_congr rfl fun l _ => ?_
-  rw [Int.cast_prod, ← Nat.Iio_eq_range, ← Fin.map_valEmbedding_Iio, prod_map]
-  simp
 
-theorem rhoB_toWt (h : T.Pins) (hj : InR D j) :
-    GlobalTheory.CompHt.rhoB (T.Dw j) (toWt (T.Dw j) (uOne Q j)) = GlobalTheory.IndefiniteRowSideFullHecke.DescentConstants.rhoB Q j := by
-  rw [GlobalTheory.CompHt.rhoB, rhoOf, ← toWt_uPr Q h hj, vdm_toWt h hj, vdm_toWt h hj, GlobalTheory.IndefiniteRowSideFullHecke.DescentConstants.rhoB]
 
 variable (D) in
 
@@ -305,8 +228,6 @@ def plainExp (Dw : Datum H) (v : D.what₂.Tau → ℕ → ℤ) : WTZ D.host.E :
 theorem thetaExp_add (v v' : D.what₂.Tau → ℕ → ℤ) : thetaExp D Dw (v + v') = thetaExp D Dw v + plainExp D Dw v' := by
   rw [thetaExp, thetaExp, plainExp, ← wtOf_add, toWt_add, add_zero]
 
-theorem thetaExp_kap (j : ℕ) : thetaExp D Dw (kapMinus D j) + plainExp D Dw (twW D j) = thetaExp D Dw (kap D j) := by
-  rw [← thetaExp_add, kapMinus_add_twW]
 
 theorem thetaExp_kap_eq (h : T.Pins) (hj : InR D j) (w : WeightFamilies.Wt D j) (hn : w.n = D.R.nV)
     (hw : Formalism.L2.Geo.wtOf w = DV.kapW D j) : thetaExp D (T.Dw j) (kap D j) = wtZ (wtA w) w.n := by

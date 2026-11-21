@@ -1,7 +1,30 @@
 import Formalism.SharpRestriction.ParConsts
 import Formalism.SharpRestriction.GrowthBounds.CovariantDegrees
-import Formalism.SharpRestriction.GrowthBounds.ConclusionA2
+import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
+import Formalism.SharpRestriction.GrowthBounds.ObjPol
 
+section
+noncomputable section
+
+open MvPolynomial
+
+namespace Formalism.MainNotions.CovariantDegrees
+
+open Formalism.MainNotions.G
+
+def HyperplaneRank (_D : Formalism.BasicNotions.D7) : Prop :=
+  ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (N n : ℕ) [NeZero n] (LL : Letters (Fin N))
+    (B : Fin N → ℕ),
+    LinearIndependent O (fun x : {x : PPath n N LL B × (ℤ → Finset (Fin n)) // IsSt x.1.mu x.2} =>
+      Psi O x.1.1.mu x.1.2) ∧
+    Submodule.span O {G | ∃ P : PPath n N LL B, ∃ I : ℤ → Finset (Fin n), IsSt P.mu I ∧ G = Psi O P.mu I} =
+      Pol O n B
+
+end Formalism.MainNotions.CovariantDegrees
+end
+end
+
+section
 noncomputable section
 
 open MvPolynomial Finset Formalism.MainNotions.G
@@ -502,10 +525,6 @@ def HodgeTateFromSandwich (D : Formalism.BasicNotions.D7) : Prop := admitted D �
 
 def Stmt (D : Formalism.BasicNotions.D7) : Prop := admitted D → AdmB D → Conclusion1 D ∧ Conclusion2 D
 
-theorem statement_of_degree_and_bound (D : Formalism.BasicNotions.D7) (h1 : IntegralityFromMetric D) (h2 : HodgeTateFromSandwich D) : Stmt D := by
-  intro hA hB
-  have p1 := h1 hA
-  exact ⟨p1, h2 hA p1.2.1 hB⟩
 
 def SecondPartClosed (D : Formalism.BasicNotions.D7) : Prop := HodgeTateFromSandwich D
 
@@ -526,3 +545,5 @@ def SecondPartFamilyClosed {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : P
 def FamilyClosedForm {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : Prop := KudlaFamilyStatement Fm
 
 end Formalism.MainNotions.CovariantDegrees
+end
+end

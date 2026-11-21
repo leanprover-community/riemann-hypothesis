@@ -69,8 +69,6 @@ def rdgU (n : SecNorm (recB h.toLawsCore)) : Rdg (recPlusN h j hj n) where
   ev_smul := evG_smul h j hj
   indep := evG_indep h j hj
 
-theorem isRdgU_rdgU (n : SecNorm (recB h.toLawsCore)) : IsRdgU h j hj n (rdgU h j hj n) (Equiv.refl _) :=
-  ⟨fun _ => rfl, fun u F y => congrFun (evG_single h j hj (deg u) F.1) y⟩
 
 end Record
 
@@ -418,41 +416,10 @@ def exampleEvaluation (σ : B₀.KO →+* ℂ) : Rdg (toyX X₀ hj) where
       (fn _).toLinearMap (LinearMap.ker_eq_bot.2 (fn_inj _))
     exact li_congr h1 fun i => (evalEmbedding_single σ (deg u) (F i).1).symm
 
-theorem exampleEvaluation_span_univ (σ : B₀.KO →+* ℂ) (u : WeightFamilies.Wt D j) :
-    (exampleEvaluation X₀ hj σ).sp u Set.univ = (homogeneousSubmodule _ ℂ (u.n / 2)).map (fn _).toLinearMap := by
-  apply le_antisymm
-  · refine Submodule.span_le.2 ?_
-    rintro _ ⟨F, -, rfl⟩
-    exact ⟨_, IsHomogeneous.map (cutR_le (hC B₀) j u F.2) σ, (evalEmbedding_single σ (deg u) F.1).symm⟩
-  · rintro _ ⟨q, hq, rfl⟩
-    change fn _ q ∈ _
-    rw [q.as_sum, map_sum]
-    refine Submodule.sum_mem _ fun β hβ => ?_
-    have hd : β.degree = u.n / 2 := by
-      by_contra hc
-      exact (mem_support_iff.1 hβ) (IsHomogeneous.coeff_eq_zero hq hc)
-    have hm : (monomial β (1 : B₀.KO)) ∈ cutR (hC B₀) j u := by
-      rw [cutR_eq _ hj]; exact isHomogeneous_monomial _ hd
-    have : fn _ (monomial β (coeff β q)) = coeff β q • fn _ (MvPolynomial.map σ (monomial β 1)) := by
-      rw [← map_smul, map_monomial, map_one, smul_monomial, smul_eq_mul, mul_one]
-    have h2 : fn _ (MvPolynomial.map σ (monomial β 1)) ∈ (exampleEvaluation X₀ hj σ).sp u Set.univ :=
-      Submodule.subset_span ⟨⟨_, hm⟩, trivial, evalEmbedding_single σ (deg u) _⟩
-    rw [this]
-    exact ((exampleEvaluation X₀ hj σ).sp u Set.univ).smul_mem (coeff β q) h2
 
 def toyW (k : Fin (WeightFamilies.dimY D j + 1)) : (exampleB B₀).Cusp j (wscalar D j 2 even_two) :=
   ⟨MvPolynomial.X k, by rw [cutR_eq _ hj]; rw [hC, show (wscalar D j 2 even_two).n / 2 = 1 from Nat.div_self two_pos]; exact isHomogeneous_X B₀.KO k⟩
 
-theorem toy (σ : B₀.KO →+* ℂ) (T : ℕ) (hT : WeightFamilies.dimY D j ≤ T) :
-    AnFacts (exampleEvaluation X₀ hj σ) (toyW hj) (fun p => if p.1 = p.2 then 1 else 0) (wscalar D j (2 * T) (even_two_mul T))
-      (wscalar D j 0 Even.zero) T ⊤ (fun _ : Fin 1 => (Pi.single 0 1 : Fin (WeightFamilies.dimY D j + 1) → ℂ)) := by
-  refine anFacts_of_poly (exampleEvaluation X₀ hj σ) (fn _) (exampleEvaluation_span_univ X₀ hj σ) _ _ (fun i => ?_) (fn_inj _) _
-    (fun p => fn_apply p _) rfl _ _ rfl T hT rfl
-  have h : ∀ k, (exampleEvaluation X₀ hj σ).ev ((toyX X₀ hj).inc _ (toyW hj k)) = fn _ (MvPolynomial.X k) := fun k =>
-    (evalEmbedding_single σ _ _).trans (congrArg _ (map_X σ k))
-  simp only [Rdg.s, h]
-  rw [Finset.sum_eq_single i (fun b _ hb => by rw [if_neg hb.symm]; exact zero_smul ℂ _) (by simp), if_pos rfl]
-  exact one_smul ℂ _
 
 end Examples₂
 
@@ -571,12 +538,5 @@ theorem relIn_margins_lines (σ : K →+* ℂ) (h : Module.finrank ℚ E = 4) :
 
 end Lines
 
-theorem archAt_empty_of_rho_zero {D : D7} {T : Top D} (h : LawsP T) (j : ℕ) {N : ℕ} {wL wF : WeightFamilies.Wt D j}
-    (w : Fin N → (recB h.toLawsCore).Cusp j wL) (Tn : ℕ) (CR Tt c : ℝ) (h0 : WeightFamilies.rho D j = 0)
-    (k : (T.U j T.σ₀).Comp) : IsEmpty (ArchAt h j w wF Tn (WeightFamilies.c1 D CR Tt c j)) :=
-  ⟨fun A => by
-    have := (A.Xa k).frame_theta_const_pos
-    rw [A.hc k, WeightFamilies.c1, h0] at this
-    simp at this⟩
 
 end GlobalTheory.Shares.Model

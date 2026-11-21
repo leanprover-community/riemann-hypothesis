@@ -1,8 +1,131 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.LatticeFrames.BuiltGIntro
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LatAtLattice
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.JetsInIffStepField
+import Formalism.SharpRestriction.Divisibility.LiftErrorLocal
+import Development.AbelianVarietyTheory.Definitions.LatticeFrames.PerIntOnAmb
+import Development.AbelianVarietyTheory.Definitions.LatticeFrames.HtPsiLeIffExists
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsOkPins
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LevelNotMemRowSG
 
+section
+noncomputable section
+
+namespace GlobalTheory.Core.Int
+
+open Formalism.BasicNotions NumberField IsDedekindDomain
+
+variable (D : D7) (u : D.what₂.Word)
+
+def PsiGeOn (N : Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V) (w : D.what₂.places.Pl) (s : ℝ) : Prop :=
+  ∀ φ ∈ N, ∃ (a : D.what₂.LL) (z : (D.fm u).ptLat.V), z ∈ locW D.what₂.places w (D.fm u).ptLat.L ∧
+    (D.fm u).ptEmb (a • z) = GlobalTheory.Core.Rk.PsiC (D.mem u).C (D.mem u).A (D.mem u).P (D.eMu u (D.jN u φ)) ∧
+    (a = 0 ∨ s ≤ (vAdd (D.plEq w) a : ℝ))
+
+end GlobalTheory.Core.Int
+end
+end
+
+section
+noncomputable section
+
+namespace GlobalTheory.Core.AtG
+
+open Formalism.BasicNotions Formalism.MainNotions NumberField
+
+variable (D : D7) (EX : ErrX D) (u : D.what₂.Word)
+
+def vDeg (i : Fin 2) (w : D.what₂.places.Pl) : ℝ := ∑ j ∈ Finset.Icc 1 D.R.m, vNN EX i u j w
+
+def errF (D : D7) : ℝ := (D.R.f : ℝ) * D.R.m * (D.R.N D.R.m : ℝ) ^ 2
+
+def errA (D : D7) : ℝ := errF D + 2 * (D.R.f : ℝ) * (D.R.m : ℝ) ^ 3 * (D.R.N D.R.m : ℝ)
+
+def Big : Prop :=
+  ∀ i : Fin 2, 2 * D.R.f * D.R.N D.R.m + 1 < D.host.g i ∧
+    ∀ j ∈ Finset.Icc 1 D.R.m, (∑ τ : D.what₂.Tau, nuAbs D u j τ) + 1 < (D.host.g i : ℝ)
+
+def ColA : Prop :=
+  ∀ (i : Fin 2) (w : D.what₂.places.Pl), D.what₂.places.resChar w = D.host.g i →
+    ∀ x ∈ ((D.fm u).lat 0).L, Int.ColGe D u w x (-vDeg D EX u i w - errF D)
+
+def PsiA : Prop :=
+  ∀ (i : Fin 2) (w : D.what₂.places.Pl), D.what₂.places.resChar w = D.host.g i →
+    Int.PsiGeOn D u (DV.MramL D u) w ((D.what₂.places.ramIdx w : ℝ) * (-vDeg D EX u i w - errA D))
+
+def PerA : Prop :=
+  ∀ (i : Fin 2) (w : D.what₂.places.Pl), D.what₂.places.resChar w = D.host.g i →
+    Int.PerGeOn D u (DV.MramL D u) w ((D.what₂.places.ramIdx w : ℝ) * (-vDeg D EX u i w - errA D))
+
+def DegExact : Prop :=
+  ∀ j ∈ Finset.Icc 1 D.R.m, ∀ τ : D.what₂.Tau,
+    nuAbs D u j τ =
+      (∑ a : Fin D.R.k, (((D.hcW u τ).u a : ℝ) - ((D.R.k : ℝ) + 1 - 2 * ((a : ℝ) + 1)) / 2)) +
+        (D.R.k : ℝ) * (wj D j τ - (D.R.k : ℝ) / 2 - (2 * (j : ℝ) - 1) * ((D.R.t : ℝ) + 1) / 2) +
+        ((D.R.t : ℝ) + 1) * ∑ i ∈ Finset.Ico 1 j, (wj D j τ - wj D i τ - ((j : ℝ) - i) * ((D.R.t : ℝ) + 1))
+
+def UnitSum : Prop :=
+  ∀ (i : Fin 2), ∀ j ∈ Finset.Icc 1 D.R.m, ∀ S : Finset D.what₂.places.Pl,
+    (∀ w, w ∈ S ↔ D.what₂.places.resChar w = D.host.g i) →
+    ∑ w ∈ S, 2 * lw D.what₂.LL (D.plEq w) * ((D.what₂.places.ramIdx w : ℝ) * vNN EX i u j w) =
+      (∑ τ : D.what₂.Tau, nuAbs D u j τ) * Real.log (D.host.g i : ℝ)
+
+def DegLe (L : SizeData₂ D) (C : ℝ) : Prop :=
+  ∀ j ∈ Finset.Icc 1 D.R.m,
+    (∑ τ : D.what₂.Tau, nuAbs D u j τ) ≤ (∑ t : D.host.TT, (L.aT t : ℝ)) + (D.R.k : ℝ) * (∑ τ : D.what₂.Tau, wj D j τ) +
+      C * (D.R.f : ℝ) * ((D.R.k : ℝ) * L.Sc + (D.R.m : ℝ) * D.R.t * (L.etaSz + D.R.t))
+
+
+def errStep (D : D7) : ℝ :=
+  ∑ j ∈ Finset.range D.R.m, ((D.R.f : ℝ) * (D.R.N j : ℝ) * (D.R.N (j + 1) : ℝ) +
+    2 * (D.R.f : ℝ) * (D.R.m : ℝ) ^ 2 * (D.R.N D.R.m : ℝ))
+
+def ColStep : Prop :=
+  ∀ (i : Fin 2) (w : D.what₂.places.Pl), D.what₂.places.resChar w = D.host.g i →
+    ∀ x ∈ ((D.fm u).lat 0).L, Int.ColGe D u w x (-vDeg D EX u i w - errStep D)
+
+def ColCoarse : Prop :=
+  ∀ (i : Fin 2) (w : D.what₂.places.Pl), D.what₂.places.resChar w = D.host.g i →
+    ∀ x ∈ ((D.fm u).lat 0).L, Int.ColGe D u w x (-vDeg D EX u i w - errA D)
+
+
+
+
+
+
+example : ∑ j ∈ Finset.range 2, ((5 + j * 8) * (5 + (j + 1) * 8) + 2 * 2 ^ 2 * 21) = 674 ∧ 2 * 21 ^ 2 = 882 := by decide
+
+example (D : D7) : errA D - errF D = 2 * (D.R.f : ℝ) * (D.R.m : ℝ) ^ 3 * (D.R.N D.R.m : ℝ) := by unfold errA; ring
+
+end GlobalTheory.Core.AtG
+end
+end
+
+section
+noncomputable section
+
+namespace GlobalTheory.Core.AtG
+
+open Formalism.BasicNotions NumberField GlobalTheory.Mem GlobalTheory.Mem.Col2
+
+def BuiltG (D : D7) (EX : ErrX D) : Prop :=
+  ∃ (B : GlobalTheory.Mem.Base) (X : PreX B.toPre) (I : TC B X) (l : I.Laws) (Z : TC.Later B (I.cols l)),
+    I.Ok ∧ I.JetsIn ∧ I.Law0 l ∧
+      (⟨D, EX.piG⟩ : Σ D' : D7, (Fin 2 → 𝓞 D'.host.E)) = ⟨I.rec7 l Z, X.piG⟩
+
+
+theorem builtG_ind {Q : ∀ D : D7, ErrX D → Prop}
+    (H : ∀ (B : GlobalTheory.Mem.Base) (X : PreX B.toPre) (I : TC B X) (l : I.Laws) (Z : TC.Later B (I.cols l)), I.Ok → I.JetsIn → I.Law0 l →
+      ∀ EX : ErrX (I.rec7 l Z), EX.piG = X.piG → Q (I.rec7 l Z) EX) {D : D7} {EX : ErrX D} (h : BuiltG D EX) : Q D EX := by
+  obtain ⟨B, X, I, l, Z, h1, h2, h3, e⟩ := h
+  have e1 : D = I.rec7 l Z := congrArg Sigma.fst e
+  subst e1
+  exact H B X I l Z h1 h2 h3 EX (eq_of_heq (Sigma.mk.inj_iff.1 e).2)
+
+end GlobalTheory.Core.AtG
+end
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.L2.Th1.H GlobalTheory.ThetaMove GlobalTheory.IndefiniteRowSideFullHecke.IndexExponentDegree GlobalTheory.Mem GlobalTheory.Mem.Col2
@@ -33,31 +156,14 @@ def errOf (I : TC B X) (l : I.Laws) (Z : TC.Later B (I.cols l)) : ErrX (I.rec7 l
   norm_mem_place_ideal u (P : (B.primes X).vT u) :=
     (GlobalTheory.MuOffMove.natCast_mem_under (X := B.fields) P.1 (B.T u)).2 (T_mem (base_fields_primes_ok B X).2.1 u P)
 
-theorem builtG_errOf (I : TC B X) (h : I.Ok) (hJ : I.JetsIn) (l : I.Laws) (Z : TC.Later B (I.cols l)) :
-    BuiltG (I.rec7 l Z) (errOf I l Z) :=
-  builtG_intro I l Z h hJ (TrueColsTest.law0 h l) _ rfl
 
-theorem exists_builtG : ∃ (D : D7) (EX : ErrX D), BuiltG D EX := by
-  obtain ⟨B, X, I, hL, h, hJ⟩ := GlobalTheory.KerT.JetsInhab.exists_colIn_jets
-  obtain ⟨Z⟩ := TrueColsTest.later (TrueColsTest.laws (I := I) h) hL
-  exact ⟨_, _, builtG_errOf I h hJ _ Z⟩
 
 theorem cong {D : D7} {EX : ErrX D} (h : BuiltG D EX) (i : Fin 2) :
     ((D.host.QS * D.host.q * D.host.d : ℕ) : 𝓞 D.host.E) ∣ EX.piG i - 1 :=
   builtG_ind (Q := fun D EX => ((D.host.QS * D.host.q * D.host.d : ℕ) : 𝓞 D.host.E) ∣ EX.piG i - 1)
     (fun _ X _ _ _ _ _ _ EX e => by rw [e]; exact X.piG_cong i) h
 
-theorem nonempty_cls {D : D7} {EX : ErrX D} (h : BuiltG D EX) (u : D.what₂.Word) : Nonempty ((D.mem u).C.cls 0) := by
-  refine builtG_ind (Q := fun D _ => ∀ u : D.what₂.Word, Nonempty ((D.mem u).C.cls 0)) ?_ h u
-  intro B X I l Z _ _ _ _ _ u
-  obtain ⟨b⟩ := l.idx0 I.mu0
-  have : NeZero (B.R.N 0) := ⟨by have := B.R.m_add_three_le_k; unfold Ranks.N; omega⟩
-  obtain ⟨p, -⟩ := exists_ptAt (R := B.R) I.sel (I.tup I.mu0) (I.cst I.mu0) (u := u) (j := 0) (DecoF.base _ _ _ _ _)
-  exact ⟨(I.stp u I.mu0 0).cl b p⟩
 
-theorem congr_piG {D : D7} {EX EX' : ErrX D} (h : BuiltG D EX) (e : EX'.piG = EX.piG) : BuiltG D EX' := by
-  unfold BuiltG at h ⊢
-  rwa [e]
 
 def negG {D : D7} (EX : ErrX D) : ErrX D :=
   { EX with
@@ -65,23 +171,9 @@ def negG {D : D7} (EX : ErrX D) : ErrX D :=
     piG_K := fun i => by simpa using neg_mem (EX.piG_K i)
     piG_norm := fun i => by simpa using EX.piG_norm i }
 
-theorem not_builtG_neg {D : D7} {EX : ErrX D} (h : BuiltG D EX) : ¬ BuiltG D (negG EX) := fun h' => by
-  have h1 := cong h 0
-  have h2 : ((D.host.QS * D.host.q * D.host.d : ℕ) : 𝓞 D.host.E) ∣ -EX.piG 0 - 1 := cong h' 0
-  have h3 : ((D.host.QS * D.host.q * D.host.d : ℕ) : 𝓞 D.host.E) ∣ ((-2 : ℤ) : 𝓞 D.host.E) := by
-    have := dvd_add h1 h2
-    convert this using 1
-    push_cast
-    ring
-  have h4 := Primes.natCast_dvd_intCast h3
-  have h5 : (4 : ℤ) ∣ -2 := dvd_trans (by
-    exact_mod_cast (((by decide : 4 ∣ 16).trans D.host.sixteen_dvd_QS).mul_right D.host.q).mul_right D.host.d) h4
-  omega
 
-theorem exists_built_and_not : ∃ (D : D7) (EX EX' : ErrX D), BuiltG D EX ∧ ¬ BuiltG D EX' :=
-  let ⟨D, EX, h⟩ := exists_builtG
-  ⟨D, EX, negG EX, h, not_builtG_neg h⟩
 
 end GlobalTheory.Core.AtG.BuiltModel
 
+end
 end

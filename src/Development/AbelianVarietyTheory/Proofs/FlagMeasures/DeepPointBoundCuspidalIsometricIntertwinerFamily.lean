@@ -6,12 +6,707 @@ import Development.AbelianVarietyTheory.BlockTheory.SiegelWeilLocal.DeepKernelBo
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DeepRegionExponents
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CanonicalLatticeFiltrationSizeProperties
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MeasurePreservingReindex
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnipotentOrbitCover
+import Formalism.HarderNarasimhan.ShiftInvariance
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FiniteAdelicUnitaryCongruenceTopology
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SmallFundamentalSetRealUnipotent
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CanonicalFlagExistsUniqueSemistable
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CanonicalLatticeFlagIsotropicSelfDual
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsConsecutiveRatioLeRpow
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.OrthogonalCanonicalFiltrationStepsAutPointStatement
+import BuildAid.ForwardExisting
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CountHypPAtAddQAt
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HalfTruncatedLeastLatticeSizeLeUnipotentNeighbou
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StepBound
+import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.DiscreteSpectrumKFiniteDecomposition
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TruncatedLeastLatticeSizeRightTranslateLowerBoun
+import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsUnipotentQuotientInvariantProbability
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AdelicUnitaryHaarBiInvariantStatement
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CuspidalSubspaceClosedRightTranslationStable
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ContinuousRepresentativePropertiesStatement
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DiscreteSeriesStepBoundOfCountingHypotheses
 
+section
+open GlobalTheory.Count Formalism.MainNotions.S Formalism.HN Formalism.REAL Matrix NumberField MeasureTheory Finset
+open scoped InnerProductSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.small_fundamental_set_real_unipotent : ∀ (I : AutInst) (x : I.GA) (g : ℕ) (R : Submodule (𝓞 I.E) (Fin I.n → I.E)) (lo hi rho : ℝ), 1 ≤ g → IsSat (Formalism.HermitianLatticesTheory.realize (bas I) (frm I x)) (lamX I x) R → R ≠ ⊥ → R ≤ perpIn I x R → 0 < hi → largestSize (bas I) (frm I x) R ≤ hi → (∀ N, R < N → N ≤ lamX I x → lo ≤ sizeQ (bas I) (frm I x) N R) → hi ≤ rho * lo → hi ^ 2 ≤ rho / 4 → ∀ ν : I.Ginf, ((ν, 1) : I.GA) ∈ I.NA (Submodule.span I.E (R : Set (Fin I.n → I.E))) → ∃ γ ∈ I.GFset ∩ I.NA (Submodule.span I.E (R : Set (Fin I.n → I.E))), (x⁻¹ * γ * x).2 ∈ I.Kg g ∧ ∃ A Z : InfinitePlace I.F → Matrix (Fin I.n) (Fin I.n) ℂ, (∀ v, inG (I.ε v) (A v) ∧ inG (I.ε v) (Z v)) ∧ (∀ v, uMat (ν v) * uMat (x.1 v) = uMat (γ.1 v) * uMat (x.1 v) * NormedSpace.exp (A v) * NormedSpace.exp (Z v)) ∧ Real.sqrt (∑ v, hs (A v)) + Real.sqrt (∑ v, hs (Z v)) ≤ (I.n : ℝ) ^ 2 * Real.sqrt I.f * g * I.rd * rho / 4 ∧ ∀ s t : ℝ, ∃ m : I.Ginf, ((m, 1) : I.GA) ∈ I.NA (Submodule.span I.E (R : Set (Fin I.n → I.E))) ∧ ∀ v, uMat (m v) * uMat (x.1 v) = uMat (x.1 v) * NormedSpace.exp ((s : ℂ) • A v) * NormedSpace.exp ((t : ℂ) • Z v) := by
+  first | exact @GlobalTheory.SmallFund.small_fundamental_set | exact GlobalTheory.SmallFund.small_fundamental_set | (intros; apply GlobalTheory.SmallFund.small_fundamental_set <;> assumption)
+end
+
+section
+open GlobalTheory.Count Formalism.MainNotions.S Formalism.HN Formalism.REAL Matrix NumberField MeasureTheory Finset
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.canonicalFlag_exists_unique_semistable : ∀ (I : AutInst) (x : I.GA), (∃ (a : ℕ) (S : Fin (a + 1) → Submodule (𝓞 I.E) (Fin I.n → I.E)) (τ : Fin a → ℝ), HasFlag I x S τ) ∧ (∀ (a a' : ℕ) (j : Fin a → ℕ) (τ : Fin a → ℝ) (j' : Fin a' → ℕ) (τ' : Fin a' → ℝ), HasType I x j τ → HasType I x j' τ' → ∃ h : a = a', (∀ i, j i = j' (Fin.cast h i)) ∧ ∀ i, τ i = τ' (Fin.cast h i)) ∧ ∀ (a : ℕ) (S : Fin (a + 1) → Submodule (𝓞 I.E) (Fin I.n → I.E)) (τ : Fin a → ℝ), HasFlag I x S τ → (∀ i : Fin a, S i.castSucc = stepLt I x (τ i) ∧ rkK (S i.castSucc) < rkK (S i.succ) ∧ largestSize (bas I) (frm I x) (S i.succ) = τ i ∧ (∀ N, S i.castSucc < N → N ≤ lamX I x → τ i ≤ sizeQ (bas I) (frm I x) N (S i.castSucc)) ∧ ∀ N, S i.castSucc ≤ N → IsSat (Formalism.HermitianLatticesTheory.realize (bas I) (frm I x)) (S i.succ) N → N ≠ S i.succ → sizeQ (bas I) (frm I x) (S i.succ) N ≤ τ i) ∧ (1 ≤ I.n → (a = 0 ↔ 1 / 2 ≤ least I x) ∧ ∀ h : 0 < a, τ ⟨0, h⟩ = least I x) := by
+  first | exact @GlobalTheory.PointFlag.flag_spec | exact GlobalTheory.PointFlag.flag_spec | (intros; apply GlobalTheory.PointFlag.flag_spec <;> assumption)
+end
+
+section
+section
+open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Count GlobalTheory.Dec GlobalTheory.Deep Formalism.HN
+open scoped InnerProductSpace ContDiff
+
+namespace GlobalTheory.FlagPieces
+
+theorem sizesLe_stepLe (I : AutInst) (x : I.GA) {t : ℝ} (ht : 0 < t)
+    (A' : Submodule (𝓞 I.E) (Fin I.n → I.E)) : SizesLe I x (stepLe I x t) A' t := by
+  intro N _ hN hne
+  have hle : stepLe I x t ≤ lamX I x := GlobalTheory.PointFlag.stepLe_le I x t
+  have hne0 : stepLe I x t ≠ ⊥ := by
+    intro h0
+    apply hne
+    rw [h0] at hN ⊢
+    exact le_bot_iff.mp hN.1
+  exact (GlobalTheory.PointFlag.sizeQ_le I x hle hN hne).trans ((GlobalTheory.T.canonicalLatticeFiltration_size_properties I x t ht).2.2.2.2.1 hne0)
+
+theorem perpIn_bot (I : AutInst) (x : I.GA) : perpIn I x ⊥ = lamX I x := by
+  apply le_antisymm
+  · exact Submodule.span_le.mpr fun y hy => hy.1
+  · intro y hy
+    apply Submodule.subset_span
+    refine ⟨hy, fun s hs => ?_⟩
+    rw [(Submodule.mem_bot _).mp hs]
+    simp [Formalism.UG.hform]
+
+theorem flag_pieces : ∀ (I : AutInst) (x : I.GA) (a : ℕ) (S : Fin (a + 1) → Submodule (𝓞 I.E) (Fin I.n → I.E)) (τ : Fin a → ℝ), HasFlag I x S τ → (∀ i, SatX I x (S i) ∧ SatX I x (perpIn I x (S i)) ∧ S i ≤ perpIn I x (S (Fin.last a)) ∧ perpIn I x (S (Fin.last a)) ≤ perpIn I x (S i) ∧ rkK (perpIn I x (S i)) + rkK (S i) = I.n) ∧ perpIn I x (S 0) = lamX I x ∧ SizesLe I x (perpIn I x (S (Fin.last a))) (S (Fin.last a)) 2 ∧ ∀ i : Fin a, SizesGe I x (S i.succ) (S i.castSucc) (τ i) ∧ SizesLe I x (S i.succ) (S i.castSucc) (τ i) ∧ SizesLe I x (perpIn I x (S i.castSucc)) (perpIn I x (S i.succ)) (τ i)⁻¹ ∧ S i.succ ≠ ⊥ ∧ largestSize (bas I) (frm I x) (S i.succ) ≤ τ i ∧ SizesGe I x (lamX I x) (S i.succ) (if h : (i : ℕ) + 1 < a then τ ⟨i + 1, h⟩ else 1 / 2) := by
+  intro I x a S τ hF
+  have h35 := GlobalTheory.T.orthogonal_canonicalFiltration_steps_autPoint I x
+  have h34 := (GlobalTheory.T.canonicalFlag_exists_unique_semistable I x).2.2 a S τ hF
+  have hsat : ∀ m, SatX I x (S m) := fun m => GlobalTheory.PointFlag.flag_sat hF m
+  have hperpLast : perpIn I x (S (Fin.last a)) = stepLe I x 2 := by
+    rw [hF.2.2.1, (h35.2.2.1 (1 / 2) (by norm_num)).2]
+    norm_num
+  have hle_last : ∀ i, S i ≤ S (Fin.last a) := fun i => hF.2.1.monotone (Fin.le_last i)
+  have hlast_le : S (Fin.last a) ≤ stepLe I x 2 := by
+    rw [hF.2.2.1]
+    exact (GlobalTheory.PointFlag.stepLt_le_stepLe I x _).trans (GlobalTheory.PointFlag.stepLe_mono I x (by norm_num))
+  refine ⟨fun i => ?_, ?_, ?_, fun i => ?_⟩
+  · have hp := h35.2.2.2 (S i) (S i) (hsat i) (hsat i) le_rfl
+    have hp' := h35.2.2.2 (S i) (S (Fin.last a)) (hsat i) (hsat _) (hle_last i)
+    refine ⟨hsat i, hp.1, ?_, hp'.2.2.2.1, hp.2.1⟩
+    rw [hperpLast]
+    exact (hle_last i).trans hlast_le
+  · rw [hF.1]
+    exact GlobalTheory.FlagPieces.perpIn_bot I x
+  · rw [hperpLast]
+    exact GlobalTheory.FlagPieces.sizesLe_stepLe I x (by norm_num) _
+  · obtain ⟨hcs, _, hlarge, hge, hlei⟩ := h34.1 i
+    obtain ⟨hτpos, _, hsucc, _⟩ := hF.2.2.2.2.1 i
+    have hsuccle : S i.succ ≤ lamX I x := by
+      rw [hsucc]
+      exact GlobalTheory.PointFlag.stepLe_le I x _
+    refine ⟨?_, hlei, ?_, ?_, hlarge.le, ?_⟩
+    · intro N hlt hle
+      exact hge N hlt (hle.trans hsuccle)
+    · rw [hcs, hsucc, (h35.2.2.1 _ hτpos).1, (h35.2.2.1 _ hτpos).2]
+      exact GlobalTheory.FlagPieces.sizesLe_stepLe I x (inv_pos.mpr hτpos) _
+    · intro h
+      have hlt : S i.castSucc < S i.succ := hF.2.1 (Fin.castSucc_lt_succ ..)
+      rw [h] at hlt
+      exact not_lt_bot hlt
+    · split_ifs with h
+      · have e : (⟨(i : ℕ) + 1, h⟩ : Fin a).castSucc = i.succ := Fin.ext (by simp)
+        have hn := (h34.1 ⟨(i : ℕ) + 1, h⟩).2.2.2.1
+        rw [e] at hn
+        intro N hlt hle
+        exact hn N hlt hle
+      · have hi := i.isLt
+        have e : i.succ = Fin.last a := Fin.ext (by simp; omega)
+        rw [e, hF.2.2.1]
+        intro N hlt hle
+        exact (GlobalTheory.T.canonicalLatticeFiltration_size_properties I x (1 / 2) (by norm_num)).2.2.2.2.2.2.2.1 N hlt hle
+
+end GlobalTheory.FlagPieces
+end
+
+open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Count GlobalTheory.Dec GlobalTheory.Deep Formalism.HN
+open scoped InnerProductSpace ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.smallSizeCanonicalFlag_pieces_properties : ∀ (I : AutInst) (x : I.GA) (a : ℕ) (S : Fin (a + 1) → Submodule (𝓞 I.E) (Fin I.n → I.E)) (τ : Fin a → ℝ), HasFlag I x S τ → (∀ i, SatX I x (S i) ∧ SatX I x (perpIn I x (S i)) ∧ S i ≤ perpIn I x (S (Fin.last a)) ∧ perpIn I x (S (Fin.last a)) ≤ perpIn I x (S i) ∧ rkK (perpIn I x (S i)) + rkK (S i) = I.n) ∧ perpIn I x (S 0) = lamX I x ∧ SizesLe I x (perpIn I x (S (Fin.last a))) (S (Fin.last a)) 2 ∧ ∀ i : Fin a, SizesGe I x (S i.succ) (S i.castSucc) (τ i) ∧ SizesLe I x (S i.succ) (S i.castSucc) (τ i) ∧ SizesLe I x (perpIn I x (S i.castSucc)) (perpIn I x (S i.succ)) (τ i)⁻¹ ∧ S i.succ ≠ ⊥ ∧ largestSize (bas I) (frm I x) (S i.succ) ≤ τ i ∧ SizesGe I x (lamX I x) (S i.succ) (if h : (i : ℕ) + 1 < a then τ ⟨i + 1, h⟩ else 1 / 2) := by
+  atlas_forward_decl GlobalTheory.FlagPieces.flag_pieces
+end
+
+section
+open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Count GlobalTheory.Dec GlobalTheory.Deep Formalism.HN
+open scoped InnerProductSpace ContDiff
+
+namespace GlobalTheory.DeepCover
+
+theorem isIsot_span (I : AutInst) (x : I.GA) (R : Submodule (𝓞 I.E) (Fin I.n → I.E)) (h0 : R ≠ ⊥)
+    (h : R ≤ perpIn I x R) : I.IsIsot (Submodule.span I.E (R : Set (Fin I.n → I.E))) := by
+  have hspan : Submodule.span I.E (R : Set (Fin I.n → I.E)) ≤
+      Submodule.span I.E (perpIn I x R : Set (Fin I.n → I.E)) :=
+    Submodule.span_mono h
+
+  have h1 : ∀ s ∈ R, ∀ y ∈ Submodule.span I.E (R : Set (Fin I.n → I.E)),
+      Formalism.UG.hform (starRingEnd I.E) I.J s y = 0 :=
+    fun s hs y hy => GlobalTheory.FlagIso.hform_span I x R (hspan hy) hs
+
+  have h2 : ∀ y ∈ Submodule.span I.E (R : Set (Fin I.n → I.E)),
+      ∀ z ∈ Submodule.span I.E (R : Set (Fin I.n → I.E)),
+        Formalism.UG.hform (starRingEnd I.E) I.J y z = 0 := by
+    intro y hy z hz
+    have hker : Submodule.span I.E (R : Set (Fin I.n → I.E)) ≤
+        LinearMap.ker (GlobalTheory.FlagIso.hR I.J y) := by
+      rw [Submodule.span_le]
+      intro s hs
+      rw [SetLike.mem_coe, LinearMap.mem_ker, GlobalTheory.FlagIso.hR_apply,
+        ← GlobalTheory.FlagIso.hform_star I.J I.J_herm s y, h1 s hs y hy, star_zero]
+    have hz' := hker hz
+    rwa [LinearMap.mem_ker, GlobalTheory.FlagIso.hR_apply] at hz'
+  refine ⟨?_, h2⟩
+  intro hbot
+  apply h0
+  rw [eq_bot_iff]
+  intro r hr
+  have hr' : r ∈ Submodule.span I.E (R : Set (Fin I.n → I.E)) := Submodule.subset_span hr
+  rw [hbot] at hr'
+  exact (Submodule.mem_bot _).2 ((Submodule.mem_bot _).1 hr')
+
+theorem unipotent_orbit_cover : ∀ (I : AutInst) (x : I.GA) (g q : ℕ), 1 ≤ g → 1 ≤ I.n → (∀ v, rkR (I.ε v) ≤ q) → least I x < 1 / 2 → ∃ W : Submodule I.E (Fin I.n → I.E), I.IsIsot W ∧ ∀ ν : I.Ginf, ((ν, 1) : I.GA) ∈ I.NA W → ∃ γ ∈ I.GFset, ∃ k ∈ I.Kg g, ∃ y ∈ omega I x W ((I.n : ℝ) ^ 2 * Real.sqrt I.f * g * I.rd * (2 * least I x) ^ ((1 : ℝ) / q) / 4), ((ν, 1) : I.GA) * x = γ * y * (1, k) := by
+  intro I x g q hg hn hq hlt
+
+  obtain ⟨⟨a, S, τ, hF⟩, -, hspec⟩ := GlobalTheory.PointFlag.flag_spec I x
+  obtain ⟨hpieces, hzero⟩ := hspec a S τ hF
+  obtain ⟨ha0, hτ0⟩ := hzero hn
+  have ha : 0 < a := by
+    rcases Nat.eq_zero_or_pos a with h | h
+    · exact absurd (ha0.1 h) (not_le.2 hlt)
+    · exact h
+  obtain ⟨hall, -, -, hstep⟩ := GlobalTheory.T.smallSizeCanonicalFlag_pieces_properties I x a S τ hF
+  obtain ⟨-, -, hSlast, hτmono, hτ, -⟩ := hF
+
+  obtain ⟨τ', hτ'⟩ : ∃ f : ℕ → ℝ, f = fun i => if h : i < a then τ ⟨i, h⟩ else 1 / 2 := ⟨_, rfl⟩
+  have hτ'lt : ∀ i (h : i < a), τ' i = τ ⟨i, h⟩ := by
+    intro i h; rw [hτ']; exact dif_pos h
+  have hτ'ge : ∀ i, a ≤ i → τ' i = 1 / 2 := by
+    intro i h; rw [hτ']; exact dif_neg (not_lt.2 h)
+  have hpos : ∀ i ≤ a, 0 < τ' i := by
+    intro i _
+    rcases lt_or_ge i a with h | h
+    · rw [hτ'lt i h]; exact (hτ ⟨i, h⟩).1
+    · rw [hτ'ge i h]; norm_num
+  have hinc : ∀ i < a, τ' i < τ' (i + 1) := by
+    intro i hi
+    rw [hτ'lt i hi]
+    rcases lt_or_ge (i + 1) a with h | h
+    · rw [hτ'lt (i + 1) h]
+      exact hτmono (Fin.mk_lt_mk.2 (Nat.lt_succ_self i))
+    · rw [hτ'ge (i + 1) h]; exact (hτ ⟨i, hi⟩).2.1
+  have hlast : τ' a = 1 / 2 := hτ'ge a le_rfl
+
+  have hrk : ∀ i (hi : i ≤ a), i ≤ rkK (S ⟨i, Nat.lt_succ_of_le hi⟩) := by
+    intro i
+    induction i with
+    | zero => intro _; exact Nat.zero_le _
+    | succ k ih =>
+      intro hk
+      have h1 := ih (Nat.le_of_succ_le hk)
+      have h2 : rkK (S (Fin.castSucc ⟨k, hk⟩)) < rkK (S (Fin.succ ⟨k, hk⟩)) :=
+        ((hpieces ⟨k, hk⟩).2.1)
+      exact Nat.succ_le_of_lt (lt_of_le_of_lt h1 h2)
+  obtain ⟨-, hrkR, -⟩ := GlobalTheory.FlagIso.flag_isotropic I x
+  have haq : a ≤ q := by
+    obtain ⟨v⟩ := (inferInstance : Nonempty (InfinitePlace I.F))
+    have h1 : a ≤ rkK (S (Fin.last a)) := hrk a le_rfl
+    rw [hSlast] at h1
+    exact h1.trans ((hrkR v).trans (hq v))
+
+  obtain ⟨b, hb, hratio, hsq⟩ := GlobalTheory.exists_consecutive_ratio_le_rpow a q τ' ha haq hpos hinc hlast
+  rw [hτ'lt 0 ha, hτ0 ha, hτ'lt b hb] at hratio hsq
+  have hi_pos : 0 < τ ⟨b, hb⟩ := (hτ ⟨b, hb⟩).1
+  have hlo_pos : 0 < τ' (b + 1) := hpos (b + 1) hb
+  obtain ⟨-, -, -, hne, hlarge, hgeL⟩ := hstep ⟨b, hb⟩
+  have hRperp : S (Fin.succ ⟨b, hb⟩) ≤ perpIn I x (S (Fin.succ ⟨b, hb⟩)) :=
+    le_trans (hall _).2.2.1 (hall _).2.2.2.1
+  have hsat : IsSat (Formalism.HermitianLatticesTheory.realize (bas I) (frm I x)) (lamX I x) (S (Fin.succ ⟨b, hb⟩)) :=
+    (hall _).1
+  have hlo : ∀ N, S (Fin.succ ⟨b, hb⟩) < N → N ≤ lamX I x →
+      τ' (b + 1) ≤ sizeQ (bas I) (frm I x) N (S (Fin.succ ⟨b, hb⟩)) := by
+    rw [hτ']; exact hgeL
+  refine ⟨Submodule.span I.E (S (Fin.succ ⟨b, hb⟩) : Set (Fin I.n → I.E)),
+    isIsot_span I x _ hne hRperp, ?_⟩
+  intro ν hν
+  obtain ⟨γ, ⟨hγF, -⟩, hk, A, Z, hAZ, heq, hbound, hst⟩ :=
+    GlobalTheory.T.small_fundamental_set_real_unipotent I x g (S (Fin.succ ⟨b, hb⟩)) (τ' (b + 1)) (τ ⟨b, hb⟩)
+      ((2 * least I x) ^ ((1 : ℝ) / q)) hg hsat hne hRperp hi_pos hlarge hlo
+      ((div_le_iff₀ hlo_pos).1 hratio) hsq ν hν
+
+  obtain ⟨m, -, hm⟩ := hst 1 1
+  have hm' : ∀ v, uMat (m v) * uMat (x.1 v) =
+      uMat (x.1 v) * NormedSpace.exp (A v) * NormedSpace.exp (Z v) := by
+    intro v; simpa only [Complex.ofReal_one, one_smul] using hm v
+
+  obtain ⟨-, -, -, -, -, -, hKg⟩ := GlobalTheory.CongTop.adelic_topology I
+  obtain ⟨-, ⟨K, hK⟩, -⟩ := hKg g hg
+  have hkinv : ((x⁻¹ * γ * x).2)⁻¹ ∈ I.Kg g := by
+    rw [← hK] at hk ⊢
+    exact K.inv_mem hk
+  refine ⟨γ, hγF, ((x⁻¹ * γ * x).2)⁻¹, hkinv, ((m * x.1 : I.Ginf), x.2), ?_, ?_⟩
+  · refine ⟨rfl, A, Z, hAZ, hbound, fun v => ?_, hst⟩
+    show uMat (m v) * uMat (x.1 v) = _
+    exact hm' v
+  · have key : ∀ v, uMat (ν v) * uMat (x.1 v) = uMat (γ.1 v) * (uMat (m v) * uMat (x.1 v)) := by
+      intro v
+      rw [heq v, hm' v]
+      simp only [mul_assoc]
+    refine Prod.ext ?_ ?_
+    · show ν * x.1 = γ.1 * (m * x.1) * 1
+      rw [mul_one]
+      funext v
+      exact Subtype.ext (Units.ext (key v))
+    · show 1 * x.2 = γ.2 * x.2 * ((x⁻¹ * γ * x).2)⁻¹
+      simp only [Prod.snd_mul, Prod.snd_inv]
+      group
+
+end GlobalTheory.DeepCover
+end
+
+section
+open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Count GlobalTheory.Dec GlobalTheory.Deep Formalism.HN
+open scoped InnerProductSpace ContDiff
+
+noncomputable section
+
+namespace GlobalTheory.OmegaLeast
+
+open scoped Matrix.Norms.L2Operator in
+
+theorem opNorm_le_sqrt_hs {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) : ‖A‖ ≤ Real.sqrt (Formalism.REAL.hs A) := by
+  rw [Matrix.l2_opNorm_def]
+  refine ContinuousLinearMap.opNorm_le_bound _ (Real.sqrt_nonneg _) fun x => ?_
+  have hhs : 0 ≤ Formalism.REAL.hs A := by unfold Formalism.REAL.hs; positivity
+  rw [EuclideanSpace.norm_eq, EuclideanSpace.norm_eq, ← Real.sqrt_mul hhs]
+  apply Real.sqrt_le_sqrt
+  unfold Formalism.REAL.hs
+  rw [Finset.sum_mul]
+  refine Finset.sum_le_sum fun i _ => ?_
+  have h1 : ‖∑ j, A i j * x j‖ ≤ ∑ j, ‖A i j‖ * ‖x j‖ :=
+    (norm_sum_le _ _).trans (le_of_eq (Finset.sum_congr rfl fun j _ => norm_mul _ _))
+  have h2 := Finset.sum_mul_sq_le_sq_mul_sq Finset.univ (fun j => ‖A i j‖) (fun j => ‖x j‖)
+  refine le_trans ?_ h2
+  exact pow_le_pow_left₀ (norm_nonneg _) h1 2
+
+open scoped Matrix.Norms.L2Operator in
+
+theorem opNorm_exp_le {n : ℕ} (hn : 1 ≤ n) (A : Matrix (Fin n) (Fin n) ℂ) :
+    ‖NormedSpace.exp A‖ ≤ Real.exp ‖A‖ := by
+  have h1 : ‖(1 : Matrix (Fin n) (Fin n) ℂ)‖ = 1 := GlobalTheory.LeastVar.opN_one hn
+  haveI : NormOneClass (Matrix (Fin n) (Fin n) ℂ) := ⟨h1⟩
+  have h := NormedSpace.expSeries_hasSum_exp (𝕂 := ℂ) A
+  have h' := NormedSpace.expSeries_hasSum_exp (𝕂 := ℝ) ‖A‖
+  rw [Real.exp_eq_exp_ℝ]
+  refine h.norm_le_of_bounded h' fun k => ?_
+  rw [NormedSpace.expSeries_apply_eq, NormedSpace.expSeries_apply_eq, norm_smul, smul_eq_mul]
+  gcongr
+  · simp
+  · exact norm_pow_le _ _
+
+open scoped Matrix.Norms.L2Operator in
+theorem dOp_exp_mul_exp_le {n : ℕ} (hn : 1 ≤ n) (A Z : Matrix (Fin n) (Fin n) ℂ) :
+    dOp (NormedSpace.exp A * NormedSpace.exp Z) ≤
+      Real.sqrt (Formalism.REAL.hs A) + Real.sqrt (Formalism.REAL.hs Z) := by
+  have h : ‖NormedSpace.exp A * NormedSpace.exp Z‖ ≤
+      Real.exp (Real.sqrt (Formalism.REAL.hs A) + Real.sqrt (Formalism.REAL.hs Z)) := by
+    rw [Real.exp_add]
+    refine (norm_mul_le _ _).trans ?_
+    gcongr
+    · exact (opNorm_exp_le hn A).trans (Real.exp_le_exp.2 (opNorm_le_sqrt_hs A))
+    · exact (opNorm_exp_le hn Z).trans (Real.exp_le_exp.2 (opNorm_le_sqrt_hs Z))
+  change Real.log ‖NormedSpace.exp A * NormedSpace.exp Z‖ ≤ _
+  rcases (norm_nonneg (NormedSpace.exp A * NormedSpace.exp Z)).eq_or_lt with h0 | h0
+  · rw [← h0, Real.log_zero]; positivity
+  · exact (Real.log_le_iff_le_exp h0).2 h
+
+theorem half_truncatedLeastLatticeSize_le_unipotentNeighbourhood : ∀ (I : AutInst) (x : I.GA) (W : Submodule I.E (Fin I.n → I.E)) (ρ : ℝ), 1 ≤ I.n → ρ ≤ Real.log 2 → ∀ y ∈ omega I x W ρ, tau1 I x / 2 ≤ tau1 I y := by
+  intro I x W ρ hn hρ y hy
+  obtain ⟨h2, A, Z, -, hAZ, hy1, -⟩ := hy
+  obtain ⟨-, -, -, -, -, ⟨K, hK⟩, -⟩ := GlobalTheory.CongTop.adelic_topology I
+  have hk : (x⁻¹ * y).2 ∈ I.Kset := by
+    have : (x⁻¹ * y).2 = 1 := by simp [h2]
+    rw [this, ← hK]; exact K.one_mem
+  have hv := GlobalTheory.LeastVar.truncatedLeastLatticeSize_rightTranslate_lower_bound I hn x (x⁻¹ * y) hk
+  rw [mul_inv_cancel_left] at hv
+  have hcard := (GlobalTheory.Count.FrameMajorant.frames_give_majorants I x).2.2.1
+  have hfpos : (0 : ℝ) < I.f := by
+    rw [← hcard]; exact_mod_cast Fintype.card_pos
+  have hhs : ∀ B : Matrix (Fin I.n) (Fin I.n) ℂ, 0 ≤ Formalism.REAL.hs B := fun B => by
+    unfold Formalism.REAL.hs; positivity
+  have hd : ∀ v, dOp (uMat ((x⁻¹ * y).1 v)) ≤ Real.log 2 := by
+    intro v
+    have e : uMat ((x⁻¹ * y).1 v) = NormedSpace.exp (A v) * NormedSpace.exp (Z v) := by
+      have e1 : uMat ((x⁻¹ * y).1 v) = uMat ((x.1 v)⁻¹) * uMat (y.1 v) := by simp [uMat]
+      have e2 : uMat ((x.1 v)⁻¹) * uMat (x.1 v) = 1 := by simp [uMat]
+      rw [e1, hy1 v, Matrix.mul_assoc, ← Matrix.mul_assoc, e2, Matrix.one_mul]
+    rw [e]
+    refine (dOp_exp_mul_exp_le hn _ _).trans (le_trans ?_ (hAZ.trans hρ))
+    gcongr
+    · exact Finset.single_le_sum (f := fun v => Formalism.REAL.hs (A v)) (fun v _ => hhs _) (Finset.mem_univ v)
+    · exact Finset.single_le_sum (f := fun v => Formalism.REAL.hs (Z v)) (fun v _ => hhs _) (Finset.mem_univ v)
+  have hs : (∑ v, dOp (uMat ((x⁻¹ * y).1 v))) / I.f ≤ Real.log 2 := by
+    rw [div_le_iff₀ hfpos]
+    refine (Finset.sum_le_sum fun v _ => hd v).trans (le_of_eq ?_)
+    rw [Finset.sum_const, Finset.card_univ, hcard, nsmul_eq_mul, mul_comm]
+  have he : (1 / 2 : ℝ) ≤ Real.exp (-((∑ v, dOp (uMat ((x⁻¹ * y).1 v))) / I.f)) := by
+    have : (1 / 2 : ℝ) = Real.exp (-Real.log 2) := by
+      rw [Real.exp_neg, Real.exp_log (by norm_num)]; norm_num
+    rw [this]
+    exact Real.exp_le_exp.2 (neg_le_neg hs)
+  have ht : 0 ≤ tau1 I x := by
+    obtain ⟨-, hfg, hspan, -, -⟩ := GlobalTheory.T.autPointLatticeIntersection_selfDual_properties I x
+    haveI := (GlobalTheory.Count.FrameMajorant.frames_give_majorants I x).1
+    have hx := (GlobalTheory.Count.FrameMajorant.frames_give_majorants I x).2.2.2.2
+    have hne : lamX I x ≠ ⊥ := by
+      intro h
+      haveI : Nonempty (Fin I.n) := ⟨⟨0, hn⟩⟩
+      rw [h] at hspan
+      simp at hspan
+    have h3 := (sizeMu I.E _ _ (bas I) (frm I x) (fun w => (hx w).1) (lamX I x) hfg hne).2.2.2.1
+    unfold tau1 least
+    rw [h3]
+    exact le_min (by norm_num) (Real.exp_pos _).le
+  have := mul_le_mul_of_nonneg_left he ht
+  linarith
+
+end GlobalTheory.OmegaLeast
+end
+end
+
+section
+open GlobalTheory.Count Formalism.MainNotions.S Formalism.HN Formalism.REAL Matrix NumberField MeasureTheory Finset
+open scoped InnerProductSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_unipotentQuotient_invariant_probability : ∀ (I : AutInst) (W : Submodule I.E (Fin I.n → I.E)), I.IsIsot W → ∃ ν : Measure I.GA, IsProbabilityMeasure ν ∧ I.IsNQuotMeas W ν ∧ ∃ Cp : Set I.GA, IsCompact Cp ∧ Cp ⊆ I.NA W ∧ ν Cpᶜ = 0 := by
+  first | exact @GlobalTheory.UnipQuot.exists_quot_prob | exact GlobalTheory.UnipQuot.exists_quot_prob | (intros; apply GlobalTheory.UnipQuot.exists_quot_prob <;> assumption)
+end
+
+section
+open GlobalTheory.Count Formalism.MainNotions.S Formalism.HN Formalism.REAL Matrix NumberField MeasureTheory Finset
+open scoped InnerProductSpace
+
+namespace GlobalTheory.MeanZero
+
+theorem continuous_mean {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [T2Space G]
+    [SecondCountableTopology G] [LocallyCompactSpace G] [MeasurableSpace G] [OpensMeasurableSpace G]
+    (ν : Measure G) [IsFiniteMeasure ν] {C : Set G} (hC : IsCompact C) (hν : ν Cᶜ = 0)
+    {f : G → ℂ} (hf : Continuous f) : Continuous fun y => ∫ m, f (m * y) ∂ν := by
+
+  have hae : ∀ᵐ m ∂ν, m ∈ C := by
+    rw [ae_iff]
+    exact hν
+  have hres : ν.restrict C = ν := Measure.restrict_eq_self_of_ae_mem hae
+  have hcont : Continuous (Function.uncurry fun (y m : G) => f (m * y)) :=
+    hf.comp (continuous_snd.mul continuous_fst)
+  have h := continuous_parametric_integral_of_continuous (μ := ν) hcont hC
+  rw [hres] at h
+  exact h
+
+theorem norm_le_of_mean_zero {X : Type} [MeasurableSpace X] (ν : Measure X) [IsProbabilityMeasure ν] {D : ℕ}
+    (f : Fin D → X → ℂ) (c : Fin D → ℂ) (r : ℝ) (hi : ∀ i, Integrable (f i) ν)
+    (h0 : ∀ i, ∫ m, f i m ∂ν = 0) (hb : ∀ᵐ m ∂ν, Real.sqrt (∑ i, ‖f i m - c i‖ ^ 2) ≤ r) :
+    Real.sqrt (∑ i, ‖c i‖ ^ 2) ≤ r := by
+  set S : ℝ := ∑ i, ‖c i‖ ^ 2 with hS
+  have hS0 : 0 ≤ S := Finset.sum_nonneg fun i _ => by positivity
+  have hr0 : 0 ≤ r := by
+    obtain ⟨m, hm⟩ := hb.exists
+    exact (Real.sqrt_nonneg _).trans hm
+
+  have hint : ∀ i ∈ (Finset.univ : Finset (Fin D)),
+      Integrable (fun m => star (c i) * (c i - f i m)) ν :=
+    fun i _ => ((integrable_const (c i)).sub (hi i)).const_mul (star (c i))
+  have hval : ∫ m, (∑ i, star (c i) * (c i - f i m)) ∂ν = (S : ℂ) := by
+    rw [integral_finset_sum _ hint, hS, Complex.ofReal_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [integral_const_mul, integral_sub (integrable_const _) (hi i), h0 i, integral_const]
+    simp [Complex.conj_mul']
+
+  have hbound : ∀ᵐ m ∂ν, ‖∑ i, star (c i) * (c i - f i m)‖ ≤ Real.sqrt S * r := by
+    filter_upwards [hb] with m hm
+    calc ‖∑ i, star (c i) * (c i - f i m)‖ ≤ ∑ i, ‖star (c i) * (c i - f i m)‖ := norm_sum_le _ _
+      _ = ∑ i, ‖c i‖ * ‖f i m - c i‖ := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          rw [norm_mul, norm_star, norm_sub_rev]
+      _ ≤ Real.sqrt (∑ i, ‖c i‖ ^ 2) * Real.sqrt (∑ i, ‖f i m - c i‖ ^ 2) :=
+          Real.sum_mul_le_sqrt_mul_sqrt _ _ _
+      _ ≤ Real.sqrt S * r := mul_le_mul_of_nonneg_left hm (Real.sqrt_nonneg _)
+  have key : S ≤ Real.sqrt S * r := by
+    have h := norm_integral_le_of_norm_le (integrable_const (Real.sqrt S * r)) hbound
+    rw [hval, integral_const] at h
+    simpa [Complex.norm_real, abs_of_nonneg hS0] using h
+  have hsq := Real.sq_sqrt hS0
+  have hs0 := Real.sqrt_nonneg S
+  nlinarith
+
+theorem norm_le_of_cusp (I : AutInst) (μf : Measure I.Gf) [μf.IsHaarMeasure] [SigmaFinite μf] (g : ℕ)
+    (W : Submodule I.E (Fin I.n → I.E)) (D : ℕ) (Fn : Fin D → I.GA → ℂ) (x : I.GA) (c : Fin D → ℂ) (r : ℝ)
+    (hg : 1 ≤ g) (hW : I.IsIsot W)
+    (hF : ∀ i, Continuous (Fn i) ∧ (∀ γ ∈ I.GFset, ∀ y, Fn i (γ * y) = Fn i y) ∧
+      (∀ k ∈ I.Kg g, ∀ y, Fn i (y * (1, k)) = Fn i y) ∧ I.IsCuspFn (I.muA μf) (Fn i))
+    (hr : ∀ ν : I.Ginf, ((ν, 1) : I.GA) ∈ I.NA W →
+      Real.sqrt (∑ i, ‖Fn i ((ν, 1) * x) - c i‖ ^ 2) ≤ r) :
+    Real.sqrt (∑ i, ‖c i‖ ^ 2) ≤ r := by
+  classical
+  obtain ⟨ν, hνP, hνQ, Cp, hCp, -, hνCp⟩ := GlobalTheory.T.exists_unipotentQuotient_invariant_probability I W hW
+  obtain ⟨⟨N, hN⟩, -, hsplit, hdense, -⟩ := GlobalTheory.T.strong_approximation_unitaryUnipotentRadical I W hW
+  obtain ⟨-, -, -, -, hpos⟩ := GlobalTheory.T.adelicUnitaryHaar_bi_invariant I μf
+  obtain ⟨hT2, hLC, hSC, -, -, -, hKg⟩ := GlobalTheory.CongTop.adelic_topology I
+  obtain ⟨hKo, ⟨K, hK⟩, -⟩ := hKg g hg
+  haveI := hT2
+  haveI := hLC
+  haveI := hSC
+
+  have hU : {u : I.Gf | x.2⁻¹ * u * x.2 ∈ I.Kg g} ∈ nhds (1 : I.Gf) := by
+    refine hKo.preimage ((continuous_const.mul continuous_id).mul continuous_const) |>.mem_nhds ?_
+    show x.2⁻¹ * 1 * x.2 ∈ I.Kg g
+    rw [mul_one, inv_mul_cancel, ← hK]
+    exact K.one_mem
+
+  have horb : ∀ m ∈ I.NA W, Real.sqrt (∑ i, ‖Fn i (m * x) - c i‖ ^ 2) ≤ r := by
+    intro m hm
+    obtain ⟨γ, ⟨hγF, hγN⟩, hγU⟩ := hdense _ hU m hm
+    have hm' : γ⁻¹ * m ∈ I.NA W := by
+      rw [← hN] at hγN hm ⊢
+      exact N.mul_mem (N.inv_mem hγN) hm
+    have hk : x.2⁻¹ * (γ⁻¹ * m).2 * x.2 ∈ I.Kg g := hγU
+    have heq : ∀ i, Fn i (m * x) = Fn i (((γ⁻¹ * m).1, 1) * x) := by
+      intro i
+      have h1 := (hF i).2.1 γ hγF (γ⁻¹ * m * x)
+      rw [← mul_assoc, mul_inv_cancel_left] at h1
+      have h2 : γ⁻¹ * m * x = (((γ⁻¹ * m).1, 1) * x) * (1, x.2⁻¹ * (γ⁻¹ * m).2 * x.2) := by
+        ext <;> simp [mul_assoc]
+      rw [h1, h2, (hF i).2.2.1 _ hk]
+    simp_rw [heq]
+    exact hr _ (hsplit _ hm').1
+
+  have hzero : ∀ i, ∫ m, Fn i (m * x) ∂ν = 0 := by
+    intro i
+    by_contra hne
+    have hc := continuous_mean ν hCp hνCp (hF i).1
+    have hopen : IsOpen {y | ∫ m, Fn i (m * y) ∂ν ≠ 0} := isOpen_ne_fun hc continuous_const
+    have hae := (hF i).2.2.2 W hW ν hνQ
+    rw [ae_iff] at hae
+    exact (hpos _ hopen ⟨x, hne⟩).ne' hae
+
+  have hint : ∀ i, Integrable (fun m => Fn i (m * x)) ν := by
+    intro i
+    have hci : Continuous fun m => Fn i (m * x) := (hF i).1.comp (continuous_id.mul continuous_const)
+    obtain ⟨B, hB⟩ := hCp.exists_bound_of_continuousOn hci.continuousOn
+    have hae : ∀ᵐ m ∂ν, m ∈ Cp := by
+      rw [ae_iff]
+      exact hνCp
+    refine Integrable.of_bound hci.aestronglyMeasurable B ?_
+    filter_upwards [hae] with m hm
+    exact hB m hm
+  have hb : ∀ᵐ m ∂ν, Real.sqrt (∑ i, ‖Fn i (m * x) - c i‖ ^ 2) ≤ r := by
+    have hae : ∀ᵐ m ∂ν, m ∈ I.NA W := by
+      rw [ae_iff]
+      exact hνQ.2.2.1
+    filter_upwards [hae] with m hm
+    exact horb m hm
+  exact norm_le_of_mean_zero ν (fun i m => Fn i (m * x)) c r hint hzero hb
+
+end GlobalTheory.MeanZero
+end
+
+section
+open GlobalTheory.Count Formalism.MainNotions.S Formalism.HN Formalism.REAL Matrix NumberField MeasureTheory Finset
+open scoped InnerProductSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cuspidalSubspace_closed_rightTranslation_stable : ∀ B : RowsAut, ∃ S : Submodule ℂ (B.I.L2 B.μf B.fund), (∀ F, F ∈ S ↔ B.I.IsCuspFn (B.I.muA B.μf) (B.I.ext F)) ∧ IsClosed (S : Set (B.I.L2 B.μf B.fund)) ∧ (∀ g, ∀ F ∈ S, B.R g F ∈ S) ∧ ∀ (F : B.I.L2 B.μf B.fund) (f : B.I.GA → ℂ), (∀ γ ∈ B.I.GFset, ∀ y, f (γ * y) = f y) → Continuous f → f =ᵐ[B.I.muA B.μf] B.I.ext F → (F ∈ S ↔ B.I.IsCuspFn (B.I.muA B.μf) f) := by
+  first | exact @GlobalTheory.CuspSubspace.cuspidal_closed_stable | exact GlobalTheory.CuspSubspace.cuspidal_closed_stable | (intros; apply GlobalTheory.CuspSubspace.cuspidal_closed_stable <;> assumption)
+end
+
+section
+section
+open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Count GlobalTheory.Dec GlobalTheory.Deep GlobalTheory.IndefiniteRowSideFullHecke.OrthonormalPlaceBasis
+open scoped InnerProductSpace ContDiff
+
+namespace GlobalTheory.PathVar
+
+theorem uMat_inj {n : ℕ} {ε : Fin n → Bool} {a b : Formalism.REAL.UJ ε} (h : uMat a = uMat b) : a = b :=
+  Subtype.ext (Units.ext h)
+
+theorem uMat_mul' {n : ℕ} {ε : Fin n → Bool} (a b : Formalism.REAL.UJ ε) : uMat (a * b) = uMat a * uMat b := rfl
+
+theorem expU_add {n : ℕ} {ε : Fin n → Bool} (X : gLie ε) (s t : ℝ) :
+    expU ((s + t) • X) = expU (s • X) * expU (t • X) := by
+  apply uMat_inj
+  rw [uMat_mul', uMat_expU, uMat_expU, uMat_expU, add_smul, Submodule.coe_add]
+  apply Matrix.exp_add_of_commute
+  simp only [Submodule.coe_smul]
+  exact ((Commute.refl (X : Matrix (Fin n) (Fin n) ℂ)).smul_left s).smul_right t
+
+theorem expU_zero {n : ℕ} {ε : Fin n → Bool} (X : gLie ε) : expU ((0 : ℝ) • X) = 1 := by
+  apply uMat_inj
+  rw [uMat_expU, zero_smul, Submodule.coe_zero, NormedSpace.exp_zero]
+  rfl
+
+noncomputable def pt (B : RowsAut) (E : gInf B) (z : B.I.GA) (t : ℝ) : B.I.GA :=
+  z * ((fun v => expU (t • E v)), 1)
+
+theorem pt_add (B : RowsAut) (E : gInf B) (z : B.I.GA) (s t : ℝ) :
+    pt B E z (s + t) = pt B E z s * ((fun v => expU (t • E v)), 1) := by
+  unfold pt
+  rw [mul_assoc]
+  congr 1
+  refine Prod.ext ?_ (by simp)
+  funext v
+  exact expU_add _ _ _
+
+theorem pt_zero (B : RowsAut) (E : gInf B) (z : B.I.GA) : pt B E z 0 = z := by
+  unfold pt
+  have : (((fun v => expU ((0 : ℝ) • E v)), 1) : B.I.GA) = 1 := by
+    refine Prod.ext ?_ rfl
+    funext v
+    exact expU_zero _
+  rw [this, mul_one]
+
+theorem hasDerivAt_vv (B : RowsAut) {D : ℕ} (T : Fin D → (B.Hs →L[ℂ] B.I.L2 B.μf B.fund))
+    (Fr : Fin D → B.Hs → B.I.GA → ℂ) (h : ∀ i, IsReps B (T i) (Fr i)) {P : ℕ} {u : B.Hs} (hu : u ∈ VP B P)
+    (E : gInf B) (z : B.I.GA) (s : ℝ) :
+    HasDerivAt (fun t => vv B Fr u (pt B E z t)) (vv B Fr (dAct B E u) (pt B E z s)) s := by
+  have h1 : ∀ i, HasDerivAt (fun t => Fr i u (pt B E z t)) (Fr i (dAct B E u) (pt B E z s)) s := by
+    intro i
+    have h0 := (h i P u hu).2.2 E (pt B E z s)
+    rw [← sub_self s] at h0
+    have h2 := h0.comp_sub_const s s
+    simp only [← pt_add, add_sub_cancel] at h2
+    exact h2
+  have h2 : HasDerivAt (fun t => fun i => Fr i u (pt B E z t)) (fun i => Fr i (dAct B E u) (pt B E z s)) s :=
+    hasDerivAt_pi.2 h1
+  exact ((EuclideanSpace.equiv (Fin D) ℂ).symm.toContinuousLinearMap.restrictScalars ℝ).hasFDerivAt.comp_hasDerivAt s h2
+
+theorem hs_smul_le {n : ℕ} (X : Matrix (Fin n) (Fin n) ℂ) {s : ℝ} (h0 : 0 ≤ s) (h1 : s ≤ 1) :
+    Formalism.REAL.hs (s • X) ≤ Formalism.REAL.hs X := by
+  unfold Formalism.REAL.hs
+  refine Finset.sum_le_sum fun i _ => Finset.sum_le_sum fun j _ => ?_
+  rw [Matrix.smul_apply, norm_smul, Real.norm_of_nonneg h0]
+  exact pow_le_pow_left₀ (by positivity) (mul_le_of_le_one_left (norm_nonneg _) h1) 2
+
+theorem pt_mem_omega (B : RowsAut) (x : B.I.GA) (W : Submodule B.I.E (Fin B.I.n → B.I.E)) (ρ : ℝ)
+    (A Z : gInf B)
+    (hρ : Real.sqrt (∑ v, Formalism.REAL.hs (A v).1) + Real.sqrt (∑ v, Formalism.REAL.hs (Z v).1) ≤ ρ)
+    (hN : ∀ s t : ℝ, ∃ m : B.I.Ginf, ((m, 1) : B.I.GA) ∈ B.I.NA W ∧
+      ∀ v, uMat (m v) * uMat (x.1 v) =
+        uMat (x.1 v) * NormedSpace.exp ((s : ℂ) • (A v).1) * NormedSpace.exp ((t : ℂ) • (Z v).1))
+    {s t : ℝ} (hs : s ∈ Set.Icc (0 : ℝ) 1) (ht : t ∈ Set.Icc (0 : ℝ) 1) :
+    pt B Z (pt B A x s) t ∈ omega B.I x W ρ := by
+  refine ⟨by simp [pt], fun v => (s • A v).1, fun v => (t • Z v).1, fun v => ⟨(s • A v).2, (t • Z v).2⟩, ?_,
+    fun v => rfl, fun s' t' => ?_⟩
+  · refine le_trans (add_le_add (Real.sqrt_le_sqrt ?_) (Real.sqrt_le_sqrt ?_)) hρ
+    · exact Finset.sum_le_sum fun v _ => hs_smul_le _ hs.1 hs.2
+    · exact Finset.sum_le_sum fun v _ => hs_smul_le _ ht.1 ht.2
+  · obtain ⟨m, hm, hm'⟩ := hN (s' * s) (t' * t)
+    refine ⟨m, hm, fun v => ?_⟩
+    rw [hm' v]
+    simp only [Submodule.coe_smul, Complex.coe_smul, smul_smul]
+
+theorem leg (B : RowsAut) (b M : ℝ) (P : ℕ) {D : ℕ} (T : Fin D → (B.Hs →L[ℂ] B.I.L2 B.μf B.fund))
+    (Fr : Fin D → B.Hs → B.I.GA → ℂ) (hS : StepBoundAt B b P) (h : ∀ i, IsReps B (T i) (Fr i)) (hM : 0 ≤ M)
+    (E : gInf B) (z : B.I.GA)
+    (hb : ∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ u ∈ VP B (P + 1), ‖vv B Fr u (pt B E z t)‖ ≤ M * ‖u‖)
+    {u : B.Hs} (hu : u ∈ VP B P) :
+    ‖vv B Fr u (pt B E z 1) - vv B Fr u z‖ ≤
+      Real.sqrt (∑ v, Formalism.REAL.hs (E v).1) * (Real.sqrt B.I.f * beP B.I.n b P * M * ‖u‖) := by
+  have := norm_image_sub_le_of_norm_deriv_le_segment_01'
+    (f := fun t => vv B Fr u (pt B E z t)) (f' := fun s => vv B Fr (dAct B E u) (pt B E z s))
+    (C := Real.sqrt (∑ v, Formalism.REAL.hs (E v).1) * (Real.sqrt B.I.f * beP B.I.n b P * M * ‖u‖))
+    (fun s _ => (hasDerivAt_vv B T Fr h hu E z s).hasDerivWithinAt)
+    (fun s hs => by
+      refine (hb s (Set.Ico_subset_Icc_self hs) _ (hS.2.2.2.2.2.2 E u hu)).trans ?_
+      refine (mul_le_mul_of_nonneg_left (hS.2.2.2.2.2.1 E u hu) hM).trans (le_of_eq ?_)
+      ring)
+  simpa only [pt_zero] using this
+
+theorem path_variation : ∀ (B : RowsAut) (b ρ M : ℝ) (P : ℕ) (D : ℕ) (T : Fin D → (B.Hs →L[ℂ] B.I.L2 B.μf B.fund)) (Fr : Fin D → B.Hs → B.I.GA → ℂ) (x : B.I.GA) (W : Submodule B.I.E (Fin B.I.n → B.I.E)), StepBoundAt B b P → (∀ i, IsReps B (T i) (Fr i)) → 0 ≤ M → (∀ y ∈ omega B.I x W ρ, ∀ u ∈ VP B (P + 1), ‖vv B Fr u y‖ ≤ M * ‖u‖) → ∀ y ∈ omega B.I x W ρ, ∀ u ∈ VP B P, ‖vv B Fr u y - vv B Fr u x‖ ≤ ρ * Real.sqrt B.I.f * beP B.I.n b P * M * ‖u‖ := by
+  intro B b ρ M P D T Fr x W hS h hM hb y hy u hu
+  obtain ⟨hy2, A0, Z0, hg, hρ, hy1, hN⟩ := hy
+  let A : gInf B := fun v => ⟨A0 v, (hg v).1⟩
+  let Z : gInf B := fun v => ⟨Z0 v, (hg v).2⟩
+  have hmem := fun s t hs ht => pt_mem_omega B x W ρ A Z hρ hN (s := s) (t := t) hs ht
+  have hyeq : y = pt B Z (pt B A x 1) 1 := by
+    refine Prod.ext ?_ (by simp [pt, hy2])
+    funext v
+    apply uMat_inj
+    rw [hy1 v]
+    simp only [pt, one_smul]
+    rfl
+  have h1 := leg B b M P T Fr hS h hM A x (fun t ht w hw => by
+    have := hb _ (hmem t 0 ht (by simp)) w hw
+    rwa [pt_zero] at this) hu
+  have h2 := leg B b M P T Fr hS h hM Z (pt B A x 1) (fun t ht w hw => hb _ (hmem 1 t (by simp) ht) w hw) hu
+  have hK : 0 ≤ Real.sqrt B.I.f * beP B.I.n b P * M * ‖u‖ := by
+    unfold beP; positivity
+  rw [← hyeq] at h2
+  calc _ ≤ ‖vv B Fr u y - vv B Fr u (pt B A x 1)‖ + ‖vv B Fr u (pt B A x 1) - vv B Fr u x‖ :=
+        norm_sub_le_norm_sub_add_norm_sub _ _ _
+    _ ≤ (Real.sqrt (∑ v, Formalism.REAL.hs (A0 v)) + Real.sqrt (∑ v, Formalism.REAL.hs (Z0 v))) *
+        (Real.sqrt B.I.f * beP B.I.n b P * M * ‖u‖) := by
+        rw [add_mul, add_comm]; exact add_le_add h1 h2
+    _ ≤ ρ * (Real.sqrt B.I.f * beP B.I.n b P * M * ‖u‖) := mul_le_mul_of_nonneg_right hρ hK
+    _ = _ := by ring
+
+end GlobalTheory.PathVar
+end
+
+open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Count GlobalTheory.Dec GlobalTheory.Deep GlobalTheory.IndefiniteRowSideFullHecke.OrthonormalPlaceBasis
+open scoped InnerProductSpace ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.representativeValuesVector_variation_unipotentOrbit : ∀ (B : RowsAut) (b ρ M : ℝ) (P : ℕ) (D : ℕ) (T : Fin D → (B.Hs →L[ℂ] B.I.L2 B.μf B.fund)) (Fr : Fin D → B.Hs → B.I.GA → ℂ) (x : B.I.GA) (W : Submodule B.I.E (Fin B.I.n → B.I.E)), StepBoundAt B b P → (∀ i, IsReps B (T i) (Fr i)) → 0 ≤ M → (∀ y ∈ omega B.I x W ρ, ∀ u ∈ VP B (P + 1), ‖vv B Fr u y‖ ≤ M * ‖u‖) → ∀ y ∈ omega B.I x W ρ, ∀ u ∈ VP B P, ‖vv B Fr u y - vv B Fr u x‖ ≤ ρ * Real.sqrt B.I.f * beP B.I.n b P * M * ‖u‖ := by
+  atlas_forward_decl GlobalTheory.PathVar.path_variation
+end
+
+section
+open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Count GlobalTheory.Dec GlobalTheory.Deep GlobalTheory.IndefiniteRowSideFullHecke.OrthonormalPlaceBasis
+open scoped InnerProductSpace ContDiff
+
+namespace GlobalTheory.DeepStep
+
+theorem step_bound (B : RowsAut) (b ρ M : ℝ) (P : ℕ) (D : ℕ)
+    (T : Fin D → (B.Hs →L[ℂ] B.I.L2 B.μf B.fund)) (Fr : Fin D → B.Hs → B.I.GA → ℂ) (x : B.I.GA)
+    (W : Submodule B.I.E (Fin B.I.n → B.I.E)) (hg : 1 ≤ B.g) (hW : B.I.IsIsot W)
+    (hcov : ∀ ν : B.I.Ginf, ((ν, 1) : B.I.GA) ∈ B.I.NA W → ∃ γ ∈ B.I.GFset, ∃ k ∈ B.I.Kg B.g,
+      ∃ y ∈ omega B.I x W ρ, ((ν, 1) : B.I.GA) * x = γ * y * (1, k))
+    (hS : StepBoundAt B b P) (hR : ∀ i, IsReps B (T i) (Fr i))
+    (hC : ∀ i u, B.I.IsCuspFn (B.I.muA B.μf) (B.I.ext (T i u))) (hM : 0 ≤ M)
+    (hb : ∀ y ∈ omega B.I x W ρ, ∀ u ∈ VP B (P + 1), ‖vv B Fr u y‖ ≤ M * ‖u‖) :
+    ∀ y ∈ omega B.I x W ρ, ∀ u ∈ VP B P,
+      ‖vv B Fr u y‖ ≤ 2 * ρ * Real.sqrt B.I.f * beP B.I.n b P * M * ‖u‖ := by
+  intro y hy u hu
+  have hvv : ∀ z : B.I.GA, ‖vv B Fr u z‖ = Real.sqrt (∑ i, ‖Fr i u z‖ ^ 2) := by
+    intro z
+    simp [vv, EuclideanSpace.norm_eq]
+  have hvvs : ∀ z : B.I.GA, ‖vv B Fr u z - vv B Fr u x‖ = Real.sqrt (∑ i, ‖Fr i u z - Fr i u x‖ ^ 2) := by
+    intro z
+    simp [vv, EuclideanSpace.norm_eq]
+  have hnear := GlobalTheory.T.representativeValuesVector_variation_unipotentOrbit B b ρ M P D T Fr x W hS hR hM hb
+  have hcusp := GlobalTheory.T.cuspidalSubspace_closed_rightTranslation_stable B
+  obtain ⟨L, hL, -, -, hLf⟩ := hcusp
+  have hrep : ∀ i, GlobalTheory.Dec.IsContRep B (T i u) (Fr i u) := fun i => (hR i P u hu).1
+  have hx : ‖vv B Fr u x‖ ≤ ρ * Real.sqrt B.I.f * beP B.I.n b P * M * ‖u‖ := by
+    rw [hvv]
+    refine GlobalTheory.MeanZero.norm_le_of_cusp B.I B.μf B.g W D (fun i => Fr i u) x (fun i => Fr i u x) _ hg hW ?_ ?_
+    · intro i
+      obtain ⟨hc, hl, hae⟩ := hrep i
+      refine ⟨hc, hl, (hR i P u hu).2.1, ?_⟩
+      have h1 := ((GlobalTheory.T.continuous_representative_properties B).2.2.2 _ _ (hrep i)).1
+      exact (hLf (T i u) (Fr i u) hl hc h1).1 ((hL _).2 (hC i u))
+    · intro ν hν
+      obtain ⟨γ, hγ, k, hk, z, hz, he⟩ := hcov ν hν
+      have hval : ∀ i, Fr i u (((ν, 1) : B.I.GA) * x) = Fr i u z := by
+        intro i
+        rw [he, (hR i P u hu).2.1 k hk, (hrep i).2.1 γ hγ]
+      simp only [hval]
+      rw [← hvvs]
+      exact hnear z hz u hu
+  calc ‖vv B Fr u y‖ = ‖(vv B Fr u y - vv B Fr u x) + vv B Fr u x‖ := by rw [sub_add_cancel]
+    _ ≤ ‖vv B Fr u y - vv B Fr u x‖ + ‖vv B Fr u x‖ := norm_add_le _ _
+    _ ≤ ρ * Real.sqrt B.I.f * beP B.I.n b P * M * ‖u‖ + ρ * Real.sqrt B.I.f * beP B.I.n b P * M * ‖u‖ :=
+        add_le_add (hnear y hy u hu) hx
+    _ = 2 * ρ * Real.sqrt B.I.f * beP B.I.n b P * M * ‖u‖ := by ring
+
+end GlobalTheory.DeepStep
+end
+
+section
 section
 open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Count GlobalTheory.Dec GlobalTheory.Deep GlobalTheory.IndefiniteRowSideFullHecke.OrthonormalPlaceBasis
 open scoped InnerProductSpace ContDiff
@@ -192,3 +887,4 @@ open scoped InnerProductSpace ContDiff
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.deepPoint_bound_cuspidalIsometricIntertwinerFamily : ∀ (B : RowsAut) (Cg : ℝ) (n₀ : ℕ) (d : InfinitePlace B.I.F → ℝ) (p q : ℕ) (b : ℝ) (c : InfinitePlace B.I.F → ℝ) (x : B.I.GA) (D : ℕ) (T : Fin D → (B.Hs →L[ℂ] B.I.L2 B.μf B.fund)) (Fr : Fin D → B.Hs → B.I.GA → ℂ), 8 ≤ n₀ → 1 ≤ q → CountHyp B Cg n₀ d p q b → (∀ v, IsGauge (B.I.ε v) (c v)) → least B.I x < tauStar B q b → (∀ i, IsReps B (T i) (Fr i)) → (∀ i u, ‖T i u‖ = ‖u‖) → (∀ i u, B.I.IsCuspFn (B.I.muA B.μf) (B.I.ext (T i u))) → ‖vv B Fr (B.tens B.w) x‖ ^ 2 ≤ (2 * GlobalTheory.IndefiniteRowSideFullHecke.DeepKernelRadiusBound.radRh B q (least B.I x) * Real.sqrt B.I.f * GlobalTheory.IndefiniteRowSideFullHecke.DeepKernelRadiusBound.stepBe B.I.n b (8 * q * GlobalTheory.IndefiniteRowSideFullHecke.DeepKernelRadiusBound.dimN B + GlobalTheory.IndefiniteRowSideFullHecke.DeepKernelRadiusBound.dimN B)) ^ (16 * q * GlobalTheory.IndefiniteRowSideFullHecke.DeepKernelRadiusBound.dimN B) * (6 * GlobalTheory.IndefiniteRowSideFullHecke.DeepKernelRadiusBound.stepBe B.I.n b (8 * q * GlobalTheory.IndefiniteRowSideFullHecke.DeepKernelRadiusBound.dimN B + GlobalTheory.IndefiniteRowSideFullHecke.DeepKernelRadiusBound.dimN B)) ^ GlobalTheory.IndefiniteRowSideFullHecke.DeepKernelRadiusBound.dimN B * Real.exp B.I.f * (17 * Real.sqrt B.I.n / least B.I x ^ 2) ^ (2 * GlobalTheory.IndefiniteRowSideFullHecke.DeepKernelRadiusBound.dimN B) * (D : ℝ) * (∏ v, c v) / (B.μf (B.I.Kg B.g)).toReal := by
   atlas_forward_decl GlobalTheory.DeepFamilyGap.deep_bound_family
+end

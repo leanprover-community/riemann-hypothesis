@@ -73,18 +73,8 @@ def valTop (l : ℕ) {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRi
     WithTop ℝ :=
   if c = 0 then ⊤ else (val l c : ℝ)
 
-theorem valTop_zero (l : ℕ) {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] :
-    valTop l (0 : O) = ⊤ := if_pos rfl
 
-theorem valTop_of_ne (l : ℕ) {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
-    {c : O} (hc : c ≠ 0) : valTop l c = (val l c : ℝ) := if_neg hc
 
-theorem val_natCast_self (l : ℕ) {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
-    (h0 : (l : O) ≠ 0) (h1 : ¬ IsUnit (l : O)) : val l (l : O) = 1 := by
-  refine div_self ?_
-  rw [Nat.cast_ne_zero, Ne, ENat.toNat_eq_zero, not_or, IsDiscreteValuationRing.addVal_eq_zero_iff,
-    IsDiscreteValuationRing.addVal_eq_top_iff]
-  exact ⟨h1, h0⟩
 
 def LenLe (l : ℕ) (O : Type) [CommRing O] (M : Type) [AddCommGroup M] [Module O M] (b : ℝ) : Prop :=
   ∃ m k : ℕ, Module.length O M = m ∧ Module.length O (O ⧸ Ideal.span {(l : O)}) = k ∧ (m : ℝ) ≤ b * k

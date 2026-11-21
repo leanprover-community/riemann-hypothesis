@@ -2581,11 +2581,8 @@ end Formalism.FourierDecayAlt.P.NFx2
 
 namespace Formalism.FourierDecayAlt.P
 
-theorem shift_block : Formalism.FourierDecayAlt.NF.SBlock := NFx2.sb_main
 
-theorem shift_connection : Formalism.FourierDecayAlt.NF.SConn := NFx2.sc_main
 
-theorem shift_norm : Formalism.FourierDecayAlt.NF.SNorm := NFx2.sn_main
 
 theorem theorem_S_of_steps : Formalism.FourierDecayAlt.NF.ThmSOfSteps := NFx2.thmSOfSteps
 

@@ -162,7 +162,6 @@ def triv (n : ℕ) : HermLine (GlobalTheory n) := HermLine.sqMetric fun _ => 0
 
 example : Family (GlobalTheory 2) := fun _ _ _ => 0
 
-theorem isSmoothHerm_fubiniStudyO1 (n : ℕ) : IsSmoothHerm (fsO1 n) := isSmoothHerm_sqMetric _
 
 theorem isArithVar_bot (n : ℕ) : IsArithVar (⊥ : Ideal (MRing (GlobalTheory (n + 1)))) (n + 1) := by
   refine ⟨⟨()⟩, ⟨Ideal.isPrime_bot, ⟨∅, by simp, by simp⟩, fun _ => ⟨0, ?_⟩⟩, ?_, ?_⟩
@@ -191,13 +190,7 @@ theorem isMultiHomog_C (c : ℤ) {n : ℕ} : IsMultiHomog (C c : MRing (GlobalTh
     simp
   · exact absurd rfl hm
 
-theorem isSec_Xb (n : ℕ) (i : Fin (n + 1)) : IsSec (⊥ : Ideal (MRing (GlobalTheory (n + 1)))) (fsO1 (n + 1)) (Xb (n + 1) i) :=
-  ⟨fun _ => 1, isMultiHomog_Xb _ _, fun _ => by simp [fsO1, HermLine.sqMetric],
-    by rw [Ideal.mem_bot]; exact X_ne_zero _⟩
 
-theorem specInt_hypotheses_hold : IsArithVar (⊥ : Ideal (MRing (GlobalTheory 1))) 1 ∧ IsSmoothHerm (fsO1 1) ∧
-    IsSec (⊥ : Ideal (MRing (GlobalTheory 1))) (fsO1 1) (Xb 1 0) :=
-  ⟨isArithVar_bot 0, isSmoothHerm_fubiniStudyO1 1, isSec_Xb 0 0⟩
 
 def halfLine : HermLine (GlobalTheory 1) := expLine (fun _ => 2 * Real.log 2) fun _ _ _ => rfl
 

@@ -33,14 +33,6 @@ def HasResC (A : FamIn D.what₂.LL G Pl0 T D.R.m) (p : Pl0 → D.what₂.LL[X])
   ∀ P : A.ok A.μ0, Col.heckePoly (A.fam.R A.μ0).n (A.fam.R A.μ0).q x P =
     (p P.1 * (A.fam.R A.μ0).blockProd P).map D.what₂.embLL
 
-theorem hasResC_map (p : Pl0 → D.what₂.LL[X]) (x : A.ok A.μ0 × ℕ → D.what₂.LL) :
-    HasResC A p (fun i => D.what₂.embLL (x i)) ↔ (A.fam.R A.μ0).HasRes p x := by
-  refine forall_congr' fun P => ?_
-  have h : Col.heckePoly (A.fam.R A.μ0).n (A.fam.R A.μ0).q (fun i => D.what₂.embLL (x i)) P =
-      (Col.heckePoly (A.fam.R A.μ0).n (A.fam.R A.μ0).q x P).map D.what₂.embLL := by
-    unfold Col.heckePoly
-    rw [Col.map_heckePolyOf]
-  exact (Eq.congr h rfl).trans (Polynomial.map_injective _ D.what₂.embLL.injective).eq_iff
 
 variable (R : RealDat D A Ks)
 

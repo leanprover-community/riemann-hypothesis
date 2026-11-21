@@ -27,21 +27,7 @@ theorem exists_values (c : Coeff l) (W : ValuationSubring ℂ) :
   · apply Subtype.ext
     simpa [zeta] using (Complex.isPrimitiveRoot_exp l.A l.A_pos.ne').pow_eq_one
 
-theorem int_ne_rt (c : Coeff l) (r : ℤ) : ((Int.castRingHom c.F r : c.F) : ℂ) ≠ H.rt0 := by
-  intro h
-  have h1 : ((r : ℂ)) ^ 2 = -(H.d : ℂ) := by
-    rw [← H.sqrt_neg_disc_sq, ← h]; simp
-  have h2 : r ^ 2 = -(H.d : ℤ) := by exact_mod_cast h1
-  have h3 := H.d_prime.pos
-  nlinarith [sq_nonneg r]
 
-theorem nonempty_int (D : Datum H) (c : Coeff l) :
-    Nonempty (ArcIn D l (Int.castRingHom c.F) c.F (Int.castRingHom c.F)) :=
-  let a := GlobalTheory.HostModel.arcIn c c.F (RingHom.id _)
-  ⟨{ D₀ := a.D₀, mod := a.mod, oa := a.oa, nontriv := a.nontriv, even := a.even, bimult := a.bimult, gen := a.gen
-     w0 := a.w0, be := a.be, be_symm := a.be_symm, be_pos := a.be_pos, be_adj := a.be_adj, be_dvd := a.be_dvd
-     eta := fun _ => a.eta 0, etaA := fun _ => a.etaA 0
-     geom := fun _ _ _ _ r _ hr => absurd hr (int_ne_rt c r) }⟩
 
 open Classical in
 

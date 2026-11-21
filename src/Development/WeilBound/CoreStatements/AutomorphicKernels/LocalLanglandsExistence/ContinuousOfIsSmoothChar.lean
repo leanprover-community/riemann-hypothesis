@@ -234,11 +234,6 @@ variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchim
 
 variable [MeasurableSpace k] [BorelSpace k]
 
-theorem isTateMeas_localEpsilon (ψ : AddChar k Circle) (hψ : Continuous ψ) (h1 : ψ ≠ 1) (χ : kˣ →* ℂˣ)
-    (hχ : IsSmoothChar χ) (t : ℝ) (ht : 0 < t) :
-    IsTateMeas ψ t χ (((t / (GroundTheory.LocalField.selfDualMeasure ψ (GroundTheory.LocalField.valBall k 0 : Set k)).toReal : ℝ) : ℂ) *
-      GroundTheory.LocalField.localEpsilon χ ψ 0) :=
-  G7.main ψ hψ h1 χ hχ t
 
 end Local
 

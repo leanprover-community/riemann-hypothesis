@@ -98,36 +98,13 @@ theorem etaPeriod_pos (τ : ℍ) : 0 < etaPeriod τ := by
   have := τ.im_pos
   positivity
 
-theorem I_mem_fd : UpperHalfPlane.I ∈ 𝒟 := by
-  refine ⟨?_, ?_⟩
-  · simp [UpperHalfPlane.I, Complex.normSq_I]
-  · simp [UpperHalfPlane.I]
 
-theorem I_mem_latticeReducedParams :
-    UpperHalfPlane.I ∈ latticeReducedParams (latticeOf Complex.I) :=
-  ⟨I_mem_fd, 1, one_ne_zero, by simp [UpperHalfPlane.I]⟩
 
 instance : Fact (Nat.Prime 7) := ⟨by norm_num⟩
 
-theorem legendreCharacter_seven_two : legendreCharacter 7 2 = 1 := by
-  have : quadraticChar (ZMod 7) 2 = 1 := by decide
-  simp [legendreCharacter, MulChar.ringHomComp_apply, this]
 
-theorem legendreCharacter_seven_three : legendreCharacter 7 3 = -1 := by
-  have : quadraticChar (ZMod 7) 3 = -1 := by decide
-  simp [legendreCharacter, MulChar.ringHomComp_apply, this]
 
-theorem legendreCharacter_seven_ne_one : legendreCharacter 7 ≠ 1 := by
-  intro h
-  have h3 := legendreCharacter_seven_three
-  rw [h] at h3
-  have hu : IsUnit (3 : ZMod 7) := by decide
-  rw [MulChar.one_apply hu] at h3
-  norm_num at h3
 
-theorem LFunction_legendreCharacter_seven_one_ne_zero :
-    DirichletCharacter.LFunction (legendreCharacter 7) 1 ≠ 0 :=
-  DirichletCharacter.LFunction_apply_one_ne_zero legendreCharacter_seven_ne_one
 
 end Ties
 

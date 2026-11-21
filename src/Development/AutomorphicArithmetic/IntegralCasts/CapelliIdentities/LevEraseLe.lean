@@ -1,8 +1,37 @@
 import Mathlib
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ProjectiveAutomorphicHecke.CentralEig2
-import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.IsOpenStabilizerLinearMap
-import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ExistsGoodWithoutBad
 
+section
+theorem UpperTheory.isOpen_stabilizer_linear_map :
+    ∀ {G V M : Type} [TopologicalSpace G] [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V] [AddCommGroup M] [Module ℂ M] (R : G → M →ₗ[ℂ] M) (f : V →ₗ[ℂ] M), (∀ v : V, IsOpen {g : G | R g (f v) = f v}) → IsOpen {g : G | R g ∘ₗ f = f} := by
+  intro G V M _ _ _ _ _ _ R f h
+  let b := Module.finBasis ℂ V
+  have key : {g : G | R g ∘ₗ f = f} = ⋂ i, {g : G | R g (f (b i)) = f (b i)} := by
+    ext g
+    simp only [Set.mem_setOf_eq, Set.mem_iInter]
+    constructor
+    · intro hg i
+      exact LinearMap.congr_fun hg (b i)
+    · intro hg
+      exact b.ext fun i => hg i
+  rw [key]
+  exact isOpen_iInter_of_finite fun i => h (b i)
+end
+
+section
+theorem UpperTheory.exists_good_without_bad :
+    ∀ {P : Type} [DecidableEq P] (Good : Finset P → Prop) (bad : P → Prop), (∀ (S : Finset P) (w : P), Good S → w ∈ S → bad w → Good (S.erase w)) → ∀ S : Finset P, Good S → ∃ T : Finset P, Good T ∧ ∀ w ∈ T, ¬ bad w := by
+  intro P _ Good bad h S
+  induction S using Finset.strongInduction with
+  | H S ih =>
+    intro hS
+    by_cases hb : ∃ w ∈ S, bad w
+    · obtain ⟨w, hw, hbw⟩ := hb
+      exact ih (S.erase w) (Finset.erase_ssubset hw) (h S w hS hw hbw)
+    · exact ⟨S, hS, fun w hw hbw => hb ⟨w, hw, hbw⟩⟩
+end
+
+section
 namespace UpperTheory.Reformulated.B.Grk2
 
 open UpperTheory.Gal.CertificateRingHomMap
@@ -109,3 +138,4 @@ theorem UpperTheory.Reformulated.B.Grk2.pVecU_of :
     obtain ⟨-, -, -, b1, b2, -⟩ := hL E n w hw
     refine ⟨fun h => hgood w h ⟨hw, a1, t1⟩, fun h => hgood _ h ⟨b1, fun e => a2 ?_, t2⟩⟩
     rw [← e, b2]
+end

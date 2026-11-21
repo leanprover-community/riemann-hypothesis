@@ -11,8 +11,6 @@ section LocRegAux
 
 variable {L : Type} [Field L] [Algebra ℂ L]
 
-private lemma le_loc (B : Subalgebra ℂ L) (e : B →ₐ[ℂ] ℂ) : B ≤ loc B e := fun b hb =>
-  ⟨1, by simp, by simpa using hb⟩
 
 end LocRegAux
 

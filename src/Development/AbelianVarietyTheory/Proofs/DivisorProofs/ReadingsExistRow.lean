@@ -74,7 +74,6 @@ def PhaseFun (u : GA D (Wc D i) → ℂ) : Prop :=
   (∀ h, ‖u h‖ = 1) ∧ (∀ γ ∈ GQ (Wc D i), ∀ h, u (γ * h) = u h) ∧ (∀ g ∈ GinfC (Wc D i), ∀ h, u (h * g) = u h) ∧
     ∀ k ∈ levW R i, ∀ h, u (h * k) = u h
 
-theorem phaseFun_one : PhaseFun R i (fun _ => 1) := ⟨fun _ => norm_one, fun _ _ _ => rfl, fun _ _ _ => rfl, fun _ _ _ => rfl⟩
 
 abbrev IsLiftW (g : G) (k : GA D (Wc D i)) : Prop := Lev.IsLevelLift (Wc D i) (R.βW i) (R.datWp i R.triv) (R.eG g) k
 

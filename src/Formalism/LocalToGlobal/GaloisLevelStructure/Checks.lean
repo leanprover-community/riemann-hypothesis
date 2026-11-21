@@ -24,18 +24,6 @@ def MtReal.transfer {D : D7} {μ μ' : D.what₂.Tup} {j j' : ℕ} (m : MtReal D
   real_range := by
     rw [LinearMap.range_comp, LinearEquiv.range, Submodule.map_top, m.real_range]
 
-theorem MtReal.comap_transfer {D : D7} {μ : D.what₂.Tup} {j : ℕ} (m : MtReal D μ j)
-    (φ : D.what₂.Mt μ j ≃ₗ[ℂ] D.what₂.Mt μ j) (S : Submodule ℂ (GAf D.host.E D.R.nV → m.wt.W)) :
-    S.comap (MtReal.transfer m φ).real = (S.comap m.real).map φ.symm.toLinearMap := by
-  ext y
-  simp only [MtReal.transfer, Submodule.mem_comap, Submodule.mem_map]
-  constructor
-  · intro h
-    exact ⟨φ y, h, by simp⟩
-  · rintro ⟨z, hz, rfl⟩
-    show m.real (φ (φ.symm z)) ∈ S
-    rw [LinearEquiv.apply_symm_apply]
-    exact hz
 
 namespace NG
 

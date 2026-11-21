@@ -2,9 +2,17 @@ import Mathlib
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.TwistedKernels.ExPhiPlusOnto
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwistedJacquetExactSmooth
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirabolicFiltrationExhaustive
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaOpenMirabolicStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaOpenMirabolic
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirabolicCharacterEqStatement
 
+section
+open GlobalTheory.PRep GlobalTheory.BZMir GlobalTheory.BZMir.Fun
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.theta_open_mirabolic : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], GlobalTheory.BZMir.Fun.ThetaOpen k := by
+  first | exact @GlobalTheory.CompanionTheory.BZFun.thetaOpen | exact GlobalTheory.CompanionTheory.BZFun.thetaOpen | (intros; apply GlobalTheory.CompanionTheory.BZFun.thetaOpen <;> assumption)
+end
+
+section
 open GlobalTheory.PRep GlobalTheory.BZMir GlobalTheory.BZMir.Fun
 
 namespace GlobalTheory.CompanionTheory.BZMir
@@ -19,3 +27,4 @@ theorem exPhiMinus (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [I
     (GlobalTheory.T.mirabolic_filtration_exhaustive k (n + 1)) f g hf hg hfg
 
 end GlobalTheory.CompanionTheory.BZMir
+end

@@ -169,11 +169,6 @@ theorem finSum_congr {a b : ℕ → L} {n : ℕ} (h : ∀ i < n, a i = b i) :
     T.finSum a n = T.finSum b n :=
   Finset.sum_congr rfl fun i hi => by rw [h i (Finset.mem_range.1 hi)]
 
-theorem finSum_mem_span_of_eq_zero {a : ℕ → L} {n m : ℕ} (h : ∀ i < m, a i = 0) (hmn : m ≤ n) :
-    T.finSum a n ∈ Ideal.span {T.π ^ m} := by
-  have h0 : T.finSum a m = 0 := by
-    rw [T.finSum_congr (b := 0) h]; simp [finSum]
-  simpa [h0] using T.finSum_sub_finSum_mem a hmn
 
 def partialSum (x : Γ) (n : ℕ) : Γ := T.finSum (T.coeff x) n
 

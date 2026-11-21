@@ -59,24 +59,11 @@ def DefectSumBound : Prop :=
     (Function.support (defect_vw E (K := K) n' a)).Finite ∧
       normSum (defect_vw E (K := K) n' a) ≤ (lrd E + Real.log ((n' : ℕ) : ℝ)) * κ
 
-theorem defectAt_vw_eq_mul {E K : Type} [Field E] [NumberField E] [Field K] [NumberField K]
-    (σ : E →+* K) (n' : ℕ+) (a : ℕ) (la : HeightOneSpectrum (𝓞 K)) (e : ℝ) (he : 0 < e) :
-    (defectAt_vw σ n' a la : ℝ) = e * a * max ((ord_vw la (conjDifferent σ) : ℝ) / e)
-      ((ord_vw la (Ideal.span {((n' : ℕ) : 𝓞 K)}) : ℝ) / e) := by
-  rw [max_div_div_right he.le, defectAt_vw]
-  push_cast
-  field_simp
 
 theorem defectAt_vw_le {E K : Type} [Field E] [NumberField E] [Field K] [NumberField K]
     (σ : E →+* K) (n' : ℕ+) (a : ℕ) (la : HeightOneSpectrum (𝓞 K)) :
     defectAt_vw σ n' a la ≤ defect_vw E n' a la :=
   Finset.le_sup (f := fun σ : E →+* K => defectAt_vw σ n' a la) (Finset.mem_univ σ)
 
-theorem le_defectAt_vw_of_mem {E K : Type} [Field E] [NumberField E] [Field K] [NumberField K]
-    (σ : E →+* K) (n' : ℕ+) (a : ℕ) (la : HeightOneSpectrum (𝓞 K))
-    (h : ((n' : ℕ) : 𝓞 K) ∈ la.asIdeal) : a ≤ defectAt_vw σ n' a la := by
-  have h1 : 0 < ord_vw la (Ideal.span {((n' : ℕ) : 𝓞 K)}) :=
-    dvd_iff_multiplicity_pos.mpr (Ideal.dvd_span_singleton.mpr h)
-  exact Nat.le_mul_of_pos_right _ (lt_of_lt_of_le h1 (le_max_right _ _))
 
 end GlobalTheory.IndefiniteRowSideFullHecke.DifferentConjugateDefects

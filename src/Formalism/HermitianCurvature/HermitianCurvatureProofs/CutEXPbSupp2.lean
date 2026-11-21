@@ -1,6 +1,353 @@
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutEXPbSuppOrbit
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutEXPbSuppHyp
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutEX2
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CornerMatrixBlockThreeMul
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RdVZeroOfVanish
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.PartialBesselSmoothCompactSupport
 
+section
+open Matrix MeasureTheory Filter Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt
+
+noncomputable section
+
+namespace Formalism.FourierDecayAlt.P.CutEXPbSupp
+
+section gen
+
+variable {k p ρ n : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
+  [InnerProductSpace ℂ Wq]
+
+theorem exists_orbit (Bj : B.RealPlaceData k ρ Wp Wq) (B0 : B.RealPlaceData k n Wp Wq) (e : p + ρ = n)
+    (H : B.Mat k n → (Wq →L[ℂ] Wp)) (g0 : B.Mat k n) (h : PBQ.pbF Bj B0 e H g0 ≠ 0) :
+    ∃ x, PBQ.GoodP Bj x ∧ ∃ ξ : Mt k n × Mt k n, PBG.InR B0 ξ ∧
+      H (D.castM e (PBQ.sP Bj x) * g0 * Matrix.of ξ.2 * Matrix.of ξ.1) ≠ 0 := by
+  by_contra hno
+  push Not at hno
+  apply h
+  unfold PBQ.pbF
+  rw [← integral_zero (PBQ.XP k p ρ) (Wq →L[ℂ] Wp)]
+  refine integral_congr_ae ?_
+  filter_upwards [PBQ.ae_goodP (p := p) Bj] with x hx
+  show PBQ.pbI Bj B0 e H g0 x = 0
+  unfold PBQ.pbI
+  have hK : PBG.Kr B0 H (D.castM e (PBQ.sP Bj x) * g0) = 0 := by
+    unfold PBG.Kr
+    rw [← integral_zero (Mt k n × Mt k n) (Wq →L[ℂ] Wp)]
+    refine integral_congr_ae ?_
+    filter_upwards [PBG.ae_inR B0] with ξ hξ
+    show _ = 0
+    rw [hno x hx ξ hξ, ContinuousLinearMap.zero_comp, smul_zero]
+  rw [hK, ContinuousLinearMap.comp_zero, smul_zero]
+
+theorem norm_entry_le_gN (g : B.Mat k n) (i j : Fin (2 * n + k + 1)) : ‖g i j‖ ≤ B.gN g := by
+  unfold B.gN
+  rw [Complex.norm_def]
+  refine Real.sqrt_le_sqrt ?_
+  calc Complex.normSq (g i j) ≤ ∑ j', Complex.normSq (g i j') :=
+        Finset.single_le_sum (f := fun j' => Complex.normSq (g i j')) (fun _ _ => Complex.normSq_nonneg _)
+          (Finset.mem_univ j)
+    _ ≤ ∑ i', ∑ j', Complex.normSq (g i' j') :=
+        Finset.single_le_sum (f := fun i' => ∑ j', Complex.normSq (g i' j'))
+          (fun _ _ => Finset.sum_nonneg fun _ _ => Complex.normSq_nonneg _) (Finset.mem_univ i)
+
+theorem orbit_gen (Bj : B.RealPlaceData k ρ Wp Wq) (B0 : B.RealPlaceData k n Wp Wq) (e : p + ρ = n)
+    (hz : B0.z = D.castV e (liftVec k p ρ Bj.z))
+    (Z : Matrix (Fin p) (Fin p) ℂ) (μ : B.Mat k ρ) (hZ : Z.det ≠ 0) (hμ : μ ∈ B.GV k ρ)
+    (x : PBQ.XP k p ρ) (hx : PBQ.GoodP Bj x) (ξ : Mt k n × Mt k n) (hξ : PBG.InR B0 ξ) (g : B.Mat k n)
+    (hg : g = D.castM e (PBQ.sP Bj x) * D.castM e (U.mMap k p ρ Z μ) * Matrix.of ξ.2 * Matrix.of ξ.1) :
+    g ∈ B.GV k n ∧ (∃ u : Matrix (Fin p) (Fin p) ℂ, Formalism.DoubleCosetMeasures.IsUpUni u ∧ ∀ a b, ‖(Z * u) a b‖ ≤ B.gN g) ∧
+      (∀ l, Dmin k n B0.z B0.z' g l = Dmin k n B0.z B0.z' (D.castM e (U.mMap k p ρ Z μ)) l) ∧
+      Gf k n B0.z B0.z' g = Gf k n B0.z B0.z' (D.castM e (U.mMap k p ρ Z μ)) := by
+  subst e
+  simp only [Formalism.FourierDecayAlt.P.Dx2.MN.castM_rfl] at hg ⊢
+  rw [Formalism.FourierDecayAlt.P.JCTx5.castV_rfl] at hz
+  have hm : U.mMap k p ρ Z μ ∈ B.GV k (p + ρ) := (Formalism.FourierDecayAlt.P.slice_membership k p ρ).1 Z μ hZ hμ
+  refine ⟨?_, ?_, ?_⟩
+  · rw [hg]
+    exact Formalism.FourierDecayAlt.P.BetaSesquilinearity.gv_mul (Formalism.FourierDecayAlt.P.BetaSesquilinearity.gv_mul (Formalism.FourierDecayAlt.P.BetaSesquilinearity.gv_mul (PartialBesselProperness.sP_GV Bj x) hm) hξ.2.1)
+      hξ.1.1
+  · refine ⟨G.upper (fun q : G.UT p => (Matrix.of ξ.2 : B.Mat k (p + ρ)) ⟨q.1.1.val, by omega⟩ ⟨q.1.2.val, by omega⟩),
+      LeftFubiniLemmas.upper_isUpUni _, fun a b => ?_⟩
+    have hZh : U.Zh k p ρ g = Z * G.upper (fun q : G.UT p =>
+        (Matrix.of ξ.2 : B.Mat k (p + ρ)) ⟨q.1.1.val, by omega⟩ ⟨q.1.2.val, by omega⟩) := by
+      have e0 := Formalism.FourierDecayAlt.P.hat_z_on_slice k p ρ 0 0 Z μ
+      rw [LeftFubiniLemmas.rn_zero, inv_one, Matrix.one_mul, Matrix.mul_one] at e0
+      rw [hg, PBQ.zh_mul_UW _ _ _ hξ.1, LeftFubiniLemmas.zh_mul_N _ _ hξ.2, PBQ.zh_sP_mul, e0,
+        PBQ.nblk_upper _ hξ.2]
+    rw [← hZh]
+    exact norm_entry_le_gN g _ _
+  · obtain ⟨h, hh, m, hmN, hs⟩ := PartialBesselProperness.leftFactor_mem Bj x
+    rw [← hz] at hh
+    have hhu : IsUnit h.det := Formalism.QuantumDeterminants.WeylGroupFacts.isUnit_of_uh hh.1
+    have hmu : IsUnit m.det := Formalism.QuantumDeterminants.WeylGroupFacts.isUnit_of_uh hmN.1
+    set pp : B.SS k (p + ρ) := ((Matrix.of.symm h⁻¹, Matrix.of.symm m⁻¹), ξ) with hpp
+    have hin : B0.inSS pp := ⟨Formalism.FourierDecayAlt.P.BigCellInversePair.uw_inv hh, Formalism.QuantumDeterminants.WeylGroupFacts.mem_n_inv hmN, hξ.1, hξ.2⟩
+    have hsg : B.sgs pp (U.mMap k p ρ Z μ) = g := by
+      rw [hg, hs]
+      simp only [B.sgs, hpp]
+      change (h⁻¹)⁻¹ * (m⁻¹)⁻¹ * U.mMap k p ρ Z μ * Matrix.of ξ.2 * Matrix.of ξ.1 = _
+      rw [Matrix.nonsing_inv_nonsing_inv _ hhu, Matrix.nonsing_inv_nonsing_inv _ hmu]
+    refine ⟨fun l => ?_, ?_⟩
+    · rw [← hsg]; exact Formalism.FourierDecayAlt.P.BigCellZetaMinors.dmin_sgs B0 hin _ l
+    · rw [← hsg]; exact Formalism.FourierDecayAlt.P.JCx1.needs.gf_sgs B0 hin _
+
+end gen
+
+theorem gf_castM {k a b : ℕ} (e : a = b) (z z' : Fin (2 * b + k + 1) → ℂ) (g : B.Mat k a) :
+    Gf k b z z' (D.castM e g) = Gf k a (D.castV e.symm z) (D.castV e.symm z') g := by
+  subst e
+  rw [Formalism.FourierDecayAlt.P.JCTx5.castM_rfl, Formalism.FourierDecayAlt.P.JCTx5.castV_rfl, Formalism.FourierDecayAlt.P.JCTx5.castV_rfl]
+
+theorem castV_castV' {k a b c : ℕ} (h1 : a = b) (h2 : b = c) (v : Fin (2 * a + k + 1) → ℂ) :
+    D.castV h2 (D.castV h1 v) = D.castV (h1.trans h2) v := by
+  subst h1 h2; rfl
+
+variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
+  [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq]
+
+theorem lowV_top {P : M.Par} (p : KB.Pl P Wp Wq) (e : P.r + (P.r - P.r) = P.r) :
+    U.lowV P.k P.r (P.r - P.r) (D.castV e.symm p.T.base.z) = (p.T.bs P.r).z ∧
+      U.lowV P.k P.r (P.r - P.r) (D.castV e.symm p.T.base.z') = (p.T.bs P.r).z' := by
+  unfold D.LevTower.base
+  rw [← p.T.z_lev P.r le_rfl, ← p.T.z'_lev P.r le_rfl, castV_castV', castV_castV']
+  exact ⟨Formalism.FourierDecayAlt.P.JCTx6.Link2.lowV_liftVec rfl _ _, Formalism.FourierDecayAlt.P.JCTx6.Link2.lowV_liftVec rfl _ _⟩
+
+theorem orbit_point {P : M.Par} (p : KB.Pl P Wp Wq) (G : B.Mat P.k P.r → (Wq →L[ℂ] Wp))
+    (Z : Matrix (Fin P.r) (Fin P.r) ℂ) (μ : B.Mat P.k (P.r - P.r)) (hZ : Z.det ≠ 0)
+    (hμ : μ ∈ Q.Glev P.k (P.r - P.r) (Fin.last _)) (h : CutEX.pbTop p G Z μ ≠ 0) :
+    ∃ g ∈ B.GV P.k P.r, G g ≠ 0 ∧ ∃ u : Matrix (Fin P.r) (Fin P.r) ℂ, Formalism.DoubleCosetMeasures.IsUpUni u ∧
+      (∀ a b, ‖(Z * u) a b‖ ≤ B.gN g) ∧ Dmin P.k P.r p.T.base.z p.T.base.z' g ⟨P.r, by omega⟩ = Z.det ∧
+      Gf P.k P.r p.T.base.z p.T.base.z' g =
+        Complex.normSq Z.det * Gf P.k (P.r - P.r) (p.T.bs P.r).z (p.T.bs P.r).z' μ := by
+  have e : P.r + (P.r - P.r) = P.r := by omega
+  have hμGV : μ ∈ B.GV P.k (P.r - P.r) := hμ.1
+  unfold CutEX.pbTop PBQ.pbT at h
+  obtain ⟨x, hx, ξ, hξ, hG⟩ := exists_orbit _ _ _ _ _ h
+  have hz : p.T.base.z = D.castV e (liftVec P.k P.r (P.r - P.r) (p.T.bs P.r).z) := (p.T.z_lev P.r le_rfl).symm
+  obtain ⟨hGV, ⟨u, hu, hb⟩, hD, hGf⟩ := orbit_gen (p.T.bs P.r) p.T.base e hz Z μ hZ hμGV x hx ξ hξ _ rfl
+  refine ⟨_, hGV, hG, u, hu, hb, ?_, ?_⟩
+  · rw [hD]
+    rw [Formalism.FourierDecayAlt.P.PBI.dmin_castM e _ _ _ P.r (by omega) (by omega), Formalism.FourierDecayAlt.P.hat_z_minimum_degree P.k P.r (P.r - P.r)]
+    have e0 := Formalism.FourierDecayAlt.P.hat_z_on_slice P.k P.r (P.r - P.r) 0 0 Z μ
+    rw [Formalism.FourierDecayAlt.P.LeftFubiniLemmas.rn_zero, inv_one, Matrix.one_mul, Matrix.mul_one] at e0
+    unfold U.DjU
+    rw [e0]
+  · rw [hGf, gf_castM e]
+    have hz0 := Formalism.FourierDecayAlt.P.PBH.inWb_castV e.symm p.T.base.z_mem
+    have hz0' := Formalism.FourierDecayAlt.P.PBH.inWb_castV e.symm p.T.base.z'_mem
+    have hG0 := Formalism.FourierDecayAlt.P.level_function_slice P.k P.r (P.r - P.r) _ _ hz0 hz0' 0 0 Z μ
+    rw [Formalism.FourierDecayAlt.P.LeftFubiniLemmas.rn_zero, inv_one, Matrix.one_mul, Matrix.mul_one] at hG0
+    obtain ⟨hl1, hl2⟩ := lowV_top p e
+    rw [hG0, hl1, hl2]
+
+end Formalism.FourierDecayAlt.P.CutEXPbSupp
+end
+end
+
+section
+open Matrix Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt
+
+noncomputable section
+
+namespace Formalism.FourierDecayAlt.P.CutEXPbSupp
+
+section hyp
+
+variable {m : ℕ}
+
+theorem rev_cs (a b : Fin (m + 1) → ℂ) (c : ℂ) (t : ℝ) (ht : 0 < t)
+    (ha : ∑ i : Fin m, ‖a i.castSucc‖ ^ 2 ≤ ‖a (Fin.last m)‖ ^ 2)
+    (hb : ∑ i : Fin m, ‖b i.castSucc‖ ^ 2 ≤ ‖b (Fin.last m)‖ ^ 2 - t)
+    (hc : ‖c‖ ≤ ∑ i : Fin m, ‖a i.castSucc‖ * ‖b i.castSucc‖) :
+    ‖a (Fin.last m)‖ * t ≤ 2 * ‖b (Fin.last m)‖ * ‖a (Fin.last m) * b (Fin.last m) + c‖ := by
+  set A := ‖a (Fin.last m)‖ with hA
+  set Bn := ‖b (Fin.last m)‖ with hBn
+  set P := ∑ i : Fin m, ‖a i.castSucc‖ * ‖b i.castSucc‖ with hPdef
+  have hP0 : 0 ≤ P := Finset.sum_nonneg fun i _ => mul_nonneg (norm_nonneg _) (norm_nonneg _)
+  have hCS : P ^ 2 ≤ (∑ i : Fin m, ‖a i.castSucc‖ ^ 2) * (∑ i : Fin m, ‖b i.castSucc‖ ^ 2) :=
+    Finset.sum_mul_sq_le_sq_mul_sq _ _ _
+  have hsb : 0 ≤ ∑ i : Fin m, ‖b i.castSucc‖ ^ 2 := Finset.sum_nonneg fun i _ => by positivity
+  have hA0 : 0 ≤ A := norm_nonneg _
+  have hB0 : 0 ≤ Bn := norm_nonneg _
+  have hBt : t ≤ Bn ^ 2 := by linarith
+  have hP2 : P ^ 2 ≤ A ^ 2 * (Bn ^ 2 - t) := hCS.trans (mul_le_mul ha hb hsb (sq_nonneg _))
+  have key : 2 * Bn * P ≤ A * (2 * Bn ^ 2 - t) := by
+    have hR : 0 ≤ A * (2 * Bn ^ 2 - t) := mul_nonneg hA0 (by linarith)
+    have hL : 0 ≤ 2 * Bn * P := by positivity
+    have hsq : (2 * Bn * P) ^ 2 ≤ (A * (2 * Bn ^ 2 - t)) ^ 2 := by
+      have e1 : (2 * Bn * P) ^ 2 = 4 * Bn ^ 2 * P ^ 2 := by ring
+      have e2 : (A * (2 * Bn ^ 2 - t)) ^ 2 = 4 * Bn ^ 2 * (A ^ 2 * (Bn ^ 2 - t)) + A ^ 2 * t ^ 2 := by ring
+      rw [e1, e2]
+      have h4 : 4 * Bn ^ 2 * P ^ 2 ≤ 4 * Bn ^ 2 * (A ^ 2 * (Bn ^ 2 - t)) :=
+        mul_le_mul_of_nonneg_left hP2 (by positivity)
+      nlinarith [sq_nonneg (A * t)]
+    nlinarith
+  have h1 : A * Bn ≤ ‖a (Fin.last m) * b (Fin.last m) + c‖ + ‖c‖ := by
+    rw [hA, hBn, ← norm_mul]
+    calc ‖a (Fin.last m) * b (Fin.last m)‖ = ‖(a (Fin.last m) * b (Fin.last m) + c) - c‖ := by
+          rw [add_sub_cancel_right]
+      _ ≤ _ := norm_sub_le _ _
+  have h2 : A * Bn - P ≤ ‖a (Fin.last m) * b (Fin.last m) + c‖ := by linarith
+  calc A * t = 2 * A * Bn ^ 2 - A * (2 * Bn ^ 2 - t) := by ring
+    _ ≤ 2 * A * Bn ^ 2 - 2 * Bn * P := by linarith
+    _ = 2 * Bn * (A * Bn - P) := by ring
+    _ ≤ 2 * Bn * ‖a (Fin.last m) * b (Fin.last m) + c‖ := mul_le_mul_of_nonneg_left h2 (by positivity)
+
+def dS (m : ℕ) : Fin (m + 1) → ℂ := fun i => if i = Fin.last m then -1 else 1
+
+theorem dS_cs (i : Fin m) : dS m i.castSucc = 1 := by simp [dS, Fin.castSucc_ne_last]
+
+theorem dS_last : dS m (Fin.last m) = -1 := by simp [dS]
+
+theorem dS_sq : diagonal (dS m) * diagonal (dS m) = 1 := by
+  rw [diagonal_mul_diagonal, ← diagonal_one]
+  congr 1; funext i; unfold dS; split_ifs <;> norm_num
+
+theorem sum_dS (v : Fin (m + 1) → ℂ) :
+    ∑ i, star (v i) * dS m i * v i =
+      ((∑ i : Fin m, ‖v i.castSucc‖ ^ 2 - ‖v (Fin.last m)‖ ^ 2 : ℝ) : ℂ) := by
+  rw [Fin.sum_univ_castSucc, dS_last]
+  simp only [dS_cs, mul_one, Complex.ofReal_sub, Complex.ofReal_sum, Complex.ofReal_pow]
+  have e : ∀ w : ℂ, star w * w = ((‖w‖ : ℝ) : ℂ) ^ 2 := fun w => by
+    rw [Complex.star_def, Complex.conj_mul']
+  rw [sub_eq_add_neg]
+  congr 1
+  · exact Finset.sum_congr rfl fun i _ => e _
+  · rw [mul_neg_one, neg_mul, e]
+
+theorem quad_eq (v w : Fin (m + 1) → ℂ) :
+    star w ⬝ᵥ (diagonal (dS m) *ᵥ v) = ∑ i, star (w i) * dS m i * v i := by
+  simp only [dotProduct, mulVec_diagonal, Pi.star_apply, mul_assoc]
+
+theorem quad_unitary (μ : Matrix (Fin (m + 1)) (Fin (m + 1)) ℂ)
+    (hμ : μᴴ * diagonal (dS m) * μ = diagonal (dS m)) (v : Fin (m + 1) → ℂ) :
+    star (μ *ᵥ v) ⬝ᵥ (diagonal (dS m) *ᵥ (μ *ᵥ v)) = star v ⬝ᵥ (diagonal (dS m) *ᵥ v) := by
+  rw [star_mulVec, ← dotProduct_mulVec, mulVec_mulVec, mulVec_mulVec, hμ]
+
+theorem row_unitary (μ : Matrix (Fin (m + 1)) (Fin (m + 1)) ℂ)
+    (hμ : μᴴ * diagonal (dS m) * μ = diagonal (dS m)) :
+    μ * diagonal (dS m) * μᴴ = diagonal (dS m) := by
+  have h1 : (diagonal (dS m) * μᴴ * diagonal (dS m)) * μ = 1 := by
+    calc (diagonal (dS m) * μᴴ * diagonal (dS m)) * μ = diagonal (dS m) * (μᴴ * diagonal (dS m) * μ) := by
+          simp only [Matrix.mul_assoc]
+      _ = 1 := by rw [hμ, dS_sq]
+  have h2 : μ * (diagonal (dS m) * μᴴ * diagonal (dS m)) = 1 := mul_eq_one_comm.mp h1
+  calc μ * diagonal (dS m) * μᴴ = μ * (diagonal (dS m) * μᴴ * diagonal (dS m)) * diagonal (dS m) := by
+        simp only [Matrix.mul_assoc, dS_sq, Matrix.mul_one]
+    _ = diagonal (dS m) := by rw [h2, Matrix.one_mul]
+
+theorem col_id (μ : Matrix (Fin (m + 1)) (Fin (m + 1)) ℂ)
+    (hμ : μᴴ * diagonal (dS m) * μ = diagonal (dS m)) (j : Fin (m + 1)) :
+    ((∑ i : Fin m, ‖μ i.castSucc j‖ ^ 2 - ‖μ (Fin.last m) j‖ ^ 2 : ℝ) : ℂ) = dS m j := by
+  have e := congrFun (congrFun hμ j) j
+  rw [Matrix.mul_apply] at e
+  simp only [Matrix.mul_diagonal, Matrix.conjTranspose_apply, Matrix.diagonal_apply_eq] at e
+  rw [← sum_dS (fun i => μ i j), ← e]
+
+theorem row_id (μ : Matrix (Fin (m + 1)) (Fin (m + 1)) ℂ)
+    (hμ : μᴴ * diagonal (dS m) * μ = diagonal (dS m)) (i : Fin (m + 1)) :
+    ((∑ j : Fin m, ‖μ i j.castSucc‖ ^ 2 - ‖μ i (Fin.last m)‖ ^ 2 : ℝ) : ℂ) = dS m i := by
+  have e := congrFun (congrFun (row_unitary μ hμ) i) i
+  rw [Matrix.mul_apply] at e
+  simp only [Matrix.mul_diagonal, Matrix.conjTranspose_apply, Matrix.diagonal_apply_eq] at e
+  rw [← sum_dS (fun j => μ i j), ← e]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  ring
+
+theorem real_of_cs {x : ℝ} (h : (x : ℂ) = 1) : x = 1 := by exact_mod_cast h
+
+theorem real_of_last {x : ℝ} (h : (x : ℂ) = -1) : x = -1 := by exact_mod_cast h
+
+theorem entry_le_last (μ : Matrix (Fin (m + 1)) (Fin (m + 1)) ℂ)
+    (hμ : μᴴ * diagonal (dS m) * μ = diagonal (dS m)) (i j : Fin (m + 1)) :
+    ‖μ i j‖ ≤ ‖μ (Fin.last m) (Fin.last m)‖ := by
+  have hrow := real_of_last (by rw [row_id μ hμ (Fin.last m), dS_last])
+  have hsq : ‖μ i j‖ ^ 2 ≤ ‖μ (Fin.last m) (Fin.last m)‖ ^ 2 := by
+    have hrow' : ∀ j0 : Fin m, ‖μ (Fin.last m) j0.castSucc‖ ^ 2 ≤ ‖μ (Fin.last m) (Fin.last m)‖ ^ 2 - 1 := by
+      intro j0
+      have : ‖μ (Fin.last m) j0.castSucc‖ ^ 2 ≤ ∑ j : Fin m, ‖μ (Fin.last m) j.castSucc‖ ^ 2 :=
+        Finset.single_le_sum (f := fun j : Fin m => ‖μ (Fin.last m) j.castSucc‖ ^ 2)
+          (fun j _ => by positivity) (Finset.mem_univ j0)
+      linarith
+    rcases Fin.eq_castSucc_or_eq_last j with ⟨j0, rfl⟩ | rfl
+    · have hcol := real_of_cs (by rw [col_id μ hμ j0.castSucc, dS_cs])
+      rcases Fin.eq_castSucc_or_eq_last i with ⟨i0, rfl⟩ | rfl
+      · have : ‖μ i0.castSucc j0.castSucc‖ ^ 2 ≤ ∑ i : Fin m, ‖μ i.castSucc j0.castSucc‖ ^ 2 :=
+          Finset.single_le_sum (f := fun i : Fin m => ‖μ i.castSucc j0.castSucc‖ ^ 2)
+            (fun i _ => by positivity) (Finset.mem_univ i0)
+        linarith [hrow' j0]
+      · linarith [hrow' j0]
+    · have hcol := real_of_last (by rw [col_id μ hμ (Fin.last m), dS_last])
+      rcases Fin.eq_castSucc_or_eq_last i with ⟨i0, rfl⟩ | rfl
+      · have : ‖μ i0.castSucc (Fin.last m)‖ ^ 2 ≤ ∑ i : Fin m, ‖μ i.castSucc (Fin.last m)‖ ^ 2 :=
+          Finset.single_le_sum (f := fun i : Fin m => ‖μ i.castSucc (Fin.last m)‖ ^ 2)
+            (fun i _ => by positivity) (Finset.mem_univ i0)
+        linarith
+      · exact le_rfl
+  exact pow_le_pow_iff_left₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero |>.mp hsq
+
+theorem entry_bound (μ : Matrix (Fin (m + 1)) (Fin (m + 1)) ℂ)
+    (hμ : μᴴ * diagonal (dS m) * μ = diagonal (dS m)) (z z' : Fin (m + 1) → ℂ) (T T' : ℝ) (hT : 0 < T)
+    (hT' : 0 < T') (hz : ∑ i : Fin m, ‖z i.castSucc‖ ^ 2 = ‖z (Fin.last m)‖ ^ 2 - T)
+    (hz' : ∑ i : Fin m, ‖z' i.castSucc‖ ^ 2 = ‖z' (Fin.last m)‖ ^ 2 - T') (i j : Fin (m + 1)) :
+    ‖μ i j‖ * (T * T') ≤
+      4 * ‖z (Fin.last m)‖ * ‖z' (Fin.last m)‖ * ‖star z ⬝ᵥ (diagonal (dS m) *ᵥ (μ *ᵥ z'))‖ := by
+  set y := μ *ᵥ z' with hy
+
+  have hyq : ∑ i : Fin m, ‖y i.castSucc‖ ^ 2 ≤ ‖y (Fin.last m)‖ ^ 2 := by
+    have e := quad_unitary μ hμ z'
+    rw [quad_eq, quad_eq, sum_dS, sum_dS] at e
+    have e' : ∑ i : Fin m, ‖y i.castSucc‖ ^ 2 - ‖y (Fin.last m)‖ ^ 2 =
+        ∑ i : Fin m, ‖z' i.castSucc‖ ^ 2 - ‖z' (Fin.last m)‖ ^ 2 := by exact_mod_cast e
+    linarith
+
+  have h1 : ‖y (Fin.last m)‖ * T ≤ 2 * ‖z (Fin.last m)‖ *
+      ‖star z ⬝ᵥ (diagonal (dS m) *ᵥ y)‖ := by
+    have hb : ∑ i : Fin m, ‖(fun i => -star (z i)) i.castSucc‖ ^ 2 ≤
+        ‖(fun i => -star (z i)) (Fin.last m)‖ ^ 2 - T := by
+      simp only [norm_neg, norm_star]; linarith
+    have := rev_cs y (fun i => -star (z i)) (∑ i : Fin m, star (z i.castSucc) * y i.castSucc) T hT hyq hb (by
+      refine (norm_sum_le _ _).trans (le_of_eq ?_)
+      refine Finset.sum_congr rfl fun i _ => ?_
+      simp only [norm_mul, norm_neg, norm_star, mul_comm])
+    simp only [norm_neg, norm_star] at this
+    have hζ : star z ⬝ᵥ (diagonal (dS m) *ᵥ y) =
+        y (Fin.last m) * -star (z (Fin.last m)) + ∑ i : Fin m, star (z i.castSucc) * y i.castSucc := by
+      rw [quad_eq, Fin.sum_univ_castSucc, dS_last]
+      simp only [dS_cs, mul_one]
+      ring
+    rw [hζ]; exact this
+
+  have h2 : ‖μ (Fin.last m) (Fin.last m)‖ * T' ≤ 2 * ‖z' (Fin.last m)‖ * ‖y (Fin.last m)‖ := by
+    have hrow := real_of_last (by rw [row_id μ hμ (Fin.last m), dS_last])
+    have ha : ∑ j : Fin m, ‖(fun j => μ (Fin.last m) j) j.castSucc‖ ^ 2 ≤
+        ‖(fun j => μ (Fin.last m) j) (Fin.last m)‖ ^ 2 := by simp only; linarith
+    have hb : ∑ i : Fin m, ‖z' i.castSucc‖ ^ 2 ≤ ‖z' (Fin.last m)‖ ^ 2 - T' := le_of_eq hz'
+    have := rev_cs (fun j => μ (Fin.last m) j) z' (∑ j : Fin m, μ (Fin.last m) j.castSucc * z' j.castSucc) T' hT'
+      ha hb (by
+        refine (norm_sum_le _ _).trans (le_of_eq ?_)
+        refine Finset.sum_congr rfl fun i _ => ?_
+        simp only [norm_mul])
+    have hyL : y (Fin.last m) =
+        μ (Fin.last m) (Fin.last m) * z' (Fin.last m) + ∑ j : Fin m, μ (Fin.last m) j.castSucc * z' j.castSucc := by
+      rw [hy, Matrix.mulVec, dotProduct, Fin.sum_univ_castSucc]; ring
+    rw [hyL]; exact this
+  have h3 := entry_le_last μ hμ i j
+  have hzL : 0 ≤ ‖z (Fin.last m)‖ := norm_nonneg _
+  have hz'L : 0 ≤ ‖z' (Fin.last m)‖ := norm_nonneg _
+  calc ‖μ i j‖ * (T * T') ≤ ‖μ (Fin.last m) (Fin.last m)‖ * T' * T := by
+        rw [mul_comm T T', ← mul_assoc]; exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right h3 hT'.le) hT.le
+    _ ≤ 2 * ‖z' (Fin.last m)‖ * ‖y (Fin.last m)‖ * T := mul_le_mul_of_nonneg_right h2 hT.le
+    _ = 2 * ‖z' (Fin.last m)‖ * (‖y (Fin.last m)‖ * T) := by ring
+    _ ≤ 2 * ‖z' (Fin.last m)‖ * (2 * ‖z (Fin.last m)‖ * ‖star z ⬝ᵥ (diagonal (dS m) *ᵥ y)‖) :=
+        mul_le_mul_of_nonneg_left h1 (by positivity)
+    _ = _ := by ring
+
+end hyp
+
+end Formalism.FourierDecayAlt.P.CutEXPbSupp
+end
+end
+
+section
 open Matrix MeasureTheory Filter Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt
 
 noncomputable section
@@ -174,3 +521,5 @@ theorem pullback_support : CutEX.PbSupp := by
       rw [hGGl]; exact hGr_lo
 
 end Formalism.FourierDecayAlt.P
+end
+end

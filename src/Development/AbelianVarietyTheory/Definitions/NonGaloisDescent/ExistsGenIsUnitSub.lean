@@ -1,10 +1,43 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.PowerSeriesVecReduceModUMulVec
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsUltrametricDistFinExt
+import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsDiscreteValuationRingIntegralClosurePadicInt
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.SndDualLiftAlgebraMap
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsAdicCompleteOfPowLe
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TiltWittEqZeroOfPrimeMulEqZero
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrobeniusSubOneWittTensorLatticeSurjectiveFixed
 
+section
+noncomputable section
+
+namespace GlobalTheory.BK
+
+open Formalism.BasicNotions.Loc
+
+variable {l : ℕ} [Fact l.Prime] (LL : FinExt l)
+
+instance isUnitBall_OL : IsUnitBall ↥(OL LL) ↥LL.1 where
+  inj := Subtype.val_injective
+  mem_range_iff x := ⟨fun ⟨y, h⟩ => h ▸ (GlobalTheory.mem_integralClosure_padicInt_iff LL.1 y).1 y.2,
+    fun h => ⟨⟨x, (GlobalTheory.mem_integralClosure_padicInt_iff LL.1 x).2 h⟩, rfl⟩⟩
+
+instance normedAlgebra_finExt : NormedAlgebra ℚ_[l] ↥LL.1 where
+  norm_smul_le c x := norm_smul_le c (x : Om l)
+
+instance isUltrametricDist_finExt : IsUltrametricDist ↥LL.1 :=
+  IsUltrametricDist.of_normedAlgebra ℚ_[l]
+
+instance completeSpace_finExt : CompleteSpace ↥LL.1 :=
+  haveI := LL.2
+  FiniteDimensional.complete ℚ_[l] ↥LL.1
+
+example : invL l (S ↥(OL LL) ↥LL.1 8) →+* Ahat ↥(OL LL) ↥LL.1 l 8 := toHatS ↥(OL LL) ↥LL.1 l 8
+
+end GlobalTheory.BK
+end
+end
+
+section
 noncomputable section
 
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BK
@@ -350,8 +383,6 @@ theorem frobOA_idem (τ : ZMod a) : frobOA l O (idem (constA t) τ) = idem (cons
 
 theorem inclO_idem (τ : ZMod a) : inclO l O (idem (constA t) τ) = idem (constW t) τ := rfl
 
-theorem frobOW_idem (τ : ZMod a) : frobOW l O (idem (constW t) τ) = idem (constW t) (τ + 1) := by
-  rw [← inclO_idem, frobOW_inclO, frobOA_idem, inclO_idem]
 
 theorem galOA_constA {g : GQ l} (hg : ∀ x ∈ Kunr l a, g x = x) (x : ZMod a → O) :
     galOA O g (constA t x) = constA t x := by
@@ -676,13 +707,8 @@ instance free_OL : Module.Free ℤ_[l] ↥(OL LL) := GlobalTheory.Decompl.free_O
 
 instance finite_OL : Module.Finite ℤ_[l] ↥(OL LL) := GlobalTheory.Decompl.finite_OL LL
 
-theorem inclO_eq : inclO l ↥(OL LL) = inclR LL := rfl
 
-theorem frobOW_eq : frobOW l ↥(OL LL) = φRW LL := rfl
 
-theorem galOW_eq {P : LocPrime l} (AI : LocAinf l P) (g : GQ l) : galOW ↥(OL LL) g = AI.gRW LL g := by
-  rw [LocAinf.gRW, locAinf_actWCbHom_eq]
-  rfl
 
 example {e : ℕ} [NeZero e] (ϖ : PiSys l e) : Function.Injective (ϖ.iW (thetaW a LL) ↥LL.1) :=
   ϖ.iW_injective _ _
@@ -690,3 +716,5 @@ example {e : ℕ} [NeZero e] (ϖ : PiSys l e) : Function.Injective (ϖ.iW (theta
 end FinExt
 
 end GlobalTheory.BKReal
+end
+end

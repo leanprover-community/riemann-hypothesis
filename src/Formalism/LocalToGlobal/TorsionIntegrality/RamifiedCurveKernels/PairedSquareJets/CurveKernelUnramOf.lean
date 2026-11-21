@@ -57,13 +57,5 @@ theorem curveJetsUnram (K : Type) [NormedField K] [IsUltrametricDist K] [CharZer
   exact (jetsUnramified K (unitBall K) (logSer W) (expSer W) _ al albar hFr hF1
     (curveNegNorm K (unitBall K) W hc h2R s2) h2R hAdj (inv_mem_unitBall hd) hne).1
 
-theorem CurveKernelUnram_of (hK : KernelTwo) : CurveKernelUnram := by
-  intro K _ _ _ W hc h2 s2 al albar t ι _ neg xP yP hE hx hy hNal hal ht hd hb hs n _ c hcn G hG P hP
-  obtain ⟨hlp, -, -, -, hU⟩ := curveFrame K (unitBall K) W hc
-  have hph0 : PowerSeries.constantCoeff (Formalism.L2.Th1.B.phO s2 (wpReg W) (logSer W)) = 0 :=
-    (phOIsPh K (wpReg W) (logSer W) s2 hlp.1 hlp.2.1).2.1
-  exact (hK K (logSer W) (expSer W) _ hlp hU hph0
-    (curveJetsUnram K W hc h2 s2 al albar t ι neg xP yP hE hx hy hNal hal ht hd hb hs)
-    n c hcn G hG).2 P hP
 
 end Formalism.L2.Th1.G

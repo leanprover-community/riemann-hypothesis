@@ -141,56 +141,6 @@ theorem muLie_mk (m : Fin 1 → O) : muLie ε ((mult ε).Fil.mkQ m) (dlogT p O) 
 omit [IsDomain O] in
 instance : Subsingleton (mult ε).Fil := by rw [mult_Fil]; infer_instance
 
-theorem realizes_mu (C : Type) [Field C] [Algebra O C] [IsIntegrallyClosedIn O C] [IsAlgClosed C]
-    [CharZero C] : Realizes hε 1 1 (PDivGroup.mu p O) (padicAction _) (mult ε) (muBasis hε)
-      (LinearEquiv.ofSubsingleton _ _) (muLie ε) where
-  tate_act a t := by
-    have h : (padicAction (PDivGroup.mu p O)).onTate O a t = a • t := by
-      change tateMap _ _ O (algebraMap ℤ_[p] (CategoryTheory.End (PDivGroup.mu p O)) a) t = _
-      rw [Algebra.algebraMap_eq_smul_one]
-      exact (LinearMap.congr_fun (map_smul (tateMap _ _ O) a (CategoryTheory.CategoryStruct.id _)) t)
-    rw [h, map_smul]
-    simp [mult, Algebra.ofId_apply, Algebra.algebraMap_eq_smul_one, Matrix.smul_mulVec]
-  fil_act a w := by
-    rw [Subsingleton.elim (LinearEquiv.ofSubsingleton _ _ _ : (mult ε).Fil) 0,
-      Subsingleton.elim (LinearEquiv.ofSubsingleton _ _ _ : (mult ε).Fil) 0]
-    simp
-  lie_act a m := by
-    have h : ∀ x, (padicAction (PDivGroup.mu p O)).onLie a x = padicToO p O a • x := fun x => by
-      change lieMap _ _ (algebraMap ℤ_[p] (CategoryTheory.End (PDivGroup.mu p O)) a) x = _
-      rw [Algebra.algebraMap_eq_smul_one]
-      exact (LinearMap.congr_fun (lieMap_smul (padicToO p O) a
-        (CategoryTheory.CategoryStruct.id _)) x).trans (by simp)
-    rw [h, ← map_smul, ← map_smul]
-    congr 2
-    ext i
-    simp [actH, mult, Matrix.mulVec, dotProduct, Subsingleton.elim i 0, padicToO,
-      Matrix.algebraMap_matrix_apply]
-  al_eq t := by
-    have h : fontaineTheta O p (Sandwich.mu ε) = 0 := by
-      rw [Sandwich.mu, map_sub, fontaineTheta_teichmuller, map_one, sub_eq_zero]
-      exact hε.zeta_zero
-    rw [Subsingleton.elim (LinearEquiv.ofSubsingleton _ _ _ : (mult ε).Fil) 0]
-    ext i
-    simp [Datum.al, mult, Matrix.mulVec, dotProduct, h]
-  b_eq x χ := by
-    obtain ⟨q, rfl⟩ := (muLie ε).surjective x
-    obtain ⟨m, rfl⟩ := (mult ε).Fil.mkQ_surjective q
-    have he : (muBasis hε).symm (Pi.single 0 1) = epsTate hε := by
-      simp only [muBasis, LinearEquiv.symm_trans_apply, LinearEquiv.symm_symm]
-      exact one_smul ℤ_[p] (epsTate hε)
-    set a := epsPairing hε (PDivGroup.mu p O) (epsTate hε) χ with ha
-    have hχ : χ = a • constGen p O := by
-      refine ((PDivGroup.mu p O).pairing_flip_bijective C).1 (LinearMap.ext fun t => ?_)
-      obtain ⟨c, rfl⟩ := (epsEquiv hε).surjective t
-      change pairing _ O (c • epsTate hε) χ = pairing _ O (c • epsTate hε) (a • constGen p O)
-      rw [map_smul, LinearMap.smul_apply, LinearMap.smul_apply, map_smul, ← epsPairing_smul hε,
-        pairing_apply _ (constGen p O), charHom_constGen, tateMap_id]
-    rw [LinearEquiv.symm_apply_apply, ← dlog_eq_omegaMap]
-    conv_rhs => rw [hχ, dlog_smul (padicToO p O), dlog_constGen, map_smul, muLie_mk]
-    have hb : bQuot (mult ε) ((mult ε).Fil.mkQ m) = m := mult_bb m
-    rw [hb, pairingO, Fin.sum_univ_one, he, ← ha]
-    simp [mul_comm]
 
 end Inhabitant
 

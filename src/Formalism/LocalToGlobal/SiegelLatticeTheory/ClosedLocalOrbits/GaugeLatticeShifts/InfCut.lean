@@ -280,8 +280,6 @@ theorem wt_cont (u u' : D.what₂.Word) : Continuous (wt X u u') := by
   · unfold JacV modC
     exact continuous_finset_prod _ fun l _ => ((hD l).norm.pow 2).pow 2
 
-theorem inNuX (u u' : D.what₂.Word) (sc : ℝ) : InNuX X u u' sc :=
-  inNuX_of_meas X u u' sc (wt_cont X u u').measurable
 
 end Conc
 

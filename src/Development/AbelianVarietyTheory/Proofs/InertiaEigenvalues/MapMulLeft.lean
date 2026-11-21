@@ -3,9 +3,139 @@ import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NotFullBot
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ApplyLayers
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLatticeAinfSandwichInvertPi
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachFunctorThreeLayerPropertiesEveryPlaceStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachInclusionXQFrobeniusStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLevelExpansionLawsOfRootsOfUnity
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachInclusionXQFrobenius
 
+section
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct GlobalTheory.NL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.wachLevelExpansionLaws_of_rootsOfUnity : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let W := (HW l).W K s LL h; LevLaws W := by
+  first | exact @GlobalTheory.NL.Expansion.levLaws | exact GlobalTheory.NL.Expansion.levLaws | (intros; apply GlobalTheory.NL.Expansion.levLaws <;> assumption)
+end
+
+section
+section
+noncomputable section
+
+namespace GlobalTheory.NL
+
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct
+
+section Generic
+
+variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
+    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
+    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
+    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
+    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
+    {PD : PeriodData G Qp K₀ K B BdR} {LL O : Type} [Field LL] [Algebra Qp LL]
+    [CommRing O] [Algebra O LL] [TopologicalSpace LL] {v : AddValuation LL (WithTop ℚ)} {n : ℕ}
+    {W : LocWach PD LL O v n} {RA RW : Type} [CommRing RA] [CommRing RW] [Algebra O RA]
+    [Algebra O RW] {inclR : RA →ₐ[O] RW} {φR : RW →ₐ[O] RW} {gR : G → (RW →ₐ[O] RW)} {πA : RA}
+
+theorem tmul_basis_inj {O R M : Type} [CommRing O] [AddCommGroup R] [Module O R] [AddCommGroup M]
+    [Module O M] (e₀ : M) (hs : Submodule.span O {e₀} = ⊤) (hi : ∀ c : O, c • e₀ = 0 → c = 0)
+    {r r' : R} (h : r ⊗ₜ[O] e₀ = r' ⊗ₜ[O] e₀) : r = r' := by
+  have hb : Function.Bijective (LinearMap.toSpanSingleton O M e₀) := by
+    refine ⟨(injective_iff_map_eq_zero _).2 fun c hc => hi c (by simpa using hc), fun x => ?_⟩
+    have hx : x ∈ Submodule.span O {e₀} := hs ▸ Submodule.mem_top
+    obtain ⟨c, hc⟩ := Submodule.mem_span_singleton.1 hx
+    exact ⟨c, by simpa using hc⟩
+  let f := LinearEquiv.ofBijective _ hb
+  have h1 : f.symm e₀ = 1 := by
+    rw [LinearEquiv.symm_apply_eq]
+    simp [f]
+  have := congrArg (fun z => TensorProduct.rid O R (LinearMap.lTensor R f.symm.toLinearMap z)) h
+  simpa [h1] using this
+
+theorem ioLaws_of_injective (E : EtTie W RA RW inclR φR gR πA)
+    (hO : Function.Injective (algebraMap O LL)) : IoLaws E := by
+  obtain ⟨e, e₀, hs, hj, -⟩ := E.one_e
+  have h0 : (e₀ : W.one.V) ≠ 0 := by
+    intro h0
+    obtain ⟨u, hu, hT⟩ := W.one_line
+    have hm : u ∈ W.one.L.T := hT ▸ Submodule.mem_span_singleton_self u
+    have hx : (⟨u, hm⟩ : ↥W.one.L.T) ∈ Submodule.span O {e₀} := hs ▸ Submodule.mem_top
+    obtain ⟨c, hc⟩ := Submodule.mem_span_singleton.1 hx
+    have := congrArg Subtype.val hc
+    simp only [Submodule.coe_smul, h0, smul_zero] at this
+    exact hu this.symm
+  have hi : ∀ c : O, c • e₀ = 0 → c = 0 := by
+    intro c hc
+    have h1 : algebraMap O LL c • (e₀ : W.one.V) = 0 := by
+      rw [algebraMap_smul]
+      exact congrArg Subtype.val hc
+    rcases smul_eq_zero.1 h1 with h2 | h2
+    · exact hO (by rw [h2, map_zero])
+    · exact absurd h2 h0
+  have hx : ∀ x : W.EE, E.jD W.one (x • e) = E.ioE x ⊗ₜ[O] e₀ := by
+    intro x
+    rw [E.jD_smul, hj, TensorProduct.smul_tmul', smul_eq_mul, mul_one]
+  have hact : ∀ g : G, W.one.actT g e₀ = e₀ := fun g => Subtype.ext (W.one_triv g _)
+  have hφ : W.φD W.one e = e := by
+    apply E.jD_inj
+    rw [E.jD_φ, hj]
+    simp [TWmap]
+  have hγ : ∀ g : G, W.γD W.one (W.resΓ g) e = e := by
+    intro g
+    apply E.jD_inj
+    rw [E.jD_act, hj]
+    simp [TWact, hact]
+  refine ⟨fun x => ?_, fun g x => ?_⟩
+  · apply tmul_basis_inj e₀ hs hi
+    have := E.jD_φ W.one (x • e)
+    rw [W.φD_smul, hφ, hx, hx] at this
+    simpa [TWmap] using this
+  · apply tmul_basis_inj e₀ hs hi
+    have := E.jD_act W.one g (x • e)
+    rw [W.γD_smul, hγ, hx, hx] at this
+    simpa [TWact, hact] using this
+
+end Generic
+
+theorem ioLaws : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let W := (HW l).W K s LL h; let E := ((F l).E K s LL h).tie; IoLaws E := by
+  intro D HW F l _ K s LL h
+  exact ioLaws_of_injective _ Subtype.val_injective
+
+end GlobalTheory.NL
+end
+end
+
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct GlobalTheory.NL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.wach_etale_map_frobenius_galois_equivariant : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let W := (HW l).W K s LL h; let E := ((F l).E K s LL h).tie; IoLaws E := by
+  atlas_forward_decl GlobalTheory.NL.ioLaws
+end
+
+section
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct GlobalTheory.NL
+
+namespace GlobalTheory.NL.AllLaws
+
+theorem laws : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let W := (HW l).W K s LL h; let E := ((F l).E K s LL h).tie; Laws (HW l) (F l) h := by
+  intro D HW F l _ K s LL h W E
+  haveI : FiniteDimensional ℚ_[l] ↥LL.1 := LL.2
+  exact ⟨GlobalTheory.T.wachLevelExpansionLaws_of_rootsOfUnity D HW l K s LL h, GlobalTheory.T.wach_etale_map_frobenius_galois_equivariant D HW F l K s LL h,
+    GlobalTheory.TrivCrys.isCrys_lat_of_trivial W.one W.one_triv⟩
+
+end GlobalTheory.NL.AllLaws
+end
+
+section
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct GlobalTheory.NL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.wach_functor_three_layer_properties_every_place : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let W := (HW l).W K s LL h; let E := ((F l).E K s LL h).tie; Laws (HW l) (F l) h := by
+  first | exact @GlobalTheory.NL.AllLaws.laws | exact GlobalTheory.NL.AllLaws.laws | (intros; apply GlobalTheory.NL.AllLaws.laws <;> assumption)
+end
+
+section
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct GlobalTheory.NL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.wachInclusion_X_Q_frobenius : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let W := (HW l).W K s LL h; let E := ((F l).E K s LL h).tie; E.io W.X = (1 : ↥(OL LL)) ⊗ₜ[ℤ_[l]] (D.locA l).π₁ ∧ E.io W.Q = (1 : ↥(OL LL)) ⊗ₜ[ℤ_[l]] (D.locA l).ξ ∧ Function.Injective (inclR LL) ∧ Function.Injective E.ioE ∧ (∀ a, inclR LL (E.io (W.φA a)) = φRW LL (inclR LL (E.io a))) ∧ (∀ x : W.EE, (∃ y, inclR LL y = E.ioE x) → ∃ a : AA K LL, algebraMap _ W.EE a = x) ∧ ∀ j : ℕ, IsUnit (algebraMap (AA K LL) W.EE ((W.φA ^ j) W.X)) ∧ IsUnit (algebraMap (AA K LL) W.EE ((W.φA ^ j) W.Q)) := by
+  first | exact @GlobalTheory.NL.IoXQ.main | exact GlobalTheory.NL.IoXQ.main | (intros; apply GlobalTheory.NL.IoXQ.main <;> assumption)
+end
+
+section
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct GlobalTheory.NL
 
 namespace GlobalTheory.NL.SandArb
@@ -87,3 +217,4 @@ theorem sandwich : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : Fo
     ((HW l).W_proj K s LL h) T hT _ _ (incl_pow _ _ hX m) hm
 
 end GlobalTheory.NL.SandArb
+end

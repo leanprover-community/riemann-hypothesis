@@ -12,17 +12,7 @@ open Formalism.BasicNotions Formalism.MainNotions GlobalTheory.Mem GlobalTheory.
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem sameOn_iff {K V : Type} {n : ℕ} (j j' : (Fin n → K) → V) : SameOn j j' ↔ j = j' := by
-  constructor
-  · rintro ⟨-, h⟩
-    funext x
-    exact h x x fun a a' e => by rw [Fin.ext e]
-  · rintro rfl
-    exact ⟨rfl, fun x x' h => congrArg j (funext fun a => h a a rfl)⟩
 
-theorem exists_sameOn {K V : Type} {n n' : ℕ} (h : n = n') (j' : (Fin n' → K) → V) : ∃ j : (Fin n → K) → V, SameOn j j' := by
-  subst h
-  exact ⟨j', (sameOn_iff _ _).2 rfl⟩
 
 example : ¬ SameOn (fun _ : Fin 1 → ℚ => (0 : ℚ)) (fun _ : Fin 2 → ℚ => (0 : ℚ)) := fun h => absurd h.1 (by decide)
 
@@ -37,10 +27,6 @@ def frm (y : Fin ((MtildeKCSD W Ch sel mu (mtildeKOk W Ch sel mu hX)).lvlDim (g0
   (MtildeKCSD W Ch sel mu (mtildeKOk W Ch sel mu hX)).basis.equivFun.symm
     (((MtildeKCSD W Ch sel mu (mtildeKOk W Ch sel mu hX)).lvlE (g0Act W Ch sel mu (mtildeKOk W Ch sel mu hX)) P.grp P.chr).mulVec y)
 
-theorem range_lvl : LinearMap.range ((MtildeKCSD W Ch sel mu (mtildeKOk W Ch sel mu hX)).lvlE
-    (g0Act W Ch sel mu (mtildeKOk W Ch sel mu hX)) P.grp P.chr).mulVecLin =
-    (MtildeKCSD W Ch sel mu (mtildeKOk W Ch sel mu hX)).lvlPart (g0Act W Ch sel mu (mtildeKOk W Ch sel mu hX)) P.grp P.chr :=
-  (image_idempotent_spec X.K _ _).2.trans (level_part_spec X.K _ _ _ _ _)
 
 theorem isFormOf_unique {V : Type} {y : V} {x x' : MtildeV W Ch sel mu P} (h : IsFormOf W Ch sel mu hX P x y)
     (h' : IsFormOf W Ch sel mu hX P x' y) : x = x' := by
@@ -50,27 +36,7 @@ theorem isFormOf_unique {V : Type} {y : V} {x x' : MtildeV W Ch sel mu P} (h : I
   subst this
   rfl
 
-theorem exists_isFormOf (y) : ∃ x, IsFormOf W Ch sel mu hX P x (frm W Ch sel mu hX P y) := by
-  let F := ((mtildeKGSD W Ch sel mu).res (mtildeKOk W Ch sel mu hX)).symm (frm W Ch sel mu hX P y)
-  have hF : F.1 ∈ (mtildeGSD W Ch sel mu P).EqFun := by
-    rw [← mem_lvlPartX_iff W Ch sel mu P (mtildeKOk W Ch sel mu hX), ← range_lvl W Ch sel mu hX]
-    refine ⟨y, ?_⟩
-    symm
-    show (MtildeKCSD W Ch sel mu (mtildeKOk W Ch sel mu hX)).basis.equivFun
-      (((mtildeKGSD W Ch sel mu).res (mtildeKOk W Ch sel mu hX)) F) = _
-    rw [LinearEquiv.apply_symm_apply, frm, LinearEquiv.apply_symm_apply]
-    rfl
-  exact ⟨_, F, hF, heq_of_eq (LinearEquiv.apply_symm_apply _ _), rfl⟩
 
-theorem isFormOf_onto (x : MtildeV W Ch sel mu P) : ∃ y, IsFormOf W Ch sel mu hX P x (frm W Ch sel mu hX P y) := by
-  obtain ⟨hK, -⟩ := (mem_MtildeV_iff W Ch sel mu P x.1).1 x.2
-  have h := (mem_lvlPartX_iff W Ch sel mu P (mtildeKOk W Ch sel mu hX) ⟨x.1, hK⟩).2 x.2
-  rw [← range_lvl W Ch sel mu hX] at h
-  obtain ⟨y, hy⟩ := h
-  refine ⟨y, ⟨x.1, hK⟩, x.2, heq_of_eq ?_, rfl⟩
-  unfold frm
-  rw [LinearEquiv.eq_symm_apply]
-  exact hy.symm
 
 end Forms
 
@@ -80,47 +46,11 @@ attribute [local instance] GlobalTheory.Mem.Col2.starE
 
 variable (X : Stages) {px : PreX X.B.toPre} (I : ColIn X.B px) (hX : X.B.fields.Ok)
 
-theorem tAll_ixOf (U : Set I.ι) (s : R3.TupU I U) : (tAll I (R3.ixOf I U s)).1 = s.1 := R3.tup_ixOf I s
 
-theorem rDim_eq (U : Set I.ι) (Xg tr) (s : R3.TupU I U) (P ψ) :
-    rDim X.toD7 (R3.famR X I hX Set.univ Xg tr).A P ψ (tAll I (R3.ixOf I U s)) = rDim X.toD7 (R3.famR X I hX U Xg tr).A P ψ s := by
-  have key : ∀ (t : R3.TupU I Set.univ), t.1 = s.1 →
-      rDim X.toD7 (R3.famR X I hX Set.univ Xg tr).A P ψ t = rDim X.toD7 (R3.famR X I hX U Xg tr).A P ψ s := by
-    obtain ⟨s, hs⟩ := s
-    rintro ⟨t, ht⟩ (rfl : t = s)
-    rfl
-  exact key _ (tAll_ixOf X I U s)
 
-theorem lDim_eq (U : Set I.ι) (Xg tr) (s : R3.TupU I U) (P ψ) (i) :
-    lDim X.toD7 (R3.famR X I hX Set.univ Xg tr).A P ψ i (tAll I (R3.ixOf I U s)) =
-      lDim X.toD7 (R3.famR X I hX U Xg tr).A P ψ i s := by
-  have key : ∀ (t : R3.TupU I Set.univ), t.1 = s.1 →
-      lDim X.toD7 (R3.famR X I hX Set.univ Xg tr).A P ψ i t = lDim X.toD7 (R3.famR X I hX U Xg tr).A P ψ i s := by
-    obtain ⟨s, hs⟩ := s
-    rintro ⟨t, ht⟩ (rfl : t = s)
-    rfl
-  exact key _ (tAll_ixOf X I U s)
 
-theorem rowForm_eq (Xg tr) (a : I.ι) (y) :
-    R3.rowForm (D := X.toD7) (R3.famR X I hX Set.univ Xg tr).A (R3.lev1 I) (R3.chr1 I) (tAll I a) y =
-      frm (Pr := X.B.primes px) X.B.wts I.Ch I.sel (I.tup a) hX (TC.Ps I) y := rfl
 
-theorem existsUnique_isCrd (Xg tr) (a : I.ι) {M : Type} [AddCommGroup M] [Module ℂ M] (e : Df.MtCx I a ≃ₗ[ℂ] M) (y) :
-    ∃! v, IsCrd I hX a e (R3.rowForm (D := X.toD7) (R3.famR X I hX Set.univ Xg tr).A (R3.lev1 I) (R3.chr1 I) (tAll I a) y) v := by
-  obtain ⟨x, hx⟩ := exists_isFormOf (Pr := X.B.primes px) X.B.wts I.Ch I.sel (I.tup a) hX (TC.Ps I) y
-  refine ⟨_, ⟨x, hx, rfl⟩, ?_⟩
-  rintro v ⟨x', hx', rfl⟩
-  rw [isFormOf_unique (Pr := X.B.primes px) X.B.wts I.Ch I.sel (I.tup a) hX (TC.Ps I) hx' hx]
 
-theorem isCrd_determines (Xg tr) (a : I.ι) {M : Type} [AddCommGroup M] [Module ℂ M] (e e' : Df.MtCx I a ≃ₗ[ℂ] M) (j : _ → M)
-    (h : ∀ y, IsCrd I hX a e (R3.rowForm (D := X.toD7) (R3.famR X I hX Set.univ Xg tr).A (R3.lev1 I) (R3.chr1 I) (tAll I a) y) (j y))
-    (h' : ∀ y, IsCrd I hX a e' (R3.rowForm (D := X.toD7) (R3.famR X I hX Set.univ Xg tr).A (R3.lev1 I) (R3.chr1 I) (tAll I a) y) (j y))
-    (F : MtildeV (Pr := X.B.primes px) X.B.wts I.Ch I.sel (I.tup a) (TC.Ps I)) : e (Df.toCx I hX a F) = e' (Df.toCx I hX a F) := by
-  obtain ⟨y, hy⟩ := isFormOf_onto (Pr := X.B.primes px) X.B.wts I.Ch I.sel (I.tup a) hX (TC.Ps I) F
-  obtain ⟨u, hu, q⟩ := h y
-  obtain ⟨u', hu', q'⟩ := h' y
-  rw [← isFormOf_unique (Pr := X.B.primes px) X.B.wts I.Ch I.sel (I.tup a) hX (TC.Ps I) hu hy, ← q,
-    isFormOf_unique (Pr := X.B.primes px) X.B.wts I.Ch I.sel (I.tup a) hX (TC.Ps I) hu hu', ← q']
 
 end Cols
 
@@ -128,19 +58,8 @@ section Core
 
 variable {K : Ctx} {B : Base} {f : Fr B.toPre} {T : TwDat B} {w : ColW B f T} {Z : w.Lt} {Wt : Set B.places.Pl} {p0 : BaseLevelRowSide (w.D Z)}
 
-theorem lawsM (t : RowsT K w Z Wt p0) : Formalism.L2.Pj.LawsM t.r.z.core.toCore := t.r.z.geo.fw.laws.toLawsM
 
-theorem rank_inR (t : RowsT K w Z Wt p0) (j : ℕ) (hj : Formalism.L2.Pj.InR (w.st Z).toD7 j) :
-    (t.r.z.core.Q.Dw j).p = (B.R.sigW j).1 ∧ (t.r.z.core.Q.Dw j).q = (B.R.sigW j).2 :=
-  let h := (lawsM t).pins.2.2.2 j hj; ⟨h.1, h.2.1⟩
 
-theorem rx_io {t : RowsT K w Z Wt p0} (x : RXs t) (μ) (h : ¬ Formalism.IndefR.RecTie.Used0 (w.D Z) μ) : p0.s.iota μ = 0 := by
-  have hm : 0 < (w.D Z).R.m := t.r.Y.hm
-  have : ∀ n, 0 < n → p0.s.downTo μ n = 0 := by
-    rintro (_ | n) hn
-    · omega
-    · rw [RowSide.downTo, (x.io μ n h).2, LinearMap.comp_zero]
-  rw [RowSide.iota, this _ hm, LinearMap.zero_comp, LinearMap.comp_zero]
 
 end Core
 
@@ -216,7 +135,6 @@ theorem lamRdef_eq (X : Stages) (τ) (i : Fin X.toD7.sp.X'.rank) (i' : Fin (X.B.
   obtain ⟨_, -, rfl⟩ := Finset.mem_image.1 hx
   rfl
 
-theorem labLL_eq (X : Stages) : labLL X.toD7 = X.B.fields.emb := rfl
 
 theorem exists_matEq {D : D7} (V : HSp D) {n : ℕ} (hn : V.rank = n) (hG : V.gram = 1) (h : Bridge.Gf V) :
     ∃ x : UAd D.sp.cm n, R3.MatEq (R3.matIn V 1 h) (x : GL (Fin n) _) := by

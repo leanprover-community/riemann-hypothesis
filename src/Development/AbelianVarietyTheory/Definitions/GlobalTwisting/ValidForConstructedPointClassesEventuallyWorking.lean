@@ -197,7 +197,6 @@ def RecExP (QO : Par → ∀ D : D7, Obj D → Prop) : Prop :=
             ∀ p : LedPart κ.C Y, p.L.sc = s → WtEq p.L a b → Val κ.C κ.cD κ.ch p.L → CanonInst p.ta.Gx →
               QO κ p.pt.D (Obj.ofPt p.pt)
 
-theorem recExP_const_iff (QO : ∀ D : D7, Obj D → Prop) : (RecExP fun _ => QO) ↔ RecEx QO := Iff.rfl
 
 def ObjCP (Q : Par → PtProp) : Prop :=
   ParEv fun κ => ∃ x0 : ℝ,
@@ -226,9 +225,6 @@ structure Link (κ : Par) {eps : ℝ} (Fm : FamP eps) : Prop where
   mid : Fm.cMid = κ.C.cMid
   last : Fm.cLast = κ.C.cLast
 
-theorem Link.csz {κ : Par} {eps : ℝ} {Fm : FamP eps} (h : Link κ Fm) : Fm.Csz = κ.C.Csz := by
-  have := congrArg (fun f : ℝ → List ℝ => (f 0).getD 2 0) h.mid
-  simpa [FamP.cMid, FC.cMid] using this
 
 theorem Link.host {κ : Par} {eps : ℝ} {Fm : FamP eps} (h : Link κ Fm) : max Fm.Co Fm.J = κ.C.P.Cpde :=
   congrArg (fun l : List ℝ => l.getD 15 0) h.out
@@ -377,11 +373,6 @@ def EvC (R : ∀ D : D7, Obj D → Prop) (𝒜 : FamClass) : Prop :=
 def EvCC {α : Type} (R : α → ∀ D : D7, Obj D → Prop) (𝒜 : FamClass) : Prop :=
   Closed (W3 𝒜) fun Fm _ => ∃ (a : α) (x0 : ℝ), ∀ x, x0 ≤ x → ∀ (hx : Fm.x1 < x) (i : Fm.Ix x), R a (Fm.D x i) (objAt Fm x hx i)
 
-theorem evaluation_constantFamily {α : Type} {R : α → ∀ D : D7, Obj D → Prop} (a : Par → α)
-    (h : EvP fun κ K => ∀ β : BPt K, β.Is Q → R (a κ) β.D β.O) : Row0 Q (EvCC R) :=
-  ⟨fun κ D O _ _ => R (a κ) D O, EvP.mono (fun _ _ _ H β hq _ _ _ => H β hq) h, fun _ _ s =>
-    ⟨1, one_pos, fun _ _ _ => ⟨⟨0, fun _ => 0, fun _ => 0, fun _ => 0⟩, fun Fm _ hc _ =>
-      let ⟨κ, _, _, t⟩ := s Fm (w3_a hc); ⟨a κ, 0, fun x _ hx i => (t x hx i).2⟩⟩⟩⟩
 
 theorem validForConstructedPointClasses_eventuallyWorkingClass {R : ∀ D : D7, Obj D → Prop} (h : EvP fun _ K => ∀ β : BPt K, β.Is Q → R β.D β.O) : Row0 Q (EvC R) :=
   ⟨fun _ D O _ _ => R D O, EvP.mono (fun _ _ _ H β hq _ _ _ => H β hq) h, fun _ _ s =>

@@ -1,5 +1,54 @@
-import Formalism.LocalToGlobal.ProjectiveLattices.UnifGam
+import Formalism.LocalToGlobal.ProjectiveLattices.PerFrLact
 
+section
+noncomputable section
+
+namespace Formalism.L2.Pj
+
+open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.L2.Theta
+open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open scoped Matrix
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+section Lat
+
+variable {E : Type} [Field E] [NumberField E] {r : ℕ}
+
+
+theorem smul_coord (x : 𝓞 E) (w : Fin r → E) (a : Fin r) : (x • w) a = (x : E) * w a := by
+  simp [Algebra.smul_def]
+
+end Lat
+
+section Herm
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
+
+theorem herm_smul_left (G : Matrix (Fin r) (Fin r) E) (c : 𝓞 E) (u w : Fin r → E) :
+    herm G (c • u) w = (c : E) * herm G u w := by
+  simp only [herm, smul_coord, Finset.mul_sum, mul_assoc]
+
+theorem herm_smul_right (G : Matrix (Fin r) (Fin r) E) (c : 𝓞 E) (u w : Fin r → E) :
+    herm G u (c • w) = cc (c : E) * herm G u w := by
+  simp only [herm, smul_coord, Finset.mul_sum, cc, map_mul]
+  refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => by ring
+
+
+end Herm
+
+section Gam
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
+  {l : Level H} {Xo : Moduli Dw l} {r : ℕ}
+
+end Gam
+
+end Formalism.L2.Pj
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.L2.Pj
@@ -29,29 +78,8 @@ theorem perFr_neg (X : ReciprocityTheory.ChartRestriction.G.FD.Data E r) (x : Fr
   unfold perFr
   rw [dif_neg hτ, dif_pos hρ1, dif_pos hi]
 
-theorem emb_smul_single (τ : E →+* ℂ) (t : 𝓞 E) (c : Fin r) :
-    ReciprocityTheory.ChartRestriction.G.FD.Data.emb τ (t • (Pi.single c 1 : Fin r → E)) = τ (t : E) • (Pi.single c 1 : Fin r → ℂ) := by
-  funext a
-  simp only [ReciprocityTheory.ChartRestriction.G.FD.Data.emb, Pi.smul_apply, Pi.single_apply, smul_eq_mul]
-  split_ifs <;> simp [Algebra.smul_def]
 
-theorem hermC_single (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (u : Fin r → ℂ) (t : 𝓞 E) (b : Fin r) :
-    hermC τ G u (ReciprocityTheory.ChartRestriction.G.FD.Data.emb τ (t • (Pi.single b 1 : Fin r → E))) =
-      (∑ a, u a * τ (G a b)) * (starRingEnd ℂ) (τ (t : E)) := by
-  rw [emb_smul_single]
-  unfold ReciprocityTheory.ChartRestriction.G.FD.hermC
-  rw [Finset.sum_mul]
-  refine Finset.sum_congr rfl fun a _ => ?_
-  rw [Finset.sum_eq_single b]
-  · simp only [Pi.smul_apply, Pi.single_eq_same, smul_eq_mul, mul_one]
-  · intro b' _ hb'
-    simp [Pi.single_apply, hb']
-  · intro h
-    exact absurd (Finset.mem_univ b) h
 
-theorem mulVec_smul_single (A : Matrix (Fin r) (Fin r) ℂ) (s : ℂ) (b a : Fin r) :
-    (A *ᵥ (s • (Pi.single b 1 : Fin r → ℂ))) a = s * A a b := by
-  simp [Matrix.mulVec, dotProduct, Pi.single_apply, mul_comm]
 
 theorem conjEmb_conjEmb (τ : E →+* ℂ) : conjEmb (conjEmb τ) = τ := by
   ext x
@@ -84,3 +112,5 @@ variable {D : D7}
 end Rows
 
 end Formalism.L2.Pj
+end
+end

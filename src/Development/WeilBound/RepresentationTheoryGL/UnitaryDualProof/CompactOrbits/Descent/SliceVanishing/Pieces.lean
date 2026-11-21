@@ -1,7 +1,179 @@
-import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.CompactOrbits.Descent.SliceVanishing.ExistsConjEqSemisimple
-import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.CompactOrbits.Descent.SliceVanishing.IsUnimodOfEquiv
+import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.CompactOrbits.Descent.SliceVanishing.ContinuousCj
+import Development.WeilBound.CoreStatements.AutomorphicKernels.BernsteinUnitaryProducts.BernsteinTheoremA.FrobeniusReciprocity.SupportedInIffOfFrob
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.CompactOrbits.Descent.SliceVanishing.SemisimpleAdjoint.IsSemisimpleOfMem
 
+section
+noncomputable section
+
+open Matrix Polynomial GroundTheory.Automorphic GroundTheory.Automorphic.Whittaker
+
+namespace PositivityTheory.RgUd.T.Desc.SLF
+
+open PositivityTheory.RgUd.T PositivityTheory.RgUd.T.Desc
+
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
+
+theorem t2k : T2Space k := Asm.t2
+
+theorem tdk : TotallyDisconnectedSpace k := totallyDisconnectedSpace_localField
+
+theorem sck : SecondCountableTopology k := (GlobalTheory.SplitWeil.Model.secondCountable_and_t2_local_field (k := k)).1
+
+theorem continuous_aevalM (P : k[X]) : Continuous fun x : Matrix (Fin n) (Fin n) k => aeval x P := by
+  have : T2Space k := t2k
+  simp_rw [aeval_eq_sum_range]
+  exact continuous_finsetSum _ fun i _ => (continuous_pow i).const_smul (P.coeff i)
+
+theorem isClosed_Tset {F : Set (Matrix (Fin n) (Fin n) k)} (hF : IsClosed F) (P : k[X]) : IsClosed (Tset F P) := by
+  have : T2Space k := t2k
+  exact hF.inter (isClosed_eq (continuous_aevalM P) continuous_id)
+
+instance t2Space_centralizer_group (Z : Subalgebra k (Matrix (Fin n) (Fin n) k)) : T2Space (GzS Z) := by
+  have : T2Space k := t2k
+  infer_instance
+
+instance gzs_td (Z : Subalgebra k (Matrix (Fin n) (Fin n) k)) : TotallyDisconnectedSpace (GzS Z) := by
+  infer_instance
+
+instance gzs_sc (Z : Subalgebra k (Matrix (Fin n) (Fin n) k)) : SecondCountableTopology (GzS Z) := by
+  have : SecondCountableTopology (GL (Fin n) k) := GlobalTheory.SplitFlip.secondCountable_GL
+  exact TopologicalSpace.Subtype.secondCountableTopology _
+
+instance gzs_sig (Z : Subalgebra k (Matrix (Fin n) (Fin n) k)) : SigmaCompactSpace (GzS Z) := by
+  infer_instance
+
+end PositivityTheory.RgUd.T.Desc.SLF
+end
+end
+
+section
+noncomputable section
+
+open Matrix Polynomial GroundTheory.Automorphic GroundTheory.Automorphic.Whittaker
+
+namespace PositivityTheory.RgUd.T.Desc.SLF
+
+open PositivityTheory.RgUd.T PositivityTheory.RgUd.T.Desc
+
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
+
+section Hyp
+
+variable {Z : Subalgebra k (Matrix (Fin n) (Fin n) k)} {F : Set (Matrix (Fin n) (Fin n) k)} {P : k[X]}
+  {s : Matrix (Fin n) (Fin n) k}
+  (hFinv : ∀ g ∈ Gz Z, ∀ x ∈ F, g.val * x * g⁻¹.val ∈ F)
+  (hP : ∀ x ∈ F, aeval x P ∈ F ∧ Module.End.IsSemisimple (Matrix.toLin' (aeval x P)) ∧ IsNilpotent (x - aeval x P) ∧
+    ∃ g ∈ Gz Z, g.val * aeval x P * g⁻¹.val = s)
+
+include hP in
+theorem P_idem [CharZero k] {x} (hx : x ∈ F) : aeval (aeval x P) P = aeval x P := by
+  set y := aeval x P with hydef
+  obtain ⟨hyF, hyS, -, -⟩ := hP x hx
+  obtain ⟨-, hzS, hzN, -⟩ := hP y hyF
+  have e : ∀ M : Matrix (Fin n) (Fin n) k, Matrix.toLinAlgEquiv' M = Matrix.toLin' M := fun M => rfl
+  have hc : Commute y (aeval y P) := by
+    have := (Commute.all (X : k[X]) P).map (aeval y)
+    rwa [aeval_X] at this
+  have hc' : Commute (Matrix.toLin' y) (Matrix.toLin' (aeval y P)) := by
+    have := hc.map (Matrix.toLinAlgEquiv' : Matrix (Fin n) (Fin n) k ≃ₐ[k] _)
+    rwa [e, e] at this
+  have hS : Module.End.IsSemisimple (Matrix.toLin' (y - aeval y P)) := by
+    rw [map_sub]
+    exact Module.End.IsSemisimple.sub_of_commute hc' hyS hzS
+  have hN : IsNilpotent (Matrix.toLin' (y - aeval y P)) := by
+    rw [← e]
+    exact hzN.map _
+  have h0 := Module.End.eq_zero_of_isNilpotent_isSemisimple hN hS
+  rw [← e, map_eq_zero_iff _ (AlgEquiv.injective _), sub_eq_zero] at h0
+  exact h0.symm
+
+include hP in
+theorem P_mem_Tset [CharZero k] {x} (hx : x ∈ F) : aeval x P ∈ Tset F P := ⟨(hP x hx).1, P_idem hP hx⟩
+
+include hP in
+theorem exists_conj_eq_semisimple {x} (hx : x ∈ Tset F P) : ∃ g ∈ Gz Z, cj g x = s := by
+  obtain ⟨hxF, hxP⟩ := hx
+  obtain ⟨-, -, -, g, hg, hgs⟩ := hP x hxF
+  rw [hxP] at hgs
+  exact ⟨g, hg, hgs⟩
+
+theorem continuousSMul_actT : @ContinuousSMul (GzS Z) (Tset F P) (actT hFinv).toSMul _ _ := by
+  refine @ContinuousSMul.mk _ _ (actT hFinv).toSMul _ _ ?_
+  exact (((Units.continuous_val.comp (continuous_subtype_val.comp continuous_fst)).matrix_mul
+    (continuous_subtype_val.comp continuous_snd)).matrix_mul
+    (Units.continuous_coe_inv.comp (continuous_subtype_val.comp continuous_fst))).subtype_mk _
+
+include hP in
+theorem isPretransitive_actT (hsT : s ∈ Tset F P) : @MulAction.IsPretransitive (GzS Z) (Tset F P) (actT hFinv).toSMul := by
+  refine @MulAction.IsPretransitive.mk _ _ (actT hFinv).toSMul ?_
+  intro x y
+  obtain ⟨a, ha, hax⟩ := exists_conj_eq_semisimple hP x.2
+  obtain ⟨b, hb, hby⟩ := exists_conj_eq_semisimple hP y.2
+  refine ⟨⟨b⁻¹ * a, (GzS Z).mul_mem ((GzS Z).inv_mem hb) ha⟩, Subtype.ext ?_⟩
+  show cj (b⁻¹ * a) x.1 = y.1
+  simp only [cj] at hax hby ⊢
+  simp only [_root_.mul_inv_rev, inv_inv, Units.val_mul]
+  calc (b⁻¹ : GL (Fin n) k).val * a.val * x.1 * (a⁻¹.val * b.val)
+      = (b⁻¹ : GL (Fin n) k).val * (a.val * x.1 * a⁻¹.val) * b.val := by
+        simp only [Matrix.mul_assoc]
+    _ = (b⁻¹ : GL (Fin n) k).val * (b.val * y.1 * b⁻¹.val) * b.val := by rw [hax, hby]
+    _ = y.1 := by simp [Matrix.mul_assoc]
+
+end Hyp
+
+end PositivityTheory.RgUd.T.Desc.SLF
+end
+end
+
+section
+noncomputable section
+
+open MeasureTheory MeasureTheory.Measure
+
+namespace PositivityTheory.RgUd.T.Desc.SLF
+
+theorem isUnimod_of_equiv {G₁ G₂ : Type*} [Group G₁] [TopologicalSpace G₁] [IsTopologicalGroup G₁] [LocallyCompactSpace G₁]
+    [Group G₂] [TopologicalSpace G₂] [IsTopologicalGroup G₂] [LocallyCompactSpace G₂] (φ : G₁ ≃ₜ* G₂)
+    (h : PositivityTheory.PfBern.Frob.IsUnimod G₂) : PositivityTheory.PfBern.Frob.IsUnimod G₁ := by
+  intro g
+  have hg : modularCharacterFun (φ g) = 1 := h (φ g)
+  show modularCharacterFun g = 1
+  borelize G₁ G₂
+  let μ₂ : Measure G₂ := haar
+  have hme : MeasurableEmbedding (φ.symm : G₂ → G₁) := φ.symm.toHomeomorph.measurableEmbedding
+  let μ₁ : Measure G₁ := map (φ.symm : G₂ → G₁) μ₂
+  haveI : IsHaarMeasure μ₁ := ContinuousMulEquiv.isHaarMeasure_map μ₂ φ.symm
+  rw [modularCharacterFun_eq_haarScalarFactor μ₁ g]
+  rw [modularCharacterFun_eq_haarScalarFactor μ₂ (φ g)] at hg
+  obtain ⟨f, hfc, hf0, hf1⟩ := exists_continuous_nonneg_pos (1 : G₁)
+  let f₂ : G₂ → ℝ := fun y => f (φ.symm y)
+  have hf₂c : Continuous f₂ := f.continuous.comp φ.symm.continuous
+  have hf₂s : HasCompactSupport f₂ := hfc.comp_homeomorph φ.symm.toHomeomorph
+  have I1 : ∫ x, f x ∂μ₁ = ∫ y, f₂ y ∂μ₂ := hme.integral_map _
+  have I2 : ∫ x, f x ∂(map (· * g) μ₁) = ∫ y, f₂ y ∂(map (· * φ g) μ₂) := by
+    rw [integral_map (measurable_mul_const g).aemeasurable f.continuous.aestronglyMeasurable,
+      show μ₁ = map (φ.symm : G₂ → G₁) μ₂ from rfl, hme.integral_map,
+      integral_map (measurable_mul_const (φ g)).aemeasurable hf₂c.aestronglyMeasurable]
+    congr 1
+    funext y
+    simp only [f₂, map_mul, ContinuousMulEquiv.symm_apply_apply]
+  have hpos : ∫ x, f x ∂μ₁ ≠ 0 :=
+    (f.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero hfc hf0 hf1).ne'
+  have hpos₂ : ∫ y, f₂ y ∂μ₂ ≠ 0 := by
+    rw [← I1]
+    exact hpos
+  have hg' : ((haarScalarFactor (map (· * φ g) μ₂) μ₂ : NNReal) : ℝ) = 1 := by
+    rw [hg]
+    rfl
+  rw [haarScalarFactor_eq_integral_div _ _ hf₂c hf₂s hpos₂] at hg'
+  apply NNReal.coe_injective
+  rw [haarScalarFactor_eq_integral_div _ _ f.continuous hfc hpos, I2, I1, hg', NNReal.coe_one]
+
+end PositivityTheory.RgUd.T.Desc.SLF
+end
+end
+
+section
 noncomputable section
 
 open Matrix Polynomial GroundTheory.Automorphic GroundTheory.Automorphic.Whittaker
@@ -85,3 +257,5 @@ theorem continuousSMul_actX : @ContinuousSMul (GzS Z) (Xs F) (actX hFinv).toSMul
 end Act
 
 end PositivityTheory.RgUd.T.Desc.SLF
+end
+end

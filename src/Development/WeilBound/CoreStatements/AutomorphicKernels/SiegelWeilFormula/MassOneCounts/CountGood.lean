@@ -1,6 +1,6 @@
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.SiegelDensities.SWMeasCAll
-import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.MassOneCounts.SolCountOneOne
-import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.MassOneCounts.FormRes
+import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodingerModel.LocalDefs
+import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.SiegelDensities.FormRes
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.QuadAtOf
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnramifiedFiniteIntegral
@@ -15,6 +15,113 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnramifiedQuadr
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnramifiedQuadraticConditionFive
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CardUnimodularHermitianRepsLevelOne
 
+section
+noncomputable section
+
+namespace PositivityTheory.SiegelWeilFormula.MOne
+
+open PositivityTheory.PfSWUS.Loc
+
+theorem card_bridge {W A R : Type} [CommRing R] (ϖ : R) (a : W → A) (ha : Function.Surjective a) (φ : W → R)
+    (hφ : Function.Surjective φ) (hker : ∀ w w', a w = a w' ↔ φ w - φ w' ∈ lev ϖ 1) (PA : A → Prop) (PR : R → Prop)
+    (hP : ∀ w, PA (a w) ↔ PR (φ w)) :
+    Nat.card {y // PA y} = Nat.card (Ideal.Quotient.mk (lev ϖ 1) '' {x | PR x}) := by
+  classical
+  choose s hs using ha
+  let e : A → R ⧸ lev ϖ 1 := fun y => Ideal.Quotient.mk (lev ϖ 1) (φ (s y))
+  have hinj : Function.Injective e := by
+    intro y y' h
+    have h' := Ideal.Quotient.eq.mp h
+    rw [← hs y, ← hs y']
+    exact (hker _ _).mpr h'
+  have himg : e '' {y | PA y} = Ideal.Quotient.mk (lev ϖ 1) '' {x | PR x} := by
+    ext c
+    constructor
+    · rintro ⟨y, hy, rfl⟩
+      refine ⟨φ (s y), ?_, rfl⟩
+      have hy' : PA (a (s y)) := by
+        rw [hs y]
+        exact hy
+      exact (hP _).mp hy'
+    · rintro ⟨x, hx, rfl⟩
+      obtain ⟨w, rfl⟩ := hφ x
+      refine ⟨a w, (hP w).mpr hx, ?_⟩
+      exact Ideal.Quotient.eq.mpr ((hker _ _).mp (hs (a w)))
+  rw [← himg, Nat.card_image_of_injective hinj]
+  rfl
+
+theorem solCount_one_one {R : Type} [CommRing R] (σ : R →+* R) (ϖ : R) (j t : R) :
+    solCount σ ϖ (Matrix.of fun _ _ => j : Matrix (Fin 1) (Fin 1) R) (Matrix.of fun _ _ => t : Matrix (Fin 1) (Fin 1) R) 1 =
+      Nat.card (Ideal.Quotient.mk (lev ϖ 1) '' {x : R | Ideal.Quotient.mk (lev ϖ 1) (σ x * j * x) =
+        Ideal.Quotient.mk (lev ϖ 1) t}) := by
+  classical
+  unfold solCount
+  have hinj : Function.Injective (fun y : Matrix (Fin 1) (Fin 1) (R ⧸ lev ϖ 1) => y 0 0) := by
+    intro y y' h
+    ext a b
+    obtain rfl : a = 0 := Subsingleton.elim _ _
+    obtain rfl : b = 0 := Subsingleton.elim _ _
+    exact h
+  rw [← Nat.card_image_of_injective hinj, Set.image_image]
+  refine congrArg (fun s : Set (R ⧸ lev ϖ 1) => Nat.card s) ?_
+  ext c
+  constructor
+  · rintro ⟨X, hX, rfl⟩
+    refine ⟨X 0 0, ?_, rfl⟩
+    have h00 := congrFun (congrFun hX 0) 0
+    simpa [red, cT, Matrix.mul_apply] using h00
+  · rintro ⟨x, hx, rfl⟩
+    refine ⟨Matrix.of fun _ _ => x, ?_, rfl⟩
+    simp only [Set.mem_ofPred_eq]
+    ext a b
+    obtain rfl : a = 0 := Subsingleton.elim _ _
+    obtain rfl : b = 0 := Subsingleton.elim _ _
+    simpa [red, cT, Matrix.mul_apply] using hx
+
+end PositivityTheory.SiegelWeilFormula.MOne
+
+end
+end
+
+section
+noncomputable section
+
+namespace PositivityTheory.SiegelWeilFormula.MOne
+
+open HeckeCharacterZeroLocus.SiegelWeilU NumberField IsDedekindDomain PositivityTheory.SiegelWeilFormula.Gunr
+open scoped TensorProduct Matrix
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+
+theorem form_res (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (J : Matrix (Fin 1) (Fin 1) E) (hJ : IsHermND σ J) (d : ℕ)
+    (b : Module.Basis (Fin d) F E) (B : Matrix (Fin 1 × Fin d) (Fin 1 × Fin d) F)
+    (hBt : ∀ (R : Type) [CommRing R] [Algebra F R] (x y : Fin 1 → R ⊗[F] E),
+      Algebra.trace R (R ⊗[F] E) (hR R σ J x y) =
+        (fun p : Fin 1 × Fin d => (Algebra.TensorProduct.basis R b).repr (x p.1) p.2) ⬝ᵥ
+          (B.map (algebraMap F R) *ᵥ fun p : Fin 1 × Fin d => (Algebra.TensorProduct.basis R b).repr (y p.1) p.2))
+    (v : HeightOneSpectrum (𝓞 F))
+    (hfix : ∀ x : Fv F v ⊗[F] E, sigR (Fv F v) σ x = x → ∃ c : Fv F v, x = algebraMap (Fv F v) (Fv F v ⊗[F] E) c)
+    (htr : ∀ a : Fv F v ⊗[F] E,
+      (∀ y ∈ Rv b v, Algebra.trace (Fv F v) (Fv F v ⊗[F] E) (a * y) ∈ v.adicCompletionIntegers F) ↔ a ∈ Rv b v)
+    (hR1 : (1 : Fv F v ⊗[F] E) ∈ Rv b v)
+    (hRmul : ∀ x ∈ Rv b v, ∀ y ∈ Rv b v, x * y ∈ Rv b v)
+    (hRsig : ∀ x ∈ Rv b v, sigR (Fv F v) σ x ∈ Rv b v)
+    (h2 : Valued.v (2 : Fv F v) = 1) (hj : inclR (Fv F v) (J 0 0) ∈ Rv b v)
+    (ϖ : v.adicCompletionIntegers F) (hϖ0 : (ϖ : Fv F v) ≠ 0) (hϖ1 : ‖(ϖ : Fv F v)‖ < 1)
+    (hϖd : ∀ x : v.adicCompletionIntegers F, ‖(x : Fv F v)‖ < 1 → ϖ ∣ x)
+    (w : Fin 1 × Fin d → v.adicCompletionIntegers F) (s : v.adicCompletionIntegers F) :
+    Valued.v ((2 : Fv F v)⁻¹ * ((fun p => (w p : Fv F v)) ⬝ᵥ
+        (B.map (algebraMap F (Fv F v)) *ᵥ fun p => (w p : Fv F v))) - s) < 1 ↔
+      ∃ y ∈ Rv b v, sigR (Fv F v) σ (zOf b v w) * inclR (Fv F v) (J 0 0) * zOf b v w -
+        algebraMap (Fv F v) (Fv F v ⊗[F] E) s = algebraMap (Fv F v) (Fv F v ⊗[F] E) ϖ * y :=
+  PositivityTheory.SiegelWeilFormula.Densx.form_res σ hCM J hJ d b B hBt v hfix htr hR1 hRmul hRsig h2 hj ϖ hϖ0 hϖ1 hϖd w s
+
+end PositivityTheory.SiegelWeilFormula.MOne
+
+end
+end
+
+section
 noncomputable section
 
 namespace PositivityTheory.SiegelWeilFormula.MOne
@@ -231,4 +338,5 @@ theorem count_good (F E : Type) [Field F] [NumberField F] [Field E] [NumberField
 
 end PositivityTheory.SiegelWeilFormula.MOne
 
+end
 end

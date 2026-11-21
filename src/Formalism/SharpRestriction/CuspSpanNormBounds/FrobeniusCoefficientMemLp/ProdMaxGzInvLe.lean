@@ -1,5 +1,197 @@
-import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.OneLeProdMax
+import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.HHRed
+import Formalism.SharpRestriction.CuspSpanNormBounds.GramProductLeHeightBoundTwo
 
+section
+set_option linter.unusedVariables false
+
+noncomputable section
+
+open scoped Classical
+
+namespace Formalism.MainNotions.S.Pv.HH
+
+open Finset NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.HermitianLatticeCounting.ExpansionTerms Formalism.MainNotions.BesselShellMomentBounds
+
+section Perm
+
+variable {d : ℕ} (c : Composition d)
+
+def bsig (i : Fin d) : Fin d :=
+  ⟨c.sizeUpTo (c.index i) + c.sizeUpTo ((c.index i : ℕ) + 1) - 1 - i, by
+    have a1 := c.sizeUpTo_index_le i
+    have a2 := c.lt_sizeUpTo_index_succ i
+    simp only [Fin.val_succ] at a2
+    have a3 : c.sizeUpTo ((c.index i : ℕ) + 1) ≤ d := c.sizeUpTo_le _
+    omega⟩
+
+theorem bsig_val (i : Fin d) :
+    ((bsig c i : Fin d) : ℕ) = c.sizeUpTo (c.index i) + c.sizeUpTo ((c.index i : ℕ) + 1) - 1 - i := rfl
+
+theorem bsig_index (i : Fin d) : c.index (bsig c i) = c.index i := by
+  have a1 := c.sizeUpTo_index_le i
+  have a2 := c.lt_sizeUpTo_index_succ i
+  simp only [Fin.val_succ] at a2
+  apply index_unique c (bsig c i) (c.index i)
+  · rw [bsig_val]; omega
+  · rw [bsig_val]; omega
+
+theorem bsig_bsig (i : Fin d) : bsig c (bsig c i) = i := by
+  have a1 := c.sizeUpTo_index_le i
+  have a2 := c.lt_sizeUpTo_index_succ i
+  simp only [Fin.val_succ] at a2
+  apply Fin.ext
+  rw [bsig_val, bsig_index, bsig_val]
+  omega
+
+def bperm : Equiv.Perm (Fin d) := Function.Involutive.toPerm (bsig c) (bsig_bsig c)
+
+end Perm
+
+section Minor
+
+variable {E : Type} [Field E] {d : ℕ}
+
+end Minor
+
+theorem max_mul_le {x z : ℝ} (hx : 0 ≤ x) (hz : 0 ≤ z) : max 1 (x * z) ≤ max 1 x * max 1 z := by
+  have h1 : (1 : ℝ) ≤ max 1 x := le_max_left _ _
+  have h2 : (1 : ℝ) ≤ max 1 z := le_max_left _ _
+  apply max_le
+  · nlinarith
+  · exact mul_le_mul (le_max_right _ _) (le_max_right _ _) hz (by linarith)
+
+def pre (y : ℕ → ℝ) (a : ℕ) : ℝ := ∏ i ∈ range (a + 1), y i
+
+section Ends
+
+variable {E : Type} [Field E] {d : ℕ}
+
+def bEnd (p : Point E d) (a : Fin (toComp p).length) : E :=
+  leadMinorE (ptMat p) ((toComp p).sizeUpTo ((a : ℕ) + 1))
+
+def yN (τ : E →+* ℂ) (p : Point E d) (i : ℕ) : ℝ :=
+  if h : i < (toComp p).length then ‖τ (toT p ⟨i, h⟩)‖ ^ (toComp p).blocksFun ⟨i, h⟩ else 1
+
+end Ends
+
+end Formalism.MainNotions.S.Pv.HH
+
+end
+end
+
+section
+noncomputable section
+
+open scoped Classical
+
+namespace Formalism.MainNotions.S.Pv.HH
+
+open Finset NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt Formalism.HermitianLatticeCounting.ExpansionTerms Formalism.MainNotions.BesselShellMomentBounds
+  Formalism.MainNotions.BridgeLemma₂
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+variable (D : D7)
+
+def K1 : ℝ := 4 ^ (D.R.rS + 1) * ((D.R.rS + 1).factorial : ℝ) ^ 2 * rho0 D ^ (2 * (D.R.rS + 1))
+
+def sgnE : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) D.host.E :=
+  Matrix.diagonal fun b => (-1 : D.host.E) ^ (D.R.rS - b.val)
+
+def sgnO : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) (𝓞 D.host.E) :=
+  Matrix.diagonal fun b => (-1 : 𝓞 D.host.E) ^ (D.R.rS - b.val)
+
+end Formalism.MainNotions.S.Pv.HH
+
+end
+end
+
+section
+set_option linter.unusedVariables false
+
+noncomputable section
+
+open scoped Classical
+
+namespace Formalism.MainNotions.S.Pv.HH
+
+open Finset NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt Formalism.HermitianLatticeCounting.ExpansionTerms Formalism.MainNotions.BesselShellMomentBounds
+  Formalism.MainNotions.BridgeLemma₂
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+variable (D : D7)
+
+theorem rdE_pos' : 0 < D.host.rdE := lt_of_lt_of_le zero_lt_one (one_le_rdE D)
+
+theorem one_le_prod_norm (x : D.host.E) (hx : x ∈ intS D) (h0 : x ≠ 0) : 1 ≤ ∏ τ, ‖embS D τ x‖ :=
+  Formalism.MainNotions.BesselShellMomentBounds.prod_absV_ge_one D x hx h0
+
+
+def qS : ℝ := D.host.rdE ^ (-(D.R.rS : ℝ))
+
+
+
+
+
+
+def R0 : ℝ := ((qS D)⁻¹) ^ (2 * (D.R.rS + 1))
+
+
+def rhoIJ {j : ℕ} (I J : Fin j ↪o Fin (D.R.rS + 1)) : ℝ := ∏ a, (rhoF D (I a) * rhoF D (J a))
+
+
+
+
+
+theorem frameExp_le (l : ℕ) (hl : l ≤ D.R.rS + 1) : frameExp D.R.rS l ≤ (D.R.rS + 1) ^ 2 := by
+  unfold frameExp
+  calc ∑ a ∈ Finset.Icc 1 l, (D.R.rS + 1 - a) ≤ ∑ a ∈ Finset.Icc 1 l, (D.R.rS + 1) :=
+        Finset.sum_le_sum fun a _ => Nat.sub_le _ _
+    _ = l * (D.R.rS + 1) := by rw [Finset.sum_const, Nat.card_Icc, smul_eq_mul]; congr 1
+    _ ≤ (D.R.rS + 1) ^ 2 := by rw [pow_two]; exact Nat.mul_le_mul_right _ hl
+
+def R1 : ℝ := D.host.rdE ^ (2 * ((D.R.rS : ℝ) + 1) ^ 2)
+
+
+
+
+
+
+end Formalism.MainNotions.S.Pv.HH
+
+end
+end
+
+section
+noncomputable section
+
+open scoped Classical
+
+namespace Formalism.MainNotions.S.Pv.HH
+
+open Finset NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt Formalism.HermitianLatticeCounting.ExpansionTerms Formalism.MainNotions.BesselShellMomentBounds
+  Formalism.MainNotions.BridgeLemma₂
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+theorem one_le_prod_max {ι : Type*} (s : Finset ι) (g : ι → ℝ) : 1 ≤ ∏ i ∈ s, max 1 (g i) := by
+  have := Finset.prod_le_prod (s := s) (f := fun _ => (1 : ℝ)) (g := fun i => max 1 (g i))
+    (fun i _ => zero_le_one) (fun i _ => le_max_left _ _)
+  simpa using this
+
+variable (D : D7)
+
+def Bmin (b C : ℝ) (Z : GramM D) : ℝ :=
+  R0 D ^ D.R.f * K1 D ^ D.R.f *
+    ((R1 D * b ^ (C * (D.R.m : ℝ) ^ 2)) ^ ((D.R.rS + 1) * D.R.f) * sizeZ D b C Z) ^ 2
+
+end Formalism.MainNotions.S.Pv.HH
+
+end
+end
+
+section
 noncomputable section
 
 open scoped Classical
@@ -12,65 +204,10 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable (D : D7)
 
-theorem absGz_le (Z : GramM D) {b C β T T' : ℝ} (hb : 0 < b) (hβ : 1 ≤ β) (hT0 : 0 ≤ T) (hT : T ≤ β)
-    (hT0' : 0 ≤ T') (hT' : T' ≤ β) (hr : 1 ≤ D.R.rS) (τ : D.what₂.Tau) :
-    |Cnt.Gz D T T' Z τ| ≤ 2 * β ^ 2 * (b ^ (C * (D.R.m : ℝ) ^ 2) * Formalism.MainNotions.GramProductBounds.Pt D b C Z τ) ^ 2 := by
-  have hr1 : D.R.rS + 1 ∈ Finset.Icc 1 (D.R.rS + 1) := Finset.mem_Icc.2 ⟨by omega, le_rfl⟩
-  have hr0 : D.R.rS ∈ Finset.Icc 1 (D.R.rS + 1) := Finset.mem_Icc.2 ⟨hr, by omega⟩
-  have ha0 := Formalism.MainNotions.GramProductBounds.absDl_nonneg D Z (D.R.rS + 1) τ
-  have hd0 := Formalism.MainNotions.GramProductBounds.absDl_nonneg D Z D.R.rS τ
-  have ha := Formalism.MainNotions.GramProductBounds.absDl_le_Pt D (C := C) hb Z τ hr1
-  have hd := Formalism.MainNotions.GramProductBounds.absDl_le_Pt D (C := C) hb Z τ hr0
-  set X := b ^ (C * (D.R.m : ℝ) ^ 2) * Formalism.MainNotions.GramProductBounds.Pt D b C Z τ
-  have hX0 : 0 ≤ X ^ 2 := sq_nonneg _
-  have ha2 := pow_le_pow_left₀ ha0 ha 2
-  have hd2 := pow_le_pow_left₀ hd0 hd 2
-  have hc0 : 0 ≤ T * T' := mul_nonneg hT0 hT0'
-  have hc : T * T' ≤ β ^ 2 := by rw [sq]; exact mul_le_mul hT hT' hT0' (by linarith)
-  have hβ2 : 1 ≤ β ^ 2 := one_le_pow₀ hβ
-  have hcd : T * T' * absDl D Z D.R.rS τ ^ 2 ≤ β ^ 2 * X ^ 2 := mul_le_mul hc hd2 (sq_nonneg _) (by positivity)
-  have hcd0 : 0 ≤ T * T' * absDl D Z D.R.rS τ ^ 2 := by positivity
-  have hXβ : X ^ 2 ≤ β ^ 2 * X ^ 2 := le_mul_of_one_le_left hX0 hβ2
-  unfold Cnt.Gz
-  rw [abs_le]
-  constructor <;> nlinarith [sq_nonneg (absDl D Z (D.R.rS + 1) τ)]
 
 def Gbd (b C β : ℝ) (Z : GramM D) : ℝ := (2 * β ^ 2 * (b ^ (C * (D.R.m : ℝ) ^ 2)) ^ 2) ^ D.R.f * sizeZ D b C Z ^ 2
 
-theorem prod_max_absGz_le (Z : GramM D) {b C β T T' : ℝ} (hb : 1 ≤ b) (hC : 0 ≤ C) (hβ : 1 ≤ β) (hT0 : 0 ≤ T)
-    (hT : T ≤ β) (hT0' : 0 ≤ T') (hT' : T' ≤ β) (hr : 1 ≤ D.R.rS) :
-    ∏ τ, max 1 |Cnt.Gz D T T' Z τ| ≤ Gbd D b C β Z := by
-  have hb0 : 0 < b := lt_of_lt_of_le zero_lt_one hb
-  have hH : 1 ≤ b ^ (C * (D.R.m : ℝ) ^ 2) := Real.one_le_rpow hb (by positivity)
-  have hf : (Finset.univ : Finset D.what₂.Tau).card = D.R.f := by rw [Finset.card_univ, D.what₂.card_Tau]
-  have hP1 : ∀ τ, 1 ≤ Formalism.MainNotions.GramProductBounds.Pt D b C Z τ := fun τ => Formalism.MainNotions.GramProductBounds.one_le_prod_max _ _
-  have step : ∀ τ, max 1 |Cnt.Gz D T T' Z τ| ≤
-      (2 * β ^ 2 * (b ^ (C * (D.R.m : ℝ) ^ 2)) ^ 2) * Formalism.MainNotions.GramProductBounds.Pt D b C Z τ ^ 2 := by
-    intro τ
-    have h1 : 1 ≤ (2 * β ^ 2 * (b ^ (C * (D.R.m : ℝ) ^ 2)) ^ 2) * Formalism.MainNotions.GramProductBounds.Pt D b C Z τ ^ 2 := by
-      have : 1 ≤ 2 * β ^ 2 * (b ^ (C * (D.R.m : ℝ) ^ 2)) ^ 2 := by
-        have h2 : 1 ≤ β ^ 2 := one_le_pow₀ hβ
-        have h3 : 1 ≤ (b ^ (C * (D.R.m : ℝ) ^ 2)) ^ 2 := one_le_pow₀ hH
-        nlinarith
-      exact one_le_mul_of_one_le_of_one_le this (one_le_pow₀ (hP1 τ))
-    refine max_le h1 (le_trans (absGz_le D Z (C := C) hb0 hβ hT0 hT hT0' hT' hr τ) (le_of_eq ?_))
-    ring
-  calc ∏ τ, max 1 |Cnt.Gz D T T' Z τ| ≤ ∏ τ, ((2 * β ^ 2 * (b ^ (C * (D.R.m : ℝ) ^ 2)) ^ 2) *
-        Formalism.MainNotions.GramProductBounds.Pt D b C Z τ ^ 2) :=
-        Finset.prod_le_prod (fun τ _ => le_trans zero_le_one (le_max_left _ _)) (fun τ _ => step τ)
-    _ = Gbd D b C β Z := by
-        unfold Gbd
-        rw [Finset.prod_mul_distrib, Finset.prod_const, hf, Finset.prod_pow, Formalism.MainNotions.GramProductBounds.sizeZ_eq]
 
-theorem prod_max_Gz_le (Z : GramM D) {b C β T T' : ℝ} (hb : 1 ≤ b) (hC : 0 ≤ C) (hβ : 1 ≤ β) (hT0 : 0 ≤ T)
-    (hT : T ≤ β) (hT0' : 0 ≤ T') (hT' : T' ≤ β) (hr : 1 ≤ D.R.rS) :
-    ∏ τ, max 1 (Cnt.Gz D T T' Z τ) ≤ Gbd D b C β Z := by
-  refine le_trans ?_ (prod_max_absGz_le D Z hb hC hβ hT0 hT hT0' hT' hr)
-  apply Finset.prod_le_prod
-  · intro τ _
-    exact le_trans zero_le_one (le_max_left _ _)
-  · intro τ _
-    exact max_le_max le_rfl (le_abs_self _)
 
 theorem embS_star (τ : D.what₂.Tau) (x : D.host.E) : embS D τ (star x) = starRingEnd ℂ (embS D τ x) := by
   unfold embS
@@ -95,32 +232,12 @@ private theorem one_le_host_rdE : 1 ≤ D.host.rdE := by
   have h'' : ((1 : ℤ) : ℝ) ≤ ((|discr D.host.E| : ℤ) : ℝ) := by exact_mod_cast h'
   simpa [Int.cast_abs] using h''
 
-private theorem frameExp_self_le_succ_sq (r : ℕ) : frameExp r r ≤ (r + 1) ^ 2 := by
-  unfold frameExp
-  calc ∑ a ∈ Finset.Icc 1 r, (r + 1 - a) ≤ ∑ a ∈ Finset.Icc 1 r, (r + 1) :=
-        Finset.sum_le_sum fun a _ => Nat.sub_le _ _
-    _ = r * (r + 1) := by simp [Nat.card_Icc]
-    _ ≤ (r + 1) ^ 2 := by nlinarith
 
 theorem wG_pos : 0 < wG D := by
   unfold wG
   exact Real.rpow_pos_of_pos (lt_of_lt_of_le one_pos (one_le_host_rdE D)) _
 
-theorem wG_le_one : wG D ≤ 1 := by
-  unfold wG
-  apply Real.rpow_le_one_of_one_le_of_nonpos (one_le_host_rdE D)
-  have : (0 : ℝ) ≤ (frameExp D.R.rS D.R.rS : ℝ) := Nat.cast_nonneg _
-  linarith
 
-theorem wG_inv_le : (wG D)⁻¹ ≤ R1 D := by
-  have h1 := one_le_host_rdE D
-  have h0 : (0 : ℝ) ≤ D.host.rdE := by linarith
-  unfold wG R1
-  rw [Real.rpow_neg h0, inv_inv]
-  apply Real.rpow_le_rpow_of_exponent_le h1
-  have h2 := frameExp_self_le_succ_sq D.R.rS
-  have h3 : ((frameExp D.R.rS D.R.rS : ℕ) : ℝ) ≤ ((D.R.rS : ℝ) + 1) ^ 2 := by exact_mod_cast h2
-  linarith
 
 theorem absGz_eq {u u' : D.what₂.Word} (F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)) (F' : FlagU D u')
     (τ : D.what₂.Tau) :
@@ -145,69 +262,8 @@ theorem absGz_eq {u u' : D.what₂.Word} (F0 : FlagG (VS D) D.R.rS ((Tu D u : �
   unfold wG
   ring
 
-theorem prod_max_Gz_inv_le {u u' : D.what₂.Word} (F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E))
-    (F' : FlagU D u') (hγ : Gval (lf D F0) F' ∈ intS D) (hγ0 : Gval (lf D F0) F' ≠ 0)
-    {b C β : ℝ} (hb : 1 ≤ b) (hC : 0 ≤ C) (hβ : 1 ≤ β) (hT : ((Tu D u : ℕ) : ℝ) ≤ β)
-    (hT' : ((Tu D u' : ℕ) : ℝ) ≤ β) (hr : 1 ≤ D.R.rS) :
-    ∏ τ, max 1 (Cnt.Gz D (Tu D u) (Tu D u') (ZhatL (lf D F0) F') τ)⁻¹ ≤
-      (R1 D ^ 2) ^ D.R.f * (R1 D ^ 2) ^ D.R.f * Gbd D b C β (ZhatL (lf D F0) F') := by
-  set Z := ZhatL (lf D F0) F'
-  set γ := Gval (lf D F0) F'
-  set s := wG D ^ 2 with hs
-  have hs0 : 0 < s := pow_pos (wG_pos D) 2
-  have hs1 : s ≤ 1 := pow_le_one₀ (wG_pos D).le (wG_le_one D)
-  have hsi : 1 ≤ s⁻¹ := one_le_inv₀ hs0 |>.2 hs1
-  have hsR : s⁻¹ ≤ R1 D ^ 2 := by
-    rw [hs, ← inv_pow]; exact pow_le_pow_left₀ (inv_nonneg.2 (wG_pos D).le) (wG_inv_le D) 2
-  have hf : (Finset.univ : Finset D.what₂.Tau).card = D.R.f := by rw [Finset.card_univ, D.what₂.card_Tau]
-  have hn : ∀ τ, 0 < ‖embS D τ γ‖ := fun τ => norm_embS_pos D hγ0 τ
-  have habs : ∀ τ, |Cnt.Gz D (Tu D u) (Tu D u') Z τ| = ‖embS D τ γ‖ * s := fun τ => absGz_eq D F0 F' τ
-  have hT0 : (0 : ℝ) ≤ ((Tu D u : ℕ) : ℝ) := Nat.cast_nonneg _
-  have hT0' : (0 : ℝ) ≤ ((Tu D u' : ℕ) : ℝ) := Nat.cast_nonneg _
-  have h1 : ∀ τ, max 1 (Cnt.Gz D (Tu D u) (Tu D u') Z τ)⁻¹ ≤ max 1 ‖embS D τ γ‖⁻¹ * s⁻¹ := by
-    intro τ
-    have hpos : 0 < |Cnt.Gz D (Tu D u) (Tu D u') Z τ| := by rw [habs]; exact mul_pos (hn τ) hs0
-    have h2 : max 1 (Cnt.Gz D (Tu D u) (Tu D u') Z τ)⁻¹ ≤ max 1 |Cnt.Gz D (Tu D u) (Tu D u') Z τ|⁻¹ := by
-      rcases le_or_gt (Cnt.Gz D (Tu D u) (Tu D u') Z τ) 0 with h | h
-      · rw [max_eq_left (le_trans (inv_nonpos.2 h) zero_le_one)]; exact le_max_left _ _
-      · rw [abs_of_pos h]
-    refine le_trans h2 ?_
-    rw [habs, mul_inv]
-    refine le_trans (max_mul_le (inv_nonneg.2 (norm_nonneg _)) (inv_nonneg.2 hs0.le)) ?_
-    rw [max_eq_right hsi]
-  have h3 : ∀ τ, max 1 ‖embS D τ γ‖ ≤ max 1 |Cnt.Gz D (Tu D u) (Tu D u') Z τ| * s⁻¹ := by
-    intro τ
-    have e : ‖embS D τ γ‖ = |Cnt.Gz D (Tu D u) (Tu D u') Z τ| * s⁻¹ := by
-      rw [habs, mul_assoc, mul_inv_cancel₀ hs0.ne', mul_one]
-    rw [e]
-    refine le_trans (max_mul_le (abs_nonneg _) (inv_nonneg.2 hs0.le)) ?_
-    rw [max_eq_right hsi]
-  have hG := prod_max_absGz_le D Z hb hC hβ hT0 hT hT0' hT' hr
-  have hP0 : 0 ≤ ∏ τ, max 1 ‖embS D τ γ‖⁻¹ := Finset.prod_nonneg fun τ _ => le_trans zero_le_one (le_max_left _ _)
-  calc ∏ τ, max 1 (Cnt.Gz D (Tu D u) (Tu D u') Z τ)⁻¹ ≤ ∏ τ, (max 1 ‖embS D τ γ‖⁻¹ * s⁻¹) :=
-        Finset.prod_le_prod (fun τ _ => le_trans zero_le_one (le_max_left _ _)) (fun τ _ => h1 τ)
-    _ = (∏ τ, max 1 ‖embS D τ γ‖⁻¹) * s⁻¹ ^ D.R.f := by rw [Finset.prod_mul_distrib, Finset.prod_const, hf]
-    _ ≤ (∏ τ, max 1 ‖embS D τ γ‖) * s⁻¹ ^ D.R.f :=
-        mul_le_mul_of_nonneg_right (prod_max_inv_le _ hn (one_le_prod_norm D γ hγ hγ0)) (by positivity)
-    _ ≤ (∏ τ, (max 1 |Cnt.Gz D (Tu D u) (Tu D u') Z τ| * s⁻¹)) * s⁻¹ ^ D.R.f :=
-        mul_le_mul_of_nonneg_right (Finset.prod_le_prod (fun τ _ => le_trans zero_le_one (le_max_left _ _))
-          (fun τ _ => h3 τ)) (by positivity)
-    _ = (∏ τ, max 1 |Cnt.Gz D (Tu D u) (Tu D u') Z τ|) * s⁻¹ ^ D.R.f * s⁻¹ ^ D.R.f := by
-        rw [Finset.prod_mul_distrib, Finset.prod_const, hf]
-    _ ≤ Gbd D b C β Z * (R1 D ^ 2) ^ D.R.f * (R1 D ^ 2) ^ D.R.f := by
-        have hsf : s⁻¹ ^ D.R.f ≤ (R1 D ^ 2) ^ D.R.f := pow_le_pow_left₀ (inv_nonneg.2 hs0.le) hsR _
-        have hA : 0 ≤ ∏ τ, max 1 |Cnt.Gz D (Tu D u) (Tu D u') Z τ| :=
-          Finset.prod_nonneg fun τ _ => le_trans zero_le_one (le_max_left _ _)
-        have hsf0 : 0 ≤ s⁻¹ ^ D.R.f := by positivity
-        calc (∏ τ, max 1 |Cnt.Gz D (Tu D u) (Tu D u') Z τ|) * s⁻¹ ^ D.R.f * s⁻¹ ^ D.R.f
-            ≤ Gbd D b C β Z * (R1 D ^ 2) ^ D.R.f * s⁻¹ ^ D.R.f :=
-              mul_le_mul_of_nonneg_right (mul_le_mul hG hsf hsf0 (le_trans hA hG)) hsf0
-          _ ≤ Gbd D b C β Z * (R1 D ^ 2) ^ D.R.f * (R1 D ^ 2) ^ D.R.f :=
-              mul_le_mul_of_nonneg_left hsf (by
-                have : 0 ≤ Gbd D b C β Z := le_trans hA hG
-                positivity)
-    _ = _ := by ring
 
 end Formalism.MainNotions.S.Pv.HH
 
+end
 end

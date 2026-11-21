@@ -110,7 +110,6 @@ variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.w
 
 theorem lamV_eq : GlobalTheory.IndefiniteRowSideFullHecke.RationalFormValues.lamV D i = FWT.lamV D i := rfl
 
-theorem formFn_eq (x : A.fam.amb.FL i t) : formFn R i t x = (R.HV i t).e (jVx R i t x) := rfl
 
 theorem isCoefExt_iff_c0BC (jL : D.what₂.LL →+* K') (c₀ : VsV D i D.what₂.LL →ₛₗ[D.what₂.embLL] (R.cV i).W)
     (c' : VsV D i K' →ₛₗ[σ'] (R.cV i).W) :
@@ -125,38 +124,9 @@ theorem isCoefExt_iff_c0BC (jL : D.what₂.LL →+* K') (c₀ : VsV D i D.what�
 
 variable (c' : VsV D i K' →ₛₗ[σ'] (R.cV i).W)
 
-theorem placeEx_iff {Cl : Type} (h : Cl → GA D (Vc D i)) :
-    PlaceEx R i t h c' ↔ ∀ (x : A.fam.amb.FL i t) (k : Cl), ∃ v, c' v = formFn R i t x (fin _ (h k)) := by
-  constructor
-  · intro H x k
-    obtain ⟨v, hv⟩ := H x
-    exact ⟨v k, (hv k).symm⟩
-  · intro H x
-    choose v hv using H x
-    exact ⟨v, fun k => (hv k).symm⟩
 
-theorem placeEx_of_valuesIn (H : ValuesIn R i t c') {Cl : Type} (h : Cl → GA D (Vc D i)) : PlaceEx R i t h c' :=
-  (placeEx_iff R i t c' h).2 fun x k => H x _
 
-theorem valuesIn_iff_forall_placeEx :
-    ValuesIn R i t c' ↔ ∀ (Cl : Type) (h : Cl → GA D (Vc D i)), PlaceEx R i t h c' := by
-  refine ⟨fun H Cl h => placeEx_of_valuesIn R i t c' H h, fun H x g => ?_⟩
-  obtain ⟨h, hh⟩ := (finHom (Vc D i)).rangeRestrict_surjective g
-  obtain ⟨v, hv⟩ := (placeEx_iff R i t c' fun _ : Unit => h).1 (H Unit _) x ()
-  exact ⟨v, hv.trans (congrArg _ hh)⟩
 
-theorem valuesIn_iff_forall_reps :
-    ValuesIn R i t c' ↔ ∀ (Cl : Type) [Fintype Cl] (h : Cl → GA D (Vc D i)),
-      Bridge.IsReps (Bridge.ratF (Vc D i)) (levJ R i t) (fun k => fin _ (h k)) → PlaceEx R i t h c' := by
-  classical
-  refine ⟨fun H Cl _ h _ => placeEx_of_valuesIn R i t c' H h, fun H x g => ?_⟩
-  obtain ⟨c, hc⟩ := isReps_update (R.B.L i t).pres.reps g
-  choose h hh using fun k => (finHom (Vc D i)).rangeRestrict_surjective (Function.update (R.B.L i t).pres.y c g k)
-  have hr : Bridge.IsReps (Bridge.ratF (Vc D i)) (levJ R i t) (fun k => fin _ (h k)) := by
-    rw [show (fun k => fin _ (h k)) = Function.update (R.B.L i t).pres.y c g from funext hh]
-    exact hc
-  obtain ⟨v, hv⟩ := (placeEx_iff R i t c' h).1 (@H _ (A.MtCSD i t).finCl h hr) x c
-  exact ⟨v, hv.trans (congrArg _ ((hh c).trans (Function.update_self ..)))⟩
 
 def TypeIn (σ' : K' →+* ℂ) (J' : Subgroup (Bridge.Gf (Vc D i))) : Prop :=
   ∀ k : levJ R i t, (k : Bridge.Gf (Vc D i)) ∈ J' → ∃ a : K', σ' a = (((levEnv (Vc D i) (R.βV i) (R.datVt i t)).χ k : ℂˣ) : ℂ)
@@ -173,25 +143,6 @@ variable {gramR : Matrix (Fin D.sp.X'.rank) (Fin D.sp.X'.rank) D.host.E}
   {c0R : VV D.what₂.LL (fun τ => Bridge.lamRdef (Ptw D) τ) →ₛₗ[D.what₂.embLL] R.cX.coef.W}
   {c0L : ∀ i : Fin D.R.m, VsV D i D.what₂.LL →ₛₗ[D.what₂.embLL] (R.cV i).coef.W} {jL : D.what₂.LL →+* K'}
 
-theorem valuesIn_iff_placeEx_of_typeIn (hV : R.models_HV)
-    (hT : Bridge.FamTie R.B R.pl (R.Sb : Set (Pl D.host.E)) R.Q (labLL D) (fun τ => Bridge.lamRdef (Ptw D) τ) (FWT.lamV D)
-      gramR c0R c0L) (hc : CoefficientBaseChange R i jL σ' (c0L i) c')
-    {Cl : Type} {h : Cl → GA D (Vc D i)} {J' : Subgroup (Bridge.Gf (Vc D i))} (hJ : J' ≤ levJ R i t)
-    (hr : Bridge.IsReps (Bridge.ratF (Vc D i)) J' (fun k => fin _ (h k))) (hχ : TypeIn R i t σ' J') :
-    ValuesIn R i t c' ↔ PlaceEx R i t h c' := by
-  refine ⟨fun H => placeEx_of_valuesIn R i t c' H h, fun H x g => ?_⟩
-  obtain ⟨c, ⟨γ, k, hg⟩, -⟩ := hr g
-  obtain ⟨v, hv⟩ := (placeEx_iff R i t c' h).1 H x c
-  obtain ⟨a, ha⟩ := hχ ⟨k, hJ k.2⟩ k.2
-  obtain ⟨γE, hγ⟩ : ∃ γE, Bridge.IsRatMat (Vc D i) γ γE := by
-    obtain ⟨g, hg⟩ := γ.2
-    exact ⟨g, hg.2.symm⟩
-  obtain ⟨u, hu⟩ := ext_stable ((isCoefExt_iff_c0BC R i jL (c0L i) c').2 hc) ((R.cV i).coef.ρ γ)
-    (fun w => ⟨_, (hT.mapL i).1 γ γE hγ w⟩) v
-  refine ⟨a • u, ?_⟩
-  have hl := formFn_law hV x γ (fin _ (h c)) ⟨k, hJ k.2⟩
-  rw [map_smulₛₗ, hu, hv, ha, hg]
-  exact hl.symm
 
 set_option maxHeartbeats 1000000 in
 
@@ -211,22 +162,7 @@ theorem typeIn_of_valuesIn (hV : R.models_HV)
   exact scalar_mem (W := (R.cV i).W) (c₀ := c0L i) (c' := c') (lam := FWT.lamV D i) hσ
     ((isCoefExt_iff_c0BC R i jL (c0L i) c').2 hc) hli (u := u) (v := v) (fun h0 => hg (hv.symm.trans h0)) hl
 
-theorem valuesIn_iff_placeEx_and_typeIn (hV : R.models_HV)
-    (hT : Bridge.FamTie R.B R.pl (R.Sb : Set (Pl D.host.E)) R.Q (labLL D) (fun τ => Bridge.lamRdef (Ptw D) τ) (FWT.lamV D)
-      gramR c0R c0L) (hσ : σ'.comp jL = D.what₂.embLL) (hc : CoefficientBaseChange R i jL σ' (c0L i) c')
-    {Cl : Type} {h : Cl → GA D (Vc D i)} {J' : Subgroup (Bridge.Gf (Vc D i))} (hJ : J' ≤ levJ R i t)
-    (hr : Bridge.IsReps (Bridge.ratF (Vc D i)) J' (fun k => fin _ (h k))) (hne : ∃ x, formFn R i t x ≠ 0) :
-    ValuesIn R i t c' ↔ PlaceEx R i t h c' ∧ TypeIn R i t σ' J' :=
-  ⟨fun H => ⟨placeEx_of_valuesIn R i t c' H h, fun k _ => typeIn_of_valuesIn hV hT hσ hc hne H k trivial⟩,
-    fun H => (valuesIn_iff_placeEx_of_typeIn hV hT hc hJ hr H.2).2 H.1⟩
 
-theorem typeIn_top_of_placeEx (hV : R.models_HV)
-    (hT : Bridge.FamTie R.B R.pl (R.Sb : Set (Pl D.host.E)) R.Q (labLL D) (fun τ => Bridge.lamRdef (Ptw D) τ) (FWT.lamV D)
-      gramR c0R c0L) (hσ : σ'.comp jL = D.what₂.embLL) (hc : CoefficientBaseChange R i jL σ' (c0L i) c')
-    {Cl : Type} {h : Cl → GA D (Vc D i)} {J' : Subgroup (Bridge.Gf (Vc D i))} (hJ : J' ≤ levJ R i t)
-    (hr : Bridge.IsReps (Bridge.ratF (Vc D i)) J' (fun k => fin _ (h k))) (hχ : TypeIn R i t σ' J')
-    (hne : ∃ x, formFn R i t x ≠ 0) (H : PlaceEx R i t h c') : TypeIn R i t σ' ⊤ :=
-  typeIn_of_valuesIn hV hT hσ hc hne ((valuesIn_iff_placeEx_of_typeIn hV hT hc hJ hr hχ).2 H)
 
 variable (R)
 
@@ -235,29 +171,13 @@ def CoefPins (i : Fin D.R.m) (jL : D.what₂.LL →+* K') (σ' : K' →+* ℂ) (
     ∃ gramR c0R c0L, Bridge.FamTie R.B R.pl (R.Sb : Set (Pl D.host.E)) R.Q (labLL D) (fun τ => Bridge.lamRdef (Ptw D) τ)
       (fun i τ => Bridge.lamLdef (Vc D i).rank ((i : ℕ) + 1) τ) gramR c0R c0L ∧ CoefficientBaseChange R i jL σ' (c0L i) c'
 
-theorem CoefPins.of_thPinsR {v₀ : (R.MW i (sg0 D A)).Vec} {La : Type} [AddCommGroup La] [Module (𝓞 D.host.E) La]
-    {ι : La →ₗ[𝓞 D.host.E] (Fin (Wc D i).rank → D.host.E)} {M : ℕ} {Mh : Ideal (𝓞 D.host.E)} {lev : G → La →ₗ[𝓞 D.host.E] La}
-    (H : ThPinsR R i jL σ' v₀ c' ι M Mh lev) : CoefPins R i jL σ' c' :=
-  ⟨H.field, H.c0⟩
 
-theorem rationalValuesAt_iff_pins : RationalValuesAt R ↔
-    ∀ (i : Fin D.R.m) (K' : Type) [Field K'] (jL : D.what₂.LL →+* K') (σ' : K' →+* ℂ) (c' : VsV D i K' →ₛₗ[σ'] (R.cV i).W),
-      CoefPins R i jL σ' c' → ∀ t, ValuesIn R i t c' := by
-  constructor
-  · rintro H i K' _ jL σ' c' ⟨hσ, gramR, c0R, c0L, hT, hc⟩ t
-    exact H gramR c0R c0L hT i t K' jL σ' hσ c' ((isCoefExt_iff_c0BC R i jL (c0L i) c').2 hc)
-  · intro H gramR c0R c0L hT i t K' _ jL σ' hσ c' hc
-    exact H i K' jL σ' c' ⟨hσ, gramR, c0R, c0L, hT, (isCoefExt_iff_c0BC R i jL (c0L i) c').1 hc⟩ t
 
 def PlaceAt : Prop :=
   ∀ (i : Fin D.R.m) (K' : Type) [Field K'] (jL : D.what₂.LL →+* K') (σ' : K' →+* ℂ) (c' : VsV D i K' →ₛₗ[σ'] (R.cV i).W),
     CoefPins R i jL σ' c' → ∀ (t : T) (Cl : Type) [Fintype Cl] (h : Cl → GA D (Vc D i)) (J' : Subgroup (Bridge.Gf (Vc D i))),
       J' ≤ levJ R i t → Bridge.IsReps (Bridge.ratF (Vc D i)) J' (fun k => fin _ (h k)) → PlaceEx R i t h c'
 
-theorem rationalValuesAt_iff : RationalValuesAt R ↔ PlaceAt R := by
-  rw [rationalValuesAt_iff_pins]
-  exact ⟨fun H i K' _ jL σ' c' hp t Cl _ h _ _ _ => placeEx_of_valuesIn R i t c' (H i K' jL σ' c' hp t) h,
-    fun H i K' _ jL σ' c' hp t => (valuesIn_iff_forall_reps R i t c').2 fun Cl _ h hr => H i K' jL σ' c' hp t Cl h _ le_rfl hr⟩
 
 def PlacePinnedAt : Prop :=
   ∀ (i : Fin D.R.m) (K' : Type) [Field K'] (jL : D.what₂.LL →+* K') (σ' : K' →+* ℂ) (c' : VsV D i K' →ₛₗ[σ'] (R.cV i).W),
@@ -265,22 +185,7 @@ def PlacePinnedAt : Prop :=
       (J' : Subgroup (Bridge.Gf (Vc D i))) (Lh : Cl → Submodule (𝓞 D.host.E) (Fin (Vc D i).rank → D.host.E)) (gam : Cl → ℕ) (vol : K'),
       RepsR R i t h bad J' Lh gam vol → PlaceEx R i t h c'
 
-theorem placePinnedAt_of_rationalValuesAt (H : RationalValuesAt R) : PlacePinnedAt R :=
-  fun i K' _ jL σ' c' hp t Cl _ h _ J' _ _ _ hr =>
-    (rationalValuesAt_iff R).1 H i K' jL σ' c' hp t Cl h J' hr.2.2.1 hr.2.2.2.2.2.1
 
-theorem rationalValuesAt_iff_placePinnedAt (hV : R.models_HV)
-    (hex : ∀ i t, ∃ (Cl : Type) (_ : Fintype Cl) (h : Cl → GA D (Vc D i)) (bad : ℕ) (J' : Subgroup (Bridge.Gf (Vc D i)))
-      (Lh : Cl → Submodule (𝓞 D.host.E) (Fin (Vc D i).rank → D.host.E)) (gam : Cl → ℕ) (vol : D.what₂.LL),
-      RepsR R i t h bad J' Lh gam vol ∧ TypeIn R i t D.what₂.embLL J') :
-    RationalValuesAt R ↔ PlacePinnedAt R := by
-  refine ⟨placePinnedAt_of_rationalValuesAt R, fun H => (rationalValuesAt_iff_pins R).2 fun i K' _ jL σ' c' hp t => ?_⟩
-  obtain ⟨Cl, _, h, bad, J', Lh, gam, vol, ⟨h1, h2, h3, h4, -, h6, h7⟩, hχ⟩ := hex i t
-  have hP := H i K' jL σ' c' hp t Cl h bad J' Lh gam _ ⟨h1, h2, h3, h4, rfl, h6, h7⟩
-  obtain ⟨hσ, gramR, c0R, c0L, hT, hc⟩ := hp
-  refine (valuesIn_iff_placeEx_of_typeIn hV hT hc h3 h6 fun k hk => ?_).2 hP
-  obtain ⟨a, ha⟩ := hχ k hk
-  exact ⟨jL a, (RingHom.congr_fun hσ a).trans ha⟩
 
 end Row
 
@@ -289,9 +194,6 @@ def PlaceRow : Prop :=
     (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A),
     R.toLevCh.Is A.μ0 → R.IsGrp F → R.IsFam → R.IsModels → PlaceAt R
 
-theorem rationalValues_iff : RationalValues ↔ PlaceRow :=
-  ⟨fun H D G _ _ Pl0 T A Ks _ _ _ R F h1 h2 h3 h4 => (rationalValuesAt_iff R).1 (H D G Pl0 T A Ks R F h1 h2 h3 h4),
-    fun H D G _ _ Pl0 T A Ks _ _ _ R F h1 h2 h3 h4 => (rationalValuesAt_iff R).2 (H D G Pl0 T A Ks R F h1 h2 h3 h4)⟩
 
 end GlobalTheory.Proof.PlaceExtensionValues
 

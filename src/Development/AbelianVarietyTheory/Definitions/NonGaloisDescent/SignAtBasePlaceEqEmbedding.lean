@@ -167,8 +167,6 @@ def KsIso.ofFormsIso {A : Arith.FormsL LL Ks WL W G} {A' : Arith.FormsL LL Ks' W
     rw [← f.rho, f.e.injective.eq_iff]
   chi g := congrArg Units.val (f.chi g)
 
-theorem KsIso.ofFormsIso_apply {A : Arith.FormsL LL Ks WL W G} {A' : Arith.FormsL LL Ks' WL' W' G'} (f : NX.FormsIso A A')
-    (x : A.WK) : ((KsIso.ofFormsIso f).φ x : WL') = f.e x := rfl
 
 end OfIso
 
@@ -236,10 +234,6 @@ def fmOf (s : Scal ι e i i' b κ) (q : KsIso ι eK γ (S.A j) (S'.A j')) : NX.F
 
 variable (s : Scal ι e i i' b κ) (q : KsIso ι eK γ (S.A j) (S'.A j'))
 
-theorem fmOf_tmul (a : NX.KB S i b) (x : NX.FmK S j) :
-    fmOf s q (a ⊗ₜ[S.Ks] x : NX.KB S i b ⊗[S.Ks] NX.FmK S j) =
-      ((show NX.KB S' i' b from fracEquiv κ a) ⊗ₜ[S'.Ks] (show NX.FmK S' j' from q.φ x) :
-        NX.KB S' i' b ⊗[S'.Ks] NX.FmK S' j') := rfl
 
 theorem fmOf_smul (c : FractionRing (tw.O i)) (x : NX.Fm S i j b) : fmOf s q (c • x) = fracEquiv κ c • fmOf s q x :=
   DFunLike.congr_fun (tens_ext (R := S.Ks) (K := NX.KB S i b) (M := NX.FmK S j)
@@ -347,18 +341,10 @@ def ratDatBC (he : ∀ x : ↥LL0', ι (e x : what₂.LL) = (x : rows'.LL)) (c :
 
 variable (he : ∀ x : ↥LL0', ι (e x : what₂.LL) = (x : rows'.LL)) (c : G0g N ≃* G0g N')
 
-theorem ratDatBC_Ks : (ratDatBC tw' S ι e he c).Ks = S.Ks := rfl
 
-theorem ratDatBC_G : (ratDatBC tw' S ι e he c).G = S.G := rfl
 
-theorem ratDatBC_eG (g : S.G) : (ratDatBC tw' S ι e he c).eG g = c (S.eG g) := rfl
 
-theorem ratDatBC_kKs (x : S.Ks) : (ratDatBC tw' S ι e he c).kKs x = e.symm (S.kKs x) := rfl
 
-theorem ratDatBC_A (j : ℕ) : letI := ι.toAlgebra
-    letI := algKsBC S ι
-    haveI := towKsBC S ι
-    (ratDatBC tw' S ι e he c).A j = NX.BC.bc rows'.LL (S.A j) := rfl
 
 def kBC : S.Ks ≃+* (ratDatBC tw' S ι e he c).Ks := RingEquiv.refl S.Ks
 
@@ -370,18 +356,8 @@ def ksBC (j : ℕ) : KsIso ι (kBC tw' S ι e he c) (gBC tw' S ι e he c) (S.A j
   haveI := towKsBC S ι
   KsIso.bc rows'.LL (S.A j)
 
-theorem ratDatBC_rhoStab_iff (j : ℕ) : NX.RhoStab S j ↔ NX.RhoStab (ratDatBC tw' S ι e he c) j :=
-  (ksBC tw' S ι e he c j).rhoStab_iff
 
-theorem ratDatBC_chiInLL0 (j : ℕ) (h : NX.ChiInLL0 S j) : NX.ChiInLL0 (ratDatBC tw' S ι e he c) j :=
-  (ksBC tw' S ι e he c j).chiInLL0 he h
 
-theorem ksBC_j (j : ℕ) (σ : rows'.LL →+* ℂ) (x : (S.A j).WK) :
-    ((ratDatBC tw' S ι e he c).A j).j σ ((ksBC tw' S ι e he c j).φ x : (ratDatBC tw' S ι e he c).WL j) = (S.A j).j (σ.comp ι) x :=
-  letI := ι.toAlgebra
-  letI := algKsBC S ι
-  haveI := towKsBC S ι
-  KsIso.bc_j rows'.LL (S.A j) σ x
 
 end Fm
 
@@ -392,8 +368,6 @@ def ringCast {A B : Type} [iA : CommRing A] [iB : CommRing B] (h : A = B) (hi : 
   map_mul' x y := by subst h; cases hi; rfl
   map_add' x y := by subst h; cases hi; rfl
 
-theorem ringCast_heq {A B : Type} [iA : CommRing A] [iB : CommRing B] (h : A = B) (hi : HEq iA iB) (x : A) :
-    HEq (ringCast h hi x) x := cast_heq h x
 
 theorem fracEquiv_ringCast_heq {A B : Type} [iA : CommRing A] [iB : CommRing B] (h : A = B) (hi : HEq iA iB)
     (x : FractionRing A) : HEq (fracEquiv (ringCast h hi) x) x := by
@@ -514,7 +488,6 @@ theorem Tw_eq : D.ntw.Tw = D'.ntw.Tw := eq_of_heq h.set.Tw
 
 theorem instTau : HEq D.what₂.instTau D'.what₂.instTau := Subsingleton.helim (congrArg Fintype h.Tau) _ _
 
-theorem freeB_finB : HEq D.ntw.freeB D'.ntw.freeB ∧ HEq D.ntw.finB D'.ntw.finB := ⟨proof_irrel_heq _ _, proof_irrel_heq _ _⟩
 
 theorem embLL_comp : D'.what₂.embLL.comp ι = D.what₂.embLL := RingHom.ext h.embLL
 
@@ -544,7 +517,6 @@ variable {i : D.ntw.Tw} {i' : D'.ntw.Tw} (hi : HEq i i')
 def oEquiv : D.ntw.O i ≃+* D'.ntw.O i' :=
   ringCast (heq_ring h.Tw_eq h.set.O h.set.crO hi).1 (heq_ring h.Tw_eq h.set.O h.set.crO hi).2
 
-theorem oEquiv_heq (x : D.ntw.O i) : HEq (h.oEquiv hi x) x := ringCast_heq _ _ x
 
 theorem frac_heq (x : FractionRing (D.ntw.O i)) : HEq (fracEquiv (h.oEquiv hi) x) x := fracEquiv_ringCast_heq _ _ x
 
@@ -594,16 +566,8 @@ variable {D D' : D7} {ι : D.what₂.LL →+* D'.what₂.LL} {e : ↥D'.LL0 ≃+
 def fmMove : NX.Fm S i j b ≃+ NX.Fm (h.ratDat S) i' j b :=
   fmOf (h.scal hi b) (ksBC D'.ntw S ι e h.LL0 h.grpEquiv j)
 
-theorem fmMove_smul (c : FractionRing (D.ntw.O i)) (x : NX.Fm S i j b) :
-    fmMove h S hi j b (c • x) = fracEquiv (h.oEquiv hi) c • fmMove h S hi j b x := fmOf_smul _ _ c x
 
-theorem fmMove_mem_Bsup (x : NX.Fm S i j b) : fmMove h S hi j b x ∈ NX.Bsup (h.ratDat S) i' j b ↔ x ∈ NX.Bsup S i j b :=
-  fmOf_mem_Bsup _ _ x
 
-theorem fmMove_actG (hst : NX.RhoStab S j) (hχ : NX.ChiInLL0 S j) (hst' hχ') (g : G0g D.nd) (x : NX.Fm S i j b) :
-    fmMove h S hi j b (NX.actG S i j b hst hχ g x) =
-      NX.actG (h.ratDat S) i' j b hst' hχ' (h.grpEquiv g) (fmMove h S hi j b x) :=
-  fmOf_actG _ _ hst hχ hst' hχ' g _ (congrArg S.eG.symm (h.grpEquiv.symm_apply_apply g)) x
 
 end Move
 

@@ -360,21 +360,6 @@ def MExists : Prop :=
     ∃ Mb : MBlk A L, ∃ hb : Formalism.L2.SG.AdBridge.AdBridgeIso A.I,
       (mk A L P Rf Xu Bu Pi Mu Wb Mb).MeasTie hb
 
-theorem settingExists_of_steps (hC : CoefWeightedLoc) (h1 : InstExists D) (h2 : LatExists D) (h3 : PsiExists D)
-    (h4 : RefExists D) (h5 : XuExists D) (h6 : BunExists D) (h7 : PiExists D) (h8 : MuExists D)
-    (h9 : WExists D) (h10 : MExists D) : ConcreteSettingExists D := by
-  intro hG
-  obtain ⟨A⟩ := h1
-  obtain ⟨L⟩ := h2
-  obtain ⟨P⟩ := h3 A
-  obtain ⟨Rf⟩ := h4 A L
-  obtain ⟨Xu⟩ := h5 A L Rf
-  obtain ⟨Bu⟩ := h6 hC hG A L P Rf
-  obtain ⟨Pi⟩ := h7 A L
-  obtain ⟨Mu⟩ := h8 A L
-  obtain ⟨Wb, hW⟩ := h9 hG A L P Rf Xu Bu Pi Mu
-  obtain ⟨Mb, hb, hM⟩ := h10 A L P Rf Xu Bu Pi Mu Wb
-  exact ⟨mk A L P Rf Xu Bu Pi Mu Wb Mb, hb, hM, hW Mb, Bu.ph_int⟩
 
 end Formalism.L2.SG.SplitPrimeNormLemmas
 
@@ -454,14 +439,6 @@ def GapBigOfGapHyp (D : D7) : Prop :=
 
 def WFromLoc (D : D7) : Prop := BesselNVGap → CoefWeightedLoc → WlocExists → GapBigOfGapHyp D → WExists D
 
-theorem wExists_of_loc (D : D7) (hF : WFromLoc D) (hB : BesselNVGap) (hC : CoefWeightedLoc) (hW : WlocExists)
-    (hG : GapBigOfGapHyp D) : WExists D :=
-  hF hB hC hW hG
 
-theorem settingExists_of_inputs (D : D7) (hB : BesselNVGap) (hC : CoefWeightedLoc) (hW : WlocExists)
-    (hG : GapBigOfGapHyp D) (hF : WFromLoc D) (h1 : InstExists D) (h2 : LatExists D) (h3 : PsiExists D)
-    (h4 : RefExists D) (h5 : XuExists D) (h6 : BunExists D) (h7 : PiExists D) (h8 : MuExists D)
-    (h10 : MExists D) : Formalism.L2.SG.ConcreteSettingExists.ConcreteSettingExists D :=
-  settingExists_of_steps D hC h1 h2 h3 h4 h5 h6 h7 h8 (wExists_of_loc D hF hB hC hW hG) h10
 
 end Formalism.L2.SG.SplitPrimeNormLemmas

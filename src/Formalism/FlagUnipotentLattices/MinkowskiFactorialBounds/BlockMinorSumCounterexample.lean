@@ -31,17 +31,6 @@ theorem prod_max_inv_le_prod_max' : Formalism.HermitianLatticeCounting.Expansion
   · exact Finset.prod_nonneg fun v _ => by positivity
   · exact h1
 
-theorem moment_recursion_iterate : Formalism.HermitianLatticeCounting.ExpansionTerms.MomentRecursionIterate := by
-  intro P ι step d MM c q0 J hd h0 hs q
-  induction q with
-  | zero => intro μ j _ _; simpa using h0 μ j
-  | succ q ih =>
-    intro μ j h1 h2
-    calc MM (q+1) μ j ≤ c * ⨆ s, MM q (step μ s) (j+2) := hs q μ j (by omega) (by omega)
-      _ ≤ c * c^q := by
-          gcongr
-          exact iSup_le fun s => ih _ _ (by have := hd μ s; omega) (by omega)
-      _ = c^(q+1) := by rw [pow_succ, mul_comm]
 
 end G0
 
@@ -988,67 +977,11 @@ end G7
 section G8
 open Finset Real MeasureTheory Formalism.HermitianLatticeCounting.ExpansionTerms
 
-lemma sum_fin_succ_cons {ι M : Type} [Fintype ι] [AddCommMonoid M] (q : ℕ) (F : (Fin (q + 1) → ι) → M) :
-    ∑ σ, F σ = ∑ τ : Fin q → ι, ∑ i : ι, F (Fin.cons i τ) := by
-  rw [← (Fintype.sum_equiv (Fin.consEquiv (fun _ : Fin (q + 1) => ι)) (fun p => F (Fin.cons p.1 p.2)) F
-    (fun _ => rfl)), Fintype.sum_prod_type_right]
 
-lemma foldr_ofFn_cons {W ι : Type} (Eop : ι → W → W) (q : ℕ) (i : ι) (τ : Fin q → ι) (w : W) :
-    (List.ofFn (Fin.cons i τ : Fin (q + 1) → ι)).foldr Eop w = Eop i ((List.ofFn τ).foldr Eop w) := by
-  simp [List.ofFn_succ]
 
-lemma iterate_sum_lower_bound {R W ι : Type} [CommSemiring R] [PartialOrder R] [IsOrderedRing R] [Fintype ι]
-    (Eop : ι → W → W) (Φ : W → R) (κ : R) (hκ : 0 ≤ κ) (h : ∀ w, κ * Φ w ≤ ∑ i, Φ (Eop i w))
-    (q : ℕ) (w : W) : κ ^ q * Φ w ≤ ∑ σ : Fin q → ι, Φ ((List.ofFn σ).foldr Eop w) := by
-  induction q with
-  | zero => simp
-  | succ q ih =>
-    rw [sum_fin_succ_cons]
-    calc κ ^ (q + 1) * Φ w = κ * (κ ^ q * Φ w) := by ring
-      _ ≤ κ * ∑ τ : Fin q → ι, Φ ((List.ofFn τ).foldr Eop w) := mul_le_mul_of_nonneg_left ih hκ
-      _ = ∑ τ : Fin q → ι, κ * Φ ((List.ofFn τ).foldr Eop w) := Finset.mul_sum _ _ _
-      _ ≤ ∑ τ : Fin q → ι, ∑ i, Φ (Eop i ((List.ofFn τ).foldr Eop w)) :=
-          Finset.sum_le_sum fun τ _ => h _
-      _ = _ := by simp only [foldr_ofFn_cons]
 
-lemma foldr_mem_filtration {W ι : Type} (Eop : ι → W → W) (Fil : ℕ → Set W)
-    (hF : ∀ i j w, w ∈ Fil j → Eop i w ∈ Fil (j + 2)) (j : ℕ) (w : W) (hw : w ∈ Fil j) (l : List ι) :
-    l.foldr Eop w ∈ Fil (j + 2 * l.length) := by
-  induction l with
-  | nil => simpa using hw
-  | cons i l ih =>
-    have := hF i _ _ ih
-    simpa [List.foldr_cons, List.length_cons, mul_add, add_assoc] using this
 
-lemma filtered_iterate_norm_bound {R W ι : Type} [CommSemiring R] [PartialOrder R] [IsOrderedRing R] [Fintype ι]
-    (Eop : ι → W → W) (Nw : W → R) (Fil : ℕ → Set W) (c : ℕ → R) (hc : ∀ j, 0 ≤ c j)
-    (hF : ∀ i j w, w ∈ Fil j → Eop i w ∈ Fil (j + 2))
-    (hN : ∀ j w, w ∈ Fil j → ∑ i, Nw (Eop i w) ≤ c j * Nw w) (q j : ℕ) (w : W) (hw : w ∈ Fil j) :
-    ∑ σ : Fin q → ι, Nw ((List.ofFn σ).foldr Eop w) ≤ (∏ i ∈ range q, c (j + 2 * i)) * Nw w := by
-  induction q with
-  | zero => simp
-  | succ q ih =>
-    rw [sum_fin_succ_cons]
-    calc ∑ τ : Fin q → ι, ∑ i, Nw ((List.ofFn (Fin.cons i τ : Fin (q + 1) → ι)).foldr Eop w)
-        = ∑ τ : Fin q → ι, ∑ i, Nw (Eop i ((List.ofFn τ).foldr Eop w)) := by simp only [foldr_ofFn_cons]
-      _ ≤ ∑ τ : Fin q → ι, c (j + 2 * q) * Nw ((List.ofFn τ).foldr Eop w) := by
-          refine Finset.sum_le_sum fun τ _ => hN _ _ ?_
-          have := foldr_mem_filtration Eop Fil hF j w hw (List.ofFn τ)
-          simpa using this
-      _ = c (j + 2 * q) * ∑ τ : Fin q → ι, Nw ((List.ofFn τ).foldr Eop w) := (Finset.mul_sum _ _ _).symm
-      _ ≤ c (j + 2 * q) * ((∏ i ∈ range q, c (j + 2 * i)) * Nw w) := mul_le_mul_of_nonneg_left ih (hc _)
-      _ = (∏ i ∈ range (q + 1), c (j + 2 * i)) * Nw w := by rw [Finset.prod_range_succ]; ring
 
-theorem abstract_iteration_theorem_holds : Formalism.HermitianLatticeCounting.ExpansionTerms.SuperharmonicMomentBound := by
-  intro Ω W ι _ _ ν Eop Ph κ Nw Fil c hm hI hk hF hN q j w hw
-  calc ∫⁻ g, κ g ^ q * Ph w g ∂ν
-      ≤ ∫⁻ g, ∑ σ : Fin q → ι, Ph ((List.ofFn σ).foldr Eop w) g ∂ν :=
-        lintegral_mono fun g => iterate_sum_lower_bound Eop (fun w => Ph w g) (κ g) zero_le (fun w => hk w g) q w
-    _ = ∑ σ : Fin q → ι, Nw ((List.ofFn σ).foldr Eop w) := by
-        rw [lintegral_finsetSum _ (fun σ _ => hm _)]
-        exact Finset.sum_congr rfl fun σ _ => hI _
-    _ ≤ (∏ i ∈ range q, c (j + 2 * i)) * Nw w :=
-        filtered_iterate_norm_bound Eop Nw Fil c (fun _ => zero_le) hF hN q j w hw
 
 noncomputable def lOneNorm {P : Type} (a : P →₀ ℂ) : ℝ := a.sum fun _ c => ‖c‖
 

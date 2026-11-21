@@ -1,12 +1,288 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GrNormPush
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsFrameComposeRingHomBaseChangeStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TransitionUniqueAndPointsStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUnitSectionOfLocalValuesStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsTangentOfUniqueIntegralLiftStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TangentFamilyOfUniqueLiftPrimeStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FrameCombinationCoeffUniqueStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TransitionUniqueAndPoints
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUnitSectionOfLocalValues
+import Development.AbelianVarietyTheory.Statements.HeightBoundStatement.HTBoundSt
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LineModel
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFrPtOfEigFrame
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IntOIsLocalRing
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LatDRSubsetLatHT
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsBlockMetricDiagForm
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FrameCombinationCoeffUnique
 
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.Geo GlobalTheory.Toroidal GlobalTheory.ShFam GlobalTheory.ShFam.Pad GlobalTheory.LocM GlobalTheory.TrueGeo GlobalTheory.Cartier
+open Formalism.MainNotions.DIV.Cons (intO)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.transition_unique_and_points : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (Xo : ∀ l : Level H, Moduli Dw l) (p : ℕ) (W : ValuationSubring ℂ) (Y : LocalSystem Xo p W) (i i₂ : Idx H p) (τ τ' : (Y i₂).X ⟶ (Y i).X) (mu : SABMap (Y i₂).t (Y i).t τ) (mu' : SABMap (Y i₂).t (Y i).t τ'), i.c.F ≤ i₂.c.F → IsTrans i i₂ τ mu → IsTrans i i₂ τ' mu' → τ = τ' ∧ ∀ (k : Type) [Field k] (y : Sp k ⟶ (Xo i₂.l).XF i₂.c) (T : Scheme.{0}) (s : T ⟶ Sp k) (g : T ⟶ (Y i₂).t.G.left), g ≫ (Y i₂).t.G.hom = s ≫ y ≫ (Y i₂).j → g ≫ mu.φ = g ≫ mu'.φ := by
+  first | exact @GlobalTheory.TransUniq.trans_unique | exact GlobalTheory.TransUniq.trans_unique | (intros; apply GlobalTheory.TransUniq.trans_unique <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.Geo GlobalTheory.Toroidal GlobalTheory.ShFam GlobalTheory.ShFam.Pad GlobalTheory.LocM GlobalTheory.TrueGeo GlobalTheory.Cartier
+open Formalism.MainNotions.DIV.Cons (intO)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_unit_section_of_local_values : ∀ (X : Scheme.{0}) [IsReduced X] (U : X.Opens) (P : ∀ (k : Type) [Field k], (Sp k ⟶ X) → k → Prop), (∀ (k : Type) [Field k] (w : Sp k ⟶ X) (a a' : k), ⊤ ≤ w ⁻¹ᵁ U → P k w a → P k w a' → a = a') → (∀ (k : Type) [Field k] (w : Sp k ⟶ X), ⊤ ≤ w ⁻¹ᵁ U → ¬ P k w 0) → (∀ z ∈ U, ∃ (V : X.Opens) (s : Γ(X, V)), z ∈ V ∧ V ≤ U ∧ ∀ (k : Type) [Field k] (w : Sp k ⟶ X), ⊤ ≤ w ⁻¹ᵁ V → P k w (valF w V s)) → ∃ s : Γ(X, U)ˣ, ∀ (k : Type) [Field k] (w : Sp k ⟶ X), ⊤ ≤ w ⁻¹ᵁ U → P k w (valF w U s.val) := by
+  first | exact @GlobalTheory.FieldPtGlue.exists_unit_of_locally | exact GlobalTheory.FieldPtGlue.exists_unit_of_locally | (intros; apply GlobalTheory.FieldPtGlue.exists_unit_of_locally <;> assumption)
+end
+
+section
+noncomputable section
+
+open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.Geo GlobalTheory.Toroidal GlobalTheory.ShFam GlobalTheory.ShFam.Pad GlobalTheory.LocM GlobalTheory.TrueGeo GlobalTheory.Cartier
+open Formalism.MainNotions.DIV.Cons (intO)
+
+namespace GlobalTheory.ShFam.LatPush
+
+open MonObj
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E}
+  {X X' : Scheme.{0}} {t : SAB H X} {t' : SAB H X'} {f : X' ⟶ X} (mu : SABMap t' t f)
+
+theorem exists_ptEquiv {T : Scheme.{0}} (q : T ⟶ X') (q' : T ⟶ X) (h : q ≫ f = q') :
+    ∃ e : (Over.mk q ⟶ t'.G) ≃* (Over.mk q' ⟶ t.G), ∀ g, (e g).left = g.left ≫ mu.φ := by
+  subst h
+  refine ⟨MulEquiv.ofBijective (pushHom mu.cart (Over.mk q)) ⟨fun a b hab => ?_, fun a => ?_⟩, fun g => rfl⟩
+  · exact Over.OverMorphism.ext (mu.cart.1.hom_ext (congrArg (fun z => z.left) hab)
+      ((Over.w a).trans (Over.w b).symm))
+  · obtain ⟨w, h1, h2⟩ := OpenReg.exists_lift mu q a.left (Over.w a)
+    exact ⟨Over.homMk w h1, Over.OverMorphism.ext h2⟩
+
+theorem spMap_alg {O B B' : Type} [CommRing O] [CommRing B] [CommRing B'] [Algebra O B] [Algebra O B']
+    (φ : B →ₐ[O] B') : spMap φ.toRingHom ≫ spMap (algebraMap O B) = spMap (algebraMap O B') := by
+  rw [OpenReg.spMap_comp]
+  congr 1
+  exact RingHom.ext fun a => φ.commutes a
+
+theorem dualMap_alg {O O' : Type} [CommRing O] [CommRing O'] (φ : O →+* O') :
+    spMap (dualMap φ) ≫ spMap (algebraMap O (DualNumber O)) =
+      spMap (algebraMap O' (DualNumber O')) ≫ spMap φ := by
+  rw [OpenReg.spMap_comp, OpenReg.spMap_comp, GlobalTheory.Frames.FramedBaseChange.dualMap_comp_alg]
+
+theorem dlogDvd_iff {O : Type} [CommRing O] (x : Sp O ⟶ X') (p m : ℕ) (v : Sp (DualNumber O) ⟶ t'.G.left)
+    (hv : v ≫ t'.G.hom = spMap (algebraMap O (DualNumber O)) ≫ x) :
+    DlogDvd t' x p m v ↔ DlogDvd t (x ≫ f) p m (v ≫ mu.φ) := by
+  choose e he using fun (B : Type) [CommRing B] [Algebra O B] =>
+    exists_ptEquiv mu (spMap (algebraMap O B) ≫ x) (spMap (algebraMap O B) ≫ x ≫ f) (Category.assoc _ _ _)
+  constructor
+  · intro h n c g hg
+    let c' : TorsChar t' x (p ^ n) :=
+      { χ := fun B _ _ _ g => c.χ B (e B g)
+        mul := fun B _ _ _ g g' h1 h2 => by
+          rw [map_mul]
+          exact c.mul B _ _ (by rw [← map_pow, h1, map_one]) (by rw [← map_pow, h2, map_one])
+        nat := fun B B' _ _ _ _ _ _ φ g g' h1 h2 =>
+          c.nat B B' φ _ _ (by rw [← map_pow, h1, map_one]) (by rw [he, he, h2, Category.assoc]) }
+    obtain ⟨g', rfl⟩ := (e _).surjective g
+    refine h n c' g' (mu.cart.1.hom_ext ?_ ?_)
+    · rw [← he, hg, Category.assoc]
+    · rw [Over.w, Category.assoc, hv, ← Category.assoc, OpenReg.spMap_comp]
+      show spMap _ ≫ x = spMap _ ≫ x
+      congr 2
+      ext a <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl']
+  · intro h n c g hg
+    let c' : TorsChar t (x ≫ f) (p ^ n) :=
+      { χ := fun B _ _ _ g => c.χ B ((e B).symm g)
+        mul := fun B _ _ _ g g' h1 h2 => by
+          rw [map_mul]
+          exact c.mul B _ _ (by rw [← map_pow, h1, map_one]) (by rw [← map_pow, h2, map_one])
+        nat := fun B B' _ _ _ _ _ _ φ g g' h1 h2 =>
+          c.nat B B' φ _ _ (by rw [← map_pow, h1, map_one]) (mu.cart.1.hom_ext
+            (by rw [← he, Category.assoc, ← he, MulEquiv.apply_symm_apply, MulEquiv.apply_symm_apply, h2])
+            (by
+              rw [Over.w, Category.assoc, Over.w]
+              show spMap _ ≫ x = spMap _ ≫ spMap _ ≫ x
+              rw [← Category.assoc, spMap_alg])) }
+    have := h n c' (e _ g) (by rw [he, hg, Category.assoc])
+    simpa only [c', MulEquiv.symm_apply_apply] using this
+
+theorem lat_push : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (X X' : Scheme.{0}) (t : SAB H X) (t' : SAB H X') (f : X' ⟶ X) (mu : SABMap t' t f) (C : Type) [NontriviallyNormedField C] [IsUltrametricDist C] (p : ℕ) (b : Bool) (xO : Sp ↥(intO C) ⟶ X'), (∀ y : Sp ↥(intO C) ⟶ X, spMap (intO C).subtype ≫ y = spMap (intO C).subtype ≫ xO ≫ f → y = xO ≫ f) → ∀ v, IsTanAtG t' (spMap (intO C).subtype ≫ xO) v → (v ∈ lat t' p (spMap (intO C).subtype ≫ xO) b ↔ v ≫ mu.φ ∈ lat t p (spMap (intO C).subtype ≫ xO ≫ f) b) := by
+  intro E _ _ _ H X X' t t' f mu C _ _ p b xO hu v hv
+  cases b
+  · constructor
+    · rintro ⟨y, hy, vO, h1, h2⟩
+      exact ⟨y ≫ f, by rw [← Category.assoc, hy, Category.assoc], vO ≫ mu.φ,
+        (OpenReg.tan_iff mu rfl h1.1).2 h1, by rw [← Category.assoc, h2]⟩
+    · rintro ⟨y, hy, vO, h1, h2⟩
+      obtain rfl := hu y hy
+      obtain ⟨w, a1, rfl⟩ := OpenReg.exists_lift mu (spMap (algebraMap _ (DualNumber ↥(intO C))) ≫ xO) vO
+        (by rw [h1.1, Category.assoc])
+      refine ⟨xO, rfl, w, (OpenReg.tan_iff mu rfl a1).1 h1, mu.cart.1.hom_ext ?_ ?_⟩
+      · rw [Category.assoc, h2]
+      · rw [Category.assoc, a1, hv.1, ← Category.assoc, dualMap_alg, Category.assoc]
+  · constructor
+    · rintro ⟨y, hy, m, vO, h1, h2, h3⟩
+      exact ⟨y ≫ f, by rw [← Category.assoc, hy, Category.assoc], m, vO ≫ mu.φ,
+        (OpenReg.tan_iff mu rfl h1.1).2 h1, by rw [← Category.assoc, h2, Category.assoc],
+        (dlogDvd_iff mu y p m vO h1.1).1 h3⟩
+    · rintro ⟨y, hy, m, vO, h1, h2, h3⟩
+      obtain rfl := hu y hy
+      obtain ⟨w, a1, rfl⟩ := OpenReg.exists_lift mu (spMap (algebraMap _ (DualNumber ↥(intO C))) ≫ xO) vO
+        (by rw [h1.1, Category.assoc])
+      refine ⟨xO, rfl, m, w, (OpenReg.tan_iff mu rfl a1).1 h1, mu.cart.1.hom_ext ?_ ?_,
+        (dlogDvd_iff mu xO p m w a1).2 h3⟩
+      · rw [Category.assoc, h2, Category.assoc]
+      · rw [Category.assoc, a1, Category.assoc, hv.1, ← Category.assoc, dualMap_alg, ← Category.assoc,
+          ← Category.assoc, OpenReg.epsMul_over]
+
+end GlobalTheory.ShFam.LatPush
+end
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.Geo GlobalTheory.Toroidal GlobalTheory.ShFam GlobalTheory.ShFam.Pad GlobalTheory.LocM GlobalTheory.TrueGeo GlobalTheory.Cartier
+open Formalism.MainNotions.DIV.Cons (intO)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isTangent_of_unique_integral_lift : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (X X' : Scheme.{0}) (t : SAB H X) (t' : SAB H X') (f : X' ⟶ X) (mu : SABMap t' t f) (C : Type) [NontriviallyNormedField C] [IsUltrametricDist C] (p : ℕ) (b : Bool) (xO : Sp ↥(intO C) ⟶ X'), (∀ y : Sp ↥(intO C) ⟶ X, spMap (intO C).subtype ≫ y = spMap (intO C).subtype ≫ xO ≫ f → y = xO ≫ f) → ∀ v, IsTanAtG t' (spMap (intO C).subtype ≫ xO) v → (v ∈ lat t' p (spMap (intO C).subtype ≫ xO) b ↔ v ≫ mu.φ ∈ lat t p (spMap (intO C).subtype ≫ xO ≫ f) b) := by
+  first | exact @GlobalTheory.ShFam.LatPush.lat_push | exact GlobalTheory.ShFam.LatPush.lat_push | (intros; apply GlobalTheory.ShFam.LatPush.lat_push <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.Geo GlobalTheory.Toroidal GlobalTheory.ShFam GlobalTheory.ShFam.Pad GlobalTheory.LocM GlobalTheory.TrueGeo GlobalTheory.Cartier
+open Formalism.MainNotions.DIV.Cons (intO)
+
+namespace GlobalTheory.GrNormPos
+
+theorem sInf_pos {C M : Type} [NontriviallyNormedField C] [AddCommGroup M] [Module C M] {g m : ℕ} (V : Fin g → M)
+    (U : Fin m → M) (hU : LinearIndependent C U) (L : Set M) (a : C) (ha : a ≠ 0)
+    (h1 : ∀ w, ∃ c : Fin g → C, w = ∑ j, c j • V j)
+    (h2 : ∀ c : Fin g → C, (∀ j, ‖c j‖ ≤ 1) → ∑ j, c j • V j ∈ L)
+    (h3 : ∀ w ∈ L, ∃ c : Fin g → C, (∀ j, ‖c j‖ ≤ 1) ∧ a • w = ∑ j, c j • V j) (i : Fin m) :
+    0 < sInf {r | ∃ cf : Fin m → C, cf i ≠ 0 ∧ (∀ k, i < k → cf k = 0) ∧ (∑ k, cf k • U k ∈ L) ∧
+      r = ‖cf i‖⁻¹} := by
+  classical
+  obtain ⟨l, hl⟩ := LinearMap.exists_leftInverse_of_injective (Fintype.linearCombination C U)
+    (LinearMap.ker_eq_bot.2 (linearIndependent_iff_injective_fintypeLinearCombination.1 hU))
+  have hl' : ∀ cf : Fin m → C, l (∑ k, cf k • U k) = cf := fun cf => by
+    have := LinearMap.congr_fun hl cf
+    rwa [LinearMap.comp_apply, Fintype.linearCombination_apply] at this
+  set B : ℝ := ∑ j, ‖l (V j) i‖ + 1 with hB
+  have hB0 : 0 < B := by positivity
+  have ha0 : 0 < ‖a‖ := norm_pos_iff.2 ha
+  refine lt_of_lt_of_le (div_pos ha0 hB0) (le_csInf ?_ ?_)
+  · obtain ⟨c, hc⟩ := h1 (U i)
+    obtain ⟨e, he⟩ := NormedField.exists_lt_norm C ‖c‖
+    have he0 : 0 < ‖e‖ := (norm_nonneg c).trans_lt he
+    have he1 : e ≠ 0 := norm_pos_iff.1 he0
+    refine ⟨_, Pi.single i e⁻¹, by simpa using he1, fun k hk => Pi.single_eq_of_ne hk.ne' _, ?_, rfl⟩
+    have : ∑ k, (Pi.single i e⁻¹ : Fin m → C) k • U k = ∑ j, (e⁻¹ * c j) • V j := by
+      rw [Finset.sum_eq_single i (fun k _ hk => by simp [Pi.single_eq_of_ne hk]) (by simp), Pi.single_eq_same, hc,
+        Finset.smul_sum]
+      exact Finset.sum_congr rfl fun j _ => smul_smul _ _ _
+    rw [this]
+    refine h2 _ fun j => ?_
+    rw [norm_mul, norm_inv, inv_mul_le_iff₀ he0, mul_one]
+    exact (norm_le_pi_norm c j).trans he.le
+  · rintro r ⟨cf, h0, -, hL, rfl⟩
+    obtain ⟨c, hc, e⟩ := h3 _ hL
+    have e2 : a * cf i = ∑ j, c j * l (V j) i := by
+      have := congrArg (fun z => l z i) e
+      simpa [map_smul, hl', map_sum, Finset.sum_apply] using this
+    have e3 : ‖a‖ * ‖cf i‖ ≤ B := by
+      rw [← norm_mul, e2]
+      refine (norm_sum_le _ _).trans ((Finset.sum_le_sum fun j _ => ?_).trans (le_add_of_nonneg_right zero_le_one))
+      rw [norm_mul]
+      exact mul_le_of_le_one_left (norm_nonneg _) (hc j)
+    have h0' : 0 < ‖cf i‖ := norm_pos_iff.2 h0
+    rw [div_le_iff₀ hB0, le_inv_mul_iff₀ h0', mul_comm]
+    exact e3
+
+open GlobalTheory.LieMet ReciprocityTheory.ChartRestriction.G.PullbackSections MonObj
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+section
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {X : Scheme.{0}}
+  {t : SAB H X} {S : Type} [CommRing S] {x : Sp S ⟶ X}
+
+theorem isComb_iff_eq {m : ℕ} {u : Fin m → (Sp (DualNumber S) ⟶ t.G.left)} (hu : ∀ i, IsTanAtG t x (u i))
+    (a : Fin m → S) (w : Sp (DualNumber S) ⟶ t.G.left) :
+    IsCombAtG t x u a w ↔ w = (tv (∑ i, a i • tanOf (hu i))).left := by
+  have h0 : IsCombAtG t x u a (tv (∑ i, a i • tanOf (hu i))).left := (isComb_iff (fun i => tanOf (hu i)) a _).2 rfl
+  refine ⟨fun h => ?_, fun h => h ▸ h0⟩
+  obtain ⟨v, hv, e⟩ := h
+  obtain ⟨v', hv', e'⟩ := h0
+  have : v = v' := funext fun i => Over.OverMorphism.ext ((hv i).trans (hv' i).symm)
+  rw [← e, ← e', this]
+
+end
+
+theorem grNorm_pos : HTBoundSt → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (X : Scheme.{0}) (t : SAB H X) (p : ℕ) (C : Formalism.MainNotions.DIV.Cons.SCF p) (b : Bool) (xO : Sp ↥(intO ↥C.S) ⟶ X), p.Prime → (∀ y : Sp ↥(intO ↥C.S) ⟶ X, spMap (intO ↥C.S).subtype ≫ y = spMap (intO ↥C.S).subtype ≫ xO → y = xO) → ∀ (m : ℕ) (u : Fin m → (Sp (DualNumber ↥C.S) ⟶ t.G.left)), (∀ i, IsTanAtG t (spMap (intO ↥C.S).subtype ≫ xO) (u i)) → (∀ cf cf' w, IsCombAtG t (spMap (intO ↥C.S).subtype ≫ xO) u cf w → IsCombAtG t (spMap (intO ↥C.S).subtype ≫ xO) u cf' w → cf = cf') → ∀ i, 0 < GlobalTheory.ShFam.Pad.grNorm t (spMap (intO ↥C.S).subtype ≫ xO) (lat t p (spMap (intO ↥C.S).subtype ≫ xO) b) u i := by
+  intro hHT E _ _ _ H X t p C b xO hp huniq m u hu hinj i
+  haveI : Fact p.Prime := Fact.mk hp
+  obtain ⟨g, v, hv, hb, hL⟩ := GlobalTheory.LatDRFree.latDR_free E H X t C.S xO huniq
+  have hp0 : (0 : ℝ) < p := Nat.cast_pos.2 hp.pos
+  have hp2 : (2 : ℝ) ≤ p := by exact_mod_cast hp.two_le
+  have hpa : ‖(p : C.S)‖ ≤ (p : ℝ) ^ (-(1 / ((p : ℝ) - 1))) := by
+    rw [C.norm_p, ← Real.rpow_neg_one]
+    refine Real.rpow_le_rpow_of_exponent_le (by linarith) (neg_le_neg ?_)
+    rw [div_le_one (by linarith)]
+    linarith
+  have hsub : latDR t (spMap (intO ↥C.S).subtype ≫ xO) ⊆ lat t p (spMap (intO ↥C.S).subtype ≫ xO) b := by
+    cases b
+    · exact subset_rfl
+    · exact latDR_subset_latHT E H X t C.S p _
+  have hsup : lat t p (spMap (intO ↥C.S).subtype ≫ xO) b ⊆ latHT t p (spMap (intO ↥C.S).subtype ≫ xO) := by
+    cases b
+    · exact latDR_subset_latHT E H X t C.S p _
+    · exact subset_rfl
+  have h1 : ∀ w : TanM (spMap (intO ↥C.S).subtype ≫ xO) t.G, ∃ c : Fin g → C.S, w = ∑ j, c j • tanOf (hv j) :=
+    fun w => by
+      obtain ⟨c, hc, -⟩ := hb _ (isTan_tv w)
+      exact ⟨c, tan_ext ((isComb_iff_eq hv c _).1 hc)⟩
+  have key := sInf_pos (fun j => tanOf (hv j)) (fun k => tanOf (hu k)) ?_
+    {w | (tv w).left ∈ lat t p (spMap (intO ↥C.S).subtype ≫ xO) b} (p : C.S) (Nat.cast_ne_zero.2 hp.ne_zero) h1
+    ?_ ?_ i
+  · unfold GlobalTheory.ShFam.Pad.grNorm
+    refine key.trans_eq (congrArg sInf (Set.ext fun r => exists_congr fun cf => and_congr_right fun _ =>
+      and_congr_right fun _ => and_congr_left fun _ => Iff.symm ?_))
+    refine ⟨?_, fun h => ⟨_, h, (isComb_iff_eq hu cf _).2 rfl⟩⟩
+    rintro ⟨w, hw, hc⟩
+    rw [(isComb_iff_eq hu cf _).1 hc] at hw
+    exact hw
+  · refine Fintype.linearIndependent_iff.2 fun c hc k => ?_
+    have := hinj c 0 _ ((isComb_iff_eq hu c _).2 rfl) ((isComb_iff_eq hu 0 _).2 (by rw [hc]; simp))
+    exact congrFun this k
+  · intro c hc
+    exact hsub ((hL c _ ((isComb_iff_eq hv c _).2 rfl)).2 hc)
+  · intro w hw
+    have h := hHT E H X t p C.S C.norm_p xO huniq _ (hsup hw) (p : C.S) hpa
+    obtain ⟨c, hc⟩ := h1 ((p : C.S) • w)
+    refine ⟨c, (hL c _ ((isComb_iff_eq hv c _).2 rfl)).1 ?_, hc⟩
+    rw [← hc]
+    exact h
+
+end GlobalTheory.GrNormPos
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.Geo GlobalTheory.Toroidal GlobalTheory.ShFam GlobalTheory.ShFam.Pad GlobalTheory.LocM GlobalTheory.TrueGeo GlobalTheory.Cartier
+open Formalism.MainNotions.DIV.Cons (intO)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tangent_family_of_unique_lift_prime : HTBoundSt → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (X : Scheme.{0}) (t : SAB H X) (p : ℕ) (C : Formalism.MainNotions.DIV.Cons.SCF p) (b : Bool) (xO : Sp ↥(intO ↥C.S) ⟶ X), p.Prime → (∀ y : Sp ↥(intO ↥C.S) ⟶ X, spMap (intO ↥C.S).subtype ≫ y = spMap (intO ↥C.S).subtype ≫ xO → y = xO) → ∀ (m : ℕ) (u : Fin m → (Sp (DualNumber ↥C.S) ⟶ t.G.left)), (∀ i, IsTanAtG t (spMap (intO ↥C.S).subtype ≫ xO) (u i)) → (∀ cf cf' w, IsCombAtG t (spMap (intO ↥C.S).subtype ≫ xO) u cf w → IsCombAtG t (spMap (intO ↥C.S).subtype ≫ xO) u cf' w → cf = cf') → ∀ i, 0 < GlobalTheory.ShFam.Pad.grNorm t (spMap (intO ↥C.S).subtype ≫ xO) (lat t p (spMap (intO ↥C.S).subtype ≫ xO) b) u i := by
+  first | exact @GlobalTheory.GrNormPos.grNorm_pos | exact GlobalTheory.GrNormPos.grNorm_pos | (intros; apply GlobalTheory.GrNormPos.grNorm_pos <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.Geo GlobalTheory.Toroidal GlobalTheory.ShFam GlobalTheory.ShFam.Pad GlobalTheory.LocM GlobalTheory.TrueGeo GlobalTheory.Cartier
+open Formalism.MainNotions.DIV.Cons (intO)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frame_combination_coeff_unique : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (c : Coeff l) (X : Scheme.{0}) (t : SAB H X) (k : Type) [Field k] (f : c.F →+* k) (x : Sp k ⟶ X) (u : Vecs Dw t k), GlobalTheory.LocM.IsFrame t f x u → (∀ cf cf' w, IsCombAtG t x (fun i : Fin (letters Dw).length => u ((letters Dw).get i).1 ((letters Dw).get i).2) cf w → IsCombAtG t x (fun i : Fin (letters Dw).length => u ((letters Dw).get i).1 ((letters Dw).get i).2) cf' w → cf = cf') ∧ ∀ (j : Fin (letters Dw).length) (cf : Fin (Dw.mult ((letters Dw).get j).1) → k) w, (∀ m, ((letters Dw).get j).2 < m → cf m = 0) → IsCombAtG t x (u ((letters Dw).get j).1) cf w → ∃ cg : Fin (letters Dw).length → k, (∀ m, j < m → cg m = 0) ∧ cg j = cf ((letters Dw).get j).2 ∧ IsCombAtG t x (fun i : Fin (letters Dw).length => u ((letters Dw).get i).1 ((letters Dw).get i).2) cg w := by
+  first | exact @GlobalTheory.Proof.frame_combination_coeff_unique.concat_frame | exact GlobalTheory.Proof.frame_combination_coeff_unique.concat_frame | (intros; apply GlobalTheory.Proof.frame_combination_coeff_unique.concat_frame <;> assumption)
+end
+
+section
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain
@@ -517,3 +793,5 @@ theorem lineModel_pull : HTBoundSt → ∀ (E : Type) [Field E] [NumberField E] 
   exact nonempty_pull hf hT hty M hB hp hx
 
 end GlobalTheory.ShFam.Pad.Pull
+end
+end

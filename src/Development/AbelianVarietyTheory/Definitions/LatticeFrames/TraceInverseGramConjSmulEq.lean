@@ -110,69 +110,11 @@ theorem iter_smul {ψ : AddChar (AF D.host.F) ℂ} {T : HSp D} {σ : ℕ} {B₁ 
     rintro q z ⟨f₁, f₂, h1, h2⟩
     exact ⟨a • f₁, a • f₂, h1.smul a, fun h₁ => ⟨(h2 h₁).1.smul a, fun h₂ => ih _ _ ((h2 h₁).2 h₂)⟩⟩
 
-theorem chain_inhabited (D : D7) : ∃ (ψ : AddChar (AF D.host.F) ℂ) (T : HSp D) (B : BesLev D 1) (c : Chain ψ T 1 B),
-    0 < B.A.rank ∧ 0 < T.rank ∧ ∃ Φ : c.Data, c.IsTheta Φ ∧ GlobalTheory.Unf.Inhab.AllNonzero c Φ := by
-  obtain ⟨⟨ψ, hψ⟩, h⟩ := GlobalTheory.Unf.Inhab.exists_chain D
-  obtain ⟨T, B, c, h1, h2, -, h3⟩ := (h ψ hψ).1
-  exact ⟨ψ, T, B, c, h1, h2, h3⟩
 
-theorem jac_link {ψ : AddChar (AF D.host.F) ℂ} (hψ : ∀ a, ψ (-a) = star (ψ a)) (h : IsLineVec L' ζ') {W W₀ : HSp D} {σ : ℕ}
-    (d : HypDec W W₀ σ) (n : GA D W) (f : WO B.L W₀ → ℂ) :
-    star (jacS ψ d L' (zEll L' σ ζ') n (fun w => star (f (l.κ W₀ w))) 0) = jacT ψ d B.L (yZero B.L σ B.ζ) n f 0 := by
-  simp only [jacS, jacT, heisO, Pi.smul_apply, smul_eq_mul, symplOH_zero_left, AddChar.map_zero_eq_one, one_mul, zero_add]
-  rw [cenT_eq l h, ptT_eq l, hψ, star_mul', star_star]
 
-theorem semiMeas_ne_zero {G H : Type} [Group G] [Group H] [MeasurableSpace G] [MeasurableSpace H] [MeasurableMul₂ G]
-    (N : Subgroup G) (s : H →* G) (hs : Measurable s) (μ : Measure H) (ν : Measure N) [SFinite ν] (hμ : μ ≠ 0) (hν : ν ≠ 0) :
-    semiMeas N s μ ν ≠ 0 := by
-  have hm : Measurable fun p : H × N => (p.2.1 * s p.1 : G) :=
-    (measurable_subtype_coe.comp measurable_snd).mul (hs.comp measurable_fst)
-  intro h
-  have h1 : μ.prod ν = 0 := (Measure.map_eq_zero_iff (hm.subtype_mk).aemeasurable).1 h
-  have h2 := congrArg (fun m : Measure (H × N) => m (Set.univ ×ˢ Set.univ)) h1
-  simp only [Measure.prod_prod, Measure.coe_zero, Pi.zero_apply, mul_eq_zero, Measure.measure_univ_eq_zero] at h2
-  exact h2.elim hμ hν
 
-theorem sFinite_volN {S S₀ : HSp D} {σ : ℕ} {d : HypDec S S₀ σ} (v : VolN d) : SFinite v.ν ∧ v.ν ≠ 0 := by
-  obtain ⟨i1, i2, i3, i4, i5, i6, i7⟩ := GlobalTheory.Mem.AdelicGroupTop.adelic_unitary_topology D S
-  have := v.unit.1
-  refine ⟨?_, fun h => ?_⟩
-  · have : SecondCountableTopology (flagN d) := TopologicalSpace.Subtype.secondCountableTopology (flagN d : Set (GA D S))
-    obtain ⟨K, hK, h⟩ := (GlobalTheory.Mem.UnipCocompact.radicals_cocompact D S σ d.e (isIsoSub_e d)).1
-    have hcl : IsClosed (NFlag S d.e : Set (GA D S)) := by
-      have : DiscreteTopology (GQ S ⊓ NFlag S d.e : Subgroup (GA D S)) :=
-        DiscreteTopology.of_subset (s := (GQ S : Set (GA D S))) i6 (fun x hx => hx.1)
-      have h1 : IsClosed ((GQ S ⊓ NFlag S d.e : Subgroup (GA D S)) : Set (GA D S)) := Subgroup.isClosed_of_discrete
-      have h2 := h1.mul_right_of_isCompact (hK.image continuous_subtype_val)
-      convert h2 using 1
-      ext x
-      constructor
-      · intro hx
-        obtain ⟨γ, hγ, k, hk, e⟩ := h ⟨x, hx⟩
-        exact ⟨γ, ⟨hγ, γ.2⟩, k, ⟨k, hk, rfl⟩, (congrArg Subtype.val e).symm⟩
-      · rintro ⟨γ, hγ, _, ⟨k, -, rfl⟩, rfl⟩
-        exact mul_mem hγ.2 k.2
-    have : LocallyCompactSpace (flagN d) := hcl.locallyCompactSpace
-    infer_instance
-  · have := v.unit.2.2
-    rw [h] at this
-    simp at this
 
-theorem jac_muR_ne_zero (J : JacLev D ρ) : J.μR ≠ 0 := by
-  obtain ⟨i1, i2, i3, i4, i5, i6, i7⟩ := GlobalTheory.Mem.AdelicGroupTop.adelic_unitary_topology D J.W
-  obtain ⟨j1, j2, j3, j4, j5, j6, j7⟩ := GlobalTheory.Mem.AdelicGroupTop.adelic_unitary_topology D J.W₀
-  have := J.v0.haar
-  obtain ⟨h1, h2⟩ := sFinite_volN J.vN
-  exact semiMeas_ne_zero _ _ J.d.continuous_embed.measurable _ _ (NeZero.ne _) h2
 
-theorem bes_muR_ne_zero (B : BesLev D ρ) : B.μR ≠ 0 := by
-  obtain ⟨i1, i2, i3, i4, i5, i6, i7⟩ := GlobalTheory.Mem.AdelicGroupTop.adelic_unitary_topology D B.V
-  obtain ⟨j1, j2, j3, j4, j5, j6, j7⟩ := GlobalTheory.Mem.AdelicGroupTop.adelic_unitary_topology D B.A
-  have := B.vA.haar
-  obtain ⟨h1, h2⟩ := sFinite_volN B.vN
-  have hc : Continuous (embA B.d B.o) :=
-    B.d.continuous_embed.comp (B.o.continuous_emb.comp (continuous_id.prodMk continuous_const))
-  exact semiMeas_ne_zero _ _ hc.measurable _ _ (NeZero.ne _) h2
 
 end GlobalTheory.Unf.Model
 

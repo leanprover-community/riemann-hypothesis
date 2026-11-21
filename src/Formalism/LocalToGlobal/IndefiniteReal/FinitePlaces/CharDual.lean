@@ -1,6 +1,461 @@
-import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.CharStd
-import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.CharCompl
+import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IntegrableOnOfPeriodic
+import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.InfFam
+import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.EqZeroOfMemFactorial
+import Formalism.LocalToGlobal.IndefiniteReal.PHeisThC
+import ReciprocityTheory.AdeleApproximation.AdeleIntA
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IntegerSubgroupIntersection.IsOpenIntSub
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IntegerSubgroupIntersection.Imports
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IntegerSubgroupIntersection.IntInterAlt
 
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory
+  IsDedekindDomain NumberField Topology NumberField.InfinitePlace.Completion
+open scoped TensorProduct ComplexConjugate
+
+namespace Formalism.IndefR.Fin
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+section Gen
+
+variable {F : Type} [Field F] [NumberField F]
+
+theorem pairA_add (a a' : Ainf F) (b b' : Af F) : pairA F (a + a') (b + b') = pairA F a b + pairA F a' b' := rfl
+
+theorem pairA_split (a : Ainf F) (b : Af F) : pairA F a b = pairA F a 0 + pairA F 0 b := by
+  rw [← pairA_add, add_zero, zero_add]
+
+theorem algebraMap_AF (q : F) :
+    algebraMap F (AF F) q = pairA F (algebraMap F (Ainf F) q) (algebraMap F (Af F) q) := rfl
+
+theorem trace_int (y : 𝓞 F) : ∃ z : ℤ, Algebra.trace ℚ F (y : F) = z := by
+  have h : IsIntegral ℤ (Algebra.trace ℚ F (y : F)) := Algebra.isIntegral_trace y.isIntegral_coe
+  obtain ⟨z, hz⟩ := IsIntegrallyClosed.isIntegral_iff.mp h
+  exact ⟨z, by rw [← hz]; simp⟩
+
+
+theorem exp_two_pi_int (n : ℤ) : Complex.exp (2 * Real.pi * Complex.I * n) = 1 := by
+  rw [show (2 * Real.pi * Complex.I * n : ℂ) = n * (2 * Real.pi * Complex.I) by ring]
+  exact Complex.exp_int_mul_two_pi_mul_I n
+
+theorem exists_nsmul_mem_cpt {X : Type*} [AddCommGroup X] [TopologicalSpace X] [IsTopologicalAddGroup X]
+    (K : Set X) (hK : IsCompact K) (hKs : ∀ y ∈ K, ∀ n : ℕ, n • y ∈ K) (H : AddSubgroup X)
+    (hH : IsOpen (H : Set X)) : ∃ m : ℕ, 0 < m ∧ ∀ y ∈ K, m • y ∈ H := by
+  classical
+  haveI : DiscreteTopology (X ⧸ H) := QuotientAddGroup.discreteTopology hH
+  have hSfin : ((fun y : X => (y : X ⧸ H)) '' K).Finite :=
+    (hK.image QuotientAddGroup.continuous_mk).finite_of_discrete
+  have hord : ∀ y ∈ K, IsOfFinAddOrder (y : X ⧸ H) := by
+    intro y hy
+    obtain ⟨a, b, hab, he⟩ := Set.Finite.exists_lt_map_eq_of_forall_mem
+      (f := fun n : ℕ => ((n • y : X) : X ⧸ H)) (fun n => Set.mem_image_of_mem _ (hKs y hy n)) hSfin
+    obtain ⟨c, rfl⟩ := Nat.exists_eq_add_of_lt hab
+    refine isOfFinAddOrder_iff_nsmul_eq_zero.mpr ⟨c + 1, Nat.succ_pos c, ?_⟩
+    have h2 : (a + (c + 1)) • (y : X ⧸ H) = a • (y : X ⧸ H) := by
+      rw [← Nat.add_assoc, ← QuotientAddGroup.mk_nsmul, ← QuotientAddGroup.mk_nsmul]
+      exact he.symm
+    rw [add_nsmul] at h2
+    simpa using h2
+  refine ⟨∏ q ∈ hSfin.toFinset, addOrderOf q, ?_, ?_⟩
+  · apply Finset.prod_pos
+    intro q hq
+    obtain ⟨y, hy, rfl⟩ := hSfin.mem_toFinset.mp hq
+    exact (hord y hy).addOrderOf_pos
+  · intro y hy
+    have hmem : (y : X ⧸ H) ∈ hSfin.toFinset := hSfin.mem_toFinset.mpr ⟨y, hy, rfl⟩
+    have h0 : (∏ q ∈ hSfin.toFinset, addOrderOf q) • (y : X ⧸ H) = 0 :=
+      addOrderOf_dvd_iff_nsmul_eq_zero.mp (Finset.dvd_prod_of_mem (fun q => addOrderOf q) hmem)
+    rw [← QuotientAddGroup.mk_nsmul, QuotientAddGroup.eq_zero_iff] at h0
+    exact h0
+
+end Gen
+
+section Psi
+
+variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ}
+
+theorem sum_fEmb (x : D.host.F) : ∑ τ : D.what₂.Tau, Eqv.fEmb D τ x = ((Algebra.trace ℚ D.host.F x : ℚ) : ℂ) := by
+  classical
+  have hb : Function.Bijective (fun τ => Eqv.fEmb D τ) := by
+    constructor
+    · intro τ τ' h
+      simp only at h
+      have h' : Eqv.plW D τ = Eqv.plW D τ' := by
+        show InfinitePlace.mk (Eqv.fEmb D τ) = InfinitePlace.mk (Eqv.fEmb D τ')
+        rw [h]
+      rw [Eqv.plW_eq_tauPl, Eqv.plW_eq_tauPl] at h'
+      exact (Formalism.L2.Host.tauPl D).injective h'
+    · intro φ
+      refine ⟨(Formalism.L2.Host.tauPl D).symm (InfinitePlace.mk φ), ?_⟩
+      have h1 := Eqv.plW_embedding D ((Formalism.L2.Host.tauPl D).symm (InfinitePlace.mk φ))
+      rw [Eqv.plW_symm] at h1
+      have hr := Eqv.fEmb_isReal D ((Formalism.L2.Host.tauPl D).symm (InfinitePlace.mk φ))
+      show Eqv.fEmb D _ = φ
+      rcases InfinitePlace.embedding_mk_eq φ with h2 | h2
+      · rw [← h1, h2]
+      · rw [← h1] at hr
+        rw [← h1, h2]
+        rw [h2] at hr
+        exact ComplexEmbedding.isReal_conjugate_iff.mp hr
+  have htr := trace_eq_sum_embeddings (K := ℚ) (L := D.host.F) (E := ℂ) (x := x)
+  rw [show ((Algebra.trace ℚ D.host.F x : ℚ) : ℂ) = algebraMap ℚ ℂ (Algebra.trace ℚ D.host.F x) from
+    (eq_ratCast _ _).symm, htr]
+  let e : (D.host.F →+* ℂ) ≃ (D.host.F →ₐ[ℚ] ℂ) := RingHom.equivRatAlgHom D.host.F ℂ
+  exact Fintype.sum_bijective (e ∘ fun τ => Eqv.fEmb D τ) (e.bijective.comp hb) _ _ (fun τ => rfl)
+
+theorem psi_inf (hψ : IsStdChar D ψ (-1)) (a : Ainf D.host.F) :
+    ψ (pairA D.host.F a 0) = Complex.exp (-(2 * Real.pi * Complex.I * ∑ τ, Eqv.gW D (Eqv.plW D τ) a)) := by
+  obtain ⟨-, -, hθ⟩ := hψ
+  have h := hθ (Eqv.thetaC D) (Eqv.isInfFam_thetaC D) a
+  simp only [Eqv.thetaC_tmul, map_one, mul_one] at h
+  rw [show ψ (pairA D.host.F a 0) = psiInf D.host.F ψ a from rfl, h]
+  congr 1
+  push_cast
+  ring
+
+theorem psi_fin_rat (hψ : IsStdChar D ψ (-1)) (q : D.host.F) :
+    ψ (pairA D.host.F 0 (algebraMap D.host.F (Af D.host.F) q)) =
+      Complex.exp (2 * Real.pi * Complex.I * (Algebra.trace ℚ D.host.F q : ℚ)) := by
+  have hrat : ψ (algebraMap D.host.F (AF D.host.F) q) = 1 := by
+    obtain ⟨⟨-, -, h, -⟩, -⟩ := hψ
+    exact h q
+  have hinf := psi_inf hψ (algebraMap D.host.F (Ainf D.host.F) q)
+  simp only [Eqv.gW_algebraMap, sum_fEmb] at hinf
+  rw [algebraMap_AF, pairA_split, AddChar.map_add_eq_mul, hinf] at hrat
+  have h2 := congrArg
+    (fun w => Complex.exp (2 * Real.pi * Complex.I * ((Algebra.trace ℚ D.host.F q : ℚ) : ℂ)) * w) hrat
+  simp only [← mul_assoc, ← Complex.exp_add, add_neg_cancel, Complex.exp_zero, one_mul, mul_one] at h2
+  exact h2
+
+
+theorem psi_pair0_add (a b : Af D.host.F) :
+    ψ (pairA D.host.F 0 (a + b)) = ψ (pairA D.host.F 0 a) * ψ (pairA D.host.F 0 b) := by
+  rw [← AddChar.map_add_eq_mul, ← pairA_add, add_zero]
+
+
+theorem psi_invDiff (hψ : IsStdChar D ψ (-1)) (d : D.host.F) (hd : d ∈ invDiff D.host.F) (y : Af D.host.F)
+    (hy : y ∈ intAf D.host.F) : ψ (pairA D.host.F 0 (algebraMap D.host.F (Af D.host.F) d * y)) = 1 := by
+  obtain ⟨G, hGo, -, hG⟩ := Formalism.IndefR.PHeisTh.psiOpen D.host.F ψ hψ.1
+  let md : Af D.host.F →+ Af D.host.F := AddMonoidHom.mulLeft (algebraMap D.host.F (Af D.host.F) d)
+  let H : AddSubgroup (Af D.host.F) := AddSubgroup.comap md G
+  have hHo : IsOpen (H : Set (Af D.host.F)) := hGo.preimage (continuous_const.mul continuous_id)
+  obtain ⟨m, hm, hmH⟩ := exists_nsmul_mem_cpt (Formalism.IndefR.PHeisFC.Ohat D.host.F)
+    (Formalism.IndefR.PHeisFC.isCompact_Ohat D.host.F)
+    (fun y hy n => (Formalism.L2.GlobalTheoryTheory.FiltrationBoundaryCriterion.CompactFixesLatticeTheory.intAd D.host.F).toAddSubgroup.nsmul_mem hy n) H hHo
+  have hm0 : ((m : ℕ) : 𝓞 D.host.F) ≠ 0 := Nat.cast_ne_zero.2 hm.ne'
+  obtain ⟨a, ha⟩ := ReciprocityTheory.UG.AdeleIntA.exists_approx y (fun v => hy v) _ hm0
+
+  set z : Af D.host.F := algebraMap D.host.F (Af D.host.F) (1 / (m : D.host.F)) *
+    (y - algebraMap D.host.F (Af D.host.F) (a : D.host.F)) with hz
+  have hmF : (m : D.host.F) ≠ 0 := Nat.cast_ne_zero.2 hm.ne'
+  have hyz : y = algebraMap D.host.F (Af D.host.F) (a : D.host.F) + m • z := by
+    rw [hz, nsmul_eq_mul, ← mul_assoc, show (m : Af D.host.F) = algebraMap D.host.F (Af D.host.F) (m : D.host.F) by
+      simp, ← map_mul, mul_one_div_cancel hmF, map_one, one_mul]
+    abel
+  have hzint : z ∈ Formalism.IndefR.PHeisFC.Ohat D.host.F := by
+    intro v
+    have hv := ha v
+    show (algebraMap D.host.F (Af D.host.F) (1 / (m : D.host.F)) *
+      (y - algebraMap D.host.F (Af D.host.F) (a : D.host.F))) v ∈ v.adicCompletionIntegers D.host.F
+    rw [HeightOneSpectrum.mem_adicCompletionIntegers]
+    have e : (algebraMap D.host.F (Af D.host.F) (1 / (m : D.host.F)) *
+        (y - algebraMap D.host.F (Af D.host.F) (a : D.host.F))) v =
+        algebraMap D.host.F (v.adicCompletion D.host.F) (1 / (m : D.host.F)) *
+          (y v - algebraMap D.host.F _ (algebraMap (𝓞 D.host.F) D.host.F a)) := rfl
+    rw [e, map_mul]
+    have hval : Valued.v (algebraMap D.host.F (v.adicCompletion D.host.F) (1 / (m : D.host.F))) =
+        (v.intValuation ((m : ℕ) : 𝓞 D.host.F))⁻¹ := by
+      rw [one_div, map_inv₀, map_inv₀]
+      congr 1
+      rw [show ((m : ℕ) : D.host.F) = algebraMap (𝓞 D.host.F) D.host.F ((m : ℕ) : 𝓞 D.host.F) by simp]
+      exact ReciprocityTheory.UG.AdeleIntA.val_R v _
+    rw [hval]
+    have hv0 : v.intValuation ((m : ℕ) : 𝓞 D.host.F) ≠ 0 := v.intValuation_ne_zero _ hm0
+    calc (v.intValuation ((m : ℕ) : 𝓞 D.host.F))⁻¹ * Valued.v _
+        ≤ (v.intValuation ((m : ℕ) : 𝓞 D.host.F))⁻¹ * v.intValuation ((m : ℕ) : 𝓞 D.host.F) :=
+          mul_le_mul' le_rfl hv
+      _ = 1 := inv_mul_cancel₀ hv0
+  rw [hyz, mul_add, psi_pair0_add]
+  have h1 : ψ (pairA D.host.F 0 (algebraMap D.host.F (Af D.host.F) d *
+      algebraMap D.host.F (Af D.host.F) (a : D.host.F))) = 1 := by
+    rw [← map_mul, psi_fin_rat hψ]
+    obtain ⟨n, hn⟩ := hd a
+    rw [hn]; push_cast; exact exp_two_pi_int n
+  have h2 : ψ (pairA D.host.F 0 (algebraMap D.host.F (Af D.host.F) d * m • z)) = 1 :=
+    hG _ (hmH z hzint)
+  rw [h1, h2, one_mul]
+
+end Psi
+
+section Kernel
+
+variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ}
+
+theorem isInt_of_intAf (y : Af D.host.F) (hy : y ∈ intAf D.host.F) : ReciprocityTheory.UG.AdeleIntA.IsInt y := by
+  simp only [Formalism.MainNotions.StandardLattice.intAf, ReciprocityTheory.UG.AdeleIntA.IsInt] at hy ⊢
+  exact hy
+
+theorem intAf_of_isInt (y : Af D.host.F) (hy : ReciprocityTheory.UG.AdeleIntA.IsInt y) : y ∈ intAf D.host.F := by
+  simp only [Formalism.MainNotions.StandardLattice.intAf, ReciprocityTheory.UG.AdeleIntA.IsInt] at hy ⊢
+  exact hy
+
+theorem intAf_mul {x y : Af D.host.F} (hx : x ∈ intAf D.host.F) (hy : y ∈ intAf D.host.F) : x * y ∈ intAf D.host.F := by
+  exact intAf_of_isInt _ (ReciprocityTheory.UG.AdeleIntA.isInt_mul (isInt_of_intAf _ hx) (isInt_of_intAf _ hy))
+
+
+theorem intAf_int (r : 𝓞 D.host.F) : algebraMap D.host.F (Af D.host.F) (r : D.host.F) ∈ intAf D.host.F := by
+  have h := ReciprocityTheory.UG.AdeleIntA.isInt_R (K := D.host.F) r
+  rw [IsScalarTower.algebraMap_apply (𝓞 D.host.F) D.host.F] at h
+  exact intAf_of_isInt _ h
+
+theorem one_intAf : (1 : Af D.host.F) ∈ intAf D.host.F := by
+  simpa using intAf_int (D := D) 1
+
+
+
+
+
+
+
+end Kernel
+
+section Exist
+
+variable {D : D7}
+
+def Linf (D : D7) : Ainf D.host.F →+ ℝ where
+  toFun a := -∑ τ : D.what₂.Tau, (Eqv.gW D (Eqv.plW D τ) a).re
+  map_zero' := by simp
+  map_add' a b := by simp only [map_add, Complex.add_re, Finset.sum_add_distrib, neg_add]
+
+theorem continuous_Linf : Continuous (Linf D) := by
+  have hg : ∀ τ, Continuous fun a : Ainf D.host.F => Eqv.gW D (Eqv.plW D τ) a := fun τ =>
+    (isometry_extensionEmbedding _).continuous.comp (continuous_apply _)
+  show Continuous fun a => -∑ τ : D.what₂.Tau, (Eqv.gW D (Eqv.plW D τ) a).re
+  exact (continuous_finset_sum _ fun τ _ => Complex.continuous_re.comp (hg τ)).neg
+
+theorem sum_gW_eq (a : Ainf D.host.F) : ∑ τ : D.what₂.Tau, Eqv.gW D (Eqv.plW D τ) a = ((-(Linf D a) : ℝ) : ℂ) := by
+  have h : ∀ τ, Eqv.gW D (Eqv.plW D τ) a = (((Eqv.gW D (Eqv.plW D τ) a).re : ℝ) : ℂ) := by
+    intro τ
+    rw [Eqv.gW_real]
+    simp
+  show ∑ τ, Eqv.gW D (Eqv.plW D τ) a = ((-(-∑ τ : D.what₂.Tau, (Eqv.gW D (Eqv.plW D τ) a).re) : ℝ) : ℂ)
+  rw [neg_neg, Complex.ofReal_sum]
+  exact Finset.sum_congr rfl fun τ _ => h τ
+
+theorem Linf_int (b : 𝓞 D.host.F) : ∃ n : ℤ, Linf D (algebraMap D.host.F (Ainf D.host.F) (b : D.host.F)) = n := by
+  obtain ⟨z, hz⟩ := trace_int b
+  refine ⟨-z, ?_⟩
+  show -∑ τ : D.what₂.Tau,
+      (Eqv.gW D (Eqv.plW D τ) (algebraMap D.host.F (Ainf D.host.F) (b : D.host.F))).re = ((-z : ℤ) : ℝ)
+  rw [show (∑ τ : D.what₂.Tau,
+      (Eqv.gW D (Eqv.plW D τ) (algebraMap D.host.F (Ainf D.host.F) (b : D.host.F))).re) =
+      (∑ τ : D.what₂.Tau, Eqv.fEmb D τ b).re by rw [Complex.re_sum]; simp only [Eqv.gW_algebraMap]]
+  rw [sum_fEmb, hz]
+  simp
+
+theorem exists_Linf_half : ∃ t : Ainf D.host.F, Linf D t = 1 / 2 := by
+  have hn0 : ((Module.finrank ℚ D.host.F : ℕ) : ℚ) ≠ 0 := by exact_mod_cast Module.finrank_pos.ne'
+  have hq : (Module.finrank ℚ D.host.F • (-(1 / (2 * (Module.finrank ℚ D.host.F : ℚ)))) : ℚ) = -(1 / 2) := by
+    rw [nsmul_eq_mul]
+    field_simp
+  refine ⟨algebraMap D.host.F (Ainf D.host.F)
+    (algebraMap ℚ D.host.F (-(1 / (2 * (Module.finrank ℚ D.host.F : ℚ))))), ?_⟩
+  have h := congrArg Complex.re
+    (sum_fEmb (D := D) (algebraMap ℚ D.host.F (-(1 / (2 * (Module.finrank ℚ D.host.F : ℚ))))))
+  rw [Algebra.trace_algebraMap, hq, Complex.re_sum] at h
+  show -∑ τ : D.what₂.Tau, (Eqv.gW D (Eqv.plW D τ) (algebraMap D.host.F (Ainf D.host.F)
+    (algebraMap ℚ D.host.F (-(1 / (2 * (Module.finrank ℚ D.host.F : ℚ))))))).re = 1 / 2
+  simp only [Eqv.gW_algebraMap, h]
+  norm_num
+
+theorem exists_stdChar : ∃ ψ : AddChar (AF D.host.F) ℂ, IsStdChar D ψ (-1) := by
+  let F := D.host.F
+  let mk : ℝ →+ AddCircle (1 : ℝ) := QuotientAddGroup.mk' _
+  have hmk : Continuous mk := continuous_quotient_mk'
+  let fs : AF F →+ Ainf F := (fstA F).toRingHom.toAddMonoidHom
+  have hfs : Continuous fs := continuous_fst
+  let g : AF F →+ AddCircle (1 : ℝ) := mk.comp ((Linf D).comp fs)
+  have hg : Continuous g := hmk.comp (continuous_Linf.comp hfs)
+  let K : AddSubgroup (AF F) := (algebraMap F (AF F)).range.toAddSubgroup
+  obtain ⟨h, hc, hK, hU⟩ := PI.GaugeCharW.extChar (AF F) K (PI.GaugeCharW.intSub F)
+    (PI.GaugeCharW.isOpen_intSub F PI.GaugeCharW.openInt) g hg (by
+      rintro x ⟨a, rfl⟩ hx
+      obtain ⟨b, rfl⟩ := PI.GaugeCharW.intInter F a (fun v => by
+        have hv := hx v
+        rwa [AlgHom.commutes] at hv)
+      obtain ⟨n, hn⟩ := Linf_int (D := D) b
+      have e1 : fs (algebraMap F (AF F) (b : F)) = algebraMap F (Ainf F) (b : F) := rfl
+      show mk (Linf D (fs (algebraMap F (AF F) (b : F)))) = 0
+      rw [e1, hn]
+      show ((n : ℝ) : AddCircle (1 : ℝ)) = 0
+      rw [AddCircle.coe_eq_zero_iff]
+      exact ⟨n, by simp⟩)
+  let ψ : AddChar (AF F) ℂ :=
+    { toFun := fun x => ((AddCircle.toCircle (h x) : Circle) : ℂ),
+      map_zero_eq_one' := by simp,
+      map_add_eq_mul' := fun x y => by simp [map_add, AddCircle.toCircle_add] }
+  have hval : ∀ t : Ainf F, ψ (pairA F t 0) = Complex.exp (2 * Real.pi * Complex.I * (Linf D t : ℂ)) := by
+    intro t
+    have hx0 : pairA F t 0 ∈ PI.GaugeCharW.intSub F := fun v => by
+      show (0 : Af F) v ∈ _
+      exact zero_mem _
+    show ((AddCircle.toCircle (h (pairA F t 0)) : Circle) : ℂ) = _
+    rw [hU _ hx0]
+    show ((AddCircle.toCircle ((Linf D t : ℝ) : AddCircle (1 : ℝ)) : Circle) : ℂ) = _
+    rw [AddCircle.toCircle_apply_mk, Circle.coe_exp]
+    congr 1; push_cast; ring
+  refine ⟨ψ, ⟨?_, ?_, ?_, ?_⟩, ⟨Eqv.thetaC D, Eqv.isInfFam_thetaC D⟩, fun θ hθ x => ?_⟩
+  · exact continuous_subtype_val.comp (AddCircle.continuous_toCircle.comp hc)
+  · intro x; exact Circle.norm_coe _
+  · intro a
+    have ha : h (algebraMap F (AF F) a) = 0 := hK _ ⟨a, rfl⟩
+    show ((AddCircle.toCircle (h (algebraMap F (AF F) a)) : Circle) : ℂ) = 1
+    simp [ha]
+  · obtain ⟨t, ht⟩ := exists_Linf_half (D := D)
+    refine ⟨pairA F t 0, ?_⟩
+    rw [hval, ht]
+    have : Complex.exp (2 * Real.pi * Complex.I * (((1 / 2 : ℝ)) : ℂ)) = -1 := by
+      rw [show 2 * Real.pi * Complex.I * (((1 / 2 : ℝ)) : ℂ) = Real.pi * Complex.I by push_cast; ring,
+        Complex.exp_pi_mul_I]
+    rw [this]; norm_num
+  · rw [Eqv.eq_thetaC D hθ]
+    unfold psiInf
+    rw [hval]
+    congr 1
+    have e : ∑ ρ, Eqv.thetaC D ρ (x ⊗ₜ[D.host.F] (1 : D.host.E)) = ((-(Linf D x) : ℝ) : ℂ) := by
+      rw [← sum_gW_eq]
+      refine Finset.sum_congr rfl fun ρ _ => ?_
+      rw [Eqv.thetaC_tmul, map_one, mul_one]
+    rw [e]; push_cast; ring
+
+
+end Exist
+
+end Formalism.IndefR.Fin
+
+end
+end
+
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory
+  IsDedekindDomain NumberField Matrix Topology
+open scoped TensorProduct ComplexConjugate Pointwise
+
+namespace Formalism.IndefR.Fin
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ} (S T : HSp D)
+
+abbrev QO : Type := MO S T ⧸ ratL T S
+
+def chiO (ψ : AddChar (AF D.host.F) ℂ) (a : Matrix (Fin T.rank) (Fin S.rank) D.host.E) (z : MO S T) : ℂ :=
+  ψ (symplO S T z (ratW T S a))
+
+theorem periodic_of {f : MO S T → ℂ} (hf : ∀ a z, f (ratW T S a + z) = f z) :
+    ∀ g ∈ ratL T S, ∀ z, f (g + z) = f z := by
+  intro g hg z
+  obtain ⟨a, rfl⟩ := (mem_ratL_iff S T g).1 hg
+  exact hf a z
+
+theorem chiO_periodic (hψ : IsStdChar D ψ (-1)) (a b : Matrix (Fin T.rank) (Fin S.rank) D.host.E) (z : MO S T) :
+    chiO S T ψ a (ratW T S b + z) = chiO S T ψ a z := by
+  unfold chiO
+  rw [symplO_add_left, AddChar.map_add_eq_mul, psi_rat hψ, one_mul]
+
+def liftQ (f : MO S T → ℂ) (hf : ∀ a z, f (ratW T S a + z) = f z) : QO S T → ℂ :=
+  Quotient.lift f (by
+    intro x y hxy
+    have h : -x + y ∈ ratL T S := QuotientAddGroup.leftRel_apply.1 hxy
+    have := periodic_of S T hf (-x + y) h x
+    rw [show -x + y + x = y by abel] at this
+    exact this.symm)
+
+theorem cont_liftQ (f : MO S T → ℂ) (hf : ∀ a z, f (ratW T S a + z) = f z) (hc : Continuous f) :
+    Continuous (liftQ S T f hf) :=
+  hc.quotient_lift _
+
+def liftC (f : MO S T → ℂ) (hf : ∀ a z, f (ratW T S a + z) = f z) (hc : Continuous f) : C(QO S T, ℂ) :=
+  ⟨liftQ S T f hf, cont_liftQ S T f hf hc⟩
+
+
+def chiC (hψ : IsStdChar D ψ (-1)) (a : Matrix (Fin T.rank) (Fin S.rank) D.host.E) : C(QO S T, ℂ) :=
+  liftC S T (chiO S T ψ a) (fun b z => chiO_periodic S T hψ a b z)
+    ((psi_cont hψ).comp (cont_symplO_left S T _))
+
+theorem chiC_apply (hψ : IsStdChar D ψ (-1)) (a) (z : MO S T) :
+    chiC S T hψ a (z : QO S T) = ψ (symplO S T z (ratW T S a)) := rfl
+
+theorem chiC_mul (hψ : IsStdChar D ψ (-1)) (a b : Matrix (Fin T.rank) (Fin S.rank) D.host.E) :
+    chiC S T hψ a * chiC S T hψ b = chiC S T hψ (a + b) := by
+  ext q
+  obtain ⟨z, rfl⟩ := QuotientAddGroup.mk_surjective q
+  simp only [ContinuousMap.mul_apply, chiC_apply, ratW_add, symplO_add_right, AddChar.map_add_eq_mul]
+
+theorem chiC_zero (hψ : IsStdChar D ψ (-1)) : chiC S T hψ 0 = 1 := by
+  ext q
+  obtain ⟨z, rfl⟩ := QuotientAddGroup.mk_surjective q
+  simp only [ContinuousMap.one_apply, chiC_apply, ratW_zero, symplO_zero_right, AddChar.map_zero_eq_one]
+
+theorem chiC_star (hψ : IsStdChar D ψ (-1)) (a : Matrix (Fin T.rank) (Fin S.rank) D.host.E) :
+    star (chiC S T hψ a) = chiC S T hψ (-a) := by
+  ext q
+  obtain ⟨z, rfl⟩ := QuotientAddGroup.mk_surjective q
+  rw [ContinuousMap.star_apply, chiC_apply, chiC_apply, ratW_neg, symplO_neg_right]
+  exact psi_conj hψ _
+
+def Achar (hψ : IsStdChar D ψ (-1)) : StarSubalgebra ℂ C(QO S T, ℂ) where
+  carrier := Submodule.span ℂ (Set.range (chiC S T hψ))
+  add_mem' := fun ha hb => Submodule.add_mem _ ha hb
+  zero_mem' := Submodule.zero_mem _
+  mul_mem' := by
+    intro f g hf hg
+    induction hf using Submodule.span_induction with
+    | mem x hx =>
+      induction hg using Submodule.span_induction with
+      | mem y hy =>
+        obtain ⟨a, rfl⟩ := hx
+        obtain ⟨b, rfl⟩ := hy
+        rw [chiC_mul]
+        exact Submodule.subset_span ⟨a + b, rfl⟩
+      | zero => rw [mul_zero]; exact Submodule.zero_mem _
+      | add y y' _ _ h1 h2 => rw [mul_add]; exact Submodule.add_mem _ h1 h2
+      | smul c y _ h => rw [mul_smul_comm]; exact Submodule.smul_mem _ c h
+    | zero => rw [zero_mul]; exact Submodule.zero_mem _
+    | add x x' _ _ h1 h2 => rw [add_mul]; exact Submodule.add_mem _ h1 h2
+    | smul c x _ h => rw [smul_mul_assoc]; exact Submodule.smul_mem _ c h
+  one_mem' := by
+    rw [← chiC_zero S T hψ]; exact Submodule.subset_span ⟨0, rfl⟩
+  algebraMap_mem' := by
+    intro c
+    rw [Algebra.algebraMap_eq_smul_one, ← chiC_zero S T hψ]
+    exact Submodule.smul_mem _ c (Submodule.subset_span ⟨0, rfl⟩)
+  star_mem' := by
+    intro f hf
+    induction hf using Submodule.span_induction with
+    | mem x hx =>
+      obtain ⟨a, rfl⟩ := hx
+      rw [chiC_star]; exact Submodule.subset_span ⟨-a, rfl⟩
+    | zero => rw [star_zero]; exact Submodule.zero_mem _
+    | add x x' _ _ h1 h2 => rw [star_add]; exact Submodule.add_mem _ h1 h2
+    | smul c x _ h => rw [star_smul]; exact Submodule.smul_mem _ _ h
+
+
+
+
+
+
+end Formalism.IndefR.Fin
+
+end
+end
+
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory
@@ -15,89 +470,6 @@ section Tate
 
 variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ}
 
-theorem rat_of_perp (hψ : IsStdChar D ψ (-1)) (a : AF D.host.F)
-    (ha : ∀ q : D.host.F, ψ (algebraMap D.host.F (AF D.host.F) q * a) = 1) :
-    ∃ q : D.host.F, a = algebraMap D.host.F (AF D.host.F) q := by
-  classical
-  let P : Set (AF D.host.F) := {c | ∀ q : D.host.F, ψ (algebraMap D.host.F (AF D.host.F) q * c) = 1}
-  have hPF : ∀ q : D.host.F, algebraMap D.host.F (AF D.host.F) q ∈ P := fun q q' => by
-    rw [← map_mul]; exact hψ.1.2.2.1 _
-  have hPadd : ∀ c c', c ∈ P → c' ∈ P → c + c' ∈ P := fun c c' hc hc' q => by
-    rw [mul_add, AddChar.map_add_eq_mul, hc q, hc' q, one_mul]
-  have hPneg : ∀ c, c ∈ P → -c ∈ P := fun c hc q => by
-    rw [mul_neg, AddChar.map_neg_eq_inv, hc q, inv_one]
-  have hPsmul : ∀ (q : D.host.F) c, c ∈ P → algebraMap D.host.F (AF D.host.F) q * c ∈ P := fun q c hc q' => by
-    rw [← mul_assoc, ← map_mul]; exact hc _
-  have hPclosed : IsClosed P := by
-    have : P = ⋂ q : D.host.F, (fun c => ψ (algebraMap D.host.F (AF D.host.F) q * c)) ⁻¹' {1} := by
-      ext c; simp [P]
-    rw [this]
-    exact isClosed_iInter fun q => isClosed_singleton.preimage
-      ((psi_cont hψ).comp (continuous_const.mul continuous_id))
-  obtain ⟨K, hK, hF0K⟩ := Formalism.IndefR.PHeisFC.fundamental_set_subset_compact D.host.F
-
-  have hN : ∀ᶠ c in 𝓝 (0 : AF D.host.F), ∀ k ∈ K, 1 / 2 < (ψ (c * k)).re := by
-    refine hK.eventually_forall_of_forall_eventually fun k _ => ?_
-    have hcont : Continuous fun p : AF D.host.F × AF D.host.F => (ψ (p.1 * p.2)).re :=
-      Complex.continuous_re.comp ((psi_cont hψ).comp (continuous_fst.mul continuous_snd))
-    have h0 : (1 / 2 : ℝ) < (ψ ((0, k).1 * (0, k).2)).re := by
-      simp only [zero_mul, AddChar.map_zero_eq_one, Complex.one_re]; norm_num
-    exact continuousAt_const.eventually_lt hcont.continuousAt h0
-
-  have hdisc : ∀ᶠ c in 𝓝 (0 : AF D.host.F), c ∈ P → c = 0 := by
-    filter_upwards [hN] with c hc hcP
-    refine psi_nondeg hψ c fun y => ?_
-    obtain ⟨q, hq, -⟩ := Formalism.IndefR.PHeisFC.ad_exU D.host.F y
-    have hy : ∀ n : ℕ, ψ (c * (n • y)) = ψ (c * y) ^ n := fun n => by
-      rw [mul_smul_comm, ← AddChar.map_nsmul_eq_pow]
-    have hre : ∀ z : AF D.host.F, 1 / 2 < (ψ (c * z)).re := fun z => by
-      obtain ⟨q', hq', -⟩ := Formalism.IndefR.PHeisFC.ad_exU D.host.F z
-      have e : c * z = algebraMap D.host.F (AF D.host.F) (-q') * c + c * (algebraMap D.host.F (AF D.host.F) q' + z) := by
-        rw [map_neg]; ring
-      rw [e, AddChar.map_add_eq_mul, hcP (-q'), one_mul]
-      exact hc _ (hF0K hq')
-    refine Formalism.IndefR.PHeisTh.eq_one_of_re_pow_gt _ (psi_norm hψ _) fun n => ?_
-    rw [← hy n]; exact hre _
-  obtain ⟨N, hN0, hNP⟩ : ∃ N ∈ 𝓝 (0 : AF D.host.F), ∀ c ∈ N, c ∈ P → c = 0 := ⟨_, hdisc, fun c hc => hc⟩
-  obtain ⟨U, hUN, hUo, hU0⟩ := mem_nhds_iff.1 hN0
-
-  have hfin : (P ∩ K).Finite := by
-    have hcpt : IsCompact (P ∩ K) := hK.inter_left hPclosed
-    refine hcpt.finite ⟨?_⟩
-    refine discreteTopology_iff_isOpen_singleton.2 fun x => ?_
-    refine ⟨(fun z => z - (x : AF D.host.F)) ⁻¹' U, hUo.preimage (continuous_id.sub continuous_const), ?_⟩
-    ext y
-    simp only [Set.mem_preimage, Set.mem_singleton_iff]
-    constructor
-    · intro hy
-      have hyx : (y : AF D.host.F) - x ∈ P := by
-        have := hPadd _ _ y.2.1 (hPneg _ x.2.1); rwa [← sub_eq_add_neg] at this
-      exact Subtype.ext (sub_eq_zero.1 (hNP _ (hUN hy) hyx))
-    · rintro rfl; simpa using hU0
-
-  by_contra hnot
-  push Not at hnot
-  have hrep : ∀ q : D.host.F, ∃ r : D.host.F, algebraMap D.host.F (AF D.host.F) r + algebraMap D.host.F (AF D.host.F) q * a ∈ Formalism.IndefR.PHeisFC.F0 D.host.F :=
-    fun q => (Formalism.IndefR.PHeisFC.ad_exU D.host.F _).exists
-  choose r hr using hrep
-  let g : D.host.F → AF D.host.F := fun q => algebraMap D.host.F (AF D.host.F) (r q) + algebraMap D.host.F (AF D.host.F) q * a
-  have hgP : ∀ q, g q ∈ P ∩ K := fun q =>
-    ⟨hPadd _ _ (hPF _) (hPsmul _ _ ha), hF0K (hr q)⟩
-  have hginj : Function.Injective g := by
-    intro q q' hqq
-    by_contra hne
-    apply hnot ((r q' - r q) / (q - q'))
-    have hsub : q - q' ≠ 0 := sub_ne_zero.2 hne
-    have e : algebraMap D.host.F (AF D.host.F) (q - q') * a = algebraMap D.host.F (AF D.host.F) (r q' - r q) := by
-      simp only [g] at hqq
-      rw [map_sub, map_sub, sub_mul]
-      linear_combination hqq
-    calc a = algebraMap D.host.F (AF D.host.F) (1 / (q - q')) * (algebraMap D.host.F (AF D.host.F) (q - q') * a) := by
-          rw [← mul_assoc, ← map_mul, one_div_mul_cancel hsub, map_one, one_mul]
-      _ = algebraMap D.host.F (AF D.host.F) (1 / (q - q')) * algebraMap D.host.F (AF D.host.F) (r q' - r q) := by rw [e]
-      _ = algebraMap D.host.F (AF D.host.F) ((r q' - r q) / (q - q')) := by
-          rw [← map_mul]; congr 1; field_simp
-  exact (Set.infinite_of_injective_forall_mem hginj hgP) hfin
 
 end Tate
 
@@ -182,155 +554,27 @@ theorem betaO_smul_right (q : D.host.F) (e γ : Matrix (Fin T.rank) (Fin S.rank)
     betaO S T e (q • γ) = q * betaO S T e γ := by
   unfold betaO; rw [hE_smul_right, trace_alg_mul]
 
-theorem betaO_add_left (e e' γ : Matrix (Fin T.rank) (Fin S.rank) D.host.E) :
-    betaO S T (e + e') γ = betaO S T e γ + betaO S T e' γ := by
-  unfold betaO hE
-  rw [← map_add, ← mul_add]
-  congr 2
-  simp only [Matrix.add_apply, mul_add, Finset.sum_add_distrib]
 
-theorem betaO_smul_left (q : D.host.F) (e γ : Matrix (Fin T.rank) (Fin S.rank) D.host.E) :
-    betaO S T (q • e) γ = q * betaO S T e γ := by
-  unfold betaO; rw [hE_smul_left, trace_alg_mul]
 
 def epsO (a : Formalism.IndefR.PHeisTh.Ix T S) : Matrix (Fin T.rank) (Fin S.rank) D.host.E :=
   Matrix.single a.1 a.2.1 (Module.finBasis D.host.F D.host.E a.2.2)
 
-theorem eV_eq (a : Formalism.IndefR.PHeisTh.Ix T S) : Formalism.IndefR.PHeisTh.eV T S a = ratW T S (epsO S T a) := by
-  ext i j
-  simp only [Formalism.IndefR.PHeisTh.eV, epsO, ratW, Matrix.map_apply, Matrix.single_apply]
-  split_ifs <;> simp
 
-theorem sum_epsO (e : Matrix (Fin T.rank) (Fin S.rank) D.host.E) :
-    ∑ a : Formalism.IndefR.PHeisTh.Ix T S, (Module.finBasis D.host.F D.host.E).repr (e a.1 a.2.1) a.2.2 • epsO S T a = e := by
-  ext i j
-  simp only [Matrix.sum_apply, Matrix.smul_apply, epsO, Matrix.single_apply, Fintype.sum_prod_type, smul_ite,
-    smul_zero, ite_and]
-  simp only [Finset.sum_ite_irrel, Finset.sum_const_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
-  exact (Module.finBasis D.host.F D.host.E).sum_repr (e i j)
 
 def LamO : Matrix (Fin T.rank) (Fin S.rank) D.host.E →ₗ[D.host.F] (Formalism.IndefR.PHeisTh.Ix T S → D.host.F) where
   toFun γ a := betaO S T (epsO S T a) γ
   map_add' γ γ' := by funext a; exact betaO_add_right S T _ γ γ'
   map_smul' q γ := by funext a; exact betaO_smul_right S T q _ γ
 
-theorem betaO_eq_zero_of (γ : Matrix (Fin T.rank) (Fin S.rank) D.host.E) (h : LamO S T γ = 0)
-    (e : Matrix (Fin T.rank) (Fin S.rank) D.host.E) : betaO S T e γ = 0 := by
-  rw [← sum_epsO S T e]
-  have hadd : ∀ (s : Finset (Formalism.IndefR.PHeisTh.Ix T S)) (f : Formalism.IndefR.PHeisTh.Ix T S → Matrix (Fin T.rank) (Fin S.rank) D.host.E),
-      betaO S T (∑ a ∈ s, f a) γ = ∑ a ∈ s, betaO S T (f a) γ := by
-    intro s f
-    induction s using Finset.induction_on with
-    | empty =>
-      simp only [Finset.sum_empty]
-      have := betaO_smul_left S T 0 0 γ
-      rwa [zero_smul, zero_mul] at this
-    | insert a s ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, betaO_add_left, ih]
-  rw [hadd]
-  refine Finset.sum_eq_zero fun a _ => ?_
-  rw [betaO_smul_left]
-  have := congrFun h a
-  simp only [LamO, LinearMap.coe_mk, AddHom.coe_mk, Pi.zero_apply] at this
-  rw [this, mul_zero]
 
-theorem LamO_injective : Function.Injective (LamO S T) := by
-  rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
-  intro γ hγ
-  have h0 := betaO_eq_zero_of S T γ hγ
-  by_contra hne
 
-  let M : Matrix (Fin S.rank) (Fin T.rank) D.host.E := S.gram⁻¹ * Matrix.transpose (γ.map (starRingEnd D.host.E)) * T.gram
-  have hM : M ≠ 0 := by
-    intro hM0
-    apply hne
-    have hS := Matrix.mul_nonsing_inv S.gram (isUnit_iff_ne_zero.2 (Formalism.L2.Theta.gram_det_ne S))
-    have hT := Matrix.mul_nonsing_inv T.gram (isUnit_iff_ne_zero.2 (Formalism.L2.Theta.gram_det_ne T))
-    have e1 : Matrix.transpose (γ.map (starRingEnd D.host.E)) = S.gram * M * T.gram⁻¹ := by
-      simp only [M, ← Matrix.mul_assoc, hS, Matrix.one_mul]
-      rw [Matrix.mul_assoc, hT, Matrix.mul_one]
-    rw [hM0, Matrix.mul_zero, Matrix.zero_mul] at e1
-    ext c b
-    have := congrFun (congrFun e1 b) c
-    simpa using this
-  obtain ⟨i, j, hij⟩ : ∃ i j, M i j ≠ 0 := by
-    by_contra h; push Not at h; exact hM (Matrix.ext h)
-  let e : Matrix (Fin T.rank) (Fin S.rank) D.host.E := Matrix.single j i (D.host.xi0⁻¹ * (M i j)⁻¹)
-  have hE1 : hE S T e γ = D.host.xi0⁻¹ := by
-    have htr : hE S T e γ = (M * e).trace := by
-      unfold hE
-      have := Brg.hO_tr (starRingEnd D.host.E) (S.gram⁻¹) T.gram e γ
-      simpa [M, Matrix.mul_assoc, starRingEnd_apply] using this
-    have key : ∀ c : D.host.E, (M * Matrix.single j i c).trace = M i j * c := by
-      intro c
-      rw [Matrix.trace, Finset.sum_eq_single i]
-      · simp [Matrix.mul_apply, Matrix.single_apply]
-      · intro b _ hb; simp [Matrix.mul_apply, Matrix.single_apply, Ne.symm hb]
-      · simp
-    rw [htr, key]
-    field_simp
-  have h1 := h0 e
-  unfold betaO at h1
-  rw [hE1, mul_inv_cancel₀ embedding_xi_zero_ne_zero, ← map_one (algebraMap D.host.F D.host.E), Algebra.trace_algebraMap,
-    nsmul_eq_mul, mul_one] at h1
-  have h2 : (Module.finrank D.host.F D.host.E : D.host.F) ≠ 0 := Nat.cast_ne_zero.2 Module.finrank_pos.ne'
-  exact h2 h1
 
-theorem LamO_surjective : Function.Surjective (LamO S T) := by
-  have hdim : Module.finrank D.host.F (Matrix (Fin T.rank) (Fin S.rank) D.host.E) =
-      Module.finrank D.host.F (Formalism.IndefR.PHeisTh.Ix T S → D.host.F) := by
-    rw [Module.finrank_fintype_fun_eq_card, Module.finrank_matrix]
-    simp [Formalism.IndefR.PHeisTh.Ix, Formalism.IndefR.PHeisFC.nE, Fintype.card_prod, Fintype.card_fin]
-    ring
-  exact (LinearMap.injective_iff_surjective_of_finrank_eq_finrank hdim).1 (LamO_injective S T)
 
-theorem smul_ratW (r : D.host.F) (e : Matrix (Fin T.rank) (Fin S.rank) D.host.E) :
-    algebraMap D.host.F (AF D.host.F) r • ratW T S e = ratW T S (r • e) := by
-  ext i j
-  show algebraMap D.host.F (AF D.host.F) r • incA D (e i j) = incA D (r • e i j)
-  rw [Algebra.smul_def, ← IsScalarTower.algebraMap_apply, Algebra.smul_def r (e i j), map_mul]
-  congr 1
-  exact (Algebra.TensorProduct.includeRight.commutes r).symm
 
-theorem ratL_of_perp {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) (x : WO S T)
-    (hx : ∀ γ, ψ (symplO S T x (ratW T S γ)) = 1) : x ∈ ratL T S := by
-  have hx' : x = ∑ a, Formalism.IndefR.PHeisTh.Co T S x a • ratW T S (epsO S T a) := by
-    conv_lhs => rw [← Formalism.IndefR.PHeisTh.sum_eV T S x]
-    simp only [eV_eq]
-  have hcoord : ∀ γ, symplO S T x (ratW T S γ) =
-      ∑ a, Formalism.IndefR.PHeisTh.Co T S x a * algebraMap D.host.F (AF D.host.F) (LamO S T γ a) := by
-    intro γ
-    have := congrArg (symplLin S T (ratW T S γ)) hx'
-    rw [map_sum] at this
-    simp only [map_smul, smul_eq_mul] at this
-    rw [show symplO S T x (ratW T S γ) = symplLin S T (ratW T S γ) x from rfl, this]
-    refine Finset.sum_congr rfl fun a _ => ?_
-    show _ * symplO S T _ _ = _
-    rw [symplO_ratW_ratW]; rfl
-  have hrat : ∀ a, ∃ r : D.host.F, Formalism.IndefR.PHeisTh.Co T S x a = algebraMap D.host.F (AF D.host.F) r := by
-    intro a
-    refine rat_of_perp hψ _ fun q => ?_
-    obtain ⟨γ, hγ⟩ := LamO_surjective S T (Pi.single a q)
-    have := hx γ
-    rw [hcoord, hγ, Finset.sum_eq_single a] at this
-    · rwa [Pi.single_eq_same, mul_comm] at this
-    · intro b _ hb; rw [Pi.single_eq_of_ne hb, map_zero, mul_zero]
-    · simp
-  choose r hr using hrat
-  let ratWHom : Matrix (Fin T.rank) (Fin S.rank) D.host.E →+ WO S T :=
-    ⟨⟨ratW T S, ratW_zero S T⟩, ratW_add S T⟩
-  refine (mem_ratL_iff S T x).2 ⟨∑ a, r a • epsO S T a, ?_⟩
-  rw [hx']
-  show ratWHom (∑ a, r a • epsO S T a) = _
-  rw [map_sum]
-  refine Finset.sum_congr rfl fun a _ => ?_
-  show ratW T S (r a • epsO S T a) = _
-  rw [hr a, smul_ratW]
-
-theorem charComplete (D : D7) : CharComplete D :=
-  charComplete_of fun _ hψ S T x hx => ratL_of_perp S T hψ x hx
 
 end Matrix
 
 end Formalism.IndefR.Fin
 
+end
 end

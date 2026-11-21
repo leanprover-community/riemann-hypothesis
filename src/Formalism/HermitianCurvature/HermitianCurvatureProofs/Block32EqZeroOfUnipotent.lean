@@ -156,7 +156,3 @@ theorem Formalism.FourierDecayAlt.P.unit_stratum_share : Formalism.FourierDecayA
       = (q : ℝ) ^ (r ^ 2 - r) * ((1 - 1 / (q : ℝ)) ^ r * (q : ℝ) ^ r) * κ := by rw [this]
     _ = _ := by ring
 
-theorem Formalism.FourierDecayAlt.P.unit_stratum_mass : Formalism.FourierDecayAlt.S3.UnitStratumMass := by
-  intro volNo volJH volKpp volOm cUk c J h1 h2 h3 h4 hc hJ
-  subst hc; subst hJ
-  refine ⟨?_, ?_, ?_⟩ <;> field_simp

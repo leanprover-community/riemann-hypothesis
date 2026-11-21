@@ -1,12 +1,615 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteAdelicLatticeOpenCompact
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AnnihilatorAdelicLatticeCompact
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BoxFourierIntegralBound
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AdelicVectorIntegralProduct
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InfiniteVectorMeasureIsAddHaar
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ArchimedeanCharacterRealPairing
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothCutoffTranslateContDiff
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LastRowMulRowGLInv
+import Development.WeilBound.CoreStatements.PublishedTheorems.SmoothVectorEstimates.WhittakerVanishingImpliesZero
 
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Topology Filter GlobalTheory.CuspGeneric GlobalTheory.CuspRep PositivityTheory.jumpWindows PositivityTheory.AdelicQuotientData GroundTheory.Automorphic.FourierWhittaker GlobalTheory.CompanionTheory.CutOff
+open scoped ContDiff
+
+namespace GlobalTheory.CompanionTheory.CutOff
+
+theorem latS_isOpen_isCompact : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] (S : Finset (Pl E)) (B : ∀ w : Pl E, AddSubgroup (w.adicCompletion E)), (∀ w ∈ S, IsOpen (B w : Set (w.adicCompletion E))) → (∀ w ∈ S, (B w : Set (w.adicCompletion E)) ⊆ (Formalism.UG.Ov E w : Set (w.adicCompletion E))) → IsOpen (latS S B : Set (Af E)) ∧ IsCompact (latS S B : Set (Af E)) := by
+  intro E _ _ _ S B hO hI
+  have hc : ∀ w : Pl E, Continuous (pLoc E w) := fun w => RestrictedProduct.continuous_eval w
+  have heq : (latS S B : Set (Af E)) =
+      (GroundTheory.Global.integralFiniteAdeles (𝓞 E) E : Set (Af E)) ∩
+        ⋂ w ∈ S, (pLoc E w) ⁻¹' (B w : Set (w.adicCompletion E)) := by
+    ext a
+    constructor
+    · rintro ⟨h1, h2⟩
+      refine ⟨GroundTheory.Global.mem_integralFiniteAdeles.2 fun w => ?_, ?_⟩
+      · by_cases hw : w ∈ S
+        · exact hI w hw (h2 w hw)
+        · exact h1 w hw
+      · exact Set.mem_iInter₂.2 fun w hw => h2 w hw
+    · rintro ⟨h1, h2⟩
+      exact ⟨fun w _ => GroundTheory.Global.mem_integralFiniteAdeles.1 h1 w,
+        fun w hw => Set.mem_iInter₂.1 h2 w hw⟩
+  rw [heq]
+  constructor
+  · exact GroundTheory.Global.isOpen_integralFiniteAdeles.inter
+      (isOpen_biInter_finset fun w hw => (hO w hw).preimage (hc w))
+  · refine (GroundTheory.Global.isCompact_integralFiniteAdeles E).inter_right ?_
+    refine isClosed_biInter fun w hw => IsClosed.preimage (hc w) ?_
+    exact AddSubgroup.isClosed_of_isOpen (B w) (hO w hw)
+
+end GlobalTheory.CompanionTheory.CutOff
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Topology Filter GlobalTheory.CuspGeneric GlobalTheory.CuspRep PositivityTheory.jumpWindows PositivityTheory.AdelicQuotientData GroundTheory.Automorphic.FourierWhittaker GlobalTheory.CompanionTheory.CutOff
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_adelic_lattice_open_compact : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] (S : Finset (Pl E)) (B : ∀ w : Pl E, AddSubgroup (w.adicCompletion E)), (∀ w ∈ S, IsOpen (B w : Set (w.adicCompletion E))) → (∀ w ∈ S, (B w : Set (w.adicCompletion E)) ⊆ (Formalism.UG.Ov E w : Set (w.adicCompletion E))) → IsOpen (latS S B : Set (Af E)) ∧ IsCompact (latS S B : Set (Af E)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CutOff.latS_isOpen_isCompact
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Topology Filter GlobalTheory.CuspGeneric GlobalTheory.CuspRep PositivityTheory.jumpWindows PositivityTheory.AdelicQuotientData GroundTheory.Automorphic.FourierWhittaker GlobalTheory.CompanionTheory.CutOff
+open scoped ContDiff
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.AnnLattice
+
+variable {E : Type} [Field E] [NumberField E]
+
+theorem sLoc_mul (w : Pl E) (t : w.adicCompletion E) (z : Af E) :
+    sLoc E w t * z = sLoc E w (t * pLoc E w z) := by
+  classical
+  refine FiniteAdeleRing.ext _ fun v => ?_
+  change (Pi.single w t : ∀ v : Pl E, v.adicCompletion E) v * pLoc E v z =
+    (Pi.single w (t * pLoc E w z) : ∀ v : Pl E, v.adicCompletion E) v
+  by_cases h : v = w
+  · subst h; simp
+  · simp [Pi.single_eq_of_ne h]
+
+theorem val_int_le_one (u : Pl E) (d : 𝓞 E) :
+    Valued.v (algebraMap E (u.adicCompletion E) (algebraMap (𝓞 E) E d)) ≤ 1 := by
+  rw [Formalism.UG.P.levelaf_valued_algebraMap]
+  exact u.valuation_le_one d
+
+theorem exists_int_small (S : Finset (Pl E)) (c : Pl E → WithZero (Multiplicative ℤ))
+    (hc : ∀ w ∈ S, c w ≠ 0) :
+    ∃ D : 𝓞 E, D ≠ 0 ∧ ∀ w ∈ S, Valued.v (algebraMap E (w.adicCompletion E) (algebraMap (𝓞 E) E D)) ≤ c w := by
+  classical
+  induction S using Finset.induction_on with
+  | empty => exact ⟨1, one_ne_zero, by simp⟩
+  | insert w S hw ih =>
+    obtain ⟨D, hD0, hD⟩ := ih fun u hu => hc u (Finset.mem_insert_of_mem hu)
+    obtain ⟨x, hxw, hx0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot w.ne_bot
+    have hlt : Valued.v (algebraMap E (w.adicCompletion E) (algebraMap (𝓞 E) E x)) < 1 := by
+      rw [Formalism.UG.P.levelaf_valued_algebraMap]
+      exact (HeightOneSpectrum.valuation_lt_one_iff_mem w _).2 hxw
+    obtain ⟨n, hn⟩ := exists_pow_lt₀ hlt (Units.mk0 _ (hc w (Finset.mem_insert_self _ _)))
+    refine ⟨D * x ^ n, mul_ne_zero hD0 (pow_ne_zero _ hx0), fun u hu => ?_⟩
+    simp only [map_mul, map_pow]
+    rcases Finset.mem_insert.1 hu with rfl | hu
+    · calc _ ≤ 1 * _ := mul_le_mul' (val_int_le_one u D) le_rfl
+        _ = _ := one_mul _
+        _ ≤ c u := hn.le
+    · calc _ ≤ c u * 1 := mul_le_mul' (hD u hu) (pow_le_one' (val_int_le_one u x) n)
+        _ = c u := mul_one _
+
+theorem one_le_exp_mul {b : WithZero (Multiplicative ℤ)} (h : 1 < b) : 1 ≤ WithZero.exp (-1 : ℤ) * b := by
+  have hb0 : b ≠ 0 := (zero_lt_one.trans h).ne'
+  obtain ⟨n, rfl⟩ : ∃ n : ℤ, b = WithZero.exp n := ⟨_, (WithZero.exp_log hb0).symm⟩
+  rw [← WithZero.exp_add, ← WithZero.exp_zero, WithZero.exp_le_exp]
+  rw [← WithZero.exp_zero, WithZero.exp_lt_exp] at h
+  omega
+
+variable {ψ : AddChar (Ad E) ℂ}
+
+theorem val_le_one_of_cond {w : Pl E} (hw : Cond ψ w) {L : Set (Af E)}
+    (hL : ∀ t ∈ Formalism.UG.Ov E w, sLoc E w t ∈ L) {z : Af E}
+    (hz : ∀ a ∈ L, ψ (sFin E (a * z)) = 1) : Valued.v (pLoc E w z) ≤ 1 := by
+  by_contra hcon
+  have h1 : 1 < Valued.v (pLoc E w z) := not_le.1 hcon
+  obtain ⟨-, ϖ, y, hϖ, hy1, hy⟩ := hw
+  have hz0 : Valued.v (pLoc E w z) ≠ 0 := (zero_lt_one.trans h1).ne'
+  have hzw : pLoc E w z ≠ 0 := (map_ne_zero _).1 hz0
+  have hϖ' : Valued.v ϖ = WithZero.exp (-1 : ℤ) := hϖ
+  have hd : 1 ≤ Valued.v ϖ * Valued.v (pLoc E w z) := by
+    rw [hϖ']
+    exact one_le_exp_mul h1
+  have hyv : Valued.v (ϖ * y) ≤ 1 := hy1
+  rw [map_mul] at hyv
+  have hle : Valued.v y ≤ Valued.v (pLoc E w z) := by
+    calc Valued.v y = 1 * Valued.v y := (one_mul _).symm
+      _ ≤ (Valued.v ϖ * Valued.v (pLoc E w z)) * Valued.v y := mul_le_mul' hd le_rfl
+      _ = (Valued.v ϖ * Valued.v y) * Valued.v (pLoc E w z) := mul_right_comm _ _ _
+      _ ≤ 1 * Valued.v (pLoc E w z) := mul_le_mul' hyv le_rfl
+      _ = _ := one_mul _
+  have ht : y / pLoc E w z ∈ Formalism.UG.Ov E w := by
+    change Valued.v (y / pLoc E w z) ≤ 1
+    rw [map_div₀]
+    exact div_le_one_of_le₀ hle zero_le'
+  have h2 := hz _ (hL _ ht)
+  rw [sLoc_mul, div_mul_cancel₀ _ hzw] at h2
+  exact hy h2
+
+theorem exists_val_bound (hψ : StdPsi ψ) (w : Pl E) {L : Set (Af E)} {N : Set (w.adicCompletion E)} (hN : N ∈ 𝓝 0)
+    (hL : ∀ t ∈ N, sLoc E w t ∈ L) :
+    ∃ c : WithZero (Multiplicative ℤ), c ≠ 0 ∧ ∀ z : Af E, (∀ a ∈ L, ψ (sFin E (a * z)) = 1) →
+      ∀ d : w.adicCompletion E, Valued.v d ≤ c → Valued.v (d * pLoc E w z) ≤ 1 := by
+  obtain ⟨y, hy⟩ := hψ.loc w
+  have hy0 : y ≠ 0 := by
+    rintro rfl
+    exact hy (by simp)
+  have hY : Valued.v y ≠ 0 := (map_ne_zero _).2 hy0
+  obtain ⟨γ, hγ⟩ := Valued.mem_nhds_zero.1 hN
+  set g : WithZero (Multiplicative ℤ) := MonoidWithZeroHom.ValueGroup₀.embedding γ.1 with hg
+  have hg0 : g ≠ 0 := by
+    rw [hg]; exact (map_ne_zero _).2 γ.ne_zero
+  refine ⟨g / Valued.v y, div_ne_zero hg0 hY, fun z hz d hd => ?_⟩
+  by_contra hcon
+  have h1 : 1 < Valued.v (d * pLoc E w z) := not_le.1 hcon
+  rw [map_mul] at h1
+  have hb0 : Valued.v (pLoc E w z) ≠ 0 := by
+    intro h
+    rw [h, mul_zero] at h1
+    exact not_lt_of_ge zero_le' h1
+  have hzw : pLoc E w z ≠ 0 := (map_ne_zero _).1 hb0
+  have hYpos : 0 < Valued.v y := zero_lt_iff.2 hY
+  have hbpos : 0 < Valued.v (pLoc E w z) := zero_lt_iff.2 hb0
+  have hdY : Valued.v d * Valued.v y ≤ g := (le_div_iff₀ hYpos).1 hd
+  have ht : y / pLoc E w z ∈ N := by
+    refine hγ ?_
+    change (Valued.v : Valuation (w.adicCompletion E) (WithZero (Multiplicative ℤ))).restrict (y / pLoc E w z) < γ.1
+    rw [Valuation.restrict_lt_iff_lt_embedding, map_div₀, ← hg, div_lt_iff₀ hbpos]
+    calc Valued.v y = 1 * Valued.v y := (one_mul _).symm
+      _ < (Valued.v d * Valued.v (pLoc E w z)) * Valued.v y := mul_lt_mul_of_pos_right h1 hYpos
+      _ = (Valued.v d * Valued.v y) * Valued.v (pLoc E w z) := mul_right_comm _ _ _
+      _ ≤ g * Valued.v (pLoc E w z) := mul_le_mul' hdY le_rfl
+  have h2 := hz _ (hL _ ht)
+  rw [sLoc_mul, div_mul_cancel₀ _ hzw] at h2
+  exact hy h2
+
+theorem exists_isCompact_annihilator : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {ψ : AddChar (Ad E) ℂ},
+    StdPsi ψ → ∀ (S : Finset (Pl E)), (∀ w, w ∉ S → Cond ψ w) → ∀ (L : Set (Af E)),
+    (∀ w, w ∉ S → ∀ t ∈ Formalism.UG.Ov E w, sLoc E w t ∈ L) →
+    (∀ w ∈ S, ∃ N ∈ 𝓝 (0 : w.adicCompletion E), ∀ t ∈ N, sLoc E w t ∈ L) →
+    ∃ C : Set (Af E), IsCompact C ∧ ∀ z : Af E, (∀ a ∈ L, ψ (sFin E (a * z)) = 1) → z ∈ C := by
+  intro E _ _ _ ψ hψ S hS L hoff hon
+  classical
+  have hloc : ∀ w : Pl E, ∃ c : WithZero (Multiplicative ℤ), c ≠ 0 ∧ (w ∈ S → ∀ z : Af E,
+      (∀ a ∈ L, ψ (sFin E (a * z)) = 1) → ∀ d : w.adicCompletion E, Valued.v d ≤ c →
+        Valued.v (d * pLoc E w z) ≤ 1) := fun w => by
+    by_cases hw : w ∈ S
+    · obtain ⟨N, hN, hNL⟩ := hon w hw
+      obtain ⟨c, hc0, hc⟩ := exists_val_bound hψ w hN hNL
+      exact ⟨c, hc0, fun _ => hc⟩
+    · exact ⟨1, one_ne_zero, fun h => absurd h hw⟩
+  choose c hc0 hc using hloc
+  obtain ⟨D, hD0, hD⟩ := exists_int_small S c fun w _ => hc0 w
+  have he : algebraMap (𝓞 E) E D ≠ 0 :=
+    (map_ne_zero_iff _ (IsFractionRing.injective (𝓞 E) E)).2 hD0
+  refine ⟨(fun y => algebraMap E (Af E) (algebraMap (𝓞 E) E D)⁻¹ * y) ''
+      (GroundTheory.Global.integralFiniteAdeles (𝓞 E) E : Set (Af E)),
+    (GroundTheory.Global.isCompact_integralFiniteAdeles E).image (continuous_const.mul continuous_id), fun z hz => ?_⟩
+  refine ⟨algebraMap E (Af E) (algebraMap (𝓞 E) E D) * z, ?_, ?_⟩
+  · refine SetLike.mem_coe.2 (GroundTheory.Global.mem_integralFiniteAdeles.2 fun w => ?_)
+    have e : (algebraMap E (Af E) (algebraMap (𝓞 E) E D) * z) w =
+        algebraMap E (w.adicCompletion E) (algebraMap (𝓞 E) E D) * pLoc E w z := rfl
+    rw [e, HeightOneSpectrum.mem_adicCompletionIntegers]
+    by_cases hw : w ∈ S
+    · exact hc w hw z hz _ (hD w hw)
+    · rw [map_mul]
+      calc _ ≤ 1 * 1 := mul_le_mul' (val_int_le_one w D) (val_le_one_of_cond (hS w hw) (hoff w hw) hz)
+        _ = 1 := one_mul 1
+  · change algebraMap E (Af E) (algebraMap (𝓞 E) E D)⁻¹ * (algebraMap E (Af E) (algebraMap (𝓞 E) E D) * z) = z
+    rw [← mul_assoc, ← map_mul, inv_mul_cancel₀ he, map_one, one_mul]
+
+end GlobalTheory.CompanionTheory.AnnLattice
+
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Topology Filter GlobalTheory.CuspGeneric GlobalTheory.CuspRep PositivityTheory.jumpWindows PositivityTheory.AdelicQuotientData GroundTheory.Automorphic.FourierWhittaker GlobalTheory.CompanionTheory.CutOff
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.annihilator_adelic_lattice_compact : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {ψ : AddChar (Ad E) ℂ}, StdPsi ψ → ∀ (S : Finset (Pl E)), (∀ w, w ∉ S → Cond ψ w) → ∀ (L : Set (Af E)), (∀ w, w ∉ S → ∀ t ∈ Formalism.UG.Ov E w, sLoc E w t ∈ L) → (∀ w ∈ S, ∃ N ∈ 𝓝 (0 : w.adicCompletion E), ∀ t ∈ N, sLoc E w t ∈ L) → ∃ C : Set (Af E), IsCompact C ∧ ∀ z : Af E, (∀ a ∈ L, ψ (sFin E (a * z)) = 1) → z ∈ C := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.AnnLattice.exists_isCompact_annihilator
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Topology Filter GlobalTheory.CuspGeneric GlobalTheory.CuspRep PositivityTheory.jumpWindows PositivityTheory.AdelicQuotientData GroundTheory.Automorphic.FourierWhittaker GlobalTheory.CompanionTheory.CutOff
+open scoped ContDiff
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.CutOff.FinFT
+
+variable {E : Type} [Field E] [NumberField E] {k : ℕ}
+
+theorem measurableSet_boxL (L : AddSubgroup (Af E)) (hLo : IsOpen (L : Set (Af E)))
+    (c : Fin k → Af E) : MeasurableSet (boxL (L : Set (Af E)) c) := by
+  have e : boxL (L : Set (Af E)) c =
+      Set.pi Set.univ fun i => (fun x : Af E => x - c i) ⁻¹' (L : Set (Af E)) := by
+    ext f; simp [boxL, Set.mem_pi]
+  rw [e]
+  exact MeasurableSet.univ_pi fun i =>
+    (hLo.preimage (continuous_id.sub continuous_const)).measurableSet
+
+theorem boxL_add_single (L : AddSubgroup (Af E)) (c f : Fin k → Af E) (i : Fin k) {a : Af E}
+    (ha : a ∈ L) : f + Pi.single i a ∈ boxL (L : Set (Af E)) c ↔ f ∈ boxL (L : Set (Af E)) c := by
+  have hl : ∀ j, (Pi.single i a : Fin k → Af E) j ∈ L := fun j => by
+    by_cases h : j = i
+    · subst h; simpa using ha
+    · simp [Pi.single_eq_of_ne h]
+  have e : ∀ j, (f + Pi.single i a : Fin k → Af E) j - c j = (f j - c j) + (Pi.single i a : Fin k → Af E) j :=
+    fun j => by simp only [Pi.add_apply]; ring
+  constructor
+  · intro h j
+    have h1 : (f + Pi.single i a : Fin k → Af E) j - c j ∈ L := h j
+    rw [e] at h1
+    exact (L.add_mem_cancel_right (hl j)).1 h1
+  · intro h j
+    change (f + Pi.single i a : Fin k → Af E) j - c j ∈ L
+    rw [e]
+    exact L.add_mem (h j) (hl j)
+
+theorem sum_add_single (f z : Fin k → Af E) (i : Fin k) (a : Af E) :
+    ∑ j, (f + Pi.single i a : Fin k → Af E) j * z j = ∑ j, f j * z j + a * z i := by
+  simp only [Pi.add_apply, add_mul, Finset.sum_add_distrib]
+  congr 1
+  rw [Finset.sum_eq_single i]
+  · simp
+  · intro j _ hj; simp [Pi.single_eq_of_ne hj]
+  · simp
+
+variable [IsTotallyComplex E]
+
+theorem box_fourier {ψ : AddChar (Ad E) ℂ} (hψ : ∀ x, ‖ψ x‖ = 1) (_hc : Continuous ψ)
+    (L : AddSubgroup (Af E)) (_hLc : IsCompact (L : Set (Af E))) (hLo : IsOpen (L : Set (Af E)))
+    (c z : Fin k → Af E) :
+    ‖∫ f, (((boxL (L : Set (Af E)) c).indicator (fun _ => (1 : ℝ)) f : ℝ) : ℂ) *
+        ψ (sFin E (∑ i, f i * z i)) ∂nuFin E k‖ ≤ (nuFin E k).real (boxL (L : Set (Af E)) c) ∧
+    (∫ f, (((boxL (L : Set (Af E)) c).indicator (fun _ => (1 : ℝ)) f : ℝ) : ℂ) *
+        ψ (sFin E (∑ i, f i * z i)) ∂nuFin E k ≠ 0 →
+      ∀ i, ∀ a ∈ L, ψ (sFin E (a * z i)) = 1) := by
+  have hm := measurableSet_boxL L hLo c
+  refine ⟨?_, ?_⟩
+  · refine (norm_integral_le_integral_norm _).trans (le_of_eq ?_)
+    have e : (fun f : Fin k → Af E => ‖(((boxL (L : Set (Af E)) c).indicator (fun _ => (1 : ℝ)) f : ℝ) : ℂ) *
+        ψ (sFin E (∑ i, f i * z i))‖) = (boxL (L : Set (Af E)) c).indicator 1 := by
+      funext f
+      by_cases hf : f ∈ boxL (L : Set (Af E)) c <;> simp [hf, hψ]
+    rw [e, integral_indicator_one hm]
+  · intro hI i a ha
+    have hinv : (nuFin E k).IsAddRightInvariant := by
+      unfold nuFin; infer_instance
+    have key := integral_add_right_eq_self (μ := nuFin E k)
+      (fun f => (((boxL (L : Set (Af E)) c).indicator (fun _ => (1 : ℝ)) f : ℝ) : ℂ) *
+        ψ (sFin E (∑ i, f i * z i))) (Pi.single i a : Fin k → Af E)
+    have e : ∀ f : Fin k → Af E,
+        (((boxL (L : Set (Af E)) c).indicator (fun _ => (1 : ℝ)) (f + Pi.single i a) : ℝ) : ℂ) *
+          ψ (sFin E (∑ j, (f + Pi.single i a : Fin k → Af E) j * z j)) =
+        ψ (sFin E (a * z i)) * ((((boxL (L : Set (Af E)) c).indicator (fun _ => (1 : ℝ)) f : ℝ) : ℂ) *
+          ψ (sFin E (∑ j, f j * z j))) := fun f => by
+      rw [sum_add_single, map_add, AddChar.map_add_eq_mul]
+      by_cases hf : f ∈ boxL (L : Set (Af E)) c
+      · rw [Set.indicator_of_mem ((boxL_add_single L c f i ha).2 hf), Set.indicator_of_mem hf]
+        ring
+      · rw [Set.indicator_of_notMem (fun h => hf ((boxL_add_single L c f i ha).1 h)),
+          Set.indicator_of_notMem hf]
+        simp
+    simp only [e] at key
+    rw [integral_const_mul] at key
+    exact mul_right_cancel₀ hI (key.trans (one_mul _).symm)
+
+theorem box_fourier_main : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {k : ℕ} {ψ : AddChar (Ad E) ℂ}, (∀ x, ‖ψ x‖ = 1) → Continuous ψ → ∀ (L : AddSubgroup (Af E)), IsCompact (L : Set (Af E)) → IsOpen (L : Set (Af E)) → ∀ (c z : Fin k → Af E), ‖∫ f, (((boxL (L : Set (Af E)) c).indicator (fun _ => (1 : ℝ)) f : ℝ) : ℂ) * ψ (sFin E (∑ i, f i * z i)) ∂nuFin E k‖ ≤ (nuFin E k).real (boxL (L : Set (Af E)) c) ∧ (∫ f, (((boxL (L : Set (Af E)) c).indicator (fun _ => (1 : ℝ)) f : ℝ) : ℂ) * ψ (sFin E (∑ i, f i * z i)) ∂nuFin E k ≠ 0 → ∀ i, ∀ a ∈ L, ψ (sFin E (a * z i)) = 1) :=
+  fun h1 h2 L h3 h4 c z => box_fourier h1 h2 L h3 h4 c z
+
+end GlobalTheory.CompanionTheory.CutOff.FinFT
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Topology Filter GlobalTheory.CuspGeneric GlobalTheory.CuspRep PositivityTheory.jumpWindows PositivityTheory.AdelicQuotientData GroundTheory.Automorphic.FourierWhittaker GlobalTheory.CompanionTheory.CutOff
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.box_fourier_integral_bound : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {k : ℕ} {ψ : AddChar (Ad E) ℂ}, (∀ x, ‖ψ x‖ = 1) → Continuous ψ → ∀ (L : AddSubgroup (Af E)), IsCompact (L : Set (Af E)) → IsOpen (L : Set (Af E)) → ∀ (c z : Fin k → Af E), ‖∫ f, (((boxL (L : Set (Af E)) c).indicator (fun _ => (1 : ℝ)) f : ℝ) : ℂ) * ψ (sFin E (∑ i, f i * z i)) ∂nuFin E k‖ ≤ (nuFin E k).real (boxL (L : Set (Af E)) c) ∧ (∫ f, (((boxL (L : Set (Af E)) c).indicator (fun _ => (1 : ℝ)) f : ℝ) : ℂ) * ψ (sFin E (∑ i, f i * z i)) ∂nuFin E k ≠ 0 → ∀ i, ∀ a ∈ L, ψ (sFin E (a * z i)) = 1) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CutOff.FinFT.box_fourier_main
+end
+
+section
+section
+noncomputable section
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Topology Filter GlobalTheory.CuspGeneric GlobalTheory.CuspRep PositivityTheory.jumpWindows PositivityTheory.AdelicQuotientData GroundTheory.Automorphic.FourierWhittaker GlobalTheory.CompanionTheory.CutOff
+open scoped ContDiff
+
+namespace GlobalTheory.CompanionTheory.CutOff.Split
+
+variable {E : Type} [Field E] [NumberField E] [IsTotallyComplex E]
+
+def rowEquiv (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (k : ℕ) :
+    (Fin k → InfiniteAdeleRing E) ≃ᵐ (Fin k → Cinf E) :=
+  MeasurableEquiv.piCongrRight fun _ =>
+    { toEquiv := (infEq E).symm.toEquiv
+      measurable_toFun := (GlobalTheory.CuspRep.GASplit.continuous_infEq_symm E).measurable
+      measurable_invFun := (continuous_infEq E).measurable }
+
+theorem nuInf_eq (k : ℕ) :
+    nuInf E k = (Measure.pi fun _ : Fin k => GroundTheory.Global.infiniteAdeleMeasure E).map (rowEquiv E k) := rfl
+
+theorem integral_split {k : ℕ} (A : (Fin k → Cinf E) → ℂ) (B : (Fin k → Af E) → ℂ) :
+    ∫ y, A (fun i => pInf E (y i)) * B (fun i => pFin E (y i)) ∂vecMeasure E (Fin k) =
+      (∫ x, A x ∂nuInf E k) * ∫ f, B f ∂nuFin E k := by
+  have hmp := measurePreserving_arrowProdEquivProdArrow (InfiniteAdeleRing E) (Af E) (Fin k)
+    (fun _ => GroundTheory.Global.infiniteAdeleMeasure E) (fun _ => GroundTheory.Global.finiteAdeleMeasure E)
+  haveI : SFinite (nuFin E k) := by unfold nuFin; infer_instance
+  have e : (fun y : Fin k → Ad E => A (fun i => pInf E (y i)) * B (fun i => pFin E (y i))) =
+      fun x => (A ∘ rowEquiv E k) ((MeasurableEquiv.arrowProdEquivProdArrow (InfiniteAdeleRing E) (Af E) (Fin k)) x).1 *
+        B ((MeasurableEquiv.arrowProdEquivProdArrow (InfiniteAdeleRing E) (Af E) (Fin k)) x).2 := by
+    funext y
+    rfl
+  have h1 : ∫ y, A (fun i => pInf E (y i)) * B (fun i => pFin E (y i)) ∂vecMeasure E (Fin k) =
+      ∫ z, (A ∘ rowEquiv E k) z.1 * B z.2 ∂((Measure.pi fun _ : Fin k => GroundTheory.Global.infiniteAdeleMeasure E).prod
+        (nuFin E k)) := by
+    rw [e]
+    exact (hmp.integral_comp (MeasurableEquiv.measurableEmbedding _)
+      (fun z => (A ∘ rowEquiv E k) z.1 * B z.2))
+  rw [h1, integral_prod_mul, nuInf_eq, integral_map_equiv]
+  rfl
+
+end GlobalTheory.CompanionTheory.CutOff.Split
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Topology Filter GlobalTheory.CuspGeneric GlobalTheory.CuspRep PositivityTheory.jumpWindows PositivityTheory.AdelicQuotientData GroundTheory.Automorphic.FourierWhittaker GlobalTheory.CompanionTheory.CutOff
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adelic_vector_integral_product : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {k : ℕ} (A : (Fin k → Cinf E) → ℂ) (B : (Fin k → Af E) → ℂ), ∫ y, A (fun i => pInf E (y i)) * B (fun i => pFin E (y i)) ∂vecMeasure E (Fin k) = (∫ x, A x ∂nuInf E k) * ∫ f, B f ∂nuFin E k := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CutOff.Split.integral_split
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Topology Filter GlobalTheory.CuspGeneric GlobalTheory.CuspRep PositivityTheory.jumpWindows PositivityTheory.AdelicQuotientData GroundTheory.Automorphic.FourierWhittaker GlobalTheory.CompanionTheory.CutOff
+open scoped ContDiff
+
+namespace GlobalTheory.CompanionTheory.CutOff
+
+variable (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (k : ℕ)
+
+noncomputable def rowInfEquiv : (Fin k → InfiniteAdeleRing E) ≃+ (Fin k → Cinf E) :=
+  AddEquiv.piCongrRight fun _ => (infEq E).symm.toAddEquiv
+
+theorem nuInf_isAddHaarMeasure : (nuInf E k).IsAddHaarMeasure := by
+  have hc : Continuous (rowInfEquiv E k) :=
+    continuous_pi fun i => (GASplit.continuous_infEq_symm E).comp (continuous_apply i)
+  have hc' : Continuous (rowInfEquiv E k).symm :=
+    continuous_pi fun i => (continuous_infEq E).comp (continuous_apply i)
+  have hp : (Measure.pi fun _ : Fin k => GroundTheory.Global.infiniteAdeleMeasure E).IsAddHaarMeasure :=
+    Measure.pi.isAddHaarMeasure _
+  exact AddEquiv.isAddHaarMeasure_map _ (rowInfEquiv E k) hc hc'
+
+end GlobalTheory.CompanionTheory.CutOff
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Topology Filter GlobalTheory.CuspGeneric GlobalTheory.CuspRep PositivityTheory.jumpWindows PositivityTheory.AdelicQuotientData GroundTheory.Automorphic.FourierWhittaker GlobalTheory.CompanionTheory.CutOff
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.infinite_vector_measure_isAddHaar : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (k : ℕ), (nuInf E k).IsAddHaarMeasure := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CutOff.nuInf_isAddHaarMeasure
+end
+
+section
+noncomputable section
+
+open NumberField IsDedekindDomain Matrix Topology Filter
+open GlobalTheory.CuspGeneric GlobalTheory.CuspRep PositivityTheory.jumpWindows
+
+namespace GlobalTheory.CompanionTheory.JSInfStep
+
+variable {E : Type} [Field E] [NumberField E] {a : ℕ}
+
+theorem nonempty_pl : Nonempty (Pl E) := by
+  obtain ⟨M, hM⟩ := Ideal.exists_maximal (𝓞 E)
+  exact ⟨⟨M, hM.isPrime, Ring.ne_bot_of_isMaximal_of_not_isField hM (RingOfIntegers.not_isField E)⟩⟩
+
+variable [IsTotallyComplex E]
+
+def chiInf (ψ : AddChar (Ad E) ℂ) : AddChar (Cinf E) ℂ :=
+  ψ.compAddMonoidHom (AddMonoidHomClass.toAddMonoidHom (sInf E))
+
+theorem chiInf_apply (ψ : AddChar (Ad E) ℂ) (z : Cinf E) : chiInf ψ z = ψ (sInf E z) := rfl
+
+theorem continuous_sInf : Continuous (sInf E) :=
+  ((continuous_infEq E).prodMk continuous_const :
+    Continuous fun x : Cinf E => ((infEq E x, 0) : InfiniteAdeleRing E × Af E))
+
+theorem pInf_sInf (x : Cinf E) : pInf E (sInf E x) = x := (infEq E).symm_apply_apply x
+
+theorem pFin_sInf (x : Cinf E) : pFin E (sInf E x) = 0 := rfl
+
+theorem chiInf_nondeg {ψ : AddChar (Ad E) ℂ} (hψ : StdPsi ψ) (z : Cinf E)
+    (h : ∀ w, chiInf ψ (z * w) = 1) : z = 0 := by
+  obtain ⟨d, hd⟩ := hψ.ann (sInf E z) fun c => by
+    have e : sInf E z * algebraMap E (Ad E) c = sInf E (z * pInf E (algebraMap E (Ad E) c)) := by
+      refine ad_ext ?_ ?_
+      · rw [map_mul, pInf_sInf, pInf_sInf]
+      · rw [map_mul, pFin_sInf, pFin_sInf, zero_mul]
+    rw [e]
+    exact h _
+  obtain ⟨w⟩ := nonempty_pl (E := E)
+  haveI : Nontrivial (Af E) := (pLoc E w).domain_nontrivial
+  have h0 : ((pFin E).comp (algebraMap E (Ad E))) d = 0 := by
+    change pFin E (algebraMap E (Ad E) d) = 0
+    rw [← hd, pFin_sInf]
+  have hd0 : d = 0 := (injective_iff_map_eq_zero _).1 ((pFin E).comp (algebraMap E (Ad E))).injective d h0
+  rw [← pInf_sInf z, hd, hd0, map_zero, map_zero]
+
+end GlobalTheory.CompanionTheory.JSInfStep
+
+end
+end
+
+section
+section
+noncomputable section
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Topology Filter GlobalTheory.CuspGeneric GlobalTheory.CuspRep PositivityTheory.jumpWindows PositivityTheory.AdelicQuotientData GroundTheory.Automorphic.FourierWhittaker GlobalTheory.CompanionTheory.CutOff
+open scoped ContDiff
+
+namespace GlobalTheory.CompanionTheory.JSPair
+
+def dotL (E : Type) [Field E] [NumberField E] (k : ℕ) :
+    (Fin k → Cinf E) →L[ℝ] (Fin k → Cinf E) →L[ℝ] Cinf E :=
+  ∑ i : Fin k, (ContinuousLinearMap.mul ℝ (Cinf E)).bilinearComp
+    (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin k => Cinf E) i)
+    (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin k => Cinf E) i)
+
+theorem dotL_apply {E : Type} [Field E] [NumberField E] {k : ℕ} (x z : Fin k → Cinf E) :
+    dotL E k x z = ∑ i, x i * z i := by
+  simp [dotL, ContinuousLinearMap.sum_apply]
+
+theorem exists_pairing : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {k : ℕ} {ψ : AddChar (Ad E) ℂ}, S8 → StdPsi ψ → ∃ β : (Fin k → Cinf E) →L[ℝ] (Fin k → Cinf E) →L[ℝ] ℝ, (∀ y, (∀ x, β x y = 0) → y = 0) ∧ ∀ x z : Fin k → Cinf E, ψ (sInf E (∑ i, x i * z i)) = Complex.exp (-((β x z : ℝ) : ℂ) * Complex.I) := by
+  intro E _ _ _ k ψ h8 hψ
+  obtain ⟨l, hl⟩ := h8 (InfinitePlace E) (GlobalTheory.CompanionTheory.JSInfStep.chiInf ψ)
+    (hψ.cont.comp GlobalTheory.CompanionTheory.JSInfStep.continuous_sInf) (fun z => hψ.norm _)
+  let β : (Fin k → Cinf E) →L[ℝ] (Fin k → Cinf E) →L[ℝ] ℝ :=
+    (ContinuousLinearMap.compL ℝ (Fin k → Cinf E) (Cinf E) ℝ (-l)) ∘L dotL E k
+  have hβ : ∀ x z, β x z = -l (∑ i, x i * z i) := fun x z => by
+    simp [β, dotL_apply]
+  refine ⟨β, fun y hy => ?_, fun x z => ?_⟩
+  · funext i
+    refine GlobalTheory.CompanionTheory.JSInfStep.chiInf_nondeg hψ (y i) fun w => ?_
+    have h0 := hy (Pi.single i w)
+    rw [hβ] at h0
+    have e : ∑ j, (Pi.single i w : Fin k → Cinf E) j * y j = y i * w := by
+      rw [Finset.sum_eq_single i]
+      · rw [Pi.single_eq_same, mul_comm]
+      · intro j _ hj
+        rw [Pi.single_eq_of_ne hj, zero_mul]
+      · simp
+    rw [e] at h0
+    have h1 : l (y i * w) = 0 := neg_eq_zero.1 h0
+    rw [hl, h1]
+    simp
+  · have := hl (∑ i, x i * z i)
+    rw [GlobalTheory.CompanionTheory.JSInfStep.chiInf_apply] at this
+    rw [this, hβ]
+    simp
+
+end GlobalTheory.CompanionTheory.JSPair
+
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Topology Filter GlobalTheory.CuspGeneric GlobalTheory.CuspRep PositivityTheory.jumpWindows PositivityTheory.AdelicQuotientData GroundTheory.Automorphic.FourierWhittaker GlobalTheory.CompanionTheory.CutOff
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.archimedean_character_real_pairing : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {k : ℕ} {ψ : AddChar (Ad E) ℂ}, S8 → StdPsi ψ → ∃ β : (Fin k → Cinf E) →L[ℝ] (Fin k → Cinf E) →L[ℝ] ℝ, (∀ y, (∀ x, β x y = 0) → y = 0) ∧ ∀ x z : Fin k → Cinf E, ψ (sInf E (∑ i, x i * z i)) = Complex.exp (-((β x z : ℝ) : ℂ) * Complex.I) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.JSPair.exists_pairing
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Topology Filter GlobalTheory.CuspGeneric GlobalTheory.CuspRep PositivityTheory.jumpWindows PositivityTheory.AdelicQuotientData GroundTheory.Automorphic.FourierWhittaker GlobalTheory.CompanionTheory.CutOff
+open scoped ContDiff
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.CutOff
+
+set_option linter.unusedSectionVars false
+
+variable {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {k : ℕ}
+
+theorem contDiff_lastEnt : ContDiff ℝ ∞ (lastEnt : (Fin k → Cinf E) → Cinf E) := by
+  unfold lastEnt
+  refine ContDiff.sum fun c _ => ?_
+  by_cases h : (c : ℕ) + 1 = k
+  · simp only [if_pos h]
+    exact contDiff_apply ℝ (Cinf E) c
+  · simp only [if_neg h]
+    exact contDiff_const
+
+theorem isOpen_lastEnt_unit : IsOpen {x : Fin k → Cinf E | IsUnit (lastEnt x)} :=
+  (Units.isOpen (R := Cinf E)).preimage (contDiff_lastEnt (E := E)).continuous
+
+theorem contDiffOn_inverse_lastEnt :
+    ContDiffOn ℝ ∞ (fun x : Fin k → Cinf E => Ring.inverse (lastEnt x))
+      {x | IsUnit (lastEnt x)} := by
+  intro x hx
+  obtain ⟨u, hu⟩ := hx
+  have h1 : ContDiffAt ℝ ∞ (Ring.inverse : Cinf E → Cinf E) (lastEnt x) := by
+    rw [← hu]; exact contDiffAt_ringInverse ℝ u
+  exact (h1.comp x (contDiff_lastEnt (E := E)).contDiffAt).contDiffWithinAt
+
+def tauM (x : Fin k → Cinf E) : LieI (InfinitePlace E) k := Matrix.of.symm (rowM (rowI x))
+
+theorem contDiffOn_tauM :
+    ContDiffOn ℝ ∞ (tauM : (Fin k → Cinf E) → LieI (InfinitePlace E) k)
+      {x | IsUnit (lastEnt x)} := by
+  refine contDiffOn_pi.2 fun i => contDiffOn_pi.2 fun c => ?_
+  have hinv := contDiffOn_inverse_lastEnt (E := E) (k := k)
+  by_cases hi : (i : ℕ) + 1 = k
+  · have e : ∀ x : Fin k → Cinf E, tauM x i c = rowI x c := fun x => rowM_apply_last _ i c hi
+    simp only [e]
+    by_cases hc : (c : ℕ) + 1 = k
+    · simp only [rowI, if_pos hc]
+      exact hinv
+    · simp only [rowI, if_neg hc]
+      exact ((contDiff_apply ℝ (Cinf E) c).contDiffOn.mul hinv).neg
+  · have e : ∀ x : Fin k → Cinf E, tauM x i c = (1 : Matrix (Fin k) (Fin k) (Cinf E)) i c :=
+      fun x => rowM_apply_ne _ i c hi
+    simp only [e]
+    exact contDiffOn_const
+
+theorem tauM_isUnit {x : Fin k → Cinf E} (h : IsUnit (lastEnt x)) :
+    IsUnit (Matrix.of (tauM x)) := by
+  have e : Matrix.of (tauM x) = (((rowGL x)⁻¹ : GL (Fin k) (Cinf E)) : Matrix (Fin k) (Fin k) (Cinf E)) :=
+    (rowGL_inv_val h).symm
+  rw [e]
+  exact Units.isUnit _
+
+theorem rt_inv_eq_orb (φ : XB E k) {x : Fin k → Cinf E} (h : IsUnit (lastEnt x)) :
+    Rt E k (infGL E k (rowGL x))⁻¹ φ = orb (repI E k) φ (tauM x) := by
+  have hu := tauM_isUnit h
+  have e : hu.unit = (rowGL x)⁻¹ := Units.ext (by
+    rw [IsUnit.unit_spec]; exact (rowGL_inv_val h).symm)
+  rw [orb, dif_pos hu, e]
+  change _ = Rt E k (infGL E k (rowGL x)⁻¹) φ
+  rw [map_inv (infGL E k)]
+
+theorem contDiff_cut_orbit {φ : XB E k} (hφ : SmV (repI E k) φ) {b : (Fin k → Cinf E) → ℝ}
+    (hb : ContDiff ℝ ∞ b) (hs : ∀ x ∈ tsupport b, IsUnit (lastEnt x)) :
+    ContDiff ℝ ∞ fun x => (b x : ℂ) • Rt E k (infGL E k (rowGL x))⁻¹ φ := by
+  have hO := isOpen_lastEnt_unit (E := E) (k := k)
+  have hbc : ContDiff ℝ ∞ fun x => (b x : ℂ) := Complex.ofRealCLM.contDiff.comp hb
+  have horb : ContDiffOn ℝ ∞ (fun x => orb (repI E k) φ (tauM x)) {x : Fin k → Cinf E | IsUnit (lastEnt x)} :=
+    ContDiffOn.comp hφ contDiffOn_tauM fun x hx => tauM_isUnit hx
+  have hF : ContDiffOn ℝ ∞ (fun x => (b x : ℂ) • Rt E k (infGL E k (rowGL x))⁻¹ φ)
+      {x : Fin k → Cinf E | IsUnit (lastEnt x)} :=
+    (hbc.contDiffOn.smul horb).congr fun x hx => by
+      rw [rt_inv_eq_orb φ hx]
+      rfl
+  refine contDiff_iff_contDiffAt.2 fun x => ?_
+  by_cases hx : x ∈ tsupport b
+  · exact hF.contDiffAt (hO.mem_nhds (hs x hx))
+  · have e : (fun x => (b x : ℂ) • Rt E k (infGL E k (rowGL x))⁻¹ φ) =ᶠ[𝓝 x] fun _ => 0 := by
+      filter_upwards [notMem_tsupport_iff_eventuallyEq.1 hx] with y hy
+      simp [hy]
+    exact contDiffAt_const.congr_of_eventuallyEq e
+
+end GlobalTheory.CompanionTheory.CutOff
+
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Topology Filter GlobalTheory.CuspGeneric GlobalTheory.CuspRep PositivityTheory.jumpWindows PositivityTheory.AdelicQuotientData GroundTheory.Automorphic.FourierWhittaker GlobalTheory.CompanionTheory.CutOff
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.smooth_cutoff_translate_contDiff : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {k : ℕ} {φ : XB E k}, SmV (repI E k) φ → ∀ {b : (Fin k → Cinf E) → ℝ}, ContDiff ℝ ∞ b → (∀ x ∈ tsupport b, IsUnit (lastEnt x)) → ContDiff ℝ ∞ fun x => (b x : ℂ) • Rt E k (infGL E k (rowGL x))⁻¹ φ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CutOff.contDiff_cut_orbit
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain MeasureTheory Matrix Topology Filter
@@ -571,4 +1174,5 @@ theorem exists_cut : S4 → S8 → PositivityTheory.jumpWindows.G0 → LastRowCu
 
 end GlobalTheory.CompanionTheory.CutOff
 
+end
 end

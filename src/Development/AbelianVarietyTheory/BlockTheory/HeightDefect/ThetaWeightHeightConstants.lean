@@ -19,9 +19,6 @@ theorem pSig_pos {R : Ranks} (j : Lift R) : 0 < pSig j := by
   have := R.m_add_three_le_k; have := j.2.1
   simp only [pSig, Ranks.sigW]; omega
 
-theorem pSig_add_qSig {R : Ranks} (j : Lift R) : pSig j + qSig j = R.r := by
-  have := R.m_add_three_le_k; have := j.2.1; have := j.2.2
-  simp only [pSig, qSig, Ranks.sigW, Ranks.r]; omega
 
 def IsTotIsotropic {E : Type} [Field E] [NumberField E] [StarRing E] (S : HSpace E)
     (U : Submodule E S.V) : Prop := ∀ x ∈ U, ∀ y ∈ U, S.hD x y = 0
@@ -32,32 +29,17 @@ def isotropicDims {E : Type} [Field E] [NumberField E] [StarRing E] (S : HSpace 
 def wittIndexOf {E : Type} [Field E] [NumberField E] [StarRing E] (S : HSpace E) : ℕ :=
   sSup (isotropicDims S)
 
-theorem wittIndexOf_isGreatest {E : Type} [Field E] [NumberField E] [StarRing E] (S : HSpace E) :
-    IsGreatest (isotropicDims S) (wittIndexOf S) := by
-  have hb : BddAbove (isotropicDims S) := by
-    refine ⟨Module.finrank E S.V, ?_⟩
-    rintro n ⟨U, -, rfl⟩
-    exact Submodule.finrank_le U
-  have hn : (isotropicDims S).Nonempty := by
-    refine ⟨_, ⊥, ?_, rfl⟩
-    intro x _ y hy
-    rw [(Submodule.mem_bot E).1 hy]
-    simp [HSpace.hD]
-  exact ⟨Nat.sSup_mem hn hb, fun n h => le_csSup hb h⟩
 
 def wittIndex (D : D7) (j : Lift D.R) : ℕ :=
   letI := D.host.cmStar; wittIndexOf (D.sp.W j.1)
 
 def rho {R : Ranks} (j : Lift R) : ℕ := R.m - j.1
 
-theorem rho_eq_qSig {R : Ranks} (j : Lift R) : rho j = qSig j := rfl
 
 def WittIndexEq : Prop := ∀ (D : D7) (j : Lift D.R), wittIndex D j = rho j
 
 def dPrime {R : Ranks} (j : Lift R) : ℕ := 2 * R.f * rho j
 
-theorem dPrime_le {R : Ranks} (j : Lift R) : dPrime j ≤ 2 * R.f * R.m :=
-  Nat.mul_le_mul_left _ (Nat.sub_le _ _)
 
 def dimBase {R : Ranks} (j : Lift R) : ℕ := R.f * pSig j * qSig j
 
@@ -70,8 +52,6 @@ def RR (D : D7) : ℝ := D.host.rdE ^ 7
 
 def PP {D : D7} (L : SizeData₂ D) (C e : ℝ) : ℝ := C * ((D.R.f : ℝ) * (D.R.r : ℝ) * L.sc.L) ^ e
 
-theorem PP_eq_params {D : D7} {L : SizeData₂ D} {P : ParameterChoice' D L} (T : ParamsT D L P) :
-    PP L T.CP T.eP = T.PP := T.PP_eq.symm
 
 def lrd (D : D7) : ℝ := Real.log D.host.rdE
 
@@ -154,18 +134,7 @@ def PlusLastPos (G : ThetaWeight D j) : Prop := ∀ τ, 1 ≤ G.plusLast τ
 
 def PlusLastPosAtOne (G : ThetaWeight D j) : Prop := ∃ τ, 1 ≤ G.plusLast τ
 
-theorem size_add (G G' : ThetaWeight D j) : (G.add G').size = G.size + G'.size - 1 := by
-  simp only [size, DF, add, Pi.add_apply, Finset.sum_add_distrib]
-  push_cast; ring
 
-theorem size_nsmul_le (N : ℕ) (hN : 1 ≤ N) (G : ThetaWeight D j) :
-    (G.nsmul N).size ≤ N * G.size := by
-  have h : (G.nsmul N).DF = N * G.DF := by
-    simp only [DF, nsmul, Finset.mul_sum, mul_add]
-  have hN' : (1 : ℤ) ≤ N := by exact_mod_cast hN
-  have hn : (G.nsmul N).n = N * G.n := rfl
-  unfold size
-  rw [h, hn]; push_cast; nlinarith
 
 theorem one_le_size {G : ThetaWeight D j} (h : G.Dominant) : 1 ≤ G.size := by
   have : 0 ≤ G.DF := Finset.sum_nonneg fun τ _ =>

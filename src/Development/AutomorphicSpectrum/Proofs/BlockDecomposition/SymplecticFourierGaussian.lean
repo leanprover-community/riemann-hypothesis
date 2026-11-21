@@ -1,9 +1,189 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NormMixedToEuclideanConjSqRat
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CoeAbsNormUnitsPrimeIdealUnit
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalFourierCosetIndValBall
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OneDim
 
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar adeleAt glAt restrictedTensor2 vecAt awayIntegral awayBox)
+open GroundTheory.Automorphic.GJMatrix (cosetInd localTensor localFourierPi localMeasurePi)
+open Ad3 Ad3.R
+open scoped NumberField.AdeleRing ValuativeRel ENNReal ComplexConjugate SchwartzMap nonZeroDivisors Classical
+
+set_option maxSynthPendingDepth 1
+set_option synthInstance.maxSize 1000
+
+namespace GlobalTheory.CompanionTheory.RSFT.GaussPlane
+
+section Helpers
+
+open NumberField.mixedEmbedding
+open scoped FourierTransform RealInnerProductSpace
+
+instance isEmpty_complexPlaces : IsEmpty {w : InfinitePlace ℚ // w.IsComplex} :=
+  ⟨fun w => InfinitePlace.not_isReal_iff_isComplex.mpr w.2 (by
+    rw [Subsingleton.elim w.1 Rat.infinitePlace]; exact Rat.isReal_infinitePlace)⟩
+
+theorem norm_mixedToEuclidean_sq_rat (x : mixedSpace ℚ) :
+    ‖mixedToEuclidean ℚ x‖ ^ 2 = ∑ w, x.1 w ^ 2 := by
+  rw [← real_inner_self_eq_norm_sq]
+  change ⟪(euclidean.toMixed ℚ).symm (mapComplexCoord ℚ sqrtTwoSMulComplex x),
+    (euclidean.toMixed ℚ).symm (mapComplexCoord ℚ sqrtTwoSMulComplex x)⟫ = _
+  rw [inner_toMixed_symm, mapComplexCoord_apply]
+  simp [sq]
+
+theorem norm_mixedToEuclideanConj_sq_rat (x : mixedSpace ℚ) :
+    ‖mixedToEuclideanConj ℚ x‖ ^ 2 = ∑ w, x.1 w ^ 2 := by
+  rw [← real_inner_self_eq_norm_sq]
+  change ⟪(euclidean.toMixed ℚ).symm (mapComplexCoord ℚ sqrtTwoSMulConj x),
+    (euclidean.toMixed ℚ).symm (mapComplexCoord ℚ sqrtTwoSMulConj x)⟫ = _
+  rw [inner_toMixed_symm, mapComplexCoord_apply]
+  simp [sq]
+
+theorem norm_toEuclid2_sq_rat (x : Fin 2 → mixedSpace ℚ) :
+    ‖Adele2.toEuclid2 ℚ x‖ ^ 2 = ∑ i, ∑ w, (x i).1 w ^ 2 := by
+  rw [← real_inner_self_eq_norm_sq, Adele2.toEuclid2_apply, WithLp.prod_inner_apply,
+    real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq, Fin.sum_univ_two,
+    norm_mixedToEuclidean_sq_rat, norm_mixedToEuclidean_sq_rat]
+
+theorem norm_toEuclid2Conj_sq_rat (x : Fin 2 → mixedSpace ℚ) :
+    ‖Adele2.toEuclid2Conj ℚ x‖ ^ 2 = ∑ i, ∑ w, (x i).1 w ^ 2 := by
+  rw [← real_inner_self_eq_norm_sq, Adele2.toEuclid2Conj_apply, WithLp.prod_inner_apply,
+    real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq, Fin.sum_univ_two,
+    norm_mixedToEuclideanConj_sq_rat, norm_mixedToEuclideanConj_sq_rat]
+
+theorem mixedFourier2_gauss (γ : 𝓢(Fin 2 → mixedSpace ℚ, ℂ)) (hγ : IsGauss γ)
+    (y : Fin 2 → mixedSpace ℚ) : Adele2.mixedFourier2 ℚ γ y = γ y := by
+  have hcomp : (γ : (Fin 2 → mixedSpace ℚ) → ℂ) ∘ (Adele2.toEuclid2 ℚ).symm =
+      fun v => Complex.exp (-(Real.pi : ℂ) * (‖v‖ : ℂ) ^ 2) := by
+    funext v
+    have hv : ‖v‖ ^ 2 = ∑ i, ∑ w, (((Adele2.toEuclid2 ℚ).symm v) i).1 w ^ 2 := by
+      rw [← norm_toEuclid2_sq_rat, ContinuousLinearEquiv.apply_symm_apply]
+    rw [Function.comp_apply, hγ, ← hv]
+    push_cast
+    rfl
+  have hb : 0 < ((Real.pi : ℂ)).re := by simpa using Real.pi_pos
+  have hpi : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
+  rw [Adele2.mixedFourier2_eq, hcomp, fourier_gaussian_innerProductSpace hb, hγ,
+    ← norm_toEuclid2Conj_sq_rat, div_self hpi, Complex.one_cpow, one_mul]
+  push_cast
+  congr 1
+  field_simp
+
+end Helpers
+
+theorem mixedFourier2_gauss_rot : ∀ (γ : 𝓢(Fin 2 → mixedEmbedding.mixedSpace ℚ, ℂ)), IsGauss γ → ∀ r : Fin 2 → 𝔸[ℚ], Adele2.mixedFourier2 ℚ γ (Adele2.infPart ![r 1, -r 0]) = γ (Adele2.infPart r) := by
+  intro γ hγ r
+  rw [show Adele2.mixedFourier2 ℚ γ (Adele2.infPart ![r 1, -r 0]) =
+    γ (Adele2.infPart ![r 1, -r 0]) from mixedFourier2_gauss γ hγ _, hγ, hγ]
+  have h1 : Adele2.infPart ![r 1, -r 0] 0 = Adele2.infPart r 1 := rfl
+  have h2 : Adele2.infPart ![r 1, -r 0] 1 = -Adele2.infPart r 0 :=
+    congrFun (Adele2.infPart_neg r) 0
+  simp only [Fin.sum_univ_two, h1, h2, Prod.fst_neg, Pi.neg_apply, neg_sq]
+  rw [add_comm]
+
+end GlobalTheory.CompanionTheory.RSFT.GaussPlane
+end
+
+section
+noncomputable section
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar adeleAt glAt restrictedTensor2 vecAt awayIntegral awayBox)
+open GroundTheory.Automorphic.GJMatrix (cosetInd localTensor localFourierPi localMeasurePi)
+open Ad3 Ad3.R
+open scoped NumberField.AdeleRing ValuativeRel ENNReal ComplexConjugate SchwartzMap nonZeroDivisors Classical
+
+namespace GlobalTheory.CompanionTheory.RSFT
+
+def absNormUnits : (FractionalIdeal (𝓞 ℚ)⁰ ℚ)ˣ →* ℝˣ :=
+  Units.map (((Rat.castHom ℝ : ℚ →+* ℝ) : ℚ →* ℝ).comp
+    (FractionalIdeal.absNorm : FractionalIdeal (𝓞 ℚ)⁰ ℚ →*₀ ℚ).toMonoidHom)
+
+theorem coe_absNormUnits (I : (FractionalIdeal (𝓞 ℚ)⁰ ℚ)ˣ) :
+    ((absNormUnits I : ℝˣ) : ℝ) =
+      ((FractionalIdeal.absNorm (I : FractionalIdeal (𝓞 ℚ)⁰ ℚ) : ℚ) : ℝ) := rfl
+
+theorem coe_absNormUnits_primeIdealUnit (w : Pl) :
+    ((absNormUnits (primeIdealUnit w) : ℝˣ) : ℝ) = (pOf w : ℝ) := by
+  rw [coe_absNormUnits, coe_primeIdealUnit, FractionalIdeal.coeIdeal_absNorm]
+  simp [pOf]
+
+theorem idl_eq_prod (S : Finset Pl) (N : S → ℤ) :
+    idl S N = ∏ v : S, primeIdealUnit v.1 ^ N v := by
+  have hsub : Function.mulSupport (fun w : Pl =>
+      primeIdealUnit w ^ (if h : w ∈ S then N ⟨w, h⟩ else 0)) ⊆ (S : Set Pl) := by
+    intro w hw
+    by_contra h
+    apply hw
+    have h' : w ∉ S := h
+    simp [h']
+  rw [idl, finprod_eq_prod_of_mulSupport_subset _ hsub, ← Finset.prod_coe_sort S]
+  refine Finset.prod_congr rfl fun v _ => ?_
+  simp
+
+theorem absNorm_idl (S : Finset Pl) (N : S → ℤ) :
+    ((FractionalIdeal.absNorm ((idl S N : (FractionalIdeal (𝓞 ℚ)⁰ ℚ)ˣ) :
+      FractionalIdeal (𝓞 ℚ)⁰ ℚ) : ℚ) : ℝ) = ∏ v : S, (pOf v.1 : ℝ) ^ N v := by
+  rw [← coe_absNormUnits, idl_eq_prod, map_prod, Units.coe_prod]
+  refine Finset.prod_congr rfl fun v _ => ?_
+  rw [map_zpow, Units.val_zpow_eq_zpow_val, coe_absNormUnits_primeIdealUnit]
+
+theorem finiteAdeleMeasure_idl_toReal (S : Finset Pl) (N : S → ℤ) :
+    (finiteAdeleMeasure ℚ (idealFiniteAdeles (idl S N))).toReal =
+      ∏ v : S, (pOf v.1 : ℝ) ^ (-N v) := by
+  rw [finiteAdeleMeasure_idealFiniteAdeles_toReal, Rat.numberField_discr]
+  have hd : (NNReal.sqrt ‖(1 : ℤ)‖₊ : ℝ) = 1 := by simp
+  rw [hd, inv_one, mul_one]
+  have hn := absNorm_idl S N
+  rw [show ((FractionalIdeal.absNorm ((idl S N : (FractionalIdeal (𝓞 ℚ)⁰ ℚ)ˣ) :
+      FractionalIdeal (𝓞 ℚ)⁰ ℚ) : ℝ)) = _ from hn, ← Finset.prod_inv_distrib]
+  exact Finset.prod_congr rfl fun v _ => (_root_.zpow_neg _ _).symm
+
+end GlobalTheory.CompanionTheory.RSFT
+
+end
+end
+
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar adeleAt glAt restrictedTensor2 vecAt awayIntegral awayBox)
+open GroundTheory.Automorphic.GJMatrix (cosetInd localTensor localFourierPi localMeasurePi)
+open Ad3 Ad3.R
+open scoped NumberField.AdeleRing ValuativeRel ENNReal ComplexConjugate SchwartzMap nonZeroDivisors Classical
+
+namespace GlobalTheory.CompanionTheory.RSFT
+
+theorem localFourier_cosetInd_valBall : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (ψ : AddChar F Circle), IsStd ψ → ∀ (N : ℤ) (a y : F), localFourier (selfDualMeasure ψ) ψ (cosetInd (valBall F N) a) y = (ψ (a * y) : ℂ) * (((residueCard F : ℝ) ^ (-N) : ℝ) : ℂ) * (valBall F (-N) : Set F).indicator (fun _ => (1 : ℂ)) y := by
+  intro F _ _ _ _ _ _ ψ hψ N a y
+  obtain ⟨hc, h1, h0⟩ := hψ
+  have hμ : (GroundTheory.LocalField.selfDualMeasure ψ).real (valBall F N : Set F) =
+      (residueCard F : ℝ) ^ (-N) := by
+    rw [measureReal_valBall, selfDualMeasure_real_valBall_zero, h0]
+    simp
+  have key := localFourier_indicator_valBall (GroundTheory.LocalField.selfDualMeasure ψ) hc h1 N y
+  rw [h0, zero_sub, hμ] at key
+  have e : (fun x => cosetInd (valBall F N) a (a + x) * (ψ ((a + x) * y) : ℂ)) =
+      fun x => (ψ (a * y) : ℂ) *
+        ((valBall F N : Set F).indicator (fun _ => (1 : ℂ)) x * (ψ (x * y) : ℂ)) := by
+    funext x
+    rw [GroundTheory.Automorphic.GJMatrix.cosetInd_apply, add_sub_cancel_left, Set.indicator_apply, add_mul,
+      AddChar.map_add_eq_mul, Circle.coe_mul]
+    simp only [SetLike.mem_coe]
+    ring
+  have e2 : localFourier (GroundTheory.LocalField.selfDualMeasure ψ) ψ (cosetInd (valBall F N) a) y =
+      (ψ (a * y) : ℂ) * localFourier (GroundTheory.LocalField.selfDualMeasure ψ) ψ
+        ((valBall F N : Set F).indicator fun _ => (1 : ℂ)) y := by
+    unfold localFourier
+    rw [← integral_add_left_eq_self _ a, e, integral_const_mul]
+  rw [e2, key, mul_assoc]
+
+end GlobalTheory.CompanionTheory.RSFT
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
@@ -315,4 +495,5 @@ theorem fourier_gaussian_of_basic_facts : B0 → FT := by
 
 end GlobalTheory.CompanionTheory.RSFT.Assemble
 
+end
 end

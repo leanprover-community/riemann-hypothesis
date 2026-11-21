@@ -21,10 +21,6 @@ def pairSet (O : Type) [CommRing O] (r K : ℕ) [NeZero r] [NeZero K] {n' : ℕ}
         geR (valS LZ {y | y < x} A) (th x)) ∧
       P = plEmb O r K A * nmEmb O r K G}
 
-theorem XX'_le_span (O : Type) [CommRing O] (r K : ℕ) [NeZero r] [NeZero K] {n' : ℕ} [NeZero n'] (F : Frames n' r)
-    (j : ℤ) (m : ℤ → ℤ) (th o : ℤ → ℝ) {x : SegRing O r K} (hx : x ∈ XX' O r K F j m th o) :
-    x ∈ Submodule.span O (pairSet O r K F j m th) :=
-  (Submodule.mem_inf.1 hx).1
 
 section Multi
 
@@ -148,32 +144,9 @@ def Lemma5aGeneratorProductsAt (C CLa : ℝ) : Prop :=
       MemAtG 0 (1 / 8) p O hk F (flatDeg lam0) Y (orbitWindowCount r de h x) (goodG' r de h x) (cPrime n' r TT.card c0 cpp cStar)
         (symG p O hk F l ga xs)
 
-theorem monomialAt_of_generatorProductsAt (C CLa : ℝ) (h : Lemma5aGeneratorProductsAt C CLa) : Lemma5aMonomialAt C CLa := by
-  intro p W Qq O Kf _ _ _ _ _ _ _ _ _ _ ι σ j w n' m r _ _ TT L₁ L₂ de h' x lam0 aT bT a Y cpp c0 Dp cStar K _ _ hk hrk
-    F nb B hD b ga hga
-  have hGen := hD.2.2.2.1.choose_spec.2 b
-  obtain ⟨xs, hxs, l, hl, hB, -⟩ := hGen
-  have e1 : MvPolynomial.map (algebraMap O (KK O)) (rename (castV hk) (B b) * monomial ga 1) =
-      symG p O hk F l ga xs := by rw [hB]; rfl
-  rw [e1]
-  let mS : ℕ := mStar p F (r + K) (orbitWindowCount r de h' x) (p ^ goodG' r de h' x) (cPrime n' r TT.card c0 cpp cStar)
-  let Sj : ℤ → Set (SegRing O r K) := fun jj =>
-    pairSet O r K F jj (g2mg p n' r K F (flatDeg lam0) mS Y jj) (g2th p n' F (flatDeg lam0) jj)
-  have hspan : ∀ i : ℕ, i < F.J → xs i ∈ Submodule.span O (Sj i) := fun i _ =>
-    symbol_spaces_le_pair_span CLa p n' O r K F (flatDeg lam0) L₁ (min (orbitWindowCount r de h' x) (2 * TT.card)) mS a Y (i : ℤ) (hxs i)
-  exact symG_span p O hk F (memSub 0 (1 / 8) p O hk F (flatDeg lam0) Y (orbitWindowCount r de h' x) (goodG' r de h' x)
-      (cPrime n' r TT.card c0 cpp cStar)) Sj l ga
-    (fun xs' hxs' => h p W Qq O Kf ι σ j w n' m r TT L₁ L₂ de h' x lam0 aT bT a Y cpp c0 Dp cStar K hk hrk F nb B hD
-      xs' hxs' l hl ga hga)
-    xs hspan
 
 def Lemma5aGeneratorProducts (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) : Prop :=
   tableLineDegreeFive.admitted D CLa Ck Crk Cdeg → ∃ C₁ : ℝ, 0 < C₁ ∧ ∀ C : ℝ, C₁ ≤ C → Lemma5aGeneratorProductsAt C CLa
 
-theorem monomial_of_generatorProducts (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) (h : Lemma5aGeneratorProducts D CLa Ck Crk Cdeg) :
-    Lemma5aMonomial D CLa Ck Crk Cdeg := by
-  intro hA
-  obtain ⟨C1, hC1, hst⟩ := h hA
-  exact ⟨C1, hC1, fun C hC => monomialAt_of_generatorProductsAt C CLa (hst C hC)⟩
 
 end Formalism.MainNotions.TestSideWords

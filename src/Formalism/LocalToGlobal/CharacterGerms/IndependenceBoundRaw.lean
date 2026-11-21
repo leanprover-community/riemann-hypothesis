@@ -45,9 +45,6 @@ theorem mm_mul_int {a b : C} (ha : V.Ge 0 a) (hb : V.MM b) : V.MM (a * b) := by
   rw [V.v.map_mul]
   exact lt_of_lt_of_le hb (le_add_of_nonneg_left h0)
 
-theorem v_pow_coe {a : C} {t : ℝ} (h : V.v a = (t : WithTop ℝ)) (k : ℕ) :
-    V.v (a ^ k) = (((k : ℝ) * t : ℝ) : WithTop ℝ) := by
-  rw [V.v.map_pow, h, ← WithTop.coe_nsmul, nsmul_eq_mul]
 
 theorem mm_of_pow {a : C} {n : ℕ} (h : V.MM (a ^ n)) : V.MM a := by
   unfold VF.MM at *
@@ -236,46 +233,8 @@ def IndependenceSpanCondition : Prop :=
       (∀ c, V.MM ((RawChart.cart (H g)).V2 x c)) →
       ∃ b : Fin X.j' → C, ∀ q, V.MM ((RawChart.cart (H g)).c0' x q ^ V.l - ∑ r, b r * e r q)
 
-theorem independence_bound_of_span (h : IndependenceSpanCondition) : IndependenceBoundAllCharts := by
-  intro C _ _ V O _ _ dd Y d _ I _ p hrk H hR2 hAlt g a hbig N w x hg hV hind
-  have := Y.algClosed
-  obtain ⟨e, he⟩ := h C V O dd Y d I p hrk H hAlt g a hbig
-  exact ValuationNonnegativity.independence_bound_of_span_raw (RawChart.cart (H g)) a _ (hR2 hAlt g a hbig) e he N w x hg hV hind
 
-theorem independence_span_of_coefficient (h : CoefficientIdentityCondition) : IndependenceSpanCondition := by
-  intro C _ _ V O _ _ dd Y d _ I _ p hrk H hAlt g a hbig
-  have key : ∀ g' : Fin 2, (Y.raw p).big g' a → (Y.raw p).big g' (a + 2) := by
-    obtain ⟨hd, hpar⟩ := hAlt
-    have hev := ValuationNonnegativity.even_val_add_two hd a
-    have e1 : ∀ b, (Y.raw p).big 1 b ↔ ¬ (Y.raw p).big 0 b := fun b => by
-      simpa using hrk.big_compl 0 b
-    intro g' hb
-    fin_cases g'
-    · exact (hpar (a + 2)).2 (hev.2 ((hpar a).1 hb))
-    · simp only [Fin.mk_one] at hb ⊢
-      rw [e1, hpar] at hb ⊢
-      rwa [hev]
-  have hsmall : ¬ (Y.raw p).big (1 - g) (a + 2) := fun h2 => (hrk.big_compl g (a + 2)).1 h2 (key g hbig)
-  have hcard : Fintype.card {q : JJ I g // (Y.raw p).ty (1 - g) q = a + 2} = (Y.raw p).j' := by
-    rw [Fintype.card_subtype]; exact hrk.rk_small (1 - g) (a + 2) hsmall
-  obtain ⟨M, hM⟩ := h C V O dd Y d I p hrk H hAlt g a hbig
-  let σ := (Fintype.equivFinOfCardEq hcard).symm
-  refine ⟨fun r => M (σ r).1, fun w x hg hV => ?_⟩
-  obtain ⟨c1, hsupp, hc1⟩ := hM w x hg hV
-  refine ⟨fun r => c1 (σ r).1, fun q => ?_⟩
-  have hsum : ∑ q', c1 q' * M q' q = ∑ r, c1 (σ r).1 * M (σ r).1 q := by
-    rw [← Finset.sum_filter_of_ne (p := fun q' => (Y.raw p).ty (1 - g) q' = a + 2)
-      (fun q' _ hne => by
-        by_contra hq
-        exact hne (by rw [hsupp q' hq, zero_mul]))]
-    rw [Finset.sum_subtype (Finset.univ.filter fun q' => (Y.raw p).ty (1 - g) q' = a + 2)
-      (p := fun q' => (Y.raw p).ty (1 - g) q' = a + 2) (fun q' => by simp)]
-    exact (Equiv.sum_comp σ (fun s => c1 s.1 * M s.1 q)).symm
-  rw [← hsum]
-  exact hc1 q
 
-theorem independence_bound_of_coefficient (h : CoefficientIdentityCondition) : IndependenceBoundAllCharts :=
-  independence_bound_of_span (independence_span_of_coefficient h)
 
 end Closed
 

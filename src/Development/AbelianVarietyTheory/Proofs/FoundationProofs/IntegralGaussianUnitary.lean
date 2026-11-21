@@ -1,8 +1,213 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsPosHermFormV
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsOrthonormalBasisEigenOfInnerMap
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntegralCexpGaussianPlane
+import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IntMIffInt
+import BuildAid.ForwardExisting
 
+section
+open Module.End
+
+namespace GlobalTheory.OrthonormalEigenbasis
+
+theorem exists_eigenbasis_of_isometry {E : Type} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
+    [FiniteDimensional ℂ E] (a : E →ₗ[ℂ] E) (ha : ∀ x y, inner ℂ (a x) (a y) = inner ℂ x y) :
+    ∃ (b : OrthonormalBasis (Fin (Module.finrank ℂ E)) ℂ E) (l : Fin (Module.finrank ℂ E) → ℂ),
+      ∀ i, a (b i) = l i • b i := by
+  set a' := LinearMap.adjoint a with ha'
+
+  have h1 : a' * a = 1 := by
+    ext x
+    apply ext_inner_right ℂ
+    intro y
+    rw [Module.End.mul_apply, ha', LinearMap.adjoint_inner_left, ha, Module.End.one_apply]
+  have h2 : a * a' = 1 := mul_eq_one_comm.mp h1
+
+  set A : E →ₗ[ℂ] E := a + a' with hAdef
+  set B : E →ₗ[ℂ] E := Complex.I • (a' - a) with hBdef
+  have hA : A.IsSymmetric := by
+    intro x y
+    simp only [hAdef, LinearMap.add_apply, inner_add_left, inner_add_right, ha',
+      LinearMap.adjoint_inner_left, LinearMap.adjoint_inner_right]
+    ring
+  have hB : B.IsSymmetric := by
+    intro x y
+    simp only [hBdef, LinearMap.smul_apply, LinearMap.sub_apply, inner_smul_left, inner_smul_right,
+      inner_sub_left, inner_sub_right, ha', LinearMap.adjoint_inner_left, LinearMap.adjoint_inner_right,
+      Complex.conj_I]
+    ring
+  have hAB : Commute A B := by
+    have hc : Commute (a + a') (a' - a) := by
+      show (a + a') * (a' - a) = (a' - a) * (a + a')
+      simp only [add_mul, mul_add, sub_mul, mul_sub, h1, h2]
+      abel
+    exact hc.smul_right Complex.I
+  have hV := LinearMap.IsSymmetric.directSum_isInternal_of_commute hA hB hAB
+  have hV' := LinearMap.IsSymmetric.orthogonalFamily_eigenspace_inf_eigenspace hA hB
+
+  have hT : Set.Finite {i : ℂ × ℂ | eigenspace A i.2 ⊓ eigenspace B i.1 ≠ ⊥} := by
+    refine ((Module.End.finite_hasEigenvalue (f := B)).prod
+      (Module.End.finite_hasEigenvalue (f := A))).subset fun i hi => ⟨?_, ?_⟩
+    · exact Module.End.hasEigenvalue_iff.mpr (ne_bot_of_le_ne_bot hi inf_le_right)
+    · exact Module.End.hasEigenvalue_iff.mpr (ne_bot_of_le_ne_bot hi inf_le_left)
+  have : Finite {i : ℂ × ℂ // eigenspace A i.2 ⊓ eigenspace B i.1 ≠ ⊥} := hT.to_subtype
+  have := Fintype.ofFinite {i : ℂ × ℂ // eigenspace A i.2 ⊓ eigenspace B i.1 ≠ ⊥}
+  classical
+  have hW := DirectSum.isInternal_ne_bot_iff.mpr hV
+  have hW' := hV'.comp (Subtype.val_injective (p := fun i : ℂ × ℂ => eigenspace A i.2 ⊓ eigenspace B i.1 ≠ ⊥))
+
+  refine ⟨hW.subordinateOrthonormalBasis rfl hW', fun i =>
+    ((hW.subordinateOrthonormalBasisIndex rfl i hW').1.2 +
+      Complex.I * (hW.subordinateOrthonormalBasisIndex rfl i hW').1.1) / 2, fun i => ?_⟩
+  have hmem := hW.subordinateOrthonormalBasis_subordinate rfl i hW'
+  rw [Submodule.mem_inf, Module.End.mem_eigenspace_iff, Module.End.mem_eigenspace_iff] at hmem
+  have hsum : ∀ v, A v + Complex.I • B v = (2 : ℂ) • a v := by
+    intro v
+    simp only [hAdef, hBdef, LinearMap.add_apply, LinearMap.smul_apply, LinearMap.sub_apply, smul_smul,
+      Complex.I_mul_I, neg_one_smul, smul_sub, two_smul]
+    abel
+  calc a (hW.subordinateOrthonormalBasis rfl hW' i)
+      = (2 : ℂ)⁻¹ • (A (hW.subordinateOrthonormalBasis rfl hW' i) +
+          Complex.I • B (hW.subordinateOrthonormalBasis rfl hW' i)) := by
+        rw [hsum, smul_smul, inv_mul_cancel₀ two_ne_zero, one_smul]
+    _ = _ := by
+        rw [hmem.1, hmem.2, smul_smul, ← add_smul, smul_smul]
+        congr 1
+        ring
+
+open GlobalTheory.UnitaryTheta in
+
+theorem exists_orthonormal_eigenbasis {V : Type} [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V]
+    (H : Sesq V) (hH : IsPosHerm H) (a : V →ₗ[ℂ] V) (ha : ∀ z w, H (a z) (a w) = H z w) :
+    ∃ (n : ℕ) (e : Module.Basis (Fin n) ℂ V) (l : Fin n → ℂ),
+      (∀ i j, H (e i) (e j) = if i = j then (1 : ℂ) else 0) ∧ ∀ i, ‖l i‖ = 1 ∧ a (e i) = l i • e i := by
+
+  let cd : InnerProductSpace.Core ℂ V :=
+    { inner := fun x y => H y x
+      conj_inner_symm := fun x y => (hH.1 y x).symm
+      re_inner_nonneg := fun x => by
+        by_cases hx : x = 0
+        · simp [hx]
+        · exact (hH.2 x hx).le
+      add_left := fun x y z => by
+        show H z (x + y) = H z x + H z y
+        exact map_add _ _ _
+      smul_left := fun x y r => by
+        show H y (r • x) = (starRingEnd ℂ) r * H y x
+        rw [LinearMap.map_smulₛₗ, smul_eq_mul]
+      definite := fun x hx => by
+        by_contra h
+        have := hH.2 x h
+        simp [hx] at this }
+  let _ : NormedAddCommGroup V := InnerProductSpace.Core.toNormedAddCommGroup (𝕜 := ℂ)
+  let _ : InnerProductSpace ℂ V := InnerProductSpace.ofCore cd.toCore
+  have hinner : ∀ x y : V, inner ℂ x y = H y x := fun _ _ => rfl
+  obtain ⟨b, l, hb⟩ := exists_eigenbasis_of_isometry a (fun x y => by rw [hinner, hinner]; exact ha y x)
+  refine ⟨Module.finrank ℂ V, b.toBasis, l, fun i j => ?_, fun i => ⟨?_, ?_⟩⟩
+  · rw [OrthonormalBasis.coe_toBasis, ← hinner, orthonormal_iff_ite.mp b.orthonormal j i]
+    exact if_congr eq_comm rfl rfl
+  ·
+    have h1 : ‖a (b i)‖ = ‖b i‖ := by
+      rw [norm_eq_sqrt_re_inner (𝕜 := ℂ), norm_eq_sqrt_re_inner (𝕜 := ℂ), hinner, hinner, ha]
+    rw [hb i, norm_smul, b.orthonormal.1 i, mul_one] at h1
+    exact h1
+  · rw [OrthonormalBasis.coe_toBasis]
+    exact hb i
+
+end GlobalTheory.OrthonormalEigenbasis
+end
+
+section
+open Complex MeasureTheory GlobalTheory.UnitaryTheta
+open scoped BigOperators ComplexConjugate Real Classical
+
+noncomputable section
+
+namespace GlobalTheory.UnitaryTheta
+
+theorem exists_eigenbasis_of_isPosHerm {V : Type} [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V]
+    (H : Sesq V) (hH : IsPosHerm H) (a : V →ₗ[ℂ] V) (ha : ∀ z w, H (a z) (a w) = H z w) :
+    ∃ (n : ℕ) (e : Module.Basis (Fin n) ℂ V) (l : Fin n → ℂ),
+      (∀ i j, H (e i) (e j) = if i = j then 1 else 0) ∧ ∀ i, ‖l i‖ = 1 ∧ a (e i) = l i • e i := by
+  first
+  | exact @_root_.GlobalTheory.OrthonormalEigenbasis.exists_orthonormal_eigenbasis
+  | exact _root_.GlobalTheory.OrthonormalEigenbasis.exists_orthonormal_eigenbasis
+  | (apply _root_.GlobalTheory.OrthonormalEigenbasis.exists_orthonormal_eigenbasis <;> assumption)
+  | (intros; apply _root_.GlobalTheory.OrthonormalEigenbasis.exists_orthonormal_eigenbasis <;> assumption)
+  | (intros; apply @_root_.GlobalTheory.OrthonormalEigenbasis.exists_orthonormal_eigenbasis <;> first | assumption | infer_instance)
+  | (intros; exact _root_.GlobalTheory.OrthonormalEigenbasis.exists_orthonormal_eigenbasis ..)
+
+theorem unitary_exists_orthonormal_eigenbasis :
+    ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℂ V] [FiniteDimensional ℂ V] (H : Sesq V), IsPosHerm H →
+      ∀ a : V ≃ₗ[ℂ] V, (∀ z w, H (a z) (a w) = H z w) →
+        ∃ (n : ℕ) (e : Module.Basis (Fin n) ℂ V) (l : Fin n → ℂ),
+          (∀ i j, H (e i) (e j) = if i = j then 1 else 0) ∧ ∀ i, ‖l i‖ = 1 ∧ a (e i) = l i • e i :=
+  fun _ _ _ _ H hH a ha => exists_eigenbasis_of_isPosHerm H hH a.toLinearMap ha
+
+end GlobalTheory.UnitaryTheta
+end
+end
+
+section
+section
+open Complex MeasureTheory GlobalTheory.UnitaryTheta
+open scoped BigOperators ComplexConjugate Real Classical
+
+namespace GlobalTheory.UnitaryTheta
+
+theorem integral_cexp_gaussian_plane : ∀ l u v : ℂ, 0 < l.re → Integrable (fun z : ℂ => cexp (-(π : ℂ) * l * (z * conj z) + π * (u * conj z) + π * (z * conj v))) ∧ ∫ z : ℂ, cexp (-(π : ℂ) * l * (z * conj z) + π * (u * conj z) + π * (z * conj v)) = l⁻¹ * cexp (π * (u * conj v) / l) := by
+  intro l u v hl
+  have hl0 : l ≠ 0 := by
+    intro h
+    simp [h] at hl
+  have hpi : (π : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
+  have hb : (-(π : ℂ) * l).re < 0 := by
+    have := mul_pos Real.pi_pos hl
+    simpa using this
+  set f : ℝ → ℂ := fun x => cexp ((-(π : ℂ) * l) * x ^ 2 + (π * (u + conj v)) * x + 0) with hf
+  set g : ℝ → ℂ := fun y => cexp ((-(π : ℂ) * l) * y ^ 2 + (π * I * (conj v - u)) * y + 0) with hg
+  have hfi : Integrable f := integrable_cexp_quadratic' hb _ _
+  have hgi : Integrable g := integrable_cexp_quadratic' hb _ _
+  have key : (fun z : ℂ => cexp (-(π : ℂ) * l * (z * conj z) + π * (u * conj z) + π * (z * conj v)))
+      = (fun p : ℝ × ℝ => f p.1 * g p.2) ∘ Complex.measurableEquivRealProd := by
+    funext z
+    simp only [hf, hg, Function.comp, Complex.measurableEquivRealProd_apply, ← Complex.exp_add]
+    congr 1
+    have hz : z = z.re + z.im * I := (Complex.re_add_im z).symm
+    have hc : conj z = z.re - z.im * I := by
+      apply Complex.ext <;> simp
+    rw [hc]
+    generalize (z.re : ℂ) = a at hz ⊢
+    generalize (z.im : ℂ) = b at hz ⊢
+    subst hz
+    linear_combination (π * l * b ^ 2) * Complex.I_sq
+  have hmp := Complex.volume_preserving_equiv_real_prod
+  refine ⟨?_, ?_⟩
+  · rw [key, hmp.integrable_comp_emb Complex.measurableEquivRealProd.measurableEmbedding]
+    exact hfi.mul_prod hgi
+  · rw [key]
+    have h1 := hmp.integral_comp' (fun p : ℝ × ℝ => f p.1 * g p.2)
+    simp only [Function.comp_def]
+    rw [h1, Measure.volume_eq_prod, integral_prod_mul, hf, hg, integral_cexp_quadratic hb,
+      integral_cexp_quadratic hb]
+    have h2 : (π : ℂ) / -(-(π : ℂ) * l) = l⁻¹ := by field_simp
+    have h3 : (l⁻¹ : ℂ) ^ (1 / 2 : ℂ) * (l⁻¹ : ℂ) ^ (1 / 2 : ℂ) = l⁻¹ := by
+      rw [← Complex.cpow_add _ _ (inv_ne_zero hl0)]
+      norm_num
+    rw [h2, mul_mul_mul_comm, h3, ← Complex.exp_add]
+    congr 2
+    field_simp
+    linear_combination (π * (conj v - u) ^ 2) * Complex.I_sq
+
+end GlobalTheory.UnitaryTheta
+end
+
+open Complex MeasureTheory GlobalTheory.UnitaryTheta
+open scoped BigOperators ComplexConjugate Real Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_cexp_complex_gaussian_linear : ∀ l u v : ℂ, 0 < l.re → Integrable (fun z : ℂ => cexp (-(π : ℂ) * l * (z * conj z) + π * (u * conj z) + π * (z * conj v))) ∧ ∫ z : ℂ, cexp (-(π : ℂ) * l * (z * conj z) + π * (u * conj z) + π * (z * conj v)) = l⁻¹ * cexp (π * (u * conj v) / l) := by
+  atlas_forward_decl GlobalTheory.UnitaryTheta.integral_cexp_gaussian_plane
+end
+
+section
 open Complex MeasureTheory GlobalTheory.UnitaryTheta
 open scoped BigOperators ComplexConjugate Real Classical
 
@@ -95,3 +300,4 @@ theorem integral_gaussian_unitary : ∀ (V : Type) [NormedAddCommGroup V] [Norme
     ring
 
 end GlobalTheory.UnitaryTheta
+end

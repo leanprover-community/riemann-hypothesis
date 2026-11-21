@@ -184,8 +184,6 @@ def ofIrr (U : Submodule ℂ (cuspForms E a)) (h : Stab U) (hi : (cuspSubmodule 
 theorem carrier_ofIrr (U : Submodule ℂ (cuspForms E a)) (h : Stab U) (hi) : carrier (ofIrr U h hi) = U :=
   Submodule.comap_map_eq_of_injective ofCusp_injective U
 
-theorem ofIrr_carrier (π : TR.CuspSub E a) : ofIrr _ (stab_carrier π) (isIrreducible_toModule π) = π :=
-  TR.CuspSub.ext (map_carrier π)
 
 theorem centralZ_eq :
     UnitaryAdmissible.centralZ E a = UnitaryAdmissible.centralExp E a • lieEq E a (TR.oneL E a) :=

@@ -100,30 +100,6 @@ theorem sameServed (K : G.Consts) (A A' : GAll) (hR : A.D.R = A'.D.R)
 
 variable {eps : ℝ} (Fm : FamP eps)
 
-theorem served_orbit_counts_agree (x : ℝ) (hx : Fm.x1 < x) : Formalism.MainNotions.LocalQuadraticParts.AmbientMetricLowerBound Fm x := by
-  intro i i' a b u0 u0' hr hr' p
-  have hTT : (Fm.D x i).host.TT.image Formalism.HC.Frame.A.val = (Fm.D x i').host.TT.image Formalism.HC.Frame.A.val :=
-    (Fm.TT_eq x i).trans (Fm.TT_eq x i').symm
-  have hR := Fm.R_eq x i i'
-  have hsc : (Fm.L x i).sc = (Fm.L x i').sc := by
-    have e1 : (Fm.L x i).sc.x = (Fm.L x i').sc.x := by rw [Fm.L_x x i hx, Fm.L_x x i' hx]
-    have e2 : (Fm.L x i).sc.eps = (Fm.L x i').sc.eps := by rw [Fm.L_eps x i, Fm.L_eps x i']
-    have e3 : (Fm.L x i).sc.J = (Fm.L x i').sc.J := (Fm.L_J x i).trans (Fm.L_J x i').symm
-    cases h1 : (Fm.L x i).sc
-    cases h2 : (Fm.L x i').sc
-    rw [h1, h2] at e1 e2 e3
-    simp only at e1 e2 e3
-    subst e1 e2 e3
-    rfl
-  exact sameServed Fm.GK (allOf (Fm.Gx x i)) (allOf (Fm.Gx x i')) hR hTT
-    (host_cls_eq (Fm.q_eq x i i') (Fm.d_eq x i i') (Fm.QS_eq x i i'))
-    (Fm.hP_eq x i i') hsc (Fm.Sc_shared x i i') (Fm.eta_eq x i i') (Fm.bs_eq x i i') (Fm.off_eq x i i')
-    (Fm.kapI_eq x i i') (Fm.ep_eq x i i')
-    (fun t t' ht => extension_by_zero_val_eq (congrArg (fun R : Ranks => R.e) hR) hTT _ _
-      (fun s s' hs => by rw [(hr.2 s).1, (hr'.2 s').1, hs]) t t' ht)
-    (fun t t' ht => extension_by_zero_val_eq (congrArg (fun R : Ranks => R.e) hR) hTT _ _
-      (fun s s' hs => by rw [(hr.2 s).2, (hr'.2 s').2, hs]) t t' ht) p
 
-theorem family_served_orbit_counts_agree : Formalism.MainNotions.LocalQuadraticParts.BaseIndependenceFamily Fm := fun x hx => served_orbit_counts_agree Fm x hx
 
 end Formalism.MainNotions.J

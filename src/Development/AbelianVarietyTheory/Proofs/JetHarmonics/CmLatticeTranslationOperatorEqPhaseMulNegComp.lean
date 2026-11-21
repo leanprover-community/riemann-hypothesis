@@ -1,20 +1,980 @@
 import Mathlib
 import Formalism.LocalToGlobal.KernelLattices.DeterminantCokernelCount.CokernelIndexFactors.StatementB
 import Development.AbelianVarietyTheory.Definitions.Jets.CmLatticeCommutatorPairingPowEqOneOfGoodLift
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IteratedFDerivCombMem
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MeasureOfProducts
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.NormSumProdLeOfCoord
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DifferentiableU1
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IteratedFDerivProdCoordAt
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsMeasureOfBoundedMoments
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.TwistedMeasureMomentsEqShiftedSeriesJets
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CpSeriesCoeffNormBoundedRingLaws
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CpTransportedTaylorSeriesMultiplicativeChart
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CmLatticeHeisenbergRelationsOneVariable
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CpSeriesMultiplicativeShiftCompAndSubst
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsRingEquivApplyEqMulOfTranscendental
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ImagQuadraticMaximalOrderArithmeticAtSplitPrime
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ConstantCoeffShiftS
+import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ClosedBallValuationSubringToSubring
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CmLatticeHeisenbergRelationsOneVariableStatement
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ImagQuadraticMaximalOrderArithmeticAtSplitPrimeStatement
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ThetaVectorsSetupExistsEqSmul
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.HeisenbergOperatorsOrthogonalFrameCoordsStatement
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsImEqLattice
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.HeisenbergOperatorsOrthogonalFrameCoords
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsOrthogonalFrameNormsCoprimeOfUnimodularStatement
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CmThetaOperatorInvariantOfLiftCongrOneStatement
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsPadicIntFrameChangeEtaleBasis
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsCmThetaEqSumProdTranslates
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CmThetaOperatorInvariantOfLiftCongrOne
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.OpUConstMul
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.TorsionLiftPairingInOrthogonalFrame
 
+section
+open scoped BigOperators
+
+namespace GlobalTheory.AlgJetComb
+
+theorem pow_mem (δ : ℂ) (f : ℂ → ℂ) (hf : Differentiable ℂ f)
+    (h : ∀ n, δ ^ n * iteratedDeriv n f 0 ∈ algebraicClosure ℚ ℂ) (a : ℕ) :
+    ∀ n, δ ^ n * iteratedDeriv n (fun x => f x ^ a) 0 ∈ algebraicClosure ℚ ℂ := by
+  induction a with
+  | zero =>
+    intro n
+    simp only [pow_zero, iteratedDeriv_const]
+    split_ifs with hn
+    · subst hn; simpa using one_mem _
+    · simpa using zero_mem _
+  | succ a ih =>
+    intro n
+    have e : (fun x => f x ^ (a + 1)) = (fun x => f x ^ a) * f := by
+      funext x; simp [pow_succ]
+    have h1 : ContDiffAt ℂ n (fun x => f x ^ a) 0 := (hf.pow a).contDiff.contDiffAt
+    have h2 : ContDiffAt ℂ n f 0 := hf.contDiff.contDiffAt
+    rw [e, iteratedDeriv_mul h1 h2, Finset.mul_sum]
+    refine sum_mem fun i hi => ?_
+    have hi' : i ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
+    have e2 : δ ^ n * ((n.choose i : ℂ) * iteratedDeriv i (fun x => f x ^ a) 0
+        * iteratedDeriv (n - i) f 0) = (n.choose i : ℂ) *
+        ((δ ^ i * iteratedDeriv i (fun x => f x ^ a) 0)
+          * (δ ^ (n - i) * iteratedDeriv (n - i) f 0)) := by
+      have : δ ^ n = δ ^ i * δ ^ (n - i) := by rw [← pow_add, Nat.add_sub_cancel' hi']
+      rw [this]; ring
+    rw [e2]
+    exact mul_mem (natCast_mem _ _) (mul_mem (ih i) (h _))
+
+theorem iteratedFDeriv_comb_mem :
+    ∀ (g m k : ℕ) (δ : ℂ) (a : Fin g → ℕ) (c : Fin m → ℂ) (f : Fin m → Fin g → ℂ → ℂ)
+      (ys : Fin k → Fin g → ℂ), (∀ j i, Differentiable ℂ (f j i)) →
+      (∀ j i n, δ⁻¹ ^ n * iteratedDeriv n (f j i) 0 ∈ algebraicClosure ℚ ℂ) →
+      (∀ j, c j ∈ algebraicClosure ℚ ℂ) → (∀ l i, ys l i ∈ algebraicClosure ℚ ℂ) →
+      iteratedFDeriv ℂ k (fun z : Fin g → ℂ => ∑ j, c j * ∏ i, f j i (z i) ^ a i) 0
+        (fun l => δ⁻¹ • ys l) ∈ algebraicClosure ℚ ℂ := by
+  intro g m k δ a c f ys hf hj hc hy
+  have hF : ∀ j, ContDiff ℂ k (fun z : Fin g → ℂ => ∏ i, f j i (z i) ^ a i) := fun j =>
+    contDiff_prod fun i _ => (((hf j i).contDiff).comp (contDiff_apply ℂ ℂ i)).pow _
+  rw [iteratedFDeriv_fun_sum_apply (f := fun j (z : Fin g → ℂ) => c j * ∏ i, f j i (z i) ^ a i)
+    (fun j _ => (contDiff_const.mul (hF j)).contDiffAt), ContinuousMultilinearMap.sum_apply]
+  refine sum_mem fun j _ => ?_
+  have e := iteratedFDeriv_const_smul_apply' (a := c j) (x := 0) (hF j).contDiffAt
+  simp only [smul_eq_mul] at e
+  rw [e, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+  refine mul_mem (hc j) ?_
+  rw [GlobalTheory.CoordProdDeriv.iteratedFDeriv_prod_coord g k (fun i x => f j i x ^ a i) _
+    (fun i => (hf j i).pow _)]
+  refine sum_mem fun σ _ => ?_
+  have hk : ∑ i, (Finset.univ.filter (fun l => σ l = i)).card = k := by
+    rw [← Finset.card_eq_sum_card_fiberwise (s := Finset.univ) (t := Finset.univ) (f := σ)
+      (fun _ _ => Finset.mem_coe.mpr (Finset.mem_univ _))]
+    simp
+  have e2 : (∏ l, (δ⁻¹ • ys l) (σ l)) *
+      ∏ i, iteratedDeriv (Finset.univ.filter (fun l => σ l = i)).card
+        (fun x => f j i x ^ a i) 0
+      = (∏ l, ys l (σ l)) * ∏ i, (δ⁻¹ ^ (Finset.univ.filter (fun l => σ l = i)).card *
+        iteratedDeriv (Finset.univ.filter (fun l => σ l = i)).card
+        (fun x => f j i x ^ a i) 0) := by
+    rw [Finset.prod_mul_distrib, Finset.prod_pow_eq_pow_sum, hk]
+    simp only [Pi.smul_apply, smul_eq_mul, Finset.prod_mul_distrib, Finset.prod_const,
+      Finset.card_univ, Fintype.card_fin]
+    ring
+  rw [e2]
+  exact mul_mem (prod_mem fun l _ => hy _ _)
+    (prod_mem fun i _ => pow_mem δ⁻¹ (f j i) (hf j i) (hj j i) _ _)
+
+end GlobalTheory.AlgJetComb
+end
+
+section
+open PowerSeries GlobalTheory.MomOne
+open scoped ComplexConjugate BigOperators Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.twisted_measure_moments_eq_shifted_series_jets : ∀ (q : ℕ) [Fact q.Prime] (S : ℂ_[q]⟦X⟧) (ζ : ℂ_[q]) (n k : ℕ), Bdd S → ζ ^ (q ^ n) = 1 → ∃ f : C(ℤ_[q], ℂ_[q]), (∀ a, f a = ζ ^ (PadicInt.toZModPow n a).val * zc a ^ k) ∧ HasSum (fun m : ℕ => coeff m S * (fwdDiff (1 : ℤ_[q]))^[m] f 0) (constantCoeff (DT^[k] (shiftS ζ S))) := by
+  first | exact @GlobalTheory.MomOne.TwistMom.twisted_moments | exact GlobalTheory.MomOne.TwistMom.twisted_moments | (intros; apply GlobalTheory.MomOne.TwistMom.twisted_moments <;> assumption)
+end
+
+section
+noncomputable section
+open PowerSeries GlobalTheory.MomOne
+open scoped ComplexConjugate BigOperators Topology
+
+namespace GlobalTheory.MomOne.ProdMeasure
+variable {q : ℕ} [Fact q.Prime]
+
+theorem hasSum_pi_prod : ∀ (g : ℕ) (u : Fin g → ℕ → ℂ_[q]) (s : Fin g → ℂ_[q]),
+    (∀ i, HasSum (u i) (s i)) → HasSum (fun ν : Fin g → ℕ => ∏ i, u i (ν i)) (∏ i, s i) := by
+  haveI : NonarchimedeanRing ℂ_[q] := ⟨NonarchimedeanAddGroup.is_nonarchimedean⟩
+  intro g
+  induction g with
+  | zero =>
+    intro u s _
+    simpa using hasSum_fintype (fun ν : Fin 0 → ℕ => ∏ i, u i (ν i))
+  | succ g ih =>
+    intro u s h
+    have h1 := (h 0).mul_of_nonarchimedean (ih (fun i => u i.succ) (fun i => s i.succ) fun i => h _)
+    rw [← (Fin.consEquiv (fun _ : Fin (g + 1) => ℕ)).hasSum_iff, Fin.prod_univ_succ]
+    convert h1 using 1
+    funext p
+    simp [Fin.consEquiv, Fin.prod_univ_succ]
+
+theorem bd_one_pow {f : ℂ_[q]⟦X⟧} (h : Bd 1 f) (a : ℕ) : Bd 1 (f ^ a) := by
+  induction a with
+  | zero =>
+    intro n
+    rw [pow_zero, coeff_one]
+    split_ifs <;> simp
+  | succ a ih =>
+    have := ((sup_norm_laws q).1 _ _ _ _ ih h).2
+    rwa [mul_one, ← pow_succ] at this
+
+theorem shiftS_pow {ζ : ℂ_[q]} (hζ : ‖ζ - 1‖ < 1) {f : ℂ_[q]⟦X⟧} (h : Bd 1 f) (a : ℕ) :
+    shiftS ζ (f ^ a) = shiftS ζ f ^ a := by
+  have H := Shift.shift_laws q ζ hζ
+  induction a with
+  | zero => simpa using H.2.2.1 1
+  | succ a ih => rw [pow_succ, (H.2.1 _ _ ⟨1, bd_one_pow h a⟩ ⟨1, h⟩).2, ih, pow_succ]
+
+theorem hat_pow (ι : ℂ ≃+* ℂ_[q]) (ℓ : ℂ_[q]⟦X⟧) (hl : constantCoeff ℓ = 0) (G : ℂ → ℂ)
+    (hG : AnalyticAt ℂ G 0) (a : ℕ) : hat ι ℓ (fun z => G z ^ a) = hat ι ℓ G ^ a := by
+  have H := TaylorRead.hat_laws q ι ℓ hl
+  induction a with
+  | zero => simpa using H.2.1 1
+  | succ a ih =>
+    simp only [pow_succ]
+    rw [(H.1 (fun z => G z ^ a) G (hG.pow a) hG).2.1, ih]
+
+theorem prod_fiber_pow {g k : ℕ} (σ : Fin k → Fin g) (x : Fin g → ℂ_[q]) :
+    ∏ l, x (σ l) = ∏ i, x i ^ (Finset.univ.filter (fun l => σ l = i)).card := by
+  rw [← Finset.prod_fiberwise Finset.univ σ (fun l => x (σ l))]
+  refine Finset.prod_congr rfl fun i _ => ?_
+  rw [← Finset.prod_const]
+  exact Finset.prod_congr rfl fun l hl => by rw [(Finset.mem_filter.mp hl).2]
+
+theorem measure_of_products : ∀ (d q : ℕ) [Fact q.Prime] (ι : ℂ ≃+* ℂ_[q]) (δ : ℂ) (Ω : ℂ_[q]) (θ : ℂ → ℂ), 0 < d → δ ≠ 0 → Ω ≠ 0 → Differentiable ℂ θ → ThetaLaws ι d (Ω / ι δ) θ → ∀ (g m : ℕ) (a : Fin g → ℕ) (c : Fin m → ℂ) (t : Fin m → Fin g → ℂ), (∀ j i, PrimeTo d q (t j i)) → ∃ μ : C(Fin g → ℤ_[q], ℂ_[q]) →L[ℂ_[q]] ℂ_[q], (∀ B : ℝ, 0 ≤ B → (‖μ‖ ≤ B ↔ ∀ ν : Fin g → ℕ, ‖∑ j, ι (c j) * ∏ i, coeff (ν i) (hat ι (C (Ω / ι δ) * logS) (U1 d (t j i) θ) ^ a i)‖ ≤ B)) ∧ ∀ (n s : ℕ) (y : Fin g → ℂ), Nat.Coprime s q → (∀ j i, InOK d ((s : ℂ) * t j i)) → (∀ i, Good ι d n s (y i)) → ∀ (k : ℕ) (ys : Fin k → Fin g → ℂ) (F : C(Fin g → ℤ_[q], ℂ_[q])), (∀ A, F A = (∏ i, ι (kap1 d 1 (y i)) ^ (PadicInt.toZModPow n (A i)).val) * ∏ l, (Ω⁻¹ * ∑ i, ι (ys l i) * zc (A i))) → ι (iteratedFDeriv ℂ k (fun z : Fin g → ℂ => ∑ j, c j * ∏ i, W1 d (y i) (U1 d (t j i) θ) (z i) ^ a i) 0 (fun l => δ⁻¹ • ys l)) = μ F := by
+  intro d q _ ι δ Ω θ hd hδ hΩ hθ hL g m a c t ht
+  set ω : ℂ_[q] := Ω / ι δ with hω
+  have hS : ∀ j i, Bd 1 (hat ι (C ω * logS) (U1 d (t j i) θ) ^ a i) :=
+    fun j i => bd_one_pow (hL.1 _ (ht j i)) _
+  obtain ⟨μ, hμ1, hμ2⟩ := GlobalTheory.MultiMahler.exists_measure_of_bounded_moments q g
+    (fun ν => ∑ j, ι (c j) * ∏ i, coeff (ν i) (hat ι (C ω * logS) (U1 d (t j i) θ) ^ a i))
+    ⟨∑ j, ‖ι (c j)‖, fun ν => (norm_sum_le _ _).trans (Finset.sum_le_sum fun j _ => by
+      rw [norm_mul, norm_prod]
+      exact mul_le_of_le_one_right (norm_nonneg _)
+        (Finset.prod_le_one (fun _ _ => norm_nonneg _) fun i _ => hS j i _))⟩
+  refine ⟨μ, hμ1, ?_⟩
+  intro n s y hs hst hy k ys F hF
+  have hl : constantCoeff (C ω * logS : ℂ_[q]⟦X⟧) = 0 := by
+    simp [logS, ← coeff_zero_eq_constantCoeff_apply]
+  have hdiff : ∀ j i, Differentiable ℂ (W1 d (y i) (U1 d (t j i) θ)) := fun j i =>
+    ((heisenbergOne d hd).2.2.1 _ _ ((heisenbergOne d hd).2.2.1 _ _ hθ).1).2
+  have hroot : ∀ i, ι (kap1 d 1 (y i)) ^ (q ^ n) = 1 := fun i =>
+    (hL.2.1 0 (y i) n s hs ⟨0, 0, by simp⟩ (hy i)).1
+  have hf : ∀ (i : Fin g) (e : ℕ), ∃ f : C(ℤ_[q], ℂ_[q]),
+      (∀ A, f A = ι (kap1 d 1 (y i)) ^ (PadicInt.toZModPow n A).val * zc A ^ e) ∧
+      ∀ j, HasSum (fun r : ℕ => coeff r (hat ι (C ω * logS) (U1 d (t j i) θ) ^ a i) *
+        (fwdDiff (1 : ℤ_[q]))^[r] f 0)
+        (ω ^ e * ι (iteratedDeriv e (fun z => W1 d (y i) (U1 d (t j i) θ) z ^ a i) 0)) := by
+    intro i e
+    obtain ⟨f, hf, -⟩ := GlobalTheory.T.twisted_measure_moments_eq_shifted_series_jets q 0 _ n e ⟨0, fun r => by simp⟩ (hroot i)
+    refine ⟨f, hf, fun j => ?_⟩
+    obtain ⟨f', hf', h⟩ := GlobalTheory.T.twisted_measure_moments_eq_shifted_series_jets q _ _ n e ⟨1, hS j i⟩ (hroot i)
+    obtain rfl : f' = f := by ext A; rw [hf, hf']
+    have han := (hdiff j i).analyticAt 0
+    rw [shiftS_pow (ShiftComp.norm_sub_one_lt_of_root (hroot i)) (hL.1 _ (ht j i)),
+      ← (hL.2.1 _ _ n s hs (hst j i) (hy i)).2, ← hat_pow ι _ hl _ han,
+      (hat_multiplicative_chart q ι ω (fun z => W1 d (y i) (U1 d (t j i) θ) z ^ a i)
+        (han.pow (a i))).2.1 e] at h
+    exact h
+  choose f hf1 hf2 using hf
+  let P : (Fin k → Fin g) → C(Fin g → ℤ_[q], ℂ_[q]) := fun σ =>
+    ⟨fun A => ∏ i, f i (Finset.univ.filter (fun l => σ l = i)).card (A i), by fun_prop⟩
+  have hP : ∀ σ, μ (P σ) = ∑ j, ι (c j) * ∏ i, (ω ^ (Finset.univ.filter (fun l => σ l = i)).card *
+      ι (iteratedDeriv (Finset.univ.filter (fun l => σ l = i)).card
+        (fun z => W1 d (y i) (U1 d (t j i) θ) z ^ a i) 0)) := by
+    intro σ
+    refine (hμ2 (fun i => f i (Finset.univ.filter (fun l => σ l = i)).card) (P σ) fun _ => rfl).unique ?_
+    have := hasSum_sum (s := Finset.univ) fun j _ =>
+      (hasSum_pi_prod g _ _ fun i => hf2 i (Finset.univ.filter (fun l => σ l = i)).card j).mul_left (ι (c j))
+    simp only [Finset.sum_mul, mul_assoc]
+    simp only [Finset.prod_mul_distrib] at this ⊢
+    exact this
+  have hFP : F = ∑ σ : Fin k → Fin g, (∏ l, Ω⁻¹ * ι (ys l (σ l))) • P σ := by
+    ext A
+    rw [hF]
+    simp only [ContinuousMap.coe_sum, Finset.sum_apply, ContinuousMap.coe_smul, Pi.smul_apply,
+      smul_eq_mul, P, ContinuousMap.coe_mk, hf1, Finset.mul_sum]
+    rw [Finset.prod_univ_sum, Fintype.piFinset_univ, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun σ _ => ?_
+    rw [Finset.prod_mul_distrib (f := fun i => ι (kap1 d 1 (y i)) ^ (PadicInt.toZModPow n (A i)).val),
+      ← prod_fiber_pow σ (fun i => zc (A i))]
+    simp only [← mul_assoc]
+    rw [Finset.prod_mul_distrib (g := fun l => zc (A (σ l)))]
+    ring
+  have hcd : ∀ j, ContDiff ℂ k (fun z : Fin g → ℂ => ∏ i, W1 d (y i) (U1 d (t j i) θ) (z i) ^ a i) :=
+    fun j => contDiff_prod fun i _ => (((hdiff j i).contDiff).comp (contDiff_apply ℂ ℂ i)).pow _
+  have hit : iteratedFDeriv ℂ k (fun z : Fin g → ℂ => ∑ j, c j * ∏ i, W1 d (y i) (U1 d (t j i) θ) (z i) ^ a i) 0
+      = ∑ j, c j • iteratedFDeriv ℂ k
+        (fun z : Fin g → ℂ => ∏ i, W1 d (y i) (U1 d (t j i) θ) (z i) ^ a i) 0 := by
+    rw [iteratedFDeriv_sum (fun j _ => contDiff_const.mul (hcd j)), Finset.sum_apply]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    exact iteratedFDeriv_const_smul_apply' (a := c j) (x := 0) (hcd j).contDiffAt
+  rw [hit, hFP, map_sum μ]
+  simp only [map_smul, hP, smul_eq_mul, ContinuousMultilinearMap.sum_apply,
+    ContinuousMultilinearMap.smul_apply, Finset.mul_sum, map_sum]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  rw [GlobalTheory.CoordProdDeriv.iteratedFDeriv_prod_coord g k
+    (fun i z => W1 d (y i) (U1 d (t j i) θ) z ^ a i) _ (fun i => (hdiff j i).pow _)]
+  simp only [Finset.mul_sum, map_sum, map_mul, map_prod, Pi.smul_apply, smul_eq_mul, map_inv₀]
+  refine Finset.sum_congr rfl fun σ _ => ?_
+  rw [Finset.prod_mul_distrib (f := fun i => ω ^ (Finset.univ.filter (fun l => σ l = i)).card),
+    ← prod_fiber_pow σ (fun _ => ω)]
+  have e : ∏ l, (ι δ)⁻¹ * ι (ys l (σ l)) = (∏ l, Ω⁻¹ * ι (ys l (σ l))) * ∏ _l : Fin k, ω := by
+    rw [← Finset.prod_mul_distrib]
+    refine Finset.prod_congr rfl fun l _ => ?_
+    rw [hω]; field_simp
+  rw [e]
+  ring
+
+end GlobalTheory.MomOne.ProdMeasure
+end
+end
+
+section
+open PowerSeries GlobalTheory.MomOne
+open scoped ComplexConjugate BigOperators Topology
+
+namespace GlobalTheory.MomOne
+
+theorem norm_sum_prod_le_of_coord {K : Type*} [NormedCommRing K] {g m : ℕ} (F G : Fin m → Fin g → ℕ → K)
+    (c : Fin m → K) (B : ℝ)
+    (step : ∀ (i : Fin g) (c' : Fin m → K), (∀ n, ‖∑ j, c' j * F j i n‖ ≤ B) → ∀ n, ‖∑ j, c' j * G j i n‖ ≤ B)
+    (h : ∀ ν : Fin g → ℕ, ‖∑ j, c j * ∏ i, F j i (ν i)‖ ≤ B) (ν : Fin g → ℕ) :
+    ‖∑ j, c j * ∏ i, G j i (ν i)‖ ≤ B := by
+  classical
+  have key : ∀ I : Finset (Fin g), ∀ ν : Fin g → ℕ,
+      ‖∑ j, c j * ∏ i, (if i ∈ I then G j i (ν i) else F j i (ν i))‖ ≤ B := by
+    intro I
+    induction I using Finset.induction_on with
+    | empty => simpa using h
+    | insert i₀ I hi ih =>
+      intro ν
+      have hs := step i₀
+        (fun j => c j * ∏ i ∈ Finset.univ.erase i₀, (if i ∈ I then G j i (ν i) else F j i (ν i))) ?_ (ν i₀)
+      · convert hs using 3 with j _
+        rw [← Finset.prod_erase_mul _ _ (Finset.mem_univ i₀), mul_assoc]
+        congr 2
+        · refine Finset.prod_congr rfl fun i hi' => ?_
+          simp [Finset.mem_insert, Finset.ne_of_mem_erase hi']
+        · simp
+      · intro n
+        convert ih (Function.update ν i₀ n) using 3 with j _
+        rw [← Finset.prod_erase_mul _ _ (Finset.mem_univ i₀), mul_assoc]
+        congr 2
+        · refine Finset.prod_congr rfl fun i hi' => ?_
+          simp [Function.update_of_ne (Finset.ne_of_mem_erase hi')]
+        · simp [hi]
+  simpa using key Finset.univ ν
+
+theorem translate_norm_prod_le : ∀ (d q : ℕ) [Fact q.Prime] (ι : ℂ ≃+* ℂ_[q]) (ω : ℂ_[q]) (θ : ℂ → ℂ), ThetaLaws ι d ω θ → ∀ (g m : ℕ) (a : Fin g → ℕ) (c : Fin m → ℂ_[q]) (t : Fin m → Fin g → ℂ) (τ : Fin g → ℂ) (B : ℝ), (∀ j i, PrimeTo d q (t j i)) → (∀ i, PrimeTo d q (τ i)) → (∀ ν : Fin g → ℕ, ‖∑ j, c j * ∏ i, coeff (ν i) (hat ι (C ω * logS) (U1 d (t j i) θ) ^ a i)‖ ≤ B) → ∀ ν : Fin g → ℕ, ‖∑ j, c j * ∏ i, coeff (ν i) (hat ι (C ω * logS) (U1 d (τ i) (U1 d (t j i) θ)) ^ a i)‖ ≤ B := by
+  intro d q _ ι ω θ hθ g m a c t τ B ht hτ h
+  refine norm_sum_prod_le_of_coord
+    (fun j i n => coeff n (hat ι (C ω * logS) (U1 d (t j i) θ) ^ a i))
+    (fun j i n => coeff n (hat ι (C ω * logS) (U1 d (τ i) (U1 d (t j i) θ)) ^ a i)) c B ?_ h
+  intro i c' hc n
+  have := hθ.2.2 (a i) m c' (fun j => t j i) (τ i) B (fun j => ht j i) (hτ i) (fun k => by
+    simpa only [map_sum, coeff_C_mul] using hc k) n
+  simpa only [map_sum, coeff_C_mul] using this
+
+end GlobalTheory.MomOne
+end
+
+section
+noncomputable section
+open PowerSeries GlobalTheory.MomOne
+open scoped ComplexConjugate BigOperators Topology
+
+namespace GlobalTheory.MomOne.JetAlg
+
+variable {p : ℕ} [hp : Fact p.Prime]
+
+def ball (p : ℕ) [Fact p.Prime] : Subring ℂ_[p] := GlobalTheory.ClosedBallValuationSubring.closedBallSubring ℂ_[p]
+
+theorem norm_p_lt_one : ‖(p : ℂ_[p])‖ < 1 := by
+  have h := PadicComplex.norm_extends' p (p : ℚ_[p])
+  have h2 : ‖(p : ℚ_[p])‖ < 1 := Padic.norm_p_lt_one
+  rw [← h] at h2
+  simpa using h2
+
+theorem norm_sub_one_lt {y : ℂ_[p]} {k : ℕ} (h : y ^ p ^ k = 1) : ‖y - 1‖ < 1 := by
+  have hne : p ^ k ≠ 0 := pow_ne_zero _ hp.out.ne_zero
+  have hy : ‖y‖ ≤ 1 := by
+    have h1 : ‖y‖ ^ p ^ k = 1 := by rw [← norm_pow, h, norm_one]
+    exact ((pow_eq_one_iff_of_nonneg (norm_nonneg _) hne).1 h1).le
+  let Y : ball p := ⟨y, hy⟩
+  obtain ⟨r, hr⟩ := exists_add_pow_prime_pow_eq hp.out (Y - 1) 1 k
+  have hr' := congrArg (fun t : ball p => (t : ℂ_[p])) hr
+  simp only [sub_add_cancel, one_pow, mul_one] at hr'
+  push_cast at hr'
+  have hz : ‖y - 1‖ ≤ 1 := (Y - 1).2
+  have hrr : ‖(r : ℂ_[p])‖ ≤ 1 := r.2
+  have e : (y - 1) ^ p ^ k = -((p : ℂ_[p]) * (y - 1) * r) := by
+    have : (Y : ℂ_[p]) = y := rfl
+    rw [this, h] at hr'
+    linear_combination -hr'
+  have h2 : ‖(y - 1) ^ p ^ k‖ < 1 := by
+    rw [e, norm_neg, norm_mul, norm_mul, mul_assoc]
+    exact mul_lt_one_of_nonneg_of_lt_one_left (norm_nonneg _) norm_p_lt_one
+      (mul_le_one₀ hz (norm_nonneg _) hrr)
+  rw [norm_pow] at h2
+  exact (pow_lt_one_iff_of_nonneg (norm_nonneg _) hne).1 h2
+
+theorem bd_derivative {f : ℂ_[p]⟦X⟧} (hf : Bd 1 f) : Bd 1 (derivative ℂ_[p] f) := by
+  intro n
+  rw [coeff_derivative, norm_mul]
+  refine mul_le_one₀ (hf _) (norm_nonneg _) ?_
+  have := IsUltrametricDist.norm_natCast_le_one ℂ_[p] (n + 1)
+  simpa using this
+
+theorem bd_DT {f : ℂ_[p]⟦X⟧} (hf : Bd 1 f) : Bd 1 (DT f) := by
+  have h := bd_derivative hf
+  intro n
+  rw [DT, add_mul, one_mul, map_add]
+  refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le (h n) ?_)
+  cases n with
+  | zero => simp
+  | succ n => rw [coeff_succ_X_mul]; exact h n
+
+theorem bd_iterate {f : ℂ_[p]⟦X⟧} (hf : Bd 1 f) (k : ℕ) : Bd 1 (DT^[k] f) := by
+  induction k with
+  | zero => exact hf
+  | succ k ih => rw [Function.iterate_succ_apply']; exact bd_DT ih
+
+theorem differentiable_U1 (d : ℕ) (x : ℂ) {F : ℂ → ℂ} (hF : Differentiable ℂ F) :
+    Differentiable ℂ (U1 d x F) := by
+  unfold U1 h1
+  fun_prop
+
+theorem differentiable_W1 (d : ℕ) (x : ℂ) {F : ℂ → ℂ} (hF : Differentiable ℂ F) :
+    Differentiable ℂ (W1 d x F) := by
+  have := differentiable_U1 d x hF
+  unfold W1
+  fun_prop
+
+end GlobalTheory.MomOne.JetAlg
+
+namespace GlobalTheory.MomOne
+open JetAlg
+
+theorem jets_algebraic : ∀ (d q : ℕ) [Fact q.Prime] (δ : ℂ) (θ : ℂ → ℂ), d.Prime → d % 16 = 7 → Split d q → IsTh d θ → δ ≠ 0 → (∀ ι : ℂ ≃+* ℂ_[q], ∃ Ω : ℂ_[q], ‖Ω‖ = 1 ∧ ThetaLaws ι d (Ω / ι δ) θ) → ∀ (ι : ℂ ≃+* ℂ_[q]) (t y : ℂ) (n s k : ℕ), Nat.Coprime s q → InOK d ((s : ℂ) * t) → Good ι d n s y → δ⁻¹ ^ k * iteratedDeriv k (W1 d y (U1 d t θ)) 0 ∈ algebraicClosure ℚ ℂ := by
+  intro d q hq δ θ hd hd16 hsp hθ hδ hL ι t y n s k hs ht hy
+  refine mem_algebraicClosure_of_norm_le q ι _ 1 ?_
+  intro ι' hι'
+  obtain ⟨Ω, hΩ, h1', h2', -⟩ := hL ι'
+  obtain ⟨hA, hB, -⟩ := okArith d q ι hd hd16 hsp
+  have hy' : Good ι' d n s y := by
+    obtain ⟨v, hv, hn, rfl⟩ := hy
+    refine ⟨v, hv, ?_, rfl⟩
+    have hc : InOK d (conj v) := (hA.2.2 v v hv hv).2.2.2
+    have := hι' ⟨conj v, (hB _ hc).2.2⟩
+    simp only at this
+    rw [this]; exact hn
+  have hs0 : 0 < s := by
+    rcases Nat.eq_zero_or_pos s with rfl | h
+    · exact absurd (by simpa using hs) hq.out.ne_one
+    · exact h
+  obtain ⟨hζ, hE⟩ := h2' t y n s hs ht hy'
+  have hb := (Shift.shift_laws q _ (norm_sub_one_lt hζ)).1 _ _ (h1' t ⟨s, hs0, hs, ht⟩)
+  rw [← hE] at hb
+  have han : AnalyticAt ℂ (W1 d y (U1 d t θ)) 0 :=
+    (differentiable_W1 d y (differentiable_U1 d t hθ.1)).analyticAt 0
+  have hk := (hat_multiplicative_chart q ι' (Ω / ι' δ) _ han).2.1 k
+  have hc := bd_iterate hb k 0
+  rw [coeff_zero_eq_constantCoeff_apply, hk, div_eq_mul_inv, mul_pow, mul_assoc, norm_mul, norm_pow, hΩ,
+    one_pow, one_mul] at hc
+  rw [map_mul, map_pow, map_inv₀]
+  exact hc
+
+end GlobalTheory.MomOne
+end
+end
+
+section
+section
+open GlobalTheory.MomOne Formalism.L2.Ker.JMB
+open scoped ComplexConjugate BigOperators ComplexOrder
+open Matrix
+
+namespace GlobalTheory.MomOne.ThetaLine
+
+variable {g : ℕ}
+
+theorem dot_transpose_eq_hf (Hm : Matrix (Fin g) (Fin g) ℂ) (z a : Fin g → ℂ) :
+    star a ⬝ᵥ Hmᵀ.mulVec z = hf Hm z a := by
+  simp only [dotProduct, mulVec, transpose_apply, hf, Pi.star_apply, Finset.mul_sum]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+  rw [Complex.star_def]
+  ring
+
+theorem im_hf_int {d : ℕ} (hd : 0 < d) (Hm : Matrix (Fin g) (Fin g) ℂ) (x y : Fin g → ℂ)
+    (h : beta d Hm x y ∈ OK d) : ∃ k : ℤ, (hf Hm x y).im = k := by
+  obtain ⟨u, v, huv⟩ := h
+  refine ⟨v, ?_⟩
+  have hs : Real.sqrt d / 2 ≠ 0 := by
+    have : (0 : ℝ) < Real.sqrt d := Real.sqrt_pos.mpr (by exact_mod_cast hd)
+    positivity
+  have key : (beta d Hm x y).im = Real.sqrt d / 2 * (hf Hm x y).im := by
+    rw [beta, Complex.im_ofReal_mul]
+  have hv : (beta d Hm x y).im = Real.sqrt d / 2 * v := by
+    rw [huv]
+    simp [w0, rtd]
+    ring
+  exact mul_left_cancel₀ hs (key.symm.trans hv)
+
+theorem transl_of_fixed {d : ℕ} {Hm : Matrix (Fin g) (Fin g) ℂ} {x : Fin g → ℂ}
+    {G : (Fin g → ℂ) → ℂ} (h : opW d Hm x G = G) (z : Fin g → ℂ) :
+    G (z + x) = Complex.exp (-((Real.pi : ℂ) * Complex.I * ((beta d Hm x x).re : ℂ))) *
+      Complex.exp (Real.pi * hf Hm z x + Real.pi / 2 * hf Hm x x) * G z := by
+  have hz := congrFun h z
+  simp only [opW, opU] at hz
+  have e1 : Complex.exp (-((Real.pi : ℂ) * Complex.I * ((beta d Hm x x).re : ℂ))) *
+      Complex.exp ((Real.pi : ℂ) * Complex.I * ((beta d Hm x x).re : ℂ)) = 1 := by
+    rw [← Complex.exp_add, neg_add_cancel, Complex.exp_zero]
+  have e2 : Complex.exp (Real.pi * hf Hm z x + Real.pi / 2 * hf Hm x x) *
+      Complex.exp (-(Real.pi : ℂ) * hf Hm z x - (Real.pi : ℂ) / 2 * hf Hm x x) = 1 := by
+    rw [← Complex.exp_add]
+    convert Complex.exp_zero using 2
+    ring
+  rw [← hz]
+  linear_combination (-(G (z + x) * Complex.exp (Real.pi * hf Hm z x + Real.pi / 2 * hf Hm x x) *
+      Complex.exp (-(Real.pi : ℂ) * hf Hm z x - (Real.pi : ℂ) / 2 * hf Hm x x))) * e1 - G (z + x) * e2
+
+theorem exists_eq_smul : ∀ (g : ℕ) (S : Setup g) (e F : (Fin g → ℂ) → ℂ), S.Ok → S.IsTheta e → S.IsTheta F → F ≠ 0 → ∃ c : ℂ, e = c • F := by
+  intro g S e F hS he hF hF0
+  obtain ⟨hp, -, hH, hdisc, -, -, hβ, hdual⟩ := hS
+  have : DiscreteTopology S.La.toAddSubgroup := hdisc
+  have hlaw : ∀ G : (Fin g → ℂ) → ℂ, S.IsTheta G → ∀ a ∈ S.La.toAddSubgroup, ∀ z,
+      G (z + a) = Complex.exp (-((Real.pi : ℂ) * Complex.I * ((beta S.d S.Hm a a).re : ℂ))) *
+        Complex.exp (Real.pi * (star a ⬝ᵥ S.Hmᵀ.mulVec z) + Real.pi / 2 * (star a ⬝ᵥ S.Hmᵀ.mulVec a)) * G z := by
+    intro G hG a ha z
+    rw [dot_transpose_eq_hf, dot_transpose_eq_hf]
+    exact transl_of_fixed (hG.2 a ha) z
+  refine GlobalTheory.ThetaTranslSpan.exists_eq_smul hH.transpose S.La.toAddSubgroup ?_
+    (fun a => Complex.exp (-((Real.pi : ℂ) * Complex.I * ((beta S.d S.Hm a a).re : ℂ)))) F e ?_
+    (hF.1.differentiable (by simp)) hF0 (hlaw F hF) (he.1.differentiable (by simp)) (hlaw e he)
+  · intro v
+    simp only [dot_transpose_eq_hf]
+    exact ⟨hdual v, fun hv a ha => im_hf_int hp.pos S.Hm a v (hβ a ha v hv)⟩
+  · intro a _
+    simp [Complex.norm_exp]
+
+end GlobalTheory.MomOne.ThetaLine
+end
+
+open GlobalTheory.MomOne Formalism.L2.Ker.JMB
+open scoped ComplexConjugate BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.theta_vectors_setup_exists_eq_smul : ∀ (g : ℕ) (S : Setup g) (e F : (Fin g → ℂ) → ℂ), S.Ok → S.IsTheta e → S.IsTheta F → F ≠ 0 → ∃ c : ℂ, e = c • F := by
+  atlas_forward_decl GlobalTheory.MomOne.ThetaLine.exists_eq_smul
+end
+
+section
+open GlobalTheory.MomOne Formalism.L2.Ker.JMB
+open scoped ComplexConjugate BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heisenbergOperators_orthogonalFrame_coords : ∀ (g : ℕ) (S : Setup g) (x : Fin g → Fin g → ℂ) (a : Fin g → ℕ), 0 < S.d → (∀ i j, beta S.d S.Hm (x i) (x j) = if i = j then (a i : ℂ) else 0) → (∀ i, 0 < a i) → (∀ v : Fin g → ℂ, v = ∑ i, (beta S.d S.Hm v (x i) / (a i : ℂ)) • x i) ∧ (∀ z w : Fin g → ℂ, hf S.Hm (∑ i, z i • x i) (∑ i, w i • x i) = ∑ i, (a i : ℂ) * h1 S.d (z i) (w i)) ∧ (∀ (m : ℕ) (c : Fin m → ℂ) (f : Fin m → Fin g → ℂ → ℂ) (G : (Fin g → ℂ) → ℂ), (∀ z : Fin g → ℂ, G (∑ i, z i • x i) = ∑ j, c j * ∏ i, f j i (z i) ^ a i) → ∀ t z : Fin g → ℂ, opU S.Hm (∑ i, t i • x i) G (∑ i, z i • x i) = ∑ j, c j * ∏ i, U1 S.d (t i) (f j i) (z i) ^ a i ∧ opW S.d S.Hm (∑ i, t i • x i) G (∑ i, z i • x i) = ∑ j, c j * ∏ i, W1 S.d (t i) (f j i) (z i) ^ a i) ∧ ∀ (G : (Fin g → ℂ) → ℂ), ContDiff ℂ ⊤ G → ∀ (k : ℕ) (ys : Fin k → Fin g → ℂ), jetV G (fun l => ∑ i, ys l i • x i) = iteratedFDeriv ℂ k (fun z : Fin g → ℂ => G (∑ i, z i • x i)) 0 ys := by
+  first | exact @GlobalTheory.MomOne.Frame.coord | exact GlobalTheory.MomOne.Frame.coord | (intros; apply GlobalTheory.MomOne.Frame.coord <;> assumption)
+end
+
+section
+open GlobalTheory.MomOne Formalism.L2.Ker.JMB
+open scoped ComplexConjugate BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cmThetaOperator_invariant_of_lift_congr_one : ∀ (q : ℕ) [Fact q.Prime] (lam : Qbar →+* ℂ_[q]) (g : ℕ) (S : Setup g) (r : ℕ) (b : Fin r → Fin g → ℂ) (e : (Fin g → ℂ) → ℂ) (t : Fin g → ℂ) (n m s : ℕ) (eps : ℂ) (y : Fin r → Fin (q ^ n)), S.Ok → (∀ i, b i ∈ S.La) → S.IsTheta e → IsIdem lam S.d m eps → 2 * n ≤ m → (∀ i, ∃ z : ℤ, (hf S.Hm (eps • b i) t).im = z) → s ≡ 1 [MOD q ^ n] → opW S.d S.Hm ((s : ℂ) • liftY q n eps b y) (opU S.Hm t e) = opW S.d S.Hm (liftY q n eps b y) (opU S.Hm t e) ∧ ∀ v ∈ S.La, kap S.Hm v ((s : ℂ) • liftY q n eps b y) = kap S.Hm v (liftY q n eps b y) := by
+  first | exact @GlobalTheory.MomOne.lift_change | exact GlobalTheory.MomOne.lift_change | (intros; apply GlobalTheory.MomOne.lift_change <;> assumption)
+end
+
+section
+section
+noncomputable section
+open GlobalTheory.MomOne Formalism.L2.Ker.JMB
+open scoped ComplexConjugate BigOperators ComplexOrder
+
+namespace GlobalTheory.MomOne.FrameChange
+
+variable {g : ℕ}
+
+theorem beta_sum_left {κ : Type} [Fintype κ] (d : ℕ) (Hm : Matrix (Fin g) (Fin g) ℂ) (c : κ → ℂ)
+    (v : κ → Fin g → ℂ) (w : Fin g → ℂ) :
+    beta d Hm (∑ k, c k • v k) w = ∑ k, c k * beta d Hm (v k) w := by
+  simp only [beta, hf, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Finset.sum_mul, Finset.mul_sum]
+  rw [Finset.sum_comm' (t' := Finset.univ) (s' := fun _ => Finset.univ) (h := by simp)]
+  simp_rw [Finset.sum_comm (s := (Finset.univ : Finset (Fin g))) (t := (Finset.univ : Finset κ))]
+  refine Finset.sum_congr rfl fun k _ => ?_
+  rw [Finset.sum_comm]
+  exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
+
+theorem beta_conj (d : ℕ) {Hm : Matrix (Fin g) (Fin g) ℂ} (h : Hm.IsHermitian) (z w : Fin g → ℂ) :
+    conj (beta d Hm z w) = beta d Hm w z := by
+  simp only [beta, hf, map_mul, map_sum, Complex.conj_ofReal, Complex.conj_conj]
+  rw [Finset.sum_comm]
+  congr 1
+  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+  have : conj (Hm j i) = Hm i j := h.apply i j
+  rw [this]; ring
+
+theorem eq_sum_frame (d : ℕ) (Hm : Matrix (Fin g) (Fin g) ℂ) (x : Fin g → Fin g → ℂ) (a : Fin g → ℕ)
+    (hx : ∀ i j, beta d Hm (x i) (x j) = if i = j then (a i : ℂ) else 0) (ha : ∀ i, (a i : ℂ) ≠ 0)
+    (v : Fin g → ℂ) : v = ∑ i, (beta d Hm v (x i) / (a i : ℂ)) • x i := by
+  have key : ∀ (z : Fin g → ℂ) k, beta d Hm (∑ i, z i • x i) (x k) = z k * a k := by
+    intro z k
+    rw [beta_sum_left]
+    simp [hx]
+  have hli : LinearIndependent ℂ x := by
+    refine Fintype.linearIndependent_iff.2 fun z hz k => ?_
+    have h := key z k
+    rw [hz] at h
+    have h0 : beta d Hm 0 (x k) = 0 := by simp [beta, hf]
+    rw [h0] at h
+    exact (mul_eq_zero.1 h.symm).resolve_right (ha k)
+  have hsp := hli.span_eq_top_of_card_eq_finrank' (by simp)
+  have hv : v ∈ Submodule.span ℂ (Set.range x) := by rw [hsp]; trivial
+  obtain ⟨z, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℂ).1 hv
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [key, mul_div_cancel_right₀ _ (ha i)]
+
+def zcHom (q : ℕ) [Fact q.Prime] : ℤ_[q] →+* ℂ_[q] := (algebraMap ℚ_[q] ℂ_[q]).comp PadicInt.Coe.ringHom
+
+theorem zcHom_injective (q : ℕ) [Fact q.Prime] : Function.Injective (zcHom q) :=
+  (algebraMap ℚ_[q] ℂ_[q]).injective.comp Subtype.val_injective
+
+end GlobalTheory.MomOne.FrameChange
+
+namespace GlobalTheory.MomOne
+open FrameChange
+
+theorem frameChange : ∀ (q : ℕ) [Fact q.Prime] (ι : ℂ ≃+* ℂ_[q]) (g : ℕ) (S : Setup g) (x : Fin g → Fin g → ℂ) (a : Fin g → ℕ) (r : ℕ) (b : Fin r → Fin g → ℂ), S.Ok → Split S.d q → (∀ i, x i ∈ S.La) → (∀ i j, beta S.d S.Hm (x i) (x j) = if i = j then (a i : ℂ) else 0) → (∀ i, 0 < a i ∧ Nat.Coprime (a i) q) → S.NNBasis q b → ∃ T : (Fin r → ℤ_[q]) ≃ₜ (Fin g → ℤ_[q]), ∀ A i, GlobalTheory.MomOne.zc (T A i) = ∑ j, GlobalTheory.MomOne.zc (A j) * ι (beta S.d S.Hm (x i) (b j)) := by
+  intro q _ ι g S x a r b hS hsp hxL hx ha hb
+  obtain ⟨hd, hd7, hpos, -, -, -, hβ, -⟩ := hS
+  obtain ⟨hbL, hgen, hind⟩ := hb
+  have hq : q.Prime := Fact.out
+  have hH : S.Hm.IsHermitian := hpos.isHermitian
+  obtain ⟨⟨h1, -, hR⟩, hZ, -⟩ := okArith S.d q ι hd hd7 hsp
+  let O : Subring ℂ :=
+    { carrier := {z | InOK S.d z}
+      one_mem' := h1
+      zero_mem' := ⟨0, 0, by simp⟩
+      mul_mem' := fun {u v} hu hv => (hR u v hu hv).2.1
+      add_mem' := fun {u v} hu hv => (hR u v hu hv).1
+      neg_mem' := fun {u} hu => (hR u u hu hu).2.2.1 }
+  have hconj : ∀ u, InOK S.d u → InOK S.d (conj u) := fun u hu => (hR u u hu hu).2.2.2
+  choose s hs c hc hsc using fun i => hgen (x i) (hxL i)
+  have hs0 : ∀ i, (s i : ℂ) ≠ 0 := fun i h => by
+    have h' : s i = 0 := by exact_mod_cast h
+    have := hs i
+    rw [h', Nat.coprime_zero_left] at this
+    exact hq.one_lt.ne' this
+  have ha0 : ∀ i, (a i : ℂ) ≠ 0 := fun i => by exact_mod_cast (ha i).1.ne'
+
+  have hMN : ∀ i k, ∑ j, beta S.d S.Hm (x i) (b j) * (conj (c k j) / (s k * a k)) = if i = k then 1 else 0 := by
+    intro i k
+    have e := beta_sum_left S.d S.Hm (c k) b (x i)
+    have e2 := beta_sum_left S.d S.Hm (fun _ : Unit => (s k : ℂ)) (fun _ => x k) (x i)
+    simp only [Finset.univ_unique, Finset.sum_singleton] at e2
+    rw [← hsc k, e2] at e
+    have e3 := congrArg conj e
+    simp only [map_sum, map_mul, beta_conj S.d hH, map_natCast] at e3
+    simp_rw [← mul_div_assoc, mul_comm (beta _ _ _ _)]
+    rw [← Finset.sum_div, ← e3, hx]
+    split_ifs with h
+    · subst h; exact div_self (mul_ne_zero (hs0 i) (ha0 i))
+    · simp
+  have hNM : ∀ j l, ∑ i, (conj (c i j) / (s i * a i)) * beta S.d S.Hm (x i) (b l) = if j = l then 1 else 0 := by
+    intro j l
+    set P : ℂ := ∏ i, ((s i : ℂ) * a i) with hP
+    have hP0 : P ≠ 0 := Finset.prod_ne_zero_iff.2 fun i _ => mul_ne_zero (hs0 i) (ha0 i)
+    let e : Fin r → ℂ := fun j => ∑ i, c i j / (s i * a i) * beta S.d S.Hm (b l) (x i)
+    have hmem : ∀ j, P * (e j - if j = l then 1 else 0) ∈ O := by
+      intro j
+      have hPO : P ∈ O := O.prod_mem fun i _ => O.mul_mem (natCast_mem O _) (natCast_mem O _)
+      rw [mul_sub, Finset.mul_sum]
+      refine O.sub_mem (O.sum_mem fun i _ => ?_) (O.mul_mem hPO (by split_ifs; exacts [O.one_mem, O.zero_mem]))
+      have : P * (c i j / (s i * a i) * beta S.d S.Hm (b l) (x i)) =
+          (∏ k ∈ Finset.univ.erase i, ((s k : ℂ) * a k)) * c i j * beta S.d S.Hm (b l) (x i) := by
+        rw [hP, ← Finset.mul_prod_erase _ _ (Finset.mem_univ i)]
+        have := hs0 i
+        have := ha0 i
+        field_simp
+      rw [this]
+      exact O.mul_mem (O.mul_mem (O.prod_mem fun i _ => O.mul_mem (natCast_mem O _) (natCast_mem O _)) (hc i j))
+        (hβ _ (hbL l) _ (hxL i))
+    have hsum : ∑ j, e j • b j = b l := by
+      conv_rhs => rw [eq_sum_frame S.d S.Hm x a hx ha0 (b l)]
+      simp only [e, Finset.sum_smul]
+      rw [Finset.sum_comm]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      have hxi : x i = (s i : ℂ)⁻¹ • ∑ j, c i j • b j := by
+        rw [← hsc i, smul_smul, inv_mul_cancel₀ (hs0 i), one_smul]
+      generalize beta S.d S.Hm (b l) (x i) = t
+      rw [hxi, smul_smul, Finset.smul_sum]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rw [smul_smul]
+      congr 1
+      have := hs0 i
+      have := ha0 i
+      field_simp
+    have h0 := hind _ hmem (by
+      simp only [mul_smul, sub_smul, ← Finset.smul_sum, Finset.sum_sub_distrib, hsum]
+      simp [ite_smul]) j
+    have h2 : e j = if j = l then 1 else 0 := sub_eq_zero.1 ((mul_eq_zero.1 h0).resolve_left hP0)
+    have h3 := congrArg conj h2
+    simp only [e, map_sum, map_mul, map_div₀, beta_conj S.d hH, map_natCast] at h3
+    rw [h3]
+    split_ifs <;> simp
+
+  choose m hm using fun i j => (hZ _ (hβ _ (hxL i) _ (hbL j))).1
+  choose n hn using fun i j => (hZ _ (hconj _ (hc i j))).1
+  have hu : ∀ i, ∃ u : ℤ_[q], ι ((s i * a i : ℂ)⁻¹) = zcHom q u := by
+    intro i
+    have hun : IsUnit ((s i * a i : ℕ) : ℤ_[q]) := by
+      rw [PadicInt.isUnit_iff, PadicInt.norm_natCast_eq_one_iff]
+      exact (Nat.Coprime.mul_left (hs i) (ha i).2).symm
+    obtain ⟨u, hu⟩ := hun.exists_left_inv
+    refine ⟨u, ?_⟩
+    have := congrArg (zcHom q) hu
+    rw [map_mul, map_natCast, map_one] at this
+    rw [map_inv₀, eq_inv_of_mul_eq_one_left this]
+    simp
+  choose u hu using hu
+  let M : Matrix (Fin g) (Fin r) ℤ_[q] := Matrix.of m
+  let N : Matrix (Fin r) (Fin g) ℤ_[q] := Matrix.of fun j i => n i j * u i
+  have hM : ∀ i j, zcHom q (M i j) = ι (beta S.d S.Hm (x i) (b j)) := fun i j => (hm i j).symm
+  have hN : ∀ j i, zcHom q (N j i) = ι (conj (c i j) / (s i * a i)) := fun j i => by
+    rw [div_eq_mul_inv, map_mul, hu, hn]
+    exact map_mul (zcHom q) _ _
+  have e1 : M * N = 1 := by
+    ext i k : 2
+    apply zcHom_injective q
+    rw [Matrix.mul_apply, map_sum]
+    simp_rw [map_mul, hM, hN, ← map_mul]
+    rw [← map_sum, hMN, Matrix.one_apply]
+    split_ifs <;> simp
+  have e2 : N * M = 1 := by
+    ext i k : 2
+    apply zcHom_injective q
+    rw [Matrix.mul_apply, map_sum]
+    simp_rw [map_mul, hM, hN, ← map_mul]
+    rw [← map_sum, hNM, Matrix.one_apply]
+    split_ifs <;> simp
+  refine ⟨{ toFun := M.mulVec
+            invFun := N.mulVec
+            left_inv := fun A => by rw [Matrix.mulVec_mulVec, e2, Matrix.one_mulVec]
+            right_inv := fun A => by rw [Matrix.mulVec_mulVec, e1, Matrix.one_mulVec]
+            continuous_toFun := continuous_const.matrix_mulVec continuous_id
+            continuous_invFun := continuous_const.matrix_mulVec continuous_id }, fun A i => ?_⟩
+  show zcHom q (∑ j, M i j * A j) = ∑ j, zcHom q (A j) * _
+  rw [map_sum]
+  exact Finset.sum_congr rfl fun j _ => by rw [map_mul, hM, mul_comm]
+
+end GlobalTheory.MomOne
+end
+end
+
+open GlobalTheory.MomOne Formalism.L2.Ker.JMB
+open scoped ComplexConjugate BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_padicInt_frame_change_etale_basis : ∀ (q : ℕ) [Fact q.Prime] (ι : ℂ ≃+* ℂ_[q]) (g : ℕ) (S : Setup g) (x : Fin g → Fin g → ℂ) (a : Fin g → ℕ) (r : ℕ) (b : Fin r → Fin g → ℂ), S.Ok → Split S.d q → (∀ i, x i ∈ S.La) → (∀ i j, beta S.d S.Hm (x i) (x j) = if i = j then (a i : ℂ) else 0) → (∀ i, 0 < a i ∧ Nat.Coprime (a i) q) → S.NNBasis q b → ∃ T : (Fin r → ℤ_[q]) ≃ₜ (Fin g → ℤ_[q]), ∀ A i, GlobalTheory.MomOne.zc (T A i) = ∑ j, GlobalTheory.MomOne.zc (A j) * ι (beta S.d S.Hm (x i) (b j)) := by
+  atlas_forward_decl GlobalTheory.MomOne.frameChange
+end
+
+section
+section
+open GlobalTheory.MomOne Formalism.L2.Ker.JMB
+open scoped ComplexConjugate BigOperators
+
+namespace GlobalTheory.MomOne.ThetaDecomp
+
+def okGroup (d : ℕ) : AddSubgroup ℂ where
+  carrier := {z | InOK d z}
+  zero_mem' := ⟨0, 0, by simp⟩
+  add_mem' := by
+    rintro _ _ ⟨u, v, rfl⟩ ⟨u', v', rfl⟩
+    exact ⟨u + u', v + v', by push_cast; ring⟩
+  neg_mem' := by
+    rintro _ ⟨u, v, rfl⟩
+    exact ⟨-u, -v, by push_cast; ring⟩
+
+theorem inOK_natCast_mul {d : ℕ} (n : ℕ) {z : ℂ} (h : InOK d z) : InOK d ((n : ℂ) * z) := by
+  obtain ⟨u, v, rfl⟩ := h
+  exact ⟨n * u, n * v, by push_cast; ring⟩
+
+theorem wK_re (d : ℕ) : (wK d).re = 1 / 2 := by simp [wK]
+
+theorem wK_im (d : ℕ) : (wK d).im = Real.sqrt d / 2 := by simp [wK]
+
+theorem cmLatticeHermitianForm_im_int_of_mem_order {d : ℕ} (hd : 0 < d) {x y : ℂ} (hx : InOK d x) (hy : InOK d y) : ∃ k : ℤ, (h1 d x y).im = k := by
+  obtain ⟨u, v, rfl⟩ := hx
+  obtain ⟨u', v', rfl⟩ := hy
+  have hs : Real.sqrt d ≠ 0 := by positivity
+  refine ⟨v * u' - u * v', ?_⟩
+  rw [h1, Complex.im_ofReal_mul]
+  simp [wK_re, wK_im]
+  field_simp
+  ring
+
+theorem inOK_of_im {d : ℕ} (hd : 0 < d) {z : ℂ} {k l : ℤ} (h : (h1 d z 1).im = k) (h' : (h1 d z (wK d)).im = l) :
+    InOK d z := by
+  have hs : Real.sqrt d ≠ 0 := by positivity
+  rw [h1, Complex.im_ofReal_mul] at h h'
+  simp only [Complex.mul_im, Complex.conj_re, Complex.conj_im, wK_re, wK_im, map_one, Complex.one_re,
+    Complex.one_im] at h h'
+  have e : Real.sqrt d * (2 / Real.sqrt d) = 2 := by field_simp
+  refine ⟨-l, k, Complex.ext ?_ ?_⟩
+  · simp [wK_re, wK_im]
+    linear_combination (-1) * h' + (1 / 2) * h - z.re / 2 * e
+  · simp [wK_re, wK_im]
+    linear_combination (Real.sqrt d / 2) * h - z.im / 2 * e
+
+theorem exp_rat_mem (r : ℚ) : Complex.exp ((Real.pi : ℂ) * Complex.I * (r : ℂ)) ∈ Qbar := by
+  rw [mem_algebraicClosure_iff]
+  refine IsAlgebraic.of_pow (n := 2 * r.den) (by have := r.den_pos; omega) ?_
+  have : Complex.exp ((Real.pi : ℂ) * Complex.I * (r : ℂ)) ^ (2 * r.den) = 1 := by
+    rw [← Complex.exp_nat_mul, Complex.exp_eq_one_iff]
+    refine ⟨r.num, ?_⟩
+    have : (r.num : ℂ) = r * r.den := by exact_mod_cast (Rat.mul_den_eq_num r).symm
+    rw [this]; push_cast; ring
+  rw [this]; exact isAlgebraic_one
+
+theorem kap_eq_one_iff {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) (x y : Fin g → ℂ) :
+    kap Hm x y = 1 ↔ ∃ k : ℤ, (hf Hm x y).im = k := by
+  rw [kap, Complex.exp_eq_one_iff]
+  constructor
+  · rintro ⟨n, hn⟩
+    refine ⟨-n, ?_⟩
+    have h2 : (((hf Hm x y).im : ℝ) : ℂ) = ((-n : ℤ) : ℝ) := by
+      apply mul_left_cancel₀ Complex.two_pi_I_ne_zero
+      push_cast
+      linear_combination -hn
+    exact_mod_cast h2
+  · rintro ⟨k, hk⟩
+    exact ⟨-k, by rw [hk]; push_cast; ring⟩
+
+noncomputable def betaL {g : ℕ} (d : ℕ) (Hm : Matrix (Fin g) (Fin g) ℂ) (y : Fin g → ℂ) : (Fin g → ℂ) →ₗ[ℂ] ℂ where
+  toFun v := beta d Hm v y
+  map_add' v w := by simp only [beta, hf, Pi.add_apply, add_mul, Finset.sum_add_distrib, mul_add]
+  map_smul' c v := by
+    simp only [beta, hf, Pi.smul_apply, smul_eq_mul, RingHom.id_apply, Finset.mul_sum]
+    exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
+
+theorem natCast_mul_im (n : ℕ) (z : ℂ) : ((n : ℂ) * z).im = n * z.im := by simp
+
+theorem cmLatticeHermitianForm_natCast_mul_right (d n : ℕ) (z w : ℂ) : h1 d z ((n : ℂ) * w) = n * h1 d z w := by
+  simp only [h1, map_mul, map_natCast]; ring
+
+theorem isTheta_sum {g : ℕ} (S : Setup g) (hS : S.Ok) (A : AddSubgroup S.La) [Fintype (S.La ⧸ A)]
+    (G : (Fin g → ℂ) → ℂ) (hG : ContDiff ℂ ⊤ G) (hA : ∀ l ∈ A, opW S.d S.Hm l G = G) :
+    S.IsTheta (fun z => ∑ c : S.La ⧸ A, opW S.d S.Hm (c.out : S.La) G z) := by
+  obtain ⟨h1, -, h3, -⟩ := GlobalTheory.HeisOps.heisenberg g S.d S.Hm hS.1.pos hS.2.2.1.1
+  have hW : ∀ (l l' : S.La) F, opW S.d S.Hm l (opW S.d S.Hm l' F) = opW S.d S.Hm (l + l' : S.La) F :=
+    fun l l' F => (h1 l l' F).2.2 (hS.2.2.2.2.2.2.1 l l.2 l' l'.2)
+  have hq : ∀ l l' : S.La, (l : S.La ⧸ A) = l' → opW S.d S.Hm l G = opW S.d S.Hm l' G := by
+    intro l l' h
+    have := hW l (-l + l') G
+    rw [hA _ (QuotientAddGroup.eq.1 h), add_neg_cancel_left] at this
+    exact this
+  refine ⟨ContDiff.sum fun c _ => (h3 _ G hG).2, fun y hy => ?_⟩
+  funext z
+  rw [← Equiv.sum_comp (Equiv.addLeft ((⟨y, hy⟩ : S.La) : S.La ⧸ A))]
+  have : opW S.d S.Hm y (fun z => ∑ c : S.La ⧸ A, opW S.d S.Hm (c.out : S.La) G z) z =
+      ∑ c : S.La ⧸ A, opW S.d S.Hm y (opW S.d S.Hm (c.out : S.La) G) z := by
+    simp only [opW.eq_1 S.d S.Hm y, opU.eq_1 S.Hm y, Finset.mul_sum, Finset.sum_mul]
+  rw [this]
+  refine Finset.sum_congr rfl fun c _ => ?_
+  rw [hW ⟨y, hy⟩, hq]
+  simp
+
+end GlobalTheory.MomOne.ThetaDecomp
+
+namespace GlobalTheory.MomOne
+open ThetaDecomp
+
+theorem exists_theta_eq_sum_prod : ∀ (q : ℕ) (g : ℕ) (S : Setup g) (x : Fin g → Fin g → ℂ) (a : Fin g → ℕ) (θ : ℂ → ℂ), q.Prime → S.Ok → (∀ i, x i ∈ S.La) → (∀ i j, beta S.d S.Hm (x i) (x j) = if i = j then (a i : ℂ) else 0) → (∀ i, 0 < a i ∧ Nat.Coprime (a i) q) → IsTh S.d θ → ∃ (m : ℕ) (r : Fin m → ℂ) (t : Fin m → Fin g → ℂ) (Θ : (Fin g → ℂ) → ℂ), S.IsTheta Θ ∧ Θ ≠ 0 ∧ (∀ j, r j ∈ Qbar) ∧ (∀ j i, PrimeTo S.d q (t j i)) ∧ ∀ z : Fin g → ℂ, Θ (∑ i, z i • x i) = ∑ j, r j * ∏ i, U1 S.d (t j i) θ (z i) ^ a i := by
+  classical
+  intro q g S x a θ _ hS hx hβ ha hθ
+  have hd : 0 < S.d := hS.1.pos
+  obtain ⟨c1, c2, c3, -⟩ := GlobalTheory.MomOne.Frame.coord g S x a hd hβ fun i => (ha i).1
+  obtain ⟨e1, -, e3, -, -, e6⟩ := GlobalTheory.HeisOps.heisenberg g S.d S.Hm hd hS.2.2.1.1
+  have ha0 : ∀ i, (a i : ℂ) ≠ 0 := fun i => by exact_mod_cast (ha i).1.ne'
+  obtain ⟨ψ, hψ⟩ : ∃ ψ : (Fin g → ℂ) →ₗ[ℂ] (Fin g → ℂ), ∀ v i, ψ v i = beta S.d S.Hm v (x i) / (a i : ℂ) :=
+    ⟨LinearMap.pi fun i => (a i : ℂ)⁻¹ • betaL S.d S.Hm (x i), fun v i => by
+      rw [div_eq_inv_mul]; rfl⟩
+  have hφψ : ∀ v, ∑ i, ψ v i • x i = v := fun v => by simp only [hψ]; exact (c1 v).symm
+  have hψφ : ∀ z : Fin g → ℂ, ψ (∑ i, z i • x i) = z := fun z => by
+    funext i
+    rw [map_sum, Finset.sum_apply]
+    simp only [map_smul]
+    simp only [Pi.smul_apply, hψ, hβ, smul_eq_mul]
+    rw [Finset.sum_eq_single i (fun j _ h => by simp [h]) (by simp)]
+    simp [ha0 i]
+  have hH : ∀ v w, (hf S.Hm v w).im = ∑ i, (a i : ℝ) * (h1 S.d (ψ v i) (ψ w i)).im := fun v w => by
+    have := c2 (ψ v) (ψ w)
+    rw [hφψ, hφψ] at this
+    rw [this, Complex.im_sum]
+    simp
+  obtain ⟨F, hFd⟩ : ∃ F : (Fin g → ℂ) → ℂ, F = fun v => ∏ i, θ (ψ v i) ^ a i := ⟨_, rfl⟩
+  have hF : ∀ z : Fin g → ℂ, F (∑ i, z i • x i) = ∑ _j : Fin 1, 1 * ∏ i, θ (z i) ^ a i := fun z => by
+    simp [hFd, hψφ]
+  have hFc : ContDiff ℂ ⊤ F := by
+    rw [hFd]
+    refine contDiff_prod fun i _ => ContDiff.pow (hθ.1.contDiff.comp ?_) _
+    exact (LinearMap.toContinuousLinearMap ((LinearMap.proj i).comp ψ)).contDiff
+  have hF0 : F 0 = 1 := by simp [hFd, hθ.2.1]
+  have hU : ∀ v z : Fin g → ℂ, opU S.Hm v F (∑ i, z i • x i) = ∏ i, U1 S.d (ψ v i) θ (z i) ^ a i := fun v z => by
+    have := (c3 1 (fun _ => 1) (fun _ _ => θ) F hF (ψ v) z).1
+    rw [hφψ] at this
+    simpa using this
+  have hW : ∀ v : Fin g → ℂ, (∀ i, InOK S.d (ψ v i)) → opW S.d S.Hm v F = F := fun v hv => by
+    funext w
+    have := (c3 1 (fun _ => 1) (fun _ _ => θ) F hF (ψ v) (ψ w)).2
+    rw [hφψ, hφψ] at this
+    rw [this]
+    simp [hFd, hθ.2.2.2.1 _ (hv _)]
+  obtain ⟨D, hD⟩ : ∃ D : AddSubgroup (Fin g → ℂ), ∀ v, v ∈ D ↔ ∀ i, InOK S.d ((a i : ℂ) * ψ v i) :=
+    ⟨⨅ i, (okGroup S.d).comap ((betaL S.d S.Hm (x i)).toAddMonoidHom), fun v => by
+      simp only [AddSubgroup.mem_iInf, AddSubgroup.mem_comap, hψ, mul_div_cancel₀ _ (ha0 _)]
+      rfl⟩
+  have hLD : ∀ l ∈ S.La, l ∈ D := fun l hl => (hD l).2 fun i => by
+    rw [hψ, mul_div_cancel₀ _ (ha0 _)]
+    exact hS.2.2.2.2.2.2.1 l hl _ (hx i)
+  obtain ⟨A, hA⟩ : ∃ A : AddSubgroup S.La, ∀ l : S.La, l ∈ A ↔ ∀ i, InOK S.d (ψ l i) :=
+    ⟨⨅ i, (okGroup S.d).comap
+      (((LinearMap.proj i).comp ψ : (Fin g → ℂ) →ₗ[ℂ] ℂ).toAddMonoidHom.comp S.La.subtype.toAddMonoidHom), fun l => by
+      simp only [AddSubgroup.mem_iInf, AddSubgroup.mem_comap]
+      rfl⟩
+  have hN : ∀ v ∈ D, ∀ i, InOK S.d (ψ ((∏ j, a j) • v) i) := fun v hv i => by
+    have := inOK_natCast_mul (∏ j ∈ Finset.univ.erase i, a j) ((hD v).1 hv i)
+    rw [← mul_assoc, ← Nat.cast_mul, Finset.prod_erase_mul _ _ (Finset.mem_univ i)] at this
+    rwa [map_nsmul, Pi.smul_apply, nsmul_eq_mul]
+  have hN0 : ∏ j, a j ≠ 0 := Finset.prod_ne_zero_iff.2 fun i _ => (ha i).1.ne'
+  have hint : ∀ v, (∀ i, InOK S.d (ψ v i)) → ∀ w ∈ D, ∃ k : ℤ, (hf S.Hm v w).im = k := fun v hv w hw => by
+    choose k hk using fun i => cmLatticeHermitianForm_im_int_of_mem_order hd (hv i) ((hD w).1 hw i)
+    refine ⟨∑ i, k i, ?_⟩
+    rw [hH]; push_cast
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [← hk, cmLatticeHermitianForm_natCast_mul_right]; simp
+  have hrat : ∀ v ∈ D, ∀ w ∈ D, ∃ r : ℚ, (hf S.Hm v w).im = r := fun v hv w hw => by
+    obtain ⟨k, hk⟩ := hint _ (hN v hv) w hw
+    refine ⟨k / (∏ j, a j : ℕ), ?_⟩
+    have h0 : ((∏ j, a j : ℕ) : ℝ) ≠ 0 := by exact_mod_cast hN0
+    rw [Rat.cast_div, Rat.cast_intCast, Rat.cast_natCast, eq_div_iff h0, ← hk, hH, hH, Finset.sum_mul]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [map_nsmul, Pi.smul_apply, nsmul_eq_mul, Basic.cmLatticeHermitianForm_mul_left, natCast_mul_im]
+    ring
+  have := hS.2.2.2.1
+  have : Module.Finite ℤ S.La := inferInstance
+  have : AddGroup.FG S.La := Module.Finite.iff_addGroup_fg.1 inferInstance
+  have := AddSubgroup.finiteIndex_range_nsmulAddMonoidHom_of_fg S.La hN0
+  have : A.FiniteIndex := AddSubgroup.finiteIndex_of_le (H := (nsmulAddMonoidHom (∏ j, a j)).range) (by
+    rintro _ ⟨l, rfl⟩
+    exact (hA _).2 (hN l (hLD l l.2)))
+  have : Fintype (S.La ⧸ A) := Fintype.ofFinite _
+  have hcomm : ∀ (l w : Fin g → ℂ) z, opW S.d S.Hm l (opU S.Hm w F) z = kap S.Hm l w * opU S.Hm w (opW S.d S.Hm l F) z := by
+    intro l w z
+    rw [opW, (e1 l w F).2.1]
+    simp only [opU.eq_1 S.Hm w, opW]
+    ring
+  have hk0 : ∀ l w : Fin g → ℂ, kap S.Hm l w ≠ 0 := fun l w => Complex.exp_ne_zero _
+  obtain ⟨χ, hχd⟩ : ∃ χ : S.La ⧸ A → Multiplicative D →* ℂ, ∀ c w hw,
+      χ c (Multiplicative.ofAdd ⟨w, hw⟩) = kap S.Hm (c.out : S.La) w :=
+    ⟨fun c =>
+      { toFun := fun w => kap S.Hm (c.out : S.La) (Multiplicative.toAdd w : D)
+        map_one' := by simp [kap, hf]
+        map_mul' := fun w w' => (e6 _ _ _).1 }, fun _ _ _ => rfl⟩
+  have hχ : Function.Injective χ := by
+    intro c c' h
+    rw [← c.out_eq, ← c'.out_eq]
+    refine QuotientAddGroup.eq.2 ((hA _).2 fun i => ?_)
+    have key : ∀ s, InOK S.d s → ∃ k : ℤ, (h1 S.d (ψ (-c.out + c'.out : S.La) i) s).im = k := by
+      intro s hs
+      obtain ⟨w, hψs⟩ : ∃ w, ψ w = Pi.single i (s / a i) := ⟨_, hψφ _⟩
+      have hw : w ∈ D := (hD w).2 fun j => by
+        rw [hψs]
+        by_cases hj : j = i
+        · subst hj; simpa [mul_div_cancel₀ _ (ha0 _)] using hs
+        · exact ⟨0, 0, by simp [hj]⟩
+      have h1' : kap S.Hm (c.out : S.La) w = kap S.Hm (c'.out : S.La) w := by
+        rw [← hχd c w hw, ← hχd c' w hw, h]
+      have h2 := (e6 (c.out : S.La) (-c.out + c'.out : S.La) w).2
+      rw [← Submodule.coe_add, add_neg_cancel_left, ← h1'] at h2
+      obtain ⟨k, hk⟩ := (kap_eq_one_iff _ _ _).1 ((mul_eq_left₀ (hk0 _ _)).1 h2.symm)
+      refine ⟨k, ?_⟩
+      rw [← hk, hH, hψs, Finset.sum_eq_single i (fun j _ h => by simp [h, h1]) (by simp), ← natCast_mul_im,
+        ← cmLatticeHermitianForm_natCast_mul_right]
+      simp [mul_div_cancel₀ _ (ha0 _)]
+    obtain ⟨k, hk⟩ := key 1 ⟨1, 0, by simp⟩
+    obtain ⟨l, hl⟩ := key (wK S.d) ⟨0, 1, by simp⟩
+    exact inOK_of_im hd hk hl
+  have hli := (linearIndependent_monoidHom (Multiplicative D) ℂ).comp χ hχ
+  obtain ⟨σ, hσ, hne⟩ : ∃ σ ∈ D, (fun z => ∑ c : S.La ⧸ A, opW S.d S.Hm (c.out : S.La) (opU S.Hm σ F) z) ≠ 0 := by
+    by_contra hcon
+    push Not at hcon
+    have h := Fintype.linearIndependent_iff.1 hli (fun c => opW S.d S.Hm (c.out : S.La) F 0) (by
+      funext w
+      rw [Finset.sum_apply, Pi.zero_apply]
+      obtain ⟨σ, hσ⟩ := w
+      have h := congrFun (hcon σ hσ) (-σ)
+      simp only [hcomm, opU.eq_1 S.Hm σ, neg_add_cancel, ← mul_assoc, ← Finset.sum_mul, Pi.zero_apply] at h
+      have h := (mul_eq_zero.1 h).resolve_right (Complex.exp_ne_zero _)
+      rw [← h]
+      exact Finset.sum_congr rfl fun c _ => by rw [← hχd c σ hσ]; exact mul_comm _ _) 0
+    have h0 : (0 : S.La ⧸ A).out ∈ A := (QuotientAddGroup.eq_zero_iff _).1 (Quotient.out_eq _)
+    simp only [hW _ ((hA _).1 h0), hF0] at h
+    exact one_ne_zero h
+  clear c1 c2 c3
+  have hth := isTheta_sum S hS A (opU S.Hm σ F) (e3 σ F hFc).1 fun l hl => by
+    funext z
+    rw [hcomm, hW _ ((hA l).1 hl), (kap_eq_one_iff _ _ _).2 (hint _ ((hA l).1 hl) σ hσ), one_mul]
+  let e := (Fintype.equivFin (S.La ⧸ A)).symm
+  refine ⟨_, fun j => Complex.exp ((Real.pi : ℂ) * Complex.I *
+      ((beta S.d S.Hm ((e j).out : S.La) ((e j).out : S.La)).re : ℂ)) *
+      Complex.exp (-(Real.pi : ℂ) * Complex.I * (((hf S.Hm ((e j).out : S.La) σ).im : ℝ) : ℂ)),
+    fun j => ψ (((e j).out : S.La) + σ), _, hth, hne, fun j => mul_mem ?_ ?_, fun j i => ?_, fun z => ?_⟩
+  · obtain ⟨u, v, h⟩ := hS.2.2.2.2.2.2.1 _ (e j).out.2 _ (e j).out.2
+    have h' : (w0 S.d).re = 1 / 2 := wK_re S.d
+    convert exp_rat_mem (u + v / 2) using 3
+    rw [h]; simp [h']; ring
+  · obtain ⟨r, hr⟩ := hrat _ (hLD _ (e j).out.2) σ hσ
+    convert exp_rat_mem (-r) using 2
+    rw [hr]; push_cast; ring
+  · exact ⟨a i, (ha i).1, (ha i).2, (hD _).1 (D.add_mem (hLD _ (e j).out.2) hσ) i⟩
+  · rw [← Equiv.sum_comp e]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [opW, (e1 _ σ F).1, ← hU]
+    exact (mul_assoc _ _ _).symm
+
+end GlobalTheory.MomOne
+end
+
+open GlobalTheory.MomOne Formalism.L2.Ker.JMB
+open scoped ComplexConjugate BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_cmTheta_eq_sum_prod_translates : ∀ (q : ℕ) (g : ℕ) (S : Setup g) (x : Fin g → Fin g → ℂ) (a : Fin g → ℕ) (θ : ℂ → ℂ), q.Prime → S.Ok → (∀ i, x i ∈ S.La) → (∀ i j, beta S.d S.Hm (x i) (x j) = if i = j then (a i : ℂ) else 0) → (∀ i, 0 < a i ∧ Nat.Coprime (a i) q) → IsTh S.d θ → ∃ (m : ℕ) (r : Fin m → ℂ) (t : Fin m → Fin g → ℂ) (Θ : (Fin g → ℂ) → ℂ), S.IsTheta Θ ∧ Θ ≠ 0 ∧ (∀ j, r j ∈ Qbar) ∧ (∀ j i, PrimeTo S.d q (t j i)) ∧ ∀ z : Fin g → ℂ, Θ (∑ i, z i • x i) = ∑ j, r j * ∏ i, U1 S.d (t j i) θ (z i) ^ a i := by
+  atlas_forward_decl GlobalTheory.MomOne.exists_theta_eq_sum_prod
+end
+
+section
 open PowerSeries GlobalTheory.MomOne Formalism.L2.Ker.JMB
 open scoped ComplexConjugate BigOperators Topology
 
@@ -367,3 +1327,5 @@ theorem moments_of_translates : ∀ (d q : ℕ) [Fact q.Prime] (lam : Qbar →+*
   ring
 
 end GlobalTheory.MomOne.Translates
+end
+end

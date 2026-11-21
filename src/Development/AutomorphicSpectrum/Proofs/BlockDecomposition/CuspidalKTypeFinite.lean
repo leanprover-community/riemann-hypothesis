@@ -1,8 +1,553 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryKTypeFinite
+import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.NotIsFinitePartOfBot
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AdmissibleOfLinearReductive
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AdmissibleUnitaryIrreducibleRep
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IwasawaOfLinearReductive
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsAdmOnOfFiniteDimensional
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CuspidalConvolutionCompactStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsNonnegBump
 
+section
+open Matrix
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.AdmGL
+
+variable {ι : Type} [Fintype ι] [DecidableEq ι] {a n : ℕ}
+
+def atPlace (M : Matrix (Fin a) (Fin a) (ι → ℂ)) (w : ι) : Matrix (Fin a) (Fin a) ℂ :=
+  M.map fun x => x w
+
+def blk (e : Fin a × ι ≃ Fin n) (M : Matrix (Fin a) (Fin a) (ι → ℂ)) : Matrix (Fin n) (Fin n) ℂ :=
+  Matrix.reindex e e (blockDiagonal (atPlace M))
+
+def unblk (e : Fin a × ι ≃ Fin n) (g : Matrix (Fin n) (Fin n) ℂ) : Matrix (Fin a) (Fin a) (ι → ℂ) :=
+  Matrix.of fun p q w => g (e (p, w)) (e (q, w))
+
+def blkG (e : Fin a × ι ≃ Fin n) : Set (Matrix (Fin n) (Fin n) ℂ) :=
+  blk e '' {M | IsUnit M}
+
+theorem blk_apply (e : Fin a × ι ≃ Fin n) (M : Matrix (Fin a) (Fin a) (ι → ℂ)) (i j : Fin n) :
+    blk e M i j = if (e.symm i).2 = (e.symm j).2 then M (e.symm i).1 (e.symm j).1 (e.symm i).2 else 0 := by
+  rw [GlobalTheory.CompanionTheory.AdmGL.blk, Matrix.reindex_apply, Matrix.submatrix_apply, Matrix.blockDiagonal_apply,
+    GlobalTheory.CompanionTheory.AdmGL.atPlace, Matrix.map_apply]
+
+@[simp] theorem unblk_blk (e : Fin a × ι ≃ Fin n) (M : Matrix (Fin a) (Fin a) (ι → ℂ)) :
+    unblk e (blk e M) = M := by
+  ext p q w
+  simp [unblk, blk_apply]
+
+theorem blk_injective (e : Fin a × ι ≃ Fin n) : Function.Injective (blk e) := by
+  intro M N h
+  rw [← GlobalTheory.CompanionTheory.AdmGL.unblk_blk e M, h, GlobalTheory.CompanionTheory.AdmGL.unblk_blk]
+
+@[simp] theorem blk_one (e : Fin a × ι ≃ Fin n) : blk e 1 = 1 := by
+  ext i j
+  rw [GlobalTheory.CompanionTheory.AdmGL.blk_apply]
+  by_cases h : i = j
+  · subst h
+    simp
+  · have h' : e.symm i ≠ e.symm j := fun h'' => h (e.symm.injective h'')
+    rw [Matrix.one_apply_ne h]
+    by_cases h2 : (e.symm i).2 = (e.symm j).2
+    · have h1 : (e.symm i).1 ≠ (e.symm j).1 := fun h1 => h' (Prod.ext h1 h2)
+      rw [if_pos h2, Matrix.one_apply_ne h1, Pi.zero_apply]
+    · rw [if_neg h2]
+
+theorem atPlace_mul (M N : Matrix (Fin a) (Fin a) (ι → ℂ)) (w : ι) :
+    atPlace (M * N) w = atPlace M w * atPlace N w := by
+  ext p q
+  simp [atPlace, Matrix.mul_apply, Finset.sum_apply]
+
+@[simp] theorem blk_mul (e : Fin a × ι ≃ Fin n) (M N : Matrix (Fin a) (Fin a) (ι → ℂ)) :
+    blk e (M * N) = blk e M * blk e N := by
+  have h : GlobalTheory.CompanionTheory.AdmGL.atPlace (M * N) = fun w => GlobalTheory.CompanionTheory.AdmGL.atPlace M w * GlobalTheory.CompanionTheory.AdmGL.atPlace N w :=
+    funext (GlobalTheory.CompanionTheory.AdmGL.atPlace_mul M N)
+  simp only [GlobalTheory.CompanionTheory.AdmGL.blk, Matrix.reindex_apply]
+  rw [h, Matrix.blockDiagonal_mul]
+  exact (Matrix.submatrix_mul_equiv _ _ _ e.symm _).symm
+
+@[simp] theorem blk_add (e : Fin a × ι ≃ Fin n) (M N : Matrix (Fin a) (Fin a) (ι → ℂ)) :
+    blk e (M + N) = blk e M + blk e N := by
+  ext i j
+  rw [Matrix.add_apply, GlobalTheory.CompanionTheory.AdmGL.blk_apply, GlobalTheory.CompanionTheory.AdmGL.blk_apply,
+    GlobalTheory.CompanionTheory.AdmGL.blk_apply]
+  split_ifs <;> simp
+
+@[simp] theorem blk_smul (e : Fin a × ι ≃ Fin n) (c : ℂ) (M : Matrix (Fin a) (Fin a) (ι → ℂ)) :
+    blk e (c • M) = c • blk e M := by
+  ext i j
+  rw [Matrix.smul_apply, GlobalTheory.CompanionTheory.AdmGL.blk_apply, GlobalTheory.CompanionTheory.AdmGL.blk_apply]
+  split_ifs <;> simp
+
+@[simp] theorem blk_conjTranspose (e : Fin a × ι ≃ Fin n) (M : Matrix (Fin a) (Fin a) (ι → ℂ)) :
+    blk e Mᴴ = (blk e M)ᴴ := by
+  ext i j
+  rw [Matrix.conjTranspose_apply, GlobalTheory.CompanionTheory.AdmGL.blk_apply, GlobalTheory.CompanionTheory.AdmGL.blk_apply]
+  by_cases h : (e.symm i).2 = (e.symm j).2
+  · rw [if_pos h, if_pos h.symm, Matrix.conjTranspose_apply, Pi.star_apply, h]
+  · rw [if_neg h, if_neg (Ne.symm h), star_zero]
+
+theorem continuous_blk (e : Fin a × ι ≃ Fin n) : Continuous (blk e) := by
+  apply continuous_matrix
+  intro i j
+  simp only [GlobalTheory.CompanionTheory.AdmGL.blk_apply]
+  by_cases h : (e.symm i).2 = (e.symm j).2
+  · simp only [if_pos h]
+    exact (continuous_apply _).comp (continuous_id.matrix_elem _ _)
+  · simp only [if_neg h]
+    exact continuous_const
+
+theorem continuous_unblk (e : Fin a × ι ≃ Fin n) : Continuous (unblk e) := by
+  apply continuous_matrix
+  intro p q
+  apply continuous_pi
+  intro w
+  simp only [GlobalTheory.CompanionTheory.AdmGL.unblk, Matrix.of_apply]
+  exact continuous_id.matrix_elem _ _
+
+theorem det_apply_place (M : Matrix (Fin a) (Fin a) (ι → ℂ)) (w : ι) : M.det w = (atPlace M w).det :=
+  RingHom.map_det (Pi.evalRingHom (fun _ : ι => ℂ) w) M
+
+theorem det_blk (e : Fin a × ι ≃ Fin n) (M : Matrix (Fin a) (Fin a) (ι → ℂ)) :
+    (blk e M).det = ∏ w, (atPlace M w).det := by
+  rw [blk, Matrix.det_reindex_self, Matrix.det_blockDiagonal]
+
+theorem isUnit_blk_iff (e : Fin a × ι ≃ Fin n) (M : Matrix (Fin a) (Fin a) (ι → ℂ)) :
+    IsUnit (blk e M) ↔ IsUnit M := by
+  rw [Matrix.isUnit_iff_isUnit_det, Matrix.isUnit_iff_isUnit_det, GlobalTheory.CompanionTheory.AdmGL.det_blk, Pi.isUnit_iff]
+  simp [isUnit_iff_ne_zero, GlobalTheory.CompanionTheory.AdmGL.det_apply_place, Finset.prod_ne_zero_iff]
+
+theorem mem_blkG_iff (e : Fin a × ι ≃ Fin n) {g : Matrix (Fin n) (Fin n) ℂ} :
+    g ∈ blkG e ↔ IsUnit g ∧ blk e (unblk e g) = g := by
+  constructor
+  · rintro ⟨M, hM, rfl⟩
+    exact ⟨(GlobalTheory.CompanionTheory.AdmGL.isUnit_blk_iff e M).2 hM, by rw [GlobalTheory.CompanionTheory.AdmGL.unblk_blk]⟩
+  · rintro ⟨hg, hg'⟩
+    refine ⟨GlobalTheory.CompanionTheory.AdmGL.unblk e g, ?_, hg'⟩
+    rw [← hg'] at hg
+    exact (GlobalTheory.CompanionTheory.AdmGL.isUnit_blk_iff e _).1 hg
+
+end GlobalTheory.CompanionTheory.AdmGL
+
+end
+end
+
+section
+open Matrix
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.AdmGL
+
+variable {ι : Type} [Fintype ι] [DecidableEq ι] {a n : ℕ}
+
+theorem isClosed_range_blk (e : Fin a × ι ≃ Fin n) : IsClosed {g | blk e (unblk e g) = g} :=
+  isClosed_eq ((continuous_blk e).comp (continuous_unblk e)) continuous_id
+
+theorem blk_unblk_of_mem_closure (e : Fin a × ι ≃ Fin n) {g : Matrix (Fin n) (Fin n) ℂ}
+    (hg : g ∈ closure (blkG e)) : blk e (unblk e g) = g :=
+  (closure_minimal (fun _ h => ((mem_blkG_iff e).1 h).2) (isClosed_range_blk e)) hg
+
+theorem finite_setOf_det_line_eq_zero {A B : Matrix (Fin n) (Fin n) ℂ} (hA : IsUnit A) :
+    {z : ℂ | ((1 - z) • A + z • B).det = 0}.Finite := by
+  let P : Polynomial ℂ := Matrix.det ((1 - Polynomial.X : Polynomial ℂ) • A.map Polynomial.C
+    + (Polynomial.X : Polynomial ℂ) • B.map Polynomial.C)
+  have hev : ∀ z : ℂ, P.eval z = ((1 - z) • A + z • B).det := by
+    intro z
+    have := RingHom.map_det (Polynomial.evalRingHom z) ((1 - Polynomial.X : Polynomial ℂ) • A.map Polynomial.C
+      + (Polynomial.X : Polynomial ℂ) • B.map Polynomial.C)
+    simp only [Polynomial.coe_evalRingHom] at this
+    rw [this]
+    congr 1
+    ext i j
+    simp
+    exact mul_comm _ _
+  have hP : P ≠ 0 := by
+    intro h
+    have := hev 0
+    rw [h] at this
+    simp only [Polynomial.eval_zero, sub_zero, one_smul, zero_smul, add_zero] at this
+    exact ((Matrix.isUnit_iff_isUnit_det A).1 hA).ne_zero this.symm
+  refine (P.rootSet_finite ℂ).subset ?_
+  intro z hz
+  rw [Polynomial.mem_rootSet]
+  refine ⟨hP, ?_⟩
+  simpa [hev] using hz
+
+theorem isPreconnected_blkG (e : Fin a × ι ≃ Fin n) : IsPreconnected (blkG e) := by
+  refine isPreconnected_of_forall_pair ?_
+  rintro _ ⟨M, hM, rfl⟩ _ ⟨N, hN, rfl⟩
+  have hA : IsUnit (blk e M) := (isUnit_blk_iff e M).2 hM
+  have hB : IsUnit (blk e N) := (isUnit_blk_iff e N).2 hN
+  set A := blk e M
+  set B := blk e N
+  let Z : Set ℂ := {z | ((1 - z) • A + z • B).det = 0}
+  have hZ : Z.Finite := finite_setOf_det_line_eq_zero hA
+  have hconn : IsPathConnected Zᶜ := hZ.countable.isPathConnected_compl_of_one_lt_rank (by
+    rw [Complex.rank_real_complex]; norm_num)
+  let γ : ℂ → Matrix (Fin n) (Fin n) ℂ := fun z => (1 - z) • A + z • B
+  have hγ : Continuous γ := by fun_prop
+  refine ⟨γ '' Zᶜ, ?_, ⟨0, ?_, by simp [γ]⟩, ⟨1, ?_, by simp [γ]⟩, hconn.isConnected.isPreconnected.image _ hγ.continuousOn⟩
+  · rintro _ ⟨z, hz, rfl⟩
+    refine (mem_blkG_iff e).2 ⟨(Matrix.isUnit_iff_isUnit_det _).2 (isUnit_iff_ne_zero.2 hz), ?_⟩
+    have : γ z = blk e ((1 - z) • M + z • N) := by simp [γ, A, B]
+    rw [this, unblk_blk]
+  · simpa [Z] using ((Matrix.isUnit_iff_isUnit_det A).1 hA).ne_zero
+  · simpa [Z] using ((Matrix.isUnit_iff_isUnit_det B).1 hB).ne_zero
+
+theorem blk_inv (e : Fin a × ι ≃ Fin n) {M : Matrix (Fin a) (Fin a) (ι → ℂ)} (hM : IsUnit M) :
+    (blk e M)⁻¹ = blk e M⁻¹ := by
+  refine Matrix.inv_eq_right_inv ?_
+  rw [← blk_mul, Matrix.mul_nonsing_inv _ ((Matrix.isUnit_iff_isUnit_det _).1 hM), blk_one]
+
+theorem isLinRed_blkG (e : Fin a × ι ≃ Fin n) : GlobalTheory.LinRed.IsLinRed (blkG e) where
+  one_mem := ⟨1, isUnit_one, blk_one e⟩
+  mul_mem := by
+    rintro _ ⟨M, hM, rfl⟩ _ ⟨N, hN, rfl⟩
+    exact ⟨M * N, IsUnit.mul hM hN, blk_mul e M N⟩
+  isUnit := fun g hg => ((mem_blkG_iff e).1 hg).1
+  inv_mem := by
+    rintro _ ⟨M, hM, rfl⟩
+    refine ⟨M⁻¹, ?_, (blk_inv e hM).symm⟩
+    exact (Matrix.isUnit_nonsing_inv_iff).2 hM
+  closed := fun g hg hcl => (mem_blkG_iff e).2 ⟨hg, blk_unblk_of_mem_closure e hcl⟩
+  connected := isPreconnected_blkG e
+  star_mem := by
+    rintro _ ⟨M, hM, rfl⟩
+    refine ⟨Mᴴ, ?_, blk_conjTranspose e M⟩
+    have : IsUnit (star M) := IsUnit.star hM
+    exact this
+
+end GlobalTheory.CompanionTheory.AdmGL
+
+end
+end
+
+section
+open scoped InnerProductSpace
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.AdmGL
+
+variable {K : Type} [Group K] {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+
+def isoPart (π : K →* (H →L[ℂ] H)) {W : Type} [AddCommGroup W] [Module ℂ W] (ρ : Representation ℂ K W) :
+    Submodule ℂ H :=
+  ⨆ (T : W →ₗ[ℂ] H) (_ : ∀ k w, T (ρ k w) = π k (T w)), LinearMap.range T
+
+theorem range_le_isoPart (π : K →* (H →L[ℂ] H)) {W : Type} [AddCommGroup W] [Module ℂ W]
+    (ρ : Representation ℂ K W) {T : W →ₗ[ℂ] H} (hT : ∀ k w, T (ρ k w) = π k (T w)) :
+    LinearMap.range T ≤ isoPart π ρ := by
+  unfold isoPart
+  exact le_iSup₂_of_le (f := fun (T : W →ₗ[ℂ] H) (_ : ∀ k w, T (ρ k w) = π k (T w)) => LinearMap.range T)
+    T hT le_rfl
+
+theorem starProjection_comm {π : K →* (H →L[ℂ] H)} (hπ : ∀ k v, ‖π k v‖ = ‖v‖) (R : Submodule ℂ H)
+    [FiniteDimensional ℂ R] (hR : ∀ k, ∀ w ∈ R, π k w ∈ R) (k : K) (x : H) :
+    R.starProjection (π k x) = π k (R.starProjection x) := by
+  have hinner : ∀ u v, ⟪π k u, π k v⟫_ℂ = ⟪u, v⟫_ℂ := fun u v =>
+    (⟨(π k : H →ₗ[ℂ] H), hπ k⟩ : H →ₗᵢ[ℂ] H).inner_map_map u v
+  have hsurj : ∀ w ∈ R, ∃ w' ∈ R, π k w' = w := by
+    intro w hw
+    refine ⟨π k⁻¹ w, hR _ w hw, ?_⟩
+    change (π k * π k⁻¹) w = w
+    rw [← map_mul, mul_inv_cancel, map_one]
+    rfl
+  apply Submodule.eq_starProjection_of_mem_of_inner_eq_zero (hR k _ (R.starProjection_apply_mem x))
+  intro w hw
+  obtain ⟨w', hw', rfl⟩ := hsurj w hw
+  rw [← map_sub, hinner]
+  exact (Submodule.mem_orthogonal' _ _).1 (R.sub_starProjection_mem_orthogonal x) w' hw'
+
+variable [CompleteSpace H]
+
+theorem isoPart_le_sup {π : K →* (H →L[ℂ] H)} (hπ : ∀ k v, ‖π k v‖ = ‖v‖) {W : Type} [AddCommGroup W]
+    [Module ℂ W] [FiniteDimensional ℂ W] (ρ : Representation ℂ K W) (W' : Submodule ℂ W)
+    (hW : ∀ k, W' ≤ W'.comap (ρ k)) :
+    isoPart π ρ ≤ isoPart π (ρ.subrepresentation W' hW) ⊔ isoPart π (ρ.quotient W' hW) := by
+  refine iSup₂_le fun T hT => ?_
+  let R : Submodule ℂ H := W'.map T
+  have hRinv : ∀ k, ∀ w ∈ R, π k w ∈ R := by
+    rintro k _ ⟨v, hv, rfl⟩
+    exact ⟨ρ k v, hW k hv, hT k v⟩
+  have hP : ∀ k x, R.starProjection (π k x) = π k (R.starProjection x) :=
+    starProjection_comm hπ R hRinv
+  have h1 : LinearMap.range (T ∘ₗ W'.subtype) ≤ isoPart π (ρ.subrepresentation W' hW) :=
+    range_le_isoPart π _ (fun k w => by simp [hT])
+  have hRle : R ≤ LinearMap.range (T ∘ₗ W'.subtype) := by
+    rintro _ ⟨u, hu, rfl⟩
+    exact ⟨⟨u, hu⟩, rfl⟩
+  have hker : W' ≤ LinearMap.ker ((LinearMap.id - (R.starProjection : H →ₗ[ℂ] H)) ∘ₗ T) := by
+    intro v hv
+    simp only [LinearMap.mem_ker, LinearMap.comp_apply, LinearMap.sub_apply, LinearMap.id_apply,
+      ContinuousLinearMap.coe_coe]
+    rw [sub_eq_zero, eq_comm, Submodule.starProjection_eq_self_iff]
+    exact ⟨v, hv, rfl⟩
+  let Q := W'.liftQ ((LinearMap.id - (R.starProjection : H →ₗ[ℂ] H)) ∘ₗ T) hker
+  have hQmk : ∀ v, Q (Submodule.Quotient.mk v) = T v - R.starProjection (T v) := by
+    intro v
+    simp [Q]
+  have hQ : ∀ k w, Q (ρ.quotient W' hW k w) = π k (Q w) := by
+    intro k w
+    induction w using Submodule.Quotient.induction_on with
+    | H v =>
+      rw [Representation.quotient_apply, Submodule.mapQ_apply, hQmk, hQmk, hT, hP, map_sub]
+  have h2 := range_le_isoPart π (ρ.quotient W' hW) hQ
+  rintro _ ⟨v, rfl⟩
+  rw [show T v = R.starProjection (T v) + (T v - R.starProjection (T v)) by abel]
+  exact Submodule.add_mem_sup (h1 (hRle (R.starProjection_apply_mem (T v))))
+    (h2 ⟨Submodule.Quotient.mk v, hQmk v⟩)
+
+theorem finiteDimensional_isoPart_of_simple {π : K →* (H →L[ℂ] H)}
+    (hadm : ∀ S : Submodule ℂ H, FiniteDimensional ℂ S → (∀ k, ∀ w ∈ S, π k w ∈ S) →
+      (∀ S' : Submodule ℂ H, S' ≤ S → (∀ k, ∀ w ∈ S', π k w ∈ S') → S' = ⊥ ∨ S' = S) →
+      FiniteDimensional ℂ (sSup {S' | ∃ T : H →ₗ[ℂ] H, S' = S.map T ∧
+        ∀ k, ∀ w ∈ S, T (π k w) = π k (T w)} : Submodule ℂ H))
+    {W : Type} [AddCommGroup W] [Module ℂ W] [FiniteDimensional ℂ W] (ρ : Representation ℂ K W)
+    (hs : ∀ W' : Submodule ℂ W, (∀ k, W' ≤ W'.comap (ρ k)) → W' = ⊥ ∨ W' = ⊤) :
+    FiniteDimensional ℂ (isoPart π ρ) := by
+  classical
+  by_cases h0 : ∀ T : W →ₗ[ℂ] H, (∀ k w, T (ρ k w) = π k (T w)) → T = 0
+  · have hbot : isoPart π ρ = ⊥ := by
+      refine le_bot_iff.1 (iSup₂_le fun T hT => ?_)
+      rw [h0 T hT, LinearMap.range_zero]
+    rw [hbot]
+    infer_instance
+  push Not at h0
+  obtain ⟨T₀, hT₀, hne⟩ := h0
+  have hinj : Function.Injective T₀ := by
+    rw [← LinearMap.ker_eq_bot]
+    rcases hs (LinearMap.ker T₀) (fun k v hv => by
+      simp only [Submodule.mem_comap, LinearMap.mem_ker] at hv ⊢
+      rw [hT₀, hv, map_zero]) with h | h
+    · exact h
+    · exact absurd (LinearMap.ker_eq_top.1 h) hne
+  let S : Submodule ℂ H := LinearMap.range T₀
+  have hSinv : ∀ k, ∀ w ∈ S, π k w ∈ S := by
+    rintro k _ ⟨v, rfl⟩
+    exact ⟨ρ k v, hT₀ k v⟩
+  have hSirr : ∀ S' : Submodule ℂ H, S' ≤ S → (∀ k, ∀ w ∈ S', π k w ∈ S') → S' = ⊥ ∨ S' = S := by
+    intro S' hle hinv
+    rcases hs (S'.comap T₀) (fun k v hv => by
+      simp only [Submodule.mem_comap] at hv ⊢
+      rw [hT₀]
+      exact hinv k _ hv) with h | h
+    · left
+      rw [eq_bot_iff]
+      intro w hw
+      obtain ⟨v, rfl⟩ := hle hw
+      have hv : v ∈ S'.comap T₀ := hw
+      rw [h, Submodule.mem_bot] at hv
+      rw [hv, map_zero]
+      exact Submodule.zero_mem _
+    · right
+      refine le_antisymm hle ?_
+      rintro _ ⟨v, rfl⟩
+      have hv : v ∈ S'.comap T₀ := by rw [h]; trivial
+      exact hv
+  have hfin := hadm S inferInstance hSinv hSirr
+  let e : W ≃ₗ[ℂ] S := LinearEquiv.ofInjective T₀ hinj
+  refine Submodule.finiteDimensional_of_le
+    (S₂ := sSup {S' | ∃ T : H →ₗ[ℂ] H, S' = S.map T ∧ ∀ k, ∀ w ∈ S, T (π k w) = π k (T w)})
+    (iSup₂_le fun T hT => ?_)
+  let T' : H →ₗ[ℂ] H := T ∘ₗ (e.symm : S →ₗ[ℂ] W) ∘ₗ (S.orthogonalProjectionOnto : H →ₗ[ℂ] S)
+  have hT' : ∀ v, T' (T₀ v) = T v := by
+    intro v
+    have he : ((e v : S) : H) = T₀ v := LinearEquiv.ofInjective_apply _ v
+    simp only [T', LinearMap.comp_apply, ContinuousLinearMap.coe_coe]
+    rw [← he, Submodule.orthogonalProjectionOnto_mem_subspace_eq_self, LinearEquiv.coe_coe,
+      LinearEquiv.symm_apply_apply]
+  refine le_sSup ⟨T', ?_, ?_⟩
+  · have hc : T' ∘ₗ T₀ = T := LinearMap.ext hT'
+    rw [← hc, LinearMap.range_comp]
+  · rintro k _ ⟨v, rfl⟩
+    rw [← hT₀, hT', hT', hT]
+
+theorem finiteDimensional_isoPart {π : K →* (H →L[ℂ] H)} (hπ : ∀ k v, ‖π k v‖ = ‖v‖)
+    (hadm : ∀ S : Submodule ℂ H, FiniteDimensional ℂ S → (∀ k, ∀ w ∈ S, π k w ∈ S) →
+      (∀ S' : Submodule ℂ H, S' ≤ S → (∀ k, ∀ w ∈ S', π k w ∈ S') → S' = ⊥ ∨ S' = S) →
+      FiniteDimensional ℂ (sSup {S' | ∃ T : H →ₗ[ℂ] H, S' = S.map T ∧
+        ∀ k, ∀ w ∈ S, T (π k w) = π k (T w)} : Submodule ℂ H))
+    (d : ℕ) : ∀ (W : Type) [AddCommGroup W] [Module ℂ W] [FiniteDimensional ℂ W] (ρ : Representation ℂ K W),
+      Module.finrank ℂ W = d → FiniteDimensional ℂ (isoPart π ρ) := by
+  induction d using Nat.strong_induction_on with
+  | _ d ih =>
+  intro W _ _ _ ρ hd
+  by_cases hs : ∀ W' : Submodule ℂ W, (∀ k, W' ≤ W'.comap (ρ k)) → W' = ⊥ ∨ W' = ⊤
+  · exact finiteDimensional_isoPart_of_simple hadm ρ hs
+  push Not at hs
+  obtain ⟨W', hW, hbot, htop⟩ := hs
+  have h1 : Module.finrank ℂ W' < d := hd ▸ Submodule.finrank_lt htop
+  have h2 : Module.finrank ℂ (W ⧸ W') < d := by
+    have hsum := Submodule.finrank_quotient_add_finrank W'
+    have hpos : 0 < Module.finrank ℂ W' :=
+      Nat.pos_of_ne_zero fun h => hbot (Submodule.finrank_eq_zero.1 h)
+    omega
+  have := ih _ h1 W' (ρ.subrepresentation W' hW) rfl
+  have := ih _ h2 (W ⧸ W') (ρ.quotient W' hW) rfl
+  exact Submodule.finiteDimensional_of_le (isoPart_le_sup hπ ρ W' hW)
+
+end GlobalTheory.CompanionTheory.AdmGL
+
+end
+end
+
+section
+section
+open NumberField MeasureTheory Topology Matrix GlobalTheory.AutomorphicL2Unitary GlobalTheory.DiscreteSum GlobalTheory.OpTrace GlobalTheory.UnitaryBC GlobalTheory.DiscSpec GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.AdmGL
+
+variable {ι : Type} [Fintype ι] [DecidableEq ι] {a n : ℕ}
+
+open scoped Classical in
+
+def toGL (M : Matrix (Fin a) (Fin a) (ι → ℂ)) : GL (Fin a) (ι → ℂ) :=
+  if h : IsUnit M then h.unit else 1
+
+theorem coe_toGL {M : Matrix (Fin a) (Fin a) (ι → ℂ)} (h : IsUnit M) : (toGL M : Matrix (Fin a) (Fin a) (ι → ℂ)) = M := by
+  simp [toGL, h]
+
+theorem toGL_coe (u : GL (Fin a) (ι → ℂ)) : toGL (u : Matrix (Fin a) (Fin a) (ι → ℂ)) = u :=
+  Units.ext (coe_toGL u.isUnit)
+
+def blkRep {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] (e : Fin a × ι ≃ Fin n)
+    (σ : GL (Fin a) (ι → ℂ) →* (H →L[ℂ] H)) (g : Matrix (Fin n) (Fin n) ℂ) : H →L[ℂ] H :=
+  σ (toGL (unblk e g))
+
+variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+
+theorem blkRep_blk (e : Fin a × ι ≃ Fin n) (σ : GL (Fin a) (ι → ℂ) →* (H →L[ℂ] H)) (u : GL (Fin a) (ι → ℂ)) :
+    blkRep e σ (blk e (u : Matrix (Fin a) (Fin a) (ι → ℂ))) = σ u := by
+  rw [blkRep, unblk_blk, toGL_coe]
+
+theorem blk_coe_mem (e : Fin a × ι ≃ Fin n) (u : GL (Fin a) (ι → ℂ)) :
+    blk e (u : Matrix (Fin a) (Fin a) (ι → ℂ)) ∈ blkG e := ⟨_, u.isUnit, rfl⟩
+
+theorem exists_gl_of_mem (e : Fin a × ι ≃ Fin n) {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ blkG e) :
+    ∃ u : GL (Fin a) (ι → ℂ), g = blk e (u : Matrix (Fin a) (Fin a) (ι → ℂ)) := by
+  obtain ⟨M, hM, rfl⟩ := hg
+  exact ⟨hM.unit, rfl⟩
+
+theorem continuousOn_toGL_unblk (e : Fin a × ι ≃ Fin n) :
+    ContinuousOn (fun g => toGL (unblk e g) : Matrix (Fin n) (Fin n) ℂ → GL (Fin a) (ι → ℂ)) (blkG e) := by
+  rw [continuousOn_iff_continuous_restrict]
+  have hval : ∀ g : blkG e, ((toGL (unblk e g.1) : GL (Fin a) (ι → ℂ)) : Matrix (Fin a) (Fin a) (ι → ℂ)) = unblk e g.1 := by
+    rintro ⟨_, M, hM, rfl⟩
+    rw [unblk_blk]
+    exact coe_toGL hM
+  have hinv : ∀ g : blkG e, (((toGL (unblk e g.1))⁻¹ : GL (Fin a) (ι → ℂ)) : Matrix (Fin a) (Fin a) (ι → ℂ)) =
+      unblk e (g.1.det⁻¹ • g.1.adjugate) := by
+    rintro ⟨_, M, hM, rfl⟩
+    have h := blk_inv e hM
+    rw [Matrix.inv_def, Ring.inverse_eq_inv'] at h
+    simp only [h, unblk_blk]
+    rw [Matrix.coe_units_inv, coe_toGL hM]
+  have hdet : ∀ g : blkG e, g.1.det ≠ 0 := fun g =>
+    ((Matrix.isUnit_iff_isUnit_det _).1 ((mem_blkG_iff e).1 g.2).1).ne_zero
+  have hc : Continuous fun g : blkG e => g.1.det⁻¹ • g.1.adjugate :=
+    (Continuous.inv₀ continuous_subtype_val.matrix_det hdet).smul continuous_subtype_val.matrix_adjugate
+  refine Units.continuous_iff.2 ⟨?_, ?_⟩
+  · exact ((continuous_unblk e).comp continuous_subtype_val).congr fun g => (hval g).symm
+  · exact ((continuous_unblk e).comp hc).congr fun g => (hinv g).symm
+
+theorem isURepOn_blkRep (e : Fin a × ι ≃ Fin n) {σ : GL (Fin a) (ι → ℂ) →* (H →L[ℂ] H)} (hσ : IsUnitaryRep σ) :
+    Formalism.MainNotions.S.IsURepOn (blkG e) (blkRep e σ) := by
+  refine ⟨⟨?_, ?_⟩, fun g _ v => hσ.norm_apply _ v, fun v =>
+    (hσ.continuous_apply v).comp_continuousOn (continuousOn_toGL_unblk e)⟩
+  · have h := blkRep_blk e σ 1
+    simpa using h
+  · intro g hg h hh
+    obtain ⟨u, rfl⟩ := exists_gl_of_mem e hg
+    obtain ⟨v, rfl⟩ := exists_gl_of_mem e hh
+    rw [← blk_mul, ← Units.val_mul, blkRep_blk, blkRep_blk, blkRep_blk, map_mul]
+    rfl
+
+theorem isIrredOn_blkRep (e : Fin a × ι ≃ Fin n) {σ : GL (Fin a) (ι → ℂ) →* (H →L[ℂ] H)}
+    (hi : IsTopIrreducible σ) : Formalism.MainNotions.S.IsIrredOn (blkG e) (blkRep e σ) := fun S hS hinv =>
+  hi.2 S ⟨hS, fun u v hv => by
+    have h := hinv _ (blk_coe_mem e u) v hv
+    rwa [blkRep_blk] at h⟩
+
+theorem blk_mem_maxCpt (e : Fin a × ι ≃ Fin n) (k : Matrix.unitaryGroup (Fin a) (ι → ℂ)) :
+    blk e k.1 ∈ GlobalTheory.LinRed.maxCpt (blkG e) := by
+  refine ⟨blk_coe_mem e (Unitary.toUnits k), ?_⟩
+  rw [SetLike.mem_coe, Matrix.mem_unitaryGroup_iff, Matrix.star_eq_conjTranspose, ← blk_conjTranspose, ← blk_mul,
+    ← Matrix.star_eq_conjTranspose, (Matrix.mem_unitaryGroup_iff).1 k.2, blk_one]
+
+theorem exists_unitary_of_mem_maxCpt (e : Fin a × ι ≃ Fin n) {g : Matrix (Fin n) (Fin n) ℂ}
+    (hg : g ∈ GlobalTheory.LinRed.maxCpt (blkG e)) :
+    ∃ k : Matrix.unitaryGroup (Fin a) (ι → ℂ), g = blk e k.1 := by
+  obtain ⟨⟨M, -, rfl⟩, hu⟩ := hg
+  refine ⟨⟨M, ?_⟩, rfl⟩
+  rw [SetLike.mem_coe, Matrix.mem_unitaryGroup_iff, Matrix.star_eq_conjTranspose, ← blk_conjTranspose, ← blk_mul,
+    ← blk_one e, ← Matrix.star_eq_conjTranspose] at hu
+  rw [Matrix.mem_unitaryGroup_iff]
+  exact blk_injective e hu
+
+theorem finiteDimensional_isoPart_gl [CompleteSpace H] {σ : GL (Fin a) (ι → ℂ) →* (H →L[ℂ] H)}
+    (hσ : IsUnitaryRep σ) (hi : IsTopIrreducible σ) {W : Type} [AddCommGroup W] [Module ℂ W] [FiniteDimensional ℂ W]
+    (ρ : Representation ℂ (Matrix.unitaryGroup (Fin a) (ι → ℂ)) W) :
+    FiniteDimensional ℂ (isoPart (σ.comp Unitary.toUnits) ρ) := by
+  let e := Fintype.equivFin (Fin a × ι)
+  have hLR := isLinRed_blkG e
+  have hA := GlobalTheory.CompanionTheory.admitted.isAdmissible_of_unitary_irreducible hLR
+    (GlobalTheory.CompanionTheory.AdmIwa.RamifiedPrimeLengthBound hLR (GlobalTheory.CompanionTheory.IwaGen.iwaOn_of_isLinRed hLR)) H (blkRep e σ)
+    (isURepOn_blkRep e hσ) (isIrredOn_blkRep e hi)
+  have hrep : ∀ k : Matrix.unitaryGroup (Fin a) (ι → ℂ),
+      blkRep e σ (blk e k.1) = (σ.comp Unitary.toUnits) k := fun k => blkRep_blk e σ (Unitary.toUnits k)
+  refine finiteDimensional_isoPart (π := σ.comp Unitary.toUnits) (fun k v => hσ.norm_apply _ v) ?_ _ W ρ rfl
+  intro S hfd hS hirr
+  have hKS : GlobalTheory.LinRed.IsKStable (blkG e) (blkRep e σ) S := by
+    intro g hg w hw
+    obtain ⟨k, rfl⟩ := exists_unitary_of_mem_maxCpt e hg
+    rw [hrep]
+    exact hS k w hw
+  have hirr' : ∀ S' : Submodule ℂ H, S' ≤ S → GlobalTheory.LinRed.IsKStable (blkG e) (blkRep e σ) S' → S' = ⊥ ∨ S' = S :=
+    fun S' hle hst => hirr S' hle fun k w hw => by
+      have h := hst _ (blk_mem_maxCpt e k) w hw
+      rwa [hrep] at h
+  have hfin := hA.2.2.2 S hfd hKS hirr'
+  have heq : {S' : Submodule ℂ H | ∃ T : H →ₗ[ℂ] H, S' = S.map T ∧
+      ∀ k, ∀ w ∈ S, T ((σ.comp Unitary.toUnits) k w) = (σ.comp Unitary.toUnits) k (T w)} =
+      {S' | ∃ T : H →ₗ[ℂ] H, S' = S.map T ∧ ∀ k ∈ GlobalTheory.LinRed.maxCpt (blkG e), ∀ w ∈ S,
+        T (blkRep e σ k w) = blkRep e σ k (T w)} := by
+    ext S'
+    constructor
+    · rintro ⟨T, rfl, hT⟩
+      refine ⟨T, rfl, fun g hg w hw => ?_⟩
+      obtain ⟨k, rfl⟩ := exists_unitary_of_mem_maxCpt e hg
+      rw [hrep]
+      exact hT k w hw
+    · rintro ⟨T, rfl, hT⟩
+      refine ⟨T, rfl, fun k w hw => ?_⟩
+      rw [← hrep]
+      exact hT _ (blk_mem_maxCpt e k) w hw
+  rw [heq]
+  exact hfin
+
+theorem admissible_GL_Cinf : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] (σ : GL (Fin a) (Cinf E) →* (H →L[ℂ] H)), IsUnitaryRep σ → IsTopIrreducible σ → ∀ (W : Type) [AddCommGroup W] [Module ℂ W] [FiniteDimensional ℂ W] (ρ : Representation ℂ (Kinf E a) W), FiniteDimensional ℂ ↥(⨆ (T : W →ₗ[ℂ] H) (_ : ∀ k w, T (ρ k w) = σ (Unitary.toUnits k) (T w)), LinearMap.range T : Submodule ℂ H) := by
+  intro E _ _ _ a H _ _ _ σ hσ hi W _ _ _ ρ
+  classical
+  exact finiteDimensional_isoPart_gl hσ hi ρ
+
+end GlobalTheory.CompanionTheory.AdmGL
+
+end
+end
+
+open NumberField MeasureTheory Topology Matrix GlobalTheory.AutomorphicL2Unitary GlobalTheory.DiscreteSum GlobalTheory.OpTrace GlobalTheory.UnitaryBC GlobalTheory.DiscSpec GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_K_type_finite : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] (σ : GL (Fin a) (Cinf E) →* (H →L[ℂ] H)), IsUnitaryRep σ → IsTopIrreducible σ → ∀ (W : Type) [AddCommGroup W] [Module ℂ W] [FiniteDimensional ℂ W] (ρ : Representation ℂ (Kinf E a) W), FiniteDimensional ℂ ↥(⨆ (T : W →ₗ[ℂ] H) (_ : ∀ k w, T (ρ k w) = σ (Unitary.toUnits k) (T w)), LinearMap.range T : Submodule ℂ H) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.AdmGL.admissible_GL_Cinf
+end
+
+section
 section
 noncomputable section
 
@@ -379,3 +924,4 @@ open NumberField MeasureTheory Topology Matrix GlobalTheory.AutomorphicL2Unitary
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.cuspidal_K_type_finite : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ) (μ : Measure (GA E a)) [μ.IsHaarMeasure] [μ.IsMulRightInvariant] (H : Submodule ℂ (L2 (latticeGL E a) μ)), H ≤ L2cusp μ → IsIrredSubrep (R (latticeGL E a) μ) H → ∀ (U : Subgroup (GL (Fin a) (Af E))), IsOpen (U : Set (GL (Fin a) (Af E))) → ∀ (W : Type) [AddCommGroup W] [Module ℂ W] [FiniteDimensional ℂ W] (ρ : Representation ℂ (Kinf E a) W), FiniteDimensional ℂ ↥(⨆ (T : W →ₗ[ℂ] L2 (latticeGL E a) μ) (_ : (∀ k w, T (ρ k w) = R (latticeGL E a) μ (infGL E a (Unitary.toUnits k)) (T w)) ∧ ∀ w, T w ∈ H ∧ ∀ u ∈ U, R (latticeGL E a) μ (finGL E a u) (T w) = T w), LinearMap.range T : Submodule ℂ (L2 (latticeGL E a) μ)) := by
   atlas_forward_decl GlobalTheory.CompanionTheory.IsoTypes.finiteDimensional_isotypic
+end

@@ -29,7 +29,6 @@ theorem Gam_eq_map (Γ K : Subgroup G) (g : G) :
     convert hk using 1
     group
 
-theorem Gam_mono {Γ K U : Subgroup G} (h : U ≤ K) (g : G) : Gam Γ U g ≤ Gam Γ K g := fun _ hx => mem_Gam.2 ⟨(mem_Gam.1 hx).1, h (mem_Gam.1 hx).2⟩
 
 def GamEquivSet (Γ K : Subgroup G) (g : G) : Gam Γ K g ≃ {γ : Γ | g⁻¹ * (γ : G) * g ∈ K} where
   toFun x := ⟨⟨x.1, (mem_Gam.1 x.2).1⟩, (mem_Gam.1 x.2).2⟩
@@ -191,28 +190,7 @@ theorem fibRep_symm_mk {Γ K U : Subgroup G} (hUK : U ≤ K) (rep : DoubleCoset.
     (hrep : ∀ c, DoubleCoset.mk Γ K (rep c) = c) (c : DoubleCoset.Quotient (Γ : Set G) K) (k : K) :
     (fibRep hUK rep hrep).symm ⟨c, Quotient.mk'' (k : K ⧸ U.subgroupOf K)⟩ = DoubleCoset.mk Γ U (rep c * k) := rfl
 
-theorem fibRep_mk {Γ K U : Subgroup G} (hUK : U ≤ K) (rep : DoubleCoset.Quotient (Γ : Set G) K → G)
-    (hrep : ∀ c, DoubleCoset.mk Γ K (rep c) = c) (c : DoubleCoset.Quotient (Γ : Set G) K) (k : K) :
-    fibRep hUK rep hrep (DoubleCoset.mk Γ U (rep c * k)) = ⟨c, Quotient.mk'' (k : K ⧸ U.subgroupOf K)⟩ := by
-  rw [← fibRep_symm_mk hUK rep hrep c k, Equiv.apply_symm_apply]
 
-theorem fibRep_fst {Γ K U : Subgroup G} (hUK : U ≤ K) (rep : DoubleCoset.Quotient (Γ : Set G) K → G)
-    (hrep : ∀ c, DoubleCoset.mk Γ K (rep c) = c) (x : G) :
-    (fibRep hUK rep hrep (DoubleCoset.mk Γ U x)).1 = DoubleCoset.mk Γ K x := by
-  have hp := (fibRep hUK rep hrep).symm_apply_apply (DoubleCoset.mk Γ U x)
-  generalize fibRep hUK rep hrep (DoubleCoset.mk Γ U x) = p at hp ⊢
-  obtain ⟨c, o⟩ := p
-  induction o using Quotient.inductionOn' with
-  | h y =>
-  induction y using QuotientGroup.induction_on with
-  | H k =>
-  rw [fibRep_symm_mk] at hp
-  obtain ⟨h, hh, u, hu, he⟩ := (DoubleCoset.eq Γ U _ _).1 hp
-  show c = DoubleCoset.mk Γ K x
-  rw [← hrep c]
-  refine (DoubleCoset.eq Γ K _ _).2 ⟨h, hh, (k : G) * u, K.mul_mem k.2 (hUK hu), ?_⟩
-  rw [he]
-  group
 
 def fib {Γ K U : Subgroup G} (hUK : U ≤ K) :
     DoubleCoset.Quotient (Γ : Set G) U ≃
@@ -304,25 +282,6 @@ theorem finite_cls {Γ K U : Subgroup G} (hUK : U ≤ K) [Finite (DoubleCoset.Qu
     [Finite (K ⧸ U.subgroupOf K)] : Finite (DoubleCoset.Quotient (Γ : Set G) U) := by
   exact Finite.of_equiv _ (fib hUK).symm
 
-theorem mass_clsRep {Γ K U : Subgroup G} (hUK : U ≤ K) (rep : DoubleCoset.Quotient (Γ : Set G) K → G)
-    (hrep : ∀ c, DoubleCoset.mk Γ K (rep c) = c) [Fintype (DoubleCoset.Quotient (Γ : Set G) K)]
-    [Fintype (DoubleCoset.Quotient (Γ : Set G) U)]
-    [Finite (K ⧸ U.subgroupOf K)] (hfin : ∀ c, Finite (Gam Γ K (rep c))) :
-    ∑ q : DoubleCoset.Quotient (Γ : Set G) U, ((Nat.card (Gam Γ U (Quotient.out q)) : ℝ))⁻¹ =
-      (∑ c, ((Nat.card (Gam Γ K (rep c)) : ℝ))⁻¹) * Nat.card (K ⧸ U.subgroupOf K) := by
-  classical
-  haveI : ∀ c : DoubleCoset.Quotient (Γ : Set G) K,
-      Fintype (orbitRel.Quotient (Gam Γ K (rep c)) (K ⧸ U.subgroupOf K)) := fun c => Fintype.ofFinite _
-  rw [← Equiv.sum_comp (fibRep hUK rep hrep).symm, Fintype.sum_sigma, Finset.sum_mul]
-  refine Finset.sum_congr rfl fun c _ => ?_
-  haveI := hfin c
-  rw [inv_mul_eq_div, ← sum_inv_card_stabilizer (Gam Γ K (rep c)) (K ⧸ U.subgroupOf K)]
-  refine Finset.sum_congr rfl fun ω _ => ?_
-  have e := stabEquivCls hUK rep hrep c (Quotient.out ω)
-  have hω : (Quotient.mk'' (Quotient.out ω) : orbitRel.Quotient (Gam Γ K (rep c)) (K ⧸ U.subgroupOf K)) = ω :=
-    Quotient.out_eq ω
-  rw [hω] at e
-  rw [Nat.card_congr e.toEquiv]
 
 open Formalism.UG in
 theorem fibCount : FibCount := by

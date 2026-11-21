@@ -1,7 +1,60 @@
 import Mathlib
-import GroundTheory.GlobalFields.IdeleClassGroup.NatCardTateOfIsCyclic
+import GroundTheory.GlobalFields.IdeleClassGroup.InvariantsGalois
+import GroundTheory.GlobalFields.SecondInequality.Cyclic
 import GroundTheory.GlobalFields.NormResidueSymbol.Cyclotomic
 
+section
+namespace GroundTheory.Global
+
+open NumberField IntermediateField GroundTheory.LocalField.Abstract
+
+local notation "ℚ̄" => AlgebraicClosure ℚ
+
+noncomputable section
+
+namespace IdeleClassLimit
+
+open FiniteSubfield
+
+theorem natCard_tate_of_isCyclic (K L : Subgroup (ℚ̄ ≃ₐ[ℚ] ℚ̄)) [(L.subgroupOf K).Normal]
+    [(L.subgroupOf K).FiniteIndex] {F E : FiniteSubfield} (hFE : F ≤ E)
+    (hK : K = F.1.fixingSubgroup) (hL : L = E.1.fixingSubgroup)
+    (hcyc : IsCyclic (K ⧸ L.subgroupOf K)) :
+    Nat.card (tateZero IdeleClassLimit K L) = L.relIndex K ∧
+      Nat.card (tateNegOne IdeleClassLimit K L) = 1 := by
+  subst hK hL
+  have : Fact (F ≤ E) := ⟨hFE⟩
+  have : IsGalois F.1 E.1 := isGalois_of_normal (F := F) (E := E)
+
+  have hcycE : IsCyclic (E.1 ≃ₐ[F.1] E.1) := by
+    let φ := QuotientGroup.lift (E.1.fixingSubgroup.subgroupOf F.1.fixingSubgroup)
+      (restrictHom (F := F) (E := E)) (ker_restrictHom (F := F) (E := E)).ge
+    refine isCyclic_of_surjective φ fun x ↦ ?_
+    obtain ⟨g, rfl⟩ := restrictHom_surjective (F := F) (E := E) x
+    exact ⟨g, rfl⟩
+  obtain ⟨σ, hσ⟩ := IsCyclic.exists_generator (α := E.1 ≃ₐ[F.1] E.1)
+  have hax := classFieldAxiom_ideleClassGroup (K := F.1) (L := E.1) σ hσ
+  refine ⟨?_, ?_⟩
+  · rw [Nat.card_congr (tateZeroEquivGalois (F := F) (E := E)).toEquiv,
+      GroundTheory.LocalField.natCard_tateZero_eq hσ, hax.1]
+    exact (relIndex_fixingSubgroup hFE).symm
+  · rw [Nat.card_congr (tateNegOneEquivGalois (F := F) (E := E)).toEquiv,
+      GroundTheory.LocalField.natCard_tateNegOne_eq hσ, hax.2]
+
+theorem classFieldAxiom : ClassFieldAxiom (ℚ̄ ≃ₐ[ℚ] ℚ̄) IdeleClassLimit := by
+  intro U V hVU _ hcyc
+  exact natCard_tate_of_isCyclic (U : Subgroup (ℚ̄ ≃ₐ[ℚ] ℚ̄)) (V : Subgroup (ℚ̄ ≃ₐ[ℚ] ℚ̄))
+    (ofOpenSubgroup_le hVU) (fixingSubgroup_ofOpenSubgroup U).symm
+    (fixingSubgroup_ofOpenSubgroup V).symm hcyc
+
+end IdeleClassLimit
+
+end
+
+end GroundTheory.Global
+end
+
+section
 namespace GroundTheory.Global
 
 open NumberField IntermediateField GroundTheory.LocalField.Abstract
@@ -50,10 +103,6 @@ theorem ideleClassEquiv_ratRingEquiv (c : IdeleClassGroup ℚ) :
         (eq_ratCast (algebraMap ℚ rationals.1) l).symm) c
   rwa [ideleClassMap_self_eq, ideleClassEquiv_refl] at h
 
-theorem ideleClassNorm_ideleClassEquiv_ratRingEquiv (c : IdeleClassGroup ℚ) :
-    ideleClassNorm ℚ rationals.1 (ideleClassEquiv ratRingEquiv c) = c := by
-  rw [ideleClassEquiv_ratRingEquiv, ideleClassNorm_ideleClassMap,
-    show Module.finrank ℚ rationals.1 = 1 from IntermediateField.finrank_bot, pow_one]
 
 def ratEquiv :
     IdeleClassGroup ℚ ≃* fixedModule IdeleClassLimit (⊤ : Subgroup (ℚ̄ ≃ₐ[ℚ] ℚ̄)) :=
@@ -71,11 +120,6 @@ theorem val_baseEquiv (c : IdeleClassGroup rationals.1) :
     val (baseEquiv c) = cycDegree (cycSymbol rationals c) := by
   simp [val]
 
-theorem val_ratEquiv (c : IdeleClassGroup ℚ) :
-    val (ratEquiv c) = cycDegree (reciprocityMap c) := by
-  have h : ratEquiv c = baseEquiv (ideleClassEquiv ratRingEquiv c) := MulEquiv.trans_apply _ _ c
-  rw [h, val_baseEquiv, cycSymbol, MonoidHom.comp_apply,
-    ideleClassNorm_ideleClassEquiv_ratRingEquiv]
 
 theorem cycSymbol_ideleClassNorm {F : FiniteSubfield} (h : rationals ≤ F)
     (c : IdeleClassGroup F.1) :
@@ -181,15 +225,11 @@ def classFieldTheory : ClassFieldTheory (ℚ̄ ≃ₐ[ℚ] ℚ̄) IdeleClassLimi
 theorem classFieldTheory_deg : classFieldTheory.deg = degree :=
   rfl
 
-theorem classFieldTheory_val (c : IdeleClassGroup ℚ) :
-    classFieldTheory.val (ratEquiv c) = cycDegree (reciprocityMap c) :=
-  val_ratEquiv c
 
-theorem classFieldTheory_val_surjective : Function.Surjective classFieldTheory.val :=
-  val_surjective
 
 end IdeleClassLimit
 
 end
 
 end GroundTheory.Global
+end

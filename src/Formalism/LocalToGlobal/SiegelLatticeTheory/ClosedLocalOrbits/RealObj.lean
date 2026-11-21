@@ -560,24 +560,6 @@ theorem cooOf_nonneg (u u' : D.what₂.Word) (sc : ℝ) : 0 ≤ DisintegrationCo
   · exact h.choose_spec.1.le
   · exact le_rfl
 
-theorem inNuX_of_meas (u u' : D.what₂.Word) (sc : ℝ) (hm : Measurable (wt X u u')) : InNuX X u u' sc := by
-  have hC := cooOf_nonneg X u u' sc
-  have hf : Measurable (fun c => ENNReal.ofReal (DisintegrationConstant X u u' sc * wt X u u' c)) :=
-    ENNReal.measurable_ofReal.comp (measurable_const.mul hm)
-  have key : ∀ c, ENNReal.ofReal (DisintegrationConstant X u u' sc * wt X u u' c) * ENNReal.ofReal (hilbertSchmidtSqGram X u u' sc c) =
-      ENNReal.ofReal (DisintegrationConstant X u u' sc) * ENNReal.ofReal (wt X u u' c * hilbertSchmidtSqGram X u u' sc c) := by
-    intro c
-    have ho : 0 ≤ hilbertSchmidtSqGram X u u' sc c := hilbert_schmidt_nonneg_alt _
-    rcases le_total 0 (wt X u u' c) with hw | hw
-    · rw [ENNReal.ofReal_mul hC, ENNReal.ofReal_mul hw, mul_assoc]
-    · rw [ENNReal.ofReal_of_nonpos (mul_nonpos_of_nonneg_of_nonpos hC hw),
-        ENNReal.ofReal_of_nonpos (mul_nonpos_of_nonpos_of_nonneg hw ho), zero_mul, mul_zero]
-  unfold InNuX intOOe intCe nuM
-  rw [lintegral_withDensity_eq_lintegral_mul_non_measurable _ hf
-    (ae_of_all _ (fun _ => ENNReal.ofReal_lt_top)), ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
-  congr 1
-  funext c
-  exact key c
 
 end Proofs
 

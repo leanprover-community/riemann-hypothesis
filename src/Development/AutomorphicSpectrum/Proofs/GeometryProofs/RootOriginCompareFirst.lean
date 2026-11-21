@@ -8,11 +8,457 @@ import Development.AutomorphicSpectrum.Definitions.MetricPeriods.HasMultiplierLi
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCptFiniteExtension
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCompCompareFlagStatement
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeSpanProjectionBound
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ValuationCoordsComplexPointStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SubringCoordsComplexValue
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeComponentBaseChangeCompat
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeComponentLatticeMapCompat
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ValuationCoordsComplexPoint
+import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.HodgeIPIffHodgeFormConj
+import BuildAid.ForwardExisting
+import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCompCompareGeneric
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieLatticeDominantCompat
 
+section
+open ReciprocityTheory.ChartRestriction.G.Geo GlobalTheory.CompanionTheory.Ar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.valuation_coords_complex_point : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Ω : Type) [Field Ω] (y : (Σ k, ι k) → Ω) (w : (Σ k, ι k) → ℂ), w ∈ Small.ptsOver ℂ (mCoordIdeal y) → ∃ (W : Subring Ω) (φ : W →+* ℂ), (∀ a : W, φ a ≠ 0 → IsUnit a) ∧ (∀ (k : K) (c e : ι k), w ⟨k, c⟩ ≠ 0 → ∃ h : y ⟨k, e⟩ / y ⟨k, c⟩ ∈ W, φ ⟨_, h⟩ * w ⟨k, c⟩ = w ⟨k, e⟩) ∧ ∀ (a : K → ℤ) (s : Ω) (v : ℂ) (C : ∀ k, ι k), Small.HasVal y a s w v → (∀ k, w ⟨k, C k⟩ ≠ 0) → ∃ h : s * ∏ k, y ⟨k, C k⟩ ^ (-a k) ∈ W, φ ⟨_, h⟩ * ∏ k, w ⟨k, C k⟩ ^ a k = v := by
+  first | exact @GlobalTheory.CompanionTheory.Ar.LocVal.exists_locRing_val | exact GlobalTheory.CompanionTheory.Ar.LocVal.exists_locRing_val | (intros; apply GlobalTheory.CompanionTheory.Ar.LocVal.exists_locRing_val <;> assumption)
+end
+
+section
+section
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.RegVal
+
+open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar
+
+variable {X : Scheme.{0}} {Ω Ω' : Type} [Field Ω] [Field Ω']
+
+theorem germ_frac {U : X.Opens} (hU : IsAffineOpen U) {p : X} (hp : p ∈ U) (s : X.presheaf.stalk p) :
+    ∃ (n d : Γ(X, U)) (m : ℕ), IsUnit (X.presheaf.germ U p hp d) ∧
+      s * X.presheaf.germ U p hp d ^ m = X.presheaf.germ U p hp n := by
+  obtain ⟨V, hpV, t, rfl⟩ := X.presheaf.exists_germ_eq s
+  obtain ⟨d, hdV, hpd⟩ := hU.exists_basicOpen_le (V := V) ⟨p, hpV⟩ hp
+  have := hU.isLocalization_basicOpen d
+  obtain ⟨m, n, e⟩ := IsLocalization.Away.surj (S := Γ(X, X.basicOpen d)) d
+    (X.presheaf.map (homOfLE hdV).op t)
+  refine ⟨n, d, m, (X.mem_basicOpen d p hp).1 hpd, ?_⟩
+  have e' := congrArg (X.presheaf.germ (X.basicOpen d) p hpd) e
+  rw [map_mul, map_pow] at e'
+  have h0 : ∀ f : Γ(X, U), X.presheaf.germ (X.basicOpen d) p hpd (algebraMap Γ(X, U) Γ(X, X.basicOpen d) f) =
+      X.presheaf.germ U p hp f := fun f =>
+    X.presheaf.germ_res_apply (homOfLE (X.basicOpen_le d)) p hpd f
+  rw [h0, h0, TopCat.Presheaf.germ_res_apply] at e'
+  exact e'
+
+theorem genMap_germ (ξ : Spec (CommRingCat.of Ω) ⟶ X) {U : X.Opens} {q : X} (hq : q ∈ U) (h : genPt ξ ⤳ q)
+    (f : Γ(X, U)) :
+    genMap ξ ⟨q, h⟩ (X.presheaf.germ U q hq f) =
+      (Scheme.stalkClosedPointTo ξ).hom (X.presheaf.germ U (genPt ξ) (h.mem_open U.isOpen hq) f) := by
+  have e := congr($(X.presheaf.germ_stalkSpecializes hq h) f)
+  simp only [CommRingCat.comp_apply] at e
+  simp only [genMap, CommRingCat.hom_comp, RingHom.comp_apply]
+  exact congrArg (Scheme.stalkClosedPointTo ξ).hom e
+
+theorem add_val {ξ : Spec (CommRingCat.of Ω) ⟶ X} {z : Spec (CommRingCat.of ℂ) ⟶ X} {a b : Ω} {r s : ℂ}
+    (h : ValAt ξ z a r) (h' : ValAt ξ z b s) : ValAt ξ z (a + b) (r + s) := by
+  obtain ⟨h, x, rfl, rfl⟩ := h
+  obtain ⟨_, y, rfl, rfl⟩ := h'
+  exact ⟨h, x + y, map_add _ _ _, map_add _ _ _⟩
+
+def QV (i : Ω →+* Ω') (W : Subring Ω') (φ : W →+* ℂ) (ξ : Spec (CommRingCat.of Ω) ⟶ X)
+    (z : Spec (CommRingCat.of ℂ) ⟶ X) (n : Ω) : Prop :=
+  ∃ h : i n ∈ W, ValAt ξ z n (φ ⟨i n, h⟩)
+
+variable {i : Ω →+* Ω'} {W : Subring Ω'} {φ : W →+* ℂ} {ξ : Spec (CommRingCat.of Ω) ⟶ X}
+  {z : Spec (CommRingCat.of ℂ) ⟶ X}
+
+theorem QV.add {a b : Ω} (ha : QV i W φ ξ z a) (hb : QV i W φ ξ z b) : QV i W φ ξ z (a + b) := by
+  obtain ⟨h1, v1⟩ := ha
+  obtain ⟨h2, v2⟩ := hb
+  have hm : i (a + b) ∈ W := by rw [map_add]; exact W.add_mem h1 h2
+  refine ⟨hm, ?_⟩
+  have e : (⟨i (a + b), hm⟩ : W) = ⟨_, h1⟩ + ⟨_, h2⟩ := Subtype.ext (by simp)
+  rw [e, map_add]
+  exact add_val v1 v2
+
+theorem QV.mul {a b : Ω} (ha : QV i W φ ξ z a) (hb : QV i W φ ξ z b) : QV i W φ ξ z (a * b) := by
+  obtain ⟨h1, v1⟩ := ha
+  obtain ⟨h2, v2⟩ := hb
+  have hm : i (a * b) ∈ W := by rw [map_mul]; exact W.mul_mem h1 h2
+  refine ⟨hm, ?_⟩
+  have e : (⟨i (a * b), hm⟩ : W) = ⟨_, h1⟩ * ⟨_, h2⟩ := Subtype.ext (by simp)
+  rw [e, map_mul]
+  exact CxVal.mul v1 v2
+
+theorem QV.int (hz : genPt ξ ⤳ centre z) (n : ℤ) : QV i W φ ξ z (n : Ω) := by
+  have hm : i (n : Ω) ∈ W := by rw [map_intCast]; exact intCast_mem W n
+  refine ⟨hm, ?_⟩
+  have e : (⟨i (n : Ω), hm⟩ : W) = (n : W) := Subtype.ext (by simp)
+  rw [e, map_intCast]
+  exact ⟨hz, n, by simp, (map_intCast (Scheme.stalkClosedPointTo z).hom n).trans (by simp)⟩
+
+theorem QV.prod {ι : Type} (hz : genPt ξ ⤳ centre z) (s : Finset ι) (f : ι → Ω)
+    (h : ∀ k ∈ s, QV i W φ ξ z (f k)) : QV i W φ ξ z (∏ k ∈ s, f k) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simpa using QV.int (i := i) (W := W) (φ := φ) hz 1
+  | insert k s hk ih =>
+    rw [Finset.prod_insert hk]
+    exact (h k (Finset.mem_insert_self k s)).mul (ih fun l hl => h l (Finset.mem_insert_of_mem hl))
+
+theorem QV.adjoin (hz : genPt ξ ⤳ centre z) {S : Set Ω} (hS : ∀ n ∈ S, QV i W φ ξ z n) {a : Ω}
+    (ha : a ∈ Algebra.adjoin ℤ S) : QV i W φ ξ z a := by
+  induction ha using Algebra.adjoin_induction with
+  | mem x hx => exact hS x hx
+  | algebraMap n => simpa using QV.int (i := i) (W := W) (φ := φ) hz n
+  | add x y _ _ hx hy => exact hx.add hy
+  | mul x y _ _ hx hy => exact hx.mul hy
+
+theorem val_frac {S T : Type} [CommRing S] [CommRing T] (f : S →+* T) {s g n : S} {m : ℕ} (e : s * g ^ m = n) :
+    f s * f g ^ m = f n := by
+  rw [← e, map_mul, map_pow]
+
+theorem frac_mem (hU : ∀ a : W, φ a ≠ 0 → IsUnit a) {a nn dd : Ω} {m : ℕ} {r vn vd : ℂ}
+    (hn : i nn ∈ W) (hd : i dd ∈ W) (vn' : φ ⟨_, hn⟩ = vn) (vd' : φ ⟨_, hd⟩ = vd) (hvd : vd ≠ 0)
+    (e : a * dd ^ m = nn) (e' : r * vd ^ m = vn) : ∃ h : i a ∈ W, φ ⟨_, h⟩ = r := by
+  obtain ⟨u, hu⟩ := hU ⟨_, hd⟩ (by rw [vd']; exact hvd)
+  have h1 : ((u : W) : Ω') = i dd := by rw [hu]
+  have h2 : (((u⁻¹ : Wˣ) : W) : Ω') * i dd = 1 := by
+    rw [← h1]
+    exact congrArg Subtype.val u.inv_mul
+  have hia : i a = i nn * (((u⁻¹ : Wˣ) : W) : Ω') ^ m := by
+    rw [← e, map_mul, map_pow, mul_assoc, ← mul_pow, mul_comm (i dd), h2, one_pow, mul_one]
+  have hm : i a ∈ W := by
+    rw [hia]
+    exact W.mul_mem hn (W.pow_mem (SetLike.coe_mem _) m)
+  refine ⟨hm, ?_⟩
+  have e2 : (⟨i a, hm⟩ : W) = ⟨_, hn⟩ * ((u⁻¹ : Wˣ) : W) ^ m := Subtype.ext (by simpa using hia)
+  have h3 : φ ((u⁻¹ : Wˣ) : W) * vd = 1 := by
+    rw [← vd', ← hu, ← map_mul, u.inv_mul, map_one]
+  rw [e2, map_mul, map_pow, vn', ← e', mul_assoc, ← mul_pow, mul_comm vd, h3, one_pow, mul_one]
+
+theorem contains_localRing : ∀ (X : Scheme.{0}) (Ω Ω' : Type) [Field Ω] [Field Ω'] (i : Ω →+* Ω')
+    (ξ : Spec (CommRingCat.of Ω) ⟶ X) (K : Type) [Fintype K] (J : K → Type) (y : (Σ k, J k) → Ω)
+    (z : Spec (CommRingCat.of ℂ) ⟶ X) (w : (Σ k, J k) → ℂ) (W : Subring Ω') (φ : W →+* ℂ),
+    CoordTie ℤ ξ (fun c' : (k : K) → J k => ∏ k, y ⟨k, c' k⟩) → CoordsAt ξ y z w →
+    (∀ a : W, φ a ≠ 0 → IsUnit a) →
+    (∀ (k : K) (c e : J k), w ⟨k, c⟩ ≠ 0 →
+      ∃ h : i (y ⟨k, e⟩ / y ⟨k, c⟩) ∈ W, φ ⟨_, h⟩ * w ⟨k, c⟩ = w ⟨k, e⟩) →
+    ∀ (a : Ω) (r : ℂ), ValAt ξ z a r → ∃ h : i a ∈ W, φ ⟨_, h⟩ = r := by
+  intro X Ω Ω' _ _ i ξ K _ J y z w W φ tie hw hU hyp a r har
+  obtain ⟨hz, s, hsa, hsr⟩ := har
+  choose c hc using hw.1
+  have hc0 : ∀ k, w ⟨k, c k⟩ ≠ 0 := fun k => (hc k).ne_zero
+  have hy : ∀ k, y ⟨k, c k⟩ ≠ 0 := fun k => (hw.2 k (c k) (hc k)).1
+  have hxc : (∏ k, y ⟨k, c k⟩) ≠ 0 := Finset.prod_ne_zero_iff.2 fun k _ => hy k
+  have ratio : ∀ (k : K) (e : J k), QV i W φ ξ z (y ⟨k, e⟩ / y ⟨k, c k⟩) := fun k e => by
+    obtain ⟨h, v⟩ := hyp k (c k) e (hc0 k)
+    obtain ⟨t, ht, ht'⟩ := (hw.2 k (c k) (hc k)).2 e
+    refine ⟨h, ?_⟩
+    rwa [mul_right_cancel₀ (hc0 k) (v.trans ht')]
+  have gen : ∀ c' : (k : K) → J k, QV i W φ ξ z ((∏ k, y ⟨k, c' k⟩) / ∏ k, y ⟨k, c k⟩) := fun c' => by
+    rw [← Finset.prod_div_distrib]
+    exact QV.prod hz _ _ fun k _ => ratio k (c' k)
+  have hin : InChart ξ (fun c' : (k : K) → J k => ∏ k, y ⟨k, c' k⟩) c ⟨centre z, hz⟩ := by
+    refine ⟨hxc, fun c' => ?_⟩
+    obtain ⟨_, _, s', hs', _⟩ := gen c'
+    exact ⟨s', hs'⟩
+  obtain ⟨U, hUa, hUm⟩ := tie.affine c hxc
+  have hpU : centre z ∈ U := (hUm _).2 ⟨hz, hin⟩
+  obtain ⟨n, d, m, hd, e⟩ := germ_frac hUa hpU s
+  have hgU : genPt ξ ∈ U := hz.mem_open U.isOpen hpU
+  have hQ : ∀ f : Γ(X, U), QV i W φ ξ z
+      ((Scheme.stalkClosedPointTo ξ).hom (X.presheaf.germ U (genPt ξ) hgU f)) := fun f => by
+    refine QV.adjoin hz (S := Set.range fun j : (k : K) → J k =>
+      (∏ k, y ⟨k, j k⟩) / ∏ k, y ⟨k, c k⟩) ?_ ((tie.ring c hxc _).2 fun q hq => ?_)
+    · rintro _ ⟨j, rfl⟩
+      exact gen j
+    · have hqU : q.1 ∈ U := (hUm _).2 ⟨q.2, hq⟩
+      exact ⟨X.presheaf.germ U q.1 hqU f, genMap_germ ξ hqU q.2 f⟩
+  have hval : ∀ f : Γ(X, U), ∃ h : i ((Scheme.stalkClosedPointTo ξ).hom (X.presheaf.germ U (genPt ξ) hgU f)) ∈ W,
+      φ ⟨_, h⟩ = (Scheme.stalkClosedPointTo z).hom (X.presheaf.germ U (centre z) hpU f) := fun f => by
+    obtain ⟨h, v⟩ := hQ f
+    exact ⟨h, CxVal.unique v ⟨hz, _, genMap_germ ξ hpU hz f, rfl⟩⟩
+  obtain ⟨hn, vn⟩ := hval n
+  obtain ⟨hd', vd⟩ := hval d
+  refine frac_mem (m := m) hU hn hd' vn vd (hd.map (Scheme.stalkClosedPointTo z).hom).ne_zero ?_ ?_
+  · have e1 := congrArg (genMap ξ ⟨centre z, hz⟩) e
+    rw [map_mul, map_pow, hsa, genMap_germ ξ hpU hz, genMap_germ ξ hpU hz] at e1
+    exact e1
+  · rw [← hsr]
+    exact val_frac (Scheme.stalkClosedPointTo z).hom e
+
+end GlobalTheory.CompanionTheory.Ar.RegVal
+end
+end
+
+open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.subring_coords_complex_value : ∀ (X : Scheme.{0}) (Ω Ω' : Type) [Field Ω] [Field Ω'] (i : Ω →+* Ω') (ξ : Spec (CommRingCat.of Ω) ⟶ X) (K : Type) [Fintype K] (J : K → Type) (y : (Σ k, J k) → Ω) (z : Spec (CommRingCat.of ℂ) ⟶ X) (w : (Σ k, J k) → ℂ) (W : Subring Ω') (φ : W →+* ℂ), CoordTie ℤ ξ (fun c' : (k : K) → J k => ∏ k, y ⟨k, c' k⟩) → CoordsAt ξ y z w → (∀ a : W, φ a ≠ 0 → IsUnit a) → (∀ (k : K) (c e : J k), w ⟨k, c⟩ ≠ 0 → ∃ h : i (y ⟨k, e⟩ / y ⟨k, c⟩) ∈ W, φ ⟨_, h⟩ * w ⟨k, c⟩ = w ⟨k, e⟩) → ∀ (a : Ω) (r : ℂ), ValAt ξ z a r → ∃ h : i a ∈ W, φ ⟨_, h⟩ = r := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.RegVal.contains_localRing
+end
+
+section
+section
+noncomputable section
+
+open AlgebraicGeometry CategoryTheory NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.OrVert
+
+namespace GlobalTheory.CompanionTheory.Ar.OrArch
+
+theorem isLocalRing_of_value {Ω : Type} [Field Ω] (W : Subring Ω) (φ : W →+* ℂ)
+    (hW : ∀ a : W, φ a ≠ 0 → IsUnit a) : IsLocalRing W := by
+  haveI : Nontrivial W := φ.domain_nontrivial
+  refine IsLocalRing.of_nonunits_add fun a b ha hb hu => ?_
+  have h0 : ∀ c : W, c ∈ nonunits W → φ c = 0 := fun c hc => by_contra fun h => hc (hW c h)
+  have := hu.map φ
+  rw [map_add, h0 a ha, h0 b hb, add_zero] at this
+  exact not_isUnit_zero this
+
+theorem exists_stalkHom {X : Scheme.{0}} {Ω₁ Ω : Type} [Field Ω₁] [Field Ω]
+    (ξ : Spec (CommRingCat.of Ω₁) ⟶ X) (i : Ω₁ →+* Ω) (W : Subring Ω) (φ : W →+* ℂ)
+    (z : Spec (CommRingCat.of ℂ) ⟶ X) (hz : genPt ξ ⤳ centre z)
+    (hv : ∀ (a : Ω₁) (r : ℂ), ValAt ξ z a r → ∃ h : i a ∈ W, φ ⟨_, h⟩ = r) :
+    ∃ σ : X.presheaf.stalk (centre z) →+* W, (∀ s, (σ s : Ω) = i (genMap ξ ⟨centre z, hz⟩ s)) ∧
+      ∀ s, φ (σ s) = (Scheme.stalkClosedPointTo z).hom s := by
+  have hm : ∀ s, ValAt ξ z (genMap ξ ⟨centre z, hz⟩ s) ((Scheme.stalkClosedPointTo z).hom s) :=
+    fun s => ⟨hz, s, rfl, rfl⟩
+  exact ⟨(i.comp (genMap ξ ⟨centre z, hz⟩)).codRestrict W fun s => (hv _ _ (hm s)).1,
+    fun _ => rfl, fun s => (hv _ _ (hm s)).2⟩
+
+theorem isLocalHom_of_value {X : Scheme.{0}} {Ω : Type} [Field Ω] (W : Subring Ω) (φ : W →+* ℂ)
+    (z : Spec (CommRingCat.of ℂ) ⟶ X) (σ : X.presheaf.stalk (centre z) →+* W)
+    (hσ : ∀ s, φ (σ s) = (Scheme.stalkClosedPointTo z).hom s) : IsLocalHom σ :=
+  ⟨fun s hs => GlobalTheory.CompanionTheory.Ar.CxVal.isUnit s (by rw [← hσ]; exact (hs.map φ).ne_zero)⟩
+
+theorem domBy_of_stalkHom {X : Scheme.{0}} {Ω₁ Ω : Type} [Field Ω₁] [Field Ω]
+    (ξ : Spec (CommRingCat.of Ω₁) ⟶ X) (i : Ω₁ →+* Ω) (q : Cpt ξ) (W : Subring Ω) (V : ValuationSubring Ω)
+    (hWV : W ≤ V.toSubring) (hloc : IsLocalHom (Subring.inclusion hWV))
+    (σ : X.presheaf.stalk q.1 →+* W) (hl : IsLocalHom σ) (hσ : ∀ s, (σ s : Ω) = i (genMap ξ q s)) :
+    DomBy V.toSubring i ξ q := by
+  refine ⟨?_, ?_⟩
+  · rintro _ ⟨s, rfl⟩
+    rw [← hσ]
+    exact hWV (σ s).2
+  · rintro _ ⟨s, rfl⟩ h0 hinv
+    have hi : i (genMap ξ q s) ≠ 0 := (map_ne_zero i).2 h0
+    have hu : IsUnit (Subring.inclusion hWV (σ s)) := by
+      refine IsUnit.of_mul_eq_one (⟨_, hinv⟩ : V.toSubring) (Subtype.ext ?_)
+      change ((σ s : W) : Ω) * (i (genMap ξ q s))⁻¹ = 1
+      rw [hσ, mul_inv_cancel₀ hi]
+    obtain ⟨u, rfl⟩ := isUnit_of_map_unit σ s (isUnit_of_map_unit (Subring.inclusion hWV) _ hu)
+    exact ⟨(u⁻¹ : (X.presheaf.stalk q.1)ˣ).val, map_units_inv (genMap ξ q) u⟩
+
+theorem point_closed {X Y : Scheme.{0}} (x : X) (f : X ⟶ Y) {R : Type} [CommRing R] [IsLocalRing R]
+    (σ : X.presheaf.stalk x →+* R) (hl : IsLocalHom σ) :
+    (spMap σ ≫ X.fromSpecStalk x ≫ f) (IsLocalRing.closedPoint R) = f x := by
+  have : IsLocalHom (CommRingCat.ofHom σ).hom := hl
+  change f (X.fromSpecStalk x (Spec.map (CommRingCat.ofHom σ) (IsLocalRing.closedPoint R))) = f x
+  rw [Spec_closedPoint, Scheme.fromSpecStalk_closedPoint]
+
+theorem spec_stalkHom {X : Scheme.{0}} {Ω₁ Ω : Type} [Field Ω₁] [Field Ω]
+    (ξ : Spec (CommRingCat.of Ω₁) ⟶ X) (i : Ω₁ →+* Ω) (q : Cpt ξ) (W : Subring Ω)
+    (σ : X.presheaf.stalk q.1 →+* W) (hσ : ∀ s, (σ s : Ω) = i (genMap ξ q s)) :
+    spMap W.subtype ≫ spMap σ ≫ X.fromSpecStalk q.1 = spMap i ≫ ξ := by
+  have e : W.subtype.comp σ = i.comp (genMap ξ q) := RingHom.ext hσ
+  have e2 : spMap W.subtype ≫ spMap σ = spMap i ≫ spMap (genMap ξ q) :=
+    (LieTangent.spec_comp σ W.subtype).trans
+      ((congrArg (fun g => Spec.map (CommRingCat.ofHom g)) e).trans (LieTangent.spec_comp _ _).symm)
+  rw [← Category.assoc, e2, Category.assoc]
+  exact congrArg (spMap i ≫ ·) (LieTangent.spec_genMap ξ q)
+
+theorem exists_common_point : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (S S₀ : Finset ℕ) (Ω Ω₀ : Type) [Field Ω] [Field Ω₀] (K K₀ : Type) [Fintype K] [Fintype K₀] (J : K → Type) (J₀ : K₀ → Type) (y : (Σ k, J k) → Ω) (y₀ : (Σ k, J₀ k) → Ω₀) (𝔐 : HodgeCpt Y S y) (𝔐₀ : HodgeCpt Y S₀ y₀) (i : Ω₀ →+* Ω) (W : Subring Ω) (φ : W →+* ℂ) (z₁ : Spec (CommRingCat.of ℂ) ⟶ 𝔐.X) (z₂ : Spec (CommRingCat.of ℂ) ⟶ 𝔐₀.X), 𝔐.ξ ≫ 𝔐.f = spMap i ≫ 𝔐₀.ξ ≫ 𝔐₀.f → (∀ a : W, φ a ≠ 0 → IsUnit a) → (∀ (a : Ω) (r : ℂ), ValAt 𝔐.ξ z₁ a r → ∃ h : a ∈ W, φ ⟨a, h⟩ = r) → (∀ (a : Ω₀) (r : ℂ), ValAt 𝔐₀.ξ z₂ a r → ∃ h : i a ∈ W, φ ⟨_, h⟩ = r) → ∃ (σ₁ : 𝔐.X.presheaf.stalk (centre z₁) →+* W) (σ₂ : 𝔐₀.X.presheaf.stalk (centre z₂) →+* W), (∀ s, (σ₁ s : Ω) = genMap 𝔐.ξ ⟨centre z₁, 𝔐.all _⟩ s) ∧ (∀ s, (σ₂ s : Ω) = i (genMap 𝔐₀.ξ ⟨centre z₂, 𝔐₀.all _⟩ s)) ∧ (∀ s, φ (σ₁ s) = (Scheme.stalkClosedPointTo z₁).hom s) ∧ (∀ s, φ (σ₂ s) = (Scheme.stalkClosedPointTo z₂).hom s) ∧ spMap σ₁ ≫ 𝔐.X.fromSpecStalk (centre z₁) ≫ 𝔐.f = spMap σ₂ ≫ 𝔐₀.X.fromSpecStalk (centre z₂) ≫ 𝔐₀.f := by
+  intro E _ _ _ H D l Xo c Y S S₀ Ω Ω₀ _ _ K K₀ _ _ J J₀ y y₀ 𝔐 𝔐₀ i W φ z₁ z₂ hξ hW h₁ h₂
+  haveI := isLocalRing_of_value W φ hW
+  obtain ⟨σ₁, a₁, b₁⟩ := exists_stalkHom 𝔐.ξ (RingHom.id Ω) W φ z₁ (𝔐.all _) h₁
+  obtain ⟨σ₂, a₂, b₂⟩ := exists_stalkHom 𝔐₀.ξ i W φ z₂ (𝔐₀.all _) h₂
+  refine ⟨σ₁, σ₂, a₁, a₂, b₁, b₂, ?_⟩
+  have l₁ := isLocalHom_of_value W φ z₁ σ₁ b₁
+  have l₂ := isLocalHom_of_value W φ z₂ σ₂ b₂
+  obtain ⟨V, hV⟩ := (LocalSubring.mk W).exists_le_valuationSubring
+  obtain ⟨hWV, hloc⟩ := LocalSubring.le_def.1 hV
+  have hc : 𝔐.f (centre z₁) = 𝔐₀.f (centre z₂) :=
+    image_eq_of_domBy E H D l Xo c Y S S₀ Ω Ω₀ K K₀ J J₀ y y₀ 𝔐 𝔐₀ i hξ V ⟨centre z₁, 𝔐.all _⟩ ⟨centre z₂, 𝔐₀.all _⟩
+      (domBy_of_stalkHom 𝔐.ξ (RingHom.id Ω) ⟨centre z₁, 𝔐.all _⟩ W V hWV hloc σ₁ l₁ a₁)
+      (domBy_of_stalkHom 𝔐₀.ξ i ⟨centre z₂, 𝔐₀.all _⟩ W V hWV hloc σ₂ l₂ a₂)
+  refine LieTangent.ext_of_injective (R := W) (φ := W.subtype) Subtype.val_injective ?_ ?_
+  · exact (point_closed _ 𝔐.f σ₁ l₁).trans (hc.trans (point_closed _ 𝔐₀.f σ₂ l₂).symm)
+  · have e₁ := spec_stalkHom 𝔐.ξ (RingHom.id Ω) ⟨centre z₁, 𝔐.all _⟩ W σ₁ a₁
+    have e₂ := spec_stalkHom 𝔐₀.ξ i ⟨centre z₂, 𝔐₀.all _⟩ W σ₂ a₂
+    have hid : spMap (RingHom.id Ω) = 𝟙 _ := by simp [spMap]
+    rw [hid, Category.id_comp] at e₁
+    have f₁ := congrArg (· ≫ 𝔐.f) e₁
+    have f₂ := congrArg (· ≫ 𝔐₀.f) e₂
+    simp only [Category.assoc] at f₁ f₂
+    exact f₁.trans (hξ.trans f₂.symm)
+
+end GlobalTheory.CompanionTheory.Ar.OrArch
+end
+end
+
+open AlgebraicGeometry CategoryTheory NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hodge_component_base_change_compat : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (S S₀ : Finset ℕ) (Ω Ω₀ : Type) [Field Ω] [Field Ω₀] (K K₀ : Type) [Fintype K] [Fintype K₀] (J : K → Type) (J₀ : K₀ → Type) (y : (Σ k, J k) → Ω) (y₀ : (Σ k, J₀ k) → Ω₀) (𝔐 : HodgeCpt Y S y) (𝔐₀ : HodgeCpt Y S₀ y₀) (i : Ω₀ →+* Ω) (W : Subring Ω) (φ : W →+* ℂ) (z₁ : Spec (CommRingCat.of ℂ) ⟶ 𝔐.X) (z₂ : Spec (CommRingCat.of ℂ) ⟶ 𝔐₀.X), 𝔐.ξ ≫ 𝔐.f = spMap i ≫ 𝔐₀.ξ ≫ 𝔐₀.f → (∀ a : W, φ a ≠ 0 → IsUnit a) → (∀ (a : Ω) (r : ℂ), ValAt 𝔐.ξ z₁ a r → ∃ h : a ∈ W, φ ⟨a, h⟩ = r) → (∀ (a : Ω₀) (r : ℂ), ValAt 𝔐₀.ξ z₂ a r → ∃ h : i a ∈ W, φ ⟨_, h⟩ = r) → ∃ (σ₁ : 𝔐.X.presheaf.stalk (centre z₁) →+* W) (σ₂ : 𝔐₀.X.presheaf.stalk (centre z₂) →+* W), (∀ s, (σ₁ s : Ω) = genMap 𝔐.ξ ⟨centre z₁, 𝔐.all _⟩ s) ∧ (∀ s, (σ₂ s : Ω) = i (genMap 𝔐₀.ξ ⟨centre z₂, 𝔐₀.all _⟩ s)) ∧ (∀ s, φ (σ₁ s) = (Scheme.stalkClosedPointTo z₁).hom s) ∧ (∀ s, φ (σ₂ s) = (Scheme.stalkClosedPointTo z₂).hom s) ∧ spMap σ₁ ≫ 𝔐.X.fromSpecStalk (centre z₁) ≫ 𝔐.f = spMap σ₂ ≫ 𝔐₀.X.fromSpecStalk (centre z₂) ≫ 𝔐₀.f := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.OrArch.exists_common_point
+end
+
+section
+section
+noncomputable section
+
+open AlgebraicGeometry CategoryTheory NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
+
+namespace GlobalTheory.CompanionTheory.Ar.SingVal
+
+open LiePull LieTangent
+
+section Abstract
+
+open MonObj
+
+variable {S : Scheme.{0}} {G : Over S} [GrpObj G] {Ω : Type} [Field Ω] {L V : Type} [AddCommGroup L] [Module Ω L]
+  [AddCommGroup V] [Module ℂ V] {ξ : Sp Ω ⟶ S} {z : Sp ℂ ⟶ S}
+
+def extSub (W : Subring Ω) {x : Sp W ⟶ S} (hx : spMap W.subtype ≫ x = ξ) (N : LieModel G ξ L) : Submodule W L where
+  carrier := {e | ∃ v, Ext W.subtype x N e v}
+  add_mem' := fun ⟨_, hv⟩ ⟨_, hv'⟩ => ⟨_, hv.mul hx hv'⟩
+  zero_mem' := ⟨_, Ext.zero hx⟩
+  smul_mem' c _ := fun ⟨_, hv⟩ => ⟨_, hv.smul c⟩
+
+theorem exists_val (W : Subring Ω) (φ : W →+* ℂ) {x : Sp W ⟶ S} (hz : spMap φ ≫ x = z) (N : LieModel G ξ L)
+    (Nz : LieModel G z V) :
+    ∃ val : L → V, ∀ e v, Ext W.subtype x N e v → Nz.pt (val e) = epsBase φ hz ≫ v := by
+  classical
+  have key : ∀ e, ∃ w, ∀ v, Ext W.subtype x N e v → Nz.pt w = epsBase φ hz ≫ v := by
+    intro e
+    by_cases h : ∃ v, Ext W.subtype x N e v
+    · obtain ⟨v, hv⟩ := h
+      obtain ⟨w, hw⟩ := Nz.onto _ (isTanAt_base φ hz hv.1)
+      exact ⟨w, fun v' hv' => by rw [hw, hv.unique Subtype.val_injective hv']⟩
+    · exact ⟨0, fun v hv => (h ⟨v, hv⟩).elim⟩
+  choose val hval using key
+  exact ⟨val, hval⟩
+
+theorem exists_lat_val (W : Subring Ω) (φ : W →+* ℂ) {x : Sp W ⟶ S} (hx : spMap W.subtype ≫ x = ξ)
+    (hz : spMap φ ≫ x = z) (N : LieModel G ξ L) (Nz : LieModel G z V) :
+    ∃ (Lm : Submodule W L) (val : L → V), val 0 = 0 ∧ (∀ e ∈ Lm, ∀ e' ∈ Lm, val (e + e') = val e + val e') ∧
+      (∀ a : W, ∀ e ∈ Lm, val ((a : Ω) • e) = φ a • val e) ∧
+      ∀ e v, Ext W.subtype x N e v → e ∈ Lm ∧ Nz.pt (val e) = epsBase φ hz ≫ v := by
+  obtain ⟨val, hval⟩ := exists_val W φ hz N Nz
+  refine ⟨extSub W hx N, val, ?_, ?_, ?_, fun e v h => ⟨⟨v, h⟩, hval e v h⟩⟩
+  · apply Nz.inj
+    rw [hval 0 1 (Ext.zero hx), LieModel.pt_zero, comp_one]
+  · rintro e ⟨v, hv⟩ e' ⟨v', hv'⟩
+    apply Nz.inj
+    rw [hval _ _ (hv.mul hx hv'), Nz.add, hval _ _ hv, hval _ _ hv', comp_mul]
+  · rintro a e ⟨v, hv⟩
+    apply Nz.inj
+    have h1 := hval _ _ (hv.smul a)
+    refine h1.trans ?_
+    rw [LieModel.pt_smul, hval _ _ hv]
+    have e1 : epsBase φ hz ≫ epsScale x a = epsScale z (φ a) ≫ epsBase φ hz := base_scale φ hz a
+    have e2 : LieEx.hom x (a • (LinearMap.id : W →ₗ[W] W)) = epsScale x a := rfl
+    rw [e2, ← Category.assoc, e1, Category.assoc]
+
+theorem spMap_dual_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (a : A →+* B) (b : B →+* C)
+    {T : Scheme.{0}} (t : Sp (DualNumber A) ⟶ T) :
+    spMap (dualMap (b.comp a)) ≫ t = spMap (dualMap b) ≫ spMap (dualMap a) ≫ t := by
+  rw [← dualMap_comp]
+  exact (congrArg (· ≫ t) (spec_comp (dualMap a) (dualMap b)).symm).trans (Category.assoc _ _ _)
+
+theorem assoc_three {P Q R T U : Scheme.{0}} (a : P ⟶ Q) (b : Q ⟶ R) (c : R ⟶ T) (d : T ⟶ U) :
+    (a ≫ b ≫ c) ≫ d = a ≫ b ≫ c ≫ d := by
+  simp only [Category.assoc]
+
+theorem ext_of_tan {X' : Scheme.{0}} {G' : Over X'} [GrpObj G'] {f : X' ⟶ S} {ψ : G'.left ⟶ G.left}
+    (hG : IsGrpPullback G' G f ψ) {A B : Type} [CommRing A] [CommRing B] {g : A →+* Ω} {y : Sp B ⟶ X'} (σ : B →+* A)
+    {h : B →+* Ω} {x : Sp A ⟶ S} (hxy : x = (spMap σ ≫ y) ≫ f) (hσ : g.comp σ = h) {N : LieModel G ξ L} {e : L}
+    {v : epsAt y ⟶ G'} (hv : IsTanAt G' y v)
+    (he : (N.pt e).left = spMap (dualMap h) ≫ v.left ≫ ψ) :
+    ∃ u : epsAt x ⟶ G, Ext g x N e u ∧ u.left = spMap (dualMap σ) ≫ v.left ≫ ψ := by
+  subst hxy
+  subst hσ
+  refine ⟨LieMove.pushEps hG (epsBase σ rfl ≫ v), ⟨(LieMove.tan_iff hG _).1 (isTanAt_base σ rfl hv), ?_⟩,
+    Category.assoc _ _ _⟩
+  refine he.trans ?_
+  have e1 : spMap (dualMap (g.comp σ)) = spMap (dualMap g) ≫ spMap (dualMap σ) := by
+    rw [← dualMap_comp]
+    exact (spec_comp _ _).symm
+  rw [e1, Category.assoc]
+  rfl
+
+end Abstract
+
+theorem value_map : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (S S₀ : Finset ℕ) (Ω Ω₀ : Type) [Field Ω] [Field Ω₀] (K K₀ : Type) [Fintype K] [Fintype K₀] (J : K → Type) (J₀ : K₀ → Type) (y : (Σ k, J k) → Ω) (y₀ : (Σ k, J₀ k) → Ω₀) (𝔐 : HodgeCpt Y S y) (𝔐₀ : HodgeCpt Y S₀ y₀) (i : Ω₀ →+* Ω) (ι : 𝔐₀.Li →+ 𝔐.Li) (W : Subring Ω) (φ : W →+* ℂ) (z₁ : Spec (CommRingCat.of ℂ) ⟶ 𝔐.X) (z₂ : Spec (CommRingCat.of ℂ) ⟶ 𝔐₀.X) (σ₁ : 𝔐.X.presheaf.stalk (centre z₁) →+* W) (σ₂ : 𝔐₀.X.presheaf.stalk (centre z₂) →+* W), 𝔐.ξ ≫ 𝔐.f = spMap i ≫ 𝔐₀.ξ ≫ 𝔐₀.f → (∀ (e : 𝔐₀.Li) (e' : 𝔐.Li), (𝔐.M.pt e').left ≫ 𝔐.m.φ = spMap (dualMap i) ≫ (𝔐₀.M.pt e).left ≫ 𝔐₀.m.φ ↔ e' = ι e) → (∀ s, (σ₁ s : Ω) = genMap 𝔐.ξ ⟨centre z₁, 𝔐.all _⟩ s) → (∀ s, (σ₂ s : Ω) = i (genMap 𝔐₀.ξ ⟨centre z₂, 𝔐₀.all _⟩ s)) → (∀ s, φ (σ₁ s) = (Scheme.stalkClosedPointTo z₁).hom s) → (∀ s, φ (σ₂ s) = (Scheme.stalkClosedPointTo z₂).hom s) → spMap σ₁ ≫ 𝔐.X.fromSpecStalk (centre z₁) ≫ 𝔐.f = spMap σ₂ ≫ 𝔐₀.X.fromSpecStalk (centre z₂) ≫ 𝔐₀.f → ∀ (Vz : Type) [AddCommGroup Vz] [Module ℂ Vz] (MR : LieModel 𝔐.t.G z₁ Vz), ∃ (Lm : Submodule W 𝔐.Li) (val : 𝔐.Li → Vz), val 0 = 0 ∧ (∀ e ∈ Lm, ∀ e' ∈ Lm, val (e + e') = val e + val e') ∧ (∀ a : W, ∀ e ∈ Lm, val ((a : Ω) • e) = φ a • val e) ∧ (∀ (e : 𝔐.Li) (v : epsAt z₁ ⟶ 𝔐.t.G), 𝔐.M.ValAt z₁ e v → e ∈ Lm ∧ v = MR.pt (val e)) ∧ ∀ (e₀ : 𝔐₀.Li) (v₀ : epsAt z₂ ⟶ 𝔐₀.t.G), 𝔐₀.M.ValAt z₂ e₀ v₀ → ι e₀ ∈ Lm ∧ (MR.pt (val (ι e₀))).left ≫ 𝔐.m.φ = v₀.left ≫ 𝔐₀.m.φ := by
+  intro E _ _ _ H D l Xo c Y S S₀ Ω Ω₀ _ _ K K₀ _ _ J J₀ y y₀ 𝔐 𝔐₀ i ι W φ z₁ z₂ σ₁ σ₂ hgen hι hσ₁ hσ₂ hφ₁ hφ₂ hxx
+    Vz _ _ MR
+  have hG := 𝔐.m.cart
+  have hG₀ := 𝔐₀.m.cart
+  have s₁ : W.subtype.comp σ₁ = genMap 𝔐.ξ ⟨centre z₁, 𝔐.all _⟩ := RingHom.ext hσ₁
+  have s₂ : W.subtype.comp σ₂ = i.comp (genMap 𝔐₀.ξ ⟨centre z₂, 𝔐₀.all _⟩) := RingHom.ext hσ₂
+  have t₁ : φ.comp σ₁ = (Scheme.stalkClosedPointTo z₁).hom := RingHom.ext hφ₁
+  have t₂ : φ.comp σ₂ = (Scheme.stalkClosedPointTo z₂).hom := RingHom.ext hφ₂
+  obtain ⟨x, hx₁⟩ : ∃ x : Sp W ⟶ Y.X, x = (spMap σ₁ ≫ 𝔐.X.fromSpecStalk (centre z₁)) ≫ 𝔐.f := ⟨_, rfl⟩
+  have hx₂ : x = (spMap σ₂ ≫ 𝔐₀.X.fromSpecStalk (centre z₂)) ≫ 𝔐₀.f := by
+    rw [hx₁, Category.assoc, Category.assoc, hxx]
+  have hx : spMap W.subtype ≫ x = 𝔐.ξ ≫ 𝔐.f := by
+    rw [hx₁, ← Category.assoc, ← Category.assoc, spec_comp, s₁]
+    exact congrArg (· ≫ 𝔐.f) (spec_genMap 𝔐.ξ ⟨centre z₁, 𝔐.all _⟩)
+  have hz : spMap φ ≫ x = z₁ ≫ 𝔐.f := by
+    rw [hx₁, ← Category.assoc, ← Category.assoc, spec_comp, t₁]
+    exact congrArg (· ≫ 𝔐.f) (spec_centre z₁)
+  obtain ⟨Lm, val, h0, hadd, hsm, hext⟩ := exists_lat_val W φ hx hz (LieMove.pushModel hG 𝔐.M)
+    (LieMove.pushModel hG MR)
+  refine ⟨Lm, val, h0, hadd, hsm, ?_, ?_⟩
+  · intro e v hv
+    obtain ⟨h, v', hv', hl⟩ := hv
+    obtain ⟨u, hu, hul⟩ := ext_of_tan (N := LieMove.pushModel hG 𝔐.M) (e := e) hG σ₁ hx₁ s₁ hv'.1
+      (by
+        show (𝔐.M.pt e).left ≫ _ = _
+        rw [hv'.2]
+        exact Category.assoc _ _ _)
+    obtain ⟨hm, hpt⟩ := hext e u hu
+    refine ⟨hm, LieMove.pushEps_inj hG (Eq.trans ?_ hpt.symm)⟩
+    have e3 : v.left = spMap (dualMap φ) ≫ spMap (dualMap σ₁) ≫ v'.left := by
+      rw [hl, ← t₁]
+      exact spMap_dual_comp _ _ _
+    apply Over.OverMorphism.ext
+    show v.left ≫ _ = spMap (dualMap φ) ≫ u.left
+    rw [hul, e3]
+    exact assoc_three _ _ _ _
+  · intro e₀ v₀ hv
+    obtain ⟨h, v', hv', hl⟩ := hv
+    have hι' := (hι e₀ (ι e₀)).2 rfl
+    obtain ⟨u, hu, hul⟩ := ext_of_tan (N := LieMove.pushModel hG 𝔐.M) (e := ι e₀) hG₀ σ₂ hx₂ s₂ hv'.1
+      (by
+        show (𝔐.M.pt (ι e₀)).left ≫ _ = _
+        rw [hι', hv'.2, spMap_dual_comp]
+        exact congrArg (_ ≫ ·) (Category.assoc _ _ _))
+    obtain ⟨hm, hpt⟩ := hext _ u hu
+    refine ⟨hm, ?_⟩
+    have e3 : v₀.left = spMap (dualMap φ) ≫ spMap (dualMap σ₂) ≫ v'.left := by
+      rw [hl, ← t₂]
+      exact spMap_dual_comp _ _ _
+    refine (congrArg (fun q => q.left) hpt).trans ?_
+    show spMap (dualMap φ) ≫ u.left = _
+    rw [hul, e3]
+    exact (assoc_three _ _ _ _).symm
+
+end GlobalTheory.CompanionTheory.Ar.SingVal
+end
+end
+
+open AlgebraicGeometry CategoryTheory NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hodge_component_lattice_map_compat : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (S S₀ : Finset ℕ) (Ω Ω₀ : Type) [Field Ω] [Field Ω₀] (K K₀ : Type) [Fintype K] [Fintype K₀] (J : K → Type) (J₀ : K₀ → Type) (y : (Σ k, J k) → Ω) (y₀ : (Σ k, J₀ k) → Ω₀) (𝔐 : HodgeCpt Y S y) (𝔐₀ : HodgeCpt Y S₀ y₀) (i : Ω₀ →+* Ω) (ι : 𝔐₀.Li →+ 𝔐.Li) (W : Subring Ω) (φ : W →+* ℂ) (z₁ : Spec (CommRingCat.of ℂ) ⟶ 𝔐.X) (z₂ : Spec (CommRingCat.of ℂ) ⟶ 𝔐₀.X) (σ₁ : 𝔐.X.presheaf.stalk (centre z₁) →+* W) (σ₂ : 𝔐₀.X.presheaf.stalk (centre z₂) →+* W), 𝔐.ξ ≫ 𝔐.f = spMap i ≫ 𝔐₀.ξ ≫ 𝔐₀.f → (∀ (e : 𝔐₀.Li) (e' : 𝔐.Li), (𝔐.M.pt e').left ≫ 𝔐.m.φ = spMap (dualMap i) ≫ (𝔐₀.M.pt e).left ≫ 𝔐₀.m.φ ↔ e' = ι e) → (∀ s, (σ₁ s : Ω) = genMap 𝔐.ξ ⟨centre z₁, 𝔐.all _⟩ s) → (∀ s, (σ₂ s : Ω) = i (genMap 𝔐₀.ξ ⟨centre z₂, 𝔐₀.all _⟩ s)) → (∀ s, φ (σ₁ s) = (Scheme.stalkClosedPointTo z₁).hom s) → (∀ s, φ (σ₂ s) = (Scheme.stalkClosedPointTo z₂).hom s) → spMap σ₁ ≫ 𝔐.X.fromSpecStalk (centre z₁) ≫ 𝔐.f = spMap σ₂ ≫ 𝔐₀.X.fromSpecStalk (centre z₂) ≫ 𝔐₀.f → ∀ (Vz : Type) [AddCommGroup Vz] [Module ℂ Vz] (MR : LieModel 𝔐.t.G z₁ Vz), ∃ (Lm : Submodule W 𝔐.Li) (val : 𝔐.Li → Vz), val 0 = 0 ∧ (∀ e ∈ Lm, ∀ e' ∈ Lm, val (e + e') = val e + val e') ∧ (∀ a : W, ∀ e ∈ Lm, val ((a : Ω) • e) = φ a • val e) ∧ (∀ (e : 𝔐.Li) (v : epsAt z₁ ⟶ 𝔐.t.G), 𝔐.M.ValAt z₁ e v → e ∈ Lm ∧ v = MR.pt (val e)) ∧ ∀ (e₀ : 𝔐₀.Li) (v₀ : epsAt z₂ ⟶ 𝔐₀.t.G), 𝔐₀.M.ValAt z₂ e₀ v₀ → ι e₀ ∈ Lm ∧ (MR.pt (val (ι e₀))).left ≫ 𝔐.m.φ = v₀.left ≫ 𝔐₀.m.φ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.SingVal.value_map
+end
+
+section
 section
 open AlgebraicGeometry CategoryTheory NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
@@ -335,3 +781,4 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.root_origin_compare_first : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (S S₀ : Finset ℕ) (M R : Top.RootModel (CMType H) (D.p + D.q)) (Sys : PB.AnSys (Top.dimFl (CMType H) (D.p + D.q)) (Option (RootIx D))) (Fx : FixedData Y Sys) (o : RootOrigin Y S M Fx) (o₀ : RootOrigin Y S₀ R Fx) (i : R.Ω →+* M.Ω), i.comp o₀.g = o.g → ∀ (z₁ : Spec (CommRingCat.of ℂ) ⟶ o.𝔐.X) (z₂ : Spec (CommRingCat.of ℂ) ⟶ o₀.𝔐.X) (w : (Σ k, Cmp.joinIdx M.ι R.ι k) → ℂ), w ∈ Small.ptsOver ℂ (mCoordIdeal (Ht.joinOf M R i)) → CoordsAt o.𝔐.ξ M.y z₁ (fun p => w (Cmp.joinInl M.ι R.ι p)) → CoordsAt o₀.𝔐.ξ R.y z₂ (fun p => w (Cmp.joinInr M.ι R.ι p)) → o.𝔐.Interior z₁ → o₀.𝔐.Interior z₂ → ∀ (r : RootIx D) (v : ℂ), Small.HasVal (Ht.joinOf M R i) (Ht.joinDeg M R (some r)) (i (o₀.e r) / o.e r) w v → ‖v‖ * (o₀.sing r).h (fun p => w (Cmp.joinInr M.ι R.ι p)) = (o.sing r).h (fun p => w (Cmp.joinInl M.ι R.ι p)) := by
   atlas_forward_decl GlobalTheory.CompanionTheory.Ar.SingCmp.sing_agree
+end

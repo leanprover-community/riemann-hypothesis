@@ -182,9 +182,6 @@ omit [NumberField E] in
 theorem isConstAlong_const (c : ℂ) : IsConstAlong σ J X S (fun _ => c) fun _ => c := fun μ 𝓕 _ _ h _ => by
   simp [Measure.real, h]
 
-theorem isCuspOn_univ {K : Subgroup (GAd σ J)} {ψ : GAd σ J → ℂ} :
-    IsCuspOn σ J X Y Finset.univ K ψ ↔ IsAutOn σ J X Y Finset.univ K ψ :=
-  and_iff_left fun _ h => absurd (Finset.subset_univ _) h.2
 
 variable (n r) in
 

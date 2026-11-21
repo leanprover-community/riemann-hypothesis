@@ -1187,39 +1187,6 @@ section HeisFar
 
 open Formalism.IndefR.Fock.DRho
 
-theorem heisFarDRho (D : D7) : HeisFarDRho D := by
-  intro ψ θ hψ hθ hLine S T τ w hw z F hF
-  obtain rfl := Eqv.eq_thetaC D hθ
-
-  have hph : ∀ t : ℝ, ψ (symplOH S T w (lineAt (Eqv.thetaC D) τ z t)) = 1 := by
-    intro t
-    rw [lineAt_eq hLine τ z t, psi_real S T hψ w _ (finPart_Lb _)]
-    have hs : (∑ ρ, eR S T ρ (compAt (Eqv.thetaC D) ρ w) (compAt (Eqv.thetaC D) ρ (Lb D _ _ (t • sg τ z)))) = 0 := by
-      refine Finset.sum_eq_zero fun ρ _ => ?_
-      rw [compAt_Lb]
-      by_cases hρ : ρ = τ
-      · subst hρ
-        rw [hw, eR, eM_zero_left]
-      · have : Matrix.of ((t • sg (D := D) τ z) ρ) = 0 := by
-          ext i j
-          simp [sg, hρ]
-        rw [this, eR, eM_zero_right]
-    rw [hs]
-    simp
-  have hph' : ∀ t : ℝ, ψ (symplOH S T (lineAt (Eqv.thetaC D) τ z t) w) = 1 := by
-    intro t
-    rw [Formalism.IndefR.Fin.symplOH_swap, AddChar.map_neg_eq_inv, hph t, inv_one]
-  funext x
-  have key : (fun t : ℝ => heisO ψ S T (lineAt (Eqv.thetaC D) τ z t) (heisO ψ S T w F) x) =
-      fun t => ψ (symplOH S T x w) * heisO ψ S T (lineAt (Eqv.thetaC D) τ z t) F (x + w) := by
-    funext t
-    simp only [heisO]
-    rw [Formalism.IndefR.Fin.symplOH_add_left, Formalism.IndefR.Fin.symplOH_add_left, AddChar.map_add_eq_mul,
-      AddChar.map_add_eq_mul, hph t, hph' t, add_right_comm x]
-    ring
-  show deriv (fun t : ℝ => heisO ψ S T (lineAt (Eqv.thetaC D) τ z t) (heisO ψ S T w F) x) 0 =
-    ψ (symplOH S T x w) * deriv (fun t : ℝ => heisO ψ S T (lineAt (Eqv.thetaC D) τ z t) F (x + w)) 0
-  rw [key, deriv_const_mul_field]
 
 end HeisFar
 
@@ -1243,79 +1210,19 @@ theorem compAt_mul {m k n : ℕ} (ρ : D.what₂.Tau) (A : Matrix (Fin m) (Fin k
   unfold compAt
   exact Matrix.map_mul (f := (Eqv.thetaC D ρ).comp (infPart D))
 
-theorem finPart_matmul {m k n : ℕ} (A : Matrix (Fin m) (Fin k) (AE D)) (B : Matrix (Fin k) (Fin n) (AE D)) :
-    (A * B).map (finPart D) = A.map (finPart D) * B.map (finPart D) :=
-  Matrix.map_mul
 
 theorem finPart_mt {V : HSp D} {g : GA D V} (hg : g ∈ GinfC V) : (Formalism.L2.Theta.mt V g).map (finPart D) = 1 := by
   have h0 : finHom V g = 1 := hg
   have h : (finHom V g).1 = 1 := by rw [h0]; rfl
   exact h
 
-theorem atOnly_inv {V : HSp D} {τ : D.what₂.Tau} {g : GA D V} (hg : AtOnly V τ g) : AtOnly V τ g⁻¹ := by
-  refine ⟨(GinfC V).inv_mem hg.1, fun ρ hρ => ?_⟩
-  have h := congrArg (compAt (Eqv.thetaC D) ρ) (mt_mul V g⁻¹ g)
-  rw [inv_mul_cancel, mt_one, compAt_mul, hg.2 ρ hρ, Matrix.mul_one] at h
-  rw [← h]
-  try (ext i j; simp [compAt, Matrix.one_apply])
 
-theorem actO_far {S T : HSp D} {τ : D.what₂.Tau} {g : GA D S} {h : GA D T} (hg : AtOnly S τ g) (hh : AtOnly T τ h)
-    (w : WO S T) (hw : compAt (Eqv.thetaC D) τ w = 0) : actO S T g h w = w := by
-  have hgi := atOnly_inv hg
-  ext i j
-  refine sub_eq_zero.1 (eq_zero_of_parts D _ ?_ ?_)
-  · apply (Eqv.splitEquiv D).injective
-    funext ρ
-    rw [map_zero, Pi.zero_apply, Eqv.splitEquiv_apply, (infPart D).map_sub, (Eqv.thetaC D ρ).map_sub]
-    show compAt (Eqv.thetaC D) ρ (actO S T g h w) i j - compAt (Eqv.thetaC D) ρ w i j = 0
-    unfold actO
-    rw [compAt_mul, compAt_mul]
-    by_cases hρ : ρ = τ
-    · subst hρ
-      rw [hw]
-      simp
-    · rw [hh.2 ρ hρ, hgi.2 ρ hρ]
-      simp
-  · rw [(finPart D).map_sub, sub_eq_zero]
-    have e := congrArg (fun M => M i j) (show (actO S T g h w).map (finPart D) = w.map (finPart D) by
-      unfold actO
-      rw [finPart_matmul, finPart_matmul, finPart_mt hh.1, finPart_mt hgi.1, Matrix.one_mul, Matrix.mul_one])
-    exact e
 
-theorem oneP_atOnly (V : HSp D) (τ : D.what₂.Tau) (X : Matrix (Fin V.rank) (Fin V.rank) ℂ) (t : ℝ) :
-    AtOnly V τ (oneP (Eqv.thetaC D) V τ X t) := by
-  unfold oneP atTau
-  split_ifs with hx
-  · obtain ⟨h1, -, h3⟩ := hx.choose_spec
-    exact ⟨h1, fun ρ hρ => h3 ρ hρ⟩
-  · refine ⟨(GinfC V).one_mem, fun ρ _ => ?_⟩
-    rw [mt_one]
-    try (ext i j; simp [compAt, Matrix.one_apply])
 
-theorem omDerFar (D : D7) : OmDerFar D := by
-  intro hLine ψ θ S T χS χT om hθ hW τ XS XT hXS hXT w hw F hF
-  obtain rfl := Eqv.eq_thetaC D hθ
-  funext x
-  have key : (fun t : ℝ => om (oneP (Eqv.thetaC D) S τ XS t, oneP (Eqv.thetaC D) T τ XT t) (heisO ψ S T w F) x) =
-      fun t => ψ (symplOH S T x w) * om (oneP (Eqv.thetaC D) S τ XS t, oneP (Eqv.thetaC D) T τ XT t) F (x + w) := by
-    funext t
-    rw [hW.om_heis _ _ w F hF, actO_far (oneP_atOnly S τ XS t) (oneP_atOnly T τ XT t) w hw]
-    rfl
-  show deriv (fun t : ℝ => om (oneP (Eqv.thetaC D) S τ XS t, oneP (Eqv.thetaC D) T τ XT t) (heisO ψ S T w F) x) 0 =
-    ψ (symplOH S T x w) * deriv (fun t : ℝ => om (oneP (Eqv.thetaC D) S τ XS t, oneP (Eqv.thetaC D) T τ XT t) F (x + w)) 0
-  rw [key, deriv_const_mul_field]
 
 end OmFar
 
-theorem fockDerO_of_steps {D : D7} (hT : ThetaDRho D) (hL : DRhoLin D) (hC : DRhoComm D) (hH : HeisFarDRho D)
-    (hS : OmSmoothO D) (hDR : OmDerDRho D) (hFar : OmDerFar D) (hSk : OmDerSkew D) (hV : VacSchur D) :
-    FockDerO D :=
-  fockDerO_of hT hL hC quadCommPol fCoordFacts (dRhoPoly_of hT hL hC) hH hS hDR hFar hSk hV
 
-theorem fockDerO_of_om {D : D7} (hS : OmSmoothO D) (hDR : OmDerDRho D) (hSk : OmDerSkew D) (hV : VacSchur D) :
-    FockDerO D :=
-  fockDerO_of_steps (Formalism.IndefR.Fock.DRho.thetaDRho D) (Formalism.IndefR.Fock.DRho.dRhoLin D)
-    (Formalism.IndefR.Fock.DRho.dRhoComm D) (heisFarDRho D) hS hDR (omDerFar D) hSk hV
 
 end Formalism.IndefR.Fock.Der
 

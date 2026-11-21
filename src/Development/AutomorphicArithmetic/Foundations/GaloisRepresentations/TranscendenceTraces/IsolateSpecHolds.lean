@@ -1,11 +1,10 @@
 import Mathlib
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PtExOf
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.IsolateSpec
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PFibFin
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PPtCommon
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PChart
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PWtExt
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PPtOne
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.WtPtOf
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PPtLift
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PIsolate
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PIsolateSpec
@@ -19,11 +18,11 @@ import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.Trans
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PRingSplit
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PLocFinAff
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PCoverOne
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PLocFinSec
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleLocalPropertyCalculusRulesStatement
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.WtBCOf
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PInvTrans
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PGalTrans
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PSplitField
+import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.SplittingFieldConstruction
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PWtComp
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PSplitCover
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PWtLin
@@ -34,21 +33,15 @@ import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.Trans
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PCountEx
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PCountWt
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PWtLocal
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PWtCrit
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PNormAff
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PNwtGlue
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PMultBC
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PNwtAgree
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PNwtOpen
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PWtVanish
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PWtUnique
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PWtNormal
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PWtDegConst
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PNmlLoc
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PNmlInt
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PNmlNoeth
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PNwtFlat
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PMultBasic
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PMultSec
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PMultEt
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PMultOpen
@@ -56,14 +49,12 @@ import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.Trans
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PNwtDeg
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PStalkSum
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PMultSumPt
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PMultSum
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PArtSum
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PMultPt
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PWtFlat
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PFunSec
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PTrRed
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.TrHlOf
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PSumNat
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PPtInj
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PFamSemi
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PRedZero
@@ -79,8 +70,6 @@ import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.Trans
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PTrChar
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PCorrEqQ
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PCycComp
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.OpEqOf
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PCorrBCQ
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PImgBasic
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PCorrCompQ
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.ImgcSpec
@@ -94,12 +83,217 @@ import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.Trans
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PTrPush
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.TrBCOf
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PTrLin
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PTrDeg
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PCorrEq
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PTrRel
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.PPhiEx
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.FLOf
 
+section
+open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC UpperTheory.Gal.TranscendenceTraces
+
+theorem UpperTheory.Gal.TranscendenceTraces.ptEx_of :
+    PtEx := by
+  intro X s
+  let Ω : Type := AlgebraicClosure (X.residueField s)
+  let y : gp Ω ⟶ Spec (X.residueField s) :=
+    Spec.map (CommRingCat.ofHom (algebraMap (X.residueField s) Ω))
+  refine ⟨Ω, inferInstance, inferInstance, y ≫ X.fromSpecResidueField s, ?_⟩
+  rw [pt_comp]
+  exact Scheme.fromSpecResidueField_apply s (pt y)
+end
+
+section
+open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC UpperTheory.Gal.TranscendenceTraces
+
+theorem UpperTheory.Gal.TranscendenceTraces.wtPt_of :
+    WtExt → PtCommon → WtPt := by
+  intro hE hC Z S p _ w hw Ω Ω' _ _ _ _ z z' h
+  obtain ⟨L, _, _, a, a', ha⟩ := hC Z Ω Ω' z z' h
+  rw [← hE p w hw Ω L z a, ← hE p w hw Ω' L z' a', ha]
+end
+
+section
+open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC UpperTheory.Gal.TranscendenceTraces
+
+theorem UpperTheory.Gal.TranscendenceTraces.locFinSec_of :
+    CoverOne → LocFinGeo → LocFinSec := by
+  intro hC hG R _ F G f V U r _ b hb
+  obtain ⟨W, π, a, hE, hS, ha⟩ := hC R f V b hb
+  haveI := hE
+  haveI := hS
+  refine (GlobalTheory.T.etaleLocal_property_calculus_rules).2.1 U _ _ (hG π r) ?_
+  rintro U' g ⟨s, hs⟩ V' k r' hk
+  refine ⟨Sec.res (pullback.lift k r' hk ≫ s) a, ?_⟩
+  rw [map_res, ha, res_res]
+  congr 1
+  rw [Category.assoc, hs, pullback.lift_fst]
+end
+
+section
+open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC UpperTheory.Gal.TranscendenceTraces
+
+theorem UpperTheory.Gal.TranscendenceTraces.splitField_of :
+    SplitField :=
+  _root_.UpperTheory.Reformulated.B.SplittingFieldConstruction.splitField_of
+end
+
+section
+open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC UpperTheory.Gal.TranscendenceTraces
+
+theorem UpperTheory.Gal.TranscendenceTraces.wtCrit_of :
+    PtEx → WtCrit := by
+  intro hPt Z S p w h A φ hφ
+  choose N c hN hu hc using h A φ hφ
+  refine ⟨c, ?_, fun Ω _ _ x => (hc (pt x) Ω x (hu (pt x))).symm⟩
+  rw [IsLocallyConstant.iff_exists_open]
+  intro u
+  refine ⟨N u, hN u, hu u, fun u' hu' => ?_⟩
+  obtain ⟨Ω, _, _, x, rfl⟩ := hPt A.U u'
+  rw [← hc (pt x) Ω x (hu (pt x)), hc u Ω x hu']
+end
+
+section
+open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC UpperTheory.Gal.TranscendenceTraces
+
+theorem UpperTheory.Gal.TranscendenceTraces.normAff_of :
+    Chart → NormSpec → NormAff := by
+  intro hC hN Z S p _ U hU hD hI
+  obtain ⟨B, _, _, v, hfin, hpb⟩ := hC p Γ(S, U) hU.fromSpec
+  obtain ⟨w, hw⟩ := hN Γ(S, U) B
+  exact ⟨⟨_, _, hU.fromSpec, v, _, hpb⟩, w, inferInstance, hU.range_fromSpec, hw⟩
+end
+
+section
+open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC UpperTheory.Gal.TranscendenceTraces
+
+theorem UpperTheory.Gal.TranscendenceTraces.wtNormal_of :
+    NormAff → NwtGlue → WtNormal := by
+  intro hAff hGlue Z S p _ hS
+  have h : ∃ w, IsNwt p w := by
+    refine hGlue p (fun s => ?_)
+    obtain ⟨U, hU, hs, hd, hi⟩ := hS s
+    obtain ⟨A, w, ho, hr, hw⟩ := hAff p U hU hd hi
+    exact ⟨A, w, ho, by rw [hr]; exact hs, hw⟩
+  unfold nwt
+  rw [dif_pos h]
+  exact h.choose_spec
+end
+
+section
+open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC UpperTheory.Gal.TranscendenceTraces
+
+theorem UpperTheory.Gal.TranscendenceTraces.nmlLoc_of :
+    NmlInt → NmlNoeth → NmlLoc := by
+  intro hI hN S hS h
+  rcases h with h | h
+  · haveI := h
+    exact hI S hS
+  · haveI := h
+    exact hN S hS
+end
+
+section
+open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC UpperTheory.Gal.TranscendenceTraces
+
+theorem UpperTheory.Gal.TranscendenceTraces.nwtFlat_of :
+    WtBC → WtFlat → WtUnique → MultBC → NwtFlat := by
+  intro hBC hFlat hUniq hMBC Z' S' Z S v p' p g _ _ _ pb hN hD
+  haveI : IsFinite p' := MorphismProperty.of_isPullback pb ‹_›
+  refine hUniq p' _ _ (hBC v p' p g _ pb hN.1) (hFlat p') _ hD ?_
+  intro Ω _ _ z hz
+  rw [hMBC v p' p g pb]
+  refine hN.2 Ω (z ≫ v) ?_
+  have e : (z ≫ v) ≫ p = (z ≫ p') ≫ g := by
+    rw [Category.assoc, pb.w, Category.assoc]
+  rw [e, pt_comp]
+  exact hz
+end
+
+section
+open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC UpperTheory.Gal.TranscendenceTraces
+
+theorem UpperTheory.Gal.TranscendenceTraces.multBasic_of :
+    MultBC → MultOpen → MultEt → MultBasic := by
+  intro h1 h2 h3
+  exact ⟨h1, h2, h3⟩
+end
+
+section
+open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC UpperTheory.Gal.TranscendenceTraces
+
+theorem UpperTheory.Gal.TranscendenceTraces.multSum_of :
+    MultSumPt → MultBC → MultSum := by
+  intro hPt hBC Z S p _ _ Ω _ _ x
+  have hpb : IsPullback (pullback.fst p x) (pullback.snd p x) p x := IsPullback.of_hasPullback p x
+  have hfin := Scheme.Hom.finrank_of_isPullback _ _ _ _ hpb (IsLocalRing.closedPoint Ω)
+  have h1 := hPt Ω (pullback.snd p x)
+  rw [hBC _ _ _ _ hpb] at h1
+  rw [show pt x = x (IsLocalRing.closedPoint Ω) from rfl, ← hfin, ← h1]
+  simp only [Wt.push, Wt.comap]
+  have hb := fib_bijOn hpb (Ω := Ω) (𝟙 _)
+  rw [Category.id_comp] at hb
+  exact (finsum_mem_eq_of_bijOn _ hb (fun _ _ => rfl)).symm
+end
+
+section
+open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC UpperTheory.Gal.TranscendenceTraces
+
+theorem UpperTheory.Gal.TranscendenceTraces.sumNat_of :
+    SumNat := by
+  intro R _ F Z S p w A B t a b hB Ω _ _ x
+  rw [res_res, hB Ω (x ≫ t.g)]
+  symm
+  refine finsum_mem_eq_of_bijOn (fun z => z ≫ t.k) (fib_bijOn t.isPullback x) ?_
+  intro z _
+  simp only [res_res, Category.assoc, t.hv]
+end
+
+section
+open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC UpperTheory.Gal.TranscendenceTraces
+
+theorem UpperTheory.Gal.TranscendenceTraces.opEq_of :
+    FL → RpBasic → RpOp → OpEq := by
+  intro hFL hB hOp Q Z S p _ F G t τ τ' hτ hτ' n
+  ext x
+  obtain ⟨a, ha⟩ := (hB (ZMod Q) (res (ZMod Q) F) Z n).1 x
+  have hd := (hB (ZMod Q) (res (ZMod Q) F) Z n).2.1 x a ha
+  have h1 := hOp _ _ τ n x a ha
+  have h2 := hOp _ _ τ' n x a ha
+  obtain ⟨y, hy⟩ := (hFL Q p F G t).2 τ τ' hτ hτ' (Sq.self p) (n - 1) n (n + 1)
+    (sub_add_cancel n 1) rfl a hd
+  exact ((hB (ZMod Q) (res (ZMod Q) G) S n).2.2.1 _ _ _ _ h1 h2).1.mpr ⟨y, hy⟩
+end
+
+section
+open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC UpperTheory.Gal.TranscendenceTraces
+
+private theorem pullHQ_comp' (l : ℕ) [Fact l.Prime] {A B C : Scheme.{0}} (f : A ⟶ B) (g : B ⟶ C) (n i : ℤ) :
+    pullHQ l (sch.map (f ≫ g)) n i = pullHQ l (sch.map f) n i ∘ₗ pullHQ l (sch.map g) n i := by
+  simp only [pullHQ, Functor.map_comp, pullHl_comp, LinearMap.baseChange_comp]
+
+theorem UpperTheory.Gal.TranscendenceTraces.corrBCQ_of :
+    TrBCQ → CorrBCQ := by
+  intro hT l _ n i S' Y' S Y c' c g g' v hpb hf hw hl
+  haveI := c.fin
+  haveI := c'.fin
+  simp only [Corr.opQ]
+  rw [← LinearMap.comp_assoc, hT l n i v c'.p c.p g c.w hpb c.wt hl, ← hw,
+    LinearMap.comp_assoc, LinearMap.comp_assoc, ← pullHQ_comp', ← pullHQ_comp', hf]
+end
+
+section
+open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC UpperTheory.Gal.TranscendenceTraces
+
+theorem UpperTheory.Gal.TranscendenceTraces.trDeg_of :
+    TrPush → TrLin → TrDeg := by
+  intro hP hL q _ n i Z S p _ w d hw hq hpush x
+  have h1 := hP q n i p (𝟙 S) w (by simpa using hw) hq x
+  simp only [Category.comp_id] at h1
+  rw [h1, hpush]
+  exact (hL q n i).2.2 S d hq x
+end
+
+section
 namespace UpperTheory.Gal.TranscendenceTraces
 
 theorem ptEx_holds : PtEx := @ptEx_of
@@ -313,3 +507,4 @@ theorem adic_holds (h : GlobalTheory.EtC.A8) : Adic := ⟨trRed_holds h, trHl_ho
     corrCompQ_holds h, corrGraphQ_holds h, trSplitQ_holds h⟩
 
 end UpperTheory.Gal.TranscendenceTraces
+end

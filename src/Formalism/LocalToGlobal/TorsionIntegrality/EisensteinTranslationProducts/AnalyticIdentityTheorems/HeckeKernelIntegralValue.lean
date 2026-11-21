@@ -17,13 +17,6 @@ lemma norm_hk (s : ℝ) (w : ℂ) (hw : w ≠ 0) : ‖hk s w‖ = ‖w‖ ^ (-(2
     Real.norm_of_nonneg (Real.rpow_nonneg h0.le _)]
   rw [show -(2 + 2 * s) = (-2 : ℝ) + -(2 * s) by ring, Real.rpow_add h0, rpow_neg_two' h0]
 
-lemma norm_hk_le (s : ℝ) (w : ℂ) : ‖hk s w‖ ≤ ‖w‖ ^ (-(2 + 2 * s)) := by
-  by_cases hw : w = 0
-  · subst hw
-    simp only [hk]
-    simp
-    exact Real.rpow_nonneg le_rfl _
-  · exact (norm_hk s w hw).le
 
 lemma summable_upper (z : UpperHalfPlane) (s : ℝ) (hs : 0 < s) :
     Summable (fun p : ℤ × ℤ => ‖(p.1 : ℂ) + (p.2 : ℂ) * (z : ℂ)‖ ^ (-(2 + 2 * s))) := by
@@ -185,71 +178,11 @@ lemma row (τ : ℂ) (s : ℝ) (n : ℤ) (hτ : τ.im ≠ 0) (hs : 0 ≤ s) (hn 
     rw [e, integral_add_right_eq_self
       (fun y : ℝ => hk s ((y : ℂ) + (((n : ℝ) * τ.im : ℝ) : ℂ) * Complex.I)), vH, abs_mul]
 
-lemma tendsto_neg_inv (c : ℂ) (l : Filter ℝ) (hl : Tendsto (fun x : ℝ => |x + c.re|) l atTop) :
-    Tendsto (fun x : ℝ => -((x : ℂ) + c)⁻¹) l (𝓝 0) := by
-  have h1 : Tendsto (fun x : ℝ => ‖(x : ℂ) + c‖) l atTop := by
-    refine tendsto_atTop_mono (fun x => ?_) hl
-    simpa using Complex.abs_re_le_norm ((x : ℂ) + c)
-  have h2 := tendsto_inv₀_cobounded.comp (tendsto_norm_atTop_iff_cobounded.mp h1)
-  simpa using h2.neg
 
 end Hk1
 
-theorem hecke_kernel_summable : HkSummable := by
-  intro τ s hτ hs
-  exact Summable.of_norm_bounded (Hk1.summable_norm τ s hτ hs) (fun p => Hk1.norm_hk_le s _)
 
-theorem hecke_kernel_line_integral : HkRowIntegral := by
-  intro τ s n hτ hs hn
-  have hI := (Hk1.row τ s n hτ hs hn).1
-  refine ⟨hI, ?_⟩
-  have h := hI.hasSum_intervalIntegral_comp_add_int
-  unfold hkInt
-  have e : (fun m : ℤ => ∫ x in (0 : ℝ)..1, hk s ((m : ℂ) + (x : ℂ) + (n : ℂ) * τ))
-      = fun m : ℤ => ∫ x in (0 : ℝ)..1, hk s (((x + m : ℝ) : ℂ) + (n : ℂ) * τ) := by
-    funext m
-    congr 1
-    funext x
-    congr 1
-    push_cast
-    ring
-  rw [e]
-  exact h
 
-theorem hecke_kernel_integral_value : HkIntValue := by
-  intro τ s n hτ hs hn
-  exact (Hk1.row τ s n hτ hs.le hn).2
 
-theorem hecke_kernel_integral_zero : HkIntZero := by
-  intro τ n hτ hn
-  have hI := (Hk1.row τ 0 n hτ le_rfl hn).1
-  have hne : ∀ x : ℝ, (x : ℂ) + (n : ℂ) * τ ≠ 0 := by
-    intro x h
-    have h' := congrArg Complex.im h
-    simp at h'
-    rcases h' with h' | h'
-    · exact hn h'
-    · exact hτ h'
-  have e : (fun x : ℝ => hk 0 ((x : ℂ) + (n : ℂ) * τ))
-      = fun x : ℝ => (((x : ℂ) + (n : ℂ) * τ) ^ 2)⁻¹ := by
-    funext x; simp [hk]
-  have hd : ∀ x : ℝ, HasDerivAt (fun x : ℝ => -((x : ℂ) + (n : ℂ) * τ)⁻¹)
-      ((((x : ℂ) + (n : ℂ) * τ) ^ 2)⁻¹) x := by
-    intro x
-    have h1 : HasDerivAt (fun x : ℝ => (x : ℂ) + (n : ℂ) * τ) 1 x :=
-      (Complex.ofRealCLM.hasDerivAt (x := x)).add_const _
-    have h2 := (h1.inv (hne x)).neg
-    have h3 : (((x : ℂ) + (n : ℂ) * τ) ^ 2)⁻¹ = -(-1 / ((x : ℂ) + (n : ℂ) * τ) ^ 2) := by
-      rw [neg_div, neg_neg, one_div]
-    rw [h3]
-    exact h2
-  rw [e] at hI
-  unfold hkInt
-  rw [e, integral_of_hasDerivAt_of_tendsto hd hI
-    (Hk1.tendsto_neg_inv _ _ (tendsto_abs_atBot_atTop.comp
-      (tendsto_atBot_add_const_right _ _ tendsto_id)))
-    (Hk1.tendsto_neg_inv _ _ (tendsto_abs_atTop_atTop.comp
-      (tendsto_atTop_add_const_right _ _ tendsto_id)))]
-  simp
 
 end Formalism.L2.Th1.F

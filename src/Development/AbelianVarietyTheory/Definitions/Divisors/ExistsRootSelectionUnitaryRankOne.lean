@@ -295,8 +295,6 @@ theorem isTest_indicator {H : Type} [Group H] (θ : H →* H) (K : Subgroup H) (
       by_contra hn; exact hg (by simp [Set.indicator_apply, hn])
     exact ⟨1, Finset.mem_singleton_self _, 1, K.one_mem, g, hgK, by simp⟩
 
-theorem match_refl (G : HTGroup p) (K : Subgroup (Gr G 1)) (φ : Gr G 1 → ℂ) : Match G 1 K φ K φ :=
-  fun _ _ => rfl
 
 end Inhabitants
 
@@ -362,8 +360,6 @@ theorem exPair_mark : ∃ μ : ℂ, exPair.Mark μ := by
 
 theorem exists_rootSelection_unitaryRankOne : ∃ sel, IsSel (ex 1 one_ne_zero) sel := exists_isSel_of_isSimple _ isSimple_unitaryRankOne
 
-theorem exists_cls_mark : ∃ q : Cls (ex 1 one_ne_zero), ∃ P : Pair (ex 1 one_ne_zero), Quot.mk _ P = q ∧ ∃ μ, P.Mark μ :=
-  ⟨Quot.mk _ exPair, exPair, rfl, exPair_mark⟩
 
 example : ((exPair.c : ℚˣ) : ℚ) = 5 := rfl
 

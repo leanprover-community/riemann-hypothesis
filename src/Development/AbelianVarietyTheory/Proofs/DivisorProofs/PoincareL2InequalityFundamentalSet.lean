@@ -10,10 +10,803 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsSelfDualTr
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.KronHolPsiStatementHolds
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.CuspStatementPf
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LintegralInvariantChartSetLeMulFundamentalSet
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OrbitSumKernelBallMeasureLeIntegral
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LintegralUnitaryKernelLeExpPowEight
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InvariantMeasureChartBallOrthonormalLowerBound
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OrbitSumExpPotentialUniformBound
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PoinConvBdd
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GramChartSubFormEntryLe
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MeasurePreservingCurry
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsOpenAndFderivMoebI
+import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.ExistsMixedProj
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormFactorAndDensityNearOneInFlagChart
+import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.EnormPowLeInvMeasureMulLintegralBall
 
+section
+section
+open Matrix Polynomial
+
+namespace GlobalTheory
+
+theorem norm_multiset_prod_near_one (s : Multiset ℂ) (hs : ∀ μ ∈ s, ‖μ - 1‖ ≤ 1 / 2) :
+    (1 / 2 : ℝ) ^ Multiset.card s ≤ ‖s.prod‖ ∧ ‖s.prod‖ ≤ (3 / 2 : ℝ) ^ Multiset.card s := by
+  induction s using Multiset.induction_on with
+  | empty => simp
+  | cons a s ih =>
+    have ha := hs a (Multiset.mem_cons_self a s)
+    obtain ⟨h1, h2⟩ := ih (fun μ hμ => hs μ (Multiset.mem_cons_of_mem hμ))
+    have hlo : (1 / 2 : ℝ) ≤ ‖a‖ := by
+      have := norm_sub_norm_le (1 : ℂ) (1 - a)
+      rw [norm_one, sub_sub_cancel, norm_sub_rev] at this
+      linarith
+    have hhi : ‖a‖ ≤ 3 / 2 := by
+      have := norm_add_le (a - 1) 1
+      rw [sub_add_cancel, norm_one] at this
+      linarith
+    rw [Multiset.prod_cons, Multiset.card_cons, norm_mul, pow_succ, pow_succ]
+    constructor
+    · rw [mul_comm ((1 / 2 : ℝ) ^ _)]
+      exact mul_le_mul hlo h1 (by positivity) (norm_nonneg _)
+    · rw [mul_comm ((3 / 2 : ℝ) ^ _)]
+      exact mul_le_mul hhi h2 (norm_nonneg _) (by norm_num)
+
+theorem det_near_one_bounds (n : ℕ) (A : Matrix (Fin n) (Fin n) ℂ) (ε : ℝ)
+    (hA : ∀ i j, ‖A i j - (1 : Matrix (Fin n) (Fin n) ℂ) i j‖ ≤ ε) (hn : (n : ℝ) * ε ≤ 1 / 2) :
+    (1 / 2 : ℝ) ^ n ≤ ‖A.det‖ ∧ ‖A.det‖ ≤ 2 ^ n := by
+  have hroot : ∀ μ ∈ A.charpoly.roots, ‖μ - 1‖ ≤ 1 / 2 := by
+    intro μ hμ
+    have hr : A.charpoly.IsRoot μ := isRoot_of_mem_roots hμ
+    have hev : Module.End.HasEigenvalue (Matrix.toLin' A) μ := by
+      rw [Module.End.hasEigenvalue_iff_isRoot_charpoly, Matrix.charpoly_toLin']; exact hr
+    obtain ⟨k, hk⟩ := eigenvalue_mem_ball hev
+    rw [Metric.mem_closedBall, dist_eq_norm] at hk
+    have hdiag : ‖A k k - 1‖ ≤ ε := by simpa using hA k k
+    have h1n : 1 ≤ n := Fin.pos k
+    have hoff : ∑ j ∈ Finset.univ.erase k, ‖A k j‖ ≤ ((n : ℝ) - 1) * ε := by
+      have hle : ∀ j ∈ Finset.univ.erase k, ‖A k j‖ ≤ ε := by
+        intro j hj
+        have hjk : k ≠ j := (Finset.ne_of_mem_erase hj).symm
+        simpa [Matrix.one_apply_ne hjk] using hA k j
+      calc _ ≤ ∑ _j ∈ Finset.univ.erase k, ε := Finset.sum_le_sum hle
+        _ = ((n : ℝ) - 1) * ε := by
+          rw [Finset.sum_const, Finset.card_erase_of_mem (Finset.mem_univ _), Finset.card_univ,
+            Fintype.card_fin, nsmul_eq_mul, Nat.cast_sub h1n, Nat.cast_one]
+    calc ‖μ - 1‖ = ‖(μ - A k k) + (A k k - 1)‖ := by rw [sub_add_sub_cancel]
+      _ ≤ ‖μ - A k k‖ + ‖A k k - 1‖ := norm_add_le _ _
+      _ ≤ ((n : ℝ) - 1) * ε + ε := add_le_add (hk.trans hoff) hdiag
+      _ = n * ε := by ring
+      _ ≤ 1 / 2 := hn
+  have hcard : Multiset.card A.charpoly.roots = n := by
+    rw [(splits_iff_card_roots).mp (IsAlgClosed.splits _), Matrix.charpoly_natDegree_eq_dim,
+      Fintype.card_fin]
+  obtain ⟨h1, h2⟩ := norm_multiset_prod_near_one _ hroot
+  rw [hcard, ← Matrix.det_eq_prod_roots_charpoly] at h1 h2
+  refine ⟨h1, h2.trans ?_⟩
+  exact pow_le_pow_left₀ (by norm_num) (by norm_num) n
+
+end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.det_near_one_matrix_norm_bounds : ∀ (n : ℕ) (A : Matrix (Fin n) (Fin n) ℂ) (ε : ℝ), (∀ i j, ‖A i j - (1 : Matrix (Fin n) (Fin n) ℂ) i j‖ ≤ ε) → (n : ℝ) * ε ≤ 1 / 2 → (1 / 2 : ℝ) ^ n ≤ ‖A.det‖ ∧ ‖A.det‖ ≤ 2 ^ n := by
+  atlas_forward_decl GlobalTheory.det_near_one_bounds
+end
+
+section
+open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.L2DbarEstimates
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gramChart_sub_form_entry_le : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : ReciprocityTheory.ChartRestriction.G.FD.Data E r) (w : ReciprocityTheory.L2DbarEstimates.V (ReciprocityTheory.ChartRestriction.G.AR.Inst.nd X)) (τ : X.Ψ) (a b : Fin r), (r : ℝ) * ‖w‖ ≤ 1 → ‖ReciprocityTheory.ChartRestriction.G.AR.Up.PoinPf.Gw X w τ a b - ReciprocityTheory.ChartRestriction.G.AR.Up.PoinPf.Jd X a b‖ ≤ 3 * ‖w‖ := by
+  first | exact @GlobalTheory.GramChartNear.gw_sub_jd_le | exact GlobalTheory.GramChartNear.gw_sub_jd_le | (intros; apply GlobalTheory.GramChartNear.gw_sub_jd_le <;> assumption)
+end
+
+section
+section
+open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.L2DbarEstimates MeasureTheory
+open scoped ENNReal
+
+namespace GlobalTheory.BallSum
+
+open ReciprocityTheory.ChartRestriction.G.AR.Up.PoinPf
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
+
+theorem norm_lminor_Gw_ge (X : Data E r) (w : V (nd X)) (τ : X.Ψ) (hw : 3 * (r : ℝ) * ‖w‖ ≤ 1 / 2) :
+    (1 / 2 : ℝ) ^ r ≤ ‖lminor (Gw X w τ) (i0 X)‖ := by
+  have hw0 : (r : ℝ) * ‖w‖ ≤ 1 := by nlinarith [norm_nonneg w]
+  have hp : X.p0 ≤ r := X.p0_le
+  have key := (GlobalTheory.T.det_near_one_matrix_norm_bounds X.p0 ((Gw X w τ).submatrix (Fin.castLE X.p0_le) (Fin.castLE X.p0_le))
+    (3 * ‖w‖) (fun i j => ?_) ?_).1
+  · unfold lminor
+    refine le_trans ?_ key
+    exact pow_le_pow_of_le_one (by norm_num) (by norm_num) hp
+  · have hJ : Jd X (Fin.castLE X.p0_le i) (Fin.castLE X.p0_le j) = (1 : Matrix (Fin X.p0) (Fin X.p0) ℂ) i j := by
+      simp only [Jd, Matrix.diagonal_apply, Matrix.one_apply, Fin.castLE_inj]
+      split_ifs with h
+      · subst h; simp [sgn, i.isLt]
+      · rfl
+    rw [Matrix.submatrix_apply, ← hJ]
+    exact GlobalTheory.T.gramChart_sub_form_entry_le E r X w τ _ _ hw0
+  · have : (X.p0 : ℝ) ≤ r := by exact_mod_cast hp
+    nlinarith [norm_nonneg w]
+
+theorem rhY_cpt_le (X : Data E r) {x0 x : Frame X.Ψ r} (hx0 : IsOrth X x0) (hx : IsOrth X x)
+    (hr : 0 < r) (w : V (nd X)) (hw : ‖w‖ ≤ 1 / (100 * (r : ℝ) ^ 2)) :
+    rhY X x0 (cpt X x w) ≤ rhY X x0 x + X.Ψ.card * (3 * r * Real.log 2) := by
+  have hr1 : (1 : ℝ) ≤ r := by exact_mod_cast hr
+  have hrw : 100 * (r : ℝ) ^ 2 * ‖w‖ ≤ 1 := by
+    rw [le_div_iff₀ (by positivity)] at hw; linarith
+  have hp : (X.p0 : ℝ) ≤ r := by exact_mod_cast X.p0_le
+  have hw3 : 3 * (r : ℝ) * ‖w‖ ≤ 1 / 2 := by nlinarith [norm_nonneg w]
+  have hterm : ∀ τ : X.Ψ, -(Real.log ‖dmin X.Gm (cpt X x w) τ (i0 X)‖ -
+      2 * Real.log ‖lminor (gM X x0 (cpt X x w) τ) (i0 X)‖) ≤
+        -(Real.log ‖dmin X.Gm x τ (i0 X)‖ - 2 * Real.log ‖lminor (gM X x0 x τ) (i0 X)‖) +
+          3 * r * Real.log 2 := by
+    intro τ
+    have hd1 : ‖dmin X.Gm x τ (i0 X)‖ = 1 := norm_dmin_orth' X hx τ _
+    have hA : -Real.log ‖dmin X.Gm (cpt X x w) τ (i0 X)‖ ≤ r * Real.log 2 := by
+      rw [dmin_cpt_orth X hx]
+      have h1 := norm_lminor_Gw_ge X w τ hw3
+      have h2 : Real.log ((1 / 2 : ℝ) ^ r) ≤ Real.log ‖lminor (Gw X w τ) (i0 X)‖ :=
+        Real.log_le_log (by positivity) h1
+      rw [Real.log_pow, one_div, Real.log_inv] at h2
+      linarith
+    have hM22 := (sumBd_weight (Mq_isUpq X hx0 hx τ)).1
+    have hnorm : ∀ y, ‖lminor (gM X x0 y τ) (i0 X)‖ = ‖(Mq X x0 y τ).toBlocks₂₂.det‖ := fun y => by
+      rw [det_lowerBlock_eq_conj_minor, Complex.norm_conj]; rfl
+    have hPP := GlobalTheory.T.det_near_one_matrix_norm_bounds X.p0 (((Mq X x0 x τ).toBlocks₂₂)⁻¹ * (Mq X x0 x τ).toBlocks₂₁ *
+        (Nw X w τ).toBlocks₁₂ + (Nw X w τ).toBlocks₂₂) (((r : ℝ) + 1) * ‖w‖)
+        (fun i j => pert_entry X hx0 hx w τ i j) (by nlinarith [norm_nonneg w])
+    have hP := hPP.2
+    have h0 : 0 < ‖(((Mq X x0 x τ).toBlocks₂₂)⁻¹ * (Mq X x0 x τ).toBlocks₂₁ *
+        (Nw X w τ).toBlocks₁₂ + (Nw X w τ).toBlocks₂₂).det‖ := lt_of_lt_of_le (by positivity) hPP.1
+    have hpos : 0 < ‖(Mq X x0 x τ).toBlocks₂₂.det‖ := norm_pos_iff.2 hM22
+    have hB : Real.log ‖lminor (gM X x0 (cpt X x w) τ) (i0 X)‖ ≤
+        Real.log ‖lminor (gM X x0 x τ) (i0 X)‖ + r * Real.log 2 := by
+      rw [hnorm, hnorm, Mq_cpt', det_split _ _ hM22, norm_mul]
+      rw [Real.log_mul hpos.ne' h0.ne']
+      have h2 : Real.log ‖(((Mq X x0 x τ).toBlocks₂₂)⁻¹ * (Mq X x0 x τ).toBlocks₂₁ *
+          (Nw X w τ).toBlocks₁₂ + (Nw X w τ).toBlocks₂₂).det‖ ≤ X.p0 * Real.log 2 := by
+        rw [← Real.log_pow]; exact Real.log_le_log h0 hP
+      have hl2 : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
+      nlinarith
+    rw [hd1, Real.log_one]
+    linarith
+  unfold rhY
+  rw [← Finset.sum_neg_distrib, ← Finset.sum_neg_distrib]
+  calc ∑ τ, -(Real.log ‖dmin X.Gm (cpt X x w) τ (i0 X)‖ - 2 * Real.log ‖lminor (gM X x0 (cpt X x w) τ) (i0 X)‖)
+      ≤ ∑ τ : X.Ψ, (-(Real.log ‖dmin X.Gm x τ (i0 X)‖ - 2 * Real.log ‖lminor (gM X x0 x τ) (i0 X)‖) +
+          3 * r * Real.log 2) := Finset.sum_le_sum fun τ _ => hterm τ
+    _ = _ := by
+        rw [Finset.sum_add_distrib, Finset.sum_const, Finset.card_univ, Fintype.card_coe, nsmul_eq_mul]
+
+end GlobalTheory.BallSum
+
+namespace GlobalTheory.BallSum
+
+open ReciprocityTheory.ChartRestriction.G.AR.Up.PoinPf
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
+
+theorem lintegral_orbit_le (X : Data E r) {x y : Frame X.Ψ r} (hx : IsOrth X x) (hy : IsOrth X y)
+    {A : Set (V (nd X))} (hA : MeasurableSet A) (hAO : A ⊆ OmF X x) {φ : Frame X.Ψ r → ℝ≥0∞}
+    (hφ : Measurable φ) (hφB : ∀ u ∈ X.dom, ∀ b ∈ Bor X.Ψ r, φ (rmul u b) = φ u)
+    (hinj : ∀ γ ∈ X.Γ, ∀ z ∈ A, ∀ z' ∈ A, ∀ b ∈ Bor X.Ψ r,
+      lact γ (cpt X x z) = rmul (cpt X x z') b → γ = 1) :
+    ∫⁻ z in A, ∑' γ : X.Γ, φ (lact γ.1 (cpt X x z)) ∂muF X x ≤ ∫⁻ z, φ (cpt X y z) ∂muF X y := by
+  classical
+  have := FundSetPf.countable_GL (E := E) (r := r)
+  have hS := GlobalTheory.Unfold.measurableSet_satFrames X hx hA hAO
+  have hc : Measurable (cpt X x) := (FundSetPf.cont_cpt X x).measurable
+  let χ : X.Γ → Frame X.Ψ r → ℝ≥0∞ := fun γ =>
+    ((fun u => lact (γ.1)⁻¹ u) ⁻¹' GlobalTheory.Unfold.satFrames X x A).indicator φ
+  have hχm : ∀ γ, Measurable (χ γ) := fun γ =>
+    hφ.indicator ((GlobalTheory.Unfold.continuous_lact X _).measurable hS)
+  have hχB : ∀ γ, ∀ u ∈ X.dom, ∀ b ∈ Bor X.Ψ r, χ γ (rmul u b) = χ γ u := by
+    intro γ u hu b hb
+    simp only [χ, Set.indicator, Set.mem_preimage, FundSetPf.lact_rmul,
+      GlobalTheory.Unfold.rmul_mem_satFrames_iff X x A _ hb, hφB u hu b hb]
+  have hterm : ∀ γ : X.Γ, ∫⁻ z in A, φ (lact γ.1 (cpt X x z)) ∂muF X x =
+      ∫⁻ z, χ γ (cpt X x z) ∂muF X x := by
+    intro γ
+    rw [measInv_holds r X x (lact γ.1 x) hx (GlobalTheory.Unfold.isOrth_lact X hx γ.2) (χ γ) (hχm γ) (hχB γ),
+      GlobalTheory.Unfold.muF_lact X x γ.2, ← lintegral_indicator hA]
+    refine lintegral_congr fun z => ?_
+    simp only [χ, Set.indicator, Set.mem_preimage, GlobalTheory.Unfold.cpt_lact, FundSetPf.lact_inv,
+      GlobalTheory.Unfold.cpt_mem_satFrames_iff X hx]
+  have huniq : ∀ (u : Frame X.Ψ r) (γ γ' : X.Γ), lact (γ.1)⁻¹ u ∈ GlobalTheory.Unfold.satFrames X x A →
+      lact (γ'.1)⁻¹ u ∈ GlobalTheory.Unfold.satFrames X x A → γ = γ' := by
+    intro u γ γ' hm hm'
+    obtain ⟨z, hz, b, hb, h⟩ := hm
+    obtain ⟨z', hz', b', hb', h'⟩ := hm'
+    have hδ : (γ'.1)⁻¹ * γ.1 ∈ X.Γ := X.Γ.mul_mem (X.Γ.inv_mem γ'.2) γ.2
+    have e1 : lact ((γ'.1)⁻¹ * γ.1) (rmul (cpt X x z) b) = rmul (cpt X x z') b' := by
+      rw [← h, ← h', ← FundSetPf.lact_mul, mul_assoc, mul_inv_cancel, mul_one]
+    have e2 : lact ((γ'.1)⁻¹ * γ.1) (cpt X x z) = rmul (cpt X x z') (rmul b' (ExtFPf.invF X b)) := by
+      rw [← ExtFPf.rmul_assoc, ← e1, ← FundSetPf.lact_rmul, ExtFPf.rmul_assoc, ExtFPf.rmul_invF X hb,
+        ExtFPf.rmul_oneF]
+    have h1 := hinj _ hδ z hz z' hz' _ (ExtFPf.mul_mem X hb' (ExtFPf.invF_mem X hb)) e2
+    exact Subtype.ext (inv_mul_eq_one.mp h1).symm
+  have hpt : ∀ u, ∑' γ : X.Γ, χ γ u ≤ φ u := by
+    intro u
+    by_cases hT : ∃ γ : X.Γ, lact (γ.1)⁻¹ u ∈ GlobalTheory.Unfold.satFrames X x A
+    · obtain ⟨γ0, hγ0⟩ := hT
+      rw [tsum_eq_single γ0]
+      · exact Set.indicator_le_self _ _ u
+      · intro γ hne
+        exact Set.indicator_of_notMem (s := (fun u => lact (γ.1)⁻¹ u) ⁻¹' GlobalTheory.Unfold.satFrames X x A)
+          (fun hm => hne (huniq u γ γ0 hm hγ0)) φ
+    · push_neg at hT
+      have h0 : ∀ γ : X.Γ, χ γ u = 0 := fun γ =>
+        Set.indicator_of_notMem (s := (fun u => lact (γ.1)⁻¹ u) ⁻¹' GlobalTheory.Unfold.satFrames X x A) (hT γ) φ
+      simp [h0]
+  calc ∫⁻ z in A, ∑' γ : X.Γ, φ (lact γ.1 (cpt X x z)) ∂muF X x
+      = ∑' γ : X.Γ, ∫⁻ z in A, φ (lact γ.1 (cpt X x z)) ∂muF X x :=
+        lintegral_tsum fun γ => ((hφ.comp (GlobalTheory.Unfold.continuous_lact X γ.1).measurable).comp hc).aemeasurable
+    _ = ∑' γ : X.Γ, ∫⁻ z, χ γ (cpt X x z) ∂muF X x := tsum_congr hterm
+    _ = ∫⁻ z, ∑' γ : X.Γ, χ γ (cpt X x z) ∂muF X x :=
+        (lintegral_tsum fun γ => ((hχm γ).comp hc).aemeasurable).symm
+    _ ≤ ∫⁻ z, φ (cpt X x z) ∂muF X x := lintegral_mono fun z => hpt _
+    _ = ∫⁻ z, φ (cpt X y z) ∂muF X y := measInv_holds r X x y hx hy φ hφ hφB
+
+end GlobalTheory.BallSum
+
+namespace GlobalTheory.BallSum
+
+open ReciprocityTheory.ChartRestriction.G.AR.Up.PoinPf
+
+theorem const_le (f r : ℕ) : (4 * (f : ℝ) * (r : ℝ) ^ 2 + 1) * ((f : ℝ) * (3 * (r : ℝ) * Real.log 2)) ≤
+    15 * ((f : ℝ) * r) ^ 8 := by
+  have hl : Real.log 2 ≤ 1 := by
+    have := Real.log_le_sub_one_of_pos (show (0 : ℝ) < 2 by norm_num); linarith
+  have hl0 : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
+  rcases Nat.eq_zero_or_pos f with hf | hf
+  · subst hf; simp
+  rcases Nat.eq_zero_or_pos r with hr | hr
+  · subst hr; simp
+  have hf1 : (1 : ℝ) ≤ f := by exact_mod_cast hf
+  have hr1 : (1 : ℝ) ≤ r := by exact_mod_cast hr
+  set a : ℝ := (f : ℝ) * r with ha
+  have ha1 : 1 ≤ a := by nlinarith
+  have h3 : a ^ 3 ≤ a ^ 8 := pow_le_pow_right₀ ha1 (by norm_num)
+  have h1 : a ≤ a ^ 8 := by
+    calc a = a ^ 1 := (pow_one a).symm
+      _ ≤ a ^ 8 := pow_le_pow_right₀ ha1 (by norm_num)
+  have hfr : (f : ℝ) ^ 2 * (r : ℝ) ^ 3 ≤ a ^ 3 := by
+    rw [ha, mul_pow]
+    have : (f : ℝ) ^ 2 ≤ (f : ℝ) ^ 3 := pow_le_pow_right₀ hf1 (by norm_num)
+    exact mul_le_mul_of_nonneg_right this (by positivity)
+  have hx : (4 * (f : ℝ) * (r : ℝ) ^ 2 + 1) * ((f : ℝ) * (3 * (r : ℝ) * Real.log 2)) ≤
+      (4 * (f : ℝ) * (r : ℝ) ^ 2 + 1) * ((f : ℝ) * (3 * (r : ℝ))) := by
+    have h := mul_le_mul_of_nonneg_left hl (show 0 ≤ 3 * (r : ℝ) by positivity)
+    refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left ?_ (by positivity)) (by positivity)
+    linarith
+  have he : (4 * (f : ℝ) * (r : ℝ) ^ 2 + 1) * ((f : ℝ) * (3 * (r : ℝ))) =
+      12 * ((f : ℝ) ^ 2 * (r : ℝ) ^ 3) + 3 * a := by rw [ha]; ring
+  linarith
+
+theorem ballSum_le : ∃ C : ℝ, 0 ≤ C ∧ ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : ReciprocityTheory.ChartRestriction.G.FD.Data E r) (x y : ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r), 0 < X.p0 → X.p0 < r → ReciprocityTheory.ChartRestriction.G.AR.Up.IsOrth X x → ReciprocityTheory.ChartRestriction.G.AR.Up.IsOrth X y → (∀ γ ∈ X.Γ, ∀ z z' : ReciprocityTheory.L2DbarEstimates.V (ReciprocityTheory.ChartRestriction.G.AR.Inst.nd X), ‖z‖ ≤ 1 / (100 * (r : ℝ) ^ 2) → ‖z'‖ ≤ 1 / (100 * (r : ℝ) ^ 2) → ∀ b ∈ Bor X.Ψ r, lact γ (ReciprocityTheory.ChartRestriction.G.AR.Inst.cpt X x z) = rmul (ReciprocityTheory.ChartRestriction.G.AR.Inst.cpt X x z') b → γ = 1) → ReciprocityTheory.ChartRestriction.G.AR.Up.muF X x (Metric.ball (0 : ReciprocityTheory.L2DbarEstimates.V (ReciprocityTheory.ChartRestriction.G.AR.Inst.nd X)) (1 / (100 * (r : ℝ) ^ 2)) ∩ ReciprocityTheory.ChartRestriction.G.AR.Up.OmF X x) * ∑' γ : X.Γ, ENNReal.ofReal (ReciprocityTheory.ChartRestriction.G.AR.Up.PoinPf.kaY X x (4 * (X.Ψ.card : ℝ) * (r : ℝ) ^ 2 + 1) (lact γ.1 y)) ≤ ENNReal.ofReal (Real.exp (C * ((X.Ψ.card : ℝ) * r) ^ 8)) * ∫⁻ z, ENNReal.ofReal (ReciprocityTheory.ChartRestriction.G.AR.Up.kaF X y (4 * (X.Ψ.card : ℝ) * (r : ℝ) ^ 2 + 1) z) ∂(ReciprocityTheory.ChartRestriction.G.AR.Up.muF X y) := by
+  refine ⟨15, by norm_num, ?_⟩
+  intro E _ _ _ r X x y hp0 hp0r hx hy hinj
+  classical
+  haveI := FundSetPf.countable_GL (E := E) (r := r)
+  have hr : 0 < r := by omega
+  set s : ℝ := 4 * (X.Ψ.card : ℝ) * (r : ℝ) ^ 2 + 1 with hs
+  have hs0 : 0 ≤ s := by positivity
+  set ρ : ℝ := 1 / (100 * (r : ℝ) ^ 2) with hρ
+  set A : Set (V (nd X)) := Metric.ball (0 : V (nd X)) ρ ∩ OmF X x with hAdef
+  set K : ℝ := (X.Ψ.card : ℝ) * (3 * r * Real.log 2) with hK
+  set k : ℝ≥0∞ := ENNReal.ofReal (Real.exp (s * K)) with hk
+  set φ : Frame X.Ψ r → ℝ≥0∞ := fun u => ENNReal.ofReal (kaY X y s u) with hφdef
+  have hφm : Measurable φ := ENNReal.measurable_ofReal.comp (meas_kaY X y s)
+  have hφB : ∀ u ∈ X.dom, ∀ b ∈ Bor X.Ψ r, φ (rmul u b) = φ u := fun u hu b hb => by
+    simp only [hφdef, kaY_rmul X hy hu hb]
+  set G : Frame X.Ψ r → ℝ≥0∞ := fun u => ∑' δ : X.Γ, φ (lact δ.1 u) with hGdef
+
+  have hsym : ∑' γ : X.Γ, ENNReal.ofReal (kaY X x s (lact γ.1 y)) = G x := by
+    simp only [hGdef]
+    rw [← (Equiv.inv X.Γ).tsum_eq (fun δ : X.Γ => φ (lact δ.1 x))]
+    refine tsum_congr fun γ => ?_
+    have hγi : (γ.1)⁻¹ ∈ X.Γ := X.Γ.inv_mem γ.2
+    show ENNReal.ofReal (kaY X x s (lact γ.1 y)) = ENNReal.ofReal (kaY X y s (lact (γ.1)⁻¹ x))
+    rw [GlobalTheory.PoinSumBound.kaY_eq_exp X hx (orth_mem_dom X (GlobalTheory.Unfold.isOrth_lact X hy γ.2)),
+      GlobalTheory.PoinSumBound.kaY_eq_exp X hy (orth_mem_dom X (GlobalTheory.Unfold.isOrth_lact X hx hγi)),
+      GlobalTheory.Up.rhX_lact (X.Γ_stab _ γ.2), GlobalTheory.OrbitSum.rhX_symm X (GlobalTheory.Unfold.isOrth_lact X hx hγi) hy]
+
+  have hHar : ∀ w ∈ A, G x ≤ k * G (cpt X x w) := by
+    intro w hw
+    simp only [hGdef]
+    rw [← ENNReal.tsum_mul_left]
+    refine ENNReal.tsum_le_tsum fun δ => ?_
+    have ho := GlobalTheory.Unfold.isOrth_lact X hx δ.2
+    have hwn : ‖w‖ ≤ ρ := (mem_ball_zero_iff.1 hw.1).le
+    have h := GlobalTheory.BallSum.rhY_cpt_le X hy ho hr w hwn
+    show ENNReal.ofReal (kaY X y s (lact δ.1 x)) ≤ k * ENNReal.ofReal (kaY X y s (lact δ.1 (cpt X x w)))
+    rw [← GlobalTheory.Unfold.cpt_lact, hk, ← ENNReal.ofReal_mul (Real.exp_pos _).le]
+    refine ENNReal.ofReal_le_ofReal ?_
+    unfold kaY
+    rw [← Real.exp_add]
+    refine Real.exp_le_exp.2 ?_
+    have := mul_le_mul_of_nonneg_left h hs0
+    linarith
+
+  have hAm : MeasurableSet A := measurableSet_ball.inter (OntoB.isOpen_OmF X x).measurableSet
+  have h1 : muF X x A * G x ≤ k * ∫⁻ z in A, G (cpt X x z) ∂muF X x := by
+    rw [mul_comm, ← setLIntegral_const, ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+    exact setLIntegral_mono' hAm fun z hz => hHar z hz
+
+  have h2 : ∫⁻ z in A, G (cpt X x z) ∂muF X x ≤ ∫⁻ z, φ (cpt X y z) ∂muF X y :=
+    lintegral_orbit_le X hx hy hAm Set.inter_subset_right hφm hφB
+      fun γ hγ z hz z' hz' b hb e => hinj γ hγ z z' (mem_ball_zero_iff.1 hz.1).le
+        (mem_ball_zero_iff.1 hz'.1).le b hb e
+  have h3 : ∫⁻ z, φ (cpt X y z) ∂muF X y = ∫⁻ z, ENNReal.ofReal (kaF X y s z) ∂muF X y := by
+    simp only [hφdef, kaY_cpt X hy]
+  have hkC : k ≤ ENNReal.ofReal (Real.exp (15 * ((X.Ψ.card : ℝ) * r) ^ 8)) :=
+    ENNReal.ofReal_le_ofReal (Real.exp_le_exp.2 (const_le X.Ψ.card r))
+  rw [hsym]
+  calc muF X x A * G x ≤ k * ∫⁻ z in A, G (cpt X x z) ∂muF X x := h1
+    _ ≤ k * ∫⁻ z, ENNReal.ofReal (kaF X y s z) ∂muF X y := mul_le_mul_of_nonneg_left (h2.trans h3.le) zero_le
+    _ ≤ _ := mul_le_mul_of_nonneg_right hkC zero_le
+
+end GlobalTheory.BallSum
+end
+
+open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.L2DbarEstimates MeasureTheory
+open scoped ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.orbitSum_kernel_ballMeasure_le_integral : ∃ C : ℝ, 0 ≤ C ∧ ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : ReciprocityTheory.ChartRestriction.G.FD.Data E r) (x y : ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r), 0 < X.p0 → X.p0 < r → ReciprocityTheory.ChartRestriction.G.AR.Up.IsOrth X x → ReciprocityTheory.ChartRestriction.G.AR.Up.IsOrth X y → (∀ γ ∈ X.Γ, ∀ z z' : ReciprocityTheory.L2DbarEstimates.V (ReciprocityTheory.ChartRestriction.G.AR.Inst.nd X), ‖z‖ ≤ 1 / (100 * (r : ℝ) ^ 2) → ‖z'‖ ≤ 1 / (100 * (r : ℝ) ^ 2) → ∀ b ∈ Bor X.Ψ r, lact γ (ReciprocityTheory.ChartRestriction.G.AR.Inst.cpt X x z) = rmul (ReciprocityTheory.ChartRestriction.G.AR.Inst.cpt X x z') b → γ = 1) → ReciprocityTheory.ChartRestriction.G.AR.Up.muF X x (Metric.ball (0 : ReciprocityTheory.L2DbarEstimates.V (ReciprocityTheory.ChartRestriction.G.AR.Inst.nd X)) (1 / (100 * (r : ℝ) ^ 2)) ∩ ReciprocityTheory.ChartRestriction.G.AR.Up.OmF X x) * ∑' γ : X.Γ, ENNReal.ofReal (ReciprocityTheory.ChartRestriction.G.AR.Up.PoinPf.kaY X x (4 * (X.Ψ.card : ℝ) * (r : ℝ) ^ 2 + 1) (lact γ.1 y)) ≤ ENNReal.ofReal (Real.exp (C * ((X.Ψ.card : ℝ) * r) ^ 8)) * ∫⁻ z, ENNReal.ofReal (ReciprocityTheory.ChartRestriction.G.AR.Up.kaF X y (4 * (X.Ψ.card : ℝ) * (r : ℝ) ^ 2 + 1) z) ∂(ReciprocityTheory.ChartRestriction.G.AR.Up.muF X y) := by
+  atlas_forward_decl GlobalTheory.BallSum.ballSum_le
+end
+
+section
+section
+open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.L2DbarEstimates MeasureTheory
+open Matrix Formalism.DegreeFormula Formalism.MJ GlobalTheory.TrueCx GlobalTheory.FlagFibre
+open scoped ENNReal ComplexOrder
+
+namespace GlobalTheory.KernelIntegral
+
+theorem lminor_glue {r p q : ℕ} {e : Fin r ≃ Fin p ⊕ Fin q} (he : IsBlockSL2Embedding e) {A : Matrix (Fin r) (Fin r) ℂ}
+    (hA : reindex e e A = -Formalism.UG.Jpq p q) (w : (Fin p × Fin q → ℂ) × (Low q → ℂ) × (Low p → ℂ))
+    (hw : toMat w.1 ∈ hcDom p q) (i : Fin (r + 1)) (hi : (i : ℕ) = q) :
+    lminor ((uni (glue e w))ᴴ * A * uni (glue e w)) i = (hQ (toMat w.1)).det := by
+  set H := (uni (glue e w))ᴴ * A * uni (glue e w) with hH
+  have hR := reindex_conj_glue he A w
+  have hS : shear (reindex e e A) (toMat w.1) =
+      fromBlocks (-1) (-(toMat w.1)) (-(toMat w.1)ᴴ) (hQ (toMat w.1)) := by
+    rw [hA]; exact GlobalTheory.FlagFibreInt.shear_neg_J _
+  have h22 : (reindex e e H).toBlocks₂₂ = (uni w.2.1)ᴴ * hQ (toMat w.1) * uni w.2.1 := by
+    rw [hR, blockDiag_conj, toBlocks_fromBlocks₂₂, hS, toBlocks_fromBlocks₂₂]
+  have hd : (reindex e e H).toBlocks₂₂.det = (hQ (toMat w.1)).det := by
+    rw [h22, det_mul, det_mul, det_conjTranspose, det_uni]; simp
+  have hpd : (hQ (toMat w.1)).PosDef := hw
+  have hu : IsUnit (reindex e e H).toBlocks₂₂.det := by
+    rw [hd]; exact hpd.det_pos.ne'.isUnit
+  rw [(GlobalTheory.FlagFibre.lminor_block r p q e he H hu).2 i 0 (by simp [hi]), hd]
+  simp [lminor]
+
+theorem lminor_base {r p q : ℕ} {e : Fin r ≃ Fin p ⊕ Fin q} (he : IsBlockSL2Embedding e) {A : Matrix (Fin r) (Fin r) ℂ}
+    (hA : reindex e e A = -Formalism.UG.Jpq p q) (y : Low r → ℂ) (hy : toMat (base e y) ∈ hcDom p q)
+    (i : Fin (r + 1)) (hi : (i : ℕ) = q) :
+    lminor ((uni y)ᴴ * A * uni y) i = (hQ (toMat (base e y))).det := by
+  obtain ⟨w, rfl⟩ := glue_surjective he y
+  rw [base_glue he] at hy ⊢
+  exact lminor_glue he hA w hy i hi
+
+theorem measurableSet_hc (p q : ℕ) : MeasurableSet {v : Fin p × Fin q → ℂ | toMat v ∈ hcDom p q} := by
+  have h : {v : Fin p × Fin q → ℂ | toMat v ∈ hcDom p q} =
+      (fun v : Fin p × Fin q → ℂ => fun x : Unit × Fin p × Fin q => v x.2) ⁻¹' DomFlat Unit p q := by
+    ext v
+    exact ⟨fun h _ => h, fun h => h ()⟩
+  rw [h]
+  exact (GlobalTheory.HodgeDomain.ActionDeriv.isOpen_domFlat.preimage (by fun_prop)).measurableSet
+
+theorem det_hQ_pos {p q : ℕ} {Z : Matrix (Fin p) (Fin q) ℂ} (hZ : Z ∈ hcDom p q) :
+    0 < (hQ Z).det.re ∧ (hQ Z).det.re ≤ 1 := by
+  have hpd : (hQ Z).PosDef := hZ
+  refine ⟨(ExhA.det_re_pos_im hpd).1, ?_⟩
+  have h : hQ Z = 1 - Zᴴ * Zᴴᴴ := by rw [conjTranspose_conjTranspose]; rfl
+  rw [h] at hpd ⊢
+  exact ExhA.det_re_le_one hpd
+
+theorem norm_le_one_of_hc {p q : ℕ} {v : Fin p × Fin q → ℂ} (hv : toMat v ∈ hcDom p q) (x : Fin p × Fin q) :
+    ‖v x‖ ≤ 1 := by
+  have hpd : (1 - (toMat v)ᴴ * toMat v).PosDef := hv
+  have h := hpd.diag_pos (i := x.2)
+  have e : (1 - (toMat v)ᴴ * toMat v : Matrix (Fin q) (Fin q) ℂ) x.2 x.2 = ((1 - ∑ a, ‖v (a, x.2)‖ ^ 2 : ℝ) : ℂ) := by
+    simp only [Matrix.sub_apply, Matrix.one_apply_eq, Matrix.mul_apply, conjTranspose_apply, toMat, Matrix.of_apply,
+      RCLike.star_def, Complex.conj_mul']
+    push_cast; ring
+  rw [e, Complex.zero_lt_real] at h
+  have h2 : ‖v x‖ ^ 2 ≤ ∑ a, ‖v (a, x.2)‖ ^ 2 :=
+    Finset.single_le_sum (f := fun a => ‖v (a, x.2)‖ ^ 2) (fun _ _ => by positivity) (Finset.mem_univ x.1)
+  nlinarith [norm_nonneg (v x)]
+
+end GlobalTheory.KernelIntegral
+
+namespace GlobalTheory.KernelIntegral
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
+
+noncomputable def wt (p q : ℕ) (bb : ℝ) (v : Fin p × Fin q → ℂ) : ℝ≥0∞ :=
+  {v : Fin p × Fin q → ℂ | toMat v ∈ hcDom p q}.indicator (fun v => ENNReal.ofReal ((hQ (toMat v)).det.re ^ bb)) v
+
+theorem measurable_wt (p q : ℕ) (bb : ℝ) : Measurable (wt p q bb) := by
+  refine Measurable.indicator ?_ (measurableSet_hc p q)
+  have hc : Continuous fun v : Fin p × Fin q → ℂ => (hQ (toMat v)).det := by
+    unfold hQ
+    exact (continuous_const.sub (continuous_toMat.matrix_conjTranspose.matrix_mul continuous_toMat)).matrix_det
+  exact ((Complex.continuous_re.comp hc).measurable.pow_const bb).ennreal_ofReal
+
+theorem sgn_reindex (X : Data E r) {j : ℕ} (hj : j ≤ r) (hp : X.p0 = r - j) :
+    reindex (idx hj) (idx hj) (sgnMat r X.p0) = -Formalism.UG.Jpq j (r - j) := by
+  rw [sgnMat, hp]
+  exact reindex_sgn hj
+
+theorem dens_kaF_eq (X : Data E r) {j : ℕ} (hj : j ≤ r) (hp : X.p0 = r - j) (bb : ℝ) {z : V (nd X)}
+    (hz : z ∈ OmF X (x0F X)) :
+    ENNReal.ofReal (densF X (x0F X) z) * ENNReal.ofReal (kaF X (x0F X) bb z) =
+      (∏ t, wt j (r - j) bb (base (idx hj) (coords X (Equiv.refl X.Ψ) z t))) *
+        ∏ t, ENNReal.ofReal (dens (sgnMat r X.p0) (coords X (Equiv.refl X.Ψ) z t)) := by
+  set κ := Equiv.refl X.Ψ
+  have hx : cpt X (x0F X) z ∈ X.dom := hz
+  have hD := domPt_mem X hj κ hp hx
+  have hmat : ∀ t, toMat (base (idx hj) (coords X κ z t)) = domPt X hj κ (cpt X (x0F X) z) t := fun t => by
+    ext a b
+    exact (proj_eq X hj κ z t (a, b)).symm
+  have hc : ∀ t, toMat (base (idx hj) (coords X κ z t)) ∈ hcDom j (r - j) := fun t => by
+    rw [hmat t]; exact hD t
+  have hmin : ∀ t : X.Ψ, dmin X.Gm (cpt X (x0F X) z) t ⟨X.p0, Nat.lt_succ_of_le X.p0_le⟩ =
+      (hQ (toMat (base (idx hj) (coords X κ z t)))).det := fun t =>
+    (dmin_cpt X κ z t _).trans (lminor_base (isBlockOrderedSumEquiv_trueIndex hj) (sgn_reindex X hj hp) _ (hc t) _ hp)
+  have hk : kaF X (x0F X) bb z = ∏ t, (hQ (toMat (base (idx hj) (coords X κ z t)))).det.re ^ bb := by
+    simp only [kaF, rhF, hmin]
+    rw [neg_mul_neg, Finset.mul_sum, Real.exp_sum]
+    refine Finset.prod_congr rfl fun t _ => ?_
+    have hpd : (hQ (toMat (base (idx hj) (coords X κ z t)))).PosDef := hc t
+    rw [ExF.norm_of_pos hpd.det_pos, Real.rpow_def_of_pos (det_hQ_pos (hc t)).1, mul_comm]
+  rw [densF_eq X κ, hk, ENNReal.ofReal_prod_of_nonneg fun _ _ => dens_nonneg _ _,
+    ENNReal.ofReal_prod_of_nonneg fun t _ => Real.rpow_nonneg (det_hQ_pos (hc t)).1.le _, mul_comm]
+  congr 1
+  refine Finset.prod_congr rfl fun t _ => ?_
+  rw [wt, Set.indicator_of_mem (show base (idx hj) (coords X κ z t) ∈
+    {v : Fin j × Fin (r - j) → ℂ | toMat v ∈ hcDom j (r - j)} from hc t)]
+
+end GlobalTheory.KernelIntegral
+
+namespace GlobalTheory.KernelIntegral
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
+
+def cube (p q : ℕ) : Set (Fin p × Fin q → ℂ) := Set.univ.pi fun _ => Metric.closedBall (0 : ℂ) 1
+
+theorem fibre_bound (X : Data E r) {j : ℕ} (hj : j ≤ r) (hp : X.p0 = r - j) {bb : ℝ} (hbb : (r : ℝ) ≤ bb)
+    (v : Fin j × Fin (r - j) → ℂ) :
+    wt j (r - j) bb v * ∫⁻ b : (Low (r - j) → ℂ) × (Low j → ℂ), ENNReal.ofReal (dens (sgnMat r X.p0) (glue (idx hj) (v, b)))
+      ≤ ENNReal.ofReal (1 / (flagConst j * flagConst (r - j))) * (cube j (r - j)).indicator 1 v := by
+  by_cases hv : toMat v ∈ hcDom j (r - j)
+  · have hc : v ∈ cube j (r - j) := fun x _ => by
+      rw [Metric.mem_closedBall, dist_zero_right]; exact norm_le_one_of_hc hv x
+    rw [wt, Set.indicator_of_mem (show v ∈ {v : Fin j × Fin (r - j) → ℂ | toMat v ∈ hcDom j (r - j)} from hv),
+      Set.indicator_of_mem hc, Pi.one_apply, mul_one,
+      GlobalTheory.FlagFibreInt.lintegral_dens_glue r j (r - j) (idx hj) (isBlockOrderedSumEquiv_trueIndex hj) _ (sgn_reindex X hj hp) v hv,
+      ← ENNReal.ofReal_mul (Real.rpow_nonneg (det_hQ_pos hv).1.le _)]
+    refine ENNReal.ofReal_le_ofReal ?_
+    obtain ⟨h0, h1⟩ := det_hQ_pos hv
+    have hc0 : 0 < flagConst j * flagConst (r - j) := mul_pos (flagConst_pos _) (flagConst_pos _)
+    set d := (hQ (toMat v)).det.re
+    have hN : (((j + (r - j) : ℕ) : ℤ) : ℝ) = r := by
+      rw [Nat.add_sub_cancel' hj]; simp
+    have e : d ^ bb * d ^ (-((j + (r - j) : ℕ) : ℤ)) = d ^ (bb - r) := by
+      rw [← Real.rpow_intCast, Int.cast_neg, hN, ← Real.rpow_add h0, sub_eq_add_neg]
+    rw [← mul_div_assoc, e, div_le_div_iff_of_pos_right hc0]
+    exact Real.rpow_le_one h0.le h1 (by linarith)
+  · rw [wt, Set.indicator_of_notMem (show v ∉ {v : Fin j × Fin (r - j) → ℂ | toMat v ∈ hcDom j (r - j)} from hv),
+      zero_mul]
+    exact zero_le'
+
+theorem lintegral_x0F_le (X : Data E r) {j : ℕ} (hj : j ≤ r) (hp : X.p0 = r - j) {bb : ℝ} (hbb : (r : ℝ) ≤ bb) :
+    ∫⁻ z, ENNReal.ofReal (kaF X (x0F X) bb z) ∂muF X (x0F X) ≤
+      (ENNReal.ofReal (1 / (flagConst j * flagConst (r - j))) * volume (cube j (r - j))) ^ X.Ψ.card := by
+  set κ := Equiv.refl X.Ψ
+  set e := idx hj
+  set D : (Low r → ℂ) → ℝ≥0∞ := fun y => ENNReal.ofReal (dens (sgnMat r X.p0) y) with hDdef
+  set φ : (X.Ψ → Fin j × Fin (r - j) → ℂ) → ℝ≥0∞ := fun a => ∏ t, wt j (r - j) bb (a t) with hφdef
+  set G : (X.Ψ → Low r → ℂ) → ℝ≥0∞ := fun c => φ (fun t => base e (c t)) * ∏ t, D (c t) with hGdef
+  have hDm : Measurable D := (measurable_dens _).ennreal_ofReal
+  have hφm : Measurable φ := Finset.measurable_prod _ fun t _ => (measurable_wt _ _ _).comp (measurable_pi_apply t)
+  have hGm : Measurable G :=
+    (hφm.comp (measurable_pi_lambda _ fun t => (measurable_base _).comp (measurable_pi_apply t))).mul
+      (Finset.measurable_prod _ fun t _ => hDm.comp (measurable_pi_apply t))
+  have hco := GlobalTheory.FlagFibre.measurePreserving_coords_sorted E r X X.Ψ κ
+  have hdm : Measurable fun z => ENNReal.ofReal (densF X (x0F X) z) := by
+    have e1 : (fun z => ENNReal.ofReal (densF X (x0F X) z)) = fun z => ∏ t, D (coords X κ z t) := by
+      funext z
+      rw [densF_eq X κ, ENNReal.ofReal_prod_of_nonneg fun _ _ => dens_nonneg _ _]
+    rw [e1]
+    exact Finset.measurable_prod _ fun t _ => hDm.comp ((measurable_pi_apply t).comp hco.measurable)
+  have key := GlobalTheory.ProdFibre.lintegral_pi_fibre X.Ψ _ _ _ (glue e) (base e) D φ (GlobalTheory.T.measurePreserving_glueLowerUnitriangularBlocks _ _ _ _ (isBlockOrderedSumEquiv_trueIndex hj))
+    (measurable_base _) (base_glue (isBlockOrderedSumEquiv_trueIndex hj)) hDm hφm
+  set K := ENNReal.ofReal (1 / (flagConst j * flagConst (r - j)))
+  have hcube : MeasurableSet (cube j (r - j)) :=
+    MeasurableSet.univ_pi fun _ => Metric.isClosed_closedBall.measurableSet
+  calc ∫⁻ z, ENNReal.ofReal (kaF X (x0F X) bb z) ∂muF X (x0F X)
+      ≤ ∫⁻ z in OmF X (x0F X), ((fun z => ENNReal.ofReal (densF X (x0F X) z)) *
+          fun z => ENNReal.ofReal (kaF X (x0F X) bb z)) z :=
+        lintegral_withDensity_le_lintegral_mul _ hdm _
+    _ ≤ ∫⁻ z in OmF X (x0F X), G (coords X κ z) :=
+        setLIntegral_mono (hGm.comp hco.measurable) fun z hz => (dens_kaF_eq X hj hp bb hz).le
+    _ ≤ ∫⁻ z, G (coords X κ z) := setLIntegral_le_lintegral _ _
+    _ = ∫⁻ c, G c := hco.lintegral_comp hGm
+    _ = ∫⁻ a, φ a * ∏ t, ∫⁻ b, D (glue e (a t, b)) := key
+    _ ≤ ∫⁻ a, K ^ X.Ψ.card * (Set.univ.pi fun _ : X.Ψ => cube j (r - j)).indicator 1 a := by
+        refine lintegral_mono fun a => ?_
+        rw [hφdef]
+        simp only
+        rw [← Finset.prod_mul_distrib]
+        calc ∏ t, wt j (r - j) bb (a t) * ∫⁻ b, D (glue e (a t, b))
+            ≤ ∏ t : X.Ψ, K * (cube j (r - j)).indicator 1 (a t) :=
+              Finset.prod_le_prod' fun t _ => fibre_bound X hj hp hbb (a t)
+          _ = K ^ X.Ψ.card * (Set.univ.pi fun _ : X.Ψ => cube j (r - j)).indicator 1 a := by
+              rw [Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ, Fintype.card_coe]
+              congr 1
+              by_cases h : a ∈ Set.univ.pi fun _ : X.Ψ => cube j (r - j)
+              · rw [Set.indicator_of_mem h, Pi.one_apply]
+                exact Finset.prod_eq_one fun t _ => by
+                  rw [Set.indicator_of_mem (h t (Set.mem_univ _)), Pi.one_apply]
+              · rw [Set.indicator_of_notMem h]
+                simp only [Set.mem_univ_pi, not_forall] at h
+                obtain ⟨t, ht⟩ := h
+                exact Finset.prod_eq_zero (Finset.mem_univ t) (by rw [Set.indicator_of_notMem ht])
+    _ = (K * volume (cube j (r - j))) ^ X.Ψ.card := by
+        rw [lintegral_const_mul _ (measurable_one.indicator (MeasurableSet.univ_pi fun _ => hcube)),
+          lintegral_indicator_one (MeasurableSet.univ_pi fun _ => hcube), volume_pi_pi, Finset.prod_const,
+          Finset.card_univ, Fintype.card_coe, mul_pow]
+
+end GlobalTheory.KernelIntegral
+
+namespace GlobalTheory.KernelIntegral
+
+theorem one_div_flagConst_le (m : ℕ) : 1 / flagConst m ≤ Real.pi ^ (m * m) := by
+  have hπ1 : 1 ≤ Real.pi := by linarith [Real.pi_gt_three]
+  have h : (Real.pi ^ (m * m))⁻¹ ≤ flagConst m := by
+    have e : (Real.pi ^ (m * m))⁻¹ = ∏ _i ∈ Finset.range m, (Real.pi ^ m)⁻¹ := by
+      rw [Finset.prod_const, Finset.card_range, pow_mul, inv_pow]
+    rw [e, flagConst]
+    refine Finset.prod_le_prod (fun _ _ => by positivity) fun i hi => ?_
+    have hi' : i ≤ m := (Finset.mem_range.1 hi).le
+    have h1 : (1 : ℝ) ≤ i.factorial := by exact_mod_cast i.factorial_pos
+    calc (Real.pi ^ m)⁻¹ ≤ (Real.pi ^ i)⁻¹ :=
+          inv_anti₀ (pow_pos Real.pi_pos _) (pow_le_pow_right₀ hπ1 hi')
+      _ = 1 / Real.pi ^ i := (one_div _).symm
+      _ ≤ (i.factorial : ℝ) / Real.pi ^ i := div_le_div_of_nonneg_right h1 (pow_pos Real.pi_pos _).le
+  calc 1 / flagConst m ≤ 1 / (Real.pi ^ (m * m))⁻¹ :=
+        one_div_le_one_div_of_le (inv_pos.2 (pow_pos Real.pi_pos _)) h
+    _ = Real.pi ^ (m * m) := by rw [one_div, inv_inv]
+
+theorem bound_num (r j f : ℕ) (hj : j ≤ r) :
+    (ENNReal.ofReal (1 / (flagConst j * flagConst (r - j))) * volume (cube j (r - j))) ^ f ≤
+      ENNReal.ofReal (Real.exp (3 * ((f : ℝ) * r) ^ 8)) := by
+  have hv : volume (cube j (r - j)) = ENNReal.ofReal (Real.pi ^ (j * (r - j))) := by
+    rw [cube, volume_pi_pi, Finset.prod_const, Finset.card_univ, Fintype.card_prod, Fintype.card_fin,
+      Fintype.card_fin, Complex.volume_closedBall, ENNReal.ofReal_one, one_pow, one_mul,
+      ← ENNReal.ofReal_coe_nnreal, NNReal.coe_real_pi, ENNReal.ofReal_pow Real.pi_pos.le]
+  have hc0 : 0 < flagConst j * flagConst (r - j) := mul_pos (flagConst_pos _) (flagConst_pos _)
+  rw [hv, ← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_pow (by positivity)]
+  refine ENNReal.ofReal_le_ofReal ?_
+  have hπ1 : 1 ≤ Real.pi := by linarith [Real.pi_gt_three]
+  have hπe : Real.pi ≤ Real.exp 3 := by linarith [Real.pi_le_four, Real.add_one_le_exp 3]
+  obtain ⟨k, rfl⟩ : ∃ k, r = j + k := ⟨r - j, (Nat.add_sub_cancel' hj).symm⟩
+  rw [Nat.add_sub_cancel_left]
+  have h1 : 1 / (flagConst j * flagConst k) * Real.pi ^ (j * k) ≤ Real.pi ^ ((j + k) * (j + k)) :=
+    calc 1 / (flagConst j * flagConst k) * Real.pi ^ (j * k)
+        = (1 / flagConst j) * (1 / flagConst k) * Real.pi ^ (j * k) := by rw [one_div_mul_one_div]
+      _ ≤ Real.pi ^ (j * j) * Real.pi ^ (k * k) * Real.pi ^ (j * k) := by
+          refine mul_le_mul_of_nonneg_right ?_ (pow_pos Real.pi_pos _).le
+          exact mul_le_mul (one_div_flagConst_le j) (one_div_flagConst_le k)
+            (one_div_pos.2 (flagConst_pos k)).le (pow_pos Real.pi_pos _).le
+      _ = Real.pi ^ (j * j + k * k + j * k) := by rw [pow_add, pow_add]
+      _ ≤ Real.pi ^ ((j + k) * (j + k)) := pow_le_pow_right₀ hπ1 (by nlinarith)
+  have hn : ((j + k) * (j + k) * f : ℕ) ≤ (f * (j + k)) ^ 8 := by
+    rcases Nat.eq_zero_or_pos (f * (j + k)) with h | h
+    · rcases Nat.mul_eq_zero.1 h with h' | h' <;> simp [h']
+    · calc (j + k) * (j + k) * f ≤ (f * (j + k)) ^ 2 := by
+            have hf : 1 ≤ f := Nat.pos_of_ne_zero fun h0 => by simp [h0] at h
+            nlinarith
+        _ ≤ (f * (j + k)) ^ 8 := Nat.pow_le_pow_right h (by norm_num)
+  calc (1 / (flagConst j * flagConst k) * Real.pi ^ (j * k)) ^ f
+      ≤ (Real.pi ^ ((j + k) * (j + k))) ^ f := pow_le_pow_left₀
+        (mul_pos (one_div_pos.2 (mul_pos (flagConst_pos j) (flagConst_pos k))) (pow_pos Real.pi_pos _)).le h1 f
+    _ ≤ (Real.exp 3 ^ ((j + k) * (j + k))) ^ f :=
+        pow_le_pow_left₀ (by positivity) (pow_le_pow_left₀ Real.pi_pos.le hπe _) f
+    _ = Real.exp (3 * (((j + k) * (j + k) * f : ℕ) : ℝ)) := by
+        rw [← pow_mul, ← Real.exp_nat_mul, mul_comm]
+    _ ≤ Real.exp (3 * ((f : ℝ) * ((j + k : ℕ) : ℝ)) ^ 8) := by
+        refine Real.exp_le_exp.2 (mul_le_mul_of_nonneg_left ?_ (by norm_num))
+        exact_mod_cast hn
+
+theorem lintegral_kaF_le : ∃ C : ℝ, 0 ≤ C ∧ ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ)
+    (X : ReciprocityTheory.ChartRestriction.G.FD.Data E r) (y : ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r), 0 < X.p0 → X.p0 < r →
+    ReciprocityTheory.ChartRestriction.G.AR.Up.IsOrth X y →
+    ∫⁻ z, ENNReal.ofReal (ReciprocityTheory.ChartRestriction.G.AR.Up.kaF X y (4 * (X.Ψ.card : ℝ) * (r : ℝ) ^ 2 + 1) z)
+      ∂(ReciprocityTheory.ChartRestriction.G.AR.Up.muF X y) ≤ ENNReal.ofReal (Real.exp (C * ((X.Ψ.card : ℝ) * r) ^ 8)) := by
+  refine ⟨3, by norm_num, ?_⟩
+  intro E _ _ _ r X y _ _ hy
+  have hj : r - X.p0 ≤ r := Nat.sub_le _ _
+  have hp : X.p0 = r - (r - X.p0) := (Nat.sub_sub_self X.p0_le).symm
+  have hf : (1 : ℝ) ≤ X.Ψ.card := by
+    have := Finset.card_pos.2 (Finset.nonempty_coe_sort.1 (psi_nonempty X))
+    exact_mod_cast this
+  have hbb : (r : ℝ) ≤ 4 * (X.Ψ.card : ℝ) * (r : ℝ) ^ 2 + 1 := by
+    have hr : (r : ℝ) ≤ (r : ℝ) ^ 2 := by
+      have : r ≤ r * r := Nat.le_mul_self r
+      rw [sq]; exact_mod_cast this
+    nlinarith [sq_nonneg (r : ℝ)]
+  have hka : kaF X y (4 * (X.Ψ.card : ℝ) * (r : ℝ) ^ 2 + 1) =
+      kaF X (x0F X) (4 * (X.Ψ.card : ℝ) * (r : ℝ) ^ 2 + 1) := by
+    funext z
+    simp only [kaF, GlobalTheory.Up.PoleValue.rhF_eq (isOrth_x0F X) hy]
+  rw [hka, GlobalTheory.Up.PoleValue.muF_eq (isOrth_x0F X) hy]
+  exact (lintegral_x0F_le X hj hp hbb).trans (bound_num r (r - X.p0) X.Ψ.card hj)
+
+end GlobalTheory.KernelIntegral
+end
+
+open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.L2DbarEstimates MeasureTheory
+open scoped ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lintegral_unitaryKernel_le_exp_pow_eight : ∃ C : ℝ, 0 ≤ C ∧ ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : ReciprocityTheory.ChartRestriction.G.FD.Data E r) (y : ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r), 0 < X.p0 → X.p0 < r → ReciprocityTheory.ChartRestriction.G.AR.Up.IsOrth X y → ∫⁻ z, ENNReal.ofReal (ReciprocityTheory.ChartRestriction.G.AR.Up.kaF X y (4 * (X.Ψ.card : ℝ) * (r : ℝ) ^ 2 + 1) z) ∂(ReciprocityTheory.ChartRestriction.G.AR.Up.muF X y) ≤ ENNReal.ofReal (Real.exp (C * ((X.Ψ.card : ℝ) * r) ^ 8)) := by
+  atlas_forward_decl GlobalTheory.KernelIntegral.lintegral_kaF_le
+end
+
+section
+section
+open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.L2DbarEstimates MeasureTheory
+open scoped ENNReal
+
+namespace GlobalTheory.BallVol
+
+noncomputable section
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
+
+theorem spread_zero (X : Data E r) (hr : 0 < r) (τ : X.Ψ) : X.spread (fun _ _ => 0) τ = 0 := by
+  haveI : Nonempty (Fin r) := ⟨⟨0, hr⟩⟩
+  simp [Data.spread]
+
+theorem nd_le (X : Data E r) : nd X ≤ X.Ψ.card * (r * r) := by
+  unfold nd
+  rw [Fintype.card_prod, Fintype.card_coe]
+  refine Nat.mul_le_mul_left _ ?_
+  calc Fintype.card {p : Fin r × Fin r // p.2 < p.1} ≤ Fintype.card (Fin r × Fin r) :=
+        Fintype.card_subtype_le _
+    _ = r * r := by simp
+
+theorem nat_bound (f r n : ℕ) (hf : 1 ≤ f) (hr : 1 ≤ r) (hn : n ≤ f * (r * r)) :
+    2 * n * (200 * r ^ 3 * f) + n * n + 1 ≤ 402 * (f * r) ^ 8 := by
+  set a := f * r with ha
+  have ha1 : 1 ≤ a := Nat.one_le_iff_ne_zero.2 (Nat.mul_ne_zero (by omega) (by omega))
+  have hra : r ≤ a := by rw [ha]; exact Nat.le_mul_of_pos_left r (by omega)
+  have hfa : f ≤ a := by rw [ha]; exact Nat.le_mul_of_pos_right f (by omega)
+  have hna : n ≤ a * a := hn.trans (by rw [ha, ← Nat.mul_assoc]; exact Nat.mul_le_mul_left _ hra)
+  have h1 : 2 * n * (200 * r ^ 3 * f) ≤ 400 * a ^ 8 := by
+    have e : 2 * n * (200 * r ^ 3 * f) ≤ 400 * ((a * a) * (a ^ 3 * a)) := by
+      have := Nat.mul_le_mul hna (Nat.mul_le_mul (Nat.pow_le_pow_left hra 3) hfa)
+      nlinarith
+    refine e.trans (Nat.mul_le_mul_left _ ?_)
+    calc a * a * (a ^ 3 * a) = a ^ 6 := by ring
+      _ ≤ a ^ 8 := Nat.pow_le_pow_right ha1 (by norm_num)
+  have h2 : n * n ≤ a ^ 8 := by
+    calc n * n ≤ (a * a) * (a * a) := Nat.mul_le_mul hna hna
+      _ = a ^ 4 := by ring
+      _ ≤ a ^ 8 := Nat.pow_le_pow_right ha1 (by norm_num)
+  have h3 : 1 ≤ a ^ 8 := Nat.one_le_pow _ _ ha1
+  omega
+
+theorem real_bound (f r n : ℕ) (hf : 1 ≤ f) (hr : 1 ≤ r) (hn : n ≤ f * (r * r)) :
+    Real.exp (-(402 * ((f : ℝ) * r) ^ 8)) ≤ Real.exp (-(1 / 10)) *
+      (Real.pi ^ n * (1 / (200 * (r : ℝ) ^ 3 * f)) ^ (2 * n) / n.factorial) := by
+  set K : ℝ := 200 * (r : ℝ) ^ 3 * f with hK
+  have hf' : (1 : ℝ) ≤ f := by exact_mod_cast hf
+  have hr' : (1 : ℝ) ≤ r := by exact_mod_cast hr
+  have hK1 : 1 ≤ K := by
+    have : (1 : ℝ) ≤ (r : ℝ) ^ 3 := one_le_pow₀ hr'
+    rw [hK]; nlinarith
+  have hKpos : 0 < K := by linarith
+
+  have hδ : Real.exp (-K) ≤ 1 / K := by
+    rw [Real.exp_neg, one_div]
+    exact inv_anti₀ hKpos (by linarith [Real.add_one_le_exp K])
+  have hδn : Real.exp (-(2 * n * K)) ≤ (1 / K) ^ (2 * n) := by
+    calc Real.exp (-(2 * n * K)) = Real.exp (-K) ^ (2 * n) := by
+          rw [← Real.exp_nat_mul]; congr 1; push_cast; ring
+      _ ≤ (1 / K) ^ (2 * n) := pow_le_pow_left₀ (Real.exp_pos _).le hδ _
+  have hpi : (1 : ℝ) ≤ Real.pi ^ n := one_le_pow₀ (by linarith [Real.pi_gt_three])
+  have hfac : (n.factorial : ℝ) ≤ Real.exp ((n : ℝ) * n) := by
+    have h1 : (n.factorial : ℝ) ≤ (n : ℝ) ^ n := by exact_mod_cast Nat.factorial_le_pow n
+    have h2 : (n : ℝ) ^ n ≤ Real.exp n ^ n :=
+      pow_le_pow_left₀ (Nat.cast_nonneg _) (by linarith [Real.add_one_le_exp (n : ℝ)]) _
+    rw [← Real.exp_nat_mul] at h2
+    exact h1.trans h2
+  have hfpos : (0 : ℝ) < n.factorial := by exact_mod_cast Nat.factorial_pos n
+  have hN := nat_bound f r n hf hr hn
+  have hNR : 2 * (n : ℝ) * K + n * n + 1 ≤ 402 * ((f : ℝ) * r) ^ 8 := by
+    rw [hK]; exact_mod_cast hN
+  have hmain : Real.exp (-(402 * ((f : ℝ) * r) ^ 8)) ≤
+      Real.exp (-(1 / 10)) * (Real.exp (-(2 * n * K)) / Real.exp ((n : ℝ) * n)) := by
+    rw [← Real.exp_sub, ← Real.exp_add]
+    exact Real.exp_le_exp.2 (by linarith)
+  refine hmain.trans (mul_le_mul_of_nonneg_left ?_ (Real.exp_pos _).le)
+  calc Real.exp (-(2 * n * K)) / Real.exp ((n : ℝ) * n)
+      ≤ (1 / K) ^ (2 * n) / n.factorial := div_le_div₀ (by positivity) hδn hfpos hfac
+    _ ≤ Real.pi ^ n * (1 / K) ^ (2 * n) / n.factorial := by
+        gcongr
+        exact le_mul_of_one_le_left (by positivity) hpi
+
+theorem ballvol : ∃ C : ℝ, 0 ≤ C ∧ ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ)
+    (X : ReciprocityTheory.ChartRestriction.G.FD.Data E r) (x : ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r), 0 < X.p0 → X.p0 < r →
+    ReciprocityTheory.ChartRestriction.G.AR.Up.IsOrth X x →
+    ENNReal.ofReal (Real.exp (-(C * ((X.Ψ.card : ℝ) * r) ^ 8))) ≤
+      ReciprocityTheory.ChartRestriction.G.AR.Up.muF X x (Metric.ball (0 : ReciprocityTheory.L2DbarEstimates.V (ReciprocityTheory.ChartRestriction.G.AR.Inst.nd X))
+        (1 / (100 * (r : ℝ) ^ 2)) ∩ ReciprocityTheory.ChartRestriction.G.AR.Up.OmF X x) := by
+  refine ⟨402, by norm_num, ?_⟩
+  intro E _ _ _ r X x hp0 hpr hx
+  have hr : 0 < r := lt_of_le_of_lt (Nat.zero_le _) hpr
+  set la : Wt X.Ψ r := fun _ _ => 0 with hla
+  set w : ℝ := ∑ τ, X.spread la τ with hw
+  have hw0 : w = 0 := Finset.sum_eq_zero fun τ _ => spread_zero X hr τ
+  have hcard : ((X.Ψ.card : ℕ) : ℝ) = fdeg E := by
+    rw [← Fintype.card_coe, QuadraticCoefficientForms.card_Psi X]
+  have hf1 : (1 : ℝ) ≤ (X.Ψ.card : ℝ) := by rw [hcard]; exact one_le_field_half_degree
+  have hf1n : 1 ≤ X.Ψ.card := by exact_mod_cast hf1
+  have hr1 : (1 : ℝ) ≤ r := by exact_mod_cast hr
+  set δ := GlobalTheory.LevGeo.chartRad E r w with hδ
+  have hδeq : δ = 1 / (200 * (r : ℝ) ^ 3 * (X.Ψ.card : ℝ)) := by
+    rw [hδ, GlobalTheory.LevGeo.chartRad, hw0, zero_add, hcard]
+  have hδpos : 0 < δ := by rw [hδeq]; positivity
+  have hδle : δ ≤ 1 / (100 * (r : ℝ) ^ 2) := by
+    rw [hδeq]
+    refine one_div_le_one_div_of_le (by positivity) ?_
+    have h3 : (r : ℝ) ^ 2 ≤ (r : ℝ) ^ 3 := pow_le_pow_right₀ hr1 (by norm_num)
+    have h4 : (r : ℝ) ^ 3 ≤ (r : ℝ) ^ 3 * (X.Ψ.card : ℝ) := le_mul_of_one_le_right (by positivity) hf1
+    nlinarith
+  have hnear : ∀ z : V (nd X), ‖z‖ ≤ δ → cpt X x z ∈ X.dom ∧
+      Real.exp (-(1 / 20)) ≤ X.nfac la (cpt X x z) ^ 2 ∧ Real.exp (-(1 / 10)) ≤ densF X x z :=
+    fun z hz => GlobalTheory.ChartNearOne.chart_near_one E r X la w x hr hx le_rfl z hz
+  have hsubO : Metric.ball (0 : V (nd X)) δ ⊆ OmF X x := fun z hz =>
+    (hnear z (le_of_lt (mem_ball_zero_iff.1 hz))).1
+  have hsub : Metric.ball (0 : V (nd X)) δ ⊆
+      Metric.ball 0 (1 / (100 * (r : ℝ) ^ 2)) ∩ OmF X x := fun z hz =>
+    ⟨Metric.ball_subset_ball hδle hz, hsubO hz⟩
+  refine le_trans ?_ (measure_mono hsub)
+  have hm : muF X x (Metric.ball 0 δ) =
+      ∫⁻ z in Metric.ball (0 : V (nd X)) δ, ENNReal.ofReal (densF X x z) := by
+    rw [muF, withDensity_apply _ measurableSet_ball, Measure.restrict_restrict measurableSet_ball,
+      Set.inter_eq_left.2 hsubO]
+  rw [hm]
+  have hn := nd_le X
+  calc ENNReal.ofReal (Real.exp (-(402 * ((X.Ψ.card : ℝ) * r) ^ 8)))
+      ≤ ENNReal.ofReal (Real.exp (-(1 / 10))) * volume (Metric.ball (0 : V (nd X)) δ) := by
+        rw [GlobalTheory.volume_ball_euclideanSpace_complex 0 hδpos, Fintype.card_fin,
+          ← ENNReal.ofReal_mul (Real.exp_pos _).le]
+        refine ENNReal.ofReal_le_ofReal ?_
+        rw [hδeq]
+        exact real_bound X.Ψ.card r (nd X) hf1n hr hn
+    _ = ∫⁻ z in Metric.ball (0 : V (nd X)) δ, ENNReal.ofReal (Real.exp (-(1 / 10))) := by
+        rw [setLIntegral_const, mul_comm]
+    _ ≤ _ := setLIntegral_mono' measurableSet_ball fun z hz =>
+        ENNReal.ofReal_le_ofReal (hnear z (le_of_lt (mem_ball_zero_iff.1 hz))).2.2
+
+end
+
+end GlobalTheory.BallVol
+end
+
+open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.L2DbarEstimates MeasureTheory
+open scoped ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.invariantMeasure_chartBall_orthonormal_lower_bound : ∃ C : ℝ, 0 ≤ C ∧ ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : ReciprocityTheory.ChartRestriction.G.FD.Data E r) (x : ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r), 0 < X.p0 → X.p0 < r → ReciprocityTheory.ChartRestriction.G.AR.Up.IsOrth X x → ENNReal.ofReal (Real.exp (-(C * ((X.Ψ.card : ℝ) * r) ^ 8))) ≤ ReciprocityTheory.ChartRestriction.G.AR.Up.muF X x (Metric.ball (0 : ReciprocityTheory.L2DbarEstimates.V (ReciprocityTheory.ChartRestriction.G.AR.Inst.nd X)) (1 / (100 * (r : ℝ) ^ 2)) ∩ ReciprocityTheory.ChartRestriction.G.AR.Up.OmF X x) := by
+  atlas_forward_decl GlobalTheory.BallVol.ballvol
+end
+
+section
 section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.BasicNotions.TH Formalism.L2.Theta ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.CovTop GlobalTheory.BigTop GlobalTheory.CovHt
 open ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.L2DbarEstimates MeasureTheory
@@ -217,3 +1010,4 @@ open scoped ENNReal
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.poincare_l2_inequality_fundamental_set : ∃ C : ℝ, 0 ≤ C ∧ ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (la : ReciprocityTheory.ChartRestriction.G.FD.Wt X.Ψ r) (x x0 : Frame X.Ψ r) (FF : Set (ReciprocityTheory.L2DbarEstimates.V (ReciprocityTheory.ChartRestriction.G.AR.Inst.nd X))) (F : ReciprocityTheory.L2DbarEstimates.V (ReciprocityTheory.ChartRestriction.G.AR.Inst.nd X) → ℂ) (P0 : Frame X.Ψ r → ℂ), 0 < X.p0 → X.p0 < r → ReciprocityTheory.ChartRestriction.G.AR.Up.IsOrth X x → ReciprocityTheory.ChartRestriction.G.AR.Up.IsOrth X x0 → ReciprocityTheory.ChartRestriction.G.AR.Up.IsFundSet X x0 FF → (∀ γ ∈ X.Γ, ∀ z z' : ReciprocityTheory.L2DbarEstimates.V (ReciprocityTheory.ChartRestriction.G.AR.Inst.nd X), ‖z‖ ≤ 1 / (100 * (r : ℝ) ^ 2) → ‖z'‖ ≤ 1 / (100 * (r : ℝ) ^ 2) → ∀ b ∈ Bor X.Ψ r, lact γ (ReciprocityTheory.ChartRestriction.G.AR.Inst.cpt X x z) = rmul (ReciprocityTheory.ChartRestriction.G.AR.Inst.cpt X x z') b → γ = 1) → DifferentiableOn ℂ F (ReciprocityTheory.ChartRestriction.G.AR.Up.OmF X x) → ReciprocityTheory.ChartRestriction.G.AR.Up.IsBEq X la P0 → (∀ z ∈ ReciprocityTheory.ChartRestriction.G.AR.Up.OmF X x, P0 (ReciprocityTheory.ChartRestriction.G.AR.Inst.cpt X x z) = F z) → ∫⁻ z in FF, ENNReal.ofReal (X.pnorm la (ReciprocityTheory.ChartRestriction.G.AR.Up.poin X la P0) (ReciprocityTheory.ChartRestriction.G.AR.Inst.cpt X x0 z) ^ 2) ∂(ReciprocityTheory.ChartRestriction.G.AR.Up.muF X x0) ≤ ENNReal.ofReal (Real.exp (C * ((X.Ψ.card : ℝ) * r) ^ 8)) * ∫⁻ z, ENNReal.ofReal (‖F z‖ ^ 2 / ReciprocityTheory.ChartRestriction.G.AR.Up.kaF X x (4 * (X.Ψ.card : ℝ) * (r : ℝ) ^ 2 + 1) z) * ReciprocityTheory.ChartRestriction.G.AR.Up.IW.Wpsi X la (fun _ => 0) (ReciprocityTheory.ChartRestriction.G.AR.Inst.cpt X x z) ∂(ReciprocityTheory.ChartRestriction.G.AR.Up.muF X x) := by
   atlas_forward_decl GlobalTheory.PoincareL2.poincare_l2_inequality
+end

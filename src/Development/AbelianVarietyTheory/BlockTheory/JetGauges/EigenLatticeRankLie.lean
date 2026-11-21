@@ -30,19 +30,6 @@ def eigenLattice (hx : Chart.IsUnivChart G n x) {O : Type} [CommRing O] (act : O
   add_mem' {c c'} hc hc' a := by rw [map_add, hc a, hc' a, smul_add]
   smul_mem' r c hc a := by rw [map_smul, hc a, smul_comm]
 
-theorem mem_eigenLattice_iff (hx : Chart.IsUnivChart G n x) {O : Type} [CommRing O] (act : OAct O G) (τ : O →+* R)
-    (c : Fin n → R) :
-    c ∈ eigenLattice hx act τ ↔ ∀ a, Chart.tvec (x := x) c ≫ act.act a =
-      Chart.spMap (Chart.scaleD (τ a)) ≫ Chart.tvec (x := x) c := by
-  refine forall_congr' fun a => ?_
-  have := act.hom a
-  rw [← Chart.tvec_tmap hx, ← Chart.tvec_smul hx]
-  constructor
-  · intro h
-    exact congrArg _ h
-  · intro h
-    exact (Chart.tcoord_tvec hx _).symm.trans
-      ((Chart.tcoord_congr hx h _ (Chart.isTan_tvec hx _)).trans (Chart.tcoord_tvec hx _))
 
 example [IsDomain R] (hx : Chart.IsUnivChart G n x) {O : Type} [CommRing O] (act : OAct O G) (τ : O →+* R)
     (r : R) (hr : r ≠ 0) (c : Fin n → R) (h : r • c ∈ eigenLattice hx act τ) : c ∈ eigenLattice hx act τ := by

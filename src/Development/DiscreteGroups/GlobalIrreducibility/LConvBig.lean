@@ -1,6 +1,374 @@
-import Development.DiscreteGroups.GlobalIrreducibility.LConvBigD
+import Development.DiscreteGroups.GlobalIrreducibility.LConvCut
+import GroundTheory.LocalFields.Uniqueness
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AlgebraMapIntertwiningMapBijectiveOfIsSmooth
 import GroundTheory.AutomorphicForms.SmoothRepSchur
 
+section
+noncomputable section
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel GlobalTheory.LocLanglands GlobalTheory.Whittaker Filter Topology
+
+namespace DiscreteGroups.sglob.LConv
+
+section Matrices
+
+variable {k : Type} [Field k] {m : ℕ}
+
+def tv {n : ℕ} (i j : Fin n) (h : i ≠ j) (c : k) : GL (Fin n) k :=
+  ⟨Matrix.transvection i j c, Matrix.transvection i j (-c),
+    by rw [Matrix.transvection_mul_transvection_same _ _ h, add_neg_cancel, Matrix.transvection_zero],
+    by rw [Matrix.transvection_mul_transvection_same _ _ h, neg_add_cancel, Matrix.transvection_zero]⟩
+
+theorem val_tv {n : ℕ} (i j : Fin n) (h : i ≠ j) (c : k) :
+    ((tv i j h c : GL (Fin n) k) : Matrix (Fin n) (Fin n) k) = Matrix.transvection i j c := rfl
+
+theorem val_tv_inv {n : ℕ} (i j : Fin n) (h : i ≠ j) (c : k) :
+    (((tv i j h c)⁻¹ : GL (Fin n) k) : Matrix (Fin n) (Fin n) k) = Matrix.transvection i j (-c) := rfl
+
+theorem tv_zero {n : ℕ} (i j : Fin n) (h : i ≠ j) : tv i j h (0 : k) = 1 :=
+  Units.ext (by rw [val_tv, Matrix.transvection_zero, Units.val_one])
+
+theorem continuous_tv [TopologicalSpace k] [IsTopologicalAddGroup k] {n : ℕ} (i j : Fin n) (h : i ≠ j) :
+    Continuous fun c : k => tv i j h c := by
+  refine Units.continuous_iff.2 ⟨?_, ?_⟩
+  · show Continuous fun c : k => Matrix.transvection i j c
+    refine continuous_pi fun a => continuous_pi fun b => ?_
+    simp only [Matrix.transvection, Matrix.add_apply, Matrix.single_apply]
+    split_ifs <;> fun_prop
+  · show Continuous fun c : k => Matrix.transvection i j (-c)
+    refine continuous_pi fun a => continuous_pi fun b => ?_
+    simp only [Matrix.transvection, Matrix.add_apply, Matrix.single_apply]
+    split_ifs <;> fun_prop
+
+theorem stdSum_symm_castSucc (i : Fin m) : (stdSum (rfl : m + 1 = m + 1)).symm i.castSucc = Sum.inl i := by
+  rw [Equiv.symm_apply_eq]
+  exact Fin.ext (by simp)
+
+theorem stdSum_symm_last : (stdSum (rfl : m + 1 = m + 1)).symm (Fin.last m) = Sum.inr 0 := by
+  rw [Equiv.symm_apply_eq]
+  exact Fin.ext (by simp)
+
+theorem corner_cs_cs (g : GL (Fin m) k) (i j : Fin m) :
+    (corner g : Matrix (Fin (m + 1)) (Fin (m + 1)) k) i.castSucc j.castSucc = (g : Matrix (Fin m) (Fin m) k) i j := by
+  simp [corner, val_emb₂, Matrix.reindex_apply, stdSum_symm_castSucc]
+
+theorem corner_cs_last (g : GL (Fin m) k) (i : Fin m) :
+    (corner g : Matrix (Fin (m + 1)) (Fin (m + 1)) k) i.castSucc (Fin.last m) = 0 := by
+  simp [corner, val_emb₂, Matrix.reindex_apply, stdSum_symm_castSucc, stdSum_symm_last]
+
+theorem corner_last (g : GL (Fin m) k) (j : Fin (m + 1)) :
+    (corner g : Matrix (Fin (m + 1)) (Fin (m + 1)) k) (Fin.last m) j =
+      (1 : Matrix (Fin (m + 1)) (Fin (m + 1)) k) (Fin.last m) j := by
+  refine Fin.lastCases ?_ (fun j => ?_) j
+  · simp [corner, val_emb₂, Matrix.reindex_apply, stdSum_symm_last]
+  · simp [corner, val_emb₂, Matrix.reindex_apply, stdSum_symm_castSucc, stdSum_symm_last,
+      (Fin.castSucc_lt_last j).ne']
+
+theorem corner_one : corner (1 : GL (Fin m) k) = 1 :=
+  map_one (emb₂ k (stdSum (rfl : m + 1 = m + 1)))
+
+theorem longElt_inv (n : ℕ) : (longElt n k)⁻¹ = longElt n k := Units.ext rfl
+
+theorem longElt_last (j : Fin (m + 1)) :
+    (longElt (m + 1) k : Matrix (Fin (m + 1)) (Fin (m + 1)) k) (Fin.last m) j = if j = 0 then 1 else 0 := by
+  simp [longElt]
+
+end Matrices
+
+section Small
+
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+
+theorem exists_small {U : Set k} (hU : U ∈ 𝓝 (0 : k)) (a : k) : ∃ t : k, t ≠ 0 ∧ t ∈ U ∧ a * t ∈ U := by
+  let := GroundTheory.LocalField.nontriviallyNormedField k
+  have hU' : U ∩ (fun t => a * t) ⁻¹' U ∈ 𝓝 (0 : k) :=
+    inter_mem hU ((continuous_const.mul continuous_id).continuousAt.preimage_mem_nhds (by simpa using hU))
+  obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.1 hU'
+  obtain ⟨t, ht0, htε⟩ := NormedField.exists_norm_lt k hε
+  have ht : t ∈ U ∩ (fun t => a * t) ⁻¹' U := hball (by simpa using htε)
+  exact ⟨t, norm_pos_iff.1 ht0, ht.1, ht.2⟩
+
+end Small
+
+end DiscreteGroups.sglob.LConv
+
+end
+end
+
+section
+noncomputable section
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel GlobalTheory.LocLanglands GlobalTheory.Whittaker
+
+namespace DiscreteGroups.sglob.LConv
+
+variable {k : Type} [Field k] {m : ℕ}
+
+def cornerHom : GL (Fin m) k →* GL (Fin (m + 1)) k :=
+  (emb₂ k (stdSum (rfl : m + 1 = m + 1))).comp (MonoidHom.inl _ _)
+
+theorem cornerHom_apply (g : GL (Fin m) k) : cornerHom g = corner g := rfl
+
+def IsP (p : GL (Fin (m + 1)) k) : Prop :=
+  ∀ j, (p : Matrix (Fin (m + 1)) (Fin (m + 1)) k) (Fin.last m) j = (1 : Matrix (Fin (m + 1)) (Fin (m + 1)) k) (Fin.last m) j
+
+theorem mul_apply_last_of_isMirabolic {a b : GL (Fin (m + 1)) k} (ha : IsP a) (j : Fin (m + 1)) :
+    ((a * b : GL (Fin (m + 1)) k) : Matrix (Fin (m + 1)) (Fin (m + 1)) k) (Fin.last m) j =
+      (b : Matrix (Fin (m + 1)) (Fin (m + 1)) k) (Fin.last m) j := by
+  rw [Units.val_mul, Matrix.mul_apply]
+  calc ∑ c, (a : Matrix (Fin (m + 1)) (Fin (m + 1)) k) (Fin.last m) c * (b : Matrix (Fin (m + 1)) (Fin (m + 1)) k) c j
+      = ∑ c, (1 : Matrix (Fin (m + 1)) (Fin (m + 1)) k) (Fin.last m) c * (b : Matrix (Fin (m + 1)) (Fin (m + 1)) k) c j :=
+        Finset.sum_congr rfl fun c _ => by rw [ha c]
+    _ = _ := by rw [← Matrix.mul_apply, Matrix.one_mul]
+
+theorem isMirabolic_mul {a b : GL (Fin (m + 1)) k} (ha : IsP a) (hb : IsP b) : IsP (a * b) := fun j =>
+  (mul_apply_last_of_isMirabolic ha j).trans (hb j)
+
+theorem isMirabolic_corner (g : GL (Fin m) k) : IsP (corner g) := corner_last g
+
+theorem exists_eq_mul_corner {p : GL (Fin (m + 1)) k} (hp : IsP p) :
+    ∃ u ∈ unipB k (Fin (m + 1)), ∃ h : GL (Fin m) k, p = u * corner h := by
+  have hne : ∀ j : Fin m, Fin.last m ≠ j.castSucc := fun j => (Fin.castSucc_lt_last j).ne'
+  set A : Matrix (Fin m) (Fin m) k := (p : Matrix (Fin (m + 1)) (Fin (m + 1)) k).submatrix Fin.castSucc Fin.castSucc
+  have he : ((-1 : k) ^ (m + m)) = 1 := by rw [← two_mul, pow_mul]; simp
+  have hdet : (p : Matrix (Fin (m + 1)) (Fin (m + 1)) k).det = A.det := by
+    have hp' : ∀ j, (p : Matrix (Fin (m + 1)) (Fin (m + 1)) k) (Fin.last m) j =
+        (1 : Matrix (Fin (m + 1)) (Fin (m + 1)) k) (Fin.last m) j := hp
+    rw [Matrix.det_succ_row _ (Fin.last m), Fin.sum_univ_castSucc]
+    simp [hp', Matrix.one_apply, hne, Fin.succAbove_last, A, he]
+  have hA : A.det ≠ 0 := by
+    rw [← hdet]
+    exact ((Matrix.isUnit_iff_isUnit_det _).1 p.isUnit).ne_zero
+  set h : GL (Fin m) k := Matrix.GeneralLinearGroup.mkOfDetNeZero A hA
+  have hh : (h : Matrix (Fin m) (Fin m) k) = A := rfl
+  refine ⟨p * corner h⁻¹, ?_, h, ?_⟩
+  swap
+  · rw [mul_assoc, ← cornerHom_apply, ← cornerHom_apply, ← map_mul, inv_mul_cancel, map_one, mul_one]
+  have hL : ∀ j, ((p * corner h⁻¹ : GL (Fin (m + 1)) k) : Matrix (Fin (m + 1)) (Fin (m + 1)) k) (Fin.last m) j =
+      (1 : Matrix (Fin (m + 1)) (Fin (m + 1)) k) (Fin.last m) j := fun j =>
+    (mul_apply_last_of_isMirabolic hp j).trans (corner_last _ j)
+  have hB : ∀ i j : Fin m, ((p * corner h⁻¹ : GL (Fin (m + 1)) k) : Matrix (Fin (m + 1)) (Fin (m + 1)) k)
+      i.castSucc j.castSucc = (1 : Matrix (Fin m) (Fin m) k) i j := by
+    intro i j
+    rw [Units.val_mul, Matrix.mul_apply, Fin.sum_univ_castSucc, corner_last, Matrix.one_apply_ne (hne j)]
+    simp only [corner_cs_cs, mul_zero, add_zero]
+    rw [← h.mul_inv, Matrix.mul_apply, hh]
+    rfl
+  refine (mem_unipB k).2 ⟨fun i j hij => ?_, fun i => ?_⟩
+  · induction i using Fin.lastCases with
+    | last => rw [hL, Matrix.one_apply_ne hij.ne']
+    | cast i =>
+      induction j using Fin.lastCases with
+      | last => exact absurd hij (not_lt.2 (Fin.castSucc_lt_last i).le)
+      | cast j =>
+        rw [hB, Matrix.one_apply_ne]
+        intro e; subst e; exact lt_irrefl _ hij
+  · induction i using Fin.lastCases with
+    | last => rw [hL, Matrix.one_apply_eq]
+    | cast i => rw [hB, Matrix.one_apply_eq]
+
+section Agree
+
+variable {ψ : AddChar k Circle} {V₁ V₂ : Type} [AddCommGroup V₁] [Module ℂ V₁] [AddCommGroup V₂] [Module ℂ V₂]
+  {π₁ : Representation ℂ (GL (Fin (m + 1)) k) V₁} {π₂ : Representation ℂ (GL (Fin (m + 1)) k) V₂}
+  {l₁ : Module.Dual ℂ V₁} {l₂ : Module.Dual ℂ V₂}
+
+theorem agree_of_isP (hl₁ : IsFunctional ψ π₁ l₁) (hl₂ : IsFunctional ψ π₂ l₂) {v₁ : V₁} {v₂ : V₂}
+    (hX : ∀ g : GL (Fin m) k, l₁ (π₁ (corner g) v₁) = l₂ (π₂ (corner g) v₂)) {p : GL (Fin (m + 1)) k}
+    (hp : IsP p) : l₁ (π₁ p v₁) = l₂ (π₂ p v₂) := by
+  obtain ⟨u, hu, h, rfl⟩ := exists_eq_mul_corner hp
+  rw [map_mul, map_mul, Module.End.mul_apply, Module.End.mul_apply, hl₁ u hu, hl₂ u hu, hX h]
+
+theorem agree_translate (hl₁ : IsFunctional ψ π₁ l₁) (hl₂ : IsFunctional ψ π₂ l₂) {v₁ : V₁} {v₂ : V₂}
+    (hX : ∀ g : GL (Fin m) k, l₁ (π₁ (corner g) v₁) = l₂ (π₂ (corner g) v₂)) {p : GL (Fin (m + 1)) k}
+    (hp : IsP p) (g : GL (Fin m) k) : l₁ (π₁ (corner g) (π₁ p v₁)) = l₂ (π₂ (corner g) (π₂ p v₂)) := by
+  rw [← Module.End.mul_apply, ← map_mul, ← Module.End.mul_apply, ← map_mul]
+  exact agree_of_isP hl₁ hl₂ hX (isMirabolic_mul (isMirabolic_corner g) hp)
+
+end Agree
+
+end DiscreteGroups.sglob.LConv
+
+end
+end
+
+section
+noncomputable section
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel GlobalTheory.LocLanglands GlobalTheory.Whittaker
+
+namespace DiscreteGroups.sglob.LConv
+
+variable {k : Type} [Field k] {m : ℕ} {ψ : AddChar k Circle} {V₁ V₂ : Type} [AddCommGroup V₁] [Module ℂ V₁]
+  [AddCommGroup V₂] [Module ℂ V₂] {π₁ : Representation ℂ (GL (Fin (m + 1)) k) V₁}
+  {π₂ : Representation ℂ (GL (Fin (m + 1)) k) V₂} {l₁ : Module.Dual ℂ V₁} {l₂ : Module.Dual ℂ V₂}
+
+theorem agree_of_entry_one (hl₁ : IsFunctional ψ π₁ l₁) (hl₂ : IsFunctional ψ π₂ l₂)
+    (hW : ∀ (v₁ : V₁) (v₂ : V₂), (∀ g : GL (Fin m) k, l₁ (π₁ (corner g) v₁) = l₂ (π₂ (corner g) v₂)) →
+      l₁ (π₁ (longElt (m + 1) k) v₁) = l₂ (π₂ (longElt (m + 1) k) v₂)) {v₁ : V₁} {v₂ : V₂}
+    (hX : ∀ g : GL (Fin m) k, l₁ (π₁ (corner g) v₁) = l₂ (π₂ (corner g) v₂)) (g : GL (Fin (m + 1)) k)
+    (hg : ((g⁻¹ : GL (Fin (m + 1)) k) : Matrix (Fin (m + 1)) (Fin (m + 1)) k) (Fin.last m) 0 = 1) :
+    l₁ (π₁ g v₁) = l₂ (π₂ g v₂) := by
+  set r : Fin (m + 1) → k := fun j => ((g⁻¹ : GL (Fin (m + 1)) k) : Matrix (Fin (m + 1)) (Fin (m + 1)) k) (Fin.last m) j
+  set M : Matrix (Fin (m + 1)) (Fin (m + 1)) k :=
+    Matrix.of fun i j => if i = 0 then r j else (1 : Matrix (Fin (m + 1)) (Fin (m + 1)) k) i j
+  have hMtri : ∀ i j : Fin (m + 1), j < i → M i j = 0 := by
+    intro i j hij
+    have hi : i ≠ 0 := fun e => by subst e; exact (Fin.not_lt_zero j) hij
+    simp [M, hi, Matrix.one_apply_ne hij.ne']
+  have hMdiag : ∀ i, M i i = 1 := by
+    intro i
+    by_cases hi : i = 0
+    · subst hi; simpa [M, r] using hg
+    · simp [M, hi]
+  have hdet : M.det = 1 := by
+    rw [Matrix.det_of_isUpperTriangular (fun i j hij => hMtri i j hij)]
+    simp [hMdiag]
+  set n : GL (Fin (m + 1)) k := Matrix.GeneralLinearGroup.mkOfDetNeZero M (by rw [hdet]; exact one_ne_zero)
+  have hnv : (n : Matrix (Fin (m + 1)) (Fin (m + 1)) k) = M := rfl
+  have hn : n ∈ unipB k (Fin (m + 1)) := (mem_unipB k).2 ⟨fun i j hij => by rw [hnv]; exact hMtri i j hij,
+    fun i => by rw [hnv]; exact hMdiag i⟩
+  have hwn : ∀ b, ((longElt (m + 1) k : Matrix (Fin (m + 1)) (Fin (m + 1)) k) * (n : Matrix (Fin (m + 1)) (Fin (m + 1)) k))
+      (Fin.last m) b = r b := by
+    intro b
+    rw [hnv, Matrix.mul_apply, Finset.sum_eq_single (0 : Fin (m + 1))]
+    · rw [longElt_last, if_pos rfl, one_mul]
+      simp [M, r]
+    · intro a _ ha
+      rw [longElt_last, if_neg ha, zero_mul]
+    · intro h
+      exact absurd (Finset.mem_univ _) h
+  set p : GL (Fin (m + 1)) k := longElt (m + 1) k * n * g
+  have hP : IsP p := by
+    intro j
+    show ((longElt (m + 1) k * n * g : GL (Fin (m + 1)) k) : Matrix (Fin (m + 1)) (Fin (m + 1)) k) (Fin.last m) j = _
+    rw [Units.val_mul, Units.val_mul, Matrix.mul_apply]
+    calc _ = ∑ b, r b * (g : Matrix (Fin (m + 1)) (Fin (m + 1)) k) b j :=
+          Finset.sum_congr rfl fun b _ => by rw [hwn b]
+      _ = _ := by
+        simp only [r]
+        rw [← Matrix.mul_apply, ← Units.val_mul, inv_mul_cancel, Units.val_one]
+  have hg' : g = n⁻¹ * (longElt (m + 1) k)⁻¹ * p := by
+    simp only [p, mul_assoc, inv_mul_cancel_left]
+  rw [hg', longElt_inv]
+  simp only [map_mul, Module.End.mul_apply]
+  rw [hl₁ _ (inv_mem hn), hl₂ _ (inv_mem hn), hW _ _ (agree_translate hl₁ hl₂ hX hP)]
+
+theorem val_scalar (z : kˣ) :
+    ((Matrix.GeneralLinearGroup.scalar (Fin (m + 1)) z : GL (Fin (m + 1)) k) : Matrix (Fin (m + 1)) (Fin (m + 1)) k) =
+      Matrix.diagonal fun _ => (z : k) := by
+  first
+  | rfl
+  | (ext i j; simp [Matrix.GeneralLinearGroup.scalar, Matrix.diagonal_apply])
+
+theorem agree_scalar {ω₁ ω₂ : kˣ →* ℂˣ} (h₁ : HasCentralChar π₁ ω₁) (h₂ : HasCentralChar π₂ ω₂)
+    (hl₁ : IsFunctional ψ π₁ l₁) (hl₂ : IsFunctional ψ π₂ l₂)
+    (hW : ∀ (v₁ : V₁) (v₂ : V₂), (∀ g : GL (Fin m) k, l₁ (π₁ (corner g) v₁) = l₂ (π₂ (corner g) v₂)) →
+      l₁ (π₁ (longElt (m + 1) k) v₁) = l₂ (π₂ (longElt (m + 1) k) v₂)) {v₁ : V₁} {v₂ : V₂}
+    (hX : ∀ g : GL (Fin m) k, l₁ (π₁ (corner g) v₁) = l₂ (π₂ (corner g) v₂)) (g : GL (Fin (m + 1)) k) (u : kˣ)
+    (hg : ((g⁻¹ : GL (Fin (m + 1)) k) : Matrix (Fin (m + 1)) (Fin (m + 1)) k) (Fin.last m) 0 = u) :
+    (ω₁ u : ℂ) * l₁ (π₁ g v₁) = (ω₂ u : ℂ) * l₂ (π₂ g v₂) := by
+  have hent : (((Matrix.GeneralLinearGroup.scalar (Fin (m + 1)) u * g)⁻¹ : GL (Fin (m + 1)) k) :
+      Matrix (Fin (m + 1)) (Fin (m + 1)) k) (Fin.last m) 0 = 1 := by
+    rw [mul_inv_rev, ← map_inv, Units.val_mul, val_scalar, Matrix.mul_diagonal, hg, Units.mul_inv]
+  have := agree_of_entry_one hl₁ hl₂ hW hX _ hent
+  rwa [map_mul, map_mul, Module.End.mul_apply, Module.End.mul_apply, h₁, h₂, map_smul, map_smul,
+    smul_eq_mul, smul_eq_mul] at this
+
+end DiscreteGroups.sglob.LConv
+
+end
+end
+
+section
+noncomputable section
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel GlobalTheory.LocLanglands GlobalTheory.Whittaker Filter Topology
+
+namespace DiscreteGroups.sglob.LConv
+
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {m : ℕ}
+  {ψ : AddChar k Circle} {V₁ V₂ : Type} [AddCommGroup V₁] [Module ℂ V₁]
+  [AddCommGroup V₂] [Module ℂ V₂] {π₁ : Representation ℂ (GL (Fin (m + 1)) k) V₁}
+  {π₂ : Representation ℂ (GL (Fin (m + 1)) k) V₂} {l₁ : Module.Dual ℂ V₁} {l₂ : Module.Dual ℂ V₂}
+
+theorem small_fix (hs₁ : IsSmooth π₁) (hs₂ : IsSmooth π₂) (v₁ : V₁) (v₂ : V₂) (i j : Fin (m + 1)) (h : i ≠ j) :
+    {t : k | π₁ (tv i j h (-t)) v₁ = v₁ ∧ π₂ (tv i j h (-t)) v₂ = v₂} ∈ 𝓝 (0 : k) := by
+  have hc : Continuous fun t : k => tv i j h (-t) := (continuous_tv i j h).comp continuous_neg
+  refine IsOpen.mem_nhds (((hs₁ v₁).preimage hc).inter ((hs₂ v₂).preimage hc)) ?_
+  simp [tv_zero]
+
+theorem last_ne_zero (hm : 0 < m) : Fin.last m ≠ (0 : Fin (m + 1)) := fun e => by
+  have := congrArg Fin.val e
+  simp at this
+  omega
+
+theorem transvection_apply_same (i j : Fin (m + 1)) (h : i ≠ j) (t : k) : Matrix.transvection i j t i j = t := by
+  simp [Matrix.transvection, Matrix.one_apply_ne h]
+
+theorem centralChar_eq (hm : 0 < m) (hs₁ : IsSmooth π₁) (hs₂ : IsSmooth π₂) {ω₁ ω₂ : kˣ →* ℂˣ}
+    (h₁ : HasCentralChar π₁ ω₁) (h₂ : HasCentralChar π₂ ω₂) (hl₁ : IsFunctional ψ π₁ l₁) (hl₂ : IsFunctional ψ π₂ l₂)
+    (hW : ∀ (v₁ : V₁) (v₂ : V₂), (∀ g : GL (Fin m) k, l₁ (π₁ (corner g) v₁) = l₂ (π₂ (corner g) v₂)) →
+      l₁ (π₁ (longElt (m + 1) k) v₁) = l₂ (π₂ (longElt (m + 1) k) v₂)) {v₁ : V₁} {v₂ : V₂}
+    (hX : ∀ g : GL (Fin m) k, l₁ (π₁ (corner g) v₁) = l₂ (π₂ (corner g) v₂)) (h0 : l₁ v₁ ≠ 0) : ω₁ = ω₂ := by
+  have hc : l₁ v₁ = l₂ v₂ := by
+    have := hX 1
+    rwa [corner_one, map_one, map_one, Module.End.one_apply, Module.End.one_apply] at this
+  have hL := last_ne_zero hm
+  have hO := small_fix hs₁ hs₂ v₁ v₂ _ _ hL
+  have key : ∀ t : k, ∀ ht : t ≠ 0, t ∈ {t : k | π₁ (tv _ _ hL (-t)) v₁ = v₁ ∧ π₂ (tv _ _ hL (-t)) v₂ = v₂} →
+      ω₁ (Units.mk0 t ht) = ω₂ (Units.mk0 t ht) := by
+    intro t ht hmem
+    have hent : (((tv _ _ hL (-t))⁻¹ : GL (Fin (m + 1)) k) : Matrix (Fin (m + 1)) (Fin (m + 1)) k) (Fin.last m) 0 =
+        (Units.mk0 t ht : k) := by
+      rw [val_tv_inv, neg_neg, transvection_apply_same _ _ hL, Units.val_mk0]
+    have := agree_scalar h₁ h₂ hl₁ hl₂ hW hX _ _ hent
+    rw [hmem.1, hmem.2, ← hc] at this
+    exact Units.ext (mul_right_cancel₀ h0 this)
+  refine MonoidHom.ext fun a => ?_
+  obtain ⟨t, ht, htO, hatO⟩ := exists_small hO (a : k)
+  have hat : (a : k) * t ≠ 0 := mul_ne_zero a.ne_zero ht
+  have e : Units.mk0 ((a : k) * t) hat = a * Units.mk0 t ht := Units.ext (by simp)
+  have h1 := key _ hat hatO
+  rw [e, map_mul, map_mul, key _ ht htO] at h1
+  exact mul_right_cancel h1
+
+theorem agree_all (hm : 0 < m) (hs₁ : IsSmooth π₁) (hs₂ : IsSmooth π₂) {ω : kˣ →* ℂˣ}
+    (h₁ : HasCentralChar π₁ ω) (h₂ : HasCentralChar π₂ ω) (hl₁ : IsFunctional ψ π₁ l₁) (hl₂ : IsFunctional ψ π₂ l₂)
+    (hW : ∀ (v₁ : V₁) (v₂ : V₂), (∀ g : GL (Fin m) k, l₁ (π₁ (corner g) v₁) = l₂ (π₂ (corner g) v₂)) →
+      l₁ (π₁ (longElt (m + 1) k) v₁) = l₂ (π₂ (longElt (m + 1) k) v₂)) {v₁ : V₁} {v₂ : V₂}
+    (hX : ∀ g : GL (Fin m) k, l₁ (π₁ (corner g) v₁) = l₂ (π₂ (corner g) v₂)) (g : GL (Fin (m + 1)) k) :
+    l₁ (π₁ g v₁) = l₂ (π₂ g v₂) := by
+  have step : ∀ g : GL (Fin (m + 1)) k,
+      ((g⁻¹ : GL (Fin (m + 1)) k) : Matrix (Fin (m + 1)) (Fin (m + 1)) k) (Fin.last m) 0 ≠ 0 →
+      l₁ (π₁ g v₁) = l₂ (π₂ g v₂) := by
+    intro g hg
+    have := agree_scalar h₁ h₂ hl₁ hl₂ hW hX g (Units.mk0 _ hg) rfl
+    exact mul_left_cancel₀ (ω (Units.mk0 _ hg)).ne_zero this
+  by_cases hg : ((g⁻¹ : GL (Fin (m + 1)) k) : Matrix (Fin (m + 1)) (Fin (m + 1)) k) (Fin.last m) 0 = 0
+  swap
+  · exact step g hg
+  obtain ⟨j, hj⟩ : ∃ j, ((g⁻¹ : GL (Fin (m + 1)) k) : Matrix (Fin (m + 1)) (Fin (m + 1)) k) j 0 ≠ 0 := by
+    by_contra hall
+    push_neg at hall
+    have h1 := congrFun (congrFun g.mul_inv 0) 0
+    rw [Matrix.mul_apply] at h1
+    simp [hall] at h1
+  have hjL : Fin.last m ≠ j := fun e => hj (e ▸ hg)
+  obtain ⟨t, ht, htO, -⟩ := exists_small (small_fix hs₁ hs₂ v₁ v₂ _ _ hjL) 1
+  have hent : (((g * tv _ _ hjL (-t))⁻¹ : GL (Fin (m + 1)) k) : Matrix (Fin (m + 1)) (Fin (m + 1)) k)
+      (Fin.last m) 0 ≠ 0 := by
+    rw [mul_inv_rev, Units.val_mul, val_tv_inv, neg_neg, Matrix.transvection_mul_apply_same, hg, zero_add]
+    exact mul_ne_zero ht hj
+  have := step _ hent
+  rwa [map_mul, map_mul, Module.End.mul_apply, Module.End.mul_apply, htO.1, htO.2] at this
+
+end DiscreteGroups.sglob.LConv
+
+end
+end
+
+section
 noncomputable section
 
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel GlobalTheory.LocLanglands GlobalTheory.Whittaker
@@ -113,4 +481,5 @@ theorem bigCell : BigCell := by
 
 end DiscreteGroups.sglob.LConv
 
+end
 end

@@ -35,21 +35,7 @@ def negFr (F : GlobalTheory.LocMod.Frame k N Y) : GlobalTheory.LocMod.Frame k N 
 
 theorem isStdFr_stdFr {pos : Y → ℕ} {e : Y ≃ Fin N} (h : IsOrd pos e) : IsStdFr pos (stdFr k e) := ⟨e, h, rfl⟩
 
-theorem isStdFr_unique {pos : Y → ℕ} {F F' : GlobalTheory.LocMod.Frame k N Y} (h : IsStdFr pos F) (h' : IsStdFr pos F') : F.β = F'.β := by
-  obtain ⟨e, he, hF⟩ := h
-  obtain ⟨e', he', hF'⟩ := h'
-  have : e = e' := Equiv.ext fun a => Fin.ext ((he a).trans (he' a).symm)
-  rw [hF, hF', this]
 
-theorem not_isStdFr_neg [Nonempty Y] (h2 : (2 : k) ≠ 0) {pos : Y → ℕ} {F : GlobalTheory.LocMod.Frame k N Y} (h : IsStdFr pos F) :
-    ¬ IsStdFr pos (negFr F) := fun h' => by
-  have hβ : -F.β = F.β := isStdFr_unique h' h
-  obtain ⟨e, -, hF⟩ := h
-  obtain ⟨a⟩ := ‹Nonempty Y›
-  have h1 : -F.β (e a) a = F.β (e a) a := congrFun (congrFun hβ (e a)) a
-  have h0 : F.β (e a) a = 1 := by rw [hF]; exact Matrix.one_apply_eq (e a)
-  rw [h0] at h1
-  exact h2 (by linear_combination -h1)
 
 def blockOrd (κ τ l j : ℕ) : (Fin κ ⊕ Fin l) ⊕ Fin j × Fin τ ≃ Fin (κ + l + j * τ) :=
   (Equiv.sumCongr finSumFinEquiv finProdFinEquiv).trans finSumFinEquiv
@@ -62,14 +48,7 @@ theorem isOrd_zPos (κ τ l j : ℕ) : IsOrd (zPos (κ := κ) (τ := τ) (l := l
   rintro ((i | i) | ⟨a, b⟩) <;> simp [blockOrd, zPos, finProdFinEquiv]
   ring
 
-theorem exists_isStdFr (k : Type) [Field k] (κ τ l j : ℕ) :
-    (∃ F : GlobalTheory.LocMod.Frame k (κ + j + j * τ) (XIx (Fin κ) (Fin τ) j), IsStdFr xPos F) ∧
-      ∃ F : GlobalTheory.LocMod.Frame k (κ + l + j * τ) (Ix (Fin κ ⊕ Fin l) (Fin τ) j), IsStdFr zPos F :=
-  ⟨⟨_, isStdFr_stdFr (isOrd_xPos κ τ j)⟩, ⟨_, isStdFr_stdFr (isOrd_zPos κ τ l j)⟩⟩
 
-theorem isStdFr_stdFr_and_not_isStdFr_negFr : IsStdFr (xPos (κ := 1) (τ := 1) (j := 1)) (stdFr ℚ (blockOrd 1 1 1 1)) ∧
-    ¬ IsStdFr (xPos (κ := 1) (τ := 1) (j := 1)) (negFr (stdFr ℚ (blockOrd 1 1 1 1))) :=
-  ⟨isStdFr_stdFr (isOrd_xPos 1 1 1), not_isStdFr_neg two_ne_zero (isStdFr_stdFr (isOrd_xPos 1 1 1))⟩
 
 end Frames
 

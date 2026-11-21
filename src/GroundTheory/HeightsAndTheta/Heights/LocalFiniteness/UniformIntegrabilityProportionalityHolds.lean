@@ -117,8 +117,6 @@ import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChartProjFinite
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PVarIntGraph
 set_option maxSynthPendingDepth 1
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.FourB_IntegralOnModel : GroundTheory.Heights₂.Heights.FourB.IntegralOnModel.Statement :=
-  @GroundTheory.Heights₂.Heights.FourB.IntegralOnModel.of_open GroundTheory.Heights₂.Heights.FourB.ClosedPointOfGenericFibre.proof GroundTheory.Heights₂.Heights.FourB.IntegralPointOfAlgebraicDomain.proof
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.RestCutFlagKillsIdeal : GroundTheory.Heights₂.Heights.RestCutFlagKillsIdeal.Statement :=
   @GroundTheory.Heights₂.Heights.RestCutFlagKillsIdeal.proof GroundTheory.Heights₂.Heights.RestTerms.FlagIntegralKillsPowerSums.full GroundTheory.Heights₂.Heights.RestCutIdealSum.proof
@@ -156,17 +154,11 @@ theorem GroundTheory.Heights₂.Heights.AutoClose.GaussShell : GroundTheory.Heig
 theorem GroundTheory.Heights₂.Heights.AutoClose.GaussLatticeCovolume : GroundTheory.Heights₂.Heights.GaussLatticeCovolume.Statement :=
   @GroundTheory.Heights₂.Heights.GaussLatticeCovolume.proof GroundTheory.Heights₂.Heights.GaussLatticeIsLattice.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.StrongApprox_SAHolds : GroundTheory.Heights₂.Heights.StrongApprox.SAHolds.Statement :=
-  @GroundTheory.Heights₂.Heights.StrongApprox.SAHolds.of_neighbourhoods_truncation GroundTheory.Heights₂.Heights.StrongApprox.AENeighbourhoods.full GroundTheory.Heights₂.Heights.StrongApprox.Truncation.full
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.PtsSheetOnlyNull : GroundTheory.Heights₂.Heights.PtsSheetOnlyNull.Statement :=
   @GroundTheory.Heights₂.Heights.PtsSheetOnlyNull.proof GroundTheory.Heights₂.Heights.CriticalFibreInfinite.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.Targets_CurveVertPointSurj : GroundTheory.Heights₂.Heights.Targets.CurveVertPointSurj.Statement :=
-  @GroundTheory.Heights₂.Heights.Targets.CurveVertPointSurj.proof GroundTheory.Heights₂.Heights.Targets.CurveRingFinite.proof GroundTheory.Heights₂.Heights.Targets.CurveClosedPointChart.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.Targets_CurveVertPointChart : GroundTheory.Heights₂.Heights.Targets.CurveVertPointChart.Statement :=
-  @GroundTheory.Heights₂.Heights.Targets.CurveVertPointChart.proof GroundTheory.Heights₂.Heights.Targets.CurveRingFinite.proof GroundTheory.Heights₂.Heights.Targets.CurveClosedPointChart.proof
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.Targets_ChartDivisorComponents : GroundTheory.Heights₂.Heights.Targets.ChartDivisorComponents.Statement :=
   @GroundTheory.Heights₂.Heights.Targets.ChartDivisorComponents.proof GroundTheory.Heights₂.Heights.Targets.ChartSectionNotMem.proof
@@ -177,14 +169,10 @@ theorem GroundTheory.Heights₂.Heights.AutoClose.GoodChartDim : GroundTheory.He
 theorem GroundTheory.Heights₂.Heights.AutoClose.Targets_LelongWeightDiff : GroundTheory.Heights₂.Heights.Targets.LelongWeightDiff.Statement :=
   @GroundTheory.Heights₂.Heights.Targets.LelongWeightDiff.proof GroundTheory.Heights₂.Heights.HilbertSamuel.Closed.ChartMassCompact
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.Targets_ProjPotMassPos : GroundTheory.Heights₂.Heights.Targets.ProjPotMassPos.Statement :=
-  @GroundTheory.Heights₂.Heights.Targets.ProjPotMassPos.of_found GroundTheory.Heights₂.Heights.Targets.ProjPotDens.proof
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.Targets_ChartConeLength : GroundTheory.Heights₂.Heights.Targets.ChartConeLength.Statement :=
   @GroundTheory.Heights₂.Heights.Targets.ChartConeLength.proof GroundTheory.Heights₂.Heights.Targets.ConeRingLaurent.proof GroundTheory.Heights₂.Heights.Targets.ChartDehomIdeal.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.Targets_InvertibleIndexMul : GroundTheory.Heights₂.Heights.Targets.InvertibleIndexMul.Statement :=
-  @GroundTheory.Heights₂.Heights.Targets.InvertibleIndexMul.proof GroundTheory.Heights₂.Heights.Targets.LocalGenFamily.proof GroundTheory.Heights₂.Heights.Targets.LocallyPrincipalCoprimeField.proof GroundTheory.Heights₂.Heights.Targets.InvertibleProductRep.proof GroundTheory.Heights₂.Heights.Targets.InvertibleIndexCharP.proof
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.PtsSegreChartFibreSum : GroundTheory.Heights₂.Heights.PtsSegreChartFibreSum.Statement :=
   @GroundTheory.Heights₂.Heights.PtsSegreChartFibreSum.proof GroundTheory.Heights₂.Heights.SegreChartZeroSet.proof GroundTheory.Heights₂.Heights.SegreChartProjFinite.proof
@@ -249,11 +237,5 @@ theorem GroundTheory.Heights₂.Heights.AutoClose.AdmissibleAENrm : GroundTheory
 theorem GroundTheory.Heights₂.Heights.AutoClose.ConeKrullDimLe : GroundTheory.Heights₂.Heights.ConeKrullDimLe.Statement :=
   @GroundTheory.Heights₂.Heights.ConeKrullDimLe.proof GroundTheory.Heights₂.Heights.ConeFiniteFibreDim.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.model_cech_exact_sequence_holds : GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ModelRowExact.Statement :=
-  @GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ModelRowExact.proof GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.RowSub.proof GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.CellZeroConst.proof GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.RowSecGlue.proof GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.CellContract.proof GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.CellLocGlue.proof GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.RowChartAct.proof GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.RowLocCover.closed
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.model_curves_exist_holds : GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ModelCurves.Statement :=
-  @GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ModelCurves.proof GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ModelCurvesDim.proof GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ModelCurvesLift.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.double_cech_complex_holds : GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.DoubleCech.Statement :=
-  @GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.DoubleCech.proof GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.Staircase.proof GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.CellDSq.proof

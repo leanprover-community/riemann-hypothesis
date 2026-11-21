@@ -266,16 +266,6 @@ theorem IsSubbundle.isSaturated {i : G ⟶ F} (h : IsSubbundle i) : IsSaturated 
   have ⟨_, hs⟩ := h.isVB_cokernel
   hs.isTorsionFree
 
-theorem isSaturated_iff_isIso_toSat (i : G ⟶ F) [Mono i] : IsSaturated i ↔ IsIso (toSat i) := by
-  refine ⟨fun h => ?_, fun h => IsTorsionFree.of_mono (G := cokernel (toSat i ≫ satι i))
-    (isSaturated_satι i) (cokernelEpiComp (toSat i) (satι i)).hom⟩
-  have : Epi (toSat i) := QCoh.epi_of_locally_app_surjective _ fun V x hx =>
-    ⟨V, hx, le_rfl, fun s => by
-      obtain ⟨t, ht⟩ := (QCoh.exact_app_of_exact_of_mono (ShortComplex.exact_cokernel i) V _).1
-        (h V (genericPoint_mem hx) _ ((germ_cokernel_π_eq_zero_iff i _ _).2
-          ((satSub i).incl_app_mem s)))
-      exact ⟨t, (satSub i).incl_app_injective V ht⟩⟩
-  exact isIso_of_mono_of_epi _
 
 theorem isIso_satι_of_genRank_eq (i : G ⟶ F) [Mono i] [IsFiniteQC F] (h : genRank G = genRank F) :
     IsIso (satι i) := by

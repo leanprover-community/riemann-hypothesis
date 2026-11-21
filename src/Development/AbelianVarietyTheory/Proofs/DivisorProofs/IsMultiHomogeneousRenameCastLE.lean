@@ -1,11 +1,358 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.PointHeight
 import ReciprocityTheory.SemistableReduction.TorusL2CauchyInequality
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MeasurePreservingPolarGaussianProbabilityComplex
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GaussianRadialLawProbabilityLogIntegrableMean
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GaussianFirstCoordsMeasurePreservingStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BlockSphereProbZeroSetEqZero
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousFirstCoords
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IntegrableMonomialMulConjComplexGaussian
 
+section
+section
+open MeasureTheory Set MvPolynomial ReciprocityTheory.MultiplicativeHeights GlobalTheory.SphereMeanDrop
+
+noncomputable section
+
+namespace GlobalTheory.SphereMeanDrop
+
+theorem measurePreserving_polar_gaussProb (n : ℕ) (hn : 0 < n) :
+    MeasurePreserving (fun p : UnitSphereC n × Ioi (0:ℝ) => (p.2 : ℝ) • (p.1 : EuclideanSpace ℂ (Fin n)))
+      ((sphereProb n).prod (radProb n)) (gaussProb n) := by
+  haveI : Nontrivial (EuclideanSpace ℂ (Fin n)) :=
+    Module.nontrivial_of_finrank_pos (R := ℝ) (by rw [finrank_euclidean_complex]; omega)
+  set f : UnitSphereC n × Ioi (0:ℝ) → EuclideanSpace ℂ (Fin n) :=
+    fun p => (p.2 : ℝ) • (p.1 : EuclideanSpace ℂ (Fin n)) with hf_def
+  set S := (volume : Measure (EuclideanSpace ℂ (Fin n))).toSphere with hS
+  set R0 := Measure.volumeIoiPow (2 * n - 1) with hR0
+  set h : Ioi (0:ℝ) → ENNReal := fun r => ENNReal.ofReal (Real.exp (-(r : ℝ) ^ 2)) with hh_def
+  set g : EuclideanSpace ℂ (Fin n) → ENNReal := fun x => ENNReal.ofReal (Real.exp (-‖x‖ ^ 2)) with hg_def
+  have hfm : Measurable f := by
+    apply Continuous.measurable
+    exact (continuous_subtype_val.comp continuous_snd).smul (continuous_subtype_val.comp continuous_fst)
+  have hhm : Measurable h := Measurable.ennreal_ofReal (by fun_prop)
+  have hgm : Measurable g := Measurable.ennreal_ofReal (by fun_prop)
+
+  have hA : MeasurePreserving f (S.prod R0) volume := by
+    have h1 := Measure.measurePreserving_homeomorphUnitSphereProd
+      (volume : Measure (EuclideanSpace ℂ (Fin n)))
+    rw [finrank_euclidean_complex] at h1
+    have h2 : MeasurePreserving (homeomorphUnitSphereProd (EuclideanSpace ℂ (Fin n))).toMeasurableEquiv
+      _ _ := h1
+    have h3 := h2.symm
+    have h4 : MeasurePreserving (Subtype.val : ({(0 : EuclideanSpace ℂ (Fin n))}ᶜ : Set _) → _)
+        ((volume : Measure (EuclideanSpace ℂ (Fin n))).comap Subtype.val) volume := by
+      refine ⟨measurable_subtype_coe, ?_⟩
+      rw [map_comap_subtype_coe (measurableSet_singleton _).compl, restrict_compl_singleton]
+    have h5 := h4.comp h3
+    convert h5 using 1
+    funext p
+    simp [hf_def]
+
+  have hB : MeasurePreserving f (S.prod (R0.withDensity h))
+      ((volume : Measure (EuclideanSpace ℂ (Fin n))).withDensity g) := by
+    refine ⟨hfm, ?_⟩
+    rw [prod_withDensity_right hhm]
+    ext s hs
+    rw [Measure.map_apply hfm hs, withDensity_apply _ (hfm hs), withDensity_apply _ hs]
+    have hpt : ∀ z : UnitSphereC n × Ioi (0:ℝ), h z.2 = g (f z) := by
+      intro z
+      simp only [hh_def, hg_def, hf_def, norm_smul, Real.norm_eq_abs, abs_of_pos (show (0:ℝ) < z.2 from z.2.2)]
+      have : ‖(z.1 : EuclideanSpace ℂ (Fin n))‖ = 1 := by simp
+      rw [this, mul_one]
+    simp_rw [hpt]
+    exact hA.setLIntegral_comp_preimage hs hgm
+
+  have ha0 : S univ ≠ 0 := by
+    rw [hS, Measure.toSphere_apply_univ, finrank_euclidean_complex]
+    exact mul_ne_zero (by simp; omega) (Metric.measure_ball_pos _ _ one_pos).ne'
+  have haT : S univ ≠ ⊤ := measure_ne_top _ _
+  have hsph : sphereProb n = (S univ)⁻¹ • S := sphereProb_eq n
+  have hrad : radProb n = ((R0.withDensity h) univ)⁻¹ • R0.withDensity h := by
+    simp only [radProb, ProbabilityTheory.cond, Measure.restrict_univ]; rfl
+  have hgau : gaussProb n = (((volume : Measure (EuclideanSpace ℂ (Fin n))).withDensity g) univ)⁻¹ •
+      (volume : Measure (EuclideanSpace ℂ (Fin n))).withDensity g := by
+    simp only [gaussProb, ProbabilityTheory.cond, Measure.restrict_univ]; rfl
+  have hmass : ((volume : Measure (EuclideanSpace ℂ (Fin n))).withDensity g) univ
+      = S univ * (R0.withDensity h) univ := by
+    rw [← hB.map_eq, Measure.map_apply hfm MeasurableSet.univ, preimage_univ, ← univ_prod_univ,
+      Measure.prod_prod]
+  refine ⟨hfm, ?_⟩
+  rw [hsph, hrad, hgau, Measure.prod_smul_left, Measure.prod_smul_right, smul_smul,
+    Measure.map_smul, hB.map_eq, hmass, ENNReal.mul_inv (Or.inl ha0) (Or.inl haT)]
+
+end GlobalTheory.SphereMeanDrop
+end
+end
+
+open MeasureTheory Set MvPolynomial ReciprocityTheory.MultiplicativeHeights GlobalTheory.SphereMeanDrop
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.measurePreserving_polar_gaussianProbabilityComplexSpace : ∀ (n : ℕ), 0 < n → MeasurePreserving (fun p : UnitSphereC n × Ioi (0:ℝ) => (p.2 : ℝ) • (p.1 : EuclideanSpace ℂ (Fin n))) ((sphereProb n).prod (radProb n)) (gaussProb n) := by
+  atlas_forward_decl GlobalTheory.SphereMeanDrop.measurePreserving_polar_gaussProb
+end
+
+section
+section
+open MeasureTheory Set MvPolynomial ReciprocityTheory.MultiplicativeHeights GlobalTheory.SphereMeanDrop
+
+namespace GlobalTheory.SphereMeanDrop
+
+theorem radProb_log_mean : ∀ (n : ℕ), 0 < n → IsProbabilityMeasure (radProb n) ∧
+    Integrable (fun r : Ioi (0:ℝ) => Real.log r) (radProb n) ∧
+    ∫ r, Real.log (r : ℝ) ∂(radProb n) = radK (2 * n - 1) / radJ (2 * n - 1) := by
+  intro n hn
+  set μ0 := Measure.volumeIoiPow (2 * n - 1) with hμ0
+  set f : Ioi (0:ℝ) → NNReal := fun r => Real.toNNReal (Real.exp (-(r : ℝ) ^ 2)) with hf
+  have hfm : Measurable f := by
+    rw [hf]; exact (by fun_prop : Measurable fun r : Ioi (0:ℝ) => Real.exp (-(r : ℝ) ^ 2)).real_toNNReal
+  have hν : (μ0.withDensity fun r => ENNReal.ofReal (Real.exp (-(r : ℝ) ^ 2)))
+      = μ0.withDensity fun r => (f r : ENNReal) := rfl
+  have hJi : Integrable (fun r : Ioi (0 : ℝ) ↦ Real.exp (-(r : ℝ) ^ 2)) μ0 :=
+    integrable_volumeIoiPow (k := 2 * n - 1) (g := fun r ↦ Real.exp (-r ^ 2)) (integrableOn_radJ _)
+  have hKo : IntegrableOn (fun r : ℝ ↦ r ^ (2 * n - 1) * (Real.log r * Real.exp (-r ^ 2))) (Ioi 0) := by
+    refine (integrableOn_radK (k := 2 * n - 1) (by omega)).congr_fun (fun r _ ↦ ?_)
+      measurableSet_Ioi
+    ring
+  have hKi : Integrable (fun r : Ioi (0 : ℝ) ↦ Real.log r * Real.exp (-(r : ℝ) ^ 2)) μ0 :=
+    integrable_volumeIoiPow (k := 2 * n - 1) (g := fun r ↦ Real.log r * Real.exp (-r ^ 2)) hKo
+  have hJv : ∫ r : Ioi (0 : ℝ), Real.exp (-(r : ℝ) ^ 2) ∂μ0 = radJ (2 * n - 1) := by
+    rw [hμ0, integral_volumeIoiPow (2 * n - 1) (fun r ↦ Real.exp (-r ^ 2))]; rfl
+  have hKv : ∫ r : Ioi (0 : ℝ), Real.log r * Real.exp (-(r : ℝ) ^ 2) ∂μ0 = radK (2 * n - 1) := by
+    rw [hμ0, integral_volumeIoiPow (2 * n - 1) (fun r ↦ Real.log r * Real.exp (-r ^ 2)), radK]
+    refine setIntegral_congr_fun measurableSet_Ioi fun r _ ↦ ?_
+    ring
+
+  have hmass : (μ0.withDensity fun r => ENNReal.ofReal (Real.exp (-(r : ℝ) ^ 2))) univ
+      = ENNReal.ofReal (radJ (2 * n - 1)) := by
+    rw [withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ, ← hJv,
+      ofReal_integral_eq_lintegral_ofReal hJi (Filter.Eventually.of_forall fun r => (Real.exp_pos _).le)]
+  have hJpos := radJ_pos (2 * n - 1)
+  have hm0 : (μ0.withDensity fun r => ENNReal.ofReal (Real.exp (-(r : ℝ) ^ 2))) univ ≠ 0 := by
+    rw [hmass]; exact ENNReal.ofReal_pos.2 hJpos |>.ne'
+  have hmt : (μ0.withDensity fun r => ENNReal.ofReal (Real.exp (-(r : ℝ) ^ 2))) univ ≠ ⊤ := by
+    rw [hmass]; exact ENNReal.ofReal_ne_top
+  have hcond : radProb n = ((μ0.withDensity fun r => ENNReal.ofReal (Real.exp (-(r : ℝ) ^ 2))) univ)⁻¹ •
+      (μ0.withDensity fun r => ENNReal.ofReal (Real.exp (-(r : ℝ) ^ 2))) := by
+    rw [radProb, ProbabilityTheory.cond, Measure.restrict_univ]
+  refine ⟨?_, ?_, ?_⟩
+  · rw [radProb]; exact ProbabilityTheory.cond_isProbabilityMeasure_of_finite hm0 hmt
+  · rw [hcond]
+    refine Integrable.smul_measure ?_ (ENNReal.inv_ne_top.2 hm0)
+    rw [hν, integrable_withDensity_iff_integrable_smul hfm]
+    refine hKi.congr (Filter.Eventually.of_forall fun r => ?_)
+    simp only [hf, NNReal.smul_def, smul_eq_mul, Real.coe_toNNReal _ (Real.exp_pos _).le]
+    ring
+  · rw [hcond, integral_smul_measure, hmass, hν, integral_withDensity_eq_integral_smul hfm]
+    have : ∫ r : Ioi (0:ℝ), f r • Real.log (r : ℝ) ∂μ0 = radK (2 * n - 1) := by
+      rw [← hKv]
+      refine integral_congr_ae (Filter.Eventually.of_forall fun r => ?_)
+      simp only [hf, NNReal.smul_def, smul_eq_mul, Real.coe_toNNReal _ (Real.exp_pos _).le]
+      ring
+    rw [this, ENNReal.toReal_inv, ENNReal.toReal_ofReal hJpos.le, smul_eq_mul, div_eq_inv_mul]
+
+end GlobalTheory.SphereMeanDrop
+end
+
+open MeasureTheory Set MvPolynomial ReciprocityTheory.MultiplicativeHeights GlobalTheory.SphereMeanDrop
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gaussianRadialLawProbability_log_integrable_mean : ∀ (n : ℕ), 0 < n → IsProbabilityMeasure (radProb n) ∧ Integrable (fun r : Ioi (0:ℝ) => Real.log r) (radProb n) ∧ ∫ r, Real.log (r : ℝ) ∂(radProb n) = radK (2 * n - 1) / radJ (2 * n - 1) := by
+  atlas_forward_decl GlobalTheory.SphereMeanDrop.radProb_log_mean
+end
+
+section
+open MeasureTheory Set MvPolynomial ReciprocityTheory.MultiplicativeHeights GlobalTheory.SphereMeanDrop
+
+noncomputable section
+
+namespace GlobalTheory.GaussMarginal
+
+open Real
+
+theorem lintegral_pi_fin {E : Type*} [MeasurableSpace E] (n : ℕ) (μ : Measure E) [SigmaFinite μ]
+    (f : Fin n → E → ENNReal) (hf : ∀ i, Measurable (f i)) :
+    ∫⁻ x : Fin n → E, ∏ i, f i (x i) ∂(Measure.pi fun _ => μ) = ∏ i, ∫⁻ t, f i t ∂μ := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    have h := (measurePreserving_piFinSuccAbove (fun _ : Fin (n + 1) => μ) 0).symm
+    rw [← h.lintegral_comp_emb (MeasurableEquiv.measurableEmbedding _), Fin.prod_univ_succ,
+      ← ih (fun i => f i.succ) (fun i => hf _), ← lintegral_prod_mul (hf 0).aemeasurable
+        (Finset.measurable_prod _ fun i _ => (hf i.succ).comp (measurable_pi_apply i)).aemeasurable]
+    refine lintegral_congr fun q => ?_
+    simp [Fin.prod_univ_succ, MeasurableEquiv.piFinSuccAbove_symm_apply, Fin.insertNthEquiv]
+
+theorem lintegral_pi_prod {ι E : Type*} [Fintype ι] [MeasurableSpace E] (μ : Measure E) [SigmaFinite μ]
+    (f : ι → E → ENNReal) (hf : ∀ i, Measurable (f i)) :
+    ∫⁻ x : ι → E, ∏ i, f i (x i) ∂(Measure.pi fun _ => μ) = ∏ i, ∫⁻ t, f i t ∂μ := by
+  let e := (Fintype.equivFin ι).symm
+  have h := measurePreserving_piCongrLeft (fun _ : ι => μ) e
+  rw [← h.lintegral_comp_emb (MeasurableEquiv.measurableEmbedding _), ← e.prod_comp,
+    ← lintegral_pi_fin _ μ (fun i => f (e i)) (fun i => hf _)]
+  refine lintegral_congr fun q => ?_
+  rw [← e.prod_comp]
+  simp [MeasurableEquiv.coe_piCongrLeft]
+
+theorem pi_withDensity_const {ι E : Type*} [Fintype ι] [MeasurableSpace E] (μ : Measure E)
+    [SigmaFinite μ] (f : E → ENNReal) (hf : Measurable f) [SigmaFinite (μ.withDensity f)] :
+    (Measure.pi fun _ : ι => μ.withDensity f) =
+      (Measure.pi fun _ : ι => μ).withDensity fun x => ∏ i, f (x i) := by
+  refine Measure.pi_eq fun s hs => ?_
+  rw [withDensity_apply _ (MeasurableSet.univ_pi hs), ← lintegral_indicator (MeasurableSet.univ_pi hs)]
+  simp_rw [withDensity_apply _ (hs _), ← lintegral_indicator (hs _)]
+  rw [← lintegral_pi_prod μ (fun i => (s i).indicator f) (fun i => hf.indicator (hs i))]
+  refine lintegral_congr fun x => ?_
+  by_cases hx : x ∈ Set.univ.pi s
+  · rw [Set.indicator_of_mem hx]
+    exact Finset.prod_congr rfl fun i _ => (Set.indicator_of_mem (hx i trivial) _).symm
+  · rw [Set.indicator_of_notMem hx]
+    obtain ⟨i, hi⟩ : ∃ i, x i ∉ s i := by simpa [Set.mem_pi] using hx
+    exact (Finset.prod_eq_zero (Finset.mem_univ i) (Set.indicator_of_notMem hi _)).symm
+
+theorem isProbabilityMeasure_complexGaussian_one :
+    IsProbabilityMeasure (GlobalTheory.complexGaussian ℂ 1) :=
+  GlobalTheory.isProbabilityMeasure_complexGaussian (by simp [Complex.finrank_real_complex])
+
+theorem gaussProb_eq_complexGaussian (k : ℕ) :
+    gaussProb k = GlobalTheory.complexGaussian (EuclideanSpace ℂ (Fin k)) k := by
+  have hP := GlobalTheory.isProbabilityMeasure_complexGaussian (E := EuclideanSpace ℂ (Fin k)) (g := k)
+    (by rw [GlobalTheory.finrank_real_euclideanSpace_complex, Fintype.card_fin])
+  set ν := (volume : Measure (EuclideanSpace ℂ (Fin k))).withDensity
+    fun x => ENNReal.ofReal (Real.exp (-‖x‖ ^ 2)) with hν
+  have hm : Measurable fun x : EuclideanSpace ℂ (Fin k) => ENNReal.ofReal (Real.exp (-‖x‖ ^ 2)) := by
+    fun_prop
+  have hc : GlobalTheory.complexGaussian (EuclideanSpace ℂ (Fin k)) k = ENNReal.ofReal ((π ^ k)⁻¹) • ν := by
+    ext s hs
+    rw [Measure.smul_apply, GlobalTheory.complexGaussian, withDensity_apply _ hs, hν, withDensity_apply _ hs,
+      smul_eq_mul, ← lintegral_const_mul _ hm]
+    refine lintegral_congr fun x => ?_
+    rw [ENNReal.ofReal_mul (by positivity)]
+  have h1 := hP.measure_univ
+  rw [hc, Measure.smul_apply, smul_eq_mul] at h1
+  rw [gaussProb, ProbabilityTheory.cond, Measure.restrict_univ, hc, ← hν,
+    ← ENNReal.eq_inv_of_mul_eq_one_left h1]
+
+theorem map_ofLp_gaussProb (k : ℕ) :
+    (gaussProb k).map (WithLp.ofLp (p := 2) (V := Fin k → ℂ)) =
+      Measure.pi fun _ : Fin k => GlobalTheory.complexGaussian ℂ 1 := by
+  haveI := isProbabilityMeasure_complexGaussian_one
+  have hmp := GlobalTheory.volume_preserving_ofLp_complex (Fin k)
+  set f1 : ℂ → ENNReal := fun z => ENNReal.ofReal ((π ^ 1)⁻¹ * Real.exp (-‖z‖ ^ 2)) with hf1
+  have hf1m : Measurable f1 := by fun_prop
+  haveI : SigmaFinite ((volume : Measure ℂ).withDensity f1) :=
+    inferInstanceAs (SigmaFinite (GlobalTheory.complexGaussian ℂ 1))
+  have hG : Measurable fun y : Fin k → ℂ => ∏ i, f1 (y i) := by fun_prop
+  ext s hs
+  rw [Measure.map_apply hmp.measurable hs, gaussProb_eq_complexGaussian, GlobalTheory.complexGaussian,
+    withDensity_apply _ (hmp.measurable hs), show GlobalTheory.complexGaussian ℂ 1 = (volume : Measure ℂ).withDensity f1 from rfl,
+    pi_withDensity_const _ f1 hf1m, ← volume_pi, withDensity_apply _ hs,
+    ← hmp.setLIntegral_comp_preimage hs hG]
+  refine lintegral_congr fun x => ?_
+  simp only [hf1]
+  rw [← ENNReal.ofReal_prod_of_nonneg (fun i _ => by positivity), Finset.prod_mul_distrib,
+    ← Real.exp_sum, Finset.prod_const, Finset.card_univ, Fintype.card_fin, EuclideanSpace.norm_sq_eq,
+    ← Finset.sum_neg_distrib, pow_one, inv_pow]
+
+theorem measurePreserving_restrict_castLE {α : Type*} [MeasurableSpace α] (μ : Measure α)
+    [IsProbabilityMeasure μ] {N n : ℕ} (h : N ≤ n) :
+    MeasurePreserving (fun (y : Fin n → α) (j : Fin N) => y (Fin.castLE h j))
+      (Measure.pi fun _ => μ) (Measure.pi fun _ => μ) := by
+  obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le h
+  have hr : Measurable fun (y : Fin (N + m) → α) (j : Fin N) => y (Fin.castLE h j) :=
+    measurable_pi_lambda _ fun j => measurable_pi_apply _
+  refine ⟨hr, (Measure.pi_eq fun s hs => ?_).symm⟩
+  rw [Measure.map_apply hr (MeasurableSet.univ_pi hs)]
+  have hpre : (fun (y : Fin (N + m) → α) (j : Fin N) => y (Fin.castLE h j)) ⁻¹' univ.pi s =
+      univ.pi (Fin.append s fun _ : Fin m => (univ : Set α)) := by
+    ext y
+    simp only [mem_preimage, mem_univ_pi]
+    constructor
+    · intro hy i
+      refine Fin.addCases (fun j => ?_) (fun j => ?_) i
+      · rw [Fin.append_left]; exact hy j
+      · rw [Fin.append_right]; exact mem_univ _
+    · intro hy j
+      have := hy (Fin.castAdd m j)
+      rwa [Fin.append_left] at this
+  rw [hpre, Measure.pi_pi, Fin.prod_univ_add]
+  simp [Fin.append_left, Fin.append_right]
+
+theorem measurePreserving_firstCoords_gaussProb :
+    ∀ (N n : ℕ) (h : N ≤ n), MeasurePreserving (firstCoords h) (gaussProb n) (gaussProb N) := by
+  intro N n h
+  haveI := isProbabilityMeasure_complexGaussian_one
+  have hofn : Measurable (WithLp.ofLp (p := 2) (V := Fin n → ℂ)) :=
+    (GlobalTheory.volume_preserving_ofLp_complex (Fin n)).measurable
+  have hofN : Measurable (WithLp.ofLp (p := 2) (V := Fin N → ℂ)) :=
+    (GlobalTheory.volume_preserving_ofLp_complex (Fin N)).measurable
+  have htoN : Measurable (WithLp.toLp 2 : (Fin N → ℂ) → EuclideanSpace ℂ (Fin N)) := by fun_prop
+  have e1 : MeasurePreserving (WithLp.ofLp (p := 2) (V := Fin n → ℂ)) (gaussProb n)
+      (Measure.pi fun _ : Fin n => GlobalTheory.complexGaussian ℂ 1) := ⟨hofn, map_ofLp_gaussProb n⟩
+  have e3 : MeasurePreserving (WithLp.toLp 2 : (Fin N → ℂ) → EuclideanSpace ℂ (Fin N))
+      (Measure.pi fun _ : Fin N => GlobalTheory.complexGaussian ℂ 1) (gaussProb N) := by
+    refine ⟨htoN, ?_⟩
+    rw [← map_ofLp_gaussProb N, Measure.map_map htoN hofN]
+    convert Measure.map_id
+    funext x
+    rfl
+  exact e3.comp ((measurePreserving_restrict_castLE _ h).comp e1)
+
+end GlobalTheory.GaussMarginal
+end
+end
+
+section
+open MeasureTheory Set MvPolynomial ReciprocityTheory.MultiplicativeHeights GlobalTheory.SphereMeanDrop
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gaussian_first_coords_measure_preserving : ∀ (N n : ℕ) (h : N ≤ n), MeasurePreserving (firstCoords h) (gaussProb n) (gaussProb N) := by
+  first | exact @GlobalTheory.GaussMarginal.measurePreserving_firstCoords_gaussProb | exact GlobalTheory.GaussMarginal.measurePreserving_firstCoords_gaussProb | (intros; apply GlobalTheory.GaussMarginal.measurePreserving_firstCoords_gaussProb <;> assumption)
+end
+
+section
+section
+open MeasureTheory Set MvPolynomial ReciprocityTheory.MultiplicativeHeights GlobalTheory.SphereMeanDrop
+
+noncomputable section
+
+namespace GlobalTheory.SphereMeanNull
+
+theorem exists_blockSphere_eval_ne_zero {B n : ℕ} (hn : 0 < n) {a : Fin B → ℕ}
+    {g : MvPolynomial (Fin B × Fin n) ℂ} (hg0 : g ≠ 0) (hg : IsMultiHomogeneous a g) :
+    ∃ u : BlockSphere B n, eval (blockPoint u) g ≠ 0 := by
+  obtain ⟨s, hs⟩ := MvPolynomial.ne_zero_iff.mp hg0
+  obtain ⟨z, hz1, hz⟩ := exists_torus_coeff_le g s
+  set r : ℝ := (Real.sqrt n)⁻¹ with hrdef
+  have hnR : (0 : ℝ) < n := by exact_mod_cast hn
+  have hr : 0 < r := inv_pos.mpr (Real.sqrt_pos.mpr hnR)
+  have hr2 : r ^ 2 * n = 1 := by
+    rw [hrdef, inv_pow, Real.sq_sqrt hnR.le, inv_mul_cancel₀ hnR.ne']
+  let u : BlockSphere B n := fun b => ⟨WithLp.toLp 2 (fun j => (r : ℂ) * z (b, j)), by
+    rw [mem_sphere_zero_iff_norm, EuclideanSpace.norm_eq]
+    simp only [norm_mul, Complex.norm_real, Real.norm_of_nonneg hr.le, hz1, mul_one]
+    rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, mul_comm, hr2,
+      Real.sqrt_one]⟩
+  have hbp : blockPoint u = fun p => (r : ℂ) * z p := rfl
+  have heval : eval (blockPoint u) g = (r : ℂ) ^ (∑ b, a b) * eval z g := by
+    rw [hbp]; exact eval_mul_of_isMultiHomogeneous hg _ z
+  have hne : eval z g ≠ 0 := norm_pos_iff.mp (lt_of_lt_of_le (norm_pos_iff.mpr hs) hz)
+  exact ⟨u, by rw [heval]; exact mul_ne_zero (pow_ne_zero _ (by exact_mod_cast hr.ne')) hne⟩
+
+theorem blockSphereProb_zeroSet_eq_zero : ∀ (B n : ℕ) (a : Fin B → ℕ)
+    (g : MvPolynomial (Fin B × Fin n) ℂ), 0 < n → g ≠ 0 → IsMultiHomogeneous a g →
+    blockSphereProb B n {z | eval (blockPoint z) g = 0} = 0 := by
+  intro B n a g hn hg0 hg
+  obtain ⟨u, hu⟩ := exists_blockSphere_eval_ne_zero hn hg0 hg
+  exact null_of_logBound hn ReciprocityTheory.MultiplicativeHeights.Closed.sphereLogIntegrable
+    (blockSphere_logMean_bound ReciprocityTheory.MultiplicativeHeights.Closed.sj ReciprocityTheory.MultiplicativeHeights.Closed.sphereLogIntegrable hn B)
+    a g u hg hu
+
+end GlobalTheory.SphereMeanNull
+end
+end
+
+open MeasureTheory Set MvPolynomial ReciprocityTheory.MultiplicativeHeights GlobalTheory.SphereMeanDrop
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.blockSphereProb_zeroSet_eq_zero_of_ne_zero : ∀ (B n : ℕ) (a : Fin B → ℕ) (g : MvPolynomial (Fin B × Fin n) ℂ), 0 < n → g ≠ 0 → IsMultiHomogeneous a g → blockSphereProb B n {z | eval (blockPoint z) g = 0} = 0 := by
+  atlas_forward_decl GlobalTheory.SphereMeanNull.blockSphereProb_zeroSet_eq_zero
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.SphereMeanDrop
@@ -241,3 +588,5 @@ theorem blockSphereMean_incl (B N n δ : ℕ) (f : MvPolynomial (Fin B × Fin N)
   linear_combination hIn.symm + (B : ℝ) * δ * hr
 
 end GlobalTheory.SphereMeanDrop
+end
+end

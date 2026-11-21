@@ -115,12 +115,6 @@ theorem p_add_comm (hx : Z x) (hy : Z y) : G.add x y = G.add y x := by
   evs at this
   exact this.symm
 
-theorem p_add_assoc (hx : Z x) (hy : Z y) (hz : Z z) : G.add (G.add x y) z = G.add x (G.add y z) := by
-  have h : G.add (G.add (pt R (n := 3) d 0) (pt R d 1)) (pt R d 2) =
-      G.add (pt R d 0) (G.add (pt R d 1) (pt R d 2)) := funext G.assoc
-  have := congrArg (ep ![x, y, z]) h
-  evs at this
-  exact this
 
 theorem p_add_zero (hx : Z x) : G.add x 0 = x := by
   rw [p_add_comm G hx Z_zero, p_zero_add G hx]
@@ -145,9 +139,6 @@ theorem act_comm (a b : O) (hx : Z x) :
     comp1 (A.act a) (comp1 (A.act b) x) = comp1 (A.act b) (comp1 (A.act a) x) := by
   rw [← mul_act A a b hx, ← mul_act A b a hx, mul_comm]
 
-theorem succ_act (k : ℕ) (hx : Z x) :
-    comp1 (A.act ((k + 1 : ℕ) : O)) x = G.add (comp1 (A.act (k : O)) x) x := by
-  rw [Nat.cast_succ, add_act A _ _ hx, A.one_act, germ_comp1_zero_point_left _ hx]
 
 end Law
 

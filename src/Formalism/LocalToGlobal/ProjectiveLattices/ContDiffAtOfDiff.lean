@@ -64,61 +64,8 @@ theorem eps_zero (X : PT E) : X.eps 0 = 1 := by
   · rw [h1] at h
     norm_num [Hf] at h
 
-theorem eps_natSmul (X : PT E) {x : Vsp X.dim} (hx : x ∈ X.L) (k : ℕ) :
-    (X.eps ((k : ℂ) • x) : ℝ) = (X.eps x : ℝ) ^ k := by
-  induction k with
-  | zero => simp [eps_zero]
-  | succ k ih =>
-    have hkx : (k : ℂ) • x ∈ X.L := by
-      rw [Nat.cast_smul_eq_nsmul]; exact nsmul_mem hx k
-    have h := X.eps_add _ hkx x hx
-    have him : (Hf ((k : ℂ) • x) x).im = 0 := by
-      unfold Hf
-      rw [Complex.im_sum]
-      refine Finset.sum_eq_zero fun i _ => ?_
-      simp [PiLp.smul_apply, mul_assoc, Complex.mul_conj]
-    rw [show ((k + 1 : ℕ) : ℂ) • x = (k : ℂ) • x + x by push_cast; rw [add_smul, one_smul], h, ih, him]
-    simp [pow_succ]
 
-theorem isPi_nat (X : PT E) (M : ℕ) : IsPi X (M ^ 2) ((M : ℂ) • LinearMap.id) := by
-  refine ⟨fun α v => ?_, fun x hx => ?_, fun v w => ?_, fun x hx => ?_⟩
-  · simp only [LinearMap.smul_apply, LinearMap.id_apply]
-    ext i
-    simp [act]
-    ring
-  · simp only [LinearMap.smul_apply, LinearMap.id_apply]
-    rw [Nat.cast_smul_eq_nsmul]
-    exact nsmul_mem hx M
-  · simp only [LinearMap.smul_apply, LinearMap.id_apply]
-    unfold Hf
-    rw [Finset.mul_sum]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    simp
-    ring
-  · simp only [LinearMap.smul_apply, LinearMap.id_apply]
-    have h := eps_natSmul X hx M
-    have h2 : (X.eps x : ℝ) ^ M = (X.eps x : ℝ) ^ (M ^ 2) := by
-      rcases X.eps_pm x hx with h1 | h1
-      · simp [h1]
-      · rw [h1]
-        push_cast
-        rw [sq, pow_mul]
-        rcases neg_one_pow_eq_or ℝ M with h3 | h3 <;> simp [h3]
-    exact_mod_cast h.trans h2
 
-theorem one_le_n_of_DF {n nb : ℕ} {dim : (E →+* ℂ) → ℕ} (bs : Fin nb → Block E n dim) (h : 1 ≤ DF bs) :
-    1 ≤ n := by
-  by_contra hn
-  have h0 : n = 0 := by omega
-  subst h0
-  have : DF bs = 0 := by
-    unfold DF
-    refine Finset.sum_eq_zero fun j _ => ?_
-    have : (bs j).i = 0 := by
-      by_contra hi
-      exact Fin.elim0 ((bs j).col ⟨0, by omega⟩)
-    simp [this]
-  omega
 
 end Pi
 

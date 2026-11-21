@@ -1,9 +1,143 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.RangeShape
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CutoffMulPolyMemCcMat
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ImportsLastSide
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsBiFiniteSubspace
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsMulCommutativeCentRealUJ
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsCompactPseudoUnitaryOffDiagNormSublevelStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPolyEntriesConjLeftRightMul
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OffDiagBlockNormContInvStatement
 
+section
+open MeasureTheory Matrix GlobalTheory.Orb
+open Formalism.REAL (UJ KG toM toMK muK expG inG Jm Kset)
+open scoped ContDiff
+
+namespace GlobalTheory.CutoffPoly
+
+theorem contDiff_entry {n : ℕ} (i j : Fin n) : ContDiff ℝ ∞ (fun M : Fin n → Fin n → ℂ => M i j) :=
+  (contDiff_apply ℝ ℂ j).comp (contDiff_apply ℝ (Fin n → ℂ) i)
+
+theorem contDiff_eval {X σ : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X] (c : σ → X → ℂ)
+    (hc : ∀ s, ContDiff ℝ ∞ (c s)) (P : MvPolynomial σ ℂ) :
+    ContDiff ℝ ∞ (fun x => MvPolynomial.eval (fun s => c s x) P) := by
+  induction P using MvPolynomial.induction_on with
+  | C a => simpa using contDiff_const
+  | add p q hp hq => simpa using hp.add hq
+  | mul_X p s hp => simpa using hp.mul (hc s)
+
+theorem cutoff_mul_poly_mem_ccMat : ∀ (n : ℕ) (ε : Fin n → Bool) (F : ℝ → ℝ) (R : ℝ), ContDiff ℝ ∞ F → (∀ x, R ≤ x → F x = 0) → ∀ P : MvPolynomial ((Fin n × Fin n) ⊕ (Fin n × Fin n)) ℂ, (fun g : UJ ε => ((F (∑ z : {z : Fin n × Fin n // ε z.1 = true ∧ ε z.2 = false}, ‖(toM g) z.1.1 z.1.2‖ ^ 2) : ℝ) : ℂ) * MvPolynomial.eval (Sum.elim (fun z : Fin n × Fin n => (toM g) z.1 z.2) (fun z : Fin n × Fin n => star ((toM g) z.1 z.2))) P) ∈ CcMat (ujMat ε) := by
+  intro n ε F R hF hR P
+  refine mem_ccSmooth.2 ⟨?_, fun M : Fin n → Fin n → ℂ =>
+    ((F (∑ z : {z : Fin n × Fin n // ε z.1 = true ∧ ε z.2 = false}, ‖M z.1.1 z.1.2‖ ^ 2) : ℝ) : ℂ) *
+      MvPolynomial.eval (fun s => Sum.elim (fun (z : Fin n × Fin n) (M : Fin n → Fin n → ℂ) => M z.1 z.2)
+        (fun (z : Fin n × Fin n) (M : Fin n → Fin n → ℂ) => star (M z.1 z.2)) s M) P, ?_, ?_⟩
+  · refine HasCompactSupport.intro (GlobalTheory.T.isCompact_pseudoUnitary_offDiag_norm_sublevel n ε R) fun g hg => ?_
+    have h : R ≤ ∑ z : {z : Fin n × Fin n // ε z.1 = true ∧ ε z.2 = false}, ‖(toM g) z.1.1 z.1.2‖ ^ 2 :=
+      (not_le.1 hg).le
+    rw [hR _ h]; simp
+  · refine ContDiff.mul (Complex.ofRealCLM.contDiff.comp (hF.comp ?_)) (contDiff_eval _ ?_ P)
+    · exact ContDiff.sum fun z _ => (contDiff_norm_sq ℂ).comp (contDiff_entry _ _)
+    · rintro (z | z)
+      · exact contDiff_entry _ _
+      · exact Complex.conjCLE.contDiff.comp (contDiff_entry z.1 z.2)
+  · intro g
+    congr 3
+    funext s
+    rcases s with z | z <;> rfl
+
+end GlobalTheory.CutoffPoly
+end
+
+section
+open MvPolynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_poly_entries_conj_left_right_mul : ∀ (n : ℕ) (a b : Matrix (Fin n) (Fin n) ℂ) (P : MvPolynomial ((Fin n × Fin n) ⊕ (Fin n × Fin n)) ℂ), ∃ Q : MvPolynomial ((Fin n × Fin n) ⊕ (Fin n × Fin n)) ℂ, Q.totalDegree ≤ P.totalDegree ∧ ∀ g : Matrix (Fin n) (Fin n) ℂ, MvPolynomial.eval (Sum.elim (fun z : Fin n × Fin n => (a * g * b) z.1 z.2) (fun z : Fin n × Fin n => star ((a * g * b) z.1 z.2))) P = MvPolynomial.eval (Sum.elim (fun z : Fin n × Fin n => (g) z.1 z.2) (fun z : Fin n × Fin n => star ((g) z.1 z.2))) Q := by
+  first | exact @GlobalTheory.PolyEntryMul.main | exact GlobalTheory.PolyEntryMul.main | (intros; apply GlobalTheory.PolyEntryMul.main <;> assumption)
+end
+
+section
+open MeasureTheory Matrix GlobalTheory.Orb
+open Formalism.REAL (UJ KG toM toMK muK expG inG Jm Kset)
+open scoped ContDiff
+
+namespace GlobalTheory.PolyShapeFinite
+
+theorem main : ∀ (n : ℕ) (ε : Fin n → Bool) (F : ℝ → ℝ) (P : MvPolynomial ((Fin n × Fin n) ⊕ (Fin n × Fin n)) ℂ), IsBiFinite (KG ε) (fun g : UJ ε => ((F (∑ z : {z : Fin n × Fin n // ε z.1 = true ∧ ε z.2 = false}, ‖(toM g) z.1.1 z.1.2‖ ^ 2) : ℝ) : ℂ) * MvPolynomial.eval (Sum.elim (fun z : Fin n × Fin n => (toM g) z.1 z.2) (fun z : Fin n × Fin n => star ((toM g) z.1 z.2))) P) := by
+  intro n ε F P
+  let r : UJ ε → ℝ := fun g => ∑ z : {z : Fin n × Fin n // ε z.1 = true ∧ ε z.2 = false}, ‖(toM g) z.1.1 z.1.2‖ ^ 2
+  let ev : UJ ε → ((Fin n × Fin n) ⊕ (Fin n × Fin n)) → ℂ := fun g =>
+    Sum.elim (fun z : Fin n × Fin n => (toM g) z.1 z.2) (fun z : Fin n × Fin n => star ((toM g) z.1 z.2))
+  let L : MvPolynomial ((Fin n × Fin n) ⊕ (Fin n × Fin n)) ℂ →ₗ[ℂ] (UJ ε → ℂ) :=
+    { toFun := fun Q g => ((F (r g) : ℝ) : ℂ) * MvPolynomial.eval (ev g) Q
+      map_add' := fun Q Q' => by funext g; simp [mul_add]
+      map_smul' := fun c Q => by funext g; simp [MvPolynomial.smul_eq_C_mul, mul_left_comm] }
+  unfold IsBiFinite
+  have hle : Submodule.span ℂ {φ : UJ ε → ℂ | ∃ k ∈ KG ε, ∃ k' ∈ KG ε, φ = fun g =>
+      ((F (r (k * g * k')) : ℝ) : ℂ) * MvPolynomial.eval (ev (k * g * k')) P} ≤
+      (MvPolynomial.restrictTotalDegree _ ℂ P.totalDegree).map L := by
+    rw [Submodule.span_le]
+    rintro φ ⟨k, hk, k', hk', rfl⟩
+    obtain ⟨Q, hQ, hQe⟩ := GlobalTheory.T.exists_poly_entries_conj_left_right_mul n (toM k) (toM k') P
+    refine ⟨Q, (MvPolynomial.mem_restrictTotalDegree _ _ _).2 hQ, ?_⟩
+    funext g
+    have h1 : r (k * g * k') = r g := (GlobalTheory.T.offDiagBlockNorm_mul_invariant n ε).2 ⟨k, hk⟩ ⟨k', hk'⟩ g
+    have h2 : toM (k * g * k') = toM k * toM g * toM k' := rfl
+    have h3 : MvPolynomial.eval (ev (k * g * k')) P = MvPolynomial.eval (ev g) Q := by
+      simp only [ev, h2]; exact hQe (toM g)
+    show ((F (r g) : ℝ) : ℂ) * MvPolynomial.eval (ev g) Q = _
+    rw [h1, h3]
+  exact Submodule.finiteDimensional_of_le hle
+
+end GlobalTheory.PolyShapeFinite
+end
+
+section
+open MeasureTheory Matrix GlobalTheory.Orb
+open Formalism.REAL (UJ KG toM toMK muK expG inG Jm Kset)
+open scoped ContDiff
+
+namespace GlobalTheory
+
+private lemma span_add_le {H : Type} [Group H] (K : Subgroup H) (f f' : H → ℂ) :
+    Submodule.span ℂ {φ : H → ℂ | ∃ k ∈ K, ∃ k' ∈ K, φ = fun g => (f + f') (k * g * k')} ≤
+      Submodule.span ℂ {φ : H → ℂ | ∃ k ∈ K, ∃ k' ∈ K, φ = fun g => f (k * g * k')} ⊔
+      Submodule.span ℂ {φ : H → ℂ | ∃ k ∈ K, ∃ k' ∈ K, φ = fun g => f' (k * g * k')} := by
+  refine Submodule.span_le.2 ?_
+  rintro φ ⟨k, hk, k', hk', rfl⟩
+  refine Submodule.mem_sup.2 ⟨_, Submodule.subset_span ⟨k, hk, k', hk', rfl⟩, _,
+    Submodule.subset_span ⟨k, hk, k', hk', rfl⟩, ?_⟩
+  funext g; simp
+
+private lemma span_smul_le {H : Type} [Group H] (K : Subgroup H) (c : ℂ) (f : H → ℂ) :
+    Submodule.span ℂ {φ : H → ℂ | ∃ k ∈ K, ∃ k' ∈ K, φ = fun g => (c • f) (k * g * k')} ≤
+      Submodule.span ℂ {φ : H → ℂ | ∃ k ∈ K, ∃ k' ∈ K, φ = fun g => f (k * g * k')} := by
+  refine Submodule.span_le.2 ?_
+  rintro φ ⟨k, hk, k', hk', rfl⟩
+  have : (fun g => (c • f) (k * g * k')) = c • fun g => f (k * g * k') := by funext g; simp
+  rw [SetLike.mem_coe, this]
+  exact Submodule.smul_mem _ c (Submodule.subset_span ⟨k, hk, k', hk', rfl⟩)
+
+private lemma span_zero_le {H : Type} [Group H] (K : Subgroup H) :
+    Submodule.span ℂ {φ : H → ℂ | ∃ k ∈ K, ∃ k' ∈ K, φ = fun g => (0 : H → ℂ) (k * g * k')} ≤ ⊥ := by
+  refine Submodule.span_le.2 ?_
+  rintro φ ⟨k, hk, k', hk', rfl⟩
+  simp only [SetLike.mem_coe, Submodule.mem_bot]
+  rfl
+
+theorem isBiFinite_subspace : ∀ (H : Type) [Group H] (K : Subgroup H), IsBiFinite K (0 : H → ℂ) ∧
+    (∀ f f' : H → ℂ, IsBiFinite K f → IsBiFinite K f' → IsBiFinite K (f + f')) ∧
+    ∀ (c : ℂ) (f : H → ℂ), IsBiFinite K f → IsBiFinite K (c • f) := by
+  intro H _ K
+  refine ⟨?_, fun f f' hf hf' => ?_, fun c f hf => ?_⟩
+  · unfold IsBiFinite
+    exact Submodule.finiteDimensional_of_le (span_zero_le K)
+  · unfold IsBiFinite at *
+    exact Submodule.finiteDimensional_of_le (span_add_le K f f')
+  · unfold IsBiFinite at *
+    exact Submodule.finiteDimensional_of_le (span_smul_le K c f)
+
+end GlobalTheory
+end
+
+section
 open GlobalTheory.Orb GlobalTheory.PsCo.Pc1
 open Formalism.REAL (UJ KG toM)
 
@@ -29,3 +163,4 @@ theorem stShape : GlobalTheory.PsCo.Pc1.StShape := by
   exact ⟨h1, h2, continuous_of_mem_ccSmooth (continuous_matCoord_ujMat ε) h1, (mem_ccSmooth.1 h1).1⟩
 
 end GlobalTheory.ShapeSmoothFinite
+end

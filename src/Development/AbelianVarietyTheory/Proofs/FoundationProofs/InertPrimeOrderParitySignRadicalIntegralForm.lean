@@ -1,7 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IdxEqRelIndex
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsSplitPart
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.OddnessConditionHolds
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CharacterTrivialAtInertPrimesStatement
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaPullbackFirstGroupRationalPointEqSmul
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsNormOneScalarAvoidingMatrixEigenvalues
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaSpanRationalTranslatesVacuum
@@ -9,12 +10,757 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.OmEqPullOfVacuum
 import Formalism.SharpRestriction.Divisibility.BoundaryLocalData
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FrameEmbeddingUniqueFixed
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ConstOfEquivariant
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RelIndexImageOneSubComplexLinearEquiv
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaTranslationIntertwinerUnitary
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CharacterAtInertComponent
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RelIndexNeZeroOfMoves
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaLatticeIndex
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ProdSqNormEmbT
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FrameEmbeddingUniqueFixedStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaLatticeImageRationalHomLattice
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsGeneratorCmDifferentIdealScaled
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IdealPeriodLatticeOfCurveDatum
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.QuadraticCharNegOne
 
+section
+noncomputable section
+
+open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum
+open scoped BigOperators
+
+namespace GlobalTheory.VacuumEven
+
+open GlobalTheory.VacuumScalar GlobalTheory.NormSum.VacMove
+
+variable {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} {N N' : ℕ}
+
+theorem exists_scalar (hc : Crv D cc δ) {e0 : VC D N N' → ℂ}
+    (he : e0 ∈ Th D (tor0 D cc δ) (stdL D N) (stdL D N')) (W : WeilO D cc δ N N' e0) {g : GA D N} {g' : GA D N'}
+    {L L'} (hL : Moves D (g : GL (Fin N) (AE D)) L) (hL' : Moves D (g' : GL (Fin N') (AE D)) L') :
+    ∃ c : ℂ, W.Om g g' e0 = c •
+      Iop D (tor0 D cc δ) (La0 D (tor0 D cc δ) N N') (La D (tor0 D cc δ) L L') e0 := by
+  have hg1 := (GlobalTheory.InducedType.induced_type D).1
+  have k0 : KLat D (tor0 D cc δ) (La0 D (tor0 D cc δ) N N') :=
+    Or.inr ⟨_, _, sd_of_moves (moves_one D N), sd_of_moves (moves_one D N'), rfl⟩
+  have k1 : KLat D (tor0 D cc δ) (La D (tor0 D cc δ) L L') := Or.inr ⟨_, _, sd_of_moves hL, sd_of_moves hL', rfl⟩
+  obtain ⟨-, hTh, -, -⟩ := GlobalTheory.T.intertwinerUnitary_all D cc δ hc N N' _ _ k0 k1 e0 he
+  obtain ⟨a1, -, a3, a4, -, a6, -⟩ := lattice_facts hc he W.nz hL hL'
+  obtain ⟨hline, hW, -⟩ := GlobalTheory.T.theta_space_selfDual_pair_at_most_line D hg1 cc δ hc N N' _ k1
+  have heT : e0 ∈ TT D (tor0 D cc δ) N N' := ⟨he.1, 1, one_pos, fun y hy => by rw [one_smul]; exact a6 y hy⟩
+  have hF := W.maps g g' e0 heT
+  refine hline _ ⟨hF.1, fun x hx => ?_⟩ _ hTh a1
+  suffices hs : Wd D (tor0 D cc δ) x (W.Om g g' e0) = W.Om g g' e0 by
+    rw [hW x hx] at hs; exact congrFun hs
+  have hWT : Wd D (tor0 D cc δ) x (W.Om g g' e0) ∈ TT D (tor0 D cc δ) N N' := by
+    obtain ⟨hd, m, hm, hfix⟩ := hF
+    refine ⟨Wd_differentiable _ hd, _, Nat.mul_pos hm (Nat.pos_of_ne_zero a4), fun y hy => ?_⟩
+    have h1 := AddSubgroup.nsmul_mem _ (AddSubgroup.nsmul_relIndex_mem (La D (tor0 D cc δ) L L') hy) m
+    have h2 := hfix _ (AddSubgroup.nsmul_mem _ hy
+      ((La D (tor0 D cc δ) L L').relIndex (La0 D (tor0 D cc δ) N N')))
+    rw [smul_smul] at h1 h2
+    rw [← Wl_apply, ← Wl_apply, ← Module.End.mul_apply, ← a3 _ h1 _ hx, add_comm, a3 _ hx _ h1,
+      Module.End.mul_apply, Wl_apply, Wl_apply, h2]
+    rfl
+  obtain ⟨y, hy, hyW⟩ := GlobalTheory.T.weilOperator_conj_heisenberg_moved_lattice D hg1 cc δ hc.1.1 N N' e0 W g⁻¹ g g'⁻¹ g' L _ L' _ hL hL'
+    (by rw [inv_mul_cancel]; exact moves_one D N) (by rw [inv_mul_cancel]; exact moves_one D N') x hx _ hF
+  rw [← W.mul _ _ _ _ _ heT, inv_mul_cancel, inv_mul_cancel, W.one _ heT, ← Wl_apply y, a6 y hy] at hyW
+  have := congrArg (W.Om g g') hyW
+  rwa [← W.mul _ _ _ _ _ hWT, mul_inv_cancel, mul_inv_cancel, W.one _ hWT] at this
+
+
+
+end GlobalTheory.VacuumEven
+end
+end
+
+section
+open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum GlobalTheory.RatEqui GlobalTheory.InertParity
+open scoped BigOperators Pointwise
+
+namespace GlobalTheory.ThetaCovIndex
+
+open GlobalTheory.ThetaInter Module
+
+section General
+
+variable {W : Type} [NormedAddCommGroup W] [NormedSpace ℝ W] [FiniteDimensional ℝ W]
+
+omit [FiniteDimensional ℝ W] in
+set_option backward.isDefEq.respectTransparency false in
+
+theorem relIndex_eq_abs_det {ι : Type} [Fintype ι] [DecidableEq ι] (b₁ b₂ : Basis ι ℝ W) {L₁ L₂ : AddSubgroup W}
+    (h₁ : (Submodule.span ℤ (Set.range b₁)).toAddSubgroup = L₁)
+    (h₂ : (Submodule.span ℤ (Set.range b₂)).toAddSubgroup = L₂) (h : L₁ ≤ L₂) :
+    (L₁.relIndex L₂ : ℝ) = |b₂.det b₁| := by
+  subst h₁ h₂
+  rw [AddSubgroup.relIndex_eq_natAbs_det _ _ h (b₁.restrictScalars ℤ) (b₂.restrictScalars ℤ),
+    Nat.cast_natAbs, Int.cast_abs]
+  congr 1
+  rw [Basis.det_apply, Basis.det_apply, Int.cast_det]
+  congr; ext i j
+  rw [Matrix.map_apply, Basis.toMatrix_apply, Basis.toMatrix_apply]
+  have := b₂.restrictScalars_repr_apply ℤ
+    ⟨b₁.restrictScalars ℤ j, h (Submodule.coe_mem _)⟩ i
+  refine this.trans ?_
+  simp
+
+theorem exists_basis_finrank {A : AddSubgroup W} (hA : DiscreteTopology A)
+    (hsp : Submodule.span ℝ (A : Set W) = ⊤) :
+    ∃ b : Basis (Fin (finrank ℝ W)) ℝ W, (Submodule.span ℤ (Set.range b)).toAddSubgroup = A := by
+  have : DiscreteTopology A.toIntSubmodule := hA
+  have : IsZLattice ℝ A.toIntSubmodule := ⟨hsp⟩
+  let b₀ := Module.finBasisOfFinrankEq ℤ A.toIntSubmodule (ZLattice.rank ℝ A.toIntSubmodule)
+  refine ⟨b₀.ofZLatticeBasis ℝ A.toIntSubmodule, ?_⟩
+  rw [Basis.ofZLatticeBasis_span]
+  rfl
+
+theorem relIndex_map {A B : AddSubgroup W} (hA : DiscreteTopology A)
+    (hsp : Submodule.span ℝ (A : Set W) = ⊤) (f : W ≃ₗ[ℝ] W) (hB : B ≤ A)
+    (hf : B.map (f : W →ₗ[ℝ] W).toAddMonoidHom ≤ A) {m : ℕ} (hm : 0 < m)
+    (hx : ∀ x ∈ A, ∃ y ∈ B, m • x = f y) :
+    B.relIndex A ≠ 0 ∧ ((B.map (f : W →ₗ[ℝ] W).toAddMonoidHom).relIndex A : ℝ) =
+      B.relIndex A * |LinearMap.det (f : W →ₗ[ℝ] W)| := by
+  have hBd : DiscreteTopology B := DiscreteTopology.of_subset hA hB
+  have hBs : Submodule.span ℝ (B : Set W) = ⊤ := by
+    have h1 : (Submodule.span ℝ (B : Set W)).map (f : W →ₗ[ℝ] W) = ⊤ := by
+      rw [eq_top_iff, ← hsp, Submodule.span_le]
+      intro x hxA
+      obtain ⟨y, hy, e⟩ := hx x hxA
+      have hm' : (m : ℝ) ≠ 0 := by exact_mod_cast hm.ne'
+      refine ⟨(m : ℝ)⁻¹ • y, Submodule.smul_mem _ _ (Submodule.subset_span hy), ?_⟩
+      simp only [LinearEquiv.coe_coe, map_smul]
+      rw [← e, ← Nat.cast_smul_eq_nsmul ℝ, smul_smul, inv_mul_cancel₀ hm', one_smul]
+    rw [eq_top_iff]
+    intro x _
+    obtain ⟨y, hy, e⟩ := (h1.ge (Submodule.mem_top (x := f x)))
+    exact f.injective e ▸ hy
+  obtain ⟨a, ha⟩ := exists_basis_finrank hA hsp
+  obtain ⟨b, hb⟩ := exists_basis_finrank hBd hBs
+  have hb₁ : (Submodule.span ℤ (Set.range (b.map f))).toAddSubgroup =
+      B.map (f : W →ₗ[ℝ] W).toAddMonoidHom := by
+    ext y
+    obtain ⟨x, rfl⟩ := f.surjective y
+    have : f x ∈ B.map (f : W →ₗ[ℝ] W).toAddMonoidHom ↔ x ∈ B :=
+      AddSubgroup.mem_map_iff_mem (f := (f : W →ₗ[ℝ] W).toAddMonoidHom) f.injective
+    rw [this, ← hb, Submodule.mem_toAddSubgroup, Submodule.mem_toAddSubgroup,
+      Module.Basis.mem_span_iff_repr_mem, Module.Basis.mem_span_iff_repr_mem]
+    simp
+  have e1 := relIndex_eq_abs_det b a hb ha hB
+  generalize B.map (f : W →ₗ[ℝ] W).toAddMonoidHom = C at hf hb₁ ⊢
+  have e2 := relIndex_eq_abs_det (b.map f) a hb₁ ha hf
+  refine ⟨fun h0 => ?_, ?_⟩
+  · rw [h0, Nat.cast_zero, eq_comm, abs_eq_zero] at e1
+    exact IsUnit.ne_zero (a.isUnit_det b) e1
+  · rw [e2, e1, ← abs_mul, mul_comm, ← a.det_comp (f : W →ₗ[ℝ] W) b, Basis.coe_map]
+    rfl
+
+end General
+
+theorem relIndex_image_one_sub_complexLinearEquiv {W : Type} [NormedAddCommGroup W] [NormedSpace ℂ W] [FiniteDimensional ℂ W]
+    {A A₁ : AddSubgroup W} (t₁ : DiscreteTopology A) (s₁ : Submodule.span ℝ (A : Set W) = ⊤)
+    (u : W ≃ₗ[ℂ] W) (hA : ∀ x, x ∈ A ↔ u x ∈ A₁)
+    (hdet : LinearMap.det (LinearMap.id - (u.symm : W →ₗ[ℂ] W)) ≠ 0) {m : ℕ} (hm : 0 < m)
+    (hx : ∀ x ∈ A, ∃ y ∈ A, u.symm y ∈ A ∧ m • x = y - u.symm y) :
+    A₁.relIndex A ≠ 0 ∧
+      (((A.map (LinearMap.id - (u.symm : W →ₗ[ℂ] W)).toAddMonoidHom).relIndex A : ℕ) : ℝ) =
+        (A₁.relIndex A : ℝ) * ‖LinearMap.det (LinearMap.id - (u.symm : W →ₗ[ℂ] W))‖ ^ 2 := by
+  set g : W →ₗ[ℂ] W := LinearMap.id - (u.symm : W →ₗ[ℂ] W) with hg
+  have hgy : ∀ y, g y = y - u.symm y := fun y => rfl
+  let f : W ≃ₗ[ℝ] W := (LinearMap.equivOfDetNeZero g hdet).restrictScalars ℝ
+  have hfg : (f : W →ₗ[ℝ] W) = g.restrictScalars ℝ := by
+    ext1 y; simp [f]
+  have hfy : ∀ y, f y = y - u.symm y := fun y => congrArg (fun φ => φ y) hfg
+  have hA' : ∀ y, u.symm y ∈ A ↔ y ∈ A₁ := fun y => by rw [hA, u.apply_symm_apply]
+  have hinf : (A₁ ⊓ A).map (f : W →ₗ[ℝ] W).toAddMonoidHom = A.map g.toAddMonoidHom ⊓ A := by
+    ext x
+    constructor
+    · rintro ⟨y, ⟨hy₁, hy⟩, rfl⟩
+      refine ⟨⟨y, hy, (hfy y).symm⟩, ?_⟩
+      change f y ∈ A
+      rw [hfy]
+      exact A.sub_mem hy ((hA' y).2 hy₁)
+    · rintro ⟨⟨y, hy, rfl⟩, h2⟩
+      refine ⟨y, ⟨(hA' y).1 ?_, hy⟩, hfy y⟩
+      have h3 : y - u.symm y ∈ A := h2
+      simpa using A.sub_mem hy h3
+  have key := relIndex_map (B := A₁ ⊓ A) t₁ s₁ f inf_le_right (hinf.le.trans inf_le_right) hm
+    fun x hxA => by
+      obtain ⟨y, hy, hy', e⟩ := hx x hxA
+      exact ⟨y, ⟨(hA' y).1 hy', hy⟩, e.trans (hfy y).symm⟩
+  rw [hinf, AddSubgroup.inf_relIndex_right, AddSubgroup.inf_relIndex_right, hfg,
+    LinearMap.det_restrictScalars, Algebra.norm_complex_apply, Complex.normSq_eq_norm_sq,
+    abs_of_nonneg (by positivity)] at key
+  exact key
+
+theorem relIndex_one_sub : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ), Crv D cc δ → ∀ (N N' : ℕ) (A A₁ : AddSubgroup (VC D N N')), KLat D (tor0 D cc δ) A → KLat D (tor0 D cc δ) A₁ → ∀ (u : VC D N N' ≃ₗ[ℂ] VC D N N'), (∀ z w, Hf D (tor0 D cc δ) (u z) (u w) = Hf D (tor0 D cc δ) z w) → (∀ x, x ∈ A ↔ u x ∈ A₁) → LinearMap.det (LinearMap.id - (u.symm : VC D N N' →ₗ[ℂ] VC D N N')) ≠ 0 → (∃ m : ℕ, 0 < m ∧ ∀ x ∈ A, ∃ y ∈ A, u.symm y ∈ A ∧ m • x = y - u.symm y) → A₁.relIndex A ≠ 0 ∧ ((((A.map (LinearMap.id - (u.symm : VC D N N' →ₗ[ℂ] VC D N N')).toAddMonoidHom).relIndex A : ℕ) : ℝ)) = (A₁.relIndex A : ℝ) * ‖LinearMap.det (LinearMap.id - (u.symm : VC D N N' →ₗ[ℂ] VC D N N'))‖ ^ 2 := by
+  intro D cc δ hc N N' A A₁ h₁ _ u _ hA hdet ⟨m, hm, hx⟩
+  obtain ⟨f₁, s₁, d₁, -⟩ := klat_facts hc h₁
+  have t₁ := discrete_of_selfDual (isHerm_sesqOf D (tor0 D cc δ) N N') d₁ f₁
+  exact relIndex_image_one_sub_complexLinearEquiv t₁ s₁ u hA hdet hm hx
+
+end GlobalTheory.ThetaCovIndex
+end
+
+section
+open NumberField
+
+namespace GlobalTheory.FiniteQuotientComap
+
+theorem exists_int_mul_mem {E : Type} [Field E] [NumberField E] (a : E) :
+    ∃ m : ℤ, m ≠ 0 ∧ ∃ b : 𝓞 E, (b : E) = (m : E) * a := by
+
+  obtain ⟨m, hm⟩ := IsIntegral.exists_multiple_integral_of_isLocalization (R := ℤ) (Rₘ := ℚ)
+    (M := nonZeroDivisors ℤ) a (Algebra.IsIntegral.isIntegral a)
+  refine ⟨(m : ℤ), nonZeroDivisors.coe_ne_zero m, (⟨m • a, hm⟩ : 𝓞 E), ?_⟩
+  show m • a = _
+  rw [Submonoid.smul_def, zsmul_eq_mul]
+
+theorem exists_int_smul_mem {E : Type} [Field E] [NumberField E] {n : ℕ}
+    (L : Submodule (𝓞 E) (Fin n → E)) (x : Fin n → E)
+    (hx : x ∈ Submodule.span E (L : Set (Fin n → E))) :
+    ∃ m : ℤ, m ≠ 0 ∧ m • x ∈ L := by
+  induction hx using Submodule.span_induction with
+  | mem y hy => exact ⟨1, one_ne_zero, by simpa using hy⟩
+  | zero => exact ⟨1, one_ne_zero, by simp⟩
+  | add y z _ _ hy hz =>
+    obtain ⟨m, hm0, hm⟩ := hy
+    obtain ⟨k, hk0, hk⟩ := hz
+    refine ⟨m * k, mul_ne_zero hm0 hk0, ?_⟩
+    have e1 : (m * k) • y = k • (m • y) := by rw [mul_comm, mul_smul]
+    have e2 : (m * k) • z = m • (k • z) := mul_smul m k z
+    rw [smul_add, e1, e2]
+    exact add_mem (zsmul_mem hm k) (zsmul_mem hk m)
+  | smul c y _ hy =>
+
+    obtain ⟨m, hm0, hm⟩ := hy
+    obtain ⟨k, hk0, b, hb⟩ := exists_int_mul_mem c
+    refine ⟨k * m, mul_ne_zero hk0 hm0, ?_⟩
+    have e : (k * m) • (c • y) = b • (m • y) := by
+      ext i
+      simp [Algebra.smul_def, hb]
+      ring
+    rw [e]
+    exact L.smul_mem b hm
+
+theorem finite_quotient_comap {E : Type} [Field E] [NumberField E] {n : ℕ}
+    (L₀ L : Submodule (𝓞 E) (Fin n → E)) (h₀ : L₀.FG)
+    (hL : Submodule.span E (L : Set (Fin n → E)) = ⊤) :
+    Finite (L₀ ⧸ Submodule.comap L₀.subtype L) := by
+
+  have : Module.Finite (𝓞 E) L₀ := Module.Finite.iff_fg.mpr h₀
+  have : Module.Finite ℤ L₀ := Module.Finite.trans (𝓞 E) L₀
+  apply Module.finite_of_fg_torsion
+  intro q
+  obtain ⟨y, rfl⟩ := Submodule.Quotient.mk_surjective (Submodule.comap L₀.subtype L) q
+  obtain ⟨m, hm0, hm⟩ := exists_int_smul_mem L (y : Fin n → E) (by rw [hL]; exact Submodule.mem_top)
+  refine ⟨⟨m, mem_nonZeroDivisors_of_ne_zero hm0⟩, ?_⟩
+  change (m : ℤ) • (Submodule.Quotient.mk y : L₀ ⧸ Submodule.comap L₀.subtype L) = 0
+  rw [← Submodule.Quotient.mk_smul, Submodule.Quotient.mk_eq_zero, Submodule.mem_comap]
+  simpa using hm
+
+end GlobalTheory.FiniteQuotientComap
+end
+
+section
+open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum GlobalTheory.RatEqui GlobalTheory.InertParity
+open scoped BigOperators Pointwise
+
+noncomputable section
+
+namespace GlobalTheory.InertParity.LengthSign
+
+theorem not_dvd_relIndex {G : Type} [AddCommGroup G] (A B : AddSubgroup G) (h0 : A.relIndex B ≠ 0) {q s : ℕ}
+    (hq : q.Prime) (hs : Nat.Coprime s q) (h : ∀ x ∈ B, s • x ∈ A) : ¬ q ∣ A.relIndex B := by
+  intro hd
+  have : Fact q.Prime := ⟨hq⟩
+  have : Finite (B ⧸ A.addSubgroupOf B) := Nat.finite_of_card_ne_zero h0
+  obtain ⟨x, hx⟩ := exists_prime_addOrderOf_dvd_card' (G := B ⧸ A.addSubgroupOf B) q hd
+  have : s • x = 0 := by
+    induction x using QuotientAddGroup.induction_on with
+    | H y =>
+      rw [← QuotientAddGroup.mk_nsmul, QuotientAddGroup.eq_zero_iff, AddSubgroup.mem_addSubgroupOf]
+      exact h y y.2
+  have h1 := addOrderOf_dvd_of_nsmul_eq_zero this
+  rw [hx] at h1
+  exact hq.one_lt.ne' (Nat.Coprime.eq_one_of_dvd hs.symm h1)
+
+theorem factorization_relIndex_eq {G : Type} [AddCommGroup G] (A A' B : AddSubgroup G) (h0 : A.relIndex B ≠ 0)
+    (h0' : A'.relIndex B ≠ 0) {q s : ℕ} (hq : q.Prime) (hs : Nat.Coprime s q) (h : ∀ x ∈ A, s • x ∈ A')
+    (h' : ∀ x ∈ A', s • x ∈ A) : (A.relIndex B).factorization q = (A'.relIndex B).factorization q := by
+  have hX : (A ⊓ A').relIndex B ≠ 0 := AddSubgroup.relIndex_inf_ne_zero h0 h0'
+  have e1 := AddSubgroup.relIndex_inf_mul_relIndex A A' B
+  have e2 := AddSubgroup.relIndex_inf_mul_relIndex A' A B
+  rw [inf_comm A' A] at e2
+  have n1 : A.relIndex (A' ⊓ B) ≠ 0 := left_ne_zero_of_mul (e1 ▸ hX)
+  have n2 : A'.relIndex (A ⊓ B) ≠ 0 := left_ne_zero_of_mul (e2 ▸ hX)
+  have d1 := not_dvd_relIndex A (A' ⊓ B) n1 hq hs fun x hx => h' x hx.1
+  have d2 := not_dvd_relIndex A' (A ⊓ B) n2 hq hs fun x hx => h x hx.1
+  have e := congrArg (fun m : ℕ => m.factorization q) (e1.trans e2.symm)
+  simp only [Nat.factorization_mul n1 h0', Nat.factorization_mul n2 h0, Finsupp.add_apply,
+    Nat.factorization_eq_zero_of_not_dvd d1, Nat.factorization_eq_zero_of_not_dvd d2, zero_add] at e
+  exact e.symm
+
+theorem finite_quot {E : Type} [Field E] [NumberField E] {n : ℕ} (L₀ L : Submodule (𝓞 E) (Fin n → E))
+    (h₀ : L₀.FG) (h : Submodule.span E (L : Set (Fin n → E)) = ⊤) :
+    Finite (L₀ ⧸ Submodule.comap L₀.subtype L) := by
+  first
+  | exact @_root_.GlobalTheory.FiniteQuotientComap.finite_quotient_comap
+  | exact _root_.GlobalTheory.FiniteQuotientComap.finite_quotient_comap
+  | (apply _root_.GlobalTheory.FiniteQuotientComap.finite_quotient_comap <;> assumption)
+  | (intros; apply _root_.GlobalTheory.FiniteQuotientComap.finite_quotient_comap <;> assumption)
+  | (intros; apply @_root_.GlobalTheory.FiniteQuotientComap.finite_quotient_comap <;> first | assumption | infer_instance)
+  | (intros; exact _root_.GlobalTheory.FiniteQuotientComap.finite_quotient_comap ..)
+
+theorem eq_lat {D : D7} {n : ℕ} {g : GL (Fin n) (AE D)} {L : Submodule (𝓞 D.host.E) (Fin n → D.host.E)}
+    (h : Moves D g L) : L = AdLattice.lat g := by
+  ext x
+  exact (h x).trans (AdLattice.mem_lat g x).symm
+
+theorem finite_lat (D : D7) {n : ℕ} (g : GL (Fin n) (AE D)) :
+    Finite (stdL D n ⧸ Submodule.comap (stdL D n).subtype (AdLattice.lat g)) :=
+  finite_quot _ _ (AdLattice.lat_one_eq D n ▸ (AdLattice.lat_isLattice _).fg) (AdLattice.lat_isLattice g).span_eq_top
+
+theorem idx_lat_ne_zero (D : D7) {n : ℕ} (g : GL (Fin n) (AE D)) : idx D (AdLattice.lat g) ≠ 0 := by
+  have := finite_lat D g
+  exact Nat.card_pos.ne'
+
+theorem exists_int_mul (D : D7) {N : ℕ} (q : ℕ) (k : GA D N) (h : TrivAt D q (k : GL (Fin N) (AE D))) :
+    ∃ s : ℕ, Nat.Coprime s q ∧
+      (∀ i j, (s : AE D) * ((k : GL (Fin N) (AE D)) : Matrix (Fin N) (Fin N) (AE D)) i j ∈ OhE D) ∧
+      ∀ i j, (s : AE D) * (((k : GL (Fin N) (AE D))⁻¹ : GL (Fin N) (AE D)) :
+        Matrix (Fin N) (Fin N) (AE D)) i j ∈ OhE D := by
+  have h0 : ∀ i j, ∃ m : ℕ, Nat.Coprime m q ∧ (m : AE D) *
+      (((k : GL (Fin N) (AE D)) : Matrix (Fin N) (Fin N) (AE D)) i j -
+        (1 : Matrix (Fin N) (Fin N) (AE D)) i j) ∈ OhE D := by
+    intro i j
+    obtain ⟨m, -, hm, s, hs, he⟩ := h i j 0
+    refine ⟨m, hm, ?_⟩
+    rw [pow_zero, one_mul] at he
+    rw [he]
+    exact hs
+  choose m hm hmS using h0
+  set s : ℕ := ∏ r : Fin N × Fin N, m r.1 r.2 with hs
+  have hint : ∀ i j, (s : AE D) * ((k : GL (Fin N) (AE D)) : Matrix (Fin N) (Fin N) (AE D)) i j ∈ OhE D := by
+    intro i j
+    obtain ⟨c, hc⟩ := Finset.dvd_prod_of_mem (fun r : Fin N × Fin N => m r.1 r.2) (Finset.mem_univ (i, j))
+    have h1 : (1 : Matrix (Fin N) (Fin N) (AE D)) i j ∈ OhE D := by
+      rw [Matrix.one_apply]
+      split_ifs
+      · exact one_mem _
+      · exact zero_mem _
+    have : (s : AE D) * ((k : GL (Fin N) (AE D)) : Matrix (Fin N) (Fin N) (AE D)) i j = (c : AE D) * ((m i j : AE D) *
+        (((k : GL (Fin N) (AE D)) : Matrix (Fin N) (Fin N) (AE D)) i j -
+          (1 : Matrix (Fin N) (Fin N) (AE D)) i j)) + (s : AE D) * (1 : Matrix (Fin N) (Fin N) (AE D)) i j := by
+      rw [hs, hc]; push_cast; ring
+    rw [this]
+    exact add_mem (mul_mem (natCast_mem _ c) (hmS i j)) (mul_mem (natCast_mem _ s) h1)
+  refine ⟨s, Nat.Coprime.prod_left fun r _ => hm r.1 r.2, hint, fun i j => ?_⟩
+  rw [AdLattice.inv_entry (D.host.conj : D.host.E →ₐ[ℚ] D.host.E) _ k.2]
+  have := Formalism.UG.P.csDual_sig_mem (D.host.conj : D.host.E →ₐ[ℚ] D.host.E) (hint j i)
+  rwa [map_mul, map_natCast] at this
+
+theorem agree (D : D7) {n : ℕ} (q : ℕ) (g k : GA D n) (h : TrivAt D q (k : GL (Fin n) (AE D))) :
+    ∃ s : ℕ, Nat.Coprime s q ∧
+      (∀ x ∈ AdLattice.lat (g : GL (Fin n) (AE D)), s • x ∈ AdLattice.lat ((g * k : GA D n) : GL (Fin n) (AE D))) ∧
+      ∀ x ∈ AdLattice.lat ((g * k : GA D n) : GL (Fin n) (AE D)), s • x ∈ AdLattice.lat (g : GL (Fin n) (AE D)) := by
+  obtain ⟨s, hs, h1, h2⟩ := exists_int_mul D q k h
+  refine ⟨s, hs, fun x hx => ?_, fun x hx => ?_⟩
+  · rw [← Nat.cast_smul_eq_nsmul D.host.E]
+    refine AdLattice.smul_mem_lat s ?_ hx
+    rw [Subgroup.coe_mul, mul_inv_rev, inv_mul_cancel_right]
+    exact h2
+  · rw [← Nat.cast_smul_eq_nsmul D.host.E]
+    refine AdLattice.smul_mem_lat s ?_ hx
+    rw [Subgroup.coe_mul, inv_mul_cancel_left]
+    exact h1
+
+theorem finite_of_moves {D : D7} {n : ℕ} {g : GL (Fin n) (AE D)} {L : Submodule (𝓞 D.host.E) (Fin n → D.host.E)}
+    (h : Moves D g L) : Finite (stdL D n ⧸ Submodule.comap (stdL D n).subtype L) := by
+  rw [eq_lat h]
+  exact finite_lat D g
+
+theorem relIndex_ne_zero_of_moves {D : D7} {n : ℕ} {g : GL (Fin n) (AE D)}
+    {L : Submodule (𝓞 D.host.E) (Fin n → D.host.E)} (h : Moves D g L) :
+    L.toAddSubgroup.relIndex (stdL D n).toAddSubgroup ≠ 0 := by
+  rw [← idx_eq_relIndex, eq_lat h]
+  exact idx_lat_ne_zero D g
+
+theorem agree_of_moves {D : D7} {n : ℕ} {q : ℕ} {g k : GA D n} (h : TrivAt D q (k : GL (Fin n) (AE D)))
+    {L L' : Submodule (𝓞 D.host.E) (Fin n → D.host.E)} (hL : Moves D (g : GL (Fin n) (AE D)) L)
+    (hL' : Moves D ((g * k : GA D n) : GL (Fin n) (AE D)) L') :
+    ∃ s : ℕ, Nat.Coprime s q ∧ (∀ x ∈ L.toAddSubgroup, s • x ∈ L'.toAddSubgroup) ∧
+      ∀ x ∈ L'.toAddSubgroup, s • x ∈ L.toAddSubgroup := by
+  rw [eq_lat hL, eq_lat hL']
+  exact agree D q g k h
+
+theorem agree_std {D : D7} {n : ℕ} {q : ℕ} {k : GA D n} (h : TrivAt D q (k : GL (Fin n) (AE D)))
+    {L : Submodule (𝓞 D.host.E) (Fin n → D.host.E)} (hL : Moves D (k : GL (Fin n) (AE D)) L) :
+    ∃ s : ℕ, Nat.Coprime s q ∧ ∀ x ∈ (stdL D n).toAddSubgroup, s • x ∈ L.toAddSubgroup := by
+  obtain ⟨s, hsq, h, -⟩ := agree D q 1 k h
+  rw [one_mul, OneMemClass.coe_one, AdLattice.lat_one_eq, ← eq_lat hL] at h
+  exact ⟨s, hsq, h⟩
+
+theorem neg_one_pow_lenQ : ∀ (D : D7) (n : ℕ) (gs gi : GA D n) (Li L : Submodule (𝓞 D.host.E) (Fin n → D.host.E)), SuppSplit D (gs : GL (Fin n) (AE D)) → SuppInert D (gi : GL (Fin n) (AE D)) → Moves D (gi : GL (Fin n) (AE D)) Li → Moves D ((gi * gs : GA D n) : GL (Fin n) (AE D)) L → (-1 : ℂ) ^ lenQ D (stdL D n) Li = sgn D (idx D L) := by
+  intro D n gs gi Li L hs hi hLi hL
+  have := finite_of_moves hLi
+  have h1 : sgn D (idx D Li) = (-1 : ℂ) ^ lenQ D (stdL D n) Li := by
+    refine (GlobalTheory.T.finite_module_sign_eq_neg_one_pow_length D (stdL D n ⧸ Submodule.comap (stdL D n).subtype Li)).2 fun q hq hd => ?_
+    by_contra hn
+    obtain ⟨s, hsq, h⟩ := agree_std (hi q hq hn) hLi
+    exact not_dvd_relIndex _ _ (relIndex_ne_zero_of_moves hLi) hq hsq h ((idx_eq_relIndex Li) ▸ hd)
+  rw [← h1]
+  refine sgn_congr fun q hq hiq => ?_
+  obtain ⟨s, hsq, h, h'⟩ := agree_of_moves (hs q hq hiq) hLi hL
+  rw [idx_eq_relIndex, idx_eq_relIndex]
+  exact factorization_relIndex_eq _ _ _ (relIndex_ne_zero_of_moves hLi) (relIndex_ne_zero_of_moves hL) hq hsq h h'
+
+end GlobalTheory.InertParity.LengthSign
+end
+end
+
+section
+open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum GlobalTheory.RatEqui GlobalTheory.InertParity
+open scoped BigOperators Pointwise nonZeroDivisors
+
+noncomputable section
+
+namespace GlobalTheory.ThetaLatIndex
+
+theorem relIndex_pi_const {ι G : Type} [Fintype ι] [AddCommGroup G] (L L' : AddSubgroup G) :
+    (AddSubgroup.pi Set.univ fun _ : ι => L').relIndex (AddSubgroup.pi Set.univ fun _ : ι => L) =
+      L'.relIndex L ^ Fintype.card ι := by
+  let f : (AddSubgroup.pi Set.univ fun _ : ι => L) →+ (ι → L) :=
+    { toFun := fun x i => ⟨x.1 i, x.2 i (Set.mem_univ i)⟩
+      map_zero' := rfl
+      map_add' := fun _ _ => rfl }
+  have hf : Function.Surjective f := fun y => ⟨⟨fun i => y i, fun i _ => (y i).2⟩, rfl⟩
+  have hc : (AddSubgroup.pi Set.univ fun _ : ι => L').addSubgroupOf
+      (AddSubgroup.pi Set.univ fun _ : ι => L) =
+      (AddSubgroup.pi Set.univ fun _ : ι => L'.addSubgroupOf L).comap f := by
+    ext x
+    simp [AddSubgroup.mem_addSubgroupOf, AddSubgroup.mem_pi, f]
+  rw [AddSubgroup.relIndex, hc, AddSubgroup.index_comap_of_surjective _ hf, AddSubgroup.index_pi]
+  simp [AddSubgroup.relIndex]
+
+section General
+
+variable {R K M : Type} [CommRing R] [IsDedekindDomain R] [Field K] [Algebra R K] [IsFractionRing R K]
+  [AddCommGroup M] [Module K M] [Module R M] [IsScalarTower R K M]
+
+def mulL (I : Submodule R K) (L : Submodule R M) : Submodule R M :=
+  Submodule.span R {v | ∃ t ∈ I, ∃ y ∈ L, v = t • y}
+
+theorem exists_gen_inv (I : FractionalIdeal R⁰ K) (hI : I ≠ 0) {n : R} (hn : n ≠ 0) :
+    ∃ t ∈ I, (∀ s ∈ I, ∃ a : R, ∃ s' ∈ I, s = a • t + n • s') ∧
+      ∃ t' : K, ∃ a : R, (∀ s ∈ I, ∃ b : R, algebraMap R K b = t' * s) ∧ t' * t + algebraMap R K (a * n) = 1 := by
+  have hn' : (FractionalIdeal.spanSingleton R⁰ (algebraMap R K n)) ≠ 0 := by
+    simpa [FractionalIdeal.spanSingleton_eq_zero_iff] using hn
+  have hle : FractionalIdeal.spanSingleton R⁰ (algebraMap R K n) * I ≤ I :=
+    FractionalIdeal.spanSingleton_mul_le_iff.2 fun z hz => by
+      rw [← Algebra.smul_def]; exact (I : Submodule R K).smul_mem n hz
+  obtain ⟨t, ht⟩ := IsDedekindDomain.exists_add_spanSingleton_mul_eq hle (mul_ne_zero hn' hI) one_ne_zero
+  rw [mul_one] at ht
+  refine ⟨t, ?_, fun s hs => ?_, ?_⟩
+  · rw [← FractionalIdeal.spanSingleton_le_iff_mem, ← ht, ← FractionalIdeal.sup_eq_add]
+    exact le_sup_right
+  · rw [← ht, FractionalIdeal.mem_add] at hs
+    obtain ⟨i, hi, j, hj, rfl⟩ := hs
+    obtain ⟨s', hs', rfl⟩ := FractionalIdeal.mem_singleton_mul.1 hi
+    obtain ⟨a, rfl⟩ := (FractionalIdeal.mem_spanSingleton _).1 hj
+    exact ⟨a, s', hs', by rw [add_comm, Algebra.smul_def n]⟩
+  · have h1 : FractionalIdeal.spanSingleton R⁰ (algebraMap R K n) + FractionalIdeal.spanSingleton R⁰ t * I⁻¹ = 1 := by
+      have := congrArg (· * I⁻¹) ht
+      simpa only [add_mul, mul_assoc, mul_inv_cancel₀ hI, mul_one] using this
+    have h2 : (1 : K) ∈ FractionalIdeal.spanSingleton R⁰ (algebraMap R K n) + FractionalIdeal.spanSingleton R⁰ t * I⁻¹ := by
+      rw [h1]; exact FractionalIdeal.one_mem_one _
+    rw [FractionalIdeal.mem_add] at h2
+    obtain ⟨i, hi, j, hj, e⟩ := h2
+    obtain ⟨t', ht', rfl⟩ := FractionalIdeal.mem_singleton_mul.1 hj
+    obtain ⟨a, rfl⟩ := (FractionalIdeal.mem_spanSingleton _).1 hi
+    refine ⟨t', a, fun s hs => ?_, ?_⟩
+    · have := FractionalIdeal.mul_mem_mul ht' hs
+      rw [inv_mul_cancel₀ hI] at this
+      exact (FractionalIdeal.mem_one_iff _).1 this
+    · rw [← e, map_mul, Algebra.smul_def]; ring
+
+theorem relIndex_mulL (I : FractionalIdeal R⁰ K) (hI : I ≠ 0) {n : R} (hn : n ≠ 0) (L L₀ : Submodule R M)
+    (h : ∀ x ∈ L₀, n • x ∈ L) :
+    (mulL (I : Submodule R K) L).toAddSubgroup.relIndex (mulL (I : Submodule R K) L₀).toAddSubgroup =
+      L.toAddSubgroup.relIndex L₀.toAddSubgroup := by
+  obtain ⟨t, ht, hg, t', a, hi, e⟩ := exists_gen_inv I hI hn
+  let f : M →+ M := DistribSMul.toAddMonoidHom M t
+  have hf : ∀ x, f x = t • x := fun _ => rfl
+  set H := (mulL (I : Submodule R K) L).toAddSubgroup ⊓ (mulL (I : Submodule R K) L₀).toAddSubgroup with hH
+  have h1 : (mulL (I : Submodule R K) L₀).toAddSubgroup = L₀.toAddSubgroup.map f ⊔ H := by
+    apply le_antisymm
+    · have key : ∀ v ∈ mulL (I : Submodule R K) L₀, ∀ o : R, o • v ∈ L₀.toAddSubgroup.map f ⊔ H := by
+        intro v hv
+        induction hv using Submodule.span_induction with
+        | mem v hv =>
+          intro o
+          obtain ⟨s, hs, y, hy, rfl⟩ := hv
+          obtain ⟨b, s', hs', rfl⟩ := hg s hs
+          rw [add_smul, smul_add]
+          refine AddSubgroup.add_mem_sup ⟨(o * b) • y, L₀.smul_mem _ hy, ?_⟩ ⟨?_, ?_⟩
+          · rw [hf, smul_comm, mul_smul, smul_assoc]
+          · refine Submodule.smul_mem _ o (Submodule.subset_span ⟨s', hs', n • y, h y hy, ?_⟩)
+            rw [smul_assoc, smul_comm]
+          · exact Submodule.smul_mem _ o (Submodule.subset_span ⟨_, (I : Submodule R K).smul_mem n hs', y, hy, rfl⟩)
+        | zero => intro o; rw [smul_zero]; exact zero_mem _
+        | add x y _ _ hx hy => intro o; rw [smul_add]; exact add_mem (hx o) (hy o)
+        | smul b x _ hx => intro o; rw [smul_smul]; exact hx _
+      intro v hv
+      simpa using key v hv 1
+    · refine sup_le ?_ inf_le_right
+      rintro _ ⟨y, hy, rfl⟩
+      exact Submodule.subset_span ⟨t, ht, y, hy, rfl⟩
+  have h2 : ∀ v ∈ mulL (I : Submodule R K) L, t' • v ∈ L := by
+    intro v hv
+    induction hv using Submodule.span_induction with
+    | mem v hv =>
+      obtain ⟨s, hs, y, hy, rfl⟩ := hv
+      obtain ⟨b, hb⟩ := hi s hs
+      rw [smul_smul, ← hb, algebraMap_smul]
+      exact L.smul_mem b hy
+    | zero => rw [smul_zero]; exact zero_mem _
+    | add x y _ _ hx hy => rw [smul_add]; exact add_mem hx hy
+    | smul b x _ hx => rw [smul_comm]; exact L.smul_mem b hx
+  have h3 : H.comap f ⊓ L₀.toAddSubgroup = L.toAddSubgroup ⊓ L₀.toAddSubgroup := by
+    ext x
+    refine and_congr_left fun hx => ⟨fun hx' => ?_, fun hx' => ⟨?_, ?_⟩⟩
+    · have e2 : x = t' • (t • x) + a • (n • x) := by
+        rw [smul_smul, smul_smul, ← algebraMap_smul K (a * n) x, ← add_smul, e, one_smul]
+      change x ∈ L
+      rw [e2]
+      exact add_mem (h2 _ hx'.1) (L.smul_mem a (h x hx))
+    · exact Submodule.subset_span ⟨t, ht, x, hx', rfl⟩
+    · exact Submodule.subset_span ⟨t, ht, x, hx, rfl⟩
+  rw [← AddSubgroup.inf_relIndex_right, ← hH, h1, AddSubgroup.relIndex_sup_right, ← AddSubgroup.relIndex_comap,
+    ← AddSubgroup.inf_relIndex_right, h3, AddSubgroup.inf_relIndex_right]
+
+end General
+
+open GlobalTheory.InertSign GlobalTheory.ThetaLatImage
+
+variable {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} {N N' : ℕ}
+
+theorem exists_int_smul {L : Lat D N} (hL : Submodule.span D.host.E (L : Set (Fin N → D.host.E)) = ⊤)
+    (x : Fin N → D.host.E) : ∃ n : ℤ, n ≠ 0 ∧ n • x ∈ L := by
+  have hx : x ∈ Submodule.span D.host.E (L : Set (Fin N → D.host.E)) := by rw [hL]; trivial
+  induction hx using Submodule.span_induction with
+  | mem x hx => exact ⟨1, one_ne_zero, by simpa using hx⟩
+  | zero => exact ⟨1, one_ne_zero, by simp⟩
+  | add x y _ _ hx hy =>
+    obtain ⟨a, ha, hx⟩ := hx
+    obtain ⟨b, hb, hy⟩ := hy
+    refine ⟨a * b, mul_ne_zero ha hb, ?_⟩
+    rw [smul_add]
+    refine add_mem ?_ ?_
+    · rw [mul_comm, mul_smul]; exact zsmul_mem hx b
+    · rw [mul_smul]; exact zsmul_mem hy a
+  | smul c x _ hx =>
+    obtain ⟨a, ha, hx⟩ := hx
+    have hc : IsAlgebraic ℤ c := (IsFractionRing.isAlgebraic_iff ℤ ℚ _).2 (Algebra.IsAlgebraic.isAlgebraic c)
+    obtain ⟨b, hb, hbc⟩ := hc.exists_integral_multiple
+    refine ⟨b * a, mul_ne_zero hb ha, ?_⟩
+    have e : (b * a) • c • x = (⟨b • c, hbc⟩ : 𝓞 D.host.E) • (a • x) := by
+      change _ = (b • c) • (a • x)
+      rw [mul_smul, smul_comm a, smul_assoc]
+    rw [e]
+    exact L.smul_mem _ hx
+
+theorem exists_common {L : Lat D N} (hL : Submodule.span D.host.E (L : Set (Fin N → D.host.E)) = ⊤) :
+    ∃ n : ℤ, n ≠ 0 ∧ ∀ x ∈ stdL D N, n • x ∈ L := by
+  choose m hm hm' using fun i : Fin N => exists_int_smul hL (Pi.single i 1)
+  refine ⟨∏ i, m i, Finset.prod_ne_zero_iff.2 fun i _ => hm i, fun x hx => ?_⟩
+  choose o ho using mem_stdL.1 hx
+  have e : x = ∑ i, o i • (Pi.single i 1 : Fin N → D.host.E) := by
+    funext j
+    simp [Finset.sum_apply, Pi.single_apply, ← ho, Algebra.smul_def]
+  rw [e, Finset.smul_sum]
+  refine Submodule.sum_mem _ fun i _ => ?_
+  rw [smul_comm, ← Finset.prod_erase_mul _ _ (Finset.mem_univ i), mul_smul]
+  exact L.smul_mem _ (zsmul_mem (hm' i) _)
+
+theorem idx_ne_zero {L : Lat D N} (hL : SD D L) : idx D L ≠ 0 := by
+  obtain ⟨n, hn, h⟩ := exists_common ((sd_iff D L).1 hL).2.1
+  have hfg : (stdL D N).FG := Submodule.fg_pi fun _ => by
+    rw [Submodule.one_eq_span]; exact Submodule.fg_span_singleton _
+  haveI : Module.Finite (𝓞 D.host.E) (stdL D N) := Module.Finite.iff_fg.2 hfg
+  haveI : Module.Finite ℤ (stdL D N ⧸ Submodule.comap (stdL D N).subtype L) :=
+    Module.Finite.trans (𝓞 D.host.E) _
+  haveI : Finite (stdL D N ⧸ Submodule.comap (stdL D N).subtype L) := by
+    refine Module.finite_of_fg_torsion _ fun q => ⟨⟨n, mem_nonZeroDivisors_of_ne_zero hn⟩, ?_⟩
+    obtain ⟨x, rfl⟩ := Submodule.Quotient.mk_surjective _ q
+    change n • (Submodule.mkQ (Submodule.comap (stdL D N).subtype L) x) = 0
+    rw [← map_zsmul, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
+    exact h x x.2
+  exact Nat.card_pos.ne'
+
+theorem relIndex_Iid (hcc : cc ≠ ⊥) {L : Lat D N} {n : ℤ} (hn : n ≠ 0) (h : ∀ x ∈ stdL D N, n • x ∈ L) :
+    (mulL (Iid D cc) L).toAddSubgroup.relIndex (mulL (Iid D cc) (stdL D N)).toAddSubgroup = idx D L :=
+  relIndex_mulL (⟨Iid D cc, IdealGenerator.isFractional_Iid D cc⟩ : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E)
+    (fun h => IdealGenerator.Iid_ne_bot D cc hcc (FractionalIdeal.coeToSubmodule_eq_bot.2 h))
+    (n := (n : 𝓞 D.host.E)) (Int.cast_ne_zero.2 hn) L (stdL D N)
+    fun x hx => by rw [Int.cast_smul_eq_zsmul]; exact h x hx
+
+def cj (D : D7) (N : ℕ) : (Fin N → D.host.E) →+ (Fin N → D.host.E) where
+  toFun y j := D.host.conj (y j)
+  map_zero' := by funext j; simp
+  map_add' x y := by funext j; simp
+
+theorem cj_cj (y : Fin N → D.host.E) : cj D N (cj D N y) = y := funext fun j => conj_conj D (y j)
+
+theorem cj_mem_std {y : Fin N → D.host.E} : cj D N y ∈ stdL D N ↔ y ∈ stdL D N := by
+  have : ∀ y, y ∈ stdL D N → cj D N y ∈ stdL D N := fun y hy => mem_stdL.2 fun i => (mem_stdL.1 hy i).conj
+  exact ⟨fun h => cj_cj y ▸ this _ h, this y⟩
+
+def cjL (L : Lat D N) : Lat D N where
+  carrier := {y | cj D N y ∈ L}
+  add_mem' := fun {a b} ha hb => by
+    change cj D N (a + b) ∈ L
+    rw [map_add]; exact L.add_mem ha hb
+  zero_mem' := by
+    change cj D N 0 ∈ L
+    rw [map_zero]; exact L.zero_mem
+  smul_mem' := fun c a ha => by
+    have e : cj D N (c • a) = sgO D c • cj D N a := by
+      funext j
+      change D.host.conj ((c : D.host.E) * a j) = D.host.conj (c : D.host.E) * D.host.conj (a j)
+      rw [map_mul]
+    change cj D N (c • a) ∈ L
+    rw [e]; exact L.smul_mem _ ha
+
+theorem idx_cjL (L : Lat D N) : idx D (cjL L) = idx D L := by
+  have e : (stdL D N).toAddSubgroup.map (cj D N) = (stdL D N).toAddSubgroup := by
+    ext y
+    refine ⟨?_, fun hy => ⟨cj D N y, cj_mem_std.2 hy, cj_cj y⟩⟩
+    rintro ⟨x, hx, rfl⟩
+    exact cj_mem_std.2 hx
+  rw [idx_eq_relIndex, idx_eq_relIndex]
+  change (L.toAddSubgroup.comap (cj D N)).relIndex _ = _
+  rw [AddSubgroup.relIndex_comap, e]
+
+theorem cjL_std : cjL (stdL D N) = stdL D N := Submodule.ext fun _ => cj_mem_std
+
+theorem span_conj_eq (L : Lat D N) : Submodule.span (𝓞 D.host.E)
+    {v | ∃ t ∈ Iid D cc, ∃ y ∈ L, v = t • fun j => D.host.conj (y j)} = mulL (Iid D cc) (cjL L) := by
+  unfold mulL
+  congr 1
+  ext v
+  constructor
+  · rintro ⟨t, ht, y, hy, rfl⟩
+    exact ⟨t, ht, cj D N y, by change cj D N (cj D N y) ∈ L; rwa [cj_cj], rfl⟩
+  · rintro ⟨t, ht, y, hy, rfl⟩
+    exact ⟨t, ht, cj D N y, hy, congrArg _ (cj_cj y).symm⟩
+
+theorem sd_std : SD D (stdL D N) := by
+  refine (sd_iff D _).2 ⟨Submodule.fg_pi fun _ => by
+    rw [Submodule.one_eq_span]; exact Submodule.fg_span_singleton _, ?_, fun y => ⟨fun hy x hx => ?_, fun h => ?_⟩⟩
+  · rw [eq_top_iff, ← (Pi.basisFun D.host.E (Fin N)).span_eq]
+    refine Submodule.span_mono ?_
+    rintro _ ⟨j, rfl⟩
+    refine mem_stdL.2 fun i => ?_
+    rw [Pi.basisFun_apply, Pi.single_apply]
+    split_ifs
+    · exact one_mem _
+    · exact zero_mem _
+  · exact sum_mem fun i _ => mul_mem (mem_stdL.1 hy i) (mem_stdL.1 hx i).conj
+  · refine mem_stdL.2 fun j => ?_
+    have := h (Pi.single j 1) (mem_stdL.2 fun i => by
+      rw [Pi.single_apply]
+      split_ifs
+      · exact one_mem _
+      · exact zero_mem _)
+    simpa [hE, Pi.single_apply, apply_ite] using this
+
+def ptH (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (N N' : ℕ) : Matrix (Fin N') (Fin N) D.host.E →+ VC D N N' where
+  toFun := pt D (tor0 D cc δ) δ
+  map_zero' := pt_zero
+  map_add' := pt_add
+
+theorem relIndex_La (hδ : δ ≠ 0) (L L₁ : Lat D N) (L' L₁' : Lat D N') :
+    (La D (tor0 D cc δ) L L').relIndex (La D (tor0 D cc δ) L₁ L₁') =
+      (RL D cc L L').toAddSubgroup.relIndex (RL D cc L₁ L₁').toAddSubgroup := by
+  have e : ∀ (L : Lat D N) (L' : Lat D N'),
+      La D (tor0 D cc δ) L L' = (RL D cc L L').toAddSubgroup.map (ptH D cc δ N N') := fun L L' => by
+    ext x
+    rw [(theta_lattice_image D cc δ hδ N N').2.1]
+    exact exists_congr fun z => and_congr_right fun _ => eq_comm
+  rw [e, e, AddSubgroup.relIndex_map_map_of_injective _ _ (pt_injective hδ)]
+
+theorem theta_lattice_index : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ), Crv D cc δ → ∀ (N N' : ℕ), (∀ L' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E), SD D L' → idx D L' ≠ 0 ∧ (La D (tor0 D cc δ) (stdL D N) L').relIndex (La0 D (tor0 D cc δ) N N') = idx D L' ^ N) ∧ ∀ L : Submodule (𝓞 D.host.E) (Fin N → D.host.E), SD D L → idx D L ≠ 0 ∧ (La D (tor0 D cc δ) L (stdL D N')).relIndex (La0 D (tor0 D cc δ) N N') = idx D L ^ N' := by
+  intro D cc δ hc N N'
+  have hδ : δ ≠ 0 := (GlobalTheory.CurveLattice.lattice_of_curve D (GlobalTheory.InducedType.induced_type D).1 cc δ hc).2.1
+  refine ⟨fun L' hL => ⟨idx_ne_zero hL, ?_⟩, fun L hL => ⟨idx_ne_zero hL, ?_⟩⟩
+  · obtain ⟨n, hn, h⟩ := exists_common ((sd_iff D L').1 hL).2.1
+    let f : (Fin N → Fin N' → D.host.E) →+ Matrix (Fin N') (Fin N) D.host.E :=
+      { toFun := fun w i j => w j i, map_zero' := rfl, map_add' := fun _ _ => rfl }
+    have hf : Function.Injective f := fun w w' e => funext fun j => funext fun i => congrFun (congrFun e i) j
+    have e : ∀ L' : Lat D N', (RL D cc (stdL D N) L').toAddSubgroup =
+        (AddSubgroup.pi Set.univ fun _ : Fin N => (mulL (Iid D cc) L').toAddSubgroup).map f := fun L' => by
+      ext z
+      refine (mem_RL_cols L' z).trans ⟨fun h => ⟨fun j i => z i j, fun j _ => h j, rfl⟩, ?_⟩
+      rintro ⟨w, hw, rfl⟩ j
+      exact hw j trivial
+    rw [La0, relIndex_La hδ, e, e, AddSubgroup.relIndex_map_map_of_injective _ _ hf, relIndex_pi_const,
+      relIndex_Iid hc.1.1 hn h, Fintype.card_fin]
+  · obtain ⟨n, hn, h⟩ := exists_common ((sd_iff D L).1 hL).2.1
+    have h' : ∀ x ∈ stdL D N, n • x ∈ cjL L := fun x hx => by
+      change cj D N (n • x) ∈ L
+      rw [map_zsmul]; exact h _ (cj_mem_std.2 hx)
+    have e : ∀ L : Lat D N, SD D L → (RL D cc L (stdL D N')).toAddSubgroup =
+        (AddSubgroup.pi Set.univ fun _ : Fin N' => (mulL (Iid D cc) (cjL L)).toAddSubgroup) := fun L hL => by
+      ext z
+      refine (mem_RL_rows L hL z).trans ?_
+      rw [span_conj_eq]
+      exact ⟨fun h i _ => h i, fun h i => h i trivial⟩
+    rw [La0, relIndex_La hδ, e L hL, e _ sd_std, cjL_std]
+    refine (relIndex_pi_const _ _).trans ?_
+    rw [relIndex_Iid hc.1.1 hn h', idx_cjL, Fintype.card_fin]
+
+end GlobalTheory.ThetaLatIndex
+end
+end
+
+section
+open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum GlobalTheory.RatEqui GlobalTheory.InertParity
+open scoped BigOperators Pointwise
+
+namespace GlobalTheory.TypeNormProduct
+
+theorem prod_sq_norm_embT : ∀ (D : D7) (y : 𝓞 D.host.E),
+    ∏ τ, ‖embT D τ (y : D.host.E)‖ ^ 2 = (Ideal.absNorm (Ideal.span {y}) : ℝ) := by
+  intro D y
+  have hc : ∀ (φ : D.host.E →+* ℂ) (x : D.host.E), φ (D.host.conj x) = starRingEnd ℂ (φ x) :=
+    fun φ x => D.host.conjE_apply φ x
+  have hcc : ∀ x : D.host.E, D.host.conj (D.host.conj x) = x := fun x =>
+    D.host.φ₀.injective (by rw [hc, hc, Complex.conj_conj])
+  set x : D.host.E := (y : D.host.E) with hx
+  have ht : D.host.conj (x * D.host.conj x) = x * D.host.conj x := by
+    rw [map_mul, hcc, mul_comm]
+  have h1 := GlobalTheory.NormSign.prod_embT D (x * D.host.conj x)
+  have h2 := congrArg D.host.φ₀ (GlobalTheory.NormSign.norm_eq D.host ht)
+  rw [map_pow, ← h1, map_ratCast, map_mul, Algebra.norm_eq_of_algEquiv] at h2
+  have h3 : ∏ τ, embT D τ (x * D.host.conj x) = ((∏ τ, ‖embT D τ x‖ ^ 2 : ℝ) : ℂ) := by
+    push_cast
+    refine Finset.prod_congr rfl fun τ _ => ?_
+    rw [map_mul, hc, Complex.mul_conj, Complex.normSq_eq_norm_sq]
+    push_cast
+    rfl
+  rw [h3] at h2
+  have h4 : ((Algebra.norm ℚ x : ℚ) : ℝ) ^ 2 = (∏ τ, ‖embT D τ x‖ ^ 2) ^ 2 := by
+    apply Complex.ofReal_injective
+    rw [Complex.ofReal_pow, Complex.ofReal_pow, ← h2]
+    push_cast
+    ring
+  have h5 : 0 ≤ ∏ τ, ‖embT D τ x‖ ^ 2 := Finset.prod_nonneg fun _ _ => by positivity
+  rw [← sq_abs] at h4
+  have h6 := (pow_left_inj₀ (abs_nonneg _) h5 two_ne_zero).1 h4
+  rw [← h6, Ideal.absNorm_span_singleton, hx, ← Algebra.coe_norm_int, Nat.cast_natAbs]
+  push_cast
+  rfl
+
+end GlobalTheory.TypeNormProduct
+end
+
+section
 open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum GlobalTheory.RatEqui GlobalTheory.InertParity
 open scoped BigOperators Pointwise
 
@@ -466,3 +1212,5 @@ theorem poisson : ∀ D : D7, admissible_poisson D := by
   exact ⟨a, a', fun g g' γ γ' hr hr' => oddEq_of_mem hc hN he W g g' γ γ' a a' hr hr' ha' ha⟩
 
 end GlobalTheory.OddRank
+end
+end

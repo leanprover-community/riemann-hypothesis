@@ -138,7 +138,6 @@ def lineAdapted (II : IntersectionSystem)
     rw [this]
     rfl
 
-theorem flagDim0_line : lineDataZero.flagDim0 = 0 := rfl
 
 end Line
 

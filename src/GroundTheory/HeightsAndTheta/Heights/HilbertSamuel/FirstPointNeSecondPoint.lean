@@ -1,6 +1,162 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.FderivFderivLogRho
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.IsConeAnalyticSubset
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.LemCone
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.HilbertSamuel
+
+open ReciprocityTheory.ChartRestriction.G.Geo
+
+noncomputable section
+
+namespace FSLevi
+
+variable {J : Type} [Fintype J]
+
+def reP (p : J) : (J → ℂ) →L[ℝ] ℝ := Complex.reCLM.comp (ContinuousLinearMap.proj p)
+
+def imaginary (p : J) : (J → ℂ) →L[ℝ] ℝ := Complex.imCLM.comp (ContinuousLinearMap.proj p)
+
+def nsq (z : J → ℂ) : ℝ := ∑ p, (reP p z ^ 2 + imaginary p z ^ 2)
+
+def bil : (J → ℂ) →L[ℝ] ((J → ℂ) →L[ℝ] ℝ) :=
+  ∑ p, ((reP p).smulRight (reP p) + (imaginary p).smulRight (imaginary p))
+
+theorem bil_apply (u v : J → ℂ) : bil u v = ∑ p, (reP p u * reP p v + imaginary p u * imaginary p v) := by
+  simp [bil, ContinuousLinearMap.sum_apply]
+
+theorem reP_apply (p : J) (z : J → ℂ) : reP p z = (z p).re := rfl
+
+theorem imaginaryPart_apply (p : J) (z : J → ℂ) : imaginary p z = (z p).im := rfl
+
+theorem hasFDerivAt_nsq (z : J → ℂ) : HasFDerivAt nsq ((2 : ℝ) • bil z) z := by
+  have h : ∀ p : J, HasFDerivAt (fun z : J → ℂ ↦ reP p z ^ 2 + imaginary p z ^ 2)
+      ((2 * reP p z) • reP p + (2 * imaginary p z) • imaginary p) z := by
+    intro p
+    have h1 := (reP p).hasFDerivAt (x := z) |>.pow 2
+    have h2 := (imaginary p).hasFDerivAt (x := z) |>.pow 2
+    refine (h1.add h2).congr_fderiv ?_
+    ext v
+    simp
+  have hs := HasFDerivAt.fun_sum (u := Finset.univ) (fun p _ ↦ h p)
+  refine hs.congr_fderiv ?_
+  ext v
+  simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.add_apply,
+    ContinuousLinearMap.smul_apply, smul_eq_mul, bil_apply, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun p _ ↦ ?_
+  ring
+
+theorem norm_sq_eq (w : ℂ) : ‖w‖ ^ 2 = w.re ^ 2 + w.im ^ 2 := by
+  rw [Complex.sq_norm, Complex.normSq_apply]; ring
+
+theorem log_rho_eq (z : J → ℂ) : Real.log ((fsMetric J).ρ z) = (1 / 2) * Real.log (nsq z) := by
+  have : (fsMetric J).ρ z = Real.sqrt (nsq z) := by
+    simp [fsMetric, EuclideanSpace.norm_eq, nsq, reP_apply, imaginaryPart_apply, norm_sq_eq]
+  rw [this, Real.log_sqrt (x := nsq z) (Finset.sum_nonneg fun p _ ↦ by positivity)]
+  ring
+
+theorem nsq_pos {z : J → ℂ} (hz : z ≠ 0) : 0 < nsq z := by
+  obtain ⟨p, hp⟩ := Function.ne_iff.mp hz
+  refine Finset.sum_pos' (fun q _ ↦ by positivity) ⟨p, Finset.mem_univ _, ?_⟩
+  rw [reP_apply, imaginaryPart_apply, ← norm_sq_eq]
+  exact pow_pos (norm_pos_iff.mpr hp) 2
+
+theorem hasFDerivAt_logRho {z : J → ℂ} (hz : z ≠ 0) :
+    HasFDerivAt (fun z ↦ Real.log ((fsMetric J).ρ z)) ((nsq z)⁻¹ • bil z) z := by
+  have h := ((hasFDerivAt_nsq z).log (nsq_pos hz).ne').const_mul (1 / 2 : ℝ)
+  have e : (fun z ↦ Real.log ((fsMetric J).ρ z)) = fun z ↦ (1 / 2) * Real.log (nsq z) :=
+    funext log_rho_eq
+  rw [e]
+  refine h.congr_fderiv ?_
+  ext v
+  simp only [ContinuousLinearMap.smul_apply, smul_eq_mul]
+  ring
+
+theorem hasFDerivAt_deriv {z : J → ℂ} (hz : z ≠ 0) :
+    HasFDerivAt (fun z ↦ (nsq z)⁻¹ • bil z)
+      ((nsq z)⁻¹ • bil + (((ContinuousLinearMap.toSpanSingleton ℝ (-(nsq z ^ 2)⁻¹)).comp
+        ((2 : ℝ) • bil z))).smulRight (bil z)) z := by
+  have hinv := (hasFDerivAt_inv (𝕜 := ℝ) (nsq_pos hz).ne').comp z (hasFDerivAt_nsq z)
+  exact hinv.fun_smul bil.hasFDerivAt
+
+theorem fderiv_fderiv_logRho {z : J → ℂ} (hz : z ≠ 0) :
+    fderiv ℝ (fderiv ℝ fun z ↦ Real.log ((fsMetric J).ρ z)) z =
+      (nsq z)⁻¹ • bil + (((ContinuousLinearMap.toSpanSingleton ℝ (-(nsq z ^ 2)⁻¹)).comp
+        ((2 : ℝ) • bil z))).smulRight (bil z) := by
+  have hev : (fderiv ℝ fun z ↦ Real.log ((fsMetric J).ρ z)) =ᶠ[nhds z]
+      fun z ↦ (nsq z)⁻¹ • bil z := by
+    filter_upwards [isOpen_ne.mem_nhds hz] with z' hz'
+    exact (hasFDerivAt_logRho hz').fderiv
+  rw [hev.fderiv_eq]
+  exact (hasFDerivAt_deriv hz).fderiv
+
+theorem cs (z w : J → ℂ) :
+    (∑ p, (reP p z * reP p w + imaginary p z * imaginary p w)) ^ 2 +
+      (∑ p, (reP p z * reP p (Complex.I • w) + imaginary p z * imaginary p (Complex.I • w))) ^ 2 ≤
+      nsq z * nsq w := by
+  set a : J → ℂ := fun p ↦ starRingEnd ℂ (z p) * w p
+  have h1 : (∑ p, (reP p z * reP p w + imaginary p z * imaginary p w)) = (∑ p, a p).re := by
+    rw [Complex.re_sum]
+    refine Finset.sum_congr rfl fun p _ ↦ ?_
+    simp [a, reP_apply, imaginaryPart_apply, Complex.mul_re]
+  have h2 : (∑ p, (reP p z * reP p (Complex.I • w) + imaginary p z * imaginary p (Complex.I • w))) =
+      -(∑ p, a p).im := by
+    rw [Complex.im_sum, ← Finset.sum_neg_distrib]
+    refine Finset.sum_congr rfl fun p _ ↦ ?_
+    simp [a, reP_apply, imaginaryPart_apply, Complex.mul_re, Complex.mul_im]
+    ring
+  rw [h1, h2, neg_sq]
+  have h3 : (∑ p, a p).re ^ 2 + (∑ p, a p).im ^ 2 = ‖∑ p, a p‖ ^ 2 := (norm_sq_eq _).symm
+  rw [h3]
+  have h4 : ‖∑ p, a p‖ ≤ ∑ p, ‖z p‖ * ‖w p‖ := by
+    refine (norm_sum_le _ _).trans (le_of_eq ?_)
+    simp [a]
+  have h5 : (∑ p, ‖z p‖ * ‖w p‖) ^ 2 ≤ nsq z * nsq w := by
+    have := Finset.sum_mul_sq_le_sq_mul_sq Finset.univ (fun p ↦ ‖z p‖) (fun p ↦ ‖w p‖)
+    simpa [nsq, reP_apply, imaginaryPart_apply, norm_sq_eq] using this
+  calc ‖∑ p, a p‖ ^ 2 ≤ (∑ p, ‖z p‖ * ‖w p‖) ^ 2 := by gcongr
+    _ ≤ nsq z * nsq w := h5
+
+theorem leviForm_nonneg {z : J → ℂ} (hz : z ≠ 0) (w : J → ℂ) :
+    0 ≤ leviForm (fun z ↦ Real.log ((fsMetric J).ρ z)) z w := by
+  unfold leviForm
+  rw [fderiv_fderiv_logRho hz]
+  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.comp_apply,
+    ContinuousLinearMap.toSpanSingleton_apply, smul_eq_mul]
+  have hN := nsq_pos hz
+  have hww : bil w w = nsq w := by
+    rw [bil_apply, nsq]; exact Finset.sum_congr rfl fun p _ ↦ by ring
+  have hiw : bil (Complex.I • w) (Complex.I • w) = nsq w := by
+    rw [bil_apply, nsq]
+    refine Finset.sum_congr rfl fun p _ ↦ ?_
+    simp [reP_apply, imaginaryPart_apply]
+    ring
+  rw [hww, hiw]
+  have hc := cs z w
+  rw [← bil_apply, ← bil_apply] at hc
+  set X := bil z w
+  set Y := bil z (Complex.I • w)
+  have key : (nsq z)⁻¹ * nsq w + (2 * X) * -(nsq z ^ 2)⁻¹ * X +
+      ((nsq z)⁻¹ * nsq w + (2 * Y) * -(nsq z ^ 2)⁻¹ * Y) =
+        2 * (nsq z * nsq w - (X ^ 2 + Y ^ 2)) / nsq z ^ 2 := by
+    field_simp; ring
+  have hnn : 0 ≤ 2 * (nsq z * nsq w - (X ^ 2 + Y ^ 2)) / nsq z ^ 2 :=
+    div_nonneg (by linarith) (by positivity)
+  have : 0 ≤ (nsq z)⁻¹ * nsq w + (2 * X) * -(nsq z ^ 2)⁻¹ * X +
+      ((nsq z)⁻¹ * nsq w + (2 * Y) * -(nsq z ^ 2)⁻¹ * Y) := key ▸ hnn
+  nlinarith [this]
+
+end FSLevi
+
+end
+
+end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.HilbertSamuel
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.HilbertSamuel
@@ -24,11 +180,6 @@ def p0 : J2 := ⟨(), 0⟩
 
 def p1 : J2 := ⟨(), 1⟩
 
-theorem twoPoint_cases (q : J2) : q = p0 ∨ q = p1 := by
-  obtain ⟨⟨⟩, i⟩ := q
-  fin_cases i
-  · exact Or.inl rfl
-  · exact Or.inr rfl
 
 theorem firstPoint_ne_secondPoint : p0 ≠ p1 := by
   decide
@@ -71,123 +222,21 @@ theorem dehom_homog (p : Polynomial ℤ) {d : ℕ} (hp : p.natDegree ≤ d) : de
   refine Finset.sum_congr rfl fun i _ ↦ ?_
   rw [← Polynomial.C_mul_X_pow_eq_monomial]
 
-theorem isMultiHomog_homog (p : Polynomial ℤ) (d : ℕ) :
-    IsMultiHomog (ι := GlobalTheory (Fin 2)) (homog p d) fun _ ↦ d := by
-  intro m hm k
-  obtain ⟨i, hi, hmi⟩ := Finset.mem_biUnion.mp (support_sum hm)
-  have hm' : m = Finsupp.single p1 i + Finsupp.single p0 (d - i) := by
-    by_contra hne
-    rw [support_monomial] at hmi
-    split_ifs at hmi with hc
-    · simp at hmi
-    · exact hne (Finset.mem_singleton.mp hmi)
-  subst hm'
-  obtain ⟨⟩ := k
-  have hi' : i ≤ d := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
-  rw [Fin.sum_univ_two]
-  simp [Finsupp.single_apply, p0, p1]
-  omega
 
 theorem homog_add (p q : Polynomial ℤ) (d : ℕ) : homog (p + q) d = homog p d + homog q d := by
   simp [homog, Polynomial.coeff_add, map_add, Finset.sum_add_distrib]
 
 theorem homog_zero (d : ℕ) : homog 0 d = 0 := by simp [homog]
 
-theorem homog_C_mul_X_pow (c : ℤ) {j d : ℕ} (hj : j ≤ d) :
-    homog (Polynomial.C c * Polynomial.X ^ j) d =
-      monomial (Finsupp.single p1 j + Finsupp.single p0 (d - j)) c := by
-  rw [homog, Finset.sum_eq_single j]
-  · simp
-  · intro i _ hij
-    simp [Polynomial.coeff_C_mul_X_pow, hij]
-  · intro h
-    exact absurd (Finset.mem_range.mpr (by omega)) h
 
-theorem finsupp_twoPoint_eq (m : J2 →₀ ℕ) : m = Finsupp.single p1 (m p1) + Finsupp.single p0 (m p0) := by
-  ext q
-  rcases twoPoint_cases q with rfl | rfl
-  · simp [Finsupp.single_apply, firstPoint_ne_secondPoint.symm]
-  · simp [Finsupp.single_apply, firstPoint_ne_secondPoint]
 
-theorem homog_dehom {f : MvPolynomial J2 ℤ} {d : ℕ} (hf : f.IsHomogeneous d) :
-    homog (dehom f) d = f := by
-  let H : Polynomial ℤ →+ MvPolynomial J2 ℤ :=
-    { toFun := fun p ↦ homog p d, map_zero' := homog_zero d, map_add' := fun p q ↦ homog_add p q d }
-  have key : ∀ m ∈ f.support, H (dehom (monomial m (f.coeff m))) = monomial m (f.coeff m) := by
-    intro m hm
-    have hdeg : m p0 + m p1 = d := by
-      have := hf (mem_support_iff.mp hm)
-      simp only [Finsupp.weight_apply, Pi.one_apply, smul_eq_mul, mul_one] at this
-      rw [Finsupp.sum_fintype _ _ (by simp), sum_twoPoint] at this
-      exact this
-    conv_lhs => rw [finsupp_twoPoint_eq m]
-    rw [dehom_monomial]
-    change homog _ d = _
-    rw [homog_C_mul_X_pow _ (by omega), show d - m p1 = m p0 by omega, ← finsupp_twoPoint_eq m]
-  conv_lhs => rw [f.as_sum]
-  change H (dehom (∑ m ∈ f.support, monomial m (f.coeff m))) = _
-  rw [map_sum, map_sum]
-  conv_rhs => rw [f.as_sum]
-  exact Finset.sum_congr rfl key
 
-theorem coordIdeal_alt : coordIdeal ℤ x = ⊥ := by
-  ext f
-  refine ⟨fun hf ↦ ?_, fun hf ↦ ?_⟩
-  · have hcomp : ∀ d, homogeneousComponent d f = 0 := fun d ↦ by
-      have h1 : aeval x (homogeneousComponent d f) = 0 := by
-        rw [← coeff_coneMap ℤ x f d]
-        rw [coordIdeal, RingHom.mem_ker] at hf
-        rw [hf, Polynomial.coeff_zero]
-      rw [aeval_alt] at h1
-      have h2 : dehom (homogeneousComponent d f) = 0 :=
-        IsFractionRing.injective (Polynomial ℤ) Fld (by rw [h1, map_zero])
-      rw [← homog_dehom (homogeneousComponent_isHomogeneous d f), h2, homog_zero]
-    rw [Submodule.mem_bot, ← sum_homogeneousComponent f]
-    simp [hcomp]
-  · rw [Submodule.mem_bot] at hf
-    rw [hf]
-    exact Submodule.zero_mem _
 
-theorem isArithVar_alt : IsArithVar (ι := GlobalTheory (Fin 2)) (coordIdeal ℤ x) (1 + 1) := by
-  rw [coordIdeal_alt]
-  exact Inter.isArithVar_projLine
 
-theorem linearIndependent_alt : LinearIndependent ℤ x := by
-  rw [Fintype.linearIndependent_iff]
-  intro g hg q
-  rw [sum_twoPoint] at hg
-  have h : algebraMap (Polynomial ℤ) Fld (Polynomial.C (g p0) + Polynomial.C (g p1) * Polynomial.X) =
-      0 := by
-    rw [← hg]
-    simp [x, val, p0, p1, zsmul_eq_mul]
-  have hp : Polynomial.C (g p0) + Polynomial.C (g p1) * Polynomial.X = 0 :=
-    IsFractionRing.injective (Polynomial ℤ) Fld (by rw [h, map_zero])
-  have h0 := congrArg (Polynomial.coeff · 0) hp
-  have h1 := congrArg (Polynomial.coeff · 1) hp
-  simp only [Polynomial.coeff_add, Polynomial.coeff_C, Polynomial.coeff_C_mul_X] at h0 h1
-  simp at h0 h1
-  rcases twoPoint_cases q with rfl | rfl
-  · exact h0
-  · exact h1
 
-theorem birational_alt : Birational (ι := GlobalTheory (Fin 2)) x := by
-  intro s
-  obtain ⟨p, q, hq, rfl⟩ := IsFractionRing.div_surjective (A := Polynomial ℤ) s
-  set D := max p.natDegree q.natDegree
-  have hq0 : algebraMap (Polynomial ℤ) Fld q ≠ 0 :=
-    IsFractionRing.to_map_ne_zero_of_mem_nonZeroDivisors hq
-  refine ⟨fun _ ↦ D, homog p D, homog q D, isMultiHomog_homog p D, isMultiHomog_homog q D, ?_, ?_⟩
-  · rw [aeval_alt, dehom_homog q (le_max_right _ _)]
-    exact hq0
-  · rw [aeval_alt, aeval_alt, dehom_homog p (le_max_left _ _), dehom_homog q (le_max_right _ _),
-      div_mul_cancel₀ _ hq0]
 
 abbrev fs : ConeMetric ℂ J2 := fsMetric J2
 
-theorem rho_fs (z : J2 → ℂ) : fs.ρ z = Real.sqrt (FSLevi.nsq z) := by
-  have h := FSLevi.log_rho_eq z
-  simp [fsMetric, EuclideanSpace.norm_eq, FSLevi.nsq, FSLevi.reP_apply, FSLevi.imaginaryPart_apply,
-    FSLevi.norm_sq_eq]
 
 theorem isSmoothHerm_fs {κ : Type} [Fintype κ] : IsSmoothHerm (HermLine.ofCone (fsMetric (Ix κ))) := by
   have hN : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (FSLevi.nsq (J := Ix κ)) := by
@@ -216,12 +265,10 @@ theorem isSemipositiveRel_fs {κ : Type} [Fintype κ] (P₀ P : Ideal (MRing (Gl
     exact fun h0 ↦ hi (congrFun h0 _)
   exact FSLevi.leviForm_nonneg hz0 w
 
-theorem isHSDatum : IsHSDatum 1 x fs ⊥ :=
-  ⟨le_rfl, isArithVar_alt, linearIndependent_alt, bot_le,
-    isSemipositiveRel_fs (κ := Fin 2) ⊥ (coordIdeal ℤ x), isConjInvariantH_fs (κ := Fin 2)⟩
 
 end P1
 
 end
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.HilbertSamuel
+end

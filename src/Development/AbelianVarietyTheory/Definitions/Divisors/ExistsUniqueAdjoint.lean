@@ -24,9 +24,6 @@ theorem existsUnique_adjoint (X₁ : Setup F W i) (a : Matrix (Fin 8) (Fin 8) �
   refine ⟨(W + W.transpose)⁻¹ * (a.transpose * (W + W.transpose)), Matrix.mul_nonsing_inv_cancel_left _ _ hu, fun b hb => ?_⟩
   rw [← hb, Matrix.nonsing_inv_mul_cancel_left _ _ hu]
 
-theorem polar_adjoint {s : ℕ} (S a a' : Matrix (Fin s) (Fin s) ℤ) (h : S * a' = a.transpose * S) (y χ : Fin s → ℤ) :
-    (a.mulVec y) ⬝ᵥ (S.mulVec χ) = y ⬝ᵥ (S.mulVec (a'.mulVec χ)) := by
-  rw [Matrix.mulVec_mulVec, h, ← Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec y, Matrix.vecMul_transpose]
 
 theorem exists_endU (𝔪 : UMem X₁ z₁ act V ev X t δ) (a : Matrix (Fin 8) (Fin 8) ℤ) :
     ∃ E : EndU 𝔪.U.toUnifPre, E.aA.left ≫ 𝔪.φ = 𝔪.φ ≫ (act a).left :=

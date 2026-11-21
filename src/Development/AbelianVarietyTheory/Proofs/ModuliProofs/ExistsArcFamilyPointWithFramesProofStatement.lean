@@ -1,8 +1,0 @@
-import Mathlib
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsArcFamilyPointWithFramesProof
-open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
-open scoped CategoryTheory.Obj
-set_option maxHeartbeats 1000000 in
-theorem _root_.GlobalTheory.T.existsArcFamilyPointWithFrames_proof : GlobalTheory.LN.ArcFamSt := by
-  first | exact @GlobalTheory.arcFam_closed | exact GlobalTheory.arcFam_closed | (intros; apply GlobalTheory.arcFam_closed <;> assumption)

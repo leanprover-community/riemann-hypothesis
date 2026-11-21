@@ -69,10 +69,6 @@ theorem unrAt (h : TeichTriv H χ) {w : HeightOneSpectrum (𝓞 H.E)} (hw : Over
 
 end TeichTriv
 
-theorem not_teichTriv_of_isDelta {p : ℕ} (hd : IsDelta (H := H) p χ) {w : HeightOneSpectrum (𝓞 H.E)} (hp : OverP H p w)
-    (hw : OverP H H.pde w ∨ OverP H H.pde' w) : ¬ TeichTriv H χ := fun h => by
-  have := (hd.ine w hp 1).1 fun x hx => by rw [pow_one, h.unrAt hw (hd.tame w) x hx]
-  omega
 
 end Host
 
@@ -84,18 +80,7 @@ def Teich : Prop := ∀ a, TeichTriv D.host (Z.chi a)
 
 variable {Z}
 
-theorem Teich.lambda_local_teichmuller (h : Z.Teich) (l : ℕ) (j a : Fin D.R.m) {w : HeightOneSpectrum (𝓞 D.host.E)}
-    (hw : OverP D.host D.host.pde w ∨ OverP D.host D.host.pde' w) {x : (w.adicCompletion D.host.E)ˣ}
-    (hx : x ^ (Ideal.absNorm w.asIdeal - 1) = 1) :
-    (Z.lam0 l j a).loc w x = (Z.C.mu0 j).loc w x * (Z.C.delAt l).loc w x := by
-  unfold lam0
-  rw [HChar.loc_mul, HChar.loc_mul, HChar.loc_inv, h a w hw x hx, inv_one, mul_one]
 
-theorem Teich.not_mul_del (h : Z.Teich) (a : Fin D.R.m) {w : HeightOneSpectrum (𝓞 D.host.E)} (hw : OverP D.host D.host.pde w) :
-    ¬ TeichTriv D.host (Z.chi a * Z.C.del) := fun h' => by
-  have h1 := (h a).inv.mul h'
-  rw [inv_mul_cancel_left] at h1
-  exact not_teichTriv_of_isDelta Z.C.isDel hw (Or.inl hw) h1
 
 end LamDat
 
@@ -133,9 +118,6 @@ theorem isLamTieFull_of_labels (J A : ∀ i, X.abelian₂ i → Fin D.R.m) (S : 
 
 namespace IsLamTieFull
 
-theorem isLamTie (h : IsLamTieFull X Z) : IsLamTie X Z := fun i hi =>
-  let ⟨h0, ι, h1, h2, _⟩ := h i hi
-  ⟨h0, ι, h1, h2⟩
 
 theorem exists_labels (h : IsLamTieFull X Z) {i : X.Tw} (hi : X.NonzeroIndexPlace i) (j : Fin D.R.m) {s : ℕ} (b : Bool) (hs : 1 ≤ s)
     (hs' : s ≤ BlochKatoReduction.Gen.NFun D.R + 1) : ∃ lam : X.abelian₂ i, X.sideL i lam = b ∧ X.jL i lam = j.1 + 1 ∧ X.s2 i lam = 2 * (s : ℤ) :=

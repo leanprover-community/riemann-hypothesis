@@ -3,8 +3,16 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FirstChernFormPrope
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothFormsCalculusHolomorphicAtlasStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HolAtlasTopFormIntegralFiniteAdditiveHomogeneousStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HomogeneousMemSpanLinearRoots
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TopPowerHermitianFormDensityStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TopPowerHermitianFormDensity
 
+section
+open GlobalTheory.CxForm
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.top_power_hermitian_form_density : ∀ (n : ℕ) (H : Matrix (Fin n) (Fin n) ℂ), GlobalTheory.CxForm.dens (((∑ a, ∑ b, H a b • GlobalTheory.CxForm.sym (a, b) : GlobalTheory.CxForm.Ev n) ^ n : GlobalTheory.CxForm.Ev n) : GlobalTheory.CxForm.Alt n) = (n.factorial : ℂ) * H.det / (Complex.I / 2) ^ n := by
+  first | exact @GlobalTheory.CxForm.DensPow.dens_pow | exact GlobalTheory.CxForm.DensPow.dens_pow | (intros; apply GlobalTheory.CxForm.DensPow.dens_pow <;> assumption)
+end
+
+section
 open CategoryTheory AlgebraicGeometry MvPolynomial MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.ArInt GlobalTheory.CxForm GlobalTheory.CxPts GlobalTheory.VB GlobalTheory.Cartier GlobalTheory.CovTest GlobalTheory.CovTest.SwapLine GlobalTheory.LineForm
@@ -208,3 +216,5 @@ theorem geoFun_eq_integral : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) [IsInt
     exact finsum_congr fun σ => ((integral_lin hX σ L).2 t x).symm
 
 end GlobalTheory.LineForm.GeoInt
+end
+end

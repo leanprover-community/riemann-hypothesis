@@ -180,37 +180,6 @@ theorem ptValueC_of (h1 : LiftAtSomeC X Y u u' κ)
   ext x
   simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.smul_apply, map_smul, hk2, c2, c3, hk1, c1]
 
-theorem commonFrameC_of_D (h1 : LiftAtSomeC X Y u u' κ)
-    (h2 : Formalism.L2.SG.PairVal.CellPtUnique D u u' (X.Fu u) (Y.what₂ u))
-    (h3 : DecompPhaseC X Y u u' κ) (h4 : DFrameAtS X u u' i0 i0' 1) (h4' : LiftGPosC X Y u u' κ)
-    (h5 : FormTranspC X Y u u' vR νq κ) (hD : CommonDC X Y u u' vR i0 i0' νq κ)
-    (hV : LemmaVLiftC X Y u u' κ) (hAt : AtPtRelevantC X Y u u') :
-    CommonFrameC X Y u u' vR i0 i0' νq κ := by
-  intro R ρ
-  obtain ⟨U, U', ζ, hζ, hc⟩ := hD R ρ
-  refine ⟨U, U', ζ, hζ, fun s A B hAB => ?_⟩
-  rw [← hAB]
-  by_cases hrel : s.1.relevant
-  · obtain ⟨g, hg, g', hg', hdec, h, h', hDF, hval⟩ :=
-      chiOO_decomp X Y u u' vR i0 i0' νq κ h1 h2 h3 h4 h4' h5 R ρ s hrel
-    rw [hval]
-    exact hc s hrel g hg g' hg' hdec h h' hDF
-  · obtain ⟨h0, hc0⟩ := irrelZeroC_of X Y u u' vR i0 i0' νq κ hV hAt R ρ s hrel
-    rw [h0]
-    unfold frameVal
-    rcases hc0 with hc0 | hc0
-    · rw [hc0, zero_smul, smul_zero]
-    · rw [hc0]
-      simp
 
-theorem commonFrameC_of_move (h1 : LiftAtSomeC X Y u u' κ)
-    (h2 : Formalism.L2.SG.PairVal.CellPtUnique D u u' (X.Fu u) (Y.what₂ u))
-    (h3 : DecompPhaseC X Y u u' κ) (h4 : DFrameAtS X u u' i0 i0' 1) (h4' : LiftGPosC X Y u u' κ)
-    (h5 : FormTranspC X Y u u' vR νq κ) (hM : DFrameMoveC X u u' i0 i0') (hF : OOtNuC X Y u u' νq κ)
-    (hNu : Formalism.L2.SG.RealObj.NuQOK X u u' νq) (hVI : Formalism.L2.SG.RealObj.VIndep X u u' 1 i0 i0' νq)
-    (hS : ScalarAgreeC X Y u u' κ) (hV : LemmaVLiftC X Y u u' κ) (hAt : AtPtRelevantC X Y u u') :
-    CommonFrameC X Y u u' vR i0 i0' νq κ :=
-  commonFrameC_of_scalar X Y u u' vR i0 i0' νq κ (ptValueC_of X Y u u' vR i0 i0' νq κ h1 h2 h3 h4 h4' h5 hM) hF hNu hVI
-    hS hV hAt
 
 end Formalism.L2.SG.Pf.RowForm

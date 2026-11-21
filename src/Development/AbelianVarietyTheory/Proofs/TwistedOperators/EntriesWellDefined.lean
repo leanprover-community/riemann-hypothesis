@@ -9,22 +9,423 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OpEOmTargetUnipo
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegralCompBlocks
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CharEqOneOfOpENeZero
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SchwartzBruhatMatrixExistsOpenAddSubgroupInvaria
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsCOPrXCgrpStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsParabolicDoubleCosetFunctionEqOne
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RootExchangeUnipotentExistsResidueCardPowMemNhdsStatement
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsCOPrXCgrp
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RootExchangeUnipotentExistsResidueCardPowMemNhds
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HaarCompactOpenRatioEqZpowOfTopNilpotent
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ParabolicHaarVolumeConjIntersectionEqMul
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegralTranslateIndicatorStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsQuotIntCosetFnStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsAdaptedExponentSchwartzBruhatLastColumnStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FiniteQuotientCosetsScaledStandardLatticeBoxStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsGenericLevelOfFrame
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsIsSymmetricPositionLevelStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.GenericLevelOfFrameBlockAndCharacterStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SymmetricPositionLevelShapeOnParabolicStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FirstVertexIteratedLevelChainInFrameStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FirstVertexParahoricLevelChainTwistStatement
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsMulLeftInvariantVolGL
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegralTranslateIndicator
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsQuotIntCosetFn
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsAdaptedExponentSchwartzBruhatLastColumn
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsIsSymmetricPositionLevel
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.GenericLevelOfFrameBlockAndCharacter
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SymmetricPositionLevelShapeOnParabolic
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FirstVertexIteratedLevelChainInFrame
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FirstVertexParahoricLevelChainTwist
 
+section
+open MeasureTheory ValuativeRel Matrix Topology GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isCO_prX_Cgrp_and_det_valuation_deltaR_eq_one : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : Type) [Fintype n] [DecidableEq n] (c : ℕ) (J : Subgroup (GL (n ⊕ Fin c) k)), IsCO J → ∀ h : GL (n ⊕ Fin c) k, IsCO (prX (Cgrp J h)) ∧ ∀ g ∈ prX (Cgrp J h), valuation k ((Matrix.GeneralLinearGroup.det g : kˣ) : k) = 1 ∧ deltaR c g = 1 := by
+  first | exact @GlobalTheory.PrCompactOpen.isCO_prX_Cgrp | exact GlobalTheory.PrCompactOpen.isCO_prX_Cgrp | (intros; apply GlobalTheory.PrCompactOpen.isCO_prX_Cgrp <;> assumption)
+end
+
+section
+section
+open MeasureTheory ValuativeRel Matrix Topology GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum
+
+namespace GlobalTheory.CosetFn
+section
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+  {n : Type} [Fintype n] [DecidableEq n] {c : ℕ}
+
+theorem deltaR_mul (g g' : GL n k) : deltaR c (g * g') = deltaR c g * deltaR c g' := by
+  simp only [deltaR, nabs, map_mul, NNReal.coe_mul, mul_zpow]
+
+theorem deltaR_one : deltaR c (1 : GL n k) = 1 := by
+  simp [deltaR, nabs]
+
+omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
+theorem mul_embX_mem_R {u : GL (n ⊕ Fin c) k} (hu : u ∈ N k n c 1) (g : GL n k) :
+    u * embX c g ∈ R k n c 1 :=
+  mul_mem (Subgroup.mem_sup_right hu) (Subgroup.mem_sup_left ⟨g, rfl⟩)
+
+theorem deltaR_eq {J : Subgroup (GL (n ⊕ Fin c) k)} {h : GL (n ⊕ Fin c) k}
+    (H : ∀ g ∈ prX (Cgrp J h), deltaR c g = 1) {u u' j j' : GL (n ⊕ Fin c) k} {g g' : GL n k}
+    (hu : u ∈ N k n c 1) (hu' : u' ∈ N k n c 1) (hj : j ∈ J) (hj' : j' ∈ J)
+    (e : u * embX c g * h * j = u' * embX c g' * h * j') : deltaR c g = deltaR c g' := by
+  have h1 : g'⁻¹ * g ∈ prX (Cgrp J h) := by
+    refine ⟨embX c g'⁻¹ * (u'⁻¹ * u) * (embX c g'⁻¹)⁻¹,
+      Radical.conj_mem _ (mul_mem (inv_mem hu') hu), ?_⟩
+    have e2 : embX c g'⁻¹ * (u'⁻¹ * u) * (embX c g'⁻¹)⁻¹ * embX c (g'⁻¹ * g)
+        = (u' * embX c g')⁻¹ * (u * embX c g) := by
+      simp only [map_mul, map_inv]; group
+    rw [e2]
+    refine Subgroup.mem_inf.2
+      ⟨Subgroup.mul_mem _ (Subgroup.inv_mem _ (mul_embX_mem_R hu' g')) (mul_embX_mem_R hu g), ?_⟩
+    have e3 : u * embX c g = u' * embX c g' * h * j' * j⁻¹ * h⁻¹ := by
+      rw [← e]; group
+    have e4 : h⁻¹ * ((u' * embX c g')⁻¹ * (u * embX c g)) * h⁻¹⁻¹ = j' * j⁻¹ := by
+      rw [e3]; group
+    show h⁻¹ * ((u' * embX c g')⁻¹ * (u * embX c g)) * h⁻¹⁻¹ ∈ J
+    rw [e4]
+    exact mul_mem hj' (inv_mem hj)
+  have h2 := deltaR_mul (c := c) g' (g'⁻¹ * g)
+  rw [H _ h1, mul_inv_cancel_left, mul_one] at h2
+  exact h2
+
+end
+
+theorem exists_isCosetFn (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] (n : Type) [Fintype n] [DecidableEq n] (c : ℕ)
+    (J : Subgroup (GL (n ⊕ Fin c) k)) (h : GL (n ⊕ Fin c) k)
+    (H : ∀ g ∈ prX (Cgrp J h), deltaR c g = 1) : ∃ f, IsCosetFn J h f ∧ f h = 1 := by
+  classical
+  let P : GL (n ⊕ Fin c) k → GL n k → Prop := fun x g =>
+    ∃ u ∈ N k n c 1, ∃ j ∈ J, x = u * embX c g * h * j
+  let f : GL (n ⊕ Fin c) k → ℂ := fun x =>
+    if hx : ∃ g, P x g then (deltaR c hx.choose : ℂ) else 0
+  have fpos : ∀ x g, P x g → f x = (deltaR c g : ℂ) := by
+    intro x g hg
+    have hx : ∃ g, P x g := ⟨g, hg⟩
+    obtain ⟨u, hu, j, hj, e⟩ := hx.choose_spec
+    obtain ⟨u', hu', j', hj', e'⟩ := hg
+    simp only [f, dif_pos hx]
+    rw [deltaR_eq H hu hu' hj hj' (e.symm.trans e')]
+  have fneg : ∀ x, (¬ ∃ g, P x g) → f x = 0 := fun x hx => by simp only [f, dif_neg hx]
+  have left : ∀ u ∈ N k n c 1, ∀ (g g' : GL n k) x, P x g' → P (u * embX c g * x) (g * g') := by
+    rintro u hu g g' x ⟨u', hu', j, hj, rfl⟩
+    refine ⟨u * (embX c g * u' * (embX c g)⁻¹), mul_mem hu (Radical.conj_mem _ hu'), j, hj, ?_⟩
+    simp only [map_mul]; group
+  have right : ∀ j ∈ J, ∀ g x, P x g → P (x * j) g := by
+    rintro j hj g x ⟨u', hu', j', hj', rfl⟩
+    exact ⟨u', hu', j' * j, mul_mem hj' hj, by group⟩
+  refine ⟨f, ⟨?_, ?_, ?_⟩, ?_⟩
+  · intro u hu g x
+    by_cases hx : ∃ g', P x g'
+    · obtain ⟨g', hg'⟩ := hx
+      rw [fpos _ _ (left u hu g g' x hg'), fpos _ _ hg', deltaR_mul]
+      push_cast; rfl
+    · rw [fneg x hx, mul_zero]
+      apply fneg
+      rintro ⟨g', hg'⟩
+      apply hx
+      have := left _ (Radical.conj_mem g⁻¹ (inv_mem hu)) g⁻¹ g' _ hg'
+      have e : embX c g⁻¹ * u⁻¹ * (embX c g⁻¹)⁻¹ * embX c g⁻¹ * (u * embX c g * x) = x := by
+        simp only [map_inv]; group
+      rw [e] at this
+      exact ⟨_, this⟩
+  · intro x j hj
+    by_cases hx : ∃ g', P x g'
+    · obtain ⟨g', hg'⟩ := hx
+      rw [fpos _ _ (right j hj g' x hg'), fpos _ _ hg']
+    · rw [fneg x hx]
+      apply fneg
+      rintro ⟨g', hg'⟩
+      apply hx
+      have := right _ (inv_mem hj) g' _ hg'
+      rw [mul_inv_cancel_right] at this
+      exact ⟨_, this⟩
+  · intro x hx
+    apply fneg
+    rintro ⟨g, u, hu, j, hj, e⟩
+    apply hx
+    symm
+    rw [DoubleCoset.eq]
+    exact ⟨_, mul_embX_mem_R hu g, j, hj, e⟩
+  · rw [fpos h 1 ⟨1, one_mem _, 1, one_mem _, by simp⟩, deltaR_one]
+    simp
+
+end GlobalTheory.CosetFn
+end
+
+open MeasureTheory ValuativeRel Matrix Topology GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_parabolicDoubleCosetFunction_eq_one : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : Type) [Fintype n] [DecidableEq n] (c : ℕ) (J : Subgroup (GL (n ⊕ Fin c) k)) (h : GL (n ⊕ Fin c) k), (∀ g ∈ prX (Cgrp J h), deltaR c g = 1) → ∃ f, IsCosetFn J h f ∧ f h = 1 := by
+  atlas_forward_decl GlobalTheory.CosetFn.exists_isCosetFn
+end
+
+section
+open MeasureTheory ValuativeRel Matrix Topology GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rootExchangeUnipotent_exists_residueCardPow_mem_nhds : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : Type) [Fintype n] [DecidableEq n] (c p : ℕ), (resCard k).Prime → ∀ u ∈ N k n c p, ∀ U ∈ 𝓝 (1 : GL (n ⊕ Fin c) k), ∃ m : ℕ, u ^ (resCard k ^ m) ∈ U := by
+  first | exact @GlobalTheory.RootEx.UnipPow.exists_pow_mem_nhds | exact GlobalTheory.RootEx.UnipPow.exists_pow_mem_nhds | (intros; apply GlobalTheory.RootEx.UnipPow.exists_pow_mem_nhds <;> assumption)
+end
+
+section
+section
+open MeasureTheory ValuativeRel Matrix Topology GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum
+
+noncomputable section
+namespace GlobalTheory.CosetVolProd
+
+open MeasureTheory ValuativeRel Matrix Topology in
+
+theorem _root_.GlobalTheory.CosetVolProd.volR_Cgrp : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (ν : Measure k) [ν.IsAddHaarMeasure] (n : Type) [Fintype n] [DecidableEq n] (c : ℕ) (J : Subgroup (GL (n ⊕ Fin c) k)) (h : GL (n ⊕ Fin c) k), IsOpen (_root_.GlobalTheory.StepData.prX (_root_.GlobalTheory.StepData.Cgrp J h) : Set (GL n k)) → ∀ m : Measure (GL n k), _root_.GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum.volR ν m (_root_.GlobalTheory.StepData.Cgrp J h) = _root_.GlobalTheory.RootEx.volN ν n c 1 ((_root_.GlobalTheory.StepData.Cgrp J h).subgroupOf (_root_.GlobalTheory.RootEx.N k n c 1)) * m (_root_.GlobalTheory.StepData.prX (_root_.GlobalTheory.StepData.Cgrp J h)) := by
+  intro k _ _ _ _ _ _ ν _ n _ _ c J h hopen m
+  set C := _root_.GlobalTheory.StepData.Cgrp J h
+  set N := _root_.GlobalTheory.RootEx.N k n c 1
+  haveI := _root_.GlobalTheory.RootEx.VolN.isHaarMeasure_volN ν (n := n) (c := c) 1
+  have key : ∀ g : GL n k, _root_.GlobalTheory.RootEx.volN ν n c 1
+      {u : N | _root_.GlobalTheory.RootEx.embX c g * (u : GL (n ⊕ Fin c) k) ∈ C}
+      = (_root_.GlobalTheory.StepData.prX C : Set (GL n k)).indicator
+          (fun _ => _root_.GlobalTheory.RootEx.volN ν n c 1 (C.subgroupOf N)) g := by
+    intro g
+    by_cases hg : g ∈ _root_.GlobalTheory.StepData.prX C
+    · rw [Set.indicator_of_mem hg]
+      obtain ⟨u₀, hu₀, hC⟩ := (_root_.GlobalTheory.StepData.mem_prX).1 hg
+      have hv : (_root_.GlobalTheory.RootEx.embX c g)⁻¹ * u₀ * _root_.GlobalTheory.RootEx.embX c g ∈ N :=
+        _root_.GlobalTheory.RootEx.Model.conj_mem hu₀ g
+      set v : N := ⟨_, hv⟩
+      have hset : {u : N | _root_.GlobalTheory.RootEx.embX c g * (u : GL (n ⊕ Fin c) k) ∈ C}
+          = (fun w => v⁻¹ * w) ⁻¹' (C.subgroupOf N : Set N) := by
+        ext u
+        show _ ∈ C ↔ ((v⁻¹ * u : N) : GL (n ⊕ Fin c) k) ∈ C
+        have e : _root_.GlobalTheory.RootEx.embX c g * (u : GL (n ⊕ Fin c) k)
+            = (u₀ * _root_.GlobalTheory.RootEx.embX c g) *
+              (((_root_.GlobalTheory.RootEx.embX c g)⁻¹ * u₀ * _root_.GlobalTheory.RootEx.embX c g)⁻¹
+                * u) := by group
+        rw [e, C.mul_mem_cancel_left hC]
+        rfl
+      rw [hset, measure_preimage_mul]
+    · rw [Set.indicator_of_notMem hg]
+      have hset : {u : N | _root_.GlobalTheory.RootEx.embX c g * (u : GL (n ⊕ Fin c) k) ∈ C} = ∅ := by
+        refine Set.eq_empty_iff_forall_notMem.2 fun u hu => ?_
+        apply hg
+        refine (_root_.GlobalTheory.StepData.mem_prX).2 ⟨_root_.GlobalTheory.RootEx.embX c g * (u : GL (n ⊕ Fin c) k) * (_root_.GlobalTheory.RootEx.embX c g)⁻¹,
+          _root_.GlobalTheory.RootEx.Radical.conj_mem g u.2, ?_⟩
+        rwa [inv_mul_cancel_right]
+      rw [hset, measure_empty]
+  unfold _root_.GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum.volR
+  refine (lintegral_congr key).trans ?_
+  rw [lintegral_indicator_const hopen.measurableSet]
+
+end GlobalTheory.CosetVolProd
+end
+end
+
+open MeasureTheory ValuativeRel Matrix Topology GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.parabolicHaarVolume_conjIntersection_eq_mul : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (ν : Measure k) [ν.IsAddHaarMeasure] (n : Type) [Fintype n] [DecidableEq n] (c : ℕ) (J : Subgroup (GL (n ⊕ Fin c) k)) (h : GL (n ⊕ Fin c) k), IsOpen (prX (Cgrp J h) : Set (GL n k)) → ∀ m : Measure (GL n k), volR ν m (Cgrp J h) = volN ν n c 1 ((Cgrp J h).subgroupOf (N k n c 1)) * m (prX (Cgrp J h)) := by
+  atlas_forward_decl GlobalTheory.CosetVolProd.volR_Cgrp
+end
+
+section
+open MeasureTheory ValuativeRel Matrix Topology GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_indicator_Cgrp_translate_eq_deltaR_mul : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (ν : Measure k) [ν.IsAddHaarMeasure] (n : Type) [Fintype n] [DecidableEq n] (c : ℕ), 1 ≤ c → ∀ (J : Subgroup (GL (n ⊕ Fin c) k)), IsCO J → ∀ (h : GL (n ⊕ Fin c) k), IsCO (prX (Cgrp J h)) → ∀ (m : Measure (GL n k)) [m.IsHaarMeasure], ∀ u₀ ∈ N k n c 1, ∀ g₀ : GL n k, ∫ g, (∫ u : N k n c 1, (Cgrp J h : Set (GL (n ⊕ Fin c) k)).indicator (fun _ => (1 : ℂ)) (embX c g * (u : GL (n ⊕ Fin c) k) * (u₀ * embX c g₀)) ∂(volN ν n c 1)) ∂m = ((deltaR c g₀ * ((volN ν n c 1 ((Cgrp J h).subgroupOf (N k n c 1))).toReal * (m (prX (Cgrp J h))).toReal) : ℝ) : ℂ) := by
+  first | exact @GlobalTheory.StepAvg.integral_translate_indicator | exact GlobalTheory.StepAvg.integral_translate_indicator | (intros; apply GlobalTheory.StepAvg.integral_translate_indicator <;> assumption)
+end
+
+section
+open MeasureTheory ValuativeRel Matrix Topology GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isQuotInt_cosetFn_alt : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (ν : Measure k) [ν.IsAddHaarMeasure] (n : Type) [Fintype n] [DecidableEq n] (c : ℕ) (J : Subgroup (GL (n ⊕ Fin c) k)), IsCO J → ∀ (h : GL (n ⊕ Fin c) k) (m : Measure (GL n k)) (v : ℝ), v ≠ 0 → (∀ u₀ ∈ N k n c 1, ∀ g₀ : GL n k, ∫ g, (∫ u : N k n c 1, (Cgrp J h : Set (GL (n ⊕ Fin c) k)).indicator (fun _ => (1 : ℂ)) (embX c g * (u : GL (n ⊕ Fin c) k) * (u₀ * embX c g₀)) ∂(volN ν n c 1)) ∂m = ((deltaR c g₀ * v : ℝ) : ℂ)) → ∀ (μG : Measure (GL (n ⊕ Fin c) k)) [μG.IsHaarMeasure] (f : GL (n ⊕ Fin c) k → ℂ), IsCosetFn J h f → IsQuotInt ν m μG 1 f ((((μG J).toReal / v : ℝ) : ℂ) * f h) := by
+  first | exact @GlobalTheory.CosetQuotInt.isQuotInt_cosetFn | exact GlobalTheory.CosetQuotInt.isQuotInt_cosetFn | (intros; apply GlobalTheory.CosetQuotInt.isQuotInt_cosetFn <;> assumption)
+end
+
+section
+open MeasureTheory ValuativeRel Matrix Topology GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_adapted_exponent_schwartzBruhat_lastColumn : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : Type) [Fintype n] [DecidableEq n] (n' : Type) [Fintype n'] [DecidableEq n'] (S : Set (Matrix (n ⊕ Fin 0) (n' ⊕ Fin (0 + 1)) k → ℂ)), S.Finite → (∀ Ψ ∈ S, Ψ ∈ SB (Matrix (n ⊕ Fin 0) (n' ⊕ Fin (0 + 1)) k)) → ∀ ϖ : kˣ, IsUnif ϖ → ∃ e : ℕ, 1 ≤ e ∧ ∀ Ψ ∈ S, ∀ (x₀ : Matrix n n' k) (y : n → k), (Ψ (withCol x₀ y) ≠ 0 → y ∈ box n (ϖ ^ e)⁻¹) ∧ ∀ z ∈ box n (ϖ ^ e), Ψ (withCol x₀ (y + z)) = Ψ (withCol x₀ y) := by
+  first | exact @GlobalTheory.AdaptedExp.exists_adapted_exponent | exact GlobalTheory.AdaptedExp.exists_adapted_exponent | (intros; apply GlobalTheory.AdaptedExp.exists_adapted_exponent <;> assumption)
+end
+
+section
+open MeasureTheory ValuativeRel Matrix Topology GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum
+
+namespace GlobalTheory.BoxCosets
+
+theorem finite_cosets (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] (n : Type) [Fintype n] (c₁ c₂ : kˣ) :
+    {yb : (n → k) ⧸ box n c₂ | ∃ y ∈ box n c₁, Submodule.Quotient.mk y = yb}.Finite := by
+  have e : ∀ c : kˣ, (box n c : Set (n → k)) = Set.pi Set.univ (fun _ => cball c) := by
+    intro c
+    ext y
+    simp only [Set.mem_pi, Set.mem_univ, true_implies]
+    rfl
+  have hc : IsCompact (box n c₁ : Set (n → k)) := by
+    rw [e]; exact isCompact_univ_pi fun _ => isCompact_cball c₁
+  have ho : IsOpen (box n c₂ : Set (n → k)) := by
+    rw [e]; exact isOpen_set_pi Set.finite_univ fun _ _ => isOpen_cball c₂
+  obtain ⟨t, -, ht⟩ := hc.elim_nhds_subcover
+    (fun x => (fun y => y - x) ⁻¹' (box n c₂ : Set (n → k))) (by
+      intro x _
+      refine (ho.preimage (continuous_id.sub continuous_const)).mem_nhds ?_
+      simp)
+  refine (t.finite_toSet.image (fun x => (Submodule.Quotient.mk x : (n → k) ⧸ box n c₂))).subset ?_
+  rintro _ ⟨y, hy, rfl⟩
+  have := ht hy
+  simp only [Set.mem_iUnion] at this
+  obtain ⟨x, hx, hxy⟩ := this
+  exact ⟨x, hx, ((Submodule.Quotient.eq _).2 hxy).symm⟩
+
+end GlobalTheory.BoxCosets
+end
+
+section
+open MeasureTheory ValuativeRel Matrix Topology GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_quotient_cosets_scaledStandardLatticeBox : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : Type) [Fintype n] (c₁ c₂ : kˣ), {yb : (n → k) ⧸ box n c₂ | ∃ y ∈ box n c₁, Submodule.Quotient.mk y = yb}.Finite := by
+  first | exact @GlobalTheory.BoxCosets.finite_cosets | exact GlobalTheory.BoxCosets.finite_cosets | (intros; apply GlobalTheory.BoxCosets.finite_cosets <;> assumption)
+end
+
+section
+section
+open MeasureTheory ValuativeRel Matrix Topology GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum
+
+namespace GlobalTheory.GenericLevel
+
+section
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+
+theorem exists_residueChar {ψ : AddChar k Circle} (hψ : HasConductor ψ 1) {ϖ : kˣ} (hϖ : IsUnif ϖ) :
+    ∃ φ : AddChar 𝓀[k] Circle, ∀ x : 𝒪[k],
+      φ (IsLocalRing.residue 𝒪[k] x) = ψ (((ϖ⁻¹ : kˣ) : k) * (x : k)) := by
+  have hsurj : Function.Surjective (IsLocalRing.residue 𝒪[k]) := IsLocalRing.residue_surjective
+  have h1 : ∀ y : k, valuation k y ≤ 1 → ψ y = 1 := by
+    intro y hy
+    exact (hψ 1).2 (by simp) y (by simpa using hy)
+  have key : ∀ x y : 𝒪[k], IsLocalRing.residue 𝒪[k] x = IsLocalRing.residue 𝒪[k] y →
+      ψ (((ϖ⁻¹ : kˣ) : k) * (x : k)) = ψ (((ϖ⁻¹ : kˣ) : k) * (y : k)) := by
+    intro x y hxy
+    have h2 := (hϖ _).1 ((residue_eq_iff_lt x y).1 hxy)
+    have h0 : valuation k (ϖ : k) ≠ 0 := by simp
+    have h3 : valuation k (((ϖ⁻¹ : kˣ) : k) * ((x : k) - (y : k))) ≤ 1 := by
+      rw [map_mul, Units.val_inv_eq_inv_val, map_inv₀]
+      exact (inv_mul_le_one₀ (zero_lt_iff.2 h0)).2 h2
+    have h4 : ((ϖ⁻¹ : kˣ) : k) * (x : k)
+        = ((ϖ⁻¹ : kˣ) : k) * (y : k) + ((ϖ⁻¹ : kˣ) : k) * ((x : k) - (y : k)) := by ring
+    rw [h4, AddChar.map_add_eq_mul, h1 _ h3, mul_one]
+  let f : 𝓀[k] → Circle := fun t => ψ (((ϖ⁻¹ : kˣ) : k) * ((Function.surjInv hsurj t : 𝒪[k]) : k))
+  have hf : ∀ x : 𝒪[k], f (IsLocalRing.residue 𝒪[k] x) = ψ (((ϖ⁻¹ : kˣ) : k) * (x : k)) :=
+    fun x => key _ _ (Function.surjInv_eq hsurj _)
+  refine ⟨⟨f, ?_, ?_⟩, hf⟩
+  · have := hf 0
+    simpa using this
+  · intro s t
+    obtain ⟨x, rfl⟩ := hsurj s
+    obtain ⟨y, rfl⟩ := hsurj t
+    rw [← map_add, hf, hf, hf, ← AddChar.map_add_eq_mul]
+    congr 1
+    push_cast
+    ring
+
+end
+
+section
+variable {F a : Type} [Field F] [Fintype a] [DecidableEq a]
+
+def upperUnip (F : Type) {a : Type} [Field F] [Fintype a] [DecidableEq a] (pos : a → ℕ) :
+    Subgroup (GL a F) where
+  carrier := {g | IsUpperUnip pos (g : Matrix a a F)}
+  one_mem' := fun _ _ _ => rfl
+  mul_mem' := fun {g h} hg hh => Radical.Uni.mul (b := pos) hg hh
+  inv_mem' := fun {g} hg => Radical.Uni.inv (b := pos) hg
+
+theorem superSum_mul {pos : a → ℕ} {M M' : Matrix a a F} (h : IsUpperUnip pos M)
+    (h' : IsUpperUnip pos M') : superSum pos (M * M') = superSum pos M + superSum pos M' := by
+  unfold superSum
+  rw [← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun r _ => ?_
+  rw [← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun s _ => ?_
+  split_ifs with hs
+  · exact Radical.Uni.mul_apply_succ (b := pos) h h' hs
+  · simp
+
+omit [DecidableEq a] in
+theorem superSum_map {R : Type} [CommRing R] (f : R →+* F) (pos : a → ℕ) (M : Matrix a a R) :
+    superSum pos (M.map f) = f (∑ r, ∑ s, if pos s = pos r + 1 then M r s else 0) := by
+  unfold superSum
+  simp only [map_sum, Matrix.map_apply]
+  refine Finset.sum_congr rfl fun r _ => Finset.sum_congr rfl fun s _ => ?_
+  split_ifs <;> simp
+
+noncomputable def genChar (φ : AddChar F Circle) (pos : a → ℕ) : upperUnip F pos →* ℂˣ :=
+  Circle.toUnits.comp (MonoidHom.mk' (fun g => φ (superSum pos ((g : GL a F) : Matrix a a F)))
+    (fun g h => by
+      rw [← AddChar.map_add_eq_mul, ← superSum_mul g.2 h.2]
+      rfl))
+
+theorem genChar_apply (φ : AddChar F Circle) (pos : a → ℕ) (g : upperUnip F pos) :
+    ((genChar φ pos g : ℂˣ) : ℂ) = φ (superSum pos ((g : GL a F) : Matrix a a F)) := rfl
+
+end
+
+theorem exists_isGenericLevel :
+    ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+      (ψ : AddChar k Circle), HasConductor ψ 1 → ∀ ϖ : kˣ, IsUnif ϖ → ∀ κ l : ℕ,
+      ∃ P : TypeDatum k (Fin κ ⊕ Fin l), IsGenericLevel ψ ϖ P := by
+  intro k _ _ _ _ ψ hψ ϖ hϖ κ l
+  obtain ⟨φ, hφ⟩ := exists_residueChar hψ hϖ
+  refine ⟨TypeDatum.ofResidue (upperUnip 𝓀[k] (framePos κ l)) (genChar φ (framePos κ l)), ?_, ?_⟩
+  · intro g
+    constructor
+    · rintro ⟨u, hu, rfl⟩
+      exact ⟨_, ⟨u, rfl, rfl⟩, hu⟩
+    · rintro ⟨gb, ⟨u, rfl, rfl⟩, hu⟩
+      exact ⟨u, hu, rfl⟩
+  · rintro ⟨g, u, hu, rfl⟩
+    have h := TypeDatum.ofResidue_lam (upperUnip 𝓀[k] (framePos κ l)) (genChar φ (framePos κ l)) u hu
+    rw [h, genChar_apply]
+    have e1 := superSum_map (IsLocalRing.residue 𝒪[k]) (framePos κ l) (u : Matrix _ _ 𝒪[k])
+    have e2 := superSum_map (algebraMap 𝒪[k] k) (framePos κ l) (u : Matrix _ _ 𝒪[k])
+    have e3 := hφ (∑ r, ∑ s, if framePos κ l s = framePos κ l r + 1
+      then (u : Matrix _ _ 𝒪[k]) r s else 0)
+    rw [← e1] at e3
+    have e4 : φ (superSum (framePos κ l) ((u : Matrix _ _ 𝒪[k]).map (IsLocalRing.residue 𝒪[k])))
+        = ψ (((ϖ⁻¹ : kˣ) : k) *
+          superSum (framePos κ l) ((u : Matrix _ _ 𝒪[k]).map (algebraMap 𝒪[k] k))) := by
+      rw [e3, e2]
+      rfl
+    exact congrArg (fun z : Circle => (z : ℂ)) e4
+
+end GlobalTheory.GenericLevel
+end
+
+open MeasureTheory ValuativeRel Matrix Topology GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_genericLevelOfFrame : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ψ : AddChar k Circle), HasConductor ψ 1 → ∀ ϖ : kˣ, IsUnif ϖ → ∀ κ l : ℕ, ∃ P : TypeDatum k (Fin κ ⊕ Fin l), IsGenericLevel ψ ϖ P := by
+  atlas_forward_decl GlobalTheory.GenericLevel.exists_isGenericLevel
+end
+
+section
+open MeasureTheory ValuativeRel Matrix Topology GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_isSymmetricPositionLevel : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ψ : AddChar k Circle), HasConductor ψ 1 → ∀ ϖ : kˣ, IsUnif ϖ → ∀ ρ κ l : ℕ, ∃ P : TypeDatum k (Fin κ ⊕ Fin l), IsSymLevel ψ ϖ ρ P := by
+  first | exact @GlobalTheory.SymLevelExists.exists_isSymLevel | exact GlobalTheory.SymLevelExists.exists_isSymLevel | (intros; apply GlobalTheory.SymLevelExists.exists_isSymLevel <;> assumption)
+end
+
+section
+open MeasureTheory ValuativeRel Matrix Topology GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.genericLevelOfFrame_block_and_character : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ψ : AddChar k Circle) (ϖ : kˣ) (κ l : ℕ) (P : TypeDatum k (Fin κ ⊕ Fin l)), IsGenericLevel ψ ϖ P → ((∀ u ∈ N k (Fin κ) l 1, ∀ γ : GL (Fin κ) k, u * embX l γ ∈ P.J → ∃ gb, Reduces γ gb ∧ IsUpperUnip Fin.val gb.val) ∧ (∀ (γ : GL (Fin κ) k) (gb : GL (Fin κ) 𝓀[k]), Reduces γ gb → IsUpperUnip Fin.val gb.val → ∃ hm : embX l γ ∈ P.J, (P.lam ⟨_, hm⟩ : ℂ) = ψ ((ϖ⁻¹ : kˣ) * superSum Fin.val γ.val)) ∧ ∀ u ∈ N k (Fin κ) l 1, ∀ hm : u ∈ P.J, (P.lam ⟨u, hm⟩ : ℂ) = ψ ((ϖ⁻¹ : kˣ) * simpleSum u)) := by
+  first | exact @GlobalTheory.GenericShape.generic_shape | exact GlobalTheory.GenericShape.generic_shape | (intros; apply GlobalTheory.GenericShape.generic_shape <;> assumption)
+end
+
+section
+open MeasureTheory ValuativeRel Matrix Topology GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.symmetricPositionLevel_shape_on_parabolic : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ψ : AddChar k Circle) (ϖ : kˣ) (ρ κ l : ℕ) (P : TypeDatum k (Fin κ ⊕ Fin l)), IsSymLevel ψ ϖ ρ P → ((∀ u ∈ N k (Fin κ) l 1, ∀ γ : GL (Fin κ) k, u * embX l γ ∈ P.J → ∃ gb, Reduces γ gb ∧ IsUpperUnip Fin.val gb.val) ∧ (∀ (γ : GL (Fin κ) k) (gb : GL (Fin κ) 𝓀[k]), Reduces γ gb → IsUpperUnip Fin.val gb.val → ∃ hm : embX l γ ∈ P.J, (P.lam ⟨_, hm⟩ : ℂ) = ψ ((ϖ⁻¹ : kˣ) * superSum Fin.val γ.val)) ∧ ∀ u ∈ N k (Fin κ) l 1, ∀ hm : u ∈ P.J, (P.lam ⟨u, hm⟩ : ℂ) = ψ ((ϖ⁻¹ : kˣ) * simpleSum u)) := by
+  first | exact @GlobalTheory.SymShape.sym_shape | exact GlobalTheory.SymShape.sym_shape | (intros; apply GlobalTheory.SymShape.sym_shape <;> assumption)
+end
+
+section
+open MeasureTheory ValuativeRel Matrix Topology GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.firstVertex_iteratedLevelChain_in_frame : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ψ : AddChar k Circle) (ϖ : kˣ) (s : ℕ) (t : Type) [Fintype t] [DecidableEq t] (κ : ℕ) (P : TypeDatum k (Fin κ ⊕ Fin (s + 1))), ((∀ u ∈ N k (Fin κ) (s + 1) 1, ∀ γ : GL (Fin κ) k, u * embX (s + 1) γ ∈ P.J → ∃ gb, Reduces γ gb ∧ IsUpperUnip Fin.val gb.val) ∧ (∀ (γ : GL (Fin κ) k) (gb : GL (Fin κ) 𝓀[k]), Reduces γ gb → IsUpperUnip Fin.val gb.val → ∃ hm : embX (s + 1) γ ∈ P.J, (P.lam ⟨_, hm⟩ : ℂ) = ψ ((ϖ⁻¹ : kˣ) * superSum Fin.val γ.val)) ∧ ∀ u ∈ N k (Fin κ) (s + 1) 1, ∀ hm : u ∈ P.J, (P.lam ⟨u, hm⟩ : ℂ) = ψ ((ϖ⁻¹ : kˣ) * simpleSum u)) → ∀ (μ : ℕ → kˣ →* ℂˣ) (hμ : ∀ j, IsTame (μ j)) (c : ℕ) (H : 0 + c = s + 1), (prX (Cgrp ((typeChain t ϖ P μ hμ).lev 0 c H).J 1) : Set (GL (XIx (Fin κ) t 0) k)) = colGroup k κ t ∧ (∀ γ ∈ colGroup k κ t, ∃ hm : embX c γ ∈ ((typeChain t ϖ P μ hμ).lev 0 c H).J, (((typeChain t ϖ P μ hμ).lev 0 c H).lam ⟨_, hm⟩ : ℂ) = colChar ψ ϖ γ) ∧ ∀ u ∈ N k (XIx (Fin κ) t 0) c 1, ∀ hm : u ∈ ((typeChain t ϖ P μ hμ).lev 0 c H).J, (((typeChain t ϖ P μ hμ).lev 0 c H).lam ⟨u, hm⟩ : ℂ) = ψ (simpleSum u) := by
+  first | exact @GlobalTheory.FirstVertexFrame.firstVertex_typeChain | exact GlobalTheory.FirstVertexFrame.firstVertex_typeChain | (intros; apply GlobalTheory.FirstVertexFrame.firstVertex_typeChain <;> assumption)
+end
+
+section
+open MeasureTheory ValuativeRel Matrix Topology GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.firstVertex_parahoricLevelChain_twist : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ψ : AddChar k Circle), HasConductor ψ 1 → ∀ (s : ℕ) (t : Type) [Fintype t] [DecidableEq t] (κ : Type) [Fintype κ] [DecidableEq κ] (δ : kˣ →* ℂˣ) (hδ : IsTame δ) (η : ℕ → kˣ →* ℂˣ) (c : ℕ) (H : 0 + c = s + 1), (prX (Cgrp ((twistChain s t κ δ hδ η).lev 0 c H).J 1) : Set (GL (XIx κ t 0) k)) = KO k (XIx κ t 0) ∧ (∀ γ ∈ KO k (XIx κ t 0), ∃ hm : embX c γ ∈ ((twistChain s t κ δ hδ η).lev 0 c H).J, (((twistChain s t κ δ hδ η).lev 0 c H).lam ⟨_, hm⟩ : ℂ) = 1) ∧ ∀ u ∈ N k (XIx κ t 0) c 1, ∀ hm : u ∈ ((twistChain s t κ δ hδ η).lev 0 c H).J, (((twistChain s t κ δ hδ η).lev 0 c H).lam ⟨u, hm⟩ : ℂ) = ψ (simpleSum u) := by
+  first | exact @GlobalTheory.TwistVertex.firstVertex_twist | exact GlobalTheory.TwistVertex.firstVertex_twist | (intros; apply GlobalTheory.TwistVertex.firstVertex_twist <;> assumption)
+end
+
+section
 open MeasureTheory ValuativeRel Matrix Topology
 open scoped ENNReal
 
@@ -419,3 +820,5 @@ theorem entries_wellDefined : GlobalTheory.IndefiniteRowSideFullHecke.FramePosit
     chainInvariantLast, firstVertexChains hψ⟩
 
 end GlobalTheory.UnfoldedEntries
+end
+end

@@ -197,30 +197,8 @@ end Core2
 def mat4 (p : F × F × F × F) : Fin 2 × Fin 2 → F :=
   fun ij => !![p.1, p.2.1; p.2.2.1, p.2.2.2] ij.1 ij.2
 
-theorem measurable_entries_four : Measurable (mat4 (F := F)) := by
-  refine measurable_pi_lambda _ fun ij => ?_
-  rcases ij with ⟨i, j⟩
-  fin_cases i <;> fin_cases j <;> simp [mat4] <;> fun_prop
 
-theorem pi_eq_map (ν : Measure F) [ν.IsAddHaarMeasure] :
-    (Measure.pi fun _ : Fin 2 × Fin 2 => ν) = (ν.prod (ν.prod (ν.prod ν))).map mat4 := by
-  refine Measure.pi_eq fun s hs => ?_
-  rw [Measure.map_apply measurable_entries_four (MeasurableSet.univ_pi hs)]
-  have : mat4 ⁻¹' Set.univ.pi s = s (0, 0) ×ˢ s (0, 1) ×ˢ s (1, 0) ×ˢ s (1, 1) := by
-    ext p
-    simp [mat4, Set.mem_pi, Prod.forall, Fin.forall_fin_two, and_assoc]
-  rw [this, Measure.prod_prod, Measure.prod_prod, Measure.prod_prod]
-  simp [Fintype.prod_prod_type, Fin.prod_univ_two, mul_assoc]
 
-theorem lint4 (ν : Measure F) [ν.IsAddHaarMeasure] {K : F × F × F × F → ℝ≥0∞} (hK : Measurable K) :
-    ∫⁻ p, K p ∂(ν.prod (ν.prod (ν.prod ν))) = ∫⁻ A, ∫⁻ B, ∫⁻ C, ∫⁻ D, K (A, B, C, D) ∂ν ∂ν ∂ν ∂ν := by
-  rw [lintegral_prod _ hK.aemeasurable]
-  refine lintegral_congr fun A => ?_
-  have hA : Measurable fun p : F × F × F => K (A, p) := hK.comp (by fun_prop)
-  rw [lintegral_prod _ hA.aemeasurable]
-  refine lintegral_congr fun B => ?_
-  have hB : Measurable fun p : F × F => K (A, B, p) := hK.comp (by fun_prop)
-  rw [lintegral_prod _ hB.aemeasurable]
 
 def dens (g : GL (Fin 2) F) : ℝ≥0∞ := (((modulus (g.val).det ^ 2)⁻¹ : ℝ≥0) : ℝ≥0∞)
 
@@ -239,24 +217,6 @@ theorem Hf_zero (f : GL (Fin 2) F → ℝ≥0∞) {x : Fin 2 × Fin 2 → F}
   rw [Hf, Function.extend_apply' _ _ _ (by simpa using hx)]
   rfl
 
-theorem lint_hG (ψ : AddChar F Circle) (f : GL (Fin 2) F → ℝ≥0∞) (hf : Measurable f) :
-    ∫⁻ g, f g ∂LFS.hG ψ = ∫⁻ x, Hf f x ∂(Measure.pi fun _ : Fin 2 × Fin 2 => selfDualMeasure ψ) := by
-  have he := (Measures.glChart F 2).measurableEmbedding
-  have hd : (fun g : GL (Fin 2) F =>
-      (((distribHaarChar F (Matrix.GeneralLinearGroup.det g) ^ 2)⁻¹ : ℝ≥0) : ℝ≥0∞)) = dens := by
-    funext g
-    rw [dens, distribHaarChar_eq_modulus, Matrix.GeneralLinearGroup.val_det_apply]
-  rw [LFS.hG, Measures.haarGL_eq, hd, lintegral_withDensity_eq_lintegral_mul _ measurable_dens hf]
-  have h1 : ∀ g, ((dens : GL (Fin 2) F → ℝ≥0∞) * f) g = Hf f ((Measures.glChart F 2).toFun g) := fun g =>
-    (he.injective.extend_apply _ _ g).symm
-  rw [lintegral_congr h1]
-  change ∫⁻ g, Hf f ((Measures.glChart F 2).toFun g)
-    ∂((Measure.pi fun _ : Fin 2 × Fin 2 => selfDualMeasure ψ).comap (Measures.glChart F 2).toFun) = _
-  rw [← he.lintegral_map, he.map_comap, ← lintegral_indicator he.measurableSet_range]
-  refine lintegral_congr fun x => ?_
-  by_cases hx : x ∈ Set.range (Measures.glChart F 2).toFun
-  · rw [Set.indicator_of_mem hx]
-  · rw [Set.indicator_of_notMem hx, Hf_zero f hx]
 
 theorem hr_val {r : Fin 2 → F} (h1 : r 1 ≠ 0) : (hr r).val = !![(r 1)⁻¹, 0; r 0, r 1] := by
   have hd : (!![(r 1)⁻¹, 0; r 0, r 1] : Matrix (Fin 2) (Fin 2) F).det ≠ 0 := by
@@ -296,46 +256,5 @@ theorem key (f : GL (Fin 2) F → ℝ≥0∞) {y : F} (hy : y ≠ 0) (t : F) {r 
   congr 2
   field_simp
 
-theorem gjm2 : Ad3.K.GL2LocalData.GJm2 := by
-  intro F _ _ _ _ _ _ ψ _ f hf
-  have hH := measurable_Hf hf
-  have hK : Measurable fun p : F × F × F × F => Hf f (mat4 p) := hH.comp measurable_entries_four
-  have h0 : ∀ A B C D : F, A * D - B * C = 0 → Hf f (mat4 (A, B, C, D)) = 0 := by
-    intro A B C D h
-    refine Hf_zero f ?_
-    rintro ⟨g, hg⟩
-    have hdet : (g.val).det = 0 := by
-      rw [Matrix.det_fin_two]
-      have e := fun i j => congrFun hg (i, j)
-      simp only [Measures.glChart_apply] at e
-      rw [e 0 0, e 0 1, e 1 0, e 1 1]
-      simpa [mat4] using h
-    exact ((Matrix.isUnit_iff_isUnit_det _).1 g.isUnit).ne_zero hdet
-  rw [lint_hG ψ f hf, pi_eq_map, lintegral_map hH measurable_entries_four, lint4 _ hK, core _ _ hK h0]
-  set ν := selfDualMeasure ψ
-  set K : F × F × F × F → ℝ≥0∞ := fun p => Hf f (mat4 p)
-  have hQ := measurable_Qc hK
-  let W : F × F → ℝ≥0∞ := fun p => ∫⁻ t, ∫⁻ y, Qc K p.1 p.2 t y ∂ν ∂ν
-  have hW : Measurable W := by
-    have h3 : Measurable fun z : (F × F) × F × F => Qc K z.1.1 z.1.2 z.2.1 z.2.2 :=
-      hQ.comp (f := fun z : (F × F) × F × F => (z.1.1, z.1.2, z.2.1, z.2.2)) (by fun_prop)
-    have h4 : Measurable fun z : ((F × F) × F) × F => Qc K z.1.1.1 z.1.1.2 z.1.2 z.2 :=
-      hQ.comp (f := fun z : ((F × F) × F) × F => (z.1.1.1, z.1.1.2, z.1.2, z.2)) (by fun_prop)
-    exact (h4.lintegral_prod_right').lintegral_prod_right'
-  have hT : ∀ r : Fin 2 → F, W (r 0, r 1) = ∫⁻ t, ∫⁻ y, (if h : y = 0 ∨ r 1 = 0 then 0 else
-      f (dg2 (Units.mk0 y (fun e => h (Or.inl e))) 1 * w0 * uni2 t * hr r) *
-        ENNReal.ofReal ((modulus y : ℝ) ^ (-1 : ℤ))) ∂ν ∂ν := by
-    intro r
-    refine lintegral_congr fun t => lintegral_congr fun y => ?_
-    by_cases h : y = 0 ∨ r 1 = 0
-    · rw [dif_pos h, Qc, if_pos h.symm]
-    · rw [dif_neg h, Qc, if_neg (fun h' => h h'.symm)]
-      push_neg at h
-      exact key f h.1 t h.2
-  have hmp := (measurePreserving_piFinTwo fun _ : Fin 2 => ν).lintegral_comp hW
-  have hR : ∫⁻ u, ∫⁻ v, W (u, v) ∂ν ∂ν = ∫⁻ r, W (r 0, r 1) ∂LFS.vol2 ψ := by
-    rw [← lintegral_prod _ hW.aemeasurable]
-    exact hmp.symm
-  refine hR.trans (lintegral_congr hT)
 
 end GlobalTheory.CompanionTheory.GL2Coordinates

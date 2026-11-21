@@ -148,10 +148,6 @@ def localReciprocityOfField : Kˣ ⧸ (normUnits K L).range ≃* (L ≃ₐ[K] L)
   (QuotientGroup.quotientMulEquivOfEq ker_localArtinMapOfField.symm).trans
     (QuotientGroup.quotientKerEquivOfSurjective _ surjective_localArtinMapOfField)
 
-theorem localReciprocityOfField_mk (x : Kˣ) :
-    localReciprocityOfField (K := K) (L := L) (x : Kˣ ⧸ (normUnits K L).range) =
-      localArtinMapOfField K L x :=
-  rfl
 
 end Intrinsic
 

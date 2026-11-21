@@ -28,10 +28,6 @@ theorem herm3 (v w : Fin (2 + 1) → ℂ) : herm (Hb 2) v w =
   simp [herm, Hb, dotProduct, Matrix.mulVec_diagonal, Fin.sum_univ_succ, Fin.ext_iff]
   ring
 
-theorem xx_eq : xx = pEl 2 1 (fun _ => (![1,0,0] : Fin 3 → ℂ)) 0 := by
-  ext i j
-  fin_cases i <;> fin_cases j <;>
-    simp [xx, pEl, herm3, bvec] <;> norm_num
 
 theorem xx_inv : xx⁻¹ = xi := by
   apply Matrix.inv_eq_right_inv
@@ -51,11 +47,6 @@ theorem sw_mem : sw ∈ GG 2 1 := by
   ext i j
   fin_cases i <;> fin_cases j <;> simp [sw, Matrix.mul_apply, Fin.sum_univ_succ]
 
-theorem xx_mem : xx ∈ GG 2 1 := by
-  show xxᴴ * Hpk 2 1 * xx = Hpk 2 1
-  rw [hpk_eq]
-  ext i j
-  fin_cases i <;> fin_cases j <;> simp [xx, Matrix.mul_apply, Fin.sum_univ_succ, map_ofNat] <;> norm_num
 
 theorem herm5 (v w : Fin (2 * 1 + 2 + 1) → ℂ) : herm (Hpk 2 1) v w =
     star (w (0 : Fin 5)) * v (4 : Fin 5) + star (w (1 : Fin 5)) * v (1 : Fin 5) + star (w (2 : Fin 5)) * v (2 : Fin 5)
@@ -83,23 +74,10 @@ theorem zhat_eq : Zhat 2 1 z0 z1 sw = !![1, 0; 0, -2] := by
 theorem dmin_one : Dmin 2 1 z0 z1 sw ⟨1, by omega⟩ = 1 := by
   unfold Dmin; rw [zhat_eq]; simp [Matrix.det_unique]
 
-theorem dmin_two : Dmin 2 1 z0 z1 sw (Fin.last 2) = -2 := by
-  unfold Dmin; rw [zhat_eq]
-  show (!![1, 0; 0, -2] : Matrix (Fin 2) (Fin 2) ℂ).det = -2
-  simp [Matrix.det_fin_two]
 
 theorem dr_eq : Dr 2 1 z0 z1 sw = 1 := by unfold Dr; rw [dmin_one]; simp
 
-theorem tz0 : Tz 2 1 z0 = 1 := by simp [Tz, herm5, z0]
-theorem tz1 : Tz 2 1 z1 = 3 := by simp [Tz, herm5, z1]; norm_num
 
-theorem twoFl : TwoFl 2 1 z0 z1 sw := by
-  refine ⟨?_, ?_, by rw [tz0]; norm_num, by rw [tz1]; norm_num, sw_mem, ?_, by rw [dr_eq]; norm_num⟩
-  · intro i hi; fin_cases i <;> simp_all [z0]
-  · intro i hi; fin_cases i <;> simp_all [z1]
-  · unfold Gf; rw [dmin_one, tz0, tz1]
-    have := dmin_two
-    rw [this]; simp; norm_num
 
 theorem xx_mulVec (v : Fin (2 * 1 + 2 + 1) → ℂ) : xx *ᵥ v =
     (![v (0 : Fin 5) - v (1 : Fin 5) - v (4 : Fin 5) / 2, v (1 : Fin 5) + v (4 : Fin 5), v (2 : Fin 5), v (3 : Fin 5),
@@ -166,21 +144,7 @@ theorem yv_eq : Yv 2 1 z0 z1 sw xx = 1 := by
 theorem one_le_Sg (k r : ℕ) (z) (x : Mat k r) : 1 ≤ Sg k r z x := by
   unfold Sg; rw [Finset.le_fold_max]; exact Or.inl le_rfl
 
-theorem eset_nonempty : ∃ R₀ : ℝ, (Eset 2 1 z0 z1 sw R₀ (3 / 4)).Nonempty := by
-  refine ⟨max (Sg 2 1 z1 xx) (Sg 2 1 z0 (sw * xx)), Matrix.of.symm xx, xx_mem, le_max_left _ _, le_max_right _ _, ?_, ?_⟩
-  · show 3 / 4 < Yv 2 1 z0 z1 sw xx
-    rw [yv_eq]; norm_num
-  · show Yv 2 1 z0 z1 sw xx ≤ _
-    rw [yv_eq]; norm_num
 
-theorem deOK : DeOK 2 1 z0 z1 sw 1 := by
-  refine ⟨le_rfl, fun l hl _ => ?_⟩
-  fin_cases l
-  · simp [Dmin]
-  · have := dmin_one
-    simp at this ⊢
-    rw [this]; simp
-  · simp at hl
 
 theorem uEmb_mem (a : ℂ) : uEmb 0 2 (upper fun _ => a) ∈ GG 0 2 := by
   have hu : upper (r := 2) (fun _ => a) = !![1, a; 0, 1] := by
@@ -299,23 +263,7 @@ theorem _root_.GlobalTheory.Amp.Model.cont_lebN_map (k r : ℕ) :
   exact ((_root_.GlobalTheory.Amp.Model.cont_uEmb k r).comp continuous_fst).matrix_mul
     ((_root_.GlobalTheory.Amp.Model.cont_pOf k r).comp continuous_snd)
 
-theorem lebN_ne_zero (k r : ℕ) : lebN k r ≠ 0 := by
-  intro h
-  have := congrArg (fun μ : Measure (Mt k r) => μ Set.univ) h
-  simp only [lebN] at this
-  rw [Measure.map_apply (cont_lebN_map k r).measurable MeasurableSet.univ] at this
-  haveI h1 : (volume : Measure ((UT r → ℂ) × (Fin r → ℝ))).IsOpenPosMeasure := Measure.prod.instIsOpenPosMeasure
-  haveI h0 : (volume : Measure (Fin (k + 1) → ℂ)).IsOpenPosMeasure := Measure.pi.isOpenPosMeasure _
-  haveI h0' : (volume : Measure (Fin r → Fin (k + 1) → ℂ)).IsOpenPosMeasure := Measure.pi.isOpenPosMeasure _
-  haveI s1 : SFinite (volume : Measure ((UT r → ℂ) × (Fin r → ℝ))) := Measure.prod.instSFinite
-  haveI s2 : SFinite (volume : Measure (PPar k r)) := Measure.prod.instSFinite
-  haveI h2 : (volume : Measure (PPar k r)).IsOpenPosMeasure := Measure.prod.instIsOpenPosMeasure
-  haveI h3 : (volume : Measure ((UT r → ℂ) × PPar k r)).IsOpenPosMeasure := Measure.prod.instIsOpenPosMeasure
-  exact (isOpen_univ.measure_pos (volume : Measure ((UT r → ℂ) × PPar k r)) Set.univ_nonempty).ne' (by simpa using this)
 
-theorem ball_pos_fin {m : ℕ} (S : Set (Matrix (Fin m) (Fin m) ℂ)) {ρ : ℝ} (h : 0 < ρ) :
-    0 < volume (Metric.ball (0 : lieE S) ρ) ∧ volume (Metric.ball (0 : lieE S) ρ) < ⊤ :=
-  ⟨Metric.measure_ball_pos _ _ h, measure_ball_lt_top⟩
 
 theorem hasDens_unique {m : ℕ} {S : Set (Matrix (Fin m) (Fin m) ℂ)} {μ} {c c' : ℝ≥0∞}
     (h : HasDens S μ c) (h' : HasDens S μ c') : c = c' := tendsto_nhds_unique h h'

@@ -291,8 +291,5 @@ theorem fin_small {r : ℕ} (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r) (Z : Com
 
 end Main
 
-theorem small_le_pow : Hypotheses2 → ∀ (D : D7) (T : Core D) (j : ℕ) (Y : Deep T j) (e : ℕ) (o : ℝ), Y.Good e o → 2 < Module.finrank ℚ D.host.E / 2 → ∀ (Z : Comp Y.d.Xo₂ Y.d.c₂) (u : GlobalTheory.AllWt.Weight (T.Q.Dw j)) (t : ℝ), GoodOn Y.U (xiR D) (fun _ => D.sp.W j) Y.dict Z (wtOf (T.Q.Dw j) u 0) → GlobalTheory.DegVal.BirOn Y.U Z (wtOf (T.Q.Dw j) u 0) → NoBase Y.U Z (wtOf (T.Q.Dw j) u 0) → 0 < Y.dg u Z → ∀ (la : HeightOneSpectrum (𝓞 Y.d.c₂.F)) (ν : Valuation (Om Z) NNReal), (∀ c : 𝓞 Y.d.c₂.F, ν (algebraMap Y.d.c₂.F (Om Z) (c : Y.d.c₂.F)) ≤ 1) → (∀ c ∈ la.asIdeal, ν (algebraMap Y.d.c₂.F (Om Z) (c : Y.d.c₂.F)) < 1) → ∀ τ : ℕ, 0 < τ → ∀ f ∈ smallL Y.U (xiR D) (fun _ => D.sp.W j) Y.dict Z (wtOf (T.Q.Dw j) u 0) τ t, ∃ l ∈ latOn Y.U Z (wtOf (T.Q.Dw j) u 0), ν (genVal Z (f : Rul Y.d.Xo₂ Y.d.c₂)) ≤ ν (genVal Z (l : Rul Y.d.Xo₂ Y.d.c₂)) ^ τ := by
-  intro _ D T j Y e o _ _ Z u t hG hB _ _ la ν h1 h2 τ _ f hf
-  exact fin_small Y.U Z _ hG.2.1 hG.2.2 hB la ν h1 h2 τ f fun v hv => hf.1 la v hv
 
 end GlobalTheory.CompanionTheory.SmallFin

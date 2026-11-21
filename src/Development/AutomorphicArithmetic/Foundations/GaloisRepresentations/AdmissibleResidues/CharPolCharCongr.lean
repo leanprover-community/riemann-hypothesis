@@ -30,24 +30,5 @@ theorem WDN.charpoly (hl : ((l : ℕ) : 𝓞 E) ∉ w.asIdeal) (k : WDN ι r y) 
   rw [← hN.charPol_wdOf hl ht ι g, e, k.pol]
 
 theorem wn' (k : WDN ι r y) : WDN ι r y := k
-theorem woOf' (k : IsWDOf ι r y) : WDN ι r y := .of_isWDOf k
-theorem woConj' (k : WDN ι r y) (hl : ((l : ℕ) : 𝓞 E) ∉ w.asIdeal) {r' : G E Ω →* GL (Fin n) (Qbar l)}
-    (P : GL (Fin n) (Qbar l)) (hP : ∀ g : ↥(Weil h), P * r g = r' g * P) : WDN ι r' y := k.of_conj hl P hP
-theorem woSum' (hA : Gu.SumAway) {m : ℕ} {r' : G E Ω →* GL (Fin m) (Qbar l)} (hc : Continuous r) (hc' : Continuous r')
-    (hl : ((l : ℕ) : 𝓞 E) ∉ w.asIdeal) {y' : WD h} (k : WDN ι r y) (k' : WDN ι r' y') :
-    WDN ι (Formalism.MainNotions.SumRepresentations.At.sumRep r r') (y.lpSum y') := by
-  obtain ⟨x, hx, k⟩ := k
-  obtain ⟨x', hx', k'⟩ := k'
-  exact ⟨_, hA E Ω l ι n m r r' hc hc' w hl A h _ _ hx hx', k.sum k'⟩
-theorem woChar' (hl : ((l : ℕ) : 𝓞 E) ∉ w.asIdeal) {r' : G E Ω →* GL (Fin n) (Qbar l)} {z : WD h} (hz : z.lpDim = 1)
-    (e : IsWDOf ι r' ((wdOf h hl ι r).lpChar z)) (k : WDN ι r y) : WDN ι r' (y.lpChar z) := ⟨_, e, (k.awV hl).char hz⟩
-theorem galEx' (H : CuspU) (E Ω : Type) [Field E] [NumberField E] [IsCMField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
-    (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (a : ℕ) (ha : 1 ≤ a) (π : CuspSub E a) (χ : HChar (maximalRealSubfield E))
-    (hr : (CG.mk π).IsRegAlg) (hp : IsPolarized π χ) :
-    ∃ (r : G E Ω →* GL (Fin a) (Qbar l)) (wt : ℤ) (HT : (E →+* Qbar l) → Multiset ℤ), IsGalU π χ ι r wt HT ∧
-      ∀ (w : HeightOneSpectrum (𝓞 E)), ((l : ℕ) : 𝓞 E) ∉ w.asIdeal → ∀ (A : ValuationSubring Ω) (h : IsPlaceOver A w)
-        (rc : IrrGL (w.adicCompletion E) → WD h), IsRec h rc → ∀ σ, π.IsLocComp w σ → WDN ι r (rc (algNorm σ)) := by
-  obtain ⟨r, wt, HT, k⟩ := H E Ω l ι a ha π χ hr hp
-  exact ⟨r, wt, HT, k, fun w hl A h rc hrc σ hσ => .of_aw hl k.cont (.of_aw (k.away w hl A h rc hrc σ hσ))⟩
 
 end UpperTheory.GalN.V

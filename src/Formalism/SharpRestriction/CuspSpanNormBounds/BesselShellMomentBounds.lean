@@ -295,86 +295,13 @@ namespace Formalism.MainNotions.BesselShellMomentBounds
 
 open Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.BasicNotions Formalism.HermitianLatticeCounting.ExpansionTerms Formalism.MainNotions.S.Pv.Frames
 
-theorem theorem_B_second_bound_ge_64 (D : D7) (C : ℝ) (hC : 64 ≤ C) : Formalism.MainNotions.OnePlaceEstimates.PathWeightComponents D C := by
-  intro T T' hT hT'
-  refine (theorem_B_second_bound_64 D T T' hT hT').trans ?_
-  apply ENNReal.ofReal_le_ofReal
-  exact pow_le_pow_left₀ (by norm_num) hC _
 
-theorem family_theorem_B_second_bound {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : Formalism.MainNotions.OnePlaceEstimates.FamilyTheoremBSecondBound Fm 64 := by
-  intro x i
-  exact theorem_B_second_bound_64 _
 
-theorem mem_blockEnds (D : D7) (bs : List (D.host.E × ℕ)) : ∀ (acc l : ℕ), l ∈ blockEnds D acc bs →
-    ∃ a, a < bs.length ∧ l = acc + pS bs (a + 1) := by
-  induction bs with
-  | nil => intro acc l h; simp [blockEnds] at h
-  | cons b bs ih =>
-    obtain ⟨t, s⟩ := b
-    intro acc l h
-    simp only [blockEnds, List.mem_cons] at h
-    rcases h with h | h
-    · exact ⟨0, by simp, by simp [pS, h]⟩
-    · obtain ⟨a, ha, rfl⟩ := ih _ _ h
-      exact ⟨a + 1, by simpa using ha, by simp [pS, add_assoc]⟩
 
-theorem block_end_leading_minors_integral (D : D7) (T T' : ℕ) (γ : Point D.host.E (D.R.rS + 1)) (h : IsBPt D T T' γ) :
-    ∀ l ∈ blockEnds D 0 γ.1, ∃ hl : l ≤ D.R.rS + 1,
-      IsIntegral ℤ (leadMinorK (ptMat γ) l hl) ∧ leadMinorK (ptMat γ) l hl ≠ 0 := by
-  intro l hl
-  obtain ⟨a, ha, rfl⟩ := mem_blockEnds D γ.1 0 l hl
-  have hle : 0 + pS γ.1 (a + 1) ≤ D.R.rS + 1 := by rw [zero_add]; exact (toComp γ).sizeUpTo_le _
-  refine ⟨hle, ?_⟩
-  have := point_embedding_of_boundary_point D T T' γ h ⟨a, by rw [show (toSig γ).1.length = γ.1.length from toComp_length γ]; exact ha⟩
-  have e : leadMinorK (ptMat γ) (0 + pS γ.1 (a + 1)) hle =
-      IndexedMinorEntry (toComp γ).blocksFun (toT γ) ⟨a, by rw [toComp_length]; exact ha⟩ := by
-    rw [E5minor_eq, leadMinorK_eq, ptMat_eq]
-    simp [sizeUpTo_toComp]
-  rw [e]
-  exact this
 
-theorem block_start_scalar_integral (D : D7) (T T' : ℕ) (γ : Point D.host.E (D.R.rS + 1)) (h : IsBPt D T T' γ)
-    (a : ℕ) (ha : a < γ.1.length) :
-    IsIntegral ℤ (leadMinorK (ptMat γ) (pS γ.1 a) ((toComp γ).sizeUpTo_le a) * (γ.1[a]).1) := by
-  obtain ⟨⟨Z, hZ, L, U, hL, hU, rfl⟩, -⟩ := h
-  have key := Formalism.HermitianLatticeCounting.Final.ExpansionTerms.integral_evaluation_fourth D.host.E (integralClosure ℤ D.host.E).toSubring (D.R.rS + 1) (toComp γ) (toT γ)
-    (toT_ne γ) L U ⟨fun i => (hL i i).2 rfl, fun i j hij => (hL i j).1 hij⟩
-    ⟨fun i => (hU i i).2 rfl, fun i j hij => (hU i j).1 hij⟩
-    (by intro i j; rw [← ptMat_eq]; exact hZ i j)
-  have := key.2 ⟨a, by rw [toComp_length]; exact ha⟩
-  have e : leadMinorK (ptMat γ) (pS γ.1 a) ((toComp γ).sizeUpTo_le a) =
-      leadingPrincipalMinor (blockAntidiagonalMatrix (toComp γ) (toT γ)) ((toComp γ).sizeUpTo a) := by
-    rw [leadMinorK_eq (ptMat γ) (pS γ.1 a) ((toComp γ).sizeUpTo_le a), ptMat_eq]
-    rfl
-  rw [e]
-  exact this
 
-theorem mem_blockHeads {K : Type} [Field K] (bs : List (K × ℕ)) : ∀ (acc : ℕ) (p : ℕ × K),
-    p ∈ Formalism.MainNotions.OnePlaceEstimates.blockHeads acc bs → ∃ (a : ℕ) (ha : a < bs.length), p = (acc + pS bs a, (bs[a]).1) := by
-  induction bs with
-  | nil => intro acc p h; simp [Formalism.MainNotions.OnePlaceEstimates.blockHeads] at h
-  | cons b bs ih =>
-    obtain ⟨t, s⟩ := b
-    intro acc p h
-    simp only [Formalism.MainNotions.OnePlaceEstimates.blockHeads, List.mem_cons] at h
-    rcases h with h | h
-    · exact ⟨0, by simp, by simp [pS, h]⟩
-    · obtain ⟨a, ha, rfl⟩ := ih _ _ h
-      exact ⟨a + 1, by simpa using ha, by simp [pS, add_assoc]⟩
 
-theorem theorem_B_first_assertions (D : D7) : Formalism.MainNotions.OnePlaceEstimates.TheoremBIntegralityAtEnds D := by
-  intro T T' γ h
-  refine ⟨fun l hlm hl => ?_, fun p hp hl => ?_⟩
-  · obtain ⟨hl', hI, hne⟩ := block_end_leading_minors_integral D T T' γ h l hlm
-    exact ⟨hI, hne⟩
-  · obtain ⟨a, ha, rfl⟩ := mem_blockHeads γ.1 0 p hp
-    have h2 := block_start_scalar_integral D T T' γ h a ha
-    convert h2 using 3
-    all_goals simp
 
-theorem family_theorem_B_first_assertions {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : Formalism.MainNotions.OnePlaceEstimates.FamilyTheoremBIntegrality Fm := by
-  intro x i
-  exact theorem_B_first_assertions _
 
 end Formalism.MainNotions.BesselShellMomentBounds
 
@@ -392,113 +319,12 @@ theorem strictAnti_of_interlace {k0 : ℕ} {u : Fin (k0 + 1) → ℝ} {ρ : Fin 
     StrictAnti u := by
   exact Fin.strictAnti_iff_succ_lt.2 (fun j => (h j).2.trans (h j).1)
 
-theorem interlace_above {k0 : ℕ} {u : Fin (k0 + 1) → ℝ} {ρ : Fin k0 → ℝ} (h : Interlace u ρ)
-    (l : Fin (k0 + 1)) (j : Fin k0) (hj : j.val < l.val) : u l < ρ j := by
-  have hA := (strictAnti_of_interlace h).antitone
-  exact lt_of_le_of_lt (hA (show j.succ ≤ l by rw [Fin.le_iff_val_le_val, Fin.val_succ]; omega)) (h j).2
 
-theorem interlace_below {k0 : ℕ} {u : Fin (k0 + 1) → ℝ} {ρ : Fin k0 → ℝ} (h : Interlace u ρ)
-    (l : Fin (k0 + 1)) (j : Fin k0) (hj : l.val ≤ j.val) : ρ j < u l := by
-  have hA := (strictAnti_of_interlace h).antitone
-  exact (h j).1.trans_le (hA (show l ≤ j.castSucc by rw [Fin.le_iff_val_le_val, Fin.coe_castSucc]; omega))
 
-theorem xPoly_ofReal {j : ℕ} (ρ : Fin j → ℝ) (Y : ℝ) : xPoly ρ (Y : ℂ) = ((∏ l : Fin j, (Y + ρ l) : ℝ) : ℂ) := by
-  simp [xPoly]
 
-theorem prod_sign_cases {ι : Type*} (s : Finset ι) (p : ι → Prop) [DecidablePred p] :
-    (∏ j ∈ s, (if p j then (1 : ℝ) else -1)) = 1 ∨ (∏ j ∈ s, (if p j then (1 : ℝ) else -1)) = -1 := by
-  classical
-  refine Finset.induction_on s (by simp) ?_
-  intro a s ha ih
-  rw [Finset.prod_insert ha]
-  rcases ih with h | h <;> rw [h] <;> split_ifs <;> norm_num
 
-theorem cut_sides {x x' a b y : ℝ} (hmin : min (-x) (-x') < a) (hmax : b < max (-x) (-x')) (hy : y ∈ Set.Icc a b)
-    (hd : 2 ≤ |y + x| ∧ 2 ≤ |y + x'|) : 2 ≤ y + max x x' ∧ y + min x x' ≤ -2 := by
-  obtain ⟨hya, hyb⟩ := hy
-  obtain ⟨h1, h2⟩ := hd
-  rcases le_total x x' with hx | hx
-  · rw [max_eq_right hx, min_eq_left hx]
-    rw [min_eq_right (neg_le_neg hx)] at hmin
-    rw [max_eq_left (neg_le_neg hx)] at hmax
-    rcases le_abs'.mp h1 with h | h <;> rcases le_abs'.mp h2 with h' | h' <;> constructor <;> linarith
-  · rw [max_eq_left hx, min_eq_right hx]
-    rw [min_eq_left (neg_le_neg hx)] at hmin
-    rw [max_eq_right (neg_le_neg hx)] at hmax
-    rcases le_abs'.mp h1 with h | h <;> rcases le_abs'.mp h2 with h' | h' <;> constructor <;> linarith
 
-theorem interlacing_signs_real (D : D7) : Formalism.MainNotions.OnePlaceEstimates.adm3b D := by
-  intro k0 u u' T T' I hT hT' hcut hex
-  obtain ⟨l, a, b, hne, hab, rfl, hmin, hmax, hdist⟩ := hcut
-  have hside : ∀ y ∈ Set.Icc a b, 2 ≤ y + max (u l) (u' l) ∧ y + min (u l) (u' l) ≤ -2 :=
-    fun y hy => cut_sides hmin hmax hy (hdist y hy)
-  refine ⟨⟨∏ j : Fin k0, (if j.val < l.val then (1 : ℝ) else -1), prod_sign_cases _ _, ?_⟩, ?_⟩
-  · intro ρ hρ hρ' Y hY
-    obtain ⟨hM, hm⟩ := hside Y hY
-    have key : ∀ e : ℝ, |e| ≤ 1 →
-        0 < (∏ j : Fin k0, (if j.val < l.val then (1 : ℝ) else -1)) * ∏ j : Fin k0, (Y + e + ρ j) := by
-      intro e he
-      rw [← Finset.prod_mul_distrib]
-      refine Finset.prod_pos fun j _ => ?_
-      obtain ⟨e1, e2⟩ := abs_le.1 he
-      by_cases hj : j.val < l.val
-      · have h1 := interlace_above hρ l j hj
-        have h2 := interlace_above hρ' l j hj
-        have h3 : max (u l) (u' l) < ρ j := max_lt h1 h2
-        rw [if_pos hj]; linarith
-      · have h1 := interlace_below hρ l j (not_lt.1 hj)
-        have h2 := interlace_below hρ' l j (not_lt.1 hj)
-        have h3 : ρ j < min (u l) (u' l) := lt_min h1 h2
-        rw [if_neg hj]; linarith
-    refine ⟨?_, ?_, ?_⟩
-    · have := key 0 (by simp)
-      rw [xPoly_ofReal, Complex.ofReal_re]; simpa using this
-    · have := key 1 (by simp)
-      rw [show ((Y : ℂ) + 1) = ((Y + 1 : ℝ) : ℂ) by push_cast; ring, xPoly_ofReal, Complex.ofReal_re]; exact this
-    · have := key (-1) (by simp)
-      rw [show ((Y : ℂ) - 1) = ((Y + -1 : ℝ) : ℂ) by push_cast; ring, xPoly_ofReal, Complex.ofReal_re]; exact this
-  · intro Y hY
-    obtain ⟨ρ, hρ, hρ'⟩ := hex
-    obtain ⟨hM, hm⟩ := hside Y hY
-    have hq : qPoly T T' u u' (Y : ℂ) =
-        ((-(T * T') * ∏ i : Fin (k0 + 1), ((Y + 1 / 2 + u i) * (Y + 1 / 2 + u' i)) : ℝ) : ℂ) := by
-      simp [qPoly]
-    rw [hq, Complex.ofReal_re, ← Finset.mul_prod_erase Finset.univ _ (Finset.mem_univ l)]
-    have hl : (Y + 1 / 2 + u l) * (Y + 1 / 2 + u' l) < 0 := by
-      rcases le_total (u l) (u' l) with h | h
-      · rw [max_eq_right h] at hM; rw [min_eq_left h] at hm
-        exact mul_neg_of_neg_of_pos (by linarith) (by linarith)
-      · rw [max_eq_left h] at hM; rw [min_eq_right h] at hm
-        exact mul_neg_of_pos_of_neg (by linarith) (by linarith)
-    have hrest : 0 < ∏ i ∈ Finset.univ.erase l, ((Y + 1 / 2 + u i) * (Y + 1 / 2 + u' i)) := by
-      refine Finset.prod_pos fun i hi => ?_
-      have hil : i ≠ l := (Finset.mem_erase.1 hi).1
-      rcases lt_or_gt_of_ne (fun h => hil (Fin.ext h) : i.val ≠ l.val) with h | h
-      · have hi0 : i.val < k0 := by have := l.isLt; omega
-        have e : (⟨i.val, hi0⟩ : Fin k0).castSucc = i := Fin.ext rfl
-        have a1 := (hρ ⟨i.val, hi0⟩).1
-        have a2 := (hρ' ⟨i.val, hi0⟩).1
-        rw [e] at a1 a2
-        have b1 := interlace_above hρ l ⟨i.val, hi0⟩ h
-        have b2 := interlace_above hρ' l ⟨i.val, hi0⟩ h
-        have b3 : max (u l) (u' l) < ρ ⟨i.val, hi0⟩ := max_lt b1 b2
-        exact mul_pos (by linarith) (by linarith)
-      · have hi0 : i.val - 1 < k0 := by have := i.isLt; omega
-        have e : (⟨i.val - 1, hi0⟩ : Fin k0).succ = i := Fin.ext (by simp; omega)
-        have a1 := (hρ ⟨i.val - 1, hi0⟩).2
-        have a2 := (hρ' ⟨i.val - 1, hi0⟩).2
-        rw [e] at a1 a2
-        have b1 := interlace_below hρ l ⟨i.val - 1, hi0⟩ (by simp; omega)
-        have b2 := interlace_below hρ' l ⟨i.val - 1, hi0⟩ (by simp; omega)
-        have b3 : ρ ⟨i.val - 1, hi0⟩ < min (u l) (u' l) := lt_min b1 b2
-        exact mul_pos_of_neg_of_neg (by linarith) (by linarith)
-    have hTT : 0 < T * T' := mul_pos hT hT'
-    nlinarith [mul_pos hTT (mul_pos (neg_pos.2 hl) hrest)]
 
-theorem sl2_matrix_preserves_symplectic (s : ℂ) :
-    (Formalism.MainNotions.OnePlaceEstimates.Umat s).transpose * !![0, 1; -1, 0] * Formalism.MainNotions.OnePlaceEstimates.Umat s = !![0, 1; -1, 0] := by
-  ext i j
-  fin_cases i <;> fin_cases j <;> simp [Formalism.MainNotions.OnePlaceEstimates.Umat, Matrix.mul_apply, Fin.sum_univ_two]
 
 section ThmB
 
@@ -980,12 +806,6 @@ theorem BSum_le_of_onePlace {Ch Cg dist CK p : ℝ} {P : ∀ (T T' : ℕ) (b : �
   rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity)]
   exact mul_le_mul' (ENNReal.ofReal_le_ofReal (arith_B D.R.rS _ e he hb2)) le_rfl
 
-theorem theorem_B_first_bound_one_place {Ch Cg CK : ℝ} {A : ℕ} (hCg : 2 ≤ Cg)
-    (hO : OnePlace D Ch Cg 0 (fun _ _ _ _ => True) A CK 4 0) : Formalism.MainNotions.OnePlaceEstimates.RotatedSumBound D Ch Cg (CK + 6) := by
-  intro T T' b X
-  have h := BSum_le_of_onePlace hCg (by norm_num) hO T T' b X trivial
-  simp only [Real.rpow_zero] at h
-  exact h
 
 theorem theorem_B_weighted_bound_one_place {Aw Ch Cg CK : ℝ} {A : ℕ} (hCg : 2 ≤ Cg)
     (hO : OnePlace D Ch Cg 0 (fun _ _ _ X => ∀ v, AllGaps (X.L v).lam (Cg * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 4)) A CK 5
@@ -993,21 +813,6 @@ theorem theorem_B_weighted_bound_one_place {Aw Ch Cg CK : ℝ} {A : ℕ} (hCg : 
   intro T T' b X hG
   exact BSum_le_of_onePlace hCg (by norm_num) hO T T' b X hG
 
-theorem theorem_B_uniform_bound_one_place {Aw Ch Cu Cg Cg' CK : ℝ} {A : ℕ} (hCg : 2 ≤ Cg)
-    (hO : OnePlace D Ch Cg (Cu * D.R.k * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 3)
-      (fun _ _ _ X => (∀ v, Formalism.MainNotions.OnePlaceEstimates.RngU D Cu Cg' (X.L v).lam (lamSH D.R (D.hc v))) ∧
-        ∀ v, jNorm2 (X.L v) (X.f v) (X.μsec v) ≠ 0) A CK 4 0)
-    (hO' : OnePlace D Ch Cg (Cu * D.R.k * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 3)
-      (fun _ _ _ X => ((∀ v, Formalism.MainNotions.OnePlaceEstimates.RngU D Cu Cg' (X.L v).lam (lamSH D.R (D.hc v))) ∧
-        ∀ v, jNorm2 (X.L v) (X.f v) (X.μsec v) ≠ 0) ∧
-        ∀ v, AllGaps (lamSH D.R (D.hc v)) (Cg * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 4)) A CK 5
-      (Aw * ((D.R.rS : ℝ) + 1) ^ 2)) : Formalism.MainNotions.OnePlaceEstimates.UniformityTheoremB D Aw Ch Cu Cg Cg' (CK + 6) := by
-  intro T T' b X hR hJ
-  refine ⟨?_, fun hG => ?_⟩
-  · have h := BSum_le_of_onePlace hCg (by norm_num) hO T T' b X ⟨hR, hJ⟩
-    simp only [Real.rpow_zero] at h
-    exact h
-  · exact BSum_le_of_onePlace hCg (by norm_num) hO' T T' b X ⟨⟨hR, hJ⟩, hG⟩
 
 end ThmB
 
@@ -1027,15 +832,6 @@ def AdmOpen (D : D7) (Gm : GM) (CB Co Cd C0 CA Cg₁ Cg₂ c C₁ : ℝ) (Ks : �
     ShortGridGramBound D Gm CB Cs ∧ LiftGridGramBound D Gm CB Cs ∧ LargeBlockGridBound D Gm CB Cs C₃ ∧ UniformGridGramBound D Gm CB Cs C₃ ∧
     adm18 D ∧ DualTranslationPrinciple D ∧ adm19 D ∧ adm20 D ∧ adm21 D c C₁ ∧ adm22 D Ch Cg Cq ∧ CapelliEigenvalueAlt D
 
-theorem bessel_admissible_iff_open (hL : Formalism.MainNotions.S.UnitaryLevelOperators.stLetters) (hW : Formalism.MainNotions.S.UnitaryLevelOperators.stWaveLetters) (D : D7) (Gm : GM)
-    (CB Co Cd C0 CA Cg₁ Cg₂ c C₁ : ℝ) (Ks : ℕ) (E₀ Eg E₁ E₂ E₃ Cs C₃ Ch Cg Cq : ℝ) :
-    admitted D Gm CB Co Cd C0 CA Cg₁ Cg₂ c C₁ Ks E₀ Eg E₁ E₂ E₃ Cs C₃ Ch Cg Cq ↔
-      AdmOpen D Gm CB Co Cd C0 CA Cg₁ Cg₂ c C₁ Ks E₀ Eg E₁ E₂ E₃ Cs C₃ Ch Cg Cq := by
-  constructor
-  · rintro ⟨h1, h2, ⟨h3a, -⟩, ⟨-, h4b⟩, h5, h6, h7, ⟨-, h8b⟩, rest⟩
-    exact ⟨h1, h2, h3a, h4b, h5, h6, h7, h8b, rest⟩
-  · rintro ⟨h1, h2, h3a, h4b, h5, h6, h7, h8b, rest⟩
-    exact ⟨h1, h2, ⟨h3a, interlacing_signs_real D⟩, ⟨hL, h4b⟩, h5, h6, h7, ⟨hW, h8b⟩, rest⟩
 
 end Formalism.MainNotions.BesselShellMomentBounds
 
@@ -1049,98 +845,11 @@ namespace Formalism.MainNotions.BesselShellMomentBounds
 
 open Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.HermitianLatticeCounting.P Formalism.MainNotions.S.Pv.Frames
 
-theorem iterated_difference_operator_bound (V P Λ : Type) [AddCommGroup V] [Module ℂ V] [AddCommGroup P] (jh : P → V) (Dop : Λ → Module.End ℂ V)
-    (wt : Λ → ℕ) (N1 : P → ℕ) (Gam : ℝ) (Rad : ℕ) (hGam : 0 ≤ Gam)
-    (hN1 : ∀ x y, N1 (x + y) ≤ N1 x + N1 y) (hN10 : N1 0 = 0)
-    (hstep : ∀ μ l, N1 μ + wt l ≤ Rad → ∃ a : P →₀ ℂ, Dop l (jh μ) = a.sum (fun ν c => c • jh (μ + ν)) ∧
-      (a.sum fun _ c => ‖c‖) ≤ Gam ∧ ∀ ν ∈ a.support, N1 ν ≤ wt l) :
-    ∀ (μ : P) (al : List Λ), N1 μ + (al.map wt).sum ≤ Rad →
-      ∃ a : P →₀ ℂ, (al.map Dop).prod (jh μ) = a.sum (fun ν c => c • jh (μ + ν)) ∧
-        (a.sum fun _ c => ‖c‖) ≤ Gam ^ al.length ∧ ∀ ν ∈ a.support, N1 ν ≤ (al.map wt).sum := by
-  classical
-  intro μ al
-  induction al with
-  | nil =>
-    intro _
-    refine ⟨Finsupp.single 0 1, ?_, ?_, ?_⟩
-    · simp
-    · simp
-    · intro ν hν
-      have : ν = 0 := by simpa using Finsupp.support_single_subset hν
-      subst this
-      simp [hN10]
-  | cons l al ih =>
-    intro hq
-    simp only [List.map_cons, List.sum_cons, List.prod_cons, List.length_cons] at hq ⊢
-    obtain ⟨a, ha1, ha2, ha3⟩ := ih (by omega)
-    have hb : ∀ ν, ∃ b : P →₀ ℂ, ν ∈ a.support →
-        (Dop l (jh (μ + ν)) = b.sum (fun ν' c => c • jh (μ + ν + ν')) ∧
-        (b.sum fun _ c => ‖c‖) ≤ Gam ∧ ∀ ν' ∈ b.support, N1 ν' ≤ wt l) := by
-      intro ν
-      by_cases hν : ν ∈ a.support
-      · have h1 := ha3 ν hν
-        have h2 := hN1 μ ν
-        obtain ⟨b, hb⟩ := hstep (μ + ν) l (by omega)
-        exact ⟨b, fun _ => hb⟩
-      · exact ⟨0, fun h => absurd h hν⟩
-    choose b hb using hb
-    let a' : P →₀ ℂ := ∑ ν ∈ a.support, ∑ ν' ∈ (b ν).support, Finsupp.single (ν + ν') (a ν * b ν ν')
-    refine ⟨a', ?_, ?_, ?_⟩
-    · rw [Module.End.mul_apply, ha1]
-      have hΨ : a'.sum (fun ν c => c • jh (μ + ν)) =
-          Finsupp.linearCombination ℂ (fun ν => jh (μ + ν)) a' :=
-        (Finsupp.linearCombination_apply ℂ a').symm
-      rw [hΨ]
-      simp only [a', map_sum, Finsupp.linearCombination_single]
-      rw [Finsupp.sum, map_sum]
-      refine Finset.sum_congr rfl fun ν hν => ?_
-      rw [map_smul, (hb ν hν).1, Finsupp.sum, Finset.smul_sum]
-      refine Finset.sum_congr rfl fun ν' _ => ?_
-      rw [mul_smul, add_assoc]
-    · have h1 : lOneNorm a' ≤ ∑ ν ∈ a.support, ∑ ν' ∈ (b ν).support, ‖a ν‖ * ‖b ν ν'‖ := by
-        refine (lOneNorm_sum_le _ _).trans (Finset.sum_le_sum fun ν _ => ?_)
-        refine (lOneNorm_sum_le _ _).trans (Finset.sum_le_sum fun ν' _ => ?_)
-        rw [lOneNorm_single, norm_mul]
-      calc (a'.sum fun _ c => ‖c‖) ≤ ∑ ν ∈ a.support, ∑ ν' ∈ (b ν).support, ‖a ν‖ * ‖b ν ν'‖ := h1
-        _ ≤ ∑ ν ∈ a.support, ‖a ν‖ * Gam := by
-            refine Finset.sum_le_sum fun ν hν => ?_
-            rw [← Finset.mul_sum]
-            exact mul_le_mul_of_nonneg_left (hb ν hν).2.1 (norm_nonneg _)
-        _ = (a.sum fun _ c => ‖c‖) * Gam := by rw [Finsupp.sum, Finset.sum_mul]
-        _ ≤ Gam ^ al.length * Gam := by gcongr
-        _ = Gam ^ (al.length + 1) := by rw [pow_succ]
-    · intro ν'' h
-      have h1 := Finsupp.support_finsetSum h
-      rw [Finset.mem_biUnion] at h1
-      obtain ⟨ν, hν, h2⟩ := h1
-      have h3 := Finsupp.support_finsetSum h2
-      rw [Finset.mem_biUnion] at h3
-      obtain ⟨ν', hν', h4⟩ := h3
-      have h5 : ν'' = ν + ν' := by simpa using Finsupp.support_single_subset h4
-      subst h5
-      have e1 := hN1 ν ν'
-      have e3 := ha3 ν hν
-      have e4 := (hb ν hν).2.2 ν' hν'
-      omega
 
 def wordOf {ι : Type} (ls : List ι) (α : ι → ℕ) : List ι := ls.flatMap fun l => List.replicate (α l) l
 
-theorem wordOf_prod {ι M : Type} [CommMonoid M] (ls : List ι) (α : ι → ℕ) (g : ι → M) :
-    ((wordOf ls α).map g).prod = (ls.map fun l => g l ^ α l).prod := by
-  induction ls with
-  | nil => simp [wordOf]
-  | cons a ls ih => simp_all [wordOf, List.flatMap_cons, List.prod_append, List.map_replicate, List.prod_replicate]
 
-theorem wordOf_sum {ι : Type} (ls : List ι) (α : ι → ℕ) (g : ι → ℕ) :
-    ((wordOf ls α).map g).sum = (ls.map fun l => α l * g l).sum := by
-  induction ls with
-  | nil => simp [wordOf]
-  | cons a ls ih => simp_all [wordOf, List.flatMap_cons, List.sum_append, List.map_replicate, List.sum_replicate]
 
-theorem wordOf_length {ι : Type} (ls : List ι) (α : ι → ℕ) : (wordOf ls α).length = (ls.map α).sum := by
-  induction ls with
-  | nil => simp [wordOf]
-  | cons a ls ih => simp_all [wordOf, List.flatMap_cons, List.length_append, List.length_replicate]
 
 def mulOp {X W : Type} [AddCommGroup W] [Module ℂ W] (φ : X → ℂ) : Module.End ℂ (X → W) where
   toFun F := fun q => φ q • F q
@@ -1150,27 +859,10 @@ def mulOp {X W : Type} [AddCommGroup W] [Module ℂ W] (φ : X → ℂ) : Module
     show φ q • (c • F q) = c • (φ q • F q)
     exact smul_comm _ _ _
 
-theorem mulOp_list {X W ι : Type} [AddCommGroup W] [Module ℂ W] (φ : ι → X → ℂ) (al : List ι) (F : X → W) (q : X) :
-    (al.map fun l => mulOp (W := W) (φ l)).prod F q = (al.map fun l => φ l q).prod • F q := by
-  induction al with
-  | nil => simp
-  | cons a al ih =>
-    simp only [List.map_cons, List.prod_cons]
-    change φ a q • ((al.map fun l => mulOp (W := W) (φ l)).prod F) q = _
-    rw [ih, smul_smul]
 
 def nat1 {n : ℕ} (ν : Fin n → ℤ) : ℕ := ∑ s, (ν s).natAbs
 
-theorem int_l1_norm_cast_sum_abs {n : ℕ} (ν : Fin n → ℤ) : ∑ s, |(ν s : ℝ)| = (nat1 ν : ℝ) := by
-  simp [nat1, Nat.cast_sum, Nat.cast_natAbs, Int.cast_abs]
 
-theorem int_l1_norm_add_le {n : ℕ} (x y : Fin n → ℤ) : nat1 (x + y) ≤ nat1 x + nat1 y := by
-  unfold nat1
-  rw [← Finset.sum_add_distrib]
-  apply Finset.sum_le_sum
-  intro s _
-  simp only [Pi.add_apply]
-  exact Int.natAbs_add_le _ _
 
 def FamilyDerivativeExpansion (D : D7) (Ch Cg Cq Cb : ℝ) : Prop :=
   ∀ (L : LocBessel D.R.k D.R.rS) (μsec : ℂ → Matrix (Fin (D.R.k + 1)) (Fin (D.R.k + 1)) ℂ) (ka b κ : ℝ) (p : ℕ)
@@ -1196,88 +888,8 @@ def FamilyDerivativeExpansion (D : D7) (Ch Cg Cq Cb : ℝ) : Prop :=
           Dbig ((l : ℕ) + 1) q • L.J (fν μ) (bigCell D.R.k D.R.rS q.1 (μsec q.2)) =
             a.sum fun ν c => c • L.J (fν (μ + ν)) (bigCell D.R.k D.R.rS q.1 (μsec q.2))
 
-theorem expansion_of_param_expansion (D : D7) (Ch Cg Cq Cb : ℝ) (h : FamilyDerivativeExpansion D Ch Cg Cq Cb) :
-    Formalism.MainNotions.OnePlaceEstimates.BesselExpansionCoefficientSum D Ch Cg Cq Cb := by
-  classical
-  intro L μsec ka b κ p Hν _ _ _ σν fν hκ hL hR hsec hfam _ α hα
-  have hb0 : 0 ≤ b := by
-    obtain ⟨-, -, -, -, -, ⟨-, -, -, -, -, -, -, -, -, -, hlam, -⟩, -, -⟩ := hL
-    exact le_trans (abs_nonneg _) (hlam ⟨0, by omega⟩)
-  let X := {q : (Fin D.R.rS → ℂ) × ℂ // (∀ i, q.1 i ≠ 0) ∧
-    Tz D.R.k D.R.rS L.z * Tz D.R.k D.R.rS L.z' < Complex.normSq q.2}
-  let jh : (Fin (2 * D.R.rS + D.R.k + 1) → ℤ) → (X → (L.Wq →L[ℂ] L.Wp)) :=
-    fun ν q => L.J (fν ν) (bigCell D.R.k D.R.rS q.1.1 (μsec q.1.2))
-  let φ : Fin (D.R.rS + 1) → X → ℂ := fun l q => Dbig ((l : ℕ) + 1) q.1
-  have key := iterated_difference_operator_bound (X → (L.Wq →L[ℂ] L.Wp)) (Fin (2 * D.R.rS + D.R.k + 1) → ℤ) (Fin (D.R.rS + 1)) jh
-    (fun l => mulOp (φ l)) (fun l => (l : ℕ) + 1) nat1 (b ^ (Cb * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 2))
-    ((D.R.rS + 1) * p) (Real.rpow_nonneg hb0 _) int_l1_norm_add_le (by simp [nat1])
-    (by
-      intro μ l hμ
-      obtain ⟨a, ha1, ha2, ha3⟩ := h L μsec ka b κ p Hν σν fν hκ hL hR hsec hfam μ l
-        (by rw [int_l1_norm_cast_sum_abs]; exact_mod_cast hμ)
-      refine ⟨a, ?_, ha2, ?_⟩
-      · funext q
-        have := ha3 q.1 q.2.1 q.2.2
-        show Dbig ((l : ℕ) + 1) q.1 • L.J (fν μ) _ = _
-        rw [this]
-        simp only [Finsupp.sum, Finset.sum_apply, Pi.smul_apply]
-        rfl
-      · intro ν hν
-        have := ha1 ν hν
-        rw [int_l1_norm_cast_sum_abs] at this
-        exact_mod_cast this)
-    0 (wordOf (List.finRange (D.R.rS + 1)) α)
-  have hlen : (wordOf (List.finRange (D.R.rS + 1)) α).length = ∑ l, α l := by
-    rw [wordOf_length, Fin.sum_univ_def]
-  have hwt : ((wordOf (List.finRange (D.R.rS + 1)) α).map fun l : Fin (D.R.rS + 1) => (l : ℕ) + 1).sum ≤
-      (D.R.rS + 1) * ∑ l, α l := by
-    rw [wordOf_sum, ← Fin.sum_univ_def, Finset.mul_sum]
-    refine Finset.sum_le_sum fun l _ => ?_
-    rw [mul_comm]
-    exact Nat.mul_le_mul_right _ l.2
-  obtain ⟨a, ha1, ha2, ha3⟩ := key (by
-    have : nat1 (0 : Fin (2 * D.R.rS + D.R.k + 1) → ℤ) = 0 := by simp [nat1]
-    rw [this, zero_add]
-    exact hwt.trans (Nat.mul_le_mul_left _ hα))
-  refine ⟨⇑a, a.hasFiniteSupport, ?_, ?_, ?_⟩
-  · intro ν hν
-    rw [int_l1_norm_cast_sum_abs]
-    exact_mod_cast (ha3 ν (Finsupp.mem_support_iff.2 hν)).trans hwt
-  · rw [tsum_eq_sum (s := a.support) (fun ν hν => by simp [Finsupp.notMem_support_iff.1 hν])]
-    refine le_trans ha2 (le_of_eq ?_)
-    rw [hlen, ← Real.rpow_natCast, ← Real.rpow_mul hb0]
-  · intro q hq1 hq2
-    have e := congrFun ha1 ⟨q, hq1, hq2⟩
-    rw [mulOp_list] at e
-    rw [tsum_eq_sum (s := a.support) (fun ν hν => by simp [Finsupp.notMem_support_iff.1 hν])]
-    have e2 : ((wordOf (List.finRange (D.R.rS + 1)) α).map fun l => φ l ⟨q, hq1, hq2⟩).prod = Dpow α q := by
-      rw [wordOf_prod, ← Fin.prod_univ_def]
-      rfl
-    rw [e2] at e
-    simp only [Finsupp.sum, Finset.sum_apply, Pi.smul_apply, zero_add] at e
-    exact e
 
-theorem expansion_of_all_cell_expansion (D : D7) (Ch Cg Cq Cb : ℝ) (h : Formalism.MainNotions.OnePlaceEstimates.BesselExpansionCoefficients D Ch Cg Cq Cb) :
-    Formalism.MainNotions.OnePlaceEstimates.BesselExpansionCoefficientSum D Ch Cg Cq Cb := by
-  intro L μsec ka b κ p Hν _ _ _ σν fν hκ hL hR hsec hfam h1 α hα
-  obtain ⟨a, h1', h2, h3, h4, -⟩ := h L μsec ka b κ p Hν σν fν hκ hL hR hsec hfam h1 α 0 (by simpa using hα)
-  refine ⟨a, h1', ?_, ?_, ?_⟩
-  · simpa using h2
-  · simpa using h3
-  · intro q hq1 hq2
-    have := h4 q hq1 hq2
-    simpa [Dpow] using this
 
-theorem conjugate_expansion_near_param (D : D7) (Ch Cg Cq Cb : ℝ) (h : Formalism.MainNotions.OnePlaceEstimates.BesselConjugatesEveryCell D Ch Cg Cq Cb) :
-    Formalism.MainNotions.OnePlaceEstimates.BesselExpansionNearParameter D Ch Cg Cq Cb := by
-  intro L lam0 μsec ka b κ p Hν _ _ _ σν fν hκ hL hR hsec hfam h1 α hα
-  obtain ⟨a, h1', h2, h3, h4, -⟩ := h L lam0 μsec ka b κ p Hν σν fν hκ hL hR hsec hfam h1 α 0 (by simpa using hα)
-  refine ⟨a, h1', ?_, ?_, ?_⟩
-  · simpa using h2
-  · simpa using h3
-  · intro q hq1 hq2
-    have := h4 q hq1 hq2
-    simpa [Dpow] using this
 
 end Formalism.MainNotions.BesselShellMomentBounds
 
@@ -1398,15 +1010,6 @@ theorem dens_nonneg (L : LocBessel k r) (F : Mx k r → (L.Wq →L[ℂ] L.Wp)) (
   unfold dens
   exact mul_nonneg (bcWeight_nonneg _ _ _) (hsNormSq_nonneg _)
 
-theorem jNorm2W_eq (L : LocBessel k r) (F : Mx k r → (L.Wq →L[ℂ] L.Wp)) (μsec) (φ : (Fin r → ℂ) × ℂ → ℂ) :
-    jNorm2W L F μsec φ = ∫⁻ p, ENNReal.ofReal (‖φ p‖ ^ 2 * dens L F μsec p) := by
-  unfold Formalism.MainNotions.S.ThB.jNorm2W Formalism.QuantumDeterminants.jNormSq dens
-  congr 1
-  funext p
-  congr 1
-  try beta_reduce
-  rw [Real.norm_eq_abs, sq_abs, mul_pow, Real.sq_sqrt (hsNormSq_nonneg _)]
-  ring
 
 theorem jNorm2_eq (L : LocBessel k r) (F : Mx k r → (L.Wq →L[ℂ] L.Wp)) (μsec) :
     jNorm2 L F μsec = ∫⁻ p, ENNReal.ofReal (dens L F μsec p) := by
@@ -1423,14 +1026,6 @@ theorem dens_smul (L : LocBessel k r) (c : ℂ) (F : Mx k r → (L.Wq →L[ℂ] 
   rw [J_smul, hsNormSq_smul]
   ring
 
-theorem jNorm2W_smul (L : LocBessel k r) (c : ℂ) (F : Mx k r → (L.Wq →L[ℂ] L.Wp)) (μsec) (φ) :
-    jNorm2W L (fun x => c • F x) μsec φ = ENNReal.ofReal (‖c‖ ^ 2) * jNorm2W L F μsec φ := by
-  rw [jNorm2W_eq, jNorm2W_eq, ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
-  congr 1
-  funext p
-  rw [dens_smul, ← ENNReal.ofReal_mul (sq_nonneg ‖c‖)]
-  congr 1
-  ring
 
 theorem jNorm2_smul (L : LocBessel k r) (c : ℂ) (F : Mx k r → (L.Wq →L[ℂ] L.Wp)) (μsec) :
     jNorm2 L (fun x => c • F x) μsec = ENNReal.ofReal (‖c‖ ^ 2) * jNorm2 L F μsec := by
@@ -1464,139 +1059,7 @@ def ExFam (D : D7) (Ch Cg Cq : ℝ) : Prop :=
             ∀ f' : Mx D.R.k D.R.rS → (L.Wq →L[ℂ] L.Wp), IsKFinCoefH (σν ν) f' →
               ∀ q : (Fin D.R.rS → ℂ) × ℂ, Formalism.MainNotions.OnePlaceEstimates.InBig L q → L.J f' (bigCell D.R.k D.R.rS q.1 (μsec q.2)) = 0))
 
-theorem expansion_norm_unit_bound (D : D7) (Ch Cg Cq Cb : ℝ) (hCg : 1 ≤ Cg) (hM : JMeas D) (hX : ExFam D Ch Cg Cq)
-    (hE : Formalism.MainNotions.OnePlaceEstimates.BesselExpansionCoefficientSum D Ch Cg Cq Cb)
-    (L : LocBessel D.R.k D.R.rS) (f0 : Mx D.R.k D.R.rS → (L.Wq →L[ℂ] L.Wp))
-    (μsec : ℂ → Matrix (Fin (D.R.k + 1)) (Fin (D.R.k + 1)) ℂ) (ka b κ : ℝ) (p : ℕ)
-    (hκ : κ = 1 ∨ κ = ka) (hL : LocOk0 D Ch Cg L L.lam ka b κ) (hR : Formalism.MainNotions.OnePlaceEstimates.GapAndSizeRange D Cg Cq L p)
-    (hf : IsKFinCoefH L.σ f0) (hsec : IsSection D.R.k D.R.rS L.z L.z' μsec) (h1 : jNorm2 L f0 μsec = 1)
-    (hb : 0 < b) (α : Fin (D.R.rS + 1) → ℕ) (hα : ∑ l, α l ≤ p) :
-    jNorm2W L f0 μsec (Dpow α) ≤
-      ENNReal.ofReal (b ^ (2 * Cb * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 2 * (∑ l, α l : ℕ))) := by
-  classical
-  obtain ⟨Hν, i1, i2, i3, σν, fν, hf0, hfam⟩ := hX L μsec ka b κ p f0 hκ hL hR hsec hf h1
-  subst hf0
-  obtain ⟨a, hfin, hsup, hsum, hexp⟩ := hE L μsec ka b κ p Hν σν fν hκ hL hR hsec hfam h1 α hα
-  set s : Finset (Fin (2 * D.R.rS + D.R.k + 1) → ℤ) := hfin.toFinset with hs
-  have hout : ∀ ν, ν ∉ s → a ν = 0 := fun ν hν => by
-    by_contra h
-    exact hν (hfin.mem_toFinset.2 h)
-  set S : ℝ := ∑ ν ∈ s, ‖a ν‖ with hS
-  have hS0 : 0 ≤ S := Finset.sum_nonneg fun _ _ => norm_nonneg _
-  have hSle : S ≤ b ^ (Cb * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 2 * (∑ l, α l : ℕ)) := by
-    rw [tsum_eq_sum (s := s) (fun ν hν => by rw [hout ν hν, norm_zero])] at hsum
-    exact hsum
-  have hk2 : 2 ≤ D.R.k := by have := Ranks.k_ge D.R; omega
-  have hpt : ∀ q : (Fin D.R.rS → ℂ) × ℂ, ‖Dpow α q‖ ^ 2 * dens L (fν 0) μsec q ≤
-      S * ∑ ν ∈ s, ‖a ν‖ * dens L (fν ν) μsec q := by
-    intro q
-    by_cases hq : (∀ i, q.1 i ≠ 0) ∧ Tz D.R.k D.R.rS L.z * Tz D.R.k D.R.rS L.z' < Complex.normSq q.2
-    · have e := hexp q hq.1 hq.2
-      rw [tsum_eq_sum (s := s) (fun ν hν => by rw [hout ν hν, zero_smul])] at e
-      have h2 := hsNormSq_sum_le s a (fun ν => L.J (fν ν) (bigCell D.R.k D.R.rS q.1 (μsec q.2)))
-      rw [← e, hsNormSq_smul] at h2
-      have hw := bcWeight_nonneg (k := D.R.k) (r := D.R.rS) (Tz D.R.k D.R.rS L.z) (Tz D.R.k D.R.rS L.z') q
-      have h3 := mul_le_mul_of_nonneg_left h2 hw
-      unfold dens
-      calc _ = bcWeight D.R.k D.R.rS (Tz D.R.k D.R.rS L.z) (Tz D.R.k D.R.rS L.z') q *
-            (‖Dpow α q‖ ^ 2 * hsNormSq (L.J (fν 0) (bigCell D.R.k D.R.rS q.1 (μsec q.2)))) := by ring
-        _ ≤ _ := h3
-        _ = _ := by
-            rw [Finset.mul_sum, Finset.mul_sum, Finset.mul_sum]
-            exact Finset.sum_congr rfl fun ν _ => by rw [hS]; ring
-    · have hw := bcWeight_off (k := D.R.k) (r := D.R.rS) hk2 (Tz D.R.k D.R.rS L.z) (Tz D.R.k D.R.rS L.z') q hq
-      unfold dens
-      simp [hw]
-  have hle1 : ∀ ν ∈ s, ∫⁻ q, ENNReal.ofReal (dens L (fν ν) μsec q) ≤ 1 := by
-    intro ν hν
-    have hν' : a ν ≠ 0 := hfin.mem_toFinset.1 hν
-    have hr : ∑ t, |(ν t : ℝ)| ≤ ((D.R.rS + 1) * p : ℕ) :=
-      (hsup ν hν').trans (by exact_mod_cast Nat.mul_le_mul_left _ hα)
-    rw [← jNorm2_eq]
-    rcases (hfam ν hr).2.2 with h | h
-    · exact le_of_eq h
-    · rw [jNorm2_eq]
-      have : ∀ q, ENNReal.ofReal (dens L (fν ν) μsec q) = 0 := fun q => by
-        unfold dens
-        by_cases hq : (∀ i, q.1 i ≠ 0) ∧ Tz D.R.k D.R.rS L.z * Tz D.R.k D.R.rS L.z' < Complex.normSq q.2
-        · rw [h.1 q hq]
-          simp [hsNormSq_eq]
-        · simp [bcWeight_off (k := D.R.k) (r := D.R.rS) hk2 (Tz D.R.k D.R.rS L.z) (Tz D.R.k D.R.rS L.z') q hq]
-      simp [this]
-  have hmeas : ∀ ν ∈ s, Measurable fun q => ENNReal.ofReal ‖a ν‖ * ENNReal.ofReal (dens L (fν ν) μsec q) := by
-    intro ν hν
-    have hν' : a ν ≠ 0 := hfin.mem_toFinset.1 hν
-    have hr : ∑ t, |(ν t : ℝ)| ≤ ((D.R.rS + 1) * p : ℕ) :=
-      (hsup ν hν').trans (by exact_mod_cast Nat.mul_le_mul_left _ hα)
-    exact ((hM L μsec (Hν ν) (σν ν) _ (fν ν) hsec (hfam ν hr).1 (hfam ν hr).2.1).ennreal_ofReal).const_mul _
-  rw [jNorm2W_eq]
-  calc ∫⁻ q, ENNReal.ofReal (‖Dpow α q‖ ^ 2 * dens L (fν 0) μsec q)
-      ≤ ∫⁻ q, ENNReal.ofReal S * ∑ ν ∈ s, ENNReal.ofReal ‖a ν‖ * ENNReal.ofReal (dens L (fν ν) μsec q) := by
-        refine lintegral_mono fun q => ?_
-        refine (ENNReal.ofReal_le_ofReal (hpt q)).trans (le_of_eq ?_)
-        rw [ENNReal.ofReal_mul hS0, ENNReal.ofReal_sum_of_nonneg
-          (fun ν _ => mul_nonneg (norm_nonneg _) (dens_nonneg _ _ _ _))]
-        congr 1
-        exact Finset.sum_congr rfl fun ν _ => ENNReal.ofReal_mul (norm_nonneg _)
-    _ = ENNReal.ofReal S * ∑ ν ∈ s, ENNReal.ofReal ‖a ν‖ * ∫⁻ q, ENNReal.ofReal (dens L (fν ν) μsec q) := by
-        rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top, lintegral_finsetSum _ hmeas]
-        congr 1
-        exact Finset.sum_congr rfl fun ν _ => lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
-    _ ≤ ENNReal.ofReal S * ∑ ν ∈ s, ENNReal.ofReal ‖a ν‖ := by
-        gcongr with ν hν
-        exact (mul_le_mul' le_rfl (hle1 ν hν)).trans (le_of_eq (mul_one _))
-    _ = ENNReal.ofReal (S * S) := by
-        rw [← ENNReal.ofReal_sum_of_nonneg (fun ν _ => norm_nonneg _), ← ENNReal.ofReal_mul hS0]
-    _ ≤ _ := by
-        apply ENNReal.ofReal_le_ofReal
-        refine (mul_le_mul hSle hSle hS0 (Real.rpow_nonneg hb.le _)).trans (le_of_eq ?_)
-        rw [← Real.rpow_add hb]
-        congr 1
-        ring
 
-theorem expansion_norm_bound_of_expansion (D : D7) (Ch Cg Cq Cb : ℝ) (hCg : 1 ≤ Cg) (hM : JMeas D) (hX : ExFam D Ch Cg Cq)
-    (hE : Formalism.MainNotions.OnePlaceEstimates.BesselExpansionCoefficientSum D Ch Cg Cq Cb) : Formalism.MainNotions.OnePlaceEstimates.BesselDerivativeIteration D Ch Cg Cq Cb := by
-  intro L f μsec ka b κ p hκ hL hR hf hsec α hα
-  have hb : 0 < b := by
-    have h := b_ge_of_StdHyp0 hL.1 hL.2.2.2.2.2.1
-    have : (0 : ℝ) < Cg * ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) ^ 7 := by positivity
-    linarith
-  set B : ℝ := b ^ (2 * Cb * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 2 * (∑ l, α l : ℕ)) with hB
-  have hBpos : 0 < B := Real.rpow_pos_of_pos hb _
-  by_cases htop : jNorm2 L f μsec = ⊤
-  · rw [htop, ENNReal.mul_top (by simpa using hBpos)]
-    exact le_top
-  by_cases h0 : jNorm2 L f μsec = 0
-  · rw [h0, mul_zero, nonpos_iff_eq_zero, jNorm2W_eq]
-    have hm := (hM L μsec L.Hs L.σ L.lam f hsec L.hσ hf).ennreal_ofReal
-    rw [jNorm2_eq, lintegral_eq_zero_iff hm] at h0
-    rw [lintegral_eq_zero_iff' ?_]
-    · filter_upwards [h0] with q hq
-      have : dens L f μsec q ≤ 0 := ENNReal.ofReal_eq_zero.1 hq
-      have h2 : dens L f μsec q = 0 := le_antisymm this (dens_nonneg _ _ _ _)
-      simp [h2]
-    · refine ⟨fun _ => 0, measurable_const, ?_⟩
-      filter_upwards [h0] with q hq
-      have : dens L f μsec q ≤ 0 := ENNReal.ofReal_eq_zero.1 hq
-      have h2 : dens L f μsec q = 0 := le_antisymm this (dens_nonneg _ _ _ _)
-      simp [h2]
-  set N := jNorm2 L f μsec with hN
-  have hNr : 0 < N.toReal := ENNReal.toReal_pos h0 htop
-  set c : ℝ := Real.sqrt (N.toReal)⁻¹ with hc
-  have hc2 : ‖(c : ℂ)‖ ^ 2 = (N.toReal)⁻¹ := by
-    rw [Complex.norm_real, Real.norm_eq_abs, sq_abs, Real.sq_sqrt (inv_nonneg.2 hNr.le)]
-  have hcN : ENNReal.ofReal (‖(c : ℂ)‖ ^ 2) = N⁻¹ := by
-    rw [hc2, ENNReal.ofReal_inv_of_pos hNr, ENNReal.ofReal_toReal htop]
-  have h1 : jNorm2 L (fun x => (c : ℂ) • f x) μsec = 1 := by
-    rw [jNorm2_smul, hcN]
-    exact ENNReal.inv_mul_cancel h0 htop
-  have key := expansion_norm_unit_bound D Ch Cg Cq Cb hCg hM hX hE L (fun x => (c : ℂ) • f x) μsec ka b κ p hκ hL hR
-    (coef_smul L L.σ c f hf) hsec h1 hb α hα
-  rw [jNorm2W_smul, hcN] at key
-  calc jNorm2W L f μsec (Dpow α) = N * (N⁻¹ * jNorm2W L f μsec (Dpow α)) := by
-        rw [← mul_assoc, ENNReal.mul_inv_cancel h0 htop, one_mul]
-    _ ≤ N * ENNReal.ofReal B := mul_le_mul' le_rfl key
-    _ = ENNReal.ofReal B * N := mul_comm _ _
 
 end Formalism.MainNotions.BesselShellMomentBounds
 
@@ -1682,47 +1145,7 @@ def LowestKTypeRightInvariant (D : D7) (Ch Cg : ℝ) : Prop :=
     ∃ w0 ∈ shell L P 0, w0 ≠ 0 ∧ ∀ Φ : (Fin (D.R.rS + 1) → ℝ) → ENNReal, Measurable Φ →
       Emom L Bf νq w (fun g => Φ (fun a => la D L a g)) = Emom L Bf νq w0 (fun g => Φ (fun a => la D L a g))
 
-theorem shell_bounds_of_four_clauses (D : D7) (Ch Cg Cq C1 C2 : ℝ) (hLow : LowestKTypeRightInvariant D Ch Cg) (ha : ShellMomentBound D Ch Cg Cq C1 C2)
-    (hb : ShellEnergyBound D Ch Cg Cq C1) (hc : ShellLowestCoordinateBound D) (hd : ShellTailBound D Ch Cg Cq C1 C2) : SubmultiplicativeLocalNorm D Ch Cg Cq C1 C2 := by
-  intro L lam0 ka b bv Bf μG μS νq P w j h1 h2 h3 h4 h5 h6 h7 h8 h9 h10 h11
-  rcases h10 with h10 | ⟨rfl, h10⟩
-  · have H : CloudNodeShape D Ch Cg L lam0 ka b bv Bf μG μS νq P w j := ⟨h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11⟩
-    exact ⟨ha L lam0 ka b bv Bf μG μS νq P w j H, hb L lam0 ka b bv Bf μG μS νq P w j H, hc L,
-      hd L lam0 ka b bv Bf μG μS νq P w j H⟩
-  · obtain ⟨w0, hw0, hw0ne, hEq⟩ := hLow L lam0 ka b bv Bf μG μS νq P w ⟨h1, h2, h3, h4, h5, h6, h7, h8, h9⟩ h10 h11
-    have H : CloudNodeShape D Ch Cg L lam0 ka b bv Bf μG μS νq P w0 0 := ⟨h1, h2, h3, h4, h5, h6, h7, h8, h9, hw0, hw0ne⟩
-    refine ⟨fun q hq1 hq2 => ?_, fun hl q a ha' => ?_, hc L, fun q hq1 hq2 => ⟨fun a => ⟨?_, ?_⟩, fun lam' hlam' => ?_⟩⟩
-    · exact (hEq (fun l => ENNReal.ofReal (l 0 ^ (2 * q)))
-        ((measurable_pi_apply _).pow_const _).ennreal_ofReal).trans_le
-        (ha L lam0 ka b bv Bf μG μS νq P w0 0 H q hq1 hq2)
-    · exact (hEq (fun l => ENNReal.ofReal ((l ⟨a + 1, by omega⟩ / l ⟨a, by omega⟩) ^ (2 * q)))
-        (((measurable_pi_apply (⟨a + 1, by omega⟩ : Fin (D.R.rS + 1))).div
-          (measurable_pi_apply (⟨a, by omega⟩ : Fin (D.R.rS + 1)))).pow_const _).ennreal_ofReal).trans_le
-        (hb L lam0 ka b bv Bf μG μS νq P w0 0 H hl q a ha')
-    · exact (hEq (fun l => ENNReal.ofReal (l a ^ (2 * q)))
-        ((measurable_pi_apply _).pow_const _).ennreal_ofReal).trans_le
-        ((hd L lam0 ka b bv Bf μG μS νq P w0 0 H q hq1 hq2).1 a).1
-    · exact (hEq (fun l => ENNReal.ofReal ((l a)⁻¹ ^ (2 * q)))
-        ((measurable_pi_apply _).inv.pow_const _).ennreal_ofReal).trans_le
-        ((hd L lam0 ka b bv Bf μG μS νq P w0 0 H q hq1 hq2).1 a).2
-    · have hS : MeasurableSet {l : Fin (D.R.rS + 1) → ℝ | ∃ a : Fin (D.R.rS + 1),
-          lam' * H1 D C2 b ka ≤ max (l a) (l a)⁻¹} := by
-        rw [Set.ofPred_exists]
-        exact MeasurableSet.iUnion fun a =>
-          measurableSet_le measurable_const ((measurable_pi_apply a).max (measurable_pi_apply a).inv)
-      exact (hEq (Set.indicator {l : Fin (D.R.rS + 1) → ℝ | ∃ a : Fin (D.R.rS + 1),
-          lam' * H1 D C2 b ka ≤ max (l a) (l a)⁻¹} 1) (measurable_one.indicator hS)).trans_le
-        ((hd L lam0 ka b bv Bf μG μS νq P w0 0 H q hq1 hq2).2 lam' hlam')
 
-theorem four_clauses_of_shell_bounds (D : D7) (Ch Cg Cq C1 C2 : ℝ) (h : SubmultiplicativeLocalNorm D Ch Cg Cq C1 C2) :
-    ShellMomentBound D Ch Cg Cq C1 C2 ∧ ShellEnergyBound D Ch Cg Cq C1 ∧ ShellTailBound D Ch Cg Cq C1 C2 := by
-  refine ⟨?_, ?_, ?_⟩
-  · intro L lam0 ka b bv Bf μG μS νq P w j ⟨h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11⟩
-    exact (h L lam0 ka b bv Bf μG μS νq P w j h1 h2 h3 h4 h5 h6 h7 h8 h9 (Or.inl h10) h11).1
-  · intro L lam0 ka b bv Bf μG μS νq P w j ⟨h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11⟩
-    exact (h L lam0 ka b bv Bf μG μS νq P w j h1 h2 h3 h4 h5 h6 h7 h8 h9 (Or.inl h10) h11).2.1
-  · intro L lam0 ka b bv Bf μG μS νq P w j ⟨h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11⟩
-    exact (h L lam0 ka b bv Bf μG μS νq P w j h1 h2 h3 h4 h5 h6 h7 h8 h9 (Or.inl h10) h11).2.2.2
 
 section Geometry
 
@@ -2327,28 +1750,7 @@ theorem shell_tail_bound_of_moment_energy (D : D7) (Ch Cg Cq C1 CardSubmodulesOf
       have : (0 : ℝ) ≤ D.R.rS := Nat.cast_nonneg _
       linarith
 
-theorem shell_moment_bound_mono_const (D : D7) (Ch Cg Cq C1 CardSubmodulesOfIndexLePow C2 : ℝ) (hCg : 1 ≤ Cg) (hC2 : CardSubmodulesOfIndexLePow ≤ C2)
-    (ha : ShellMomentBound D Ch Cg Cq C1 CardSubmodulesOfIndexLePow) : ShellMomentBound D Ch Cg Cq C1 C2 := by
-  intro L lam0 ka b bv Bf μG μS νq P w j hH q hq hj
-  refine (ha L lam0 ka b bv Bf μG μS νq P w j hH q hq hj).trans ?_
-  obtain ⟨hn2, hnb, hbvb, hka, -, -⟩ := sizes D Ch Cg hCg L lam0 ka b bv hH.1 hH.2.1 hH.2.2.1
-  apply ENNReal.ofReal_le_ofReal
-  have hb1 : (1:ℝ) ≤ b := by linarith
-  have hk : 0 ≤ (1 + 1 / ka) ^ (2 * D.R.rS + 2) := pow_nonneg (by have := one_div_pos.mpr hka; linarith) _
-  have hH0 : 0 ≤ H1 D CardSubmodulesOfIndexLePow b ka := mul_nonneg (Real.rpow_nonneg (by linarith) _) hk
-  apply pow_le_pow_left₀ hH0
-  unfold H1
-  refine mul_le_mul_of_nonneg_right ?_ hk
-  apply Real.rpow_le_rpow_of_exponent_le hb1
-  exact mul_le_mul_of_nonneg_right hC2 (Nat.cast_nonneg _)
 
-theorem shell_bounds_of_moment_energy (D : D7) (Ch Cg Cq C1 CardSubmodulesOfIndexLePow C2 : ℝ) (hCg : 1 ≤ Cg) (hC1 : 1 ≤ C1) (constant_log_relation : 0 ≤ CardSubmodulesOfIndexLePow)
-    (hC2 : CardSubmodulesOfIndexLePow + (Real.logb 2 C1 + 4 + |Ch|) ≤ C2) (hSm : ShellSmooth D) (hMe : PhMeas D) (hLow : LowestKTypeRightInvariant D Ch Cg)
-    (ha : ShellMomentBound D Ch Cg Cq C1 CardSubmodulesOfIndexLePow) (hb : ShellEnergyBound D Ch Cg Cq C1) : SubmultiplicativeLocalNorm D Ch Cg Cq C1 C2 := by
-  have hlog : 0 ≤ Real.logb 2 C1 := Real.logb_nonneg one_lt_two hC1
-  have hC2' : CardSubmodulesOfIndexLePow ≤ C2 := by have := abs_nonneg Ch; linarith
-  exact shell_bounds_of_four_clauses D Ch Cg Cq C1 C2 hLow (shell_moment_bound_mono_const D Ch Cg Cq C1 CardSubmodulesOfIndexLePow C2 hCg hC2' ha) hb
-    (majorant_ge_lowest_coordinate_sq D) (shell_tail_bound_of_moment_energy D Ch Cg Cq C1 CardSubmodulesOfIndexLePow C2 hCg hC1 constant_log_relation hC2 hSm hMe ha hb)
 
 def ShellEnergyOneStep (D : D7) (Ch Cg Cq Cs : ℝ) : Prop :=
   ∀ (L : LocBessel D.R.k D.R.rS) (lam0 : Fin (2 * D.R.rS + D.R.k + 1) → ℝ) (ka b bv : ℝ) (Bf : L.Hs → L.Wp)
@@ -2367,127 +1769,6 @@ theorem ofReal_norm_sq {E : Type*} [NormedAddCommGroup E] (a : E) :
     ENNReal.ofReal (‖a‖ ^ 2) = (‖a‖₊ : ENNReal) ^ 2 := by
   rw [ENNReal.ofReal_pow (norm_nonneg _), ← coe_nnnorm, ENNReal.ofReal_coe_nnreal]
 
-theorem shell_energy_bound_of_one_step (D : D7) (Ch Cg Cq Cs C1 : ℝ) (hCg : 1 ≤ Cg) (hCs : 0 ≤ Cs) (hC1 : 2 * Cs ≤ C1)
-    (hSm : ShellSmooth D) (hMe : PhMeas D) (hst : ShellEnergyOneStep D Ch Cg Cq Cs) : ShellEnergyBound D Ch Cg Cq C1 := by
-  intro L lam0 ka b bv Bf μG μS νq P w j H hl q a ha
-  obtain ⟨hLoc, hbv, hShape, hBes, hG, hS, hQ, hnorm, hCay, hw, hw0⟩ := id H
-  obtain ⟨hn2, hnbv, hbvb, hka, hkinv, hT⟩ := sizes D Ch Cg hCg L lam0 ka b bv hLoc hbv hShape
-  obtain ⟨ι, hι, Eop, hE1, hE2, hE3⟩ :=
-    hst L lam0 ka b bv Bf μG μS νq P ⟨hLoc, hbv, hShape, hBes, hG, hS, hQ, hnorm, hCay⟩ hl
-  have hconc := quot_conc L.z μG μS νq hG hS hQ
-  have hae : ∀ᵐ x ∂νq, Matrix.of x ∈ UH (Hpk D.R.k D.R.rS) := by
-    rw [ae_iff]; exact hconc
-  set n : ℝ := ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) with hn
-  have hb0 : 0 ≤ b := by linarith
-  let UHs : Set (Mt D.R.k D.R.rS) := {x | Matrix.of x ∈ UH (Hpk D.R.k D.R.rS)}
-  let W := {v : L.Hs // ∃ j, v ∈ shell L P j}
-  let Eop' : ι → W → W := fun i v => ⟨Eop i v.1, v.2.choose + 2, hE1 i _ v.1 v.2.choose_spec⟩
-  let f : L.Hs → Mt D.R.k D.R.rS → ℝ := fun v => Set.indicator UHs (fun x => ‖Bf (L.σ (Matrix.of x) v)‖)
-  let Ph : W → Mt D.R.k D.R.rS → ENNReal := fun v x => ENNReal.ofReal ((f v.1 x) ^ 2)
-  let rat : Mt D.R.k D.R.rS → ℝ := fun x =>
-    la D L ⟨a + 1, by omega⟩ (Matrix.of x) / la D L ⟨a, by omega⟩ (Matrix.of x)
-  let κ : Mt D.R.k D.R.rS → ENNReal := fun x => ENNReal.ofReal ((ka * rat x) ^ 2)
-  let Nw : W → ENNReal := fun v => ENNReal.ofReal (‖v.1‖ ^ 2)
-  let Fil : ℕ → Set W := fun j => {v | v.1 ∈ shell L P j}
-  let c : ℕ → ENNReal := fun j => ENNReal.ofReal ((Cs * n ^ 2 * (b + j)) ^ 2)
-  have hsmooth : ∀ v : W, v.1 ∈ smoothVecs (k := D.R.k) (r := D.R.rS) L.σ := fun v =>
-    hSm L P _ hCay v.1 v.2.choose_spec
-  have hfin : ∀ (v : L.Hs) x, x ∈ UHs → f v x = ‖Bf (L.σ (Matrix.of x) v)‖ := fun v x hx =>
-    Set.indicator_of_mem hx _
-  have hfout : ∀ (v : L.Hs) x, x ∉ UHs → f v x = 0 := fun v x hx => Set.indicator_of_notMem hx _
-  have h1 : ∀ v, Measurable (Ph v) := fun v => ((hMe L Bf v.1 hBes (hsmooth v)).pow_const 2).ennreal_ofReal
-  have h2 : ∀ v, ∫⁻ x, Ph v x ∂νq = Nw v := by
-    intro v
-    have e := hnorm v.1 (hsmooth v)
-    show ∫⁻ x, Ph v x ∂νq = ENNReal.ofReal (‖v.1‖ ^ 2)
-    rw [ofReal_norm_sq, ← e]
-    refine lintegral_congr_ae ?_
-    filter_upwards [hae] with x hx
-    show ENNReal.ofReal ((f v.1 x) ^ 2) = _
-    rw [hfin v.1 x hx, ofReal_norm_sq]
-  have h3 : ∀ v x, κ x * Ph v x ≤ ∑ i, Ph (Eop' i v) x := by
-    intro v x
-    by_cases hx : x ∈ UHs
-    · show ENNReal.ofReal ((ka * rat x) ^ 2) * ENNReal.ofReal ((f v.1 x) ^ 2) ≤
-        ∑ i, ENNReal.ofReal ((f (Eop i v.1) x) ^ 2)
-      rw [← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_sum_of_nonneg (fun i _ => by positivity)]
-      apply ENNReal.ofReal_le_ofReal
-      rw [hfin v.1 x hx]
-      simp only [hfin _ x hx]
-      have := hE3 a ha _ v.1 v.2.choose_spec (Matrix.of x) hx
-      rw [mul_div_assoc] at this
-      exact this
-    · show ENNReal.ofReal ((ka * rat x) ^ 2) * ENNReal.ofReal ((f v.1 x) ^ 2) ≤ _
-      rw [hfout v.1 x hx]
-      simp
-  have h4 : ∀ i j v, v ∈ Fil j → Eop' i v ∈ Fil (j + 2) := fun i j v hv => hE1 i j v.1 hv
-  have h5 : ∀ j v, v ∈ Fil j → ∑ i, Nw (Eop' i v) ≤ c j * Nw v := by
-    intro j v hv
-    show ∑ i, ENNReal.ofReal (‖Eop i v.1‖ ^ 2) ≤
-      ENNReal.ofReal ((Cs * n ^ 2 * (b + j)) ^ 2) * ENNReal.ofReal (‖v.1‖ ^ 2)
-    rw [← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_sum_of_nonneg (fun i _ => by positivity)]
-    exact ENNReal.ofReal_le_ofReal (hE2 j v.1 hv)
-  have core := Formalism.HermitianLatticeCounting.Final.ExpansionTerms.abstract_iteration_theorem (Mt D.R.k D.R.rS) W ι νq Eop' Ph κ Nw Fil c h1 h2 h3 h4 h5 q j
-    ⟨w, j, hw⟩ hw
-
-  have hwpos : 0 < ‖w‖ ^ 2 := by positivity
-  have hN0 : ENNReal.ofReal (‖w‖ ^ 2) ≠ 0 := (ENNReal.ofReal_pos.mpr hwpos).ne'
-  have hNt : ENNReal.ofReal (‖w‖ ^ 2) ≠ ⊤ := ENNReal.ofReal_ne_top
-  have hkq : 0 < ka ^ (2 * q) := by positivity
-  have hA0 : ENNReal.ofReal (ka ^ (2 * q)) ≠ 0 := (ENNReal.ofReal_pos.mpr hkq).ne'
-  have hAt : ENNReal.ofReal (ka ^ (2 * q)) ≠ ⊤ := ENNReal.ofReal_ne_top
-  have hI : ENNReal.ofReal (ka ^ (2 * q)) *
-      ∫⁻ x, ENNReal.ofReal (rat x ^ (2 * q)) * (‖Bf (L.σ (Matrix.of x) w)‖₊ : ENNReal) ^ 2 ∂νq =
-      ∫⁻ x, κ x ^ q * Ph ⟨w, j, hw⟩ x ∂νq := by
-    rw [← lintegral_const_mul' _ _ hAt]
-    refine lintegral_congr_ae ?_
-    filter_upwards [hae] with x hx
-    show _ = ENNReal.ofReal ((ka * rat x) ^ 2) ^ q * ENNReal.ofReal ((f w x) ^ 2)
-    rw [hfin w x hx, ofReal_norm_sq, ← ENNReal.ofReal_pow (by positivity), ← mul_assoc,
-      ← ENNReal.ofReal_mul hkq.le]
-    congr 2
-    rw [← pow_mul, mul_pow]
-  have hprod : (∏ i ∈ Finset.range q, c (j + 2 * i)) ≤ ENNReal.ofReal ((C1 * n ^ 2 * (b + j + q)) ^ (2 * q)) := by
-    show (∏ i ∈ Finset.range q, ENNReal.ofReal ((Cs * n ^ 2 * (b + ((j + 2 * i : ℕ) : ℝ))) ^ 2)) ≤ _
-    rw [← ENNReal.ofReal_prod_of_nonneg (fun i _ => by positivity)]
-    apply ENNReal.ofReal_le_ofReal
-    calc ∏ i ∈ Finset.range q, (Cs * n ^ 2 * (b + ((j + 2 * i : ℕ) : ℝ))) ^ 2
-        ≤ ∏ _i ∈ Finset.range q, (C1 * n ^ 2 * (b + j + q)) ^ 2 := by
-          refine Finset.prod_le_prod (fun i _ => by positivity) fun i hi => ?_
-          have hiq : (i : ℝ) ≤ q := by exact_mod_cast (Finset.mem_range.mp hi).le
-          apply pow_le_pow_left₀ (by positivity)
-          have hn0 : 0 ≤ n ^ 2 := by positivity
-          have hj0 : (0 : ℝ) ≤ j := Nat.cast_nonneg _
-          have hq0 : (0 : ℝ) ≤ q := Nat.cast_nonneg _
-          push_cast
-          calc Cs * n ^ 2 * (b + (j + 2 * i)) ≤ Cs * n ^ 2 * (2 * (b + j + q)) := by
-                apply mul_le_mul_of_nonneg_left _ (by positivity); linarith
-            _ = 2 * Cs * n ^ 2 * (b + j + q) := by ring
-            _ ≤ C1 * n ^ 2 * (b + j + q) := by
-                apply mul_le_mul_of_nonneg_right _ (by positivity)
-                exact mul_le_mul_of_nonneg_right hC1 hn0
-      _ = (C1 * n ^ 2 * (b + j + q)) ^ (2 * q) := by
-          rw [Finset.prod_const, Finset.card_range, ← pow_mul]
-  have hI2 : ∫⁻ x, ENNReal.ofReal (rat x ^ (2 * q)) * (‖Bf (L.σ (Matrix.of x) w)‖₊ : ENNReal) ^ 2 ∂νq ≤
-      (ENNReal.ofReal (ka ^ (2 * q)))⁻¹ *
-        (ENNReal.ofReal ((C1 * n ^ 2 * (b + j + q)) ^ (2 * q)) * ENNReal.ofReal (‖w‖ ^ 2)) := by
-    rw [← ENNReal.mul_le_iff_le_inv hA0 hAt, hI]
-    exact le_trans core (mul_le_mul_left hprod _)
-  show (ENNReal.ofReal (‖w‖ ^ 2))⁻¹ *
-      ∫⁻ x, ENNReal.ofReal (rat x ^ (2 * q)) * (‖Bf (L.σ (Matrix.of x) w)‖₊ : ENNReal) ^ 2 ∂νq ≤ _
-  calc (ENNReal.ofReal (‖w‖ ^ 2))⁻¹ *
-      ∫⁻ x, ENNReal.ofReal (rat x ^ (2 * q)) * (‖Bf (L.σ (Matrix.of x) w)‖₊ : ENNReal) ^ 2 ∂νq
-      ≤ (ENNReal.ofReal (‖w‖ ^ 2))⁻¹ * ((ENNReal.ofReal (ka ^ (2 * q)))⁻¹ *
-        (ENNReal.ofReal ((C1 * n ^ 2 * (b + j + q)) ^ (2 * q)) * ENNReal.ofReal (‖w‖ ^ 2))) :=
-        mul_le_mul_right hI2 _
-    _ = (ENNReal.ofReal (ka ^ (2 * q)))⁻¹ * ENNReal.ofReal ((C1 * n ^ 2 * (b + j + q)) ^ (2 * q)) *
-        ((ENNReal.ofReal (‖w‖ ^ 2))⁻¹ * ENNReal.ofReal (‖w‖ ^ 2)) := by ring
-    _ = (ENNReal.ofReal (ka ^ (2 * q)))⁻¹ * ENNReal.ofReal ((C1 * n ^ 2 * (b + j + q)) ^ (2 * q)) := by
-        rw [ENNReal.inv_mul_cancel hN0 hNt, mul_one]
-    _ = ENNReal.ofReal ((C1 * n ^ 2 * (b + j + q) / ka) ^ (2 * q)) := by
-        rw [← ENNReal.ofReal_inv_of_pos hkq, ← ENNReal.ofReal_mul (inv_pos.mpr hkq).le, div_pow]
-        congr 1
-        rw [div_eq_mul_inv, mul_comm]
 
 def shellMomentSupremum (D : D7) (Ch Cg : ℝ) (lam0 : Fin (2 * D.R.rS + D.R.k + 1) → ℝ) (u : Fin D.R.k → ℝ) (ka b bv : ℝ) (q : ℕ)
     (μ : Fin (2 * D.R.rS + D.R.k + 1) → ℝ) (j : ℕ) : ENNReal :=
@@ -2508,122 +1789,12 @@ def parAfter {n : ℕ} (μ : Fin n → ℝ) : List (Fin n) → (Fin n → ℝ)
   | [] => μ
   | s :: l => parAfter μ l - Pi.single s 1
 
-theorem l1_distance_after_shifts_le {n : ℕ} (μ lam0 : Fin n → ℝ) (l : List (Fin n)) :
-    l1 (parAfter μ l) lam0 ≤ l1 μ lam0 + l.length := by
-  induction l with
-  | nil => simp [parAfter]
-  | cons s l ih =>
-    have h : l1 (parAfter μ l - Pi.single s 1) lam0 ≤ l1 (parAfter μ l) lam0 + 1 := by
-      unfold l1
-      have h1 : ∑ a, |(Pi.single s (1 : ℝ) : Fin n → ℝ) a| = 1 := by
-        simp [Pi.single_apply, apply_ite abs]
-      calc ∑ a, |(parAfter μ l - Pi.single s 1 : Fin n → ℝ) a - lam0 a|
-          ≤ ∑ a, (|parAfter μ l a - lam0 a| + |(Pi.single s (1 : ℝ) : Fin n → ℝ) a|) := by
-            refine Finset.sum_le_sum fun a _ => ?_
-            have : (parAfter μ l - Pi.single s 1 : Fin n → ℝ) a - lam0 a =
-                (parAfter μ l a - lam0 a) - (Pi.single s (1 : ℝ) : Fin n → ℝ) a := by
-              simp only [Pi.sub_apply]; ring
-            rw [this]
-            exact abs_sub _ _
-        _ = ∑ a, |parAfter μ l a - lam0 a| + 1 := by rw [Finset.sum_add_distrib, h1]
-    simp only [parAfter, List.length_cons]
-    push_cast
-    linarith
 
-theorem shell_moment_bound_of_one_step (D : D7) (Ch Cg Cq C1 C2 : ℝ) (hSm : ShellSmooth D) (hst : ShellMomentOneStep D Ch Cg Cq C1 C2) :
-    ShellMomentBound D Ch Cg Cq C1 C2 := by
-  intro L lam0 ka b bv Bf μG μS νq P w j H q hq1 hq2
-  have hε : L.ε = epsSH D.R := H.1.2.1
-  have core := Formalism.HermitianLatticeCounting.Final.ExpansionTerms.mass_inequality_iteration (List (Fin (2 * D.R.rS + D.R.k + 1))) (Fin (2 * D.R.rS + D.R.k + 1))
-    (fun l s => s :: l) List.length
-    (fun q' l j' => shellMomentSupremum D Ch Cg lam0 L.u ka b bv q' (parAfter L.lam l) j')
-    (ENNReal.ofReal (H1 D C2 b ka ^ 2)) q (j + 2 * q)
-    (fun l s => by simp)
-    (by
-      intro l j'
-      refine iSup_le fun L' => iSup_le fun Bf' => iSup_le fun μG' => iSup_le fun μS' => iSup_le fun νq' =>
-        iSup_le fun P' => iSup_le fun w' => iSup_le fun h' => ?_
-      obtain ⟨_, _, H'⟩ := h'
-      obtain ⟨_, _, _, _, _, _, _, hnorm', hCay', hw', hw0'⟩ := H'
-      have e := hnorm' w' (hSm L' P' j' hCay' w' hw')
-      have e' : ∫⁻ x, (‖Bf' (L'.σ (Matrix.of x) w')‖₊ : ENNReal) ^ 2 ∂νq' = (‖w'‖₊ : ENNReal) ^ 2 := e
-      unfold Emom
-      simp only [mul_zero, pow_zero, ENNReal.ofReal_one, one_mul]
-      rw [e', ofReal_norm_sq]
-      exact ENNReal.inv_mul_le_one _)
-    (by
-      intro q' l j' hl hj'
-      refine hst lam0 L.u ka b bv q' (parAfter L.lam l) j' ?_ ?_
-      · have h1 := l1_distance_after_shifts_le L.lam lam0 l
-        have h2 : ((l.length : ℝ) + 1) ≤ q := by exact_mod_cast hl
-        rw [← hε]
-        linarith
-      · have h2 : ((j' : ℝ) + 2) ≤ (j : ℝ) + 2 * q := by exact_mod_cast hj'
-        linarith)
-    q [] j (by simp) le_rfl
-  have hle : Emom L Bf νq w (fun g => ENNReal.ofReal (la D L 0 g ^ (2 * q))) ≤
-      shellMomentSupremum D Ch Cg lam0 L.u ka b bv q (parAfter L.lam []) j := by
-    unfold shellMomentSupremum
-    exact le_iSup_of_le L <| le_iSup_of_le Bf <| le_iSup_of_le μG <| le_iSup_of_le μS <| le_iSup_of_le νq <|
-      le_iSup_of_le P <| le_iSup_of_le w <| le_iSup_of_le ⟨rfl, rfl, H⟩ le_rfl
-  refine le_trans hle (le_trans core (le_of_eq ?_))
-  rw [← ENNReal.ofReal_pow (by positivity), ← pow_mul]
 
-theorem shell_bounds_of_one_steps (D : D7) (Ch Cg Cq Cs C1 CardSubmodulesOfIndexLePow C2 : ℝ) (hCg : 1 ≤ Cg) (hCs : 0 ≤ Cs) (hC1 : 1 ≤ C1)
-    (twice_smooth_le_first : 2 * Cs ≤ C1) (constant_log_relation : 0 ≤ CardSubmodulesOfIndexLePow) (hC2 : CardSubmodulesOfIndexLePow + (Real.logb 2 C1 + 4 + |Ch|) ≤ C2) (hSm : ShellSmooth D)
-    (hMe : PhMeas D) (hLow : LowestKTypeRightInvariant D Ch Cg) (hsa : ShellMomentOneStep D Ch Cg Cq C1 CardSubmodulesOfIndexLePow) (hsb : ShellEnergyOneStep D Ch Cg Cq Cs) :
-    SubmultiplicativeLocalNorm D Ch Cg Cq C1 C2 := by
-  exact shell_bounds_of_moment_energy D Ch Cg Cq C1 CardSubmodulesOfIndexLePow C2 hCg hC1 constant_log_relation hC2 hSm hMe hLow
-    (shell_moment_bound_of_one_step D Ch Cg Cq C1 CardSubmodulesOfIndexLePow hSm hsa) (shell_energy_bound_of_one_step D Ch Cg Cq Cs C1 hCg hCs twice_smooth_le_first hSm hMe hsb)
 
-theorem shell_moment_bound_anti_const (D : D7) (Ch Cg Cq C1 C1' C2 : ℝ) (hCg : 1 ≤ Cg) (h0 : 0 < C1) (h : C1 ≤ C1')
-    (ha : ShellMomentBound D Ch Cg Cq C1 C2) : ShellMomentBound D Ch Cg Cq C1' C2 := by
-  intro L lam0 ka b bv Bf μG μS νq P w j hH q hq hj
-  apply ha L lam0 ka b bv Bf μG μS νq P w j hH q hq
-  obtain ⟨hn2, hnb, hbvb, hka, -, -⟩ := sizes D Ch Cg hCg L lam0 ka b bv hH.1 hH.2.1 hH.2.2.1
-  refine le_trans hj ?_
-  have hn : (0:ℝ) < ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) ^ 2 := by positivity
-  apply div_le_div_of_nonneg_left (by linarith) (mul_pos h0 hn)
-  exact mul_le_mul_of_nonneg_right h hn.le
 
-theorem shell_tail_bound_anti_const (D : D7) (Ch Cg Cq C1 C1' C2 : ℝ) (hCg : 1 ≤ Cg) (h0 : 0 < C1) (h : C1 ≤ C1')
-    (hd : ShellTailBound D Ch Cg Cq C1 C2) : ShellTailBound D Ch Cg Cq C1' C2 := by
-  intro L lam0 ka b bv Bf μG μS νq P w j hH q hq hj
-  apply hd L lam0 ka b bv Bf μG μS νq P w j hH q hq
-  obtain ⟨hn2, hnb, hbvb, hka, -, -⟩ := sizes D Ch Cg hCg L lam0 ka b bv hH.1 hH.2.1 hH.2.2.1
-  refine le_trans hj ?_
-  have hn : (0:ℝ) < ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) ^ 4 := by positivity
-  apply div_le_div_of_nonneg_left (by linarith) (mul_pos h0 hn)
-  exact mul_le_mul_of_nonneg_right h hn.le
 
-theorem shell_energy_bound_mono_const (D : D7) (Ch Cg Cq C1 C1' : ℝ) (hCg : 1 ≤ Cg) (h0 : 0 ≤ C1) (h : C1 ≤ C1')
-    (hb : ShellEnergyBound D Ch Cg Cq C1) : ShellEnergyBound D Ch Cg Cq C1' := by
-  intro L lam0 ka b bv Bf μG μS νq P w j hH hl q a ha
-  refine (hb L lam0 ka b bv Bf μG μS νq P w j hH hl q a ha).trans ?_
-  obtain ⟨hn2, hnb, hbvb, hka, -, -⟩ := sizes D Ch Cg hCg L lam0 ka b bv hH.1 hH.2.1 hH.2.2.1
-  apply ENNReal.ofReal_le_ofReal
-  have hn0 : (0:ℝ) ≤ ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) ^ 2 := sq_nonneg _
-  have hbj : (0:ℝ) ≤ b + j + q := by
-    have := Nat.cast_nonneg (α := ℝ) j
-    have := Nat.cast_nonneg (α := ℝ) q
-    linarith
-  apply pow_le_pow_left₀
-  · exact div_nonneg (mul_nonneg (mul_nonneg h0 hn0) hbj) hka.le
-  · apply div_le_div_of_nonneg_right _ hka.le
-    exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right h hn0) hbj
 
-theorem shell_bounds_uniform_in_constant (D : D7) (Ch Cg Cq C1₀ CardSubmodulesOfIndexLePow C2 : ℝ) (hCg : 1 ≤ Cg) (hC1 : 1 ≤ C1₀) (constant_log_relation : 0 ≤ CardSubmodulesOfIndexLePow)
-    (hC2 : CardSubmodulesOfIndexLePow + (Real.logb 2 C1₀ + 4 + |Ch|) ≤ C2) (hSm : ShellSmooth D) (hMe : PhMeas D) (hLow : LowestKTypeRightInvariant D Ch Cg)
-    (ha : ShellMomentBound D Ch Cg Cq C1₀ CardSubmodulesOfIndexLePow) (hb : ShellEnergyBound D Ch Cg Cq C1₀) : ∀ C1 ≥ C1₀, SubmultiplicativeLocalNorm D Ch Cg Cq C1 C2 := by
-  intro C1 hC1ge
-  have hlog : 0 ≤ Real.logb 2 C1₀ := Real.logb_nonneg one_lt_two hC1
-  have hC2' : CardSubmodulesOfIndexLePow ≤ C2 := by have := abs_nonneg Ch; linarith
-  have h0 : 0 < C1₀ := by linarith
-  exact shell_bounds_of_four_clauses D Ch Cg Cq C1 C2 hLow
-    (shell_moment_bound_anti_const D Ch Cg Cq C1₀ C1 C2 hCg h0 hC1ge (shell_moment_bound_mono_const D Ch Cg Cq C1₀ CardSubmodulesOfIndexLePow C2 hCg hC2' ha))
-    (shell_energy_bound_mono_const D Ch Cg Cq C1₀ C1 hCg h0.le hC1ge hb) (majorant_ge_lowest_coordinate_sq D)
-    (shell_tail_bound_anti_const D Ch Cg Cq C1₀ C1 C2 hCg h0 hC1ge
-      (shell_tail_bound_of_moment_energy D Ch Cg Cq C1₀ CardSubmodulesOfIndexLePow C2 hCg hC1 constant_log_relation hC2 hSm hMe ha hb))
 
 theorem stepConst_le (b ka T n Ch CA CQ C2 : ℝ) (r : ℕ) (hb : 2 ≤ b) (hn1 : 1 ≤ n) (hn : n ≤ b) (hka : 0 < ka)
     (hkab : ka ≤ b ^ Ch) (hT0 : 0 ≤ T) (hT : T ≤ b ^ (Ch * ((2 * r + 2 : ℕ) : ℝ))) (hCA : 0 ≤ CA) (hCQ : 1 ≤ CQ)
@@ -2751,23 +1922,6 @@ structure BesselShellOpenHypotheses (D : D7) (Ch Aw Cu Cg Cq Cg' C1 CardSubmodul
   shellMomentStep : ShellMomentOneStep D Ch Cg Cq C1 CardSubmodulesOfIndexLePow
   shellEnergyOneStep : ShellEnergyOneStep D Ch Cg Cq Cs
 
-theorem bessel_shell_statement_of_open (D : D7) (Ch Aw Cu Cg Cq Cg' C1 CardSubmodulesOfIndexLePow C2 Cs Cb Cgf Cf : ℝ) (A : ℕ) (hCg : 2 ≤ Cg) (hCs : 0 ≤ Cs)
-    (hC1 : 1 ≤ C1) (twice_smooth_le_first : 2 * Cs ≤ C1) (constant_log_relation : 0 ≤ CardSubmodulesOfIndexLePow) (hC2 : CardSubmodulesOfIndexLePow + (Real.logb 2 C1 + 4 + |Ch|) ≤ C2)
-    (h : BesselShellOpenHypotheses D Ch Aw Cu Cg Cq Cg' C1 CardSubmodulesOfIndexLePow Cs Cb Cgf Cf A) : aux₃ D Ch Aw Cu Cg Cq Cg' C1 C2 Cb 64 Cgf Cf := by
-  have hCg1 : 1 ≤ Cg := by linarith
-  have e : Cb - 6 + 6 = Cb := by ring
-  have h92x := bessel_expansion_of_near h.conjugateExpansionNearLambda
-  have h92e := expansion_of_all_cell_expansion D Ch Cg Cq Cb h92x
-  refine ⟨h.bp, ?_, theorem_B_second_bound_64 D, ?_, h.p90, h.p91,
-    expansion_norm_bound_of_expansion D Ch Cg Cq Cb hCg1 h.jMeas h.exFam h92e, h92e, h.ubp, ?_,
-    shell_bounds_of_one_steps D Ch Cg Cq Cs C1 CardSubmodulesOfIndexLePow C2 hCg1 hCs hC1 twice_smooth_le_first constant_log_relation hC2 h.shell h.phMeas h.lowK h.shellMomentStep h.shellEnergyOneStep,
-    theorem_B_first_assertions D, h.fr, h92x, h.p90d, h.p90P, h.p92c, conjugate_expansion_near_param D Ch Cg Cq Cb h.conjugateExpansionNearLambda, h.conjugateExpansionNearLambda⟩
-  · have := theorem_B_first_bound_one_place hCg h.one1
-    rwa [e] at this
-  · have := theorem_B_weighted_bound_one_place hCg h.one3
-    rwa [e] at this
-  · have := theorem_B_uniform_bound_one_place hCg h.oneUnitaryFirstPlace h.oneUnitaryThirdPlace
-    rwa [e] at this
 
 end Formalism.MainNotions.BesselShellMomentBounds
 

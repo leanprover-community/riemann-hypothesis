@@ -56,12 +56,6 @@ theorem exists_coord_tens (F E : Type) [Field F] [NumberField F] [IsTotallyReal 
   show e1 (e0 (x + y)) = e1 (e0 x) + e1 (e0 y)
   rw [show e0 (x + y) = e0 x + e0 y from eL.map_add x y, h1]
 
-theorem exists_coord_tup (F E : Type) [Field F] [NumberField F] [IsTotallyReal F] [Field E]
-    [NumberField E] [Algebra F E] (n M : ℕ) :
-    ∃ (N : ℕ) (e : (Fin n → Fin M → Ainf F ⊗[F] E) ≃ₜ (Fin N → ℝ)), ∀ x y, e (x + y) = e x + e y := by
-  obtain ⟨k, eK, hK⟩ := exists_coord_tens F E
-  obtain ⟨k1, e1, h1⟩ := exists_coord_pi eK hK (Fin M)
-  exact exists_coord_pi e1 h1 (Fin n)
 
 section Zero
 

@@ -108,7 +108,6 @@ instance Rp.torsionFreeOp : Module.IsTorsionFree (Op X la N) (Rp X la N) where
 def bcV : X.Vl la →ₐ[X.Kl la] Rp X la N :=
   (Algebra.TensorProduct.includeRight : X.Vl la →ₐ[X.Kl la] Kp X la N ⊗[X.Kl la] X.Vl la)
 
-theorem bcV_apply (v : X.Vl la) : bcV X la N v = ((1 : Kp X la N) ⊗ₜ[X.Kl la] v : Kp X la N ⊗[X.Kl la] X.Vl la) := rfl
 
 theorem bcV_isBaseChange : IsBaseChange (Kp X la N) (bcV X la N).toLinearMap :=
   TensorProduct.isBaseChange (X.Kl la) (X.Vl la) (Kp X la N)
@@ -232,7 +231,6 @@ def Fil (u : WeightFamilies.Wt D j) (a : ℕ) : Submodule (Kp X la N) (Rp X la N
 theorem mem_Fil {u : WeightFamilies.Wt D j} {a : ℕ} {f : Rp X la N} : f ∈ Fil X la w u a ↔
     f ∈ Vw X la N u ∧ ∃ k, a ≤ k ∧ sec X la w 0 ^ k * f ∈ Mon X la w u a (k - a) := Iff.rfl
 
-theorem Fil_le_Vw (u : WeightFamilies.Wt D j) (a : ℕ) : Fil X la w u a ≤ Vw X la N u := fun _ h => h.1
 
 end
 

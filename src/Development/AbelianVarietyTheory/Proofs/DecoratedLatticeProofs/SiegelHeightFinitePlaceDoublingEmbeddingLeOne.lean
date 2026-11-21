@@ -1,8 +1,249 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IntegrandSZero
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsSingleMemLocalLatticeCompletion
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsBoundAbsLocalLatticeCompletionEntries
+import Development.AbelianVarietyTheory.Definitions.Foundations.T2SpaceAdeleRing
+import BuildAid.ForwardExisting
 
+section
+namespace GlobalTheory.LatticeIntegerMultiple
+
+open NumberField
+
+theorem exists_int_mul_mem {E : Type} [Field E] [NumberField E] (a : E) :
+    ∃ (m : ℤ) (b : RingOfIntegers E), m ≠ 0 ∧ algebraMap (RingOfIntegers E) E b = m • a := by
+  have hQ : IsAlgebraic ℚ a := Algebra.IsAlgebraic.isAlgebraic a
+  have hZ : IsAlgebraic ℤ a := (IsFractionRing.isAlgebraic_iff ℤ ℚ E).2 hQ
+  obtain ⟨m, hm, hi⟩ := hZ.exists_integral_multiple
+  exact ⟨m, ⟨m • a, hi⟩, hm, rfl⟩
+
+theorem exists_zsmul_mem_lattice {E : Type} [Field E] [NumberField E] {n : ℕ}
+    (L : Submodule (RingOfIntegers E) (Fin n → E)) [Submodule.IsLattice E L] (x : Fin n → E) :
+    ∃ (m : ℤ), m ≠ (0 : ℤ) ∧ m • x ∈ L := by
+  have hx : x ∈ Submodule.span E (L : Set (Fin n → E)) := by
+    rw [Submodule.IsLattice.span_eq_top (A := E)]
+    trivial
+  induction hx using Submodule.span_induction with
+  | mem y hy => exact ⟨1, one_ne_zero, by simpa using hy⟩
+  | zero => exact ⟨1, one_ne_zero, by simp⟩
+  | add y z _ _ hy hz =>
+    obtain ⟨m, hm, hy⟩ := hy
+    obtain ⟨k, hk, hz⟩ := hz
+    refine ⟨m * k, mul_ne_zero hm hk, ?_⟩
+    rw [smul_add]
+    refine L.add_mem ?_ ?_
+    · rw [mul_comm, mul_smul]; exact zsmul_mem hy k
+    · rw [mul_smul]; exact zsmul_mem hz m
+  | smul a y _ hy =>
+    obtain ⟨m, hm, hy⟩ := hy
+    obtain ⟨k, b, hk, hb⟩ := exists_int_mul_mem a
+    refine ⟨k * m, mul_ne_zero hk hm, ?_⟩
+    have h : (k * m) • a • y = b • (m • y) := by
+      rw [← algebraMap_smul E b, hb, mul_smul, smul_comm m a y, smul_assoc]
+    rw [h]
+    exact L.smul_mem b hy
+
+end GlobalTheory.LatticeIntegerMultiple
+end
+
+section
+open scoped TensorProduct
+
+namespace GlobalTheory.LocalLatticeIntegral
+
+open NumberField
+
+theorem exists_int_mul_integral {E : Type} [Field E] [NumberField E] (e : E) :
+    ∃ M : ℤ, M ≠ 0 ∧ ∃ r : 𝓞 E, (r : E) = (M : E) * e := by
+  have h : IsAlgebraic ℤ e := (IsFractionRing.isAlgebraic_iff ℤ ℚ E).2 (Algebra.IsAlgebraic.isAlgebraic e)
+  obtain ⟨M, hM, hi⟩ := h.exists_integral_multiple
+  exact ⟨M, hM, ⟨M • e, hi⟩, by simp [zsmul_eq_mul]⟩
+
+theorem exists_int_smul_mem {E : Type} [Field E] [NumberField E] {n : ℕ} (L : Submodule (𝓞 E) (Fin n → E))
+    [hL : Submodule.IsLattice E L] (x : Fin n → E) : ∃ N : ℤ, N ≠ 0 ∧ N • x ∈ L := by
+  have hx : x ∈ Submodule.span E (L : Set (Fin n → E)) := by
+    rw [hL.span_eq_top]; exact Submodule.mem_top
+  induction hx using Submodule.span_induction with
+  | mem x hx => exact ⟨1, one_ne_zero, by simpa using hx⟩
+  | zero => exact ⟨1, one_ne_zero, by simp⟩
+  | add x y _ _ hx hy =>
+    obtain ⟨N, hN, h1⟩ := hx
+    obtain ⟨M, hM, h2⟩ := hy
+    refine ⟨N * M, mul_ne_zero hN hM, ?_⟩
+    rw [smul_add]
+    refine L.add_mem ?_ ?_
+    · rw [mul_comm, mul_smul]; exact L.toAddSubgroup.zsmul_mem h1 M
+    · rw [mul_smul]; exact L.toAddSubgroup.zsmul_mem h2 N
+  | smul e x _ hx =>
+    obtain ⟨N, hN, h1⟩ := hx
+    obtain ⟨M, hM, r, hr⟩ := exists_int_mul_integral e
+    refine ⟨M * N, mul_ne_zero hM hN, ?_⟩
+    have h2 := L.smul_mem r h1
+    convert h2 using 1
+    funext j
+    have : (r • N • x) j = (r : E) * ((N : E) * x j) := by
+      simp [Algebra.smul_def, zsmul_eq_mul]
+    rw [this, hr]
+    simp only [Pi.smul_apply, zsmul_eq_mul, smul_eq_mul, Int.cast_mul]
+    ring
+
+theorem exists_single_mem_latLoc : ∀ {F E : Type} [inst : Field F] [inst_1 : NumberField F] [inst_2 : Field E] [NumberField E] [inst_4 : Algebra F E] {n : ℕ} (L : Submodule (NumberField.RingOfIntegers E) (Fin n → E)) [Submodule.IsLattice E L] (v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F)), ∃ (c : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v), c ≠ (0 : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v) ∧ ∀ (i : Fin n), Pi.single i (c ⊗ₜ[F] (1 : E)) ∈ GlobalTheory.AdelicU.latLoc F L v := by
+  intro F E _ _ _ _ _ n L _ v
+  choose N hN hmem using fun i : Fin n => exists_int_smul_mem L (Pi.single i (1 : E))
+  have hP : (∏ i, N i) ≠ 0 := Finset.prod_ne_zero_iff.2 fun i _ => hN i
+  haveI : CharZero (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v) :=
+    charZero_of_injective_algebraMap (algebraMap F (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v)).injective
+  refine ⟨((∏ i, N i : ℤ) : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v), Int.cast_ne_zero.2 hP, fun i => ?_⟩
+  obtain ⟨k, hk⟩ : N i ∣ ∏ j, N j := Finset.dvd_prod_of_mem N (Finset.mem_univ i)
+  have h1 : (∏ j, N j) • (Pi.single i (1 : E) : Fin n → E) ∈ L := by
+    rw [hk, mul_comm, mul_smul]; exact L.toAddSubgroup.zsmul_mem (hmem i) k
+  generalize (∏ j, N j) = P at h1
+  refine AddSubgroup.subset_closure ⟨1, one_mem _, _, h1, ?_⟩
+  funext j
+  by_cases hj : j = i
+  · subst hj
+    rw [Pi.single_eq_same, Pi.smul_apply, Pi.single_eq_same, TensorProduct.tmul_smul, TensorProduct.smul_tmul',
+      zsmul_eq_mul, mul_one]
+  · rw [Pi.single_eq_of_ne hj, Pi.smul_apply, Pi.single_eq_of_ne hj, smul_zero, TensorProduct.tmul_zero]
+
+end GlobalTheory.LocalLatticeIntegral
+end
+
+section
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain GlobalTheory.AdelicU Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+
+namespace GlobalTheory.AdelicU
+
+theorem exists_zsmul_mem_of_isLattice {E : Type} [Field E] [NumberField E] {n : ℕ}
+    (L : Submodule (𝓞 E) (Fin n → E)) [Submodule.IsLattice E L] (x : Fin n → E) :
+    ∃ m : ℤ, m ≠ 0 ∧ m • x ∈ L := by
+  first
+  | exact @_root_.GlobalTheory.LatticeIntegerMultiple.exists_zsmul_mem_lattice
+  | exact _root_.GlobalTheory.LatticeIntegerMultiple.exists_zsmul_mem_lattice
+  | (apply _root_.GlobalTheory.LatticeIntegerMultiple.exists_zsmul_mem_lattice <;> assumption)
+  | (intros; apply _root_.GlobalTheory.LatticeIntegerMultiple.exists_zsmul_mem_lattice <;> assumption)
+  | (intros; apply @_root_.GlobalTheory.LatticeIntegerMultiple.exists_zsmul_mem_lattice <;> first | assumption | infer_instance)
+  | (intros; exact _root_.GlobalTheory.LatticeIntegerMultiple.exists_zsmul_mem_lattice ..)
+
+theorem exists_single_mem_latLoc {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+    {n : ℕ} (L : Submodule (𝓞 E) (Fin n → E)) [Submodule.IsLattice E L] (v : HeightOneSpectrum (𝓞 F)) :
+    ∃ c : Fv F v, c ≠ 0 ∧
+      ∀ i : Fin n, (Pi.single i (c ⊗ₜ[F] (1 : E)) : Fin n → Fv F v ⊗[F] E) ∈ latLoc F L v := by
+  first
+  | exact @_root_.GlobalTheory.LocalLatticeIntegral.exists_single_mem_latLoc
+  | exact _root_.GlobalTheory.LocalLatticeIntegral.exists_single_mem_latLoc
+  | (apply _root_.GlobalTheory.LocalLatticeIntegral.exists_single_mem_latLoc <;> assumption)
+  | (intros; apply _root_.GlobalTheory.LocalLatticeIntegral.exists_single_mem_latLoc <;> assumption)
+  | (intros; apply @_root_.GlobalTheory.LocalLatticeIntegral.exists_single_mem_latLoc <;> first | assumption | infer_instance)
+  | (intros; exact _root_.GlobalTheory.LocalLatticeIntegral.exists_single_mem_latLoc ..)
+
+end GlobalTheory.AdelicU
+end
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain GlobalTheory.AdelicU Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_single_mem_localLatticeCompletion : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ} (L : Submodule (𝓞 E) (Fin n → E)) [Submodule.IsLattice E L] (v : HeightOneSpectrum (𝓞 F)), ∃ c : Fv F v, c ≠ 0 ∧ ∀ i : Fin n, (Pi.single i (c ⊗ₜ[F] (1 : E)) : Fin n → Fv F v ⊗[F] E) ∈ latLoc F L v := by
+  atlas_forward_decl GlobalTheory.AdelicU.exists_single_mem_latLoc
+end
+
+section
+noncomputable section
+
+namespace GlobalTheory.LocalLatticeBound
+
+open scoped TensorProduct NNReal
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.AdelicU
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+
+theorem abs_zero_le (v : HeightOneSpectrum (𝓞 F)) (C : ℝ≥0) : absFin F v (0 : Fv F v ⊗[F] E) ≤ C :=
+  (absFin_le_iff F v).2 fun τ => by rw [map_zero, (absBar_eq_zero F v).2 rfl]; exact zero_le
+
+theorem abs_neg_le (v : HeightOneSpectrum (𝓞 F)) {C : ℝ≥0} {y : Fv F v ⊗[F] E} (h : absFin F v y ≤ C) :
+    absFin F v (-y) ≤ C :=
+  (absFin_le_iff F v).2 fun τ => by rw [map_neg, absBar_neg]; exact (le_absFin F v τ y).trans h
+
+theorem abs_int_mul_le (v : HeightOneSpectrum (𝓞 F)) {C : ℝ≥0} {c y : Fv F v ⊗[F] E} (hc : c ∈ intLoc F E v)
+    (h : absFin F v y ≤ C) : absFin F v (c * y) ≤ C :=
+  (absFin_mul_le F v c y).trans ((mul_le_mul' (absFin_le_one_of_mem_intLoc hc) h).trans_eq (one_mul C))
+
+theorem exists_bound_rat {n : ℕ} (L : Submodule (𝓞 E) (Fin n → E)) (hL : L.FG) (v : HeightOneSpectrum (𝓞 F)) :
+    ∃ C : ℝ≥0, ∀ x ∈ L, ∀ i, absFin F v ((1 : Fv F v) ⊗ₜ[F] x i) ≤ C := by
+  obtain ⟨S, rfl⟩ := hL
+  refine ⟨S.sup fun s => Finset.univ.sup fun i => absFin F v ((1 : Fv F v) ⊗ₜ[F] s i), fun x hx i => ?_⟩
+  induction hx using Submodule.span_induction with
+  | mem s hs =>
+    exact (Finset.le_sup (f := fun i => absFin F v ((1 : Fv F v) ⊗ₜ[F] s i)) (Finset.mem_univ i)).trans
+      (Finset.le_sup (f := fun s : Fin n → E => Finset.univ.sup fun i => absFin F v ((1 : Fv F v) ⊗ₜ[F] s i)) hs)
+  | zero => rw [Pi.zero_apply, TensorProduct.tmul_zero]; exact abs_zero_le v _
+  | add x y _ _ hx hy =>
+    rw [Pi.add_apply, TensorProduct.tmul_add]
+    exact (absFin_add_le F v _ _).trans (max_le hx hy)
+  | smul c x _ hx =>
+    have e : (1 : Fv F v) ⊗ₜ[F] (c • x) i = ((1 : Fv F v) ⊗ₜ[F] (c : E)) * ((1 : Fv F v) ⊗ₜ[F] x i) := by
+      rw [Algebra.TensorProduct.tmul_mul_tmul, one_mul]; rfl
+    rw [e]
+    exact abs_int_mul_le v (tmul_mem_intLoc (one_mem _) c) hx
+
+theorem exists_bound_latLoc {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
+    (L : Submodule (𝓞 E) (Fin n → E)) [Submodule.IsLattice E L] (v : HeightOneSpectrum (𝓞 F)) :
+    ∃ C : ℝ≥0, ∀ y ∈ latLoc F L v, ∀ i : Fin n, absFin F v (y i) ≤ C := by
+  obtain ⟨C, hC⟩ := exists_bound_rat L (Submodule.IsLattice.fg (A := E)) v
+  refine ⟨C, fun y hy i => ?_⟩
+  change y ∈ AddSubgroup.closure _ at hy
+  induction hy using AddSubgroup.closure_induction with
+  | mem y hy =>
+    obtain ⟨a, ha, x, hx, rfl⟩ := hy
+    have e : a ⊗ₜ[F] x i = (a ⊗ₜ[F] ((1 : 𝓞 E) : E)) * ((1 : Fv F v) ⊗ₜ[F] x i) := by
+      rw [Algebra.TensorProduct.tmul_mul_tmul, mul_one]; simp
+    change absFin F v (a ⊗ₜ[F] x i) ≤ C
+    rw [e]
+    exact abs_int_mul_le v (tmul_mem_intLoc ha 1) (hC x hx i)
+  | zero => exact abs_zero_le v C
+  | add y z _ _ hy hz => exact (absFin_add_le F v _ _).trans (max_le hy hz)
+  | neg y _ hy => exact abs_neg_le v hy
+
+end GlobalTheory.LocalLatticeBound
+
+end
+end
+
+section
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain GlobalTheory.AdelicU Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+
+namespace GlobalTheory
+
+theorem absFin_latLoc_le : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
+    (L : Submodule (𝓞 E) (Fin n → E)) [Submodule.IsLattice E L] (v : HeightOneSpectrum (𝓞 F)),
+    ∃ C : ℝ≥0, ∀ y ∈ latLoc F L v, ∀ i, absFin F v (y i) ≤ C := by
+  first
+  | (run_tac Lean.Elab.Tactic.liftMetaTactic (fun g => do pure [← g.revertAll])); exact @_root_.GlobalTheory.LocalLatticeBound.exists_bound_latLoc
+  | (run_tac Lean.Elab.Tactic.liftMetaTactic (fun g => do pure [← g.revertAll])); exact _root_.GlobalTheory.LocalLatticeBound.exists_bound_latLoc
+  | exact @_root_.GlobalTheory.LocalLatticeBound.exists_bound_latLoc
+  | exact _root_.GlobalTheory.LocalLatticeBound.exists_bound_latLoc
+  | (apply _root_.GlobalTheory.LocalLatticeBound.exists_bound_latLoc <;> assumption)
+  | (intros; apply _root_.GlobalTheory.LocalLatticeBound.exists_bound_latLoc <;> assumption)
+  | (intros; apply @_root_.GlobalTheory.LocalLatticeBound.exists_bound_latLoc <;> first | assumption | infer_instance)
+  | (intros; exact _root_.GlobalTheory.LocalLatticeBound.exists_bound_latLoc ..)
+
+example : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ} (L : Submodule (𝓞 E) (Fin n → E)) [Submodule.IsLattice E L] (v : HeightOneSpectrum (𝓞 F)), ∃ C : ℝ≥0, ∀ y ∈ latLoc F L v, ∀ i, absFin F v (y i) ≤ C := @absFin_latLoc_le
+
+end GlobalTheory
+end
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain GlobalTheory.AdelicU Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_bound_abs_localLatticeCompletion_entries : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ} (L : Submodule (𝓞 E) (Fin n → E)) [Submodule.IsLattice E L] (v : HeightOneSpectrum (𝓞 F)), ∃ C : ℝ≥0, ∀ y ∈ latLoc F L v, ∀ i, absFin F v (y i) ≤ C := by
+  atlas_forward_decl GlobalTheory.absFin_latLoc_le
+end
+
+section
 open scoped TensorProduct NNReal Matrix
 
 namespace GlobalTheory.Core.Rk.HgtFin
@@ -137,3 +378,4 @@ theorem hgtFin_ioAt_le_one : ∀ (D : D7) (A : HSp D) (L : Lat A), IsSelfDualC A
   exact GlobalTheory.Core.Rk.HgtFin.hgtFin_ioH_le_one (isCMExt_host D) (gram_hdbl A) L v y
 
 end GlobalTheory.Core.Rk.IP
+end

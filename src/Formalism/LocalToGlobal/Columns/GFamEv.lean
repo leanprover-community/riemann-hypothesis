@@ -21,9 +21,6 @@ def cls (F : GFam K) (p : F.Pt) : F.Cl := ⟨p.1, (F.mem p.1).cls p.2⟩
 
 def repPt (F : GFam K) (c : F.Cl) : F.Pt := ⟨c.1, F.rep c⟩
 
-theorem cls_repPt (F : GFam K) (c : F.Cl) : F.cls (F.repPt c) = c := by
-  obtain ⟨b, c⟩ := c
-  exact congrArg (Sigma.mk b) ((F.mem b).outSec.spec c)
 
 structure Ev (F : GFam K) (σ : K →+* ℂ) where
 
@@ -53,7 +50,6 @@ variable {F : GFam K} {σ : K →+* ℂ} (E : F.Ev σ)
 
 theorem mem_Y (b : F.β) : (E.mem b).Y = E.Y := rfl
 theorem mem_ev (b : F.β) : (E.mem b).ev = E.ev := rfl
-theorem mem_ip (b : F.β) : (E.mem b).ip = E.ip := rfl
 theorem mem_tr (b : F.β) : (E.mem b).tr = E.tr b := rfl
 
 @[reducible] def ofMem {b₀ : F.β} (E₀ : (F.mem b₀).Ev σ) (tr : ∀ b, F.G b →* ((E₀.Y → ℂ) ≃ₗ[ℂ] (E₀.Y → ℂ)))
@@ -88,15 +84,12 @@ def part (b : F.β) : (F.Cl → E.Y → ℂ) →ₗ[ℂ] ((F.mem b).Cl → E.Y �
 
 theorem part_apply (b : F.β) (Φ : F.Cl → E.Y → ℂ) (c : (F.mem b).Cl) : E.part b Φ c = Φ ⟨b, c⟩ := rfl
 
-theorem part_emb (b : F.β) (φ : F.Forms) : E.part b (E.emb φ) = (E.mem b).emb (φ b) := rfl
 
 def trPt (p : F.Pt) : (E.Y → ℂ) ≃ₗ[ℂ] (E.Y → ℂ) := E.tr p.1 ((F.mem p.1).outSec.mv p.2)
 
 def atPt (p : F.Pt) (Φ : F.Cl → E.Y → ℂ) : E.Y → ℂ := E.trPt p (Φ (F.cls p))
 
-theorem trPt_mem (b : F.β) (d : F.D b) : E.trPt ⟨b, d⟩ = (E.mem b).trPt d := rfl
 
-theorem atPt_mem (b : F.β) (d : F.D b) (Φ : F.Cl → E.Y → ℂ) : E.atPt ⟨b, d⟩ Φ = (E.mem b).atPt d (E.part b Φ) := rfl
 
 theorem atPt_emb (φ : F.Forms) (p : F.Pt) :
     E.atPt p (E.emb φ) = E.ev (((φ p.1 : (F.mem p.1).EqFun) : F.D p.1 → F.V) p.2) :=
@@ -111,8 +104,6 @@ def opOn (δ : F.Pt → F.Pt) : (F.Cl → E.Y → ℂ) →ₗ[ℂ] (F.Cl → E.Y
   map_add' Φ Ψ := by funext c; exact map_add (E.trPt _) _ _
   map_smul' a Φ := by funext c; exact map_smul (E.trPt _) _ _
 
-theorem opOn_apply (δ : F.Pt → F.Pt) (Φ : F.Cl → E.Y → ℂ) (c : F.Cl) :
-    E.opOn δ Φ c = E.trPt (δ (F.repPt c)) (Φ (F.cls (δ (F.repPt c)))) := rfl
 
 theorem opOn_emb (δ : F.Pt → F.Pt) (φ : F.Forms) (c : F.Cl) :
     E.opOn δ (E.emb φ) c =
@@ -146,25 +137,11 @@ theorem opOn_comp (hf : F.Free) (δ δ' : F.Pt → F.Pt)
 
 def opOnC (δ : ∀ b, F.D b → F.D b) : (F.Cl → E.Y → ℂ) →ₗ[ℂ] (F.Cl → E.Y → ℂ) := E.opOn fun p => ⟨p.1, δ p.1 p.2⟩
 
-theorem opOnC_mem (δ : ∀ b, F.D b → F.D b) (Φ : F.Cl → E.Y → ℂ) (b : F.β) (c : (F.mem b).Cl) :
-    E.opOnC δ Φ ⟨b, c⟩ = (E.mem b).opOn (δ b) (E.part b Φ) c := rfl
 
-theorem part_opOnC (δ : ∀ b, F.D b → F.D b) (Φ : F.Cl → E.Y → ℂ) (b : F.β) :
-    E.part b (E.opOnC δ Φ) = (E.mem b).opOn (δ b) (E.part b Φ) := rfl
 
-theorem opOnC_apply (δ : ∀ b, F.D b → F.D b) (Φ : F.Cl → E.Y → ℂ) (c : F.Cl) :
-    E.opOnC δ Φ c = E.trPt ⟨c.1, δ c.1 (F.rep c)⟩ (Φ ⟨c.1, (F.mem c.1).cls (δ c.1 (F.rep c))⟩) := rfl
 
-theorem opOnC_emb (δ : ∀ b, F.D b → F.D b) (φ : F.Forms) (c : F.Cl) :
-    E.opOnC δ (E.emb φ) c = E.ev (((φ c.1 : (F.mem c.1).EqFun) : F.D c.1 → F.V) (δ c.1 (F.rep c))) :=
-  E.atPt_emb φ ⟨c.1, δ c.1 (F.rep c)⟩
 
-theorem opOnC_id (hf : F.Free) : E.opOnC (fun _ d => d) = LinearMap.id := E.opOn_id hf
 
-theorem opOnC_comp (hf : F.Free) (δ δ' : ∀ b, F.D b → F.D b)
-    (hδ' : ∀ (b : F.β) (g : F.G b) (d : F.D b), δ' b (g • d) = g • δ' b d) :
-    E.opOnC δ ∘ₗ E.opOnC δ' = E.opOnC fun b d => δ' b (δ b d) :=
-  E.opOn_comp hf _ _ fun b g d => ⟨g, by rw [hδ'], rfl⟩
 
 def lin : (F.ιV → ℂ) →ₗ[ℂ] (E.Y → ℂ) := Fintype.linearCombination ℂ fun i => E.ev (F.bV i)
 
@@ -195,8 +172,6 @@ def sharp (ℓ : F.V →ₛₗ[σ] ℂ) : E.Y → ℂ :=
 
 theorem lin_mem (b : F.β) : (E.mem b).lin = E.lin := rfl
 theorem gram_mem (b : F.β) : (E.mem b).gram = E.gram := rfl
-theorem ipB_mem (b : F.β) : (E.mem b).ipB = E.ipB := rfl
-theorem co_mem (b : F.β) : (E.mem b).co = E.co := rfl
 theorem extend_mem (b : F.β) {M : Type} [AddCommGroup M] [Module ℂ M] (ℓ : F.V →ₛₗ[σ] M) :
     (E.mem b).extend ℓ = E.extend ℓ := rfl
 theorem sharp_mem (b : F.β) (ℓ : F.V →ₛₗ[σ] ℂ) : (E.mem b).sharp ℓ = E.sharp ℓ := rfl
@@ -243,11 +218,6 @@ theorem ipCl_apply (h : F.Ok) (Φ Ψ : F.Cl → E.Y → ℂ) :
   simp only [LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.compl₂_apply, LinearMap.comp_apply, LinearMap.proj_apply,
     smul_eq_mul]
 
-theorem ipCl_eq_sum (h : F.Ok) (Φ Ψ : F.Cl → E.Y → ℂ) :
-    E.ipCl h Φ Ψ = ∑ b, (E.mem b).ipCl (h b) (E.part b Φ) (E.part b Ψ) := by
-  let _ : ∀ b, Fintype (F.mem b).Cl := fun b => (h b).fintypeCl
-  rw [ipCl_apply, Fintype.sum_sigma]
-  exact Finset.sum_congr rfl fun b _ => ((E.mem b).ipCl_apply (h b) _ _).symm
 
 def Fi : Submodule ℂ (F.Cl → E.Y → ℂ) := Submodule.span ℂ (Set.range E.emb)
 
@@ -306,23 +276,8 @@ def perCl (h : F.Ok) {ι : Type} [Fintype ι] (ℓ : F.Cl → ι → (F.V →ₛ
       refine Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun b _ => ?_
       ring)
 
-theorem perCl_apply (h : F.Ok) {ι : Type} [Fintype ι] (ℓ : F.Cl → ι → (F.V →ₛₗ[σ] ℂ)) (Φ : F.Cl → E.Y → ℂ) (z : ι → ℂ) :
-    E.perCl h ℓ Φ z = (letI := h.fintypeCl
-      ∑ c : F.Cl, ((Nat.card (MulAction.stabilizer (F.G c.1) (F.rep c)) : ℕ) : ℂ)⁻¹ *
-        ∑ a, z a * E.extend (ℓ c a) (Φ c)) := rfl
 
-theorem perCl_emb (h : F.Ok) {ι : Type} [Fintype ι] (ℓ : F.Cl → ι → (F.V →ₛₗ[σ] ℂ)) (φ : F.Forms) (z : ι → ℂ) :
-    E.perCl h ℓ (E.emb φ) z = (letI := h.fintypeCl
-      ∑ c : F.Cl, ((Nat.card (MulAction.stabilizer (F.G c.1) (F.rep c)) : ℕ) : ℂ)⁻¹ *
-        ∑ a, z a * ℓ c a (F.valAt φ c)) := by
-  unfold perCl
-  simp only [LinearMap.mk₂_apply, emb_valAt, extend_ev]
 
-theorem perCl_eq_sum (h : F.Ok) {ι : Type} [Fintype ι] (ℓ : F.Cl → ι → (F.V →ₛₗ[σ] ℂ)) (Φ : F.Cl → E.Y → ℂ) (z : ι → ℂ) :
-    E.perCl h ℓ Φ z = ∑ b, (E.mem b).perCl (h b) (fun c => ℓ ⟨b, c⟩) (E.part b Φ) z := by
-  let _ : ∀ b, Fintype (F.mem b).Cl := fun b => (h b).fintypeCl
-  rw [perCl_apply, Fintype.sum_sigma]
-  rfl
 
 theorem norm_eq (h : F.Ok) (R : F.Rat) (hσ : ∀ x : K, σ (star x) = starRingEnd ℂ (σ x)) (φ : F.Forms) :
     (majAt (F.hB h) (stdFrame (F.hGram h)) (InfinitePlace.mk σ) φ φ).re =
@@ -355,17 +310,9 @@ variable {K : Type} [Field K] [NumberField K] [StarRing K] {S : GSD K} {σ : K �
   tr := fun _ => E.tr
   tr_ev := fun _ => E.tr_ev
 
-theorem toFam_mem : E.toFam.mem () = E := rfl
 
-theorem toFam_emb (φ : S.toFam.Forms) (c : S.Cl) : E.toFam.emb φ ⟨(), c⟩ = E.emb (φ ()) c := rfl
 
-theorem toFam_atPt (d : S.D) (Φ : S.toFam.Cl → E.Y → ℂ) :
-    E.toFam.atPt ⟨(), d⟩ Φ = E.atPt d fun c => Φ ⟨(), c⟩ := rfl
 
-theorem toFam_ipCl (h : S.Ok) (Φ Ψ : S.toFam.Cl → E.Y → ℂ) :
-    E.toFam.ipCl (S.toFam_ok h) Φ Ψ = E.ipCl h (fun c => Φ ⟨(), c⟩) (fun c => Ψ ⟨(), c⟩) := by
-  rw [GFam.Ev.ipCl_eq_sum, Fintype.sum_unique]
-  rfl
 
 end GSD.Ev
 
@@ -384,9 +331,6 @@ def roundEvF (σ₀ : X.K →+* ℂ) (hσ : ∀ x : X.K, σ₀ (star x) = starRi
   tr b := (roundEv σ₀ hσ lam L (Λ b)).tr
   tr_ev b := (roundEv σ₀ hσ lam L (Λ b)).tr_ev
 
-theorem roundEvF_mem (σ₀ : X.K →+* ℂ) (hσ : ∀ x : X.K, σ₀ (star x) = starRingEnd ℂ (σ₀ x))
-    (lam : X.Tau → DomWeight n) (L : DecoSet X.E n ST SG → Submodule (𝓞 X.E) (Sp X.E n)) (Λ : β → LevFam X.E X.K n SG) (b : β) :
-    (roundEvF σ₀ hσ lam L Λ).mem b = roundEv σ₀ hσ lam L (Λ b) := rfl
 
 end Round
 

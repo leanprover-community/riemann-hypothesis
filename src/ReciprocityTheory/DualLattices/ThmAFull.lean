@@ -1,7 +1,98 @@
-import ReciprocityTheory.DualLattices.OneAddPowOfSq
+import ReciprocityTheory.DualLattices.NsetExpInjectiveSurjective
 import ReciprocityTheory.DualLattices.StThmAFull
 import ReciprocityTheory.DualLattices.MapSmulOneMulVec
 
+section
+noncomputable section
+
+open TensorProduct
+
+namespace ReciprocityTheory.PGsh
+
+universe u
+
+variable {R₀ : Type u} [CommRing R₀]
+
+lemma BX.ev_map (B : BX R₀) {R S : LAlg R₀} (f : (R : Type u) →ₐ[R₀] (S : Type u))
+    (h : B.gg →ₗ[R₀] (R : Type u)) (v : B.gg ⊗[R₀] (R : Type u)) :
+    f (B.ev h v) = B.ev (f.toLinearMap ∘ₗ h) (LinearMap.lTensor B.gg f.toLinearMap v) := by
+  induction v using TensorProduct.induction_on with
+  | zero => simp [BX.ev]
+  | tmul g r => simp [BX.ev]
+  | add a b ha hb =>
+    simp only [BX.ev, map_add] at ha hb ⊢
+    rw [ha, hb]
+
+private lemma one_add_pow_of_sq {S : Type*} [CommRing S] (a : S) (ha : a * a = 0) (k : ℕ) :
+    (1 + a) ^ k = 1 + k * a := by
+  induction k with
+  | zero => simp
+  | succ k ih =>
+    rw [pow_succ, ih]
+    push_cast
+    linear_combination (k : S) * ha
+
+theorem b4 (B : BX R₀) (hB1 : PairingPropertiesStatement B) (hB3 : TangentPairingStatement B) {p : ℕ}
+    (Tw : ATower R₀ p) : NsetExpInjectiveSurjective B Tw := by
+  intro Dp ι τ E ht bt h1 h2 h3 i j
+  apply sub_eq_zero.mp
+  apply Tw.sep
+  intro n
+  obtain ⟨k, hk, hpair⟩ := h1 i j n
+  obtain ⟨thi, wi, hmi, hNi, hwi⟩ := h3 i n
+  obtain ⟨thj, wj, hmj, hNj, hwj⟩ := h3 j n
+  have hsurjL : Function.Surjective (Tw.π n).1.toLinearMap := Tw.surj n
+  obtain ⟨hsi, hsi_spec⟩ := Module.projective_lifting_property (Tw.π n).1.toLinearMap
+    ((Tw.q n).1.toLinearMap ∘ₗ ht i) hsurjL
+  obtain ⟨hsj, hsj_spec⟩ := Module.projective_lifting_property (Tw.π n).1.toLinearMap
+    ((Tw.q n).1.toLinearMap ∘ₗ ht j) hsurjL
+  obtain ⟨-, -, -, -, -, -, hnat, -⟩ := hB1
+  have hpq := hnat _ _ (Tw.q n) _ _ _ _ hpair
+  rw [← hmi, ← hmj] at hpq
+  have hB3' := hB3 (Tw.R' n) (Tw.R n) (Tw.π n) (Tw.ξ n) (Dp n) (p ^ (n + 1)) (Tw.surj n)
+    (Tw.ker_eq n) (Tw.ξ_sq n) (Tw.ann n) (Tw.char n) thi thj
+    (TensorProduct.map LinearMap.id (ξmul (Tw.π n) (Tw.ξ n) (Tw.ξ_mem n)) wi)
+    (TensorProduct.map LinearMap.id (ξmul (Tw.π n) (Tw.ξ n) (Tw.ξ_mem n)) wj)
+    hsi hsj (Tw.zh n ^ k) _ hNi hNj
+    (by rw [hmi, hsi_spec]; exact h2 i n) (by rw [hmj, hsj_spec]; exact h2 j n) hpq
+    (Units.ext (by simp [Tw.ζ_spec]))
+  have hev : ∀ (h : B.gg →ₗ[R₀] (Tw.R' n : Type u)) (w : B.gg ⊗[R₀] (Tw.R' n : Type u)),
+      B.evK (Tw.π n) h (TensorProduct.map LinearMap.id (ξmul (Tw.π n) (Tw.ξ n) (Tw.ξ_mem n)) w) =
+        Tw.ξ n * B.ev h w := by
+    intro h w
+    induction w using TensorProduct.induction_on with
+    | zero => simp [BX.evK, BX.ev]
+    | tmul g r =>
+      simp [BX.evK, BX.ev, ξmul]
+      ring
+    | add a b ha hb =>
+      simp only [BX.evK, BX.ev, map_add] at ha hb ⊢
+      rw [ha, hb, mul_add]
+  rw [hev, hev] at hB3'
+  have hpow : ((Tw.zh n ^ k : (Tw.R' n : Type u)ˣ) : (Tw.R' n : Type u)) ^ (p ^ (n + 1)) =
+      1 + (k : (Tw.R' n : Type u)) * (Tw.cp n * Tw.ξ n) := by
+    rw [Units.val_pow_eq_pow_val, pow_right_comm, Tw.zh_pow n]
+    apply one_add_pow_of_sq
+    calc Tw.cp n * Tw.ξ n * (Tw.cp n * Tw.ξ n) = Tw.cp n * Tw.cp n * (Tw.ξ n * Tw.ξ n) := by ring
+      _ = 0 := by rw [Tw.ξ_sq n, mul_zero]
+  have hξ : ((k : (Tw.R' n : Type u)) * Tw.cp n - (B.ev hsj wi - B.ev hsi wj)) * Tw.ξ n = 0 := by
+    have hh := hB3'.symm.trans hpow
+    linear_combination -hh
+  have hmem := Tw.ann n _ hξ
+  rw [← Tw.ker_eq n, RingHom.mem_ker] at hmem
+  have e1 : (Tw.π n).1 (B.ev hsj wi) = (Tw.q n).1 (B.ev (ht j) (bt i)) := by
+    rw [BX.ev_map B (Tw.π n).1 hsj wi, hsj_spec, hwi, ← BX.ev_map B (Tw.q n).1 (ht j) (bt i)]
+  have e2 : (Tw.π n).1 (B.ev hsi wj) = (Tw.q n).1 (B.ev (ht i) (bt j)) := by
+    rw [BX.ev_map B (Tw.π n).1 hsi wj, hsi_spec, hwj, ← BX.ev_map B (Tw.q n).1 (ht i) (bt j)]
+  simp only [map_sub, map_mul, map_natCast, Tw.cp_spec, e1, e2] at hmem
+  rw [map_sub, map_sub, map_mul, hk]
+  linear_combination hmem
+
+end ReciprocityTheory.PGsh
+end
+end
+
+section
 noncomputable section
 
 open TensorProduct Matrix
@@ -10,42 +101,9 @@ namespace ReciprocityTheory.PGsh
 
 variable {R₀ : Type} [CommRing R₀]
 
-private lemma ev_expand (B : BX R₀) {O : LAlg R₀} {g : ℕ} (gb : Module.Basis (Fin g) R₀ B.gg)
-    (h : B.gg →ₗ[R₀] (O : Type)) (b : B.gg ⊗[R₀] (O : Type)) :
-    B.ev h b = ∑ a, h (gb a) * B.ev (Algebra.linearMap R₀ (O : Type) ∘ₗ gb.coord a) b := by
-  induction b using TensorProduct.induction_on with
-  | zero => simp [BX.ev]
-  | tmul x r =>
-    simp only [BX.ev, TensorProduct.map_tmul, LinearMap.mul'_apply, LinearMap.id_apply,
-      LinearMap.comp_apply, Algebra.linearMap_apply, Module.Basis.coord_apply]
-    conv_lhs => rw [← gb.sum_repr x]
-    rw [map_sum, Finset.sum_mul]
-    refine Finset.sum_congr rfl fun a _ => ?_
-    rw [map_smul, Algebra.smul_def]
-    ring
-  | add a b ha hb =>
-    simp only [BX.ev, map_add] at *
-    rw [ha, hb, ← Finset.sum_add_distrib]
-    exact Finset.sum_congr rfl fun _ _ => by ring
 
-private lemma stdJ_form {D : Type} [CommRing D] {g : ℕ}
-    (M : Matrix (Fin g ⊕ Fin g) (Fin g ⊕ Fin g) D) (i j : Fin g ⊕ Fin g) :
-    (Mᵀ * stdJ D g * M) i j =
-      ∑ a, (M (Sum.inr a) i * M (Sum.inl a) j - M (Sum.inl a) i * M (Sum.inr a) j) := by
-  simp [Matrix.mul_apply, stdJ, Fintype.sum_sum_type, Matrix.one_apply, sub_eq_add_neg]
-  rw [Finset.sum_add_distrib, Finset.sum_neg_distrib]
 
-theorem thmAFull (B : BX R₀) (hB1 : PairingPropertiesStatement B) (hB3 : TangentPairingStatement B) {p : ℕ}
-    (Tw : ATower R₀ p) : ThmAFullStatement B Tw := by
-  intro _ Dp g gb τ E ht bt hc hEt hdiag hdet hpair hheight hbt
-  have h4 := b4 B hB1 hB3 Tw Dp (Fin g ⊕ Fin g) τ E ht bt hpair hheight hbt
-  have hJ : (thmAPhi B gb ht bt)ᵀ * stdJ (Tw.O : Type) g * thmAPhi B gb ht bt = Tw.c • E := by
-    ext i j
-    rw [stdJ_form, Matrix.smul_apply, smul_eq_mul, h4 i j, ev_expand B gb (ht j),
-      ev_expand B gb (ht i), ← Finset.sum_sub_distrib]
-    refine Finset.sum_congr rfl fun a _ => ?_
-    simp only [thmAPhi, Matrix.of_apply, Sum.elim_inl, Sum.elim_inr]
-    ring
-  exact ⟨hJ, a1 (Tw.O : Type) g E _ Tw.c hEt hdiag hdet hc hJ⟩
 
 end ReciprocityTheory.PGsh
+end
+end

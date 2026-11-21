@@ -73,9 +73,6 @@ theorem fibre (h : IsGal π hπ G act) (K : Type) [Field K] [IsAlgClosed K] (a b
   · rintro ⟨g, hg, -⟩
     rw [hg, Category.assoc, h.act_comp]
 
-theorem fibre_cx (h : IsGal π hπ G act) (a b : CxPts sW (RingHom.id ℂ)) :
-    a.1 ≫ π = b.1 ≫ π ↔ ∃! g : G, b.1 = a.1 ≫ act g :=
-  h.fibre ℂ a.1 b.1
 
 end IsGal
 

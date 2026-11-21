@@ -1,7 +1,33 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Foundations.GelfA
+import Formalism.GradedWeylDivisibility.StatementE
 import Formalism.RealPlaceAnalysis.StatementB
 
+section
+noncomputable section
+
+namespace GlobalTheory.Mem.Gelf
+
+open MvPolynomial
+
+def rowE (R : Type) [CommRing R] (r n : ℕ) :
+    Matrix (Fin r) (Fin r) (Module.End R (MvPolynomial (Fin r × Fin n) R)) :=
+  Matrix.of fun a b => ∑ s : Fin n,
+    (LinearMap.mulLeft R (X (a, s) : MvPolynomial (Fin r × Fin n) R)).comp (pderiv (R := R) (b, s)).toLinearMap
+
+def GlRel {A : Type} [Ring A] {N : ℕ} (E : Matrix (Fin N) (Fin N) A) : Prop :=
+  ∀ a b c d, E a b * E c d - E c d * E a b = (if b = c then E a d else 0) - (if d = a then E c b else 0)
+
+def gelfA {R : Type} [CommRing R] {N : ℕ} (μ : Fin N → R) : Matrix (Fin N) (Fin N) R :=
+  Matrix.of fun a b => if a = b then μ a + ((N - 1 - a.val : ℕ) : R) else if a < b then -1 else 0
+
+def gelfC {R : Type} [CommRing R] {N : ℕ} (μ : Fin N → R) (k : ℕ) : R :=
+  ∑ a, ∑ b, (gelfA μ ^ k) a b
+
+end GlobalTheory.Mem.Gelf
+end
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.Mem.GelfCheck
@@ -108,8 +134,6 @@ theorem _root_.GlobalTheory.Mem.GelfCheck.rowE_eq_rowDiv (R : Type) [CommRing R]
   rw [_root_.GlobalTheory.Mem.GelfCheck.rowE_apply]
   exact ⟨by unfold _root_.Formalism.GradedWeylDivisibility.rowDiv; exact h1.symm, by unfold _root_.Formalism.GradedWeylDivisibility.rowDiv; exact h0⟩
 
-theorem glRel_iff {A : Type} [Ring A] {N : ℕ} (E : Matrix (Fin N) (Fin N) A) :
-    GlRel E ↔ Formalism.REAL.GlRel (fun a b => E a b) := Iff.rfl
 
 open MvPolynomial in
 theorem _root_.GlobalTheory.Mem.GelfCheck.gelfA_eq_Amat {N : ℕ} (μ : Fin N → ℂ) :
@@ -161,57 +185,7 @@ section
 variable {R : Type} [CommRing R] {V : Type} [AddCommGroup V] [Module R V] {N : ℕ}
   {E : Matrix (Fin N) (Fin N) (Module.End R V)} {μ : Fin N → R} {v : V}
 
-theorem upper_kill (h : GlRel E) (hv : ∀ a b, a < b → E a b v = 0) (k : ℕ) (a b : Fin N) (hab : a < b) :
-    (E ^ k) a b v = 0 := by
-  induction k generalizing a b with
-  | zero => simp [Matrix.one_apply, hab.ne]
-  | succ k ih =>
-    rw [pow_succ', Matrix.mul_apply, LinearMap.sum_apply]
-    refine Finset.sum_eq_zero fun c _ => ?_
-    rcases lt_or_ge c b with hc | hc
-    · simp [ih c b hc]
-    · have := congrArg (fun f : Module.End R V => f v) (pow_cov h k c b a c)
-      simp only [LinearMap.sub_apply, Module.End.mul_apply, hv a c (hab.trans_le hc), map_zero, sub_zero,
-        if_true, if_neg hab.ne', LinearMap.zero_apply, ih a b hab] at this
-      simpa using this
 
-theorem diag_pow (h : GlRel E) (hw : ∀ a, E a a v = μ a • v) (hv : ∀ a b, a < b → E a b v = 0) (k : ℕ)
-    (a : Fin N) : (E ^ k) a a v = (∑ b, (gelfA μ ^ k) a b) • v := by
-  induction k generalizing a with
-  | zero => simp [Matrix.one_apply]
-  | succ k ih =>
-    set e : Fin N → R := fun c => ∑ b, (gelfA μ ^ k) c b with he
-    have ih' : ∀ c, (E ^ k) c c v = e c • v := ih
-    have hr : (∑ b, (gelfA μ ^ (k+1)) a b) = ∑ c, gelfA μ a c * e c := by
-      simp only [pow_succ', Matrix.mul_apply, he, Finset.mul_sum]
-      exact Finset.sum_comm
-    have hl : (E ^ (k+1)) a a v =
-        (∑ c, (if a = c then μ a * e a else if a < c then e a - e c else 0)) • v := by
-      rw [pow_succ', Matrix.mul_apply, LinearMap.sum_apply, Finset.sum_smul]
-      refine Finset.sum_congr rfl fun c _ => ?_
-      rcases lt_trichotomy a c with hc | hc | hc
-      · have := congrArg (fun f : Module.End R V => f v) (pow_cov h k c a a c)
-        simp only [LinearMap.sub_apply, Module.End.mul_apply, hv a c hc, map_zero, sub_zero,
-          if_true, ih'] at this
-        simp [hc.ne, hc, this, sub_smul]
-      · subst hc
-        simp [ih', hw, smul_smul, mul_comm]
-      · simp [upper_kill h hv k c a hc, hc.ne', not_lt.mpr hc.le]
-    rw [hl, hr]
-    congr 1
-    have hcard : (∑ c : Fin N, if a < c then e a else 0) = ((N - 1 - a.val : ℕ) : R) * e a := by
-      rw [← Finset.sum_filter, Finset.sum_const, Finset.filter_lt_eq_Ioi, Fin.card_Ioi, nsmul_eq_mul]
-    have h1 : ∀ c, (if a = c then μ a * e a else if a < c then e a - e c else 0) =
-        (gelfA μ a c * e c - if a = c then ((N - 1 - a.val : ℕ) : R) * e a else 0) +
-          (if a < c then e a else 0) := by
-      intro c
-      rcases lt_trichotomy a c with hc | hc | hc
-      · simp [gelfA, hc, hc.ne]; ring
-      · subst hc; simp [gelfA]; ring
-      · simp [gelfA, hc.ne', not_lt.mpr hc.le]
-    simp only [h1, Finset.sum_add_distrib, Finset.sum_sub_distrib, hcard, Finset.sum_ite_eq, Finset.mem_univ,
-      if_true]
-    ring
 
 open MvPolynomial in
 variable {R : Type} [CommRing R] {V : Type} [AddCommGroup V] [Module R V] {N : ℕ}
@@ -295,10 +269,7 @@ example : gelfC (![1, 0] : Fin 2 → ℤ) 2 = 2 := by
 example : gelfC (![0, 1] : Fin 2 → ℤ) 2 = 0 := by
   simp [gelfC, gelfA, pow_two, Matrix.mul_apply, Fin.sum_univ_two]
 
-theorem trace_pow_X (R : Type) [CommRing R] (r n : ℕ) (t : Fin n) (k : ℕ) :
-    (rowE R (r+1) n ^ k).trace (X (0, t)) = gelfC (Pi.single (0 : Fin (r+1)) (1 : R)) k • X (0, t) := by
-  refine trace_pow_apply (glRel_rowE R (r+1) n) (fun a => ?_) (fun a b hab => ?_) k
-  · rw [rowE_X]; split_ifs with h <;> simp [h]
-  · rw [rowE_X, if_neg (ne_of_gt (lt_of_le_of_lt (Fin.zero_le a) hab))]
 
 end GlobalTheory.Mem.GelfCheck
+end
+end

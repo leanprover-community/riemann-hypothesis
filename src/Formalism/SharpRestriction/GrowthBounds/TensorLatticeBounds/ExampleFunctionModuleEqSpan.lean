@@ -1,5 +1,338 @@
-import Formalism.SharpRestriction.GrowthBounds.TensorLatticeBounds.DataRank
+import Formalism.SharpRestriction.GrowthBounds.TensorLatticeBounds.DataForm
+import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
+import Formalism.SharpRestriction.GrowthBounds.TensorLatticeBounds.DataLoc
+import Formalism.LocalToGlobal.GroupLattices.PerfectRings.JOInjective
 
+section
+noncomputable section
+
+namespace Formalism.MainNotions.G.Inhab
+
+open Formalism.MainNotions.G Formalism.GradedWeylDivisibility MvPolynomial
+
+section CC
+
+variable (R K : Type) [CommRing R] [Field K] [Algebra R K]
+
+def ccL (σ : Type) : MvPolynomial σ K →ₗ[K] K := lcoeff K 0
+
+
+def ccInt (σ : Type) : Submodule R (MvPolynomial σ K) :=
+  (LinearMap.range (Algebra.linearMap R K)).comap ((ccL K σ).restrictScalars R)
+
+theorem mem_ccInt {σ : Type} (F : MvPolynomial σ K) : F ∈ ccInt R K σ ↔ ∃ a : R, algebraMap R K a = constantCoeff F :=
+  Iff.rfl
+
+theorem cc_rowAct {r n : ℕ} (g : Matrix (Fin r) (Fin r) K) (F : MvPolynomial (Fin r × Fin n) K) :
+    constantCoeff (rowAct K g F) = constantCoeff F := by
+  have : (constantCoeff.comp (rowAct K (n := n) g).toRingHom : MvPolynomial (Fin r × Fin n) K →+* K) = constantCoeff := by
+    apply MvPolynomial.ringHom_ext
+    · intro a; simp [rowAct]
+    · intro v; simp [rowAct]
+  exact congrArg (fun f : MvPolynomial (Fin r × Fin n) K →+* K => f F) this
+
+theorem nablaLTw_le_ccInt (m : ℕ) (g : Matrix (Fin (m + 1)) (Fin (m + 1)) K) :
+    nablaLTw R K m 0 g ≤ ccInt R K _ := by
+  rintro F ⟨F', hF', rfl⟩
+  obtain ⟨P, -, hP⟩ := hF'
+  rw [mem_ccInt]
+  refine ⟨constantCoeff P, ?_⟩
+  have h1 : constantCoeff (rowAct K g F') = algebraMap R K (constantCoeff P) := by
+    have hP' : mapAlgHom (Algebra.ofId R K) P = rowAct K g F' := hP
+    rw [← hP', mapAlgHom_apply, constantCoeff_map]
+    rfl
+  rw [cc_rowAct] at h1
+  simp [h1]
+
+
+
+
+theorem const_of_dualWeyl (r n : ℕ) (F : MvPolynomial (Fin r × Fin n) K) (hF : F ∈ dualWeyl K r n 0) :
+    F = C (constantCoeff F) := by
+  have hw : IsWeightedHomogeneous (colW r n) F 0 := (mem_weightedHomogeneousSubmodule K (colW r n) 0 F).1 hF.1
+  have : Finsupp.NonTorsionWeight ℕ (colW r n) :=
+    ⟨fun {c v} h0 => by
+      have := congrFun h0 v.2
+      simpa [colW] using this⟩
+  ext d
+  by_cases hd : d = 0
+  · subst hd; simp [constantCoeff_eq]
+  · rw [coeff_C, if_neg (Ne.symm hd)]
+    by_contra hc
+    exact hd ((Finsupp.weight_eq_zero_iff_eq_zero (colW r n)).1 (hw hc))
+
+theorem Vsp_le {n' m : ℕ} : Vsp K (fun _ _ => 0 : Fin n' → Fin (m + 1) → ℤ) ≤ Submodule.span K {1} := by
+  unfold Vsp tensorLat
+  rw [Submodule.span_le]
+  rintro _ ⟨F, hF, rfl⟩
+  have h1 : ∀ s, F s = C (constantCoeff (F s)) := fun s => by
+    have h2 := hF s
+    simp only [lamAt_zero] at h2
+    rw [if_pos (show Antitone (0 : Fin (m + 1) → ℤ) from fun _ _ _ => le_rfl)] at h2
+    have h0 : nuOf (0 : Fin (m + 1) → ℤ) = 0 := by funext t; simp [nuOf]
+    rw [h0] at h2
+    exact const_of_dualWeyl K _ _ _ h2
+  refine Submodule.mem_span_singleton.2 ⟨∏ s, constantCoeff (F s), ?_⟩
+  have : ∀ s, blockEmb K s (F s) = C (constantCoeff (F s)) := fun s => by
+    conv_lhs => rw [h1 s]
+    simp [blockEmb]
+  simp only [this]
+  rw [smul_eq_C_mul, mul_one, map_prod]
+
+
+theorem one_mem_Vsp {n' m : ℕ} : (1 : MvPolynomial _ K) ∈ Vsp K (fun _ _ => 0 : Fin n' → Fin (m + 1) → ℤ) := by
+  unfold Vsp
+  refine one_mem_tensorLat K K _ fun s => ?_
+  rw [lamAt_zero, if_pos (show Antitone (0 : Fin (m + 1) → ℤ) from fun _ _ _ => le_rfl)]
+  have h0 : nuOf (0 : Fin (m + 1) → ℤ) = 0 := by funext t; simp [nuOf]
+  rw [h0]
+  exact one_mem_dualWeyl K _ _
+
+
+end CC
+
+end Formalism.MainNotions.G.Inhab
+
+end
+end
+
+section
+noncomputable section
+
+namespace Formalism.MainNotions.G.Inhab
+
+open Formalism.MainNotions.G
+
+variable {p n' : ℕ} {W Qq O Kf : Type} [CommRing W] [IsDomain W] [IsDiscreteValuationRing W] [Field Qq]
+    [Algebra W Qq] [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field Kf] [Algebra O Kf]
+    {ι : Qq →+* Kf} {σ : Qq ≃+* Qq} {j : W →+* O} {w : O}
+
+def gen (Qq : Type) [Field Qq] (p : ℕ) (a : ℤ) : Fin 1 → Qq := fun _ => (p : Qq) ^ a
+
+theorem gen_mem (a : ℤ) : gen Qq p a ∈ line W (Qq := Qq) p a := Submodule.mem_span_singleton_self _
+
+
+
+
+def toQuot (W : Type) {Qq : Type} [CommRing W] [Field Qq] [Algebra W Qq] (p : ℕ) (a : ℤ) :
+    W →ₗ[W] (↥(line W (Qq := Qq) p a) ⧸ Submodule.comap (line W (Qq := Qq) p a).subtype (line W p (a + 1))) :=
+  (Submodule.mkQ _).comp (LinearMap.toSpanSingleton W _ ⟨gen Qq p a, Submodule.mem_span_singleton_self _⟩)
+
+
+
+
+def edge1 (W : Type) (Qq : Type) [CommRing W] [Field Qq] [Algebra W Qq] (p : ℕ) (a : ℤ) : Edge W Qq 1 :=
+  ⟨line W p (a + 1), line W p a⟩
+
+
+
+end Formalism.MainNotions.G.Inhab
+
+end
+end
+
+section
+noncomputable section
+
+namespace Formalism.MainNotions.G.Inhab
+
+open Formalism.MainNotions.G Formalism.GradedWeylDivisibility MvPolynomial
+
+variable {p n' : ℕ} {W Qq O Kf : Type} [CommRing W] [IsDomain W] [IsDiscreteValuationRing W] [Field Qq]
+    [Algebra W Qq] [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field Kf] [Algebra O Kf]
+    {ι : Qq →+* Kf} {σ : Qq ≃+* Qq} {j : W →+* O} {w : O}
+
+abbrev Z0 (n' : ℕ) : Fin n' → Fin (0 + 1) → ℤ := fun _ _ => 0
+
+
+def oneV (Kf : Type) [Field Kf] (n' : ℕ) : Vsp Kf (Z0 n') := ⟨1, one_mem_Vsp Kf⟩
+
+def evV (Kf : Type) [Field Kf] (n' : ℕ) : Module.Dual Kf (Vsp Kf (Z0 n')) := (ccL Kf _).comp (Vsp Kf (Z0 n')).subtype
+
+
+
+
+
+theorem ext_lat (h : HidaSetting p n' W Qq O Kf ι σ j w) (L : Submodule W (Fin (0 + 1) → Qq)) (hL : IsLattice W L) (s : ℕ) :
+    IsLattice O (extO O ι σ s L) :=
+  LatticeSystems.je_extO_lat (gat1 h) (0 : Fin 1) s L hL
+
+
+
+
+
+
+
+end Formalism.MainNotions.G.Inhab
+
+end
+end
+
+section
+noncomputable section
+
+namespace Formalism.MainNotions.G.Inhab
+
+open Formalism.MainNotions.G Formalism.GradedWeylDivisibility MvPolynomial
+
+section Const
+
+variable (R K : Type) [CommRing R] [Field K] [Algebra R K]
+
+theorem mem_span_one {σ : Type} (F : MvPolynomial σ K) :
+    F ∈ Submodule.span R {(1 : MvPolynomial σ K)} ↔ ∃ a : R, F = C (algebraMap R K a) := by
+  rw [Submodule.mem_span_singleton]
+  constructor
+  · rintro ⟨a, rfl⟩
+    exact ⟨a, by rw [Algebra.smul_def, mul_one, MvPolynomial.algebraMap_apply]⟩
+  · rintro ⟨a, rfl⟩
+    exact ⟨a, by rw [Algebra.smul_def, mul_one, MvPolynomial.algebraMap_apply]⟩
+
+theorem nuOf_zero (m : ℕ) : nuOf (0 : Fin (m + 1) → ℤ) = 0 := by funext t; simp [nuOf]
+
+theorem nablaLTw_le_const (m : ℕ) (g : Matrix (Fin (m + 1)) (Fin (m + 1)) K) (hg : IsUnit g.det) :
+    nablaLTw R K m 0 g ≤ Submodule.span R {1} := by
+  intro F hF
+  have h1 := LatticeSystems.la_nablaLTw_le m 0 g hg F hF
+  rw [nuOf_zero] at h1
+  have h2 := const_of_dualWeyl K _ _ F h1
+  obtain ⟨a, ha⟩ := (mem_ccInt R K _).1 (nablaLTw_le_ccInt R K m g hF)
+  exact (mem_span_one R K F).2 ⟨a, by rw [ha]; exact h2⟩
+
+theorem applyWord_one (k : ℕ) (w : List (Fin k × Fin k × ℕ)) :
+    ∃ a : R, applyWord R w (1 : MvPolynomial (Fin k × Fin k) R) = C a := by
+  induction w with
+  | nil => exact ⟨1, by simp [applyWord]⟩
+  | cons x w ih =>
+    obtain ⟨a, ha⟩ := ih
+    have h1 : applyWord R (x :: w) (1 : MvPolynomial (Fin k × Fin k) R) =
+        rowDiv R x.1 x.2.1 x.2.2 (applyWord R w 1) := rfl
+    rw [h1, ha]
+    unfold rowDiv
+    have h2 : rowGen R x.1 x.2.1 (C a : MvPolynomial (Fin k × Fin k) R) = Polynomial.C (C a) := by
+      have := (rowGen R (n := k) x.1 x.2.1).commutes a
+      rw [MvPolynomial.algebraMap_eq] at this
+      rw [this]
+      rfl
+    rw [h2, Polynomial.coeff_C]
+    split_ifs
+    · exact ⟨a, rfl⟩
+    · exact ⟨0, by simp⟩
+
+theorem weyl_zero_const (k : ℕ) (P : MvPolynomial (Fin k × Fin k) R) (hP : P ∈ weyl R k k le_rfl 0) :
+    ∃ a : R, P = C a := by
+  unfold weyl at hP
+  induction hP using Submodule.span_induction with
+  | mem x hx =>
+    obtain ⟨w, rfl⟩ := hx
+    have h1 : hw R (le_refl k) (0 : Fin k → ℕ) = 1 := by simp [hw]
+    simp only [h1]
+    exact applyWord_one R k w
+  | zero => exact ⟨0, by simp⟩
+  | add x y _ _ hx hy =>
+    obtain ⟨a, rfl⟩ := hx
+    obtain ⟨b, rfl⟩ := hy
+    exact ⟨a + b, by simp⟩
+  | smul c x _ hx =>
+    obtain ⟨a, rfl⟩ := hx
+    exact ⟨c * a, by rw [smul_eq_C_mul, map_mul]⟩
+
+theorem rowAct_one' (k n : ℕ) : rowAct K (n := n) (1 : Matrix (Fin k) (Fin k) K) = AlgHom.id K _ := by
+  apply MvPolynomial.algHom_ext
+  rintro ⟨a, s⟩
+  simp only [rowAct, aeval_X, AlgHom.id_apply]
+  rw [Finset.sum_eq_single a]
+  · simp
+  · intro b _ hb
+    rw [Matrix.one_apply_ne (Ne.symm hb)]; simp
+  · intro h; exact absurd (Finset.mem_univ _) h
+
+theorem rowAct_cancel (k n : ℕ) (g : Matrix (Fin k) (Fin k) K) (hg : IsUnit g.det) (F : MvPolynomial (Fin k × Fin n) K) :
+    rowAct K g⁻¹ (rowAct K g F) = F := by
+  have h1 := rowActMul K k n g⁻¹ g
+  rw [Matrix.mul_nonsing_inv g hg, rowAct_one'] at h1
+  exact congrArg (fun f : MvPolynomial (Fin k × Fin n) K →ₐ[K] MvPolynomial (Fin k × Fin n) K => f F) h1
+
+theorem deltaLTw_le_const (m : ℕ) (g : Matrix (Fin (m + 1)) (Fin (m + 1)) K) (hg : IsUnit g.det) :
+    deltaLTw R K m 0 g ≤ Submodule.span R {1} := by
+  rintro F ⟨F', hF', rfl⟩
+  obtain ⟨P, hP, hPF⟩ := hF'
+  rw [nuOf_zero] at hP
+  obtain ⟨a, rfl⟩ := weyl_zero_const R _ P hP
+  have h1 : rowAct K g F' = C (algebraMap R K a) := by
+    have : mapAlgHom (Algebra.ofId R K) (C a : MvPolynomial _ R) = rowAct K g F' := hPF
+    rw [← this, mapAlgHom_apply, map_C]
+    rfl
+  have h2 : F' = C (algebraMap R K a) := by
+    rw [← rowAct_cancel K _ _ g hg F', h1]
+    simp [rowAct]
+  refine (mem_span_one R K _).2 ⟨a, ?_⟩
+  simp [h2]
+
+theorem H0_degree_zero_le_constants (m : ℕ) (Λ : Submodule R (Fin (m + 1) → K)) (hΛ : IsLattice R Λ) :
+    H0 R m 0 Λ ≤ Submodule.span R {1} := by
+  obtain ⟨g, hg, rfl⟩ := hΛ
+  exact (LatticeSystems.H0_le_twisted_nabla m 0 (fun _ _ _ => le_rfl) g hg).trans (nablaLTw_le_const R K m g hg)
+
+theorem Dl0_le_const (m : ℕ) (Λ : Submodule R (Fin (m + 1) → K)) (hΛ : IsLattice R Λ) :
+    Dl0 R m 0 Λ ≤ Submodule.span R {1} := by
+  obtain ⟨g, hg, rfl⟩ := hΛ
+  unfold Dl0
+  rw [if_pos (show Antitone (0 : Fin (m + 1) → ℤ) from fun _ _ _ => le_rfl)]
+  exact (iInf₂_le g ⟨hg, rfl⟩).trans (deltaLTw_le_const R K m g hg)
+
+theorem tensorLat_le_const {S : Type} [Fintype S] {k n : ℕ} (M : S → Submodule R (MvPolynomial (Fin k × Fin n) K))
+    (h : ∀ s, M s ≤ Submodule.span R {1}) : tensorLat R K M ≤ Submodule.span R {1} := by
+  unfold tensorLat
+  rw [Submodule.span_le]
+  rintro _ ⟨F, hF, rfl⟩
+  choose a ha using fun s => (mem_span_one R K _).1 (h s (hF s))
+  refine (mem_span_one R K _).2 ⟨∏ s, a s, ?_⟩
+  rw [map_prod, map_prod]
+  refine Finset.prod_congr rfl fun s _ => ?_
+  rw [ha s, blockEmb, rename_C]
+
+end Const
+
+section Tup
+
+variable {p : ℕ} (G : GAtP p) (h0 : ∀ v, G.P.lam0 v = fun _ _ => 0)
+
+theorem tenV_le_const (M : ∀ v, Submodule G.O (MvPolynomial (Fin (G.P.n' v) × (Fin (G.P.m + 1) × Fin (G.P.m + 1))) G.Kf))
+    (h : ∀ v, M v ≤ Submodule.span G.O {1}) : G.P.tenV M ≤ Submodule.span G.O {1} := by
+  unfold Places.tenV
+  rw [Submodule.span_le]
+  rintro _ ⟨F, hF, rfl⟩
+  choose a ha using fun v => (mem_span_one G.O G.Kf _).1 (h v (hF v))
+  refine (mem_span_one G.O G.Kf _).2 ⟨∏ v, a v, ?_⟩
+  rw [map_prod, map_prod]
+  refine Finset.prod_congr rfl fun v _ => ?_
+  rw [ha v, Places.vEmb, rename_C]
+
+include h0 in
+theorem Htup_le_const (L : G.P.Tup) (hL : G.P.IsLatTup L) : G.P.Htup L ≤ Submodule.span G.O {1} := by
+  refine tenV_le_const G _ fun v => ?_
+  unfold Hten
+  refine tensorLat_le_const G.O G.Kf _ fun s => ?_
+  rw [h0 v, lamAt_zero]
+  exact H0_degree_zero_le_constants G.O G.Kf _ _ (LatticeSystems.je_extO_lat G v s.val (L v) (hL v))
+
+include h0 in
+theorem HtupW_le_const (L : G.P.Tup) (hL : G.P.IsLatTup L) : G.P.HtupW L ≤ Submodule.span G.O {1} := by
+  refine tenV_le_const G _ fun v => ?_
+  unfold HtenW
+  refine tensorLat_le_const G.O G.Kf _ fun s => ?_
+  rw [h0 v, lamAt_zero]
+  exact Dl0_le_const G.O G.Kf _ _ (LatticeSystems.je_extO_lat G v s.val (L v) (hL v))
+
+end Tup
+
+end Formalism.MainNotions.G.Inhab
+
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.MainNotions.G.Inhab
@@ -27,114 +360,19 @@ variable {p n' : ℕ} {W Qq O Kf : Type} [CommRing W] [IsDomain W] [IsDiscreteVa
 
 def tup0 (h : HidaSetting p n' W Qq O Kf ι σ j w) : (places1 h).Tup := fun _ => line W p 0
 
-theorem zero_tuple_isLattice (h : HidaSetting p n' W Qq O Kf ι σ j w) : (places1 h).IsLatTup (tup0 h) := fun _ => line_isLattice h 0
 
-theorem tup_eq_smul (h : HidaSetting p n' W Qq O Kf ι σ j w) (L : (places1 h).Tup) (hL : (places1 h).IsLatTup L) :
-    ∃ γ : (level1 h).Γ, L = (level1 h).smul γ (tup0 h) := by
-  obtain ⟨n, hn⟩ := lat1 h (L (0 : Fin 1)) (hL (0 : Fin 1))
-  refine ⟨Multiplicative.ofAdd n, ?_⟩
-  funext v
-  have hv : v = (0 : Fin 1) := Subsingleton.elim (α := Fin 1) v 0
-  subst hv
-  have h1 := smul1 h (Multiplicative.ofAdd n) (tup0 h) 0 rfl
-  refine hn.trans (Eq.trans ?_ h1.symm)
-  simp
 
-theorem funMod_eq (h : HidaSetting p n' W Qq O Kf ι σ j w) (Hv : (places1 h).Tup → Submodule O (places1 h).Xsp)
-    (h1 : ∀ L, (1 : (places1 h).Xsp) ∈ Hv L)
-    (h2 : ∀ L, (places1 h).IsLatTup L → Hv L ≤ Submodule.span O {1}) :
-    (level1 h).funMod Hv = Submodule.span O {oneFn (places1 h)} := by
-  apply le_antisymm
-  · intro F hF
-    obtain ⟨a1, a2, a3⟩ := (mem_funMod (level1 h) Hv F).1 hF
-    obtain ⟨c, hc⟩ := Submodule.mem_span_singleton.1 (h2 _ (zero_tuple_isLattice h) (a1 _ (zero_tuple_isLattice h)))
-    refine Submodule.mem_span_singleton.2 ⟨c, ?_⟩
-    funext L
-    by_cases hL : (places1 h).IsLatTup L
-    · obtain ⟨γ, rfl⟩ := tup_eq_smul h L hL
-      rw [a3, ← hc, Pi.smul_apply, oneFn_pos _ hL, LinearMap.map_smul_of_tower]
-      have hx : (level1 h).actX γ 1 = 1 := natAct_one' (places1 h) (fun _ => rfl) _
-      rw [hx]
-      show c • (1 : (places1 h).Xsp) = (((1 : Oˣ) : O)) • c • (1 : (places1 h).Xsp)
-      rw [Units.val_one, one_smul]
-    · rw [a2 L hL, Pi.smul_apply, oneFn_neg _ hL, smul_zero]
-  · rw [Submodule.span_le, Set.singleton_subset_iff]
-    exact oneFn_mem (places1 h) (level1 h) (fun _ => rfl) rfl Hv h1
 
 def oneG (h : HidaSetting p n' W Qq O Kf ι σ j w) : (gat1 h).Fn := fun _ => oneFn (places1 h)
 
-theorem example_function_module_eq_span (h : HidaSetting p n' W Qq O Kf ι σ j w) (Hv : (places1 h).Tup → Submodule O (places1 h).Xsp)
-    (h1 : ∀ L, (1 : (places1 h).Xsp) ∈ Hv L)
-    (h2 : ∀ L, (places1 h).IsLatTup L → Hv L ≤ Submodule.span O {1}) :
-    (gat1 h).funMod Hv = Submodule.span (gat1 h).O {oneG h} := by
-  ext F
-  unfold GAtP.funMod
-  rw [Submodule.mem_pi, Submodule.mem_span_singleton]
-  constructor
-  · intro hF
-    have := hF () (Set.mem_univ _)
-    have h3 : (show (places1 h).Tup → (places1 h).Xsp from F ()) ∈ (level1 h).funMod Hv := this
-    rw [funMod_eq h Hv h1 h2] at h3
-    obtain ⟨c, hc⟩ := Submodule.mem_span_singleton.1 h3
-    exact ⟨c, funext fun _ => hc⟩
-  · rintro ⟨c, rfl⟩ i _
-    show (show O from c) • oneFn (places1 h) ∈ (level1 h).funMod Hv
-    rw [funMod_eq h Hv h1 h2]
-    exact Submodule.smul_mem _ _ (Submodule.mem_span_singleton_self _)
 
-theorem finrank_oneG (h : HidaSetting p n' W Qq O Kf ι σ j w) :
-    Module.finrank (gat1 h).O (Submodule.span (gat1 h).O {oneG h}) = 1 := by
-  have := h.frac_O
-  have hf : Function.Injective (LinearMap.toSpanSingleton (gat1 h).O (gat1 h).Fn (oneG h)) := by
-    rw [injective_iff_map_eq_zero]
-    intro c hc
-    have h1 : (show O from c) • (oneFn (places1 h) (tup0 h)) = 0 := congrFun (congrFun hc ()) (tup0 h)
-    rw [oneFn_pos _ (zero_tuple_isLattice h), Algebra.smul_def, mul_one, MvPolynomial.algebraMap_apply] at h1
-    have h2 : algebraMap O Kf (show O from c) = 0 := by
-      have := congrArg constantCoeff h1
-      simpa using this
-    exact (map_eq_zero_iff _ (IsFractionRing.injective O Kf)).1 h2
-  rw [LinearMap.span_singleton_eq_range, LinearMap.finrank_range_of_inj hf, Module.finrank_self]
 
-theorem example_dual_module_eq_span_one (h : HidaSetting p n' W Qq O Kf ι σ j w) : (gat1 h).Mna = Submodule.span (gat1 h).O {oneG h} :=
-  example_function_module_eq_span h _ (one_mem_Htup (places1 h) fun _ => rfl) (Htup_le_const (gat1 h) fun _ => rfl)
 
-theorem example_module_eq_span_one (h : HidaSetting p n' W Qq O Kf ι σ j w) : (gat1 h).M = Submodule.span (gat1 h).O {oneG h} :=
-  example_function_module_eq_span h _ (one_mem_HtupW (places1 h) fun _ => rfl) (HtupW_le_const (gat1 h) fun _ => rfl)
 
-theorem example_rank_one_sandwich (h : HidaSetting p n' W Qq O Kf ι σ j w) :
-    (gat1 h).M = (gat1 h).Mna ∧ (gat1 h).d = 1 ∧ (gat1 h).dna = 1 ∧ (gat1 h).Sandwich := by
-  have hM := example_module_eq_span_one h
-  have hN := example_dual_module_eq_span_one h
-  refine ⟨hM.trans hN.symm, ?_, ?_, ?_, ?_⟩
-  · unfold GAtP.d; rw [hM]; exact finrank_oneG h
-  · unfold GAtP.dna; rw [hN]; exact finrank_oneG h
-  · rw [hM, hN]
-    show Submodule.map (((p : (gat1 h).O) ^ 0) • LinearMap.id) _ ≤ _
-    rw [pow_zero, one_smul, Submodule.map_id]
-  · rw [hM, hN]
 
-theorem gat_full_nonempty (p : ℕ) (hp : p.Prime) (h5 : 5 ≤ p) (n' : ℕ) (h2 : 2 ≤ n') (he : Even n') :
-    ∃ G : GAtP p, 1 ≤ G.P.nV ∧ G.P.r = 1 ∧ G.TrivStab ∧ G.FinClasses ∧ G.d = 1 ∧ G.dna = 1 ∧ G.Sandwich ∧
-      ∀ v, G.P.n' v = n' ∧
-        UnramifiedQuadraticSetting p (G.P.n' v) (G.P.W v) (G.P.Qq v) G.O G.Kf (G.P.ι v) (G.P.σ v) (G.P.j v) G.P.w ∧
-        LPprime (W := G.P.W v) (Qq := G.P.Qq v) (O := G.O) (Kf := G.Kf) p (G.P.n' v) (G.P.ι v) (G.P.σ v) G.P.w G.P.r
-          (G.P.lam0 v) 0 0 0 4 := by
-  have : Fact p.Prime := ⟨hp⟩
-  have hS := Formalism.L2.G.settingStd p n' h5 h2 he
-  have h := hS.1
-  obtain ⟨-, h3, h4, h5'⟩ := example_rank_one_sandwich h
-  exact ⟨gat1 h, le_rfl, rfl, fun _ => level1_trivStab h, fun _ => level1_finClasses h, h3, h4, h5',
-    fun _ => ⟨rfl, hS, lpprime_zero h⟩⟩
 
-theorem dimV_eq_one (K : Type) [Field K] {n' m : ℕ} : dimV K (fun _ _ => 0 : Fin n' → Fin (m + 1) → ℤ) = 1 := by
-  apply le_antisymm (dimV_le_one K)
-  unfold dimV
-  have : FiniteDimensional K ↥(Vsp K (fun _ _ => 0 : Fin n' → Fin (m + 1) → ℤ)) :=
-    Submodule.finiteDimensional_of_le (Vsp_le K)
-  rw [Nat.succ_le_iff, Module.finrank_pos_iff_exists_ne_zero]
-  exact ⟨⟨1, one_mem_Vsp K⟩, fun h => one_ne_zero (congrArg Subtype.val h)⟩
 
 end Formalism.MainNotions.G.Inhab
 
+end
 end

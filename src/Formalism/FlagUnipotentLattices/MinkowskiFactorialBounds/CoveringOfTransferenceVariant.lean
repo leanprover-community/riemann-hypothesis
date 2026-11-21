@@ -1,11 +1,25 @@
 import Formalism.FlagUnipotentLattices.SubmoduleGeneratorsBound
 import Formalism.FlagUnipotentLattices.CoveringRadius2
 import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.SumComplexEmbeddingsEqSumInfinitePlace
-import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.LatticeSumTupleOfLatticeSumTuple
+import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.SchurAverage
+import Formalism.HyperbolicPlaceProducts.SubgroupIndexCounts.DedekindLFunctions
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.TransferenceCover
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.TransferenceCoveringDivisor
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.Residue
 
+section
+open Module Matrix Formalism.HermitianLatticeCounting.LatticeSumBounds
+open scoped BigOperators ComplexConjugate
+
+namespace Formalism.HermitianLatticeCounting.P
+
+open NumberField
+
+
+end Formalism.HermitianLatticeCounting.P
+end
+
+section
 namespace Formalism.HermitianLatticeCounting.P
 
 theorem dedekindZeta_residue_bound : Formalism.HermitianLatticeCounting.S7.DedekindZetaResidueBound := dedekind_residue_bound
@@ -16,6 +30,6 @@ theorem covering_radius_bound₂ : Formalism.HermitianLatticeCounting.S7.Coverin
 
 theorem covering_of_transference : Formalism.HermitianLatticeCounting.LatticeSumBounds.CoveringO := coveringO_of_transference transference_principle
 
-theorem covering_of_transference_variant : Formalism.HermitianLatticeCounting.LatticeSumBounds.CoveringO' := coveringO'_of_transference transference_principle
 
 end Formalism.HermitianLatticeCounting.P
+end

@@ -225,13 +225,6 @@ def Flip : Prop := ∀ D : D7, FlipAt D
 
 section Basic₂
 
-theorem absF_one : absF (1 : (AE D)ˣ) = 1 := by
-  have h : (Oh D).toAddSubgroup.map (AddMonoidHom.mulLeft (toEAf D ((1 : (AE D)ˣ) : AE D))) = (Oh D).toAddSubgroup := by
-    ext x; simp
-  unfold absF Datum.volRel
-  rw [h, inf_idem, AddSubgroup.addSubgroupOf_self]
-  have : Nat.card ((Oh D).toAddSubgroup ⧸ (⊤ : AddSubgroup (Oh D).toAddSubgroup)) = 1 := AddSubgroup.index_top
-  rw [this]; simp
 
 theorem sum_divisible_eq_sum_mul {A B : Type} [CommRing A] [CommRing B] (φ : A →+* B) (e : A) {p q : ℕ} (u v : Fin p → A) (u' v' : Fin q → A)
     (h : ∑ i, u i * v i + ∑ i, u' i * v' i = 0) : ∑ i, φ (e * u i) * φ (e * v i) + ∑ i, φ (e * u' i) * φ (e * v' i) = 0 := by
@@ -240,39 +233,12 @@ theorem sum_divisible_eq_sum_mul {A B : Type} [CommRing A] [CommRing B] (φ : A 
   rw [← h2]
   congr 1 <;> refine Finset.sum_congr rfl fun i _ => ?_ <;> rw [← map_mul] <;> congr 1 <;> ring
 
-theorem rowBlocks_mul_colBlocks (e : AE D) {a a' d₁ d₂ : ℕ} (hd : a + a' = d₁ + d₂) (h : GL (Fin (d₁ + d₂)) (AE D)) :
-    yLeft e hd h * xTop e hd h + yRight e hd h * xBot e hd h = 0 := by
-  ext q p
-  have h1 : (h.1 * (h⁻¹).1) (Fin.cast hd (Fin.natAdd a q)) (Fin.cast hd (Fin.castAdd a' p)) = 0 := by
-    rw [Units.mul_inv, Matrix.one_apply_ne]
-    intro H
-    have := congrArg Fin.val H
-    simp at this
-    omega
-  rw [Matrix.mul_apply, Fin.sum_univ_add] at h1
-  exact sum_divisible_eq_sum_mul (toEAf D) e _ _ _ _ h1
 
 variable {G₀ : Type} [Group G₀] [Fintype G₀] {Pl0 T : Type} {A : FamIn D.what₂.LL G₀ Pl0 T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat D A Ks} {G : GridDat R}
 
-theorem cTot_ne_zero {c : T → ℕ → ℕ → ℂ} (h : IsSqConst G c) (t : T) : cTot D c t ≠ 0 :=
-  Finset.prod_ne_zero_iff.2 fun i hi => Finset.prod_ne_zero_iff.2 fun j hj =>
-    (h t i j (Finset.mem_range.1 hi) (Finset.mem_range.1 hj)).1
 
-theorem rowVec_tuple (t t' : T) (i : ℕ) (P : ∀ j, Pol (G.V i j) (G.V i (j + 1))) (n : ℕ) : rowVec G t i P n = rowVec G t' i P n := by
-  induction n with
-  | zero => rfl
-  | succ n ih =>
-    show rowVec G t i P n ∘ₗ _ = rowVec G t' i P n ∘ₗ _
-    rw [ih, G.th_It t t']
 
-theorem colLift_succ_int (h : G.IsLifts) (t : T) {j n : ℕ} (hj : j ≤ D.R.m) (hn : n < D.R.m) (f : ∀ i, DX G i j)
-    (hf : IsFinVec R.ψ R.θ true (G.V (n + 1) j) (G.V n j) (f n)) (P : ∀ i, Pol (G.V (i + 1) j) (G.V i j)) (F : G.CV 0 j)
-    (v : SmT (G.V 0 j).M) :
-    (G.colLift t j f (n + 1) F).1 (colVec G j P (n + 1) v) =
-      (G.X n j).int (G.meas t n j) (fock R.ψ R.θ true (G.V (n + 1) j) (G.V n j) (f n) (P n))
-        ((G.colLift t j f n F).1 (colVec G j P n v)) :=
-  ((h.X t n j hn hj _ hf).int_eq _ _ _).symm
 
 end Basic₂
 

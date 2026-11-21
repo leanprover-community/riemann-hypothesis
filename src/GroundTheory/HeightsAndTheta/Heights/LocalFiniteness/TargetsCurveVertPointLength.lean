@@ -27,11 +27,7 @@ theorem GroundTheory.Heights₂.Heights.AutoClose.RestCutCaseSharp : GroundTheor
 theorem GroundTheory.Heights₂.Heights.AutoClose.VertPointNagata : GroundTheory.Heights₂.Heights.VertPointNagata.Statement :=
   @GroundTheory.Heights₂.Heights.VertPointNagata.proof GroundTheory.Heights₂.Heights.AutoClose.VertPointChart
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.Targets_CurveVertPointLength : GroundTheory.Heights₂.Heights.Targets.CurveVertPointLength.Statement :=
-  @GroundTheory.Heights₂.Heights.Targets.CurveVertPointLength.proof GroundTheory.Heights₂.Heights.AutoClose.Targets_CurveVertPointChart GroundTheory.Heights₂.Heights.AutoClose.Targets_CurveVertPointInj GroundTheory.Heights₂.Heights.AutoClose.Targets_CurveVertPointSurj GroundTheory.Heights₂.Heights.AutoClose.Targets_CurveVertPointMultChart GroundTheory.Heights₂.Heights.Targets.CurveSectionQuotLocal.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.Targets_ProjFullRankDense : GroundTheory.Heights₂.Heights.Targets.ProjFullRankDense.Statement :=
-  @GroundTheory.Heights₂.Heights.Targets.ProjFullRankDense.of_found GroundTheory.Heights₂.Heights.Targets.ProjRegularClosureOpen.proof GroundTheory.Heights₂.Heights.AutoClose.Targets_ProjFullRankMeetsRegular
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.PtsSheetSimpleNull : GroundTheory.Heights₂.Heights.PtsSheetSimpleNull.Statement :=
   @GroundTheory.Heights₂.Heights.PtsSheetSimpleNull.proof GroundTheory.Heights₂.Heights.AutoClose.PtsGenericCount

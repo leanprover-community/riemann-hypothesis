@@ -101,9 +101,6 @@ def URat (i : ℕ) (v : (D.mem u).A.vT) : Prop :=
 def UL (i : ℕ) (v : (D.mem u).A.vT) (h : URat D u i v) : Vl D u i →ₗ[D.what₂.LL] Vl D u i :=
   descend ((D.fm u).emb i) ((D.fm u).emb i) ((D.fm u).emb_inj i) (Uop D u i v) h
 
-theorem UL_spec (i : ℕ) (v : (D.mem u).A.vT) (h : URat D u i v) (x : Vl D u i) :
-    (D.fm u).emb i (UL D u i v h x) = Uop D u i v ((D.fm u).emb i x) :=
-  descend_spec ((D.fm u).emb i) ((D.fm u).emb i) ((D.fm u).emb_inj i) (Uop D u i v) h x
 
 end LT
 

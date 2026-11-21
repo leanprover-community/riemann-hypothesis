@@ -48,17 +48,8 @@ theorem subsingleton_H {i : ℕ} (hi : Y.dim < i) (Δ : Y.Dv) : Subsingleton (Y.
   Y.isAmple_projective_O_one.subsingleton_coh_of_dim_lt _
     (by rw [Y.topologicalKrullDim_eq]; exact_mod_cast hi)
 
-theorem hdim_eq_zero_of_lt {i : ℕ} (hi : Y.dim < i) (Δ : Y.Dv) : Y.hdim i Δ = 0 :=
-  (Y.hdim_eq_zero_iff i Δ).2 (Y.subsingleton_H hi Δ)
 
-theorem chi_eq_sum (Δ : Y.Dv) :
-    Y.chi Δ = ∑ i ∈ Finset.range (Y.dim + 1), (-1 : ℤ) ^ i * Y.hdim i Δ :=
-  chi_eq_sum_range F _ fun _ hi => Y.subsingleton_H hi Δ
 
-theorem eulerChar_eq_finrank_riemannRoch {Δ : Y.Dv} (h : ∀ i, 0 < i → Y.hdim i Δ = 0) :
-    Y.chi Δ = Module.finrank F (Y.H0 Δ) :=
-  (chi_eq_hdim_zero F fun i hi => (Y.hdim_eq_zero_iff i Δ).1 (h i hi)).trans
-    (congrArg _ (Y.hdim_zero Δ))
 
 variable {Y} in
 
@@ -71,9 +62,6 @@ variable {Y} in
 theorem hdim_congr {Δ Δ' : Y.Dv} (e : toPic Δ = toPic Δ') (i : ℕ) : Y.hdim i Δ = Y.hdim i Δ' :=
   hdim_eq_of_toPic_eq (isLB_toLB Δ') e i
 
-theorem hdim_add_principal (i : ℕ) (Δ : Y.Dv) (g : Y.Fnˣ) :
-    Y.hdim i (Δ + principal g) = Y.hdim i Δ :=
-  hdim_congr (by rw [map_add, toPic_principal, add_zero]) i
 
 theorem chi_eq_chiPic (Δ : Y.Dv) : Y.chi Δ = chiPic F (structureModule Y.X) (toPic Δ) := rfl
 
@@ -99,8 +87,6 @@ def cechCx (Δ : Y.Dv) : CochainComplex (ModuleCat.{0} F) ℕ := cech F (Y.sheaf
 def cechEquiv (i : ℕ) (Δ : Y.Dv) : (Y.cechCx Δ).homology i ≃ₗ[F] Y.H i Δ :=
   cechHEquivCoh F Y.iSup_stdOpen Y.isAffineOpen_biInf_stdOpen (Y.sheaf Δ) i
 
-theorem hdim_eq_cech (i : ℕ) (Δ : Y.Dv) :
-    Y.hdim i Δ = Module.finrank F ((Y.cechCx Δ).homology i) := (Y.cechEquiv i Δ).finrank_eq.symm
 
 def inter (Δ : Fin Y.dim → Y.Dv) : ℤ := interNum F (structureModule Y.X) fun i => Y.lb (Δ i)
 
@@ -109,9 +95,6 @@ theorem inter_eq_multiDiff (Δ : Fin Y.dim → Y.Dv) : Y.inter Δ = multiDiff Δ
   rw [Function.comp_apply, map_zero] at e
   exact (interNum_eq_multiDiff F _ fun i => isLB_toLB (Δ i)).trans e.symm
 
-theorem inter_eq_sum (Δ : Fin Y.dim → Y.Dv) :
-    Y.inter Δ = ∑ S : Finset (Fin Y.dim), (-1 : ℤ) ^ S.card * Y.chi (-∑ i ∈ S, Δ i) := by
-  simp only [inter_eq_multiDiff, multiDiff_apply, zero_sub, smul_eq_mul]
 
 variable {Y} in
 
@@ -125,10 +108,6 @@ variable {Y} in
 theorem inter_congr {Δ Δ' : Fin Y.dim → Y.Dv} (e : ∀ i, toPic (Δ i) = toPic (Δ' i)) :
     Y.inter Δ = Y.inter Δ' := inter_eq_of_toPic_eq (fun i => isLB_toLB (Δ' i)) e
 
-theorem inter_eq_zero_of_principal (Δ : Fin Y.dim → Y.Dv) (i : Fin Y.dim) (g : Y.Fnˣ)
-    (h : Δ i = principal g) : Y.inter Δ = 0 :=
-  interNum_eq_zero_of_cls_eq_zero F _ (fun i => isLB_toLB (Δ i)) i
-    ((toPic_apply _).symm.trans (h ▸ toPic_principal g))
 
 theorem inter_comp_perm (Δ : Fin Y.dim → Y.Dv) (σ : Equiv.Perm (Fin Y.dim)) :
     Y.inter (Δ ∘ σ) = Y.inter Δ :=
@@ -136,8 +115,6 @@ theorem inter_comp_perm (Δ : Fin Y.dim → Y.Dv) (σ : Equiv.Perm (Fin Y.dim)) 
 
 theorem inter_const (Δ : Y.Dv) : Y.inter (fun _ => Δ) = topSelfIntersection F (Y.lb Δ) Y.dim := rfl
 
-theorem del_linSys {Δ : Y.Dv} {n : ℕ} (b : Fin n → Y.H0 Δ) :
-    (Y.linSys b).del = Y.inter fun _ => Δ := rfl
 
 theorem diffVanish_chi : DiffVanish (Y.dim + 1) Y.chi :=
   (diffVanish_chiPic_of_isProjOver Y.algebraMap_Γ (structureModule Y.X) Y.isProjOver
@@ -153,9 +130,6 @@ theorem inter_update_add (Δ : Fin Y.dim → Y.Dv) (i : Fin Y.dim) (A B : Y.Dv) 
       Y.inter (Function.update Δ i A) + Y.inter (Function.update Δ i B) := by
   simp only [← interForm_apply, MultilinearMap.map_update_add]
 
-theorem inter_update_zsmul (Δ : Fin Y.dim → Y.Dv) (i : Fin Y.dim) (n : ℤ) (A : Y.Dv) :
-    Y.inter (Function.update Δ i (n • A)) = n * Y.inter (Function.update Δ i A) := by
-  simp only [← interForm_apply, MultilinearMap.map_update_smul, smul_eq_mul]
 
 theorem inter_zsmul (n : Fin Y.dim → ℤ) (Δ : Fin Y.dim → Y.Dv) :
     Y.inter (fun i => n i • Δ i) = (∏ i, n i) * Y.inter Δ := by
@@ -183,21 +157,7 @@ def IsCurve (Z : Y.Cl) : Prop :=
 
 def deg (C : Y.Cl) (Δ : Y.Dv) : ℤ := interNumRed F C ![Y.lb Δ]
 
-theorem finiteCoh_sheafOn (Z : Y.Cl) (Δ : Y.Dv) : FiniteCoh F (Y.sheafOn Z Δ) := by
-  letI := algebraΓAlong F (redι Z)
-  have hf := algebraMap_eq_strHom F (Scheme.IdealSheafData.vanishingIdeal Z).subscheme
-  have : IsProper (strHom F (Scheme.IdealSheafData.vanishingIdeal Z).subscheme) := by
-    rw [← comp_strHom (appTop_algebraMap_along F (redι Z)), strHom_eq Y.algebraMap_Γ]
-    infer_instance
-  exact ((Y.isAmple_projective_O_one.pull_of_isClosedImmersion (redι Z)).finiteCohTwists hf
-    (structureModule _)).pushforward_of_isClosedImmersion (appTop_algebraMap_along F (redι Z)) _
-      (isLB_toLB Δ)
 
-theorem chiOn_eq_chi_pull (Z : Y.Cl) (Δ : Y.Dv) :
-    letI := algebraΓAlong F (redι Z)
-    Y.chiOn Z Δ = GlobalTheory.chi F (twist (structureModule _) ((Y.lb Δ).pull (redι Z))) :=
-  letI := algebraΓAlong F (redι Z)
-  chi_twist_pushforward_of_isClosedImmersion (appTop_algebraMap_along F (redι Z)) _ _
 
 theorem interOn_eq_multiDiff (Z : Y.Cl) {d : ℕ} (Δ : Fin d → Y.Dv) :
     Y.interOn Z Δ = multiDiff Δ (Y.chiOn Z) 0 := by
@@ -206,9 +166,6 @@ theorem interOn_eq_multiDiff (Z : Y.Cl) {d : ℕ} (Δ : Fin d → Y.Dv) :
   rw [Function.comp_apply, map_zero] at e
   exact (interNum_eq_multiDiff F _ fun i => isLB_toLB (Δ i)).trans e.symm
 
-theorem interOn_eq_sum (Z : Y.Cl) {d : ℕ} (Δ : Fin d → Y.Dv) :
-    Y.interOn Z Δ = ∑ S : Finset (Fin d), (-1 : ℤ) ^ S.card * Y.chiOn Z (-∑ i ∈ S, Δ i) := by
-  simp only [interOn_eq_multiDiff, multiDiff_apply, zero_sub, smul_eq_mul]
 
 variable {Y} in
 
@@ -216,27 +173,12 @@ theorem interOn_congr (Z : Y.Cl) {d : ℕ} {Δ Δ' : Fin d → Y.Dv}
     (e : ∀ i, toPic (Δ i) = toPic (Δ' i)) : Y.interOn Z Δ = Y.interOn Z Δ' :=
   interNum_congr_cls F _ (fun i => isLB_toLB (Δ i)) (fun i => isLB_toLB (Δ' i)) e
 
-theorem interOn_comp_perm (Z : Y.Cl) {d : ℕ} (Δ : Fin d → Y.Dv) (σ : Equiv.Perm (Fin d)) :
-    Y.interOn Z (Δ ∘ σ) = Y.interOn Z Δ :=
-  interNum_comp_perm F _ (L := fun i => Y.lb (Δ i)) (fun i => isLB_toLB (Δ i)) σ
 
-theorem chiOn_top (Δ : Y.Dv) : Y.chiOn ⊤ Δ = Y.chi Δ := by
-  have h := InterModel.interNumRed_eq_interNumOn F (𝟙 Y.X) ⊤ (by simp) ![Y.lb (-Δ)]
-  have h₀ := InterModel.interNumRed_eq_interNumOn F (𝟙 Y.X) ⊤ (by simp) (![] : Fin 0 → LB Y.X)
-  rw [interNumOn_id] at h h₀
-  have hL := isLB_toLB (-Δ)
-  have e : cls _ (isLB_toLB Δ) = -cls _ hL := by rw [← toPic_apply, ← toPic_apply, map_neg, neg_neg]
-  have h₁ := (interNum_cons_of_cls_eq_neg F _ (P := ![]) hL isEmptyElim _ e).symm.trans
-    (h.trans (interNum_cons_of_cls_eq_neg F _ (P := ![]) hL isEmptyElim _ e))
-  rw [← h₀, interNum_of_isEmpty F (twist _ _), interNum_of_isEmpty F (twist _ _)] at h₁
-  exact sub_right_injective h₁
 
 theorem interOn_top_eq_interNum {d : ℕ} (Δ : Fin d → Y.Dv) :
     Y.interOn ⊤ Δ = interNum F (structureModule Y.X) fun i => Y.lb (Δ i) := by
   rw [interOn, InterModel.interNumRed_eq_interNumOn F (𝟙 _) ⊤ (by simp), interNumOn_id]
 
-theorem interOn_top (Δ : Fin Y.dim → Y.Dv) : Y.interOn ⊤ Δ = Y.inter Δ :=
-  Y.interOn_top_eq_interNum Δ
 
 variable {Y} in
 
@@ -350,11 +292,6 @@ theorem deg_nonneg_of_generatesAt {Δ : Y.Dv} {f : Y.Fn} (hf : f ∈ Y.H0 Δ) {x
   exact ⟨H.1, fun ⟨y, hy, hy'⟩ =>
     H.2 ⟨y, hy, ((presents_toLB Δ).vanishesAt_rat_iff _).1 (e.symm ▸ hy')⟩⟩
 
-theorem deg_nonneg_of_eff {Δ : Y.Dv} (h : Y.Eff Δ) (hs : ¬ Y.subCl C (Y.supp Δ)) :
-    0 ≤ Y.deg C Δ ∧ ((∃ y ∈ C, y ∈ Y.supp Δ) → 0 < Y.deg C Δ) := by
-  obtain ⟨x, hx, hx'⟩ := SetLike.not_le_iff_exists.1 hs
-  have H := hC.deg_nonneg_of_generatesAt (eff_iff_one_mem.1 h) hx (notMem_supp_iff.1 hx')
-  exact ⟨H.1, fun ⟨y, hy, hy'⟩ => H.2 ⟨y, hy, (CartierDiv.Eff.mem_supp_iff h).1 hy'⟩⟩
 
 end IsCurve
 
@@ -397,14 +334,8 @@ theorem ample_iff_of_toPic_eq (hL : L.IsLB) (e : toPic Δ = cls L hL) : Y.ample 
   ⟨fun h => h.of_lbIso hL ((cls_eq_iff _ _).1 e.symm),
     fun h => h.of_lbIso (isLB_toLB Δ) ((cls_eq_iff _ _).1 e)⟩
 
-theorem nef_congr (e : toPic A = toPic B) : Y.nef A ↔ Y.nef B :=
-  nef_iff_of_toPic_eq (isLB_toLB B) e
 
-theorem big_congr (e : toPic A = toPic B) : Y.big A ↔ Y.big B :=
-  big_iff_of_toPic_eq (isLB_toLB B) e
 
-theorem ample_congr (e : toPic A = toPic B) : Y.ample A ↔ Y.ample B :=
-  ample_iff_of_toPic_eq (isLB_toLB B) e
 
 variable (Y) in
 
@@ -434,14 +365,6 @@ theorem ample.deg_pos (h : Y.ample A) {C : Y.Cl} (hC : Y.IsCurve C) : 0 < Y.deg 
 
 theorem ample.nef (h : Y.ample A) : Y.nef A := IsAmpleLB.isNef h
 
-theorem ample.eventually_hdim_eq_zero (h : Y.ample A) (Δ : Y.Dv) :
-    ∀ᶠ n : ℕ in atTop, ∀ i, 0 < i → Y.hdim i (Δ + n • A) = 0 :=
-  (IsAmpleLB.eventually_subsingleton_coh_twist Y.algebraMap_Γ (Y.sheaf Δ) h).mono fun n hn i hi => by
-    obtain ⟨e⟩ := nonempty_twist_twist_iso_of_cls_eq (structureModule Y.X) (isLB_toLB Δ)
-      (isLB_lbPow (isLB_toLB A) n) (isLB_toLB (Δ + n • A))
-      (by rw [cls_lbPow (isLB_toLB A), ← toPic_apply, ← toPic_apply, ← toPic_apply, map_add,
-        map_nsmul])
-    exact (Y.hdim_eq_zero_iff i _).2 ((cohOn.mapIso F ⊤ i e).toEquiv.subsingleton_congr.1 (hn i hi))
 
 variable (Y) in
 
@@ -465,10 +388,6 @@ theorem big_nsmul_iff {n : ℕ} (hn : 1 ≤ n) : Y.big (n • Δ) ↔ Y.big Δ :
     (by rw [cls_lbPow (isLB_toLB Δ), map_nsmul, toPic_apply])).trans
       (isBig_pow_iff Y.algebraMap_Γ Y.isProjOver (isLB_toLB Δ) hn)
 
-theorem big.isBig_frequently_riemannRoch_ne_bot (h : Y.big Δ) : ∃ᶠ n : ℕ in atTop, Y.H0 (n • Δ) ≠ ⊥ :=
-  (IsBig.frequently_hasNonzeroSec h).mono fun n hn => hasNonzeroSec_iff.1
-    (hn.of_cls_eq (isLB_toLB _) (isLB_lbPow (isLB_toLB Δ) n)
-      (by rw [cls_lbPow (isLB_toLB Δ), ← toPic_apply, ← toPic_apply, map_nsmul]))
 
 theorem not_big_zero (h : 1 ≤ Y.dim) : ¬ Y.big 0 := fun hb => by
   obtain ⟨c, hc, hn⟩ := big_iff.1 hb
@@ -531,13 +450,8 @@ theorem inter_zsmul_projHyp (d : Fin n → ℤ) :
     (proj F n).inter (fun i => d i • projHyp F n) = ∏ i, d i :=
   ((proj F n).inter_zsmul d fun _ => projHyp F n).trans (by rw [inter_projHyp]; exact mul_one _)
 
-theorem exists_inter_eq_one :
-    ∃ (Y : Var F) (Δ : Y.Dv), Y.dim = n ∧ Y.inter (fun _ => Δ) = 1 :=
-  ⟨proj F n, projHyp F n, rfl, inter_projHyp F n⟩
 
-theorem ample_projHyp : (proj F n).ample (projHyp F n) := (proj F n).ample_hyp _
 
-theorem nef_projHyp : (proj F n).nef (projHyp F n) := (ample_projHyp F n).nef
 
 theorem big_projHyp : (proj F n).big (projHyp F n) := by
   refine Var.big_iff.2 ⟨(n.factorial : ℝ)⁻¹, by positivity, Frequently.of_forall fun m => ?_⟩

@@ -327,10 +327,6 @@ include h
 theorem preimage_le (W : Y.Opens) (g : G) : π ⁻¹ᵁ W ≤ (ρ g).hom ⁻¹ᵁ π ⁻¹ᵁ W :=
   preimage_le_of_invariant ρ π h.comp_eq W g
 
-theorem range_app (W : Y.Opens) :
-    Set.range (π.app W) = {s | IsInvariantSection ρ (π ⁻¹ᵁ W) s} :=
-  Set.ext fun s ↦ ⟨by rintro ⟨t, rfl⟩; exact isInvariantSection_app ρ π h.comp_eq W t,
-    h.mem_range_app W s⟩
 
 theorem isSchemeTheoreticallyDominant : IsSchemeTheoreticallyDominant π :=
   have := h.isAffineHom

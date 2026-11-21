@@ -230,24 +230,7 @@ theorem cp_jacobi (p q r k : Pos n) :
   rw [e, e, e]
   ring
 
-theorem sum_cst (p q r k : Ix n) : ∑ i, cst p q i * cst i r k =
-    if k.1 = (p.1 && q.1 && r.1) then ∑ m, cp p.2 q.2 m * cp m r.2 k.2 else 0 := by
-  obtain ⟨s, p⟩ := p
-  obtain ⟨t, q⟩ := q
-  obtain ⟨u, r⟩ := r
-  obtain ⟨w, k⟩ := k
-  rw [Fintype.sum_prod_type]
-  cases s <;> cases t <;> cases u <;> cases w <;> simp [cst]
 
-theorem cst_jacobi (p q r k : Ix n) :
-    ∑ i, cst p q i * cst i r k + ∑ i, cst q r i * cst i p k + ∑ i, cst r p i * cst i q k = 0 := by
-  rw [sum_cst, sum_cst, sum_cst]
-  have h1 : (q.1 && r.1 && p.1) = (p.1 && q.1 && r.1) := by cases p.1 <;> cases q.1 <;> cases r.1 <;> rfl
-  have h2 : (r.1 && p.1 && q.1) = (p.1 && q.1 && r.1) := by cases p.1 <;> cases q.1 <;> cases r.1 <;> rfl
-  rw [h1, h2]
-  split_ifs
-  · exact cp_jacobi _ _ _ _
-  · simp
 
 end Constants
 
@@ -444,15 +427,5 @@ theorem rl_comm {E1 E2 : Fin n → Fin n → Module.End ℂ V} (h : Pair2 E1 E2)
 
 end Letters
 
-theorem bdSqR : BdSqR := by
-  intro n V _ _ E1 E2 h
-  have hL : ∀ i j : Ix n, (liftR n (rl E1 E2 i) : Module.End ℂ (Cr n V)) * liftR n (rl E1 E2 j) -
-      liftR n (rl E1 E2 j) * liftR n (rl E1 E2 i) = ∑ k, cst i j k • (liftR n (rl E1 E2 k) : Module.End ℂ (Cr n V)) := by
-    intro i j
-    refine LinearMap.ext fun x => funext fun A => ?_
-    have := LinearMap.congr_fun (rl_comm h i j) (x A)
-    simpa [lift_apply, LinearMap.sum_apply, Finset.sum_apply] using this
-  exact d_sq cst (fun i => (liftR n (rl E1 E2 i) : Module.End ℂ (Cr n V))) annR creR hL
-    (fun i j => lift_ann _ j) (fun i j => lift_cre _ j) cst_anti cst_jacobi ann_ann cre_cre ann_cre
 
 end GlobalTheory.CompanionTheory.RealMult.BdSqProof

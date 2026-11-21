@@ -2,17 +2,735 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.ApplyEqOfMemAdjoin
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsTopWTopWOfExists
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EdgeCupProps
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsAlgZpMapOfAlgebraic
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsGaloisInvariantValuationIntegersEqIntegral
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsConjOverPrime
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.AlgebraicElementApproximation
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.AutomorphismOnExtensionPointwise
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.AutomorphismExtensionUniform
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FrobeniusPowerBasisIndependent
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FrobeniusPowerReductionCongruence
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LaurentSeriesAlgebraicConstant
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ResidueAlgebraicPolynomialDivisible
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsLogDerivQExpansionModPrimePowUnique
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsLogDerivQExpansionModPrimePowOfTranslation
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EvalSeriesCongIffCoeffAndIsUnit
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EvOfFintype
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.Geofix
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsLocalValueOfQuotientAddOfCommonDenominator
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IoConstOfMem
+import Development.AbelianVarietyTheory.Definitions.Foundations.MemRingOfInR
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsModularFunctionTowerAlgebraicCoefficients
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsEqExpOfRat
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsReparametrizationByTowerParameter
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EvalSeriesAndDerivUniqueOfCoefficients
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GnFixZeta
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelLogCoordsStatement
 
+section
+section
+open scoped MatrixGroups
+open GlobalTheory.KZ GlobalTheory.Glue GlobalTheory.K5 GlobalTheory.KummerEisensteinGalois
+
+namespace GlobalTheory.K5
+
+theorem exists_valuationSubring_isInt_comap :
+    ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (p : ℕ) [Fact p.Prime] (Ωl : Type)
+      [Field Ωl] [Algebra (O0 p) Ωl], IsClo p Ωl → ∀ j : Ω →+* Ωl,
+      ∃ B : ValuationSubring Ω, ((p : ℕ) : Ω) ∈ B.nonunits ∧ ∀ x, x ∈ B ↔ IsInt p (j x) := by
+  intro Ω _ _ _ p _ Ωl _ _ hC j
+  obtain ⟨v, hv, -, -, hp1⟩ := exists_valuation_isInt p Ωl hC
+  let w : Valuation Ω NNReal := v.comap j
+  refine ⟨w.valuationSubring, ?_, fun x => ?_⟩
+  · rw [ValuationSubring.mem_nonunits_iff, ← map_one w.valuationSubring.valuation,
+      ← w.isEquiv_valuation_valuationSubring.lt_iff_lt, map_one]
+    show v (j ((p : ℕ) : Ω)) < 1
+    rw [map_natCast]
+    exact hp1
+  · rw [Valuation.mem_valuationSubring_iff]
+    exact hv (j x)
+
+end GlobalTheory.K5
+end
+
+open scoped MatrixGroups
+open GlobalTheory.KZ GlobalTheory.Glue GlobalTheory.K5 GlobalTheory.KummerEisensteinGalois
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_valuationSubring_pullback_integral_elements : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (p : ℕ) [Fact p.Prime] (Ωl : Type) [Field Ωl] [Algebra (O0 p) Ωl], IsClo p Ωl → ∀ j : Ω →+* Ωl, ∃ B : ValuationSubring Ω, ((p : ℕ) : Ω) ∈ B.nonunits ∧ ∀ x, x ∈ B ↔ IsInt p (j x) := by
+  atlas_forward_decl GlobalTheory.K5.exists_valuationSubring_isInt_comap
+end
+
+section
+open scoped MatrixGroups
+open GlobalTheory.KZ GlobalTheory.Glue GlobalTheory.K5 GlobalTheory.KummerEisensteinGalois
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_algEquiv_map_valuationSubring_over_prime : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (p : ℕ) [Fact p.Prime] (A B : ValuationSubring Ω), ((p : ℕ) : Ω) ∈ A.nonunits → ((p : ℕ) : Ω) ∈ B.nonunits → ∃ σ : Ω ≃ₐ[ℚ] Ω, ∀ x, σ x ∈ B ↔ x ∈ A := by
+  first | exact @GlobalTheory.ValConjClosure.exists_conj_over_prime | exact GlobalTheory.ValConjClosure.exists_conj_over_prime | (intros; apply GlobalTheory.ValConjClosure.exists_conj_over_prime <;> assumption)
+end
+
+section
+section
+open scoped MatrixGroups
+open GlobalTheory.KZ GlobalTheory.Glue GlobalTheory.K5 GlobalTheory.KummerEisensteinGalois
+
+namespace GlobalTheory.K5.DenseAlg
+
+theorem exists_mem_cong : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (p : ℕ) [Fact p.Prime]
+    (A : ValuationSubring Ω) (Ωl : Type) [Field Ωl] [Algebra (O0 p) Ωl], IsClo p Ωl → ∀ j : Ω →+* Ωl,
+    (∀ x, x ∈ A ↔ IsInt p (j x)) → ∀ (k : ℕ) (e : Ωl), IsInt p e → IsAlgZp p e → ∃ a ∈ A, Cong p k e (j a) := by
+  intro Ω _ _ _ p _ A Ωl _ _ hclo j hA k e he halg
+  haveI : IsAlgClosed Ω := IsAlgClosure.isAlgClosed ℚ
+  obtain ⟨a, ha, hc⟩ := GlobalTheory.K5.Dense.exists_cong p Ωl hclo Ω j k e he halg
+  exact ⟨a, (hA a).2 ha, hc⟩
+
+end GlobalTheory.K5.DenseAlg
+end
+
+open scoped MatrixGroups
+open GlobalTheory.KZ GlobalTheory.Glue GlobalTheory.K5 GlobalTheory.KummerEisensteinGalois
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_algebraicNumber_congr_mod_prime_pow : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (p : ℕ) [Fact p.Prime] (A : ValuationSubring Ω) (Ωl : Type) [Field Ωl] [Algebra (O0 p) Ωl], IsClo p Ωl → ∀ j : Ω →+* Ωl, (∀ x, x ∈ A ↔ IsInt p (j x)) → ∀ (k : ℕ) (e : Ωl), IsInt p e → IsAlgZp p e → ∃ a ∈ A, Cong p k e (j a) := by
+  atlas_forward_decl GlobalTheory.K5.DenseAlg.exists_mem_cong
+end
+
+section
+section
+open scoped MatrixGroups
+open GlobalTheory.KZ GlobalTheory.Glue GlobalTheory.K5 GlobalTheory.KummerEisensteinGalois
+
+namespace GlobalTheory.CuspDown
+
+theorem exists_restrict : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (p : ℕ) [Fact p.Prime] (A : ValuationSubring Ω) (Ωl : Type) [Field Ωl] [Algebra (O0 p) Ωl], IsClo p Ωl → ∀ j : Ω →+* Ωl, (∀ x, x ∈ A ↔ IsInt p (j x)) → ∀ g : Gal p Ωl, ∃ s : Ω ≃ₐ[ℚ] Ω, Stab A s ∧ ∀ x, g (j x) = j (s x) := by
+  intro Ω _ _ _ p _ A Ωl _ _ hC j hA g
+  haveI : CharZero Ωl := GlobalTheory.K5.Basic.charZero_of_isClo hC
+  letI : Algebra Ω Ωl := j.toAlgebra
+  haveI : IsScalarTower ℚ Ω Ωl := IsScalarTower.of_algebraMap_eq fun x => by
+    rw [RingHom.algebraMap_toAlgebra, eq_ratCast (algebraMap ℚ Ωl), eq_ratCast (algebraMap ℚ Ω), map_ratCast]
+  haveI : Normal ℚ Ω := IsAlgClosure.normal ℚ Ω
+  let gq : Ωl ≃ₐ[ℚ] Ωl := AlgEquiv.ofRingEquiv (f := g.toRingEquiv) (fun x => by
+    simp only [eq_ratCast, AlgEquiv.toRingEquiv_eq_coe, RingEquiv.coe_toEquiv, AlgEquiv.coe_ringEquiv]
+    exact map_ratCast g x)
+  have hc : ∀ x, g (j x) = j (gq.restrictNormal Ω x) := fun x => by
+    have := AlgEquiv.restrictNormal_commutes gq Ω x
+    rw [RingHom.algebraMap_toAlgebra] at this
+    rw [this]; rfl
+  refine ⟨gq.restrictNormal Ω, fun x => ?_, hc⟩
+  rw [hA, hA, ← hc]
+  constructor
+  · intro h
+    have := GlobalTheory.K5.Basic.isInt_gal g.symm h
+    rwa [AlgEquiv.symm_apply_apply] at this
+  · exact GlobalTheory.K5.Basic.isInt_gal g
+
+end GlobalTheory.CuspDown
+end
+
+open scoped MatrixGroups
+open GlobalTheory.KZ GlobalTheory.Glue GlobalTheory.K5 GlobalTheory.KummerEisensteinGalois
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_algClosure_automorphism_restricting_local : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (p : ℕ) [Fact p.Prime] (A : ValuationSubring Ω) (Ωl : Type) [Field Ωl] [Algebra (O0 p) Ωl], IsClo p Ωl → ∀ j : Ω →+* Ωl, (∀ x, x ∈ A ↔ IsInt p (j x)) → ∀ g : Gal p Ωl, ∃ s : Ω ≃ₐ[ℚ] Ω, Stab A s ∧ ∀ x, g (j x) = j (s x) := by
+  atlas_forward_decl GlobalTheory.CuspDown.exists_restrict
+end
+
+section
+section
+noncomputable section
+
+namespace GlobalTheory.Glue.CuspUp
+
+open GlobalTheory.K5 GlobalTheory.KZ Polynomial
+open scoped NNReal
+
+section Local
+
+variable {p : ℕ} [hp : Fact p.Prime] {Ωl : Type} [Field Ωl] [Algebra (O0 p) Ωl]
+  {v : Valuation Ωl ℝ≥0}
+
+theorem v_alg_le (hv : ∀ x : Ωl, v x ≤ 1 ↔ IsInt p x) (b : O0 p) : v (algebraMap (O0 p) Ωl b) ≤ 1 :=
+  (hv _).2 isIntegral_algebraMap
+
+theorem v_alg_lt_iff (hv : ∀ x : Ωl, v x ≤ 1 ↔ IsInt p x) (h1 : v (p : Ωl) < 1) (b : O0 p) :
+    v (algebraMap (O0 p) Ωl b) < 1 ↔ (p : O0 p) ∣ b := by
+  obtain ⟨_, hd, hirr⟩ := completed_laurent_isDVR p
+  constructor
+  · intro hb
+    rw [← Ideal.mem_span_singleton, ← hirr.maximalIdeal_eq]
+    intro hu
+    obtain ⟨c, hc⟩ := hu.exists_right_inv
+    have h2 : v (algebraMap (O0 p) Ωl b) * v (algebraMap (O0 p) Ωl c) = 1 := by
+      rw [← map_mul, ← map_mul, hc, map_one, map_one]
+    exact absurd h2 (mul_lt_one_of_nonneg_of_lt_one_left zero_le hb (v_alg_le hv c)).ne
+  · rintro ⟨c, rfl⟩
+    rw [map_mul, map_mul, map_natCast]
+    exact mul_lt_one_of_nonneg_of_lt_one_left zero_le h1 (v_alg_le hv c)
+
+theorem exists_red : ∃ φ : O0 p →+* LaurentSeries (ZMod p),
+    φ (qO p) = HahnSeries.single (1 : ℤ) (1 : ZMod p) ∧ ∀ b, φ b = 0 ↔ (p : O0 p) ∣ b := by
+  obtain ⟨e, he⟩ := exists_completedLaurent_quot_prime_equiv_laurentFp p
+  refine ⟨e.toRingHom.comp (Ideal.Quotient.mk _), he, fun b => ?_⟩
+  rw [← Ideal.mem_span_singleton, ← Ideal.Quotient.eq_zero_iff_mem]
+  exact e.map_eq_zero_iff
+
+theorem isInt_qq (T : K5.Tower p Ωl) (n : ℕ) : IsIntegral (O0 p) (T.qq n) := by
+  refine IsIntegral.of_pow (pow_pos hp.out.pos n) ?_
+  rw [Basic.qq_pow]
+  exact isIntegral_algebraMap
+
+theorem v_aeval_le (hv : ∀ x : Ωl, v x ≤ 1 ↔ IsInt p x) (T : K5.Tower p Ωl) (n : ℕ) (f : (O0 p)[X]) :
+    v (aeval (T.qq n) f) ≤ 1 :=
+  (hv _).2 (IsIntegral.of_mem_of_fg _ (isInt_qq T n).fg_adjoin_singleton _
+    (aeval_mem_adjoin_singleton _ _))
+
+theorem orth (h : IsClo p Ωl) (hv : ∀ x : Ωl, v x ≤ 1 ↔ IsInt p x) (h1 : v (p : Ωl) < 1)
+    (T : K5.Tower p Ωl) (n : ℕ) (f : (O0 p)[X]) (hf : f.natDegree < p ^ n)
+    (hlt : v (aeval (T.qq n) f) < 1) : C (p : O0 p) ∣ f := by
+  obtain ⟨φ, hq, hφ⟩ := exists_red (p := p)
+  have h2 := GlobalTheory.aeval_qq_pow_sub_lt_one p Ωl h v hv h1 T n f hf
+  have h3 : v (aeval (T.qq n) f ^ (p ^ n)) < 1 := by
+    rw [map_pow]; exact pow_lt_one₀ zero_le hlt (pow_pos hp.out.pos n).ne'
+  have h4 := v.map_sub_lt h3 h2
+  rw [sub_sub_cancel, v_alg_lt_iff hv h1, ← hφ] at h4
+  simp only [map_sum, map_mul, map_pow, hq] at h4
+  have h5 := GlobalTheory.laurent_pow_indep_over_prime_pow_powers p n (fun i => φ (f.coeff i)) h4
+  rw [C_dvd_iff_dvd_coeff]
+  intro i
+  by_cases hi : i < p ^ n
+  · exact (hφ _).1 (h5 i hi)
+  · rw [coeff_eq_zero_of_natDegree_lt (by omega)]; exact dvd_zero _
+
+theorem res (h : IsClo p Ωl) (hv : ∀ x : Ωl, v x ≤ 1 ↔ IsInt p x) (h1 : v (p : Ωl) < 1)
+    (T : K5.Tower p Ωl) (n : ℕ) (f : (O0 p)[X]) (hf : f.natDegree < p ^ n)
+    (halg : IsAlgebraic ℤ (aeval (T.qq n) f)) : ∃ m : ℤ, v (aeval (T.qq n) f - m) < 1 := by
+  obtain ⟨φ, hq, hφ⟩ := exists_red (p := p)
+  have h2 := GlobalTheory.aeval_qq_pow_sub_lt_one p Ωl h v hv h1 T n f hf
+  have hy := v_aeval_le hv T n f
+  set y := aeval (T.qq n) f
+  set b := ∑ i ∈ Finset.range (p ^ n), f.coeff i ^ (p ^ n) * qO p ^ i
+  obtain ⟨P, hP0, hP⟩ := GlobalTheory.K5.exists_int_poly_root_mod_p p Ωl h v hv h1 (y ^ p ^ n) b (halg.pow _)
+    (by rw [map_pow]; exact pow_le_one₀ zero_le hy) h2
+  obtain ⟨c, hc⟩ := GlobalTheory.laurentSeries_eq_C_of_root (ZMod p) (φ b) ⟨_, hP0, by
+    rw [← (hφ _).2 hP, eval₂_map, aeval_def, hom_eval₂]
+    congr 1
+    exact RingHom.ext_int _ _⟩
+  obtain ⟨m, rfl⟩ := ZMod.intCast_surjective c
+  refine ⟨m, ?_⟩
+  have h3 : v (algebraMap (O0 p) Ωl (b - (m : O0 p) ^ p ^ n)) < 1 := by
+    rw [v_alg_lt_iff hv h1, ← hφ, map_sub, hc, map_pow φ, map_intCast φ,
+      ← map_intCast (HahnSeries.C : ZMod p →+* LaurentSeries (ZMod p)), ← map_pow, ZMod.pow_card_pow, sub_self]
+  have hm : v (m : Ωl) ≤ 1 := (hv _).2 (Basic.isInt_intCast m)
+  let y' : v.integer := ⟨y - m, v.map_sub_le hy hm⟩
+  obtain ⟨r, hr⟩ := exists_add_pow_prime_pow_eq hp.out y' (m : v.integer) n
+  have hr' := congrArg (Subtype.val) hr
+  simp only [y'] at hr'
+  push_cast at hr'
+  have h4 : v ((p : Ωl) * (y - m) * m * r) < 1 := by
+    rw [mul_assoc, mul_assoc, map_mul]
+    exact mul_lt_one_of_nonneg_of_lt_one_left zero_le h1 (y' * ((m : v.integer) * r)).2
+  have h5 := v.map_sub_lt (v.map_add_lt h2 h3) h4
+  have h6 : y ^ p ^ n - algebraMap (O0 p) Ωl b + algebraMap (O0 p) Ωl (b - (m : O0 p) ^ p ^ n) -
+      (p : Ωl) * (y - m) * m * r = (y - m) ^ p ^ n := by
+    rw [map_sub, map_pow, map_intCast]
+    rw [sub_add_cancel] at hr'
+    linear_combination hr'
+  rw [h6, map_pow] at h5
+  exact lt_of_pow_lt_pow_left₀ (p ^ n) zero_le_one (by rwa [one_pow])
+
+variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω]
+
+theorem approx (h : IsClo p Ωl) (hv : ∀ x : Ωl, v x ≤ 1 ↔ IsInt p x) (h1 : v (p : Ωl) < 1)
+    (T : K5.Tower p Ωl) (n : ℕ) (j : Ω →+* Ωl) (s : Ω ≃ₐ[ℚ] Ω) (hs : ∀ x, v (j x) ≤ 1 → v (j (s x)) ≤ 1)
+    (N : ℕ) : ∀ (f : (O0 p)[X]) (a : Ω), f.natDegree < p ^ n → aeval (T.qq n) f = j a →
+      v (j (s a - a)) ≤ v (p : Ωl) ^ N := by
+  haveI := Basic.charZero_of_isClo h
+  haveI : CharZero Ω := algebraRat.charZero Ω
+  induction N with
+  | zero =>
+    intro f a _ ha
+    have h2 := v_aeval_le hv T n f
+    rw [ha] at h2
+    rw [map_sub, pow_zero]
+    exact v.map_sub_le (hs a h2) h2
+  | succ N ih =>
+    intro f a hf ha
+    have halg : IsAlgebraic ℤ a :=
+      (IsFractionRing.isAlgebraic_iff ℤ ℚ Ω).2 (Algebra.IsAlgebraic.isAlgebraic a)
+    obtain ⟨m, hm⟩ := res h hv h1 T n f hf (ha ▸ halg.algHom j.toIntAlgHom)
+    have hf' : (f - C (m : O0 p)).natDegree < p ^ n := by rwa [natDegree_sub_C]
+    obtain ⟨g, hg⟩ := orth h hv h1 T n _ hf' (by simpa using hm)
+    have hp0 : (p : Ω) ≠ 0 := by exact_mod_cast hp.out.ne_zero
+    have hpl : (p : Ωl) ≠ 0 := by exact_mod_cast hp.out.ne_zero
+    have hpO : (p : O0 p) ≠ 0 := by exact_mod_cast hp.out.ne_zero
+    have h3 := ih g ((a - m) / p) (by rwa [hg, natDegree_C_mul hpO] at hf') (by
+      have := congrArg (aeval (T.qq n)) hg
+      simp only [map_sub, map_mul, aeval_C, map_intCast, map_natCast, ha] at this
+      rw [map_div₀, map_sub, map_intCast, map_natCast, this, mul_div_cancel_left₀ _ hpl])
+    have h4 : s a - a = p * (s ((a - m) / p) - (a - m) / p) := by
+      rw [map_div₀, map_sub, map_intCast, map_natCast]; field_simp; ring
+    rw [h4, map_mul, map_mul, map_natCast, pow_succ']
+    exact mul_le_mul_right h3 _
+
+theorem fixed (h : IsClo p Ωl) (hv : ∀ x : Ωl, v x ≤ 1 ↔ IsInt p x) (h1 : v (p : Ωl) < 1)
+    (T : K5.Tower p Ωl) (n : ℕ) (j : Ω →+* Ωl) (s : Ω ≃ₐ[ℚ] Ω) (hs : ∀ x, v (j x) ≤ 1 → v (j (s x)) ≤ 1)
+    (f : (O0 p)[X]) (d : O0 p) (hd : d ≠ 0) (a : Ω)
+    (ha : aeval (T.qq n) f = algebraMap (O0 p) Ωl d * j a) : s a = a := by
+  haveI : CharZero Ω := algebraRat.charZero Ω
+  obtain ⟨_, hdv, hirr⟩ := completed_laurent_isDVR p
+  obtain ⟨m, u, rfl⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible hd hirr
+  have hpos := pow_pos hp.out.pos n
+  have hmon : (X ^ (p ^ n) - C (qO p)).Monic := monic_X_pow_sub_C _ hpos.ne'
+  have hdeg : ((C (↑u⁻¹ : O0 p) * f) %ₘ (X ^ (p ^ n) - C (qO p))).natDegree < p ^ n := by
+    have := natDegree_modByMonic_lt (C (↑u⁻¹ : O0 p) * f) hmon (fun h0 => by
+      have := congrArg natDegree h0
+      rw [natDegree_X_pow_sub_C, natDegree_one] at this
+      omega)
+    rwa [natDegree_X_pow_sub_C] at this
+  have hev : aeval (T.qq n) ((C (↑u⁻¹ : O0 p) * f) %ₘ (X ^ (p ^ n) - C (qO p))) = j ((p : Ω) ^ m * a) := by
+    rw [aeval_modByMonic_eq_self_of_root (by simp [Basic.qq_pow]), map_mul, aeval_C, ha, ← mul_assoc,
+      ← map_mul, Units.inv_mul_cancel_left]
+    simp
+  have h0 : v (j (s ((p : Ω) ^ m * a) - (p : Ω) ^ m * a)) = 0 := by
+    by_contra hne
+    obtain ⟨N, hN⟩ := exists_pow_lt_of_lt_one (pos_iff_ne_zero.2 hne) h1
+    exact absurd (approx h hv h1 T n j s hs N _ _ hdeg hev) (not_le.2 hN)
+  rw [v.zero_iff, map_eq_zero, sub_eq_zero, map_mul, map_pow, map_natCast] at h0
+  exact mul_left_cancel₀ (pow_ne_zero m (by exact_mod_cast hp.out.ne_zero)) h0
+
+theorem up (h : IsClo p Ωl) (hv : ∀ x : Ωl, v x ≤ 1 ↔ IsInt p x) (h1 : v (p : Ωl) < 1)
+    (T : K5.Tower p Ωl) (n : ℕ) (j : Ω →+* Ωl) (s : Ω ≃ₐ[ℚ] Ω) (hs : ∀ x, v (j x) ≤ 1 → v (j (s x)) ≤ 1) :
+    ∃ g : Gal p Ωl, g (T.qq n) = T.qq n ∧ ∀ x, g (j x) = j (s x) := by
+  haveI := h.clo
+  haveI := h.alg
+  haveI := Basic.charZero_of_isClo h
+  haveI : FaithfulSMul (O0 p) Ωl := (faithfulSMul_iff_algebraMap_injective _ _).2 h.inj
+  letI : Algebra (FractionRing (O0 p)) Ωl := FractionRing.liftAlgebra (O0 p) Ωl
+  haveI : IsScalarTower (O0 p) (FractionRing (O0 p)) Ωl := FractionRing.isScalarTower_liftAlgebra _ _
+  haveI : Algebra.IsAlgebraic (FractionRing (O0 p)) Ωl :=
+    (IsFractionRing.comap_isAlgebraic_iff (A := O0 p) (K := FractionRing (O0 p))).1 h.alg
+  let K := IntermediateField.adjoin (FractionRing (O0 p)) {T.qq n}
+  have hfix : ∀ a : Ω, j a ∈ Set.range (algebraMap K Ωl) → s a = a := by
+    rintro a ⟨⟨y, hy⟩, rfl : y = j a⟩
+    rw [← IntermediateField.mem_toSubalgebra, IntermediateField.adjoin_simple_toSubalgebra_of_isAlgebraic
+      (Algebra.IsAlgebraic.isAlgebraic _), Algebra.adjoin_singleton_eq_range_aeval] at hy
+    obtain ⟨f, hf⟩ := hy
+    obtain ⟨d, hd, hdf⟩ := IsLocalization.integerNormalization_spec (nonZeroDivisors (O0 p)) f
+    refine fixed h hv h1 T n j s hs
+      (IsLocalization.integerNormalization (nonZeroDivisors (O0 p)) f) d (nonZeroDivisors.ne_zero hd) a ?_
+    rw [← aeval_map_algebraMap (FractionRing (O0 p)), hdf, ← Algebra.smul_def, ← hf,
+      ← algebraMap_smul (FractionRing (O0 p)) d f, map_smul, algebraMap_smul]
+    rfl
+  obtain ⟨g, hg⟩ := GlobalTheory.exists_algEquiv_inducing_of_forall_conj Ω Ωl K j s (GlobalTheory.exists_algEquiv_apply_eq_of_fixes_preimage_base Ω Ωl K j s hfix)
+  refine ⟨(g.restrictScalars (FractionRing (O0 p))).restrictScalars (O0 p), ?_, hg⟩
+  exact g.commutes ⟨T.qq n, IntermediateField.mem_adjoin_simple_self _ _⟩
+
+end Local
+
+theorem exists_gal_fix_qq_of_stab {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (p : ℕ) [Fact p.Prime]
+    (A : ValuationSubring Ω) (Ωl : Type) [Field Ωl] [Algebra (O0 p) Ωl] (h : IsClo p Ωl) (j : Ω →+* Ωl)
+    (hA : ∀ x, x ∈ A ↔ IsInt p (j x)) (T : GlobalTheory.K5.Tower p Ωl) (n : ℕ) (s : Ω ≃ₐ[ℚ] Ω) (hs : Stab A s) :
+    ∃ g : Gal p Ωl, g (T.qq n) = T.qq n ∧ ∀ x, g (j x) = j (s x) := by
+  obtain ⟨v, hv, -, -, h1⟩ := exists_valuation_isInt p Ωl h
+  exact up h hv h1 T n j s fun x hx => (hv _).2 ((hA _).1 ((hs x).2 ((hA _).2 ((hv _).1 hx))))
+
+end GlobalTheory.Glue.CuspUp
+end
+end
+
+open scoped MatrixGroups
+open GlobalTheory.KZ GlobalTheory.Glue GlobalTheory.K5 GlobalTheory.KummerEisensteinGalois
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_local_aut_fixing_tower_param_of_stabilizes : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (p : ℕ) [Fact p.Prime] (A : ValuationSubring Ω) (Ωl : Type) [Field Ωl] [Algebra (O0 p) Ωl], IsClo p Ωl → ∀ j : Ω →+* Ωl, (∀ x, x ∈ A ↔ IsInt p (j x)) → ∀ (T : GlobalTheory.K5.Tower p Ωl) (n : ℕ) (s : Ω ≃ₐ[ℚ] Ω), Stab A s → ∃ g : Gal p Ωl, g (T.qq n) = T.qq n ∧ ∀ x, g (j x) = j (s x) := by
+  atlas_forward_decl GlobalTheory.Glue.CuspUp.exists_gal_fix_qq_of_stab
+end
+
+section
+open scoped MatrixGroups
+open GlobalTheory.KZ GlobalTheory.Glue GlobalTheory.K5 GlobalTheory.KummerEisensteinGalois
+
+namespace GlobalTheory.Glue
+
+theorem isAlgZp_map_of_algebraic : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (p : ℕ) [Fact p.Prime] (Ωl : Type) [Field Ωl] [Algebra (O0 p) Ωl] (j : Ω →+* Ωl) (x : Ω), IsAlgZp p (j x) := by
+  intro Ω _ _ _ p _ Ωl _ _ j x
+  have hx : IsAlgebraic ℚ x := Algebra.IsAlgebraic.isAlgebraic x
+  have hz : IsAlgebraic ℤ x := (IsFractionRing.isAlgebraic_iff ℤ ℚ Ω).2 hx
+  obtain ⟨P, hP, hPx⟩ := hz
+  refine ⟨P.map (Int.castRingHom ℤ_[p]), ?_, ?_⟩
+  · exact (Polynomial.map_ne_zero_iff (RingHom.injective_int _)).2 hP
+  · rw [Polynomial.map_map, Polynomial.aeval_def, Polynomial.eval₂_map]
+    have e1 : (algebraMap (O0 p) Ωl).comp ((algebraMap ℤ_[p] (O0 p)).comp (Int.castRingHom ℤ_[p])) = j.comp (algebraMap ℤ Ω) := RingHom.ext_int _ _
+    rw [e1, ← Polynomial.hom_eval₂, ← Polynomial.aeval_def, hPx, map_zero]
+
+theorem zt_prim_and_pow : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (l n : ℕ), 0 < l → IsPrimitiveRoot (zt ε l n) (l ^ n) ∧ zt ε l (n + 1) ^ l = zt ε l n := by
+  intro Ω _ _ _ ε l n hl
+  haveI : CharZero Ω := charZero_of_injective_algebraMap (algebraMap ℚ Ω).injective
+  haveI : IsAlgClosed Ω := IsAlgClosure.isAlgClosed ℚ
+  have hkey : ∀ m : ℕ, ε (zt ε l m) = Complex.exp (2 * Real.pi * Complex.I / ((l ^ m : ℕ) : ℂ)) := by
+    intro m
+    have hN : l ^ m ≠ 0 := pow_ne_zero _ hl.ne'
+    have hw : Complex.exp (2 * Real.pi * Complex.I * (((1 / (l : ℚ) ^ m : ℚ)) : ℂ)) =
+        Complex.exp (2 * Real.pi * Complex.I / ((l ^ m : ℕ) : ℂ)) := by
+      congr 1; push_cast; ring
+    haveI : NeZero ((l ^ m : ℕ) : Ω) := ⟨by exact_mod_cast hN⟩
+    haveI : NeZero (l ^ m) := ⟨hN⟩
+    obtain ⟨z, hz⟩ := HasEnoughRootsOfUnity.exists_primitiveRoot Ω (l ^ m)
+    have hz' : IsPrimitiveRoot (ε z) (l ^ m) := hz.map_of_injective ε.injective
+    have hp := Complex.isPrimitiveRoot_exp (l ^ m) hN
+    obtain ⟨i, -, hi⟩ := hz'.eq_pow_of_pow_eq_one hp.pow_eq_one
+    have hex : ∃ y, ε y = Complex.exp (2 * Real.pi * Complex.I * (((1 / (l : ℚ) ^ m : ℚ)) : ℂ)) :=
+      ⟨z ^ i, by rw [map_pow, hi, hw]⟩
+    show ε (Function.invFun ε _) = _
+    rw [Function.invFun_eq hex, hw]
+  refine ⟨?_, ?_⟩
+  · rw [← IsPrimitiveRoot.map_iff_of_injective (f := ε) ε.injective, hkey]
+    exact Complex.isPrimitiveRoot_exp _ (pow_ne_zero _ hl.ne')
+  · apply ε.injective
+    rw [map_pow, hkey, hkey, ← Complex.exp_nat_mul]
+    congr 1
+    have : (l : ℂ) ≠ 0 := by exact_mod_cast hl.ne'
+    push_cast
+    field_simp
+    ring
+
+theorem exists_cusp_embedding : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : GlobalTheory.KZ.Tower Ω ε), (∃ φ : ℂ → ℂ, DifferentiableOn ℂ φ Hs ∧ X.an X.jK = (φ : Mero)) →
+  ∀ (p : ℕ) [Fact p.Prime], p ≠ 2 → ∀ (A : ValuationSubring Ω), ((p : ℕ) : Ω) ∈ A.nonunits → ∃ (Ωl : Type) (_ : Field Ωl) (_ : Algebra (O0 p) Ωl), IsClo p Ωl ∧ ∃ (T : GlobalTheory.K5.Tower p Ωl) (j : Ω →+* Ωl), IsCusp ε A T j := by
+  intro Ω _ _ _ ε X _ p _ _ A hA
+  let Ωl := AlgebraicClosure (FractionRing (O0 p))
+  have hcl : IsClo p Ωl := GlobalTheory.K5.Basic.isClo_algebraicClosure p
+  haveI : CharZero Ωl := GlobalTheory.K5.Basic.charZero_of_isClo hcl
+  haveI : IsAlgClosed Ωl := hcl.clo
+  let j0 : Ω →+* Ωl := (IsAlgClosed.lift : Ω →ₐ[ℚ] Ωl).toRingHom
+  obtain ⟨B, hBp, hB⟩ := GlobalTheory.T.exists_valuationSubring_pullback_integral_elements p Ωl hcl j0
+  obtain ⟨σ, hσ⟩ := GlobalTheory.T.exists_algEquiv_map_valuationSubring_over_prime p A B hA hBp
+  let j : Ω →+* Ωl := j0.comp σ.toRingEquiv.toRingHom
+  have hint : ∀ x, x ∈ A ↔ IsInt p (j x) := fun x => (hσ x).symm.trans (hB _)
+  have hl : 0 < p := (Fact.out : p.Prime).pos
+  let T0 := (GlobalTheory.K5.Basic.nonempty_tower hcl).some
+  let T : GlobalTheory.K5.Tower p Ωl :=
+    { ζ := fun n => j (zt ε p n), qq := T0.qq,
+      prim := fun n => (zt_prim_and_pow ε p n hl).1.map_of_injective j.injective,
+      ζpow := fun n => by simp only [← map_pow, (zt_prim_and_pow ε p n hl).2],
+      q0 := T0.q0, qpow := T0.qpow }
+  refine ⟨Ωl, inferInstance, inferInstance, hcl, T, j, ?_⟩
+  exact { int := hint, alg := isAlgZp_map_of_algebraic p Ωl j, root := fun n => rfl,
+          dense := GlobalTheory.T.exists_algebraicNumber_congr_mod_prime_pow p A Ωl hcl j hint, down := GlobalTheory.T.exists_algClosure_automorphism_restricting_local p A Ωl hcl j hint,
+          up := fun n s hs => GlobalTheory.T.exists_local_aut_fixing_tower_param_of_stabilizes p A Ωl hcl j hint T n s hs }
+
+end GlobalTheory.Glue
+end
+
+section
+open GlobalTheory.K5 Polynomial
+open scoped NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.automorphism_on_extension_pointwise : ∀ (Ω L K : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] [Field L] [IsAlgClosed L] [Field K] [CharZero K] [Algebra K L] [Algebra.IsAlgebraic K L] (j : Ω →+* L) (s : Ω ≃ₐ[ℚ] Ω), (∀ a : Ω, j a ∈ Set.range (algebraMap K L) → s a = a) → ∀ x : Ω, ∃ g : L ≃ₐ[K] L, g (j x) = j (s x) := by
+  first | exact @GlobalTheory.exists_algEquiv_apply_eq_of_fixes_preimage_base | exact GlobalTheory.exists_algEquiv_apply_eq_of_fixes_preimage_base | (intros; apply GlobalTheory.exists_algEquiv_apply_eq_of_fixes_preimage_base <;> assumption)
+end
+
+section
+open GlobalTheory.K5 Polynomial
+open scoped NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.automorphism_extension_uniform : ∀ (Ω L K : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] [Field L] [IsAlgClosed L] [Field K] [CharZero K] [Algebra K L] [Algebra.IsAlgebraic K L] (j : Ω →+* L) (s : Ω ≃ₐ[ℚ] Ω), (∀ x : Ω, ∃ g : L ≃ₐ[K] L, g (j x) = j (s x)) → ∃ g : L ≃ₐ[K] L, ∀ x : Ω, g (j x) = j (s x) := by
+  first | exact @GlobalTheory.exists_algEquiv_inducing_of_forall_conj | exact GlobalTheory.exists_algEquiv_inducing_of_forall_conj | (intros; apply GlobalTheory.exists_algEquiv_inducing_of_forall_conj <;> assumption)
+end
+
+section
+open GlobalTheory.K5 Polynomial
+open scoped NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frobenius_power_basis_independent : ∀ (p : ℕ) [Fact p.Prime] (n : ℕ) (c : ℕ → LaurentSeries (ZMod p)), ∑ i ∈ Finset.range (p ^ n), c i ^ (p ^ n) * (HahnSeries.single (1 : ℤ) (1 : ZMod p)) ^ i = 0 → ∀ i < p ^ n, c i = 0 := by
+  first | exact @GlobalTheory.laurent_pow_indep_over_prime_pow_powers | exact GlobalTheory.laurent_pow_indep_over_prime_pow_powers | (intros; apply GlobalTheory.laurent_pow_indep_over_prime_pow_powers <;> assumption)
+end
+
+section
+open GlobalTheory.K5 Polynomial
+open scoped NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frobenius_power_reduction_congruence : ∀ (p : ℕ) [Fact p.Prime] (Ωl : Type) [Field Ωl] [Algebra (O0 p) Ωl], IsClo p Ωl → ∀ (v : Valuation Ωl ℝ≥0), (∀ x : Ωl, v x ≤ 1 ↔ IsInt p x) → v (p : Ωl) < 1 → ∀ (T : Tower p Ωl) (n : ℕ) (f : (O0 p)[X]), f.natDegree < p ^ n → v (aeval (T.qq n) f ^ (p ^ n) - algebraMap (O0 p) Ωl (∑ i ∈ Finset.range (p ^ n), f.coeff i ^ (p ^ n) * qO p ^ i)) < 1 := by
+  first | exact @GlobalTheory.aeval_qq_pow_sub_lt_one | exact GlobalTheory.aeval_qq_pow_sub_lt_one | (intros; apply GlobalTheory.aeval_qq_pow_sub_lt_one <;> assumption)
+end
+
+section
+open GlobalTheory.K5 Polynomial
+open scoped NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.laurent_series_algebraic_constant : ∀ (k : Type) [Field k] (f : LaurentSeries k), (∃ P : k[X], P ≠ 0 ∧ eval₂ HahnSeries.C f P = 0) → ∃ c : k, f = HahnSeries.C c := by
+  first | exact @GlobalTheory.laurentSeries_eq_C_of_root | exact GlobalTheory.laurentSeries_eq_C_of_root | (intros; apply GlobalTheory.laurentSeries_eq_C_of_root <;> assumption)
+end
+
+section
+open GlobalTheory.K5 Polynomial
+open scoped NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.residue_algebraic_polynomial_divisible : ∀ (p : ℕ) [Fact p.Prime] (Ωl : Type) [Field Ωl] [Algebra (O0 p) Ωl], IsClo p Ωl → ∀ (v : Valuation Ωl ℝ≥0), (∀ x : Ωl, v x ≤ 1 ↔ IsInt p x) → v (p : Ωl) < 1 → ∀ (y : Ωl) (b : O0 p), IsAlgebraic ℤ y → v y ≤ 1 → v (y - algebraMap (O0 p) Ωl b) < 1 → ∃ P : ℤ[X], P.map (Int.castRingHom (ZMod p)) ≠ 0 ∧ (p : O0 p) ∣ aeval b P := by
+  first | exact @GlobalTheory.K5.exists_int_poly_root_mod_p | exact GlobalTheory.K5.exists_int_poly_root_mod_p | (intros; apply GlobalTheory.K5.exists_int_poly_root_mod_p <;> assumption)
+end
+
+section
+noncomputable section
+
+namespace GlobalTheory.Glue.Cusp
+
+open GlobalTheory.K5 GlobalTheory.KZ Polynomial
+open scoped NNReal
+
+section Local
+
+variable {p : ℕ} [hp : Fact p.Prime] {Ωl : Type} [Field Ωl] [Algebra (O0 p) Ωl]
+  {v : Valuation Ωl ℝ≥0}
+
+theorem v_alg_le (hv : ∀ x : Ωl, v x ≤ 1 ↔ IsInt p x) (b : O0 p) : v (algebraMap (O0 p) Ωl b) ≤ 1 :=
+  (hv _).2 isIntegral_algebraMap
+
+theorem v_alg_lt_iff (hv : ∀ x : Ωl, v x ≤ 1 ↔ IsInt p x) (h1 : v (p : Ωl) < 1) (b : O0 p) :
+    v (algebraMap (O0 p) Ωl b) < 1 ↔ (p : O0 p) ∣ b := by
+  obtain ⟨_, hd, hirr⟩ := completed_laurent_isDVR p
+  constructor
+  · intro hb
+    rw [← Ideal.mem_span_singleton, ← hirr.maximalIdeal_eq]
+    intro hu
+    obtain ⟨c, hc⟩ := hu.exists_right_inv
+    have h2 : v (algebraMap (O0 p) Ωl b) * v (algebraMap (O0 p) Ωl c) = 1 := by
+      rw [← map_mul, ← map_mul, hc, map_one, map_one]
+    exact absurd h2 (mul_lt_one_of_nonneg_of_lt_one_left zero_le hb (v_alg_le hv c)).ne
+  · rintro ⟨c, rfl⟩
+    rw [map_mul, map_mul, map_natCast]
+    exact mul_lt_one_of_nonneg_of_lt_one_left zero_le h1 (v_alg_le hv c)
+
+theorem exists_red : ∃ φ : O0 p →+* LaurentSeries (ZMod p),
+    φ (qO p) = HahnSeries.single (1 : ℤ) (1 : ZMod p) ∧ ∀ b, φ b = 0 ↔ (p : O0 p) ∣ b := by
+  obtain ⟨e, he⟩ := exists_completedLaurent_quot_prime_equiv_laurentFp p
+  refine ⟨e.toRingHom.comp (Ideal.Quotient.mk _), he, fun b => ?_⟩
+  rw [← Ideal.mem_span_singleton, ← Ideal.Quotient.eq_zero_iff_mem]
+  exact e.map_eq_zero_iff
+
+theorem isInt_qq (T : K5.Tower p Ωl) (n : ℕ) : IsIntegral (O0 p) (T.qq n) := by
+  refine IsIntegral.of_pow (pow_pos hp.out.pos n) ?_
+  rw [Basic.qq_pow]
+  exact isIntegral_algebraMap
+
+theorem v_aeval_le (hv : ∀ x : Ωl, v x ≤ 1 ↔ IsInt p x) (T : K5.Tower p Ωl) (n : ℕ) (f : (O0 p)[X]) :
+    v (aeval (T.qq n) f) ≤ 1 :=
+  (hv _).2 (IsIntegral.of_mem_of_fg _ (isInt_qq T n).fg_adjoin_singleton _
+    (aeval_mem_adjoin_singleton _ _))
+
+theorem orth (h : IsClo p Ωl) (hv : ∀ x : Ωl, v x ≤ 1 ↔ IsInt p x) (h1 : v (p : Ωl) < 1)
+    (T : K5.Tower p Ωl) (n : ℕ) (f : (O0 p)[X]) (hf : f.natDegree < p ^ n)
+    (hlt : v (aeval (T.qq n) f) < 1) : C (p : O0 p) ∣ f := by
+  obtain ⟨φ, hq, hφ⟩ := exists_red (p := p)
+  have h2 := GlobalTheory.T.frobenius_power_reduction_congruence p Ωl h v hv h1 T n f hf
+  have h3 : v (aeval (T.qq n) f ^ (p ^ n)) < 1 := by
+    rw [map_pow]; exact pow_lt_one₀ zero_le hlt (pow_pos hp.out.pos n).ne'
+  have h4 := v.map_sub_lt h3 h2
+  rw [sub_sub_cancel, v_alg_lt_iff hv h1, ← hφ] at h4
+  simp only [map_sum, map_mul, map_pow, hq] at h4
+  have h5 := GlobalTheory.T.frobenius_power_basis_independent p n (fun i => φ (f.coeff i)) h4
+  rw [C_dvd_iff_dvd_coeff]
+  intro i
+  by_cases hi : i < p ^ n
+  · exact (hφ _).1 (h5 i hi)
+  · rw [coeff_eq_zero_of_natDegree_lt (by omega)]; exact dvd_zero _
+
+theorem res (h : IsClo p Ωl) (hv : ∀ x : Ωl, v x ≤ 1 ↔ IsInt p x) (h1 : v (p : Ωl) < 1)
+    (T : K5.Tower p Ωl) (n : ℕ) (f : (O0 p)[X]) (hf : f.natDegree < p ^ n)
+    (halg : IsAlgebraic ℤ (aeval (T.qq n) f)) : ∃ m : ℤ, v (aeval (T.qq n) f - m) < 1 := by
+  obtain ⟨φ, hq, hφ⟩ := exists_red (p := p)
+  have h2 := GlobalTheory.T.frobenius_power_reduction_congruence p Ωl h v hv h1 T n f hf
+  have hy := v_aeval_le hv T n f
+  set y := aeval (T.qq n) f
+  set b := ∑ i ∈ Finset.range (p ^ n), f.coeff i ^ (p ^ n) * qO p ^ i
+  obtain ⟨P, hP0, hP⟩ := GlobalTheory.T.residue_algebraic_polynomial_divisible p Ωl h v hv h1 (y ^ p ^ n) b (halg.pow _)
+    (by rw [map_pow]; exact pow_le_one₀ zero_le hy) h2
+  obtain ⟨c, hc⟩ := GlobalTheory.T.laurent_series_algebraic_constant (ZMod p) (φ b) ⟨_, hP0, by
+    rw [← (hφ _).2 hP, eval₂_map, aeval_def, hom_eval₂]
+    congr 1
+    exact RingHom.ext_int _ _⟩
+  obtain ⟨m, rfl⟩ := ZMod.intCast_surjective c
+  refine ⟨m, ?_⟩
+  have h3 : v (algebraMap (O0 p) Ωl (b - (m : O0 p) ^ p ^ n)) < 1 := by
+    rw [v_alg_lt_iff hv h1, ← hφ, map_sub, hc, map_pow φ, map_intCast φ,
+      ← map_intCast (HahnSeries.C : ZMod p →+* LaurentSeries (ZMod p)), ← map_pow, ZMod.pow_card_pow, sub_self]
+  have hm : v (m : Ωl) ≤ 1 := (hv _).2 (Basic.isInt_intCast m)
+  let y' : v.integer := ⟨y - m, v.map_sub_le hy hm⟩
+  obtain ⟨r, hr⟩ := exists_add_pow_prime_pow_eq hp.out y' (m : v.integer) n
+  have hr' := congrArg (Subtype.val) hr
+  simp only [y'] at hr'
+  push_cast at hr'
+  have h4 : v ((p : Ωl) * (y - m) * m * r) < 1 := by
+    rw [mul_assoc, mul_assoc, map_mul]
+    exact mul_lt_one_of_nonneg_of_lt_one_left zero_le h1 (y' * ((m : v.integer) * r)).2
+  have h5 := v.map_sub_lt (v.map_add_lt h2 h3) h4
+  have h6 : y ^ p ^ n - algebraMap (O0 p) Ωl b + algebraMap (O0 p) Ωl (b - (m : O0 p) ^ p ^ n) -
+      (p : Ωl) * (y - m) * m * r = (y - m) ^ p ^ n := by
+    rw [map_sub, map_pow, map_intCast]
+    rw [sub_add_cancel] at hr'
+    linear_combination hr'
+  rw [h6, map_pow] at h5
+  exact lt_of_pow_lt_pow_left₀ (p ^ n) zero_le_one (by rwa [one_pow])
+
+variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω]
+
+theorem approx (h : IsClo p Ωl) (hv : ∀ x : Ωl, v x ≤ 1 ↔ IsInt p x) (h1 : v (p : Ωl) < 1)
+    (T : K5.Tower p Ωl) (n : ℕ) (j : Ω →+* Ωl) (s : Ω ≃ₐ[ℚ] Ω) (hs : ∀ x, v (j x) ≤ 1 → v (j (s x)) ≤ 1)
+    (N : ℕ) : ∀ (f : (O0 p)[X]) (a : Ω), f.natDegree < p ^ n → aeval (T.qq n) f = j a →
+      v (j (s a - a)) ≤ v (p : Ωl) ^ N := by
+  haveI := Basic.charZero_of_isClo h
+  haveI : CharZero Ω := algebraRat.charZero Ω
+  induction N with
+  | zero =>
+    intro f a _ ha
+    have h2 := v_aeval_le hv T n f
+    rw [ha] at h2
+    rw [map_sub, pow_zero]
+    exact v.map_sub_le (hs a h2) h2
+  | succ N ih =>
+    intro f a hf ha
+    have halg : IsAlgebraic ℤ a :=
+      (IsFractionRing.isAlgebraic_iff ℤ ℚ Ω).2 (Algebra.IsAlgebraic.isAlgebraic a)
+    obtain ⟨m, hm⟩ := res h hv h1 T n f hf (ha ▸ halg.algHom j.toIntAlgHom)
+    have hf' : (f - C (m : O0 p)).natDegree < p ^ n := by rwa [natDegree_sub_C]
+    obtain ⟨g, hg⟩ := orth h hv h1 T n _ hf' (by simpa using hm)
+    have hp0 : (p : Ω) ≠ 0 := by exact_mod_cast hp.out.ne_zero
+    have hpl : (p : Ωl) ≠ 0 := by exact_mod_cast hp.out.ne_zero
+    have hpO : (p : O0 p) ≠ 0 := by exact_mod_cast hp.out.ne_zero
+    have h3 := ih g ((a - m) / p) (by rwa [hg, natDegree_C_mul hpO] at hf') (by
+      have := congrArg (aeval (T.qq n)) hg
+      simp only [map_sub, map_mul, aeval_C, map_intCast, map_natCast, ha] at this
+      rw [map_div₀, map_sub, map_intCast, map_natCast, this, mul_div_cancel_left₀ _ hpl])
+    have h4 : s a - a = p * (s ((a - m) / p) - (a - m) / p) := by
+      rw [map_div₀, map_sub, map_intCast, map_natCast]; field_simp; ring
+    rw [h4, map_mul, map_mul, map_natCast, pow_succ']
+    exact mul_le_mul_right h3 _
+
+theorem fixed (h : IsClo p Ωl) (hv : ∀ x : Ωl, v x ≤ 1 ↔ IsInt p x) (h1 : v (p : Ωl) < 1)
+    (T : K5.Tower p Ωl) (n : ℕ) (j : Ω →+* Ωl) (s : Ω ≃ₐ[ℚ] Ω) (hs : ∀ x, v (j x) ≤ 1 → v (j (s x)) ≤ 1)
+    (f : (O0 p)[X]) (d : O0 p) (hd : d ≠ 0) (a : Ω)
+    (ha : aeval (T.qq n) f = algebraMap (O0 p) Ωl d * j a) : s a = a := by
+  haveI : CharZero Ω := algebraRat.charZero Ω
+  obtain ⟨_, hdv, hirr⟩ := completed_laurent_isDVR p
+  obtain ⟨m, u, rfl⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible hd hirr
+  have hpos := pow_pos hp.out.pos n
+  have hmon : (X ^ (p ^ n) - C (qO p)).Monic := monic_X_pow_sub_C _ hpos.ne'
+  have hdeg : ((C (↑u⁻¹ : O0 p) * f) %ₘ (X ^ (p ^ n) - C (qO p))).natDegree < p ^ n := by
+    have := natDegree_modByMonic_lt (C (↑u⁻¹ : O0 p) * f) hmon (fun h0 => by
+      have := congrArg natDegree h0
+      rw [natDegree_X_pow_sub_C, natDegree_one] at this
+      omega)
+    rwa [natDegree_X_pow_sub_C] at this
+  have hev : aeval (T.qq n) ((C (↑u⁻¹ : O0 p) * f) %ₘ (X ^ (p ^ n) - C (qO p))) = j ((p : Ω) ^ m * a) := by
+    rw [aeval_modByMonic_eq_self_of_root (by simp [Basic.qq_pow]), map_mul, aeval_C, ha, ← mul_assoc,
+      ← map_mul, Units.inv_mul_cancel_left]
+    simp
+  have h0 : v (j (s ((p : Ω) ^ m * a) - (p : Ω) ^ m * a)) = 0 := by
+    by_contra hne
+    obtain ⟨N, hN⟩ := exists_pow_lt_of_lt_one (pos_iff_ne_zero.2 hne) h1
+    exact absurd (approx h hv h1 T n j s hs N _ _ hdeg hev) (not_le.2 hN)
+  rw [v.zero_iff, map_eq_zero, sub_eq_zero, map_mul, map_pow, map_natCast] at h0
+  exact mul_left_cancel₀ (pow_ne_zero m (by exact_mod_cast hp.out.ne_zero)) h0
+
+theorem up (h : IsClo p Ωl) (hv : ∀ x : Ωl, v x ≤ 1 ↔ IsInt p x) (h1 : v (p : Ωl) < 1)
+    (T : K5.Tower p Ωl) (n : ℕ) (j : Ω →+* Ωl) (s : Ω ≃ₐ[ℚ] Ω) (hs : ∀ x, v (j x) ≤ 1 → v (j (s x)) ≤ 1) :
+    ∃ g : Gal p Ωl, g (T.qq n) = T.qq n ∧ ∀ x, g (j x) = j (s x) := by
+  haveI := h.clo
+  haveI := h.alg
+  haveI := Basic.charZero_of_isClo h
+  haveI : FaithfulSMul (O0 p) Ωl := (faithfulSMul_iff_algebraMap_injective _ _).2 h.inj
+  letI : Algebra (FractionRing (O0 p)) Ωl := FractionRing.liftAlgebra (O0 p) Ωl
+  haveI : IsScalarTower (O0 p) (FractionRing (O0 p)) Ωl := FractionRing.isScalarTower_liftAlgebra _ _
+  haveI : Algebra.IsAlgebraic (FractionRing (O0 p)) Ωl :=
+    (IsFractionRing.comap_isAlgebraic_iff (A := O0 p) (K := FractionRing (O0 p))).1 h.alg
+  let K := IntermediateField.adjoin (FractionRing (O0 p)) {T.qq n}
+  have hfix : ∀ a : Ω, j a ∈ Set.range (algebraMap K Ωl) → s a = a := by
+    rintro a ⟨⟨y, hy⟩, rfl : y = j a⟩
+    rw [← IntermediateField.mem_toSubalgebra, IntermediateField.adjoin_simple_toSubalgebra_of_isAlgebraic
+      (Algebra.IsAlgebraic.isAlgebraic _), Algebra.adjoin_singleton_eq_range_aeval] at hy
+    obtain ⟨f, hf⟩ := hy
+    obtain ⟨d, hd, hdf⟩ := IsLocalization.integerNormalization_spec (nonZeroDivisors (O0 p)) f
+    refine fixed h hv h1 T n j s hs
+      (IsLocalization.integerNormalization (nonZeroDivisors (O0 p)) f) d (nonZeroDivisors.ne_zero hd) a ?_
+    rw [← aeval_map_algebraMap (FractionRing (O0 p)), hdf, ← Algebra.smul_def, ← hf,
+      ← algebraMap_smul (FractionRing (O0 p)) d f, map_smul, algebraMap_smul]
+    rfl
+  obtain ⟨g, hg⟩ := GlobalTheory.T.automorphism_extension_uniform Ω Ωl K j s (GlobalTheory.T.automorphism_on_extension_pointwise Ω Ωl K j s hfix)
+  refine ⟨(g.restrictScalars (FractionRing (O0 p))).restrictScalars (O0 p), ?_, hg⟩
+  exact g.commutes ⟨T.qq n, IntermediateField.mem_adjoin_simple_self _ _⟩
+
+end Local
+
+end GlobalTheory.Glue.Cusp
+end
+end
+
+section
+noncomputable section
+
+namespace GlobalTheory.Glue.IoInh
+
+open GlobalTheory.K5 GlobalTheory.KZ
+
+section Local
+
+variable {p : ℕ} [hp : Fact p.Prime] {Ωl : Type} [Field Ωl] [Algebra (O0 p) Ωl]
+
+theorem ev_single (ψ : O0 p →+* Ωl) (e : Ωl) (h1 : IsInt p e) (h2 : IsAlgZp p e) (a : Lau p) (c : ℤ → Ωl)
+    (hc : ∀ r, c r = e * zp Ωl (a.coeff r)) :
+    Ev ψ c (e * ψ (algebraMap (Lau p) (O0 p) a)) (e * ψ (algebraMap (Lau p) (O0 p) (thL a))) :=
+  ⟨1, fun _ => e, fun _ => a, fun _ => ⟨h1, h2⟩, fun r => by simp [hc], by simp, by simp⟩
+
+theorem zp_intCast (m : ℤ) : zp Ωl (m : ℤ_[p]) = (m : Ωl) := by
+  rw [zp, ← HahnSeries.C_apply, map_intCast, map_intCast, map_intCast]
+
+variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ}
+
+theorem const_mem (X : GlobalTheory.KZ.Tower Ω ε) (L : ℕ) (c : Ω) : algebraMap Ω X.K c ∈ KT X L :=
+  (X.sl _).commutes c
+
+theorem exp_const (X : GlobalTheory.KZ.Tower Ω ε) (c : Ω) (r : ℚ) :
+    (X.exp (algebraMap Ω X.K c)).coeff r = if r = 0 then c else 0 := by
+  rw [AlgHom.commutes, HahnSeries.algebraMap_apply', PowerSeries.algebraMap_apply, Algebra.algebraMap_self,
+    RingHom.id_apply, HahnSeries.ofPowerSeries_C, HahnSeries.C_apply, HahnSeries.coeff_single]
+  split_ifs <;> rfl
+
+variable {X : GlobalTheory.KZ.Tower Ω ε} {A : ValuationSubring Ω} {T : GlobalTheory.K5.Tower p Ωl} {j : Ω →+* Ωl} {n : ℕ}
+  {ψ : O0 p →+* Ωl} {io : KT X (p ^ n) →+* Ωl}
+
+theorem io_const_of_mem (h : IsClo p Ωl) (hc : IsCusp ε A T j) (hψ : IsReb T n ψ) (hio : IsIo X A T j n ψ io)
+    (c : Ω) (hA : c ∈ A) : io ⟨algebraMap Ω X.K c, const_mem X _ c⟩ = j c := by
+  classical
+  obtain ⟨x', hx⟩ := hio.ev ⟨algebraMap Ω X.K c, const_mem X _ c⟩ {c} (fun r => by
+    simp only [exp_const]
+    split_ifs
+    · exact ⟨hA, IntermediateField.subset_adjoin _ _ (by simp)⟩
+    · exact ⟨zero_mem _, zero_mem _⟩)
+  have hp0 : (p : ℚ) ^ n ≠ 0 := pow_ne_zero _ (by exact_mod_cast hp.out.ne_zero)
+  have h2 := ev_single ψ (j c) ((hc.int c).1 hA) (hc.alg c) 1
+    (fun r : ℤ => j ((X.exp (algebraMap Ω X.K c)).coeff ((r : ℚ) / (p : ℚ) ^ n))) (fun r => by
+      simp only [exp_const]
+      by_cases hr : r = 0
+      · subst hr
+        have : zp Ωl (1 : ℤ_[p]) = 1 := by simpa using zp_intCast (p := p) (Ωl := Ωl) 1
+        simp [this]
+      · have : zp Ωl (0 : ℤ_[p]) = 0 := by simpa using zp_intCast (p := p) (Ωl := Ωl) 0
+        have h3 : (r : ℚ) / (p : ℚ) ^ n ≠ 0 := div_ne_zero (by exact_mod_cast hr) hp0
+        simp [this, h3, HahnSeries.coeff_one, hr])
+  have := (GlobalTheory.EvUniq.ev_unique p Ωl h T n ψ hψ _ _ _ _ _ hx h2).1
+  rwa [map_one, map_one, mul_one] at this
+
+theorem io_const (h : IsClo p Ωl) (hc : IsCusp ε A T j) (hψ : IsReb T n ψ) (hio : IsIo X A T j n ψ io)
+    (c : Ω) : io ⟨algebraMap Ω X.K c, const_mem X _ c⟩ = j c := by
+  rcases A.mem_or_inv_mem c with hA | hA
+  · exact io_const_of_mem h hc hψ hio c hA
+  · have h1 := io_const_of_mem h hc hψ hio c⁻¹ hA
+    have h2 : (⟨algebraMap Ω X.K c⁻¹, const_mem X _ c⁻¹⟩ : KT X (p ^ n)) = ⟨algebraMap Ω X.K c, const_mem X _ c⟩⁻¹ :=
+      Subtype.ext (map_inv₀ _ _)
+    rw [h2, map_inv₀, map_inv₀] at h1
+    exact inv_injective h1
+
+end Local
+
+end GlobalTheory.Glue.IoInh
+end
+end
+
+section
 section
 open scoped MatrixGroups
 open GlobalTheory.KZ GlobalTheory.Glue GlobalTheory.K5 GlobalTheory.KummerEisensteinGalois
@@ -631,3 +1349,4 @@ theorem _root_.GlobalTheory.T.siegelUnit_edgeClass_kummer_dlog_congruence : ∀ 
         (s.symm (ξ r) - ξ r - (p : Ω) ^ cc * ((A₁ * h - g * B₁ : ℤ) : Ω) * (t.val : Ω) *
           coefQ (p ^ L) (cmul (smF c 1 (N * p ^ L) (eOm ε (1 / ((N * p ^ L : ℕ) : ℚ))) A₁ a₂) (smF d 1 (N * p ^ L) (eOm ε (1 / ((N * p ^ L : ℕ) : ℚ))) B₁ b₂)) r) := by
   atlas_forward_decl GlobalTheory.pair_edge_dlog
+end

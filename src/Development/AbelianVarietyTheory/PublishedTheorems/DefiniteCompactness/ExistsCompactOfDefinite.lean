@@ -64,35 +64,7 @@ theorem exists_compact_of_definite {r : ℕ} (X : Data E r) (hd : X.p0 = 0 ∨ X
     · simp only [hcc]
       rw [hPU, Matrix.mul_assoc, Matrix.mul_nonsing_inv _ hu, Matrix.mul_one]
 
-theorem compactSpace_of_definite {r : ℕ} (X : Data E r) (hd : X.p0 = 0 ∨ X.p0 = r)
-    (H : Subgroup (X.Ψ → GL (Fin r) ℂ))
-    (hH : ∀ g, g ∈ H ↔ X.IsUnitaryC fun τ => (g τ : Matrix (Fin r) (Fin r) ℂ)) :
-    CompactSpace H := by
-  choose K hK hmem using exists_compact_of_definite X hd
-  have hcl : IsClosed (H : Set (X.Ψ → GL (Fin r) ℂ)) := by
-    convert GlobalTheory.UnitaryFrames.isClosed_unitary X using 1
-    ext g
-    exact hH g
-  have hc : IsCompact (Set.pi Set.univ fun τ : X.Ψ =>
-      Units.embedProduct (Matrix (Fin r) (Fin r) ℂ) ⁻¹' (K τ ×ˢ (MulOpposite.op '' K τ))) :=
-    isCompact_univ_pi fun τ => Units.isClosedEmbedding_embedProduct.isCompact_preimage
-      ((hK τ).prod ((hK τ).image MulOpposite.continuous_op))
-  refine isCompact_iff_compactSpace.mp (hc.of_isClosed_subset hcl fun g hg τ _ => ?_)
-  exact ⟨hmem τ _ ((hH g).1 hg τ), _, hmem τ _ ((hH g⁻¹).1 (H.inv_mem hg) τ), rfl⟩
 
-theorem of_definite {r : ℕ} (X : Data E r) (hd : X.p0 = 0 ∨ X.p0 = r)
-    (H : Subgroup (X.Ψ → GL (Fin r) ℂ))
-    (hH : ∀ g, g ∈ H ↔ X.IsUnitaryC fun τ => (g τ : Matrix (Fin r) (Fin r) ℂ))
-    [MeasurableSpace H] [BorelSpace H] (ν : Measure H) [ν.IsHaarMeasure] :
-    ∃ Ω : Set H, MeasurableSet Ω ∧ ν Ω < ⊤ ∧
-      ∀ g : H, ∃ γ : GL (Fin r) E, IsUStab X.Gm X.Λ γ ∧ ∃ w ∈ Ω, ∀ τ : X.Ψ,
-        (((g : X.Ψ → GL (Fin r) ℂ) τ : GL (Fin r) ℂ) : Matrix (Fin r) (Fin r) ℂ) =
-          (γ : Matrix (Fin r) (Fin r) E).map τ.1 *
-            (((w : X.Ψ → GL (Fin r) ℂ) τ : GL (Fin r) ℂ) : Matrix (Fin r) (Fin r) ℂ) := by
-  haveI := compactSpace_of_definite X hd H hH
-  refine ⟨Set.univ, MeasurableSet.univ, isCompact_univ.measure_lt_top, fun g =>
-    ⟨1, ⟨fun x y => by simp, fun x => by simp⟩, g, Set.mem_univ _, fun τ => ?_⟩⟩
-  simp
 
 theorem exists_haar {r : ℕ} (X : Data E r) :
     ∃ H : Subgroup (X.Ψ → GL (Fin r) ℂ),

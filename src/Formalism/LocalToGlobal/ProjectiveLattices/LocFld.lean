@@ -210,10 +210,7 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {c : Coeff l}
 
-theorem algPtLa_of_numPt (hN : XoNumPt Xo c) : AlgPtLa Xo c := algPtLa_of hN locFld
 
-theorem intFrNe_of_numPt (hN : XoNumPt Xo c) (hE : IntFrExt Xo c) : IntFrNe Xo c (algCls Xo c) :=
-  intFrNe_of' hN locFld hE
 
 end Cor
 

@@ -1749,9 +1749,6 @@ variable (D) in
 
 def LocUnimodT : Prop := LocTied D → ∀ Z : LocDat D, LocUnimodC D Z
 
-theorem bbTie_of_tied (hT : LocTied D) (hE : LocEqT D) (hS : LocSatT D) (hD : LocDiffT D) (Z : LocDat D) :
-    BBTie D Z :=
-  bbTie_of Z (hE hT Z) (hS hT Z) (hD hT Z)
 
 theorem frameGenLoc_of' (hDN : Formalism.L2.SG.GramJoint.DNeZeroAt) (Z : LocDat D) (hE : LocEqC D Z)
     (hS : LocSatC D Z) (hD : LocDiffC D Z) (hDu : LocUnimodC D Z)

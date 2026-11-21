@@ -133,47 +133,5 @@ lemma isClosed_S (f : Polynomial 𝒪[F]) (a : 𝒪[F]) (hc0 : valuation F ((f.d
     simp only [Set.mem_ofPred_eq, Set.mem_compl_iff, Set.mem_preimage, not_lt]
   exact h1.inter h2
 
-theorem henselStrong : PI.HenselStrong := by
-  unfold PI.HenselStrong
-  intro F _ _ _ _ f a hfa
-  have hc0 : valuation F ((f.derivative.eval a : 𝒪[F]) : F) ≠ 0 := by
-    intro h0
-    rw [h0, zero_pow two_ne_zero] at hfa
-    exact not_lt_zero hfa
-  by_contra hno
-  have hS := (isClosed_S f a hc0).isCompact
-  have step : ∀ b ∈ {b : 𝒪[F] | valuation F ((b - a : 𝒪[F]) : F) <
-        valuation F ((f.derivative.eval a : 𝒪[F]) : F) ∧
-      valuation F ((f.eval b : 𝒪[F]) : F) ≤ valuation F ((f.eval a : 𝒪[F]) : F)},
-      ∃ b' ∈ {b : 𝒪[F] | valuation F ((b - a : 𝒪[F]) : F) <
-        valuation F ((f.derivative.eval a : 𝒪[F]) : F) ∧
-      valuation F ((f.eval b : 𝒪[F]) : F) ≤ valuation F ((f.eval a : 𝒪[F]) : F)},
-        valuation F ((f.eval b' : 𝒪[F]) : F) < valuation F ((f.eval b : 𝒪[F]) : F) := by
-    intro b hb
-    have hne : f.eval b ≠ 0 := fun h0 => hno ⟨b, h0, hb.1⟩
-    obtain ⟨b', h1, h2⟩ := newton_step f a b hb.1 (lt_of_le_of_lt hb.2 hfa) hne
-    exact ⟨b', ⟨h1, h2.le.trans hb.2⟩, h2⟩
-  obtain ⟨t, htS, htfin, hcov⟩ := hS.elim_finite_subcover_image
-    (b := {b : 𝒪[F] | valuation F ((b - a : 𝒪[F]) : F) <
-        valuation F ((f.derivative.eval a : 𝒪[F]) : F) ∧
-      valuation F ((f.eval b : 𝒪[F]) : F) ≤ valuation F ((f.eval a : 𝒪[F]) : F)})
-    (c := fun b => {x : 𝒪[F] | valuation F ((f.eval b : 𝒪[F]) : F) <
-      valuation F ((f.eval x : 𝒪[F]) : F)})
-    (fun b _ => (isOpen_lt_val _).preimage (continuous_eval f))
-    (fun x hx => by
-      obtain ⟨x', hx', hlt⟩ := step x hx
-      exact Set.mem_biUnion hx' hlt)
-  have haS : a ∈ {b : 𝒪[F] | valuation F ((b - a : 𝒪[F]) : F) <
-        valuation F ((f.derivative.eval a : 𝒪[F]) : F) ∧
-      valuation F ((f.eval b : 𝒪[F]) : F) ≤ valuation F ((f.eval a : 𝒪[F]) : F)} := by
-    refine ⟨?_, le_rfl⟩
-    have h00 : ((a - a : 𝒪[F]) : F) = 0 := by simp
-    rw [h00, Valuation.map_zero]
-    exact lt_of_le_of_ne zero_le (Ne.symm hc0)
-  obtain ⟨i, hi, -⟩ := Set.mem_iUnion₂.mp (hcov haS)
-  obtain ⟨m, hmt, hmin⟩ := Set.exists_min_image t
-    (fun b => valuation F ((f.eval b : 𝒪[F]) : F)) htfin ⟨i, hi⟩
-  obtain ⟨j, hjt, hj⟩ := Set.mem_iUnion₂.mp (hcov (htS hmt))
-  exact absurd (hmin j hjt) (not_le.mpr hj)
 
 end PI.HenselValuation

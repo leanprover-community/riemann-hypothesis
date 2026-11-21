@@ -150,14 +150,6 @@ theorem absPow_model (m : ℤ) :
   rw [CG.infChar_ofChar, CG.infChar_ofChar, h, h, Multiset.map_singleton]
   congr 1; push_cast; ring
 
-theorem not_isRegAlg_half : ¬ (CG.ofChar (GlobalTheory.HeckeGal.Model.absPow E (1 / 2))).IsRegAlg := by
-  intro hr
-  obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
-  obtain ⟨n, hn⟩ := (CG.isRegAlg_ofChar _).1 hr τ
-  rw [(InfType.expo_of_infType E _).2.1 _ (GlobalTheory.HeckeGal.Model.absPow_isAbsPow E _)] at hn
-  have h1 : (1 / 2 : ℝ) = n := by exact_mod_cast hn
-  have h2 : (1 : ℤ) = 2 * n := by exact_mod_cast (by linarith : (1 : ℝ) = 2 * n)
-  omega
 
 theorem exists_gauss : ∃ (_ : IsCMField (CyclotomicField 4 ℚ)) (π : CuspSub (CyclotomicField 4 ℚ) 1),
     (CG.mk π).IsRegAlg ∧ (∀ τ, (CG.mk π).infChar ((starRingEnd ℂ).comp τ) =

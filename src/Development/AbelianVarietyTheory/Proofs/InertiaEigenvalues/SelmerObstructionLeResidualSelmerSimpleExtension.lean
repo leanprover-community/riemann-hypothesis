@@ -6,13 +6,403 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocalCondition
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocalConditionAboveLSaturatedOfSelmerSetup
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SelmerFunctorLeftExactTorsionCoefficients
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RepOnEqOfEqOne
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GlobalEulerChar
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NonemptySubquotEquiv
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.H0TwDualEqZero
+import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.ContinuousCycMod
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SelAllLeInf
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EqZeroOfComm
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocalDegreeSum
 
+section
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.BlochKatoReduction Formalism.MainNotions.BlochKatoReduction.Gen GlobalTheory.TwSys GlobalTheory.SelFun GlobalTheory.Published
+
+namespace GlobalTheory.EulerScalars
+
+noncomputable def subquotEquiv {R R' X : Type*} [CommRing R] [CommRing R'] [AddCommGroup X]
+    [Module R X] [Module R' X] (Z B : Submodule R X) (Z' B' : Submodule R' X)
+    (hZ : ∀ x, x ∈ Z ↔ x ∈ Z') (hB : ∀ x, x ∈ B ↔ x ∈ B') :
+    (Z ⧸ B.comap Z.subtype) ≃ (Z' ⧸ B'.comap Z'.subtype) :=
+  Quotient.congr (Equiv.subtypeEquivRight hZ) fun a b => by
+    rw [Submodule.quotientRel_def, Submodule.quotientRel_def]
+    exact hB _
+
+theorem global_euler_char : GlobalFiniteness → GlobalEulerChar → ∀ (F Ω : Type) [Field F] [NumberField F] [IsTotallyComplex F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (l : ℕ) [Fact l.Prime] (Λ M : Type) [CommRing Λ] [AddCommGroup M] [Module Λ M] [Finite M] [TopologicalSpace M] [DiscreteTopology M] (S : Finset (HeightOneSpectrum (𝓞 F))) (ρ : Representation Λ (GS Ω (S : Set (HeightOneSpectrum (𝓞 F)))) M), (∀ m : M, l • m = 0) → ContainsAbove S l → ContAction ρ → Finite (H1 ρ) ∧ Finite (H2 ρ) ∧ Nat.card (H1 ρ) = Nat.card (H0 ρ) * Nat.card (H2 ρ) * Nat.card M ^ InfinitePlace.nrComplexPlaces F := by
+  intro hF hE F Ω _ _ _ _ _ _ l _ Λ M _ _ _ _ _ _ S ρ hl hS hc
+
+  obtain ⟨_⟩ : Nonempty (Module (ZMod (l ^ 1)) M) :=
+    ⟨AddCommGroup.zmodModule (n := l ^ 1) (by simpa using hl)⟩
+  obtain ⟨ρ', hρ'⟩ : ∃ ρ' : Representation (ZMod (l ^ 1)) (GS Ω (S : Set (HeightOneSpectrum (𝓞 F)))) M,
+      ∀ g m, ρ' g m = ρ g m := ⟨zmodRep (l ^ 1) ρ, fun _ _ => rfl⟩
+
+  have hc' : ContAction ρ' := by
+    unfold ReciprocityTheory.Gal.ContAction at hc ⊢
+    simpa only [hρ'] using hc
+  have hd : ∀ c : GS Ω (S : Set (HeightOneSpectrum (𝓞 F))) → M,
+      ReciprocityTheory.Gal.d1 ρ c = ReciprocityTheory.Gal.d1 ρ' c := by
+    intro c
+    funext p
+    rcases p with ⟨g, h⟩
+    simp only [ReciprocityTheory.Gal.d1_apply, hρ']
+  have e0 : {m : M // m ∈ ReciprocityTheory.Gal.H0 ρ} ≃ {m : M // m ∈ ReciprocityTheory.Gal.H0 ρ'} := by
+    refine Equiv.subtypeEquivRight fun m => ?_
+    rw [ReciprocityTheory.Gal.mem_riemannRochSpace_iff_regularAt_everywhere, ReciprocityTheory.Gal.mem_riemannRochSpace_iff_regularAt_everywhere]
+    simp only [hρ']
+  have c0 : Nat.card (ReciprocityTheory.Gal.H0 ρ) = Nat.card (ReciprocityTheory.Gal.H0 ρ') := Nat.card_congr e0
+  have e1 : ReciprocityTheory.Gal.H1 ρ ≃ ReciprocityTheory.Gal.H1 ρ' :=
+    subquotEquiv _ _ _ _
+      (fun f => by rw [ReciprocityTheory.Gal.mem_Z1_iff_cocycle, ReciprocityTheory.Gal.mem_Z1_iff_cocycle]; simp only [hρ'])
+      (fun f => by rw [ReciprocityTheory.Gal.mem_coboundaries1, ReciprocityTheory.Gal.mem_coboundaries1]; simp only [hρ'])
+  have e2 : ReciprocityTheory.Gal.H2 ρ ≃ ReciprocityTheory.Gal.H2 ρ' :=
+    subquotEquiv _ _ _ _
+      (fun f => by rw [ReciprocityTheory.Gal.mem_cocycles2, ReciprocityTheory.Gal.mem_cocycles2]; simp only [hρ'])
+      (fun f => by rw [ReciprocityTheory.Gal.separated_dvr_second_cohomology_mem, ReciprocityTheory.Gal.separated_dvr_second_cohomology_mem]; simp only [hd])
+
+  obtain ⟨-, f1, f2, -⟩ := hF F Ω l 1 M S ρ' one_pos hS hc'
+  have hreal : ∀ w : InfinitePlace F, ¬ w.IsReal := fun w =>
+    InfinitePlace.not_isReal_iff_isComplex.mpr (IsTotallyComplex.isComplex w)
+  have heq := hE F Ω l 1 M S ρ' one_pos hS hc' (fun _ => 1) (fun w hw => absurd hw (hreal w))
+
+  have harch : archH0Card S ρ' (fun _ => 1) = Nat.card M ^ InfinitePlace.nrComplexPlaces F := by
+    classical
+    unfold archH0Card
+    rw [Finset.prod_eq_one, one_mul]
+    intro w hw
+    exact absurd (Finset.mem_filter.mp hw).2 (hreal w)
+  rw [harch, IsTotallyComplex.finrank] at heq
+  refine ⟨Finite.of_equiv _ e1.symm, Finite.of_equiv _ e2.symm, ?_⟩
+  rw [Nat.card_congr e1, c0, Nat.card_congr e2]
+  have hpos : 0 < Nat.card M ^ InfinitePlace.nrComplexPlaces F := pow_pos Nat.card_pos _
+  apply Nat.eq_of_mul_eq_mul_right hpos
+  rw [← heq, two_mul, pow_add]
+  ring
+
+end GlobalTheory.EulerScalars
+end
+
+section
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.BlochKatoReduction Formalism.MainNotions.BlochKatoReduction.Gen GlobalTheory.TwSys GlobalTheory.SelFun GlobalTheory.Published
+
+namespace GlobalTheory.LocEulerScalars
+
+theorem nonempty_subquot_equiv {R R' X : Type*} [Ring R] [Ring R'] [AddCommGroup X] [Module R X]
+    [Module R' X] (Z B : Submodule R X) (Z' B' : Submodule R' X)
+    (hZ : ∀ x, x ∈ Z ↔ x ∈ Z') (hB : ∀ x, x ∈ B ↔ x ∈ B') :
+    Nonempty ((Z ⧸ B.comap Z.subtype) ≃ (Z' ⧸ B'.comap Z'.subtype)) := by
+  refine ⟨Quotient.congr (Equiv.subtypeEquivRight hZ) fun a b => ?_⟩
+  change (B.comap Z.subtype).quotientRel a b ↔
+    (B'.comap Z'.subtype).quotientRel (Equiv.subtypeEquivRight hZ a) (Equiv.subtypeEquivRight hZ b)
+  rw [Submodule.quotientRel_def, Submodule.quotientRel_def, Submodule.mem_comap,
+    Submodule.mem_comap]
+  exact hB _
+
+theorem localEulerChar_above : LocalFiniteness → LocalEulerChar → ∀ (F Ω : Type) [Field F] [NumberField F] [IsTotallyComplex F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (l : ℕ) [Fact l.Prime] (Λ M : Type) [CommRing Λ] [AddCommGroup M] [Module Λ M] [Finite M] [TopologicalSpace M] [DiscreteTopology M] (A : ValuationSubring Ω) (v : HeightOneSpectrum (𝓞 F)) (ρ : Representation Λ (Dec (F := F) A) M), (∀ m : M, l • m = 0) → IsPlaceOver A v → ((l : ℕ) : 𝓞 F) ∈ v.asIdeal → ContAction ρ → Finite (H1 ρ) ∧ Finite (H2 ρ) ∧ Nat.card (H1 ρ) = Nat.card (H0 ρ) * Nat.card (H2 ρ) * Nat.card M ^ ReciprocityTheory.Gal.locDeg v := by
+  intro hF hE F Ω _ _ _ _ _ _ l _ Λ M _ _ _ _ _ _ A v ρ hl hA hv hc
+
+  let _ : Module (ZMod (l ^ 1)) M := AddCommGroup.zmodModule fun m => by rw [pow_one]; exact hl m
+  let ρ' : Representation (ZMod (l ^ 1)) (Dec (F := F) A) M := zmodRep (l ^ 1) ρ
+  have hc' : ContAction ρ' := hc
+
+  have hd : ∀ c : Dec (F := F) A → M, d1 ρ c = d1 ρ' c := fun c => by
+    funext p
+    obtain ⟨g, h⟩ := p
+    rw [d1_apply, d1_apply]
+    rfl
+  have hZ1 : ∀ f, f ∈ Z1 ρ ↔ f ∈ Z1 ρ' := fun f => by
+    rw [mem_Z1_iff_cocycle, mem_Z1_iff_cocycle]
+    exact Iff.rfl
+  have hB1 : ∀ f, f ∈ B1 ρ ↔ f ∈ B1 ρ' := fun f => by
+    rw [mem_coboundaries1, mem_coboundaries1]
+    exact Iff.rfl
+  have hZ2 : ∀ f, f ∈ Z2 ρ ↔ f ∈ Z2 ρ' := fun f => by
+    rw [mem_cocycles2, mem_cocycles2]
+    exact Iff.rfl
+  have hB2 : ∀ f, f ∈ B2 ρ ↔ f ∈ B2 ρ' := fun f => by
+    rw [separated_dvr_second_cohomology_mem, separated_dvr_second_cohomology_mem]
+    simp only [hd]
+  obtain ⟨e1⟩ := nonempty_subquot_equiv (Z1 ρ) (B1 ρ) (Z1 ρ') (B1 ρ') hZ1 hB1
+  obtain ⟨e2⟩ := nonempty_subquot_equiv (Z2 ρ) (B2 ρ) (Z2 ρ') (B2 ρ') hZ2 hB2
+  have c1 : Nat.card (H1 ρ) = Nat.card (H1 ρ') := Nat.card_congr e1
+  have c2 : Nat.card (H2 ρ) = Nat.card (H2 ρ') := Nat.card_congr e2
+
+  obtain ⟨-, h1, h2, -⟩ := hF F Ω l 1 M A ρ' v Nat.one_pos hA hc'
+  have hχ := (hE F Ω l 1 M A ρ' v Nat.one_pos hA hc').1 hv
+  refine ⟨Finite.of_equiv _ e1.symm, Finite.of_equiv _ e2.symm, ?_⟩
+  rw [c1, c2]
+  convert hχ using 3
+
+  exact Nat.card_congr (Equiv.subtypeEquivRight fun _ => Iff.rfl)
+
+end GlobalTheory.LocEulerScalars
+end
+
+section
+noncomputable section
+
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.BlochKatoReduction Formalism.MainNotions.BlochKatoReduction.Gen GlobalTheory.TwSys GlobalTheory.SelFun GlobalTheory.Published
+
+namespace GlobalTheory.LocTwoOnto
+
+theorem H0_twDual_eq_zero {R Γ M : Type} [CommRing R] [Group Γ] [AddCommGroup M] [Module R M]
+    (μ : Γ →* Rˣ) (ρ : Representation R Γ M)
+    (hc : ∀ φ : M →+ R, (∀ g h m, φ (ρ g (ρ h m)) = φ (ρ h (ρ g m))) → φ = 0)
+    (y : H0 (twDual μ ρ)) : y = 0 := by
+  obtain ⟨φ, hφ⟩ := y
+  have hfix : ∀ g, twDual μ ρ g φ = φ := hφ
+  let f : M →ₗ[R] R := φ
+
+  have hmul : ∀ g m, f (ρ g m) = ((μ g : Rˣ) : R) * f m := by
+    intro g m
+    have h := congrArg (fun ψ : TDual R M => ψ (ρ g m)) (hfix g)
+    simp only [twDual_apply, Representation.inv_self_apply] at h
+    exact h.symm
+
+  have hzero : f.toAddMonoidHom = 0 :=
+    hc _ fun g h m => by
+      simp only [LinearMap.toAddMonoidHom_coe, hmul]
+      ring
+  apply Subtype.ext
+  apply TDual.ext
+  intro m
+  have hm := congrArg (fun k : M →+ R => k m) hzero
+  simp only [LinearMap.toAddMonoidHom_coe, AddMonoidHom.zero_apply] at hm
+  exact hm
+
+theorem loc2_surjective : PoitouTateTotallyComplex → ∀ (F Ω : Type) [Field F] [NumberField F] [IsTotallyComplex F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (l : ℕ) [Fact l.Prime] (Λ M : Type) [CommRing Λ] [AddCommGroup M] [Module Λ M] [Finite M] [TopologicalSpace M] [DiscreteTopology M] (S : Finset (HeightOneSpectrum (𝓞 F))) (Av : S → ValuationSubring Ω) (ρ : Representation Λ (GS Ω (S : Set (HeightOneSpectrum (𝓞 F)))) M), (∀ m : M, l • m = 0) → ContainsAbove S l → (∀ v, IsPlaceOver (Av v) v.1) → ContAction ρ → (∀ (C : Type) [AddCommGroup C] (φ : M →+ C), (∀ g h m, φ (ρ g (ρ h m)) = φ (ρ h (ρ g m))) → φ = 0) → ∀ x : ∀ v : S, H2 (ρ.comp (locFam S Av v)), ∃ y : H2 ρ, ∀ v, resH2 ρ (locFam S Av v) (continuous_locFam S Av v) y = x v := by
+  intro hPT F Ω _ _ _ _ _ _ l _ Λ M _ _ _ _ _ _ S Av ρ hl hS hAv hρ hcomm x
+  have hl0 : 0 < l ^ 1 := pow_pos (Fact.out : l.Prime).pos 1
+  have : NeZero (l ^ (1 : ℕ)) := ⟨hl0.ne'⟩
+
+  have hl1 : ∀ m : M, (l ^ (1 : ℕ)) • m = 0 := fun m => by rw [pow_one]; exact hl m
+  have instZ : Module (ZMod (l ^ (1 : ℕ))) M := AddCommGroup.zmodModule hl1
+  have : ContinuousConstSMul (ZMod (l ^ (1 : ℕ))) M := ⟨fun _ => continuous_of_discreteTopology⟩
+  have : IsAlgClosed Ω := IsAlgClosure.isAlgClosed F
+  have : CharZero Ω := charZero_of_injective_algebraMap (algebraMap F Ω).injective
+
+  obtain ⟨ζ, hζ⟩ := IsAlgClosed.exists_root (Polynomial.cyclotomic (l ^ (1 : ℕ)) Ω)
+    (Polynomial.degree_cyclotomic_pos _ _ hl0).ne'
+  have hζ' : IsPrimitiveRoot ζ (l ^ (1 : ℕ)) := (Polynomial.isRoot_cyclotomic_iff_charZero hl0).1 hζ
+  obtain ⟨inv, -, hall⟩ := hPT F Ω l 1 one_pos ζ hζ'
+  obtain ⟨μ, hμ⟩ := PoitouTate.exists_lift_cycMod (Ω := Ω) (r := 1) hS
+
+  let ρ' : GS Ω (S : Set (HeightOneSpectrum (𝓞 F))) →* Module.End (ZMod (l ^ (1 : ℕ))) M :=
+    { toFun := fun g => (ρ g).toAddMonoidHom.toZModLinearMap (l ^ (1 : ℕ))
+      map_one' := by ext m; simp
+      map_mul' := fun g h => by ext m; simp }
+  have hρ' : ContAction ρ' := hρ
+  obtain ⟨hNT, -⟩ := hall S hS Av hAv μ hμ M ρ' hρ'
+  have hc' : ∀ φ : M →+ ZMod (l ^ (1 : ℕ)), (∀ g h m, φ (ρ' g (ρ' h m)) = φ (ρ' h (ρ' g m))) → φ = 0 :=
+    fun φ hφ => hcomm (ZMod (l ^ (1 : ℕ))) φ hφ
+
+  choose z hz using fun v => Submodule.Quotient.mk_surjective _ (x v)
+  let z' : ∀ v : S, Z2 (ρ'.comp (locFam S Av v)) := fun v => ⟨(z v).1, (z v).2⟩
+
+  obtain ⟨y', hy'⟩ := LinearMap.mem_range.1
+    ((hNT.mem_range_localization_H2_iff (fun v => Submodule.Quotient.mk (z' v))).2 fun y => by
+      rw [H0_twDual_eq_zero μ ρ' hc' y]
+      simp)
+  obtain ⟨w', hw'⟩ := Submodule.Quotient.mk_surjective _ y'
+  let w : Z2 ρ := ⟨w'.1, w'.2⟩
+  refine ⟨Submodule.Quotient.mk w, fun v => ?_⟩
+  have hv := congrFun hy' v
+  rw [← hw'] at hv
+  change resH2 ρ' (locFam S Av v) (continuous_locFam S Av v) (Submodule.Quotient.mk w') =
+    Submodule.Quotient.mk (z' v) at hv
+  rw [resH2, Submodule.mapQ_apply, Submodule.Quotient.eq] at hv
+  rw [← hz v, resH2, Submodule.mapQ_apply, Submodule.Quotient.eq]
+  simp only [Submodule.mem_comap, Submodule.coe_subtype] at hv ⊢
+
+  obtain ⟨c, hc, hcd⟩ := (separated_dvr_second_cohomology_mem _ _).1 hv
+  refine (separated_dvr_second_cohomology_mem _ _).2 ⟨c, hc, ?_⟩
+  funext p
+  have hp := congrFun hcd p
+  exact hp
+
+end GlobalTheory.LocTwoOnto
+end
+end
+
+section
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.BlochKatoReduction Formalism.MainNotions.BlochKatoReduction.Gen GlobalTheory.TwSys GlobalTheory.SelFun GlobalTheory.Published
+
+namespace GlobalTheory.ResComm
+
+theorem comm_span {Λ M C : Type} [CommRing Λ] [AddCommGroup M] [Module Λ M] [AddCommGroup C] (S : Set (Module.End Λ M))
+    (φ : M →+ C) (h : ∀ A ∈ S, ∀ B ∈ S, ∀ m, φ (A (B m)) = φ (B (A m))) :
+    ∀ A ∈ Submodule.span Λ S, ∀ B ∈ Submodule.span Λ S, ∀ m, φ (A (B m)) = φ (B (A m)) := by
+
+  have key : ∀ A ∈ S, ∀ B ∈ Submodule.span Λ S, ∀ m, φ (A (B m)) = φ (B (A m)) := by
+    intro A hA B hB
+    induction hB using Submodule.span_induction with
+    | mem B hB => exact h A hA B hB
+    | zero => intro m; simp
+    | add B₁ B₂ _ _ h₁ h₂ => intro m; simp [h₁, h₂]
+    | smul c B _ hB' =>
+      intro m
+      simp only [LinearMap.smul_apply, ← map_smul]
+      exact hB' (c • m)
+  intro A hA B hB
+  induction hA using Submodule.span_induction with
+  | mem A hA => exact key A hA B hB
+  | zero => intro m; simp
+  | add A₁ A₂ _ _ h₁ h₂ => intro m; simp [h₁, h₂]
+  | smul c A _ hA' =>
+    intro m
+    simp only [LinearMap.smul_apply, ← map_smul]
+    exact hA' (c • m)
+
+theorem act_add {O Λ K : Type} [CommRing O] [CommRing Λ] [Algebra O Λ] [AddCommGroup K] [Module Λ K] {r : ℕ}
+    (P Q : Matrix (Fin r) (Fin r) O) :
+    matAct (M := K) ((P + Q).map (algebraMap O Λ)) =
+      matAct (P.map (algebraMap O Λ)) + matAct (Q.map (algebraMap O Λ)) := by
+  refine LinearMap.ext fun v => funext fun i => ?_
+  simp [matAct, add_smul, Finset.sum_add_distrib]
+
+theorem act_smul {O Λ K : Type} [CommRing O] [CommRing Λ] [Algebra O Λ] [AddCommGroup K] [Module Λ K] {r : ℕ}
+    (c : O) (P : Matrix (Fin r) (Fin r) O) :
+    matAct (M := K) ((c • P).map (algebraMap O Λ)) = algebraMap O Λ c • matAct (P.map (algebraMap O Λ)) := by
+  refine LinearMap.ext fun v => funext fun i => ?_
+  simp [matAct, mul_smul, Finset.smul_sum]
+
+theorem act_congr {O Λ K : Type} [CommRing O] [IsLocalRing O] [CommRing Λ] [IsLocalRing Λ] [Algebra O Λ]
+    [IsLocalHom (algebraMap O Λ)] [AddCommGroup K] [Module Λ K] {r : ℕ}
+    (hm : ∀ x ∈ IsLocalRing.maximalIdeal Λ, ∀ k : K, x • k = 0) (P Q : Matrix (Fin r) (Fin r) O)
+    (h : P.map (IsLocalRing.residue O) = Q.map (IsLocalRing.residue O)) :
+    matAct (M := K) (P.map (algebraMap O Λ)) = matAct (Q.map (algebraMap O Λ)) := by
+  refine LinearMap.ext fun v => funext fun i => ?_
+  simp only [matAct, LinearMap.coe_mk, AddHom.coe_mk, Matrix.map_apply]
+  refine Finset.sum_congr rfl fun j _ => ?_
+
+  have hPQ : P i j - Q i j ∈ IsLocalRing.maximalIdeal O := by
+    have e := congrFun (congrFun h i) j
+    simp only [Matrix.map_apply] at e
+    exact Ideal.Quotient.eq.mp e
+  have hΛ : algebraMap O Λ (P i j - Q i j) ∈ IsLocalRing.maximalIdeal Λ :=
+    (IsLocalRing.mem_maximalIdeal _).mpr (mem_nonunits_iff.mpr fun hu =>
+      mem_nonunits_iff.mp ((IsLocalRing.mem_maximalIdeal _).mp hPQ) (isUnit_of_map_unit (algebraMap O Λ) _ hu))
+  have e := hm _ hΛ (v j)
+  rwa [map_sub, sub_smul, sub_eq_zero] at e
+
+private theorem matAct_single {O Λ K : Type} [CommRing O] [CommRing Λ] [Algebra O Λ] [AddCommGroup K] [Module Λ K] {r : ℕ}
+    (a b : Fin r) (v : Fin r → K) :
+    matAct (M := K) ((Matrix.of fun i j => if i = a ∧ j = b then (1 : O) else 0).map (algebraMap O Λ)) v =
+      Pi.single a (v b) := by
+  funext i
+  simp only [matAct, LinearMap.coe_mk, AddHom.coe_mk, Matrix.map_apply, Matrix.of_apply]
+  by_cases hi : i = a
+  · subst hi
+    simp [apply_ite (algebraMap O Λ), ite_smul]
+  · simp [hi]
+
+private theorem matAct_of_span_residue_spans {Γ O Λ K : Type} [Group Γ] [CommRing O] [IsLocalRing O] [CommRing Λ] [IsLocalRing Λ]
+    [Algebra O Λ] [IsLocalHom (algebraMap O Λ)] [AddCommGroup K] [Module Λ K] {r : ℕ} (ρ : Γ →* GL (Fin r) O)
+    (hm : ∀ x ∈ IsLocalRing.maximalIdeal Λ, ∀ k : K, x • k = 0)
+    (hsp : Submodule.span (IsLocalRing.ResidueField O) (Set.range fun g =>
+      ((ρ g : GL (Fin r) O) : Matrix (Fin r) (Fin r) O).map (IsLocalRing.residue O)) = ⊤)
+    (P : Matrix (Fin r) (Fin r) O) :
+    matAct (M := K) (P.map (algebraMap O Λ)) ∈ Submodule.span Λ (Set.range fun g =>
+      matAct (M := K) (((ρ g : GL (Fin r) O) : Matrix (Fin r) (Fin r) O).map (algebraMap O Λ))) := by
+
+  have lift : ∀ X : Matrix (Fin r) (Fin r) (IsLocalRing.ResidueField O),
+      ∃ P' : Matrix (Fin r) (Fin r) O, P'.map (IsLocalRing.residue O) = X := fun X =>
+    ⟨X.map (Function.surjInv IsLocalRing.residue_surjective), by
+      ext i j; simp [Function.surjInv_eq IsLocalRing.residue_surjective]⟩
+
+  suffices H : ∀ X ∈ Submodule.span (IsLocalRing.ResidueField O) (Set.range fun g =>
+      ((ρ g : GL (Fin r) O) : Matrix (Fin r) (Fin r) O).map (IsLocalRing.residue O)),
+      ∀ P : Matrix (Fin r) (Fin r) O, P.map (IsLocalRing.residue O) = X →
+        matAct (M := K) (P.map (algebraMap O Λ)) ∈ Submodule.span Λ (Set.range fun g =>
+          matAct (M := K) (((ρ g : GL (Fin r) O) : Matrix (Fin r) (Fin r) O).map (algebraMap O Λ))) by
+    exact H _ (by rw [hsp]; exact Submodule.mem_top) P rfl
+  intro X hX
+  induction hX using Submodule.span_induction with
+  | mem X hX =>
+    obtain ⟨g, rfl⟩ := hX
+    intro P hP
+    rw [act_congr (K := K) hm P _ hP]
+    exact Submodule.subset_span ⟨g, rfl⟩
+  | zero =>
+    intro P hP
+    have hP0 : P.map (IsLocalRing.residue O) = (0 : Matrix (Fin r) (Fin r) O).map (IsLocalRing.residue O) := by
+      rw [hP]; ext i j; simp
+    rw [act_congr (K := K) hm P 0 hP0]
+    have h0 : matAct (M := K) ((0 : Matrix (Fin r) (Fin r) O).map (algebraMap O Λ)) = 0 := by
+      refine LinearMap.ext fun v => funext fun i => ?_
+      simp [matAct]
+    rw [h0]
+    exact Submodule.zero_mem _
+  | add X Y _ _ hX hY =>
+    intro P hP
+    obtain ⟨P₁, hP₁⟩ := lift X
+    have hP₂ : (P - P₁).map (IsLocalRing.residue O) = Y := by
+      have e : (P - P₁).map (IsLocalRing.residue O) =
+          P.map (IsLocalRing.residue O) - P₁.map (IsLocalRing.residue O) := by
+        ext i j; simp
+      rw [e, hP, hP₁, add_sub_cancel_left]
+    have e : P = P₁ + (P - P₁) := by abel
+    rw [e, act_add]
+    exact Submodule.add_mem _ (hX P₁ hP₁) (hY _ hP₂)
+  | smul c X _ hX =>
+    intro P hP
+    obtain ⟨P₁, hP₁⟩ := lift X
+    obtain ⟨c₀, rfl⟩ := IsLocalRing.residue_surjective c
+    have h' : P.map (IsLocalRing.residue O) = (c₀ • P₁).map (IsLocalRing.residue O) := by
+      rw [hP, ← hP₁]; ext i j; simp
+    rw [act_congr (K := K) hm P _ h', act_smul]
+    exact Submodule.smul_mem _ _ (hX P₁ hP₁)
+
+private theorem matAct_rep {Γ O Λ K : Type} [Group Γ] [CommRing O] [CommRing Λ] [Algebra O Λ] [AddCommGroup K]
+    [Module Λ K] {r : ℕ} (ρ : Γ →* GL (Fin r) O) (χ : Γ →* Oˣ) (κ : Γ →* Λˣ) (g : Γ) (m : Fin r → K) :
+    repOn (twGL ρ χ) κ K g m = ((κ g : Λ) * algebraMap O Λ (((χ g)⁻¹ : Oˣ) : O)) •
+      matAct (M := K) (((ρ g : GL (Fin r) O) : Matrix (Fin r) (Fin r) O).map (algebraMap O Λ)) m := by
+  have e : (((twGL ρ χ) g : GL (Fin r) O) : Matrix (Fin r) (Fin r) O) =
+      (((χ g)⁻¹ : Oˣ) : O) • ((ρ g : GL (Fin r) O) : Matrix (Fin r) (Fin r) O) := by
+    simp [twGL, scalGL, Matrix.smul_eq_diagonal_mul]
+  show ((κ g : Λ) • matAct (M := K) ((((twGL ρ χ) g : GL (Fin r) O) : Matrix (Fin r) (Fin r) O).map
+    (algebraMap O Λ))) m = _
+  rw [e, act_smul, smul_smul]
+  rfl
+
+theorem eq_zero_of_comm : ∀ (Γ O Λ K C : Type) [Group Γ] [CommRing O] [IsLocalRing O] [CommRing Λ] [IsLocalRing Λ] [Algebra O Λ] [IsLocalHom (algebraMap O Λ)] [AddCommGroup K] [Module Λ K] [AddCommGroup C] (r : ℕ) (ρ : Γ →* GL (Fin r) O) (χ : Γ →* Oˣ) (κ : Γ →* Λˣ), 2 ≤ r → (∀ x ∈ IsLocalRing.maximalIdeal Λ, ∀ k : K, x • k = 0) → Submodule.span (IsLocalRing.ResidueField O) (Set.range fun g => ((ρ g : GL (Fin r) O) : Matrix (Fin r) (Fin r) O).map (IsLocalRing.residue O)) = ⊤ → ∀ φ : (Fin r → K) →+ C, (∀ g h m, φ (repOn (twGL ρ χ) κ K g (repOn (twGL ρ χ) κ K h m)) = φ (repOn (twGL ρ χ) κ K h (repOn (twGL ρ χ) κ K g m))) → φ = 0 := by
+  intro Γ O Λ K C _ _ _ _ _ _ _ _ _ _ r ρ χ κ hr hm hsp φ hφ
+
+  have hunit : ∀ g, IsUnit ((κ g : Λ) * algebraMap O Λ (((χ g)⁻¹ : Oˣ) : O)) := fun g =>
+    (κ g).isUnit.mul (((χ g)⁻¹).isUnit.map _)
+  have hcomm : ∀ A ∈ Set.range fun g =>
+      matAct (M := K) (((ρ g : GL (Fin r) O) : Matrix (Fin r) (Fin r) O).map (algebraMap O Λ)),
+      ∀ B ∈ Set.range fun g =>
+      matAct (M := K) (((ρ g : GL (Fin r) O) : Matrix (Fin r) (Fin r) O).map (algebraMap O Λ)),
+      ∀ m, φ (A (B m)) = φ (B (A m)) := by
+    rintro _ ⟨g, rfl⟩ _ ⟨h, rfl⟩ m
+    obtain ⟨w, hw⟩ : ∃ w : Λ, ((κ g : Λ) * algebraMap O Λ (((χ g)⁻¹ : Oˣ) : O)) *
+        ((κ h : Λ) * algebraMap O Λ (((χ h)⁻¹ : Oˣ) : O)) * w = 1 :=
+      ⟨(((hunit g).mul (hunit h)).unit⁻¹ : Λˣ), by simp⟩
+    have e := hφ g h (w • m)
+    simp only [matAct_rep, map_smul, smul_smul] at e
+    have e1 : w * ((κ h : Λ) * algebraMap O Λ (((χ h)⁻¹ : Oˣ) : O)) *
+        ((κ g : Λ) * algebraMap O Λ (((χ g)⁻¹ : Oˣ) : O)) = 1 := by linear_combination hw
+    have e2 : w * ((κ g : Λ) * algebraMap O Λ (((χ g)⁻¹ : Oˣ) : O)) *
+        ((κ h : Λ) * algebraMap O Λ (((χ h)⁻¹ : Oˣ) : O)) = 1 := by linear_combination hw
+    rw [e1, e2, one_smul, one_smul] at e
+    exact e
+
+  have hall : ∀ (P Q : Matrix (Fin r) (Fin r) O) (m : Fin r → K),
+      φ (matAct (M := K) (P.map (algebraMap O Λ)) (matAct (M := K) (Q.map (algebraMap O Λ)) m)) =
+        φ (matAct (M := K) (Q.map (algebraMap O Λ)) (matAct (M := K) (P.map (algebraMap O Λ)) m)) :=
+    fun P Q => comm_span _ φ hcomm _ (matAct_of_span_residue_spans ρ hm hsp P) _ (matAct_of_span_residue_spans ρ hm hsp Q)
+
+  have : Nontrivial (Fin r) := Fin.nontrivial_iff_two_le.mpr hr
+  have hsingle : ∀ (a : Fin r) (x : K), φ (Pi.single a x) = 0 := by
+    intro a x
+    obtain ⟨b, hb⟩ := exists_ne a
+    have e := hall (Matrix.of fun i j => if i = a ∧ j = b then (1 : O) else 0)
+      (Matrix.of fun i j => if i = b ∧ j = b then (1 : O) else 0) (Pi.single b x)
+    simp only [matAct_single] at e
+    simpa [Pi.single_eq_of_ne hb] using e
+  refine AddMonoidHom.ext fun m => ?_
+  rw [← Finset.univ_sum_single m, map_sum]
+  simp [hsingle]
+
+end GlobalTheory.ResComm
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.BlochKatoReduction Formalism.MainNotions.BlochKatoReduction.Gen GlobalTheory.TwSys GlobalTheory.SelFun GlobalTheory.Published
@@ -560,3 +950,5 @@ theorem selObs : PoitouTateTotallyComplex → CohDimTwo → LocalFiniteness → 
   · rw [hcount K hK, hcx, Nat.card_pi, Finset.prod_const, Finset.card_fin, ← pow_mul, mul_comm D.R.r]
 
 end GlobalTheory.SelObstruction
+end
+end

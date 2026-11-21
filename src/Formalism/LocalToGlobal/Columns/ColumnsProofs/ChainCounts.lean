@@ -244,19 +244,7 @@ theorem mem_flagU_iff {N : ℕ} {M : ℕ → Submodule (𝓞 E) (Sp E N)} {e : �
     κ ∈ LocE.flagU M e r st ↔ (∀ s ∈ st, κ ∈ stabL E N (M s)) ∧ ∀ s < r, κ ∈ stabL E N (M s) ∧ κ (e s) - e s ∈ M s :=
   Iff.rfl
 
-theorem flagG_le (P : HeightOneSpectrum (𝓞 E)) (k₀ n c s : ℕ) :
-    LocE.flagG P (qOf P) k₀ n c s ≤ LocE.lamY P (qOf P) n c fun i => i + 1 := by
-  unfold LocE.flagG LocE.lamY
-  apply sclLat_anti
-  intro l
-  split_ifs <;> omega
 
-theorem mem_flagG_of_qinv (P : HeightOneSpectrum (𝓞 E)) (k₀ n c s : ℕ) {w : Sp E (n + c)}
-    (hw : ((qOf P : E))⁻¹ • w ∈ LocE.lamY P (qOf P) n c fun i => i + 1) : w ∈ LocE.flagG P (qOf P) k₀ n c s := by
-  unfold LocE.flagG
-  unfold LocE.lamY at hw
-  refine mem_sclLat_of_qinv P _ (fun l => ?_) hw
-  split_ifs <;> omega
 
 theorem bvecG_mem (P : HeightOneSpectrum (𝓞 E)) (k₀ n c s : ℕ) :
     LocE.bvecG E (qOf P) k₀ n c s ∈ LocE.lamY P (qOf P) n c fun i => i + 1 := by
@@ -272,36 +260,7 @@ theorem bvecG_mem (P : HeightOneSpectrum (𝓞 E)) (k₀ n c s : ℕ) :
   · rw [mul_zero, mul_zero]
     exact intAt_zero P
 
-theorem stab_flagG_of_cong (P : HeightOneSpectrum (𝓞 E)) {n c : ℕ} {κ : Sp E (n + c) ≃ₗ[E] Sp E (n + c)}
-    (hs : κ ∈ stabL E (n + c) (LocE.lamY P (qOf P) n c fun i => i + 1))
-    (hc : ∀ x ∈ LocE.lamY P (qOf P) n c (fun i => i + 1), ((qOf P : E))⁻¹ • (κ x - x) ∈ LocE.lamY P (qOf P) n c fun i => i + 1)
-    (k₀ s : ℕ) :
-    κ ∈ stabL E (n + c) (LocE.flagG P (qOf P) k₀ n c s) ∧
-      ∀ s', κ (LocE.bvecG E (qOf P) k₀ n c s') - LocE.bvecG E (qOf P) k₀ n c s' ∈ LocE.flagG P (qOf P) k₀ n c s := by
-  refine ⟨mem_stabL_iff.2 fun x => ⟨fun hx => ?_, fun hx => ?_⟩, fun s' => mem_flagG_of_qinv P k₀ n c s (hc _ (bvecG_mem P k₀ n c s'))⟩
-  · have hxΛ : x ∈ LocE.lamY P (qOf P) n c fun i => i + 1 := (mem_stabL_iff.1 hs x).1 (flagG_le P k₀ n c s hx)
-    have h1 := mem_flagG_of_qinv P k₀ n c s (hc x hxΛ)
-    have : x = κ x - (κ x - x) := by abel
-    rw [this]
-    exact sub_mem hx h1
-  · have hxΛ := flagG_le P k₀ n c s hx
-    have h1 := mem_flagG_of_qinv P k₀ n c s (hc x hxΛ)
-    have : κ x = (κ x - x) + x := by abel
-    rw [this]
-    exact add_mem h1 hx
 
-theorem mem_JG_of_cong (P : HeightOneSpectrum (𝓞 E)) {n c : ℕ} {κ : Sp E (n + c) ≃ₗ[E] Sp E (n + c)}
-    (hs : κ ∈ stabL E (n + c) (LocE.lamY P (qOf P) n c fun i => i + 1))
-    (hc : ∀ x ∈ LocE.lamY P (qOf P) n c (fun i => i + 1), ((qOf P : E))⁻¹ • (κ x - x) ∈ LocE.lamY P (qOf P) n c fun i => i + 1)
-    (k₀ r t : ℕ) : κ ∈ LocE.JG P (qOf P) k₀ r t n c ∧ κ ∈ LocE.JGsharp P (qOf P) k₀ r t n c := by
-  have hJ : κ ∈ LocE.JG P (qOf P) k₀ r t n c := by
-    unfold LocE.JG
-    refine Subgroup.mem_inf.2 ⟨hs, mem_flagU_iff.2 ⟨fun s _ => (stab_flagG_of_cong P hs hc k₀ s).1, fun s _ =>
-      ⟨(stab_flagG_of_cong P hs hc k₀ s).1, (stab_flagG_of_cong P hs hc k₀ s).2 s⟩⟩⟩
-  refine ⟨hJ, ?_⟩
-  unfold LocE.JGsharp
-  refine Subgroup.mem_inf.2 ⟨hJ, mem_flagU_iff.2 ⟨fun s hs' => absurd hs' (Set.notMem_empty s), fun s _ =>
-    ⟨(stab_flagG_of_cong P hs hc k₀ 0).1, (stab_flagG_of_cong P hs hc k₀ 0).2 k₀⟩⟩⟩
 
 theorem flagS_le (P : HeightOneSpectrum (𝓞 E)) (k₀ rS n c s : ℕ) :
     LocE.flagS P (qOf P) k₀ rS n c s ≤ LocE.lamY P (qOf P) n c fun i => i + 1 := by
@@ -349,39 +308,6 @@ section Yb
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
 
-theorem be_diff {n : ℕ} {ST SG : Finset (HeightOneSpectrum (𝓞 E))} {d : Deco E n ST SG} (hd : d.Ok) (w : SG) (hU : UnifAt w.1)
-    {y y' : Sp E n} (hy : ((qOf w.1 : ℕ) : E) • y ∈ d.at w.1) (hy' : ((qOf w.1 : ℕ) : E) • y' ∈ d.at w.1)
-    (h : d.be w (((qOf w.1 : ℕ) : E) • y) = d.be w (((qOf w.1 : ℕ) : E) • y')) : y - y' ∈ d.at w.1 := by
-  have hq : ((qOf w.1 : ℕ) : E) ≠ 0 := qOf_ne_zero w.1
-  have hzm : ((qOf w.1 : ℕ) : E) • y - ((qOf w.1 : ℕ) : E) • y' ∈ d.at w.1 := sub_mem hy hy'
-  have hbe : d.be w (((qOf w.1 : ℕ) : E) • y - ((qOf w.1 : ℕ) : E) • y') = 0 := by
-    have h1 := hd.be_add w _ hzm _ hy'
-    rw [sub_add_cancel, h] at h1
-    exact (add_eq_right.mp h1.symm)
-  obtain ⟨s, hs, hsz⟩ := (mem_locP w.1 d.N _).1 hzm
-  have hbe2 : d.be w (s • (((qOf w.1 : ℕ) : E) • y - ((qOf w.1 : ℕ) : E) • y')) = 0 := by
-    rw [hd.be_smul w s _ hzm, hbe, smul_zero]
-  have hker := hd.be_ker w _ hsz hbe2
-  have key : ((qOf w.1 : ℕ) : E)⁻¹ • (s • (((qOf w.1 : ℕ) : E) • y - ((qOf w.1 : ℕ) : E) • y')) ∈ localization₂ w.1.asIdeal d.N := by
-    refine Submodule.smul_induction_on hker (fun a ha x hx => ?_) (fun x x' hx hx' => ?_)
-    · have hI := hU (algebraMap (𝓞 E) E a) (IntAt.coe _ a)
-        (by rw [reduction_coe]; exact Ideal.Quotient.eq_zero_iff_mem.2 ha)
-      obtain ⟨r, s', hs', hr⟩ := hI
-      refine (mem_locP w.1 d.N _).2 ⟨s', hs', ?_⟩
-      have e1 : s' • (((qOf w.1 : ℕ) : E)⁻¹ • (a • x)) = r • x := by
-        rw [algebra_compatible_smul E a x, algebra_compatible_smul E s', algebra_compatible_smul E r, smul_smul, smul_smul]
-        congr 1
-        rw [← hr]
-        ring
-      rw [e1]
-      exact d.N.smul_mem r hx
-    · rw [smul_add]
-      exact add_mem hx hx'
-  have key2 : s • (((qOf w.1 : ℕ) : E)⁻¹ • (((qOf w.1 : ℕ) : E) • y - ((qOf w.1 : ℕ) : E) • y')) ∈ localization₂ w.1.asIdeal d.N := by
-    rw [algebra_compatible_smul E s, smul_smul, mul_comm, ← smul_smul, ← algebra_compatible_smul E s]
-    exact key
-  have := mem_localization_of_smul_mem₂ w.1 d.N hs key2
-  rwa [smul_sub, inv_smul_smul₀ hq, inv_smul_smul₀ hq] at this
 
 end Yb
 
@@ -395,35 +321,15 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks}
 
 def UnifG (Pr : Primes X) : Prop := ∀ P ∈ Pr.vGs, UnifAt P
 
-theorem mem_vGs_of_QE (hQ : QE sel (mu : Chr X.F X.E X.K) = ∅) (P : rowSG Pr sel mu) : P.1 ∈ Pr.vGs :=
-  (Finset.mem_union.1 P.2).resolve_right (by rw [hQ]; exact Finset.notMem_empty _)
 
 theorem rowSG_eq_of_QE (hQ : QE sel (mu : Chr X.F X.E X.K) = ∅) : rowSG Pr sel mu = Pr.vGs := by
   unfold rowSG uSG
   rw [hQ, Finset.union_empty]
 
-theorem prod_vGs (hPr : Pr.Ok) : ∏ P ∈ Pr.vGs, Ideal.absNorm P.asIdeal = (Pr.g 0 * Pr.g 1) ^ X.f := by
-  unfold Primes.vGs
-  rw [Finset.prod_union]
-  · rw [Finset.prod_congr rfl (fun P hP => hPr.vG_norm 0 P hP), Finset.prod_congr rfl (fun P hP => hPr.vG_norm 1 P hP),
-      Finset.prod_const, Finset.prod_const, hPr.vG_card 0, hPr.vG_card 1, mul_pow]
-  · rw [Finset.disjoint_left]
-    intro P h0 h1
-    exact hPr.g_ne ((hPr.vG_norm 0 P h0).symm.trans (hPr.vG_norm 1 P h1))
 
-theorem prod_rowSG (hPr : Pr.Ok) (hQ : QE sel (mu : Chr X.F X.E X.K) = ∅) (D : ℕ) :
-    ∏ P : rowSG Pr sel mu, Ideal.absNorm P.1.asIdeal ^ D = (Pr.g 0 * Pr.g 1) ^ (X.f * D) := by
-  rw [Finset.prod_coe_sort (rowSG Pr sel mu) (fun P => Ideal.absNorm P.asIdeal ^ D), rowSG_eq_of_QE sel mu hQ, Finset.prod_pow,
-    prod_vGs hPr, ← pow_mul]
 
 theorem gg_pos (hPr : Pr.Ok) : 0 < Pr.g 0 * Pr.g 1 := Nat.mul_pos (hPr.g_prime 0).pos (hPr.g_prime 1).pos
 
-theorem dimY_le (R : Ranks) {j : ℕ} (hj : j ≤ R.m) : R.N j + cOf R j ≤ R.N R.m := by
-  unfold Ranks.N cOf
-  have h1 : j * (R.t + 1) = j * R.t + j := by ring
-  have h2 : R.m * (R.t + 1) = R.m * R.t + R.m := by ring
-  have h3 : j * R.t ≤ R.m * R.t := Nat.mul_le_mul_right _ hj
-  omega
 
 theorem N_le (R : Ranks) {j : ℕ} (hj : j ≤ R.m) : R.N j ≤ R.N R.m := by
   unfold Ranks.N
@@ -434,128 +340,18 @@ def redIdx (j : ℕ) (b : L.β j) :
     ∀ P : rowSG Pr sel mu, Fin (R.N j + cOf R j) → Fin (R.N j + cOf R j) → 𝓞 X.E ⧸ P.1.asIdeal :=
   fun P => redM P.1 (LocE.scE (R.N j) fun i => i + 1) (L.h j b P)
 
-theorem redIdx_inj {Ch : Chars X Pr R.m} {G : ChGlob X R.m} {m2 : ℕ} (hL : ChIdx.Ok Ch sel mu cst L G m2) (hU : UnifG Pr)
-    (hQ : QE sel (mu : Chr X.F X.E X.K) = ∅) {i : ℕ} (hi : i < m2) : Function.Injective (redIdx sel mu L (i + 1)) := by
-  intro b b' hbb
-  refine hL.inj i hi b b' fun P => ?_
-  have hP := mem_vGs_of_QE sel mu hQ P
-  have hs : ∀ b : L.β (i + 1), L.h (i + 1) b P ∈
-      stabL X.E _ (LocE.lamY P.1 (qOf P.1) (R.N (i + 1)) (cOf R (i + 1)) fun i => i + 1) := by
-    intro b
-    have := hL.stabG (i + 1) b P hP
-    unfold lamYat at this
-    rwa [if_pos hP] at this
-  have hc := cong_of_redM (hU P.1 hP) (hs b) (hs b') (congrFun hbb P)
-  obtain ⟨hJ, _⟩ := mem_JG_of_cong P.1 (Subgroup.mul_mem _ (Subgroup.inv_mem _ (hs b)) (hs b')) hc R.k R.r R.t
-  have hJs := mem_JGsym_of_cong P.1 (Subgroup.mul_mem _ (Subgroup.inv_mem _ (hs b)) (hs b')) hc R.k R.rS R.r R.t
-  have hJat : (L.h (i + 1) b P)⁻¹ * L.h (i + 1) b' P ∈ Jat (Pr := Pr) cst.sharp (i + 1) P.1 := by
-    unfold Jat
-    split_ifs
-    all_goals first | exact hJs | exact hJ
-  exact ⟨1, Subgroup.one_mem _, _, hJat, by rw [one_mul, mul_inv_cancel_left]⟩
 
-theorem card_fun_quot {n : ℕ} (P : HeightOneSpectrum (𝓞 X.E)) :
-    Nat.card (Fin n → Fin n → 𝓞 X.E ⧸ P.asIdeal) = Ideal.absNorm P.asIdeal ^ (n * n) := by
-  rw [Nat.card_fun, Nat.card_fun, card_quot, Nat.card_eq_fintype_card, Fintype.card_fin, ← pow_mul]
 
-theorem card_beta_le {Ch : Chars X Pr R.m} {G : ChGlob X R.m} {m2 : ℕ} (hL : ChIdx.Ok Ch sel mu cst L G m2) (hPr : Pr.Ok)
-    (hU : UnifG Pr) (hQ : QE sel (mu : Chr X.F X.E X.K) = ∅) {i : ℕ} (hi : i < m2) :
-    Fintype.card (L.β (i + 1)) ≤
-      (Pr.g 0 * Pr.g 1) ^ (X.f * ((R.N (i + 1) + cOf R (i + 1)) * (R.N (i + 1) + cOf R (i + 1)))) := by
-  rw [← Nat.card_eq_fintype_card]
-  refine (Nat.card_le_card_of_injective _ (redIdx_inj sel mu cst L hL hU hQ hi)).trans (le_of_eq ?_)
-  rw [Nat.card_pi, Finset.prod_congr rfl (fun P _ => card_fun_quot P.1), prod_rowSG sel mu hPr hQ]
 
 def redY {n : ℕ} {ST : Finset (HeightOneSpectrum (𝓞 X.E))} (d : Deco X.E n ST Pr.vGs) (Y : Set (Sp X.E n)) :
     ∀ P : rowSG Pr sel mu, Fin n → 𝓞 X.E ⧸ P.1.asIdeal :=
   fun P => if h : P.1 ∈ Pr.vGs then d.be ⟨P.1, h⟩ (((qOf P.1 : ℕ) : X.E) • repY Y) else 0
 
-theorem memA_iff (hQ : QE sel (mu : Chr X.F X.E X.K) = ∅) {n : ℕ} (N : Submodule (𝓞 X.E) (Sp X.E n)) (z : Sp X.E n) :
-    z ∈ locLat (rowSG Pr sel mu) N (fun P => if P.1 ∈ Pr.vGs then 0 else (cst.M : ℤ)) ↔
-      ∀ P : rowSG Pr sel mu, z ∈ localization₂ P.1.asIdeal N := by
-  rw [mem_locLat]
-  refine forall_congr' fun P => ?_
-  rw [if_pos (mem_vGs_of_QE sel mu hQ P), zpow_zero, inv_one, one_smul]
 
-theorem memB_iff (hQ : QE sel (mu : Chr X.F X.E X.K) = ∅) {n : ℕ} (N : Submodule (𝓞 X.E) (Sp X.E n)) (z : Sp X.E n) :
-    z ∈ locLat (rowSG Pr sel mu) N (fun P => if P.1 ∈ Pr.vGs then -1 else -(cst.M : ℤ)) ↔
-      ∀ P : rowSG Pr sel mu, ((qOf P.1 : ℕ) : X.E) • z ∈ localization₂ P.1.asIdeal N := by
-  rw [mem_locLat]
-  refine forall_congr' fun P => ?_
-  rw [if_pos (mem_vGs_of_QE sel mu hQ P), zpow_neg_one, inv_inv]
 
-theorem ybSet_rep (hQ : QE sel (mu : Chr X.F X.E X.K) = ∅) {n : ℕ} (N : Submodule (𝓞 X.E) (Sp X.E n)) {Y : Set (Sp X.E n)}
-    (hY : Y ∈ ybSet sel mu cst N) :
-    (∀ P : rowSG Pr sel mu, ((qOf P.1 : ℕ) : X.E) • repY Y ∈ localization₂ P.1.asIdeal N) ∧
-      Y = {z | z - repY Y ∈ locLat (rowSG Pr sel mu) N (fun P => if P.1 ∈ Pr.vGs then 0 else (cst.M : ℤ))} := by
-  obtain ⟨y, hy, rfl⟩ := hY
-  set A := locLat (rowSG Pr sel mu) N (fun P => if P.1 ∈ Pr.vGs then 0 else (cst.M : ℤ)) with hA
-  have hyY : y ∈ {z | z - y ∈ A} := by
-    show y - y ∈ A
-    rw [sub_self]
-    exact zero_mem _
-  have hr : repY {z | z - y ∈ A} ∈ {z | z - y ∈ A} := by
-    unfold repY
-    exact Classical.epsilon_spec ⟨y, hyY⟩
-  have hr' : repY {z | z - y ∈ A} - y ∈ A := hr
-  refine ⟨fun P => ?_, ?_⟩
-  · have e1 : ((qOf P.1 : ℕ) : X.E) • repY {z | z - y ∈ A} =
-        ((qOf P.1 : ℕ) : X.E) • y + ((qOf P.1 : ℕ) : X.E) • (repY {z | z - y ∈ A} - y) := by
-      rw [← smul_add, add_sub_cancel]
-    rw [e1]
-    exact add_mem ((memB_iff sel mu cst hQ N y).1 hy P)
-      (natCast_smul_mem _ _ ((memA_iff sel mu cst hQ N _).1 hr' P))
-  · ext z
-    show z - y ∈ A ↔ z - repY {z | z - y ∈ A} ∈ A
-    constructor
-    · intro hz
-      have : z - repY {z | z - y ∈ A} = (z - y) - (repY {z | z - y ∈ A} - y) := by abel
-      rw [this]
-      exact sub_mem hz hr'
-    · intro hz
-      have : z - y = (z - repY {z | z - y ∈ A}) + (repY {z | z - y ∈ A} - y) := by abel
-      rw [this]
-      exact add_mem hz hr'
 
-theorem redY_injOn (hU : UnifG Pr) (hQ : QE sel (mu : Chr X.F X.E X.K) = ∅) {n : ℕ} {ST : Finset (HeightOneSpectrum (𝓞 X.E))}
-    (d : DecoSet X.E n ST Pr.vGs) : Set.InjOn (redY sel mu d.1) (ybSet sel mu cst d.1.N) := by
-  intro Y hY Y' hY' h
-  obtain ⟨hq, hYe⟩ := ybSet_rep sel mu cst hQ d.1.N hY
-  obtain ⟨hq', hYe'⟩ := ybSet_rep sel mu cst hQ d.1.N hY'
-  have hdiff : repY Y - repY Y' ∈ locLat (rowSG Pr sel mu) d.1.N (fun P => if P.1 ∈ Pr.vGs then 0 else (cst.M : ℤ)) := by
-    refine (memA_iff sel mu cst hQ d.1.N _).2 fun P => ?_
-    have hP := mem_vGs_of_QE sel mu hQ P
-    have hh := congrFun h P
-    unfold redY at hh
-    rw [dif_pos hP, dif_pos hP] at hh
-    exact be_diff d.2 ⟨P.1, hP⟩ (hU P.1 hP) (hq P) (hq' P) hh
-  rw [hYe, hYe']
-  ext z
-  simp only [Set.mem_ofPred_eq]
-  constructor
-  · intro hz
-    have : z - repY Y' = (z - repY Y) + (repY Y - repY Y') := by abel
-    rw [this]
-    exact add_mem hz hdiff
-  · intro hz
-    have : z - repY Y = (z - repY Y') - (repY Y - repY Y') := by abel
-    rw [this]
-    exact sub_mem hz hdiff
 
-theorem ybSet_count (hPr : Pr.Ok) (hU : UnifG Pr) (hQ : QE sel (mu : Chr X.F X.E X.K) = ∅) {n : ℕ}
-    {ST : Finset (HeightOneSpectrum (𝓞 X.E))} (d : DecoSet X.E n ST Pr.vGs) :
-    (ybSet sel mu cst d.1.N).Finite ∧ (ybSet sel mu cst d.1.N).ncard ≤ (Pr.g 0 * Pr.g 1) ^ (X.f * n) := by
-  have hinj := redY_injOn sel mu cst hU hQ d
-  have hcard : Nat.card (∀ P : rowSG Pr sel mu, Fin n → 𝓞 X.E ⧸ P.1.asIdeal) = (Pr.g 0 * Pr.g 1) ^ (X.f * n) := by
-    rw [Nat.card_pi, ← prod_rowSG sel mu hPr hQ n]
-    refine Finset.prod_congr rfl fun P _ => ?_
-    rw [Nat.card_fun, card_quot, Nat.card_eq_fintype_card, Fintype.card_fin]
-  refine ⟨Set.Finite.of_finite_image (Set.toFinite _) hinj, ?_⟩
-  rw [← hcard, ← Set.ncard_univ]
-  exact Set.ncard_le_ncard_of_injOn _ (fun _ _ => Set.mem_univ _) hinj
 
-theorem ybSet_nonempty {n : ℕ} (N : Submodule (𝓞 X.E) (Sp X.E n)) : (ybSet sel mu cst N).Nonempty :=
-  ⟨_, 0, zero_mem _, rfl⟩
 
 structure CountsN (m2 : ℕ) : Prop where
   n0 : Fintype.card (L.β 0) = 1
@@ -565,26 +361,7 @@ structure CountsN (m2 : ℕ) : Prop where
   nY : ∀ (u : Pr.Word) (p : ChPt (R := R) sel mu u (m2 + 1)),
     (ybSet sel mu cst p.deco.1.N).ncard ≤ (Pr.g 0 * Pr.g 1) ^ (X.f * R.N R.m)
 
-theorem countsN_of {Ch : Chars X Pr R.m} {G : ChGlob X R.m} {m2 : ℕ} (hL : ChIdx.Ok Ch sel mu cst L G m2) (hPr : Pr.Ok)
-    (hU : UnifG Pr) (hQ : QE sel (mu : Chr X.F X.E X.K) = ∅) : CountsN sel mu cst L m2 where
-  n0 := Fintype.card_eq_one_iff.2 hL.zero_uniq
-  nLast := Fintype.card_eq_one_iff.2 hL.last_uniq
-  nMid j hj1 hj2 := by
-    obtain ⟨i, rfl⟩ : ∃ i, j = i + 1 := ⟨j - 1, by omega⟩
-    refine (card_beta_le sel mu cst L hL hPr hU hQ (by omega : i < m2)).trans ?_
-    have hD := dimY_le R (j := i + 1) (by rw [hL.hm]; omega)
-    refine Nat.pow_le_pow_right (gg_pos hPr) (Nat.mul_le_mul_left _ ?_)
-    rw [sq]
-    exact Nat.mul_le_mul hD hD
-  ybFin u p := (ybSet_count sel mu cst hPr hU hQ p.deco).1
-  nY u p := by
-    refine (ybSet_count sel mu cst hPr hU hQ p.deco).2.trans ?_
-    exact Nat.pow_le_pow_right (gg_pos hPr) (Nat.mul_le_mul_left _ (N_le R (by rw [hL.hm]; omega)))
 
-theorem ybHyp_of {Ch : Chars X Pr R.m} {G : ChGlob X R.m} {m2 : ℕ} (hL : ChIdx.Ok Ch sel mu cst L G m2) (hPr : Pr.Ok)
-    (hU : UnifG Pr) (hQ : QE sel (mu : Chr X.F X.E X.K) = ∅) (u : Pr.Word) (b : L.β (m2 + 1)) :
-    YbHyp (R := R) sel mu cst L u m2 b :=
-  ⟨(countsN_of sel mu cst L hL hPr hU hQ).ybFin u⟩
 
 end Chain
 
@@ -732,14 +509,7 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks}
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K)))
 
-theorem countsN_ref (hX : X.Ok) (hPr : Pr.Ok) (hQ : QE sel (mu : Chr X.F X.E X.K) = ∅) {Ch : Chars X Pr R.m}
-    {G : ChGlob X R.m} {m2 : ℕ} (hL : ChIdx.Ok Ch sel mu cst L G m2) : CountsN sel mu cst L m2 :=
-  countsN_of sel mu cst L hL hPr (unifG_of hX hPr) hQ
 
-theorem ybHyp_ref (hX : X.Ok) (hPr : Pr.Ok) (hQ : QE sel (mu : Chr X.F X.E X.K) = ∅) {Ch : Chars X Pr R.m}
-    {G : ChGlob X R.m} {m2 : ℕ} (hL : ChIdx.Ok Ch sel mu cst L G m2) (u : Pr.Word) (b : L.β (m2 + 1)) :
-    YbHyp (R := R) sel mu cst L u m2 b :=
-  ybHyp_of sel mu cst L hL hPr (unifG_of hX hPr) hQ u b
 
 end Final
 

@@ -164,18 +164,8 @@ def ClaimEquivariant (D : D7) : Prop := ∀ (X : ThetaX D) (T : ThetaTied D X) (
 section
 variable {ψ : AddChar (AF D.host.F) ℂ} {A B : HSp D} {χA χB : (AE D)ˣ →* Circle} {om : Rep ψ A B}
 
-theorem kern_right (f : Theta ψ A B) (g g' : GA D A) (h h' : GA D B) :
-    kern om f (g * g') (h * h') = kern om (om (g', h') f) g h := by
-  have : om (g * g', h * h') = om (g, h) * om (g', h') := by rw [← map_mul]; rfl
-  simp only [kern, this, Module.End.mul_apply]
 
-theorem kern_left (hw : IsWeil ψ χA χB om) (f : Theta ψ A B) {γ : GA D A} (hγ : γ ∈ GQ A) {δ : GA D B} (hδ : δ ∈ GQ B)
-    (g : GA D A) (h : GA D B) : kern om f (γ * g) (δ * h) = kern om f g h := by
-  rw [kern_right]
-  exact hw.rat γ hγ δ hδ _
 
-theorem kern_cont (hw : IsWeil ψ χA χB om) (f : Theta ψ A B) : Continuous fun p : GA D A × GA D B => kern om f p.1 p.2 :=
-  hw.cont f 0
 
 end
 

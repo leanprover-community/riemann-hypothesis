@@ -51,16 +51,6 @@ theorem isPair_pow (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (hψ : IsStdChar D 
   have := hE V.rank τ
   rwa [show ((V.rank : ℚ) / 2) = ((a : ℤ) : ℚ) by rw [ha]; push_cast; ring] at this
 
-theorem isPair_rec (D : D7) (i : Fin D.R.m) (hV : VStd D i) (ψ : AddChar (AF D.host.F) ℂ) (hψ : IsStdChar D ψ (-1)) (η) (hη : IsEtaTilde D η) :
-    0 < (Vc D i).rank ∧ 0 < (Wc D i).rank ∧ ∃ θ χV χW om, IsPair ψ θ (Vc D i) (Wc D i) χV χW om := by
-  have hr : 0 < D.R.r := by
-    have := D.R.m_add_three_le_k
-    simp only [Ranks.r]; omega
-  obtain ⟨θ, hθ⟩ := hψ.2.1
-  refine ⟨hr.trans_le (r_le_V i), hr.trans_le (r_le_rank_Wc i), θ, _, _,
-    isPair_pow D ψ hψ θ hθ _ _ hV.1 ?_ (D.sp.V_sig _) (D.sp.W_sig _) η hη⟩
-  rw [D.sp.V_rank _ (Nat.le_add_left _ _) i.2]
-  exact (kapDom D).2
 
 theorem hatC_phiHat {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H} {l : Level H}
     (c : Coeff l) {n : ℕ} (φ : (Fin n → LevQc Dw l) → c.F) (hf : Finite (Fin n → LevQc Dw l)) (q : Fin n → LevQ Dw l) :
@@ -82,11 +72,5 @@ theorem hatC_phiHat {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Reci
   rw [map_mul, map_zpow₀]
   rfl
 
-theorem markAd_one {D : D7} {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : Datum H} (l : Level H) (W : HSp D)
-    (ι : Dw.La →ₗ[𝓞 D.host.E] (Fin W.rank → D.host.E)) : MarkAd l W rfl ι 1 ι := by
-  intro a _
-  refine ⟨0, zero_mem _, ?_⟩
-  rw [map_one, nsmul_zero, Units.val_one, Matrix.one_mulVec]
-  exact sub_self _
 
 end GlobalTheory.AdTh

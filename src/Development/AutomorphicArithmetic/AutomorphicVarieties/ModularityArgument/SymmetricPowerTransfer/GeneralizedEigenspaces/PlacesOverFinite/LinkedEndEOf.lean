@@ -60,8 +60,6 @@ def LinkedEndE : Prop :=
     Pr.SeedClause c η (Chr.Psi l e (Chr.dirG ℚ Ω ψ)) σ L →
     Pr.FinPt c.O Φ 3 ∧ Pr.AutPt k 3 ι (cycBar L Ω l)⁻¹ ∧ ∃ ka, Sd.IsAlgChar ι ka ∧ Pr.AutPt k 2 ι ka
 
-theorem linkedEndE_of (h : Pr.LinkedEnd) : LinkedEndE :=
-  fun Ω _ _ _ l _ ι c _ N _ e ψ he _ => h Ω l ι c N e ψ he
 
 end UpperTheory.V.Z.Sym.Pl
 

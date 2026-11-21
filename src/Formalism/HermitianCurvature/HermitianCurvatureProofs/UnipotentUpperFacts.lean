@@ -36,22 +36,9 @@ lemma conj_pow (γ X : Matrix n n ℂ) (hγ : IsUnit γ.det) (p : ℕ) : (γ⁻�
     simp only [Matrix.mul_assoc]
     rw [Matrix.mul_nonsing_inv_cancel_left _ _ hγ]
 
-lemma blk_pow {p q : Type*} [Fintype p] [DecidableEq p] [Fintype q] [DecidableEq q]
-    (A : Matrix p p ℂ) (D : Matrix q q ℂ) (m : ℕ) :
-    (Matrix.fromBlocks A 0 0 D) ^ m = Matrix.fromBlocks (A ^ m) 0 0 (D ^ m) := by
-  induction m with
-  | zero => simp [Matrix.fromBlocks_one]
-  | succ m ih => rw [pow_succ, ih, Matrix.fromBlocks_multiply, pow_succ, pow_succ]; simp
 
 end gen
 
-lemma ut_sub_pow {m : ℕ} {u : Matrix (Fin m) (Fin m) ℂ} (hu : u ∈ C2.UTset m) : (u - 1) ^ m = 0 := by
-  apply strict_pow_eq_zero
-  intro i j hji
-  rw [Matrix.sub_apply, Matrix.one_apply]
-  rcases lt_or_eq_of_le hji with h | h
-  · rw [hu.1 i j h, if_neg (fun e => by subst e; exact lt_irrefl _ h), sub_zero]
-  · subst h; rw [hu.2, if_pos rfl, sub_self]
 
 variable {k r : ℕ}
 

@@ -50,12 +50,6 @@ def place3 : HeightOneSpectrum (𝓞 ℚ) := placeAbove3.under (𝓞 ℚ)
 theorem placeAbove3_under_int : placeAbove3.asIdeal.under ℤ = threeZ :=
   (primeAbove3.2.2).over.symm
 
-theorem three_mem_place3 : (3 : 𝓞 ℚ) ∈ place3.asIdeal := by
-  rw [place3, HeightOneSpectrum.under_asIdeal, Ideal.under_def, Ideal.mem_comap, map_ofNat]
-  have h3 : ((3 : ℕ) : ℤ) ∈ placeAbove3.asIdeal.under ℤ := by
-    rw [placeAbove3_under_int]; exact Ideal.subset_span rfl
-  rw [Ideal.under_def, Ideal.mem_comap] at h3
-  simpa using h3
 
 theorem cycAt_three : CycAt place3 placeAbove3 := by
   refine ⟨inferInstance, by rw [finrank_QI]; exact Nat.prime_two, rfl, fun u' hu' => ?_⟩

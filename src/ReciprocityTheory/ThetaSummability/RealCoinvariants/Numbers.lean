@@ -51,7 +51,5 @@ end RealData
 
 def exampleData : RealData := ⟨9, 5, 1, 1, 16⟩
 
-theorem exampleData_hyp : exampleData.Hyp := by
-  constructor <;> norm_num [exampleData]
 
 end ReciprocityTheory.ThetaSummability.Real

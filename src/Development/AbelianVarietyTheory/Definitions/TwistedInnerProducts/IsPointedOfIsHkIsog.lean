@@ -343,14 +343,6 @@ theorem IsMulPull.exists_isRigIso {p : ℕ} {s : LB.Sec (LPow A L.L 1 (Over.mk x
   · rw [hv _ _ z J hJ, ← val_corr hJ cα]
     exact (twist_val tw _ z hJ).trans (mul_comm _ _)
 
-theorem isThetaTrace_mulT [IsCommMonObj A] {p : ℕ} {s : LB.Sec (LPow A L.L 1 (Over.mk x))}
-    {s₁ : LB.Sec (LPow A L.L ((p : ℤ) ^ 2) (Over.mk x))} (h : IsMulPull A L p s s₁) :
-    IsThetaTrace A L (mulT A (Over.mk x) p).left p s s := by
-  obtain ⟨β, hβ, hc⟩ := h.exists_isRigIso
-  refine isThetaTrace_iff.2 ⟨β, s₁, 1, fun _ => 1, hβ, h, ⟨fun _ => Subgroup.one_mem _, fun c hc =>
-    ⟨0, by simpa using (mem_transKer_mulT p c).1 hc, fun _ _ => Subsingleton.elim _ _⟩⟩, fun Z r z J hJ => ?_⟩
-  rw [Fin.sum_univ_one, hc.val _ z hJ, translT_one, Over.id_left, Category.comp_id, mul_comm,
-    Units.mul_inv_cancel_right]
 
 theorem IsRepsModTors.card {G : Type} [CommGroup G] {C : Subgroup G} {p n : ℕ} {r : Fin n → G}
     (h : IsRepsModTors C p r) : Nat.card C = Nat.card {c : G // c ∈ C ∧ c ^ p = 1} * n := by
@@ -448,17 +440,6 @@ theorem IsDescLift.symLift [IsCommMonObj A] (h : IsDescLift A L Ψ k β U) (hβ 
     simp only [ofMul_mul, ofMul_inv, ofMul_one]
     abel
 
-theorem IsThetaTrace.sv_eq_of_mulT [IsCommMonObj A] (hG : GlobalFnsSt) (hA : IsAbelianScheme A) {p : ℕ}
-    {s u : LB.Sec (LPow A L.L 1 (Over.mk x))} (h : IsThetaTrace A L (mulT A (Over.mk x) p).left p s u)
-    {Z : Scheme.{0}} (r : Z ⟶ (Over.mk x ⊗ A).left) (z : Z) {J} (hJ : Good L.L z J) :
-    sv A L u (r ≫ (mulT A (Over.mk x) p).left) z J = sv A L s (r ≫ (mulT A (Over.mk x) p).left) z J := by
-  obtain ⟨β, s₁, n, c, hβ, hs, hr, hv⟩ := isThetaTrace_iff.1 h
-  obtain ⟨β', hβ', hc⟩ := hs.exists_isRigIso
-  obtain ⟨i, -, hi⟩ := hr.2 1 (Subgroup.one_mem _)
-  have hu : ∀ j, j = i := fun j => hi j (by simpa using (mem_transKer_mulT p _).1 (hr.1 j))
-  rw [hv _ r z J hJ, Finset.sum_eq_single i (fun j _ hj => absurd (hu j) hj) (fun h => absurd (Finset.mem_univ i) h),
-    hc.val _ z hJ, hβ.val_unique hG hA hβ' _ z hJ, Category.assoc, mem_transKer.1 (hr.1 i), mul_comm,
-    Units.mul_inv_cancel_right]
 
 end General
 

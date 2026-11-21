@@ -45,16 +45,11 @@ theorem isHtFun_generic_iff [IsIntegral X] {p : X ⟶ Sp k} (L : ι → HermLB p
     IsHtFun L (genericPoint X) (D + 1) Φ ↔ IsArFun L D Φ :=
   Iff.rfl
 
-theorem isIntFun_one_iff {p : X ⟶ Sp k} (L : ι → HermLB p) (D : ℕ) (Λ : MvPolynomial ι ℝ →ₗ[ℝ] ℝ) :
-    IsIntFun L (fun _ _ => 1) D Λ ↔ IsGeoFun L D Λ :=
-  Iff.rfl
 
 def vdmPol (r e : ℕ) : MvPolynomial (Option (Fin r)) ℝ :=
   C ((r.factorial : ℝ)⁻¹) * (∑ i : Fin r, MvPolynomial.X (some i) ^ 2) *
     (∏ i : Fin r, ∏ i' ∈ Finset.Ioi i, (MvPolynomial.X (some i') - MvPolynomial.X (some i))) * MvPolynomial.X none ^ e
 
-theorem vdmPol_one (e : ℕ) : vdmPol 1 e = MvPolynomial.X (some 0) ^ 2 * MvPolynomial.X none ^ e := by
-  simp [vdmPol]
 
 structure FlagSp (E : X.Modules) (r : ℕ) : Type 1 where
 

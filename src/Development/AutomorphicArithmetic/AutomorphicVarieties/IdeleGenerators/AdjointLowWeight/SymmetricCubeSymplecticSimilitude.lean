@@ -28,10 +28,6 @@ theorem symmetric_cube_explicit (u : R) (g : M2 R) : s3 u g =
   ext i j
   fin_cases i <;> fin_cases j <;> simp [s3, symCubeMatrixHom, Matrix.diagonal_mul, Matrix.mul_diagonal] <;> ring
 
-theorem symmetric_cube_map (f : R →+* R') (u : R) (g : M2 R) : (s3 u g).map f = s3 (f u) (g.map f) := by
-  ext i j
-  rw [symmetric_cube_explicit, symmetric_cube_explicit]
-  fin_cases i <;> fin_cases j <;> simp [map_ofNat]
 
 theorem low_map (f : R →+* R') (x : R) : (low x).map f = low (f x) := by
   ext i j
@@ -54,43 +50,11 @@ theorem symmetric_cube_mul (g h : M2 R) : s3 u (g * h) = s3 u g * s3 u h := by
   simp only [s3, map_mul, mul_assoc]
   rw [← mul_assoc (Matrix.diagonal ![1, 1, -1, u]), e, one_mul]
 
-theorem adjoint_symmetric_cube (g : M2 R) : adj (s3 u g) = s3 u g.adjugate := by
-  ext i j
-  rw [adj_apply, symmetric_cube_explicit, symmetric_cube_explicit, Matrix.adjugate_fin_two]
-  fin_cases i <;> fin_cases j <;> simp [sgn, Fin.rev, hu] <;> ring
 
-theorem symmetric_cube_smul (a : R) (g : M2 R) : s3 u (a • g) = a ^ 3 • s3 u g := by
-  ext i j
-  rw [symmetric_cube_explicit, symmetric_cube_explicit]
-  fin_cases i <;> fin_cases j <;> simp <;> ring
 
-theorem symmetric_cube_symplectic_similitude (a : R) (g : M2 R) : IsGSp (a ^ 2 * g.det ^ 3) (a • s3 u g) := by
-  have e : adj (a • s3 u g) = a • adj (s3 u g) := by
-    ext i j
-    simp only [adj_apply, Matrix.smul_apply]
-    rw [smul_comm]
-  rw [IsGSp, e, adjoint_symmetric_cube hu, Matrix.smul_mul, Matrix.mul_smul, ← symmetric_cube_mul hu, Matrix.adjugate_mul, symmetric_cube_smul hu, symmetric_cube_one hu,
-    smul_smul, smul_smul, ← sq]
 
-theorem adjoint_symmetric_cube_lower (x : R) : adj (s3 u (low x)) = s3 u (low (-x)) := by
-  rw [adjoint_symmetric_cube hu]
-  congr 1
-  simp [low, Matrix.adjugate_fin_two]
 
-theorem symmetric_cube_lower_unipotent (x : R) : IsLow (s3 u (low x)) := by
-  refine ⟨?_, fun i => ?_, fun i j h => ?_⟩
-  · simpa [low] using symmetric_cube_symplectic_similitude hu 1 (low x)
-  · rw [symmetric_cube_explicit]
-    fin_cases i <;> simp [low, hu]
-  · rw [symmetric_cube_explicit]
-    fin_cases i <;> fin_cases j <;> simp [low] at h ⊢
 
-theorem conjugate_symmetric_cube_flags (a x y : R) (g : M2 R) : adj (s3 u (low y)) * (a • s3 u g) * s3 u (low x) =
-    a • s3 u !![g 0 0 + g 0 1 * x, g 0 1; g 1 0 + g 1 1 * x - (g 0 0 + g 0 1 * x) * y, g 1 1 - y * g 0 1] := by
-  rw [adjoint_symmetric_cube_lower hu, Matrix.mul_smul, Matrix.smul_mul, ← symmetric_cube_mul hu, ← symmetric_cube_mul hu]
-  congr 2
-  ext i j
-  fin_cases i <;> fin_cases j <;> simp [low, Matrix.mul_apply, Fin.sum_univ_succ, Matrix.vecMul, dotProduct] <;> ring
 
 omit hu in
 theorem symmetric_cube_upper_triangular (a : R) {g : M2 R} (h : g 1 0 = 0) : IsUp (a • s3 u g) := by
@@ -103,12 +67,6 @@ theorem symmetric_cube_lower_entries_zero (a : R) {g : M2 R} (h : g 0 1 = 0) {i 
   rw [symmetric_cube_explicit]
   fin_cases i <;> fin_cases j <;> simp [h] at hij ⊢
 
-theorem symmetric_cube_diagonal_entries (a : R) {g : M2 R} (h : g 0 1 * g 1 0 = 0) (i : Fin 4) :
-    (a • s3 u g) i i = a * (g 0 0 ^ (3 - (i : ℕ)) * g 1 1 ^ (i : ℕ)) := by
-  rw [symmetric_cube_explicit]
-  fin_cases i <;> simp [hu]
-  · linear_combination (2 * a * g 0 0) * h
-  · linear_combination (2 * a * g 1 1) * h
 
 def rep {Γ : Type} [Group Γ] (δ : Γ →* Rˣ) (ρ : Γ →* M2 R) : Γ →* M4 R where
   toFun g := (δ g : R) • s3 u (ρ g)

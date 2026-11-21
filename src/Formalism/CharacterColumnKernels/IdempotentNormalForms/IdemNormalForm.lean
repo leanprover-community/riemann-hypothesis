@@ -21,20 +21,6 @@ theorem burnside : StatBurnside := by
   have := ha (Module.finBasis k V i) (Finset.mem_image_of_mem _ (Finset.mem_univ i))
   simpa [F] using this.symm
 
-theorem ontoLattice : StatOntoLattice := by
-  intro O A L _ _ _ _ _ _ _ _ φ hφ
-  have hle : (⊤ : Submodule O (Module.End O L)) ≤
-      LinearMap.range φ.toLinearMap ⊔ IsLocalRing.maximalIdeal O • ⊤ := by
-    intro f _
-    obtain ⟨a, ha⟩ := hφ f
-    have hf : f = φ a + (f - φ a) := by abel
-    rw [hf]
-    exact Submodule.add_mem_sup (LinearMap.mem_range.mpr ⟨a, rfl⟩) ha
-  have htop := Submodule.le_of_le_smul_of_le_jacobson_bot Module.Finite.fg_top
-    (IsLocalRing.jacobson_eq_maximalIdeal ⊥ bot_ne_top).ge hle
-  intro f
-  obtain ⟨a, ha⟩ := LinearMap.mem_range.mp (htop Submodule.mem_top)
-  exact ⟨a, ha⟩
 
 section RankMod
 

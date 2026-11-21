@@ -84,25 +84,13 @@ def altCx (R : Type) [CommRing R] : Cx.{0} R where
 def exH (R : Type) [CommRing R] : ∀ n, (altCx R).X n →ₗ[R] (altCx R).X n :=
   fun n => if n = 0 then LinearMap.id else 0
 
-theorem exH_zero (R : Type) [CommRing R] (y : R) : (show R from exH R 0 y) = y := by
-  change (if (0 : ℕ) = 0 then LinearMap.id else 0 : R →ₗ[R] R) y = y
-  simp
 
-theorem exH_one (R : Type) [CommRing R] (y : R) : (show R from exH R 1 y) = 0 := by
-  change (if (1 : ℕ) = 0 then LinearMap.id else 0 : R →ₗ[R] R) y = 0
-  simp
 
 theorem alt_zero (R : Type) [CommRing R] (y : R) : (show R from (altCx R).d 0 y) = y := by
   change (if Even 0 then LinearMap.id else 0 : R →ₗ[R] R) y = y
   simp
 
-theorem exAD_ne (R : Type) [CommRing R] [Nontrivial R] : ∃ x : (altCx R).X 0, (AD.ofH (exH R)).r 0 x ≠ 0 := by
-  refine ⟨(1 : R), fun h0 => one_ne_zero (α := R) ?_⟩
-  have e : (show R from (altCx R).d 0 (show R from exH R 0 (1 : R))) - (show R from exH R 1 (show R from (altCx R).d 0 (1 : R))) = 0 := h0
-  rwa [exH_zero, alt_zero, exH_one, sub_zero] at e
 
-theorem exNH_ne (R : Type) [CommRing R] [Nontrivial R] : ∃ x : (altCx R).X 0, (NH.ofH (exH R)).h 0 x ≠ 0 :=
-  ⟨(1 : R), fun h0 => one_ne_zero (α := R) ((exH_zero R 1).symm.trans h0)⟩
 
 def cone (t : AD K L) : Cx.{w} R where
   X n := L.X n × K.X n
@@ -344,8 +332,6 @@ def eZ (A : Cx.{w} R) (n : ℕ) : (sh A).Z (n + 1) →ₗ[R] A.Z n :=
 def eH (A : Cx.{w} R) (n : ℕ) : (sh A).H (n + 1) →ₗ[R] A.H n :=
   Submodule.mapQ _ _ (eZ A n) fun z hz => mem_B_sh z.1 hz
 
-theorem eH_cls (n : ℕ) (x : (sh A).X (n + 1)) (hx : (sh A).d (n + 1) x = 0) :
-    eH A n ((sh A).cls x hx) = A.cls (show A.X n from x) (sh_cocycle x hx) := rfl
 
 theorem eH_shF (φ : Cx.Hom A A' (RingHom.id R)) (n : ℕ) (y : (sh A).H (n + 1)) :
     eH A' n ((shF φ).mapH (n + 1) y) = φ.mapH n (eH A n y) := by
@@ -513,8 +499,6 @@ def exDat (R : Type) [CommRing R] (ι : Type) [DecidableEq ι] : Dat (flatSy R �
   hρ _ _ _ := rfl
   hn _ _ _ := rfl
 
-theorem exDat_ne (R : Type) [CommRing R] [Nontrivial R] (ι : Type) [DecidableEq ι] :
-    ∃ x : ((flatSy R ι).K ∅).X 0, (exDat R ι).ρ ∅ 0 x ≠ 0 := ⟨(1 : R), one_ne_zero (α := R)⟩
 
 variable {A B : Sy.{w} R ι}
 

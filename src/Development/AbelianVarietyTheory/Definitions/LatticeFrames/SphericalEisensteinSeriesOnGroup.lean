@@ -34,7 +34,6 @@ def Compat {T T' : HSp D} {t : ℕ} (d : HypDec T T' t) (l : Lvl T) (l' : Lvl T'
   ∀ w, l.form.map (compInf D.host.F D.host.E w) =
     (adj d.pX ⬝ d.pX + adj d.p0 ⬝ (l'.form ⬝ d.p0) + adj d.pY ⬝ d.pY : Mx D T.rank T.rank).map (compInf D.host.F D.host.E w)
 
-theorem Lvl.K_frameLat (V : HSp D) (a : GL (Fin V.rank) (AE D)) : Lvl.K (⟨frameLat V, a⟩ : Lvl V) = Kmax V a := rfl
 
 theorem Lvl.good_frameLat (V : HSp D) {a : GL (Fin V.rank) (AE D)} (ha : IsMaj V a) :
     Lvl.Good (⟨frameLat V, a⟩ : Lvl V) :=
@@ -63,7 +62,6 @@ def sphericalEisensteinSeriesOnGroup (h : GA D T) : ℂ → ℂ := fun s => cose
 
 def residueFieldAlt : ℂ := laurent (sphericalEisensteinSeriesOnGroup d K 1) (rhoH T r) (-1)
 
-theorem sphericalSection_maximalCompact (b : GL (Fin T.rank) (AE D)) : sphericalSectionIwasawa d (Kmax T b) = sphericalSection d b := rfl
 
 end SlopeTestRemainingChoices
 
@@ -81,14 +79,6 @@ def rderG (X : Matrix (Fin (n + n)) (Fin (n + n)) ℂ) (f : StdUnn.G D n → ℂ
 def conjG (Z : Matrix (Fin (n + n)) (Fin (n + n)) ℂ) : Matrix (Fin (n + n)) (Fin (n + n)) ℂ :=
   -((StdUnn.blk4 (0 : Matrix (Fin n) (Fin n) ℂ) 1 (-1) 0)⁻¹ * Zᴴ * StdUnn.blk4 (0 : Matrix (Fin n) (Fin n) ℂ) 1 (-1) 0)
 
-theorem conjG_I_smul_one : conjG n (Complex.I • 1) = Complex.I • 1 := by
-  have h : StdUnn.blk4 (0 : Matrix (Fin n) (Fin n) ℂ) 1 (-1) 0 * StdUnn.blk4 (0 : Matrix (Fin n) (Fin n) ℂ) (-1) 1 0 = 1 := by
-    simp [StdUnn.blk4, Matrix.submatrix_mul_equiv, Matrix.fromBlocks_multiply]
-  have hu := Matrix.isUnit_det_of_right_inverse h
-  unfold conjG
-  rw [Matrix.conjTranspose_smul, Matrix.conjTranspose_one, Matrix.mul_smul, Matrix.mul_one, Matrix.smul_mul,
-    Matrix.nonsing_inv_mul _ hu]
-  simp
 
 def rderCG (Z : Matrix (Fin (n + n)) (Fin (n + n)) ℂ) (f : StdUnn.G D n → ℂ) : StdUnn.G D n → ℂ :=
   rderG θ n τ ((1 / 2 : ℂ) • (Z + conjG n Z)) f + Complex.I • rderG θ n τ ((1 / (2 * Complex.I) : ℂ) • (Z - conjG n Z)) f
@@ -111,11 +101,6 @@ def projS {T : HSp D} {K : Subgroup (GA D T)} (ν : Measure K) (Φ : Mx D T.rank
 def ikS {T T' : HSp D} {t : ℕ} (d : HypDec T T' t) (μ : Measure (Mx D t n)) (Φ : Mx D T.rank n → ℂ) : Mx D T'.rank n → ℂ :=
   fun a => ∫ x, Φ (d.jX ⬝ x + d.j0 ⬝ a) ∂μ
 
-theorem projS_of_invariant {T : HSp D} {K : Subgroup (GA D T)} (ν : Measure K) [IsProbabilityMeasure ν]
-    {Φ : Mx D T.rank n → ℂ} (h : ∀ k ∈ K, ∀ x : Mx D T.rank n, Φ (mt T k ⬝ x) = Φ x) : projS ν Φ = Φ := by
-  funext x
-  have : ∀ k : K, Φ (mt T (k : GA D T)⁻¹ ⬝ x) = Φ x := fun k => h _ (K.inv_mem k.2) x
-  simp [projS, this]
 
 variable (θ : InfFam D) (τ : D.what₂.Tau)
 

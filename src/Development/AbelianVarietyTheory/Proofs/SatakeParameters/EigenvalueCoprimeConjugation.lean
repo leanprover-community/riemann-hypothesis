@@ -216,25 +216,7 @@ theorem conclusions_iff {σ : D.what₂.FT} {i : D.nd.Loc} {k : Fin 2} (v : D.nd
   ⟨fun h => ⟨(eigenvalues_iff D σ i k v).1 h.1, exists_frobConj_of_eigenvalues D hg hl h.1⟩,
     fun ⟨h, φ, _, hφ⟩ => ⟨(eigenvalues_iff D σ i k v).2 h, φ, hφ⟩⟩
 
-theorem tameGenerator_iff : GlobalTheory.RowCopy.JointOccurrenceCondition D ↔ TameGeneratorAtTypePrime D := by
-  rw [first_iff]
-  constructor
-  · intro h σ i k hG v
-    obtain ⟨hc, ht, hl, ho, hg⟩ := (hypotheses_iff D σ i k v).2 hG
-    exact (conclusions_iff D v hg hl).1 (h σ k v hc ht i hl ho hg)
-  · intro h σ k v hc ht i hl ho hg
-    exact (conclusions_iff D v hg hl).2 (h σ i k ((hypotheses_iff D σ i k v).1 ⟨hc, ht, hl, ho, hg⟩) v)
 
-theorem strong_iff : TameAtTypePrimeStrong D ↔ TameGeneratorAtTypePrime D ∧
-    ∀ (σ : D.what₂.FT) (i : D.nd.Loc) (k : Fin 2), Guard D σ i k → ∀ (v : D.nd.PlG k)
-      (s : G D.host.E D.nd.Om), IsWildAtType D k v s → D.ntypes.rbar σ (D.nd.w i) s = 1 := by
-  refine ⟨fun h => ⟨tameGenerator_of_strong D h, fun σ i k hG v => (h σ i k hG v).1⟩,
-    fun ⟨h, hw⟩ σ i k hG v => ⟨hw σ i k hG v, (h σ i k hG v).1, fun φ hφ => ?_⟩⟩
-  unfold IsFrobAtType at hφ
-  rw [normV_plGw] at hφ
-  have h3 := hw σ i k hG v _ (wild_of_frob (D.ntypes.tg_mem k v) hφ)
-  rw [map_mul, map_inv, inv_mul_eq_one, map_pow] at h3
-  exact h3.symm
 
 end GlobalTheory.Proof.EigenvalueCoprimeConjugation
 

@@ -1,13 +1,399 @@
 import Mathlib
 import Development.WeilBound.ThetaLifts.Reductions.SiegelPar
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EqZeroOfIsIntegralMulOfSmall
+import Development.WeilBound.ThetaLifts.Reductions.SiegelCore
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TorusArchimedeanFrameAction
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeFrameWeightRatioBound
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MinimalParabolicFrameBlockZero
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactFiniteAdelicDenominator
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FrameBlockZeroStabilizesFlag
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AdeleSplitSndDiagonal
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SumFrameIdem
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNatMulIntegralOfIsCompact
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsNsmulPaddedLatticeMemBasisProduct
+import CompanionTheory.AutomorphicTheory.SiegelWeilFiniteness.Bridge
+import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.OfUnfolding
 
+section
+open NumberField MeasureTheory Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet
+open Formalism.UG (cT)
+open scoped TensorProduct NNReal ENNReal
+
+namespace GlobalTheory.CompanionTheory.SmallIntegral
+
+theorem eq_zero_of_isIntegral_mul_of_small :
+    ∀ (E : Type) [Field E] [NumberField E] (d : ℕ) (y : E), 0 < d →
+      IsIntegral ℤ ((d : E) * y) → ∀ ε : ℝ, (∀ φ : E →+* ℂ, ‖φ y‖ ≤ ε) →
+      ((d : ℝ) * ε) ^ Module.finrank ℚ E < 1 → y = 0 := by
+  intro E _ _ d y hd hint ε hε hlt
+  by_contra hy
+  have hd' : (d : E) ≠ 0 := by exact_mod_cast hd.ne'
+  have hz : (d : E) * y ≠ 0 := mul_ne_zero hd' hy
+
+  obtain ⟨n, hn⟩ := IsIntegrallyClosed.isIntegral_iff.mp
+    (Algebra.isIntegral_norm ℚ hint : IsIntegral ℤ (Algebra.norm ℚ ((d : E) * y)))
+  have hnorm0 : Algebra.norm ℚ ((d : E) * y) ≠ 0 := Algebra.norm_ne_zero_iff.mpr hz
+  have hn0 : n ≠ 0 := by
+    rintro rfl
+    exact hnorm0 (by simpa using hn.symm)
+  have hn1 : (1 : ℝ) ≤ |(n : ℝ)| := by exact_mod_cast Int.one_le_abs hn0
+
+  have hprod : ((Algebra.norm ℚ ((d : E) * y) : ℚ) : ℂ) = ∏ φ : E →+* ℂ, φ ((d : E) * y) := by
+    have h := Algebra.norm_eq_prod_embeddings ℚ ℂ ((d : E) * y)
+    have h2 : ∏ σ : E →ₐ[ℚ] ℂ, σ ((d : E) * y) = ∏ φ : E →+* ℂ, φ ((d : E) * y) :=
+      Fintype.prod_equiv (RingHom.equivRatAlgHom E ℂ).symm _ _ (fun σ => rfl)
+    rw [← h2, ← h]
+    simp
+  have hnC : ((n : ℂ)) = ∏ φ : E →+* ℂ, φ ((d : E) * y) := by
+    rw [← hprod, ← hn]
+    simp
+  have habs : |(n : ℝ)| = ∏ φ : E →+* ℂ, ‖φ ((d : E) * y)‖ := by
+    have := congrArg norm hnC
+    rw [norm_prod] at this
+    simpa using this
+  have hbound : ∏ φ : E →+* ℂ, ‖φ ((d : E) * y)‖ ≤ ((d : ℝ) * ε) ^ Module.finrank ℚ E := by
+    have hle : ∀ φ ∈ (Finset.univ : Finset (E →+* ℂ)), ‖φ ((d : E) * y)‖ ≤ (d : ℝ) * ε := by
+      intro φ _
+      rw [map_mul, map_natCast, norm_mul, Complex.norm_natCast]
+      exact mul_le_mul_of_nonneg_left (hε φ) (Nat.cast_nonneg d)
+    calc ∏ φ : E →+* ℂ, ‖φ ((d : E) * y)‖ ≤ ∏ _φ : E →+* ℂ, (d : ℝ) * ε :=
+          Finset.prod_le_prod (fun _ _ => norm_nonneg _) hle
+      _ = ((d : ℝ) * ε) ^ Module.finrank ℚ E := by
+          rw [Finset.prod_const, Finset.card_univ, NumberField.Embeddings.card E ℂ]
+  linarith
+
+end GlobalTheory.CompanionTheory.SmallIntegral
+end
+
+section
+section
+noncomputable section
+
+open NumberField MeasureTheory Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet PositivityTheory.ThKR GlobalTheory.CompanionTheory.RapidDecay
+open Formalism.UG (cT)
+open GlobalTheory.Orb (archMat)
+open scoped TensorProduct NNReal ENNReal
+
+namespace GlobalTheory.CompanionTheory.RapidDecay
+
+theorem single_mul_mul_single_eq_zero {R : Type} [CommRing R] {r : ℕ} {B : Matrix (Fin r) (Fin r) R}
+    {m i : Fin r} (h : B m i = 0) :
+    (single m m (1 : R) : Matrix (Fin r) (Fin r) R) * B * single i i (1 : R) = 0 := by
+  ext a b
+  simp only [Matrix.mul_apply, Matrix.single_apply, Matrix.zero_apply]
+  rcases eq_or_ne m a with rfl | ha <;> rcases eq_or_ne i b with rfl | hb <;>
+    simp [*, Finset.sum_ite_eq, Finset.sum_ite_eq']
+
+theorem map_single_one_eq {E : Type} [Field E] {r : ℕ} (f : E →+* ℂ) (i : Fin r) :
+    (single i i (1 : E) : Matrix (Fin r) (Fin r) E).map f = single i i (1 : ℂ) := by
+  ext a b
+  simp only [Matrix.map_apply, Matrix.single_apply]
+  split_ifs <;> simp
+
+theorem mul_mul_frameLine {n r : ℕ} {A G : Matrix (Fin n) (Fin n) ℂ} {P : Matrix (Fin n) (Fin r) ℂ}
+    {B : Matrix (Fin r) (Fin r) ℂ} (hG : G * P = P * B) (Q : Matrix (Fin r) (Fin n) ℂ) (i : Fin r)
+    (h : A * P * B * single i i (1 : ℂ) = 0) :
+    A * G * (P * single i i (1 : ℂ) * Q) = 0 := by
+  calc A * G * (P * single i i (1 : ℂ) * Q) = A * (G * P) * single i i (1 : ℂ) * Q := by
+        simp only [Matrix.mul_assoc]
+    _ = A * P * B * single i i (1 : ℂ) * Q := by
+        rw [hG]; simp only [Matrix.mul_assoc]
+    _ = 0 := by rw [h, Matrix.zero_mul]
+
+theorem minPar_frame_block_eq_zero : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (n : ℕ) (J : Matrix (Fin n) (Fin n) E), IsHermND σ J → ∀ (r : ℕ) (X Y : Matrix (Fin n) (Fin r) E), IsWittFrame σ J X Y → ∀ g ∈ minPar σ J X, ∀ (w : InfinitePlace F) (τ : EmbOver E w) (s : Fin r) (α β : FrameIx r), frameLev s α < 2 → frameLev s β = 2 → (frameIdem (σ : E →+* E) J X Y α).map τ.1 * archMat σ J τ (projArch σ J w g) * (frameIdem (σ : E →+* E) J X Y β).map τ.1 = 0 := by
+  intro F E _ _ _ _ _ σ hCM n J hJ r X Y hW g hg w τ s α β hα hβ
+  obtain ⟨-, -, -, hστ⟩ := hCM
+  have hσσ : ∀ x, σ (σ x) = x := fun x => τ.1.injective (by rw [hστ, hστ, star_star])
+  have cT_mul : ∀ {a b c : ℕ} (A : Matrix (Fin a) (Fin b) E) (B : Matrix (Fin b) (Fin c) E),
+      cT (σ : E →+* E) (A * B) = cT (σ : E →+* E) B * cT (σ : E →+* E) A := by
+    intro a b c A B
+    simp [Formalism.UG.cT, Matrix.map_mul, Matrix.transpose_mul]
+  have cT_cT : ∀ {a b : ℕ} (A : Matrix (Fin a) (Fin b) E), cT (σ : E →+* E) (cT (σ : E →+* E) A) = A := by
+    intro a b A
+    ext i j
+    simp [Formalism.UG.cT, hσσ]
+  have cT_J : cT (σ : E →+* E) J = J := by
+    ext i j
+    simpa [Formalism.UG.cT] using hJ.1 i j
+  have cT_one : cT (σ : E →+* E) (1 : Matrix (Fin r) (Fin r) E) = 1 := by
+    ext i j
+    by_cases hij : i = j
+    · subst hij; simp [Formalism.UG.cT]
+    · simp [Formalism.UG.cT, Matrix.one_apply, hij, Ne.symm hij]
+  have hyx : cT (σ : E →+* E) Y * (J * X) = 1 := by
+    have h := congrArg (cT (σ : E →+* E)) hW.xy
+    rw [cT_mul, cT_mul, cT_cT, cT_J, cT_one] at h
+    exact h
+  have hxx : cT (σ : E →+* E) X * (J * X) = 0 := by
+    rw [← Matrix.mul_assoc]
+    exact hW.xx
+  obtain ⟨B, hBt, hB⟩ := hg
+  let φ : TensorProduct F (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF F) E →+* ℂ :=
+    (GlobalTheory.AdelicU.infEmb τ).comp (GlobalTheory.AdelicU.compInf F E w)
+  have hφ : ∀ x : E, φ (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF F) x) = τ.1 x := by
+    intro x
+    simp [φ, Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR, GlobalTheory.AdelicU.compInf, GlobalTheory.AdelicU.infEmb]
+  have hAd : (GlobalTheory.SiegelSet.adMat F X).map φ = X.map τ.1 := by
+    ext i j
+    simp only [GlobalTheory.SiegelSet.adMat, Matrix.map_apply]
+    exact hφ (X i j)
+  have hA : archMat σ J τ (projArch σ J w g) =
+      ((GlobalTheory.AdelicU.matHom (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF F) σ J g : GL (Fin n) _) : Matrix (Fin n) (Fin n) _).map φ := by
+    ext i j
+    simp [GlobalTheory.Orb.archMat, GlobalTheory.AdelicU.matHom_projArch, Formalism.UG.bc, φ]
+  have hG : archMat σ J τ (projArch σ J w g) * X.map τ.1 = X.map τ.1 * B.map φ := by
+    rw [hA, ← hAd, ← Matrix.map_mul, hB, Matrix.map_mul]
+  rcases β with _ | (i | i)
+  · change 1 = 2 at hβ
+    exact absurd hβ (by decide)
+  · by_cases hi : i ≤ s
+    · have hframe : (frameIdem (σ : E →+* E) J X Y (some (Sum.inl i))).map τ.1 =
+          X.map τ.1 * single i i (1 : ℂ) * (cT (σ : E →+* E) Y * J).map τ.1 := by
+        change (X * single i i (1 : E) * (cT (σ : E →+* E) Y * J)).map τ.1 = _
+        simp only [Matrix.map_mul, map_single_one_eq]
+      rw [hframe]
+      apply mul_mul_frameLine hG
+      rw [← Matrix.map_mul]
+      rcases α with _ | (j | j)
+      · have h0 : frameIdem (σ : E →+* E) J X Y none * X = 0 := by
+          change (1 - X * (cT (σ : E →+* E) Y * J) - Y * (cT (σ : E →+* E) X * J)) * X = 0
+          simp only [Matrix.sub_mul, Matrix.one_mul, Matrix.mul_assoc, hyx, hxx,
+            Matrix.mul_one, Matrix.mul_zero, sub_self, sub_zero]
+        rw [h0]
+        simp
+      · have hj : ¬ j ≤ s := by
+          intro h
+          change (if j ≤ s then 2 else 1) < 2 at hα
+          rw [if_pos h] at hα
+          exact absurd hα (by decide)
+        have hij : i < j := lt_of_le_of_lt hi (not_le.mp hj)
+        have hBji : (B.map φ) j i = 0 := by
+          simp [Matrix.map_apply, hBt hij]
+        have h1 : frameIdem (σ : E →+* E) J X Y (some (Sum.inl j)) * X = X * single j j (1 : E) := by
+          change X * single j j (1 : E) * (cT (σ : E →+* E) Y * J) * X = _
+          simp only [Matrix.mul_assoc, hyx, Matrix.mul_one]
+        rw [h1, Matrix.map_mul, map_single_one_eq, Matrix.mul_assoc, Matrix.mul_assoc,
+          ← Matrix.mul_assoc (single j j (1 : ℂ)), single_mul_mul_single_eq_zero hBji, Matrix.mul_zero]
+      · have h2 : frameIdem (σ : E →+* E) J X Y (some (Sum.inr j)) * X = 0 := by
+          change Y * single j j (1 : E) * (cT (σ : E →+* E) X * J) * X = 0
+          simp only [Matrix.mul_assoc, hxx, Matrix.mul_zero]
+        rw [h2]
+        simp
+    · change (if i ≤ s then 2 else 1) = 2 at hβ
+      rw [if_neg hi] at hβ
+      exact absurd hβ (by decide)
+  · change (if i ≤ s then 0 else 1) = 2 at hβ
+    by_cases hi : i ≤ s
+    · rw [if_pos hi] at hβ
+      exact absurd hβ (by decide)
+    · rw [if_neg hi] at hβ
+      exact absurd hβ (by decide)
+
+end GlobalTheory.CompanionTheory.RapidDecay
+
+end
+end
+
+open NumberField MeasureTheory Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet PositivityTheory.ThKR GlobalTheory.CompanionTheory.RapidDecay
+open Formalism.UG (cT)
+open GlobalTheory.Orb (archMat)
+open scoped TensorProduct NNReal ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.minimal_parabolic_frame_block_zero : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (n : ℕ) (J : Matrix (Fin n) (Fin n) E), IsHermND σ J → ∀ (r : ℕ) (X Y : Matrix (Fin n) (Fin r) E), IsWittFrame σ J X Y → ∀ g ∈ minPar σ J X, ∀ (w : InfinitePlace F) (τ : EmbOver E w) (s : Fin r) (α β : FrameIx r), frameLev s α < 2 → frameLev s β = 2 → (frameIdem (σ : E →+* E) J X Y α).map τ.1 * archMat σ J τ (projArch σ J w g) * (frameIdem (σ : E →+* E) J X Y β).map τ.1 = 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RapidDecay.minPar_frame_block_eq_zero
+end
+
+section
+section
+open NumberField MeasureTheory Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet PositivityTheory.ThKR GlobalTheory.CompanionTheory.RapidDecay
+open Formalism.UG (cT)
+open GlobalTheory.Orb (archMat)
+open scoped TensorProduct NNReal ENNReal
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.AdeleDenom
+
+open IsDedekindDomain
+
+theorem isIntegral_of_forall_mem_adicCompletionIntegers {F : Type} [Field F] [NumberField F] (f : F)
+    (h : ∀ v : HeightOneSpectrum (𝓞 F), (f : v.adicCompletion F) ∈ HeightOneSpectrum.adicCompletionIntegers F v) :
+    IsIntegral ℤ f := by
+  obtain ⟨r, rfl⟩ := HeightOneSpectrum.mem_integers_of_valuation_le_one (R := 𝓞 F) (K := F) (x := f)
+    (fun v => by
+      have hv := h v
+      rw [HeightOneSpectrum.mem_adicCompletionIntegers, HeightOneSpectrum.adicCompletion.valued_coe] at hv
+      exact hv)
+  exact NumberField.RingOfIntegers.isIntegral_coe r
+
+theorem exists_nat_mul_isIntegral_of_isCompact (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E]
+    [Algebra F E] (L : Set (Af F ⊗[F] E)) (hL : IsCompact L) :
+    ∃ d : ℕ, 0 < d ∧ ∀ e : E, inclR (F := F) (Af F) e ∈ L → IsIntegral ℤ ((d : E) * e) := by
+  classical
+  haveI : FiniteDimensional F E := Module.Finite.of_restrictScalars_finite ℚ F E
+  have key : ∀ x : E, ∃ m : ℕ, 0 < m ∧ IsIntegral ℤ ((m : E) * x) := by
+    intro x
+    have halg : IsAlgebraic ℤ x :=
+      (IsFractionRing.isAlgebraic_iff (A := ℤ) (K := ℚ) (C := E)).mpr (Algebra.IsAlgebraic.isAlgebraic (R := ℚ) x)
+    obtain ⟨y, hy, hyx⟩ := halg.exists_integral_multiple
+    refine ⟨y.natAbs, Int.natAbs_pos.mpr hy, ?_⟩
+    have hc : ((y.natAbs : ℕ) : E) = ((|y| : ℤ) : E) := by
+      rw [← Int.cast_natCast, Int.natCast_natAbs]
+    rcases abs_choice y with h | h
+    · rw [hc, h, ← zsmul_eq_mul]
+      exact hyx
+    · rw [hc, h, Int.cast_neg, neg_mul, ← zsmul_eq_mul]
+      exact hyx.neg
+  let b := Module.finBasis F E
+  choose mm hmm0 hmm using fun i => key (b i)
+  obtain ⟨m, hm0, hmb⟩ : ∃ m : ℕ, 0 < m ∧ ∀ i, IsIntegral ℤ ((m : E) * b i) := by
+    refine ⟨∏ i, mm i, Finset.prod_pos fun i _ => hmm0 i, fun i => ?_⟩
+    have hsplit : ((∏ j, mm j : ℕ) : E) = ((∏ j ∈ Finset.univ.erase i, mm j : ℕ) : E) * (mm i : E) := by
+      rw [← Nat.cast_mul, Finset.prod_erase_mul _ _ (Finset.mem_univ i)]
+    rw [hsplit, mul_assoc]
+    refine IsIntegral.mul ?_ (hmm i)
+    simpa using (isIntegral_algebraMap (R := ℤ) (A := E) (x := ((∏ j ∈ Finset.univ.erase i, mm j : ℕ) : ℤ)))
+  let B := Algebra.TensorProduct.basis (Af F) b
+  let φ : (Af F ⊗[F] E) →ₗ[Af F] (Fin (Module.finrank F E) → Af F) := B.equivFun.toLinearMap
+  have hφ : Continuous φ := IsModuleTopology.continuous_of_linearMap φ
+  obtain ⟨N, hN, hNK⟩ := GlobalTheory.WeilM.exists_nat_mul_integral_of_isCompact F (hL.image hφ)
+  refine ⟨N * m, Nat.mul_pos hN hm0, fun e he => ?_⟩
+  have hx := hNK (φ (inclR (F := F) (Af F) e)) ⟨_, he, rfl⟩
+  have hcoord : ∀ i, φ (inclR (F := F) (Af F) e) i = algebraMap F (Af F) (b.repr e i) := by
+    intro i
+    have hincl : inclR (F := F) (Af F) e = (1 : Af F) ⊗ₜ[F] e := rfl
+    simp [φ, B, hincl, Algebra.TensorProduct.basis_repr_tmul]
+  have hint : ∀ i, IsIntegral ℤ ((N : F) * b.repr e i) := by
+    intro i
+    refine isIntegral_of_forall_mem_adicCompletionIntegers _ fun v => ?_
+    have h1 := hx i v
+    rw [hcoord, ← map_natCast (algebraMap F (Af F)) N, ← map_mul] at h1
+    exact h1
+  have hsum : ((N * m : ℕ) : E) * e = ∑ i, algebraMap F E ((N : F) * b.repr e i) * ((m : E) * b i) := by
+    conv_lhs => rw [← b.sum_repr e]
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [Algebra.smul_def, map_mul, map_natCast]
+    push_cast
+    ring
+  rw [hsum]
+  exact IsIntegral.sum _ fun i _ => (hint i).algebraMap.mul (hmb i)
+
+end GlobalTheory.CompanionTheory.AdeleDenom
+end
+end
+
+open NumberField MeasureTheory Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet PositivityTheory.ThKR GlobalTheory.CompanionTheory.RapidDecay
+open Formalism.UG (cT)
+open GlobalTheory.Orb (archMat)
+open scoped TensorProduct NNReal ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.compact_finite_adelic_denominator : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (L : Set (Af F ⊗[F] E)), IsCompact L → ∃ d : ℕ, 0 < d ∧ ∀ e : E, inclR (F := F) (Af F) e ∈ L → IsIntegral ℤ ((d : E) * e) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.AdeleDenom.exists_nat_mul_isIntegral_of_isCompact
+end
+
+section
+section
+open NumberField MeasureTheory Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet PositivityTheory.ThKR GlobalTheory.CompanionTheory.RapidDecay
+open Formalism.UG (cT)
+open GlobalTheory.Orb (archMat)
+open scoped TensorProduct NNReal ENNReal
+
+namespace GlobalTheory.CompanionTheory.RapidDecay
+
+theorem frameIdem_inl_mulVec {E : Type} [Field E] {n r : ℕ} (S : E →+* E)
+    (J : Matrix (Fin n) (Fin n) E) (X Y : Matrix (Fin n) (Fin r) E) (i : Fin r) (v : Fin n → E) :
+    frameIdem S J X Y (some (Sum.inl i)) *ᵥ v = fun a => X a i * ((cT S Y * J) *ᵥ v) i := by
+  funext a
+  simp only [frameIdem]
+  rw [← Matrix.mulVec_mulVec]
+  simp [Matrix.mulVec, dotProduct, Matrix.mul_apply, Matrix.single_apply, Finset.sum_ite_eq, ite_and]
+
+theorem stabilises_flag_span : ∀ (E : Type) [Field E] (S : E →+* E) (n r : ℕ) (J : Matrix (Fin n) (Fin n) E) (X Y : Matrix (Fin n) (Fin r) E), cT S Y * J * X = 1 → ∀ (g : Matrix (Fin n) (Fin n) E) (j : Fin r), (∀ α β : FrameIx r, frameLev j α < 2 → frameLev j β = 2 → frameIdem S J X Y α * g * frameIdem S J X Y β = 0) → ∀ l : Fin r, l ≤ j → ∃ b : Fin r → E, g *ᵥ (fun a => X a l) = X *ᵥ b ∧ ∀ m : Fin r, j < m → b m = 0 := by
+  intro E _ S n r J X Y hXY g j hg l hl
+  have hcol : (fun a => X a l) = X *ᵥ Pi.single l 1 := by
+    funext a; simp
+  have hx : frameIdem S J X Y (some (Sum.inl l)) *ᵥ (fun a => X a l) = fun a => X a l := by
+    rw [frameIdem_inl_mulVec, hcol, Matrix.mulVec_mulVec, hXY]
+    funext a; simp
+  have hβ : frameLev j (some (Sum.inl l) : FrameIx r) = 2 := by simp [frameLev, hl]
+  set v : Fin n → E := g *ᵥ (fun a => X a l) with hv
+  have hz : ∀ α : FrameIx r, frameLev j α < 2 → frameIdem S J X Y α *ᵥ v = 0 := by
+    intro α hα
+    have := hg α _ hα hβ
+    calc frameIdem S J X Y α *ᵥ v
+        = frameIdem S J X Y α *ᵥ (g *ᵥ (frameIdem S J X Y (some (Sum.inl l)) *ᵥ (fun a => X a l))) := by
+          rw [hx]
+      _ = (frameIdem S J X Y α * g * frameIdem S J X Y (some (Sum.inl l))) *ᵥ (fun a => X a l) := by
+          simp only [Matrix.mulVec_mulVec, Matrix.mul_assoc]
+      _ = 0 := by rw [this, Matrix.zero_mulVec]
+  have hsum : v = ∑ α, frameIdem S J X Y α *ᵥ v := by
+    have h1 : (∑ α, frameIdem S J X Y α) *ᵥ v = ∑ α, frameIdem S J X Y α *ᵥ v :=
+      map_sum (Matrix.mulVec.addMonoidHomLeft v) (fun α => frameIdem S J X Y α) Finset.univ
+    rwa [sum_frameIdem, Matrix.one_mulVec] at h1
+  refine ⟨fun m => if m ≤ j then ((cT S Y * J) *ᵥ v) m else 0, ?_, fun m hm => if_neg (not_le.2 hm)⟩
+  refine hsum.trans ?_
+  rw [Fintype.sum_option, Fintype.sum_sum_type, hz none (by simp [frameLev]), zero_add]
+  have hinr : ∑ i, frameIdem S J X Y (some (Sum.inr i)) *ᵥ v = 0 := by
+    refine Finset.sum_eq_zero fun i _ => hz _ ?_
+    by_cases h : i ≤ j <;> simp [frameLev, h]
+  rw [hinr, add_zero]
+  funext a
+  rw [Finset.sum_apply]
+  simp only [Matrix.mulVec, dotProduct]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  by_cases h : i ≤ j
+  · have := congrFun (frameIdem_inl_mulVec S J X Y i v) a
+    simp only [Matrix.mulVec, dotProduct] at this
+    simpa [h] using this
+  · have h0 := congrFun (hz (some (Sum.inl i)) (by simp [frameLev, h])) a
+    simp only [Matrix.mulVec, dotProduct] at h0
+    simpa [h] using h0
+
+end GlobalTheory.CompanionTheory.RapidDecay
+end
+
+open NumberField MeasureTheory Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet PositivityTheory.ThKR GlobalTheory.CompanionTheory.RapidDecay
+open Formalism.UG (cT)
+open GlobalTheory.Orb (archMat)
+open scoped TensorProduct NNReal ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frame_block_zero_stabilizes_flag : ∀ (E : Type) [Field E] (S : E →+* E) (n r : ℕ) (J : Matrix (Fin n) (Fin n) E) (X Y : Matrix (Fin n) (Fin r) E), cT S Y * J * X = 1 → ∀ (g : Matrix (Fin n) (Fin n) E) (j : Fin r), (∀ α β : FrameIx r, frameLev j α < 2 → frameLev j β = 2 → frameIdem S J X Y α * g * frameIdem S J X Y β = 0) → ∀ l : Fin r, l ≤ j → ∃ b : Fin r → E, g *ᵥ (fun a => X a l) = X *ᵥ b ∧ ∀ m : Fin r, j < m → b m = 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RapidDecay.stabilises_flag_span
+end
+
+section
+open NumberField MeasureTheory Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet PositivityTheory.ThKR
+open Formalism.UG (cT bc UJ)
+open scoped TensorProduct NNReal ENNReal
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.ClassFin
+
+section Reduction
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+
+theorem projFin_ratEmb_val (σ : E →ₐ[F] E) {n : ℕ} (J : Matrix (Fin n) (Fin n) E) (γ : GRat σ J) :
+    (GlobalTheory.AdelicU.projFin σ J (ratEmb σ J γ)).1 = bc (inclR (Af F)) γ.1 := by
+  refine Units.ext (Matrix.ext fun r s => ?_)
+  change Algebra.TensorProduct.map (sndA F) (AlgHom.id F E) ((1 : AF F) ⊗ₜ[F] (γ.1.1 r s)) =
+    (1 : Af F) ⊗ₜ[F] (γ.1.1 r s)
+  simp
+
+end Reduction
+
+section Lattices
+
+open GroundTheory.Automorphic GroundTheory.Heights₂.Heights.FiniteCovolume Module
+open scoped Pointwise
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+  [Algebra.IsQuadraticExtension F E]
+
+end Lattices
+
+end GlobalTheory.CompanionTheory.ClassFin
+end
+end
+
+section
 noncomputable section
 
 open NumberField MeasureTheory Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet PositivityTheory.ThKR GlobalTheory.CompanionTheory.RapidDecay
@@ -212,4 +598,5 @@ theorem flag_key : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberF
 
 end GlobalTheory.CompanionTheory.FlagKey
 
+end
 end

@@ -1,7 +1,105 @@
 import Mathlib
 import GroundTheory.GlobalFields.CyclotomicCharacters.Degree
-import GroundTheory.GlobalFields.CyclotomicCharacters.ClosedSubgroups
+import GroundTheory.GlobalFields.CyclotomicCharacters.ProfinitePadic
 
+section
+open Filter Topology
+open scoped GroundTheory.LocalField.Abstract
+
+namespace GroundTheory.Global
+
+namespace Cyclotomic
+
+open GroundTheory.LocalField.Abstract
+
+section Padic
+
+variable {ℓ : ℕ} [hℓ : Fact ℓ.Prime]
+
+
+
+
+end Padic
+
+section ProfiniteInteger
+
+def factorialPNat (n : ℕ) : ℕ+ := ⟨(n + 1).factorial, Nat.factorial_pos _⟩
+
+theorem tendsto_natCast (a : ℤ̂) :
+    Tendsto (fun n : ℕ => (((ProfiniteInteger.proj (factorialPNat n) a).val : ℕ) : ℤ̂)) atTop
+      (𝓝 a) := by
+  rw [tendsto_subtype_rng, tendsto_pi_nhds]
+  intro m
+  refine tendsto_nhds_of_eventually_eq ?_
+  filter_upwards [eventually_ge_atTop (m : ℕ)] with n hn
+  have hdvd : (m : ℕ) ∣ (factorialPNat n : ℕ) := Nat.dvd_factorial m.pos (by omega)
+  have h := ProfiniteInteger.castHom_proj hdvd a
+  rw [ZMod.castHom_apply, ZMod.cast_eq_val] at h
+  simp only [ProfiniteInteger.proj_apply] at h
+  rw [← h]
+  rfl
+
+theorem denseRange_natCast : DenseRange (Nat.cast : ℕ → ℤ̂) := fun a =>
+  mem_closure_of_tendsto (tendsto_natCast a) (Eventually.of_forall fun _ => Set.mem_range_self _)
+
+theorem mul_mem_of_isClosed' (H : AddSubgroup ℤ̂) (hH : IsClosed (H : Set ℤ̂)) {x : ℤ̂}
+    (hx : x ∈ H) (a : ℤ̂) : a * x ∈ H :=
+  denseRange_natCast.induction_on a (hH.preimage (continuous_id.mul continuous_const))
+    fun k => by
+      show (k : ℤ̂) * x ∈ H
+      rw [← nsmul_eq_mul]
+      exact H.nsmul_mem hx k
+
+def idealOfIsClosed (H : AddSubgroup ℤ̂) (hH : IsClosed (H : Set ℤ̂)) : Ideal ℤ̂ where
+  carrier := H
+  add_mem' := H.add_mem
+  zero_mem' := H.zero_mem
+  smul_mem' a _ hx := mul_mem_of_isClosed' H hH hx a
+
+noncomputable def primeIdempotent (q : Nat.Primes) : ℤ̂ :=
+  ofPadics (Pi.single q 1)
+
+theorem toPadicInt_primeIdempotent (q q' : Nat.Primes) :
+    toPadicInt q' (primeIdempotent q) = Pi.single (M := fun q : Nat.Primes => ℤ_[q]) q 1 q' :=
+  congrFun (toPadics_ofPadics _) q'
+
+
+theorem mem_of_forall_toPadicInt (H : AddSubgroup ℤ̂) (hH : IsClosed (H : Set ℤ̂)) {y : ℤ̂}
+    (hy : ∀ q : Nat.Primes, ∃ h ∈ H, toPadicInt q h = toPadicInt q y) : y ∈ H := by
+  choose h hh hhy using hy
+  let s : Finset Nat.Primes → ℤ̂ := fun F => ∑ q ∈ F, primeIdempotent q * h q
+  have hs : ∀ F, s F ∈ H := fun F =>
+    H.sum_mem fun q _ => mul_mem_of_isClosed' H hH (hh q) _
+  have hcomp : ∀ (F : Finset Nat.Primes) (q' : Nat.Primes), toPadicInt q' (s F) = if q' ∈ F then toPadicInt q' y else 0 := by
+    intro F q'
+    simp only [s, map_sum, map_mul, toPadicInt_primeIdempotent]
+    split_ifs with hq'
+    · rw [Finset.sum_eq_single q', Pi.single_eq_same, one_mul, hhy]
+      · intro b _ hb
+        rw [Pi.single_eq_of_ne hb.symm, zero_mul]
+      · intro h'; exact absurd hq' h'
+    · refine Finset.sum_eq_zero fun b hb => ?_
+      rw [Pi.single_eq_of_ne (by rintro rfl; exact hq' hb), zero_mul]
+  have ht : Tendsto (fun F => toPadics (s F)) atTop (𝓝 (toPadics y)) := by
+    rw [tendsto_pi_nhds]
+    intro q'
+    refine tendsto_nhds_of_eventually_eq ?_
+    filter_upwards [eventually_ge_atTop {q'}] with F hF
+    rw [toPadics_apply, hcomp, if_pos (Finset.singleton_subset_iff.1 hF), toPadics_apply]
+  have ht' := (continuous_ofPadics.tendsto _).comp ht
+  simp only [Function.comp_def, ofPadics_toPadics] at ht'
+  exact hH.mem_of_tendsto ht' (Eventually.of_forall hs)
+
+
+
+end ProfiniteInteger
+
+end Cyclotomic
+
+end GroundTheory.Global
+end
+
+section
 open NumberField IntermediateField Filter Topology
 open scoped GroundTheory.LocalField.Abstract Pointwise
 
@@ -27,9 +125,6 @@ theorem isOpen_stabilizer_ringOfIntegers (b : 𝓞 ℚ̄) :
 noncomputable abbrev ringOfIntegersIncl (L : IntermediateField ℚ ℚ̄) : 𝓞 L →+* 𝓞 ℚ̄ :=
   RingOfIntegers.mapRingHom (algebraMap L ℚ̄)
 
-theorem coe_ringOfIntegersIncl (L : IntermediateField ℚ ℚ̄) (a : 𝓞 L) :
-    ((ringOfIntegersIncl L a : 𝓞 ℚ̄) : ℚ̄) = ((a : L) : ℚ̄) :=
-  rfl
 
 theorem exists_mem_stabilizer_of_comap_eq (L : IntermediateField ℚ ℚ̄) (P : Ideal (𝓞 ℚ̄))
     [P.IsPrime] (τ : Gal(ℚ̄/ℚ))
@@ -274,16 +369,7 @@ def decompositionComponentImage : AddSubgroup ℤ_[q] where
     rintro _ ⟨σ, hσ, rfl⟩
     exact ⟨σ⁻¹, inv_mem hσ, by simp⟩
 
-theorem coe_decompositionComponentImage :
-    (decompositionComponentImage q P : Set ℤ_[q]) =
-      (fun σ => Multiplicative.toAdd (degreeComponent q σ)) ''
-        (MulAction.stabilizer Gal(ℚ̄/ℚ) P) :=
-  rfl
 
-theorem isClosed_decompositionComponentImage :
-    IsClosed (decompositionComponentImage q P : Set ℤ_[q]) :=
-  ((isClosed_stabilizer P).isCompact.image
-    (continuous_toAdd.comp (continuous_degreeComponent q))).isClosed
 
 def decompositionDegreeImage : AddSubgroup ℤ̂ where
   carrier := (fun σ => Multiplicative.toAdd (degree σ)) '' (MulAction.stabilizer Gal(ℚ̄/ℚ) P)
@@ -295,52 +381,16 @@ def decompositionDegreeImage : AddSubgroup ℤ̂ where
     rintro _ ⟨σ, hσ, rfl⟩
     exact ⟨σ⁻¹, inv_mem hσ, by simp⟩
 
-theorem coe_decompositionDegreeImage :
-    (decompositionDegreeImage P : Set ℤ̂) =
-      (fun σ => Multiplicative.toAdd (degree σ)) '' (MulAction.stabilizer Gal(ℚ̄/ℚ) P) :=
-  rfl
 
-theorem isClosed_decompositionDegreeImage :
-    IsClosed (decompositionDegreeImage P : Set ℤ̂) :=
-  ((isClosed_stabilizer P).isCompact.image (continuous_toAdd.comp continuous_degree)).isClosed
 
-theorem topologicalClosure_decompositionDegreeImage :
-    (decompositionDegreeImage P).topologicalClosure = decompositionDegreeImage P :=
-  SetLike.coe_injective (by
-    rw [AddSubgroup.topologicalClosure_coe, (isClosed_decompositionDegreeImage P).closure_eq])
 
-theorem exists_mem_decompositionComponentImage_ne_zero (p : ℕ) [Fact p.Prime] [P.IsPrime]
-    [P.LiesOver (Ideal.span {(p : ℤ)})] :
-    ∃ x ∈ decompositionComponentImage q P, x ≠ 0 := by
-  obtain ⟨σ, hσ, hne⟩ := exists_mem_stabilizer_degreeComponent_ne_one (p := p) P q
-  refine ⟨_, ⟨σ, hσ, rfl⟩, fun h => hne ?_⟩
-  have h' : Multiplicative.toAdd (degreeComponent q σ) = 0 := h
-  rw [← ofAdd_toAdd (degreeComponent q σ), h', ofAdd_zero]
 
-theorem isOpen_decompositionComponentImage (p : ℕ) [Fact p.Prime] [P.IsPrime]
-    [P.LiesOver (Ideal.span {(p : ℤ)})] :
-    IsOpen (decompositionComponentImage q P : Set ℤ_[q]) := by
-  obtain ⟨x, hx, hx0⟩ := exists_mem_decompositionComponentImage_ne_zero q P p
-  exact isOpen_of_isClosed_of_ne_zero _ (isClosed_decompositionComponentImage q P) hx hx0
 
-theorem infinite_decompositionComponentImage (p : ℕ) [Fact p.Prime] [P.IsPrime]
-    [P.LiesOver (Ideal.span {(p : ℤ)})] :
-    (decompositionComponentImage q P : Set ℤ_[q]).Infinite := by
-  obtain ⟨x, hx, hx0⟩ := exists_mem_decompositionComponentImage_ne_zero q P p
-  exact infinite_of_ne_zero _ hx hx0
 
-theorem nonempty_addEquiv_decompositionDegreeImage (p : ℕ) [Fact p.Prime] [P.IsPrime]
-    [P.LiesOver (Ideal.span {(p : ℤ)})] :
-    Nonempty ((decompositionDegreeImage P).topologicalClosure ≃+ ℤ̂) := by
-  rw [topologicalClosure_decompositionDegreeImage]
-  refine nonempty_addEquiv_of_isClosed _ (isClosed_decompositionDegreeImage P) fun q => ?_
-  obtain ⟨σ, hσ, hne⟩ := exists_mem_stabilizer_degreeComponent_ne_one (p := p) P q
-  refine ⟨_, ⟨σ, hσ, rfl⟩, ?_⟩
-  rw [toPadicInt_degree]
-  exact fun h => hne (by rw [← ofAdd_toAdd (degreeComponent q σ), h, ofAdd_zero])
 
 end Image
 
 end Cyclotomic
 
 end GroundTheory.Global
+end

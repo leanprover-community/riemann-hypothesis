@@ -131,12 +131,6 @@ theorem le_lamMin (hW : Df.WF) (S : IndefRows Df) (v : InfinitePlace K) (c : ℝ
   refine Finset.le_inf' _ _ fun p hp => h p ?_
   simpa [occurring] using hp
 
-theorem numLa_eq (E : Type) [Field E] [NumberField E] {x : ℝ} (ε : ℝ) (hx : 0 < x) :
-    numLa E x ε = numL x ε + Real.log x + Real.log (rootDiscr E) := by
-  have hr : 0 < rootDiscr E := Real.rpow_pos_of_pos (by exact_mod_cast abs_pos.2 (discr_ne_zero E)) _
-  have hb : 0 < numB x ε := Real.exp_pos _
-  rw [numLa, Real.log_mul (mul_pos hx hb).ne' hr.ne', Real.log_mul hx.ne' hb.ne', numB, Real.log_exp]
-  ring
 
 example : numN 6 2 3 = 6 + 2 * (3 + ((6 + 2 - 1) + 6) + 1) := by decide
 

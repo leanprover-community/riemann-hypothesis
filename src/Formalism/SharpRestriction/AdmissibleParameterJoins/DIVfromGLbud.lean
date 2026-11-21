@@ -9,9 +9,6 @@ open Formalism.BasicNotions
 
 variable {D : D7} {L : SizeData₂ D}
 
-theorem levelPrime_budget_of_fifth {C : ℝ} (h : ∀ u, product_first_zeroth_parts.WeightBudgetBound D u L C) : WeightDegreeSizes.LevelPrimeBudget D L C := by
-  unfold WeightDegreeSizes.LevelPrimeBudget
-  exact h
 
 theorem setting_fam {eps : ℝ} (Fm : FamP eps) (hT : TuSize Fm) (hDl : DlSize Fm) :
     ∃ x0 : ℝ, ∀ x ≥ x0, ∀ (i : Fm.Ix x) u, product_first_zeroth_parts.HidaSetting (Fm.D x i) u := by
@@ -53,12 +50,6 @@ theorem setting_fam {eps : ℝ} (Fm : FamP eps) (hT : TuSize Fm) (hDl : DlSize F
     exact_mod_cast h4.trans hM.1
   exact levelPrime_setting_of_sizes le_rfl hN hW hTu hm u
 
-theorem family_levelPrime_budget {eps : ℝ} (Fm : FamP eps) (hT : TuSize Fm) (hDl : DlSize Fm) (hB : product_first_zeroth_parts.BudF Fm) :
-    ∃ C x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, WeightDegreeSizes.LevelPrimeBudget (Fm.D x i) (Fm.L x i) C := by
-  obtain ⟨x1, hx1⟩ := setting_fam Fm hT hDl
-  obtain ⟨C, x0, hB⟩ := hB
-  refine ⟨C, max x0 x1, fun x hx i => levelPrime_budget_of_fifth (fun u =>
-    hB x (le_trans (le_max_left _ _) hx) i u (hx1 x (le_trans (le_max_right _ _) hx) i u))⟩
 
 theorem gammaDiscriminant_budget_of_sizes {Cn cL CG : ℝ} (hcL : 1 ≤ cL) (hCG : 0 ≤ CG) (hN : NumsL D L Cn cL) (hG : FactDGam D CG) :
     WeightDegreeSizes.StabiliserLogBound D L (4 * CG) := by
@@ -122,14 +113,6 @@ theorem gammaDiscriminant_budget_of_sizes {Cn cL CG : ℝ} (hcL : 1 ≤ cL) (hCG
   have := mul_le_mul_of_nonneg_left key hCG
   nlinarith
 
-theorem family_gammaDiscriminant_budget {eps : ℝ} (Fm : FamP eps) (hT : TuSize Fm) (hDl : DlSize Fm) (hG : DGamSize Fm) :
-    ∃ C x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, WeightDegreeSizes.StabiliserLogBound (Fm.D x i) (Fm.L x i) C := by
-  obtain ⟨CG, x0, hG⟩ := hG
-  obtain ⟨Cn₀, hCn⟩ := numsL_wtsL_fam Fm hT hDl
-  obtain ⟨x2, hx2⟩ := hCn Cn₀ le_rfl 3 le_rfl
-  refine ⟨4 * max CG 0, max x0 x2, fun x hx i => ?_⟩
-  exact gammaDiscriminant_budget_of_sizes (by norm_num) (le_max_right _ _) (hx2 x (le_trans (le_max_right _ _) hx) i).1
-    (factDGam_mono (hG x (le_trans (le_max_left _ _) hx) i) (le_max_left _ _))
 
 end Formalism.MainNotions.J
 

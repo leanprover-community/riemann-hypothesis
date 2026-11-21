@@ -83,13 +83,6 @@ structure IsPolFam (C : Ell H R ω) (t : SAB H (Sp R)) {D : Datum H} (L : Submod
     (φ : L → (C.P.A ⟶ t.G)) : Prop extends IsHomFam C t L φ where
   lam : ∃ h, IsKForm D ε h ∧ ∀ a b : L, LamEq t.PP.L (φ a) (φ b) C.P.L (C.act.act (h a b)) (𝟙 C.P.A)
 
-theorem isPolFam_of_isTen {C : Ell H R ω} {D : Datum H} {ε : ℤˣ} {h : D.La → D.La → OK H} (hh : IsKForm D ε h)
-    {T : PAT H (Sp R)} (X : IsTen C D h T) : IsPolFam C T.t (⊤ : Submodule (𝓞 E) D.La) ε fun a => X.ten.tmul a.1 :=
-  { hom := fun _ => inferInstance
-    add := fun a b => X.ten.tmul_add a.1 b.1
-    smul := fun s a => X.lin s a.1
-    lin := fun k a => (X.ten.isLinearHom_tmul a.1).comm k
-    lam := ⟨h, hh, fun a b => X.lam a.1 b.1⟩ }
 
 end Family
 
@@ -114,17 +107,6 @@ theorem isHolTo_comp {V W : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] [No
   ext z
   exact ⟨fun hz => ⟨hB z, hz.2⟩, fun hz => ⟨trivial, hz.2⟩⟩
 
-theorem isExp_of_familyUnif {D : Datum H} {l : Level H} {Xo : Moduli D l} {σ : KA l →+* ℂ} {g : ℕ}
-    {ty : Fin g → (E →+* ℂ)} (FU : FamilyUnif Xo σ ty) (i : Fin FU.n) {Pe : (FU.Di i).La →+ (Fin g → ℂ)}
-    (hP : IsPeriod (FU.Di i) ty Pe) : IsExp Xo.univ.t (FU.u i Pe) (FU.Di i) ty Pe (FU.ex i Pe) := by
-  have h₀ : IsHolPeriods (FU.Di i) ty (Set.univ : Set (Fin 0 → ℂ)) (fun _ => Pe) :=
-    ⟨fun _ _ => hP, fun _ => differentiableOn_const _⟩
-  have h₁ := (FU.hol i 0 Set.univ (fun _ => Pe) isOpen_univ h₀).2
-  have hc : Differentiable ℂ fun z : Fin g → ℂ => ((0 : Fin 0 → ℂ), z) := by fun_prop
-  have h₂ := isHolTo_comp hc (B := Set.univ ×ˢ Set.univ) (fun _ => Set.mk_mem_prod trivial trivial) h₁
-  refine ⟨hP, FU.ex_add i Pe hP, FU.ex_onto i Pe hP, FU.ex_ker i Pe hP, FU.ex_lin i Pe hP, ?_, ?_⟩
-  · simpa only [] using h₂
-  · exact FU.ex_weil i Pe hP
 
 def IsFamExp {R : Type} [CommRing R] {ω : R} (C : Ell H R ω) (t : SAB H (Sp R)) {D : Datum H}
     (L : Submodule (𝓞 E) D.La) (φ : L → (C.P.A ⟶ t.G)) (s : R →+* ℂ) {g : ℕ} (ty : Fin g → (E →+* ℂ))
@@ -166,21 +148,6 @@ def IsRealisedBy (X : LatData hP Λ) {K : Type} [Field K] [NumberField K] {ρ : 
 
 end LatData
 
-theorem nonempty_latData {D D' : Datum H} (hp : D.p = 1) (hq : D.q = 0) (h' : D'.p = 0 ∧ D'.q = 1) {g : ℕ}
-    {ty : Fin g → (E →+* ℂ)} (hty : IsTypeFn H 1 0 ty) {Pe : D.La →+ (Fin g → ℂ)} (hP : IsPeriod D ty Pe) :
-    Nonempty (LatData hP 1) := by
-  have he : IsEmpty (Fin D.q) := hq ▸ inferInstanceAs (IsEmpty (Fin 0))
-  refine ⟨⟨fun b => match b with | true => D | false => D', ⟨hp, hq⟩, h',
-    fun j => match j with | .inl _ => LinearMap.id | .inr k => he.elim k, fun _ => 1, ?_, ?_, ?_, le_rfl, by simp⟩⟩
-  · rintro (j | k) a
-    · show _ ∈ PureType.lat hP H.rt0
-      rw [PureType.lat_eq_top hP hty]; trivial
-    · exact he.elim k
-  · rintro (j | k) a b
-    · rw [one_smul]; rfl
-    · exact he.elim k
-  · intro x
-    refine ⟨1, one_pos, Submodule.mem_iSup_of_mem (.inl ⟨0, by omega⟩) ⟨x, (one_smul _ x).symm⟩⟩
 
 section Degree
 

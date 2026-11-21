@@ -181,26 +181,6 @@ theorem HodgeOver.exists_basis (a : HodgeOver A' A h i j) (s : CMType H ⊕ CMTy
   have h2 : LinearIndependent Ω' w := LinearIndependent.of_comp (A'.Vgen s).subtype h1
   exact ⟨basisOfLinearIndependentOfCardEqFinrank' w h2 (Module.finrank_eq_card_basis B).symm, fun k => by simp [w]⟩
 
-theorem HodgeOver.exists_basesOver (a : HodgeOver A' A h i j) (bW : WBases A) (bO : OmBases A) :
-    ∃ (bW' : WBases A') (bO' : OmBases A'), BasesOver i j bW' bO' bW bO := by
-  choose bW' hW using fun τ => a.exists_basis (.inl τ) (bW τ)
-  have key : ∀ τ, ∃ b' : Module.Basis (Fin D.q) Ω' (Module.Dual Ω' (A'.Vgen (.inr τ))),
-      ∀ k (v : A.Vgen (.inr τ)) (v' : A'.Vgen (.inr τ)), (v' : A'.Li) = j v → b' k v' = i (bO τ k v) := fun τ => by
-    obtain ⟨B⟩ := nonempty_basis_Vgen A (.inr τ)
-    have := Module.Finite.of_basis B
-    let C : Module.Basis (Fin D.q) Ω (A.Vgen (.inr τ)) := (bO τ).dualBasis.map (Module.evalEquiv Ω _).symm
-    have hC : ∀ v k, C.repr v k = bO τ k v := fun v k => by
-      simp [C]
-    obtain ⟨C', hC'⟩ : ∃ C' : Module.Basis (Fin D.q) Ω' (A'.Vgen (.inr τ)), ∀ k, (C' k : A'.Li) = j (C k) :=
-      a.exists_basis (.inr τ) C
-    refine ⟨C'.dualBasis, fun k v v' hv => ?_⟩
-    have e : v' = ∑ m, i (bO τ m v) • C' m := Subtype.ext (by
-      rw [hv]
-      conv_lhs => rw [← C.sum_repr v]
-      simp only [AddSubmonoidClass.coe_finsetSum, SetLike.val_smul, map_sum, a.2.2.2.1.1, hC', hC])
-    rw [e, Module.Basis.dualBasis_apply, C'.repr_sum_self]
-  choose bO' hO using key
-  exact ⟨bW', bO', hW, hO⟩
 
 theorem BasesOver.refl (bW : WBases A) (bO : OmBases A) :
     BasesOver (RingHom.id Ω) (AddMonoidHom.id _) bW bO bW bO :=
@@ -267,12 +247,6 @@ theorem BaseMetric.exists_conj (BM : BaseMetric M n) (x : BM.Rb.X) :
     ∃ x', SameOrbit (BM.Rb.lift x' x') fun q => starRingEnd ℂ (BM.Rb.lift x x q) :=
   BM.Rb.surj _ (conj_mem_mcPts (BM.Rb.mem x x (BM.Rb.mem_U x))) fun h => by simpa using h.2 1 trivial
 
-theorem BaseMetric.isConj_of_isEmpty (BM : BaseMetric M n) [IsEmpty (NonPluckerBlocks M.blk)]
-    (h : ∀ p, IsConjInvariantH (BM.hom p)) : BM.IsConj := by
-  refine ⟨fun x x' _ => ?_, fun p z _ _ _ _ => h p z⟩
-  obtain rfl : x' = x := BM.Rb.inj _ _ (fun h => by simpa using h.2 1 trivial)
-    ⟨fun _ => 1, fun _ => one_ne_zero, funext fun q => isEmptyElim q.1⟩
-  exact ⟨Iff.rfl, rfl⟩
 
 end Tests
 
@@ -283,44 +257,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Da
   {Ω : Type} [Field Ω] [CharZero Ω] {K₀ : Type} [Fintype K₀] {J₀ : K₀ → Type} [∀ k, Fintype (J₀ k)]
   {x₀ : (Σ k, J₀ k) → Ω}
 
-theorem exists_flagModel_baseMetric (ha : FlagModelExists) (hc : BaseMetricExists) (𝔐 : HodgeCpt Y S x₀) {d : ℕ}
-    (hp : 1 ≤ D.p) (hq : 1 ≤ D.q) (hv : IsArithVar (mCoordIdeal x₀) (Fintype.card (CMType H) * D.p * D.q + 1))
-    (hd : 𝔐.IsCover d) (hs : HasSncBoundary 𝔐 (Fintype.card (CMType H) * D.p * D.q)) :
-    ∃ (K : Type) (_ : Fintype K) (ι : K → Type) (_ : ∀ k, Fintype (ι k)) (Φ : Type) (_ : Field Φ)
-      (y : (Σ k, ι k) → Φ) (M : FlagModel y (CMType H) (D.p + D.q) D.p) (𝔐₁ : HodgeCpt Y S M.x) (tie : FlagTie M 𝔐₁)
-      (BM : BaseMetric M (Fintype.card (CMType H) * D.p * D.q)), BM.IsHodge tie ∧ BM.IsConj ∧
-      IsArithVar (mCoordIdeal y)
-        (Fintype.card (CMType H) * D.p * D.q + Fintype.card (CMType H) * (D.p.choose 2 + D.q.choose 2) + 1) := by
-  obtain ⟨⟨bW⟩, ⟨bO⟩⟩ := nonempty_bases 𝔐
-  obtain ⟨K, _, ι, _, Φ, _, y, M, 𝔐₁, tie, -, -, -, -, -, -, -, -, -, -, ⟨h1, -, h2⟩, h3, -⟩ :=
-    ha E H D l Xo c Y S Ω K₀ J₀ x₀ 𝔐 _ d bW bO hv hd
-  obtain ⟨BM, hBM, hcj⟩ := hc E H D l Xo c Y S K ι Φ y M 𝔐₁ tie d hp hq h1 (h2 _ hs)
-  exact ⟨K, _, ι, _, Φ, _, y, M, 𝔐₁, tie, BM, hBM, hcj, h3⟩
 
-theorem exists_flagCover (ha : FlagModelExists) (hb : CoverExists) {K : Type} [Fintype K] {ι : K → Type}
-    [∀ k, Fintype (ι k)] {Φ : Type} [Field Φ] {y : (Σ k, ι k) → Φ} {M : FlagModel y (CMType H) (D.p + D.q) D.p}
-    {𝔐 : HodgeCpt Y S M.x} (tie : FlagTie M 𝔐) (A : HodgeCpt Y S' x₀) {κ : NonPluckerBlocks M.blk → K₀}
-    {v : (Σ k, baseIdx ι M.blk k) → Σ k, J₀ k} {i : M.Ω →+* Ω} {h : A.X ⟶ 𝔐.X} {j : 𝔐.Li →+ A.Li} {n d d' : ℕ}
-    (hκ : IsBlockMap κ v) (hx : ∀ q, x₀ (v q) = i (M.x q)) (ho : HodgeOver A 𝔐 h i j)
-    (hv : IsArithVar (mCoordIdeal x₀) (n + 1)) (hd : 𝔐.IsCover d) (hd' : A.IsCover d') :
-    ∃ (K' : Type) (_ : Fintype K') (ι' : K' → Type) (_ : ∀ k, Fintype (ι' k)) (Φ' : Type) (_ : Field Φ')
-      (y' : (Σ k, ι' k) → Φ') (M' : FlagModel y' (CMType H) (D.p + D.q) D.p) (Cv : FlagCover M' M)
-      (𝔐' : HodgeCpt Y S' y') (Fl : 𝔐'.Flag), d * Cv.deg = Fl.deg := by
-  obtain ⟨bW, bO, hB⟩ := ho.exists_basesOver tie.eW tie.eO
-  obtain ⟨K', _, ι', _, Φ', _, y', M', 𝔐₁, tie', κ', v', φ, π, j', 𝔐', Fl, -, -, ⟨g1, g2, -, -, g3, -, g4⟩,
-    ⟨h1, -, -⟩, -, -, h4⟩ := ha E H D l Xo c Y S' Ω K₀ J₀ x₀ A n d' bW bO hv hd'
-  have hκ' : IsBlockMap (κ' ∘ κ) (v' ∘ v) := by
-    refine ⟨g1.1.comp hκ.1, g1.2.1.comp hκ.2.1, fun p => (g1.2.2.1 _).trans (congrArg κ' (hκ.2.2.1 p)), ?_⟩
-    rintro q ⟨k, hk⟩
-    obtain ⟨r, rfl⟩ := g1.2.2.2 q ⟨κ k, hk⟩
-    obtain ⟨t, rfl⟩ := hκ.2.2.2 r ⟨k, g1.1 (hk.trans (g1.2.2.1 r))⟩
-    exact ⟨t, rfl⟩
-  have hB' : BasesOver (φ.comp i) (j'.comp j) tie'.eW tie'.eO tie.eW tie.eO :=
-    ⟨fun τ a => (g4.1 τ a).trans (congrArg j' (hB.1 τ a)), fun τ a w w' e =>
-      (g4.2 τ a ⟨j w, ho.map_Vgen _ w.2⟩ w' e).trans (congrArg φ (hB.2 τ a w _ rfl))⟩
-  obtain ⟨Cv, -, -, -, hC⟩ := hb E H D l Xo c Y S S' K ι Φ y K' ι' Φ' y' M M' 𝔐 𝔐₁ tie tie' _ _ (φ.comp i) (π ≫ h)
-    (j'.comp j) d d' hκ' (fun q => (g2 _).trans (congrArg φ (hx q))) (g3.trans ho) hB' hd h1
-  exact ⟨K', _, ι', _, Φ', _, y', M', Cv, 𝔐', Fl, hC.trans h4.symm⟩
 
 theorem CoverExists.diag (hb : CoverExists) {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Φ : Type}
     [Field Φ] {y : (Σ k, ι k) → Φ} {M : FlagModel y (CMType H) (D.p + D.q) D.p} {𝔐 : HodgeCpt Y S M.x}

@@ -77,13 +77,5 @@ theorem vac_ne_zero {r g : ℕ} {X : Data E r} {bas : (Fin g ⊕ Fin g → ℤ) 
 
 end
 
-theorem exists_moduli (p q : ℕ) (h : 1 ≤ p + q) :
-    ∃ (E : Type) (_ : Field E) (_ : NumberField E) (_ : IsCMField E) (H : Host E) (Dw : Datum H)
-      (l : Geo.Tor.Level H) (_ : Moduli Dw l), Dw.p = p ∧ Dw.q = q ∧ l.A = 1 := by
-  obtain ⟨E, i1, i2, i3, H, -, hD⟩ := exists_datum_sum_and_all_signatures.2
-  obtain ⟨D, hp, hq⟩ := hD p q
-  obtain ⟨l, hA, -⟩ := exists_level_goodAt_all_primes_and_idx E H 1 one_pos
-  obtain ⟨Xo⟩ : Nonempty (Moduli D l) := GlobalTheory.T.exists_moduli_scheme_polarized_abelian_level E H D l (by omega)
-  exact ⟨E, i1, i2, i3, H, D, l, Xo, hp, hq, hA⟩
 
 end GlobalTheory.ClsVal.ValuesTest

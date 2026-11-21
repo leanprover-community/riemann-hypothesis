@@ -215,12 +215,6 @@ lemma Tt_Tt (q : MvPolynomial (Fin n) R) : Tt R n (Tt R n q) = q := by
     rw [← AlgHom.comp_assoc, Ee_comp_Tt, Eh_comp_Tt]
   exact congrArg (fun φ : MvPolynomial (Fin n) R →ₐ[R] MvPolynomial (Fin n) R => φ q) h1
 
-theorem Eh_injective : Function.Injective (Eh R n) := by
-  intro p q h
-  have e1 : ∀ x, Ee R n (Tt R n x) = Eh R n x := fun x => by rw [← AlgHom.comp_apply, Ee_comp_Tt]
-  have h1 : Ee R n (Tt R n p) = Ee R n (Tt R n q) := by rw [e1, e1, h]
-  have h2 := Ee_injective h1
-  rw [← Tt_Tt p, ← Tt_Tt q, h2]
 
 theorem Eh_surj (p : MvPolynomial (Fin n) R) (hp : p.IsSymmetric) : ∃ q, Eh R n q = p := by
   obtain ⟨q, hq⟩ := MvPolynomial.esymmAlgHom_fin_surjective R (le_refl n)
@@ -387,63 +381,7 @@ def Aw (n m : ℕ) : Finset (Fin n →₀ ℕ) :=
   ((range (m + 1)).biUnion fun k => finsuppAntidiag (univ : Finset (Fin n)) k).filter
     (fun α => wt α = m)
 
-lemma mem_Aw (m : ℕ) (α : Fin n →₀ ℕ) : α ∈ Aw n m ↔ wt α = m := by
-  unfold Aw
-  rw [Finset.mem_filter, Finset.mem_biUnion]
-  constructor
-  · exact fun h => h.2
-  · intro h
-    refine ⟨⟨∑ j, α j, ?_, ?_⟩, h⟩
-    · rw [Finset.mem_range, Nat.lt_succ_iff, ← h]
-      unfold wt
-      exact Finset.sum_le_sum fun j _ => Nat.le_mul_of_pos_left _ (by omega)
-    · rw [Finset.mem_finsuppAntidiag]
-      exact ⟨rfl, Finset.subset_univ _⟩
 
-theorem G_unique (H : MvPowerSeries (Fin n) R) (hH : H.subst (hv R n) = 0) : H = 0 := by
-  ext α
-  rw [map_zero]
-  obtain ⟨m, hm⟩ : ∃ m, wt α = m := ⟨_, rfl⟩
-  let P : MvPolynomial (Fin n) R := ∑ β ∈ Aw n m, MvPolynomial.monomial β (MvPowerSeries.coeff β H)
-  have hcP : ∀ β, MvPolynomial.coeff β P = if wt β = m then MvPowerSeries.coeff β H else 0 := by
-    intro β
-    simp only [P, MvPolynomial.coeff_sum, MvPolynomial.coeff_monomial]
-    rw [Finset.sum_ite_eq']
-    by_cases h : wt β = m
-    · rw [if_pos ((mem_Aw m β).mpr h), if_pos h]
-    · rw [if_neg (fun h' => h ((mem_Aw m β).mp h')), if_neg h]
-  have hEP : Eh R n P = 0 := by
-    ext d
-    rw [MvPolynomial.coeff_zero, coeff_Eh]
-    by_cases hd : d.degree = m
-    · have h0 := congrArg (MvPowerSeries.coeff d) hH
-      rw [MvPowerSeries.coeff_subst hasSubst_hv, map_zero] at h0
-      refine Eq.trans ?_ h0
-      apply finsum_congr
-      intro β
-      rw [hcP]
-      by_cases hb : wt β = m
-      · rw [if_pos hb]
-      · rw [if_neg hb, zero_smul, coeff_prodpow_eq_zero β d (by rw [hd]; exact hb), smul_zero]
-    · apply finsum_eq_zero_of_forall_eq_zero
-      intro β
-      rw [hcP]
-      by_cases hb : wt β = m
-      · rw [if_pos hb, coeff_prodpow_eq_zero β d (by rw [hb]; exact Ne.symm hd), smul_zero]
-      · rw [if_neg hb, zero_smul]
-  have hP0 : P = 0 := Eh_injective (by rw [hEP, map_zero])
-  have h1 := hcP α
-  rw [hP0, MvPolynomial.coeff_zero, if_pos hm] at h1
-  exact h1.symm
 
 end Formalism.FT.SymmetricSeries
 
-theorem Formalism.FT.symmetric_series_h_symm : Formalism.FT.SymmSeriesHsymm := by
-  intro R _ n F hF
-  obtain ⟨G, hG⟩ := Formalism.FT.SymmetricSeries.exists_G F hF
-  refine ⟨G, hG, fun G' hG' => ?_⟩
-  have hG'' : G'.subst (Formalism.FT.SymmetricSeries.hv R n) = F := hG'
-  have h0 : (G' - G).subst (Formalism.FT.SymmetricSeries.hv R n) = 0 := by
-    rw [← MvPowerSeries.coe_substAlgHom Formalism.FT.SymmetricSeries.hasSubst_hv, map_sub,
-      MvPowerSeries.coe_substAlgHom Formalism.FT.SymmetricSeries.hasSubst_hv, hG'', hG, sub_self]
-  exact sub_eq_zero.mp (Formalism.FT.SymmetricSeries.G_unique _ h0)

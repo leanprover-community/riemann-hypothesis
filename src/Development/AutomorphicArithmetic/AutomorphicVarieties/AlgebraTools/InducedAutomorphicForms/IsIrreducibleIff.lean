@@ -17,9 +17,6 @@ def IrrOn (ρ : Representation k G V) (H : Subgroup G) : Prop :=
 theorem IrrOn.mono {ρ : Representation k G V} {H H' : Subgroup G} (h : IrrOn ρ H) (hle : H ≤ H') : IrrOn ρ H' :=
   fun W hW => h W fun g hg => hW g (hle hg)
 
-theorem irrOn_iff_comp (ρ : Representation k G V) (H : Subgroup G) :
-    IrrOn ρ H ↔ IrrOn (ρ.comp H.subtype : Representation k H V) ⊤ :=
-  ⟨fun h W hW => h W fun g hg => hW ⟨g, hg⟩ trivial, fun h W hW => h W fun g _ => hW g g.2⟩
 
 theorem isIrreducible_iff (ρ : Representation k G V) : ρ.IsIrreducible ↔ Nontrivial V ∧ IrrOn ρ ⊤ := by
   constructor
@@ -39,8 +36,6 @@ theorem isIrreducible_iff (ρ : Representation k G V) : ρ.IsIrreducible ↔ Non
     · exact Or.inl (Subrepresentation.toSubmodule_injective e)
     · exact Or.inr (Subrepresentation.toSubmodule_injective e)
 
-theorem irrOn_line (ρ : Representation k G k) (H : Subgroup G) : IrrOn ρ H :=
-  fun W _ => Ideal.eq_bot_or_top W
 
 def matRep {n : Type} [Fintype n] [DecidableEq n] (r : G →* GL n k) : Representation k G (n → k) where
   toFun g := Matrix.toLin' (r g : Matrix n n k)

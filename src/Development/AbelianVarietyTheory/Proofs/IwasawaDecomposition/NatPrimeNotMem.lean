@@ -2,7 +2,25 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FieldValuesMemFixedField
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.MemLevelOfLocalDepth
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FinAfMemIntUIff
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NatCastNotMemOfPrimeNe
+
+section
+namespace GlobalTheory.NatCastNotMemPrime
+
+theorem natCast_notMem_of_prime_ne {A : Type} [inst : CommRing A] (P : Ideal A)
+    [hP : Ideal.IsPrime P] {p l : ℕ} (hp : Nat.Prime p) (hl : Nat.Prime l) (hne : l ≠ p)
+    (hpP : (↑p : A) ∈ P) : (↑l : A) ∉ P := by
+  intro hlP
+  have hcop : Nat.Coprime l p := (Nat.coprime_primes hl hp).2 hne
+  have hc : IsCoprime (l : A) (p : A) := Nat.Coprime.cast hcop
+  obtain ⟨a, b, hab⟩ := hc
+  apply hP.ne_top
+  rw [Ideal.eq_top_iff_one, ← hab]
+  exact P.add_mem (P.mul_mem_left a hlP) (P.mul_mem_left b hpP)
+
+end GlobalTheory.NatCastNotMemPrime
+end
+
+section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx
 open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
@@ -85,3 +103,4 @@ theorem twistPlaces : ∀ (X : Stages) (px : PreX X.B.toPre) (I : Col2.ColIn X.B
     exact off PP hPP _ (X.B.T_prime u) (hI.T_mem u)
 
 end GlobalTheory.Mem.TwistPlaces
+end

@@ -1,14 +1,383 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.MultiplicationLatticeSecond
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NonnegAdmissibleIffPositiveDefinite
+import Development.AbelianVarietyTheory.Definitions.Divisors.IsProperToroidalModelStructureMap
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsProperToroidalModelStructureMap
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsUniqueIsVal
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GradedLineBundleExists
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NonemptyOfModToModIso
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsDiscreteValuationRingIntO
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ChartExtensionHolds
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ChartFrameMoveHolds
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsUniqueH0Section
 import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsArcBasisBaseChange
 
+section
+noncomputable section
+
+open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Toroidal
+
+namespace GlobalTheory.LocM.FJ
+
+section Directions
+
+variable {L L' : Type} [AddCommGroup L] [AddCommGroup L'] {K : Type} [NormedField K]
+
+def Nonneg (P : Set L) (χ : Module.Dual ℤ L) : Prop := ∀ γ ∈ P, 0 ≤ χ γ
+
+def Isolates (P : Set L) (γ : L) (χ : Module.Dual ℤ L) : Prop :=
+  γ ∈ P ∧ Nonneg P χ ∧ ∀ χ', Nonneg P χ' → χ' γ = χ γ → χ' = χ
+
+def IsFat (P : Set L) : Prop := ∃ k : ℕ, 0 < k ∧ ∀ γ ∈ P, ∀ δ : L, ∃ C : ℕ, ∀ N : ℕ, C ≤ N → N • γ + k • δ ∈ P
+
+def IsExpansion (P : Set L) (Val : L → LaurentSeries K → Prop) (c : Module.Dual ℤ L → K) : Prop :=
+  (∀ χ, c χ ≠ 0 → Nonneg P χ) ∧
+    ∀ γ ∈ P, ∀ r, Val γ r → ∀ n : ℤ, r.coeff n = ∑ᶠ (χ : Module.Dual ℤ L) (_ : χ γ = n), c χ
+
+def coefSet (P : Set L) (Val : L → LaurentSeries K → Prop) (χ : Module.Dual ℤ L) : Set ℝ :=
+  {x | ∃ γ r, Isolates P γ χ ∧ Val γ r ∧ x = ‖r.coeff (χ γ)‖}
+
+def coefNorm (P : Set L) (Val : L → LaurentSeries K → Prop) (χ : Module.Dual ℤ L) : ℝ := sSup (coefSet P Val χ)
+
+variable {P : Set L} {Val : L → LaurentSeries K → Prop} {χ : Module.Dual ℤ L}
+
+theorem IsFat.bound {k : ℕ} (h : ∀ γ ∈ P, ∀ δ : L, ∃ C : ℕ, ∀ N : ℕ, C ≤ N → N • γ + k • δ ∈ P) {γ : L} (hγ : γ ∈ P)
+    (δ : L) : ∃ C : ℕ, (∀ N : ℕ, C ≤ N → N • γ + k • δ ∈ P) ∧ ∀ χ, Nonneg P χ → |k * χ δ| ≤ C * χ γ := by
+  obtain ⟨C₁, h₁⟩ := h γ hγ δ
+  obtain ⟨C₂, h₂⟩ := h γ hγ (-δ)
+  refine ⟨max C₁ C₂, fun N hN => h₁ N ((le_max_left _ _).trans hN), fun χ hχ => ?_⟩
+  have a := hχ _ (h₁ _ (le_max_left C₁ C₂))
+  have b := hχ _ (h₂ _ (le_max_right C₁ C₂))
+  simp only [map_add, map_nsmul, map_neg, nsmul_eq_mul, mul_neg] at a b
+  exact abs_le.2 ⟨by linarith, by linarith⟩
+
+theorem IsFat.finite [Module.Finite ℤ L] (h : IsFat P) {γ : L} (hγ : γ ∈ P) (n : ℤ) :
+    {χ : Module.Dual ℤ L | Nonneg P χ ∧ χ γ = n}.Finite := by
+  obtain ⟨k, hk, h⟩ := h
+  obtain ⟨m, v, hv⟩ := Module.Finite.exists_fin (R := ℤ) (M := L)
+  choose C _ hC using fun i => IsFat.bound h hγ (v i)
+  refine Set.Finite.of_finite_image (f := fun χ i => χ (v i))
+    ((Set.Finite.pi' fun i => Set.finite_Icc (-(C i * n)) (C i * n)).subset ?_)
+    fun χ _ χ' _ e => LinearMap.ext_on_range hv (congrFun e)
+  rintro _ ⟨χ, ⟨h₁, rfl⟩, rfl⟩ i
+  refine abs_le.1 (le_trans ?_ (hC i χ h₁))
+  rw [abs_mul]
+  exact le_mul_of_one_le_left (abs_nonneg _) (by rw [Nat.abs_cast]; exact_mod_cast hk)
+
+theorem exists_forall_ne_zero {T : Set (Module.Dual ℤ L)} (hT : T.Finite) (h : ∀ φ ∈ T, φ ≠ 0) :
+    ∃ δ : L, ∀ φ ∈ T, φ δ ≠ 0 := by
+  induction T, hT using Set.Finite.induction_on with
+  | empty => exact ⟨0, by simp⟩
+  | @insert φ T _ hT ih =>
+    obtain ⟨δ, hδ⟩ := ih fun ψ hψ => h ψ (Set.mem_insert_of_mem _ hψ)
+    obtain ⟨a, ha⟩ : ∃ a, φ a ≠ 0 := by
+      by_contra! hh
+      exact h φ (Set.mem_insert _ _) (LinearMap.ext hh)
+    have fin : (⋃ ψ ∈ insert φ T, {n : ℤ | ψ (n • δ + a) = 0}).Finite := by
+      refine (hT.insert φ).biUnion fun ψ hψ => Set.Subsingleton.finite fun n hn n' hn' => ?_
+      simp only [Set.mem_setOf_eq, map_add, map_smul, smul_eq_mul] at hn hn'
+      by_cases h0 : ψ δ = 0
+      · rcases hψ with rfl | hψ
+        · rw [h0] at hn; exact absurd (by simpa using hn) ha
+        · exact absurd h0 (hδ ψ hψ)
+      · exact mul_right_cancel₀ h0 (by linarith)
+    obtain ⟨n, hn⟩ := fin.exists_notMem
+    exact ⟨n • δ + a, fun ψ hψ e => hn (Set.mem_biUnion hψ e)⟩
+
+theorem IsFat.exists_isolates [Module.Finite ℤ L] (h : IsFat P) (hne : P.Nonempty) (hχ : Nonneg P χ) :
+    ∃ γ, Isolates P γ χ := by
+  obtain ⟨γ, hγ⟩ := hne
+  have fin := h.finite hγ (χ γ)
+  obtain ⟨k, hk, h⟩ := h
+  obtain ⟨δ, hδ⟩ := exists_forall_ne_zero (T := (fun χ' => χ' - χ) '' ({χ' | Nonneg P χ' ∧ χ' γ = χ γ} \ {χ}))
+    ((fin.subset Set.diff_subset).image _) (by rintro _ ⟨χ', h', rfl⟩; exact sub_ne_zero.2 h'.2)
+  obtain ⟨C, hC, hb⟩ := IsFat.bound h hγ δ
+  obtain ⟨a, ha⟩ := Int.eq_ofNat_of_zero_le (hχ γ hγ)
+  refine ⟨_, hC (C * (2 * a + 1) + 1) (by nlinarith), hχ, fun χ' h' e => ?_⟩
+  simp only [map_add, map_nsmul, nsmul_eq_mul] at e
+  push_cast at e
+  have b := abs_le.1 (hb χ hχ)
+  have b' := abs_le.1 (hb χ' h')
+  have n' := h' γ hγ
+  have hC0 : (0 : ℤ) ≤ C := Int.natCast_nonneg _
+  have ha0 : (0 : ℤ) ≤ a := Int.natCast_nonneg _
+  have e₁ : χ' γ = χ γ := by
+    rw [ha] at b e ⊢
+    rcases lt_trichotomy (χ' γ) a with hl | hl | hl
+    · nlinarith [mul_nonneg hC0 ha0, mul_nonneg (mul_nonneg hC0 ha0) (sub_nonneg.2 (Int.add_one_le_of_lt hl)),
+        mul_nonneg hC0 (sub_nonneg.2 hl.le)]
+    · exact hl
+    · nlinarith [mul_nonneg (mul_nonneg hC0 ha0) (sub_nonneg.2 (Int.add_one_le_of_lt hl))]
+  by_contra hne
+  refine hδ _ ⟨χ', ⟨⟨h', e₁⟩, hne⟩, rfl⟩ ?_
+  rw [e₁, add_right_inj] at e
+  exact sub_eq_zero.2 (mul_left_cancel₀ (by exact_mod_cast hk.ne') e)
+
+theorem IsExpansion.coeff_eq {c : Module.Dual ℤ L → K} (h : IsExpansion P Val c) {γ : L} (hγ : Isolates P γ χ)
+    {r : LaurentSeries K} (hr : Val γ r) : r.coeff (χ γ) = c χ := by
+  rw [h.2 γ hγ.1 r hr, finsum_eq_single _ χ]
+  · exact finsum_eq_single (fun _ : χ γ = χ γ => c χ) rfl fun _ h => (h rfl).elim
+  · intro χ' hne
+    by_cases e : χ' γ = χ γ
+    · simp [of_not_not fun h0 => hne (hγ.2.2 χ' (h.1 χ' h0) e)]
+    · simp [e]
+
+theorem coefNorm_eq_zero (h : ¬ Nonneg P χ) : coefNorm P Val χ = 0 := by
+  rw [coefNorm, show coefSet P Val χ = ∅ from Set.eq_empty_of_forall_notMem fun _ ⟨_, _, h', _⟩ => h h'.2.1,
+    Real.sSup_empty]
+
+theorem coefSet_nonempty [Module.Finite ℤ L] (h : IsFat P) (hne : P.Nonempty) (hV : ∀ γ ∈ P, ∃ r, Val γ r)
+    (hχ : Nonneg P χ) : (coefSet P Val χ).Nonempty := by
+  obtain ⟨γ, hγ⟩ := h.exists_isolates hne hχ
+  obtain ⟨r, hr⟩ := hV γ hγ.1
+  exact ⟨_, γ, r, hγ, hr, rfl⟩
+
+theorem IsExpansion.coefNorm_eq [Module.Finite ℤ L] {c : Module.Dual ℤ L → K} (hc : IsExpansion P Val c) (h : IsFat P)
+    (hne : P.Nonempty) (hV : ∀ γ ∈ P, ∃ r, Val γ r) (χ : Module.Dual ℤ L) : coefNorm P Val χ = ‖c χ‖ := by
+  by_cases hχ : Nonneg P χ
+  · have : coefSet P Val χ = {‖c χ‖} := (coefSet_nonempty h hne hV hχ).subset_singleton_iff.1 (by
+      rintro _ ⟨γ, r, hγ, hr, rfl⟩
+      exact congrArg _ (hc.coeff_eq hγ hr))
+    rw [coefNorm, this, csSup_singleton]
+  · rw [coefNorm_eq_zero hχ, of_not_not fun h0 => hχ (hc.1 χ h0), norm_zero]
+
+theorem IsExpansion.unique [Module.Finite ℤ L] {c c' : Module.Dual ℤ L → K} (hc : IsExpansion P Val c)
+    (hc' : IsExpansion P Val c') (h : IsFat P) (hne : P.Nonempty) (hV : ∀ γ ∈ P, ∃ r, Val γ r) : c = c' := by
+  funext χ
+  by_cases hχ : Nonneg P χ
+  · obtain ⟨γ, hγ⟩ := h.exists_isolates hne hχ
+    obtain ⟨r, hr⟩ := hV γ hγ.1
+    exact (hc.coeff_eq hγ hr).symm.trans (hc'.coeff_eq hγ hr)
+  · rw [of_not_not fun h0 => hχ (hc.1 χ h0), of_not_not fun h0 => hχ (hc'.1 χ h0)]
+
+
+
+
+theorem isFat_pos : IsFat {n : ℤ | 0 < n} := ⟨1, one_pos, fun γ hγ δ => ⟨δ.natAbs + 1, fun N hN => by
+  have h : (0 : ℤ) < γ := hγ
+  have hN' : |δ| + 1 ≤ (N : ℤ) := by rw [← Int.natCast_natAbs]; exact_mod_cast hN
+  change (0 : ℤ) < N • γ + 1 • δ
+  rw [nsmul_eq_mul, one_smul]
+  nlinarith [neg_abs_le δ, abs_nonneg δ]⟩⟩
+
+theorem isExpansion_single [DecidableEq (Module.Dual ℤ L)] {χ₀ : Module.Dual ℤ L} (h : Nonneg P χ₀) (a : K) :
+    IsExpansion P (fun γ r => r = HahnSeries.single (χ₀ γ) a) (fun χ => if χ = χ₀ then a else 0) := by
+  refine ⟨fun χ hχ => (of_not_not fun e => hχ (if_neg e) : χ = χ₀) ▸ h, ?_⟩
+  rintro γ - _ rfl n
+  rw [finsum_eq_single _ χ₀ fun χ e => by simp [e]]
+  simp only [if_true]
+  by_cases e : χ₀ γ = n
+  · subst e
+    rw [HahnSeries.coeff_single_same]
+    exact (finsum_eq_single (fun _ : χ₀ γ = χ₀ γ => a) rfl fun _ h => (h rfl).elim).symm
+  · rw [HahnSeries.coeff_single_of_ne (Ne.symm e)]
+    simp [e]
+
+end Directions
+
+section Forms
+
+variable {X : Type} [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X]
+
+theorem exists_sq_le {β : LinearMap.BilinForm ℤ X} (hs : ∀ y z, β y z = β z y) (hp : ∀ y, y ≠ 0 → 0 < β y y)
+    (φ : Module.Dual ℤ X) : ∃ C : ℕ, ∀ y, φ y ^ 2 ≤ C * β y y := by
+  have nn : ∀ y, 0 ≤ β y y := fun y => by
+    by_cases h : y = 0
+    · simp [h]
+    · exact (hp y h).le
+  have inj : Function.Injective β := (injective_iff_map_eq_zero _).2 fun y hy => by
+    by_contra h
+    simpa [hy] using hp y h
+  have tor : Module.IsTorsion ℤ (Module.Dual ℤ X ⧸ LinearMap.range β) := by
+    rw [← Module.finrank_eq_zero_iff_isTorsion]
+    have h₁ := Submodule.finrank_quotient_add_finrank (LinearMap.range β)
+    rw [LinearMap.finrank_range_of_inj inj, Module.finrank_linearMap_self] at h₁
+    exact Nat.add_eq_right.1 h₁
+  obtain ⟨⟨d, hd⟩, h⟩ := @tor (Submodule.Quotient.mk φ)
+  obtain ⟨z, hz⟩ := (Submodule.Quotient.mk_eq_zero _).1 (show Submodule.Quotient.mk (d • φ) = 0 from h)
+  have hd1 : 1 ≤ d ^ 2 := (one_le_sq_iff_one_le_abs d).2 (Int.one_le_abs (nonZeroDivisors.ne_zero hd))
+  obtain ⟨C, hC⟩ := Int.eq_ofNat_of_zero_le (nn z)
+  refine ⟨C, fun y => ?_⟩
+  have e : β z y = d * φ y := by rw [hz]; rfl
+  have cs : β z y ^ 2 ≤ β z z * β y y := by
+    by_cases h0 : z = 0
+    · simp [h0]
+    · have := nn (β z z • y - β z y • z)
+      simp only [map_sub, map_smul, LinearMap.sub_apply, LinearMap.smul_apply, smul_eq_mul, hs y z] at this
+      exact le_of_mul_le_mul_left (by nlinarith) (hp z h0)
+  rw [← hC]
+  rw [e, mul_pow] at cs
+  nlinarith [sq_nonneg (φ y)]
+
+theorem exists_abs_le {β : LinearMap.BilinForm ℤ X} (hs : ∀ y z, β y z = β z y) (hp : ∀ y, y ≠ 0 → 0 < β y y)
+    (δ : LinearMap.BilinForm ℤ X) : ∃ C : ℕ, ∀ y, |δ y y| ≤ C * β y y := by
+  let b := Module.finBasis ℤ X
+  choose C hC using fun i => exists_sq_le hs hp (b.coord i)
+  choose C' hC' using fun i => exists_sq_le hs hp (δ (b i))
+  refine ⟨∑ i, (C i + C' i), fun y => ?_⟩
+  have e : δ y y = ∑ i, b.coord i y * δ (b i) y := by
+    refine (congrArg (fun z => δ z y) (b.sum_repr y).symm).trans ?_
+    simp only [map_sum, LinearMap.sum_apply, map_smul, LinearMap.smul_apply, smul_eq_mul, Module.Basis.coord_apply]
+  rw [e, Nat.cast_sum, Finset.sum_mul]
+  refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun i _ => ?_)
+  have h₁ := hC i y
+  have h₂ := hC' i y
+  push_cast
+  refine abs_le.2 ⟨?_, ?_⟩ <;>
+    nlinarith [sq_nonneg (b.coord i y + δ (b i) y), sq_nonneg (b.coord i y - δ (b i) y), sq_nonneg (b.coord i y),
+      sq_nonneg (δ (b i) y)]
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] (H : Host E) (N : ℕ)
+
+def admitted (X : Type) [AddCommGroup X] [Module (𝓞 E) X] : Set (levelForms H N X) :=
+  {γ | (∀ y, y ≠ 0 → 0 < (γ : LinearMap.BilinForm ℤ X) y y) ∧ ∀ y z, (2 * N : ℤ) ∣ (γ : LinearMap.BilinForm ℤ X) y z}
+
+variable [Module (𝓞 E) X]
+
+variable (X) in
+
+theorem isFat_adm : IsFat (admitted H N X) := by
+  refine ⟨2, two_pos, fun γ hγ δ => ?_⟩
+  obtain ⟨C, hC⟩ := exists_abs_le γ.2.1 hγ.1 δ.1
+  refine ⟨2 * C + 1, fun n hn => ⟨fun y hy => ?_, fun y z => ?_⟩⟩
+  · have h₁ := hγ.1 y hy
+    have h₂ := (abs_le.1 (hC y)).1
+    have h₃ : (2 * C + 1 : ℤ) ≤ n := by exact_mod_cast hn
+    simp only [Submodule.coe_add, Submodule.coe_smul_of_tower, LinearMap.add_apply, LinearMap.smul_apply, nsmul_eq_mul]
+    push_cast
+    nlinarith
+  · simp only [Submodule.coe_add, Submodule.coe_smul_of_tower, LinearMap.add_apply, LinearMap.smul_apply, nsmul_eq_mul]
+    exact dvd_add ((hγ.2 y z).mul_left _) (mul_dvd_mul_left _ (δ.2.2.2 y z))
+
+variable {H N} in
+omit [Module.Free ℤ X] [Module.Finite ℤ X] in
+
+theorem nonneg_admissible_iff_positiveDefinite (χ : Module.Dual ℤ (levelForms H N X)) : Nonneg (admitted H N X) χ ↔
+    ∀ γ : levelForms H N X, (∀ y, y ≠ 0 → 0 < (γ : LinearMap.BilinForm ℤ X) y y) → 0 ≤ χ γ := by
+  refine ⟨fun h γ hγ => ?_, fun h γ hγ => h γ hγ.1⟩
+  have := h ((2 : ℤ) • γ) ⟨fun y hy => mul_pos two_pos (hγ y hy), fun y z => mul_dvd_mul_left _ (γ.2.2.2 y z)⟩
+  rw [map_smul, smul_eq_mul] at this
+  omega
+
+end Forms
+
+end GlobalTheory.LocM.FJ
+end
+end
+
+section
+noncomputable section
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField TopologicalSpace
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.PullbackSections Formalism.L2.Pj GlobalTheory.LieMet GlobalTheory.LocM GlobalTheory.Points
+open GlobalTheory.GradedPieces IsLocalRing
+
+namespace GlobalTheory.LocM.FJ
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
+
+section Value
+
+variable {Xo : ∀ l : Level H, Moduli Dw l} {p : ℕ} {W : ValuationSubring ℂ} {Y : LocalSystem Xo p W} {i₀ : Idx H p}
+
+structure GrTriv (Z : Mdl Y i₀) (e : ∀ σ : E →+* ℂ, Fin (Dw.mult σ) → ℤ) (F : Z.X.Modules) : Type 1 where
+
+  L : LB Z.X
+
+  isLB : L.IsLB
+
+  hU : ∀ i, IsAffineOpen (L.U i)
+
+  w : ∀ i, Vecs Dw (Y Z.i).t Γ(Z.X, L.U i)
+
+  int : ∀ i, IntFrame Z (hU i) (w i)
+
+  trans : ∀ (i i' : L.ι) (k : Type) [Field k] (φ : Γ(Z.X, L.U i) →+* k) (φ' : Γ(Z.X, L.U i') →+* k)
+    (d : ∀ σ : E →+* ℂ, Fin (Dw.mult σ) → k),
+    spMap φ ≫ (hU i).fromSpec = spMap φ' ≫ (hU i').fromSpec → Set.range (spMap φ ≫ (hU i).fromSpec) ⊆ Z.opn →
+    (∀ σ, DiagAt (Y Z.i).t (spMap φ ≫ (hU i).fromSpec ≫ Z.π) ((w i').bc φ' σ) ((w i).bc φ σ) (d σ)) →
+    valR (spMap φ ≫ (hU i).fromSpec) _ (L.g i i').val = ∏ σ, ∏ a, d σ a ^ e σ a
+
+  iso : F ≅ GlobalTheory.LB.toMod L
+
+variable {Z : Mdl Y i₀} {e : ∀ σ : E →+* ℂ, Fin (Dw.mult σ) → ℤ}
+
+theorem nonempty_grTriv (hp : p.Prime) (hW : (p : ℂ) ∈ W.nonunits) {L : LB Z.X} (h : IsGrLB Z e L) :
+    Nonempty (GrTriv Z e (Z.ofMod (GlobalTheory.LB.toMod L)).toMod) := by
+  obtain ⟨hL, hU, w, hw, ht⟩ := h
+  haveI : GlobalTheory.QCoh.IsFiniteQC (GlobalTheory.LB.toMod L) := (GlobalTheory.VB.isVB_toMod hL).isFiniteQC
+  obtain ⟨i⟩ := GlobalTheory.ModelPresentation.nonempty_ofMod_toMod_iso E H Dw Xo p W hp hW Y i₀ Z (GlobalTheory.LB.toMod L)
+  exact ⟨⟨L, hL, hU, w, hw, ht, i⟩⟩
+
+variable {F : Z.X.Modules} (T : GrTriv Z e F) {V : Z.X.Opens} {k : Type} [Field k]
+
+def GrTriv.IsVal (f : Γ(F, V)) (x : Sp k ⟶ Z.X) (u : Vecs Dw (Y Z.i).t k) (r : k) : Prop :=
+  ⊤ ≤ x ⁻¹ᵁ V ∧ ∃ (i : T.L.ι) (φ : Γ(Z.X, T.L.U i) →+* k) (d : ∀ σ : E →+* ℂ, Fin (Dw.mult σ) → k),
+    spMap φ ≫ (T.hU i).fromSpec = x ∧ (∀ σ, DiagAt (Y Z.i).t (x ≫ Z.π) ((T.w i).bc φ σ) (u σ) (d σ)) ∧
+    r = valR x (V ⊓ T.L.U i) (GlobalTheory.LB.coord (T.iso.hom.app V f) i) * ∏ σ, ∏ a, d σ a ^ e σ a
+
+theorem range_subset_opn {x : Sp k ⟶ Z.X} {u : Vecs Dw (Y Z.i).t k} (h : Z.FlagAt x u) : Set.range x ⊆ Z.opn := by
+  obtain ⟨a, φ, rfl, -⟩ := h
+  rintro _ ⟨z, rfl⟩
+  rw [← Z.cover]
+  exact Set.mem_iUnion.2 ⟨a, le_preimage_specMap_fromSpec (Z.U a).2 (CommRingCat.ofHom φ) (Set.mem_univ z)⟩
+
+theorem GrTriv.existsUnique_isVal (hty : ∀ σ, Z.ty σ = Finset.range (Dw.mult σ + 1)) (f : Γ(F, V)) {x : Sp k ⟶ Z.X}
+    (hx : ⊤ ≤ x ⁻¹ᵁ V) {u : Vecs Dw (Y Z.i).t k} (hu : Z.FlagAt x u) : ∃! r, T.IsVal f x u r := by
+  have ho := range_subset_opn hu
+  have tu : ∀ σ i, IsTanAtG (Y Z.i).t (x ≫ Z.π) (u σ i) := fun σ i => by
+    obtain ⟨_, _, -, h, -⟩ := hu
+    exact (h.1 σ i).1
+  have fl : ∀ i (φ : Γ(Z.X, T.L.U i) →+* k), spMap φ ≫ (T.hU i).fromSpec = x → Z.FlagAt x ((T.w i).bc φ) :=
+    fun i φ h => h ▸ (T.int i).2 k φ (h ▸ ho)
+  refine existsUnique_of_exists_of_unique ?_ ?_
+  · obtain ⟨i, hi⟩ := Opens.mem_iSup.1 (T.isLB.cover.ge (Set.mem_univ (x (closedPoint k))))
+    have h : ⊤ ≤ x ⁻¹ᵁ T.L.U i := fun z _ => by
+      obtain rfl : z = closedPoint k := Subsingleton.elim (α := PrimeSpectrum k) _ _
+      exact hi
+    have e₁ := specMap_valMap_fromSpec (T.hU i) x h
+    choose d hd using fun σ => exists_diag_of_flagAt Z hty hu (fl i _ e₁) σ (tu σ) (tan_bc (T.int i) _ e₁ σ)
+      (linInd_bc (T.int i) _ e₁ σ)
+    exact ⟨_, hx, i, _, d, e₁, fun σ => (diagAt_iff (tan_bc (T.int i) _ e₁ σ) (tu σ) (d σ)).2 (hd σ), rfl⟩
+  · rintro _ _ ⟨-, i, φ, d, e₁, hd, rfl⟩ ⟨-, i', φ', d', e₂, hd', rfl⟩
+    choose D hD using fun σ => exists_diag_of_flagAt Z hty (fl i _ e₁) (fl i' _ e₂) σ (tan_bc (T.int i) _ e₁ σ)
+      (tan_bc (T.int i') _ e₂ σ) (linInd_bc (T.int i') _ e₂ σ)
+    have hg := T.trans i i' k φ φ' D (e₁.trans e₂.symm) (e₁ ▸ ho) fun σ => by
+      rw [← Category.assoc, e₁]
+      exact (diagAt_iff (tan_bc (T.int i') _ e₂ σ) (tan_bc (T.int i) _ e₁ σ) (D σ)).2 (hD σ)
+    have hd'' : ∀ σ, d' σ = fun a => d σ a * D σ a := fun σ =>
+      ((diagAt_iff (tan_bc (T.int i') _ e₂ σ) (tu σ) _).1 (hd' σ)).unique (linInd_bc (T.int i') _ e₂ σ)
+        ((hD σ).trans ((diagAt_iff (tan_bc (T.int i) _ e₁ σ) (tu σ) _).1 (hd σ)))
+    have h₁ : ⊤ ≤ x ⁻¹ᵁ T.L.U i := e₁ ▸ le_preimage_specMap_fromSpec (T.hU i) (CommRingCat.ofHom φ)
+    have h₂ : ⊤ ≤ x ⁻¹ᵁ T.L.U i' := e₂ ▸ le_preimage_specMap_fromSpec (T.hU i') (CommRingCat.ofHom φ')
+    have h₃ : ⊤ ≤ x ⁻¹ᵁ (V ⊓ T.L.U i ⊓ T.L.U i') := fun z hz => ⟨⟨hx hz, h₁ hz⟩, h₂ hz⟩
+    have hc := congrArg (valR x _) (GlobalTheory.LB.coord_mem (T.iso.hom.app V f) i i')
+    rw [valR_mul x _ h₃] at hc
+    erw [valR_res x _ h₃, valR_res x _ h₃, valR_res x _ h₃] at hc
+    rw [e₁] at hg
+    rw [hc, hg]
+    simp only [hd'', mul_zpow, Finset.prod_mul_distrib]
+    ring
+
+theorem GrTriv.IsVal.change {T : GrTriv Z e F} {f : Γ(F, V)} {x : Sp k ⟶ Z.X} {u u' : Vecs Dw (Y Z.i).t k} {r : k}
+    (h : T.IsVal f x u r) (tu : ∀ σ i, IsTanAtG (Y Z.i).t (x ≫ Z.π) (u σ i))
+    (tu' : ∀ σ i, IsTanAtG (Y Z.i).t (x ≫ Z.π) (u' σ i)) {d : ∀ σ : E →+* ℂ, Fin (Dw.mult σ) → k}
+    (hd : ∀ σ, DiagAt (Y Z.i).t (x ≫ Z.π) (u σ) (u' σ) (d σ)) : T.IsVal f x u' (r * ∏ σ, ∏ a, d σ a ^ e σ a) := by
+  obtain ⟨hx, i, φ, D, e₁, hD, rfl⟩ := h
+  refine ⟨hx, i, φ, fun σ a => d σ a * D σ a, e₁, fun σ => (diagAt_iff (tan_bc (T.int i) _ e₁ σ) (tu' σ) _).2
+    (((diagAt_iff (tan_bc (T.int i) _ e₁ σ) (tu σ) _).1 (hD σ)).trans ((diagAt_iff (tu σ) (tu' σ) _).1 (hd σ))), ?_⟩
+  simp only [mul_zpow, Finset.prod_mul_distrib]
+  ring
+
+
+end Value
+
+end GlobalTheory.LocM.FJ
+end
+end
+
+section
 set_option maxHeartbeats 800000
 
 noncomputable section
@@ -49,13 +418,6 @@ theorem toLaurent_injective : Function.Injective F.toLaurent :=
   fun _ _ h => PowerSeries.map_injective (intO ↥F.K).subtype Subtype.val_injective
     (HahnSeries.ofPowerSeries_injective (Γ := ℤ) h)
 
-theorem norm_coeff_toLaurent (g : PowerSeries F.O) (n : ℤ) : ‖(F.toLaurent g).coeff n‖ ≤ 1 := by
-  change ‖((PowerSeries.map (intO ↥F.K).subtype g : PowerSeries ↥F.K) : LaurentSeries ↥F.K).coeff n‖ ≤ 1
-  rw [PowerSeries.coeff_coe]
-  split_ifs
-  · simp
-  · rw [PowerSeries.coeff_map]
-    exact (PowerSeries.coeff _ g).2
 
 theorem isAdicComplete {ϖ : F.O} (h : Irreducible ϖ) : IsAdicComplete (Ideal.span {ϖ}) F.O := by
   haveI : CompleteSpace ↥F.K := F.closed.completeSpace_coe
@@ -72,19 +434,6 @@ theorem isAdicComplete {ϖ : F.O} (h : Irreducible ϖ) : IsAdicComplete (Ideal.s
 
 end DVF
 
-theorem exists_dvf {l : Level H} (c : Coeff l) {p : ℕ} {W : ValuationSubring ℂ} (hp : p.Prime) (hW : (p : ℂ) ∈ W.nonunits) :
-    ∃ (F : DVF p) (b : c.V W →+* F.O), Function.Injective b := by
-  haveI := c.fin
-  haveI : NumberField c.F := {}
-  have hn := SharedLaws.mem_nonunits_V c hp.ne_zero hW
-  haveI := (isDiscreteValuationRing_and_finite_residueField_of_numberField (c.V W) hp.ne_zero hn).1
-  haveI : Countable c.F := Countable.of_equiv _ (Module.finBasis ℚ c.F).equivFun.toEquiv.symm
-  obtain ⟨C, f, K, hf, -, hK, hd, -⟩ := Cht.CompletedClosure.fieldSt p (c.V W) hp
-    ((ValuationSubring.coe_mem_nonunits_iff (A := c.V W) (a := (p : c.V W))).1 (by simpa using hn))
-  let g : c.V W →+* ↥K := ((intO ↥C.S).subtype.comp f).codRestrict K fun a =>
-    hK ▸ Subfield.le_topologicalClosure _ (Subfield.subset_closure ⟨a, rfl⟩)
-  exact ⟨⟨C, K, hK ▸ Subfield.isClosed_topologicalClosure _, hd⟩, g.codRestrict (intO ↥K) fun a => (f a).2,
-    fun a a' h => hf (Subtype.ext (congrArg (fun z : ↥(intO ↥K) => ((z : ↥K) : ↥C.S)) h))⟩
 
 section Cusp
 
@@ -121,11 +470,6 @@ theorem dir_nonempty : t.Dir.Nonempty :=
 
 theorem isFat_dir : IsFat t.Dir := isFat_adm _ H l.M'
 
-theorem nontrivial_forms : Nontrivial t.Forms := by
-  haveI := t.a.nontriv
-  obtain ⟨γ, hγ⟩ := t.dir_nonempty
-  obtain ⟨y, hy⟩ := exists_ne (0 : t.a.D₀.X)
-  exact ⟨γ, 0, fun h => by simpa [h] using hγ.1 y hy⟩
 
 end Cusp
 
@@ -204,11 +548,6 @@ theorem exists_cusp {Xo : Moduli Dw l} {Y : Model Xo c (c.V W).subtype} (hY : Y.
     (fun τ => b.comp (IntModelExists.embV c W τ)) io hio hρ (IntModelExists.exists_values c W)
   exact ⟨⟨b, a, e, io, (ArcCompare.isLetters_iff Wt io e).2 ⟨hio, _, fun τ => RingHom.ext (hρ τ), he⟩⟩, rfl, HEq.rfl⟩
 
-theorem exists_cusp_hyp {Xo : Moduli (HostModel.hypDatum H) l} {Y : Model Xo c (c.V W).subtype} (hY : Y.N4) (hp : p.Prime)
-    (hW : (p : ℂ) ∈ W.nonunits) : ∃ F : DVF p, Nonempty (Cusp (HostModel.hypDatum H) l (c.V W).subtype F.O) := by
-  obtain ⟨F, b, hb⟩ := exists_dvf c hp hW
-  obtain ⟨io, hio⟩ := exists_io hb
-  exact ⟨F, ⟨(exists_cusp hY hb (toricIn b io hio)).choose⟩⟩
 
 end Cusp
 
@@ -352,12 +691,6 @@ theorem CuspRec.exists_equiv : ∃ ε : (CuspRec.of t).cusp.Forms ≃ₗ[ℤ] t.
   obtain ⟨ε, h₁, h₂⟩ := (CuspRec.of t).ex.choose_spec
   exact ⟨ε.trans (Module.finBasis ℤ t.Forms).equivFun.symm, h₁, h₂⟩
 
-theorem CuspRec.exists_fjNorm_eq : ∃ ε : t.Chr ≃ₗ[ℤ] (CuspRec.of t).cusp.Chr,
-    ∀ (e : ∀ σ : E →+* ℂ, Fin (Dw.mult σ) → ℤ) (M : Z.X.Modules) (T : GrTriv Z e M) (f : Γ(M, Z.genO)) (χ : t.Chr),
-      fjNorm (CuspRec.of t).cusp T f (ε χ) = fjNorm t T f χ := by
-  obtain ⟨ε, h₁, h₂⟩ := CuspRec.exists_equiv t
-  exact ⟨ε.dualMap, fun e M T f χ => coefNorm_equiv ε h₁
-    (fun γ r => exists_congr fun x => exists_congr fun v => and_congr_left' (h₂ γ x v)) χ⟩
 
 end Arcs
 
@@ -399,48 +732,19 @@ namespace FJ
 
 variable {ct : At S κ p} {l : PsiT D → ℕ → ℤ} {f : ct.Sec (ct.Lb l)}
 
-theorem fjN_le_iff (B : ℝ) : (∀ s χ, (fjTrue ct).fjN l f s χ ≤ B) ↔
-    ∀ (F : DVF p) (t : CuspOn ct.YY F) (χ : t.Chr), fjNorm t (lbTriv ct l) f χ ≤ B := by
-  refine ⟨fun h F t χ => ?_, fun h s χ => h _ _ χ⟩
-  obtain ⟨ε, hε⟩ := CuspRec.exists_fjNorm_eq t
-  exact hε _ _ _ f χ ▸ h (CuspRec.of t) (ε χ)
 
-theorem fjNorm_eq {F : DVF p} {t : CuspOn ct.YY F} {c : t.Chr → ↥F.K} (h : IsFJ t (lbTriv ct l) f c) (χ : t.Chr) :
-    fjNorm t (lbTriv ct l) f χ = ‖c χ‖ :=
-  h.coefNorm_eq t.isFat_dir t.dir_nonempty (fun _ => exists_isSeries t _ f ct.hp.ne_zero (charts_YY ct) ct.isYY.2.1.1) χ
 
 theorem IsFJ.unique {F : DVF p} {t : CuspOn ct.YY F} {c c' : t.Chr → ↥F.K} (h : IsFJ t (lbTriv ct l) f c)
     (h' : IsFJ t (lbTriv ct l) f c') : c = c' :=
   IsExpansion.unique h h' t.isFat_dir t.dir_nonempty fun _ => exists_isSeries t _ f ct.hp.ne_zero (charts_YY ct) ct.isYY.2.1.1
 
-theorem coefSet_nonempty_of_nonneg {F : DVF p} (t : CuspOn ct.YY F) {χ : t.Chr} (h : Nonneg t.Dir χ) :
-    (coefSet t.Dir (IsSeries t (lbTriv ct l) f) χ).Nonempty :=
-  coefSet_nonempty t.isFat_dir t.dir_nonempty (fun _ => exists_isSeries t _ f ct.hp.ne_zero (charts_YY ct) ct.isYY.2.1.1) h
 
-theorem fjN_eq_zero (s : (fjTrue ct).FJd) (χ : (fjTrue ct).Chr s) (γ : s.cusp.Forms)
-    (hγ : ∀ y, y ≠ 0 → 0 < (γ : LinearMap.BilinForm ℤ s.cusp.a.D₀.X) y y) (h : (show s.cusp.Chr from χ) γ < 0) :
-    (fjTrue ct).fjN l f s χ = 0 :=
-  coefNorm_eq_zero fun h' => h.not_ge ((nonneg_admissible_iff_positiveDefinite _).1 h' γ hγ)
 
-theorem fjN_le_one (h : ∀ (F : DVF p) (t : CuspOn ct.YY F) γ r, IsSeries t (lbTriv ct l) f γ r →
-    r ∈ F.toLaurent.range) (s : (fjTrue ct).FJd) (χ : (fjTrue ct).Chr s) : (fjTrue ct).fjN l f s χ ≤ 1 :=
-  coefNorm_le zero_le_one fun γ _ r hr n => by
-    obtain ⟨g, rfl⟩ := h _ _ γ r hr
-    exact s.F.norm_coeff_toLaurent g n
 
-theorem nonempty_fjd {F : DVF p} {b : ct.YY.i.c.V ct.W →+* F.O} (hb : Function.Injective b)
-    (a : ArcIn S.Dw ct.YY.i.l (ct.YY.i.c.V ct.W).subtype F.O b) : Nonempty (fjTrue ct).FJd :=
-  ⟨CuspRec.of (exists_cusp (charts_YY ct) hb a).choose⟩
 
-theorem nonempty_fjd_hyp (h : S.Dw = HostModel.hypDatum A.H) : Nonempty (fjTrue ct).FJd := by
-  obtain ⟨F, b, hb⟩ := exists_dvf ct.YY.i.c ct.hp ct.hW
-  obtain ⟨io, hio⟩ := exists_io hb
-  have : Nonempty (ArcIn S.Dw ct.YY.i.l (ct.YY.i.c.V ct.W).subtype F.O b) := by
-    generalize ct.YY.i = i at *
-    rw [h]
-    exact ⟨toricIn b io hio⟩
-  exact nonempty_fjd hb this.some
 
 end FJ
 
 end GlobalTheory.LocM
+end
+end

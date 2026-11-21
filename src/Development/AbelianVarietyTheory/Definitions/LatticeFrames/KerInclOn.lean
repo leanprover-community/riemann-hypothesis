@@ -57,7 +57,6 @@ theorem EvAll.and {F : Pts} {Q Q' : ℝ → ∀ D : D7, D.what₂.Word → Prop}
   let ⟨a, h⟩ := h; let ⟨b, h'⟩ := h'
   ⟨max a b, fun x hx i u => ⟨h x (le_trans (le_max_left _ _) hx) i u, h' x (le_trans (le_max_right _ _) hx) i u⟩⟩
 
-theorem EvSome.rkAll {F : Pts} (h : F.EvSome fun _ D u => RK D u) : F.RKAll := h
 
 end Pts
 

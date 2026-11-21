@@ -339,9 +339,6 @@ theorem isGeneric_iff_isGenericFor {ψ : AddChar k Circle} (hψ : Continuous ψ)
   · intro h
     exact ⟨ψ, hψ, h1, h⟩
 
-theorem isGeneric_detRep_one (χ : kˣ →* ℂˣ) : IsGeneric (detRep (Fin 1) χ) := by
-  obtain ⟨ψ, hψ, h1⟩ := exists_continuous_addChar_ne_one k
-  exact ⟨ψ, hψ, h1, isGenericFor_one ψ χ⟩
 
 end Generic
 

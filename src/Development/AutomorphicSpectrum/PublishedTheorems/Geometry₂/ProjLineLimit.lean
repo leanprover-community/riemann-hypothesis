@@ -28,11 +28,6 @@ theorem projLine_limit (h : NefRR) :
   rw [h4] at this
   simpa using this
 
-theorem genDeg_nonneg (h : NefRR) (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Ω : Type) [Field Ω]
-    [CharZero Ω] (y : (Σ k, ι k) → Ω) (D : ℕ) (a : K → ℤ) (h1 : IsArithVar (mCoordIdeal y) (D + 1))
-    (h2 : Birational y) (h3 : NefOnGenericDeg (mCoordIdeal y) a) : 0 ≤ genDeg (mCoordIdeal y) D a := by
-  have := ge_of_tendsto' (h K ι Ω y D a h1 h2 h3).2 (b := 0) (fun τ => by positivity)
-  exact_mod_cast this
 
 section DimZero
 

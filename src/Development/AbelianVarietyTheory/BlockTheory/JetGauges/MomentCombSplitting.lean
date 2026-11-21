@@ -105,67 +105,13 @@ def IntMomCombSplit : Prop :=
       ∀ (p : ℕ) [Fact p.Prime], SplitK D p → Nat.Coprime (Ideal.absNorm cc) p →
         ∀ lam : Qbar →+* ℂ_[p], HidaSetting B lam ∧ IntAt B χ lam ∧ MomCombAt B χ lam
 
-theorem IntMomCombSplit.intMomSplit (h : IntMomCombSplit) : IntMomSplit := by
-  intro D cc hc δ hδ B χ hχ p _ hs hp lam
-  obtain ⟨h1, h2, Ω, hΩ, h3⟩ := h D cc hc δ hδ B χ hχ p hs hp lam
-  exact ⟨h1, h2, Ω, hΩ, fun N N' L L' hA =>
-    ⟨(h3 N N' L L' hA).1, (h3 N N' L L' hA).2.1, (h3 N N' L L' hA).2.2.1⟩⟩
 
 theorem ne_zero_of_coprime {p N₀ : ℕ} [hp : Fact p.Prime] (h : Nat.Coprime N₀ p) : N₀ ≠ 0 := by
   rintro rfl
   exact hp.out.one_lt.ne' (by simpa using h)
 
-theorem vecOf_nsmul (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) {N N' : ℕ} (n : ℕ)
-    (A : Matrix (Fin N') (Fin N) D.host.E) : vecOf D cc δ ((n : D.host.E) • A) = n • vecOf D cc δ A := by
-  funext τ i j
-  simp [vecOf, embV, tor0]
-  ring
 
-theorem goodBasis_smul (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) {p : ℕ} [Fact p.Prime] {N N' r N₀ : ℕ}
-    (L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)) (L' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E))
-    (h₀ : Nat.Coprime N₀ p) (b : Fin r → Matrix (Fin N') (Fin N) D.host.E)
-    (hb : NNBasis D (tor0 D cc δ) δ p L L' b) :
-    GoodBasis D cc δ L L' p N₀ (fun i => (N₀ : D.host.E) • b i) := by
-  obtain ⟨⟨h1, h2, h3⟩, h4⟩ := hb
-  have hne : (N₀ : D.host.K) ≠ 0 := Nat.cast_ne_zero.mpr (ne_zero_of_coprime h₀)
-  refine ⟨⟨⟨?_, ?_, ?_⟩, ?_⟩, ?_⟩
-  · have := h1.units_smul (fun _ => Units.mk0 (N₀ : D.host.K) hne)
-    convert this using 2 with i
-    simp only [Pi.smul_apply', Units.smul_mk0, Nat.cast_smul_eq_nsmul]
-  · intro i
-    obtain ⟨s, hs, hm⟩ := h2 i
-    refine ⟨s, hs, ?_⟩
-    rw [smul_comm, Nat.cast_smul_eq_nsmul]
-    exact nsmul_mem hm _
-  · intro y hy
-    obtain ⟨s, hs, c, hc⟩ := h3 y hy
-    refine ⟨N₀ * s, Nat.Coprime.mul_left h₀ hs, c, ?_⟩
-    rw [Nat.cast_mul, mul_smul, hc, Finset.smul_sum]
-    exact Finset.sum_congr rfl fun i _ => smul_comm _ _ _
-  · intro i
-    change vecOf D cc δ ((N₀ : D.host.E) • b i) ∈ _
-    rw [vecOf_nsmul]
-    exact nsmul_mem (h4 i) _
-  · intro i
-    exact ⟨vecOf D cc δ (b i), h4 i, vecOf_nsmul D cc δ N₀ (b i)⟩
 
-theorem goodLift_one (D : D7) {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) {N N' : ℕ}
-    (L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)) (L' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)) (n : ℕ)
-    (A : Matrix (Fin N') (Fin N) D.host.E) : GoodLift D lam cc δ L L' 1 n A ↔ AdmLift D lam cc δ L L' n A :=
-  ⟨fun h => h.1, fun h => ⟨h, h.1.imp fun _ hk => ⟨_, hk, (one_nsmul _).symm⟩⟩⟩
 
-theorem goodLift_smul (D : D7) {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) {N N' : ℕ}
-    (L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)) (L' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)) (N₀ s n : ℕ)
-    (A : Matrix (Fin N') (Fin N) D.host.E) (h : AdmLift D lam cc δ L L' n A) :
-    GoodLift D lam cc δ L L' N₀ n (((N₀ * s : ℕ) : D.host.E) • A) := by
-  obtain ⟨⟨k, hk⟩, ⟨s₁, h1, h1'⟩, ⟨s₂, h2, h2'⟩⟩ := h
-  refine ⟨⟨⟨k, ?_⟩, ⟨s₁, h1, ?_⟩, ⟨s₂, h2, ?_⟩⟩, k, s • (p ^ k • vecOf D cc δ A), nsmul_mem hk _, ?_⟩
-  · rw [vecOf_nsmul, smul_comm]
-    exact nsmul_mem hk _
-  · rw [smul_comm _ ((N₀ * s : ℕ) : D.host.E), smul_comm _ ((N₀ * s : ℕ) : D.host.E), Nat.cast_smul_eq_nsmul]
-    exact nsmul_mem h1' _
-  · rw [smul_comm _ ((N₀ * s : ℕ) : D.host.E), smul_comm _ ((N₀ * s : ℕ) : D.host.E), Nat.cast_smul_eq_nsmul]
-    exact nsmul_mem h2' _
-  · rw [vecOf_nsmul, smul_comm, mul_smul]
 
 end GlobalTheory.IndefiniteRowSideFullHecke.MomentCombSplitting

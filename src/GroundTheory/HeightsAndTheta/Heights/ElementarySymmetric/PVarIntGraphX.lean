@@ -1,9 +1,34 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StVarIntGraphCompact
+import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StVarIntGraph
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PVarIntGraph
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PLelongPolyLimit
 import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PIntegralIndep
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.AssemblyBase
+
+section
+set_option maxSynthPendingDepth 1
+
+noncomputable section
+
+namespace GroundTheory.Heights₂.Heights.Targets
+
+open MvPolynomial
+open GroundTheory.Heights₂.Heights (varInt SmoothNear euclPot contDiff_euclPot)
+open GroundTheory.Heights₂.Heights.ComplexSets (zeroSet)
+open scoped ContDiff
+
+def VarIntGraphCompact.Statement : Prop :=
+  ∀ (n e : ℕ) (J : Ideal (MvPolynomial (Fin n) ℂ)) (p : MvPolynomial (Fin n) ℂ) (F : (Fin (n + 1) → ℂ) → ℝ)
+    (Φ : Fin e → (Fin (n + 1) → ℂ) → ℝ),
+    J.IsPrime → SmoothNear (zeroSet (graphIdeal J p)) F → HasCompactSupport F →
+    (∀ k, SmoothNear (zeroSet (graphIdeal J p)) (Φ k)) →
+      varInt (graphIdeal J p) e F Φ = varInt J e (fun x => F (graphPt p x)) (fun k x => Φ k (graphPt p x))
+
+end GroundTheory.Heights₂.Heights.Targets
+end
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 noncomputable section
@@ -102,3 +127,5 @@ theorem LelongPolyLimit.of_mult_weight (hMult : LocalMultComap.Statement) (hWeig
   LelongPolyLimit.proof_of_compact VarIntGraphCompact.closed hMult hWeight
 
 end GroundTheory.Heights₂.Heights.Targets
+end
+end

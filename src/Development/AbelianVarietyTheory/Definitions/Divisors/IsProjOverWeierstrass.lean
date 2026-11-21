@@ -123,9 +123,6 @@ attribute [instance] Secs.grp
 theorem Agree.symm {X Y Y' : Scheme.{0}} {L : LB X} {h : Y ⟶ X} {h' : Y' ⟶ X} {k : ℕ} {s : SecK L h k} {s' : SecK L h' k}
     (H : Agree L s s') : Agree L s' s := fun Z p p' e z J hJ => (H Z p' p e.symm z J hJ).symm
 
-theorem GalEq.galEqN {R : Type} [CommRing R] [IsDomain R] {D : DegPre R} {A : PolAV (Sp (FractionRing R))}
-    {lab : Labels D A} (h : GalEq lab) {n : ℕ} (hn : 0 < n) : GalEqN n lab :=
-  fun σ j => h σ _ (Nat.one_le_pow _ _ hn)
 
 namespace TraitWit
 
@@ -176,27 +173,7 @@ def rho : GaussianInt →+* Matrix (Fin 2) (Fin 2) ℤ where
   map_zero' := by ext i j; fin_cases i <;> fin_cases j <;> simp
   map_add' a b := by ext i j; fin_cases i <;> fin_cases j <;> simp <;> ring
 
-theorem polar_tq (u : (FractionRing K)ˣ) (y z : Fin 2 → ℤ) :
-    polar (tq (fun n : ℤ => u ^ (n ^ 2)) (1 : Matrix (Fin 2) (Fin 2) ℤ)) y z = u ^ (4 * (y 0 * z 0 + y 1 * z 1)) := by
-  have h : ∀ z : Fin 2 → ℤ, tq (fun n : ℤ => u ^ (n ^ 2)) (1 : Matrix (Fin 2) (Fin 2) ℤ) z = u ^ (2 * z 0 * z 0 + 2 * z 1 * z 1) :=
-    fun z => by simp [tq, Fin.prod_univ_two, polar_zpow_sq, zpow_add]
-  rw [polar, h, h, h, ← zpow_neg, ← zpow_neg, ← zpow_add, ← zpow_add]
-  congr 1
-  simp only [Pi.add_apply]
-  ring
 
-theorem isAct_gauss (u : (FractionRing K)ˣ) :
-    ∃ (_ : Module GaussianInt (toricPre K (Fin 2 → ℤ) (tq (fun n : ℤ => u ^ (n ^ 2)) 1)).X)
-      (o : (toricPre K (Fin 2 → ℤ) (tq (fun n : ℤ => u ^ (n ^ 2)) 1)).OAct GaussianInt),
-      (toricTens (fun n : ℤ => u ^ (n ^ 2)) 1).IsAct o rho := by
-  letI : Module GaussianInt (Fin 2 → ℤ) := Module.compHom (Fin 2 → ℤ) ((Matrix.toLinAlgEquiv' (R := ℤ)).toRingEquiv.toRingHom.comp rho)
-  have hs : ∀ (a : GaussianInt) (z : Fin 2 → ℤ), a • z = (rho a).mulVec z := fun _ _ => rfl
-  refine ⟨inferInstance, toricOAct _ GaussianInt (fun a y z => ?_), fun a z i => ?_, fun _ _ => toUnit_unique _ _⟩
-  · rw [polar_tq, polar_tq, hs, hs]
-    congr 1
-    simp [rho, Matrix.mulVec, dotProduct, Fin.sum_univ_two]
-    ring
-  · exact congrFun (hs a z) i
 
 end Tensor
 
@@ -288,12 +265,6 @@ theorem exists_uCover (hR : GlobalTheory.LN.CDvr R) {D : DegData R (maximalIdeal
       exact LBIso.chartPull (h := pullback.fst A.A.hom (spMap ψ)) (GlobalTheory.chartPullPull A.L _)
         (chartPullSame U.LG.L _ (fun _ => U.gen.inv.left ≫ pullback.fst G.hom (jK R)) _ _ fun _ => rfl) hlb
 
-theorem uCover_rank_one : ∃ (C : UCover (PowerSeries ℚ)) (D : DegData (PowerSeries ℚ) (maximalIdeal (PowerSeries ℚ)))
-    (G : Over (Sp (PowerSeries ℚ))) (_ : GrpObj G) (_ : IsCommMonObj G), C.A.g = 1 ∧ C.G.left = G.left ∧
-      Module.finrank ℤ D.toPre.X = 1 ∧ Nonempty (Unif (maximalIdeal _) D C.A G) := by
-  obtain ⟨A, G, _, _, D, U, hG, hA, hr, -⟩ := GlobalTheory.TateUnif.exists_unif_rank_one
-  obtain ⟨C, -, rfl, h⟩ := exists_uCover ⟨inferInstance, base_powerSeries.1.2.2.2, base_powerSeries.2⟩ hG U
-  exact ⟨C, D, G, _, _, hA, h, hr, ⟨U⟩⟩
 
 end Cover
 
@@ -332,9 +303,6 @@ theorem toProj_secK {R : Type} [CommRing R] {N : ℕ} {L : LB X} (f : X ⟶ Sp R
 
 variable {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R]
 
-theorem traitReg_secK (M : Modif R) (G : Over M.S) {L : LB G.left} (t : L.Sec) (α : Y ⟶ G.left) :
-    TraitReg M G L (secK t α) := fun W _ _ _ hW _ _ _ _ _ =>
-  ⟨W, _, inferInstance, inferInstance, RingHom.id W, secK t _, hW, Function.injective_id, RingHom.Finite.id W, agree_secK _ _ _⟩
 
 def constSecs (M : Modif R) (G₀ : Over (Sp R)) [GrpObj G₀] [Smooth G₀.hom] {N : ℕ} (i : G₀.left ⟶ PSpace R N)
     [IsImmersion i] (hi : i ≫ PSpace.str R N = G₀.hom) (G : Over M.S) [GrpObj G] (gam : G.left ⟶ G₀.left)
@@ -414,28 +382,6 @@ theorem isProjOver_weierstrass {R : Type} [CommRing R] (W : _root_.WeierstrassCu
     congr 1
   exact key _ s.1.2 _ s.2.2
 
-theorem secs_multiplicative (M : Modif (PowerSeries ℚ)) :
-    ∃ (G₀ : Over (Sp (PowerSeries ℚ))) (_ : GrpObj G₀) (_ : IsSemiAbelian G₀)
-      (_ : IsProper ((Over.pullback (jK (PowerSeries ℚ))).obj G₀).hom)
-      (L : LB ((Over.pullback M.π).obj G₀).left) (_ : L.IsLB)
-      (S : Secs M ((Over.pullback M.π).obj G₀) L (pullback.fst ((Over.pullback M.π).obj G₀).hom M.gp))
-      (i : splitTorus (Sp (ResidueField (PowerSeries ℚ))) ℤ ≅ S.Y), IsMonHom i.hom ∧
-        (∀ a, TraitReg M _ L (S.s a)) ∧ TraitReg M _ L S.θ := by
-  obtain ⟨W, hW⟩ : ∃ W : _root_.WeierstrassCurve (PowerSeries ℚ), W = ⟨1, 0, 0, PowerSeries.X, 0⟩ := ⟨_, rfl⟩
-  obtain ⟨U, hU, hsm, hqc, hgi⟩ := GlobalTheory.WeierstrassCurve.exists_smoothLocus _ W
-  have hs : Smooth (U.ι ≫ GlobalTheory.WeierstrassCurve.toSpec W) := SmoothOfRelativeDimension.smooth 1 _
-  obtain ⟨_, _, -, hmul⟩ := GlobalTheory.exists_grpObj_smoothLocus _ W U hU hs hgi
-  obtain ⟨hG, i, hi⟩ := GlobalTheory.MultiplicativeReduction.isSemiAbelian_and_specialFibre W hW U hU hs hgi hqc hmul
-  obtain ⟨N, c, _, hc⟩ := isProjOver_weierstrass W
-  let G₀ := Over.mk (U.ι ≫ GlobalTheory.WeierstrassCurve.toSpec W)
-  have : Smooth G₀.hom := hs
-  have him : IsImmersion (U.ι ≫ c) := inferInstance
-  have hE : (W.map (algebraMap _ (FractionRing (PowerSeries ℚ)))).IsElliptic :=
-    hW ▸ GlobalTheory.MultiplicativeReduction.isElliptic_generic
-  refine ⟨G₀, inferInstance, hG, GlobalTheory.MultiplicativeReduction.isProper_pullback_snd W U hU _
-    (by rw [← _root_.WeierstrassCurve.map_Δ]; exact hE.isUnit.ne_zero), _, LB.isLB_pull (GlobalTheory.ProjSpace.O1_isLB _ N) _,
-    @constSecs _ _ _ _ _ M G₀ _ _ N (U.ι ≫ c) him (by rw [Category.assoc, hc]; rfl) _ _ _ (isGrpPullback_pullback _ M.π) _,
-    i, hi, fun a => traitReg_secK _ _ _ _, traitReg_secK _ _ _ _⟩
 
 end Sections
 

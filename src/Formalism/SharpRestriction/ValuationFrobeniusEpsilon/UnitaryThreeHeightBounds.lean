@@ -298,9 +298,6 @@ def IsRiAt {F : Type} [Field F] [NumberField F] [Algebra F QbarQ] {n l : ℕ} [F
     (π : (V.spec F n).Rep) (ρ : Formalism.ConjugateSelfDual.G F QbarQ →* GL (Fin n) (QbarL l)) : Prop :=
   TV.GeoMatch ρ ι.toRingHom ((V.spec F n).hecke π)
 
-theorem isRi_iff {F : Type} [Field F] [NumberField F] [Algebra F QbarQ] {n l : ℕ} [Fact l.Prime]
-    (π : (V.spec F n).Rep) (ρ : Formalism.ConjugateSelfDual.G F QbarQ →* GL (Fin n) (QbarL l)) :
-    V.IsRi π ρ ↔ IsRiAt V (V.iotaC l) π ρ := Iff.rfl
 
 def IndPl (l : ℕ) [Fact l.Prime] (H : Subgroup GQ) (τ : IntermediateField.fixedField H →+* QbarL l) : Prop :=
   ∀ x : IntermediateField.fixedField H, ((x : QbarQ) ∈ V.plc l ↔ ‖τ x‖ ≤ 1)
@@ -748,20 +745,9 @@ def LiftingLemmasStatement (X : SymSp) (β cP cD C₁ C₂ : ℝ) : Prop := Lit 
 def ExponentFormsStatement (X : SymSp) (β cP cD : ℝ) (aD : ℕ) (C₁ C₂ : ℝ) : Prop :=
   LitE D V X β cP cD aD → admitted D V → ConclusionE₂ D V C₁ C₂ (max 6 (aD + 1))
 
-theorem stmtLE_four (X : SymSp) (β cP cD C₁ C₂ : ℝ) :
-    ExponentFormsStatement D V X β cP cD 4 C₁ C₂ ↔ LiftingLemmasStatement D V X β cP cD C₁ C₂ := Iff.rfl
 
-theorem Gelander.max_zero {X : SymSp} {β : ℝ} (h : Gelander X β) : Gelander X (max β 0) := by
-  intro K _ h2 hc M hM h3
-  exact (h K h2 hc M hM h3).trans (mul_le_mul_of_nonneg_right (le_max_left β 0) (X.vol_nonneg K M))
 
-theorem LitE.max_zero {D : D7} {V : VData D} {X : SymSp} {β cP cD : ℝ} {aD : ℕ} (h : LitE D V X β cP cD aD) :
-    LitE D V X (max β 0) cP cD aD :=
-  let ⟨h0, h1, h2, h3, h4, h5, h6, h7, ⟨g, r⟩, h9⟩ := h
-  ⟨h0, h1, h2, h3, h4, h5, h6, h7, ⟨g.max_zero, r⟩, h9⟩
 
-theorem Lit.max_zero {D : D7} {V : VData D} {X : SymSp} {β cP cD : ℝ} (h : Lit D V X β cP cD) :
-    Lit D V X (max β 0) cP cD := LitE.max_zero h
 
 end Lit
 
@@ -792,19 +778,7 @@ def LitFE (X : SymSp) (β cP cD : ℝ) (aD : ℕ) : Prop :=
 def FamilyExponentFormsStatement (X : SymSp) (β cP cD : ℝ) (aD : ℕ) (C₁ C₂ : ℝ) : Prop :=
   LitFE Fm VF X β cP cD aD → AdmF Fm VF → FamilyExponentFormsBound Fm VF C₁ C₂ (max 6 (aD + 1))
 
-theorem family_exponent_forms_of (X : SymSp) (β cP cD : ℝ) (aD : ℕ) (C₁ C₂ : ℝ)
-    (h : ∀ x (i : Fm.Ix x), ExponentFormsStatement (Fm.D x i) (VF x i) X β cP cD aD C₁ C₂) :
-    FamilyExponentFormsStatement Fm VF X β cP cD aD C₁ C₂ := by
-  rintro ⟨a, hL⟩ ⟨b, hA⟩
-  exact ⟨max a b, fun x hx i => h x i (hL x (le_trans (le_max_left a b) hx) i)
-    (hA x (le_trans (le_max_right a b) hx) i)⟩
 
-theorem family_statement_of_records (X : SymSp) (β cP cD C₁ C₂ : ℝ)
-    (h : ∀ x (i : Fm.Ix x), LiftingLemmasStatement (Fm.D x i) (VF x i) X β cP cD C₁ C₂) :
-    FamilyLiftingStatement Fm VF X β cP cD C₁ C₂ := by
-  rintro ⟨a, hL⟩ ⟨b, hA⟩
-  exact ⟨max a b, fun x hx i => h x i (hL x (le_trans (le_max_left a b) hx) i)
-    (hA x (le_trans (le_max_right a b) hx) i)⟩
 
 end Fam
 
@@ -903,11 +877,7 @@ def InertCaseFreeExponents (C₂ : ℝ) (bD bN be : ℕ) : Prop :=
 
 def HeightBoundsFreeExponents (C₁ C₂ : ℝ) (bD bN be : ℕ) : Prop := Conclusion1 D V ∧ GaussianCaseFreeExponents D V C₁ bN be ∧ InertCaseFreeExponents D V C₂ bD bN be
 
-theorem gaussian_bound_text_iff (C₁ : ℝ) : GaussianCaseFreeExponents D V C₁ 18 7 ↔ GaussianCaseHeightBound D V C₁ := Iff.rfl
-theorem inert_bound_text_iff (C₂ : ℝ) (bD : ℕ) : InertCaseFreeExponents D V C₂ bD 18 7 ↔ InertBoundExponent D V C₂ bD := Iff.rfl
-theorem free_exponents_eighteen_seven_iff (C₁ C₂ : ℝ) (bD : ℕ) : HeightBoundsFreeExponents D V C₁ C₂ bD 18 7 ↔ ConclusionE₂ D V C₁ C₂ bD := Iff.rfl
 
-theorem free_exponents_six_eighteen_seven_iff (C₁ C₂ : ℝ) : HeightBoundsFreeExponents D V C₁ C₂ 6 18 7 ↔ Conclusion₂ D V C₁ C₂ := Iff.rfl
 
 def lit6N : Prop := Purity V ∧ LocGlob3N V ∧ LocGlobWt3 V ∧ LocGlob2G V
 
@@ -945,8 +915,6 @@ def UniformFreeExponentAllRecords : Prop :=
 theorem UniformFreeExponentAllRecords.on (h : UniformFreeExponentAllRecords) (𝒞 : ∀ D : D7, VData D → Prop) : UniformFreeExponentOnClass 𝒞 :=
   fun C₃ B₃ C₂ B₂ => let ⟨C₁, C₂', h'⟩ := h C₃ B₃ C₂ B₂; ⟨C₁, C₂', fun D V _ => h' D V⟩
 
-theorem stmtLAbsXOn_true : UniformFreeExponentOnClass (fun _ _ => True) ↔ UniformFreeExponentAllRecords :=
-  ⟨fun h C₃ B₃ C₂ B₂ => let ⟨C₁, C₂', h'⟩ := h C₃ B₃ C₂ B₂; ⟨C₁, C₂', fun D V => h' D V trivial⟩, fun h => h.on _⟩
 
 section FamX
 
@@ -959,7 +927,6 @@ def LitFX (C₃ : ℝ) (B₃ : ℕ) (C₂ : ℝ) (B₂ : ℕ) : Prop :=
 def FamilyFreeExponentStatement (C₃ : ℝ) (B₃ : ℕ) (C₂ : ℝ) (B₂ : ℕ) (C₁ C₂' : ℝ) : Prop :=
   LitFX Fm VF C₃ B₃ C₂ B₂ → AdmF Fm VF → FamilyFreeExponentBound Fm VF C₁ C₂' (max B₃ B₂ + 1) (max B₃ B₂) (max B₃ B₂ + 1)
 
-theorem family_bound_text_iff (C₁ C₂ : ℝ) : FamilyFreeExponentBound Fm VF C₁ C₂ 6 18 7 ↔ OrbitValuationBound Fm VF C₁ C₂ := Iff.rfl
 
 theorem family_free_exponent_of (C₃ : ℝ) (B₃ : ℕ) (C₂ : ℝ) (B₂ : ℕ) (C₁ C₂' : ℝ)
     (h : ∀ x (i : Fm.Ix x), FreeExponentStatement (Fm.D x i) (VF x i) C₃ B₃ C₂ B₂ C₁ C₂') :

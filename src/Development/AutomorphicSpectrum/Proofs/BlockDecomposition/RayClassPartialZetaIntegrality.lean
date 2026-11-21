@@ -1,7 +1,190 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ExistsAvoidOne
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeZetaSpecialValueDenominatorBound
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeightedSumDecompositionDenominators
 
+section
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open NumberField Formalism.MainNotions.ShortIntervalPrimes GlobalTheory.RayZeta GlobalTheory.CompanionTheory.Hypotheses₂.Shintani GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Abel
+
+namespace GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Abel
+
+theorem DL_int_valued {r : ℕ} (g : (Fin r → ℕ) → ℂ) (hg : ∀ m, ∃ z : ℤ, g m = (z : ℂ))
+    (cs : List (Fin r)) : ∀ m, ∃ z : ℤ, DL cs g m = (z : ℂ) := by
+  induction cs with
+  | nil => exact hg
+  | cons c cs ih =>
+    intro m
+    obtain ⟨z1, h1⟩ := ih (m + Pi.single c 1)
+    obtain ⟨z2, h2⟩ := ih m
+    refine ⟨z1 - z2, ?_⟩
+    show DL cs g (m + Pi.single c 1) - DL cs g m = ((z1 - z2 : ℤ) : ℂ)
+    rw [h1, h2]
+    push_cast
+    ring
+
+theorem coneTerm_neg_nat {ι : Type} [Fintype ι] {r : ℕ} (a : ι → Fin r → ℝ) (b : ι → ℝ) (p : ℕ)
+    (m : Fin r → ℕ) :
+    coneTerm a b (-(p : ℂ)) m = ((∏ j, (b j + ∑ i, a j i * (m i : ℝ)) ^ p : ℝ) : ℂ) := by
+  unfold coneTerm
+  rw [Complex.ofReal_prod]
+  refine Finset.prod_congr rfl (fun j _ => ?_)
+  rw [neg_neg, Complex.cpow_natCast, Complex.ofReal_pow]
+
+theorem tsum_mem_of_denominator {α : Type} (f : α → ℂ) (K l : ℕ) (hl : 0 < l)
+    (hf : ∀ m, ∃ x : ℤ, ((l : ℂ) ^ K) * f m = (x : ℂ)) :
+    ∃ (q : ℚ) (z : ℤ), ∑' m, f m = (q : ℂ) ∧ (l : ℚ) ^ K * q = z := by
+  have hmem : ((l : ℂ) ^ K) * ∑' m, f m ∈ Set.range (Int.cast : ℤ → ℂ) := by
+    by_cases hs : Summable f
+    · rw [← tsum_mul_left]
+      have hs' : Summable (fun m => (l : ℂ) ^ K * f m) := hs.mul_left _
+      apply Complex.isClosed_range_intCast.mem_of_tendsto hs'.hasSum
+      refine Filter.Eventually.of_forall (fun S => ?_)
+      choose x hx using hf
+      exact ⟨∑ b ∈ S, x b, by push_cast; exact Finset.sum_congr rfl (fun b _ => (hx b).symm)⟩
+    · rw [tsum_eq_zero_of_not_summable hs, mul_zero]
+      exact ⟨0, by simp⟩
+  obtain ⟨z, hz⟩ := hmem
+  have hlC : ((l : ℂ) ^ K) ≠ 0 := pow_ne_zero _ (Nat.cast_ne_zero.mpr hl.ne')
+  have hlQ : ((l : ℚ) ^ K) ≠ 0 := pow_ne_zero _ (Nat.cast_ne_zero.mpr hl.ne')
+  refine ⟨(z : ℚ) / (l : ℚ) ^ K, z, ?_, ?_⟩
+  · push_cast
+    rw [hz]
+    exact (mul_div_cancel_left₀ (∑' m, f m) hlC).symm
+  · rw [mul_div_assoc']
+    exact mul_div_cancel_left₀ _ hlQ
+
+theorem value_neg_nat_mem : ∀ (ι : Type) [Fintype ι] (r : ℕ) (a : ι → Fin r → ℝ) (b : ι → ℝ) (u : (Fin r → ℕ) → ℚ) (cs : List (Fin r)) (p K l : ℕ), 0 < l → (∀ m, ∃ z : ℤ, (l : ℚ) ^ K * u m = z) → (∀ m : Fin r → ℕ, ∃ z : ℤ, ∏ j, (b j + ∑ i, a j i * (m i : ℝ)) ^ p = (z : ℝ)) → ∃ (q : ℚ) (z : ℤ), ∑' m, (u m : ℂ) * DL cs (coneTerm a b (-(p : ℂ))) m = (q : ℂ) ∧ (l : ℚ) ^ K * q = z := by
+  intro ι _ r a b u cs p K l hl hu hprod
+  apply tsum_mem_of_denominator _ K l hl
+  intro m
+  obtain ⟨z2, h2⟩ := DL_int_valued (coneTerm a b (-(p : ℂ))) (fun m' => by
+      obtain ⟨z, hz⟩ := hprod m'
+      exact ⟨z, by rw [coneTerm_neg_nat, hz, Complex.ofReal_intCast]⟩) cs m
+  obtain ⟨z1, h1⟩ := hu m
+  refine ⟨z1 * z2, ?_⟩
+  rw [h2, ← mul_assoc]
+  have h1' : ((l : ℂ) ^ K) * (u m : ℂ) = (z1 : ℂ) := by exact_mod_cast h1
+  rw [h1']
+  push_cast
+  ring
+
+end GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Abel
+end
+end
+
+open NumberField Formalism.MainNotions.ShortIntervalPrimes GlobalTheory.RayZeta GlobalTheory.CompanionTheory.Hypotheses₂.Shintani GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Abel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cone_series_special_value_rational : ∀ (ι : Type) [Fintype ι] (r : ℕ) (a : ι → Fin r → ℝ) (b : ι → ℝ) (u : (Fin r → ℕ) → ℚ) (cs : List (Fin r)) (p K l : ℕ), 0 < l → (∀ m, ∃ z : ℤ, (l : ℚ) ^ K * u m = z) → (∀ m : Fin r → ℕ, ∃ z : ℤ, ∏ j, (b j + ∑ i, a j i * (m i : ℝ)) ^ p = (z : ℝ)) → ∃ (q : ℚ) (z : ℤ), ∑' m, (u m : ℂ) * DL cs (coneTerm a b (-(p : ℂ))) m = (q : ℂ) ∧ (l : ℚ) ^ K * q = z := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Abel.value_neg_nat_mem
+end
+
+section
+section
+set_option autoImplicit false
+noncomputable section
+open NumberField Formalism.MainNotions.ShortIntervalPrimes GlobalTheory.RayZeta GlobalTheory.CompanionTheory.Hypotheses₂.Shintani GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Abel
+namespace GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Abel
+
+theorem eq_at_neg_of_eq_right (k p : ℕ) (hp : p < k) (T G : ℂ → ℂ)
+    (hT : DifferentiableOn ℂ T {1}ᶜ) (hG : DifferentiableOn ℂ G {s | -(k : ℝ) < s.re})
+    (h : ∀ s : ℂ, 1 < s.re → T s = G s) : T (-(p : ℂ)) = G (-(p : ℂ)) := by
+  have hk : (0 : ℝ) < k := by exact_mod_cast (lt_of_le_of_lt (Nat.zero_le p) hp)
+  have hpk : (p : ℝ) < k := by exact_mod_cast hp
+  have hp0 : (0 : ℝ) ≤ p := Nat.cast_nonneg p
+  set C₁ : Set ℂ := {s | -(k : ℝ) < s.re} ∩ {s | 0 < s.im} with hC₁
+  set C₂ : Set ℂ := {s | -(k : ℝ) < s.re} ∩ {s | s.re < 1} with hC₂
+  have hO₁ : IsOpen C₁ :=
+    (isOpen_lt continuous_const Complex.continuous_re).inter
+      (isOpen_lt continuous_const Complex.continuous_im)
+  have hO₂ : IsOpen C₂ :=
+    (isOpen_lt continuous_const Complex.continuous_re).inter
+      (isOpen_lt Complex.continuous_re continuous_const)
+  have hV₁ : Convex ℝ C₁ := (convex_halfSpace_re_gt _).inter (convex_halfSpace_im_gt _)
+  have hV₂ : Convex ℝ C₂ := (convex_halfSpace_re_gt _).inter (convex_halfSpace_re_lt _)
+  have hs₁ : C₁ ⊆ {1}ᶜ := by
+    intro s hs h1
+    have : s = 1 := h1
+    have h2 := hs.2
+    simp [this] at h2
+  have hs₂ : C₂ ⊆ {1}ᶜ := by
+    intro s hs h1
+    have : s = 1 := h1
+    have h2 := hs.2
+    simp [this] at h2
+  have hAT₁ : AnalyticOnNhd ℂ T C₁ := (hT.mono hs₁).analyticOnNhd hO₁
+  have hAG₁ : AnalyticOnNhd ℂ G C₁ := (hG.mono fun s hs => hs.1).analyticOnNhd hO₁
+  have hAT₂ : AnalyticOnNhd ℂ T C₂ := (hT.mono hs₂).analyticOnNhd hO₂
+  have hAG₂ : AnalyticOnNhd ℂ G C₂ := (hG.mono fun s hs => hs.1).analyticOnNhd hO₂
+  have hz₁ : (2 + Complex.I : ℂ) ∈ C₁ := by
+    refine ⟨?_, ?_⟩ <;> simp <;> linarith
+  have hev₁ : T =ᶠ[nhds (2 + Complex.I : ℂ)] G := by
+    have hopen : IsOpen {s : ℂ | 1 < s.re} := isOpen_lt continuous_const Complex.continuous_re
+    filter_upwards [hopen.mem_nhds (by simp : (2 + Complex.I : ℂ) ∈ {s : ℂ | 1 < s.re})] with s hs
+    exact h s hs
+  have hE₁ : Set.EqOn T G C₁ :=
+    hAT₁.eqOn_of_preconnected_of_eventuallyEq hAG₁ hV₁.isPreconnected hz₁ hev₁
+  have hz₂ : (Complex.I : ℂ) ∈ C₂ := by
+    refine ⟨?_, ?_⟩ <;> simp <;> linarith
+  have hz₂' : (Complex.I : ℂ) ∈ C₁ := by
+    refine ⟨?_, ?_⟩ <;> simp <;> linarith
+  have hev₂ : T =ᶠ[nhds (Complex.I : ℂ)] G := by
+    filter_upwards [hO₁.mem_nhds hz₂'] with s hs
+    exact hE₁ hs
+  have hE₂ : Set.EqOn T G C₂ :=
+    hAT₂.eqOn_of_preconnected_of_eventuallyEq hAG₂ hV₂.isPreconnected hz₂ hev₂
+  refine hE₂ ?_
+  refine ⟨?_, ?_⟩
+  · simp only [Set.mem_setOf_eq, Complex.neg_re, Complex.natCast_re]
+    linarith
+  · simp only [Set.mem_setOf_eq, Complex.neg_re, Complex.natCast_re]
+    linarith
+
+theorem abelValue_mem_zInv (ι : Type) [Fintype ι] (r l : ℕ) (a : ι → Fin r → ℝ) (b : ι → ℝ)
+    (w : (Fin r → ℕ) → ℚ) (hr : r ≤ Fintype.card ι) (hl : 0 < l) (ha : ∀ j i, 0 < a j i)
+    (hb : ∀ j, 0 < b j) (hw : GoodWeight l w) (hz : ∀ m, ∃ z : ℤ, w m = z) (T : ℂ → ℂ)
+    (hT : DifferentiableOn ℂ T {1}ᶜ)
+    (hS : ∀ s : ℂ, 1 < s.re → HasSum (fun m => (w m : ℂ) * coneTerm a b s m) (T s)) (p : ℕ)
+    (hp : ∀ m : Fin r → ℕ, ∃ z : ℤ, ∏ j, (b j + ∑ i, a j i * (m i : ℝ)) ^ p = (z : ℝ)) :
+    ∃ (q : ℚ) (K : ℕ) (z : ℤ), T (-(p : ℂ)) = (q : ℂ) ∧ (l : ℚ) ^ K * q = z := by
+  obtain ⟨Q, _, cs, u, K, hu, hc, hK, hid⟩ :=
+    GlobalTheory.T.weighted_sum_decomposition_denominators r l (Fintype.card ι * (p + 1) + 2) w hl hw hz
+  set G : ℂ → ℂ := fun s => ∑ q, ∑' m, (u q m : ℂ) * DL (cs q) (coneTerm a b s) m with hGdef
+  have hG : DifferentiableOn ℂ G {s | -((p + 1 : ℕ) : ℝ) < s.re} := by
+    refine DifferentiableOn.fun_sum fun q _ => ?_
+    exact GlobalTheory.T.cone_series_differentiable_left_strip ι r a b ha hb (p + 1) _ (cs q) (u q) le_rfl (hu q) (hc q)
+  have hTG : ∀ s : ℂ, 1 < s.re → T s = G s := by
+    intro s hs
+    rw [← (hS s hs).tsum_eq]
+    exact hid _ (GlobalTheory.T.cone_series_summable_right_half_plane ι r a b hr ha hb s hs)
+  have hval := eq_at_neg_of_eq_right (p + 1) p (Nat.lt_succ_self p) T G hT hG hTG
+  choose ρ ζ hρ hζ using fun q => GlobalTheory.T.cone_series_special_value_rational ι r a b (u q) (cs q) p K l hl (hK q) hp
+  refine ⟨∑ q, ρ q, K, ∑ q, ζ q, ?_, ?_⟩
+  · rw [hval, hGdef]
+    push_cast
+    exact Finset.sum_congr rfl fun q _ => hρ q
+  · rw [Finset.mul_sum]
+    push_cast
+    exact Finset.sum_congr rfl fun q _ => hζ q
+
+theorem abelValue_mem_zInv' : ∀ (ι : Type) [Fintype ι] (r l : ℕ) (a : ι → Fin r → ℝ) (b : ι → ℝ) (w : (Fin r → ℕ) → ℚ), r ≤ Fintype.card ι → 0 < l → (∀ j i, 0 < a j i) → (∀ j, 0 < b j) → GoodWeight l w → (∀ m, ∃ z : ℤ, w m = z) → ∀ T : ℂ → ℂ, DifferentiableOn ℂ T {1}ᶜ → (∀ s : ℂ, 1 < s.re → HasSum (fun m => (w m : ℂ) * coneTerm a b s m) (T s)) → ∀ p : ℕ, (∀ m : Fin r → ℕ, ∃ z : ℤ, ∏ j, (b j + ∑ i, a j i * (m i : ℝ)) ^ p = (z : ℝ)) → ∃ (q : ℚ) (K : ℕ) (z : ℤ), T (-(p : ℂ)) = (q : ℂ) ∧ (l : ℚ) ^ K * q = z := by
+  intro ι _ r l a b w hr hl ha hb hw hz T hT hS p hp
+  exact abelValue_mem_zInv ι r l a b w hr hl ha hb hw hz T hT hS p hp
+
+end GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Abel
+end
+end
+
+open NumberField Formalism.MainNotions.ShortIntervalPrimes GlobalTheory.RayZeta GlobalTheory.CompanionTheory.Hypotheses₂.Shintani GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Abel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cone_zeta_special_value_denominator_bound : ∀ (ι : Type) [Fintype ι] (r l : ℕ) (a : ι → Fin r → ℝ) (b : ι → ℝ) (w : (Fin r → ℕ) → ℚ), r ≤ Fintype.card ι → 0 < l → (∀ j i, 0 < a j i) → (∀ j, 0 < b j) → GoodWeight l w → (∀ m, ∃ z : ℤ, w m = z) → ∀ T : ℂ → ℂ, DifferentiableOn ℂ T {1}ᶜ → (∀ s : ℂ, 1 < s.re → HasSum (fun m => (w m : ℂ) * coneTerm a b s m) (T s)) → ∀ p : ℕ, (∀ m : Fin r → ℕ, ∃ z : ℤ, ∏ j, (b j + ∑ i, a j i * (m i : ℝ)) ^ p = (z : ℝ)) → ∃ (q : ℚ) (K : ℕ) (z : ℤ), T (-(p : ℂ)) = (q : ℂ) ∧ (l : ℚ) ^ K * q = z := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Abel.abelValue_mem_zInv'
+end
+
+section
 section
 set_option autoImplicit false
 
@@ -158,3 +341,4 @@ open NumberField Formalism.MainNotions.ShortIntervalPrimes GlobalTheory.RayZeta 
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.ray_class_partial_zeta_integrality : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (𝔣 𝔞 𝔟 𝔠 : Ideal (𝓞 F)) (J : Type) [Fintype J] (r : J → ℕ) (y : J → 𝓞 F) (v : ∀ j, Fin (r j) → 𝓞 F), ClassParam 𝔣 𝔞 𝔟 r y v → 𝔠.IsPrime → (Ideal.absNorm 𝔠).Prime → (∀ j i, v j i ∉ 𝔠 * 𝔟) → ∀ T : ℂ → ℂ, DifferentiableOn ℂ T {1}ᶜ → (∀ s : ℂ, 1 < s.re → HasSum (fun I : {I : Ideal (𝓞 F) // CoprimeTo F 𝔣 I ∧ RayRel F 𝔣 I 𝔞} => (classWeight (Ideal.absNorm 𝔠) 𝔠 I.1 : ℂ) * ((Ideal.absNorm I.1 : ℕ) : ℂ) ^ (-s)) (T s)) → ∀ k : ℕ, 1 ≤ k → ∃ q : ℚ, T (1 - (k : ℂ)) = (q : ℂ) ∧ ∀ l : ℕ, l.Prime → l ≠ Ideal.absNorm 𝔠 → ¬ l ∣ Ideal.absNorm 𝔟 → 0 ≤ padicValRat l q := by
   atlas_forward_decl GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Integrality.classTwist_value_int
+end

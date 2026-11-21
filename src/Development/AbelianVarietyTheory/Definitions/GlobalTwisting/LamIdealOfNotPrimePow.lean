@@ -105,30 +105,12 @@ def lamRay (g : D.G) (n : ℕ) : ℝ := ∑ᶠ I ∈ idealsIn D g n, lamIdeal I
 
 namespace RayCount
 
-theorem idealsIn_finite (g : D.G) (n : ℕ) : (idealsIn D g n).Finite :=
-  (Ideal.finite_setOf_absNorm_eq (S := 𝓞 K) n).subset fun _ h => h.2.2.1
 
-theorem coe_aRay_eq_cnt (g : D.G) {n : ℕ} (hn : n ≠ 0) : (aRay D g n : ℂ) = D.cnt g n := by
-  rw [D.cnt_of_ne_zero g hn, aRay, ← Nat.card_coe_set_eq]
-  norm_cast
-  exact Nat.card_congr (Equiv.subtypeEquivRight fun I => by simp only [idealsIn, Set.mem_setOf_eq]; tauto)
 
-theorem aRay_eq_card (g : D.G) (n : ℕ) : aRay D g n = ((idealsIn_finite D g n).toFinset.card : ℝ) := by
-  rw [aRay, Set.ncard_eq_toFinset_card _ (idealsIn_finite D g n)]
 
-theorem lamRay_eq_sum (g : D.G) (n : ℕ) : lamRay D g n = ∑ I ∈ (idealsIn_finite D g n).toFinset, lamIdeal I :=
-  finsum_mem_eq_finite_toFinset_sum _ (idealsIn_finite D g n)
 
-theorem lamIdeal_prime_pow (P : Ideal (𝓞 K)) (hP : P.IsPrime) (h0 : P ≠ ⊥) (k : ℕ) (hk : 1 ≤ k) :
-    lamIdeal (P ^ k) = Real.log (Ideal.absNorm P) := by
-  rw [lamIdeal, if_pos ⟨P, k, hP, h0, hk, rfl⟩, Ideal.radical_pow _ (by omega), hP.radical]
 
-theorem lamIdeal_of_not_prime_pow {I : Ideal (𝓞 K)}
-    (h : ¬ ∃ (P : Ideal (𝓞 K)) (k : ℕ), P.IsPrime ∧ P ≠ ⊥ ∧ 1 ≤ k ∧ I = P ^ k) : lamIdeal I = 0 := by
-  rw [lamIdeal, if_neg h]
 
-theorem lamIdeal_unit : lamIdeal (⊤ : Ideal (𝓞 K)) = 0 := by
-  unfold lamIdeal; split_ifs <;> simp
 
 end RayCount
 
@@ -254,10 +236,6 @@ def fam : LFam where
         (fun p _ => mul_nonneg (ao_nonneg _) (ao_nonneg _)) hm)
       unfold ao; split_ifs <;> simp
 
-theorem aChi_fam (n : ℕ) : fam.aChi 1 n = if Odd n then 1 else 0 := by
-  have : ∑ g : ZMod 1, (1 : AddChar (ZMod 1) ℂ) g * (ao n : ℂ) = if Odd n then 1 else 0 := by
-    unfold ao; split_ifs <;> simp
-  exact this
 
 theorem res_fam : fam.res 1 = 1 / 2 := by
   have : (((1 / 2 : ℝ) * Fintype.card (ZMod 1) : ℝ) : ℂ) = 1 / 2 := by simp

@@ -1,7 +1,34 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsRealisesNeOne
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsTateEpsTateEpsAndNeZero
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsLocExtFinrankEq
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocalFieldTwoVocabulariesDictionary
+
+section
+noncomputable section
+
+open NumberField IsDedekindDomain ValuativeRel Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.DelEps
+
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+namespace GlobalTheory.DelEps
+
+theorem isTateEps_tateEps_and_ne_zero : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] (ψ : AddChar k Circle), Continuous ψ → ψ ≠ 1 → ∀ (χ : kˣ →* ℂˣ), IsSmoothChar χ →
+    IsTateEps ψ χ (tateEps ψ χ) ∧ tateEps ψ χ ≠ 0 := by
+  intro k _ _ _ _ ψ hψ h1 χ hχ
+  obtain ⟨⟨e, he, -⟩, hne⟩ := existsUnique_isTateEps ψ hψ h1 χ hχ
+  have hx : ∃ e, IsTateEps ψ χ e := ⟨e, he⟩
+  have hs : IsTateEps ψ χ (tateEps ψ χ) := by
+    unfold tateEps
+    rw [dif_pos hx]
+    exact hx.choose_spec
+  exact ⟨hs, hne _ hs⟩
+
+end GlobalTheory.DelEps
+end
+end
+
+section
 open NumberField IsDedekindDomain ValuativeRel Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.DelEps GlobalTheory.DelGlob
 open GroundTheory.Global (HeckeCharacter localAdelicChar)
 open GroundTheory.Automorphic.GodementSection (localChar)
@@ -181,3 +208,5 @@ theorem GlobalTheory.DelEps.tateEps_eq_localEpsilon_half : ∀ (F : Type) [Field
       ring
     · refine Finset.sum_congr rfl fun r _ => ?_
       rw [Units.val_inv_eq_inv_val]
+end
+end

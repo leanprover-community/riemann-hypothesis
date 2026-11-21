@@ -32,8 +32,6 @@ theorem hJ_smul_l (c : ℂ) (x y : Fin n → ℂ) : hJ ε (c • x) y = conj c *
 theorem hJ_smul_r (c : ℂ) (x y : Fin n → ℂ) : hJ ε x (c • y) = c * hJ ε x y := by
   unfold hJ; rw [mulVec_smul, dotProduct_smul, smul_eq_mul]
 
-theorem hJ_zero_l (y : Fin n → ℂ) : hJ ε 0 y = 0 := by
-  unfold hJ; simp
 
 theorem hJ_conj_sym (x y : Fin n → ℂ) : hJ ε x y = conj (hJ ε y x) := by
   unfold hJ

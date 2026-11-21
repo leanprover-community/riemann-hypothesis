@@ -539,23 +539,6 @@ theorem zhat_move {T T' : E} (F : LFlag S r T) (F' : LFlag S r T') {s : S.V ≃�
     RingHom.id_apply]
   ring
 
-theorem frame_coef_unique {T T' : E} (F : LFlag S r T) (F' : LFlag S r T') (hdet : (ZhatL F F').det ≠ 0)
-    {x y : Fin (r + 1) → E} (h : ∑ c, x c • frame F c = ∑ c, y c • frame F c) : x = y := by
-  have hz : ∀ d, ∑ c, star (x c - y c) * ZhatL F F' c d = 0 := by
-    intro d
-    have h0 : ∑ c, (x c - y c) • frame F c = 0 := by
-      simp only [sub_smul, Finset.sum_sub_distrib, h, sub_self]
-    have : S.hT (∑ c, (x c - y c) • frame F c) (frame F' d) = 0 := by rw [h0]; simp
-    rw [map_sum, LinearMap.sum_apply] at this
-    simp only [LinearMap.map_smulₛₗ₂, smul_eq_mul] at this
-    exact this
-  have hv : Matrix.vecMul (fun c => star (x c - y c)) (ZhatL F F') = 0 := by
-    ext d; simp only [Matrix.vecMul, dotProduct, Pi.zero_apply]; exact hz d
-  have := Matrix.eq_zero_of_vecMul_eq_zero hdet hv
-  funext c
-  have hc := congrFun this c
-  simp only [Pi.zero_apply, star_eq_zero] at hc
-  exact sub_eq_zero.mp hc
 
 end Frame
 
@@ -603,10 +586,6 @@ theorem zhatOM_eq_pv {r : ℕ} (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) K) :
   ext a b
   simp [ZhatOM, Matrix.mul_diagonal, mul_comm]
 
-theorem conjT_loUni [StarRing K] {u : Matrix (Fin N) (Fin N) K} (h : IsUpUni u) : IsLoUni u.conjTranspose := by
-  intro i j
-  simp only [Matrix.conjTranspose_apply]
-  exact ⟨fun hij => by rw [(h j i).1 hij, star_zero], fun hij => by subst hij; rw [(h i i).2 rfl, star_one]⟩
 
 end Big
 

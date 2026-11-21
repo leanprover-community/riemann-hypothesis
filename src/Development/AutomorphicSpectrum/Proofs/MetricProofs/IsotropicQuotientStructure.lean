@@ -2,16 +2,450 @@ import Mathlib
 import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsEigFrames
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.RiemannLatticeEigenProjection
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.QuotientLatticeByIsotropicSubmodule
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsBasisSubsetOfSaturatedSubmoduleStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.LinearIndependentRealPeriodsBasis
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.MemSpanOfRealCombinationPeriods
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.LinearIndependentComplexOfRealHermitian
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsHermitianOrthogonalProjection
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsRealOrthogonalProjectionOfRealGram
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsPosDefFormOnQuotient
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsDescendedRingHomOnQuotient
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.RiemannLatticeQuotientCompatStatement
+import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsRestTer
 
+section
+namespace GlobalTheory.CompanionTheory.Ar.Lattice
+
+theorem exists_basis_span_eq_of_saturated (Λ : Type) [AddCommGroup Λ] [Module.Free ℤ Λ]
+    [Module.Finite ℤ Λ] (N : Submodule ℤ Λ)
+    (hN : ∀ (v : Λ) (n : ℤ), n ≠ 0 → n • v ∈ N → v ∈ N) :
+    ∃ (k n : ℕ) (b : Module.Basis (Fin n) ℤ Λ) (f : Fin k → Fin n),
+      Function.Injective f ∧ Submodule.span ℤ (Set.range fun i => b (f i)) = N :=
+  _root_.UpperTheory.Reformulated.B.Yha6.main Λ N hN
+
+end GlobalTheory.CompanionTheory.Ar.Lattice
+end
+
+section
+open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GroundTheory.Heights₂.Heights.LowerBoundFree GroundTheory.Heights₂.Heights.Regular
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_basis_subset_of_saturated_submodule : ∀ (Λ : Type) [AddCommGroup Λ] [Module.Free ℤ Λ] [Module.Finite ℤ Λ] (N : Submodule ℤ Λ), (∀ (v : Λ) (n : ℤ), n ≠ 0 → n • v ∈ N → v ∈ N) → ∃ (k n : ℕ) (b : Module.Basis (Fin n) ℤ Λ) (f : Fin k → Fin n), Function.Injective f ∧ Submodule.span ℤ (Set.range fun i => b (f i)) = N := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Lattice.exists_basis_span_eq_of_saturated
+end
+
+section
+section
+open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GroundTheory.Heights₂.Heights.LowerBoundFree GroundTheory.Heights₂.Heights.Regular
+
+namespace GlobalTheory.CompanionTheory.Ar.Cusp
+
+theorem riemLat_basis_periods_linearIndependent : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (R : RiemLat E g Λ) (n : ℕ) (b : Module.Basis (Fin n) ℤ Λ), LinearIndependent ℝ (fun j => R.P (b j)) := by
+  intro E _ _ _ g Λ _ _ R n b
+  have hspan : Submodule.span ℝ (Set.range R.P) = ⊤ := (GlobalTheory.T.riemann_lattice_eigen_projection E g Λ Unit R).2.1
+  have hmem : ∀ x : Λ, R.P x ∈ Submodule.span ℝ (Set.range fun j => R.P (b j)) := by
+    intro x
+    have hx : x ∈ Submodule.span ℤ (Set.range b) := by
+      rw [b.span_eq]; trivial
+    induction hx using Submodule.span_induction with
+    | mem y hy =>
+      obtain ⟨j, rfl⟩ := hy
+      exact Submodule.subset_span ⟨j, rfl⟩
+    | zero => simp
+    | add y z _ _ hy hz =>
+      rw [map_add]
+      exact Submodule.add_mem _ hy hz
+    | smul c y _ hy =>
+      rw [map_zsmul]
+      exact Submodule.smul_of_tower_mem _ c hy
+  have htop : ⊤ ≤ Submodule.span ℝ (Set.range fun j => R.P (b j)) := by
+    rw [← hspan]
+    apply Submodule.span_le.mpr
+    rintro _ ⟨x, rfl⟩
+    exact hmem x
+  have hcard : Fintype.card (Fin n) = Module.finrank ℝ (Fin g → ℂ) := by
+    have h1 : Module.finrank ℤ Λ = Fintype.card (Fin n) := by
+      haveI := R.free
+      haveI := R.fin
+      exact Module.finrank_eq_card_basis b
+    have h2 : Module.finrank ℝ (Fin g → ℂ) = 2 * g := by
+      simp [Module.finrank_pi_fintype, Complex.finrank_real_complex, mul_comm]
+    rw [← h1, R.rank, h2]
+  exact linearIndependent_of_top_le_span_of_card_eq_finrank htop hcard
+
+end GlobalTheory.CompanionTheory.Ar.Cusp
+end
+
+open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GroundTheory.Heights₂.Heights.LowerBoundFree GroundTheory.Heights₂.Heights.Regular
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.linearIndependent_real_periods_basis : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (R : RiemLat E g Λ) (n : ℕ) (b : Module.Basis (Fin n) ℤ Λ), LinearIndependent ℝ (fun j => R.P (b j)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Cusp.riemLat_basis_periods_linearIndependent
+end
+
+section
+section
+open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GroundTheory.Heights₂.Heights.LowerBoundFree GroundTheory.Heights₂.Heights.Regular
+
+namespace GlobalTheory.CompanionTheory.Ar.Cusp
+
+theorem mem_span_part_of_period_real_comb :
+    ∀ (g k n : ℕ) (Λ : Type) [AddCommGroup Λ] (P : Λ →+ (Fin g → ℂ))
+      (b : Module.Basis (Fin n) ℤ Λ) (f : Fin k → Fin n),
+      LinearIndependent ℝ (fun j => P (b j)) → Function.Injective f →
+      ∀ (x : Λ) (c : Fin k → ℝ), P x = ∑ i, (c i : ℂ) • P (b (f i)) →
+        x ∈ Submodule.span ℤ (Set.range fun i => b (f i)) := by
+  intro g k n Λ _ P b f hli hf x c hx
+  classical
+
+  have hPx : P x = ∑ j, ((b.repr x j : ℤ) : ℝ) • P (b j) := by
+    conv_lhs => rw [← b.sum_repr x]
+    rw [map_sum]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [map_zsmul, Int.cast_smul_eq_zsmul]
+
+  let d : Fin n → ℝ := fun j => ∑ i, if f i = j then c i else 0
+  have hPd : P x = ∑ j, d j • P (b j) := by
+    rw [hx]
+    simp only [d, Finset.sum_smul, ite_smul, zero_smul]
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [Finset.sum_ite_eq, if_pos (Finset.mem_univ _), Complex.coe_smul]
+  have hcoef : ∀ j, ((b.repr x j : ℤ) : ℝ) = d j := by
+    have h0 : ∑ j, (((b.repr x j : ℤ) : ℝ) - d j) • P (b j) = 0 := by
+      simp only [sub_smul, Finset.sum_sub_distrib]
+      rw [← hPx, ← hPd, sub_self]
+    intro j
+    exact sub_eq_zero.mp (Fintype.linearIndependent_iff.mp hli _ h0 j)
+  have hzero : ∀ j, j ∉ Set.range f → b.repr x j = 0 := by
+    intro j hj
+    have hd : d j = 0 := by
+      refine Finset.sum_eq_zero fun i _ => ?_
+      rw [if_neg]
+      exact fun h => hj ⟨i, h⟩
+    have := hcoef j
+    rw [hd] at this
+    exact_mod_cast this
+  rw [← b.sum_repr x]
+  refine Submodule.sum_mem _ fun j _ => ?_
+  by_cases hj : j ∈ Set.range f
+  · obtain ⟨i, rfl⟩ := hj
+    exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+  · rw [hzero j hj, zero_smul]
+    exact Submodule.zero_mem _
+
+end GlobalTheory.CompanionTheory.Ar.Cusp
+end
+
+open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GroundTheory.Heights₂.Heights.LowerBoundFree GroundTheory.Heights₂.Heights.Regular
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_span_of_real_combination_periods : ∀ (g k n : ℕ) (Λ : Type) [AddCommGroup Λ] (P : Λ →+ (Fin g → ℂ)) (b : Module.Basis (Fin n) ℤ Λ) (f : Fin k → Fin n), LinearIndependent ℝ (fun j => P (b j)) → Function.Injective f → ∀ (x : Λ) (c : Fin k → ℝ), P x = ∑ i, (c i : ℂ) • P (b (f i)) → x ∈ Submodule.span ℤ (Set.range fun i => b (f i)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Cusp.mem_span_part_of_period_real_comb
+end
+
+section
+section
+open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GroundTheory.Heights₂.Heights.LowerBoundFree GroundTheory.Heights₂.Heights.Regular
+
+namespace GlobalTheory.CompanionTheory.Ar.RealFormIndep
+
+theorem pairing_real_combination {g k : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ)
+    (u : Fin k → Fin g → ℂ) (a b : Fin k → ℝ) :
+    (∑ i, a i • u i) ⬝ᵥ Hm *ᵥ star (∑ j, b j • u j) =
+      ∑ i, ∑ j, ((a i * b j : ℝ) : ℂ) * (u i ⬝ᵥ Hm *ᵥ star (u j)) := by
+  rw [star_sum, mulVec_sum, sum_dotProduct]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [dotProduct_sum]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  rw [star_smul, star_trivial, mulVec_smul, smul_dotProduct, dotProduct_smul, Complex.real_smul,
+    Complex.real_smul, Complex.ofReal_mul]
+  ring
+
+theorem linearIndependent_complex_of_real_form :
+    ∀ (g k : ℕ) (Hm : Matrix (Fin g) (Fin g) ℂ),
+      (∀ z : Fin g → ℂ, z ≠ 0 → 0 < (z ⬝ᵥ Hm *ᵥ star z).re) →
+      ∀ u : Fin k → Fin g → ℂ, LinearIndependent ℝ u →
+        (∀ i j, (u i ⬝ᵥ Hm *ᵥ star (u j)).im = 0) → LinearIndependent ℂ u := by
+  intro g k Hm hpos u hu hreal
+  rw [Fintype.linearIndependent_iff] at hu ⊢
+  intro c hc
+  have hR : ∀ a b : Fin k → ℝ, ((∑ i, a i • u i) ⬝ᵥ Hm *ᵥ star (∑ j, b j • u j)).im = 0 := by
+    intro a b
+    rw [pairing_real_combination]
+    simp [Complex.im_sum, hreal]
+  have hxy : (∑ i, (c i).re • u i) + Complex.I • (∑ i, (c i).im • u i) = 0 := by
+    rw [← hc]
+    ext t
+    simp only [Pi.add_apply, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Complex.real_smul,
+      Finset.mul_sum, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    conv_rhs => rw [← Complex.re_add_im (c i)]
+    ring
+  have hx : (∑ i, (c i).re • u i) = -(Complex.I • ∑ i, (c i).im • u i) := eq_neg_of_add_eq_zero_left hxy
+  have hyy : ((∑ i, (c i).im • u i) ⬝ᵥ Hm *ᵥ star (∑ j, (c j).im • u j)).re = 0 := by
+    have h := hR (fun i => (c i).re) (fun j => (c j).im)
+    rw [hx, neg_dotProduct, smul_dotProduct, smul_eq_mul] at h
+    simpa using h
+  have hy0 : (∑ i, (c i).im • u i) = 0 := by
+    by_contra hne
+    have := hpos _ hne
+    linarith
+  have hx0 : (∑ i, (c i).re • u i) = 0 := by
+    rw [hx, hy0, smul_zero, neg_zero]
+  intro i
+  have h1 := hu (fun i => (c i).re) hx0 i
+  have h2 := hu (fun i => (c i).im) hy0 i
+  exact Complex.ext (by simpa using h1) (by simpa using h2)
+
+end GlobalTheory.CompanionTheory.Ar.RealFormIndep
+end
+
+open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GroundTheory.Heights₂.Heights.LowerBoundFree GroundTheory.Heights₂.Heights.Regular
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.linearIndependent_complex_of_real_hermitian : ∀ (g k : ℕ) (Hm : Matrix (Fin g) (Fin g) ℂ), (∀ z : Fin g → ℂ, z ≠ 0 → 0 < (z ⬝ᵥ Hm *ᵥ star z).re) → ∀ u : Fin k → Fin g → ℂ, LinearIndependent ℝ u → (∀ i j, (u i ⬝ᵥ Hm *ᵥ star (u j)).im = 0) → LinearIndependent ℂ u := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.RealFormIndep.linearIndependent_complex_of_real_form
+end
+
+section
+section
+open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GroundTheory.Heights₂.Heights.LowerBoundFree GroundTheory.Heights₂.Heights.Regular
+
+namespace GlobalTheory.CompanionTheory.Ar.PosFormProjection
+
+theorem exists_orthogonal_coefficients :
+    ∀ (g k : ℕ) (Hm : Matrix (Fin g) (Fin g) ℂ),
+      (∀ z : Fin g → ℂ, z ≠ 0 → 0 < (z ⬝ᵥ Hm *ᵥ star z).re) →
+      ∀ u : Fin k → Fin g → ℂ, LinearIndependent ℂ u →
+      ∀ z : Fin g → ℂ, ∃ c : Fin k → ℂ,
+        ∀ j, (z - ∑ i, c i • u i) ⬝ᵥ Hm *ᵥ star (u j) = 0 := by
+  intro g k Hm hpos u hli z
+  let A : (Fin k → ℂ) →ₗ[ℂ] (Fin k → ℂ) :=
+    { toFun := fun c j => (∑ i, c i • u i) ⬝ᵥ Hm *ᵥ star (u j)
+      map_add' := by
+        intro a b
+        funext j
+        simp only [Pi.add_apply, add_smul, Finset.sum_add_distrib, add_dotProduct]
+      map_smul' := by
+        intro a b
+        funext j
+        simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply, mul_smul, ← Finset.smul_sum,
+          smul_dotProduct] }
+  have hinj : Function.Injective A := by
+    rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
+    intro c hc
+    have hw : ∀ j, (∑ i, c i • u i) ⬝ᵥ Hm *ᵥ star (u j) = 0 := fun j => congrFun hc j
+    have hww : (∑ i, c i • u i) ⬝ᵥ Hm *ᵥ star (∑ i, c i • u i) = 0 := by
+      rw [star_sum, Matrix.mulVec_sum, dotProduct_sum]
+      refine Finset.sum_eq_zero fun j _ => ?_
+      rw [star_smul, Matrix.mulVec_smul, dotProduct_smul, hw j, smul_zero]
+    have hw0 : ∑ i, c i • u i = 0 := by
+      by_contra hne
+      have := hpos _ hne
+      rw [hww] at this
+      simp at this
+    funext i
+    exact Fintype.linearIndependent_iff.mp hli c hw0 i
+  obtain ⟨c, hc⟩ := LinearMap.injective_iff_surjective.mp hinj (fun j => z ⬝ᵥ Hm *ᵥ star (u j))
+  refine ⟨c, fun j => ?_⟩
+  have hcj : (∑ i, c i • u i) ⬝ᵥ Hm *ᵥ star (u j) = z ⬝ᵥ Hm *ᵥ star (u j) := congrFun hc j
+  rw [sub_dotProduct, hcj, sub_self]
+
+end GlobalTheory.CompanionTheory.Ar.PosFormProjection
+end
+
+open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GroundTheory.Heights₂.Heights.LowerBoundFree GroundTheory.Heights₂.Heights.Regular
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_hermitian_orthogonal_projection : ∀ (g k : ℕ) (Hm : Matrix (Fin g) (Fin g) ℂ), (∀ z : Fin g → ℂ, z ≠ 0 → 0 < (z ⬝ᵥ Hm *ᵥ star z).re) → ∀ u : Fin k → Fin g → ℂ, LinearIndependent ℂ u → ∀ z : Fin g → ℂ, ∃ c : Fin k → ℂ, ∀ j, (z - ∑ i, c i • u i) ⬝ᵥ Hm *ᵥ star (u j) = 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.PosFormProjection.exists_orthogonal_coefficients
+end
+
+section
+section
+open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GroundTheory.Heights₂.Heights.LowerBoundFree GroundTheory.Heights₂.Heights.Regular
+
+namespace GlobalTheory.CompanionTheory.Ar.ProjReal
+
+theorem orthogonal_projection_real_coefficients :
+    ∀ (g k : ℕ) (Hm : Matrix (Fin g) (Fin g) ℂ),
+      (∀ z : Fin g → ℂ, z ≠ 0 → 0 < (z ⬝ᵥ Hm *ᵥ star z).re) →
+      ∀ u : Fin k → Fin g → ℂ, LinearIndependent ℂ u →
+      (∀ z : Fin g → ℂ, ∃ c : Fin k → ℂ, ∀ j, (z - ∑ i, c i • u i) ⬝ᵥ Hm *ᵥ star (u j) = 0) →
+      (∀ i j, (u i ⬝ᵥ Hm *ᵥ star (u j)).im = 0) →
+      ∀ z : Fin g → ℂ, (∀ j, (z ⬝ᵥ Hm *ᵥ star (u j)).im = 0) →
+      ∃ c : Fin k → ℝ, ∀ j, (z - ∑ i, (c i : ℂ) • u i) ⬝ᵥ Hm *ᵥ star (u j) = 0 := by
+  intro g k Hm _ u _ hproj hu z hz
+  obtain ⟨c, hc⟩ := hproj z
+  refine ⟨fun i => (c i).re, fun j => ?_⟩
+  have h := hc j
+  simp only [sub_dotProduct, sum_dotProduct, smul_dotProduct, smul_eq_mul] at h ⊢
+  apply Complex.ext
+  · have h' := congrArg Complex.re h
+    simp only [Complex.sub_re, Complex.re_sum, Complex.mul_re, hu, mul_zero, sub_zero, Complex.zero_re] at h'
+    simpa [Complex.sub_re, Complex.re_sum, Complex.mul_re, hu] using h'
+  · simp [Complex.sub_im, Complex.im_sum, Complex.mul_im, hu, hz]
+
+end GlobalTheory.CompanionTheory.Ar.ProjReal
+end
+
+open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GroundTheory.Heights₂.Heights.LowerBoundFree GroundTheory.Heights₂.Heights.Regular
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_real_orthogonal_projection_of_real_gram : ∀ (g k : ℕ) (Hm : Matrix (Fin g) (Fin g) ℂ), (∀ z : Fin g → ℂ, z ≠ 0 → 0 < (z ⬝ᵥ Hm *ᵥ star z).re) → ∀ u : Fin k → Fin g → ℂ, LinearIndependent ℂ u → (∀ z : Fin g → ℂ, ∃ c : Fin k → ℂ, ∀ j, (z - ∑ i, c i • u i) ⬝ᵥ Hm *ᵥ star (u j) = 0) → (∀ i j, (u i ⬝ᵥ Hm *ᵥ star (u j)).im = 0) → ∀ z : Fin g → ℂ, (∀ j, (z ⬝ᵥ Hm *ᵥ star (u j)).im = 0) → ∃ c : Fin k → ℝ, ∀ j, (z - ∑ i, (c i : ℂ) • u i) ⬝ᵥ Hm *ᵥ star (u j) = 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.ProjReal.orthogonal_projection_real_coefficients
+end
+
+section
+section
+open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GroundTheory.Heights₂.Heights.LowerBoundFree GroundTheory.Heights₂.Heights.Regular
+
+namespace GlobalTheory.CompanionTheory.Ar.QuotUniv
+
+theorem hermitian_transport_along_orthogonal_complement :
+    ∀ (g g' : ℕ) (Hm : Matrix (Fin g) (Fin g) ℂ), Hm.IsHermitian → (∀ z : Fin g → ℂ, z ≠ 0 → 0 < (z ⬝ᵥ Hm *ᵥ star z).re) → ∀ (S : Submodule ℂ (Fin g → ℂ)) (q : (Fin g → ℂ) →ₗ[ℂ] (Fin g' → ℂ)), Function.Surjective q → LinearMap.ker q = S → (∀ z : Fin g → ℂ, ∃ s ∈ S, ∀ v ∈ S, (z - s) ⬝ᵥ Hm *ᵥ star v = 0) → ∃ Hm' : Matrix (Fin g') (Fin g') ℂ, Hm'.IsHermitian ∧ (∀ z : Fin g' → ℂ, z ≠ 0 → 0 < (z ⬝ᵥ Hm' *ᵥ star z).re) ∧ ∀ x y : Fin g → ℂ, (∀ v ∈ S, x ⬝ᵥ Hm *ᵥ star v = 0) → q y ⬝ᵥ Hm' *ᵥ star (q x) = y ⬝ᵥ Hm *ᵥ star x := by
+  intro g g' Hm hHm hpos S q hq hker hproj
+  have hconj : ∀ x y : Fin g → ℂ, star (x ⬝ᵥ Hm *ᵥ star y) = y ⬝ᵥ Hm *ᵥ star x := by
+    intro x y
+    rw [← Matrix.star_dotProduct_star, Matrix.star_mulVec, star_star, hHm.eq,
+      ← Matrix.dotProduct_mulVec]
+  have hmemS : ∀ z, q z = 0 → z ∈ S := fun z hz => by
+    rw [← hker]
+    exact LinearMap.mem_ker.2 hz
+  choose z hz using fun i : Fin g' => hq (Pi.single i 1)
+  choose s hsS hs using fun i => hproj (z i)
+  let A : Matrix (Fin g') (Fin g) ℂ := Matrix.of fun i => z i - s i
+  have hAq : ∀ i, q (z i - s i) = Pi.single i 1 := by
+    intro i
+    have hs0 : q (s i) = 0 := by
+      have : s i ∈ LinearMap.ker q := by rw [hker]; exact hsS i
+      exact LinearMap.mem_ker.1 this
+    rw [map_sub, hz i, hs0, sub_zero]
+  have hT : ∀ u : Fin g' → ℂ, Matrix.vecMul u A = ∑ i, u i • (z i - s i) := by
+    intro u
+    ext a
+    simp [A, Matrix.vecMul, dotProduct, Finset.sum_apply]
+  have hTq : ∀ u, q (Matrix.vecMul u A) = u := by
+    intro u
+    rw [hT, map_sum]
+    simp_rw [map_smul, hAq]
+    ext j
+    simp [Finset.sum_apply, Pi.single_apply]
+  have hTorth : ∀ u, ∀ v ∈ S, Matrix.vecMul u A ⬝ᵥ Hm *ᵥ star v = 0 := by
+    intro u v hv
+    rw [hT, sum_dotProduct]
+    exact Finset.sum_eq_zero fun i _ => by rw [smul_dotProduct, hs i v hv, smul_zero]
+  have hkey : ∀ u u' : Fin g' → ℂ, u ⬝ᵥ (A * Hm * A.conjTranspose) *ᵥ star u' =
+      Matrix.vecMul u A ⬝ᵥ Hm *ᵥ star (Matrix.vecMul u' A) := by
+    intro u u'
+    rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec u A,
+      Matrix.star_vecMul]
+  have hlift : ∀ x : Fin g → ℂ, (∀ v ∈ S, x ⬝ᵥ Hm *ᵥ star v = 0) →
+      Matrix.vecMul (q x) A = x := by
+    intro x hx
+    have hdS : Matrix.vecMul (q x) A - x ∈ S := hmemS _ (by rw [map_sub, hTq, sub_self])
+    have hd0 : (Matrix.vecMul (q x) A - x) ⬝ᵥ Hm *ᵥ star (Matrix.vecMul (q x) A - x) = 0 := by
+      rw [sub_dotProduct, hTorth _ _ hdS, hx _ hdS, sub_zero]
+    by_contra hne
+    have := hpos _ (sub_ne_zero.2 hne)
+    rw [hd0, Complex.zero_re] at this
+    exact lt_irrefl _ this
+  refine ⟨A * Hm * A.conjTranspose, Matrix.isHermitian_mul_mul_conjTranspose A hHm, ?_, ?_⟩
+  · intro u hu
+    rw [hkey]
+    apply hpos
+    intro h0
+    apply hu
+    rw [← hTq u, h0, map_zero]
+  · intro x y hx
+    rw [hkey, hlift x hx, ← sub_eq_zero, ← sub_dotProduct, ← hconj,
+      hx (Matrix.vecMul (q y) A - y) (hmemS _ (by rw [map_sub, hTq, sub_self])), star_zero]
+
+end GlobalTheory.CompanionTheory.Ar.QuotUniv
+end
+
+open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GroundTheory.Heights₂.Heights.LowerBoundFree GroundTheory.Heights₂.Heights.Regular
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_posDef_form_on_quotient : ∀ (g g' : ℕ) (Hm : Matrix (Fin g) (Fin g) ℂ), Hm.IsHermitian → (∀ z : Fin g → ℂ, z ≠ 0 → 0 < (z ⬝ᵥ Hm *ᵥ star z).re) → ∀ (S : Submodule ℂ (Fin g → ℂ)) (q : (Fin g → ℂ) →ₗ[ℂ] (Fin g' → ℂ)), Function.Surjective q → LinearMap.ker q = S → (∀ z : Fin g → ℂ, ∃ s ∈ S, ∀ v ∈ S, (z - s) ⬝ᵥ Hm *ᵥ star v = 0) → ∃ Hm' : Matrix (Fin g') (Fin g') ℂ, Hm'.IsHermitian ∧ (∀ z : Fin g' → ℂ, z ≠ 0 → 0 < (z ⬝ᵥ Hm' *ᵥ star z).re) ∧ ∀ x y : Fin g → ℂ, (∀ v ∈ S, x ⬝ᵥ Hm *ᵥ star v = 0) → q y ⬝ᵥ Hm' *ᵥ star (q x) = y ⬝ᵥ Hm *ᵥ star x := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.QuotUniv.hermitian_transport_along_orthogonal_complement
+end
+
+section
+section
+open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GroundTheory.Heights₂.Heights.LowerBoundFree GroundTheory.Heights₂.Heights.Regular
+
+namespace GlobalTheory.CompanionTheory.Ar.QuotUniv
+
+theorem ringAction_descends_along_surjection
+    (O : Type) [Ring O] (g g' : ℕ) (B : O →+* Module.End ℂ (Fin g → ℂ))
+    (q : (Fin g → ℂ) →ₗ[ℂ] (Fin g' → ℂ)) (hq : Function.Surjective q)
+    (hk : ∀ (a : O) z, q z = 0 → q (B a z) = 0) :
+    ∃ B' : O →+* Module.End ℂ (Fin g' → ℂ), ∀ a z, B' a (q z) = q (B a z) := by
+  obtain ⟨s, hs⟩ := q.exists_rightInverse_of_surjective (LinearMap.range_eq_top.mpr hq)
+  have hqs : ∀ w, q (s w) = w := fun w => LinearMap.congr_fun hs w
+  obtain ⟨F, hF⟩ : ∃ F : O → Module.End ℂ (Fin g' → ℂ), ∀ a z, F a (q z) = q (B a z) := by
+    refine ⟨fun a => q ∘ₗ (B a ∘ₗ s), fun a z => ?_⟩
+    have h0 : q (B a (s (q z) - z)) = 0 := hk a _ (by rw [map_sub, hqs, sub_self])
+    rw [map_sub, map_sub, sub_eq_zero] at h0
+    exact h0
+  have hext : ∀ L M : Module.End ℂ (Fin g' → ℂ), (∀ z, L (q z) = M (q z)) → L = M := by
+    intro L M h
+    refine LinearMap.ext fun w => ?_
+    obtain ⟨z, rfl⟩ := hq w
+    exact h z
+  refine ⟨{ toFun := F, map_one' := ?_, map_mul' := ?_, map_zero' := ?_, map_add' := ?_ },
+    fun a z => hF a z⟩
+  · exact hext _ _ fun z => by simp [hF]
+  · intro a b
+    exact hext _ _ fun z => by simp [hF, Module.End.mul_apply]
+  · exact hext _ _ fun z => by simp [hF]
+  · intro a b
+    exact hext _ _ fun z => by simp [hF]
+
+end GlobalTheory.CompanionTheory.Ar.QuotUniv
+end
+
+open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GroundTheory.Heights₂.Heights.LowerBoundFree GroundTheory.Heights₂.Heights.Regular
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_descended_ringHom_on_quotient : ∀ (O : Type) [Ring O] (g g' : ℕ) (B : O →+* Module.End ℂ (Fin g → ℂ)) (q : (Fin g → ℂ) →ₗ[ℂ] (Fin g' → ℂ)), Function.Surjective q → (∀ (a : O) z, q z = 0 → q (B a z) = 0) → ∃ B' : O →+* Module.End ℂ (Fin g' → ℂ), ∀ a z, B' a (q z) = q (B a z) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.QuotUniv.ringAction_descends_along_surjection
+end
+
+section
+open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GroundTheory.Heights₂.Heights.LowerBoundFree GroundTheory.Heights₂.Heights.Regular
+
+namespace GlobalTheory.CompanionTheory.Ar.Cusp
+
+theorem riemLat_assemble_of_quot : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (g g' : ℕ) (Λ Λ' : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] [AddCommGroup Λ'] [Module (𝓞 E) Λ'] (R : RiemLat E g Λ) (R₁ : RiemLat E g' Λ') (D : AddSubgroup Λ) (π : Λ → Λ') (q : (Fin g → ℂ) →ₗ[ℂ] (Fin g' → ℂ)) (Hm' : Matrix (Fin g') (Fin g') ℂ) (B' : 𝓞 E →+* Module.End ℂ (Fin g' → ℂ)), (∀ x', ∃ x ∈ D, π x = x') → (∀ x ∈ D, ∀ y ∈ D, π (x + y) = π x + π y) → (∀ (a : 𝓞 E), ∀ x ∈ D, a • x ∈ D ∧ π (a • x) = a • π x) → (∀ x ∈ D, π x = 0 → q (R.P x) = 0) → (∀ a z, B' a (q z) = q (R.B a z)) → Hm'.IsHermitian → (∀ z : Fin g' → ℂ, z ≠ 0 → 0 < (z ⬝ᵥ Hm' *ᵥ star z).re) → (∀ x ∈ D, ∀ y ∈ D, (q (R.P x) ⬝ᵥ Hm' *ᵥ star (q (R.P y))).im = R₁.form (π x) (π y)) → ∃ R' : RiemLat E g' Λ', R'.form = R₁.form ∧ R'.Hm = Hm' ∧ ∀ x ∈ D, R'.P (π x) = q (R.P x) := by
+  intro E _ _ _ g g' Λ Λ' _ _ _ _ R R₁ D π q Hm' B' hsurj hadd hsmul hker hB hHm hpos hform
+  choose s hsD hs using hsurj
+  have hwd : ∀ x ∈ D, ∀ y ∈ D, π x = π y → q (R.P x) = q (R.P y) := by
+    intro x hx y hy hxy
+    have hxy' : x - y ∈ D := D.sub_mem hx hy
+    have h1 := hadd (x - y) hxy' y hy
+    rw [sub_add_cancel, hxy] at h1
+    have h2 : π (x - y) = 0 :=
+      calc π (x - y) = π (x - y) + π y - π y := (add_sub_cancel_right _ _).symm
+        _ = π y - π y := by rw [← h1]
+        _ = 0 := sub_self _
+    have h3 := hker _ hxy' h2
+    rwa [map_sub, map_sub, sub_eq_zero] at h3
+  let P' : Λ' →+ (Fin g' → ℂ) := AddMonoidHom.mk' (fun x' => q (R.P (s x'))) (fun x' y' => by
+    show q (R.P (s (x' + y'))) = q (R.P (s x')) + q (R.P (s y'))
+    have hD : s x' + s y' ∈ D := D.add_mem (hsD x') (hsD y')
+    have h := hwd _ (hsD (x' + y')) _ hD (by rw [hs, hadd _ (hsD x') _ (hsD y'), hs, hs])
+    rw [h, map_add, map_add])
+  have hP' : ∀ x ∈ D, P' (π x) = q (R.P x) := fun x hx => hwd _ (hsD (π x)) _ hx (hs (π x))
+  refine ⟨⟨R₁.1, R₁.2, R₁.3, R₁.form, R₁.5, R₁.6, R₁.7, P', Hm', hHm, hpos, ?_, B', ?_⟩, rfl, rfl, hP'⟩
+  · intro x' y'
+    have h := hform _ (hsD x') _ (hsD y')
+    rw [hs, hs] at h
+    exact h
+  · intro a x'
+    have hax : a • s x' ∈ D := (hsmul a _ (hsD x')).1
+    have h1 : π (a • s x') = a • x' := by rw [(hsmul a _ (hsD x')).2, hs]
+    calc P' (a • x') = P' (π (a • s x')) := by rw [h1]
+      _ = q (R.P (a • s x')) := hP' _ hax
+      _ = q (R.B a (R.P (s x'))) := by rw [R.14]
+      _ = B' a (q (R.P (s x'))) := (hB a _).symm
+
+end GlobalTheory.CompanionTheory.Ar.Cusp
+end
+
+section
+open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GroundTheory.Heights₂.Heights.LowerBoundFree GroundTheory.Heights₂.Heights.Regular
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.riemannLattice_quotient_compat : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (g g' : ℕ) (Λ Λ' : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] [AddCommGroup Λ'] [Module (𝓞 E) Λ'] (R : RiemLat E g Λ) (R₁ : RiemLat E g' Λ') (D : AddSubgroup Λ) (π : Λ → Λ') (q : (Fin g → ℂ) →ₗ[ℂ] (Fin g' → ℂ)) (Hm' : Matrix (Fin g') (Fin g') ℂ) (B' : 𝓞 E →+* Module.End ℂ (Fin g' → ℂ)), (∀ x', ∃ x ∈ D, π x = x') → (∀ x ∈ D, ∀ y ∈ D, π (x + y) = π x + π y) → (∀ (a : 𝓞 E), ∀ x ∈ D, a • x ∈ D ∧ π (a • x) = a • π x) → (∀ x ∈ D, π x = 0 → q (R.P x) = 0) → (∀ a z, B' a (q z) = q (R.B a z)) → Hm'.IsHermitian → (∀ z : Fin g' → ℂ, z ≠ 0 → 0 < (z ⬝ᵥ Hm' *ᵥ star z).re) → (∀ x ∈ D, ∀ y ∈ D, (q (R.P x) ⬝ᵥ Hm' *ᵥ star (q (R.P y))).im = R₁.form (π x) (π y)) → ∃ R' : RiemLat E g' Λ', R'.form = R₁.form ∧ R'.Hm = Hm' ∧ ∀ x ∈ D, R'.P (π x) = q (R.P x) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Cusp.riemLat_assemble_of_quot
+end
+
+section
 section
 open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GroundTheory.Heights₂.Heights.LowerBoundFree GroundTheory.Heights₂.Heights.Regular
 
@@ -243,3 +677,4 @@ open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTh
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.isotropic_quotient_structure : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (R₀ : RiemLat E g Λ) (I : Submodule (𝓞 E) Λ), IsSaturated I → IsIsoSub R₀.form I → ∃ (g' k : ℕ) (Λ' : Type) (_ : AddCommGroup Λ') (_ : Module (𝓞 E) Λ') (e : Fin k → Λ) (form' : Λ' →ₗ[ℤ] Λ' →ₗ[ℤ] ℤ) (π : Λ → Λ'), k + g' = g ∧ (∀ x', ∃ x, (∀ y ∈ I, R₀.form x y = 0) ∧ π x = x') ∧ ∀ R : RiemLat E g Λ, R.form = R₀.form → LinearIndependent ℂ (fun i => R.P (e i)) ∧ Submodule.span ℂ (R.P '' I) = Submodule.span ℂ (Set.range fun i => R.P (e i)) ∧ ∀ q : (Fin g → ℂ) →ₗ[ℂ] (Fin g' → ℂ), Function.Surjective q → LinearMap.ker q = Submodule.span ℂ (R.P '' I) → ∃ R' : RiemLat E g' Λ', R'.form = form' ∧ (∀ x, (∀ y ∈ I, R.form x y = 0) → R'.P (π x) = q (R.P x)) ∧ ∀ x y, (∀ v ∈ I, R.ip (R.P v) x = 0) → R'.ip (q x) (q y) = R.ip x y := by
   atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Cusp.Univ.QuotLat.exists_univ_quot
+end

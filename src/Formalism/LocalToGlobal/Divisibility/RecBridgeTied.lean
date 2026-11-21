@@ -17,8 +17,6 @@ section FieldsLL
 abbrev fieldsLL (D : Formalism.BasicNotions.D7) (X : Formalism.L2.Col.Fields) (e : X.Tau → (X.E →+* D.what₂.LL)) : Formalism.L2.Col.Fields :=
   { X with K := D.what₂.LL, fieldK := inferInstance, nfK := inferInstance, starK := inferInstance, emb := e }
 
-theorem fieldsLL_K (D : Formalism.BasicNotions.D7) (X : Formalism.L2.Col.Fields) (e : X.Tau → (X.E →+* D.what₂.LL)) :
-    (fieldsLL D X e).K = D.what₂.LL := rfl
 
 end FieldsLL
 
@@ -125,7 +123,6 @@ attribute [instance] DivisionRowsColumns.grp DivisionRowsColumns.fin
 abbrev DivisionRowsColumns.toF {L : SizeData₂ D} (R : DivisionRowsColumns L) : DivisionRowsFace L :=
   DivisionRowsFace.ofCol3 L R.X R.e R.A3 R.P0 R.ψ0 R.P1 R.ψ1 R.c R.Sp R.Zsc R.Zs R.stable R.inBlock R.hOk R.hsep R.what₂
 
-theorem DivisionRowsColumns.toF_Dc {L : SizeData₂ D} (R : DivisionRowsColumns L) (Zs : DefSub R.A3.fam3.amb3) : (R.toF.fc Zs).Dc = R.c.face Zs := rfl
 
 structure DivisionPackageColumns {L : SizeData₂ D} (Rt : DivisionRowsColumns L) (C Cabs : ℝ) extends DivisionPackageFace Rt.toF C Cabs where
   hQ : ∀ u, ChainTie (inp u).ch (Rt.c.memQ (wU u))
@@ -143,27 +140,6 @@ def DivisionPackageColumns.inputs {L : SizeData₂ D} {Rt : DivisionRowsColumns 
     val2 := Formalism.L2.G.ServJointF.val2AllAtRF D L _ P.brTied hcut h2 u (P.Nu u)
       (Formalism.L2.G.ServJoint.nu_into L hN u (P.eNu u) (P.NuC (P.wU u)) (P.Nu u) (P.hNu u).lat (P.shift u)) }
 
-theorem DivisionPackageColumns.linkRec {L : SizeData₂ D} {Rt : DivisionRowsColumns L} {C Cabs : ℝ} (P : DivisionPackageColumns Rt C Cabs)
-    (h2 : Formalism.MainNotions.LocalQuadraticParts.adm2 D L) (hcut : ∀ μ, Formalism.BasicNotions.DV.Used D μ → Formalism.L2.G.ServJoint.CutUp D μ)
-    (hN : Formalism.BasicNotions.DV.NprimeDef D L) (u : D.what₂.Word) :
-    DivClausesR P.Pk.core (P.R u) (P.wU u) (P.Nu u) (sgRec L u) ∧
-      (∀ y : Fin ((P.inp u).ch.c 0) → D.what₂.LL,
-        (P.hQ u).coL ((chainMat (P.inp u).ch.Kj ⟨(Rt.c.memQ (P.wU u)).n + 1, by have := (P.hQ u).hmm; omega⟩).mulVec y) =
-          Formalism.L2.Ker.colMu Rt.c.W Rt.c.Ch Rt.c.sel (Rt.c.mu Rt.A3.fam3.base3.μ0) (Rt.c.cst Rt.A3.fam3.base3.μ0) (Rt.c.Li Rt.A3.fam3.base3.μ0)
-            Rt.c.Am (Rt.c.wd (P.wU u)) Rt.c.m2 (Rt.c.b Rt.A3.fam3.base3.μ0 (P.wU u)) (Rt.c.hY Rt.A3.fam3.base3.μ0 (P.wU u)) Rt.c.Lv
-            (Rt.c.hK Rt.A3.fam3.base3.μ0 (P.wU u)) (Rt.c.hF Rt.A3.fam3.base3.μ0 (P.wU u)) (Rt.c.hL Rt.A3.fam3.base3.μ0)
-            (colOfCoord Rt.c.W Rt.c.Ch Rt.c.hX (Rt.c.wd (P.wU u)) fun i => y (Fin.cast (P.inp u).ch.c0.symm i))) ∧
-      ∀ (φ : Fin (ramDim Rt.c.W Rt.c.Ch Rt.c.hX (Rt.c.wd (P.wU u))) → D.what₂.LL)
-        (F : Fin ((Rt.A3.side3 Rt.P1 Rt.ψ1 P.Pk.Zs).nV Rt.A3.fam3.base3.μ0) → D.what₂.LL),
-        (P.inp u).ch.PtL ((chainMat (P.inp u).ch.Kj (Fin.last (P.inp u).ch.mm)).mulVec fun i => φ (Fin.cast (P.inp u).ch.c0 i)) F =
-          colPerL (Rt.c.hP Rt.A3.fam3.base3.μ0) Rt.c.Xg (Rt.c.wd (P.wU u)) (Rt.c.ev P.Pk.Zs Rt.A3.fam3.base3.μ0)
-            (Formalism.L2.Ker.colMu Rt.c.W Rt.c.Ch Rt.c.sel (Rt.c.mu Rt.A3.fam3.base3.μ0) (Rt.c.cst Rt.A3.fam3.base3.μ0) (Rt.c.Li Rt.A3.fam3.base3.μ0)
-              Rt.c.Am (Rt.c.wd (P.wU u)) Rt.c.m2 (Rt.c.b Rt.A3.fam3.base3.μ0 (P.wU u)) (Rt.c.hY Rt.A3.fam3.base3.μ0 (P.wU u)) Rt.c.Lv
-              (Rt.c.hK Rt.A3.fam3.base3.μ0 (P.wU u)) (Rt.c.hF Rt.A3.fam3.base3.μ0 (P.wU u)) (Rt.c.hL Rt.A3.fam3.base3.μ0)
-              (colOfCoord Rt.c.W Rt.c.Ch Rt.c.hX (Rt.c.wd (P.wU u)) φ)) F := by
-  exact linkDIV_L2R3_rec (X := fieldsLL D Rt.X Rt.e) Rt.A3 Rt.hOk Rt.hsep Rt.P0 Rt.ψ0 Rt.P1 Rt.ψ1 Rt.c.hX Rt.c.Xg
-    Rt.c.mu Rt.c.cst Rt.c.Li Rt.c.hL Rt.c.hP Rt.c.Mem Rt.c.wd Rt.c.b Rt.c.hY Rt.c.Am Rt.c.hK Rt.c.hF Rt.c.hE Rt.c.ev
-    Rt.Sp Rt.Zsc P.cf P.Cp P.CHp P.Pk (P.R u) (P.wU u) (P.Nu u) (sgRec L u) (P.inputs h2 hcut hN u) (P.hQ u) (P.h0 u)
 
 structure BridgeRowsT {eps : ℝ} (Fm : FamP eps) (Rt : Σ' x0 : ℝ, ∀ x, Fm.x1 < x → x0 ≤ x → ∀ i : Fm.Ix x, DivisionRowsColumns (Fm.L x i))
     (Cabs CH : ℝ) : Prop where
@@ -202,15 +178,6 @@ theorem linkDIVt_of_rowsT {eps : ℝ} (Fm : FamP eps)
     (B : BridgeRowsT Fm Rt Cabs CH) : LinkDIVt Fm Cabs CH :=
   linkDIVt_of_rowsF Fm (rowsTtoF Rt) Cabs CH B.toF
 
-theorem linkDIVt_closedT (𝒟 : FamClass) (Cabs : ℝ)
-    (Rt : ∀ {eps : ℝ} (Fm : FamP eps), 𝒟 Fm → Σ' x0 : ℝ, ∀ x, Fm.x1 < x → x0 ≤ x → ∀ i : Fm.Ix x, DivisionRowsColumns (Fm.L x i))
-    (h : Closed 𝒟 (fun Fm CH => ∀ hc : 𝒟 Fm, TuSize Fm → DGamSize Fm → BridgeRowsT Fm (Rt Fm hc) Cabs CH)) :
-    Closed 𝒟 (fun Fm CH => TuSize Fm → DGamSize Fm → LinkDIVt Fm Cabs CH) := by
-  refine linkDIVt_closedF 𝒟 Cabs (fun Fm hc => rowsTtoF (Rt Fm hc)) ?_
-  obtain ⟨ε1, hε1, hK⟩ := h
-  refine ⟨ε1, hε1, fun eps he hle => ?_⟩
-  obtain ⟨K, hK'⟩ := hK eps he hle
-  exact ⟨K, fun Fm CH hD hL hc hT hG => (hK' Fm CH hD hL hc hT hG).toF⟩
 
 end Rows
 
@@ -251,22 +218,8 @@ def DivisionRowsColumns.split_model_to_place_model (P : RowSideFamily ex) (hr : 
   hsep := hr.famSep
   what₂ := Classical.choose hr.rows0
 
-theorem DivisionRowsColumns.of_tied_subspaces_eq (P : RowSideFamily ex) (hr : RowsHold0_3 P) (X : Formalism.L2.Col.Fields) (e : X.Tau → (X.E →+* D.what₂.LL))
-    (c : ColRec3 (fieldsLL D X e) P.A3 P.Ps P.ψs) (Sp : ∀ Zs : DefSub P.A3.fam3.amb3, SPer (c.face Zs))
-    (Zsc : DefSub P.A3.fam3.amb3 → IndefScale P.A3.fam3.base3) : (DivisionRowsColumns.split_model_to_place_model (L := L) P hr X e c Sp Zsc).toF.Zs = P.Zs := rfl
 
-theorem DivisionRowsColumns.of_tied_rows_eq (P : RowSideFamily ex) (hr : RowsHold0_3 P) (X : Formalism.L2.Col.Fields) (e : X.Tau → (X.E →+* D.what₂.LL))
-    (c : ColRec3 (fieldsLL D X e) P.A3 P.Ps P.ψs) (Sp : ∀ Zs : DefSub P.A3.fam3.amb3, SPer (c.face Zs))
-    (Zsc : DefSub P.A3.fam3.amb3 → IndefScale P.A3.fam3.base3) :
-    (DivisionRowsColumns.split_model_to_place_model (L := L) P hr X e c Sp Zsc).toF.what₂.toIndefData = P.S0 :=
-  Classical.choose_spec hr.rows0
 
-theorem DivisionRowsColumns.of_tied_columns_eq (P : RowSideFamily ex) (hr : RowsHold0_3 P) (X : Formalism.L2.Col.Fields) (e : X.Tau → (X.E →+* D.what₂.LL))
-    (c : ColRec3 (fieldsLL D X e) P.A3 P.Ps P.ψs) (Sp : ∀ Zs : DefSub P.A3.fam3.amb3, SPer (c.face Zs))
-    (Zsc : DefSub P.A3.fam3.amb3 → IndefScale P.A3.fam3.base3) (h : ColTie3 P X e c Sp) :
-    ((DivisionRowsColumns.split_model_to_place_model (L := L) P hr X e c Sp Zsc).toF.fc P.Zs).Dc = P.Dc ∧
-      HEq ((DivisionRowsColumns.split_model_to_place_model (L := L) P hr X e c Sp Zsc).toF.fc P.Zs).Sp P.Sp :=
-  ⟨h.1, h.2⟩
 
 def EvTie3 (P : RowSideFamily ex) (hr : RowsHold0_3 P) (X : Formalism.L2.Col.Fields) (e : X.Tau → (X.E →+* D.what₂.LL))
     (c : ColRec3 (fieldsLL D X e) P.A3 P.Ps P.ψs) (Sp : ∀ Zs : DefSub P.A3.fam3.amb3, SPer (c.face Zs))

@@ -32,9 +32,6 @@ def Narrow : Prop :=
         (rc (cls σ)).inePol (AlgEquiv.restrictScalars E (t : G E' Ω)) =
           ∏ j ∈ Finset.range n, (X - C ((θ (z ^ g ^ j) : ℂˣ) : ℂ))
 
-theorem narrow_of_field (H : GlobalTheory.Published.DepthZeroTypeInertia) : Narrow :=
-  fun E E' Ω _ _ _ _ _ _ _ _ _ _ _ g _ A w h w' h' rc hrc i hi n hn hg hN a' ha' K _ _ red hr hk θ hθ τ hτ hf σ hs =>
-    (H E E' Ω g A w h w' h' rc hrc i hi n hn hg hN a' ha' K red hr hk θ hθ τ hτ hf σ hs).2
 
 def LCusp : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (g : ℕ) [Fact g.Prime]
@@ -120,24 +117,5 @@ theorem pow_card_units {E' : Type} [Field E'] [NumberField E'] (w' : HeightOneSp
   ext
   rw [Units.val_pow_eq_pow_val, ← hcard, FiniteField.pow_card]
 
-theorem narrow_of_leaves (H1 : LCusp) (H2 : LDepth) (H3 : LTame) (H4 : LMatch) : Narrow := by
-  intro E E' Ω _ _ _ _ _ _ _ _ _ _ _ g _ A w h w' h' rc hrc i hi n hn hg hN a' ha' K _ _ red hr hk θ hθ τ hτ hf σ hs
-    t x z hxz hv
-  obtain ⟨a, ha, ε, hε, hL⟩ := hrc
-  have hrc' : IsRec h rc := ⟨a, ha, ε, hε, hL⟩
-  have hc : IsIrrWD (rc (cls σ)) := (hL.cusp _).1 (H1 E w g i hi n hn τ hτ σ hs)
-  have ht : IsTameWD (rc (cls σ)) := (hL.depth _).1 (H2 E w g i hi n τ σ hs)
-  have hd : (rc (cls σ)).lpDim = n := hL.dim _
-  obtain ⟨ξ, hξ, hξf⟩ := H3 E E' Ω g A w h w' h' i hi n hn hg hN a' ha' K red hr hk (rc (cls σ)) hc ht hd
-  obtain ⟨k, hk'⟩ := H4 E E' Ω g A w h w' h' rc hrc' i hi n hn hg hN a' ha' K red hr hk θ hθ τ hτ hf σ hs ξ hξ hξf
-  rw [hξf t x z hxz hv]
-  have hpos : 0 < g ^ n := pow_pos (Fact.out : g.Prime).pos n
-  have hz := pow_card_units w' g n hN K red hr hk hpos z
-  have e1 : ∀ j, ((ξ (z ^ g ^ j) : ℂˣ) : ℂ) = ((θ (z ^ g ^ (j + k)) : ℂˣ) : ℂ) := fun j => by
-    rw [hk', ← pow_mul, ← pow_add]
-  simp_rw [e1]
-  refine prod_shift (fun j => ((θ (z ^ g ^ j) : ℂˣ) : ℂ)) n (fun j => ?_) k
-  show ((θ (z ^ g ^ (j + n)) : ℂˣ) : ℂ) = ((θ (z ^ g ^ j) : ℂˣ) : ℂ)
-  rw [pow_add, mul_comm, pow_mul, hz]
 
 end DiscreteGroups.sglob.DzType

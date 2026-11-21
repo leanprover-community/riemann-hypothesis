@@ -215,18 +215,6 @@ theorem cubical_clause_iff {G' : Over S'} {G : Over S} [GrpObj G'] [IsCommMonObj
   exact ⟨c'', rfl, idIso _, idIso_isGen hL, idIso_maps _ _ _ _ hr,
     idIso_maps (L.L.pull m.F) (thφ G' (x3 G')) thε _ c''.isGen⟩
 
-theorem cube_conclusion_iff {G' : Over S'} {G : Over S} [GrpObj G'] [IsCommMonObj G'] [GrpObj G]
-    [IsCommMonObj G] (m : CubeMap G' G) (L : RigLB G) (c : CubicalStr G L) :
-    (∃ (hL : (L.L.pull m.F).IsLB) (hr : (m.rigPull L.L L.rig).IsGen),
-      (∃ c' : CubicalStr G' (m.rigLB L hL hr), m.IsPullCubical c' c) ∧
-      (L.IsSymmetric → (m.rigLB L hL hr).IsSymmetric)) ↔
-    ∃ (hL : (L.L.pull m.F).IsLB) (hr : (m.rigPull L.L L.rig).IsGen)
-      (c' : CubicalStr G' (m.rigLB L hL hr)),
-      c'.t = m.thetaPull L.L c.t ∧ m.IsPullCubical c' c ∧
-        (L.IsSymmetric → (m.rigLB L hL hr).IsSymmetric) := by
-  refine exists_congr fun hL => exists_congr fun hr => ?_
-  rw [cubical_clause_iff]
-  exact ⟨fun ⟨⟨c', h1, h2⟩, h3⟩ => ⟨c', h1, h2, h3⟩, fun ⟨c', h1, h2, h3⟩ => ⟨⟨c', h1, h2⟩, h3⟩⟩
 
 end Group
 

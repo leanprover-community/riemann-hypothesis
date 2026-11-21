@@ -11,21 +11,11 @@ section QuadConj
 
 variable {F : Type*} [Field F] (a : F)
 
-theorem algebraTrace_quadraticAlgebra (z : QuadraticAlgebra F a 0) :
-    Algebra.trace F (QuadraticAlgebra F a 0) z = 2 * z.re := by
-  rw [Algebra.trace_eq_matrix_trace (QuadraticAlgebra.basis a 0), Matrix.trace_fin_two,
-    Algebra.leftMulMatrix_eq_repr_mul, Algebra.leftMulMatrix_eq_repr_mul]
-  simp [QuadraticAlgebra.basis]
-  ring
 
 instance isQuadraticExtension_quadraticAlgebra :
     Algebra.IsQuadraticExtension F (QuadraticAlgebra F a 0) :=
   ⟨QuadraticAlgebra.finrank_eq_two a 0⟩
 
-theorem conj_quadraticAlgebra (z : QuadraticAlgebra F a 0) :
-    conj F (QuadraticAlgebra F a 0) z = star z := by
-  rw [conj_apply, algebraTrace_quadraticAlgebra]
-  ext <;> simp [QuadraticAlgebra.algebraMap_eq]; ring
 
 end QuadConj
 
@@ -176,51 +166,8 @@ section Bridge
 variable {F A : Type*} [Field F] [Field A] [Algebra F A] [Algebra.IsQuadraticExtension F A]
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 
-theorem gram_diagForm (a : ι → Fˣ) :
-    gram (diagForm (E := A) a).toSesq (Pi.basisFun A ι) =
-      diagonal fun i => algebraMap F A (a i) := by
-  ext i j
-  rw [gram_apply, diagForm_apply, Pi.basisFun_apply, Pi.basisFun_apply]
-  by_cases hij : i = j
-  · subst hij
-    rw [Finset.sum_eq_single i]
-    · simp
-    · intro k _ hk; simp [hk]
-    · simp
-  · rw [Matrix.diagonal_apply_ne _ hij]
-    refine Finset.sum_eq_zero fun k _ => ?_
-    by_cases hk : k = i
-    · subst hk; simp [Ne.symm hij]
-    · simp [hk]
 
-theorem isometric_iff_isCongr (h h' : HermitianForm F A (ι → A)) :
-    HermitianForm.Isometric h h' ↔
-      IsCongr (conjHom F A) (gram h'.toSesq (Pi.basisFun A ι)) (gram h.toSesq (Pi.basisFun A ι)) := by
-  set b := Pi.basisFun A ι
-  constructor
-  · rintro ⟨e, he⟩
-    refine ⟨LinearMap.toMatrix b b (e : (ι → A) →ₗ[A] (ι → A)), LinearEquiv.isUnit_det e b b, ?_⟩
-    ext i j
-    rw [← sesq_apply_map_basis]
-    simp only [LinearEquiv.coe_coe, he, gram_apply]
-  · rintro ⟨P, hP, hPH⟩
-    have hP' : IsUnit (LinearMap.toMatrix b b (Matrix.toLin b b P)).det := by
-      rwa [LinearMap.toMatrix_toLin]
-    refine ⟨LinearEquiv.ofIsUnitDet hP', fun x y => ?_⟩
-    have key : (h'.toSesq.comp (Matrix.toLin b b P)).compl₂ (Matrix.toLin b b P) = h.toSesq := by
-      refine LinearMap.ext_basis b b fun i j => ?_
-      have := congrFun (congrFun hPH i) j
-      rw [← LinearMap.toMatrix_toLin b b P, ← sesq_apply_map_basis] at this
-      rw [LinearMap.compl₂_apply, LinearMap.comp_apply, this, gram_apply]
-    exact LinearMap.congr_fun₂ key x y
 
-theorem isometric_prod_diagForm_cons {n : ℕ} (a₀ : Fˣ) (a : Fin n → Fˣ) :
-    HermitianForm.Isometric ((HermitianForm.ofUnit (E := A) a₀).prod (diagForm a))
-      (diagForm (Fin.cons a₀ a : Fin (n + 1) → Fˣ)) := by
-  refine ⟨Fin.consLinearEquiv A (fun _ : Fin (n + 1) => A), fun p q => ?_⟩
-  rw [diagForm_apply, Fin.sum_univ_succ, HermitianForm.prod_apply, HermitianForm.ofUnit_apply,
-    diagForm_apply]
-  simp
 
 end Bridge
 

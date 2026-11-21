@@ -1,6 +1,58 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.PowLeComapMapPow
 
+section
+universe u_1 u_2
+
+namespace GlobalTheory.PowerExtensionEvaluation
+
+theorem pow_le_comap_map_pow {A : Type u_1} {B : Type u_2} [CommRing A] [CommRing B]
+    (I : Ideal A) (f : A →+* B) (n : ℕ) : I ^ n ≤ ((I.map f) ^ n).comap f :=
+  Ideal.map_le_iff_le_comap.mp (le_of_eq (Ideal.map_pow f I n))
+
+theorem factorPow_evalₐ {A : Type u_1} [CommRing A] (I : Ideal A) {m n : ℕ} (hle : m ≤ n)
+    (x : AdicCompletion I A) :
+    Ideal.Quotient.factorPow I hle (AdicCompletion.evalₐ I n x) = AdicCompletion.evalₐ I m x := by
+  obtain ⟨s, rfl⟩ := AdicCompletion.mk_surjective I A x
+  rw [AdicCompletion.evalₐ_mk, AdicCompletion.evalₐ_mk]
+  change Ideal.Quotient.mk (I ^ m) (s.val n) = Ideal.Quotient.mk (I ^ m) (s.val m)
+  rw [Ideal.Quotient.eq]
+  have h := s.property hle
+  rw [SModEq.sub_mem] at h
+  have h2 : s.val m - s.val n ∈ I ^ m := by simpa [smul_eq_mul, Ideal.mul_top] using h
+  have h3 := (I ^ m).neg_mem h2
+  rwa [neg_sub] at h3
+
+theorem exists_extension {A : Type u_1} {B : Type u_2} [CommRing A] [CommRing B]
+    (I : Ideal A) (f : A →+* B) [IsAdicComplete (Ideal.map f I) B] :
+    ∃ g : AdicCompletion I A →+* B, g.comp (algebraMap A (AdicCompletion I A)) = f := by
+  let F : (n : ℕ) → AdicCompletion I A →+* B ⧸ (Ideal.map f I) ^ n := fun n =>
+    (Ideal.quotientMap ((Ideal.map f I) ^ n) f (pow_le_comap_map_pow I f n)).comp
+      (AdicCompletion.evalₐ I n : AdicCompletion I A →+* A ⧸ I ^ n)
+  have hF : ∀ {m n : ℕ} (hle : m ≤ n),
+      (Ideal.Quotient.factorPow (Ideal.map f I) hle).comp (F n) = F m := by
+    intro m n hle
+    ext x
+    obtain ⟨a, ha⟩ := Ideal.Quotient.mk_surjective (AdicCompletion.evalₐ I n x)
+    have hm : AdicCompletion.evalₐ I m x = Ideal.Quotient.mk (I ^ m) a := by
+      rw [← factorPow_evalₐ I hle x, ← ha]
+      rfl
+    change Ideal.Quotient.factorPow (Ideal.map f I) hle
+        (Ideal.quotientMap _ f (pow_le_comap_map_pow I f n) (AdicCompletion.evalₐ I n x)) =
+      Ideal.quotientMap _ f (pow_le_comap_map_pow I f m) (AdicCompletion.evalₐ I m x)
+    rw [← ha, hm, Ideal.quotientMap_mk, Ideal.quotientMap_mk]
+    rfl
+  refine ⟨IsAdicComplete.liftRingHom (Ideal.map f I) F hF, ?_⟩
+  apply DFunLike.coe_injective
+  apply IsHausdorff.funext' (Ideal.map f I)
+  intro n a
+  rw [RingHom.coe_comp, Function.comp_apply, IsAdicComplete.mk_liftRingHom]
+  change Ideal.quotientMap _ f (pow_le_comap_map_pow I f n) (AdicCompletion.evalₐ I n (AdicCompletion.of I A a)) = _
+  rw [AdicCompletion.evalₐ_of, Ideal.quotientMap_mk]
+
+end GlobalTheory.PowerExtensionEvaluation
+end
+
+section
 open Polynomial
 
 namespace GlobalTheory
@@ -212,17 +264,7 @@ theorem ringKrullDim_eq_one {C : Type*} [NontriviallyNormedField C] [IsUltrametr
 
 end NormIntegers
 
-theorem exists_norm_pow_eq_of_isAlgClosed {C : Type*} [NormedField C] [IsAlgClosed C] (x : C)
-    {n : ℕ} (hn : 0 < n) : ∃ y : C, ‖y‖ ^ n = ‖x‖ := by
-  obtain ⟨y, rfl⟩ := IsAlgClosed.exists_pow_nat_eq x hn
-  exact ⟨y, (norm_pow y n).symm⟩
 
-theorem valueGroup_divisible_of_isAlgClosed {C : Type*} [Field C] [IsAlgClosed C]
-    (O : ValuationSubring C) (γ : O.ValueGroup) {n : ℕ} (hn : 0 < n) :
-    ∃ δ : O.ValueGroup, δ ^ n = γ := by
-  obtain ⟨x, rfl⟩ := O.valuation_surjective γ
-  obtain ⟨y, rfl⟩ := IsAlgClosed.exists_pow_nat_eq x hn
-  exact ⟨O.valuation y, (map_pow _ y n).symm⟩
 
 theorem isLocalHom_of_comp_algebraMap_adicCompletion {A B : Type*} [CommRing A] [IsLocalRing A]
     [IsNoetherianRing A] [CommRing B] [IsLocalRing B] (f : A →+* B) [IsLocalHom f]
@@ -419,31 +461,7 @@ theorem exists_padic_isometry {C : Type*} [NormedField C] [IsUltrametricDist C] 
     IsDenseInducing.extend_eq (hi'.isUniformInducing.isDenseInducing hd) hf'.continuous q
   rw [this, hf, hi]
 
-theorem norm_padic_ringHom_eq {C : Type*} [NormedField C] (p : ℕ) [hp : Fact p.Prime]
-    (h : ‖(p : C)‖ = (p : ℝ)⁻¹) (j : ℚ_[p] →+* C) (hj : ∀ x : ℤ_[p], ‖j x‖ ≤ 1) (x : ℚ_[p]) :
-    ‖j x‖ = ‖x‖ := by
-  have hu : ∀ y : ℚ_[p], ‖y‖ = 1 → ‖j y‖ = 1 := by
-    intro y hy
-    have hy0 : y ≠ 0 := by rintro rfl; simp at hy
-    have h1 : ‖j y‖ ≤ 1 := hj ⟨y, hy.le⟩
-    have h2 : ‖j y⁻¹‖ ≤ 1 := hj ⟨y⁻¹, by simp [hy]⟩
-    rw [map_inv₀, norm_inv, inv_le_one₀ (by simpa using hy0)] at h2
-    exact le_antisymm h1 h2
-  rcases eq_or_ne x 0 with rfl | hx
-  · simp
-  have hp0 : (p : ℝ) ≠ 0 := by exact_mod_cast hp.out.ne_zero
-  have := hu (x * (p : ℚ_[p]) ^ (-x.valuation)) (by
-    rw [norm_mul, norm_zpow, Padic.norm_p, Padic.norm_eq_zpow_neg_valuation hx, inv_zpow,
-      mul_inv_cancel₀ (zpow_ne_zero _ hp0)])
-  rw [map_mul, map_zpow₀, map_natCast, norm_mul, norm_zpow, h, inv_zpow,
-    mul_inv_eq_one₀ (zpow_ne_zero _ hp0)] at this
-  rw [this, Padic.norm_eq_zpow_neg_valuation hx]
 
-theorem padic_ringHom_ext_of_continuous {C : Type*} [NormedField C] (p : ℕ) [Fact p.Prime]
-    {j₁ j₂ : ℚ_[p] →+* C} (h₁ : Continuous j₁) (h₂ : Continuous j₂) : j₁ = j₂ := by
-  refine RingHom.ext fun x => congrFun ((Padic.denseRange_ratCast p).equalizer h₁ h₂ ?_) x
-  ext q
-  simp
 
 theorem exists_complete_isAlgClosed_padic_of_isDiscreteValuationRing (V : Type*) (K : Type u)
     [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [Field K] [Algebra V K]
@@ -497,69 +515,7 @@ instance {C : Type*} [NormedField C] [IsUltrametricDist C] [IsAlgClosed C] :
     IsAlgClosed (IsLocalRing.ResidueField (normIntegers C)) :=
   NormIntegers.isAlgClosed_residueField (normIntegers_integers C)
 
-theorem normIntegers_properties_of_completeSpace (C : Type*) [NontriviallyNormedField C]
-    [IsUltrametricDist C] [CompleteSpace C] :
-    (∀ w : normIntegers C, ‖(w : C)‖ < 1 → IsAdicComplete (Ideal.span {w}) (normIntegers C)) ∧
-    (∀ J : Ideal (normIntegers C), J.FG → J.IsPrincipal) ∧
-    (∀ J : Ideal (normIntegers C), J.FG → J ≤ IsLocalRing.maximalIdeal (normIntegers C) →
-      J = ⊥ ∨ ∃ w : normIntegers C, 0 < ‖(w : C)‖ ∧ ‖(w : C)‖ < 1 ∧ J = Ideal.span {w}) ∧
-    HenselianLocalRing (normIntegers C) ∧
-    ringKrullDim (normIntegers C) = 1 ∧
-    (IsAlgClosed C →
-      (∀ (γ : (normIntegers C).ValueGroup) (n : ℕ), 0 < n → ∃ δ, δ ^ n = γ) ∧
-      (∀ (x : C) (n : ℕ), 0 < n → ∃ y : C, ‖y‖ ^ n = ‖x‖) ∧
-      IsAlgClosed (IsLocalRing.ResidueField (normIntegers C))) ∧
-    (∀ (A : Type u) [CommRing A] [IsLocalRing A] [IsNoetherianRing A]
-      (f : A →+* normIntegers C) [IsLocalHom f],
-      (∃! g : AdicCompletion (IsLocalRing.maximalIdeal A) A →+* normIntegers C,
-        g.comp (algebraMap A _) = f) ∧
-      ∀ g : AdicCompletion (IsLocalRing.maximalIdeal A) A →+* normIntegers C,
-        g.comp (algebraMap A _) = f → IsLocalHom g) := by
-  have hO := normIntegers_integers C
-  refine ⟨fun w hw => NormIntegers.isAdicComplete_span_singleton hO hw,
-    fun J hJ => NormIntegers.isPrincipal_of_fg hO hJ,
-    fun J hJ hle => NormIntegers.eq_bot_or_eq_span_of_fg_of_ne_top hO hJ
-      (ne_top_of_le_ne_top (IsLocalRing.maximalIdeal.isMaximal _).ne_top hle),
-    inferInstance, NormIntegers.ringKrullDim_eq_one hO,
-    fun _ => ⟨fun γ n hn => valueGroup_divisible_of_isAlgClosed _ γ hn,
-      fun x n hn => exists_norm_pow_eq_of_isAlgClosed x hn, inferInstance⟩,
-    fun A _ _ _ f _ => ⟨NormIntegers.existsUnique_extend_of_fg hO
-      (IsLocalRing.maximalIdeal A).fg_of_isNoetherianRing f,
-      fun g hg => isLocalHom_of_comp_algebraMap_adicCompletion f g hg⟩⟩
 
-theorem valuationRing_of_complete_field :
-    (∀ (C : Type u) [NontriviallyNormedField C] [IsUltrametricDist C] [CompleteSpace C],
-      (∀ w : normIntegers C, ‖(w : C)‖ < 1 → IsAdicComplete (Ideal.span {w}) (normIntegers C)) ∧
-      (∀ J : Ideal (normIntegers C), J.FG → J.IsPrincipal) ∧
-      (∀ J : Ideal (normIntegers C), J.FG → J ≤ IsLocalRing.maximalIdeal (normIntegers C) →
-        J = ⊥ ∨ ∃ w : normIntegers C, 0 < ‖(w : C)‖ ∧ ‖(w : C)‖ < 1 ∧ J = Ideal.span {w}) ∧
-      HenselianLocalRing (normIntegers C) ∧
-      ringKrullDim (normIntegers C) = 1 ∧
-      (IsAlgClosed C →
-        (∀ (γ : (normIntegers C).ValueGroup) (n : ℕ), 0 < n → ∃ δ, δ ^ n = γ) ∧
-        (∀ (x : C) (n : ℕ), 0 < n → ∃ y : C, ‖y‖ ^ n = ‖x‖) ∧
-        IsAlgClosed (IsLocalRing.ResidueField (normIntegers C))) ∧
-      (∀ (A : Type u) [CommRing A] [IsLocalRing A] [IsNoetherianRing A]
-        (f : A →+* normIntegers C) [IsLocalHom f],
-        (∃! g : AdicCompletion (IsLocalRing.maximalIdeal A) A →+* normIntegers C,
-          g.comp (algebraMap A _) = f) ∧
-        ∀ g : AdicCompletion (IsLocalRing.maximalIdeal A) A →+* normIntegers C,
-          g.comp (algebraMap A _) = f → IsLocalHom g)) ∧
-    (∀ (V K : Type u) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [Field K]
-      [Algebra V K] [IsFractionRing V K],
-      (∀ a : V, a ≠ 0 → a ∈ IsLocalRing.maximalIdeal V → ∀ r : ℝ, 0 < r → r < 1 →
-        ∃ (C : Type u) (_ : NontriviallyNormedField C) (_ : IsUltrametricDist C)
-          (_ : CompleteSpace C) (_ : IsAlgClosed C) (_ : Algebra K C),
-          (∀ x : K, ‖algebraMap K C x‖ ≤ 1 ↔ x ∈ (algebraMap V K).range) ∧
-            ‖algebraMap K C (algebraMap V K a)‖ = r) ∧
-      (∀ [CharZero K] (p : ℕ) [Fact p.Prime], (p : V) ∈ IsLocalRing.maximalIdeal V →
-        ∃ (C : Type u) (_ : NontriviallyNormedField C) (_ : IsUltrametricDist C)
-          (_ : CompleteSpace C) (_ : IsAlgClosed C) (_ : NormedAlgebra ℚ_[p] C) (_ : Algebra K C),
-          ∀ x : K, ‖algebraMap K C x‖ ≤ 1 ↔ x ∈ (algebraMap V K).range)) :=
-  ⟨fun C _ _ _ => normIntegers_properties_of_completeSpace C,
-    fun V K _ _ _ _ _ _ =>
-      ⟨fun _ ha0 ha _ hr0 hr1 =>
-        exists_complete_isAlgClosed_of_isDiscreteValuationRing V K ha0 ha hr0 hr1,
-      fun p _ hp => exists_complete_isAlgClosed_padic_of_isDiscreteValuationRing V K p hp⟩⟩
 
 end GlobalTheory
+end

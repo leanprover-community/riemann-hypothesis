@@ -56,10 +56,6 @@ variable {U V : (Proj 𝒜).Opens} {d d' : ℕ} {a b a' b' : A} {ha : a ∈ 𝒜
 theorem ev_frac (x : Proj 𝒜) (hx : x ∈ U) :
     ev 𝒜 U x hx (frac 𝒜 U a b ha hb hU) = Localization.mk a ⟨b, hU hx⟩ := rfl
 
-theorem ev_frac_mul_den (x : Proj 𝒜) (hx : x ∈ U) :
-    ev 𝒜 U x hx (frac 𝒜 U a b ha hb hU) * algebraMap A _ b = algebraMap A _ a := by
-  rw [ev_frac, Localization.mk_eq_mk']
-  exact IsLocalization.mk'_spec _ a (⟨b, hU hx⟩ : x.asHomogeneousIdeal.toIdeal.primeCompl)
 
 theorem resG_frac (h : V ≤ U) :
     resG (Proj 𝒜) h (frac 𝒜 U a b ha hb hU) = frac 𝒜 V a b ha hb (h.trans hU) := rfl

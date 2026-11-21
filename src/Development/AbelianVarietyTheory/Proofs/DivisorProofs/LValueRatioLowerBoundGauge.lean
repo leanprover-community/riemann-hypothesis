@@ -3,13 +3,230 @@ import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmal
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToricSumEqHeckeLValueMulAuxiliaryFactors
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsValCharTwist
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.HeckeTateFunctionalEquationCM
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MeanValuationGeOfIntegralAtPrime
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PartialZetaValuesAtNegIntUnique
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SquareNuTwistedTupleIsCMValueHeckeCharacterStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistPlacesUnderSplitCoprimeConductorStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SquareNuTwistedTupleRamifiedAtTwistPlaceStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistPlacesUnderPrimeNotMemOfNormCoprime
+import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HeckeLPartialContinuationHolds
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MeanValuationNormOverDegreeSmulEqAddValuation
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SquareNuTwistedTupleIsCMValueHeckeCharacter
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistPlacesUnderSplitCoprimeConductor
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SquareNuTwistedTupleRamifiedAtTwistPlace
 
+section
+section
+open NumberField IsDedekindDomain Polynomial
+
+noncomputable section
+
+namespace GlobalTheory.FunObj.SqNum.MeanValLow
+
+variable {K : Type} [Field K] [NumberField K]
+
+theorem vw_eq_zero_of_notMem (w : Formalism.PairingDivisionLocalBalance.Pl K) {a : 𝓞 K} (ha : a ∉ w.asIdeal) : Formalism.DivisionValues.vw w (a : K) = 0 := by
+  classical
+  have ha0 : (Ideal.span {a} : Ideal (𝓞 K)) ≠ 0 := by
+    rw [ne_eq, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]
+    rintro rfl
+    exact ha w.asIdeal.zero_mem
+  unfold Formalism.DivisionValues.vw
+  rw [← FractionalIdeal.coeIdeal_span_singleton, FractionalIdeal.count_coe K _ ha0]
+  by_contra h
+  have h' : (Associates.mk w.asIdeal).count (Associates.mk (Ideal.span {a})).factors ≠ 0 := by
+    intro h0
+    exact h (by rw [h0]; rfl)
+  exact ha (Ideal.dvd_span_singleton.1 ((Associates.count_ne_zero_iff_dvd ha0 w.irreducible).1 h'))
+
+theorem vw_int_nonneg (w : Formalism.PairingDivisionLocalBalance.Pl K) (a : 𝓞 K) : 0 ≤ Formalism.DivisionValues.vw w (a : K) := by
+  unfold Formalism.DivisionValues.vw
+  rw [← FractionalIdeal.coeIdeal_span_singleton]
+  exact FractionalIdeal.count_coe_nonneg K w _
+
+theorem vw_mul (w : Formalism.PairingDivisionLocalBalance.Pl K) {a b : K} (ha : a ≠ 0) (hb : b ≠ 0) :
+    Formalism.DivisionValues.vw w (a * b) = Formalism.DivisionValues.vw w a + Formalism.DivisionValues.vw w b := by
+  unfold Formalism.DivisionValues.vw
+  rw [← FractionalIdeal.spanSingleton_mul_spanSingleton]
+  exact FractionalIdeal.count_mul K w ((FractionalIdeal.spanSingleton_ne_zero_iff).2 ha)
+    ((FractionalIdeal.spanSingleton_ne_zero_iff).2 hb)
+
+theorem vw_pow (w : Formalism.PairingDivisionLocalBalance.Pl K) (a : K) (n : ℕ) : Formalism.DivisionValues.vw w (a ^ n) = n * Formalism.DivisionValues.vw w a := by
+  unfold Formalism.DivisionValues.vw
+  rw [← FractionalIdeal.spanSingleton_pow, FractionalIdeal.count_pow]
+
+theorem coeff_zero_mem (σ : K →+* ℂ) {δ : ℂ} (hδ : IsIntegral ℤ δ) {q : K[X]} (hq : IsMinPol σ δ q) :
+    ∃ b : 𝓞 K, (b : K) = q.coeff 0 := by
+  letI : Algebra K ℂ := σ.toAlgebra
+  letI : Algebra (𝓞 K) ℂ := ((algebraMap K ℂ).comp (algebraMap (𝓞 K) K)).toAlgebra
+  haveI : IsScalarTower (𝓞 K) K ℂ := IsScalarTower.of_algebraMap_eq fun _ => rfl
+  haveI : IsScalarTower ℤ (𝓞 K) ℂ := IsScalarTower.of_algebraMap_eq' (Subsingleton.elim _ _)
+  have hi : IsIntegral (𝓞 K) δ := hδ.tower_top
+  have e := minpoly.isIntegrallyClosed_eq_field_fractions' K hi
+  refine ⟨(minpoly (𝓞 K) δ).coeff 0, ?_⟩
+  rw [hq.eq_minpoly, e, coeff_map]
+
+end GlobalTheory.FunObj.SqNum.MeanValLow
+
+open GlobalTheory.FunObj.SqNum.MeanValLow in
+
+theorem GlobalTheory.FunObj.SqNum.meanVal_vw_ge_of_intAt : ∀ {K : Type} [Field K] [NumberField K] (σ : K →+* ℂ) {β : ℂ} {p : K[X]}, GlobalTheory.FunObj.SqNum.IsMinPol σ β p → β ≠ 0 → ∀ {c : K}, c ≠ 0 → ∀ {l : ℕ}, l.Prime → ∀ {w : Formalism.PairingDivisionLocalBalance.Pl K}, (l : 𝓞 K) ∈ w.asIdeal → ∀ {m : ℕ}, GlobalTheory.CMVal.IntAt l ((l : ℂ) ^ m * (σ c * β)) → -((m : ℝ) * (Formalism.DivisionValues.vw w (l : K) : ℝ)) ≤ (Formalism.DivisionValues.vw w c : ℝ) + GlobalTheory.FunObj.SqNum.meanVal_vw w p := by
+  intro K _ _ σ β p hp hβ c hc l hl w hw m ⟨n, hn, hint⟩
+  have hn0 : n ≠ 0 := by
+    rintro rfl
+    rw [Nat.coprime_zero_left] at hn
+    exact hl.one_lt.ne' hn
+  have hl0 : (l : K) ≠ 0 := by exact_mod_cast hl.ne_zero
+  have hnK : (n : K) ≠ 0 := by exact_mod_cast hn0
+  have hlm : (l : K) ^ m ≠ 0 := pow_ne_zero _ hl0
+  set a : K := (n : K) * (l : K) ^ m * c with ha_def
+  have ha : a ≠ 0 := mul_ne_zero (mul_ne_zero hnK hlm) hc
+  have hδ : IsIntegral ℤ (σ a * β) := by
+    have e : σ a * β = (n : ℂ) * ((l : ℂ) ^ m * (σ c * β)) := by
+      simp only [a, map_mul, map_pow, map_natCast]; ring
+    rw [e]; exact hint
+  letI : Algebra K ℂ := σ.toAlgebra
+  haveI : IsScalarTower ℤ K ℂ := IsScalarTower.of_algebraMap_eq' (Subsingleton.elim _ _)
+  have hK : IsIntegral K (σ a * β) := hδ.tower_top
+  have hq : IsMinPol σ (σ a * β) (minpoly K (σ a * β)) :=
+    ⟨minpoly.monic hK, minpoly.irreducible hK, minpoly.aeval K (σ a * β)⟩
+  obtain ⟨b, hb⟩ := coeff_zero_mem σ hδ hq
+  have eq := hp.scaleRoots_eq hq ha
+  obtain ⟨hc0, hd⟩ := hp.ne_zero hβ
+  rw [eq, coeff_scaleRoots, Nat.sub_zero] at hb
+  have h0 : 0 ≤ Formalism.DivisionValues.vw w (p.coeff 0 * a ^ p.natDegree) := hb ▸ vw_int_nonneg w b
+  rw [vw_mul w hc0 (pow_ne_zero _ ha), vw_pow, ha_def, vw_mul w (mul_ne_zero hnK hlm) hc,
+    vw_mul w hnK hlm, vw_pow] at h0
+  have hnw : (n : 𝓞 K) ∉ w.asIdeal := by
+    intro hn'
+    obtain ⟨x, y, e'⟩ := (Nat.isCoprime_iff_coprime.2 hn).map (Int.castRingHom (𝓞 K))
+    refine w.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 ?_)
+    rw [← e']
+    exact add_mem (Ideal.mul_mem_left _ _ (by simpa using hn')) (Ideal.mul_mem_left _ _ (by simpa using hw))
+  have hvn : Formalism.DivisionValues.vw w (n : K) = 0 := by
+    have := vw_eq_zero_of_notMem w hnw
+    simpa using this
+  rw [hvn] at h0
+  have hdpos : (0 : ℝ) < p.natDegree := by exact_mod_cast Nat.pos_of_ne_zero hd
+  unfold GlobalTheory.FunObj.SqNum.meanVal_vw
+  have h1 : (0 : ℝ) ≤ (Formalism.DivisionValues.vw w (p.coeff 0) : ℝ) + p.natDegree * ((m : ℝ) * Formalism.DivisionValues.vw w (l : K) + Formalism.DivisionValues.vw w c) := by
+    have := (Int.cast_le (R := ℝ)).2 h0
+    push_cast at this
+    linarith
+  have h2 : -((m : ℝ) * Formalism.DivisionValues.vw w (l : K) + Formalism.DivisionValues.vw w c) ≤ (Formalism.DivisionValues.vw w (p.coeff 0) : ℝ) / p.natDegree := by
+    rw [le_div_iff₀ hdpos]; linarith
+  linarith
+end
+end
+
+open NumberField IsDedekindDomain Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.meanValuation_ge_of_integral_at_prime : ∀ {K : Type} [Field K] [NumberField K] (σ : K →+* ℂ) {β : ℂ} {p : K[X]}, GlobalTheory.FunObj.SqNum.IsMinPol σ β p → β ≠ 0 → ∀ {c : K}, c ≠ 0 → ∀ {l : ℕ}, l.Prime → ∀ {w : Formalism.PairingDivisionLocalBalance.Pl K}, (l : 𝓞 K) ∈ w.asIdeal → ∀ {m : ℕ}, GlobalTheory.CMVal.IntAt l ((l : ℂ) ^ m * (σ c * β)) → -((m : ℝ) * (Formalism.DivisionValues.vw w (l : K) : ℝ)) ≤ (Formalism.DivisionValues.vw w c : ℝ) + GlobalTheory.FunObj.SqNum.meanVal_vw w p := by
+  atlas_forward_decl GlobalTheory.FunObj.SqNum.meanVal_vw_ge_of_intAt
+end
+
+section
+section
+open NumberField IsDedekindDomain Polynomial
+
+namespace GlobalTheory.ZetaValUnique
+
+theorem classZeta_eqOn {E : Type} [Field E] [NumberField E] {C : ClassGroup (GlobalTheory.CMVal.OF E)} {Z Z' : ℂ → ℂ}
+    (h : GlobalTheory.IndefiniteRowSideFullHecke.ClassZetaValuationBounds.IsClassZeta C Z) (h' : GlobalTheory.IndefiniteRowSideFullHecke.ClassZetaValuationBounds.IsClassZeta C Z') :
+    Set.EqOn Z Z' {1}ᶜ := by
+  have ho : IsOpen ({1}ᶜ : Set ℂ) := isOpen_compl_singleton
+  have hc : IsPreconnected ({1}ᶜ : Set ℂ) :=
+    (isConnected_compl_singleton_of_one_lt_rank (by simp) (1 : ℂ)).isPreconnected
+  refine (h.1.analyticOnNhd ho).eqOn_of_preconnected_of_eventuallyEq (h'.1.analyticOnNhd ho) hc
+    (z₀ := 2) (by norm_num) ?_
+  have hh : IsOpen {s : ℂ | 1 < s.re} := isOpen_lt continuous_const Complex.continuous_re
+  filter_upwards [hh.mem_nhds (show (2 : ℂ) ∈ {s : ℂ | 1 < s.re} by simp)] with s hs
+  exact (h.2 s hs).unique (h'.2 s hs)
+
+theorem classZetaVals_unique : ∀ {E : Type} [Field E] [NumberField E] {k : ℕ}, 2 ≤ k →
+    ∀ {z z' : ClassGroup (GlobalTheory.CMVal.OF E) → ℚ}, GlobalTheory.IndefiniteRowSideFullHecke.ClassZetaValuationBounds.IsClassZetaVals k z →
+      GlobalTheory.IndefiniteRowSideFullHecke.ClassZetaValuationBounds.IsClassZetaVals k z' → z = z' := by
+  intro E _ _ k hk z z' hz hz'
+  funext C
+  obtain ⟨Z, hZ, hZv⟩ := hz C
+  obtain ⟨Z', hZ', hZv'⟩ := hz' C
+  have hne : (1 - (k : ℂ)) ∈ ({1}ᶜ : Set ℂ) := by
+    simp only [Set.mem_compl_iff, Set.mem_singleton_iff, sub_eq_self, Nat.cast_eq_zero]
+    omega
+  have := classZeta_eqOn hZ hZ' hne
+  rw [hZv, hZv'] at this
+  exact_mod_cast this
+
+end GlobalTheory.ZetaValUnique
+end
+
+open NumberField IsDedekindDomain Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.partialZeta_values_at_neg_int_unique : ∀ {E : Type} [Field E] [NumberField E] {k : ℕ}, 2 ≤ k → ∀ {z z' : ClassGroup (GlobalTheory.CMVal.OF E) → ℚ}, GlobalTheory.IndefiniteRowSideFullHecke.ClassZetaValuationBounds.IsClassZetaVals k z → GlobalTheory.IndefiniteRowSideFullHecke.ClassZetaValuationBounds.IsClassZetaVals k z' → z = z' := by
+  atlas_forward_decl GlobalTheory.ZetaValUnique.classZetaVals_unique
+end
+
+section
+open NumberField IsDedekindDomain
+open Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.square_nu_twisted_tuple_isCMValueHeckeCharacter : ∀ {D : Formalism.BasicNotions.D7} {T : Type} {L : Formalism.IndefR.Links.LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} (G : GlobalTheory.ChiGrid.GridData L sc) {μ₀ : T}, L.Is μ₀ → ∀ (t : T) (i j : Fin D.R.m) {s : ℕ}, s ≤ GlobalTheory.FunObj.SqNum.halfRank D i j → GlobalTheory.CMVal.IsValChar (GlobalTheory.FunObj.SqNum.cmPhi D) s (GlobalTheory.FunObj.SqNum.kap D sc.cGap i j s) (GlobalTheory.FunObj.SqNum.condF G.pl) ((GlobalTheory.SqTop.twPl G t).image fun P => P.under (𝓞 D.host.F)) (GlobalTheory.FunObj.SqNum.nuH G t i j) := by
+  first | exact @GlobalTheory.SqTop.TwVal.isValChar_nu_twist | exact GlobalTheory.SqTop.TwVal.isValChar_nu_twist | (intros; apply GlobalTheory.SqTop.TwVal.isValChar_nu_twist <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain
+open Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isFinSetSplitPlacesCoprimeConductor_twPl_under : ∀ {D : Formalism.BasicNotions.D7} {T : Type} {L : Formalism.IndefR.Links.LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} (G : GlobalTheory.ChiGrid.GridData L sc) {μ₀ : T}, L.Is μ₀ → ∀ (t : T), GlobalTheory.CMVal.IsFinSetSplitPlacesCoprimeConductor (GlobalTheory.FunObj.SqNum.condF G.pl) ((GlobalTheory.SqTop.twPl G t).image fun P => P.under (𝓞 D.host.F)) := by
+  first | exact @GlobalTheory.KummerTwistLemmas.twist_places_under_split_coprime_conductor | exact GlobalTheory.KummerTwistLemmas.twist_places_under_split_coprime_conductor | (intros; apply GlobalTheory.KummerTwistLemmas.twist_places_under_split_coprime_conductor <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain
+open Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.square_nu_twisted_tuple_ramified_at_twist_place : ∀ {D : Formalism.BasicNotions.D7} {T : Type} {L : Formalism.IndefR.Links.LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} (G : GlobalTheory.ChiGrid.GridData L sc) {μ₀ : T}, L.Is μ₀ → ∀ (t : T) (i j : Fin D.R.m), ∀ P ∈ GlobalTheory.SqTop.twPl G t, ¬ (GlobalTheory.FunObj.SqNum.nuH G t i j).UnrAt P := by
+  first | exact @GlobalTheory.SqTop.nuH_not_unrAt_twPl | exact GlobalTheory.SqTop.nuH_not_unrAt_twPl | (intros; apply GlobalTheory.SqTop.nuH_not_unrAt_twPl <;> assumption)
+end
+
+section
+section
+open NumberField IsDedekindDomain
+open Classical
+
+theorem GlobalTheory.twPl_under_not_mem_prime : ∀ {D : Formalism.BasicNotions.D7} {T : Type} {L : Formalism.IndefR.Links.LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} (G : GlobalTheory.ChiGrid.GridData L sc) (t : T) {l : ℕ}, l.Prime → ∀ {w : Formalism.PairingDivisionLocalBalance.Pl D.what₂.LL}, (l : 𝓞 D.what₂.LL) ∈ w.asIdeal → (GlobalTheory.SqTop.Qn G t : 𝓞 D.what₂.LL) ∉ w.asIdeal → ∀ q ∈ ((GlobalTheory.SqTop.twPl G t).image fun P => P.under (𝓞 D.host.F)), (l : 𝓞 D.host.F) ∉ q.asIdeal := by
+  intro D T L sc G t l hl w hlw hQ q hq hlq
+  obtain ⟨P, hP, rfl⟩ := Finset.mem_image.mp hq
+  have hlP : ((l : ℕ) : 𝓞 D.host.E) ∈ P.asIdeal := by
+    have h := hlq
+    simp only [HeightOneSpectrum.under] at h
+    have : algebraMap (𝓞 D.host.F) (𝓞 D.host.E) (l : 𝓞 D.host.F) ∈ P.asIdeal := h
+    simpa using this
+  have hdvd : l ∣ Ideal.absNorm P.asIdeal := by
+    have h1 := Ideal.absNorm_dvd_norm_of_mem hlP
+    have h2 : ((l : ℕ) : 𝓞 D.host.E) = algebraMap ℤ (𝓞 D.host.E) (l : ℤ) := by simp
+    rw [h2, Algebra.norm_algebraMap] at h1
+    have h3 : Ideal.absNorm P.asIdeal ∣ l ^ Module.finrank ℤ (𝓞 D.host.E) := by
+      have := Int.natAbs_dvd_natAbs.mpr h1
+      simpa [Int.natAbs_pow] using this
+    obtain ⟨k, -, hk⟩ := (Nat.dvd_prime_pow hl).mp h3
+    have hne : Ideal.absNorm P.asIdeal ≠ 1 := by
+      rw [Ne, Ideal.absNorm_eq_one_iff]
+      exact P.isPrime.ne_top
+    rcases k with _ | k
+    · rw [pow_zero] at hk; exact absurd hk hne
+    · rw [hk]; exact dvd_pow_self l (Nat.succ_ne_zero k)
+  have hQd : l ∣ GlobalTheory.SqTop.Qn G t :=
+    dvd_trans hdvd (Finset.dvd_prod_of_mem _ hP)
+  obtain ⟨k, hk⟩ := hQd
+  apply hQ
+  rw [hk, Nat.cast_mul]
+  exact w.asIdeal.mul_mem_right _ hlw
+end
+
+open NumberField IsDedekindDomain
+open Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.twist_places_under_prime_not_mem_of_norm_coprime : ∀ {D : Formalism.BasicNotions.D7} {T : Type} {L : Formalism.IndefR.Links.LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} (G : GlobalTheory.ChiGrid.GridData L sc) (t : T) {l : ℕ}, l.Prime → ∀ {w : Formalism.PairingDivisionLocalBalance.Pl D.what₂.LL}, (l : 𝓞 D.what₂.LL) ∈ w.asIdeal → (GlobalTheory.SqTop.Qn G t : 𝓞 D.what₂.LL) ∉ w.asIdeal → ∀ q ∈ ((GlobalTheory.SqTop.twPl G t).image fun P => P.under (𝓞 D.host.F)), (l : 𝓞 D.host.F) ∉ q.asIdeal := by
+  atlas_forward_decl GlobalTheory.twPl_under_not_mem_prime
+end
+
+section
 section
 noncomputable section
 open NumberField IsDedekindDomain Polynomial
@@ -200,3 +417,4 @@ open GlobalTheory.SqTop
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.lValueRatio_lower_bound_gauge : GlobalTheory.IndefiniteRowSideFullHecke.ClassZetaValuationBounds.ToricDenominator → FieldDat → TorEx → RhoLow := by
   atlas_forward_decl GlobalTheory.RhoLowProof.rhoLow_holds
+end

@@ -2,8 +2,114 @@ import Mathlib
 import GroundTheory.AutomorphicForms.CuspidalDiscreteness
 import GroundTheory.AutomorphicForms.CuspidalProjection.Unfold
 import GroundTheory.AutomorphicForms.SupercuspidalCoefficients
-import GroundTheory.AutomorphicForms.CuspidalProjection.ContinuousFiniteAdeleSingleAdd
+import GroundTheory.GlobalFields.TateThesis.AdelicCharLocal
 
+section
+open MeasureTheory Set Function Filter Topology
+open NumberField IsDedekindDomain
+open scoped NumberField.AdeleRing
+
+namespace GroundTheory.Automorphic
+
+noncomputable section
+
+namespace CuspidalProjection
+
+open Reduction AutomorphicForm CuspidalSpectrum
+
+variable {K : Type*} [Field K] [NumberField K] {n r : ℕ} (v : HeightOneSpectrum (𝓞 K))
+
+theorem continuous_finiteAdeleSingleAdd :
+    Continuous (GroundTheory.Global.finiteAdeleSingleAdd (K := K) v) := by
+  classical
+  have hle : (Filter.cofinite : Filter (HeightOneSpectrum (𝓞 K))) ≤ 𝓟 {v}ᶜ := by
+    rw [Filter.le_principal_iff, Filter.mem_cofinite, compl_compl]
+    exact Set.finite_singleton v
+  let g : v.adicCompletion K → RestrictedProduct (fun w : HeightOneSpectrum (𝓞 K) => w.adicCompletion K)
+      (fun w => (w.adicCompletionIntegers K : Set (w.adicCompletion K))) (𝓟 {v}ᶜ) := fun x =>
+    ⟨Pi.single (M := fun w : HeightOneSpectrum (𝓞 K) => w.adicCompletion K) v x,
+      Filter.eventually_principal.2 fun w hw => by
+        rw [Pi.single_eq_of_ne (Set.mem_compl_singleton_iff.1 hw)]
+        exact zero_mem _⟩
+  have hs : Continuous fun x : v.adicCompletion K =>
+      Pi.single (M := fun w : HeightOneSpectrum (𝓞 K) => w.adicCompletion K) v x :=
+    continuous_single v
+  have hg : Continuous g := RestrictedProduct.continuous_rng_of_principal.2 hs
+  have heq : (GroundTheory.Global.finiteAdeleSingleAdd (K := K) v : v.adicCompletion K → _) =
+      RestrictedProduct.inclusion _ _ hle ∘ g := by
+    funext x
+    rfl
+  rw [heq]
+  exact (RestrictedProduct.continuous_inclusion hle).comp hg
+
+def adeleSingle : v.adicCompletion K →+ 𝔸[K] :=
+  (AddMonoidHom.inr (InfiniteAdeleRing K) (FiniteAdeleRing (𝓞 K) K)).comp
+    (GroundTheory.Global.finiteAdeleSingleAdd v)
+
+
+def evAt : 𝔸[K] →+* v.adicCompletion K :=
+  (RestrictedProduct.evalRingHom (fun u : HeightOneSpectrum (𝓞 K) => u.adicCompletion K) v).comp
+    (RingHom.snd _ _)
+
+theorem evAt_apply (x : 𝔸[K]) : evAt v x = x.2 v := rfl
+
+
+def compAt : AdelicGLn.AdelicGL K n →* GL (Fin n) (v.adicCompletion K) :=
+  (RestrictedProduct.evalMonoidHom (fun w : HeightOneSpectrum (𝓞 K) => GL (Fin n) (w.adicCompletion K)) v).comp
+    ((MonoidHom.snd _ _).comp (AdelicGLn.restrictedProductEquiv K n).toMonoidHom)
+
+theorem compAt_apply (g : AdelicGLn.AdelicGL K n) (a b : Fin n) :
+    (compAt v g : GL (Fin n) (v.adicCompletion K)) a b = ((g : AdelicGLn.AdelicMatrix K n) a b).2 v :=
+  AdelicGLn.restrictedProductEquiv_apply_snd K n g v a b
+
+theorem continuous_compAt : Continuous (compAt (K := K) (n := n) v) :=
+  (RestrictedProduct.continuous_eval v).comp
+    (continuous_snd.comp (AdelicGLn.restrictedProductEquiv K n).continuous)
+
+def awayAt : 𝔸[K] →+*
+    InfiniteAdeleRing K × ((w : {w : HeightOneSpectrum (𝓞 K) // w ≠ v}) → w.1.adicCompletion K) :=
+  (RingHom.fst _ _).prod (RingHom.pi fun w =>
+    (RestrictedProduct.evalRingHom (fun u : HeightOneSpectrum (𝓞 K) => u.adicCompletion K) w.1).comp
+      (RingHom.snd _ _))
+
+def AgreeAway (g g' : AdelicGLn.AdelicGL K n) : Prop :=
+  (awayAt v).mapMatrix (g : AdelicGLn.AdelicMatrix K n) =
+    (awayAt v).mapMatrix (g' : AdelicGLn.AdelicMatrix K n)
+
+variable (n r) in
+
+def unipAt (y : UPos n r → v.adicCompletion K) : normOneGL K n :=
+  unipOne K n r fun p => adeleSingle v (y p)
+
+theorem unipAt_add (y y' : UPos n r → v.adicCompletion K) :
+    unipAt n r v (y + y') = unipAt n r v y * unipAt n r v y' := by
+  rw [unipAt, unipAt, unipAt, ← unipOne_add]
+  congr 1
+  funext p
+  simp [map_add]
+
+
+
+def unipCoord (g : normOneGL K n) : UPos n r → v.adicCompletion K := fun p =>
+  (compAt v (g : AdelicGLn.AdelicGL K n) : GL (Fin n) (v.adicCompletion K)) p.1.1 p.1.2
+
+theorem continuous_unipCoord : Continuous (unipCoord (K := K) (n := n) (r := r) v) := by
+  refine continuous_pi fun p => ?_
+  have h : Continuous fun g : GL (Fin n) (v.adicCompletion K) =>
+      (g : Matrix (Fin n) (Fin n) (v.adicCompletion K)) p.1.1 p.1.2 :=
+    Units.continuous_val.matrix_elem p.1.1 p.1.2
+  exact h.comp ((continuous_compAt v).comp continuous_subtype_val)
+
+
+
+end CuspidalProjection
+
+end
+
+end GroundTheory.Automorphic
+end
+
+section
 open MeasureTheory Set Filter Topology Function
 open NumberField IsDedekindDomain
 open scoped ENNReal Pointwise InnerProductSpace ComplexConjugate NumberField.AdeleRing
@@ -24,68 +130,6 @@ local notation "Γ₁" => rationalGLOne K n
 
 variable (μ : Measure (normOneGL K n)) [μ.IsHaarMeasure]
 
-theorem integral_rconv_unip_eq (f : CompactlySupportedContinuousMap (normOneGL K n) ℂ)
-    (φ : Lp ℂ 2 (quotientMeasure Γ₁ μ)) (r : ℕ) (x : normOneGL K n) :
-    ∫ X in unipFundamentalDomain K n r, rconv Γ₁ μ f φ (unipOne K n r X * x)
-      ∂unipMeasure K n r = ∫ z, f (x⁻¹ * z) * constantTermL2 μ r φ z ∂μ := by
-  set S := (x * ·) '' tsupport (f : normOneGL K n → ℂ)
-  have hS : IsCompact S := f.hasCompactSupport.isCompact.image (continuous_const_mul x)
-  obtain ⟨M, hM⟩ := f.continuous.bounded_above_of_compact_support f.hasCompactSupport
-  have hfS : ∀ z ∉ S, f (x⁻¹ * z) = 0 := fun z hz =>
-    image_eq_zero_of_notMem_tsupport fun h => hz ⟨x⁻¹ * z, h, by simp⟩
-  set F : (UPos n r → 𝔸[K]) → normOneGL K n → ℂ :=
-    fun X z => f (x⁻¹ * z) * φ (mk Γ₁ (unipOne K n r X * z))
-  have hFm : StronglyMeasurable (uncurry F) :=
-    (f.continuous.comp (continuous_const_mul x⁻¹ |>.comp continuous_snd)).stronglyMeasurable.mul
-      ((Lp.stronglyMeasurable φ).comp_measurable ((measurable_mk Γ₁).comp
-        (continuous_unipOne_mul r).measurable))
-  have hint : Integrable (uncurry F)
-      (((unipMeasure K n r).restrict (unipFundamentalDomain K n r)).prod μ) := by
-    refine ⟨hFm.aestronglyMeasurable, ?_⟩
-    obtain ⟨C, hC, hCφ⟩ := exists_lintegral_unip_sq_le μ r hS
-    have hfin : ∫⁻ z in S, ∫⁻ X in unipFundamentalDomain K n r,
-        ‖φ (mk Γ₁ (unipOne K n r X * z))‖ₑ ∂unipMeasure K n r ∂μ < ⊤ :=
-      L2Kernel.lt_top_of_sq_lt_top ((hCφ φ).trans_lt
-        (ENNReal.mul_lt_top hC.lt_top (ENNReal.pow_lt_top enorm_lt_top)))
-    have hmeas : Measurable fun p : (UPos n r → 𝔸[K]) × normOneGL K n =>
-        ‖φ (mk Γ₁ (unipOne K n r p.1 * p.2))‖ₑ :=
-      ((Lp.stronglyMeasurable φ).measurable.comp ((measurable_mk Γ₁).comp
-        (continuous_unipOne_mul r).measurable)).enorm
-    rw [hasFiniteIntegral_iff_enorm, lintegral_prod _ hFm.aestronglyMeasurable.enorm]
-    calc ∫⁻ X in unipFundamentalDomain K n r, ∫⁻ z, ‖uncurry F (X, z)‖ₑ ∂μ ∂unipMeasure K n r
-        ≤ ∫⁻ X in unipFundamentalDomain K n r, ∫⁻ z in S,
-            ENNReal.ofReal M * ‖φ (mk Γ₁ (unipOne K n r X * z))‖ₑ ∂μ ∂unipMeasure K n r := by
-          refine lintegral_mono fun X => ?_
-          rw [← lintegral_indicator hS.measurableSet]
-          refine lintegral_mono fun z => ?_
-          by_cases hz : z ∈ S
-          · rw [indicator_of_mem hz]
-            simp only [F, uncurry_apply_pair, enorm_mul]
-            gcongr
-            rw [← ofReal_norm]
-            exact ENNReal.ofReal_le_ofReal (hM _)
-          · rw [indicator_of_notMem hz]
-            simp [F, hfS z hz]
-      _ = ENNReal.ofReal M * ∫⁻ z in S, ∫⁻ X in unipFundamentalDomain K n r,
-            ‖φ (mk Γ₁ (unipOne K n r X * z))‖ₑ ∂unipMeasure K n r ∂μ := by
-          simp_rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
-          congr 1
-          exact lintegral_lintegral_swap hmeas.aemeasurable
-      _ < ⊤ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top hfin
-  have hinner : ∀ X, rconv Γ₁ μ f φ (unipOne K n r X * x) = ∫ z, F X z ∂μ := by
-    intro X
-    rw [rconv, ← integral_mul_left_eq_self _ (unipOne K n r X)]
-    congr 1
-    ext z
-    simp only [F, mul_inv_rev, mul_assoc, inv_mul_cancel_left]
-  have hCT : ∀ z, ∫ X in unipFundamentalDomain K n r, F X z ∂unipMeasure K n r =
-      f (x⁻¹ * z) * constantTermL2 μ r φ z := by
-    intro z
-    simp only [F, constantTermL2, ctFun]
-    exact integral_const_mul _ _
-  simp_rw [hinner]
-  rw [integral_integral_swap hint]
-  simp_rw [hCT]
 
 theorem constantTermL2_unipotent_mul (φ : Lp ℂ 2 (quotientMeasure Γ₁ μ)) (r : ℕ)
     (Y : UPos n r → 𝔸[K]) (z : normOneGL K n) :
@@ -100,13 +144,6 @@ theorem constantTermL2_unipotent_mul (φ : Lp ℂ 2 (quotientMeasure Γ₁ μ)) 
   show (φ : RightCosetSpace Γ₁ → ℂ) (mk Γ₁ (unipOne K n r (ξ + s) * z)) = φ (mk Γ₁ (unipOne K n r s * z))
   rw [unipOne_add, mul_assoc, mk_mul_of_mem (unipOne_mem_rationalGLOne r ⟨ξ, hξ⟩)]
 
-theorem integrableOn_constantTermL2 (φ : Lp ℂ 2 (quotientMeasure Γ₁ μ)) (r : ℕ)
-    {S : Set (normOneGL K n)} (hS : IsCompact S) : IntegrableOn (constantTermL2 μ r φ) S μ := by
-  obtain ⟨C, hC, hCφ⟩ := exists_lintegral_constantTermL2_sq_le μ r hS
-  refine ⟨(stronglyMeasurable_ctFun r (Lp.stronglyMeasurable φ)).aestronglyMeasurable, ?_⟩
-  rw [hasFiniteIntegral_iff_enorm]
-  exact L2Kernel.lt_top_of_sq_lt_top ((hCφ φ).trans_lt
-    (ENNReal.mul_lt_top hC.lt_top (ENNReal.pow_lt_top enorm_lt_top)))
 
 variable (v : HeightOneSpectrum (𝓞 K)) [MeasurableSpace (v.adicCompletion K)]
   [BorelSpace (v.adicCompletion K)]
@@ -118,24 +155,6 @@ def IsCuspidalAt (ν : ∀ r : ℕ, Measure (UPos n r → v.adicCompletion K)) (
 
 variable {μ v}
 
-theorem integrated_mem_cuspidalL2 {ν : ∀ r : ℕ, Measure (UPos n r → v.adicCompletion K)}
-    [∀ r, (ν r).IsAddHaarMeasure] {f : CompactlySupportedContinuousMap (normOneGL K n) ℂ}
-    (hf : IsCuspidalAt v ν f) (φ : Lp ℂ 2 (quotientMeasure Γ₁ μ)) :
-    (rightRegularRep Γ₁ μ).integrated μ (UnitaryRep.ccToL1 μ f) φ ∈ cuspidalL2 μ := by
-  intro r hr hrn
-  have := isFiniteMeasure_quotientMeasure (K := K) (n := n) μ
-  filter_upwards [ae_ctFun_congr μ r (integrated_ae_eq_rconvQ Γ₁ μ f φ)] with y hy
-  rw [constantTermL2, hy, Pi.zero_apply]
-  simp only [ctFun, rconvQ_mk]
-  rw [integral_rconv_unip_eq]
-  have hhc : HasCompactSupport fun z : normOneGL K n => f (y⁻¹ * z) :=
-    f.hasCompactSupport.comp_isClosedEmbedding (Homeomorph.mulLeft y⁻¹).isClosedEmbedding
-  exact integral_mul_eq_zero_of_integral_eq_zero (ν := ν r) (isProperHom_unipAt v)
-    (h := fun z => f (y⁻¹ * z)) (f.continuous.comp (continuous_const_mul _)) hhc
-    (stronglyMeasurable_ctFun r (Lp.stronglyMeasurable φ)).aestronglyMeasurable
-    (integrableOn_constantTermL2 μ φ r hhc.isCompact)
-    (fun b z => constantTermL2_unipotent_mul μ φ r _ z)
-    (fun z => by simpa only [mul_assoc] using hf r hr hrn y⁻¹ z)
 
 omit [MeasurableSpace (v.adicCompletion K)] [BorelSpace (v.adicCompletion K)] in
 theorem unipAt_neg (r : ℕ) (y : UPos n r → v.adicCompletion K) :
@@ -157,19 +176,6 @@ def ccStar (f : CompactlySupportedContinuousMap (normOneGL K n) ℂ) :
 @[simp] theorem ccStar_apply (f : CompactlySupportedContinuousMap (normOneGL K n) ℂ)
     (g : normOneGL K n) : ccStar f g = conj (f g⁻¹) := rfl
 
-theorem isCuspidalAt_ccStar {ν : ∀ r : ℕ, Measure (UPos n r → v.adicCompletion K)}
-    [∀ r, (ν r).IsAddHaarMeasure] {f : CompactlySupportedContinuousMap (normOneGL K n) ℂ}
-    (hf : IsCuspidalAt v ν f) : IsCuspidalAt v ν (ccStar f) := by
-  intro r hr hrn g₁ g₂
-  have h : ∀ y, ccStar f (g₁ * unipAt n r v y * g₂) = conj (f (g₂⁻¹ * unipAt n r v (-y) * g₁⁻¹)) := by
-    intro y
-    rw [ccStar_apply, unipAt_neg]
-    congr 2
-    group
-  simp_rw [h]
-  have : (ν r).Regular := Measure.Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure _
-  rw [integral_conj, integral_neg_eq_self (fun y => f (g₂⁻¹ * unipAt n r v y * g₁⁻¹)),
-    hf r hr hrn, map_zero]
 
 variable (μ) in
 
@@ -186,46 +192,12 @@ theorem ccToL1_ccStar [μ.IsInvInvariant] (f : CompactlySupportedContinuousMap (
   rw [hb, hc]
   exact ha
 
-theorem integrated_eq_zero_of_mem_orthogonal {ν : ∀ r : ℕ, Measure (UPos n r → v.adicCompletion K)}
-    [∀ r, (ν r).IsAddHaarMeasure] {f : CompactlySupportedContinuousMap (normOneGL K n) ℂ}
-    (hf : IsCuspidalAt v ν f) {ψ : Lp ℂ 2 (quotientMeasure Γ₁ μ)} (hψ : ψ ∈ (cuspidalL2 μ)ᗮ) :
-    (rightRegularRep Γ₁ μ).integrated μ (UnitaryRep.ccToL1 μ f) ψ = 0 := by
-  have := isInvInvariant_of_isMulRightInvariant μ
-  have hadj : ContinuousLinearMap.adjoint
-      ((rightRegularRep Γ₁ μ).integrated μ (UnitaryRep.ccToL1 μ f)) =
-      (rightRegularRep Γ₁ μ).integrated μ (UnitaryRep.ccToL1 μ (ccStar f)) := by
-    exact ((rightRegularRep Γ₁ μ).adjoint_integrated μ (UnitaryRep.ccToL1 μ f)).trans
-      (congrArg _ (ccToL1_ccStar μ f).symm)
-  refine ext_inner_left ℂ fun w => ?_
-  have h1 := (ContinuousLinearMap.adjoint_inner_left
-    ((rightRegularRep Γ₁ μ).integrated μ (UnitaryRep.ccToL1 μ f)) ψ w).symm
-  have h2 := (Submodule.mem_orthogonal _ _).1 hψ _
-    (integrated_mem_cuspidalL2 (isCuspidalAt_ccStar hf) w)
-  rw [← hadj] at h2
-  exact h1.trans (h2.trans (inner_zero_right _).symm)
 
-theorem starProjection_comp_integrated {ν : ∀ r : ℕ, Measure (UPos n r → v.adicCompletion K)}
-    [∀ r, (ν r).IsAddHaarMeasure] {f : CompactlySupportedContinuousMap (normOneGL K n) ℂ}
-    (hf : IsCuspidalAt v ν f) :
-    (cuspidalL2 μ).starProjection ∘L (rightRegularRep Γ₁ μ).integrated μ (UnitaryRep.ccToL1 μ f) =
-      (rightRegularRep Γ₁ μ).integrated μ (UnitaryRep.ccToL1 μ f) :=
-  ContinuousLinearMap.ext fun φ =>
-    Submodule.starProjection_eq_self_iff.2 (integrated_mem_cuspidalL2 hf φ)
 
-theorem integrated_comp_starProjection {ν : ∀ r : ℕ, Measure (UPos n r → v.adicCompletion K)}
-    [∀ r, (ν r).IsAddHaarMeasure] {f : CompactlySupportedContinuousMap (normOneGL K n) ℂ}
-    (hf : IsCuspidalAt v ν f) :
-    (rightRegularRep Γ₁ μ).integrated μ (UnitaryRep.ccToL1 μ f) ∘L (cuspidalL2 μ).starProjection =
-      (rightRegularRep Γ₁ μ).integrated μ (UnitaryRep.ccToL1 μ f) := by
-  refine ContinuousLinearMap.ext fun φ => ?_
-  have h : φ - (cuspidalL2 μ).starProjection φ ∈ (cuspidalL2 μ)ᗮ :=
-    Submodule.sub_starProjection_mem_orthogonal φ
-  have h0 := integrated_eq_zero_of_mem_orthogonal hf h
-  rw [map_sub, sub_eq_zero] at h0
-  exact h0.symm
 
 end CuspidalProjection
 
 end
 
 end GroundTheory.Automorphic
+end

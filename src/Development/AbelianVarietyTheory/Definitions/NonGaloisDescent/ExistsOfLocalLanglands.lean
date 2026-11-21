@@ -66,19 +66,6 @@ theorem isTateMeas_iff {c : kˣ} (hc : HasConductor ψ c) {t : ℝ} (ht : 0 < t)
     and_congr (hasExponent_mul_absPow _).symm (and_congr_right fun hR => ?_)
   rw [sum_shift hR, ← cond_eq hc hc', key, mul_right_inj' (Complex.ofReal_ne_zero.2 hs.ne')]
 
-theorem existsUnique_isTateMeas (hψ : Continuous ψ) (h1 : ψ ≠ 1) (hχ : IsSmoothChar χ) {t : ℝ} (ht : 0 < t) :
-    (∃! e : ℂ, IsTateMeas ψ t χ e) ∧ ∀ e, IsTateMeas ψ t χ e → e ≠ 0 := by
-  obtain ⟨c, hc⟩ := exists_hasConductor_of_continuous ψ hψ h1
-  have hs : ((t * Real.sqrt (nabs k c) : ℝ) : ℂ) ≠ 0 :=
-    Complex.ofReal_ne_zero.2 (mul_pos ht (Real.sqrt_pos.2 (nabs_pos' c))).ne'
-  have key : ∀ e, IsTateMeas ψ t χ e →
-      IsTateEps ψ (χ * absPow k ((-(1 / 2) : ℝ) : ℂ)) (((t * Real.sqrt (nabs k c) : ℝ) : ℂ)⁻¹ * e) := fun e he =>
-    (isTateMeas_iff hc ht).1 (by rwa [mul_inv_cancel_left₀ hs])
-  obtain ⟨a, ha⟩ := exists_hasExponent hχ
-  obtain ⟨R, hR⟩ := exists_isShellReps c a
-  refine ⟨existsUnique_of_exists_of_unique ⟨_, c, a, R, hc, ha, hR, rfl⟩ fun e e' he he' => ?_, fun e he h0 => ?_⟩
-  · exact mul_left_cancel₀ (inv_ne_zero hs) ((key e he).unique (key e' he'))
-  · exact (key e he).ne_zero (by rw [h0, mul_zero])
 
 theorem isTateMeas_of_isUnram {c : kˣ} (hc : HasConductor ψ c) (hχ : IsUnram χ) (t : ℝ) :
     IsTateMeas ψ t χ (((t * nabs k c : ℝ) : ℂ) * ((χ c)⁻¹ : ℂˣ)) := by
@@ -195,11 +182,6 @@ theorem isDeligneEps_centreOf {ε : EpsMeasFamily A} (H : IsDeligneMeas ε) : Is
 theorem exists_iff : (∃ ε : EpsMeasFamily A, IsDeligneMeas ε) ↔ ∃ ε : EpsFamily A, IsDeligneEps ε :=
   ⟨fun ⟨_, H⟩ => ⟨_, isDeligneEps_centreOf H⟩, fun ⟨_, H⟩ => ⟨_, isDeligneMeas_measOf H⟩⟩
 
-theorem exists_of_localLanglands (hL : GlobalTheory.Published.LocalLanglandsGL) (E : Type) [Field E] [NumberField E] [Algebra E Ω]
-    [IsAlgClosure E Ω] (w : HeightOneSpectrum (𝓞 E)) (h : IsPlaceOver A w) :
-    (∃ a, IsLocalArtin h a) ∧ ∃ ε : EpsMeasFamily A, IsDeligneMeas ε := by
-  obtain ⟨rc, ⟨a, ha, ε, hε, -⟩, -⟩ := hL.1 E Ω A w h
-  exact ⟨⟨a, ha⟩, _, isDeligneMeas_measOf hε⟩
 
 end GlobalTheory.LocLanglands.MeasModel
 

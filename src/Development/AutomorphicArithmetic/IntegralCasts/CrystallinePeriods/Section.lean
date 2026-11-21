@@ -208,36 +208,10 @@ namespace BdRPlus
 
 variable {p}
 
-theorem eval_eq_zero_of_mem_ker_theta_pow {n : ℕ} {x : BdRPlus p R} (hx : x ∈ fil p R n) :
-    eval p R n x = 0 := by
-  have h1 : RingHom.ker (theta p R) ≤
-      ((AinfInv.kerTheta p R).map (Ideal.Quotient.mk (AinfInv.kerTheta p R ^ n))).comap
-        (eval p R n) := by
-    intro y hy
-    rw [RingHom.mem_ker, theta_eq_zero_iff] at hy
-    exact evalₐ_mem_map_of_evalOne _ hy n
-  have h2 := pow_le_comap_pow h1 n hx
-  rw [← Ideal.map_pow, Ideal.map_quotient_self, Ideal.mem_comap, Ideal.mem_bot] at h2
-  exact h2
 
-theorem iInf_ker_theta_pow : ⨅ n, fil p R n = ⊥ := by
-  rw [eq_bot_iff]
-  intro x hx
-  rw [Ideal.mem_iInf] at hx
-  exact ext_eval fun n => by rw [eval_eq_zero_of_mem_ker_theta_pow (hx n), map_zero]
 
 variable {F : Type v} {L : Type w} [CommRing F] [CommRing L] [Algebra F L]
 
-theorem hom_ext_of_formallyUnramified [Algebra.FormallyUnramified F L] {s₁ s₂ : L →+* BdRPlus p R}
-    (hF : ∀ a : F, s₁ (algebraMap F L a) = s₂ (algebraMap F L a))
-    (hθ : ∀ x, theta p R (s₁ x) = theta p R (s₂ x)) : s₁ = s₂ := by
-  letI : Algebra F (BdRPlus p R) := (s₁.comp (algebraMap F L)).toAlgebra
-  have := Algebra.FormallyUnramified.ext_of_iInf (R := F) (I := RingHom.ker (theta p R))
-    iInf_ker_theta_pow (g₁ := { s₁ with commutes' := fun _ => rfl })
-    (g₂ := { s₂ with commutes' := fun a => (hF a).symm }) (fun x => by
-      rw [Ideal.Quotient.eq, RingHom.mem_ker, map_sub, sub_eq_zero]
-      exact hθ x)
-  exact RingHom.ext fun x => AlgHom.congr_fun this x
 
 theorem exists_section [Algebra.FormallySmooth F L]
     (hθ : Function.Surjective (AinfInv.theta p R)) (ι : F →+* AinfInv p R)
@@ -279,15 +253,6 @@ theorem section_algebraMap [Algebra.FormallySmooth F L]
     «section» hθ ι j hj (algebraMap F L a) = algebraMap (AinfInv p R) _ (ι a) :=
   (exists_section hθ ι j hj).choose_spec.2 a
 
-theorem eq_section [Algebra.FormallyEtale F L]
-    (hθ : Function.Surjective (AinfInv.theta p R)) (ι : F →+* AinfInv p R)
-    (j : L →+* Localization.Away (p : R))
-    (hj : ∀ a : F, j (algebraMap F L a) = AinfInv.theta p R (ι a)) (s : L →+* BdRPlus p R)
-    (h₁ : ∀ x, theta p R (s x) = j x)
-    (h₂ : ∀ a : F, s (algebraMap F L a) = algebraMap (AinfInv p R) _ (ι a)) :
-    s = «section» hθ ι j hj :=
-  hom_ext_of_formallyUnramified (F := F) (fun a => by rw [h₂, section_algebraMap])
-    (fun x => by rw [h₁, theta_section])
 
 end BdRPlus
 

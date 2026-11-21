@@ -1,11 +1,26 @@
 import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.TotallyRealRoots.FinrankAdjoinRootsEqRootDeg
 import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.TotallyRealRoots.GalAbelian
-import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.TotallyRealRoots.SumArith
+import Mathlib
 import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.TotallyRealRoots.Generate
 import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.TotallyRealRoots.EqOneOfMemPrincOne
 import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.IrreducibleSpans.CostCond
 import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.SelmerDuality.LengthFrac
 
+section
+namespace KStar.TotallyRealRoots
+
+private def sieveOK (n : ℕ) : Bool :=
+  decide (2 ≤ n) && [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31].all (fun d => n == d || n % d != 0)
+
+private def headF (n : ℕ) : ℕ :=
+  if sieveOK n then (Nat.log2 (n ^ 256) + 1) * 1000000 / n ^ 2 + 1 else 0
+
+
+
+end KStar.TotallyRealRoots
+end
+
+section
 namespace KStar.TotallyRealRoots
 
 open IsDiscreteValuationRing
@@ -122,3 +137,4 @@ theorem length_twistInvOver (hl : ¬ IsUnit (l : O)) (U : Subgroup ℤ_[l]ˣ) (t
     rw [length_twistInvOver_of_eq K hn.symm, ← hn]
 
 end KStar.TotallyRealRoots
+end

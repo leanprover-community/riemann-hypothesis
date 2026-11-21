@@ -3,7 +3,28 @@ import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsWildInert
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.GaloisSideTwistedSelmerAuxiliaryPrimes
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SemisimpleOfInjective
 import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverStd
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormEvalLeSumNormCoeff
+
+section
+namespace GlobalTheory.EvalNormCoefficientBound
+
+theorem norm_eval_le_sum_norm_coeff {σ : Type} (P : MvPolynomial σ ℂ) (v : σ → ℂ)
+    (hv : ∀ (s : σ), ‖v s‖ ≤ (1 : ℝ)) :
+    ‖(MvPolynomial.eval v : MvPolynomial σ ℂ → ℂ) P‖ ≤
+      ∑ d ∈ MvPolynomial.support P, ‖MvPolynomial.coeff d P‖ := by
+  rw [MvPolynomial.eval_eq]
+  refine (norm_sum_le _ _).trans (Finset.sum_le_sum (fun d _ => ?_))
+  rw [norm_mul]
+  have h1 : ‖∏ s ∈ d.support, v s ^ d s‖ ≤ 1 := by
+    rw [norm_prod]
+    refine Finset.prod_le_one (fun s _ => norm_nonneg _) (fun s _ => ?_)
+    rw [norm_pow]
+    exact pow_le_one₀ (norm_nonneg _) (hv s)
+  exact mul_le_of_le_one_right (norm_nonneg _) h1
+
+end GlobalTheory.EvalNormCoefficientBound
+end
+
+section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 NumberField IsDedekindDomain Polynomial GlobalTheory.EtaJoin GlobalTheory.CoefDuty
 
 noncomputable section
@@ -172,3 +193,6 @@ theorem GlobalTheory.InvFormBdd.exists_isInvForm : ∀ (L : Type) [Field L] [Num
       exact (LinearMap.toMatrix_mulVec_repr b b (a.ρ γ) z).symm
     rw [hv, hv]
     exact h3 _ ⟨γ, rfl⟩ _ _
+end
+end
+end

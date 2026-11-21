@@ -113,9 +113,6 @@ def Under (P : ∀ (E K : Type) [Field E] [NumberField E] [Field K] [NumberField
   ∀ (N : ℕ) (e : Fin N ≃ C × VVIdx lam) (X : InfinitePlace K → Matrix (Fin N) (Fin N) ℂ),
     P E K cE ι emb n lam R J C L N e X
 
-theorem slopeE_eq : SlopeE = Under fun _ _ _ _ _ _ _ _ _ _ emb _ lam R J _ L _ e X =>
-    WeylClause emb lam R J L e X ∧ NablaClause emb lam R J L e X ∧
-      WeylClauseDual emb lam R J L e X ∧ NablaClauseDual emb lam R J L e X := rfl
 
 def FirstCM : Prop := Under fun E _ _ _ _ _ _ cE _ _ emb n lam R J _ L _ e X =>
   cE ≠ RingHom.id E → 1 ≤ n → WeylClause emb lam R J L e X

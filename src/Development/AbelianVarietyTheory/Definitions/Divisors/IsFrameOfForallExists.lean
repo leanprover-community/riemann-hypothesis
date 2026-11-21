@@ -431,8 +431,6 @@ theorem biprod (hF : IsVB F r) (hG : IsVB G s) : IsVB (F ⊞ G) (r + s) := by
 
 end IsVB
 
-theorem isVB_congr (φ : F ≅ G) : IsVB F r ↔ IsVB G r :=
-  ⟨fun h => h.of_iso φ, fun h => h.of_iso φ.symm⟩
 
 theorem isVB_zero_iff : IsVB F 0 ↔ IsZero F := by
   refine ⟨fun h => QCoh.support_eq_empty_iff.1 (Set.eq_empty_of_forall_notMem fun x =>

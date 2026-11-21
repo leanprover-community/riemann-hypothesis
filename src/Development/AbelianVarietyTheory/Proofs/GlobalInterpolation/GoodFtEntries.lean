@@ -95,19 +95,7 @@ theorem row_lab_of_good : GlobalTheory.GLq.Green → GlobalTheory.Published.Zele
   obtain ⟨κ, -, -, t⟩ := s Fm hc
   exact ties_of_built hG hZ hDZ (p := prmR N S Γ) (fun K q => hN _ _ _ _ _ _ _ _ _ _ _ _ _ q.x.nx.2) (t x hx i).1 (hA Fm hc x hx i)
 
-theorem row_lab_ev_of_good (hG : GlobalTheory.GLq.Green) (hZ : GlobalTheory.Published.ZelevinskyPolynomialRing) (hDZ : GlobalTheory.Published.DepthZeroInertia)
-    {hL : GlobalTheory.Published.LocalLanglandsGL} {p : Prm hL} (hp : ∀ (K : Ctx) (q : WPt p.s K), GenPin q.core.a) :
-    RL.At p RL.GoodReductionCondition → RL.At p fun Q Lk => Row Q Lk (Ind.EvW (Bd := Bundle) fun D _ _ _ => Ties D) := by
-  intro ⟨R, hR, hrow⟩
-  refine ⟨R, hR, hrow.imp fun 𝒜 σ s hA => Closed.imp hA fun Fm _ _ h hc => ?_⟩
-  obtain ⟨x0, h⟩ := h hc
-  obtain ⟨κ, -, -, t⟩ := s Fm (w3_a hc)
-  exact ⟨x0, fun x hx h0 i => ties_of_built hG hZ hDZ hp (t x hx i).1 (h x hx h0 i)⟩
 
-theorem row_lab_labelCondition_of_localLanglands (hG : GlobalTheory.GLq.Green) (hZ : GlobalTheory.Published.ZelevinskyPolynomialRing) (hDZ : GlobalTheory.Published.DepthZeroInertia)
-    (hL : GlobalTheory.Published.LocalLanglandsGL) (S : SExt) (Γ : GeoP) :
-    RL.At (prmR (NE hL) S Γ) (fun Q Lk => Row Q Lk (AtAll fun D _ _ _ => GoodFTAll D)) → RL.At (prmR (NE hL) S Γ) RL.LabelCondition :=
-  row_lab_of_good hG hZ hDZ hL (NE hL) S Γ fun _ _ _ _ _ _ _ _ _ _ _ _ _ m => m.zeta
 
 theorem row_lab_of_layer : GlobalTheory.GLq.Green → GlobalTheory.Published.ZelevinskyPolynomialRing → GlobalTheory.Published.DepthZeroInertia → ∀ (hL : GlobalTheory.Published.LocalLanglandsGL) (N : NExt hL) (S : SExt) (Γ : GeoP), (∀ K B f T w Z Wt p0 t nch n xd c, N K B f T w Z Wt p0 t nch n xd c → Nonempty (GlobalTheory.HeightCounting.Up.NEb hL K B f T w Z Wt p0 t nch n xd c)) → RL.At (prmR N S Γ) (fun Q L => Row Q L (AtAll fun D _ _ (_ : Bundle _ _ _) => Formalism.BasicNotions.GoodFTAll D)) → RL.At (prmR N S Γ) RL.LabelCondition :=
   fun hG hZ hDZ hL N S Γ hN =>

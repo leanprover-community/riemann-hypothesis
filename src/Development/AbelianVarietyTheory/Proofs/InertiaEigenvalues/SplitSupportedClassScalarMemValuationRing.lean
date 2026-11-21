@@ -1,9 +1,394 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ValRingLocRing
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SqrtPowOdd
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ValMulSqrtUnit
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsInertTop
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OscillatorModelValuesThird
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LawOfSquaresSelfDualSplitLattice
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsSelfDualCHLat
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HeckeCharOnIdMulSqrtAbsNormInvMemSubring
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CharacterUnramifiedOffBad
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsElemStdLatticeSandwichSplitSupport
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HasInfExpMulOfIsOpenKer
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasInfExpIffHasInfQ
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HeckeCharacterUnramifiedAeAndExistsLevel
+import Formalism.LocalToGlobal.UnitaryNorms.CharProd
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HeckeCharLocPowEqOneOnLocalUnits
+import BuildAid.ForwardExisting
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsNumerator
 
+section
+open NumberField IsDedekindDomain
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heckeChar_onId_mul_sqrt_absNorm_inv_mem_subring : ∀ (L : Type) [Field L] [NumberField L] (χ : Formalism.L2.Host.HChar L) (O : Subring ℂ) (cc : Ideal (𝓞 L)), cc ≠ ⊥ → (∀ P : HeightOneSpectrum (𝓞 L), cc ≤ P.asIdeal → (((χ.val P : ℂˣ) : ℂ) * ((Real.sqrt (Ideal.absNorm P.asIdeal) : ℝ) : ℂ))⁻¹ ∈ O) → (((χ.onId (cc : FractionalIdeal (nonZeroDivisors (𝓞 L)) L) : ℂˣ) : ℂ) * ((Real.sqrt (Ideal.absNorm cc) : ℝ) : ℂ))⁻¹ ∈ O := by
+  first | exact @GlobalTheory.HeckeIdealValue.inv_mem | exact GlobalTheory.HeckeIdealValue.inv_mem | (intros; apply GlobalTheory.HeckeIdealValue.inv_mem <;> assumption)
+end
+
+section
+open NumberField Matrix Complex IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Dict GlobalTheory.AdTh GlobalTheory.ClsVal
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
+open GlobalTheory.SW hiding Level IsSB
+open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
+open GlobalTheory.ExportSeries (Base Twist Weight PairRep GLR detChar detFam fockGL harm harmLat IsCoefRing finPt series idem)
+open scoped TensorProduct Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.SingleDatum
+set_option synthInstance.maxHeartbeats 400000
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.character_unramified_off_bad : ∀ (D : D7) (V W : HSp D) (B : Base V W), B.Good → ∀ χ : Formalism.L2.Host.HChar D.host.E, ChrEq (B.mu * B.eta⁻¹) χ → ∀ bad : ℕ, (∀ PP, PP ∈ B.G.Pg ∨ PP ∈ B.de.Q → (bad : 𝓞 D.host.E) ∈ PP.asIdeal) → (∀ Q : HeightOneSpectrum (𝓞 D.host.E), (bad : 𝓞 D.host.E) ∉ Q.asIdeal → χ.UnrAt Q) ∧ ∀ Q : HeightOneSpectrum (𝓞 D.host.E), GlobalTheory.IdemSupport.cP Q ≠ Q → ∀ k, χ.resFin (Q.under (𝓞 D.host.F)) k = 1 := by
+  first | exact @GlobalTheory.BasePairChar.base_pair_char | exact GlobalTheory.BasePairChar.base_pair_char | (intros; apply GlobalTheory.BasePairChar.base_pair_char <;> assumption)
+end
+
+section
+open NumberField Matrix Complex IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Dict GlobalTheory.AdTh GlobalTheory.ClsVal
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
+open GlobalTheory.SW hiding Level IsSB
+open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
+open GlobalTheory.ExportSeries (Base Twist Weight PairRep GLR detChar detFam fockGL harm harmLat IsCoefRing finPt series idem)
+open scoped TensorProduct Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.SingleDatum
+set_option synthInstance.maxHeartbeats 400000
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_elem_stdLattice_sandwich_splitSupport : ∀ (D : D7) (V : HSp D), V.gram = 1 → Bridge.hLat V 1 = Formalism.L2.Pj.stdLat D.host.E V.rank → ∀ (h : GA D V) (e : AE D) (Ps : Finset (Formalism.L2.DIV.Pl D.host.E)) (bad : ℕ), IsIdemSum e Ps → (∀ PP ∈ Ps, ((bad : ℕ) : 𝓞 D.host.E) ∉ PP.asIdeal) → SuppAt e V h → ∃ m : 𝓞 D.host.E, m ≠ 0 ∧ Ideal.span {m} • Bridge.hLat V (finPt V h) ≤ Formalism.L2.Pj.stdLat D.host.E V.rank ∧ Ideal.span {m} • Formalism.L2.Pj.stdLat D.host.E V.rank ≤ Bridge.hLat V (finPt V h) ∧ ∀ P : Ideal (𝓞 D.host.E), P.IsPrime → m ∈ P → P.map (GlobalTheory.IdemSupport.cO D : 𝓞 D.host.E →+* 𝓞 D.host.E) ≠ P ∧ ((bad : ℕ) : 𝓞 D.host.E) ∉ P := by
+  first | exact @GlobalTheory.SuppLatStd.lat_std_of_suppAt | exact GlobalTheory.SuppLatStd.lat_std_of_suppAt | (intros; apply GlobalTheory.SuppLatStd.lat_std_of_suppAt <;> assumption)
+end
+
+section
+open NumberField Matrix Complex IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Dict GlobalTheory.AdTh GlobalTheory.ClsVal
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
+open GlobalTheory.SW hiding Level IsSB
+open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
+open GlobalTheory.ExportSeries (Base Twist Weight PairRep GLR detChar detFam fockGL harm harmLat IsCoefRing finPt series idem)
+open scoped TensorProduct Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.SingleDatum
+set_option synthInstance.maxHeartbeats 400000
+
+namespace GlobalTheory.ClassScalarIn
+
+theorem unimod_hLat {D : D7} (V : HSp D) (hg : V.gram = 1) (g : Bridge.Gf V) :
+    (⟨Bridge.hLat V g⟩ : GenLat D.host.E V.rank).Unimod := by
+  intro v
+  have h := (GlobalTheory.MovedLat.isSelfDualC_hLat V g).2 v
+  rw [h]
+  refine forall_congr' fun w => imp_congr_right fun _ => ?_
+  simp only [hg, Matrix.one_apply, mul_ite, mul_one, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  have e : ∑ j, (IsCMField.complexConj D.host.E) (v j) * w j =
+      IsCMField.complexConj D.host.E (∑ x, star (w x) * v x) := by
+    rw [map_sum]
+    refine Finset.sum_congr rfl fun x _ => ?_
+    rw [map_mul, show star (w x) = IsCMField.complexConj D.host.E (w x) from rfl,
+      IsCMField.complexConj_apply_apply, mul_comm]
+  rw [e]
+  constructor
+  · rintro ⟨b, hb⟩
+    exact ⟨(Formalism.L2.Pj.hostOfRecord D).bar b, by rw [← hb]; exact (Formalism.L2.Pj.hostOfRecord D).bar_eq b⟩
+  · rintro ⟨b, hb⟩
+    refine ⟨(Formalism.L2.Pj.hostOfRecord D).bar b, ?_⟩
+    rw [(Formalism.L2.Pj.hostOfRecord D).bar_eq]
+    have hb' : ((b : 𝓞 D.host.E) : D.host.E) = IsCMField.complexConj D.host.E (∑ x, star (w x) * v x) := hb
+    rw [hb', IsCMField.complexConj_apply_apply]
+
+theorem sqrt_pow_odd (N k s : ℕ) : Real.sqrt (((N * k ^ 2 : ℕ) : ℝ) ^ (2 * s + 1)) =
+    ((N ^ s * k ^ (2 * s + 1) : ℕ) : ℝ) * Real.sqrt N := by
+  rw [show (((N * k ^ 2 : ℕ) : ℝ)) ^ (2 * s + 1) = (((N ^ s * k ^ (2 * s + 1) : ℕ) : ℝ)) ^ 2 * N by push_cast; ring,
+    Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (Nat.cast_nonneg _)]
+
+end GlobalTheory.ClassScalarIn
+end
+
+section
+section
+open NumberField IsDedekindDomain
+
+namespace GlobalTheory
+
+theorem ringOfIntegers_map_mem_valuationSubring {K : Type} [Field K] [NumberField K]
+    (A : ValuationSubring ℂ) (σ : K →+* ℂ) (x : 𝓞 K) : σ (x : K) ∈ A := by
+  have h1 : IsIntegral ℤ (σ (x : K)) := (RingOfIntegers.isIntegral_coe x).map σ.toIntAlgHom
+  have h2 : IsIntegral A (σ (x : K)) := h1.tower_top
+  obtain ⟨y, hy⟩ := IsIntegrallyClosed.isIntegral_iff.mp h2
+  rw [← hy]
+  exact y.2
+
+noncomputable def ringOfIntegersToValuationSubring {K : Type} [Field K] [NumberField K]
+    (A : ValuationSubring ℂ) (σ : K →+* ℂ) : 𝓞 K →+* A :=
+  ((σ.comp (algebraMap (𝓞 K) K)).codRestrict A.toSubring
+    (fun x => ringOfIntegers_map_mem_valuationSubring A σ x))
+
+theorem valuation_embedding_generator_eq_one :
+    ∀ (K : Type) [Field K] [NumberField K] (A : ValuationSubring ℂ) (p : ℕ), p.Prime →
+      (p : ℂ) ∈ A.nonunits → ∀ (P : HeightOneSpectrum (𝓞 K)), (p : 𝓞 K) ∉ P.asIdeal →
+      ∀ (α : 𝓞 K) (h : ℕ), Ideal.span {α} = P.asIdeal ^ h →
+      ∀ σ : K →+* ℂ, A.valuation (σ (α : K)) = 1 := by
+  intro K _ _ A p _ hpA P hpP α h hα σ
+  set f := ringOfIntegersToValuationSubring A σ with hf
+  have hfx : ∀ x : 𝓞 K, ((f x : A) : ℂ) = σ (x : K) := fun x => rfl
+  set Q : Ideal (𝓞 K) := (IsLocalRing.maximalIdeal A).comap f with hQ
+  have hQp : Q.IsPrime := Ideal.comap_isPrime f (IsLocalRing.maximalIdeal A)
+  have hQne : Q ≠ ⊤ := hQp.ne_top
+  have hmem : ∀ x : 𝓞 K, x ∈ Q ↔ A.valuation (σ (x : K)) < 1 := by
+    intro x
+    rw [hQ, Ideal.mem_comap, ValuationSubring.valuation_lt_one_iff, hfx]
+  have hpQ : (p : 𝓞 K) ∈ Q := by
+    rw [hmem]
+    have : σ (((p : 𝓞 K) : K)) = (p : ℂ) := by simp
+    rw [this]
+    exact (ValuationSubring.mem_nonunits_iff A).mp hpA
+  refine le_antisymm ?_ ?_
+  · exact (ValuationSubring.valuation_le_one_iff A _).mpr (ringOfIntegers_map_mem_valuationSubring A σ α)
+  · by_contra hlt
+    push_neg at hlt
+    have hαQ : α ∈ Q := (hmem α).mpr hlt
+    have hspan : P.asIdeal ^ h ≤ Q := by
+      rw [← hα, Ideal.span_singleton_le_iff_mem]
+      exact hαQ
+    have hPQ : P.asIdeal ≤ Q := Ideal.IsPrime.le_of_pow_le hspan
+    have hPeq : P.asIdeal = Q := P.isMaximal.eq_of_le hQne hPQ
+    exact hpP (hPeq ▸ hpQ)
+
+end GlobalTheory
+end
+
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.valuation_embedding_generator_eq_one' : ∀ (K : Type) [Field K] [NumberField K] (A : ValuationSubring ℂ) (p : ℕ), p.Prime → (p : ℂ) ∈ A.nonunits → ∀ (P : HeightOneSpectrum (𝓞 K)), (p : 𝓞 K) ∉ P.asIdeal → ∀ (α : 𝓞 K) (h : ℕ), Ideal.span {α} = P.asIdeal ^ h → ∀ σ : K →+* ℂ, A.valuation (σ (α : K)) = 1 := by
+  atlas_forward_decl GlobalTheory.valuation_embedding_generator_eq_one
+end
+
+section
+section
+open NumberField IsDedekindDomain
+
+namespace GlobalTheory
+
+theorem valuation_sqrt_absNorm_eq_one :
+    ∀ (K : Type) [Field K] [NumberField K] (A : ValuationSubring ℂ) (p : ℕ), p.Prime →
+      (p : ℂ) ∈ A.nonunits → ∀ (P : HeightOneSpectrum (𝓞 K)), (p : 𝓞 K) ∉ P.asIdeal →
+        A.valuation (((Real.sqrt (Ideal.absNorm P.asIdeal) : ℝ) : ℂ)) = 1 := by
+  intro K _ _ A p hp hpA P hpP
+  set N : ℕ := Ideal.absNorm P.asIdeal with hNdef
+
+  have hNcard : N = Nat.card (𝓞 K ⧸ P.asIdeal) := by
+    rw [hNdef, Ideal.absNorm_apply, Submodule.cardQuot_apply]
+  have hN0 : N ≠ 0 := by
+    rw [hNdef, Ne, Ideal.absNorm_eq_zero_iff]; exact P.ne_bot
+  have hpN : ¬ p ∣ N := by
+    intro hdvd
+    haveI : Finite (𝓞 K ⧸ P.asIdeal) := Nat.finite_of_card_ne_zero (hNcard ▸ hN0)
+    haveI : Fact p.Prime := ⟨hp⟩
+    letI : Field (𝓞 K ⧸ P.asIdeal) := Ideal.Quotient.field _
+    obtain ⟨x, hx⟩ := exists_prime_addOrderOf_dvd_card' (G := 𝓞 K ⧸ P.asIdeal) p (hNcard ▸ hdvd)
+    have hx0 : x ≠ 0 := by
+      rintro rfl; rw [addOrderOf_zero] at hx; exact hp.one_lt.ne' hx.symm
+    have hpx : (p : 𝓞 K ⧸ P.asIdeal) * x = 0 := by
+      rw [← nsmul_eq_mul, ← hx, addOrderOf_nsmul_eq_zero]
+    have hp0 : (p : 𝓞 K ⧸ P.asIdeal) = 0 := (mul_eq_zero.mp hpx).resolve_right hx0
+    apply hpP
+    rw [← Ideal.Quotient.eq_zero_iff_mem, map_natCast]; exact hp0
+  have hcop : Nat.Coprime N p := (Nat.coprime_comm.mp ((Nat.Prime.coprime_iff_not_dvd hp).mpr hpN))
+
+  have hbez : (N : ℤ) * Nat.gcdA N p + (p : ℤ) * Nat.gcdB N p = 1 := by
+    have := Nat.gcd_eq_gcd_ab N p
+    rw [hcop] at this; simpa using this.symm
+  have hbezA : ((N : A) * ((Nat.gcdA N p : ℤ) : A)) + ((p : A) * ((Nat.gcdB N p : ℤ) : A)) = 1 := by
+    have := congrArg (Int.cast : ℤ → A) hbez
+    push_cast at this; exact this
+  have hpnu : ¬ IsUnit (p : A) := by
+    rw [ValuationSubring.valuation_eq_one_iff]
+    have := (ValuationSubring.mem_nonunits_iff A).mp hpA
+    push_cast; exact this.ne
+  have hNu : IsUnit (N : A) := by
+    rcases IsLocalRing.isUnit_or_isUnit_of_add_one hbezA with h | h
+    · exact isUnit_of_mul_isUnit_left h
+    · exact absurd (isUnit_of_mul_isUnit_left h) hpnu
+  have hvN : A.valuation (N : ℂ) = 1 := by
+    have := (ValuationSubring.valuation_eq_one_iff A _).mp hNu
+    push_cast at this; exact this
+
+  have hsq : ((Real.sqrt N : ℝ) : ℂ) ^ 2 = (N : ℂ) := by
+    rw [← Complex.ofReal_pow, Real.sq_sqrt (Nat.cast_nonneg _), Complex.ofReal_natCast]
+  have h2 : A.valuation ((Real.sqrt N : ℝ) : ℂ) ^ 2 = 1 := by
+    rw [← map_pow, hsq, hvN]
+  rcases lt_trichotomy (A.valuation ((Real.sqrt N : ℝ) : ℂ)) 1 with h | h | h
+  · exact absurd h2 (pow_lt_one₀ zero_le' h two_ne_zero).ne
+  · exact h
+  · exact absurd h2 (one_lt_pow₀ h two_ne_zero).ne'
+
+end GlobalTheory
+end
+
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.valuation_sqrt_absNorm_eq_one' : ∀ (K : Type) [Field K] [NumberField K] (A : ValuationSubring ℂ) (p : ℕ), p.Prime → (p : ℂ) ∈ A.nonunits → ∀ (P : HeightOneSpectrum (𝓞 K)), (p : 𝓞 K) ∉ P.asIdeal → A.valuation (((Real.sqrt (Ideal.absNorm P.asIdeal) : ℝ) : ℂ)) = 1 := by
+  atlas_forward_decl GlobalTheory.valuation_sqrt_absNorm_eq_one
+end
+
+section
+open NumberField Matrix Complex IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Dict GlobalTheory.AdTh GlobalTheory.ClsVal
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
+open GlobalTheory.SW hiding Level IsSB
+open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
+open GlobalTheory.ExportSeries (Base Twist Weight PairRep GLR detChar detFam fockGL harm harmLat IsCoefRing finPt series idem)
+open scoped TensorProduct Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.SingleDatum
+set_option synthInstance.maxHeartbeats 400000
+
+namespace GlobalTheory.UnitOverP
+
+theorem val_eq_one_of_pow (A : ValuationSubring ℂ) {z : ℂ} {m : ℕ} (hm : m ≠ 0) (h : A.valuation (z ^ m) = 1) :
+    A.valuation z = 1 := by
+  rw [map_pow] at h
+  exact ((pow_eq_one_iff).1 h).resolve_right hm
+
+theorem exists_gen {K : Type} [Field K] [NumberField K] (P : HeightOneSpectrum (𝓞 K)) :
+    ∃ h : ℕ, 0 < h ∧ ∃ α : 𝓞 K, Ideal.span {α} = P.asIdeal ^ h := by
+  have hP : P.asIdeal ∈ nonZeroDivisors (Ideal (𝓞 K)) := mem_nonZeroDivisors_of_ne_zero P.ne_bot
+  set h := Fintype.card (ClassGroup (𝓞 K))
+  have hPh : P.asIdeal ^ h ∈ nonZeroDivisors (Ideal (𝓞 K)) := pow_mem hP h
+  have h1 : ClassGroup.mk0 ⟨P.asIdeal ^ h, hPh⟩ = 1 := by
+    have e : (⟨P.asIdeal ^ h, hPh⟩ : nonZeroDivisors (Ideal (𝓞 K))) = ⟨P.asIdeal, hP⟩ ^ h := Subtype.ext (by simp)
+    rw [e, map_pow, pow_card_eq_one]
+  haveI := (ClassGroup.mk0_eq_one_iff hPh).1 h1
+  exact ⟨h, Fintype.card_pos, _, Ideal.span_singleton_generator _⟩
+
+end GlobalTheory.UnitOverP
+
+namespace GlobalTheory.UnitOverP
+
+open Formalism.L2.Host in
+
+theorem val_mul_sqrt_unit : ∀ (D : D7) (V W : HSp D) (B : Base V W), B.Good → ∀ χ : Formalism.L2.Host.HChar D.host.E, ChrEq (B.mu * B.eta⁻¹) χ → ∀ (p : ℕ) (A : ValuationSubring ℂ), p.Prime → (p : ℂ) ∈ A.nonunits → ∀ bad : ℕ, p ∣ bad → (∀ PP, PP ∈ B.G.Pg ∨ PP ∈ B.de.Q → (bad : 𝓞 D.host.E) ∈ PP.asIdeal) → ∀ P : HeightOneSpectrum (𝓞 D.host.E), (bad : 𝓞 D.host.E) ∉ P.asIdeal → ((χ.val P : ℂˣ) : ℂ) * ((Real.sqrt (Ideal.absNorm P.asIdeal) : ℝ) : ℂ) ∈ A ∧ (((χ.val P : ℂˣ) : ℂ) * ((Real.sqrt (Ideal.absNorm P.asIdeal) : ℝ) : ℂ))⁻¹ ∈ A := by
+  intro D V W B hB χ hχ p A hp hpA bad hpb hbad P hP
+  classical
+  have hpP : ((p : ℕ) : 𝓞 D.host.E) ∉ P.asIdeal := by
+    intro h
+    apply hP
+    obtain ⟨r, rfl⟩ := hpb
+    rw [Nat.cast_mul]
+    exact Ideal.mul_mem_right _ _ h
+  have hinf : ∀ τ, HasInfExp D (B.mu * B.eta⁻¹) τ
+      (((B.w.c τ : ℚ) - ((B.w.p τ : ℚ) - B.w.q τ) / 2 + 1 / 2) + -(1 / 2)) := fun τ =>
+    GlobalTheory.Chain.StepVac.hasInfExp_mul (GlobalTheory.RealFockAction.hasInfExp_mul_of_isOpen_ker (hB.inf τ) hB.de.isOpen)
+      (GlobalTheory.Chain.StepVac.hasInfExp_inv (hB.eta.2.2.2 τ))
+  obtain ⟨n, -, hχinf⟩ := GlobalTheory.HeckeInfExp.hasInfQ_of_hasInfExp D _ χ _ hχ hinf
+  obtain ⟨h, hh, α, hα⟩ := exists_gen P
+  have hα0 : (α : D.host.E) ≠ 0 := by
+    intro h0
+    have h1 : α = 0 := by exact_mod_cast h0
+    rw [h1, Ideal.span_singleton_eq_bot.2 rfl] at hα
+    exact (pow_ne_zero h P.ne_bot) hα.symm
+  set k : D.host.Eˣ := Units.mk0 _ hα0 with hk
+  have hmem : ∀ v : HeightOneSpectrum (𝓞 D.host.E), α ∈ v.asIdeal ↔ v = P := by
+    intro v
+    constructor
+    · intro hv
+      have h1 : P.asIdeal ^ h ≤ v.asIdeal := by
+        rw [← hα, Ideal.span_le, Set.singleton_subset_iff]; exact hv
+      have h2 : P.asIdeal ≤ v.asIdeal := v.isPrime.le_of_pow_le h1
+      exact HeightOneSpectrum.ext ((P.isMaximal.eq_of_le v.isPrime.ne_top h2).symm)
+    · rintro rfl
+      have h1 : α ∈ Ideal.span {α} := Ideal.subset_span rfl
+      rw [hα] at h1
+      exact Ideal.pow_le_self hh.ne' h1
+  have hval : ∀ v : HeightOneSpectrum (𝓞 D.host.E), v.valuation D.host.E (k : D.host.E) = v.intValuation α := fun v =>
+    HeightOneSpectrum.valuation_of_algebraMap v α
+  have hv1 : ∀ v, v ≠ P → v.valuation D.host.E (k : D.host.E) = 1 := fun v hv => by
+    rw [hval]
+    exact le_antisymm (v.intValuation_le_one α)
+      (not_lt.1 fun h' => hv ((hmem v).1 ((v.intValuation_lt_one_iff_mem α).1 h')))
+  have hord : ∀ v, v ≠ P → ordF v k = 0 := fun v hv => by
+    unfold ordF; rw [hv1 v hv]; simp
+  have hatFin : ∀ (v : HeightOneSpectrum (𝓞 D.host.E)) (x : D.host.Eˣ),
+      Valued.v ((atFin v x : (v.adicCompletion D.host.E)ˣ) : v.adicCompletion D.host.E) = v.valuation D.host.E (x : D.host.E) :=
+    fun v x => HeightOneSpectrum.valuedAdicCompletion_eq_valuation' v (x : D.host.E)
+  set N := ordF P k with hNdef
+  have hPv : P.valuation D.host.E (k : D.host.E) = WithZero.exp (-N) := by
+    have h0 : P.valuation D.host.E (k : D.host.E) ≠ 0 := by simp
+    rw [hNdef, ordF, neg_neg]
+    exact (WithZero.exp_log h0).symm
+  have hN : 0 < N := by
+    have h1 : P.valuation D.host.E (k : D.host.E) < 1 := by
+      rw [hval]; exact (P.intValuation_lt_one_iff_mem α).2 ((hmem P).2 rfl)
+    rw [hPv, ← WithZero.exp_zero, WithZero.exp_lt_exp] at h1
+    omega
+
+  have hfin := GlobalTheory.Mem.UnrAe.finite_ramified χ
+  set S := insert P hfin.toFinset with hSdef
+  have hS : ∀ v, v ∉ S → χ.UnrAt v := fun v hv => by
+    by_contra h'
+    exact hv (Finset.mem_insert_of_mem (hfin.mem_toFinset.2 h'))
+  have hpr := χ.productRule S hS k
+  have hfp : (∏ᶠ (v : HeightOneSpectrum (𝓞 D.host.E)) (_ : v ∉ S), χ.val v ^ ordF v k) = 1 :=
+    finprod_eq_one_of_forall_eq_one fun v => by
+      rw [finprod_eq_if]
+      split_ifs with hv
+      · rfl
+      · rw [hord v (fun e => hv (e ▸ Finset.mem_insert_self _ _)), zpow_zero]
+  rw [hfp, mul_one, ← Finset.mul_prod_erase S _ (Finset.mem_insert_self P _)] at hpr
+  set u : D.host.Eˣ := k * (unif P ^ N)⁻¹ with hudef
+  have hku : k = u * unif P ^ N := by rw [hudef, inv_mul_cancel_right]
+  have hlocP : χ.locK P k = χ.locK P u * χ.val P ^ N := by
+    rw [hku, map_mul, map_zpow]; rfl
+  have hu : IsUnitAt P (atFin P u) := by
+    have h1 := unif_spec P
+    unfold IsUnifAt at h1
+    unfold IsUnitAt
+    rw [hudef, map_mul, map_inv, map_zpow, Units.val_mul, Units.val_inv_eq_inv_val, Units.val_zpow_eq_zpow_val, map_mul,
+      map_inv₀, map_zpow₀, h1, hatFin, hPv, ← WithZero.exp_zsmul, ← WithZero.exp_neg, ← WithZero.exp_add]
+    simp
+  have hroot : ∀ (v : HeightOneSpectrum (𝓞 D.host.E)) (x : D.host.Eˣ), IsUnitAt v (atFin v x) →
+      A.valuation ((χ.locK v x : ℂˣ) : ℂ) = 1 := by
+    intro v x hx
+    obtain ⟨m, hm, hxm⟩ := GlobalTheory.T.heckeChar_loc_pow_eq_one_on_localUnits _ χ v _ hx
+    apply val_eq_one_of_pow A hm.ne'
+    rw [← Units.val_pow_eq_pow_val, show χ.locK v x = χ.loc v (atFin v x) from rfl, hxm, Units.val_one, map_one]
+  have hw : ∀ τ, A.valuation (tauE D τ (k : D.host.E) / ((‖tauE D τ (k : D.host.E)‖ : ℝ) : ℂ)) = 1 := by
+    intro τ
+    apply val_eq_one_of_pow A two_ne_zero
+    have hz : tauE D τ (k : D.host.E) ≠ 0 := (map_ne_zero _).2 k.ne_zero
+    have hz' : starRingEnd ℂ (tauE D τ (k : D.host.E)) ≠ 0 := (map_ne_zero _).2 hz
+    have hn : ((‖tauE D τ (k : D.host.E)‖ : ℝ) : ℂ) ^ 2 = tauE D τ (k : D.host.E) * starRingEnd ℂ (tauE D τ (k : D.host.E)) := by
+      rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]; push_cast; ring
+    have e : (tauE D τ (k : D.host.E) / ((‖tauE D τ (k : D.host.E)‖ : ℝ) : ℂ)) ^ 2 =
+        tauE D τ (k : D.host.E) / starRingEnd ℂ (tauE D τ (k : D.host.E)) := by
+      rw [div_pow, hn]; field_simp
+    have h1 : A.valuation (tauE D τ (k : D.host.E)) = 1 := GlobalTheory.T.valuation_embedding_generator_eq_one' _ A p hp hpA P hpP α h hα (tauE D τ)
+    have h2 : A.valuation (starRingEnd ℂ (tauE D τ (k : D.host.E))) = 1 :=
+      GlobalTheory.T.valuation_embedding_generator_eq_one' _ A p hp hpA P hpP α h hα ((starRingEnd ℂ).comp (tauE D τ))
+    rw [e, map_div₀, h1, h2, div_one]
+  have hinfv : A.valuation ((χ.inf k : ℂˣ) : ℂ) = 1 := by
+    rw [hχinf k, map_prod]
+    exact Finset.prod_eq_one fun τ _ => by rw [map_zpow₀, hw τ, _root_.one_zpow]
+  have hrest : A.valuation ((∏ v ∈ S.erase P, χ.locK v k : ℂˣ) : ℂ) = 1 := by
+    rw [Units.coe_prod, map_prod]
+    refine Finset.prod_eq_one fun v hv => hroot v k ?_
+    unfold IsUnitAt
+    rw [hatFin]
+    exact hv1 v (Finset.ne_of_mem_erase hv)
+  have key := congrArg (fun x : ℂˣ => A.valuation (x : ℂ)) hpr
+  simp only [hlocP, Units.val_mul, map_mul, Units.val_one, map_one, Units.val_zpow_eq_zpow_val, map_zpow₀, hinfv, hrest,
+    hroot P u hu, one_mul, mul_one] at key
+  have hvalP : A.valuation ((χ.val P : ℂˣ) : ℂ) = 1 := by
+    obtain ⟨M, hM⟩ := Int.eq_ofNat_of_zero_le hN.le
+    rw [hM, zpow_natCast] at key
+    refine val_eq_one_of_pow A (m := M) (by have h3 := hN; rw [hM] at h3; omega) ?_
+    rw [map_pow]; exact key
+  have hfinal : A.valuation (((χ.val P : ℂˣ) : ℂ) * ((Real.sqrt (Ideal.absNorm P.asIdeal) : ℝ) : ℂ)) = 1 := by
+    rw [map_mul, hvalP, GlobalTheory.T.valuation_sqrt_absNorm_eq_one' _ A p hp hpA P hpP, one_mul]
+  exact ⟨(A.valuation_le_one_iff _).1 hfinal.le, (A.valuation_le_one_iff _).1 (by rw [map_inv₀, hfinal, inv_one])⟩
+
+end GlobalTheory.UnitOverP
+end
+
+section
 open NumberField Matrix Complex IsDedekindDomain
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Dict GlobalTheory.AdTh GlobalTheory.ClsVal
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
@@ -386,3 +771,4 @@ theorem GlobalTheory.LevelSeries.clsScal_mem_valRing : ∀ (D : D7) (ψ : AddCha
   push_cast
   rw [mul_inv, mul_inv]
   ring
+end

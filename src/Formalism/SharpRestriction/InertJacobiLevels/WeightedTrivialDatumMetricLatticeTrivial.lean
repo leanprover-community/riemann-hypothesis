@@ -40,83 +40,24 @@ variable (hv : W → ℝ) (vol : @HSpace H.E _ _ H.cmStar → ℝ) (hvol : ∀ V
   (tw : (@placesOf H.E _ _ H.cmStar).Pl → Bool)
   (htw : ∀ w, tw ((@placesOf H.E _ _ H.cmStar).conj w) = tw w)
 
-theorem weightedTrivialDatum_multiplicity_trivial : ∀ μ j, Subsingleton ((codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).what₂.Mult μ j) :=
-  fun _ _ => inferInstanceAs (Subsingleton Z0)
 
-theorem weightedTrivialDatum_ambient_subsingleton : ∀ μ, Subsingleton ((codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).what₂.Amb μ) :=
-  fun _ => inferInstanceAs (Subsingleton Z0)
 
-theorem weightedTrivialDatum_metricLattice_trivial : ∀ μ j, Subsingleton ((codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).what₂.MtL μ j) :=
-  fun _ _ => inferInstanceAs (Subsingleton PUnit)
 
-theorem weightedTrivialDatum_multSpace_trivial : ∀ j, Subsingleton ((codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).what₂.Mj j) :=
-  fun _ => inferInstanceAs (Subsingleton Z0)
 
-theorem weightedTrivialDatum_error_subsingleton : Subsingleton (codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).what₂.EE0 :=
-  inferInstanceAs (Subsingleton Z0)
 
-theorem weightedTrivialDatum_radical_subsingleton : Subsingleton (codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).div.RR.V :=
-  inferInstanceAs (Subsingleton (zeroHLat H.E).V)
 
-theorem weightedTrivialDatum_nu_subsingleton : ∀ u, Subsingleton ((codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).div.Nu u).V :=
-  fun _ => inferInstanceAs (Subsingleton (zeroHLat H.E).V)
 
-theorem weightedTrivialDatum_lattice_subsingleton : ∀ u j, Subsingleton (((codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).fm u).lat j).V :=
-  fun _ _ => inferInstanceAs (Subsingleton (fmZeroHLat H.E).V)
 
-theorem weightedTrivialDatum_points_isEmpty : ∀ u μ i, IsEmpty (((codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).chTw u μ).Y i) :=
-  fun _ _ _ => ⟨fun y => Empty.elim y⟩
 
-theorem weightedTrivialDatum_metricVector_trivial : ∀ i j b k Q ψ, Subsingleton ((codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).nexp.MtV i j b k Q ψ) :=
-  fun i => Empty.elim i
 
-theorem weightedTrivialDatum_forms_subsingleton : ∀ i j b, Subsingleton ((codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).nexp.Fm i j b) :=
-  fun i => Empty.elim i
 
-theorem weightedTrivialDatum_mem_base_lattice : ∀ x : (codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).what₂.LL, x ∈ (codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).LL0 :=
-  fun _ => trivial
 
-theorem weightedTrivialDatum_class_zero_equiv : ∀ u μ, Nonempty (((codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).mem u).C.cls 0 ≃ ((codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).chTw u μ).cls 0) :=
-  fun _ _ => ⟨Equiv.refl _⟩
 
-theorem weightedTrivialDatum_isEmpty_local : IsEmpty (codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).nd.Loc :=
-  ⟨fun a => Empty.elim a⟩
 
-theorem weightedTrivialDatum_classes_isEmpty (hE : ∀ u i, IsEmpty ((K u).cls (i + 1))) : ∀ u μ j, IsEmpty (((codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).chTw u μ).cls (j + 1)) :=
-  fun u _ j => hE u j
 
-theorem weightedTrivialDatum_gammaDiscriminant_eq (hDG : ∀ u, (K u).DGam = minkM (2 * R.f * R.N R.m)) :
-    ∀ u μ, ((codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).chTw u μ).DGam = ((codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).mem (codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).u₀).C.DGam :=
-  fun u _ => (hDG u).trans (hDG u0).symm
 
-theorem shape_zero_weightedTrivialDatum (hE : ∀ u i, IsEmpty ((K u).cls (i + 1))) (hDG : ∀ u, (K u).DGam = minkM (2 * R.f * R.N R.m)) :
-    Shape0 (codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw) where
-  mult := weightedTrivialDatum_multiplicity_trivial H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  amb := weightedTrivialDatum_ambient_subsingleton H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  mtL := weightedTrivialDatum_metricLattice_trivial H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  mj := weightedTrivialDatum_multSpace_trivial H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  ee0 := weightedTrivialDatum_error_subsingleton H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  rr := weightedTrivialDatum_radical_subsingleton H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  nu := weightedTrivialDatum_nu_subsingleton H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  lat := weightedTrivialDatum_lattice_subsingleton H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  yTw := weightedTrivialDatum_points_isEmpty H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  clsTw := weightedTrivialDatum_classes_isEmpty H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw hE
-  mtV := weightedTrivialDatum_metricVector_trivial H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  fmN := weightedTrivialDatum_forms_subsingleton H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  ll0 := weightedTrivialDatum_mem_base_lattice H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  Ij0 := fun _ _ _ => rfl
-  jw0 := fun _ _ _ => rfl
-  drows := rfl
-  dgam := weightedTrivialDatum_gammaDiscriminant_eq H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw hDG
-  mink := hDG u0
-  loc := weightedTrivialDatum_isEmpty_local H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
-  cls0 := weightedTrivialDatum_class_zero_equiv H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw
 
-theorem weightedTrivialDatum_finrank_zero (u) : Module.finrank ℂ ((codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).mem u).A.Mu0 = 0 := by
-  show Module.finrank ℂ (⊥ : Submodule ℂ ((K u).cls 0 → Empty → ℂ)) = 0
-  exact finrank_bot ℂ _
 
-theorem weightedTrivialDatum_embedding_bijective : Function.Bijective (codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).embE := Function.bijective_id
 
 def LevelGap : Prop :=
   ∀ {R : Ranks} (H : Host R) {W : Type} [Fintype W] (u0 : W) (T : W → ℕ) [∀ u, Fact (T u).Prime]

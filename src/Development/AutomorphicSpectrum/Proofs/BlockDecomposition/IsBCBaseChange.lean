@@ -82,16 +82,6 @@ def baseChange (K : Type) [Field K] [NumberField K] (D : Dat) : DatK K where
     have hw' : w ∉ badSet D := by simpa using hw
     exact isStd_of_unramified w (by_contra fun h => hw' (Or.inr h))
 
-theorem isBC_baseChange (D : Dat) : IsBC D (baseChange K D) where
-  k := rfl
-  nu v w _ := by
-    obtain rfl := eq_below v w
-    rfl
-  bad v w _ := by
-    obtain rfl := eq_below v w
-    simp [baseChange, badSet]
 
-theorem bcex : ∀ (K : Type) [Field K] [NumberField K], Ad3.K.QuadraticBaseChangeGL3.BCEX K :=
-  fun K _ _ D => ⟨baseChange K D, isBC_baseChange D⟩
 
 end GlobalTheory.CompanionTheory.BaseChangeData

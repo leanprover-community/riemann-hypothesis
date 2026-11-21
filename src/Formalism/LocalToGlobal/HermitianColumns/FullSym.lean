@@ -205,7 +205,6 @@ def FullTied.toS {D : D7} (X : FullTied D) : FullTiedS D where
   vpos := X.vpos
   baseL := fun u pb h => ⟨(X.baseL u pb h).1, fun i h1 hm _ => (X.baseL u pb h).2 i h1 hm⟩
 
-theorem FullTied.one_chart_model_base_level_eq {D : D7} (X : FullTied D) : X.toS.base.lev0 = X.base.lev0 := rfl
 
 theorem ExtraTied.toS {D : D7} {X : FullTied D} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L}
     {Gl : Formalism.MainNotions.G.LatInst D} {K : Formalism.MainNotions.G.Consts} {Y : DivX D} {cX : ExtraC}
@@ -214,11 +213,8 @@ theorem ExtraTied.toS {D : D7} {X : FullTied D} {L : SizeData₂ D} {hT : GatTie
 
 def FullTiedS.to0 {D : D7} (X : FullTiedS D) : Herm0 D := ⟨X.base.lev0, X.g⟩
 
-theorem FullTiedS.base_model_level_eq {D : D7} (X : FullTiedS D) : X.to0.lev0 = X.base.lev0 := rfl
 
-theorem FullTiedS.base_model_g_eq {D : D7} (X : FullTiedS D) : X.to0.g = X.g := rfl
 
-theorem FullTied.one_chart_model_base_eq {D : D7} (X : FullTied D) : X.toS.to0 = X.to0 := rfl
 
 end Formalism.L2.Herm
 

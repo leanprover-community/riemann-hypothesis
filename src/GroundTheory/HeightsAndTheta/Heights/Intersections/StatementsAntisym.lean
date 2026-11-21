@@ -602,36 +602,12 @@ theorem isSmoothHerm_ofMetrics_fs (a : K → ℤ) : IsSmoothHerm (HermLine.ofMet
 
 end FS
 
-theorem sumY_base (f : ExY .base → ℝ) : ∑ i, f i = f () := by
-  have h : ∀ g : Unit → ℝ, ∑ i, g i = g () := fun g => by simp
-  exact h f
 
-theorem sumY_det (f : ExY .det → ℝ) : ∑ i, f i = f () := by
-  have h : ∀ g : Unit → ℝ, ∑ i, g i = g () := fun g => by simp
-  exact h f
 
-theorem sumY_line (f : ExY .line → ℝ) : ∑ i, f i = f (Sum.inl ()) + f (Sum.inr ()) := by
-  have h : ∀ g : Unit ⊕ Unit → ℝ, ∑ i, g i = g (Sum.inl ()) + g (Sum.inr ()) := fun g => by
-    simp [Fintype.sum_sum_type]
-  exact h f
 
-theorem sumW_base (f : ExW .base → ℝ) : ∑ i, f i = f () := by
-  have h : ∀ g : Unit → ℝ, ∑ i, g i = g () := fun g => by simp
-  exact h f
 
-theorem sumW_det (f : ExW .det → ℝ) : ∑ i, f i = f () := by
-  have h : ∀ g : Unit → ℝ, ∑ i, g i = g () := fun g => by simp
-  exact h f
 
-theorem sumW_line0 (f : ExW .line0 → ℝ) : ∑ i, f i = f (Sum.inl ()) + f (Sum.inr ()) := by
-  have h : ∀ g : Unit ⊕ Unit → ℝ, ∑ i, g i = g (Sum.inl ()) + g (Sum.inr ()) := fun g => by
-    simp [Fintype.sum_sum_type]
-  exact h f
 
-theorem sumW_line1 (f : ExW .line1 → ℝ) : ∑ i, f i = f (Sum.inl ()) + f (Sum.inr ()) := by
-  have h : ∀ g : Unit ⊕ Unit → ℝ, ∑ i, g i = g (Sum.inl ()) + g (Sum.inr ()) := fun g => by
-    simp [Fintype.sum_sum_type]
-  exact h f
 
 theorem prod_YBlk (f : T.YBlk → ℝ) : ∏ k, f k = f .base * (f .det * f .line) := by
   rw [show (Finset.univ : Finset T.YBlk) = {.base, .det, .line} from rfl]
@@ -645,36 +621,9 @@ def exXi : HermLine ExY := HermLine.ofMetrics (fun k => fsMetric (ExY k)) T.twoX
 
 def exAL : HermLine ExY := HermLine.ofMetrics (fun k => fsMetric (ExY k)) (Pi.single T.YBlk.base 1)
 
-theorem exXi_h (w : (Σ k, ExY k) → ℂ) :
-    exXi.h w = ‖w ⟨.base, ()⟩‖ ^ 3 * ‖w ⟨.det, ()⟩‖⁻¹ *
-      (‖w ⟨.line, Sum.inl ()⟩‖ ^ 2 + ‖w ⟨.line, Sum.inr ()⟩‖ ^ 2)⁻¹ := by
-  rw [exXi, ofMetrics_fs_h, prod_YBlk, sumY_base, sumY_det, sumY_line]
-  simp only [T.twoXiDegY]
-  have h1 : Real.sqrt (‖w ⟨.base, ()⟩‖ ^ 2) = ‖w ⟨.base, ()⟩‖ := Real.sqrt_sq (norm_nonneg _)
-  have h2 : Real.sqrt (‖w ⟨.det, ()⟩‖ ^ 2) = ‖w ⟨.det, ()⟩‖ := Real.sqrt_sq (norm_nonneg _)
-  have h3 : Real.sqrt (‖w ⟨.line, Sum.inl ()⟩‖ ^ 2 + ‖w ⟨.line, Sum.inr ()⟩‖ ^ 2) ^ (-2 : ℤ) =
-      (‖w ⟨.line, Sum.inl ()⟩‖ ^ 2 + ‖w ⟨.line, Sum.inr ()⟩‖ ^ 2)⁻¹ := by
-    rw [_root_.zpow_neg, zpow_two, Real.mul_self_sqrt (by positivity)]
-  rw [h1, h2, h3]
-  simp [_root_.zpow_neg, mul_assoc]
 
-theorem lagrange_identity_complex_two (u0 u1 w0 w1 : ℂ) :
-    ‖u0 * w1 - u1 * w0‖ ^ 2 + ‖star u0 * w0 + star u1 * w1‖ ^ 2 =
-      (‖u0‖ ^ 2 + ‖u1‖ ^ 2) * (‖w0‖ ^ 2 + ‖w1‖ ^ 2) := by
-  simp only [Complex.sq_norm, Complex.normSq_apply, Complex.sub_re, Complex.sub_im, Complex.add_re,
-    Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.star_def, Complex.conj_re, Complex.conj_im]
-  ring
 
-theorem hermG_one (u w : Unit ⊕ Unit → ℂ) :
-    hermG 1 u w = star (u (Sum.inl ())) * w (Sum.inl ()) + star (u (Sum.inr ())) * w (Sum.inr ()) := by
-  simp [hermG, dotProduct, Fintype.sum_sum_type, Matrix.one_mulVec]
 
-theorem hermG_one_re (u : Unit ⊕ Unit → ℂ) :
-    (hermG 1 u u).re = ‖u (Sum.inl ())‖ ^ 2 + ‖u (Sum.inr ())‖ ^ 2 := by
-  rw [hermG_one]
-  simp only [Complex.add_re, Complex.sq_norm, Complex.normSq_apply, Complex.mul_re, Complex.star_def,
-    Complex.conj_re, Complex.conj_im]
-  ring
 
 def projLineBundleExample : ProjectiveLineBundle 1 where
   Ω := ℚ
@@ -708,58 +657,10 @@ def projLineBundleExample : ProjectiveLineBundle 1 where
     simp only [exg, exh, map_mul, map_sub, map_pow, aeval_X, ex_wwCoord, exCW, exιR_X, map_one, T.diagSec]
     ring
 
-theorem eval_exg (z : (Σ k, ExW k) → ℂ) :
-    eval z (map (Int.castRingHom ℂ) exg) = z ⟨.det, ()⟩ *
-      (z ⟨.line0, Sum.inl ()⟩ * z ⟨.line1, Sum.inr ()⟩ - z ⟨.line0, Sum.inr ()⟩ * z ⟨.line1, Sum.inl ()⟩) := by
-  simp [exg]
 
-theorem eval_exh (z : (Σ k, ExW k) → ℂ) : eval z (map (Int.castRingHom ℂ) exh) = z ⟨.base, ()⟩ ^ 3 := by
-  simp [exh]
 
-theorem norm_sq_heights_eq_sine_sq_example (z : (Σ k, ExW k) → ℂ) (hblk : ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0) :
-    ‖eval z (map (Int.castRingHom ℂ) exg)‖ ^ 2 * exXi.h (fun p => z (T.yyEmb 0 p)) *
-        exXi.h (fun p => z (T.yyEmb 1 p)) =
-      ‖eval z (map (Int.castRingHom ℂ) exh)‖ ^ 2 *
-        sinSqG (1 : Matrix (Unit ⊕ Unit) (Unit ⊕ Unit) ℂ) (fun k : Unit ⊕ Unit => z ⟨.line0, k⟩)
-          (fun k : Unit ⊕ Unit => z ⟨.line1, k⟩) := by
-  have hd : z ⟨.det, ()⟩ ≠ 0 := by
-    obtain ⟨i, hi⟩ := hblk .det
-    exact hi
-  have hU : 0 < ‖z ⟨.line0, Sum.inl ()⟩‖ ^ 2 + ‖z ⟨.line0, Sum.inr ()⟩‖ ^ 2 := by
-    obtain ⟨i, hi⟩ := hblk .line0
-    rcases i with ⟨⟩ | ⟨⟩
-    · have := pow_pos (norm_pos_iff.2 hi) 2
-      positivity
-    · have := pow_pos (norm_pos_iff.2 hi) 2
-      positivity
-  have hW : 0 < ‖z ⟨.line1, Sum.inl ()⟩‖ ^ 2 + ‖z ⟨.line1, Sum.inr ()⟩‖ ^ 2 := by
-    obtain ⟨i, hi⟩ := hblk .line1
-    rcases i with ⟨⟩ | ⟨⟩
-    · have := pow_pos (norm_pos_iff.2 hi) 2
-      positivity
-    · have := pow_pos (norm_pos_iff.2 hi) 2
-      positivity
-  have hdn : 0 < ‖z ⟨.det, ()⟩‖ := norm_pos_iff.2 hd
-  have hL := lagrange_identity_complex_two (z ⟨.line0, Sum.inl ()⟩) (z ⟨.line0, Sum.inr ()⟩) (z ⟨.line1, Sum.inl ()⟩)
-    (z ⟨.line1, Sum.inr ()⟩)
-  have key : ‖z ⟨.line0, Sum.inl ()⟩ * z ⟨.line1, Sum.inr ()⟩ - z ⟨.line0, Sum.inr ()⟩ * z ⟨.line1, Sum.inl ()⟩‖ ^ 2 =
-      (‖z ⟨.line0, Sum.inl ()⟩‖ ^ 2 + ‖z ⟨.line0, Sum.inr ()⟩‖ ^ 2) *
-        (‖z ⟨.line1, Sum.inl ()⟩‖ ^ 2 + ‖z ⟨.line1, Sum.inr ()⟩‖ ^ 2) -
-      ‖star (z ⟨.line0, Sum.inl ()⟩) * z ⟨.line1, Sum.inl ()⟩ +
-        star (z ⟨.line0, Sum.inr ()⟩) * z ⟨.line1, Sum.inr ()⟩‖ ^ 2 := by
-    linarith
-  rw [eval_exg, eval_exh, exXi_h, exXi_h, sinSqG, hermG_one, hermG_one_re, hermG_one_re]
-  simp only [T.yyEmb, if_true, Fin.one_eq_zero_iff, OfNat.ofNat_ne_one, if_false]
-  rw [norm_mul, mul_pow, key, norm_pow]
-  field_simp
 
-theorem ex_isXi : projLineBundleExample.IsXi exXi :=
-  ⟨rfl, isSmoothHerm_ofMetrics_fs _, fun z hz => norm_sq_heights_eq_sine_sq_example z hz.1⟩
 
-theorem ex_fromBase : IsFromBase exAL := by
-  refine ⟨by simp [exAL, HermLine.ofMetrics], fun z z' hb hd => ?_⟩
-  rw [exAL, ofMetrics_fs_h, ofMetrics_fs_h, prod_YBlk, prod_YBlk, sumY_base, sumY_base]
-  simp [hb ()]
 
 theorem segreBlockEmbedding_injective (j : Fin 2) : Function.Injective (diagonalBlockIndex j) := by
   intro a b h
@@ -777,37 +678,8 @@ theorem pullDeg_otherLine (j : Fin 2) (c : T.YBlk → ℤ) : I1.pullDeg (diagona
 def exPull (j : Fin 2) (c : T.YBlk → ℤ) : HermLine ExW :=
   HermLine.ofMetrics (fun k => fsMetric (ExW k)) (I1.pullDeg (diagonalBlockIndex j) c)
 
-theorem ex_isPull0 (c : T.YBlk → ℤ) :
-    IsPullHerm (diagonalBlockIndex 0) (T.yyEmb 0) (HermLine.ofMetrics (fun k => fsMetric (ExY k)) c) (exPull 0 c) := by
-  refine ⟨rfl, fun z => ?_⟩
-  have e1 : I1.pullDeg (diagonalBlockIndex 0) c .base = c .base := pullDeg_segreBlockEmbedding 0 c .base
-  have e2 : I1.pullDeg (diagonalBlockIndex 0) c .det = c .det := pullDeg_segreBlockEmbedding 0 c .det
-  have e3 : I1.pullDeg (diagonalBlockIndex 0) c .line0 = c .line := pullDeg_segreBlockEmbedding 0 c .line
-  have e4 : I1.pullDeg (diagonalBlockIndex 0) c .line1 = 0 := pullDeg_otherLine 0 c
-  rw [exPull, ofMetrics_fs_h, ofMetrics_fs_h, prod_WBlk, prod_YBlk, sumW_base, sumW_det, sumW_line0, sumW_line1,
-    sumY_base, sumY_det, sumY_line, e1, e2, e3, e4]
-  simp [T.yyEmb]
 
-theorem ex_isPull1 (c : T.YBlk → ℤ) :
-    IsPullHerm (diagonalBlockIndex 1) (T.yyEmb 1) (HermLine.ofMetrics (fun k => fsMetric (ExY k)) c) (exPull 1 c) := by
-  refine ⟨rfl, fun z => ?_⟩
-  have e1 : I1.pullDeg (diagonalBlockIndex 1) c .base = c .base := pullDeg_segreBlockEmbedding 1 c .base
-  have e2 : I1.pullDeg (diagonalBlockIndex 1) c .det = c .det := pullDeg_segreBlockEmbedding 1 c .det
-  have e3 : I1.pullDeg (diagonalBlockIndex 1) c .line1 = c .line := pullDeg_segreBlockEmbedding 1 c .line
-  have e4 : I1.pullDeg (diagonalBlockIndex 1) c .line0 = 0 := pullDeg_otherLine 1 c
-  rw [exPull, ofMetrics_fs_h, ofMetrics_fs_h, prod_WBlk, prod_YBlk, sumW_base, sumW_det, sumW_line0, sumW_line1,
-    sumY_base, sumY_det, sumY_line, e1, e2, e3, e4]
-  simp [T.yyEmb]
 
-theorem setting_inhabited :
-    ∃ (S : ProjectiveLineBundle 1) (X A : HermLine S.YIdx) (X₀ X₁ A₀ : HermLine S.WIdx),
-      S.IsXi X ∧ IsSmoothHerm A ∧ IsFromBase A ∧
-      IsPullHerm (diagonalBlockIndex 0) (T.yyEmb 0) X X₀ ∧ IsPullHerm (diagonalBlockIndex 1) (T.yyEmb 1) X X₁ ∧
-      IsPullHerm (diagonalBlockIndex 0) (T.yyEmb 0) A A₀ ∧
-      IsSmoothHerm X₀ ∧ IsSmoothHerm X₁ ∧ IsSmoothHerm A₀ :=
-  ⟨projLineBundleExample, exXi, exAL, exPull 0 T.twoXiDegY, exPull 1 T.twoXiDegY, exPull 0 (Pi.single T.YBlk.base 1),
-    ex_isXi, isSmoothHerm_ofMetrics_fs _, ex_fromBase, ex_isPull0 _, ex_isPull1 _, ex_isPull0 _,
-    isSmoothHerm_ofMetrics_fs _, isSmoothHerm_ofMetrics_fs _, isSmoothHerm_ofMetrics_fs _⟩
 
 end Inhabit
 

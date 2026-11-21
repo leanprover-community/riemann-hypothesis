@@ -1,8 +1,50 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.LowerLiftsZeroOfWittIdxEqZero
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.IntegrableOfIsAniso
-import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.IsTraceClassOfRankZero
+import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.CuspDiscreteDecompositionOfTraceClass
+import Development.AbelianVarietyTheory.Definitions.Foundations.ConstantOneNotCuspidalOfIsotropic
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsMulRightInvariantHaarAdelicUnitaryGroupHermiti
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NonemptyRecordOfLocStage
 
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta MeasureTheory Set Filter NumberField
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.OpTrace GlobalTheory.Cusp GlobalTheory.Orb GlobalTheory.AdelicU GlobalTheory.SplitWeil GlobalTheory.Cusp.Model GlobalTheory.CuspDecay.Model
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.CuspSpectrum.Model
+
+theorem exists_measure (D : D7) (V : HSp D) :
+    ∃ μ : Measure (GA D V), μ.IsHaarMeasure ∧ μ.IsMulRightInvariant :=
+  ⟨Measure.haar, inferInstance, AdelicPointsUnimod.isMulRightInvariant_of_isHaarMeasure D V _ inferInstance⟩
+
+theorem exists_ne_zero : ∃ (D : D7) (V : HSp D) (μ : Measure (GA D V)) (_ : μ.IsHaarMeasure)
+    (_ : μ.IsMulRightInvariant), V.rank = 1 ∧ ∃ f ∈ CcGA V, RcuspOp V μ f ≠ 0 := by
+  obtain ⟨D⟩ := Mem.nonempty_record_of_locStage
+  obtain ⟨μ, _, _⟩ := exists_measure D (line D)
+  obtain ⟨v, hv, h0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot (L2cusp_ne_bot μ (wittIndex_line D))
+  obtain ⟨f, hf, h⟩ := exists_RcuspOp_ne_zero (v := ⟨v, hv⟩) fun e => h0 (congrArg Subtype.val e)
+  exact ⟨D, line D, μ, ‹_›, ‹_›, rfl, f, hf, fun e => h (by rw [e]; rfl)⟩
+
+theorem exists_isotropic : ∃ (D : D7) (V : HSp D) (μ : Measure (GA D V)) (_ : μ.IsHaarMeasure)
+    (_ : μ.IsMulRightInvariant), wittIndex V = 1 ∧ L2cusp V μ ≠ ⊤ ∧ ∃ f ∈ CcGA V, f 1 = 1 := by
+  obtain ⟨D⟩ := Mem.nonempty_record_of_locStage
+  obtain ⟨μ, _, _⟩ := exists_measure D (plane D)
+  obtain ⟨φ, hφ, -, h1, -⟩ := exists_bump_ccAd (J := (plane D).gram) (isCMExt_host D) univ_mem
+  exact ⟨D, plane D, μ, ‹_›, ‹_›, wittIndex_plane D, L2cusp_plane_ne_top μ, _, hφ, by simp [h1]⟩
+
+variable {D : D7} {V : HSp D} {μ : Measure (GA D V)} [μ.IsHaarMeasure] [μ.IsMulRightInvariant]
+
+
+
+end GlobalTheory.CuspSpectrum.Model
+
+end
+end
+
+section
 noncomputable section
 
 open scoped ComplexConjugate NNReal ENNReal
@@ -83,54 +125,11 @@ theorem value_smul (mH : Measure (GA D B)) {c : ℝ≥0} (hc : c ≠ 0) (φ φ' 
 
 variable {ω : GA D A × GA D B →* Module.End ℂ (WO A B → ℂ)} {m : Measure (GA D A)}
 
-theorem petersson_lift_smul_measure (mH : Measure (GA D B)) (c : ℝ≥0) (Φ₁ Φ₂ : WO A B → ℂ) (f₁ f₂ : GA D A → ℂ) :
-    petersson B mH (thetaLift ω (c • m) Φ₁ f₁) (thetaLift ω (c • m) Φ₂ f₂) =
-      (c : ℂ) ^ 2 * petersson B mH (thetaLift ω m Φ₁ f₁) (thetaLift ω m Φ₂ f₂) := by
-  have e : ∀ Φ f, thetaLift ω (c • m) Φ f = (c : ℂ) • thetaLift ω m Φ f := fun Φ f =>
-    funext fun h => petersson_smul_measure m c _ _
-  rw [e, e, petersson_smul_left, ← petersson_conj_symm, petersson_smul_left, map_mul, petersson_conj_symm,
-    Complex.conj_ofReal]
-  ring
 
-theorem petersson_lift_smul (mH : Measure (GA D B)) (c₁ c₂ : ℂ) (Φ₁ Φ₂ : WO A B → ℂ) (f₁ f₂ : GA D A → ℂ) :
-    petersson B mH (thetaLift ω m Φ₁ (c₁ • f₁)) (thetaLift ω m Φ₂ (c₂ • f₂)) =
-      conj c₁ * c₂ * petersson B mH (thetaLift ω m Φ₁ f₁) (thetaLift ω m Φ₂ f₂) := by
-  rw [thetaLift_smul, thetaLift_smul, petersson_smul_left, ← petersson_conj_symm, petersson_smul_left, map_mul,
-    petersson_conj_symm, Complex.conj_conj]
-  ring
 
-theorem dblInt_theta [SigmaFinite m] {ψ : AddChar (AF D.host.F) ℂ} {χB : (AE D)ˣ →* Circle}
-    {ωd : GA D (dblSp A) × GA D B →* Module.End ℂ (WO (dblSp A) B → ℂ)} (hc : ThetaClause ψ A B χB ω ωd)
-    {Φ₁ Φ₂ : WO A B → ℂ} (h₁ : IsThetaFunO ψ A B Φ₁) (h₂ : IsThetaFunO ψ A B Φ₂) (f₁ f₂ : GA D A → ℂ) (h : GA D B) :
-    dblInt A χB⁻¹ m (fun g => thetaKO ωd g h (delta A B Φ₁ Φ₂)) f₁ f₂ =
-      thetaLift ω m Φ₁ f₁ h * conj (thetaLift ω m Φ₂ f₂ h) := by
-  rw [dblInt_of_factor (A := fun g => thetaKO ω g h Φ₁) (B := fun g => thetaKO ω g h Φ₂)
-    fun g₁ g₂ => ((hc Φ₁ Φ₂ h₁ h₂).2 g₁ g₂ h).2, thetaLift, thetaLift, petersson_conj_symm]
 
-theorem conclusion_zero (χB : (AE D)ˣ →* Circle) (ωd : GA D (dblSp A) × GA D B →* Module.End ℂ (WO (dblSp A) B → ℂ))
-    (a : GL (Fin A.rank) (AE D)) (ν : Measure (WO A B)) (𝓕 : Set (WO A B)) (mH : Measure (GA D B)) (Φ₁ : WO A B → ℂ)
-    (f₁ f₂ : GA D A → ℂ) :
-    ZetaValueAt A χB⁻¹ m (flat A a (swSec A B ωd ν 𝓕 (delta A B Φ₁ 0)) (sZero A B)) f₁ f₂ (sZero A B)
-      ((((autMeasure B mH).real Set.univ : ℝ) : ℂ)⁻¹ * petersson B mH (thetaLift ω m Φ₁ f₁) (thetaLift ω m 0 f₂)) := by
-  have h0 : delta A B Φ₁ 0 = 0 := funext fun x => by simp [IndefiniteRowSideFullHecke.SphericalZero.delta]
-  have h1 : flat A a (swSec A B ωd ν 𝓕 (delta A B Φ₁ 0)) (sZero A B) = fun _ _ => 0 := by
-    funext s g
-    refine (flatH_apply _ _ _ _).trans ?_
-    simp [h0, swSec, IndefiniteRowSideFullHecke.SphericalZero.evZero]
-  have h2 : thetaLift ω m 0 f₂ = 0 := funext fun h => by simp [thetaLift, petersson, pet, AutomorphicL2Unitary.descend, thetaKO]
-  have h3 : eis A (fun _ => (0 : ℂ)) = fun _ => 0 := funext fun g => by simp [eis, cosetSum, term]
-  have h4 : dblIntegrand A χB⁻¹ (fun _ => (0 : ℂ)) f₁ f₂ = fun _ => 0 := funext fun g => by simp [dblIntegrand]
-  have h5 : dblIntegrandQ A χB⁻¹ (fun _ => (0 : ℂ)) f₁ f₂ = fun _ => 0 := funext fun g => by simp [dblIntegrandQ, h4]
-  rw [h1, h2, show petersson B mH (thetaLift ω m Φ₁ f₁) 0 = 0 by simp [petersson, pet, AutomorphicL2Unitary.descend], mul_zero]
-  refine ⟨⟨fun s _ => ⟨fun _ _ _ => rfl, fun g => ?_⟩, fun s _ => ?_⟩, ?_⟩
-  · simp [EisConv, CosetConv, term, summable_zero]
-  · rw [h3, DblConv, h4, h5]
-    exact ⟨fun _ _ _ => rfl, integrable_zero _ _ _⟩
-  · have : zeta A χB⁻¹ m (fun _ _ => (0 : ℂ)) f₁ f₂ = fun _ => 0 := funext fun s => by
-      rw [zeta, h3, dblInt, h5, integral_zero]
-    rw [this]
-    exact (GlobalTheory.Cont.holValueAt_const 0 _).valueAt
 
 end GlobalTheory.RallisIP.Model
 
+end
 end

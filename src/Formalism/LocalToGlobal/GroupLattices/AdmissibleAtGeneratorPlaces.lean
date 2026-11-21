@@ -1,6 +1,40 @@
-import Formalism.LocalToGlobal.GroupLattices.AdmissibleOfInclusion
+import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSy
+import Formalism.SharpRestriction.SmoothDesignExistence.SumOverPrimesHypotheses
+import Formalism.SharpRestriction.AdmissibleParameterJoins.DIVfromGLs
+import Formalism.SharpRestriction.Divisibility.ChainOperators.PerCol
 import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSaj
 
+section
+noncomputable section
+
+namespace Formalism.L2.G.Adm2In
+
+open Formalism.BasicNotions Formalism.MainNotions
+
+structure Adm2In (𝒞 : FamClass) : Prop where
+
+  pt0 : Closed 𝒞 fun Fm _ => ∃ x0 : ℝ, ∀ x, x0 ≤ x → ∀ (_ : Fm.x1 < x) (i : Fm.Ix x), ∀ u, Formalism.MainNotions.product_first_zeroth_parts.Conclusion6 (Fm.D x i) u
+  ptTw : Closed 𝒞 fun Fm _ => ∃ x0 : ℝ, ∀ x, x0 ≤ x → ∀ (hx : Fm.x1 < x) (i : Fm.Ix x),
+    Formalism.MainNotions.WeightDegreeSizes.TwistedChainIntegral (Fm.D x i) (Fm.ex x hx i).tw
+  per0 : Closed 𝒞 fun Fm _ => ∃ x0 : ℝ, ∀ x, x0 ≤ x → ∀ (_ : Fm.x1 < x) (i : Fm.Ix x), Formalism.MainNotions.WeightDegreeSizes.PeriodClassSumWeyl (Fm.D x i)
+  perTw : Closed 𝒞 fun Fm _ => ∃ x0 : ℝ, ∀ x, x0 ≤ x → ∀ (hx : Fm.x1 < x) (i : Fm.Ix x),
+    Formalism.MainNotions.WeightDegreeSizes.TwistedPeriodIntegral (Fm.D x i) (Fm.X x i) (Fm.ex x hx i).tw
+
+  serv : Closed 𝒞 fun Fm _ => WeilJacquetShalikaLaw.ServF Fm
+
+  p10 : Closed 𝒞 fun Fm _ => ∃ x0 : ℝ, ∀ x, x0 ≤ x → ∀ (hx : Fm.x1 < x) (i : Fm.Ix x),
+    ∀ u, Formalism.MainNotions.product_first_zeroth_parts.Conclusion5Sharp (Fm.D x i) u ∧ Formalism.MainNotions.product_first_zeroth_parts.TupleChainSharpColumnValuation (Fm.X x i) (Fm.ex x hx i).tw u
+
+  dgt : Closed 𝒞 fun Fm _ => ∃ x0 : ℝ, ∀ x, x0 ≤ x → ∀ (_ : Fm.x1 < x) (i : Fm.Ix x), Formalism.MainNotions.WeightDegreeSizes.LevelPrimeCoprimeStabiliser (Fm.D x i)
+
+  atG : Closed 𝒞 fun Fm _ => ∃ C1 C2 : ℝ, Formalism.MainNotions.WeightDegreeSizes.FamilyPeriodFormCond Fm C1 C2 ∧ Formalism.MainNotions.WeightDegreeSizes.familySizeBoundAtTypePrime Fm C1
+
+end Formalism.L2.G.Adm2In
+
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.L2.G.Adm2InU
@@ -337,16 +371,8 @@ theorem admissible_family_of_inclusion {𝒞 : FamClass} (h : Adm2InU 𝒞) :
   obtain ⟨g1, g2, g3, g4, hS, ha, hb, C1, hCL, hSg⟩ := hK' Fm CH hc hL
   exact famU he Fm g1 g2 g3 g4 hS ha hb hCL hSg
 
-theorem inU_of_in {𝒞 : FamClass} (h : Formalism.L2.G.Adm2In.Adm2In 𝒞) : Adm2InU 𝒞 where
-  pt0 := h.pt0
-  ptTw := h.ptTw.imp fun _ _ _ ⟨x0, g⟩ => ⟨x0, fun x hx h1 i u μ _ hμ => g x hx h1 i u μ hμ⟩
-  per0 := h.per0
-  perTw := h.perTw.imp fun _ _ _ ⟨x0, g⟩ => ⟨x0, fun x hx h1 i hD u μ _ hμ => g x hx h1 i hD u μ hμ⟩
-  serv := h.serv
-  p10 := h.p10.imp fun _ _ _ ⟨x0, g⟩ => ⟨x0, fun x hx h1 i u => ⟨(g x hx h1 i u).1, fun w hw μ _ _ hQ y hy => (g x hx h1 i u).2 w hw μ hQ y hy⟩⟩
-  dgt := h.dgt
-  atG := h.atG.imp fun _ _ _ ⟨C1, _, ⟨x0, g⟩, hSg⟩ => ⟨C1, ⟨x0, fun x h1 hx i j w hj u hw μ _ φ hφ F hF => (g x h1 hx i).1 j w hj u hw μ φ hφ F hF⟩, hSg⟩
 
 end Formalism.L2.G.Adm2InU
 
+end
 end

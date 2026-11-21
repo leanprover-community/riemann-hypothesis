@@ -23,9 +23,6 @@ theorem coprime_QSq {l : ℕ} (hl : l.Prime) (hs : l ∉ H.small) (hq : l ≠ H.
   · exact UpperTheory.Small.not_dvd_QS H hl hs h
   · exact hq h
 
-theorem coprime_condN {l : ℕ} (hl : l.Prime) (hs : l ∉ H.small) (hq : l ≠ H.q) (hd : l ≠ H.d) :
-    Nat.Coprime (H.QS * H.q * H.d) l :=
-  ((Nat.Prime.coprime_iff_not_dvd hl).2 (UpperTheory.Small.not_dvd_condN H hl hs hq hd)).symm
 
 theorem QSq_notMem {A : Type} [CommRing A] {Q : Ideal A} (hQ : Q ≠ ⊤) {l : ℕ} (hl : l.Prime) (hs : l ∉ H.small) (hq : l ≠ H.q)
     (hlQ : (l : A) ∈ Q) : ((H.QS * H.q : ℕ) : A) ∉ Q :=

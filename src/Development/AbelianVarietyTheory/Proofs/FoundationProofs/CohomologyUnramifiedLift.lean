@@ -1,21 +1,784 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntegralTwoCocycleReciprocityTrivialAtLastPlace
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CupProductUnramifiedClassesVanishes
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UnramifiedCocycleKillsRootsStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsAuxiliaryPrimeFrobeniusNearCommutator
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UnramifiedCocycleKillsRoots
+import Development.AbelianVarietyTheory.Definitions.Foundations.FinalTheorems
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ChebotarevDegreeOne
+import Development.AutomorphicArithmetic.AutomorphicVarieties.PrimitiveFrobeniusFixed.PlaceBasic
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CupProductCoboundaryModStatement
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LocalHeightFrobeniusPlace
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsCharacterPrimeConductorDegreePrimePowStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CocyclePairingLocallyConstant
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LocalConditionsIndependentOfPlaceOverStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsCharacterPrimeConductorDegreePrimePow
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NormLeOneOfIsIntegralPadicInt
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LocalConditionsIndependentOfPlaceOver
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.EqOfNatCastMem
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.CongruenceMulOfUnitFactor
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemOfFinTwo
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NormAlgebraMapLeOne
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsOpenKerAndIsLocallyConstant
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ColRepApplyOfOne
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InertiaFixesRootOfUnity
 
+section
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unramified_cocycle_kills_roots : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (c : Coef l) (n : ℕ) (S : Finset Pl) (W : R2 Ω l) (y : G ℚ Ω → Fin 2 → Qbar l) (w : Pl) (ψ : G ℚ Ω →* Multiplicative (ZMod (l ^ n))), Continuous W → (∀ s i j, mat W s i j ∈ c.O) → ContainsAbove S l → (∀ v, v ∉ S → ∀ B : ValuationSubring Ω, IsPlaceOver B v → Ine (F := ℚ) B ≤ W.ker) → (∀ s i, y s i ∈ c.O) → KillsMu (normV w) ψ → w ∉ S → Tame c W y n w ψ → ∃ (P un : Qbar l) (d : G ℚ Ω → Fin 2 → Qbar l), P ∈ c.O ∧ ‖un‖ = 1 ∧ (∀ (B : ValuationSubring Ω) (σ : G ℚ Ω), IsPlaceOver B w → IsFrob B (normV w) σ → Cg n P (un * (mat W σ - 1).det)) ∧ Continuous d ∧ (∀ s i, d s i ∈ c.O) ∧ (∀ s t, Cv n (d (s * t)) (d s + mat W s *ᵥ d t + ((((ψ s).toAdd.val : ℕ) : Qbar l) * P) • (mat W s *ᵥ y t))) ∧ (∀ a ∈ (toGS Ω (insert w (S : Set Pl))).ker, Cv n (d a) 0) ∧ ∀ q ∈ S, ((l : ℕ) : 𝓞 ℚ) ∉ q.asIdeal → ∃ B : ValuationSubring Ω, IsPlaceOver B q ∧ Cob1 c n W (Ine (F := ℚ) B) d := by
+  first | exact @GlobalTheory.Ord2.FirstDer.main | exact GlobalTheory.Ord2.FirstDer.main | (intros; apply GlobalTheory.Ord2.FirstDer.main <;> assumption)
+end
+
+section
+section
+noncomputable section
+
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2
+open scoped Matrix
+
+namespace GlobalTheory.Ord2.AuxiliaryInertOddPrime
+
+variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω]
+
+theorem fix_root {l : ℕ} [Fact l.Prime] {s : G ℚ Ω} (hs : s ∈ (cycBar ℚ Ω l).ker) {n : ℕ} {x : Ω}
+    (hx : x ^ (l ^ n) = 1) : s x = x := by
+  have : IsAlgClosed Ω := IsAlgClosure.isAlgClosed ℚ
+  have h1 : cycZ ℚ Ω l s = 1 := by
+    have h := congrArg Units.val (MonoidHom.mem_ker.1 hs)
+    apply Units.ext
+    have hinj : Function.Injective ((algebraMap ℚ_[l] (Qbar l)).comp PadicInt.Coe.ringHom) :=
+      (algebraMap ℚ_[l] (Qbar l)).injective.comp Subtype.val_injective
+    apply hinj
+    simpa [cycBar] using h
+  haveI : CharZero Ω := charZero_of_injective_algebraMap (algebraMap ℚ Ω).injective
+  haveI hE : ∀ i, HasEnoughRootsOfUnity Ω (l ^ i) := fun i => inferInstance
+  have h2 := cyclotomicCharacter.spec l (MulSemiringAction.toRingAut (G ℚ Ω) Ω s) x hx
+  have h3 : cyclotomicCharacter Ω l (MulSemiringAction.toRingAut (G ℚ Ω) Ω s) = 1 := h1
+  rw [h3] at h2
+  have h4 : (MulSemiringAction.toRingAut (G ℚ Ω) Ω s) x = s x := rfl
+  rw [h4, Units.val_one, map_one, ZMod.val_one_eq_one_mod, ← pow_eq_pow_mod 1 hx, pow_one] at h2
+  exact h2
+
+theorem comm_apply {l : ℕ} [Fact l.Prime] {n : ℕ} {a : Ω} (ha : ∀ g : G ℚ Ω, g a = a)
+    {s t : G ℚ Ω} (hs : s ∈ (cycBar ℚ Ω l).ker) (ht : t ∈ (cycBar ℚ Ω l).ker) {y : Ω}
+    (hy : y ^ (l ^ n) = a) : s (t y) = t (s y) := by
+  by_cases h0 : y = 0
+  · simp [h0]
+  have key : ∀ g : G ℚ Ω, (g y / y) ^ (l ^ n) = 1 := fun g => by
+    rw [div_pow, ← map_pow, hy, ha, ← hy]
+    exact div_self (pow_ne_zero _ h0)
+  obtain ⟨c, hcr, es⟩ : ∃ c : Ω, c ^ (l ^ n) = 1 ∧ s y = c * y :=
+    ⟨s y / y, key s, (div_mul_cancel₀ _ h0).symm⟩
+  obtain ⟨d, hdr, et⟩ : ∃ d : Ω, d ^ (l ^ n) = 1 ∧ t y = d * y :=
+    ⟨t y / y, key t, (div_mul_cancel₀ _ h0).symm⟩
+  rw [et, es, map_mul, map_mul, fix_root hs hdr, fix_root ht hcr, es, et]
+  ring
+
+theorem comm_fix {l : ℕ} [Fact l.Prime] {n : ℕ} {a : Ω} (ha : ∀ g : G ℚ Ω, g a = a) {σ : G ℚ Ω}
+    (hσ : σ ∈ ⁅(cycBar ℚ Ω l).ker, (cycBar ℚ Ω l).ker⁆) {y : Ω} (hy : y ^ (l ^ n) = a) : σ y = y := by
+  let K : Subgroup (G ℚ Ω) := ⨅ z : {z : Ω // z ^ (l ^ n) = a}, MulAction.stabilizer (G ℚ Ω) (z : Ω)
+  have hK : ∀ g, g ∈ K ↔ ∀ z : Ω, z ^ (l ^ n) = a → g z = z := fun g => by
+    simp only [K, Subgroup.mem_iInf, MulAction.mem_stabilizer_iff, AlgEquiv.smul_def, Subtype.forall]
+  have hle : ⁅(cycBar ℚ Ω l).ker, (cycBar ℚ Ω l).ker⁆ ≤ K := by
+    rw [Subgroup.commutator_le]
+    intro s hs t ht
+    rw [hK]
+    intro z hz
+    have hz' : ((t * s)⁻¹ z) ^ (l ^ n) = a := by rw [← map_pow, hz, ha]
+    have e : s * t * s⁻¹ * t⁻¹ = (s * t) * (t * s)⁻¹ := by group
+    rw [commutatorElement_def, e, AlgEquiv.mul_apply, AlgEquiv.mul_apply, comm_apply ha hs ht hz', ← AlgEquiv.mul_apply,
+      ← AlgEquiv.mul_apply, mul_inv_cancel, AlgEquiv.one_apply]
+  exact (hK σ).1 (hle hσ) y hy
+
+theorem isOpen_stab (x : Ω) : IsOpen {τ : G ℚ Ω | τ x = x} := by
+  have : Algebra.IsAlgebraic ℚ Ω := IsAlgClosure.isAlgebraic
+  have hx : IsIntegral ℚ x := (Algebra.IsAlgebraic.isAlgebraic x).isIntegral
+  haveI : FiniteDimensional ℚ (IntermediateField.adjoin ℚ {x}) := IntermediateField.adjoin.finiteDimensional hx
+  have h := IntermediateField.fixingSubgroup_isOpen (IntermediateField.adjoin ℚ {x})
+  have hle : (IntermediateField.adjoin ℚ {x}).fixingSubgroup ≤ MulAction.stabilizer (G ℚ Ω) x := fun g hg => by
+    rw [MulAction.mem_stabilizer_iff, AlgEquiv.smul_def]
+    exact (IntermediateField.mem_fixingSubgroup_iff _ _).1 hg x (IntermediateField.mem_adjoin_simple_self ℚ x)
+  have e : {τ : G ℚ Ω | τ x = x} = (MulAction.stabilizer (G ℚ Ω) x : Set (G ℚ Ω)) := by
+    ext τ; simp [MulAction.mem_stabilizer_iff, AlgEquiv.smul_def]
+  rw [e]
+  exact Subgroup.isOpen_mono hle h
+
+theorem root_mod {B : ValuationSubring Ω} {p m N : ℕ} (hp : p.Prime) (hpB : B.valuation (p : Ω) < 1) (hm : m ≠ 0)
+    {α : Ω} (hα : α ^ m = (N : Ω)) (hfr : B.valuation α ≤ 1 → B.valuation (α - α ^ p) < 1) :
+    ∃ x : ZMod p, x ^ m = (N : ZMod p) := by
+  classical
+  haveI : Fact p.Prime := ⟨hp⟩
+  have hαle : B.valuation α ≤ 1 := by
+    have h1 : B.valuation α ^ m ≤ 1 := by
+      rw [← map_pow, hα]; exact (B.valuation_le_one_iff _).2 (natCast_mem B N)
+    exact (pow_le_one_iff hm).1 h1
+  have hαB : α ∈ B := (B.valuation_le_one_iff α).1 hαle
+  let a : B := ⟨α, hαB⟩
+  have hmax : ∀ b : B, B.valuation (b : Ω) < 1 → IsLocalRing.residue B b = 0 := fun b hb =>
+    (IsLocalRing.residue_eq_zero_iff b).2 ((B.valuation_lt_one_iff b).2 hb)
+  have hpk : ((p : ℕ) : IsLocalRing.ResidueField B) = 0 := by
+    have := hmax (p : B) (by simpa using hpB)
+    simpa using this
+  haveI : CharP (IsLocalRing.ResidueField B) p := (CharP.charP_iff_prime_eq_zero hp).2 hpk
+  let φ : ZMod p →+* IsLocalRing.ResidueField B := ZMod.castHom (dvd_refl p) _
+  have hφ : Function.Injective φ := φ.injective
+  have hr : IsLocalRing.residue B a ^ p = IsLocalRing.residue B a := by
+    have := hmax (a - a ^ p) (by simpa [a] using hfr hαle)
+    rw [map_sub, map_pow, sub_eq_zero] at this
+    exact this.symm
+  have hP : (Polynomial.X ^ p - Polynomial.X : Polynomial (IsLocalRing.ResidueField B)) ≠ 0 :=
+    FiniteField.X_pow_card_sub_X_ne_zero _ hp.one_lt
+  have hsub : Finset.univ.image φ ⊆
+      (Polynomial.X ^ p - Polynomial.X : Polynomial (IsLocalRing.ResidueField B)).roots.toFinset := by
+    intro y hy
+    obtain ⟨b, -, rfl⟩ := Finset.mem_image.1 hy
+    rw [Multiset.mem_toFinset, Polynomial.mem_roots hP, Polynomial.IsRoot.def, Polynomial.eval_sub,
+      Polynomial.eval_pow, Polynomial.eval_X, ← map_pow, ZMod.pow_card, sub_self]
+  have hcard : (Polynomial.X ^ p - Polynomial.X : Polynomial (IsLocalRing.ResidueField B)).roots.toFinset.card ≤
+      (Finset.univ.image φ).card := by
+    rw [Finset.card_image_of_injective _ hφ, Finset.card_univ, ZMod.card]
+    calc _ ≤ Multiset.card (Polynomial.X ^ p - Polynomial.X : Polynomial (IsLocalRing.ResidueField B)).roots :=
+          Multiset.toFinset_card_le _
+      _ ≤ (Polynomial.X ^ p - Polynomial.X : Polynomial (IsLocalRing.ResidueField B)).natDegree :=
+          Polynomial.card_roots' _
+      _ = p := FiniteField.X_pow_card_sub_X_natDegree_eq _ hp.one_lt
+  have heq := Finset.eq_of_subset_of_card_le hsub hcard
+  have hrmem : IsLocalRing.residue B a ∈
+      (Polynomial.X ^ p - Polynomial.X : Polynomial (IsLocalRing.ResidueField B)).roots.toFinset := by
+    rw [Multiset.mem_toFinset, Polynomial.mem_roots hP, Polynomial.IsRoot.def, Polynomial.eval_sub,
+      Polynomial.eval_pow, Polynomial.eval_X, hr, sub_self]
+  rw [← heq] at hrmem
+  obtain ⟨x, -, hx⟩ := Finset.mem_image.1 hrmem
+  refine ⟨x, hφ ?_⟩
+  have ha : a ^ m = (N : B) := Subtype.ext (by simp [a, hα])
+  rw [map_pow, hx, map_natCast, ← map_pow, ha, map_natCast]
+
+end GlobalTheory.Ord2.AuxiliaryInertOddPrime
+
+namespace GlobalTheory.Ord2.AuxiliaryInertOddPrime
+
+theorem normV_eq_absNorm (v : Pl) : normV v = Ideal.absNorm v.asIdeal := by
+  rw [Ideal.absNorm_apply, Submodule.cardQuot_apply]; rfl
+
+theorem absNorm_dvd_of_mem {I : Ideal (𝓞 ℚ)} {n : ℕ} (h : (n : 𝓞 ℚ) ∈ I) : Ideal.absNorm I ∣ n := by
+  have h1 := Ideal.absNorm_dvd_absNorm_of_le ((Ideal.span_singleton_le_iff_mem I).2 h)
+  rwa [Ideal.absNorm_span_natCast, RingOfIntegers.rank, Module.finrank_self, pow_one] at h1
+
+theorem natCast_mem_iff (v : Pl) (n : ℕ) : (n : 𝓞 ℚ) ∈ v.asIdeal ↔ normV v ∣ n := by
+  rw [normV_eq_absNorm]
+  refine ⟨absNorm_dvd_of_mem, ?_⟩
+  rintro ⟨c, rfl⟩
+  rw [Nat.cast_mul]
+  exact Ideal.mul_mem_right _ _ (Ideal.absNorm_mem _)
+
+theorem normV_prime' (v : Pl) : (normV v).Prime := by
+  have h1 : 1 < normV v := NumberField.HeightOneSpectrum.one_lt_absNorm v
+  refine Nat.prime_def.2 ⟨h1, fun m hm => ?_⟩
+  obtain ⟨c, hc⟩ := hm
+  have h2 := (natCast_mem_iff v _).2 dvd_rfl
+  rw [hc, Nat.cast_mul] at h2
+  rcases v.isPrime.mem_or_mem h2 with h | h
+  · exact Or.inr (Nat.dvd_antisymm ⟨c, hc⟩ ((natCast_mem_iff v _).1 h))
+  · have h3 := Nat.dvd_antisymm (Dvd.intro_left m hc.symm) ((natCast_mem_iff v _).1 h)
+    rw [h3] at hc
+    exact Or.inl (Nat.eq_of_mul_eq_mul_right (by omega) (hc.symm.trans (one_mul _).symm))
+
+theorem val_natCast_lt_one_iff {Ω : Type} [Field Ω] [Algebra ℚ Ω] {A : ValuationSubring Ω} {w : Pl}
+    (h : IsPlaceOver A w) (n : ℕ) : A.valuation (n : Ω) < 1 ↔ normV w ∣ n := by
+  rw [← natCast_mem_iff, ← h]
+  simp
+
+end GlobalTheory.Ord2.AuxiliaryInertOddPrime
+
+namespace GlobalTheory.Ord2.AuxiliaryInertOddPrime
+
+theorem exists_odd_prime_gt_two_bounds : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (n : ℕ)
+    (S S' : Finset Pl) (U : Subgroup (G ℚ Ω)) (σ : G ℚ Ω), IsOpen (U : Set (G ℚ Ω)) →
+    σ ∈ ⁅(cycBar ℚ Ω l).ker, (cycBar ℚ Ω l).ker⁆ → ∃ (w : Pl) (B : ValuationSubring Ω) (τ : G ℚ Ω),
+      w ∉ S ∧ w ∉ S' ∧ IsPlaceOver B w ∧ IsFrob B (normV w) τ ∧ τ ∈ Dec (F := ℚ) B ∧ σ⁻¹ * τ ∈ U ∧
+      l ^ n ∣ normV w - 1 ∧ ∀ v ∈ S, ∃ x : ZMod (normV w), x ^ (l ^ n) = (normV v : ZMod (normV w)) := by
+  intro l hl Ω _ _ _ n S S' U σ hU hσ
+  classical
+  haveI hΩ : IsAlgClosed Ω := IsAlgClosure.isAlgClosed ℚ
+  haveI : CharZero Ω := charZero_of_injective_algebraMap (algebraMap ℚ Ω).injective
+  have hm : 0 < l ^ n := pow_pos hl.out.pos n
+  obtain ⟨ζ, hζ⟩ : ∃ ζ : Ω, IsPrimitiveRoot ζ (l ^ n) := by
+    haveI : NeZero ((l ^ n : ℕ) : Ω) := ⟨Nat.cast_ne_zero.2 hm.ne'⟩
+    obtain ⟨z, hz⟩ := IsAlgClosed.exists_root (Polynomial.cyclotomic (l ^ n) Ω)
+      (Polynomial.degree_cyclotomic_pos _ Ω hm).ne'
+    exact ⟨z, Polynomial.isRoot_cyclotomic_iff.1 hz⟩
+  have hα : ∀ v : Pl, ∃ α : Ω, α ^ (l ^ n) = (normV v : Ω) := fun v => IsAlgClosed.exists_pow_nat_eq _ hm
+  choose α hα using hα
+  let T : Finset Ω := insert ζ (S.image α)
+  let O : Set (G ℚ Ω) := {τ | σ⁻¹ * τ ∈ U} ∩ ⋂ x ∈ T, {τ | τ x = x}
+  have hO : IsOpen O := (hU.preimage (continuous_mul_left σ⁻¹)).inter
+    (isOpen_biInter_finset fun x _ => isOpen_stab x)
+  have hσker : σ ∈ (cycBar ℚ Ω l).ker := Subgroup.commutator_le_left _ _ hσ
+  have hσO : σ ∈ O := by
+    refine ⟨by simp [U.one_mem], Set.mem_iInter₂.2 fun x hx => ?_⟩
+    rcases Finset.mem_insert.1 hx with rfl | hx
+    · exact fix_root hσker hζ.pow_eq_one
+    · obtain ⟨v, -, rfl⟩ := Finset.mem_image.1 hx
+      exact comm_fix (fun g => map_natCast g _) hσ (hα v)
+  have hl0 : Ideal.span {((l : ℕ) : 𝓞 ℚ)} ≠ ⊥ := by
+    rw [Ne, Ideal.span_singleton_eq_bot]
+    exact Nat.cast_ne_zero.2 hl.out.ne_zero
+  have hTfin : ((S : Set Pl) ∪ (S' : Set Pl) ∪ {v : Pl | v.asIdeal ∣ Ideal.span {((l : ℕ) : 𝓞 ℚ)}}).Finite :=
+    ((S.finite_toSet).union (S'.finite_toSet)).union (Ideal.finite_factors hl0)
+  have hdense := GlobalTheory.Published.ChebotarevDegreeOne.dense (F := ℚ) (Ω := Ω) GlobalTheory.Published.chebotarevDegreeOne' hTfin
+  obtain ⟨τ, hτO, w, hwT, -, B, hB, hτ⟩ := hdense.inter_open_nonempty O hO ⟨σ, hσO⟩
+  simp only [Set.mem_union, Finset.mem_coe, Set.mem_setOf_eq, not_or] at hwT
+  obtain ⟨⟨hwS, hwS'⟩, hwl⟩ := hwT
+  have hlw : ((l : ℕ) : 𝓞 ℚ) ∉ w.asIdeal := fun h =>
+    hwl (Ideal.dvd_iff_le.2 ((Ideal.span_singleton_le_iff_mem _).2 h))
+  have hfix : ∀ x ∈ T, τ x = x := fun x hx => Set.mem_iInter₂.1 hτO.2 x hx
+  have hp : (normV w).Prime := normV_prime' w
+  have hpB : B.valuation ((normV w : ℕ) : Ω) < 1 := (val_natCast_lt_one_iff hB _).2 dvd_rfl
+  have hlB : ¬ B.valuation ((l : ℕ) : Ω) < 1 := fun h => hlw ((hB _).1 (by simpa using h))
+  have hnot : ¬ B.valuation ((l ^ n : ℕ) : Ω) < 1 := fun h =>
+    hlB ((val_natCast_lt_one_iff hB l).2 (hp.dvd_of_dvd_pow ((val_natCast_lt_one_iff hB (l ^ n)).1 h)))
+  have hpows := (ML.placeBasic Ω).2.2.2.2.2.2.1 B (normV w) (l ^ n) τ hτ hnot
+  have h1 : ζ ^ normV w = ζ := (hpows ζ hζ.pow_eq_one).symm.trans (hfix ζ (Finset.mem_insert_self _ _))
+  have h2 : ζ ^ (normV w - 1) = 1 := by
+    have hz : ζ ≠ 0 := hζ.ne_zero hm.ne'
+    refine mul_right_cancel₀ hz ?_
+    rw [← pow_succ, Nat.sub_add_cancel hp.one_le, one_mul, h1]
+  refine ⟨w, B, τ, hwS, hwS', hB, hτ, hτ.1, hτO.1, hζ.dvd_of_pow_eq_one _ h2, fun v hv => ?_⟩
+  have hτv : τ (α v) = α v := hfix _ (Finset.mem_insert_of_mem (Finset.mem_image_of_mem α hv))
+  refine root_mod hp hpB hm.ne' (hα v) fun h => ?_
+  have := hτ.2 (α v) h
+  rwa [hτv] at this
+
+end GlobalTheory.Ord2.AuxiliaryInertOddPrime
+end
+end
+
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_auxiliary_prime_frobenius_near_commutator : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (n : ℕ) (S S' : Finset Pl) (U : Subgroup (G ℚ Ω)) (σ : G ℚ Ω), IsOpen (U : Set (G ℚ Ω)) → σ ∈ ⁅(cycBar ℚ Ω l).ker, (cycBar ℚ Ω l).ker⁆ → ∃ (w : Pl) (B : ValuationSubring Ω) (τ : G ℚ Ω), w ∉ S ∧ w ∉ S' ∧ IsPlaceOver B w ∧ IsFrob B (normV w) τ ∧ τ ∈ Dec (F := ℚ) B ∧ σ⁻¹ * τ ∈ U ∧ l ^ n ∣ normV w - 1 ∧ ∀ v ∈ S, ∃ x : ZMod (normV w), x ^ (l ^ n) = (normV v : ZMod (normV w)) := by
+  atlas_forward_decl GlobalTheory.Ord2.AuxiliaryInertOddPrime.exists_odd_prime_gt_two_bounds
+end
+
+section
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_character_primeConductor_degree_prime_pow : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (n : ℕ) (w : Pl), 1 ≤ n → l ^ n ∣ normV w - 1 → ∃ ψ : G ℚ Ω →* Multiplicative (ZMod (l ^ n)), KillsMu (normV w) ψ ∧ Function.Surjective ψ ∧ (∀ B : ValuationSubring Ω, IsPlaceOver B w → ∃ τ ∈ Ine (F := ℚ) B, (ψ τ).toAdd = 1) ∧ ∀ v : Pl, v ≠ w → (∃ x : ZMod (normV w), x ^ (l ^ n) = (normV v : ZMod (normV w))) → ∀ B : ValuationSubring Ω, IsPlaceOver B v → Dec (F := ℚ) B ≤ ψ.ker := by
+  first | exact @GlobalTheory.Ord2.PrimeChar.exists_prime_char | exact GlobalTheory.Ord2.PrimeChar.exists_prime_char | (intros; apply GlobalTheory.Ord2.PrimeChar.exists_prime_char <;> assumption)
+end
+
+section
+section
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2
+open scoped Matrix
+
+noncomputable section
+
+namespace GlobalTheory.Ord2.XiCoc
+
+variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {l : ℕ} [Fact l.Prime]
+
+theorem norm_le_one_of_int (x : Qbar l) (hx : IsIntegral ℤ_[l] x) : ‖x‖ ≤ 1 := by
+  first
+  | exact @_root_.GlobalTheory.PadicIntegralNorm.norm_le_one_of_isIntegral_padicInt
+  | exact _root_.GlobalTheory.PadicIntegralNorm.norm_le_one_of_isIntegral_padicInt
+  | (apply _root_.GlobalTheory.PadicIntegralNorm.norm_le_one_of_isIntegral_padicInt <;> assumption)
+  | (intros; apply _root_.GlobalTheory.PadicIntegralNorm.norm_le_one_of_isIntegral_padicInt <;> assumption)
+  | (intros; apply @_root_.GlobalTheory.PadicIntegralNorm.norm_le_one_of_isIntegral_padicInt <;> first | assumption | infer_instance)
+  | (intros; exact _root_.GlobalTheory.PadicIntegralNorm.norm_le_one_of_isIntegral_padicInt ..)
+
+theorem norm_le_one (c : Coef l) {x : Qbar l} (hx : x ∈ c.O) : ‖x‖ ≤ 1 := by
+  haveI := c.fin
+  have : Algebra.IsIntegral ℤ_[l] c.O := Algebra.IsIntegral.of_finite ℤ_[l] c.O
+  exact norm_le_one_of_int x ((Algebra.IsIntegral.isIntegral (R := ℤ_[l]) (⟨x, hx⟩ : c.O)).map c.O.val)
+
+theorem eps_mem (c : Coef l) (s : G ℚ Ω) : eps l s ∈ c.O := by
+  have h : eps l s = algebraMap ℤ_[l] (Qbar l) ((cycZ ℚ Ω l s : ℤ_[l]ˣ) : ℤ_[l]) := by
+    rw [IsScalarTower.algebraMap_apply ℤ_[l] ℚ_[l] (Qbar l)]; rfl
+  rw [h]; exact c.O.algebraMap_mem _
+
+theorem eps_cont : Continuous fun s : G ℚ Ω => eps l s :=
+  (continuous_algebraMap ℚ_[l] (Qbar l)).comp
+    (continuous_subtype_val.comp ((Units.continuous_val (M := ℤ_[l])).comp (continuous_cycZ ℚ Ω l)))
+
+theorem eps_mul (r s : G ℚ Ω) : eps l (r * s) = eps l r * eps l s := by
+  simp [eps, map_mul]
+
+theorem mat_mul (W : R2 Ω l) (r s : G ℚ Ω) : mat W (r * s) = mat W r * mat W s := by
+  simp [mat, map_mul]
+
+theorem dt_val (W : R2 Ω l) (s : G ℚ Ω) : ((dt W s : (Qbar l)ˣ) : Qbar l) = (mat W s).det := by
+  simp [dt, mat]
+
+theorem dt_inv (W : R2 Ω l) (h2 : dt W ^ 2 = 1) (s : G ℚ Ω) : (dt W s)⁻¹ = dt W s := by
+  have h := congrArg (fun f => f s) h2
+  simp only [MonoidHom.pow_apply, MonoidHom.one_apply] at h
+  exact inv_eq_of_mul_eq_one_right (by rw [← sq]; exact h)
+
+theorem det_sq (W : R2 Ω l) (h2 : dt W ^ 2 = 1) (s : G ℚ Ω) : (mat W s).det * (mat W s).det = 1 := by
+  have h := congrArg (fun f => f s) h2
+  simp only [MonoidHom.pow_apply, MonoidHom.one_apply] at h
+  rw [← dt_val, ← Units.val_mul, ← sq, h, Units.val_one]
+
+theorem matD (W : R2 Ω l) (h2 : dt W ^ 2 = 1) (s : G ℚ Ω) :
+    mat (dual1 W) s = (eps l s * (mat W s).det) • mat W s := by
+  have := dt_inv W h2 s
+  simp [dual1, tw, mat, eps, Matrix.GeneralLinearGroup.scalar, this, ← dt_val]
+  exact (Matrix.smul_eq_diagonal_mul _ _).symm
+
+theorem sm_add {x y : Qbar l} {B : ℝ} (hx : ‖x‖ ≤ B) (hy : ‖y‖ ≤ B) : ‖x + y‖ ≤ B :=
+  (IsUltrametricDist.norm_add_le_max _ _).trans (max_le hx hy)
+
+theorem sm_sub {x y : Qbar l} {B : ℝ} (hx : ‖x‖ ≤ B) (hy : ‖y‖ ≤ B) : ‖x - y‖ ≤ B := by
+  rw [sub_eq_add_neg]; exact sm_add hx (by rwa [norm_neg])
+
+theorem sm_mul {a x : Qbar l} {B : ℝ} (ha : ‖a‖ ≤ 1) (hx : ‖x‖ ≤ B) : ‖a * x‖ ≤ B := by
+  rw [norm_mul]
+  calc ‖a‖ * ‖x‖ ≤ 1 * ‖x‖ := mul_le_mul_of_nonneg_right ha (norm_nonneg _)
+    _ = ‖x‖ := one_mul _
+    _ ≤ B := hx
+
+theorem om_sm {e v : Fin 2 → Qbar l} {B : ℝ} (he : ∀ i, ‖e i‖ ≤ B) (hv : ∀ i, ‖v i‖ ≤ 1) : ‖om e v‖ ≤ B := by
+  unfold om
+  exact sm_sub (by rw [mul_comm]; exact sm_mul (hv 1) (he 0)) (by rw [mul_comm]; exact sm_mul (hv 0) (he 1))
+
+theorem mulVec_sm {M : Matrix (Fin 2) (Fin 2) (Qbar l)} {v : Fin 2 → Qbar l} {B : ℝ} (hM : ∀ i j, ‖M i j‖ ≤ 1)
+    (hv : ∀ i, ‖v i‖ ≤ B) (i : Fin 2) : ‖(M *ᵥ v) i‖ ≤ B := by
+  simp only [Matrix.mulVec, dotProduct, Fin.sum_univ_two]
+  exact sm_add (sm_mul (hM i 0) (hv 0)) (sm_mul (hM i 1) (hv 1))
+
+theorem mulVec_mem (c : Coef l) {M : Matrix (Fin 2) (Fin 2) (Qbar l)} {v : Fin 2 → Qbar l} (hM : ∀ i j, M i j ∈ c.O)
+    (hv : ∀ i, v i ∈ c.O) (i : Fin 2) : (M *ᵥ v) i ∈ c.O := by
+  simp only [Matrix.mulVec, dotProduct, Fin.sum_univ_two]
+  exact add_mem (mul_mem (hM i 0) (hv 0)) (mul_mem (hM i 1) (hv 1))
+
+theorem psi_sm (n : ℕ) (ψ : G ℚ Ω →* Multiplicative (ZMod (l ^ n))) (r s : G ℚ Ω) :
+    ‖(((ψ (r * s)).toAdd.val : ℕ) : Qbar l) - ((ψ r).toAdd.val : ℕ) - ((ψ s).toAdd.val : ℕ)‖ ≤
+      ‖((l : ℕ) : Qbar l) ^ n‖ := by
+  haveI : NeZero (l ^ n) := ⟨pow_ne_zero _ (Fact.out : l.Prime).ne_zero⟩
+  have e1 : (ψ (r * s)).toAdd = (ψ r).toAdd + (ψ s).toAdd := by rw [map_mul, toAdd_mul]
+  rw [e1, ZMod.val_add]
+  set m := (ψ r).toAdd.val + (ψ s).toAdd.val
+  have e2 : ((m % l ^ n : ℕ) : Qbar l) = (m : Qbar l) - ((l : ℕ) : Qbar l) ^ n * ((m / l ^ n : ℕ) : Qbar l) := by
+    have := Nat.mod_add_div m (l ^ n)
+    rw [eq_sub_iff_add_eq, ← Nat.cast_pow, ← Nat.cast_mul, ← Nat.cast_add, this]
+  have e3 : ((m % l ^ n : ℕ) : Qbar l) - ((ψ r).toAdd.val : ℕ) - ((ψ s).toAdd.val : ℕ) =
+      -(((l : ℕ) : Qbar l) ^ n * ((m / l ^ n : ℕ) : Qbar l)) := by
+    rw [e2]; simp only [m, Nat.cast_add]; ring
+  rw [e3, norm_neg, norm_mul]
+  calc _ ≤ ‖((l : ℕ) : Qbar l) ^ n‖ * 1 :=
+        mul_le_mul_of_nonneg_left (IsUltrametricDist.norm_natCast_le_one _ _) (norm_nonneg _)
+    _ = _ := mul_one _
+
+theorem ident (Ar As : Matrix (Fin 2) (Fin 2) (Qbar l)) (er es Pp pr ps prs ut us ust cyz : Qbar l)
+    (dr ds drs ys zs zt : Fin 2 → Qbar l) (hdet : Ar.det * Ar.det = 1)
+    (hcyz : cyz = om ys (((es * As.det) • As) *ᵥ zt)) :
+    er * (om ds (((es * As.det) • As) *ᵥ zt) - ps * Pp * es * ut) +
+        (om dr (((er * Ar.det) • Ar) *ᵥ (zs + ((es * As.det) • As) *ᵥ zt)) - pr * Pp * er * ust) -
+      ((om drs (((er * es * (Ar.det * As.det)) • (Ar * As)) *ᵥ zt) - prs * Pp * (er * es) * ut) +
+        (om dr (((er * Ar.det) • Ar) *ᵥ zs) - pr * Pp * er * us)) =
+    -om (drs - (dr + Ar *ᵥ ds + (pr * Pp) • (Ar *ᵥ ys))) (((er * es * (Ar.det * As.det)) • (Ar * As)) *ᵥ zt) +
+      Pp * (er * es) * ut * (prs - pr - ps) - Pp * pr * er * (cyz - (es * ut - ust + us)) := by
+  have key : er * (om ds (((es * As.det) • As) *ᵥ zt) - ps * Pp * es * ut) +
+        (om dr (((er * Ar.det) • Ar) *ᵥ (zs + ((es * As.det) • As) *ᵥ zt)) - pr * Pp * er * ust) -
+      ((om drs (((er * es * (Ar.det * As.det)) • (Ar * As)) *ᵥ zt) - prs * Pp * (er * es) * ut) +
+        (om dr (((er * Ar.det) • Ar) *ᵥ zs) - pr * Pp * er * us)) -
+    (-om (drs - (dr + Ar *ᵥ ds + (pr * Pp) • (Ar *ᵥ ys))) (((er * es * (Ar.det * As.det)) • (Ar * As)) *ᵥ zt) +
+      Pp * (er * es) * ut * (prs - pr - ps) - Pp * pr * er * (cyz - (es * ut - ust + us))) =
+    -(er * om ds (((es * As.det) • As) *ᵥ zt) + pr * Pp * er * cyz) * (Ar.det * Ar.det - 1) := by
+    subst hcyz
+    simp only [om, Matrix.mulVec, dotProduct, Fin.sum_univ_two, Matrix.smul_apply, Matrix.mul_apply, Pi.add_apply,
+      Pi.sub_apply, Pi.smul_apply, smul_eq_mul, Matrix.det_fin_two]
+    ring
+  linear_combination key + (-(er * om ds (((es * As.det) • As) *ᵥ zt) + pr * Pp * er * cyz)) * hdet
+
+end GlobalTheory.Ord2.XiCoc
+
+open GlobalTheory.Ord2.XiCoc in
+
+theorem GlobalTheory.Ord2.cup_product_two_cocycle : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (c : Coef l) (n : ℕ) (S : Finset Pl) (W : R2 Ω l) (y z d : G ℚ Ω → Fin 2 → Qbar l) (u : G ℚ Ω → Qbar l) (P : Qbar l) (ψ : G ℚ Ω →* Multiplicative (ZMod (l ^ n))), Continuous W → (∀ s i j, mat W s i j ∈ c.O) → dt W ^ 2 = 1 → (toGS Ω (S : Set Pl)).ker ≤ N0g W ⊓ ψ.ker → IsLocallyConstant ψ → P ∈ c.O → y ∈ Z1 (Loc.colRep W) → z ∈ Z1 (Loc.colRep (dual1 W)) → (∀ s i, y s i ∈ c.O) → (∀ s i, z s i ∈ c.O) → (∀ a ∈ (toGS Ω (S : Set Pl)).ker, y a = 0 ∧ z a = 0 ∧ Cv n (d a) 0) → Continuous u → (∀ s, u s ∈ c.O) → (∀ s, ∀ a ∈ (toGS Ω (S : Set Pl)).ker, Cg n (u (s * a)) (u s)) → (∀ s t, Cg n (cup W y z s t) (eps l s * u t - u (s * t) + u s)) → Continuous d → (∀ s i, d s i ∈ c.O) → (∀ s t, Cv n (d (s * t)) (d s + mat W s *ᵥ d t + ((((ψ s).toAdd.val : ℕ) : Qbar l) * P) • (mat W s *ᵥ y t))) → Coc2 c n S (fun s t => cup W d z s t - (((ψ s).toAdd.val : ℕ) : Qbar l) * P * eps l s * u t) := by
+  intro l _ Ω _ _ _ c n S W y z d u P ψ hW hWO hdt hker hψ hP hy hz hyO hzO hyz0 hu huO huS hcup hd hdO hdrec
+  set B : ℝ := ‖((l : ℕ) : Qbar l) ^ n‖
+  have nO : ∀ x ∈ c.O, ‖x‖ ≤ 1 := fun x hx => norm_le_one c hx
+  have detO : ∀ s, (mat W s).det ∈ c.O := fun s => by
+    rw [Matrix.det_fin_two]; exact sub_mem (mul_mem (hWO _ _ _) (hWO _ _ _)) (mul_mem (hWO _ _ _) (hWO _ _ _))
+  have DO : ∀ s i j, mat (dual1 W) s i j ∈ c.O := fun s i j => by
+    rw [matD W hdt, Matrix.smul_apply, smul_eq_mul]; exact mul_mem (mul_mem (eps_mem c s) (detO s)) (hWO _ _ _)
+  have psiO : ∀ s, ((((ψ s).toAdd.val : ℕ) : Qbar l)) ∈ c.O := fun s => natCast_mem c.O _
+  have zrec : ∀ s t, z (s * t) = z s + mat (dual1 W) s *ᵥ z t := fun s t => by
+    have := hz.2 s t
+    rw [this]; rfl
+  refine ⟨?_, ?_, ?_, ?_⟩
+  ·
+    have hA : Continuous fun s => mat W s := Units.continuous_val.comp hW
+    have hAij : ∀ i j, Continuous fun s => mat W s i j := fun i j =>
+      (continuous_apply j).comp ((continuous_apply i).comp hA)
+    have hdet : Continuous fun s => (mat W s).det := by
+      simp_rw [Matrix.det_fin_two]
+      exact ((hAij 0 0).mul (hAij 1 1)).sub ((hAij 0 1).mul (hAij 1 0))
+    have hψc : Continuous fun s => (((ψ s).toAdd.val : ℕ) : Qbar l) :=
+      (hψ.comp (fun x => ((x.toAdd.val : ℕ) : Qbar l))).continuous
+    have hdi : ∀ i, Continuous fun s => d s i := fun i => (continuous_apply i).comp hd
+    have hzi : ∀ i, Continuous fun s => z s i := fun i => (continuous_apply i).comp hz.1
+    have he : Continuous fun s : G ℚ Ω => eps l s := eps_cont
+    have hf : ∀ {f : G ℚ Ω → Qbar l}, Continuous f → Continuous fun p : G ℚ Ω × G ℚ Ω => f p.1 :=
+      fun h => h.comp continuous_fst
+    have hg : ∀ {f : G ℚ Ω → Qbar l}, Continuous f → Continuous fun p : G ℚ Ω × G ℚ Ω => f p.2 :=
+      fun h => h.comp continuous_snd
+    simp only [cup, om, matD W hdt, Matrix.mulVec, dotProduct, Fin.sum_univ_two, Matrix.smul_apply, smul_eq_mul]
+    have hD : ∀ i j, Continuous fun p : G ℚ Ω × G ℚ Ω => eps l p.1 * (mat W p.1).det * mat W p.1 i j :=
+      fun i j => ((hf he).mul (hf hdet)).mul (hf (hAij i j))
+    exact (((hf (hdi 0)).mul (((hD 1 0).mul (hg (hzi 0))).add ((hD 1 1).mul (hg (hzi 1))))).sub
+      ((hf (hdi 1)).mul (((hD 0 0).mul (hg (hzi 0))).add ((hD 0 1).mul (hg (hzi 1)))))).sub
+      ((((hf hψc).mul continuous_const).mul (hf he)).mul (hg hu))
+  ·
+    intro s t
+    refine sub_mem ?_ (mul_mem (mul_mem (mul_mem (psiO s) hP) (eps_mem c s)) (huO t))
+    unfold cup om
+    exact sub_mem (mul_mem (hdO s 0) (mulVec_mem c (DO s) (hzO t) 1)) (mul_mem (hdO s 1) (mulVec_mem c (DO s) (hzO t) 0))
+  ·
+    intro r s t
+    show ‖_ - _‖ ≤ B
+    have key := ident (mat W r) (mat W s) (eps l r) (eps l s) P (((ψ r).toAdd.val : ℕ) : Qbar l)
+      (((ψ s).toAdd.val : ℕ) : Qbar l) (((ψ (r * s)).toAdd.val : ℕ) : Qbar l) (u t) (u s) (u (s * t)) (cup W y z s t)
+      (d r) (d s) (d (r * s)) (y s) (z s) (z t) (det_sq W hdt r) (by rw [cup, matD W hdt])
+    simp only [cup, zrec, matD W hdt, mat_mul, eps_mul, Matrix.det_mul] at key ⊢
+    rw [key]
+    have hV : ∀ s' i j, ((eps l s' * (mat W s').det) • mat W s') i j ∈ c.O := fun s' i j => by
+      rw [← matD W hdt]; exact DO s' i j
+    have hVrs : ∀ i, ‖(((eps l r * eps l s * ((mat W r).det * (mat W s).det)) • (mat W r * mat W s)) *ᵥ z t) i‖ ≤ 1 := by
+      intro i
+      refine nO _ (mulVec_mem c (fun i j => ?_) (hzO t) i)
+      have := hV (r * s) i j
+      rwa [mat_mul, eps_mul, Matrix.det_mul] at this
+    have hEu := hcup s t
+    simp only [Cg, cup, matD W hdt] at hEu
+    refine sm_sub (sm_add (by rw [norm_neg]; exact om_sm (fun i => hdrec r s i) hVrs)
+      (sm_mul (nO _ (mul_mem (mul_mem hP (mul_mem (eps_mem c r) (eps_mem c s))) (huO t))) (psi_sm n ψ r s)))
+      (sm_mul (nO _ (mul_mem (mul_mem hP (psiO r)) (eps_mem c r))) hEu)
+  ·
+    intro s t a ha b hb
+    have ha' := hker ha
+    simp only [N0g, Subgroup.mem_inf, MonoidHom.mem_ker] at ha'
+    obtain ⟨⟨hca, hWa⟩, hψa⟩ := ha'
+    have hAa : mat W a = 1 := by simp [mat, hWa]
+    have hea : eps l a = 1 := by simp [eps, hca]
+    have hAsa : mat W (s * a) = mat W s := by rw [mat_mul, hAa, mul_one]
+    have hesa : eps l (s * a) = eps l s := by rw [eps_mul, hea, mul_one]
+    have hψsa : ψ (s * a) = ψ s := by rw [map_mul, hψa, mul_one]
+    have hztb : z (t * b) = z t := by rw [zrec, (hyz0 b hb).2.1]; simp
+    show ‖_ - _‖ ≤ B
+    simp only [cup, matD W hdt, hAsa, hesa, hψsa, hztb]
+    have hE : ∀ i, ‖(d (s * a) - d s) i‖ ≤ B := by
+      intro i
+      have h1 := hdrec s a i
+      simp only [Cg, (hyz0 a ha).1, Matrix.mulVec_zero, smul_zero, add_zero, Pi.add_apply, Pi.zero_apply] at h1
+      have h2 : ‖(mat W s *ᵥ d a) i‖ ≤ B :=
+        mulVec_sm (fun i j => nO _ (hWO s i j)) (fun j => by have h0 := (hyz0 a ha).2.2 j; simp only [Cg, Pi.zero_apply, sub_zero] at h0; exact h0) i
+      have h3 : (d (s * a) - d s) i = (d (s * a) i - (d s i + (mat W s *ᵥ d a) i)) + (mat W s *ᵥ d a) i := by
+        simp only [Pi.sub_apply]; ring
+      rw [h3]; exact sm_add h1 h2
+    have hVs : ∀ i, ‖(((eps l s * (mat W s).det) • mat W s) *ᵥ z t) i‖ ≤ 1 := by
+      intro i
+      refine nO _ (mulVec_mem c (fun i j => ?_) (hzO t) i)
+      rw [← matD W hdt]; exact DO s i j
+    have e : om (d (s * a)) (((eps l s * (mat W s).det) • mat W s) *ᵥ z t) -
+          (((ψ s).toAdd.val : ℕ) : Qbar l) * P * eps l s * u (t * b) -
+        (om (d s) (((eps l s * (mat W s).det) • mat W s) *ᵥ z t) -
+          (((ψ s).toAdd.val : ℕ) : Qbar l) * P * eps l s * u t) =
+        om (d (s * a) - d s) (((eps l s * (mat W s).det) • mat W s) *ᵥ z t) -
+          ((((ψ s).toAdd.val : ℕ) : Qbar l) * P * eps l s) * (u (t * b) - u t) := by
+      simp only [om, Pi.sub_apply]; ring
+    rw [e]
+    exact sm_sub (om_sm hE hVs) (sm_mul (nO _ (mul_mem (mul_mem (psiO s) hP) (eps_mem c s))) (huS t b hb))
+
+end
+end
+
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cocycle_pairing_locally_constant : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (c : Coef l) (n : ℕ) (S : Finset Pl) (W : R2 Ω l) (y z d : G ℚ Ω → Fin 2 → Qbar l) (u : G ℚ Ω → Qbar l) (P : Qbar l) (ψ : G ℚ Ω →* Multiplicative (ZMod (l ^ n))), Continuous W → (∀ s i j, mat W s i j ∈ c.O) → dt W ^ 2 = 1 → (toGS Ω (S : Set Pl)).ker ≤ N0g W ⊓ ψ.ker → IsLocallyConstant ψ → P ∈ c.O → y ∈ Z1 (Loc.colRep W) → z ∈ Z1 (Loc.colRep (dual1 W)) → (∀ s i, y s i ∈ c.O) → (∀ s i, z s i ∈ c.O) → (∀ a ∈ (toGS Ω (S : Set Pl)).ker, y a = 0 ∧ z a = 0 ∧ Cv n (d a) 0) → Continuous u → (∀ s, u s ∈ c.O) → (∀ s, ∀ a ∈ (toGS Ω (S : Set Pl)).ker, Cg n (u (s * a)) (u s)) → (∀ s t, Cg n (cup W y z s t) (eps l s * u t - u (s * t) + u s)) → Continuous d → (∀ s i, d s i ∈ c.O) → (∀ s t, Cv n (d (s * t)) (d s + mat W s *ᵥ d t + ((((ψ s).toAdd.val : ℕ) : Qbar l) * P) • (mat W s *ᵥ y t))) → Coc2 c n S (fun s t => cup W d z s t - (((ψ s).toAdd.val : ℕ) : Qbar l) * P * eps l s * u t) := by
+  atlas_forward_decl GlobalTheory.Ord2.cup_product_two_cocycle
+end
+
+section
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.localConditions_independent_of_place_over : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (W : R2 Ω l) (z : G ℚ Ω → Fin 2 → Qbar l), z ∈ Z1 (Loc.colRep W) → ∀ (w : Pl) (B B' : ValuationSubring Ω), IsPlaceOver B w → IsPlaceOver B' w → ((∃ x : Fin 2 → Qbar l, ∀ s ∈ Ine (F := ℚ) B, z s = mat W s *ᵥ x - x) → ∃ x : Fin 2 → Qbar l, ∀ s ∈ Ine (F := ℚ) B', z s = mat W s *ᵥ x - x) ∧ (Triv W B z → Triv W B' z) := by
+  first | exact @GlobalTheory.Ord2.place_indep | exact GlobalTheory.Ord2.place_indep | (intros; apply GlobalTheory.Ord2.place_indep <;> assumption)
+end
+
+section
+namespace GlobalTheory.FinTwoMembership
+
+open Matrix
+
+theorem mem_of_fin_two {R : Type*} [CommRing R] (S : Subring R) (M : Matrix (Fin 2) (Fin 2) R)
+    (y z : Fin 2 → R) (u : R) (hM : ∀ i j, M i j ∈ S) (hy : ∀ i, y i ∈ S) (hz : ∀ i, z i ∈ S)
+    (hu : u ∈ S) :
+    M.det * u - ((M.adjugate *ᵥ y) 0 * z 1 - (M.adjugate *ᵥ y) 1 * z 0) ∈ S := by
+  have hadj : ∀ i j, M.adjugate i j ∈ S := by
+    intro i j
+    rw [Matrix.adjugate_fin_two]
+    fin_cases i <;> fin_cases j <;> simp [S.neg_mem, hM]
+  have hv : ∀ i, (M.adjugate *ᵥ y) i ∈ S := by
+    intro i
+    simp only [Matrix.mulVec, dotProduct, Fin.sum_univ_two]
+    exact S.add_mem (S.mul_mem (hadj _ _) (hy _)) (S.mul_mem (hadj _ _) (hy _))
+  have hdet : M.det ∈ S := by
+    rw [Matrix.det_fin_two]
+    exact S.sub_mem (S.mul_mem (hM _ _) (hM _ _)) (S.mul_mem (hM _ _) (hM _ _))
+  exact S.sub_mem (S.mul_mem hdet hu)
+    (S.sub_mem (S.mul_mem (hv _) (hz _)) (S.mul_mem (hv _) (hz _)))
+
+theorem ht_mem : ∀ {Ω : Type} [inst : Field Ω] [inst_1 : Algebra ℚ Ω] {l : ℕ} [inst_2 : Fact (Nat.Prime l)]
+    (c : UpperTheory.V.HV.Coef l) (W : GlobalTheory.Ord2.R2 Ω l) (y z : Formalism.ConjugateSelfDual.G ℚ Ω → Fin (2 : ℕ) → Formalism.ConjugateSelfDual.Qbar l)
+    (u : Formalism.ConjugateSelfDual.G ℚ Ω → Formalism.ConjugateSelfDual.Qbar l),
+    (∀ (s : Formalism.ConjugateSelfDual.G ℚ Ω) (i j : Fin (2 : ℕ)), GlobalTheory.Ord2.mat W s i j ∈ UpperTheory.V.HV.Coef.O c) →
+    (∀ (s : Formalism.ConjugateSelfDual.G ℚ Ω) (i : Fin (2 : ℕ)), y s i ∈ UpperTheory.V.HV.Coef.O c) →
+    (∀ (s : Formalism.ConjugateSelfDual.G ℚ Ω) (i : Fin (2 : ℕ)), z s i ∈ UpperTheory.V.HV.Coef.O c) →
+    (∀ (s : Formalism.ConjugateSelfDual.G ℚ Ω), u s ∈ UpperTheory.V.HV.Coef.O c) →
+    ∀ (s : Formalism.ConjugateSelfDual.G ℚ Ω), GlobalTheory.Ord2.ht W y z u s ∈ UpperTheory.V.HV.Coef.O c := by
+  intro Ω _ _ l _ c W y z u hW hy hz hu s
+  have hM : ∀ i j, (GlobalTheory.Ord2.mat W s - 1) i j ∈ c.O.toSubring := by
+    intro i j
+    rw [Matrix.sub_apply]
+    refine c.O.toSubring.sub_mem (hW s i j) ?_
+    rw [Matrix.one_apply]
+    split_ifs
+    · exact c.O.toSubring.one_mem
+    · exact c.O.toSubring.zero_mem
+  exact mem_of_fin_two c.O.toSubring _ (y s) (z s) (u s) hM (hy s) (hz s) (hu s)
+
+end GlobalTheory.FinTwoMembership
+end
+
+section
+namespace GlobalTheory.IntegralAlgebraMapNormBound
+
+open Polynomial
+
+lemma norm_algebraMap_le_one {l : ℕ} [Fact (Nat.Prime l)] (c : ℤ_[l]) :
+    ‖algebraMap ℤ_[l] (PadicAlgCl l) c‖ ≤ 1 := by
+  rw [IsScalarTower.algebraMap_apply ℤ_[l] ℚ_[l] (PadicAlgCl l)]
+  have h1 : ‖algebraMap ℚ_[l] (PadicAlgCl l) (algebraMap ℤ_[l] ℚ_[l] c)‖
+      = ‖algebraMap ℤ_[l] ℚ_[l] c‖ := PadicAlgCl.norm_extends l _
+  rw [h1]
+  exact PadicInt.norm_le_one c
+
+theorem norm_le_one_of_isIntegral {l : ℕ} [Fact (Nat.Prime l)] (x : PadicAlgCl l)
+    (hx : IsIntegral ℤ_[l] x) : ‖x‖ ≤ (1 : ℝ) := by
+  by_contra hlt
+  push_neg at hlt
+  obtain ⟨p, hmon, hp⟩ := hx
+  set n := p.natDegree with hn
+  have hx0 : 0 < ‖x‖ := lt_trans one_pos hlt
+  rw [eval₂_eq_sum_range, Finset.sum_range_succ, ← hn] at hp
+  have hlead : p.coeff n = 1 := hmon
+  rw [hlead, map_one, one_mul] at hp
+  have heq : x ^ n = -∑ i ∈ Finset.range n, algebraMap ℤ_[l] (PadicAlgCl l) (p.coeff i) * x ^ i := by
+    rw [eq_neg_iff_add_eq_zero, add_comm]; exact hp
+  have hbound : ‖∑ i ∈ Finset.range n, algebraMap ℤ_[l] (PadicAlgCl l) (p.coeff i) * x ^ i‖
+      ≤ ‖x‖ ^ n / ‖x‖ := by
+    apply IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg (by positivity)
+    intro i hi
+    rw [Finset.mem_range] at hi
+    rw [norm_mul, norm_pow, le_div_iff₀ hx0]
+    calc ‖algebraMap ℤ_[l] (PadicAlgCl l) (p.coeff i)‖ * ‖x‖ ^ i * ‖x‖
+        ≤ 1 * ‖x‖ ^ i * ‖x‖ := by
+          gcongr
+          exact norm_algebraMap_le_one _
+      _ = ‖x‖ ^ (i + 1) := by ring
+      _ ≤ ‖x‖ ^ n := pow_le_pow_right₀ hlt.le (by omega)
+  have hxn : ‖x‖ ^ n ≤ ‖x‖ ^ n / ‖x‖ := by
+    calc ‖x‖ ^ n = ‖x ^ n‖ := (norm_pow x n).symm
+      _ = _ := by rw [heq, norm_neg]
+      _ ≤ _ := hbound
+  have hpos : 0 < ‖x‖ ^ n := pow_pos hx0 n
+  have : ‖x‖ ^ n / ‖x‖ < ‖x‖ ^ n := div_lt_self hpos hlt
+  linarith
+
+theorem main : ∀ {l : ℕ} [inst : Fact (Nat.Prime l)] (x : PadicAlgCl l),
+    IsIntegral ℤ_[l] x → ‖x‖ ≤ (1 : ℝ) :=
+  fun x hx => norm_le_one_of_isIntegral x hx
+
+end GlobalTheory.IntegralAlgebraMapNormBound
+end
+
+section
+namespace GlobalTheory.OpenKernelLocallyConstant
+
+theorem isOpen_ker_and_isLocallyConstant {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω]
+    (C : Type) [Group C] (N : ℕ) (ψ : Formalism.ConjugateSelfDual.G ℚ Ω →* C) (hN : N ≠ 0)
+    (hψ : UpperTheory.V.Af.KillsMu N ψ) :
+    IsOpen (↑(MonoidHom.ker ψ) : Set (Formalism.ConjugateSelfDual.G ℚ Ω)) ∧
+      IsLocallyConstant (⇑ψ : Formalism.ConjugateSelfDual.G ℚ Ω → C) := by
+  classical
+  have hopen : IsOpen (↑(MonoidHom.ker ψ) : Set (Formalism.ConjugateSelfDual.G ℚ Ω)) := by
+    have halg : Algebra.IsAlgebraic ℚ Ω := IsAlgClosure.isAlgebraic
+    let S : Set Ω := {z | z ^ N = 1}
+    have hS : S.Finite := by
+      refine (Polynomial.nthRoots N (1 : Ω)).toFinset.finite_toSet.subset ?_
+      intro z hz
+      have hz' : z ^ N = 1 := hz
+      simpa [Polynomial.mem_nthRoots (Nat.pos_of_ne_zero hN)] using hz'
+    have : Finite S := hS.to_subtype
+    have : FiniteDimensional ℚ (IntermediateField.adjoin ℚ S) :=
+      IntermediateField.finiteDimensional_adjoin fun x _ => (halg.isAlgebraic x).isIntegral
+    refine Subgroup.isOpen_mono (H₁ := (IntermediateField.adjoin ℚ S).fixingSubgroup) ?_
+      (IntermediateField.fixingSubgroup_isOpen _)
+    intro s hs
+    rw [MonoidHom.mem_ker]
+    refine hψ s ?_
+    intro z hz
+    exact (IntermediateField.mem_fixingSubgroup_iff _ _).1 hs z
+      (IntermediateField.subset_adjoin ℚ S hz)
+  refine ⟨hopen, ?_⟩
+  rw [IsLocallyConstant.iff_exists_open]
+  intro x
+  refine ⟨(fun y => x⁻¹ * y) ⁻¹' (MonoidHom.ker ψ : Set (Formalism.ConjugateSelfDual.G ℚ Ω)),
+    hopen.preimage (continuous_const.mul continuous_id), by simp, ?_⟩
+  intro y hy
+  have h : ψ (x⁻¹ * y) = 1 := hy
+  rw [map_mul, map_inv, inv_mul_eq_one] at h
+  exact h.symm
+
+end GlobalTheory.OpenKernelLocallyConstant
+end
+
+section
+open Formalism.ConjugateSelfDual ReciprocityTheory.Gal
+
+namespace GlobalTheory.ZeroSubmodule
+
+variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {l : ℕ} [Fact (Nat.Prime l)]
+
+theorem colRep_apply_of_one (V : GlobalTheory.Ord2.R2 Ω l) (s : G ℚ Ω)
+    (hs : (V : G ℚ Ω → GL (Fin 2) (Qbar l)) s = 1) (v : Fin 2 → Qbar l) :
+    UpperTheory.V.Loc.colRep V s v = v := by
+  show Matrix.toLin' ((V s : GL (Fin 2) (Qbar l)) : Matrix (Fin 2) (Fin 2) (Qbar l)) v = v
+  rw [hs]
+  simp
+
+def zeroSub (V : GlobalTheory.Ord2.R2 Ω l) (H : Subgroup (G ℚ Ω)) (x : G ℚ Ω → Fin 2 → Qbar l)
+    (hV : ∀ a ∈ H, (V : G ℚ Ω → GL (Fin 2) (Qbar l)) a = 1)
+    (hx : x ∈ Z1 (UpperTheory.V.Loc.colRep V)) : Subgroup (G ℚ Ω) where
+  carrier := {s | s ∈ H ∧ x s = 0}
+  one_mem' := by
+    refine ⟨H.one_mem, ?_⟩
+    have h := ((mem_Z1_iff_cocycle _ x).1 hx).2 1 1
+    rw [mul_one, colRep_apply_of_one V 1 (map_one V)] at h
+    simpa using h
+  mul_mem' := by
+    rintro s t ⟨hs, hs0⟩ ⟨ht, ht0⟩
+    refine ⟨H.mul_mem hs ht, ?_⟩
+    rw [((mem_Z1_iff_cocycle _ x).1 hx).2 s t, colRep_apply_of_one V s (hV s hs), hs0, ht0, add_zero]
+  inv_mem' := by
+    rintro s ⟨hs, hs0⟩
+    refine ⟨H.inv_mem hs, ?_⟩
+    have h := ((mem_Z1_iff_cocycle _ x).1 hx).2 s s⁻¹
+    rw [mul_inv_cancel, colRep_apply_of_one V s (hV s hs), hs0, zero_add] at h
+    have h1 : x 1 = 0 := by
+      have h := ((mem_Z1_iff_cocycle _ x).1 hx).2 1 1
+      rw [mul_one, colRep_apply_of_one V 1 (map_one V)] at h
+      simpa using h
+    rw [← h, h1]
+
+theorem cocycle_one (V : GlobalTheory.Ord2.R2 Ω l) (x : G ℚ Ω → Fin 2 → Qbar l)
+    (hx : x ∈ Z1 (UpperTheory.V.Loc.colRep V)) : x 1 = 0 := by
+  have h := ((mem_Z1_iff_cocycle _ x).1 hx).2 1 1
+  rw [mul_one, colRep_apply_of_one V 1 (map_one V)] at h
+  simpa using h
+
+theorem zeroSub_normal (V : GlobalTheory.Ord2.R2 Ω l) (H : Subgroup (G ℚ Ω)) (x : G ℚ Ω → Fin 2 → Qbar l)
+    (hH : H.Normal) (hV : ∀ a ∈ H, (V : G ℚ Ω → GL (Fin 2) (Qbar l)) a = 1)
+    (hx : x ∈ Z1 (UpperTheory.V.Loc.colRep V)) : (zeroSub V H x hV hx).Normal := by
+  constructor
+  rintro s ⟨hs, hs0⟩ g
+  refine ⟨hH.conj_mem s hs g, ?_⟩
+  have hc := ((mem_Z1_iff_cocycle _ x).1 hx).2
+  rw [hc (g * s) g⁻¹, hc g s, hs0, map_zero, add_zero, map_mul, Module.End.mul_apply,
+    colRep_apply_of_one V s (hV s hs), ← hc g g⁻¹, mul_inv_cancel, cocycle_one V x hx]
+
+theorem zeroSub_isClosed (V : GlobalTheory.Ord2.R2 Ω l) (H : Subgroup (G ℚ Ω)) (x : G ℚ Ω → Fin 2 → Qbar l)
+    (hHc : IsClosed (H : Set (G ℚ Ω))) (hV : ∀ a ∈ H, (V : G ℚ Ω → GL (Fin 2) (Qbar l)) a = 1)
+    (hx : x ∈ Z1 (UpperTheory.V.Loc.colRep V)) : IsClosed (zeroSub V H x hV hx : Set (G ℚ Ω)) := by
+  have : (zeroSub V H x hV hx : Set (G ℚ Ω)) = (H : Set (G ℚ Ω)) ∩ x ⁻¹' {0} := rfl
+  rw [this]
+  exact hHc.inter (isClosed_singleton.preimage ((mem_Z1_iff_cocycle _ x).1 hx).1)
+
+theorem main : ∀ {Ω : Type} [inst : Field Ω] [inst_1 : Algebra ℚ Ω] {l : ℕ} [inst_2 : Fact (Nat.Prime l)] (S : Set GlobalTheory.Ord2.Pl) (V : GlobalTheory.Ord2.R2 Ω l) (H : Subgroup (Formalism.ConjugateSelfDual.G ℚ Ω)) (x : Formalism.ConjugateSelfDual.G ℚ Ω → Fin (2 : ℕ) → Formalism.ConjugateSelfDual.Qbar l), Subgroup.Normal H → IsClosed (↑H : Set (Formalism.ConjugateSelfDual.G ℚ Ω)) → (∀ a ∈ H, (V : Formalism.ConjugateSelfDual.G ℚ Ω → GL (Fin (2 : ℕ)) (Formalism.ConjugateSelfDual.Qbar l)) a = (1 : GL (Fin (2 : ℕ)) (Formalism.ConjugateSelfDual.Qbar l))) → x ∈ ReciprocityTheory.Gal.Z1 (UpperTheory.V.Loc.colRep V) → (∀ v ∉ S, ∀ (B : ValuationSubring Ω), Formalism.ConjugateSelfDual.IsPlaceOver B v → ∀ s ∈ ReciprocityTheory.Gal.Ine B, s ∈ H ∧ x s = (0 : Fin (2 : ℕ) → Formalism.ConjugateSelfDual.Qbar l)) → ∀ a ∈ ReciprocityTheory.Gal.NS Ω S, x a = (0 : Fin (2 : ℕ) → Formalism.ConjugateSelfDual.Qbar l) := by
+  intro Ω _ _ l _ S V H x hH hHc hV hx hI a ha
+  haveI := zeroSub_normal V H x hH hV hx
+  have hle : NS Ω S ≤ zeroSub V H x hV hx := by
+    apply Subgroup.topologicalClosure_minimal _ _ (zeroSub_isClosed V H x hHc hV hx)
+    apply Subgroup.normalClosure_le_normal
+    intro s hs
+    simp only [Set.mem_iUnion, Set.mem_setOf_eq] at hs
+    obtain ⟨v, hv, B, hB, hsB⟩ := hs
+    exact hI v hv B hB s hsB
+  exact (hle ha).2
+
+end GlobalTheory.ZeroSubmodule
+end
+
+section
+namespace GlobalTheory.InertiaRootOfUnity
+
+theorem eq_one_of_val_sub_lt {K Γ : Type*} [Field K] [LinearOrderedCommGroupWithZero Γ] (w : Valuation K Γ)
+    (N : ℕ) (hN : ¬ w (N : K) < 1) (u : K) (hu : u ^ N = 1) (h : w (u - 1) < 1) : u = 1 := by
+  by_contra hne
+  have hx : u - 1 ≠ 0 := sub_ne_zero.mpr hne
+  have hw1 : w u = 1 := by
+    have h' := Valuation.map_add_eq_of_lt_right w (x := u - 1) (y := 1) (by rw [map_one]; exact h)
+    rwa [sub_add_cancel, map_one] at h'
+  have hpow : ∀ i : ℕ, w (u ^ i - 1) < 1 := by
+    intro i
+    induction i with
+    | zero => simp
+    | succ i ih =>
+      have hr : u ^ (i + 1) - 1 = u * (u ^ i - 1) + (u - 1) := by ring
+      rw [hr]
+      refine Valuation.map_add_lt w ?_ h
+      rw [map_mul, hw1, one_mul]
+      exact ih
+  have hsum : ∑ i ∈ Finset.range N, u ^ i = 0 := by
+    have hg := geom_sum_mul u N
+    rw [hu, sub_self] at hg
+    exact (mul_eq_zero.mp hg).resolve_right hx
+  have hNeq : (N : K) = -∑ i ∈ Finset.range N, (u ^ i - 1) := by
+    rw [Finset.sum_sub_distrib, hsum]
+    simp
+  apply hN
+  rw [hNeq, Valuation.map_neg]
+  exact w.map_sum_lt one_ne_zero fun i _ => hpow i
+
+theorem inertia_fixes_root_of_unity {Ω : Type} [Field Ω] [Algebra ℚ Ω] (N : ℕ) (v : GlobalTheory.Ord2.Pl)
+    (B : ValuationSubring Ω) (hB : Formalism.ConjugateSelfDual.IsPlaceOver B v)
+    (hN : ¬ ((N : NumberField.RingOfIntegers ℚ) ∈ v.asIdeal))
+    (s : Formalism.ConjugateSelfDual.G ℚ Ω) (hs : s ∈ ReciprocityTheory.Gal.Ine B) (ζ : Ω) (hζ : ζ ^ N = 1) : s ζ = ζ := by
+  have hN0 : N ≠ 0 := by
+    rintro rfl
+    exact hN (by simpa using v.asIdeal.zero_mem)
+  have hζ0 : ζ ≠ 0 := by
+    rintro rfl
+    simp [zero_pow hN0] at hζ
+  have hwζ : B.valuation ζ = 1 := by
+    have hp : B.valuation ζ ^ N = 1 := by rw [← map_pow, hζ, map_one]
+    rcases lt_trichotomy (B.valuation ζ) 1 with hlt | heq | hgt
+    · exact absurd hp (pow_lt_one₀ zero_le' hlt hN0).ne
+    · exact heq
+    · exact absurd hp (one_lt_pow₀ hgt hN0).ne'
+  have hI := (ReciprocityTheory.Gal.mem_Ine.mp hs).2 ζ hwζ.le
+  have hsζ : s ζ ^ N = 1 := by rw [← map_pow, hζ, map_one]
+  have hone := eq_one_of_val_sub_lt B.valuation N ?_ (s ζ * ζ⁻¹) ?_ ?_
+  · exact (mul_inv_eq_one₀ hζ0).mp hone
+  · intro hlt
+    exact hN ((hB N).mp (by simpa using hlt))
+  · rw [mul_pow, hsζ, inv_pow, hζ, inv_one, mul_one]
+  · have hr : s ζ * ζ⁻¹ - 1 = (s ζ - ζ) * ζ⁻¹ := by field_simp
+    rw [hr, map_mul, map_inv₀, hwζ, inv_one, mul_one]
+    exact hI
+
+end GlobalTheory.InertiaRootOfUnity
+end
+
+section
 section
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2
 open scoped Matrix
@@ -286,3 +1049,4 @@ open scoped Matrix
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.cohomology_unramified_lift : GlobalTheory.Mem.LiteralAutomorphy.LitCoh → ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (e : ℕ) (S : Finset Pl) (A : ValuationSubring Ω) (W : R2 Ω l), Nf e S A W → ∀ (c : Coef l) (y z : G ℚ Ω → Fin 2 → Qbar l) (u : G ℚ Ω → Qbar l) (S' : Finset Pl) (n : ℕ), 1 ≤ n → (∀ s i j, mat W s i j ∈ c.O) → y ∈ Z1 (Loc.colRep W) → z ∈ Z1 (Loc.colRep (dual1 W)) → (∀ s i, y s i ∈ c.O) → (∀ s i, z s i ∈ c.O) → Unr W y → (∀ q : Pl, ((l : ℕ) : 𝓞 ℚ) ∉ q.asIdeal → ∀ B : ValuationSubring Ω, IsPlaceOver B q → ∃ x : Fin 2 → Qbar l, (∀ i, x i ∈ c.O) ∧ ∀ s ∈ Ine (F := ℚ) B, z s = mat (dual1 W) s *ᵥ x - x) → (∃ x : Fin 2 → Qbar l, (∀ i, x i ∈ c.O) ∧ ∀ s ∈ Dec (F := ℚ) A, z s = mat (dual1 W) s *ᵥ x - x) → (∀ w : Pl, w ∉ S' → l ^ n ∣ normV w - 1 → ∀ ψ : G ℚ Ω →* Multiplicative (ZMod (l ^ n)), KillsMu (normV w) ψ → Function.Surjective ψ → Tame c W y n w ψ) → Continuous u → (∀ s, u s ∈ c.O) → (∀ s, ∀ a ∈ (toGS Ω (S : Set Pl)).ker, Cg n (u (s * a)) (u s)) → (∀ s t, Cg n (cup W y z s t) (eps l s * u t - u (s * t) + u s)) → ∀ σ ∈ ⁅H0g W, H0g W⁆, Cg n ((mat W σ - 1).det * ht W y z u σ) 0 := by
   atlas_forward_decl GlobalTheory.Ord2.ht_vanish_commutator
+end

@@ -21,9 +21,6 @@ def LinApprox {Γ : Type} [Group Γ] {a : ℕ} (r : Γ →* GL (Fin a) k) (C : S
 def opOf {Γ V : Type} [Group Γ] [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ Γ V) (f : Γ →₀ ℂ) (v : V) : V :=
   f.sum fun g c => c • ρ g v
 
-theorem linApprox_of_mem {Γ : Type} [Group Γ] {a : ℕ} {r : Γ →* GL (Fin a) k} {C : Set (Γ →* GL (Fin a) k)} (h : r ∈ C) :
-    LinApprox r C := fun ε hε =>
-  ⟨{r}, fun _ => 1, by simpa using h, fun g => by simpa using hε.le⟩
 
 theorem PolyApprox.mono [IsUltrametricDist k] {J : Type} {θ : J → k} {S T : Set (J → k)} (h : PolyApprox θ S)
     (hST : S ⊆ T) : PolyApprox θ T := fun ε hε => by

@@ -438,20 +438,6 @@ def toFormDataG (j : ℕ) : ExtensionFiltration.FormDataG P.fs.KO (P.fs.Forms j)
   toFormData := P.toFormData j
   ip_posDef := fun v => P.ip_posDef j v.embedding
 
-theorem comp_laws (j : ℕ) :
-    (∀ x : P.fs.cuspF j, ∑ c, P.prC j c x = x) ∧
-    (∀ c d (x : P.fs.cuspF j), c ≠ d → P.prC j c (P.prC j d x) = 0) ∧
-    (∀ la (y : P.fs.Pt j la) (x : P.fs.cuspF j),
-      (P.toFormData j).sn la y (P.prC j (P.cmpPt j la y) x : P.fs.Forms j) = (P.toFormData j).sn la y x) ∧
-    (∀ la (y : P.fs.Pt j la) c (x : P.fs.cuspF j), c ≠ P.cmpPt j la y →
-      (P.toFormData j).sn la y (P.prC j c x : P.fs.Forms j) = 0) ∧
-    (∀ v c d (f g : P.fs.cuspF j), c ≠ d →
-      (P.toFormData j).ip v (P.prC j c f : P.fs.Forms j) (P.prC j d g : P.fs.Forms j) = 0) := by
-  refine ⟨P.prC_sum j, P.prC_orth j, fun la y x => ?_, fun la y c x hc => ?_, fun v c d f g h => P.ip_prC j _ c d f g h⟩
-  · show expV _ _ = expV _ _
-    rw [P.vAt_prC_self]
-  · show expV _ _ = 0
-    rw [P.vAt_prC_ne j la y c x hc, expV_top]
 
 end FormsKPkg
 

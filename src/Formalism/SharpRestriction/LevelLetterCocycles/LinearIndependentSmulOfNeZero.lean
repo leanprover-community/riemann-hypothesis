@@ -71,61 +71,7 @@ section GT
 open Formalism.CyclotomicNorms (vl)
 open Formalism.MainNotions.BlochKatoReduction.Gen (nval)
 
-theorem vl_eq_nval {R L : Type} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [NormedField L]
-    (ℓ : ℕ) (hℓ : ℓ.Prime) (φ : R →+* L) (hφ : ∀ a, ‖φ a‖ ≤ 1) (hl : ‖(ℓ : L)‖ = (ℓ : ℝ)⁻¹) :
-    0 < (IsDiscreteValuationRing.addVal R (ℓ : R)).toNat ∧
-    ∀ x : R, x ≠ 0 → φ x ≠ 0 ∧ vl ℓ (φ x) = nval R ℓ x := by
-  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible R
-  have hℓ1 : (1 : ℝ) < ℓ := by exact_mod_cast hℓ.one_lt
-  have hℓ0 : (0 : ℝ) < ℓ := by linarith
-  have hunit : ∀ u : Rˣ, ‖φ u‖ = 1 := by
-    intro u
-    refine le_antisymm (hφ _) ?_
-    have h1 : ‖φ u‖ * ‖φ ((u⁻¹ : Rˣ) : R)‖ = 1 := by
-      rw [← norm_mul, ← map_mul, Units.mul_inv, map_one, norm_one]
-    nlinarith [hφ ((u⁻¹ : Rˣ) : R), norm_nonneg (φ u), norm_nonneg (φ ((u⁻¹ : Rˣ) : R))]
-  have hl0 : (ℓ : R) ≠ 0 := by
-    intro h0
-    have : (ℓ : L) = 0 := by rw [← map_natCast φ, h0, map_zero]
-    rw [this, norm_zero] at hl
-    exact absurd hl (by positivity : (0 : ℝ) < (ℓ : ℝ)⁻¹).ne
-  have hrep : ∀ x : R, x ≠ 0 → ∃ n : ℕ, IsDiscreteValuationRing.addVal R x = n ∧ ‖φ x‖ = ‖φ ϖ‖ ^ n := by
-    intro x hx
-    obtain ⟨n, u, hu⟩ := IsDiscreteValuationRing.associated_pow_irreducible hx hϖ
-    refine ⟨n, ?_, ?_⟩
-    · apply IsDiscreteValuationRing.addVal_def x u⁻¹ hϖ n
-      rw [← hu]; simp [mul_comm]
-    · rw [← norm_pow, ← map_pow, ← hu, map_mul, norm_mul, hunit, mul_one]
-  obtain ⟨m, hm, hmn⟩ := hrep _ hl0
-  rw [map_natCast, hl] at hmn
-  have hm0 : m ≠ 0 := by
-    rintro rfl
-    rw [pow_zero] at hmn
-    have : (ℓ : ℝ) = 1 := by field_simp at hmn; linarith
-    linarith
-  have ht : 0 < ‖φ ϖ‖ := by
-    rcases (norm_nonneg (φ ϖ)).lt_or_eq with h | h
-    · exact h
-    · rw [← h, zero_pow hm0] at hmn
-      exact absurd hmn (by positivity : (0 : ℝ) < (ℓ : ℝ)⁻¹).ne'
-  have hlog : (m : ℝ) * Real.logb ℓ ‖φ ϖ‖ = -1 := by
-    rw [← Real.logb_pow, ← hmn, Real.logb_inv, Real.logb_self_eq_one hℓ1]
-  refine ⟨by rw [hm]; simpa using Nat.pos_of_ne_zero hm0, ?_⟩
-  intro x hx
-  obtain ⟨n, hn, hnn⟩ := hrep x hx
-  refine ⟨?_, ?_⟩
-  · rw [← norm_pos_iff, hnn]; positivity
-  · unfold vl nval
-    rw [hnn, hn, hm, Real.logb_pow]
-    simp only [ENat.toNat_natCast]
-    have hm' : (m : ℝ) ≠ 0 := by exact_mod_cast hm0
-    field_simp
-    nlinarith [hlog]
 
-theorem norm_natCast_self_padicComplex (l : ℕ) [Fact l.Prime] : ‖(l : ℂ_[l])‖ = (l : ℝ)⁻¹ := by
-  have h := PadicComplex.norm_extends' l (l : ℚ_[l])
-  rw [map_natCast, PadicComplex.coe_natCast, Padic.norm_p] at h
-  exact h
 
 end GT
 
@@ -142,38 +88,9 @@ theorem isLatIn_spanK {O K V : Type} [CommRing O] [IsDomain O] [Field K] [Algebr
 variable {D : Formalism.BasicNotions.D7} {N : Formalism.BasicNotions.NData D.R D.host D.what₂}
   {X : Formalism.BasicNotions.NTw D.R D.host D.what₂ D.LL0 N} {Y : Formalism.BasicNotions.NExp D.R D.host D.what₂ D.LL0 N X}
 
-theorem IdxM_of {i : X.Tw} {F : RFam Y i} {j : ℕ} {b : Bool} (hR : RHyp Y i F j b) {k : ℕ}
-    {Q : Finset (Formalism.BasicNotions.PlE D.host)} {ψ : Formalism.ConjugateSelfDual.G D.host.E N.Om →* (X.Ok i k)ˣ} {e : ℝ}
-    (hlat : IsLatIn (F.ThPsi j b k Q ψ) (F.VKk j b k))
-    (h : Formalism.MainNotions.IntegralHeckeForms.sIdx (X.l i) ((F.B j b).baseChange (X.Ok i k)) (F.ThPsi j b k Q ψ) ≤
-      Formalism.MainNotions.IntegralHeckeForms.sIdx (X.l i) (F.B j b) (F.Th j b) + e) :
-    IdxM Y i F j b k Q ψ e := by
-  intro O' _ _ _ _ _ _ hinj hfin M hM
-  have hB : IsLatIn (F.B j b) ((F.VK j b).restrictScalars (X.O i)) := isLatIn_spanK hR.1
-  have hTfg : (F.Th j b).FG := by
-    rw [← hR.2.2.2.2.2.2.1]
-    exact Submodule.fg_span ((F.S j b).finite_toSet.image _)
-  have hT : IsLatIn (F.Th j b) ((F.VK j b).restrictScalars (X.O i)) := by
-    rw [← hR.2.2.2.2.2.2.2.1]
-    exact isLatIn_spanK hTfg
-  have := X.Ok_fin i k
-  exact Formalism.MainNotions.IntegralHeckeForms.Idx.transfer (X.Ok_inj i k) hinj (X.l i) hB hT hlat e h hM
 
-theorem partBM_of_partBR {i : X.Tw} {F : RFam Y i}
-    (hR : ∀ j ∈ Finset.Icc 1 D.R.m, ∀ b : Bool, RHyp Y i F j b) {Q : Finset (Formalism.BasicNotions.PlE D.host)} {k' : ℕ}
-    {ψ' : X.RCG i Q →* (X.Ok i k')ˣ} {eps' : ℝ} (h : partBR Y i F Q k' ψ' eps') :
-    partBM Y i F Q k' ψ' eps' := by
-  obtain ⟨epsB, h0, hs, hb⟩ := h
-  exact ⟨epsB, h0, hs, fun j hj b => ⟨(hb j hj b).1, IdxM_of (hR j hj b) (hb j hj b).1 (hb j hj b).2⟩⟩
 
-theorem arbitrary_lattice_of_twist_theorem (D : Formalism.BasicNotions.D7) (bkP : Formalism.MainNotions.BlochKatoReduction.BK D) (N0 : D.ntw.Tw → ℕ)
-    (h : aux₃ D bkP N0) : ArbitraryLatticeAtNonzeroIndexPlaces D bkP N0 := by
-  intro i hi hS eps' he F hF A0
-  obtain ⟨Q, k', ψ', h1, h2, h3, h4, h5, h6⟩ := h i hi hS eps' he F hF A0
-  exact ⟨Q, k', ψ', h1, h2, h3, partBM_of_partBR hF h4, h5, h6⟩
 
-theorem arbitrary_lattice_of_statement (D : Formalism.BasicNotions.D7) (bkP : Formalism.MainNotions.BlochKatoReduction.BK D) (h : Stmt D bkP) : ArbitraryLatticeOfAdmissible D bkP :=
-  fun N0 hA => arbitrary_lattice_of_twist_theorem D bkP N0 (h N0 hA)
 
 end Cons
 
@@ -195,14 +112,6 @@ def CurveIdealTorusProperties : Prop :=
       PsiOk i A0 Q k' ψ' ∧ partAT (Formalism.MainNotions.BlochKatoReduction.pin bkP) i Q k' ψ' eps' ∧
       partBR D.nexp i F Q k' ψ' eps' ∧ partC N0 i Q k' ψ' eps' ∧ partD i Q k' ψ' eps'
 
-theorem conclusion_iff_withoutFirstConjunct : aux₃ D bkP N0 ↔ CurveIdealTorusProperties D bkP N0 := by
-  constructor
-  · intro h i hi hS eps' he F hF A0
-    obtain ⟨Q, k', ψ', h1, _, h3, h4, h5, h6⟩ := h i hi hS eps' he F hF A0
-    exact ⟨Q, k', ψ', h1, h3, h4, h5, h6⟩
-  · intro h i hi hS eps' he F hF A0
-    obtain ⟨Q, k', ψ', h1, h3, h4, h5, h6⟩ := h i hi hS eps' he F hF A0
-    exact ⟨Q, k', ψ', h1, Formalism.MainNotions.BlochKatoReduction.Gen.partA_of_partAT (Formalism.MainNotions.BlochKatoReduction.pin bkP) i Q k' ψ' eps' h3, h3, h4, h5, h6⟩
 
 end Open
 
@@ -633,7 +542,6 @@ def crd (w : Fm ⊗[O] Λ) : Fin d → Λ :=
 theorem rTensor_injective [Module.Flat O Λ] : Function.Injective (B.subtype.rTensor Λ) :=
   Module.Flat.rTensor_preserves_injective_linearMap (M := Λ) B.subtype B.injective_subtype
 
-theorem intIn_rTensor (W : B ⊗[O] Λ) : IntIn B Λ (B.subtype.rTensor Λ W) := ⟨W, rfl⟩
 
 theorem crd_rTensor [Module.Flat O Λ] (W : B ⊗[O] Λ) :
     crd β Λ (B.subtype.rTensor Λ W) = crdB β Λ W := by
@@ -821,13 +729,6 @@ theorem sIdx_of_le (l : ℕ) {M N : Submodule R W} (h : N ≤ M) :
   rw [Formalism.IrreducibleCountingLemmas.TW.Idx.relLen_of_le h]
   simp
 
-theorem sIdx_mono (l : ℕ) {B0 Y T V : Submodule R W} (hB : IsLatIn B0 V) (hY : IsLatIn Y V)
-    (hT : IsLatIn T V) (h : Y ≤ T) : Formalism.MainNotions.IntegralHeckeForms.sIdx l B0 T ≤ Formalism.MainNotions.IntegralHeckeForms.sIdx l B0 Y := by
-  have a := sIdx_add_real l hB hT hY
-  have b : 0 ≤ Formalism.MainNotions.IntegralHeckeForms.sIdx l T Y := by
-    rw [sIdx_of_le l h]
-    positivity
-  linarith
 
 variable {d : ℕ} {e : Fin d → W}
 
@@ -2179,31 +2080,12 @@ def packAB {i : X.Tw} (F : Formalism.MainNotions.IntegralHeckeForms.RFam Y i) (j
     rfl
   t3 := h.2.2.2.2.2.2.2.2.2.2.2
 
-theorem abstract_form_of_lattice_run (bkP : Formalism.MainNotions.BlochKatoReduction.Gen.BKPh X) (N0 : X.Tw → ℕ)
-    (hmain : ∀ i, X.NonzeroIndexPlace i → ∀ j ∈ Finset.Icc 1 D.R.m, ∀ b (p : Pack Y i j b), p.Main) (h2 : SelmerSeriesChoice Y bkP N0) :
-    Formalism.MainNotions.IntegralHeckeForms.TwistingCharacterExistence Y bkP N0 := by
-  intro i hi hS eps' he F hF A0
-  obtain ⟨Q, k', ψ', M, χ, hPsi, _, hχ, _, hAT, hC, hD, epsB, h0, hs, hb⟩ :=
-    run_packs bkP N0 h2 i hi hS eps' he A0 (fun x => packAB F x.1.1 x.2 (hF x.1.1 x.1.2 x.2))
-      (fun x => hmain i hi x.1.1 x.1.2 x.2 _)
-  refine ⟨Q, k', ψ', hPsi, hAT, hC, hD, M, χ, hχ, epsB, h0, hs, ?_⟩
-  intro j hj b Tψ hT hmem
-  obtain ⟨hl, hi⟩ := hb (⟨j, hj⟩, b)
-  have hle : (packAB F j b (hF j hj b)).Yl Q M k' (psiAt b χ) ≤ Tψ := by
-    unfold Pack.Yl
-    rw [Submodule.span_le]
-    rintro _ ⟨a, ha, rfl⟩
-    exact hmem a ha
-  exact (sIdx_mono' (X.l i) ((packAB F j b (hF j hj b)).isLatIn_B k') hl hT hle).trans hi
 
 theorem conclusion_of_lattice_pack (D : Formalism.BasicNotions.D7) (bkP : Formalism.MainNotions.BlochKatoReduction.BK D) (N0 : D.ntw.Tw → ℕ)
     (hmain : ∀ i, D.ntw.NonzeroIndexPlace i → ∀ j ∈ Finset.Icc 1 D.R.m, ∀ b (p : Pack D.nexp i j b), p.Main) (h2 : adm2 D bkP N0) (h11 : adm11 D) :
     aux₃ D bkP N0 :=
   fun i hi => general_bound_of_lattice_pack (Formalism.MainNotions.BlochKatoReduction.pin bkP) N0 hmain h2 h11 i hi
 
-theorem abstract_form_of_lattice_pack (D : Formalism.BasicNotions.D7) (bkP : Formalism.MainNotions.BlochKatoReduction.BK D) (N0 : D.ntw.Tw → ℕ)
-    (hmain : ∀ i, D.ntw.NonzeroIndexPlace i → ∀ j ∈ Finset.Icc 1 D.R.m, ∀ b (p : Pack D.nexp i j b), p.Main) (h2 : adm2 D bkP N0) : AbstractTwistPinned D bkP N0 :=
-  abstract_form_of_lattice_run (Formalism.MainNotions.BlochKatoReduction.pin bkP) N0 hmain h2
 
 end Fin
 
@@ -2228,20 +2110,12 @@ theorem conclusion_of_hecke_commutation (D : Formalism.BasicNotions.D7) (bkP : F
     (h2 : adm2 D bkP N0) (h11 : adm11 D) (h12 : adm12 D) (h13 : adm13 D) : aux₃ D bkP N0 :=
   conclusion_of_lattice_pack D bkP N0 (fun _ hi _ hj _ p => p.main hF h12 h13 hi hj) h2 h11
 
-theorem abstract_form_of_hecke (D : Formalism.BasicNotions.D7) (bkP : Formalism.MainNotions.BlochKatoReduction.BK D) (N0 : D.ntw.Tw → ℕ) (hF : FrobEx D.nd)
-    (h2 : adm2 D bkP N0) (h12 : adm12 D) (h13 : adm13 D) : AbstractTwistPinned D bkP N0 :=
-  abstract_form_of_lattice_pack D bkP N0 (fun _ hi _ hj _ p => p.main hF h12 h13 hi hj) h2
 
 theorem stmt_of_frobenius (D : Formalism.BasicNotions.D7) (bkP : Formalism.MainNotions.BlochKatoReduction.BK D) (hF : FrobEx D.nd) : Stmt D bkP := by
   rintro N0 ⟨_, h2, _, _, _, _, _, _, _, _, h11, h12, h13⟩
   exact conclusion_of_hecke_commutation D bkP N0 hF h2 h11 h12 h13
 
-theorem arbitrary_lattice_of_frobenius (D : Formalism.BasicNotions.D7) (bkP : Formalism.MainNotions.BlochKatoReduction.BK D) (hF : FrobEx D.nd) : ArbitraryLatticeOfAdmissible D bkP :=
-  arbitrary_lattice_of_statement D bkP (stmt_of_frobenius D bkP hF)
 
-theorem abstract_form_of_frobenius (D : Formalism.BasicNotions.D7) (bkP : Formalism.MainNotions.BlochKatoReduction.BK D) (hF : FrobEx D.nd) : AbstractTwistOfAdmissible D bkP := by
-  rintro N0 ⟨_, h2, _, _, _, _, _, _, _, _, _, h12, h13⟩
-  exact abstract_form_of_hecke D bkP N0 hF h2 h12 h13
 
 end Asm4
 
@@ -2639,11 +2513,7 @@ theorem frobEx_holds {D : Formalism.BasicNotions.D7} (N : NData D.R D.host D.wha
 theorem frobenius_lifting (D : Formalism.BasicNotions.D7) (bkP : Formalism.MainNotions.BlochKatoReduction.BK D) : Stmt D bkP :=
   stmt_of_frobenius D bkP (frobEx_holds D.nd)
 
-theorem arbitrary_lattice_holds (D : Formalism.BasicNotions.D7) (bkP : Formalism.MainNotions.BlochKatoReduction.BK D) : ArbitraryLatticeOfAdmissible D bkP :=
-  arbitrary_lattice_of_frobenius D bkP (frobEx_holds D.nd)
 
-theorem abstract_form_holds (D : Formalism.BasicNotions.D7) (bkP : Formalism.MainNotions.BlochKatoReduction.BK D) : AbstractTwistOfAdmissible D bkP :=
-  abstract_form_of_frobenius D bkP (frobEx_holds D.nd)
 
 end Final
 

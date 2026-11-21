@@ -40,23 +40,7 @@ abbrev locLat {n : Type} [Fintype n] [DecidableEq n] (v : HeightOneSpectrum (�
     (Λ : Submodule (𝓞 E) (n → E)) : Submodule (intV E v) (n → E ⊗[F] v.adicCompletion F) :=
   latS (F := F) (v.adicCompletion F) (intV E v) Λ
 
-theorem mem_primeOf_prP {σ : E →ₐ[F] E} (hφ : IsSplitting σ v φ) (a : intV E v) :
-    a ∈ primeOf (prP φ) ↔ Valued.v (prP φ a) < 1 := by
-  refine ⟨fun h => ?_, fun h => Ideal.subset_span h⟩
-  induction h using Submodule.span_induction with
-  | mem x hx => exact hx
-  | zero => simp
-  | add x y _ _ hx hy =>
-    rw [Subring.coe_add, map_add]
-    exact lt_of_le_of_lt (Valuation.map_add _ _ _) (max_lt hx hy)
-  | smul c x _ hx =>
-    have hc : Valued.v (prP φ c) ≤ 1 := ((hφ.2.2 c).1 c.2).1
-    rw [smul_eq_mul, Subring.coe_mul, map_mul, map_mul]
-    exact mul_lt_one_of_nonneg_of_lt_one_right hc zero_le' hx
 
-theorem primeOf_prP_ne_top {σ : E →ₐ[F] E} (hφ : IsSplitting σ v φ) : primeOf (prP φ) ≠ ⊤ := by
-  rw [Ideal.ne_top_iff_one, mem_primeOf_prP φ hφ]
-  simp
 
 end Local
 

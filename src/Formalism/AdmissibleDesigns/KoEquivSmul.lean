@@ -37,7 +37,6 @@ def epsHom (e : ℕ) : G →* Matrix (Fin 1) (Fin 1) LL where
     simp [Formalism.MainNotions.N.epsTw, Matrix.mul_apply, mul_pow]
     ring
 
-theorem epsHom_apply (e : ℕ) (g : G) : epsHom PD (LL := LL) e g = Formalism.MainNotions.N.epsTw PD e g := rfl
 
 theorem matRep_eps (e : ℕ) (g : G) (v : Fin 1 → LL) :
     Formalism.MainNotions.N.matRep (epsHom PD (LL := LL) e) g v =
@@ -81,10 +80,6 @@ variable {PD}
       choose u hu using hv
       exact ⟨u, funext fun j => hu j⟩
 
-theorem twLat_V (hinj : Function.Injective (algebraMap O LL)) (ε' : G → O)
-    (hε : ∀ g, algebraMap O LL (ε' g) = algebraMap Qp LL (((PD.χ g)⁻¹ : Qpˣ) : Qp)) (e : ℕ)
-    (hcont : Continuous fun g => (algebraMap O LL (ε' g)) ^ e) :
-    (twLat hinj ε' hε e hcont).V = (Fin 1 → LL) := rfl
 
 theorem actD_twLat (hinj : Function.Injective (algebraMap O LL)) (ε' : G → O)
     (hε : ∀ g, algebraMap O LL (ε' g) = algebraMap Qp LL (((PD.χ g)⁻¹ : Qpˣ) : Qp)) (e : ℕ)
@@ -165,8 +160,6 @@ theorem koEquiv_smul (a : O') (x : KO O') : koEquiv σ eK heK (a • x) = σ a �
   show koTo σ eK heK (a • x) = σ a • koTo σ eK heK x
   exact (koTo σ eK heK).map_smulₛₗ a x
 
-theorem koEquiv_mk (x : FractionRing O') :
-    koEquiv σ eK heK (Submodule.Quotient.mk x) = Submodule.Quotient.mk (fun _ => eK x) := rfl
 
 end KO
 

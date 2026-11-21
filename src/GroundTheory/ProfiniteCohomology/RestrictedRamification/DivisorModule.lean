@@ -155,8 +155,6 @@ def divFunMap {B : Type} [AddCommGroup B] (g : A →+ B) : divFunRep φ A ⟶ di
       map_add' := fun f₁ f₂ => Subtype.ext (funext fun _ => funext fun _ => map_add g _ _) },
     fun _ => LinearMap.ext fun _ => rfl⟩
 
-theorem coe_divFunMap_hom_apply {B : Type} [AddCommGroup B] (g : A →+ B) (f : divFun φ A) :
-    (((divFunMap φ A g).hom f : divFun φ B) : I → G → B) = fun i x => g ((f : I → G → A) i x) := rfl
 
 abbrev ratToQZ : ℚ →+ QZ := QuotientAddGroup.mk' (AddSubgroup.zmultiples (1 : ℚ))
 

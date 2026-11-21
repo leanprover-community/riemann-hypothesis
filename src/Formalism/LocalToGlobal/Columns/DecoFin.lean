@@ -1422,19 +1422,6 @@ theorem DecoSet.smul_mem_upSet (a : UF E n × GLG E n SG) (P : ST) (q : 𝓞 E)
   · intro h
     exact key a _ _ h
 
-theorem DecoSet.smul_mem_dnSet (a : UF E n × GLG E n SG) (P : ST) (q : 𝓞 E)
-    (d d' : DecoSet E n ST SG) : a • d' ∈ (a • d).dnSet P q ↔ d' ∈ d.dnSet P q := by
-  have key : ∀ (b : UF E n × GLG E n SG) (e e' : DecoSet E n ST SG), Deco.IsDn P q e.1 e'.1 →
-      Deco.IsDn P q (b • e).1 (b • e').1 := by
-    intro b e e' h
-    rw [DecoSet.smul_val, DecoSet.smul_val]
-    exact h.act b.1.2 b.2
-  constructor
-  · intro h
-    have h2 := key a⁻¹ _ _ h
-    rwa [inv_smul_smul, inv_smul_smul] at h2
-  · intro h
-    exact key a _ _ h
 
 theorem DecoSet.dnSet_finite (d : DecoSet E n ST SG) (P : ST) (hne : conjPrime₂ P.1 ≠ P.1) (q : 𝓞 E) :
     (d.dnSet P q).Finite := by
@@ -2442,8 +2429,6 @@ theorem T_unif (hX : X.Ok) (hPr : Pr.Ok) (u : Pr.Word) (P : Pr.vT u) :
     (Pr.T u : 𝓞 X.E) ∈ P.1.asIdeal ∧ (Pr.T u : 𝓞 X.E) ∉ P.1.asIdeal ^ 2 :=
   ⟨T_mem hPr u P, T_notMem_sq hPr u P (hPr.piT_notMem_sq hX u P.2)⟩
 
-theorem upD_finite_nonempty (hX : X.Ok) (hPr : Pr.Ok) (u : Pr.Word) {n : ℕ} (P : Pr.vT u)
-    (d : ColDeco X Pr u n) : (upD u P d).Finite ∧ (upD u P d).Nonempty := ⟨DecoSet.upSet_finite d P _, DecoSet.upSet_nonempty d P (moveHyp_of_ok hPr u P) (T_unif hX hPr u P).1 (T_unif hX hPr u P).2⟩
 
 theorem piT_dvd_of_mem (hX : X.Ok) (hPr : Pr.Ok) (u : Pr.Word) (r : 𝓞 X.E)
     (hr : ∀ P : Pr.vT u, r ∈ P.1.asIdeal) : Pr.piT u ∣ r := by

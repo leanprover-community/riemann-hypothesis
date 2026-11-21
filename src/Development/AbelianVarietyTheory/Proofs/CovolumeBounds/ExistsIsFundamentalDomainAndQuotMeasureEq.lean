@@ -18,37 +18,7 @@ structure IsAEOrbitSection (G : Type*) {X : Type*} [SMul G X] [MeasurableSpace X
   protected ae_covers : ∀ᵐ x ∂μ, ∃ g : G, g • x ∈ D
   protected ae_unique : ∀ᵐ x ∂μ, x ∈ D → ∀ g : G, g • x ∈ D → g • x = x
 
-theorem isAEOrbitSection_sign_Ici : IsAEOrbitSection ℤˣ (Ici (0 : ℝ)) volume where
-  nullMeasurableSet := measurableSet_Ici.nullMeasurableSet
-  ae_covers := Eventually.of_forall fun x => by
-    rcases le_total 0 x with h | h
-    · exact ⟨1, by simpa using h⟩
-    · exact ⟨-1, by simpa using h⟩
-  ae_unique := Eventually.of_forall fun x hx g hg => by
-    rcases Int.units_eq_one_or g with rfl | rfl
-    · simp
-    · have h1 : x ≤ 0 := by simpa using hg
-      have : x = 0 := le_antisymm h1 hx
-      simp [this]
 
-theorem isAEAddOrbitSection_zmultiples_Ico :
-    IsAEAddOrbitSection (AddSubgroup.zmultiples (1 : ℝ)) (Ico (0 : ℝ) 1) volume where
-  nullMeasurableSet := measurableSet_Ico.nullMeasurableSet
-  ae_covers := Eventually.of_forall fun x =>
-    ⟨⟨(-⌊x⌋) • (1 : ℝ), AddSubgroup.zsmul_mem_zmultiples _ _⟩, by
-      have h1 := Int.floor_le x
-      have h2 := Int.lt_floor_add_one x
-      simp only [AddSubgroup.mk_vadd, vadd_eq_add, mem_Ico, zsmul_eq_mul, Int.cast_neg]
-      constructor <;> linarith⟩
-  ae_unique := Eventually.of_forall fun x hx g hg => by
-    obtain ⟨g, n, rfl⟩ := g
-    simp only [AddSubgroup.mk_vadd, vadd_eq_add, mem_Ico, zsmul_eq_mul, mul_one] at hg hx ⊢
-    have h1 : (n : ℝ) < 1 := by linarith [hg.2, hx.1]
-    have h2 : (-1 : ℝ) < n := by linarith [hg.1, hx.2]
-    have h1' : n < 1 := by exact_mod_cast h1
-    have h2' : -1 < n := by exact_mod_cast h2
-    have : n = 0 := by omega
-    simp [this]
 
 section Existence
 
@@ -526,16 +496,6 @@ theorem exists_isFundamentalDomain_of_surjective [ProperlyDiscontinuousSMul G X]
   · obtain ⟨g, rfl⟩ := hφ q
     simpa only [hact] using hfree g hq
 
-theorem exists_isFundamentalDomain_range_toPermHom [ProperlyDiscontinuousSMul G X] (μ : Measure X)
-    (hfree : ∀ g : G, (∃ x : X, g • x ≠ x) → μ {x | g • x = x} = 0) :
-    ∃ D : Set X, MeasurableSet D ∧ (∀ x, ∃ g : G, g • x ∈ D) ∧
-      (∀ x ∈ D, ∀ g : G, g • x ∈ D → g • x = x) ∧
-      IsFundamentalDomain (MulAction.toPermHom G X).range D μ := by
-  refine exists_isFundamentalDomain_of_surjective G (MulAction.toPermHom G X).rangeRestrict
-    (MonoidHom.rangeRestrict_surjective _) (fun _ _ => rfl) μ fun g hg => hfree g ?_
-  by_contra h
-  push Not at h
-  exact hg (Subtype.ext (Equiv.ext h))
 
 @[to_additive exists_isAddFundamentalDomain_and_addQuotMeasure_eq
 ]
@@ -661,18 +621,6 @@ theorem exists_isFundamentalDomain_and_quotMeasure_eq_subgroup_op (μ : Measure 
 
 end DiscreteSubgroup
 
-theorem properlyDiscontinuousSMul_of_discrete_of_properSMul {G X : Type*} [Group G]
-    [TopologicalSpace G] [IsTopologicalGroup G] [T2Space G] [MulAction G X] [TopologicalSpace X]
-    [T2Space X] [LocallyCompactSpace X] [ProperSMul G X] (Γ : Subgroup G) [DiscreteTopology Γ] :
-    ProperlyDiscontinuousSMul Γ X := by
-  have : IsClosed (Γ : Set G) := Subgroup.isClosed_of_discrete
-  have : ContinuousSMul G X := ProperSMul.toContinuousSMul
-  rw [properlyDiscontinuousSMul_iff_properSMul]
-  infer_instance
 
-theorem addQuotMeasure_zmultiples_one_univ :
-    addQuotMeasure (AddSubgroup.zmultiples (1 : ℝ)) (volume : Measure ℝ) univ = 1 := by
-  rw [isAEAddOrbitSection_zmultiples_Ico.addQuotMeasure_univ]
-  simp
 
 end GlobalTheory

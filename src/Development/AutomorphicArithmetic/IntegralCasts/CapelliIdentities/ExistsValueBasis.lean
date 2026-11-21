@@ -3,11 +3,348 @@ import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCptGen
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
-import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.FormallySmoothSurjectiveDerivation
-import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.FormallySmoothSectionStalk
-import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.OneLeftCongr
-import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.SpanLinearIndependentBase
 
+section
+open TensorProduct in
+private theorem UpperTheory.universal_derivation_surjective {A B : Type} [CommRing A] [IsLocalRing A] [CommRing B]
+    [Algebra A B] [Algebra B A] [IsScalarTower A B A]
+    [Algebra.FormallySmooth A B] [Algebra.EssFiniteType A B] :
+    ∃ (n : ℕ) (d : Derivation A B (Fin n → A)), Function.Surjective d ∧
+      ∀ (R : Type) [AddCommGroup R] [Module A R] [Module B R] [IsScalarTower B A R]
+        (δ : Derivation A B R), ∃ c : Fin n → R, ∀ b, δ b = ∑ i, d b i • c i := by
+  haveI : Module.Free A (A ⊗[B] Ω[B⁄A]) := Module.free_of_flat_of_isLocalRing
+  let e := Module.finBasis A (A ⊗[B] Ω[B⁄A])
+  let D0 : Derivation A B (A ⊗[B] Ω[B⁄A]) :=
+    (TensorProduct.mk B A Ω[B⁄A] 1).compDer (KaehlerDifferential.D A B)
+  have hD0 : ∀ b, D0 b = 1 ⊗ₜ KaehlerDifferential.D A B b := fun b => rfl
+  have hsurj : Function.Surjective D0 := by
+    have h1 : ∀ (w : Ω[B⁄A]) (a : A), a ⊗ₜ[B] w ∈ LinearMap.range D0.toLinearMap := by
+      intro w
+      have hw : w ∈ Submodule.span B (Set.range (KaehlerDifferential.D A B)) := by
+        rw [KaehlerDifferential.span_range_derivation]; trivial
+      induction hw using Submodule.span_induction with
+      | mem x hx =>
+        obtain ⟨b, rfl⟩ := hx
+        intro a
+        have : a ⊗ₜ[B] KaehlerDifferential.D A B b = a • D0 b := by
+          rw [hD0, TensorProduct.smul_tmul', smul_eq_mul, mul_one]
+        rw [this]
+        exact Submodule.smul_mem _ _ ⟨b, rfl⟩
+      | zero => intro a; simp
+      | add x y _ _ hx hy =>
+        intro a
+        rw [TensorProduct.tmul_add]
+        exact add_mem (hx a) (hy a)
+      | smul b x _ hx =>
+        intro a
+        rw [← TensorProduct.smul_tmul]
+        exact hx _
+    intro x
+    change x ∈ LinearMap.range D0.toLinearMap
+    induction x with
+    | zero => simp
+    | tmul a w => exact h1 w a
+    | add x y hx hy => exact add_mem hx hy
+  refine ⟨_, (e.equivFun.toLinearMap.restrictScalars B).compDer D0,
+    e.equivFun.surjective.comp hsurj, ?_⟩
+  intro R _ _ _ _ δ
+  haveI : IsScalarTower A B R := ⟨fun a b r => by
+    rw [← algebraMap_smul A (a • b) r, ← algebraMap_smul A b r, ← mul_smul]
+    congr 1
+    rw [Algebra.algebraMap_eq_smul_one, smul_assoc, ← Algebra.algebraMap_eq_smul_one, smul_eq_mul]⟩
+  let f : A ⊗[B] Ω[B⁄A] →ₗ[A] R := δ.liftKaehlerDifferential.liftBaseChange A
+  refine ⟨fun i => f (e i), fun b => ?_⟩
+  have h2 : δ b = f (D0 b) := by
+    simp [f, hD0]
+  rw [h2]
+  conv_lhs => rw [← e.sum_equivFun (D0 b), map_sum]
+  simp only [map_smul]
+  rfl
+
+theorem UpperTheory.formally_smooth_surjective_derivation :
+    ∀ {A B : Type} [CommRing A] [IsLocalRing A] [CommRing B] (α : A →+* B) (σ : B →+* A),
+        σ.comp α = RingHom.id A → α.FormallySmooth → α.EssFiniteType →
+          ∃ (n : ℕ) (d : B → Fin n → A), Function.Surjective d ∧
+            ∀ (R : Type) [CommRing R] (φ : A →+* R),
+              (∀ c : Fin n → R, ∃ g : B →+* DualNumber R,
+                (∀ a, g (α a) = TrivSqZeroExt.inl (φ a)) ∧ (∀ b, (g b).fst = φ (σ b)) ∧
+                  ∀ b, (g b).snd = ∑ i, φ (d b i) * c i) ∧
+              ∀ g : B →+* DualNumber R, (∀ a, g (α a) = TrivSqZeroExt.inl (φ a)) → (∀ b, (g b).fst = φ (σ b)) →
+                ∃ c : Fin n → R, ∀ b, (g b).snd = ∑ i, φ (d b i) * c i := by
+  intro A B _ _ _ α σ hσ hfs hft
+  have hσ' : ∀ a, σ (α a) = a := fun a => RingHom.congr_fun hσ a
+  letI : Algebra A B := α.toAlgebra
+  letI : Algebra B A := σ.toAlgebra
+  haveI : IsScalarTower A B A := IsScalarTower.of_algebraMap_eq fun a => (hσ' a).symm
+  haveI : Algebra.FormallySmooth A B := hfs
+  haveI : Algebra.EssFiniteType A B := hft
+  obtain ⟨n, d, hd, H⟩ := UpperTheory.universal_derivation_surjective (A := A) (B := B)
+  have hmul : ∀ x y i, d (x * y) i = σ x * d y i + σ y * d x i := fun x y i => by
+    rw [d.leibniz]; rfl
+  have hα : ∀ a, d (α a) = 0 := fun a => d.map_algebraMap a
+  refine ⟨n, d, hd, fun R _ φ => ⟨fun c => ?_, fun g hg1 hg2 => ?_⟩⟩
+  · refine ⟨{ toFun := fun b => TrivSqZeroExt.inl (φ (σ b)) +
+                TrivSqZeroExt.inr (∑ i, φ (d b i) * c i)
+              map_one' := ?_, map_mul' := ?_, map_zero' := ?_, map_add' := ?_ }, ?_, ?_, ?_⟩
+    · ext <;> simp
+    · intro x y
+      ext
+      · simp
+      · simp [hmul, -Derivation.leibniz, add_mul, Finset.sum_add_distrib, Finset.mul_sum,
+          Finset.sum_mul, mul_assoc, mul_comm, mul_left_comm, mul_add, add_comm]
+    · ext <;> simp
+    · intro x y
+      ext <;> simp [add_mul, Finset.sum_add_distrib]
+    · intro a
+      simp [hα, hσ']
+    · intro b
+      simp
+    · intro b
+      simp
+  · letI : Algebra A R := φ.toAlgebra
+    letI : Algebra B R := (φ.comp σ).toAlgebra
+    haveI : IsScalarTower B A R := IsScalarTower.of_algebraMap_eq fun b => rfl
+    let δ : Derivation A B R := Derivation.mk'
+      { toFun := fun b => (g b).snd
+        map_add' := fun x y => by simp
+        map_smul' := fun a b => by
+          change (g (α a * b)).snd = φ a * (g b).snd
+          simp [hg1] }
+      (fun x y => by
+        change (g (x * y)).snd = φ (σ x) * (g y).snd + φ (σ y) * (g x).snd
+        simp [hg2, mul_comm])
+    exact H R δ
+end
+
+section
+private lemma UpperTheory.isLocalHom_of_square_zero {A B : Type*} [CommRing A] [CommRing B] (π : A →+* B)
+    (hs : Function.Surjective π) (hk : ∀ x, π x = 0 → x * x = 0) : IsLocalHom π := by
+  refine ⟨fun a ha => ?_⟩
+  obtain ⟨c, hc⟩ := ha.exists_right_inv
+  obtain ⟨b, rfl⟩ := hs c
+  have h0 : π (a * b - 1) = 0 := by rw [map_sub, map_mul, hc, map_one, sub_self]
+  have hn : IsNilpotent (a * b - 1) := ⟨2, by rw [pow_two]; exact hk _ h0⟩
+  have hu : IsUnit (a * b) := by simpa using hn.isUnit_add_one
+  exact isUnit_of_mul_isUnit_left hu
+
+theorem UpperTheory.formally_smooth_section_stalk :
+    open AlgebraicGeometry CategoryTheory in
+        ∀ {X Y : Scheme.{0}} (f : Y ⟶ X) [Smooth f] (s : X ⟶ Y), s ≫ f = 𝟙 X → ∀ p : X,
+          ∃ (B : CommRingCat.{0}) (α : X.presheaf.stalk p ⟶ B) (σ : B ⟶ X.presheaf.stalk p) (ι : Spec B ⟶ Y),
+            α.hom.FormallySmooth ∧ α.hom.EssFiniteType ∧ Mono ι ∧
+              ι ≫ f = Spec.map α ≫ X.fromSpecStalk p ∧ Spec.map σ ≫ ι = X.fromSpecStalk p ≫ s ∧
+              ∀ (R R' : CommRingCat.{0}) [IsLocalRing R] (π : R' ⟶ R) (φ : X.presheaf.stalk p ⟶ R) (v : Spec R' ⟶ Y),
+                Function.Surjective π.hom → (∀ x, π.hom x = 0 → x * x = 0) →
+                  Spec.map π ≫ v = Spec.map φ ≫ X.fromSpecStalk p ≫ s → ∃ g : B ⟶ R', v = Spec.map g ≫ ι := by
+  open AlgebraicGeometry CategoryTheory in
+  intro X Y f _ s hs p
+  have hp : f (s p) = p := by
+    rw [← Scheme.Hom.comp_apply, hs]; rfl
+  have hi : Inseparable p (f (s p)) := Inseparable.of_eq hp.symm
+  have hfs : (f.stalkMap (s p)).hom.FormallySmooth := by
+    rw [← Scheme.Hom.mem_smoothLocus, f.smoothLocus_eq_top]; trivial
+  have hft : (f.stalkMap (s p)).hom.EssFiniteType := LocallyOfFiniteType.stalkMap f (s p)
+  refine ⟨Y.presheaf.stalk (s p), (X.presheaf.stalkCongr hi).hom ≫ f.stalkMap (s p),
+    s.stalkMap p, Y.fromSpecStalk (s p), ?_, ?_, inferInstance, ?_, ?_, ?_⟩
+  · exact (RingHom.FormallySmooth.respectsIso.cancel_left_isIso _ _).mpr hfs
+  · exact (RingHom.EssFiniteType.respectsIso.cancel_left_isIso _ _).mpr hft
+  · have h : Spec.map (X.presheaf.stalkCongr hi).hom ≫ X.fromSpecStalk p =
+        X.fromSpecStalk (f (s p)) :=
+      Scheme.SpecMap_stalkSpecializes_fromSpecStalk hi.specializes'
+    rw [Spec.map_comp, Category.assoc, h, Scheme.SpecMap_stalkMap_fromSpecStalk]
+  · exact Scheme.SpecMap_stalkMap_fromSpecStalk s
+  · intro R R' _ π φ v hπ hk hv
+    haveI : IsLocalHom π.hom := UpperTheory.isLocalHom_of_square_zero π.hom hπ hk
+    haveI : IsLocalRing R' := π.hom.domain_isLocalRing
+    have hsp : v (IsLocalRing.closedPoint R') ⤳ s p := by
+      have h1 : v (IsLocalRing.closedPoint R') =
+          s (X.fromSpecStalk p (Spec.map φ (IsLocalRing.closedPoint R))) := by
+        have h3 : v (Spec.map π (IsLocalRing.closedPoint R)) =
+            s (X.fromSpecStalk p (Spec.map φ (IsLocalRing.closedPoint R))) :=
+          congrArg (fun k : Spec R ⟶ Y => k (IsLocalRing.closedPoint R)) hv
+        exact (congrArg v (Spec_closedPoint (f := π)).symm).trans h3
+      have h2 : X.fromSpecStalk p (Spec.map φ (IsLocalRing.closedPoint R)) ⤳ p := by
+        have : X.fromSpecStalk p (Spec.map φ (IsLocalRing.closedPoint R)) ∈
+            Set.range (X.fromSpecStalk p) := ⟨_, rfl⟩
+        rwa [Scheme.range_fromSpecStalk] at this
+      rw [h1]
+      exact h2.map s.continuous
+    refine ⟨Y.presheaf.stalkSpecializes hsp ≫ Scheme.stalkClosedPointTo v, ?_⟩
+    rw [Spec.map_comp, Category.assoc, Scheme.SpecMap_stalkSpecializes_fromSpecStalk,
+      Scheme.Spec_stalkClosedPointTo_fromSpecStalk]
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
+private noncomputable def UpperTheory.specMapOverOfAlgHom {S : Scheme.{0}} {R : Type} [CommRing R]
+    (x : Spec (CommRingCat.of R) ⟶ S) {A B : Type} [CommRing A] [CommRing B] [Algebra R A]
+    [Algebra R B] (f : A →ₐ[R] B) :
+    Over.mk (Spec.map (CommRingCat.ofHom (algebraMap R B)) ≫ x) ⟶
+      Over.mk (Spec.map (CommRingCat.ofHom (algebraMap R A)) ≫ x) :=
+  Over.homMk (Spec.map (CommRingCat.ofHom f.toRingHom)) (by
+    change Spec.map _ ≫ Spec.map _ ≫ x = Spec.map _ ≫ x
+    rw [← Category.assoc, ← Spec.map_comp, ← CommRingCat.ofHom_comp]
+    congr 3
+    exact f.comp_algebraMap)
+
+open AlgebraicGeometry CategoryTheory in
+private theorem UpperTheory.specMapAlg_comp {S : Scheme.{0}} {R : Type} [CommRing R]
+    (x : Spec (CommRingCat.of R) ⟶ S) {A B C : Type} [CommRing A] [CommRing B] [CommRing C]
+    [Algebra R A] [Algebra R B] [Algebra R C] (f : A →ₐ[R] B) (g : B →ₐ[R] C) :
+    UpperTheory.specMapOverOfAlgHom x g ≫ UpperTheory.specMapOverOfAlgHom x f = UpperTheory.specMapOverOfAlgHom x (g.comp f) := by
+  apply Over.OverMorphism.ext
+  change Spec.map _ ≫ Spec.map _ = Spec.map _
+  rw [← Spec.map_comp, ← CommRingCat.ofHom_comp]
+  rfl
+
+open AlgebraicGeometry CategoryTheory in
+private theorem UpperTheory.specMap_id {S : Scheme.{0}} {R : Type} [CommRing R]
+    (x : Spec (CommRingCat.of R) ⟶ S) {A : Type} [CommRing A] [Algebra R A] :
+    UpperTheory.specMapOverOfAlgHom x (AlgHom.id R A) = 𝟙 _ := by
+  apply Over.OverMorphism.ext
+  exact Spec.map_id _
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
+private theorem UpperTheory.grpObj_one_left_congr {S : Scheme.{0}} (G : Over S) [GrpObj G]
+    {X : Scheme.{0}} {x y : X ⟶ S} (h : x = y) :
+    (1 : Over.mk x ⟶ G).left = (1 : Over.mk y ⟶ G).left := by
+  subst h
+  rfl
+
+theorem UpperTheory.tangent_left_one :
+    open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
+        ∀ {S : Scheme.{0}} (G : Over S) [GrpObj G] {R : Type} [CommRing R] (x : Spec (CommRingCat.of R) ⟶ S)
+          (v w : Over.mk (Spec.map (CommRingCat.ofHom (algebraMap R (DualNumber R))) ≫ x) ⟶ G),
+          Spec.map (CommRingCat.ofHom (TrivSqZeroExt.fstHom R R R).toRingHom) ≫ v.left = (1 : Over.mk x ⟶ G).left →
+          Spec.map (CommRingCat.ofHom (TrivSqZeroExt.fstHom R R R).toRingHom) ≫ w.left = (1 : Over.mk x ⟶ G).left →
+            ∃ u : Spec (CommRingCat.of (TrivSqZeroExt R (R × R))) ⟶ G.left,
+              Spec.map (CommRingCat.ofHom (TrivSqZeroExt.fstHom R R (R × R)).toRingHom) ≫ u = (1 : Over.mk x ⟶ G).left ∧
+              Spec.map (CommRingCat.ofHom (TrivSqZeroExt.map (LinearMap.fst R R R)).toRingHom) ≫ u = v.left ∧
+              Spec.map (CommRingCat.ofHom (TrivSqZeroExt.map (LinearMap.snd R R R)).toRingHom) ≫ u = w.left ∧
+              Spec.map (CommRingCat.ofHom (TrivSqZeroExt.map (LinearMap.fst R R R + LinearMap.snd R R R)).toRingHom) ≫ u
+                = (v * w).left := by
+  open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
+  · intro S G _ R _ x v w hv hw
+    have hx : Spec.map (CommRingCat.ofHom (algebraMap R R)) ≫ x = x := by
+      have : Spec.map (CommRingCat.ofHom (algebraMap R R)) = 𝟙 _ := Spec.map_id _
+      rw [this, Category.id_comp]
+    have h1 := UpperTheory.grpObj_one_left_congr G hx
+    have hv' : UpperTheory.specMapOverOfAlgHom x (TrivSqZeroExt.fstHom R R R) ≫ v = 1 :=
+      Over.OverMorphism.ext (hv.trans h1.symm)
+    have hw' : UpperTheory.specMapOverOfAlgHom x (TrivSqZeroExt.fstHom R R R) ≫ w = 1 :=
+      Over.OverMorphism.ext (hw.trans h1.symm)
+    have e0 : (TrivSqZeroExt.map (0 : R →ₗ[R] R)) =
+        (Algebra.ofId R (DualNumber R)).comp (TrivSqZeroExt.fstHom R R R) := by
+      apply AlgHom.ext
+      intro a
+      ext <;> simp [TrivSqZeroExt.algebraMap_eq_inl]
+    have hv0 : UpperTheory.specMapOverOfAlgHom x (TrivSqZeroExt.map (0 : R →ₗ[R] R)) ≫ v = 1 := by
+      rw [e0, ← UpperTheory.specMapAlg_comp, Category.assoc, hv', MonObj.comp_one]
+    have hw0 : UpperTheory.specMapOverOfAlgHom x (TrivSqZeroExt.map (0 : R →ₗ[R] R)) ≫ w = 1 := by
+      rw [e0, ← UpperTheory.specMapAlg_comp, Category.assoc, hw', MonObj.comp_one]
+    let U : Over.mk (Spec.map (CommRingCat.ofHom (algebraMap R (TrivSqZeroExt R (R × R)))) ≫ x) ⟶ G :=
+      (UpperTheory.specMapOverOfAlgHom x (TrivSqZeroExt.map (LinearMap.inl R R R)) ≫ v) *
+        (UpperTheory.specMapOverOfAlgHom x (TrivSqZeroExt.map (LinearMap.inr R R R)) ≫ w)
+    have key : ∀ f : (R × R) →ₗ[R] R, UpperTheory.specMapOverOfAlgHom x (TrivSqZeroExt.map f) ≫ U =
+        (UpperTheory.specMapOverOfAlgHom x (TrivSqZeroExt.map (f ∘ₗ LinearMap.inl R R R)) ≫ v) *
+          (UpperTheory.specMapOverOfAlgHom x (TrivSqZeroExt.map (f ∘ₗ LinearMap.inr R R R)) ≫ w) := by
+      intro f
+      simp only [U, MonObj.comp_mul, ← Category.assoc, UpperTheory.specMapAlg_comp,
+        TrivSqZeroExt.map_comp_map]
+    have k0 : UpperTheory.specMapOverOfAlgHom x (TrivSqZeroExt.fstHom R R (R × R)) ≫ U = 1 := by
+      simp only [U, MonObj.comp_mul, ← Category.assoc, UpperTheory.specMapAlg_comp,
+        TrivSqZeroExt.fstHom_comp_map]
+      rw [hv', hw', _root_.mul_one]
+    have k1 : UpperTheory.specMapOverOfAlgHom x (TrivSqZeroExt.map (LinearMap.fst R R R)) ≫ U = v := by
+      rw [key, LinearMap.fst_comp_inl, LinearMap.fst_comp_inr, hw0, TrivSqZeroExt.map_id,
+        UpperTheory.specMap_id, Category.id_comp, _root_.mul_one]
+    have k2 : UpperTheory.specMapOverOfAlgHom x (TrivSqZeroExt.map (LinearMap.snd R R R)) ≫ U = w := by
+      rw [key, LinearMap.snd_comp_inl, LinearMap.snd_comp_inr, hv0, TrivSqZeroExt.map_id,
+        UpperTheory.specMap_id, Category.id_comp, _root_.one_mul]
+    have k3 : UpperTheory.specMapOverOfAlgHom x (TrivSqZeroExt.map (LinearMap.fst R R R + LinearMap.snd R R R)) ≫ U
+        = v * w := by
+      rw [key, LinearMap.add_comp, LinearMap.add_comp, LinearMap.fst_comp_inl,
+        LinearMap.fst_comp_inr, LinearMap.snd_comp_inl, LinearMap.snd_comp_inr, add_zero, zero_add,
+        TrivSqZeroExt.map_id, UpperTheory.specMap_id, Category.id_comp, Category.id_comp]
+    exact ⟨U.left, (congrArg CommaMorphism.left k0).trans h1, congrArg CommaMorphism.left k1,
+      congrArg CommaMorphism.left k2, congrArg CommaMorphism.left k3⟩
+end
+
+section
+theorem UpperTheory.span_linear_independent_base :
+    ∀ {A Ω C E V I : Type} [CommRing A] [Field Ω] [Field C] [AddCommGroup E] [Module Ω E] [AddCommGroup V]
+          [Module C V] [Fintype I] {n : ℕ} (φ : A →+* Ω) (ψ : A →+* C) (κ : E ≃ₗ[Ω] (Fin n → Ω)) (κ' : V ≃ₗ[C] (Fin n → C))
+          (F : I → E), Function.Injective φ → LinearIndependent Ω F →
+          Submodule.span (↥φ.range) {e : E | ∃ a : Fin n → A, κ e = fun i => φ (a i)} =
+            Submodule.span (↥φ.range) (Set.range F) →
+          ∃ y : Module.Basis I C V, ∀ j, ∃ a : Fin n → A, (κ (F j) = fun i => φ (a i)) ∧ κ' (y j) = fun i => ψ (a i) := by
+  intro A Ω C E V I _ _ _ _ _ _ _ _ n φ ψ κ κ' F hφ hF hspan
+  classical
+  have hlat : ∀ e ∈ Submodule.span (↥φ.range) {e : E | ∃ a : Fin n → A, κ e = fun i => φ (a i)},
+      ∃ a : Fin n → A, κ e = fun i => φ (a i) := by
+    intro e he
+    induction he using Submodule.span_induction with
+    | mem x hx => exact hx
+    | zero => exact ⟨0, by ext i; simp⟩
+    | add x y _ _ hx hy =>
+      obtain ⟨a, ha⟩ := hx
+      obtain ⟨b, hb⟩ := hy
+      exact ⟨a + b, by ext i; simp [ha, hb]⟩
+    | smul c x _ hx =>
+      obtain ⟨a, ha⟩ := hx
+      obtain ⟨c, r, rfl⟩ := c
+      refine ⟨r • a, ?_⟩
+      change κ (φ r • x) = _
+      ext i
+      simp [ha]
+  have ha : ∀ j, ∃ a : Fin n → A, κ (F j) = fun i => φ (a i) := fun j =>
+    hlat _ (hspan ▸ Submodule.subset_span ⟨j, rfl⟩)
+  choose a ha using ha
+  have hb : ∀ k : Fin n, ∃ b : I → A, ∀ i, ∑ j, a j i * b j = (1 : Matrix (Fin n) (Fin n) A) i k := by
+    intro k
+    have hk : κ.symm (fun i => φ ((1 : Matrix (Fin n) (Fin n) A) i k)) ∈
+        Submodule.span (↥φ.range) (Set.range F) := by
+      rw [← hspan]
+      exact Submodule.subset_span ⟨fun i => (1 : Matrix (Fin n) (Fin n) A) i k, by simp⟩
+    obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun _).1 hk
+    choose b hb using fun j => (c j).2
+    refine ⟨b, fun i => hφ ?_⟩
+    have h1 : ∑ j, φ (b j) • F j = κ.symm (fun i => φ ((1 : Matrix (Fin n) (Fin n) A) i k)) := by
+      rw [← hc]
+      exact Finset.sum_congr rfl fun j _ => by rw [hb j]; rfl
+    have h2 := congrFun (congrArg κ h1) i
+    rw [LinearEquiv.apply_symm_apply] at h2
+    rw [← h2]
+    simp [ha, mul_comm]
+  choose b hb using hb
+  set P : Matrix (Fin n) I A := Matrix.of fun i j => a j i with hP
+  set Q : Matrix I (Fin n) A := Matrix.of fun j k => b k j with hQ
+  have hPQ : P * Q = 1 := by
+    ext i k
+    simpa [Matrix.mul_apply, hP, hQ] using hb k i
+  have hQP : Q * P = 1 := by
+    have hD : P * (Q * P - 1) = 0 := by
+      rw [Matrix.mul_sub, ← Matrix.mul_assoc, hPQ, Matrix.one_mul, Matrix.mul_one, sub_self]
+    rw [← sub_eq_zero]
+    generalize Q * P - 1 = D at hD
+    ext l j
+    have h0 : ∑ l, φ (D l j) • F l = 0 := by
+      apply κ.injective
+      ext i
+      have h3 := congrArg φ (congrFun (congrFun hD i) j)
+      simpa [Matrix.mul_apply, hP, ha, mul_comm] using h3
+    apply hφ
+    simpa using Fintype.linearIndependent_iff.1 hF _ h0 l
+  have h1 : Q.map ψ * P.map ψ = 1 := by
+    rw [← Matrix.map_mul, hQP, Matrix.map_one _ (map_zero ψ) (map_one ψ)]
+  have h2 : P.map ψ * Q.map ψ = 1 := by
+    rw [← Matrix.map_mul, hPQ, Matrix.map_one _ (map_zero ψ) (map_one ψ)]
+  refine ⟨(Pi.basisFun C I).map ((Matrix.toLin'OfInv h1 h2).trans κ'.symm), fun j => ⟨a j, ha j, ?_⟩⟩
+  ext i
+  simp [Matrix.toLin'OfInv, hP]
+end
+
+section
 namespace UpperTheory.Reformulated.B.Ga4
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj GlobalTheory.CompanionTheory.Ar
@@ -261,3 +598,4 @@ theorem UpperTheory.Reformulated.B.Ga4.exists_value_basis :
   have h1 := hκ' (y j)
   rw [ha'] at h1
   exact ⟨h, v, hv, C.rep_uniq h1 (C.rep_val ψ hr)⟩
+end

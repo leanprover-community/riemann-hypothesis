@@ -201,13 +201,6 @@ theorem isCsdGL_const : IsCsdGL (Submodule.span ℂ {oneFn E a}) := by
   rw [h, ← hc, map_smul, map_smul, act_oneFn, act_oneFn]
   cases o <;> rfl
 
-theorem isDiscrete_const (h : ∀ c : ℂ, IsSqInt fun _ : GA E a => c * 1) :
-    IsDiscrete (Submodule.span ℂ {oneFn E a}) :=
-  ⟨fun _ => isAutForm_const, fun φ hφ => by
-      obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.1 hφ
-      exact h c,
-    isStable_const, fun e => oneFn_ne_zero (Submodule.span_singleton_eq_bot.1 e),
-    fun W hW _ => (nonzero_span_atom _ oneFn_ne_zero).le_iff.1 hW⟩
 
 theorem cuspSub_iff (P : CuspSub E a) :
     (IsCsdGL P.V ↔ P.IsCsd) ∧ (∀ w σ, IsLocCompGL P.V w σ ↔ P.IsLocComp w σ) ∧

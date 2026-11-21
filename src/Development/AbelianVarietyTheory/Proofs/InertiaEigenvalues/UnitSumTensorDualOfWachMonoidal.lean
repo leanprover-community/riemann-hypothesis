@@ -162,8 +162,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {PD : PeriodData G Qp K₀ K B BdR} {LL O : Type} [Field LL] [Algebra Qp LL]
     [CommRing O] [Algebra O LL] [TopologicalSpace LL] {v : AddValuation LL (WithTop ℚ)} {n : ℕ}
 
-theorem isSumLat_iff {T T' T'' : LocLat G Qp LL O} (i : LatHom T.L T''.L) (i' : LatHom T'.L T''.L) :
-    UnitDualParts.IsSumLat i i' ↔ TensorLatticeUnitPart.IsSumLat i i' := Iff.rfl
 
 theorem isTensorLat_curry {T T' T'' : LocLat G Qp LL O} (m : ↥T.L.T ⊗[O] ↥T'.L.T ≃ₗ[O] ↥T''.L.T)
     (hm : UnitDualParts.IsTensorLat m) :
@@ -198,90 +196,8 @@ def DualLatCrys : Prop :=
   ∀ (T T' : LocLat G Qp LL O) (Pr : T.V →ₗ[LL] T'.V →ₗ[LL] LL),
     IsCrys PD T.ρ → IsDualLat T.L T'.L Pr → IsCrys PD T'.ρ
 
-theorem isBaseChange_lat [IsFractionRing O LL] (T : LocLat G Qp LL O) :
-    IsBaseChange LL T.L.T.subtype := by
-  rw [← isLocalizedModule_iff_isBaseChange (nonZeroDivisors O) LL]
-  refine ⟨fun s => ?_, fun y => ?_, fun {x y} h => ⟨1, by rw [Subtype.ext h]⟩⟩
-  · have := (IsLocalization.map_units LL s).map (algebraMap LL (Module.End LL T.V))
-    rw [Module.End.isUnit_iff] at this ⊢
-    convert this using 1
-    ext x
-    simp
-  · have hy : y ∈ Submodule.span LL (T.L.T : Set T.V) := by rw [T.L.span]; trivial
-    have : ∃ s : nonZeroDivisors O, (s : O) • y ∈ T.L.T := by
-      induction hy using Submodule.span_induction with
-      | mem x hx => exact ⟨1, by simpa using hx⟩
-      | zero => exact ⟨1, by simp⟩
-      | add x y _ _ hx hy =>
-        obtain ⟨s, hs⟩ := hx
-        obtain ⟨t, ht⟩ := hy
-        refine ⟨s * t, ?_⟩
-        rw [smul_add, Submonoid.coe_mul]
-        refine T.L.T.add_mem ?_ ?_
-        · rw [mul_comm, mul_smul]; exact T.L.T.smul_mem _ hs
-        · rw [mul_smul]; exact T.L.T.smul_mem _ ht
-      | smul c x _ hx =>
-        obtain ⟨s, hs⟩ := hx
-        obtain ⟨⟨a, t⟩, hc⟩ := IsLocalization.surj (nonZeroDivisors O) c
-        refine ⟨s * t, ?_⟩
-        have : ((s * t : nonZeroDivisors O) : O) • c • x = a • (s : O) • x := by
-          rw [← algebraMap_smul LL a, ← algebraMap_smul LL (s : O),
-            ← algebraMap_smul LL ((s * t : nonZeroDivisors O) : O), smul_smul, smul_smul,
-            Submonoid.coe_mul, map_mul]
-          simp only at hc
-          rw [← hc]
-          congr 1
-          ring
-        rw [this]
-        exact T.L.T.smul_mem _ hs
-    obtain ⟨s, hs⟩ := this
-    exact ⟨(⟨_, hs⟩, s), rfl⟩
 
-theorem tensorLatCrys_of [IsFractionRing O LL] (h : CrystallineSubrepresentation.TensorCrys PD LL) :
-    TensorLatCrys PD LL O := by
-  intro T T' T'' b hT hT' hb
-  let e : T.V ⊗[LL] T'.V ≃ₗ[LL] T''.V :=
-    (TensorProduct.congr (isBaseChange_lat T).equiv.symm (isBaseChange_lat T').equiv.symm).trans
-      ((AlgebraTensorModule.distribBaseChange O LL ↥T.L.T ↥T'.L.T).symm.trans
-        (((LinearEquiv.ofBijective (TensorProduct.lift b) hb.1).baseChange O LL _ _).trans
-          (isBaseChange_lat T'').equiv))
-  have he : ∀ (x : ↥T.L.T) (y : ↥T'.L.T), e ((x : T.V) ⊗ₜ[LL] (y : T'.V)) = (b x y : T''.V) := by
-    intro x y
-    have hx : (isBaseChange_lat T).equiv.symm (x : T.V) = 1 ⊗ₜ[O] x :=
-      (isBaseChange_lat T).equiv_symm_apply x
-    have hy : (isBaseChange_lat T').equiv.symm (y : T'.V) = 1 ⊗ₜ[O] y :=
-      (isBaseChange_lat T').equiv_symm_apply y
-    simp [e, hx, hy, IsBaseChange.equiv_tmul]
-  refine isCrys_of_equiv PD e (fun g z => ?_) (h T.V T.ρ T'.V T'.ρ hT hT')
-  have key : TensorProduct.curry (e.toLinearMap.comp ((T.ρ.tprod T'.ρ) g)) =
-      TensorProduct.curry ((T''.ρ g).comp e.toLinearMap) := by
-    refine LinearMap.ext_on T.L.span fun x hx => LinearMap.ext_on T'.L.span fun y hy => ?_
-    have h1 := he (T.actT g ⟨x, hx⟩) (T'.actT g ⟨y, hy⟩)
-    have h2 := he ⟨x, hx⟩ ⟨y, hy⟩
-    rw [hb.2] at h1
-    change e (T.ρ g x ⊗ₜ[LL] T'.ρ g y) = T''.ρ g (e (x ⊗ₜ[LL] y))
-    rw [h2]
-    exact h1
-  exact LinearMap.congr_fun (TensorProduct.curry_injective key) z
 
-theorem dualLatCrys_of (h : CrystallineSubrepresentation.DualCrys PD LL) : DualLatCrys PD LL O := by
-  rintro T T' Pr hT ⟨hG, -, h2, hr, -⟩
-  have hinj : Function.Injective Pr.flip := by
-    rw [injective_iff_map_eq_zero]
-    intro y hy
-    exact h2 y fun x => LinearMap.congr_fun hy x
-  have hbij : Function.Bijective Pr.flip :=
-    ⟨hinj, (LinearMap.injective_iff_surjective_of_finrank_eq_finrank
-      (by rw [← hr]; exact (Subspace.dual_finrank_eq (K := LL) (V := T.V)).symm)).mp hinj⟩
-  let e : T'.V ≃ₗ[LL] Module.Dual LL T.V := LinearEquiv.ofBijective Pr.flip hbij
-  refine isCrys_of_equiv PD e.symm (fun g f => ?_) (h T.V T.ρ hT)
-  obtain ⟨y, rfl⟩ := e.surjective f
-  apply e.injective
-  rw [e.apply_symm_apply, e.symm_apply_apply]
-  ext x
-  change Pr (T.ρ g⁻¹ x) y = Pr x (T'.ρ g y)
-  rw [← hG g]
-  simp
 
 variable {W : LocWach PD LL O v n} {RA RW : Type} [CommRing RA] [CommRing RW] [Algebra O RA]
     [Algebra O RW] {inclR : RA →ₐ[O] RW} {φR : RW →ₐ[O] RW} {gR : G → (RW →ₐ[O] RW)} {πA : RA}
@@ -415,36 +331,10 @@ def TensorDualCrys : Prop :=
   ∀ (K : FinExt l) (s : ℕ) (LL : FinExt l), Good K s LL →
     TensorLatCrys (P.PD K) ↥LL.1 ↥(OL LL) ∧ DualLatCrys (P.PD K) ↥LL.1 ↥(OL LL)
 
-theorem tensorDualCrys_of (hT : CrystallineSubrepresentation.LocTensorCrys l P) (hD : CrystallineSubrepresentation.LocDualCrys l P) :
-    TensorDualCrys l P := fun K _ LL _ => by
-  obtain ⟨_, -, -, -, -, -, hF⟩ := GlobalTheory.Per.integers_completeDVR l LL
-  exact ⟨tensorLatCrys_of (hT K LL), dualLatCrys_of (hD K LL)⟩
 
-theorem unitPart_iff : UnitDualParts.UnitPart l P AI H F ↔ TensorLatticeUnitPart.UnitPart l P AI H F := Iff.rfl
 
-theorem sumPart_iff : UnitDualParts.SumPart l P H ↔ TensorLatticeUnitPart.SumPart l P H :=
-  ⟨fun h K s LL hg => sum_iff.mp (h K s LL hg), fun h K s LL hg => sum_iff.mpr (h K s LL hg)⟩
 
-theorem wachMonoidal_iff :
-    TensorLatticeUnitPart.WachMonoidal l P AI H F ↔ UnitDualParts.UnitSumTensorDual l P AI H F ∧ TensorDualCrys l P := by
-  constructor
-  · rintro ⟨h1, h2, h3, h4⟩
-    exact ⟨⟨h1, (sumPart_iff l P H).mpr h2,
-      fun K s LL hg => ((tensor_iff _).mp (h3 K s LL hg)).1,
-      fun K s LL hg => ((dual_iff _).mp (h4 K s LL hg)).1⟩,
-      fun K s LL hg => ⟨((tensor_iff _).mp (h3 K s LL hg)).2, ((dual_iff _).mp (h4 K s LL hg)).2⟩⟩
-  · rintro ⟨⟨h1, h2, h3, h4⟩, hc⟩
-    exact ⟨h1, (sumPart_iff l P H).mp h2,
-      fun K s LL hg => (tensor_iff _).mpr ⟨h3 K s LL hg, (hc K s LL hg).1⟩,
-      fun K s LL hg => (dual_iff _).mpr ⟨h4 K s LL hg, (hc K s LL hg).2⟩⟩
 
-theorem unitSumTensorDual_of_wachMonoidal (h : TensorLatticeUnitPart.WachMonoidal l P AI H F) :
-    UnitDualParts.UnitSumTensorDual l P AI H F :=
-  ((wachMonoidal_iff l P AI H F).mp h).1
 
-theorem equiv_of_stability (hT : CrystallineSubrepresentation.LocTensorCrys l P) (hD : CrystallineSubrepresentation.LocDualCrys l P) :
-    UnitDualParts.UnitSumTensorDual l P AI H F ↔ TensorLatticeUnitPart.WachMonoidal l P AI H F :=
-  ⟨fun h => (wachMonoidal_iff l P AI H F).mpr ⟨h, tensorDualCrys_of l P hT hD⟩,
-    unitSumTensorDual_of_wachMonoidal l P AI H F⟩
 
 end GlobalTheory.Cmp.WachMonoidal

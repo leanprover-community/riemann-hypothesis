@@ -130,11 +130,6 @@ def fixingOfAlgHomMulEquiv : fixingOfAlgHom j ≃*
         (τ.1 ((closureEquivOfAlgHom j).symm z)))))
     simp
 
-theorem fixingOfAlgHomMulEquiv_apply (σ : fixingOfAlgHom j)
-    (z : AlgebraicClosure ((placeOfAlgHom j).1.adicCompletion L)) :
-    fixingOfAlgHomMulEquiv j σ z =
-      closureEquivOfAlgHom j (σ.1 ((closureEquivOfAlgHom j).symm z)) :=
-  rfl
 
 theorem continuous_coe_fixingOfAlgHomMulEquiv_symm :
     Continuous fun τ : Gal(AlgebraicClosure ((placeOfAlgHom j).1.adicCompletion L) /
@@ -180,10 +175,6 @@ def fixingOfAlgHomEquiv : fixingOfAlgHom j ≃ₜ*
     continuous_toFun := e.symm.continuous
     continuous_invFun := hc }
 
-theorem fixingOfAlgHomEquiv_apply (σ : fixingOfAlgHom j)
-    (z : AlgebraicClosure ((placeOfAlgHom j).1.adicCompletion L)) :
-    fixingOfAlgHomEquiv j σ z = closureEquivOfAlgHom j (σ.1 ((closureEquivOfAlgHom j).symm z)) :=
-  rfl
 
 end Fixing
 
@@ -341,9 +332,6 @@ def mackeyPlaceEquiv :
     MackeyIndex (gsOpenSubgroup S hL) (gsFinFamily S ιs) ≃ (placesOver S : Set (HeightOneSpectrum (𝓞 L))) :=
   Equiv.ofBijective (mackeyPlace S hL ιs) ⟨mackeyPlace_injective hL ιs, mackeyPlace_surjective hL ιs⟩
 
-theorem coe_mackeyPlaceEquiv (p : MackeyIndex (gsOpenSubgroup S hL) (gsFinFamily S ιs)) :
-    (mackeyPlaceEquiv S hL ιs p : HeightOneSpectrum (𝓞 L)) = (gsLocalPlace hL ιs p.1 p.2.out).1 :=
-  rfl
 
 omit [IsScalarTower F L Ω] in
 variable (S) in

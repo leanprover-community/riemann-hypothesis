@@ -1,10 +1,40 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.EqOrConjOfPlaceOf
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsCompactAdeleRingModNumberFieldStatement
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.IntegrableOnFundamentalDomainOfCocompactStatement
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.MemAdelicLatticeIffLocalSelfDualCompletionStatement
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.TwoStepUnipotentCompactModSubringStatement
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsCompactAdeleRingModNumberField
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.IntegrableOnFundamentalDomainOfCocompact
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.MemAdelicLatticeIffLocalSelfDualCompletion
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.TwoStepUnipotentCompactModSubring
 
+section
+open NumberField IsDedekindDomain MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_compact_adeleRing_mod_numberField : ∀ (F : Type) [Field F] [NumberField F], ∃ K : Set (AdeleRing (𝓞 F) F), IsCompact K ∧ ∀ a : AdeleRing (𝓞 F) F, ∃ x : F, a - algebraMap F (AdeleRing (𝓞 F) F) x ∈ K := by
+  first | exact @GlobalTheory.AdeleCocompact.exists_compact_adele | exact GlobalTheory.AdeleCocompact.exists_compact_adele | (intros; apply GlobalTheory.AdeleCocompact.exists_compact_adele <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integrableOn_fundamentalDomain_of_invariant_of_cocompact : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G] [BorelSpace G] (Γ : Subgroup G) [Countable Γ] (K : Set G), IsCompact K → (∀ g : G, ∃ γ ∈ Γ, γ * g ∈ K) → ∀ (μ : Measure G), μ.IsHaarMeasure → ∀ (𝓕 : Set G), IsFundamentalDomain Γ 𝓕 μ → ∀ (f : G → ℂ), Continuous f → (∀ γ ∈ Γ, ∀ g, f (γ * g) = f g) → IntegrableOn f 𝓕 μ := by
+  first | exact @GlobalTheory.integrableOn_fundamentalDomain_of_cocompact | exact GlobalTheory.integrableOn_fundamentalDomain_of_cocompact | (intros; apply GlobalTheory.integrableOn_fundamentalDomain_of_cocompact <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.BasicNotions
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_adelic_lattice_iff_local_selfDual_completion : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E] (V : HSpace E) (y : Fin V.rank → Af F ⊗[F] E), y ∈ Formalism.MainNotions.StandardLattice.latHat F E {x : Fin V.rank → E | ∑ i, x i • V.frame i ∈ V.L0} ↔ ∀ v : HeightOneSpectrum (𝓞 F), (fun i => Algebra.TensorProduct.map (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F v) (AlgHom.id F E) (y i)) ∈ GlobalTheory.IndefiniteRowSideFullHecke.AdelicUnitaryGroups.latLoc (F := F) V v := by
+  first | exact @GlobalTheory.LatticeLocalGlobal.mem_latHat_iff | exact GlobalTheory.LatticeLocalGlobal.mem_latHat_iff | (intros; apply GlobalTheory.LatticeLocalGlobal.mem_latHat_iff <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.twoStepUnipotent_compact_mod_subring : ∀ (S : Type) [Ring S] [TopologicalSpace S] [IsTopologicalRing S] (st : S →+ S) (S₀ : Subring S) (e₁ e₃ h : S) (K : Set S), Continuous st → (∀ x y, st (x * y) = st y * st x) → (∀ x, st (st x) = x) → (∀ x ∈ S₀, st x ∈ S₀) → e₁ ∈ S₀ → h ∈ S₀ → e₁ * e₁ = e₁ → st e₁ = e₃ → e₁ * e₃ = 0 → e₃ * e₁ = 0 → h + h = 1 → (∀ x, h * x = x * h) → IsCompact K → (∀ x, ∃ y ∈ S₀, x - y ∈ K) → ∃ K' : Set Sˣ, IsCompact K' ∧ (∀ g ∈ K', (st (g : S) * (g : S) = 1 ∧ ((g : S) - 1) * e₁ = 0 ∧ (1 - e₁) * ((g : S) - 1) * (1 - e₃) = 0)) ∧ ∀ g : Sˣ, (st (g : S) * (g : S) = 1 ∧ ((g : S) - 1) * e₁ = 0 ∧ (1 - e₁) * ((g : S) - 1) * (1 - e₃) = 0) → ∃ γ : Sˣ, (st (γ : S) * (γ : S) = 1 ∧ ((γ : S) - 1) * e₁ = 0 ∧ (1 - e₁) * ((γ : S) - 1) * (1 - e₃) = 0) ∧ (γ : S) ∈ S₀ ∧ ((γ⁻¹ : Sˣ) : S) ∈ S₀ ∧ γ * g ∈ K' := by
+  first | exact @GlobalTheory.TwoStepUnipotent.compact_mod_subring | exact GlobalTheory.TwoStepUnipotent.compact_mod_subring | (intros; apply GlobalTheory.TwoStepUnipotent.compact_mod_subring <;> assumption)
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.AutFunCompare
@@ -653,3 +683,5 @@ theorem embRel_iff (A B : HSp D) (ι : B.V →ₗ[D.host.E] A.V) (hι : HSpace.I
 end Host
 
 end GlobalTheory.AutFunCompare
+end
+end

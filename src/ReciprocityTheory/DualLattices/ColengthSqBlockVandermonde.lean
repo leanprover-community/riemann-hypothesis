@@ -1,5 +1,57 @@
-import ReciprocityTheory.DualLattices.DiscriminantColengthStatement
+import ReciprocityTheory.DualLattices.CotangentSurjective
+import ReciprocityTheory.DualLattices.VDetEqOneOfIntegral
 
+section
+noncomputable section
+
+open Matrix
+
+namespace ReciprocityTheory.PGsh.Up
+
+open ReciprocityTheory.PGsh.L2
+
+def discr {C : Type} [Field C] {n : ℕ} (a : Fin n → C) : C :=
+  ∏ τ, ∏ τ' ∈ Finset.univ.erase τ, (a τ - a τ')
+
+def freeMat {C : Type} [Field C] {n : ℕ} (a : Fin n → C) (h : ℕ) :
+    Matrix (Fin n × Fin h) (Fin n × Fin h) C :=
+  Matrix.of fun x y => if x.2 = y.2 then a x.1 ^ (y.1 : ℕ) else 0
+
+def sumPts {C : Type} [Field C] {v : Valuation C NNReal} {n s : ℕ}
+    (Mτ : Fin n → Lat v (Fin s)) : Set (Fin n × Fin s → C) :=
+  {w | ∀ τ, (fun i => w (τ, i)) ∈ (Mτ τ).pts}
+
+def projPts {C : Type} [Field C] {n s : ℕ} (M : Set (Fin n × Fin s → C)) (τ : Fin n) :
+    Set (Fin s → C) :=
+  (fun w i => w (τ, i)) '' M
+
+def IsLaStable {C : Type} [Field C] {v : Valuation C NNReal} {n s : ℕ} (a : Fin n → C)
+    (M : Lat v (Fin n × Fin s)) : Prop :=
+  ∀ w ∈ M.pts, (fun y : Fin n × Fin s => a y.1 * w y) ∈ M.pts
+
+def DiscriminantColengthStatement : Prop :=
+  ∀ (C : Type) [Field C] [IsAlgClosed C] (v : Valuation C NNReal) (R : Type) [CommRing R]
+    [Algebra R C], v.Integers R → (∃ c : C, 0 < v c ∧ v c < 1) →
+    ∀ (n : ℕ) (a : Fin n → C), Function.Injective a → (∀ τ, v (a τ) ≤ 1) →
+    (∀ (s : ℕ) (F S : Lat v (Fin n × Fin s)), F.B = freeMat a s →
+      S.pts = sumPts (fun _ => Lat.std v (Fin s)) →
+      colen F S ^ 2 = v (discr a) ^ s) ∧
+    (∀ (s : ℕ) (M S : Lat v (Fin n × Fin s)) (Mτ : Fin n → Lat v (Fin s)), IsLaStable a M →
+      (∀ τ, (Mτ τ).pts = projPts M.pts τ) → S.pts = sumPts Mτ →
+      v (discr a) ^ s ≤ colen M S ^ 2) ∧
+    (∀ (s h : ℕ) (A : Fin n → Matrix (Fin s) (Fin h) C) (F : Lat v (Fin n × Fin h))
+      (M' S : Lat v (Fin n × Fin s)) (Mτ : Fin n → Lat v (Fin s)), F.B = freeMat a h →
+      (∀ τ, Function.Surjective (A τ).mulVec) →
+      M'.pts = (fun w : Fin n × Fin h → C => fun y : Fin n × Fin s =>
+        ∑ l, A y.1 y.2 l * w (y.1, l)) '' F.pts →
+      (∀ τ, (Mτ τ).pts = projPts M'.pts τ) → S.pts = sumPts Mτ →
+      colen M' S ^ 2 * v (discr a) ^ h ≤ v (discr a) ^ (2 * s))
+
+end ReciprocityTheory.PGsh.Up
+end
+end
+
+section
 noncomputable section
 
 open Matrix
@@ -21,11 +73,6 @@ lemma sumLat_apply {n s : ℕ} (Mτ : Fin n → Lat v (Fin s)) (x y : Fin n × F
   simp only [sumLat, Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.prodComm_symm,
     Equiv.prodComm_apply, Prod.fst_swap, Prod.snd_swap, Matrix.blockDiagonal_apply]
 
-lemma sumLat_det {n s : ℕ} (Mτ : Fin n → Lat v (Fin s)) :
-    (sumLat Mτ).B.det = ∏ τ, (Mτ τ).B.det := by
-  show (Matrix.reindex (Equiv.prodComm (Fin s) (Fin n)) (Equiv.prodComm (Fin s) (Fin n))
-      (Matrix.blockDiagonal fun τ => (Mτ τ).B)).det = _
-  rw [Matrix.det_reindex_self, Matrix.det_blockDiagonal]
 
 lemma sumLat_mulVec {n s : ℕ} (Mτ : Fin n → Lat v (Fin s)) (c : Fin n × Fin s → C) (τ : Fin n)
     (i : Fin s) : ((sumLat Mτ).B *ᵥ c) (τ, i) = ((Mτ τ).B *ᵥ fun j => c (τ, j)) i := by
@@ -98,13 +145,7 @@ lemma v_det_freeMat_sq {n : ℕ} (a : Fin n → C) (s : ℕ) :
     v (freeMat a s).det ^ 2 = v (discr a) ^ s := by
   rw [det_freeMat, map_pow, pow_right_comm, v_det_vandermonde_sq]
 
-theorem colength_sq_blockVandermonde {n : ℕ} (a : Fin n → C) (s : ℕ) (F S : Lat v (Fin n × Fin s))
-    (hF : F.B = freeMat a s) (hS : S.pts = sumPts (fun _ => Lat.std v (Fin s))) :
-    colen F S ^ 2 = v (discr a) ^ s := by
-  rw [colen_congr (L₂' := F) (L₂ := sumLat fun _ => Lat.std v (Fin s)) rfl
-    (hS.trans (sumLat_pts _).symm)]
-  rw [colen, sumLat_det]
-  simp only [Lat.std, Matrix.det_one, map_one, Finset.prod_const_one, div_one, hF]
-  exact v_det_freeMat_sq a s
 
 end ReciprocityTheory.PGsh.Up
+end
+end

@@ -1,9 +1,182 @@
 import Formalism.LocalToGlobal.GroupLattices.LevelCharts.LevelsOfChChartsCover
-import Formalism.LocalToGlobal.GroupLattices.LevelCharts.LamHLocPrinc
+import Formalism.LocalToGlobal.GroupLattices.LevelCharts.FiniteCompG
+import Formalism.LocalToGlobal.GroupLattices.LevelCharts.AtGLev
 import Formalism.LocalToGlobal.GroupLattices.CloudFilling.CloudBound
 import Formalism.LocalToGlobal.HermitianColumns.HermCols
 import Formalism.LocalToGlobal.HermitianColumns.TiedQC
 
+section
+noncomputable section
+
+open NumberField IsDedekindDomain Matrix Formalism.UG
+open scoped TensorProduct
+
+namespace Formalism.L2.G
+
+structure CharsG (F : Type) [Field F] [NumberField F] (gp : Fin 2 → ℕ) (Z : Type) [CommGroup Z] where
+  psi0 : ∀ (i : Fin 2) (v : HeightOneSpectrum (𝓞 F)), (gp i : 𝓞 F) ∈ v.asIdeal → AddChar (resV F v) Z
+  psi_zero_nontrivial_character : ∀ i v h, psi0 i v h ≠ 1
+  chi : ∀ (i : Fin 2) (v : HeightOneSpectrum (𝓞 F)), (gp i : 𝓞 F) ∈ v.asIdeal → ℕ → (resV F v)ˣ →* Z
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {N : ℕ}
+    {σE : E →ₐ[F] E} {J : Matrix (Fin N) (Fin N) E} {gp : Fin 2 → ℕ}
+    {splitG : ∀ (i : Fin 2) (v : HeightOneSpectrum (𝓞 F)), (gp i : 𝓞 F) ∈ v.asIdeal →
+      E ⊗[F] v.adicCompletion F ≃+* v.adicCompletion F × v.adicCompletion F}
+    {Lb : Submodule (𝓞 E) (Fin N → E)}
+    {Uloc : ∀ v : HeightOneSpectrum (𝓞 F), Subgroup (GL (Fin N) (E ⊗[F] v.adicCompletion F))} {k m t j : ℕ}
+    {Z : Type} [CommGroup Z]
+
+theorem awayG_le_comap (p : ℕ) (v : HeightOneSpectrum (𝓞 F)) (hv : ((p : ℕ) : 𝓞 F) ∉ v.asIdeal) :
+    awayG σE J Uloc p ≤ (Uloc v).comap (bc (prV (E := E) v)) :=
+  fun x hx => ((mem_awayG σE J Uloc p x).1 hx).2 v hv
+
+def LevAtG.lamG (X : LevAtG σE J gp splitG Lb Uloc k m t j) (hg : ∀ i, gp i ≠ 0) (ch : CharsG F gp Z) (p : ℕ)
+    (hp : ∀ i, Nat.Coprime p (gp i)) : awayG σE J Uloc p →* Z :=
+  X.lamGlob hg ch.psi0 ch.chi (awayG σE J Uloc p) (fun i v h => awayG_le_comap p v (not_mem_of_coprime (hp i) v h))
+
+def LevAtG.typeX (X : LevAtG σE J gp splitG Lb Uloc k m t j) (hg : ∀ i, gp i ≠ 0) (ch : CharsG F gp Z) (p : ℕ)
+    (hp : ∀ i, Nat.Coprime p (gp i)) : awayG σE J Uloc p →* Z := (X.lamG hg ch p hp)⁻¹
+
+def LevAtG.psiX (X : LevAtG σE J gp splitG Lb Uloc k m t j) (hg : ∀ i, gp i ≠ 0) (ch : CharsG F gp Z) (p : ℕ)
+    (hp : ∀ i, Nat.Coprime p (gp i)) : awayG σE J Uloc p →* Z := (X.typeX hg ch p hp)⁻¹
+
+
+variable (σE J Uloc) in
+
+def lamQG (Q : Finset (HeightOneSpectrum (𝓞 F))) (lamQ : ∀ v, v ∈ Q → (Uloc v →* Z)) (p : ℕ)
+    (hQ : ∀ v ∈ Q, ((p : ℕ) : 𝓞 F) ∉ v.asIdeal) : awayG σE J Uloc p →* Z :=
+  prodChar Q Uloc lamQ (awayG σE J Uloc p) (fun v hv => awayG_le_comap p v (hQ v hv))
+
+
+end Formalism.L2.G
+end
+end
+
+section
+noncomputable section
+
+open Matrix NumberField IsDedekindDomain Formalism.UG
+open scoped TensorProduct
+
+namespace Formalism.L2.G
+
+section Loc
+
+variable (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) {N : ℕ}
+
+def HLoc (H : Subgroup (GL (Fin N) (resV F v))) : Subgroup (GL (Fin N) (v.adicCompletion F)) :=
+  congPre (algebraMap (v.adicCompletionIntegers F) (v.adicCompletion F))
+    (IsLocalRing.maximalIdeal (v.adicCompletionIntegers F)) H
+
+def lamHLoc {Z : Type} [CommGroup Z] (H : Subgroup (GL (Fin N) (resV F v))) (lam : H →* Z) : HLoc F v H →* Z :=
+  congChar _ (algMapV_injective F v) _ _ lam
+
+
+
+
+theorem HLoc_mono {H H' : Subgroup (GL (Fin N) (resV F v))} (h : H ≤ H') : HLoc F v H ≤ HLoc F v H' :=
+  Subgroup.map_mono (Subgroup.comap_mono h)
+
+
+end Loc
+
+section Uni
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {N : ℕ}
+  (σE : E →ₐ[F] E) (J : Matrix (Fin N) (Fin N) E) (v : HeightOneSpectrum (𝓞 F))
+  (spl : E ⊗[F] v.adicCompletion F ≃+* v.adicCompletion F × v.adicCompletion F) (fr : GL (Fin N) (v.adicCompletion F))
+
+def HU (H : Subgroup (GL (Fin N) (resV F v))) : Subgroup (GL (Fin N) (E ⊗[F] v.adicCompletion F)) :=
+  UPts σE J (v.adicCompletion F) ⊓ (HLoc F v H).comap (toFr v spl fr)
+
+
+theorem HU_mono {H H' : Subgroup (GL (Fin N) (resV F v))} (h : H ≤ H') : HU σE J v spl fr H ≤ HU σE J v spl fr H' :=
+  inf_le_inf_left _ (Subgroup.comap_mono (HLoc_mono F v h))
+
+def lamHU {Z : Type} [CommGroup Z] (H : Subgroup (GL (Fin N) (resV F v))) (lam : H →* Z) : HU σE J v spl fr H →* Z :=
+  (lamHLoc F v H lam).comp (((toFr v spl fr).subgroupComap (HLoc F v H)).comp (Subgroup.inclusion inf_le_right))
+
+
+
+
+
+end Uni
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {N : ℕ}
+
+structure LevAtGH (σE : E →ₐ[F] E) (J : Matrix (Fin N) (Fin N) E) (gp : Fin 2 → ℕ)
+    (splitG : ∀ (i : Fin 2) (v : HeightOneSpectrum (𝓞 F)), (gp i : 𝓞 F) ∈ v.asIdeal →
+      E ⊗[F] v.adicCompletion F ≃+* v.adicCompletion F × v.adicCompletion F)
+    (Lb : Submodule (𝓞 E) (Fin N → E))
+    (Uloc : ∀ v : HeightOneSpectrum (𝓞 F), Subgroup (GL (Fin N) (E ⊗[F] v.adicCompletion F)))
+    (H : ∀ (i : Fin 2) (v : HeightOneSpectrum (𝓞 F)), (gp i : 𝓞 F) ∈ v.asIdeal → Subgroup (GL (Fin N) (resV F v))) where
+
+  frG : ∀ (i : Fin 2) (v : HeightOneSpectrum (𝓞 F)), (gp i : 𝓞 F) ∈ v.asIdeal → GL (Fin N) (v.adicCompletion F)
+
+  frG_lat : ∀ (i : Fin 2) (v : HeightOneSpectrum (𝓞 F)) (h : (gp i : 𝓞 F) ∈ v.asIdeal) (x : Fin N → v.adicCompletion F),
+    (∃ y ∈ latS (F := F) (v.adicCompletion F)
+        (tensInt (F := F) (v.adicCompletion F) (intOE E) (v.adicCompletionIntegers F).toSubring) Lb,
+      ∀ b, (splitG i v h (y b)).1 = x b) ↔
+      ∀ b, (((frG i v h)⁻¹ : GL (Fin N) (v.adicCompletion F)) : Matrix (Fin N) (Fin N) (v.adicCompletion F)).mulVec x b ∈
+        v.adicCompletionIntegers F
+
+  Uloc_g : ∀ (i : Fin 2) (v : HeightOneSpectrum (𝓞 F)) (h : (gp i : 𝓞 F) ∈ v.asIdeal),
+    Uloc v = HU σE J v (splitG i v h) (frG i v h) (H i v h)
+
+variable {σE : E →ₐ[F] E} {J : Matrix (Fin N) (Fin N) E} {gp : Fin 2 → ℕ}
+    {splitG : ∀ (i : Fin 2) (v : HeightOneSpectrum (𝓞 F)), (gp i : 𝓞 F) ∈ v.asIdeal →
+      E ⊗[F] v.adicCompletion F ≃+* v.adicCompletion F × v.adicCompletion F}
+    {Lb : Submodule (𝓞 E) (Fin N → E)}
+    {Uloc : ∀ v : HeightOneSpectrum (𝓞 F), Subgroup (GL (Fin N) (E ⊗[F] v.adicCompletion F))}
+    {H : ∀ (i : Fin 2) (v : HeightOneSpectrum (𝓞 F)), (gp i : 𝓞 F) ∈ v.asIdeal → Subgroup (GL (Fin N) (resV F v))}
+    {Z : Type} [CommGroup Z]
+
+def LevAtG.toH {k m t j : ℕ} (X : LevAtG σE J gp splitG Lb Uloc k m t j) :
+    LevAtGH σE J gp splitG Lb Uloc (fun _ v _ => JXbar (resV F v) N k m t j) where
+  frG := X.frG
+  frG_lat := X.frG_lat
+  Uloc_g := X.Uloc_g
+
+def LevAtGH.lamV (X : LevAtGH σE J gp splitG Lb Uloc H) (lam : ∀ i v h, H i v h →* Z) (i : Fin 2)
+    (v : HeightOneSpectrum (𝓞 F)) (h : (gp i : 𝓞 F) ∈ v.asIdeal) : Uloc v →* Z :=
+  (lamHU σE J v (splitG i v h) (X.frG i v h) (H i v h) (lam i v h)).comp (Subgroup.inclusion (le_of_eq (X.Uloc_g i v h)))
+
+def LevAtGH.lamGlob (X : LevAtGH σE J gp splitG Lb Uloc H) (hg : ∀ i, gp i ≠ 0) (lam : ∀ i v h, H i v h →* Z)
+    (Up : Subgroup (GL (Fin N) (E ⊗[F] FiniteAdeleRing (𝓞 F) F)))
+    (hUp : ∀ (i : Fin 2) (v : HeightOneSpectrum (𝓞 F)), (gp i : 𝓞 F) ∈ v.asIdeal →
+      Up ≤ (Uloc v).comap (bc (prV (E := E) v))) : Up →* Z :=
+  ∏ i : Fin 2, prodChar (placesOver F (gp i)) Uloc
+    (fun v hv => X.lamV lam i v ((mem_placesOver F (gp i) (hg i) v).1 hv))
+    Up (fun v hv => hUp i v ((mem_placesOver F (gp i) (hg i) v).1 hv))
+
+
+
+def LevAtGH.lamG (X : LevAtGH σE J gp splitG Lb Uloc H) (hg : ∀ i, gp i ≠ 0) (lam : ∀ i v h, H i v h →* Z) (p : ℕ)
+    (hp : ∀ i, Nat.Coprime p (gp i)) : awayG σE J Uloc p →* Z :=
+  X.lamGlob hg lam (awayG σE J Uloc p) (fun i v h => awayG_le_comap p v (not_mem_of_coprime (hp i) v h))
+
+def LevAtGH.typeX (X : LevAtGH σE J gp splitG Lb Uloc H) (hg : ∀ i, gp i ≠ 0) (lam : ∀ i v h, H i v h →* Z) (p : ℕ)
+    (hp : ∀ i, Nat.Coprime p (gp i)) : awayG σE J Uloc p →* Z := (X.lamG hg lam p hp)⁻¹
+
+def LevAtGH.psiX (X : LevAtGH σE J gp splitG Lb Uloc H) (hg : ∀ i, gp i ≠ 0) (lam : ∀ i v h, H i v h →* Z) (p : ℕ)
+    (hp : ∀ i, Nat.Coprime p (gp i)) : awayG σE J Uloc p →* Z := (X.typeX hg lam p hp)⁻¹
+
+
+def CharsG.lamX (ch : CharsG F gp Z) (N k m t j : ℕ) (i : Fin 2) (v : HeightOneSpectrum (𝓞 F)) (h : (gp i : 𝓞 F) ∈ v.asIdeal) :
+    JXbar (resV F v) N k m t j →* Z := lamXbar (resV F v) N k m t j (ch.psi0 i v h) (ch.chi i v h)
+
+
+
+theorem LevAtGH.le_top (X : LevAtGH σE J gp splitG Lb Uloc H) (i : Fin 2) (v : HeightOneSpectrum (𝓞 F))
+    (h : (gp i : 𝓞 F) ∈ v.asIdeal) : Uloc v ≤ HU σE J v (splitG i v h) (X.frG i v h) ⊤ := by
+  rw [X.Uloc_g i v h]
+  exact HU_mono σE J v _ _ (_root_.le_top)
+
+end Formalism.L2.G
+end
+end
+
+section
 noncomputable section
 
 open Formalism.BasicNotions NumberField IsDedekindDomain Matrix Formalism.UG Formalism.MainNotions.G Formalism.FrobeniusOrbits
@@ -188,3 +361,5 @@ abbrev levelsTw (D : D7) {inQ : D.what₂.Tup → HeightOneSpectrum (𝓞 D.host
 end Record
 
 end Formalism.L2.G
+end
+end

@@ -29,7 +29,6 @@ def Covers (r : Γ →* GL (Fin a) k) (ρ : Γ →* GL (Fin d) k) : Prop :=
   ∃ (m : ℕ) (B : Matrix (Fin a × Fin m) (Fin d) k), B.rank = d ∧
     ∀ g : Γ, Matrix.kronecker (r g : Matrix (Fin a) (Fin a) k) (1 : Matrix (Fin m) (Fin m) k) * B = B * (ρ g : Matrix (Fin d) (Fin d) k)
 
-theorem inside_refl (r : Γ →* GL (Fin a) k) : Inside r r := ⟨1, by simp, fun g => by simp⟩
 
 end Alg
 

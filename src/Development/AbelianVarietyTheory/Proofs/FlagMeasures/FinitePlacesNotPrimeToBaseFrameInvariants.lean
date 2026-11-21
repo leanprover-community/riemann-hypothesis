@@ -1,11 +1,259 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.AtBase
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.NGData
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NonzeroCmElementLocalUnitAlmostAll
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FrameFactorsLocalUnitsAlmostAllStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocalModelsUnsplitAlmostAll
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocalisedBaseFramesLeadingMinorEq
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.LocFacts
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FrameFactorsLocalUnitsAlmostAll
 
+section
+section
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc Formalism.L2.SG.TermDef GlobalTheory.LocOver
+open scoped Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.UnitAlmostAll
+
+variable {D : D7}
+
+theorem exists_nat_mul_integral (x : D.host.E) : ∃ n : ℕ, n ≠ 0 ∧ IsIntegral ℤ ((n : D.host.E) * x) := by
+  have : Algebra.IsAlgebraic ℤ ℚ := IsLocalization.isAlgebraic ℚ (nonZeroDivisors ℤ)
+  have : Algebra.IsAlgebraic ℤ D.host.E := Algebra.IsAlgebraic.trans ℤ ℚ D.host.E
+  obtain ⟨y, hy0, hy⟩ := (Algebra.IsAlgebraic.isAlgebraic (R := ℤ) x).exists_integral_multiple
+
+  refine ⟨y.natAbs * y.natAbs, by simpa using hy0, ?_⟩
+  have hsq : ((y.natAbs * y.natAbs : ℕ) : ℤ) = y * y := by
+    rw [Nat.cast_mul]
+    exact Int.natAbs_mul_self' y
+  have e : ((y.natAbs * y.natAbs : ℕ) : D.host.E) * x = (y : D.host.E) * (y • x) := by
+    rw [zsmul_eq_mul, ← mul_assoc]
+    have hc : ((y.natAbs * y.natAbs : ℕ) : D.host.E) = (((y.natAbs * y.natAbs : ℕ) : ℤ) : D.host.E) :=
+      (Int.cast_natCast _).symm
+    rw [hc, hsq, Int.cast_mul]
+  rw [e]
+  have hyi : IsIntegral ℤ (y : D.host.E) := by
+    simpa using (isIntegral_algebraMap : IsIntegral ℤ (algebraMap ℤ D.host.E y))
+  exact hyi.mul hy
+
+theorem iota_mem_O (Z : LocDat D) (p : PlF D) (x : D.host.E) (n : ℕ)
+    (hint : IsIntegral ℤ ((n : D.host.E) * x)) (hn : ¬ ((n : 𝓞 D.host.F) ∈ p.asIdeal)) :
+    (D.s.atP p).ιE x ∈ (Z.M p).L.O := by
+  rw [Formalism.L2.SG.Pf.LocFacts.lf_hO Z p, (D.s.atP p).O_def]
+  have : CharZero (D.s.atP p).Fp := (D.s.atP p).char0
+  have hn0 : n ≠ 0 := by
+    rintro rfl
+    exact hn (by simp)
+  have hcn : (D.s.atP p).ιF (n : D.host.F) = (n : (D.s.atP p).Fp) := map_natCast _ n
+  have hc0 : (n : (D.s.atP p).Fp) ≠ 0 := by exact_mod_cast hn0
+
+  have hv : p.valuation D.host.F (n : D.host.F) = 1 := by
+    have := (IsDedekindDomain.HeightOneSpectrum.valuation_eq_one_iff_notMem
+      (v := p) (K := D.host.F) (r := (n : 𝓞 D.host.F))).mpr hn
+    rwa [map_natCast] at this
+  have hle : (1 : (D.s.atP p).Fp) ≤ᵥ (n : (D.s.atP p).Fp) := by
+    have := ((D.s.atP p).val 1 (n : D.host.F)).mpr (by rw [hv, map_one])
+    rwa [map_one, hcn] at this
+  have hinv : (n : (D.s.atP p).Fp)⁻¹ ∈ (ValuativeRel.valuation (D.s.atP p).Fp).integer := by
+    rw [Valuation.mem_integer_iff, map_inv₀]
+    have h1 := (Valuation.Compatible.vle_iff_le (v := ValuativeRel.valuation (D.s.atP p).Fp) 1
+      (n : (D.s.atP p).Fp)).mp hle
+    rw [map_one] at h1
+    exact inv_le_one_of_one_le₀ h1
+  have hx : (D.s.atP p).ιE x = algebraMap (D.s.atP p).Fp (D.s.atP p).Ep (n : (D.s.atP p).Fp)⁻¹ *
+      (D.s.atP p).ιE ((n : D.host.E) * x) := by
+    have hE : (n : D.host.E) = algebraMap D.host.F D.host.E (n : D.host.F) := (map_natCast _ n).symm
+    rw [map_mul, hE, (D.s.atP p).compat, hcn, ← mul_assoc, ← map_mul, inv_mul_cancel₀ hc0, map_one, one_mul]
+  rw [hx]
+  refine IsIntegral.mul ?_ ?_
+  · exact isIntegral_algebraMap (R := (ValuativeRel.valuation (D.s.atP p).Fp).integer) (x := ⟨(n : (D.s.atP p).Fp)⁻¹, hinv⟩)
+  · exact (hint.map (D.s.atP p).ιE.toIntAlgHom).tower_top
+
+theorem unit_almost_all : ∀ (D : D7) (Z : LocDat D) (x : D.host.E), x ≠ 0 →
+    {p : PlF D | ¬ Formalism.MainNotions.S.LocNG.IsUnitO (Z.M p) ((D.s.atP p).ιE x)}.Finite := by
+  intro D Z x hx
+  obtain ⟨n, hn0, hn⟩ := exists_nat_mul_integral x
+  obtain ⟨m, hm0, hm⟩ := exists_nat_mul_integral x⁻¹
+
+  have hI : Ideal.span {((n * m : ℕ) : 𝓞 D.host.F)} ≠ 0 := by
+    rw [Ne, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]
+    exact_mod_cast Nat.mul_ne_zero hn0 hm0
+  refine (Ideal.finite_factors hI).subset ?_
+  intro p hp
+  simp only [Set.mem_ofPred_eq] at hp ⊢
+  rw [Ideal.dvd_span_singleton]
+  by_contra hnm
+  apply hp
+  have hn' : ¬ ((n : 𝓞 D.host.F) ∈ p.asIdeal) := fun h => hnm (by
+    push_cast
+    exact Ideal.mul_mem_right _ _ h)
+  have hm' : ¬ ((m : 𝓞 D.host.F) ∈ p.asIdeal) := fun h => hnm (by
+    push_cast
+    exact Ideal.mul_mem_left _ _ h)
+  refine ⟨iota_mem_O Z p x n hn hn', (D.s.atP p).ιE x⁻¹, iota_mem_O Z p x⁻¹ m hm hm', ?_⟩
+  rw [← map_mul, mul_inv_cancel₀ hx, map_one]
+
+end GlobalTheory.UnitAlmostAll
+end
+end
+
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc Formalism.L2.SG.TermDef GlobalTheory.LocOver
+open scoped Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.nonzero_cm_element_local_unit_almost_all : ∀ (D : D7) (Z : LocDat D) (x : D.host.E), x ≠ 0 →
+    {p : PlF D | ¬ Formalism.MainNotions.S.LocNG.IsUnitO (Z.M p) ((D.s.atP p).ιE x)}.Finite := by
+  atlas_forward_decl GlobalTheory.UnitAlmostAll.unit_almost_all
+end
+
+section
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc Formalism.L2.SG.TermDef GlobalTheory.LocOver
+open scoped Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frame_factors_local_units_almost_all : ∀ (D : D7) (Z : LocDat D) (a : Fin (D.R.rS + 1)),
+    {p : PlF D | ¬ Formalism.MainNotions.S.LocNG.IsUnitO (Z.M p) (frFac Z.δ p a)}.Finite := by
+  first | exact @GlobalTheory.FrameFactorUnit.frFac_isUnitO_finite | exact GlobalTheory.FrameFactorUnit.frFac_isUnitO_finite | (intros; apply GlobalTheory.FrameFactorUnit.frFac_isUnitO_finite <;> assumption)
+end
+
+section
+section
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc Formalism.L2.SG.TermDef GlobalTheory.LocOver
+open scoped Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.LocSplitFinite
+
+theorem finite_resChar_eq (F : Type) [Field F] [NumberField F] (l : ℕ) (hl : l ≠ 0) :
+    {p : IsDedekindDomain.HeightOneSpectrum (𝓞 F) | Formalism.MainNotions.S.Loc.resChar p = l}.Finite := by
+  have hx : ((l : 𝓞 F)) ≠ 0 := Nat.cast_ne_zero.2 hl
+  have hI : Ideal.span {((l : 𝓞 F))} ≠ 0 := by
+    rw [Ne, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]; exact hx
+  refine (Ideal.finite_factors hI).subset ?_
+  intro p hp
+  simp only [Set.mem_setOf_eq] at hp ⊢
+  rw [Ideal.dvd_iff_le, Ideal.span_singleton_le_iff_mem]
+  rw [← Ideal.Quotient.eq_zero_iff_mem, map_natCast]
+  unfold Formalism.MainNotions.S.Loc.resChar at hp
+  rw [← hp]
+  exact ringChar.Nat.cast_ringChar
+
+theorem split_finite : ∀ (D : D7) (Z : LocDat D), {p : PlF D | (Z.M p).split ≠ none}.Finite := by
+  intro D Z
+  have h0 := finite_resChar_eq D.host.F (D.host.g 0) (D.host.g_prime 0).ne_zero
+  have h1 := finite_resChar_eq D.host.F (D.host.g 1) (D.host.g_prime 1).ne_zero
+  refine (h0.union h1).subset ?_
+  intro p hp
+  simp only [Set.mem_setOf_eq] at hp
+  have hs : (D.s.atP p).split.isSome := by
+    have ha := (Z.agree p).2.2.2.2.2
+    revert ha
+    cases h : (Z.M p).split with
+    | none => exact absurd h hp
+    | some g =>
+      cases h' : (D.s.atP p).split with
+      | none => intro ha; exact ha.elim
+      | some sg => intro _; rfl
+  have hm := (D.s_split p).1 hs
+  simp only [Finset.mem_insert, Finset.mem_singleton] at hm
+  rcases hm with hm | hm
+  · exact Or.inl hm
+  · exact Or.inr hm
+
+end GlobalTheory.LocSplitFinite
+end
+
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc Formalism.L2.SG.TermDef GlobalTheory.LocOver
+open scoped Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_models_unsplit_almost_all : ∀ (D : D7) (Z : LocDat D), {p : PlF D | (Z.M p).split ≠ none}.Finite := by
+  atlas_forward_decl GlobalTheory.LocSplitFinite.split_finite
+end
+
+section
+section
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc Formalism.L2.SG.TermDef GlobalTheory.LocOver
+open scoped Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.LocMinor
+
+theorem leadMinor_atBase : ∀ (D : D7) (Z : LocDat D) (p : PlF D) {T T' : D.host.E} (F : LFlag (VS D) D.R.rS T)
+    (F' : LFlag (VS D) D.R.rS T') (Tn T'n : ℕ) (P : Formalism.MainNotions.S.LocNG.FPair (locH Z p) D.R.rS),
+    AtBase Z p F F' Tn T'n P → ∀ l : ℕ, P.Dm l =
+      (∏ a : Fin (D.R.rS + 1), if a.val < l then (Z.M p).L.cj (frFac Z.δ p a) * frFac Z.δ p a else 1) *
+        (D.s.atP p).ιE (Formalism.MainNotions.S.Dl F.fl F'.fl l) := by
+  intro D Z p T T' F F' Tn T'n P hP l
+  obtain ⟨hA, hB, -, -⟩ := hP
+  have hent : ∀ a b, (locH Z p).Zhat P.A.f P.B.f a b =
+      (Z.M p).L.cj (frFac Z.δ p a) * (frFac Z.δ p b *
+        (D.s.atP p).ιE (Formalism.MainNotions.S.Zhat F.fl F'.fl a b)) := by
+    intro a b
+    rw [hA, hB]
+    show LocFacts₂ Z.M p (frFac Z.δ p b • baseChange₂ D p (frame F' b)) (frFac Z.δ p a • baseChange₂ D p (frame F a)) = _
+    rw [Formalism.L2.SG.Pf.LocFacts.localForm_smul_left₂, Formalism.L2.SG.Pf.LocFacts.localForm_smul_right, baseChangeAt_form Z.M p (Z.hcj p)]
+    simp only [Formalism.MainNotions.S.Zhat, frame]
+    ring
+  show (locH Z p).Dl P.A.f P.B.f l = _
+  unfold Loc.HermSp.Dl Formalism.MainNotions.S.Dl Formalism.MainNotions.S.leadMinorE
+  split_ifs with hl
+  · rw [RingHom.map_det]
+    have hM : ((locH Z p).Zhat P.A.f P.B.f).submatrix (Fin.castLE hl) (Fin.castLE hl) =
+        Matrix.of fun i j => (Z.M p).L.cj (frFac Z.δ p (Fin.castLE hl i)) * (frFac Z.δ p (Fin.castLE hl j) *
+          (((Formalism.MainNotions.S.Zhat F.fl F'.fl).submatrix (Fin.castLE hl) (Fin.castLE hl)).map (D.s.atP p).ιE) i j) := by
+      ext i j
+      simp only [Matrix.submatrix_apply, Matrix.of_apply, Matrix.map_apply, hent]
+    have e1 := Matrix.det_mul_column (fun i : Fin l => (Z.M p).L.cj (frFac Z.δ p (Fin.castLE hl i)))
+      (Matrix.of fun i j => frFac Z.δ p (Fin.castLE hl j) *
+          (((Formalism.MainNotions.S.Zhat F.fl F'.fl).submatrix (Fin.castLE hl) (Fin.castLE hl)).map (D.s.atP p).ιE) i j)
+    have e2 := Matrix.det_mul_row (fun j : Fin l => frFac Z.δ p (Fin.castLE hl j))
+      (((Formalism.MainNotions.S.Zhat F.fl F'.fl).submatrix (Fin.castLE hl) (Fin.castLE hl)).map (D.s.atP p).ιE)
+    simp only [Matrix.of_apply] at e1
+    rw [RingHom.mapMatrix_apply, hM, e1, e2, ← mul_assoc, ← Finset.prod_mul_distrib]
+    congr 1
+    set g : ℕ → (D.s.atP p).Ep := fun k => if h : k < D.R.rS + 1 then
+      (Z.M p).L.cj (frFac Z.δ p ⟨k, h⟩) * frFac Z.δ p ⟨k, h⟩ else 1 with hg
+    have h1 : (∏ a : Fin (D.R.rS + 1), if a.val < l then (Z.M p).L.cj (frFac Z.δ p a) * frFac Z.δ p a else 1)
+        = ∏ k ∈ Finset.range (D.R.rS + 1), if k < l then g k else 1 := by
+      rw [← Fin.prod_univ_eq_prod_range (fun k => if k < l then g k else 1)]
+      refine Finset.prod_congr rfl fun a _ => ?_
+      show _ = (if a.val < l then g a.val else 1)
+      rw [hg]; dsimp only; rw [dif_pos a.isLt]
+    have h2 : (∏ i : Fin l, (Z.M p).L.cj (frFac Z.δ p (Fin.castLE hl i)) * frFac Z.δ p (Fin.castLE hl i))
+        = ∏ k ∈ Finset.range l, g k := by
+      rw [← Fin.prod_univ_eq_prod_range g]
+      refine Finset.prod_congr rfl fun i _ => ?_
+      have : i.val < D.R.rS + 1 := lt_of_lt_of_le i.isLt hl
+      show _ = g i.val
+      rw [hg]; dsimp only; rw [dif_pos this]; rfl
+    rw [h1, h2, ← Finset.prod_filter]
+    congr 1
+    ext k
+    simp only [Finset.mem_filter, Finset.mem_range]
+    omega
+  · simp
+
+end GlobalTheory.LocMinor
+end
+
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc Formalism.L2.SG.TermDef GlobalTheory.LocOver
+open scoped Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.localised_base_frames_leading_minor_eq : ∀ (D : D7) (Z : LocDat D) (p : PlF D) {T T' : D.host.E} (F : LFlag (VS D) D.R.rS T)
+    (F' : LFlag (VS D) D.R.rS T') (Tn T'n : ℕ) (P : Formalism.MainNotions.S.LocNG.FPair (locH Z p) D.R.rS),
+    AtBase Z p F F' Tn T'n P → ∀ l : ℕ, P.Dm l =
+      (∏ a : Fin (D.R.rS + 1), if a.val < l then (Z.M p).L.cj (frFac Z.δ p a) * frFac Z.δ p a else 1) *
+        (D.s.atP p).ιE (Formalism.MainNotions.S.Dl F.fl F'.fl l) := by
+  atlas_forward_decl GlobalTheory.LocMinor.leadMinor_atBase
+end
+
+section
 section
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc Formalism.L2.SG.TermDef GlobalTheory.LocOver
 open scoped Classical
@@ -128,3 +376,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.finite_places_not_primeTo_baseFrameInvariants : ∀ (D : D7) (Z : LocDat D), ∀ (u u' : D.what₂.Word) (F00 : LFlag (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)) (F'0 : LFlag (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)), Gval F00 F'0 ≠ 0 → ∀ FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS, (∀ p, AtBase Z p F00 F'0 (Tu D u) (Tu D u') (FP p)) → {p : PlF D | ¬ (FP p).PrimeTo}.Finite := by
   atlas_forward_decl GlobalTheory.PrimeAlmostAll.primeTo_finite
+end

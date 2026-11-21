@@ -63,23 +63,7 @@ theorem infString_one (A : Multiset ℂ) : infString 1 A = A := by
 theorem satString_one (q : ℕ) (B : Multiset ℂˣ) : satString q 1 B = B.map Units.val := by
   simp [satString, Multiset.bind_singleton]
 
-theorem infString_zero (n : ℕ) :
-    infString n {0} = Finset.univ.val.map fun k : Fin n => ((n : ℂ) - 1) / 2 - (k : ℕ) := by
-  rw [infString, Multiset.singleton_bind, Fin.univ_val_map, List.ofFn_eq_map, ← Multiset.coe_range, Multiset.map_coe,
-    ← List.map_coe_finRange_eq_range, List.map_map]
-  simp [Function.comp_def]
 
-theorem satString_two (q : ℕ) (hq : (q : ℂ) ≠ 0) :
-    satString (q ^ 2) 2 {1} = (GlobalTheory.LGrp.bcParam 2 fun _ => Units.mk0 (q : ℂ) hq).map Units.val := by
-  have h1 : (((q ^ 2 : ℕ) : ℂ)) ^ ((2 : ℂ)⁻¹) = q := by
-    have := Complex.natCast_cpow_natCast_mul q 2 ((2 : ℂ)⁻¹)
-    push_cast at this ⊢
-    rw [← this]; simp
-  have e1 : (((2 : ℕ) : ℂ) - 1) / 2 - ((0 : ℕ) : ℂ) = (2 : ℂ)⁻¹ := by norm_num
-  have e2 : (((2 : ℕ) : ℂ) - 1) / 2 - ((1 : ℕ) : ℂ) = -(2 : ℂ)⁻¹ := by norm_num
-  have r : Multiset.range 2 = 0 ::ₘ {1} := by decide
-  rw [satString, Multiset.singleton_bind, r, Multiset.map_cons, Multiset.map_singleton, e1, e2, Complex.cpow_neg, h1]
-  simp [GlobalTheory.LGrp.bcParam]
 
 theorem isSatStringAt_one (π : Submodule ℂ (UA E 1 → ℂ)) (w : HeightOneSpectrum (𝓞 E)) :
     IsSatStringAt π (a := fun _ : Fin 1 => 1) (fun _ => CG.ofChar 1) (fun _ => 1) w := by

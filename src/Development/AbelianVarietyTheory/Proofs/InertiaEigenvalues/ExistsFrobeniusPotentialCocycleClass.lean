@@ -5,11 +5,411 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.KisinInfGalois
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BreuilKisinBcrisComparisonFrobeniusNaturality
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BreuilKisinMuPowSmulFrobeniusMemAinf
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MonodromyMemRangeOfInvariantVector
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsGaloisDecompTameCoverAction
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TensorOneInjective
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HorizEqXiRed
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsPrimePowSmulMemLocalLattice
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsPotential
+import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.OneSubPhiOntoOfFilZero
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GaloisQlEqGaloisKPrimeMulGaloisKinfty
+import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.ConductorExponents
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsMuSemidirectCyclicCoverOfMemGKinfCoeffs
 
+section
+noncomputable section
+
+namespace GlobalTheory.FrobeniusPower
+
+open Polynomial
+
+theorem ringHom_eq_pow_frob (p : ℕ) [Fact p.Prime] (F : Type) [Field F] [Finite F] [CharP F p]
+    (φ : F →+* F) : ∃ m : ℕ, ∀ x : F, φ x = x ^ p ^ m := by
+  letI : Algebra (ZMod p) F := ZMod.algebra F p
+  let ψ : F →ₐ[ZMod p] F :=
+    { φ with
+      commutes' := fun r =>
+        RingHom.congr_fun (RingHom.ext_zmod (φ.comp (algebraMap (ZMod p) F)) (algebraMap (ZMod p) F)) r }
+  have hinj : Function.Injective ψ := ψ.toRingHom.injective
+  let σ : F ≃ₐ[ZMod p] F := AlgEquiv.ofBijective ψ ⟨hinj, Finite.injective_iff_surjective.1 hinj⟩
+  obtain ⟨n, hn⟩ := (FiniteField.bijective_frobeniusAlgEquivOfAlgebraic_pow (ZMod p) F).2 σ
+  refine ⟨n, fun x => ?_⟩
+  have h1 : σ x = φ x := rfl
+  rw [← h1, ← hn, AlgEquiv.coe_pow, FiniteField.coe_frobeniusAlgEquivOfAlgebraic_iterate, ZMod.card]
+
+theorem finite_Fq (l : ℕ) [hl : Fact (Nat.Prime l)] (a : ℕ) [NeZero a] : Finite (GlobalTheory.BKReal.Fq l a) := by
+  have hq : 1 < l ^ a := Nat.one_lt_pow (NeZero.ne a) hl.out.one_lt
+  have hp : (X ^ (l ^ a) - X : (Formalism.BasicNotions.Loc.OCb l)[X]) ≠ 0 := by
+    intro h
+    have h2 := congrArg (fun f => Polynomial.coeff f (l ^ a)) h
+    simp only [coeff_sub, coeff_X_pow, coeff_X, if_true, coeff_zero, if_neg hq.ne] at h2
+    simp at h2
+  have hsub : ((GlobalTheory.BKReal.resSub l a : Subring (Formalism.BasicNotions.Loc.OCb l)) : Set (Formalism.BasicNotions.Loc.OCb l)) ⊆
+      {x | (X ^ (l ^ a) - X : (Formalism.BasicNotions.Loc.OCb l)[X]).IsRoot x} := by
+    intro x hx
+    have hx' : iterateFrobenius (Formalism.BasicNotions.Loc.OCb l) l a x = x := hx
+    rw [iterateFrobenius_def] at hx'
+    show Polynomial.eval x (X ^ (l ^ a) - X) = 0
+    rw [eval_sub, eval_pow, eval_X, hx', sub_self]
+  have h : Finite ↥(GlobalTheory.BKReal.resSub l a) := ((Polynomial.finite_setOf_isRoot hp).subset hsub).to_subtype
+  exact h
+
+theorem main : ∀ (l : ℕ) [hl : Fact (Nat.Prime l)] (a : ℕ) [inst : NeZero a]
+    (φ : GlobalTheory.BKReal.Fq l a →+* GlobalTheory.BKReal.Fq l a), ∃ (m : ℕ), ∀ (x : GlobalTheory.BKReal.Fq l a),
+      (φ : GlobalTheory.BKReal.Fq l a → GlobalTheory.BKReal.Fq l a) x = x ^ l ^ m := by
+  intro l hl a _ φ
+  haveI := finite_Fq l a
+  haveI : IsDomain (GlobalTheory.BKReal.Fq l a) := inferInstanceAs (IsDomain ↥(GlobalTheory.BKReal.resSub l a))
+  haveI : CharP (GlobalTheory.BKReal.Fq l a) l :=
+    inferInstanceAs (CharP ↥(GlobalTheory.BKReal.resSub l a) l)
+  letI : Field (GlobalTheory.BKReal.Fq l a) := (Finite.isDomain_to_isField _).toField
+  exact ringHom_eq_pow_frob l (GlobalTheory.BKReal.Fq l a) φ
+
+end GlobalTheory.FrobeniusPower
+end
+end
+
+section
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BK GlobalTheory.BKReal GlobalTheory.BKGal GlobalTheory.Per Matrix
+open scoped Formalism.Per
+
+noncomputable section
+
+namespace GlobalTheory.BKReal
+
+variable (l : ℕ) [hl : Fact l.Prime] (a : ℕ) [NeZero a]
+
+def galFq (g : GQ l) : Fq l a →+* Fq l a :=
+  ((Per.σF g).comp (Fq.val l a)).codRestrict (resSub l a) fun x => by
+    rw [mem_resSub, RingHom.comp_apply, ← map_pow]
+    exact congrArg (Per.σF g) (mem_resSub.1 x.2)
+
+theorem val_galFq (g : GQ l) (x : Fq l a) : Fq.val l a (galFq l a g x) = Per.σF g (Fq.val l a x) := rfl
+
+theorem exists_pow_eq (φ : Fq l a →+* Fq l a) : ∃ m : ℕ, ∀ x, φ x = x ^ l ^ m := by
+  first
+  | exact @_root_.GlobalTheory.FrobeniusPower.main
+  | exact _root_.GlobalTheory.FrobeniusPower.main
+  | (apply _root_.GlobalTheory.FrobeniusPower.main <;> assumption)
+  | (intros; apply _root_.GlobalTheory.FrobeniusPower.main <;> assumption)
+  | (intros; apply @_root_.GlobalTheory.FrobeniusPower.main <;> first | assumption | infer_instance)
+  | (intros; exact _root_.GlobalTheory.FrobeniusPower.main ..)
+  | (intro h; exact _root_.GlobalTheory.FrobeniusPower.main h _ (fun _ => Iff.rfl))
+  | exact _root_.GlobalTheory.FrobeniusPower.main ‹_› _ (fun _ => Iff.rfl)
+  | (apply _root_.GlobalTheory.FrobeniusPower.main <;> first | assumption | exact fun _ => Iff.rfl)
+
+theorem gal_wA_pow (g : GQ l) :
+    ∃ s : ZMod a, ∀ w : Wq l a, Per.σA g (wA l a w) = wA l a ((sigma l a ^ s.val) w) := by
+  obtain ⟨m, hm⟩ := exists_pow_eq l a (galFq l a g)
+  refine ⟨(m : ZMod a), fun w => ?_⟩
+  rw [ZMod.val_natCast, ← pow_eq_pow_mod m (sigma_pow_eq_one l a)]
+  refine WittVector.ext fun n => ?_
+  rw [GlobalTheory.RingIface.sigA_coeff]
+  change Per.σF g (Fq.val l a (w.coeff n)) = Fq.val l a (((sigma l a ^ m) w).coeff n)
+  rw [coeff_sigma_pow, ← hm, val_galFq]
+
+end GlobalTheory.BKReal
+end
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BK GlobalTheory.BKReal GlobalTheory.BKGal GlobalTheory.Per Matrix
+open scoped Formalism.Per
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.galois_action_cyclotomic_power : ∀ (l : ℕ) [Fact l.Prime] (a : ℕ) [NeZero a] (g : GQ l), ∃ s : ZMod a, ∀ w : Wq l a, Per.σA g (wA l a w) = wA l a ((sigma l a ^ s.val) w) := by
+  atlas_forward_decl GlobalTheory.BKReal.gal_wA_pow
+end
+
+section
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BK GlobalTheory.BKReal GlobalTheory.BKGal GlobalTheory.Per Matrix
+open scoped Formalism.Per
+
+noncomputable section
+
+namespace GlobalTheory.BKReal
+
+theorem kummer_mem_Fq_of_mem_GKinf : ∀ (l : ℕ) [Fact l.Prime] (a e : ℕ) [NeZero a] [NeZero e]
+    (ϖ : PiSys l e), e + 1 = l ^ a → ∀ k ∈ ϖ.GKinf, ∃ z : Fq l a, z ^ e = 1 ∧ ϖ.kummer k = Fq.val l a z := by
+  intro l _ a e _ _ ϖ he k hk
+  have hfix := (IntermediateField.mem_fixingSubgroup_iff _ _).1 hk
+  have hr : ∀ n, ϖ.ratio k n ^ e = 1 := fun n => by
+    have hmem : ϖ.seq n ^ e ∈ ϖ.Kinf := IntermediateField.subset_adjoin _ _ ⟨n, rfl⟩
+    refine Subtype.ext ?_
+    rw [SubmonoidClass.coe_pow, PiSys.coe_ratio, ← map_pow, div_pow, ← map_pow, hfix _ hmem,
+      div_self (pow_ne_zero _ (ϖ.seq_ne_zero n)), map_one]
+    rfl
+  have hK : ϖ.kummer k ^ e = 1 := Perfection.ext fun n => by
+    erw [map_pow, map_one]
+    change Ideal.Quotient.mk _ (ϖ.ratio k n) ^ e = 1
+    rw [← map_pow, hr, map_one]
+  have hmem : ϖ.kummer k ∈ resSub l a := by
+    rw [mem_resSub, ← he, pow_succ, hK, one_mul]
+  obtain ⟨z, hz⟩ : ∃ z : Fq l a, Fq.val l a z = ϖ.kummer k := ⟨(⟨ϖ.kummer k, hmem⟩ : ↥(resSub l a)), rfl⟩
+  refine ⟨z, Fq.val_injective l a ?_, hz.symm⟩
+  rw [map_pow, map_one, hz, hK]
+
+end GlobalTheory.BKReal
+end
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BK GlobalTheory.BKReal GlobalTheory.BKGal GlobalTheory.Per Matrix
+open scoped Formalism.Per
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_root_of_unity_kummer_eq : ∀ (l : ℕ) [Fact l.Prime] (a e : ℕ) [NeZero a] [NeZero e] (ϖ : PiSys l e), e + 1 = l ^ a → ∀ k ∈ ϖ.GKinf, ∃ z : Fq l a, z ^ e = 1 ∧ ϖ.kummer k = Fq.val l a z := by
+  atlas_forward_decl GlobalTheory.BKReal.kummer_mem_Fq_of_mem_GKinf
+end
+
+section
+section
+noncomputable section
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BK GlobalTheory.BKReal GlobalTheory.BKGal GlobalTheory.Per Matrix
+open scoped Formalism.Per
+
+namespace GlobalTheory.CoverGen
+
+open GlobalTheory.KinfCover
+
+variable {l : ℕ} [hl : Fact l.Prime] {a : ℕ} [NeZero a] {e : ℕ} [NeZero e]
+  {O : Type} [CommRing O] [Algebra ℤ_[l] O] [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O]
+  (t : Wq l a →ₐ[ℤ_[l]] O) (ϖ : PiSys l e)
+  (K : Type) [NormedField K] [IsUltrametricDist K] [Algebra O K] [IsUnitBall O K]
+  [NormedAlgebra ℚ_[l] K] [TameDescentExponentData K l e a]
+
+theorem covers_of_sigma_teich {k : GQ l} (s : ZMod a) (z : Fq l a) (hze : z ^ e = 1)
+    (hs : ∀ w : Wq l a, Per.σA k (wA l a w) = wA l a ((sigma l a ^ s.val) w))
+    (hz : ϖ.kummer k = Fq.val l a z) : ∃ γ : TameGal K l e a, Covers K t ϖ k γ := by
+  let ζ : rootsOfUnity e K := rootsOfUnity.mkOfPowEq (algebraMap O K (t (WittVector.teichmuller l z))) (by
+    rw [← map_pow, ← map_pow, ← map_pow, hze, map_one, map_one, map_one])
+  refine ⟨⟨ζ, Multiplicative.ofAdd s⟩, fun f f' hf' => ?_⟩
+  set m : ℕ := s.val with hmdef
+  have hms : ((m : ℕ) : ZMod a) = s := ZMod.natCast_zmod_val s
+  set c : ZMod a → O := fun τ => emb t τ (WittVector.teichmuller l z) with hc
+  have hroot : ∀ τ, TameGal.root (⟨ζ, Multiplicative.ofAdd s⟩ : TameGal K l e a) τ =
+      algebraMap O K (c τ) := fun τ => by
+    have h1 : c τ = t (WittVector.teichmuller l z) ^ l ^ (-τ).val := by
+      change t ((sigma l a ^ (-τ).val) (WittVector.teichmuller l z)) = _
+      rw [sigma_pow_teich, map_pow]
+    rw [h1, map_pow]
+    change (((ζ ^ l ^ (-τ).val : rootsOfUnity e K) : Kˣ) : K) = _
+    rw [SubgroupClass.coe_pow, Units.val_pow_eq_pow_val, rootsOfUnity.coe_mkOfPowEq]
+  have hf'' : ∀ τ, f' τ = equivA O K (rescale (c τ) ((equivA O K).symm (f (τ - m)))) := fun τ => by
+    refine Subtype.ext ?_
+    rw [hf' τ, ringAct_apply, hroot, coe_equivA, ← rescale_map, ← coe_equivA, AlgEquiv.apply_symm_apply, hms]
+    rfl
+  have hRHS : ϖ.iTot t K f' =
+      ∑ τ, idem (constA t) τ * ϖ.evO O (rescale (c τ) ((equivA O K).symm (f (τ - m)))) := by
+    rw [PiSys.iTot, glue_apply]
+    refine Finset.sum_congr rfl fun τ _ => ?_
+    rw [hf'' τ, PiSys.iA_equivA]
+  rw [hRHS, PiSys.iTot, glue_apply, map_sum]
+  refine Fintype.sum_equiv (Equiv.addRight (m : ZMod a)) _ _ fun σ => ?_
+  rw [map_mul, galOA_idem t hs, Equiv.coe_addRight, add_sub_cancel_right]
+  change _ * galOA O k (ϖ.evO O ((equivA O K).symm (f σ))) = _
+  rw [galOA_evO t ϖ z hz.symm, idem_mul_glue]
+
+end GlobalTheory.CoverGen
+
+theorem GlobalTheory.CoverGen.exists_covers_of_sigma_teich : ∀ (l : ℕ) [Fact l.Prime] (a e : ℕ) [NeZero a] [NeZero e] (O K : Type) [CommRing O] [Algebra ℤ_[l] O] [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O] [NormedField K] [IsUltrametricDist K] [Algebra O K] [IsUnitBall O K] [NormedAlgebra ℚ_[l] K] [TameDescentExponentData K l e a] (t : Wq l a →ₐ[ℤ_[l]] O) (ϖ : PiSys l e) (k : GQ l) (s : ZMod a) (z : Fq l a), z ^ e = 1 → (∀ w : Wq l a, Per.σA k (wA l a w) = wA l a ((sigma l a ^ s.val) w)) → ϖ.kummer k = Fq.val l a z → ∃ γ : TameGal K l e a, Covers K t ϖ k γ :=
+  fun _ _ _ _ _ _ _ K _ _ _ _ _ _ _ _ _ _ t ϖ _ s z hze hs hz => GlobalTheory.CoverGen.covers_of_sigma_teich t ϖ K s z hze hs hz
+end
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BK GlobalTheory.BKReal GlobalTheory.BKGal GlobalTheory.Per Matrix
+open scoped Formalism.Per
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_coversTame_of_frobenius_teichmuller : ∀ (l : ℕ) [Fact l.Prime] (a e : ℕ) [NeZero a] [NeZero e] (O K : Type) [CommRing O] [Algebra ℤ_[l] O] [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O] [NormedField K] [IsUltrametricDist K] [Algebra O K] [IsUnitBall O K] [NormedAlgebra ℚ_[l] K] [TameDescentExponentData K l e a] (t : Wq l a →ₐ[ℤ_[l]] O) (ϖ : PiSys l e) (k : GQ l) (s : ZMod a) (z : Fq l a), z ^ e = 1 → (∀ w : Wq l a, Per.σA k (wA l a w) = wA l a ((sigma l a ^ s.val) w)) → ϖ.kummer k = Fq.val l a z → ∃ γ : TameGal K l e a, Covers K t ϖ k γ := by
+  atlas_forward_decl GlobalTheory.CoverGen.exists_covers_of_sigma_teich
+end
+
+section
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BK GlobalTheory.BKReal GlobalTheory.BKGal GlobalTheory.Per Matrix
+open scoped Formalism.Per
+
+namespace GlobalTheory.TameCoverGen
+
+theorem main : ∀ (l : ℕ) [Fact l.Prime] (a e : ℕ) [NeZero a] [NeZero e] (O K : Type) [CommRing O] [Algebra ℤ_[l] O] [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O] [NormedField K] [IsUltrametricDist K] [Algebra O K] [IsUnitBall O K] [NormedAlgebra ℚ_[l] K] [TameDescentExponentData K l e a] (t : Wq l a →ₐ[ℤ_[l]] O) (ϖ : PiSys l e) (g : Gl l), ∃ h k : Gl l, g = h * k ∧ sQ l h ∈ GK (ϖ.field a) ∧ ∃ γ : TameGal K l e a, Covers K t ϖ (sQ l k) γ := by
+  intro l _ a e _ _ O K _ _ _ _ _ _ _ _ _ _ t ϖ g
+  have he : e + 1 = l ^ a := TameDescentExponentData.succ_eq (K := K)
+  obtain ⟨h, hh, k, hk, hg⟩ := GlobalTheory.T.galoisQl_eq_galoisKPrime_mul_galoisKinfty l a e ϖ he (sQ l g)
+  let h' : Gl l := ⟨h, GK_le (K := Formalism.MainNotions.ElementDenominator.qlExt l) (K' := ϖ.field a) bot_le hh⟩
+  refine ⟨h', h'⁻¹ * g, by rw [mul_inv_cancel_left], hh, ?_⟩
+  have hk' : sQ l (h'⁻¹ * g) = k := by
+    rw [map_mul, map_inv, show sQ l g = h * k from hg]
+    change h⁻¹ * (h * k) = k
+    rw [inv_mul_cancel_left]
+  rw [hk']
+  obtain ⟨s, hs⟩ := GlobalTheory.T.galois_action_cyclotomic_power l a k
+  obtain ⟨z, hz, hkz⟩ := GlobalTheory.T.exists_root_of_unity_kummer_eq l a e ϖ he k hk
+  exact GlobalTheory.T.exists_coversTame_of_frobenius_teichmuller l a e O K t ϖ k s z hz hs hkz
+
+end GlobalTheory.TameCoverGen
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BK GlobalTheory.BKReal GlobalTheory.BKGal GlobalTheory.Per Matrix
+open scoped Formalism.Per
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_galois_decomp_tameCover_action : ∀ (l : ℕ) [Fact l.Prime] (a e : ℕ) [NeZero a] [NeZero e] (O K : Type) [CommRing O] [Algebra ℤ_[l] O] [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O] [NormedField K] [IsUltrametricDist K] [Algebra O K] [IsUnitBall O K] [NormedAlgebra ℚ_[l] K] [TameDescentExponentData K l e a] (t : Wq l a →ₐ[ℤ_[l]] O) (ϖ : PiSys l e) (g : Gl l), ∃ h k : Gl l, g = h * k ∧ sQ l h ∈ GK (ϖ.field a) ∧ ∃ γ : TameGal K l e a, Covers K t ϖ (sQ l k) γ := by
+  atlas_forward_decl GlobalTheory.TameCoverGen.main
+end
+
+section
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BK GlobalTheory.BKReal GlobalTheory.BKGal GlobalTheory.Per Matrix
+open scoped Formalism.Per
+
+noncomputable section
+
+namespace GlobalTheory.TensorOneInj
+
+theorem bcris_nontrivial (l : ℕ) [Fact l.Prime] : Nontrivial (Per.Bcris l) := by
+  obtain ⟨C⟩ := GlobalTheory.MemLoc.nonempty_core l
+  have : Nontrivial (Per.BdR l) := (GlobalTheory.MemLoc.BdRField.bdR_isField l).2.2.1.nontrivial
+  exact C.ι.domain_nontrivial
+
+theorem algebraMap_injective (l : ℕ) [Fact l.Prime] :
+    Function.Injective (algebraMap ℤ_[l] (Per.Bcris l)) := by
+  have := bcris_nontrivial l
+  rw [injective_iff_map_eq_zero]
+  intro x hx
+  by_contra h0
+  rw [PadicInt.unitCoeff_spec h0, map_mul, map_pow, map_natCast] at hx
+  have hu : IsUnit (algebraMap ℤ_[l] (Per.Bcris l) (PadicInt.unitCoeff h0 : ℤ_[l])) :=
+    (PadicInt.unitCoeff h0).isUnit.map _
+  exact (hu.mul ((GlobalTheory.MemLoc.isUnit_l_Bcris l).pow _)).ne_zero hx
+
+theorem algebraMap_OB_injective (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O]
+    [Module.Flat ℤ_[l] O] : Function.Injective (algebraMap O (OB l O)) := by
+  have h := Module.Flat.lTensor_preserves_injective_linearMap (M := O)
+    (Algebra.linearMap ℤ_[l] (Per.Bcris l)) (algebraMap_injective l)
+  have e : ⇑(algebraMap O (OB l O)) =
+      (LinearMap.lTensor O (Algebra.linearMap ℤ_[l] (Per.Bcris l))) ∘ (TensorProduct.rid ℤ_[l] O).symm := by
+    funext o
+    simp [Algebra.TensorProduct.algebraMap_apply]
+  rw [e]
+  exact h.comp (TensorProduct.rid ℤ_[l] O).symm.injective
+
+theorem tensor_one_injective : ∀ (l : ℕ) [Fact l.Prime] (O K : Type) [CommRing O] [Algebra ℤ_[l] O]
+    [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O] [NormedField K] [Algebra O K] [IsUnitBall O K]
+    [NormedAlgebra ℚ_[l] K] (G : Type) [Group G] [TopologicalSpace G] (T : LocLat G ℚ_[l] K O),
+    Function.Injective fun x : ↥T.L.T => (1 : OB l O) ⊗ₜ[O] x := by
+  intro l _ O K _ _ _ _ _ _ _ _ G _ _ T
+  haveI : Module.Free O ↥T.L.T := T.L.free
+  have h := Module.Flat.rTensor_preserves_injective_linearMap (M := ↥T.L.T)
+    (Algebra.linearMap O (OB l O)) (algebraMap_OB_injective l O)
+  have e : (fun x : ↥T.L.T => (1 : OB l O) ⊗ₜ[O] x) =
+      (LinearMap.rTensor (↥T.L.T) (Algebra.linearMap O (OB l O))) ∘ (TensorProduct.lid O ↥T.L.T).symm := by
+    funext x
+    simp [Algebra.TensorProduct.one_def]
+  rw [e]
+  exact h.comp (TensorProduct.lid O ↥T.L.T).symm.injective
+
+end GlobalTheory.TensorOneInj
+end
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BK GlobalTheory.BKReal GlobalTheory.BKGal GlobalTheory.Per Matrix
+open scoped Formalism.Per
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.one_tmul_injective_locLat : ∀ (l : ℕ) [Fact l.Prime] (O K : Type) [CommRing O] [Algebra ℤ_[l] O] [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O] [NormedField K] [Algebra O K] [IsUnitBall O K] [NormedAlgebra ℚ_[l] K] (G : Type) [Group G] [TopologicalSpace G] (T : LocLat G ℚ_[l] K O), Function.Injective fun x : ↥T.L.T => (1 : OB l O) ⊗ₜ[O] x := by
+  atlas_forward_decl GlobalTheory.TensorOneInj.tensor_one_injective
+end
+
+section
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BK GlobalTheory.BKReal GlobalTheory.BKGal GlobalTheory.Per Matrix
+open scoped Formalism.Per
+
+namespace GlobalTheory
+
+theorem horiz_eq_xi_red : ∀ (O K : Type) [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K] [IsUnitBall O K] (l e a : ℕ) (ι : Type) [Fintype ι] [DecidableEq ι] [Fact l.Prime] [NormedAlgebra ℚ_[l] K] (P : PhiMod O K l e a ι) (v : Vec K a ι), P.conn v = 0 → v = P.xi (red v) := by
+  intro O K _ _ _ _ _ l e a ι _ _ _ _ P v hv
+  have hn : P.nabla v = 0 := by
+    rw [BK.PhiMod.conn_apply] at hv
+    exact (smul_right_injective _ PowerSeries.X_ne_zero) (hv.trans (smul_zero _).symm)
+  set w := P.xiExt.symm v with hw
+  have hvw : v = P.xiExt w := by rw [hw, LinearEquiv.apply_symm_apply]
+  have hd : BK.derV w = 0 := by
+    rw [hvw, BK.PhiMod.nabla_xiExt, ← map_zero P.xiExt] at hn
+    exact P.xiExt.injective hn
+  have hnz : ∀ m : ℕ, ((m : K) + 1) ≠ 0 := by
+    intro m h
+    have h2 : algebraMap ℚ_[l] K ((m : ℚ_[l]) + 1) = 0 := by
+      rw [map_add, map_natCast, map_one]; exact h
+    rw [map_eq_zero_iff _ (algebraMap ℚ_[l] K).injective] at h2
+    exact Nat.cast_add_one_ne_zero m h2
+  have hc : w = BK.cst (red w) := by
+    funext τ i
+    ext n
+    rcases n with _ | m
+    · simp [BK.cst_apply, red_apply]
+    · have h1 := congrArg (fun f => PowerSeries.coeff m (f τ i)) hd
+      simp only [BK.derV_apply, PowerSeries.coeff_derivative] at h1
+      rw [BK.cst_apply, PowerSeries.coeff_C, if_neg (Nat.succ_ne_zero m)]
+      have h3 : PowerSeries.coeff (m + 1) (w τ i) * ((m : K) + 1) = 0 := by simpa using h1
+      exact (mul_eq_zero.1 h3).resolve_right (hnz m)
+  calc v = P.xiExt w := hvw
+    _ = P.xiExt (BK.cst (red w)) := by rw [← hc]
+    _ = P.xi (red v) := by rw [BK.PhiMod.xi_apply, hvw, BK.PhiMod.red_xiExt]
+
+end GlobalTheory
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BK GlobalTheory.BKReal GlobalTheory.BKGal GlobalTheory.Per Matrix
+open scoped Formalism.Per
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eq_xi_red_of_conn_eq_zero' : ∀ (O K : Type) [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K] [IsUnitBall O K] (l e a : ℕ) (ι : Type) [Fintype ι] [DecidableEq ι] [Fact l.Prime] [NormedAlgebra ℚ_[l] K] (P : PhiMod O K l e a ι) (v : Vec K a ι), P.conn v = 0 → v = P.xi (red v) := by
+  atlas_forward_decl GlobalTheory.horiz_eq_xi_red
+end
+
+section
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BK GlobalTheory.BKReal GlobalTheory.BKGal GlobalTheory.Per Matrix
+open scoped Formalism.Per
+
+namespace GlobalTheory.LatPow
+
+theorem pow_smul_mem : ∀ (l : ℕ) [Fact l.Prime] (O K : Type) [CommRing O] [NormedField K] [Algebra O K]
+    [IsUnitBall O K] [NormedAlgebra ℚ_[l] K] (G : Type) [Group G] [TopologicalSpace G]
+    (T : LocLat G ℚ_[l] K O) (v : T.V), ∃ n₀ : ℕ, ∀ n, n₀ ≤ n → ∃ x : ↥T.L.T, (x : T.V) = (l : K) ^ n • v := by
+  intro l _ O K _ _ _ _ _ G _ _ T v
+  have hv : v ∈ Submodule.span K (T.L.T : Set T.V) := by rw [T.L.span]; trivial
+  suffices h : ∃ n₀ : ℕ, ∀ n, n₀ ≤ n → (l : K) ^ n • v ∈ T.L.T by
+    obtain ⟨n₀, h⟩ := h
+    exact ⟨n₀, fun n hn => ⟨⟨_, h n hn⟩, rfl⟩⟩
+  induction hv using Submodule.span_induction with
+  | mem x hx =>
+    refine ⟨0, fun n _ => ?_⟩
+    have : (l : K) ^ n • x = ((l : O) ^ n) • x := by
+      rw [← algebraMap_smul K ((l : O) ^ n) x, map_pow, map_natCast]
+    rw [this]
+    exact T.L.T.smul_mem _ hx
+  | zero => exact ⟨0, fun n _ => by rw [smul_zero]; exact T.L.T.zero_mem⟩
+  | add x y _ _ hx hy =>
+    obtain ⟨a, ha⟩ := hx
+    obtain ⟨b, hb⟩ := hy
+    exact ⟨max a b, fun n hn => by
+      rw [smul_add]
+      exact T.L.T.add_mem (ha n (le_of_max_le_left hn)) (hb n (le_of_max_le_right hn))⟩
+  | smul c x _ hx =>
+    obtain ⟨a, ha⟩ := hx
+    obtain ⟨m, b, hb⟩ := exists_pow_mul_mem (O := O) l c
+    refine ⟨a + m, fun n hn => ?_⟩
+    have e : (l : K) ^ n • c • x = b • ((l : K) ^ (n - m) • x) := by
+      rw [← algebraMap_smul K b, ← hb, smul_smul, smul_smul]
+      congr 1
+      rw [mul_comm ((l : K) ^ m) c, mul_assoc, ← pow_add, Nat.add_sub_cancel' (by omega), mul_comm]
+    rw [e]
+    exact T.L.T.smul_mem _ (ha _ (by omega))
+
+end GlobalTheory.LatPow
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BK GlobalTheory.BKReal GlobalTheory.BKGal GlobalTheory.Per Matrix
+open scoped Formalism.Per
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_prime_pow_smul_mem_localLattice : ∀ (l : ℕ) [Fact l.Prime] (O K : Type) [CommRing O] [NormedField K] [Algebra O K] [IsUnitBall O K] [NormedAlgebra ℚ_[l] K] (G : Type) [Group G] [TopologicalSpace G] (T : LocLat G ℚ_[l] K O) (v : T.V), ∃ n₀ : ℕ, ∀ n, n₀ ≤ n → ∃ x : ↥T.L.T, (x : T.V) = (l : K) ^ n • v := by
+  atlas_forward_decl GlobalTheory.LatPow.pow_smul_mem
+end
+
+section
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BK GlobalTheory.BKReal GlobalTheory.BKGal GlobalTheory.Per Matrix
 open scoped Formalism.Per
 
@@ -229,3 +629,5 @@ theorem potential_class : ∀ (l : ℕ) [Fact l.Prime] (a e : ℕ) [NeZero a] [N
     exact ⟨b + 0, isPotential_add R hb (UnitModel.isPotential_phi_sub t ϖ R hm), by rwa [add_zero]⟩
 
 end GlobalTheory.GalPot
+end
+end

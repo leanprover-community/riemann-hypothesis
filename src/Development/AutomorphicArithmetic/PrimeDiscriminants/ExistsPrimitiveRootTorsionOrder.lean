@@ -64,9 +64,7 @@ def IsMu (x : H.E) : Prop := ∃ m : ℕ, 0 < m ∧ x ^ m = 1
 
 theorem w_pos : 0 < H.w := Units.torsionOrder_pos H.E
 
-theorem two_dvd_w : 2 ∣ H.w := UpperTheory.two_dvd_torsionOrder
 
-theorem two_le_w : 2 ≤ H.w := Nat.le_of_dvd H.w_pos H.two_dvd_w
 
 theorem isMu_iff (x : H.E) : H.IsMu x ↔ x ^ H.w = 1 := UpperTheory.root_iff_pow_torsionOrder x
 
@@ -82,18 +80,6 @@ theorem MuPM.nuW (h : H.MuPM) (l : ℕ) : H.nuW l = if l = 2 then 1 else 0 := by
 theorem w_dvd_condN : H.w ∣ H.condN :=
   UpperTheory.torsionOrder_dvd_of_algHom H.condN (even_iff_two_dvd.2 H.two_dvd_condN) (Nat.pos_of_ne_zero H.condN_ne_zero) H.cycEmb
 
-theorem sum_nuW_mul_log_le (S : Finset ℕ) : ∑ l ∈ S, (H.nuW l : ℝ) * Real.log l ≤ Real.log H.w := by
-  classical
-  rw [Real.log_nat_eq_sum_factorization, Finsupp.sum]
-  have h0 : ∀ l : ℕ, 0 ≤ (H.w.factorization l : ℝ) * Real.log l := fun l => by positivity
-  calc ∑ l ∈ S, (H.nuW l : ℝ) * Real.log l
-      = ∑ l ∈ S ∩ H.w.factorization.support, (H.w.factorization l : ℝ) * Real.log l := by
-        refine (Finset.sum_subset Finset.inter_subset_left fun l hl hl' => ?_).symm
-        have : H.w.factorization l = 0 := by
-          by_contra h
-          exact hl' (Finset.mem_inter.2 ⟨hl, Finsupp.mem_support_iff.2 h⟩)
-        simp [HostRaw.nuW, this]
-    _ ≤ _ := Finset.sum_le_sum_of_subset_of_nonneg Finset.inter_subset_right fun l _ _ => h0 l
 
 end Formalism.HC.HostRaw
 

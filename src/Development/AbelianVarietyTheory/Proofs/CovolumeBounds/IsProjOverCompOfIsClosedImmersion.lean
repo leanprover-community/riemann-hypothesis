@@ -4,8 +4,64 @@ import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsIs
 import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.AwayLiftCompFromZeroRingHom
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IsProjOverOfIsPullback
-import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IsClosedImmersionSigmaDesc
+import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IsClosedImmersionIffPullRatio
 
+section
+noncomputable section
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits TopologicalSpace MvPolynomial
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap PSpace resG IsProjOver)
+namespace GlobalTheory.ProjSpace
+
+private lemma isClosedEmbedding_sigma_desc_of_pairwise_disjoint_range {ι : Type} [Finite ι] {Z : ι → Type*}
+    [∀ i, TopologicalSpace (Z i)] {W : Type*} [TopologicalSpace W] (g : ∀ i, Z i → W)
+    (hg : ∀ i, Topology.IsClosedEmbedding (g i))
+    (h : Pairwise fun i j => Disjoint (Set.range (g i)) (Set.range (g j))) :
+    Topology.IsClosedEmbedding (fun p : Σ i, Z i => g p.1 p.2) := by
+  refine .of_continuous_injective_isClosedMap ?_ ?_ ?_
+  · exact continuous_sigma fun i => (hg i).continuous
+  · rintro ⟨i, x⟩ ⟨j, y⟩ hxy
+    by_cases hij : i = j
+    · subst hij
+      obtain rfl := (hg i).injective hxy
+      rfl
+    · exact absurd hxy ((h hij).ne_of_mem ⟨x, rfl⟩ ⟨y, rfl⟩)
+  · intro C hC
+    have hC' : (fun p : Σ i, Z i => g p.1 p.2) '' C = ⋃ i, g i '' (_root_.Sigma.mk i ⁻¹' C) := by
+      ext w
+      simp
+    rw [hC']
+    exact isClosed_iUnion_of_finite fun i => (hg i).isClosedMap _ (hC.preimage continuous_sigmaMk)
+
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits TopologicalSpace MvPolynomial in
+
+theorem _root_.GlobalTheory.ProjSpace.isClosedImmersion_sigmaDesc {ι : Type} [Finite ι]
+    {X : ι → Scheme.{0}} {Y : Scheme.{0}}
+    (f : ∀ i, X i ⟶ Y) (hf : ∀ i, IsClosedImmersion (f i))
+    (h : Pairwise fun i j => Disjoint (Set.range (f i)) (Set.range (f j))) :
+    IsClosedImmersion (Sigma.desc f) := by
+  have hsurj : SurjectiveOnStalks (Sigma.desc f) :=
+    IsZariskiLocalAtSource.sigmaDesc (P := @SurjectiveOnStalks) fun i => (hf i).toSurjectiveOnStalks
+  have key : ⇑(Sigma.desc f) ∘ AlgebraicGeometry.sigmaMk X = fun p => f p.1 p.2 := by
+    funext ⟨i, x⟩
+    rw [Function.comp_apply, AlgebraicGeometry.sigmaMk_mk, ← Scheme.Hom.comp_apply, Sigma.ι_desc]
+  have hce : Topology.IsClosedEmbedding (Sigma.desc f) := by
+    have e := isClosedEmbedding_sigma_desc_of_pairwise_disjoint_range (fun i => ⇑(f i))
+      (fun i => (hf i).isClosedEmbedding) h
+    rw [← key] at e
+    have hsplit : ⇑(Sigma.desc f) =
+        (⇑(Sigma.desc f) ∘ AlgebraicGeometry.sigmaMk X) ∘ (AlgebraicGeometry.sigmaMk X).symm := by
+      funext y
+      simp
+    rw [hsplit]
+    exact e.comp (AlgebraicGeometry.sigmaMk X).symm.isClosedEmbedding
+  haveI : IsPreimmersion (Sigma.desc f) := (isPreimmersion_iff _).2 ⟨hsurj, hce.isEmbedding⟩
+  exact .of_isPreimmersion _ hce.isClosed_range
+
+end GlobalTheory.ProjSpace
+end
+end
+
+section
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory CategoryTheory.Limits TopologicalSpace Opposite MvPolynomial
@@ -433,7 +489,6 @@ def vPlusι : VPlus I ⟶ PSpace R N :=
 instance isClosedImmersion_vPlusι : IsClosedImmersion (vPlusι I) :=
   isClosedImmersion_projMap _ Ideal.Quotient.mk_surjective _
 
-theorem isProjOver_vPlus : IsProjOver (vPlusι I ≫ PSpace.str R N) := ⟨N, vPlusι I, inferInstance, rfl⟩
 
 theorem vPlusι_app_formOn_eq_zero_iff (i : Fin (N + 1)) {n : ℕ} {f : MvPolynomial (Fin (N + 1)) R}
     (hf : f.IsHomogeneous n) :
@@ -539,12 +594,6 @@ theorem mem_range_vPlusι_iff (x : PSpace R N) : x ∈ Set.range (vPlusι I) ↔
 theorem range_vPlusι : Set.range (vPlusι I) = ProjectiveSpectrum.zeroLocus (grading R N) I :=
   Set.ext fun x => mem_range_vPlusι_iff I x
 
-theorem exists_eq_pt_vPlus [Subsingleton (CommRing.Pic A)] (c : R →+* A) (ψ : Sp A ⟶ VPlus I)
-    (hψ : ψ ≫ vPlusι I ≫ PSpace.str R N = spMap c) :
-    ∃ (v : Fin (N + 1) → A) (hv : Ideal.span (Set.range v) = ⊤),
-      (∀ f ∈ I, eval₂ c v f = 0) ∧ ψ ≫ vPlusι I = pt c v hv := by
-  obtain ⟨v, hv, e⟩ := exists_eq_pt c (ψ ≫ vPlusι I) (by rw [Category.assoc, hψ])
-  exact ⟨v, hv, (exists_comp_vPlusι_eq_pt_iff I c v hv).1 ⟨ψ, e⟩, e⟩
 
 theorem isProjOver_comp_of_isClosedImmersion (g : Z ⟶ Y) [IsClosedImmersion g] {f : Y ⟶ Sp R}
     (h : IsProjOver f) : IsProjOver (g ≫ f) := by
@@ -731,3 +780,5 @@ example (h : Ideal.span (Set.range ![(2 : ℤ), 3]) = ⊤) (h' : Ideal.span (Set
   (pt_eq_pt_iff _ h h').2 ⟨-1, by decide⟩
 
 end GlobalTheory.ProjSpace
+end
+end

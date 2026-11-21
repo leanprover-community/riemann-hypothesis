@@ -381,42 +381,6 @@ theorem exists_levTie (d : DeltaDat Xo c n) (σ : c.F →+* ℂ) (hI : d.l₂.Mb
     exact (a (key.1 ⟨k.1, (mem_congGrp hle k.1).1 k.2, hk⟩)).elim
   · simp
 
-theorem exists_x0Tie (d : DeltaDat Xo c n) (hpd : Nat.Coprime d.pd l.M) {X : Data E (Dw.p + Dw.q)}
-    (D : SW.Level X) (hm : D.𝔪 ≤ Mfr l) (hn : Dw.p + Dw.q ≤ n) {L : Lt E (Dw.p + Dw.q)} (hL : L ∈ D.lats)
-    {δ : Dw.La →ₗ[𝓞 E] (Fin (Dw.p + Dw.q) → E)} (hδ : ∀ a, δ a ∈ L) (hon : L ≤ LinearMap.range δ ⊔ Mfr l • L)
-    (rk : Bool) : ∃ x0, IsBaseClassLevelAdapted d D hn x0 δ ∧ AdmX (l := l) rk x0 := by
-  have := Dw.fin
-  have := Dw.proj
-  obtain ⟨s, hs, hLΛ, hΛL⟩ := hL.2
-  have mono {t : 𝓞 E} (ht : IsCoprime (Ideal.span {t}) D.𝔪) : IsCoprime (Ideal.span {t}) (Mfr l) := by
-    obtain ⟨a, m, hm', e⟩ := cop_iff.1 ht
-    exact cop_iff.2 ⟨a, m, hm hm', e⟩
-  have hsb := mono hs.of_mul_right_left
-  have hp : IsCoprime (Ideal.span {(d.pd : 𝓞 E)}) (Mfr l) := by
-    obtain ⟨a, b, e⟩ := (Nat.isCoprime_iff_coprime.2 hpd).map (Int.castRingHom (𝓞 E))
-    exact cop_iff.2 ⟨a, _, Ideal.mul_mem_left _ b (m_mem l), by simpa using e⟩
-  have l1 : loc (Mfr l) (Mfr l • X.Λ) ≤ loc (Mfr l) (Mfr l • L) := fun v ⟨t, ht, hv⟩ =>
-    loc_loc ht ⟨s, hsb, smul_map_mem LinearMap.id hΛL hv⟩
-  have l2 : Mfr l • L ≤ loc (Mfr l) (Mfr l • X.Λ) := fun v hv => ⟨s, hsb, smul_map_mem LinearMap.id hLΛ hv⟩
-  have hx (i) : ∃ a : Dw.La, Cong X (Mfr l) (d.pd • δ a) (D.β i) := by
-    obtain ⟨u, hu, e⟩ := exists_cong (N := LinearMap.range ((d.pd : 𝓞 E) • δ)) (le_loc _ (D.β_mem i))
-      (loc_loc (cop_mul hp hsb) (le_loc _ (by
-        obtain ⟨_, ⟨a, rfl⟩, w, hw, e⟩ := Submodule.mem_sup.1 (hon (hΛL _ (D.β_mem i)))
-        rw [mul_smul, ← e, smul_add]
-        exact Submodule.add_mem_sup ⟨a, rfl⟩ (Submodule.smul_mem _ _ (l2 hw)))))
-    obtain ⟨a, rfl⟩ := hu
-    exact ⟨a, by simpa [Nat.cast_smul_eq_nsmul] using cong_symm e⟩
-  choose a ha using hx
-  refine ⟨fun k => if h : (k : ℕ) < Dw.p + Dw.q then a ⟨k, h⟩ else 0, ⟨fun i => by simpa using ha i,
-    fun k hk => by simp [not_lt.2 hk]⟩, ?_⟩
-  refine span_of_map Dw.rank hL.1.1 (span_lats hL) hδ hon fun v hv => ?_
-  refine loc_loc hsb (SetLike.le_def.1 (D.β_span.trans (sup_le (Submodule.span_le.2 ?_) ?_)) (hLΛ v hv))
-  · rintro _ ⟨i, rfl⟩
-    rw [← sub_add_cancel (D.β i) (d.pd • δ (a i))]
-    refine add_mem (loc_mono le_sup_right (l1 (cong_iff.1 (cong_symm (ha i)))))
-      (le_loc _ (Submodule.mem_sup_left (nsmul_mem (Submodule.mem_map_of_mem (Submodule.subset_span ?_)) _)))
-    exact ⟨Fin.castLE hn i, Or.inr i.2, by simp⟩
-  · exact (Submodule.smul_mono hm le_rfl).trans ((le_loc _).trans (l1.trans (loc_mono le_sup_right)))
 
 theorem LevTie.norm_eq_one {d : DeltaDat Xo c n} {σ : c.F →+* ℂ} {ph : (Fin n → LaJ Xo c d) → c.F}
     {D : SW.Level X} {hn : r ≤ n} (T : LevTie d σ ph D hn) {L : Lt E r} (hL : L ∈ D.lats)
@@ -434,17 +398,6 @@ theorem LevTie.norm_eq_one {d : DeltaDat Xo c n} {σ : c.F →+* ℂ} {ph : (Fin
   rw [h xs y (fun i => by rw [e]; exact ⟨hx i, cong_refl _⟩) e0, datF,
     dif_pos ⟨⟨1, by simp only [e]; exact red_one⟩, e0⟩, norm_mul, ht, norm_lam, one_mul]
 
-theorem spanInd_laws (d : DeltaDat Xo c n) :
-    (∀ x x' : Fin n → LaJ Xo c d, (∀ b : Fin n, b.val < Dw.p + Dw.q → x b = x' b) → spanInd d x = spanInd d x') ∧
-    (∀ x, spanInd d x ≠ 0 → Submodule.span (𝓞 E) (x '' {b | b.val < Dw.p + Dw.q}) = ⊤) ∧
-    ∀ (k : LaJ Xo c d ≃ₗ[𝓞 E] LaJ Xo c d) x, spanInd d (fun b => k (x b)) = spanInd d x := by
-  refine ⟨fun x x' h => ?_, fun x h => ?_, fun k x => ?_⟩
-  · rw [spanInd, spanInd, Set.image_congr (s := {b : Fin n | b.val < Dw.p + Dw.q}) (g := x') h]
-  · by_contra e; exact h (if_neg e)
-  · have : Submodule.span (𝓞 E) ((fun b => k (x b)) '' {b | b.val < Dw.p + Dw.q}) =
-        (Submodule.span (𝓞 E) (x '' {b | b.val < Dw.p + Dw.q})).map (k : LaJ Xo c d →ₗ[𝓞 E] LaJ Xo c d) := by
-      rw [Submodule.map_span, Set.image_image]; rfl
-    simp only [spanInd, this, Submodule.map_eq_top_iff]
 
 end
 

@@ -1,20 +1,1165 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.EisValueAtIffEisPoleLE
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.OneMemEntries
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ValHalfInf
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsLinearIndependentOfRatIndependent
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsAdeleCoverModFieldShrunkCompact
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SkewHermitianAdelicCoverOfAdeleCover
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CompactAdelesRationalPointsFiniteEventuallyZeroStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TensorIdeleNormalizedAbsIdeleHalfAtInfinityStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SummableRpowOfFibreCardLe
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIntGeneratorsCardEqOfIsLatticePi
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LinearIndependentVecMulOfSpanRat
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GramDetIndexSublattice
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MatrixInvEntriesBounded
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsLatticeAdelicMatrixIntegralTranslateStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsCmAdeleSplitComplexFiniteAdeles
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TotallyComplexSpanEmbeddingsAndFinrank
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.CocompactTensor
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CompactAdelesRationalPointsFiniteEventuallyZero
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TensorIdeleNormalizedAbsIdeleHalfAtInfinity
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsLatticeAdelicMatrixIntegralTranslate
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsAdeleRingTensorEquivInfiniteProdFinite
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsArchAdeleTensorEquivComplexCmType
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsTensorFiniteAdeleEquiv
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ContinuousSymmFinite
 
+section
+noncomputable section
+
+namespace GlobalTheory.Eis.Conv
+
+open Matrix Formalism.UG GlobalTheory.Doubling
+open scoped NNReal
+
+section Alg
+
+variable {A : Type} [CommRing A] {n ι : Type} [Fintype n] [DecidableEq n] [Fintype ι] [DecidableEq ι]
+  (e : n ⊕ n ≃ ι)
+
+def uni (S : Matrix n n A) : GL ι A :=
+  ⟨(fromBlocks 1 S 0 1).submatrix e.symm e.symm, (fromBlocks 1 (-S) 0 1).submatrix e.symm e.symm,
+    by simp [submatrix_mul_equiv, fromBlocks_multiply], by simp [submatrix_mul_equiv, fromBlocks_multiply]⟩
+
+theorem val_uni (S : Matrix n n A) : (uni e S).1 = (fromBlocks 1 S 0 1).submatrix e.symm e.symm := rfl
+
+theorem uni_add (S T : Matrix n n A) : uni e (S + T) = uni e S * uni e T :=
+  Units.ext (by simp [val_uni, submatrix_mul_equiv, fromBlocks_multiply, add_comm])
+
+theorem blk_mul_uni (a d : GL n A) (S : Matrix n n A) :
+    blkGL e (a, d) * uni e S = uni e (a.1 * S * d⁻¹.1) * blkGL e (a, d) :=
+  Units.ext (by simp [val_uni, blkMat, submatrix_mul_equiv, fromBlocks_multiply, Matrix.mul_assoc])
+
+def cti (σ : A →+* A) : GL n A →* GL n A where
+  toFun g := ⟨cT σ g⁻¹.1, cT σ g.1, by rw [← cT_mul, Units.mul_inv, cT_one], by rw [← cT_mul, Units.inv_mul, cT_one]⟩
+  map_one' := Units.ext (by simp [cT_one])
+  map_mul' g h := Units.ext (by simp [cT_mul])
+
+theorem val_cti (σ : A →+* A) (g : GL n A) : (cti σ g).1 = cT σ g⁻¹.1 := rfl
+
+variable [Invertible (2 : A)]
+
+theorem conj_mem (x : GL ι A) (h : (x.1.submatrix e e).toBlocks₂₁ = 0) :
+    (cayley e)⁻¹ * x * cayley e ∈ stabGL (diagSub A e) := by
+  refine mem_stabGL_diagSub.2 (keepsDiag_of_mulVec fun w hw => ?_)
+  obtain ⟨y, rfl⟩ := (mem_diagSub e).1 hw
+  refine (mem_diagSub e).2 ⟨⅟(2 : A) • ((x.1.submatrix e e).toBlocks₁₁ *ᵥ (y + y)), ?_⟩
+  rw [Units.val_mul, Units.val_mul, ← mulVec_mulVec, ← mulVec_mulVec, cayley_mulVec, mulVec_pairVec e x.1, h]
+  refine (congrArg (fun z => (cayley e)⁻¹.1 *ᵥ z) ?_).trans
+    (by rw [mulVec_mulVec, Units.inv_mul, one_mulVec] : (cayley e)⁻¹.1 *ᵥ ((cayley e).1 *ᵥ _) = _)
+  rw [cayley_mulVec, ← add_smul, invOf_two_add_invOf_two]
+  simp
+
+def upper : Subgroup (GL ι A) := (stabGL (diagSub A e)).comap (MulAut.conj (cayley (A := A) e)⁻¹).toMonoidHom
+
+theorem mem_upper {x : GL ι A} : x ∈ upper e ↔ (cayley e)⁻¹ * x * cayley e ∈ stabGL (diagSub A e) := by
+  simp [upper]
+
+theorem uni_mem (S : Matrix n n A) : uni e S ∈ upper e := (mem_upper e).2 (conj_mem e _ (by simp [val_uni]))
+
+theorem blk_mem (a d : GL n A) : blkGL e (a, d) ∈ upper e := (mem_upper e).2 (conj_mem e _ (by simp [blkMat]))
+
+theorem exists_decomp {σ : A →+* A} (hσ : ∀ x, σ (σ x) = x) {U : GL n A} (hU : cT σ U.1 = U.1) {p : GL ι A}
+    (hp : p ∈ UJ σ (dblGram e U.1)) (hk : KeepsDiag e p.1) : ∃ (β : GL n A) (S : Matrix n n A), cT σ S = -S ∧
+      leviMat e p.1 = (cti σ β * U).1 ∧
+      blkGL e (1, U) * cayley e * p = uni e S * blkGL e (cti σ β * U, β) * cayley e := by
+  have hc : ∀ X : Matrix n n A, cT σ (cT σ X) = X := fun X => by ext i j; exact hσ _
+  have hu : IsUnit (quotMat e p.1) := by
+    have := (isUnit_iff_isUnit_det _).1 p.isUnit
+    rw [hk.det_eq] at this
+    exact (isUnit_iff_isUnit_det _).2 (isUnit_of_mul_isUnit_right this)
+  obtain ⟨b₀, hb₀⟩ := hu
+  have h0 := quot_levi e hp hk
+  have hl : leviMat e p.1 = (cti σ (U * b₀) * U).1 := by
+    have h0' : cT σ (U * b₀).1 * leviMat e p.1 = U.1 := by rw [Units.val_mul, cT_mul, hU, hb₀]; exact h0
+    refine Eq.trans ?_ (congrArg (cT σ (U * b₀)⁻¹.1 * ·) h0')
+    rw [← Matrix.mul_assoc, ← cT_mul, Units.mul_inv, cT_one, Matrix.one_mul]
+  have h1 : cT σ (p.1.submatrix e e) * fromBlocks U.1 0 0 (-U.1) * p.1.submatrix e e = fromBlocks U.1 0 0 (-U.1) := by
+    rw [← submatrix_blkMat e, show cT σ (p.1.submatrix e e) = (cT σ p.1).submatrix e e from rfl, submatrix_mul_equiv,
+      submatrix_mul_equiv]
+    exact congrArg (fun X => X.submatrix e e) hp
+  have hp' : p.1 = (fromBlocks (p.1.submatrix e e).toBlocks₁₁ (p.1.submatrix e e).toBlocks₁₂
+      (p.1.submatrix e e).toBlocks₂₁ (p.1.submatrix e e).toBlocks₂₂).submatrix e.symm e.symm := by
+    simp [fromBlocks_toBlocks]
+  rw [← fromBlocks_toBlocks (p.1.submatrix e e)] at h1
+  unfold KeepsDiag at hk
+  unfold leviMat at hk hl ⊢
+  unfold quotMat at hb₀
+  generalize (p.1.submatrix e e).toBlocks₁₁ = a at *
+  generalize (p.1.submatrix e e).toBlocks₁₂ = b at *
+  generalize (p.1.submatrix e e).toBlocks₂₁ = c at *
+  generalize (p.1.submatrix e e).toBlocks₂₂ = d at *
+  obtain rfl : d = a + b - c := by rw [← hk]; abel
+  have hs : ∀ X Y : Matrix n n A, cT σ (X - Y) = cT σ X - cT σ Y := fun X Y => by ext; simp [cT]
+  have ha : ∀ X Y : Matrix n n A, cT σ (X + Y) = cT σ X + cT σ Y := fun X Y => by ext; simp [cT]
+  have hf : cT σ (fromBlocks a b c (a + b - c)) = fromBlocks (cT σ a) (cT σ c) (cT σ b) (cT σ a + cT σ b - cT σ c) := by
+    rw [← ha, ← hs]; simp [cT, fromBlocks_map, fromBlocks_transpose]
+  simp only [hf, fromBlocks_multiply, Matrix.mul_zero, add_zero, zero_add, fromBlocks_inj] at h1
+  have h2 : cT σ (c - b) * (U * b₀).1 + cT σ (U * b₀).1 * (c - b) = 0 := by
+    have h3 : (2 : A) • (cT σ (c - b) * (U * b₀).1 + cT σ (U * b₀).1 * (c - b)) = 0 := by
+      rw [Units.val_mul, cT_mul, hU, hb₀, hs, hs, two_smul]
+      refine Eq.trans ?_ ((congrArg₂ (· + ·) (congrArg₂ (· - ·) h1.1 h1.2.1)
+        (congrArg₂ (· - ·) h1.2.2.2 h1.2.2.1)).trans (by simp))
+      noncomm_ring
+    simpa [smul_smul] using congrArg (⅟(2 : A) • ·) h3
+  refine ⟨U * b₀, (c - b) * (U * b₀)⁻¹.1, ?_, hl, Units.ext ?_⟩
+  · have := congrArg (fun X => cT σ (U * b₀)⁻¹.1 * X * (U * b₀)⁻¹.1) h2
+    simp only [Matrix.mul_add, Matrix.add_mul, Matrix.mul_zero, Matrix.zero_mul] at this
+    rw [Matrix.mul_assoc, Matrix.mul_assoc, Units.mul_inv, Matrix.mul_one, ← Matrix.mul_assoc, ← cT_mul, ← cT_mul,
+      Units.mul_inv, cT_one, Matrix.one_mul] at this
+    exact eq_neg_of_add_eq_zero_left this
+  · have h4 : (c - b) * (U * b₀)⁻¹.1 * (U * b₀).1 = c - b := by rw [Matrix.mul_assoc, Units.inv_mul, Matrix.mul_one]
+    simp only [Units.val_mul (uni e _ * _), Units.val_mul (uni e _), Units.val_mul (blkGL e _ * _),
+      Units.val_mul (blkGL e _), val_blkGL, val_uni, blkMat, ← hl]
+    rw [hp']
+    simp only [cayley, submatrix_mul_equiv, fromBlocks_multiply, h4, Matrix.mul_zero, add_zero, zero_add,
+      Matrix.zero_mul, Matrix.one_mul, Matrix.mul_one, Units.val_one, Matrix.mul_neg]
+    congr 1
+    rw [Units.val_mul, hb₀, fromBlocks_inj]
+    refine ⟨?_, ?_, ?_, ?_⟩ <;> noncomm_ring
+
+end Alg
+
+section Bounded
+
+variable {Q X Y : Type} [TopologicalSpace X] [TopologicalSpace Y]
+
+def Bdd (f : Q → X) : Prop := ∃ K, IsCompact K ∧ ∀ q, f q ∈ K
+
+theorem Bdd.map {f : Q → X} (h : Bdd f) {g : X → Y} (hg : Continuous g) : Bdd fun q => g (f q) :=
+  let ⟨K, hK, h⟩ := h; ⟨g '' K, hK.image hg, fun q => ⟨_, h q, rfl⟩⟩
+
+theorem Bdd.prod {f : Q → X} {g : Q → Y} (h : Bdd f) (h' : Bdd g) : Bdd fun q => (f q, g q) :=
+  let ⟨K, hK, h⟩ := h; let ⟨L, hL, h'⟩ := h'; ⟨K ×ˢ L, hK.prod hL, fun q => ⟨h q, h' q⟩⟩
+
+theorem Bdd.comp {f : Q → X} (h : Bdd f) {Q' : Type} (r : Q' → Q) : Bdd fun q => f (r q) :=
+  let ⟨K, hK, h⟩ := h; ⟨K, hK, fun _ => h _⟩
+
+theorem Bdd.mul [Mul X] [ContinuousMul X] {f g : Q → X} (h : Bdd f) (h' : Bdd g) : Bdd fun q => f q * g q :=
+  (h.prod h').map (g := fun x => x.1 * x.2) continuous_mul
+
+theorem Bdd.const (x : X) : Bdd fun _ : Q => x := ⟨{x}, isCompact_singleton, fun _ => rfl⟩
+
+theorem bdd_matrix {m n : Type} {f : Q → Matrix m n X} {K : Set X} (hK : IsCompact K) (h : ∀ q i j, f q i j ∈ K) :
+    Bdd f := ⟨Set.pi Set.univ fun _ => Set.pi Set.univ fun _ => K,
+      isCompact_univ_pi fun _ => isCompact_univ_pi fun _ => hK, fun q i _ j _ => h q i j⟩
+
+theorem Bdd.entries {m n : Type} [Finite m] [Finite n] {f : Q → Matrix m n X} (h : Bdd f) :
+    ∃ K, IsCompact K ∧ ∀ q i j, f q i j ∈ K :=
+  let ⟨K, hK, h⟩ := h
+  ⟨⋃ i, ⋃ j, (fun M : Matrix m n X => M i j) '' K, isCompact_iUnion fun i => isCompact_iUnion fun j =>
+    hK.image (continuous_id.matrix_elem i j), fun q i j => Set.mem_iUnion₂.2 ⟨i, j, _, h q, rfl⟩⟩
+
+theorem bdd_units [Monoid X] [T1Space X] [ContinuousMul X] {f : Q → Xˣ} (h : Bdd fun q => (f q).1)
+    (h' : Bdd fun q => (f q)⁻¹.1) : Bdd f :=
+  let ⟨K, hK, h⟩ := h.prod (h'.map MulOpposite.continuous_op)
+  ⟨_, Units.isClosedEmbedding_embedProduct.isCompact_preimage hK, h⟩
+
+end Bounded
+
+section Count
+
+variable {E A : Type} [Field E] [CommRing A] [Nontrivial A] (j : E →+* A) {n ι : Type} [Fintype n] [DecidableEq n]
+  [Fintype ι] [DecidableEq ι] (e : n ⊕ n ≃ ι)
+
+theorem mem_rat {g : GL ι A} : g ∈ (bc j).range ↔ ∀ a b, g.1 a b ∈ j.range := by
+  refine ⟨by rintro ⟨x, rfl⟩ a b; exact ⟨_, rfl⟩, fun h => ?_⟩
+  choose x hx using h
+  have h1 : (of x).map j = g.1 := by ext a b; exact hx a b
+  have h2 : (of x).det ≠ 0 := fun h => by
+    have := (isUnit_iff_isUnit_det _).1 g.isUnit
+    rw [← h1, ← RingHom.mapMatrix_apply, ← RingHom.map_det, h, map_zero] at this
+    exact not_isUnit_zero this
+  exact ⟨GeneralLinearGroup.mkOfDetNeZero _ h2, Units.ext h1⟩
+
+theorem blocks_mem {R : Subring A} {a b c d : Matrix n n A} (ha : ∀ i k, a i k ∈ R) (hb : ∀ i k, b i k ∈ R)
+    (hc : ∀ i k, c i k ∈ R) (hd : ∀ i k, d i k ∈ R) (x y : ι) : (fromBlocks a b c d).submatrix e.symm e.symm x y ∈ R := by
+  obtain ⟨x | x, rfl⟩ := e.surjective x <;> obtain ⟨y | y, rfl⟩ := e.surjective y <;> simp [*]
+
+theorem one_mem_entries (R : Subring A) (i k : n) : (1 : Matrix n n A) i k ∈ R := by
+  rw [one_apply]; split_ifs; exacts [one_mem _, zero_mem _]
+
+theorem uni_rat (S : Matrix n n E) : uni e (S.map j) ∈ (bc j).range :=
+  (mem_rat j).2 (blocks_mem e (one_mem_entries _) (fun _ _ => ⟨_, rfl⟩) (fun _ _ => zero_mem _) (one_mem_entries _))
+
+theorem blk_rat {a d : GL n A} (ha : a ∈ (bc j).range) (hd : d ∈ (bc j).range) : blkGL e (a, d) ∈ (bc j).range :=
+  (mem_rat j).2 (blocks_mem e ((mem_rat j).1 ha) (fun _ _ => zero_mem _) (fun _ _ => zero_mem _) ((mem_rat j).1 hd))
+
+theorem cayley_rat [Invertible (2 : A)] : cayley e ∈ (bc j).range :=
+  (mem_rat j).2 (blocks_mem e (one_mem_entries _) (one_mem_entries _) (one_mem_entries _)
+    fun _ _ => neg_mem (one_mem_entries _ _ _))
+
+theorem cti_rat {σ : A →+* A} (hσ : ∀ x ∈ j.range, σ x ∈ j.range) {a : GL n A} (ha : a ∈ (bc j).range) :
+    cti σ a ∈ (bc j).range := (mem_rat j).2 fun x y => hσ _ ((mem_rat j).1 (inv_mem ha) y x)
+
+variable [TopologicalSpace A] [IsTopologicalRing A]
+
+theorem exists_card_le (hF : ∀ Ω : Set A, IsCompact Ω → {x : E | j x ∈ Ω}.Finite) {Q : Type} {Z w : Q → GL ι A}
+    (hZ : ∀ q, Z q ∈ (bc j).range) (hi : Function.Injective Z) (hw : Bdd w) :
+    ∃ N : ℕ, ∀ (z : GL ι A) (T : Finset Q), (∀ q ∈ T, Z q = z * w q) → T.card ≤ N := by
+  obtain ⟨Ω, hΩ, h⟩ := ((((hw.comp Prod.fst).map continuous_inv).mul (hw.comp Prod.snd)).map
+    Units.continuous_val).entries
+  have h1 : {g : GL ι A | ∀ a b, g.1 a b ∈ j '' {x : E | j x ∈ Ω}}.Finite :=
+    (Set.Finite.pi' fun _ => Set.Finite.pi' fun _ => (hF Ω hΩ).image j).preimage
+      (f := fun g : GL ι A => (g.1 : ι → ι → A)) fun _ _ _ _ h => Units.ext h
+  refine ⟨h1.toFinset.card, fun z T hT => ?_⟩
+  rcases T.eq_empty_or_nonempty with rfl | ⟨q₀, h₀⟩
+  · simp
+  refine Finset.card_le_card_of_injOn (fun q => (Z q₀)⁻¹ * Z q) (fun q hq => ?_) fun q _ q' _ h => hi (mul_left_cancel h)
+  refine h1.mem_toFinset.2 fun a b => ?_
+  obtain ⟨x, hx⟩ := (mem_rat j).1 (mul_mem (inv_mem (hZ q₀)) (hZ q)) a b
+  refine ⟨x, ?_, hx⟩
+  rw [Set.mem_setOf_eq, hx, hT q hq, hT q₀ h₀, show (z * w q₀)⁻¹ * (z * w q) = (w q₀)⁻¹ * w q by group]
+  exact h (q₀, q) a b
+
+omit [Nontrivial A] in
+theorem continuous_uni : Continuous (uni (A := A) e) :=
+  Units.continuous_iff.2 ⟨(continuous_const.matrix_fromBlocks continuous_id continuous_const
+    continuous_const).matrix_submatrix _ _, (continuous_const.matrix_fromBlocks continuous_neg continuous_const
+    continuous_const).matrix_submatrix _ _⟩
+
+omit [Nontrivial A] in
+theorem continuous_cti {σ : A →+* A} (hσ : Continuous σ) : Continuous (cti (n := n) σ) :=
+  Units.continuous_iff.2 ⟨(Units.continuous_coe_inv.matrix_map hσ).matrix_transpose,
+    (Units.continuous_val.matrix_map hσ).matrix_transpose⟩
+
+end Count
+
+section Core
+
+variable {E A : Type} [Field E] [CommRing A] {n ι : Type} [Fintype n] [DecidableEq n] [Fintype ι] [DecidableEq ι]
+
+def dg (s : Aˣ) (l : n → ℤ) : GL n A :=
+  ⟨diagonal fun i => (s ^ l i).1, diagonal fun i => (s ^ l i)⁻¹.1, by simp, by simp⟩
+
+theorem cti_dg {σ : A →+* A} {s : Aˣ} (hs : σ s.1 = s.1) (l : n → ℤ) : cti σ (dg s l) = (dg s l)⁻¹ := by
+  have h : Units.map σ.toMonoidHom s = s := Units.ext hs
+  have h1 : ∀ i, σ (s ^ l i)⁻¹.1 = (s ^ l i)⁻¹.1 := fun i => by
+    have := congrArg Units.val (map_inv (Units.map σ.toMonoidHom) (s ^ l i))
+    rwa [map_zpow, h] at this
+  refine Units.ext ?_
+  change ((diagonal fun i => (s ^ l i)⁻¹.1).map σ)ᵀ = diagonal fun i => (s ^ l i)⁻¹.1
+  rw [diagonal_map (map_zero σ), diagonal_transpose]
+  exact congrArg diagonal (funext h1)
+
+theorem det_dg (s : Aˣ) (l : n → ℤ) : GeneralLinearGroup.det (dg s l) = ∏ i, s ^ l i :=
+  Units.ext (by simp [dg])
+
+theorem det_cti (σ : A →+* A) (g : GL n A) :
+    GeneralLinearGroup.det (cti σ g) = Units.map σ.toMonoidHom (GeneralLinearGroup.det g⁻¹) :=
+  Units.ext ((det_transpose _).trans (σ.map_det _).symm)
+
+variable [Nontrivial A] [TopologicalSpace A] [IsTopologicalRing A] [T2Space A] [Invertible (2 : A)]
+
+theorem core (j : E →+* A) (e : n ⊕ n ≃ ι) {σ : A →+* A} (hσc : Continuous σ) (hσ : ∀ x, σ (σ x) = x)
+    (hσj : ∀ x ∈ j.range, σ x ∈ j.range) {s : Aˣ} (hs : σ s.1 = s.1) {ν : Aˣ →* ℝ≥0} (hν : Continuous ν)
+    (hνσ : ∀ x, ν (Units.map σ.toMonoidHom x) = ν x) (hνj : ∀ x : Aˣ, x.1 ∈ j.range → ν x = 1) {b : ℝ} (hb : 0 < b)
+    (hνs : (ν s : ℝ) = b⁻¹)
+    (hD : ∀ Ω : Set A, IsCompact Ω → {x : E | j x ∈ Ω}.Finite ∧
+      ∃ m₀ : ℕ, ∀ m, m₀ ≤ m → ∀ ω ∈ Ω, ∀ x : E, j x = s.1 ^ m * ω → x = 0)
+    (hR : ∃ Ω : Set A, IsCompact Ω ∧ ∀ β : GL n A, ∃ (δ : GL n E) (l : n → ℤ) (c : GL n A),
+      (∀ i k, c.1 i k ∈ Ω ∧ c⁻¹.1 i k ∈ Ω) ∧ δ.1.map j * β.1 = diagonal (fun i => (s ^ l i).1) * c.1)
+    (hC : ∃ (Ω : Set A) (C : ℝ), IsCompact Ω ∧ ∀ m : n → ℕ, ∃ Y : Finset (Matrix n n A),
+      (Y.card : ℝ) ≤ C * ∏ i, b ^ (Fintype.card n * m i) ∧ ∀ S : Matrix n n A, cT σ S = -S → ∃ S₀ : Matrix n n E, ∃ y ∈ Y,
+        ∃ ω : Matrix n n A, (∀ i k, ω i k ∈ Ω) ∧
+          S = S₀.map j + y + diagonal (fun i => s.1 ^ m i) * ω * diagonal (fun i => s.1 ^ m i))
+    {U : GL n A} (hU : cT σ U.1 = U.1) (hUj : U ∈ (bc j).range) {Q : Type} {p k : Q → GL ι A}
+    (hp : ∀ q, p q ∈ UJ σ (dblGram e U.1)) (hp' : ∀ q, KeepsDiag e (p q).1) (hk : Bdd k)
+    (hγ : ∀ q, p q * k q ∈ (bc j).range)
+    (hi : ∀ q q', p q' * k q' * (p q * k q)⁻¹ ∈ stabGL (diagSub A e) → q = q') :
+    ∃ (C : ℝ) (m : Q → n → ℕ), (∀ q (x : Aˣ), x.1 = (leviMat e (p q).1).det → (ν x : ℝ) ≤ C * ∏ i, (b ^ m q i)⁻¹) ∧
+      ∀ (μ : n → ℕ) (T : Finset Q), (∀ q ∈ T, m q = μ) → (T.card : ℝ) ≤ C * ∏ i, b ^ (Fintype.card n * μ i) := by
+  classical
+  have hcc : ∀ X : Matrix n n A, cT σ (cT σ X) = X := fun X => by ext i j; exact hσ _
+  choose β S hS hα hdec using fun q => exists_decomp e hσ hU (hp q) (hp' q)
+  obtain ⟨Ω₁, hΩ₁, hR⟩ := hR
+  choose δ l c hc hred using fun q => hR (β q)
+  replace hred : ∀ q, bc j (δ q) * β q = dg s (l q) * c q := fun q => Units.ext (hred q)
+  have hcb : Bdd c := bdd_units (bdd_matrix hΩ₁ fun q i k => (hc q i k).1) (bdd_matrix hΩ₁ fun q i k => (hc q i k).2)
+  set w₁ : Q → GL ι A := fun q => blkGL e (cti σ (c q) * U, c q) * cayley e * k q with hw₁
+  have hw₁b : Bdd w₁ := (((((hcb.map (continuous_cti hσc)).mul (Bdd.const U)).prod hcb).map
+    (continuous_blkGL e)).mul (Bdd.const _)).mul hk
+  set L : Q → GL ι A := fun q => blkGL e (cti σ (bc j (δ q)), bc j (δ q)) * blkGL e (1, U) with hL
+  have hLj : ∀ q, L q * cayley e * (p q * k q) ∈ (bc j).range := fun q =>
+    mul_mem (mul_mem (mul_mem (blk_rat j e (cti_rat j hσj ⟨_, rfl⟩) ⟨_, rfl⟩) (blk_rat j e (one_mem _) hUj))
+      (cayley_rat j e)) (hγ q)
+  set S' : Q → Matrix n n A := fun q => (cti σ (bc j (δ q))).1 * S q * (bc j (δ q))⁻¹.1 with hS'
+  have hS'' : ∀ q, cT σ (S' q) = -S' q := fun q => by
+    simp only [hS', val_cti, cT_mul, hcc, hS, Matrix.mul_neg, Matrix.neg_mul, Matrix.mul_assoc]
+  have h1 : ∀ q, L q * cayley e * (p q * k q) = uni e (S' q) * blkGL e ((dg s (l q))⁻¹, dg s (l q)) * w₁ q := fun q => by
+    calc _ = blkGL e (cti σ (bc j (δ q)), bc j (δ q)) * (blkGL e (1, U) * cayley e * p q) * k q := by
+          simp only [hL, mul_assoc]
+      _ = uni e (S' q) * (blkGL e (cti σ (bc j (δ q)), bc j (δ q)) * blkGL e (cti σ (β q) * U, β q)) * cayley e * k q := by
+          rw [hdec, ← mul_assoc, ← mul_assoc, blk_mul_uni, mul_assoc (uni e _)]
+      _ = _ := by
+          rw [← map_mul, Prod.mk_mul_mk, ← mul_assoc (cti σ _), ← map_mul, hred, map_mul (cti σ), cti_dg hs,
+            mul_assoc _ (cti σ _), ← Prod.mk_mul_mk, map_mul]
+          simp only [hw₁, mul_assoc]
+  clear_value w₁ S'
+  obtain ⟨Ω₂, hΩ₂, hw₂⟩ := (hw₁b.map Units.continuous_val).entries
+  obtain ⟨m₀, hm₀⟩ := (hD Ω₂ hΩ₂).2
+  have hl : ∀ q i, l q i ≤ m₀ := fun q i => by
+    by_contra! hlt
+    obtain ⟨m, hm⟩ := Int.eq_ofNat_of_zero_le (a := l q i) (by omega)
+    have h2 : ∀ x, (L q * cayley e * (p q * k q)).1 (e (.inr i)) x = 0 := fun x => by
+      obtain ⟨y, hy⟩ := (mem_rat j).1 (hLj q) (e (.inr i)) x
+      have h3 : j y = s.1 ^ m * (w₁ q).1 (e (.inr i)) x := by
+        rw [hy, h1, Units.val_mul, Units.val_mul, val_uni, val_blkGL, blkMat, submatrix_mul_equiv, fromBlocks_multiply,
+          mul_apply, ← e.sum_comp]
+        simp [dg, diagonal_apply, hm]
+      rw [← hy, hm₀ m (by omega) _ (hw₂ q _ _) y h3, map_zero]
+    have := (isUnit_iff_isUnit_det _).1 (L q * cayley e * (p q * k q)).isUnit
+    rw [det_eq_zero_of_row_eq_zero _ h2] at this
+    exact not_isUnit_zero this
+  set m : Q → n → ℕ := fun q i => (m₀ - l q i).toNat with hm
+  have hlm : ∀ q i, l q i = m₀ - m q i := fun q i => by have := hl q i; simp only [hm]; omega
+  obtain ⟨Ω₃, C, hΩ₃, hC⟩ := hC
+  choose Y hY hC using hC
+  choose S₀ y hy ω hω hcov using fun q => hC (m q) (S' q) (hS'' q)
+  set w : Q → GL ι A := fun q => uni e ((s.1 ^ m₀ * s.1 ^ m₀) • ω q) * w₁ q with hw
+  have hwb : Bdd w := (((bdd_matrix hΩ₃ hω).map (continuous_const_smul _)).map (continuous_uni e)).mul hw₁b
+  set Z : Q → GL ι A := fun q => uni e ((-S₀ q).map j) * (L q * cayley e * (p q * k q)) with hZ
+  have h4 : ∀ q, Z q = uni e (y q) * blkGL e ((dg s fun i => m₀ - m q i)⁻¹, dg s fun i => m₀ - m q i) * w q := fun q => by
+    have h5 : ∀ i, (s ^ ((m₀ : ℤ) - m q i))⁻¹.1 * s.1 ^ m₀ = s.1 ^ m q i := fun i => by
+      rw [← Units.val_pow_eq_pow_val, ← Units.val_pow_eq_pow_val, ← Units.val_mul, ← zpow_natCast, ← zpow_natCast,
+        ← _root_.zpow_neg, ← _root_.zpow_add]
+      congr 2; ring
+    simp only [hZ, hw]
+    rw [h1, ← mul_assoc, ← mul_assoc, ← uni_add, ← mul_assoc, mul_assoc (uni e (y q)), blk_mul_uni, ← mul_assoc,
+      ← uni_add, show l q = fun i => (m₀ : ℤ) - m q i from funext (hlm q), hcov]
+    congr 3
+    ext i k
+    change _ = y q i k + (diagonal (fun i => (s ^ ((m₀ : ℤ) - m q i))⁻¹.1) * ((s.1 ^ m₀ * s.1 ^ m₀) • ω q) *
+      diagonal (fun i => (s ^ ((m₀ : ℤ) - m q i))⁻¹.1)) i k
+    simp only [Matrix.add_apply, map_apply, Matrix.neg_apply, map_neg, mul_diagonal, diagonal_mul, Matrix.smul_apply,
+      smul_eq_mul, ← h5]
+    ring
+  have hZi : Function.Injective Z := fun q q' h => by
+    have h6 : ∀ q, uni e ((-S₀ q).map j) * L q ∈ upper e := fun q =>
+      mul_mem (uni_mem e _) (mul_mem (blk_mem e _ _) (blk_mem e _ _))
+    refine hi q q' ?_
+    convert (mem_upper e).1 (mul_mem (inv_mem (h6 q')) (h6 q)) using 1
+    simp only [hZ] at h
+    generalize p q * k q = g at *
+    generalize p q' * k q' = g' at *
+    rw [mul_inv_eq_iff_eq_mul]
+    calc g' = (cayley e)⁻¹ * (uni e ((-S₀ q').map j) * L q')⁻¹ * (uni e ((-S₀ q').map j) * (L q' * cayley e * g')) := by
+          group
+      _ = _ := by rw [← h]; group
+  obtain ⟨N, hN⟩ := exists_card_le j (fun Ω h => (hD Ω h).1) (Z := Z) (fun q => mul_mem (uni_rat j e _) (hLj q)) hZi hwb
+  have hdet : Continuous (GeneralLinearGroup.det : GL n A → Aˣ) := Units.continuous_iff.2
+    ⟨Units.continuous_val.matrix_det, Units.continuous_coe_inv.matrix_det⟩
+  obtain ⟨K, hK, hcK⟩ := (((hcb.map continuous_inv).map hdet).map hν).map NNReal.continuous_coe
+  obtain ⟨B, hB⟩ := hK.bddAbove
+  have hνd : ∀ g ∈ (bc (n := n) j).range, ν (GeneralLinearGroup.det g) = 1 := by
+    rintro _ ⟨x, rfl⟩
+    exact hνj _ ⟨x.1.det, j.map_det _⟩
+  refine ⟨max (B * b ^ (m₀ * Fintype.card n)) (N * C), m, fun q x hx => ?_, fun μ T hT => ?_⟩
+  · have h7 : x = GeneralLinearGroup.det (cti σ (β q) * U) := Units.ext (by rw [hx, hα]; rfl)
+    have h8 : β q = (bc j (δ q))⁻¹ * (dg s (l q) * c q) := by rw [← hred, inv_mul_cancel_left]
+    have h9 : (ν x : ℝ) = ν (GeneralLinearGroup.det (c q)⁻¹) * ∏ i, b ^ l q i := by
+      rw [h7, map_mul, map_mul, hνd U hUj, mul_one, det_cti, hνσ, h8]
+      simp only [_root_.mul_inv_rev, map_mul, map_inv, inv_inv, hνd _ ⟨δ q, rfl⟩, mul_one, det_dg, map_prod, map_zpow₀,
+        map_zpow]
+      push_cast
+      simp only [hνs, _root_.inv_zpow, Finset.prod_inv_distrib, inv_inv]
+    refine le_trans ?_ (mul_le_mul_of_nonneg_right (le_max_left _ _) (by positivity))
+    rw [h9, mul_assoc]
+    refine mul_le_mul (hB (hcK q)) (le_of_eq ?_) (by positivity) ((NNReal.coe_nonneg _).trans (hB (hcK q)))
+    simp only [hlm, zpow_sub₀ hb.ne', zpow_natCast, div_eq_mul_inv, Finset.prod_mul_distrib, Finset.prod_const,
+      Finset.card_univ, pow_mul]
+  · refine le_trans ?_ (mul_le_mul_of_nonneg_right (le_max_right _ _) (by positivity))
+    have h10 : T.card ≤ N * (Y μ).card := Finset.card_le_mul_card_image_of_maps_to
+      (fun q hq => hT q hq ▸ hy q) N fun z _ => hN (uni e z * blkGL e ((dg s fun i => m₀ - μ i)⁻¹, dg s fun i => m₀ - μ i)) _
+        fun q hq => by rw [h4, (Finset.mem_filter.1 hq).2, hT q (Finset.mem_filter.1 hq).1]
+    rw [mul_assoc]
+    exact (Nat.cast_le.2 h10).trans (by push_cast; exact mul_le_mul_of_nonneg_left (hY μ) (Nat.cast_nonneg _))
+
+end Core
+
+end GlobalTheory.Eis.Conv
+
+end
+end
+
+section
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.Doubling GlobalTheory.Eis.Conv
+
+namespace GlobalTheory.Eis.ConvCover
+
+theorem exists_int_near {F : Type} [Field F] {w : InfinitePlace F} (hw : w.IsReal)
+    (N : ℕ) (t : w.Completion) (ht : ‖t‖ ≤ N) :
+    ∃ n ∈ Finset.Icc (-(N : ℤ)) N, ‖t - (n : w.Completion)‖ ≤ 1 := by
+  have hi := InfinitePlace.Completion.isometry_extensionEmbeddingOfIsReal hw
+  set e := InfinitePlace.Completion.extensionEmbeddingOfIsReal hw with he
+  have hn : ∀ s, ‖e s‖ = ‖s‖ := fun s => hi.norm_map_of_map_zero (map_zero e) s
+  rw [← hn, Real.norm_eq_abs, abs_le] at ht
+  refine ⟨⌊e t⌋, Finset.mem_Icc.2 ⟨?_, ?_⟩, ?_⟩
+  · rw [Int.le_floor]; push_cast; exact ht.1
+  · have : (⌊e t⌋ : ℝ) ≤ ((N : ℤ) : ℝ) := by
+      push_cast; exact (Int.floor_le _).trans ht.2
+    exact_mod_cast this
+  · rw [← hn, map_sub, map_intCast, Real.norm_eq_abs, abs_le]
+    have h1 := Int.floor_le (e t)
+    have h2 := Int.lt_floor_add_one (e t)
+    constructor <;> linarith
+
+theorem norm_two_pow_le {F : Type} [Field F] (w : InfinitePlace F) (m : ℕ) :
+    ‖(2 : w.Completion) ^ m‖ ≤ 2 ^ m := by
+  have hi := InfinitePlace.Completion.isometry_extensionEmbedding w
+  rw [← hi.norm_map_of_map_zero (map_zero _), map_pow, map_ofNat, norm_pow]
+  simp
+
+theorem exists_cover : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F], ∃ (Ω : Set (AF F)) (C : ℝ), IsCompact Ω ∧ ∀ m : ℕ, ∃ Y : Finset (AF F), (Y.card : ℝ) ≤ C * ((2 : ℝ) ^ Fintype.card (InfinitePlace F)) ^ m ∧ ∀ a : AF F, ∃ x : F, ∃ y ∈ Y, ∃ ω ∈ Ω, a = algebraMap F (AF F) x + y + (halfInf F).1 ^ m * ω := by
+  intro F _ _ _
+  classical
+  obtain ⟨K, hK, hKx⟩ := GlobalTheory.AdeleCocompact.exists_compact_adele F
+  have := GlobalTheory.AdeleCocompact.properSpace_completion F
+  have hb : ∃ R : ℕ, ∀ k ∈ K, ∀ w : InfinitePlace F, ‖k.1 w‖ ≤ R := by
+    have hc : Continuous fun k : AdeleRing (𝓞 F) F => ∑ w : InfinitePlace F, ‖k.1 w‖ :=
+      continuous_finsetSum _ fun w _ => ((continuous_apply w).comp continuous_fst).norm
+    obtain ⟨B, hB⟩ := (hK.image hc).bddAbove
+    refine ⟨⌈B⌉₊, fun k hk w => ?_⟩
+    refine le_trans ?_ ((hB ⟨k, hk, rfl⟩).trans (Nat.le_ceil B))
+    exact Finset.single_le_sum (f := fun w : InfinitePlace F => ‖k.1 w‖)
+      (fun _ _ => norm_nonneg _) (Finset.mem_univ w)
+  obtain ⟨R, hR⟩ := hb
+  let h : InfiniteAdeleRing F := algebraMap F (InfiniteAdeleRing F) 2⁻¹
+  have h2 : h * 2 = 1 := by
+    rw [← map_ofNat (algebraMap F (InfiniteAdeleRing F)) 2, ← map_mul,
+      inv_mul_cancel₀ two_ne_zero, map_one]
+  let ι : (InfinitePlace F → ℤ) → InfiniteAdeleRing F := fun n w => (n w : w.Completion)
+  refine ⟨((Set.pi Set.univ fun w : InfinitePlace F => Metric.closedBall (0 : w.Completion) 1 :
+      Set (InfiniteAdeleRing F)) ×ˢ (Prod.snd '' K) :
+        Set (InfiniteAdeleRing F × FiniteAdeleRing (𝓞 F) F)),
+    (2 * R + 1 : ℝ) ^ Fintype.card (InfinitePlace F),
+    (isCompact_univ_pi fun v => isCompact_closedBall _ _).prod (hK.image continuous_snd),
+    fun m => ?_⟩
+  refine ⟨(Fintype.piFinset fun _ : InfinitePlace F =>
+      Finset.Icc (-((2 ^ m * R : ℕ) : ℤ)) ((2 ^ m * R : ℕ) : ℤ)).image
+      fun n => ((h ^ m * ι n, 0) : InfiniteAdeleRing F × FiniteAdeleRing (𝓞 F) F), ?_, fun a => ?_⟩
+  · refine le_trans (Nat.cast_le.2 Finset.card_image_le) ?_
+    rw [Fintype.card_piFinset, Finset.prod_const, Finset.card_univ, ← pow_mul, mul_comm _ m,
+      pow_mul, ← mul_pow, Nat.cast_pow]
+    refine pow_le_pow_left₀ (Nat.cast_nonneg _) ?_ _
+    have hc : (Finset.Icc (-((2 ^ m * R : ℕ) : ℤ)) ((2 ^ m * R : ℕ) : ℤ)).card
+        = 2 * (2 ^ m * R) + 1 := by
+      rw [Int.card_Icc]; omega
+    rw [hc]
+    push_cast
+    have : (1 : ℝ) ≤ 2 ^ m := one_le_pow₀ one_le_two
+    nlinarith
+  · obtain ⟨x, hx⟩ := hKx a
+    set k := a - algebraMap F (AdeleRing (𝓞 F) F) x with hk
+    have hn : ∀ w : InfinitePlace F, ∃ n ∈ Finset.Icc (-((2 ^ m * R : ℕ) : ℤ)) ((2 ^ m * R : ℕ) : ℤ),
+        ‖(2 : w.Completion) ^ m * k.1 w - (n : w.Completion)‖ ≤ 1 := fun w => by
+      refine exists_int_near (IsTotallyReal.isReal w) _ _ ((norm_mul_le _ _).trans ?_)
+      push_cast
+      exact mul_le_mul (norm_two_pow_le w m) (hR k hx w) (norm_nonneg _) (by positivity)
+    choose n hn1 hn2 using hn
+    refine ⟨x, _, Finset.mem_image_of_mem _ (Fintype.mem_piFinset.2 hn1),
+      ((2 ^ m * k.1 - ι n, k.2) : InfiniteAdeleRing F × FiniteAdeleRing (𝓞 F) F),
+      ⟨fun w _ => ?_, ⟨k, hx, rfl⟩⟩, ?_⟩
+    · exact mem_closedBall_zero_iff.2 (hn2 w)
+    · have ha : a = algebraMap F (AdeleRing (𝓞 F) F) x + k := by rw [hk]; ring
+      refine ha.trans (Eq.trans (congrArg (algebraMap F (AF F) x + ·) ?_) (add_assoc (G := AF F) _ _ _).symm)
+      refine Prod.ext ?_ ?_
+      · change k.1 = h ^ m * ι n + h ^ m * (2 ^ m * k.1 - ι n)
+        rw [← mul_add, add_sub_cancel, ← mul_assoc, ← mul_pow, h2, one_pow, one_mul]
+      · change k.2 = 0 + 1 ^ m * k.2
+        rw [one_pow, one_mul, zero_add]
+
+end GlobalTheory.Eis.ConvCover
+end
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.Doubling GlobalTheory.Eis.Conv
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_adele_cover_mod_field_shrunk_compact : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F], ∃ (Ω : Set (AF F)) (C : ℝ), IsCompact Ω ∧ ∀ m : ℕ, ∃ Y : Finset (AF F), (Y.card : ℝ) ≤ C * ((2 : ℝ) ^ Fintype.card (InfinitePlace F)) ^ m ∧ ∀ a : AF F, ∃ x : F, ∃ y ∈ Y, ∃ ω ∈ Ω, a = algebraMap F (AF F) x + y + (halfInf F).1 ^ m * ω := by
+  atlas_forward_decl GlobalTheory.Eis.ConvCover.exists_cover
+end
+
+section
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.Doubling GlobalTheory.Eis.Conv
+
+noncomputable section
+
+namespace GlobalTheory.Eis.Conv.CovSkew
+
+theorem exists_delta (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+    (σ : E →ₐ[F] E) (h : IsCMExt F E σ) :
+    ∃ δ : E, σ δ = -δ ∧ ∀ z : E, ∃ a b : F, z = a • (1 : E) + b • δ := by
+  obtain ⟨-, hc, h2, hσ⟩ := h
+  obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
+  have hnr : ¬ ComplexEmbedding.IsReal τ := IsTotallyComplex.complexEmbedding_not_isReal τ
+  obtain ⟨x, hx⟩ : ∃ x, star (τ x) ≠ τ x := by
+    by_contra hcon
+    push Not at hcon
+    apply hnr
+    rw [ComplexEmbedding.isReal_iff]
+    ext x
+    exact hcon x
+  have hδ : σ (x - σ x) = -(x - σ x) := by
+    apply τ.injective
+    rw [hσ, map_neg, map_sub, hσ, star_sub, star_star, neg_sub]
+  have h0 : x - σ x ≠ 0 := by
+    intro h0
+    apply hx
+    rw [← hσ, ← sub_eq_zero.mp h0]
+  refine ⟨x - σ x, hδ, ?_⟩
+  generalize x - σ x = δ at hδ h0
+  have hli : LinearIndependent F ![(1 : E), δ] := by
+    rw [LinearIndependent.pair_iff]
+    intro s t hst
+    have h1 := congrArg σ hst
+    have hsm : ∀ (a : F) (z : E), σ (a • z) = a • σ z := fun a z => σ.toLinearMap.map_smul a z
+    rw [map_add, hsm, hsm, map_one, hδ, map_zero, smul_neg] at h1
+    have hs : (2 * s) • (1 : E) = 0 := by
+      rw [two_mul, add_smul]; linear_combination hst + h1
+    have hs0 : s = 0 := by simpa using hs
+    refine ⟨hs0, ?_⟩
+    rw [hs0, zero_smul, zero_add] at hst
+    exact (smul_eq_zero.mp hst).resolve_right h0
+  intro z
+  have hsp := hli.span_eq_top_of_card_eq_finrank' (by simp [h2])
+  have hz : z ∈ Submodule.span F (Set.range ![(1 : E), δ]) := by rw [hsp]; trivial
+  rw [Matrix.range_cons, Matrix.range_cons, Matrix.range_empty, Set.union_empty,
+    Set.singleton_union, Submodule.mem_span_pair] at hz
+  obtain ⟨a, b, hab⟩ := hz
+  exact ⟨a, b, hab.symm⟩
+
+section
+variable {F E : Type} [Field F] [Field E] [Algebra F E] {R : Type} [CommRing R] [Algebra F R]
+
+theorem exists_coords (δ : E) (h : ∀ z : E, ∃ a b : F, z = a • (1 : E) + b • δ) (z : R ⊗[F] E) :
+    ∃ u v : R, z = u ⊗ₜ[F] (1 : E) + v ⊗ₜ[F] δ := by
+  induction z with
+  | zero => exact ⟨0, 0, by simp⟩
+  | tmul r e =>
+    obtain ⟨a, b, rfl⟩ := h e
+    exact ⟨a • r, b • r, by
+      rw [TensorProduct.tmul_add, TensorProduct.smul_tmul, TensorProduct.smul_tmul]⟩
+  | add x y hx hy =>
+    obtain ⟨u, v, rfl⟩ := hx
+    obtain ⟨u', v', rfl⟩ := hy
+    exact ⟨u + u', v + v', by simp only [TensorProduct.add_tmul]; abel⟩
+
+def psi (δ : E) (a a' : R) : R ⊗[F] E := (a - a') • (1 : R ⊗[F] E) + (a + a') • ((1 : R) ⊗ₜ[F] δ)
+
+theorem psi_eq (δ : E) (a a' : R) :
+    psi δ a a' = (a - a') ⊗ₜ[F] (1 : E) + (a + a') ⊗ₜ[F] δ := by
+  simp [psi, Algebra.TensorProduct.one_def, TensorProduct.smul_tmul']
+
+theorem exists_psi [CharZero F] (σ : E →ₐ[F] E) (δ : E) (hδ : σ δ = -δ)
+    (h : ∀ z : E, ∃ a b : F, z = a • (1 : E) + b • δ) {n : ℕ}
+    (S : Matrix (Fin n) (Fin n) (R ⊗[F] E)) (hS : cT (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.sigR R σ) S = -S) :
+    ∃ T : Fin n → Fin n → R, ∀ i j, S i j = psi δ (T i j) (T j i) := by
+  choose U V hUV using fun i j => exists_coords δ h (S i j)
+  set c : R := algebraMap F R 2⁻¹ with hc
+  have h2 : 2 * c = 1 := by
+    rw [hc, ← map_ofNat (algebraMap F R) 2, ← map_mul, mul_inv_cancel₀ two_ne_zero, map_one]
+  refine ⟨fun i j => c * c * (U i j - U j i + V i j + V j i), fun i j => ?_⟩
+  have h1 : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.sigR R σ (S j i) = - S i j := congrFun (congrFun hS i) j
+  have e1 : ∀ k l, S k l = U k l • (1 : R ⊗[F] E) + V k l • ((1 : R) ⊗ₜ[F] δ) := fun k l => by
+    rw [hUV]; simp [Algebra.TensorProduct.one_def, TensorProduct.smul_tmul']
+  have e2 : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.sigR R σ (S j i)
+      = U j i • (1 : R ⊗[F] E) - V j i • ((1 : R) ⊗ₜ[F] δ) := by
+    rw [hUV, map_add]
+    change U j i ⊗ₜ[F] σ 1 + V j i ⊗ₜ[F] σ δ = _
+    simp [hδ, Algebra.TensorProduct.one_def, TensorProduct.smul_tmul', TensorProduct.tmul_neg,
+      sub_eq_add_neg]
+  rw [e2] at h1
+  have e3 := e1 i j
+  have h2' : 2 * algebraMap R (R ⊗[F] E) c = 1 := by
+    rw [← map_ofNat (algebraMap R (R ⊗[F] E)) 2, ← map_mul, h2, map_one]
+  unfold psi
+  simp only [Algebra.smul_def, map_add, map_sub, map_mul] at h1 e3 ⊢
+  generalize algebraMap R (R ⊗[F] E) = f at *
+  generalize ((1 : R) ⊗ₜ[F] δ) = d at *
+  linear_combination (f c) * e3 + (f c) * h1 - S i j * h2'
+    - f c * (f (U i j) - f (U j i) + (f (V i j) + f (V j i)) * d) * h2'
+
+theorem psi_split (δ : E) (x x' : F) (y y' t w w' : R) :
+    psi δ (algebraMap F R x + y + t * w) (algebraMap F R x' + y' + t * w')
+      = inclR (F := F) R ((x - x') • (1 : E) + (x + x') • δ) + psi δ y y'
+        + algebraMap R (R ⊗[F] E) t * psi δ w w' := by
+  have : inclR (F := F) R ((x - x') • (1 : E) + (x + x') • δ)
+      = psi δ (algebraMap F R x) (algebraMap F R x') := by
+    rw [psi_eq, ← map_sub, ← map_add, Algebra.algebraMap_eq_smul_one,
+      Algebra.algebraMap_eq_smul_one, TensorProduct.smul_tmul, TensorProduct.smul_tmul,
+      ← TensorProduct.tmul_add]
+    rfl
+  rw [this]
+  unfold psi
+  simp only [Algebra.smul_def, map_add, map_sub, map_mul]
+  ring
+
+end
+
+theorem cover_skew : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (b C₀ : ℝ) (Ω₀ : Set (AF F)), IsCompact Ω₀ → (∀ m : ℕ, ∃ Y : Finset (AF F), (Y.card : ℝ) ≤ C₀ * b ^ m ∧ ∀ a : AF F, ∃ x : F, ∃ y ∈ Y, ∃ ω ∈ Ω₀, a = algebraMap F (AF F) x + y + (halfInf F).1 ^ m * ω) → ∀ n : ℕ, ∃ (Ω : Set (AF F ⊗[F] E)) (C : ℝ), IsCompact Ω ∧ ∀ m : Fin n → ℕ, ∃ Y : Finset (Matrix (Fin n) (Fin n) (AF F ⊗[F] E)), (Y.card : ℝ) ≤ C * ∏ i, (b ^ 2) ^ (n * m i) ∧ ∀ S : Matrix (Fin n) (Fin n) (AF F ⊗[F] E), cT (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.sigR (AF F) σ) S = -S → ∃ S₀ : Matrix (Fin n) (Fin n) E, ∃ y ∈ Y, ∃ ω : Matrix (Fin n) (Fin n) (AF F ⊗[F] E), (∀ i j, ω i j ∈ Ω) ∧ S = S₀.map (inclR (F := F) (AF F)) + y + Matrix.diagonal (fun i => (halfE F E).1 ^ m i) * ω * Matrix.diagonal (fun i => (halfE F E).1 ^ m i) := by
+  intro F E _ _ _ _ _ σ hσ b C₀ Ω₀ hΩ₀ hcov n
+  classical
+  obtain ⟨δ, hδ, hsp⟩ := exists_delta F E σ hσ
+  choose Y hY hYc using hcov
+  have : IsModuleTopology (AF F) (AF F ⊗[F] E) := ⟨rfl⟩
+  have : IsTopologicalRing (AF F ⊗[F] E) := isTopologicalRing_tens
+  have hcont : Continuous fun p : AF F × AF F => psi (F := F) δ p.1 p.2 := by
+    unfold psi
+    fun_prop
+  refine ⟨_, C₀ ^ (n * n), (hΩ₀.prod hΩ₀).image hcont, fun m => ?_⟩
+  refine ⟨(Fintype.piFinset fun p : Fin n × Fin n => Y (m p.1 + m p.2)).image
+    (fun y => Matrix.of fun i j => psi δ (y (i, j)) (y (j, i))), ?_, fun S hS => ?_⟩
+  · refine (Nat.cast_le.mpr Finset.card_image_le).trans ?_
+    rw [Fintype.card_piFinset, Nat.cast_prod]
+    refine (Finset.prod_le_prod (fun _ _ => Nat.cast_nonneg _) (fun p _ => hY _)).trans (le_of_eq ?_)
+    rw [Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ, Fintype.card_prod,
+      Fintype.card_fin, Finset.prod_pow_eq_pow_sum]
+    congr 1
+    simp only [← pow_mul]
+    rw [Finset.prod_pow_eq_pow_sum, Fintype.sum_prod_type]
+    congr 1
+    simp only [Finset.sum_add_distrib, Finset.sum_const, Finset.card_univ, Fintype.card_fin,
+      smul_eq_mul, ← Finset.mul_sum]
+    ring
+  · obtain ⟨T, hT⟩ := exists_psi σ δ hδ hsp S hS
+    choose x y hy ω hω hTe using fun i j => hYc (m i + m j) (T i j)
+    refine ⟨Matrix.of fun i j => (x i j - x j i) • (1 : E) + (x i j + x j i) • δ, _,
+      Finset.mem_image.mpr ⟨fun p => y p.1 p.2, Fintype.mem_piFinset.mpr fun p => hy _ _, rfl⟩,
+      Matrix.of fun i j => psi δ (ω i j) (ω j i),
+      fun i j => ⟨(ω i j, ω j i), ⟨hω _ _, hω _ _⟩, rfl⟩, ?_⟩
+    ext i j
+    rw [Matrix.add_apply, Matrix.add_apply, Matrix.mul_diagonal, Matrix.diagonal_mul, hT,
+      hTe i j, hTe j i, add_comm (m j) (m i), psi_split]
+    have : (halfE F E).1 = algebraMap (AF F) (AF F ⊗[F] E) (halfInf F).1 := rfl
+    rw [this, map_pow]
+    simp only [Matrix.map_apply, Matrix.of_apply]
+    ring
+
+end GlobalTheory.Eis.Conv.CovSkew
+
+end
+end
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.Doubling GlobalTheory.Eis.Conv
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.skewHermitian_adelic_cover_of_adele_cover : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (b C₀ : ℝ) (Ω₀ : Set (AF F)), IsCompact Ω₀ → (∀ m : ℕ, ∃ Y : Finset (AF F), (Y.card : ℝ) ≤ C₀ * b ^ m ∧ ∀ a : AF F, ∃ x : F, ∃ y ∈ Y, ∃ ω ∈ Ω₀, a = algebraMap F (AF F) x + y + (halfInf F).1 ^ m * ω) → ∀ n : ℕ, ∃ (Ω : Set (AF F ⊗[F] E)) (C : ℝ), IsCompact Ω ∧ ∀ m : Fin n → ℕ, ∃ Y : Finset (Matrix (Fin n) (Fin n) (AF F ⊗[F] E)), (Y.card : ℝ) ≤ C * ∏ i, (b ^ 2) ^ (n * m i) ∧ ∀ S : Matrix (Fin n) (Fin n) (AF F ⊗[F] E), cT (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.sigR (AF F) σ) S = -S → ∃ S₀ : Matrix (Fin n) (Fin n) E, ∃ y ∈ Y, ∃ ω : Matrix (Fin n) (Fin n) (AF F ⊗[F] E), (∀ i j, ω i j ∈ Ω) ∧ S = S₀.map (inclR (F := F) (AF F)) + y + Matrix.diagonal (fun i => (halfE F E).1 ^ m i) * ω * Matrix.diagonal (fun i => (halfE F E).1 ^ m i) := by
+  atlas_forward_decl GlobalTheory.Eis.Conv.CovSkew.cover_skew
+end
+
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.Doubling GlobalTheory.Eis.Conv
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.compact_adeles_rational_points_finite_eventually_zero : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (Ω : Set (AF F ⊗[F] E)), IsCompact Ω → {x : E | inclR (F := F) (AF F) x ∈ Ω}.Finite ∧ ∃ m₀ : ℕ, ∀ m, m₀ ≤ m → ∀ ω ∈ Ω, ∀ x : E, inclR (F := F) (AF F) x = (halfE F E).1 ^ m * ω → x = 0 := by
+  first | exact @GlobalTheory.Eis.Conv.Discr.finite_and_eventually_eq_zero | exact GlobalTheory.Eis.Conv.Discr.finite_and_eventually_eq_zero | (intros; apply GlobalTheory.Eis.Conv.Discr.finite_and_eventually_eq_zero <;> assumption)
+end
+
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.Doubling GlobalTheory.Eis.Conv
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tensorIdeleNormalizedAbs_ideleHalfAtInfinity : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → absE F E (halfE F E) = ((4 : ℝ≥0) ^ Fintype.card (InfinitePlace F))⁻¹ := by
+  first | exact @GlobalTheory.Eis.Conv.absE_halfE | exact GlobalTheory.Eis.Conv.absE_halfE | (intros; apply GlobalTheory.Eis.Conv.absE_halfE <;> assumption)
+end
+
+section
+section
+namespace GlobalTheory.SummCount
+
+theorem summable_prod_fin_tuple {α : Type} {g : α → ℝ} (hg : Summable g) (h0 : ∀ a, 0 ≤ g a)
+    (N : ℕ) : Summable fun x : Fin N → α => ∏ i, g (x i) := by
+  induction N with
+  | zero => exact .of_finite
+  | succ N ih =>
+    have h := hg.mul_of_nonneg ih h0 fun x => Finset.prod_nonneg fun i _ => h0 _
+    rw [← (Fin.consEquiv fun _ : Fin (N + 1) => α).summable_iff]
+    refine h.congr fun p => ?_
+    simp [Fin.prod_univ_succ, Fin.consEquiv]
+
+theorem pow_mul_inv_rpow_eq {b t : ℝ} (hb : 0 < b) (n m : ℕ) :
+    b ^ (n * m) * ((b ^ m)⁻¹) ^ t = (b ^ ((n : ℝ) - t)) ^ m := by
+  have hx : 0 < b ^ m := pow_pos hb m
+  rw [Real.inv_rpow hx.le, ← Real.rpow_neg hx.le, pow_mul', ← Real.rpow_natCast (b ^ m) n,
+    ← Real.rpow_add hx, ← Real.rpow_natCast b m, ← Real.rpow_mul hb.le,
+    ← Real.rpow_mul_natCast hb.le]
+  congr 1
+  ring
+
+theorem summable_rpow_of_fibre_card_le (ι : Type) (n : ℕ) (b C t : ℝ) (k : ι → Fin n → ℕ)
+    (h : ι → ℝ) (hb : 1 < b) (ht : (n : ℝ) < t)
+    (hh : ∀ q, 0 ≤ h q ∧ h q ≤ C * ∏ i, (b ^ k q i)⁻¹)
+    (hT : ∀ (m : Fin n → ℕ) (T : Finset ι), (∀ q ∈ T, k q = m) →
+      (T.card : ℝ) ≤ C * ∏ i, b ^ (n * m i)) :
+    Summable fun q => h q ^ t := by
+  have hb0 : 0 < b := zero_lt_one.trans hb
+  have ht0 : 0 ≤ t := le_trans (Nat.cast_nonneg n) ht.le
+  rcases isEmpty_or_nonempty ι with hι | ⟨⟨q0⟩⟩
+  · exact .of_finite
+  have hP : ∀ m : Fin n → ℕ, 0 < ∏ i, (b ^ m i)⁻¹ := fun m => by positivity
+  have hC : 0 ≤ C := (mul_nonneg_iff_of_pos_right (hP (k q0))).1 ((hh q0).1.trans (hh q0).2)
+  set r := b ^ ((n : ℝ) - t) with hr
+  have hr0 : 0 ≤ r := Real.rpow_nonneg hb0.le _
+  have hr1 : r < 1 := Real.rpow_lt_one_of_one_lt_of_neg hb (by linarith)
+  set g : (Fin n → ℕ) → ℝ := fun m => C * C ^ t * ∏ i, r ^ m i with hg_def
+  have hg0 : ∀ m, 0 ≤ g m := fun m => by
+    simp only [hg_def]; positivity
+  have hg : Summable g :=
+    (summable_prod_fin_tuple (summable_geometric_of_lt_one hr0 hr1) (fun _ => pow_nonneg hr0 _)
+      n).mul_left _
+  have key : ∀ q, h q ^ t ≤ C ^ t * ∏ i, ((b ^ k q i)⁻¹) ^ t := fun q => by
+    rw [Real.finset_prod_rpow _ _ (fun i _ => by positivity), ← Real.mul_rpow hC (hP _).le]
+    exact Real.rpow_le_rpow (hh q).1 (hh q).2 ht0
+  refine summable_of_sum_le (c := ∑' m, g m) (fun q => Real.rpow_nonneg (hh q).1 _) fun T => ?_
+  rw [← Finset.sum_fiberwise_of_maps_to (g := k) (t := T.image k)
+    (fun q hq => Finset.mem_image_of_mem k hq)]
+  refine le_trans (Finset.sum_le_sum fun m _ => ?_) (hg.sum_le_tsum _ (fun m _ => hg0 m))
+  calc ∑ q ∈ T with k q = m, h q ^ t
+      ≤ ∑ q ∈ T with k q = m, C ^ t * ∏ i, ((b ^ m i)⁻¹) ^ t :=
+        Finset.sum_le_sum fun q hq => by
+          have := key q
+          rwa [(Finset.mem_filter.1 hq).2] at this
+    _ = ((T.filter (k · = m)).card : ℝ) * (C ^ t * ∏ i, ((b ^ m i)⁻¹) ^ t) := by
+        rw [Finset.sum_const, nsmul_eq_mul]
+    _ ≤ (C * ∏ i, b ^ (n * m i)) * (C ^ t * ∏ i, ((b ^ m i)⁻¹) ^ t) :=
+        mul_le_mul_of_nonneg_right (hT m _ fun q hq => (Finset.mem_filter.1 hq).2)
+          (mul_nonneg (Real.rpow_nonneg hC _)
+            (Finset.prod_nonneg fun i _ => Real.rpow_nonneg (by positivity) _))
+    _ = g m := by
+        simp only [hg_def, hr, ← pow_mul_inv_rpow_eq hb0 n, Finset.prod_mul_distrib]
+        ring
+
+end GlobalTheory.SummCount
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.summable_rpow_of_fibre_card_le' : ∀ (ι : Type) (n : ℕ) (b C t : ℝ) (k : ι → Fin n → ℕ) (h : ι → ℝ), 1 < b → (n : ℝ) < t → (∀ q, 0 ≤ h q ∧ h q ≤ C * ∏ i, (b ^ k q i)⁻¹) → (∀ (m : Fin n → ℕ) (T : Finset ι), (∀ q ∈ T, k q = m) → (T.card : ℝ) ≤ C * ∏ i, b ^ (n * m i)) → Summable fun q => h q ^ t := by
+  atlas_forward_decl GlobalTheory.SummCount.summable_rpow_of_fibre_card_le
+end
+
+section
+section
+open scoped Matrix
+open NumberField IsDedekindDomain
+
+namespace GlobalTheory
+
+theorem mem_ratSpan_of_isLattice_pi (E : Type) [Field E] [NumberField E] (n : ℕ)
+    (Λ : Submodule (𝓞 E) (Fin n → E)) (hΛ : Submodule.IsLattice E Λ)
+    (S : Submodule ℚ (Fin n → E)) (hS : ∀ x ∈ Λ, x ∈ S) (x : Fin n → E) : x ∈ S := by
+  have hx : x ∈ Submodule.span E (Λ : Set (Fin n → E)) := by
+    rw [Submodule.IsLattice.span_eq_top (self := hΛ)]; trivial
+  have key : ∀ c : E, c • x ∈ S := by
+    induction hx using Submodule.span_induction with
+    | mem y hy =>
+      intro c
+      rw [← (integralBasis E).sum_repr c, Finset.sum_smul]
+      refine S.sum_mem fun i _ => ?_
+      rw [smul_assoc]
+      refine S.smul_mem _ (hS _ ?_)
+      rw [integralBasis_apply, algebraMap_smul]
+      exact Λ.smul_mem _ hy
+    | zero => intro c; simp
+    | add y z _ _ hy hz => intro c; rw [smul_add]; exact S.add_mem (hy c) (hz c)
+    | smul a y _ hy => intro c; rw [smul_smul]; exact hy _
+  simpa using key 1
+
+theorem exists_intGenerators_card_eq_of_isLattice_pi (E : Type) [Field E] [NumberField E] (n : ℕ)
+    (Λ : Submodule (𝓞 E) (Fin n → E)) (hΛ : Submodule.IsLattice E Λ) :
+    ∃ u : Fin (Module.finrank ℚ E * n) → Fin n → E,
+      (∀ x, x ∈ Λ ↔ x ∈ Submodule.span ℤ (Set.range u)) ∧ Submodule.span ℚ (Set.range u) = ⊤ := by
+  classical
+  have : Module.Finite (𝓞 E) Λ := Module.Finite.iff_fg.2 (Submodule.IsLattice.fg (self := hΛ))
+  have : Module.Finite ℤ Λ := Module.Finite.trans (𝓞 E) Λ
+  have : Module.Free ℤ Λ := inferInstance
+  let b := Module.Free.chooseBasis ℤ Λ
+  let f : Λ →ₗ[ℤ] (Fin n → E) := Λ.subtype.toAddMonoidHom.toIntLinearMap
+  have hf : Function.Injective f := Subtype.val_injective
+  let v : Module.Free.ChooseBasisIndex ℤ Λ → Fin n → E := f ∘ b
+  have hZ : LinearIndependent ℤ v := b.linearIndependent.map' f (LinearMap.ker_eq_bot.2 hf)
+  have hspan : ∀ x, x ∈ Λ ↔ x ∈ Submodule.span ℤ (Set.range v) := by
+    intro x
+    have h := congrArg (Submodule.map f) b.span_eq
+    rw [Submodule.map_span, ← Set.range_comp, Submodule.map_top] at h
+    change x ∈ Λ ↔ x ∈ Submodule.span ℤ (Set.range (f ∘ b))
+    rw [h]
+    exact ⟨fun hx => ⟨⟨x, hx⟩, rfl⟩, fun ⟨y, hy⟩ => hy ▸ y.2⟩
+  have hQ : Submodule.span ℚ (Set.range v) = ⊤ :=
+    eq_top_iff.2 fun x _ => mem_ratSpan_of_isLattice_pi E n Λ hΛ _
+      (fun y hy => Submodule.span_le_restrictScalars ℤ ℚ _ ((hspan y).1 hy)) x
+  have hQi : LinearIndependent ℚ v := (LinearIndependent.iff_fractionRing ℤ ℚ).1 hZ
+  have hcard : Fintype.card (Module.Free.ChooseBasisIndex ℤ Λ) = Module.finrank ℚ E * n := by
+    rw [← finrank_span_eq_card hQi, hQ, finrank_top, Module.finrank_pi_fintype]
+    simp [mul_comm]
+  let e := Fintype.equivFinOfCardEq hcard
+  have hr : Set.range (v ∘ e.symm) = Set.range v := e.symm.surjective.range_comp v
+  exact ⟨v ∘ e.symm, by rw [hr]; exact hspan, by rw [hr]; exact hQ⟩
+
+end GlobalTheory
+end
+
+open scoped Matrix
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_int_span_generators_of_isLattice_pi : ∀ (E : Type) [Field E] [NumberField E] (n : ℕ) (Λ : Submodule (𝓞 E) (Fin n → E)), Submodule.IsLattice E Λ → ∃ u : Fin (Module.finrank ℚ E * n) → Fin n → E, (∀ x, x ∈ Λ ↔ x ∈ Submodule.span ℤ (Set.range u)) ∧ Submodule.span ℚ (Set.range u) = ⊤ := by
+  atlas_forward_decl GlobalTheory.exists_intGenerators_card_eq_of_isLattice_pi
+end
+
+section
+section
+open scoped Matrix
+open NumberField IsDedekindDomain
+
+namespace GlobalTheory
+
+theorem linearIndependent_vecMul_of_span_rat :
+    ∀ (E : Type) [Field E] [NumberField E] (R : Type) [CommRing R] [Algebra ℝ R] [FiniteDimensional ℝ R] (τ : E →+* R), Submodule.span ℝ (Set.range τ) = ⊤ → Module.finrank ℝ R = Module.finrank ℚ E → ∀ (n : ℕ) (ι : Type) [Fintype ι] (u : ι → Fin n → E), Fintype.card ι = Module.finrank ℚ E * n → Submodule.span ℚ (Set.range u) = ⊤ → ∀ g : GL (Fin n) R, LinearIndependent ℝ fun k => (fun i => τ (u k i)) ᵥ* g.1 := by
+  intro E _ _ R _ _ _ τ hτ hrk n ι _ u hcard hu g
+  classical
+  have hq : ∀ c : ℚ, τ (algebraMap ℚ E c) = algebraMap ℝ R (algebraMap ℚ ℝ c) := by
+    intro c
+    have : τ.comp (algebraMap ℚ E) = (algebraMap ℝ R).comp (algebraMap ℚ ℝ) :=
+      Subsingleton.elim _ _
+    exact congrArg (fun f : ℚ →+* R => f c) this
+  set V : Submodule ℝ (Fin n → R) :=
+    Submodule.span ℝ (Set.range fun k => (fun i => τ (u k i))) with hV
+  have h1 : ∀ x : Fin n → E, (fun i => τ (x i)) ∈ V := by
+    intro x
+    have hx : x ∈ Submodule.span ℚ (Set.range u) := by rw [hu]; trivial
+    induction hx using Submodule.span_induction with
+    | mem x hx =>
+      obtain ⟨k, rfl⟩ := hx
+      exact Submodule.subset_span ⟨k, rfl⟩
+    | zero =>
+      have : (fun i => τ ((0 : Fin n → E) i)) = 0 := by ext i; simp
+      rw [this]; exact V.zero_mem
+    | add x y _ _ hx hy =>
+      have : (fun i => τ ((x + y) i)) = (fun i => τ (x i)) + (fun i => τ (y i)) := by
+        ext i; simp
+      rw [this]; exact V.add_mem hx hy
+    | smul c x _ hx =>
+      have : (fun i => τ ((c • x) i)) = (algebraMap ℚ ℝ c) • (fun i => τ (x i)) := by
+        ext i
+        rw [Pi.smul_apply, Pi.smul_apply, Algebra.smul_def, Algebra.smul_def, map_mul, hq]
+      rw [this]; exact V.smul_mem _ hx
+  have h2 : ∀ (i : Fin n) (r : R), Pi.single i r ∈ V := by
+    intro i r
+    have hle : Submodule.span ℝ (Set.range τ) ≤
+        V.comap (LinearMap.single ℝ (fun _ : Fin n => R) i) := by
+      rw [Submodule.span_le]
+      rintro _ ⟨e, rfl⟩
+      have := h1 (Pi.single i e)
+      have h' : (fun j => τ ((Pi.single i e : Fin n → E) j)) = Pi.single i (τ e) := by
+        ext j
+        by_cases hj : j = i
+        · subst hj; simp
+        · simp [hj]
+      rw [h'] at this
+      exact this
+    have hr : r ∈ Submodule.span ℝ (Set.range τ) := by rw [hτ]; trivial
+    exact hle hr
+  have h3 : ∀ y : Fin n → R, y ∈ V := by
+    intro y
+    rw [← Finset.univ_sum_single y]
+    exact V.sum_mem fun i _ => h2 i _
+  let φ : (Fin n → R) →ₗ[ℝ] (Fin n → R) :=
+    { toFun := fun v => v ᵥ* g.1
+      map_add' := fun v w => Matrix.add_vecMul _ _ _
+      map_smul' := fun c v => Matrix.smul_vecMul _ _ _ }
+  apply linearIndependent_of_top_le_span_of_card_eq_finrank
+  · intro y _
+    have hy : y = φ (y ᵥ* (g⁻¹).1) := by
+      simp [φ, Matrix.vecMul_vecMul]
+    have hm : φ (y ᵥ* (g⁻¹).1) ∈ V.map φ := Submodule.mem_map_of_mem (h3 _)
+    rw [hV, Submodule.map_span, ← Set.range_comp] at hm
+    rw [hy]
+    exact hm
+  · rw [hcard, Module.finrank_pi_fintype, ← hrk]
+    simp [mul_comm]
+
+end GlobalTheory
+end
+
+open scoped Matrix
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.linearIndependent_vecMul_of_span_rat' : ∀ (E : Type) [Field E] [NumberField E] (R : Type) [CommRing R] [Algebra ℝ R] [FiniteDimensional ℝ R] (τ : E →+* R), Submodule.span ℝ (Set.range τ) = ⊤ → Module.finrank ℝ R = Module.finrank ℚ E → ∀ (n : ℕ) (ι : Type) [Fintype ι] (u : ι → Fin n → E), Fintype.card ι = Module.finrank ℚ E * n → Submodule.span ℚ (Set.range u) = ⊤ → ∀ g : GL (Fin n) R, LinearIndependent ℝ fun k => (fun i => τ (u k i)) ᵥ* g.1 := by
+  atlas_forward_decl GlobalTheory.linearIndependent_vecMul_of_span_rat
+end
+
+section
+section
+open scoped Matrix
+open NumberField IsDedekindDomain
+
+namespace GlobalTheory
+
+theorem gram_det_index_sublattice (U V ι κ : Type) [AddCommGroup U] [NormedAddCommGroup V]
+    [InnerProductSpace ℝ V] [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ]
+    (φ : U →ₗ[ℤ] V) (u : ι → U) (v : κ → U) (hc : Fintype.card ι = Fintype.card κ)
+    (hv : ∀ k, v k ∈ Submodule.span ℤ (Set.range u)) :
+    ∃ m : ℕ, (Matrix.gram ℝ fun k => φ (v k)).det = (m : ℝ) ^ 2 * (Matrix.gram ℝ fun i => φ (u i)).det ∧
+      ∀ i, (m : ℤ) • u i ∈ Submodule.span ℤ (Set.range v) := by
+  let e : ι ≃ κ := Fintype.equivOfCardEq hc
+  choose A hA using fun i => (Submodule.mem_span_range_iff_exists_fun ℤ).1 (hv (e i))
+  let Am : Matrix ι ι ℤ := Matrix.of A
+  have hAm : ∀ i j, Am i j = A i j := fun _ _ => rfl
+  let Ar : Matrix ι ι ℝ := Am.map (Int.castRingHom ℝ)
+  have hAr : ∀ i j, Ar i j = (A i j : ℝ) := fun _ _ => rfl
+  have hphi : ∀ i, φ (v (e i)) = ∑ j, (A i j : ℝ) • φ (u j) := by
+    intro i
+    rw [← hA i, map_sum]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [map_zsmul, Int.cast_smul_eq_zsmul]
+  have h1 : (Matrix.gram ℝ fun k => φ (v k)).submatrix e e
+      = Ar * (Matrix.gram ℝ fun i => φ (u i)) * Arᵀ := by
+    ext i j
+    simp only [Matrix.submatrix_apply, Matrix.gram_apply, Matrix.mul_apply, Matrix.transpose_apply, hAr]
+    rw [hphi i, hphi j, inner_sum]
+    simp only [sum_inner, real_inner_smul_left, real_inner_smul_right, Finset.sum_mul, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun b _ => Finset.sum_congr rfl fun a _ => ?_
+    ring
+  have hdetA : Ar.det = (Am.det : ℝ) := by
+    have := (Int.castRingHom ℝ).map_det Am
+    simpa [Ar] using this.symm
+  refine ⟨Am.det.natAbs, ?_, ?_⟩
+  · have h2 := Matrix.det_submatrix_equiv_self e (Matrix.gram ℝ fun k => φ (v k))
+    rw [← h2, h1, Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, hdetA]
+    have h3 : ((Am.det.natAbs : ℕ) : ℝ) ^ 2 = (Am.det : ℝ) ^ 2 := by
+      rw [Nat.cast_natAbs, Int.cast_abs, sq_abs]
+    rw [h3]; ring
+  · intro i
+    have hkey : Am.det • u i = ∑ k, Am.adjugate i k • v (e k) := by
+      have h4 : ∀ j, (Am.adjugate * Am) i j = Am.det * (1 : Matrix ι ι ℤ) i j := by
+        intro j
+        rw [Matrix.adjugate_mul, Matrix.smul_apply, smul_eq_mul]
+      calc Am.det • u i = ∑ j, (Am.det * (1 : Matrix ι ι ℤ) i j) • u j := by
+            simp [Matrix.one_apply, ite_smul]
+        _ = ∑ j, (∑ k, Am.adjugate i k * A k j) • u j := by
+            refine Finset.sum_congr rfl fun j _ => ?_
+            rw [← h4 j, Matrix.mul_apply]; rfl
+        _ = ∑ k, Am.adjugate i k • v (e k) := by
+            simp only [Finset.sum_smul, ← hA, Finset.smul_sum, mul_smul]
+            exact Finset.sum_comm
+    have hmem : Am.det • u i ∈ Submodule.span ℤ (Set.range v) := by
+      rw [hkey]
+      exact Submodule.sum_mem _ fun k _ =>
+        Submodule.smul_mem _ _ (Submodule.subset_span ⟨e k, rfl⟩)
+    rcases Int.natAbs_eq Am.det with h | h
+    · rw [← h]; exact hmem
+    · have : ((Am.det.natAbs : ℕ) : ℤ) = -Am.det := by omega
+      rw [this, neg_smul]
+      exact Submodule.neg_mem _ hmem
+
+end GlobalTheory
+end
+
+open scoped Matrix
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gram_det_eq_sq_mul_gram_det_of_mem_span : ∀ (U V ι κ : Type) [AddCommGroup U] [NormedAddCommGroup V] [InnerProductSpace ℝ V] [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ] (φ : U →ₗ[ℤ] V) (u : ι → U) (v : κ → U), Fintype.card ι = Fintype.card κ → (∀ k, v k ∈ Submodule.span ℤ (Set.range u)) → ∃ m : ℕ, (Matrix.gram ℝ fun k => φ (v k)).det = (m : ℝ) ^ 2 * (Matrix.gram ℝ fun i => φ (u i)).det ∧ ∀ i, (m : ℤ) • u i ∈ Submodule.span ℤ (Set.range v) := by
+  atlas_forward_decl GlobalTheory.gram_det_index_sublattice
+end
+
+section
+section
+open scoped Matrix
+open NumberField IsDedekindDomain
+
+namespace GlobalTheory
+
+theorem matrix_inv_entries_bounded (R : Type) [NormedCommRing R] [NormedAlgebra ℝ R] [FiniteDimensional ℝ R] (n : ℕ) (G : Matrix (Fin n) (Fin n) R → ℝ) (hG : Continuous G) (hU : ∀ c, G c ≠ 0 → IsUnit c) (B ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, (∀ c : Matrix (Fin n) (Fin n) R, (∀ i j, ‖c i j‖ ≤ B) → G c ≤ C) ∧ ∀ c : GL (Fin n) R, (∀ i j, ‖c.1 i j‖ ≤ B) → ε ≤ G c.1 → ∀ i j, ‖c⁻¹.1 i j‖ ≤ C := by
+  haveI : ProperSpace R := FiniteDimensional.proper_real R
+  haveI : CompleteSpace R := FiniteDimensional.complete ℝ R
+  set K : Set (Matrix (Fin n) (Fin n) R) := Set.pi Set.univ (fun _ => Set.pi Set.univ (fun _ => Metric.closedBall (0 : R) B)) with hK
+  have hKc : IsCompact K := isCompact_univ_pi (fun _ => isCompact_univ_pi (fun _ => isCompact_closedBall _ _))
+  have hmemK : ∀ c : Matrix (Fin n) (Fin n) R, (∀ i j, ‖c i j‖ ≤ B) → c ∈ K := by
+    intro c h i _ j _
+    simpa [Metric.mem_closedBall, dist_zero_right] using h i j
+  obtain ⟨C1, hC1⟩ := hKc.exists_bound_of_continuousOn hG.continuousOn
+  set K' := K ∩ {c | ε ≤ G c} with hK'
+  have hK'c : IsCompact K' := hKc.inter_right (isClosed_le continuous_const hG)
+  let f : Matrix (Fin n) (Fin n) R → (Fin n → Fin n → R) := fun c => fun i j => (c⁻¹) i j
+  have hf : ContinuousOn f K' := by
+    intro c hc
+    have hu : IsUnit c := hU c (ne_of_gt (lt_of_lt_of_le hε hc.2))
+    have hdet : IsUnit c.det := (Matrix.isUnit_iff_isUnit_det c).1 hu
+    obtain ⟨u, hu'⟩ := hdet
+    have h1 : ContinuousAt Ring.inverse c.det := by
+      rw [← hu']; exact NormedRing.inverse_continuousAt u
+    exact (continuousAt_matrix_inv c h1).continuousWithinAt
+  obtain ⟨C2, hC2⟩ := hK'c.exists_bound_of_continuousOn hf
+  refine ⟨max C1 C2, ?_, ?_⟩
+  · intro c hc
+    exact le_trans (le_trans (le_abs_self _) (by simpa [Real.norm_eq_abs] using hC1 c (hmemK c hc))) (le_max_left _ _)
+  · intro c hc hGc i j
+    have hm : c.1 ∈ K' := ⟨hmemK _ hc, hGc⟩
+    have h2 := hC2 _ hm
+    have h3 : ‖f c.1 i j‖ ≤ ‖f c.1‖ := le_trans (norm_le_pi_norm (f c.1 i) j) (norm_le_pi_norm (f c.1) i)
+    rw [Matrix.coe_units_inv]
+    exact le_trans (le_trans h3 h2) (le_max_right _ _)
+
+end GlobalTheory
+end
+
+open scoped Matrix
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_bound_inv_entries_of_bounded_entries : ∀ (R : Type) [NormedCommRing R] [NormedAlgebra ℝ R] [FiniteDimensional ℝ R] (n : ℕ) (G : Matrix (Fin n) (Fin n) R → ℝ), Continuous G → (∀ c, G c ≠ 0 → IsUnit c) → ∀ B ε : ℝ, 0 < ε → ∃ C : ℝ, (∀ c : Matrix (Fin n) (Fin n) R, (∀ i j, ‖c i j‖ ≤ B) → G c ≤ C) ∧ ∀ c : GL (Fin n) R, (∀ i j, ‖c.1 i j‖ ≤ B) → ε ≤ G c.1 → ∀ i j, ‖c⁻¹.1 i j‖ ≤ C := by
+  atlas_forward_decl GlobalTheory.matrix_inv_entries_bounded
+end
+
+section
+open scoped Matrix
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_lattice_adelicMatrix_integral_translate : ∀ (E : Type) [Field E] [NumberField E] (n : ℕ) (β : GL (Fin n) (FiniteAdeleRing (𝓞 E) E)), ∃ Λ : Submodule (𝓞 E) (Fin n → E), Submodule.IsLattice E Λ ∧ ∀ (M : ℕ) (δ : GL (Fin n) E), (∀ i, δ.1 i ∈ Λ) → (∀ x ∈ Λ, ∃ y : Fin n → 𝓞 E, (M : E) • x = (fun i => (y i : E)) ᵥ* δ.1) → ∀ (i j : Fin n) (v : HeightOneSpectrum (𝓞 E)), (δ.1.map (algebraMap E (FiniteAdeleRing (𝓞 E) E)) * β.1) i j v ∈ v.adicCompletionIntegers E ∧ ((M : FiniteAdeleRing (𝓞 E) E) * (β⁻¹.1 * δ⁻¹.1.map (algebraMap E (FiniteAdeleRing (𝓞 E) E))) i j) v ∈ v.adicCompletionIntegers E := by
+  first | exact @GlobalTheory.AdelicMatLat.exists_lattice_integral | exact GlobalTheory.AdelicMatLat.exists_lattice_integral | (intros; apply GlobalTheory.AdelicMatLat.exists_lattice_integral <;> assumption)
+end
+
+section
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.Doubling GlobalTheory.Eis.Conv
+
+namespace GlobalTheory.Eis.Conv.AdeleCMSplit
+
+open scoped TensorProduct NNReal Matrix in
+open NumberField IsDedekindDomain in
+
+theorem _root_.GlobalTheory.Eis.Conv.AdeleCMSplit.exists_adele_split : ∀ (F E : Type) [Field F] [NumberField F]
+    [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsCMExt F E σ →
+    ∃ e : (_root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF F ⊗[F] E) ≃+* (InfinitePlace E → ℂ) × FiniteAdeleRing (𝓞 E) E,
+      Continuous e.symm ∧
+      (∀ x : E, e (_root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (F := F) (_root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF F) x) =
+        (fun w : InfinitePlace E => w.embedding x, algebraMap E (FiniteAdeleRing (𝓞 E) E) x)) ∧
+      e (_root_.GlobalTheory.Eis.Conv.halfE F E).1 = (fun _ => 2⁻¹, 1) := by
+  intro F E _ _ _ _ _ σ hσ
+  obtain ⟨e₁, he₁, -, he₁s⟩ := _root_.GlobalTheory.AdSplit.exists_adele_equiv F E
+  choose θ hθ using fun τ => (_root_.GlobalTheory.Mem.VolEmb.existsUnique_infEmb F E σ hσ τ).exists
+  have hcm : _root_.GlobalTheory.Mem.Vol.IsCMFam (fun w : InfinitePlace E => w.embedding) := by
+    unfold _root_.GlobalTheory.Mem.Vol.IsCMFam
+    simp only [InfinitePlace.mk_embedding]
+    exact Function.bijective_id
+  obtain ⟨e₂, he₂, -, he₂s, -⟩ := _root_.GlobalTheory.Mem.VolInfIso.exists_infAdele_equiv F E σ
+    (InfinitePlace E) (fun w => w.embedding) (fun w => θ w.embedding) hσ hcm (fun w => hθ _)
+  obtain ⟨ι, hι1, hι2, -⟩ := _root_.GlobalTheory.AdeleBaseChange.exists_tensor_finiteAdele_equiv F E
+  have hιs := _root_.GlobalTheory.AdeleBaseChange.continuous_symm_finite F E ι hι2
+  refine ⟨e₁.trans (RingEquiv.prodCongr e₂ ι), ?_, ?_, ?_⟩
+  · exact he₁s.comp ((he₂s.comp continuous_fst).prodMk (hιs.comp continuous_snd))
+  · intro x
+    have h1 : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (F := F) (_root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF F) x = (1 : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF F) ⊗ₜ[F] x := rfl
+    have h2 : e₁ ((1 : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF F) ⊗ₜ[F] x) =
+        ((1 : InfiniteAdeleRing F) ⊗ₜ[F] x, (1 : FiniteAdeleRing (𝓞 F) F) ⊗ₜ[F] x) := by
+      refine Prod.ext ?_ ?_
+      · rw [(he₁ _).1]; exact Algebra.TensorProduct.map_tmul _ _ _ _
+      · rw [(he₁ _).2]; exact Algebra.TensorProduct.map_tmul _ _ _ _
+    rw [h1, RingEquiv.trans_apply, h2]
+    refine Prod.ext ?_ ?_
+    · funext w
+      exact (he₂ _ w).trans ((hθ _).1 x)
+    · exact hι1 x
+  · have h0 : ((_root_.GlobalTheory.Eis.Conv.halfE F E).1 : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF F ⊗[F] E) =
+        ((algebraMap F (InfiniteAdeleRing F) 2⁻¹, (1 : FiniteAdeleRing (𝓞 F) F)) : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF F)
+          ⊗ₜ[F] (1 : E) := rfl
+    have h2 : e₁ (((algebraMap F (InfiniteAdeleRing F) 2⁻¹, (1 : FiniteAdeleRing (𝓞 F) F)) :
+        _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF F) ⊗ₜ[F] (1 : E)) = ((1 : InfiniteAdeleRing F) ⊗ₜ[F] algebraMap F E 2⁻¹, 1) := by
+      refine Prod.ext ?_ ?_
+      · rw [(he₁ _).1]
+        refine (Algebra.TensorProduct.map_tmul _ _ _ _).trans ?_
+        show algebraMap F (InfiniteAdeleRing F) 2⁻¹ ⊗ₜ[F] (1 : E) = _
+        rw [Algebra.algebraMap_eq_smul_one, Algebra.algebraMap_eq_smul_one,
+          TensorProduct.smul_tmul]
+      · rw [(he₁ _).2]; exact (Algebra.TensorProduct.map_tmul _ _ _ _).trans (by rfl)
+    rw [h0]
+    refine (congrArg (RingEquiv.prodCongr e₂ ι) h2).trans ?_
+    refine Prod.ext ?_ ?_
+    · funext w
+      refine ((he₂ ((1 : InfiniteAdeleRing F) ⊗ₜ[F] algebraMap F E 2⁻¹) w).trans
+        ((hθ _).1 _)).trans ?_
+      simp only [map_inv₀, map_ofNat]
+    · exact map_one ι
+
+end GlobalTheory.Eis.Conv.AdeleCMSplit
+end
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.Doubling GlobalTheory.Eis.Conv
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_cmAdele_split_complex_finiteAdeles : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∃ e : (AF F ⊗[F] E) ≃+* (InfinitePlace E → ℂ) × FiniteAdeleRing (𝓞 E) E, Continuous e.symm ∧ (∀ x : E, e (inclR (F := F) (AF F) x) = (fun w : InfinitePlace E => w.embedding x, algebraMap E (FiniteAdeleRing (𝓞 E) E) x)) ∧ e (halfE F E).1 = (fun _ => 2⁻¹, 1) := by
+  atlas_forward_decl GlobalTheory.Eis.Conv.AdeleCMSplit.exists_adele_split
+end
+
+section
+section
+open scoped Matrix
+open NumberField IsDedekindDomain
+
+namespace GlobalTheory
+
+open NumberField.InfinitePlace NumberField.mixedEmbedding in
+
+theorem totallyComplex_span_embeddings_and_finrank :
+    ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E],
+      Submodule.span ℝ (Set.range (Pi.ringHom fun w : InfinitePlace E => w.embedding)) = ⊤ ∧
+        Module.finrank ℝ (InfinitePlace E → ℂ) = Module.finrank ℚ E := by
+  intro E _ _ _
+  constructor
+  ·
+    let f : mixedSpace E →ₗ[ℝ] (InfinitePlace E → ℂ) :=
+      { toFun := fun x w => x.2 ⟨w, IsTotallyComplex.isComplex w⟩
+        map_add' := fun x y => rfl
+        map_smul' := fun c x => rfl }
+    have hf : Function.Surjective f := by
+      intro y
+      exact ⟨(0, fun w => y w.1), rfl⟩
+    have hcomp : ∀ x : E, f (mixedEmbedding E x) = Pi.ringHom (fun w : InfinitePlace E => w.embedding) x := by
+      intro x
+      funext w
+      simp only [f, LinearMap.coe_mk, AddHom.coe_mk, mixedEmbedding_apply_isComplex]
+      rfl
+    have hspan : Submodule.span ℝ (Set.range (mixedEmbedding E)) = ⊤ := by
+      apply eq_top_iff.mpr
+      rw [← (latticeBasis E).span_eq]
+      apply Submodule.span_mono
+      rintro _ ⟨i, rfl⟩
+      exact ⟨_, (latticeBasis_apply E i).symm⟩
+    have himg : f '' Set.range (mixedEmbedding E) =
+        Set.range (Pi.ringHom fun w : InfinitePlace E => w.embedding) := by
+      rw [← Set.range_comp]
+      exact congrArg Set.range (funext hcomp)
+    rw [← himg, ← Submodule.map_span, hspan, Submodule.map_top, LinearMap.range_eq_top]
+    exact hf
+  · rw [Module.finrank_pi_fintype]
+    simp only [Complex.finrank_real_complex, Finset.sum_const, Finset.card_univ, smul_eq_mul]
+    rw [IsTotallyComplex.finrank, card_eq_nrRealPlaces_add_nrComplexPlaces,
+      IsTotallyComplex.nrRealPlaces_eq_zero]
+    ring
+
+end GlobalTheory
+end
+
+open scoped Matrix
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.span_range_embedding_and_finrank_of_isTotallyComplex : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E], Submodule.span ℝ (Set.range (Pi.ringHom fun w : InfinitePlace E => w.embedding)) = ⊤ ∧ Module.finrank ℝ (InfinitePlace E → ℂ) = Module.finrank ℚ E := by
+  atlas_forward_decl GlobalTheory.totallyComplex_span_embeddings_and_finrank
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.Eis.Conv
@@ -299,4 +1444,5 @@ theorem sphConv : ∀ (D : D7) (V : HSp D) (a : GL (Fin V.rank) (AE D)),
 
 end GlobalTheory.Eis
 
+end
 end

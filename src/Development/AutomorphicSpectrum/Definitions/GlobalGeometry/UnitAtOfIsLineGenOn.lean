@@ -128,24 +128,7 @@ theorem unitAt_div {A B : Lat ξ E} {p q : ℕ} {a : ⋀[Ω]^p E} {b : ⋀[Ω]^q
   rw [inv_div]
   exact div_mem_reg_at_of_is_coeff_at ha hb h' h
 
-theorem isCoeffAt_smul {A B : Lat ξ E} {p q : ℕ} {a : ⋀[Ω]^p E} {b : ⋀[Ω]^q E} {x : Cpt ξ} {f c d : Ω}
-    (hc : c ≠ 0) (hd : d ≠ 0) (h : IsCoeffAt A B p q a b x f) :
-    IsCoeffAt A B p q (c • a) (d • b) x (c * f / d) := by
-  obtain ⟨α, β, hα, hβ, hA, hB, e1⟩ := h
-  refine ⟨α / c, β / d, div_ne_zero hα hc, div_ne_zero hβ hd, ?_, ?_, ?_⟩
-  · rw [hA, smul_smul, div_mul_cancel₀ _ hc]
-  · rw [hB, smul_smul, div_mul_cancel₀ _ hd]
-  · rw [← e1]
-    field_simp
 
-theorem unitAt_of_isLineGenOn {A B : Lat ξ E} {p q : ℕ} {a : ⋀[Ω]^p E} {b : ⋀[Ω]^q E} {T : Set (Cpt ξ)}
-    {c : Ω} (hc : c ≠ 0) (h : IsLineGenOn A B p q a b T) (h' : IsLineGenOn A B p q (c • a) b T)
-    {x : Cpt ξ} (hx : x ∈ T) : unitAt ξ x c := by
-  have h1 : IsCoeffAt A B p q (c • a) b x c := by
-    have h2 := isCoeffAt_smul hc one_ne_zero (h.2.2 x hx)
-    rwa [one_smul, mul_one, div_one] at h2
-  have h3 := unitAt_div h'.1 h'.2.1 h1 (h'.2.2 x hx)
-  rwa [div_one] at h3
 
 theorem ιMulti_ne_zero {r : ℕ} {e : Fin r → E} (h : LinearIndependent Ω e) :
     exteriorPower.ιMulti Ω r e ≠ 0 := by
@@ -169,16 +152,6 @@ theorem ιMulti_ne_zero {r : ℕ} {e : Fin r → E} (h : LinearIndependent Ω e)
   rw [hm, Matrix.det_one] at hd
   exact zero_ne_one hd
 
-theorem ne_zero_of_frame {A B : Lat ξ E} {p q : ℕ} {a : ⋀[Ω]^p E} {b : ⋀[Ω]^q E} {x : Cpt ξ} {f : Ω}
-    {e : Fin p → E} (he : A.IsFrameAt e x) (h : IsCoeffAt A B p q a b x f) : a ≠ 0 := by
-  rintro rfl
-  obtain ⟨α, β, hα, -, hA, -, -⟩ := h
-  rw [wedge_of_frame he, smul_zero] at hA
-  have hmem : exteriorPower.ιMulti Ω p e ∈ Submodule.span (regAt ξ x) {(0 : ⋀[Ω]^p E)} := by
-    rw [← hA]
-    exact Submodule.mem_span_singleton_self _
-  rw [Submodule.span_singleton_eq_bot.2 rfl, Submodule.mem_bot] at hmem
-  exact ιMulti_ne_zero he.1 hmem
 
 end General
 
@@ -208,17 +181,7 @@ theorem gen : IsLineGenOn (line ![2, 0]) (line ![0, 1]) 1 1 (exteriorPower.ιMul
   have h := isCoeffAt_of_frame (frame ne₀ x) (frame ne₁ x) (one_ne_zero) (one_ne_zero)
   rwa [one_smul, one_smul, div_one] at h
 
-theorem coeff_half (x) : IsCoeffAt (line ![2, 0]) (line ![0, 1]) 1 1
-    ((2 : ℚ)⁻¹ • exteriorPower.ιMulti ℚ 1 ![![2, 0]]) (exteriorPower.ιMulti ℚ 1 ![![0, 1]]) x 2⁻¹ := by
-  have h := isCoeffAt_of_frame (frame ne₀ x) (frame ne₁ x) (inv_ne_zero two_ne_zero) one_ne_zero
-  rwa [one_smul, div_one] at h
 
-theorem not_gen : ¬ IsLineGenOn (line ![2, 0]) (line ![0, 1]) 1 1
-    ((2 : ℚ)⁻¹ • exteriorPower.ιMulti ℚ 1 ![![2, 0]]) (exteriorPower.ιMulti ℚ 1 ![![0, 1]]) {two} := by
-  intro h
-  have hg : IsLineGenOn (line ![2, 0]) (line ![0, 1]) 1 1 (exteriorPower.ιMulti ℚ 1 ![![2, 0]])
-      (exteriorPower.ιMulti ℚ 1 ![![0, 1]]) {two} := ⟨gen.1, gen.2.1, fun x _ => gen.2.2 x trivial⟩
-  exact half_notMem (unitAt_of_isLineGenOn (inv_ne_zero two_ne_zero) hg h (Set.mem_singleton _)).2.1
 
 end Int
 

@@ -1,11 +1,426 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsRootSelectionUnitaryRankOne
 import Development.AbelianVarietyTheory.Definitions.Divisors.MapInclKMemTwCentResOne
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CommensurableConjRangeGLSubringStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinitePadicIntegersQuotPrimePowOfFiniteDimStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinitePadicTensorUnramifiedIntegersQuotPrimePowStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPadicPowMulMemTensorUnramifiedIntegersStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CommensurableMapConjProdPiStatement
+import ReciprocityTheory.ClassFieldTheory.LocalClassField.EulerLatticeA
+
+section
+open Matrix
+
+namespace GlobalTheory
+
+section GLCong
+
+variable {B : Type} [CommRing B] (R : Subring B) {n : ℕ}
+
+theorem glcong_mem_range (A : GL (Fin n) B) (hA : ∀ i j, (A : Matrix (Fin n) (Fin n) B) i j ∈ R)
+    (hA' : ∀ i j, ((A⁻¹ : GL (Fin n) B) : Matrix (Fin n) (Fin n) B) i j ∈ R) :
+    A ∈ (GeneralLinearGroup.map (n := Fin n) R.subtype).range := by
+  let M : Matrix (Fin n) (Fin n) R := fun i j => ⟨_, hA i j⟩
+  let N : Matrix (Fin n) (Fin n) R := fun i j => ⟨_, hA' i j⟩
+  have hM : R.subtype.mapMatrix M = (A : Matrix (Fin n) (Fin n) B) := by ext i j; rfl
+  have hN : R.subtype.mapMatrix N = ((A⁻¹ : GL (Fin n) B) : Matrix (Fin n) (Fin n) B) := by ext i j; rfl
+  have hinj : Function.Injective (R.subtype.mapMatrix : Matrix (Fin n) (Fin n) R →+* _) := by
+    intro X Y h; ext i j; exact congrFun (congrFun h i) j
+  have h1 : M * N = 1 := hinj (by rw [map_mul, map_one, hM, hN, ← Units.val_mul, mul_inv_cancel, Units.val_one])
+  have h2 : N * M = 1 := hinj (by rw [map_mul, map_one, hM, hN, ← Units.val_mul, inv_mul_cancel, Units.val_one])
+  refine ⟨⟨M, N, h1, h2⟩, ?_⟩
+  ext i j
+  rfl
+
+theorem glcong_entries (c : R) (h : GL (Fin n) R)
+    (hh : GeneralLinearGroup.map (n := Fin n) (Ideal.Quotient.mk (Ideal.span {c * c})) h = 1)
+    (P Q : Matrix (Fin n) (Fin n) B) (hP : ∀ i j, (c : B) * P i j ∈ R) (hQ : ∀ i j, (c : B) * Q i j ∈ R)
+    (hPQ : P * Q = 1) :
+    ∀ i j, (P * R.subtype.mapMatrix (h : Matrix (Fin n) (Fin n) R) * Q) i j ∈ R := by
+  have hX : ∀ i j, ∃ x : R, x * (c * c) = (h : Matrix (Fin n) (Fin n) R) i j - (1 : Matrix (Fin n) (Fin n) R) i j := by
+    intro i j
+    rw [← Ideal.mem_span_singleton', ← Ideal.Quotient.eq]
+    have := congrArg (fun u : GL (Fin n) (R ⧸ Ideal.span {c * c}) => (u : Matrix (Fin n) (Fin n) (R ⧸ Ideal.span {c * c})) i j) hh
+    simp only [GeneralLinearGroup.map_apply, Units.val_one] at this
+    rw [this, Matrix.one_apply, Matrix.one_apply]
+    split_ifs <;> simp
+  choose X hXe using hX
+  let P' : Matrix (Fin n) (Fin n) R := fun i j => ⟨_, hP i j⟩
+  let Q' : Matrix (Fin n) (Fin n) R := fun i j => ⟨_, hQ i j⟩
+  let X' : Matrix (Fin n) (Fin n) R := fun i j => X i j
+  have hP' : R.subtype.mapMatrix P' = (c : B) • P := by ext i j; rfl
+  have hQ' : R.subtype.mapMatrix Q' = (c : B) • Q := by ext i j; rfl
+  have hh' : (h : Matrix (Fin n) (Fin n) R) = 1 + (c * c) • X' := by
+    refine Matrix.ext fun i j => ?_
+    show _ = (1 : Matrix (Fin n) (Fin n) R) i j + (c * c) * X i j
+    rw [mul_comm, hXe i j]; ring
+  have key : P * R.subtype.mapMatrix (h : Matrix (Fin n) (Fin n) R) * Q
+      = R.subtype.mapMatrix (1 + P' * X' * Q') := by
+    have hs : R.subtype.mapMatrix ((c * c) • X') = ((c : B) * (c : B)) • R.subtype.mapMatrix X' := by
+      ext i j
+      change ((c * c * X i j : R) : B) = (c : B) * c * (X i j : B)
+      push_cast; ring
+    rw [map_add, map_one, map_mul, map_mul, hP', hQ', hh', map_add, map_one, hs]
+    simp only [Matrix.mul_add, Matrix.add_mul, Matrix.mul_one, hPQ, Matrix.smul_mul, Matrix.mul_smul, smul_smul, Matrix.mul_assoc]
+  intro i j
+  rw [key]
+  exact ((1 + P' * X' * Q' : Matrix (Fin n) (Fin n) R) i j).2
+
+theorem glcong_relIndex_ne_zero (c : R) (hfin : Finite (R ⧸ Ideal.span {c * c})) (g : GL (Fin n) B)
+    (hg : ∀ i j, (c : B) * (g : Matrix (Fin n) (Fin n) B) i j ∈ R)
+    (hg' : ∀ i j, (c : B) * ((g⁻¹ : GL (Fin n) B) : Matrix (Fin n) (Fin n) B) i j ∈ R) :
+    (((GeneralLinearGroup.map (n := Fin n) R.subtype).range).map (MulAut.conj g).toMonoidHom).relIndex
+      (GeneralLinearGroup.map (n := Fin n) R.subtype).range ≠ 0 := by
+  set φ := GeneralLinearGroup.map (n := Fin n) R.subtype
+  set ψ := GeneralLinearGroup.map (n := Fin n) (Ideal.Quotient.mk (Ideal.span {c * c}))
+  have hΓ : ψ.ker.index ≠ 0 := by
+    rw [Subgroup.index_ker]
+    exact Nat.card_ne_zero.mpr ⟨inferInstance, inferInstance⟩
+  have hinj : Function.Injective φ := by
+    intro a b hab
+    ext i j
+    exact congrArg (fun u : GL (Fin n) B => (u : Matrix (Fin n) (Fin n) B) i j) hab
+  have h1 : (ψ.ker.map φ).relIndex φ.range ≠ 0 := by
+    rw [MonoidHom.range_eq_map, Subgroup.relIndex_map_map_of_injective _ _ hinj,
+      Subgroup.relIndex_top_right]
+    exact hΓ
+  have hval : ∀ h : GL (Fin n) R, ((φ h : GL (Fin n) B) : Matrix (Fin n) (Fin n) B)
+      = R.subtype.mapMatrix (h : Matrix (Fin n) (Fin n) R) := fun h => rfl
+  have hgg : ((g⁻¹ : GL (Fin n) B) : Matrix (Fin n) (Fin n) B) * (g : Matrix (Fin n) (Fin n) B) = 1 := by
+    rw [← Units.val_mul, inv_mul_cancel, Units.val_one]
+  have h2 : ψ.ker.map φ ≤ φ.range.map (MulAut.conj g).toMonoidHom := by
+    rintro x ⟨h, hh, rfl⟩
+    replace hh : ψ h = 1 := hh
+    have hh' : ψ h⁻¹ = 1 := by rw [map_inv, hh, inv_one]
+    rw [Subgroup.mem_map]
+    refine ⟨g⁻¹ * φ h * g, ?_, by simp [MulAut.conj_apply, mul_assoc]⟩
+    apply glcong_mem_range
+    · intro i j
+      have := glcong_entries R c h hh _ _ hg' hg hgg i j
+      rwa [Units.val_mul, Units.val_mul, hval]
+    · intro i j
+      have := glcong_entries R c h⁻¹ hh' _ _ hg' hg hgg i j
+      rwa [show (g⁻¹ * φ h * g)⁻¹ = g⁻¹ * φ h⁻¹ * g by rw [map_inv]; group, Units.val_mul, Units.val_mul, hval]
+  exact fun h0 => h1 (Subgroup.relIndex_eq_zero_of_le_left h2 h0)
+
+end GLCong
+
+theorem commensurable_conj_range_GL_subring {B : Type} [CommRing B] (R : Subring B) (n : ℕ) (c : R)
+    (hfin : Finite (R ⧸ Ideal.span {c * c})) (g : GL (Fin n) B)
+    (hg : ∀ i j, (c : B) * (g : Matrix (Fin n) (Fin n) B) i j ∈ R)
+    (hg' : ∀ i j, (c : B) * ((g⁻¹ : GL (Fin n) B) : Matrix (Fin n) (Fin n) B) i j ∈ R) :
+    Subgroup.Commensurable ((GeneralLinearGroup.map R.subtype).range.map (MulAut.conj g).toMonoidHom)
+      (GeneralLinearGroup.map R.subtype).range := by
+  set K := (GeneralLinearGroup.map (n := Fin n) R.subtype).range
+  refine ⟨glcong_relIndex_ne_zero R c hfin g hg hg', ?_⟩
+  have e := Subgroup.relIndex_map_map_of_injective (f := (MulAut.conj g).toMonoidHom)
+    (K.map (MulAut.conj g⁻¹).toMonoidHom) K (MulEquiv.injective _)
+  have hK : (K.map (MulAut.conj g⁻¹).toMonoidHom).map (MulAut.conj g).toMonoidHom = K := by
+    rw [Subgroup.map_map]
+    conv_rhs => rw [← Subgroup.map_id K]
+    congr 1
+    ext x
+    simp [MulAut.conj_apply, mul_assoc]
+  rw [hK] at e
+  rw [e]
+  exact glcong_relIndex_ne_zero R c hfin g⁻¹ hg' (by simpa using hg)
+
+end GlobalTheory
+end
+
+section
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.commensurable_conj_range_gl_map_subtype : ∀ {B : Type} [CommRing B] (R : Subring B) (n : ℕ) (c : R), Finite (R ⧸ Ideal.span {c * c}) → ∀ g : GL (Fin n) B, (∀ i j, (c : B) * (g : Matrix (Fin n) (Fin n) B) i j ∈ R) → (∀ i j, (c : B) * ((g⁻¹ : GL (Fin n) B) : Matrix (Fin n) (Fin n) B) i j ∈ R) → Subgroup.Commensurable ((GeneralLinearGroup.map R.subtype).range.map (MulAut.conj g).toMonoidHom) (GeneralLinearGroup.map R.subtype).range := by
+  first | (exact @GlobalTheory.commensurable_conj_range_GL_subring) | (exact GlobalTheory.commensurable_conj_range_GL_subring) | (intros; apply GlobalTheory.commensurable_conj_range_GL_subring  <;> assumption)
+end
+
+section
+open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount
+open scoped TensorProduct Classical
+
+namespace GlobalTheory.LKLoc.IntFin
+
+theorem finite_intK_quot_pow : ∀ (p : ℕ) [Fact p.Prime] (L : IntermediateField ℚ_[p] (PadicAlgCl p))
+    [FiniteDimensional ℚ_[p] L] (m : ℕ),
+    Finite (GlobalTheory.LKLoc.intK p L ⧸ Ideal.span {(p : GlobalTheory.LKLoc.intK p L) ^ m}) := by
+  intro p _ L hL m
+  have hp : p ≠ 0 := (Fact.out : p.Prime).ne_zero
+  have h := ReciprocityTheory.DiscreteGroups.LocalClassField.Euler.card_OK_quot_natCast p L hL (pow_ne_zero m hp)
+  have hf : Finite (ReciprocityTheory.DiscreteGroups.LocalClassField.OK p L ⧸ Ideal.span {((p ^ m : ℕ) : ReciprocityTheory.DiscreteGroups.LocalClassField.OK p L)}) :=
+    Nat.finite_of_card_ne_zero (by rw [h]; positivity)
+  push_cast at hf
+  exact hf
+
+end GlobalTheory.LKLoc.IntFin
+end
+
+section
+open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount
+open scoped TensorProduct Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_padicIntegers_quot_primePow_of_finiteDim : ∀ (p : ℕ) [Fact p.Prime] (L : IntermediateField ℚ_[p] (PadicAlgCl p)) [FiniteDimensional ℚ_[p] L] (m : ℕ), Finite (GlobalTheory.LKLoc.intK p L ⧸ Ideal.span {(p : GlobalTheory.LKLoc.intK p L) ^ m}) := by
+  first | (exact @GlobalTheory.LKLoc.IntFin.finite_intK_quot_pow) | (exact GlobalTheory.LKLoc.IntFin.finite_intK_quot_pow) | (intros; apply GlobalTheory.LKLoc.IntFin.finite_intK_quot_pow  <;> assumption)
+end
+
+section
+open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount
+open scoped TensorProduct Classical
+
+noncomputable section
+
+namespace GlobalTheory.TenFin
+
+theorem finite_quot_of_gen {R A B : Type} [CommRing R] [CommRing A] [CommRing B] (I : Ideal R)
+    (f : A →+* R) (g : B →+* R) (J₁ : Ideal A) (J₂ : Ideal B) (h₁ : J₁.map f ≤ I) (h₂ : J₂.map g ≤ I)
+    [Finite (A ⧸ J₁)] [Finite (B ⧸ J₂)] (hgen : Subring.closure (Set.range f ∪ Set.range g) = ⊤)
+    (n : ℕ) (hn : n ≠ 0) (hI : (n : R) ∈ I) : Finite (R ⧸ I) := by
+  let π := Ideal.Quotient.mk I
+  let fa : A ⧸ J₁ →+* R ⧸ I := Ideal.Quotient.lift J₁ (π.comp f) (fun a ha =>
+    Ideal.Quotient.eq_zero_iff_mem.2 (h₁ (Ideal.mem_map_of_mem f ha)))
+  let gb : B ⧸ J₂ →+* R ⧸ I := Ideal.Quotient.lift J₂ (π.comp g) (fun a ha =>
+    Ideal.Quotient.eq_zero_iff_mem.2 (h₂ (Ideal.mem_map_of_mem g ha)))
+  have hfa : ∀ a, π (f a) = fa (Ideal.Quotient.mk J₁ a) := fun a => rfl
+  have hgb : ∀ b, π (g b) = gb (Ideal.Quotient.mk J₂ b) := fun b => rfl
+  let S : Set (R ⧸ I) := Set.image2 (· * ·) (Set.range fa) (Set.range gb)
+  have hS : S.Finite := (Set.finite_range fa).image2 _ (Set.finite_range gb)
+  let M : Submonoid (R ⧸ I) :=
+    { carrier := S
+      one_mem' := ⟨1, ⟨1, map_one _⟩, 1, ⟨1, map_one _⟩, one_mul 1⟩
+      mul_mem' := by
+        rintro _ _ ⟨_, ⟨a, rfl⟩, _, ⟨b, rfl⟩, rfl⟩ ⟨_, ⟨a', rfl⟩, _, ⟨b', rfl⟩, rfl⟩
+        refine ⟨fa (a * a'), ⟨_, rfl⟩, gb (b * b'), ⟨_, rfl⟩, ?_⟩
+        simp only [map_mul]; ring }
+  have hsub : π '' (Set.range f ∪ Set.range g) ⊆ (M : Set (R ⧸ I)) := by
+    rintro _ ⟨_, ⟨a, rfl⟩ | ⟨b, rfl⟩, rfl⟩
+    · exact ⟨fa (Ideal.Quotient.mk J₁ a), ⟨_, rfl⟩, 1, ⟨1, map_one _⟩, (mul_one _).trans (hfa a).symm⟩
+    · exact ⟨1, ⟨1, map_one _⟩, gb (Ideal.Quotient.mk J₂ b), ⟨_, rfl⟩, (one_mul _).trans (hgb b).symm⟩
+  have htop : AddSubgroup.closure S = ⊤ := by
+    rw [eq_top_iff]
+    intro x _
+    have hx : x ∈ Subring.closure (π '' (Set.range f ∪ Set.range g)) := by
+      rw [← RingHom.map_closure, hgen, ← RingHom.range_eq_map]
+      exact Ideal.Quotient.mk_surjective x
+    rw [Subring.mem_closure_iff] at hx
+    refine AddSubgroup.closure_mono ?_ hx
+    exact Submonoid.closure_le.2 hsub
+  haveI : AddGroup.FG (R ⧸ I) := ⟨⟨hS.toFinset, by rw [Set.Finite.coe_toFinset]; exact htop⟩⟩
+  refine AddCommGroup.finite_of_fg_torsion _ fun x => ?_
+  refine isOfFinAddOrder_iff_nsmul_eq_zero.2 ⟨n, Nat.pos_of_ne_zero hn, ?_⟩
+  rw [nsmul_eq_mul]
+  have : (n : R ⧸ I) = 0 := by
+    rw [← map_natCast π]; exact Ideal.Quotient.eq_zero_iff_mem.2 hI
+  rw [this, zero_mul]
+
+theorem finite_intKQ_quot : ∀ (p : ℕ) [Fact p.Prime] (K : IntermediateField ℚ_[p] (PadicAlgCl p)) (r m : ℕ),
+    Finite (GlobalTheory.LKLoc.intK p K ⧸ Ideal.span {(p : GlobalTheory.LKLoc.intK p K) ^ m}) →
+    Finite (GlobalTheory.LKLoc.intK p (Qr p r) ⧸ Ideal.span {(p : GlobalTheory.LKLoc.intK p (Qr p r)) ^ m}) →
+    Finite (intKQ p K r ⧸ Ideal.span {(p : intKQ p K r) ^ m}) := by
+  intro p _ K r m hA hB
+  let f : GlobalTheory.LKLoc.intK p K →+* intKQ p K r :=
+    ((inclK p K r).toRingHom.comp (GlobalTheory.LKLoc.intK p K).subtype).codRestrict (intKQ p K r)
+      (fun a => Subring.subset_closure (Or.inl ⟨a, rfl⟩))
+  let g : GlobalTheory.LKLoc.intK p (Qr p r) →+* intKQ p K r :=
+    ((inclQ p K r).toRingHom.comp (GlobalTheory.LKLoc.intK p (Qr p r)).subtype).codRestrict (intKQ p K r)
+      (fun b => Subring.subset_closure (Or.inr ⟨⟨b.1, b.2⟩, rfl⟩))
+  have hgen : Subring.closure (Set.range f ∪ Set.range g) = ⊤ := by
+    rw [eq_top_iff]
+    rintro ⟨x, hx⟩ -
+    induction hx using Subring.closure_induction with
+    | mem y hy =>
+      rcases hy with ⟨a, rfl⟩ | ⟨b, rfl⟩
+      · exact Subring.subset_closure (Or.inl ⟨a, rfl⟩)
+      · exact Subring.subset_closure (Or.inr ⟨⟨b.1, b.2⟩, rfl⟩)
+    | zero => exact zero_mem _
+    | one => exact one_mem _
+    | add y z _ _ h1 h2 => exact add_mem h1 h2
+    | neg y _ h => exact neg_mem h
+    | mul y z _ _ h1 h2 => exact mul_mem h1 h2
+  refine finite_quot_of_gen (J₁ := Ideal.span {(p : GlobalTheory.LKLoc.intK p K) ^ m})
+    (J₂ := Ideal.span {(p : GlobalTheory.LKLoc.intK p (Qr p r)) ^ m}) _ f g ?_ ?_ hgen (p ^ m) (pow_ne_zero _ (Fact.out : p.Prime).ne_zero) ?_
+  · rw [Ideal.map_span, Set.image_singleton, map_pow, map_natCast]
+  · rw [Ideal.map_span, Set.image_singleton, map_pow, map_natCast]
+  · rw [Nat.cast_pow]; exact Ideal.subset_span rfl
+
+end GlobalTheory.TenFin
+end
+end
+
+section
+open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount
+open scoped TensorProduct Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_padicTensorUnramifiedIntegers_quot_primePow : ∀ (p : ℕ) [Fact p.Prime] (K : IntermediateField ℚ_[p] (PadicAlgCl p)) (r m : ℕ), Finite (GlobalTheory.LKLoc.intK p K ⧸ Ideal.span {(p : GlobalTheory.LKLoc.intK p K) ^ m}) → Finite (GlobalTheory.LKLoc.intK p (Qr p r) ⧸ Ideal.span {(p : GlobalTheory.LKLoc.intK p (Qr p r)) ^ m}) → Finite (intKQ p K r ⧸ Ideal.span {(p : intKQ p K r) ^ m}) := by
+  first | (exact @GlobalTheory.TenFin.finite_intKQ_quot) | (exact GlobalTheory.TenFin.finite_intKQ_quot) | (intros; apply GlobalTheory.TenFin.finite_intKQ_quot  <;> assumption)
+end
+
+section
+namespace GlobalTheory.PowerScaledNormBound
+
+theorem exists_pow_mul_norm_le_one (p : ℕ) [Fact (Nat.Prime p)] (y : PadicAlgCl p) :
+    ∃ k : ℕ, ‖(p : PadicAlgCl p) ^ k * y‖ ≤ (1 : ℝ) := by
+  have hprime : p.Prime := Fact.out
+  have hp : ‖(p : PadicAlgCl p)‖ = (p : ℝ)⁻¹ := by
+    rw [← PadicAlgCl.valuation_coe, PadicAlgCl.valuation_p p]
+    simp
+  have hp1 : (p : ℝ)⁻¹ < 1 := inv_lt_one_of_one_lt₀ (by exact_mod_cast hprime.one_lt)
+  have hy := norm_nonneg y
+  obtain ⟨k, hk⟩ := exists_pow_lt_of_lt_one (show (0 : ℝ) < 1 / (‖y‖ + 1) by positivity) hp1
+  refine ⟨k, ?_⟩
+  rw [norm_mul, norm_pow, hp]
+  calc (p : ℝ)⁻¹ ^ k * ‖y‖ ≤ 1 / (‖y‖ + 1) * ‖y‖ := mul_le_mul_of_nonneg_right hk.le hy
+    _ ≤ 1 := by
+      rw [div_mul_eq_mul_div, one_mul, div_le_one (by positivity)]
+      linarith
+
+end GlobalTheory.PowerScaledNormBound
+end
+
+section
+open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount
+open scoped TensorProduct Classical
+
+namespace GlobalTheory.LKRes.Denom
+
+variable (p : ℕ) [Fact p.Prime]
+
+theorem exists_pow_mul_norm_le_one (y : PadicAlgCl p) : ∃ k : ℕ, ‖(p : PadicAlgCl p) ^ k * y‖ ≤ 1 := by
+  first
+  | exact @_root_.GlobalTheory.PowerScaledNormBound.exists_pow_mul_norm_le_one
+  | exact _root_.GlobalTheory.PowerScaledNormBound.exists_pow_mul_norm_le_one
+  | (apply _root_.GlobalTheory.PowerScaledNormBound.exists_pow_mul_norm_le_one <;> assumption)
+  | (intros; apply _root_.GlobalTheory.PowerScaledNormBound.exists_pow_mul_norm_le_one <;> assumption)
+  | (intros; apply @_root_.GlobalTheory.PowerScaledNormBound.exists_pow_mul_norm_le_one <;> first | assumption | infer_instance)
+  | (intros; exact _root_.GlobalTheory.PowerScaledNormBound.exists_pow_mul_norm_le_one ..)
+
+variable (K : IntermediateField ℚ_[p] (PadicAlgCl p)) (r : ℕ)
+
+theorem inclK_mem (a : K) (ha : ‖(a : PadicAlgCl p)‖ ≤ 1) : inclK p K r a ∈ intKQ p K r :=
+  Subring.subset_closure (Or.inl ⟨⟨a, (ReciprocityTheory.DiscreteGroups.LocalClassField.mem_Obar_iff (p := p)).2 ha⟩, rfl⟩)
+
+theorem inclQ_mem (b : Qr p r) (hb : ‖(b : PadicAlgCl p)‖ ≤ 1) : inclQ p K r b ∈ intKQ p K r :=
+  Subring.subset_closure (Or.inr ⟨⟨b, (ReciprocityTheory.DiscreteGroups.LocalClassField.mem_Obar_iff (p := p)).2 hb⟩, rfl⟩)
+
+theorem aux (x : K ⊗[ℚ_[p]] Qr p r) :
+    ∃ k : ℕ, (p : K ⊗[ℚ_[p]] Qr p r) ^ k * x ∈ intKQ p K r := by
+  have hp : ∀ m : ℕ, (p : K ⊗[ℚ_[p]] Qr p r) ^ m ∈ intKQ p K r := fun m => pow_mem (natCast_mem _ p) m
+  induction x using TensorProduct.induction_on with
+  | zero => exact ⟨0, by rw [mul_zero]; exact (intKQ p K r).zero_mem⟩
+  | tmul a b =>
+    obtain ⟨k, hk⟩ := exists_pow_mul_norm_le_one p (a : PadicAlgCl p)
+    obtain ⟨l, hl⟩ := exists_pow_mul_norm_le_one p (b : PadicAlgCl p)
+    refine ⟨k + l, ?_⟩
+    have e : (p : K ⊗[ℚ_[p]] Qr p r) ^ (k + l) * (a ⊗ₜ[ℚ_[p]] b) =
+        ((p : K) ^ k * a) ⊗ₜ[ℚ_[p]] ((p : Qr p r) ^ l * b) := by
+      calc (p : K ⊗[ℚ_[p]] Qr p r) ^ (k + l) * (a ⊗ₜ[ℚ_[p]] b)
+          = (Algebra.TensorProduct.includeLeft (R := ℚ_[p]) (S := ℚ_[p]) (B := Qr p r) ((p : K) ^ k)) *
+            (Algebra.TensorProduct.includeRight (R := ℚ_[p]) (A := K) ((p : Qr p r) ^ l)) * (a ⊗ₜ[ℚ_[p]] b) := by
+            simp only [map_pow, map_natCast, pow_add]
+        _ = _ := by
+            simp only [Algebra.TensorProduct.includeLeft_apply, Algebra.TensorProduct.includeRight_apply,
+              Algebra.TensorProduct.tmul_mul_tmul, mul_one, one_mul]
+    rw [e]
+    have hm := mul_mem (inclK_mem p K r ((p : K) ^ k * a) (by simpa using hk))
+      (inclQ_mem p K r ((p : Qr p r) ^ l * b) (by simpa using hl))
+    have e2 : inclK p K r ((p : K) ^ k * a) * inclQ p K r ((p : Qr p r) ^ l * b) =
+        ((p : K) ^ k * a) ⊗ₜ[ℚ_[p]] ((p : Qr p r) ^ l * b) := by
+      change (((p : K) ^ k * a) ⊗ₜ[ℚ_[p]] (1 : Qr p r)) * ((1 : K) ⊗ₜ[ℚ_[p]] ((p : Qr p r) ^ l * b)) = _
+      rw [Algebra.TensorProduct.tmul_mul_tmul, mul_one, one_mul]
+    rw [← e2]
+    exact hm
+  | add x y hx hy =>
+    obtain ⟨k, hk⟩ := hx
+    obtain ⟨l, hl⟩ := hy
+    refine ⟨k + l, ?_⟩
+    have e : (p : K ⊗[ℚ_[p]] Qr p r) ^ (k + l) * (x + y) =
+        (p : K ⊗[ℚ_[p]] Qr p r) ^ l * ((p : K ⊗[ℚ_[p]] Qr p r) ^ k * x) +
+          (p : K ⊗[ℚ_[p]] Qr p r) ^ k * ((p : K ⊗[ℚ_[p]] Qr p r) ^ l * y) := by
+      ring
+    rw [e]
+    exact add_mem (mul_mem (hp l) hk) (mul_mem (hp k) hl)
+
+end GlobalTheory.LKRes.Denom
+
+namespace GlobalTheory.LKRes
+
+theorem exists_pow_mul_mem_intKQ : ∀ (p : ℕ) [Fact p.Prime] (K : IntermediateField ℚ_[p] (PadicAlgCl p)) (r : ℕ)
+    (x : KQ p K r), ∃ k : ℕ, (p : KQ p K r) ^ k * x ∈ intKQ p K r :=
+  fun p _ K r x => Denom.aux p K r x
+
+end GlobalTheory.LKRes
+end
+
+section
+open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount
+open scoped TensorProduct Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_padic_pow_mul_mem_tensorUnramifiedIntegers : ∀ (p : ℕ) [Fact p.Prime] (K : IntermediateField ℚ_[p] (PadicAlgCl p)) (r : ℕ) (x : KQ p K r), ∃ k : ℕ, (p : KQ p K r) ^ k * x ∈ intKQ p K r := by
+  first | (exact @GlobalTheory.LKRes.exists_pow_mul_mem_intKQ) | (exact GlobalTheory.LKRes.exists_pow_mul_mem_intKQ) | (intros; apply GlobalTheory.LKRes.exists_pow_mul_mem_intKQ  <;> assumption)
+end
+
+section
+open Matrix
+
+namespace GlobalTheory
+
+theorem relIndex_iInf_fin_ne_zero {G : Type} [Group G] {m : ℕ} (K : Fin m → Subgroup G)
+    (L : Subgroup G) (h : ∀ i, (K i).relIndex L ≠ 0) : (⨅ i, K i).relIndex L ≠ 0 := by
+  have key : ∀ s : Finset (Fin m), (⨅ i ∈ s, K i).relIndex L ≠ 0 := by
+    intro s
+    induction s using Finset.induction_on with
+    | empty => simp
+    | insert a s ha ih =>
+      rw [Finset.iInf_insert]
+      exact Subgroup.relIndex_inf_ne_zero (h a) ih
+  simpa using key Finset.univ
+
+theorem prod_pi_eq_inf_iInf {A : Type} [Group A] {m : ℕ} {B : Fin m → Type} [∀ i, Group (B i)]
+    (H : Subgroup A) (K : ∀ i, Subgroup (B i)) :
+    H.prod (Subgroup.pi Set.univ K) =
+      H.comap (MonoidHom.fst A ((i : Fin m) → B i)) ⊓
+        ⨅ i, (K i).comap ((Pi.evalMonoidHom B i).comp (MonoidHom.snd A ((i : Fin m) → B i))) := by
+  ext x
+  simp [Subgroup.mem_prod, Subgroup.mem_pi, Subgroup.mem_iInf]
+
+theorem relIndex_prod_pi_ne_zero {A : Type} [Group A] {m : ℕ} {B : Fin m → Type}
+    [∀ i, Group (B i)] (H H' : Subgroup A) (K K' : ∀ i, Subgroup (B i))
+    (hH : H.relIndex H' ≠ 0) (hK : ∀ i, (K i).relIndex (K' i) ≠ 0) :
+    (H.prod (Subgroup.pi Set.univ K)).relIndex (H'.prod (Subgroup.pi Set.univ K')) ≠ 0 := by
+  rw [prod_pi_eq_inf_iInf H K]
+  apply Subgroup.relIndex_inf_ne_zero
+  · rw [Subgroup.relIndex_comap]
+    refine mt (Subgroup.relIndex_eq_zero_of_le_right ?_) hH
+    rintro _ ⟨x, hx, rfl⟩
+    exact (Subgroup.mem_prod.mp hx).1
+  · apply relIndex_iInf_fin_ne_zero
+    intro i
+    rw [Subgroup.relIndex_comap]
+    refine mt (Subgroup.relIndex_eq_zero_of_le_right ?_) (hK i)
+    rintro _ ⟨x, hx, rfl⟩
+    exact ((Subgroup.mem_pi Set.univ).mp (Subgroup.mem_prod.mp hx).2) i (Set.mem_univ i)
+
+theorem map_conj_prod_pi {A : Type} [Group A] {m : ℕ} {B : Fin m → Type} [∀ i, Group (B i)]
+    (H : Subgroup A) (K : ∀ i, Subgroup (B i)) (g : A × ((i : Fin m) → B i)) :
+    (H.prod (Subgroup.pi Set.univ K)).map (MulAut.conj g).toMonoidHom =
+      (H.map (MulAut.conj g.1).toMonoidHom).prod
+        (Subgroup.pi Set.univ fun i => (K i).map (MulAut.conj (g.2 i)).toMonoidHom) := by
+  ext x
+  simp only [Subgroup.mem_map_equiv, Subgroup.mem_prod, Subgroup.mem_pi, Set.mem_univ,
+    true_implies, MulAut.conj_symm_apply, Prod.fst_mul, Prod.snd_mul, Prod.fst_inv,
+    Prod.snd_inv, Pi.mul_apply, Pi.inv_apply]
+
+theorem commensurable_map_conj_prod_pi : ∀ {A : Type} [Group A] {m : ℕ} {B : Fin m → Type} [∀ i, Group (B i)] (H : Subgroup A) (K : ∀ i, Subgroup (B i)) (g : A × ((i : Fin m) → B i)), Subgroup.Commensurable (H.map (MulAut.conj g.1).toMonoidHom) H → (∀ i, Subgroup.Commensurable ((K i).map (MulAut.conj (g.2 i)).toMonoidHom) (K i)) → Subgroup.Commensurable ((H.prod (Subgroup.pi Set.univ K)).map (MulAut.conj g).toMonoidHom) (H.prod (Subgroup.pi Set.univ K)) := by
+  intro A _ m B _ H K g hH hK
+  rw [map_conj_prod_pi]
+  exact ⟨relIndex_prod_pi_ne_zero _ _ _ _ hH.1 fun i => (hK i).1,
+    relIndex_prod_pi_ne_zero _ _ _ _ hH.2 fun i => (hK i).2⟩
+
+end GlobalTheory
+end
+
+section
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.commensurable_map_conj_prod_pi' : ∀ {A : Type} [Group A] {m : ℕ} {B : Fin m → Type} [∀ i, Group (B i)] (H : Subgroup A) (K : ∀ i, Subgroup (B i)) (g : A × ((i : Fin m) → B i)), Subgroup.Commensurable (H.map (MulAut.conj g.1).toMonoidHom) H → (∀ i, Subgroup.Commensurable ((K i).map (MulAut.conj (g.2 i)).toMonoidHom) (K i)) → Subgroup.Commensurable ((H.prod (Subgroup.pi Set.univ K)).map (MulAut.conj g).toMonoidHom) (H.prod (Subgroup.pi Set.univ K)) := by
+  first | (exact @GlobalTheory.commensurable_map_conj_prod_pi) | (exact GlobalTheory.commensurable_map_conj_prod_pi) | (intros; apply GlobalTheory.commensurable_map_conj_prod_pi  <;> assumption)
+end
+
+section
 open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount
 open scoped TensorProduct Classical
 
@@ -147,3 +562,5 @@ theorem GlobalTheory.heckeOperator_integral :
     rw [Subgroup.mem_comap, Kp0, Subgroup.mem_comap, inclG_mem_KHT_iff, inclG_mem_KHT_iff]
   · rintro _ ⟨x, hx, rfl⟩
     exact GlobalTheory.LKRes.Model.sigHT_KHT p _ _ _ _ x hx
+end
+end

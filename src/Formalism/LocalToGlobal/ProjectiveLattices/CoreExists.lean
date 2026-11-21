@@ -29,18 +29,7 @@ def parameterOfRecord (D : D7) (hF : OFull D) (hz : OZeta D)
     (datumAtLift_pq_pos D (unramBridge D.host.E (cmUnram_conj D)) hDat j))
   eO := eOf D hF
 
-theorem parameter_record_conditions (D : D7) (hF : OFull D) (hz : OZeta D)
-    (hDat : ∀ j, InR D j → ∃ hI : DatInt D j, DatLaws D j hI) (hN : N1ab) : (parameterOfRecord D hF hz hDat hN).Pins := by
-  refine ⟨⟨rfl, rfl, rfl, tauEmb_sqrt D⟩, levelG_M D _, eOf_spec D hF, fun j hj => ?_⟩
-  show IsDatW D j (datumAtLift D (unramBridge D.host.E (cmUnram_conj D)) hDat j)
-  unfold datumAtLift
-  rw [dif_pos hj]
-  exact isDatW_datumOf D _ j _ _
 
-theorem parameter_record_pq_pos (D : D7) (hF : OFull D) (hz : OZeta D)
-    (hDat : ∀ j, InR D j → ∃ hI : DatInt D j, DatLaws D j hI) (hN : N1ab) (j : ℕ) :
-    1 ≤ ((parameterOfRecord D hF hz hDat hN).Dw j).p + ((parameterOfRecord D hF hz hDat hN).Dw j).q :=
-  datumAtLift_pq_pos D _ hDat j
 
 variable {D : D7}
 
@@ -51,8 +40,6 @@ def kfW (V : HSp D) (N : ℕ) : Subgroup (GA D V) := Subgroup.closure (levSet V 
 
 def LevGrp (V : HSp D) (N : ℕ) : Prop := ∀ k ∈ kfW V N, k ∈ levSet V N
 
-theorem isLevelK_kfW {V : HSp D} {N : ℕ} (h : LevGrp V N) : IsLevelK V N (kfW V N) :=
-  fun k => ⟨fun hk => h k hk, fun hk => Subgroup.subset_closure hk⟩
 
 section One
 

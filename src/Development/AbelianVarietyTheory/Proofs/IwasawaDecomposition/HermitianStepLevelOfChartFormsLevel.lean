@@ -2,13 +2,489 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StdLvPr
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnSpacesStandardInFrameCoords
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevelPrimeUnramifiedUniformizer
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ValNatCastLtOne
+import Formalism.LocalToGlobal.HermitianForms.DefsGH
+import Formalism.LocalToGlobal.Columns.RecLevelLocT
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UlocOfTrivDisc
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ULocDualHformOne
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevelActsTriviallyOnDiscriminantGroup
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnitaryScalarEqOneModOfFixesSimpleModule
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevelPrimeDvdOfAdicValuationLtOne
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ImportsExtra
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsSplittingOfCharacter
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsAddEquivField
 
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.Col Formalism.UG Formalism.L2.Forms Matrix
+open scoped TensorProduct
+
+namespace GlobalTheory.Mem.LevCong
+
+variable {F : Type} [Field F] [NumberField F]
+
+theorem val_natCast_lt_one (v : HeightOneSpectrum (𝓞 F)) (p : ℕ) (hv : (p : 𝓞 F) ∈ v.asIdeal) :
+    Valued.v (p : v.adicCompletion F) < 1 := by
+  have : (p : v.adicCompletion F) = algebraMap F (v.adicCompletion F) (algebraMap (𝓞 F) F (p : 𝓞 F)) := by simp
+  rw [this]
+  have h2 := HeightOneSpectrum.valuedAdicCompletion_eq_valuation' (K := F) v (algebraMap (𝓞 F) F (p : 𝓞 F))
+  have h3 := (HeightOneSpectrum.valuation_lt_one_iff_mem (K := F) v _).2 hv
+  exact h2 ▸ h3
+
+theorem redM_eq_one {n : ℕ} (v : HeightOneSpectrum (𝓞 F)) (p : ℕ) (hv : (p : 𝓞 F) ∈ v.asIdeal)
+    (M : Matrix (Fin n) (Fin n) (v.adicCompletion F))
+    (hM : ∀ r c, ∃ t ∈ v.adicCompletionIntegers F, M r c = (1 : Matrix (Fin n) (Fin n) (v.adicCompletion F)) r c + p * t) :
+    redM F v M = 1 := by
+  have hp : IsLocalRing.residue (v.adicCompletionIntegers F) (p : v.adicCompletionIntegers F) = 0 := by
+    rw [IsLocalRing.residue_eq_zero_iff]
+    refine (Valuation.mem_maximalIdeal_iff _ _).2 ?_
+    simpa using val_natCast_lt_one v p hv
+  ext r c
+  obtain ⟨t, ht, e⟩ := hM r c
+  set u : v.adicCompletionIntegers F := (if r = c then 1 else 0) + p * ⟨t, ht⟩ with hu
+  have e' : M r c = (u : v.adicCompletion F) := by
+    rw [e, hu, Matrix.one_apply]
+    split_ifs <;> simp
+  have hm : M r c ∈ v.adicCompletionIntegers F := e' ▸ u.2
+  unfold redM
+  rw [dif_pos hm]
+  have : (⟨M r c, hm⟩ : v.adicCompletionIntegers F) = u := Subtype.ext e'
+  rw [this, hu, map_add, map_mul, hp, zero_mul, add_zero, Matrix.one_apply]
+  split_ifs <;> simp
+
+theorem mem_Uloc_of_cong : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {T f : ℕ} {bad : Set (HeightOneSpectrum (𝓞 F))} {gp : Fin 2 → ℕ}
+    (S : Formalism.L2.Forms.StepLevel F E σ J T f bad) (G : GLoc F E σ gp)
+    {H : ∀ (a : Fin 2) (v : HeightOneSpectrum (𝓞 F)), (gp a : 𝓞 F) ∈ v.asIdeal → Subgroup (GL (Fin n) (kv F v))}
+    {lam : ∀ a v h, H a v h →* ℂˣ} (_ : GLevH S G H lam) (a : Fin 2) (v : HeightOneSpectrum (𝓞 F)) (_ : (gp a : 𝓞 F) ∈ v.asIdeal)
+    (x : GL (Fin n) (E ⊗[F] v.adicCompletion F)) (_ : x ∈ levelVL σ J v S.Lb)
+    (_ : ∀ y ∈ latS (F := F) (v.adicCompletion F) (intV E v) S.Lb, ∃ z ∈ latS (F := F) (v.adicCompletion F) (intV E v) S.Lb,
+      (x : Matrix (Fin n) (Fin n) (E ⊗[F] v.adicCompletion F)) *ᵥ y - y = ((gp a : ℕ) : E ⊗[F] v.adicCompletion F) • z),
+    x ∈ S.Uloc v := by
+  intro F E _ _ _ _ _ σ n J T f bad gp S G H lam L a v h x hx hc
+  refine (L.mem a v h x hx).2 ⟨1, (H a v h).one_mem, ?_⟩
+  rw [Units.val_one]
+  refine (redM_eq_one v (gp a) h _ fun r c => ?_).symm
+  set fr := L.fr a v h with hfr
+  set φ := G.phi a v h with hφ
+  have hinv : ∀ w : Fin n → v.adicCompletion F,
+      ((fr⁻¹ : GL (Fin n) (v.adicCompletion F)) : Matrix (Fin n) (Fin n) (v.adicCompletion F)) *ᵥ
+        ((fr : Matrix (Fin n) (Fin n) (v.adicCompletion F)) *ᵥ w) = w := fun w => by
+    rw [Matrix.mulVec_mulVec, Units.inv_mul, Matrix.one_mulVec]
+  obtain ⟨y, hy, hyw⟩ := (L.fr_lat a v h ((fr : Matrix (Fin n) (Fin n) (v.adicCompletion F)) *ᵥ Pi.single c 1)).2 (fun b => by
+    show (((fr⁻¹ : GL (Fin n) (v.adicCompletion F)) : Matrix (Fin n) (Fin n) (v.adicCompletion F)) *ᵥ _) b ∈ _
+    rw [hinv, Pi.single_apply]
+    split_ifs
+    · exact one_mem _
+    · exact zero_mem _)
+  obtain ⟨z, hz, e⟩ := hc y hy
+  have ht := (L.fr_lat a v h (fun b => φ (z b))).1 ⟨z, hz, fun _ => rfl⟩ r
+  refine ⟨_, ht, ?_⟩
+  have hy' : (fr : Matrix (Fin n) (Fin n) (v.adicCompletion F)) *ᵥ Pi.single c 1 = φ ∘ y := (funext hyw).symm
+  have e2 : ((bc φ x : GL (Fin n) (v.adicCompletion F)) : Matrix (Fin n) (Fin n) (v.adicCompletion F)) *ᵥ (φ ∘ y) =
+      φ ∘ y + ((gp a : ℕ) : v.adicCompletion F) • fun b => φ (z b) := by
+    funext b
+    have e3 := congrArg φ (congrFun e b)
+    rw [Pi.sub_apply, map_sub, RingHom.map_mulVec, Pi.smul_apply, smul_eq_mul, map_mul, map_natCast, sub_eq_iff_eq_add'] at e3
+    exact e3
+  have e4 : G.mat a v h fr x *ᵥ Pi.single c 1 = Pi.single c 1 + ((gp a : ℕ) : v.adicCompletion F) •
+      (((fr⁻¹ : GL (Fin n) (v.adicCompletion F)) : Matrix (Fin n) (Fin n) (v.adicCompletion F)) *ᵥ fun b => φ (z b)) := by
+    unfold GLoc.mat
+    rw [Units.val_mul, Units.val_mul, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, hy', ← hφ, e2, Matrix.mulVec_add,
+      Matrix.mulVec_smul, ← hy', hinv]
+  have e5 := congrFun e4 r
+  rw [Matrix.mulVec_single_one, Pi.add_apply, Pi.smul_apply, smul_eq_mul, Pi.single_apply] at e5
+  rw [Matrix.one_apply]
+  exact e5
+
+end GlobalTheory.Mem.LevCong
+end
+
+section
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.Col Formalism.UG Formalism.L2.Forms Matrix
+open scoped TensorProduct
+
+noncomputable section
+
+namespace GlobalTheory
+
+section SlopeTestRemainingChoices
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+
+theorem sigR_inclE_adic (σ : E →ₐ[F] E) (v : HeightOneSpectrum (𝓞 F)) (a : E) :
+    sigR σ (v.adicCompletion F) (inclE (F := F) (v.adicCompletion F) a) =
+      inclE (F := F) (v.adicCompletion F) (σ a) := by
+  simp [sigR, inclE]
+
+theorem sigR_mem_intV_adic (σ : E →ₐ[F] E) (v : HeightOneSpectrum (𝓞 F)) {s : E ⊗[F] v.adicCompletion F}
+    (hs : s ∈ intV E v) : sigR σ (v.adicCompletion F) s ∈ intV E v := by
+  have key : intV E v ≤ (intV E v).comap (sigR σ (v.adicCompletion F)) := by
+    refine Subring.closure_le.2 ?_
+    rintro _ (⟨⟨x, b, rfl⟩, rfl⟩ | ⟨⟨y, hy⟩, rfl⟩)
+    · show sigR σ (v.adicCompletion F) (inclE (F := F) (v.adicCompletion F) (algebraMap (𝓞 E) E b)) ∈ intV E v
+      rw [sigR_inclE_adic]
+      have h : IsIntegral ℤ ((σ : E →+* E) (algebraMap (𝓞 E) E b)) :=
+        (RingOfIntegers.isIntegral_coe b).map ((σ : E →+* E).toIntAlgHom)
+      exact Formalism.UG.P.easyc_inclE_mem (F := F) (v.adicCompletion F) (v.adicCompletionIntegers F).toSubring _
+        ⟨IsIntegralClosure.mk' (𝓞 E) _ h, IsIntegralClosure.algebraMap_mk' _ _ _⟩
+    · show sigR σ (v.adicCompletion F) ((1 : E) ⊗ₜ[F] y) ∈ intV E v
+      simp only [sigR, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, Algebra.TensorProduct.map_tmul,
+        map_one, AlgHom.coe_id, id_eq]
+      exact Subring.subset_closure (Or.inr ⟨⟨y, hy⟩, rfl⟩)
+  exact key hs
+
+theorem mul_eq_unit_mul_of_triple_product_one {A : Type} [CommRing A] (a b P Q T : A) (h : P * Q * T = 1) :
+    a * b = T * ((a * P) * (b * Q)) := by linear_combination (-(a * b)) * h
+
+theorem eq_one_add_mul_neg_of_add_mul_eq_one {A : Type} [CommRing A] (a T S : A) (h : a + T * S = 1) : a = 1 + T * (-S) := by
+  linear_combination h
+
+theorem mul_sub_eq_of_triple_product_one {A : Type} [CommRing A] (P Q T d e : A) (h : P * Q * T = 1) (hd : d = 1 + T * e) :
+    P * (d * Q - Q) = e := by linear_combination (P * Q) * hd + e * h
+
+end SlopeTestRemainingChoices
+
+set_option maxHeartbeats 1000000 in
+
+theorem uloc_acts_trivially_on_dual_quotient {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+    (σ : E →ₐ[F] E) (hσ : ∀ x, σ (σ x) = x) {n : ℕ} [NeZero n] {T f : ℕ} {bad : Set (HeightOneSpectrum (𝓞 F))}
+    (S : Formalism.L2.Forms.StepLevel F E σ (1 : Matrix (Fin n) (Fin n) E) T f bad) (p q : 𝓞 E) (hqp : (q : E) = σ (p : E))
+    (hpq : (p : E) * (q : E) = (T : E)) (hT : T ≠ 0)
+    (hLb : S.Lb = rll_dLat n ((p : E)⁻¹))
+    (hdual : Submodule.span (𝓞 E) (dualSet (σ : E →+* E) (1 : Matrix (Fin n) (Fin n) E) S.Lb) = rll_dLat n (q : E))
+    (v : HeightOneSpectrum (𝓞 F)) (hv : (T : 𝓞 F) ∈ v.asIdeal)
+    (hH : ∀ m : S.fM v hv, m ≠ 0 → ∀ d c : intV E v, (d - 1) • m = 0 →
+      sigR σ (v.adicCompletion F) (d : E ⊗[F] v.adicCompletion F) * (d : E ⊗[F] v.adicCompletion F) =
+        1 + (T : E ⊗[F] v.adicCompletion F) * (c : E ⊗[F] v.adicCompletion F) →
+      ∃ e : intV E v, (d : E ⊗[F] v.adicCompletion F) = 1 + (T : E ⊗[F] v.adicCompletion F) * (e : E ⊗[F] v.adicCompletion F))
+    (x : GL (Fin n) (E ⊗[F] v.adicCompletion F)) (hx : x ∈ S.Uloc v) :
+    ∀ y ∈ latS (F := F) (v.adicCompletion F) (intV E v) (Submodule.span (𝓞 E) (dualSet (σ : E →+* E) (1 : Matrix (Fin n) (Fin n) E) S.Lb)),
+      (x : Matrix (Fin n) (Fin n) (E ⊗[F] v.adicCompletion F)) *ᵥ y - y ∈ latS (F := F) (v.adicCompletion F) (intV E v) S.Lb := by
+  have hT' : (T : E) ≠ 0 := Nat.cast_ne_zero.2 hT
+  have hp0 : (p : E) ≠ 0 := fun h => hT' (by rw [← hpq, h, zero_mul])
+  have hq0 : (q : E) ≠ 0 := fun h => hT' (by rw [← hpq, h, mul_zero])
+  have hΛ : ∀ z, z ∈ latS (F := F) (v.adicCompletion F) (intV E v) S.Lb ↔
+      (∀ i, i ≠ lastIdx n → z i ∈ intV E v) ∧
+        inclE (F := F) (v.adicCompletion F) ((p : E)⁻¹) * z (lastIdx n) ∈ intV E v := by
+    intro z; rw [hLb]; exact rll_mem_loc_dLat n v _ (inv_ne_zero hp0) z
+  have hΛ' : ∀ z, z ∈ latS (F := F) (v.adicCompletion F) (intV E v)
+      (Submodule.span (𝓞 E) (dualSet (σ : E →+* E) (1 : Matrix (Fin n) (Fin n) E) S.Lb)) ↔
+      (∀ i, i ≠ lastIdx n → z i ∈ intV E v) ∧
+        inclE (F := F) (v.adicCompletion F) (q : E) * z (lastIdx n) ∈ intV E v := by
+    intro z; rw [hdual]; exact rll_mem_loc_dLat n v _ hq0 z
+  rw [S.UlocAlt v hv] at hx
+  obtain ⟨⟨hU, hstL⟩, hstL', hfix⟩ := hx
+  set ι := inclE (F := F) (E := E) (v.adicCompletion F) with hιdef
+  set ℓ := lastIdx n with hℓ
+  set X := (x : Matrix (Fin n) (Fin n) (E ⊗[F] v.adicCompletion F)) with hX
+  have hQQ : ι (q : E) * ι ((q : E)⁻¹) = 1 := by rw [← map_mul, mul_inv_cancel₀ hq0, map_one]
+  have hPQi : ι ((p : E)⁻¹) * ι ((q : E)⁻¹) * (T : E ⊗[F] v.adicCompletion F) = 1 := by
+    rw [← map_natCast ι T, ← map_mul, ← map_mul, ← hpq]
+    rw [show (p : E)⁻¹ * (q : E)⁻¹ * ((p : E) * (q : E)) = 1 by field_simp, map_one]
+  have hPQ : ι (p : E) * ι (q : E) = (T : E ⊗[F] v.adicCompletion F) := by
+    rw [← map_mul, hpq, map_natCast]
+
+  set w : Fin n → E ⊗[F] v.adicCompletion F := Pi.single ℓ (ι ((q : E)⁻¹)) with hwdef
+  have hw : w ∈ (latS (F := F) (v.adicCompletion F) (intV E v) (Submodule.span (𝓞 E) (dualSet (σ : E →+* E) (1 : Matrix (Fin n) (Fin n) E) S.Lb))) := by
+    refine (hΛ' w).2 ⟨fun i hi => ?_, ?_⟩
+    · rw [hwdef, Pi.single_eq_of_ne hi]; exact zero_mem _
+    · rw [hwdef, Pi.single_eq_same, hQQ]; exact one_mem _
+
+  have hdec : ∀ z ∈ (latS (F := F) (v.adicCompletion F) (intV E v) (Submodule.span (𝓞 E) (dualSet (σ : E →+* E) (1 : Matrix (Fin n) (Fin n) E) S.Lb))), ∃ r : intV E v, (r : E ⊗[F] v.adicCompletion F) = ι (q : E) * z ℓ ∧
+      z - (r : E ⊗[F] v.adicCompletion F) • w ∈ (latS (F := F) (v.adicCompletion F) (intV E v) S.Lb) := by
+    intro z hz
+    refine ⟨⟨ι (q : E) * z ℓ, ((hΛ' z).1 hz).2⟩, rfl, (hΛ _).2 ⟨fun i hi => ?_, ?_⟩⟩
+    · simp only [Pi.sub_apply, Pi.smul_apply, smul_eq_mul, hwdef, Pi.single_eq_of_ne hi, mul_zero, sub_zero]
+      exact ((hΛ' z).1 hz).1 i hi
+    · have h0 : z ℓ - (ι (q : E) * z ℓ) * ι ((q : E)⁻¹) = 0 := by linear_combination (-z ℓ) * hQQ
+      simp only [Pi.sub_apply, Pi.smul_apply, smul_eq_mul, hwdef, Pi.single_eq_same]
+      rw [h0, mul_zero]; exact zero_mem _
+
+  set m := S.fT v hv ⟨w, hw⟩ with hmdef
+  have hf : ∀ z : (latS (F := F) (v.adicCompletion F) (intV E v) (Submodule.span (𝓞 E) (dualSet (σ : E →+* E) (1 : Matrix (Fin n) (Fin n) E) S.Lb))), ∃ r : intV E v, (r : E ⊗[F] v.adicCompletion F) = ι (q : E) * z.1 ℓ ∧ S.fT v hv z = r • m := by
+    rintro ⟨z, hz⟩
+    obtain ⟨r, hr, hu⟩ := hdec z hz
+    refine ⟨r, hr, ?_⟩
+    have h1 := S.fT_L v hv ((⟨z, hz⟩ : (latS (F := F) (v.adicCompletion F) (intV E v) (Submodule.span (𝓞 E) (dualSet (σ : E →+* E) (1 : Matrix (Fin n) (Fin n) E) S.Lb)))) - r • (⟨w, hw⟩ : (latS (F := F) (v.adicCompletion F) (intV E v) (Submodule.span (𝓞 E) (dualSet (σ : E →+* E) (1 : Matrix (Fin n) (Fin n) E) S.Lb))))) hu
+    rw [map_sub] at h1
+    rw [LinearMap.map_smul] at h1
+    rw [sub_eq_zero] at h1
+    exact h1
+  have hm0 : m ≠ 0 := by
+    intro h0
+    apply S.fT_ne v hv
+    refine LinearMap.ext fun z => ?_
+    obtain ⟨r, -, hr⟩ := hf z
+    rw [hr, h0, LinearMap.zero_apply]
+    exact smul_zero r
+
+  have hXw : X *ᵥ w = fun i => X i ℓ * ι ((q : E)⁻¹) := by
+    funext i
+    show (fun j => X i j) ⬝ᵥ Pi.single ℓ (ι ((q : E)⁻¹)) = _
+    rw [dotProduct_single]
+  have hxw : X *ᵥ w ∈ (latS (F := F) (v.adicCompletion F) (intV E v) (Submodule.span (𝓞 E) (dualSet (σ : E →+* E) (1 : Matrix (Fin n) (Fin n) E) S.Lb))) := (hstL' w).1 hw
+  have hb : ∀ i, i ≠ ℓ → X i ℓ * ι ((q : E)⁻¹) ∈ intV E v := by
+    intro i hi
+    have h1 := ((hΛ' _).1 hxw).1 i hi
+    rw [congrFun hXw i] at h1
+    exact h1
+  have hXwi : ∀ i, (X *ᵥ w) i = X i ℓ * ι ((q : E)⁻¹) := fun i => congrFun hXw i
+  have hd : X ℓ ℓ ∈ intV E v := by
+    have h1 := ((hΛ' _).1 hxw).2
+    rw [hXwi ℓ, mul_left_comm, hQQ, mul_one] at h1
+    exact h1
+  have h2 : ((⟨X ℓ ℓ, hd⟩ : intV E v) - 1) • m = 0 := by
+    obtain ⟨r, hr, hrm⟩ := hf ⟨X *ᵥ w, hxw⟩
+    have hr' : r = ⟨X ℓ ℓ, hd⟩ := by
+      apply Subtype.ext
+      rw [hr]
+      show ι (q : E) * (X *ᵥ w) ℓ = X ℓ ℓ
+      rw [hXwi ℓ, mul_left_comm, hQQ, mul_one]
+    have hfx := hfix ⟨w, hw⟩
+    rw [sub_smul, one_smul, ← hr', ← hrm, sub_eq_zero]
+    exact hfx
+  have hU' : cT (sigR σ (v.adicCompletion F)) X * X = 1 := by
+    have h1 : cT (sigR σ (v.adicCompletion F)) X * (1 : Matrix (Fin n) (Fin n) E).map ι * X =
+        (1 : Matrix (Fin n) (Fin n) E).map ι := hU
+    rwa [Matrix.map_one ι (map_zero ι) (map_one ι), Matrix.mul_one] at h1
+  have hsum : ∑ j, sigR σ (v.adicCompletion F) (X j ℓ) * X j ℓ = 1 := by
+    have h1 := congrFun (congrFun hU' ℓ) ℓ
+    rw [Matrix.mul_apply, Matrix.one_apply_eq] at h1
+    simpa only [cT, Matrix.transpose_apply, Matrix.map_apply] using h1
+  have hs : ∀ a : E, sigR σ (v.adicCompletion F) (ι a) = ι (σ a) := fun a => sigR_inclE_adic σ v a
+  have hsq : σ (q : E) = p := by rw [hqp, hσ]
+  have hsQi : sigR σ (v.adicCompletion F) (ι ((q : E)⁻¹)) = ι ((p : E)⁻¹) := by rw [hs, map_inv₀, hsq]
+  have hc' : -∑ j ∈ Finset.univ.erase ℓ, sigR σ (v.adicCompletion F) (X j ℓ * ι ((q : E)⁻¹)) * (X j ℓ * ι ((q : E)⁻¹))
+      ∈ intV E v :=
+    neg_mem (sum_mem fun j hj => mul_mem (sigR_mem_intV_adic σ v (hb j (Finset.ne_of_mem_erase hj)))
+      (hb j (Finset.ne_of_mem_erase hj)))
+  have h3 : sigR σ (v.adicCompletion F) (X ℓ ℓ) * X ℓ ℓ = 1 + (T : E ⊗[F] v.adicCompletion F) *
+      (-∑ j ∈ Finset.univ.erase ℓ, sigR σ (v.adicCompletion F) (X j ℓ * ι ((q : E)⁻¹)) * (X j ℓ * ι ((q : E)⁻¹))) := by
+    apply eq_one_add_mul_neg_of_add_mul_eq_one
+    rw [← Finset.add_sum_erase _ _ (Finset.mem_univ ℓ)] at hsum
+    rw [Finset.mul_sum]
+    convert hsum using 2
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [map_mul, hsQi]
+    exact (mul_eq_unit_mul_of_triple_product_one _ _ _ _ _ hPQi).symm
+  obtain ⟨e, he⟩ := hH m hm0 ⟨X ℓ ℓ, hd⟩ ⟨_, hc'⟩ h2 h3
+  have he' : X ℓ ℓ = 1 + (T : E ⊗[F] v.adicCompletion F) * (e : E ⊗[F] v.adicCompletion F) := he
+  have hwΛ : X *ᵥ w - w ∈ latS (F := F) (v.adicCompletion F) (intV E v) S.Lb := by
+    refine (hΛ _).2 ⟨fun i hi => ?_, ?_⟩
+    · rw [Pi.sub_apply, hXwi i, hwdef, Pi.single_eq_of_ne hi, sub_zero]
+      exact hb i hi
+    · rw [Pi.sub_apply, hXwi ℓ, hwdef, Pi.single_eq_same, mul_sub_eq_of_triple_product_one _ _ _ _ _ hPQi he']
+      exact e.2
+  intro y hy
+  obtain ⟨r, -, hu⟩ := hdec y hy
+  have hsplit : X *ᵥ y - y = (X *ᵥ (y - (r : E ⊗[F] v.adicCompletion F) • w) - (y - (r : E ⊗[F] v.adicCompletion F) • w)) +
+      (r : E ⊗[F] v.adicCompletion F) • (X *ᵥ w - w) := by
+    rw [Matrix.mulVec_sub, Matrix.mulVec_smul, smul_sub]
+    abel
+  rw [hsplit]
+  exact add_mem (sub_mem ((hstL _).1 hu) hu) (Submodule.smul_mem _ r hwΛ)
+
+end GlobalTheory
+end
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.Col Formalism.UG Formalism.L2.Forms Matrix
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.level_acts_trivially_on_discriminant_group : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (_ : ∀ x, σ (σ x) = x) {n : ℕ} [NeZero n] {T f : ℕ} {bad : Set (HeightOneSpectrum (𝓞 F))}
+    (S : Formalism.L2.Forms.StepLevel F E σ (1 : Matrix (Fin n) (Fin n) E) T f bad) (p q : 𝓞 E) (_ : (q : E) = σ (p : E)) (_ : (p : E) * (q : E) = (T : E)) (_ : T ≠ 0)
+    (_ : S.Lb = rll_dLat n ((p : E)⁻¹))
+    (_ : Submodule.span (𝓞 E) (dualSet (σ : E →+* E) (1 : Matrix (Fin n) (Fin n) E) S.Lb) = rll_dLat n (q : E))
+    (v : HeightOneSpectrum (𝓞 F)) (hv : (T : 𝓞 F) ∈ v.asIdeal)
+    (_ : ∀ m : S.fM v hv, m ≠ 0 → ∀ d c : intV E v, (d - 1) • m = 0 →
+      sigR σ (v.adicCompletion F) (d : E ⊗[F] v.adicCompletion F) * (d : E ⊗[F] v.adicCompletion F) =
+        1 + (T : E ⊗[F] v.adicCompletion F) * (c : E ⊗[F] v.adicCompletion F) →
+      ∃ e : intV E v, (d : E ⊗[F] v.adicCompletion F) = 1 + (T : E ⊗[F] v.adicCompletion F) * (e : E ⊗[F] v.adicCompletion F))
+    (x : GL (Fin n) (E ⊗[F] v.adicCompletion F)) (_ : x ∈ S.Uloc v),
+    ∀ y ∈ latS (F := F) (v.adicCompletion F) (intV E v) (Submodule.span (𝓞 E) (dualSet (σ : E →+* E) (1 : Matrix (Fin n) (Fin n) E) S.Lb)),
+      (x : Matrix (Fin n) (Fin n) (E ⊗[F] v.adicCompletion F)) *ᵥ y - y ∈ latS (F := F) (v.adicCompletion F) (intV E v) S.Lb := by
+  atlas_forward_decl GlobalTheory.uloc_acts_trivially_on_dual_quotient
+end
+
+section
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.Col Formalism.UG Formalism.L2.Forms Matrix
+open scoped TensorProduct
+
+namespace GlobalTheory.UnitaryScalarModT
+
+theorem eq_one_add_of_fixes : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (_ : Module.finrank F E = 2) (_ : ∀ x, σ (σ x) = x) (_ : ∀ x, σ x = x → x ∈ (algebraMap F E).range)
+    (_ : ∀ P : Ideal (𝓞 E), P.IsMaximal → ∃ θ t : 𝓞 E, (t : E) = σ θ ∧ θ - t ∉ P) (v : HeightOneSpectrum (𝓞 F)) (T : ℕ) (_ : T.Prime)
+    (_ : ∀ a : v.adicCompletionIntegers F, Valued.v (a : v.adicCompletion F) < 1 → ∃ b : v.adicCompletionIntegers F, a = (T : v.adicCompletionIntegers F) * b)
+    (M : Type) [AddCommGroup M] [Module (intV E v) M] (_ : Nat.card M = T) (m : M) (_ : m ≠ 0) (d c : intV E v) (_ : (d - 1) • m = 0)
+    (_ : sigR σ (v.adicCompletion F) (d : E ⊗[F] v.adicCompletion F) * (d : E ⊗[F] v.adicCompletion F) =
+        1 + (T : E ⊗[F] v.adicCompletion F) * (c : E ⊗[F] v.adicCompletion F)),
+    ∃ e : intV E v, (d : E ⊗[F] v.adicCompletion F) = 1 + (T : E ⊗[F] v.adicCompletion F) * (e : E ⊗[F] v.adicCompletion F) := by
+  intro F E _ _ _ _ _ σ hdeg hσ hfix hun v T hT hunif M _ _ hM m hm d c hd hc
+  obtain ⟨χ, hχ⟩ := GlobalTheory.PrimeOrderModule.exists_character (intV E v) M T hT hM
+  obtain ⟨s, hs, hsχ⟩ := GlobalTheory.OverSplit.exists_splitting_of_character F E σ hdeg hσ hfix hun v T hT χ
+  obtain ⟨⟨ε, hε⟩, -, -⟩ := GlobalTheory.OverResidue.residue_of_prime_card F E σ v s hs M T hT hM
+    (fun a m ha => hχ a m (hsχ a ha))
+  have hεm : ε m ≠ 0 := fun h => hm (ε.injective (h.trans (map_zero ε).symm))
+  have key : ∀ (a : intV E v) (a' : v.adicCompletionIntegers F),
+      (a' : v.adicCompletion F) = (s a).1 → a • m = 0 →
+      a' ∈ IsLocalRing.maximalIdeal (v.adicCompletionIntegers F) := by
+    intro a a' h h0
+    have h1 := hε a a' h m
+    rw [h0, map_zero] at h1
+    have h2 : IsLocalRing.residue _ a' * ε m = 0 := h1.symm
+    exact (IsLocalRing.residue_eq_zero_iff _).1 ((mul_eq_zero.1 h2).resolve_right hεm)
+  obtain ⟨hd1, hd2⟩ := (hs.2.2 d).1 d.2
+  obtain ⟨hc1, -⟩ := (hs.2.2 c).1 c.2
+  set d₁ : v.adicCompletionIntegers F := ⟨_, hd1⟩ with hd₁
+  set d₂ : v.adicCompletionIntegers F := ⟨_, hd2⟩ with hd₂
+  set c₁ : v.adicCompletionIntegers F := ⟨_, hc1⟩ with hc₁
+  have m1 : d₁ - 1 ∈ IsLocalRing.maximalIdeal (v.adicCompletionIntegers F) :=
+    key (d - 1) _ (by simp [hd₁]) hd
+  have mT : (T : v.adicCompletionIntegers F) ∈ IsLocalRing.maximalIdeal (v.adicCompletionIntegers F) :=
+    key (T : intV E v) _ (by simp) (by rw [Nat.cast_smul_eq_nsmul, ← hM, card_nsmul_eq_zero'])
+  have hrel : d₂ * d₁ = 1 + (T : v.adicCompletionIntegers F) * c₁ := by
+    have h := congrArg (fun x => (s x).1) hc
+    simp only [map_mul, map_add, map_one, map_natCast, hs.2.1] at h
+    exact Subtype.ext (by simpa [hd₁, hd₂, hc₁, swapR] using h)
+  have m2 : d₂ - 1 ∈ IsLocalRing.maximalIdeal (v.adicCompletionIntegers F) := by
+    have : d₂ - 1 = (T : v.adicCompletionIntegers F) * c₁ - d₂ * (d₁ - 1) := by
+      linear_combination hrel
+    rw [this]
+    exact sub_mem (Ideal.mul_mem_right _ _ mT) (Ideal.mul_mem_left _ _ m1)
+  obtain ⟨b₁, hb₁⟩ := hunif _ ((Valuation.mem_maximalIdeal_iff (v := Valued.v) (a := d₁ - 1)).1 m1)
+  obtain ⟨b₂, hb₂⟩ := hunif _ ((Valuation.mem_maximalIdeal_iff (v := Valued.v) (a := d₂ - 1)).1 m2)
+  refine ⟨⟨s.symm ((b₁ : v.adicCompletion F), (b₂ : v.adicCompletion F)), (hs.2.2 _).2 ?_⟩, s.injective ?_⟩
+  · rw [s.apply_symm_apply]
+    exact ⟨b₁.2, b₂.2⟩
+  · have e1 : (s d).1 - 1 = (T : v.adicCompletion F) * b₁ := by
+      have h := congrArg Subtype.val hb₁
+      push_cast at h
+      exact h
+    have e2 : (s d).2 - 1 = (T : v.adicCompletion F) * b₂ := by
+      have h := congrArg Subtype.val hb₂
+      push_cast at h
+      exact h
+    rw [map_add, map_one, map_mul, map_natCast, s.apply_symm_apply]
+    refine Prod.ext ?_ ?_
+    · simpa using sub_eq_iff_eq_add'.1 e1
+    · simpa using sub_eq_iff_eq_add'.1 e2
+
+end GlobalTheory.UnitaryScalarModT
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.Col Formalism.UG Formalism.L2.Forms Matrix
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitaryScalar_eq_one_mod_of_fixes_simple_module : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (_ : Module.finrank F E = 2) (_ : ∀ x, σ (σ x) = x) (_ : ∀ x, σ x = x → x ∈ (algebraMap F E).range)
+    (_ : ∀ P : Ideal (𝓞 E), P.IsMaximal → ∃ θ t : 𝓞 E, (t : E) = σ θ ∧ θ - t ∉ P) (v : HeightOneSpectrum (𝓞 F)) (T : ℕ) (_ : T.Prime)
+    (_ : ∀ a : v.adicCompletionIntegers F, Valued.v (a : v.adicCompletion F) < 1 → ∃ b : v.adicCompletionIntegers F, a = (T : v.adicCompletionIntegers F) * b)
+    (M : Type) [AddCommGroup M] [Module (intV E v) M] (_ : Nat.card M = T) (m : M) (_ : m ≠ 0) (d c : intV E v) (_ : (d - 1) • m = 0)
+    (_ : sigR σ (v.adicCompletion F) (d : E ⊗[F] v.adicCompletion F) * (d : E ⊗[F] v.adicCompletion F) =
+        1 + (T : E ⊗[F] v.adicCompletion F) * (c : E ⊗[F] v.adicCompletion F)),
+    ∃ e : intV E v, (d : E ⊗[F] v.adicCompletion F) = 1 + (T : E ⊗[F] v.adicCompletion F) * (e : E ⊗[F] v.adicCompletion F) := by
+  atlas_forward_decl GlobalTheory.UnitaryScalarModT.eq_one_add_of_fixes
+end
+
+section
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.UG Matrix
+open scoped TensorProduct
+
+noncomputable section
+
+namespace GlobalTheory.LevelUnif
+
+open GlobalTheory.LevelHecke
+
+theorem le_exp_sub_one {x : WithZero (Multiplicative ℤ)} {n : ℤ} (h : x < WithZero.exp n) :
+    x ≤ WithZero.exp (n - 1) := by
+  rcases eq_or_ne x 0 with rfl | hx
+  · exact zero_le'
+  rw [← WithZero.exp_log hx] at h ⊢
+  rw [WithZero.exp_lt_exp] at h
+  rw [WithZero.exp_le_exp]
+  omega
+
+theorem T_notMem_sq (D : D7) (u : D.what₂.Word) (A : Formalism.L2.Forms.AtTTied u)
+    (v : HeightOneSpectrum (𝓞 D.host.F)) (hv : (((D.mem u).A.T : ℕ) : 𝓞 D.host.F) ∈ v.asIdeal) :
+    (((D.mem u).A.T : ℕ) : 𝓞 D.host.F) ∉ v.asIdeal ^ 2 := by
+  set v0 := A.eV.symm ⟨v, hv⟩ with hv0
+  have hU := GlobalTheory.LevelUnram.unram D u A v0
+  set P := RingHom.ker (A.res v0) with hP
+  haveI hPp : P.IsPrime := RingHom.ker_isPrime _
+  have hvP : ∀ x, x ∈ v.asIdeal → algebraMap (𝓞 D.host.F) (𝓞 D.host.E) x ∈ P := by
+    intro x hx
+    have h := (A.res_v v0 x).1 (by rw [hv0, Equiv.apply_symm_apply]; exact hx)
+    exact h
+  have hTP : (((D.mem u).A.T : ℕ) : 𝓞 D.host.E) ∈ P := hU.1
+  have hT0 : (((D.mem u).A.T : ℕ) : 𝓞 D.host.E) ≠ 0 := by
+    exact_mod_cast (D.mem u).A.T_prime.ne_zero
+  have hPbot : P ≠ ⊥ := fun h => hT0 (by rw [h] at hTP; exact (Ideal.mem_bot).1 hTP)
+  have hlt : P ^ 2 < P ^ 1 := Ideal.pow_right_strictAnti P hPbot hPp.ne_top (by norm_num)
+  rw [pow_one] at hlt
+  obtain ⟨a, haP, ha2⟩ := SetLike.exists_of_lt hlt
+  have hTE : (((D.mem u).A.T : ℕ) : 𝓞 D.host.E) ∉ P ^ 2 := by
+    intro hT2
+    obtain ⟨s, b, hs, hsab⟩ := hU.2 a haP
+    have h1 : s * a ∈ P ^ 2 := by rw [hsab]; exact Ideal.mul_mem_right _ _ hT2
+    rcases Ideal.IsPrime.mul_mem_pow P h1 with h | h
+    · exact hs h
+    · exact ha2 h
+  intro hv2
+  apply hTE
+  have hle : Ideal.map (algebraMap (𝓞 D.host.F) (𝓞 D.host.E)) v.asIdeal ≤ P :=
+    Ideal.map_le_iff_le_comap.2 (fun x hx => hvP x hx)
+  have h3 := Ideal.mem_map_of_mem (algebraMap (𝓞 D.host.F) (𝓞 D.host.E)) hv2
+  rw [Ideal.map_pow] at h3
+  have h4 := Ideal.pow_right_mono hle 2 h3
+  simpa using h4
+
+theorem dvd_of_val_lt_one : ∀ (D : Formalism.BasicNotions.D7) (u : D.what₂.Word) (A : Formalism.L2.Forms.AtTTied u)
+    (v : HeightOneSpectrum (𝓞 D.host.F)) (_ : (((D.mem u).A.T : ℕ) : 𝓞 D.host.F) ∈ v.asIdeal)
+    (a : v.adicCompletionIntegers D.host.F) (_ : Valued.v (a : v.adicCompletion D.host.F) < 1),
+    ∃ b : v.adicCompletionIntegers D.host.F, a = (((D.mem u).A.T : ℕ) : v.adicCompletionIntegers D.host.F) * b := by
+  intro D u A v hv a ha
+  have hT2 := T_notMem_sq D u A v hv
+  have hval : v.intValuation (((D.mem u).A.T : ℕ) : 𝓞 D.host.F) = WithZero.exp (-1) := by
+    apply le_antisymm
+    · have h := (v.intValuation_le_pow_iff_mem _ 1).2 (by simpa using hv)
+      simpa using h
+    · by_contra h
+      push_neg at h
+      have h2 := le_exp_sub_one h
+      norm_num at h2
+      exact hT2 ((v.intValuation_le_pow_iff_mem _ 2).1 (by simpa using h2))
+  have hTv : Valued.v ((((D.mem u).A.T : ℕ) : v.adicCompletion D.host.F)) = WithZero.exp (-1) := by
+    have h := v.valuedAdicCompletion_eq_valuation (K := D.host.F) (((D.mem u).A.T : ℕ) : 𝓞 D.host.F)
+    rw [HeightOneSpectrum.valuation_of_algebraMap, hval] at h
+    simpa using h
+  have hc0 : ((((D.mem u).A.T : ℕ) : v.adicCompletion D.host.F)) ≠ 0 := by
+    intro h; rw [h, map_zero] at hTv; exact WithZero.zero_ne_coe hTv
+  have hale : Valued.v (a : v.adicCompletion D.host.F) ≤ WithZero.exp (-1) := by
+    have h := le_exp_sub_one (n := 0) (by simpa using ha)
+    simpa using h
+  set c : v.adicCompletion D.host.F := (((D.mem u).A.T : ℕ) : v.adicCompletion D.host.F) with hc
+  have hb : (a : v.adicCompletion D.host.F) / c ∈ v.adicCompletionIntegers D.host.F := by
+    rw [HeightOneSpectrum.mem_adicCompletionIntegers, map_div₀, hTv]
+    rw [div_le_one₀ (by simp)]
+    exact hale
+  refine ⟨⟨_, hb⟩, Subtype.ext ?_⟩
+  push_cast
+  rw [← hc, mul_div_cancel₀ _ hc0]
+
+end GlobalTheory.LevelUnif
+
+end
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.UG Matrix
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.levelPrime_dvd_of_adicValuation_lt_one : ∀ (D : Formalism.BasicNotions.D7) (u : D.what₂.Word) (A : Formalism.L2.Forms.AtTTied u) (v : HeightOneSpectrum (𝓞 D.host.F)) (_ : (((D.mem u).A.T : ℕ) : 𝓞 D.host.F) ∈ v.asIdeal)
+    (a : v.adicCompletionIntegers D.host.F) (_ : Valued.v (a : v.adicCompletion D.host.F) < 1),
+    ∃ b : v.adicCompletionIntegers D.host.F, a = (((D.mem u).A.T : ℕ) : v.adicCompletionIntegers D.host.F) * b := by
+  atlas_forward_decl GlobalTheory.LevelUnif.dvd_of_val_lt_one
+end
+
+section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
 open scoped TensorProduct
 attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
@@ -167,4 +643,5 @@ theorem GlobalTheory.Mem.Col2.TC.level_of_chart : ∀ {B : Base} {X : PreX B.toP
     exact GlobalTheory.Mem.Col2.Lv.uloc_T_iff (sigD (I.rec7 l Z)) (I.rec7 l Z).sp.cm.deg2 (fun x => star_star x) (fun x hx => ((I.rec7 l Z).sp.cm.fixed x).1 hx)
       (I.rec7 l Z).sp.cm.cmUnram.2.2 hgram K.lev F.atT.piU (s F.atT.piU) rfl hpq hTp hL v h (GlobalTheory.T.levelPrime_dvd_of_adicValuation_lt_one (I.rec7 l Z) u F.atT v h) x
 
+end
 end

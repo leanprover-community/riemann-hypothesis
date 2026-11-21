@@ -338,46 +338,7 @@ theorem IsCoord.mem_GQ (h : IsCoord V hr V' ψ) (g) : ψ g ∈ GQ V ↔ g ∈ Au
     rw [← hu, e', Matrix.map_mul, Matrix.map_mul]
     congr 2
 
-theorem latHat_spOf (V : HSp D) : ConjugateFieldNorm.latHat D.host.F (spOf V rfl).L = Formalism.L2.Pj.latHat V := by
-  unfold ConjugateFieldNorm.latHat Formalism.L2.Pj.latHat
-  congr 1
-  ext z
-  constructor
-  · rintro ⟨a, ha, _, ⟨x, hx, rfl⟩, e⟩
-    exact ⟨a, ha, x, hx, by rw [e]; simp [crdR]⟩
-  · rintro ⟨a, ha, x, hx, e⟩
-    exact ⟨a, ha, _, ⟨x, hx, rfl⟩, by rw [e]; simp [crdR]⟩
 
-theorem IsCoord.isLevelK_iff (h : IsCoord V hr V' ψ) (N : ℕ) (Kf : Subgroup (GA D V)) :
-    Formalism.L2.Pj.IsLevelK V N Kf ↔
-      Kf.comap ψ.toMonoidHom = ConjugateFieldNorm.levelK D.host.F V' N ∧ ConjugateFieldNorm.LevelByCongruence D.host.F V' N := by
-  have hf := h.mem_GfC
-  subst hr
-  obtain rfl := h.sp
-  have h2 : ∀ g, (finHom V (ψ g)).val = g.2.1.val := h.fin
-  have key : Formalism.L2.Pj.IsLevelK V N Kf ↔ ∀ k, ψ k ∈ Kf ↔ k.1 = 1 ∧ ∀ z ∈ ConjugateFieldNorm.latHat D.host.F (spOf V rfl).L,
-      ∃ w ∈ ConjugateFieldNorm.latHat D.host.F (spOf V rfl).L, k.2.1.val.mulVec z - z = N • w := by
-    unfold Formalism.L2.Pj.IsLevelK
-    rw [ψ.surjective.forall]
-    simp only [hf, h2, latHat_spOf]
-  rw [key]
-  constructor
-  · intro hk
-    have hl : ConjugateFieldNorm.LevelByCongruence D.host.F (spOf V rfl) N := fun k => by
-      refine ⟨fun hh => ⟨hh.1, hh.2.2⟩, fun hh => ⟨hh.1, fun z => ⟨fun hz => ?_, fun hz => ?_⟩, hh.2⟩⟩
-      · obtain ⟨w, hw, e⟩ := hh.2 z hz
-        rw [eq_add_of_sub_eq e]
-        exact add_mem (nsmul_mem hw N) hz
-      · have hi : ψ k⁻¹ ∈ Kf := by rw [map_inv]; exact Kf.inv_mem ((hk k).2 hh)
-        obtain ⟨w, hw, e⟩ := ((hk _).1 hi).2 _ hz
-        have e1 : (k⁻¹).2.1.val * k.2.1.val = 1 := Units.inv_mul _
-        rw [Matrix.mulVec_mulVec, e1, Matrix.one_mulVec] at e
-        rw [eq_add_of_sub_eq e]
-        exact add_mem (nsmul_mem hw N) hz
-    exact ⟨Subgroup.ext fun k => (hk k).trans (hl k).symm, hl⟩
-  · rintro ⟨e, hl⟩ k
-    rw [← hl k, ← e]
-    rfl
 
 def IsCoord.quotEquiv (h : IsCoord V hr V' ψ) : AutomorphismGroupTopologies.AutQ D.host.F V' ≃ᵐ Formalism.L2.Pj.AutQ V where
   toEquiv := Quotient.congr ψ.toEquiv fun a b => by
@@ -398,40 +359,11 @@ def IsCoord.quotEquiv (h : IsCoord V hr V' ψ) : AutomorphismGroupTopologies.Aut
 theorem IsCoord.quotEquiv_mk (h : IsCoord V hr V' ψ) (g) :
     h.quotEquiv (AutomorphismGroupTopologies.autMk D.host.F V' g) = Formalism.L2.Pj.autMk V (ψ g) := rfl
 
-theorem IsCoord.onQ_eq (h : IsCoord V hr V' ψ) (φ : GA D V → ℂ) (hφ : ∀ γ ∈ GQ V, ∀ g, φ (γ * g) = φ g) :
-    AutomorphismGroupTopologies.onQ D.host.F V' (fun g => φ (ψ g)) = Formalism.L2.Pj.onQ V φ ∘ h.quotEquiv := by
-  funext q
-  obtain ⟨g, rfl⟩ := Quotient.exists_rep q
-  refine (AutomorphismGroupTopologies.onQ_mk D.host.F V' _ (fun γ hγ g => ?_) g).trans ?_
-  · rw [map_mul, hφ _ ((h.mem_GQ γ).2 hγ)]
-  · have e : (QuotientGroup.rightRel (GQ V)) (ψ g) (Quotient.out (Formalism.L2.Pj.autMk V (ψ g))) :=
-      Quotient.exact (Quotient.out_eq (Formalism.L2.Pj.autMk V (ψ g))).symm
-    rw [QuotientGroup.rightRel_apply] at e
-    rw [← hφ _ e (ψ g), inv_mul_cancel_right]
-    rfl
 
 def RightInv (V : HSp D) (ν : Measure (Formalism.L2.Pj.AutQ V)) : Prop :=
   ∀ (h : GA D V) (ρ : Formalism.L2.Pj.AutQ V → Formalism.L2.Pj.AutQ V),
     (∀ g : GA D V, ρ (Quotient.mk _ g) = Quotient.mk _ (g * h)) → ∀ s, MeasurableSet s → ν (ρ ⁻¹' s) = ν s
 
-theorem IsCoord.isAutProb_iff (h : IsCoord V hr V' ψ) (ν : Measure (AutomorphismGroupTopologies.AutQ D.host.F V')) :
-    AutomorphismGroupTopologies.IsAutProb D.host.F V' ν ↔ IsProbabilityMeasure (ν.map h.quotEquiv) ∧ RightInv V (ν.map h.quotEquiv) := by
-  refine and_congr ?_ ⟨fun H k ρ hρ s hs => ?_, fun H k s hs => ?_⟩
-  · rw [isProbabilityMeasure_iff, isProbabilityMeasure_iff, MeasurableEquiv.map_apply, Set.preimage_univ]
-  · obtain ⟨k, rfl⟩ := ψ.surjective k
-    rw [MeasurableEquiv.map_apply, MeasurableEquiv.map_apply, ← H k _ (h.quotEquiv.measurable hs)]
-    congr 1
-    ext q
-    obtain ⟨g, rfl⟩ := Quotient.exists_rep q
-    change ρ (Quotient.mk _ (ψ g)) ∈ s ↔ Quotient.mk _ (ψ (g * k)) ∈ s
-    rw [hρ, map_mul]
-  · have := H (ψ k) (h.quotEquiv ∘ AutomorphismGroupTopologies.autRt D.host.F V' k ∘ h.quotEquiv.symm) (fun g => by
-      obtain ⟨g, rfl⟩ := ψ.surjective g
-      change h.quotEquiv (AutomorphismGroupTopologies.autRt _ _ k (h.quotEquiv.symm (h.quotEquiv (AutomorphismGroupTopologies.autMk D.host.F V' g)))) = _
-      rw [MeasurableEquiv.symm_apply_apply, AutomorphismGroupTopologies.autRt_mk, h.quotEquiv_mk, map_mul]) _
-      (h.quotEquiv.symm.measurable hs)
-    rw [MeasurableEquiv.map_apply, MeasurableEquiv.map_apply] at this
-    simpa [← Set.preimage_comp, Function.comp_def] using this
 
 end Rec
 

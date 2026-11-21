@@ -1,7 +1,62 @@
 import Mathlib
-import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.RelativeIndexFlags.VolumeIndexRepresentationNonzero
-import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.RelativeIndexFlags.RelIndexInfRightNeZero
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.PairVal
 
+section
+noncomputable section
+
+open scoped Classical
+
+namespace Formalism.L2.SG.Pf.RelativeIndexFlags
+
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermDef Formalism.L2.SG.PairVal
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+variable (D : D7) (u u' : D.what₂.Word)
+
+variable (F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)) (what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V))
+
+def VolIdxRep : Prop :=
+  ∀ (δ : ∀ p : Formalism.MainNotions.S.LocalSplitGroups.PlF D, (D.s.atP p).Fp)
+    (M : ∀ p : Formalism.MainNotions.S.LocalSplitGroups.PlF D, Formalism.MainNotions.S.Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep),
+    (∀ p, Formalism.MainNotions.S.LocalSplitGroups.Agree δ M p) → ∀ (t : Term D u u' F0 what₂) (w : Point D.host.E (D.R.rS + 1))
+      (F₁ F₂ : LFlag (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)) (L₁ U₁ L₂ U₂ : MatR D),
+      t.relevant → t.generic → NormRep t w F₁ L₁ U₁ → NormRep t w F₂ L₂ U₂ →
+        volIdx D u u' F0 what₂ δ M t w F₁ L₁ = volIdx D u u' F0 what₂ δ M t w F₂ L₂
+
+def VolumeIndexRepresentationNonzero : Prop :=
+  ∀ (δ : ∀ p : Formalism.MainNotions.S.LocalSplitGroups.PlF D, (D.s.atP p).Fp)
+    (M : ∀ p : Formalism.MainNotions.S.LocalSplitGroups.PlF D, Formalism.MainNotions.S.Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep),
+    (∀ p, Formalism.MainNotions.S.LocalSplitGroups.Agree δ M p) → ∀ (t : Term D u u' F0 what₂) (w : Point D.host.E (D.R.rS + 1))
+      (F₁ F₂ : LFlag (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)) (L₁ U₁ L₂ U₂ : MatR D),
+      t.relevant → t.generic → NormRep t w F₁ L₁ U₁ → Formalism.MainNotions.S.Lat.Gval (lf D F0) F₁ ≠ 0 → NormRep t w F₂ L₂ U₂ → Formalism.MainNotions.S.Lat.Gval (lf D F0) F₂ ≠ 0 →
+        volIdx D u u' F0 what₂ δ M t w F₁ L₁ = volIdx D u u' F0 what₂ δ M t w F₂ L₂
+
+end Formalism.L2.SG.Pf.RelativeIndexFlags
+end
+end
+
+section
+noncomputable section
+
+namespace Formalism.L2.SG.Pf.RelativeIndexFlags
+
+variable {G : Type*} [Group G]
+
+def ratio (A S : Subgroup G) : ℝ := (A.relIndex S : ℝ) / (S.relIndex A : ℝ)
+
+
+
+
+
+abbrev cj (g : G) (A : Subgroup G) : Subgroup G := A.map (MulAut.conj g).toMonoidHom
+
+
+end Formalism.L2.SG.Pf.RelativeIndexFlags
+end
+end
+
+section
 noncomputable section
 
 open scoped Classical
@@ -40,27 +95,8 @@ def StabAutConjP : Prop :=
       ∃ g : GLR D, g ∈ loGen (D.R.rS + 1) D.host.E ∧
         stabAut D u u' F0 what₂ t F₂ L₂ = cj g (stabAut D u u' F0 what₂ t F₁ L₁)
 
-theorem stabInt_le_loGen (δ : ∀ p : Formalism.MainNotions.S.LocalSplitGroups.PlF D, (D.s.atP p).Fp)
-    (M : ∀ p : Formalism.MainNotions.S.LocalSplitGroups.PlF D, Formalism.MainNotions.S.Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep)
-    (w : Point D.host.E (D.R.rS + 1)) :
-    stabInt D u u' δ M w ≤ loGen (D.R.rS + 1) D.host.E := by
-  unfold stabInt loGen
-  refine Subgroup.closure_mono ?_
-  intro a ha
-  exact ha.1
 
-theorem volume_index_representation_of_finite (hC : StabAutConjP D u u' F0 what₂) (hFin : VolIdxFinP D u u' F0 what₂)
-    (hU : UniConjIdx (D.R.rS + 1) D.host.E) : Formalism.L2.SG.Pf.RelativeIndexFlags.VolumeIndexRepresentationNonzero D u u' F0 what₂ := by
-  intro δ M hAg t w F₁ F₂ L₁ U₁ L₂ U₂ hrel hgen h1 hG1 h2 hG2
-  obtain ⟨g, hg, he⟩ := hC t w F₁ F₂ L₁ U₁ L₂ U₂ h1 h2
-  obtain ⟨a1, a2⟩ := hFin δ M hAg t w F₁ L₁ U₁ hrel hgen h1 hG1
-  obtain ⟨b1, b2⟩ := hFin δ M hAg t w F₂ L₂ U₂ hrel hgen h2 hG2
-  rw [he] at b1 b2
-  change ratio (stabAut D u u' F0 what₂ t F₁ L₁) (stabInt D u u' δ M w) =
-    ratio (stabAut D u u' F0 what₂ t F₂ L₂) (stabInt D u u' δ M w)
-  rw [he]
-  symm
-  exact ratio_cj_of _ _ g a1 a2 b1 b2
-    (hU _ g hg (stabInt_le_loGen D u u' δ M w))
 
 end Formalism.L2.SG.Pf.RelativeIndexFlags
+end
+end

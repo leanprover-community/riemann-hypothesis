@@ -74,8 +74,6 @@ theorem T_modEq (D : D7) (u : D.what₂.Word) : (D.mem u).A.T ≡ 1 [MOD condE D
       (pow_ne_zero _ (Nat.mul_ne_zero (D.host.g_prime 0).ne_zero (D.host.g_prime 1).ne_zero))
   exact (norm_modEq D.host π h0 h2 h3).of_mul_right _
 
-theorem frob_dlog_eq (H : Host R) : (∀ p, hPH H p = frobH H p) ∧ GlobalTheory.EX.dlogH H = GlobalTheory.IndefiniteRowSideFullHecke.FewBadPrimes.dlogH H :=
-  ⟨fun _ => rfl, rfl⟩
 
 theorem isOrigins_bsH (φ : Formalism.HC.Frame) : IsOrigins (φ := φ) Arith.bsH :=
   ⟨fun h t => GlobalTheory.Refill.bsH_orb h t, fun h t => GlobalTheory.Refill.bsH_step h t⟩
@@ -251,8 +249,6 @@ theorem winOK_iff (C : FC) (s : Scale) (H : Host R) (a b : R.A → ℤ) :
   rw [win_iff]
   simp only [Formalism.HC.Frame.ofNat_val]
 
-theorem numWords_eq (C : FC) (s : Scale) (R : Ranks) :
-    numWords C s R = ⌈3 * Real.exp (C.CGam * (R.m : ℝ) ^ 5 * R.f * s.L) ^ 2 * s.x ^ C.P.CF⌉₊ := rfl
 
 def codeOf {M : ℕ} {W : Type} (c : Fin M → W) (hc : Function.Injective c) : Finset W := Finset.univ.map ⟨c, hc⟩
 
@@ -298,66 +294,8 @@ def OffCanon : PtProp := fun D L _ X _ _ _ _ _ =>
   ∀ j, j ∉ SizeData₂.lifts D → ∀ t : G.HH D,
     X.off j (false, t) = if t ∈ D.host.TT then L.sc.b' / L.sc.x else L.sc.w'' D.R.n
 
-theorem canonInst_iff {C : FC} (p : Pt C) : CanonInst p.ta.Gx ↔ BsCanon p ∧ p.Has OffCanon := Iff.rfl
 
-theorem from_of_over {C : FC} {s : Scale} {H : Host R} {q0 : ℕ} (hH : ArithData C s H q0 Arith.bsH)
-    (a b : R.A → ℤ) {M : ℕ} (c : Fin M → Fin (R.k - 2) → Bool) (hc : Function.Injective c)
-    {off : ℕ → ℕ → ℝ} {u0 : R.A} {T : codeOf c hc → ℕ} {p : Pt C}
-    (h : Over p s H hH.ccK_eq Arith.bsH (fun n => a (R.ofNat n)) (fun n => b (R.ofNat n)) (codeOf c hc) off u0 T) :
-    p.L.sc = s ∧ HostArith p.D.host ∧ p.From H a b c u0.val ∧ BsCanon p ∧
-      (∀ (j : ℕ) (t : G.HH p.D), p.ta.Gx.off j (false, t) = off j t.val) ∧ ∀ u, ∃ w, (p.D.mem u).A.T = T w := by
-  obtain ⟨⟨hcp, hh⟩, hs, hbs, hoff, hw, e, he, hT⟩ := h
-  have hR : p.D.R = R := congrArg Sigma.fst hh
-  subst hR
-  have hD : p.D.host = hostAt H hH.ccK_eq u0 (Finset.univ.image T) hcp := eq_of_heq (Sigma.mk.inj hh).2
-  have hmod := T_modEq p.D
-  refine ⟨hs, ?_, ⟨rfl, by rw [hD]; rfl, by rw [hD]; rfl, by rw [hD]; rfl, by rw [hD]; rfl, by rw [hD]; rfl, by rw [hD]; rfl,
-    by rw [hD]; rfl, by rw [hD]; exact Finset.subset_union_left, by rw [hD]; rfl, fun l => ?_, fun t t' ht => ?_,
-    ⟨e.trans (codeEquiv c hc).symm, fun u l => ?_⟩, by rw [hD]; rfl⟩, fun h t => Formalism.HC.Frame.A.val_injective _ (hbs h t h t rfl rfl), hoff,
-    fun u => ⟨_, hT u⟩⟩
-  · rw [hD] at hmod ⊢
-    refine hostArith_of _ (fun i => ?_) fun l hl => ?_
-    · obtain ⟨π, a1, a2, -⟩ := hH.2.2.2.2.2.2.2.2.1 i
-      exact ⟨π, a1, a2⟩
-    · rcases Finset.mem_union.1 hl with hl | hl
-      · exact level_of_arithData hH l hl
-      · obtain ⟨w, -, rfl⟩ := Finset.mem_image.1 hl
-        obtain ⟨u, rfl⟩ := e.surjective w
-        rw [← hT u]
-        exact ⟨(p.D.mem u).A.T_prime, hmod u⟩
-  · show (frobH p.D.host l).val = _
-    rw [hD]
-    rfl
-  · have := hw t
-    rw [ht] at this
-    simpa only [Formalism.HC.Frame.ofNat_val] using this
-  · split_ifs with hl
-    · rw [Equiv.trans_apply, codeEquiv_symm c hc]
-      exact he u ⟨l, hl⟩
-    · exact dif_neg hl
 
-theorem over_of_from {C : FC} {s : Scale} {H : Host R} (hK : H.ccK = ⊤)
-    (a b : ℕ → ℤ) {M : ℕ} (c : Fin M → Fin (R.k - 2) → Bool) (hc : Function.Injective c)
-    {off : ℕ → ℕ → ℝ} {u0 : R.A} {p : Pt C} (hs : p.L.sc = s)
-    (hF : p.From H (fun t => a t.val) (fun t => b t.val) c u0.val) (hB : BsCanon p)
-    (hoff : ∀ (j : ℕ) (t : G.HH p.D), p.ta.Gx.off j (false, t) = off j t.val)
-    (S : Finset ℕ) (hS : ∀ l, l ∈ S ↔ ∃ u, (p.D.mem u).A.T = l) (hcp : ∀ l ∈ S, Nat.Coprime l H.QS)
-    (hh : (⟨p.D.R, p.D.host⟩ : Σ R' : Ranks, Host R') = ⟨R, hostAt H hK u0 S hcp⟩) :
-    ∃ T : codeOf c hc → ℕ, Over p s H hK Arith.bsH a b (codeOf c hc) off u0 T := by
-  obtain ⟨hR, -, -, -, -, -, -, -, -, -, -, hw, ⟨eW, he⟩, -⟩ := hF
-  subst hR
-  set e := eW.trans (codeEquiv c hc) with hedef
-  refine ⟨fun w => (p.D.mem (e.symm w)).A.T, ?_, hs, fun h t h' t' e1 e2 => ?_, hoff, fun t => hw t _ rfl, e, fun u l => ?_,
-    fun u => congrArg (fun v => (p.D.mem v).A.T) (e.symm_apply_apply u).symm⟩
-  · have : S = Finset.univ.image (fun w => (p.D.mem (e.symm w)).A.T) := by
-      ext l
-      rw [hS, Finset.mem_image]
-      exact ⟨fun ⟨u, hu⟩ => ⟨e u, Finset.mem_univ _, by rw [e.symm_apply_apply, hu]⟩, fun ⟨w, _, hw⟩ => ⟨_, hw⟩⟩
-    rw [← this]
-    exact ⟨hcp, hh⟩
-  · rw [hB, Formalism.HC.Frame.A.val_injective _ e1, Formalism.HC.Frame.A.val_injective _ e2]
-  · rw [he u l.1, dif_pos l.2]
-    rfl
 
 def ObjExNarrow (Q : PtProp) : Prop :=
   ∃ ε0 : ℝ, 0 < ε0 ∧ ∀ eps C8 c6 Cb : ℝ, 0 < eps → eps ≤ ε0 → eps < 1 / 52 → 1 ≤ C8 → ∃ K0 : TransportedAlt,
@@ -383,17 +321,6 @@ def Common (Q : PtProp) : Prop :=
           ChProviso_at p.L 3 ∧ p.L.TuGe ∧ (∀ u, Real.log ((p.D.mem u).A.T : ℝ) ≤ C.CTu * p.D.R.m * p.L.sc.L) ∧
           FactDGam p.D Cdg
 
-theorem narrow_of_objEx {Q : PtProp} (h : ObjEx Q) : ObjExNarrow Q := by
-  obtain ⟨ε0, h0, h⟩ := h
-  refine ⟨ε0, h0, fun eps C8 c6 Cb h1 h2 h3 h4 => ?_⟩
-  obtain ⟨K0, h⟩ := h eps C8 4 c6 Cb h1 h2 h3 h4
-  refine ⟨K0, fun C hC h8 hL => ?_⟩
-  obtain ⟨c1, h⟩ := h C hC h8 hL
-  refine ⟨c1, fun cD hcD => ?_⟩
-  obtain ⟨c2, h⟩ := h cD hcD
-  refine ⟨c2, fun ch hch => ?_⟩
-  obtain ⟨Cdg, x0, h⟩ := h ch hch
-  exact ⟨Cdg, x0, fun s R H q0 a b M c u0 hs hx hR hT hH _ hw hM hc hu => h s R H q0 a b M c u0 hs hx hR hT hH hw hM hc hu⟩
 
 theorem Common.imp {Q Q' : PtProp} (h : Common Q) (hQ : ∀ (C : FC) (p : Pt C), p.Has Q → p.Has Q') : Common Q' := by
   obtain ⟨ε0, h0, h⟩ := h
@@ -411,159 +338,18 @@ theorem Common.imp {Q Q' : PtProp} (h : Common Q) (hQ : ∀ (C : FC) (p : Pt C),
   obtain ⟨p, a1, a2, a3, a4, a5, a6, a7, a8⟩ := h u0 hu
   exact ⟨p, a1, a2, a3, a4, a5, a6, hQ C p a7, a8⟩
 
-theorem narrow_iff_common (Q : PtProp) : ObjExNarrow Q ↔ Common (Q.and OffCanon) := by
-  refine ⟨fun ⟨ε0, h0, h⟩ => ⟨ε0, h0, fun eps C8 c6 Cb h1 h2 h3 h4 => ?_⟩,
-    fun ⟨ε0, h0, h⟩ => ⟨ε0, h0, fun eps C8 c6 Cb h1 h2 h3 h4 => ?_⟩⟩
-  all_goals
-    obtain ⟨K0, h⟩ := h eps C8 c6 Cb h1 h2 h3 h4
-    refine ⟨K0, fun C hC h8 hL => ?_⟩
-    obtain ⟨c1, h⟩ := h C hC h8 hL
-    refine ⟨c1, fun cD hcD => ?_⟩
-    obtain ⟨c2, h⟩ := h cD hcD
-    refine ⟨c2, fun ch hch => ?_⟩
-    obtain ⟨Cdg, x0, h⟩ := h ch hch
-  · refine ⟨Cdg, x0, fun s R H q0 a b M c hs hx hR hT hH hr hw hM hc => ?_⟩
-    have hn : 0 < R.n := R.ord_pos
-    obtain ⟨p0, b1, b2, -, b4, b5, -⟩ := h s R H q0 a b M c 0 hs hx hR hT hH hr hw hM hc hn
-    refine ⟨fun j n => p0.ta.Gx.off j (false, (p0.D.R.ofNat n : G.HH p0.D)), fun u0 hu => ?_⟩
-    obtain ⟨p, a1, a2, a3, a4, a5, a6, a7⟩ := h s R H q0 a b M c u0 hs hx hR hT hH hr hw hM hc hu
-    refine ⟨p, a1, a2, a3, a4, a5.1, fun j t => ?_, ⟨a6, a5.2⟩, a7⟩
-    have hS := GlobalTheory.EX.TieSame.same_of_from C cD ch p p0 R H a b M c u0 0 (a1.trans b1.symm) a2 b2 a4 b4 a5 b5
-    refine hS.2.2.2.2.2.2.2.2.2.2.2.2.1 j t _ (Formalism.HC.Frame.val_ofNat_of_lt _ ?_).symm
-    rw [← hS.1]
-    exact Formalism.HC.Frame.A.val_lt t
-  · refine ⟨Cdg, x0, fun s R H q0 a b M c u0 hs hx hR hT hH hr hw hM hc hu => ?_⟩
-    obtain ⟨off, h⟩ := h s R H q0 a b M c hs hx hR hT hH hr hw hM hc
-    obtain ⟨p, a1, a2, a3, a4, a5, -, a7, a8⟩ := h u0 hu
-    exact ⟨p, a1, a2, a3, a4, ⟨a5, a7.2⟩, a7.1, a8⟩
 
-theorem common_of_objEx {Q : PtProp} (h : ObjEx Q) : Common Q :=
-  ((narrow_iff_common Q).1 (narrow_of_objEx h)).imp fun _ _ hp => hp.1
 
-theorem common_of_objectsExist {Q : PtProp} (h : ObjectsExist Q) : Common Q := by
-  obtain ⟨Cdg, -, h⟩ := h
-  refine ⟨1, one_pos, fun eps C8 c6 Cb h1 _ h3 h4 => ?_⟩
-  obtain ⟨K0, h⟩ := h eps h1 h3 C8 h4
-  refine ⟨K0, fun C hC h8 hL => ?_⟩
-  subst h8
-  obtain ⟨c1, h⟩ := h C hC rfl hL
-  refine ⟨c1, fun cD hcD => ?_⟩
-  obtain ⟨c2, h⟩ := h cD hcD
-  refine ⟨c2, fun ch hch => ?_⟩
-  obtain ⟨x0, h⟩ := h ch hch
-  obtain ⟨x1, hx1⟩ := hyp_iff eps c6 Cb h1
-  refine ⟨Cdg, max x0 x1, fun s R H q0 a b M c hs hx hR hT hH hr hw hM hc => ?_⟩
-  have hA := ((hx1 C s R H q0 hs ((le_max_right _ _).trans hx)).1 ⟨hT, hH, hr⟩).1
-  obtain ⟨off, h⟩ := h s hs ((le_max_left _ _).trans hx) R hR H q0 _ hA _ _ ((winOK_iff C s H a b).1 hw) (codeOf c hc)
-    ((card_codeOf c hc).trans hM)
-  refine ⟨off, fun u0 hu => ?_⟩
-  obtain ⟨T, p, hO, -, hV, hQ, hP, hTr, hD⟩ := h (R.ofNat u0)
-  obtain ⟨a1, a2, a3, a4, a5, a6⟩ := from_of_over hA a b c hc hO
-  rw [Formalism.HC.Frame.val_ofNat_of_lt R.toFrame hu] at a3
-  have hrg := (range_iff hC p.L).2 fun u => by
-    obtain ⟨w, hw⟩ := a6 u
-    rw [hw, a1, a3.1]
-    exact hTr w
-  exact ⟨p, a1, hV, a2, a3, a4, a5, hQ, hP, hrg.1, hrg.2, hD⟩
 
-theorem narrow_of_objectsExist {Q : PtProp} (h : ObjectsExist (Q.and OffCanon)) : ObjExNarrow Q :=
-  (narrow_iff_common Q).2 (common_of_objectsExist h)
 
 def EpsLe (δ : ℝ) : PtProp := fun _ L _ _ _ _ _ _ _ => L.sc.eps ≤ δ
 
-theorem objEx_and_iff (Q : PtProp) {δ : ℝ} (hδ : 0 < δ) :
-    ObjEx Q ↔ ObjEx (Q.and ((EpsLe δ).and fun _ _ _ X _ _ _ _ _ => CanonInst X)) := by
-  refine ⟨fun ⟨ε0, h0, h⟩ => ⟨min ε0 δ, lt_min h0 hδ, fun eps C8 C5 c6 Cb h1 h2 h3 h4 => ?_⟩,
-    fun ⟨ε0, h0, h⟩ => ⟨ε0, h0, fun eps C8 C5 c6 Cb h1 h2 h3 h4 => ?_⟩⟩
-  on_goal 1 => obtain ⟨K0, h⟩ := h eps C8 C5 c6 Cb h1 (h2.trans (min_le_left _ _)) h3 h4
-  on_goal 2 => obtain ⟨K0, h⟩ := h eps C8 C5 c6 Cb h1 h2 h3 h4
-  all_goals
-    refine ⟨K0, fun C hC h8 hL => ?_⟩
-    obtain ⟨c1, h⟩ := h C hC h8 hL
-    refine ⟨c1, fun cD hcD => ?_⟩
-    obtain ⟨c2, h⟩ := h cD hcD
-    refine ⟨c2, fun ch hch => ?_⟩
-    obtain ⟨Cdg, x0, h⟩ := h ch hch
-    refine ⟨Cdg, x0, fun s R H q0 a b M c u0 hs hx hR hT hH hw hM hc hu => ?_⟩
-    obtain ⟨p, a1, a2, a3, a4, a5, a6, a7⟩ := h s R H q0 a b M c u0 hs hx hR hT hH hw hM hc hu
-  · refine ⟨p, a1, a2, a3, a4, a5, ⟨a6, ?_, a5⟩, a7⟩
-    show p.L.sc.eps ≤ δ
-    rw [a1, hs]
-    exact h2.trans (min_le_right _ _)
-  · exact ⟨p, a1, a2, a3, a4, a5, a6.1, a7⟩
 
-theorem no_choices_of_objectsExist {Q : PtProp} {δ : ℝ} (h : ObjectsExist (Q.and (EpsLe δ))) (eps : ℝ) (h1 : 0 < eps)
-    (h2 : eps < 1 / 52) (h3 : δ < eps) : ∀ C8 : ℝ, 1 ≤ C8 → ∃ K0 : TransportedAlt, ∀ C : FC, Std C → C.P.Cpde = C8 → C.Large K0 C.P.CF → ∃ x0 : ℝ,
-      ∀ s : Scale, s.eps = eps → x0 ≤ s.x → ∀ (R : Ranks), RankVal s R →
-        ∀ (H : Host R) (q0 : ℕ) (bs : R.A → R.A → R.A), ArithData C s H q0 bs →
-        ∀ a b : ℕ → ℤ, Win s R.k (H.TT.image Formalism.HC.Frame.A.val) (bTop C s R) a b →
-        ∀ code : Finset (Fin (R.k - 2) → Bool), code.card ≠ numWords C s R := by
-  intro C8 h8
-  obtain ⟨Cdg, -, h⟩ := h
-  obtain ⟨K0, h⟩ := h eps h1 h2 C8 h8
-  refine ⟨K0, fun C hC hP hL => ?_⟩
-  obtain ⟨c1, h⟩ := h C hC hP hL
-  obtain ⟨c2, h⟩ := h c1 le_rfl
-  obtain ⟨x0, h⟩ := h c2 le_rfl
-  refine ⟨x0, fun s hs hx R hR H q0 bs hH a b hw code hc => ?_⟩
-  obtain ⟨off, h⟩ := h s hs hx R hR H q0 bs hH a b hw code hc
-  obtain ⟨T, p, hO, -, -, hQ, -⟩ := h 0
-  have h4 : p.L.sc.eps ≤ δ := hQ.2
-  rw [hO.2.1, hs] at h4
-  linarith
 
 def HostExNarrow : Prop :=
   HostExP fun _ s _ H q0 => QDq s.x s.eps 4 H.q H.d ∧ LeastPrimeCong H q0
 
-theorem hostEx_of_narrow (h : HostExNarrow) : HostEx := HostExP.hostEx h
 
-theorem kitEx_of_narrow {Q : PtProp} (hHost : HostExNarrow) (hWt : WeightEx) (hObj : ObjExNarrow Q) : KitEx (withDuty Q) := by
-  obtain ⟨ε0, hε0, hObj⟩ := hObj
-  obtain ⟨la, hla, hHost⟩ := hHost
-  refine ⟨la, hla, ε0, hε0, fun eps he he0 he1 => ?_⟩
-  obtain ⟨CT2, C8, C5, c6, Cb, xH, h8, -, h6, hb, S, hHost⟩ := hHost eps he he1
-  obtain ⟨KW, hWt⟩ := hWt eps C8 he he1
-  obtain ⟨KO, hObj⟩ := hObj eps C8 c6 Cb he he0 he1 h8
-  refine ⟨CT2, C8, KW.sup KO, h8, fun C hC hT hP hL => ?_⟩
-  obtain ⟨hLW, hLO⟩ := fc_large_of_sup hL
-  obtain ⟨c1, hObj⟩ := hObj C hC hP hLO
-  refine ⟨max c1 0, fun cD hcD => ?_⟩
-  obtain ⟨c2, hObj⟩ := hObj cD ((le_max_left _ _).trans hcD)
-  refine ⟨c2, fun ch hch => ?_⟩
-  obtain ⟨Cdg, xO, hObj⟩ := hObj ch hch
-  obtain ⟨xW, hWt⟩ := hWt C hC hLW cD ch ((le_max_right _ _).trans hcD)
-  have hmid := hC.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1
-  have hG : 0 ≤ C.CGam := zero_le_one.trans (hmid _ (by simp [FC.cMid]))
-  have hF : 0 ≤ C.P.CF := zero_le_one.trans (hmid _ (by simp [FC.cMid]))
-  obtain ⟨xC, hCode⟩ := exists_injective_words eps C.CGam C.P.CF he he1 hG hF
-  obtain ⟨xq, hq⟩ := small_prime_lt eps C8 he h8
-  refine ⟨4, c6, Cb, Cdg, max (max (max xH xO) xW) (max xC xq), by norm_num, h6, hb, S, fun s hs hx hS => ?_⟩
-  simp only [max_le_iff] at hx
-  obtain ⟨⟨⟨hxH, hxO⟩, hxW⟩, hxC, hxq⟩ := hx
-  obtain ⟨R, H, q0, hRV, hHT, hH5, h4, hr⟩ := hHost s hs hxH hS
-  have hH : HostGood s C8 4 c6 Cb H q0 := ⟨hH5.1, hH5.2.1, hH5.2.2.1, hH5.2.2.2.1, h4, hH5.2.2.2.2.2⟩
-  obtain ⟨a, b, h0, hWin, hW⟩ := hWt s R H hs hxW hRV hH.1
-  obtain ⟨c, hc, -⟩ := hCode s R hs hxC hRV
-  have hHT' : H.CT2 = C.CT2 := hHT.trans hT.symm
-  have hn : 0 < R.n := R.ord_pos
-  have hq0 : (q0 : ℝ) < s.X' := by
-    have hqp : (0 : ℝ) < H.q := by exact_mod_cast H.hyp.1.pos
-    have hdp : (0 : ℝ) < H.d := by exact_mod_cast H.hyp.2.1.pos
-    have hQS : (0 : ℝ) < H.QS := by exact_mod_cast H.QS_pos
-    exact hq s _ q0 hs hxq (by positivity) hH.1.log_cond_le hH.2.2.2.2.2.2.2.2.2.2.2.2.1.2.2.1
-  choose pt hsc hval har hfrom hcan hhas hpr htu hlog hdg using
-    fun i : Fin R.n => hObj s R H q0 a b _ c i.1 hs hxO hRV hHT' hH hr hWin rfl hc i.2
-  choose eW heW using fun i => (hfrom i).words
-  refine ⟨⟨Fin R.n, ⟨⟨0, hn⟩⟩, pt, hsc, hval, har, fun i i' => ?_, _, eW, fun i i' u u' h => ?_, fun i0 u0 hu => ?_⟩,
-    fun i => ?_⟩
-  · exact GlobalTheory.EX.TieSame.same_of_from C cD ch (pt i) (pt i') R H a b _ c _ _ ((hsc i).trans (hsc i').symm) (hval i) (hval i')
-      (hfrom i) (hfrom i') (hcan i) (hcan i')
-  · funext l
-    rw [heW i u l, heW i' u' l, h]
-  · rw [(hfrom i0).1] at hu
-    exact ⟨⟨u0, hu⟩, (hfrom ⟨u0, hu⟩).2.2.2.2.2.2.2.2.2.1⟩
-  · exact has_withDuty_and_chosen (C8 := C8) (q0 := q0) (pt i) hC hHT' (by rw [hsc i]; exact hH) (by rw [hsc i]; exact hq0) h0
-      (by rw [hsc i]; exact hW) (hval i) (hfrom i) (hcan i) (hhas i) (hpr i) (htu i) (hlog i) (hdg i)
 
 structure Switch where
 

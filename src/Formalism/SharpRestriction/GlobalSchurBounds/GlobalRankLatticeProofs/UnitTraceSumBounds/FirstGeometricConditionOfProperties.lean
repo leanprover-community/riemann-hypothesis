@@ -1,9 +1,38 @@
 import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.AdditionIdentityOfSigmaFormulaUnit
-import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.FirstKernelRemainderOfLevelRestrictionOfLinPtW
+import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.LevelRestrictionOfGroupLawAlt
+import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.CoefWfZero
 import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.RetcutA
 import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.TheoremOfCubeOfAdditionFormulas
-import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.StmtPhDualWHolds
+import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.FglPtW
 
+section
+namespace Formalism.MainNotions.Ext.CutA
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.GL3Theta Formalism.MainNotions.GL3r7 Formalism.MainNotions.Ext
+
+
+end Formalism.MainNotions.Ext.CutA
+end
+
+section
+namespace Formalism.MainNotions.Ext
+
+theorem addPtW_holds : AddPtW :=
+  fun p _ g hOk hF σ a b ha hb =>
+    formal_group_add_generation ℂ_[p] (Formalism.MainNotions.GL3Theta.Wp p) g.l g.ex hOk.2.2.1 hOk.2.2.2 hF σ a b ha hb
+
+theorem mulPtW_holds : MulPtW :=
+  fun p _ g hOk c hc σ a ha =>
+    formal_group_mul_generation ℂ_[p] (Formalism.MainNotions.GL3Theta.Wp p) g.l g.ex hOk.2.2.1 hOk.2.2.2 c hc σ a ha
+
+
+
+
+
+end Formalism.MainNotions.Ext
+end
+
+section
 namespace Formalism.MainNotions.Ext
 
 open Formalism.BasicNotions Formalism.MainNotions.GL3Theta Formalism.MainNotions.GL3r7 Formalism.MainNotions.Ext.CutA
@@ -20,13 +49,6 @@ theorem firstGeometricCondition_of_properties (D : D7) (hc : cube D) (he : endIn
     phUnitary_of gramUnitEq_holds D hG, phIsotropic_of gramIsoEq_holds D hG, phDual_of phDualOfGram_holds D hG,
     sDiff_of sDiffOfGram_holds D hG hb, stmt_endIntW_holds D he, splitZero_of' splitZeroG_holds D he ha hn hb hB⟩
 
-theorem witt_conditions_of_cube_endInt_phW (D : D7) (hc : cube D) (he : endInt D) (hOK : PhNormOK D) (hW : phW D) :
-    beW D ∧ PhDualW D ∧ SDiffW D ∧ FirstKernelRemainder D := by
-  obtain ⟨hB, -, hb, -, -, -, -, -, hd, hs, heW, -⟩ := firstGeometricCondition_of_properties D hc he hOK
-  have ha := addInt_holds D
-  have h1 := stmt_beW_holds D hW readW_holds ha heW hB hb
-  have h2 := stmt_PhDualW_holds D hW readW_holds ha heW hd
-  have h3 := stmt_SDiffW_holds D hW readW_holds ha heW hs
-  exact ⟨h1, h2, h3, firstKernelRemainder_of_levelRestriction_of_linPtW level_restriction_of_group_law_holds linPtW_holds D hW ha heW h3 h2⟩
 
 end Formalism.MainNotions.Ext
+end

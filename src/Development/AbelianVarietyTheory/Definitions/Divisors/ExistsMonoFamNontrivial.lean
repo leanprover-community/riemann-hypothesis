@@ -1,6 +1,6 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsOverIff
-import Development.AbelianVarietyTheory.Definitions.Divisors.NotIsConstAlongConeZero
+import Development.AbelianVarietyTheory.Definitions.Divisors.RigidForFan
 import Development.AbelianVarietyTheory.Definitions.Divisors.FromBase
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnitPartOfPeriodTauMonomial
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPosCombinationSmoothConeSymmIntForm
@@ -10,6 +10,150 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ConeAtInteri
 import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ArcWitnessModelPoint
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.ConvexCones.ExistsFan
 
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField IsLocalRing
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
+open ReciprocityTheory.ChartRestriction.G.Out.InhTate
+open GlobalTheory.Toroidal GlobalTheory.ToricData
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+namespace GlobalTheory.RigChart.Model
+
+theorem gm_gv {Y Z : Scheme.{0}} (r : Z ⟶ Y) (z : Z) (V : Y.Opens) (h : r z ∈ V) (a : Γ(Y, ⊤)ˣ) :
+    gm r z V (InhTate.gv a V) = gm (𝟙 Z) z ⊤ (pullTop r a) := by
+  rw [InhTate.gv, gm_res r z _ h]
+  have := gm_pull (𝟙 Z) r z ⊤ trivial a
+  rw [Category.id_comp] at this
+  exact this.symm
+
+theorem val_const {W Y Z : Scheme.{0}} {K : Type} [Fintype K] {φ : K → (Y ⟶ W)} {ε : K → ℤ}
+    {t : LB.Gen (LB.LinComb (Inh.trivLB W) φ ε)} {a : Γ(Y, ⊤)ˣ} (h : IsConst t a) (r : Z ⟶ Y) (z : Z)
+    (J : (Z ⟶ W) → (Inh.trivLB W).ι) : Geo.Tor.val t r z J = gm (𝟙 Z) z ⊤ (pullTop r a) := by
+  have hm : r z ∈ LB.wchart (Inh.trivLB W) φ (fun k => J (r ≫ φ k)) := by rw [wchart_triv]; trivial
+  exact (congrArg (gm r z _) (h _)).trans (gm_gv r z _ hm a)
+
+
+theorem good_triv {W Z : Scheme.{0}} (z : Z) : Good (Inh.trivLB W) z (fun _ => PUnit.unit) := fun _ => trivial
+
+theorem gm_eq_of_top {Y Z : Scheme.{0}} (r : Z ⟶ Y) (z : Z) {V : Y.Opens} (hV : V = ⊤) (a : Γ(Y, V)ˣ) :
+    gm r z V a = gm (𝟙 Z) z ⊤ (pullTop r (res hV.ge a)) := by
+  subst hV
+  rw [← gm_gv r z (⊤ : Y.Opens) (show r z ∈ (⊤ : Y.Opens) from trivial), InhTate.gv, res_self, res_self]
+
+theorem one_isGen {W Y : Scheme.{0}} (f g : Y ⟶ W) :
+    LB.Gen.IsGen (⟨fun _ => 1⟩ : LB.Iso ((Inh.trivLB W).pull f) ((Inh.trivLB W).pull g)) := by
+  intro i j
+  have hg : (LB.div ((Inh.trivLB W).pull g) ((Inh.trivLB W).pull f)).g i j = 1 := by
+    have h₁ := Inh.linComb_triv_g (fun _ : PUnit => f) (fun _ => 1) i.2 j.2
+    have h₂ := Inh.linComb_triv_g (fun _ : PUnit => g) (fun _ => 1) i.1 j.1
+    unfold LB.div
+    dsimp only
+    rw [h₁, h₂, map_one, map_one, inv_one, _root_.mul_one]
+  rw [hg, _root_.one_mul]
+  rfl
+
+theorem constHom_apply {R k : Type} [CommRing R] [Field k] (ρ : R →+* DualNumber k) (r : R) :
+    constHom ρ r = TrivSqZeroExt.inl (ρ r).fst := rfl
+
+
+variable {R : Type} [CommRing R] [IsDomain R] {X : Type} [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X]
+  (q : X → (FractionRing R)ˣ) {m : ℕ} (t : Fin m → R) (gam : Fin m → LinearMap.BilinForm ℤ X)
+
+
+
+abbrev A : Type := PowerSeries (PowerSeries ℚ)
+
+abbrev tt : A := PowerSeries.X
+
+abbrev ss : A := PowerSeries.C PowerSeries.X
+
+theorem ss_mem : ss ∈ maximalIdeal A := by
+  rw [mem_maximalIdeal, mem_nonunits_iff, PowerSeries.isUnit_iff_constantCoeff, PowerSeries.constantCoeff_C,
+    PowerSeries.isUnit_iff_constantCoeff]
+  simp
+
+theorem isUnit_one_add {x : A} (h : x ∈ maximalIdeal A) : IsUnit (1 + x) := by
+  have := isUnit_one_sub_self_of_mem_nonunits (-x) ((mem_maximalIdeal _).1 (neg_mem h))
+  simpa using this
+
+def frm : LinearMap.BilinForm ℤ (ℤ × ℤ) := LinearMap.mk₂ ℤ (fun y z => 2 * (y.1 * z.1 + y.2 * z.2))
+  (fun _ _ _ => by simp; ring) (fun _ _ _ => by simp; ring) (fun _ _ _ => by simp; ring) (fun _ _ _ => by simp; ring)
+
+def nrm (y : ℤ × ℤ) : ℕ := (y.1 * y.1 + y.2 * y.2).toNat
+
+
+def per (v : Aˣ) (b : ℤ × ℤ → ℤ) (y : ℤ × ℤ) : (FractionRing A)ˣ :=
+  Units.mk0 (algebraMap A _ (tt ^ nrm y * (v ^ b y : Aˣ)))
+    ((map_ne_zero_iff _ (IsFractionRing.injective A _)).2
+      (mul_ne_zero (pow_ne_zero _ PowerSeries.X_ne_zero) (Units.ne_zero _)))
+
+
+
+
+def tang : A →+* DualNumber ℚ := RingHom.comp
+  { toFun := fun f : PowerSeries ℚ => TrivSqZeroExt.inl (PowerSeries.constantCoeff f) + TrivSqZeroExt.inr (PowerSeries.coeff 1 f)
+    map_one' := by ext <;> simp [PowerSeries.coeff_one]
+    map_mul' := fun f g => by
+      ext
+      · simp
+      · simp only [TrivSqZeroExt.snd_mul, TrivSqZeroExt.snd_add, TrivSqZeroExt.fst_add, TrivSqZeroExt.snd_inl,
+          TrivSqZeroExt.snd_inr, TrivSqZeroExt.fst_inl, TrivSqZeroExt.fst_inr, PowerSeries.coeff_mul]
+        rw [Finset.Nat.antidiagonal_succ]
+        first
+          | (simp [PowerSeries.coeff_zero_eq_constantCoeff]; done)
+          | (simp [PowerSeries.coeff_zero_eq_constantCoeff]; ring)
+    map_zero' := by ext <;> simp
+    map_add' := fun f g => by ext <;> simp [add_add_add_comm] } PowerSeries.constantCoeff
+
+
+
+
+
+def vs : Aˣ := (isUnit_one_add ss_mem).unit
+
+def vts : Aˣ := (isUnit_one_add (Ideal.mul_mem_left _ tt ss_mem)).unit
+
+
+
+
+
+
+theorem isConstAlong_const (Q : DegPre R) (gam : Fin m → LinearMap.BilinForm ℤ Q.X) {k : Type} [Field k]
+    (ρ : R →+* DualNumber k) (hρ : constHom ρ = ρ) : IsConstAlong Q t gam ρ 0 := by
+  unfold IsConstAlong
+  rw [hρ]
+  have hL : (Q.P.L.pull (pullback.fst Q.P.A.hom (spMap ρ))).IsLB := LB.isLB_linComb Q.P.isLB _ _
+  have hw : ∀ y, (spMap ρ ≫ (Q.c y).left) ≫ Q.P.A.hom = 𝟙 _ ≫ spMap ρ := fun y => by
+    rw [Category.assoc, Over.w (Q.c y)]; exact (Category.comp_id _).trans (Category.id_comp _).symm
+  refine ⟨(Over.pullback (spMap ρ)).obj Q.P.A, inferInstance, pullback.fst _ _, pullback.fst _ _, idIso _,
+    fun y => pullback.lift _ _ (hw y), isGrpPullback_pullback _ _, isGrpPullback_pullback _ _, fun _ _ _ _ => rfl,
+    idIso_isGen hL, fun y => ⟨pullback.lift_snd _ _ _, pullback.lift_fst _ _ _, pullback.lift_fst _ _ _⟩,
+    fun y z τ₀ _ e he x J hJ => ?_⟩
+  obtain rfl : e = 1 := Units.ext (by simpa using he)
+  have k : ∀ f : Sp (DualNumber k) ⟶ pullback Q.P.A.hom (spMap ρ),
+      gm f x _ ((idIso (Q.P.L.pull (pullback.fst Q.P.A.hom (spMap ρ)))).s
+        (fun _ => J (f ≫ pullback.fst Q.P.A.hom (spMap ρ)), fun _ => J (f ≫ pullback.fst Q.P.A.hom (spMap ρ)))) = 1 :=
+    fun f => gm_self hL f x (mem_pull.2 (hJ (f ≫ _)))
+  erw [k, k, k, k, unitOn_one, map_one]
+  simp
+
+theorem toroidalChartsForFan (h : RigidForFan) : GlobalTheory.Published.ToroidalChartsForFan := by
+  intro E _ _ _ H Dw hr φ h₁ h₂ l Xo c
+  obtain ⟨Y, BD, d, k, a₁, a₂, a₃, a₄, a₅, a₆, a₇, -⟩ := h E H Dw hr φ h₁ h₂ l Xo c
+  exact ⟨Y, BD, d, k, a₁, a₂, a₃, a₄, a₅, a₆, a₇⟩
+
+
+end GlobalTheory.RigChart.Model
+end
+end
+
+section
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
@@ -72,9 +216,6 @@ def TauIn {V : Type} [CommRing V] [IsDomain V] (Q : DegPre V) (τ₀ : Gens Q) {
     (k : FractionRing V) = ∏ i, algebraMap V (FractionRing V) (s i) ^ ε i a b ∧ ∀ z J, Good Q.P.L z J →
       val (Q.tau a b) (𝟙 _) z J = gm (𝟙 (TK V).left) z ⊤ (unitOn k) * val (τ₀ a b) (toUnit (TK V)).left z J
 
-theorem tauIn_iff {V : Type} [CommRing V] [IsDomain V] (Q : DegPre V) (τ₀ : Gens Q) {N : ℕ} (s : Fin N → V)
-    (ε : Fin N → LinearMap.BilinForm ℤ Q.X) :
-    TauIn Q τ₀ s ε ↔ ∀ a b, GlobalTheory.RigChart.IsUnitTau Q s ε a b (τ₀ a b) := Iff.rfl
 
 def lamUnit {B B₀ B' Z : Scheme.{0}} {M : LB B} {M₀ : LB B₀} {π₁ : B' ⟶ B} {π₀ : B' ⟶ B₀}
     (w : LB.Iso (M.pull π₁) (M₀.pull π₀)) {X : Type} [AddCommGroup X] (x : X → (Z ⟶ B')) (a b : X) (z : Z)
@@ -118,12 +259,6 @@ def OpenCls (C : MonoFam Xo c φ R) : Prop :=
     ∀ g : Sp (FractionRing R) ⟶ Sp (Localization.Away (∏ i, C.s i)),
       g ≫ spMap (algebraMap R (Localization.Away (∏ i, C.s i))) = jK R → g ≫ yo = C.y
 
-theorem openCls_iff (C : MonoFam Xo c φ R) : OpenCls C ↔
-    ∃ yo : Sp (Localization.Away (∏ i, C.s i)) ⟶ Xo.XF c,
-      Classifies Xo c C.t (spMap (algebraMap R (Localization.Away (∏ i, C.s i)))) yo ∧
-      ∀ g : Sp (FractionRing R) ⟶ Sp (Localization.Away (∏ i, C.s i)),
-        g ≫ spMap (algebraMap R (Localization.Away (∏ i, C.s i))) = jK R → g ≫ yo = C.y :=
-  ⟨fun ⟨yo, tO, h₁, h₂, h₃⟩ => ⟨yo, ⟨tO, h₁, h₂⟩, h₃⟩, fun ⟨yo, ⟨tO, h₁, h₂⟩, h₃⟩ => ⟨yo, tO, h₁, h₂, h₃⟩⟩
 
 def Inj (C : MonoFam Xo c φ R) : Prop :=
   ∀ (R' : Type) [CommRing R'] [IsDomain R'] [IsLocalRing R'], GlobalTheory.Mum.Base R' → ∀ θ₁ θ₂ : R →+* R',
@@ -211,33 +346,6 @@ theorem MonoFam.exists_tauIn (C : MonoFam Xo c φ R) :
     (fun i y z => by simp only [LinearMap.smul_apply, (C.cone.mem i).1 y z]) C.s_ne_zero
   exact ⟨τ₀, h⟩
 
-theorem exists_monoFam_of_point (φ : InvFun (𝓞 E)) (hR : GlobalTheory.Mum.Base R) (x : Sp R ⟶ Xo.XF c) :
-    ∃ C : MonoFam Xo c φ R, C.m = 0 ∧ C.y = jK R ≫ x ∧ Nonempty (SABMap C.t Xo.univ.t (x ≫ pullback.fst _ _)) := by
-  obtain ⟨t, ⟨m⟩⟩ := GlobalTheory.TraitOrder.exists_pull (x ≫ pullback.fst _ _) Xo.univ.t
-  have hCN : GlobalTheory.TorRef.IsCN R := ⟨hR.1.1, hR.1.2.2.1, hR.1.2.2.2, hR.2⟩
-  have hprop : IsProper t.G.hom := MorphismProperty.of_isPullback (P := @IsProper) m.cart.1 Xo.univ.proper
-  obtain ⟨PP', cub, sym, adj, prim, m₂, hm₂⟩ := sabPull Out.CubePf.cubePull (jK R) t
-  obtain ⟨m₃⟩ := GlobalTheory.TraitOrder.comp (h := (jK R ≫ x) ≫ pullback.fst _ _) (Category.assoc _ _ _).symm m m₂
-  have hpol : GlobalTheory.LN.PolAt t (jK R) := by
-    have h₂ : LBIso PP'.L (t.PP.L.pull m₂.φ) := m₂.lin.imp fun _ h => h.1
-    rw [hm₂] at h₂
-    have h₃ : LBIso PP'.L (Xo.univ.t.PP.L.pull m₃.φ) := m₃.lin.imp fun _ h => h.1
-    have hL := LB.isLB_pull t.PP.isLB (pullback.fst t.G.hom (jK R))
-    exact ⟨inferInstanceAs (IsProper (pullback.snd _ _)), amplePt _ _ _ _ _ m₃.φ m₃.cart _ _ Xo.univ.t.PP.isLB hL
-      (LBIso.trans hL PP'.isLB (LB.isLB_pull Xo.univ.t.PP.isLB _) h₂.symm h₃) Xo.univ.ample Xo.univ.ktriv⟩
-  have hPI : PushInvertible Xo.univ.t.G Xo.univ.t.PP.L :=
-    GlobalTheory.PushInv.pushInvertible_any GlobalTheory.allSixLaws.2.1.secBaseChangeAny GlobalTheory.allSixLaws.1.globalSectionsRank _ (GlobalTheory.Obj.toPolAV Xo.univ)
-  obtain ⟨P, -, hX⟩ := GlobalTheory.GenFan.exists_pelUnif_torsionIso_subsingleton_of_abLocus R t hCN hpol
-    (GlobalTheory.ThetaLocal.thetaNZ_of_pushInvertible E H _ Xo.univ.t hPI R _ t m) (fun p K _ _ q _ => inferInstance)
-  obtain ⟨b, hb⟩ := Spec.map_surjective (x ≫ pullback.snd Xo.s (spMap (IntermediateField.inclusion c.le).toRingHom))
-  let F : Fam Xo c R := ⟨b.hom, t, P, jK R ≫ x, by rw [Category.assoc, ← hb]; rfl, _, ⟨m₂⟩, ⟨m₃⟩⟩
-  refine ⟨⟨F, 0, Fin.elim0, fun i => i.elim0, Fin.elim0, GlobalTheory.GenFan.isCone_empty H φ _,
-    by rw [Module.finrank_zero_of_subsingleton]; exact Nat.zero_le _, fun y => ?_⟩, rfl, rfl, ⟨m⟩⟩
-  obtain rfl : y = 0 := Subsingleton.elim _ _
-  have := hR.2
-  obtain ⟨r, hr, -, -, hu⟩ := (GlobalTheory.PsiCoordLocal.main R P.D hCN.2.1 0).1
-  obtain ⟨u, rfl⟩ := hu rfl
-  exact ⟨u, Fin.elim0, fun i => i.elim0, by simpa using hr⟩
 
 theorem Fam.exists_monoFam [IsNoetherianRing R] (C : Fam Xo c R) (hφ : IsPolFan H.bar (min Dw.p Dw.q) φ) {u : R}
     (hu : u ∈ maximalIdeal R) {β : LinearMap.BilinForm ℤ C.P.D.toPre.X} (hβ : β ∈ balForms H.bar C.P.D.toPre.X)
@@ -267,53 +375,6 @@ theorem Fam.exists_monoFam [IsNoetherianRing R] (C : Fam Xo c R) (hφ : IsPolFan
   refine ⟨v, k, hk, ?_⟩
   simpa only [Fin.prod_univ_one, Matrix.cons_val_zero, e, ← pow_mul, Finset.prod_pow_eq_pow_sum] using hc
 
-theorem exists_monoFam_nontrivial : ∃ (E : Type) (_ : Field E) (_ : NumberField E) (_ : IsCMField E) (H : Host E) (Dw : Datum H)
-    (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (φ : InvFun (𝓞 E)) (C : MonoFam Xo c φ (PowerSeries ℂ)),
-    IsPolFan H.bar (min Dw.p Dw.q) φ ∧ NoSelfInt H.bar (min Dw.p Dw.q) φ ∧ GlobalTheory.Mum.Base (PowerSeries ℂ) ∧
-      Nontrivial C.P.D.toPre.X ∧ 1 ≤ C.m := by
-  obtain ⟨E, i₁, i₂, i₃, H, D, l, Xo, c, W₀, Y, bF, -, -, a, χ, w, -, -, -, -, -, -, hs, -, hab, -⟩ :=
-    GlobalTheory.ArcWitness.exists_arcWit GlobalTheory.partI_closed
-  haveI : CharZero (PowerSeries ℂ) := algebraRat.charZero _
-  have hc : IsAdicComplete (maximalIdeal (PowerSeries ℂ)) (PowerSeries ℂ) := by
-    rw [PowerSeries.maximalIdeal_eq_span_X]; infer_instance
-  rw [← PowerSeries.maximalIdeal_eq_span_X] at w
-  obtain ⟨φ, hφ, hns, -⟩ := GlobalTheory.CompanionTheory.Ar.Fan.exists_fan E H (min D.p D.q)
-  let b : c.F →+* PowerSeries ℂ := (PowerSeries.C (R := ℂ)).comp bF
-  have hq : (jK _ ≫ χ) ≫ Y.s = (jK _ ≫ spMap b) ≫ spMap (c.V W₀).subtype := by
-    rw [Category.assoc, hs, Category.assoc]
-    congr 1
-    exact (Spec.map_comp _ _).symm.trans (Spec.map_comp (CommRingCat.ofHom (c.V W₀).subtype) (CommRingCat.ofHom b))
-  have := Y.jQ_open
-  have hr : Set.range (pullback.lift _ _ hq) ⊆ Set.range Y.jQ := by
-    rintro _ ⟨p, rfl⟩
-    rw [← Y.ab_gen, Set.mem_preimage, ← Scheme.Hom.comp_apply, pullback.lift_fst, Scheme.Hom.comp_apply, hab]
-    intro hX
-    have h1 : algebraMap (PowerSeries ℂ) (FractionRing (PowerSeries ℂ)) PowerSeries.X ∈ p.asIdeal := hX
-    rw [@Ideal.eq_bot_of_prime _ _ _ p.isPrime, Ideal.mem_bot, map_eq_zero_iff _ (IsFractionRing.injective _ _)] at h1
-    exact PowerSeries.X_ne_zero h1
-  let y := IsOpenImmersion.lift Y.jQ _ hr
-  have hy : y ≫ Y.jQ = pullback.lift _ _ hq := IsOpenImmersion.lift_fac _ _ _
-  obtain ⟨tK, ⟨n₀⟩⟩ := GlobalTheory.TraitOrder.exists_pull (jK _) w.t
-  obtain ⟨n₁⟩ := GlobalTheory.TraitOrder.comp rfl w.m n₀
-  obtain ⟨n₂⟩ := GlobalTheory.TraitOrder.cancel (g := y) (by rw [← Category.assoc, hy, pullback.lift_fst]) Y.m n₁
-  let F : Fam Xo c (PowerSeries ℂ) := ⟨b, w.t, w.P, y, by rw [← Y.jQ_over, ← Category.assoc, hy, pullback.lift_snd],
-    tK, ⟨n₀⟩, GlobalTheory.TraitOrder.comp rfl Y.m0.toSABMap n₂⟩
-  obtain ⟨be, hbe, hmono, hval⟩ := GlobalTheory.ArcOrder.exists_form (PowerSeries.C_injective) w PowerSeries.X_irreducible 1 1 (by simp)
-  have hM : be ∈ levelForms H l.M' w.P.D.toPre.X := ⟨hbe.1, hbe.2.1, fun y z => by
-    obtain ⟨y, rfl⟩ := w.e.surjective y
-    obtain ⟨z, rfl⟩ := w.e.surjective z
-    rw [hval]
-    exact ((Dvd.intro_left 2 rfl).trans (a.be_dvd y z)).mul_left _⟩
-  obtain ⟨β, hβ, rfl⟩ := (mem_levelForms_iff_smul (level_pos l).ne').1 hM
-  obtain ⟨C, hC⟩ := F.exists_monoFam hφ (u := PowerSeries.X) (by rw [PowerSeries.maximalIdeal_eq_span_X]; exact Ideal.mem_span_singleton_self _)
-    ((balForms_eq_levelForms H _).ge hβ) hmono
-  have hn : Nontrivial C.P.D.toPre.X := by
-    haveI := a.nontriv
-    rw [hC]
-    exact w.e.injective.nontrivial
-  obtain ⟨x, hx⟩ := exists_ne (0 : C.P.D.toPre.X)
-  obtain ⟨i, -⟩ := C.mono.exists_pos (maximalIdeal.isMaximal _).ne_top hx
-  exact ⟨E, _, _, _, H, D, l, Xo, c, φ, C, hφ, hns, ⟨⟨inferInstance, inferInstance, inferInstance, hc⟩, inferInstance⟩, hn, i.pos⟩
 
 section Tests
 
@@ -321,40 +382,6 @@ open GlobalTheory.RigChart GlobalTheory.RigChart.Model GlobalTheory.ToricData Re
 
 variable {V : Type} [CommRing V] [IsDomain V] {m : ℕ} {K : Type} [Field K]
 
-theorem sepAt_rescale (Q : DegPre V) (s : Fin m → V) (gam : Fin m → LinearMap.BilinForm ℤ Q.X) (ev : V →+* K)
-    (k₀ : Subfield K) (u : Fin m → Vˣ) (h : SepAt Q s gam ev k₀) : SepAt Q (fun i => u i * s i) gam ev k₀ := by
-  obtain ⟨h0, B₀, _, _, M₀, c₀, B', _, π₁, π₀, w, c', α, h₁, h₂, h₃, h₄, h₅, h₆, h₇⟩ := h
-  refine ⟨fun i => by rw [map_mul, h0, mul_zero], B₀, _, inferInstance, M₀, c₀, B', _, π₁, π₀, w, c',
-    fun i => α i * (Units.map ev.toMonoidHom (u i))⁻¹, h₁, h₂, h₃, h₄, h₅, h₆, fun a b τ₀ ⟨hg, k, hk, hv⟩ => ?_⟩
-  let v : Vˣ := ∏ i, u i ^ gam i a b
-  let f : Vˣ →* (FractionRing V)ˣ := Units.map (algebraMap V (FractionRing V)).toMonoidHom
-  have hk' : ((k * (f v)⁻¹ : (FractionRing V)ˣ) : FractionRing V) = ∏ i, algebraMap V (FractionRing V) (s i) ^ gam i a b := by
-    rw [Units.val_mul, hk, Units.val_inv_eq_inv_val, mul_inv_eq_iff_eq_mul₀ (f v).ne_zero]
-    simp only [v, f, map_prod, map_zpow, Units.coe_prod, Units.val_zpow_eq_zpow_val, map_mul, mul_zpow,
-      Finset.prod_mul_distrib]
-    exact mul_comm _ _
-  have hv' : ∀ z J, Good Q.P.L z J → val (Q.tau a b) (𝟙 _) z J =
-      gm (𝟙 (TK V).left) z ⊤ (unitOn (k * (f v)⁻¹)) * val (GlobalTheory.UU.scaleGen (unitOn v) τ₀) (toUnit (TK V)).left z J := by
-    intro z J hJ
-    have e : gm (toUnit (TK V)).left z ⊤ (unitOn v) = gm (𝟙 (TK V).left) z ⊤ (unitOn (f v)) := by
-      rw [GlobalTheory.UU.gm_top]
-      exact congrArg _ (pullTop_unitOn (algebraMap V (FractionRing V)) _)
-    refine (hv z J hJ).trans (Eq.symm ?_)
-    refine (congrArg _ (GlobalTheory.UU.val_scaleGen _ _ _ hJ)).trans ?_
-    rw [e, ← _root_.mul_assoc, ← map_mul, ← unitOn_mul, inv_mul_cancel_right]
-  obtain ⟨τ₁, hτ, hval⟩ := h₇ a b (GlobalTheory.UU.scaleGen (unitOn v) τ₀) ⟨GlobalTheory.UU.scaleGen_isGen _ hg, k * (f v)⁻¹, hk', hv'⟩
-  refine ⟨τ₁, hτ, fun z J J₀ hJ hJ₀ => ?_⟩
-  have e := (GlobalTheory.UU.val_scaleGen _ _ _ hJ).symm.trans (hval z J J₀ hJ hJ₀)
-  have e₁ : gm (spMap ev) z ⊤ (unitOn v) = gm (𝟙 (Sp K)) z ⊤ (unitOn (Units.map ev.toMonoidHom v)) := by
-    rw [GlobalTheory.UU.gm_top]
-    exact congrArg _ (pullTop_unitOn ev v)
-  have e₂ : ∏ i, (α i * (Units.map ev.toMonoidHom (u i))⁻¹) ^ gam i a b =
-      (Units.map ev.toMonoidHom v)⁻¹ * ∏ i, α i ^ gam i a b := by
-    simp only [v, map_prod, map_zpow, mul_zpow, Finset.prod_mul_distrib, inv_zpow', zpow_neg, Finset.prod_inv_distrib]
-    exact mul_comm _ _
-  rw [e₂, unitOn_mul, unitOn_inv, map_mul, map_inv, ← e₁]
-  refine (eq_inv_mul_of_mul_eq e).trans ?_
-  ac_rfl
 
 theorem exists_val_eq (k₀ : Subfield K) {Y : Scheme.{0}} {M : LB Y} {I : Type} [Fintype I] {p : I → (Sp k₀ ⟶ Y)} {n : I → ℤ}
     (τ : LB.Gen (LB.LinComb M p n)) {z : Sp K} {J : (Sp K ⟶ Y) → M.ι} (hJ : Good M z J) :
@@ -400,162 +427,14 @@ theorem exists_iso_pull_pull {B B₀ B' : Scheme.{0}} {M : LB B} (hM : M.IsLB) (
     Category.assoc, mul_right_comm, gm_cocycle hM (f ≫ π ≫ β) z a₁ a₂ a₄, ← gm_cocycle hM (f ≫ π ≫ β) z a₁ a₃ a₄,
     mul_inv_cancel_right]
 
-theorem sepAt_of_range (Q : DegPre V) (s : Fin m → V) (gam : Fin m → LinearMap.BilinForm ℤ Q.X) (ev : V →+* K)
-    (k₀ : Subfield K) (h0 : ∀ i, ev (s i) = 0) (h : ∀ v, ev v ∈ k₀) : SepAt Q s gam ev k₀ := by
-  let e₀ : Sp k₀ ⟶ Sp V := spMap (ev.codRestrict k₀ h)
-  let u : Sp K ⟶ Sp k₀ := spMap k₀.subtype
-  have hu : u ≫ e₀ = spMap ev := (Spec.map_comp _ _).symm
-  have hab : IsAbelianScheme ((Over.pullback e₀).obj Q.P.A) := GlobalTheory.isAbelianScheme_pullback_obj e₀ Q.P.A Q.P.isAb
-  let B₀ := (Over.pullback e₀).obj Q.P.A
-  let β : B₀.left ⟶ Q.P.A.left := pullback.fst _ _
-  let B' := (Over.pullback u).obj B₀
-  let π : B'.left ⟶ B₀.left := pullback.fst _ _
-  have w₀ : ∀ a, (e₀ ≫ (Q.c a).left) ≫ Q.P.A.hom = 𝟙 _ ≫ e₀ := fun a => by
-    rw [Category.assoc, Over.w (Q.c a)]; exact (Category.comp_id _).trans (Category.id_comp _).symm
-  let c₀ : Q.X → (Sp k₀ ⟶ B₀.left) := fun a => pullback.lift _ _ (w₀ a)
-  have c₀β : ∀ a, c₀ a ≫ β = e₀ ≫ (Q.c a).left := fun a => pullback.lift_fst _ _ _
-  have w₁ : ∀ a, (u ≫ c₀ a) ≫ B₀.hom = 𝟙 _ ≫ u := fun a => by
-    rw [Category.assoc, show c₀ a ≫ B₀.hom = 𝟙 _ from pullback.lift_snd _ _ _, Category.comp_id, Category.id_comp]
-  let c' : Q.X → (Sp K ⟶ B'.left) := fun a => pullback.lift _ _ (w₁ a)
-  have c'π : ∀ a, c' a ≫ π = u ≫ c₀ a := fun a => pullback.lift_fst _ _ _
-  have c'πβ : ∀ a, c' a ≫ π ≫ β = spMap ev ≫ (Q.c a).left := fun a => by
-    rw [← Category.assoc, c'π, Category.assoc, c₀β, ← Category.assoc, hu]
-  obtain ⟨w, hw, hwv⟩ := exists_iso_pull_pull Q.P.isLB β π
-  refine ⟨h0, B₀, inferInstance, inferInstance, Q.P.L.pull β, c₀, B', inferInstance, π ≫ β, π, w, c', 1,
-    hab, LB.isLB_pull Q.P.isLB β,
-    ((isGrpPullback_pullback B₀ u).comp (isGrpPullback_pullback Q.P.A e₀)).congr hu rfl, isGrpPullback_pullback B₀ u, hw,
-    fun a => ⟨pullback.lift_snd _ _ _, c'πβ a, c'π a⟩, fun a b τ₀ hτ => ?_⟩
-  clear_value c' c₀ π β B' B₀
-  let x : Fin 4 → Q.X := ![a + b, a, b, 0]
-  have hx : ∀ {T : Type} (f : Q.X → T), ![f (a + b), f a, f b, f 0] = fun k => f (x k) := fun f => by
-    funext k; fin_cases k <;> rfl
-  let A := chartPullLinComb Q.P.L β ![c₀ (a + b), c₀ a, c₀ b, c₀ 0]
-    ![(Q.c (a + b)).left, (Q.c a).left, (Q.c b).left, (Q.c 0).left] ![-1, 1, 1, -1] e₀ (fun k => by fin_cases k <;> exact c₀β _)
-  refine ⟨⟨fun i => res (A.le i) (pullU e₀ _ (τ₀.s (A.idx i)))⟩, fun i j => unit_ext fun y hy => ?_, fun z J J₀ hJ hJ₀ => ?_⟩
-  · have hm := And.intro (A.le i hy.1) (A.le j hy.2)
-    have e := (gm_res e₀ y _ hm _).symm.trans ((congrArg (gm e₀ y _) (hτ.1 (A.idx i) (A.idx j))).trans ((map_mul _ _ _).trans
-      (congrArg₂ (· * ·) rfl (gm_res e₀ y _ hm _))))
-    exact ((gm_res _ y _ hy _).trans (gm_rp₁ e₀ y _ _ (A.le i) hy.1 _)).trans (e.trans ((map_mul _ _ _).trans
-      (congrArg₂ (· * ·) (A.g y i j hy.1 hy.2) ((gm_res _ y _ hy _).trans (gm_rp₁ e₀ y _ _ (A.le j) hy.2 _)))).symm)
-  · have m₀ := hJ₀.mem ![c₀ (a + b), c₀ a, c₀ b, c₀ 0] u
-    have m₁ := A.le _ m₀
-    have m₂ : spMap ev z ∈ LB.wchart Q.P.L ![(Q.c (a + b)).left, (Q.c a).left, (Q.c b).left, (Q.c 0).left]
-        (A.idx fun k => J₀ (u ≫ ![c₀ (a + b), c₀ a, c₀ b, c₀ 0] k)) := by rw [← hu]; exact m₁
-    refine (gen_trans hτ.1 (spMap ev) z (hJ.mem _ _) m₂).trans (congrArg₂ (· * ·) ?_ ?_)
-    · have key : ∀ y, gw w (c' y) z (J₀ (c' y ≫ π)) (fun _ => J (c' y ≫ π ≫ β)) =
-          (gm (spMap ev ≫ (Q.c y).left) z _ (Q.P.L.g (J (spMap ev ≫ (Q.c y).left)) (J₀ (u ≫ c₀ y) PUnit.unit)))⁻¹ := fun y => by
-        have a₁ : (c' y ≫ π ≫ β) z ∈ Q.P.L.U (J₀ (c' y ≫ π) PUnit.unit) := (mem_pull (F := β)).1 (hJ₀ (c' y ≫ π))
-        have a₂ := hJ (c' y ≫ π ≫ β)
-        rw [hwv _ _ _ _ _ a₁ a₂, ← c'πβ, ← c'π, eq_inv_iff_mul_eq_one, gm_cocycle Q.P.isLB _ z a₁ a₂ a₁,
-          gm_self Q.P.isLB _ z a₁]
-      simp only [lamUnit, key, Pi.one_apply, one_zpow, Finset.prod_const_one, unitOn_one, map_one, _root_.mul_one, inv_inv, trF,
-        Fin.prod_univ_four]
-      simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val, zpow_neg, zpow_one]
-      rfl
-    · refine Eq.trans ?_ (gm_res u z (A.le _) m₀ _).symm
-      have e := gm_pull u e₀ z _ m₁ (τ₀.s (A.idx fun k => J₀ (u ≫ ![c₀ (a + b), c₀ a, c₀ b, c₀ 0] k)))
-      rw [hu] at e
-      exact e.symm
 
-theorem lamUnit_one {W W' B' Z : Scheme.{0}} {π₁ : B' ⟶ W} {π₀ : B' ⟶ W'} {X : Type} [AddCommGroup X] (x : X → (Z ⟶ B'))
-    (a b : X) (z : Z) (J J₀) :
-    lamUnit (⟨fun _ => 1⟩ : LB.Iso ((Inh.trivLB W).pull π₁) ((Inh.trivLB W').pull π₀)) x a b z J J₀ = 1 := by
-  unfold lamUnit gw
-  erw [map_one, map_one, map_one, map_one]
-  simp
 
-theorem sepAt_toric_iff {X : Type} [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X] (q : X → (FractionRing V)ˣ)
-    (s : Fin m → V) (gam : Fin m → LinearMap.BilinForm ℤ X) (ev : V →+* K) (k₀ : Subfield K) :
-    SepAt (toricPre V X q) s gam ev k₀ ↔ (∀ i, ev (s i) = 0) ∧ ∃ α : Fin m → Kˣ, ∀ (a b : X) (u : Vˣ),
-      (polar q a b : FractionRing V) = (∏ i, algebraMap V (FractionRing V) (s i) ^ gam i a b) * algebraMap V _ u →
-      ∃ x ∈ k₀, ev u = (∏ i, (α i : K) ^ gam i a b) * x := by
-  refine and_congr_right' ⟨?_, ?_⟩
-  · rintro ⟨B₀, _, _, M₀, c₀, B', _, π₁, π₀, w, c', α, -, h₂, h₃, -, -, hc, h⟩
-    have : IsIso B'.hom := by
-      have : IsIso (toricPre V X q).P.A.hom := by show IsIso (𝟙 _); infer_instance
-      exact h₃.1.isIso_snd_of_isIso
-    have hc' : ∀ y, c' y = inv B'.hom := fun y => by
-      rw [← cancel_mono B'.hom, (hc y).1, IsIso.inv_hom_id]
-    obtain rfl : c' = fun _ => inv B'.hom := funext hc'
-    refine ⟨α, fun a b u hq => ?_⟩
-    have hu := cg_isConst (K := Fin 4) ![((toricPre V X q).c (a + b)).left, ((toricPre V X q).c a).left,
-      ((toricPre V X q).c b).left, ((toricPre V X q).c 0).left] ![-1, 1, 1, -1] (unitOn u)
-    obtain ⟨τ₁, -, hτ⟩ := h a b _ ((isUnitTau_iff q s gam a b _).2 ⟨u, hu, hq⟩)
-    have : Subsingleton (Sp K) := inferInstanceAs (Subsingleton (PrimeSpectrum K))
-    let z : Sp K := (default : PrimeSpectrum K)
-    obtain ⟨J₀, hJ₀, -⟩ := exists_good M₀ h₂ z (K := Empty) Empty.elim Empty.elim (fun a => a.elim) (fun a => a.elim)
-    obtain ⟨x, hx⟩ := exists_val_eq k₀ τ₁ hJ₀
-    have e : unitOn (Units.map ev.toMonoidHom u) = unitOn ((∏ i, α i ^ gam i a b) * Units.map k₀.subtype.toMonoidHom x) := by
-      refine unit_ext fun z' _ => ?_
-      obtain rfl : z = z' := Subsingleton.elim _ _
-      have h1 := (val_const hu (spMap ev) z (fun _ => PUnit.unit)).symm.trans (hτ z (fun _ => PUnit.unit) J₀ (good_triv z) hJ₀)
-      rw [hx, pullTop_unitOn] at h1
-      unfold lamUnit at h1
-      beta_reduce at h1
-      rw [mul_inv_cancel, _root_.one_mul, inv_mul_cancel, _root_.one_mul] at h1
-      rw [unitOn_mul, map_mul]
-      exact h1
-    exact ⟨x, x.1.2, by simpa using congrArg Units.val (unitOn_inj.1 e)⟩
-  · rintro ⟨α, h⟩
-    have pb : ∀ {S T : Scheme.{0}} (f : S ⟶ T), IsGrpPullback (𝟙_ (Over S)) (𝟙_ (Over T)) f f := fun f =>
-      ⟨IsPullback.of_vert_isIso (fst := f) (snd := 𝟙 _) (f := 𝟙 _) (g := f) ⟨by simp⟩, fun T x y x₀ y₀ hx _ => by
-        rw [toUnit_unique (x₀ * y₀) x₀, toUnit_unique (x * y) x, hx]⟩
-    have hc : ∀ y, ((toricPre V X q).c y).left = 𝟙 (Sp V) := fun y =>
-      congrArg (·.left) (toUnit_unique ((toricPre V X q).c y) (𝟙 (𝟙_ (Over (Sp V)))))
-    refine ⟨(Inh.zeroPolAV (Sp k₀)).A, inferInstance, inferInstance, (Inh.zeroPolAV (Sp k₀)).L, fun _ => 𝟙 _, 𝟙_ _, inferInstance,
-      spMap ev, spMap k₀.subtype, ⟨fun _ => 1⟩, fun _ => 𝟙 _, α, (Inh.zeroPolAV (Sp k₀)).isAb, (Inh.zeroPolAV (Sp k₀)).isLB,
-      pb _, pb _, one_isGen₂ _ _, fun y => ⟨Category.id_comp _, ?_, ?_⟩, fun a b τ₀ hτ => ?_⟩
-    · exact (Category.id_comp _).trans ((Category.comp_id _).symm.trans (congrArg _ (hc y).symm))
-    · exact (Category.id_comp _).trans (Category.comp_id _).symm
-    · obtain ⟨u, hu, hq⟩ := (isUnitTau_iff q s gam a b _).1 hτ
-      obtain ⟨x, hx, e⟩ := h a b u hq
-      have hx0 : (⟨x, hx⟩ : k₀) ≠ 0 := fun h0 => by
-        obtain rfl : x = 0 := congrArg Subtype.val h0
-        exact (u.isUnit.map ev).ne_zero (by rw [e, mul_zero])
-      refine ⟨cg _ _ (unitOn (Units.mk0 _ hx0)), cg_isGen _ _ _, fun z J J₀ _ _ => ?_⟩
-      have e' : Units.map ev.toMonoidHom u = (∏ i, α i ^ gam i a b) * Units.map k₀.subtype.toMonoidHom (Units.mk0 _ hx0) := by
-        ext1; simpa using e
-      refine (val_const hu _ z J).trans (Eq.trans ?_ (congrArg₂ (· * ·) rfl (val_const (cg_isConst _ _ _) _ z J₀).symm))
-      erw [lamUnit_one, _root_.one_mul]
-      erw [pullTop_unitOn, pullTop_unitOn]
-      rw [e', unitOn_mul _ (Units.map _ _), map_mul]
-      rfl
 
-theorem sepAt_per_iff (v : Aˣ) (b : ℤ × ℤ → ℤ) (ev : A →+* K) (k₀ : Subfield K) :
-    SepAt (toricPre A (ℤ × ℤ) (per v b)) ![tt] ![frm] ev k₀ ↔ ev tt = 0 ∧ ∃ α : Kˣ, ∀ y z : ℤ × ℤ,
-      ∃ x ∈ k₀, ev (v ^ (b (y + z) - b y - b z) : Aˣ) = (α : K) ^ frm y z * x := by
-  refine (sepAt_toric_iff (per v b) ![tt] ![frm] ev k₀).trans (and_congr (by simp) ⟨fun ⟨α, h⟩ => ⟨α 0, fun y z => ?_⟩,
-    fun ⟨α, h⟩ => ⟨![α], fun y z u hq => ?_⟩⟩)
-  · simpa using h y z (v ^ (b (y + z) - b y - b z)) (by simpa using polar_per v b y z)
-  · have ht : algebraMap A (FractionRing A) tt ≠ 0 :=
-      (map_ne_zero_iff _ (IsFractionRing.injective A _)).2 PowerSeries.X_ne_zero
-    rw [polar_per, Fin.prod_univ_one] at hq
-    have hu := IsFractionRing.injective A (FractionRing A) (mul_left_cancel₀ (zpow_ne_zero _ ht) hq)
-    rw [← hu]
-    simpa using h y z
 
-theorem sepAt_mixed_iff (ev : A →+* K) (k₀ : Subfield K) :
-    SepAt (toricPre A (ℤ × ℤ) (per vs fun y => y.1 * y.2)) ![tt] ![frm] ev k₀ ↔ ev tt = 0 ∧ ev ss ∈ k₀ := by
-  have hv : ev vs = 1 + ev ss := by simp [vs]
-  have hz : ∀ n : ℤ, ev (vs ^ n : Aˣ) = ev vs ^ n := fun n =>
-    (congrArg Units.val (map_zpow (Units.map ev.toMonoidHom) vs n)).trans (Units.val_zpow_eq_zpow_val _ _)
-  refine (sepAt_per_iff _ _ ev k₀).trans (and_congr_right' ⟨fun ⟨α, h⟩ => ?_, fun h => ⟨1, fun y z => ⟨_, ?_, by rw [Units.val_one, one_zpow, _root_.one_mul]⟩⟩⟩)
-  · obtain ⟨x, hx, e⟩ := h (1, 0) (0, 1)
-    have : ev ss = x - 1 := by
-      rw [eq_sub_iff_add_eq', ← hv]
-      simpa [frm] using e
-    exact this ▸ k₀.sub_mem hx k₀.one_mem
-  · rw [hz, hv]
-    exact k₀.zpow_mem (k₀.add_mem k₀.one_mem h) _
 
-theorem sepAt_cone_iff (ev : A →+* K) (k₀ : Subfield K) :
-    SepAt (toricPre A (ℤ × ℤ) (per vs fun y => nrm y)) ![tt] ![frm] ev k₀ ↔ ev tt = 0 := by
-  refine (sepAt_per_iff _ _ ev k₀).trans (and_iff_left ⟨Units.map ev.toMonoidHom vs, fun y z => ⟨1, k₀.one_mem, ?_⟩⟩)
-  have e : frm y z = nrm (y + z) - nrm y - nrm z := by
-    simp only [nrm_cast, frm, LinearMap.mk₂_apply, Prod.fst_add, Prod.snd_add]; ring
-  rw [_root_.mul_one, e]
-  exact (congrArg Units.val (map_zpow (Units.map ev.toMonoidHom) vs _)).trans (Units.val_zpow_eq_zpow_val _ _)
 
 end Tests
 
 end GlobalTheory.UChart
+end
+end

@@ -10,8 +10,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta IsDedek
 
 namespace GlobalTheory.MeasTupleEq
 
-theorem indexValue_eq_parIdx (q : ℝ) (r d : ℕ) : indexValue q r d = parIdx q r d := by
-  simp only [indexValue, parIdx, zpow_neg, zpow_natCast]
 
 theorem map_residue_surjective (O : Type) [CommRing O] [IsLocalRing O] (n : ℕ) :
     Function.Surjective (Matrix.GeneralLinearGroup.map (n := Fin n) (IsLocalRing.residue O)) := by
@@ -31,16 +29,6 @@ theorem map_residue_surjective (O : Type) [CommRing O] [IsLocalRing O] (n : ℕ)
   refine ⟨Matrix.GeneralLinearGroup.mk'' M hdet, Units.ext ?_⟩
   exact hM
 
-theorem index_parahoric (O : Type) [CommRing O] [IsLocalRing O] (r d : ℕ) :
-    (parahoric (IsLocalRing.maximalIdeal O) r d).index =
-      (parahoric (⊥ : Ideal (IsLocalRing.ResidueField O)) r d).index := by
-  rw [← Subgroup.index_comap_of_surjective _ (map_residue_surjective O (r + d))]
-  congr 1
-  ext h
-  rw [Subgroup.mem_comap]
-  refine forall_congr' fun i => forall_congr' fun k => forall_congr' fun _ => forall_congr' fun _ => ?_
-  rw [Ideal.mem_bot]
-  exact (IsLocalRing.residue_eq_zero_iff _).symm
 
 def glT {k : Type} [Field k] {n : ℕ} (g : GL (Fin n) k) : GL (Fin n) k :=
   ⟨(g : Matrix (Fin n) (Fin n) k).transpose, ((g⁻¹ : GL (Fin n) k) : Matrix (Fin n) (Fin n) k).transpose,
@@ -101,91 +89,16 @@ theorem index_field (k : Type) [Field k] [Fintype k] (r d : ℕ) :
   apply eq_indexValue (by exact_mod_cast hq)
   exact_mod_cast h2
 
-theorem indexFormula : IndexFormula := by
-  intro F _ _ v r d
-  haveI : Finite (IsLocalRing.ResidueField (v.adicCompletionIntegers F)) := tjcosets_finite v
-  letI := Fintype.ofFinite (IsLocalRing.ResidueField (v.adicCompletionIntegers F))
-  have hc := tjcosets_card_residue v
-  rw [Nat.card_eq_fintype_card] at hc
-  unfold localIndex
-  rw [index_parahoric, index_field, hc]
-  rfl
 
-theorem localIndex_ne_one {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) {r d : ℕ} (hr : 0 < r)
-    (hd : 0 < d) : localIndex v r d ≠ 1 := by
-  intro h
-  unfold localIndex at h
-  rw [Subgroup.index_eq_one, eq_top_iff] at h
-  let i : Fin (r + d) := ⟨r, by omega⟩
-  let k : Fin (r + d) := ⟨0, by omega⟩
-  have hik : i ≠ k := fun e => by have := congrArg Fin.val e; simp only [i, k] at this; omega
-  have hdet : IsUnit (Matrix.transvection i k (1 : v.adicCompletionIntegers F)).det := by
-    rw [Matrix.det_transvection_of_ne i k hik]; exact isUnit_one
-  have hm := h (Subgroup.mem_top (Matrix.GeneralLinearGroup.mk'' _ hdet)) i k le_rfl hr
-  have he : (Matrix.transvection i k (1 : v.adicCompletionIntegers F)) i k = 1 := by
-    simp [Matrix.transvection, Matrix.one_apply_ne hik]
-  have hm' : (1 : v.adicCompletionIntegers F) ∈ IsLocalRing.maximalIdeal _ := he ▸ hm
-  exact (IsLocalRing.maximalIdeal.isMaximal _).ne_top ((Ideal.eq_top_iff_one _).2 hm')
 
 variable {D : D7} {X : ThetaX D}
 
-theorem myTied_iff_abstract (X : ThetaX D) (Z : DivX D) : ThetaDivisorCompatibility X Z ↔ MeasFactorAbstract X Z := by
-  unfold ThetaDivisorCompatibility ThetaX.TieMY MeasFactorAbstract
-  simp only [indexValue_eq_parIdx]
 
-theorem prod_localIndex {T : ThetaTied D X} {Z : DivX D} {μ : D.what₂.Tup} (e : Z.QPl μ ≃ ramPlaces T μ)
-    (he : ∀ x, Z.qv μ x = Ideal.absNorm (e x).1.asIdeal) (S : Finset (HeightOneSpectrum (𝓞 D.host.F)))
-    (hS : (↑S : Set _) = ramPlaces T μ) (r d : ℕ) :
-    ∏ v ∈ S, (localIndex v r d : ℝ) = ∏ x : Z.QPl μ, parIdx (Z.qv μ x) r d := by
-  symm
-  refine Finset.prod_bij (fun x _ => (e x).1) (fun x _ => ?_) (fun x _ y _ hxy => ?_) (fun v hv => ?_) (fun x _ => ?_)
-  · exact Finset.mem_coe.mp (hS.symm.subset (e x).2)
-  · exact e.injective (Subtype.ext hxy)
-  · have hv' : v ∈ ramPlaces T μ := by rw [← hS]; exact hv
-    exact ⟨e.symm ⟨v, hv'⟩, Finset.mem_univ _, by simp⟩
-  · rw [he x, indexFormula, indexValue_eq_parIdx]
 
-theorem factor_iff_myTied {T : ThetaTied D X} {Z : DivX D} (hP : PlacesTied T Z) : MeasFactor T ↔ ThetaDivisorCompatibility X Z := by
-  refine forall_congr' fun μ => ?_
-  obtain ⟨e, he⟩ := hP μ
-  constructor
-  · rintro ⟨S, hS, hm⟩ j hj
-    rw [hm j hj, prod_localIndex e he S hS]
-  · intro h
-    have hfin : (ramPlaces T μ).Finite := Set.finite_coe_iff.1 (Finite.of_equiv _ e)
-    refine ⟨hfin.toFinset, hfin.coe_toFinset, fun j hj => ?_⟩
-    rw [h j hj, prod_localIndex e he _ hfin.coe_toFinset]
 
-theorem measTupleTied_iff (T : ThetaTied D X) (Z : DivX D) :
-    MeasTupleTied T Z ↔ (∀ μ, ∀ v ∈ ramPlaces T μ, IsSplit D v) ∧ PlacesTied T Z ∧ ThetaDivisorCompatibility X Z :=
-  ⟨fun h => ⟨h.split, h.places, (factor_iff_myTied h.places).1 h.factor⟩,
-    fun h => ⟨h.1, h.2.1, (factor_iff_myTied h.2.1).2 h.2.2⟩⟩
 
-theorem myTied_of_measTupleTied {T : ThetaTied D X} {Z : DivX D} (h : MeasTupleTied T Z) : ThetaDivisorCompatibility X Z :=
-  ((measTupleTied_iff T Z).1 h).2.2
 
-theorem mY_ne_one {T : ThetaTied D X} (h : MeasFactor T) {μ : D.what₂.Tup} (hμ : (ramPlaces T μ).Nonempty) :
-    X.mY μ 1 ≠ 1 := by
-  obtain ⟨S, hS, hm⟩ := h μ
-  obtain ⟨v, hv⟩ := hμ
-  have h2 := D.R.two_le_m
-  have hr : 0 < D.R.r := by unfold Ranks.r; omega
-  have ht : 0 < 1 * D.R.t := by have := D.R.rank_add_five_le; omega
-  rw [hm 1 (by omega), ← Nat.cast_prod, Ne, Nat.cast_eq_one, Finset.prod_eq_one_iff]
-  intro hall
-  exact localIndex_ne_one v hr ht (hall v (Finset.mem_coe.1 (hS.symm.subset hv)))
 
-theorem myTied_not_measTupleTied (T : ThetaTied D X) (Z : DivX D) {μ : D.what₂.Tup} (hμ : (ramPlaces T μ).Nonempty) :
-    ∃ (X' : ThetaX D) (T' : ThetaTied D X') (Z' : DivX D), Z'.Qp = Z.Qp ∧ (∀ ν, ramPlaces T' ν = ramPlaces T ν) ∧
-      (∀ ν j, X'.mY ν j = 1) ∧ ThetaDivisorCompatibility X' Z' ∧ ¬ PlacesTied T' Z' ∧ ¬ MeasFactor T' ∧
-      ¬ MeasTupleTied T' Z' := by
-  have hn : ¬ PlacesTied (GlobalTheory.MeasTuple.thetaDivisorRestriction T (GlobalTheory.MeasTuple.rep Z 0)) (GlobalTheory.MeasTuple.rep Z 0) := fun h => by
-    obtain ⟨e, -⟩ := h μ
-    obtain ⟨v, hv⟩ := hμ
-    exact (e.symm ⟨v, hv⟩).1.elim0
-  exact ⟨_, GlobalTheory.MeasTuple.thetaDivisorRestriction T (GlobalTheory.MeasTuple.rep Z 0), GlobalTheory.MeasTuple.rep Z 0, rfl, fun _ => rfl,
-    (GlobalTheory.MeasTuple.trivial_factor X Z).2.2, GlobalTheory.MeasTuple.myTied_setMY _ _, hn,
-    fun h => mY_ne_one h (μ := μ) hμ ((GlobalTheory.MeasTuple.trivial_factor X Z).2.2 μ 1), fun h => hn h.places⟩
 
 end GlobalTheory.MeasTupleEq
 

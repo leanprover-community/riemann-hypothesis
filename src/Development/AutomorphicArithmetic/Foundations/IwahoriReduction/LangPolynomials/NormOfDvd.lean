@@ -1,7 +1,470 @@
-import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.LangPolynomials.ResidueFieldTeichmullerLiftExists
+import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.LangPolynomials.FixedIntegersIsUnitOfNotMemPrimeSpan
+import CompanionTheory.AutomorphicTheory.PlaceSeparation.ArtinA
+import GroundTheory.ProfiniteCohomology.RestrictedRamification.Ramification
 import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.LangPolynomials.FrobEx
-import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.LangPolynomials.FixAbs
 
+section
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2 GlobalTheory.KZ GlobalTheory.Col UpperTheory.Kd.C7
+
+private theorem unramified_uniformizer_divides {K E : Type} [Field K] [NumberField K] [Field E] [NumberField E] [Algebra K E]
+    (π : 𝓞 K) (p : Ideal (𝓞 K)) [p.IsPrime] (hp : p = Ideal.span {π}) (P : Ideal (𝓞 E)) [P.IsPrime] [P.LiesOver p]
+    (h : Algebra.IsUnramifiedAt (𝓞 K) P) (x : 𝓞 E) (hx : x ∈ P) :
+    ∃ t y : 𝓞 E, t ∉ P ∧ t * x = algebraMap (𝓞 K) (𝓞 E) π * y := by
+  letI := Localization.AtPrime.algebraOfLiesOver p P
+  have h2 := ((Algebra.isUnramifiedAt_iff_map_eq (𝓞 K) p P).1 h).2
+  have h3 : algebraMap (𝓞 E) (Localization.AtPrime P) x ∈ IsLocalRing.maximalIdeal (Localization.AtPrime P) :=
+    (IsLocalization.AtPrime.to_map_mem_maximal_iff _ P x).2 hx
+  rw [← h2] at h3
+  have h4 : Ideal.map (algebraMap (𝓞 K) (Localization.AtPrime P)) p =
+      Ideal.span {algebraMap (𝓞 K) (Localization.AtPrime P) π} := by
+    rw [hp, Ideal.map_span, Set.image_singleton]
+  rw [h4, Ideal.mem_span_singleton'] at h3
+  obtain ⟨z, hz⟩ := h3
+  obtain ⟨⟨y, t⟩, hyt⟩ := IsLocalization.surj P.primeCompl z
+  refine ⟨t, y, t.2, ?_⟩
+  apply IsLocalization.injective (Localization.AtPrime P) P.primeCompl_le_nonZeroDivisors
+  simp only at hyt
+  rw [map_mul, map_mul, ← hz, ← hyt, ← IsScalarTower.algebraMap_apply]
+  ring
+
+private theorem valuation_le_uniformizer_div {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] (A : ValuationSubring Ω)
+    (u : HeightOneSpectrum (𝓞 E)) (hu : IsPlaceOver A u) (π : 𝓞 E)
+    (h : ∀ x ∈ u.asIdeal, ∃ t y : 𝓞 E, t ∉ u.asIdeal ∧ t * x = π * y) (z : E)
+    (hz : A.valuation (algebraMap E Ω z) < 1) :
+    A.valuation (algebraMap E Ω z) ≤ A.valuation (algebraMap E Ω (π : E)) := by
+  have h1 : ∀ s : 𝓞 E, s ∉ u.asIdeal → A.valuation (algebraMap E Ω (s : E)) = 1 := fun s hs =>
+    le_antisymm (CompanionTheory.FamInh.val_int_le_one A s) (not_lt.1 ((hu s).not.2 hs))
+  obtain ⟨n, d, e | e⟩ := u.exists_primeCompl_mul_eq_or_mul_eq z
+  · have e' : z * ((d : 𝓞 E) : E) = (n : E) := e
+    have h2 : A.valuation (algebraMap E Ω z) = A.valuation (algebraMap E Ω (n : E)) := by
+      rw [← e', map_mul, map_mul, h1 d d.2, mul_one]
+    obtain ⟨t, y, ht, e2⟩ := h n ((hu n).1 (h2 ▸ hz))
+    have e3 : (t : E) * (n : E) = (π : E) * (y : E) := by exact_mod_cast congrArg (fun a : 𝓞 E => (a : E)) e2
+    have h3 := congrArg (fun a : E => A.valuation (algebraMap E Ω a)) e3
+    simp only [map_mul] at h3
+    rw [h1 t ht, one_mul] at h3
+    rw [h2, h3]
+    exact mul_le_of_le_one_right' (CompanionTheory.FamInh.val_int_le_one A y)
+  · have e' : z * (n : E) = ((d : 𝓞 E) : E) := e
+    have h2 := h1 d d.2
+    rw [← e', map_mul, map_mul] at h2
+    exact absurd h2 ((mul_le_of_le_one_right' (CompanionTheory.FamInh.val_int_le_one A n)).trans_lt hz).ne
+
+private theorem valuation_le_uniformizer_inertia {K Ω : Type} [Field K] [NumberField K] [Field Ω] [Algebra K Ω] [IsAlgClosure K Ω]
+    (A : ValuationSubring Ω) (v : HeightOneSpectrum (𝓞 K)) (hv : IsPlaceOver A v) (π : 𝓞 K)
+    (hπ : v.asIdeal = Ideal.span {π}) (x : Ω) (hx : ∀ s ∈ Ine (F := K) A, s x = x) (h1 : A.valuation x < 1) :
+    A.valuation x ≤ A.valuation (algebraMap K Ω (π : K)) := by
+  haveI : IsAlgClosed Ω := IsAlgClosure.isAlgClosed K
+  haveI : IsGalois K Ω := {}
+  let M : IntermediateField K Ω := (FiniteGaloisIntermediateField.adjoin K ({x} : Set Ω)).toIntermediateField
+  have hxM : x ∈ M := FiniteGaloisIntermediateField.subset_adjoin K ({x} : Set Ω) rfl
+  haveI : NumberField M := NumberField.of_module_finite K M
+  haveI : Algebra.IsAlgebraic M Ω := Algebra.IsAlgebraic.tower_top (K := K) M
+  haveI : IsAlgClosure M Ω := ⟨inferInstance, inferInstance⟩
+  obtain ⟨w, hw, hwv⟩ := CompanionTheory.FamInh.exists_place_between (L := M) hv
+  let E : IntermediateField K M := IntermediateField.fixedField (w.asIdeal.inertia Gal(M/K))
+  haveI : NumberField E := NumberField.of_module_finite K E
+  have hxE : (⟨x, hxM⟩ : M) ∈ E := by
+    rw [IntermediateField.mem_fixedField_iff]
+    intro τ hτ
+    obtain ⟨σ, hσ, rfl⟩ := CompanionTheory.FamInh.exists_lift_ine hw hτ
+    apply (algebraMap M Ω).injective
+    exact (AlgEquiv.restrictNormal_commutes σ M _).trans (hx σ hσ)
+  have hun : Algebra.IsUnramifiedAt (𝓞 K) (w.asIdeal.under (𝓞 E)) :=
+    (GroundTheory.ProfCoh.isUnramifiedAt_under_iff_inertia (F := K) (E := E) (M := M) w.asIdeal).2
+      fun σ hσ y => (IntermediateField.mem_fixedField_iff _ _).1 y.2 σ hσ
+  have hu : IsPlaceOver A (w.under (𝓞 E)) := fun y => by
+    have := hw (algebraMap (𝓞 E) (𝓞 M) y)
+    exact this
+  haveI : (w.asIdeal.under (𝓞 E)).LiesOver v.asIdeal := inferInstance
+  have := valuation_le_uniformizer_div A (w.under (𝓞 E)) hu (algebraMap (𝓞 K) (𝓞 E) π)
+    (unramified_uniformizer_divides π v.asIdeal hπ (w.asIdeal.under (𝓞 E)) hun) ⟨_, hxE⟩ h1
+  exact this
+
+theorem UpperTheory.Kd.C7.inertia_invariant_valuation_uniformizer_bound :
+    UpperTheory.Kd.C7.FixedIntegersIsUnitOfNotMemPrimeSpan := by
+  intro l hl _ Ω _ _ _ A ⟨v, hv, hlv⟩ x hx
+  haveI : CharZero Ω := algebraRat.charZero Ω
+  have hpr : Prime ((l : ℕ) : 𝓞 ℚ) := by
+    have h0 : Prime (l : ℤ) := Nat.prime_iff_prime_int.mp hl.out
+    have := (MulEquiv.prime_iff Rat.ringOfIntegersEquiv.symm).2 h0
+    simpa using this
+  have hπ : v.asIdeal = Ideal.span {((l : ℕ) : 𝓞 ℚ)} := by
+    have hm : (Ideal.span {((l : ℕ) : 𝓞 ℚ)}).IsMaximal :=
+      ((Ideal.span_singleton_prime hpr.ne_zero).mpr hpr).isMaximal (by simpa using hpr.ne_zero)
+    exact (hm.eq_of_le v.isPrime.ne_top ((Ideal.span_singleton_le_iff_mem _).2 hlv)).symm
+  have hl0 : (l : Ω) ≠ 0 := Nat.cast_ne_zero.2 hl.out.ne_zero
+  by_cases h1 : A.valuation (x : Ω) < 1
+  · exfalso
+    have h2 := valuation_le_uniformizer_inertia A v hv _ hπ x x.2.2 h1
+    have h3 : algebraMap ℚ Ω (((l : ℕ) : 𝓞 ℚ) : ℚ) = (l : Ω) := by simp
+    rw [h3] at h2
+    have h4 : (x : Ω) / l ∈ A := by
+      rw [← A.valuation_le_one_iff, map_div₀]
+      exact div_le_one_of_le₀ h2 zero_le
+    refine hx (Ideal.mem_span_singleton'.2 ⟨⟨(x : Ω) / l, h4, fun s hs => ?_⟩, Subtype.ext ?_⟩)
+    · rw [map_div₀, x.2.2 s hs, map_natCast]
+    · push_cast
+      exact div_mul_cancel₀ _ hl0
+  · have h2 : A.valuation (x : Ω) = 1 := le_antisymm ((A.valuation_le_one_iff _).2 x.2.1) (not_lt.1 h1)
+    have h0 : (x : Ω) ≠ 0 := by
+      intro h
+      rw [h, map_zero] at h2
+      exact zero_ne_one h2
+    have h4 : (x : Ω)⁻¹ ∈ A := by
+      rw [← A.valuation_le_one_iff, map_inv₀, h2, inv_one]
+    refine IsUnit.of_mul_eq_one ⟨(x : Ω)⁻¹, h4, fun s hs => ?_⟩ (Subtype.ext ?_)
+    · rw [map_inv₀, x.2.2 s hs]
+    · exact mul_inv_cancel₀ h0
+end
+
+section
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2 GlobalTheory.KZ GlobalTheory.Col UpperTheory.Kd.C7
+
+private theorem zero_one_mem_gammaSet_one {Ω : Type} [Field Ω] (A : ValuationSubring Ω) {q : ℕ} (hq2 : 2 ≤ q) {a : Ω} (ha : a ^ q = a) : a ∈ A := by
+  rcases eq_or_ne a 0 with rfl | h0
+  · exact A.zero_mem
+  rcases A.mem_or_inv_mem a with h | h
+  · exact h
+  · have h1 : a * a ^ (q - 2) = 1 := by
+      rw [← pow_succ', show q - 2 + 1 = q - 1 by omega]
+      have : a ^ q = a ^ (q - 1) * a := by rw [← pow_succ, Nat.sub_add_cancel (by omega)]
+      rw [this] at ha
+      exact (mul_eq_right₀ h0).1 ha
+    rw [eq_inv_of_mul_eq_one_left h1, ← inv_pow]
+    exact A.pow_mem h _
+
+private theorem eq_of_pow_eq_self_of_valuation_sub_lt_one {Ω : Type} [Field Ω] (A : ValuationSubring Ω) {q : ℕ} (hq : A.valuation (q : Ω) < 1) {a b : Ω} (ha : a ∈ A) (hb : b ∈ A) (ha' : a ^ q = a) (hb' : b ^ q = b) (hab : A.valuation (a - b) < 1) : a = b := by
+  by_contra hne
+  have hS : (∑ i ∈ Finset.range q, a ^ i * b ^ (q - 1 - i)) = 1 := by
+    have h := geom_sum₂_mul a b q
+    rw [ha', hb'] at h
+    have hsub : a - b ≠ 0 := sub_ne_zero.2 hne
+    exact (mul_eq_right₀ hsub).1 h
+  set a' : A := ⟨a, ha⟩
+  set b' : A := ⟨b, hb⟩
+  have hS' : (∑ i ∈ Finset.range q, a' ^ i * b' ^ (q - 1 - i)) = 1 := by
+    apply Subtype.ext
+    simpa using hS
+  have hr : IsLocalRing.residue A a' = IsLocalRing.residue A b' := by
+    rw [← sub_eq_zero, ← map_sub, IsLocalRing.residue_eq_zero_iff, A.valuation_lt_one_iff]
+    simpa using hab
+  have hq' : IsLocalRing.residue A (q : A) = 0 := by
+    rw [IsLocalRing.residue_eq_zero_iff, A.valuation_lt_one_iff]
+    simpa using hq
+  have := congrArg (IsLocalRing.residue A) hS'
+  rw [map_sum, map_one] at this
+  simp only [map_mul, map_pow, ← hr] at this
+  rw [Finset.sum_congr rfl (fun i hi => by rw [← pow_add, Nat.add_sub_cancel' (by have := Finset.mem_range.1 hi; omega)])] at this
+  rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul, ← map_natCast (IsLocalRing.residue A), hq', zero_mul] at this
+  exact zero_ne_one this
+
+private theorem fin_lemma_3 {Ω : Type} [Field Ω] [Algebra ℚ Ω] (A : ValuationSubring Ω) {l : ℕ} [hp : Fact l.Prime] (hl : A.valuation (l : Ω) < 1) (a : A) (halg : IsAlgebraic ℚ (a : Ω)) :
+    ∃ q : ℕ, 2 ≤ q ∧ A.valuation (q : Ω) < 1 ∧ A.valuation ((a : Ω) ^ q - a) < 1 := by
+  have hlK : ((l : ℕ) : IsLocalRing.ResidueField A) = 0 := by
+    rw [← map_natCast (IsLocalRing.residue A), IsLocalRing.residue_eq_zero_iff, A.valuation_lt_one_iff]
+    simpa using hl
+  haveI : CharP (IsLocalRing.ResidueField A) l := (CharP.charP_iff_prime_eq_zero hp.out).2 hlK
+  letI : Algebra (ZMod l) (IsLocalRing.ResidueField A) := ZMod.algebra _ l
+  obtain ⟨Q, hQ0, hQ⟩ := (IsFractionRing.isAlgebraic_iff ℤ ℚ Ω).2 halg
+  have hc0 : Q.content ≠ 0 := by
+    rwa [Ne, Polynomial.content_eq_zero_iff]
+  have hQ'Ω : Polynomial.aeval (a : Ω) Q.primPart = 0 := by
+    have h := hQ
+    rw [Polynomial.eq_C_content_mul_primPart Q, map_mul, Polynomial.aeval_C] at h
+    refine (mul_eq_zero.1 h).resolve_left ?_
+    rw [IsScalarTower.algebraMap_apply ℤ ℚ Ω]
+    exact (map_ne_zero (algebraMap ℚ Ω)).2 (by simpa using hc0)
+  have hQ'A : Polynomial.aeval a Q.primPart = 0 := by
+    apply Subtype.ext
+    change ((Polynomial.aeval a Q.primPart : A) : Ω) = (0 : Ω)
+    rw [← hQ'Ω]
+    exact (Polynomial.aeval_algHom_apply A.subtype.toIntAlgHom a Q.primPart).symm
+  obtain ⟨i, hi⟩ : ∃ i, ¬ (l : ℤ) ∣ Q.primPart.coeff i := by
+    by_contra hall
+    push_neg at hall
+    have hd : Polynomial.C (l : ℤ) ∣ Q.primPart := Polynomial.C_dvd_iff_dvd_coeff _ _ |>.2 hall
+    have hu := Polynomial.isPrimitive_primPart Q _ hd
+    rw [Int.isUnit_iff] at hu
+    have := hp.out.two_le
+    omega
+  set Q2 := Q.primPart.map (Int.castRingHom (ZMod l))
+  have hQ2 : Q2 ≠ 0 := by
+    intro h
+    have := congrArg (fun p => Polynomial.coeff p i) h
+    simp only [Q2, Polynomial.coeff_map, Polynomial.coeff_zero, eq_intCast] at this
+    exact hi ((ZMod.intCast_zmod_eq_zero_iff_dvd _ _).1 this)
+  have hev : Polynomial.aeval (IsLocalRing.residue A a) Q2 = 0 := by
+    rw [Polynomial.aeval_def, Polynomial.eval₂_map, RingHom.ext_int ((algebraMap (ZMod l) _).comp (Int.castRingHom _)) (algebraMap ℤ _), ← Polynomial.aeval_def]
+    exact (Polynomial.aeval_algHom_apply (IsLocalRing.residue A).toIntAlgHom a Q.primPart).trans (by
+      change IsLocalRing.residue A (Polynomial.aeval a Q.primPart) = 0
+      rw [hQ'A, map_zero])
+  have hint : IsIntegral (ZMod l) (IsLocalRing.residue A a) := IsAlgebraic.isIntegral (⟨Q2, hQ2, hev⟩ : IsAlgebraic (ZMod l) (IsLocalRing.residue A a))
+  haveI := IntermediateField.adjoin.finiteDimensional hint
+  haveI : Finite (IntermediateField.adjoin (ZMod l) {IsLocalRing.residue A a}) := Module.finite_of_finite (ZMod l)
+  letI := Fintype.ofFinite (IntermediateField.adjoin (ZMod l) {IsLocalRing.residue A a})
+  refine ⟨Fintype.card (IntermediateField.adjoin (ZMod l) {IsLocalRing.residue A a}), Fintype.one_lt_card, ?_, ?_⟩
+  · have h0 := FiniteField.cast_card_eq_zero (IntermediateField.adjoin (ZMod l) {IsLocalRing.residue A a})
+    have h1 : ((Fintype.card (IntermediateField.adjoin (ZMod l) {IsLocalRing.residue A a}) : ℕ) : IsLocalRing.ResidueField A) = 0 := by
+      have := congrArg (algebraMap (IntermediateField.adjoin (ZMod l) {IsLocalRing.residue A a}) (IsLocalRing.ResidueField A)) h0
+      rwa [map_natCast, map_zero] at this
+    rw [← map_natCast (IsLocalRing.residue A), IsLocalRing.residue_eq_zero_iff, A.valuation_lt_one_iff] at h1
+    simpa using h1
+  · have h0 := FiniteField.pow_card (⟨IsLocalRing.residue A a, IntermediateField.mem_adjoin_simple_self _ _⟩ : (IntermediateField.adjoin (ZMod l) {IsLocalRing.residue A a}))
+    have h1 := congrArg Subtype.val h0
+    simp only [IntermediateField.coe_pow] at h1
+    rw [← map_pow, ← sub_eq_zero, ← map_sub, IsLocalRing.residue_eq_zero_iff, A.valuation_lt_one_iff] at h1
+    simpa using h1
+
+private theorem exists_r0_valuation_sub_lt_one_of_isAlgebraic {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosed Ω] (A : ValuationSubring Ω) {l : ℕ} [Fact l.Prime] (hl : A.valuation (l : Ω) < 1) (a : A) (halg : IsAlgebraic ℚ (a : Ω)) :
+    ∃ w ∈ R0 A, A.valuation (w - a) < 1 := by
+  obtain ⟨q, hq2, hq, haq⟩ := fin_lemma_3 A hl a halg
+  set T : Polynomial Ω := Polynomial.X ^ q - Polynomial.X with hT
+  have hTm : T.Monic := Polynomial.monic_X_pow_sub (by rw [Polynomial.degree_X]; exact_mod_cast (by omega : 1 < q))
+  have hprod := (Polynomial.prod_multiset_X_sub_C_of_monic_of_roots_card_eq hTm (Polynomial.splits_iff_card_roots.mp (IsAlgClosed.splits T))).symm
+  have hroot : ∀ w ∈ T.roots, w ^ q = w := by
+    intro w hw
+    have := (Polynomial.mem_roots hTm.ne_zero).1 hw
+    simpa [T, sub_eq_zero] using this
+  have hev : T.eval (a : Ω) = (T.roots.map fun w => (a : Ω) - w).prod := by
+    conv_lhs => rw [hprod]
+    rw [Polynomial.eval_multiset_prod, Multiset.map_map]
+    simp [Function.comp_def]
+  have hv : A.valuation (T.eval (a : Ω)) < 1 := by simpa [T] using haq
+  rw [hev, map_multiset_prod, Multiset.map_map] at hv
+  obtain ⟨w, hw, hwv⟩ : ∃ w ∈ T.roots, A.valuation ((a : Ω) - w) < 1 := by
+    by_contra hno
+    push_neg at hno
+    have h1 : (T.roots.map (A.valuation ∘ fun w => (a : Ω) - w)).prod = 1 := by
+      apply Multiset.prod_eq_one
+      intro x hx
+      obtain ⟨w, hw, rfl⟩ := Multiset.mem_map.1 hx
+      refine le_antisymm ?_ (hno w hw)
+      exact (A.valuation_le_one_iff _).2 (A.sub_mem a.2 (zero_one_mem_gammaSet_one A hq2 (hroot w hw)))
+    rw [h1] at hv
+    exact lt_irrefl _ hv
+  have hwA : w ∈ A := zero_one_mem_gammaSet_one A hq2 (hroot w hw)
+  refine ⟨w, ⟨hwA, fun s hs => ?_⟩, ?_⟩
+  · have hsq : (s w) ^ q = s w := by rw [← map_pow, hroot w hw]
+    change s ∈ Inertia A at hs
+    unfold Inertia at hs
+    exact eq_of_pow_eq_self_of_valuation_sub_lt_one A hq (zero_one_mem_gammaSet_one A hq2 hsq) hwA hsq (hroot w hw) (hs.2 w ((A.valuation_le_one_iff _).2 hwA))
+  · rw [Valuation.map_sub_swap]
+    exact hwv
+
+open Polynomial IsLocalRing in
+theorem UpperTheory.Kd.C7.residue_field_teichmuller_lift_exists :
+    UpperTheory.Kd.C7.FixedIntegersMonicHasRootModPrime := by
+  intro l _ hl2 Ω _ _ _ A hA P hP hdeg
+  haveI : IsAlgClosed Ω := IsAlgClosure.isAlgClosed ℚ
+  haveI : Algebra.IsAlgebraic ℚ Ω := IsAlgClosure.isAlgebraic
+  have hl : A.valuation (l : Ω) < 1 := by
+    obtain ⟨pl, hpl, hlpl⟩ := hA
+    unfold IsPlaceOver at hpl
+    have := (hpl (l : 𝓞 ℚ)).2 hlpl
+    simpa using this
+  set Pm := P.map (R0 A).subtype with hPm
+  have hmon : Pm.Monic := hP.map _
+  have hdeg' : Pm.natDegree = P.natDegree := Polynomial.natDegree_map_eq_of_injective Subtype.val_injective P
+  obtain ⟨α, hα⟩ := IsAlgClosed.exists_root Pm (by
+    rw [Polynomial.degree_eq_natDegree hmon.ne_zero, hdeg']
+    exact_mod_cast hdeg.ne')
+  have hcA : ∀ i, Pm.coeff i ∈ A := fun i => by
+    rw [hPm, Polynomial.coeff_map]
+    exact (P.coeff i).2.1
+  have hαA : α ∈ A := by
+    by_contra hn
+    have hv1 : 1 < A.valuation α := by
+      rw [← not_le, A.valuation_le_one_iff]
+      exact hn
+    have h0 : Pm.eval α = 0 := hα
+    rw [hmon.as_sum, Polynomial.eval_add, Polynomial.eval_pow, Polynomial.eval_X, Polynomial.eval_finset_sum] at h0
+    simp only [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_pow, Polynomial.eval_X] at h0
+    have e : α ^ Pm.natDegree = -∑ i ∈ Finset.range Pm.natDegree, Pm.coeff i * α ^ i := eq_neg_of_add_eq_zero_left h0
+    have hle : A.valuation (∑ i ∈ Finset.range Pm.natDegree, Pm.coeff i * α ^ i) ≤ A.valuation α ^ (Pm.natDegree - 1) := by
+      apply Valuation.map_sum_le
+      intro i hi
+      rw [map_mul, map_pow]
+      calc A.valuation (Pm.coeff i) * A.valuation α ^ i ≤ 1 * A.valuation α ^ i := by
+            gcongr
+            exact (A.valuation_le_one_iff _).2 (hcA i)
+        _ = A.valuation α ^ i := one_mul _
+        _ ≤ A.valuation α ^ (Pm.natDegree - 1) := by
+            apply pow_le_pow_right₀ hv1.le
+            have := Finset.mem_range.1 hi
+            omega
+    have := congrArg A.valuation e
+    rw [Valuation.map_neg, map_pow] at this
+    rw [← this] at hle
+    have hlt : A.valuation α ^ (Pm.natDegree - 1) < A.valuation α ^ Pm.natDegree :=
+      pow_lt_pow_right₀ hv1 (by omega)
+    exact absurd hle (not_le.2 hlt)
+  obtain ⟨w, hwR, hwv⟩ := exists_r0_valuation_sub_lt_one_of_isAlgebraic A hl ⟨α, hαA⟩ (Algebra.IsAlgebraic.isAlgebraic α)
+  refine ⟨⟨w, hwR⟩, ?_⟩
+  by_contra hnot
+  obtain ⟨u, hu⟩ := inertia_invariant_valuation_uniformizer_bound l hl2 Ω A hA _ hnot
+  have hsub : R0 A ≤ A.toSubring := fun x hx => hx.1
+  set φ := Subring.inclusion hsub
+  set PA := P.map φ
+  have hcoe : ∀ y : A.toSubring, ((PA.eval y : A.toSubring) : Ω) = Pm.eval (y : Ω) := by
+    intro y
+    have : Pm = PA.map A.toSubring.subtype := by
+      rw [hPm, Polynomial.map_map]
+      rfl
+    rw [this, Polynomial.eval_map (p := PA)]
+    exact (Polynomial.eval₂_hom (p := PA) A.toSubring.subtype y).symm
+  obtain ⟨c, hc⟩ := Polynomial.sub_dvd_eval_sub (⟨w, hwR.1⟩ : A.toSubring) ⟨α, hαA⟩ PA
+  have hPw : ((Polynomial.eval (⟨w, hwR⟩ : R0 A) P : R0 A) : Ω) = (w - α) * (c : Ω) := by
+    have h1 : ((Polynomial.eval (⟨w, hwR⟩ : R0 A) P : R0 A) : Ω) = Pm.eval w := by
+      rw [hPm, Polynomial.eval_map]
+      exact (Polynomial.eval₂_hom (R0 A).subtype _).symm
+    have h2 := congrArg (fun z : A.toSubring => (z : Ω)) hc
+    push_cast [hcoe] at h2
+    rw [h1, ← sub_zero (Pm.eval w), ← (show Pm.eval α = 0 from hα)]
+    exact h2
+  have hsmall : A.valuation ((Polynomial.eval (⟨w, hwR⟩ : R0 A) P : R0 A) : Ω) < 1 := by
+    rw [hPw, map_mul]
+    calc A.valuation (w - α) * A.valuation (c : Ω) ≤ A.valuation (w - α) * 1 := by
+          gcongr
+          exact (A.valuation_le_one_iff _).2 c.2
+      _ = A.valuation (w - α) := mul_one _
+      _ < 1 := hwv
+  have hinv : ((u : R0 A) : Ω) * ((u⁻¹ : (R0 A)ˣ) : R0 A) = 1 := by
+    rw [← MulMemClass.coe_mul, u.mul_inv, OneMemClass.coe_one]
+  have hv2 := congrArg A.valuation hinv
+  rw [map_mul, map_one, hu] at hv2
+  have hle1 : A.valuation (((u⁻¹ : (R0 A)ˣ) : R0 A) : Ω) ≤ 1 := (A.valuation_le_one_iff _).2 ((u⁻¹ : (R0 A)ˣ) : R0 A).2.1
+  have : A.valuation ((Polynomial.eval (⟨w, hwR⟩ : R0 A) P : R0 A) : Ω) * A.valuation (((u⁻¹ : (R0 A)ˣ) : R0 A) : Ω) < 1 :=
+    lt_of_le_of_lt (mul_le_of_le_one_right' hle1) hsmall
+  rw [hv2] at this
+  exact lt_irrefl _ this
+end
+
+section
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2 GlobalTheory.KZ GlobalTheory.Col UpperTheory.Kd.C7
+
+private theorem exists_natCast_add_mul_of_frobenius_fixed {R : Type} [CommRing R] [IsDomain R] (p : ℕ) [hp : Fact p.Prime]
+    (σ : R ≃+* R) (hpr : Prime (p : R)) (hfrob : ∀ x : R, σ x - x ^ p ∈ Ideal.span {(p : R)})
+    (x : R) (hx : σ x = x) : ∃ a : ℕ, ∃ y : R, x = a + p * y ∧ σ y = y := by
+  classical
+  haveI : NeZero p := ⟨hp.out.ne_zero⟩
+  haveI : (Ideal.span {(p : R)}).IsPrime := (Ideal.span_singleton_prime hpr.ne_zero).mpr hpr
+  haveI : CharP (R ⧸ Ideal.span {(p : R)}) p := CharP.quotient R p (mem_nonunits_iff.mpr hpr.not_unit)
+  let K := R ⧸ Ideal.span {(p : R)}
+  let π : R →+* K := Ideal.Quotient.mk _
+  let f : ZMod p →+* K := ZMod.castHom (dvd_refl p) K
+  have hxx : π x ^ p = π x := by
+    have h1 := hfrob x
+    rw [hx] at h1
+    have h2 : π (x - x ^ p) = 0 := Ideal.Quotient.eq_zero_iff_mem.mpr h1
+    rw [map_sub, map_pow] at h2
+    exact (sub_eq_zero.mp h2).symm
+  have hf : Function.Injective f := f.injective
+  let q : Polynomial K := Polynomial.X ^ p - Polynomial.X
+  have hdeg : q.natDegree = p := by
+    have h1 : (Polynomial.X : Polynomial K).natDegree < (Polynomial.X ^ p : Polynomial K).natDegree := by
+      rw [Polynomial.natDegree_X_pow, Polynomial.natDegree_X]
+      exact hp.out.one_lt
+    rw [Polynomial.natDegree_sub_eq_left_of_natDegree_lt h1, Polynomial.natDegree_X_pow]
+  have hq : q ≠ 0 := by
+    intro h
+    have := hdeg
+    rw [h, Polynomial.natDegree_zero] at this
+    exact hp.out.ne_zero this.symm
+  have hroot : ∀ t : K, t ^ p = t → t ∈ q.roots.toFinset := by
+    intro t ht
+    rw [Multiset.mem_toFinset, Polynomial.mem_roots hq]
+    simp [q, ht]
+  have hsub : Finset.univ.image f ⊆ q.roots.toFinset := by
+    intro t ht
+    obtain ⟨a, -, rfl⟩ := Finset.mem_image.mp ht
+    apply hroot
+    rw [← map_pow, ZMod.pow_card]
+  have hcard : q.roots.toFinset.card ≤ (Finset.univ.image f).card := by
+    rw [Finset.card_image_of_injective _ hf, Finset.card_univ, ZMod.card]
+    calc q.roots.toFinset.card ≤ Multiset.card q.roots := Multiset.toFinset_card_le _
+      _ ≤ q.natDegree := Polynomial.card_roots' q
+      _ = p := hdeg
+  have heq := Finset.eq_of_subset_of_card_le hsub hcard
+  have hmem : π x ∈ Finset.univ.image f := heq ▸ hroot _ hxx
+  obtain ⟨a, -, ha⟩ := Finset.mem_image.mp hmem
+  have hval : π (a.val : R) = π x := by
+    rw [map_natCast, ZMod.natCast_val, ← ha]
+    rfl
+  have hmemI : x - (a.val : R) ∈ Ideal.span {(p : R)} := by
+    rw [← Ideal.Quotient.eq_zero_iff_mem]
+    change π (x - (a.val : R)) = 0
+    rw [map_sub, hval, sub_self]
+  obtain ⟨y, hy⟩ := Ideal.mem_span_singleton'.mp hmemI
+  refine ⟨a.val, y, by rw [mul_comm, hy]; ring, ?_⟩
+  have h3 : (p : R) * σ y = p * y := by
+    have := congrArg σ hy
+    rw [map_mul, map_natCast, map_sub, map_natCast, hx] at this
+    rw [mul_comm, this, mul_comm, hy]
+  exact mul_left_cancel₀ hpr.ne_zero h3
+
+theorem UpperTheory.Kd.C7.pFixAbs :
+    UpperTheory.Kd.C7.SFixAbs := by
+  intro R _ p _ _ σ hσ x hx
+  obtain ⟨hdom, hpr, hcomp, hfrob, -⟩ := hσ
+  classical
+  haveI := hdom
+  haveI := hcomp
+  have step : ∀ y : {y : R // σ y = y}, ∃ a : ℕ, ∃ y' : {y : R // σ y = y}, y.1 = a + p * y'.1 := by
+    intro y
+    obtain ⟨a, y', h1, h2⟩ := exists_natCast_add_mul_of_frobenius_fixed p σ hpr hfrob y.1 y.2
+    exact ⟨a, ⟨y', h2⟩, h1⟩
+  choose d nx hdn using step
+  let seq : ℕ → {y : R // σ y = y} := fun n => Nat.rec ⟨x, hx⟩ (fun _ y => nx y) n
+  let s : ℕ → ℕ := fun n => ∑ i ∈ Finset.range n, d (seq i) * p ^ i
+  have hrep : ∀ n, x = (s n : R) + (p : R) ^ n * (seq n).1 := by
+    intro n
+    induction n with
+    | zero => simp [s, seq]
+    | succ n ih =>
+      have e : seq (n + 1) = nx (seq n) := rfl
+      rw [ih, hdn (seq n)]
+      simp only [s, Finset.sum_range_succ, e]
+      push_cast
+      ring
+  have hdvd : ∀ m k, (p : ℤ) ^ m ∣ ((s (m + k) : ℕ) : ℤ) - (s m : ℤ) := by
+    intro m k
+    induction k with
+    | zero => simp
+    | succ k ih =>
+      have e : ((s (m + (k + 1)) : ℕ) : ℤ) - s m
+          = (((s (m + k)) : ℤ) - s m) + (d (seq (m + k)) : ℤ) * (p : ℤ) ^ (m + k) := by
+        simp only [s, ← add_assoc, Finset.sum_range_succ]
+        push_cast
+        ring
+      rw [e]
+      exact dvd_add ih (Dvd.dvd.mul_left (pow_dvd_pow _ (Nat.le_add_right _ _)) _)
+  have hZ : ∀ (a b : ℤ_[p]) (m : ℕ), a ≡ b [SMOD ((IsLocalRing.maximalIdeal ℤ_[p]) ^ m • ⊤ : Submodule ℤ_[p] ℤ_[p])]
+      ↔ (p : ℤ_[p]) ^ m ∣ a - b := by
+    intro a b m
+    rw [SModEq.sub_mem, PadicInt.maximalIdeal_eq_span_p, Ideal.span_singleton_pow, Ideal.smul_eq_mul,
+      Ideal.mul_top, Ideal.mem_span_singleton]
+  obtain ⟨L, hL⟩ := IsPrecomplete.prec (I := IsLocalRing.maximalIdeal ℤ_[p]) inferInstance
+    (f := fun n => (s n : ℤ_[p])) (by
+      intro m n hmn
+      rw [hZ]
+      obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hmn
+      have h1 := map_dvd (Int.castRingHom ℤ_[p]) (hdvd m k)
+      simp only [map_pow, map_sub, map_natCast] at h1
+      rw [← dvd_neg, neg_sub]
+      exact h1)
+  refine ⟨L, ?_⟩
+  rw [IsHausdorff.eq_iff_smodEq (I := Ideal.span {(p : R)})]
+  intro n
+  rw [SModEq.sub_mem, Ideal.span_singleton_pow, Ideal.smul_eq_mul, Ideal.mul_top, Ideal.mem_span_singleton]
+  obtain ⟨c, hc⟩ := (hZ _ _ n).mp (hL n)
+  have h2 := congrArg (algebraMap ℤ_[p] R) hc
+  rw [map_sub, map_natCast, map_mul, map_pow, map_natCast] at h2
+  refine ⟨-(algebraMap ℤ_[p] R c + (seq n).1), ?_⟩
+  linear_combination (-1 : R) * h2 - hrep n
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2 GlobalTheory.KZ GlobalTheory.Col
@@ -74,7 +537,6 @@ private theorem mem_Cl {x : K} : x ∈ Cl i ↔ ∀ ε > 0, ∃ y, ‖x - i y‖
 variable (i) in
 private def inc : S →+* Cl i := i.codRestrict _ fun y => i.range.le_topologicalClosure ⟨y, rfl⟩
 
-private theorem inc_coe (y : S) : (inc i y : K) = i y := rfl
 
 private theorem dense_inc : DenseRange (inc i) := by
   rw [Metric.denseRange_iff]
@@ -309,3 +771,5 @@ theorem pFrEx3 : SFrEx := by
     jh_le := h.cl_le }⟩
 
 end UpperTheory.Kd.C7
+end
+end

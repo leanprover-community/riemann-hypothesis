@@ -51,54 +51,11 @@ theorem cabs_zero (σ : c.F →+* ℂ) : cabs (0 : CAt σ) = 0 := norm_zero (E :
 variable {h : GenFrEx Xo c} {fn : ∀ σ : c.F →+* ℂ, FrPt Xo c (CAt σ) → Ix Dw → ℝ}
   {yP : ∀ Z : Comp Xo c, ∀ P : Om Z →+* ℂ, FrPt Xo c (CAt (sgOf P))}
 
-theorem fromTest_iff_of_valAtCx (hcx : ValAtCx h yP) (Z : Comp Xo c) (P : Om Z →+* ℂ) :
-    FT (genFr h Z) ↔ FT (yP Z P) := by
-  have h1 := hcx Z P 0 0 1 one_mem_sec
-  unfold evC at h1
-  constructor
-  · intro hg
-    by_contra hy
-    rw [evR_one _ hg, evR_of_not_ft _ _ hy, map_one, norm_one, cabs_zero] at h1
-    exact one_ne_zero h1
-  · intro hy
-    by_contra hg
-    rw [evR_one _ hy, evR_of_not_ft _ _ hg, map_zero, norm_zero, cabs_one] at h1
-    exact zero_ne_one h1
 
-theorem fromTest_of_nzSome {f : Rul Xo c} (hN : NZSome h f) : ∃ Z, evC h Z f ≠ 0 ∧ FT (genFr h Z) := by
-  obtain ⟨Z, hZ⟩ := hN
-  refine ⟨Z, hZ, ?_⟩
-  by_contra hg
-  exact hZ (evR_of_not_ft _ _ hg)
 
-theorem nzSome_one_iff : NZSome h (1 : Rul Xo c) ↔ ∃ Z, FT (genFr h Z) := by
-  constructor
-  · intro hN
-    obtain ⟨Z, _, hZ⟩ := fromTest_of_nzSome hN
-    exact ⟨Z, hZ⟩
-  · rintro ⟨Z, hZ⟩
-    refine ⟨Z, ?_⟩
-    unfold evC
-    rw [evR_one _ hZ]
-    exact one_ne_zero
 
-theorem not_nzSome_zero : ¬ NZSome h (0 : Rul Xo c) := by
-  rintro ⟨Z, hZ⟩
-  exact hZ (evalAt_zero _ _ _)
 
-theorem laws_of_no_comp (hne : IsEmpty (Comp Xo c)) (f : Rul Xo c) :
-    PTNe Xo c ∧ ValAtCx h yP ∧ ¬ NZSome h f :=
-  ⟨fun Z => hne.elim Z, fun Z => hne.elim Z, fun ⟨Z, _⟩ => hne.elim Z⟩
 
-theorem supR_pos [Fintype (Comp Xo c)] (hfn : FnNe Xo c fn) (hPT : PTNe Xo c) (hcx : ValAtCx h yP)
-    {a : (E →+* ℂ) × ℕ → ℕ} {n : ℕ} {f : Rul Xo c} (hS : f ∈ sec Xo c a n) (hB : SupBdd Xo c fn a n f)
-    (hN : NZSome h f) (σ : c.F →+* ℂ) : 0 < supR Xo c fn σ a n f := by
-  obtain ⟨Z, hZ⟩ := hN
-  obtain ⟨P, hP⟩ := hPT Z σ
-  have h1 := nrmC_valC_le hcx hS hB Z P
-  have hP' : sgOf P = σ := hP
-  rw [hP'] at h1
-  exact lt_of_lt_of_le (nrmC_pos fn (yP Z) hfn P (valC_mem h a n f Z) (valC_ne_zero hZ)) h1
 
 theorem pn_one_le (σ : c.F →+* ℂ) (y : FrPt Xo c (CAt σ)) : pn σ (fn σ) (ex Dw 0 0) 1 y ≤ 1 := by
   show cabs (evR Xo c 1 y) * ∏ i, |fn σ y i|⁻¹ ^ ex Dw 0 0 i ≤ 1
@@ -110,8 +67,6 @@ theorem pn_one_le (σ : c.F →+* ℂ) (y : FrPt Xo c (CAt σ)) : pn σ (fn σ) 
 theorem supBdd_one : SupBdd Xo c fn 0 0 1 := fun σ =>
   ⟨1, Set.forall_mem_range.2 fun y => pn_one_le σ y⟩
 
-theorem supR_one_le (σ : c.F →+* ℂ) : supR Xo c fn σ 0 0 1 ≤ 1 :=
-  Real.iSup_le (fun y => pn_one_le σ y) zero_le_one
 
 section Conj
 
@@ -149,17 +104,6 @@ theorem supR_le_conj
 
 end Conj
 
-theorem supBdd_of_fn_zero (a : (E →+* ℂ) × ℕ → ℕ) {n : ℕ} (hn : n ≠ 0) (f : Rul Xo c) :
-    SupBdd Xo c (fun _ _ _ => 0) a n f ∧ ∀ σ, supR Xo c (fun _ _ _ => 0) σ a n f = 0 :=
-  ⟨fun σ => (SupNormExample.bddAt_of_fnorm_zero _ _ σ (ex Dw a n) none hn f).1,
-   fun σ => (SupNormExample.bddAt_of_fnorm_zero _ _ σ (ex Dw a n) none hn f).2⟩
 
-theorem exists_fn_small (a : (E →+* ℂ) × ℕ → ℕ) {n : ℕ} (hn : n ≠ 0) (f : Rul Xo c) :
-    ∃ fn : ∀ σ : c.F →+* ℂ, FrPt Xo c (CAt σ) → Ix Dw → ℝ,
-      FnNe Xo c fn ∧ SupBdd Xo c fn a n f ∧ ∀ σ, supR Xo c fn σ a n f ≤ 1 := by
-  choose g hg using fun σ : c.F →+* ℂ =>
-    SupNormExample.exists_fnorm_small (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z) σ
-      (ex Dw a n) none hn f
-  exact ⟨g, fun σ y i => ((hg σ).1 y i).ne', fun σ => (hg σ).2.1, fun σ => (hg σ).2.2⟩
 
 end GlobalTheory.SupLawProbe

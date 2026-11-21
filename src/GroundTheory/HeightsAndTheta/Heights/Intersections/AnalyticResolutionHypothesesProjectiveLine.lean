@@ -259,12 +259,6 @@ theorem isMultiHomogIdeal_span_X [Fintype K] [DecidableEq K] {R : Type} [CommRin
   · exact hm
   · exact absurd rfl hm
 
-theorem X_not_mem_span_X {R : Type} [CommRing R] [Nontrivial R] {q q' : Σ k, ι k} (h : q ≠ q') :
-    (X q' : MRing ι R) ∉ Ideal.span {(X q : MRing ι R)} := by
-  rw [mem_span_X_iff]
-  intro hm
-  have := hm (Finsupp.single q' 1) (by simp [support_X])
-  simp [h.symm] at this
 
 theorem isPrime_span_X {R : Type} [CommRing R] [IsDomain R] (q : Σ k, ι k) :
     (Ideal.span {(X q : MRing ι R)}).IsPrime :=
@@ -283,72 +277,20 @@ abbrev Xj {R : Type} [CommRing R] (j : Fin 2) : MRing ι1 R := X ⟨(), j⟩
 
 abbrev ptI {R : Type} [CommRing R] (j : Fin 2) : Ideal (MRing ι1 R) := Ideal.span {Xj j}
 
-theorem fin_two_add_one_ne (j : Fin 2) : j + 1 ≠ j := by
-  fin_cases j <;> decide
 
 theorem fin_two_eq_or_eq_add_one (j i : Fin 2) : i = j ∨ i = j + 1 := by
   fin_cases j <;> fin_cases i <;> decide
 
-theorem isRelevant_ptI {R : Type} [CommRing R] [Nontrivial R] (j : Fin 2) :
-    IsRelevant (ptI (R := R) j) := by
-  intro k
-  refine ⟨j + 1, X_not_mem_span_X ?_⟩
-  intro h
-  have := congrArg Sigma.snd h
-  exact fin_two_add_one_ne j (by simpa using this.symm)
 
-theorem comps_bot_X {R : Type} [CommRing R] [IsDomain R] (j : Fin 2) :
-    comps (⊥ : Ideal (MRing ι1 R)) (Xj j) = {ptI j} := by
-  have := isPrime_span_X (R := R) (⟨(), j⟩ : Σ _ : Unit, Fin 2)
-  ext W
-  simp only [comps, bot_sup_eq, Ideal.minimalPrimes_eq_subsingleton_self, Set.mem_ofPred_eq,
-    Set.mem_singleton_iff]
-  constructor
-  · exact fun h => h.1
-  · rintro rfl
-    exact ⟨rfl, isRelevant_ptI j⟩
 
-theorem ptI_ne {R : Type} [CommRing R] [Nontrivial R] : ptI (R := R) 0 ≠ ptI 1 := by
-  intro h
-  have h0 : (Xj 0 : MRing ι1 R) ∈ ptI 0 := Ideal.subset_span rfl
-  rw [h] at h0
-  exact X_not_mem_span_X (by decide) h0
 
-theorem extC_bot : extC (⊥ : Ideal (MRing ι1 ℚ)) = ⊥ := Ideal.map_bot
 
-theorem extC_ptI (j : Fin 2) : extC (ptI (R := ℚ) j) = ptI j := by
-  simp [extC, ReciprocityTheory.AnForm.R.extC, Ideal.map_span]
 
-theorem minimalPrimes_bot_C : (⊥ : Ideal (MRing ι1 ℂ)).minimalPrimes = {⊥} :=
-  IsDomain.minimalPrimes_eq_singleton_bot _
 
-theorem minimalPrimes_ptI (j : Fin 2) : (ptI (R := ℂ) j).minimalPrimes = {ptI j} := by
-  have := isPrime_span_X (R := ℂ) (⟨(), j⟩ : Σ _ : Unit, Fin 2)
-  exact Ideal.minimalPrimes_eq_subsingleton_self
 
-theorem dim_bot (k : Type) [Field k] :
-    ringKrullDim (MRing ι1 k ⧸ (⊥ : Ideal (MRing ι1 k))) = ((1 + Fintype.card Unit : ℕ) : WithBot ℕ∞) := by
-  have h := ReciprocityTheory.AnForm.R.BaseChangeC.height_add_ringKrullDim_quotient_fintype
-    (σ := Σ _ : Unit, Fin 2) k ⊥
-  rw [Ideal.height_bot] at h
-  simpa using h
 
-theorem isProjVar_bot : IsProjVar (⊥ : Ideal (MRing ι1 ℂ)) 1 :=
-  ⟨GroundTheory.Heights₂.Heights.NumbersDVR.isMultiProjPrime_bot, dim_bot ℂ⟩
 
-theorem isProjVarQ_bot : IsProjVarQ (⊥ : Ideal (MRing ι1 ℚ)) 1 :=
-  ⟨GroundTheory.Heights₂.Heights.NumbersDVR.isMultiProjPrime_bot, dim_bot ℚ⟩
 
-theorem isMultiHomog_Xj {R : Type} [CommRing R] (j : Fin 2) :
-    IsMultiHomog (Xj (R := R) j) (fun _ => 1) := by
-  have h := isWeightedHomogeneous_X R (GroundTheory.Heights₂.Heights.NumbersDVR.blockWeight ι1)
-    (⟨(), j⟩ : Σ _ : Unit, Fin 2)
-  have hw : GroundTheory.Heights₂.Heights.NumbersDVR.blockWeight ι1 (⟨(), j⟩ : Σ _ : Unit, Fin 2) =
-      fun _ => 1 := by
-    funext u
-    simp [GroundTheory.Heights₂.Heights.NumbersDVR.blockWeight]
-  rw [hw] at h
-  exact h
 
 def projLineResolution : Res ι1 (⊥ : Ideal (MRing ι1 ℂ)) 1 where
   D := ptI 0
@@ -483,37 +425,16 @@ theorem contDiff_normSq_coord (i : Fin 2) :
     ContDiff ℝ ∞ (fun z : MCone ι1 => ‖z ⟨(), i⟩‖ ^ 2) :=
   (contDiff_norm_sq ℝ).comp (contDiff_apply ℝ ℂ (⟨(), i⟩ : Σ _ : Unit, Fin 2))
 
-theorem contDiff_qn : ContDiff ℝ ∞ qn :=
-  (contDiff_normSq_coord 0).add (contDiff_normSq_coord 1)
 
-theorem qn_pos {z : MCone ι1} (hz : ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0) : 0 < qn z := by
-  obtain ⟨i, hi⟩ := hz ()
-  have h := pow_pos (norm_pos_iff.mpr hi) 2
-  unfold qn
-  fin_cases i
-  · exact add_pos_of_pos_of_nonneg h (sq_nonneg _)
-  · exact add_pos_of_nonneg_of_pos (sq_nonneg _) h
 
 theorem qn_tsmul (c : Unit → ℂ) (z : MCone ι1) : qn (tsmul c z) = ‖c ()‖ ^ 2 * qn z := by
   simp only [qn, tsmul, norm_mul, mul_pow]
   ring
 
-theorem isOpen_qn_pos : IsOpen {w : MCone ι1 | 0 < qn w} :=
-  isOpen_lt continuous_const contDiff_qn.continuous
 
 def fubiniStudyLine : HLine ι1 := ReciprocityTheory.ChartRestriction.G.Geo.fsLine 2
 
-theorem logH_fubiniStudyLine (z : MCone ι1) : logH fubiniStudyLine z = Real.log (qn z) / 2 := by
-  have h : fubiniStudyLine.h z = Real.sqrt (qn z) := by
-    simp [fubiniStudyLine, ReciprocityTheory.ChartRestriction.G.Geo.fsLine, ReciprocityTheory.ChartRestriction.G.Geo.HermLine.ofMetrics,
-      ReciprocityTheory.ChartRestriction.G.Geo.fsMetric, EuclideanSpace.norm_eq, Fin.sum_univ_two, qn]
-  rw [logH, h, Real.log_sqrt (by unfold qn; positivity)]
 
-theorem isSmoothMetric_fubiniStudyLine (P : Ideal (MRing ι1 ℂ)) : IsSmoothMetric P fubiniStudyLine := by
-  intro z hz
-  refine ⟨{w | 0 < qn w}, isOpen_qn_pos.mem_nhds (qn_pos hz.1), fun w => Real.log (qn w) / 2,
-    ?_, fun w _ => logH_fubiniStudyLine w⟩
-  exact (contDiff_qn.contDiffOn.log fun w hw => ne_of_gt hw).div_const 2
 
 def projectiveLineCoordinates (j : Fin 2) (z : MCone ι1) : ℝ := ‖z ⟨(), j⟩‖ ^ 2 / qn z
 
@@ -523,10 +444,6 @@ theorem projLineRatio_torus_smul (j : Fin 2) (c : Unit → ℂ) (hc : ∀ k, c k
   simp only [tsmul, norm_mul, mul_pow]
   exact mul_div_mul_left _ _ (pow_ne_zero 2 (norm_ne_zero_iff.mpr (hc ())))
 
-theorem isSmoothFn_projLineRatio (P : Ideal (MRing ι1 ℂ)) (j : Fin 2) : IsSmoothFn P (projectiveLineCoordinates j) := by
-  refine ⟨fun c hc z _ => projLineRatio_torus_smul j c hc z, fun z hz => ?_⟩
-  refine ⟨{w | 0 < qn w}, isOpen_qn_pos.mem_nhds (qn_pos hz.1), projectiveLineCoordinates j, ?_, fun w _ => rfl⟩
-  exact (contDiff_normSq_coord j).contDiffOn.div contDiff_qn.contDiffOn fun w hw => ne_of_gt hw
 
 theorem isSmoothPot_logH {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type}
     [∀ k, Fintype (ι k)] {P : Ideal (MRing ι ℂ)} {L : HLine ι} (h : IsSmoothMetric P L) :
@@ -540,189 +457,35 @@ theorem isSmoothPot_logH {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type
     add_comm]
   simp only [Real.log_zpow]
 
-theorem isSmoothPot_of_fn {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type}
-    [∀ k, Fintype (ι k)] {P : Ideal (MRing ι ℂ)} {g : MCone ι → ℝ} (h : IsSmoothFn P g) :
-    IsSmoothPot P g :=
-  ⟨⟨0, fun c hc z hz => by simp [h.1 c hc z hz]⟩, h.2⟩
 
-theorem isSec_bot_X {R : Type} [CommRing R] [IsDomain R] (j : Fin 2) :
-    IsFormSec (⊥ : Ideal (MRing ι1 R)) fubiniStudyLine (Xj j) :=
-  ⟨fun _ => 1, fun k => by simp [fubiniStudyLine, ReciprocityTheory.ChartRestriction.G.Geo.fsLine,
-    ReciprocityTheory.ChartRestriction.G.Geo.HermLine.ofMetrics], isMultiHomog_Xj j, X_ne_bot _⟩
 
 def fsTw : HLine ι1 :=
   ReciprocityTheory.ChartRestriction.G.Geo.HermLine.tensor fubiniStudyLine
     (ReciprocityTheory.ChartRestriction.G.Geo.HermLine.ofWeight (projectiveLineCoordinates 0) fun c z hc => projLineRatio_torus_smul 0 c hc z)
 
-theorem isSmoothMetric_fsTw (P : Ideal (MRing ι1 ℂ)) : IsSmoothMetric P fsTw := by
-  intro z hz
-  refine ⟨{w | 0 < qn w}, isOpen_qn_pos.mem_nhds (qn_pos hz.1),
-    fun w => Real.log (qn w) / 2 - projectiveLineCoordinates 0 w, ?_, fun w hw => ?_⟩
-  · exact ((contDiff_qn.contDiffOn.log fun w hw => ne_of_gt hw).div_const 2).sub
-      ((contDiff_normSq_coord 0).contDiffOn.div contDiff_qn.contDiffOn fun w hw => ne_of_gt hw)
-  · have hp := fubiniStudyLine.pos w hw.2.1
-    show Real.log (fubiniStudyLine.h w * Real.exp (-projectiveLineCoordinates 0 w)) = _
-    rw [Real.log_mul hp.ne' (Real.exp_pos _).ne', Real.log_exp, ← logH, logH_fubiniStudyLine]
-    ring
 
-theorem fsTw_a : fsTw.a = fubiniStudyLine.a := by
-  show fubiniStudyLine.a + 0 = fubiniStudyLine.a
-  exact add_zero _
 
 def projLineFubiniStudyMass : ℝ := zInt (⊥ : Ideal (MRing ι1 ℂ)) 1 ![logH fubiniStudyLine] (fun _ => 1)
 
-theorem nonempty_resolution_projLine : Nonempty (Res ι1 (⊥ : Ideal (MRing ι1 ℂ)) 1) := ⟨projLineResolution⟩
 
-theorem holoMap_infty :
-    HoloMap (ReciprocityTheory.AnForm.M.ptAtlas ({OnePoint.infty} : Set (OnePoint ℂ))) ReciprocityTheory.AnForm.M.p1
-      Subtype.val := by
-  refine ⟨continuous_subtype_val, fun j k y _ => ?_⟩
-  have hc : (ReciprocityTheory.AnForm.M.p1.chart k ∘ Subtype.val ∘
-      ((ReciprocityTheory.AnForm.M.ptAtlas ({OnePoint.infty} : Set (OnePoint ℂ))).chart j).symm) =
-      fun _ => (ReciprocityTheory.AnForm.M.p1.chart k ∘ Subtype.val ∘
-        ((ReciprocityTheory.AnForm.M.ptAtlas ({OnePoint.infty} : Set (OnePoint ℂ))).chart j).symm) y :=
-    funext fun y' => congrArg _ (Subsingleton.elim y' y)
-  rw [hc]
-  exact analyticAt_const
 
-theorem projectiveLineZeroForm_holds.analyticResolution_hypotheses_projectiveLine :
-    IsPotential ReciprocityTheory.AnForm.M.p1 ReciprocityTheory.AnForm.M.fsPot ∧
-    IsSection ReciprocityTheory.AnForm.M.p1 ReciprocityTheory.AnForm.M.fsPot ReciprocityTheory.AnForm.M.projectiveLinePairSection ∧
-    IsSNC ReciprocityTheory.AnForm.M.p1 ReciprocityTheory.AnForm.M.fsPot ReciprocityTheory.AnForm.M.projectiveLinePairSection ![1]
-      ![({OnePoint.infty} : Set (OnePoint ℂ))] ∧
-    HoloMap (ReciprocityTheory.AnForm.M.ptAtlas ({OnePoint.infty} : Set (OnePoint ℂ))) ReciprocityTheory.AnForm.M.p1
-      Subtype.val ∧
-    ReciprocityTheory.AnForm.M.p1.Smooth ReciprocityTheory.AnForm.M.fsH ∧
-    ∀ i : Fin 0, IsPotential ReciprocityTheory.AnForm.M.p1 ((Fin.elim0 : Fin 0 → LocPot (OnePoint ℂ)) i) :=
-  ⟨ReciprocityTheory.AnForm.M.projLine_isSmoothPotential, ReciprocityTheory.AnForm.M.projLine_isHolomorphicSection, ReciprocityTheory.AnForm.M.projLine_isSimpleNormalCrossing,
-    holoMap_infty, ReciprocityTheory.AnForm.M.projLine_smooth_of_charts ReciprocityTheory.AnForm.M.contDiff_fubiniStudyRatio_comp_chart0
-      ReciprocityTheory.AnForm.M.contDiff_fubiniStudyRatio_comp_chart1, fun i => i.elim0⟩
 
-theorem ResIndep.analyticResolution_hypotheses_projectiveLine :
-    IsProjVar (⊥ : Ideal (MRing ι1 ℂ)) 1 ∧ (∀ j, IsSmoothPot ⊥ ((![logH fubiniStudyLine] : Fin 1 → _) j)) ∧
-    (IsSmoothFn ⊥ (secNorm fubiniStudyLine (Xj 0)) ∨ ∃ (A : HLine ι1) (s : MRing ι1 ℂ),
-      IsSmoothMetric ⊥ A ∧ IsFormSec ⊥ A s ∧ secNorm fubiniStudyLine (Xj 0) = secNorm A s) :=
-  ⟨isProjVar_bot, fun j => by fin_cases j; exact isSmoothPot_logH (isSmoothMetric_fubiniStudyLine ⊥),
-    Or.inr ⟨fubiniStudyLine, Xj 0, isSmoothMetric_fubiniStudyLine ⊥, isSec_bot_X 0, rfl⟩⟩
 
-theorem S3.analyticResolution_hypotheses_projectiveLine :
-    IsProjVar (⊥ : Ideal (MRing ι1 ℂ)) (0 + 1) ∧ Nonempty (Res ι1 ⊥ (0 + 1)) ∧
-    (∀ j, IsSmoothMetric ⊥ ((![] : Fin 0 → HLine ι1) j)) ∧ IsSmoothFn ⊥ (projectiveLineCoordinates 0) ∧
-    IsSmoothFn ⊥ (projectiveLineCoordinates 1) :=
-  ⟨isProjVar_bot, nonempty_resolution_projLine, fun j => j.elim0, isSmoothFn_projLineRatio ⊥ 0, isSmoothFn_projLineRatio ⊥ 1⟩
 
-theorem ThreeSphereMass.analyticResolution_hypotheses_projectiveLine :
-    IsProjVar (⊥ : Ideal (MRing ι1 ℂ)) 1 ∧ Nonempty (Res ι1 ⊥ 1) ∧
-    (∀ j, IsSmoothMetric ⊥ ((![fubiniStudyLine] : Fin 1 → HLine ι1) j)) ∧
-    (∀ j, IsSmoothMetric ⊥ ((![fsTw] : Fin 1 → HLine ι1) j)) ∧
-    (∀ j, ((![fubiniStudyLine] : Fin 1 → HLine ι1) j).a = ((![fsTw] : Fin 1 → HLine ι1) j).a) :=
-  ⟨isProjVar_bot, nonempty_resolution_projLine, fun j => by fin_cases j; exact isSmoothMetric_fubiniStudyLine ⊥,
-    fun j => by fin_cases j; exact isSmoothMetric_fsTw ⊥, fun j => by fin_cases j; exact fsTw_a.symm⟩
 
-theorem S4.analyticResolution_hypotheses_projectiveLine :
-    IsProjVar (⊥ : Ideal (MRing ι1 ℂ)) 1 ∧ (∀ j, IsSmoothPot ⊥ ((![logH fubiniStudyLine] : Fin 1 → _) j)) ∧
-    IsSmoothMetric ⊥ fubiniStudyLine ∧ IsFormSec (⊥ : Ideal (MRing ι1 ℂ)) fubiniStudyLine (Xj 0) :=
-  ⟨isProjVar_bot, fun j => by fin_cases j; exact isSmoothPot_logH (isSmoothMetric_fubiniStudyLine ⊥),
-    isSmoothMetric_fubiniStudyLine ⊥, isSec_bot_X 0⟩
 
-theorem res_comps_bot (j : Fin 2) :
-    ∀ W ∈ comps (⊥ : Ideal (MRing ι1 ℂ)) (Xj j), Nonempty (Res ι1 W 0) := by
-  rw [comps_bot_X]
-  rintro W rfl
-  exact ⟨ptRes j⟩
 
-theorem PoincareLelongAlt.analyticResolution_hypotheses_projectiveLine :
-    IsProjVar (⊥ : Ideal (MRing ι1 ℂ)) (0 + 1) ∧ Nonempty (Res ι1 ⊥ (0 + 1)) ∧
-    (∀ W ∈ comps (⊥ : Ideal (MRing ι1 ℂ)) (Xj 0), Nonempty (Res ι1 W 0)) ∧
-    (∀ j, IsSmoothMetric ⊥ ((![] : Fin 0 → HLine ι1) j)) ∧ IsSmoothMetric ⊥ fubiniStudyLine ∧
-    IsFormSec (⊥ : Ideal (MRing ι1 ℂ)) fubiniStudyLine (Xj 0) ∧ IsSmoothFn ⊥ (projectiveLineCoordinates 1) :=
-  ⟨isProjVar_bot, nonempty_resolution_projLine, res_comps_bot 0, fun j => j.elim0, isSmoothMetric_fubiniStudyLine ⊥,
-    isSec_bot_X 0, isSmoothFn_projLineRatio ⊥ 1⟩
 
-theorem Degrees.analyticResolution_hypotheses_projectiveLine :
-    IsProjVar (⊥ : Ideal (MRing ι1 ℂ)) 1 ∧ Nonempty (Res ι1 ⊥ 1) ∧
-    (∀ j, IsSmoothMetric ⊥ ((![fubiniStudyLine] : Fin 1 → HLine ι1) j)) :=
-  ⟨isProjVar_bot, nonempty_resolution_projLine, fun j => by fin_cases j; exact isSmoothMetric_fubiniStudyLine ⊥⟩
 
-theorem comps_disjoint {R : Type} [CommRing R] [IsDomain R] :
-    ∀ W ∈ comps (⊥ : Ideal (MRing ι1 R)) (Xj 0), W ∉ comps ⊥ (Xj 1) := by
-  rw [comps_bot_X, comps_bot_X]
-  rintro W rfl h
-  exact ptI_ne h
 
-theorem ProjectiveLineTwo.analyticResolution_hypotheses_projectiveLine :
-    IsProjVar (⊥ : Ideal (MRing ι1 ℂ)) (0 + 1) ∧ Nonempty (Res ι1 ⊥ (0 + 1)) ∧
-    (∀ W ∈ comps (⊥ : Ideal (MRing ι1 ℂ)) (Xj 0), Nonempty (Res ι1 W 0)) ∧ (∀ W ∈ comps (⊥ : Ideal (MRing ι1 ℂ)) (Xj 1), Nonempty (Res ι1 W 0)) ∧
-    (∀ j, IsSmoothMetric ⊥ ((![] : Fin 0 → HLine ι1) j)) ∧ IsSmoothMetric ⊥ fubiniStudyLine ∧
-    IsSmoothMetric ⊥ fsTw ∧ IsFormSec (⊥ : Ideal (MRing ι1 ℂ)) fubiniStudyLine (Xj 0) ∧ IsFormSec (⊥ : Ideal (MRing ι1 ℂ)) fsTw (Xj 1) ∧
-    (∀ W ∈ comps (⊥ : Ideal (MRing ι1 ℂ)) (Xj 0), W ∉ comps ⊥ (Xj 1)) :=
-  ⟨isProjVar_bot, nonempty_resolution_projLine, res_comps_bot 0, res_comps_bot 1, fun j => j.elim0,
-    isSmoothMetric_fubiniStudyLine ⊥, isSmoothMetric_fsTw ⊥, isSec_bot_X 0,
-    by obtain ⟨a, ha, hs, hn⟩ := isSec_bot_X (R := ℂ) 1; exact ⟨a, fun k => by rw [fsTw_a]; exact ha k, hs, hn⟩,
-    comps_disjoint⟩
 
-theorem sC_Xj (j : Fin 2) : sC (Xj (R := ℚ) j) = Xj j := by
-  simp [sC]
 
-theorem BCMult.analyticResolution_hypotheses_projectiveLine :
-    IsProjVarQ (⊥ : Ideal (MRing ι1 ℚ)) (0 + 1) ∧ IsMultiHomog (Xj (R := ℚ) 0) (fun _ => 1) ∧
-    Xj 0 ∉ (⊥ : Ideal (MRing ι1 ℚ)) ∧ ptI 0 ∈ comps (⊥ : Ideal (MRing ι1 ℚ)) (Xj 0) ∧
-    ptI (R := ℂ) 0 ∈ (extC (ptI (R := ℚ) 0)).minimalPrimes :=
-  ⟨isProjVarQ_bot, isMultiHomog_Xj 0, X_ne_bot _, by rw [comps_bot_X]; rfl,
-    by rw [extC_ptI, minimalPrimes_ptI]; rfl⟩
 
-theorem BCCommon.analyticResolution_hypotheses_projectiveLine :
-    IsProjVarQ (⊥ : Ideal (MRing ι1 ℚ)) (0 + 1) ∧ IsMultiHomog (Xj (R := ℚ) 0) (fun _ => 1) ∧
-    Xj 0 ∉ (⊥ : Ideal (MRing ι1 ℚ)) ∧ (⊥ : Ideal (MRing ι1 ℂ)) ∈ (extC ⊥).minimalPrimes ∧
-    ptI 0 ∈ comps (⊥ : Ideal (MRing ι1 ℂ)) (sC (Xj 0)) :=
-  ⟨isProjVarQ_bot, isMultiHomog_Xj 0, X_ne_bot _, by rw [extC_bot, minimalPrimes_bot_C]; rfl,
-    by rw [sC_Xj, comps_bot_X]; rfl⟩
 
-theorem BCDeg.analyticResolution_hypotheses_projectiveLine : IsProjVarQ (⊥ : Ideal (MRing ι1 ℚ)) 1 := isProjVarQ_bot
 
-theorem res_min_extC_bot (e : ℕ) (R : Res ι1 (⊥ : Ideal (MRing ι1 ℂ)) e) :
-    ∀ Z ∈ (extC (⊥ : Ideal (MRing ι1 ℚ))).minimalPrimes, Nonempty (Res ι1 Z e) := by
-  rw [extC_bot, minimalPrimes_bot_C]
-  rintro Z rfl
-  exact ⟨R⟩
 
-theorem res_comps_extC (j : Fin 2) :
-    ∀ W ∈ comps (⊥ : Ideal (MRing ι1 ℚ)) (Xj j), ∀ Z ∈ (extC W).minimalPrimes,
-      Nonempty (Res ι1 Z 0) := by
-  rw [comps_bot_X]
-  rintro W rfl Z hZ
-  rw [extC_ptI, minimalPrimes_ptI] at hZ
-  rw [hZ]
-  exact ⟨ptRes j⟩
 
-theorem DegreesQ.analyticResolution_hypotheses_projectiveLine :
-    IsProjVarQ (⊥ : Ideal (MRing ι1 ℚ)) 1 ∧
-    (∀ Z ∈ (extC (⊥ : Ideal (MRing ι1 ℚ))).minimalPrimes, Nonempty (Res ι1 Z 1)) ∧
-    (∀ j, IsSmoothMetric (extC ⊥) ((![fubiniStudyLine] : Fin 1 → HLine ι1) j)) :=
-  ⟨isProjVarQ_bot, res_min_extC_bot 1 projLineResolution, fun j => by fin_cases j; exact isSmoothMetric_fubiniStudyLine _⟩
 
-theorem ProjectiveLineOverRationals.analyticResolution_hypotheses_projectiveLine :
-    IsProjVarQ (⊥ : Ideal (MRing ι1 ℚ)) (0 + 1) ∧
-    (∀ Z ∈ (extC (⊥ : Ideal (MRing ι1 ℚ))).minimalPrimes, Nonempty (Res ι1 Z (0 + 1))) ∧
-    (∀ W ∈ comps (⊥ : Ideal (MRing ι1 ℚ)) (Xj 0), ∀ Z ∈ (extC W).minimalPrimes,
-      Nonempty (Res ι1 Z 0)) ∧
-    (∀ j, IsSmoothMetric (extC ⊥) ((![] : Fin 0 → HLine ι1) j)) ∧ IsSmoothMetric (extC ⊥) fubiniStudyLine ∧
-    IsFormSec (⊥ : Ideal (MRing ι1 ℚ)) fubiniStudyLine (Xj 0) ∧ IsSmoothFn (extC ⊥) (projectiveLineCoordinates 1) :=
-  ⟨isProjVarQ_bot, res_min_extC_bot 1 projLineResolution, res_comps_extC 0, fun j => j.elim0,
-    isSmoothMetric_fubiniStudyLine _, isSec_bot_X 0, isSmoothFn_projLineRatio _ 1⟩
 
-theorem ProjectivePlaneOverRationals.analyticResolution_hypotheses_projectiveLine :
-    IsProjVarQ (⊥ : Ideal (MRing ι1 ℚ)) (0 + 1) ∧
-    (∀ Z ∈ (extC (⊥ : Ideal (MRing ι1 ℚ))).minimalPrimes, Nonempty (Res ι1 Z (0 + 1))) ∧
-    (∀ W ∈ comps (⊥ : Ideal (MRing ι1 ℚ)) (Xj 0), ∀ Z ∈ (extC W).minimalPrimes,
-      Nonempty (Res ι1 Z 0)) ∧
-    (∀ W ∈ comps (⊥ : Ideal (MRing ι1 ℚ)) (Xj 1), ∀ Z ∈ (extC W).minimalPrimes,
-      Nonempty (Res ι1 Z 0)) ∧
-    (∀ j, IsSmoothMetric (extC ⊥) ((![] : Fin 0 → HLine ι1) j)) ∧ IsSmoothMetric (extC ⊥) fubiniStudyLine ∧
-    IsSmoothMetric (extC ⊥) fubiniStudyLine ∧ IsFormSec (⊥ : Ideal (MRing ι1 ℚ)) fubiniStudyLine (Xj 0) ∧
-    IsFormSec (⊥ : Ideal (MRing ι1 ℚ)) fubiniStudyLine (Xj 1) ∧
-    (∀ W ∈ comps (⊥ : Ideal (MRing ι1 ℚ)) (Xj 0), W ∉ comps ⊥ (Xj 1)) :=
-  ⟨isProjVarQ_bot, res_min_extC_bot 1 projLineResolution, res_comps_extC 0, res_comps_extC 1, fun j => j.elim0,
-    isSmoothMetric_fubiniStudyLine _, isSmoothMetric_fubiniStudyLine _, isSec_bot_X 0, isSec_bot_X 1, comps_disjoint⟩
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Inter

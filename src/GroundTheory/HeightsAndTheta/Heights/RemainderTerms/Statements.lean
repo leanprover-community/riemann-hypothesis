@@ -394,7 +394,6 @@ theorem LemmaA.hypotheses_inhabited :
   refine ⟨?_, isHomogeneous_one _ _⟩
   simp [IsPowerSumDecomposition]
 
-theorem rectangle_antitone_inhabited : Antitone (rectangle 2 3) := fun _ _ _ => le_rfl
 
 theorem SchurPowerSumCoefficient.hypotheses_inhabited :
     1 ≤ 3 ∧ 3 ≤ 3 ∧ Antitone (![2, 1] : Fin 2 → ℕ) ∧ ∑ i, (![2, 1] : Fin 2 → ℕ) i = 3 := by

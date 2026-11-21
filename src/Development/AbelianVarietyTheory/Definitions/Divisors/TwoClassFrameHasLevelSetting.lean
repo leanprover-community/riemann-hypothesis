@@ -17,20 +17,6 @@ variable (l : ℕ) [Fact l.Prime]
 
 def embZ : ℤ_[l] →+* PadicAlgCl l := (algebraMap ℚ_[l] (PadicAlgCl l)).comp (algebraMap ℤ_[l] ℚ_[l])
 
-theorem embZ_ring : Function.Injective (embZ l) ∧ ∃ L : IntermediateField ℚ_[l] (PadicAlgCl l), FiniteDimensional ℚ_[l] L ∧
-    Set.range (embZ l) = {x | x ∈ L ∧ ‖x‖ ≤ 1} := by
-  refine ⟨(algebraMap ℚ_[l] (PadicAlgCl l)).injective.comp Subtype.val_injective, ⊥, inferInstance, ?_⟩
-  ext x
-  constructor
-  · rintro ⟨y, rfl⟩
-    refine ⟨IntermediateField.mem_bot.2 ⟨(y : ℚ_[l]), rfl⟩, ?_⟩
-    show ‖algebraMap ℚ_[l] (PadicAlgCl l) (y : ℚ_[l])‖ ≤ 1
-    rw [norm_algebraMap']
-    exact y.2
-  · rintro ⟨hx, hn⟩
-    obtain ⟨y, rfl⟩ := IntermediateField.mem_bot.1 hx
-    rw [norm_algebraMap'] at hn
-    exact ⟨⟨y, hn⟩, rfl⟩
 
 def twoFrame (N : ℕ) : Frame l Unit N where
   O := ℤ_[l]
@@ -44,33 +30,6 @@ def twoFrame (N : ℕ) : Frame l Unit N where
   tr _ := {(1, Multiplicative.ofAdd 1)}
   cst _ := 1
 
-theorem twoFrame_ok (N : ℕ) : (twoFrame l N).Ok where
-  ring := embZ_ring l
-  classes := by
-    classical
-    refine ⟨Finset.univ.image fun a : Multiplicative (ZMod 2) => ((1 : GL (Fin N) ℤ_[l]), a), ?_⟩
-    rintro ⟨g, a⟩
-    refine ⟨1, Subgroup.one_mem _, (1, a), Finset.mem_image.2 ⟨a, Finset.mem_univ _, rfl⟩, (g, 1), rfl, ?_⟩
-    exact Prod.ext (by change g = 1 * 1 * g; simp) (by change a = 1 * a * 1; simp)
-  tame g := by
-    have hu : Unique {γ : (twoFrame l N).Γ // g⁻¹ * (γ : (twoFrame l N).G) * g ∈ (twoFrame l N).K} :=
-      { default := ⟨1, by simp⟩
-        uniq := fun a => Subtype.ext (Subtype.ext (Subgroup.mem_bot.1 a.1.2)) }
-    refine ⟨inferInstance, ?_⟩
-    rw [Nat.card_unique, Nat.dvd_one]
-    exact (Fact.out : l.Prime).ne_one
-  perm i κ := by
-    refine ⟨1, fun s => ⟨κ, ?_, rfl, rfl⟩⟩
-    obtain ⟨s, hs⟩ := s
-    obtain rfl := Finset.mem_singleton.1 hs
-    obtain ⟨⟨g, a⟩, h⟩ := κ
-    exact Prod.ext (by change g * 1 = 1 * g; simp) (mul_comm _ _)
-  comm i j := by
-    refine ⟨Equiv.refl _, fun x => ?_⟩
-    have e : ((((Equiv.refl _ x).1 : (twoFrame l N).tr j) : (twoFrame l N).G) * ((Equiv.refl _ x).2 : (twoFrame l N).tr i))⁻¹ *
-      ((x.1 : (twoFrame l N).G) * x.2) = 1 := inv_mul_cancel _
-    have h1 : (twoFrame l N).Triv 1 := ⟨Subgroup.one_mem _, map_one _, map_one _⟩
-    exact (congrArg (twoFrame l N).Triv e).mpr h1
 
 def sg (e : ℤˣ) (a : Multiplicative (ZMod 2)) : PadicAlgCl l := ((e ^ (Multiplicative.toAdd a) : ℤˣ) : ℤ)
 
@@ -89,29 +48,7 @@ theorem act_mul (N : ℕ) (mu : Unit → ℕ → ℕ) (g h : GL (Fin N) ℤ_[l])
   have e2 : ∀ a b, grp (PadicAlgCl l) N mu (a * b) = grp (PadicAlgCl l) N mu a * grp (PadicAlgCl l) N mu b := fun a b => map_mul _ _ _
   rw [act, e, e2, map_mul, Units.val_mul, map_mul, act, act, smul_mul_smul_comm]
 
-theorem twoFrame_isEig (N : ℕ) (mu : Unit → ℕ → ℕ) (v : NablaT (PadicAlgCl l) N mu) (hv : v ≠ 0) (e : ℤˣ) :
-    (twoFrame l N).IsEig mu fun _ => ((e : ℤ) : PadicAlgCl l) := by
-  refine ⟨fun g : GL (Fin N) ℤ_[l] × Multiplicative (ZMod 2) => sg l e g.2 • act l N mu g.1⁻¹ v, fun h => hv ?_,
-    ⟨fun γ hγ g => ?_, fun κ g => ?_⟩, fun i g => ?_⟩
-  · have := congrFun h (1, 1)
-    change sg l e 1 • act l N mu 1⁻¹ v = 0 at this
-    simpa [sg, act_one] using this
-  · obtain rfl := Subgroup.mem_bot.1 hγ
-    exact congrArg (fun g : GL (Fin N) ℤ_[l] × Multiplicative (ZMod 2) => sg l e g.2 • act l N mu g.1⁻¹ v) (one_mul g)
-  · obtain ⟨⟨k, a⟩, hk⟩ := κ
-    obtain rfl : a = 1 := hk
-    obtain ⟨g, b⟩ := g
-    change act l N mu k (sg l e (b * 1) • act l N mu (g * k)⁻¹ v) = sg l e b • act l N mu g⁻¹ v
-    rw [mul_one, map_smul, ← Module.End.mul_apply, ← act_mul, mul_inv_rev, mul_inv_cancel_left]
-  · obtain ⟨g, b⟩ := g
-    change embZ l 1 • ∑ s ∈ ({(1, Multiplicative.ofAdd 1)} : Finset (GL (Fin N) ℤ_[l] × Multiplicative (ZMod 2))),
-      sg l e (b * s.2) • act l N mu (g * s.1)⁻¹ v = ((e : ℤ) : PadicAlgCl l) • sg l e b • act l N mu g⁻¹ v
-    rw [map_one, one_smul, Finset.sum_singleton, mul_one, smul_smul]
-    congr 1
-    simp [sg, uzpow_add, mul_comm]
 
-theorem twoFrame_isEig_neg (N : ℕ) : (twoFrame l N).IsEig (fun _ _ => 0) fun _ => -1 := by
-  simpa using twoFrame_isEig l N _ _ (oneVec_ne_zero l N) (-1)
 
 theorem exists_over {ι : Type} {N : ℕ} (F : Frame l ι N) (hF : F.Ok) (θ : F.I → PadicAlgCl l) (hθ : ∀ i, ‖θ i‖ ≤ 1) :
     ∃ m : Ideal F.T, m.IsPrime ∧ F.Over θ m := by
@@ -149,15 +86,7 @@ def HasLevelSetting {ι : Type} [DecidableEq ι] {N : ℕ} (F : Frame l ι N) (l
     (_ : IsScalarTower F.O F.T (Forms F.O (A := alg F.O N lam) F.Γ jK (NablaT F.O N lam))) (m : Ideal F.T),
       m.IsPrime ∧ F.IsJ lam jK ∧ F.IsHecke lam jK (NablaT F.O N lam) ∧ F.Over θ m
 
-theorem hasLevelSetting {ι : Type} [Fintype ι] [DecidableEq ι] {N : ℕ} (F : Frame l ι N) (hF : F.Ok) (lam : ι → ℕ → ℕ)
-    (θ : F.I → PadicAlgCl l) (hθ : ∀ i, ‖θ i‖ ≤ 1) : HasLevelSetting l F lam θ := by
-  obtain ⟨jK, hJ⟩ := levelMap_exists l ι N F lam
-  obtain ⟨i1, i2, hH⟩ := HeckeMod.hecke_module l ι N F lam jK hF hJ (NablaT F.O N lam)
-  obtain ⟨m, hm, hO⟩ := exists_over l F hF θ hθ
-  exact ⟨jK, i1, i2, m, hm, hJ, hH, hO⟩
 
-theorem twoClassFrame_hasLevelSetting (N : ℕ) (lam : Unit → ℕ → ℕ) : HasLevelSetting l (twoFrame l N) lam fun _ => -1 :=
-  hasLevelSetting l _ (twoFrame_ok l N) lam _ fun _ => by simp
 
 def plc : HeightOneSpectrum (𝓞 ℚ) where
   asIdeal :=
@@ -234,9 +163,6 @@ def scFrame (ev : ℕ → ℤ) : Frame l Unit 3 where
   tr _ := {1}
   cst i := (ev (i + 1) : ℤ_[l])
 
-theorem scFrame_ok (ev : ℕ → ℤ) : (scFrame l ev).Ok :=
-  have h := GLInhab.ok l 3
-  ⟨embZ_ring l, h.classes, h.tame, fun _ κ => h.perm () κ, fun _ _ => h.comm () ()⟩
 
 def cc : NablaT (PadicAlgCl l) 3 (fun (_ : Unit) _ => 0) →ₗ[PadicAlgCl l] PadicAlgCl l :=
   (MvPolynomial.lcoeff (PadicAlgCl l) 0).comp ((Submodule.subtype _).comp
@@ -352,16 +278,6 @@ def scReads (ev : ℕ → ℤ) : Reads (scFrame l ev) (fun _ _ => 0) (dat ev) (p
 
 def th (ev : ℕ → ℤ) : (scFrame l ev).I → PadicAlgCl l := fun i => (ev ((show Fin 3 from i) + 1) : PadicAlgCl l)
 
-theorem th_occurs (ev : ℕ → ℤ) : (scReads l ev).Occurs ⊤ (th l ev) := by
-  let f : (dat ev).S.Forms := ⟨fun _ => (1 : ℚ), fun _ _ => rfl⟩
-  refine ⟨(scReads l ev).rd f, Submodule.subset_span ⟨f, trivial, rfl⟩, fun h0 => ?_, (scReads l ev).form f, fun i g => ?_⟩
-  · have h2 := congrArg (cc l) (congrFun h0 (1 : GL (Fin 3) ℤ_[l]))
-    change cc l (algebraMap ℚ (PadicAlgCl l) 1 • oneVec l 3) = cc l 0 at h2
-    rw [map_smul, cc_one, smul_eq_mul, mul_one, map_zero, map_one] at h2
-    exact one_ne_zero h2
-  · change embZ l (ev ((show Fin 3 from i) + 1) : ℤ_[l]) • ∑ s ∈ ({1} : Finset (GL (Fin 3) ℤ_[l])), algebraMap ℚ (PadicAlgCl l) 1 • oneVec l 3 =
-      (ev ((show Fin 3 from i) + 1) : PadicAlgCl l) • algebraMap ℚ (PadicAlgCl l) 1 • oneVec l 3
-    rw [Finset.sum_singleton, map_intCast]
 
 def evYes : ℕ → ℤ
   | 0 => 1
@@ -400,14 +316,7 @@ theorem root_of_hasBlock (ev : ℕ → ℤ) (θ : Fin 3 → PadicAlgCl l) (h : (
   simp [Formalism.L2.Col.heckePolyOf, Formalism.L2.Col.blockPoly, Finset.sum_range_succ, Finset.prod_range_succ, sysOf] at h1
   linear_combination h1
 
-theorem not_hasBlock_no : ¬ (scReads l evNo).HasBlock (th l evNo) := fun h => by
-  have := root_of_hasBlock l evNo _ h
-  simp [th, evNo] at this
-  norm_num at this
 
-theorem not_hasBlock_zero (ev : ℕ → ℤ) : ¬ (scReads l ev).HasBlock 0 := fun h => by
-  have : (1 : PadicAlgCl l) - 0 + 2 * 0 - 8 * 0 = 0 := root_of_hasBlock l ev _ h
-  simp at this
 
 def allPlaces (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] : FrobNorm E Ω l (HeightOneSpectrum (𝓞 E)) where
   lab := id
@@ -416,14 +325,6 @@ def allPlaces (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] 
   cont := continuous_const
   cofin := by simp
 
-theorem allPlaces_reads (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] :
-    (allPlaces l E Ω).Reads 1 (fun _ _ => 1) fun _ => Polynomial.X - Polynomial.C 1 := by
-  intro P B σ _ _
-  have e : (Polynomial.X - Polynomial.C (1 : PadicAlgCl l)).reverse = 1 - Polynomial.X := by
-    rw [Polynomial.reverse, Polynomial.natDegree_X_sub_C, Polynomial.reflect_sub, Polynomial.reflect_one_X, Polynomial.reflect_C]
-    simp
-  refine e.trans ?_
-  simp [Formalism.L2.Col.heckePolyOf, Finset.sum_range_succ, allPlaces, sub_eq_add_neg]
 
 end GlobalTheory.ExpFrame.Inhab
 

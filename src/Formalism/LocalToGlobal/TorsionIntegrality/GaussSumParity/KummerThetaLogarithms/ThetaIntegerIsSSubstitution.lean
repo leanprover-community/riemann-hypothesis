@@ -236,13 +236,6 @@ theorem one_letter_gauss_of_f : OneLetterGaussOfF := by
     (hT2 (biextension_hypotheses_of_level_one K0 l 2 σ hU le_rfl (by decide) F hF be0 hF1 Unit _ _ (SingleLetterLog.owOK_two σ) ζ hζ))
     1 (by simp) g hg0 hg' U hUi (-1) (Or.inr rfl) p hp I a ha hsa n
 
-theorem theorem_s_of_f : ThmSOfF := by
-  intro K0 K _ _ _ _ _ _ _ j p ν r0 r1 _ σ hj hU hζ F hF be hF1 hF2
-  obtain ⟨c, hc, hcc, h⟩ := Formalism.InvariantFactorPaths.G7.Top.thmSFull K0 K j p ν r0 r1 σ hj hU hζ F hF be
-    (betaHypOfF K0 p σ hU F be hF1 hF2)
-  refine ⟨c, hc, hcc, ?_⟩
-  intro om oms ϖ μ U0 Φ hϖ hO hT hμ0 hμ hU0 hΦ0 hΦ
-  exact h _ _ ϖ μ U0 Φ hϖ (omega_integral_criterion K0 K p ν σ j hU hj om oms hO hT) hμ0 hμ hU0 hΦ0 hΦ
 
 theorem kernel_of_f : KernelOfF := by
   intro p _ K0 _ _ _ _ σ hU hζ F hF be hF1 hF2 K _ _ _ j ν r0 r1 _ hj hϖ om oms hO hT U0 Φ hU0 hΦ0

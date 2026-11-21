@@ -4,7 +4,37 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsGoodIndexN
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.Hilbert90FiniteIdelesCongruence
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqIffConjPl
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RamificationIdxEqOneOfIsSquare
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NatCastMemOfPrimeDvdAbsNorm
+
+section
+namespace GlobalTheory.NatCastMemOfPrimeDvdNorm
+
+open NumberField IsDedekindDomain
+
+theorem natCast_mem_of_prime_dvd_absNorm {K : Type} [Field K] [NumberField K]
+    (w : HeightOneSpectrum (RingOfIntegers K)) {q : ℕ} (hq : Nat.Prime q)
+    (hd : q ∣ Ideal.absNorm w.asIdeal) : (q : RingOfIntegers K) ∈ w.asIdeal := by
+  haveI : Fact q.Prime := ⟨hq⟩
+  haveI : w.asIdeal.IsPrime := w.isPrime
+  haveI : Finite (RingOfIntegers K ⧸ w.asIdeal) :=
+    Ideal.finiteQuotientOfFreeOfNeBot w.asIdeal w.ne_bot
+  have hc : q ∣ Nat.card (RingOfIntegers K ⧸ w.asIdeal) := by
+    rwa [Ideal.absNorm_apply, Submodule.cardQuot_apply] at hd
+  obtain ⟨x, hx⟩ := exists_prime_addOrderOf_dvd_card' q hc
+  have hx0 : x ≠ 0 := by
+    rintro rfl
+    rw [addOrderOf_zero] at hx
+    exact hq.one_lt.ne hx
+  have h1 : (q : RingOfIntegers K ⧸ w.asIdeal) * x = 0 := by
+    rw [← nsmul_eq_mul, ← hx]
+    exact addOrderOf_nsmul_eq_zero x
+  have h2 : (q : RingOfIntegers K ⧸ w.asIdeal) = 0 := (mul_eq_zero.mp h1).resolve_right hx0
+  rw [← Ideal.Quotient.eq_zero_iff_mem, map_natCast]
+  exact h2
+
+end GlobalTheory.NatCastMemOfPrimeDvdNorm
+end
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice MeasureTheory IsDedekindDomain NumberField Matrix
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum GlobalTheory.LFun GlobalTheory.AdelicU GlobalTheory.PRep GlobalTheory.FinZeta GlobalTheory.AdelicScalar GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues GlobalTheory.LiftRows
 open Formalism.IndefR.Lev (levG levChi IsBaseFrame)
@@ -59,3 +89,5 @@ theorem lam_qV_pow (D : D7) (lam : ℕ →* ℂ)
     refine conj_smul_ne_of_isSplit D v w hw hv (hi w.asIdeal w.isPrime w.ne_bot hmem)
 
 end GlobalTheory.FinZeta.SplitNorm
+end
+end

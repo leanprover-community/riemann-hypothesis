@@ -85,11 +85,7 @@ theorem GSD.valH_spec (R : S.Rat) (d : S.D) :
     (∀ v (x : S.V), Formalism.HermitianLatticesTheory.normAt (S.valH d).b (S.valH d).X v x = Real.sqrt (S.pairAt v x x).re) :=
   formH_spec S.bV S.pair R.pos' (S.Del d)
 
-theorem GSD.valH_good (R : S.Rat) (d : S.D) (hD : Submodule.IsLattice K (S.Del d)) : (S.valH d).Good :=
-  formH_good S.bV S.pair R.pos' hD
 
-theorem GSD.valNabH_good (R : S.Rat) (d : S.D) (hD : Submodule.IsLattice K (S.Nab d)) : (S.valNabH d).Good :=
-  formH_good S.bV S.pair R.pos' hD
 
 end Val
 
@@ -113,15 +109,6 @@ theorem stdNabL_eq : stdNabL K lam = nabK (oneW lam) fun _ => colLat (1 : GL (Fi
   rw [← h]
   rfl
 
-theorem stdDelL_eq : stdDelL K lam = delK (oneW lam) fun _ => colLat (1 : GL (Fin n) K) := by
-  unfold stdDelL delK
-  have h := (nabDelFree K Unit n (oneW lam) 1).2
-  have h1 : (delStd K (oneW lam)).map ((actP (oneW lam) (1 : Unit → GL (Fin n) K)).restrictScalars (𝓞 K)) = delStd K (oneW lam) := by
-    ext F
-    simp [polyAction_one₂]
-  rw [h1] at h
-  rw [← h]
-  rfl
 
 theorem brz_colLat_one_lattice : Submodule.IsLattice K (colLat (1 : GL (Fin n) K)) := by
   have e : colLat (1 : GL (Fin n) K) = stdLat K n := by
@@ -135,22 +122,14 @@ theorem stdNabL_isLattice : Submodule.IsLattice K (stdNabL K lam) := by
   rw [stdNabL_eq]
   exact (nabDelLattice K Unit n (oneW lam) _ fun _ => brz_colLat_one_lattice K).1
 
-theorem stdDelL_isLattice : Submodule.IsLattice K (stdDelL K lam) := by
-  rw [stdDelL_eq]
-  exact (nabDelLattice K Unit n (oneW lam) _ fun _ => brz_colLat_one_lattice K).2
 
 theorem stdNabH_good : (stdNabH K lam).Good := formH_good _ _ (stdPair_pos K lam) (stdNabL_isLattice K lam)
 
-theorem stdDelH_good : (stdDelH K lam).Good := formH_good _ _ (stdPair_pos K lam) (stdDelL_isLattice K lam)
 
 theorem stdNabL_ne_bot : stdNabL K lam ≠ ⊥ := by
   exact isLattice_ne_bot (stdNabL_isLattice K lam)
 
-theorem stdDelL_ne_bot : stdDelL K lam ≠ ⊥ := by
-  exact isLattice_ne_bot (stdDelL_isLattice K lam)
 
-theorem stdDelL_le : stdDelL K lam ≤ stdNabL K lam :=
-  Submodule.comap_mono (delStd_le_nabStd K (oneW lam))
 
 theorem slopeLeMax : SlopeLeMax K lam :=
   hlat_mu_le_muMax (stdNabH K lam) (stdNabH_good K lam).1 (stdNabH_good K lam).2.1 (stdNabL_ne_bot K lam)
@@ -161,8 +140,6 @@ section Cols
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
 
-theorem colValH_good (hX : X.Ok) (u : Pr.Word) (j : ℕ) (d : (colGSD W Ch u j).D) : ((colGSD W Ch u j).valH d).Good :=
-  GSD.valH_good (colRat W Ch hX u j) d (thl_colDel_isLattice W Ch u j d)
 
 end Cols
 

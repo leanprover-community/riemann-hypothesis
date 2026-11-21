@@ -183,13 +183,6 @@ theorem nuP_succ (C : CharFrame D) (P : HeightOneSpectrum (𝓞 D.host.E)) (j : 
     | (congr 3; ext; simp)
     | (congr 2; ext; simp)
 
-theorem nuP_mul_delQ (Tp : TupTied D C nch) (μ : D.what₂.Tup) (P : HeightOneSpectrum (𝓞 D.host.E)) (j : Fin D.R.m) :
-    nuP C P (j.1 + 1) * delQ Tp μ P = ((Tp.tup μ j)⁻¹).loc P := by
-  rw [nuP_succ]
-  refine MonoidHom.ext fun x => ?_
-  show ((C.mu0 j).loc P x)⁻¹ * ((Tp.xi μ).loc P x)⁻¹ = ((C.mu0 j * Tp.xi μ).loc P x)⁻¹
-  rw [← mul_inv]
-  rfl
 
 structure QLocTied (Tp : TupTied D C nch) (Z : DivX D)
     (PQ : ∀ μ, Z.QPl μ → HeightOneSpectrum (𝓞 D.host.E)) : Prop where
@@ -368,16 +361,8 @@ theorem QLocJoint.l2 (hQ : ThmQ) {Tp : TupTied D C nch} {Z : DivX D} (h : QLocJo
   unfold QLocTiedC at hC
   exact hC.2.l2 hQ
 
-theorem qLocTied_of_empty (Tp : TupTied D C nch) (Z : DivX D) (hE : ∀ μ, IsEmpty (Z.QPl μ)) (PQ) : QLocTied Tp Z PQ := by
-  constructor <;> intro μ v <;> exact (hE μ).elim v
 
-theorem qLocVal_of_empty (Z : DivX D) (hE : ∀ μ, IsEmpty (Z.QPl μ)) : QLocVal Z := by
-  constructor <;> intro μ v <;> exact (hE μ).elim v
 
-theorem qLocTied_divXToy (Tp : TupTied D C nch) (h0 hM PQ) : QLocTied Tp (Examples₂.divXExample D h0 hM) PQ :=
-  qLocTied_of_empty Tp _ (fun _ => ⟨fun e => Empty.elim e⟩) PQ
 
-theorem qLocTied_divXStd (Tp : TupTied D C nch) (n bM hg kap hk PQ) : QLocTied Tp (Examples₂.NZ.divXStd D n bM hg kap hk) PQ :=
-  qLocTied_of_empty Tp _ (fun _ => ⟨fun e => Empty.elim e⟩) PQ
 
 end Formalism.L2.DIV

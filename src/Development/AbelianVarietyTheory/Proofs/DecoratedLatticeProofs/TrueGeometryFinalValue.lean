@@ -1,5 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MemLevOfRed
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SplitPlaceLocalGroupElementsJacobiBessel
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MemIdAtOfSupp
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.StabilizesSelfDualIffFrameMatrixStabilizesStatement
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsReductionOfMemLevelZero
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LevDatYZero
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsSuppVecLocEq
@@ -7,6 +9,143 @@ import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MovesLocal
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.CarriesLatticeCompletionOnOffIffAllFinitePlaces
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsMatrixInFrameOfXZero
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.NotIsCompactUnivFv
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix
+open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.SplitWeil GlobalTheory.LatPair GlobalTheory.SeeSaw GlobalTheory.FinPl ValuativeRel
+open scoped TensorProduct nonZeroDivisors
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open scoped Pointwise
+
+noncomputable section
+namespace GlobalTheory.SeeSaw.LevMoves
+
+section
+variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+
+theorem mulVec_sec (q : SplitPt D k) {m n : ℕ} (M : Matrix (Fin m) (Fin n) (AE D)) (y : Fin n → k) :
+    M *ᵥ (fun i => q.sec (y i)) = fun i => q.sec ((M.map q.pr *ᵥ y) i) := by
+  funext i
+  simp only [Matrix.mulVec, dotProduct, map_sum, Matrix.map_apply]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  have h := q.sec_pr (M i j * q.sec (y j))
+  rw [RingHom.map_mul, q.pr_sec, mul_left_comm, ← GlobalTheory.FrameGlob.sec_eq_mul] at h
+  exact h.symm
+
+theorem isLat_moved (q : SplitPt D k) {PP : Formalism.L2.DIV.Pl D.host.E} (hq : Formalism.L2.NTheta.IsIdemAt q.e PP) (S : HSp D)
+    (Λ L : Lat S) (β : GL (Fin S.rank) (Lev.EAf D)) (hβ : Formalism.L2.DIV.IsFrame β Λ) (t : GA D S)
+    (ht : Moves S t Λ L (· = q.v)) {Y : Type} [Fintype Y] [DecidableEq Y] (F : GlobalTheory.LocMod.Frame k S.rank Y) (bas : GL Y k)
+    (σ : Fin S.rank ≃ Y) (hM : GlobalTheory.LocMod.MovedTo (GlobalTheory.LocMod.ofSplit q) S t β ((F.β * bas.val).submatrix id σ))
+    (x : Y → k) : x ∈ GlobalTheory.StepData.latOf bas ↔ (fun i => q.sec ((F.β *ᵥ x) i)) ∈ latV S L (· = q.v) := by
+  obtain ⟨B, hB, hl⟩ := GlobalTheory.LocMod.PinEx.exists_topFrame q hq S Λ β hβ
+  have hs : Function.Surjective (toEAf D) := by
+    refine (Algebra.TensorProduct.comm D.host.F (Af D.host.F) D.host.E).surjective.comp ?_
+    exact Algebra.TensorProduct.map_surjective _ _ (fun α => ⟨pairA _ 0 α, rfl⟩) Function.surjective_id
+  choose f hf using hs
+  have e : (β.val.map f).map (toEAf D) = β.val := by ext i j; exact hf _
+  have h1 := hB _ e
+  have h2 := hM _ e
+  rw [GlobalTheory.MixModel.mt_one, Matrix.one_mul] at h1
+  rw [Matrix.map_mul, h1] at h2
+  have h3 : (mt S t).map q.pr *ᵥ (B.val *ᵥ fun i => ((bas⁻¹).val *ᵥ x) (σ i)) = F.β *ᵥ x := by
+    rw [Matrix.mulVec_mulVec]
+    refine (congrArg (· *ᵥ _) h2).trans ?_
+    have : (fun i => ((bas⁻¹).val *ᵥ x) (σ i)) = ((bas⁻¹).val *ᵥ x) ∘ σ := rfl
+    rw [this, Matrix.submatrix_mulVec_equiv, Function.comp_id, Function.comp_assoc, Equiv.self_comp_symm, Function.comp_id,
+      Matrix.mulVec_mulVec, Matrix.mul_assoc, Units.mul_inv, Matrix.mul_one]
+  rw [← h3, ← mulVec_sec, ← ht _ fun i => GlobalTheory.FrameGlob.sec_mem_idAt q _, hl, Matrix.mulVec_mulVec, Units.inv_mul,
+    Matrix.one_mulVec, GlobalTheory.StepData.mem_latOf]
+  exact ⟨fun h i => h _, fun h i => by simpa using h (σ.symm i)⟩
+
+theorem smul_latOf {Y : Type} [Fintype Y] [DecidableEq Y] {bas g : GL Y k} (h : g ∈ GlobalTheory.StepData.stabLat bas) :
+    g • GlobalTheory.StepData.latOf bas = GlobalTheory.StepData.latOf bas := by
+  have h1 := GlobalTheory.StepData.mem_stabLat_iff.1 h
+  ext y
+  conv_rhs => rw [← h1]
+  change (∃ x, x ∈ GlobalTheory.StepData.latOf bas ∧ g • x = y) ↔ _
+  constructor
+  · rintro ⟨x, hx, rfl⟩
+    exact (GlobalTheory.StepData.mulVec_mem_latOf g).2 hx
+  · intro hy
+    refine ⟨g⁻¹ • y, (GlobalTheory.StepData.mulVec_mem_latOf g).1 ?_, smul_inv_smul _ _⟩
+    have : g.val *ᵥ (g⁻¹ • y) = y := smul_inv_smul g y
+    rwa [this]
+
+end
+
+end GlobalTheory.SeeSaw.LevMoves
+end
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix
+open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.SplitWeil GlobalTheory.LatPair GlobalTheory.SeeSaw GlobalTheory.FinPl ValuativeRel
+open scoped TensorProduct nonZeroDivisors
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open scoped Pointwise
+
+noncomputable section
+namespace GlobalTheory.SeeSaw.RedLev
+
+theorem frGL_mul {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
+    (β : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) (y : GL (Fin n) (Formalism.L2.Herm.intAf F E)) :
+    Formalism.L2.DIV.frGL β y * β = β * Formalism.L2.DIV.intGL F E n y := by
+  simp [Formalism.L2.DIV.frGL]
+
+section
+variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+
+set_option maxHeartbeats 1000000 in
+
+theorem mul_moved (p : GlobalTheory.LocMod.Place D k) {π' : EAf D →+* k} (hπ : ∀ a, π' (toEAf D a) = p.π a) (V : HSp D)
+    (t x : GA D V) (β : GL (Fin V.rank) (Lev.EAf D)) (y : GL (Fin V.rank) (Formalism.L2.Herm.intAf D.host.F D.host.E))
+    (hy : Formalism.L2.DIV.frGL β y = Lev.finE V (t⁻¹ * x * t)) {M : Matrix (Fin V.rank) (Fin V.rank) k}
+    (hM : GlobalTheory.LocMod.MovedTo p V t β M) :
+    (mt V x).map p.π * M = M * y.val.map (π'.comp (Formalism.L2.Herm.intAf D.host.F D.host.E).subtype) := by
+  have hs : Function.Surjective (toEAf D) := by
+    refine (Algebra.TensorProduct.comm D.host.F (Af D.host.F) D.host.E).surjective.comp ?_
+    exact Algebra.TensorProduct.map_surjective _ _ (fun α => ⟨pairA _ 0 α, rfl⟩) Function.surjective_id
+  choose f hf using hs
+  have h1 := hM (β.val.map f) (Matrix.ext fun i j => hf _)
+  have h2 : (β.val.map f).map p.π = β.val.map π' := Matrix.ext fun i j => by
+    rw [Matrix.map_apply, Matrix.map_apply, ← hπ, hf]; rfl
+  rw [Matrix.map_mul, h2] at h1
+  have h3 : Lev.finE V (t⁻¹ * x * t) * β = β * Formalism.L2.DIV.intGL D.host.F D.host.E _ y := by
+    rw [← hy]
+    exact frGL_mul (F := D.host.F) (E := D.host.E) β y
+  have h4 : (mt V (t⁻¹ * x * t)).map p.π * β.val.map π' =
+      β.val.map π' * y.val.map (π'.comp (Formalism.L2.Herm.intAf D.host.F D.host.E).subtype) := by
+    have h5 := congrArg (fun g : GL (Fin V.rank) (Lev.EAf D) => g.val.map π') h3
+    simp only [Units.val_mul, Matrix.map_mul] at h5
+    have h6 : (Lev.finE V (t⁻¹ * x * t)).val.map π' = (mt V (t⁻¹ * x * t)).map p.π := Matrix.ext fun i j => hπ _
+    rw [h6] at h5
+    exact h5
+  have h7 : mt V x * mt V t = mt V t * mt V (t⁻¹ * x * t) := by
+    rw [← GlobalTheory.MixModel.mt_mul, ← GlobalTheory.MixModel.mt_mul, mul_assoc, mul_inv_cancel_left]
+  rw [← h1, ← Matrix.mul_assoc, ← Matrix.map_mul, h7, Matrix.map_mul, Matrix.mul_assoc, h4, Matrix.mul_assoc]
+
+omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
+
+theorem conj_eq {n : ℕ} {Y : Type} [Fintype Y] [DecidableEq Y] (F : GlobalTheory.LocMod.Frame k n Y) (bas W : GL Y k) (σ : Fin n ≃ Y)
+    (N : Matrix (Fin n) (Fin n) k)
+    (h : F.β * W.val * F.γ * (F.β * bas.val).submatrix id σ = (F.β * bas.val).submatrix id σ * N) :
+    (bas⁻¹ * W * bas).val.submatrix σ σ = N := by
+  have h1 : ((bas⁻¹).val * F.γ).submatrix σ id * (F.β * bas.val).submatrix id σ = 1 := by
+    change ((bas⁻¹).val * F.γ * (F.β * bas.val)).submatrix σ σ = 1
+    rw [Matrix.mul_assoc, ← Matrix.mul_assoc F.γ, F.γβ, Matrix.one_mul, Units.inv_mul, Matrix.submatrix_one_equiv]
+  rw [← Matrix.one_mul N, ← h1, Matrix.mul_assoc, ← h]
+  change _ = ((bas⁻¹).val * F.γ * (F.β * W.val * F.γ * (F.β * bas.val))).submatrix σ σ
+  congr 1
+  simp only [Units.val_mul, Matrix.mul_assoc]
+  rw [← Matrix.mul_assoc F.γ F.β bas.val, ← Matrix.mul_assoc F.γ F.β, F.γβ, Matrix.one_mul, Matrix.one_mul]
+
+end
+
+end GlobalTheory.SeeSaw.RedLev
+end
+end
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.SeeSaw GlobalTheory.StepData GlobalTheory.SymChain GlobalTheory.LocMod GlobalTheory.MiS GlobalTheory.MiTop GlobalTheory.Fam GlobalTheory.Mem.Col2 ValuativeRel IsLocalRing
 open scoped TensorProduct Classical
@@ -218,4 +357,5 @@ theorem GlobalTheory.FamTrace.conj_mem_rows_iff : ∀ {B : GlobalTheory.Mem.Base
   intro B X I l Z L hT Gi Gl Kc Yd cX ex W hA u a ha _ row col _ x hx
   exact GlobalTheory.FamTrace.Rows.main W hA.pk u a ha row col x hx
 
+end
 end

@@ -461,28 +461,6 @@ theorem setAverage_eq_of_surjective [K.FiniteIndex] (hφ : Function.Surjective �
   exact ⟨integrableOn_subgroup_iff hD hD'' hf', setIntegral_subgroup_eq_index_smul hD hD'' hf',
     setAverage_subgroup_eq hD hD'' hf'⟩
 
-theorem unfolding_isFundamentalDomain (hφ : Function.Surjective φ)
-    (hφs : ∀ (g : G) (x : X), φ g • x = g • x) (hD : IsFundamentalDomain H D μ)
-    {u : X → ℝ≥0∞} (hu : ∀ (g : G) (x : X), u (g • x) = u x) :
-    (∀ B : Set X, NullMeasurableSet B μ → ∀ m : ℝ≥0∞,
-      (∀ x, ({g : G | g • x ∈ B}.encard : ℝ≥0∞) ≤ m) →
-        ∫⁻ x in B, u x ∂μ ≤ m * ∫⁻ x in D, u x ∂μ) ∧
-    (∀ B : Set X, NullMeasurableSet B μ → ∫⁻ x in B, u x ∂μ
-      ≤ ({g : G | (g • B ∩ B).Nonempty}.encard : ℝ≥0∞) * ∫⁻ x in D, u x ∂μ) ∧
-    (Function.Surjective φ' → (∀ (k : K) (x : X), φ' k • x = k • x) →
-      IsFundamentalDomain H' D' μ →
-        μ D ≤ μ D' ∧ (K.FiniteIndex →
-          (∃ n : ℕ, 0 < n ∧ n ∣ K.index ∧ μ D' = n * μ D ∧
-            ∫⁻ x in D', u x ∂μ = n * ∫⁻ x in D, u x ∂μ) ∧
-          ⨍⁻ x in D', u x ∂μ = ⨍⁻ x in D, u x ∂μ)) := by
-  refine ⟨fun B hB m hm => setLIntegral_le_mul_of_surjective hφ hφs hD hB hu hm,
-    fun B hB => setLIntegral_le_encard_mul_of_ae_covers
-      (ae_exists_smul_mem_of_surjective hφ hφs hD) hB hu,
-    fun hφ' hφs' hD' => ⟨measure_le_measure_of_surjective hφ hφs hD hφ' hφs' hD', fun _ =>
-      ⟨⟨(K.map φ).index, ?_, K.index_map_dvd hφ, measure_eq_index_map_mul hφ hφs hD hφ' hφs' hD',
-        setLIntegral_eq_index_map_mul hφ hφs hD hφ' hφs' hD' hu⟩,
-        setLAverage_eq_of_surjective hφ hφs hD hφ' hφs' hD' hu⟩⟩⟩
-  exact Nat.pos_of_ne_zero (finiteIndex_map_of_surjective (K := K) hφ).index_ne_zero
 
 end Kernel
 
@@ -492,27 +470,8 @@ variable {G X : Type*} [Group G] [MulAction G X] [MeasurableSpace X] {μ : Measu
   [MeasurableConstSMul G X] [SMulInvariantMeasure G X μ] [Countable G] {B D D' : Set X}
   {K : Subgroup G}
 
-theorem setLIntegral_le_mul_of_range_toPermHom
-    (hD : IsFundamentalDomain (MulAction.toPermHom G X).range D μ)
-    (hB : NullMeasurableSet B μ) {u : X → ℝ≥0∞} (hu : ∀ (g : G) (x : X), u (g • x) = u x)
-    {m : ℝ≥0∞} (hm : ∀ x, ({g : G | g • x ∈ B}.encard : ℝ≥0∞) ≤ m) :
-    ∫⁻ x in B, u x ∂μ ≤ m * ∫⁻ x in D, u x ∂μ :=
-  setLIntegral_le_mul_of_surjective (MulAction.toPermHom G X).rangeRestrict_surjective
-    (fun _ _ => rfl) hD hB hu hm
 
-theorem measure_le_measure_of_range_toPermHom
-    (hD : IsFundamentalDomain (MulAction.toPermHom G X).range D μ)
-    (hD' : IsFundamentalDomain (MulAction.toPermHom K X).range D' μ) : μ D ≤ μ D' :=
-  measure_le_measure_of_surjective (MulAction.toPermHom G X).rangeRestrict_surjective
-    (fun _ _ => rfl) hD (MulAction.toPermHom K X).rangeRestrict_surjective (fun _ _ => rfl) hD'
 
-theorem setLAverage_eq_of_range_toPermHom [K.FiniteIndex]
-    (hD : IsFundamentalDomain (MulAction.toPermHom G X).range D μ)
-    (hD' : IsFundamentalDomain (MulAction.toPermHom K X).range D' μ) {u : X → ℝ≥0∞}
-    (hu : ∀ (g : G) (x : X), u (g • x) = u x) :
-    ⨍⁻ x in D', u x ∂μ = ⨍⁻ x in D, u x ∂μ :=
-  setLAverage_eq_of_surjective (MulAction.toPermHom G X).rangeRestrict_surjective
-    (fun _ _ => rfl) hD (MulAction.toPermHom K X).rangeRestrict_surjective (fun _ _ => rfl) hD' hu
 
 end Image
 

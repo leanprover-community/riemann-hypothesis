@@ -93,13 +93,6 @@ theorem _root_.GlobalTheory.LatticeRep.IsLatRep.fix_of_map_le (h : _root_.Global
   rw [hidx, map_one, inv_one, one_smul]
   exact sumOp_eq_self_of_le hg hv
 
-theorem IsLatRep.eq_self_of_trivial (h : IsLatSystem σ w γ W lam A ρ) (hO : IsLatRep W lam A ρ Om) {g : Γ}
-    (hg : ∀ x, ρ g x = x) (m : M) : Om g m = m := by
-  refine transl_induction h.2.2.2.1 (p := fun m => Om g m = m) (fun x v hv => ?_) (map_zero _)
-    (fun a b ha hb => by rw [map_add, ha, hb]) (fun c a ha => by rw [map_smul, ha]) m
-  rw [hO.1, hg, hO.fix_of_map_le h _ hv]
-  rintro _ ⟨a, ha, rfl⟩
-  rw [hg]; exact ha
 
 open Classical in
 open scoped BigOperators in

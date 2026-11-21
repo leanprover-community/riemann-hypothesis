@@ -289,14 +289,7 @@ def ofFramesIso (he : ∀ i, IsFrame (e i)) (hU : ⨆ i, U i = ⊤) : F ≅ toMo
         coord_toFramesLinear, coord_toFramesLinear, IsFrame.resG_repr, QCoh.res_res,
         QCoh.res_res]
 
-theorem coord_ofFramesIso_hom_app (he : ∀ i, IsFrame (e i)) (hU : ⨆ i, U i = ⊤) (V : X.Opens)
-    (s : Γ(F, V)) (i : ι) :
-    coord ((ofFramesIso he hU).hom.app V s) i = (he i).repr (inf_le_right : V ⊓ U i ≤ U i)
-      (F.presheaf.map (homOfLE inf_le_left).op s) := rfl
 
-theorem ofFramesIso_hom_app_frame (he : ∀ i, IsFrame (e i)) (hU : ⨆ i, U i = ⊤) (i : ι) :
-    (ofFramesIso he hU).hom.app (U i) (e i) = chartSec (ofFrames_isLB he hU) i :=
-  sec_ext fun j => (resG_ofFrames_g he j i _).symm
 
 theorem exists_toMod_iso (F : X.Modules)
     (h : ∀ x : X, ∃ (U : X.Opens) (_ : x ∈ U) (e : Γ(F, U)), IsFrame e) :
@@ -305,12 +298,6 @@ theorem exists_toMod_iso (F : X.Modules)
   have hU : ⨆ x, U x = ⊤ := eq_top_iff.2 fun x _ => Opens.mem_iSup.2 ⟨x, hx x⟩
   exact ⟨ofFrames he, ofFrames_isLB he hU, ⟨(ofFramesIso he hU).symm⟩⟩
 
-theorem exists_toMod_iso_iff (F : X.Modules) :
-    (∃ L : LB X, L.IsLB ∧ Nonempty (toMod L ≅ F)) ↔
-      ∀ x : X, ∃ (U : X.Opens) (_ : x ∈ U) (e : Γ(F, U)), IsFrame e := by
-  refine ⟨fun ⟨L, hL, ⟨φ⟩⟩ x => ?_, exists_toMod_iso F⟩
-  obtain ⟨i, hi⟩ := Opens.mem_iSup.1 (hL.cover.ge (Opens.mem_top x))
-  exact ⟨L.U i, hi, _, (isFrame_chartSec hL i).app φ⟩
 
 theorem exists_toMod_iso_of_restrict_iso (F : X.Modules)
     (h : ∀ x : X, ∃ (U : X.Opens) (_ : x ∈ U),
@@ -555,17 +542,11 @@ variable (R) in
 def globalRingEquiv : R ≃+* Γ(Sp R, ⊤) :=
   (Scheme.ΓSpecIso (CommRingCat.of R)).symm.commRingCatIsoToRingEquiv
 
-theorem globalRingEquiv_apply (r : R) :
-    globalRingEquiv R r = (Scheme.ΓSpecIso (CommRingCat.of R)).inv r := rfl
 
 instance secModuleSp : Module R (LB.Sec L) :=
   Module.compHom (LB.Sec L) (Scheme.ΓSpecIso (CommRingCat.of R)).inv.hom
 
-theorem sp_smul_def (r : R) (σ : LB.Sec L) :
-    r • σ = (show Γ(Sp R, ⊤) from (Scheme.ΓSpecIso (CommRingCat.of R)).inv r) • σ := rfl
 
-theorem sp_smul_f (r : R) (σ : LB.Sec L) (i : L.ι) :
-    (r • σ).f i = resG (Sp R) le_top ((Scheme.ΓSpecIso (CommRingCat.of R)).inv r) * σ.f i := rfl
 
 theorem spec_smul_top {S : CommRingCat.{0}} (F : (Spec S).Modules) (r : S) (s : Γ(F, ⊤)) :
     r • s = (show Γ(Spec S, ⊤) from (Scheme.ΓSpecIso S).inv r) • s :=

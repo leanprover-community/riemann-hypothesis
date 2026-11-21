@@ -208,16 +208,5 @@ theorem modelExists_statement : ModelExists := by
   · exact ultra p
   · exact charZero_of_injective_algebraMap (IsFractionRing.injective (WW p) (KK p))
 
-theorem BetaNonVacuous_of (hM : ModelExists) (hL : LawExists) (hG : GcIsBeta) (hU : GcUnique) :
-    BetaNonVacuous := by
-  intro p _ hp2
-  obtain ⟨K, i1, h1, h2, h3, σ, hσ, ζ, hζ⟩ := hM p hp2
-  obtain ⟨⟨F, hF⟩, -⟩ := hL K p hσ.1 hσ.2.2.1
-  refine ⟨K, i1, h1, h2, h3, σ, F, Gser p 1 (σ 1), hσ, ⟨ζ, hζ⟩, hF, ?_, ?_⟩
-  · exact hG K p σ hσ F hF 1 (by simp) (by simp)
-  · intro h
-    have h0 : (0 : MvPowerSeries (Fin 2) K) = Gser p 0 (σ 0) := by simp [Gser]
-    rw [h0] at h
-    exact one_ne_zero (hU K p σ hσ 1 0 (by simp) (by simp) h)
 
 end Formalism.InvariantFactorPaths.G7

@@ -3,9 +3,147 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.HermiteNormalForms
 import Development.AutomorphicArithmetic.AutomorphicVarieties.HermiteNormalForms.Exbasis
 import Development.AutomorphicArithmetic.AutomorphicVarieties.HermiteNormalForms.DetPull
 import Development.AutomorphicArithmetic.AutomorphicVarieties.HermiteNormalForms.Hnf
-import Development.AutomorphicArithmetic.AutomorphicVarieties.HermiteNormalForms.Nearvx
+import Development.AutomorphicArithmetic.AutomorphicVarieties.HermiteNormalForms.SmulNeZeroLat
+import Development.AutomorphicArithmetic.AutomorphicVarieties.HermiteNormalForms.Nearvec
+import Mathlib
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ConvexNerveComplexes.SimpSpan
 
+section
+open NumberField Matrix UpperTheory.V UpperTheory.V.KT
+open scoped ComplexOrder
+
+theorem UpperTheory.V.KT.rankhs :
+    ∀ (L : Type) [Field L] [NumberField L] [IsTotallyComplex L] (N : ℕ), Module.finrank ℝ (HS L N) ≤ dd L N * N := by
+  intro L _ _ _ N
+  refine (Submodule.finrank_le (HSsub L N)).trans (le_of_eq ?_)
+  have h1 := IsTotallyComplex.finrank L
+  have h2 := InfinitePlace.card_eq_nrRealPlaces_add_nrComplexPlaces L
+  have h3 := IsTotallyComplex.nrRealPlaces_eq_zero L
+  simp only [Module.finrank_pi_fintype, Complex.finrank_real_complex, Finset.sum_const,
+    Finset.card_univ, Fintype.card_fin, smul_eq_mul, dd]
+  rw [h1, h2, h3]
+  ring
+end
+
+section
+open NumberField Matrix UpperTheory.V UpperTheory.V.KT
+open scoped ComplexOrder
+
+private theorem UpperTheory.V.KT.finite_subfamily_spans_dual {E Y : Type*} [AddCommGroup E] [Module ℝ E]
+    [Module.Finite ℝ E] (f : Y → Module.Dual ℝ E) (S : Set Y) :
+    ∃ M : Finset Y, M.card ≤ Module.finrank ℝ E ∧ (∀ y ∈ M, y ∈ S) ∧
+      ∀ k : E, (∀ y ∈ M, f y k = 0) → ∀ y ∈ S, f y k = 0 := by
+  classical
+  obtain ⟨b, hbs, hspan, hli⟩ := exists_linearIndependent ℝ (f '' S)
+  have hbfin : b.Finite := hli.setFinite
+  have hch : ∀ φ ∈ b, ∃ y, y ∈ S ∧ f y = φ := fun φ hφ => hbs hφ
+  choose g hgS hgf using hch
+  refine ⟨hbfin.toFinset.attach.image (fun φ => g φ.1 (hbfin.mem_toFinset.mp φ.2)), ?_, ?_, ?_⟩
+  · haveI : Fintype b := hbfin.fintype
+    calc (hbfin.toFinset.attach.image (fun φ => g φ.1 (hbfin.mem_toFinset.mp φ.2))).card
+        ≤ hbfin.toFinset.attach.card := Finset.card_image_le
+      _ = hbfin.toFinset.card := Finset.card_attach
+      _ = Fintype.card b := hbfin.card_toFinset
+      _ ≤ Module.finrank ℝ (Module.Dual ℝ E) := hli.fintype_card_le_finrank
+      _ = Module.finrank ℝ E := Subspace.dual_finrank_eq
+  · intro y hy
+    obtain ⟨φ, _, rfl⟩ := Finset.mem_image.mp hy
+    exact hgS _ _
+  · intro k hk y hy
+    have hsub : b ⊆ LinearMap.ker (Module.Dual.eval ℝ E k) := by
+      intro φ hφ
+      rw [SetLike.mem_coe, LinearMap.mem_ker, Module.Dual.eval_apply, ← hgf φ hφ]
+      exact hk _ (Finset.mem_image.mpr ⟨⟨φ, hbfin.mem_toFinset.mpr hφ⟩, Finset.mem_attach _ _, rfl⟩)
+    have hle := Submodule.span_le.mpr hsub
+    rw [hspan] at hle
+    have hm := hle (Submodule.subset_span ⟨y, hy, rfl⟩)
+    rwa [LinearMap.mem_ker, Module.Dual.eval_apply] at hm
+
+theorem UpperTheory.V.KT.vxdet :
+    ∀ (L : Type) [Field L] [NumberField L] [IsTotallyComplex L] (N : ℕ) (v : Vx L N),
+    ∃ M : Finset (Lat L N), M.card ≤ dd L N * N ∧ (∀ y ∈ M, q v.1 y = 1) ∧
+      ∀ h : HS L N, (∀ y ∈ M, q h y = 1) → h = v.1 := by
+  intro L _ _ _ N v
+  obtain ⟨M, hMc, hMS, hMk⟩ := UpperTheory.V.KT.finite_subfamily_spans_dual (E := HS L N)
+    (fun y : Lat L N => (ev y : Module.Dual ℝ (HS L N))) {y | y ≠ 0 ∧ q v.1 y = 1}
+  refine ⟨M, hMc.trans (rankhs L N), fun y hy => (hMS y hy).2, ?_⟩
+  intro h hh
+  have hk : ∀ y ∈ M, ev y (h - v.1) = 0 := by
+    intro y hy
+    rw [map_sub, ev_apply, ev_apply, hh y hy, (hMS y hy).2, sub_self]
+  have hall := hMk (h - v.1) hk
+  have h0 : h - v.1 = 0 := by
+    apply v.2.2
+    intro y hy
+    have hy' : q v.1 y.1 = 1 := by
+      rw [← ev_apply]
+      exact hy
+    exact hall y.1 ⟨y.2, hy'⟩
+  exact sub_eq_zero.mp h0
+end
+
+section
+open Matrix
+open scoped ComplexOrder
+
+theorem UpperTheory.V.KT.cardsub :
+    ∀ (α : Type) (S : Set α) (k : ℕ), S.Finite →
+    {M : Finset α | (↑M : Set α) ⊆ S ∧ M.card ≤ k}.Finite ∧
+      {M : Finset α | (↑M : Set α) ⊆ S ∧ M.card ≤ k}.ncard ≤ (S.ncard + 1) ^ k := by
+  intro α S k hS
+  classical
+  set T := hS.toFinset with hT
+  let F : Finset (Finset α) := (Finset.range (k + 1)).biUnion fun j => T.powersetCard j
+  have hsub : {M : Finset α | (↑M : Set α) ⊆ S ∧ M.card ≤ k} ⊆ (↑F : Set (Finset α)) := by
+    rintro M ⟨hM, hk⟩
+    rw [Finset.mem_coe, Finset.mem_biUnion]
+    refine ⟨M.card, Finset.mem_range.2 (by omega), Finset.mem_powersetCard.2 ⟨?_, rfl⟩⟩
+    intro x hx
+    simpa [T] using hM hx
+  have hfin := F.finite_toSet.subset hsub
+  refine ⟨hfin, ?_⟩
+  calc _ ≤ (↑F : Set (Finset α)).ncard := Set.ncard_le_ncard hsub F.finite_toSet
+    _ = F.card := Set.ncard_coe_finset F
+    _ ≤ ∑ j ∈ Finset.range (k + 1), (T.powersetCard j).card := Finset.card_biUnion_le
+    _ = ∑ j ∈ Finset.range (k + 1), T.card.choose j := by simp [Finset.card_powersetCard]
+    _ ≤ ∑ j ∈ Finset.range (k + 1), T.card ^ j * 1 ^ (k - j) * k.choose j := by
+      apply Finset.sum_le_sum
+      intro j hj
+      have h1 : T.card.choose j ≤ T.card ^ j := Nat.choose_le_pow _ _
+      have h2 : 1 ≤ k.choose j := Nat.choose_pos (by simp at hj; omega)
+      rw [one_pow, mul_one]
+      calc T.card.choose j ≤ T.card ^ j := h1
+        _ = T.card ^ j * 1 := (mul_one _).symm
+        _ ≤ T.card ^ j * k.choose j := Nat.mul_le_mul_left _ h2
+    _ = (T.card + 1) ^ k := (add_pow _ _ _).symm
+    _ = (S.ncard + 1) ^ k := by rw [Set.ncard_eq_toFinset_card S hS]
+end
+
+section
+open NumberField Matrix UpperTheory.V UpperTheory.V.KT
+open scoped ComplexOrder
+
+theorem UpperTheory.V.KT.nearvx :
+    ∀ (L : Type) [Field L] [NumberField L] [IsTotallyComplex L] (N : ℕ) (A : Matrix (Fin N) (Fin N) (𝓞 L)), A.det ≠ 0 →
+    (nearVx A).Finite ∧ (nearVx A).ncard ≤ ((2 * RR L N + 1) ^ dd L N + 1) ^ (dd L N * N) := by
+  intro L _ _ _ N A hA
+  choose f hf1 hf2 hf3 using vxdet L N
+  obtain ⟨hfin, hcard⟩ := nearvec L N A hA
+  obtain ⟨h1, h2⟩ := cardsub (Lat L N) (nearVec A) (dd L N * N) hfin
+  have hinj : Function.Injective f := fun v w e =>
+    Subtype.ext (hf3 w v.1 (fun y hy => hf2 v y (e ▸ hy)))
+  have hmap : ∀ v ∈ nearVx A, f v ∈
+      {M : Finset (Lat L N) | (↑M : Set (Lat L N)) ⊆ nearVec A ∧ M.card ≤ dd L N * N} := by
+    intro v hv
+    refine ⟨fun y hy => ⟨v.1, ?_, hv, hf2 v y hy⟩, hf1 v⟩
+    have := v.2.1
+    rwa [poly_qc] at this
+  refine ⟨Set.Finite.of_injOn hmap hinj.injOn h1, ?_⟩
+  refine (Set.ncard_le_ncard_of_injOn f hmap hinj.injOn h1).trans (h2.trans ?_)
+  exact Nat.pow_le_pow_left (Nat.succ_le_succ hcard) _
+end
+
+section
 open NumberField Matrix UpperTheory.V UpperTheory.V.KT
 open scoped ComplexOrder
 
@@ -72,3 +210,4 @@ theorem UpperTheory.V.KT.orb :
   refine (Finset.sum_le_card_nsmul _ _ _ fun A _ => hb A).trans ?_
   rw [smul_eq_mul, Finset.card_univ, Fintype.card_coe]
   exact Nat.mul_le_mul_right _ ((Finset.card_filter_le _ _).trans hS)
+end

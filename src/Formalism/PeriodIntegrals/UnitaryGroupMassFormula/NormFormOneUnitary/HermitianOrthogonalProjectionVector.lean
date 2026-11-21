@@ -1,5 +1,295 @@
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.NormFormOneUnitary.UnitaryP
+import Formalism.HermitianCurvature.OperatorsCommuteTranslations
 
+section
+open Matrix Finset Formalism.QuantumDeterminants
+
+noncomputable section
+
+namespace NFOne
+
+def sg (k r : ℕ) (i : Fin (2 * r + k + 1)) : Fin (2 * r + k + 1) := ⟨2 * r + k - i.val, by omega⟩
+
+@[simp] theorem sg_val (k r : ℕ) (i : Fin (2 * r + k + 1)) : (sg k r i).val = 2 * r + k - i.val := rfl
+
+theorem sg_sg (k r : ℕ) (i : Fin (2 * r + k + 1)) : sg k r (sg k r i) = i := by
+  apply Fin.ext
+  simp only [sg_val]
+  have := i.isLt
+  omega
+
+def dW (k r : ℕ) (i : Fin (2 * r + k + 1)) : ℂ := if i.val = r + k then -1 else 1
+
+theorem star_dW (k r : ℕ) (i : Fin (2 * r + k + 1)) : star (dW k r i) = dW k r i := by
+  unfold dW
+  split_ifs <;> simp
+
+theorem Hpk_eq (k r : ℕ) (p l : Fin (2 * r + k + 1)) :
+    Hpk k r p l = if r ≤ p.val ∧ p.val ≤ r + k then (if l = p then dW k r p else 0)
+      else (if l = sg k r p then 1 else 0) := by
+  have := p.isLt
+  have := l.isLt
+  simp only [Hpk, dW, Fin.ext_iff, sg_val]
+  split_ifs <;> first | rfl | (exfalso; omega)
+
+theorem Hpk_symm (k r : ℕ) (p l : Fin (2 * r + k + 1)) : Hpk k r p l = Hpk k r l p := by
+  have := p.isLt
+  have := l.isLt
+  simp only [Hpk, Fin.ext_iff]
+  split_ifs <;> first | rfl | (exfalso; omega)
+
+theorem H_row (k r : ℕ) (p : Fin (2 * r + k + 1)) (f : Fin (2 * r + k + 1) → ℂ) :
+    ∑ l, Hpk k r p l * f l =
+      if r ≤ p.val ∧ p.val ≤ r + k then dW k r p * f p else f (sg k r p) := by
+  by_cases h : r ≤ p.val ∧ p.val ≤ r + k
+  · simp [Hpk_eq, h, ite_mul]
+  · simp [Hpk_eq, h, ite_mul]
+
+theorem Hpk_mulVec (k r : ℕ) (v : Fin (2 * r + k + 1) → ℂ) (p : Fin (2 * r + k + 1)) :
+    (Hpk k r *ᵥ v) p = if r ≤ p.val ∧ p.val ≤ r + k then dW k r p * v p else v (sg k r p) := by
+  exact H_row k r p v
+
+theorem herm_eq (k r : ℕ) (v w : Fin (2 * r + k + 1) → ℂ) :
+    herm (Hpk k r) v w = ∑ i, star (w i) * (Hpk k r *ᵥ v) i := rfl
+
+def Pm (k r j : ℕ) (V : ℕ → Fin (2 * r + k + 1) → ℂ) :
+    Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ := fun p q =>
+  if p.val < r then
+    (if r ≤ q.val ∧ q.val ≤ r + k then -(dW k r q * star (V p.val q))
+     else if r + k < q.val then
+       (if (sg k r q).val < j then V (sg k r q).val p else -star (V p.val (sg k r q)))
+     else 0)
+  else if r ≤ p.val ∧ p.val ≤ r + k then
+    (if r + k < q.val then V (sg k r q).val p else 0)
+  else 0
+
+theorem P_colX (k r j : ℕ) (V : ℕ → Fin (2 * r + k + 1) → ℂ) (p q : Fin (2 * r + k + 1))
+    (hq : q.val < r) : Pm k r j V p q = 0 := by
+  simp only [Pm]
+  split_ifs <;> first | rfl | (exfalso; omega)
+
+theorem P_rowS (k r j : ℕ) (V : ℕ → Fin (2 * r + k + 1) → ℂ) (p q : Fin (2 * r + k + 1))
+    (hp : r + k < p.val) : Pm k r j V p q = 0 := by
+  simp only [Pm]
+  split_ifs <;> first | rfl | (exfalso; omega)
+
+theorem P_rowWS_colW (k r j : ℕ) (V : ℕ → Fin (2 * r + k + 1) → ℂ) (p q : Fin (2 * r + k + 1))
+    (hp : r ≤ p.val) (hq : q.val ≤ r + k) : Pm k r j V p q = 0 := by
+  simp only [Pm]
+  split_ifs <;> first | rfl | (exfalso; omega)
+
+theorem P_WS (k r j : ℕ) (V : ℕ → Fin (2 * r + k + 1) → ℂ) (p q : Fin (2 * r + k + 1))
+    (hp1 : r ≤ p.val) (hp2 : p.val ≤ r + k) (hq : r + k < q.val) :
+    Pm k r j V p q = V (sg k r q).val p := by
+  simp only [Pm]
+  split_ifs <;> first | rfl | (exfalso; omega)
+
+theorem P_XW (k r j : ℕ) (V : ℕ → Fin (2 * r + k + 1) → ℂ) (p q : Fin (2 * r + k + 1))
+    (hp : p.val < r) (hq1 : r ≤ q.val) (hq2 : q.val ≤ r + k) :
+    Pm k r j V p q = -(dW k r q * star (V p.val q)) := by
+  simp only [Pm]
+  split_ifs <;> first | rfl | (exfalso; omega)
+
+theorem P_XS (k r j : ℕ) (V : ℕ → Fin (2 * r + k + 1) → ℂ) (p q : Fin (2 * r + k + 1))
+    (hp : p.val < r) (hq : r + k < q.val) :
+    Pm k r j V p q = if (sg k r q).val < j then V (sg k r q).val p else -star (V p.val (sg k r q)) := by
+  simp only [Pm]
+  split_ifs <;> first | rfl | (exfalso; omega)
+
+theorem HP_apply (k r j : ℕ) (V : ℕ → Fin (2 * r + k + 1) → ℂ) (p q : Fin (2 * r + k + 1)) :
+    (Hpk k r * Pm k r j V) p q = if r ≤ p.val ∧ p.val ≤ r + k then dW k r p * Pm k r j V p q
+      else Pm k r j V (sg k r p) q := by
+  rw [Matrix.mul_apply]
+  exact H_row k r p (fun l => Pm k r j V l q)
+
+theorem PH_apply (k r j : ℕ) (V : ℕ → Fin (2 * r + k + 1) → ℂ) (p q : Fin (2 * r + k + 1)) :
+    ((Pm k r j V)ᴴ * Hpk k r) p q = if r ≤ q.val ∧ q.val ≤ r + k then dW k r q * star (Pm k r j V q p)
+      else star (Pm k r j V (sg k r q) p) := by
+  have h : ∑ l, Hpk k r q l * star (Pm k r j V l p) =
+      if r ≤ q.val ∧ q.val ≤ r + k then dW k r q * star (Pm k r j V q p)
+      else star (Pm k r j V (sg k r q) p) := H_row k r q (fun l => star (Pm k r j V l p))
+  rw [Matrix.mul_apply, ← h]
+  refine Finset.sum_congr rfl fun l _ => ?_
+  rw [Matrix.conjTranspose_apply, Hpk_symm k r l q, mul_comm]
+
+theorem PHP_apply (k r j : ℕ) (V : ℕ → Fin (2 * r + k + 1) → ℂ) (p q : Fin (2 * r + k + 1)) :
+    ((Pm k r j V)ᴴ * (Hpk k r * Pm k r j V)) p q = ∑ i, (if r ≤ i.val ∧ i.val ≤ r + k then
+      dW k r i * star (Pm k r j V i p) * Pm k r j V i q else 0) := by
+  rw [Matrix.mul_apply]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [HP_apply, Matrix.conjTranspose_apply]
+  have hi := i.isLt
+  by_cases h : r ≤ i.val ∧ i.val ≤ r + k
+  · rw [if_pos h, if_pos h]
+    ring
+  · rw [if_neg h, if_neg h]
+    by_cases h2 : i.val < r
+    · rw [P_rowS k r j V (sg k r i) q (by simp only [sg_val]; omega), mul_zero]
+    · rw [P_rowS k r j V i p (by omega), star_zero, zero_mul]
+
+end NFOne
+end
+end
+
+section
+open Matrix Finset Formalism.QuantumDeterminants
+
+noncomputable section
+
+namespace NFOne
+
+theorem K_iso (k r j : ℕ) (V : ℕ → Fin (2 * r + k + 1) → ℂ)
+    (Vs : ∀ b, b < j → ∀ q : Fin (2 * r + k + 1), r + k < q.val →
+      V b q = if (sg k r q).val = b then 1 else 0)
+    (p q : Fin (2 * r + k + 1)) (hp : r + k < p.val) (hq : r + k < q.val)
+    (hb : (sg k r q).val < j) (hc : (sg k r p).val < j) :
+    herm (Hpk k r) (V (sg k r q).val) (V (sg k r p).val) =
+      star (V (sg k r p).val (sg k r q)) + V (sg k r q).val (sg k r p) +
+      ∑ i, (if r ≤ i.val ∧ i.val ≤ r + k then
+        dW k r i * star (V (sg k r p).val i) * V (sg k r q).val i else 0) := by
+  have hp' := p.isLt; have hq' := q.isLt
+  rw [herm_eq]
+  have pt : ∀ i : Fin (2 * r + k + 1),
+      star (V (sg k r p).val i) * (Hpk k r *ᵥ V (sg k r q).val) i =
+        (if i = sg k r q then star (V (sg k r p).val (sg k r q)) else 0) +
+        (if i = p then V (sg k r q).val (sg k r p) else 0) +
+        (if r ≤ i.val ∧ i.val ≤ r + k then
+          dW k r i * star (V (sg k r p).val i) * V (sg k r q).val i else 0) := by
+    intro i
+    have hi := i.isLt
+    rw [Hpk_mulVec]
+    by_cases h1 : i.val < r
+    · rw [if_neg (show ¬ (r ≤ i.val ∧ i.val ≤ r + k) by omega),
+        if_neg (show ¬ (i = p) from fun h => by rw [h] at h1; omega),
+        if_neg (show ¬ (r ≤ i.val ∧ i.val ≤ r + k) by omega), add_zero, add_zero]
+      rw [Vs _ hb (sg k r i) (by simp only [sg_val]; omega)]
+      by_cases h2 : i = sg k r q
+      · rw [if_pos (show (sg k r (sg k r i)).val = (sg k r q).val by rw [h2, sg_sg]), if_pos h2,
+          mul_one, h2]
+      · rw [if_neg (show ¬ ((sg k r (sg k r i)).val = (sg k r q).val) by
+            intro h; apply h2; ext; simp only [sg_val] at h ⊢; omega), if_neg h2, mul_zero]
+    · by_cases h3 : i.val ≤ r + k
+      · rw [if_pos (show r ≤ i.val ∧ i.val ≤ r + k from ⟨by omega, h3⟩),
+          if_neg (show ¬ (i = sg k r q) from fun h => by rw [h] at h1; simp only [sg_val] at h1; omega),
+          if_neg (show ¬ (i = p) from fun h => by rw [h] at h3; omega),
+          if_pos (show r ≤ i.val ∧ i.val ≤ r + k from ⟨by omega, h3⟩)]
+        ring
+      · rw [if_neg (show ¬ (r ≤ i.val ∧ i.val ≤ r + k) by omega),
+          if_neg (show ¬ (r ≤ i.val ∧ i.val ≤ r + k) by omega),
+          if_neg (show ¬ (i = sg k r q) from fun h => by rw [h] at h3; simp only [sg_val] at h3; omega),
+          zero_add, add_zero]
+        rw [Vs _ hc i (by omega)]
+        by_cases h2 : i = p
+        · rw [if_pos (show (sg k r i).val = (sg k r p).val by rw [h2]), if_pos h2, h2]; simp
+        · rw [if_neg (show ¬ ((sg k r i).val = (sg k r p).val) by
+            intro h; apply h2; ext; simp only [sg_val] at h; omega), if_neg h2]; simp
+  rw [Finset.sum_congr rfl (fun i _ => pt i), Finset.sum_add_distrib, Finset.sum_add_distrib]
+  simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true]
+
+theorem E_zero (k r j : ℕ) (V : ℕ → Fin (2 * r + k + 1) → ℂ)
+    (V0 : ∀ c, j ≤ c → V c = 0)
+    (Vs : ∀ b, b < j → ∀ q : Fin (2 * r + k + 1), r + k < q.val →
+      V b q = if (sg k r q).val = b then 1 else 0)
+    (Viso : ∀ b c, b < j → c < j → herm (Hpk k r) (V b) (V c) = 0)
+    (p q : Fin (2 * r + k + 1)) :
+    ((Pm k r j V)ᴴ * Hpk k r) p q + (Hpk k r * Pm k r j V) p q +
+      ((Pm k r j V)ᴴ * (Hpk k r * Pm k r j V)) p q = 0 := by
+  have hp2 := p.isLt
+  have hq2 := q.isLt
+  rw [PH_apply, HP_apply, PHP_apply]
+  have hC : ¬ (r + k < p.val ∧ r + k < q.val) →
+      ∑ i, (if r ≤ i.val ∧ i.val ≤ r + k then
+        dW k r i * star (Pm k r j V i p) * Pm k r j V i q else 0) = 0 := by
+    intro hpq
+    refine Finset.sum_eq_zero fun i _ => ?_
+    split_ifs with hi
+    · by_cases hp : r + k < p.val
+      · rw [P_rowWS_colW k r j V i q hi.1 (by omega), mul_zero]
+      · rw [P_rowWS_colW k r j V i p hi.1 (by omega), star_zero, mul_zero, zero_mul]
+    · rfl
+  by_cases hpX : p.val < r
+  · have hpW : ¬ (r ≤ p.val ∧ p.val ≤ r + k) := by omega
+    have hA : ∀ x : Fin (2 * r + k + 1), Pm k r j V x p = 0 := fun x => P_colX k r j V x p hpX
+    have hB : Pm k r j V (sg k r p) q = 0 := P_rowS k r j V (sg k r p) q (by rw [sg_val]; omega)
+    rw [if_neg hpW, hB, hC (by omega), hA, hA]
+    simp
+  · by_cases hpW : r ≤ p.val ∧ p.val ≤ r + k
+    · rw [if_pos hpW, hC (by omega), add_zero]
+      by_cases hqX : q.val < r
+      · have hqW : ¬ (r ≤ q.val ∧ q.val ≤ r + k) := by omega
+        rw [if_neg hqW, P_rowS k r j V (sg k r q) p (by rw [sg_val]; omega), P_colX k r j V p q hqX]
+        simp
+      · by_cases hqW : r ≤ q.val ∧ q.val ≤ r + k
+        · rw [if_pos hqW, P_rowWS_colW k r j V q p hqW.1 hpW.2, P_rowWS_colW k r j V p q hpW.1 hqW.2]
+          simp
+        · have hqS : r + k < q.val := by omega
+          rw [if_neg hqW, P_XW k r j V (sg k r q) p (by rw [sg_val]; omega) hpW.1 hpW.2,
+            P_WS k r j V p q hpW.1 hpW.2 hqS, star_neg, star_mul', star_star, star_dW]
+          ring
+    · have hpS : r + k < p.val := by omega
+      rw [if_neg hpW]
+      by_cases hqX : q.val < r
+      · have hqW : ¬ (r ≤ q.val ∧ q.val ≤ r + k) := by omega
+        rw [if_neg hqW, P_rowS k r j V (sg k r q) p (by rw [sg_val]; omega),
+          P_colX k r j V (sg k r p) q hqX, hC (by omega)]
+        simp
+      · by_cases hqW : r ≤ q.val ∧ q.val ≤ r + k
+        · rw [if_pos hqW, P_WS k r j V q p hqW.1 hqW.2 hpS,
+            P_XW k r j V (sg k r p) q (by rw [sg_val]; omega) hqW.1 hqW.2, hC (by omega)]
+          ring
+        · have hqS : r + k < q.val := by omega
+          rw [if_neg hqW]
+          have hC' : ∑ i, (if r ≤ i.val ∧ i.val ≤ r + k then
+              dW k r i * star (Pm k r j V i p) * Pm k r j V i q else 0) =
+              ∑ i, (if r ≤ i.val ∧ i.val ≤ r + k then
+                dW k r i * star (V (sg k r p).val i) * V (sg k r q).val i else 0) := by
+            refine Finset.sum_congr rfl fun i _ => ?_
+            split_ifs with hi
+            · rw [P_WS k r j V i p hi.1 hi.2 hpS, P_WS k r j V i q hi.1 hi.2 hqS]
+            · rfl
+          rw [hC', P_XS k r j V (sg k r q) p (by rw [sg_val]; omega) hpS,
+            P_XS k r j V (sg k r p) q (by rw [sg_val]; omega) hqS]
+          by_cases hbp : (sg k r p).val < j
+          · by_cases hbq : (sg k r q).val < j
+            · rw [if_pos hbp, if_pos hbq]
+              have hK := K_iso k r j V Vs p q hpS hqS hbq hbp
+              rw [Viso _ _ hbq hbp] at hK
+              exact hK.symm
+            · have h0 := V0 _ (Nat.le_of_not_lt hbq)
+              rw [if_pos hbp, if_neg hbq, h0]
+              simp
+          · have h0 := V0 _ (Nat.le_of_not_lt hbp)
+            rw [if_neg hbp, h0]
+            by_cases hbq : (sg k r q).val < j
+            · rw [if_pos hbq]
+              simp
+            · have h0' := V0 _ (Nat.le_of_not_lt hbq)
+              rw [if_neg hbq, h0']
+              simp
+
+theorem unitary_P (k r j : ℕ) (V : ℕ → Fin (2 * r + k + 1) → ℂ)
+    (V0 : ∀ c, j ≤ c → V c = 0)
+    (Vs : ∀ b, b < j → ∀ q : Fin (2 * r + k + 1), r + k < q.val →
+      V b q = if (sg k r q).val = b then 1 else 0)
+    (Viso : ∀ b c, b < j → c < j → herm (Hpk k r) (V b) (V c) = 0) :
+    (1 + Pm k r j V)ᴴ * Hpk k r * (1 + Pm k r j V) = Hpk k r := by
+  have hE : (Pm k r j V)ᴴ * Hpk k r + Hpk k r * Pm k r j V +
+      (Pm k r j V)ᴴ * (Hpk k r * Pm k r j V) = 0 := by
+    ext p q
+    simp only [Matrix.add_apply, Matrix.zero_apply]
+    exact E_zero k r j V V0 Vs Viso p q
+  rw [Matrix.conjTranspose_add, Matrix.conjTranspose_one]
+  calc (1 + (Pm k r j V)ᴴ) * Hpk k r * (1 + Pm k r j V)
+      = Hpk k r + ((Pm k r j V)ᴴ * Hpk k r + Hpk k r * Pm k r j V +
+          (Pm k r j V)ᴴ * (Hpk k r * Pm k r j V)) := by
+        simp only [Matrix.add_mul, Matrix.mul_add, Matrix.one_mul, Matrix.mul_one, Matrix.mul_assoc]
+        abel
+    _ = Hpk k r := by rw [hE, add_zero]
+
+end NFOne
+end
+end
+
+section
 open Matrix Finset Formalism.QuantumDeterminants Formalism.FourierDecayAlt.C3
 
 noncomputable section
@@ -43,25 +333,8 @@ theorem herm_Hpk_of_inWb_eq_sum_wI (k r j : ℕ) (y : Fin j → Fin (2 * r + k +
   rw [herm_sum_smul_right']
   simp [hzy]
 
-theorem Vv_zero {k r j : ℕ} (y : Fin j → Fin (2 * r + k + 1) → ℂ) (N : Matrix (Fin j) (Fin j) ℂ)
-    (c : ℕ) (hc : j ≤ c) : Vv y N c = 0 := by
-  unfold Vv
-  rw [dif_neg (by omega)]
 
-theorem Vv_iso (k r j : ℕ) (y : Fin j → Fin (2 * r + k + 1) → ℂ) (N : Matrix (Fin j) (Fin j) ℂ)
-    (hyy : ∀ a a', herm (Hpk k r) (y a) (y a') = 0) (b c : ℕ) (hb : b < j) (hc : c < j) :
-    herm (Hpk k r) (Vv y N b) (Vv y N c) = 0 := by
-  unfold Vv
-  rw [dif_pos hb, dif_pos hc]
-  exact herm_comb k r j y hyy _ _
 
-theorem hermitian_orthogonal_projection_vector (k r j : ℕ) (y : Fin j → Fin (2 * r + k + 1) → ℂ) (N : Matrix (Fin j) (Fin j) ℂ)
-    (z' : Fin (2 * r + k + 1) → ℂ) (hzy : ∀ a, herm (Hpk k r) z' (y a) = 0) (c : ℕ) :
-    herm (Hpk k r) z' (Vv y N c) = 0 := by
-  unfold Vv
-  split_ifs with h
-  · exact herm_Hpk_of_inWb_eq_sum_wI k r j y z' hzy _
-  · simp [herm]
 
 theorem y_esI_zero (k r j : ℕ) (y : Fin j → Fin (2 * r + k + 1) → ℂ)
     (hy2 : ∀ (a : Fin j) (b : Fin r), j ≤ b.val → y a (esI k r b) = 0)
@@ -77,30 +350,6 @@ theorem y_esI_zero (k r j : ℕ) (y : Fin j → Fin (2 * r + k + 1) → ℂ)
   rw [he] at h
   exact h
 
-theorem projection_vector_coordinate (k r j : ℕ) (hj : j ≤ r) (y : Fin j → Fin (2 * r + k + 1) → ℂ)
-    (N : Matrix (Fin j) (Fin j) ℂ)
-    (hy2 : ∀ (a : Fin j) (b : Fin r), j ≤ b.val → y a (esI k r b) = 0)
-    (hNM : N * (Matrix.of fun a b : Fin j => y a (sR k r j hj b)) = 1)
-    (b : ℕ) (hb : b < j) (q : Fin (2 * r + k + 1)) (hq : r + k < q.val) :
-    Vv y N b q = if (sg k r q).val = b then 1 else 0 := by
-  have hq2 := q.isLt
-  unfold Vv
-  rw [dif_pos hb]
-  simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
-  by_cases hs : (sg k r q).val < j
-  · have hsr : sR k r j hj ⟨(sg k r q).val, hs⟩ = q := by
-      apply Fin.ext
-      show 2 * r + k - (sg k r q).val = q.val
-      simp only [sg_val]
-      omega
-    have h := congrFun (congrFun hNM ⟨b, hb⟩) ⟨(sg k r q).val, hs⟩
-    rw [Matrix.mul_apply] at h
-    simp only [Matrix.of_apply, hsr, Matrix.one_apply, Fin.ext_iff] at h
-    rw [h]
-    split_ifs <;> first | rfl | (exfalso; omega)
-  · have h0 : ∀ a, y a q = 0 := fun a => y_esI_zero k r j y hy2 a q hq hs
-    simp only [h0, mul_zero, Finset.sum_const_zero]
-    rw [if_neg (by omega)]
 
 theorem nf_sum (k r j : ℕ) (hj : j ≤ r) (y : Fin j → Fin (2 * r + k + 1) → ℂ)
     (N : Matrix (Fin j) (Fin j) ℂ)
@@ -223,30 +472,7 @@ theorem z_fix (k r j : ℕ) (V : ℕ → Fin (2 * r + k + 1) → ℂ) (z' : Fin 
     exact this
   · simp [if_neg hp]
 
-theorem normFormOne : IsotropicNormalFormPartial := by
-  intro k r z' j hj y hz hy2 hdet hzy hyy
-  have hu : IsUnit (Matrix.of fun a b : Fin j => y a (sR k r j hj b)).det := isUnit_iff_ne_zero.mpr hdet
-  have hMN : (Matrix.of fun a b : Fin j => y a (sR k r j hj b)) *
-      (Matrix.of fun a b : Fin j => y a (sR k r j hj b))⁻¹ = 1 := Matrix.mul_nonsing_inv _ hu
-  have hNM : (Matrix.of fun a b : Fin j => y a (sR k r j hj b))⁻¹ *
-      (Matrix.of fun a b : Fin j => y a (sR k r j hj b)) = 1 := Matrix.nonsing_inv_mul _ hu
-  refine ⟨1 + Pm k r j (Vv y (Matrix.of fun a b : Fin j => y a (sR k r j hj b))⁻¹), ?_,
-    fun a q => if r + k < q.val then y a q else 0, fun a => ⟨?_, ?_, ?_⟩⟩
-  · simp only [N0set, UH, Set.mem_setOf_eq]
-    refine ⟨?_, ?_, ?_, ?_, ?_⟩
-    · exact unitary_P k r j _ (fun c hc => Vv_zero y _ c hc)
-        (fun b hb q hq => projection_vector_coordinate k r j hj y _ hy2 hNM b hb q hq)
-        (fun b c hb hc => Vv_iso k r j y _ hyy b c hb hc)
-    · exact fun a => cols_X k r j _ a
-    · exact z_fix k r j _ z' hz (fun c => hermitian_orthogonal_projection_vector k r j y _ z' hzy c)
-    · intro p q hq1 hq2 hp
-      rw [Matrix.add_apply, P_rowWS_colW k r j _ p q hp hq2, add_zero, Matrix.one_apply]
-    · intro p q hq hp
-      rw [Matrix.add_apply, P_rowS k r j _ p q hp, add_zero, Matrix.one_apply]
-  · exact nf k r j hj y _ hy2 hMN a
-  · intro p hp
-    exact if_neg (show ¬ (r + k < p.val) by omega)
-  · intro p hp
-    exact if_pos hp
 
 end NFOne
+end
+end

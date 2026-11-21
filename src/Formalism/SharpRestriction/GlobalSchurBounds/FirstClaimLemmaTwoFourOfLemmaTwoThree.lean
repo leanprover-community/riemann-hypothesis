@@ -501,7 +501,6 @@ def MassRatio₂ (x eps C : ℝ) : Prop :=
       (∃ S : ℂ, TailSum χ (zz x) S ∧ ‖(x : ℂ) * S‖ ≤ x ^ eps) ∧
       ‖logDerivativeAtOne χ‖ ≤ C * Real.log x
 
-theorem lemma_two_two_iff_both_claims (D : D7) (x eps C : ℝ) : Conclusion2 D x eps C ↔ projection_sandwich_lattice C ∧ MassRatio₂ x eps C := Iff.rfl
 
 theorem one_le_order {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) {s : ℂ} (hs : s ≠ 1 ∨ χ ≠ 1)
     (hz : DirichletCharacter.LFunction χ s = 0) :
@@ -713,11 +712,6 @@ theorem lemma_two_two_of_count_and_psi_bounds {eps : ℝ} (h0 : 0 < eps) (h1 : e
   intro x hx D c h6
   exact ⟨first_claim_lemma_two_two_of_count D Cq c hCq h6 (le_max_right _ _), h x hx _ (le_max_left _ _)⟩
 
-theorem lemma_two_two_family_of_psi_bounds {eps : ℝ} (Fm : FamP eps) (h0 : 0 < eps) (h1 : eps < 1)
-    {C1 c1 : ℝ} (hC1 : 0 < C1) (hc1 : 0 < c1) (H : PsiBounds C1 c1) (h6 : FamilySixthHypothesis Fm) : Conclusion2Family Fm := by
-  obtain ⟨Cq, c, hCq, -, hc⟩ := h6
-  obtain ⟨C, x0, hC, hx0, h⟩ := lemma_two_two_of_count_and_psi_bounds h0 h1 hC1 hc1 H hCq.le
-  exact ⟨C, hC, x0, hx0, fun x hx i => h x hx _ c (hc x (lt_of_lt_of_le hx0 hx) i)⟩
 
 def ZeroSum (C2 : ℝ) : Prop :=
   ∀ Q : ℝ, ∀ (N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ N), χ ≠ 1 → GoodFor Q χ →
@@ -1782,12 +1776,6 @@ theorem grBound_rat : GrBound ℚ := by
   have h0 : (0 : ℝ) ≤ m := Nat.cast_nonneg m
   linarith
 
-theorem lemma_two_three_of_Q4_field_bounds (C0 Cr cr cQ cQ' : ℝ) (hC0 : 0 < C0) (hCr : 0 < Cr) (hcr : 0 < cr) (hcQ : 0 < cQ)
-    (hcQ' : 0 < cQ') :
-    ∃ C0' c1 c2 : ℝ, 0 < C0' ∧ 0 < c1 ∧ 0 < c2 ∧ ∀ (D : Formalism.BasicNotions.D7) (c1' : ℝ), adm8 D C0 Cr cr cQ c1' →
-      GrBound D.host.K → Deg2Bound D.host.K → PointsLemma D cQ' C0' Cr cr c1 c2 := by
-  obtain ⟨C0', c1, c2, p1, p2, p3, h⟩ := lemma_two_three_of_Q4_both_fields C0 Cr cr cQ cQ' hC0 hCr hcr hcQ hcQ'
-  exact ⟨C0', c1, c2, p1, p2, p3, fun D c1' ha hG hD => h D c1' ha grBound_rat deg2Bound_rat hG hD⟩
 
 theorem lemma_two_three_rat_of_Q4 (C0 Cr cr cQ : ℝ) (hC0 : 0 < C0) (hCr : 0 < Cr) (hcr : 0 < cr) (hcQ : 0 < cQ) :
     ∃ C0' c2 : ℝ, 0 < C0' ∧ 0 < c2 ∧
@@ -1909,8 +1897,6 @@ theorem deg2Bound_of_absNorm (h : ∀ p : ℕ, Ideal.absNorm (Ideal.span {((p : 
     _ ≤ Real.sqrt Y := Nat.floor_le (Real.sqrt_nonneg _)
     _ ≤ 2 * Real.sqrt Y := by linarith [Real.sqrt_nonneg Y]
 
-theorem deg2Bound_of_finrank (h : Module.finrank ℚ K0 = 2) : Deg2Bound K0 :=
-  deg2Bound_of_absNorm (absNorm_natCast h)
 
 end Deg2
 
@@ -1990,19 +1976,7 @@ theorem thin_of_psiThin (eps c C : ℝ) (heps : 0 < eps) (hc : 0 < c) (hC : 0 < 
   rw [neg_mul, hsq] at key
   exact key
 
-theorem proposition_six_of_psi_thin (eps c C : ℝ) (heps : 0 < eps) (hc : 0 < c) (hC : 0 < C) :
-    ∃ c' x0 : ℝ, 0 < c' ∧ 1 < x0 ∧ ∀ x : ℝ, x0 ≤ x → ∀ D : Formalism.BasicNotions.D7, PsiThin D x eps C c →
-      PropTwoSixThinScales D x eps c' := by
-  obtain ⟨c', x0, hc', hx0, h⟩ := thin_of_psiThin eps c C heps hc hC
-  exact ⟨c', x0, hc', hx0, fun x hx D hpsi h5 => h x hx D (log_conductor_le_of_proposition_two_six (by linarith) h5) hpsi⟩
 
-theorem proposition_six_family_of_psi_thin {eps : ℝ} (heps : 0 < eps) (Fm : Formalism.MainNotions.FamP eps)
-    (h : ∃ C c : ℝ, 0 < C ∧ 0 < c ∧ ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, PsiThin (Fm.D x i) x eps C c) :
-    FamilyPropTwoSixCongruenceForm Fm := by
-  obtain ⟨C, c, hC, hc, x1, h1⟩ := h
-  obtain ⟨c', x0, hc', hx0, h0⟩ := proposition_six_of_psi_thin eps c C heps hc hC
-  exact ⟨c', hc', max x0 x1, lt_of_lt_of_le hx0 (le_max_left _ _),
-    fun x hx i => h0 x ((le_max_left _ _).trans hx) _ (h1 x ((le_max_right _ _).trans hx) i)⟩
 
 end Formalism.MainNotions.ShortIntervalPrimes
 
@@ -2395,45 +2369,10 @@ theorem thin_of_zeroFree (eps C7 C11 c : ℝ) (heps : 0 < eps) (hC7 : 0 < C7) (h
   exact h x ((le_max_left _ _).trans hx) D hlog
     (psiThin_of hC7 hC2.le hc D h7 hzf hcond (zeroSumE_of hC11 hc D h7 h11 hzf hcond hinv) x eps hp3)
 
-theorem proposition_six_of_zero_free_region (eps C7 C11 c : ℝ) (heps : 0 < eps) (hC7 : 0 < C7) (hC11 : 0 < C11) (hc : 0 < c) :
-    ∃ c' x0 : ℝ, 0 < c' ∧ 1 < x0 ∧ ∀ x : ℝ, x0 ≤ x → ∀ D : D7, adm7 D C7 → adm11 D C11 → ZeroFreeE D c →
-      CondE D → InvE D → PropTwoSixThinScales D x eps c' := by
-  obtain ⟨c', x0, hc', hx0, h⟩ := thin_of_zeroFree eps C7 C11 c heps hC7 hC11 hc
-  exact ⟨c', x0, hc', hx0, fun x hx D h7 h11 hzf hcond hinv h5 =>
-    h x hx D (log_conductor_le_of_proposition_two_six (by linarith) h5) h7 h11 hzf hcond hinv⟩
 
-theorem inv_of_cube {w : ℂ} (h : w ^ 3 = w) : w⁻¹ = w := by
-  by_cases h0 : w = 0
-  · simp [h0]
-  · have h1 : w * w = 1 := by
-      have h2 : w * (w * w) = w * 1 := by
-        calc w * (w * w) = w ^ 3 := by ring
-          _ = w * 1 := by rw [h, mul_one]
-      exact mul_left_cancel₀ h0 h2
-    exact inv_eq_of_mul_eq_one_left h1
 
-theorem kronSym_cube (D : ℤ) (a : ℕ) : kronSym D a ^ 3 = kronSym D a := by
-  unfold kronSym
-  have h1 : ∀ z : ℤ, (z = 0 ∨ z = 1 ∨ z = -1) → z ^ 3 = z := by
-    rintro z (h | h | h) <;> subst h <;> norm_num
-  have hj := h1 _ (jacobiSym.trichotomy D (a / 2 ^ a.factorization 2))
-  have hk : kron2 D ^ 3 = kron2 D := by
-    unfold kron2; split_ifs <;> norm_num
-  rw [mul_pow, hj, ← pow_mul, mul_comm (a.factorization 2) 3, pow_mul, hk]
 
-theorem kron_cube (D : ℤ) (a : ℕ) : kron D a ^ 3 = kron D a := by
-  unfold kron
-  exact_mod_cast kronSym_cube D a
 
-theorem principal_quartic_character_cube (q d : ℕ) (i : Fin 4) (a : ℕ) : chi0 q d i a ^ 3 = chi0 q d i a := by
-  fin_cases i
-  · simp [chi0]
-  · exact kron_cube _ _
-  · exact kron_cube _ _
-  · show (chDir d a * psDir q a) ^ 3 = chDir d a * psDir q a
-    rw [mul_pow]
-    unfold chDir psDir
-    rw [kron_cube, kron_cube]
 
 theorem invE_holds (D : D7) : InvE D := by
   intro N _ χ hχ
@@ -2515,8 +2454,6 @@ theorem small_no_zero_le (B : ℕ) : ∃ c0 : ℝ, 0 < c0 ∧ ∀ (N : ℕ) [NeZ
     linarith
   exact h hd ⟨k, by omega⟩ χ hχ
 
-theorem small_no_zero : ∃ c0 : ℝ, 0 < c0 ∧ ∀ (N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ N), χ.IsPrimitive → 3 ≤ N →
-    N ≤ 8 → ∀ b : ℝ, 1 - c0 ≤ b → b ≤ 1 → DirichletCharacter.LFunction χ b ≠ 0 := small_no_zero_le 8
 
 def RealClassE (D : D7) : Prop :=
   ∀ (N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ N), IsCharED D χ → IsRealChar χ →
@@ -2659,32 +2596,7 @@ namespace Formalism.MainNotions.ShortIntervalPrimes
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory Filter Topology DirichletCharacter
 
-lemma kronecker_two_eq_chi_eight (D : ℤ) : kron2 D = ZMod.χ₈ (D : ZMod 8) := by
-  have h8 : (D : ZMod 8) = ((D % 8 : ℤ) : ZMod 8) := by
-    have := ZMod.intCast_mod D 8
-    exact_mod_cast this.symm
-  have h2 : D % 2 = (D % 8) % 2 := by omega
-  have h88 : D % 8 = (D % 8) % 8 := by omega
-  have h0 := Int.emod_nonneg D (show (8 : ℤ) ≠ 0 by norm_num)
-  have h1 := Int.emod_lt_of_pos D (show (0 : ℤ) < 8 by norm_num)
-  unfold kron2
-  rw [h8, h2, h88]
-  generalize D % 8 = r at *
-  interval_cases r <;> simp <;> decide
 
-lemma kronSym_eq_jacobi' (q n : ℕ) (hq : q % 4 = 3) (hn : n ≠ 0) :
-    kronSym (-(q : ℤ)) n = jacobiSym (n : ℤ) q := by
-  unfold kronSym
-  set v := n.factorization 2 with hv
-  set m := n / 2 ^ v with hm
-  have hnm : 2 ^ v * m = n := Nat.ordProj_mul_ordCompl_eq_self n 2
-  have hodd : Odd m := by
-    rw [← Nat.not_even_iff_odd, even_iff_two_dvd]
-    exact Nat.not_dvd_ordCompl Nat.prime_two hn
-  have e1 : jacobiSym (n : ℤ) q = jacobiSym 2 q ^ v * jacobiSym (m : ℤ) q := by
-    rw [← hnm]; push_cast
-    rw [jacobiSym.mul_left, jacobiSym.pow_left]
-  rw [e1, Formalism.HermitianLattices.GL2a2.kronecker_odd q m hq hodd, kronecker_two_eq_chi_eight, Formalism.HermitianLattices.GL2a2.kronecker_two q hq, mul_comm]
 
 lemma changeLevel_natCast {n M : ℕ} (h : n ∣ M) (χ : DirichletCharacter ℂ n) (a : ℕ) (ha : a.Coprime M) :
     changeLevel h χ (a : ZMod M) = χ (a : ZMod n) := by
@@ -2711,51 +2623,8 @@ theorem level_dvd_of_agree {N M : ℕ} [NeZero N] (hM : M ≠ 0) (χ : Dirichlet
 def Jc (p : ℕ) [Fact p.Prime] : DirichletCharacter ℂ p :=
   (quadraticChar (ZMod p)).ringHomComp (Int.castRingHom ℂ)
 
-lemma Jc_apply (p : ℕ) [Fact p.Prime] (a : ℕ) : Jc p (a : ZMod p) = ((jacobiSym (a : ℤ) p : ℤ) : ℂ) := by
-  unfold Jc
-  rw [MulChar.ringHomComp_apply, ← jacobiSym.legendreSym.to_jacobiSym]
-  unfold legendreSym
-  simp
 
-lemma kron_eq_Jc (p : ℕ) [Fact p.Prime] (hp4 : p % 4 = 3) (a : ℕ) (ha : a ≠ 0) :
-    kron (-(p : ℤ)) a = Jc p (a : ZMod p) := by
-  unfold kron
-  rw [kronSym_eq_jacobi' p a hp4 ha, Jc_apply]
 
-theorem level_dvd_NE {n q d : ℕ} (hn : 0 < n) (hq : q.Prime) (hq4 : q % 4 = 3) (hd : d.Prime) (hd4 : d % 4 = 3)
-    {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) (h : IsCharE n q d χ) : N ∣ 4 * n * q * d := by
-  obtain ⟨hp, i, ξ, -, hv⟩ := h
-  have : Fact q.Prime := ⟨hq⟩
-  have : Fact d.Prime := ⟨hd⟩
-  have hM : 4 * n * q * d ≠ 0 := by
-    have := hq.pos; have := hd.pos; positivity
-  have dn : 4 * n ∣ 4 * n * q * d := ⟨q * d, by ring⟩
-  have dq : q ∣ 4 * n * q * d := ⟨4 * n * d, by ring⟩
-  have dd : d ∣ 4 * n * q * d := ⟨4 * n * q, by ring⟩
-  have hne : ∀ a : ℕ, a.Coprime (4 * n * q * d) → a ≠ 0 := by
-    rintro a ha rfl
-    rw [Nat.coprime_zero_left] at ha
-    have h4 : 4 ∣ 4 * n * q * d := ⟨n * q * d, by ring⟩
-    rw [ha] at h4
-    omega
-  fin_cases i
-  · refine level_dvd_of_agree hM χ hp (changeLevel dn ξ) (fun a ha => ?_)
-    rw [hv a ha, changeLevel_natCast dn ξ a ha]
-    simp [chi0]
-  · refine level_dvd_of_agree hM χ hp (changeLevel dd (Jc d) * changeLevel dn ξ) (fun a ha => ?_)
-    rw [hv a ha, MulChar.mul_apply, changeLevel_natCast dn ξ a ha, changeLevel_natCast dd _ a ha,
-      ← kron_eq_Jc d hd4 a (hne a ha)]
-    rfl
-  · refine level_dvd_of_agree hM χ hp (changeLevel dq (Jc q) * changeLevel dn ξ) (fun a ha => ?_)
-    rw [hv a ha, MulChar.mul_apply, changeLevel_natCast dn ξ a ha, changeLevel_natCast dq _ a ha,
-      ← kron_eq_Jc q hq4 a (hne a ha)]
-    rfl
-  · refine level_dvd_of_agree hM χ hp (changeLevel dd (Jc d) * changeLevel dq (Jc q) * changeLevel dn ξ)
-      (fun a ha => ?_)
-    rw [hv a ha, MulChar.mul_apply, MulChar.mul_apply, changeLevel_natCast dn ξ a ha,
-      changeLevel_natCast dq _ a ha, changeLevel_natCast dd _ a ha,
-      ← kron_eq_Jc q hq4 a (hne a ha), ← kron_eq_Jc d hd4 a (hne a ha)]
-    rfl
 
 theorem level_dvd_condN (D : D7) {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) (h : IsCharED D χ) :
     N ∣ D.host.QS * D.host.q * D.host.d := by
@@ -2774,18 +2643,8 @@ theorem condE_holds (D : D7) : CondE D := by
   unfold NE
   exact_mod_cast this
 
-theorem condE_of (D : D7) (_hn : 0 < D.R.n) (_hq : D.host.q.Prime) (_hq4 : D.host.q % 4 = 3) (_hd : D.host.d.Prime)
-    (_hd4 : D.host.d % 4 = 3) : CondE D := condE_holds D
 
-theorem condition_E_of_proposition_two_five (D : D7) (x eps C5 : ℝ) (_hn : 0 < D.R.n) (_h5 : PrimesAsPropTwoFive D x eps C5) : CondE D :=
-  condE_holds D
 
-theorem proposition_six_of_real_class_condition (eps c6 C7 C11 : ℝ) (B : ℕ) (h0 : 0 < eps) (h6 : 0 < c6) (h7 : 0 < C7) (h11 : 0 < C11) :
-    ∃ c' x0 : ℝ, 0 < c' ∧ 1 < x0 ∧ ∀ x : ℝ, x0 ≤ x → ∀ (D : D7) (Cq : ℝ), oddQS D ≤ B →
-      adm6 D Cq c6 → adm7 D C7 → adm11 D C11 →
-      RealClassE D → PropTwoSixThinScales D x eps c' := by
-  obtain ⟨c', x0, hc', hx0, h⟩ := classMap_estimate_of_admissible eps c6 C7 C11 B h0 h6 h7 h11
-  exact ⟨c', x0, hc', hx0, fun x hx D Cq hodd a6 a7 a11 hr => h x hx D Cq hodd a6 a7 a11 (condE_holds D) hr⟩
 
 theorem proposition_six_family_of_real_classes {eps : ℝ} (Fm : FamP eps) (h6 : FamilySixthHypothesis Fm) (h7 : adm7F Fm) (h11 : ComplementTwoFamily Fm)
     (hR : ∃ x1 : ℝ, ∀ x ≥ x1, ∀ i : Fm.Ix x, RealClassE (Fm.D x i)) : FamilyPropTwoSixCongruenceForm Fm := by
@@ -2809,179 +2668,12 @@ lemma gen5 (e : ℕ) (v : (ZMod (2 ^ (e + 2)))ˣ) :
     have h2 : Formalism.TwoAdicCyclotomicDecomposition.u5 (e + 2) ^ k = v * (-1) := by rw [hj]; group
     rw [h2]; simp
 
-theorem even_char_two_pow (e : ℕ) (he : 1 ≤ e) (ξ : DirichletCharacter ℂ (2 ^ (e + 2))) (hev : ξ.Even) (a : ℕ)
-    (ha : Odd a) : ∃ k : ℕ, ξ (a : ZMod (2 ^ (e + 2))) = ξ ((5 : ℕ) : ZMod (2 ^ (e + 2))) ^ k ∧ chi8 a = (-1) ^ k := by
-  have hcop : a.Coprime (2 ^ (e + 2)) := Nat.Coprime.pow_right _ (Nat.coprime_two_right.2 ha)
-  obtain ⟨v, hv⟩ := (ZMod.isUnit_iff_coprime a (2 ^ (e + 2))).2 hcop
-  obtain ⟨k, hk⟩ := gen5 e v
-  have h5 : ((Formalism.TwoAdicCyclotomicDecomposition.u5 (e + 2) : (ZMod (2 ^ (e + 2)))ˣ) : ZMod (2 ^ (e + 2))) = ((5 : ℕ) : ZMod (2 ^ (e + 2))) :=
-    ZMod.coe_unitOfCoprime 5 _
-  have h8 : 8 ∣ 2 ^ (e + 2) := by
-    obtain ⟨f, rfl⟩ := Nat.exists_eq_add_of_le he
-    exact ⟨2 ^ f, by ring⟩
-  have hval : (a : ZMod (2 ^ (e + 2))) = ((5 : ℕ) : ZMod (2 ^ (e + 2))) ^ k ∨
-      (a : ZMod (2 ^ (e + 2))) = -(((5 : ℕ) : ZMod (2 ^ (e + 2))) ^ k) := by
-    rcases hk with h | h
-    · left; rw [← hv, h, Units.val_pow_eq_pow_val, h5]
-    · right; rw [← hv, h, Units.val_neg, Units.val_pow_eq_pow_val, h5]
-  have hchi : chi8 a = ((ZMod.χ₈ (a : ZMod 8) : ℤ) : ℂ) := by
-    unfold chi8 kron kronSym
-    have hf : a.factorization 2 = 0 :=
-      Nat.factorization_eq_zero_of_not_dvd (by rw [← even_iff_two_dvd, Nat.not_even_iff_odd]; exact ha)
-    rw [hf, pow_zero, pow_zero, Nat.div_one, mul_one, jacobiSym.at_two ha]
-  have hcast : (a : ZMod 8) = (5 : ZMod 8) ^ k ∨ (a : ZMod 8) = -((5 : ZMod 8) ^ k) := by
-    rcases hval with h | h
-    · left
-      have := congrArg (ZMod.castHom h8 (ZMod 8)) h
-      rw [map_natCast, map_pow, map_natCast] at this
-      simpa using this
-    · right
-      have := congrArg (ZMod.castHom h8 (ZMod 8)) h
-      rw [map_natCast, map_neg, map_pow, map_natCast] at this
-      simpa using this
-  have c5 : ZMod.χ₈ (5 : ZMod 8) = -1 := by decide
-  have cm : ZMod.χ₈ (-1 : ZMod 8) = 1 := by decide
-  refine ⟨k, ?_, ?_⟩
-  · rcases hval with h | h
-    · rw [h, map_pow]
-    · rw [h, ← neg_one_mul, map_mul, map_pow, hev, one_mul]
-  · rw [hchi]
-    rcases hcast with h | h
-    · rw [h, map_pow, c5]; push_cast; rfl
-    · rw [h, ← neg_one_mul, map_mul, map_pow, c5, cm, one_mul]; push_cast; rfl
 
-theorem level_dvd_of_agree' {N M M' : ℕ} [NeZero N] (hM : M ≠ 0) (hM' : M' ≠ 0) (χ : DirichletCharacter ℂ N)
-    (hp : χ.IsPrimitive) (ψ : DirichletCharacter ℂ M')
-    (h : ∀ a : ℕ, a.Coprime M → χ (a : ZMod N) = ψ (a : ZMod M')) : N ∣ M' := by
-  have hL : N * M * M' ≠ 0 := mul_ne_zero (mul_ne_zero (NeZero.ne N) hM) hM'
-  have : NeZero (N * M * M') := ⟨hL⟩
-  have d1 : N ∣ N * M * M' := ⟨M * M', by ring⟩
-  have d2 : M' ∣ N * M * M' := ⟨N * M, by ring⟩
-  have d3 : M ∣ N * M * M' := ⟨N * M', by ring⟩
-  have key : changeLevel d1 χ = changeLevel d2 ψ := by
-    ext u
-    have hc : ((u : ZMod (N * M * M')).val).Coprime (N * M * M') := ZMod.val_coe_unit_coprime u
-    have hu : (((u : ZMod (N * M * M')).val : ℕ) : ZMod (N * M * M')) = u := ZMod.natCast_zmod_val _
-    rw [← hu, changeLevel_natCast d1 χ _ hc, changeLevel_natCast d2 ψ _ hc]
-    exact h _ (Nat.Coprime.coprime_dvd_right d3 hc)
-  have c1 : conductor (changeLevel d1 χ) = N := by rw [conductor_changeLevel]; exact hp
-  have c2 : conductor (changeLevel d2 ψ) = conductor ψ := by rw [conductor_changeLevel]
-  rw [← c1, key, c2]
-  exact conductor_dvd_level ψ
 
-lemma chi_eight_odd_eq_zmod (a : ℕ) (ha : Odd a) : chi8 a = ((ZMod.χ₈ (a : ZMod 8) : ℤ) : ℂ) := by
-  unfold chi8 kron kronSym
-  have hf : a.factorization 2 = 0 :=
-    Nat.factorization_eq_zero_of_not_dvd (by rw [← even_iff_two_dvd, Nat.not_even_iff_odd]; exact ha)
-  rw [hf, pow_zero, pow_zero, Nat.div_one, mul_one, jacobiSym.at_two ha]
 
-lemma kron_sq (p a : ℕ) (hp4 : p % 4 = 3) (ha : a.Coprime p) (ha0 : a ≠ 0) : kron (-(p : ℤ)) a ^ 2 = 1 := by
-  unfold kron
-  rw [kronSym_eq_jacobi' p a hp4 ha0]
-  have : jacobiSym (a : ℤ) p ^ 2 = 1 := jacobiSym.sq_one (by rw [Int.gcd_natCast_natCast]; exact ha)
-  exact_mod_cast this
 
-lemma principal_quartic_character_sq_eq_one (q d : ℕ) (hq4 : q % 4 = 3) (hd4 : d % 4 = 3) (i : Fin 4) (a : ℕ) (hq : a.Coprime q) (hd : a.Coprime d)
-    (ha0 : a ≠ 0) : chi0 q d i a ^ 2 = 1 := by
-  have h1 := kron_sq q a hq4 hq ha0
-  have h2 := kron_sq d a hd4 hd ha0
-  fin_cases i
-  · simp [chi0]
-  · exact h2
-  · exact h1
-  · show (kron (-(d : ℤ)) a * kron (-(q : ℤ)) a) ^ 2 = 1
-    rw [mul_pow, h1, h2, one_mul]
 
-lemma real_unit_sq {N : ℕ} (χ : DirichletCharacter ℂ N) (hreal : IsRealChar χ) (a : ℕ) (ha : a.Coprime N) :
-    χ (a : ZMod N) ^ 2 = 1 := by
-  obtain ⟨u, hu⟩ := (ZMod.isUnit_iff_coprime a N).2 ha
-  have hn : ‖χ (a : ZMod N)‖ = 1 := by rw [← hu]; exact DirichletCharacter.unit_norm_eq_one χ u
-  have him : (χ (a : ZMod N)).im = 0 := hreal _
-  set z := χ (a : ZMod N) with hz
-  have h1 : z = (z.re : ℂ) := by apply Complex.ext <;> simp [him]
-  have h2 : z.re ^ 2 = 1 := by
-    have := Complex.sq_norm z
-    rw [hn, Complex.normSq_apply, him] at this
-    nlinarith
-  rw [h1]; exact_mod_cast h2
 
-theorem realClass_core (e : ℕ) (he : 1 ≤ e) {q d : ℕ} (hq : q.Prime) (hq4 : q % 4 = 3) (hd : d.Prime)
-    (hd4 : d % 4 = 3) {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) (hp : χ.IsPrimitive) (hreal : IsRealChar χ)
-    (i : Fin 4) (ξ : DirichletCharacter ℂ (2 ^ (e + 2))) (hev : ξ.Even)
-    (hv : ∀ a : ℕ, a.Coprime (2 ^ (e + 2) * q * d) → χ (a : ZMod N) = chi0 q d i a * ξ (a : ZMod (2 ^ (e + 2)))) :
-    N ≤ 8 ∨ Induces χ (psDir q) (8 * q * d) ∨ Induces χ (fun a => chi8 a * psDir q a) (8 * q * d) ∨
-    Induces χ (chDir d) (8 * q * d) ∨ Induces χ (fun a => chi8 a * chDir d a) (8 * q * d) ∨
-    Induces χ (fun a => chDir d a * psDir q a) (8 * q * d) ∨
-    Induces χ (fun a => chi8 a * chDir d a * psDir q a) (8 * q * d) := by
-  have hqp := hq.pos
-  have hdp := hd.pos
-  have hMpos : 0 < 2 ^ (e + 2) * q * d := by positivity
-  have h8pos : 8 * q * d ≠ 0 := by positivity
-  have hNpos : 0 < N := Nat.pos_of_ne_zero (NeZero.ne N)
-  have : NeZero (2 ^ (e + 2)) := ⟨by positivity⟩
-
-  have hs : ξ ((5 : ℕ) : ZMod (2 ^ (e + 2))) = 1 ∨ ξ ((5 : ℕ) : ZMod (2 ^ (e + 2))) = -1 := by
-    have hu5 : IsUnit (((5 : ℕ) : ZMod (2 ^ (e + 2)))) :=
-      (ZMod.isUnit_iff_coprime 5 _).2 (Nat.Coprime.pow_right _ (by norm_num))
-    obtain ⟨p, hpgt, hpp, hpu⟩ := Nat.forall_exists_prime_gt_and_eq_mod hu5 (2 ^ (e + 2) * q * d + N)
-    have cM : p.Coprime (2 ^ (e + 2) * q * d) :=
-      (Nat.Prime.coprime_iff_not_dvd hpp).2 (Nat.not_dvd_of_pos_of_lt hMpos (by omega))
-    have cN : p.Coprime N := (Nat.Prime.coprime_iff_not_dvd hpp).2 (Nat.not_dvd_of_pos_of_lt hNpos (by omega))
-    have cq : p.Coprime q := Nat.Coprime.coprime_dvd_right ⟨2 ^ (e + 2) * d, by ring⟩ cM
-    have cd : p.Coprime d := Nat.Coprime.coprime_dvd_right ⟨2 ^ (e + 2) * q, by ring⟩ cM
-    have h1 := real_unit_sq χ hreal p cN
-    have h2 := principal_quartic_character_sq_eq_one q d hq4 hd4 i p cq cd hpp.ne_zero
-    rw [hv p cM, mul_pow, h2, one_mul, hpu] at h1
-    have h3 : (ξ ((5 : ℕ) : ZMod (2 ^ (e + 2))) - 1) * (ξ ((5 : ℕ) : ZMod (2 ^ (e + 2))) + 1) = 0 := by
-      linear_combination h1
-    rcases mul_eq_zero.1 h3 with h | h
-    · left; linear_combination h
-    · right; linear_combination h
-  have hcop : ∀ a : ℕ, a.Coprime (8 * q * d) → Odd a ∧ a.Coprime (2 ^ (e + 2) * q * d) := by
-    intro a ha
-    have c2 : a.Coprime 2 := Nat.Coprime.coprime_dvd_right ⟨4 * q * d, by ring⟩ ha
-    have cq : a.Coprime q := Nat.Coprime.coprime_dvd_right ⟨8 * d, by ring⟩ ha
-    have cd : a.Coprime d := Nat.Coprime.coprime_dvd_right ⟨8 * q, by ring⟩ ha
-    exact ⟨Nat.coprime_two_right.1 c2, Nat.Coprime.mul_right (Nat.Coprime.mul_right (Nat.Coprime.pow_right _ c2) cq) cd⟩
-  rcases hs with hs | hs
-  · have key : ∀ a : ℕ, a.Coprime (8 * q * d) → χ (a : ZMod N) = chi0 q d i a := by
-      intro a ha
-      obtain ⟨ho, hc⟩ := hcop a ha
-      obtain ⟨k, hk, -⟩ := even_char_two_pow e he ξ hev a ho
-      rw [hv a hc, hk, hs, one_pow, mul_one]
-    fin_cases i
-    · left
-      have := level_dvd_of_agree' h8pos one_ne_zero χ hp (1 : DirichletCharacter ℂ 1) (fun a ha => by
-        rw [key a ha, MulChar.one_apply (isUnit_of_subsingleton _)]; rfl)
-      have := Nat.le_of_dvd one_pos this
-      omega
-    · right; right; right; left
-      exact ⟨hp, fun a ha => key a ha⟩
-    · right; left
-      exact ⟨hp, fun a ha => key a ha⟩
-    · right; right; right; right; right; left
-      exact ⟨hp, fun a ha => key a ha⟩
-  · have key : ∀ a : ℕ, a.Coprime (8 * q * d) → χ (a : ZMod N) = chi0 q d i a * chi8 a := by
-      intro a ha
-      obtain ⟨ho, hc⟩ := hcop a ha
-      obtain ⟨k, hk, hk8⟩ := even_char_two_pow e he ξ hev a ho
-      rw [hv a hc, hk, hs, hk8]
-    fin_cases i
-    · left
-      have := level_dvd_of_agree' h8pos (by norm_num) χ hp
-        ((ZMod.χ₈).ringHomComp (Int.castRingHom ℂ) : DirichletCharacter ℂ 8) (fun a ha => by
-          rw [key a ha, MulChar.ringHomComp_apply, chi_eight_odd_eq_zmod a (hcop a ha).1]
-          simp [chi0])
-      exact Nat.le_of_dvd (by norm_num) this
-    · right; right; right; right; left
-      exact ⟨hp, fun a ha => by rw [key a ha, mul_comm]; rfl⟩
-    · right; right; left
-      exact ⟨hp, fun a ha => by rw [key a ha, mul_comm]; rfl⟩
-    · right; right; right; right; right; right
-      exact ⟨hp, fun a ha => by
-        rw [key a ha]
-        show chDir d a * psDir q a * chi8 a = chi8 a * chDir d a * psDir q a
-        ring⟩
 
 private theorem conductor_le_of_quadratic_squares {N M : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) (hp : χ.IsPrimitive)
     (h2 : χ ^ 2 = 1) (hM : M ∣ N) (hM0 : M ≠ 0)
@@ -3065,18 +2757,7 @@ theorem realClassE_holds (D : D7) : RealClassE D := by
   have h3 : N ∣ D.host.QS := ((D.host.hyp.1.coprime_iff_not_dvd.2 hq).symm).dvd_of_dvd_mul_right h2
   exact dvd_eight_mul_ordCompl D.host.QS_pos.ne' h3 (not_sixteen_dvd_of_real χ hχ.1 hreal)
 
-theorem proposition_six_of_bounded_odd_moduli (eps c6 C7 C11 : ℝ) (B : ℕ) (h0 : 0 < eps) (h6 : 0 < c6) (h7 : 0 < C7) (h11 : 0 < C11) :
-    ∃ c' x0 : ℝ, 0 < c' ∧ 1 < x0 ∧ ∀ x : ℝ, x0 ≤ x → ∀ (D : D7) (Cq : ℝ), oddQS D ≤ B →
-      adm6 D Cq c6 → adm7 D C7 → adm11 D C11 →
-      PropTwoSixThinScales D x eps c' := by
-  obtain ⟨c', x0, hc', hx0, h⟩ := proposition_six_of_real_class_condition eps c6 C7 C11 B h0 h6 h7 h11
-  exact ⟨c', x0, hc', hx0, fun x hx D Cq hodd a6 a7 a11 => h x hx D Cq hodd a6 a7 a11 (realClassE_holds D)⟩
 
-theorem thin_set_family_of_admitted {eps : ℝ} (Fm : FamP eps) (h6 : FamilySixthHypothesis Fm) (h7 : adm7F Fm) (h11 : ComplementTwoFamily Fm) :
-    ∃ c : ℝ, 0 < c ∧ ∃ x0 : ℝ, 1 < x0 ∧ ∀ x ≥ x0, ∀ i : Fm.Ix x, RealBoxE (Fm.D x i) →
-      Real.log (NE (Fm.D x i) : ℝ) ≤ 8 * x ^ (eps / 5) * Real.log x ^ 2 → ThinE (Fm.D x i) x eps c := by
-  obtain ⟨c, hc, x0, hx0, h⟩ := thin_set_family_of_conditions Fm h6 h7 h11
-  exact ⟨c, hc, x0, hx0, fun x hx i => h x hx i (condE_holds _) (realClassE_holds _)⟩
 
 theorem proposition_six_norm_family_of_admitted {eps : ℝ} (Fm : FamP eps) (h6 : FamilySixthHypothesis Fm) (h7 : adm7F Fm) (h11 : ComplementTwoFamily Fm) :
     FamilyPropTwoSixCongruenceForm Fm :=
@@ -3221,12 +2902,7 @@ theorem subgroup_admissible_holds : ∃ c C : ℝ, 0 < c ∧ 0 < C ∧ ∀ D : F
           have : 0 ≤ |C| * u * Real.exp (-(c * Real.sqrt (Real.log u))) := by positivity
           nlinarith
 
-theorem chebyshev_family_holds {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : FamilySecondHypothesis Fm :=
-  ⟨Real.log 4 + 4, by have := Real.log_nonneg (show (1 : ℝ) ≤ 4 by norm_num); linarith, fun _ _ _ => second_admissible_holds _⟩
 
-theorem third_admissible_family_holds {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : FamilyAdmittedLemmaThree Fm := by
-  obtain ⟨c, C, hc, hC, h⟩ := subgroup_admissible_holds
-  exact ⟨c, C, hc, hC, fun _ _ _ => h _⟩
 
 lemma kronecker_two_eq_chi_eight_int (D : ℤ) : kron2 D = ZMod.χ₈ (D : ZMod 8) := by
   have h8 : (D : ZMod 8) = ((D % 8 : ℤ) : ZMod 8) := by
@@ -3358,12 +3034,6 @@ namespace Formalism.MainNotions.ShortIntervalPrimes
 open Finset Filter Topology ArithmeticFunction MeasureTheory Formalism.MainNotions.GlobalTheoryTheory
 open Br
 
-theorem lemma_three_of_Q4_growth_bound (C0 Cr cr cQ cQ' : ℝ) (hC0 : 0 < C0) (hCr : 0 < Cr) (hcr : 0 < cr) (hcQ : 0 < cQ)
-    (hcQ' : 0 < cQ') :
-    ∃ C0' c1 c2 : ℝ, 0 < C0' ∧ 0 < c1 ∧ 0 < c2 ∧ ∀ (D : Formalism.BasicNotions.D7) (c1' : ℝ), adm8 D C0 Cr cr cQ c1' →
-      GrBound D.host.K → PointsLemma D cQ' C0' Cr cr c1 c2 := by
-  obtain ⟨C0', c1, c2, p1, p2, p3, h⟩ := lemma_two_three_of_Q4_field_bounds C0 Cr cr cQ cQ' hC0 hCr hcr hcQ hcQ'
-  exact ⟨C0', c1, c2, p1, p2, p3, fun D c1' ha hG => h D c1' ha hG (deg2Bound_K D)⟩
 
 theorem lemma_two_three_family_of_Q4_galois_bound {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (h8 : FamilyTemperatureAsymptotic Fm)
     (hK : ∀ x > 1, ∀ i : Fm.Ix x, GrBound (Fm.D x i).host.K) : Conclusion3Family Fm :=

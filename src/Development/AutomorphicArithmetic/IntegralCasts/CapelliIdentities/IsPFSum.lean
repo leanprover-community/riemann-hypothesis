@@ -1,6 +1,12 @@
 import Mathlib
-import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.IsPF
 
+section
+noncomputable def UpperTheory.Reformulated.B.PolynomialFunction₂.IsPF :
+    {A : Type} → [inst : Ring A] → [Algebra ℂ A] → (ℂ → A) → Prop :=
+  fun {A} _ _ f => ∃ p : Polynomial A, ∀ Y : ℂ, f Y = Polynomial.eval (algebraMap ℂ A Y) p
+end
+
+section
 theorem UpperTheory.Reformulated.B.IsPFSum.isPF_sum :
     ∀ {A : Type} [inst : Ring A] [inst_1 : Algebra ℂ A] {ι : Type} (s : Finset ι) {f : ι → ℂ → A},
       (∀ i ∈ s, UpperTheory.Reformulated.B.PolynomialFunction₂.IsPF (f i)) → UpperTheory.Reformulated.B.PolynomialFunction₂.IsPF fun (Y : ℂ) ↦ ∑ i ∈ s, f i Y := by
@@ -16,3 +22,4 @@ theorem UpperTheory.Reformulated.B.IsPFSum.isPF_sum :
     have h1 : (∑ i ∈ s, f i Y) = Polynomial.eval ((algebraMap ℂ A) Y) q := hq Y
     show (∑ i ∈ insert a s, f i Y) = Polynomial.eval ((algebraMap ℂ A) Y) (p + q)
     rw [Finset.sum_insert ha, hp, h1, Polynomial.eval_add]
+end

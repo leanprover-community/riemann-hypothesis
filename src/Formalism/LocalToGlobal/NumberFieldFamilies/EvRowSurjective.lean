@@ -94,10 +94,6 @@ def evC (Zs : DefSub (colIn3 W Ch sel hX v0 TU Xg S0 xiVal trIv).fam3.amb3) (t :
     (Fin (((colIn3 W Ch sel hX v0 TU Xg S0 xiVal trIv).side3 P.grp P.chr Zs).nV t) → X.K) →ₗ[X.K] V0X W Ch sel t.1 Xg P :=
   evRow W Ch sel t.1 (mtildeKOk W Ch sel t.1 hX) Xg P
 
-theorem evC_bijective (Zs : DefSub (colIn3 W Ch sel hX v0 TU Xg S0 xiVal trIv).fam3.amb3)
-    (t : (colIn3 W Ch sel hX v0 TU Xg S0 xiVal trIv).fam3.base3.Tup) :
-    Function.Bijective (evC W Ch sel hX v0 TU Xg S0 xiVal trIv P Zs t) := ⟨evRow_injective W Ch sel t.1 (mtildeKOk W Ch sel t.1 hX) Xg P,
-    evRow_surjective W Ch sel t.1 (mtildeKOk W Ch sel t.1 hX) Xg P⟩
 
 theorem evC_res_lvl {s : ℕ} (hOk : (colIn3 W Ch sel hX v0 TU Xg S0 xiVal trIv).A.fam.Ok s)
     (Zs : DefSub (colIn3 W Ch sel hX v0 TU Xg S0 xiVal trIv).fam3.amb3)

@@ -131,33 +131,6 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks}
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S₀ : Set ℕ}
   (mu : Tup X.F X.E X.K S₀) (cst : LocCst X (rowSG Pr sel mu)) (σ₀ : X.K →+* ℂ) (P : rowSG Pr sel mu)
 
-theorem exists_atTwist (s : ℕ) (hP : P.1 ∉ Pr.vGs) (hs : R.m = s + 2) (hok : cst.Ok) (hmu : ∀ i, i < R.m → cst.muq (i + 1) P ≠ 0)
-    (hq : ((qOf P.1 : ℕ) : 𝓞 X.E) ∉ P.1.asIdeal ^ 2) :
-    ∃ (k : Type) (_ : Field k) (_ : ValuativeRel k) (_ : TopologicalSpace k) (_ : IsNonarchimedeanLocalField k) (ι : X.E →+* k)
-      (W : TwData k), AtTwist (R := R) sel mu cst σ₀ P ι s W := by
-  classical
-  letI := GlobalTheory.LocalData.complRel P.1
-  haveI := GlobalTheory.LocalData.isLocalField P.1
-  obtain ⟨ϖ, hc, hu⟩ := GlobalTheory.AtTypeExists.exists_compl P.1 hq
-  obtain ⟨ψ, hψ, hψv⟩ := exists_psi P.1 (qOf P.1) (cst.D P) _ ϖ σ₀ (cst.psi P) hc hu (hok.D_pos P) (hok.psi_add P)
-    (hok.psi_int P) (hok.psi_ne P)
-  obtain ⟨δ, hδ, hδv⟩ := exists_delta P.1 (qOf P.1) _ ϖ hc
-    ((Units.map σ₀.toMonoidHom).comp (resChar (mu : Chr X.F X.E X.K) P.1))⁻¹
-  choose η hη hηv using fun i => exists_unram ϖ hu
-    (if h : σ₀ (cst.muq i P) = 0 then 1 else Units.mk0 _ h * (δ ϖ)⁻¹)
-  have hq0 : (Real.sqrt (qOf P.1) : ℂ) ≠ 0 := by
-    have := ComplRes.q_ne_zero hc
-    have h2 : 0 < qOf P.1 := Nat.pos_of_ne_zero fun h => this (by rw [h]; simp)
-    exact_mod_cast (Real.sqrt_pos.2 (by exact_mod_cast h2)).ne'
-  refine ⟨_, _, _, _, inferInstance, _, ⟨ϖ, hu, ψ, hψ.continuous, hψ, δ, hδ, η, hη, σ₀ (cst.sq P) / Real.sqrt (qOf P.1)⟩,
-    hP, hs, hc, hψv, fun a u ha hu' e => ?_, fun i hi => ?_, (div_mul_cancel₀ _ hq0).symm⟩
-  · change (δ u : ℂ) = _
-    rw [hδv a u ha hu' e, LocE.unitV, dif_pos hu']
-    simp
-  · change ((η (i + 1) * δ) ϖ : ℂ) = _
-    have h : σ₀ (cst.muq (i + 1) P) ≠ 0 := (map_ne_zero σ₀).2 (hmu i hi)
-    rw [MonoidHom.mul_apply, hηv, dif_neg h]
-    simp
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ι : X.E →+* k)
   (s : ℕ) (W : TwData k)
@@ -169,22 +142,6 @@ theorem sg_sq (h : AtTwist (R := R) sel mu cst σ₀ P ι s W) (hok : cst.Ok) : 
   rw [map_pow, h.sq, mul_pow, map_natCast, ← Complex.ofReal_pow, Real.sq_sqrt (Nat.cast_nonneg _)] at h1
   exact mul_right_cancel₀ hq' (by simpa using h1)
 
-theorem not_isUnram (h : AtTwist (R := R) sel mu cst σ₀ P ι s W) (hξ : resChar (mu : Chr X.F X.E X.K) P.1 ≠ 1) :
-    ¬ IsUnram W.δ := by
-  intro hun
-  refine hξ (MonoidHom.ext fun c => ?_)
-  obtain ⟨a, ha⟩ := Ideal.Quotient.mk_surjective (c : 𝓞 X.E ⧸ P.1.asIdeal)
-  have hr : redP P.1 (a : X.E) = c := by
-    have := ComplRes.reduction_spec (P := P.1) (a := (a : X.E)) (r := a) (s := 1) (one_notMem _) (by simp)
-    simpa [ha] using this
-  have hi := ComplRes.intAt_coe (P := P.1) a
-  have hu : IsUnit (redP P.1 (a : X.E)) := hr ▸ c.isUnit
-  have hv := (ComplRes.v_eq_one_iff_red h.compl W.unif hi).2 hu
-  have h0 : ι a ≠ 0 := fun h0 => by simp [h0] at hv
-  have h1 := h.del a (Units.mk0 _ h0) hi hu rfl
-  rw [hun _ hv, LocE.unitV, dif_pos hu, show hu.unit = c from Units.ext hr] at h1
-  refine Units.ext (σ₀.injective ?_)
-  simpa using (inv_eq_one.1 h1.symm)
 
 theorem isGL_existsUnique (j c : ℕ) (hc : cOf R j = c) (γ : AutY X R j) :
     ∃! g : GL (XIx (Fin R.k) (Fin R.t) j ⊕ Fin c) k, IsGL ι γ g := by
@@ -344,30 +301,5 @@ theorem om_agree (h : AtTwist (R := R) sel mu cst σ₀ P ι s W) (hok : cst.Ok)
 
 end Sign
 
-theorem twData_closed : ∃ (k : Type) (_ : Field k) (_ : ValuativeRel k) (_ : TopologicalSpace k) (_ : IsNonarchimedeanLocalField k)
-    (W : TwData k), ¬ IsUnram W.δ ∧ (∀ j, W.η j ≠ 1) ∧ W.sg = -1 := by
-  obtain ⟨X, Pr, R, Ch, sel, S₀, mu, cst, σ₀, P, k, i1, i2, i3, i4, ι, s, S, -, -, -, -, hχ, -, hS⟩ :=
-    GlobalTheory.AtTypeClosed.exists_closed_ok
-  obtain ⟨η, hη, hηv⟩ := exists_unram S.ϖ S.unif (-1)
-  refine ⟨k, i1, i2, i3, i4, ⟨S.ϖ, S.unif, S.ψ, S.cond.continuous, S.cond, S.μ 1, S.tame 1, fun _ => η, fun _ => hη, -1⟩,
-    fun hun => ?_, fun _ h => ?_, rfl⟩
-  · refine hχ (MonoidHom.ext fun c => ?_)
-    obtain ⟨a, ha⟩ := Ideal.Quotient.mk_surjective (c : 𝓞 X.E ⧸ P.1.asIdeal)
-    have hr : redP P.1 (a : X.E) = c := by
-      have := ComplRes.reduction_spec (P := P.1) (a := (a : X.E)) (r := a) (s := 1) (one_notMem _) (by simp)
-      simpa [ha] using this
-    have hi := ComplRes.intAt_coe (P := P.1) a
-    have hu : IsUnit (redP P.1 (a : X.E)) := hr ▸ c.isUnit
-    have hv := (ComplRes.v_eq_one_iff_red hS.tie.compl S.unif hi).2 hu
-    have h0 : ι a ≠ 0 := fun h0 => by simp [h0] at hv
-    have h1 := hS.tie.chi 0 a (Units.mk0 _ h0) hi hu rfl
-    have h2 : S.μ (0 + 1) (Units.mk0 _ h0) = 1 := hun _ hv
-    rw [h2, LocE.unitV, dif_pos hu, show hu.unit = c from Units.ext hr] at h1
-    refine Units.ext (σ₀.injective ?_)
-    simpa using h1.symm
-  · have h1 : η = 1 := h
-    rw [h1] at hηv
-    have := congrArg Units.val hηv
-    norm_num at this
 
 end GlobalTheory.TwBridge.Model

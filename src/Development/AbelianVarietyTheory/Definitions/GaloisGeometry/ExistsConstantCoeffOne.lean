@@ -53,18 +53,6 @@ theorem CurveData.exists_of_cm (h2 : Formalism.L2.Th1.CM.CM2) (h3 : Formalism.L2
   obtain ⟨σ, hσ, ⟨F, hF⟩, -⟩ := Formalism.L2.Th1.D.fieldDataCM l h5
   exact ⟨g2, g3, s2, ε, σ, F, ⟨h5, hg.2.2.1, hg.2.2.2.1, hε, hth, hσ, hF, hN σ hσ⟩, hg.2.2.2.2.1⟩
 
-theorem CurveData.exists_five [Fact (Nat.Prime 5)] (h2 : Formalism.L2.Th1.CM.CM2) (h3 : Formalism.L2.Th1.CM.CM3) (h4 : Formalism.L2.Th1.CM.CM4) :
-    ∃ (g2 g3 s2 ε : MaximalUnramifiedExtension 5) (σ : MaximalUnramifiedExtension 5 →+* MaximalUnramifiedExtension 5) (F : MvPowerSeries (Fin 2) (MaximalUnramifiedExtension 5)),
-      CurveData 5 g2 g3 s2 ε σ F ∧ ‖(g2 : ℂ_[5]) ^ 3 - 27 * (g3 : ℂ_[5]) ^ 2‖ = 1 := by
-  have h0 : ∀ a : Fin 5, a * a + 2 ≠ 0 := by decide
-  refine CurveData.exists_of_cm h2 h3 h4 7 _ (by norm_num : Nat.Prime 7).prime.squarefree (by norm_num)
-    (Formalism.L2.Th1.F.cmPairHasCMBy 1 1 2 7 (by norm_num) (by norm_num) (by norm_num) (by decide)) 5 le_rfl (by decide) ?_
-  rintro ⟨a, ha⟩
-  have h5 : ((5 : ℕ) : ZMod 5) = 0 := ZMod.natCast_self 5
-  have h1 : a * a + 2 = 0 := by
-    push_cast at ha h5
-    linear_combination ha - h5
-  exact h0 a h1
 
 theorem HypPair.exists_unramified (l : ℕ) [Fact l.Prime] (h5 : 5 ≤ l) (σ : MaximalUnramifiedExtension l →+* MaximalUnramifiedExtension l) (hσ : UnrOK (MaximalUnramifiedExtension l) l σ)
     (E : Type) [Fintype E] [DecidableEq E] : ∃ f f' : E → (Bool × E) → MaximalUnramifiedExtension l, HypPair σ f f' := by
@@ -114,56 +102,8 @@ theorem HostLog.constantCoeff_subst {K σ τ : Type} [Field K] [Finite σ] {a : 
     MvPowerSeries.subst_C]
   simp
 
-theorem HostLog.constantCoeff_factor (l : ℕ) [Fact l.Prime] (g2 g3 s2 ε : MaximalUnramifiedExtension l) (n : Type) [Fintype n] :
-    MvPowerSeries.constantCoeff
-      (Formalism.DworkPowerSeriesWeights.mvExp (∑ i : n, at1 i (PowerSeries.map (MaximalUnramifiedExtension l).subtype (phFF l g2 g3 s2 ε)) : MvPowerSeries n ℂ_[l])) = 1 := by
-  have hl : 2 ≤ l := (Fact.out : l.Prime).two_le
-  have key : ∀ {a : MvPowerSeries n ℂ_[l]} (_ : MvPowerSeries.constantCoeff a = 0) (f : PowerSeries ℂ_[l]),
-      MvPowerSeries.constantCoeff (PowerSeries.subst a f : MvPowerSeries n ℂ_[l]) = PowerSeries.constantCoeff f :=
-    fun {a} ha f => HostLog.constantCoeff_subst (σ := Unit) (a := fun _ => a) (fun _ => ha) f
-  rw [Formalism.DworkPowerSeriesWeights.mvExp, key]
-  · simp
-  · rw [map_sum]
-    refine Finset.sum_eq_zero fun i _ => ?_
-    rw [at1, key (by simp), ← PowerSeries.coeff_zero_eq_constantCoeff_apply, PowerSeries.coeff_map,
-      PowerSeries.coeff_zero_eq_constantCoeff_apply, Formalism.L2.Th1.D.FAux.cc_phFF hl, map_zero]
 
-theorem HostLog.norm_constantCoeff_le {l : ℕ} [Fact l.Prime] {g2 g3 s2 ε : MaximalUnramifiedExtension l} {n : Type} [Fintype n]
-    {Θ : MvPowerSeries n ℂ_[l]} (h : HostLog l g2 g3 s2 ε Θ) : ‖MvPowerSeries.constantCoeff Θ‖ ≤ 1 := by
-  have hp := Formalism.L2.Th1.D.BrC.logPair (K := ℂ_[l]) (Fact.out : l.Prime).two_le
-  have h0 := h 0
-  rw [MvPowerSeries.coeff_zero_eq_constantCoeff_apply, map_mul, HostLog.constantCoeff_factor, one_mul,
-    HostLog.constantCoeff_subst] at h0
-  · exact h0
-  · exact fun i => Formalism.L2.Th1.C.Pts.constantCoeff_subst_l hp (MvPowerSeries.constantCoeff_X i)
 
-theorem HostLog.exists_constantCoeff_one (l : ℕ) [Fact l.Prime] (g2 g3 s2 ε : MaximalUnramifiedExtension l) (n : Type) [Fintype n] :
-    ∃ Θ : MvPowerSeries n ℂ_[l], MvPowerSeries.constantCoeff Θ = 1 ∧ HostLog l g2 g3 s2 ε Θ := by
-  classical
-  have hp := Formalism.L2.Th1.D.BrC.logPair (K := ℂ_[l]) (Fact.out : l.Prime).two_le
-  have hE1 := HostLog.constantCoeff_factor l g2 g3 s2 ε n
-  set E : MvPowerSeries n ℂ_[l] :=
-    Formalism.DworkPowerSeriesWeights.mvExp (∑ i : n, at1 i (PowerSeries.map (MaximalUnramifiedExtension l).subtype (phFF l g2 g3 s2 ε)) : MvPowerSeries n ℂ_[l]) with hE
-  have ha : ∀ i : n, MvPowerSeries.constantCoeff (at1 i (Formalism.L2.Th1.D.expF ℂ_[l] l) : MvPowerSeries n ℂ_[l]) = 0 :=
-    fun i => Formalism.L2.Th1.C.Pts.constantCoeff_subst_linv hp (MvPowerSeries.constantCoeff_X i)
-  have hb : ∀ i : n, MvPowerSeries.constantCoeff (at1 i (lgF ℂ_[l] l) : MvPowerSeries n ℂ_[l]) = 0 :=
-    fun i => Formalism.L2.Th1.C.Pts.constantCoeff_subst_l hp (MvPowerSeries.constantCoeff_X i)
-  refine ⟨MvPowerSeries.subst (fun i : n => (at1 i (Formalism.L2.Th1.D.expF ℂ_[l] l) : MvPowerSeries n ℂ_[l])) E⁻¹, ?_, ?_⟩
-  · rw [HostLog.constantCoeff_subst ha, MvPowerSeries.constantCoeff_inv, hE1, inv_one]
-  · unfold HostLog
-    rw [← hE, MvPowerSeries.subst_comp_subst_apply (MvPowerSeries.hasSubst_of_constantCoeff_zero ha)
-      (MvPowerSeries.hasSubst_of_constantCoeff_zero hb)]
-    have : (fun i : n => MvPowerSeries.subst (fun i : n => (at1 i (lgF ℂ_[l] l) : MvPowerSeries n ℂ_[l]))
-        (at1 i (Formalism.L2.Th1.D.expF ℂ_[l] l) : MvPowerSeries n ℂ_[l])) = MvPowerSeries.X := by
-      funext i
-      conv_lhs => rw [at1]
-      rw [Formalism.L2.Th1.C.Pts.substMv_subst (MvPowerSeries.constantCoeff_X i) hb,
-        MvPowerSeries.subst_X (MvPowerSeries.hasSubst_of_constantCoeff_zero hb)]
-      exact Formalism.L2.Th1.C.Pts.subst_linv_l hp (MvPowerSeries.constantCoeff_X i)
-    rw [this, MvPowerSeries.subst_self, id, MvPowerSeries.mul_inv_cancel _ (by rw [hE1]; exact one_ne_zero)]
-    intro m
-    rw [MvPowerSeries.coeff_one]
-    split_ifs <;> simp
 
 theorem thOrth.hasSubst (D : D7) {N N' r : ℕ} {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) (c : ℂ_[p])
     (b : Fin r → Matrix (Fin N') (Fin N) D.host.E) :
@@ -171,11 +111,6 @@ theorem thOrth.hasSubst (D : D7) {N N' r : ℕ} {p : ℕ} [Fact p.Prime] (lam : 
       (∑ i, MvPowerSeries.C (c * lamC lam (embT D k.1 (b i k.2.1 k.2.2))) * MvPowerSeries.X i : MvPowerSeries (Fin r) ℂ_[p])) :=
   MvPowerSeries.hasSubst_of_constantCoeff_zero fun k => by simp
 
-theorem thOrth.apply_X (D : D7) {N N' r : ℕ} {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) (c : ℂ_[p])
-    (b : Fin r → Matrix (Fin N') (Fin N) D.host.E) (k : D.what₂.Tau × Fin N' × Fin N) :
-    thOrth D lam c b (MvPowerSeries.X k) =
-      ∑ i, MvPowerSeries.C (c * lamC lam (embT D k.1 (b i k.2.1 k.2.2))) * MvPowerSeries.X i :=
-  MvPowerSeries.subst_X (thOrth.hasSubst D lam c b) k
 
 theorem thOrth.constantCoeff_eq (D : D7) {N N' r : ℕ} {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) (c : ℂ_[p])
     (b : Fin r → Matrix (Fin N') (Fin N) D.host.E) (G : MvPowerSeries (D.what₂.Tau × Fin N' × Fin N) ℂ_[p]) :

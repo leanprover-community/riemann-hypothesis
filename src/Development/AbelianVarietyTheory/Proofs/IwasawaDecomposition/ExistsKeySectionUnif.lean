@@ -1,17 +1,271 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FlagComponentFramedPointFrame
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.NotIsCompactUnivFv
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUniversalTripleFibreAtFramedPointStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UniversalTripleFibresBaseChangeKeyDataStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ThetaKeyRuleTriangularFrameChangeFourthPowerStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ThetaKeyRuleValueAtThetaPointStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsPowEqUnitOfContinuousComplexRootStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsBaseFieldMultipleOfNthRootComplexification
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIntegerExponentSectionOfChartRegularStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOnKeySectionComplexValueStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUniversalTripleFibreAtFramedPoint
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UniversalTripleFibresBaseChangeKeyData
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ThetaKeyRuleTriangularFrameChangeFourthPower
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ThetaKeyRuleValueAtThetaPoint
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ThetaFrameValueEqUnitSmoothConnectedBase
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.KchMul
+import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.FinrankFixedSubmoduleComplexification
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIntegerExponentSectionOfChartRegular
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOnKeySectionComplexValue
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.KeyFamOne
 import Development.AbelianVarietyTheory.Proofs.GenericRegularity.LinearDisjointAlgebraicClosure
 
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj GlobalTheory.ShFam GlobalTheory.LamT GlobalTheory.KeyFourth GlobalTheory.FrameUnif GlobalTheory.Reg
+open scoped Matrix TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_universalTripleFibre_at_framedPoint : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (g : ℕ) (e : Fin g ≃ Σ τ : E →+* ℂ, Fin (Dw.mult τ)) (S : Type) [CommRing S] [Nontrivial S] [Algebra c.F S] (y : FrPt Xo c S), 1 ≤ Dw.p + Dw.q → ∃ Φ : FibKey Xo S y.x, Tied e y.s y.u Φ := by
+  first | exact @GlobalTheory.KeyFourth.exists_tied | exact GlobalTheory.KeyFourth.exists_tied | (intros; apply GlobalTheory.KeyFourth.exists_tied <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj GlobalTheory.ShFam GlobalTheory.LamT GlobalTheory.KeyFourth GlobalTheory.FrameUnif GlobalTheory.Reg
+open scoped Matrix TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.universal_triple_fibres_base_change_key_data : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (g : ℕ) (e : Fin g ≃ Σ τ : E →+* ℂ, Fin (Dw.mult τ)) (S S' : Type) [CommRing S] [Algebra c.F S] [CommRing S'] [Nontrivial S'] [Algebra c.F S'] (φ : S →ₐ[c.F] S') (y : FrPt Xo c S) (z : FrPt Xo c S') (Φ : FibKey Xo S y.x) (Φ' : FibKey Xo S' z.x), FrMap φ y z → Tied e y.s y.u Φ → Tied e z.s z.u Φ' → KeyPB Φ'.key Φ.key φ.toRingHom := by
+  first | exact @GlobalTheory.KeyFourth.tied_keyPB | exact GlobalTheory.KeyFourth.tied_keyPB | (intros; apply GlobalTheory.KeyFourth.tied_keyPB <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj GlobalTheory.ShFam GlobalTheory.LamT GlobalTheory.KeyFourth GlobalTheory.FrameUnif GlobalTheory.Reg
+open scoped Matrix TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.theta_key_rule_triangular_frame_change_fourth_power : ∀ κ : GlobalTheory.KeyCl.Rule, GlobalTheory.KeyCl.Homog (fun _ => 1) κ → GlobalTheory.KeyCl.Funct κ → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (g : ℕ) (e : Fin g ≃ Σ τ : E →+* ℂ, Fin (Dw.mult τ)) (K : Type) [Field K] [CharZero K] [Algebra c.F K] (t : Ix Dw → Kˣ) (y y' : FrPt Xo c K) (Φ : FibKey Xo K y.x) (Φ' : FibKey Xo K y'.x), FrBor t y y' → Tied e y.s y.u Φ → Tied e y'.s y'.u Φ' → κ K Φ'.key = kch t ^ 4 * κ K Φ.key := by
+  first | exact @GlobalTheory.KeyFourth.rule_frBor | exact GlobalTheory.KeyFourth.rule_frBor | (intros; apply GlobalTheory.KeyFourth.rule_frBor <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj GlobalTheory.ShFam GlobalTheory.LamT GlobalTheory.KeyFourth GlobalTheory.FrameUnif GlobalTheory.Reg
+open scoped Matrix TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.theta_key_rule_value_at_theta_point : ∀ κ : GlobalTheory.KeyCl.Rule, GlobalTheory.KeyCl.Homog (fun _ => 1) κ → GlobalTheory.KeyCl.ThetaOne κ → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (σ : c.F →+* ℂ) (g : ℕ) (e : Fin g ≃ Σ τ : E →+* ℂ, Fin (Dw.mult τ)) (F : FamilyUnif Xo (σ.comp (IntermediateField.inclusion c.le).toRingHom) (fun j => Formalism.L2.PjFree.relab c σ (e j).1)) (r : ℕ) (M : ModelsOf F r) (k : Fin F.n) (T : ThetaData e F M k), ∀ b ∈ T.co ⁻¹' (M.X k).dom, ∀ (a : ℂ) (y : FrPt Xo c (CAt σ)) (Φ : FibKey Xo ℂ y.x), a ≠ 0 → IsThetaPt T b a y → Tied (S := ℂ) e y.s y.u Φ → a ^ 8 * (κ ℂ Φ.key : ℂ) = ((2 * Real.pi * Complex.I) ^ g * (T.h b).det) ^ 4 := by
+  first | exact @GlobalTheory.KeyFourth.value_at_thetaPt | exact GlobalTheory.KeyFourth.value_at_thetaPt | (intros; apply GlobalTheory.KeyFourth.value_at_thetaPt <;> assumption)
+end
+
+section
+open Polynomial
+
+namespace GlobalTheory.ContRoot
+
+open GlobalTheory.AffinePoints
+
+theorem nonempty_algHom (B : Type) [CommRing B] [Nontrivial B] [Algebra ℂ B]
+    [Algebra.FiniteType ℂ B] : Nonempty (B →ₐ[ℂ] ℂ) := by
+  obtain ⟨m, hm⟩ := Ideal.exists_maximal B
+  let _ := Ideal.Quotient.field m
+  have : Module.Finite ℂ (B ⧸ m) := finite_of_finite_type_of_isJacobsonRing ℂ (B ⧸ m)
+  exact ⟨(IsAlgClosed.lift : (B ⧸ m) →ₐ[ℂ] ℂ).comp (Ideal.Quotient.mkₐ ℂ m)⟩
+
+theorem exists_monic_prime_dvd (B : Type) [CommRing B] [IsDomain B] [IsIntegrallyClosed B]
+    {n : ℕ} (hn : 0 < n) (u : B) :
+    ∃ P : B[X], P.Monic ∧ Prime P ∧ 0 < P.natDegree ∧ P ∣ X ^ n - C u := by
+  let L := AlgebraicClosure (FractionRing B)
+  have hinj : Function.Injective (algebraMap B L) := by
+    rw [IsScalarTower.algebraMap_eq B (FractionRing B) L]
+    exact (algebraMap (FractionRing B) L).injective.comp (IsFractionRing.injective B _)
+  have : FaithfulSMul B L := (faithfulSMul_iff_algebraMap_injective B L).2 hinj
+  obtain ⟨β, hβ⟩ := IsAlgClosed.exists_pow_nat_eq (algebraMap B L u) hn
+  have h0 : aeval β (X ^ n - C u : B[X]) = 0 := by simp [hβ]
+  have hint : IsIntegral B β := ⟨_, monic_X_pow_sub_C u hn.ne', h0⟩
+  exact ⟨minpoly B β, minpoly.monic hint, minpoly.prime_of_isIntegrallyClosed hint,
+    minpoly.natDegree_pos hint, minpoly.isIntegrallyClosed_dvd hint h0⟩
+
+theorem exists_pow_eq_of_continuous_root : ∀ (B : Type) [CommRing B] [IsDomain B] [Algebra ℂ B] [Algebra.Smooth ℂ B] (n : ℕ) (u : Bˣ) (ρ : (B →ₐ[ℂ] ℂ) → ℂ), 0 < n → (∀ (m : ℕ) (V : Set (Fin m → ℂ)) (s : (Fin m → ℂ) → (B →ₐ[ℂ] ℂ)), IsOpen V → (∀ a : B, DifferentiableOn ℂ (fun p => s p a) V) → ContinuousOn (fun p => ρ (s p)) V) → (∀ ψ : B →ₐ[ℂ] ℂ, ρ ψ ^ n = ψ (u : B)) → ∃ b : B, b ^ n = u := by
+  intro B _ _ _ _ n u ρ hn hc hρ
+  have hρc : Continuous ρ := GlobalTheory.RootConst.continuous_of_holomorphic_families B ρ hc
+  have := GlobalTheory.isIntegrallyClosed_of_smooth ℂ B
+  obtain ⟨P, hm, hp, hd, hdvd⟩ := exists_monic_prime_dvd B hn (u : B)
+  have hdom : IsDomain (AdjoinRoot P) := AdjoinRoot.isDomain_of_prime hp
+  have hft : Algebra.FiniteType ℂ (AdjoinRoot P) :=
+    Algebra.FiniteType.trans (S := B) inferInstance inferInstance
+  have hconn := GlobalTheory.RootConst.preconnectedSpace_algHom (AdjoinRoot P)
+  let φ : B →ₐ[ℂ] AdjoinRoot P := IsScalarTower.toAlgHom ℂ B (AdjoinRoot P)
+  have hroot : AdjoinRoot.root P ^ n = φ u := by
+    have h := (AdjoinRoot.mk_eq_zero (f := P)).2 hdvd
+    rw [map_sub, map_pow, AdjoinRoot.mk_X, AdjoinRoot.mk_C, sub_eq_zero] at h
+    exact h
+  have hu : ∀ ψ : B →ₐ[ℂ] ℂ, ψ u ≠ 0 := fun ψ => (u.isUnit.map ψ).ne_zero
+  have hρ0 : ∀ ψ, ρ ψ ≠ 0 := fun ψ h => hu ψ (by rw [← hρ, h, zero_pow hn.ne'])
+  have hcont : Continuous fun χ : AdjoinRoot P →ₐ[ℂ] ℂ =>
+      χ (AdjoinRoot.root P) / ρ (comap φ χ) :=
+    (continuous_eval _).div (hρc.comp (continuous_comap φ)) fun _ => hρ0 _
+  have hconst := GlobalTheory.RootConst.eq_of_pow_eq_one hcont hn fun χ => by
+    rw [div_pow, ← map_pow, hroot, hρ, comap_apply]
+    exact div_self (hu (comap φ χ))
+  obtain ⟨ψ⟩ := nonempty_algHom B
+  have key : ∀ z, (P.map (ψ : B →+* ℂ)).IsRoot z → ∃ χ : AdjoinRoot P →ₐ[ℂ] ℂ,
+      comap φ χ = ψ ∧ χ (AdjoinRoot.root P) = z := by
+    intro z hz
+    have hz' : P.eval₂ (ψ : B →+* ℂ) z = 0 := by rw [← eval_map]; exact hz
+    refine ⟨AdjoinRoot.liftAlgHom P ψ z hz', ?_, by simp⟩
+    ext b
+    simp [φ]
+  have huniq : ∀ z w, (P.map (ψ : B →+* ℂ)).IsRoot z → (P.map (ψ : B →+* ℂ)).IsRoot w →
+      z = w := by
+    intro z w hz hw
+    obtain ⟨χ, h1, h2⟩ := key z hz
+    obtain ⟨χ', h1', h2'⟩ := key w hw
+    have h := hconst χ χ'
+    simp only [h1, h1', h2, h2'] at h
+    exact (div_left_inj' (hρ0 ψ)).1 h
+  have hsep : (P.map (ψ : B →+* ℂ)).Separable := by
+    refine (separable_X_pow_sub_C (n := n) (ψ u) (Nat.cast_ne_zero.2 hn.ne') (hu ψ)).of_dvd ?_
+    simpa using Polynomial.map_dvd (ψ : B →+* ℂ) hdvd
+  have hne : P.map (ψ : B →+* ℂ) ≠ 0 := (hm.map _).ne_zero
+  have hdeg : P.natDegree ≤ 1 := by
+    rw [← hm.natDegree_map (ψ : B →+* ℂ),
+      (IsAlgClosed.splits (P.map (ψ : B →+* ℂ))).natDegree_eq_card_roots,
+      ← Multiset.toFinset_card_of_nodup (nodup_roots hsep)]
+    refine Finset.card_le_one.2 fun a ha b hb => huniq a b ?_ ?_
+    · exact (mem_roots hne).1 (Multiset.mem_toFinset.1 ha)
+    · exact (mem_roots hne).1 (Multiset.mem_toFinset.1 hb)
+  have h1 : P = X + C (P.coeff 0) := hm.eq_X_add_C (le_antisymm hdeg hd)
+  refine ⟨-P.coeff 0, ?_⟩
+  have h2 : P.eval (-P.coeff 0) = 0 := by
+    rw [congrArg (eval (-P.coeff 0)) h1]; simp
+  have h3 := eval_eq_zero_of_dvd_of_eval_eq_zero hdvd h2
+  simpa [sub_eq_zero] using h3
+
+end GlobalTheory.ContRoot
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj GlobalTheory.ShFam GlobalTheory.LamT GlobalTheory.KeyFourth GlobalTheory.FrameUnif GlobalTheory.Reg
+open scoped Matrix TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_pow_eq_unit_of_continuous_complex_root : ∀ (B : Type) [CommRing B] [IsDomain B] [Algebra ℂ B] [Algebra.Smooth ℂ B] (n : ℕ) (u : Bˣ) (ρ : (B →ₐ[ℂ] ℂ) → ℂ), 0 < n → (∀ (m : ℕ) (V : Set (Fin m → ℂ)) (s : (Fin m → ℂ) → (B →ₐ[ℂ] ℂ)), IsOpen V → (∀ a : B, DifferentiableOn ℂ (fun p => s p a) V) → ContinuousOn (fun p => ρ (s p)) V) → (∀ ψ : B →ₐ[ℂ] ℂ, ρ ψ ^ n = ψ (u : B)) → ∃ b : B, b ^ n = u := by
+  atlas_forward_decl GlobalTheory.ContRoot.exists_pow_eq_of_continuous_root
+end
+
+section
+section
+open scoped TensorProduct
+
+namespace GlobalTheory.KeyFourth
+
+theorem exists_eq_smul_of_pow_eq_pow {R : Type*} [CommRing R] [IsDomain R] [Algebra ℂ R]
+    {n : ℕ} (hn : 0 < n) {x y : R} (h : x ^ n = y ^ n) : ∃ z : ℂ, x = z • y := by
+  have : NeZero n := ⟨hn.ne'⟩
+  have h0 := Complex.isPrimitiveRoot_exp n hn.ne'
+  have h1 := h0.map_of_injective (algebraMap ℂ R).injective
+  have h2 := h1.pow_sub_pow_eq_prod_sub_mul x y hn
+  rw [h, sub_self] at h2
+  obtain ⟨ζ, hζ, hz⟩ := Finset.prod_eq_zero_iff.1 h2.symm
+  rw [Polynomial.mem_nthRootsFinset hn] at hζ
+  obtain ⟨i, -, hi⟩ := h1.eq_pow_of_pow_eq_one hζ
+  refine ⟨Complex.exp (2 * Real.pi * Complex.I / n) ^ i, ?_⟩
+  rw [Algebra.smul_def, map_pow, hi]
+  exact sub_eq_zero.1 hz
+
+theorem exists_eq_smul_pow_of_pow_eq_tmul :
+    ∀ (K : Type) [Field K] [Algebra K ℂ] (A : Type) [CommRing A] [Algebra K A]
+      [IsDomain (ℂ ⊗[K] A)] (n : ℕ) (w : ℂ ⊗[K] A) (C : ℂ) (u : A), 0 < n → C ≠ 0 → u ≠ 0 →
+      w ^ n = C ⊗ₜ[K] u → ∃ (a : K) (b : A), a ≠ 0 ∧ u = a • b ^ n := by
+  intro K _ _ A _ _ _ n w C u hn hC hu hw
+  obtain ⟨f, hf⟩ := Module.Projective.exists_dual_eq_one K (one_ne_zero : (1 : ℂ) ≠ 0)
+  let T : ℂ ⊗[K] A →ₗ[K] A := (TensorProduct.lid K A).toLinearMap ∘ₗ LinearMap.rTensor A f
+  have hT : ∀ (c : ℂ) (a : A), T (c ⊗ₜ a) = f c • a := fun c a => by simp [T]
+  have hne : ∀ (c : ℂ) (a : A), c ≠ 0 → a ≠ 0 → c ⊗ₜ[K] a ≠ 0 := by
+    intro c a hc ha h
+    have h1 : (1 : ℂ) ⊗ₜ[K] a = 0 := by
+      have := congrArg (fun t : ℂ ⊗[K] A => c⁻¹ • t) h
+      simpa [TensorProduct.smul_tmul', hc] using this
+    have h2 := hT 1 a
+    rw [h1, map_zero, hf, one_smul] at h2
+    exact ha h2.symm
+  have hw0 : w ≠ 0 := by
+    rintro rfl
+    rw [zero_pow hn.ne'] at hw
+    exact hne C u hC hu hw.symm
+  have hst : ∀ σ : ℂ ≃ₐ[K] ℂ, ∀ x ∈ Submodule.span ℂ {w},
+      σ.toLinearMap.rTensor A x ∈ Submodule.span ℂ {w} := by
+    intro σ x hx
+    obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.1 hx
+    let S : ℂ ⊗[K] A →ₐ[K] ℂ ⊗[K] A := Algebra.TensorProduct.map σ.toAlgHom (AlgHom.id K A)
+    have hS : ∀ t, σ.toLinearMap.rTensor A t = S t := by
+      intro t
+      induction t with
+      | zero => simp
+      | tmul b v => simp [S]
+      | add x y hx hy => simp only [map_add, hx, hy]
+    obtain ⟨μ, hμ⟩ := IsAlgClosed.exists_pow_nat_eq (σ C / C) hn
+    have h1 : (S w) ^ n = (μ • w) ^ n := by
+      rw [← map_pow, smul_pow, hw, hμ, TensorProduct.smul_tmul', smul_eq_mul,
+        div_mul_cancel₀ _ hC]
+      simp [S]
+    obtain ⟨z, hz⟩ := exists_eq_smul_of_pow_eq_pow hn h1
+    have h2 : c • w = (c ⊗ₜ[K] (1 : A)) * w := by
+      rw [Algebra.smul_def]; rfl
+    have h3 : S (c ⊗ₜ[K] (1 : A)) * S w = σ c • S w := by
+      rw [Algebra.smul_def]
+      simp [S]
+    rw [hS, h2, map_mul, h3, hz, smul_smul, smul_smul]
+    exact Submodule.smul_mem _ _ (Submodule.mem_span_singleton_self w)
+  obtain ⟨N, hN, -⟩ := (GlobalTheory.GaloisDescent.complex_stable_iff_exists_baseChange _).1 hst
+  have hN0 : N ≠ ⊥ := by
+    rintro rfl
+    rw [Submodule.baseChange_bot, eq_comm, Submodule.span_singleton_eq_bot] at hN
+    exact hw0 hN
+  obtain ⟨b, hbN, hb0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hN0
+  have hb : (1 : ℂ) ⊗ₜ[K] b ∈ Submodule.span ℂ {w} :=
+    hN ▸ Submodule.tmul_mem_baseChange_of_mem 1 hbN
+  obtain ⟨l, hl⟩ := Submodule.mem_span_singleton.1 hb
+  have hpow : (1 : ℂ) ⊗ₜ[K] (b ^ n) = (l ^ n * C) ⊗ₜ[K] u := by
+    have := congrArg (· ^ n) hl
+    simp only [smul_pow, hw, Algebra.TensorProduct.tmul_pow, one_pow, TensorProduct.smul_tmul',
+      smul_eq_mul] at this
+    exact this.symm
+  have hbn : b ^ n ≠ 0 := by
+    intro h
+    have h1 : ((1 : ℂ) ⊗ₜ[K] b) ^ n = 0 := by
+      rw [Algebra.TensorProduct.tmul_pow, h, TensorProduct.tmul_zero]
+    exact hne 1 b one_ne_zero hb0 (pow_eq_zero_iff hn.ne' |>.1 h1)
+  have h4 := congrArg T hpow
+  rw [hT, hT, hf, one_smul] at h4
+  have h5 : f (l ^ n * C) ≠ 0 := by
+    intro h
+    rw [h, zero_smul] at h4
+    exact hbn h4
+  exact ⟨(f (l ^ n * C))⁻¹, b, inv_ne_zero h5, by rw [h4, smul_smul, inv_mul_cancel₀ h5, one_smul]⟩
+
+end GlobalTheory.KeyFourth
+end
+
+open AlgebraicGeometry CategoryTheory Limits NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj GlobalTheory.ShFam GlobalTheory.LamT GlobalTheory.KeyFourth GlobalTheory.FrameUnif GlobalTheory.Reg
+open scoped Matrix TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_base_field_multiple_of_nth_root_complexification : ∀ (K : Type) [Field K] [Algebra K ℂ] (A : Type) [CommRing A] [Algebra K A] [IsDomain (ℂ ⊗[K] A)] (n : ℕ) (w : ℂ ⊗[K] A) (C : ℂ) (u : A), 0 < n → C ≠ 0 → u ≠ 0 → w ^ n = C ⊗ₜ[K] u → ∃ (a : K) (b : A), a ≠ 0 ∧ u = a • b ^ n := by
+  atlas_forward_decl GlobalTheory.KeyFourth.exists_eq_smul_pow_of_pow_eq_tmul
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj GlobalTheory.ShFam GlobalTheory.LamT GlobalTheory.KeyFourth GlobalTheory.FrameUnif GlobalTheory.Reg
+open scoped Matrix TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_integer_exponent_section_of_chart_regular : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (h : GenFrEx Xo c) (w : Ix Dw → ℤ) (b : ∀ Z : Comp Xo c, Om Z), (∀ C : FChart h, ((∏ i, C.t i ^ w i : (Om C.Z)ˣ) : Om C.Z) * b C.Z ∈ C.R) → ∃ f ∈ GlobalTheory.AllWt.secZ Xo c w, ∀ Z, evC h Z f = b Z := by
+  first | exact @GlobalTheory.SecGlueInt.exists_secZ_of_regular | exact GlobalTheory.SecGlueInt.exists_secZ_of_regular | (intros; apply GlobalTheory.SecGlueInt.exists_secZ_of_regular <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj GlobalTheory.ShFam GlobalTheory.LamT GlobalTheory.KeyFourth GlobalTheory.FrameUnif GlobalTheory.Reg
+open scoped Matrix TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.continuousOn_keySection_complexValue : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (σ : c.F →+* ℂ) (g : ℕ) (e : Fin g ≃ Σ τ : E →+* ℂ, Fin (Dw.mult τ)) (F : FamilyUnif Xo (σ.comp (IntermediateField.inclusion c.le).toRingHom) (fun j => Formalism.L2.PjFree.relab c σ (e j).1)) (r : ℕ) (M : ModelsOf F r) (T : ∀ k, ThetaData e F M k) (un : ∀ k, (M.X k).dom → FrPt Xo c (CAt σ)), Formalism.L2.PjFree.GoodEmb c σ → ModelBase M → NegXi M → (∀ k, IsNormUn (T k) (un k)) → FramesOK e F M un → ∀ (A : Type) [CommRing A] [Algebra c.F A] (yA : FrPt Xo c A) (m : ℕ) (B : Set (Fin m → ℂ)) (φ : (Fin m → ℂ) → (A →ₐ[c.F] CAt σ)) (y : (Fin m → ℂ) → FrPt Xo c (CAt σ)) (ρ : (Fin m → ℂ) → ℂ), IsOpen B → (∀ a, DifferentiableOn ℂ (fun b => Formalism.L2.PjFree.toC (φ b a)) B) → (∀ b ∈ B, FrMap (φ b) yA (y b)) → (∀ b ∈ B, RootVal (unfOf e F M un) (y b) (ρ b)) → ContinuousOn ρ B := by
+  first | exact @GlobalTheory.KeyFourth.continuousOn_rootVal | exact GlobalTheory.KeyFourth.continuousOn_rootVal | (intros; apply GlobalTheory.KeyFourth.continuousOn_rootVal <;> assumption)
+end
+
+section
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory Limits NumberField
@@ -219,3 +473,5 @@ theorem nonempty_keySec : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
   rfl
 
 end GlobalTheory.KeyFourth
+end
+end

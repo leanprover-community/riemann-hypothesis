@@ -42,16 +42,5 @@ def IdCellFrame (E K : Type) [Field E] [NumberField E] [StarRing E] [Field K] [A
     (ζ : 𝓞 E) - 1 ∈ P.asIdeal →
     T = T' ∧ ∀ i : Fin (r + 1), c i = 1
 
-theorem idCellFrame_of {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K] [Algebra K E]
-    (hR : RelevScalar E K) (hN : NormRoot E) (hM : RootModP E) : IdCellFrame E K := by
-  intro S r T T' F F' c ζ g P hstar htr hT hT' hsame hc hrel hg hg3 hgP hgP2 hζ
-  obtain ⟨hTT, n, hn, hζn⟩ := hN S r T T' F F' c ζ hstar hT hT' hsame hc
-  have hζ1 : (ζ : 𝓞 E) = 1 :=
-    hM g P ζ hg hg3 hgP hgP2 ⟨n, hn, by rw [← Units.val_pow_eq_pow_val, hζn, Units.val_one]⟩ hζ
-  refine ⟨hTT, fun i => ?_⟩
-  have hT0 : ((T : ℕ) : E) ≠ 0 := by exact_mod_cast hT.ne'
-  have hT0' : ((T' : ℕ) : E) ≠ 0 := by exact_mod_cast hT'.ne'
-  rw [hR S r (T : E) (T' : E) F F' c htr hT0 hT0' hsame hrel i, hc, hζ1]
-  simp
 
 end Formalism.L2.SG.IdCell

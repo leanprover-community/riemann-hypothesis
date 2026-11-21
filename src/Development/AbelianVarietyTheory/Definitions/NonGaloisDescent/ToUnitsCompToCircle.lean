@@ -174,8 +174,6 @@ def toCircle {M : Type} [Group M] [Finite M] (c : M →* ℂˣ) : M →* Circle 
 @[simp] theorem coe_toCircle {M : Type} [Group M] [Finite M] (c : M →* ℂˣ) (u : M) :
     ((toCircle c u : Circle) : ℂ) = ((c u : ℂˣ) : ℂ) := rfl
 
-theorem toUnits_comp_toCircle {M : Type} [Group M] [Finite M] (c : M →* ℂˣ) : Circle.toUnits.comp (toCircle c) = c :=
-  MonoidHom.ext fun _ => Units.ext rfl
 
 end Res
 
@@ -322,9 +320,6 @@ variable (R)
 
 def tupTwist (t : T0) : Twist D Circle := ⟨R.Q t, R.xi t, fun PP => toCircle (R.xiR t PP)⟩
 
-theorem isResAt_tupTwist {t₀ : T0} (hL : R.toLevCh.Is t₀) (t : T0) {PP : Pl D.host.E} (hPP : PP ∈ R.Q t)
-    (h : Formalism.L2.NTheta.IsIdemAt (idemAt PP) PP) : IsResAt (tupTwist R t).chi PP ((tupTwist R t).res PP) :=
-  fun x hx hi u hu => Circle.ext (eq_res_of_chrEq (hL.xi t) h (hL.xi_tame t PP) (hL.xiR t PP hPP) x hx hi u hu)
 
 theorem isUnit_of_isONBasis {k p : ℕ} {J s B : Matrix (Fin k) (Fin k) ℂ} (h : IsONBasis J s B p) : IsUnit B := by
   obtain ⟨ε, h1, h2, -⟩ := h

@@ -81,10 +81,5 @@ theorem partLat_le (Z : Comp Xo c) (G : WTZ D.host.E) : partLat U Z G ≤ latW U
   rintro _ ⟨f, hf, rfl⟩
   exact (mem_latOn U).1 hf
 
-theorem isComplexData_of_laws {T : Core D} (h : LawsM T) {j : ℕ} (hj : InR D j) :
-    IsComplexData (T.U j) (T.V j) (T.dict j) :=
-  ⟨h.pins.2.1.2, fun σ hσ => ⟨h.unf j hj σ hσ, by
-    obtain ⟨th, hr, h1, h2⟩ := h.dictU j hj σ hσ
-    exact ⟨T.Kf j σ, th, hr, h.pins.2.1.1 ▸ h.levelK j hj σ hσ, h1, h2⟩, h.finVol j hj σ hσ, h.xiAbs j hj σ hσ⟩⟩
 
 end GlobalTheory.IndefiniteRowSideFullHecke.ComponentMassSum

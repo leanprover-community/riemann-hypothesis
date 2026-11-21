@@ -182,13 +182,6 @@ theorem value_mem_span (hP : GlobalTheory.Published.CuspRapidDecay) (T : CoreJ D
     exact (LinearMap.finrank_range_le L).trans hd
   exact fun w hw => h1 (h2.ge (hL w hw))
 
-theorem liftsSpan_of_classSumsSpan (hP : GlobalTheory.Published.CuspRapidDecay) (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL]
-    (R : RealDat D A T.Q.c.F) (F : Face D A) (κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1))
-    (v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW i σ).Vec) (O : ∀ i, OMDat T.toCore R i Unit (fun _ => A.μ0))
-    (i : Fin D.R.m) (hsz : 8 * D.R.f * D.R.r + 4 ≤ D.R.nV) (hR : R.Char F) (hW : Nonempty (FWTie T R κ v₀))
-    (hO : OMPins T R κ v₀ O i) (h0 : OneMapRow0 T R κ v₀ O i) (hspan : ClassSumsSpan (O i) (κ i)) :
-    LiftsSpan R i (v₀ i (sg0 D A)) :=
-  fun t _ => value_mem_span hP T R F κ v₀ O i hsz hR hW hO h0 hspan _ (hR.thP.thF_mem i t _)
 
 section Guard
 

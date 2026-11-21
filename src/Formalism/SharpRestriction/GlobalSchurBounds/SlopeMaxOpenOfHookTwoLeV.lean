@@ -195,14 +195,7 @@ theorem familySlopeLowerOpen_of_std (hS : StdSlopeLow) (hH : HookBound) {eps : �
   obtain ⟨x0, hx0⟩ := h
   exact ⟨x0, fun x hx hx1 i => slopeLowerOpen_of_std_hook hS hH _ (hx0 x hx hx1 i)⟩
 
-theorem familySlopeMaxOpen_of_hook_v (hH : HookBound) {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
-    (h : fam0 Fm fun D => 2 ≤ D.host.v ∧ SlopeMaxC D) : FamilySlopeMaxOpenPart Fm 4 := by
-  obtain ⟨x0, hx0⟩ := h
-  exact ⟨x0, fun x hx hx1 i => slopeMaxOpen_of_hook_two_le_v hH _ (hx0 x hx hx1 i).1 (hx0 x hx hx1 i).2⟩
 
-theorem familySlopeMaxOpen_of_hook (hH : HookBound) {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (h : fam0 Fm SlopeMaxC) : FamilySlopeMaxOpenPart Fm 4 := by
-  obtain ⟨x0, hx0⟩ := h
-  exact ⟨x0, fun x hx hx1 i => slopeMaxOpen_of_hook hH _ (hx0 x hx hx1 i)⟩
 
 section ShortVec
 
@@ -227,10 +220,6 @@ theorem slopeMaxC_of (D : D7) (hS : ShortDual D) (hG : SlopeMaxGiven D) : SlopeM
 
 theorem slope_max_open_four_of_hookBound (hH : HookBound) (D : D7) (hS : ShortDual D) (hG : SlopeMaxGiven D) : SlopeMaxOpenPart D 4 := slopeMaxOpen_of_hook hH D (slopeMaxC_of D hS hG)
 
-theorem family_slope_max_open_four_of_hookBound (hH : HookBound) {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
-    (h : fam0 Fm fun D => ShortDual D ∧ SlopeMaxGiven D) : FamilySlopeMaxOpenPart Fm 4 := by
-  obtain ⟨x0, hx0⟩ := h
-  exact ⟨x0, fun x hx hx1 i => slope_max_open_four_of_hookBound hH _ (hx0 x hx hx1 i).1 (hx0 x hx hx1 i).2⟩
 
 end ShortVec
 

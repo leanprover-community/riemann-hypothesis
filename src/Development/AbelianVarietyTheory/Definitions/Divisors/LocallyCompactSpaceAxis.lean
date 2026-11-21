@@ -124,95 +124,12 @@ theorem scales_of_diag {C : Matrix (Fin n) (Fin (r + 1)) E} {p : GAd σ J} {l : 
   rw [mul_diagonal] at this
   simpa [Matrix.mul_apply, ResLine.col, mul_comm] using this
 
-theorem exists_isFlow (hc : IsCMExt F E σ) (hJ : IsHermND σ J) (hW : IsWittFrame σ J X Y) : ∃ a, IsFlow σ J X Y a := by
-  obtain ⟨t, htc, ht⟩ := GlobalTheory.IdTorus.exists_continuous_isIdTorusElt hc hJ hW
-  have hd : (2 * (Module.finrank ℚ F : ℝ)) ≠ 0 := by
-    have := Module.finrank_pos (R := ℚ) (M := F); positivity
-  let l : ℝ → Fin (r + 1) → (AF F ⊗[F] E)ˣ := fun s => Pi.mulSingle 0 (archUnit F E (s / (2 * Module.finrank ℚ F)))
-  have l0 : ∀ s, (absE F E (l s 0) : ℝ) = Real.exp s := fun s => by
-    simp only [l, Pi.mulSingle_eq_same]
-    rw [GlobalTheory.HeckeAbsArch.absE_archUnit hc, mul_div_cancel₀ _ hd]
-  have cl := fun s => GlobalTheory.IdTorusCent.centre_levi hc hJ hW (S := {0}) (by
-      intro k hk i hi; rw [Finset.mem_singleton] at hk ⊢; subst hk; exact le_antisymm hi (Fin.zero_le _))
-    (l := l s) (fun k hk => Pi.mulSingle_eq_of_ne (by simpa using hk) _) (ht (l s))
-  refine ⟨fun s => t (l s), htc.comp ((continuous_mulSingle 0).comp
-    (GlobalTheory.HeckeAbsArch.continuous_archUnit.comp (continuous_id.div_const _))), fun s s' => ?_,
-    fun s => ⟨_, scales_of_diag (ht (l s)).1, l0 s⟩,
-    fun s => ⟨_, scales_of_diag (l := fun k => (conjUnit σ (l s k))⁻¹) (ht (l s)).2.1, ?_⟩, fun s => (cl s).1, fun s => (cl s).2⟩
-  · refine GlobalTheory.IdTorus.isIdTorusElt_uniq hc hJ hW (ht _) ?_
-    have : l (s + s') = l s * l s' := by
-      simp only [l]; rw [add_div, GlobalTheory.HeckeAbsArch.archUnit_add, Pi.mulSingle_mul]
-    rw [this]; exact GlobalTheory.IdTorus.isIdTorusElt_mul (ht _) (ht _)
-  · rw [map_inv, GlobalTheory.Doubling.absE_conjUnit, NNReal.coe_inv, l0, Real.exp_neg]
 
-theorem ht_flow {L : Submodule (𝓞 E) (Fin n → E)} {a : GL (Fin n) (AF F ⊗[F] E)} {h : GAd σ J → ℝ}
-    (H : Data σ J X Y L a h) {c : ℝ → GAd σ J} (hc : IsFlow σ J X Y c) (t : ℝ) : h (c t) = Real.exp t := by
-  obtain ⟨l, h1, h2⟩ := hc.onX t
-  simpa [h2] using H.ht _ l h1 1 (one_mem _)
 
-theorem isHt_of_data {L : Submodule (𝓞 E) (Fin n → E)} {a : GL (Fin n) (AF F ⊗[F] E)} {h : GAd σ J → ℝ}
-    (H : Data σ J X Y L a h) : IsHt (levelAll σ J L a) h := by
-  obtain ⟨_, _⟩ := GlobalTheory.StdPar.ring_facts (F := F) (E := E)
-  haveI := H.adapted.lat
-  have hyx : cT (σ : E →+* E) (ResLine.col Y) * J * ResLine.col X = 1 := by
-    ext i j
-    have := congrFun (congrFun (GlobalTheory.StdPar.yx H.cm H.herm H.witt) 0) 0
-    rw [Subsingleton.elim i 0, Subsingleton.elim j 0]
-    simpa [cT, ResLine.col, Matrix.mul_apply] using this
-  let φ : GAd σ J → AF F ⊗[F] E := fun p =>
-    (adMat F (cT (σ : E →+* E) (ResLine.col Y) * J) * ((matHom _ σ J p).1 * adMat F (ResLine.col X))) 0 0
-  have hφ : ∀ p l, Scales σ J (ResLine.col X) p l → φ p = l := fun p l e => by
-    unfold Scales at e
-    simp only [φ, e, Matrix.mul_smul, adMat, ← Matrix.map_mul, hyx]
-    simp
-  have cφ : Continuous φ := (continuous_const.matrix_mul (GlobalTheory.StdPar.continuous_mat.matrix_mul continuous_const)).matrix_elem 0 0
-  have hinv : ∀ p l, Scales σ J (ResLine.col X) p l → Scales σ J (ResLine.col X) p⁻¹ l⁻¹ := fun p l e => by
-    unfold Scales at *
-    rw [map_inv]; exact GlobalTheory.IwLine.inv_mul_eq_smul _ _ _ e
-  have hmul : ∀ p l q m, Scales σ J (ResLine.col X) p l → Scales σ J (ResLine.col X) q m → Scales σ J (ResLine.col X) (p * q) (l * m) :=
-    fun p l q m e e' => by
-      unfold Scales at *
-      rw [map_mul, Units.val_mul, Matrix.mul_assoc, e', Matrix.mul_smul, e, smul_smul, Units.val_mul, mul_comm]
-  have eP : lineGrp σ J (ResLine.col X) = GlobalTheory.StdPar.frameStab σ J (ResLine.col X) ⊤ := by
-    ext p
-    refine ⟨fun ⟨l, e⟩ => ⟨Units.map (Matrix.scalar (Fin 1)).toMonoidHom l, trivial, e.trans ?_⟩, fun ⟨B, _, e⟩ =>
-      ⟨Matrix.GeneralLinearGroup.det B, e.trans ?_⟩⟩
-    · ext i j; simp [Matrix.mul_apply, mul_comm, Subsingleton.elim j 0]
-    · ext i j; simp [Matrix.mul_apply, mul_comm, Subsingleton.elim j 0]
-  have cP : IsClosed (lineGrp σ J (ResLine.col X) : Set (GAd σ J)) := by
-    rw [eP]; exact GlobalTheory.StdPar.isClosed_frameStab hyx isClosed_univ
-  refine ⟨(GlobalTheory.EisLineModel.pos H.iwa H.ht).1, ?_, fun k hk => by simpa using H.ht 1 1 (by simp [Scales]) k hk, fun g => ?_⟩
-  · refine GlobalTheory.Doubling.continuous_of_prod cP (GlobalTheory.Doubling.isCompact_levelAll H.cm _ _ _)
-      (fun g => let ⟨p, l, e, k, hk, e'⟩ := H.iwa g; ⟨⟨p, l, e⟩, k, hk, e'⟩) ?_
-    let u : lineGrp σ J (ResLine.col X) → (AF F ⊗[F] E)ˣ := fun p => p.2.choose
-    have hu : ∀ p : lineGrp σ J (ResLine.col X), Scales σ J (ResLine.col X) p (u p) := fun p => p.2.choose_spec
-    have cu : Continuous u := Units.continuous_iff.2
-      ⟨(cφ.comp continuous_subtype_val).congr fun p => hφ _ _ (hu p),
-        (cφ.comp continuous_subtype_val.inv).congr fun p => hφ _ _ (hinv _ _ (hu p))⟩
-    exact (NNReal.continuous_coe.comp (GlobalTheory.Doubling.continuous_absE.comp (cu.comp continuous_fst))).congr
-      fun x => (H.ht _ _ (hu x.1) _ x.2.2).symm
-  · obtain ⟨p, l, e, k, hk, rfl⟩ := H.iwa g
-    refine ⟨k, hk, fun x => ?_⟩
-    obtain ⟨q, m, e', k', hk', e''⟩ := H.iwa (k * x)
-    rw [mul_assoc, e'', ← mul_assoc, H.ht _ _ (hmul _ _ _ _ e e') _ hk', H.ht _ _ e _ hk, H.ht _ _ e' _ hk', map_mul,
-      NNReal.coe_mul]
 
-theorem all_inhabited : ∃ (F E : Type) (_ : Field F) (_ : NumberField F) (_ : Field E) (_ : NumberField E) (_ : Algebra F E)
-    (σ : E →ₐ[F] E) (J : Matrix (Fin 2) (Fin 2) E) (X Y : Matrix (Fin 2) (Fin (0 + 1)) E) (L : Submodule (𝓞 E) (Fin 2 → E))
-    (a : GL (Fin 2) (AF F ⊗[F] E)) (h : GAd σ J → ℝ) (c : ℝ → GAd σ J) (T : Set (ratPts σ J)),
-    Data σ J X Y L a h ∧ IsFlow σ J X Y c ∧ IsReps σ J (ResLine.col X) T ∧ IsHt (levelAll σ J L a) h ∧
-      ∀ t, h (c t) = Real.exp t := by
-  obtain ⟨F, E, _, _, _, _, _, σ, J, X, Y, L, a, h, H⟩ := data_inhabited
-  obtain ⟨c, hc⟩ := exists_isFlow H.cm H.herm H.witt
-  obtain ⟨T, hT⟩ := exists_isReps (σ := σ) (J := J) (ResLine.col X)
-  exact ⟨F, E, _, _, _, _, _, σ, J, X, Y, L, a, h, c, T, H, hc, hT, isHt_of_data H, ht_flow H hc⟩
 
 example (H : Subgroup (GAd σ J)) : Countable (ratPts σ J ⊓ H : Subgroup (GAd σ J)) := inferInstance
 
-theorem isHt_right {G : Type} [Group G] [TopologicalSpace G] {K : Subgroup G} {h : G → ℝ} (H : IsHt K h) (g : G) {k : G}
-    (hk : k ∈ K) : h (g * k) = h g := by
-  obtain ⟨k', hk', e⟩ := H.iw g
-  rw [e, H.one _ (mul_mem hk' hk), mul_one]
 
 abbrev Pl : Type := Multiplicative (Fin 2 → ℝ)
 
@@ -250,62 +167,9 @@ theorem single_int (i : Fin 2) (m : ℤ) : Multiplicative.ofAdd (Pi.single i (m 
 
 def unitInt (i : Fin 2) : Set (axis i) := {u | u.1.toAdd i ∈ Set.Ico (0 : ℝ) 1}
 
-theorem isFD (i : Fin 2) (μ : Measure (axis i)) : IsFundamentalDomain (intPts.subgroupOf (axis i)) (unitInt i) μ := by
-  refine IsFundamentalDomain.mk' ?_ fun x => ?_
-  · exact (((cont_coord i).comp continuous_subtype_val).measurable measurableSet_Ico).nullMeasurableSet
-  · refine ⟨⟨⟨_, single_mem i ((-⌊x.1.toAdd i⌋ : ℤ) : ℝ)⟩, single_int i _⟩, ?_, fun g hg => ?_⟩
-    · change (Pi.single i ((-⌊x.1.toAdd i⌋ : ℤ) : ℝ) + x.1.toAdd : Fin 2 → ℝ) i ∈ Set.Ico (0 : ℝ) 1
-      simp only [Pi.add_apply, Pi.single_eq_same, Int.cast_neg]
-      exact ⟨by linarith [Int.floor_le (x.1.toAdd i)], by linarith [Int.lt_floor_add_one (x.1.toAdd i)]⟩
-    · obtain ⟨m, e⟩ := g.2 i
-      change g.1.1.toAdd i + x.1.toAdd i ∈ Set.Ico (0 : ℝ) 1 at hg
-      have e' : g.1.1.toAdd i = m := e
-      rw [e'] at hg
-      have : ⌊x.1.toAdd i⌋ = -m := Int.floor_eq_iff.2 ⟨by push_cast; linarith [hg.1], by push_cast; linarith [hg.2]⟩
-      refine Subtype.ext (Subtype.ext (Multiplicative.toAdd.injective (funext fun j => ?_)))
-      by_cases h : j = i
-      · subst h; simp [this, e']
-      · simp [h, g.1.2 j h]
 
-theorem fin_unitInt (i : Fin 2) (μ : Measure (axis i)) [μ.IsHaarMeasure] : μ (unitInt i) ≠ ⊤ := by
-  have hc : IsCompact (Multiplicative.ofAdd '' (Set.Icc (0 : Fin 2 → ℝ) 1) : Set Pl) := isCompact_Icc.image continuous_ofAdd
-  refine ne_top_of_le_ne_top ((isClosed_axis i).isClosedEmbedding_subtypeVal.isCompact_preimage hc).measure_ne_top
-    (measure_mono fun u hu => ⟨u.1.toAdd, ⟨fun j => ?_, fun j => ?_⟩, rfl⟩)
-  · by_cases h : j = i
-    · subst h; exact hu.1
-    · simp [u.2 j h]
-  · by_cases h : j = i
-    · subst h; exact hu.2.le
-    · simp [u.2 j h]
 
-theorem countable_intPts : Countable intPts :=
-  Function.Injective.countable (f := fun (g : intPts) (j : Fin 2) => (g.2 j).choose) fun a b h =>
-    Subtype.ext (Multiplicative.toAdd.injective (funext fun j => by
-      rw [(a.2 j).choose_spec, (b.2 j).choose_spec]; exact congrArg _ (congrFun h j)))
 
-theorem semiLat_plane : SemiLat (axis 0) (axis 1) intPts Measure.haar Measure.haar (unitInt 0) (unitInt 1) where
-  closedN := isClosed_axis 0
-  closedM := isClosed_axis 1
-  norm := fun m _ u hu => by rwa [mul_comm m, mul_inv_cancel_right]
-  disj := fun g h0 h1 => Multiplicative.toAdd.injective (funext fun j => by
-    fin_cases j
-    · exact h1 0 (by decide)
-    · exact h0 1 (by decide))
-  dec := fun γ hγ => by
-    obtain ⟨m, e⟩ := hγ 0
-    obtain ⟨m', e'⟩ := hγ 1
-    refine ⟨_, single_mem 0 m, _, single_mem 1 m', single_int _ _, single_int _ _,
-      Multiplicative.toAdd.injective (funext fun j => ?_)⟩
-    fin_cases j <;> simp [e, e']
-  haarN := inferInstance
-  haarM := inferInstance
-  domN := isFD 0 _
-  domM := isFD 1 _
-  finN := fin_unitInt 0 _
-  finM := fin_unitInt 1 _
-  count := countable_intPts
-  topGrp := inferInstance
-  borel := inferInstance
 
 theorem semiLat_ne_zero {G : Type} [Group G] [TopologicalSpace G] [MeasurableSpace G]
     {N M Λ : Subgroup G} {ν : Measure N} {π : Measure M} {𝓝 : Set N} {𝓜 : Set M}

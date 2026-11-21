@@ -139,14 +139,6 @@ theorem exists_point (h : IsChowFormInt I e dl f) :
   obtain ⟨y, hy, hI, -⟩ := (h.zero_iff u).1 hu
   exact (hc ⟨y, hy, hI⟩).elim
 
-theorem span_eq_elimIdeal (h : IsChowFormInt I e dl f) (hp : I.IsPrime)
-    (hI : I.IsHomogeneous (homogeneousSubmodule (Fin N) k)) :
-    Ideal.span {f} = GlobalTheory.Chow.elimIdeal (Fin (e + 1)) I := by
-  obtain ⟨y, hy, hyI⟩ := h.exists_point
-  obtain ⟨j, hj⟩ := Function.ne_iff.1 hy
-  have : (GlobalTheory.Chow.elimIdeal (Fin (e + 1)) I).IsPrime :=
-    GlobalTheory.Chow.isPrime_elimIdeal ⟨j, fun hX => hj (by simpa using hyI _ hX)⟩
-  rw [h.span_eq_radical_elimIdeal hI, this.radical]
 
 theorem pos (h : IsChowFormInt I e dl f) : 0 < dl := by
   refine Nat.pos_of_ne_zero fun h0 => ?_
@@ -323,16 +315,7 @@ theorem irreducible_sq_add_sq :
   simp at h2
   nlinarith [sq_nonneg (MvPolynomial.eval (fun _ => (1 : ℚ)) r)]
 
-theorem isPrime_span_sq_add_sq :
-    (Ideal.span {(X 0 ^ 2 + X 1 ^ 2 : MvPolynomial (Fin 2) ℚ)}).IsPrime :=
-  (Ideal.span_singleton_prime irreducible_sq_add_sq.ne_zero).2 irreducible_sq_add_sq.prime
 
-theorem isHomogeneous_span_sq_add_sq :
-    (Ideal.span {(X 0 ^ 2 + X 1 ^ 2 : MvPolynomial (Fin 2) ℚ)}).IsHomogeneous
-      (homogeneousSubmodule (Fin 2) ℚ) := by
-  refine Ideal.homogeneous_span _ _ ?_
-  rintro _ rfl
-  exact ⟨2, (isHomogeneous_X_pow _ _).add (isHomogeneous_X_pow _ _)⟩
 
 theorem isChowFormInt_sq_add_sq :
     IsChowFormInt (Ideal.span {(X 0 ^ 2 + X 1 ^ 2 : MvPolynomial (Fin 2) ℚ)}) 0 2
@@ -378,27 +361,7 @@ theorem isChowFormInt_sq_add_sq :
       refine (mul_eq_zero.1 ?_).resolve_right (pow_ne_zero 2 h0)
       linear_combination u (0, 1) ^ 2 * h1 + (u (0, 0) * y 0 - u (0, 1) * y 1) * h2
 
-theorem not_isChowForm_sq_add_sq (δ : ℕ) (f : MvPolynomial (Fin (0 + 1) × Fin 2) ℚ) :
-    ¬ IsChowForm (Ideal.span {(X 0 ^ 2 + X 1 ^ 2 : MvPolynomial (Fin 2) ℚ)}) 0 δ f := by
-  intro h
-  obtain ⟨-, c, hc, rfl⟩ := isChowFormInt_sq_add_sq.unique h.isChowFormInt
-  obtain ⟨z, hz⟩ := IsAlgClosed.exists_pow_nat_eq (-1 : AlgebraicClosure ℚ) two_pos
-  have hz' : (C z : MvPolynomial (Fin (0 + 1) × Fin 2) (AlgebraicClosure ℚ)) ^ 2 = -1 := by
-    rw [← map_pow, hz, map_neg, map_one]
-  obtain ⟨φ, hi⟩ : ∃ φ : ℚ →+* AlgebraicClosure ℚ, Irreducible (MvPolynomial.map φ
-      (C c * (X (0, 0) ^ 2 + X (0, 1) ^ 2) : MvPolynomial (Fin (0 + 1) × Fin 2) ℚ)) := ⟨_, h.irred⟩
-  have := hi.isUnit_or_isUnit
-    (a := C (φ c) * (X (0, 0) + C z * X (0, 1))) (b := X (0, 0) - C z * X (0, 1)) (by
-      simp only [map_mul, map_C, map_add, map_pow, map_X]
-      linear_combination (C (φ c) * X (0, 1) ^ 2) * hz')
-  rcases this with h1 | h1 <;> simpa using h1.map constantCoeff
 
-theorem isChowFormCycle_two_sq_add_sq :
-    IsChowFormCycle
-      (Finsupp.single (Ideal.span {(X 0 ^ 2 + X 1 ^ 2 : MvPolynomial (Fin 2) ℚ)}) 2) 0 4
-      ((X (0, 0) ^ 2 + X (0, 1) ^ 2) ^ 2) := by
-  simpa using (isChowFormInt_sq_add_sq.single isPrime_span_sq_add_sq
-    isHomogeneous_span_sq_add_sq).nsmul 2
 
 example (f : MvPolynomial (Fin (0 + 1) × Fin 2) ℚ) :
     ¬ IsChowFormInt (Ideal.span {(X 0 ^ 2 + X 1 ^ 2 : MvPolynomial (Fin 2) ℚ)}) 0 1 f :=

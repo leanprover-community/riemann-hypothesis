@@ -264,16 +264,6 @@ theorem eq_of_annNorm_sub {x y : T.Ann ρ0 σ0} (hlo : T.annNorm ρ0 σ0 (annIn 
     (hhi : T.annNorm ρ0 σ0 (annOut ρ0 σ0) (x - y) = 0) : x = y := by
   rw [← dist_eq_zero, dist_ann, hlo, hhi, max_self]
 
-theorem tendsto_ann {z : ℕ → T.Ann ρ0 σ0} {x : T.Ann ρ0 σ0}
-    (h : ∀ ε > 0, ∃ J₀ : ℕ, ∀ J ≥ J₀, T.annNorm ρ0 σ0 (annIn ρ0 σ0) (z J - x) ≤ ε ∧
-      T.annNorm ρ0 σ0 (annOut ρ0 σ0) (z J - x) ≤ ε) : Tendsto z atTop (𝓝 x) := by
-  rw [Metric.tendsto_atTop]
-  intro ε hε
-  obtain ⟨J₀, hJ₀⟩ := h (ε / 2) (half_pos hε)
-  refine ⟨J₀, fun J hJ => ?_⟩
-  rw [dist_ann]
-  obtain ⟨h1, h2⟩ := hJ₀ J hJ
-  exact lt_of_le_of_lt (max_le h1 h2) (half_lt_self hε)
 
 theorem exists_limit_ann {z : ℕ → T.Ann ρ0 σ0}
     (h : ∀ ε > 0, ∃ J₀ : ℕ, ∀ J ≥ J₀, ∀ K ≥ J₀, T.annNorm ρ0 σ0 (annIn ρ0 σ0) (z J - z K) ≤ ε ∧
@@ -509,12 +499,6 @@ theorem annNorm_annMap (r : AnnRad ρ0 σ0) (x : T.Ann ρ0 σ0) :
 theorem annMap_coeAnn (b : T.Econ ρ0) : G.annMap (T.coeAnn (σ0 := σ0) b) = T.coeAnn (G.econMap ρ0 b) :=
   G.annMap_coe _
 
-theorem annMap_toAnn (x : T.RobbaExt ρ0) :
-    G.annMap (T.toAnn ρ0 σ0 x) = T.toAnn ρ0 σ0 (G.extMap ρ0 x) :=
-  Completion.induction_on x
-    (isClosed_eq (G.continuous_annMap.comp T.continuous_toAnn)
-      (T.continuous_toAnn.comp Completion.continuous_map))
-    fun b => by rw [toAnn_coe, annMap_coeAnn, extMap_coe, toAnn_coe]
 
 end TeichIso
 

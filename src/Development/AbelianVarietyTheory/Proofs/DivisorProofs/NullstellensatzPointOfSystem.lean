@@ -2,8 +2,218 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.JoinCastSucc
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.FramedLatticeZeroCycleHeight
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LeOfRingKrullDimConeIdeal
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIntegralRelation
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsIntegralConeRingOfForallValuationSubring
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRatioMemValuationSubringAtGenericPoint
 
+section
+open MvPolynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_integral_relation_C_mul_X_pow_of_valuationSubring : ∀ (F K : Type) [Field F] [Field K] (φ : F →+* K) (r e : ℕ) (w : Fin r → K) (τ : K), (∀ V : ValuationSubring K, (∀ c, φ c ∈ V) → ∃ i, w i ≠ 0 ∧ τ / w i ^ e ∈ V) → ∃ (m : ℕ) (b : Fin m → MvPolynomial (Fin r) F), (Polynomial.C τ * Polynomial.X ^ e) ^ m + ∑ k, MvPolynomial.eval₂ (Polynomial.C.comp φ) (fun i => Polynomial.C (w i) * Polynomial.X) (b k) * (Polynomial.C τ * Polynomial.X ^ e) ^ (k : ℕ) = 0 := by
+  first | exact @GlobalTheory.isIntegral_coneRing_of_forall_valuationSubring | exact GlobalTheory.isIntegral_coneRing_of_forall_valuationSubring | (intros; apply GlobalTheory.isIntegral_coneRing_of_forall_valuationSubring <;> assumption)
+end
+
+section
+section
+open MvPolynomial
+
+namespace GlobalTheory
+
+theorem coeff_eval₂_C_mul_X {F K : Type} [Field F] [Field K] (φ : F →+* K) {r : ℕ} (w : Fin r → K)
+    (p : MvPolynomial (Fin r) F) (d : ℕ) :
+    (MvPolynomial.eval₂ (Polynomial.C.comp φ) (fun i => Polynomial.C (w i) * Polynomial.X) p).coeff d
+      = MvPolynomial.eval₂ φ w (homogeneousComponent d p) := by
+  induction p using MvPolynomial.induction_on' with
+  | monomial u a =>
+    have hprod : (u.prod fun i k => (Polynomial.C (w i) * Polynomial.X : Polynomial K) ^ k)
+        = Polynomial.C (u.prod fun i k => w i ^ k) * Polynomial.X ^ (Finsupp.degree u) := by
+      simp only [Finsupp.prod, mul_pow, Finset.prod_mul_distrib, map_prod, map_pow,
+        Finset.prod_pow_eq_pow_sum, Finsupp.degree_apply]
+    have hcomp : homogeneousComponent d (monomial u a)
+        = if Finsupp.degree u = d then monomial u a else 0 := by
+      ext v
+      rw [coeff_homogeneousComponent]
+      by_cases hd : Finsupp.degree u = d
+      · by_cases hv : u = v
+        · subst hv; simp [hd]
+        · simp [coeff_monomial, hv, hd]
+      · by_cases hv : u = v
+        · subst hv; simp [hd]
+        · simp [coeff_monomial, hv, hd]
+    rw [eval₂_monomial, hprod, hcomp, ← mul_assoc, RingHom.comp_apply, ← map_mul,
+      Polynomial.coeff_C_mul_X_pow]
+    by_cases h : Finsupp.degree u = d
+    · subst h
+      simp [eval₂_monomial]
+    · have h' : d ≠ Finsupp.degree u := fun e => h e.symm
+      simp [h, h']
+  | add p q hp hq =>
+    simp only [eval₂_add, Polynomial.coeff_add, map_add, hp, hq]
+
+theorem homogeneous_components_of_integral_equation (F K : Type) [Field F] [Field K] (φ : F →+* K)
+    (r e m : ℕ) (w : Fin r → K) (τ : K) (b : Fin m → MvPolynomial (Fin r) F)
+    (h : (Polynomial.C τ * Polynomial.X ^ e) ^ m + ∑ k, MvPolynomial.eval₂ (Polynomial.C.comp φ)
+      (fun i => Polynomial.C (w i) * Polynomial.X) (b k) *
+        (Polynomial.C τ * Polynomial.X ^ e) ^ (k : ℕ) = 0) :
+    ∃ a : Fin m → MvPolynomial (Fin r) F, (∀ k, (a k).IsHomogeneous (e * (m - k))) ∧
+      τ ^ m + ∑ k, MvPolynomial.eval₂ φ w (a k) * τ ^ (k : ℕ) = 0 := by
+  refine ⟨fun k => homogeneousComponent (e * (m - k)) (b k),
+    fun k => homogeneousComponent_isHomogeneous _ _, ?_⟩
+  have hc := congrArg (fun P : Polynomial K => P.coeff (e * m)) h
+  simp only [Polynomial.coeff_add, Polynomial.finsetSum_coeff, Polynomial.coeff_zero] at hc
+  have hpow : ∀ n : ℕ, (Polynomial.C τ * Polynomial.X ^ e) ^ n
+      = Polynomial.C (τ ^ n) * Polynomial.X ^ (e * n) := by
+    intro n
+    rw [mul_pow, ← pow_mul, map_pow]
+  have hterm : ∀ k : Fin m, (MvPolynomial.eval₂ (Polynomial.C.comp φ)
+      (fun i => Polynomial.C (w i) * Polynomial.X) (b k) *
+        (Polynomial.C τ * Polynomial.X ^ e) ^ (k : ℕ)).coeff (e * m)
+      = MvPolynomial.eval₂ φ w (homogeneousComponent (e * (m - k)) (b k)) * τ ^ (k : ℕ) := by
+    intro k
+    have hle : e * (k : ℕ) ≤ e * m := Nat.mul_le_mul_left e k.is_lt.le
+    rw [hpow, ← mul_assoc, Polynomial.coeff_mul_X_pow', if_pos hle, Polynomial.coeff_mul_C,
+      ← Nat.mul_sub, coeff_eval₂_C_mul_X]
+  rw [hpow, Polynomial.coeff_C_mul_X_pow, if_pos rfl] at hc
+  simpa only [hterm] using hc
+
+end GlobalTheory
+end
+
+open MvPolynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.homogeneous_components_of_cone_integral_equation : ∀ (F K : Type) [Field F] [Field K] (φ : F →+* K) (r e m : ℕ) (w : Fin r → K) (τ : K) (b : Fin m → MvPolynomial (Fin r) F), (Polynomial.C τ * Polynomial.X ^ e) ^ m + ∑ k, MvPolynomial.eval₂ (Polynomial.C.comp φ) (fun i => Polynomial.C (w i) * Polynomial.X) (b k) * (Polynomial.C τ * Polynomial.X ^ e) ^ (k : ℕ) = 0 → ∃ a : Fin m → MvPolynomial (Fin r) F, (∀ k, (a k).IsHomogeneous (e * (m - k))) ∧ τ ^ m + ∑ k, MvPolynomial.eval₂ φ w (a k) * τ ^ (k : ℕ) = 0 := by
+  atlas_forward_decl GlobalTheory.homogeneous_components_of_integral_equation
+end
+
+section
+open NumberField MvPolynomial ReciprocityTheory.MultiplicativeHeights GlobalTheory GlobalTheory.ChowHt GlobalTheory.Adelic GlobalTheory.HSCore GlobalTheory.HSChoice
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_ratio_mem_valuationSubring_at_generic_point : ∀ (F : Type) [Field F] (S : LinSys F), S.IsVariety → ∀ (r e : ℕ) (u : Fin r → Fin S.N → F) (th : (lbPow S.L e).Sec), (∀ y : S.Y, ∃ i, y ∈ nonzeroLocus (S.comb (u i))) → ∀ η : S.Y, IsGenericPoint η Set.univ → ∀ V : ValuationSubring (S.Y.residueField η), (∀ c, S.baseHom (resPt η) c ∈ V) → ∃ i, S.val (resPt η) (S.comb (u i)) ≠ 0 ∧ S.powVal (resPt η) th / S.val (resPt η) (S.comb (u i)) ^ e ∈ V := by
+  first | exact @GlobalTheory.Adelic.LinSys.exists_ratio_mem_valuationSubring | exact GlobalTheory.Adelic.LinSys.exists_ratio_mem_valuationSubring | (intros; apply GlobalTheory.Adelic.LinSys.exists_ratio_mem_valuationSubring <;> assumption)
+end
+
+section
+section
+open NumberField MvPolynomial ReciprocityTheory.MultiplicativeHeights GlobalTheory GlobalTheory.ChowHt GlobalTheory.Adelic GlobalTheory.HSCore GlobalTheory.HSChoice
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
+open AlgebraicGeometry TopologicalSpace CategoryTheory GlobalTheory.Points GlobalTheory.Twist
+
+set_option autoImplicit false
+
+namespace GlobalTheory.Adelic.GenericRel
+
+theorem eval₂_mul_of_isHomogeneous {σ R A : Type} [CommSemiring R] [CommSemiring A] (φ : R →+* A)
+    {p : MvPolynomial σ R} {d : ℕ} (hp : p.IsHomogeneous d) (c : A) (v : σ → A) :
+    eval₂ φ (fun i => c * v i) p = c ^ d * eval₂ φ v p := by
+  rw [eval₂_eq, eval₂_eq, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun a ha => ?_
+  have : a.degree = d := by rw [Finsupp.degree_eq_weight_one]; exact hp (mem_support_iff.1 ha)
+  simp only [mul_pow, Finset.prod_mul_distrib, Finset.prod_pow_eq_pow_sum]
+  rw [← this, Finsupp.degree_apply, mul_left_comm]
+
+variable {F : Type} [Field F] (S : LinSys F)
+
+noncomputable def relFn (c : S.L.ι) {r e : ℕ} (u : Fin r → Fin S.N → F) (th : (lbPow S.L e).Sec) (m : ℕ)
+    (a : Fin m → MvPolynomial (Fin r) F) : Γ(S.Y, S.L.U c) :=
+  zfun th c ^ m + ∑ k, eval₂ ((resG S.Y le_top).comp (algebraMap F Γ(S.Y, ⊤)))
+    (fun i => (S.comb (u i)).f c) (a k) * zfun th c ^ (k : ℕ)
+
+theorem valR_relFn {K : Type} [Field K] (x : Sp K ⟶ S.Y) (c : S.L.ι) (hx : ptOf x ∈ S.L.U c) {r e : ℕ}
+    (u : Fin r → Fin S.N → F) (th : (lbPow S.L e).Sec) (m : ℕ) (a : Fin m → MvPolynomial (Fin r) F) :
+    valR x (S.L.U c) (relFn S c u th m a) = valR x (S.L.U c) (zfun th c) ^ m + ∑ k, eval₂ (S.baseHom x)
+      (fun i => valR x (S.L.U c) ((S.comb (u i)).f c)) (a k) * valR x (S.L.U c) (zfun th c) ^ (k : ℕ) := by
+  have h := (le_iff_ptOf_mem x _).2 hx
+  have hc : (valMap x _ h).hom.comp ((resG S.Y le_top).comp (algebraMap F Γ(S.Y, ⊤))) = S.baseHom x := by
+    ext b
+    exact ((valR_eq x _ h _).symm.trans (valR_res x le_top h _)).trans (S.valR_algebraMap x b)
+  simp only [relFn, valR_eq x _ h, map_add, map_sum, map_mul, map_pow, eval₂_comp_left, hc]
+  rfl
+
+theorem relation_of_generic (F : Type) [Field F] (S : LinSys F) (hY : AlgebraicGeometry.IsIntegral S.Y)
+    (r e : ℕ) (u : Fin r → Fin S.N → F) (th : (lbPow S.L e).Sec) (η : S.Y) (hη : IsGenericPoint η Set.univ)
+    (m : ℕ) (a : Fin m → MvPolynomial (Fin r) F) (ha : ∀ k, (a k).IsHomogeneous (e * (m - k)))
+    (h0 : S.powVal (resPt η) th ^ m + ∑ k, MvPolynomial.eval₂ (S.baseHom (resPt η))
+      (fun i => S.val (resPt η) (S.comb (u i))) (a k) * S.powVal (resPt η) th ^ (k : ℕ) = 0)
+    (K : Type) [Field K] [Algebra F K] (x : S.Pt K) :
+    S.powVal x.1 th ^ m + ∑ k, aeval (fun i => ∑ j, algebraMap F K (u i j) * S.coords x.1 j) (a k) *
+      S.powVal x.1 th ^ (k : ℕ) = 0 := by
+  have hxU : ptOf x.1 ∈ S.L.U (S.chartAt (ptOf x.1)) := S.mem_chartAt _
+  have hηU : ptOf (resPt η) ∈ S.L.U (S.chartAt (ptOf x.1)) := by
+    rw [ptOf_resPt]
+    exact (hη.mem_open_set_iff (S.L.U _).isOpen).2 ⟨_, trivial, hxU⟩
+  obtain ⟨c0, hc0, hv, hp⟩ := S.exists_frame_change (resPt η) _ hηU
+  have hzero : valR (resPt η) _ (relFn S (S.chartAt (ptOf x.1)) u th m a) = 0 := by
+    rw [valR_relFn S _ _ hηU, hp (e : ℤ) th]
+    simp only [hv, zpow_natCast, eval₂_mul_of_isHomogeneous _ (ha _)]
+    calc _ = c0 ^ (e * m) * (S.powVal (resPt η) th ^ m + ∑ k, MvPolynomial.eval₂ (S.baseHom (resPt η))
+          (fun i => S.val (resPt η) (S.comb (u i))) (a k) * S.powVal (resPt η) th ^ (k : ℕ)) := by
+          rw [mul_add, Finset.mul_sum, mul_pow, ← pow_mul]
+          congr 1
+          refine Finset.sum_congr rfl fun k _ => ?_
+          rw [mul_pow, ← pow_mul, show e * m = e * (m - k) + e * k by
+            rw [← mul_add, Nat.sub_add_cancel k.2.le], pow_add]
+          ring
+      _ = 0 := by rw [h0, mul_zero]
+  have hb : S.Y.basicOpen (relFn S (S.chartAt (ptOf x.1)) u th m a) = ⊥ := by
+    rw [eq_bot_iff]
+    intro y hy
+    have hm : η ∈ S.Y.basicOpen (relFn S (S.chartAt (ptOf x.1)) u th m a) :=
+      (hη.mem_open_set_iff (S.Y.basicOpen _).isOpen).2 ⟨y, trivial, hy⟩
+    rw [← ptOf_resPt η] at hm
+    exact ((valR_ne_zero_iff (resPt η) hηU _).2 hm hzero).elim
+  have hf : relFn S (S.chartAt (ptOf x.1)) u th m a = 0 := by
+    haveI := hY
+    exact (basicOpen_eq_bot_iff _).1 hb
+  have key := valR_relFn S x.1 _ hxU u th m a
+  rw [hf, valR_zero x.1 _ ((le_iff_ptOf_mem _ _).2 hxU)] at key
+  have e2 : ∀ i, valR x.1 _ ((S.comb (u i)).f (S.chartAt (ptOf x.1))) =
+      ∑ j, algebraMap F K (u i j) * S.coords x.1 j := fun i =>
+    (S.val_comb x.1 (u i)).trans (by rw [LinSys.baseHom_ptOver])
+  simp only [e2, LinSys.baseHom_ptOver] at key
+  simp only [aeval_def]
+  exact key.symm
+
+end GlobalTheory.Adelic.GenericRel
+end
+
+open NumberField MvPolynomial ReciprocityTheory.MultiplicativeHeights GlobalTheory GlobalTheory.ChowHt GlobalTheory.Adelic GlobalTheory.HSCore GlobalTheory.HSChoice
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.linearSystem_relation_of_generic_point : ∀ (F : Type) [Field F] (S : LinSys F), AlgebraicGeometry.IsIntegral S.Y → ∀ (r e : ℕ) (u : Fin r → Fin S.N → F) (th : (lbPow S.L e).Sec) (η : S.Y), IsGenericPoint η Set.univ → ∀ (m : ℕ) (a : Fin m → MvPolynomial (Fin r) F), (∀ k, (a k).IsHomogeneous (e * (m - k))) → S.powVal (resPt η) th ^ m + ∑ k, MvPolynomial.eval₂ (S.baseHom (resPt η)) (fun i => S.val (resPt η) (S.comb (u i))) (a k) * S.powVal (resPt η) th ^ (k : ℕ) = 0 → ∀ (K : Type) [Field K] [Algebra F K] (x : S.Pt K), S.powVal x.1 th ^ m + ∑ k, aeval (fun i => ∑ j, algebraMap F K (u i j) * S.coords x.1 j) (a k) * S.powVal x.1 th ^ (k : ℕ) = 0 := by
+  atlas_forward_decl GlobalTheory.Adelic.GenericRel.relation_of_generic
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open NumberField MvPolynomial ReciprocityTheory.MultiplicativeHeights GlobalTheory GlobalTheory.ChowHt GlobalTheory.Adelic GlobalTheory.HSCore GlobalTheory.HSChoice
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
+
+namespace GlobalTheory.SecIntegral
+
+theorem exists_integral_relation : ∀ (F : Type) [Field F] (S : LinSys F), S.IsVariety → ∀ (r e : ℕ) (u : Fin r → Fin S.N → F) (th : (lbPow S.L e).Sec), (∀ y : S.Y, ∃ i, y ∈ nonzeroLocus (S.comb (u i))) → ∃ (m : ℕ) (a : Fin m → MvPolynomial (Fin r) F), (∀ k, (a k).IsHomogeneous (e * (m - k))) ∧ ∀ (K : Type) [Field K] [Algebra F K] (x : S.Pt K), S.powVal x.1 th ^ m + ∑ k, aeval (fun i => ∑ j, algebraMap F K (u i j) * S.coords x.1 j) (a k) * S.powVal x.1 th ^ (k : ℕ) = 0 := by
+  intro F _ S hS r e u th hcov
+  have hI : AlgebraicGeometry.IsIntegral S.Y := hS.isIntegral
+  have hη : IsGenericPoint (genericPoint S.Y) Set.univ := by
+    simpa using genericPoint_spec S.Y
+  obtain ⟨m, b, hb⟩ := GlobalTheory.T.exists_integral_relation_C_mul_X_pow_of_valuationSubring F (S.Y.residueField (genericPoint S.Y)) (S.baseHom (resPt (genericPoint S.Y))) r e
+    (fun i => S.val (resPt (genericPoint S.Y)) (S.comb (u i))) (S.powVal (resPt (genericPoint S.Y)) th)
+    (GlobalTheory.T.exists_ratio_mem_valuationSubring_at_generic_point F S hS r e u th hcov _ hη)
+  obtain ⟨a, ha, h0⟩ := GlobalTheory.T.homogeneous_components_of_cone_integral_equation _ _ _ r e m _ _ b hb
+  exact ⟨m, a, ha, GlobalTheory.T.linearSystem_relation_of_generic_point F S hI r e u th _ hη m a ha h0⟩
+
+end GlobalTheory.SecIntegral
+end
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -25,108 +235,7 @@ theorem exists_rat_pt {K : Type} [Field K] [IsAlgClosed K] {X : Scheme.{0}} (f :
   replace hc : IsClosed {c} := hc
   exact ⟨pointOfClosedPoint f c hc, pointOfClosedPoint_comp _ _ _, fun w => by rw [pointOfClosedPoint_apply]; exact hcZ⟩
 
-theorem exists_pt_of_mem_cone : ∀ (F : Type) [Field F] [NumberField F] (S : LinSys F), S.IsVariety → S.BasePointFree → ∀ (K : Type) [Field K] [Algebra F K] [IsAlgClosure F K] (y : Fin S.N → K), y ≠ 0 → (∀ g ∈ S.imageIdeal, aeval y g = 0) → ∃ (x : S.Pt K) (c : K), c ≠ 0 ∧ S.coords x.1 = c • y := by
-  intro F _ _ S hS hb K _ _ _ y hy hI
-  haveI : IsAlgClosed K := IsAlgClosure.isAlgClosed F
-  classical
-  by_contra hno
-  push_neg at hno
-  have hT : (S.baseChange K).IsVariety := hS.baseChange K
-  have hbT : (S.baseChange K).BasePointFree := hb.baseChange K
-  obtain ⟨i₀, hi₀⟩ := Function.ne_iff.1 hy
-  change y i₀ ≠ 0 at hi₀
-  let u : Fin S.N → Fin S.N → K := fun j => y i₀ • Pi.single j 1 - y j • Pi.single i₀ 1
-  have hu : ∀ (j : Fin S.N) (c : Fin S.N → K), ∑ l, u j l * c l = y i₀ * c j - y j * c i₀ := fun j c => by
-    simp [u, sub_mul, Finset.sum_sub_distrib, Pi.single_apply, mul_assoc]
-
-  have hcov : ∀ z : (S.baseChange K).Y, ∃ j, z ∈ nonzeroLocus ((S.baseChange K).comb (u j)) := by
-    by_contra hc
-    push_neg at hc
-    obtain ⟨z, hz⟩ := hc
-    have := hT.smooth
-    have : Smooth (S.baseChange K).str := SmoothOfRelativeDimension.smooth (S.baseChange K).D _
-    have hZ : IsClosed (⋂ j, ((nonzeroLocus ((S.baseChange K).comb (u j)) : Set (S.baseChange K).Y)ᶜ)) :=
-      isClosed_iInter fun j => (nonzeroLocus ((S.baseChange K).comb (u j))).isOpen.isClosed_compl
-    obtain ⟨a, ha, haZ⟩ := GlobalTheory.ConeOnto.exists_rat_pt (S.baseChange K).str hZ.isLocallyClosed
-      (x := z) (Set.mem_iInter.2 hz)
-    let xa : (S.baseChange K).Pt K := ⟨a, ha.trans (Spec.map_id _).symm⟩
-    have hbase : (S.baseChange K).baseHom a = RingHom.id K := LinSys.baseHom_ptOver xa
-    have hv : ∀ j, y i₀ * (S.baseChange K).coords a j - y j * (S.baseChange K).coords a i₀ = 0 := fun j => by
-      have h0 := Set.mem_iInter.1 (haZ (IsLocalRing.closedPoint K)) j
-      have h1 : (S.baseChange K).val a ((S.baseChange K).comb (u j)) = 0 :=
-        not_not.1 fun h => h0 (((S.baseChange K).val_ne_zero_iff a _).1 h)
-      have h2 := ((S.baseChange K).val_comb a (u j)).symm.trans h1
-      rw [hbase] at h2
-      simp only [RingHom.id_apply] at h2
-      exact (hu j ((S.baseChange K).coords a)).symm.trans h2
-    have hc0 : (S.baseChange K).coords a i₀ ≠ 0 := fun h0 => hbT.coords_ne_zero a (funext fun j => by
-      have := hv j
-      rw [h0, mul_zero, sub_zero] at this
-      exact (mul_eq_zero.1 this).resolve_left hi₀)
-    obtain ⟨c, hc, e⟩ := S.exists_coords_baseChange K a
-    refine hno (LinSys.toBase xa) (c⁻¹ * ((S.baseChange K).coords a i₀ / y i₀))
-      (mul_ne_zero (inv_ne_zero hc) (div_ne_zero hc0 hi₀)) (funext fun j => ?_)
-    have ej := congrFun e j
-    have hvj := hv j
-    change S.coords (a ≫ S.bcFst K) j = _
-    simp only [Pi.smul_apply, smul_eq_mul] at ej ⊢
-    have e1 : S.coords (a ≫ S.bcFst K) j = c⁻¹ * (S.baseChange K).coords a j := by
-      rw [ej, ← mul_assoc, inv_mul_cancel₀ hc, one_mul]
-    have e2 : (S.baseChange K).coords a j = (S.baseChange K).coords a i₀ / y i₀ * y j := by
-      field_simp
-      linear_combination hvj
-    rw [e1, e2]
-    ring
-
-  have hX : (X i₀ : MvPolynomial (Fin (S.baseChange K).N) K).IsHomogeneous 1 := isHomogeneous_X K i₀
-  obtain ⟨m, A, hA, hrel⟩ := GlobalTheory.SecIntegral.exists_integral_relation K (S.baseChange K) hT S.N 1 u
-    ((S.baseChange K).form hX) hcov
-  let σ : Fin S.N → MvPolynomial (Fin S.N) K := fun i => ∑ j, C (u i j) * X j
-  have hσ : ∀ i, (σ i).IsHomogeneous 1 := fun i =>
-    IsHomogeneous.sum _ _ _ fun j _ => by
-      simpa using (isHomogeneous_C (Fin S.N) (u i j)).mul (isHomogeneous_X K j)
-  let G : MvPolynomial (Fin S.N) K := X i₀ ^ m + ∑ k : Fin m, bind₁ σ (A k) * X i₀ ^ (k : ℕ)
-  have hG : G.IsHomogeneous m := by
-    refine (isHomogeneous_X_pow i₀ m).add (IsHomogeneous.sum _ _ _ fun k _ => ?_)
-    have h1 : (bind₁ σ (A k)).IsHomogeneous (1 * (1 * (m - k))) :=
-      (hA k).eval₂ C σ (fun r => isHomogeneous_C _ r) hσ
-    have h2 := h1.mul (isHomogeneous_X_pow i₀ (k : ℕ))
-    have e : 1 * (1 * (m - (k : ℕ))) + k = m := by omega
-    rwa [e] at h2
-
-  haveI := HeightExists.isIntegral hT
-  obtain ⟨Ω, _, _, xg, hxg, -⟩ := HeightExists.exists_generic hT
-  have hmem : G ∈ (S.baseChange K).imageIdeal := by
-    rw [imageIdeal_eq_coneIdeal_of_generic K Ω _ xg hxg 1 _ one_ne_zero (one_smul _ _).symm]
-    refine (mem_coneIdeal_of_isHomogeneous (K := K) (N := S.N) _ hG).2 ?_
-    have h := hrel Ω xg
-    rw [LinSys.powVal_form, LinSys.baseHom_ptOver] at h
-    erw [eval₂_X] at h
-    let cg : Fin S.N → Ω := (S.baseChange K).coords xg.1
-    have h' : cg i₀ ^ m + ∑ k : Fin m, aeval (fun i : Fin S.N => ∑ j : Fin S.N, algebraMap K Ω (u i j) * cg j) (A k) *
-        cg i₀ ^ (k : ℕ) = 0 := h
-    show aeval cg G = 0
-    simp only [G, σ, map_add, map_pow, map_sum, map_mul, aeval_X, aeval_bind₁, aeval_C]
-    exact h'
-
-  rw [← HeightExists.map_imageIdeal hS K] at hmem
-  have hker : S.imageIdeal.map (MvPolynomial.map (algebraMap F K)) ≤ RingHom.ker (eval y) :=
-    Ideal.map_le_iff_le_comap.2 fun g hg => by
-      rw [Ideal.mem_comap, RingHom.mem_ker, MvPolynomial.eval_map, ← aeval_def]
-      exact hI g hg
-  have h0 : eval y G = 0 := hker hmem
-  have hA0 : ∀ k : Fin m, eval y (bind₁ σ (A k)) = 0 := fun k => by
-    show aeval y (bind₁ σ (A k)) = 0
-    rw [aeval_bind₁]
-    have e : (fun i => aeval y (σ i)) = 0 := funext fun i => by
-      simp only [σ, map_sum, map_mul, aeval_C, aeval_X, Algebra.algebraMap_self, RingHom.id_apply, Pi.zero_apply]
-      rw [hu i y]
-      ring
-    rw [e, aeval_zero, Algebra.algebraMap_self, RingHom.id_apply, constantCoeff, RingHom.coe_mk, MonoidHom.coe_mk,
-      OneHom.coe_mk]
-    exact (hA k).coeff_eq_zero (d := 0) (by simp; omega)
-  have h3 : eval y G = y i₀ ^ m := by
-    simp only [G, map_add, map_pow, map_sum, map_mul, eval_X, hA0, zero_mul, Finset.sum_const_zero, add_zero]
-  exact pow_ne_zero m hi₀ (h3.symm.trans h0)
 
 end GlobalTheory.ConeOnto
+end
+end

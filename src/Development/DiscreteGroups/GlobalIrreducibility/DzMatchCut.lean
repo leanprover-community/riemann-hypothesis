@@ -322,11 +322,5 @@ theorem narrowBig_of (H1 : LCusp) (H2 : LDepth) (H3 : LTame) (H4 : LMatchBig) : 
   show ((θ (z ^ g ^ (j + n)) : ℂˣ) : ℂ) = ((θ (z ^ g ^ j) : ℂˣ) : ℂ)
   rw [pow_add, mul_comm, pow_mul, hz]
 
-theorem narrowBig_of_leaves (H1 : LCusp) (H2 : LDepth) (H3 : LTame) (hO : LOneOf) (hP : LPin) (hK : LKondo) (hFE : LFE)
-    (hFP : LFinPair) (hPs : LPsi) (hG : LGen) (hR : LRed) (hT : LTw) (hTR : LTameRec) (hE : LGal)
-    (cg : DiscreteGroups.sglob.LConv.CuspGen) (art : GlobalTheory.Published.GlobalArtinReciprocity) (chev : GlobalTheory.Published.ChevalleyUnits)
-    (hL : GlobalTheory.Published.LocalLanglandsGL) (bern : GlobalTheory.Published.BernsteinUnitaryProductIrreducible) : NarrowBig :=
-  narrowBig_of H1 H2 H3 (lMatchBig_of H1 H2 (hO (hTR art chev)) hP hK (hFP hFE) hPs (hG bern) (hR cg) hT
-    (hE hL (hTR art chev)))
 
 end DiscreteGroups.sglob.DzType

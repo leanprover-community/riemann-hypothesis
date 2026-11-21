@@ -62,12 +62,6 @@ theorem pow_two_pow_add_inv_succ (ζ : L) (hζ : ζ ≠ 0) (m : ℕ) : thP ζ (m
   field_simp
   ring
 
-theorem pow_two_pow_add_inv_mem_adjoin [Algebra ℚ L] (ζ : L) (hζ : ζ ≠ 0) (m : ℕ) : thP ζ m ∈ F1 ζ := by
-  induction m with
-  | zero => simpa [thP, F1] using IntermediateField.mem_adjoin_simple_self ℚ (ζ + ζ⁻¹)
-  | succ m ih =>
-    rw [pow_two_pow_add_inv_succ ζ hζ]
-    exact sub_mem (pow_mem ih 2) (by exact_mod_cast (F1 ζ).natCast_mem 2)
 
 theorem pow_two_pow_add_inv_sq_eq_two [CharZero L] (ζ : L) (e : ℕ) (he : 1 ≤ e) (h : IsPrimitiveRoot ζ (2 ^ (e + 2))) :
     thP ζ (e - 1) ^ 2 = 2 := by

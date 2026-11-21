@@ -1,7 +1,143 @@
 import Development.EtaleCohomology.EtaleSheaves.ClsBiprodEqZero
 import Development.EtaleCohomology.EtaleSheaves.LeafCover2Of
-import Development.EtaleCohomology.EtaleSheaves.LeafKunEmptyPf
+import Development.EtaleCohomology.EtaleSheaves.CupUnitChernKummerLaws
 
+section
+noncomputable section
+open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC
+
+namespace LateralTheory.E.LeafKunnethCut
+
+def KBasis (q : ℕ) {Y : Scheme.{0}} (S : Type) [Fintype S] (deg : S → ℤ) (j : ℤ) (b : ∀ s, Ht q (sch.obj Y) (deg s) j) :
+    Prop :=
+  ∀ m : ℤ, Function.Bijective fun c : {s // deg s = m} → ZMod q =>
+    ∑ s : {s // deg s = m}, c s • ((b s.1).cast s.2 rfl : Ht q (sch.obj Y) m j)
+
+def KunAt (q : ℕ) {k : Type} [Field k] {X Y : Scheme.{0}} (p : X ⟶ Spec (CommRingCat.of k))
+    (r : Y ⟶ Spec (CommRingCat.of k)) (S : Type) [Fintype S] (deg : S → ℤ) (j : ℤ)
+    (b : ∀ s, Ht q (sch.obj Y) (deg s) j) : Prop :=
+  ∀ n i : ℤ, Function.Bijective fun a : ∀ s, Ht q (sch.obj X) (n - deg s) i =>
+    ∑ s, ((cup q (pull _ (sch.map (pullback.fst p r)) _ _ (a s)) (pull _ (sch.map (pullback.snd p r)) _ _ (b s))).cast
+      (by ring) rfl : Ht q (sch.obj (pullback p r)) n (i + j))
+
+def LeafSHCoh : Prop := LateralTheory.E.E8.Base → ∀ (q : ℕ) [NeZero q] (k : Type) [Field k] [IsAlgClosed k], IsUnit (q : k) →
+  ∀ (A : Type) [CommRing A], SH A → ∀ (_s : Spec (CommRingCat.of A) ⟶ Spec (CommRingCat.of k)) (i : ℤ),
+    (∃ g : Ht q (sch.obj (Spec (CommRingCat.of A))) 0 i, Function.Bijective fun c : ZMod q => c • g) ∧
+    ∀ n : ℤ, n ≠ 0 → Subsingleton (Ht q (sch.obj (Spec (CommRingCat.of A))) n i)
+
+def LeafKunLocal : Prop := LateralTheory.E.E8.Base → ∀ (q : ℕ) [NeZero q] (k : Type) [Field k] [IsAlgClosed k], IsUnit (q : k) →
+  ∀ {Y : Scheme.{0}} (r : Y ⟶ Spec (CommRingCat.of k)) [IsProper r] [Smooth r] (S : Type) [Fintype S] (deg : S → ℤ) (j : ℤ)
+    (b : ∀ s, Ht q (sch.obj Y) (deg s) j), KBasis q S deg j b →
+  ∀ (A : Type) [CommRing A], SH A → ∀ s : Spec (CommRingCat.of A) ⟶ Spec (CommRingCat.of k), KunAt q s r S deg j b
+
+def LeafKunGlobal : Prop := LateralTheory.E.E8.Base → ∀ (q : ℕ) [NeZero q] (k : Type) [Field k] [IsAlgClosed k], IsUnit (q : k) →
+  ∀ {Y : Scheme.{0}} (r : Y ⟶ Spec (CommRingCat.of k)) [IsProper r] [Smooth r] (S : Type) [Fintype S] (deg : S → ℤ) (j : ℤ)
+    (b : ∀ s, Ht q (sch.obj Y) (deg s) j), KBasis q S deg j b →
+  (∀ (A : Type) [CommRing A], SH A → ∀ s : Spec (CommRingCat.of A) ⟶ Spec (CommRingCat.of k), KunAt q s r S deg j b) →
+  ∀ {X : Scheme.{0}} (p : X ⟶ Spec (CommRingCat.of k)) [QuasiCompact p] [QuasiSeparated p], KunAt q p r S deg j b
+
+theorem goal_of (hL : LeafKunLocal) (hG : LeafKunGlobal) : LateralTheory.E.E8.EtaleKunneth := by
+  intro hB q _ k _ _ hq X Y p r _ _ _ _ S _ deg j b hb
+  exact hG hB q k hq r S deg j b hb (hL hB q k hq r S deg j b hb) p
+
+end LateralTheory.E.LeafKunnethCut
+end
+end
+
+section
+noncomputable section
+open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC LateralTheory.E.LeafKunnethCut
+
+namespace LateralTheory.E.LeafKunGlobalCut
+
+def LeafKunFT : Prop := LateralTheory.E.E8.Base → ∀ (q : ℕ) [NeZero q] (k : Type) [Field k] [IsAlgClosed k], IsUnit (q : k) →
+  ∀ {Y : Scheme.{0}} (r : Y ⟶ Spec (CommRingCat.of k)) [IsProper r] [Smooth r] (S : Type) [Fintype S] (deg : S → ℤ) (j : ℤ)
+    (b : ∀ s, Ht q (sch.obj Y) (deg s) j), KBasis q S deg j b →
+  (∀ (A : Type) [CommRing A], SH A → ∀ s : Spec (CommRingCat.of A) ⟶ Spec (CommRingCat.of k), KunAt q s r S deg j b) →
+  ∀ (B : Type) [CommRing B] (s : Spec (CommRingCat.of B) ⟶ Spec (CommRingCat.of k)) [LocallyOfFiniteType s],
+    KunAt q s r S deg j b
+
+def LeafKunAffine : Prop := LateralTheory.E.E8.Base → ∀ (q : ℕ) [NeZero q] (k : Type) [Field k] [IsAlgClosed k], IsUnit (q : k) →
+  ∀ {Y : Scheme.{0}} (r : Y ⟶ Spec (CommRingCat.of k)) [IsProper r] [Smooth r] (S : Type) [Fintype S] (deg : S → ℤ) (j : ℤ)
+    (b : ∀ s, Ht q (sch.obj Y) (deg s) j),
+  (∀ (B : Type) [CommRing B] (s : Spec (CommRingCat.of B) ⟶ Spec (CommRingCat.of k)) [LocallyOfFiniteType s],
+    KunAt q s r S deg j b) →
+  ∀ (B : Type) [CommRing B] (s : Spec (CommRingCat.of B) ⟶ Spec (CommRingCat.of k)), KunAt q s r S deg j b
+
+def LeafKunQcqs : Prop := LateralTheory.E.E8.Base → ∀ (q : ℕ) [NeZero q] (k : Type) [Field k] [IsAlgClosed k], IsUnit (q : k) →
+  ∀ {Y : Scheme.{0}} (r : Y ⟶ Spec (CommRingCat.of k)) [IsProper r] [Smooth r] (S : Type) [Fintype S] (deg : S → ℤ) (j : ℤ)
+    (b : ∀ s, Ht q (sch.obj Y) (deg s) j),
+  (∀ (B : Type) [CommRing B] (s : Spec (CommRingCat.of B) ⟶ Spec (CommRingCat.of k)), KunAt q s r S deg j b) →
+  ∀ {X : Scheme.{0}} (p : X ⟶ Spec (CommRingCat.of k)) [QuasiCompact p] [QuasiSeparated p], KunAt q p r S deg j b
+
+theorem goal_of (h1 : LeafKunFT) (h2 : LeafKunAffine) (h3 : LeafKunQcqs) : LateralTheory.E.LeafKunnethCut.LeafKunGlobal := by
+  intro hB q _ k _ _ hq Y r _ _ S _ deg j b hb hSH X p _ _
+  exact h3 hB q k hq r S deg j b (h2 hB q k hq r S deg j b (h1 hB q k hq r S deg j b hb hSH)) p
+
+end LateralTheory.E.LeafKunGlobalCut
+end
+end
+
+section
+noncomputable section
+open CategoryTheory Limits AlgebraicGeometry Opposite
+open GlobalTheory.EtC CochainComplex.HomComplex
+
+namespace LateralTheory.E.LeafKunEmptyPf
+
+variable {R : Type} [CommRing R]
+
+theorem sec_sub (F : Shv R) (U : Scheme.{0}) [IsEmpty U] : Subsingleton (Sec F U) :=
+  ModuleCat.isZero_iff_subsingleton.mp (Sheaf.isTerminalOfBotCover F U (Scheme.bot_mem_grothendieckTopology U)).isZero
+
+theorem subsingleton_freePresheaf_hom_of_isEmpty (Z : Scheme.{0}) [IsEmpty Z] (M : Scheme.{0}ᵒᵖ ⥤ ModuleCat.{1} (ULift.{1} R))
+    (hM : ∀ U : Scheme.{0}, IsEmpty U → Subsingleton (M.obj (op U))) :
+    Subsingleton ((freeP R).obj (yoneda.obj Z) ⟶ M) := by
+  constructor; intro α β
+  apply NatTrans.ext; funext U
+  apply ModuleCat.hom_ext; apply LinearMap.ext; intro x
+  by_cases h : IsEmpty ((Opposite.unop U : Scheme.{0}) : Type)
+  · haveI := hM _ h; exact Subsingleton.elim _ _
+  · haveI : IsEmpty (Opposite.unop U ⟶ Z) := ⟨fun f => h ⟨fun y => isEmptyElim (f.base y)⟩⟩
+    have hs : Subsingleton (((freeP R).obj (yoneda.obj Z)).obj U) := by
+      change Subsingleton (ULift.{1} (Opposite.unop U ⟶ Z) →₀ ULift.{1} R); infer_instance
+    rw [Subsingleton.elim x 0, map_zero, map_zero]
+
+theorem free_zero (Z : Scheme.{0}) [IsEmpty Z] : IsZero ((free R).obj (yoneda.obj Z)) := by
+  rw [IsZero.iff_id_eq_zero]
+  have h1 := subsingleton_freePresheaf_hom_of_isEmpty (R := R) Z ((sheafToPresheaf Scheme.etaleTopology _).obj ((free R).obj (yoneda.obj Z)))
+    (fun U hU => by haveI := hU; exact sec_sub _ U)
+  apply ((sheafificationAdjunction Scheme.etaleTopology _).homEquiv ((freeP R).obj (yoneda.obj Z))
+    ((free R).obj (yoneda.obj Z))).injective
+  exact h1.elim _ _
+
+theorem chains_zero (Z : Scheme.{0}) [IsEmpty Z] (p : ℤ) : IsZero (((chains R).obj (sch.obj Z)).X p) := by
+  by_cases h : ∃ j : ℕ, ComplexShape.embeddingDownNat.f j = p
+  · obtain ⟨j, hj⟩ := h
+    have hz : IsZero (((chainsN R).obj (sch.obj Z)).X j) := free_zero (R := R) Z
+    exact hz.of_iso (HomologicalComplex.extendXIso ((chainsN R).obj (sch.obj Z)) ComplexShape.embeddingDownNat hj)
+  · push Not at h
+    exact HomologicalComplex.isZero_extend_X ((chainsN R).obj (sch.obj Z)) ComplexShape.embeddingDownNat p h
+
+theorem H_sub (Z : Scheme.{0}) [IsEmpty Z] (F : Shv R) (n : ℤ) : Subsingleton (H R (sch.obj Z) F n) := by
+  constructor; intro x y
+  obtain ⟨a, rfl⟩ := CohomologyClass.mk_surjective x
+  obtain ⟨b, rfl⟩ := CohomologyClass.mk_surjective y
+  congr 1
+  apply Cocycle.ext
+  apply Cochain.ext
+  intro p q hpq
+  exact (chains_zero (R := R) Z p).eq_of_src _ _
+
+instance botEmpty {X : Scheme.{0}} : IsEmpty (⊥ : X.Opens).toScheme := ⟨fun x => by
+  have h : (⊥ : X.Opens).ι.base x ∈ Set.range (⊥ : X.Opens).ι.base := ⟨x, rfl⟩
+  rw [Scheme.Opens.range_ι] at h; simp at h⟩
+
+end LateralTheory.E.LeafKunEmptyPf
+end
+end
+
+section
 noncomputable section
 open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC CochainComplex.HomComplex
 
@@ -192,3 +328,5 @@ theorem LateralTheory.E.BinPf.DescEqv_of : LateralTheory.E.BinPf.DescEqv := by
       have := sub_pb_coprod (R := ZMod q) (sp R0) (sp R1) (tw q i) n
       have := sub_pb_sch (R := ZMod q) e (tw q i) n
       exact bij_of_sub _ _ n)
+end
+end

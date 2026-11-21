@@ -11,46 +11,8 @@ namespace GlobalTheory.Published.LanglandsSumTests
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {χ : kˣ →* ℂˣ}
 
-theorem jhMult_parInd {η : kˣ →* ℂˣ} (hη : IsSmoothChar η) :
-    jhMult (detRep (Fin 2) η) (parInd pts (ofChar (detLevi pts η))) = 1 ∧
-      ¬ (parInd pts (ofChar (detLevi pts η))).IsIrreducible := by
-  classical
-  obtain ⟨V, _, _, π, f, ⟨φ⟩, hf, h0, h, h1⟩ := exists_line hη
-  have hi : (detRep (Fin 2) η).IsIrreducible := isIrreducible_ofChar _
-  refine ⟨?_, fun H => ?_⟩
-  · rw [← jhMult_congr_right _ φ, JHMult.jhMult_exact f (quotMk f.range) hi hf
-      f.range.toSubmodule.mkQ_surjective (fun u => (Submodule.Quotient.mk_eq_zero _).2 ⟨u, rfl⟩)
-      (fun v hv => (Submodule.Quotient.mk_eq_zero _).1 hv), jhMult_self hi]
-    have : jhMult (detRep (Fin 2) η) (quot f.range) = 0 := by
-      by_contra hne
-      obtain ⟨e⟩ := (JHMult.jhMult_ne_zero_iff.1 hne).nonempty_equiv hi (isCosocle_quot h0 h).1
-      exact h1.false e.toLinearEquiv
-    rw [this, add_zero]
-  · have H' : π.IsIrreducible := GlobalTheory.Parabolic.isIrreducible_of_equiv φ.symm H
-    rcases eq_bot_or_eq_top f.range with e | e
-    · exact (isAtom_range hi f hf).1 e
-    · exact h0 e
 
-theorem nonempty_equiv_prod (hχ : IsSmoothChar χ) :
-    Nonempty ((parInd pts (ofChar (detLevi pts (χ * absPow k (1 / 2))))).Equiv
-      (prod₂ (detRep (Fin 1) χ) (detRep (Fin 1) (χ * absPow k 1)))) := by
-  have hν := hχ.mul (isSmoothChar_absPow (k := k) 1)
-  obtain ⟨a⟩ := nonempty_prod₂_equiv_prodIrr _ (IrrRep.det (Fin 1) χ hχ).smooth (IrrRep.det (Fin 1) χ hχ).irr
-    _ (IrrRep.det (Fin 1) _ hν).smooth (IrrRep.det (Fin 1) _ hν).irr rfl
-  obtain ⟨hd, ⟨ψ⟩⟩ := exists_equiv_prodIrr (θ := ![χ, χ * absPow k 1])
-    (Fin.forall_fin_two.2 ⟨hχ, hν⟩)
-    (x := ![IrrGL.of _ (IrrRep.det (Fin 1) χ hχ).smooth (IrrRep.det (Fin 1) χ hχ).irr,
-      IrrGL.of _ (IrrRep.det (Fin 1) _ hν).smooth (IrrRep.det (Fin 1) _ hν).irr])
-    (Fin.forall_fin_two.2 ⟨rfl, rfl⟩)
-    (Θ := detLevi pts (χ * absPow k (1 / 2))) fun g => by
-      rw [detLevi_pts, Fin.prod_univ_two, mul_assoc χ, mul_assoc χ, ← absPow_add, ← absPow_add]
-      norm_num
-  exact ⟨Representation.Equiv.trans ψ (Representation.Equiv.symm a)⟩
 
-theorem isL_char {y : IrrGL k} (hy : y.IsCusp) (hχ : IsSmoothChar χ) (e : y = IrrGL.ofChar χ hχ) :
-    IsL {Segment.single y hy} (detRep (Fin 1) χ) := by
-  subst e
-  exact (single_spec hy).2.2.2.of_equiv (equivRep (IrrRep.det (Fin 1) χ hχ)).symm
 
 theorem eq_of_isLSeg_single {ρ x : IrrGL k} (hρ : ρ.IsCusp) (h : IsLSeg (.single ρ hρ) x.rep) : x = ρ := by
   obtain ⟨n, c⟩ := x
@@ -87,23 +49,6 @@ theorem equiv_of_isL (hχ : IsSmoothChar χ) {V : Type} [AddCommGroup V] [Module
   obtain rfl : x = y := eq_of_heq (h1.trans h2.symm)
   exact hc'.unique hc
 
-theorem linked_case (hχ : IsSmoothChar χ) :
-    ∃ (𝔪 𝔫 : Multiset (Segment k)) (π₁ π₂ : IrrRep (GL (Fin 1) k)),
-      IsL 𝔪 π₁.ρ ∧ IsL 𝔫 π₂.ρ ∧ ¬ (prod₂ π₁.ρ π₂.ρ).IsIrreducible ∧
-      (∃ π : IrrRep (GL (Fin (1 + 1)) k), IsL (𝔪 + 𝔫) π.ρ) ∧
-        ∀ π : IrrRep (GL (Fin (1 + 1)) k), IsL (𝔪 + 𝔫) π.ρ → jhMult π.ρ (prod₂ π₁.ρ π₂.ρ) = 1 := by
-  have hη := hχ.mul (isSmoothChar_absPow (k := k) (1 / 2))
-  obtain ⟨φ⟩ := nonempty_equiv_prod hχ
-  refine ⟨_, _, IrrRep.det (Fin 1) χ hχ, IrrRep.det (Fin 1) _ (hχ.mul (isSmoothChar_absPow 1)),
-    isL_char (IrrGL.isCusp_ofChar χ hχ) hχ rfl,
-    isL_char ((IrrGL.isCusp_ofChar χ hχ).nu 1) _ (IrrGL.tw_ofChar _ _ hχ (isSmoothChar_absPow _)),
-    fun H => (jhMult_parInd hη).2 (GlobalTheory.Parabolic.isIrreducible_of_equiv φ.symm H),
-    ⟨IrrRep.det (Fin 2) _ hη, isL_detRep_two hχ⟩, fun π h => ?_⟩
-  obtain ⟨e⟩ := equiv_of_isL hχ h
-  have h1 := jhMult_congr_right (detRep (Fin 2) (χ * absPow k (1 / 2))) φ
-  rw [(jhMult_parInd hη).1] at h1
-  have h2 := jhMult_congr_left e (prod₂ (detRep (Fin 1) χ) (detRep (Fin 1) (χ * absPow k 1)))
-  exact h2.trans h1.symm
 
 example : IsNonarchimedeanLocalField ℚ_[2] ∧ CharZero ℚ_[2] ∧ IsSmoothChar (1 : ℚ_[2]ˣ →* ℂˣ) :=
   ⟨inferInstance, inferInstance, isSmoothChar_one⟩
@@ -126,31 +71,7 @@ theorem nonempty_equiv_parInd_zero {α V : Type} {m : α → Type} [Fintype α] 
     rw [hg g]
     exact L.apply_symm_apply _
 
-theorem isL_rank_zero {𝔪 : Multiset (Segment k)} {V : Type} [AddCommGroup V] [Module ℂ V]
-    {π : Representation ℂ (GL (Fin 0) k) V} (h : IsL 𝔪 π) :
-    𝔪 = 0 ∧ Nonempty (π.Equiv (detRep (Fin 0) (1 : kˣ →* ℂˣ))) := by
-  have h0 : 𝔪 = 0 := Multiset.eq_zero_of_forall_notMem fun Δ hΔ => by
-    have := Multiset.sum_eq_zero_iff.1 (Tests.IsL_deg h) _ (Multiset.mem_map_of_mem _ hΔ)
-    exact (Nat.mul_pos Δ.len_pos Δ.d_pos).ne' this
-  subst h0
-  obtain ⟨s, x, hd, ⟨Δ, ⟨hm, -⟩, -⟩, hc⟩ := h
-  obtain rfl : s = 0 := by simpa using congrArg Multiset.card hm
-  obtain ⟨φ⟩ := Tests.nonempty_equiv_prodIrr_zero x hd
-  exact ⟨rfl, ((isCosocle_self (isIrreducible_ofChar _)).of_equiv (.refl _) φ).unique hc⟩
 
-theorem rank_zero_case (𝔪 𝔫 : Multiset (Segment k)) (π₁ π₂ : IrrRep (GL (Fin 0) k)) (h₁ : IsL 𝔪 π₁.ρ)
-    (h₂ : IsL 𝔫 π₂.ρ) : (∃ π : IrrRep (GL (Fin (0 + 0)) k), IsL (𝔪 + 𝔫) π.ρ) ∧
-      ∀ π : IrrRep (GL (Fin (0 + 0)) k), IsL (𝔪 + 𝔫) π.ρ → jhMult π.ρ (prod₂ π₁.ρ π₂.ρ) = 1 := by
-  obtain ⟨rfl, ⟨a⟩⟩ := isL_rank_zero h₁
-  obtain ⟨rfl, ⟨b⟩⟩ := isL_rank_zero h₂
-  refine ⟨⟨π₁, h₁⟩, fun π h => ?_⟩
-  obtain ⟨-, ⟨c⟩⟩ := isL_rank_zero h
-  obtain ⟨φ⟩ := nonempty_equiv_parInd_zero (two (stdSum (rfl : 0 + 0 = 0 + 0)))
-    ((extTensor π₁.ρ π₂.ρ).comp (leviTwo k _ _).symm.toMonoidHom)
-    ((TensorProduct.lid ℂ ℂ).symm.trans (TensorProduct.congr a.symm.toLinearEquiv b.symm.toLinearEquiv))
-  have h1 := jhMult_congr_right (detRep (Fin 0) (1 : kˣ →* ℂˣ)) φ
-  rw [jhMult_self (σ := detRep (Fin 0) (1 : kˣ →* ℂˣ)) (isIrreducible_ofChar _)] at h1
-  exact (jhMult_congr_left c _).trans h1.symm
 
 end GlobalTheory.Published.LanglandsSumTests
 

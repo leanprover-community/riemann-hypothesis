@@ -118,8 +118,6 @@ theorem res_resG {U V : M.Z.Opens} (h : V ≤ U) (hV : (V : Set M.Z).Nonempty) (
     M.res V hV (resG M.Z h f) = M.res U (hV.mono h) f := by
   rw [res_apply, res_apply, M.valF_resG h hV]
 
-theorem res_comp_resG {U V : M.Z.Opens} (h : V ≤ U) (hV : (V : Set M.Z).Nonempty) :
-    (M.res V hV).comp (resG M.Z h) = M.res U (hV.mono h) := RingHom.ext fun f => M.res_resG h hV f
 
 private theorem stalkClosedPointTo_injective :
     Function.Injective (Scheme.stalkClosedPointTo (R := CommRingCat.of Ω) M.pt).hom := by
@@ -554,8 +552,6 @@ theorem isUnit_valLoc_iff {C : Type} [CommRing C] [IsLocalRing C] (y : Sp C ⟶ 
   · intro ha
     exact ha.map _
 
-theorem isLocalHom_valLoc {C : Type} [CommRing C] [IsLocalRing C] (y : Sp C ⟶ M.Z) {z : M.Z}
-    (h : y (IsLocalRing.closedPoint C) = z) : IsLocalHom (valLoc y z (h ▸ specializes_rfl)) := ⟨fun a ha => (isUnit_valLoc_iff y h a).1 ha⟩
 
 theorem val_spMap_comp {C K : Type} [CommRing C] [IsLocalRing C] [Field K] (σ : C →+* K) (y : Sp C ⟶ M.Z)
     {z : M.Z} (h : y (IsLocalRing.closedPoint C) ⤳ z) (x : M.O z) :
@@ -1023,13 +1019,6 @@ theorem isIntegrallyClosed_O_ofAffine [IsIntegrallyClosed A] (z : PrimeSpectrum 
   exact isIntegrallyClosed_of_isLocalization _ z.asIdeal.primeCompl
     (fun s hs => mem_nonZeroDivisors_of_ne_zero fun h => Ideal.mem_primeCompl_iff.1 hs (h ▸ z.asIdeal.zero_mem))
 
-theorem isHom_ofAffine {Ω' B : Type} [Field Ω'] [Algebra o Ω'] [CommRing B] [IsDomain B] [Algebra o B]
-    [Algebra.FiniteType o B] [Algebra B Ω'] [IsScalarTower o B Ω'] [IsFractionRing B Ω'] (φ : Ω →ₐ[o] Ω')
-    (ψ : A →+* B) (h : ∀ a, algebraMap B Ω' (ψ a) = φ (algebraMap A Ω a)) :
-    (ofAffine o Ω A).IsHom (ofAffine o Ω' B) φ (spMap ψ) := by
-  show spMap (algebraMap B Ω') ≫ spMap ψ = spMap φ.toRingHom ≫ spMap (algebraMap A Ω)
-  have e : (algebraMap B Ω').comp ψ = φ.toRingHom.comp (algebraMap A Ω) := RingHom.ext h
-  rw [← Spec.map_comp, ← Spec.map_comp, ← CommRingCat.ofHom_comp, ← CommRingCat.ofHom_comp, e]
 
 end Affine
 

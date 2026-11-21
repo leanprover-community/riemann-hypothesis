@@ -46,40 +46,7 @@ theorem kAt_mul (hθ : IsInfFam θ) (τ : D.what₂.Tau) {e : Fin V.rank → Boo
       _ = _ := by rw [mul_nonsing_inv _ hd]; simp only [Matrix.mul_one, Matrix.mul_assoc]
   · rw [hm, hk.2.2 _ c, hl.2.2 _ c, Matrix.mul_one]
 
-theorem kAt_injective (hθ : IsInfFam θ) (τ : D.what₂.Tau) {e : Fin V.rank → Bool}
-    {P : Matrix (Fin V.rank) (Fin V.rank) ℂ} (hP : IsUnit P) (h : Pᴴ * Formalism.REAL.Jm e * P = gramAt D V τ) :
-    Function.Injective (kAt θ V τ e P) := by
-  intro k l hkl
-  have hd : IsUnit P.det := (Matrix.isUnit_iff_isUnit_det P).1 hP
-  have hk := (isAtTau_kAt θ V hθ τ hP h k).2.1
-  have hl := (isAtTau_kAt θ V hθ τ hP h l).2.1
-  rw [hkl, hl] at hk
-  have h2 : Formalism.REAL.toMK l = Formalism.REAL.toMK k := by
-    have hPi : IsUnit P⁻¹ := isUnit_nonsing_inv_iff.2 hP
-    exact hPi.mul_left_cancel (hP.mul_right_cancel hk)
-  exact Subtype.ext (Subtype.ext (Units.ext h2.symm))
 
-theorem hasTypeAt_trivial_iff (hθ : IsInfFam θ) (τ : D.what₂.Tau) {e : Fin V.rank → Bool}
-    {P : Matrix (Fin V.rank) (Fin V.rank) ℂ} (hP : IsUnit P) (h : Pᴴ * Formalism.REAL.Jm e * P = gramAt D V τ)
-    (φ : GA D V → ℂ) : HasTypeAt θ V τ e P (Representation.trivial ℂ (Formalism.REAL.KG e) ℂ) φ ↔
-      ∀ x k, φ (x * kAt θ V τ e P k) = φ x := by
-  have h1 : kAt θ V τ e P 1 = 1 := by
-    have := kAt_mul θ V hθ τ hP h 1 1
-    rw [mul_one] at this
-    exact (mul_eq_left.1 this.symm)
-  constructor
-  · intro H x k
-    have key : ∀ f ∈ coeffSpan (Representation.trivial ℂ (Formalism.REAL.KG e) ℂ), f k = f 1 := by
-      intro f hf
-      induction hf using Submodule.span_induction with
-      | mem f hf => obtain ⟨ℓ, w, rfl⟩ := hf; rfl
-      | zero => rfl
-      | add f g _ _ a b => simp [a, b]
-      | smul c f _ a => simp [a]
-    have := key _ (H x)
-    simpa [h1] using this
-  · intro H x
-    exact Submodule.subset_span ⟨LinearMap.id, φ x, funext fun k => H x k⟩
 
 theorem hypotheses_met (D : D7) : ∃ (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)) (_ : IsInfFam θ)
     (ε : D.what₂.Tau → Fin (D.sp.Y 0).rank → Bool)
@@ -95,11 +62,6 @@ theorem hypotheses_met (D : D7) : ∃ (θ : D.what₂.Tau → (Ainf D.host.F ⊗
   rw [hb] at this
   exact one_ne_zero (congrFun ((Submodule.mem_bot ℂ).1 this) 1)
 
-theorem finite_of_rank_zero (hV : V.rank = 0) (S : Set (GA D V → ℂ)) :
-    FiniteDimensional ℂ (Submodule.span ℂ S) := by
-  have : IsEmpty (Fin V.rank) := by rw [hV]; infer_instance
-  have : Subsingleton (GA D V) := ⟨fun a b => Subtype.ext (Units.ext (Subsingleton.elim _ _))⟩
-  infer_instance
 
 end GlobalTheory.Published.AutFin.Model
 

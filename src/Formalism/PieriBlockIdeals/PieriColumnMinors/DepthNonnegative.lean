@@ -1,10 +1,612 @@
 import Formalism.PieriBlockIdeals.BlockIdealBound5Derived
 import Formalism.PieriBlockIdeals.PieriColumnMinors.ProdInitialMinorsMemDetSpan
-import Formalism.PieriBlockIdeals.PieriColumnMinors.UnitNormBounds
-import Formalism.PieriBlockIdeals.PieriColumnMinors.JointCorollaryFiveBound
+import Formalism.PieriBlockIdeals.FactorialValuationSum
+import Formalism.PieriBlockIdeals.PieriColumnMinors.LabelSumNeedsLeFalse
+import Formalism.PieriBlockIdeals.PieriColumnMinors.LastGradedImpliesOneBlock
+import Mathlib
+import Formalism.PieriBlockIdeals.Statement
+import Formalism.PieriBlockIdeals.JointCW5
 import Formalism.RankGapBounds.RankGapProofs.FormsTensorLocalization
 import Formalism.PieriBlockIdeals.PieriColumnMinors.RegularCuspidalTrace
 
+section
+noncomputable section
+
+open CategoryTheory CategoryTheory.Limits
+
+namespace Formalism.CohomologicalDescent.UnitNormBounds
+
+open Formalism.CohomologicalDescent Formalism.CohomologicalDescent.LD
+
+theorem rowStart_rev_eq (k j t w M : ℕ) (lam : Fin (k + j) → ℕ) (hb : ∀ a, w ≤ lam a ∧ lam a ≤ M)
+    (b : Fin (k + j)) :
+    U k j t lam (Fin.rev b) = (M : ℤ) - (dual M lam b : ℤ) + (t : ℤ) + (b.val : ℤ) := by
+  have h1 := Fin.val_rev b
+  have h2 := hb (Fin.rev b)
+  have h3 := b.isLt
+  unfold U dual
+  omega
+
+theorem content_label_eq (t w M : ℕ) (hwM : w ≤ M) (ct : ℤ) : cont t w M ct = (M : ℤ) - ct + (t : ℤ) - 1 := by
+  unfold cont maxB
+  omega
+
+theorem good_labels_holds : GoodLabels := by
+  intro k j t w M i lam hb tau htau b col h1 h2
+  have hU := rowStart_rev_eq k j t w M lam hb b
+  have hw := hb (Fin.rev b)
+  have hd : dual M lam b = M - lam (Fin.rev b) := rfl
+  obtain ⟨_, _, _, _, hbox⟩ := Finset.mem_filter.mp htau
+  constructor
+  · by_contra hcon
+    unfold boxesOfContent at hbox
+    rw [Finset.card_eq_zero] at hbox
+    have hmem : b ∈ Finset.univ.filter fun a : Fin (k + j) =>
+        (dual M lam a : ℤ) ≤ ((M - w : ℕ) : ℤ) + (a.val : ℤ) ∧
+          ((M - w : ℕ) : ℤ) + (a.val : ℤ) < (tau a : ℤ) := by
+      refine Finset.mem_filter.mpr ⟨Finset.mem_univ _, ?_, ?_⟩
+      · omega
+      · unfold label maxB at hcon
+        omega
+    rw [hbox] at hmem
+    exact absurd hmem (Finset.notMem_empty _)
+  · unfold label
+    omega
+
+theorem card_filter_rev_lt_le (k j : ℕ) (p : Fin (k + j) → Prop) [DecidablePred p] :
+    (Finset.univ.filter fun b : Fin (k + j) => (Fin.rev b).val < k ∧ p b).card ≤ k := by
+  have h := Finset.card_le_card_of_injOn (s := Finset.univ.filter fun b : Fin (k + j) => (Fin.rev b).val < k ∧ p b)
+    (t := Finset.range k) (fun b => (Fin.rev b).val)
+    (by
+      intro b hb
+      have := (Finset.mem_filter.mp (Finset.mem_coe.mp hb)).2.1
+      exact Finset.mem_coe.mpr (Finset.mem_range.mpr this))
+    (by
+      intro a _ b _ hab
+      exact Fin.rev_injective (Fin.ext hab))
+  simpa using h
+
+theorem card_filter_not_rev_lt_le (k j : ℕ) (p : Fin (k + j) → Prop) [DecidablePred p] :
+    (Finset.univ.filter fun b : Fin (k + j) => ¬ (Fin.rev b).val < k ∧ p b).card ≤ j := by
+  have h := Finset.card_le_card_of_injOn (s := Finset.univ.filter fun b : Fin (k + j) => ¬ (Fin.rev b).val < k ∧ p b)
+    (t := Finset.range j) (fun b => b.val)
+    (by
+      intro b hb
+      have h1 := (Finset.mem_filter.mp (Finset.mem_coe.mp hb)).2.1
+      have h2 := Fin.val_rev b
+      have h3 := b.isLt
+      exact Finset.mem_coe.mpr (Finset.mem_range.mpr (by show b.val < j; omega)))
+    (by
+      intro a _ b _ hab
+      exact Fin.ext hab)
+  simpa using h
+
+theorem counts_rows_holds : CountsRows := by
+  intro k j t w M i lam xm xp hR tau _ ct
+  have hb : ∀ a, w ≤ lam a ∧ lam a ≤ M := fun a => ⟨hR.low a, hR.high a⟩
+  unfold boxesOfLabel boxesOfContent cloudBoxes
+  rw [← Finset.card_filter_add_card_filter_not (s := Finset.univ.filter fun a : Fin (k + j) =>
+      (dual M lam a : ℤ) ≤ cont t w M ct + (a.val : ℤ) ∧ cont t w M ct + (a.val : ℤ) < (tau a : ℤ))
+      (fun b : Fin (k + j) => (Fin.rev b).val < k), add_comm]
+  rw [Finset.filter_filter, Finset.filter_filter]
+  refine Nat.add_le_add ?_ (le_of_eq ?_)
+  · split_ifs with hct
+    · refine le_trans (le_of_eq ?_) (card_filter_not_rev_lt_le k j (fun a : Fin (k + j) =>
+        (dual M lam a : ℤ) ≤ cont t w M ct + (a.val : ℤ) ∧ cont t w M ct + (a.val : ℤ) < (tau a : ℤ)))
+      congr 1
+      ext b
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+      tauto
+    · rw [Nat.le_zero, Finset.card_eq_zero, Finset.filter_eq_empty_iff]
+      rintro b _ ⟨⟨h1, _⟩, h3⟩
+      have hU := rowStart_rev_eq k j t w M lam hb b
+      have hc := content_label_eq t w M (le_trans (hb b).1 (hb b).2) ct
+      have hr := hR.rest (Fin.rev b) (by omega)
+      omega
+  · congr 1
+    ext b
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+    tauto
+
+theorem counts_cloud_holds : CountsCloud := by
+  intro k j t w M i lam tau htau ct
+  constructor
+  · exact card_filter_rev_lt_le k j _
+  · refine le_trans ?_ (ld_boxes_le t (M - w) i (k + j) (dual M lam) tau htau (cont t w M ct))
+    unfold cloudBoxes boxesOfContent
+    refine Finset.card_le_card ?_
+    intro b hb
+    exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, (Finset.mem_filter.mp hb).2.2⟩
+
+theorem counts_deep_holds : CountsDeep := by
+  intro k j t w M i lam xm xp hR tau htau ct hct
+  have hb : ∀ a, w ≤ lam a ∧ lam a ≤ M := fun a => ⟨hR.low a, hR.high a⟩
+  obtain ⟨hpi, _, hsum, _, _⟩ := Finset.mem_filter.mp htau
+  have hle : ∀ b, dual M lam b ≤ tau b := fun b => (Finset.mem_Icc.mp ((Fintype.mem_piFinset.mp hpi) b)).1
+  have htot : ∑ b : Fin (k + j), ((tau b : ℤ) - (dual M lam b : ℤ)) = (i : ℤ) := by
+    rw [Finset.sum_sub_distrib]
+    have : ((∑ a, tau a : ℕ) : ℤ) = ((∑ a, dual M lam a + i : ℕ) : ℤ) := by rw [hsum]
+    push_cast at this
+    linarith
+  unfold cloudBoxes
+  rw [← htot, ← nsmul_eq_mul, ← Finset.sum_const]
+  refine le_trans (Finset.sum_le_sum ?_) (Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _) ?_)
+  · intro b hbm
+    obtain ⟨_, h1, h2, h3⟩ := Finset.mem_filter.mp hbm
+    have hU := rowStart_rev_eq k j t w M lam hb b
+    have hc := content_label_eq t w M (le_trans (hb b).1 (hb b).2) ct
+    have hr := (hR.cloud (Fin.rev b) h1).1
+    omega
+  · intro b _ _
+    have := hle b
+    omega
+
+theorem boxesOfLabel_le_bound (k j t w M i : ℕ) (lam : Fin (k + j) → ℕ) (xm xp : ℤ) (hR : Rows k j t w M lam xm xp)
+    (tau : Fin (k + j) → ℕ) (htau : tau ∈ shapes t (M - w) i (dual M lam)) (ct : ℤ) :
+    (boxesOfLabel t w M lam tau ct : ℝ) ≤
+      (if ct < xm then (j : ℝ) else 0) +
+        min (min (k : ℝ) (t : ℝ)) (if ct < xm then (i : ℝ) / ((xm - ct : ℤ) : ℝ) else (k : ℝ)) := by
+  have h1 := counts_rows_holds k j t w M i lam xm xp hR tau htau ct
+  have h2 := counts_cloud_holds k j t w M i lam tau htau ct
+  have hk : (cloudBoxes k j t w M lam tau ct : ℝ) ≤ k := by exact_mod_cast h2.1
+  have ht : (cloudBoxes k j t w M lam tau ct : ℝ) ≤ t := by exact_mod_cast h2.2
+  by_cases hct : ct < xm
+  · rw [if_pos hct] at h1
+    rw [if_pos hct, if_pos hct]
+    have h1' : (boxesOfLabel t w M lam tau ct : ℝ) ≤ (j : ℝ) + (cloudBoxes k j t w M lam tau ct : ℝ) := by
+      exact_mod_cast h1
+    have h3 := counts_deep_holds k j t w M i lam xm xp hR tau htau ct hct
+    have h3' : (cloudBoxes k j t w M lam tau ct : ℝ) * ((xm - ct : ℤ) : ℝ) ≤ (i : ℝ) := by exact_mod_cast h3
+    have hpos : (0 : ℝ) < ((xm - ct : ℤ) : ℝ) := by exact_mod_cast (by omega : (0 : ℤ) < xm - ct)
+    have h4 : (cloudBoxes k j t w M lam tau ct : ℝ) ≤ (i : ℝ) / ((xm - ct : ℤ) : ℝ) := (le_div_iff₀ hpos).mpr h3'
+    have h5 := le_min (le_min hk ht) h4
+    linarith
+  · rw [if_neg hct] at h1
+    rw [if_neg hct, if_neg hct]
+    have h1' : (boxesOfLabel t w M lam tau ct : ℝ) ≤ (0 : ℝ) + (cloudBoxes k j t w M lam tau ct : ℝ) := by
+      exact_mod_cast h1
+    have h5 := le_min (le_min hk ht) hk
+    linarith
+
+theorem multiplicity_bound_holds : MuBound := by
+  intro k j t w M i lam xm xp hR ct
+  unfold mu
+  by_cases hne : (shapes t (M - w) i (dual M lam)).Nonempty
+  · obtain ⟨tau, htau, heq⟩ := Finset.exists_mem_eq_sup _ hne
+      (fun tau => boxesOfContent (dual M lam) tau (cont t w M ct))
+    rw [heq]
+    exact boxesOfLabel_le_bound k j t w M i lam xm xp hR tau htau ct
+  · rw [Finset.not_nonempty_iff_eq_empty.mp hne, Finset.sup_empty]
+    have h0 : (((⊥ : ℕ) : ℕ) : ℝ) = 0 := by simp
+    rw [h0]
+    refine add_nonneg (by split_ifs <;> positivity) (le_min (le_min (Nat.cast_nonneg _) (Nat.cast_nonneg _)) ?_)
+    split_ifs with hct
+    · exact div_nonneg (Nat.cast_nonneg _) (by exact_mod_cast (by omega : (0 : ℤ) ≤ xm - ct))
+    · exact Nat.cast_nonneg _
+
+theorem mem_label_interval_of_mu_ne_zero (k j t w M i : ℕ) (lam : Fin (k + j) → ℕ) (xm xp : ℤ) (hR : Rows k j t w M lam xm xp)
+    (ct : ℤ) (hmu : mu t (M - w) i (dual M lam) (cont t w M ct) ≠ 0) : maxB t w < ct ∧ ct < xp := by
+  have hb : ∀ a, w ≤ lam a ∧ lam a ≤ M := fun a => ⟨hR.low a, hR.high a⟩
+  unfold mu at hmu
+  obtain ⟨tau, htau, hbx⟩ := (Finset.lt_sup_iff).mp (Nat.pos_of_ne_zero hmu)
+  unfold boxesOfContent at hbx
+  obtain ⟨b, hbm⟩ := Finset.card_pos.mp hbx
+  obtain ⟨h1, h2⟩ := (Finset.mem_filter.mp hbm).2
+  have hU := rowStart_rev_eq k j t w M lam hb b
+  have hc := content_label_eq t w M (le_trans (hb b).1 (hb b).2) ct
+  obtain ⟨col, hcol⟩ : ∃ col : ℕ, (col : ℤ) = cont t w M ct + (b.val : ℤ) :=
+    ⟨(cont t w M ct + (b.val : ℤ)).toNat, Int.toNat_of_nonneg (by omega)⟩
+  have hg := (good_labels_holds k j t w M i lam hb tau htau b col (by omega) (by omega)).1
+  unfold label at hg
+  constructor
+  · omega
+  · by_cases hk : (Fin.rev b).val < k
+    · have := (hR.cloud (Fin.rev b) hk).2
+      omega
+    · have := hR.rest (Fin.rev b) (by omega)
+      have := hR.le
+      omega
+
+theorem padicValInt_prod_eq_sum (l : ℕ) [Fact l.Prime] (s : Finset ℕ) (g : ℕ → ℤ) (hg : ∀ x ∈ s, g x ≠ 0) :
+    padicValInt l (∏ x ∈ s, g x) = ∑ x ∈ s, padicValInt l (g x) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp
+  | insert a s ha ih =>
+    rw [Finset.prod_insert ha, Finset.sum_insert ha,
+      padicValInt.mul (hg a (Finset.mem_insert_self _ _))
+        (Finset.prod_ne_zero_iff.mpr fun x hx => hg x (Finset.mem_insert_of_mem hx)),
+      ih (fun x hx => hg x (Finset.mem_insert_of_mem hx))]
+
+theorem padicValInt_pow_eq_mul (l : ℕ) [Fact l.Prime] (x : ℤ) (_hx : x ≠ 0) (m : ℕ) :
+    padicValInt l (x ^ m) = m * padicValInt l x := by
+  unfold padicValInt
+  rw [Int.natAbs_pow, padicValNat.pow]
+
+theorem depth_valuation_sum_holds : DnValSum := by
+  intro l k j t w M i lam xm xp hl hR
+  have : Fact l.Prime := ⟨hl⟩
+  have hb : ∀ a, w ≤ lam a ∧ lam a ≤ M := fun a => ⟨hR.low a, hR.high a⟩
+  have hdw : ∀ b, dual M lam b ≤ M - w := fun b => by
+    have := hb (Fin.rev b)
+    unfold dual
+    omega
+  have hcont : ∀ c : ℤ, cont t w M (maxB t w + (((M - w : ℕ) : ℤ) - c)) = c := by
+    intro c
+    unfold cont
+    ring
+  unfold Dn
+  have hne : ∀ x ∈ Finset.range (k + j + (M - w) + i),
+      (((M - w : ℕ) : ℤ) - ((x : ℤ) - ((k + j : ℕ) : ℤ))) ^
+        mu t (M - w) i (dual M lam) ((x : ℤ) - ((k + j : ℕ) : ℤ)) ≠ 0 := by
+    intro x _
+    by_cases h : (((M - w : ℕ) : ℤ) - ((x : ℤ) - ((k + j : ℕ) : ℤ))) = 0
+    · have hc : ((x : ℤ) - ((k + j : ℕ) : ℤ)) = ((M - w : ℕ) : ℤ) := by omega
+      rw [hc, ld_mu_w]
+      simp
+    · exact pow_ne_zero _ h
+  have hterm : ∀ x ∈ Finset.range (k + j + (M - w) + i),
+      padicValInt l ((((M - w : ℕ) : ℤ) - ((x : ℤ) - ((k + j : ℕ) : ℤ))) ^
+        mu t (M - w) i (dual M lam) ((x : ℤ) - ((k + j : ℕ) : ℤ))) =
+      mu t (M - w) i (dual M lam) ((x : ℤ) - ((k + j : ℕ) : ℤ)) *
+        vl l (((M - w : ℕ) : ℤ) - ((x : ℤ) - ((k + j : ℕ) : ℤ))) := by
+    intro x _
+    by_cases h : (((M - w : ℕ) : ℤ) - ((x : ℤ) - ((k + j : ℕ) : ℤ))) = 0
+    · have hc : ((x : ℤ) - ((k + j : ℕ) : ℤ)) = ((M - w : ℕ) : ℤ) := by omega
+      rw [hc, ld_mu_w]
+      simp
+    · unfold vl
+      exact padicValInt_pow_eq_mul l _ h _
+  rw [padicValInt_prod_eq_sum l _ _ hne, Finset.sum_congr rfl hterm]
+  refine Finset.sum_bij_ne_zero
+    (fun x _ _ => maxB t w + (((M - w : ℕ) : ℤ) - ((x : ℤ) - ((k + j : ℕ) : ℤ)))) ?_ ?_ ?_ ?_
+  · intro a _ h2
+    have hmu : mu t (M - w) i (dual M lam) ((a : ℤ) - ((k + j : ℕ) : ℤ)) ≠ 0 := left_ne_zero_of_mul h2
+    rw [← hcont ((a : ℤ) - ((k + j : ℕ) : ℤ))] at hmu
+    exact Finset.mem_Ioo.mpr (mem_label_interval_of_mu_ne_zero k j t w M i lam xm xp hR _ hmu)
+  · intro a1 _ _ a2 _ _ h
+    omega
+  · intro ct _ h2
+    have hmu : mu t (M - w) i (dual M lam) (cont t w M ct) ≠ 0 := left_ne_zero_of_mul h2
+    obtain ⟨h3, h4⟩ := muSupport t (M - w) i (k + j) (dual M lam) _ hdw hmu
+    have ha : (((cont t w M ct + ((k + j : ℕ) : ℤ)).toNat : ℕ) : ℤ) = cont t w M ct + ((k + j : ℕ) : ℤ) :=
+      Int.toNat_of_nonneg (by omega)
+    have hx : (((cont t w M ct + ((k + j : ℕ) : ℤ)).toNat : ℕ) : ℤ) - ((k + j : ℕ) : ℤ) = cont t w M ct := by
+      rw [ha]; ring
+    have hv : ((M - w : ℕ) : ℤ) - cont t w M ct = ct - maxB t w := by
+      unfold cont; ring
+    refine ⟨(cont t w M ct + ((k + j : ℕ) : ℤ)).toNat, Finset.mem_range.mpr (by omega), ?_, ?_⟩
+    · rw [hx, hv]
+      exact h2
+    · rw [hx, hv]
+      ring
+  · intro a _ _
+    rw [hcont]
+    congr 2
+    ring
+
+theorem sum_padicVal_shift_eq_factorial (l : ℕ) [Fact l.Prime] (mB : ℤ) (n : ℕ) :
+    ∑ ct ∈ Finset.Ioo mB (mB + 1 + (n : ℤ)), vl l (ct - mB) = padicValNat l n.factorial := by
+  induction n with
+  | zero =>
+    have : Finset.Ioo mB (mB + 1 + ((0 : ℕ) : ℤ)) = ∅ := by
+      ext x
+      simp only [Finset.mem_Ioo, Finset.notMem_empty, iff_false]
+      omega
+    rw [this]
+    simp
+  | succ n ih =>
+    have hins : Finset.Ioo mB (mB + 1 + ((n + 1 : ℕ) : ℤ)) =
+        insert (mB + 1 + (n : ℤ)) (Finset.Ioo mB (mB + 1 + (n : ℤ))) := by
+      ext x
+      simp only [Finset.mem_Ioo, Finset.mem_insert]
+      omega
+    have hnot : (mB + 1 + (n : ℤ)) ∉ Finset.Ioo mB (mB + 1 + (n : ℤ)) := by
+      simp
+    rw [hins, Finset.sum_insert hnot, ih, Nat.factorial_succ,
+      padicValNat.mul (Nat.succ_ne_zero n) (Nat.factorial_ne_zero n)]
+    congr 1
+    unfold vl
+    have : mB + 1 + (n : ℤ) - mB = ((n + 1 : ℕ) : ℤ) := by push_cast; ring
+    rw [this, padicValInt.of_nat]
+
+theorem first_bound_holds : FactorialValuationSum := by
+  intro l xm mB hl hlt
+  have : Fact l.Prime := ⟨hl⟩
+  have hn : (((xm - mB - 1).toNat : ℕ) : ℤ) = xm - mB - 1 := Int.toNat_of_nonneg (by omega)
+  constructor
+  · have h := sum_padicVal_shift_eq_factorial l mB (xm - mB - 1).toNat
+    rw [hn] at h
+    have he : mB + 1 + (xm - mB - 1) = xm := by ring
+    rw [he] at h
+    exact h
+  · have h3 := sub_one_mul_padicValNat_factorial (p := l) (xm - mB - 1).toNat
+    have h4 : (l - 1) * padicValNat l ((xm - mB - 1).toNat).factorial ≤ (xm - mB - 1).toNat := by
+      rw [h3]; exact Nat.sub_le _ _
+    have hl2 := hl.two_le
+    have hl1 : (0 : ℝ) < (l : ℝ) - 1 := by
+      have : (2 : ℝ) ≤ (l : ℝ) := by exact_mod_cast hl2
+      linarith
+    rw [le_div_iff₀ hl1]
+    have h5 : (((l - 1 : ℕ) : ℝ)) * (padicValNat l ((xm - mB - 1).toNat).factorial : ℝ) ≤
+        (((xm - mB - 1).toNat : ℕ) : ℝ) := by exact_mod_cast h4
+    have h6 : (((l - 1 : ℕ) : ℝ)) = (l : ℝ) - 1 := by
+      rw [Nat.cast_sub (by omega)]; simp
+    have h7 : (((xm - mB - 1).toNat : ℕ) : ℝ) = ((xm - mB : ℤ) : ℝ) - 1 := by
+      have : ((((xm - mB - 1).toNat : ℕ) : ℤ) : ℝ) = ((xm - mB - 1 : ℤ) : ℝ) := by rw [hn]
+      push_cast at this ⊢
+      linarith
+    rw [h6, h7] at h5
+    linarith
+
+theorem harmonic_positive_log_holds : HarmPosLog := by
+  intro l h i hi
+  have hil : 0 ≤ i / (l : ℝ) := div_nonneg hi (Nat.cast_nonneg _)
+  constructor
+  · unfold harm
+    split_ifs with hlh
+    · exact mul_nonneg hil (add_nonneg zero_le_one Real.posLog_nonneg)
+    · refine mul_le_mul_of_nonneg_left ?_ hil
+      have : Real.log ((h : ℝ) / (l : ℝ)) ≤ Real.posLog ((h : ℝ) / (l : ℝ)) := le_max_right _ _
+      linarith
+  · intro h1 h2
+    unfold harm
+    rw [if_neg (by omega)]
+    have hl0 : (0 : ℝ) < (l : ℝ) := by exact_mod_cast h1
+    have hx : (1 : ℝ) ≤ (h : ℝ) / (l : ℝ) := by
+      rw [le_div_iff₀ hl0, one_mul]
+      exact_mod_cast h2
+    rw [Real.posLog_eq_log (by rw [abs_of_nonneg (by linarith)]; exact hx)]
+
+theorem labelLHS_shift_to_zero (l k t : ℕ) (i : ℝ) (xm xp mB : ℤ) :
+    labelLHS l k t i xm xp mB = labelLHS l k t i (xm - mB) (xp - mB) 0 := by
+  unfold labelLHS
+  congr 1
+  · refine Finset.sum_nbij' (fun ct => ct - mB) (fun ct => ct + mB) ?_ ?_ ?_ ?_ ?_
+    · intro ct h
+      simp only [Finset.mem_Icc] at h ⊢
+      omega
+    · intro ct h
+      simp only [Finset.mem_Icc] at h ⊢
+      omega
+    · intro ct _
+      ring
+    · intro ct _
+      ring
+    · intro ct _
+      rw [sub_zero]
+  · refine Finset.sum_nbij' (fun ct => ct - mB) (fun ct => ct + mB) ?_ ?_ ?_ ?_ ?_
+    · intro ct h
+      simp only [Finset.mem_Ioo] at h ⊢
+      omega
+    · intro ct h
+      simp only [Finset.mem_Ioo] at h ⊢
+      omega
+    · intro ct _
+      ring
+    · intro ct _
+      ring
+    · intro ct _
+      have e1 : xm - mB - (ct - mB) = xm - ct := by ring
+      rw [e1, sub_zero]
+
+theorem indexIntegral_shift (l : ℕ) (xm xp mB : ℤ) : IlInd l (xm - mB) (xp - mB) 0 = IlInd l xm xp mB := by
+  unfold IlInd
+  have h : (∃ y : ℤ, xm - mB ≤ y ∧ y ≤ xp - mB ∧ (l : ℤ) ∣ y - 0) ↔
+      (∃ y : ℤ, xm ≤ y ∧ y ≤ xp ∧ (l : ℤ) ∣ y - mB) := by
+    constructor
+    · rintro ⟨y, h1, h2, h3⟩
+      exact ⟨y + mB, by omega, by omega, by simpa using h3⟩
+    · rintro ⟨y, h1, h2, h3⟩
+      exact ⟨y - mB, by omega, by omega, by simpa using h3⟩
+  by_cases hc : ∃ y : ℤ, xm ≤ y ∧ y ≤ xp ∧ (l : ℤ) ∣ y - mB
+  · rw [if_pos hc, if_pos (h.mpr hc)]
+  · rw [if_neg hc, if_neg (fun h' => hc (h.mp h'))]
+
+theorem indexIntegral_nonneg (l : ℕ) (xm xp mB : ℤ) : 0 ≤ IlInd l xm xp mB := by
+  unfold IlInd
+  split_ifs <;> norm_num
+
+theorem gated_min_nonneg (l k t : ℕ) (i : ℝ) (hi : 0 ≤ i) (D : ℤ) :
+    0 ≤ (if ((d0 l D : ℕ) : ℤ) < D then min (min (k : ℝ) (t : ℝ)) (i / (d0 l D : ℝ)) else 0) := by
+  split_ifs
+  · exact le_min (le_min (Nat.cast_nonneg _) (Nat.cast_nonneg _)) (div_nonneg hi (Nat.cast_nonneg _))
+  · exact le_rfl
+
+theorem label_sum_plus_holds : LabelSumPlus := by
+  intro l k t h i xm xp mB hl hi hmx hxx hxp hh
+  by_cases hlh : h < l
+  · have hlhZ : (h : ℤ) < (l : ℤ) := by exact_mod_cast hlh
+    have hz : ∀ ct : ℤ, mB < ct → ct ≤ xp → (vl l (ct - mB) : ℝ) = 0 := by
+      intro ct h1 h2
+      rw [label_vl_zero_small (by omega) (by omega)]
+      simp
+    have hL : labelLHS l k t i xm xp mB = 0 := by
+      unfold labelLHS
+      rw [Finset.sum_eq_zero (fun ct hct => by
+            rw [hz ct (by have := Finset.mem_Icc.mp hct; omega) (Finset.mem_Icc.mp hct).2, mul_zero]),
+          Finset.sum_eq_zero (fun ct hct => by
+            rw [hz ct (Finset.mem_Ioo.mp hct).1 (by have := Finset.mem_Ioo.mp hct; omega), mul_zero]),
+          add_zero]
+    rw [hL]
+    unfold labelSumBoundPos harm
+    rw [if_pos hlh, add_zero]
+    refine add_nonneg (mul_nonneg (Nat.cast_nonneg _) (add_nonneg (div_nonneg ?_ (Nat.cast_nonneg _))
+      (indexIntegral_nonneg _ _ _ _))) (gated_min_nonneg l k t i hi _)
+    exact_mod_cast (by omega : (0 : ℤ) ≤ xp - xm)
+  · have h1 := labelSumLe_holds l k t h i (xm - mB) (xp - mB) 0 hl hi le_rfl (by omega) (by omega) (by omega) hh
+      (by omega)
+    rw [← labelLHS_shift_to_zero] at h1
+    unfold labelSumBound at h1
+    unfold labelSumBoundPos harm
+    rw [if_neg hlh]
+    have e : xp - mB - (xm - mB) = xp - xm := by ring
+    rw [indexIntegral_shift, e] at h1
+    simp only [sub_zero] at h1
+    exact h1
+
+theorem harmonic_monotone (l h : ℕ) : Monotone (harm l h) := by
+  intro a b hab
+  unfold harm
+  split_ifs with hlh
+  · exact le_rfl
+  · have hlog : 0 ≤ Real.log ((h : ℝ) / (l : ℝ)) := by
+      rcases Nat.eq_zero_or_pos l with h0 | h0
+      · rw [h0]; simp
+      · have hl0 : (0 : ℝ) < (l : ℝ) := by exact_mod_cast h0
+        refine Real.log_nonneg ?_
+        rw [le_div_iff₀ hl0, one_mul]
+        exact_mod_cast (by omega : l ≤ h)
+    exact mul_le_mul_of_nonneg_right (div_le_div_of_nonneg_right hab (Nat.cast_nonneg _)) (by linarith)
+
+theorem gated_min_monotone (l k t : ℕ) (D : ℤ) {a b : ℝ} (hab : a ≤ b) :
+    (if ((d0 l D : ℕ) : ℤ) < D then min (min (k : ℝ) (t : ℝ)) (a / (d0 l D : ℝ)) else 0) ≤
+      (if ((d0 l D : ℕ) : ℤ) < D then min (min (k : ℝ) (t : ℝ)) (b / (d0 l D : ℝ)) else 0) := by
+  split_ifs
+  · exact min_le_min_left _ (div_le_div_of_nonneg_right hab (Nat.cast_nonneg _))
+  · exact le_rfl
+
+theorem labelRHSPlus_monotone (l k t h : ℕ) (xm xp mB : ℤ) {a b : ℝ} (hab : a ≤ b) :
+    labelSumBoundPos l k t h a xm xp mB ≤ labelSumBoundPos l k t h b xm xp mB := by
+  unfold labelSumBoundPos
+  have h1 := gated_min_monotone l k t (xm - mB) hab
+  have h2 := harmonic_monotone l h hab
+  linarith
+
+theorem second_valuation_holds : Step2Val := by
+  intro l k j t w M h i lam xm xp hl hR hxp hh
+  have hsum := depth_valuation_sum_holds l k j t w M i lam xm xp hl hR
+  have hA1 := first_bound_holds l xm (maxB t w) hl hR.above
+  have hLS := label_sum_plus_holds l k t h (i : ℝ) xm xp (maxB t w) hl (Nat.cast_nonneg _) hR.above hR.le hxp hh
+  rw [hsum, Nat.cast_sum]
+  simp only [Nat.cast_mul]
+  have hdisj : Disjoint (Finset.Ioo (maxB t w) xm) (Finset.Ico xm xp) := by
+    rw [Finset.disjoint_left]
+    intro x h1 h2
+    have := (Finset.mem_Ioo.mp h1).2
+    have := (Finset.mem_Ico.mp h2).1
+    omega
+  have hun : Finset.Ioo (maxB t w) xp = Finset.Ioo (maxB t w) xm ∪ Finset.Ico xm xp := by
+    ext x
+    simp only [Finset.mem_union, Finset.mem_Ioo, Finset.mem_Ico]
+    have := hR.above
+    have := hR.le
+    omega
+  rw [hun, Finset.sum_union hdisj]
+  have h1 : ∑ ct ∈ Finset.Ioo (maxB t w) xm,
+        (mu t (M - w) i (dual M lam) (cont t w M ct) : ℝ) * (vl l (ct - maxB t w) : ℝ) ≤
+      (j : ℝ) * ∑ ct ∈ Finset.Ioo (maxB t w) xm, (vl l (ct - maxB t w) : ℝ) +
+        ∑ ct ∈ Finset.Ioo (maxB t w) xm,
+          min (min (k : ℝ) (t : ℝ)) ((i : ℝ) / ((xm - ct : ℤ) : ℝ)) * (vl l (ct - maxB t w) : ℝ) := by
+    rw [Finset.mul_sum, ← Finset.sum_add_distrib]
+    refine Finset.sum_le_sum ?_
+    intro ct hct
+    have hlt := (Finset.mem_Ioo.mp hct).2
+    have hm := multiplicity_bound_holds k j t w M i lam xm xp hR ct
+    rw [if_pos hlt, if_pos hlt] at hm
+    calc (mu t (M - w) i (dual M lam) (cont t w M ct) : ℝ) * (vl l (ct - maxB t w) : ℝ)
+        ≤ ((j : ℝ) + min (min (k : ℝ) (t : ℝ)) ((i : ℝ) / ((xm - ct : ℤ) : ℝ))) * (vl l (ct - maxB t w) : ℝ) :=
+          mul_le_mul_of_nonneg_right hm (Nat.cast_nonneg _)
+      _ = _ := by ring
+  have h2 : ∑ ct ∈ Finset.Ico xm xp,
+        (mu t (M - w) i (dual M lam) (cont t w M ct) : ℝ) * (vl l (ct - maxB t w) : ℝ) ≤
+      ∑ ct ∈ Finset.Icc xm xp, (k : ℝ) * (vl l (ct - maxB t w) : ℝ) := by
+    refine le_trans (Finset.sum_le_sum ?_)
+      (Finset.sum_le_sum_of_subset_of_nonneg Finset.Ico_subset_Icc_self ?_)
+    · intro ct hct
+      have hge := (Finset.mem_Ico.mp hct).1
+      have hm := multiplicity_bound_holds k j t w M i lam xm xp hR ct
+      rw [if_neg (by omega), if_neg (by omega), zero_add] at hm
+      exact mul_le_mul_of_nonneg_right (le_trans hm (min_le_right _ _)) (Nat.cast_nonneg _)
+    · intro ct _ _
+      exact mul_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)
+  have hA : ∑ ct ∈ Finset.Ioo (maxB t w) xm, (vl l (ct - maxB t w) : ℝ) ≤
+      (((xm - maxB t w : ℤ) : ℝ) - 1) / ((l : ℝ) - 1) := by
+    have h3 := hA1.2
+    rw [← hA1.1, Nat.cast_sum] at h3
+    exact h3
+  have hA' := mul_le_mul_of_nonneg_left hA (Nat.cast_nonneg j : (0 : ℝ) ≤ (j : ℝ))
+  unfold labelLHS at hLS
+  linarith
+
+theorem second_valuation_up_to_holds : Step2ValUpTo := by
+  intro l k j t w M h i I lam xm xp hl hR hxp hh hiI
+  have h1 := second_valuation_holds l k j t w M h i lam xm xp hl hR hxp hh
+  have h2 := labelRHSPlus_monotone l k t h xm xp (maxB t w) hiI
+  have hl1 : (0 : ℝ) ≤ (l : ℝ) - 1 := by
+    have : (2 : ℝ) ≤ (l : ℝ) := by exact_mod_cast hl.two_le
+    linarith
+  have hD : ((xm - maxB t w : ℤ) : ℝ) ≤ (h : ℝ) := by
+    have := hR.le
+    exact_mod_cast (by omega : xm - maxB t w ≤ (h : ℤ))
+  have h3 : (((xm - maxB t w : ℤ) : ℝ) - 1) / ((l : ℝ) - 1) ≤ ((h : ℝ) - 1) / ((l : ℝ) - 1) :=
+    div_le_div_of_nonneg_right (by linarith) hl1
+  have h4 := mul_le_mul_of_nonneg_left h3 (Nat.cast_nonneg j : (0 : ℝ) ≤ (j : ℝ))
+  linarith
+
+theorem c_prime_le_coarse_holds : CPrimeLeCoarse := by
+  intro l k j t q h N' ecl xm xp mB I hl hI
+  unfold cPrime cCoarse labelSumBoundPos
+  have h1 := (harmonic_positive_log_holds l h I hI).1
+  have hl1 : (0 : ℝ) ≤ (l : ℝ) - 1 := by
+    have : (2 : ℝ) ≤ (l : ℝ) := by exact_mod_cast hl
+    linarith
+  have h2 : ((h : ℝ) - 1) / ((l : ℝ) - 1) ≤ ((h : ℝ) + (N' : ℝ)) / ((l : ℝ) - 1) + 6 := by
+    have h3 : ((h : ℝ) - 1) / ((l : ℝ) - 1) ≤ ((h : ℝ) + (N' : ℝ)) / ((l : ℝ) - 1) :=
+      div_le_div_of_nonneg_right (by have : (0 : ℝ) ≤ (N' : ℝ) := Nat.cast_nonneg _; linarith) hl1
+    linarith
+  have h4 := mul_le_mul_of_nonneg_left h2
+    (by positivity : (0 : ℝ) ≤ (q : ℝ) + 2 * (j : ℝ))
+  linarith
+
+theorem labelRHSPlus_shift_invariant (l k t h : ℕ) (I : ℝ) (xm xp mB c : ℤ) :
+    labelSumBoundPos l k t h I (xm + c) (xp + c) (mB + c) = labelSumBoundPos l k t h I xm xp mB := by
+  unfold labelSumBoundPos
+  have e1 : xp + c - (xm + c) = xp - xm := by ring
+  have e2 : xm + c - (mB + c) = xm - mB := by ring
+  have e3 : xp + c - (mB + c) = xp - mB := by ring
+  have e4 : IlInd l (xm + c) (xp + c) (mB + c) = IlInd l xm xp mB := by
+    rw [← indexIntegral_shift l (xm + c) (xp + c) (mB + c), e2, e3, indexIntegral_shift]
+  rw [e1, e2, e4]
+
+end Formalism.CohomologicalDescent.UnitNormBounds
+end
+end
+
+section
+noncomputable section
+
+open Finset
+
+namespace Formalism.CohomologicalDescent
+
+open Formalism.RankGapBounds.ChebyshevFactorialBounds
+
+lemma jw_Il_eq {ι : Type} (D : Data ι) (τ : ι) (l : ℕ) :
+    IlInd l (D.xlo τ) (D.xhi τ) (D.maxB τ) = D.Icl τ l := by
+  unfold IlInd Data.Icl
+  by_cases h : ∃ y : ℤ, D.xlo τ ≤ y ∧ y ≤ D.xhi τ ∧ (l : ℤ) ∣ y - D.maxB τ
+  · rw [if_pos h]
+  · rw [if_neg h]
+
+lemma jw_Icl_nonneg {ι : Type} (D : Data ι) (τ : ι) (l : ℕ) : 0 ≤ D.Icl τ l := by
+  rw [← jw_Il_eq]
+  unfold IlInd
+  split_ifs <;> norm_num
+
+lemma jw_gate_nonneg {ι : Type} (D : Data ι) (τ : ι) (l : ℕ) :
+    (0 : ℝ) ≤ (if ((D.d0 τ l : ℕ) : ℤ) < Cor.DB D τ then
+        min (min (D.k : ℝ) (D.t : ℝ)) ((D.depth τ l : ℝ) / (D.d0 τ l : ℝ)) else 0) := by
+  split_ifs
+  · exact le_min (le_min (Nat.cast_nonneg _) (Nat.cast_nonneg _))
+      (div_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _))
+  · exact le_rfl
+
+end Formalism.CohomologicalDescent
+end
+end
+
+section
 noncomputable section
 
 open TensorProduct MvPolynomial
@@ -64,46 +666,9 @@ theorem pow_smul_weighted_component_mem_weyl (R : Type) [CommRing R] [IsDomain R
     rw [map_smul, smul_comm]
     exact Submodule.smul_mem _ _ hx
 
-theorem exponent_le_ring_component_holds : ExpLeRingComp := by
-  intro R _ _ l r ν μ e hu hE x hx
-  exact ⟨dualWeylRowGraded R r r ν μ x hx, pow_smul_weighted_component_mem_weyl R l r ν μ e hu hE x hx⟩
 
-theorem exponent_le_over_ring_holds : ExpLeRing := by
-  intro R _ _ l r ν μ e hu hE x hx
-  obtain ⟨h1, h2⟩ := Submodule.mem_inf.1 hx
-  have h3 := pow_smul_weighted_component_mem_weyl R l r ν μ e hu hE x h1
-  rwa [weightedHomogeneousComponent_eq_self ((mem_weightedHomogeneousSubmodule _ _ _ _).1 h2)] at h3
 
-theorem weight_rowWeights_eq_rowDeg {r n : ℕ} (m : Fin r × Fin n →₀ ℕ) (a : Fin r) :
-    Finsupp.weight (rowW r n) m a = rowDeg m a := by
-  rw [Finsupp.weight_apply, Finsupp.sum_fintype _ _ (by simp), Finset.sum_apply,
-    Fintype.sum_prod_type]
-  rw [Finset.sum_eq_single a]
-  · simp [rowW, rowDeg]
-  · intro b _ hb
-    simp [rowW, Ne.symm hb]
-  · simp
 
-theorem depth_nonneg_holds : DepthNonneg := by
-  intro r c ν μ hν hne
-  obtain ⟨f, hf, hf0⟩ := (Submodule.ne_bot_iff _).1 hne
-  obtain ⟨h1, h2⟩ := Submodule.mem_inf.1 hf
-  obtain ⟨m, hm⟩ := MvPolynomial.support_nonempty.2 hf0
-  have hdom := dualWeylDominanceZ r r ν le_rfl hν f h1 m hm
-  have hw : Finsupp.weight (rowW r r) m = μ :=
-    ((mem_weightedHomogeneousSubmodule _ _ _ _).1 h2) (MvPolynomial.mem_support_iff.1 hm)
-  have hrd : ∀ a : Fin r, rowDeg m a = μ a := fun a => by rw [← hw, weight_rowWeights_eq_rowDeg]
-  have hrn : ∀ a : Fin r, rowNu (r := r) ν a = ν a := fun a => by simp [rowNu]
-  simp only [hrd, hrn] at hdom
-  refine ⟨hdom.2, ?_⟩
-  have h3 := hdom.1 c
-  unfold depth2 res varpi
-  simp only [ite_mul, one_mul, zero_mul]
-  rw [← Finset.sum_filter, Finset.sum_sub_distrib]
-  have h4 : ((∑ a : Fin r with a.val < c, μ a : ℕ) : ℤ) ≤ ((∑ a : Fin r with a.val < c, ν a : ℕ) : ℤ) := by
-    exact_mod_cast h3
-  push_cast at h4
-  linarith
 
 theorem application_window : ApplicationWindow := by
   intro hD l k j t q h lam xm xp hl ht hanti hconst hspread hh hcloud hlows habove hle htop ecl hecl I μ hμ
@@ -206,24 +771,6 @@ theorem c_prime_le_weight_correction_holds : CPrimeLeCW5 := by
   rw [jw_Il_eq, hG]
   linarith
 
-theorem log_plus_versus_max_holds : LogPlusVsMax := by
-  intro l h i hh hl hi
-  have hh0 : (0 : ℝ) < h := by exact_mod_cast hh
-  have hl0 : (0 : ℝ) < l := by
-    have : (h : ℝ) < l := by exact_mod_cast hl
-    linarith
-  have hq0 : (0 : ℝ) < (h : ℝ) / (l : ℝ) := div_pos hh0 hl0
-  have hq1 : (h : ℝ) / (l : ℝ) < 1 := by
-    rw [div_lt_one hl0]
-    exact_mod_cast hl
-  have hlog : Real.log ((h : ℝ) / (l : ℝ)) < 0 := Real.log_neg hq0 hq1
-  have hpos : Real.posLog ((h : ℝ) / (l : ℝ)) = 0 := by
-    rw [Real.posLog_def]
-    exact max_eq_left hlog.le
-  rw [hpos, add_zero]
-  apply mul_lt_mul_of_pos_left _ (div_pos hi hl0)
-  rw [max_lt_iff]
-  constructor <;> linarith
 
 theorem coefficientBoundTau_nonneg {ι : Type} (D : Data ι) (τ : ι) (l : ℕ) (hl : l.Prime) : 0 ≤ Cor.coefficientBoundTau D τ l := by
   have hl0R : (0 : ℝ) < l := by exact_mod_cast hl.pos
@@ -260,15 +807,6 @@ theorem tau_term_le_correction_bound {ι : Type} [DecidableEq ι] (D : Data ι) 
       simpa using coefficientBoundTau_nonneg D τ l hl
   · exact le_rfl
 
-theorem sizeData_joint : JointEstimate := by
-  intro ι _ _ D hP h l hl hE hlJ h2 h3 h4
-  have h5 := h l hl hE hlJ h2 h3 h4
-  have h6 : (D.J l : ℝ) ≤ ((∑ τ, cTau D.T2 (fun τ => D.ex τ l) (fun τ =>
-        ⌊cPrime l D.k (D.j τ) D.t (D.q τ) D.h (D.ecl τ l) (D.xlo τ) (D.xhi τ) (D.maxB τ)
-          (D.depth τ l : ℝ)⌋₊) τ : ℕ) : ℝ) := by exact_mod_cast h5
-  refine h6.trans ?_
-  rw [Nat.cast_sum]
-  exact Finset.sum_le_sum fun τ _ => tau_term_le_correction_bound D hP l hl τ
 
 end SizeData₂
 
@@ -280,19 +818,6 @@ theorem subquotient_iso_holds : SubquotIso := by
   intro A _ V G G' _ _ _ _ _ _ ⟨e⟩ ⟨E, ψ, hψ⟩
   exact ⟨E, e.toLinearMap ∘ₗ ψ, e.surjective.comp hψ⟩
 
-theorem tensor_projection_kill_holds : TensorProjKill := by
-  intro R _ P X P' _ _ _ _ _ _ p l c h z
-  have h1 : ∀ y : X ⊗[R] P', l ^ c • TensorProduct.map p (LinearMap.id : P' →ₗ[R] P') y = 0 := by
-    intro y
-    induction y using TensorProduct.induction_on with
-    | zero => simp
-    | tmul x b => rw [TensorProduct.map_tmul, TensorProduct.smul_tmul', h x, TensorProduct.zero_tmul]
-    | add x y hx hy => rw [map_add, smul_add, hx, hy, add_zero]
-  induction z using TensorProduct.induction_on with
-  | zero => simp
-  | tmul a y =>
-    rw [TensorProduct.map_tmul, ← TensorProduct.tmul_smul, h1 y, TensorProduct.tmul_zero]
-  | add x y hx hy => rw [map_add, smul_add, hx, hy, add_zero]
 
 def mulOntoScaledSubmodule {O : Type} [CommRing O] (A : Type) [Ring A] [Algebra O A] (V : Type) [AddCommGroup V]
     [Module O V] [Module A V] [IsScalarTower O A V] (c : O) : V →ₗ[A] scaleSub A V c where
@@ -300,45 +825,6 @@ def mulOntoScaledSubmodule {O : Type} [CommRing O] (A : Type) [Ring A] [Algebra 
   map_add' x y := by ext; simp [smul_add]
   map_smul' b x := Subtype.ext (smul_comm c b x)
 
-theorem power_quotient_holds : PowQuotient := by
-  intro O _ A _ _ V _ _ _ _ ϖ a
-  have hker : scaleSub A V ϖ ≤ LinearMap.ker
-      (((scaleSub A V (ϖ ^ (a + 1))).comap (scaleSub A V (ϖ ^ a)).subtype).mkQ ∘ₗ
-        mulOntoScaledSubmodule A V (ϖ ^ a)) := by
-    rintro _ ⟨y, rfl⟩
-    rw [LinearMap.mem_ker, LinearMap.comp_apply, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero,
-      Submodule.mem_comap]
-    exact ⟨y, by
-      show ϖ ^ a • ϖ • y = ϖ ^ (a + 1) • y
-      rw [pow_succ, mul_smul]⟩
-  refine ⟨(scaleSub A V ϖ).liftQ _ hker, ?_, ?_, ?_⟩
-  · intro v
-    rfl
-  · intro z
-    obtain ⟨⟨x, y, rfl⟩, rfl⟩ := Submodule.Quotient.mk_surjective _ z
-    exact ⟨Submodule.Quotient.mk y, rfl⟩
-  · intro hreg
-    have hpow : ∀ (b : ℕ) (v : V), ϖ ^ b • v = 0 → v = 0 := by
-      intro b
-      induction b with
-      | zero => intro v hv; simpa using hv
-      | succ b ih =>
-        intro v hv
-        rw [pow_succ, mul_smul] at hv
-        exact hreg v (ih _ hv)
-    rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
-    intro z hz
-    obtain ⟨v, rfl⟩ := Submodule.Quotient.mk_surjective _ z
-    have h1 : (Submodule.Quotient.mk (⟨ϖ ^ a • v, v, rfl⟩ : scaleSub A V (ϖ ^ a)) :
-        scaleSub A V (ϖ ^ a) ⧸ (scaleSub A V (ϖ ^ (a + 1))).comap (scaleSub A V (ϖ ^ a)).subtype) = 0 := hz
-    rw [Submodule.Quotient.mk_eq_zero, Submodule.mem_comap] at h1
-    obtain ⟨y, hy⟩ := h1
-    rw [Submodule.Quotient.mk_eq_zero]
-    refine ⟨y, ?_⟩
-    have h2 : ϖ ^ a • (v - ϖ • y) = 0 := by
-      have h3 : ϖ ^ a • v = ϖ ^ (a + 1) • y := hy
-      rw [smul_sub, h3, pow_succ, mul_smul, sub_self]
-    exact sub_eq_zero.mp (hpow a _ h2)
 
 theorem simple_subquotient_of_power_holds : SimpleSubquotOfPower := by
   intro O _ A _ _ V _ _ _ _ ϖ n F F' hFF hn hsimple
@@ -408,98 +894,11 @@ theorem simple_subquotient_of_power_holds : SimpleSubquotOfPower := by
   rw [LinearMap.comp_apply, LinearEquiv.coe_coe, LinearEquiv.symm_apply_apply]
   rfl
 
-theorem filtered_map_holds : FilteredMap := by
-  intro C D _ _ _ _ F _ _ _ P P' hP Y hY
-  induction hY with
-  | zero Y h => exact Filtered.zero _ (F.map_isZero h)
-  | step S hS _ h3 ih => exact Filtered.step (S.map F) (hS.map_of_exact F) ih (hP _ h3)
 
-theorem filtered_of_iso {C : Type 1} [Category.{0} C] [Abelian C] {P : C → Prop} {Y : C}
-    (h : Filtered P Y) : ∀ {Y' : C} (_ : Y ≅ Y'), Filtered P Y' := by
-  cases h with
-  | zero _ h => intro Y' e; exact Filtered.zero _ (h.of_iso e.symm)
-  | step S hS h1 h3 =>
-    intro Y' e
-    have w : (S.f ≫ e.hom) ≫ (e.inv ≫ S.g) = 0 := by simp
-    have hiso : S ≅ ShortComplex.mk (S.f ≫ e.hom) (e.inv ≫ S.g) w :=
-      ShortComplex.isoMk (Iso.refl _) e (Iso.refl _) (by simp) (by simp)
-    exact Filtered.step (ShortComplex.mk (S.f ≫ e.hom) (e.inv ≫ S.g) w)
-      (ShortComplex.shortExact_of_iso hiso hS) h1 h3
 
-theorem filtered_middle_of_short_exact {C : Type 1} [Category.{0} C] [Abelian C] {P : C → Prop} {Z : C}
-    (hZ : Filtered P Z) : ∀ {X Y : C} (f : X ⟶ Y) (g : Y ⟶ Z) (w : f ≫ g = 0),
-      (ShortComplex.mk f g w).ShortExact → Filtered P X → Filtered P Y := by
-  induction hZ with
-  | zero Z h0 =>
-    intro X Y f g w hS hX
-    have hm : Mono f := hS.mono_f
-    have he : Epi f := hS.exact.epi_f (h0.eq_of_tgt _ _)
-    have : IsIso f := isIso_of_mono_of_epi f
-    exact filtered_of_iso hX (asIso f)
-  | step S' hS' _ h3 ih =>
-    intro X Y f g w hS hX
-    have hmf : Mono f := hS.mono_f
-    have heg : Epi g := hS.epi_g
-    have hmu : Mono S'.f := hS'.mono_f
-    have hev : Epi S'.g := hS'.epi_g
 
-    let ι : kernel (g ≫ S'.g) ⟶ Y := kernel.ι (g ≫ S'.g)
-    have hι : ι ≫ g ≫ S'.g = 0 := kernel.condition _
-    have htop : (ShortComplex.mk ι (g ≫ S'.g) hι).ShortExact :=
-      { exact := ShortComplex.exact_kernel _
-        mono_f := by dsimp; infer_instance
-        epi_g := by dsimp; infer_instance }
-    refine Filtered.step (ShortComplex.mk ι (g ≫ S'.g) hι) htop ?_ h3
-    let f' : X ⟶ kernel (g ≫ S'.g) := kernel.lift (g ≫ S'.g) f (by rw [← Category.assoc, w, zero_comp])
-    have hf' : f' ≫ ι = f := kernel.lift_ι _ _ _
-    let g' : kernel (g ≫ S'.g) ⟶ S'.X₁ := hS'.exact.lift (ι ≫ g) (by rw [Category.assoc]; exact hι)
-    have hg' : g' ≫ S'.f = ι ≫ g := hS'.exact.lift_f _ _
-    have w' : f' ≫ g' = 0 := by
-      rw [← cancel_mono S'.f, Category.assoc, hg', ← Category.assoc, hf', w, zero_comp]
-    refine ih f' g' w' ?_ hX
-    refine { exact := ?_, mono_f := ?_, epi_g := ?_ }
-    · rw [ShortComplex.exact_iff_exact_up_to_refinements]
-      intro A x₂ hx₂
-      dsimp at x₂ hx₂
-      have h1 : (x₂ ≫ ι) ≫ g = 0 := by
-        rw [Category.assoc, ← hg', ← Category.assoc, hx₂, zero_comp]
-      obtain ⟨A', π, hπ, x₁, hx₁⟩ := hS.exact.exact_up_to_refinements (x₂ ≫ ι) h1
-      dsimp at x₁ hx₁
-      refine ⟨A', π, hπ, x₁, ?_⟩
-      dsimp
-      rw [← cancel_mono ι, Category.assoc, Category.assoc, hf', hx₁]
-    · dsimp
-      exact mono_of_mono_fac hf'
-    · dsimp
-      rw [epi_iff_surjective_up_to_refinements]
-      intro A y
-      obtain ⟨A', π, hπ, x₀, hx₀⟩ := surjective_up_to_refinements_of_epi g (y ≫ S'.f)
-      have h2 : x₀ ≫ g ≫ S'.g = 0 := by
-        rw [← Category.assoc, ← hx₀, Category.assoc, Category.assoc, S'.zero, comp_zero, comp_zero]
-      refine ⟨A', π, hπ, kernel.lift (g ≫ S'.g) x₀ h2, ?_⟩
-      have h3' : kernel.lift (g ≫ S'.g) x₀ h2 ≫ ι = x₀ := kernel.lift_ι _ _ _
-      apply (cancel_mono S'.f).mp
-      calc (π ≫ y) ≫ S'.f = π ≫ y ≫ S'.f := Category.assoc _ _ _
-        _ = x₀ ≫ g := hx₀
-        _ = (kernel.lift (g ≫ S'.g) x₀ h2 ≫ ι) ≫ g := by rw [h3']
-        _ = kernel.lift (g ≫ S'.g) x₀ h2 ≫ g' ≫ S'.f := by rw [Category.assoc, hg']
-        _ = (kernel.lift (g ≫ S'.g) x₀ h2 ≫ g') ≫ S'.f := (Category.assoc _ _ _).symm
 
-theorem filtered_extension_holds : FilteredExt := by
-  intro C _ _ P S hS h1 h3
-  exact filtered_middle_of_short_exact h3 S.f S.g S.zero hS h1
 
-theorem filtered_transitive_holds : FilteredTrans := by
-  intro C _ _ P Y hY
-  induction hY with
-  | zero Y h => exact Filtered.zero _ h
-  | step S hS _ h3 ih => exact filtered_extension_holds C P S hS ih h3
-
-theorem filtered_map_filtered_holds : FilteredMapFiltered := by
-  intro C D _ _ _ _ F _ _ _ P P' hP Y hY
-  induction hY with
-  | zero Y h => exact Filtered.zero _ (F.map_isZero h)
-  | step S hS _ h3 ih => exact filtered_extension_holds D P' (S.map F) (hS.map_of_exact F) ih (hP _ h3)
 
 end Subquotients
 
@@ -585,9 +984,6 @@ theorem chain_ends_holds : ChainEnds := by
     intro τ
     simp [chainB]
 
-theorem representation_of_apply_holds : RepOfApply := by
-  intro O _ A _ _ G _ K jK W _ _ _ _ κ w
-  rfl
 
 theorem factorAction_id {O : Type} [CommRing O] {ι : Type} [Fintype ι] [DecidableEq ι] {Nb : ι → Type}
     [∀ τ, AddCommGroup (Nb τ)] [∀ τ, Module O (Nb τ)] (a : ι) (y : ⨂[O] τ, Nb τ) :
@@ -876,19 +1272,11 @@ theorem block_ideal_at_of_top_theorem (hTop : TheoremWTop) : BlockIdealAt := by
     simp only [hmaxB τ hτ]
   · rw [if_neg hτ, if_neg hτ]
 
-theorem theorem_w_central_holds : TheoremWCore := theorem_w_central_of_simple_quotients simple_subquotient_of_power_holds subquotient_iso_holds
 
 theorem weight_theorem_top : TheoremWTop := theorem_w_top_of_simple_quotients simple_subquotient_of_power_holds subquotient_iso_holds
 
 theorem block_ideal_at : BlockIdealAt := block_ideal_at_of_top_theorem weight_theorem_top
 
-theorem integral_ring_second_level : WeightSpacePrimePowerBoundOverDomain := by
-  intro hD R _ _ l N k j t q h lam xm xp ecl hl hu hh ht hS hecl I w hw x hx
-  obtain ⟨hrows, hanti, hblock, hspread, hcloud, hlows, habove, hle, htop⟩ := hS
-  have hA := application_window hD l k j t q h lam xm xp hl ht
-  rw [hrows] at hA
-  have hE := hA hanti hblock hspread hh hcloud hlows habove hle htop ecl hecl I w hw
-  exact exponent_le_over_ring_holds R l N (res N lam) w _ hu hE x hx
 
 theorem exponent_le_of_integral_inclusion_holds : ExpLeOfInclZ := by
   intro r ν μ l e ⟨m, hm, h⟩ x hx
@@ -944,19 +1332,7 @@ theorem depth_as_weight_sum_holds : DepthAsU := by
   · ring
   · ring
 
-theorem weight_exponent_depth_holds : WEDepth := by
-  intro ι _ σ k j t q l h F _ _ W U U' bot cst kap c τ lam w hl ht hW h1 h2 h3 h4 h5 h6 h7 h8 h9 h10 h11
-    hU hU'
-  have h := weightExchangeFull_holds ι σ k j t q l h F W U U' bot cst kap c τ hl ht hW h1 h2 h3 h4 h5 h6 h7 h8 h9 h10
-    h11
-  rw [depth_as_weight_sum_holds]
-  have e1 : ∑ a ∈ Finset.univ.filter (fun a : Fin (k + j + t + q) => (a : ℕ) < k + j),
-      (UN (k + j + t + q) lam a - ((w a : ℤ) + ((k + j + t + q : ℕ) : ℤ) - 1 - ((a : ℕ) : ℤ))) =
-      ∑ a ∈ Finset.univ.filter (fun a : Fin (k + j + t + q) => (a : ℕ) < k + j), (U τ a - U' τ a) :=
-    Finset.sum_congr rfl fun a _ => by rw [hU, hU']
-  rw [e1]
-  refine h.trans (le_of_eq ?_)
-  push_cast
-  ring
 
 end Formalism.CohomologicalDescent.DepthNonnegative
+end
+end

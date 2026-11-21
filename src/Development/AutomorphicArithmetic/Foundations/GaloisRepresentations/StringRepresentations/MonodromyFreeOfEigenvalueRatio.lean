@@ -30,12 +30,6 @@ theorem absSpace_smul {f : End ℂ V} {c : ℂ} (hc : c ≠ 0) {r : ℝ} {v : V}
   rw [LinearMap.smul_apply] at hu
   rw [div_eq_inv_mul, mul_smul, ← hu, smul_smul, inv_mul_cancel₀ hc, one_smul]
 
-theorem absSpace_shift {f N : End ℂ V} {c : ℂ} (hN : ∀ v, f (N v) = c • N (f v)) {r : ℝ} {v : V} (hv : v ∈ absSpace f r) :
-    N v ∈ absSpace f (‖c‖ * r) := by
-  refine (iSup₂_le fun α hα u hu => ?_ : absSpace f r ≤ (absSpace f (‖c‖ * r)).comap N) hv
-  refine Submodule.mem_iSup_of_mem (c * α) (Submodule.mem_iSup_of_mem (by rw [norm_mul, hα]) ?_)
-  rw [End.mem_eigenspace_iff] at hu ⊢
-  rw [hN, hu, map_smul, smul_smul]
 end Lin
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
@@ -119,39 +113,6 @@ theorem win_of_tempered {n : ℕ} {a : WDRep h (Fin n → ℂ)} (ht : a.Tempered
     · show (a.N ^ (k + 1)) _ = (a.N ^ (k + 1)) _
       rw [kill k v hv, map_zero]
 
-theorem kill_of_win {n : ℕ} (x : WDRep h (Fin n → ℂ)) (χ : ↥(Ine (F := E) A) → ℂ) (S : Set ℝ)
-    (hS : ∀ r ∈ S, ((normV w : ℕ) : ℝ) * r ∉ S)
-    (hw : ∀ r v, EV x χ v → v ∈ absSpace (x.ρ (frob h)) r → v ≠ 0 → r ∈ S) (v : Fin n → ℂ) (hv : EV x χ v) : x.N v = 0 := by
-  obtain ⟨m, hm, hc⟩ := GlobalTheory.IrrWeilAbs.exists_pow_central x (deg_frob (h := h))
-  let U : Submodule ℂ (Fin n → ℂ) :=
-    { carrier := {u | EV x χ u}
-      add_mem' := fun {p q} hp hq s => by rw [map_add, hp s, hq s, smul_add]
-      zero_mem' := fun s => by simp
-      smul_mem' := fun c p hp s => by rw [map_smul, hp s, smul_comm] }
-  let ψ := x.ρ (frob h ^ m)
-  have hU : ∀ u ∈ U, ψ u ∈ U := fun u hu s => by
-    have := LinearMap.congr_fun (hc (ineIncl h s)) u
-    simp only [End.mul_apply] at this
-    rw [← this, hu s, map_smul]
-  have hs : End.IsSemisimple (ψ.restrict hU) := (x.semisimple _).restrict hU
-  have htop := GlobalTheory.CompanionTheory.TempRes.iSup_eigenspace_eq_top hs
-  have hle : (⨆ μ, End.eigenspace (ψ.restrict hU) μ) ≤ LinearMap.ker (x.N ∘ₗ U.subtype) := iSup_le fun μ u hu => by
-    rw [LinearMap.mem_ker, LinearMap.comp_apply]
-    by_contra hN
-    have hu0 : (u : Fin n → ℂ) ≠ 0 := fun e => hN (by rw [Submodule.subtype_apply, e, map_zero])
-    have h1 : ψ u = μ • (u : Fin n → ℂ) := congrArg Subtype.val (End.mem_eigenspace_iff.1 hu)
-    have hr : 0 ≤ ‖μ‖ ^ ((m : ℝ)⁻¹) := Real.rpow_nonneg (norm_nonneg _) _
-    have h2 : (u : Fin n → ℂ) ∈ absSpace (x.ρ (frob h)) (‖μ‖ ^ ((m : ℝ)⁻¹)) := by
-      rw [← GlobalTheory.CompanionTheory.TempRes.absSpace_pow_eq (x.semisimple _) hr hm.ne', ← map_pow,
-        Real.rpow_inv_natCast_pow (norm_nonneg _) hm.ne']
-      exact Submodule.mem_iSup_of_mem μ (Submodule.mem_iSup_of_mem rfl (End.mem_eigenspace_iff.2 h1))
-    have h3 := absSpace_shift (x.comm_apply (frob h)) h2
-    rw [deg_frob, zpow_one, Complex.norm_natCast] at h3
-    refine hS _ (hw _ _ u.2 h2 hu0) (hw _ _ (fun s => ?_) h3 hN)
-    rw [x.comm_apply, u.2 s, map_smul]
-    simp
-  rw [htop] at hle
-  exact hle (x := ⟨v, hv⟩) Submodule.mem_top
 
 def Shape (y : WD h) : Prop :=
   ∃ L : List (WD h), (∀ z ∈ L, ∃ (t : WD h) (s : ℝ), t.tempered ∧ |s| < 1 / 2 ∧ z = t.lpTw s) ∧ y = sumList L
@@ -271,47 +232,7 @@ theorem Shape.ratio {y : WD h} {c : ℝ} (hy : Shape (y.lpTw c)) (hm : y.mono0) 
   rw [← mul_assoc] at this
   exact lt_of_mul_lt_mul_right this (Real.rpow_nonneg hq.le _)
 
-theorem monodromy_free_of_eigenvalue_ratio {x : WD h}
-    (hx : ∀ α ∈ x.eig (frob h), ∀ β ∈ x.eig (frob h), ‖α‖ < ((normV w : ℕ) : ℝ) * ‖β‖) : x.mono0 := by
-  induction x using WD.ind with
-  | hP n a =>
-    rw [WD.monodromyZero_ofWeilDeligneRepClass_iff]
-    have hm : ∀ {β : ℂ} {v : Fin n → ℂ}, v ≠ 0 → a.ρ (frob h) v = β • v → β ∈ (WD.mk a).eig (frob h) := fun hv e => by
-      rw [WD.eig_mk, mem_roots (LinearMap.charpoly_monic _).ne_zero, ← End.hasEigenvalue_iff_isRoot_charpoly]
-      exact End.hasEigenvalue_of_hasEigenvector ⟨End.mem_eigenspace_iff.2 e, hv⟩
-    refine LinearMap.ker_eq_top.1 (top_le_iff.1 ?_)
-    rw [← (a.semisimple (frob h)).iSup_eigenspace_eq_top]
-    refine iSup_le fun β v hv => ?_
-    by_contra h0
-    have hv0 : v ≠ 0 := by rintro rfl; exact h0 (map_zero _)
-    have e := End.mem_eigenspace_iff.1 hv
-    have := hx (((normV w : ℕ) : ℂ) * β) (hm h0 (by rw [a.comm_apply, e, map_smul, smul_smul, deg_frob, zpow_one])) β (hm hv0 e)
-    rw [norm_mul, Complex.norm_natCast] at this
-    exact lt_irrefl _ this
 
-theorem eq_of_mono0 {x y : WD h} (hc : ∀ g, x.charPol g = y.charPol g) (hx : x.mono0) (hy : y.mono0) : x = y := by
-  obtain ⟨n, a, rfl⟩ := x.exists_rep
-  obtain ⟨m, b, rfl⟩ := y.exists_rep
-  rw [WD.monodromyZero_ofWeilDeligneRepClass_iff] at hx hy
-  obtain ⟨e, he⟩ := GlobalTheory.AboveL.weil_rep_equiv_of_charpoly_eq E Ω A w h n m a b fun σ => by simpa using hc σ
-  exact WD.sound ⟨e, he, fun v => by rw [show a.N = 0 from hx, show b.N = 0 from hy]; simp⟩
 
-theorem aw_of_shape {x y : WD h} {c : ℝ} (hp : ∀ g : Weil h, x.charPol g = y.charPol g) (hy : Shape (y.lpTw c)) : Aw x y := by
-  refine aw_of_eigen hp (fun m => eq_of_mono0 hp (monodromy_free_of_eigenvalue_ratio fun α hα β hβ => ?_) m) ?_
-  · rw [WD.eig, hp] at hα hβ
-    exact hy.ratio m deg_frob hα hβ
-  · rintro n a b rfl rfl χ h0 v hv
-    obtain ⟨e, he⟩ := GlobalTheory.AboveL.weil_rep_equiv_of_charpoly_eq E Ω A w h n n a b fun σ => by simpa using hp σ
-    have hw := ((hy.win (a := b.tw c) (WD.lpTw_mk b c).symm).tw (-c))
-    have hq : (0 : ℝ) < ((normV w : ℕ) : ℝ) := by exact_mod_cast zero_lt_one.trans (one_lt_normV w)
-    have hb : Win b {r | r / ((normV w : ℕ) : ℝ) ^ (-c) ∈ window w} := by
-      refine Win.iso (WD.mk_eq_mk.1 ?_) hw
-      rw [← WD.lpTw_mk, ← WD.lpTw_mk, WD.lpTw_add, add_neg_cancel, WD.lpTw_zero]
-    refine kill_of_win a χ _ (fun r hr hr' => ?_) (fun r u hu hr hu0 => hb χ h0 r (e u)
-      (fun s => by rw [← he, hu s, map_smul]) (map_absSpace_le e.toLinearMap (fun z => he _ z) r ⟨u, hr, rfl⟩)
-      (e.map_ne_zero_iff.2 hu0)) v hv
-    have := window_ratio hr' hr
-    rw [mul_div_assoc] at this
-    exact lt_irrefl _ this
 
 end UpperTheory.GalN

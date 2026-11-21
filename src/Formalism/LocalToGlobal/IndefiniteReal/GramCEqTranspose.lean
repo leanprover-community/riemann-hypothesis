@@ -103,8 +103,6 @@ def nrmAt (σ : LL →+* ℂ) (x : WL) : ℝ := ‖A.j σ x‖
 def gram (σ : LL →+* ℂ) {n : ℕ} (b : Fin n → WL) : Matrix (Fin n) (Fin n) ℂ :=
   Matrix.of fun i k => A.pet σ (b i) (b k)
 
-theorem pet_self (σ : LL →+* ℂ) (x : WL) : A.pet σ x x = ((A.nrmAt σ x : ℝ) : ℂ) ^ 2 := by
-  simp [pet, nrmAt, inner_self_eq_norm_sq_to_K]
 
 theorem pet_add_left (σ : LL →+* ℂ) (x x' y : WL) : A.pet σ (x + x') y = A.pet σ x y + A.pet σ x' y := by
   simp [pet, map_add, inner_add_right]
@@ -112,14 +110,10 @@ theorem pet_add_left (σ : LL →+* ℂ) (x x' y : WL) : A.pet σ (x + x') y = A
 theorem pet_smul_left (σ : LL →+* ℂ) (a : LL) (x y : WL) : A.pet σ (a • x) y = σ a * A.pet σ x y := by
   simp [pet, map_smulₛₗ, inner_smul_right]
 
-theorem pet_conj_symm (σ : LL →+* ℂ) (x y : WL) : A.pet σ y x = starRingEnd ℂ (A.pet σ x y) := by
-  simp [pet, inner_conj_symm]
 
 def gramC (σ : LL →+* ℂ) {n : ℕ} (b : Fin n → WL) : Matrix (Fin n) (Fin n) ℂ :=
   Matrix.of fun i k => ⟪A.j σ (b i), A.j σ (b k)⟫_ℂ
 
-theorem gramC_eq_transpose (σ : LL →+* ℂ) {n : ℕ} (b : Fin n → WL) : A.gramC σ b = (A.gram σ b)ᵀ := by
-  ext i k; simp [gramC, gram, pet]
 
 open Classical in
 
@@ -145,8 +139,6 @@ theorem eOp_apply (eC : G0 → LL) (x : WL) :
     A.eOp eC x = ∑ g, (eC g * ((A.chi g)⁻¹ : LLˣ)) • A.ρ g x := by
   simp [eOp, LinearMap.sum_apply]
 
-theorem Mj_le_Mall (J0 : Subgroup G0) (lam0 : J0 →* LLˣ) (eC : G0 → LL) :
-    A.Mj J0 lam0 eC ≤ A.Mall J0 lam0 := inf_le_left
 
 theorem Mj_sub_Wgood (J0 : Subgroup G0) (lam0 : J0 →* LLˣ) (eC : G0 → LL) {x : WL}
     (hx : x ∈ A.Mj J0 lam0 eC) : x ∈ A.Wgood J0 lam0 eC :=
@@ -156,9 +148,6 @@ theorem mem_Mcoord (J0 : Subgroup G0) (lam0 : J0 →* LLˣ) (eC : G0 → LL) {d 
     (c : Fin d → LL) : c ∈ A.Mcoord J0 lam0 eC b ↔ ∑ i, c i • b i ∈ A.Mj J0 lam0 eC := by
   simp [Mcoord, Fintype.linearCombination_apply]
 
-theorem gramV_pos (pos : (LL →+* ℂ) → Prop) {σ : LL →+* ℂ} (h : pos σ) {n : ℕ} (b : Fin n → WL) :
-    A.gramV pos σ b = A.gramC σ b := by
-  simp [gramV, h]
 
 end FormsL
 

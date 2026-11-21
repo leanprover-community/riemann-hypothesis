@@ -1053,7 +1053,6 @@ def fstA (V : Type) [AddCommGroup V] [Module ℂ V] : Q.Pr V →ₐ[ℂ] Module.
   map_add' _ _ := rfl
   commutes' _ := rfl
 
-theorem fstA_apply (a : Q.Pr V) : fstA V a = a.1 := rfl
 
 theorem fst_mul (a b : Q.Pr V) : (a * b).1 = a.1 * b.1 := rfl
 theorem fst_add (a b : Q.Pr V) : (a + b).1 = a.1 + b.1 := rfl
@@ -1702,20 +1701,8 @@ theorem left_none {δ : ℕ → ℤ} {X : A} (hX : Supp d.κ δ X) {ρ : M.Ty P}
   rw [eq_sum_left d.κ (X * Pj d.κ ρ)]
   exact Finset.sum_eq_zero fun σ _ => by rw [← mul_assoc]; exact hX ρ σ (h σ)
 
-theorem right_single {δ : ℕ → ℤ} {X : A} (hX : Supp d.κ δ X) {ρ τ : M.Ty P} (h : Off δ τ ρ) :
-    Pj d.κ ρ * X = Pj d.κ ρ * X * Pj d.κ τ := by
-  conv_lhs => rw [eq_sum_right d.κ (Pj d.κ ρ * X)]
-  exact Finset.sum_eq_single τ (fun σ _ hσ => hX σ ρ (fun h' => hσ (off_unique (off_neg h') (off_neg h))))
-    (fun h' => absurd (Finset.mem_univ _) h')
 
-theorem right_none {δ : ℕ → ℤ} {X : A} (hX : Supp d.κ δ X) {ρ : M.Ty P} (h : ∀ τ, ¬ Off δ τ ρ) :
-    Pj d.κ ρ * X = 0 := by
-  rw [eq_sum_right d.κ (Pj d.κ ρ * X)]
-  exact Finset.sum_eq_zero fun σ _ => hX σ ρ (h σ)
 
-theorem kap_eq_sum (f : M.Ty P → ℂ) : d.κ f = ∑ ρ, f ρ • Pj d.κ ρ := by
-  conv_lhs => rw [eq_sum_right d.κ (d.κ f)]
-  exact Finset.sum_congr rfl fun ρ _ => kap_Pj d.κ f ρ
 
 theorem ext_right {X Y : A} (h : ∀ ρ, X * Pj d.κ ρ = Y * Pj d.κ ρ) : X = Y := by
   rw [eq_sum_right d.κ X, eq_sum_right d.κ Y]; exact Finset.sum_congr rfl fun ρ _ => h ρ
@@ -2053,7 +2040,6 @@ variable {P : M.Par} {A : Type} [Ring A] [StarRing A] [Algebra ℂ A]
 
 theorem off_congr {δ δ' : ℕ → ℤ} {ρ σ : M.Ty P} (h : Off δ ρ σ) (e : δ = δ') : Off δ' ρ σ := e ▸ h
 
-theorem ee_val (l m : ℕ) : ee l m = if m = l then 1 else 0 := rfl
 
 variable {d : Q.NFData P A} (hd : Hyp d)
 include hd
@@ -2192,7 +2178,6 @@ theorem prod_shift {l j : ℕ} {τ π : M.Ty P} (h : ∀ i ∈ Icc 1 (P.k - 1), 
   simp only [Finset.mem_erase] at hi
   rw [h i hi.2.2 hi.2.1 hi.1]
 
-theorem erase_comm' (s : Finset ℕ) (a b : ℕ) : (s.erase a).erase b = (s.erase b).erase a := Finset.erase_right_comm
 
 theorem mixed_scalar (hP : P.OK) {l j : ℕ} (hl : l ∈ Icc 1 (P.k - 1)) (hj : j ∈ Icc 1 (P.k - 1)) (hjl : j ≠ l)
     {τ ρ σ : M.Ty P} (hτ : M.Up P l τ ρ) (hτσ : M.Up P j τ σ) :
@@ -2477,13 +2462,9 @@ theorem fnmem_zb : L.ζb ∈ Set.range L.c ∪ Set.range L.ci ∪ Set.range L.cb
     {L.ζ, L.ζi, L.ζb, L.ζbi, L.GG, L.GGi} := by simp
 theorem fnmem_G : L.GG ∈ Set.range L.c ∪ Set.range L.ci ∪ Set.range L.cb ∪ Set.range L.cbi ∪
     {L.ζ, L.ζi, L.ζb, L.ζbi, L.GG, L.GGi} := by simp
-theorem fnmem_Gi : L.GGi ∈ Set.range L.c ∪ Set.range L.ci ∪ Set.range L.cb ∪ Set.range L.cbi ∪
-    {L.ζ, L.ζi, L.ζb, L.ζbi, L.GG, L.GGi} := by simp
 
 theorem zG : L.ζ * L.GG = L.GG * L.ζ := L.fns_comm _ (zeta_mem_functions L) _ (fnmem_G L)
 theorem zbG : L.ζb * L.GG = L.GG * L.ζb := L.fns_comm _ (fnmem_zb L) _ (fnmem_G L)
-theorem zGi : L.ζ * L.GGi = L.GGi * L.ζ := L.fns_comm _ (zeta_mem_functions L) _ (fnmem_Gi L)
-theorem zbGi : L.ζb * L.GGi = L.GGi * L.ζb := L.fns_comm _ (fnmem_zb L) _ (fnmem_Gi L)
 theorem zzb : L.ζb * L.ζ = L.ζ * L.ζb := L.fns_comm _ (fnmem_zb L) _ (zeta_mem_functions L)
 
 theorem Gs : L.GG * L.nabs = L.nabs * L.GG + L.ζ := by rw [L.nabs_GG]; abel

@@ -1,9 +1,0 @@
-import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.CayleyCosetSums.LamTrace
-import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.CayleyCosetSums.SingularTestsKillVacuum
-import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.CayleyCosetSums.Crux
-
-namespace PositivityTheory.Rg.Sw.HSt
-
-theorem locTau : LocTau := asmLT lt1 lt2 lt3 crux
-
-end PositivityTheory.Rg.Sw.HSt

@@ -1,8 +1,0 @@
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeEigenfunctionsClosed
-
-namespace PositivityTheory.jumpWindows
-
-theorem hecke_operator_of_automorphic : G0 → G2c :=
-  GlobalTheory.CompanionTheory.HeckeEigenspaces.hecke_eigenfunctions_closed
-
-end PositivityTheory.jumpWindows

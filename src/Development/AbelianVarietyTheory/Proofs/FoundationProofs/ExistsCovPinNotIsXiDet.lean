@@ -66,8 +66,6 @@ def XiValues (d : DeltaDat Xo c n) (σ : c.F →+* ℂ) (𝔣 : Ideal (𝓞 E)) 
         ∀ P, IsPeriod (U.Di i) ty P → ∀ y : FrPt d.Xo₂ d.c₂ (CAt (embCov d σ)), y.x = U.u i P →
           toC (evR d.Xo₂ d.c₂ d.cδ y) = σ (xi 𝔠)
 
-theorem isXiDet_iff (d : DeltaDat Xo c n) (σ : c.F →+* ℂ) (𝔣 : Ideal (𝓞 E)) (xi : Ideal (𝓞 E) →*₀ c.F) :
-    IsXiDet d σ 𝔣 xi ↔ d.cδ ∈ sec d.Xo₂ d.c₂ 0 0 ∧ XiValues d σ 𝔣 xi := Iff.rfl
 
 theorem twist_ne_zero {Q : Finset (Ideal (𝓞 E))} {K : Type} [Field K] {xi : Ideal (𝓞 E) →*₀ K} (h : IsTwist H Q xi)
     {𝔠 : Ideal (𝓞 E)} (h0 : 𝔠 ≠ ⊥) (h1 : 𝔠 ⊔ modulus H Q = ⊤) : xi 𝔠 ≠ 0 := by

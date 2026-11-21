@@ -37,7 +37,6 @@ def KE : IntermediateField ℚ_[l] (PadicAlgCl l) := ⨆ φ : F →+* PadicAlgCl
 instance KE_fin : FiniteDimensional ℚ_[l] (KE l F) :=
   IntermediateField.finiteDimensional_iSup_of_finite
 
-theorem phi_mem_KE (φ : F →+* PadicAlgCl l) (x : F) : φ x ∈ KE l F := (le_iSup (fun ψ : F →+* PadicAlgCl l => Kphi ψ) φ) (phi_mem φ x)
 
 theorem conj_mem_KE (φ : F →+* PadicAlgCl l) (τ : ↥(Kphi φ) →ₐ[ℚ_[l]] PadicAlgCl l) (y : ↥(Kphi φ)) :
     τ y ∈ KE l F := by

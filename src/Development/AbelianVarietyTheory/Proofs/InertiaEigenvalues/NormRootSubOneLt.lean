@@ -3,8 +3,70 @@ import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExpStar
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormPrimitiveRootPrimePowSubOnePadicComplex
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicTowerTraceAlmostSurjectiveStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SumTranslateEq
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ImportsLast
+
+section
+universe u_1 u_2
+
+namespace GlobalTheory.TranslateSum
+
+theorem sum_translate_eq {G : Type u_1} {M : Type u_2} [Group G] [AddCommMonoid M]
+    (H V : Subgroup G) (S : Finset G) (hS : ∀ s ∈ S, s ∈ H)
+    (huniq : ∀ h ∈ H, ∃! s : G, s ∈ S ∧ s⁻¹ * h ∈ V) (f : G → M)
+    (hf : ∀ (g v : G), v ∈ H → v ∈ V → f (g * v) = f g) :
+    ∀ h ∈ H, ∑ s ∈ S, f (h * s) = ∑ s ∈ S, f s := by
+  intro h hh
+  have hex : ∀ s ∈ S, ∃ t : G, t ∈ S ∧ t⁻¹ * (h * s) ∈ V := fun s hs =>
+    (huniq (h * s) (H.mul_mem hh (hS s hs))).exists
+  choose φ hφS hφV using hex
+  refine Finset.sum_bij φ hφS ?_ ?_ ?_
+  · intro s hs t ht hst
+    have h1 : s⁻¹ * t ∈ V := by
+      have := V.mul_mem (V.inv_mem (hφV s hs)) (hφV t ht)
+      rw [hst] at this
+      have e : ((φ t ht)⁻¹ * (h * s))⁻¹ * ((φ t ht)⁻¹ * (h * t)) = s⁻¹ * t := by group
+      rwa [e] at this
+    have h2 : t⁻¹ * t ∈ V := by
+      rw [inv_mul_cancel]; exact V.one_mem
+    exact (huniq t (hS t ht)).unique ⟨hs, h1⟩ ⟨ht, h2⟩
+  · intro u hu
+    obtain ⟨s, hs, hsV⟩ := (huniq (h⁻¹ * u) (H.mul_mem (H.inv_mem hh) (hS u hu))).exists
+    refine ⟨s, hs, ?_⟩
+    have h1 : u⁻¹ * (h * s) ∈ V := by
+      have := V.inv_mem hsV
+      have e : (s⁻¹ * (h⁻¹ * u))⁻¹ = u⁻¹ * (h * s) := by group
+      rwa [e] at this
+    exact (huniq (h * s) (H.mul_mem hh (hS s hs))).unique ⟨hφS s hs, hφV s hs⟩ ⟨hu, h1⟩
+  · intro s hs
+    have hm : (φ s hs)⁻¹ * (h * s) ∈ H :=
+      H.mul_mem (H.inv_mem (hS _ (hφS s hs))) (H.mul_mem hh (hS s hs))
+    have := hf (φ s hs) _ hm (hφV s hs)
+    rwa [mul_inv_cancel_left] at this
+
+end GlobalTheory.TranslateSum
+end
+
+section
+namespace GlobalTheory.PowerDifferenceNormInertiaEigenvalues
+
+universe u_1
+
+theorem norm_pow_sub_pow_le {C : Type u_1} [NormedField C] [IsUltrametricDist C] {x y : C}
+    (hx : ‖x‖ ≤ (1 : ℝ)) (hy : ‖y‖ ≤ (1 : ℝ)) (n : ℕ) : ‖x ^ n - y ^ n‖ ≤ ‖x - y‖ := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    have h : x ^ (n + 1) - y ^ (n + 1) = x * (x ^ n - y ^ n) + y ^ n * (x - y) := by ring
+    rw [h]
+    refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le ?_ ?_)
+    · rw [norm_mul]
+      exact (mul_le_of_le_one_left (norm_nonneg _) hx).trans ih
+    · rw [norm_mul, norm_pow]
+      exact mul_le_of_le_one_left (norm_nonneg _) (pow_le_one₀ (norm_nonneg _) hy)
+
+end GlobalTheory.PowerDifferenceNormInertiaEigenvalues
+end
+
+section
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc
 
 namespace GlobalTheory.Cyc.TraceTilt
@@ -415,3 +477,4 @@ theorem main : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) 
     rw [map_mul, hF, hwf s (hS s hs), mul_one s]
 
 end GlobalTheory.Cyc.TraceTilt
+end

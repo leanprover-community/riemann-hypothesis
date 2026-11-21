@@ -1,5 +1,93 @@
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.SchurDecayBounds.NormIdCore
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.BesselUnitNorm.BesselNormSteps.BesselLine.FSGInt
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.BesselUnitNorm.BesselNormSteps.BesselLine.FSWeil
 
+section
+open MeasureTheory Matrix
+open scoped InnerProductSpace ENNReal
+
+noncomputable section
+
+namespace PI.WBL.NIS
+
+open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.BasicNotions PI.BesselLine PI.WBL PI.WBL.FSW
+
+variable {k r : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+  {Wp : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [CompleteSpace Wp]
+
+theorem be_equiv_of_int {z : Fin (2 * r + k + 1) → ℂ} {c : ℂ} {π : Mx k r → (Wp →L[ℂ] Wp)}
+    {μW μN : Measure (Mt k r)} {σ : Mx k r → (H →L[ℂ] H)}
+    (hG : Cv.GrpF k r z) (hσ : Cv.SigU σ) (hπ : Cv.PiU z π) (hψ : Cv.PsiF k r z c) (hM : Cv.MeasF z π μW μN)
+    {w v : H} (hint : Integrable (beF z c π σ w v) (μW.prod μN))
+    {h m : Mx k r} (hh : h ∈ UWset k r z) (hm : m ∈ Nset k r) :
+    be z c π μW μN σ (σ (h * m) w) v = (psi k r z c m • π h).comp (be z c π μW μN σ w v) := by
+  have hT := hM.2.1 h hh m hm
+  let L : (Wp →L[ℂ] Wp) →L[ℂ] (Wp →L[ℂ] Wp) :=
+    ContinuousLinearMap.compL ℂ Wp Wp Wp (psi k r z c m • π h)
+  have key : ∀ᵐ p ∂(μW.prod μN), beF z c π σ (σ (h * m) w) v p = L (beF z c π σ w v (Cv.tEq h m p)) := by
+    filter_upwards [hM.1] with p hp
+    exact Cv.beF_tEq z c π σ hG hσ hπ hψ h m hh hm w v p hp
+  have hint2 : Integrable (fun p => beF z c π σ w v (Cv.tEq h m p)) (μW.prod μN) :=
+    hT.integrable_comp_of_integrable hint
+  have hmap : ∫ p, beF z c π σ w v (Cv.tEq h m p) ∂(μW.prod μN) = be z c π μW μN σ w v := by
+    rw [← integral_map hT.measurable.aemeasurable (by rw [hT.map_eq]; exact hint.aestronglyMeasurable),
+      hT.map_eq]
+    rfl
+  show ∫ p, beF z c π σ (σ (h * m) w) v p ∂(μW.prod μN) = L (be z c π μW μN σ w v)
+  rw [integral_congr_ae key, L.integral_comp_comm hint2, hmap]
+
+def evL (ξ : Wp) : (Wp →L[ℂ] Wp) →L[ℂ] ℂ :=
+  (innerSL ℂ ξ).comp (ContinuousLinearMap.apply ℂ Wp ξ)
+
+theorem evL_apply (ξ : Wp) (B : Wp →L[ℂ] Wp) : evL ξ B = ⟪ξ, B ξ⟫_ℂ := rfl
+
+def kx (z : Fin (2 * r + k + 1) → ℂ) (c : ℂ) (π : Mx k r → (Wp →L[ℂ] Wp)) (ξ : Wp) (p : Mt k r × Mt k r) : ℂ :=
+  psi k r z c (Matrix.of p.2) * star ⟪ξ, π (Matrix.of p.1)⁻¹ ξ⟫_ℂ
+
+def Fx (z : Fin (2 * r + k + 1) → ℂ) (c : ℂ) (π : Mx k r → (Wp →L[ℂ] Wp)) (μW μN : Measure (Mt k r))
+    (σ : Mx k r → (H →L[ℂ] H)) (u v : H) (ξ : Wp) (y : Mx k r) : ℂ :=
+  ⟪v, σ y u⟫_ℂ * star ⟪ξ, Aop z c π μW μN σ u v y ξ⟫_ℂ
+
+theorem star_ev_be {z : Fin (2 * r + k + 1) → ℂ} {c : ℂ} {π : Mx k r → (Wp →L[ℂ] Wp)}
+    {μW μN : Measure (Mt k r)} {σ : Mx k r → (H →L[ℂ] H)} {w' v : H}
+    (hint : Integrable (beF z c π σ w' v) (μW.prod μN)) (ξ : Wp) :
+    star ⟪ξ, be z c π μW μN σ w' v ξ⟫_ℂ = ∫ p, star ⟪v, σ (sM p) w'⟫_ℂ * kx z c π ξ p ∂(μW.prod μN) := by
+  have e1 : ⟪ξ, be z c π μW μN σ w' v ξ⟫_ℂ = ∫ p, evL ξ (beF z c π σ w' v p) ∂(μW.prod μN) := by
+    rw [(evL ξ).integral_comp_comm hint, evL_apply]
+    rfl
+  rw [e1]
+  have e2 := integral_conj (μ := μW.prod μN) (f := fun p => evL ξ (beF z c π σ w' v p))
+  simp only [starRingEnd_apply] at e2
+  rw [← e2]
+  refine integral_congr_ae (ae_of_all _ fun p => ?_)
+  simp only [evL_apply, beF, kx, sM, _root_.smul_apply, inner_smul_right, star_mul', star_star]
+  ring
+
+theorem norm_kx_le {z : Fin (2 * r + k + 1) → ℂ} {c : ℂ} {π : Mx k r → (Wp →L[ℂ] Wp)} (hGr : Cv.GrpF k r z)
+    (hPi : Cv.PiU z π) (ξ : Wp) {p : Mt k r × Mt k r} (hp : Matrix.of p.1 ∈ UWset k r z) :
+    ‖kx z c π ξ p‖ ≤ ‖ξ‖ ^ 2 := by
+  unfold kx
+  rw [norm_mul, Cv.norm_psi, one_mul, norm_star]
+  calc ‖⟪ξ, π (Matrix.of p.1)⁻¹ ξ⟫_ℂ‖ ≤ ‖ξ‖ * ‖π (Matrix.of p.1)⁻¹ ξ‖ := norm_inner_le_norm _ _
+    _ = ‖ξ‖ ^ 2 := by rw [hPi.2.2 _ (hGr.2.2.1 _ hp)]; ring
+
+theorem kx_aesm {z : Fin (2 * r + k + 1) → ℂ} {c : ℂ} {π : Mx k r → (Wp →L[ℂ] Wp)}
+    {μW μN : Measure (Mt k r)} [SFinite μN] (hM : Cv.MeasF z π μW μN) (ξ : Wp) :
+    AEStronglyMeasurable (kx z c π ξ) (μW.prod μN) := by
+  have hc1 : Continuous (fun p : Mt k r × Mt k r => psi k r z c (Matrix.of p.2)) :=
+    (Cv.psi_cont z c).comp continuous_snd
+  have h1 : AEStronglyMeasurable (fun p : Mt k r × Mt k r => psi k r z c (Matrix.of p.2)) (μW.prod μN) :=
+    hc1.aestronglyMeasurable
+  have hc : Continuous (fun B : Wp →L[ℂ] Wp => star ⟪ξ, B ξ⟫_ℂ) :=
+    continuous_star.comp (evL ξ).continuous
+  have h2 : AEStronglyMeasurable (fun p : Mt k r × Mt k r => star ⟪ξ, π (Matrix.of p.1)⁻¹ ξ⟫_ℂ) (μW.prod μN) :=
+    hc.comp_aestronglyMeasurable hM.2.2.2.comp_fst
+  exact h1.mul h2
+
+end PI.WBL.NIS
+end
+end
+
+section
 open MeasureTheory Matrix
 open scoped InnerProductSpace ENNReal
 
@@ -73,100 +161,7 @@ theorem hs_one {z : Fin (2 * r + k + 1) → ℂ} {c : ℂ} {π : Mx k r → (Wp 
   rw [hI, inner_self_eq_norm_sq_to_K]
   norm_num
 
-theorem normId_pair {z : Fin (2 * r + k + 1) → ℂ} {c : ℂ} {π : Mx k r → (Wp →L[ℂ] Wp)}
-    {μW μN μG ν : Measure (Mt k r)} {σ : Mx k r → (H →L[ℂ] H)}
-    (hG : GHyp z π μW μN μG ν σ)
-    (hGr : Cv.GrpF k r z) (hSg : Cv.SigU σ) (hPi : Cv.PiU z π) (hPs : Cv.PsiF k r z c) (hM : Cv.MeasF z π μW μN)
-    (hS : SchurOn μG σ) {u v : H} (hu : u ≠ 0)
-    (hI : ∀ x ∈ UH (Hpk k r), Integrable (beF z c π σ (σ x u) v) (μW.prod μN))
-    (hIv : Integrable (beF z c π σ v v) (μW.prod μN))
-    (hD : Integrable (fun q : Mt k r × (Mt k r × Mt k r) =>
-      ‖⟪v, σ (Matrix.of q.1) u⟫_ℂ‖ * ‖⟪v, σ (sM q.2 * Matrix.of q.1) u⟫_ℂ‖) (μG.prod (μW.prod μN)))
-    (ξ : Wp) :
-    Integrable (fun x : Mt k r => ‖be z c π μW μN σ (σ (Matrix.of x) u) v ξ‖ ^ 2) ν ∧
-    ∫ x, ‖be z c π μW μN σ (σ (Matrix.of x) u) v ξ‖ ^ 2 ∂ν =
-      ‖u‖ ^ 2 * (⟪be z c π μW μN σ v v ξ, ξ⟫_ℂ).re / fdegH μG σ u := by
-  have hnu := nuStep k r H Wp z π μW μN μG ν σ hG
-  obtain ⟨⟨ε, lam, -, hds⟩, hHaar, -, -, ⟨-, hW1⟩, ⟨κ0, -, -, rfl⟩, -⟩ := id hG
-  have : IsFiniteMeasure μW := ⟨by rw [hW1]; exact ENNReal.one_lt_top⟩
-  have : SFinite μG := sfinite_haar hHaar
-  obtain ⟨d, hd, hSch⟩ := id hS
-  rw [fdegH_eq ⟨hd, hSch⟩ hu]
-  set μS := μW.prod (haarLie (Nset k r) κ0) with hμS
-  set Φ : Mt k r × (Mt k r × Mt k r) → ℂ := fun q =>
-    ⟪v, σ (Matrix.of q.1) u⟫_ℂ * star ⟪v, σ (sM q.2 * Matrix.of q.1) u⟫_ℂ * kx z c π ξ q.2 with hΦdef
-  have h1 : ∀ᵐ y ∂μG, Fx z c π μW (haarLie (Nset k r) κ0) σ u v ξ (Matrix.of y) = ∫ p, Φ (y, p) ∂μS := by
-    filter_upwards [ae_UH_of_haar hHaar] with y hy
-    unfold Fx Aop
-    rw [star_ev_be (hI _ hy) ξ, ← integral_const_mul]
-    refine integral_congr_ae ?_
-    filter_upwards [hM.1] with p hp
-    have hs : sM p ∈ UH (Hpk k r) := hGr.1 _ hp.1.1 _ hp.2.1
-    show _ = ⟪v, σ (Matrix.of y) u⟫_ℂ * star ⟪v, σ (sM p * Matrix.of y) u⟫_ℂ * kx z c π ξ p
-    rw [hSg.2.1 _ hs _ hy, ContinuousLinearMap.comp_apply]
-    ring
-  have hΦ : Integrable Φ (μG.prod μS) := by
-    refine Integrable.mono' (hD.const_mul (‖ξ‖ ^ 2)) ?_ ?_
-    · have m1 : AEStronglyMeasurable (fun q : Mt k r × (Mt k r × Mt k r) => ⟪v, σ (Matrix.of q.1) u⟫_ℂ)
-          (μG.prod μS) := (coef_aesm hds hHaar u v).comp_fst
-      have m2 := matrix_coefficient_ae_strongly_measurable hds hGr hHaar hM.1 u v
-      have m3 : AEStronglyMeasurable (fun q : Mt k r × (Mt k r × Mt k r) => kx z c π ξ q.2) (μG.prod μS) :=
-        (kx_aesm hM ξ).comp_snd
-      exact (m1.mul (continuous_star.comp_aestronglyMeasurable m2)).mul m3
-    · filter_upwards [(Measure.quasiMeasurePreserving_snd (μ := μG) (ν := μS)).ae hM.1] with q hq
-      have hk := norm_kx_le (c := c) hGr hPi ξ hq.1
-      simp only [Φ, norm_mul, norm_star]
-      calc ‖⟪v, σ (Matrix.of q.1) u⟫_ℂ‖ * ‖⟪v, σ (sM q.2 * Matrix.of q.1) u⟫_ℂ‖ * ‖kx z c π ξ q.2‖
-          ≤ ‖⟪v, σ (Matrix.of q.1) u⟫_ℂ‖ * ‖⟪v, σ (sM q.2 * Matrix.of q.1) u⟫_ℂ‖ * ‖ξ‖ ^ 2 :=
-            mul_le_mul_of_nonneg_left hk (by positivity)
-        _ = ‖ξ‖ ^ 2 * (‖⟪v, σ (Matrix.of q.1) u⟫_ℂ‖ * ‖⟪v, σ (sM q.2 * Matrix.of q.1) u⟫_ℂ‖) := by ring
-  have hF : Integrable (fun y : Mt k r => Fx z c π μW (haarLie (Nset k r) κ0) σ u v ξ (Matrix.of y)) μG :=
-    hΦ.integral_prod_left.congr (h1.mono fun y hy => hy.symm)
-  have hu2 : ⟪u, u⟫_ℂ = ((‖u‖ ^ 2 : ℝ) : ℂ) := by
-    rw [inner_self_eq_norm_sq_to_K, Complex.ofReal_pow]
-    rfl
-  have h4 : ∀ᵐ p ∂μS, ∫ y, Φ (y, p) ∂μG =
-      ((‖u‖ ^ 2 : ℝ) : ℂ) / (d : ℂ) * (star ⟪v, σ (sM p) v⟫_ℂ * kx z c π ξ p) := by
-    filter_upwards [hM.1] with p hp
-    have hs : sM p ∈ UH (Hpk k r) := hGr.1 _ hp.1.1 _ hp.2.1
-    have hsi : (sM p)⁻¹ ∈ UH (Hpk k r) := (hGr.2.1 _ hs).2.2
-    have hss : sM p * (sM p)⁻¹ = 1 := (hGr.2.1 _ hs).1
-    have hadj : ContinuousLinearMap.adjoint (σ (sM p)) = σ (sM p)⁻¹ :=
-      Cv.adjoint_eq_of_iso _ _ (hSg.2.2 _ hs) (by rw [← hSg.2.1 _ hs _ hsi, hss, hSg.1])
-    have e0 : ∀ w : H, ⟪v, σ (sM p) w⟫_ℂ = ⟪σ (sM p)⁻¹ v, w⟫_ℂ := fun w => by
-      rw [← hadj, ContinuousLinearMap.adjoint_inner_left]
-    have hcongr : ∀ᵐ y ∂μG, Φ (y, p) =
-        kx z c π ξ p * (⟪v, σ (Matrix.of y) u⟫_ℂ * star ⟪σ (sM p)⁻¹ v, σ (Matrix.of y) u⟫_ℂ) := by
-      filter_upwards [ae_UH_of_haar hHaar] with y hy
-      show ⟪v, σ (Matrix.of y) u⟫_ℂ * star ⟪v, σ (sM p * Matrix.of y) u⟫_ℂ * kx z c π ξ p = _
-      rw [hSg.2.1 _ hs _ hy, ContinuousLinearMap.comp_apply, e0]
-      ring
-    rw [integral_congr_ae hcongr, integral_const_mul, (hSch u v u (σ (sM p)⁻¹ v)).2]
-    have e1 : ⟪v, σ (sM p)⁻¹ v⟫_ℂ = star ⟪v, σ (sM p) v⟫_ℂ := by
-      rw [← hadj, ContinuousLinearMap.adjoint_inner_right, star_inner]
-    rw [e1, hu2]
-    ring
-  have hFG : ∫ y, Fx z c π μW (haarLie (Nset k r) κ0) σ u v ξ (Matrix.of y) ∂μG =
-      ((‖u‖ ^ 2 : ℝ) : ℂ) / (d : ℂ) * star ⟪ξ, be z c π μW (haarLie (Nset k r) κ0) σ v v ξ⟫_ℂ := by
-    rw [integral_congr_ae h1, integral_integral_swap (f := fun y p => Φ (y, p)) hΦ,
-      integral_congr_ae h4, integral_const_mul, ← star_ev_be hIv ξ]
-  obtain ⟨-, hint, heq⟩ := weilStep k r H Wp z π μW (haarLie (Nset k r) κ0) μG ν σ hG
-    (Fx z c π μW (haarLie (Nset k r) κ0) σ u v ξ) hF
-  have hpt : ∀ᵐ x ∂ν, ‖be z c π μW (haarLie (Nset k r) κ0) σ (σ (Matrix.of x) u) v ξ‖ ^ 2 =
-      (∫ p, Fx z c π μW (haarLie (Nset k r) κ0) σ u v ξ (sM p * Matrix.of x) ∂μS).re := by
-    filter_upwards [hnu] with x hx
-    rw [← (hs_one hGr hSg hPi hPs hM ξ hx (hI _ hx)).2, Complex.ofReal_re]
-    rfl
-  refine ⟨hint.re.congr (hpt.mono fun x hx => hx.symm), ?_⟩
-  have hre := integral_re hint
-  simp only [RCLike.re_to_complex] at hre
-  rw [integral_congr_ae hpt, hre, ← heq, hFG]
-  have e3 : ((‖u‖ ^ 2 : ℝ) : ℂ) / (d : ℂ) * star ⟪ξ, be z c π μW (haarLie (Nset k r) κ0) σ v v ξ⟫_ℂ =
-      (((‖u‖ ^ 2 / d : ℝ)) : ℂ) * ⟪be z c π μW (haarLie (Nset k r) κ0) σ v v ξ, ξ⟫_ℂ := by
-    rw [star_inner]
-    push_cast
-    ring
-  rw [e3, Complex.re_ofReal_mul]
-  ring
 
 end PI.WBL.NIS
+end
+end

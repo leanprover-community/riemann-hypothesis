@@ -65,17 +65,6 @@ structure FixedUnif (F : T.TeichFrob) where
   φ_fix : F.φ (T.π * z) = T.π * z
   a_pos : 0 < F.a
 
-theorem exists_fixedUnif [IsAlgClosed L] (F : T.TeichFrob) (ha : 0 < F.a) : Nonempty (FixedUnif F) := by
-  obtain ⟨v, hv, huv, hv1⟩ := F.exists_inv_u
-  have hv0 : T.red v ≠ 0 := norm_ne_zero_iff.1 (by rw [hv1]; exact one_ne_zero)
-  have hρ0 : (0 : ℝ) < 1 / 2 := by norm_num
-  have hρ1 : (1 / 2 : ℝ) < 1 := by norm_num
-  obtain ⟨y, hy0, hy, -⟩ := F.exists_φ_eq_mul ha hv0 hρ0 hρ1 (T.convergesAt_of_mem_int hv hρ0 hρ1)
-    zero_le_one (by rw [T.gaussNorm_eq_one_of_mem_int hv hv1 hρ0 hρ1, one_pow])
-  refine ⟨⟨y, isUnit_of_red_ne_zero T hy0, ?_, ha⟩⟩
-  rw [map_mul, F.φ_π, hy]
-  calc T.π * F.u * (v * y) = T.π * (F.u * v) * y := by ring
-    _ = T.π * y := by rw [huv, mul_one]
 
 namespace FixedUnif
 
@@ -227,11 +216,6 @@ theorem IsInt.frob {n : ℤ} {a : T.B} (ha : IsInt U n a) : IsInt U n (F.toB a) 
   obtain ⟨x, rfl⟩ := ha
   exact ⟨F.φ x, by rw [map_mul, map_zpow₀, U.frob_ϖ, TeichFrob.toB_algebraMap]⟩
 
-theorem IsInt.frob_iterate {n : ℤ} {a : T.B} (ha : IsInt U n a) (e : ℕ) :
-    IsInt U n ((⇑F.toB)^[e] a) := by
-  induction e with
-  | zero => exact ha
-  | succ e ih => rw [Function.iterate_succ_apply']; exact ih.frob
 
 theorem IsInt.sum {n : ℤ} {ι : Type*} (s : Finset ι) (f : ι → T.B)
     (h : ∀ i ∈ s, IsInt U n (f i)) : IsInt U n (∑ i ∈ s, f i) := by
@@ -313,10 +297,6 @@ theorem ord_eq {a : T.B} {n : ℤ} {u : Γˣ}
   obtain ⟨u', hu'⟩ := ord_spec ha
   exact unit_form_unique u' u (hu'.symm.trans h)
 
-theorem ord_eq_of_red {a : T.B} {n : ℤ} {w : Γ} (hw : T.red w ≠ 0)
-    (h : a = U.ϖ ^ n * algebraMap Γ T.B w) : ord U a = n := by
-  obtain ⟨u, rfl⟩ := isUnit_of_red_ne_zero T hw
-  exact ord_eq h
 
 theorem ord_mul {a b : T.B} (ha : a ≠ 0) (hb : b ≠ 0) :
     ord U (a * b) = ord U a + ord U b := by
@@ -327,12 +307,6 @@ theorem ord_mul {a b : T.B} (ha : a ≠ 0) (hb : b ≠ 0) :
   conv_lhs => rw [hu, hu']
   ring
 
-theorem ord_frob {a : T.B} (ha : a ≠ 0) : ord U (F.toB a) = ord U a := by
-  obtain ⟨u, hu⟩ := ord_spec (U := U) ha
-  refine ord_eq (u := Units.map (F.φ : Γ →+* Γ).toMonoidHom u) ?_
-  conv_lhs => rw [hu]
-  rw [map_mul, map_zpow₀, U.frob_ϖ, TeichFrob.toB_algebraMap]
-  rfl
 
 theorem ord_pow_mul {a : T.B} (ha : a ≠ 0) (t : ℤ) :
     ord U (U.ϖ ^ t * a) = t + ord U a := by
@@ -381,8 +355,6 @@ theorem res_algebraMap (w : Γ) : res U (algebraMap Γ T.B w) = T.red w := by
     simpa using h1
   exact congrArg T.red (T.algebraMap_injective h2).symm
 
-theorem res_of_eq {a : T.B} {w : Γ} (h : a = algebraMap Γ T.B w) :
-    res U a = T.red w := by rw [h, res_algebraMap]
 
 theorem IsInt.exists_eq {a : T.B} (h : IsInt U 0 a) :
     ∃ w : Γ, a = algebraMap Γ T.B w := by
@@ -421,14 +393,7 @@ theorem res_eq_zero_iff {a : T.B} (ha : IsInt U 0 a) : res U a = 0 ↔ IsInt U 1
     rw [zpow_one, ← algebraMap_ϖ0, ← map_mul] at hy
     exact ⟨y, T.algebraMap_injective hy⟩
 
-theorem res_ne_zero_iff {a : T.B} (ha : IsInt U 0 a) (ha0 : a ≠ 0) :
-    res U a ≠ 0 ↔ ord U a = 0 := by
-  rw [Ne, res_eq_zero_iff ha, isInt_iff ha0]
-  have := (isInt_iff ha0).mp ha
-  omega
 
-theorem res_eq_zero_of_isInt_one {a : T.B} (ha : IsInt U 1 a) : res U a = 0 :=
-  (res_eq_zero_iff (ha.mono zero_le_one)).mpr ha
 
 section Matrix
 
@@ -611,22 +576,7 @@ section Lattice
 
 variable {H : Type*} [AddCommGroup H] [Module T.B H]
 
-theorem frob_iterate_algebraMap (e : ℕ) (w : Γ) :
-    (⇑F.toB)^[e] (algebraMap Γ T.B w) = algebraMap Γ T.B (((F.φ : Γ →+* Γ) ^ e) w) := by
-  induction e with
-  | zero => simp
-  | succ e ih =>
-    rw [Function.iterate_succ_apply', ih, TeichFrob.toB_algebraMap, RingHom.coe_pow,
-      RingHom.coe_pow, Function.iterate_succ_apply']
-    rfl
 
-theorem red_frob_pow (e : ℕ) (w : Γ) :
-    T.red (((F.φ : Γ →+* Γ) ^ e) w) = T.red w ^ p ^ (F.a * e) := by
-  induction e with
-  | zero => simp
-  | succ e ih =>
-    rw [RingHom.coe_pow, Function.iterate_succ_apply', ← RingHom.coe_pow, RingEquiv.coe_toRingHom,
-      F.red_φ, ih, ← pow_mul, ← pow_add, mul_add, mul_one, add_comm]
 
 theorem frob_pow_ϖ0 (e : ℕ) : ((F.φ : Γ →+* Γ) ^ e) U.ϖ0 = U.ϖ0 := by
   induction e with
@@ -640,49 +590,9 @@ variable (T) in
 noncomputable def ofCoord {n : ℕ} (b : Fin n → H) (x : Fin n → Γ) : H :=
   ∑ i, algebraMap Γ T.B (x i) • b i
 
-theorem ofCoord_eq_zero {n : ℕ} {b : Fin n → H} (hb : LinearIndependent T.B b)
-    {x : Fin n → Γ} (h : ofCoord T b x = 0) : x = 0 := by
-  funext i
-  have := Fintype.linearIndependent_iff.mp hb (fun i => algebraMap Γ T.B (x i)) h i
-  exact T.algebraMap_injective (this.trans (map_zero _).symm)
 
-theorem map_ofCoord (e : ℕ) (g : H →+ H)
-    (hg : ∀ (a : T.B) (x : H), g (a • x) = (⇑F.toB)^[e] a • g x)
-    {n : ℕ} (b : Fin n → H) (A : Matrix (Fin n) (Fin n) Γ)
-    (hA : ∀ j, g (b j) = ∑ i, algebraMap Γ T.B (A i j) • b i) (x : Fin n → Γ) :
-    g (ofCoord T b x) = ofCoord T b (matOp A ((F.φ : Γ →+* Γ) ^ e) x) := by
-  simp only [ofCoord, map_sum, hg, frob_iterate_algebraMap, hA, Finset.smul_sum, smul_smul,
-    matOp_apply, Matrix.mulVec, dotProduct, map_sum, map_mul, Finset.sum_smul]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
-  rw [mul_comm]
 
-theorem map_iterate_ofCoord (e : ℕ) (g : H →+ H)
-    (hg : ∀ (a : T.B) (x : H), g (a • x) = (⇑F.toB)^[e] a • g x)
-    {n : ℕ} (b : Fin n → H) (A : Matrix (Fin n) (Fin n) Γ)
-    (hA : ∀ j, g (b j) = ∑ i, algebraMap Γ T.B (A i j) • b i) (x : Fin n → Γ) (N : ℕ) :
-    (⇑g)^[N] (ofCoord T b x) =
-      ofCoord T b ((⇑(matOp A ((F.φ : Γ →+* Γ) ^ e)))^[N] x) := by
-  induction N with
-  | zero => rfl
-  | succ N ih =>
-    rw [Function.iterate_succ_apply', Function.iterate_succ_apply', ih, map_ofCoord e g hg b A hA]
 
-theorem exists_fixed_of_lattice [IsAlgClosed L] (U : FixedUnif F) (e : ℕ) (he : 0 < e) (g : H →+ H)
-    (hg : ∀ (a : T.B) (x : H), g (a • x) = (⇑F.toB)^[e] a • g x)
-    {n : ℕ} (b : Fin n → H) (hb : LinearIndependent T.B b)
-    (A : Matrix (Fin n) (Fin n) Γ)
-    (hA : ∀ j, g (b j) = ∑ i, algebraMap Γ T.B (A i j) • b i)
-    (x₀ : Fin n → Γ)
-    (hx₀ : ∀ N, redV T ((⇑(matOp A ((F.φ : Γ →+* Γ) ^ e)))^[N] x₀) ≠ 0) :
-    ∃ y : Fin n → Γ, redV T y ≠ 0 ∧ ofCoord T b y ≠ 0 ∧
-      g (ofCoord T b y) = ofCoord T b y := by
-  obtain ⟨y, hy, hy0⟩ := exists_fixed U (Nat.mul_pos U.a_pos he) A (red_frob_pow e)
-    (frob_pow_ϖ0 (U := U) e) x₀ hx₀
-  refine ⟨y, hy0, fun h => hy0 ?_, by rw [map_ofCoord e g hg b A hA, hy]⟩
-  rw [ofCoord_eq_zero hb h]
-  funext i
-  simp [redV]
 
 end Lattice
 

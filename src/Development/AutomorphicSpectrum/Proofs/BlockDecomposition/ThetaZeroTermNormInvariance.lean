@@ -1,6 +1,9 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SplitValueZeroDiagonalNorm
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FieldValueZeroDiagonalNorm
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SplitPlaceEmbeddingProperties
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalComponentRationalIdele
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SplitWeilActionDiagonal
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FieldWeilActionDiagonal
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalNormAtInertPlace
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RealWeilActionDiagonal
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProductFormulaGlobalCharacter
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProductFormulaModulusRational
@@ -8,6 +11,137 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NormEqualsCompl
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AdelicRealPartProperties
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnramifiedStandardValuesAtIntegral
 
+section
+section
+open NumberField IsDedekindDomain MeasureTheory GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3 Ad3.K.QuadraticBaseChangeGL3.Th
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Automorphic.Reduction (finAt infAt maxCompact)
+open GroundTheory.Automorphic.GLnLocal (integralGL)
+open Ad3.R (G2 Jd md KA LInv IsLoc2 pt pri dia2)
+open scoped NumberField.AdeleRing ValuativeRel
+open GroundTheory.Global.AdicLiesOver
+open GlobalTheory.CompanionTheory.FexTheta
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.FexTheta
+
+variable {K : Type} [Field K] [NumberField K]
+
+theorem degreeOneEmbedding_zero (v : Pl) (w : PlK K) [w.asIdeal.LiesOver v.asIdeal] : dg1 v w (0 : K) = 0 := by
+  have hinj : Function.Injective (algebraMap (Qv v) (Kv K w)) := (algebraMap (Qv v) (Kv K w)).injective
+  have h := Function.leftInverse_invFun hinj (0 : Qv v)
+  simpa [dg1] using h
+
+theorem value_zero_diagonal_norm : ∀ (K : Type) [Field K] [NumberField K], Module.finrank ℚ K = 2 →
+    ∀ (c : HeckeCharacter K) (v : Pl) (L : LM c v),
+    L.ok → L.IsSp → ∀ (g : GL (Fin 2) (Qv v)) (κ : Kˣ),
+      L.val (dg2 (nv v κ) 1 * g) 0 = c0 L κ * mp (nv v κ) (1 / 2) * L.val g 0 := by
+  intro K _ _ _ c v L hok hsp g κ
+  cases L with
+  | ns w σ η Φ => exact hsp.elim
+  | sp w₁ w₂ Φ =>
+    obtain ⟨-, hlc, hcs⟩ := hok
+    have hc : Continuous ((GP.psiF v)⁻¹ : AddChar (Qv v) Circle) := by
+      have h := (continuous_localAdelicChar (K := ℚ) v).comp continuous_neg
+      have e : (⇑((GP.psiF v)⁻¹ : AddChar (Qv v) Circle)) = (⇑(localAdelicChar ℚ v)) ∘ Neg.neg := by
+        funext x
+        simp [AddChar.inv_apply]
+      rw [e]
+      exact h
+    have hn : ((GP.psiF v)⁻¹ : AddChar (Qv v) Circle) ≠ 1 := inv_ne_one.2 (localAdelicChar_ne_one v)
+    have key := GlobalTheory.T.split_weil_action_diagonal (Qv v) ((GP.psiF v)⁻¹) hc hn (cAt c v w₁) Φ hlc hcs (nv v κ) g (0, 0)
+    simp only [LM.val, c0, degreeOneEmbedding_zero]
+    simpa using key
+
+end GlobalTheory.CompanionTheory.FexTheta
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3 Ad3.K.QuadraticBaseChangeGL3.Th
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Automorphic.Reduction (finAt infAt maxCompact)
+open GroundTheory.Automorphic.GLnLocal (integralGL)
+open Ad3.R (G2 Jd md KA LInv IsLoc2 pt pri dia2)
+open scoped NumberField.AdeleRing ValuativeRel
+open GroundTheory.Global.AdicLiesOver
+open GlobalTheory.CompanionTheory.FexTheta
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.split_value_zero_diagonal_norm : ∀ (K : Type) [Field K] [NumberField K], Module.finrank ℚ K = 2 → ∀ (c : HeckeCharacter K) (v : Pl) (L : LM c v),
+  L.ok → L.IsSp → ∀ (g : GL (Fin 2) (Qv v)) (κ : Kˣ),
+    L.val (dg2 (nv v κ) 1 * g) 0 = c0 L κ * mp (nv v κ) (1 / 2) * L.val g 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FexTheta.value_zero_diagonal_norm
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3 Ad3.K.QuadraticBaseChangeGL3.Th
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Automorphic.Reduction (finAt infAt maxCompact)
+open GroundTheory.Automorphic.GLnLocal (integralGL)
+open Ad3.R (G2 Jd md KA LInv IsLoc2 pt pri dia2)
+open scoped NumberField.AdeleRing ValuativeRel
+open GroundTheory.Global.AdicLiesOver
+open GlobalTheory.CompanionTheory.FexTheta
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.ValZeroNs
+
+theorem val_zero_dg : ∀ (K : Type) [Field K] [NumberField K], Module.finrank ℚ K = 2 →
+    ∀ (c : HeckeCharacter K) (v : Pl) (L : LM c v),
+    L.ok → ¬ L.IsSp → ∀ (g : GL (Fin 2) (Qv v)) (κ : Kˣ),
+      L.val (dg2 (nv v κ) 1 * g) 0 = c0 L κ * mp (nv v κ) (1 / 2) * L.val g 0 := by
+  intro K _ _ h2 c v L hok hsp g κ
+  have hstd : IsStd (GP.psiF v) := GlobalTheory.CompanionTheory.StdCharQ.stdChar v
+  have hχc : Continuous ((GP.psiF v)⁻¹ : AddChar (Qv v) Circle) := by
+    have : (((GP.psiF v)⁻¹ : AddChar (Qv v) Circle) : Qv v → Circle) = fun x => (GP.psiF v x)⁻¹ := by
+      funext x; exact AddChar.inv_apply' _ _
+    rw [this]
+    exact hstd.1.inv
+  have hχ1 : (GP.psiF v)⁻¹ ≠ 1 := inv_ne_one.mpr hstd.2.1
+  cases L with
+  | @sp w₁ w₂ i₁ i₂ Φ => exact absurd trivial hsp
+  | @ns w i σ η Φ =>
+    haveI := i
+    obtain ⟨hU, hσ, hη, hΦ⟩ := hok
+    have hN : ((nv v κ : (Qv v)ˣ) : Qv v) = Algebra.norm (Qv v) ((atW w κ : (Kv K w)ˣ) : Kv K w) := by
+      have e1 : ((nv v κ : (Qv v)ˣ) : Qv v) =
+          (((Units.map (Algebra.norm ℚ : K →* ℚ) κ : ℚˣ) : ℚ) : Qv v) := GlobalTheory.T.local_component_rational_idele v _
+      have e2 := GlobalTheory.T.local_norm_at_inert_place K h2 v w hU (κ : K)
+      rw [e1]
+      exact e2.symm
+    have h := GlobalTheory.T.field_weil_action_diagonal (Qv v) _ hχc hχ1 (Kv K w)
+      (GlobalTheory.CompanionTheory.QuadPlace.finrank_eq_two_of_ne_refl K h2 v w i σ hσ)
+      (continuous_adicCompletionMap v w) σ hσ η hη _ Φ hΦ (atW w κ) (nv v κ) hN g
+      (algebraMap K (Kv K w) 0)
+    have e0 : algebraMap K (Kv K w) 0 * ((atW w κ : (Kv K w)ˣ) : Kv K w) = algebraMap K (Kv K w) 0 := by
+      rw [map_zero, zero_mul]
+    rw [e0] at h
+    exact h
+
+end GlobalTheory.CompanionTheory.ValZeroNs
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3 Ad3.K.QuadraticBaseChangeGL3.Th
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Automorphic.Reduction (finAt infAt maxCompact)
+open GroundTheory.Automorphic.GLnLocal (integralGL)
+open Ad3.R (G2 Jd md KA LInv IsLoc2 pt pri dia2)
+open scoped NumberField.AdeleRing ValuativeRel
+open GroundTheory.Global.AdicLiesOver
+open GlobalTheory.CompanionTheory.FexTheta
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.field_value_zero_diagonal_norm : ∀ (K : Type) [Field K] [NumberField K], Module.finrank ℚ K = 2 → ∀ (c : HeckeCharacter K) (v : Pl) (L : LM c v),
+  L.ok → ¬ L.IsSp → ∀ (g : GL (Fin 2) (Qv v)) (κ : Kˣ),
+    L.val (dg2 (nv v κ) 1 * g) 0 = c0 L κ * mp (nv v κ) (1 / 2) * L.val g 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ValZeroNs.val_zero_dg
+end
+
+section
 section
 open NumberField IsDedekindDomain MeasureTheory GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3 Ad3.K.QuadraticBaseChangeGL3.Th
 open GroundTheory.Automorphic.GodementSection (localChar)
@@ -137,3 +271,4 @@ theorem _root_.GlobalTheory.T.theta_zero_term_norm_invariance : ∀ (K : Type) [
   ∀ M : ∀ v : Pl, LM c v, AdmM M → (∀ (v : Pl) (x : (Qv v)ˣ), (M v).ct x = 1) → ∀ (κ : Kˣ) (g : G2),
     thT n t M (dg2 (pri (Units.map (Algebra.norm ℚ : K →* ℚ) κ)) 1 * g) 0 = thT n t M g 0 := by
   atlas_forward_decl GlobalTheory.CompanionTheory.FexTheta.theta_zero_term_norm_diagonal_invariant
+end

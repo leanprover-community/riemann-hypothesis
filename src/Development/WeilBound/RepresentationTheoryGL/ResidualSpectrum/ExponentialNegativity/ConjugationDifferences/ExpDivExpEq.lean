@@ -1,8 +1,162 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.L2DecayOfCountEscape
-import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.ConjugationDifferences.ExistsNatCastConjMem
-import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.ConjugationDifferences.ExistsNormConjArchLe
+import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SiegelFinite
+import GroundTheory.AutomorphicForms.CuspidalDiscreteness.ExistsNormRconvLeSiegel
 
+section
+open Set Filter Topology
+open NumberField IsDedekindDomain
+open scoped NumberField.AdeleRing Pointwise
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
+  GroundTheory.Automorphic.CuspidalSpectrum
+
+noncomputable section
+
+namespace PositivityTheory.Rg.Rs.diffstep
+
+variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
+
+theorem exists_natCast_conj_mem (U : Subgroup (AdelicGLn.integralFiniteGL K n))
+    (hU : IsOpen (U : Set (AdelicGLn.integralFiniteGL K n))) {ω Q : Set (AdelicGLn.AdelicGL K n)}
+    (hω : IsCompact ω) (hQ : IsCompact Q) (r : ℕ) :
+    ∃ M : ℕ, 0 < M ∧ ∀ b ∈ ω, ∀ (ρ : Fin n → ℝ) (hρ : ∀ i, 0 < ρ i),
+      ∀ k ∈ Q, ∀ z : UPos n r → 𝔸[K], (∀ p, (z p).1 = 0) →
+        (∀ p, ∃ a ∈ GroundTheory.Global.integralFiniteAdeles (𝓞 K) K,
+          (z p).2 = (M : FiniteAdeleRing (𝓞 K) K) * a) →
+        ∃ u : U, ((b * diagUnits n (fun i => posIdele (ρ i) (hρ i)) * k)⁻¹ :
+            AdelicGLn.AdelicGL K n) * unipGL z * (b * diagUnits n (fun i => posIdele (ρ i) (hρ i)) * k) =
+          finEmb K n ((u : AdelicGLn.integralFiniteGL K n) : AdelicGLn.FiniteAdelicGL K n) := by
+  classical
+  set U' : Set (AdelicGLn.FiniteAdelicGL K n) :=
+    Subtype.val '' (U : Set (AdelicGLn.integralFiniteGL K n))
+  have hU' : IsOpen U' := (AdelicGLn.isOpen_integralFiniteGL K n).isOpenMap_subtype_val _ hU
+  have h1U' : (1 : AdelicGLn.FiniteAdelicGL K n) ∈ U' := ⟨1, U.one_mem, rfl⟩
+  set Cf : Set (AdelicGLn.FiniteAdelicGL K n) :=
+    (fun p : AdelicGLn.AdelicGL K n × AdelicGLn.AdelicGL K n => (AdelicGLn.prodEquiv K n (p.1 * p.2)).2) ''
+      (ω ×ˢ Q)
+  have hCf : IsCompact Cf := (hω.prod hQ).image
+    (continuous_snd.comp ((AdelicGLn.prodEquiv K n).continuous.comp (continuous_fst.mul continuous_snd)))
+  have hcont : Continuous fun q : (UPos n r → FiniteAdeleRing (𝓞 K) K) × AdelicGLn.FiniteAdelicGL K n =>
+      q.2⁻¹ * unipGL q.1 * q.2 :=
+    (continuous_snd.inv.mul (continuous_unipGL'.comp continuous_fst)).mul continuous_snd
+  have hev : ∀ᶠ w in 𝓝 (0 : UPos n r → FiniteAdeleRing (𝓞 K) K), ∀ c ∈ Cf,
+      c⁻¹ * unipGL w * c ∈ U' := by
+    refine hCf.eventually_forall_of_forall_eventually fun c _ => ?_
+    refine (hcont.tendsto ((0 : UPos n r → FiniteAdeleRing (𝓞 K) K), c)).eventually
+      (hU'.mem_nhds ?_)
+    simp only [unipGL_zero, mul_one, inv_mul_cancel]
+    exact h1U'
+  rw [nhds_pi] at hev
+  have hev' : {w : UPos n r → FiniteAdeleRing (𝓞 K) K | ∀ c ∈ Cf, c⁻¹ * unipGL w * c ∈ U'} ∈
+      Filter.pi fun _ => 𝓝 (0 : FiniteAdeleRing (𝓞 K) K) := hev
+  rw [Filter.mem_pi] at hev'
+  obtain ⟨I, -, tt, htt, hIt⟩ := hev'
+  obtain ⟨M, hM, hMW⟩ := exists_natCast_mul_mem_of_mem_nhds K (Filter.iInter_mem.2 htt)
+  refine ⟨M, hM, fun b hb ρ hρ k hk z hz1 hz2 => ?_⟩
+  set w : UPos n r → FiniteAdeleRing (𝓞 K) K := fun p => (z p).2
+  have hw : w ∈ I.pi tt := fun p _ => by
+    obtain ⟨a, ha, hza⟩ := hz2 p
+    have := hMW a ha
+    rw [mem_iInter] at this
+    change (z p).2 ∈ tt p
+    rw [hza]
+    exact this p
+  set c := (AdelicGLn.prodEquiv K n (b * k)).2
+  have hc : c ∈ Cf := ⟨(b, k), ⟨hb, hk⟩, rfl⟩
+  obtain ⟨u, huU, hu⟩ := hIt hw c hc
+  refine ⟨⟨u, huU⟩, ?_⟩
+  apply (AdelicGLn.prodEquiv K n).injective
+  rw [prodEquiv_finEmb]
+  refine Prod.ext ?_ ?_
+  · rw [map_mul, map_mul, map_inv, Prod.fst_mul, Prod.fst_mul, Prod.fst_inv,
+      prodEquiv_unipGL_fst z hz1, mul_one, inv_mul_cancel]
+  · change _ = (u : AdelicGLn.FiniteAdelicGL K n)
+    rw [hu, map_mul, map_mul, map_inv, Prod.snd_mul, Prod.snd_mul, Prod.snd_inv,
+      prodEquiv_unipGL_snd]
+    simp only [c, map_mul, Prod.snd_mul, prodEquiv_diagUnits_posIdele_snd ρ hρ, mul_one]
+    rfl
+
+end PositivityTheory.Rg.Rs.diffstep
+
+end
+end
+
+section
+open Set Filter Topology
+open NumberField IsDedekindDomain
+open scoped NumberField.AdeleRing Pointwise
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
+  GroundTheory.Automorphic.CuspidalSpectrum
+
+noncomputable section
+
+namespace PositivityTheory.Rg.Rs.diffstep
+
+variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
+
+theorem conjArch_mul_right {r : ℕ} (y q : AdelicGLn.AdelicGL K n) (P : UPos n r → 𝔸[K]) :
+    conjArch K n (y * q) P =
+      archMat K n ((q⁻¹ : AdelicGLn.AdelicGL K n) : Matrix (Fin n) (Fin n) 𝔸[K]) * conjArch K n y P *
+        archMat K n (q : Matrix (Fin n) (Fin n) 𝔸[K]) := by
+  have h : (((y * q)⁻¹ : AdelicGLn.AdelicGL K n) : Matrix (Fin n) (Fin n) 𝔸[K]) * blockEntry P *
+      ((y * q : AdelicGLn.AdelicGL K n) : Matrix (Fin n) (Fin n) 𝔸[K]) =
+      ((q⁻¹ : AdelicGLn.AdelicGL K n) : Matrix (Fin n) (Fin n) 𝔸[K]) *
+        (((y⁻¹ : AdelicGLn.AdelicGL K n) : Matrix (Fin n) (Fin n) 𝔸[K]) * blockEntry P *
+          (y : Matrix (Fin n) (Fin n) 𝔸[K])) * (q : Matrix (Fin n) (Fin n) 𝔸[K]) := by
+    rw [_root_.mul_inv_rev]
+    simp only [Units.val_mul, Matrix.mul_assoc]
+  change archMat K n _ = archMat K n _ * archMat K n _ * archMat K n _
+  rw [h, map_mul, map_mul]
+
+theorem exists_norm_conjArch_le {ω Q : Set (AdelicGLn.AdelicGL K n)} (hω : IsCompact ω)
+    (hωB : ω ⊆ ((adelicBorel : Subgroup (AdelicGLn.AdelicGL K n)) : Set (AdelicGLn.AdelicGL K n)))
+    (hQ : IsCompact Q) {t : ℝ} (ht : 0 < t) {r : ℕ} (hr : 0 < r) (hrn : r < n)
+    {𝒮 : Set (InfiniteAdeleRing K)} (h𝒮 : IsCompact 𝒮) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ b ∈ ω, ∀ (ρ : Fin n → ℝ) (hρ : ∀ i, 0 < ρ i),
+      (∀ i j : Fin n, (j : ℕ) = i + 1 → t * ρ j ≤ ρ i) →
+      ∀ q ∈ Q, ∀ P : UPos n r → 𝔸[K], (∀ p, (P p).2 = 0) → (∀ p, (P p).1 ∈ 𝒮) →
+        ‖conjArch K n (b * diagUnits n (fun i => posIdele (ρ i) (hρ i)) * q) P‖ ≤
+          C * (ρ ⟨r, hrn⟩ / ρ ⟨r - 1, by omega⟩) := by
+  obtain ⟨C₁, hC₁⟩ := exists_norm_archMat_conj_le hω hωB ht hr hrn h𝒮
+  obtain ⟨c1, hc1⟩ := hQ.exists_bound_of_continuousOn
+    (f := fun k : AdelicGLn.AdelicGL K n => archMat K n (k : Matrix (Fin n) (Fin n) 𝔸[K]))
+    (continuous_archMat.comp Units.continuous_val).continuousOn
+  obtain ⟨c2, hc2⟩ := hQ.exists_bound_of_continuousOn
+    (f := fun k : AdelicGLn.AdelicGL K n =>
+      archMat K n ((k⁻¹ : AdelicGLn.AdelicGL K n) : Matrix (Fin n) (Fin n) 𝔸[K]))
+    (continuous_archMat.comp Units.continuous_coe_inv).continuousOn
+  set c := max (max c1 c2) 0
+  have hc0 : 0 ≤ c := le_max_right _ _
+  set C₁' := max C₁ 0
+  have hC₁'0 : 0 ≤ C₁' := le_max_right _ _
+  refine ⟨c * C₁' * c, by positivity, ?_⟩
+  intro b hb ρ hρ hsieg q hq P hP2 hP1
+  set a := diagUnits n (fun i => posIdele (K := K) (ρ i) (hρ i))
+  set s := ρ ⟨r, hrn⟩ / ρ ⟨r - 1, by omega⟩
+  have hs : 0 ≤ s := div_nonneg (hρ _).le (hρ _).le
+  have h1 := hC₁ b hb ρ hρ hsieg 1 (maxCompact (K := K) (n := n)).one_mem P hP2 hP1
+  rw [mul_one] at h1
+  have hY : ‖conjArch K n (b * a) P‖ ≤ C₁' * s :=
+    h1.trans (mul_le_mul_of_nonneg_right (le_max_left _ _) hs)
+  have hq1 : ‖archMat K n (q : Matrix (Fin n) (Fin n) 𝔸[K])‖ ≤ c :=
+    (hc1 q hq).trans ((le_max_left _ _).trans (le_max_left _ _))
+  have hq2 : ‖archMat K n ((q⁻¹ : AdelicGLn.AdelicGL K n) : Matrix (Fin n) (Fin n) 𝔸[K])‖ ≤ c :=
+    (hc2 q hq).trans ((le_max_right _ _).trans (le_max_left _ _))
+  rw [conjArch_mul_right]
+  calc ‖archMat K n ((q⁻¹ : AdelicGLn.AdelicGL K n) : Matrix (Fin n) (Fin n) 𝔸[K]) *
+        conjArch K n (b * a) P * archMat K n (q : Matrix (Fin n) (Fin n) 𝔸[K])‖
+      ≤ ‖archMat K n ((q⁻¹ : AdelicGLn.AdelicGL K n) : Matrix (Fin n) (Fin n) 𝔸[K])‖ *
+          ‖conjArch K n (b * a) P‖ * ‖archMat K n (q : Matrix (Fin n) (Fin n) 𝔸[K])‖ :=
+        (norm_mul_le _ _).trans (mul_le_mul_of_nonneg_right (norm_mul_le _ _) (norm_nonneg _))
+    _ ≤ c * (C₁' * s) * c := by gcongr
+    _ = c * C₁' * c * s := by ring
+
+end PositivityTheory.Rg.Rs.diffstep
+
+end
+end
+
+section
 noncomputable section
 
 open NumberField MeasureTheory Filter Topology
@@ -119,4 +273,5 @@ theorem diffstep_holds : An.DiffStep := by
 
 end PositivityTheory.Rg.Rs
 
+end
 end

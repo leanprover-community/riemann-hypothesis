@@ -1,7 +1,17 @@
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.FamEqZero
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.VRatioGtStatement
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ExistsCeil
+import Mathlib
 
+section
+set_option autoImplicit false
+
+namespace ReciprocityTheory.ChartRestriction.G.DVR.UUA
+
+
+end ReciprocityTheory.ChartRestriction.G.DVR.UUA
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -265,3 +275,5 @@ theorem uu (hL : Laws) (hT : TwistBaseChangeStatement) : UUStatement := by
   exact uu_of hL.globalFns hT repsX_statement ceil_statement
 
 end ReciprocityTheory.ChartRestriction.G.DVR.UUA
+end
+end

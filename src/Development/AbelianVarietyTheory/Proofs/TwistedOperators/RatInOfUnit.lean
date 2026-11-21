@@ -52,17 +52,6 @@ theorem RatIn.of_mul {f g u : T → ℂ} (hg : RatIn σ t₀ g) (hu : RatIn σ t
   rw [e]
   exact hg.mul hu.inv
 
-theorem ratIn_prod {ι : Type} (s : Finset ι) {f : ι → T → ℂ} (h : ∀ i ∈ s, RatIn σ t₀ (f i)) :
-    RatIn σ t₀ fun t => ∏ i ∈ s, f i t := by
-  classical
-  revert h
-  refine Finset.induction_on s ?_ ?_
-  · intro _
-    simp only [Finset.prod_empty]
-    exact ratIn_const one_ne_zero
-  · intro a s ha ih h
-    simp only [Finset.prod_insert ha]
-    exact (h a (Finset.mem_insert_self a s)).mul (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
 
 end Rat
 

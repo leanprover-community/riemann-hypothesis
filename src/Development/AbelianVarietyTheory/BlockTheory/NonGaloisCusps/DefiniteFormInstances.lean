@@ -102,17 +102,6 @@ theorem ClosedAbsoluteShare.tied {𝒞 : FamClass} (h : ClosedAbsoluteShare 𝒞
   obtain ⟨K, hK⟩ := h e he hle
   exact ⟨K, fun Fm CH hc hL => hK Fm CH hc.1 hL⟩
 
-theorem isBaseChange_embAV {R : Ranks} {H : Host R} {what₂ : Rows.Data R} {N : NData R H what₂} {A : NAut N}
-    (B : NBC A) (i : N.Loc) (P : A.AV i) (Pa : List (Part A.CG)) :
-    IsBaseChange B (N.j i) (B.embAV i P) Pa ↔ Formalism.MainNotions.N.IsBCV N A i P Pa := by
-  have hinj : Function.Injective fun p : Part A.CG => ((⟨p.a, p.π⟩ : Σ a, A.CG a), p.d) := by
-    rintro ⟨a, π, d⟩ ⟨a', π', d'⟩ h
-    simp only [Prod.mk.injEq, Sigma.mk.injEq] at h
-    obtain ⟨⟨rfl, h1⟩, rfl⟩ := h
-    rw [eq_of_heq h1]
-  unfold IsBaseChange Formalism.MainNotions.N.IsBCV
-  rw [List.nodup_map_iff hinj]
-  simp only [B.embAV_loc, B.embAV_sat, B.embAV_inf i P]
 
 example (α : ℂ) : Formalism.MainNotions.N.ubc 3 {α} = {α, α⁻¹, 1} := by
   have : Odd 3 := by decide

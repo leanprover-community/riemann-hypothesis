@@ -378,17 +378,7 @@ theorem dblInt_add (h : DblConv V μ m E f₁ f₂) (h' : DblConv V μ m E' f₁
 
 variable [SigmaFinite m]
 
-theorem dblInt_smul_measure (c : ℝ≥0) : dblInt V μ (c • m) E f₁ f₂ = (c : ℂ) ^ 2 * dblInt V μ m E f₁ f₂ := by
-  have e : autMeasure V (c • m) = c • autMeasure V m := quotMeasure_smul (c : ℝ≥0∞)
-  rw [dblInt, e, Measure.prod_smul_left, Measure.prod_smul_right, integral_smul_nnreal_measure,
-    integral_smul_nnreal_measure, smul_smul, ← sq, NNReal.smul_def, Complex.real_smul]
-  push_cast; rfl
 
-theorem dblInt_of_factor {A B : GA D V → ℂ} (h : ∀ g₁ g₂, E (io V (g₁, g₂)) = A g₁ * conj (B g₂) * μ (detA V g₂)) :
-    dblInt V μ m E f₁ f₂ = Cusp.petersson V m A f₁ * Cusp.petersson V m f₂ B := by
-  refine (integral_congr_ae (.of_forall fun q => ?_)).trans (integral_prod_mul _ _)
-  simp only [dblIntegrandQ, dblIntegrand, h, AutomorphicL2Unitary.descend]
-  field_simp [Circle.coe_ne_zero]
 
 variable [m.IsMulLeftInvariant]
 

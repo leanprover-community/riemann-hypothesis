@@ -3,21 +3,362 @@ import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GlueApplyOfNot
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsGenericFlag
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LatNormGrLatNeZeroOfSpan
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CentreSetDominatingPoint
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DominatesRegAtLocal
+import Development.WeilBound.CoreStatements.HodgeTatePoints.GenfibMap
+import BuildAid.ForwardExisting
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntegralClosureFinite
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntegralClosureChartSpan
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueDominatingMap
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.JoinCoordsChartIntegral
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.JoinCoordsCentreChart
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ProjectiveModelNonemptyStatement
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntegralOverLocalizationScaledStatement
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LocalSubringIntegralClosureMax
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.MaximalIdealMembershipOfLocal
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PrimeMemIffNotUnitLocalizationStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegularFunctionsTwoComponentsStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ChartRingIntegralFraction
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ChartRingIntegralClosureFinite
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegularFunctionsTwoComponents
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtChartLocalization
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DominatingModelChartCompatStatement
 
+section
+section
+open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberField
+
+namespace GlobalTheory.CompanionTheory.Ar
+
+theorem dominates_localRings : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) (X' : Scheme.{0}) (Ω' : Type) [Field Ω'] (ξ' : Spec (CommRingCat.of Ω') ⟶ X') (i : Ω →+* Ω') (f : X' ⟶ X), Dominates ξ' ξ f i → ∀ p' : Cpt ξ', ∃ h : genPt ξ ⤳ f p'.1, ((∀ a ∈ regAt ξ ⟨f p'.1, h⟩, i a ∈ regAt ξ' p') ∧ ∀ a ∈ regAt ξ ⟨f p'.1, h⟩, unitAt ξ' p' (i a) → unitAt ξ ⟨f p'.1, h⟩ a) :=
+  PositivityTheory.HtPt.Mb.dom_local
+
+end GlobalTheory.CompanionTheory.Ar
+end
+
+open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dominates_regAt_local : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) (X' : Scheme.{0}) (Ω' : Type) [Field Ω'] (ξ' : Spec (CommRingCat.of Ω') ⟶ X') (i : Ω →+* Ω') (f : X' ⟶ X), Dominates ξ' ξ f i → ∀ p' : Cpt ξ', ∃ h : genPt ξ ⤳ f p'.1, ((∀ a ∈ regAt ξ ⟨f p'.1, h⟩, i a ∈ regAt ξ' p') ∧ ∀ a ∈ regAt ξ ⟨f p'.1, h⟩, unitAt ξ' p' (i a) → unitAt ξ ⟨f p'.1, h⟩ a) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.dominates_localRings
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberField
+
+namespace GlobalTheory.CompanionTheory.Ar.ChNorm
+
+theorem mem_of_isIntegral_of_inv_mem {Ω : Type} [Field Ω] (R : Subring Ω) {v : Ω} (hv : IsIntegral R v)
+    (hv0 : v ≠ 0) (hu : v⁻¹ ∈ R) : v ∈ R := by
+  obtain ⟨p, hp, hpv⟩ := hv
+  have huv : v * v⁻¹ = 1 := mul_inv_cancel₀ hv0
+  have key : ∀ i m : ℕ, i ≤ m → v ^ i * v⁻¹ ^ m = v⁻¹ ^ (m - i) := by
+    intro i m him
+    obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le him
+    rw [pow_add, ← mul_assoc, ← mul_pow, huv, one_pow, one_mul, Nat.add_sub_cancel_left]
+  rw [hp.as_sum] at hpv
+  simp only [Polynomial.eval₂_add, Polynomial.eval₂_finsetSum, Polynomial.eval₂_mul, Polynomial.eval₂_C,
+    Polynomial.eval₂_X_pow] at hpv
+  generalize p.natDegree = n at hpv
+  cases n with
+  | zero => simp at hpv
+  | succ m =>
+    have h2 := congrArg (· * v⁻¹ ^ m) hpv
+    simp only [add_mul, Finset.sum_mul, zero_mul] at h2
+    rw [pow_succ, mul_comm (v ^ m) v, mul_assoc, key m m le_rfl, Nat.sub_self, pow_zero, mul_one] at h2
+    have e : v = -∑ i ∈ Finset.range (m + 1), algebraMap R Ω (p.coeff i) * v⁻¹ ^ (m - i) := by
+      rw [eq_neg_iff_add_eq_zero, ← h2]
+      congr 1
+      refine Finset.sum_congr rfl fun i hi => ?_
+      rw [mul_assoc, key i m (by simp at hi; omega)]
+    rw [e]
+    refine neg_mem (sum_mem fun i _ => mul_mem ?_ (pow_mem hu _))
+    exact (p.coeff i).2
+
+end GlobalTheory.CompanionTheory.Ar.ChNorm
+
+namespace GlobalTheory.CompanionTheory.Ar.ChNorm
+
+theorem chRing_join_iff {o : Type} [CommRing o] {Ω : Type} [Field Ω] [Algebra o Ω] {κ : Type} (x : κ → Ω)
+    {d n : ℕ} (z : κ ⊕ Fin n → Ω) (hz : ∀ c, z (Sum.inl c) = x c ^ d) (c : κ) (hc : x c ≠ 0) (a : Ω) :
+    a ∈ chRing o (joinCo (RingHom.id Ω) x z) (c, Sum.inl c) ↔
+      a ∈ Algebra.adjoin o (Set.range (fun j => x j / x c) ∪ Set.range (fun k => z k / x c ^ d)) := by
+  have hd : x c ^ d ≠ 0 := pow_ne_zero _ hc
+  have hrat : ∀ q : κ × (κ ⊕ Fin n), joinCo (RingHom.id Ω) x z q / joinCo (RingHom.id Ω) x z (c, Sum.inl c) =
+      x q.1 / x c * (z q.2 / x c ^ d) := by
+    intro q
+    simp only [joinCo, RingHom.id_apply, hz c]
+    exact mul_div_mul_comm _ _ _ _
+  have hT : chRing o (joinCo (RingHom.id Ω) x z) (c, Sum.inl c) =
+      Algebra.adjoin o (Set.range (fun j => x j / x c) ∪ Set.range (fun k => z k / x c ^ d)) := by
+    apply le_antisymm
+    · apply Algebra.adjoin_le
+      rintro _ ⟨q, rfl⟩
+      dsimp only
+      rw [hrat]
+      exact mul_mem (Algebra.subset_adjoin (Or.inl ⟨q.1, rfl⟩)) (Algebra.subset_adjoin (Or.inr ⟨q.2, rfl⟩))
+    · apply Algebra.adjoin_le
+      rintro _ (⟨j, rfl⟩ | ⟨k, rfl⟩)
+      · have h1 : joinCo (RingHom.id Ω) x z (j, Sum.inl c) / joinCo (RingHom.id Ω) x z (c, Sum.inl c) ∈
+            chRing o (joinCo (RingHom.id Ω) x z) (c, Sum.inl c) :=
+          Algebra.subset_adjoin (Set.mem_range_self (j, Sum.inl c))
+        rw [hrat, hz c, div_self hd, mul_one] at h1
+        exact h1
+      · have h1 : joinCo (RingHom.id Ω) x z (c, k) / joinCo (RingHom.id Ω) x z (c, Sum.inl c) ∈
+            chRing o (joinCo (RingHom.id Ω) x z) (c, Sum.inl c) :=
+          Algebra.subset_adjoin (Set.mem_range_self (c, k))
+        rw [hrat, div_self hc, one_mul] at h1
+        exact h1
+  rw [hT]
+
+end GlobalTheory.CompanionTheory.Ar.ChNorm
+
+namespace GlobalTheory.CompanionTheory.Ar.ChNorm
+
+theorem joinCo_div {Ω : Type} [Field Ω] {κ : Type} (x : κ → Ω) {d n : ℕ} (z : κ ⊕ Fin n → Ω)
+    (hz : ∀ c, z (Sum.inl c) = x c ^ d) (c : κ) (q : κ × (κ ⊕ Fin n)) :
+    joinCo (RingHom.id Ω) x z q / joinCo (RingHom.id Ω) x z (c, Sum.inl c) = x q.1 / x c * (z q.2 / x c ^ d) := by
+  simp only [joinCo, RingHom.id_apply, hz c]
+  exact mul_div_mul_comm _ _ _ _
+
+theorem join_chart_normalisation : ∀ (o : Type) [CommRing o] (Ω : Type) [Field Ω] [Algebra o Ω] (κ : Type) [Finite κ] (x : κ → Ω) (d n : ℕ) (z : κ ⊕ Fin n → Ω) (M' : PModel o (joinCo (RingHom.id Ω) x z)), (∀ c, z (Sum.inl c) = x c ^ d) → (∀ c, x c ≠ 0 → ∀ a : Ω, IsIntegral (chRing o x c) a ↔ a ∈ Submodule.span (chRing o x c) (Set.range fun k => z k / x c ^ d)) → ∀ c, x c ≠ 0 → (∀ a : Ω, a ∈ chRing o (joinCo (RingHom.id Ω) x z) (c, Sum.inl c) ↔ IsIntegral (chRing o x c) a) ∧ ∀ p' : Cpt M'.ξ, (∀ j, x j / x c ∈ regAt M'.ξ p') → InChart M'.ξ (joinCo (RingHom.id Ω) x z) (c, Sum.inl c) p' := by
+  intro o _ Ω _ _ κ _ x d n z M' hz hspan c hc
+  have hd : x c ^ d ≠ 0 := pow_ne_zero _ hc
+  have hyS : ∀ k, IsIntegral (chRing o x c) (z k / x c ^ d) := fun k =>
+    (hspan c hc _).2 (Submodule.subset_span ⟨k, rfl⟩)
+  have hxS : ∀ j, x j / x c ∈ chRing o x c := fun j => Algebra.subset_adjoin ⟨j, rfl⟩
+  refine ⟨fun a => ?_, fun p' hp' => ?_⟩
+  · rw [chRing_join_iff x z hz c hc a]
+    constructor
+    · intro ha
+      have hle : Algebra.adjoin o (Set.range (fun j => x j / x c) ∪ Set.range (fun k => z k / x c ^ d)) ≤
+          (integralClosure (chRing o x c) Ω).restrictScalars o := by
+        apply Algebra.adjoin_le
+        rintro _ (⟨j, rfl⟩ | ⟨k, rfl⟩)
+        · exact (Subalgebra.mem_restrictScalars o).2 ((mem_integralClosure_iff _ _).2
+            (isIntegral_algebraMap (x := (⟨_, hxS j⟩ : chRing o x c))))
+        · exact (Subalgebra.mem_restrictScalars o).2 ((mem_integralClosure_iff _ _).2 (hyS k))
+      exact (mem_integralClosure_iff _ _).1 ((Subalgebra.mem_restrictScalars o).1 (hle ha))
+    · intro ha
+      have hSle : chRing o x c ≤
+          Algebra.adjoin o (Set.range (fun j => x j / x c) ∪ Set.range (fun k => z k / x c ^ d)) :=
+        Algebra.adjoin_mono Set.subset_union_left
+      refine Submodule.span_induction
+        (p := fun b _ => b ∈ Algebra.adjoin o (Set.range (fun j => x j / x c) ∪ Set.range (fun k => z k / x c ^ d)))
+        ?_ ?_ ?_ ?_ ((hspan c hc a).1 ha)
+      · rintro _ ⟨k, rfl⟩
+        exact Algebra.subset_adjoin (Or.inr ⟨k, rfl⟩)
+      · exact zero_mem _
+      · intro a b _ _ ha hb
+        exact add_mem ha hb
+      · intro s b _ hb
+        rw [Subalgebra.smul_def]
+        exact mul_mem (hSle s.2) hb
+  · obtain ⟨hctr, l, hl⟩ :=
+      GlobalTheory.T.join_coords_centre_chart o Ω κ (κ ⊕ Fin n) x Ω (RingHom.id Ω) z M' (fun _ => rfl) p'
+    obtain ⟨c', -, hc'⟩ := hctr
+    have ho : ∀ r : o, algebraMap o Ω r ∈ regAt M'.ξ p' := fun r =>
+      hc' _ (Subalgebra.algebraMap_mem _ r)
+    have hSle : ∀ a ∈ chRing o x c, a ∈ regAt M'.ξ p' := by
+      intro a ha
+      have h1 : a ∈ (chRing o x c).toSubring := ha
+      rw [chRing, Algebra.adjoin_eq_ring_closure] at h1
+      exact (Subring.closure_le.2 (Set.union_subset (by rintro _ ⟨r, rfl⟩; exact ho r)
+        (by rintro _ ⟨j, rfl⟩; exact hp' j))) h1
+    let φ : chRing o x c →+* regAt M'.ξ p' :=
+      { toFun := fun s => ⟨s, hSle s s.2⟩
+        map_one' := rfl
+        map_mul' := fun _ _ => rfl
+        map_zero' := rfl
+        map_add' := fun _ _ => rfl }
+    have hvint : IsIntegral (regAt M'.ξ p') (z l / x c ^ d) :=
+      IsIntegral.map_of_comp_eq φ (RingHom.id Ω) (by ext; rfl) (hyS l)
+    obtain ⟨hzl, hzr⟩ := hl
+    have hv : z l / x c ^ d ∈ regAt M'.ξ p' :=
+      mem_of_isIntegral_of_inv_mem _ hvint (div_ne_zero hzl hd) (by rw [inv_div, ← hz c]; exact hzr _)
+    have hy : ∀ k, z k / x c ^ d ∈ regAt M'.ξ p' := fun k => by
+      have e : z k / x c ^ d = z k / z l * (z l / x c ^ d) := by field_simp
+      rw [e]
+      exact mul_mem (hzr k) hv
+    refine ⟨?_, fun q => ?_⟩
+    · simp only [joinCo, RingHom.id_apply, hz c]
+      exact mul_ne_zero hc hd
+    · rw [joinCo_div x z hz c q]
+      exact mul_mem (hp' q.1) (hy q.2)
+
+end GlobalTheory.CompanionTheory.Ar.ChNorm
+end
+
+open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.join_coords_chart_integral : ∀ (o : Type) [CommRing o] (Ω : Type) [Field Ω] [Algebra o Ω] (κ : Type) [Finite κ] (x : κ → Ω) (d n : ℕ) (z : κ ⊕ Fin n → Ω) (M' : PModel o (joinCo (RingHom.id Ω) x z)), (∀ c, z (Sum.inl c) = x c ^ d) → (∀ c, x c ≠ 0 → ∀ a : Ω, IsIntegral (chRing o x c) a ↔ a ∈ Submodule.span (chRing o x c) (Set.range fun k => z k / x c ^ d)) → ∀ c, x c ≠ 0 → (∀ a : Ω, a ∈ chRing o (joinCo (RingHom.id Ω) x z) (c, Sum.inl c) ↔ IsIntegral (chRing o x c) a) ∧ ∀ p' : Cpt M'.ξ, (∀ j, x j / x c ∈ regAt M'.ξ p') → InChart M'.ξ (joinCo (RingHom.id Ω) x z) (c, Sum.inl c) p' := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.ChNorm.join_chart_normalisation
+end
+
+section
+open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.regular_functions_two_components : ∀ {o : Type} [CommRing o] {Ω : Type} [Field Ω] [Algebra o Ω] {κ : Type} [Finite κ] {x : κ → Ω} (M : PModel o x) {X' : Scheme.{0}} {Ω' : Type} [Field Ω'] (ξ' : Spec (CommRingCat.of Ω') ⟶ X') (i : Ω →+* Ω') (p' : Cpt ξ') (q₁ q₂ : Cpt M.ξ), ((∀ a ∈ regAt M.ξ q₁, i a ∈ regAt ξ' p') ∧ ∀ a ∈ regAt M.ξ q₁, unitAt ξ' p' (i a) → unitAt M.ξ q₁ a) → ((∀ a ∈ regAt M.ξ q₂, i a ∈ regAt ξ' p') ∧ ∀ a ∈ regAt M.ξ q₂, unitAt ξ' p' (i a) → unitAt M.ξ q₂ a) → q₁ = q₂ := by
+  first | exact @GlobalTheory.CompanionTheory.Ar.Centre.Sep.eq_of_dominated | exact GlobalTheory.CompanionTheory.Ar.Centre.Sep.eq_of_dominated | (intros; apply GlobalTheory.CompanionTheory.Ar.Centre.Sep.eq_of_dominated <;> assumption)
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberField
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.FracExt
+
+def genCpt {X : Scheme.{0}} {Ω : Type} [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) : Cpt ξ :=
+  ⟨genPt ξ, specializes_rfl⟩
+
+theorem mem_regAt_genCpt {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X} (h : IsCptGen ξ)
+    (a : Ω) : a ∈ regAt ξ (genCpt ξ) := by
+  obtain ⟨s, hs⟩ := h.bij.2 a
+  refine ⟨s, ?_⟩
+  have e : X.presheaf.stalkSpecializes (genCpt ξ).2 = 𝟙 _ := TopCat.Presheaf.stalkSpecializes_refl _ _
+  simp only [genMap, e, Category.id_comp]
+  exact hs
+
+theorem exists_frac {o : Type} [CommRing o] {Ω : Type} [Field Ω] [Algebra o Ω] {κ : Type} [Finite κ] {x : κ → Ω}
+    (M : PModel o x) {c : κ} (hc : x c ≠ 0) (a : Ω) :
+    ∃ u ∈ chRing o x c, ∃ v ∈ chRing o x c, a = u / v := by
+  have hp : InChart M.ξ x c (genCpt M.ξ) := ⟨hc, fun _ => mem_regAt_genCpt M.tie.gen _⟩
+  obtain ⟨u, hu, v, hv, -, e⟩ := ((GlobalTheory.T.regAt_chart_localization o Ω κ x M c _ hp).2 a).1 (mem_regAt_genCpt M.tie.gen a)
+  exact ⟨u, hu, v, hv, e⟩
+
+theorem algebraMap_mem_chRing {o : Type} [CommRing o] {Ω : Type} [Field Ω] [Algebra o Ω] {κ : Type} (x : κ → Ω)
+    (Ω' : Type) [Field Ω'] [Algebra Ω Ω'] [Algebra o Ω'] [IsScalarTower o Ω Ω'] (c : κ) {a : Ω}
+    (ha : a ∈ chRing o x c) : algebraMap Ω Ω' a ∈ chRing o (fun k => algebraMap Ω Ω' (x k)) c := by
+  induction ha using Algebra.adjoin_induction with
+  | mem a h =>
+    obtain ⟨j, rfl⟩ := h
+    rw [map_div₀]
+    exact Algebra.subset_adjoin ⟨j, rfl⟩
+  | algebraMap r =>
+    rw [← IsScalarTower.algebraMap_apply]
+    exact Subalgebra.algebraMap_mem _ r
+  | add a b _ _ ha hb => rw [map_add]; exact add_mem ha hb
+  | mul a b _ _ ha hb => rw [map_mul]; exact mul_mem ha hb
+
+theorem exists_integral_div : ∀ {o : Type} [CommRing o] {Ω : Type} [Field Ω] [Algebra o Ω] {κ : Type} [Finite κ]
+    {x : κ → Ω} (M : PModel o x) (Ω' : Type) [Field Ω'] [Algebra Ω Ω'] [FiniteDimensional Ω Ω'] [Algebra o Ω']
+    [IsScalarTower o Ω Ω'] (c : κ), x c ≠ 0 → ∀ a : Ω', ∃ b v : Ω',
+      IsIntegral (chRing o (fun k => algebraMap Ω Ω' (x k)) c) b ∧
+        v ∈ chRing o (fun k => algebraMap Ω Ω' (x k)) c ∧ v ≠ 0 ∧ a = b / v := by
+  intro o _ Ω _ _ κ _ x M Ω' _ _ _ _ _ c hc a
+  haveI : IsFractionRing (chRing o x c) Ω := IsFractionRing.of_field _ _ fun z => by
+    obtain ⟨u, hu, v, hv, e⟩ := exists_frac M hc z
+    exact ⟨⟨u, hu⟩, ⟨v, hv⟩, e⟩
+  have halg : IsAlgebraic (chRing o x c) a := by
+    haveI : Algebra.IsAlgebraic (chRing o x c) Ω' :=
+      (IsFractionRing.comap_isAlgebraic_iff (A := chRing o x c) (K := Ω) (C := Ω')).2 inferInstance
+    exact Algebra.IsAlgebraic.isAlgebraic a
+  obtain ⟨y, hy0, hi⟩ := halg.exists_integral_multiple
+  have hy0' : (y : Ω) ≠ 0 := fun h => hy0 (Subtype.ext h)
+  have hv : algebraMap Ω Ω' (y : Ω) ≠ 0 := (map_ne_zero _).2 hy0'
+  let φ : chRing o x c →+* chRing o (fun k => algebraMap Ω Ω' (x k)) c :=
+    ((algebraMap Ω Ω').comp (chRing o x c).val.toRingHom).codRestrict _
+      fun r => algebraMap_mem_chRing x Ω' c r.2
+  have hb := IsIntegral.map_of_comp_eq φ (RingHom.id Ω') (by ext r; rfl) hi
+  refine ⟨y • a, algebraMap Ω Ω' (y : Ω), hb, algebraMap_mem_chRing x Ω' c y.2, hv, ?_⟩
+  have e : y • a = algebraMap Ω Ω' (y : Ω) * a := by
+    rw [Algebra.smul_def]; rfl
+  rw [e, mul_div_cancel_left₀ _ hv]
+
+end GlobalTheory.CompanionTheory.Ar.FracExt
+end
+end
+
+open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.chart_ring_integral_fraction : ∀ {o : Type} [CommRing o] {Ω : Type} [Field Ω] [Algebra o Ω] {κ : Type} [Finite κ] {x : κ → Ω} (M : PModel o x) (Ω' : Type) [Field Ω'] [Algebra Ω Ω'] [FiniteDimensional Ω Ω'] [Algebra o Ω'] [IsScalarTower o Ω Ω'] (c : κ), x c ≠ 0 → ∀ a : Ω', ∃ b v : Ω', IsIntegral (chRing o (fun k => algebraMap Ω Ω' (x k)) c) b ∧ v ∈ chRing o (fun k => algebraMap Ω Ω' (x k)) c ∧ v ≠ 0 ∧ a = b / v := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.FracExt.exists_integral_div
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberField
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.ChartFinite
+
+theorem mem_regAt_genPt {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X}
+    (h : IsCptGen ξ) (a : Ω) : a ∈ regAt ξ ⟨genPt ξ, specializes_rfl⟩ := by
+  obtain ⟨s, hs⟩ := h.bij.2 a
+  refine ⟨s, ?_⟩
+  have e : X.presheaf.stalkSpecializes (specializes_rfl : genPt ξ ⤳ genPt ξ) = 𝟙 _ :=
+    TopCat.Presheaf.stalkSpecializes_refl _ _
+  simp only [genMap]
+  rw [e]
+  erw [Category.id_comp]
+  exact hs
+
+theorem exists_eq_div_chRing {o : Type} [CommRing o] {Ω : Type} [Field Ω] [Algebra o Ω] {κ : Type}
+    [Finite κ] {x : κ → Ω} (M : PModel o x) {c : κ} (hc : x c ≠ 0) (a : Ω) :
+    ∃ u ∈ chRing o x c, ∃ v ∈ chRing o x c, a = u / v := by
+  have hp : InChart M.ξ x c ⟨genPt M.ξ, specializes_rfl⟩ :=
+    ⟨hc, fun c' => mem_regAt_genPt M.tie.gen _⟩
+  obtain ⟨u, hu, v, hv, -, e⟩ :=
+    ((GlobalTheory.T.regAt_chart_localization o Ω κ x M c _ hp).2 a).1 (mem_regAt_genPt M.tie.gen a)
+  exact ⟨u, hu, v, hv, e⟩
+
+theorem finite_integralClosure_chRing {o : Type} [CommRing o] [Algebra.EssFiniteType ℤ o] {Ω : Type}
+    [Field Ω] [Algebra o Ω] {κ : Type} [Finite κ] {x : κ → Ω} (M : PModel o x) (Ω' : Type) [Field Ω']
+    [Algebra Ω Ω'] [FiniteDimensional Ω Ω'] [Algebra o Ω'] [IsScalarTower o Ω Ω'] (c : κ)
+    (hc : x c ≠ 0) :
+    Module.Finite (chRing o (fun k => algebraMap Ω Ω' (x k)) c)
+      (integralClosure (chRing o (fun k => algebraMap Ω Ω' (x k)) c) Ω') := by
+  let φ : Ω →ₐ[o] Ω' := IsScalarTower.toAlgHom o Ω Ω'
+  have hφ : Function.Injective φ := φ.toRingHom.injective
+  have hmap : (chRing o x c).map φ = chRing o (fun k => algebraMap Ω Ω' (x k)) c := by
+    simp only [chRing]
+    rw [AlgHom.map_adjoin, ← Set.range_comp]
+    congr 2
+    ext j
+    simp [φ]
+  let e : chRing o x c ≃ₐ[o] chRing o (fun k => algebraMap Ω Ω' (x k)) c :=
+    ((chRing o x c).equivMapOfInjective φ hφ).trans (Subalgebra.equivOfEq _ _ hmap)
+  have he : ∀ a, ((e a : chRing o (fun k => algebraMap Ω Ω' (x k)) c) : Ω') =
+      algebraMap Ω Ω' (a : Ω) := fun a => rfl
+  haveI : Algebra.FiniteType o (chRing o (fun k => algebraMap Ω Ω' (x k)) c) := by
+    rw [← Subalgebra.fg_iff_finiteType]
+    exact Subalgebra.fg_def.2 ⟨_, Set.finite_range _, rfl⟩
+  haveI : Algebra.EssFiniteType o (chRing o (fun k => algebraMap Ω Ω' (x k)) c) :=
+    Algebra.EssFiniteType.of_finiteType _ _
+  haveI : Algebra.EssFiniteType ℤ (chRing o (fun k => algebraMap Ω Ω' (x k)) c) :=
+    Algebra.EssFiniteType.comp ℤ o _
+  letI : Algebra (chRing o (fun k => algebraMap Ω Ω' (x k)) c) Ω :=
+    ((chRing o x c).val.toRingHom.comp e.symm.toRingEquiv.toRingHom).toAlgebra
+  have hmapΩ : ∀ a : chRing o x c,
+      algebraMap (chRing o (fun k => algebraMap Ω Ω' (x k)) c) Ω (e a) = (a : Ω) := by
+    intro a
+    change ((e.symm (e a) : chRing o x c) : Ω) = a
+    rw [AlgEquiv.symm_apply_apply]
+  haveI : IsScalarTower (chRing o (fun k => algebraMap Ω Ω' (x k)) c) Ω Ω' :=
+    IsScalarTower.of_algebraMap_eq fun a => by
+      obtain ⟨b, rfl⟩ := e.surjective a
+      rw [hmapΩ]
+      exact he b
+  haveI : FaithfulSMul (chRing o (fun k => algebraMap Ω Ω' (x k)) c) Ω :=
+    (faithfulSMul_iff_algebraMap_injective _ _).2 fun a b h => by
+      obtain ⟨a, rfl⟩ := e.surjective a
+      obtain ⟨b, rfl⟩ := e.surjective b
+      rw [hmapΩ, hmapΩ] at h
+      rw [Subtype.ext h]
+  haveI : IsFractionRing (chRing o (fun k => algebraMap Ω Ω' (x k)) c) Ω :=
+    IsFractionRing.of_field _ _ fun z => by
+      obtain ⟨u, hu, v, hv, rfl⟩ := exists_eq_div_chRing M hc z
+      exact ⟨e ⟨u, hu⟩, e ⟨v, hv⟩, by rw [hmapΩ, hmapΩ]⟩
+  exact GlobalTheory.T.integral_closure_finite _ Ω Ω'
+
+end GlobalTheory.CompanionTheory.Ar.ChartFinite
+end
+end
+
+open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.chart_ring_integral_closure_finite : ∀ {o : Type} [CommRing o] [Algebra.EssFiniteType ℤ o] {Ω : Type} [Field Ω] [Algebra o Ω] {κ : Type} [Finite κ] {x : κ → Ω} (M : PModel o x) (Ω' : Type) [Field Ω'] [Algebra Ω Ω'] [FiniteDimensional Ω Ω'] [Algebra o Ω'] [IsScalarTower o Ω Ω'] (c : κ), x c ≠ 0 → Module.Finite (chRing o (fun k => algebraMap Ω Ω' (x k)) c) (integralClosure (chRing o (fun k => algebraMap Ω Ω' (x k)) c) Ω') := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.ChartFinite.finite_integralClosure_chRing
+end
+
+section
 section
 open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberField
 
@@ -392,3 +733,4 @@ open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberFiel
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.exists_normal_dominating_model : ∀ (o : Type) [CommRing o] [Algebra.EssFiniteType ℤ o] (Ω : Type) [Field Ω] [Algebra o Ω] (κ : Type) [Finite κ] (x : κ → Ω) (M : PModel o x) (Ω' : Type) [Field Ω'] [Algebra Ω Ω'] [FiniteDimensional Ω Ω'] [Algebra o Ω'] [IsScalarTower o Ω Ω'], ∃ (κ' : Type) (_ : Finite κ') (y : κ' → Ω') (M' : PModel o y) (f : M'.X ⟶ M.X), Dominates M'.ξ M.ξ f (algebraMap Ω Ω') ∧ Flat.NormalCpt M'.ξ ∧ IsFinite f ∧ ∀ p : Cpt M.ξ, NormAt M'.ξ f (algebraMap Ω Ω') p := by
   atlas_forward_decl GlobalTheory.CompanionTheory.Ar.NormEx.exists_normalisation
+end

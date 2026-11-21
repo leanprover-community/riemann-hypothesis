@@ -27,32 +27,7 @@ theorem tfa_std_iff {n : ℕ} (Q : HeightOneSpectrum (𝓞 E)) (x : Sp E (n + 1)
     refine Fin.lastCases h2 (fun j => ?_) i
     exact h1 j
 
-theorem tfa_spec {SG : Finset (HeightOneSpectrum (𝓞 E))} {ST : Finset (HeightOneSpectrum (𝓞 E))} {N n : ℕ} (hN : N = n + 1) (pi : 𝓞 E)
-    (d : DecoSet E n ∅ SG) (hOk : (d.1.til (ST := ST) pi).Ok) (w : SG) (x : Sp E N) :
-    tfaExt hN (d.1.liftFr w) x ∈ localization₂ w.1.asIdeal (DecoSet.tilH (ST := ST) hN pi d).1.N ↔ x ∈ stdAt E N w.1 := by
-  subst hN
-  have hl := Deco.liftFr_spec (d.2.hasLift w)
-  show extE (d.1.liftFr w) x ∈ localization₂ w.1.asIdeal (DecoSet.til (ST := ST) pi d).1.N ↔ _
-  unfold DecoSet.til
-  rw [dif_pos hOk]
-  show extE (d.1.liftFr w) x ∈ localization₂ w.1.asIdeal (tilN d.1.N) ↔ _
-  rw [mem_localization_tilN, initL_extE, extE_last, tfa_std_iff]
-  exact and_congr_left' (hl.1 _)
 
-theorem tfa_conj {N n : ℕ} (hN : N = n + 1) (f : Sp E n ≃ₗ[E] Sp E n) (g : UF E n) (x : Sp E N) (l : Fin N) :
-    (tfaExt hN f)⁻¹ ((extUH hN g).1 (tfaExt hN f x)) l =
-      if h : l.1 < n then (f⁻¹ (g.1 (f (fun i : Fin n => x ⟨i.1, by omega⟩)))) ⟨l.1, h⟩ else x l := by
-  subst hN
-  show (extE f).symm (extE g.1 (extE f x)) l = _
-  by_cases h : l.1 < n
-  · rw [dif_pos h]
-    obtain ⟨i, rfl⟩ : ∃ i : Fin n, l = Fin.castSucc i := ⟨⟨l.1, h⟩, Fin.ext rfl⟩
-    have e1 : (extE f).symm (extE g.1 (extE f x)) (Fin.castSucc i) = initL E n ((extE f).symm (extE g.1 (extE f x))) i := rfl
-    rw [e1, initL_extE_symm, initL_extE, initL_extE]
-    rfl
-  · rw [dif_neg h]
-    obtain rfl : l = Fin.last n := Fin.ext (by have := l.2; simp; omega)
-    rw [extE_symm_last, extE_last, extE_last]
 
 def tfaD {n : ℕ} (z : E) (hz : z ≠ 0) : Sp E (n + 1) ≃ₗ[E] Sp E (n + 1) :=
   LinearEquiv.piCongrRight fun i : Fin (n + 1) => if i = Fin.last n then LinearEquiv.smulOfNeZero E E z hz else LinearEquiv.refl E E

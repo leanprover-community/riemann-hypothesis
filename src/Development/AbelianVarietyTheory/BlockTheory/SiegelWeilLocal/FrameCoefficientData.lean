@@ -377,35 +377,6 @@ def negStd (E : Type) [CommRing E] [StarRing E] (n : ℕ) :
     (fun x y y' => by simp [mul_add, Finset.sum_add_distrib, add_comm])
     (fun c x y => by simp [Finset.mul_sum, mul_left_comm, mul_comm, mul_assoc, starRingEnd_apply])
 
-theorem isInnerLattice_std (n : ℕ) (A : Frame F (Fin n → E) 0) (i₀ : Fin n)
-    (hz : ∀ i, A.z i ∈ MaxOrd o E) (h1 : A.z i₀ = 1)
-    (hs : ∀ x ∈ MaxOrd o E, star x ∈ MaxOrd o E) :
-    A.IsInnerLattice (negStd E n)
-      (Submodule.span (MaxOrd o E) (Set.range fun i : Fin n => (Pi.single i 1 : Fin n → E))) := by
-  classical
-  have hX : A.X E 0 = ⊥ := by simp [Frame.X]
-  have hm : ∀ v : Fin n → E, v ∈ Submodule.span (MaxOrd o E)
-      (Set.range fun i : Fin n => (Pi.single i 1 : Fin n → E)) ↔ ∀ i, v i ∈ MaxOrd o E := by
-    intro v
-    rw [Submodule.mem_span_range_iff_exists_fun]
-    constructor
-    · rintro ⟨c, rfl⟩ i
-      simp [Finset.sum_apply, Pi.single_apply, Subalgebra.smul_def]
-    · intro hv
-      refine ⟨fun i => ⟨v i, hv i⟩, ?_⟩
-      ext i
-      simp [Finset.sum_apply, Pi.single_apply, Subalgebra.smul_def]
-  refine ⟨⟨Finset.univ.image fun i : Fin n => (Pi.single i 1 : Fin n → E), by simp [hX]⟩,
-    fun v => ?_, (hm _).2 hz, fun c hc => by simpa [h1] using (hm _).1 hc i₀⟩
-  constructor
-  · intro hv
-    refine ⟨fun w hw => by simp [hX] at hw; simp [hw], fun w hw => ?_⟩
-    exact (MaxOrd o E).neg_mem ((MaxOrd o E).sum_mem fun i _ =>
-      (MaxOrd o E).mul_mem ((hm _).1 hv i) (hs _ ((hm _).1 hw i)))
-  · rintro ⟨-, hv⟩
-    refine (hm _).2 fun i => ?_
-    have := hv (Pi.single i 1) (Submodule.subset_span ⟨i, rfl⟩)
-    simpa [negStd, Pi.single_apply, apply_ite (star : E → E)] using this
 
 end Examples
 

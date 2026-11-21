@@ -66,8 +66,6 @@ theorem ev_params : Ev fun K => ∀ X : Stages, K.Over X.B.toPre → X.V.div.eta
     ⟨hP.arith.1, hP.arith.2.1, hP.arith.2.2.1, hlev⟩
   exact ⟨L, e1, M.sizes, ⟨M.params⟩, M.parT.nV_ge⟩
 
-theorem stepW_ev {Q : Ctx → Prop} (h : Ev Q) : StepW Pinned fun K _ _ _ _ => Q K :=
-  Step.of_evG ((evG_of_ev h).imp fun _ _ _ _ _ H _ _ _ _ _ _ _ _ _ => H)
 
 end GlobalTheory.PrimIn.AtData
 

@@ -180,8 +180,6 @@ def IsEquivariant (ρ : O →+* Module.End R N) (ρ' : O →+* Module.End R N') 
     Prop :=
   ∀ a x, f (ρ a x) = ρ' a (f x)
 
-theorem isEquivariant_id (ρ : O →+* Module.End R N) : IsEquivariant ρ ρ LinearMap.id :=
-  fun _ _ => rfl
 
 theorem isEquivariant_action (ρ : O →+* Module.End R N) (c : O) : IsEquivariant ρ ρ (ρ c) :=
   fun a x => by
@@ -244,8 +242,6 @@ theorem proj_of_mem_ne {i j : ι} (hij : j ≠ i) {x : N} (hx : x ∈ eigenSub �
 theorem isProj_proj (i : ι) : LinearMap.IsProj (eigenSub ρ (σ i)) (proj h ρ i) :=
   ⟨proj_mem h ρ i, fun _ hx => proj_of_mem h hx⟩
 
-theorem range_proj (i : ι) : LinearMap.range (proj h ρ i) = eigenSub ρ (σ i) :=
-  (isProj_proj h ρ i).range
 
 theorem completeOrthogonalIdempotents_proj [Fintype ι] :
     CompleteOrthogonalIdempotents (proj h ρ) :=
@@ -640,11 +636,6 @@ theorem isLocallyConstant_rankAtStalk_eigenSub [Module.Projective R N] [Module.F
   have := Module.finitePresentation_of_projective R (eigenSub ρ (σ i))
   Module.isLocallyConstant_rankAtStalk
 
-theorem isClopen_setOf_rankAtStalk_eq [Module.Projective R N] [Module.Finite R N] (r : ι → ℕ) :
-    IsClopen {p : PrimeSpectrum R | ∀ i, Module.rankAtStalk (eigenSub ρ (σ i)) p = r i} := by
-  rw [Set.ofPred_forall]
-  exact isClopen_iInter_of_finite fun i =>
-    (isLocallyConstant_rankAtStalk_eigenSub h ρ i).isClopen_fiber (r i)
 
 end Stalk
 
@@ -665,20 +656,6 @@ theorem card_eq_of_basis (b : Module.Basis ι ℤ (𝓞 E)) :
     Fintype.card ι = Module.finrank ℚ E := by
   rw [← NumberField.RingOfIntegers.rank, Module.finrank_eq_card_basis b]
 
-theorem det_sq_eq_of_basis {O : Type*} [CommRing O] (σ : ι → O →+* R)
-    (b b' : Module.Basis ι ℤ O) :
-    (Matrix.of fun i j => σ i (b j)).det ^ 2 = (Matrix.of fun i j => σ i (b' j)).det ^ 2 := by
-  have h1 : (Matrix.of fun i j => σ i (b' j))
-      = (Matrix.of fun i j => σ i (b j)) * (b.toMatrix b').map (Int.castRingHom R) := by
-    ext i j
-    conv_lhs => rw [Matrix.of_apply, ← b.sum_toMatrix_smul_self b' j]
-    simp [Matrix.mul_apply, mul_comm]
-  have h2 : (b.toMatrix b').det ^ 2 = 1 := by
-    have hu : IsUnit (b.toMatrix b').det := by
-      rw [← Module.Basis.det_apply]; exact b.isUnit_det b'
-    rcases Int.isUnit_iff.1 hu with h | h <;> simp [h]
-  rw [h1, Matrix.det_mul, mul_pow, ← RingHom.mapMatrix_apply, ← RingHom.map_det, ← map_pow, h2]
-  simp
 
 theorem det_sq_eq_discr_map {σ : ι → 𝓞 E →+* R} {b : Module.Basis ι ℤ (𝓞 E)}
     (hd : (Matrix.of fun i j => σ i (b j)).det ^ 2 = (NumberField.discr E : R))
@@ -767,10 +744,6 @@ theorem isSplitting_of_isUnit_discr {σ : ι → 𝓞 E →+* R} (b : Module.Bas
     (hu : IsUnit (NumberField.discr E : R)) : IsSplitting σ :=
   (isSplitting_iff_isUnit_det σ b).2 ((isUnit_pow_iff two_ne_zero).1 (hd ▸ hu))
 
-theorem isUnit_discr_of_isSplitting {σ : ι → 𝓞 E →+* R} (b : Module.Basis ι ℤ (𝓞 E))
-    (hd : (Matrix.of fun i j => σ i (b j)).det ^ 2 = (NumberField.discr E : R))
-    (h : IsSplitting σ) : IsUnit (NumberField.discr E : R) :=
-  hd ▸ ((isSplitting_iff_isUnit_det σ b).1 h).pow 2
 
 omit [DecidableEq ι] in
 

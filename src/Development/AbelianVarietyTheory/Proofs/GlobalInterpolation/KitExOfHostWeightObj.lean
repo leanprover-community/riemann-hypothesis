@@ -7,10 +7,80 @@ import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ThinScalesIff
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ScalePolynomialQuantitiesComparison
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MPowFiveMulFMulLLe
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsRanksRankValFrame
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.BadCharacterBoundStatement
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.WeightRequirementOfValidStatement
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.WeightRequirementOfValid
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SamePointOfSameScale
 
+section
+noncomputable section
+
+namespace GlobalTheory.EX
+
+open Formalism.BasicNotions Formalism.BasicNotions.LevelStarExponents Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.GlobalTheoryTheory NumberField
+
+open Classical in
+
+def BadOfBase (B : Arith.Base) (h : ℕ → B.H) (Cb : ℝ) : Prop :=
+  let PR := (Finset.range ⌈B.sc.X'⌉₊).filter (fun p =>
+    p.Prime ∧ B.IsResidueClassZero p ∧ B.sc.x ^ (B.sc.eps / 4) ≤ (addOrderOf (h p) : ℝ))
+  ∑ p ∈ PR, Real.log p / p *
+      ((B.TT.filter (fun t => ¬ Arith.Loc.Good B (h p) (Arith.bsH (Arith.Loc.stepP B (h p) p) t))).card : ℝ) ≤
+    4 * (Cb * B.sc.x ^ (-2 : ℝ)) * B.sc.delta1 * B.R.n * ∑ p ∈ PR, Real.log p / p
+
+theorem badOK_iff_badOfBase {R : Ranks} (s : Scale) (Cb : ℝ) (H : Host R) :
+    BadOK s Cb H ↔ BadOfBase (baseOf s 0 0 H) (hPH H) Cb := Iff.rfl
+
+theorem chBad_iff_badOfBase {D : D7} {L : SizeData₂ D} (X : G.Inst D L) (hX : ∀ h t, X.bs h t = Arith.bsH h t) (Cb : ℝ) :
+    ChBad_at X Cb ↔ BadOfBase (baseOf L.sc 0 0 D.host) (G.hP D) Cb := by
+  have hb : X.bs = fun h t => Arith.bsH h t := funext fun h => funext fun t => hX h t
+  unfold ChBad_at badTops
+  obtain ⟨bs, h1, h2, off, h3, h4, h5, kap, ep⟩ := X
+  dsimp only at hb
+  subst hb
+  exact Iff.rfl
+
+theorem badOfBase_of_host {R R' : Ranks} (hR : R' = R) (s : Scale) (H : Host R) (H' : Host R')
+    (h : ℕ → R.A) (h' : ℕ → R'.A) (Cb : ℝ)
+    (hT : H'.TT.image Formalism.HC.Frame.A.val = H.TT.image Formalism.HC.Frame.A.val) (hq : H'.q = H.q) (hd : H'.d = H.d)
+    (hc : H'.cls = H.cls)
+    (hh : ∀ l, (h' l).val = (h l).val) (hb : BadOfBase (baseOf s 0 0 H) h Cb) :
+    BadOfBase (baseOf s 0 0 H') h' Cb := by
+  subst hR
+  have hT' : H'.TT = H.TT := Finset.image_injective (Formalism.HC.Frame.A.val_injective _) hT
+  have hh' : h' = h := funext fun l => Formalism.HC.Frame.A.val_injective _ (hh l)
+  subst hh'
+  unfold baseOf at hb ⊢
+  rw [hT', hq, hd, hc]
+  exact hb
+
+theorem chBad_of_from : ∀ (C : FC) (p : Pt C) (R : Ranks) (H : Host R) (a b : R.A → ℤ) (M : ℕ)
+    (c : Fin M → Fin (R.k - 2) → Bool) (u0 : ℕ) (Cb : ℝ),
+    p.From H a b c u0 → CanonInst p.ta.Gx → BadOK p.L.sc Cb H → ChBad_at p.ta.Gx Cb := by
+  intro C p R H a b M c u0 Cb hF hC hB
+  have hc := hF.cls_eq
+  obtain ⟨hR, hT, -, hq, hd, -, -, -, -, -, hh, -⟩ := hF
+  exact (chBad_iff_badOfBase _ hC.1 Cb).2
+    (badOfBase_of_host hR p.L.sc H p.D.host (hPH H) (G.hP p.D) Cb hT hq hd hc hh ((badOK_iff_badOfBase _ _ _).1 hB))
+
+end GlobalTheory.EX
+
+end
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.LevelStarExponents Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.GlobalTheoryTheory GlobalTheory.EX NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.bad_character_bound : ∀ (C : FC) (p : Pt C) (R : Ranks) (H : Host R) (a b : R.A → ℤ) (M : ℕ) (c : Fin M → Fin (R.k - 2) → Bool) (u0 : ℕ) (Cb : ℝ), p.From H a b c u0 → CanonInst p.ta.Gx → BadOK p.L.sc Cb H → ChBad_at p.ta.Gx Cb := by
+  first | exact @GlobalTheory.EX.chBad_of_from | exact GlobalTheory.EX.chBad_of_from | (intros; apply GlobalTheory.EX.chBad_of_from <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.LevelStarExponents Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.GlobalTheoryTheory GlobalTheory.EX NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weight_requirement_of_valid : ∀ (C : FC) (cD ch : ℝ) (p : Pt C) (R : Ranks) (H : Host R) (a b : R.A → ℤ) (M : ℕ) (c : Fin M → Fin (R.k - 2) → Bool) (u0 : ℕ), Std C → Val C cD ch p.L → p.From H a b c u0 → CanonInst p.ta.Gx → (∀ t, t ∉ H.TT → a t = 0 ∧ b t = 0) → WOK p.L.sc cD ch C.GK H a b → Formalism.MainNotions.AuxBlock8.WReq p.ta.Gx C.GK (G.aL p.L) (G.bL p.L) := by
+  first | exact @GlobalTheory.EX.wreq_of_wok | exact GlobalTheory.EX.wreq_of_wok | (intros; apply GlobalTheory.EX.wreq_of_wok <;> assumption)
+end
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.LevelStarExponents Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.GlobalTheoryTheory GlobalTheory.EX NumberField
 
 namespace GlobalTheory.EX
@@ -46,46 +116,6 @@ theorem X'_le_b (s : Scale) : s.X' ≤ s.b := by
   have := s.eps_pos
   exact Real.exp_le_exp.2 (Real.rpow_le_rpow_of_exponent_le s.one_lt_alt.le (by linarith))
 
-theorem has_withDuty_and_chosen {Q : PtProp} {C : FC} {cD ch C8 C5 c6 Cb Cdg : ℝ} (p : Pt C) {R : Ranks} {H : Host R} {q0 : ℕ}
-    {a b : R.A → ℤ} {M : ℕ} {c : Fin M → Fin (R.k - 2) → Bool} {u0 : ℕ} (hC : Std C) (hT : H.CT2 = C.CT2)
-    (hH : HostGood p.L.sc C8 C5 c6 Cb H q0) (hq : (q0 : ℝ) < p.L.sc.X')
-    (h0 : ∀ t, t ∉ H.TT → a t = 0 ∧ b t = 0) (hW : WOK p.L.sc cD ch C.GK H a b)
-    (hV : Val C cD ch p.L) (hF : p.From H a b c u0) (hI : CanonInst p.ta.Gx) (hQ : p.Has Q)
-    (h1 : ChProviso_at p.L 3) (h2 : p.L.TuGe)
-    (h3 : ∀ u, Real.log ((p.D.mem u).A.T : ℝ) ≤ C.CTu * p.D.R.m * p.L.sc.L) (h4 : FactDGam p.D Cdg) :
-    p.Has (withDuty Q) ∧ p.Chosen C5 c6 Cb Cdg := by
-  have hw := GlobalTheory.T.weight_requirement_of_valid C cD ch p R H a b M c u0 hC hV hF hI h0 hW
-  obtain ⟨hv, -, hT2, -, hQD, hBox, -, hThin, hBad, -, -, -, ⟨hp, hmod, -, hne, hne'⟩, hlev⟩ := hH
-  have hb := GlobalTheory.T.bad_character_bound C p R H a b M c u0 Cb hF hI hBad
-  have hBW := hF.boxesW hBox
-  have hRW := hF.qdRowsW hBox
-  have hTh := hF.chThin hThin
-  have eQS := hF.QS_eq
-  obtain ⟨eR, -, eT2, eq, ed, eg, ep, ep', hsub, -⟩ := hF
-  subst eR
-  have hq0 : (0 : ℝ) < q0 := by exact_mod_cast hp.pos
-  have hXb := X'_le_b p.L.sc
-  refine ⟨⟨hQ, hw, hBW, hRW, q0, hsub (by rw [hlev]; simp), hp, ?_, ?_, hq, ?_, ?_, ?_⟩, ?_, hb, ?_, hTh, h1, h2, h3, h4⟩
-  · rw [eQS, eq, ed]; exact hmod
-  · rw [Real.log_le_iff_le_exp hq0]
-    exact hq.le.trans hXb
-  · rw [ep]; exact hne
-  · rw [ep']; exact hne'
-  · intro i hi
-    have hg := (hv.2.2.2.2.1 i).1
-    rw [← eg, ← hi] at hg
-    have hk : (1 : ℝ) ≤ p.D.R.k := by
-      have := p.D.R.m_add_three_le_k
-      exact_mod_cast (by omega : 1 ≤ p.D.R.k)
-    have hb1 : 1 ≤ p.L.sc.b := Real.one_le_exp (Real.rpow_nonneg (by linarith [p.L.sc.one_lt_alt]) _)
-    have h5 : p.L.sc.b ≤ (p.D.R.k : ℝ) * p.L.sc.b := le_mul_of_one_le_left (by linarith) hk
-    have h6 : (p.D.R.k : ℝ) * p.L.sc.b ≤ ((p.D.R.k : ℝ) * p.L.sc.b) ^ 8 := le_self_pow₀ (by linarith) (by norm_num)
-    linarith
-  · unfold ThickSetLowerBound Host.secondSet_card_lower_bound
-    rw [eT2, hV.secondConstant_eq, hV.host.2.2.2.2.2.1, ← hT, ← hv.2.2.2.2.2.1]
-    exact hT2
-  · unfold ChQD_at
-    rw [eq, ed]
-    exact hQD
 
 end GlobalTheory.EX
+end

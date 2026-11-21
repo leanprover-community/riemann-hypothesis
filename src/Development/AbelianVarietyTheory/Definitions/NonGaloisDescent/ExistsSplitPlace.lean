@@ -107,13 +107,6 @@ theorem nonempty_ident (D : D7) : Nonempty (Ident D) := by
   exact ⟨⟨fun k v => RingEquiv.ofBijective _ ⟨RingHom.injective _, key k v⟩,
     fun k v => Formalism.BasicNotions.Examples₂.LocF.emb_cont _ _ (D.naut.plGw_over k v)⟩⟩
 
-theorem ident_unique (D : D7) (I J : Ident D) : I = J := by
-  obtain ⟨i, hi⟩ := I
-  obtain ⟨j, hj⟩ := J
-  congr 1
-  funext k v
-  refine RingEquiv.ext (congrFun ((Padic.denseRange_ratCast _).equalizer (hi k v) (hj k v) (funext fun q => ?_)))
-  simp
 
 theorem cls_eq_of_iso {D : D7} (I : Ident D) (k : Fin 2) (v : D.nd.PlG k) {n : ℕ}
     (σ τ : GlobalTheory.SmGL.IrrRep (GL (Fin n) ((D.naut.plGw k v).adicCompletion D.host.E)))
@@ -138,11 +131,6 @@ theorem exists_isRc (hL : GlobalTheory.Published.LocalLanglandsGL) {D : D7} (T :
   beta_reduce
   rw [dif_pos h', Equiv.apply_symm_apply, cls_eq_of_iso I k v _ σ ⟨h'.choose_spec.some.symm ≪≫ h.some⟩]
 
-theorem isRc_dim {hL : GlobalTheory.Published.LocalLanglandsGL} {D : D7} {T : GlobalTheory.RowTie.WDTie D.nd D.naut} {I : Ident D} {rc}
-    (h : IsRc hL T I rc) (k v n σ) : D.naut.lpDim (rc k v n (pull I k v σ)) = n := by
-  rw [← T.dim, h k v n σ _ ⟨CategoryTheory.Iso.refl _⟩]
-  obtain ⟨_, _, _, -, H⟩ := GlobalTheory.CuspRep.ParLaws.isRec_locRec hL (D.nd.plOm.2 (D.naut.plGw k v))
-  exact H.dim _
 
 theorem param_eq {hL : GlobalTheory.Published.LocalLanglandsGL} {D : D7} {T : GlobalTheory.RowTie.WDTie D.nd D.naut} {I : Ident D} {rc}
     (h : IsRc hL T I rc) {rep cp} (hc : IsComp I rep cp) {loc : D.what₂.FT → ∀ w, D.naut.LP w} {sat}
@@ -244,30 +232,7 @@ def constTyp (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) : NG.F
   ne := by simp
   irr S' h _ := ((Submodule.isAtom_iff_finrank_eq_one.2 (finrank_span_singleton one_ne_zero)).le_iff).1 h
 
-theorem isComp_const (D : D7) (I : Ident D) : IsComp I (fun _ => constTyp D.host.E D.R.r)
-    fun _ k v => pull I k v (GlobalTheory.SmGL.IrrRep.ofChar 1 GlobalTheory.SmGL.isSmoothChar_one) := by
-  intro σ k v
-  obtain ⟨s, hs⟩ := exists_splitPlace D k v
-  refine ⟨s, hs, _, ?_, rfl⟩
-  have key : ∀ (w) (hs : s.w = w) (hw : ((D.host.g k : ℕ) : 𝓞 D.host.E) ∈ w.asIdeal)
-      (J : ℚ_[D.host.g k] ≃+* w.adicCompletion D.host.E), Continuous J →
-      GlobalTheory.HeightCounting.IsLocS (constTyp D.host.E D.R.r).S s (hs ▸ (GlobalTheory.SmGL.IrrRep.ofChar 1 GlobalTheory.SmGL.isSmoothChar_one :
-        GlobalTheory.SmGL.IrrRep (GL (Fin D.R.r) (w.adicCompletion D.host.E)))) := by
-    rintro _ rfl hw J hJ
-    obtain ⟨i, h1, h2⟩ := exists_iso s _ hw J hJ
-    refine ⟨i, LinearMap.toSpanSingleton ℂ _ 1, h1, h2, fun a b h => ?_,
-      fun a => Submodule.mem_span_singleton.2 ⟨a, rfl⟩, fun x _ (a : ℂ) => ?_⟩
-    · exact smul_left_injective ℂ (one_ne_zero : (1 : GAf D.host.E D.R.r → ℂ) ≠ 0) h
-    · funext g
-      change ((1 : ℂ) * a) • (1 : ℂ) = a • (1 : ℂ)
-      rw [one_mul]
-  exact key _ hs (D.naut.plGw_over k v) (I.i k v) (I.cont k v)
 
-theorem not_isComp_zero (D : D7) (I : Ident D) (rep) (σ : D.what₂.FT) (k : Fin 2) (v : D.nd.PlG k) (cp)
-    (h : IsComp I rep cp) : Nontrivial (cp σ k v) := by
-  obtain ⟨_, _, τ, -, h2⟩ := h σ k v
-  rw [h2]
-  exact (irrSm_pull I k v τ).1.1
 
 theorem exists_pull {D : D7} (I : Ident D) (k v) {n : ℕ} (π : Rep.{0} ℂ (GL (Fin n) ℚ_[D.host.g k]))
     (h : GlobalTheory.SerSys.IrrSm π) : ∃ σ, Nonempty (π ≅ pull I k v σ) := by
@@ -292,10 +257,6 @@ theorem exists_pull {D : D7} (I : Ident D) (k v) {n : ℕ} (π : Rep.{0} ℂ (GL
       (Matrix.GeneralLinearGroup.map (I.i k v).toRingHom g)) x
   rw [hg]
 
-theorem isRc_unique {hL : GlobalTheory.Published.LocalLanglandsGL} {D : D7} {T : GlobalTheory.RowTie.WDTie D.nd D.naut} {I : Ident D} {rc rc'}
-    (h : IsRc hL T I rc) (h' : IsRc hL T I rc') (k v n π) (hπ : GlobalTheory.SerSys.IrrSm π) : rc k v n π = rc' k v n π := by
-  obtain ⟨σ, e⟩ := exists_pull I k v π hπ
-  exact (T.e _).injective ((h k v n σ π e).trans (h' k v n σ π e).symm)
 
 end GlobalTheory.TypeRec.Model
 

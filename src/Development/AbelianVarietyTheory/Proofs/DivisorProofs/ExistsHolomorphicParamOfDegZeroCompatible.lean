@@ -1,7 +1,15 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsParameterFunctionOfFibreDerivZeroStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsParameterFunctionOfFibreDerivZero
 import BuildAid.ForwardExisting
 
+section
+open CategoryTheory GlobalTheory.CatCoh GlobalTheory.AnPer GlobalTheory.AnPer.Charts TopologicalSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_parameter_function_of_fibreDeriv_zero : ∀ {I : Type} [Fintype I] {g : ℕ} {Λ : Type} [AddCommGroup Λ] {F : Fam I g Λ} (K : Charts F), K.Rich → ∀ (a : ∀ k, Hol (K.W k)), (∀ k k' (e : K.le 0 k' k), sh e (a k) = a k') → (∀ k i, dw i (a k) = 0) → ∃ p : Hol F.V, ∀ k, a k = K.cst k p := by
+  first | exact @GlobalTheory.AnPer.Charts.exists_cst_of_dw_eq_zero | exact GlobalTheory.AnPer.Charts.exists_cst_of_dw_eq_zero | (intros; apply GlobalTheory.AnPer.Charts.exists_cst_of_dw_eq_zero <;> assumption)
+end
+
+section
 section
 set_option autoImplicit false
 
@@ -33,3 +41,4 @@ open CategoryTheory GlobalTheory.CatCoh GlobalTheory.AnPer GlobalTheory.AnPer.Ch
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.exists_holomorphic_param_of_degZero_compatible : ∀ {I : Type} [Fintype I] {g : ℕ} {Λ : Type} [AddCommGroup Λ] {F : Fam I g Λ} (K : Charts F), K.Rich → ∀ G : C0 K.Oc, (∀ (T T' : K.Obj) (φ : T ⟶ T'), φ.deg = 0 → G T' = φ.φ (G T)) → ∃ p : Hol F.V, ∀ T : K.Obj, G T = algebraMap (Hol F.V) T.C p := by
   atlas_forward_decl GlobalTheory.AnPer.Charts.exists_param_of_deg_zero
+end

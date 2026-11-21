@@ -1,8 +1,78 @@
-import Formalism.SharpRestriction.AdmissibleParameterJoins.NandDIVa
+import Formalism.LocalRingCardinality.DataParams₂
+import Formalism.LocalRingCardinality.DataDIV
 import Formalism.SharpRestriction.GlobalTheoremInputs
 import Formalism.SharpRestriction.LevelLetterCocycles.SumRepresentations
 import Development.AutomorphicArithmetic.ResidueCharacters.TwistedPlaces
 
+section
+noncomputable section
+
+namespace Formalism.MainNotions.J
+
+open Formalism.BasicNotions
+
+theorem injective_of_scalars {ι V W : Type*} [DecidableEq ι] [AddCommGroup V] [Module ℂ V]
+    [AddCommGroup W] [Module ℂ W] (S : ι → Submodule ℂ V) (hS : DirectSum.IsInternal S)
+    (A : V →ₗ[ℂ] W) (B : W →ₗ[ℂ] V)
+    (h : ∀ σ, S σ ≠ ⊥ → ∃ lam : ℂ, lam ≠ 0 ∧ ∀ f ∈ S σ, B (A f) = lam • f) :
+    Function.Injective A := by
+  classical
+  have h' : ∀ σ, ∃ lam : ℂ, lam ≠ 0 ∧ ∀ f ∈ S σ, B (A f) = lam • f := by
+    intro σ
+    by_cases hσ : S σ = ⊥
+    · refine ⟨1, one_ne_zero, fun f hf => ?_⟩
+      rw [hσ, Submodule.mem_bot] at hf
+      simp [hf]
+    · exact h σ hσ
+  choose c hc0 hc using h'
+  let _ := hS.chooseDecomposition
+  have key : ∀ v : V, ∀ k, ((DirectSum.decompose S (B (A v)) k : S k) : V) =
+      c k • ((DirectSum.decompose S v k : S k) : V) := by
+    intro v
+    induction v using DirectSum.Decomposition.inductionOn S with
+    | zero => intro k; simp
+    | @homogeneous i m =>
+      intro k
+      have hm : B (A (m : V)) ∈ S i := by
+        rw [hc i _ m.2]; exact (S i).smul_mem _ m.2
+      by_cases hik : i = k
+      · subst hik
+        rw [DirectSum.decompose_of_mem_same S hm, DirectSum.decompose_of_mem_same S m.2, hc i _ m.2]
+      · rw [DirectSum.decompose_of_mem_ne S hm hik, DirectSum.decompose_of_mem_ne S m.2 hik, smul_zero]
+    | add a b ha hb =>
+      intro k
+      simp only [map_add, DirectSum.decompose_add, DirectSum.add_apply, Submodule.coe_add, smul_add, ha k, hb k]
+  rw [injective_iff_map_eq_zero]
+  intro v hv
+  have hz : DirectSum.decompose S v = 0 := by
+    ext k
+    have := key v k
+    rw [hv, map_zero, DirectSum.decompose_zero] at this
+    simp only [DirectSum.zero_apply, ZeroMemClass.coe_zero] at this ⊢
+    exact (smul_eq_zero.mp this.symm).resolve_left (hc0 k)
+  exact (DirectSum.decompose S).injective (by rw [hz, DirectSum.decompose_zero])
+
+
+
+theorem finrank_Mj {D : D7} (X : DivX D) (j : ℕ) (hr : (X.MjH j).rank = D.what₂.D0) :
+    Module.finrank ℂ (D.what₂.Mj j) = D.what₂.D0 := by
+  have hb := X.jM_basis j
+  have h1 : Module.finrank ℂ (D.what₂.Mj j) = Fintype.card (X.MjH j).ι :=
+    Module.finrank_eq_card_basis (Module.Basis.mk hb.1 (by rw [hb.2]))
+  have h2 : (X.MjH j).rank = Fintype.card (X.MjH j).ι := by
+    unfold HLat.rank Formalism.HN.rkK
+    rw [(X.MjH_good j).2.2, finrank_top]
+    exact Module.finrank_eq_card_basis (X.MjH j).b
+  rw [h1, ← h2, hr]
+
+
+
+end Formalism.MainNotions.J
+
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.MainNotions.J
@@ -16,24 +86,9 @@ def ThetaOnto (D : D7) (μ : D.what₂.Tup) : Prop :=
 
 def LocEachLift (D : D7) : Prop := ∀ j ∈ SizeData₂.lifts D, ∃ i : D.nd.Loc, D.nd.j i = j
 
-theorem RankMj_of_MjRank {D : D7} (X : DivX D)
-    (h : ∀ j, 1 ≤ j → j ≤ D.R.m → (X.MjH j).rank = D.what₂.D0) : RankMj D :=
-  fun j hj => finrank_Mj X j (h j (Finset.mem_Icc.mp hj).1 (Finset.mem_Icc.mp hj).2)
 
-theorem RankMj_of_isot {D : D7} (hI : Rows.IsotInternal D.what₂) (hR : Rows.IsotRank D.what₂) : RankMj D :=
-  fun j hj => finrank_Mj_of_isot D.what₂ hI hR j (Finset.mem_Icc.mp hj).1 (Finset.mem_Icc.mp hj).2
 
-theorem dZ0_eq_D0_of_rankMj_of_thetaOnto {D : D7} (L : SizeData₂ D) (hM : RankMj D) (h : ThetaOnto D D.what₂.mu0) :
-    ∀ j ∈ SizeData₂.lifts D, L.dZ0 j = D.what₂.D0 := by
-  intro j hj
-  unfold SizeData₂.dZ0
-  rw [finrank_Zj_of_injective D.what₂ _ j (thetaT_injective_of_onto D.what₂ _ j (h j hj)), hM j hj]
 
-theorem rank_at_place_eq_of_surjective {D : D7} (L : SizeData₂ D) (hM : RankMj D) (w : D.what₂.places.Pl)
-    (h : ThetaOnto D (D.what₂.muTw w)) : ∀ j ∈ SizeData₂.lifts D, L.zeroSpaceRankAtPlace j w = D.what₂.D0 := by
-  intro j hj
-  unfold SizeData₂.zeroSpaceRankAtPlace
-  rw [finrank_Zj_of_injective D.what₂ _ j (thetaT_injective_of_onto D.what₂ _ j (h j hj)), hM j hj]
 
 theorem theta_injective_of_scalars (D : D7) (h42 : Formalism.MainNotions.SumRepresentations.Conclusion42 D) (hI : Rows.IsotInternal D.what₂)
     (i : D.nd.Loc) (hj : D.nd.j i ∈ SizeData₂.lifts D) :
@@ -42,33 +97,11 @@ theorem theta_injective_of_scalars (D : D7) (h42 : Formalism.MainNotions.SumRepr
   exact injective_of_scalars (D.what₂.isot (D.nd.j i)) (hI _ hj'.1 hj'.2) _ (D.what₂.thetaP (D.nd.mu i) (D.nd.j i))
     (fun σ hσ => let ⟨lam, h0, hl⟩ := (h42 i σ hσ).1.1; ⟨(lam : ℂ), by exact_mod_cast h0.ne', hl⟩)
 
-theorem rank_at_place_eq_of_scalars {D : D7} (L : SizeData₂ D) (hM : RankMj D) (h42 : Formalism.MainNotions.SumRepresentations.Conclusion42 D)
-    (hI : Rows.IsotInternal D.what₂) (i : D.nd.Loc) (hj : D.nd.j i ∈ SizeData₂.lifts D) :
-    L.zeroSpaceRankAtPlace (D.nd.j i) (D.nd.w i) = D.what₂.D0 := by
-  have h := theta_injective_of_scalars D h42 hI i hj
-  unfold SizeData₂.zeroSpaceRankAtPlace
-  rw [← D.nd.mu_w i, finrank_Zj_of_injective D.what₂ _ _ h, hM _ hj]
 
-theorem family_rank_eq_of_surjective {eps : ℝ} (Fm : FamP eps)
-    (h : ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, RankMj (Fm.D x i) ∧ ThetaOnto (Fm.D x i) (Fm.D x i).what₂.mu0) :
-    SmallLevelRankEq Fm := by
-  obtain ⟨x0, h⟩ := h
-  exact ⟨x0, fun x hx i => dZ0_eq_D0_of_rankMj_of_thetaOnto (Fm.L x i) (h x hx i).1 (h x hx i).2⟩
 
-theorem family_rank_eq_of_scalars {eps : ℝ} (Fm : FamP eps)
-    (h : ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, RankMj (Fm.D x i) ∧ Formalism.MainNotions.SumRepresentations.Conclusion42 (Fm.D x i) ∧
-      Rows.IsotInternal (Fm.D x i).what₂ ∧ LocEachLift (Fm.D x i) ∧ Formalism.MainNotions.TwistedPlaces.adm3 (Fm.L x i)) : SmallLevelRankEq Fm := by
-  obtain ⟨x0, h⟩ := h
-  refine ⟨x0, fun x hx i j hj => ?_⟩
-  obtain ⟨hM, h42, hI, hL, h3⟩ := h x hx i
-  obtain ⟨a, rfl⟩ := hL j hj
-  rw [← h3 _ hj ((Fm.D x i).nd.w a) ((Fm.D x i).nd.w_tw a)]
-  exact rank_at_place_eq_of_scalars (Fm.L x i) hM h42 hI a hj
 
-theorem rank_uniform_over_places {D : D7} (L : SizeData₂ D) (hM : RankMj D) (h : ∀ μ, ThetaOnto D μ) : Formalism.MainNotions.TwistedPlaces.adm3 L := by
-  intro j hj w _
-  rw [rank_at_place_eq_of_surjective L hM w (h _) j hj, dZ0_eq_D0_of_rankMj_of_thetaOnto L hM (h _) j hj]
 
 end Formalism.MainNotions.J
 
+end
 end

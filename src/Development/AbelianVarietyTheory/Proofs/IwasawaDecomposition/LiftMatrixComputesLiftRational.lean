@@ -323,17 +323,6 @@ theorem exists_thTie_of_coord {s : ℕ} (X0 : BaseLevelRowSide D) (hOk : A.fam.O
       (congrArg (R.jV i t) (levelFormCoordinateMap_levelZero F hOk (R.toCx F).zs i t z))))
     exact h1.trans h2.symm
 
-theorem exists_mtTie_thTie {s : ℕ} (X0 : BaseLevelRowSide D) (hC : R.Char F) (hOk : A.fam.Ok s) (hZ : R.LRatZ F) (hS : R.LStable F)
-    (hU : R.LUnif) (hL : R.LLevelW F) (hT : R.LTheta F) (hR : R.LRatTh F) (Y : RowsTie R F X0) :
-    ∃ eMt jW, MtTie D A F.P0 F.ψ0 (R.toCx F).zs Y.tup eMt ∧
-      ThTie D A (P0 := F.P0) (ψ0 := F.ψ0) (Zs := (R.toCx F).zs) ((R.toCx F).data F.cr false) Y.tup eMt jW ∧
-      (∀ (i : Fin D.R.m) (t : T) x, Y.eV i t (D.what₂.jMt (Y.tup t) ((i : ℕ) + 1) (eMt i t x)) =
-        R.jV i t (LiftForms.lvlForm (A.fam.L i t).S (A.fam.L i t).r (A.fam.lvlA F.P0 F.ψ0).P (A.fam.lvlA F.P0 F.ψ0).ψ x)) ∧
-      ∀ i y, Y.eW i (jW i y) = goodForm R F false i y := by
-  have h := LiftForms.exists_mtTie_coord R F X0 hC hOk hZ hS Y
-  refine h.elim fun e he => ?_
-  have h' := exists_thTie_of_coord R F X0 hOk hU hL hT hR Y e he.1 fun i t => (he.2 i t).1
-  exact h'.elim fun jW hj => ⟨e, jW, he.1, hj.1, fun i t => (he.2 i t).1, hj.2⟩
 
 end Main
 

@@ -550,12 +550,6 @@ theorem exists_topologicalKrullDim_fibres_eq_of_isEmbedding
     (topologicalKrullDim_preimage_genericPoint_eq f hd),
     fun Z hZ ↦ topologicalKrullDim_eq_of_mem_irreducibleComponents_of_trdeg_eq f hi hr hZ hd⟩
 
-theorem topologicalKrullDim_component_fiber_eq {Z : Set (f.fiber (closedPoint O))}
-    (hZ : Z ∈ irreducibleComponents (f.fiber (closedPoint O))) :
-    topologicalKrullDim Z = topologicalKrullDim (f.fiber (genericPoint (Spec (.of O)))) := by
-  obtain ⟨d, h₁, h₂⟩ := exists_topologicalKrullDim_fibres_eq_of_isEmbedding f
-    (f.fiberι _).isEmbedding (f.range_fiberι _) (f.fiberι _).isEmbedding (f.range_fiberι _)
-  rw [h₁, h₂ Z hZ]
 
 omit [IsDomain O] [IsDiscreteValuationRing O] [IsIntegral Y] [LocallyOfFiniteType f] [Flat f] in
 

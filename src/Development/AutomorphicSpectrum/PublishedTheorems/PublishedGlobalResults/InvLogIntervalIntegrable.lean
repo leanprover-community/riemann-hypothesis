@@ -93,31 +93,8 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.PrimesInProgressionsRelativeModel
 
-theorem invLog_intervalIntegrable {u v : ℝ} (hu : 2 ≤ u) (hv : 2 ≤ v) :
-    IntervalIntegrable (fun t : ℝ => 1 / Real.log t) MeasureTheory.volume u v := by
-  apply ContinuousOn.intervalIntegrable
-  have h2 : ∀ t ∈ Set.uIcc u v, (2 : ℝ) ≤ t := fun t ht => le_trans (le_min hu hv) ht.1
-  refine ContinuousOn.div continuousOn_const (Real.continuousOn_log.mono ?_) ?_
-  · intro t ht; have := h2 t ht; simp only [Set.mem_compl_iff, Set.mem_singleton_iff]; linarith
-  · intro t ht; have := h2 t ht; exact (Real.log_pos (by linarith)).ne'
 
-theorem invLog_integral_pos {u v : ℝ} (hu : 2 ≤ u) (huv : u < v) :
-    0 < ∫ t in u..v, 1 / Real.log t := by
-  refine intervalIntegral.intervalIntegral_pos_of_pos_on
-    (invLog_intervalIntegrable hu (by linarith)) ?_ huv
-  intro t ht
-  exact one_div_pos.2 (Real.log_pos (by linarith [ht.1]))
 
-theorem main_pos {X Y θ : ℝ} (hθ : θ ≤ 1) (hY : 2 ≤ Y) (hYX : Y < X) :
-    0 < (∫ t in (2 : ℝ)..X, 1 / Real.log t) - θ * ∫ t in (2 : ℝ)..Y, 1 / Real.log t := by
-  have h1 := intervalIntegral.integral_add_adjacent_intervals
-    (invLog_intervalIntegrable (le_refl 2) hY) (invLog_intervalIntegrable hY (by linarith : (2:ℝ) ≤ X))
-  have h2 := invLog_integral_pos hY hYX
-  have h3 : 0 ≤ ∫ t in (2 : ℝ)..Y, 1 / Real.log t := by
-    rcases hY.eq_or_lt with h | h
-    · subst h; simp
-    · exact (invLog_integral_pos le_rfl h).le
-  nlinarith
 
 theorem exists_exponent {C c : ℝ} (C₀ : ℝ) (hc : 0 < c) :
     ∃ L : ℝ, C₀ ≤ L ∧ 2 ≤ L ∧ C * Real.exp (-(c * L)) + C * Real.exp (-(c * Real.sqrt L)) < 1 := by

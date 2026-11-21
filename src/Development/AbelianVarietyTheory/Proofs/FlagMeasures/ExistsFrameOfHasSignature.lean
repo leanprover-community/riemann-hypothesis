@@ -4,9 +4,124 @@ import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AdelstabL
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SignatureConjugationInvariant
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SignatureExists
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HostCmData
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ImportsBisExtra
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.InclEIntMem
 
+section
+namespace GlobalTheory.SublatticeFacts
+
+open Matrix
+
+theorem finiteRing_sq_sub_mul_sq_eq_of_card {A : Type} [CommRing A] {S : Subring A} {n : Type} [Fintype n] [DecidableEq n]
+    (Λ : Submodule (↥S) (n → A)) (hfg : Submodule.FG Λ)
+    (hden : ∀ (v : n → A), ∃ (N : ℕ), (1 : ℕ) ≤ N ∧ (↑N : A) • v ∈ Λ) (X : Matrix n n A) :
+    ∃ (N : ℕ), (1 : ℕ) ≤ N ∧ ∀ y ∈ Λ, (↑N : A) • Matrix.mulVec X y ∈ Λ := by
+  classical
+  obtain ⟨t, rfl⟩ := hfg
+  choose f hf1 hf using fun v : n → A => hden (X *ᵥ v)
+  refine ⟨∏ v ∈ t, f v, ?_, ?_⟩
+  · exact Nat.one_le_iff_ne_zero.mpr (Finset.prod_ne_zero_iff.mpr fun v _ => by have := hf1 v; omega)
+  · intro y hy
+    rw [Nat.cast_smul_eq_nsmul A]
+    induction hy using Submodule.span_induction with
+    | mem x hx =>
+      rw [← Finset.mul_prod_erase t f hx, mul_nsmul, ← Nat.cast_smul_eq_nsmul A (f x)]
+      exact Submodule.smul_of_tower_mem _ (∏ v ∈ t.erase x, f v) (hf x)
+    | zero => simp
+    | add x y _ _ hx hy =>
+      rw [Matrix.mulVec_add, smul_add]
+      exact Submodule.add_mem _ hx hy
+    | smul a x _ hx =>
+      have : X *ᵥ (a • x) = a • (X *ᵥ x) := by
+        ext i
+        simp [Matrix.mulVec, dotProduct, Finset.mul_sum, Subring.smul_def, mul_left_comm]
+      rw [this, smul_comm]
+      exact Submodule.smul_mem _ a hx
+
+theorem main : ∀ {A : Type} [inst : CommRing A] {S : Subring A} {n : Type} [inst_1 : Fintype n] [DecidableEq n]
+    (Λ : Submodule (↥S) (n → A)), Submodule.FG Λ →
+    (∀ (v : n → A), ∃ (N : ℕ), (1 : ℕ) ≤ N ∧ (↑N : A) • v ∈ Λ) →
+    ∀ (X : Matrix n n A), ∃ (N : ℕ), (1 : ℕ) ≤ N ∧ ∀ y ∈ Λ, (↑N : A) • Matrix.mulVec X y ∈ Λ :=
+  fun Λ hfg hden X => finiteRing_sq_sub_mul_sq_eq_of_card Λ hfg hden X
+
+end GlobalTheory.SublatticeFacts
+end
+
+section
+open NumberField
+open scoped TensorProduct
+
+noncomputable section
+open Classical
+
+namespace GlobalTheory.VectorInclusion
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
+
+def vecIncl (x : Fin n → E) : Fin n → E ⊗[F] Formalism.MainNotions.S.Af F :=
+  fun i => Formalism.UG.inclE (F := F) (Formalism.MainNotions.S.Af F) (x i)
+
+theorem inclE_int_mem (c : 𝓞 E) :
+    Formalism.UG.inclE (F := F) (Formalism.MainNotions.S.Af F) (c : E) ∈ Formalism.MainNotions.S.IntAf F E := by
+  unfold Formalism.MainNotions.S.IntAf Formalism.UG.tensInt
+  apply Subring.subset_closure
+  left
+  refine ⟨⟨(c : E), ⟨c, rfl⟩⟩, ?_⟩
+  rfl
+
+theorem vecIncl_add (x y : Fin n → E) :
+    vecIncl (F := F) (x + y) = vecIncl (F := F) x + vecIncl (F := F) y := by
+  funext i; simp [vecIncl, map_add]
+
+theorem vecIncl_zero : vecIncl (F := F) (0 : Fin n → E) = 0 := by
+  funext i; simp [vecIncl]
+
+theorem vecIncl_smul (c : 𝓞 E) (x : Fin n → E) :
+    vecIncl (F := F) (c • x) =
+      (⟨Formalism.UG.inclE (F := F) (Formalism.MainNotions.S.Af F) (c : E), inclE_int_mem c⟩ : Formalism.MainNotions.S.IntAf F E) •
+        vecIncl (F := F) x := by
+  funext i
+  simp only [vecIncl, Pi.smul_apply]
+  rw [Algebra.smul_def, map_mul]
+  rfl
+
+theorem lamAf_fg (L : Submodule (𝓞 E) (Fin n → E)) (hL : L.FG) :
+    Submodule.FG (R := ↥(Formalism.MainNotions.S.IntAf F E)) (Formalism.MainNotions.S.lamAf L) := by
+  obtain ⟨s, hs⟩ := hL
+  refine ⟨s.image (vecIncl (F := F)), ?_⟩
+  apply le_antisymm
+  · rw [Submodule.span_le]
+    intro y hy
+    simp only [Finset.coe_image, Set.mem_image] at hy
+    obtain ⟨x, hx, rfl⟩ := hy
+    apply Submodule.subset_span
+    have hxL : x ∈ L := hs ▸ Submodule.subset_span hx
+    exact ⟨⟨x, hxL⟩, rfl⟩
+  · unfold Formalism.MainNotions.S.lamAf
+    rw [Submodule.span_le]
+    rintro y ⟨⟨x, hx⟩, rfl⟩
+    have key : ∀ z ∈ Submodule.span (𝓞 E) (s : Set (Fin n → E)),
+        vecIncl (F := F) z ∈ Submodule.span (Formalism.MainNotions.S.IntAf F E)
+          ((s.image (vecIncl (F := F)) : Finset _) : Set (Fin n → E ⊗[F] Formalism.MainNotions.S.Af F)) := by
+      intro z hz
+      induction hz using Submodule.span_induction with
+      | mem z hz =>
+        apply Submodule.subset_span
+        simp only [Finset.coe_image]
+        exact ⟨z, hz, rfl⟩
+      | zero => rw [vecIncl_zero]; exact Submodule.zero_mem _
+      | add a b _ _ ha hb => rw [vecIncl_add]; exact Submodule.add_mem _ ha hb
+      | smul c a _ ha => rw [vecIncl_smul]; exact Submodule.smul_mem _ _ ha
+    rw [← hs] at hx
+    exact key x hx
+
+theorem main : ∀ {F E : Type} [inst : Field F] [inst_1 : NumberField F] [inst_2 : Field E] [inst_3 : NumberField E] [inst_4 : Algebra F E] {n : ℕ} (L : Submodule (NumberField.RingOfIntegers E) (Fin n → E)), Submodule.FG L → Submodule.FG (R := ↥(Formalism.MainNotions.S.IntAf F E)) (Formalism.MainNotions.S.lamAf L) :=
+  fun L hL => lamAf_fg L hL
+
+end GlobalTheory.VectorInclusion
+
+end
+end
+
+section
 noncomputable section
 
 open NumberField Matrix IsDedekindDomain Formalism.MainNotions.S Formalism.UG
@@ -395,3 +510,5 @@ theorem exists_signature (p q : ℕ) : ∃ I : AutInst, I.n = p + q ∧ ∀ v, I
   exact ⟨I, h⟩
 
 end GlobalTheory.AutInhab
+end
+end

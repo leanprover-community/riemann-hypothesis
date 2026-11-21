@@ -4,10 +4,71 @@ import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MkMemAdmiss
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.IwahoriHeckeInjectivity.HeckeInj
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.IwahoriBlocks.SimpleIn
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.IwahoriBlocks.IwahoriCentralBorel.LevLaws
-import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.MeanValueUniqueness
-import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.IsOpenRightInvariance
-import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.AeTranslateEq
 
+section
+theorem UpperTheory.mean_value_uniqueness :
+    ∀ {G K : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [TopologicalSpace K] [CompactSpace K]
+        [MeasurableSpace K] [OpensMeasurableSpace K] (κ : MeasureTheory.Measure K) [MeasureTheory.IsFiniteMeasure κ]
+        (a : K → G) (p : K → ℂ), Continuous a → Continuous p → ∀ φ ψ : G → ℂ, Continuous φ → Continuous ψ →
+        (∀ g, ∫ k, p k * φ (g * a k) ∂κ = φ g) → (∀ g, ∫ k, p k * ψ (g * a k) ∂κ = ψ g) →
+        ∀ g, ∫ k, p k * (φ + ψ) (g * a k) ∂κ = (φ + ψ) g := by
+  intro G K _ _ _ _ _ _ _ κ _ a p ha hp φ ψ hφ hψ h1 h2 g
+  have key : ∀ f : G → ℂ, Continuous f →
+      MeasureTheory.Integrable (fun k => p k * f (g * a k)) κ := by
+    intro f hf
+    have hc : Continuous (fun k => p k * f (g * a k)) :=
+      hp.mul (hf.comp (continuous_const.mul ha))
+    exact (BoundedContinuousFunction.mkOfCompact ⟨_, hc⟩).integrable κ
+  simp only [Pi.add_apply, mul_add]
+  rw [MeasureTheory.integral_add (key φ hφ) (key ψ hψ), h1 g, h2 g]
+end
+
+section
+theorem UpperTheory.isOpen_right_invariance :
+    ∀ {H F G : Type} [Group H] [TopologicalSpace H] [IsTopologicalGroup H] [Group F] [TopologicalSpace F] [Group G]
+        (ι : H →* F) (f : F →* G) (U : Subgroup F) (φ : G → ℂ), Continuous ι → IsOpen (U : Set F) →
+        (∀ u ∈ U, ∀ g, φ (g * f u) = φ g) → IsOpen {h : H | (fun x => φ (x * f (ι h))) = φ} := by
+  intro H F G _ _ _ _ _ _ ι f U φ hι hU hφ
+  let S : Subgroup H :=
+    { carrier := {h : H | (fun x => φ (x * f (ι h))) = φ}
+      one_mem' := by
+        funext x
+        simp
+      mul_mem' := by
+        intro a b ha hb
+        funext x
+        have h1 : φ (x * f (ι a) * f (ι b)) = φ (x * f (ι a)) := congrFun hb (x * f (ι a))
+        have h2 : φ (x * f (ι a)) = φ x := congrFun ha x
+        rw [map_mul, map_mul, ← mul_assoc, h1, h2]
+      inv_mem' := by
+        intro a ha
+        funext x
+        have h1 : φ (x * f (ι a⁻¹) * f (ι a)) = φ (x * f (ι a⁻¹)) := congrFun ha (x * f (ι a⁻¹))
+        rw [← h1]
+        simp }
+  have hle : U.comap ι ≤ S := by
+    intro h hh
+    funext x
+    exact hφ (ι h) hh x
+  have hopen : IsOpen ((U.comap ι : Subgroup H) : Set H) := hU.preimage hι
+  exact Subgroup.isOpen_mono hle hopen
+end
+
+section
+theorem UpperTheory.ae_translate_eq :
+    ∀ {G X : Type} [Group G] [MeasurableSpace G] [MeasurableMul G] [MeasurableSpace X]
+        (μ : MeasureTheory.Measure G) [μ.IsMulRightInvariant] (ν : MeasureTheory.Measure X) (q : G → X) (ρ : X → X) (g : G)
+        (v v' : X → ℂ) (φ : G → ℂ), MeasureTheory.Measure.QuasiMeasurePreserving q μ ν → (∀ y, ρ (q y) = q (y * g)) →
+        (v' =ᵐ[ν] fun x => v (ρ x)) → (∀ᵐ y ∂μ, v (q y) = φ y) → ∀ᵐ y ∂μ, v' (q y) = φ (y * g) := by
+  intro G X _ _ _ _ μ _ ν q ρ g v v' φ hq hρ hv hφ
+  have h1 : ∀ᵐ y ∂μ, v' (q y) = v (ρ (q y)) := hq.ae hv
+  have h2 : ∀ᵐ y ∂μ, v (q (y * g)) = φ (y * g) :=
+    (MeasureTheory.measurePreserving_mul_right μ g).quasiMeasurePreserving.ae hφ
+  filter_upwards [h1, h2] with y a b
+  rw [a, hρ, b]
+end
+
+section
 section
 open MeasureTheory GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Adel
 open UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.E UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C
@@ -113,3 +174,4 @@ theorem UpperTheory.Reformulated.B.Gul4.xMem :
   obtain ⟨-, -, -, U, hU, fφ⟩ := hφ
   exact UpperTheory.isOpen_right_invariance ι (GroundTheory.Automorphic.MultiplicityOne.finProj K 2) _ φ
     ((UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks.embEx 2 w hw).2 ι hι).1 ((UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks.levLaws 2 _).1 U hU).1.2 fφ
+end

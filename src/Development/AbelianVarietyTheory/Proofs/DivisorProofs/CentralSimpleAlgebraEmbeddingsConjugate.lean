@@ -1,10 +1,226 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.TraceDefinitePairsEqAutomorphicTrace
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CharpolyAlgHomEqMapMinpoly
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CharpolyDvdPowOfAevalEqZero
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OrbKEqZeroOfCharpolyNotSeparable
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OrbKEqZeroOfCusp
+import GroundTheory.Brauer.TensorSimple
+import Development.AbelianVarietyTheory.Definitions.Divisors.PointSide
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwOrbUEqZeroOfCusp
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VolEqIdxRatio
+
+section
+open scoped TensorProduct
+
+namespace GlobalTheory.CsaCharpoly
+open Polynomial
+
+theorem injective_of_isSimpleRing {R S : Type} [Ring R] [IsSimpleRing R] [Ring S] [Nontrivial S]
+    (f : R →+* S) : Function.Injective f := by
+  rcases eq_bot_or_eq_top (TwoSidedIdeal.ker f) with h | h
+  · rw [injective_iff_map_eq_zero]
+    intro x hx
+    have : x ∈ TwoSidedIdeal.ker f := (TwoSidedIdeal.mem_ker f).2 hx
+    rw [h] at this
+    simpa using this
+  · exfalso
+    have : (1 : R) ∈ TwoSidedIdeal.ker f := by rw [h]; trivial
+    rw [TwoSidedIdeal.mem_ker, map_one] at this
+    exact one_ne_zero this
+
+theorem natDegree_minpoly_le_one_tmul {F A : Type} [Field F] [Ring A] [Algebra F A] (K : Type)
+    [Field K] [Algebra F K] (g : A) (hK : IsIntegral K ((1 : K) ⊗ₜ[F] g)) :
+    (minpoly F g).natDegree ≤ (minpoly K ((1 : K) ⊗ₜ[F] g)).natDegree := by
+  set x : K ⊗[F] A := (1 : K) ⊗ₜ[F] g with hx
+  have hli : LinearIndependent K (fun j : Fin (minpoly F g).natDegree => x ^ (j : ℕ)) := by
+    have h := Module.Flat.linearIndependent_one_tmul (S := K) (linearIndependent_pow (K := F) g)
+    convert h using 1
+    funext j
+    simp [hx, Algebra.TensorProduct.tmul_pow]
+  by_contra hlt
+  push_neg at hlt
+  have hsum := aeval_eq_sum_range' hlt x
+  rw [minpoly.aeval, ← Fin.sum_univ_eq_sum_range (fun i => (minpoly K x).coeff i • x ^ i)] at hsum
+  have hc := Fintype.linearIndependent_iff.mp hli (fun i => (minpoly K x).coeff i) hsum.symm
+  apply minpoly.ne_zero hK
+  ext i
+  rw [coeff_zero]
+  by_cases hi : i < (minpoly F g).natDegree
+  · exact hc ⟨i, hi⟩
+  · exact coeff_eq_zero_of_natDegree_lt (by omega)
+
+end GlobalTheory.CsaCharpoly
+
+namespace GlobalTheory
+open Polynomial
+
+theorem charpoly_algHom_eq_map_minpoly : ∀ (F L C : Type) [Field F] [Field L] [Algebra F L] [Ring C]
+    [Algebra F C] [Algebra.IsCentral F C] [IsSimpleRing C] [FiniteDimensional F C] (n : ℕ),
+    Module.finrank F C = n ^ 2 → ∀ (ι : C →ₐ[F] Matrix (Fin n) (Fin n) L) (y : C),
+    (minpoly F y).natDegree = n → (ι y).charpoly = (minpoly F y).map (algebraMap F L) := by
+  intro F L C _ _ _ _ _ _ _ _ n _ ι a hdeg
+  have ha : IsIntegral F a := IsIntegral.of_finite F a
+  have hn : 0 < n := hdeg ▸ minpoly.natDegree_pos ha
+  haveI : NeZero n := ⟨hn.ne'⟩
+  let g : L ⊗[F] C →ₐ[L] Matrix (Fin n) (Fin n) L :=
+    Algebra.TensorProduct.lift (Algebra.ofId L _) ι (fun l y ↦ Algebra.commute_algebraMap_left l _)
+  haveI : IsSimpleRing (L ⊗[F] C) := GroundTheory.Brauer.isSimpleRing_tensorProduct_of_right
+  have hg : Function.Injective g := GlobalTheory.CsaCharpoly.injective_of_isSimpleRing g.toRingHom
+  have eg : g ((1 : L) ⊗ₜ a) = ι a := by
+    simp only [g]; erw [Algebra.TensorProduct.lift_tmul]; simp
+  have hyi : IsIntegral L ((1 : L) ⊗ₜ[F] a) := IsIntegral.of_finite L _
+  have hxi : IsIntegral L (ι a) := IsIntegral.of_finite L _
+  have hmin : minpoly L (ι a) = minpoly L ((1 : L) ⊗ₜ[F] a) := by
+    rw [← eg]; exact minpoly.algHom_eq g hg _
+  have hge : n ≤ (minpoly L (ι a)).natDegree := by
+    rw [hmin, ← hdeg]; exact GlobalTheory.CsaCharpoly.natDegree_minpoly_le_one_tmul L a hyi
+  have hdvd : minpoly L (ι a) ∣ (minpoly F a).map (algebraMap F L) := by
+    apply minpoly.dvd
+    rw [aeval_map_algebraMap, aeval_algHom_apply, minpoly.aeval, map_zero]
+  have hmonic : ((minpoly F a).map (algebraMap F L)).Monic := (minpoly.monic ha).map _
+  have hdm : ((minpoly F a).map (algebraMap F L)).natDegree = n := by rw [natDegree_map, hdeg]
+  have e1 : (minpoly F a).map (algebraMap F L) = minpoly L (ι a) :=
+    eq_of_monic_of_dvd_of_natDegree_le (minpoly.monic hxi) hmonic hdvd (by rw [hdm]; exact hge)
+  have e2 : (ι a).charpoly = minpoly L (ι a) :=
+    eq_of_monic_of_dvd_of_natDegree_le (minpoly.monic hxi) (Matrix.charpoly_monic _)
+      (Matrix.minpoly_dvd_charpoly _) (by rw [Matrix.charpoly_natDegree_eq_dim, Fintype.card_fin]; exact hge)
+  rw [e2, e1]
+
+end GlobalTheory
+end
+
+section
+open Polynomial
+
+namespace GlobalTheory.SepCharpoly
+
+theorem charpoly_dvd_pow_of_aeval_eq_zero {R : Type*} [CommRing R] {n : Type*} [Fintype n] [DecidableEq n]
+    (M : Matrix n n R) (p : R[X]) (hp : aeval M p = 0) : M.charpoly ∣ p ^ Fintype.card n := by
+  set a : Matrix n n R[X] := algebraMap R[X] (Matrix n n R[X]) X with ha_def
+  set b : Matrix n n R[X] := (Algebra.ofId R R[X]).mapMatrix M with hb_def
+  have hab : Commute a b := Algebra.commutes X b
+  have key : ∀ q : R[X], ∃ H, (a - b) * H = aeval a q - aeval b q := by
+    intro q
+    induction q using Polynomial.induction_on' with
+    | add p q hp hq =>
+      obtain ⟨H1, h1⟩ := hp
+      obtain ⟨H2, h2⟩ := hq
+      exact ⟨H1 + H2, by rw [mul_add, h1, h2, map_add, map_add]; abel⟩
+    | monomial k c =>
+      refine ⟨algebraMap R (Matrix n n R[X]) c * ∑ i ∈ Finset.range k, a ^ i * b ^ (k - 1 - i), ?_⟩
+      rw [aeval_monomial, aeval_monomial, ← mul_assoc, ← Algebra.commutes, mul_assoc, hab.mul_geom_sum₂,
+        mul_sub]
+  obtain ⟨H, hH⟩ := key p
+  have hb : aeval b p = 0 := by
+    rw [hb_def, aeval_algHom_apply, hp, map_zero]
+  have ha : aeval a p = algebraMap R[X] (Matrix n n R[X]) p := by
+    rw [ha_def, aeval_algebraMap_apply, aeval_X_left_apply]
+  have hch : (a - b).det = M.charpoly := rfl
+  refine ⟨H.det, ?_⟩
+  rw [← hch, ← Matrix.det_mul, hH, hb, sub_zero, ha, Matrix.algebraMap_eq_diagonal, Matrix.det_diagonal]
+  simp
+
+theorem not_separable_charpoly : ∀ (F L C : Type) [Field F] [Field L] [Algebra F L] [Ring C] [Algebra F C]
+    [FiniteDimensional F C] (n : ℕ) (ι : C →ₐ[F] Matrix (Fin n) (Fin n) L) (y : C),
+    ((minpoly F y).natDegree < n ∨ ((minpoly F y).natDegree = n ∧ ¬ (minpoly F y).Separable)) →
+      ¬ (ι y).charpoly.Separable := by
+  intro F L C _ _ _ _ _ _ n ι y h hc
+  have hyi : IsIntegral F y := IsIntegral.of_finite F y
+  have hpm : (minpoly F y).Monic := minpoly.monic hyi
+  have h1 : aeval (ι y) ((minpoly F y).map (algebraMap F L)) = 0 := by
+    rw [aeval_map_algebraMap, aeval_algHom_apply, minpoly.aeval, map_zero]
+  have h2 : minpoly L (ι y) ∣ (minpoly F y).map (algebraMap F L) := minpoly.dvd L _ h1
+  have h3 : (ι y).charpoly ∣ (minpoly L (ι y)) ^ Fintype.card (Fin n) :=
+    charpoly_dvd_pow_of_aeval_eq_zero _ _ (minpoly.aeval L _)
+  have h4 : (ι y).charpoly ∣ minpoly L (ι y) := hc.squarefree.isRadical _ _ h3
+  have h5 := h4.trans h2
+  have hmm : ((minpoly F y).map (algebraMap F L)).Monic := hpm.map _
+  have hdc : (ι y).charpoly.natDegree = n := by
+    rw [Matrix.charpoly_natDegree_eq_dim, Fintype.card_fin]
+  have hdm : ((minpoly F y).map (algebraMap F L)).natDegree = (minpoly F y).natDegree := natDegree_map _
+  rcases h with h | ⟨h, hns⟩
+  · have := natDegree_le_of_dvd h5 hmm.ne_zero
+    omega
+  · have e := eq_of_monic_of_dvd_of_natDegree_le (Matrix.charpoly_monic _) hmm h5 (by omega)
+    rw [← e] at hc
+    exact hns ((separable_map (algebraMap F L)).mp hc)
+
+example : ∀ (F L C : Type) [Field F] [Field L] [Algebra F L] [Ring C] [Algebra F C] [FiniteDimensional F C] (n : ℕ) (ι : C →ₐ[F] Matrix (Fin n) (Fin n) L) (y : C), ((minpoly F y).natDegree < n ∨ ((minpoly F y).natDegree = n ∧ ¬ (minpoly F y).Separable)) → ¬ (ι y).charpoly.Separable := not_separable_charpoly
+
+end GlobalTheory.SepCharpoly
+end
+
+section
+namespace GlobalTheory
+
+theorem orbK_eq_zero_of_charpoly_not_separable (G : Type) [Group G] (k : Type) [Field k] (n : ℕ)
+    (π : G →* GL (Fin n) k) (K : Subgroup G) (δ : G) (f : G → ℂ)
+    (hf : ∀ g, f g ≠ 0 → ((π g : GL (Fin n) k) : Matrix (Fin n) (Fin n) k).charpoly.Separable)
+    (hδ : ¬ ((π δ : GL (Fin n) k) : Matrix (Fin n) (Fin n) k).charpoly.Separable) :
+    GlobalTheory.LKCount.orbK (MonoidHom.id G) K δ f = 0 := by
+  unfold GlobalTheory.LKCount.orbK GlobalTheory.LKCount.orbC
+  apply finsum_eq_zero_of_forall_eq_zero
+  intro q
+  have hz : ∀ x : G, f (x⁻¹ * δ * x) = 0 := by
+    intro x
+    by_contra h
+    apply hδ
+    have hs := hf _ h
+    have hc : ((π (x⁻¹ * δ * x) : GL (Fin n) k) : Matrix (Fin n) (Fin n) k).charpoly
+        = ((π δ : GL (Fin n) k) : Matrix (Fin n) (Fin n) k).charpoly := by
+      rw [map_mul, map_mul, map_inv, Units.val_mul, Units.val_mul,
+        Matrix.charpoly_mul_comm, ← mul_assoc, ← Units.val_mul, mul_inv_cancel, Units.val_one, one_mul]
+    rwa [hc] at hs
+  simp [hz]
+
+end GlobalTheory
+end
+
+section
+noncomputable section
+
+open MeasureTheory Matrix
+open scoped Classical
+
+namespace GlobalTheory.OrbDesc
+
+theorem orbK_eq_twOrbU {G : Type} [Group G] (K0 : Subgroup G) (γ : G) (f : G → ℂ)
+    (hbi : ∀ k ∈ K0, ∀ k' ∈ K0, ∀ g, f (k * g * k') = f g) :
+    GlobalTheory.LKCount.orbK (MonoidHom.id G) K0 γ f =
+      GlobalTheory.LKLoc.twOrbU (MonoidHom.id G) K0 γ (GlobalTheory.BCT.twCent (MonoidHom.id G) γ ⊓ K0) f := by
+  unfold GlobalTheory.LKCount.orbK GlobalTheory.LKCount.orbC GlobalTheory.LKLoc.twOrbU GlobalTheory.LKLoc.orbSum
+  refine finsum_congr fun q => ?_
+  have hc : (fun k : K0 => f ((Quotient.out q * k)⁻¹ * γ * (MonoidHom.id G) (Quotient.out q * k))) =
+      fun _ => f ((Quotient.out q)⁻¹ * γ * Quotient.out q) := by
+    funext k
+    have := hbi (k : G)⁻¹ (K0.inv_mem k.2) k k.2 ((Quotient.out q)⁻¹ * γ * Quotient.out q)
+    rw [← this]
+    simp only [MonoidHom.id_apply, _root_.mul_inv_rev, mul_assoc]
+  rw [hc, avg_const']
+  simp only [MonoidHom.id_apply, GlobalTheory.LKCount.vol, GlobalTheory.LKLoc.volRat, GlobalTheory.LKLoc.locPart]
+  congr 1
+  push_cast
+  rw [inv_div]
+
+end GlobalTheory.OrbDesc
+
+namespace GlobalTheory.LKCount
+
+theorem orbK_eq_zero_of_cusp : ∀ (K : Type) [Field K] [TopologicalSpace K] [IsTopologicalRing K] [LocallyCompactSpace K] [MeasurableSpace K] [BorelSpace K]
+  (ι : Type) [Fintype ι] [DecidableEq ι] [Nonempty ι] (f : GL ι K → ℂ), IsLocallyConstant f → HasCompactSupport f →
+  (∀ (a b : ℕ) (e : ι ≃ Fin a ⊕ Fin b), 0 < a → 0 < b → ∀ (μ : Measure (Fin a → Fin b → K)), μ.IsAddHaarMeasure →
+    ∀ u : (Fin a → Fin b → K) → GL ι K,
+      (∀ X, (u X : Matrix ι ι K) = Matrix.reindex e.symm e.symm (Matrix.fromBlocks 1 (Matrix.of X) 0 1)) →
+      ∀ g h : GL ι K, ∫ X, f (g * (h⁻¹ * u X * h)) ∂μ = 0) →
+  ∀ γ : GL ι K, (γ : Matrix ι ι K).charpoly.Separable → ¬ Irreducible (γ : Matrix ι ι K).charpoly →
+  ∀ (K0 : Subgroup (GL ι K)), IsOpen (K0 : Set (GL ι K)) → IsCompact (K0 : Set (GL ι K)) →
+    (∀ k ∈ K0, ∀ k' ∈ K0, ∀ g, f (k * g * k') = f g) →
+    GlobalTheory.LKCount.orbK (MonoidHom.id (GL ι K)) K0 γ f = 0 := by
+  intro K _ _ _ _ _ _ ι _ _ _ f hlc hcs hyp γ hsep hirr K0 hK0o hK0c hbi
+  rw [GlobalTheory.OrbDesc.orbK_eq_twOrbU K0 γ f hbi]
+  exact GlobalTheory.OrbDesc.twOrbU_eq_zero_of_cusp K ι f hlc hcs hyp γ hsep hirr K0 K0 hK0o hK0c hK0o hK0c hbi
+
+end GlobalTheory.LKCount
+end
+end
+
+section
 open MeasureTheory Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKDef
 open scoped TensorProduct Classical
 
@@ -119,30 +335,7 @@ section Prod
 variable {G₁ G₂ : Type} [Group G₁] [Group G₂] [TopologicalSpace G₁] [TopologicalSpace G₂]
   [IsTopologicalGroup G₁] [IsTopologicalGroup G₂]
 
-theorem prodMap_id_eq : (MonoidHom.id G₁).prodMap (MonoidHom.id G₂) = MonoidHom.id (G₁ × G₂) := by
-  ext <;> rfl
 
-theorem oTerm_prod_inv (K₁ : Subgroup G₁) (K₂ : Subgroup G₂) (δ₁ : G₁) (δ₂ : G₂) (f₁ : G₁ → ℂ) (f₂ : G₂ → ℂ)
-    (hK₁c : IsCompact (K₁ : Set G₁)) (hK₁o : IsOpen (K₁ : Set G₁))
-    (hK₂c : IsCompact (K₂ : Set G₂)) (hK₂o : IsOpen (K₂ : Set G₂))
-    (hf₁ : ∀ k ∈ K₁, ∀ y, f₁ (k⁻¹ * y * MonoidHom.id G₁ k) = f₁ y)
-    (hf₂ : ∀ k ∈ K₂, ∀ y, f₂ (k⁻¹ * y * MonoidHom.id G₂ k) = f₂ y)
-    (hv₁ : ∀ t ∈ twCent (MonoidHom.id G₁) δ₁, vol (twCent (MonoidHom.id G₁) δ₁ ⊓ K₁)
-      ((twCent (MonoidHom.id G₁) δ₁ ⊓ K₁).map (MulAut.conj t).toMonoidHom) = 1)
-    (hv₂ : ∀ t ∈ twCent (MonoidHom.id G₂) δ₂, vol (twCent (MonoidHom.id G₂) δ₂ ⊓ K₂)
-      ((twCent (MonoidHom.id G₂) δ₂ ⊓ K₂).map (MulAut.conj t).toMonoidHom) = 1) :
-    ∀ t ∈ twCent (MonoidHom.id (G₁ × G₂)) (δ₁, δ₂), ∀ k ∈ K₁.prod K₂, ∀ x,
-      oTerm (MonoidHom.id (G₁ × G₂)) (K₁.prod K₂) (twCent (MonoidHom.id (G₁ × G₂)) (δ₁, δ₂) ⊓ K₁.prod K₂) (δ₁, δ₂)
-          (fun w => f₁ w.1 * f₂ w.2) (t * x * k) =
-        oTerm (MonoidHom.id (G₁ × G₂)) (K₁.prod K₂) (twCent (MonoidHom.id (G₁ × G₂)) (δ₁, δ₂) ⊓ K₁.prod K₂) (δ₁, δ₂)
-          (fun w => f₁ w.1 * f₂ w.2) x := by
-  intro t ht k hk x
-  rw [← prodMap_id_eq] at ht ⊢
-  rw [twCent_prod] at ht ⊢
-  rw [Subgroup.mem_prod] at ht hk
-  rw [show t * x * k = (t.1 * x.1 * k.1, t.2 * x.2 * k.2) from rfl, show x = (x.1, x.2) from rfl,
-    oTerm_prod, oTerm_prod,
-    oTerm_inv _ K₁ δ₁ f₁ hK₁c hK₁o hf₁ hv₁ ht.1 hk.1, oTerm_inv _ K₂ δ₂ f₂ hK₂c hK₂o hf₂ hv₂ ht.2 hk.2]
 
 end Prod
 
@@ -170,94 +363,9 @@ theorem not_irreducible_map {F L : Type} [Field F] [Field L] (φ : F →+* L) (p
     (hirr : ¬ Irreducible p) : ¬ Irreducible (p.map φ) :=
   fun h => hirr (Polynomial.Monic.irreducible_of_irreducible_map φ p hp h)
 
-theorem vol_conj_eq_one_of_separable (k : Type) [Field k] (n : ℕ) (γ : GL (Fin n) k) (K₀ : Subgroup (GL (Fin n) k))
-    (hs : (γ : Matrix (Fin n) (Fin n) k).charpoly.Separable) :
-    ∀ s ∈ twCent (MonoidHom.id _) γ, GlobalTheory.LKCount.vol (twCent (MonoidHom.id _) γ ⊓ K₀)
-      ((twCent (MonoidHom.id _) γ ⊓ K₀).map (MulAut.conj s).toMonoidHom) = 1 := by
-  intro s hs'
-  have hs0 : s * γ = γ * s := hs'
-  have hfix : ∀ c ∈ twCent (MonoidHom.id _) γ ⊓ K₀, (MulAut.conj s).toMonoidHom c = c := by
-    intro c hc
-    have hc0 : c * γ = γ * c := hc.1
-    have := GlobalTheory.CentSep.centraliser_comm_of_separable k (Fin n) γ s c hs hs0 hc0
-    show s * c * s⁻¹ = c
-    rw [this, mul_inv_cancel_right]
-  have hmap : (twCent (MonoidHom.id _) γ ⊓ K₀).map (MulAut.conj s).toMonoidHom = twCent (MonoidHom.id _) γ ⊓ K₀ := by
-    ext c
-    constructor
-    · rintro ⟨c', hc', rfl⟩
-      rw [hfix c' hc']; exact hc'
-    · intro hc
-      exact ⟨c, hc, hfix c hc⟩
-  rw [hmap]
-  simp [GlobalTheory.LKCount.vol, Subgroup.relIndex_self]
 
-theorem orbK_eq_zero_of_split {A : Type} [Group A] (k : Type) [Field k] [TopologicalSpace k] [IsTopologicalRing k]
-    [T2Space k] (n : ℕ) (H : Type) [Group H] [TopologicalSpace H] [IsTopologicalGroup H] [T2Space H]
-    (e : A ≃* GL (Fin n) k × H) (K : Subgroup A) (K₀ : Subgroup (GL (Fin n) k)) (K'' : Subgroup H)
-    (h0o : IsOpen (K₀ : Set (GL (Fin n) k))) (h0c : IsCompact (K₀ : Set (GL (Fin n) k)))
-    (h1o : IsOpen (K'' : Set H)) (h1c : IsCompact (K'' : Set H)) (hmap : K.map e.toMonoidHom = K₀.prod K'')
-    (f₀ : GL (Fin n) k → ℂ) (f'' : H → ℂ) (F : A → ℂ) (hF : ∀ h, F h = f₀ (e h).1 * f'' (e h).2)
-    (hbi : ∀ c ∈ K₀, ∀ c' ∈ K₀, ∀ g, f₀ (c * g * c') = f₀ g) (hf'' : ∀ c ∈ K'', ∀ z, f'' (c⁻¹ * z * c) = f'' z)
-    (δ : A) (hs : ((e δ).1 : Matrix (Fin n) (Fin n) k).charpoly.Separable)
-    (hv : ∀ s ∈ twCent (MonoidHom.id H) (e δ).2, GlobalTheory.LKCount.vol (twCent (MonoidHom.id H) (e δ).2 ⊓ K'')
-      ((twCent (MonoidHom.id H) (e δ).2 ⊓ K'').map (MulAut.conj s).toMonoidHom) = 1)
-    (h0 : orbK (MonoidHom.id _) K₀ (e δ).1 f₀ = 0) : orbK (MonoidHom.id A) K δ F = 0 := by
-  have hFe : (fun z => F (e.symm z)) = fun w : GL (Fin n) k × H => f₀ w.1 * f'' w.2 := by
-    funext z; rw [hF, MulEquiv.apply_symm_apply]
-  have hf₁ : ∀ c ∈ K₀, ∀ y, f₀ (c⁻¹ * y * MonoidHom.id _ c) = f₀ y :=
-    fun c hc y => hbi _ (K₀.inv_mem hc) _ hc y
-  have hv₁ := vol_conj_eq_one_of_separable k n (e δ).1 K₀ hs
-  rw [orbK_congr_equiv e K δ F]
-  · rw [hmap, hFe, ← prodMap_id_eq]
-    have := orbK_prod (MonoidHom.id _) (MonoidHom.id H) K₀ K'' (e δ).1 (e δ).2 f₀ f'' continuous_id continuous_id
-      h0c h0o h1c h1o hf₁ hf'' hv₁ hv
-    rw [h0, zero_mul] at this
-    exact this
-  · rw [hmap, hFe]
-    exact oTerm_prod_inv K₀ K'' (e δ).1 (e δ).2 f₀ f'' h0c h0o h1c h1o hf₁ hf'' hv₁ hv
 
-theorem orbK_eq_zero_of_not_regIrr : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (k₀ : Type) [Field k₀] [ValuativeRel k₀] [TopologicalSpace k₀] [IsNonarchimedeanLocalField k₀] [MeasurableSpace k₀] [BorelSpace k₀] [Algebra G.F k₀] (ι₀ : G.C →ₐ[G.F] Matrix (Fin G.n) (Fin G.n) k₀) (k₁ : Type) [Field k₁] [Algebra G.F k₁] (ι₁ : G.C →ₐ[G.F] Matrix (Fin G.n) (Fin G.n) k₁) (H' : Type) [Group H'] [TopologicalSpace H'] [IsTopologicalGroup H'] [T2Space H'] (e : G.GAf × Gr G 1 ≃* GL (Fin G.n) k₀ × H') (π₁ : G.GAf × Gr G 1 →* GL (Fin G.n) k₁),
-  (∀ (B : DForm G) (x : (AfP p ⊗[ℚ] G.C)ˣ) (t : (AfP p)ˣ) (hx : Triv G (AfP p) B.β x t) (y : GlobalTheory.LKCx.grp G B.β), (((e (B.embAt x t hx y)).1 : GL (Fin G.n) k₀) : Matrix (Fin G.n) (Fin G.n) k₀).charpoly = (ι₀ ((y.1.1 : G.Cˣ) : G.C)).charpoly ∧ ((π₁ (B.embAt x t hx y) : GL (Fin G.n) k₁) : Matrix (Fin G.n) (Fin G.n) k₁).charpoly = (ι₁ ((y.1.1 : G.Cˣ) : G.C)).charpoly) →
-  ∀ (L : G.Level) (K' : Subgroup (Gr G 1)) (K₀ : Subgroup (GL (Fin G.n) k₀)) (K'' : Subgroup H'), IsOpen (K₀ : Set (GL (Fin G.n) k₀)) → IsCompact (K₀ : Set (GL (Fin G.n) k₀)) → IsOpen (K'' : Set H') → IsCompact (K'' : Set H') →
-  (L.K.toSubgroup.prod K').map e.toMonoidHom = K₀.prod K'' →
-  ∀ (f₀ : GL (Fin G.n) k₀ → ℂ) (f'' : H' → ℂ) (f : G.GAf → ℂ) (f' : Gr G 1 → ℂ),
-  (∀ h : G.GAf × Gr G 1, f h.1 * f' h.2 = f₀ (e h).1 * f'' (e h).2) →
-  (∀ h : G.GAf × Gr G 1, f h.1 * f' h.2 ≠ 0 → ((π₁ h : GL (Fin G.n) k₁) : Matrix (Fin G.n) (Fin G.n) k₁).charpoly.Separable) →
-  IsLocallyConstant f₀ → HasCompactSupport f₀ → (∀ (a b : ℕ) (ε : Fin G.n ≃ Fin a ⊕ Fin b), 0 < a → 0 < b → ∀ (μ : Measure (Fin a → Fin b → k₀)), μ.IsAddHaarMeasure →
-    ∀ u : (Fin a → Fin b → k₀) → GL (Fin G.n) k₀,
-      (∀ X, (u X : Matrix (Fin G.n) (Fin G.n) k₀) = Matrix.reindex ε.symm ε.symm (Matrix.fromBlocks 1 (Matrix.of X) 0 1)) →
-      ∀ g h : GL (Fin G.n) k₀, ∫ X, f₀ (g * (h⁻¹ * u X * h)) ∂μ = 0) →
-  (∀ k ∈ K₀, ∀ k' ∈ K₀, ∀ g, f₀ (k * g * k') = f₀ g) → (∀ k ∈ K'', ∀ z, f'' (k⁻¹ * z * k) = f'' z) →
-  (∀ (B : DForm G) (x : (AfP p ⊗[ℚ] G.C)ˣ) (t : (AfP p)ˣ) (hx : Triv G (AfP p) B.β x t) (y : GlobalTheory.LKCx.grp G B.β), (minpoly G.F ((y.1.1 : G.Cˣ) : G.C)).natDegree = G.n → (minpoly G.F ((y.1.1 : G.Cˣ) : G.C)).Separable → ∀ s ∈ GlobalTheory.BCT.twCent (MonoidHom.id H') (e (B.embAt x t hx y)).2, GlobalTheory.LKCount.vol (GlobalTheory.BCT.twCent (MonoidHom.id H') (e (B.embAt x t hx y)).2 ⊓ K'') ((GlobalTheory.BCT.twCent (MonoidHom.id H') (e (B.embAt x t hx y)).2 ⊓ K'').map (MulAut.conj s).toMonoidHom) = 1) →
-  ∀ (B : DForm G) (x : (AfP p ⊗[ℚ] G.C)ˣ) (t : (AfP p)ˣ) (hx : Triv G (AfP p) B.β x t) (y : GlobalTheory.LKCx.grp G B.β), ¬ RegIrr G ((y.1.1 : G.Cˣ) : G.C) →
-    GlobalTheory.LKCount.orbK (MonoidHom.id _) (L.K.toSubgroup.prod K') (B.embAt x t hx y) (fun h => f h.1 * f' h.2) = 0 := by
-  intro p _ G k₀ _ _ _ _ _ _ _ ι₀ k₁ _ _ ι₁ H' _ _ _ _ e π₁ hc L K' K₀ K'' h0o h0c h1o h1c hmap f₀ f'' f f' hprod hsep
-    hlc hcs hcusp hbi hf'' hvol B x t hx y hy
-  obtain ⟨hc0, hc1⟩ := hc B x t hx y
-  by_cases hs1 : ((π₁ (B.embAt x t hx y) : GL (Fin G.n) k₁) : Matrix (Fin G.n) (Fin G.n) k₁).charpoly.Separable
-  swap
-  · exact GlobalTheory.orbK_eq_zero_of_charpoly_not_separable _ k₁ G.n π₁ _ _ _ hsep hs1
-  rw [hc1] at hs1
-  have hns := GlobalTheory.SepCharpoly.not_separable_charpoly G.F k₁ G.C G.n ι₁ ((y.1.1 : G.Cˣ) : G.C)
-  have hle := natDegree_minpoly_le G.F k₁ G.C G.n G.n_pos ι₁ ((y.1.1 : G.Cˣ) : G.C)
-  have hdeg : (minpoly G.F ((y.1.1 : G.Cˣ) : G.C)).natDegree = G.n := by
-    by_contra h
-    exact hns (Or.inl (lt_of_le_of_ne hle h)) hs1
-  have hsm : (minpoly G.F ((y.1.1 : G.Cˣ) : G.C)).Separable := by
-    by_contra h
-    exact hns (Or.inr ⟨hdeg, h⟩) hs1
-  have hirr : ¬ Irreducible (minpoly G.F ((y.1.1 : G.Cˣ) : G.C)) := fun h => hy ⟨hdeg, hsm, h⟩
-  rw [GlobalTheory.charpoly_algHom_eq_map_minpoly G.F k₀ G.C G.n G.rankC ι₀ _ hdeg] at hc0
-  have hs0 : (((e (B.embAt x t hx y)).1 : GL (Fin G.n) k₀) : Matrix (Fin G.n) (Fin G.n) k₀).charpoly.Separable := by
-    rw [hc0]; exact hsm.map
-  have hi0 : ¬ Irreducible
-      (((e (B.embAt x t hx y)).1 : GL (Fin G.n) k₀) : Matrix (Fin G.n) (Fin G.n) k₀).charpoly := by
-    rw [hc0]
-    exact not_irreducible_map _ _ (minpoly.monic (IsIntegral.of_finite G.F _)) hirr
-  haveI : Nonempty (Fin G.n) := ⟨⟨0, G.n_pos⟩⟩
-  have h0 := GlobalTheory.LKCount.orbK_eq_zero_of_cusp k₀ (Fin G.n) f₀ hlc hcs hcusp _ hs0 hi0 K₀ h0o h0c hbi
-  exact orbK_eq_zero_of_split k₀ G.n H' e _ K₀ K'' h0o h0c h1o h1c hmap f₀ f'' _ hprod hbi hf'' _ hs0
-    (hvol B x t hx y hdeg hsm) h0
 
 end GlobalTheory.VanishNonEll
+end
+end

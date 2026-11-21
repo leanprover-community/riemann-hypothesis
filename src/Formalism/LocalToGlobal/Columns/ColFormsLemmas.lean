@@ -58,8 +58,6 @@ section Form
 variable {X : Fields} {n : ℕ} {ST SG : Finset (HeightOneSpectrum (𝓞 X.E))}
   (C : CoefPk X n (DecoSet X.E n ST SG)) (Λ : LevFam X.E X.K n SG)
 
-theorem formGSD_smul (a : (formGSD C Λ).G) (d : (formGSD C Λ).D) :
-    a • d = ((FormG.incl Λ a : UF X.E n × GLG X.E n SG) • (d : DecoSet X.E n ST SG) : DecoSet X.E n ST SG) := rfl
 
 theorem FormG.incl_injective : Function.Injective (FormG.incl Λ) := by
   intro a b h
@@ -140,9 +138,6 @@ theorem colLev_of_lt {j : ℕ} (hj : j < R.m) (w : Pr.vGs) :
     colLev Ch j w = ⟨HX (𝓞 X.E ⧸ w.1.asIdeal) (R.N j) R.k R.t j,
       lamX (Ch.psi0 w) (extChi fun s => Ch.chi s w) (R.N j) R.k R.m R.t j⟩ := if_pos hj
 
-theorem colLev_m (w : Pr.vGs) :
-    colLev Ch R.m w = ⟨HXm (𝓞 X.E ⧸ w.1.asIdeal) (R.N R.m) R.r R.t R.m,
-      lamXm (Ch.psi0 w) (extChi fun s => Ch.chi s w) (R.N R.m) R.r R.t R.m⟩ := if_neg (lt_irrefl _)
 
 theorem colFree (hX : X.Ok) (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) (u : Pr.Word) :
     (colGSD W Ch u 0).Free := by
@@ -169,16 +164,7 @@ theorem finrank_MfV (hX : X.Ok) (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1
     finrank X.K (MfV W Ch u) = Nat.card (colGSD W Ch u 0).Cl * finrank X.K (VV X.K (W.lamTrue u 0)) :=
   (colGSD W Ch u 0).finrank_free (colOk W Ch hX u 0) (colFree W Ch hX hPr hbig u)
 
-theorem ColL_le_ColLnab (u : Pr.Word) (j : ℕ) : ColL W Ch u j ≤ ColLnab W Ch u j := by
-  intro φ hφ d
-  exact roundPk_del_le X (W.lamTrue u j) (fun d : DecoSet X.E (R.N j) (Pr.vT u) Pr.vGs => d.1.Lsh) d (hφ d)
 
-theorem map_MfL (hX : X.Ok) (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) (u : Pr.Word)
-    (s : (colGSD W Ch u 0).Sec) :
-    (MfL W Ch u).map (((colGSD W Ch u 0).resFree (colOk W Ch hX u 0) s (colFree W Ch hX hPr hbig u) :
-      (colGSD W Ch u 0).EqFun →ₗ[X.K] ((colGSD W Ch u 0).Cl → (colGSD W Ch u 0).V)).restrictScalars (𝓞 X.K)) =
-      Submodule.pi Set.univ fun c => (colGSD W Ch u 0).Del (s.rep c) :=
-  (colGSD W Ch u 0).map_intDel_free (colOk W Ch hX u 0) s (colFree W Ch hX hPr hbig u)
 
 theorem finrank_MfV_pos (hX : X.Ok) (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) (u : Pr.Word) :
     0 < finrank X.K (MfV W Ch u) := by

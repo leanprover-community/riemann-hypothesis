@@ -4,7 +4,16 @@ import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IntegralClosur
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GlueApplyOfNotInFibre
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsGenericWeilPairing
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TateIsoPullbackEquiv
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ProjectiveModuleModNBasisStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ProjectiveModuleModNBasis
+
+section
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.projective_module_mod_N_basis : ∀ (E : Type) [Field E] [NumberField E] (M : Type) [AddCommGroup M] [Module (𝓞 E) M], Module.Finite (𝓞 E) M → Module.Projective (𝓞 E) M → ∀ (n N : ℕ), Module.finrank (𝓞 E) M = n → 0 < N → ∃ φ : (Fin n → 𝓞 E) →ₗ[𝓞 E] M, (∀ m, ∃ x b, m = φ x + N • b) ∧ ∀ x b, φ x = N • b → ∃ x', x = N • x' := by
+  first | exact @GlobalTheory.CompanionTheory.ModFree.exists_free_map_mod | exact GlobalTheory.CompanionTheory.ModFree.exists_free_map_mod | (intros; apply GlobalTheory.CompanionTheory.ModFree.exists_free_map_mod <;> assumption)
+end
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
 open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundles
@@ -272,3 +281,5 @@ theorem generic_torsion : Out.WeilSt → ∀ (E : Type) [Field E] [NumberField E
   exact ⟨τ, ew, e, h1, h2, h3, hew, h4, h5, h6, h7, h8⟩
 
 end GlobalTheory.CompanionTheory.Ar.HF
+end
+end

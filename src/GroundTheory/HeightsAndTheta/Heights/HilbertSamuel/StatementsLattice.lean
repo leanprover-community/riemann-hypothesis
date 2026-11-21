@@ -98,19 +98,6 @@ def LogDetDerivative.Statement : Prop :=
     ∀ t, HasDerivAt (fun s ↦ -(1 / 2) * Real.log (G s).det.re)
       (-(1 / 2) * ((G t)⁻¹ * G' t).trace.re) t
 
-theorem logDet_example :
-    (∀ t : ℝ, (diagonal fun _ : Fin 2 ↦ ((Real.exp t : ℝ) : ℂ)).PosDef) ∧
-    ∀ (t : ℝ) (i j : Fin 2),
-      HasDerivAt (fun s : ℝ ↦ diagonal (fun _ : Fin 2 ↦ ((Real.exp s : ℝ) : ℂ)) i j)
-        (diagonal (fun _ : Fin 2 ↦ ((Real.exp t : ℝ) : ℂ)) i j) t := by
-  refine ⟨fun t ↦ PosDef.diagonal fun _ ↦ Complex.zero_lt_real.mpr (Real.exp_pos t),
-    fun t i j ↦ ?_⟩
-  by_cases hij : i = j
-  · subst hij
-    simp only [diagonal_apply_eq]
-    exact (Real.hasDerivAt_exp t).ofReal_comp
-  · simp only [diagonal_apply_ne _ hij]
-    exact hasDerivAt_const t 0
 
 def BetaSum.Statement : Prop :=
   ∀ D i : ℕ, i ≤ D →
@@ -129,20 +116,6 @@ def Halving.Statement : Prop :=
     Tendsto (fun n ↦ a (2 * n) - a n / 2) atTop (𝓝 0) →
     Tendsto (fun n ↦ a (n + 1) - a n) atTop (𝓝 0) → Tendsto a atTop (𝓝 0)
 
-theorem halving_example :
-    (∃ C : ℝ, ∀ n : ℕ, |1 / ((n : ℝ) + 1)| ≤ C) ∧
-    Tendsto (fun n : ℕ ↦ 1 / (((2 * n : ℕ) : ℝ) + 1) - 1 / ((n : ℝ) + 1) / 2) atTop (𝓝 0) ∧
-    Tendsto (fun n : ℕ ↦ 1 / (((n + 1 : ℕ) : ℝ) + 1) - 1 / ((n : ℝ) + 1)) atTop (𝓝 0) := by
-  have h0 : Tendsto (fun n : ℕ ↦ 1 / ((n : ℝ) + 1)) atTop (𝓝 0) :=
-    tendsto_one_div_add_atTop_nhds_zero_nat
-  refine ⟨⟨1, fun n ↦ ?_⟩, ?_, ?_⟩
-  · have hn : (0 : ℝ) < (n : ℝ) + 1 := by positivity
-    rw [abs_of_pos (by positivity), div_le_one hn]
-    linarith [(Nat.cast_nonneg n : (0 : ℝ) ≤ n)]
-  · have h2 := h0.comp (tendsto_id.const_mul_atTop' (by norm_num : 0 < 2))
-    simpa using h2.sub (h0.div_const 2)
-  · have h1 := h0.comp (tendsto_add_atTop_nat 1)
-    simpa using h1.sub h0
 
 def unitBallVolume (R : ℕ) : ℝ := (volume (Metric.ball (0 : EuclideanSpace ℝ (Fin R)) 1)).toReal
 
@@ -201,33 +174,6 @@ def ShortLatticeBasis.standard : ShortLatticeBasis standardLattice 1 where
     (EuclideanSpace.basisFun (Fin 2) ℝ).orthonormal.linearIndependent.comp _ (Fin.cast_injective _)
   norm_le i := ((EuclideanSpace.basisFun (Fin 2) ℝ).orthonormal.1 _).le
 
-theorem packing_example :
-    let S : Finset (EuclideanSpace ℝ (Fin 2)) := {0, EuclideanSpace.basisFun (Fin 2) ℝ 0}
-    (∀ s ∈ S, s ∈ standardLattice) ∧ (∀ s ∈ S, ‖s‖ ≤ 1) ∧
-      (∀ s ∈ S, ∀ t ∈ S, s ≠ t → Real.exp (-0) ≤ ‖s - t‖) ∧ S.card = 2 := by
-  have hn : ‖EuclideanSpace.basisFun (Fin 2) ℝ 0‖ = 1 :=
-    (EuclideanSpace.basisFun (Fin 2) ℝ).orthonormal.1 0
-  have hne : (0 : EuclideanSpace ℝ (Fin 2)) ≠ EuclideanSpace.basisFun (Fin 2) ℝ 0 := by
-    intro h; rw [← h, norm_zero] at hn; exact zero_ne_one hn
-  have hmem : EuclideanSpace.basisFun (Fin 2) ℝ 0 ∈ standardLattice :=
-    Submodule.subset_span ⟨0, by simp⟩
-  refine ⟨?_, ?_, ?_, ?_⟩
-  · intro s hs
-    rcases Finset.mem_insert.mp hs with rfl | hs
-    · exact Submodule.zero_mem _
-    · rw [Finset.mem_singleton.mp hs]; exact hmem
-  · intro s hs
-    rcases Finset.mem_insert.mp hs with rfl | hs
-    · simp
-    · rw [Finset.mem_singleton.mp hs, hn]
-  · intro s hs t ht hst
-    rw [neg_zero, Real.exp_zero]
-    rcases Finset.mem_insert.mp hs with rfl | hs <;> rcases Finset.mem_insert.mp ht with rfl | ht
-    · exact absurd rfl hst
-    · rw [Finset.mem_singleton.mp ht, zero_sub, norm_neg, hn]
-    · rw [Finset.mem_singleton.mp hs, sub_zero, hn]
-    · rw [Finset.mem_singleton.mp hs, Finset.mem_singleton.mp ht] at hst; exact absurd rfl hst
-  · exact Finset.card_pair hne
 
 end LatticeExamples
 

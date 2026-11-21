@@ -7,12 +7,44 @@ import ReciprocityTheory.AnalyticForms.LeviForms.UnifInt
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.MongeAmpereIntegralCongrPotentials
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GoodProjExistsStatementHolds
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.LineIsomorphismDefectFunction
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntersectionFamilyDefectFormulaStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntersectionFamilyDefectFormula
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntersectionFamilySymmetric
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.TelescopingCoordinateDifference
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.MongeAmpereDifferenceTendstoZero
+import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsTwiceDifferentiableAt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.CompRightEqZero
+import Development.WeilBound.CoreStatements.PluriharmonicCharts.XAnTwo
+import BuildAid.ForwardExisting
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ResolutionStatementHolds
 
+section
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 ReciprocityTheory.AnForm.M GlobalTheory.CompanionTheory.Ar.Cmp Filter Topology
+open ReciprocityTheory.ChartRestriction.G.AI.I1 (IsBlockMap pullDeg)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.intersection_family_defect_formula : RatRStatement → ResBridgeStatement → GoodProjExistsStatement → AvoidStatement → ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (I : Ideal (MRing ι) → (n : ℕ) → (Fin n → HermLine ι) → ℝ), IsIntersectionFamily I → ∀ (P J : Ideal (MRing ι)) (e : ℕ) (R : AnLogRes P J e) (L : Fin e → HermLine ι) (A B : HermLine ι) (f g : MRing ι) (w : ((Σ k, ι k) → ℂ) → ℝ), IsArithVar P (e + 1) → (∀ j, IsSmoothHerm (L j)) → IsSmoothHerm A → IsSmoothHerm B → IsLineIso P A.a B.a f g → IsDefectOn P (mcPts P) f g A B w → I P (e + 1) (Fin.snoc L A) - I P (e + 1) (Fin.snoc L B) = -mInt R.A (fun j => potOf R (L j)) (fun x => w (R.lift x x)) := by
+  first | exact @GlobalTheory.CompanionTheory.Ar.Cmp.OneSlot.inter_sub_eq_neg_mInt | exact GlobalTheory.CompanionTheory.Ar.Cmp.OneSlot.inter_sub_eq_neg_mInt | (intros; apply GlobalTheory.CompanionTheory.Ar.Cmp.OneSlot.inter_sub_eq_neg_mInt <;> assumption)
+end
+
+section
+section
+open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights
+open scoped ComplexOrder
+
+namespace GlobalTheory.CompanionTheory.Ar.PB
+
+theorem an_two_weights_close : ConvergenceSignedStatement → ∀ (e : ℕ) (σ : Type) (S : AnSys e (σ ⊕ σ)) (d : σ → S.X → ℝ), (∀ a, S.A.Smooth (d a)) → (∀ a, ∀ y ∈ S.open', S.ph (Sum.inl a) y = S.ph (Sum.inr a) y + d a y) → ∀ (a : σ) (w : Fin e → σ ⊕ σ), Tendsto (fun t => mInt S.A (fun i => S.potT (w i) t) (fun x => S.phT (Sum.inl a) t x - S.phT (Sum.inr a) t x - d a x)) (𝓝[>] 0) (𝓝 0) :=
+  @PositivityTheory.Xgp.t_an_two
+
+end GlobalTheory.CompanionTheory.Ar.PB
+end
+
+open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.monge_ampere_difference_tendsto_zero : ConvergenceSignedStatement → ∀ (e : ℕ) (σ : Type) (S : AnSys e (σ ⊕ σ)) (d : σ → S.X → ℝ), (∀ a, S.A.Smooth (d a)) → (∀ a, ∀ y ∈ S.open', S.ph (Sum.inl a) y = S.ph (Sum.inr a) y + d a y) → ∀ (a : σ) (w : Fin e → σ ⊕ σ), Tendsto (fun t => mInt S.A (fun i => S.potT (w i) t) (fun x => S.phT (Sum.inl a) t x - S.phT (Sum.inr a) t x - d a x)) (𝓝[>] 0) (𝓝 0) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.PB.an_two_weights_close
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Cmp.OneModel
@@ -188,3 +220,5 @@ theorem cmp_one : Inputs → AvoidStatement → ∀ (II : IntersectionSystem), I
   exact (GlobalTheory.T.telescoping_coordinate_difference (σ ⊕ σ) (D + 1) (Re.num II t) _ _).symm
 
 end GlobalTheory.CompanionTheory.Ar.Cmp.OneModel
+end
+end

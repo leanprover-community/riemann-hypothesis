@@ -16,9 +16,6 @@ def cSix : ℝ := 32
 
 def ceilEight (n : ℕ) : ℕ := 8 * ((n + 7) / 8)
 
-theorem ceilEight_spec (n : ℕ) : 8 ∣ ceilEight n ∧ n ≤ ceilEight n ∧ ∀ a, 8 ∣ a → n ≤ a → ceilEight n ≤ a := by
-  unfold ceilEight
-  refine ⟨⟨_, rfl⟩, by omega, fun a ha h => by omega⟩
 
 section Numbers
 
@@ -57,18 +54,7 @@ def expC : ℕ := sInf {c : ℕ | bigR D ^ 8 * degStar D L ^ 2 ≤ (3 : ℝ) ^ c
 
 def levDeep : ℕ := D.host.g 0 * D.host.g 1 * (3 ^ expC D L * 5 ^ expC D L)
 
-theorem expQ_spec : bigR D ^ 7 * degStar D L ^ 2 ≤ (3 : ℝ) ^ (2 * expQ D L) := by
-  obtain ⟨n, hn⟩ := pow_unbounded_of_one_lt (bigR D ^ 7 * degStar D L ^ 2) (by norm_num : (1 : ℝ) < 3)
-  have : n ∈ {c : ℕ | bigR D ^ 7 * degStar D L ^ 2 ≤ (3 : ℝ) ^ (2 * c)} :=
-    hn.le.trans (pow_le_pow_right₀ (by norm_num) (by omega))
-  exact Nat.sInf_mem ⟨n, this⟩
 
-theorem expC_spec : bigR D ^ 8 * degStar D L ^ 2 ≤ (3 : ℝ) ^ expC D L ∧ max 4 (2 * expQ D L) ≤ expC D L := by
-  obtain ⟨n, hn⟩ := pow_unbounded_of_one_lt (bigR D ^ 8 * degStar D L ^ 2) (by norm_num : (1 : ℝ) < 3)
-  have : n + max 4 (2 * expQ D L) ∈
-      {c : ℕ | bigR D ^ 8 * degStar D L ^ 2 ≤ (3 : ℝ) ^ c ∧ max 4 (2 * expQ D L) ≤ c} :=
-    ⟨hn.le.trans (pow_le_pow_right₀ (by norm_num) (by omega)), by omega⟩
-  exact Nat.sInf_mem ⟨_, this⟩
 
 def shareW (g : ℕ) : ℝ :=
   3 * (D.R.f : ℝ) / g + 23 * D.R.f * Real.log g * (g : ℝ) ^ (-(1 : ℝ) / 2) +
@@ -112,7 +98,6 @@ theorem nU_eq (j : ℕ) : nU D j = placeRankTwoOne.normU D j (wAn D j) := by
   refine Finset.sum_congr rfl fun i _ => ?_
   simp [uAn, kap, i.2]
 
-theorem uAn_anchor (j : ℕ) (τ : D.what₂.Tau) : uAn D j τ (D.R.k - 2) = 0 := sub_self _
 
 end Numbers
 
@@ -146,7 +131,6 @@ def epsR (j : ℕ) : ℝ := 7 * dY D ^ 2 / tR Q + 3 / 2 * dY D * rhoB Q j
 
 def xZero (j : ℕ) : ℝ := dY D * (2 * dY D + 5 + rhoB Q j * tR Q) / ((1 - rhoB Q j) * (tR Q - dY D))
 
-theorem uOne_anchor (j : ℕ) (τ : D.what₂.Tau) : uOne Q j τ (D.R.k - 2) = 0 := by simp [uOne]
 
 def numBase (j : ℕ) : OT.Num where
   D := placeRankTwoOne.dimY D
@@ -208,7 +192,6 @@ def numAt (j : ℕ) : OT.Num := (numBase Q j).hat
 
 def Reading (j : ℕ) (N : OT.Num) : Prop := N.admitted ∧ N.hat = numAt Q j
 
-theorem numAt_hat (j : ℕ) : (numAt Q j).hat = numAt Q j := rfl
 
 def ppE (D : D7) (N : OT.Num) : ℝ := N.PPp + 1 + lrd D
 
@@ -315,14 +298,6 @@ def ParamLines (j : ℕ) (N : OT.Num) : Prop :=
 def DelStrong (D : D7) (L : SizeData₂ D) (j : ℕ) (N : OT.Num) : Prop :=
   24 * del D * ppE D N * nKap D j ≤ L.sc.b / 8
 
-theorem strong_arith {δ e A PP K fk b : ℝ} (hδ : 0 ≤ δ) (hδe : δ ≤ e) (hA : 0 ≤ A) (h16 : 16 * A ≤ PP)
-    (hK : K ≤ 32 * fk * b) (hfk : 0 ≤ fk) (hb : 0 ≤ b) (h : 385 * PP * fk * e ≤ 1) :
-    24 * δ * A * K ≤ b / 8 := by
-  have h1 : 24 * δ * A * K ≤ 24 * δ * A * (32 * fk * b) := mul_le_mul_of_nonneg_left hK (by positivity)
-  have h2 : δ * (16 * A) * fk ≤ e * PP * fk :=
-    mul_le_mul_of_nonneg_right (mul_le_mul hδe h16 (by positivity) (hδ.trans hδe)) hfk
-  have h3 : δ * A * fk ≤ 1 / 6144 := by nlinarith
-  nlinarith [mul_le_mul_of_nonneg_right h3 hb]
 
 structure Choice (j : ℕ) : Prop where
   kap_def : DV.KapDef D
@@ -358,12 +333,6 @@ structure Choice (j : ℕ) : Prop where
       Q.TO * Q.PP ≤ L.sc.b ^ (9 / 10 : ℝ) ∧ L.sc.b ^ (9 / 10 : ℝ) ≤ L.sc.w'' D.R.n
   share : 385 * Q.PP * D.R.f * D.R.k * Real.exp (-L.sc.x ^ (L.sc.ez / 7)) ≤ 1
 
-theorem Choice.x_ge_eps {Q : ParamsT D L P} {j : ℕ} (h : Choice Q j) :
-    2 * L.sc.x ^ (L.sc.ez / 7) ≤ L.sc.x ^ (L.sc.eps / 6) ∧
-      2 * (L.Ct + 4) * Real.log L.sc.x + 6 ≤ L.sc.x ^ ((L.sc.eps : ℝ) / 6) := by
-  have h1 : L.sc.x ^ (L.sc.ez / 6) ≤ L.sc.x ^ (L.sc.eps / 6) :=
-    Real.rpow_le_rpow_of_exponent_le L.sc.one_lt_alt.le (by linarith [L.sc.ez_le])
-  exact ⟨h.x_ge.1.trans h1, h.x_ge.2.trans h1⟩
 
 end Run
 

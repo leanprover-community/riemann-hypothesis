@@ -82,18 +82,7 @@ theorem stmt : GlobalTheory.IndefiniteRowSideFullHecke.PeriodLowerBounds.Stmt :=
   have h1 := expLe_of hF hE hC
   ⟨h1, fun hP => ⟨linkRam_of h1 hP, linkNu_of X (linkRam_of h1 hP)⟩⟩
 
-theorem periodBound_iff {D : D7} (L : SizeData₂ D) (X : ErrX D) (C1 : ℝ) :
-    PeriodBound L X C1 ↔ ∀ (i : Fin 2) (w : LiftErrorLocal.Pl D), LiftErrorLocal.Over D i w → ∀ u : D.what₂.Word,
-      D.what₂.places.resChar w ≠ (D.mem u).A.T → ∀ μ : D.what₂.Tup, DV.Used D μ → GlobalTheory.IndefiniteRowSideFullHecke.ColumnAvoidanceConditions.Bound D L X C1 i w u μ := by
-  refine forall_congr' fun i => forall_congr' fun w => forall_congr' fun _ => forall_congr' fun u => forall_congr' fun _ =>
-    forall_congr' fun μ => forall_congr' fun _ => forall_congr' fun φ => forall_congr' fun _ => forall_congr' fun F =>
-    forall_congr' fun _ => exists_congr fun y => and_congr_right fun _ => or_congr_right ?_
-  have he : (0 : ℝ) < (D.what₂.places.ramIdx w : ℝ) := by exact_mod_cast D.what₂.places.ramIdx_pos w
-  unfold LiftErrorLocal.vG
-  rw [le_div_iff₀ he, mul_comm]
-  rfl
 
-theorem stmtFam {eps : ℝ} (Fm : FamP eps) (C1 : ℝ) : FamilyErrorExponentBound Fm C1 := stmtFam_of stmt Fm C1
 
 end GlobalTheory.ExpAtTypePrimes
 

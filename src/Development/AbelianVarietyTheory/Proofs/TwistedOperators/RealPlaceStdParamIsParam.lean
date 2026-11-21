@@ -1,8 +1,29 @@
 import Mathlib
 import Formalism.SharpRestriction.Divisibility.SchurIrreducible
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NonemptyGrpData
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NonemptyFockModelOfUnitaryPairCovers
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NonemptyFockModelUnitaryDualPairStatement
 
+section
+section
+open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible
+
+namespace GlobalTheory
+
+theorem nonempty_fockData_of_covers :
+    ∀ (p q r s : ℕ) (T0 : GrpData (p * r + q * s) (p * s + q * r)) (T1 : GrpData p q)
+      (T2 : GrpData r s), Nonempty (FockData T0 T1 T2) :=
+  GlobalTheory.T.nonempty_fockModel_unitary_dual_pair
+
+end GlobalTheory
+end
+
+open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.nonempty_fockModel_of_unitary_pair_covers : ∀ (p q r s : ℕ) (T0 : GrpData (p * r + q * s) (p * s + q * r)) (T1 : GrpData p q) (T2 : GrpData r s), Nonempty (FockData T0 T1 T2) := by
+  atlas_forward_decl GlobalTheory.nonempty_fockData_of_covers
+end
+
+section
 open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible
 
 namespace GlobalTheory
@@ -66,3 +87,4 @@ theorem exists_provA_of_forall_exists_hasParam :
   exact ⟨⟨grp, fun p q r s => Classical.choice (GlobalTheory.T.nonempty_fockModel_of_unitary_pair_covers p q r s _ _ _), ds⟩, hds⟩
 
 end GlobalTheory
+end

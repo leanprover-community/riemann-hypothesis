@@ -2667,9 +2667,6 @@ theorem cexp_mul_I_pow_eq_circleChar (n : ℕ) (t : ℝ) : cexp ((t : ℂ) * I) 
   push_cast
   ring
 
-theorem integrable_circleChar (k : ℤ) : Integrable (E1 k) mu1 := by
-  exact Integrable.mono' (integrable_const (1 : ℝ)) (continuous_circleChar k).aestronglyMeasurable
-    (ae_of_all _ fun t => (norm_circleChar k t).le)
 
 theorem integral_circleChar (k : ℤ) : ∫ t, E1 k t ∂mu1 = if k = 0 then 1 else 0 := by
   have h2pi : (0 : ℝ) < 2 * Real.pi := by positivity
@@ -3168,25 +3165,7 @@ open Formalism.BasicNotions NumberField
 def Open (D : D7) (C₀ C5 : ℝ) : Prop :=
   MsCount D C₀ ∧ PointsLemma D ∧ SlopeLowerOpenPart D ∧ SlopeMaxOpenPart D C5
 
-theorem stmt_of_open (C₀ C5 : ℝ) (h2 : 2 ≤ C₀) (Cn Cd Cper Cth : ℝ) : ∃ C1 C2 C4 C5' C6 : ℝ, ∀ (D : D7) (x : ℝ),
-    max Cn 1 ≤ x → Open D C₀ C5 → Stmt D Cn Cd Cper Cth C1 C2 C4 C5' C6 x := by
-  obtain ⟨C1, h1⟩ := baseChange_preserves_unitary_of C₀ h2 Cn
-  obtain ⟨C2, hZ1⟩ := opNorm_estimate_of_theta_mass Cn Cd C1
-  obtain ⟨CP, hP⟩ := exists_projection_estimate Cn
-  obtain ⟨C4, h4⟩ := heckeValue_estimate_of_record_value Cn Cd Cper Cth C2 CP
-  obtain ⟨C5', h5⟩ := ramifiedLattice_of_chain_estimates Cn
-  obtain ⟨C6, h6⟩ := classMap_estimate_of_partial Cn C5
-  refine ⟨C1, C2, C4, C5', C6, fun D x hx ⟨oM, o3, oa, ob⟩ ⟨a1, a2, _, _, a6, _⟩ => ?_⟩
-  have p1 := h1 D x oM
-  have p2 := hZ1 D x Cth a2 p1
-  exact ⟨p1, p2, o3, h4 D x a1 a2 p2 (hP D x a6), h5 D x hx oa, h6 D x hx ob, supBound_holds D, propZ_second_holds⟩
 
-theorem propZ_first_of_mass (Cn Cd Cper Cth C1 : ℝ) : ∃ C : ℝ, ∀ (D : D7) (x : ℝ), adm1 D Cn Cper x → adm2 D Cn Cth x → adm6 D →
-    Conclusion1 D Cn C1 x → Conclusion4 D Cn Cd C x := by
-  obtain ⟨C2, hZ1⟩ := opNorm_estimate_of_theta_mass Cn Cd C1
-  obtain ⟨CP, hP⟩ := exists_projection_estimate Cn
-  obtain ⟨C4, h4⟩ := heckeValue_estimate_of_record_value Cn Cd Cper Cth C2 CP
-  exact ⟨C4, fun D x a1 a2 a6 p1 => h4 D x a1 a2 (hZ1 D x Cth a2 p1) (hP D x a6)⟩
 
 def OpenF {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (C₀ C5 : ℝ) : Prop :=
   MsCountF Fm C₀ ∧ ConclusionF3 Fm ∧ FamilySlopeLowerOpenPart Fm ∧ FamilySlopeMaxOpenPart Fm C5

@@ -240,10 +240,6 @@ theorem exists_abs {i : Fin D.R.m} {Tp : Type} {tup : Tp → T0} (hS : ∀ t, Sc
   obtain ⟨q, hq⟩ := (hp.ep t).2 L I a b c d e
   exact ⟨q, hq.1, hq.2.1, hq.2.2.trans (congrArg (fun x => x⁻¹ * (q : O.c'.F)) hE.symm)⟩
 
-theorem rowAt_iff_common (i : Fin D.R.m) (hV : T.V ((i : ℕ) + 1) T.toCore.σ₀ = Wc D i) {Tp : Type} [Nonempty Tp] (tup : Tp → T0)
-    (hS : ∀ t, ScalarExtends T R i (tup t)) (cc : (T.U ((i : ℕ) + 1) T.toCore.σ₀).Comp → ℂ) (ph : ℂ) :
-    IotaEmbeddingColumns.RowAt T R κ v₀ i hV tup cc ph ↔ ∃ O : OMDat T.toCore R i Tp tup, Common κ v₀ O cc ph :=
-  (rowAt_iff T R κ v₀ i hV tup cc ph).trans ⟨fun ⟨O, h, _⟩ => ⟨O, h⟩, fun ⟨O, h⟩ => exists_abs κ v₀ hS O h⟩
 
 def LevUnique (i : Fin D.R.m) : Prop :=
   ∀ lev lev' : G → (T.Q.Dw ((i : ℕ) + 1)).La →ₗ[𝓞 D.host.E] (T.Q.Dw ((i : ℕ) + 1)).La,
@@ -273,10 +269,6 @@ theorem ties_of_pins {i : Fin D.R.m} (h : OMPins T R κ v₀ O i) : VStd D i ∧
 theorem guards_iff {i : Fin D.R.m} (h : OMPins T R κ v₀ O i) : IotaEmbeddingColumns.PlaceGuard T R ↔ QGuard R :=
   (placeGuard_iff T R).trans (and_iff_left (ties_of_pins h).2.2)
 
-theorem rowBase_of {i : Fin D.R.m} (hV : T.V ((i : ℕ) + 1) T.toCore.σ₀ = Wc D i) (hp : OMPins T R κ v₀ O i)
-    (ht : PhaseTie T R κ v₀ O ph i) (h0 : OneMapRow0 T R κ v₀ O i) (hS : ScalarExtends T R i A.μ0) :
-    IotaEmbeddingColumns.RowBase T R κ v₀ i hV (T.cE ((i : ℕ) + 1) T.toCore.σ₀) (ph i) :=
-  (rowAt_iff_common T R κ v₀ i hV _ (fun _ => hS) _ _).2 ⟨O i, hp.2, (ht h0).2.1⟩
 
 theorem rowAll_of_rowR {i : Fin D.R.m} (hV : T.V ((i : ℕ) + 1) T.toCore.σ₀ = Wc D i) (hS : ∀ t, ScalarExtends T R i t)
     (h : OneMapRowR T R κ v₀ O ph i) (hg : IotaEmbeddingColumns.PlaceGuard T R) :
@@ -299,48 +291,10 @@ theorem conclusions_iff {i : Fin D.R.m} (hV : T.V ((i : ℕ) + 1) T.toCore.σ₀
       (IotaEmbeddingColumns.PlaceGuard T R → IotaEmbeddingColumns.RowAll T R κ v₀ i hV (T.cE ((i : ℕ) + 1) T.toCore.σ₀) (ph i)) :=
   ⟨fun h => ⟨h.1, rowAll_of_rowR hV hS h⟩, fun h => rowR_of_rowAll hV hp ht hL h.1 h.2⟩
 
-theorem oneMapAll_of_rowR (F : Face D A) (hS : ∀ i t, ScalarExtends T R i t) (h : ∀ i, OneMapRowR T R κ v₀ O ph i) :
-    IotaEmbeddingColumns.OneMapAll T R κ v₀ F ph :=
-  fun _ _ _ _ hg i hV => rowAll_of_rowR hV (hS i) (h i) hg
 
-theorem constTie_iff (hS : ∀ i t, ScalarExtends T R i t) :
-    IotaEmbeddingColumns.ConstTie T R κ v₀ ↔ ∀ i : Fin D.R.m, (∃ cc z, ∃ O' : OMDat T.toCore R i T0 id, Common κ v₀ O' cc z) →
-      ∃ z, ∃ O' : OMDat T.toCore R i T0 id, Common κ v₀ O' (T.cE ((i : ℕ) + 1) T.toCore.σ₀) z := by
-  haveI : Nonempty T0 := ⟨A.μ0⟩
-  have e := fun i hV cc z => rowAt_iff_common T R κ v₀ i hV (id : T0 → T0) (hS i) cc z
-  constructor
-  · rintro h i ⟨cc, z, O', h'⟩
-    exact (h i O'.hV ⟨cc, z, (e i O'.hV cc z).2 ⟨O', h'⟩⟩).imp fun z' hz => (e i O'.hV _ z').1 hz
-  · rintro h i hV ⟨cc, z, h'⟩
-    exact (h i ⟨cc, z, (e i hV cc z).1 h'⟩).imp fun z' hz => (e i hV _ z').2 hz
 
-theorem statements_iff {F : Face D A} (hT : IotaEmbeddingColumns.Ties T R κ v₀ F) (hN : IotaEmbeddingColumns.BaseNonzero T R v₀)
-    (hp : ∀ i, OMPins T R κ v₀ O i) (ht : ∀ i, PhaseTie T R κ v₀ O ph i) (hL : ∀ i, LevUnique T R i)
-    (hS : ∀ i t, ScalarExtends T R i t) :
-    (∀ i, OneMapRowR T R κ v₀ O ph i) ↔ (∀ i, OneMapRow0 T R κ v₀ O i) ∧ IotaEmbeddingColumns.OneMapAll T R κ v₀ F ph ∧
-      (IotaEmbeddingColumns.PlaceGuard T R → IotaEmbeddingColumns.ConstTie T R κ v₀) :=
-  ⟨fun h => ⟨fun i => (h i).1, oneMapAll_of_rowR F hS h, fun hg i hV _ => ⟨ph i, rowAll_of_rowR hV (hS i) (h i) hg⟩⟩,
-    fun ⟨h0, h, hc⟩ i => rowR_of_rowAll (O i).hV (hp i) (ht i) (hL i) (h0 i) fun hg =>
-      h hT (hc hg) (fun j hV _ => rowBase_of hV (hp j) (ht j) (h0 j) (hS j _)) hN hg i _⟩
 
 variable (T R κ v₀ O ph)
 
-theorem oneMap_all_comparison (F : Face D A) :
-    (IotaEmbeddingColumns.PlaceGuard T R ↔ QGuard R ∧ TypeCoprime T R) ∧
-    (∀ i hV, OneMapRowR T R κ v₀ O ph i ↔ OneMapRow0 T R κ v₀ O i ∧ (QGuard R → ∃ O' : OMDat T.toCore R i T0 id,
-      Common κ v₀ O' (T.cE ((i : ℕ) + 1) T.toCore.σ₀) (ph i) ∧ O'.EquivAt (κ i) (T.cE ((i : ℕ) + 1) T.toCore.σ₀) ∧
-        PhaseRational T R κ v₀ i hV (T.cE ((i : ℕ) + 1) T.toCore.σ₀) (ph i))) ∧
-    (∀ i hV cc z, IotaEmbeddingColumns.RowAll T R κ v₀ i hV cc z ↔
-      ∃ O' : OMDat T.toCore R i T0 id, Common κ v₀ O' cc z ∧ ∀ t, BAbs O'.c' (O'.B t)) ∧
-    (∀ i hV, OMPins T R κ v₀ O i → PhaseTie T R κ v₀ O ph i → LevUnique T R i → (∀ t, ScalarExtends T R i t) →
-      (OneMapRowR T R κ v₀ O ph i ↔ OneMapRow0 T R κ v₀ O i ∧
-        (IotaEmbeddingColumns.PlaceGuard T R → IotaEmbeddingColumns.RowAll T R κ v₀ i hV (T.cE ((i : ℕ) + 1) T.toCore.σ₀) (ph i)))) ∧
-    ((∀ i t, ScalarExtends T R i t) → (∀ i, OneMapRowR T R κ v₀ O ph i) → IotaEmbeddingColumns.OneMapAll T R κ v₀ F ph) ∧
-    (IotaEmbeddingColumns.Ties T R κ v₀ F → IotaEmbeddingColumns.BaseNonzero T R v₀ → (∀ i, OMPins T R κ v₀ O i) → (∀ i, PhaseTie T R κ v₀ O ph i) →
-      (∀ i, LevUnique T R i) → (∀ i t, ScalarExtends T R i t) →
-      ((∀ i, OneMapRowR T R κ v₀ O ph i) ↔ (∀ i, OneMapRow0 T R κ v₀ O i) ∧ IotaEmbeddingColumns.OneMapAll T R κ v₀ F ph ∧
-        (IotaEmbeddingColumns.PlaceGuard T R → IotaEmbeddingColumns.ConstTie T R κ v₀))) :=
-  ⟨placeGuard_iff T R, rowR_iff T R κ v₀ O ph, rowAll_iff T R κ v₀, fun _ hV => conclusions_iff hV, oneMapAll_of_rowR F,
-    statements_iff⟩
 
 end GlobalTheory.OneMapAllCompare

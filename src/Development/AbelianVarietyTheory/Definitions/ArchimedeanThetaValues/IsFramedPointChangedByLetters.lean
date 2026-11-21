@@ -203,25 +203,9 @@ section Fld
 
 variable {Y : Model Xo c β} {K : Type} [Field K] {b : O →+* K} {a : ArcIn Dw l β K b} {χ : Sp (PowerSeries K) ⟶ Y.X}
 
-theorem lieImg_iff_isLieImage (W : Wit Y a χ) (ν : Out.GtPt a.D₀ (epsR K)) (v : epsR (PowerSeries K) ⟶ W.t.G) :
-    LieImg W ν v ↔ IsLieImage W ν v := Iff.rfl
 
-theorem gtTanR_iff_gtTan (ν : Out.GtPt a.D₀ (epsR K)) : GtTanR ν ↔ GtTan (a := a) ν := Iff.rfl
 
-theorem arcBasis_iff_arcLieBasis [Algebra c.F K] (W : Wit Y a χ) (ρ : (E →+* ℂ) → (𝓞 E →+* K))
-    (hρ : ∀ τ x, ρ τ x = algebraMap c.F K (embK c τ x))
-    (e : ∀ τ : E →+* ℂ, Fin (Dw.mult τ) → Out.GtPt a.D₀ (epsR K)) : ArcBasis W ρ e ↔ ArcLieBasis W e := by
-  simp only [ArcBasis, ArcLieBasis, hρ]
-  exact Iff.rfl
 
-theorem IsArcFr.isArcPt3At [Algebra c.F K] [Algebra c.F (ArcS Dw K)] {W : Wit Y a χ}
-    {e : ∀ τ : E →+* ℂ, Fin (Dw.mult τ) → Out.GtPt a.D₀ (epsR K)} {th : a.D₀.P.L.Sec}
-    {y : FrPt Xo c (ArcS Dw K)} (h : IsArcFr W e th (arcι Dw K) y) (hth : ∃ j, th.f j ≠ 0) :
-    IsArcPt3At Y a χ W y th := by
-  obtain ⟨-, t', m1, m2, φ, -, -, -, hφ0, hφ, -, θ, w1, w2, σ', s1, θ2, hΘ, hr1, hr2, hi1, hi2, hps, hs⟩ := h
-  obtain ⟨σ, fam, θ', hexp, hcoh, hσ, hθ⟩ := hΘ
-  exact ⟨σ, fam, θ', θ, hth, hexp, hcoh, hσ, hθ, t', m1, m2, w1, w2, σ', s1, θ2, ⟨φ, hφ0, hφ⟩,
-    hr1, hr2, hi1, hi2, hps, hs⟩
 
 theorem IsArcFr.isFramedPoint_changed_by_letters [Algebra c.F K] [Algebra c.F (ArcS Dw K)] {W : Wit Y a χ}
     {e : ∀ τ : E →+* ℂ, Fin (Dw.mult τ) → Out.GtPt a.D₀ (epsR K)} {th : a.D₀.P.L.Sec} {ζ : ArcS Dw K}

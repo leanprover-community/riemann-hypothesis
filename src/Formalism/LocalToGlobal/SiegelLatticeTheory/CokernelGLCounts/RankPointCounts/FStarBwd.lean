@@ -122,12 +122,5 @@ def BwdBeta : Prop :=
 
 variable {u u' F0 what₂}
 
-theorem bwdC_of (hC : CtxP u u' F0 what₂) (h1 : BwdN Zd u u' F0 what₂) (h2 : BwdTerm Zd u u' F0 what₂)
-    (h3 : BwdPair Zd u u' F0 what₂) : BwdC Zd u u' F0 what₂ := by
-  intro γ Z hZ F'₂ φ φ' hS Λ₂ hΛ₂
-  obtain ⟨n, hn, himg⟩ := h1 hC γ Z hZ F'₂ φ φ' hS Λ₂ hΛ₂
-  obtain ⟨hT, hA, hG, hO⟩ := h2 hC γ Z hZ F'₂ φ φ' hS Λ₂ hΛ₂
-  refine ⟨mapL n (isom_of_N0F hn) (liftF F'₂), ⟨?_, h3 hC γ Z hZ F'₂ φ φ' hS Λ₂ hΛ₂ n hn himg⟩, n, hn, ⟨fun a => rfl, rfl⟩, himg⟩
-  exact mem_EZ_of hn γ.lam Λ₂ (gmap_eq_of_image himg) (liftF F'₂) Z hT hA hG hO hS.1
 
 end Formalism.L2.SG.Pf.FrameGlobalPatching.FStar

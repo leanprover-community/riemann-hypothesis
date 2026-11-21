@@ -111,12 +111,6 @@ theorem abs_nrm_sub_nrm_le (x y : Ω) : |nrm K x - nrm K y| ≤ nrm K (x - y) :=
   change |‖x‖ - ‖y‖| ≤ ‖x - y‖
   exact abs_norm_sub_norm_le x y
 
-theorem nrm_add_eq_left {x y : Ω} (h : nrm K y < nrm K x) : nrm K (x + y) = nrm K x := by
-  letI := algebraicNormedField K Ω
-  haveI := algebraicNormedField_isUltrametricDist K Ω
-  change ‖y‖ < ‖x‖ at h
-  change ‖x + y‖ = ‖x‖
-  exact IsUltrametricDist.norm_add_eq_max_of_norm_ne_norm (ne_of_gt h) |>.trans (max_eq_left h.le)
 
 theorem nrm_prod {ι : Type*} (s : Finset ι) (f : ι → Ω) :
     nrm K (∏ i ∈ s, f i) = ∏ i ∈ s, nrm K (f i) := by
@@ -144,11 +138,6 @@ theorem nrm_natCast_le_one (n : ℕ) : nrm K (n : Ω) ≤ 1 := by
   change ‖(n : Ω)‖ ≤ 1
   exact IsUltrametricDist.norm_natCast_le_one Ω n
 
-theorem nrm_intCast_le_one (n : ℤ) : nrm K (n : Ω) ≤ 1 := by
-  letI := algebraicNormedField K Ω
-  haveI := algebraicNormedField_isUltrametricDist K Ω
-  change ‖(n : Ω)‖ ≤ 1
-  exact IsUltrametricDist.norm_intCast_le_one Ω n
 
 theorem nrm_algEquiv (σ : Ω ≃ₐ[K] Ω) (x : Ω) : nrm K (σ x) = nrm K x := by
   letI := normedField K
@@ -428,8 +417,6 @@ theorem nrm_N (n : ℕ) (y : Ω) : nrm K (t.N n y) = nrm K y ^ (p ^ t.k n) := by
 theorem nrm_N_le_one (n : ℕ) {y : Ω} (hy : nrm K y ≤ 1) : nrm K (t.N n y) ≤ 1 := by
   rw [nrm_N]; exact pow_le_one₀ (nrm_nonneg _) hy
 
-theorem N_eq_zero_iff (n : ℕ) {y : Ω} : t.N n y = 0 ↔ y = 0 := by
-  rw [← nrm_eq_zero (K := K), nrm_N, pow_eq_zero_iff (pow_pos t.prime.pos _).ne', nrm_eq_zero]
 
 theorem nrm_N_sub_pow_le (n : ℕ) {y : Ω} (hy : y ∈ t.E (n + 1)) (hy1 : nrm K y ≤ 1) :
     nrm K (t.N n y - y ^ (p ^ t.k n)) ≤ t.c := by

@@ -257,9 +257,6 @@ theorem grMap_mk {π : 𝔹} (hπ : maximalIdeal 𝔹 = span {π}) {i : ℤ} (b 
     grMap hπ i ⟨algebraMap 𝔹 𝔹dR π ^ i * algebraMap 𝔹 𝔹dR b, h⟩ = thetaBDeRhamPlusField p b := by
   rw [grMap_apply, filEquiv_mk]
 
-theorem grMap_smul {π : 𝔹} (hπ : maximalIdeal 𝔹 = span {π}) {i : ℤ} (c : 𝔹) (x : fil K p i) :
-    grMap hπ i (c • x) = thetaBDeRhamPlusField p c * grMap hπ i x := by
-  rw [grMap_apply, grMap_apply, map_smul, smul_eq_mul, map_mul]
 
 theorem grMap_surjective {π : 𝔹} (hπ : maximalIdeal 𝔹 = span {π}) (i : ℤ) :
     Function.Surjective (grMap (K := K) hπ i) :=
@@ -290,8 +287,6 @@ def grEquiv {π : 𝔹} (hπ : maximalIdeal 𝔹 = span {π}) (i : ℤ) :
   (QuotientAddGroup.quotientAddEquivOfEq (ker_grMap hπ i).symm).trans
     (QuotientAddGroup.quotientKerEquivOfSurjective _ (grMap_surjective hπ i))
 
-theorem grEquiv_mk {π : 𝔹} (hπ : maximalIdeal 𝔹 = span {π}) {i : ℤ} (x : fil K p i) :
-    grEquiv hπ i (Submodule.Quotient.mk x) = grMap hπ i x := rfl
 
 end IsPerfectoidField
 

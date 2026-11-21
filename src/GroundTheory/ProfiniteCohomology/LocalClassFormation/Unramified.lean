@@ -1,9 +1,62 @@
 import Mathlib
-import GroundTheory.ProfiniteCohomology.LocalClassFormation.IntegerUnitsToUnitsHomApply
+import GroundTheory.ProfiniteCohomology.GaloisModules.CoeGalRootsOfUnityHomApply
+import GroundTheory.LocalFields.HerbrandLocalBase
+import GroundTheory.TateCohomology.Characters
 import GroundTheory.LocalFields.UnramifiedNorms
 import GroundTheory.LocalFields.UnramifiedGalois
 import GroundTheory.TateCohomology.Herbrand
 import GroundTheory.ProfiniteCohomology.ClassFormations.IsIsoCohomologyMapAlongResSubgroupOfHom
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.ProfCoh
+
+open CategoryTheory GroundTheory.LocalField ValuativeRel
+
+variable (K L : Type) [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
+  [Field L] [ValuativeRel L] [TopologicalSpace L] [IsNonarchimedeanLocalField L]
+  [Algebra K L] [ValuativeExtension K L] [FiniteDimensional K L]
+
+noncomputable abbrev galIntegerUnitsZ : Rep ℤ Gal(L/K) :=
+  Rep.ofMulDistribMulAction Gal(L/K) 𝒪[L]ˣ
+
+noncomputable def integerUnitsToUnits : galIntegerUnitsZ K L ⟶ galUnitsZ K L :=
+  Rep.ofHom ⟨(MonoidHom.toAdditive (unitsIncl L)).toIntLinearMap, fun σ => by
+    ext x
+    rfl⟩
+
+@[simp]
+theorem integerUnitsToUnits_hom_apply (x : Additive 𝒪[L]ˣ) :
+    (integerUnitsToUnits K L).hom x = Additive.ofMul (unitsIncl L x.toMul) :=
+  rfl
+
+noncomputable def unitsValuation : galUnitsZ K L ⟶ Rep.trivial ℤ Gal(L/K) ℤ :=
+  Rep.ofHom ⟨(unitsOrd L).toIntLinearMap, fun σ => by
+    ext x
+    exact unitsOrd_smul σ x.toMul⟩
+
+@[simp]
+theorem unitsValuation_hom_apply (x : Additive Lˣ) :
+    (unitsValuation K L).hom x = ord ((x.toMul : Lˣ) : L) :=
+  rfl
+
+noncomputable def unitsValuationSES : ShortComplex (Rep ℤ Gal(L/K)) :=
+  ShortComplex.mk (integerUnitsToUnits K L) (unitsValuation K L) (by
+    ext x
+    exact ord_unit (K := L) x.toMul)
+
+theorem unitsValuationSES_shortExact : (unitsValuationSES K L).ShortExact where
+  exact := GroundTheory.GroupCoh.shortComplex_exact_of_forall fun x hx =>
+    (exact_unitsIncl_unitsOrd (L := L) x).1 hx
+  mono_f := (Rep.mono_iff_injective _).2 fun _ _ h =>
+    Additive.toMul.injective (unitsIncl_injective (K := L) (congrArg Additive.toMul h))
+  epi_g := (Rep.epi_iff_surjective _).2 (unitsOrd_surjective (L := L))
+
+end GroundTheory.ProfCoh
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
@@ -89,9 +142,6 @@ noncomputable def evalCharQZ (σ : G) : (Additive G →+ AddCircle (1 : ℚ)) �
   map_zero' := by simp
   map_add' χ ψ := by simp
 
-theorem evalCharQZ_apply (σ : G) (χ : Additive G →+ AddCircle (1 : ℚ)) :
-    evalCharQZ σ χ = QZ.toAddCircle.symm (χ (Additive.ofMul σ)) :=
-  rfl
 
 theorem evalCharQZ_injective {σ : G} (hσ : ∀ g : G, g ∈ Subgroup.zpowers σ) :
     Function.Injective (evalCharQZ σ) := by
@@ -177,8 +227,6 @@ noncomputable def h2UnitsIsoInt [IsUnramified K L] :
     groupCohomology (galUnitsZ K L) 2 ≅ groupCohomology (Rep.trivial ℤ Gal(L/K) ℤ) 2 :=
   asIso (h2Valuation K L)
 
-theorem h2UnitsIsoInt_hom [IsUnramified K L] : (h2UnitsIsoInt K L).hom = h2Valuation K L :=
-  rfl
 
 theorem h2Valuation_injective [IsUnramified K L] : Function.Injective (h2Valuation K L).hom :=
   (ModuleCat.mono_iff_injective _).1 inferInstance
@@ -226,18 +274,8 @@ theorem mem_range_unramifiedInv_iff (x : QZ) :
       GroundTheory.GroupCoh.cyclicChar_apply_gen, card_algEquiv_of_unramified K L he]
     rfl
 
-theorem range_unramifiedInv :
-    (unramifiedInv K L).range = AddSubgroup.zmultiples (QZ.mk (1 / Module.finrank K L)) := by
-  have hn : 0 < Module.finrank K L := Module.finrank_pos
-  ext x
-  rw [mem_range_unramifiedInv_iff, AddSubgroup.mem_zmultiples_iff]
-  constructor
-  · intro hx
-    obtain ⟨m, rfl⟩ := QZ.exists_eq_nsmul_mk_one_div hn hx
-    exact ⟨m, natCast_zsmul _ _⟩
-  · rintro ⟨k, rfl⟩
-    rw [smul_comm, QZ.nsmul_mk_one_div, smul_zero]
 
 end Invariant
 
 end GroundTheory.ProfCoh
+end

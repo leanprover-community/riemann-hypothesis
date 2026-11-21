@@ -263,13 +263,6 @@ theorem tate_isMonomialTau (k : ℤ) : (tate k).IsMonomialTau ![PowerSeries.X] !
   rw [_root_.mul_one]
   exact congrArg (gm (𝟙 _) z ⊤) (map_zpow _ _ _).symm
 
-theorem tate_isPos {k : ℤ} (hk : 0 < k) : (tate k).IsPos (maximalIdeal (PowerSeries ℚ)) :=
-  (tate_isMonomialTau k).isPos
-    (fun i => by
-      rw [Subsingleton.elim i 0, PowerSeries.maximalIdeal_eq_span_X]; exact Ideal.mem_span_singleton_self _)
-    (fun i (y : ℤ) => by
-      rw [Subsingleton.elim i 0]; exact (mul_nonneg hk.le (mul_self_nonneg y) : 0 ≤ k * (y * y)))
-    (fun (y : ℤ) hy => ⟨0, (mul_pos hk (mul_self_pos.2 hy) : 0 < k * (y * y))⟩)
 
 open InhTate in
 
@@ -309,23 +302,8 @@ theorem refines_tate : Refines (tate 2) (RingHom.id _) tatePre (AddEquiv.refl _)
   erw [tau_isConst a b]
   exact gm_res _ z _ (hJ.mem _ _) _
 
-theorem isCN_powerSeries : IsCN (PowerSeries ℚ) :=
-  ⟨inferInstance, inferInstance, inferInstance, algebraRat.charZero _⟩
 
-theorem exists_pos_refined : ∃ (Q : Data (PowerSeries ℚ)) (D : DegData (PowerSeries ℚ) (maximalIdeal _))
-    (ε : D.toPre.X ≃+ Q.X), Nontrivial Q.X ∧ IsCN (PowerSeries ℚ) ∧ Q.IsPos (maximalIdeal _) ∧
-      Refines Q (RingHom.id _) D.toPre ε :=
-  ⟨tate 2, ⟨InhTate.tatePre, InhTate.psiEven, InhTate.tauBimult,
-    by rw [PowerSeries.maximalIdeal_eq_span_X]; exact InhTate.tateData.psi_pos,
-    by rw [PowerSeries.maximalIdeal_eq_span_X]; exact InhTate.tateData.psi_tendsto⟩, AddEquiv.refl _,
-    inferInstance, isCN_powerSeries, tate_isPos two_pos, refines_tate⟩
 
-theorem exists_unif_of_isMumfordOf {o : Type} [CommRing o] {ζ : o} {g n : ℕ} (F : SFam g n ζ) {S : Scheme.{0}} (j : F.X ⟶ S)
-    {G : Over S} [GrpObj G] (e : F.univ.A.left ⟶ G.left) [IsLocalRing R] (ξ : Sp R ⟶ S)
-    (D : DegData R (maximalIdeal R)) (h : IsMumfordOf F j e ξ (ofDeg D.toPre D.tau_bimult)) :
-    ∃ (G' : Over (Sp R)) (_ : GrpObj G') (_ : IsCommMonObj G') (π : G'.left ⟶ G.left) (A : PolAV (Sp (FractionRing R)))
-      (U : Unif (maximalIdeal R) D A G'), IsUnifOf F j e (spMap (RingHom.id R) ≫ ξ) π U :=
-  h.unif R (RingHom.id R) h.isCN Function.injective_id (RingHom.Finite.id R) D _ (refines_ofDeg _ _)
 
 end Wit
 

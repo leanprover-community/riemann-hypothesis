@@ -87,15 +87,8 @@ def polyW : WachMod (polyBase p) 0 (K p) where
   γ_N := by intro x hx; exact ⟨0, Submodule.zero_mem _, by simp⟩
   γ_qN := by intro y hy; exact ⟨0, by simp, by simp⟩
 
-theorem polyW_nondeg : (polyW p).N ≠ ⊥ ∧ ¬ IsUnit (polyBase p).π₀ := by
-  constructor
-  · intro h
-    have : (1 : K p) ∈ (polyW p).N := ⟨1, by simp⟩
-    rw [h, Submodule.mem_bot] at this; exact one_ne_zero this
-  · simp only [polyBase]; exact Polynomial.not_isUnit_X
 
 end Wit
 
-theorem wach_module_nonempty : WachNonempty := fun p _ => ⟨polyW p, polyW_nondeg p⟩
 
 end Formalism.CL.W

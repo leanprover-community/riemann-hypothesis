@@ -1,23 +1,174 @@
-import ReciprocityTheory.GeometryOfNumbers.PluriharmonicAnalysis.MorseGenStB
+import Mathlib
 
+section
+namespace ReciprocityTheory.GeometryOfNumbersTheory
+
+open Matrix MeasureTheory Complex
+
+
+
+
+end ReciprocityTheory.GeometryOfNumbersTheory
+end
+
+section
+noncomputable section
+
+namespace ReciprocityTheory.GeometryOfNumbersTheory
+
+open MeasureTheory Filter Topology
+
+open Set
+
+
+
+def discI (a R : ℝ) : ℝ :=
+  ∫ z in Metric.ball (0 : ℂ) R, Real.exp (-(a * ‖z‖ ^ 2))
+
+
+
+
+
+
+
+
+end ReciprocityTheory.GeometryOfNumbersTheory
+end
+end
+
+section
+namespace ReciprocityTheory.GeometryOfNumbersTheory
+
+open MeasureTheory
+
+
+
+
+
+end ReciprocityTheory.GeometryOfNumbersTheory
+end
+
+section
+namespace ReciprocityTheory.GeometryOfNumbersTheory
+
+open MeasureTheory Filter Topology
+
+
+
+end ReciprocityTheory.GeometryOfNumbersTheory
+end
+
+section
+namespace ReciprocityTheory.GeometryOfNumbersTheory
+
+open Complex
+
+section
+variable {D : ℕ}
+
+lemma pgtl_smul_decomp (c : ℂ) (z : Fin D → ℂ) : c • z = c.re • z + c.im • (I • z) := by
+  ext j
+  simp only [Pi.smul_apply, Pi.add_apply, smul_eq_mul, Complex.real_smul]
+  conv_lhs => rw [← Complex.re_add_im c]
+  ring
+
+lemma pgtl_clin {F : Type*} [AddCommGroup F] [Module ℂ F] (f : (Fin D → ℂ) → F)
+    (hadd : ∀ x y, f (x + y) = f x + f y) (hr : ∀ (r : ℝ) x, f (r • x) = (r : ℂ) • f x)
+    (hI : ∀ x, f (I • x) = I • f x) (c : ℂ) (x : Fin D → ℂ) : f (c • x) = c • f x := by
+  rw [pgtl_smul_decomp c x, hadd, hr, hr, hI]
+  conv_rhs => rw [← Complex.re_add_im c]
+  rw [add_smul, mul_smul]
+
+noncomputable def pgtlCx (d : (Fin D → ℂ) →L[ℝ] ℝ) : (Fin D → ℂ) →L[ℂ] ℂ :=
+  LinearMap.toContinuousLinearMap
+  { toFun := fun z => (d z : ℂ) - I * (d (I • z) : ℂ)
+    map_add' := by intro x y; simp only [smul_add, map_add, ofReal_add]; ring
+    map_smul' := by
+      intro c z
+      simp only [RingHom.id_apply, smul_eq_mul]
+      refine pgtl_clin (fun z => (d z : ℂ) - I * (d (I • z) : ℂ)) ?_ ?_ ?_ c z
+      · intro x y; simp only [smul_add, map_add, ofReal_add]; ring
+      · intro r x
+        rw [smul_comm I r x, map_smul, map_smul, smul_eq_mul, smul_eq_mul, smul_eq_mul]
+        push_cast; ring
+      · intro x
+        rw [smul_smul, I_mul_I, neg_one_smul, map_neg, smul_eq_mul]
+        push_cast
+        ring_nf
+        rw [I_sq]; ring }
+
+lemma pgtlCx_apply (d : (Fin D → ℂ) →L[ℝ] ℝ) (z : Fin D → ℂ) :
+    pgtlCx d z = (d z : ℂ) - I * (d (I • z) : ℂ) := rfl
+
+
+noncomputable def pgtlJ : (Fin D → ℂ) →L[ℝ] (Fin D → ℂ) :=
+  (I • ContinuousLinearMap.id ℂ (Fin D → ℂ)).restrictScalars ℝ
+
+lemma pgtlJ_apply (w : Fin D → ℂ) : pgtlJ w = I • w := rfl
+
+noncomputable def pgtlDz (B : (Fin D → ℂ) →L[ℝ] (Fin D → ℂ) →L[ℝ] ℝ) (z : Fin D → ℂ) :
+    (Fin D → ℂ) →L[ℝ] ℝ :=
+  (1 / 4 : ℝ) • (B z - (B (I • z)).comp pgtlJ)
+
+lemma pgtlDz_apply (B : (Fin D → ℂ) →L[ℝ] (Fin D → ℂ) →L[ℝ] ℝ) (z w : Fin D → ℂ) :
+    pgtlDz B z w = (B z w - B (I • z) (I • w)) / 4 := by
+  simp only [pgtlDz, ContinuousLinearMap.smul_apply, ContinuousLinearMap.sub_apply,
+    ContinuousLinearMap.comp_apply, pgtlJ_apply, smul_eq_mul]
+  ring
+
+noncomputable def pgtlBil (B : (Fin D → ℂ) →L[ℝ] (Fin D → ℂ) →L[ℝ] ℝ) :
+    (Fin D → ℂ) →L[ℂ] (Fin D → ℂ) →L[ℂ] ℂ :=
+  LinearMap.toContinuousLinearMap
+  { toFun := fun z => pgtlCx (pgtlDz B z)
+    map_add' := by
+      intro x y
+      refine ContinuousLinearMap.ext fun w => ?_
+      simp only [ContinuousLinearMap.add_apply, pgtlCx_apply, pgtlDz_apply, smul_add, map_add]
+      apply Complex.ext <;> simp <;> ring
+    map_smul' := by
+      intro c z
+      simp only [RingHom.id_apply]
+      refine pgtl_clin (fun z => pgtlCx (pgtlDz B z)) ?_ ?_ ?_ c z
+      · intro x y
+        refine ContinuousLinearMap.ext fun w => ?_
+        simp only [ContinuousLinearMap.add_apply, pgtlCx_apply, pgtlDz_apply, smul_add, map_add]
+        apply Complex.ext <;> simp <;> ring
+      · intro r x
+        refine ContinuousLinearMap.ext fun w => ?_
+        simp only [ContinuousLinearMap.smul_apply, pgtlCx_apply, pgtlDz_apply, smul_comm I r x,
+          map_smul, smul_eq_mul]
+        apply Complex.ext <;> simp <;> ring
+      · intro x
+        refine ContinuousLinearMap.ext fun w => ?_
+        simp only [ContinuousLinearMap.smul_apply, pgtlCx_apply, pgtlDz_apply, smul_smul, I_mul_I,
+          neg_one_smul, map_neg, ContinuousLinearMap.neg_apply, smul_eq_mul]
+        apply Complex.ext <;> simp <;> ring }
+
+
+
+end
+
+
+
+end ReciprocityTheory.GeometryOfNumbersTheory
+end
+
+section
+namespace ReciprocityTheory.GeometryOfNumbersTheory
+
+open MeasureTheory Complex Matrix Unitary
+open scoped ComplexOrder
+
+
+end ReciprocityTheory.GeometryOfNumbersTheory
+end
+
+section
 namespace ReciprocityTheory.GeometryOfNumbersTheory
 
 open MeasureTheory Complex Matrix
 open scoped ComplexOrder
 
-theorem morse_general_uniform {D : ℕ} (ρ₀ K₂ K₃ Lν νmin : ℝ) (hρ₀ : 0 < ρ₀) (hνmin : 0 < νmin) :
-    ∃ M : ℝ, 0 < M ∧ ∀ n : ℕ, 0 < n → ∀ (φ ν : (Fin D → ℂ) → ℝ) (f : (Fin D → ℂ) → ℂ),
-      ContDiffOn ℝ 3 φ (Metric.ball 0 ρ₀) →
-      ‖fderiv ℝ (fderiv ℝ φ) 0‖ ≤ K₂ →
-      (∀ z ∈ Metric.ball (0 : Fin D → ℂ) ρ₀, ‖iteratedFDeriv ℝ 3 φ z‖ ≤ K₃) →
-      ContinuousOn ν (Metric.ball 0 ρ₀) → νmin ≤ ν 0 →
-      (∀ z ∈ Metric.ball (0 : Fin D → ℂ) ρ₀, ν 0 - Lν * ‖z‖ ≤ ν z) →
-      (∀ z ∈ Metric.ball (0 : Fin D → ℂ) ρ₀, 0 ≤ ν z) →
-      DifferentiableOn ℂ f (Metric.ball 0 ρ₀) →
-      IntegrableOn (fun z => ‖f z‖ ^ 2 * Real.exp (-((n : ℝ) * φ z)) * ν z)
-        (Metric.ball (0 : Fin D → ℂ) ρ₀) →
-      ‖f 0‖ ^ 2 * Real.exp (-((n : ℝ) * φ 0)) ≤ M * (n : ℝ) ^ D *
-        ∫ z in Metric.ball (0 : Fin D → ℂ) ρ₀, ‖f z‖ ^ 2 * Real.exp (-((n : ℝ) * φ z)) * ν z := by
-  exact morseGen_uniform hρ₀ hνmin
 
 end ReciprocityTheory.GeometryOfNumbersTheory
+end

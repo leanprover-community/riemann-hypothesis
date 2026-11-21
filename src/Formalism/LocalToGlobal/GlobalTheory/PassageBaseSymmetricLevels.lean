@@ -17,28 +17,10 @@ section Chars
 
 variable {K : Type} [Field K] {Γ : Type} [Group Γ] [Finite Γ]
 
-theorem chi_pow_card (H : Subgroup Γ) (χ : H →* Kˣ) (h : H) : ((χ h : Kˣ) : K) ^ Nat.card H = 1 := by
-  have e : h ^ Nat.card H = 1 := pow_card_eq_one'
-  rw [← Units.val_pow_eq_pow_val, ← map_pow, e, map_one, Units.val_one]
 
-theorem chi_inv_pow_card (H : Subgroup Γ) (χ : H →* Kˣ) (h : H) :
-    (((χ h)⁻¹ : Kˣ) : K) ^ Nat.card H = 1 := by
-  rw [← map_inv]; exact chi_pow_card H χ h⁻¹
 
-theorem isIntegral_of_pow_one {R : Type} [CommRing R] [Algebra ℤ R] {x : R} {n : ℕ} (hn : 0 < n) (h : x ^ n = 1) :
-    IsIntegral ℤ x := by
-  apply IsIntegral.of_pow hn
-  rw [h]; exact isIntegral_one
 
-theorem norm_of_pow_one {z : ℂ} {n : ℕ} (hn : 0 < n) (h : z ^ n = 1) : ‖z‖ = 1 := by
-  have : ‖z‖ ^ n = 1 := by rw [← norm_pow, h, norm_one]
-  exact (pow_eq_one_iff_of_nonneg (norm_nonneg z) hn.ne').1 this
 
-theorem star_eq_inv_of_pow_one {z : ℂ} {n : ℕ} (hn : 0 < n) (h : z ^ n = 1) : star z = z⁻¹ := by
-  have hz := norm_of_pow_one hn h
-  have h0 : z ≠ 0 := by intro h0; rw [h0, norm_zero] at hz; exact zero_ne_one hz
-  rw [Complex.inv_def, Complex.normSq_eq_norm_sq, hz]
-  simp
 
 end Chars
 
@@ -89,48 +71,11 @@ theorem typeProj_mul_self [CharZero K] (ρ : Γ →* Matrix (Fin n) (Fin n) K) (
   congr 1
   field_simp
 
-theorem comm_typeProj (ρ : Γ →* Matrix (Fin n) (Fin n) K) (H : Subgroup Γ) (χ : H →* Kˣ)
-    (M : Matrix (Fin n) (Fin n) K) (hM : ∀ g, M * ρ g = ρ g * M) :
-    M * typeProj ρ H χ = typeProj ρ H χ * M := by
-  letI : Fintype H := Fintype.ofFinite H
-  simp only [typeProj, Matrix.mul_smul, Matrix.smul_mul, Finset.mul_sum, Finset.sum_mul, hM]
 
-theorem typeProj_mulVec (ρ : Γ →* Matrix (Fin n) (Fin n) K) (H : Subgroup Γ) (χ : H →* Kˣ) (x : Fin n → K) :
-    haveI : Fintype H := Fintype.ofFinite H
-    typeProj ρ H χ *ᵥ x = ((Nat.card H : K)⁻¹) • ∑ h : H, (((χ h)⁻¹ : Kˣ) : K) • (ρ (h : Γ) *ᵥ x) := by
-  letI : Fintype H := Fintype.ofFinite H
-  rw [typeProj_eq, Matrix.smul_mulVec, tsumP, sum_mulVec']
-  simp only [Matrix.smul_mulVec]
 
 variable [NumberField K]
 
-theorem typeProj_int (ρ : Γ →* Matrix (Fin n) (Fin n) K) (H : Subgroup Γ) (χ : H →* Kˣ)
-    (R : Submodule (𝓞 K) (Fin n → K)) (hR : ∀ g, ∀ x ∈ R, ρ g *ᵥ x ∈ R) :
-    ∀ x ∈ R, ((Nat.card H : ℕ) : 𝓞 K) • (typeProj ρ H χ *ᵥ x) ∈ R := by
-  intro x hx
-  letI : Fintype H := Fintype.ofFinite H
-  have hc : (Nat.card H : K) ≠ 0 := by exact_mod_cast (Nat.card_pos (α := H)).ne'
-  have e : ((Nat.card H : ℕ) : 𝓞 K) • (typeProj ρ H χ *ᵥ x) =
-      ∑ h : H, (((χ h)⁻¹ : Kˣ) : K) • (ρ (h : Γ) *ᵥ x) := by
-    rw [DivPassage.ok_smul_eq, map_natCast, typeProj_mulVec, smul_smul, mul_inv_cancel₀ hc, one_smul]
-  rw [e]
-  refine Submodule.sum_mem _ fun h _ => ?_
-  have hi : IsIntegral ℤ (((χ h)⁻¹ : Kˣ) : K) :=
-    isIntegral_of_pow_one (Nat.card_pos (α := H)) (chi_inv_pow_card H χ h)
-  have e2 : (((χ h)⁻¹ : Kˣ) : K) • (ρ (h : Γ) *ᵥ x) = (IsIntegralClosure.mk' (𝓞 K) _ hi) • (ρ (h : Γ) *ᵥ x) := by
-    rw [DivPassage.ok_smul_eq, IsIntegralClosure.algebraMap_mk']
-  rw [e2]
-  exact R.smul_mem _ (hR _ _ hx)
 
-theorem typeProj_intG [Fintype Γ] (ρ : Γ →* Matrix (Fin n) (Fin n) K) (H : Subgroup Γ) (χ : H →* Kˣ)
-    (R : Submodule (𝓞 K) (Fin n → K)) (hR : ∀ g, ∀ x ∈ R, ρ g *ᵥ x ∈ R) :
-    ∀ x ∈ R, ((Fintype.card Γ : ℕ) : 𝓞 K) • (typeProj ρ H χ *ᵥ x) ∈ R := by
-  intro x hx
-  have e : ((Fintype.card Γ : ℕ) : 𝓞 K) • (typeProj ρ H χ *ᵥ x) =
-      ((H.index : ℕ) : 𝓞 K) • (((Nat.card H : ℕ) : 𝓞 K) • (typeProj ρ H χ *ᵥ x)) := by
-    rw [smul_smul, ← Nat.cast_mul, mul_comm, H.card_mul_index, Nat.card_eq_fintype_card]
-  rw [e]
-  exact R.smul_mem _ (typeProj_int ρ H χ R hR x hx)
 
 end TP
 
@@ -206,15 +151,6 @@ theorem tmat_adj (hX : ∀ v, IsUnit (X v).det) (v : InfinitePlace K) (M N : Mat
   rw [maj_eq, maj_eq, fcoord_mulVec X hX, fcoord_mulVec X hX, Matrix.star_mulVec, ← Matrix.dotProduct_mulVec] at e
   exact e
 
-theorem tmat_unitary (hX : ∀ v, IsUnit (X v).det) (v : InfinitePlace K) (M : Matrix (Fin n) (Fin n) K)
-    (h : ∀ x y, majAt (Pi.basisFun K (Fin n)) X v (M *ᵥ x) (M *ᵥ y) = majAt (Pi.basisFun K (Fin n)) X v x y) :
-    (tmat X v M)ᴴ * tmat X v M = 1 := by
-  apply mat_eq_of_form X hX v
-  intro x y
-  have e := h x y
-  rw [maj_eq, maj_eq, fcoord_mulVec X hX, fcoord_mulVec X hX, Matrix.star_mulVec, ← Matrix.dotProduct_mulVec,
-    Matrix.mulVec_mulVec] at e
-  rw [e, Matrix.one_mulVec]
 
 def Contr (T : Matrix (Fin n) (Fin n) ℂ) : Prop := ∀ u, cnorm (T *ᵥ u) ≤ cnorm u
 
@@ -223,9 +159,6 @@ theorem contr_mul {T T' : Matrix (Fin n) (Fin n) ℂ} (h : Contr T) (h' : Contr 
   rw [← Matrix.mulVec_mulVec]
   exact le_trans (h _) (h' u)
 
-theorem contr_unitary {T : Matrix (Fin n) (Fin n) ℂ} (h : Tᴴ * T = 1) : Contr T := by
-  intro u
-  rw [Formalism.L2.GlobalTheoryTheory.HLatOps.cnorm_mulVec h]
 
 theorem contr_proj {P : Matrix (Fin n) (Fin n) ℂ} (hH : Pᴴ = P) (hP : P * P = P) : Contr P := by
   intro u
@@ -318,26 +251,7 @@ theorem maj_move (ρ : Γ →* Matrix (Fin n) (Fin n) K)
   have e := hI g v x (ρ g⁻¹ *ᵥ y)
   rwa [Matrix.mulVec_mulVec, ← map_mul, mul_inv_cancel, map_one, Matrix.one_mulVec] at e
 
-theorem conj_chi_inv (H : Subgroup Γ) (χ : H →* Kˣ) (v : InfinitePlace K) (h : H) :
-    starRingEnd ℂ (v.embedding (((χ h)⁻¹ : Kˣ) : K)) = v.embedding ((χ h : Kˣ) : K) := by
-  have hp : (v.embedding ((χ h : Kˣ) : K)) ^ Nat.card H = 1 := by rw [← map_pow, chi_pow_card, map_one]
-  have hinv : (((χ h)⁻¹ : Kˣ) : K) = ((χ h : Kˣ) : K)⁻¹ := Units.val_inv_eq_inv_val _
-  have hs : ∀ w : ℂ, starRingEnd ℂ w = star w := fun _ => rfl
-  rw [hinv, map_inv₀, map_inv₀, hs, star_eq_inv_of_pow_one (Nat.card_pos (α := H)) hp, inv_inv]
 
-theorem typeProj_adj (ρ : Γ →* Matrix (Fin n) (Fin n) K) (H : Subgroup Γ) (χ : H →* Kˣ)
-    (hI : ∀ (g : Γ) v (x y : Fin n → K), majAt (Pi.basisFun K (Fin n)) X v (ρ g *ᵥ x) (ρ g *ᵥ y) =
-      majAt (Pi.basisFun K (Fin n)) X v x y) (v : InfinitePlace K) (x y : Fin n → K) :
-    majAt (Pi.basisFun K (Fin n)) X v (typeProj ρ H χ *ᵥ x) y =
-      majAt (Pi.basisFun K (Fin n)) X v x (typeProj ρ H χ *ᵥ y) := by
-  letI : Fintype H := Fintype.ofFinite H
-  have hc : starRingEnd ℂ (v.embedding ((Nat.card H : K)⁻¹)) = v.embedding ((Nat.card H : K)⁻¹) := by
-    simp
-  rw [typeProj_mulVec, typeProj_mulVec, maj_smul_left, maj_smul_right, maj_sum_left, maj_sum_right, hc]
-  congr 1
-  simp only [maj_smul_left, maj_smul_right, conj_chi_inv, maj_move X ρ hI]
-  refine Fintype.sum_equiv (Equiv.inv H) _ _ (fun h => ?_)
-  simp only [Equiv.inv_apply, map_inv, inv_inv, InvMemClass.coe_inv]
 
 end Adj
 
@@ -673,57 +587,11 @@ theorem rows_gen (hL : A.LatG) {D : ℕ} (ι : Matrix (Fin A.Dg) (Fin D) K) (P :
 
 end Gen
 
-theorem sizes_from_representation : SizesFromRep := by
-  intro K _ _ _ Γ _ _ D0 D1 B H0 H1 χ0 χ1 la hla
-  refine ⟨Nat.card_pos, ?_, Nat.card_pos, ?_, hla⟩
-  · show Nat.card H0 ≤ Fintype.card Γ
-    rw [← Nat.card_eq_fintype_card]
-    exact H0.card_le_card_group
-  · show Nat.card H1 ≤ Fintype.card Γ
-    rw [← Nat.card_eq_fintype_card]
-    exact H1.card_le_card_group
 
-theorem lines_from_representation : RowsFromRep := by
-  intro K _ _ _ Γ _ _ D0 D1 B H0 H1 χ0 χ1 XE0 XE1 hL hE0 hE1 hD0 hD1
-  exact ⟨rows_gen (B.amb H0 χ0 H1 χ1) hL B.ι0 _ hD0 hE0.1 hE0.2.1,
-    rows_gen (B.amb H0 χ0 H1 χ1) hL B.ι1 _ hD1 hE1.1 hE1.2.1⟩
 
-theorem transfer_from_representation : TransferFromRep := by
-  intro K _ _ _ _ Γ _ _ D0 D1 B H0 H1 χ0 χ1 hF hL hRows hGL hGI hEC hEO hES hEI hEA hDM hXI hNS
-  have hI' : ∀ (g : Γ) v (x y : Fin B.Dg → K),
-      Formalism.HermitianLatticesTheory.majAt (Pi.basisFun K (Fin B.Dg)) B.Xg v (B.ρ g *ᵥ x) (B.ρ g *ᵥ y) =
-        Formalism.HermitianLatticesTheory.majAt (Pi.basisFun K (Fin B.Dg)) B.Xg v x y := hGI
-  exact transfer_gen (B.amb H0 χ0 H1 χ1) (fun s i => B.ρ (B.γ s i)) (fun s i => B.ρ (B.γ s i)⁻¹) hF hL hRows
-    Fintype.card_pos (typeProj_mul_self _ _ _) (typeProj_mul_self _ _ _)
-    (fun s => comm_typeProj _ _ _ _ (hEC s)) (fun s => comm_typeProj _ _ _ _ (hEC s))
-    (typeProj_intG _ _ _ _ hGL) (typeProj_intG _ _ _ _ hGL)
-    (typeProj_adj B.Xg _ _ _ hI') (typeProj_adj B.Xg _ _ _ hI')
-    hEO.1 hEO.2 hES hEI hEA
-    (fun s i => hGL _) (fun s i => hGL _)
-    (fun s i v => contr_unitary (tmat_unitary B.Xg hF v _ (hI' _ v)))
-    (fun s i v => contr_unitary (tmat_unitary B.Xg hF v _ (hI' _ v)))
-    (fun s i v x y => maj_move B.Xg B.ρ hI' _ v x y)
-    (fun s i => hEC s _)
-    hDM hXI hNS
 
-theorem passage_from_representation : PassageFromRep := by
-  intro K _ _ _ _ Bs Df0 Df1 N S0 S1 Γ _ _ H0 H1 χ0 χ1 B hF hL hE0 hE1 hS0 hS1 hla hMu hD0 hD1
-    hGL hGI hEC hEO hES hEI hEA hDM hXI hNS
-  have hRows := lines_from_representation K Γ S0.D S1.D B H0 H1 χ0 χ1 S0.XE S1.XE hL hE0 hE1 hD0 hD1
-  obtain ⟨hRk, hDg0, hDg1, hMx⟩ := transfer_from_representation K Γ S0.D S1.D B H0 H1 χ0 χ1 hF hL hRows
-    hGL hGI hEC hEO hES hEI hEA hDM hXI hNS
-  exact passage_from_levels K Bs Df0 Df1 N S0 S1 (B.amb H0 χ0 H1 χ1) hF hL hE0 hE1 hS0 hS1
-    (sizes_from_representation K Γ S0.D S1.D B H0 H1 χ0 χ1 N.la hla) hRk hDg0 hDg1 hMx hMu hRows
 
-theorem passage_concrete : PassageConcrete := by
-  intro K _ _ _ _ E _ _ Pg r ρs k _ Pl0 T J _ F ψ Zs N S0 S1 B hF hL hE0 hE1 hS0 hS1 hla hMu hD0 hD1
-    hGL hGI hEC hEO hES hEI hEA hDM hXI hNS
-  exact passage_from_representation K F.base _ _ N S0 S1 (Formalism.L2.DIV.G0 Pg r) _ _ _ _ B hF hL hE0 hE1 hS0 hS1 hla hMu
-    hD0 hD1 hGL hGI hEC hEO hES hEI hEA hDM hXI hNS
 
-theorem passage_base_symmetric_levels : PassageAtBaseSymmetricLevels := by
-  intro K _ _ _ _ E _ _ Pg r ρs k _ Pl0 T J _ F ψ Zs N S0 S1 A
-  exact passage_from_levels K F.base _ _ N S0 S1 A
 
 section Triv
 
@@ -744,44 +612,6 @@ def trivRep (D : ℕ) (X : InfinitePlace K → Matrix (Fin D) (Fin D) ℂ) (R : 
   ι0 := 1
   ι1 := 1
 
-theorem trivRep_ok (D : ℕ) (X : InfinitePlace K → Matrix (Fin D) (Fin D) ℂ) (R : Submodule (𝓞 K) (Fin D → K)) :
-    (trivRep D X R).GLat ∧ (trivRep D X R).GIso ∧ (trivRep D X R).EsCentral ∧ (trivRep D X R).EsOrth ∧
-    (trivRep D X R).EsSum ∧ (trivRep D X R).EsInt ∧ (trivRep D X R).EsAdj ∧
-    (trivRep D X R).DimMult (typeProj (trivRep D X R).ρ ⊥ 1) (typeProj (trivRep D X R).ρ ⊥ 1) ∧
-    (trivRep D X R).XInj (typeProj (trivRep D X R).ρ ⊥ 1) (typeProj (trivRep D X R).ρ ⊥ 1) ∧
-    (trivRep D X R).NsSq := by
-  have he := typeProj_mul_self (1 : Unit →* Matrix (Fin D) (Fin D) K) (⊥ : Subgroup Unit) 1
-  dsimp only [RepDat.GLat, RepDat.GIso, RepDat.maj, RepDat.EsCentral, RepDat.EsOrth, RepDat.EsSum, RepDat.EsInt,
-    RepDat.EsAdj, RepDat.DimMult, RepDat.XInj, RepDat.xMat, RepDat.NsSq, trivRep]
-  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
-  · intro g x hx
-    simpa using hx
-  · intro g v x y
-    simp
-  · intro s g
-    simp
-  · exact ⟨fun s => one_mul 1, fun s t h => absurd (Subsingleton.elim s t) h⟩
-  · simp
-  · intro s x hx
-    simpa using hx
-  · intro s v x y
-    simp
-  · intro s
-    rw [one_mul]
-  · intro s a ha h
-    have hP : typeProj (1 : Unit →* Matrix (Fin D) (Fin D) K) ⊥ 1 * 1 *
-        (typeProj (1 : Unit →* Matrix (Fin D) (Fin D) K) ⊥ 1 * 1) =
-        typeProj (1 : Unit →* Matrix (Fin D) (Fin D) K) ⊥ 1 * 1 := by
-      rw [mul_one, he]
-    have h0 := (mem_range_idem hP).1 (ha 0)
-    rw [Fin.sum_univ_one, MonoidHom.one_apply, mul_one, mul_one] at h
-    rw [mul_one] at h0
-    rw [← Matrix.mulVec_mulVec, h0, h0] at h
-    funext i
-    rw [Subsingleton.elim i 0, h]
-    rfl
-  · intro s
-    simp
 
 end Triv
 

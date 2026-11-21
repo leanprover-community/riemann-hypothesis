@@ -3,14 +3,265 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsTorPartTorusExten
 import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.IsE8ThetaStructure
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PowFrameOne
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsThNeZero
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JKCompEq
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEmbFractionRingOfDominant
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SupIClosedPointEq
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NonemptyPerpKerEquivHom
+import Development.AbelianVarietyTheory.Statements.SemistableTorsion.ImmersedBy
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsProjectiveModel
+import Development.AbelianVarietyTheory.Definitions.Degenerations.NormNatCastPadicAlgClOfCoprime
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCompleteDvrCentre
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.UTorsClosed
 import Development.AbelianVarietyTheory.Proofs.TorusSplitting.ExistsValuationClosure
 
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory.ZH
+open scoped CategoryTheory.Obj
+open Classical
+attribute [local instance] Over.cartesianMonoidalCategory
+
+noncomputable section
+
+namespace GlobalTheory.GenFibre
+
+theorem jK_comp_eq {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] (M : RatModel o Ω)
+    {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] (ξ : Sp V ⟶ M.Z) (emb : Ω →+* FractionRing V)
+    (hemb : ∀ (W : M.Z.Opens) (f : Γ(M.Z, W)), ξ (IsLocalRing.closedPoint V) ∈ W →
+      emb (valF M.pt W f) = algebraMap V (FractionRing V) (valR ξ W f)) :
+    jK V ≫ ξ = spMap emb ≫ M.pt := by
+  obtain ⟨W, hW, hξ, -⟩ := GlobalTheory.Points.exists_isAffineOpen_le ξ (GlobalTheory.Points.le_preimage_top ξ)
+  have hz : ξ (IsLocalRing.closedPoint V) ∈ W := hξ (x := IsLocalRing.closedPoint V) trivial
+  have hpt : ⊤ ≤ M.pt ⁻¹ᵁ W := M.top_le_preimage_pt ⟨_, hz⟩
+  refine GlobalTheory.Points.ext_of_valR hW (GlobalTheory.Points.le_preimage_comp (V := ⊤) (jK V) ξ hξ le_rfl)
+    (GlobalTheory.Points.le_preimage_comp (V := ⊤) (spMap emb) M.pt hpt le_rfl) fun f => ?_
+  calc valR (jK V ≫ ξ) W f = algebraMap V (FractionRing V) (valR ξ W f) :=
+        GlobalTheory.Points.valR_spMap_comp (algebraMap V (FractionRing V)) ξ W hξ f
+    _ = emb (valF M.pt W f) := (hemb W f hz).symm
+    _ = valR (spMap emb ≫ M.pt) W f := (GlobalTheory.Points.valR_spMap_comp emb M.pt W hpt f).symm
+
+theorem genFibre : ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [ArithBase o Ω] (S : ThetaSys o Ω) (ρ : S.Real) (M : RatModel o Ω) (U₀ : M.Z.Opens) (EE : M.Lat S.J) (Zh : ZHOut ρ M U₀ EE), S.Over₀ M U₀ → ∀ (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] (ξ : Sp V ⟶ M.Z), (∃ w, ξ w = genericPoint M.Z) → ∀ [IsCommMonObj ((Over.pullback ξ).obj Zh.G)] (D : DegData V (IsLocalRing.maximalIdeal V)) (A : PolAV (Sp (FractionRing V))) (U : Unif (IsLocalRing.maximalIdeal V) D A ((Over.pullback ξ).obj Zh.G)), LBIso U.LG.L (Zh.L.L.pull (pullback.fst Zh.G.hom ξ)) → ∀ (emb : Ω →+* FractionRing V), (∀ (W : M.Z.Opens) (f : Γ(M.Z, W)), ξ (IsLocalRing.closedPoint V) ∈ W → emb (valF M.pt W f) = algebraMap V (FractionRing V) (valR ξ W f)) → ∃ φ : A.A.left ⟶ ρ.P.A.left, IsGrpPullback A.A ρ.P.A (spMap (emb.comp (algebraMap S.R Ω))) φ ∧ LBIso A.L (ρ.P.L.pull φ) := by
+  intro o Ω _ _ _ _ S ρ M U₀ EE Zh hO V _ _ _ ξ _ _ D A U hLG emb hemb
+  have e₁ := jK_comp_eq M ξ emb hemb
+  have hpt : Set.range M.pt ⊆ (U₀ : Set M.Z) := fun _ ⟨w, hw⟩ => hw ▸ M.top_le_preimage_pt hO.ne (x := w) trivial
+  let x : Sp Ω ⟶ U₀.toScheme := IsOpenImmersion.lift U₀.ι M.pt (by rw [Scheme.Opens.range_ι]; exact hpt)
+  have hx : x ≫ U₀.ι = M.pt := IsOpenImmersion.lift_fac _ _ _
+  have hxu : x ≫ Zh.u₀ = spMap S.R.val.toRingHom := Zh.u₀_gen x hx
+  let y : Sp (FractionRing V) ⟶ U₀.toScheme := spMap emb ≫ x
+  have e₂ : (𝟙 _ ≫ jK V) ≫ ξ = y ≫ U₀.ι := by
+    rw [Category.id_comp, e₁, Category.assoc, hx]
+  have e₃ : 𝟙 _ ≫ y ≫ Zh.u₀ = spMap (emb.comp (algebraMap S.R Ω)) := by
+    rw [Category.id_comp, Category.assoc, hxu]
+    show Spec.map _ ≫ Spec.map _ = _
+    rw [← Spec.map_comp]; rfl
+  haveI := U.gen_hom
+  haveI : IsMonHom U.gen.symm.hom := by show IsMonHom U.gen.inv; infer_instance
+  have hA := ((isGrpPullback_of_iso U.gen.symm).comp
+    (isGrpPullback_pullback ((Over.pullback ξ).obj Zh.G) (jK V))).comp (isGrpPullback_pullback Zh.G ξ)
+  have hB := (isGrpPullback_pullback ((Over.pullback Zh.u₀).obj ρ.P.A) y).comp Zh.cart
+  obtain ⟨e, he, hφ⟩ := grpPullback_iso (hA.congr e₂ rfl) hB
+  haveI := he
+  have hC := (isGrpPullback_of_iso e).comp ((isGrpPullback_pullback ((Over.pullback Zh.u₀).obj ρ.P.A) y).comp
+    (isGrpPullback_pullback ρ.P.A Zh.u₀))
+  refine ⟨_, hC.congr e₃ rfl, ?_⟩
+  have H1 := U.ext
+  have H2 := GlobalTheory.GenSpread.lbIso_pull_of_lbIso hLG (pullback.fst ((Over.pullback ξ).obj Zh.G).hom (jK V)) rfl
+  have H3 := LBIso.trans (pull_isLB A.isLB _) (pull_isLB U.LG.isLB _) (pull_isLB Zh.L.isLB _) H1 H2
+  have H4 : LBIso (A.L.pull (𝟙 _)) (Zh.L.L.pull (U.gen.inv.left ≫
+      pullback.fst ((Over.pullback ξ).obj Zh.G).hom (jK V) ≫ pullback.fst Zh.G.hom ξ)) :=
+    GlobalTheory.GenSpread.lbIso_pull_comp U.gen.inv.left
+      (by rw [← Over.comp_left, U.gen.inv_hom_id, Over.id_left]) rfl H3
+  have H5 := LBIso.chartPull (chartPullUnpull A.L (𝟙 _) rfl) (chartPullId _) H4
+  have H6 : LBIso (Zh.L.L.pull (U.gen.inv.left ≫ pullback.fst ((Over.pullback ξ).obj Zh.G).hom (jK V) ≫
+      pullback.fst Zh.G.hom ξ)) (ρ.P.L.pull (e.hom.left ≫ pullback.fst ((Over.pullback Zh.u₀).obj ρ.P.A).hom y ≫
+      pullback.fst ρ.P.A.hom Zh.u₀)) :=
+    GlobalTheory.GenSpread.lbIso_pull_comp (e.hom.left ≫ pullback.fst ((Over.pullback Zh.u₀).obj ρ.P.A).hom y)
+      (a := Zh.φ) (b := pullback.fst ρ.P.A.hom Zh.u₀) (by rw [Category.assoc, hφ, Category.assoc]; rfl)
+      (Category.assoc _ _ _).symm ⟨Zh.w, Zh.w_gen⟩
+  exact LBIso.trans A.isLB (pull_isLB Zh.L.isLB _) (pull_isLB ρ.P.isLB _) H5 H6
+
+end GlobalTheory.GenFibre
+end
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory.ZH
+open scoped CategoryTheory.Obj
+open Classical
+
+noncomputable section
+namespace GlobalTheory.ZH.RatModel
+
+theorem spMap_fractionRing_specializes (V : Type) [CommRing V] [IsDomain V] (w : Sp V) (p : Sp (FractionRing V)) :
+    (spMap (algebraMap V (FractionRing V))) p ⤳ w := by
+  refine (PrimeSpectrum.le_iff_specializes (R := V) _ _).1 ?_
+  show Ideal.comap (algebraMap V (FractionRing V)) p.asIdeal ≤ w.asIdeal
+  have hp : p.asIdeal = ⊥ := @Ideal.eq_bot_of_prime _ _ p.asIdeal (PrimeSpectrum.isPrime p)
+  rw [hp]
+  intro x hx
+  have hx' : algebraMap V (FractionRing V) x = 0 := Ideal.mem_bot.1 (Ideal.mem_comap.1 hx)
+  rw [(injective_iff_map_eq_zero _).1 (IsFractionRing.injective V (FractionRing V)) x hx']
+  exact w.asIdeal.zero_mem
+
+theorem exists_emb_fractionRing_of_dominant : ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] (M : RatModel o Ω) (V : Type) [CommRing V] [IsDomain V] [IsLocalRing V] (ξ : Sp V ⟶ M.Z), (∃ w, ξ w = genericPoint M.Z) → ∃ emb : Ω →+* FractionRing V, ∀ (U : M.Z.Opens) (f : Γ(M.Z, U)), ξ (IsLocalRing.closedPoint V) ∈ U → emb (valF M.pt U f) = algebraMap V (FractionRing V) (valR ξ U f) := by
+  intro o Ω _ _ _ M V _ _ _ ξ ⟨w, hw⟩
+  set z := ξ (IsLocalRing.closedPoint V) with hzdef
+  let g0 : M.O z →+* V :=
+    (Scheme.stalkClosedPointTo (R := CommRingCat.of V) ξ).hom.comp (M.stalkEquiv z).symm.toRingHom
+  have hg0 : ∀ (U : M.Z.Opens) (f : Γ(M.Z, U)) (hz : z ∈ U),
+      g0 ⟨valF M.pt U f, RatModel.valF_mem_O hz f⟩ = valR ξ U f := by
+    intro U f hz
+    have h : ⊤ ≤ ξ ⁻¹ᵁ U := (GlobalTheory.Points.le_preimage_iff ξ U).2 hz
+    have e1 : (M.stalkEquiv z).symm ⟨valF M.pt U f, RatModel.valF_mem_O hz f⟩ = M.Z.presheaf.germ U z hz f := by
+      rw [RingEquiv.symm_apply_eq, RatModel.stalkEquiv_germ]
+    have e2 := congrArg (fun φ => φ.hom f) (GlobalTheory.Points.germ_stalkClosedPointTo_eq_valMap ξ U h)
+    change (Scheme.stalkClosedPointTo (R := CommRingCat.of V) ξ).hom ((M.stalkEquiv z).symm ⟨valF M.pt U f, RatModel.valF_mem_O hz f⟩) = _
+    rw [e1]
+    rw [GlobalTheory.Points.valR_eq ξ U h]
+    exact e2
+  have hinj0 : Function.Injective g0 := by
+    rw [injective_iff_map_eq_zero]
+    rintro ⟨x, hx⟩ h0
+    obtain ⟨U, f, hz, rfl⟩ := RatModel.mem_O.1 hx
+    rw [hg0 U f hz] at h0
+    have hU : (U : Set M.Z).Nonempty := ⟨z, hz⟩
+    by_cases hf : f = 0
+    · subst hf
+      apply Subtype.ext
+      show valF M.pt U 0 = 0
+      rw [← M.res_apply U hU, map_zero]
+    · exfalso
+      have hb : M.Z.basicOpen f ≠ ⊥ := fun hb => hf ((basicOpen_eq_bot_iff f).1 hb)
+      obtain ⟨y, hy⟩ : ((M.Z.basicOpen f : M.Z.Opens) : Set M.Z).Nonempty := by
+        rw [Set.nonempty_iff_ne_empty]
+        exact fun h => hb (SetLike.coe_injective h)
+      have hgen : genericPoint M.Z ∈ M.Z.basicOpen f :=
+        (genericPoint_specializes y).mem_open (M.Z.basicOpen f).isOpen hy
+      let eta : Sp (FractionRing V) ⟶ M.Z := spMap (algebraMap V (FractionRing V)) ≫ ξ
+      have heta : ⊤ ≤ eta ⁻¹ᵁ M.Z.basicOpen f := by
+        intro p _
+        have hs : eta p ⤳ genericPoint M.Z := by
+          rw [← hw]
+          exact (spMap_fractionRing_specializes V w p).map ξ.continuous
+        exact hs.mem_open (M.Z.basicOpen f).isOpen hgen
+      have hetaU : ⊤ ≤ eta ⁻¹ᵁ U := heta.trans (eta.preimage_mono (M.Z.basicOpen_le f))
+      have hu := (GlobalTheory.Points.le_preimage_basicOpen_iff eta hetaU f).1 heta
+      rw [GlobalTheory.Points.valR_spMap_comp _ ξ U ((GlobalTheory.Points.le_preimage_iff ξ U).2 hz), h0, map_zero] at hu
+      exact not_isUnit_zero hu
+  let g : M.O z →+* FractionRing V := (algebraMap V (FractionRing V)).comp g0
+  have hinj : Function.Injective g := (IsFractionRing.injective V (FractionRing V)).comp hinj0
+  refine ⟨IsFractionRing.lift hinj, fun U f hz => ?_⟩
+  have e : valF M.pt U f = algebraMap (M.O z) Ω ⟨valF M.pt U f, RatModel.valF_mem_O hz f⟩ := rfl
+  rw [e, IsFractionRing.lift_algebraMap]
+  show algebraMap V (FractionRing V) (g0 _) = _
+  rw [hg0 U f hz]
+
+end GlobalTheory.ZH.RatModel
+end
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory.ZH
+open scoped CategoryTheory.Obj
+open Classical
+
+namespace GlobalTheory.ZH.ThetaSys
+
+theorem supI_closedPoint_eq : ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] (S : ThetaSys o Ω) (M : RatModel o Ω),
+    M.HasDiv S.th → ∀ (V : Type) [CommRing V] [IsDomain V] [IsLocalRing V] (ξ : Sp V ⟶ M.Z)
+    (emb : Ω →+* FractionRing V), (∀ (U : M.Z.Opens) (f : Γ(M.Z, U)), ξ (IsLocalRing.closedPoint V) ∈ U →
+      emb (valF M.pt U f) = algebraMap V (FractionRing V) (valR ξ U f)) →
+    S.supI M (ξ (IsLocalRing.closedPoint V)) =
+      {a | S.th a ≠ 0 ∧ ∀ b, ∃ v : V, emb (S.th b) = algebraMap V (FractionRing V) v * emb (S.th a)} := by
+  intro o Ω _ _ _ S M hD V _ _ _ ξ emb hemb
+  set z := ξ (IsLocalRing.closedPoint V) with hzdef
+  have hs : ξ (IsLocalRing.closedPoint V) ⤳ z := specializes_rfl
+  have key : ∀ (x : Ω) (hx : x ∈ M.O z), emb x = algebraMap V (FractionRing V) (RatModel.valLoc ξ z hs ⟨x, hx⟩) := by
+    intro x hx
+    obtain ⟨U, f, hz, rfl⟩ := hx
+    rw [RatModel.valLoc_valF ξ hs hz f]
+    exact hemb U f hz
+  ext a
+  simp only [supI, Set.mem_setOf_eq]
+  constructor
+  · rintro ⟨ha, hb⟩
+    refine ⟨ha, fun b => ⟨RatModel.valLoc ξ z hs ⟨_, hb b⟩, ?_⟩⟩
+    rw [← key _ (hb b), ← map_mul, div_mul_cancel₀ _ ha]
+  · rintro ⟨ha, hc⟩
+    obtain ⟨x₀, hx₀⟩ := hD z
+    obtain ⟨v, hv⟩ := hc x₀
+    have hea : emb (S.th a) ≠ 0 := (map_ne_zero emb).2 ha
+    have hw := key _ (hx₀.2 a)
+    have hunit : IsUnit (RatModel.valLoc ξ z hs ⟨_, hx₀.2 a⟩) := by
+      refine IsUnit.of_mul_eq_one v (IsFractionRing.injective V (FractionRing V) ?_)
+      have hv0 : algebraMap V (FractionRing V) v ≠ 0 := by
+        intro h0
+        exact (map_ne_zero emb).2 hx₀.1 (by rw [hv, h0, zero_mul])
+      rw [map_mul, map_one, ← hw, map_div₀, hv]
+      field_simp
+    have hu : IsUnit (⟨S.th a / S.th x₀, hx₀.2 a⟩ : M.O z) :=
+      (RatModel.isUnit_valLoc_iff ξ hzdef.symm _).1 hunit
+    exact (hx₀.div_iff_isUnit a).2 hu
+
+end GlobalTheory.ZH.ThetaSys
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory.ZH
+open scoped CategoryTheory.Obj
+open Classical
+
+namespace GlobalTheory.ZH.PerpKerRank
+
+theorem exists_eStd_eq_addHom (g n : ℕ) (φ : (Fin g ⊕ Fin g → ZMod n) →+ ZMod n) :
+    ∃ a, ∀ b, eStd g n a b = φ b := by
+  obtain ⟨a, ha⟩ := (eStdBilin_bijective (g := g) (n := n)).2 (φ.toZModLinearMap n)
+  exact ⟨a, fun b => LinearMap.congr_fun ha b⟩
+
+theorem nonempty_perp_ker_equiv_hom {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] (S : ThetaSys o Ω)
+    {X : Type} [AddCommGroup X]
+    (yy : S.Gam →+ X ⧸ (nsmulAddMonoidHom (S.r * S.N) : X →+ X).range) (hs : Function.Surjective yy) :
+    Nonempty (S.perp yy.ker ≃+ (X →+ ZMod (S.r * S.N))) := by
+  choose σ hσ using fun α : X => hs (QuotientAddGroup.mk α)
+  have ind : ∀ (t : S.perp yy.ker) (b b' : S.Gam), yy b = yy b' → eStd S.g _ t b = eStd S.g _ t b' := by
+    intro t b b' e
+    have h0 : eStd S.g _ t (b - b') = 0 := t.2 _ (by rw [AddMonoidHom.mem_ker, map_sub, e, sub_self])
+    rw [← sub_add_cancel b b', eStd_add_right, h0, zero_add]
+  let Λ : S.perp yy.ker →+ X →+ ZMod (S.r * S.N) := AddMonoidHom.mk'
+    (fun t => AddMonoidHom.mk' (fun α => eStd S.g _ t (σ α)) fun α β => by
+      rw [← eStd_add_right]
+      exact ind t _ _ (by rw [map_add, hσ, hσ, hσ, QuotientAddGroup.mk_add]))
+    fun t t' => AddMonoidHom.ext fun α => eStd_add_left _ _ _
+  have hΛ : ∀ (t : S.perp yy.ker) b α, yy b = QuotientAddGroup.mk α → Λ t α = eStd S.g _ t b :=
+    fun t b α e => ind t _ _ ((hσ α).trans e.symm)
+  refine ⟨AddEquiv.ofBijective Λ ⟨(injective_iff_map_eq_zero _).2 fun t ht =>
+    Subtype.ext (eq_zero_of_eStd_eq_zero fun b => ?_), fun l => ?_⟩⟩
+  · obtain ⟨α, e⟩ := QuotientAddGroup.mk_surjective (yy b)
+    rw [← hΛ t b α e.symm, ht, AddMonoidHom.zero_apply]
+  · let l' : (X ⧸ (nsmulAddMonoidHom (S.r * S.N) : X →+ X).range) →+ ZMod (S.r * S.N) :=
+      QuotientAddGroup.lift _ l (by
+        rintro _ ⟨x, rfl⟩
+        show l ((S.r * S.N) • x) = 0
+        rw [map_nsmul, nsmul_eq_mul, ZMod.natCast_self, zero_mul])
+    obtain ⟨a, ha⟩ := exists_eStd_eq_addHom S.g _ (l'.comp yy)
+    refine ⟨⟨a, fun h hh => (ha h).trans ?_⟩, AddMonoidHom.ext fun α => (ha (σ α)).trans ?_⟩
+    · rw [AddMonoidHom.comp_apply, (AddMonoidHom.mem_ker).1 hh, map_zero]
+    · rw [AddMonoidHom.comp_apply, hσ]
+      rfl
+
+theorem perp_ker_equiv : ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] (S : ThetaSys o Ω) (X : Type) [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X] (yy : S.Gam →+ X ⧸ (nsmulAddMonoidHom (S.r * S.N) : X →+ X).range), Function.Surjective yy → S.IsoFree (S.perp yy.ker) → Nonempty (S.perp yy.ker ≃+ (Fin (Module.finrank ℤ X) → ZMod (S.r * S.N))) := by
+  intro o Ω _ _ _ S X _ _ _ yy hs _
+  obtain ⟨e⟩ := nonempty_perp_ker_equiv_hom S yy hs
+  exact ⟨e.trans
+    ((addMonoidHomLequivInt ℤ).toAddEquiv.trans ((Module.finBasis ℤ X).constr ℤ).symm.toAddEquiv)⟩
+
+end GlobalTheory.ZH.PerpKerRank
+end
+
+section
 section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
@@ -249,3 +500,4 @@ open GlobalTheory.Poinc.FibLat GlobalTheory.Poinc.Eq8
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.torusRank_eq_rank_thetaGroupOfPoint_perp : ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [ArithBase o Ω] (S : ThetaSys o Ω) (ρ : S.Real) (M : RatModel o Ω) (U₀ : M.Z.Opens) (EE : M.Lat S.J) (FinalForm : ZHOut ρ M U₀ EE), S.Big → S.Over₀ M U₀ → S.IsEE M U₀ EE → ∀ w : M.Z, ∃ r : ℕ, RkAt FinalForm.G w r ∧ Nonempty (S.TT M w ≃+ (Fin r → ZMod (S.r * S.N))) := by
   atlas_forward_decl GlobalTheory.ThetaDvr.TorRank.rkAt_tt_equiv
+end

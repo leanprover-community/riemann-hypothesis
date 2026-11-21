@@ -70,9 +70,6 @@ def mulTens : (V ⊗[Qp] B) ⊗[LL] (V' ⊗[Qp] B) →ₗ[LL] (V ⊗[LL] V') ⊗
   (AlgebraTensorModule.map (LinearMap.id : V ⊗[LL] V' →ₗ[LL] V ⊗[LL] V') (LinearMap.mul' Qp B)).comp
     (AlgebraTensorModule.tensorTensorTensorComm Qp Qp LL LL V B V' B).toLinearMap
 
-theorem mulTens_tmul (v : V) (v' : V') (b b' : B) :
-    mulTens Qp B LL V V' ((v ⊗ₜ[Qp] b) ⊗ₜ[LL] (v' ⊗ₜ[Qp] b')) = (v ⊗ₜ[LL] v') ⊗ₜ[Qp] (b * b') := by
-  simp [mulTens]
 
 def mulDcris (ρ : Representation LL G V) (ρ' : Representation LL G V') :
     ↥(Dcris PD ρ) ⊗[LL] ↥(Dcris PD ρ') →ₗ[LL] (V ⊗[LL] V') ⊗[Qp] B :=
@@ -89,10 +86,6 @@ end Maps
 
 def InvB : Prop := ∀ b : B, (∀ g, PD.actB g b = b) ↔ ∃ c : K₀, algebraMap K₀ B c = b
 
-theorem invB_holds : InvB PD := fun b =>
-  ⟨PD.invB b, by
-    rintro ⟨c, rfl⟩ g
-    exact (PD.actB g).commutes c⟩
 
 variable (LL : Type) [Field LL] [Algebra Qp LL]
 

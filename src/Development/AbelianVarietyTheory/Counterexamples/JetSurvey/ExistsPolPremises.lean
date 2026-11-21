@@ -4,11 +4,51 @@ import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.GlobalFnsH
 import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.PullQkSurjective
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsPullbackDegPreStrictLineBundleIso
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsFiniteCubeInduction
-import Development.AbelianVarietyTheory.Counterexamples.JetSurvey.ExistsUniqueScalar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.PhiPow
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ExistsFamRep
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ZeroFLeftExt
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.PullTopZFConstUnit
 import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.ExistsUniqueEqConstMulEllTheta
 import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.RosatiAdjOfPoints
 import Development.AbelianVarietyTheory.Definitions.Uniformization.IsEllipticCurveTwoAdic
 
+section
+noncomputable section
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Out.InhTate ReciprocityTheory.ChartRestriction.G.DVR
+
+namespace GlobalTheory.PhiPowerTest
+
+open ToricData
+
+abbrev qq : ℤ → (FractionRing InhTate.R)ˣ := fun n => piK ^ (n ^ 2)
+
+def multData : DegData InhTate.R InhTate.I where
+  toPre := toricPre InhTate.R ℤ qq
+  psi_even := toricPre_tate ▸ tateData.psi_even
+  tau_bimult := toricPre_tate ▸ tateData.tau_bimult
+  psi_pos := toricPre_tate ▸ tateData.psi_pos
+  psi_tendsto := toricPre_tate ▸ tateData.psi_tendsto
+
+abbrev KK : Type := FractionRing InhTate.R
+
+def halfPeriod : QkPt multData.toPre KK 2 :=
+  ⟨(1 : ℤ), pt qq KK (zpowersHom _ piK), pt qq KK (zpowersHom _ piK ^ 2), (isNsmul_pt qq KK 2 _ _).2 rfl,
+    (isIota_pt qq KK _ _).2 fun χ => by
+      rw [polar_zpow_sq]
+      change (((piK ^ χ) ^ 2 : KKˣ) : KK) = ((piK ^ (2 * 1 * χ) : KKˣ) : KK)
+      rw [← zpow_natCast, ← zpow_mul, mul_one, mul_comm]
+      rfl⟩
+
+def normOne : LB.Gen (LB.LinComb multData.toPre.P.L (DegPre.lineφ multData.toPre KK halfPeriod.g.b) (DegPre.lineε 2)) :=
+  cg _ _ (Geo.Tor.unitOn (1 : KKˣ))
+
+end GlobalTheory.PhiPowerTest
+end
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.BaseChangeToolsTest
@@ -76,23 +116,9 @@ theorem act_unique {S S' : Scheme.{0}} {f : S' ⟶ S} {P : PolAV S} {P' : PolAV 
   subst e
   rfl
 
-theorem exists_pol_premises {S S' : Scheme.{0}} (f : S' ⟶ S) (P : PolAV S) :
-    ∃ (P' : PolAV S') (g : P'.A.left ⟶ P.A.left), P'.g = P.g ∧ IsGrpPullback P'.A P.A f g ∧ LBIso (P.L.pull g) P'.L :=
-  ⟨StrictPull.polPull P f, pullback.fst P.A.hom f, rfl, isGrpPullback_pullback P.A f,
-    PolBaseChange.lbIso_refl (pull_isLB P.isLB _)⟩
 
-theorem elliptic_instance {R : Type} [CommRing R] [IsNoetherianRing R] (W : _root_.WeierstrassCurve R) [W.IsElliptic]
-    {S' : Scheme.{0}} (f : S' ⟶ Spec (CommRingCat.of R)) :
-    ∃ (o : (WeierstrassCurve.ellPolAV W).OAct ℤ) (P' : PolAV S')
-      (g : P'.A.left ⟶ (WeierstrassCurve.ellPolAV W).A.left),
-      (∀ a : ℤ, o.act a = (𝟙 (WeierstrassCurve.ellPolAV W).A : _ ⟶ _) ^ a) ∧ P'.g = 1 ∧
-      IsGrpPullback P'.A (WeierstrassCurve.ellPolAV W).A f g ∧ LBIso ((WeierstrassCurve.ellPolAV W).L.pull g) P'.L ∧
-      ∃! o' : P'.OAct ℤ, ∀ a, (o'.act a).left ≫ g = g ≫ (o.act a).left := by
-  obtain ⟨o, ho⟩ := exists_oAct_int UU.SettingConsistentExample.cubeSt' _ (WeierstrassCurve.ellPolAV W)
-  obtain ⟨P', g, hd, hg, hL⟩ := exists_pol_premises f (WeierstrassCurve.ellPolAV W)
-  obtain ⟨o', ho'⟩ := both_hold.2 _ _ f _ P' g hg hL ℤ o
-  exact ⟨o, P', g, ho, hd, hg, hL, o', ho', fun o₁ h₁ => act_unique hg o o₁ o' h₁ ho'⟩
 
 end GlobalTheory.BaseChangeToolsTest
 
+end
 end

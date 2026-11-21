@@ -506,12 +506,6 @@ theorem lenW_inf (w : HeightOneSpectrum (𝓞 K)) (A B : Submodule (𝓞 K) V) :
     simp
   rw [this]
 
-theorem lenW_eq_zero (w : HeightOneSpectrum (𝓞 K)) {A B : Submodule (𝓞 K) V} (h : atW w A ≤ atW w B) :
-    lenW w A B = 0 := by
-  unfold lenW
-  rw [Module.length_eq_zero_iff, Submodule.Quotient.subsingleton_iff, eq_top_iff]
-  intro x _
-  exact h x.2
 
 abbrev idLat (I : Ideal (𝓞 K)) : Submodule (𝓞 K) K := IsLocalization.coeSubmodule K I
 

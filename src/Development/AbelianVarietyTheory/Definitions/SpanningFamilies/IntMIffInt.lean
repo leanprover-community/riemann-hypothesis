@@ -52,7 +52,6 @@ theorem isMu_one : IsMu 1 := ⟨1, one_pos, one_pow 1⟩
 
 theorem ph_zero : Ph 0 := ⟨1, one_pos, by simp⟩
 
-theorem ph_I : Ph I := ⟨4, by norm_num, by simp [Complex.I_pow_four]⟩
 
 theorem IsMu.mul {a b : ℂ} (ha : IsMu a) (hb : IsMu b) : IsMu (a * b) := by
   obtain ⟨m, hm, h⟩ := ha

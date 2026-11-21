@@ -69,7 +69,6 @@ theorem exists_isEps (l : ℕ) [Fact l.Prime] : ∃ e : Per.Fl l, IsEps e := by
   obtain ⟨ε, h⟩ := exists_tilt ζ h0 hs
   exact ⟨ε, isEps_of_root h0 h1 h⟩
 
-theorem not_isEps_one : ¬ IsEps (1 : Per.Fl l) := fun h => h.2 (by simp)
 
 theorem core_isEps (C : Core l) : IsEps C.ε := isEps_of_root C.ζ_zero C.ζ_one C.ε_root
 
@@ -91,14 +90,7 @@ theorem theta_xi {e : Per.Fl l} (h : IsEps e) : Per.θ l (xi e) = 0 := by
   rw [map_mul, theta_mu, theta_mu, h.1, sub_self] at h1
   exact (mul_eq_zero.1 h1.symm).resolve_right (sub_ne_zero.2 h.2)
 
-theorem core_isCrisDR (C : Core l) : Per.IsCrisDR l C.ι := by
-  obtain ⟨ι, hι⟩ := GlobalTheory.CrisIncl.exists_incl l
-  obtain ⟨j, h1, h2, h3⟩ := GlobalTheory.CrisIncl.exists_restrict l ι hι
-  have e : j = C.j := (GlobalTheory.T.canonicalAcrisToBdRPlus_unique_equivariant_approx l C.j C.j_cris).1 j ⟨h2, h3⟩
-  have e' : C.ι = ι := GlobalTheory.RingIface.bcris_ext l fun x => by rw [C.ι_j, h1, e]
-  rwa [e']
 
-theorem isLogA_one : IsLogA (1 : Per.Fl l) 0 := fun r => ⟨0, fun n _ => ⟨0, by simp [mu], 0, by simp⟩⟩
 
 theorem mem_pc (R : Type) [CommRing R] (r : ℕ) (x : GlobalTheory.AdicMaps.PHat l R) :
     x ∈ ((Ideal.span {(l : R)}) ^ r • ⊤ : Submodule R (GlobalTheory.AdicMaps.PHat l R)) ↔

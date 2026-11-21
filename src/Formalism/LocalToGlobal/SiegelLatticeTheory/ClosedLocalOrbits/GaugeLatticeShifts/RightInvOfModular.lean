@@ -1,8 +1,68 @@
 import Mathlib
-import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.EqOneOfZpowMem
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.HermitianZZEqNeg
 import Formalism.RealPlaceAnalysis.FinalF
 
+section
+noncomputable section
+
+open MeasureTheory Topology Filter
+open scoped ENNReal NNReal Pointwise
+
+namespace Formalism.L2.SG.RealObj.InfCut.UnitaryIsometries.Modular
+
+variable {G : Type*} [TopologicalSpace G] [Group G] [IsTopologicalGroup G] [LocallyCompactSpace G]
+  [SecondCountableTopology G] [T2Space G] [MeasurableSpace G] [BorelSpace G]
+
+local notation "Δ" => Measure.modularCharacterFun (G := G)
+
+theorem map_right (g : G) : (Measure.haar : Measure G).map (· * g) = Δ g • (Measure.haar : Measure G) :=
+  Measure.map_right_mul_eq_modularCharacterFun_smul _ g
+
+theorem haar_preimage (g : G) {A : Set G} (hA : MeasurableSet A) :
+    (Measure.haar : Measure G) ((· * g) ⁻¹' A) = (Δ g : ℝ≥0∞) * (Measure.haar : Measure G) A := by
+  have h : ((Measure.haar : Measure G).map (· * g)) A = (Δ g • (Measure.haar : Measure G)) A := by rw [map_right]
+  rw [Measure.map_apply (measurable_mul_const g) hA] at h
+  rw [h, Measure.smul_apply, ENNReal.smul_def, smul_eq_mul]
+
+theorem exists_compact_pos : ∃ C : Set G, IsCompact C ∧ 0 < (Measure.haar : Measure G) C ∧
+    (Measure.haar : Measure G) C ≠ ⊤ := by
+  obtain ⟨C, hC, h1⟩ := exists_compact_mem_nhds (1 : G)
+  refine ⟨C, hC, ?_, hC.measure_lt_top.ne⟩
+  exact Measure.measure_pos_of_nonempty_interior _ ⟨1, mem_interior_iff_mem_nhds.2 h1⟩
+
+
+theorem eventually_lt (ε : ℝ) (hε : 0 < ε) : ∀ᶠ h in 𝓝 (1 : G), (Δ h : ℝ) < 1 + ε := by
+  obtain ⟨C, hC, hpos, hfin⟩ := exists_compact_pos (G := G)
+  have hlt : (Measure.haar : Measure G) C < ENNReal.ofReal (1 + ε) * (Measure.haar : Measure G) C := by
+    have h1 : (1 : ℝ≥0∞) < ENNReal.ofReal (1 + ε) := by
+      rw [← ENNReal.ofReal_one]; exact (ENNReal.ofReal_lt_ofReal_iff (by linarith)).2 (by linarith)
+    have := ENNReal.mul_lt_mul_right hpos.ne' hfin h1
+    simpa [mul_comm] using this
+  obtain ⟨U, hCU, hU, hUlt⟩ := Set.exists_isOpen_lt_of_lt C _ hlt
+  obtain ⟨V, hV, hCV⟩ := compact_open_separated_mul_right hC hU hCU
+  have hV' : ∀ᶠ h in 𝓝 (1 : G), h⁻¹ ∈ V := by
+    have ht : Tendsto (fun h : G => h⁻¹) (𝓝 1) (𝓝 1) := by simpa using continuous_inv.tendsto (1 : G)
+    exact ht hV
+  filter_upwards [hV'] with h hh
+  have hsub : (· * h) ⁻¹' C ⊆ U := by
+    intro x hx
+    apply hCV
+    exact ⟨x * h, hx, h⁻¹, hh, by group⟩
+  have h2 : (Δ h : ℝ≥0∞) * (Measure.haar : Measure G) C < ENNReal.ofReal (1 + ε) * (Measure.haar : Measure G) C := by
+    rw [← haar_preimage h hC.isClosed.measurableSet]
+    exact lt_of_le_of_lt (measure_mono hsub) hUlt
+  have h3 : (Δ h : ℝ≥0∞) < ENNReal.ofReal (1 + ε) :=
+    not_le.1 fun hle => lt_irrefl _ (lt_of_le_of_lt (mul_le_mul_of_nonneg_right hle zero_le) h2)
+  rw [← ENNReal.ofReal_coe_nnreal] at h3
+  exact (ENNReal.ofReal_lt_ofReal_iff (by linarith)).1 h3
+
+
+
+end Formalism.L2.SG.RealObj.InfCut.UnitaryIsometries.Modular
+end
+end
+
+section
 noncomputable section
 
 open MeasureTheory Topology Filter Matrix
@@ -81,55 +141,9 @@ instance instLCSG : LocallyCompactSpace SS := (SG_closed ε e z).isClosedEmbeddi
 
 instance instSCSG : SecondCountableTopology SS := Topology.IsEmbedding.subtypeVal.secondCountableTopology
 
-theorem rightInv_of_modular (hΔ : ∀ s : SS, Measure.modularCharacterFun s = 1)
-    (μ : Measure (Formalism.REAL.UJ ε)) (hμ : IsHaarS (SLoc ε e z) μ) :
-    ∀ s ∈ SLoc ε e z, μ.map (· * s) = μ := by
-  intro s hs
-  obtain ⟨⟨hσ, hne, hcompl, hinv⟩, hfin⟩ := hμ
-  have hSm : MeasurableSet (SG ε e z : Set (Formalism.REAL.UJ ε)) := (SG_closed ε e z).measurableSet
-  have memb : MeasurableEmbedding (Subtype.val : SS → Formalism.REAL.UJ ε) := MeasurableEmbedding.subtype_coe hSm
-  set ν : Measure SS := μ.comap Subtype.val with hν
-  have hrestr : μ.restrict (SG ε e z : Set (Formalism.REAL.UJ ε)) = μ := by
-    apply Measure.restrict_eq_self_of_ae_mem
-    rw [ae_iff]
-    exact hcompl
-  have hmapν : ν.map Subtype.val = μ := by
-    rw [hν, memb.map_comap, Subtype.range_coe, hrestr]
-  have himg : ∀ (t : SS) (A : Set SS), Subtype.val '' ((fun x => t * x) ⁻¹' A) =
-      (fun x => (t : Formalism.REAL.UJ ε) * x) ⁻¹' (Subtype.val '' A) := by
-    intro t A
-    ext x
-    constructor
-    · rintro ⟨y, hy, rfl⟩
-      exact ⟨t * y, hy, rfl⟩
-    · rintro ⟨a, ha, hax⟩
-      have hxS : x ∈ SS := by
-        have : x = ((t⁻¹ * a : SS) : Formalism.REAL.UJ ε) := by
-          simp only [Subgroup.coe_mul, Subgroup.coe_inv, hax]; group
-        rw [this]; exact (t⁻¹ * a).2
-      refine ⟨⟨x, hxS⟩, ?_, rfl⟩
-      show t * ⟨x, hxS⟩ ∈ A
-      have : t * ⟨x, hxS⟩ = a := Subtype.ext (by simpa using hax.symm)
-      rw [this]; exact ha
-  have hνinv : ν.IsMulLeftInvariant := by
-    refine ⟨fun t => ?_⟩
-    ext A hA
-    rw [Measure.map_apply (measurable_const_mul t) hA, hν, memb.comap_apply, memb.comap_apply, himg,
-      ← Measure.map_apply (measurable_const_mul _) (memb.measurableSet_image.2 hA), hinv _ t.2]
-  have hνfin : IsFiniteMeasureOnCompacts ν := by
-    refine ⟨fun K hK => ?_⟩
-    rw [hν, memb.comap_apply]
-    exact (hK.image continuous_subtype_val).measure_lt_top
-  have hνeq : ν = ν.haarScalarFactor Measure.haar • Measure.haar := Measure.isMulLeftInvariant_eq_smul ν Measure.haar
-  have hνright : ν.map (· * ⟨s, hs⟩) = ν := by
-    rw [hνeq, Measure.map_smul, Formalism.L2.SG.RealObj.InfCut.UnitaryIsometries.Modular.map_right, hΔ, one_smul]
-  calc μ.map (· * s) = (ν.map Subtype.val).map (· * s) := by rw [hmapν]
-    _ = (ν.map (· * ⟨s, hs⟩)).map Subtype.val := by
-        rw [Measure.map_map (measurable_mul_const s) measurable_subtype_coe,
-          Measure.map_map measurable_subtype_coe (measurable_mul_const _)]
-        rfl
-    _ = μ := by rw [hνright, hmapν]
 
 end Sub
 
 end Formalism.L2.SG.RealObj.InfCut.UnitaryIsometries.RI
+end
+end

@@ -13,10 +13,6 @@ abbrev IdeleGroup : Type _ := (𝔸[K])ˣ
 
 namespace IdeleGroup
 
-theorem isEmbedding_val_inv :
-    IsEmbedding (fun x : IdeleGroup K ↦ ((x : 𝔸[K]), ((x⁻¹ : IdeleGroup K) : 𝔸[K]))) :=
-  ((Homeomorph.refl (𝔸[K])).prodCongr MulOpposite.opHomeomorph.symm).isEmbedding.comp
-    (Units.isEmbedding_embedProduct (M := 𝔸[K]))
 
 example : IsTopologicalGroup (IdeleGroup K) := inferInstance
 

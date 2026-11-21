@@ -217,14 +217,7 @@ theorem frobTwist_hom_ext {f g : H ⟶ frobTwist h G}
 
 @[simp] theorem frobTwistMap_id : frobTwistMap h (𝟙 G) = 𝟙 _ := frobTwist_hom_ext h fun _ _ => rfl
 
-theorem frobTwistMap_comp (f : G ⟶ H) (g : H ⟶ K) :
-    frobTwistMap h (f ≫ g) = frobTwistMap h f ≫ frobTwistMap h g :=
-  frobTwist_hom_ext h fun _ _ => rfl
 
-theorem frobTwistMap_add (f g : G ⟶ H) :
-    frobTwistMap h (f + g) = frobTwistMap h f + frobTwistMap h g :=
-  letI := (frobRing h).toAlgebra
-  baseChangeMap_add R f g
 
 @[simp] theorem relFrob_app_frobProj (n : ℕ) (a : G.A n) :
     (relFrob h G).app n ((frobProj h G).app n a) = a ^ p :=
@@ -303,10 +296,6 @@ def frobTwistBaseChange : frobTwist h' (G.baseChange S) ≅ (frobTwist h G).base
         frobLift_app_frobProj]
       exact congrArg _ ((SemiHom.liftOver_app _ _ _ n 1 a).trans (by rw [map_one, one_smul]; rfl))
 
-theorem frobTwistBaseChange_hom_app (n : ℕ) (x : (frobTwist h G).A n) :
-    (frobTwistBaseChange h G h').hom.app n (((frobTwist h G).toBase S).app n x) =
-      ((G.toBase S).frobTwist h h').app n x :=
-  (SemiHom.lift_app _ n 1 x).trans (one_smul _ _)
 
 end BaseChange
 

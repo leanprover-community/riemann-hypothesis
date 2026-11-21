@@ -6,8 +6,16 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CuspFormSmooth
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CuspFormRapidKernelSmoothSpanSmoothCuspidalBoundStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MatrixSpanLeRapidSpan
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MspanLeBddForms
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InverseTransposeMemCuspFormRapidKernelSpanContraStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InverseTransposeMemCuspFormRapidKernelSpanContra
 
+section
+open NumberField Matrix MeasureTheory GlobalTheory.CuspRep GroundTheory.Global GroundTheory.Global.IdeleGroup
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.inverseTranspose_mem_cuspFormRapidKernelSpan_contragredient : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ) (π : CuspSub E a) (F : GA E a → ℂ), F ∈ GlobalTheory.JSW.mspanR π → (fun g => F (invT a (Ad E) g)) ∈ GlobalTheory.JSW.mspanR π.contra := by
+  first | exact @GlobalTheory.JSW.invT_mem_mspanR_contra | exact GlobalTheory.JSW.invT_mem_mspanR_contra | (intros; apply GlobalTheory.JSW.invT_mem_mspanR_contra <;> assumption)
+end
+
+section
 noncomputable section
 
 open NumberField Matrix MeasureTheory Filter GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL GlobalTheory.ThetaPoisson GroundTheory.Global GroundTheory.Global.IdeleGroup
@@ -174,3 +182,5 @@ theorem integral_low_eq (hπ : π.IsUnitary) (hπ' : π'.IsUnitary) (hφ : φ �
   exact ⟨hA.add hB, integral_add hA hB⟩
 
 end GlobalTheory.RSThetaLowM
+end
+end

@@ -2,9 +2,24 @@ import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.SpecialFibreUnits
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.FormalAlgebraisation
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SpecialFibreConnected
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsHomSpecProdSelfPreimageEqClopenStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HomExtSpecProdSelfOfBasicOpenPreimageEqStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsHomSpecProdSelfPreimageEqClopen
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HomExtSpecProdSelfOfBasicOpenPreimageEq
 
+section
+open CategoryTheory Limits AlgebraicGeometry GlobalTheory.AlgConn
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_hom_specProdSelf_preimage_eq_clopen : ∀ (O : Type) [CommRing O] (T : Scheme.{0}) (p : T ⟶ Spec (.of O)) (U : Set T), IsClopen U → ∃ h : T ⟶ Spec (.of (O × O)), h ≫ twoπ O = p ∧ ((h ⁻¹ᵁ (Spec (.of (O × O))).basicOpen (fst1 O) : T.Opens) : Set T) = U := by
+  first | exact @GlobalTheory.exists_hom_spec_prod_self_preimage_eq_clopen | exact GlobalTheory.exists_hom_spec_prod_self_preimage_eq_clopen | (intros; apply GlobalTheory.exists_hom_spec_prod_self_preimage_eq_clopen <;> assumption)
+end
+
+section
+open CategoryTheory Limits AlgebraicGeometry GlobalTheory.AlgConn
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hom_ext_specProdSelf_of_basicOpen_preimage_eq : ∀ (O : Type) [CommRing O] (T : Scheme.{0}) (h h' : T ⟶ Spec (.of (O × O))), h ≫ twoπ O = h' ≫ twoπ O → h ⁻¹ᵁ (Spec (.of (O × O))).basicOpen (fst1 O) = h' ⁻¹ᵁ (Spec (.of (O × O))).basicOpen (fst1 O) → h = h' := by
+  first | exact @GlobalTheory.AlgConn.hom_ext_of_twoπ_of_basicOpen | exact GlobalTheory.AlgConn.hom_ext_of_twoπ_of_basicOpen | (intros; apply GlobalTheory.AlgConn.hom_ext_of_twoπ_of_basicOpen <;> assumption)
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -114,3 +129,5 @@ theorem connectedSpace_specialFibre_of_morphisms : GlobalTheory.Published.Formal
     exact hu' (hcl.injective (hw'.trans hx') ▸ hw)
 
 end GlobalTheory.AlgConn
+end
+end

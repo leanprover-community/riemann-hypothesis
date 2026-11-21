@@ -2,9 +2,166 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.CongModRefl
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LevelCoverComplexModelsComponentsIsometriesDegreStatement
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MemCuspFormsOfMultipleRationalIsometryMove
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MeanZeroCompSmulPeriodicFundamentalDomain
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPosNatSmulMemOfSpanningNumberFieldLattice
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MeanFundamentalDomainEqOfPeriodic
+import BuildAid.ForwardExisting
 
+section
+section
+open MeasureTheory
+open scoped Pointwise
+
+namespace GlobalTheory
+
+theorem mean_zero_comp_smul_of_periodic :
+    ∀ (n : Type) [Fintype n] (L : AddSubgroup (n → ℝ)) [Countable L] (D : Set (n → ℝ)) (k : (n → ℝ) → ℂ) (q : ℝ), 0 < q → MeasureTheory.IsAddFundamentalDomain L D MeasureTheory.volume → 0 < MeasureTheory.volume D → MeasureTheory.volume D < ⊤ → Continuous k → (∃ C : ℝ, ∀ s, ‖k s‖ ≤ C) → (∀ p ∈ L, ∀ s, k (s + p) = k s) → ∫ s in D, k s = 0 → ∀ (L₁ : AddSubgroup (n → ℝ)) [Countable L₁] (D₁ : Set (n → ℝ)), MeasureTheory.IsAddFundamentalDomain L₁ D₁ MeasureTheory.volume → MeasureTheory.volume D₁ < ⊤ → (∀ p ∈ L₁, ∀ s, k (q • (s + p)) = k (q • s)) → ∫ s in D₁, k (q • s) = 0 := by
+  intro n _ L _ D k q hq hD hDpos hDfin hk hb hper h0 L₁ _ D₁ hD₁ hD₁fin hper₁
+  have hq0 : q ≠ 0 := hq.ne'
+  have hqi : q⁻¹ ≠ 0 := inv_ne_zero hq0
+  let φ : (n → ℝ) →+ (n → ℝ) := DistribMulAction.toAddMonoidHom (n → ℝ) q⁻¹
+  have hφ : Function.Injective φ := fun x y h => by
+    simpa [φ, smul_right_inj hqi] using h
+  let L' : AddSubgroup (n → ℝ) := L.map φ
+  let eL : L ≃+ L' := AddSubgroup.equivMapOfInjective L φ hφ
+  haveI : Countable L' := Countable.of_equiv L eL.toEquiv
+  let f : (n → ℝ) ≃ (n → ℝ) := (Homeomorph.smulOfNeZero q⁻¹ hqi).toEquiv
+  have hf : ∀ x, f x = q⁻¹ • x := fun x => rfl
+  have hfs : ∀ x, f.symm x = q • x := fun x => by
+    apply f.injective
+    rw [Equiv.apply_symm_apply, hf, smul_smul, inv_mul_cancel₀ hq0, one_smul]
+  have hD' : IsAddFundamentalDomain L' (f '' D) volume := by
+    refine hD.image_of_equiv f ?_ eL.symm.toEquiv ?_
+    · have : (f.symm : (n → ℝ) → (n → ℝ)) = fun x => q • x := funext hfs
+      rw [this]
+      exact Measure.quasiMeasurePreserving_smul volume hq0
+    · intro g x
+      show f ((eL.symm g : L) +ᵥ x) = g +ᵥ f x
+      have hg : ((g : L') : n → ℝ) = q⁻¹ • ((eL.symm g : L) : n → ℝ) := by
+        conv_lhs => rw [← eL.apply_symm_apply g]
+        rfl
+      rw [AddSubgroup.vadd_def, AddSubgroup.vadd_def, vadd_eq_add, vadd_eq_add, hf, hf, smul_add, hg]
+  have himg : f '' D = q⁻¹ • D := by
+    ext x; simp [hf, Set.mem_smul_set]
+  rw [himg] at hD'
+  have hvol : volume (q⁻¹ • D) = ENNReal.ofReal |q⁻¹ ^ Module.finrank ℝ (n → ℝ)| * volume D :=
+    Measure.addHaar_smul volume q⁻¹ D
+  have hvne0 : volume (q⁻¹ • D) ≠ 0 := by
+    rw [hvol]
+    refine mul_ne_zero ?_ hDpos.ne'
+    simpa using abs_pos.2 (pow_ne_zero (Module.finrank ℝ (n → ℝ)) hqi)
+  have hvfin : volume (q⁻¹ • D) < ⊤ := by
+    rw [hvol]; exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top hDfin
+  have hint0 : ∫ s in q⁻¹ • D, k (q • s) = 0 := by
+    rw [Measure.setIntegral_comp_smul_of_pos volume k (q⁻¹ • D) hq, smul_smul,
+      mul_inv_cancel₀ hq0, one_smul, h0, smul_zero]
+  have hperL' : ∀ p ∈ L', ∀ s, k (q • (s + p)) = k (q • s) := by
+    intro p hp s
+    obtain ⟨p0, hp0, rfl⟩ := AddSubgroup.mem_map.1 hp
+    have : q • (s + φ p0) = q • s + p0 := by
+      simp [φ, smul_add, smul_smul, mul_inv_cancel₀ hq0]
+    rw [this, hper p0 hp0]
+  obtain ⟨C, hC⟩ := hb
+  have key := mean_fundamentalDomain_eq_of_periodic n L' L₁ (q⁻¹ • D) D₁ (fun s => k (q • s))
+    hD' hD₁ hvfin hD₁fin (hk.comp (continuous_const_smul q)) ⟨C, fun s => hC _⟩ hperL' hper₁
+  rw [hint0, mul_zero] at key
+  have hre : ((volume (q⁻¹ • D)).toReal : ℂ) ≠ 0 := by
+    exact_mod_cast (ENNReal.toReal_pos hvne0 hvfin.ne).ne'
+  exact (mul_eq_zero.1 key).resolve_left hre
+
+end GlobalTheory
+end
+
+open MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mean_zero_comp_smul_periodic_fundamentalDomain : ∀ (n : Type) [Fintype n] (L : AddSubgroup (n → ℝ)) [Countable L] (D : Set (n → ℝ)) (k : (n → ℝ) → ℂ) (q : ℝ), 0 < q → MeasureTheory.IsAddFundamentalDomain L D MeasureTheory.volume → 0 < MeasureTheory.volume D → MeasureTheory.volume D < ⊤ → Continuous k → (∃ C : ℝ, ∀ s, ‖k s‖ ≤ C) → (∀ p ∈ L, ∀ s, k (s + p) = k s) → ∫ s in D, k s = 0 → ∀ (L₁ : AddSubgroup (n → ℝ)) [Countable L₁] (D₁ : Set (n → ℝ)), MeasureTheory.IsAddFundamentalDomain L₁ D₁ MeasureTheory.volume → MeasureTheory.volume D₁ < ⊤ → (∀ p ∈ L₁, ∀ s, k (q • (s + p)) = k (q • s)) → ∫ s in D₁, k (q • s) = 0 := by
+  atlas_forward_decl GlobalTheory.mean_zero_comp_smul_of_periodic
+end
+
+section
+namespace GlobalTheory.NatMultipleIntegral
+
+open NumberField
+
+theorem exists_nat_mul_isIntegral (E : Type) [Field E] [NumberField E] (c : E) :
+    ∃ n : ℕ, 0 < n ∧ IsIntegral ℤ ((n : E) * c) := by
+  have h1 : IsAlgebraic ℚ c := Algebra.IsAlgebraic.isAlgebraic c
+  have h2 : IsAlgebraic ℤ c := (IsFractionRing.isAlgebraic_iff ℤ ℚ E).mpr h1
+  obtain ⟨y, hy, hint⟩ := h2.exists_integral_multiple
+  refine ⟨y.natAbs, Int.natAbs_pos.mpr hy, ?_⟩
+  rw [zsmul_eq_mul] at hint
+  rcases Int.natAbs_eq y with h | h
+  · have : ((y.natAbs : ℕ) : E) = (y : E) := by
+      conv_rhs => rw [h]
+      exact (Int.cast_natCast _).symm
+    rw [this]; exact hint
+  · have : ((y.natAbs : ℕ) : E) = -(y : E) := by
+      conv_rhs => rw [h]
+      rw [Int.cast_neg, neg_neg, Int.cast_natCast]
+    rw [this, neg_mul]; exact hint.neg
+
+theorem exists_nat_smul_mem (E : Type) [inst : Field E] [NumberField E] (r : ℕ)
+    (Λ : Submodule (NumberField.RingOfIntegers E) (Fin r → E))
+    (hΛ : Submodule.span E (↑Λ : Set (Fin r → E)) = ⊤) (v : Fin r → E) :
+    ∃ (q : ℕ), (0 : ℕ) < q ∧ (↑q : E) • v ∈ Λ := by
+  have hv : v ∈ Submodule.span E (↑Λ : Set (Fin r → E)) := hΛ ▸ Submodule.mem_top
+  have key : ∀ (a : E), IsIntegral ℤ a → ∀ x ∈ Λ, a • x ∈ Λ := by
+    intro a ha x hx
+    exact Λ.smul_mem (⟨a, ha⟩ : NumberField.RingOfIntegers E) hx
+  have keyn : ∀ (n : ℕ), ∀ x ∈ Λ, (n : E) • x ∈ Λ := by
+    intro n x hx
+    rw [Nat.cast_smul_eq_nsmul]
+    exact nsmul_mem hx n
+  induction hv using Submodule.span_induction with
+  | mem x hx => exact ⟨1, one_pos, by simpa using hx⟩
+  | zero => exact ⟨1, one_pos, by simp⟩
+  | add x y _ _ hx hy =>
+    obtain ⟨p, hp, hpx⟩ := hx
+    obtain ⟨q, hq, hqy⟩ := hy
+    refine ⟨p * q, Nat.mul_pos hp hq, ?_⟩
+    have e : ((p * q : ℕ) : E) • (x + y) = (q : E) • ((p : E) • x) + (p : E) • ((q : E) • y) := by
+      rw [smul_add, smul_smul, smul_smul, Nat.cast_mul, mul_comm (q : E) (p : E)]
+    rw [e]
+    exact Λ.add_mem (keyn q _ hpx) (keyn p _ hqy)
+  | smul c x _ hx =>
+    obtain ⟨p, hp, hpx⟩ := hx
+    obtain ⟨n, hn, hint⟩ := exists_nat_mul_isIntegral E c
+    refine ⟨n * p, Nat.mul_pos hn hp, ?_⟩
+    have e : ((n * p : ℕ) : E) • (c • x) = ((n : E) * c) • ((p : E) • x) := by
+      rw [smul_smul, smul_smul, Nat.cast_mul]
+      congr 1
+      ring
+    rw [e]
+    exact key _ hint _ hpx
+
+end GlobalTheory.NatMultipleIntegral
+end
+
+section
+section
+open NumberField
+
+namespace GlobalTheory
+
+theorem exists_pos_nat_smul_mem_of_span_eq_top (E : Type) [Field E] [NumberField E] (r : ℕ)
+    (Λ : Submodule (NumberField.RingOfIntegers E) (Fin r → E))
+    (h : Submodule.span E (Λ : Set (Fin r → E)) = ⊤) (v : Fin r → E) :
+    ∃ q : ℕ, 0 < q ∧ (q : E) • v ∈ Λ := by
+  first
+  | exact @_root_.GlobalTheory.NatMultipleIntegral.exists_nat_smul_mem
+  | exact _root_.GlobalTheory.NatMultipleIntegral.exists_nat_smul_mem
+  | (apply _root_.GlobalTheory.NatMultipleIntegral.exists_nat_smul_mem <;> assumption)
+  | (intros; apply _root_.GlobalTheory.NatMultipleIntegral.exists_nat_smul_mem <;> assumption)
+  | (intros; apply @_root_.GlobalTheory.NatMultipleIntegral.exists_nat_smul_mem <;> first | assumption | infer_instance)
+  | (intros; exact _root_.GlobalTheory.NatMultipleIntegral.exists_nat_smul_mem ..)
+
+end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_pos_nat_smul_mem_of_spanning_numberField_lattice : ∀ (E : Type) [Field E] [NumberField E] (r : ℕ) (Λ : Submodule (NumberField.RingOfIntegers E) (Fin r → E)), Submodule.span E (Λ : Set (Fin r → E)) = ⊤ → ∀ v : Fin r → E, ∃ q : ℕ, 0 < q ∧ (q : E) • v ∈ Λ := by
+  atlas_forward_decl GlobalTheory.exists_pos_nat_smul_mem_of_span_eq_top
+end
+
+section
 section
 open NumberField MeasureTheory Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.L2.Theta Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.AllWt GlobalTheory.LevGeo GlobalTheory.LevPull GlobalTheory.FieldBC
 open scoped ENNReal
@@ -302,3 +459,4 @@ open scoped ENNReal
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.cuspForm_iff_levelCover_pullback : ∀ (D : D7) (j : ℕ) (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E) (Dw : Datum H) (l : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ D.R.r) (dict : ∀ σ : c.F →+* ℂ, GA D (D.sp.W j) → Σ k, Frame ((U σ).X k).Ψ D.R.r) (d : DeltaDat Xo c 0) (U₂ : ∀ σ : d.c₂.F →+* ℂ, Unf d.Xo₂ d.c₂ σ D.R.r) (dict₂ : ∀ σ : d.c₂.F →+* ℂ, GA D (D.sp.W j) → Σ k, Frame ((U₂ σ).X k).Ψ D.R.r), Laws D j Xo c U dict → Laws D j d.Xo₂ d.c₂ U₂ dict₂ → d.IsLev → ∀ (a : (D.host.E →+* ℂ) × ℕ → ℕ) (n : ℕ), Dom a n → Even n → ∀ f ∈ sec Xo c a n, ∀ g ∈ sec d.Xo₂ d.c₂ a n, Pull d f g → (g ∈ cusp d.Xo₂ d.c₂ U₂ a n ↔ f ∈ cusp Xo c U a n) := by
   atlas_forward_decl GlobalTheory.LevCusp.cusp_iff_pull
+end

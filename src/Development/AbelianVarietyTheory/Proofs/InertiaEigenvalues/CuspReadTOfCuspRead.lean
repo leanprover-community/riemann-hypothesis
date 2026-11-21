@@ -32,8 +32,6 @@ variable {Ω : Type} [Field Ω] [Algebra H.E Ω] [IsAlgClosure H.E Ω]
 def locGR (rc : RecFam) (pl : Formalism.GaloisCohomology.Places H.E Ω) {a : ℕ} (π : HostCGu H a) (w : PlE H) : WD (pl.2 w) :=
   rc (pl.2 w) (compG π w)
 
-theorem locGR_locRec (hL : GlobalTheory.Published.LocalLanglandsGL) (pl : Formalism.GaloisCohomology.Places H.E Ω) {a : ℕ} (π : HostCGu H a)
-    (w : PlE H) : locGR (fun h => ParLaws.locRec hL h) pl π w = ParLaws.locG hL pl π w := rfl
 
 end GlobalTheory.RecT
 
@@ -64,8 +62,6 @@ def cgTrueT_of_cgTrue (hD : GlobalTheory.Published.DepthZeroTypeInertia) {hL : G
   inf := C.inf
   csd := C.csd
 
-theorem cgTrueT_of_cgTrue_e (hD : GlobalTheory.Published.DepthZeroTypeInertia) {hL : GlobalTheory.Published.LocalLanglandsGL} (C : CGTrue hL D T) :
-    (cgTrueT_of_cgTrue hD C).e = C.e := rfl
 
 set_option maxHeartbeats 2000000 in
 
@@ -81,9 +77,6 @@ def trueCGT (hD : GlobalTheory.Published.DepthZeroTypeInertia) (hL : GlobalTheor
     CGTrueT (fun h => ParLaws.locRec hL h) (setCG D hE (trueK hL hF D T η η' h1 h2 h3 h4)) (wdCG hE _ T) :=
   cgTrueT_of_cgTrue hD (trueCG hL hF D hE T η η' h1 h2 h3 h4)
 
-theorem trueCGT_e_surj (hD hL hF D hE T η η' h1 h2 h3 h4) (a : ℕ) (ha : 0 < a) :
-    Function.Surjective ((trueCGT hD hL hF D hE T η η' h1 h2 h3 h4).e a) :=
-  (trueCG hL hF D hE T η η' h1 h2 h3 h4).surj a ha
 
 def CGTrueT.equivGood (C : CGTrueT rc D T) (a : ℕ) (h : 0 < a) :
     {σ : D.naut.CG a // AllGood (C.e a σ)} ≃ {π : HostCGu D.host a // AllGood π} :=
@@ -102,44 +95,14 @@ def recMapT {R : Ranks} {H : Host R} {what₂ : Rows.Data R} {N : NData R H what
     (rc : RecFam) : RecMap A :=
   fun w _ σ => (T.e w).symm (rc (N.plOm.2 w) (cls (ParLaws.toRep σ)))
 
-theorem recMapT_locRec {R : Ranks} {H : Host R} {what₂ : Rows.Data R} {N : NData R H what₂} {A : NAut N}
-    (T : WDTie N A) (hL : GlobalTheory.Published.LocalLanglandsGL) :
-    recMapT T (fun h => ParLaws.locRec hL h) = GlobalTheory.FormDict.recT T hL := rfl
 
 def CuspReadT {R : Ranks} {H : Host R} {what₂ : Rows.Data R} {N : NData R H what₂} {A : NAut N} (rc : RecMap A) : Prop :=
   ∀ (a : ℕ) (P : CuspSub H.E a), 1 ≤ a → P.IsCsd →
     (∀ w : PlE H, ∃ σ, P.IsLocComp w σ ∧ Good (cls (ParLaws.toRep σ))) → ∃ π : A.CG a, A.csd π ∧
     (∀ w σ, P.IsLocComp w σ → A.locG π w = rc w a σ) ∧ ∀ τ m, P.HasInfChar τ m → A.infG π τ = m
 
-theorem cuspReadT_of_cuspRead {R : Ranks} {H : Host R} {what₂ : Rows.Data R} {N : NData R H what₂} {A : NAut N}
-    {rc : RecMap A} (h : CuspRead rc) : CuspReadT rc :=
-  fun a P ha hP _ => h a P ha hP
 
-theorem compG_eq {D : D7} {a : ℕ} (P : CuspSub D.host.E a) (hu : haveI := host_isCMField D.host; (CG.mk P).IsUnitary)
-    {w : PlE D.host} {σ : SmIrr (GL (Fin a) (w.adicCompletion D.host.E))} (hσ : P.IsLocComp w σ) :
-    compG (H := D.host) ⟨CG.mk P, hu⟩ w = cls (ParLaws.toRep σ) := by
-  haveI := host_isCMField D.host
-  have h1 : (CG.mk P).IsLoc w (Quotient.mk _ σ) := hσ
-  simp only [compG]
-  rw [CG.IsLoc.unique D.host.E a _ w _ _ h1.loc h1]
-  rfl
 
-theorem cuspReadT_recMapT : ∀ (rc : RecFam) (D : D7) (T : WDTie D.nd D.naut),
-    CGTrueT rc D T → CuspReadT (recMapT T rc) := by
-  intro rc D T C a P ha hP hg
-  haveI := host_isCMField D.host
-  have hu : (CG.mk P).IsUnitary := CsdUnitary.isUnitary_of_isCsd _ a (CG.mk P) hP
-  have hgood : AllGood (H := D.host) ⟨CG.mk P, hu⟩ := fun w => by
-    obtain ⟨σ, hσ, hg⟩ := hg w
-    rw [compG_eq P hu hσ]; exact hg
-  obtain ⟨π, hπ⟩ := C.surj a ha ⟨CG.mk P, hu⟩ hgood
-  refine ⟨π, (C.csd a _).2 (by rw [hπ]; exact hP), fun w σ hσ => ?_, fun τ m hm => ?_⟩
-  · apply (T.e w).injective
-    rw [C.loc a π w (by rw [hπ]; exact hgood w)]
-    simp only [recMapT, Equiv.apply_symm_apply, locGR, hπ]
-    rw [compG_eq P hu hσ]
-  · rw [C.inf, hπ]
-    exact CG.HasInfChar.infChar_eq (π := CG.mk P) hm
 
 end Read
 
@@ -149,13 +112,6 @@ namespace GlobalTheory.RecT
 
 open GlobalTheory.RowTie
 
-theorem nonempty_equivGoodAll : ∀ (hT : UpperTheory.Zero.LLC.RecTExists) (D : D7) (T : WDTie D.nd D.naut),
-    GlobalTheory.HeightCounting.CGTrueT hT D T → ∀ a : ℕ, 0 < a →
-      Nonempty (D.naut.CG a ≃ {ρ : HostCGu D.host a // GlobalTheory.HeightCounting.GoodAll ρ}) := by
-  intro hT D T C a ha
-  exact ⟨Equiv.ofBijective (fun π => ⟨C.e a π, C.good a π⟩)
-    ⟨fun x y h => (C.e a).injective (congrArg Subtype.val h),
-     fun ρ => let ⟨π, hπ⟩ := C.surj a ha ρ.1 ρ.2; ⟨π, Subtype.ext hπ⟩⟩⟩
 
 def ofShared {hT : UpperTheory.Zero.LLC.RecTExists} {D : D7} {T : WDTie D.nd D.naut} (C : GlobalTheory.HeightCounting.CGTrueT hT D T) :
     GlobalTheory.RecT.CGTrueT (fun h => ParLawsT.locRecT hT h) D T where

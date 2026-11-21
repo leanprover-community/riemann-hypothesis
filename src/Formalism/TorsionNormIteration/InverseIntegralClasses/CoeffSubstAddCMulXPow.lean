@@ -197,12 +197,6 @@ theorem bwd (h5 : Formalism.LT.CoeffBound.{u}) (h6 : Formalism.LT.PowCongr.{u, 0
 
 end Back
 
-theorem funEqCongr (h5 : Formalism.LT.CoeffBound.{u}) (h6 : Formalism.LT.PowCongr.{u, 0}) :
-    Formalism.G.FunEqCongr.{u} := by
-  intro K _ _ _ p q σ hS f hf0 hf1 hfe α β hα0 hβ0 hα hβ r hr
-  exact ⟨fwd h5 h6 hS hf0 hfe hα0 hβ0 hα hβ hr, bwd h5 h6 hS hf0 hf1 hfe hα0 hβ0 hα hβ hr⟩
 
 end Formalism.LT.CongrP
 
-theorem Formalism.LT.FunEqCongr_of (h5 : Formalism.LT.CoeffBound.{u}) (h6 : Formalism.LT.PowCongr.{u, 0}) :
-    Formalism.G.FunEqCongr.{u} := Formalism.LT.CongrP.funEqCongr h5 h6

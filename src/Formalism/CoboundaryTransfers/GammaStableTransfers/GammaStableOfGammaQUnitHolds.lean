@@ -1,6 +1,197 @@
-import Formalism.CoboundaryTransfers.GammaStableTransfers.MemCoboundariesOfIsOneCoboundary
+import Formalism.CoboundaryTransfers.StatementAPI
 import Formalism.FrobeniusContraction.FrobeniusContractionProofs.LenBound
 
+section
+noncomputable section
+
+namespace Formalism.CoboundaryTransfers
+
+namespace WachMod
+
+variable {O A : Type} [CommRing O] [CommRing A] [Algebra O A] {B : Base O A} {M : ℕ}
+  {D : Type} [AddCommGroup D] [Module A D] [Module O D] [IsScalarTower O A D]
+  (W : WachMod B M D)
+
+theorem smulO_eq (c : O) (x : D) : c • x = algebraMap O A c • x := by
+  rw [algebraMap_smul]
+
+theorem smulO_mem (c : O) {x : D} (hx : x ∈ W.N) : c • x ∈ W.N := by
+  rw [smulO_eq (A := A)]; exact W.N.smul_mem _ hx
+
+theorem qInv_of_mem {n : D} (hn : n ∈ W.N) : W.QInv n := W.N.smul_mem _ hn
+
+theorem qInv_zero : W.QInv 0 := by
+  simp only [QInv, smul_zero]; exact W.N.zero_mem
+
+theorem qInv_add {y y' : D} (hy : W.QInv y) (hy' : W.QInv y') : W.QInv (y + y') := by
+  simp only [QInv, smul_add]; exact W.N.add_mem hy hy'
+
+theorem qInv_sub {y y' : D} (hy : W.QInv y) (hy' : W.QInv y') : W.QInv (y - y') := by
+  simp only [QInv, smul_sub]; exact W.N.sub_mem hy hy'
+
+theorem qInv_smul (a : A) {y : D} (hy : W.QInv y) : W.QInv (a • y) := by
+  simp only [QInv]; rw [smul_comm]; exact W.N.smul_mem a hy
+
+theorem qInv_smulO (c : O) {y : D} (hy : W.QInv y) : W.QInv (c • y) := by
+  rw [smulO_eq (A := A)]; exact W.qInv_smul _ hy
+
+
+theorem xN_zero : W.XN 0 := ⟨0, W.N.zero_mem, (smul_zero _).symm⟩
+
+theorem xN_add {z z' : D} (hz : W.XN z) (hz' : W.XN z') : W.XN (z + z') := by
+  obtain ⟨n, hn, rfl⟩ := hz; obtain ⟨n', hn', rfl⟩ := hz'
+  exact ⟨n + n', W.N.add_mem hn hn', (smul_add _ _ _).symm⟩
+
+theorem xN_smul (a : A) {z : D} (hz : W.XN z) : W.XN (a • z) := by
+  obtain ⟨n, hn, rfl⟩ := hz
+  exact ⟨a • n, W.N.smul_mem a hn, smul_comm _ _ _⟩
+
+theorem xN_smulO (c : O) {z : D} (hz : W.XN z) : W.XN (c • z) := by
+  rw [smulO_eq (A := A)]; exact W.xN_smul _ hz
+
+theorem cont_pow_X_pow_eq_zero_of_lt : W.C1 0 0 := ⟨W.qInv_zero, W.xN_zero⟩
+
+theorem isOneCochain_add {y z y' z' : D} (h : W.C1 y z) (h' : W.C1 y' z') : W.C1 (y + y') (z + z') :=
+  ⟨W.qInv_add h.1 h'.1, W.xN_add h.2 h'.2⟩
+
+theorem isOneCochain_smul_of_tower (c : O) {y z : D} (h : W.C1 y z) : W.C1 (c • y) (c • z) :=
+  ⟨W.qInv_smulO c h.1, W.xN_smulO c h.2⟩
+
+theorem cont_X_pow_pow_eq_zero_of_gt : W.C2 0 := ⟨0, W.qInv_zero, (smul_zero _).symm⟩
+
+theorem isTwoCochain_add {ω ω' : D} (h : W.C2 ω) (h' : W.C2 ω') : W.C2 (ω + ω') := by
+  obtain ⟨y, hy, rfl⟩ := h; obtain ⟨y', hy', rfl⟩ := h'
+  exact ⟨y + y', W.qInv_add hy hy', (smul_add _ _ _).symm⟩
+
+theorem isTwoCochain_smul (a : A) {ω : D} (h : W.C2 ω) : W.C2 (a • ω) := by
+  obtain ⟨y, hy, rfl⟩ := h
+  exact ⟨a • y, W.qInv_smul a hy, smul_comm _ _ _⟩
+
+theorem d1_apply (y z : D) : W.d1 y z = (W.γ y - y) - (W.φ z - z) := rfl
+
+theorem diffOne_zero : W.d1 0 0 = 0 := by simp [d1]
+
+theorem diffOne_add (y z y' z' : D) : W.d1 (y + y') (z + z') = W.d1 y z + W.d1 y' z' := by
+  simp only [d1, map_add]; abel
+
+theorem diffOne_smul_of_tower (c : O) (y z : D) : W.d1 (c • y) (c • z) = c • W.d1 y z := by
+  simp only [d1, map_smul, smul_sub]
+
+theorem diffOne_diffZero (x : D) : W.d1 (W.φ x - x) (W.γ x - x) = 0 := by
+  simp only [d1, map_sub, W.comm]; abel
+
+theorem isOneCochain_diffZero {x : D} (hx : x ∈ W.N) : W.C1 (W.φ x - x) (W.γ x - x) := by
+  refine ⟨?_, ?_⟩
+  · simp only [QInv, smul_sub]
+    exact W.N.sub_mem (W.φ_N x hx) (W.N.smul_mem _ hx)
+  · obtain ⟨x', hx', h⟩ := W.γ_N x hx
+    exact ⟨x', hx', h⟩
+
+theorem isTwoCochain_diffOne {y z : D} (h : W.C1 y z) : W.C2 (W.d1 y z) := by
+  obtain ⟨hy, n, hn, rfl⟩ := h
+  obtain ⟨y', hy', hγ⟩ := W.γ_QN y hy
+  obtain ⟨v, hv⟩ := B.φX
+  refine ⟨y' - (v • W.φ n - n), ?_, ?_⟩
+  · refine W.qInv_sub hy' (W.qInv_sub ?_ (W.qInv_of_mem hn))
+    refine W.qInv_smul v ?_
+    exact W.φ_N n hn
+  · rw [d1, hγ, W.φ_smul, hv, mul_smul, smul_sub, smul_sub]
+
+
+
+theorem cocycle_zero : W.Cocycle 0 0 := ⟨W.cont_pow_X_pow_eq_zero_of_lt, W.diffOne_zero⟩
+
+theorem cocycle_add {y z y' z' : D} (h : W.Cocycle y z) (h' : W.Cocycle y' z') :
+    W.Cocycle (y + y') (z + z') :=
+  ⟨W.isOneCochain_add h.1 h'.1, by rw [W.diffOne_add, h.2, h'.2, add_zero]⟩
+
+theorem cocycle_smulO (c : O) {y z : D} (h : W.Cocycle y z) : W.Cocycle (c • y) (c • z) :=
+  ⟨W.isOneCochain_smul_of_tower c h.1, by rw [W.diffOne_smul_of_tower, h.2, smul_zero]⟩
+
+theorem isCob1_zero : W.IsCob1 0 0 := ⟨0, W.N.zero_mem, by simp, by simp⟩
+
+theorem isCob1_add {y z y' z' : D} (h : W.IsCob1 y z) (h' : W.IsCob1 y' z') :
+    W.IsCob1 (y + y') (z + z') := by
+  obtain ⟨x, hx, rfl, rfl⟩ := h; obtain ⟨x', hx', rfl, rfl⟩ := h'
+  refine ⟨x + x', W.N.add_mem hx hx', ?_, ?_⟩ <;> simp only [map_add] <;> abel
+
+theorem isCob1_smulO (c : O) {y z : D} (h : W.IsCob1 y z) : W.IsCob1 (c • y) (c • z) := by
+  obtain ⟨x, hx, rfl, rfl⟩ := h
+  exact ⟨c • x, W.smulO_mem c hx, by rw [map_smul, smul_sub], by rw [map_smul, smul_sub]⟩
+
+theorem isCob2_zero : W.IsCob2 0 := ⟨0, 0, W.cont_pow_X_pow_eq_zero_of_lt, W.diffOne_zero.symm⟩
+
+theorem isCob2_add {ω ω' : D} (h : W.IsCob2 ω) (h' : W.IsCob2 ω') : W.IsCob2 (ω + ω') := by
+  obtain ⟨y, z, hc, rfl⟩ := h; obtain ⟨y', z', hc', rfl⟩ := h'
+  exact ⟨y + y', z + z', W.isOneCochain_add hc hc', (W.diffOne_add _ _ _ _).symm⟩
+
+theorem isCob2_smulO (c : O) {ω : D} (h : W.IsCob2 ω) : W.IsCob2 (c • ω) := by
+  obtain ⟨y, z, hc, rfl⟩ := h
+  exact ⟨c • y, c • z, W.isOneCochain_smul_of_tower c hc, (W.diffOne_smul_of_tower _ _ _).symm⟩
+
+def qInvSub : Submodule A D where
+  carrier := {y | W.QInv y}
+  add_mem' := W.qInv_add
+  zero_mem' := W.qInv_zero
+  smul_mem' := fun a _ hy => W.qInv_smul a hy
+
+def xNSub : Submodule A D where
+  carrier := {z | W.XN z}
+  add_mem' := W.xN_add
+  zero_mem' := W.xN_zero
+  smul_mem' := fun a _ hz => W.xN_smul a hz
+
+def twoCochains : Submodule A D where
+  carrier := {ω | W.C2 ω}
+  add_mem' := W.isTwoCochain_add
+  zero_mem' := W.cont_X_pow_pow_eq_zero_of_gt
+  smul_mem' := fun a _ h => W.isTwoCochain_smul a h
+
+def cocycleSub : Submodule O (D × D) where
+  carrier := {pr | W.Cocycle pr.1 pr.2}
+  add_mem' := fun h h' => W.cocycle_add h h'
+  zero_mem' := W.cocycle_zero
+  smul_mem' := fun c _ h => W.cocycle_smulO c h
+
+def isCob1Sub : Submodule O (D × D) where
+  carrier := {pr | W.IsCob1 pr.1 pr.2}
+  add_mem' := fun h h' => W.isCob1_add h h'
+  zero_mem' := W.isCob1_zero
+  smul_mem' := fun c _ h => W.isCob1_smulO c h
+
+def isCob2Sub : Submodule O D where
+  carrier := {ω | W.IsCob2 ω}
+  add_mem' := W.isCob2_add
+  zero_mem' := W.isCob2_zero
+  smul_mem' := fun c _ h => W.isCob2_smulO c h
+
+theorem mem_Z1_iff_cocycle (y z : D) : (y, z) ∈ W.Z1 ↔ W.d1 y z = 0 := by
+  rw [Z1, LinearMap.mem_ker, LinearMap.coprod_apply]
+  simp only [LinearMap.sub_apply, LinearMap.neg_apply, LinearMap.id_apply, d1]
+  rw [← sub_eq_add_neg]
+
+theorem mem_cocycles' (pr : D × D) : pr ∈ W.Z1 ↔ W.d1 pr.1 pr.2 = 0 := W.mem_Z1_iff_cocycle pr.1 pr.2
+
+
+theorem coboundaries_le_cocycles : W.B1 ≤ W.Z1 := by
+  rintro _ ⟨x, rfl⟩
+  rw [W.mem_cocycles']
+  simpa [LinearMap.prod_apply] using W.diffOne_diffZero x
+
+
+
+
+
+end WachMod
+
+
+
+
+end Formalism.CoboundaryTransfers
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.CoboundaryTransfers
@@ -14,65 +205,9 @@ private theorem WachMod.mem_cocycles_units_iff (W : WachMod B M D) (pr : D × D)
     pr ∈ W.Z1 ↔ W.d1 pr.1 pr.2 = 0 := by
   simp [WachMod.Z1, WachMod.d1, sub_eq_add_neg]
 
-private theorem WachMod.WachMod_mem_B1_iff (W : WachMod B M D) (pr : D × D) :
-    pr ∈ W.B1 ↔ ∃ x, (W.φ x - x, W.γ x - x) = pr := by
-  simp [WachMod.B1]
 
 end SlopeTestRemainingChoices
 
-theorem homPreservesCochains_holds : HomMaps := by
-  intro O A _ _ _ B M D D' _ _ _ _ _ _ _ _ W W' F
-  have hQ : ∀ y, W.QInv y → W'.QInv (F.f y) := fun y hy => by
-    show B.Q ^ M • F.f y ∈ W'.N
-    rw [← map_smul]
-    exact F.N_le _ hy
-  have hX : ∀ z, W.XN z → W'.XN (F.f z) := by
-    rintro z ⟨n, hn, rfl⟩
-    exact ⟨F.f n, F.N_le n hn, map_smul _ _ _⟩
-  have hC1 : ∀ y z, W.C1 y z → W'.C1 (F.f y) (F.f z) := fun y z h => ⟨hQ y h.1, hX z h.2⟩
-  have hd : ∀ y z, F.f (W.d1 y z) = W'.d1 (F.f y) (F.f z) := fun y z => by
-    simp only [WachMod.d1, map_sub, F.φ_comm, F.γ_comm]
-  have hZ1 : W.Z1.map F.f2 ≤ W'.Z1 := by
-    rintro _ ⟨pr, hpr, rfl⟩
-    refine (WachMod.mem_cocycles_units_iff W' _).mpr ?_
-    show W'.d1 (F.f pr.1) (F.f pr.2) = 0
-    rw [← hd, (WachMod.mem_cocycles_units_iff W pr).mp hpr, map_zero]
-  have hB1 : W.B1.map F.f2 ≤ W'.B1 := by
-    rintro _ ⟨pr, hpr, rfl⟩
-    obtain ⟨x, rfl⟩ := (WachMod.WachMod_mem_B1_iff W pr).mp hpr
-    exact (WachMod.WachMod_mem_B1_iff W' _).mpr ⟨F.f x, by simp [Hom.f2, F.φ_comm, F.γ_comm]⟩
-  have hZf : W.Zf.map F.f2 ≤ W'.Zf := by
-    refine Submodule.map_le_iff_le_comap.mpr ?_
-    rw [WachMod.Zf]
-    refine sup_le ?_ ?_
-    · rw [Submodule.span_le]
-      rintro pr ⟨hz, a, b, hb, hint⟩
-      refine Submodule.mem_comap.mpr ?_
-      rw [WachMod.Zf]
-      apply Submodule.mem_sup_left
-      apply Submodule.subset_span
-      refine ⟨hZ1 ⟨pr, hz, rfl⟩, a, F.f2 b, hB1 ⟨b, hb, rfl⟩, ?_⟩
-      obtain ⟨⟨k, hk⟩, hxn⟩ := hint
-      have e : (B.p ^ a : ℕ) • F.f2 pr + F.f2 b = F.f2 ((B.p ^ a : ℕ) • pr + b) := by
-        rw [map_add, map_nsmul]
-      rw [e]
-      refine ⟨⟨k, ?_⟩, hX _ hxn⟩
-      show B.Q ^ k • F.f (((B.p ^ a : ℕ) • pr + b).1) ∈ W'.N
-      rw [← map_smul]
-      exact F.N_le _ hk
-    · intro pr hpr
-      refine Submodule.mem_comap.mpr ?_
-      rw [WachMod.Zf]
-      exact Submodule.mem_sup_right (hB1 ⟨pr, hpr, rfl⟩)
-  refine ⟨hQ, hX, ?_, hd, ?_, ?_, ?_, hZ1, hB1, hZf⟩
-  · rintro ω ⟨y, hy, rfl⟩
-    exact ⟨F.f y, hQ y hy, map_smul _ _ _⟩
-  · rintro y z ⟨h1, h2⟩
-    exact ⟨hC1 y z h1, by rw [← hd, h2, map_zero]⟩
-  · rintro y z ⟨x, hx, rfl, rfl⟩
-    exact ⟨F.f x, F.N_le x hx, by rw [map_sub, F.φ_comm], by rw [map_sub, F.γ_comm]⟩
-  · rintro ω ⟨y, z, h, rfl⟩
-    exact ⟨F.f y, F.f z, hC1 y z h, hd y z⟩
 
 theorem gammaStableOfGammaQUnit_holds : GammaQNOf := by
   intro O A _ _ _ B M D _ _ _ _ N γ hG hQ hγ hN y hy
@@ -120,14 +255,6 @@ theorem gammaStableOfGammaQUnit_holds : GammaQNOf := by
   show B.Q ^ M • (γ y - y) = B.Q ^ M • (B.X • y')
   rw [hkey, smul_comm (B.Q ^ M) B.X y', hy']
 
-theorem cokernelLengthBound_holds : ColBound := by
-  intro O A _ _ _ B M D D' _ _ _ _ _ _ _ _ W W' F g e hfin hlift
-  obtain ⟨s, hs, hspan⟩ := hfin
-  show Module.length O (↥W'.Zf ⧸ F.ImF.comap W'.Zf.subtype) ≤ _
-  first
-    | exact Formalism.WachCohomologyFacts.quotientLengthBound_holds O (D' × D') B.p g e W'.Zf W'.B1 F.ImF s hs hspan le_sup_right hlift
-    | exact Formalism.WachCohomologyFacts.PLenBound.quotientLengthBound_holds O (D' × D') B.p g e W'.Zf W'.B1 F.ImF s hs hspan le_sup_right hlift
-    | exact _root_.quotientLengthBound_holds O (D' × D') B.p g e W'.Zf W'.B1 F.ImF s hs hspan le_sup_right hlift
 
 theorem finiteClassesLift_holds : LiftHf := by
   intro O A _ _ _ B M D₀ D₁ D₂ _ _ _ _ _ _ _ _ _ _ _ _ W₀ W₁ W₂ S H₁ H₂ _ _ _ _ cl₁ cl₂ Hf₁ Hf₂ g eW c
@@ -143,3 +270,5 @@ theorem finiteClassesLift_holds : LiftHf := by
   rw [hnat _ _ hpr', map_smul, hpr, smul_smul, mul_comm]
 
 end Formalism.CoboundaryTransfers
+end
+end

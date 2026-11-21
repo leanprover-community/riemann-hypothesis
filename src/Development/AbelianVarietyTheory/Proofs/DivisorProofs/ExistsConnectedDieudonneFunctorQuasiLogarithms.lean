@@ -3,25 +3,482 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.RedSurjective
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SubstLiftXPowFrob
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsConnectedPDivGroupChartOfIsConn
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsCommFormalGroupLawOfIsLawOf
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsMapOfAddFormalGroupLawEvalPointsStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRigidifiedExtensionOfSeriesPair
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RigidifiedExtensionPresentationOfSeriesPairs
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqZeroOfFormalGroupLawCoboundaryOneEqZeroStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsMapOfAddFormalGroupLawEvalPoints
+import Development.AbelianVarietyTheory.Definitions.Divisors.WittOnFalse
+import Development.AbelianVarietyTheory.Definitions.Divisors.FormalCoboundarySmul
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InvariantDifferentialsConnectedPDivGroupCoordina
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsSymmetricFormalGroupCocycleIffMemCocyclesStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqZeroOfFormalGroupLawCoboundaryOneEqZero
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.QuasiLogReduces
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.QuasiLogarithmPullbackTeichmullerLift
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConstantCoeffSubstZero
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MapExists
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ReductionMap
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WittModuleFreeFiniteOfReduction
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.WittFrobeniusPowEqOne
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConstantCoeffSubstOfZero
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ModNoPTorsion
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MvPowerSeriesReductionModPrimeRules
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ReductionCommutesFormalGroupLawCoboundaries
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsCommFormalGroupLawMap
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniquePowerSeriesSemilinearPDivGroupHomChaStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SemilinearPDivGroupHomChartConstantCoeffSubst
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConnectedPDivGroupChartSemilinearHomIsFormalGrou
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RigidifiedExtensionPresentationNaturalSemilinearStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniquePowerSeriesOfCompatibleSystem
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CounitCotangentClassPowerSeriesEvalAtNilpotentStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NilpotentEvalCommutesSubstAndAlgebraMap
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CounitCotangentClassPowerSeriesEvalAtNilpotent
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConnectedPDivGroupFormalLawCoordinatesStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SemilinearPDivGroupHomEvalTwoVariableSeries
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MapFormalGroupLawQuasiLogarithms
 
+section
+open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isMapOf_add_formalGroupLawEvalPoints : ∀ (p : ℕ) (k : Type) [CommRing k] (d e : ℕ) (G H : PDivGroup p k) (c : Chart G d) (c' : Chart H e), ∀ (ν : Fin e → MvPowerSeries (Fin e ⊕ Fin e) k) (f g : G ⟶ H) (φ ψ : Fin e → MvPowerSeries (Fin d) k), c'.IsLawOf ν → c.IsMapOf c' f φ → c.IsMapOf c' g ψ → c.IsMapOf c' (f + g) (op ν φ ψ) := by
+  first | exact @GlobalTheory.Katz.Chart.isMapOf_add | exact GlobalTheory.Katz.Chart.isMapOf_add | (intros; apply GlobalTheory.Katz.Chart.isMapOf_add <;> assumption)
+end
+
+section
+section
+open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
+
+noncomputable section
+
+namespace GlobalTheory.Katz
+
+theorem exists_rigMap (p : ℕ) (k : Type) [Field k] (d : ℕ) (G : PDivGroup p k) (c : Chart G d) :
+    ∃ ρ : MvPowerSeries (Fin d ⊕ Fin d) k × (Fin d → k) →ₗ[k] G.RigExt,
+      (∀ s w (z : G.cocycles) (u : G.omega), (∀ n, z.1 n = c.ev₂ n s) →
+        (∀ n, u.1 n = ∑ i, w i • dUnit k (c.x n i)) → ρ (s, w) = G.rigMk (z, u)) := by
+  classical
+  let L : MvPowerSeries (Fin d ⊕ Fin d) k →ₗ[k] (∀ n, G.A n ⊗[k] G.A n) :=
+    LinearMap.pi fun n => (c.ev₂ n).toLinearMap
+  let S : Submodule k (MvPowerSeries (Fin d ⊕ Fin d) k) := G.cocycles.comap L
+  let T₀ : S →ₗ[k] G.cocycles := L.restrict (fun x hx => hx)
+  obtain ⟨T, hT⟩ := LinearMap.exists_extend T₀
+  have hU := (GlobalTheory.T.invariantDifferentials_connectedPDivGroup_coordinates p k d G c).1
+  let U : (Fin d → k) →ₗ[k] G.omega :=
+    { toFun := fun w => ⟨fun n => ∑ i, w i • dUnit k (c.x n i), hU w⟩
+      map_add' := fun a b => Subtype.ext (funext fun n => by
+        simp [add_smul, Finset.sum_add_distrib])
+      map_smul' := fun r a => Subtype.ext (funext fun n => by
+        simp [Finset.smul_sum, smul_smul]) }
+  refine ⟨G.rigMk ∘ₗ T.prodMap U, fun s w z u hz hu => ?_⟩
+  have hs : s ∈ S := by
+    change L s ∈ G.cocycles
+    have : L s = z.1 := funext fun n => (hz n).symm
+    rw [this]; exact z.2
+  have h1 : T s = z := by
+    have := LinearMap.congr_fun hT ⟨s, hs⟩
+    simp only [LinearMap.comp_apply, Submodule.subtype_apply] at this
+    rw [this]
+    exact Subtype.ext (funext fun n => (hz n).symm)
+  have h2 : U w = u := Subtype.ext (funext fun n => (hu n).symm)
+  simp [h1, h2]
+
+end GlobalTheory.Katz
+end
+end
+
+open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_rigidifiedExtension_of_series_pair : ∀ (p : ℕ) (k : Type) [Field k] (d : ℕ) (G : PDivGroup p k) (c : Chart G d), ∃ ρ : MvPowerSeries (Fin d ⊕ Fin d) k × (Fin d → k) →ₗ[k] G.RigExt, (∀ s w (z : G.cocycles) (u : G.omega), (∀ n, z.1 n = c.ev₂ n s) → (∀ n, u.1 n = ∑ i, w i • dUnit k (c.x n i)) → ρ (s, w) = G.rigMk (z, u)) := by
+  atlas_forward_decl GlobalTheory.Katz.exists_rigMap
+end
+
+section
+section
+open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
+
+theorem GlobalTheory.Katz.isRigOf_rigMk : ∀ (p : ℕ) (k : Type) [CommRing k] (d : ℕ) (G : PDivGroup p k) (c : Chart G d), ∀ (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) k) (ρ : MvPowerSeries (Fin d ⊕ Fin d) k × (Fin d → k) →ₗ[k] G.RigExt), c.IsLawOf μ → (∀ s w (z : G.cocycles) (u : G.omega), (∀ n, z.1 n = c.ev₂ n s) → (∀ n, u.1 n = ∑ i, w i • dUnit k (c.x n i)) → ρ (s, w) = G.rigMk (z, u)) → IsRigOf μ ρ := by
+  intro p k _ d G c μ ρ hμ hρ
+  have hcoc := GlobalTheory.T.isSymmetricFormalGroupCocycle_iff_mem_cocycles p k d G c μ hμ
+  have hdu := GlobalTheory.T.counit_cotangentClass_powerSeriesEvalAtNilpotent k d
+  have hlaw := ((GlobalTheory.T.connectedPDivGroup_formalLaw_coordinates p k d G c).2 μ hμ).2
+  have hom := GlobalTheory.T.invariantDifferentials_connectedPDivGroup_coordinates p k d G c
+  have hone := GlobalTheory.T.functions_eq_series_in_chart p k d G c
+  have hpres := (GlobalTheory.T.chart_square_coordinates_present_levels p k d G c).2
+  constructor
+  · intro v
+    obtain ⟨⟨z, u⟩, rfl⟩ := Submodule.mkQ_surjective _ v
+    obtain ⟨s, hs, -⟩ := hpres z.1 (fun n => (z.2 n).2)
+    obtain ⟨w, hw, -⟩ := hom.2 u
+    have hz : (fun n => c.ev₂ n s) = z.1 := funext hs
+    refine ⟨s, w, (hcoc s).2 (hz ▸ z.2), ?_⟩
+    exact hρ s w z u (fun n => (hs n).symm) hw
+  · intro s w hs
+    let z : G.cocycles := ⟨fun n => c.ev₂ n s, (hcoc s).1 hs⟩
+    let u : G.omega := ⟨fun n => ∑ i, w i • dUnit k (c.x n i), hom.1 w⟩
+    rw [hρ s w z u (fun _ => rfl) (fun _ => rfl)]
+    change Submodule.Quotient.mk _ = 0 ↔ _
+    rw [Submodule.Quotient.mk_eq_zero, LinearMap.mem_range]
+    constructor
+    · rintro ⟨B, hB⟩
+      rw [LinearMap.prod_apply, Prod.mk.injEq] at hB
+      obtain ⟨b, hb, -⟩ := hone.2.2 B.1 B.2
+      refine ⟨b, ?_, ?_⟩
+      · have hz2 : ∀ n, pullbackTwo (G.res n) (c.ev₂ (n + 1) s) = c.ev₂ n s := fun n => hone.2.1 n s
+        obtain ⟨t, -, ht⟩ := hpres (fun n => c.ev₂ n s) hz2
+        have h1 := ht s (fun _ => rfl)
+        have h2 := ht (cob1 μ b) (fun n => by
+          rw [(hlaw n b).2, hb n]
+          exact (congrArg (fun y : G.cocycles => y.1 n) hB.1))
+        exact h1.trans h2.symm
+      · obtain ⟨w', -, hw'⟩ := hom.2 u
+        have e1 := hw' w (fun _ => rfl)
+        have e2 := hw' (lin b) (fun n => by
+          rw [← (hdu (G.A n) (c.x n) (c.nil n) (c.aug n) b).2]
+          change _ = dUnit k (c.ev n b)
+          rw [hb n]
+          exact (congrArg (fun y : G.omega => y.1 n) hB.2).symm)
+        exact e1.trans e2.symm
+    · rintro ⟨b, rfl, rfl⟩
+      refine ⟨⟨fun n => c.ev n b, fun n => hone.1 n b⟩, ?_⟩
+      rw [LinearMap.prod_apply, Prod.mk.injEq]
+      constructor
+      · apply Subtype.ext; funext n
+        exact ((hlaw n b).2).symm
+      · apply Subtype.ext; funext n
+        exact (hdu (G.A n) (c.x n) (c.nil n) (c.aug n) b).2
+end
+
+open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rigidifiedExtension_presentation_of_series_pairs : ∀ (p : ℕ) (k : Type) [CommRing k] (d : ℕ) (G : PDivGroup p k) (c : Chart G d), ∀ (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) k) (ρ : MvPowerSeries (Fin d ⊕ Fin d) k × (Fin d → k) →ₗ[k] G.RigExt), c.IsLawOf μ → (∀ s w (z : G.cocycles) (u : G.omega), (∀ n, z.1 n = c.ev₂ n s) → (∀ n, u.1 n = ∑ i, w i • dUnit k (c.x n i)) → ρ (s, w) = G.rigMk (z, u)) → IsRigOf μ ρ := by
+  atlas_forward_decl GlobalTheory.Katz.isRigOf_rigMk
+end
+
+section
+open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eq_zero_of_formalGroupLawCoboundaryOne_eq_zero : ∀ (p : ℕ) (k : Type) [CommRing k] (h : (p : k) = 0) (d : ℕ) (G : PDivGroup p k) (c : Chart G d) (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) k), c.IsLawOf μ → ∀ b, cob1 μ b = 0 → b = 0 := by
+  first | exact @GlobalTheory.Katz.eq_zero_of_cob1_eq_zero | exact GlobalTheory.Katz.eq_zero_of_cob1_eq_zero | (intros; apply GlobalTheory.Katz.eq_zero_of_cob1_eq_zero <;> assumption)
+end
+
+section
+open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.quasiLogarithm_pullback_teichmullerLift : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [CharP k p] [PerfectRing k p] (d e : ℕ) (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) k) (ν : Fin e → MvPowerSeries (Fin e ⊕ Fin e) k) (hμ : IsLaw μ) (hν : IsLaw ν) (φ : Fin e → MvPowerSeries (Fin d) k), IsHom μ ν φ → ∀ f ∈ quasiLog p hν, subst (fun j => Katz.lift p (φ j)) f ∈ quasiLog p hμ ∧ (∀ c, Red p (cob1 (fun j => Katz.lift p (ν j)) f) c → Red p (cob1 (fun i => Katz.lift p (μ i)) (subst (fun j => Katz.lift p (φ j)) f)) (pull2 φ c)) ∧ ∀ w, RedV p (lin f) w → RedV p (lin (subst (fun j => Katz.lift p (φ j)) f)) (pullLin φ w) := by
+  first | exact @GlobalTheory.KatzPull.quasiLog_pull | exact GlobalTheory.KatzPull.quasiLog_pull | (intros; apply GlobalTheory.KatzPull.quasiLog_pull <;> assumption)
+end
+
+section
+open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
+
+set_option autoImplicit false
+noncomputable section
+namespace GlobalTheory.Katz.ModHom
+
+variable (p : ℕ) [Fact p.Prime] {k : Type} [Field k] [CharP k p]
+
+theorem red_lift {σ : Type} (g : MvPowerSeries σ k) : Red p (Katz.lift p g) g := by
+  intro α
+  exact ⟨WittVector.teichmuller p (coeff α g), coeff_lift p g α, by
+    simp [WittVector.constantCoeff_apply]⟩
+
+def substW {σ τ : Type} [Finite σ] (u : σ → MvPowerSeries τ (Fr p k)) (hu : ∀ i, constantCoeff (u i) = 0) :
+    MvPowerSeries σ (Fr p k) →ₗ[WittVector p k] MvPowerSeries τ (Fr p k) where
+  toFun f := subst u f
+  map_add' f g := subst_add (hasSubst_of_constantCoeff_zero hu) f g
+  map_smul' r f := by
+    rw [← algebraMap_smul (Fr p k) r f, subst_smul (hasSubst_of_constantCoeff_zero hu),
+      algebraMap_smul]
+    rfl
+
+variable [PerfectRing k p]
+
+def modMap {d e : ℕ} {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) k}
+    {ν : Fin e → MvPowerSeries (Fin e ⊕ Fin e) k} (hμ : IsLaw μ) (hν : IsLaw ν)
+    {φ : Fin e → MvPowerSeries (Fin d) k} (hφ : IsHom μ ν φ) : Mod p hν →ₗ[WittVector p k] Mod p hμ :=
+  Submodule.mapQ _ _
+    (((substW p (fun j => Katz.lift p (φ j)) fun j => constantCoeff_lift p (hφ.const j)).comp
+      (quasiLog p hν).subtype).codRestrict (quasiLog p hμ)
+      fun f => (GlobalTheory.T.quasiLogarithm_pullback_teichmullerLift p k d e μ ν hμ hν φ hφ f.1 f.2).1)
+    (by
+      intro f hf
+      rw [Submodule.mem_comap]
+      change f.1 ∈ intBy p k (Fin e) 1 at hf
+      change subst (fun j => Katz.lift p (φ j)) f.1 ∈ intBy p k (Fin d) 1
+      exact (GlobalTheory.T.isIntegralReducingToMvPowerSeries_subst p k (Fin e) (Fin d) _ φ (fun j => constantCoeff_lift p (hφ.const j))
+        (fun j => red_lift p (φ j))).2 1 f.1 hf)
+
+theorem modMap_mk {d e : ℕ} {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) k}
+    {ν : Fin e → MvPowerSeries (Fin e ⊕ Fin e) k} (hμ : IsLaw μ) (hν : IsLaw ν)
+    {φ : Fin e → MvPowerSeries (Fin d) k} (hφ : IsHom μ ν φ) (f : quasiLog p hν) :
+    ∃ g : quasiLog p hμ, g.1 = subst (fun j => Katz.lift p (φ j)) f.1 ∧
+      modMap p hμ hν hφ (Submodule.Quotient.mk f) = Submodule.Quotient.mk g :=
+  ⟨_, rfl, rfl⟩
+
+end GlobalTheory.Katz.ModHom
+
+theorem GlobalTheory.Katz.ModHom.map_exists : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [CharP k p] [PerfectRing k p] (d e : ℕ) (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) k) (ν : Fin e → MvPowerSeries (Fin e ⊕ Fin e) k) (hμ : IsLaw μ) (hν : IsLaw ν) (φ : Fin e → MvPowerSeries (Fin d) k), IsHom μ ν φ → ∃ m : Mod p hν →ₗ[WittVector p k] Mod p hμ, ∀ f : quasiLog p hν, ∃ g : quasiLog p hμ, g.1 = subst (fun j => Katz.lift p (φ j)) f.1 ∧ m (Submodule.Quotient.mk f) = Submodule.Quotient.mk g := by
+  intro p _ k _ _ _ d e μ ν hμ hν φ hφ
+  exact ⟨GlobalTheory.Katz.ModHom.modMap p hμ hν hφ, GlobalTheory.Katz.ModHom.modMap_mk p hμ hν hφ⟩
+end
+end
+
+section
+open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
+
+namespace GlobalTheory
+
+theorem wittModule_free_finite_of_reduction : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [CharP k p] [PerfectRing k p] (M V : Type) [AddCommGroup M] [Module (WittVector p k) M] [AddCommGroup V] [Module k V] [Module.Finite k V] (r : M →ₛₗ[(WittVector.constantCoeff : WittVector p k →+* k)] V), IsHausdorff (Ideal.span {(p : WittVector p k)}) M → (∀ m : M, (p : WittVector p k) • m = 0 → m = 0) → Function.Surjective r → (∀ m, r m = 0 → ∃ n, m = p • n) → Module.Free (WittVector p k) M ∧ Module.Finite (WittVector p k) M := by
+  intro p _ k _ _ _ M V _ _ _ _ _ r hH htf hr hker
+  classical
+  let I : Ideal (WittVector p k) := Ideal.span {(p : WittVector p k)}
+  have hpow : ∀ (j : ℕ) (m : M), ((p : WittVector p k) ^ j) • m = 0 → m = 0 := by
+    intro j
+    induction j with
+    | zero => intro m h; simpa using h
+    | succ j ih =>
+      intro m h
+      rw [pow_succ, mul_smul] at h
+      exact htf m (ih _ h)
+  haveI : Module.IsTorsionFree (WittVector p k) M :=
+    Module.IsTorsionFree.of_smul_eq_zero fun a m h => by
+      by_cases ha : a = 0
+      · exact Or.inl ha
+      right
+      obtain ⟨j, u, rfl⟩ := WittVector.exists_eq_pow_p_mul' a ha
+      rw [mul_smul] at h
+      have h1 := hpow j _ h
+      rw [← Units.smul_def] at h1
+      exact (smul_eq_zero_iff_eq u).mp h1
+  haveI : IsHausdorff I M := hH
+  let b := Module.finBasis k V
+  choose m hm using fun i => hr (b i)
+  let F : (Fin (Module.finrank k V) → WittVector p k) →ₗ[WittVector p k] M :=
+    Fintype.linearCombination (WittVector p k) m
+  haveI : IsPrecomplete I (Fin (Module.finrank k V) → WittVector p k) :=
+    GlobalTheory.isPrecomplete_pi I _
+  have hs : Function.Surjective F := by
+    apply surjective_of_mkQ_comp_surjective (I := I)
+    intro q
+    obtain ⟨x, rfl⟩ := Submodule.mkQ_surjective _ q
+    refine ⟨fun i => WittVector.teichmuller p (b.repr (r x) i), ?_⟩
+    simp only [LinearMap.comp_apply, Submodule.mkQ_apply]
+    rw [Submodule.Quotient.eq]
+    have h0 : r (F (fun i => WittVector.teichmuller p (b.repr (r x) i)) - x) = 0 := by
+      rw [map_sub, Fintype.linearCombination_apply, map_sum]
+      simp only [map_smulₛₗ, hm, WittVector.constantCoeff_apply, WittVector.teichmuller_coeff_zero]
+      rw [sub_eq_zero]
+      exact b.sum_repr (r x)
+    obtain ⟨y, hy⟩ := hker _ h0
+    rw [hy]
+    have : ((p : WittVector p k)) • y ∈ (I • ⊤ : Submodule (WittVector p k) M) :=
+      Submodule.smul_mem_smul (Ideal.mem_span_singleton_self _) Submodule.mem_top
+    simpa [Nat.cast_smul_eq_nsmul] using this
+  haveI : Module.Finite (WittVector p k) M := Module.Finite.of_surjective F hs
+  exact ⟨Module.free_of_finite_type_torsion_free', inferInstance⟩
+
+end GlobalTheory
+end
+
+section
+open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
+
+namespace GlobalTheory.Katz
+
+theorem mod_noPTorsion : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [CharP k p] [PerfectRing k p] (d : ℕ) (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) k) (h : IsLaw μ), (∀ b, cob1 μ b = 0 → b = 0) → ∀ m : Mod p h, (p : WittVector p k) • m = 0 → m = 0 := by
+  intro p _ k _ _ _ d μ h hb m hm
+  obtain ⟨R1, R2, -, -, -, R6, ZariskiNoetherianInduction⟩ := GlobalTheory.T.mvPowerSeries_reduction_mod_prime_rules p k (Fin d)
+  obtain ⟨-, R2', -, -, -, R6', R7'⟩ := GlobalTheory.T.mvPowerSeries_reduction_mod_prime_rules p k (Fin d ⊕ Fin d)
+  obtain ⟨-, C1, -, -⟩ := GlobalTheory.T.reduction_commutes_formalGroupLawCoboundaries p k d μ h.const
+  induction m using Submodule.Quotient.induction_on with
+  | H x =>
+  obtain ⟨f, hf⟩ := x
+  rw [← Submodule.Quotient.mk_smul, Submodule.Quotient.mk_eq_zero] at hm
+  rw [Submodule.Quotient.mk_eq_zero]
+  change (p : WittVector p k) • f ∈ intBy p k (Fin d) 1 at hm
+  change f ∈ intBy p k (Fin d) 1
+  obtain ⟨b, hB⟩ := (R1 _).1 hm
+  have hL : ∀ i, constantCoeff (lift p (μ i)) = 0 := fun i => constantCoeff_lift p (h.const i)
+  have hcob : cob1 (fun i => lift p (μ i)) ((p : WittVector p k) • f) =
+      (p : WittVector p k) • cob1 (fun i => lift p (μ i)) f := by
+    rw [← algebraMap_smul (Fr p k) (p : WittVector p k) f, formalCoboundary_smul hL, algebraMap_smul]
+  have hcp : cob1 (fun i => lift p (μ i)) ((p : WittVector p k) • f) ∈ intBy p k _ (p : WittVector p k) := by
+    rw [hcob, R7']; exact ⟨_, hf.2, rfl⟩
+  have h0 : cob1 μ b = 0 := R2' _ _ _ (C1 _ _ hB).1 ((R6' _).1 hcp)
+  have hb0 : b = 0 := hb b h0
+  subst hb0
+  obtain ⟨g, hg, hfg⟩ := (ZariskiNoetherianInduction _ _).1 ((R6 _).2 hB)
+  have hp : (algebraMap (WittVector p k) (Fr p k) (p : WittVector p k)) ≠ 0 := by
+    rw [map_natCast]
+    intro h0
+    have := IsFractionRing.injective (WittVector p k) (Fr p k)
+    apply WittVector.p_nonzero (p := p) (R := k)
+    apply this; rw [map_natCast, map_zero]; exact h0
+  have : f = g := by
+    ext α
+    have := congrArg (coeff α) hfg
+    rw [← algebraMap_smul (Fr p k) (p : WittVector p k) f, ← algebraMap_smul (Fr p k) (p : WittVector p k) g,
+      map_smul, map_smul, smul_eq_mul, smul_eq_mul] at this
+    exact mul_left_cancel₀ hp this
+  rw [this]; exact hg
+
+end GlobalTheory.Katz
+end
+
+section
+open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
+
+namespace GlobalTheory
+
+namespace Katz
+
+theorem existsUnique_semiHom_ev (p : ℕ) (k k' : Type) [CommRing k] [CommRing k'] (σ : k →+* k')
+    (d e : ℕ) (G : PDivGroup p k) (G' : PDivGroup p k') (c : Chart G d) (c' : Chart G' e)
+    (s : SemiHom σ G' G) :
+    ∃! φ : Fin d → MvPowerSeries (Fin e) k', ∀ n j, c'.ev n (φ j) = s.app n (c.x n j) := by
+  have h := fun j : Fin d => existsUnique_evA_eq_of_presents k' (Fin e) G'.A c'.x c'.nil
+    (fun n => (G'.res n : G'.A (n + 1) →ₐ[k'] G'.A n)) c'.res c'.presents
+    (fun n => s.app n (c.x n j)) (fun n => by
+      change G'.res n (s.app (n + 1) (c.x (n + 1) j)) = _
+      rw [s.res_app, c.res])
+  choose φ hφ hu using h
+  refine ⟨φ, fun n j => hφ j n, fun ψ hψ => funext fun j => hu j (ψ j) fun n => hψ n j⟩
+
+end Katz
+
+end GlobalTheory
+end
+
+section
+open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.existsUnique_powerSeries_semilinear_pDivGroupHom_chart : ∀ (p : ℕ) (k k' : Type) [CommRing k] [CommRing k'] (σ : k →+* k') (d e : ℕ) (G : PDivGroup p k) (G' : PDivGroup p k') (c : Chart G d) (c' : Chart G' e) (s : SemiHom σ G' G), ∃! φ : Fin d → MvPowerSeries (Fin e) k', ∀ n j, c'.ev n (φ j) = s.app n (c.x n j) := by
+  first | (exact @GlobalTheory.Katz.existsUnique_semiHom_ev) | (exact GlobalTheory.Katz.existsUnique_semiHom_ev) | (intros; apply GlobalTheory.Katz.existsUnique_semiHom_ev  <;> assumption)
+end
+
+section
+section
+open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory.Katz
+
+theorem semiHom_constantCoeff_and_ev : ∀ (p : ℕ) (k k' : Type) [CommRing k] [CommRing k'] (σ : k →+* k') (d e : ℕ) (G : PDivGroup p k) (G' : PDivGroup p k') (c : Chart G d) (c' : Chart G' e) (s : SemiHom σ G' G) (φ : Fin d → MvPowerSeries (Fin e) k'), (∀ n j, c'.ev n (φ j) = s.app n (c.x n j)) → (∀ j, constantCoeff (φ j) = 0) ∧ ∀ n g, c'.ev n (subst φ (MvPowerSeries.map σ g)) = s.app n (c.ev n g) := by
+  intro p k k' _ _ σ d e G G' c c' s φ hφ
+  have hconst : ∀ j, constantCoeff (φ j) = 0 := fun j => by
+    have h1 := (GlobalTheory.T.counit_cotangentClass_powerSeriesEvalAtNilpotent k' e (G'.A 0) (c'.x 0) (c'.nil 0) (c'.aug 0) (φ j)).1
+    change Coalgebra.counit (R := k') (c'.ev 0 (φ j)) = _ at h1
+    rw [← h1, hφ 0 j, (s.app 0).counit_map, c.aug, map_zero]
+  refine ⟨hconst, fun n g => ?_⟩
+  have hy : ∀ j, IsNilpotent (s.app n (c.x n j)) := fun j => (c.nil n j).map (s.app n).toRingHom
+  have h1 := (GlobalTheory.T.nilpotent_eval_commutes_subst_and_algebraMap k' (Fin d) (G'.A n)).1 (Fin e) (c'.ev n)
+    (fun t => by
+      change IsNilpotent (evA k' (c'.x n) (c'.nil n) (X t))
+      rw [GlobalTheory.T.powerSeriesEvalAtNilpotent_X_eq_coordinate]; exact c'.nil n t) φ hconst _ hy (fun j => hφ n j) (MvPowerSeries.map σ g)
+  rw [h1]
+  letI : Algebra k (G'.A n) := ((algebraMap k' (G'.A n)).comp σ).toAlgebra
+  let S : G.A n →ₐ[k] G'.A n :=
+    { (s.app n).toRingHom with commutes' := fun r => (s.app n).map_algebraMap r }
+  have h2 := (GlobalTheory.T.nilpotent_eval_commutes_subst_and_algebraMap k (Fin d) (G.A n)).2 (G'.A n) S (c.x n) (c.nil n) _ hy (fun _ => rfl) g
+  change _ = S (evA k (c.x n) (c.nil n) g)
+  rw [h2]
+  let M : MvPowerSeries (Fin d) k →ₐ[k] G'.A n :=
+    { (evA k' _ hy : MvPowerSeries (Fin d) k' →+* G'.A n).comp (MvPowerSeries.map σ) with
+      commutes' := fun r => by
+        change evA k' _ hy (MvPowerSeries.map σ (algebraMap k _ r)) = algebraMap k' _ (σ r)
+        rw [MvPowerSeries.algebraMap_apply, Algebra.algebraMap_self, RingHom.id_apply,
+          MvPowerSeries.map_C, ← (evA k' _ hy).commutes (σ r), MvPowerSeries.algebraMap_apply,
+          Algebra.algebraMap_self, RingHom.id_apply] }
+  have hM : M = evA k _ hy := GlobalTheory.T.mvPowerSeries_algHom_ext_of_isNilpotent_X k (Fin d) (G'.A n) M _
+    (fun i => by
+      change IsNilpotent (evA k' _ hy (MvPowerSeries.map σ (X i)))
+      rw [MvPowerSeries.map_X, GlobalTheory.T.powerSeriesEvalAtNilpotent_X_eq_coordinate]; exact hy i)
+    (fun i => by
+      change evA k' _ hy (MvPowerSeries.map σ (X i)) = _
+      rw [MvPowerSeries.map_X, GlobalTheory.T.powerSeriesEvalAtNilpotent_X_eq_coordinate, GlobalTheory.T.powerSeriesEvalAtNilpotent_X_eq_coordinate])
+  exact AlgHom.congr_fun hM g
+
+end GlobalTheory.Katz
+end
+end
+
+open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.semilinearPDivGroupHom_chart_constantCoeff_subst : ∀ (p : ℕ) (k k' : Type) [CommRing k] [CommRing k'] (σ : k →+* k') (d e : ℕ) (G : PDivGroup p k) (G' : PDivGroup p k') (c : Chart G d) (c' : Chart G' e) (s : SemiHom σ G' G) (φ : Fin d → MvPowerSeries (Fin e) k'), (∀ n j, c'.ev n (φ j) = s.app n (c.x n j)) → (∀ j, constantCoeff (φ j) = 0) ∧ ∀ n g, c'.ev n (subst φ (MvPowerSeries.map σ g)) = s.app n (c.ev n g) := by
+  atlas_forward_decl GlobalTheory.Katz.semiHom_constantCoeff_and_ev
+end
+
+section
+open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.semilinearPDivGroupHom_eval_two_variable_series : ∀ (p : ℕ) (k k' : Type) [CommRing k] [CommRing k'] (σ : k →+* k') (d e : ℕ) (G : PDivGroup p k) (G' : PDivGroup p k') (c : Chart G d) (c' : Chart G' e) (s : SemiHom σ G' G) (φ : Fin d → MvPowerSeries (Fin e) k'), (∀ n j, c'.ev n (φ j) = s.app n (c.x n j)) → ∀ n t, c'.ev₂ n (pull2 φ (MvPowerSeries.map σ t)) = (s.app n).two (c.ev₂ n t) := by
+  first | exact @GlobalTheory.Katz.semiHom_ev₂_pull2 | exact GlobalTheory.Katz.semiHom_ev₂_pull2 | (intros; apply GlobalTheory.Katz.semiHom_ev₂_pull2 <;> assumption)
+end
+
+section
+section
+set_option autoImplicit false
+
+open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
+
+namespace GlobalTheory.Katz
+
+theorem isHom_map_of_semiHom_ev (p : ℕ) (k k' : Type) [CommRing k] [CommRing k'] (σ : k →+* k')
+    (d e : ℕ) (G : PDivGroup p k) (G' : PDivGroup p k') (c : Chart G d) (c' : Chart G' e)
+    (s : SemiHom σ G' G) (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) k)
+    (ν : Fin e → MvPowerSeries (Fin e ⊕ Fin e) k') (φ : Fin d → MvPowerSeries (Fin e) k')
+    (hμ : c.IsLawOf μ) (hν : c'.IsLawOf ν) (hφ : ∀ n j, c'.ev n (φ j) = s.app n (c.x n j))
+ :
+    IsHom ν (fun i => MvPowerSeries.map σ (μ i)) φ := by
+  have hL := (GlobalTheory.T.connectedPDivGroup_formalLaw_coordinates p k' e G' c').2 ν hν
+  have h2 := GlobalTheory.T.semilinearPDivGroupHom_eval_two_variable_series p k k' σ d e G G' c c' s φ hφ
+  refine ⟨fun j => ?_, fun j => ?_⟩
+  · have h0 := (GlobalTheory.Katz.counit_dUnit_evA k' e (G'.A 0) (c'.x 0) (c'.nil 0) (c'.aug 0) (φ j)).1
+    change Coalgebra.counit (R := k') (c'.ev 0 (φ j)) = _ at h0
+    rw [← h0, hφ 0 j, (s.app 0).counit_map, c.aug 0 j, map_zero]
+  · let z : ∀ n, G'.A n ⊗[k'] G'.A n := fun n => Coalgebra.comul (R := k') (s.app n (c.x n j))
+    have hz : ∀ n, pullbackTwo (G'.res n) (z (n + 1)) = z n := fun n => by
+      simp only [z]
+      rw [pullTwo_comul, s.res_app, c.res]
+    have hl : ∀ n, c'.ev₂ n (subst ν (φ j)) = z n := fun n => by
+      rw [(hL.2 n (φ j)).1, hφ n j]
+    have hr : ∀ n, c'.ev₂ n (pull2 φ (MvPowerSeries.map σ (μ j))) = z n := fun n => by
+      rw [h2 n (μ j), hμ n j, SemiBialgHom.two_comul]
+    exact ((GlobalTheory.T.chart_square_coordinates_present_levels p k' e G' c').2 z hz).unique hl hr
+
+end GlobalTheory.Katz
+end
+
+open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.connectedPDivGroupChart_semilinearHom_isFormalGroupHom : ∀ (p : ℕ) (k k' : Type) [CommRing k] [CommRing k'] (σ : k →+* k') (d e : ℕ) (G : PDivGroup p k) (G' : PDivGroup p k') (c : Chart G d) (c' : Chart G' e) (s : SemiHom σ G' G) (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) k) (ν : Fin e → MvPowerSeries (Fin e ⊕ Fin e) k') (φ : Fin d → MvPowerSeries (Fin e) k'), c.IsLawOf μ → c'.IsLawOf ν → (∀ n j, c'.ev n (φ j) = s.app n (c.x n j)) → IsHom ν (fun i => MvPowerSeries.map σ (μ i)) φ := by
+  atlas_forward_decl GlobalTheory.Katz.isHom_map_of_semiHom_ev
+end
+
+section
+open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
+
+theorem GlobalTheory.Katz.rig_pull_natural_semi : ∀ (p : ℕ) (k k' : Type) [CommRing k] [CommRing k'] (σ : k →+* k') (d e : ℕ) (G : PDivGroup p k) (G' : PDivGroup p k') (c : Chart G d) (c' : Chart G' e) (s : SemiHom σ G' G) (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) k) (φ : Fin d → MvPowerSeries (Fin e) k') (ρ : MvPowerSeries (Fin d ⊕ Fin d) k × (Fin d → k) →ₗ[k] G.RigExt) (ρ' : MvPowerSeries (Fin e ⊕ Fin e) k' × (Fin e → k') →ₗ[k'] G'.RigExt), c.IsLawOf μ → (∀ n j, c'.ev n (φ j) = s.app n (c.x n j)) → (∀ t w (z : G.cocycles) (u : G.omega), (∀ n, z.1 n = c.ev₂ n t) → (∀ n, u.1 n = ∑ i, w i • dUnit k (c.x n i)) → ρ (t, w) = G.rigMk (z, u)) → (∀ t w (z : G'.cocycles) (u : G'.omega), (∀ n, z.1 n = c'.ev₂ n t) → (∀ n, u.1 n = ∑ i, w i • dUnit k' (c'.x n i)) → ρ' (t, w) = G'.rigMk (z, u)) → ∀ t w, IsCoc μ t → ρ' (pull2 φ (MvPowerSeries.map σ t), pullLin φ (fun i => σ (w i))) = s.rig (ρ (t, w)) := by
+  intro p k k' _ _ σ d e G G' c c' s μ φ ρ ρ' hμ hφ hρ hρ' t w ht
+  have hz : (fun n => c.ev₂ n t) ∈ G.cocycles := (GlobalTheory.T.isSymmetricFormalGroupCocycle_iff_mem_cocycles p k d G c μ hμ t).1 ht
+  have hu : (fun n => ∑ i, w i • dUnit k (c.x n i)) ∈ G.omegaSub := (GlobalTheory.T.invariantDifferentials_connectedPDivGroup_coordinates p k d G c).1 w
+  rw [hρ t w ⟨_, hz⟩ ⟨_, hu⟩ (fun _ => rfl) (fun _ => rfl), SemiHom.rig_mk]
+  have hev : ∀ n, c'.ev₂ n (pull2 φ (MvPowerSeries.map σ t)) = (s.app n).two (c.ev₂ n t) := by
+    intro n
+    exact GlobalTheory.Katz.semiHom_ev₂_pull2 p k k' σ d e G G' c c' s φ hφ n t
+  refine hρ' _ _ _ _ (fun n => ?_) (fun n => ?_)
+  · rw [SemiHom.cocycles_val, hev n]
+  · rw [SemiHom.omega_val]
+    change (s.app n).cot (∑ i, w i • dUnit k (c.x n i)) = _
+    rw [map_sum]
+    simp only [map_smulₛₗ, SemiBialgHom.cot_d]
+    have hd : ∀ i, dUnit k' (s.app n (c.x n i)) = ∑ l, lin (φ i) l • dUnit k' (c'.x n l) := fun i => by
+      rw [← hφ n i]
+      exact (GlobalTheory.T.counit_cotangentClass_powerSeriesEvalAtNilpotent k' e (G'.A n) (c'.x n) (c'.nil n) (c'.aug n) (φ i)).2
+    simp only [hd, Finset.smul_sum, smul_smul, pullLin, Finset.sum_smul]
+    exact Finset.sum_comm
+end
+
+section
+open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rigidifiedExtension_presentation_natural_semilinear : ∀ (p : ℕ) (k k' : Type) [CommRing k] [CommRing k'] (σ : k →+* k') (d e : ℕ) (G : PDivGroup p k) (G' : PDivGroup p k') (c : Chart G d) (c' : Chart G' e) (s : SemiHom σ G' G) (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) k) (φ : Fin d → MvPowerSeries (Fin e) k') (ρ : MvPowerSeries (Fin d ⊕ Fin d) k × (Fin d → k) →ₗ[k] G.RigExt) (ρ' : MvPowerSeries (Fin e ⊕ Fin e) k' × (Fin e → k') →ₗ[k'] G'.RigExt), c.IsLawOf μ → (∀ n j, c'.ev n (φ j) = s.app n (c.x n j)) → (∀ t w (z : G.cocycles) (u : G.omega), (∀ n, z.1 n = c.ev₂ n t) → (∀ n, u.1 n = ∑ i, w i • dUnit k (c.x n i)) → ρ (t, w) = G.rigMk (z, u)) → (∀ t w (z : G'.cocycles) (u : G'.omega), (∀ n, z.1 n = c'.ev₂ n t) → (∀ n, u.1 n = ∑ i, w i • dUnit k' (c'.x n i)) → ρ' (t, w) = G'.rigMk (z, u)) → ∀ t w, IsCoc μ t → ρ' (pull2 φ (MvPowerSeries.map σ t), pullLin φ (fun i => σ (w i))) = s.rig (ρ (t, w)) := by
+  first | (exact @GlobalTheory.Katz.rig_pull_natural_semi) | (exact GlobalTheory.Katz.rig_pull_natural_semi) | (intros; apply GlobalTheory.Katz.rig_pull_natural_semi  <;> assumption)
+end
+
+section
 open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
 
 set_option autoImplicit false
@@ -373,3 +830,5 @@ theorem exists_base_isConn_katz : ∀ (p : ℕ) [Fact p.Prime],
 end Main
 
 end GlobalTheory
+end
+end

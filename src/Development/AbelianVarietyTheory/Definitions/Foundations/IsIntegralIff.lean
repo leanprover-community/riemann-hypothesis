@@ -96,91 +96,24 @@ theorem isHermND_one (L : LocE F E) (n : ℕ) : IsHermND L (1 : Matrix (Fin n) (
 def stdLat (L : LocE F E) (n : ℕ) : Submodule L.O (Fin n → E) :=
   Submodule.span L.O (Set.range fun i : Fin n => (Pi.single i 1 : Fin n → E))
 
-private theorem cj_mem_O_of_mem_O' (L : LocE F E) {x : E} (hx : x ∈ L.O) : L.cj x ∈ L.O := by
-  rw [L.O_def] at hx ⊢
-  exact hx.map (L.cj.toAlgHom.restrictScalars 𝒪[F])
 
-private theorem mem_stdLat_iff_forall_mem_O (L : LocE F E) (n : ℕ) (y : Fin n → E) :
-    y ∈ stdLat L n ↔ ∀ i, y i ∈ L.O := by
-  unfold stdLat
-  constructor
-  · intro hy i
-    induction hy using Submodule.span_induction with
-    | mem x hx =>
-      obtain ⟨j, rfl⟩ := hx
-      by_cases hij : i = j
-      · subst hij
-        simp
-      · simp [hij]
-    | zero => simp
-    | add x z _ _ hx hz => exact L.O.add_mem hx hz
-    | smul a x _ hx => exact L.O.mul_mem a.2 hx
-  · intro h
-    have hy : y = ∑ i, (⟨y i, h i⟩ : L.O) • (Pi.single i 1 : Fin n → E) := by
-      ext j
-      simp [Finset.sum_apply, Pi.single_apply, Subring.smul_def]
-    rw [hy]
-    exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
 
-theorem isSD_std (L : LocE F E) (n : ℕ) : IsSD L (1 : Matrix (Fin n) (Fin n) E) (stdLat L n) := by
-  refine ⟨⟨Submodule.fg_span (Set.finite_range _), ?_⟩, fun y => ?_⟩
-  · rw [eq_top_iff]
-    intro v _
-    rw [← Finset.univ_sum_single v]
-    refine Submodule.sum_mem _ fun i _ => ?_
-    have e : Pi.single i (v i) = v i • (Pi.single i 1 : Fin n → E) := by
-      ext j
-      by_cases h : j = i <;> simp [h]
-    rw [e]
-    refine Submodule.smul_mem _ _ (Submodule.subset_span ?_)
-    exact (mem_stdLat_iff_forall_mem_O L n _).mpr fun j => by by_cases h : j = i <;> simp [h]
-  · rw [mem_stdLat_iff_forall_mem_O]
-    constructor
-    · intro hy i
-      have h1 := hy (Pi.single i 1) ((mem_stdLat_iff_forall_mem_O L n _).mpr fun j => by
-        by_cases h : j = i <;> simp [h])
-      have h2 : hf L 1 (Pi.single i 1) y = L.cj (y i) := by
-        simp [hf, Pi.single_apply, Matrix.one_apply]
-      rw [h2] at h1
-      simpa [L.cj_cj] using cj_mem_O_of_mem_O' L h1
-    · intro hy x hx
-      rw [mem_stdLat_iff_forall_mem_O] at hx
-      unfold hf
-      refine Subring.sum_mem _ fun i _ => Subring.sum_mem _ fun j _ => ?_
-      refine L.O.mul_mem (L.O.mul_mem (hx i) ?_) (cj_mem_O_of_mem_O' L (hy j))
-      by_cases h : i = j <;> simp [Matrix.one_apply, h]
 
 theorem nontrivial (L : LocE F E) : Nontrivial E := by
   exact Module.nontrivial_of_finrank_pos (R := F) (by rw [L.rank]; norm_num)
 
-theorem not_isLat_bot (L : LocE F E) (n : ℕ) : ¬ IsLat L (⊥ : Submodule L.O (Fin (n + 1) → E)) := by
-  rintro ⟨-, h⟩
-  have := nontrivial L
-  simp at h
 
-theorem isSD_zero (L : LocE F E) {n : ℕ} {Λ : Submodule L.O (Fin n → E)} (h : IsSD L 0 Λ) : Λ = ⊤ := by
-  exact eq_top_iff.mpr fun y _ => (h.2 y).mp fun x _ => by simp [hf]
 
-theorem unipOn_top_bot {n : ℕ} : unipOn (E := E) (n := n) ⊤ ⊥ = ⊥ := by
-  refine eq_bot_iff.mpr fun g hg => (Subgroup.mem_bot).mpr ?_
-  refine LinearEquiv.ext fun v => ?_
-  have h2 := hg.2 v Submodule.mem_top
-  rw [Submodule.mem_bot, sub_eq_zero] at h2
-  simpa using h2
 
 theorem invVol_self {G : Type*} [Group G] (K : Subgroup G) : invVol K K = 1 := by
   simp [invVol, Subgroup.relIndex_self]
 
-theorem invVol_of_le {G : Type*} [Group G] {K0 K : Subgroup G} (h : K ≤ K0) :
-    invVol K0 K = K.relIndex K0 := by
-  simp [invVol, Subgroup.relIndex_eq_one.mpr h]
 
 theorem lead_zero {N : ℕ} (Z : Matrix (Fin N) (Fin N) E) : lead Z 0 = 1 := by
   unfold lead
   have : IsEmpty (Fin ((0 : Fin (N + 1)) : ℕ)) := ⟨fun i => absurd i.2 (by simp)⟩
   exact Matrix.det_isEmpty
 
-theorem lead_last {N : ℕ} (Z : Matrix (Fin N) (Fin N) E) : lead Z (Fin.last N) = Z.det := rfl
 
 theorem lead_one {N : ℕ} (Z : Matrix (Fin (N + 1)) (Fin (N + 1)) E) :
     lead Z ⟨1, by omega⟩ = Z 0 0 := by
@@ -276,144 +209,7 @@ theorem isIntegral_iff (a : F) : IsIntegral 𝒪[F] a ↔ a ∈ 𝒪[F] := by
   · intro h
     exact isIntegral_algebraMap (x := (⟨a, h⟩ : 𝒪[F]))
 
-theorem nonempty_split [IsNonarchimedeanLocalField F] :
-    ∃ L : LocE F (F × F), (∀ x, L.cj x = x.swap) ∧ L.O = (𝒪[F]).prod 𝒪[F] := by
-  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible (R := 𝒪[F])
-  have hϖ0 : (ϖ : F) ≠ 0 := fun e => hϖ.ne_zero (Subtype.ext e)
-  have hinv : (ϖ : F)⁻¹ ∉ 𝒪[F] := by
-    intro h
-    apply hϖ.not_isUnit
-    exact isUnit_iff_exists_inv.mpr ⟨⟨_, h⟩, Subtype.ext (by simp [hϖ0])⟩
-  obtain ⟨ψ, hψo, hψ⟩ := exists_char _ hinv
-  have hcont : Continuous ψ := by
-    rw [continuous_iff_continuousAt]
-    intro x
-    have hO : (𝒪[F] : Set F) ∈ nhds (0 : F) :=
-      (Valuation.isOpen_integer (v := ValuativeRel.valuation F)).mem_nhds (zero_mem _)
-    have ht : Filter.Tendsto (fun y => y - x) (nhds x) (nhds 0) := by
-      rw [← sub_self x]
-      exact Filter.tendsto_id.sub tendsto_const_nhds
-    have hev : ∀ᶠ y in nhds x, ψ x = ψ y := by
-      filter_upwards [ht hO] with y hy
-      have hy' : y = x + (y - x) := by ring
-      rw [hy', AddChar.map_add_eq_mul, hψo _ hy, mul_one]
-    exact continuousAt_const.congr hev
-  have key : ∀ b : F, b ∉ 𝒪[F] → ∃ t ∈ 𝒪[F], b * t = (ϖ : F)⁻¹ := by
-    intro b hb
-    have hb0 : b ≠ 0 := by
-      rintro rfl
-      exact hb (zero_mem _)
-    have hlt : ValuativeRel.valuation F b⁻¹ < 1 :=
-      (Valuation.one_lt_val_iff _ hb0).mp (not_le.mp fun h => hb h)
-    have hbi : b⁻¹ ∈ 𝒪[F] := hlt.le
-    have hnu : ¬ IsUnit (⟨b⁻¹, hbi⟩ : 𝒪[F]) := fun hu =>
-      hlt.ne ((Valuation.integer.integers _).isUnit_iff_valuation_eq_one.mp hu)
-    have hmem : (⟨b⁻¹, hbi⟩ : 𝒪[F]) ∈ Ideal.span {ϖ} := by
-      rw [← (IsDiscreteValuationRing.irreducible_iff_uniformizer ϖ).mp hϖ]
-      exact (IsLocalRing.mem_maximalIdeal _).mpr hnu
-    obtain ⟨s, hs⟩ := Ideal.mem_span_singleton'.mp hmem
-    have hs' : (s : F) * ϖ = b⁻¹ := congrArg Subtype.val hs
-    refine ⟨s, s.2, ?_⟩
-    calc b * (s : F) = b * ((s : F) * ϖ) * (ϖ : F)⁻¹ := by field_simp
-      _ = (ϖ : F)⁻¹ := by rw [hs', mul_inv_cancel₀ hb0, one_mul]
-  let O : Subring (F × F) := (𝒪[F]).prod 𝒪[F]
-  have memO : ∀ x : F × F, x ∈ O ↔ x.1 ∈ 𝒪[F] ∧ x.2 ∈ 𝒪[F] := fun x => Subring.mem_prod
-  have comp : ∀ (p : 𝒪[F]), Irreducible p → ∀ a ra : F, a ∈ 𝒪[F] → ra ∈ 𝒪[F] →
-      ra * p = a * a → ∃ s ∈ 𝒪[F], s * p = a := by
-    intro p hp a ra ha hra h
-    have hdvd : p ∣ (⟨a, ha⟩ : 𝒪[F]) * ⟨a, ha⟩ :=
-      ⟨⟨ra, hra⟩, Subtype.ext (by push_cast; rw [← h, mul_comm])⟩
-    obtain ⟨s, hs⟩ := (hp.prime.dvd_or_dvd hdvd).elim id id
-    refine ⟨s, s.2, ?_⟩
-    have hs' := congrArg Subtype.val hs
-    push_cast at hs'
-    rw [hs', mul_comm]
-  let sw : (F × F) ≃ₐ[F] (F × F) :=
-    { toFun := Prod.swap
-      invFun := Prod.swap
-      left_inv := fun _ => rfl
-      right_inv := fun _ => rfl
-      map_mul' := fun _ _ => rfl
-      map_add' := fun _ _ => rfl
-      commutes' := fun _ => rfl }
-  refine ⟨{
-    cj := sw
-    cj_cj := fun x => rfl
-    cj_fix := fun x => by
-      constructor
-      · intro h
-        have h2 : x.2 = x.1 := congrArg Prod.fst h
-        exact ⟨x.1, Prod.ext rfl h2.symm⟩
-      · rintro ⟨a, rfl⟩
-        rfl
-    free := inferInstance
-    rank := by simp
-    reduced := inferInstance
-    top := inferInstance
-    O := O
-    O_def := fun x => by
-      rw [memO, ← GlobalTheory.HL.Model.isIntegral_iff x.1, ← GlobalTheory.HL.Model.isIntegral_iff x.2]
-      exact IsIntegral.pair_iff.symm
-    unram := fun p hp x hx hxx => by
-      rw [Submodule.mem_span_singleton] at hxx ⊢
-      obtain ⟨r, hr⟩ := hxx
-      have hr1 : r.1.1 * p = x.1 * x.1 := by
-        have := congrArg Prod.fst hr
-        simpa [Subring.smul_def] using this
-      have hr2 : r.1.2 * p = x.2 * x.2 := by
-        have := congrArg Prod.snd hr
-        simpa [Subring.smul_def] using this
-      obtain ⟨s1, hs1, e1⟩ := comp p hp x.1 r.1.1 ((memO x).mp hx).1 ((memO _).mp r.2).1 hr1
-      obtain ⟨s2, hs2, e2⟩ := comp p hp x.2 r.1.2 ((memO x).mp hx).2 ((memO _).mp r.2).2 hr2
-      refine ⟨⟨(s1, s2), (memO _).mpr ⟨hs1, hs2⟩⟩, Prod.ext ?_ ?_⟩
-      · simpa [Subring.smul_def] using e1
-      · simpa [Subring.smul_def] using e2
-    psi0 := { toFun := fun x => ψ (x.1 + x.2)
-              map_zero_eq_one' := by simp
-              map_add_eq_mul' := fun x y => by
-                simp only [Prod.fst_add, Prod.snd_add]
-                rw [add_add_add_comm, AddChar.map_add_eq_mul] }
-    local_additive_char_continuous := hcont.comp (continuous_fst.add continuous_snd)
-    local_additive_char_conj := fun y => by
-      show ψ (y.2 + y.1) = ψ (y.1 + y.2)
-      rw [add_comm]
-    additive_character_dual_ring := fun x => by
-      constructor
-      · intro h
-        rw [memO]
-        constructor
-        · by_contra h1
-          obtain ⟨t, ht, hbt⟩ := key _ h1
-          have h2 := h (t, 0) ((memO _).mpr ⟨ht, zero_mem _⟩)
-          change ψ ((x * (t, 0)).1 + (x * (t, 0)).2) = 1 at h2
-          simp only [Prod.fst_mul, Prod.snd_mul, mul_zero, add_zero, hbt] at h2
-          exact hψ h2
-        · by_contra h1
-          obtain ⟨t, ht, hbt⟩ := key _ h1
-          have h2 := h (0, t) ((memO _).mpr ⟨zero_mem _, ht⟩)
-          change ψ ((x * (0, t)).1 + (x * (0, t)).2) = 1 at h2
-          simp only [Prod.fst_mul, Prod.snd_mul, mul_zero, zero_add, hbt] at h2
-          exact hψ h2
-      · intro hx y hy
-        have hxy := (memO _).mp (O.mul_mem hx hy)
-        exact hψo _ (add_mem hxy.1 hxy.2) }, fun x => rfl, rfl⟩
 
-theorem exists_isSD [IsNonarchimedeanLocalField F] (n : ℕ) :
-    ∃ (L : LocE F (F × F)) (H : Matrix (Fin n) (Fin n) (F × F)) (Λ : Submodule L.O (Fin n → F × F)),
-      IsHermND L H ∧ IsSD L H Λ := by
-  obtain ⟨L, -, -⟩ := nonempty_split (F := F)
-  exact ⟨L, 1, stdLat L n, isHermND_one L n, isSD_std L n⟩
 
-theorem resQ_eq [IsNonarchimedeanLocalField F] (ϖ : 𝒪[F]) (h : Irreducible ϖ) :
-    resQ ϖ = Nat.card (IsLocalRing.ResidueField 𝒪[F]) ∧ 2 ≤ resQ ϖ := by
-  have hm : IsLocalRing.maximalIdeal 𝒪[F] = Ideal.span {ϖ} :=
-    (IsDiscreteValuationRing.irreducible_iff_uniformizer ϖ).mp h
-  have e : resQ ϖ = Nat.card (IsLocalRing.ResidueField 𝒪[F]) := by
-    unfold resQ
-    rw [← hm]
-    rfl
-  refine ⟨e, ?_⟩
-  rw [e]
-  exact Finite.one_lt_card
 
 end GlobalTheory.HL.Model

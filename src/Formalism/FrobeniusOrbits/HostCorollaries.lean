@@ -43,10 +43,5 @@ theorem host_field :
   ⟨hostExample, hostGroup, hostOrders, hostRecip, hostFixed, hostGalois, hostGalSpec, conj, real, f1, hostMu,
     frob, hostInertia, hostUnramEF, hostDecomp, hostDecompConj, efgTwo, splitK, cmType⟩
 
-theorem host_places :
-    HostThickOrbit ∧ HostThickExists ∧ HostTops ∧ HostProG ∧ HostStab ∧ HostOrdinary ∧ HostUnimodular ∧
-    HostConductor ∧ HostEta ∧ HostOrbitCountSg :=
-  ⟨hostThickOrbit, hostThickExists, hostTops, hostProG, hostStab, hostOrdinary, hostUnimodular,
-    hostConductor, hostEta, hostOrbitCountSg⟩
 
 end Formalism.FrobeniusOrbits.Final

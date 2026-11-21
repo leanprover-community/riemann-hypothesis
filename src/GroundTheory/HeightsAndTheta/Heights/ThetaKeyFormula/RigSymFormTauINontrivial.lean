@@ -142,49 +142,9 @@ lemma jacobiTheta₂_add_int_mul (w τ : ℂ) (k : ℤ) :
 
 def thetaOneVar : (Fin 1 → ℂ) → ℂ := fun z => jacobiTheta₂ (z 0) I
 
-lemma intVec_one (v : Fin 1 → ℤ) : intVec v 0 = (v 0 : ℂ) := rfl
 
-theorem thetaOneVar_mem : thetaOneVar ∈ thetaSec tauI (HalfChar.zero 1) 1 := by
-  refine ⟨?_, fun v z => ?_, fun u z => ?_⟩
-  · intro z
-    have h1 : DifferentiableAt ℂ (fun w : ℂ => jacobiTheta₂ w I) (z 0) :=
-      differentiableAt_jacobiTheta₂_fst (z 0) (by simp)
-    have h2 : DifferentiableAt ℂ (fun z : Fin 1 → ℂ => z 0) z := (differentiable_apply 0) z
-    exact h1.comp z h2
-  · have : perFactor (HalfChar.zero 1) 1 v = 1 := by
-      simp [perFactor, HalfChar.a, HalfChar.zero, dotProduct]
-    rw [this, one_mul]
-    simp only [thetaOneVar, Pi.add_apply, intVec_one]
-    exact jacobiTheta₂_add_int (z 0) I (v 0)
-  · simp only [thetaOneVar, Pi.add_apply, autFactor, tauI]
-    have hτ : ((I • (1 : Matrix (Fin 1) (Fin 1) ℂ)) *ᵥ intVec u) 0 = (u 0 : ℂ) * I := by
-      simp [Matrix.mulVec, dotProduct, intVec, mul_comm]
-    rw [hτ, jacobiTheta₂_add_int_mul]
-    congr 2
-    simp [dotProduct, Matrix.mulVec, intVec, HalfChar.b, HalfChar.zero]
-    ring
 
-theorem thetaOneVar_zero_ne : thetaOneVar 0 ≠ 0 := by
-  intro h
-  have hb := norm_jacobiTheta_sub_one_le (τ := I) (by simp)
-  rw [jacobiTheta_eq_jacobiTheta₂] at hb
-  simp only [thetaOneVar, Pi.zero_apply] at h
-  rw [h] at hb
-  simp only [zero_sub, norm_neg, norm_one, Complex.I_im, mul_one] at hb
-  have hπ : 3 < Real.exp Real.pi := by
-    have := Real.add_one_le_exp Real.pi
-    linarith [Real.pi_gt_three]
-  have ht : Real.exp (-Real.pi) < 1 / 3 := by
-    rw [Real.exp_neg]
-    rw [inv_lt_comm₀ (Real.exp_pos _) (by norm_num)]
-    simpa using hπ
-  have htpos := Real.exp_pos (-Real.pi)
-  have h1 : 0 < 1 - Real.exp (-Real.pi) := by linarith
-  have : 2 / (1 - Real.exp (-Real.pi)) * Real.exp (-Real.pi) < 1 := by
-    rw [div_mul_eq_mul_div, div_lt_one h1]; linarith
-  linarith
 
-theorem thetaOneVar_ne_zero : thetaOneVar ≠ 0 := fun h => thetaOneVar_zero_ne (by rw [h]; rfl)
 
 def rigSymFormTauI : RigSymForm ℂ where
   g := 1
@@ -199,9 +159,6 @@ def rigSymFormTauI : RigSymForm ℂ where
   rig := 1
   rig_mem := fun n f _ => ⟨(1 : ℂ) ^ n * f 0, by simp⟩
 
-theorem rigSymFormTauI_nontrivial :
-    rigSymFormTauI.g = 1 ∧ ∃ f ∈ rigSymFormTauI.S 1, f ≠ 0 :=
-  ⟨rfl, thetaOneVar, thetaOneVar_mem, thetaOneVar_ne_zero⟩
 
 end
 

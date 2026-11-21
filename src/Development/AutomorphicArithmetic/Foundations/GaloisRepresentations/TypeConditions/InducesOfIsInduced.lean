@@ -140,19 +140,5 @@ theorem galRep_rankTwo : GlobalTheory.Published.AutomorphicFormsFiniteGL → Car
     rw [he, ← e2]
     exact h2 (by rw [e2]; exact ncW_of_nc P.T ((nc_tw _ _).2 hn))
 
-theorem galClose_of (hPr : GlobalTheory.NRows.Hypotheses₂) (hC : CarU) (hL : GlobalTheory.Published.LocalLanglandsGL) (D : D7) (P : Pin hL D) :
-    AutomorphicGaloisAdmissible D.nd D.naut := by
-  intro i
-  refine ⟨fun a ha π hc hr => ?_, fun a π hr => GlobalTheory.GalClose.purity hPr.clo hL D P a π hr, fun χ s hs => ?_⟩
-  · rcases Nat.lt_or_ge a 2 with ha2 | ha2
-    · obtain rfl : a = 1 := by omega
-      obtain ⟨ρ, c, s, o, u⟩ := GlobalTheory.GalClose.rankOne hPr hL D P i π hr
-      refine ⟨ρ, c, s, fun w hw => RelW.of_eq (o w hw).1, fun w hw _ => ⟨(u w hw).1, (u w hw).2.1, UpperTheory.GalN.CuspA.of_eq (u w hw).2.2⟩, fun _ w => ?_⟩
-      by_cases hw : w ∈ placesOver D.host.E (D.nd.l i)
-      · exact (u w hw).2.2
-      · exact (o w hw).1
-    · obtain ⟨ρ, c, s, o, u⟩ := galRep_rankTwo hPr.fin hC hL D P i a ha2 π hc hr
-      exact ⟨ρ, c, s, o, fun w hw k => u w hw (k.resolve_left (by omega)), fun e => absurd e (by omega)⟩
-  · exact GlobalTheory.T.exists_galois_character_of_algebraic hPr.fin hPr.art hPr.chA hPr.chP hL D P i χ s hs
 
 end UpperTheory.GalS.Prod

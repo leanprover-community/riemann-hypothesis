@@ -65,12 +65,6 @@ theorem valS_smul_geR (LL : Letters ι) (S : Set ι) (c : R) (F : MvPolynomial (
   unfold valS
   exact Finset.inf_mono (sDegs_smul_subset_sDegs LL S c F _)
 
-theorem lowest_weight_C_nonpos (LL : Letters ι) (S : Set ι) (c : R) :
-    lam1S LL S (C c : MvPolynomial (ι × Fin n) R) ≤ 0 := by
-  unfold lam1S
-  refine Finset.sup_le fun d hd => ?_
-  rw [eq_zero_of_mem_sDegs_C LL S c _ d hd]
-  rfl
 
 theorem lowest_weight_smul_le (LL : Letters ι) (S : Set ι) (c : R) (F : MvPolynomial (ι × Fin n) R) :
     lam1S LL S (c • F) ≤ lam1S LL S F := by
@@ -89,13 +83,6 @@ section Sat
 
 variable {O : Type} [CommRing O] [IsDomain O] {ι : Type} {n : ℕ} [NeZero n]
 
-theorem map_smul_inv (c : O) (hc : c ≠ 0) (x : MvPolynomial (ι × Fin n) O) :
-    MvPolynomial.map (algebraMap O (KK O)) x =
-      (algebraMap O (KK O) c)⁻¹ • MvPolynomial.map (algebraMap O (KK O)) (c • x) := by
-  have ha : algebraMap O (KK O) c ≠ 0 :=
-    (map_ne_zero_iff _ (IsFractionRing.injective O (KK O))).mpr hc
-  rw [MvPolynomial.smul_eq_C_mul x c, map_mul, MvPolynomial.map_C, ← MvPolynomial.smul_eq_C_mul,
-    smul_smul, inv_mul_cancel₀ ha, one_smul]
 
 private lemma sDegs_subset_sDegs_smul_of_ne_zero (LL : Letters ι) (S : Set ι) (c : O) (hc : c ≠ 0) (x : MvPolynomial (ι × Fin n) O)
     (j : Fin n) : sDegs LL S j x ⊆ sDegs LL S j (c • x) := by
@@ -177,10 +164,6 @@ def XG (j : G) : Submodule O (MvPolynomial (ι × Fin n) O) where
     · exact le_trans (a2 q hq) (valS_smul_geR LL q.1 c A)
     · exact le_trans (lowest_weight_smul_le LL q.1 c A) (a3 q hq)
 
-theorem mem_XG (j : G) (A : MvPolynomial (ι × Fin n) O) : A ∈ XG π LL Cv Cl F j ↔
-    (∀ mo ∈ A.support, mo ∈ F.support.image (partOf π j)) ∧
-    (∀ q ∈ Cv j, ((q.2 : ℤ) : WithTop ℤ) ≤ valS LL q.1 A) ∧ ∀ q ∈ Cl j, lam1S LL q.1 A ≤ ((q.2 : ℤ) : WithBot ℤ) := by
-  exact Iff.rfl
 
 theorem sum_of_span [Fintype G] [Nonempty G] {σ : Type} (X : G → Submodule O (MvPolynomial σ O)) (P : MvPolynomial σ O)
     (h : P ∈ Submodule.span O {y | ∃ x : G → MvPolynomial σ O, (∀ j, x j ∈ X j) ∧ y = ∏ j, x j}) :

@@ -1,6 +1,46 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LdpContDiffOn
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeSqrtMulSum
 
+section
+noncomputable section
+
+open MeasureTheory Matrix Finset Filter Topology
+open scoped ContDiff ComplexConjugate InnerProductSpace ENNReal
+open PositivityTheory.RgBcC GlobalTheory.CompanionTheory.WaveCp GlobalTheory.CompanionTheory.WaveCp.Rep
+open PositivityTheory.RgTw (Mat G)
+
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+
+namespace GlobalTheory.CompanionTheory.WaveCp.Rep.Mol
+
+variable {n : ℕ} {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V]
+
+def Dm (n : ℕ) : Set (Mat n × Mat n) := GLs n ×ˢ GLs n
+
+def Ldp (X : Mat n) (K : Mat n × Mat n → V) : Mat n × Mat n → V := fun p => fderiv ℝ K p (0, X * p.2)
+
+def Hw (w : List (Bool × Fin n × Fin n)) (K : Mat n × Mat n → V) : Mat n × Mat n → V :=
+  w.foldr (fun p h => Ldp (bs p) h) K
+
+def Hf (f : Mat n → V) : Mat n × Mat n → V := fun p => f (p.1⁻¹ * p.2)
+
+@[simp] theorem Hw_nil (K : Mat n × Mat n → V) : Hw [] K = K := rfl
+
+
+
+def fld (X : Mat n) : (Mat n × Mat n) →L[ℝ] (Mat n × Mat n) :=
+  (ContinuousLinearMap.inr ℝ (Mat n) (Mat n)).comp ((GlobalTheory.CompanionTheory.RCalc.mulL X).comp (ContinuousLinearMap.snd ℝ (Mat n) (Mat n)))
+
+
+
+
+
+
+end GlobalTheory.CompanionTheory.WaveCp.Rep.Mol
+end
+end
+
+section
 noncomputable section
 
 open MeasureTheory Matrix Finset Filter Topology
@@ -38,3 +78,5 @@ theorem contDiffOn_inv {n : ℕ} : ContDiffOn ℝ ∞ (fun y : Mat n => y⁻¹) 
   simp [Matrix.inv_def, Ring.inverse_eq_inv]
 
 end GlobalTheory.CompanionTheory.WaveCp.Rep.Mol.HfSmooth
+end
+end

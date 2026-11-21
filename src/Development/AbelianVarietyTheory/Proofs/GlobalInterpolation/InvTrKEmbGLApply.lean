@@ -214,14 +214,6 @@ def IsBuilt (X : Ch D u) : Prop :=
     (∀ τ, Q.sg τ = (RowPar.of (D.hcW u τ)).sg) ∧
       X = ⟨_, _, _, forms J Q emb D.what₂.embLL (D.hcW u) Z hI hJ hQ l lf hT⟩
 
-theorem ptInt_of_isBuilt (h6 : Formalism.MainNotions.PrimeDegreeVariant.Conclusion6) {X : Ch D u} (hX : IsBuilt X) : PtInt X := by
-  obtain ⟨E, _, _, _, emb, I, J, Q, Z, hI, hJ, hQ, l, lf, hT, hsg, rfl⟩ := hX
-  refine (PtIntTest.ptInt_iff _).2 fun x hx => ?_
-  exact exists_image emb D.what₂.embLL Q (D.hcW u) h6 hI hQ (fun τ => (weights_ok Q _ emb hsg τ).1)
-    (fun τ => (weights_ok Q _ emb hsg τ).2) (lf.fam _) lf.famP x hx
 
-theorem ptInt_tw (D : D7) (Tw : TwForms D) (u : D.what₂.Word) (μ : D.what₂.Tup) (hX : IsBuilt (tw Tw u μ))
-    (h6 : Formalism.MainNotions.PrimeDegreeVariant.Conclusion6) : PtInt (tw Tw u μ) :=
-  ptInt_of_isBuilt h6 hX
 
 end GlobalTheory.LvT.BuiltChain

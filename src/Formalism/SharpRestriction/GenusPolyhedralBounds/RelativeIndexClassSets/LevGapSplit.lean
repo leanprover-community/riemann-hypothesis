@@ -55,20 +55,6 @@ theorem norm_congr_one {E : Type*} [Field E] [NumberField E] (c : E ≃ₐ[ℚ] 
   rw [hT, hcp]
   linear_combination (-(1 + c' y * M)) * hp
 
-theorem jacobi_neg_eq_one (q T : ℕ) (hq : Odd q) (hT : (4 * q : ℤ) ∣ (T : ℤ) - 1) :
-    jacobiSym (-(q : ℤ)) T = 1 := by
-  obtain ⟨m, hm⟩ := hT
-  have h4' : (T : ℤ) = 1 + 4 * (q * m) := by linarith
-  have h4 : T % 4 = 1 := by
-    generalize (q : ℤ) * m = k at h4'
-    omega
-  have hTq : (T : ℤ) % q = 1 % q := by
-    have : (T : ℤ) = 1 + q * (4 * m) := by linarith
-    rw [this, Int.add_mul_emod_self_left]
-  have hodd : Odd T := Nat.odd_iff.2 (by omega)
-  rw [show (-(q : ℤ)) = (-1) * q by ring, jacobiSym.mul_left, jacobiSym.at_neg_one hodd,
-    ZMod.χ₄_nat_one_mod_four h4, one_mul, jacobiSym.quadratic_reciprocity_one_mod_four' hq h4,
-    jacobiSym.mod_left, hTq, ← jacobiSym.mod_left, jacobiSym.one_left]
 
 section Gen
 
@@ -253,10 +239,6 @@ theorem bijective_underPl_pullPl [IsGalois ℚ E] (p : ℕ) (hp : p.Prime)
       show underPl F (pullPl (s i) w) = _
       rw [hi, pullPl_mul, underPl_pullPl_conj c hF]
 
-theorem mem_underPl_pullPl_iff (σ : E ≃ₐ[ℚ] E) (w : HeightOneSpectrum (𝓞 E)) (x : 𝓞 F) :
-    x ∈ (underPl F (pullPl σ w)).asIdeal ↔ w.valuation E (σ (algebraMap F E (x : F))) < 1 := by
-  rw [mem_underPl, mem_pullPl, ← HeightOneSpectrum.valuation_lt_one_iff_mem (K := E)]
-  rfl
 
 end Fix
 
@@ -297,23 +279,8 @@ theorem T_ne_d : T ≠ H.d :=
   ne_of_dvd_of_congr (T_congr H T pz hpz hcong) ⟨H.QS * H.q * (H.g 0 * H.g 1) ^ 2, by ring⟩
     H.hypOdd.2.1.one_lt.ne'
 
-theorem T_jacobi_q : jacobiSym (-(H.q : ℤ)) T = 1 := by
-  refine jacobi_neg_eq_one H.q T (H.hypOdd.1.odd_of_ne_two H.hypOdd.2.2.2.1) (Dvd.dvd.trans ?_ (T_congr H T pz hpz hcong))
-  obtain ⟨c, hc⟩ := H.tower_dvd
-  exact ⟨((2 ^ R.e * c * H.d * (H.g 0 * H.g 1) ^ 2 : ℕ) : ℤ), by rw [hc]; push_cast; ring⟩
 
-theorem T_jacobi_d : jacobiSym (-(H.d : ℤ)) T = 1 := by
-  refine jacobi_neg_eq_one H.d T (H.hypOdd.2.1.odd_of_ne_two H.hypOdd.2.2.2.2) (Dvd.dvd.trans ?_ (T_congr H T pz hpz hcong))
-  obtain ⟨c, hc⟩ := H.tower_dvd
-  exact ⟨((2 ^ R.e * c * H.q * (H.g 0 * H.g 1) ^ 2 : ℕ) : ℤ), by rw [hc]; push_cast; ring⟩
 
-theorem T_mod_pow : (T : ZMod (2 ^ (R.e + 2))) = 1 := by
-  have h : ((2 ^ (R.e + 2) : ℕ) : ℤ) ∣ (T : ℤ) - 1 := by
-    refine Dvd.dvd.trans ?_ (T_congr H T pz hpz hcong)
-    obtain ⟨c, hc⟩ := H.tower_dvd
-    exact ⟨((c * H.q * H.d * (H.g 0 * H.g 1) ^ 2 : ℕ) : ℤ), by rw [hc]; push_cast; ring⟩
-  have := (ZMod.intCast_eq_intCast_iff_dvd_sub 1 (T : ℤ) (2 ^ (R.e + 2))).2 h
-  simpa using this.symm
 
 theorem T_split_E (hT : T.Prime) :
     {v : HeightOneSpectrum (𝓞 H.E) | (T : 𝓞 H.E) ∈ v.asIdeal}.ncard = Module.finrank ℚ H.E := by
@@ -396,20 +363,7 @@ theorem T_split_of_levHyp {R : Ranks} (H : Host R) (T : ℕ) (pz : 𝓞 H.E) (pi
 
 theorem factTNeG : FactTNeG := fun H T pz _ h i => T_ne_g H T pz h.pz_norm h.pz_cong i
 
-theorem factTau : FactTau := by
-  intro R H T pz piG h w hw
-  have hb := bijective_Psi H T h.T_prime (T_split_E H T pz h.pz_norm h.pz_cong h.T_prime) w hw
-  refine ⟨(Equiv.ofBijective _ hb).symm, fun v x => ?_⟩
-  rw [← mem_underPl_pullPl_iff]
-  have hv := (Equiv.ofBijective _ hb).apply_symm_apply v
-  conv_lhs => rw [← hv]
-  rfl
 
-theorem factPlacesT : FactPlacesT := by
-  intro R H T pz piG h
-  obtain ⟨w, hw⟩ := exists_place_E H T h.T_prime
-  have hb := bijective_Psi H T h.T_prime (T_split_E H T pz h.pz_norm h.pz_cong h.T_prime) w hw
-  exact ⟨((Fintype.equivFinOfCardEq (card_realPlaces_eq_degree R)).symm).trans (Equiv.ofBijective _ hb)⟩
 
 section Deg
 
@@ -455,21 +409,6 @@ theorem ram_inertia_of_split (p : ℕ) (hp : p.Prime)
     ⟨v.asIdeal, v.isPrime, liesOver_of_natCast_mem p hp v hv⟩ (Finset.mem_univ _)
   exact ⟨Nat.dvd_one.1 ⟨_, hall⟩, Nat.dvd_one.1 ⟨_, hall.trans (mul_comm _ _)⟩⟩
 
-theorem card_quot_of_split (p : ℕ) (hp : p.Prime)
-    (hs : {v : HeightOneSpectrum (𝓞 K) | (p : 𝓞 K) ∈ v.asIdeal}.ncard = Module.finrank ℚ K)
-    (v : HeightOneSpectrum (𝓞 K)) (hv : (p : 𝓞 K) ∈ v.asIdeal) :
-    Nat.card (𝓞 K ⧸ v.asIdeal) = p := by
-  have := v.isPrime
-  have := liesOver_of_natCast_mem p hp v hv
-  have hpZ : Prime (p : ℤ) := Nat.prime_iff_prime_int.1 hp
-  have hpI : (Ideal.span {(p : ℤ)}).IsPrime := (Ideal.span_singleton_prime hpZ.ne_zero).2 hpZ
-  have hpM : (Ideal.span {(p : ℤ)}).IsMaximal :=
-    hpI.isMaximal (by rw [Ne, Ideal.span_singleton_eq_bot]; exact hpZ.ne_zero)
-  have h1 : Ideal.absNorm v.asIdeal = p ^ ((Ideal.span {(p : ℤ)}).inertiaDeg' v.asIdeal) :=
-    Ideal.absNorm_eq_pow_inertiaDeg' v.asIdeal hp
-  rw [Ideal.inertiaDeg'_eq_inertiaDeg (Ideal.span {(p : ℤ)}) v.asIdeal,
-    (ram_inertia_of_split p hp hs v hv).2, pow_one, Ideal.absNorm_apply, Submodule.cardQuot_apply] at h1
-  exact h1
 
 theorem intValuation_of_split (p : ℕ) (hp : p.Prime)
     (hs : {v : HeightOneSpectrum (𝓞 K) | (p : 𝓞 K) ∈ v.asIdeal}.ncard = Module.finrank ℚ K)
@@ -585,11 +524,6 @@ theorem split_F (p : ℕ) (hp : p.Prime)
   rw [← Nat.card_coe_set_eq, finrank_F, ← h2, ← h1]
   rfl
 
-theorem card_quot_F (p : ℕ) (hp : p.Prime)
-    (hs : {v : HeightOneSpectrum (𝓞 H.E) | (p : 𝓞 H.E) ∈ v.asIdeal}.ncard = Module.finrank ℚ H.E)
-    (v : HeightOneSpectrum (𝓞 H.F)) (hv : (p : 𝓞 H.F) ∈ v.asIdeal) :
-    Nat.card (𝓞 H.F ⧸ v.asIdeal) = p :=
-  card_quot_of_split p hp (split_F H p hp hs) v hv
 
 theorem conj_place_ne (p : ℕ) (hp : p.Prime)
     (hs : {v : HeightOneSpectrum (𝓞 H.E) | (p : 𝓞 H.E) ∈ v.asIdeal}.ncard = Module.finrank ℚ H.E)
@@ -597,12 +531,6 @@ theorem conj_place_ne (p : ℕ) (hp : p.Prime)
   have := H.hostE_isGalois
   exact pullPl_ne_self p hp hs w hw H.conj (conj_ne_one H)
 
-theorem existsUnique_place_over_host (p : ℕ) (hp : p.Prime)
-    (hs : {v : HeightOneSpectrum (𝓞 H.E) | (p : 𝓞 H.E) ∈ v.asIdeal}.ncard = Module.finrank ℚ H.E)
-    (pz : 𝓞 H.E) (hpz : (pz : H.E) * H.conj (pz : H.E) = (p : H.E))
-    (v : HeightOneSpectrum (𝓞 H.F)) (hv : (p : 𝓞 H.F) ∈ v.asIdeal) :
-    ∃! w : HeightOneSpectrum (𝓞 H.E), underPl H.F w = v ∧ pz ∈ w.asIdeal :=
-  existsUnique_place_over H.conj (mem_F_iff H) (conj_conj H) p hp hs pz hpz v hv
 
 end HostDeg
 

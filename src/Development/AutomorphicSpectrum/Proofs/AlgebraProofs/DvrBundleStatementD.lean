@@ -9,8 +9,24 @@ import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SameGenericFlagDiffe
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SameGenericBundleChainStatement
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SameGenericFlagComparison
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ChartBundleBaseExtensionUniqueStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ScalarQuotientStatement
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FlagIndependence
 
+section
+section
+namespace GlobalTheory.CompanionTheory.Ar.Num.ScalarFlags
+
+theorem main : GroundTheory.Heights₂.Heights.NumbersDVR.ScalarQuotient.Statement :=
+  GroundTheory.Heights₂.Heights.NumbersDVR.ScalarQuotient.proof GlobalTheory.T.flag_independence
+
+end GlobalTheory.CompanionTheory.Ar.Num.ScalarFlags
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.scalar_quotient_statement : GroundTheory.Heights₂.Heights.NumbersDVR.ScalarQuotient.Statement := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Num.ScalarFlags.main
+end
+
+section
 section
 open MvPolynomial GlobalTheory.CompanionTheory.Ar.Num GroundTheory.Heights₂.Heights.NumbersDVR
 open ReciprocityTheory.ChartRestriction.G.Geo (ChartBundle chartRing)
@@ -133,3 +149,4 @@ open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundl
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.dvr_bundle_statement_d : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (Ω : Type) [Field Ω] [Algebra O Ω] (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)], GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundles.Bd.Statement.{0,0,0} O Ω ι := by
   atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Num.Constants.main
+end

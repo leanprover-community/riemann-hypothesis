@@ -299,11 +299,6 @@ theorem blockProd_ne_zero (P : B.Pl) : B.blockProd P ≠ 0 := by
   obtain ⟨ν, _, hν⟩ := List.mem_map.mp h0
   exact blockPoly_ne_zero _ _ _ hν
 
-theorem HasRes.hasBlocks {Sg : Pl0 → K[X]} {x : B.Pl × ℕ → K} (hx : B.HasRes Sg x) :
-    Col.HasBlocks B.n B.q B.t B.bl x := by
-  intro P
-  rw [hx P]
-  exact dvd_mul_left _ _
 
 theorem HasRes.excl {Sg Sg' : Pl0 → K[X]} (hne : ∃ P : B.Pl, Sg (B.pl P) ≠ Sg' (B.pl P))
     (x : B.Pl × ℕ → K) (hx : B.HasRes Sg x) : ¬ B.HasRes Sg' x := by
@@ -681,8 +676,6 @@ theorem side_WF {s : ℕ} (h : F.Ok s) (P : Subgroup G) (ψ : P →* Kˣ) (Zs : 
   Zp_indep j := (F.L j F.μ0).part_indep (F.lvlA P ψ) (Zs.Zl j F.μ0) (h.lifts j F.μ0).comm
     (fun p : F.base.Ix => F.tr j p.1) fun p p' hpp => hsep p.1 p.2 p'.1 p'.2 (fun e => hpp (Subtype.ext e)) j
 
-theorem side_Pos (P : Subgroup G) (ψ : P →* Kˣ) (Zs : DefSub F.amb) (hrow : F.RowsExist P ψ Zs) :
-    (F.side P ψ Zs).Pos := hrow
 
 theorem side_Proviso {s : ℕ} (h : F.Ok s) (P : Subgroup G) (ψ : P →* Kˣ) (Zs : DefSub F.amb)
     (hrat : F.LiftRat P ψ Zs) : (F.side P ψ Zs).Proviso := by
@@ -878,10 +871,6 @@ theorem tB_partF : tB.partF (fun _ => 1) = ⊤ := by
   rw [← tB_eigAt]
   exact eigAt_le_eigSum tB_hasRes
 
-theorem tB_ZH : tB.ZH = ⊤ := by
-  refine eq_top_iff.mpr ?_
-  rw [← tB_eigAt]
-  exact eigAt_le_eigSum (BlockDat.HasRes.hasBlocks tB tB_hasRes)
 
 theorem example_good_coordinates_top (ℓ : Lvl ℚ G3) : tB.inV0 ℓ ⊤ = ⊤ := by
   refine eq_top_iff.mpr fun u _ => ?_
@@ -911,11 +900,6 @@ theorem tB_resSet : tB.resSet tX = {fun _ => 1} := by
     have : Nonempty (Fin (tB.nV (Lvl.full tX))) := ⟨⟨0, hpos⟩⟩
     exact top_ne_bot
 
-theorem tB_mem_ixFin (Sg : Unit → ℚ[X]) : Sg ∈ tB.ixFin tX ↔ Sg = fun _ => 1 := by
-  have hfin : (tB.resSet tX).Finite := by
-    rw [tB_resSet]; exact Set.finite_singleton _
-  unfold BlockDat.ixFin
-  rw [dif_pos hfin, Set.Finite.mem_toFinset, tB_resSet, Set.mem_singleton_iff]
 
 theorem tB_ok : tB.Ok 1 where
   good := reg_good ℚ G3
@@ -941,87 +925,17 @@ theorem tB_ok : tB.Ok 1 where
   q_pos _ := show 0 < 2 by norm_num
   pl_inj := Function.injective_id
 
-theorem tX_irr : ∀ χ ∈ tX, IsAbsIrrChar χ := by
-  intro χ hχ
-  rw [show χ = fun _ => (1 : ℚ) from Finset.mem_singleton.1 hχ]
-  exact isAbsIrrChar_one ℚ G3
 
-theorem tF_ok : tF.Ok 1 where
-  conj := rat_isConjAt _
-  tup_fin := inferInstance
-  irr := tX_irr
-  what₂ _ := tB_ok
-  lifts _ _ := tB_ok
 
 def tZs : DefSub tF.amb := ⟨fun _ => tB.goodF tX, fun _ _ => tB.goodF tX⟩
 
-theorem tZs_stable : tZs.Stable := by
-  have hs := tB.goodF_stable tF_ok.conj tB_ok tX_irr
-  unfold DefSub.Stable
-  refine ⟨fun t i => ?_, fun j t i => ?_⟩
-  · rcases i with i | g
-    · exact Submodule.map_le_iff_le_comap.mpr (hs.1 i)
-    · exact Submodule.map_le_iff_le_comap.mpr (hs.2 g)
-  · rcases i with i | g
-    · exact Submodule.map_le_iff_le_comap.mpr (hs.1 i)
-    · exact Submodule.map_le_iff_le_comap.mpr (hs.2 g)
 
-theorem tZs_inBlock : tZs.InBlock := by
-  unfold DefSub.InBlock
-  refine ⟨fun t => ?_, fun j t => ?_⟩
-  · show tB.goodF tX ≤ tB.ZH ⊓ tB.goodF tX
-    rw [tB_ZH]
-    exact le_inf le_top le_rfl
-  · show tB.goodF tX ≤ tB.ZH ⊓ tB.goodF tX
-    rw [tB_ZH]
-    exact le_inf le_top le_rfl
 
-theorem example_invariant_good_top (P : Subgroup G3) : tB.Z0 (tF.lvl P 1) (tB.goodF tX) = ⊤ := by
-  exact tB.good_part_coordinates_good_eq_top (tF.lvl P 1) tF_ok.conj tX_irr
 
-theorem tF_rows (P : Subgroup G3) : tF.RowsExist P 1 tZs := by
-  show 0 < subDim (tB.Z0 (tF.lvl P 1) (tB.goodF tX))
-  rw [example_invariant_good_top]
-  unfold subDim
-  rw [finrank_top, finrank_fin_fun]
-  exact reg_V0dim_pos_lvl ℚ G3 P
 
-theorem tF_isType (f : (Unit → ℚ[X]) → Unit → ℚ[X]) (hf : f (fun _ => 1) = fun _ => 1) :
-    eigSum tB.op (tF.IsType tB f) = ⊤ := by
-  refine eq_top_iff.mpr ?_
-  rw [← tB_eigAt]
-  have hx : tF.IsType tB f x0 := by
-    unfold DefFam.IsType
-    refine ⟨fun _ => 1, (tB_mem_ixFin _).mpr rfl, ?_⟩
-    rw [hf]
-    exact tB_hasRes
-  exact eigAt_le_eigSum hx
 
-theorem tF_same (P : Subgroup G3) : tF.SameTypes P 1 tZs := by
-  intro j
-  have h1 := tF_isType (tF.tr j) rfl
-  have h2 := example_good_coordinates_top (tF.lvlA P 1)
-  show tB.Z0 _ _ ≤ tB.inV0 _ (eigSum tB.op (tF.IsType tB (tF.tr j)))
-  rw [h1, h2]
-  exact le_top
 
-theorem tF_sep : tF.TypesSep := by
-  first
-    | (unfold DefFam.TypesSep
-       intro Sg hSg Sg' hSg' hne j
-       exact absurd (((tB_mem_ixFin Sg).mp hSg).trans ((tB_mem_ixFin Sg').mp hSg').symm) hne)
-    | (intro Sg hSg Sg' hSg' hne j
-       exfalso
-       exact hne (((tB_mem_ixFin Sg).mp hSg).trans ((tB_mem_ixFin Sg').mp hSg').symm))
-    | (intro Sg hSg Sg' hSg' hne
-       exact absurd (((tB_mem_ixFin Sg).mp hSg).trans ((tB_mem_ixFin Sg').mp hSg').symm) hne)
 
-theorem tF_rat (P : Subgroup G3) : tF.LiftRat P 1 tZs :=
-  fun _ => ⟨finBasis ℚ _, fun _ _ => mem_cmMax_rat _⟩
 
-theorem tF_WF (P : Subgroup G3) :
-    (tF.side P 1 tZs).WF ∧ (tF.side P 1 tZs).Pos ∧ (tF.side P 1 tZs).Proviso ∧ (tF.side P 1 tZs).Types := by
-  exact ⟨tF.side_WF tF_ok P 1 tZs tZs_stable tZs_inBlock tF_sep, tF.side_Pos P 1 tZs (tF_rows P),
-    tF.side_Proviso tF_ok P 1 tZs (tF_rat P), tF.side_Types tF_ok P 1 tZs tZs_stable tF_sep (tF_same P)⟩
 
 end Formalism.L2.DIV.Test

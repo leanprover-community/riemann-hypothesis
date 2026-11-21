@@ -161,11 +161,6 @@ theorem maxMinor_map {S : Type*} [CommRing S] (f : R →+* S) (B : Matrix (Fin n
   rw [RingHom.map_det]
   rfl
 
-theorem compound_map {S : Type*} [CommRing S] (f : R →+* S) (P : Matrix (Fin m) (Fin n) R) :
-    compound k (P.map f) = (compound k P).map f := by
-  ext s t
-  rw [compound_apply, map_apply, compound_apply, RingHom.map_det]
-  rfl
 
 theorem compound_mulVec_maxMinor_of_mul_eq (A : Matrix (Fin n) (Fin n) R)
     (B B' : Matrix (Fin n) (Fin k) R) (C : Matrix (Fin k) (Fin k) R) (h : A * B' = B * C) :

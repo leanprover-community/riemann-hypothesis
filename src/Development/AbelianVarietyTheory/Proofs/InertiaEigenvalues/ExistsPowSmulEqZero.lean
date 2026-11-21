@@ -4,11 +4,587 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteResidu
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GoodCoefficientRingPadicIntegersFinExt
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DvrComplete
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUniqueAlgEquivOfCompatibleQuotient
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardH1LocalEulerFormula
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LatticePowSmulNhdsZeroBasis
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdicallyCompleteLatticeReductionAction
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LatticeTwistExactSequenceCohomology
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MkMemAdmissibleAtIffCocycle
+import Formalism.GaloisCohomology.LocalTateDualityK
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardCocyclesMulInvariantsDiscrete
+import BuildAid.ForwardExisting
 
+section
+section
+open GlobalTheory.AdmLoc Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Filter Topology
+open scoped TensorProduct
+
+namespace GlobalTheory.EulerFree
+
+theorem card_Z1_of_invariants_eq_bot {O G M : Type} [CommRing O] [Group G] [TopologicalSpace G]
+    [AddCommGroup M] [Module O M] (π : Representation O G M)
+    (hlc : ∀ m, IsLocallyConstant fun g => π g m) (h0 : π.invariants = ⊥) :
+    Nat.card (ReciprocityTheory.Def.Z1 π ⊤) = Nat.card (ReciprocityTheory.Def.H1 π ⊤) * Nat.card M := by
+  have hle : ReciprocityTheory.Def.B1 π ⊤ ≤ ReciprocityTheory.Def.Z1 π ⊤ := by
+    rintro _ ⟨m, -, rfl⟩
+    refine ⟨⟨(hlc m).comp (fun x => x - m), fun _ => Submodule.mem_top⟩, ?_⟩
+    funext x
+    change π x.1 (π x.2 m - m) - (π (x.1 * x.2) m - m) + (π x.1 m - m) = 0
+    simp only [map_mul, Module.End.mul_apply, map_sub]
+    abel
+  have h1 := Submodule.card_eq_card_quotient_mul_card
+    ((ReciprocityTheory.Def.B1 π ⊤).submoduleOf (ReciprocityTheory.Def.Z1 π ⊤))
+  have h2 : Nat.card ((ReciprocityTheory.Def.B1 π ⊤).submoduleOf (ReciprocityTheory.Def.Z1 π ⊤)) =
+      Nat.card (ReciprocityTheory.Def.B1 π ⊤) := Nat.card_congr (Submodule.comapSubtypeEquivOfLe hle).toEquiv
+  have hinj : Function.Injective (ReciprocityTheory.Def.d0 π) := by
+    rw [← LinearMap.ker_eq_bot, eq_bot_iff, ← h0]
+    intro m hm g
+    exact sub_eq_zero.1 (congrFun (LinearMap.mem_ker.1 hm) g)
+  have h3 : Nat.card (ReciprocityTheory.Def.B1 π ⊤) = Nat.card M :=
+    (Nat.card_congr (Submodule.topEquiv.symm.trans
+      (Submodule.equivMapOfInjective _ hinj ⊤)).toEquiv).symm
+  rw [h1, h2, h3, mul_comm]
+
+theorem card_H1_of_euler (R O G G' : Type) [CommRing R] [CommRing O] [Group G] [TopologicalSpace G]
+    [Group G'] [TopologicalSpace G'] (φ : G' ≃* G) (hφ : Continuous φ ∧ Continuous φ.symm)
+    (M : Type) [AddCommGroup M] [Module R M] [Module O M] [Finite M] [TopologicalSpace M]
+    [DiscreteTopology M] (rho : Representation R G M) (hrho : ReciprocityTheory.Gal.ContAction rho) (d : ℕ)
+    (hEu : Nat.card (ReciprocityTheory.Gal.H1 rho) =
+      Nat.card (ReciprocityTheory.Gal.H0 rho) * Nat.card (ReciprocityTheory.Gal.H2 rho) * Nat.card M ^ d)
+    (π : Representation O G' M) (ha : ∀ g m, rho g m = π (φ.symm g) m)
+    (hlc : ∀ m, IsLocallyConstant fun g => π g m) (h0 : π.invariants = ⊥)
+    (h2 : Subsingleton (ReciprocityTheory.Def.H2 π ⊤)) :
+    Nat.card (ReciprocityTheory.Def.H1 π ⊤) = Nat.card M ^ d := by
+  have ha' : ∀ g m, rho (φ g) m = π g m := fun g m => by rw [ha, φ.symm_apply_apply]
+  have hH0 : Nat.card (ReciprocityTheory.Gal.H0 rho) = 1 := by
+    have : ReciprocityTheory.Gal.H0 rho = ⊥ := by
+      rw [eq_bot_iff]
+      intro m hm
+      have : m ∈ π.invariants := fun g => by rw [← ha']; exact hm (φ g)
+      rw [h0] at this
+      exact this
+    rw [this]
+    exact Nat.card_unique
+  have hH2 : Nat.card (ReciprocityTheory.Gal.H2 rho) = 1 := by
+    have : Subsingleton (ReciprocityTheory.Gal.H2 rho) := by
+      refine Submodule.Quotient.subsingleton_iff.2 (eq_top_iff.2 fun z _ => ?_)
+      let z' : ReciprocityTheory.Def.Z2 π ⊤ := ⟨fun x => z.1 (φ x.1, φ x.2),
+        ⟨(IsLocallyConstant.iff_continuous _).2 (z.2.1.comp
+          ((hφ.1.comp continuous_fst).prodMk (hφ.1.comp continuous_snd))), fun _ => Submodule.mem_top⟩, by
+        funext x
+        have := z.2.2 (φ x.1) (φ x.2.1) (φ x.2.2)
+        rw [ha', ← map_mul, ← map_mul] at this
+        exact this⟩
+      have hz' : z' ∈ (ReciprocityTheory.Def.B2 π ⊤).submoduleOf (ReciprocityTheory.Def.Z2 π ⊤) := by
+        rw [Submodule.Quotient.subsingleton_iff.1 h2]
+        exact Submodule.mem_top
+      obtain ⟨b, hb, hbz⟩ := hz'
+      refine ⟨fun g => b (φ.symm g), hb.1.continuous.comp hφ.2, ?_⟩
+      funext x
+      have h : π (φ.symm x.1) (b (φ.symm x.2)) - b (φ.symm x.1 * φ.symm x.2) + b (φ.symm x.1) =
+          z.1 (φ (φ.symm x.1), φ (φ.symm x.2)) := congrFun hbz (φ.symm x.1, φ.symm x.2)
+      rw [φ.apply_symm_apply, φ.apply_symm_apply, ← map_mul, ← ha] at h
+      exact h
+    exact Nat.card_unique
+  have hZ := GlobalTheory.CocycleCount.card_cocycles_mul_invariants_discrete _ _ M rho hrho
+  let E : ↥(ReciprocityTheory.Def.Z1 π ⊤) ≃ ↥(ReciprocityTheory.Gal.Z1 rho) :=
+    { toFun := fun c => ⟨fun g => c.1 (φ.symm g), c.2.1.1.continuous.comp hφ.2, fun g h => by
+        beta_reduce
+        rw [ha, map_mul, cocycle_mul]⟩
+      invFun := fun c => ⟨fun g => c.1 (φ g),
+        ⟨(IsLocallyConstant.iff_continuous _).2 (c.2.1.comp hφ.1), fun _ => Submodule.mem_top⟩, by
+          funext x
+          have := c.2.2 (φ x.1) (φ x.2)
+          rw [ha', ← map_mul] at this
+          change π x.1 (c.1 (φ x.2)) - c.1 (φ (x.1 * x.2)) + c.1 (φ x.1) = 0
+          rw [this]
+          abel⟩
+      left_inv := fun c => Subtype.ext (funext fun g => congrArg c.1 (φ.symm_apply_apply g))
+      right_inv := fun c => Subtype.ext (funext fun g => congrArg c.1 (φ.apply_symm_apply g)) }
+  have hM : 0 < Nat.card M := Nat.card_pos
+  apply Nat.eq_of_mul_eq_mul_right hM
+  rw [← card_Z1_of_invariants_eq_bot π hlc h0, Nat.card_congr E]
+  rw [hEu, hH0, hH2] at hZ
+  simpa using hZ
+
+theorem card_H1_eq_pow :
+    Formalism.GaloisCohomology.LocalEulerCharK → ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (O M : Type) [CommRing O] [AddCommGroup M] [Module O M] [Finite M] (π : Representation O ↥(GK K) M), (∀ m : M, l • m = 0) → (∀ m, IsLocallyConstant fun g => π g m) → π.invariants = ⊥ → Subsingleton (ReciprocityTheory.Def.H2 π ⊤) → Nat.card (ReciprocityTheory.Def.H1 π ⊤) = Nat.card M ^ Module.finrank ℚ_[l] ↥K.1 := by
+  intro hE l _ K O M _ _ _ _ π hl hlc h0 h2
+  have hK : FiniteDimensional ℚ_[l] ↥K.1 := K.2
+  let _ : TopologicalSpace M := ⊥
+  have _ : DiscreteTopology M := ⟨rfl⟩
+  have hr' : ∀ m : M, l ^ 1 • m = 0 := fun m => by rw [pow_one, hl]
+  have _ : NeZero (l ^ 1) := ⟨pow_ne_zero _ (Fact.out : l.Prime).ne_zero⟩
+  let _ : Module (ZMod (l ^ 1)) M := AddCommGroup.zmodModule hr'
+  let φ : ↥(GK K) ≃* Formalism.GaloisCohomology.GK l K.1 := IntermediateField.fixingSubgroupEquiv K.1
+  have hφ : Continuous φ ∧ Continuous φ.symm :=
+    GlobalTheory.fixingSubgroupEquiv_bicontinuous ℚ_[l] (Om l) K.1
+  let rho : Representation (ZMod (l ^ 1)) (Formalism.GaloisCohomology.GK l K.1) M :=
+    GlobalTheory.CocycleCount.repOfAction _ (fun g => (π (φ.symm g)).toAddMonoidHom)
+      (fun m => by simp) (fun g h m => by simp)
+  have hrho : ReciprocityTheory.Gal.ContAction rho := by
+    refine continuous_prod_of_discrete_right.2 fun m => ?_
+    exact (hlc m).continuous.comp hφ.2
+  exact card_H1_of_euler _ O _ _ φ hφ M rho hrho _ (hE l K.1 hK 1 M rho Nat.one_pos hrho) π
+    (fun _ _ => rfl) hlc h0 h2
+
+end GlobalTheory.EulerFree
+end
+
+open GlobalTheory.AdmLoc Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Filter Topology
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_H1_local_euler_formula : Formalism.GaloisCohomology.LocalEulerCharK → ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (O M : Type) [CommRing O] [AddCommGroup M] [Module O M] [Finite M] (π : Representation O ↥(GK K) M), (∀ m : M, l • m = 0) → (∀ m, IsLocallyConstant fun g => π g m) → π.invariants = ⊥ → Subsingleton (ReciprocityTheory.Def.H2 π ⊤) → Nat.card (ReciprocityTheory.Def.H1 π ⊤) = Nat.card M ^ Module.finrank ℚ_[l] ↥K.1 := by
+  atlas_forward_decl GlobalTheory.EulerFree.card_H1_eq_pow
+end
+
+section
+section
+open GlobalTheory.AdmLoc Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Filter Topology
+open scoped TensorProduct
+
+namespace GlobalTheory
+
+open Filter Topology in
+open scoped TensorProduct in
+
+theorem _root_.GlobalTheory.lattice_multiples_nhds_basis :
+    ∀ (LL O V : Type) [Field LL] [TopologicalSpace LL] [IsTopologicalRing LL] [CommRing O] [Algebra O LL] [AddCommGroup V] [Module LL V] [Module O V] [IsScalarTower O LL V] [TopologicalSpace V] [IsModuleTopology LL V] (T : Submodule O V) (lam : O), T.FG → Submodule.span LL (T : Set V) = ⊤ → IsOpen (Set.range (algebraMap O LL)) → algebraMap O LL lam ≠ 0 → (∀ U ∈ 𝓝 (0 : LL), ∃ a : ℕ, ∀ x : O, algebraMap O LL (lam ^ a * x) ∈ U) → (∀ a : ℕ, {v : V | ∃ t ∈ T, v = lam ^ a • t} ∈ 𝓝 (0 : V)) ∧ ∀ U ∈ 𝓝 (0 : V), ∃ a : ℕ, ∀ t ∈ T, lam ^ a • t ∈ U := by
+  intro LL O V _ _ _ _ _ _ _ _ _ _ _ T lam hT hspan hopen hlam hsmall
+  obtain ⟨n, s, rfl⟩ := Submodule.fg_iff_exists_fin_generating_family.mp hT
+  set φ : (Fin n → LL) →ₗ[LL] V := Fintype.linearCombination LL s with hφ
+  have key : ∀ (a : ℕ) (c : Fin n → O),
+      φ (fun i => algebraMap O LL (lam ^ a * c i)) = lam ^ a • ∑ i, c i • s i := by
+    intro a c
+    simp only [hφ, Fintype.linearCombination_apply, Finset.smul_sum, map_mul, mul_smul,
+      algebraMap_smul]
+  have hsurj : Function.Surjective φ := by
+    rw [← LinearMap.range_eq_top, eq_top_iff, ← hspan, Submodule.span_le]
+    intro t ht
+    obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun O).mp ht
+    exact ⟨_, by rw [key 0 c, pow_zero, one_smul]⟩
+  have hq := IsModuleTopology.isOpenQuotientMap_of_surjective hsurj
+  refine ⟨fun a => ?_, fun U hU => ?_⟩
+  · have hc : algebraMap O LL (lam ^ a) ≠ 0 := by rw [map_pow]; exact pow_ne_zero _ hlam
+    set W : Set LL := Set.range fun x : O => algebraMap O LL (lam ^ a * x) with hW
+    have hWeq : W = (Homeomorph.mulLeft₀ _ hc) '' Set.range (algebraMap O LL) := by
+      ext y; simp [hW, map_mul]
+    have hWo : IsOpen W := hWeq ▸ (Homeomorph.mulLeft₀ _ hc).isOpenMap _ hopen
+    have hPo : IsOpen (φ '' Set.univ.pi fun _ => W) :=
+      hq.isOpenMap _ (isOpen_set_pi Set.finite_univ fun _ _ => hWo)
+    refine mem_of_superset (hPo.mem_nhds ⟨0, fun i _ => ⟨0, by simp⟩, map_zero φ⟩) ?_
+    rintro v ⟨y, hy, rfl⟩
+    choose c hc' using fun i => hy i (Set.mem_univ i)
+    have : y = fun i => algebraMap O LL (lam ^ a * c i) := funext fun i => (hc' i).symm
+    subst this
+    exact ⟨_, (Submodule.mem_span_range_iff_exists_fun O).mpr ⟨c, rfl⟩, key a c⟩
+  · have h0 : φ ⁻¹' U ∈ 𝓝 (0 : Fin n → LL) :=
+      hq.continuous.continuousAt.preimage_mem_nhds (by simpa using hU)
+    rw [nhds_pi, Filter.mem_pi'] at h0
+    obtain ⟨I, t, ht, hsub⟩ := h0
+    obtain ⟨a, ha⟩ := hsmall (⋂ i, t i) (Filter.iInter_mem.mpr ht)
+    refine ⟨a, fun v hv => ?_⟩
+    obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun O).mp hv
+    rw [← key a c]
+    exact hsub fun i _ => Set.mem_iInter.mp (ha (c i)) i
+
+end GlobalTheory
+end
+
+open GlobalTheory.AdmLoc Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Filter Topology
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lattice_pow_smul_nhds_zero_basis : ∀ (LL O V : Type) [Field LL] [TopologicalSpace LL] [IsTopologicalRing LL] [CommRing O] [Algebra O LL] [AddCommGroup V] [Module LL V] [Module O V] [IsScalarTower O LL V] [TopologicalSpace V] [IsModuleTopology LL V] (T : Submodule O V) (lam : O), T.FG → Submodule.span LL (T : Set V) = ⊤ → IsOpen (Set.range (algebraMap O LL)) → algebraMap O LL lam ≠ 0 → (∀ U ∈ 𝓝 (0 : LL), ∃ a : ℕ, ∀ x : O, algebraMap O LL (lam ^ a * x) ∈ U) → (∀ a : ℕ, {v : V | ∃ t ∈ T, v = lam ^ a • t} ∈ 𝓝 (0 : V)) ∧ ∀ U ∈ 𝓝 (0 : V), ∃ a : ℕ, ∀ t ∈ T, lam ^ a • t ∈ U := by
+  atlas_forward_decl GlobalTheory.lattice_multiples_nhds_basis
+end
+
+section
+section
+open GlobalTheory.AdmLoc Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Filter Topology
+open scoped TensorProduct
+
+namespace GlobalTheory.CocycleLift
+
+variable {O G T M : Type} [CommRing O] [Group G] [TopologicalSpace G] [ContinuousMul G]
+  [AddCommGroup T] [Module O T] [AddCommGroup M] [Module O M]
+
+theorem pow_smul_eq_zero (lam : O) (htf : ∀ t : T, lam • t = 0 → t = 0) (n : ℕ) (t : T)
+    (h : lam ^ n • t = 0) : t = 0 := by
+  induction n generalizing t with
+  | zero => simpa using h
+  | succ n ih =>
+    rw [pow_succ, mul_smul] at h
+    exact htf _ (ih _ h)
+
+theorem smodeq_iff (lam : O) (n : ℕ) (x y : T) :
+    x ≡ y [SMOD ((Ideal.span {lam}) ^ n • ⊤ : Submodule O T)] ↔ ∃ t, x - y = lam ^ n • t := by
+  rw [SModEq.sub_mem, Ideal.span_singleton_pow, Submodule.ideal_span_singleton_smul,
+    Submodule.mem_smul_pointwise_iff_exists]
+  constructor
+  · rintro ⟨b, -, hb⟩; exact ⟨b, hb.symm⟩
+  · rintro ⟨b, hb⟩; exact ⟨b, trivial, hb.symm⟩
+
+theorem step (lam : O) (π : Representation O G T) (π' : Representation O G M) (q : T →ₗ[O] M)
+    (htf : ∀ t : T, lam • t = 0 → t = 0) (hq : Function.Surjective q)
+    (hker : ∀ t, q t = 0 ↔ ∃ y, t = lam • y) (heq : ∀ g t, q (π g t) = π' g (q t))
+    (hcont : ∀ (a : ℕ) (t : T) (g₀ : G), ∀ᶠ g in 𝓝 g₀, ∃ y, π g t - π g₀ t = lam ^ a • y)
+    (hH : Subsingleton (ReciprocityTheory.Def.H2 π' ⊤)) (a : ℕ) (c : G → T) (hc : IsLocallyConstant c)
+    (hd : ∀ x, ∃ y, ReciprocityTheory.Def.d1 π c x = lam ^ (a + 1) • y) :
+    ∃ c' : G → T, (IsLocallyConstant c' ∧ ∀ x, ∃ y, ReciprocityTheory.Def.d1 π c' x = lam ^ (a + 1 + 1) • y) ∧
+      ∀ g, ∃ y, c' g - c g = lam ^ (a + 1) • y := by
+  choose w hw using hd
+  have hw' : ∀ g h, π g (c h) - c (g * h) + c g = lam ^ (a + 1) • w (g, h) := fun g h => hw (g, h)
+  have hlc : IsLocallyConstant (fun x => q (w x)) := by
+    rw [IsLocallyConstant.iff_eventually_eq]
+    rintro ⟨g₀, h₀⟩
+    have e1 : ∀ᶠ x : G × G in 𝓝 (g₀, h₀), c x.1 = c g₀ :=
+      (hc.comp_continuous continuous_fst).eventually_eq (g₀, h₀)
+    have e2 : ∀ᶠ x : G × G in 𝓝 (g₀, h₀), c x.2 = c h₀ :=
+      (hc.comp_continuous continuous_snd).eventually_eq (g₀, h₀)
+    have e3 : ∀ᶠ x : G × G in 𝓝 (g₀, h₀), c (x.1 * x.2) = c (g₀ * h₀) :=
+      (hc.comp_continuous continuous_mul).eventually_eq (g₀, h₀)
+    have e4 : ∀ᶠ x : G × G in 𝓝 (g₀, h₀),
+        ∃ y, π x.1 (c h₀) - π g₀ (c h₀) = lam ^ (a + 1 + 1) • y :=
+      (continuous_fst.tendsto (g₀, h₀)).eventually (hcont (a + 1 + 1) (c h₀) g₀)
+    filter_upwards [e1, e2, e3, e4] with x h1 h2 h3 ⟨y, h4⟩
+    obtain ⟨g, h⟩ := x
+    simp only at h1 h2 h3 h4
+    rw [← sub_eq_zero, ← map_sub, hker]
+    refine ⟨y, ?_⟩
+    rw [← sub_eq_zero]
+    apply pow_smul_eq_zero lam htf (a + 1)
+    rw [smul_sub, smul_sub, ← hw', ← hw', h1, h2, h3, ← mul_smul, ← pow_succ, ← h4]
+    abel
+  have hcoc : ∀ g h l, π g (w (h, l)) - w (g * h, l) + w (g, h * l) - w (g, h) = 0 := by
+    intro g h l
+    apply pow_smul_eq_zero lam htf (a + 1)
+    rw [smul_sub, smul_add, smul_sub, ← map_smul, ← hw', ← hw', ← hw', ← hw']
+    simp only [map_add, map_sub, map_mul, Module.End.mul_apply, mul_assoc]
+    abel
+  have hZ : (fun x => q (w x)) ∈ ReciprocityTheory.Def.Z2 π' ⊤ := by
+    refine ⟨⟨hlc, fun _ => trivial⟩, ?_⟩
+    show ReciprocityTheory.Def.d2 π' _ = 0
+    funext ⟨g, h, l⟩
+    have := congrArg q (hcoc g h l)
+    simp only [map_add, map_sub, heq, map_zero] at this
+    exact this
+  have h0 : (Submodule.Quotient.mk ⟨_, hZ⟩ : ReciprocityTheory.Def.H2 π' ⊤) = 0 := Subsingleton.elim _ _
+  rw [Submodule.Quotient.mk_eq_zero] at h0
+  obtain ⟨b, ⟨hb, -⟩, hbd⟩ := h0
+  have hbd' : ∀ g h, π' g (b h) - b (g * h) + b g = q (w (g, h)) := fun g h => congrFun hbd (g, h)
+  choose s hs using hq
+  refine ⟨fun g => c g - lam ^ (a + 1) • s (b g), ⟨?_, ?_⟩, fun g => ⟨- s (b g), by simp⟩⟩
+  · exact hc.sub (hb.comp (fun m => lam ^ (a + 1) • s m))
+  · rintro ⟨g, h⟩
+    obtain ⟨y, hy⟩ := (hker (w (g, h) - (π g (s (b h)) - s (b (g * h)) + s (b g)))).1 (by
+      simp only [map_add, map_sub, heq, hs, hbd', sub_self])
+    refine ⟨y, ?_⟩
+    show π g (c h - lam ^ (a + 1) • s (b h)) - (c (g * h) - lam ^ (a + 1) • s (b (g * h)))
+      + (c g - lam ^ (a + 1) • s (b g)) = _
+    rw [pow_succ lam (a + 1), mul_smul, ← hy, smul_sub, ← hw', map_sub, map_smul, smul_add, smul_sub]
+    abel
+
+theorem exists_lift : ∀ (O G T M : Type) [CommRing O] [Group G] [TopologicalSpace G] [ContinuousMul G] [AddCommGroup T] [Module O T] [AddCommGroup M] [Module O M] (lam : O) (π : Representation O G T) (π' : Representation O G M) (q : T →ₗ[O] M), IsAdicComplete (Ideal.span {lam}) T → (∀ t : T, lam • t = 0 → t = 0) → Function.Surjective q → (∀ t, q t = 0 ↔ ∃ y, t = lam • y) → (∀ g t, q (π g t) = π' g (q t)) → (∀ (a : ℕ) (t : T) (g₀ : G), ∀ᶠ g in 𝓝 g₀, ∃ y, π g t - π g₀ t = lam ^ a • y) → Subsingleton (ReciprocityTheory.Def.H2 π' ⊤) → ∀ z ∈ ReciprocityTheory.Def.Z1 π' ⊤, ∃ c : G → T, (∀ g h, c (g * h) = c g + π g (c h)) ∧ (∀ g, q (c g) = z g) ∧ ∀ (a : ℕ) (g₀ : G), ∀ᶠ g in 𝓝 g₀, ∃ y, c g - c g₀ = lam ^ a • y := by
+  intro O G T M _ _ _ _ _ _ _ _ lam π π' q hcomp htf hq hker heq hcont hH z hz
+  have hst := step lam π π' q htf hq hker heq hcont hH
+  obtain ⟨⟨hz1, -⟩, hz2⟩ := hz
+  have hz3 : ∀ g h, π' g (z h) - z (g * h) + z g = 0 := fun g h => congrFun hz2 (g, h)
+  choose s hs using hq
+  let P : ℕ → (G → T) → Prop := fun a c =>
+    IsLocallyConstant c ∧ ∀ x, ∃ y, ReciprocityTheory.Def.d1 π c x = lam ^ (a + 1) • y
+  have P0 : P 0 (fun g => s (z g)) := by
+    refine ⟨hz1.comp s, ?_⟩
+    rintro ⟨g, h⟩
+    rw [zero_add, pow_one, ← hker]
+    show q (π g (s (z h)) - s (z (g * h)) + s (z g)) = 0
+    simp only [map_add, map_sub, heq, hs, hz3]
+  have hst' : ∀ a (c : {c // P a c}), ∃ c' : {c // P (a + 1) c},
+      ∀ g, ∃ y, c'.1 g - c.1 g = lam ^ (a + 1) • y := by
+    intro a c
+    obtain ⟨c', h1, h2⟩ := hst a c.1 c.2.1 c.2.2
+    exact ⟨⟨c', h1⟩, h2⟩
+  choose F hF using hst'
+  let u : ∀ a, {c // P a c} := fun a => Nat.rec ⟨_, P0⟩ F a
+  have hu : ∀ a g, ∃ y, (u (a + 1)).1 g - (u a).1 g = lam ^ (a + 1) • y := fun a => hF a (u a)
+  have hcau : ∀ g m n, m ≤ n → ∃ y, (u n).1 g - (u m).1 g = lam ^ (m + 1) • y := by
+    intro g m n hmn
+    induction n, hmn using Nat.le_induction with
+    | base => exact ⟨0, by simp⟩
+    | succ n hmn ih =>
+      obtain ⟨y, hy⟩ := ih
+      obtain ⟨y', hy'⟩ := hu n g
+      obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hmn
+      refine ⟨y + lam ^ k • y', ?_⟩
+      rw [smul_add, ← mul_smul, ← pow_add, show m + 1 + k = m + k + 1 by ring, ← hy, ← hy']
+      abel
+  have hlim : ∀ g, ∃ L, ∀ n, ∃ y, (u n).1 g - L = lam ^ n • y := by
+    intro g
+    obtain ⟨L, hL⟩ := IsPrecomplete.prec hcomp.toIsPrecomplete (f := fun n => (u n).1 g) (by
+      intro m n hmn
+      apply SModEq.symm
+      rw [smodeq_iff]
+      obtain ⟨y, hy⟩ := hcau g m n hmn
+      exact ⟨lam • y, by rw [hy, pow_succ, mul_smul]⟩)
+    exact ⟨L, fun n => (smodeq_iff lam n _ _).1 (hL n)⟩
+  choose c hc using hlim
+  refine ⟨c, fun g h => ?_, fun g => ?_, fun a g₀ => ?_⟩
+  · rw [← sub_eq_zero]
+    apply IsHausdorff.haus hcomp.toIsHausdorff
+    intro n
+    rw [smodeq_iff]
+    obtain ⟨y1, h1⟩ := hc g n
+    obtain ⟨y2, h2⟩ := hc h n
+    obtain ⟨y3, h3⟩ := hc (g * h) n
+    obtain ⟨y4, h4⟩ := (u n).2.2 (g, h)
+    have h4' : π g ((u n).1 h) - (u n).1 (g * h) + (u n).1 g = lam ^ n • lam • y4 := by
+      rw [← mul_smul, ← pow_succ]; exact h4
+    refine ⟨y1 + π g y2 - y3 - lam • y4, ?_⟩
+    rw [smul_sub, smul_sub, smul_add, ← map_smul, ← h1, ← h2, ← h3, ← h4', map_sub]
+    abel
+  · obtain ⟨y1, h1⟩ := hc g 1
+    obtain ⟨y2, h2⟩ := hcau g 0 1 (by norm_num)
+    have h0 : q ((u 0).1 g) = z g := hs _
+    rw [← h0, ← sub_eq_zero, ← map_sub, hker]
+    refine ⟨y2 - y1, ?_⟩
+    rw [zero_add, pow_one] at h2
+    rw [pow_one] at h1
+    rw [smul_sub, ← h1, ← h2]
+    abel
+  · filter_upwards [(u a).2.1.eventually_eq g₀] with g hg
+    obtain ⟨y1, h1⟩ := hc g a
+    obtain ⟨y2, h2⟩ := hc g₀ a
+    refine ⟨y2 - y1, ?_⟩
+    rw [smul_sub, ← h1, ← h2, hg]
+    abel
+
+end GlobalTheory.CocycleLift
+end
+
+open GlobalTheory.AdmLoc Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Filter Topology
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_continuous_cocycle_lift_of_subsingleton_H2 : ∀ (O G T M : Type) [CommRing O] [Group G] [TopologicalSpace G] [ContinuousMul G] [AddCommGroup T] [Module O T] [AddCommGroup M] [Module O M] (lam : O) (π : Representation O G T) (π' : Representation O G M) (q : T →ₗ[O] M), IsAdicComplete (Ideal.span {lam}) T → (∀ t : T, lam • t = 0 → t = 0) → Function.Surjective q → (∀ t, q t = 0 ↔ ∃ y, t = lam • y) → (∀ g t, q (π g t) = π' g (q t)) → (∀ (a : ℕ) (t : T) (g₀ : G), ∀ᶠ g in 𝓝 g₀, ∃ y, π g t - π g₀ t = lam ^ a • y) → Subsingleton (ReciprocityTheory.Def.H2 π' ⊤) → ∀ z ∈ ReciprocityTheory.Def.Z1 π' ⊤, ∃ c : G → T, (∀ g h, c (g * h) = c g + π g (c h)) ∧ (∀ g, q (c g) = z g) ∧ ∀ (a : ℕ) (g₀ : G), ∀ᶠ g in 𝓝 g₀, ∃ y, c g - c g₀ = lam ^ a • y := by
+  atlas_forward_decl GlobalTheory.CocycleLift.exists_lift
+end
+
+section
+section
+noncomputable section
+
+open GlobalTheory.AdmLoc Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Filter Topology
+open scoped TensorProduct
+
+namespace GlobalTheory.TensIsoExt
+
+open ReciprocityTheory.Def (Z1 B1 H1 d0 d1 C1)
+
+section Abstract
+
+variable {O G : Type} [CommRing O] [Group G]
+variable {A B C : Type} [AddCommGroup A] [Module O A] [AddCommGroup B] [Module O B]
+  [AddCommGroup C] [Module O C]
+
+def ambMap {π : Representation O G A} {π' : Representation O G B} (f : A →ₗ[O] B)
+    (hf : ∀ g m, f (π g m) = π' g (f m)) : Amb π →ₗ[O] Amb π' :=
+  Submodule.mapQ _ _ (f.compLeft G) (by
+    rintro z ⟨b, -, hb⟩
+    refine ⟨f b, Submodule.mem_top, ?_⟩
+    funext g
+    have h1 : π g b - b = z g := congrFun hb g
+    change π' g (f b) - f b = f (z g)
+    rw [← h1, map_sub, hf])
+
+theorem ambMap_mk {π : Representation O G A} {π' : Representation O G B} (f : A →ₗ[O] B)
+    (hf : ∀ g m, f (π g m) = π' g (f m)) (u : G → A) :
+    ambMap f hf (Submodule.Quotient.mk u) = Submodule.Quotient.mk (fun g => f (u g)) := rfl
+
+theorem amb_eq_iff {π : Representation O G A} (u v : G → A) :
+    (Submodule.Quotient.mk u : Amb π) = Submodule.Quotient.mk v ↔ ∃ m, ∀ g, π g m - m = u g - v g := by
+  rw [Submodule.Quotient.eq, ReciprocityTheory.Def.B1, Submodule.mem_map]
+  constructor
+  · rintro ⟨m, -, hm⟩
+    exact ⟨m, fun g => congrFun hm g⟩
+  · rintro ⟨m, hm⟩
+    exact ⟨m, Submodule.mem_top, funext hm⟩
+
+variable [TopologicalSpace G]
+
+theorem mem_range_toAmb {π : Representation O G A} (x : Amb π) :
+    x ∈ LinearMap.range (toAmb π) ↔ ∃ z ∈ Z1 π ⊤, Submodule.Quotient.mk z = x := by
+  constructor
+  · rintro ⟨y, rfl⟩
+    obtain ⟨z, rfl⟩ := Submodule.Quotient.mk_surjective _ y
+    exact ⟨z, z.2, rfl⟩
+  · rintro ⟨z, hz, rfl⟩
+    exact ⟨Submodule.Quotient.mk ⟨z, hz⟩, rfl⟩
+
+theorem mem_cocycles_units_iff {π : Representation O G A} (z : G → A) :
+    z ∈ Z1 π ⊤ ↔ IsLocallyConstant z ∧ ∀ g h, π g (z h) - z (g * h) + z g = 0 := by
+  rw [Z1, Submodule.mem_inf, LinearMap.mem_ker]
+  constructor
+  · rintro ⟨hc, hd⟩
+    exact ⟨hc.1, fun g h => congrFun hd (g, h)⟩
+  · rintro ⟨hlc, hd⟩
+    refine ⟨⟨hlc, fun _ => Submodule.mem_top⟩, ?_⟩
+    funext x
+    exact hd x.1 x.2
+
+variable {HA HB HC : Type} [AddCommGroup HA] [Module O HA] [AddCommGroup HB] [Module O HB]
+  [AddCommGroup HC] [Module O HC]
+
+private theorem ambMap_injective_lemma {πA : Representation O G A} {πB : Representation O G B}
+    {πC : Representation O G C} (α : A →ₗ[O] B) (β : B →ₗ[O] C) (hα : ∀ g m, α (πA g m) = πB g (α m))
+    (hβ : ∀ g m, β (πB g m) = πC g (β m)) (αinj : Function.Injective α) (ex : Function.Exact α β)
+    (hinv : πC.invariants = ⊥) : Function.Injective (ambMap α hα) := by
+  rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
+  intro x hx
+  obtain ⟨u, rfl⟩ := Submodule.Quotient.mk_surjective _ x
+  have h0 : (Submodule.Quotient.mk (fun g => α (u g)) : Amb πB) = Submodule.Quotient.mk 0 := by
+    rw [Submodule.Quotient.mk_zero, ← hx, ambMap_mk]
+  obtain ⟨m, hm⟩ := (amb_eq_iff _ _).1 h0
+  have hm' : ∀ g, πB g m - m = α (u g) := fun g => by simpa using hm g
+  have hfix : β m ∈ πC.invariants := by
+    rw [Representation.mem_invariants]
+    intro g
+    have e := congrArg β (hm' g)
+    rw [map_sub, hβ, ex.apply_apply_eq_zero] at e
+    exact sub_eq_zero.1 e
+  rw [hinv, Submodule.mem_bot] at hfix
+  obtain ⟨a₀, ha₀⟩ := (ex m).1 hfix
+  rw [← Submodule.Quotient.mk_zero, amb_eq_iff]
+  refine ⟨a₀, fun g => αinj ?_⟩
+  rw [map_sub, hα, ha₀, hm' g, Pi.zero_apply, sub_zero]
+
+theorem five {πA : Representation O G A} {πB : Representation O G B} {πC : Representation O G C}
+    (α : A →ₗ[O] B) (β : B →ₗ[O] C) (hα : ∀ g m, α (πA g m) = πB g (α m))
+    (hβ : ∀ g m, β (πB g m) = πC g (β m)) (αinj : Function.Injective α) (ex : Function.Exact α β)
+    (βsurj : Function.Surjective β)
+    (a : HA →ₗ[O] HB) (b : HB →ₗ[O] HC) (ex' : Function.Exact a b) (bsurj : Function.Surjective b)
+    (φA : HA →ₗ[O] Amb πA) (φB : HB →ₗ[O] Amb πB) (φC : HC →ₗ[O] Amb πC)
+    (sqa : ∀ y, ambMap α hα (φA y) = φB (a y)) (sqb : ∀ y, ambMap β hβ (φB y) = φC (b y))
+    (hle : LinearMap.range φB ≤ LinearMap.range (toAmb πB))
+    (hlc : ∀ m, IsLocallyConstant fun g => πB g m) (hinv : πC.invariants = ⊥)
+    (hA : Function.Injective φA ∧ LinearMap.range φA = LinearMap.range (toAmb πA))
+    (hC : Function.Injective φC ∧ LinearMap.range φC = LinearMap.range (toAmb πC)) :
+    Function.Injective φB ∧ LinearMap.range φB = LinearMap.range (toAmb πB) := by
+  have hαi := ambMap_injective_lemma α β hα hβ αinj ex hinv
+  refine ⟨?_, le_antisymm hle ?_⟩
+  · rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
+    intro y hy
+    have h1 : φC (b y) = 0 := by rw [← sqb, hy, map_zero]
+    have h2 : b y = 0 := hC.1 (by rw [h1, map_zero])
+    obtain ⟨x, rfl⟩ := (ex' y).1 h2
+    have h3 : φA x = 0 := hαi (by rw [sqa, hy, map_zero])
+    have h4 : x = 0 := hA.1 (by rw [h3, map_zero])
+    rw [h4, map_zero]
+  · rintro _ ⟨ζ, rfl⟩
+    obtain ⟨z, rfl⟩ := Submodule.Quotient.mk_surjective _ ζ
+    obtain ⟨hzlc, hzc⟩ := (mem_cocycles_units_iff (z : G → B)).1 z.2
+    have hβz : (fun g => β ((z : G → B) g)) ∈ Z1 πC ⊤ := by
+      refine (mem_cocycles_units_iff _).2 ⟨hzlc.comp β, fun g h => ?_⟩
+      rw [← hβ, ← map_sub, ← map_add, hzc g h, map_zero]
+    have hC' := (mem_range_toAmb (Submodule.Quotient.mk (fun g => β ((z : G → B) g)) : Amb πC)).2
+      ⟨_, hβz, rfl⟩
+    rw [← hC.2] at hC'
+    obtain ⟨w, hw⟩ := hC'
+    obtain ⟨y, rfl⟩ := bsurj w
+    obtain ⟨z', hz'mem, hz'eq⟩ := (mem_range_toAmb (φB y)).1 (hle (LinearMap.mem_range_self φB y))
+    obtain ⟨hz'lc, hz'c⟩ := (mem_cocycles_units_iff z').1 hz'mem
+    have hcl : (Submodule.Quotient.mk (fun g => β (z' g)) : Amb πC) =
+        Submodule.Quotient.mk (fun g => β ((z : G → B) g)) := by
+      rw [← ambMap_mk β hβ, hz'eq, sqb, hw]
+    obtain ⟨c, hc⟩ := (amb_eq_iff _ _).1 hcl
+    obtain ⟨m₀, hm₀⟩ := βsurj c
+    have hk : ∀ g, β ((z : G → B) g - z' g + (πB g m₀ - m₀)) = 0 := by
+      intro g
+      have e := hc g
+      rw [map_add, map_sub, map_sub, hβ, hm₀, e]
+      abel
+    choose u hu using fun g => (ex ((z : G → B) g - z' g + (πB g m₀ - m₀))).1 (hk g)
+    have hulc : IsLocallyConstant u := by
+      refine IsLocallyConstant.desc u α ?_ αinj
+      have e : α ∘ u = fun g => (z : G → B) g - z' g + (πB g m₀ - m₀) := funext hu
+      rw [e]
+      exact (hzlc.sub hz'lc).add ((hlc m₀).sub (IsLocallyConstant.const m₀))
+    have hum : u ∈ Z1 πA ⊤ := by
+      refine (mem_cocycles_units_iff u).2 ⟨hulc, fun g h => αinj ?_⟩
+      have e1 : (z : G → B) (g * h) = πB g ((z : G → B) h) + (z : G → B) g := by
+        have e := hzc g h
+        rw [sub_add_eq_add_sub, sub_eq_zero] at e
+        exact e.symm
+      have e2 : z' (g * h) = πB g (z' h) + z' g := by
+        have e := hz'c g h
+        rw [sub_add_eq_add_sub, sub_eq_zero] at e
+        exact e.symm
+      rw [map_zero, map_add, map_sub, hα, hu, hu, hu, e1, e2, map_mul, Module.End.mul_apply]
+      simp only [map_add, map_sub]
+      abel
+    obtain ⟨x, hx⟩ : Submodule.Quotient.mk u ∈ LinearMap.range φA := by
+      rw [hA.2]
+      exact (mem_range_toAmb _).2 ⟨u, hum, rfl⟩
+    refine ⟨y + a x, ?_⟩
+    rw [map_add, ← sqa, hx, ambMap_mk, ← hz'eq, ← Submodule.Quotient.mk_add]
+    change _ = (Submodule.Quotient.mk (z : G → B) : Amb πB)
+    rw [amb_eq_iff]
+    refine ⟨m₀, fun g => ?_⟩
+    rw [Pi.add_apply, hu]
+    abel
+
+end Abstract
+section Tens
+
+variable {G LL O V : Type} [Group G] [TopologicalSpace G] [Field LL] [CommRing O] [Algebra O LL]
+  [AddCommGroup V] [Module LL V] [Module O V] [IsScalarTower O LL V] [TopologicalSpace V] [ContinuousAdd V]
+  [ContinuousConstSMul LL V] {ρ : Representation LL G V} (L : Lattice (O := O) ρ) (χ : G →* Oˣ)
+  {X X' : Type} [AddCommGroup X] [Module O X] [AddCommGroup X'] [Module O X']
+
+omit [TopologicalSpace G] [TopologicalSpace V] [ContinuousAdd V] [ContinuousConstSMul LL V] in
+
+theorem lTensor_equivariant (f : X →ₗ[O] X') (g : G) (m : ↥L.T ⊗[O] X) :
+    f.lTensor ↥L.T (twCoef (latRep L) χ X g m) = twCoef (latRep L) χ X' g (f.lTensor ↥L.T m) := by
+  induction m using TensorProduct.induction_on with
+  | zero => simp only [map_zero]
+  | tmul t x => simp only [twCoef, coefRep_tmul, LinearMap.lTensor_tmul]
+  | add p q hp hq => simp only [map_add, hp, hq]
+
+theorem tensAmb_natural (f : X →ₗ[O] X') (y : H1tw L χ ⊗[O] X) :
+    ambMap (f.lTensor ↥L.T) (lTensor_equivariant L χ f) (tensAmb L χ X y) =
+      tensAmb L χ X' (f.lTensor (H1tw L χ) y) := by
+  induction y using TensorProduct.induction_on with
+  | zero => simp only [map_zero]
+  | tmul c x =>
+    obtain ⟨c, rfl⟩ := Submodule.Quotient.mk_surjective _ c
+    rw [LinearMap.lTensor_tmul, tensAmb_tmul, tensAmb_tmul, ambMap_mk]
+    congr 1
+  | add p q hp hq => simp only [map_add, hp, hq]
+
+end Tens
+
+theorem tensIso_of_exact : ∀ (G LL O V : Type) [Group G] [TopologicalSpace G] [Field LL] [CommRing O] [Algebra O LL] [AddCommGroup V] [Module LL V] [Module O V] [IsScalarTower O LL V] [TopologicalSpace V] [ContinuousAdd V] [ContinuousConstSMul LL V] (ρ : Representation LL G V) (L : Lattice (O := O) ρ) (χ : G →* Oˣ) (S X Y : Type) [AddCommGroup S] [Module O S] [AddCommGroup X] [Module O X] [AddCommGroup Y] [Module O Y] (i : S →ₗ[O] X) (p : X →ₗ[O] Y), Function.Injective i → Function.Exact i p → Function.Surjective p → (∀ c x, tensCoc L χ X c x ∈ ReciprocityTheory.Def.Z1 (twCoef (latRep L) χ X) ⊤) → (∀ m, IsLocallyConstant fun g => twCoef (latRep L) χ X g m) → (twCoef (latRep L) χ Y).invariants = ⊥ → TensIso L χ S → TensIso L χ Y → TensIso L χ X := by
+  intro G LL O V _ _ _ _ _ _ _ _ _ _ _ _ ρ L χ S X Y _ _ _ _ _ _ i p hi hex hp hcoc hlc hinv hS hY
+  have := L.free
+  refine five (i.lTensor ↥L.T) (p.lTensor ↥L.T) (lTensor_equivariant L χ i) (lTensor_equivariant L χ p)
+    (Module.Flat.lTensor_preserves_injective_linearMap i hi) (lTensor_exact _ hex hp)
+    (LinearMap.lTensor_surjective _ hp) (i.lTensor (H1tw L χ)) (p.lTensor (H1tw L χ))
+    (lTensor_exact _ hex hp) (LinearMap.lTensor_surjective _ hp)
+    (tensAmb L χ S) (tensAmb L χ X) (tensAmb L χ Y) (fun y => tensAmb_natural L χ i y)
+    (fun y => tensAmb_natural L χ p y) ?_ hlc hinv hS hY
+  rintro _ ⟨y, rfl⟩
+  induction y using TensorProduct.induction_on with
+  | zero => rw [map_zero]; exact Submodule.zero_mem _
+  | tmul c x =>
+    obtain ⟨c, rfl⟩ := Submodule.Quotient.mk_surjective _ c
+    rw [tensAmb_tmul]
+    exact (mem_range_toAmb _).2 ⟨_, hcoc c x, rfl⟩
+  | add p q hp hq => rw [map_add]; exact Submodule.add_mem _ hp hq
+
+end GlobalTheory.TensIsoExt
+end
+end
+
+open GlobalTheory.AdmLoc Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Filter Topology
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lattice_twist_exact_sequence_cohomology : ∀ (G LL O V : Type) [Group G] [TopologicalSpace G] [Field LL] [CommRing O] [Algebra O LL] [AddCommGroup V] [Module LL V] [Module O V] [IsScalarTower O LL V] [TopologicalSpace V] [ContinuousAdd V] [ContinuousConstSMul LL V] (ρ : Representation LL G V) (L : Lattice (O := O) ρ) (χ : G →* Oˣ) (S X Y : Type) [AddCommGroup S] [Module O S] [AddCommGroup X] [Module O X] [AddCommGroup Y] [Module O Y] (i : S →ₗ[O] X) (p : X →ₗ[O] Y), Function.Injective i → Function.Exact i p → Function.Surjective p → (∀ c x, tensCoc L χ X c x ∈ ReciprocityTheory.Def.Z1 (twCoef (latRep L) χ X) ⊤) → (∀ m, IsLocallyConstant fun g => twCoef (latRep L) χ X g m) → (twCoef (latRep L) χ Y).invariants = ⊥ → TensIso L χ S → TensIso L χ Y → TensIso L χ X := by
+  atlas_forward_decl GlobalTheory.TensIsoExt.tensIso_of_exact
+end
+
+section
 open GlobalTheory.AdmLoc Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Filter Topology
 open scoped TensorProduct
 open Formalism.MainNotions.N (twistRep coefRep)
@@ -459,3 +1035,5 @@ theorem freeH_of_vanish : Formalism.GaloisCohomology.LocalFinitenessK → Formal
     hV.1 hV.2 hT.1 hS.2.2.1 (fun M _ _ _ π => GlobalTheory.T.card_H1_local_euler_formula hE l S.K _ M π)
 
 end GlobalTheory.FreeCoh
+end
+end

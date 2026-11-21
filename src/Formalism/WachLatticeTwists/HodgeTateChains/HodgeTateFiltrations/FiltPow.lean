@@ -4,45 +4,6 @@ noncomputable section
 
 namespace Formalism.RepresentationBoundsCohomology.TorsionBoundCyclotomic
 
-theorem ll3 : StatLL3 := by
-  intro ℓ hℓ s H0 h d U a b hh hH hU ha hab hb hd
-  have := Fact.mk hℓ
-  have hn0 : n0 ℓ H0 ≤ Nat.log ℓ (2 * h) + 1 := by
-    apply Nat.sInf_le
-    show H0 ≤ ℓ ^ (Nat.log ℓ (2 * h) + 1) * (ℓ - 1)
-    have h1 : 2 * h < ℓ ^ (Nat.log ℓ (2 * h) + 1) := Nat.lt_pow_succ_log_self hℓ.one_lt _
-    have h2 : 1 ≤ ℓ - 1 := by have := hℓ.two_le; omega
-    nlinarith
-  refine ⟨by unfold mOf; omega, ?_⟩
-  generalize mOf ℓ s H0 = m at hd ⊢
-  have hr : ∀ i ∈ Finset.Ico a b, rI ℓ m U i ≤ U.card * (m + Nat.log ℓ (2 * h)) := by
-    intro i hi
-    rw [Finset.mem_Ico] at hi
-    unfold rI
-    calc ∑ u ∈ U.erase i, (m + padicValInt ℓ (u - i))
-        ≤ (U.erase i).card • (m + Nat.log ℓ (2 * h)) := by
-          apply Finset.sum_le_card_nsmul
-          intro u hu
-          have hu' := hU u (Finset.mem_of_mem_erase hu)
-          have h1 : padicValInt ℓ (u - i) ≤ Nat.log ℓ (2 * h) := by
-            unfold padicValInt
-            refine le_trans (padicValNat_le_nat_log _) (Nat.log_mono_right ?_)
-            omega
-          omega
-      _ ≤ U.card * (m + Nat.log ℓ (2 * h)) := by
-          rw [smul_eq_mul]
-          exact Nat.mul_le_mul_right _ (Finset.card_erase_le)
-  have hc : cM ℓ m U a b ≤ (b - a).toNat * (3 + U.card * (m + Nat.log ℓ (2 * h))) := by
-    unfold cM
-    calc ∑ i ∈ Finset.Ico a b, (2 + max 1 (rI ℓ m U i))
-        ≤ (Finset.Ico a b).card • (3 + U.card * (m + Nat.log ℓ (2 * h))) := by
-          apply Finset.sum_le_card_nsmul
-          intro i hi
-          have := hr i hi
-          omega
-      _ = _ := by rw [Int.card_Ico, smul_eq_mul]
-  unfold cLL
-  omega
 
 theorem filtPow : StatFiltPow := by
   intro ℓ hℓ N _ F γ hF0 hanti hstep b hb x

@@ -274,19 +274,5 @@ theorem zhatLoc_eq (D : Formalism.BasicNotions.D7) {M : ∀ p : PlF D, Formalism
   simp only [Zhat]
   ring
 
-theorem nu_eq_zero_of_GZ (D : Formalism.BasicNotions.D7) {T T' : D.host.E} (F0 : FlagG (VS D) D.R.rS T)
-    (what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V)) (Z : MatZ D) (hZ : GZ T T' Z = 0) :
-    Formalism.L2.SG.CntLocal.nu T' F0 what₂ Z = 0 := by
-  have hE : ∀ Λ, EZ T' F0 Λ Z = ∅ := by
-    intro Λ
-    ext F'
-    simp only [EZ, Set.mem_ofPred_eq, Set.mem_empty_iff_false, iff_false]
-    rintro ⟨⟨_, _, hG⟩, _, _, _, hZ'⟩
-    exact hG (by rw [gz_eq, hZ', hZ])
-  have hc : ∀ Λ, cntE T' F0 Λ Z = 0 := by
-    intro Λ
-    simp only [cntE, hE Λ, Set.mem_empty_iff_false, false_and, exists_false, Set.ofPred_false,
-      Set.encard_empty]
-  simp [Formalism.L2.SG.CntLocal.nu, hc]
 
 end Formalism.L2.SG.CntLocal

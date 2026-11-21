@@ -806,17 +806,7 @@ def pointsEquiv : (CartierDual R C →ₐ[R] A) ≃ GroupLike A (A ⊗[R] C) whe
     tensorToHom R A C (pointsEquiv R C A f).val φ = f φ := by
   simp [pointsEquiv]
 
-theorem pointsEquiv_eq_iff (f : CartierDual R C →ₐ[R] A) (x : A ⊗[R] C) :
-    (pointsEquiv R C A f).val = x ↔ ∀ φ, tensorToHom R A C x φ = f φ :=
-  ⟨fun h φ => h ▸ tensorToHom_pointsEquiv f φ,
-    fun h => eq_of_forall_tensorToHom fun φ => by rw [h, tensorToHom_pointsEquiv]⟩
 
-theorem pointsEquiv_comp {B : Type*} [CommSemiring B] [Algebra R B] (g : A →ₐ[R] B)
-    (f : CartierDual R C →ₐ[R] A) :
-    (pointsEquiv R C B (g.comp f)).val =
-      LinearMap.rTensor C g.toLinearMap (pointsEquiv R C A f).val :=
-  (pointsEquiv_eq_iff _ _).2 fun φ => by
-    rw [LinearMap.rTensor, tensorToHom_map, tensorToHom_pointsEquiv]; rfl
 
 end Points
 

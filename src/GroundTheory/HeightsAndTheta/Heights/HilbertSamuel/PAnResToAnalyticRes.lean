@@ -1,12 +1,432 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsAnResToAnalyticRes
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.IsConeAnalyticSubset
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsNonvanishingDense
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.EvalEqZeroOfAevalEqZero
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PResChiSymMeasure
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.MemCoordIdealOfIsHomogeneous
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.MeasurableResPtHsmProjLine
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.CNormSt
 import ReciprocityTheory.AnalyticForms.PotentialTheory.DegreeIntB
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.HilbertSamuel
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry MeasureTheory
+open scoped Manifold ContDiff
+
+noncomputable section
+
+def AnResToAnalyticRes.Statement : Prop :=
+  ∀ (D : ℕ) (Ω : Type) [Field Ω] [CharZero Ω] (κ : Type) [Fintype κ] (d : HSMDatum D Ω κ),
+    ∃ (M : Type) (_ : TopologicalSpace M) (_ : T2Space M) (_ : CompactSpace M)
+      (_ : ChartedSpace (Fin D → ℂ) M) (_ : IsManifold 𝓘(ℂ, Fin D → ℂ) ∞ M)
+      (_ : MeasurableSpace M) (_ : BorelSpace M) (f : M → Ix κ → ℂ) (dV : Measure M),
+      GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.HilbertSamuel.IsAnalyticRes (coordIdeal ℤ d.x) D f ∧
+      GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.HilbertSamuel.IsSmoothVolume D dV ∧
+      (∀ n : ℕ, chi d.x d.m (GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.HilbertSamuel.symMeasure f dV) n = resChi d n) ∧
+      ∀ (n : ℕ) (g : MvPolynomial (Ix κ) ℤ), g.IsHomogeneous n →
+        l2Norm d.m (Int.castRingHom ℂ) (GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.HilbertSamuel.symMeasure f dV) n g =
+          resolutionSectionL2Norm d n g
+
+end
+
+end GroundTheory.Heights₂.Heights.HilbertSamuel
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.HilbertSamuel
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.AnForm.M MeasureTheory
+
+noncomputable section
+
+set_option linter.unusedSectionVars false
+
+section Block
+
+variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
+
+theorem hermLine_eq_of_a_h {A B : HermLine ι} (ha : A.a = B.a) (hh : A.h = B.h) : A = B := by
+  obtain ⟨a, h, _, _⟩ := A
+  obtain ⟨a', h', _, _⟩ := B
+  subst ha
+  subst hh
+  rfl
+
+theorem hpow.equiv (A B : HermLine ι) (j : ℕ) :
+    IndefiniteRowSideFullHecke.HilbertSamuel.hpow A j = HermLine.zcomb A B (j : ℤ) 0 := by
+  refine hermLine_eq_of_a_h ?_ ?_
+  · show (j : ℤ) • A.a = (j : ℤ) • A.a + (0 : ℤ) • B.a
+    simp
+  · funext z
+    show A.h z ^ j = A.h z ^ (j : ℤ) * B.h z ^ (0 : ℤ)
+    simp
+
+theorem hpow_a_apply (A : HermLine ι) (τ : ℕ) (k : K) :
+    (IndefiniteRowSideFullHecke.HilbertSamuel.hpow A τ).a k = τ * A.a k := by
+  simp [IndefiniteRowSideFullHecke.HilbertSamuel.hpow]
+
+theorem SupLE.equiv (P : Ideal (MRing ι)) (y : (Σ k, ι k) → Ω) (A : HermLine ι) (τ : ℕ) (c : ℝ) (s : Ω) :
+    IsBoundedH P y A τ c s ↔
+      IndefiniteRowSideFullHecke.HilbertSamuel.SupLE P y (IndefiniteRowSideFullHecke.HilbertSamuel.hpow A τ).a (IndefiniteRowSideFullHecke.HilbertSamuel.hpow A τ).h c s := by
+  simp only [IsBoundedH, IndefiniteRowSideFullHecke.HilbertSamuel.SupLE, hpow_a_apply]
+  rfl
+
+theorem eval_eq_zero_of_aeval_eq_zero {y : (Σ k, ι k) → Ω} {h : MRing ι} {d : K → ℕ}
+    (hh : IsMultiHomog h d) (h0 : aeval y h = 0) {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts (mCoordIdeal y)) :
+    eval z (map (Int.castRingHom ℂ) h) = 0 := by
+  have hmem : h ∈ mCoordIdeal y := by
+    show mConeMap y h = 0
+    rw [ProjLine.mConeMap_eq_of_isMultiHomog y hh, h0, map_zero, zero_mul]
+  exact hz.2 h hmem
+
+theorem PtDominated.of_ptBoundOn {y : (Σ k, ι k) → Ω} {M L' : HermLine ι} {n : ℕ}
+    {U : Set ((Σ k, ι k) → ℂ)} {c : ℝ} {f f' : Ω} (hB : PtBoundOn y M L' n U c f f') :
+    ∀ z ∈ U, IndefiniteRowSideFullHecke.HilbertSamuel.PtDominated y (IndefiniteRowSideFullHecke.HilbertSamuel.hpow M n).a
+      (IndefiniteRowSideFullHecke.HilbertSamuel.hpow L' n).a (IndefiniteRowSideFullHecke.HilbertSamuel.hpow M n).h (IndefiniteRowSideFullHecke.HilbertSamuel.hpow L' n).h
+      c f f' z := by
+  intro z hz g h g' h' ⟨dg, dh, hg, hh, hd, _, he⟩ ⟨dg', dh', hg', hh', hd', _, he'⟩ h0 h0'
+  exact hB dg dh dg' dh' g h g' h' hg hh (fun k ↦ by rw [hd k, hpow_a_apply]) he hg' hh'
+    (fun k ↦ by rw [hd' k, hpow_a_apply]) he' z hz h0 h0'
+
+theorem PtDominated.equiv {y : (Σ k, ι k) → Ω} {M L' : HermLine ι} {n : ℕ}
+    {U : Set ((Σ k, ι k) → ℂ)} (hU : U ⊆ mcPts (mCoordIdeal y)) (c : ℝ) (f f' : Ω) :
+    PtBoundOn y M L' n U c f f' ↔
+      ∀ z ∈ U, IndefiniteRowSideFullHecke.HilbertSamuel.PtDominated y (IndefiniteRowSideFullHecke.HilbertSamuel.hpow M n).a
+        (IndefiniteRowSideFullHecke.HilbertSamuel.hpow L' n).a (IndefiniteRowSideFullHecke.HilbertSamuel.hpow M n).h (IndefiniteRowSideFullHecke.HilbertSamuel.hpow L' n).h
+        c f f' z := by
+  refine ⟨PtDominated.of_ptBoundOn, fun hT ↦ ?_⟩
+  intro dg dh dg' dh' g h g' h' hg hh hd he hg' hh' hd' he' z hz h0 h0'
+  have hy : aeval y h ≠ 0 := fun hy ↦ h0 (eval_eq_zero_of_aeval_eq_zero hh hy (hU hz))
+  have hy' : aeval y h' ≠ 0 := fun hy ↦ h0' (eval_eq_zero_of_aeval_eq_zero hh' hy (hU hz))
+  exact hT z hz g h g' h' ⟨dg, dh, hg, hh, fun k ↦ by rw [hd k, hpow_a_apply], hy, he⟩
+    ⟨dg', dh', hg', hh', fun k ↦ by rw [hd' k, hpow_a_apply], hy', he'⟩ h0 h0'
+
+theorem hHat0.equiv (y : (Σ k, ι k) → Ω) (A : HermLine ι) (n : ℕ) :
+    IndefiniteRowSideFullHecke.HilbertSamuel.hHat0 y A n = smallSectionCount (IsSmallH (mCoordIdeal y) y A) (chartLat y A.a) n :=
+  rfl
+
+theorem volHat.equiv (y : (Σ k, ι k) → Ω) (A : HermLine ι) (D : ℕ) :
+    IndefiniteRowSideFullHecke.HilbertSamuel.volHat y A D = arVolP (IsSmallH (mCoordIdeal y) y A) (chartLat y A.a) 1 D :=
+  rfl
+
+end Block
+
+section OneBlock
+
+variable {Ω : Type} [Field Ω] [CharZero Ω] {κ : Type} [Fintype κ]
+
+theorem blockNonzero_eq_ne_zero :
+    {z : Ix κ → ℂ | ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0} = {z | z ≠ 0} := by
+  ext z
+  simp only [Set.mem_ofPred_eq]
+  constructor
+  · rintro h rfl
+    obtain ⟨i, hi⟩ := h ()
+    exact hi rfl
+  · intro hz k
+    obtain ⟨⟨⟨⟩, i⟩, hp⟩ := Function.ne_iff.mp hz
+    cases k
+    exact ⟨i, hp⟩
+
+theorem IsHSDatum.equiv (D : ℕ) (x : Ix κ → Ω) (m : ConeMetric ℂ (Ix κ)) :
+    IsGoodDatum D x m ↔ ∃ P₀, IndefiniteRowSideFullHecke.HilbertSamuel.IsHSDatum D x m P₀ := by
+  constructor
+  · rintro ⟨h1, ha, hi, _, hc, P₀, hle, hsp⟩
+    exact ⟨P₀, ⟨h1, ha, hi, hle, hsp, hc⟩⟩
+  · rintro ⟨P₀, ⟨h1, ha, hi, hle, hsp, hc⟩⟩
+    refine ⟨h1, ha, hi, ?_, hc, P₀, hle, hsp⟩
+    have hs : ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) m.ρ {z : Ix κ → ℂ | ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0} := hsp.1
+    rw [blockNonzero_eq_ne_zero] at hs
+    exact hs
+
+end OneBlock
+
+section Volume
+
+@[reducible] def chartedSpaceOfAtlas {e : ℕ} {X : Type} [TopologicalSpace X] (A : FinHolAtlas e X) :
+    ChartedSpace (Fin e → ℂ) X where
+  atlas := Set.range A.chart
+  chartAt x := A.chart (Classical.choose (A.cover x))
+  mem_chart_source x := Classical.choose_spec (A.cover x)
+  chart_mem_atlas _ := ⟨_, rfl⟩
+
+theorem IsSmoothVolume.equiv {e : ℕ} {X : Type} [TopologicalSpace X] [MeasurableSpace X] (A : FinHolAtlas e X)
+    (dV : Measure X) :
+    IsSmoothVolume A dV ↔ @IndefiniteRowSideFullHecke.HilbertSamuel.IsSmoothVolume e X _ (chartedSpaceOfAtlas A) _ dV := by
+  unfold IsSmoothVolume IndefiniteRowSideFullHecke.HilbertSamuel.IsSmoothVolume
+  refine and_congr_right fun _ ↦ ⟨fun h c hc ↦ ?_, fun h j ↦ ?_⟩
+  · obtain ⟨j, rfl⟩ := hc
+    obtain ⟨ν, h1, h2, h3⟩ := h j
+    exact ⟨ν, h1, h2, fun S hS hsub ↦ by
+      rw [h3 S hS hsub, (A.chart j).image_eq_target_inter_inv_preimage hsub]⟩
+  · obtain ⟨ν, h1, h2, h3⟩ := h (A.chart j) ⟨j, rfl⟩
+    exact ⟨ν, h1, h2, fun S hS hsub ↦ by
+      rw [h3 S hS hsub, (A.chart j).image_eq_target_inter_inv_preimage hsub]⟩
+
+end Volume
+
+end
+
+end GroundTheory.Heights₂.Heights.HilbertSamuel
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.HilbertSamuel
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.AnForm.M MeasureTheory
+open scoped ComplexConjugate
+
+noncomputable section
+
+namespace ResChiSymMeasure
+
+variable {κ : Type} [Fintype κ]
+
+theorem eval_smul_of_homog {J R : Type*} [Fintype J] [CommRing R] {φ : MvPolynomial J R} {d : ℕ}
+    (hφ : φ.IsHomogeneous d) (c : R) (z : J → R) : eval (c • z) φ = c ^ d * eval z φ := by
+  classical
+  rw [eval_eq', eval_eq', Finset.mul_sum]
+  refine Finset.sum_congr rfl fun m hm => ?_
+  have hd : ∑ i, m i = d := by
+    have := hφ (mem_support_iff.mp hm)
+    rw [← this, Finsupp.weight_apply, Finsupp.sum_fintype _ _ (by simp)]
+    simp
+  simp only [Pi.smul_apply, smul_eq_mul, mul_pow, Finset.prod_mul_distrib, Finset.prod_pow_eq_pow_sum, hd]
+  ring
+
+theorem evalQ_smul {b : MvPolynomial (Ix κ) ℚ} {n : ℕ}
+    (hb : ∃ f : MvPolynomial (Ix κ) ℤ, f.IsHomogeneous n ∧ b = map (Int.castRingHom ℚ) f) (c : ℂ)
+    (z : Ix κ → ℂ) :
+    eval (c • z) (map (algebraMap ℚ ℂ) b) = c ^ n * eval z (map (algebraMap ℚ ℂ) b) := by
+  obtain ⟨f, hf, rfl⟩ := hb
+  exact eval_smul_of_homog ((hf.map _).map _) c z
+
+omit [Fintype κ] in
+
+theorem continuous_evalQ (b : MvPolynomial (Ix κ) ℚ) :
+    Continuous fun z : Ix κ → ℂ => eval z (map (algebraMap ℚ ℂ) b) :=
+  (map (algebraMap ℚ ℂ) b).continuous_eval
+
+theorem pairVal_bound {m : ConeMetric ℂ (Ix κ)} (hm : IsSmoothMetric m) {n : ℕ} {b b' : MvPolynomial (Ix κ) ℚ}
+    (hb : ∃ f : MvPolynomial (Ix κ) ℤ, f.IsHomogeneous n ∧ b = map (Int.castRingHom ℚ) f)
+    (hb' : ∃ f : MvPolynomial (Ix κ) ℤ, f.IsHomogeneous n ∧ b' = map (Int.castRingHom ℚ) f) :
+    Measurable (pairVal m n b b') ∧ ∃ C : ℝ, ∀ z, ‖pairVal m n b b' z‖ ≤ C := by
+  set h := pairVal m n b b' with hh
+  have hρ : ContinuousOn m.ρ {0}ᶜ := hm.continuousOn
+  have hcont : ContinuousOn h {0}ᶜ := by
+    refine (((continuous_evalQ b).continuousOn.mul (continuous_evalQ b').continuousOn.star).div
+      (Complex.continuous_ofReal.comp_continuousOn (hρ.pow _)) fun z hz => ?_)
+    exact Complex.ofReal_ne_zero.mpr (pow_ne_zero _ (m.pos z hz).ne')
+  have hnorm : ∀ z, ‖h z‖ = ‖eval z (map (algebraMap ℚ ℂ) b)‖ * ‖eval z (map (algebraMap ℚ ℂ) b')‖ / m.ρ z ^ (2 * n) := by
+    intro z
+    simp only [hh, pairVal, norm_div, norm_mul, Complex.norm_conj, Complex.norm_real, Real.norm_eq_abs]
+    rw [abs_of_nonneg (pow_nonneg (m.nonneg z) _)]
+  have hsm : ∀ (c : ℂ) (z : Ix κ → ℂ), c ≠ 0 → ‖h (c • z)‖ = ‖h z‖ := by
+    intro c z hc
+    rw [hnorm, hnorm, evalQ_smul hb, evalQ_smul hb', m.smul]
+    have hc' : 0 < ‖c‖ := norm_pos_iff.mpr hc
+    rw [norm_mul, norm_mul, norm_pow, mul_pow]
+    have e : ‖c‖ ^ n * ‖c‖ ^ n = ‖c‖ ^ (2 * n) := by rw [← pow_add, ← two_mul]
+    rw [show ‖c‖ ^ n * ‖eval z (map (algebraMap ℚ ℂ) b)‖ * (‖c‖ ^ n * ‖eval z (map (algebraMap ℚ ℂ) b')‖) =
+      (‖c‖ ^ n * ‖c‖ ^ n) * (‖eval z (map (algebraMap ℚ ℂ) b)‖ * ‖eval z (map (algebraMap ℚ ℂ) b')‖) by ring, e,
+      mul_div_mul_left _ _ (pow_ne_zero _ hc'.ne')]
+  obtain ⟨C, hC⟩ := (isCompact_sphere (0 : Ix κ → ℂ) 1).exists_bound_of_continuousOn
+    (hcont.mono fun z hz => by
+      simp only [Set.mem_compl_iff, Set.mem_singleton_iff]
+      rintro rfl
+      simp at hz)
+  refine ⟨measurable_of_continuousOn_compl_singleton 0 hcont, max C ‖h 0‖, fun z => ?_⟩
+  by_cases hz : z = 0
+  · rw [hz]; exact le_max_right _ _
+  · have hz' : (‖z‖ : ℂ) ≠ 0 := by simpa using hz
+    have hu : ((‖z‖ : ℂ)⁻¹ • z) ∈ Metric.sphere (0 : Ix κ → ℂ) 1 := by
+      rw [mem_sphere_zero_iff_norm, norm_smul, norm_inv, Complex.norm_real, Real.norm_eq_abs,
+        abs_norm, inv_mul_cancel₀ (norm_ne_zero_iff.mpr hz)]
+    have : z = (‖z‖ : ℂ) • ((‖z‖ : ℂ)⁻¹ • z) := by rw [smul_smul, mul_inv_cancel₀ hz', one_smul]
+    rw [this, hsm _ _ hz']
+    exact (hC _ hu).trans (le_max_left _ _)
+
+theorem measurable_conjPt : Measurable (conjPt : (Ix κ → ℂ) → Ix κ → ℂ) :=
+  (continuous_pi fun i => Complex.continuous_conj.comp (continuous_apply i)).measurable
+
+end ResChiSymMeasure
+
+open ResChiSymMeasure in
+
+theorem ResChiSymMeasure.full : ResChiSymMeasure.Statement := by
+  intro D Ω _ _ κ _ d hf n
+  have : IsProbabilityMeasure d.dV := d.vol.1
+  have hmult : ∀ w : NumberField.InfinitePlace ℚ, (w.mult : ℝ) = 1 := by
+    intro w
+    have h1 := NumberField.totalWeight_eq_sum_mult ℚ
+    rw [NumberField.totalWeight_eq_finrank, Module.finrank_self, Fintype.sum_unique] at h1
+    rw [Subsingleton.elim w default, ← h1, Nat.cast_one]
+  have hemb : ∀ w : NumberField.InfinitePlace ℚ, w.embedding = algebraMap ℚ ℂ :=
+    fun w => Subsingleton.elim _ _
+  have hw : (Height.totalWeight ℚ : ℝ) = 1 := by
+    rw [NumberField.totalWeight_eq_finrank, Module.finrank_self, Nat.cast_one]
+  have hg : Measurable (conjPt ∘ resPt d) := measurable_conjPt.comp hf
+  unfold resChi chi
+  by_cases h : ∃ p : (Σ r : ℕ, Fin r → MvPolynomial (Ix κ) ℚ), IsSecBasis d.x n p.2
+  swap
+  · rw [dif_neg h, dif_neg h]
+  rw [dif_pos h, dif_pos h]
+  have hp := h.choose_spec
+  generalize h.choose = p at hp ⊢
+  obtain ⟨r, b⟩ := p
+  have hp' : IsSecBasis d.x n b := hp
+  have hG : resGram d n b = realGram (K := ℚ) (fun _ => d.m)
+      (fun _ => IndefiniteRowSideFullHecke.HilbertSamuel.symMeasure (resPt d) d.dV) n b := by
+    ext k l
+    obtain ⟨hmeas, C, hC⟩ := pairVal_bound d.smooth (hp'.1 k) (hp'.1 l)
+    have hint : ∀ φ : d.R.X → Ix κ → ℂ, Measurable φ →
+        Integrable (pairVal d.m n (b k) (b l)) (d.dV.map φ) := fun φ _ =>
+      Integrable.of_bound hmeas.aestronglyMeasurable C (Filter.Eventually.of_forall hC)
+    simp only [realGram, hmult, hemb, one_mul, Fintype.sum_unique]
+    change _ = (∫ z, pairVal d.m n (b k) (b l) z ∂IndefiniteRowSideFullHecke.HilbertSamuel.symMeasure (resPt d) d.dV).re
+    rw [IndefiniteRowSideFullHecke.HilbertSamuel.symMeasure, integral_smul_measure,
+      integral_add_measure (hint _ hf) (hint _ hg), integral_map hf.aemeasurable hmeas.aestronglyMeasurable,
+      integral_map hg.aemeasurable hmeas.aestronglyMeasurable]
+    simp only [resGram, Function.comp_apply, ENNReal.toReal_inv, ENNReal.toReal_ofNat, Complex.real_smul,
+      Complex.mul_re, Complex.add_re, Complex.add_im, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero]
+    ring
+  rw [hG]
+  simp only [l2Degree, hw, div_one]
+  ring
+
+end
+
+end GroundTheory.Heights₂.Heights.HilbertSamuel
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.HilbertSamuel
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry MeasureTheory
+open scoped ComplexConjugate ENNReal
+
+noncomputable section
+
+namespace ResolutionL2SymmetricMeasure
+
+set_option linter.unusedSectionVars false
+
+variable {J : Type} [Fintype J]
+
+theorem coneMap_of_isHomogeneous' {Ω : Type*} [CommRing Ω] [Algebra ℤ Ω] (x : J → Ω) {f : MvPolynomial J ℤ}
+    {n : ℕ} (hf : f.IsHomogeneous n) :
+    coneMap ℤ x f = Polynomial.C (aeval x f) * Polynomial.X ^ n := by
+  simp only [coneMap, aeval_def, eval₂_eq, Finset.sum_mul, map_sum]
+  refine Finset.sum_congr rfl fun m hm => ?_
+  have hdeg : ∑ i ∈ m.support, m i = n := by
+    have := hf (mem_support_iff.mp hm)
+    simpa [Finsupp.weight_apply, Finsupp.sum] using this
+  simp_rw [mul_pow, Finset.prod_mul_distrib, ← map_pow, ← map_prod, Finset.prod_pow_eq_pow_sum,
+    hdeg, Polynomial.algebraMap_apply, map_mul, mul_assoc]
+
+theorem mem_coordIdeal_of_isHomogeneous' {Ω : Type*} [CommRing Ω] [Algebra ℤ Ω] (x : J → Ω)
+    {f : MvPolynomial J ℤ} {n : ℕ} (hf : f.IsHomogeneous n) (h : aeval x f = 0) : f ∈ coordIdeal ℤ x := by
+  rw [coordIdeal, RingHom.mem_ker, coneMap_of_isHomogeneous' x hf, h, map_zero, zero_mul]
+
+theorem continuous_conjPt' : Continuous (conjPt : (J → ℂ) → J → ℂ) :=
+  continuous_pi fun i => Complex.continuous_conj.comp (continuous_apply i)
+
+theorem eval_conjPt_int (f : MvPolynomial J ℤ) (z : J → ℂ) :
+    eval (conjPt z) (map (Int.castRingHom ℂ) f) = conj (eval z (map (Int.castRingHom ℂ) f)) := by
+  rw [eval_map, eval_map, eval₂_comp_left,
+    RingHom.ext_int ((starRingEnd ℂ).comp (Int.castRingHom ℂ)) (Int.castRingHom ℂ)]
+  rfl
+
+theorem measurable_rho (m : ConeMetric ℂ J) (hm : IsSmoothMetric m) : Measurable m.ρ :=
+  measurable_of_continuousOn_compl_singleton 0 (hm.continuousOn.mono fun _ hz => hz)
+
+theorem measurable_ptNorm (m : ConeMetric ℂ J) (hm : IsSmoothMetric m) (n : ℕ) (g : MvPolynomial J ℤ) :
+    Measurable (ptNorm m (Int.castRingHom ℂ) n g) := by
+  unfold ptNorm
+  exact ((MvPolynomial.continuous_eval _).measurable.norm).div ((measurable_rho m hm).pow_const n)
+
+theorem ptNorm_conjPt {m : ConeMetric ℂ J} (hm : IsConjInvariant m) (n : ℕ) (g : MvPolynomial J ℤ)
+    (z : J → ℂ) : ptNorm m (Int.castRingHom ℂ) n g (conjPt z) = ptNorm m (Int.castRingHom ℂ) n g z := by
+  unfold ptNorm
+  rw [eval_conjPt_int, Complex.norm_conj, show m.ρ (conjPt z) = m.ρ z from hm z]
+
+theorem ptNorm_eq_of_sub_mem {P : Ideal (MvPolynomial J ℤ)} {f g : MvPolynomial J ℤ} (hfg : f - g ∈ P)
+    (m : ConeMetric ℂ J) (n : ℕ) {z : J → ℂ} (hz : ∀ h ∈ P, eval z (map (Int.castRingHom ℂ) h) = 0) :
+    ptNorm m (Int.castRingHom ℂ) n f z = ptNorm m (Int.castRingHom ℂ) n g z := by
+  have h := hz _ hfg
+  rw [map_sub, eval_sub, sub_eq_zero] at h
+  unfold ptNorm
+  rw [h]
+
+theorem resPt_mem {D : ℕ} {Ω : Type} [Field Ω] [CharZero Ω] {κ : Type} [Fintype κ] (d : HSMDatum D Ω κ)
+    (y : d.R.X) : ∀ h ∈ coordIdeal ℤ d.x, eval (resPt d y) (map (Int.castRingHom ℂ) h) = 0 :=
+  (d.R.mem y y (d.R.mem_U y)).2
+
+theorem full : ResolutionL2SymmetricMeasure.Statement := by
+  intro D Ω _ _ κ _ d hmeas n f hf
+  classical
+  have hex : ∃ g : MvPolynomial (Ix κ) ℤ, g.IsHomogeneous n ∧ aeval d.x g = aeval d.x f := ⟨f, hf, rfl⟩
+  unfold IndefiniteRowSideFullHecke.HilbertSamuel.secNorm
+  rw [dif_pos hex]
+  obtain ⟨hgh, hgx⟩ := hex.choose_spec
+  generalize hex.choose = g at hgh hgx ⊢
+
+  have hfg : f - g ∈ coordIdeal ℤ d.x :=
+    mem_coordIdeal_of_isHomogeneous' d.x (hf.sub hgh) (by rw [map_sub, hgx, sub_self])
+  unfold resolutionSectionL2Norm l2Norm
+  set σ := Int.castRingHom ℂ
+  have e1 : ∀ y, ptNorm d.m σ n f (resPt d y) = ptNorm d.m σ n g (resPt d y) := fun y =>
+    ptNorm_eq_of_sub_mem hfg d.m n (resPt_mem d y)
+  have e2 : ∀ y, ptNorm d.m σ n f (conjPt (resPt d y)) = ptNorm d.m σ n g (resPt d y) := fun y => by
+    rw [ptNorm_conjPt d.conjInv, e1]
+  congr 1
+  simp_rw [e1, e2]
+  have hψ : Measurable fun z => ptNorm d.m σ n g z ^ 2 := (measurable_ptNorm d.m d.smooth n g).pow_const 2
+  have hA : AEMeasurable (resPt d) d.dV := hmeas.aemeasurable
+  have hB : AEMeasurable (conjPt ∘ resPt d) d.dV := (continuous_conjPt'.measurable.comp hmeas).aemeasurable
+  have hBψ : ∀ y, ptNorm d.m σ n g ((conjPt ∘ resPt d) y) ^ 2 = ptNorm d.m σ n g (resPt d y) ^ 2 := fun y => by
+    rw [Function.comp_apply, ptNorm_conjPt d.conjInv]
+  have iA : Integrable (fun z => ptNorm d.m σ n g z ^ 2) (d.dV.map (resPt d)) ↔
+      Integrable (fun y => ptNorm d.m σ n g (resPt d y) ^ 2) d.dV :=
+    integrable_map_measure hψ.aestronglyMeasurable hA
+  have iB : Integrable (fun z => ptNorm d.m σ n g z ^ 2) (d.dV.map (conjPt ∘ resPt d)) ↔
+      Integrable (fun y => ptNorm d.m σ n g (resPt d y) ^ 2) d.dV := by
+    rw [integrable_map_measure hψ.aestronglyMeasurable hB]
+    exact integrable_congr (Filter.Eventually.of_forall hBψ)
+  have jA : ∫ z, ptNorm d.m σ n g z ^ 2 ∂(d.dV.map (resPt d)) =
+      ∫ y, ptNorm d.m σ n g (resPt d y) ^ 2 ∂d.dV :=
+    integral_map hA hψ.aestronglyMeasurable
+  have jB : ∫ z, ptNorm d.m σ n g z ^ 2 ∂(d.dV.map (conjPt ∘ resPt d)) =
+      ∫ y, ptNorm d.m σ n g (resPt d y) ^ 2 ∂d.dV := by
+    rw [integral_map hB hψ.aestronglyMeasurable]
+    exact integral_congr_ae (Filter.Eventually.of_forall hBψ)
+  unfold IndefiniteRowSideFullHecke.HilbertSamuel.symMeasure
+  rw [integral_smul_measure]
+  by_cases hi : Integrable (fun y => ptNorm d.m σ n g (resPt d y) ^ 2) d.dV
+  · rw [integral_add_measure (iA.2 hi) (iB.2 hi), jA, jB]
+    simp
+  · have hn : ¬ Integrable (fun z => ptNorm d.m σ n g z ^ 2) (d.dV.map (resPt d) + d.dV.map (conjPt ∘ resPt d)) := by
+      rw [integrable_add_measure]
+      exact fun h => hi (iA.1 h.1)
+    rw [integral_undef hn, integral_undef hi]
+    simp
+
+end ResolutionL2SymmetricMeasure
+
+end
+
+end GroundTheory.Heights₂.Heights.HilbertSamuel
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
@@ -523,3 +943,4 @@ theorem AnResToAnalyticRes.proof (hND : NonvanishingDense.Statement) : AnResToAn
 end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel
+end

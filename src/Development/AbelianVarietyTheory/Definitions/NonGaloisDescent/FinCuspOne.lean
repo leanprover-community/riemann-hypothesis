@@ -34,16 +34,7 @@ def HasType {W : Type} [AddCommGroup W] [Module ℂ W] (π : Representation ℂ 
     π (GeneralLinearGroup.map (algebraMap 𝒪[k] k) κ) (j w) =
       j (τ (GeneralLinearGroup.map (IsLocalRing.residue 𝒪[k]) κ) w)
 
-theorem cuspOn_bot (π : Representation ℂ (GL (Fin n) k) V) : CuspOn π ⊥ := by
-  refine ⟨bot_le, fun κ _ v hv => ?_, fun S _ _ v hv => ⟨{1}, by simp, fun u hu => ?_, ?_⟩⟩
-  · rw [Submodule.mem_bot] at hv ⊢; simp [hv]
-  · rw [Finset.mem_singleton] at hu; subst hu; exact ⟨one_mem _, one_mem _⟩
-  · rw [Submodule.mem_bot] at hv; simp [hv]
 
-theorem finCusp_one {F : Type} [Field F] {W : Type} [AddCommGroup W] [Module ℂ W]
-    (τ : Representation ℂ (GL (Fin 1) F) W) : FinCusp τ := by
-  rintro S ⟨i, hi⟩ hS
-  exact absurd (Finset.eq_univ_iff_forall.2 fun j => Subsingleton.elim i j ▸ hi) hS
 
 end GlobalTheory.DZero
 

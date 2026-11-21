@@ -149,11 +149,6 @@ theorem isArithFrobAt_iff_decompositionToLocal (σ : MulAction.stabilizer Gal(L/
     rwa [integerAlgEquiv_ringOfIntegersToInteger, ← map_pow, ← map_sub,
       ringOfIntegersToInteger_mem_maximalIdeal_iff] at this
 
-theorem decompositionToLocal_arithFrobAt (x : 𝒪[w.adicCompletion L]) :
-    integerAlgEquiv (v.adicCompletion K) (w.adicCompletion L)
-        (decompositionToLocal v w (arithFrobAtDecomposition w)) x -
-      x ^ Nat.card 𝓀[v.adicCompletion K] ∈ 𝓂[w.adicCompletion L] :=
-  (isArithFrobAt_iff_decompositionToLocal v w _).1 (IsArithFrobAt.arithFrobAt _ _ _) x
 
 omit [Algebra (v.adicCompletion K) (w.adicCompletion L)]
   [ContinuousSMul (v.adicCompletion K) (w.adicCompletion L)]

@@ -9,12 +9,7 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.MulLawTest
 
-theorem mulA_two {S : Scheme.{0}} (A : Over S) [GrpObj A] :
-    mulA A 2 = lift (𝟙 A) (𝟙 A) ≫ μ[A] := by
-  simp [mulA, pow_two, Hom.mul_def]
 
-theorem mulA_zero {S : Scheme.{0}} (A : Over S) [GrpObj A] : mulA A 0 = toUnit A ≫ η[A] := by
-  simp [mulA, Hom.one_def]
 
 theorem comp_mulA {S : Scheme.{0}} (A : Over S) [GrpObj A] {T : Over S} (x : T ⟶ A) (n : ℕ) :
     x ≫ mulA A n = x ^ n := by
@@ -83,17 +78,6 @@ theorem separates : ∃ (P : PolAV (Spec (CommRingCat.of ℂ)))
   · have := (kerPow _ P 3 (by norm_num) _ x).1 h3
     rwa [pow_succ, hx, _root_.one_mul] at this
 
-theorem mulA_two_ne_id : ∃ P : PolAV (Spec (CommRingCat.of ℂ)), mulA P.A 2 ≠ 𝟙 P.A := by
-  obtain ⟨P, x, h2, h1, -⟩ := separates
-  refine ⟨P, fun e => h1 ((kerPow _ P 1 le_rfl _ x).2 ?_)⟩
-  have hx := (kerPow _ P 2 (by norm_num) _ x).1 h2
-  rw [← comp_mulA, e, Category.comp_id] at hx
-  simpa using hx
 
-theorem summary : KerPowSt ∧ MulPullSt ∧ MulNSt ∧
-    (∃ (P : PolAV (Spec (CommRingCat.of ℂ))) (x : Over.mk (𝟙 (Spec (CommRingCat.of ℂ))) ⟶ P.A),
-      InK P 2 x ∧ ¬ InK P 1 x ∧ ¬ InK P 3 x) ∧
-    ∃ P : PolAV (Spec (CommRingCat.of ℂ)), mulA P.A 2 ≠ 𝟙 P.A :=
-  ⟨kerPow, mulPull, mulN, separates, mulA_two_ne_id⟩
 
 end GlobalTheory.MulLawTest

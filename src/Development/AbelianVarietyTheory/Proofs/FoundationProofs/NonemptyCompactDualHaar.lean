@@ -1,12 +1,566 @@
 import Mathlib
 import Formalism.LocalToGlobal.BesselHermitianTheta.AllTied
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.HaarUpqEqOfOmegaDensity
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsPosFiniteDensityOfAlmostTranslationInvaria
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TranslateChartBallDistortion
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ReImMapSurjective
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CompactSpaceUpqTZeroRight
+import Formalism.LocalRingCardinality.DataCD
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UpqDefiniteCompact
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExpBallUMemNhds
 
+section
+open MeasureTheory Filter Topology Metric Set
+
+namespace GlobalTheory
+
+section
+variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
+  [MeasurableSpace V] [BorelSpace V]
+
+end
+
+open MeasureTheory Filter Topology Metric Set in
+variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
+  [MeasurableSpace V] [BorelSpace V] in
+private theorem measurableSet_pairs_mem_ball_mem_ball (ρ s : ℝ) :
+    MeasurableSet {p : V × V | p.1 ∈ ball (0 : V) ρ ∧ p.2 ∈ ball p.1 s} :=
+  ((isOpen_ball.preimage continuous_fst).inter
+    (isOpen_lt (continuous_snd.dist continuous_fst) continuous_const)).measurableSet
+
+open MeasureTheory Filter Topology Metric Set in
+variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
+  [MeasurableSpace V] [BorelSpace V] in
+private theorem measure_ball_mul_le_mul_of_forall_le_measure_ball (lam ν : Measure V) [lam.IsAddHaarMeasure]
+    [IsFiniteMeasure ν] {ρ s : ℝ} {a : ENNReal} (ha : ∀ x ∈ ball (0 : V) ρ, a ≤ ν (ball x s)) :
+    lam (ball 0 ρ) * a ≤ lam (ball 0 s) * ν (ball 0 (ρ + s)) := by
+  have hS := measurableSet_pairs_mem_ball_mem_ball (V := V) ρ s
+  calc lam (ball 0 ρ) * a = ∫⁻ x, (ball (0 : V) ρ).indicator (fun _ => a) x ∂lam := by
+        rw [lintegral_indicator_const measurableSet_ball, mul_comm]
+    _ ≤ ∫⁻ x, ν (Prod.mk x ⁻¹' {p : V × V | p.1 ∈ ball (0 : V) ρ ∧ p.2 ∈ ball p.1 s}) ∂lam :=
+        lintegral_mono fun x => by
+          by_cases hx : x ∈ ball (0 : V) ρ
+          · rw [indicator_of_mem hx]
+            exact (ha x hx).trans (measure_mono fun y hy => (⟨hx, hy⟩ : x ∈ ball (0 : V) ρ ∧ y ∈ ball x s))
+          · rw [indicator_of_notMem hx]
+            exact zero_le
+    _ = lam.prod ν {p : V × V | p.1 ∈ ball (0 : V) ρ ∧ p.2 ∈ ball p.1 s} :=
+        (Measure.prod_apply hS).symm
+    _ = ∫⁻ y, lam ((fun x => (x, y)) ⁻¹' {p : V × V | p.1 ∈ ball (0 : V) ρ ∧ p.2 ∈ ball p.1 s}) ∂ν :=
+        Measure.prod_apply_symm hS
+    _ ≤ ∫⁻ y, (ball (0 : V) (ρ + s)).indicator (fun _ => lam (ball 0 s)) y ∂ν :=
+        lintegral_mono fun y => by
+          by_cases hy : y ∈ ball (0 : V) (ρ + s)
+          · rw [indicator_of_mem hy, ← Measure.addHaar_ball_center lam y s]
+            refine measure_mono fun x hx => ?_
+            have hxy : dist y x < s := hx.2
+            show dist x y < s
+            rwa [dist_comm]
+          · rw [indicator_of_notMem hy]
+            have hempty : (fun x => (x, y)) ⁻¹'
+                {p : V × V | p.1 ∈ ball (0 : V) ρ ∧ p.2 ∈ ball p.1 s} = ∅ := by
+              refine eq_empty_of_forall_notMem fun x hx => hy ?_
+              have h1 : dist x 0 < ρ := hx.1
+              have h2 : dist y x < s := hx.2
+              show dist y 0 < ρ + s
+              linarith [dist_triangle y x 0]
+            rw [hempty, measure_empty]
+    _ = lam (ball 0 s) * ν (ball 0 (ρ + s)) := lintegral_indicator_const measurableSet_ball _
+
+open MeasureTheory Filter Topology Metric Set in
+variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
+  [MeasurableSpace V] [BorelSpace V] in
+private theorem measure_ball_mul_le_mul_of_forall_measure_ball_le (lam ν : Measure V) [lam.IsAddHaarMeasure]
+    [IsFiniteMeasure ν] {ρ s : ℝ} {b : ENNReal} (hb : ∀ x ∈ ball (0 : V) ρ, ν (ball x s) ≤ b) :
+    lam (ball 0 s) * ν (ball 0 (ρ - s)) ≤ lam (ball 0 ρ) * b := by
+  have hS := measurableSet_pairs_mem_ball_mem_ball (V := V) ρ s
+  calc lam (ball 0 s) * ν (ball 0 (ρ - s))
+        = ∫⁻ y, (ball (0 : V) (ρ - s)).indicator (fun _ => lam (ball 0 s)) y ∂ν :=
+          (lintegral_indicator_const measurableSet_ball _).symm
+    _ ≤ ∫⁻ y, lam ((fun x => (x, y)) ⁻¹' {p : V × V | p.1 ∈ ball (0 : V) ρ ∧ p.2 ∈ ball p.1 s}) ∂ν :=
+        lintegral_mono fun y => by
+          by_cases hy : y ∈ ball (0 : V) (ρ - s)
+          · rw [indicator_of_mem hy, ← Measure.addHaar_ball_center lam y s]
+            refine measure_mono fun x hx => ?_
+            have h1 : dist x y < s := hx
+            have h2 : dist y 0 < ρ - s := hy
+            have h3 : dist x 0 < ρ := by linarith [dist_triangle x y 0]
+            have h4 : dist y x < s := by rwa [dist_comm]
+            exact (⟨h3, h4⟩ : x ∈ ball (0 : V) ρ ∧ y ∈ ball x s)
+          · rw [indicator_of_notMem hy]
+            exact zero_le
+    _ = lam.prod ν {p : V × V | p.1 ∈ ball (0 : V) ρ ∧ p.2 ∈ ball p.1 s} :=
+        (Measure.prod_apply_symm hS).symm
+    _ = ∫⁻ x, ν (Prod.mk x ⁻¹' {p : V × V | p.1 ∈ ball (0 : V) ρ ∧ p.2 ∈ ball p.1 s}) ∂lam :=
+        Measure.prod_apply hS
+    _ ≤ ∫⁻ x, (ball (0 : V) ρ).indicator (fun _ => b) x ∂lam :=
+        lintegral_mono fun x => by
+          by_cases hx : x ∈ ball (0 : V) ρ
+          · rw [indicator_of_mem hx]
+            exact (measure_mono fun y hy => hy.2).trans (hb x hx)
+          · rw [indicator_of_notMem hx]
+            have hempty : Prod.mk x ⁻¹'
+                {p : V × V | p.1 ∈ ball (0 : V) ρ ∧ p.2 ∈ ball p.1 s} = ∅ :=
+              eq_empty_of_forall_notMem fun y hy => hx hy.1
+            rw [hempty, measure_empty]
+    _ = lam (ball 0 ρ) * b := by rw [lintegral_indicator_const measurableSet_ball, mul_comm]
+
+open MeasureTheory Filter Topology Metric Set in
+
+theorem _root_.GlobalTheory.exists_pos_finite_density_of_almost_translation_invariant :
+    ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] (lam ν : Measure V) [lam.IsAddHaarMeasure] [IsFiniteMeasure ν], (∀ r : ℝ, 0 < r → ν (ball 0 r) ≠ 0) → (∀ κ : ℝ, 1 < κ → ∃ δ : ℝ, 0 < δ ∧ ∀ x ∈ ball (0 : V) δ, ∀ r ∈ Ioo (0 : ℝ) δ, ν (ball 0 r) ≤ ν (ball x (κ * r)) ∧ ν (ball x r) ≤ ν (ball 0 (κ * r))) → ∃ c : ENNReal, c ≠ 0 ∧ c ≠ ⊤ ∧ Tendsto (fun r : ℝ => ν (ball 0 r) / lam (ball 0 r)) (𝓝[>] 0) (𝓝 c) := by
+  intro V _ _ _ _ _ lam ν _ _ hpos hinv
+  obtain ⟨d, hd⟩ : ∃ d, d = Module.finrank ℝ V := ⟨_, rfl⟩
+  obtain ⟨M, hM⟩ : ∃ M : ℝ → ℝ, ∀ r, M r = (ν (ball 0 r)).toReal := ⟨_, fun _ => rfl⟩
+  obtain ⟨L, hL⟩ : ∃ L : ℝ → ℝ, ∀ r, L r = (lam (ball 0 r)).toReal := ⟨_, fun _ => rfl⟩
+  have hc₁ : 0 < L 1 := by
+    rw [hL]
+    exact ENNReal.toReal_pos (measure_ball_pos lam 0 one_pos).ne' measure_ball_lt_top.ne
+  have hLr : ∀ r, 0 < r → L r = r ^ d * L 1 := fun r hr => by
+    rw [hL r, hL 1, Measure.addHaar_ball_of_pos lam 0 hr, ENNReal.toReal_mul,
+      ENNReal.toReal_ofReal (by positivity), hd]
+  have hMpos : ∀ r, 0 < r → 0 < M r := fun r hr => by
+    rw [hM]
+    exact ENNReal.toReal_pos (hpos r hr) (measure_ne_top ν _)
+  have hLpos : ∀ r, 0 < r → 0 < L r := fun r hr => by
+    rw [hLr r hr]
+    exact mul_pos (pow_pos hr d) hc₁
+  have hMmono : ∀ r r', r ≤ r' → M r ≤ M r' := fun r r' h => by
+    rw [hM, hM]
+    exact ENNReal.toReal_mono (measure_ne_top ν _) (measure_mono (ball_subset_ball h))
+  have hUp : ∀ ρ s r, (∀ x ∈ ball (0 : V) ρ, ν (ball 0 r) ≤ ν (ball x s)) →
+      L ρ * M r ≤ L s * M (ρ + s) := fun ρ s r h => by
+    have := ENNReal.toReal_mono (ENNReal.mul_ne_top measure_ball_lt_top.ne (measure_ne_top ν _))
+      (measure_ball_mul_le_mul_of_forall_le_measure_ball lam ν h)
+    simpa only [ENNReal.toReal_mul, ← hL, ← hM] using this
+  have hDown : ∀ ρ s b, (∀ x ∈ ball (0 : V) ρ, ν (ball x s) ≤ ν (ball 0 b)) →
+      L s * M (ρ - s) ≤ L ρ * M b := fun ρ s b h => by
+    have := ENNReal.toReal_mono (ENNReal.mul_ne_top measure_ball_lt_top.ne (measure_ne_top ν _))
+      (measure_ball_mul_le_mul_of_forall_measure_ball_le lam ν h)
+    simpa only [ENNReal.toReal_mul, ← hL, ← hM] using this
+  obtain ⟨g, hg⟩ : ∃ g : ℝ → ℝ, ∀ r, g r = M r / L r := ⟨_, fun _ => rfl⟩
+  have hgpos : ∀ r, 0 < r → 0 < g r := fun r hr => by
+    rw [hg]
+    exact div_pos (hMpos r hr) (hLpos r hr)
+  have hkey : ∀ ε, 0 < ε → ∃ t, 0 < t ∧ ∀ u ∈ Ioo 0 t, ∀ v ∈ Ioo 0 t, g u ≤ (1 + ε) * g v := by
+    intro ε hε
+    have hF : Tendsto (fun η : ℝ => ((1 + η) ^ d) ^ 3 / (1 - η) ^ d) (𝓝 0) (𝓝 1) := by
+      have : ContinuousAt (fun η : ℝ => ((1 + η) ^ d) ^ 3 / (1 - η) ^ d) 0 :=
+        (((continuous_const.add continuous_id).pow d).pow 3).continuousAt.div
+          ((continuous_const.sub continuous_id).pow d).continuousAt (by simp)
+      simpa using this.tendsto
+    obtain ⟨η, hFη, hη⟩ := (((hF.mono_left nhdsWithin_le_nhds).eventually_lt_const
+      (by linarith : (1 : ℝ) < 1 + ε)).and (Ioo_mem_nhdsGT (by norm_num : (0 : ℝ) < 1 / 2))).exists
+    obtain ⟨hη0, hη1⟩ := hη
+    obtain ⟨δ, hδ, hδ'⟩ := hinv (1 + η) (by linarith)
+    have hρ0 : 0 < δ / 2 := by linarith
+    have hηρ0 : 0 < η * (δ / 2) := mul_pos hη0 hρ0
+    have hηρ : η * (δ / 2) < δ / 2 := by nlinarith
+    refine ⟨η * (δ / 2) / (1 + η), div_pos hηρ0 (by linarith), fun u hu v hv => ?_⟩
+    have hu0 := hu.1
+    have hv0 := hv.1
+    have hku : (1 + η) * u < η * (δ / 2) := by
+      have := (lt_div_iff₀ (by linarith : (0 : ℝ) < 1 + η)).1 hu.2
+      linarith
+    have hkv : (1 + η) * v < η * (δ / 2) := by
+      have := (lt_div_iff₀ (by linarith : (0 : ℝ) < 1 + η)).1 hv.2
+      linarith
+    have hηu : 0 < η * u := mul_pos hη0 hu0
+    have huδ : u < δ := by linarith
+
+    have hU := hUp ((1 - η) * (δ / 2)) ((1 + η) * u) u fun x hx =>
+      (hδ' x (ball_subset_ball (by linarith) hx) u ⟨hu0, huδ⟩).1
+    have hU2 : L ((1 - η) * (δ / 2)) * M u ≤ L ((1 + η) * u) * M (δ / 2) :=
+      hU.trans (mul_le_mul_of_nonneg_left (hMmono _ _ (by linarith))
+        (hLpos _ (mul_pos (by linarith) hu0)).le)
+    rw [hLr _ (mul_pos (by linarith) hρ0), hLr _ (mul_pos (by linarith) hu0), mul_pow,
+      mul_pow] at hU2
+
+    obtain ⟨w, hw⟩ : ∃ w, w = v / (1 + η) := ⟨_, rfl⟩
+    have hw0 : 0 < w := hw ▸ div_pos hv0 (by linarith)
+    have hvw : (1 + η) * w = v := by rw [hw]; field_simp
+    have hηw : 0 < η * w := mul_pos hη0 hw0
+    have hwv : w < v := by
+      rw [← hvw]
+      nlinarith [hηw]
+    have hwδ : w < δ := by nlinarith [mul_pos hη0 hv0]
+    have hD := hDown ((1 + η) * (δ / 2)) w v fun x hx => by
+      have := (hδ' x (ball_subset_ball (by nlinarith) hx) w ⟨hw0, hwδ⟩).2
+      rwa [hvw] at this
+    have hD2 : L w * M (δ / 2) ≤ L ((1 + η) * (δ / 2)) * M v :=
+      (mul_le_mul_of_nonneg_left (hMmono _ _ (by nlinarith)) (hLpos w hw0).le).trans hD
+    rw [hLr w hw0, hLr _ (mul_pos (by linarith) hρ0), mul_pow] at hD2
+    have hvd : v ^ d = (1 + η) ^ d * w ^ d := by rw [← hvw, mul_pow]
+    have he : 0 < (1 + η) ^ d := pow_pos (by linarith) d
+    have ha : 0 < (1 - η) ^ d := pow_pos (by linarith) d
+    have hP : 0 < (δ / 2) ^ d := pow_pos hρ0 d
+    have hUd : 0 < u ^ d := pow_pos hu0 d
+    have hWd : 0 < w ^ d := pow_pos hw0 d
+    have hMu := hMpos u hu0
+    have hMv := hMpos v hv0
+    have h1 : (1 - η) ^ d * (δ / 2) ^ d * M u ≤ (1 + η) ^ d * u ^ d * M (δ / 2) :=
+      le_of_mul_le_mul_right (by linarith [hU2]) hc₁
+    have h2 : w ^ d * M (δ / 2) ≤ (1 + η) ^ d * (δ / 2) ^ d * M v :=
+      le_of_mul_le_mul_right (by linarith [hD2]) hc₁
+    have h3 : (1 - η) ^ d * (δ / 2) ^ d * M u * w ^ d ≤ (1 + η) ^ d * u ^ d * M (δ / 2) * w ^ d :=
+      mul_le_mul_of_nonneg_right h1 hWd.le
+    have h4 : (1 + η) ^ d * u ^ d * (w ^ d * M (δ / 2)) ≤
+        (1 + η) ^ d * u ^ d * ((1 + η) ^ d * (δ / 2) ^ d * M v) :=
+      mul_le_mul_of_nonneg_left h2 (mul_pos he hUd).le
+    have h5 : (1 - η) ^ d * M u * w ^ d * (δ / 2) ^ d ≤
+        ((1 + η) ^ d) ^ 2 * u ^ d * M v * (δ / 2) ^ d := by
+      nlinarith
+    have h6 := le_of_mul_le_mul_right h5 hP
+    have hne1 : u ^ d * L 1 ≠ 0 := (mul_pos hUd hc₁).ne'
+    have hne2 : (1 + η) ^ d * w ^ d * L 1 ≠ 0 := (mul_pos (mul_pos he hWd) hc₁).ne'
+    rw [hg, hg, hLr u hu0, hLr v hv0, hvd]
+    calc M u / (u ^ d * L 1)
+        ≤ ((1 + η) ^ d) ^ 3 / (1 - η) ^ d * (M v / ((1 + η) ^ d * w ^ d * L 1)) := by
+          rw [div_le_iff₀ (mul_pos hUd hc₁)]
+          have heq : ((1 + η) ^ d) ^ 3 / (1 - η) ^ d * (M v / ((1 + η) ^ d * w ^ d * L 1)) *
+              (u ^ d * L 1) = ((1 + η) ^ d) ^ 2 * u ^ d * M v / ((1 - η) ^ d * w ^ d) := by
+            field_simp
+          rw [heq, le_div_iff₀ (mul_pos ha hWd)]
+          linarith
+      _ ≤ (1 + ε) * (M v / ((1 + η) ^ d * w ^ d * L 1)) :=
+          mul_le_mul_of_nonneg_right hFη.le (div_pos hMv (mul_pos (mul_pos he hWd) hc₁)).le
+  obtain ⟨t₁, ht₁, hkey₁⟩ := hkey 1 one_pos
+  have hv₀ : t₁ / 2 ∈ Ioo 0 t₁ := ⟨by linarith, by linarith⟩
+  have hg₀ := hgpos (t₁ / 2) hv₀.1
+  have hupper : ∀ u ∈ Ioo 0 t₁, g u ≤ 2 * g (t₁ / 2) := fun u hu => by
+    have := hkey₁ u hu _ hv₀
+    linarith
+  have hlower : ∀ u ∈ Ioo 0 t₁, g (t₁ / 2) ≤ 2 * g u := fun u hu => by
+    have := hkey₁ _ hv₀ u hu
+    linarith
+  have hcau : Cauchy (map g (𝓝[>] (0 : ℝ))) := by
+    rw [Metric.cauchy_iff]
+    refine ⟨inferInstance, fun ε hε => ?_⟩
+    have hB : 0 < 2 * g (t₁ / 2) := by linarith
+    obtain ⟨t, ht, hgt⟩ := hkey (ε / (2 * (2 * g (t₁ / 2)))) (div_pos hε (by linarith))
+    refine ⟨g '' Ioo 0 (min t t₁), image_mem_map (Ioo_mem_nhdsGT (lt_min ht ht₁)), ?_⟩
+    rintro _ ⟨u, hu, rfl⟩ _ ⟨v, hv, rfl⟩
+    have hu' : u ∈ Ioo 0 t := ⟨hu.1, hu.2.trans_le (min_le_left _ _)⟩
+    have hv' : v ∈ Ioo 0 t := ⟨hv.1, hv.2.trans_le (min_le_left _ _)⟩
+    have hu₁ : u ∈ Ioo 0 t₁ := ⟨hu.1, hu.2.trans_le (min_le_right _ _)⟩
+    have hv₁ : v ∈ Ioo 0 t₁ := ⟨hv.1, hv.2.trans_le (min_le_right _ _)⟩
+    have h1 := hgt u hu' v hv'
+    have h2 := hgt v hv' u hu'
+    have h3 : ε / (2 * (2 * g (t₁ / 2))) * g v ≤ ε / (2 * (2 * g (t₁ / 2))) * (2 * g (t₁ / 2)) :=
+      mul_le_mul_of_nonneg_left (hupper v hv₁) (div_pos hε (by linarith)).le
+    have h4 : ε / (2 * (2 * g (t₁ / 2))) * g u ≤ ε / (2 * (2 * g (t₁ / 2))) * (2 * g (t₁ / 2)) :=
+      mul_le_mul_of_nonneg_left (hupper u hu₁) (div_pos hε (by linarith)).le
+    have h5 : ε / (2 * (2 * g (t₁ / 2))) * (2 * g (t₁ / 2)) = ε / 2 := by
+      field_simp
+    rw [Real.dist_eq, abs_sub_lt_iff]
+    constructor <;> nlinarith
+  obtain ⟨c, hc⟩ := CompleteSpace.complete hcau
+  have hc0 : 0 < c := by
+    have : g (t₁ / 2) / 2 ≤ c := ge_of_tendsto hc (by
+      filter_upwards [Ioo_mem_nhdsGT ht₁] with u hu
+      linarith [hlower u hu])
+    linarith
+  refine ⟨ENNReal.ofReal c, (ENNReal.ofReal_pos.2 hc0).ne', ENNReal.ofReal_ne_top, ?_⟩
+  refine (ENNReal.tendsto_ofReal hc).congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+  rw [hg, hM, hL, ← ENNReal.toReal_div, ENNReal.ofReal_toReal]
+  exact (ENNReal.div_lt_top (measure_ne_top ν _) (measure_ball_pos lam 0 hr).ne').ne
+
+end GlobalTheory
+end
+
+section
+open MeasureTheory Filter Topology Metric Set
+
+namespace GlobalTheory
+
+theorem translate_chart_ball_distortion
+    (V M G : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [NormedAddCommGroup M]
+    [NormedSpace ℝ M] [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (e : V → G)
+    (m : G → M) (ι : V →ₗᵢ[ℝ] M) (L : G → M →L[ℝ] M) (he : Continuous e) (he0 : e 0 = 1)
+    (hd : HasStrictFDerivAt (fun x => m (e x)) ι.toContinuousLinearMap 0)
+    (hL : ContinuousAt L 1) (hL1 : L 1 = ContinuousLinearMap.id ℝ M)
+    (hm : ∀ g h, m (g * h) = L g (m h))
+    (hopen : ∀ r : ℝ, 0 < r → e '' ball 0 r ∈ 𝓝 (1 : G)) (κ : ℝ) (hκ : 1 < κ) :
+    ∃ δ : ℝ, 0 < δ ∧ ∀ x ∈ ball (0 : V) δ, ∀ r ∈ Ioo (0 : ℝ) δ,
+      (fun g => e x * g) '' (e '' ball 0 r) ⊆ e '' ball x (κ * r) ∧
+      e '' ball x r ⊆ (fun g => e x * g) '' (e '' ball 0 (κ * r)) := by
+  set ε : ℝ := (κ - 1) / (2 * (3 + 2 * κ)) with hε
+  have hε0 : 0 < ε := div_pos (by linarith) (by linarith)
+  have hε1 : ε < 1 / 4 := by
+    rw [hε, div_lt_iff₀ (by linarith)]
+    linarith
+  have hκε : (1 + ε) ^ 2 < κ * (1 - ε) ^ 2 := by
+    have h3 : ε * (3 + 2 * κ) = (κ - 1) / 2 := by
+      rw [hε]
+      field_simp
+    nlinarith [mul_pos (sub_pos.mpr hκ) (mul_pos hε0 hε0)]
+  obtain ⟨η, hη0, hη⟩ := Metric.eventually_nhds_iff.mp (hd.isLittleO.bound hε0)
+  have hD : ∀ a b : V, ‖a‖ < η → ‖b‖ < η →
+      ‖m (e a) - m (e b) - ι (a - b)‖ ≤ ε * ‖a - b‖ := by
+    intro a b ha hb
+    have h := @hη (a, b) (by
+      simp only [Prod.dist_eq, dist_zero_right]
+      exact max_lt ha hb)
+    simpa using h
+  have hLc : ContinuousAt (fun x => L (e x)) 0 := hL.comp_of_eq he.continuousAt he0
+  obtain ⟨η2, hη20, hη2⟩ := Metric.continuousAt_iff.mp hLc ε hε0
+  have hLx : ∀ x : V, ‖x‖ < η2 → ∀ v : M, ‖L (e x) v - v‖ ≤ ε * ‖v‖ := by
+    intro x hx v
+    have h1 := hη2 (by rwa [dist_zero_right] : dist x 0 < η2)
+    simp only [he0, hL1, dist_eq_norm] at h1
+    have h2 := (L (e x) - ContinuousLinearMap.id ℝ M).le_opNorm v
+    simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.id_apply] at h2
+    exact h2.trans (mul_le_mul_of_nonneg_right h1.le (norm_nonneg v))
+  have hU : e '' ball 0 η ∈ 𝓝 (1 : G) := hopen η hη0
+  have hφ : Continuous (fun p : V × V => e p.1 * e p.2) :=
+    (he.comp continuous_fst).mul (he.comp continuous_snd)
+  have hψ : Continuous (fun p : V × V => (e p.1)⁻¹ * e p.2) :=
+    (he.comp continuous_fst).inv.mul (he.comp continuous_snd)
+  have hφU : (fun p : V × V => e p.1 * e p.2) ⁻¹' (e '' ball 0 η) ∈ 𝓝 ((0 : V), (0 : V)) :=
+    hφ.continuousAt.preimage_mem_nhds (by simpa [he0] using hU)
+  have hψU : (fun p : V × V => (e p.1)⁻¹ * e p.2) ⁻¹' (e '' ball 0 η) ∈
+      𝓝 ((0 : V), (0 : V)) :=
+    hψ.continuousAt.preimage_mem_nhds (by simpa [he0] using hU)
+  obtain ⟨η3, hη30, hη3⟩ := Metric.mem_nhds_iff.mp hφU
+  obtain ⟨η4, hη40, hη4⟩ := Metric.mem_nhds_iff.mp hψU
+  have hφ' : ∀ a b : V, ‖a‖ < η3 → ‖b‖ < η3 → ∃ z, ‖z‖ < η ∧ e z = e a * e b := by
+    intro a b ha hb
+    have hab : (a, b) ∈ ball ((0 : V), (0 : V)) η3 := by
+      rw [mem_ball, Prod.dist_eq]
+      simp only [dist_zero_right]
+      exact max_lt ha hb
+    obtain ⟨z, hz, hze⟩ := hη3 hab
+    exact ⟨z, mem_ball_zero_iff.mp hz, hze⟩
+  have hψ' : ∀ a b : V, ‖a‖ < η4 → ‖b‖ < η4 → ∃ z, ‖z‖ < η ∧ e z = (e a)⁻¹ * e b := by
+    intro a b ha hb
+    have hab : (a, b) ∈ ball ((0 : V), (0 : V)) η4 := by
+      rw [mem_ball, Prod.dist_eq]
+      simp only [dist_zero_right]
+      exact max_lt ha hb
+    obtain ⟨z, hz, hze⟩ := hη4 hab
+    exact ⟨z, mem_ball_zero_iff.mp hz, hze⟩
+  have h0η : ‖(0 : V)‖ < η := by simpa using hη0
+  refine ⟨min (η / 2) (min η2 (min (η3 / 2) (η4 / 2))),
+    lt_min (by linarith) (lt_min hη20 (lt_min (by linarith) (by linarith))), ?_⟩
+  intro x hx r hr
+  rw [mem_ball_zero_iff] at hx
+  obtain ⟨hr0, hrδ⟩ := hr
+  have b1 : ‖x‖ < η / 2 := lt_of_lt_of_le hx (min_le_left _ _)
+  have b2 : ‖x‖ < η2 := lt_of_lt_of_le hx ((min_le_right _ _).trans (min_le_left _ _))
+  have b3 : ‖x‖ < η3 / 2 := lt_of_lt_of_le hx
+    ((min_le_right _ _).trans ((min_le_right _ _).trans (min_le_left _ _)))
+  have b4 : ‖x‖ < η4 / 2 := lt_of_lt_of_le hx
+    ((min_le_right _ _).trans ((min_le_right _ _).trans (min_le_right _ _)))
+  have r1 : r < η / 2 := lt_of_lt_of_le hrδ (min_le_left _ _)
+  have r3 : r < η3 / 2 := lt_of_lt_of_le hrδ
+    ((min_le_right _ _).trans ((min_le_right _ _).trans (min_le_left _ _)))
+  have r4 : r < η4 / 2 := lt_of_lt_of_le hrδ
+    ((min_le_right _ _).trans ((min_le_right _ _).trans (min_le_right _ _)))
+  have hmx : ∀ y, m (e x * e y) - m (e x) = L (e x) (m (e y) - m (e 0)) := by
+    intro y
+    rw [map_sub, he0, ← hm, ← hm, mul_one]
+  constructor
+  · rintro _ ⟨_, ⟨y, hy, rfl⟩, rfl⟩
+    rw [mem_ball_zero_iff] at hy
+    obtain ⟨z, hz, hze⟩ := hφ' x y (by linarith) (by linarith)
+    refine ⟨z, ?_, hze⟩
+    rw [mem_ball, dist_eq_norm]
+    have e1 := hD z x hz (by linarith)
+    have e2 := hD y 0 (by linarith) h0η
+    rw [sub_zero] at e2
+    have e3 := hLx x b2 (m (e y) - m (e 0))
+    rw [hze, hmx y] at e1
+    have nι : ‖ι (z - x)‖ = ‖z - x‖ := ι.norm_map _
+    have nιy : ‖ι y‖ = ‖y‖ := ι.norm_map _
+    set v := m (e y) - m (e 0) with hv
+    have t1 : ‖z - x‖ ≤ ‖L (e x) v‖ + ε * ‖z - x‖ := by
+      have h := norm_sub_norm_le (ι (z - x)) (L (e x) v)
+      have h' : ‖ι (z - x) - L (e x) v‖ = ‖L (e x) v - ι (z - x)‖ := norm_sub_rev _ _
+      linarith
+    have t2 : ‖L (e x) v‖ ≤ (1 + ε) * ‖v‖ := by
+      have h := norm_sub_norm_le (L (e x) v) v
+      linarith
+    have t3 : ‖v‖ ≤ (1 + ε) * ‖y‖ := by
+      have h := norm_sub_norm_le v (ι y)
+      linarith
+    have k1 : (1 - ε) * ‖z - x‖ ≤ (1 + ε) ^ 2 * ‖y‖ := by
+      have := mul_le_mul_of_nonneg_left t3 (by linarith : (0 : ℝ) ≤ 1 + ε)
+      linarith only [t1, t2, this]
+    have k2 : (1 + ε) ^ 2 * ‖y‖ < (1 + ε) ^ 2 * r := mul_lt_mul_of_pos_left hy (by positivity)
+    have k3 : (1 + ε) ^ 2 * r < κ * (1 - ε) ^ 2 * r := mul_lt_mul_of_pos_right hκε hr0
+    have k4 : κ * (1 - ε) ^ 2 * r ≤ κ * (1 - ε) * r := by
+      have h1 : (1 - ε) ^ 2 ≤ 1 - ε := by
+        rw [sq]
+        exact mul_le_of_le_one_left (by linarith) (by linarith)
+      exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left h1 (by linarith)) hr0.le
+    have k5 : (1 - ε) * ‖z - x‖ < (1 - ε) * (κ * r) := by linarith only [k1, k2, k3, k4]
+    exact lt_of_mul_lt_mul_left k5 (by linarith)
+  · rintro _ ⟨w, hw, rfl⟩
+    rw [mem_ball, dist_eq_norm] at hw
+    have hwx := norm_sub_norm_le w x
+    obtain ⟨y, hyη, hye⟩ := hψ' x w (by linarith) (by linarith)
+    have hexy : e w = e x * e y := by rw [hye, mul_inv_cancel_left]
+    refine ⟨e y, ⟨y, ?_, rfl⟩, hexy.symm⟩
+    rw [mem_ball_zero_iff]
+    have e1 := hD w x (by linarith) (by linarith)
+    have e2 := hD y 0 hyη h0η
+    rw [sub_zero] at e2
+    have e3 := hLx x b2 (m (e y) - m (e 0))
+    rw [hexy, hmx y] at e1
+    have nι : ‖ι (w - x)‖ = ‖w - x‖ := ι.norm_map _
+    have nιy : ‖ι y‖ = ‖y‖ := ι.norm_map _
+    set v := m (e y) - m (e 0) with hv
+    have s1 : ‖L (e x) v‖ ≤ (1 + ε) * ‖w - x‖ := by
+      have h := norm_sub_norm_le (L (e x) v) (ι (w - x))
+      linarith
+    have s2 : (1 - ε) * ‖v‖ ≤ ‖L (e x) v‖ := by
+      have h := norm_sub_norm_le v (L (e x) v)
+      have h' : ‖v - L (e x) v‖ = ‖L (e x) v - v‖ := norm_sub_rev _ _
+      linarith
+    have s3 : (1 - ε) * ‖y‖ ≤ ‖v‖ := by
+      have h := norm_sub_norm_le (ι y) v
+      have h' : ‖ι y - v‖ = ‖v - ι y‖ := norm_sub_rev _ _
+      linarith
+    have k1 : (1 - ε) ^ 2 * ‖y‖ ≤ (1 - ε) * ‖v‖ := by
+      have := mul_le_mul_of_nonneg_left s3 (by linarith : (0 : ℝ) ≤ 1 - ε)
+      linarith only [this]
+    have k2 : (1 + ε) * ‖w - x‖ < (1 + ε) * r := mul_lt_mul_of_pos_left hw (by linarith)
+    have k3 : (1 + ε) * r ≤ (1 + ε) ^ 2 * r := by
+      linarith only [mul_pos hε0 hr0, mul_pos (mul_pos hε0 hε0) hr0]
+    have k4 : (1 + ε) ^ 2 * r < κ * (1 - ε) ^ 2 * r := mul_lt_mul_of_pos_right hκε hr0
+    have k5 : (1 - ε) ^ 2 * ‖y‖ < (1 - ε) ^ 2 * (κ * r) := by
+      linarith only [k1, s2, s1, k2, k3, k4]
+    exact lt_of_mul_lt_mul_left k5 (pow_pos (by linarith) 2).le
+
+end GlobalTheory
+end
+
+section
+open Formalism.BasicNotions MeasureTheory Filter Topology Matrix
+open scoped NNReal
+
+noncomputable section
+
+namespace GlobalTheory.CompactDualOmega
+
+theorem Jpq_mul_self (P Q : ℕ) : Formalism.UG.Jpq P Q * Formalism.UG.Jpq P Q = 1 := by
+  simp [Formalism.UG.Jpq, Matrix.fromBlocks_multiply]
+
+theorem Jpq_conjTranspose (P Q : ℕ) : (Formalism.UG.Jpq P Q)ᴴ = Formalism.UG.Jpq P Q := by
+  simp [Formalism.UG.Jpq, Matrix.fromBlocks_conjTranspose]
+
+theorem mem_lieU {P Q : ℕ} (X : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ) :
+    X ∈ lieU P Q ↔ Xᴴ * Formalism.UG.Jpq P Q + Formalism.UG.Jpq P Q * X = 0 := Iff.rfl
+
+def reImMap (P Q : ℕ) :
+    (lieU P Q × lieU P Q) →ₗ[ℝ] ((Fin P ⊕ Fin Q) × (Fin P ⊕ Fin Q) → ℂ) where
+  toFun ab := entries ((ab.1 : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ) +
+        Complex.I • (ab.2 : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ))
+  map_add' x y := by
+    funext ij
+    simp [entries]
+    ring
+  map_smul' c x := by
+    funext ij
+    simp [entries]
+    ring
+
+theorem reImMap_injective (P Q : ℕ) : Function.Injective (reImMap P Q) := by
+  rw [injective_iff_map_eq_zero]
+  rintro ⟨⟨a, ha⟩, ⟨b, hb⟩⟩ h
+  have h1 : a + Complex.I • b = 0 := by
+    ext i j
+    exact congrFun h (i, j)
+  have h2 : a = -(Complex.I • b) := eq_neg_of_add_eq_zero_left h1
+  have ha' := (mem_lieU a).1 ha
+  have hb' := (mem_lieU b).1 hb
+  have h3 : bᴴ * Formalism.UG.Jpq P Q = -(Formalism.UG.Jpq P Q * b) := eq_neg_of_add_eq_zero_left hb'
+  have h4 : (-(2 * Complex.I)) • (Formalism.UG.Jpq P Q * b) = 0 := by
+    rw [← ha', h2]
+    simp only [conjTranspose_neg, conjTranspose_smul, Matrix.neg_mul, Matrix.mul_neg,
+      Matrix.smul_mul, Matrix.mul_smul, h3, Complex.star_def, Complex.conj_I]
+    module
+  have h5 : Formalism.UG.Jpq P Q * b = 0 :=
+    (smul_eq_zero.1 h4).resolve_left (by simp)
+  have h6 : b = 0 := by
+    have := congrArg (Formalism.UG.Jpq P Q * ·) h5
+    simpa [← Matrix.mul_assoc, Jpq_mul_self] using this
+  have h7 : a = 0 := by rw [h2, h6]; simp
+  subst h6
+  subst h7
+  rfl
+
+theorem reImMap_surjective (P Q : ℕ) : Function.Surjective (reImMap P Q) := by
+  intro f
+  let Z : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ := Matrix.of fun i j => f (i, j)
+  have hJ := Jpq_mul_self P Q
+  have hH := Jpq_conjTranspose P Q
+  have hl : ∀ X : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ,
+      Formalism.UG.Jpq P Q * (Formalism.UG.Jpq P Q * X) = X := fun X => by
+    rw [← Matrix.mul_assoc, hJ, Matrix.one_mul]
+  refine ⟨(⟨(1 / 2 : ℂ) • (Z - Formalism.UG.Jpq P Q * Zᴴ * Formalism.UG.Jpq P Q), ?_⟩,
+    ⟨(-(Complex.I / 2)) • (Z + Formalism.UG.Jpq P Q * Zᴴ * Formalism.UG.Jpq P Q), ?_⟩), ?_⟩
+  · rw [mem_lieU]
+    have : star (1 / 2 : ℂ) = 1 / 2 := by simp
+    simp only [conjTranspose_smul, conjTranspose_sub, conjTranspose_mul, hH,
+      conjTranspose_conjTranspose, this, Matrix.smul_mul, Matrix.mul_smul, Matrix.sub_mul,
+      Matrix.mul_sub, Matrix.mul_assoc, hJ, hl, Matrix.mul_one]
+    module
+  · rw [mem_lieU]
+    have : star (-(Complex.I / 2)) = Complex.I / 2 := by simp [neg_div]
+    simp only [conjTranspose_smul, conjTranspose_add, conjTranspose_mul, hH,
+      conjTranspose_conjTranspose, this, Matrix.smul_mul, Matrix.mul_smul, Matrix.add_mul,
+      Matrix.mul_add, Matrix.mul_assoc, hJ, hl, Matrix.mul_one]
+    module
+  · have h1 : Complex.I * (-(Complex.I / 2)) = 1 / 2 := by
+      have := Complex.I_mul_I
+      linear_combination (-1 / 2 : ℂ) * this
+    have h2 : (1 / 2 : ℂ) • (Z - Formalism.UG.Jpq P Q * Zᴴ * Formalism.UG.Jpq P Q) +
+        Complex.I • (-(Complex.I / 2)) • (Z + Formalism.UG.Jpq P Q * Zᴴ * Formalism.UG.Jpq P Q) = Z := by
+      rw [smul_smul, h1]
+      module
+    exact (congrArg entries h2).trans rfl
+
+theorem exists_isOmegaLeb : ∀ P Q : ℕ, ∃ lam : Measure (lieU P Q), IsOmegaLeb lam := by
+  intro P Q
+  have : BorelSpace (lieU P Q) := ⟨rfl⟩
+  have : LocallyCompactSpace (Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ) :=
+    inferInstanceAs (LocallyCompactSpace ((Fin P ⊕ Fin Q) → (Fin P ⊕ Fin Q) → ℂ))
+  have : SecondCountableTopology (Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ) :=
+    inferInstanceAs (SecondCountableTopology ((Fin P ⊕ Fin Q) → (Fin P ⊕ Fin Q) → ℂ))
+  have : LocallyCompactSpace (lieU P Q) :=
+    (Submodule.closed_of_finiteDimensional (lieU P Q)).isClosedEmbedding_subtypeVal.locallyCompactSpace
+  have : SecondCountableTopology (lieU P Q) :=
+    TopologicalSpace.Subtype.secondCountableTopology _
+  have : FiniteDimensional ℝ (lieU P Q × lieU P Q) :=
+    FiniteDimensional.of_injective (reImMap P Q) (reImMap_injective P Q)
+  let e : (lieU P Q × lieU P Q) ≃L[ℝ] ((Fin P ⊕ Fin Q) × (Fin P ⊕ Fin Q) → ℂ) :=
+    (LinearEquiv.ofBijective (reImMap P Q)
+      ⟨reImMap_injective P Q, reImMap_surjective P Q⟩).toContinuousLinearEquiv
+  let l : Measure (lieU P Q) := Measure.addHaar
+  have : ((l.prod l).map e).IsAddHaarMeasure := e.isAddHaarMeasure_map _
+  let t : ℝ≥0 := Measure.addHaarScalarFactor volume ((l.prod l).map e)
+  have ht : volume = t • (l.prod l).map e := Measure.isAddLeftInvariant_eq_smul _ _
+  have ht0 : 0 < t := Measure.addHaarScalarFactor_pos_of_isAddHaarMeasure _ _
+  have hs : NNReal.sqrt t ≠ 0 := by simpa using ht0.ne'
+  refine ⟨NNReal.sqrt t • l, Measure.IsAddHaarMeasure.nnreal_smul l hs, ?_⟩
+  rw [Measure.prod_smul_left, Measure.prod_smul_right, smul_smul, NNReal.mul_self_sqrt,
+    Measure.map_smul]
+  exact ht.symm
+
+end GlobalTheory.CompactDualOmega
+end
+end
+
+section
+open Formalism.BasicNotions MeasureTheory Filter Topology
+
+namespace GlobalTheory
+
+theorem compactSpace_UpqT_zero_right : ∀ N : ℕ, CompactSpace (UpqT N 0) :=
+  fun N => (GlobalTheory.compactSpace_UpqT_definite N).1
+
+end GlobalTheory
+end
+
+section
 open Formalism.BasicNotions MeasureTheory Filter Topology Metric Set
 open scoped ENNReal NNReal
 
@@ -249,3 +803,5 @@ theorem nonempty_cdHaar : Nonempty CDHaar := by
     | succ Q => exact hqc P (Q + 1)
 
 end GlobalTheory.CompactDualExists
+end
+end

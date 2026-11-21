@@ -279,13 +279,6 @@ theorem exists_pic_linearEquiv_groupAlgebra_tensor :
   obtain ⟨M, hM⟩ := (pic_mapAlgebra_groupAlgebra_bijective A X).2 (Pic.mk _ N)
   exact ⟨M, Pic.mk_eq_mk_iff.mp hM.symm⟩
 
-theorem free_of_mapRingHom_mk_eq_one (ε : AddMonoidAlgebra A X →ₐ[A] A)
-    (h : Pic.mapRingHom (ε : AddMonoidAlgebra A X →+* A) (Pic.mk _ N) = 1) :
-    Module.Free (AddMonoidAlgebra A X) N := by
-  obtain ⟨M, hM⟩ := (pic_mapAlgebra_groupAlgebra_bijective A X).2 (Pic.mk _ N)
-  rw [← hM, ← Pic.mapRingHom_algebraMap, Pic.mapRingHom_mapRingHom, ε.comp_algebraMap,
-    Pic.mapRingHom_algebraMap, Pic.mapAlgebra_self_apply] at h
-  rw [← Pic.mk_eq_one_iff_free, ← hM, h, map_one]
 
 theorem subsingleton_pic_groupAlgebra (X : Type*) [AddCommGroup X] [Module.Free ℤ X]
     [Subsingleton (Pic A)] : Subsingleton (Pic (AddMonoidAlgebra A X)) :=

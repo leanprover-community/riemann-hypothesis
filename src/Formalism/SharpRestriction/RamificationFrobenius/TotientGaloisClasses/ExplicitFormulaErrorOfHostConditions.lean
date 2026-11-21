@@ -123,8 +123,6 @@ def Level.cyc (ψ : PChar) : Level := Level.ofSub (Subgroup.zpowers ψ.χ)
 theorem Level.mem_cyc (ψ : PChar) : ψ ∈ (Level.cyc ψ).KEPT :=
   (Level.mem_ofSub _ _).2 ⟨ψ.χ, Subgroup.mem_zpowers _, ψ.of_self⟩
 
-theorem zeroFreeOn_of_cyc {Q : PChar → Prop} (h : ∀ ψ, Q ψ → (Level.cyc ψ).ZeroFreeLevel) : ZeroFreeOn Q :=
-  zeroFreeOn_of_levels fun ψ hψ => ⟨_, Level.mem_cyc ψ, h ψ hψ⟩
 
 namespace Frame
 
@@ -152,16 +150,6 @@ structure EAtH (Λ : Level) {φ : Frame} (H : HostRaw φ) (TT : Finset φ.A) (x 
 
 def HType.level (T : HType) (o : ℕ) : Level := ⟨T.toKSet, o⟩
 
-theorem EAtH.explicit_formula_error_of_host_conditions {T : HType} {κ : HConst} {X x : ℝ} {φ : Frame} {H : HostRaw φ} (hr : T.InRange X x φ.e) (hC : 0 ≤ κ.C)
-    (h : HostConditions T κ X x H) {TT : Finset φ.A} (hs : φ.Shares TT (x ^ (-1 + T.eps))) :
-    EAtH (T.level φ.o) H TT x T.eps (κ.C * T.J) := by
-  refine ⟨rfl, h.kept, h.e, hs, h.c1, fun θ hθ N _ χ hχ => (h.b.2 θ hθ N χ hχ).trans ?_⟩
-  obtain ⟨h1, h2, -⟩ := hr
-  have hJ : (0 : ℝ) < T.J := by exact_mod_cast T.one_le_J
-  have h3 := Real.log_le_log (Real.rpow_pos_of_pos (by linarith) _) h2
-  rw [Real.log_rpow (by linarith), div_mul_eq_mul_div, one_mul, div_le_iff₀ hJ] at h3
-  rw [mul_assoc]
-  exact mul_le_mul_of_nonneg_left (by linarith) hC
 
 end Formalism.HC
 

@@ -184,13 +184,6 @@ lemma hk_cont {τ : ℂ} (hτ : τ.im ≠ 0) {n : ℤ} (hn : n ≠ 0) (m : ℤ) 
     refine Continuous.rpow c.norm (by fun_prop) (fun q => Or.inl ?_)
     exact norm_ne_zero_iff.mpr (pt_ne_zero hτ hn m q.2)
 
-lemma cell_cont {τ : ℂ} (hτ : τ.im ≠ 0) {p : ℤ × ℤ} (hp : p.2 ≠ 0) :
-    Continuous fun s : ℝ => hkCell τ s p := by
-  unfold hkCell
-  refine Continuous.sub ?_ ?_
-  · have h := (hk_cont hτ hp p.1).comp (Continuous.prodMk continuous_id (continuous_const (y := (0 : ℝ))))
-    simpa [Function.uncurry, Function.comp_def] using h
-  · exact intervalIntegral.continuous_parametric_intervalIntegral_of_continuous' (hk_cont hτ hp p.1) 0 1
 
 lemma cell_bound {τ : ℂ} (hτ : τ.im ≠ 0) {p : ℤ × ℤ} (hp : p.2 ≠ 0) {s : ℝ} (hs0 : 0 ≤ s)
     (hs1 : s ≤ 1) :
@@ -227,17 +220,6 @@ lemma cell_bound {τ : ℂ} (hτ : τ.im ≠ 0) {p : ℤ × ℤ} (hp : p.2 ≠ 0
 
 end Hk2
 
-theorem hecke_kernel_cell_bound : HkCellBound := by
-  intro τ hτ
-  refine ⟨fun p => 4 * (Hk2.kap τ ^ 2)⁻¹ * ((Hk2.kap τ * (|(p.1 : ℝ)| + |(p.2 : ℝ)|)) ^ 3)⁻¹, ?_,
-    fun s p hs0 hs1 hp => Hk2.cell_bound hτ hp hs0 hs1⟩
-  have h := Hk2.summ.mul_left (4 * (Hk2.kap τ ^ 2)⁻¹ * (Hk2.kap τ ^ 3)⁻¹)
-  refine h.congr (fun p => ?_)
-  rw [mul_pow, mul_inv]
-  ring
 
-theorem hecke_kernel_cell_continuous : HkCellCont := by
-  intro τ p hτ hp
-  exact ((Hk2.cell_cont hτ hp).tendsto 0).mono_left nhdsWithin_le_nhds
 
 end Formalism.L2.Th1.F

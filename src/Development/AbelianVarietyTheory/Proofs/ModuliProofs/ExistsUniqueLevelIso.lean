@@ -67,28 +67,7 @@ theorem level_lift (hG : IsSemiAbelian G) {P : CP G} {e : ℕ} {P₁ : CP (thick
   exact exists_even_lift (TowerEx.isNilpotent_max (e + 1)) _ (Ideal.Quotient.factor_surjective _) _ _
     (TowerEx.isGrpPullback_thickMap _ e G) hP hi h
 
-theorem hasSymTriv_iff (hG : IsSemiAbelian G) {P : CP G} {P₀ : CP (thickObj V 𝔪 0 G)} (h₀ : IsLevelCP 𝔪 0 P₀ P)
-    {i₀ : splitTorus (Lv 𝔪 0) X ⟶ thickObj V 𝔪 0 G} (F : FormalTorus 𝔪 i₀) :
-    F.HasSymTriv P ↔ ∃ σ : CubTriv P₀.c i₀, σ.Even := by
-  obtain ⟨i, hom, rfl, compat⟩ := F
-  refine Iff.trans ⟨fun ⟨σ, _⟩ => ⟨σ 0⟩, fun h => ?_⟩ (level_iff h₀ (hom 0))
-  have all : ∀ e, Nonempty (SymTriv P ((i e).left ≫ pr 𝔪 e G) (torus_w (i e))) := fun e => by
-    induction e with
-    | zero => exact h
-    | succ e ih =>
-      obtain ⟨P₁, h₁⟩ := exists_isLevelCP 𝔪 e P
-      obtain ⟨P₂, h₂⟩ := exists_isLevelCP 𝔪 (e + 1) P
-      exact (level_iff h₂ (hom _)).2 (level_lift hG h₁ h₂ (hom _) (hom _) (compat e) ((level_iff h₁ (hom _)).1 ih))
-  have ej : ∀ e, SplitTorus.bcMap (thickTrans V 𝔪 e) X ≫ (i (e + 1)).left ≫ pr 𝔪 (e + 1) G =
-      (i e).left ≫ pr 𝔪 e G := fun e => by
-    rw [← Category.assoc, torusCompat_iff.1 (compat e), Category.assoc, thickMap_pr]
-  exact ⟨fun e => (all e).some, fun e => symTriv_compat (all (e + 1)).some (all e).some (thickTrans_comp V 𝔪 e) (ej e)⟩
 
-theorem symTriv_clause_iff (hG : IsSemiAbelian G) {P : CP G} {P₀ : CP (thickObj V 𝔪 0 G)} (h₀ : IsLevelCP 𝔪 0 P₀ P)
-    (Q₀ : TQ (thickObj V 𝔪 0 G) X) :
-    (∀ F : FormalTorus 𝔪 Q₀.i, F.HasSymTriv P) ↔ ∃ σ : CubTriv P₀.c Q₀.i, σ.Even :=
-  ⟨fun h => (nonempty_formalTorus hG Q₀).elim fun F => (hasSymTriv_iff hG h₀ F).1 (h F),
-    fun h F => (hasSymTriv_iff hG h₀ F).2 h⟩
 
 omit [IsLocalRing V] in
 

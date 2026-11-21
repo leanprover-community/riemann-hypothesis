@@ -1,7 +1,169 @@
 import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.SliceTensors.PSatCoreB
-import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.SliceTensors.PSatCoreC
-import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.SliceTensors.PSatCoreD
+import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.SliceTensors.PSatDefs
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdelicGLIwasawaDecompositionStandardParabolic
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFixedOfMemISup
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsDiscreteUOfIsDiscrete
 
+section
+noncomputable section
+
+open NumberField IsDedekindDomain Formalism.L2.Host
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec
+
+namespace PositivityTheory.Rg.Rs.SatakeVectors.Core
+
+section Corner
+
+variable {R S : Type} [CommRing R] [CommRing S]
+
+theorem cc_cornerGL_leviEmb {c N : ℕ} (n : Fin c → ℕ) (h : ∑ i, n i = N) (s : R →ₙ+* S)
+    (l : ∀ i, GL (Fin (n i)) R) :
+    cornerGL N s (leviEmb R (stdBlocks n h) l) = leviEmb S (stdBlocks n h) (fun i => cornerGL (n i) s (l i)) := by
+  apply Units.ext
+  ext p q
+  obtain ⟨⟨a, i⟩, rfl⟩ := (stdBlocks n h).surjective p
+  obtain ⟨⟨b, j⟩, rfl⟩ := (stdBlocks n h).surjective q
+  by_cases hab : a = b
+  · subst hab
+    rw [leviEmb_apply_same]
+    by_cases hij : i = j
+    · subst hij
+      rw [GlobalTheory.IwasawaAdelic.cornerGL_entry_same, GlobalTheory.IwasawaAdelic.cornerGL_entry_same, leviEmb_apply_same]
+    · have hne : stdBlocks n h ⟨a, i⟩ ≠ stdBlocks n h ⟨a, j⟩ := fun he =>
+        hij (by simpa using (stdBlocks n h).injective he)
+      rw [GlobalTheory.IwasawaAdelic.cornerGL_entry_ne _ _ hne, GlobalTheory.IwasawaAdelic.cornerGL_entry_ne _ _ hij,
+        leviEmb_apply_same]
+  · have hne : stdBlocks n h ⟨a, i⟩ ≠ stdBlocks n h ⟨b, j⟩ := fun he =>
+      hab (congrArg Sigma.fst ((stdBlocks n h).injective he))
+    rw [leviEmb_apply_ne _ _ _ hab, GlobalTheory.IwasawaAdelic.cornerGL_entry_ne _ _ hne, leviEmb_apply_ne _ _ _ hab, map_zero]
+
+theorem cc_cornerGL_mem_unipRad {c N : ℕ} (n : Fin c → ℕ) (h : ∑ i, n i = N) (s : R →ₙ+* S) {u : GL (Fin N) R}
+    (hu : u ∈ unipRad R (stdBlocks n h)) : cornerGL N s u ∈ unipRad S (stdBlocks n h) := by
+  rw [mem_unipRad] at hu ⊢
+  obtain ⟨hP, hD⟩ := hu
+  refine ⟨mem_parab_iff.2 fun a b i j hlt => ?_, fun a i j => ?_⟩
+  · have hne : stdBlocks n h ⟨a, i⟩ ≠ stdBlocks n h ⟨b, j⟩ := fun he => by
+      have := congrArg Sigma.fst ((stdBlocks n h).injective he)
+      exact (ne_of_gt hlt) this
+    rw [GlobalTheory.IwasawaAdelic.cornerGL_entry_ne _ _ hne, mem_parab_iff.1 hP a b i j hlt, map_zero]
+  · by_cases hij : i = j
+    · subst hij
+      rw [GlobalTheory.IwasawaAdelic.cornerGL_entry_same, hD a i i]; simp
+    · have hne : stdBlocks n h ⟨a, i⟩ ≠ stdBlocks n h ⟨a, j⟩ := fun he => by
+        exact hij (by simpa using (stdBlocks n h).injective he)
+      rw [GlobalTheory.IwasawaAdelic.cornerGL_entry_ne _ _ hne, hD a i j, Matrix.one_apply_ne hij, Matrix.one_apply_ne hij,
+        map_zero]
+
+end Corner
+
+variable {E : Type} [Field E] [NumberField E] [IsTotallyComplex E]
+
+theorem iwasawa_inf {c N : ℕ} (n : Fin c → ℕ) (h : ∑ i, n i = N) (x : GA E N) :
+    ∃ u ∈ unipRad (Ad E) (stdBlocks n h), ∃ (m : ∀ i, GL (Fin (n i)) (Cinf E)) (k : Kinf E N),
+      x = u * leviEmb (Ad E) (stdBlocks n h) (fun i => infGL E (n i) (m i)) *
+        (infGL E N (Unitary.toUnits k) * finGL E N (Matrix.GeneralLinearGroup.map (pFin E) x)) := by
+  obtain ⟨b, hb, k, hy⟩ :=
+    GlobalTheory.IwasawaAdelic.exists_upper_mul_unitary_inf E N (Matrix.GeneralLinearGroup.map (pInf E) x)
+  have hbP := GlobalTheory.IwasawaAdelic.mem_parab_of_upper n h b hb
+  obtain ⟨u, hu, hbu⟩ := exists_levi_mul_unip (Cinf E) (stdBlocks n h) ⟨b, hbP⟩
+  set L := leviEmb (Cinf E) (stdBlocks n h) (leviProj (Cinf E) (stdBlocks n h) ⟨b, hbP⟩) with hL
+  have hN := leviEmb_mem_normalizer (Cinf E) (stdBlocks n h) (leviProj (Cinf E) (stdBlocks n h) ⟨b, hbP⟩)
+  have hu' : L * u * L⁻¹ ∈ unipRad (Cinf E) (stdBlocks n h) := (Subgroup.mem_normalizer_iff.1 hN u).1 hu
+  refine ⟨infGL E N (L * u * L⁻¹), GlobalTheory.IwasawaAdelic.infGL_mem_unipRad E n h _ hu',
+    fun i => leviProj (Cinf E) (stdBlocks n h) ⟨b, hbP⟩ i, k, ?_⟩
+  rw [← GlobalTheory.IwasawaAdelic.infGL_leviEmb, ← hL]
+  conv_lhs => rw [← infGL_mul_finGL x, hy]
+  simp only [Subtype.coe_mk] at hbu
+  rw [hbu]
+  simp only [map_mul, map_inv]
+  group
+
+theorem finGL_locGL_leviEmb {c N : ℕ} (n : Fin c → ℕ) (h : ∑ i, n i = N) (w : HeightOneSpectrum (𝓞 E))
+    (μ : ∀ i, GL (Fin (n i)) (w.adicCompletion E)) :
+    finGL E N (locGL E N w (leviEmb (w.adicCompletion E) (stdBlocks n h) μ)) =
+      leviEmb (Ad E) (stdBlocks n h) (fun i => finGL E (n i) (locGL E (n i) w (μ i))) := by
+  rw [locGL, cc_cornerGL_leviEmb, finGL, cc_cornerGL_leviEmb]
+  rfl
+
+theorem finGL_locGL_mem_unipRad {c N : ℕ} (n : Fin c → ℕ) (h : ∑ i, n i = N) (w : HeightOneSpectrum (𝓞 E))
+    {u : GL (Fin N) (w.adicCompletion E)} (hu : u ∈ unipRad (w.adicCompletion E) (stdBlocks n h)) :
+    finGL E N (locGL E N w u) ∈ unipRad (Ad E) (stdBlocks n h) := by
+  exact cc_cornerGL_mem_unipRad n h _ (cc_cornerGL_mem_unipRad n h _ hu)
+
+theorem commute_finGL_locGL {N : ℕ} (w : HeightOneSpectrum (𝓞 E)) {y : GA E N}
+    (hy : Matrix.GeneralLinearGroup.map (pLoc E w) (Matrix.GeneralLinearGroup.map (pFin E) y) = 1)
+    (g : GL (Fin N) (w.adicCompletion E)) :
+    y * finGL E N (locGL E N w g) = finGL E N (locGL E N w g) * y := by
+  have hc := LocSph.comm_locGL w _ hy g
+  conv_lhs => rw [← infGL_mul_finGL y]
+  conv_rhs => rw [← infGL_mul_finGL y]
+  rw [mul_assoc, ← (finGL E N).map_mul, hc, (finGL E N).map_mul, ← mul_assoc, infGL_comm, mul_assoc]
+
+theorem exists_split_at {N : ℕ} (w : HeightOneSpectrum (𝓞 E)) (y : GA E N) :
+    ∃ (y₀ : GA E N) (g : GL (Fin N) (w.adicCompletion E)),
+      Matrix.GeneralLinearGroup.map (pLoc E w) (Matrix.GeneralLinearGroup.map (pFin E) y₀) = 1 ∧
+        y = y₀ * finGL E N (locGL E N w g) := by
+  set g := Matrix.GeneralLinearGroup.map (pLoc E w) (Matrix.GeneralLinearGroup.map (pFin E) y)
+  refine ⟨y * (finGL E N (locGL E N w g))⁻¹, g, ?_, by group⟩
+  rw [map_mul, map_mul, map_inv, map_inv, pFin_finGL, pLoc_locGL, mul_inv_cancel]
+
+end PositivityTheory.Rg.Rs.SatakeVectors.Core
+
+end
+end
+
+section
+noncomputable section
+
+open NumberField IsDedekindDomain Formalism.UG GlobalTheory.PRep GlobalTheory.LFun GlobalTheory.SmGL GlobalTheory.CuspRep
+open scoped TensorProduct
+
+namespace PositivityTheory.Rg.Rs.SatakeVectors.Core
+
+variable {E : Type} [Field E] [NumberField E] [IsTotallyComplex E]
+
+theorem heckeVec_apply {N : ℕ} (w : HeightOneSpectrum (𝓞 E)) {F : Sm E N}
+    {f : GL (Fin N) (w.adicCompletion E) → ℂ} (hf : f ∈ Hecke ℂ (KGL w N)) (y : GA E N) :
+    (heckeVec ((finRep E N).comp (locGL E N w)) (KGL w N) f F).1 y =
+      heckeVec (rightReg ℂ _ ℂ) (KGL w N) f (fun g => F.1 (y * finGL E N (locGL E N w g))) 1 := by
+  have hK := Final.GLintComm E w N
+  rw [heckeVec, heckeVec]
+  have e1 := ((LinearMap.proj (R := ℂ) (φ := fun _ : GA E N => ℂ) y).comp (Sm E N).subtype).toAddMonoidHom.map_finsum
+    (finite_heckeVec hK hf ((finRep E N).comp (locGL E N w)) F)
+  have e2 := (LinearMap.proj (R := ℂ) (φ := fun _ : GL (Fin N) (w.adicCompletion E) => ℂ)
+    (1 : GL (Fin N) (w.adicCompletion E))).toAddMonoidHom.map_finsum
+    (finite_heckeVec hK hf (rightReg ℂ _ ℂ) (fun g => F.1 (y * finGL E N (locGL E N w g))))
+  refine e1.trans (Eq.trans (finsum_congr fun c => ?_) e2.symm)
+  show f c.out • F.1 (y * finGL E N (locGL E N w c.out)) = f c.out • F.1 (y * finGL E N (locGL E N w (1 * c.out)))
+  rw [one_mul]
+
+def evAt {m : ℕ} (U : Submodule ℂ (Sm E m)) (x : GA E m) : U →ₗ[ℂ] ℂ :=
+  LinearMap.proj x ∘ₗ (Sm E m).subtype ∘ₗ U.subtype
+
+@[simp] theorem evAt_apply {m : ℕ} (U : Submodule ℂ (Sm E m)) (x : GA E m) (ψ : U) : evAt U x ψ = ψ.1.1 x := rfl
+
+theorem exists_tensor {c : ℕ} {n : Fin c → ℕ} (U : ∀ i, Submodule ℂ (Sm E (n i)))
+    {Φ : (∀ i, GA E (n i)) → ℂ} (hΦ : Φ ∈ GlobalTheory.BCWords.tensorSp U) :
+    ∃ v : ⨂[ℂ] i, U i, ∀ m, Φ m = evT (fun i => evAt (U i) (m i)) v := by
+  induction hΦ using Submodule.span_induction with
+  | mem x hx =>
+    obtain ⟨φ, rfl⟩ := hx
+    exact ⟨PiTensorProduct.tprod ℂ φ, fun m => by rw [evT_tprod]; rfl⟩
+  | zero => exact ⟨0, fun m => by simp⟩
+  | add x y _ _ hx hy =>
+    obtain ⟨v, hv⟩ := hx
+    obtain ⟨v', hv'⟩ := hy
+    exact ⟨v + v', fun m => by rw [Pi.add_apply, hv, hv', map_add]⟩
+  | smul a x _ hx =>
+    obtain ⟨v, hv⟩ := hx
+    exact ⟨a • v, fun m => by rw [Pi.smul_apply, hv, map_smul, smul_eq_mul]⟩
+
+end PositivityTheory.Rg.Rs.SatakeVectors.Core
+
+end
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Formalism.L2.Host
@@ -130,4 +292,5 @@ theorem isSatVecGL_of_ind {c N : ℕ} {n : Fin c → ℕ} (h : ∑ i, n i = N) {
 
 end PositivityTheory.Rg.Rs.SatakeVectors
 
+end
 end

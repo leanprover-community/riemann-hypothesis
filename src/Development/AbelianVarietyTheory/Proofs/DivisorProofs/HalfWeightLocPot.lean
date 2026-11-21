@@ -92,13 +92,6 @@ theorem om_pos : IsPosPot (ProjAn.finAtlas ℤ σ₀ N) (om N) :=
 theorem fs_pot : IsPotential (ProjAn.finAtlas ℤ σ₀ N) ((hermitianTwistingSheaf ℤ N).φ σ₀).locPot :=
   ((hermitianTwistingSheaf ℤ N).isSmooth (rd N)).isPotential (isAlg N)
 
-theorem om_sameForm : SameForm (ProjAn.finAtlas ℤ σ₀ N) (om N) ((hermitianTwistingSheaf ℤ N).φ σ₀).locPot :=
-  Weight.sameForm_of_eq _ (isAlg N) (fs_pot N) fun x =>
-    ⟨fun _ => _, mem_ptsIn.2 (Set.mem_iInter.2 fun _ => mem_ptsIn.1 (((hermitianTwistingSheaf ℤ N).φ σ₀).locPot.mem_U x)), fun z => by
-      refine (congrArg (· / 2) (Weight.pull_φ _ _ _ _ _)).trans ?_
-      have e : Points.PtsOver.map (𝟙 _) (Category.id_comp (PSpace.str ℤ N)) _ z = z := Subtype.ext (Category.comp_id _)
-      erw [e]
-      rfl⟩
 
 def man : Man N where
   n := 0
@@ -115,9 +108,6 @@ def man : Man N where
   κ := 1
   κ_pos := one_pos
 
-theorem man_int (P : Fin N → (man N).Pot) (u : (man N).Fun) :
-    (man N).int P u = mInt (ProjAn.finAtlas ℤ σ₀ N) (fun i => P i (0 : Fin 1)) (u (0 : Fin 1)) :=
-  (one_mul _).trans (Fin.sum_univ_one _)
 
 def pts (σ : ℤ →+* ℂ) : CxPts (PSpace.str ℤ N) σ → (man N).X 0 :=
   cast (congrArg (CxPts (PSpace.str ℤ N)) (Subsingleton.elim σ σ₀))
@@ -132,52 +122,6 @@ def calc₀ : Calc (man N) :=
 
 def cls₀ (i : Unit) : (calc₀ N).V := InhabCalc.cls (man N) _ (fun _ _ => fs_pot N) i
 
-theorem chernOn : (calc₀ N).ChernOn (fun _ => 0) (pts N) 1 (fun _ : Unit => hermitianTwistingSheaf ℤ N) (cls₀ N) := by
-  intro u hs hu hc n f hf
-  have := (isArithVar_int N).compactSpace σ₀
-  have := CxPts.t2Space_cxPts_of_isProjOver σ₀ (isArithVar_int N).isProjOver
-  have := CxPts.secondCountableTopology_of_isProjOver σ₀ (isArithVar_int N).isProjOver
-  rw [one_mul, man_int, chInt, finsum_eq_single _ σ₀ fun σ h => absurd (Subsingleton.elim _ _) h]
-  refine (ChernMA.chernInt_eq_mInt (HermLB.cInf _ _) (isAlg N) (projLine_continuous_of_smooth _ (hf 0))).trans ?_
-  refine SameForm.mInt_eq (fun _ => Weight.sameForm_of_eq _ (isAlg N) ((calc₀ N).firstChern_isPotential _ 0) ?_) _
-  refine (halfWeight_comb (σ := σ₀) (g := fun o : Option Unit => o.elim (fun _ z => u 0 z)
-    fun _ => ((hermitianTwistingSheaf ℤ N).φ σ₀).locPot.φ) (fun o => ?_) n).congr fun x z => ?_
-  · cases o with
-    | none => exact (halfWeight_fnB _ hu hc).congr fun x z => mul_div_cancel_left₀ _ two_ne_zero
-    | some i => exact halfWeight_locPot _
-  · have e : (InhabCalc.smProj (man N) u : (man N).Fun) = u := InhabCalc.smProj_of_smooth _ hs
-    rw [Fintype.sum_option, Fintype.sum_unique, Fintype.sum_unique]
-    change _ = ∑ i : Unit, ((n (some ()) : ℝ) * @Pi.single Unit (fun _ => ℝ) _ (fun _ _ => Classical.propDecidable _) () 1 i + (n none : ℝ) * 0) *
-      ((hermitianTwistingSheaf ℤ N).φ σ₀).locPot.φ x z + ((n (some ()) : ℝ) * 0 +
-        (n none : ℝ) * (InhabCalc.smProj (man N) u : (man N).Fun) 0 z)
-    rw [e]
-    simp [add_comm]
 
-theorem reads_proj_of (N : ℕ) (H : (calc₀ N).ChernOn (fun _ => 0) (pts N) 1 (fun _ : Unit => hermitianTwistingSheaf ℤ N) (cls₀ N) →
-      ∃ (K : Calc (man N)) (v : Unit → K.V),
-        (∀ i σ, LeviEq ((man N).A σ) (K.c1 (v i) σ) ((calc₀ N).c1 (cls₀ N i) σ)) ∧
-        K.ChernOn (fun _ => 0) (pts N) 1 (fun _ : Unit => hermitianTwistingSheaf ℤ N) v ∧
-        @Calc.NumOn N (man N) ℤ _ _ (PSpace.str ℤ N) K (fun _ => 0) (pts N) 1 Unit _ (fun _ => hermitianTwistingSheaf ℤ N) v
-          (isArithVar_int N).isIntegral) :
-    ∃ (M : Man N) (K : Calc M) (ε : (ℤ →+* ℂ) → Fin (M.n + 1))
-    (π : ∀ σ, CxPts (PSpace.str ℤ N) σ → M.X (ε σ)) (v : Unit → K.V), (∀ σ, Function.Injective (π σ)) ∧
-    0 < M.int (fun _ => K.c1 (v ())) (fun _ _ => 1) ∧
-    @Calc.Reads N M ℤ _ _ (PSpace.str ℤ N) K ε π 1 Unit _ (fun _ => GlobalTheory.ProjSpace.hermitianTwistingSheaf ℤ N) v
-      (GlobalTheory.ProjSpace.isArithVar_int N).isIntegral := by
-  obtain ⟨K, v, h₁, h₂, h₃⟩ := H (chernOn N)
-  refine ⟨man N, K, fun _ => 0, pts N, v, fun σ => ?_, ?_, isArithVar_int N, one_pos, fun σ => ?_,
-    fun j => ⟨σ₀, Subsingleton.elim (α := Fin 1) _ _⟩, fun u hu σ => ?_, h₂, h₃⟩
-  · obtain rfl : σ = σ₀ := Subsingleton.elim _ _
-    exact Function.injective_id
-  · refine lt_of_lt_of_eq (InhabCalc.int_Om_pos (man N) ⟨0, inferInstance⟩) ?_
-    rw [man_int, man_int]
-    refine (SameForm.mInt_eq (fun _ => om_sameForm N) _).trans (Eq.symm ?_)
-    refine (LeviOnly.mInt_eq_of_leviEq N ((man N).X 0) ((man N).A 0) _ _ _ (fun _ => K.firstChern_isPotential _ 0)
-      (fun _ => (calc₀ N).firstChern_isPotential (cls₀ N ()) 0) (fun _ => h₁ () 0)).1.trans ?_
-    exact InhabCalc.mInt_congr_φ _ (fun _ => InhabCalc.first_chern_class_potential (man N) _ (fun _ _ => fs_pot N) () 0) _
-  · obtain rfl : σ = σ₀ := Subsingleton.elim _ _
-    exact ⟨continuous_id, Function.surjective_id⟩
-  · obtain rfl : σ = σ₀ := Subsingleton.elim _ _
-    exact (smooth_iff N _).1 (hu 0)
 
 end GlobalTheory.Mean4O.ReadsProj

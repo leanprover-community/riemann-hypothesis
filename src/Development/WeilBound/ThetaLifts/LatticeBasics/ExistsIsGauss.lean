@@ -1,10 +1,432 @@
 import Mathlib
 import Development.WeilBound.ThetaLifts.LatticeBasics.SchToPol
-import Development.WeilBound.ThetaLifts.LatticeBasics.DenseG
-import Development.WeilBound.ThetaLifts.LatticeBasics.DenseM
+import Development.WeilBound.ThetaLifts.SchwartzMoments.EqZeroOfMoments
+import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.MetaplecticRepresentation
+import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 import Development.WeilBound.ThetaLifts.ConeHypotheses.PureEqPureA
 import Development.WeilBound.ThetaLifts.LatticeBasics.ExistsRealStructure
 
+section
+noncomputable section
+
+namespace GlobalTheory.ThK.Dbl.Dense
+
+open PositivityTheory.ThKOwn (polE eq_zero_PG)
+
+theorem exp_tg {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {r : E → ℝ}
+    (hr : r.HasTemperateGrowth) (c : ℂ) (s : ℝ) :
+    (fun y => c * Complex.exp ((s : ℂ) * Complex.I * (r y : ℂ))).HasTemperateGrowth := by
+  have hlin : (fun y => (s / (2 * Real.pi)) * r y).HasTemperateGrowth :=
+    (Function.HasTemperateGrowth.const _).mul hr
+  have hc := GlobalTheory.Published.Metaplectic.hasTemperateGrowth_eChar.comp hlin
+  have h : (fun y => c * Complex.exp ((s : ℂ) * Complex.I * (r y : ℂ))) =
+      fun y => c * ((GlobalTheory.Published.Metaplectic.eChar : ℝ → ℂ) ∘ fun y => (s / (2 * Real.pi)) * r y) y := by
+    funext y
+    have hpi : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
+    simp only [Function.comp, GlobalTheory.Published.Metaplectic.eChar_apply]
+    congr 2
+    push_cast
+    field_simp
+  rw [h]
+  exact (Function.HasTemperateGrowth.const c).mul hc
+
+variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
+
+theorem quad_tg {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] (L : E ≃L[ℝ] V)
+    (Q : V →ₗ[ℝ] V →ₗ[ℝ] ℝ) : (fun x => Q (L x) (L x)).HasTemperateGrowth := by
+  have hL : (fun x => L x).HasTemperateGrowth := (L : E →L[ℝ] V).hasTemperateGrowth
+  exact (Q.toContinuousBilinearMap).bilinear_hasTemperateGrowth hL hL
+
+theorem lower_bound {n : ℕ} (L : EuclideanSpace ℝ (Fin n) ≃L[ℝ] V) (Q : V →ₗ[ℝ] V →ₗ[ℝ] ℝ)
+    (hpos : ∀ x, x ≠ 0 → 0 < Q x x) :
+    ∃ w : ℝ, 0 < w ∧ ∀ x, w * ‖x‖ ^ 2 ≤ Q (L x) (L x) := by
+  set q : EuclideanSpace ℝ (Fin n) → ℝ := fun x => Q (L x) (L x) with hqdef
+  have hq : Continuous q := (quad_tg L Q).1.continuous
+  have hscale : ∀ (t : ℝ) x, q (t • x) = t ^ 2 * q x := by
+    intro t x
+    simp only [hqdef, map_smul, LinearMap.smul_apply, smul_eq_mul]
+    ring
+  have hq0 : q 0 = 0 := by simp [hqdef]
+  by_cases hne : (Metric.sphere (0 : EuclideanSpace ℝ (Fin n)) 1).Nonempty
+  · obtain ⟨u, hu, hmin⟩ := (isCompact_sphere (0 : EuclideanSpace ℝ (Fin n)) 1).exists_isMinOn hne
+      hq.continuousOn
+    have hu0 : u ≠ 0 := by
+      rintro rfl
+      simp at hu
+    have hw : 0 < q u := hpos _ (by simpa using hu0)
+    refine ⟨q u, hw, fun x => ?_⟩
+    by_cases hx : x = 0
+    · subst hx
+      show _ ≤ q 0
+      simp [hq0]
+    have hn : ‖x‖ ≠ 0 := norm_ne_zero_iff.2 hx
+    have hm : (‖x‖⁻¹ • x) ∈ Metric.sphere (0 : EuclideanSpace ℝ (Fin n)) 1 := by
+      simp [norm_smul, hn]
+    have h1 : q u ≤ q (‖x‖⁻¹ • x) := hmin hm
+    have h2 : q x = ‖x‖ ^ 2 * q (‖x‖⁻¹ • x) := by
+      rw [hscale]
+      field_simp
+    show _ ≤ q x
+    rw [h2, mul_comm]
+    exact mul_le_mul_of_nonneg_left h1 (by positivity)
+  · refine ⟨1, one_pos, fun x => ?_⟩
+    have hx : x = 0 := by
+      by_contra hx
+      exact hne ⟨‖x‖⁻¹ • x, by simp [norm_smul, norm_ne_zero_iff.2 hx]⟩
+    subst hx
+    show _ ≤ q 0
+    simp [hq0]
+
+theorem poly_mem {n : ℕ} (L : EuclideanSpace ℝ (Fin n) ≃L[ℝ] V)
+    (N : Submodule ℂ (SchwartzMap V ℂ))
+    (hmul : ∀ (l : V →ₗ[ℝ] ℝ) (f f₁ : SchwartzMap V ℂ), f ∈ N → (∀ x, f₁ x = (l x : ℂ) * f x) → f₁ ∈ N)
+    (f₀ : SchwartzMap V ℂ) (hf₀ : f₀ ∈ N) (P : MvPolynomial (Fin n) ℂ) :
+    ∃ F ∈ N, ∀ y, F y = polE P (L.symm y) * f₀ y := by
+  induction P using MvPolynomial.induction_on with
+  | C z => exact ⟨z • f₀, N.smul_mem z hf₀, fun y => by simp [polE]⟩
+  | add P R hP hR =>
+    obtain ⟨F, hF, hFy⟩ := hP
+    obtain ⟨G, hG, hGy⟩ := hR
+    refine ⟨F + G, N.add_mem hF hG, fun y => ?_⟩
+    have h : polE (P + R) (L.symm y) = polE P (L.symm y) + polE R (L.symm y) := by simp [polE]
+    rw [h, add_mul, SchwartzMap.add_apply, hFy, hGy]
+  | mul_X P p hP =>
+    obtain ⟨F, hF, hFy⟩ := hP
+    let l : V →L[ℝ] ℝ := (EuclideanSpace.proj (𝕜 := ℝ) p).comp (L.symm : V →L[ℝ] EuclideanSpace ℝ (Fin n))
+    have hg : (fun y => ((l y : ℝ) : ℂ)).HasTemperateGrowth :=
+      (Complex.ofRealCLM.comp l).hasTemperateGrowth
+    refine ⟨SchwartzMap.smulLeftCLM ℂ (fun y => ((l y : ℝ) : ℂ)) F,
+      hmul (l : V →ₗ[ℝ] ℝ) F _ hF (fun y => ?_), fun y => ?_⟩
+    · rw [SchwartzMap.smulLeftCLM_apply_apply hg, smul_eq_mul]
+      rfl
+    · rw [SchwartzMap.smulLeftCLM_apply_apply hg, smul_eq_mul, hFy]
+      have h : polE (P * MvPolynomial.X p) (L.symm y) = polE P (L.symm y) * ((l y : ℝ) : ℂ) := by
+        simp [polE, l]
+      rw [h]
+      ring
+
+theorem schwartz_functional_eq_zero_of_dense (Q Q' : V →ₗ[ℝ] V →ₗ[ℝ] ℝ) (c₀ : ℂ)
+    (f₀ : SchwartzMap V ℂ) (hc : c₀ ≠ 0) (hpos : ∀ x, x ≠ 0 → 0 < Q x x)
+    (hf : ∀ x, f₀ x = c₀ * Complex.exp (-(Q x x : ℂ) - Complex.I * (Q' x x : ℂ)))
+    (N : Submodule ℂ (SchwartzMap V ℂ)) (hN : f₀ ∈ N)
+    (hmul : ∀ (l : V →ₗ[ℝ] ℝ) (f f₁ : SchwartzMap V ℂ), f ∈ N → (∀ x, f₁ x = (l x : ℂ) * f x) → f₁ ∈ N)
+    (T : SchwartzMap V ℂ →L[ℂ] ℂ) (hT : ∀ f ∈ N, T f = 0) : T = 0 := by
+  let L : EuclideanSpace ℝ (Fin (Module.finrank ℝ V)) ≃L[ℝ] V := (toEuclidean (E := V)).symm
+  let q : EuclideanSpace ℝ (Fin (Module.finrank ℝ V)) → ℝ := fun x => Q (L x) (L x)
+  let r : EuclideanSpace ℝ (Fin (Module.finrank ℝ V)) → ℝ := fun x => Q' (L x) (L x)
+  have hq : q.HasTemperateGrowth := quad_tg L Q
+  have hr : r.HasTemperateGrowth := quad_tg L Q'
+  obtain ⟨w, hw, hlow⟩ := lower_bound L Q hpos
+  let g : EuclideanSpace ℝ (Fin (Module.finrank ℝ V)) → ℂ :=
+    fun y => c₀ * Complex.exp (((-1 : ℝ) : ℂ) * Complex.I * (r y : ℂ))
+  let g' : EuclideanSpace ℝ (Fin (Module.finrank ℝ V)) → ℂ :=
+    fun y => c₀⁻¹ * Complex.exp (((1 : ℝ) : ℂ) * Complex.I * (r y : ℂ))
+  have hg : g.HasTemperateGrowth := exp_tg hr c₀ (-1)
+  have hg' : g'.HasTemperateGrowth := exp_tg hr c₀⁻¹ 1
+  let A : SchwartzMap (EuclideanSpace ℝ (Fin (Module.finrank ℝ V))) ℂ →L[ℂ] SchwartzMap V ℂ :=
+    SchwartzMap.compCLMOfContinuousLinearEquiv ℂ L.symm
+  let B : SchwartzMap V ℂ →L[ℂ] SchwartzMap (EuclideanSpace ℝ (Fin (Module.finrank ℝ V))) ℂ :=
+    SchwartzMap.compCLMOfContinuousLinearEquiv ℂ L
+  let M := SchwartzMap.smulLeftCLM ℂ g
+  let M' := SchwartzMap.smulLeftCLM ℂ g'
+  have hS : ∀ f, T (A (M f)) = 0 := by
+    have hext := eq_zero_PG q hq w hw hlow (T ∘L A ∘L M)
+      (fun f hf' => by
+        obtain ⟨P, hP⟩ := hf'
+        obtain ⟨F, hFN, hF⟩ := poly_mem L N hmul f₀ hN P
+        have hAM : A (M f) = F := by
+          ext y
+          have hy : (L (L.symm y)) = y := L.apply_symm_apply y
+          simp only [A, SchwartzMap.compCLMOfContinuousLinearEquiv_apply, Function.comp,
+            M, SchwartzMap.smulLeftCLM_apply_apply hg, smul_eq_mul, hP, hF, hf]
+          simp only [g, q, r, hy]
+          push_cast
+          rw [show -(Q y y : ℂ) - Complex.I * (Q' y y : ℂ) =
+            -1 * Complex.I * (Q' y y : ℂ) + -(Q y y : ℂ) by ring, Complex.exp_add]
+          ring
+        show T (A (M f)) = 0
+        rw [hAM]
+        exact hT F hFN)
+    exact fun f => DFunLike.congr_fun hext f
+  ext h
+  have hinv : A (M (M' (B h))) = h := by
+    ext y
+    simp only [A, B, SchwartzMap.compCLMOfContinuousLinearEquiv_apply, Function.comp,
+      M, M', SchwartzMap.smulLeftCLM_apply_apply hg, SchwartzMap.smulLeftCLM_apply_apply hg',
+      smul_eq_mul, L.apply_symm_apply]
+    simp only [g, g']
+    rw [← mul_assoc, mul_mul_mul_comm, ← Complex.exp_add]
+    push_cast
+    simp [hc]
+  rw [← hinv]
+  simpa using hS _
+
+end GlobalTheory.ThK.Dbl.Dense
+
+end
+end
+
+section
+noncomputable section
+
+namespace GlobalTheory.ThK.Dbl.Dense
+
+variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
+
+theorem exists_gauss (Q Q' : V →ₗ[ℝ] V →ₗ[ℝ] ℝ) (hpos : ∀ x, x ≠ 0 → 0 < Q x x) :
+    ∃ f : SchwartzMap V ℂ, ∀ x, f x = 1 * Complex.exp (-(Q x x : ℂ) - Complex.I * (Q' x x : ℂ)) := by
+  let L : EuclideanSpace ℝ (Fin (Module.finrank ℝ V)) ≃L[ℝ] V := (toEuclidean (E := V)).symm
+  obtain ⟨w, hw, hlow⟩ := lower_bound L Q hpos
+  have hq : (fun x => -(Q (L x) (L x) : ℂ) - Complex.I * (Q' (L x) (L x) : ℂ)).HasTemperateGrowth :=
+    (Complex.ofRealCLM.hasTemperateGrowth.comp (quad_tg L Q)).neg.sub
+      ((Function.HasTemperateGrowth.const _).mul (Complex.ofRealCLM.hasTemperateGrowth.comp (quad_tg L Q')))
+  let g := GlobalTheory.CompanionTheory.OM.GaussSch.cexpSchwartz hq hw fun x => by
+    simpa using hlow x
+  refine ⟨SchwartzMap.compCLMOfContinuousLinearEquiv ℂ L.symm g, fun x => ?_⟩
+  change Complex.exp (-(Q (L (L.symm x)) (L (L.symm x)) : ℂ) - Complex.I * (Q' (L (L.symm x)) (L (L.symm x)) : ℂ)) = _
+  rw [L.apply_symm_apply, one_mul]
+
+theorem hasFDerivAt_quad (Q : V →ₗ[ℝ] V →ₗ[ℝ] ℝ) (hs : ∀ x y, Q x y = Q y x) (x a : V) :
+    HasDerivAt (fun t : ℝ => (Q (x + t • a) (x + t • a) : ℂ)) (2 * Q x a) 0 := by
+  have e : (fun t : ℝ => Q (x + t • a) (x + t • a)) = fun t => Q x x + t * (2 * Q x a) + t * (t * Q a a) := by
+    funext t
+    simp only [map_add, map_smul, LinearMap.add_apply, LinearMap.smul_apply, smul_eq_mul, hs a x]
+    ring
+  have h : HasDerivAt (fun t : ℝ => Q (x + t • a) (x + t • a)) (2 * Q x a) 0 := by
+    rw [e]
+    have h1 := ((hasDerivAt_id (0 : ℝ)).mul_const (2 * Q x a)).const_add (Q x x)
+    have h2 := (hasDerivAt_id (0 : ℝ)).mul ((hasDerivAt_id (0 : ℝ)).mul_const (Q a a))
+    exact (h1.add h2).congr_deriv (by simp)
+  simpa using h.ofReal_comp
+
+theorem fderiv_gauss {Q Q' : V →ₗ[ℝ] V →ₗ[ℝ] ℝ} (hs : ∀ x y, Q x y = Q y x) (hs' : ∀ x y, Q' x y = Q' y x)
+    {f : SchwartzMap V ℂ} (hf : ∀ x, f x = 1 * Complex.exp (-(Q x x : ℂ) - Complex.I * (Q' x x : ℂ))) (x a : V) :
+    fderiv ℝ f x a = -(2 * Q x a + Complex.I * (2 * Q' x a)) * f x := by
+  have h0 : HasDerivAt (fun t : ℝ => x + t • a) a 0 := by
+    simpa using ((hasDerivAt_id (0 : ℝ)).smul_const a).const_add x
+  have h1 : HasDerivAt (fun t : ℝ => f (x + t • a)) (fderiv ℝ f x a) 0 := by
+    have := (f.hasFDerivAt (x + (0 : ℝ) • a)).comp_hasDerivAt (0 : ℝ) h0
+    simpa [Function.comp_def] using this
+  have h2 := ((hasFDerivAt_quad Q hs x a).neg.sub ((hasFDerivAt_quad Q' hs' x a).const_mul Complex.I)).cexp
+  simp only [hf, one_mul] at h1 ⊢
+  rw [h1.unique h2]
+  simp only [Pi.sub_apply, Pi.neg_apply, zero_smul, add_zero]
+  ring
+
+def om (T : V →ₗ[ℝ] V →ₗ[ℝ] ℝ) (p q : V × V) : ℝ := T p.1 q.2 - T q.1 p.2
+
+theorem exists_vacuum (T : V →ₗ[ℝ] V →ₗ[ℝ] ℝ) (hT : ∀ x y, T x y = T y x) (J : V × V →ₗ[ℝ] V × V)
+    (h1 : ∀ p q, om T (J p) q = -om T p (J q)) (h2 : ∀ p q, om T (J p) (J q) = om T p q)
+    (h3 : ∀ p, p ≠ 0 → 0 < om T p (J p)) :
+    ∃ (Q Q' : V →ₗ[ℝ] V →ₗ[ℝ] ℝ) (f : SchwartzMap V ℂ), (∀ x, x ≠ 0 → 0 < Q x x) ∧
+      (∀ x, f x = 1 * Complex.exp (-(Q x x : ℂ) - Complex.I * (Q' x x : ℂ))) ∧
+      ∀ p x, fderiv ℝ f x (J p).1 + (-(2 * Real.pi * Complex.I) * (T x (J p).2 : ℂ)) * f x =
+        Complex.I * (fderiv ℝ f x p.1 + (-(2 * Real.pi * Complex.I) * (T x p.2 : ℂ)) * f x) := by
+  let K : V →ₗ[ℝ] V := LinearMap.fst ℝ V V ∘ₗ J ∘ₗ LinearMap.inr ℝ V V
+  have hK : ∀ b, b ≠ 0 → T (K b) b < 0 := fun b hb => by
+    have := h3 (0, b) fun h => hb (congrArg Prod.snd h)
+    simpa [om, K] using this
+  have inj : Function.Injective K := (injective_iff_map_eq_zero K).2 fun b h => by
+    by_contra hb
+    simpa [h] using hK b hb
+  let e := LinearEquiv.ofInjectiveEndo K inj
+  let c : V →ₗ[ℝ] V := -e.symm.toLinearMap
+  have hc : ∀ y, (J (0, c y)).1 = -y := fun y => by
+    change K (-e.symm y) = _
+    rw [map_neg]
+    exact congrArg _ (e.apply_symm_apply y)
+  let c' : V →ₗ[ℝ] V := LinearMap.snd ℝ V V ∘ₗ J ∘ₗ LinearMap.inr ℝ V V ∘ₗ c
+  have hc' : ∀ y, (J (0, c y)).2 = c' y := fun _ => rfl
+  let Q : V →ₗ[ℝ] V →ₗ[ℝ] ℝ := Real.pi • (T ∘ₗ c)
+  let Q' : V →ₗ[ℝ] V →ₗ[ℝ] ℝ := Real.pi • (T ∘ₗ c')
+  have hQ : ∀ x y, Q x y = Real.pi * T y (c x) := fun x y => by rw [hT]; rfl
+  have hQ' : ∀ x y, Q' x y = Real.pi * T y (c' x) := fun x y => by rw [hT]; rfl
+  have s1 : ∀ x y, Q x y = Q y x := fun x y => by
+    have := h1 (0, c x) (0, c y)
+    simp only [om, hc, hc', map_neg, map_zero, LinearMap.neg_apply, LinearMap.zero_apply] at this
+    rw [hQ, hQ]
+    congr 1
+    linarith
+  have s2 : ∀ x y, Q' x y = Q' y x := fun x y => by
+    have := h2 (0, c x) (0, c y)
+    simp only [om, hc, hc', map_neg, map_zero, LinearMap.neg_apply, LinearMap.zero_apply] at this
+    rw [hQ', hQ']
+    congr 1
+    linarith
+  have pos : ∀ x, x ≠ 0 → 0 < Q x x := fun x hx => by
+    have := h3 (0, c x) fun h => hx (by
+      have := hc x
+      rw [h, map_zero] at this
+      exact neg_eq_zero.1 this.symm)
+    simp only [om, hc, hc', map_neg, map_zero, LinearMap.neg_apply, LinearMap.zero_apply] at this
+    rw [hQ]
+    exact mul_pos Real.pi_pos (by linarith)
+  obtain ⟨f, hf⟩ := exists_gauss Q Q' pos
+  refine ⟨Q, Q', f, pos, hf, fun p x => ?_⟩
+  have a1 := h1 p (0, c x)
+  have a2 := h2 p (0, c x)
+  simp only [om, hc, hc', map_neg, map_zero, LinearMap.neg_apply, LinearMap.zero_apply, sub_zero] at a1 a2
+  rw [fderiv_gauss s1 s2 hf, fderiv_gauss s1 s2 hf, hQ, hQ, hQ', hQ', a1,
+    show T (J p).1 (c' x) = T p.1 (c x) - T x (J p).2 by linarith]
+  push_cast
+  linear_combination ((2 * Real.pi) * f x * (T p.1 (c' x) + T x p.2 : ℂ)) * Complex.I_mul_I
+
+end GlobalTheory.ThK.Dbl.Dense
+
+end
+end
+
+section
+noncomputable section
+
+namespace GlobalTheory.ThK.Dbl.Dense
+
+open Matrix GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open scoped ComplexOrder Kronecker
+
+variable {n d : ℕ}
+
+def hf (A : Matrix (Fin n) (Fin n) ℂ) (C : Matrix (Fin d) (Fin d) ℂ) (x y : Matrix (Fin n) (Fin d) ℂ) : ℂ :=
+  trace (xᵀ * A * y.map star * Cᵀ)
+
+def cs (θ : Matrix (Fin n) (Fin n) ℂ) (θ' : Matrix (Fin d) (Fin d) ℂ) :
+    Matrix (Fin n) (Fin d) ℂ →ₗ[ℝ] Matrix (Fin n) (Fin d) ℂ where
+  toFun x := Complex.I • (θ * x * θ'ᵀ)
+  map_add' x y := by rw [Matrix.mul_add, Matrix.add_mul, smul_add]
+  map_smul' t x := by
+    simp only [Matrix.mul_smul, Matrix.smul_mul, RingHom.id_apply]
+    rw [smul_comm]
+
+theorem map_star_mul {a b c : ℕ} (x : Matrix (Fin a) (Fin b) ℂ) (y : Matrix (Fin b) (Fin c) ℂ) :
+    (x * y).map star = x.map star * y.map star := by
+  ext i j
+  simp only [Matrix.map_apply, Matrix.mul_apply, star_sum, star_mul']
+
+private theorem map_star_smul_matrix {a b : ℕ} (c : ℂ) (M : Matrix (Fin a) (Fin b) ℂ) :
+    (c • M).map star = star c • M.map star := by
+  ext i j
+  simp only [Matrix.map_apply, Matrix.smul_apply, smul_eq_mul, star_mul']
+
+theorem star_cs (θ : Matrix (Fin n) (Fin n) ℂ) (θ' : Matrix (Fin d) (Fin d) ℂ) (x) :
+    (cs θ θ' x).map star = (-Complex.I) • (θ.map star * x.map star * (θ'.map star)ᵀ) := by
+  rw [show cs θ θ' x = Complex.I • (θ * x * θ'ᵀ) from rfl, map_star_smul_matrix, map_star_mul, map_star_mul,
+    Matrix.transpose_map, show star Complex.I = -Complex.I from Complex.conj_I]
+
+theorem posDef_cartan {M θ : Matrix (Fin n) (Fin n) ℂ} (hM : Mᴴ = M) (h : IsCartan M θ) : (M * θ.map star).PosDef := by
+  obtain ⟨h1, h2, h3⟩ := h
+  have hbar : θ.map star * θ.map star = 1 := by
+    rw [← map_star_mul, h1, Matrix.map_one _ (by simp) (by simp)]
+  have hcomm : θᵀ * M = M * θ.map star := by
+    calc θᵀ * M = θᵀ * M * (θ.map star * θ.map star) := by rw [hbar, Matrix.mul_one]
+      _ = (θᵀ * M * θ.map star) * θ.map star := by simp only [Matrix.mul_assoc]
+      _ = M * θ.map star := by rw [h2]
+  have hH : (M * θ.map star).IsHermitian := by
+    unfold Matrix.IsHermitian
+    rw [Matrix.conjTranspose_mul, hM, ← hcomm]
+    congr 1
+    ext i j
+    simp [Matrix.conjTranspose_apply]
+  refine Matrix.PosDef.of_dotProduct_mulVec_pos hH fun x hx => ?_
+  have hy : θ *ᵥ star x ≠ 0 := by
+    intro h0
+    apply hx
+    have h5 : θ *ᵥ (θ *ᵥ star x) = 0 := by rw [h0, Matrix.mulVec_zero]
+    rw [Matrix.mulVec_mulVec, h1, Matrix.one_mulVec] at h5
+    simpa using h5
+  have hs : star (θ *ᵥ star x) = θ.map star *ᵥ x := by
+    ext i
+    simp [Matrix.mulVec, dotProduct, star_sum, star_mul']
+  have heq : (θ *ᵥ (θ *ᵥ star x)) ⬝ᵥ M *ᵥ star (θ *ᵥ star x) = star x ⬝ᵥ (M * θ.map star) *ᵥ x := by
+    rw [Matrix.mulVec_mulVec, h1, Matrix.one_mulVec, hs, Matrix.mulVec_mulVec]
+  have hpos := h3 _ hy
+  rw [Complex.pos_iff]
+  refine ⟨by rw [← heq]; exact hpos, ?_⟩
+  have him := hH.im_star_dotProduct_mulVec_self x
+  simp only [RCLike.im_to_complex] at him
+  exact him.symm
+
+variable {A θ : Matrix (Fin n) (Fin n) ℂ} {C θ' : Matrix (Fin d) (Fin d) ℂ}
+
+theorem hf_cs_cs (h : IsCartan A θ) (h' : IsCartan (Complex.I • C) θ') (x y) :
+    hf A C (cs θ θ' x) (cs θ θ' y) = hf A C x y := by
+  have e : θ'ᵀ * C * θ'.map star = C := by
+    have := h'.2.1
+    rw [Matrix.mul_smul, Matrix.smul_mul] at this
+    exact smul_right_injective _ Complex.I_ne_zero this
+  have e' : (θ'.map star)ᵀ * Cᵀ * θ' = Cᵀ := by
+    simpa only [transpose_mul, transpose_transpose, Matrix.mul_assoc] using congrArg transpose e
+  rw [hf, star_cs, hf]
+  simp only [cs, LinearMap.coe_mk, AddHom.coe_mk, transpose_smul, Matrix.smul_mul, Matrix.mul_smul, smul_smul, trace_smul,
+    transpose_mul, transpose_transpose]
+  rw [neg_mul, Complex.I_mul_I, neg_neg, one_smul]
+  conv_rhs => rw [← h.2.1, ← e']
+  simp only [Matrix.mul_assoc]
+  rw [trace_mul_comm]
+  simp only [Matrix.mul_assoc]
+
+theorem cs_cs (h : IsCartan A θ) (h' : IsCartan (Complex.I • C) θ') (x) : cs θ θ' (cs θ θ' x) = -x := by
+  show Complex.I • (θ * (Complex.I • (θ * x * θ'ᵀ)) * θ'ᵀ) = -x
+  simp only [Matrix.mul_smul, Matrix.smul_mul, smul_smul, Complex.I_mul_I]
+  have e1 : θ * (θ * x * θ'ᵀ) * θ'ᵀ = x := by
+    rw [← Matrix.mul_assoc, ← Matrix.mul_assoc, h.1, Matrix.one_mul, Matrix.mul_assoc,
+      ← Matrix.transpose_mul, h'.1, Matrix.transpose_one, Matrix.mul_one]
+  rw [e1, neg_one_smul]
+
+private theorem hf_neg_right_lattice_basics (u v : Matrix (Fin n) (Fin d) ℂ) : hf A C u (-v) = -hf A C u v := by
+  unfold hf
+  rw [Matrix.map_neg _ star_neg, Matrix.mul_neg, Matrix.neg_mul, Matrix.trace_neg]
+
+theorem hf_cs (h : IsCartan A θ) (h' : IsCartan (Complex.I • C) θ') (x y) :
+    hf A C (cs θ θ' x) y = -hf A C x (cs θ θ' y) := by
+  calc hf A C (cs θ θ' x) y = hf A C (cs θ θ' x) (cs θ θ' (cs θ θ' (-y))) := by rw [cs_cs h h', neg_neg]
+    _ = hf A C x (cs θ θ' (-y)) := hf_cs_cs h h' x _
+    _ = -hf A C x (cs θ θ' y) := by rw [map_neg, hf_neg_right_lattice_basics]
+
+private theorem trace_transpose_mul_eq_star_dotProduct (x W : Matrix (Fin n) (Fin d) ℂ) :
+    trace (xᵀ * W) = star (fun p : Fin n × Fin d => x.map star p.1 p.2) ⬝ᵥ (fun p => W p.1 p.2) := by
+  simp only [Matrix.trace, Matrix.diag, Matrix.mul_apply, Matrix.transpose_apply, dotProduct,
+    Fintype.sum_prod_type, Pi.star_apply, Matrix.map_apply, star_star]
+  exact Finset.sum_comm
+
+private theorem kroneckerMap_mul_mulVec_eq_mul_mul_transpose (P : Matrix (Fin n) (Fin n) ℂ) (Q : Matrix (Fin d) (Fin d) ℂ)
+    (Z : Matrix (Fin n) (Fin d) ℂ) :
+    Matrix.kroneckerMap (fun a b => a * b) P Q *ᵥ (fun p : Fin n × Fin d => Z p.1 p.2) =
+      fun p => (P * Z * Qᵀ) p.1 p.2 := by
+  funext p
+  obtain ⟨i, a⟩ := p
+  simp only [Matrix.mulVec, dotProduct, Matrix.kroneckerMap_apply, Fintype.sum_prod_type, Matrix.mul_apply,
+    Matrix.transpose_apply, Finset.sum_mul]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun b _ => Finset.sum_congr rfl fun j _ => ?_
+  ring
+
+theorem hf_neg (hA : Aᴴ = A) (hC : (Complex.I • C)ᴴ = Complex.I • C) (h : IsCartan A θ) (h' : IsCartan (Complex.I • C) θ')
+    {x : Matrix (Fin n) (Fin d) ℂ} (hx : x ≠ 0) : (hf A C x (cs θ θ' x)).re < 0 := by
+  have hK := (posDef_cartan hA h).kronecker (posDef_cartan hC h')
+  have key1 : hf A C x (cs θ θ' x) =
+      -trace (xᵀ * (A * θ.map star * x.map star * (Complex.I • C * θ'.map star)ᵀ)) := by
+    unfold hf
+    rw [star_cs]
+    simp only [Matrix.transpose_mul, Matrix.transpose_smul, Matrix.smul_mul, Matrix.mul_smul,
+      Matrix.trace_smul, Matrix.mul_assoc, neg_smul, Matrix.trace_neg, Matrix.mul_neg, Matrix.neg_mul]
+  have hz : (fun p : Fin n × Fin d => x.map star p.1 p.2) ≠ 0 := by
+    intro h0
+    apply hx
+    ext i a
+    have := congrFun h0 (i, a)
+    simpa using this
+  have hpos := hK.re_dotProduct_pos hz
+  rw [key1, trace_transpose_mul_eq_star_dotProduct, ← kroneckerMap_mul_mulVec_eq_mul_mul_transpose (A * θ.map star) (Complex.I • C * θ'.map star) (x.map star)]
+  simp only [RCLike.re_to_complex] at hpos
+  rw [Complex.neg_re]
+  linarith
+
+end GlobalTheory.ThK.Dbl.Dense
+
+end
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.ThK.Dbl
@@ -196,4 +618,5 @@ theorem schToPol_of (hW : WeilConv) : SchToPol := by
 
 end GlobalTheory.ThK.Dbl
 
+end
 end

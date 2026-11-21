@@ -151,60 +151,12 @@ theorem jet_congr (J : JetRing ℂ I n) {f g : (I → ℂ) → ℂ} (h : f =ᶠ[
   refine Finset.sum_congr rfl fun k _ ↦ Finset.sum_congr rfl fun s _ ↦ ?_
   rw [(h.iteratedFDeriv ℂ k).eq_of_nhds]
 
-theorem jet_linear (J : JetRing ℂ I n) (l : (I → ℂ) →L[ℂ] ℂ) : jet J l = ∑ i, l (Pi.single i 1) • J.t i := by
-  have h1 : fderiv ℂ l = fun _ ↦ l := funext fun _ ↦ l.fderiv
-  unfold jet taylor
-  rw [Finset.sum_range_succ', Finset.sum_range_succ', Finset.sum_eq_zero]
-  · rw [← (Equiv.funUnique (Fin 1) I).symm.sum_comp]
-    simp [h1]
-  · intro k _
-    refine Finset.sum_eq_zero fun s _ ↦ ?_
-    rw [iteratedFDeriv_succ_apply_right, h1, iteratedFDeriv_const_of_ne (Nat.succ_ne_zero k)]
-    simp
 
-theorem jet_coord (J : JetRing ℂ I n) (i : I) : jet J (fun z ↦ z i) = J.t i := by
-  refine (jet_linear J (ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : I ↦ ℂ) i)).trans ?_
-  simp [Pi.single_apply]
 
 theorem t_ne_zero (J : JetRing ℂ I n) (i : I) : J.t i ≠ 0 := J.b.ne_zero _
 
-theorem jet_aeval_X (J : JetRing ℂ I n) (i : I) :
-    MvPolynomial.aeval J.t (MvPolynomial.X i : MvPolynomial I ℂ) =
-      jet J fun z ↦ MvPolynomial.aeval z (MvPolynomial.X i : MvPolynomial I ℂ) := by
-  simp [jet_coord]
 
-theorem coord_nonempty (h1 : JetRingEx) (h2 : JetLift) (h3 : JetBC) (h4 : ModelAlg) (h5 : GermEx) (h6 : CoordEx)
-    (K : Type) [Field K] [NumberField K] (d : ℕ) (δ : K) (io : K →+* ℂ) (hK : Module.finrank ℚ K = 2) (hd : 0 < d)
-    (hδ : δ ^ 2 = -(d : K)) (Λ₀ : PeriodPair) (Ω₀ : ℂ) (hΛ : IsLatOf io 1 Λ₀) (hΩ : Ω₀ ^ 12 = latDisc Λ₀)
-    (E : Type) [Field E] [NumberField E] [IsCMField E] [Algebra K E] (I : Type) [Fintype I] (φ : I → E →+* ℂ)
-    (hφ : IsCMType φ) (hio : ∀ i, (φ i).comp (algebraMap K E) = io) (c : Ideal (OF E)) (y : (Af E)ˣ) (hc : c ≠ ⊥) (n : ℕ) :
-    ∃ (𝔠 : FracId (FR E)) (T : CxPt 𝔠 φ (lattice c y)) (J : JetRing ℂ I n) (Y : Family J T.X T.δ T.low) (G : Germ Y) (ε : ℤˣ),
-      Nonempty (Coord ε G) ∧ ∀ i, T.A i ≠ 0 := by
-  obtain ⟨𝔠, X₀, δ₀, N, T, hA, hO, -, hT⟩ := h4 K d δ io hK hd hδ Λ₀ Ω₀ hΛ hΩ E I φ hφ hio c y hc
-  obtain ⟨J₀⟩ := h1 Qb I n
-  obtain ⟨J⟩ := h1 ℂ I n
-  obtain ⟨Y₀⟩ := h2 (FR E) 𝔠 Qb I n J₀ X₀ δ₀ N hA
-  obtain ⟨Y, -⟩ := h3 E I 𝔠 φ _ Qb _ n J₀ J X₀ δ₀ N Y₀ T hO
-  obtain ⟨G⟩ := h5 E I 𝔠 φ c y hφ hc n T J Y
-  obtain ⟨ε, h⟩ := h6
-  exact ⟨𝔠, T, J, Y, G, ε, h E I 𝔠 φ c y hφ hc n T J Y G, fun i ↦ (hT i).1⟩
 
-theorem steps_nonvacuous (h : Steps) (h1 : JetRingEx) (h2 : JetLift) (h3 : JetBC) (h4 : ModelAlg)
-    (K : Type) [Field K] [NumberField K] (d : ℕ) (δ : K) (io : K →+* ℂ) (hK : Module.finrank ℚ K = 2) (hd : 0 < d)
-    (hδ : δ ^ 2 = -(d : K)) (Λ₀ : PeriodPair) (Ω₀ : ℂ) (hΛ : IsLatOf io 1 Λ₀) (hΩ : Ω₀ ^ 12 = latDisc Λ₀)
-    (E : Type) [Field E] [NumberField E] [IsCMField E] [Algebra K E] (I : Type) [Fintype I] (φ : I → E →+* ℂ)
-    (hφ : IsCMType φ) (hio : ∀ i, (φ i).comp (algebraMap K E) = io) (c : Ideal (OF E)) (y : (Af E)ˣ) (hc : c ≠ ⊥) (n : ℕ) :
-    ∃ (𝔠 : FracId (FR E)) (T : CxPt 𝔠 φ (lattice c y)) (J : JetRing ℂ I n) (Y : Family J T.X T.δ T.low) (G : Germ Y) (ε : ℤˣ)
-      (C : Coord ε G), (∀ i, jet J (fun z ↦ C.ζ z i) ≠ 0 ∧ ¬ (fun z ↦ C.ζ z i) =ᶠ[𝓝 0] fun _ ↦ 0) ∧
-        G.e * jet J C.C = algebraMap ℂ J.B T.C := by
-  obtain ⟨-, -, -, -, -, h5, h6, ⟨s, hZ⟩, hD⟩ := h
-  obtain ⟨𝔠, T, J, Y, G, ε, ⟨C⟩, hA⟩ := coord_nonempty h1 h2 h3 h4 h5 h6 K d δ io hK hd hδ Λ₀ Ω₀ hΛ hΩ E I φ hφ hio c y hc n
-  refine ⟨𝔠, T, J, Y, G, ε, C, fun i ↦ ?_, (hD ε E I 𝔠 φ c y hφ hc n T J Y G C).2⟩
-  have h0 : jet J (fun z ↦ C.ζ z i) ≠ 0 := by
-    rw [hZ ε E I 𝔠 φ c y hφ hc n T J Y G C i]
-    haveI := Module.Free.of_basis J.b
-    exact smul_ne_zero (mul_ne_zero (Int.cast_ne_zero.2 (Units.ne_zero _)) (hA i)) (t_ne_zero J i)
-  exact ⟨h0, fun he ↦ h0 (by rw [jet_congr J he, jet_const, map_zero])⟩
 
 end Check
 

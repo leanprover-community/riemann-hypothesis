@@ -125,20 +125,7 @@ def PtDataExSt : Prop :=
 section Basic₂
 variable {R : Type} [CommRing R] {d : ℕ} {O : Type} [CommRing O] [StarRing O]
 
-theorem charZero_closure (V : Type) [CommRing V] [IsDomain V] [CharZero V] :
-    CharZero (AlgebraicClosure (FractionRing V)) := by
-  haveI : CharZero (FractionRing V) := charZero_of_injective_algebraMap (IsFractionRing.injective V (FractionRing V))
-  infer_instance
 
-theorem colValOf_monomial (B : FB R d O) (k : Type) [CommRing k] [Algebra ℚ k] [Algebra R k] (h : PS k 2 d) (w0 : O)
-    (m : ℕ) {κ : Type} [Fintype κ] (u : κ → Fin d → k) {n : ℕ} (a : κ × Fin n →₀ ℕ) (c : k) (f : Fin n → PS k 1 d) :
-    colValOf B k h w0 m u (MvPolynomial.monomial a c) f =
-      c * ∏ i, B.nabVal k h w0 m (f i) u (MvPolynomial.monomial (colExp a i) 1) := by
-  classical
-  unfold colValOf
-  by_cases hc : c = 0
-  · simp [hc]
-  · simp [MvPolynomial.support_monomial, hc]
 
 end Basic₂
 

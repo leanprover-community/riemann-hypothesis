@@ -136,12 +136,6 @@ theorem tt_mod_q (D : Formalism.BasicNotions.D7) (δ : ∀ p : PlF D, (D.s.atP p
     push_cast
     linear_combination -hk'
 
-theorem intG_of (hN : NormG) : IntG := by
-  intro D δ M hA u u' hT F0 what₂ hrows Λ hΛ Z F' hF' p g hs a b
-  exact zzplus_mem (M p) g hs _ _ _ (tt_mod_q D δ M hA u u' hT p g hs)
-    (hN D δ M hA u u' hT F0 what₂ hrows Λ hΛ Z F' hF' p g hs) a b
 
-theorem notIntAll_of_loc (hL : LocGen) (hN : NormG) : PI.CntLocalParts.NotIntAll :=
-  notIntAll_of_gen hL (intG_of hN)
 
 end PI.CntNotIntW

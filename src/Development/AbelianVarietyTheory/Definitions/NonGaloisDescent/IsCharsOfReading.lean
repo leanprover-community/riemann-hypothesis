@@ -19,51 +19,13 @@ section Indep
 variable {C : CharFrame D} {art : Ideles D.host.E →* Gab D.host.E D.nd.Om} {X : NTw D.R D.host D.what₂ D.LL0 D.nd}
   {i : X.Tw} {b : Bool}
 
-theorem toC_eq_of_mem (ρ ρ' : Reading X i b) {x : X.O0 i} {y : ↥D.LL0} (h : ρ.toC x = embLL0 D y) :
-    ρ'.toC x = embLL0 D y := by
-  have e : algebraMap (X.O0 i) (FractionRing (X.O0 i)) x = embSide X i b y :=
-    ρ.κ.injective (ρ.ι.injective (h.trans (ρ.read y).symm))
-  change ρ'.ι (ρ'.κ (algebraMap (X.O0 i) (FractionRing (X.O0 i)) x)) = _
-  rw [e, ρ'.read]
 
-theorem almostIn_blockChar (hC : ValLL0 D C) (l : ℕ) (j : Fin D.R.m) :
-    GlobalTheory.GalChar.AlmostIn (embLL0 D) (blockChar C l j) := by
-  have hδ : (C.delAt l).ValuesIn 0 (embLL0 D) := by
-    unfold CharFrame.delAt
-    split_ifs
-    exacts [hC.del', hC.del]
-  exact ((GlobalTheory.GalChar.almostIn_of_valuesIn (hC.mu0 j)).mul (GlobalTheory.GalChar.almostIn_of_valuesIn hδ)).block hC.eta
-    (GlobalTheory.GalChar.odd_r D.R)
 
-theorem isGal_of_reading (ha : IsGlobalArtin art) (hC : ValLL0 D C) (ρ ρ' : Reading X i b) {j : Fin D.R.m}
-    {χ : GalE D →* (X.O0 i)ˣ} {n} (h : IsGal art ρ.κ ρ.ι (blockChar C (X.l i) j) n χ) :
-    ∃ n', IsGal art ρ'.κ ρ'.ι (blockChar C (X.l i) j) n' χ := by
-  obtain ⟨χ', n', h'⟩ := exists_blockChar ha hC ρ' j
-  have e : GlobalTheory.GalChar.inQ ρ'.κ χ = GlobalTheory.GalChar.inQ ρ'.κ χ' := by
-    refine GlobalTheory.GalChar.eq_of_frob ha (GlobalTheory.GalChar.continuous_units _
-      ((GlobalTheory.GalChar.isEmbedding_toQ (X.twistBaseCoefficientRing_isAdic i) ρ'.κ_alg).continuous.comp h.2.1)) (h'.cont (X.twistBaseCoefficientRing_isAdic i) ρ'.κ_alg) ?_
-    filter_upwards [almostIn_blockChar hC (X.l i) j, GlobalTheory.GalChar.unr_ae (blockChar C (X.l i) j),
-      GlobalTheory.GalChar.away_ae (E := D.host.E) (X.l i) (X.lPrime i).out.ne_zero] with v ⟨y, hy⟩ hu hv A hA σ hσ
-    have e1 := h.frob ha (Or.inl hv) hu hA hσ
-    have e2 := h'.frob ha (Or.inl hv) hu hA hσ
-    rw [← hy, ← map_inv₀] at e1 e2
-    exact Units.ext (ρ'.ι.injective ((toC_eq_of_mem ρ ρ' e1).trans e2.symm))
-  have : χ = χ' := MonoidHom.ext fun g => GlobalTheory.GalChar.inQ_inj ρ'.κ (DFunLike.congr_fun e g)
-  exact ⟨n', this ▸ h'⟩
 
 theorem notMem_l {k : Fin 2} (hk : X.l i ≠ D.host.g k) (v : D.nd.PlG k) :
     ((X.l i : ℕ) : 𝓞 D.host.E) ∉ (D.naut.plGw k v).asIdeal :=
   GlobalTheory.GalChar.notMem_of_ne (D.host.g_prime k) (X.lPrime i).out hk.symm (D.naut.plGw_over k v)
 
-theorem isChars_of_reading (ha : IsGlobalArtin art) (hC : ValLL0 D C) (ρ ρ' : Reading X i b) (h : IsChars C art ρ) :
-    IsChars C art ρ' := by
-  refine ⟨fun j => let ⟨_, hn⟩ := h.chi j; isGal_of_reading ha hC ρ ρ' hn, fun j k hk v => ?_⟩
-  obtain ⟨u, hu, e⟩ := h.tame j k hk v
-  obtain ⟨n, hn⟩ := h.chi j
-  obtain ⟨n', hn'⟩ := isGal_of_reading ha hC ρ ρ' hn
-  obtain ⟨x, -, hx⟩ := GlobalTheory.GalChar.exists_unit ha (D.nd.plOm.2 (D.naut.plGw k v)) (D.ntypes.tg_mem k v)
-  refine ⟨u, hu, ?_⟩
-  rw [← e, Reading.toC_apply, Reading.toC_apply, hn.loc (Or.inl (notMem_l hk v)) hx, hn'.loc (Or.inl (notMem_l hk v)) hx]
 
 end Indep
 
@@ -79,13 +41,6 @@ def TameTie (c : ∀ k, D.nd.PlG k → Fin D.R.m → (ZMod (D.host.g k))ˣ) : Pr
 
 variable {C art}
 
-theorem exists_tameTie (ha : IsGlobalArtin art) (hP : ∀ k v, C.P.Div k (D.naut.plGw k v)) : ∃ c, TameTie C art c := by
-  have H := fun k v => GlobalTheory.GalChar.hostHeckeFrame_tame_galois_characters (hframe C) ha eExp_int D.nd.g_split k (D.naut.plGw k v) (hP k v) _
-    (D.nd.plOm.2 (D.naut.plGw k v)) _ (D.ntypes.tg_gen k v) (D.ntypes.teichC k) (D.ntypes.teichC_inj k)
-  choose γ _ hγ using H
-  refine ⟨fun k v j => γ k v ^ (2 * (j.1 + 1)), fun k v l _ hl O _ _ _ κ ι j n χ h => hγ k v l hl O κ ι j _ ?_ n χ h⟩
-  obtain ⟨h1, -, h3, -, h5⟩ := GlobalTheory.GalChar.inertialOrderFifteenChar_auxiliaryPrime_spec (hframe C) (l := l)
-  exact h5.unr _ (GlobalTheory.GalChar.notMem_of_ne (D.host.g_prime k) h1 (h3 k).symm (D.naut.plGw_over k v))
 
 end Tame
 
@@ -222,19 +177,7 @@ theorem isTripleFor_ex (ha' : IsGlobalArtin art') (hT : TameTie C art' D.nd.chiT
 
 end Record
 
-theorem exists_isTripleOf (D : D7) [IsEmpty D.nd.Loc] (C : CharFrame D) {art : Ideles D.host.E →* Gab D.host.E D.nd.Om}
-    (ha : IsGlobalArtin art) (hC : ValLL0 D C) (hs : ∀ x : ↥D.LL0, star (x : D.what₂.LL) ∈ D.LL0)
-    (hT : TameTie C art D.nd.chiT) :
-    ∃ (X : NTw D.R D.host D.what₂ D.LL0 D.nd) (Y : NExp D.R D.host D.what₂ D.LL0 D.nd X) (e : X.Tw ≃ D.ntw.Tw),
-      (∀ i, X.NonzeroIndexPlace i ↔ D.ntw.NonzeroIndexPlace (e i)) ∧ IsTripleOf Y :=
-  let K := fun i => (chars_nonempty D C ha hC hs i).some
-  ⟨tw D C K, ex D C K, Equiv.refl _, fun _ => Iff.rfl, C, art, isTripleFor_ex D C hs K ha hT⟩
 
-theorem not_isTripleOf {X : NTw D.R D.host D.what₂ D.LL0 D.nd} (Y : NExp D.R D.host D.what₂ D.LL0 D.nd X) {i : X.Tw}
-    (hi : X.NonzeroIndexPlace i) (s : X.Sig i) {P : PlE D.host} (hP : IsSplitPl D.host P) (hS : P ∉ X.S0 i)
-    (h : X.hEig i s 0 P ≠ 1) : ¬ IsTripleOf Y := fun ⟨_, _, H⟩ =>
-  let ⟨_, _, _, _, _, _, _, _, hw⟩ := H.triple hi s
-  h (hw.hEig_zero hP hS)
 
 end GlobalTheory.Triple.Model
 

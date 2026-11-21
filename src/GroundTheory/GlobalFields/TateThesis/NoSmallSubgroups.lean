@@ -123,27 +123,13 @@ theorem isOpen_ker_of_profinite (hH : NoSmallSubgroups H) (f : G →* H) (hf : C
     IsOpen (f.ker : Set G) :=
   isOpen_ker_of_noSmallSubgroups (fun _ hW ↦ exists_openSubgroup_subset_of_profinite hW) hH f hf
 
-theorem finite_range_of_profinite (hH : NoSmallSubgroups H) (f : G →* H) (hf : Continuous f) :
-    Finite f.range :=
-  have : Finite (G ⧸ f.ker) :=
-    Subgroup.quotient_finite_of_isOpen _ (isOpen_ker_of_profinite hH f hf)
-  Finite.of_equiv _ (QuotientGroup.quotientKerEquivRange f).toEquiv
 
 theorem isOpen_ker_of_profinite_circle (f : G →* Circle) (hf : Continuous f) :
     IsOpen (f.ker : Set G) :=
   isOpen_ker_of_profinite Circle.noSmallSubgroups f hf
 
-theorem finite_range_of_profinite_circle (f : G →* Circle) (hf : Continuous f) :
-    Finite f.range :=
-  finite_range_of_profinite Circle.noSmallSubgroups f hf
 
-theorem isOpen_ker_of_profinite_units_complex (f : G →* ℂˣ) (hf : Continuous f) :
-    IsOpen (f.ker : Set G) :=
-  isOpen_ker_of_profinite Complex.units_noSmallSubgroups f hf
 
-theorem finite_range_of_profinite_units_complex (f : G →* ℂˣ) (hf : Continuous f) :
-    Finite f.range :=
-  finite_range_of_profinite Complex.units_noSmallSubgroups f hf
 
 end Kernel
 

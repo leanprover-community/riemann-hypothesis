@@ -12,70 +12,9 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.PolDeg.TautBaseModel
 
-theorem exists_tautBase {o W : Type} [CommRing o] [CommRing W] [IsLocalRing W] [IsNoetherianRing W] (b : o →+* W)
-    (P : PolAV (Sp W)) (r : ℕ) (x : Fin r → (𝟙_ (Over (Sp W)) ⟶ P.A)) :
-    ∃ T : TautBase o W, T.b = b ∧ T.g = P.g ∧ ∃ (hB : T.B = P.A) (hr : T.r = r), HEq T.grp P.grp ∧ HEq T.M.L P.L ∧
-      ∀ i : Fin T.r, HEq (T.c₀ (Pi.single i 1)) (x (Fin.cast hr i)) := by
-  haveI := P.isAb.comm
-  obtain ⟨rig, hrig⟩ := P.rigid
-  let M : RigLB P.A := ⟨P.L, rig, P.isLB, hrig⟩
-  have hC : CubeSt := GlobalTheory.abelianSchemeLaws_all.1.cube
-  obtain ⟨cub⟩ := (hC (Sp W) P M rfl).1
-  let c : (Fin r → ℤ) → (𝟙_ (Over (Sp W)) ⟶ P.A) := fun a => ∏ i, x i ^ a i
-  have hc : ∀ a a', c (a + a') = c a * c a' := fun a a' => by
-    simp only [c, Pi.add_apply, zpow_add, Finset.prod_mul_distrib]
-  obtain ⟨τ, h₁, h₂, h₃⟩ := GlobalTheory.TauLocal.exists_tau_local M cub c hc
-  refine ⟨{ b := b, B := P.A, isAb := P.isAb, g := P.g, smoothDim := P.smoothDim, M := M, cub := cub,
-            ample := P.ample, ktriv := P.ktriv, r := r, c₀ := c, c₀_add := hc, τ₀ := τ, τ₀_gen := h₁,
-            τ₀_symm := h₂, τ₀_add := h₃ }, rfl, rfl, rfl, rfl, HEq.rfl, HEq.rfl, fun i => heq_of_eq ?_⟩
-  show ∏ j, x j ^ (Pi.single i (1 : ℤ) : Fin r → ℤ) j = x i
-  rw [Finset.prod_eq_single i (fun j _ hj => by rw [Pi.single_eq_of_ne hj, zpow_zero]) (by simp)]
-  simp
 
-theorem exists_tautBase_curve {o W : Type} [CommRing o] [CommRing W] [IsLocalRing W] [IsNoetherianRing W] (b : o →+* W)
-    (h37 : IsUnit (37 : W)) : ∃ T : TautBase o W, T.b = b ∧ T.g = 1 ∧ T.r = 1 ∧ (∀ t : T.M.L.Gen, ¬ t.IsGen) ∧
-    ∃ a, T.c₀ a ≠ 1 := by
-  let E : _root_.WeierstrassCurve W := ⟨0, 0, 1, -1, 0⟩
-  haveI : E.IsElliptic := ⟨by
-    have : E.Δ = 37 := by
-      norm_num [E, WeierstrassCurve.Δ, WeierstrassCurve.b₂, WeierstrassCurve.b₄, WeierstrassCurve.b₆,
-        WeierstrassCurve.b₈]
-    rw [this]
-    exact h37⟩
-  have he : E.toAffine.Equation 0 0 := by
-    rw [WeierstrassCurve.Affine.equation_iff]; simp [E]
-  let P : PolAV (Sp W) := GlobalTheory.WeierstrassCurve.ellPolAV E
-  let x : 𝟙_ (Over (Sp W)) ⟶ P.A :=
-    Over.homMk (GlobalTheory.WeierstrassCurve.pt E (A := W) ![0, 0, 1] (GlobalTheory.WeierstrassCurve.isUnimodularSol_some he))
-      ((GlobalTheory.WeierstrassCurve.pt_toSpec E _ _).trans (Spec.map_id _))
-  have hx : x ≠ 1 := fun e => GlobalTheory.WeierstrassCurve.pt_some_ne_zero E he (by
-    have e' := congrArg (fun q => q.left) e
-    refine e'.trans ?_
-    rw [← GlobalTheory.WeierstrassCurve.eSec_ellPolAV E, Hom.one_def, toUnit_unique (toUnit _) (𝟙 _), Category.id_comp]
-    rfl)
-  obtain ⟨T, hb, hg, hB, hr, hgrp, hL, hc⟩ := exists_tautBase b P 1 (fun _ => x)
-  refine ⟨T, hb, hg, hr, ?_⟩
-  obtain ⟨b', B, isAb, g, sm, M, cub, am, kt, r, c, ca, τ, τg, τs, τa⟩ := T
-  dsimp only at hg hB hr hgrp hL hc
-  subst hB hr
-  cases hgrp
-  refine ⟨?_, Pi.single 0 1, fun e => hx ((eq_of_heq (hc 0)).symm.trans e)⟩
-  show ∀ t : M.L.Gen, ¬ t.IsGen
-  rw [eq_of_heq hL]
-  exact GlobalTheory.WeierstrassCurve.not_isGen_ellPolAV E
 
-theorem exists_tautBase_rat : ∃ T : TautBase ℤ ℚ, T.g = 1 ∧ T.r = 1 ∧ (∀ t : T.M.L.Gen, ¬ t.IsGen) ∧
-    ∃ a, T.c₀ a ≠ 1 := by
-  obtain ⟨T, -, h⟩ := exists_tautBase_curve (Int.castRingHom ℚ) (Ne.isUnit (by norm_num))
-  exact ⟨T, h⟩
 
-theorem exists_tautBase_two_adic : ∃ T : TautBase ℤ ℤ_[2], T.g = 1 ∧ T.r = 1 ∧ (∀ t : T.M.L.Gen, ¬ t.IsGen) ∧
-    ∃ a, T.c₀ a ≠ 1 := by
-  have h : IsUnit (37 : ℤ_[2]) := by
-    have := (PadicInt.norm_natCast_eq_one_iff (p := 2) (n := 37)).2 (by norm_num)
-    exact PadicInt.isUnit_iff.2 (by exact_mod_cast this)
-  obtain ⟨T, -, h⟩ := exists_tautBase_curve (Int.castRingHom ℤ_[2]) h
-  exact ⟨T, h⟩
 
 variable {o W : Type} [CommRing o] [CommRing W] [IsLocalRing W] (T : TautBase o W)
 
@@ -95,9 +34,6 @@ theorem τ₀_add_right (a a' a'' : Fin T.r → ℤ) (z J) (hJ : Good T.M.L z J)
   rw [T.τ₀_symm a _ z J hJ, T.τ₀_symm a a' z J hJ, T.τ₀_symm a a'' z J hJ, h.s01, h.s12]
   exact T.τ₀_add a' a'' a z J hJ
 
-theorem exists_good_choice : ∃ (z : (𝟙_ (Over (Sp W))).left) (J : _), Good T.M.L z J := by
-  choose J hJ using fun ψ : (𝟙_ (Over (Sp W))).left ⟶ T.B.left => exists_chart T.M.isLB (ψ (closedPoint W))
-  exact ⟨closedPoint W, J, hJ⟩
 
 theorem val_τ₀_torus (b : o →+* W) (r : ℕ) (u : Γ((𝟙_ (Over (Sp W))).left, ⊤)ˣ)
     (β : LinearMap.BilinForm ℤ (Fin r → ℤ)) (hβ : ∀ a a', β a a' = β a' a) (a a' : Fin r → ℤ) (z J)
@@ -152,33 +88,6 @@ theorem tauCoord_symm {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R] (Q : 
     exact (Scheme.ΓSpecIso (CommRingCat.of (FractionRing R))).inv_hom_id_apply k.val
   · exact (Scheme.ΓSpecIso (CommRingCat.of (FractionRing R))).inv_hom_id_apply k'.val
 
-theorem not_exists_data_of_not_symm [IsDomain (MvPowerSeries (Fin 1) ℚ)] :
-    ∃ ε : Fin 1 → LinearMap.BilinForm ℤ (Fin 2 → ℤ), ¬ ∃ (Q : Data (MvPowerSeries (Fin 1) ℚ)) (e : Q.X ≃+ (Fin 2 → ℤ)),
-      ∀ a b, ∃ k : (FractionRing (MvPowerSeries (Fin 1) ℚ))ˣ,
-        (k : FractionRing (MvPowerSeries (Fin 1) ℚ)) = Taut.perFactor ℚ 1 1 1 2 ε (e a) (e b) ∧ Q.TauCoord a b k := by
-  refine ⟨fun _ => (LinearMap.mul ℤ ℤ).compl₁₂ (LinearMap.proj 0) (LinearMap.proj 1), fun ⟨Q, e, h⟩ => ?_⟩
-  obtain ⟨k, hk, c⟩ := h (e.symm (Pi.single 0 1)) (e.symm (Pi.single 1 1))
-  obtain ⟨k', hk', c'⟩ := h (e.symm (Pi.single 1 1)) (e.symm (Pi.single 0 1))
-  obtain ⟨x, x', -, hx', e₁⟩ := tauCoord_symm Q _ _ k k' c c'
-  rw [hk, hk'] at e₁
-  simp [Taut.perFactor, Taut.coordT] at e₁
-  rw [← map_mul] at e₁
-  have e₂ := IsFractionRing.injective _ _ e₁
-  have := (e₂ ▸ hx').map (MvPowerSeries.constantCoeff (σ := Fin 1) (R := ℚ))
-  simp at this
 
-theorem not_forall_exists_data : ¬ ∀ {o W : Type} [CommRing o] [CommRing W] [IsDomain W] [IsLocalRing W] [IsNoetherianRing W]
-    (T : TautBase o W) (N m n : ℕ) [IsDomain (MvPowerSeries (Fin N) W)]
-    (ε : Fin N → LinearMap.BilinForm ℤ (Fin T.r → ℤ)),
-    ∃ (Q : Data (MvPowerSeries (Fin N) W)) (e : Q.X ≃+ (Fin T.r → ℤ)) (β : Q.B.left ⟶ T.B.left),
-      IsGrpPullback Q.B T.B (spMap MvPowerSeries.C) β ∧
-      (∀ a, (Q.c a).left ≫ β = spMap MvPowerSeries.C ≫ (T.c₀ (e a)).left) ∧
-      ∀ a b, ∃ k : (FractionRing (MvPowerSeries (Fin N) W))ˣ,
-        (k : FractionRing (MvPowerSeries (Fin N) W)) = Taut.perFactor W m N n T.r ε (e a) (e b) ∧ Q.TauCoord a b k := by
-  intro h
-  haveI : IsDomain (MvPowerSeries (Fin 1) ℚ) := NoZeroDivisors.to_isDomain _
-  obtain ⟨ε, hε⟩ := not_exists_data_of_not_symm
-  obtain ⟨Q, e, -, -, -, h₁⟩ := h (TautBase.torus (RingHom.id ℚ) 2 1 0 (fun _ _ => rfl)) 1 1 1 ε
-  exact hε ⟨Q, e, h₁⟩
 
 end GlobalTheory.PolDeg.TautBaseModel

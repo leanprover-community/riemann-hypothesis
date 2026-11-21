@@ -118,13 +118,6 @@ theorem rename_reindex_reindexInv (g : MvPolynomial (Σ _ : Unit, Fin (e + 1) ×
   rcases p with ⟨⟨⟩, q⟩
   simp [oneBlockReindex, oneBlockReindexInv]
 
-theorem rename_reindexInv_reindex (f : MvPolynomial (Coord (oneBlockSizes e r)) ℤ) :
-    rename (oneBlockReindexInv e r) (rename (oneBlockReindex e r) f) = f := by
-  rw [rename_rename]
-  convert rename_id_apply f
-  funext v
-  rcases v with ⟨⟨⟩, q⟩
-  simp [oneBlockReindex, oneBlockReindexInv]
 
 theorem coneAff_oneBlockMap (om : Module.Basis (Fin (e + 1)) ℤ (𝓞 K))
     (f : MvPolynomial (Coord (oneBlockSizes e r)) ℤ) :
@@ -152,12 +145,6 @@ theorem mem_oneBlockIdeal_iff (om : Module.Basis (Fin (e + 1)) ℤ (𝓞 K))
   rw [RingHom.mem_ker, RingHom.mem_ker, ← (coneAff_injective K r).eq_iff, map_zero]
   rw [coneAff_oneBlockMap]
 
-theorem oneBlockIdeal_eq_comap (om : Module.Basis (Fin (e + 1)) ℤ (𝓞 K)) :
-    Heights.oneBlockIdeal (r := r) om =
-      (mCoordIdeal (oneBlockPt om r)).comap (rename (oneBlockReindex e r)) := by
-  ext f
-  rw [Ideal.mem_comap]
-  exact mem_oneBlockIdeal_iff om f
 
 theorem mCoordIdeal_eq_comap (om : Module.Basis (Fin (e + 1)) ℤ (𝓞 K)) :
     mCoordIdeal (oneBlockPt om r) =
@@ -220,24 +207,7 @@ open scoped ComplexOrder
 
 variable {K : Type} [Field K] [NumberField K] {e r : ℕ}
 
-theorem oneBlockMetricAgrees_iff (om : Module.Basis (Fin (e + 1)) ℤ (𝓞 K)) (F : HermLattice K (r + 1))
-    (A : HermLine (oneBlockSizes e r)) :
-    OneBlockMetricAgrees om F A ↔
-      ∀ (σ : K →+* ℂ) (w : Fin (r + 1) → ℂ), w ≠ 0 →
-        A.metric (fun _ t ↦ σ (om ((oneBlockIndex e r).symm.symm t).1 : K) *
-          w ((oneBlockIndex e r).symm.symm t).2) = hermNorm (F.metric σ) w :=
-  Iff.rfl
 
-theorem pointHeightDegree_hypotheses (om : Module.Basis (Fin (e + 1)) ℤ (𝓞 K))
-    (F : HermLattice K (r + 1)) (A : HermLine (oneBlockSizes e r)) (hA : A.deg = 1)
-    (hM : OneBlockMetricAgrees om F A) :
-    (∀ σ, (F.metric σ).PosDef) ∧
-      (∀ σ, F.metric (ComplexEmbedding.conjugate σ) = (F.metric σ).map (starRingEnd ℂ)) ∧
-      (∀ u, A.deg u = 1) ∧
-      ∀ (σ : K →+* ℂ) (w : Fin (r + 1) → ℂ), w ≠ 0 →
-        A.metric (fun _ t ↦ σ (om ((oneBlockIndex e r).symm.symm t).1 : K) *
-          w ((oneBlockIndex e r).symm.symm t).2) = hermNorm (F.metric σ) w :=
-  ⟨F.posDef, F.conj, fun u ↦ by rw [hA]; rfl, hM⟩
 
 end Metric
 

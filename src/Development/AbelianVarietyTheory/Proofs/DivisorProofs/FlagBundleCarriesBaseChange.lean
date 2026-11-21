@@ -4,11 +4,114 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdjacentPullPull
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UniREqUni
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFlagBundleIff
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagLocallyAdaptedAffineFrame
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnipotentTriangularFactorStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LeadingMinorsUnipotentMulStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CarriedFlagTriangularFrameStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnipotentTriangularFactor
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CarriedFlagTriangularFrame
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagFramesTriangularChangeStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TriangularChangeSpansFlagStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TriangularChangeSpansFlag
+
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace Filter Topology MeasureTheory Matrix
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.Points GlobalTheory.CxPts GlobalTheory.VB GlobalTheory.HermFrame GlobalTheory.ArInt GlobalTheory.MixDens GlobalTheory.CovTest
+open GlobalTheory.FlagFibre (Low uni dens)
+open ReciprocityTheory.L2DbarEstimates (V cHess)
+open scoped ContDiff ComplexOrder Classical
+open GlobalTheory.FlagCell GlobalTheory.FlagConnect
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_unipotent_triangular_factor : ∀ (R : Type) [CommRing R] (m : ℕ) (A : Matrix (Fin m) (Fin m) R), (∀ l : Fin (m + 1), IsUnit (A.submatrix (Fin.castLE l.is_le) (Fin.castLE l.is_le)).det) → ∃ (n : Low m → R) (M : Matrix (Fin m) (Fin m) R), M.BlockTriangular id ∧ IsUnit M.det ∧ A = uniR n * M := by
+  first | exact @GlobalTheory.FlagCell.exists_lu | exact GlobalTheory.FlagCell.exists_lu | (intros; apply GlobalTheory.FlagCell.exists_lu <;> assumption)
+end
+
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace Filter Topology MeasureTheory Matrix
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.Points GlobalTheory.CxPts GlobalTheory.VB GlobalTheory.HermFrame GlobalTheory.ArInt GlobalTheory.MixDens GlobalTheory.CovTest
+open GlobalTheory.FlagFibre (Low uni dens)
+open ReciprocityTheory.L2DbarEstimates (V cHess)
+open scoped ContDiff ComplexOrder Classical
+open GlobalTheory.FlagCell GlobalTheory.FlagConnect
+
+namespace GlobalTheory.FlagCell
+
+theorem lu_minor_gen {R : Type} [CommRing R] {m l : ℕ} (n : Low m → R) (M : Matrix (Fin m) (Fin m) R)
+    (hM : M.BlockTriangular id) (e : Fin l → Fin m) (hmono : StrictMono e)
+    (hout : ∀ k, k ∉ Set.range e → ∀ j, e j < k) :
+    ((uniR n * M).submatrix e e).det = (M.submatrix e e).det := by
+  have hsplit : (uniR n * M).submatrix e e = (uniR n).submatrix e e * M.submatrix e e := by
+    ext i j
+    simp only [Matrix.submatrix_apply, Matrix.mul_apply]
+    symm
+    refine Fintype.sum_of_injective e hmono.injective _ _ ?_ (fun _ => rfl)
+    intro k hk
+    have h0 : M k (e j) = 0 := hM (hout k hk j)
+    rw [h0, mul_zero]
+  have hU : ((uniR n).submatrix e e).det = 1 := by
+    rw [Matrix.det_of_lowerTriangular]
+    · refine Finset.prod_eq_one fun i _ => ?_
+      rw [Matrix.submatrix_apply, uniR_apply, dif_neg (lt_irrefl _), if_pos rfl]
+    · intro i j hij
+      have hij' : i < j := hij
+      have h2 : e i < e j := hmono hij'
+      rw [Matrix.submatrix_apply, uniR_apply, dif_neg (not_lt.mpr h2.le), if_neg h2.ne]
+  rw [hsplit, Matrix.det_mul, hU, one_mul]
+
+theorem det_leading_uniR_mul : ∀ (R : Type) [CommRing R] (m : ℕ) (n : Low m → R) (M : Matrix (Fin m) (Fin m) R), M.BlockTriangular id → ∀ l : Fin (m + 1), ((uniR n * M).submatrix (Fin.castLE l.is_le) (Fin.castLE l.is_le)).det = (M.submatrix (Fin.castLE l.is_le) (Fin.castLE l.is_le)).det := by
+  intro R _ m n M hM l
+  refine lu_minor_gen n M hM _ (Fin.strictMono_castLE _) ?_
+  intro k hk j
+  have hkl : l.1 ≤ k.1 := by
+    by_contra hc
+    exact hk ⟨⟨k.1, lt_of_not_ge hc⟩, Fin.ext rfl⟩
+  rw [Fin.lt_def]
+  exact lt_of_lt_of_le j.2 hkl
+
+end GlobalTheory.FlagCell
+end
+
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace Filter Topology MeasureTheory Matrix
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.Points GlobalTheory.CxPts GlobalTheory.VB GlobalTheory.HermFrame GlobalTheory.ArInt GlobalTheory.MixDens GlobalTheory.CovTest
+open GlobalTheory.FlagFibre (Low uni dens)
+open ReciprocityTheory.L2DbarEstimates (V cHess)
+open scoped ContDiff ComplexOrder Classical
+open GlobalTheory.FlagCell GlobalTheory.FlagConnect
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.leading_minors_unipotent_mul : ∀ (R : Type) [CommRing R] (m : ℕ) (n : Low m → R) (M : Matrix (Fin m) (Fin m) R), M.BlockTriangular id → ∀ l : Fin (m + 1), ((uniR n * M).submatrix (Fin.castLE l.is_le) (Fin.castLE l.is_le)).det = (M.submatrix (Fin.castLE l.is_le) (Fin.castLE l.is_le)).det := by
+  first | exact @GlobalTheory.FlagCell.det_leading_uniR_mul | exact GlobalTheory.FlagCell.det_leading_uniR_mul | (intros; apply GlobalTheory.FlagCell.det_leading_uniR_mul <;> assumption)
+end
+
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace Filter Topology MeasureTheory Matrix
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.Points GlobalTheory.CxPts GlobalTheory.VB GlobalTheory.HermFrame GlobalTheory.ArInt GlobalTheory.MixDens GlobalTheory.CovTest
+open GlobalTheory.FlagFibre (Low uni dens)
+open ReciprocityTheory.L2DbarEstimates (V cHess)
+open scoped ContDiff ComplexOrder Classical
+open GlobalTheory.FlagCell GlobalTheory.FlagConnect
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.carried_flag_triangular_frame : ∀ (B Y T : Scheme.{0}) (π : Y ⟶ B) (ι : Type) (r : ι → ℕ) (E : ι → B.Modules) (fl : ∀ a, Vert.Flag ((Scheme.Modules.pullback π).obj (E a)) (r a)) (g' : T ⟶ Y) (g : T ⟶ B) (w : g' ≫ π = g) (fl' : ∀ a, Vert.Flag ((Scheme.Modules.pullback g).obj (E a)) (r a)), Carries π E r fl g' g w fl' → ∀ (U : B.Opens) (a : ι) (e : Fin (r a) → Γ(E a, U)) (V : Y.Opens) (hV : V ≤ π ⁻¹ᵁ U) (M : Matrix (Fin (r a)) (Fin (r a)) Γ(Y, V)) (V' : T.Opens) (h : V' ≤ g' ⁻¹ᵁ V) (h' : V' ≤ g ⁻¹ᵁ U), Spans (fl a) V (pullCol π e hV M) → Spans (fl' a) V' (pullCol g e h' (M.map (g'.appLE V V' h).hom)) := by
+  first | exact @GlobalTheory.FlagCell.spans_pullCol_of_carries | exact GlobalTheory.FlagCell.spans_pullCol_of_carries | (intros; apply GlobalTheory.FlagCell.spans_pullCol_of_carries <;> assumption)
+end
+
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace Filter Topology MeasureTheory Matrix
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.Points GlobalTheory.CxPts GlobalTheory.VB GlobalTheory.HermFrame GlobalTheory.ArInt GlobalTheory.MixDens GlobalTheory.CovTest
+open GlobalTheory.FlagFibre (Low uni dens)
+open ReciprocityTheory.L2DbarEstimates (V cHess)
+open scoped ContDiff ComplexOrder Classical
+open GlobalTheory.FlagCell GlobalTheory.FlagConnect
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.triangular_change_spans_flag : ∀ (X : Scheme.{0}) (F : X.Modules) (m : ℕ) (fl : Vert.Flag F m) (V : X.Opens) (v : Fin m → Γ(F, V)) (M : Matrix (Fin m) (Fin m) Γ(X, V)), Spans fl V v → M.BlockTriangular id → IsUnit M.det → Spans fl V fun j => ∑ k, M k j • v k := by
+  first | exact @GlobalTheory.FlagCell.Spans.mul_upper | exact GlobalTheory.FlagCell.Spans.mul_upper | (intros; apply GlobalTheory.FlagCell.Spans.mul_upper <;> assumption)
+end
+
+section
 open CategoryTheory AlgebraicGeometry TopologicalSpace Filter Topology MeasureTheory Matrix
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.Points GlobalTheory.CxPts GlobalTheory.VB GlobalTheory.HermFrame GlobalTheory.ArInt GlobalTheory.MixDens GlobalTheory.CovTest
@@ -190,3 +293,5 @@ theorem spans_uniR_near_image : ∀ (B Y : Scheme.{0}) (π : Y ⟶ B) (ι : Type
   exact ⟨V₁, hV₁U, fun p => n p.1 p.2, hyV₁, fun a => hn a⟩
 
 end GlobalTheory.FlagCell.CellOpen
+end
+end

@@ -215,9 +215,6 @@ theorem stmtE_of_rest (hR : RestComp) {C : ℝ} (hC : 0 ≤ C) (hS : RestSz C) (
 theorem stmtF_of_rest (hR : RestComp) {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : KudlaFamilyStatement Fm :=
   ⟨0, fun _ _ _ _ => stmt_of_rest hR _ _ _ _ _ _ _⟩
 
-theorem stmtEF_of_rest (hR : RestComp) {C : ℝ} (hC : 0 ≤ C) (hS : RestSz C) {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) :
-    FamilyClosedForm Fm :=
-  ⟨stmtF_of_rest hR Fm, C, hC, 0, fun _ _ _ _ => hS _ _⟩
 
 end Formalism.MainNotions.WeilJacquetShalikaLaw.Proof
 

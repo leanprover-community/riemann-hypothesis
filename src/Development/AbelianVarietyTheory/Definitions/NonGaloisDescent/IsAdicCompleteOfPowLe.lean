@@ -159,7 +159,6 @@ def wA : Wq l a →ₐ[ℤ_[l]] Ainf l where
   toRingHom := WittVector.map (Fq.val l a)
   commutes' := map_zlW l _
 
-theorem wA_injective : Function.Injective (wA l a) := WittVector.map_injective _ (Fq.val_injective l a)
 
 theorem wA_teich (x : Fq l a) :
     wA l a (WittVector.teichmuller l x) = WittVector.teichmuller l (Fq.val l a x) :=
@@ -287,8 +286,6 @@ def flat : OCb l :=
   (⟨fun n => Ideal.Quotient.mk _ (ϖ.seqO n), fun n => by rw [← map_pow, seqO_succ]⟩ :
     Perfection (ModP (OC l) l) l)
 
-theorem coeff_flat (n : ℕ) :
-    PreTilt.coeff n ϖ.flat = Ideal.Quotient.mk (Ideal.span {((l : ℕ) : OC l)}) (ϖ.seqO n) := rfl
 
 theorem untilt_flat : ϖ.flat.untilt = ϖ.seqO 0 := by
   refine Perfection.teichmuller_spec (I := Ideal.span {((l : ℕ) : OC l)}) fun n => ⟨ϖ.seqO n, rfl, ?_⟩
@@ -943,7 +940,6 @@ def toAinf : Hom (ϖ.prism a) (ainfObj (ϖ.field a)) where
   f_str r x h := ((isAinf_ainfObj _).mk_eq_str_iff r (ϖ.ev a x)).2
     ((congrArg (ϖ.quotToOC a) h).trans (ϖ.quotToOC_strMap a r))
 
-theorem toAinf_f (x : (Wq l a)⟦X⟧) : (ϖ.toAinf a).f x = ϖ.ev a x := rfl
 
 theorem span_ev_eis : Ideal.span {ϖ.ev a (eis l a e)} = RingHom.ker (Per.θ l) := by
   obtain ⟨ξ, h, -, h1⟩ := exists_generator l
@@ -1041,39 +1037,6 @@ theorem theta_mu {g : GQ l} (hg : g (ϖ.seq 0) = ϖ.seq 0) : Per.θ l (ϖ.mu g) 
 def IsExponent (ζ : ℕ → Om l) (g : GQ l) (x : ℤ_[l]) : Prop :=
   ∀ n, g (ϖ.seq n) = ζ n ^ (PadicInt.toZModPow n x).val * ϖ.seq n
 
-theorem existsUnique_isExponent (ζ : ℕ → Om l) (h0 : ζ 0 = 1) (hs : ∀ n, ζ (n + 1) ^ l = ζ n) (h1 : ζ 1 ≠ 1)
-    {g : GQ l} (hg : g (ϖ.seq 0) = ϖ.seq 0) : ∃! x, ϖ.IsExponent ζ g x := by
-  have hp : ∀ n k, ζ (n + k) ^ l ^ n = ζ k := fun n k => by
-    induction n with
-    | zero => simp
-    | succ n ih => rw [pow_succ', pow_mul, show n + 1 + k = n + k + 1 by omega, hs, ih]
-  have hprim : ∀ n, IsPrimitiveRoot (ζ n) (l ^ n) := fun n => by
-    rcases n with _ | n
-    · simp [h0]
-    · rw [← orderOf_eq_prime_pow (x := ζ (n + 1)) (p := l) (n := n) (by rw [hp n 1]; exact h1)
-        (by rw [← h0]; exact hp (n + 1) 0)]
-      exact IsPrimitiveRoot.orderOf _
-  have hN : ∀ n, NeZero (l ^ n) := fun n => ⟨(pow_pos hl.out.pos n).ne'⟩
-  have hk : ∀ n, ∃ k : ℕ, ζ n ^ k = g (ϖ.seq n) / ϖ.seq n := fun n =>
-    ((hprim n).eq_pow_of_pow_eq_one (by
-      rw [div_pow, ← map_pow, seq_pow, hg, div_self (ϖ.seq_ne_zero 0)])).imp fun _ h => h.2
-  choose k hk using hk
-  have hd : ∀ n, (l : ℤ) ^ n ∣ (k (n + 1) : ℤ) - k n := fun n => by
-    have h2 : ζ n ^ k (n + 1) = ζ n ^ k n := by
-      rw [hk, ← hs n, ← pow_mul, mul_comm, pow_mul, hk, div_pow, ← map_pow, ϖ.seq_succ]
-    have h3 := (hprim n).isUnit_unit (pow_pos hl.out.pos n).ne'
-    have h4 : ((hprim n).isUnit (pow_pos hl.out.pos n).ne').unit ^ k n =
-        ((hprim n).isUnit (pow_pos hl.out.pos n).ne').unit ^ k (n + 1) := Units.ext (by simpa using h2.symm)
-    rw [pow_eq_pow_iff_modEq, ← h3.eq_orderOf] at h4
-    exact_mod_cast h4.dvd
-  refine ⟨PadicInt.ofIntSeq _ (PadicInt.isCauSeq_padicNorm_of_pow_dvd_sub (fun n => (k n : ℤ)) l hd),
-    fun n => ?_, fun y hy => PadicInt.ext_of_toZModPow.1 fun n => ?_⟩
-  · rw [PadicInt.toZModPow_ofIntSeq_of_pow_dvd_sub (fun n => (k n : ℤ)) l hd n, Int.cast_natCast,
-      ZMod.val_natCast, ← pow_eq_pow_mod _ (hprim n).pow_eq_one, hk, div_mul_cancel₀ _ (ϖ.seq_ne_zero n)]
-  · rw [PadicInt.toZModPow_ofIntSeq_of_pow_dvd_sub (fun n => (k n : ℤ)) l hd n, Int.cast_natCast]
-    refine ZMod.val_injective _ ((hprim n).pow_inj (ZMod.val_lt _) (ZMod.val_lt _) ?_)
-    rw [ZMod.val_natCast, ← pow_eq_pow_mod _ (hprim n).pow_eq_one, hk, hy n,
-      mul_div_cancel_right₀ _ (ϖ.seq_ne_zero n)]
 
 theorem IsExponent.coeff_kummer {ϖ : PiSys l e} {ζ : ℕ → Om l} {g : GQ l} {x : ℤ_[l]}
     (h : ϖ.IsExponent ζ g x) (n : ℕ) (z : OC l) (hz : (z : ℂ_[l]) = algebraMap (Om l) ℂ_[l] (ζ n)) :

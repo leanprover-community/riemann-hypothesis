@@ -66,43 +66,8 @@ def srcAt (o : LamObj c nΨ n') (p : Σ τ : E →+* ℂ, Fin (blockSize H nΨ n
   if h : p.1 (H.rt : E) = H.rt0 then .inl (o.τΨ.symm ⟨p.1, h⟩, p.2.cast (if_pos h))
   else .inr (o.τ'.symm ⟨p.1, h⟩, p.2.cast (if_neg h))
 
-theorem srcAt_spec (o : LamObj c nΨ n') (p : Σ τ : E →+* ℂ, Fin (blockSize H nΨ n' τ)) :
-    (srcAt o p).chr = p.1 ∧ (srcAt o p).copy = (p.2 : ℕ) := by
-  unfold srcAt
-  split_ifs with h <;> exact ⟨by simp [FinalTheorems.chr], rfl⟩
 
-theorem srcAt_bijective (o : LamObj c nΨ n') : Function.Bijective (srcAt o) := by
-  constructor
-  · rintro ⟨τ, i⟩ ⟨τ', i'⟩ h
-    have h1 := srcAt_spec o ⟨τ, i⟩
-    have h2 := srcAt_spec o ⟨τ', i'⟩
-    rw [h] at h1
-    obtain rfl : τ = τ' := h1.1.symm.trans h2.1
-    obtain rfl : i = i' := Fin.ext (h1.2.symm.trans h2.2)
-    rfl
-  · rintro (⟨a, j⟩ | ⟨a, j⟩)
-    · have h := (o.τΨ a).2
-      refine ⟨⟨(o.τΨ a).1, j.cast (if_pos h).symm⟩, ?_⟩
-      unfold srcAt
-      rw [dif_pos h]
-      simp only [Subtype.coe_eta, Equiv.symm_apply_apply]
-      rfl
-    · have h := (o.τ' a).2
-      refine ⟨⟨(o.τ' a).1, j.cast (if_neg h).symm⟩, ?_⟩
-      unfold srcAt
-      rw [dif_neg h]
-      simp only [Subtype.coe_eta, Equiv.symm_apply_apply]
-      rfl
 
-theorem exists_isEvident (o : LamObj c nΨ n') {f : ℕ} (h₁ : o.xΨ.P.g = f) (h₂ : o.x'.P.g = f)
-    (h₃ : o.xB.P.g = f * (nΨ + n')) (U : Matrix (Fin o.xB.P.g) (Fin o.xB.P.g) o.K₁) :
-    ∃ L : LamLetters o, L.m = blockSize H nΨ n' ∧ L.U = U ∧ L.IsEvident := by
-  let b := Equiv.ofBijective _ (srcAt_bijective o)
-  let d : FinalTheorems o ≃ Fin o.xB.P.g := Fintype.equivFinOfCardEq (by simp [h₁, h₂, h₃, mul_add])
-  refine ⟨⟨blockSize H nΨ n', b.trans d, d.symm, U, fun k => (d.symm k).line⟩, rfl, rfl, d.symm.bijective,
-    fun τ i => ?_, fun _ => rfl⟩
-  have := srcAt_spec o ⟨τ, i⟩
-  simpa [b] using this
 
 end Letters
 
@@ -146,7 +111,6 @@ def LamPtClauses {σ₀ : c.F →+* ℂ} {r : ℕ} (Un : Unf Xo c σ₀ r) (k : 
 def frameOf {r : ℕ} (Xx : DataX E r) {X : Data E r} (hX : Xx.toData = X) (x : Frame X.Ψ r) : Frame Xx.Ψ r :=
   cast (congrArg (fun Y : Data E r => Frame Y.Ψ r) hX.symm) x
 
-theorem frameOf_rfl {r : ℕ} (Xx : DataX E r) (x : Frame Xx.Ψ r) : frameOf Xx rfl x = x := rfl
 
 end Point
 

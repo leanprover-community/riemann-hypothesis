@@ -1,10 +1,28 @@
 import Formalism.HermitianCurvature.StatementTop
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.VanishingAtRelevantPoints
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.FibreExpansionZeroFails
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellVanishingOfCommute
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BudgetClassEstimate
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralIdentities
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSetting
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegrableUnipotentNormRpowNeg
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheoremPIntegralOfPlaces
 
+section
+namespace Formalism.FourierDecayAlt.P
+
+
+
+end Formalism.FourierDecayAlt.P
+end
+
+section
+namespace Formalism.FourierDecayAlt.P
+
+
+end Formalism.FourierDecayAlt.P
+end
+
+section
 noncomputable section
 
 open MeasureTheory Matrix Formalism.QuantumDeterminants Formalism.FourierDecayAlt
@@ -178,25 +196,7 @@ theorem hsInner_neg_right [FiniteDimensional ℂ Wq] (X Y : Wq →L[ℂ] Wp) :
     B.hsInner X (-Y) = -B.hsInner X Y := by
   simp [hsInner_eq, inner_neg_left, Finset.sum_neg_distrib]
 
-theorem inCC_le {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] {A A' : ℝ} {m : ℕ}
-    {F : B.Mat k r → E} (hAA : A' ≤ A) (h : B.InCC A m F) : B.InCC A' m F := by
-  unfold B.InCC B.CCle at h ⊢
-  obtain ⟨c, hc1, hc2⟩ := h
-  refine ⟨c, hc1, fun u v hu hv hl g hg => ?_⟩
-  have h1 : 1 ≤ B.gN g := by
-    first
-    | exact BetaSesquilinearity.gN_ge_one hg
-    | exact Formalism.FourierDecayAlt.P.BetaSesquilinearity.gN_ge_one hg
-    | exact Formalism.FourierDecayAlt.BetaSesquilinearity.gN_ge_one hg
-  calc B.gN g ^ A' * ‖B.dLR u v F g‖ ≤ B.gN g ^ A * ‖B.dLR u v F g‖ :=
-        mul_le_mul_of_nonneg_right (Real.rpow_le_rpow_of_exponent_le h1 hAA) (norm_nonneg _)
-    _ ≤ c := hc2 u v hu hv hl g hg
 
-theorem ckOn_neg {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] {m : ℕ∞} {UU : Set (B.Mat k r)}
-    {f : B.Mat k r → E} (h : B.CkOn m UU f) : B.CkOn m UU (fun x => -f x) := by
-  intro g₀ hg₀
-  obtain ⟨U, f', hU, hgU, hcd, heq⟩ := h g₀ hg₀
-  exact ⟨U, fun x => -f' x, hU, hgU, hcd.neg, fun g hg hG => congrArg Neg.neg (heq g hg hG)⟩
 
 def chi0 (x : ℝ) : ℝ := Real.smoothTransition (2 * x - 1)
 
@@ -224,101 +224,15 @@ def negT (T : B.DTerm k r Wp Wq) : B.DTerm k r Wp Wq where
 
 def diffOp (Θ₁ Θ₂ : B.DiffOp k r Wp Wq) : B.DiffOp k r Wp Wq := Θ₁ ++ Θ₂.map negT
 
-theorem opApply_diffOp (Θ₁ Θ₂ : B.DiffOp k r Wp Wq) (F : B.Mat k r → (Wq →L[ℂ] Wp)) (g : B.Mat k r) :
-    B.opApply (diffOp Θ₁ Θ₂) F g = B.opApply Θ₁ F g - B.opApply Θ₂ F g := by
-  have key : ∀ l : B.DiffOp k r Wp Wq,
-      ((l.map negT).map fun T => T.coef g (B.Rw T.word F g)).sum
-        = -(l.map fun T => T.coef g (B.Rw T.word F g)).sum := by
-    intro l
-    induction l with
-    | nil => simp
-    | cons a l ih =>
-      simp only [List.map_cons, List.sum_cons, ih, neg_add]
-      simp [negT]
-  unfold B.opApply diffOp
-  rw [List.map_append, List.sum_append, key, sub_eq_add_neg]
 
-theorem foldr_max_append (l₁ l₂ : List ℕ) :
-    (l₁ ++ l₂).foldr max 0 = max (l₁.foldr max 0) (l₂.foldr max 0) := by
-  induction l₁ with
-  | nil => simp
-  | cons a l ih => simp [ih, max_assoc]
 
-theorem opOrder_diffOp (Θ₁ Θ₂ : B.DiffOp k r Wp Wq) :
-    B.opOrder (diffOp Θ₁ Θ₂) = max (B.opOrder Θ₁) (B.opOrder Θ₂) := by
-  unfold B.opOrder diffOp
-  rw [List.map_append, foldr_max_append, List.map_map]
-  rfl
 
 theorem rho_sub (D : B.RealPlaceData k r Wp Wq) (p : B.SS k r) (F₁ F₂ : B.Mat k r → (Wq →L[ℂ] Wp))
     (g : B.Mat k r) : B.rho D p (fun x => F₁ x - F₂ x) g = B.rho D p F₁ g - B.rho D p F₂ g := by
   simp [B.rho, ContinuousLinearMap.sub_comp, ContinuousLinearMap.comp_sub]
 
-theorem epart_left {nf nf' : ℕ} (fib : Fin nf → B.Mat k r → C6.EndH Wp Wq)
-    (fib' : Fin nf' → B.Mat k r → C6.EndH Wp Wq) (es : List (Fin nf × List (B.Mat k r))) (g : B.Mat k r) :
-    C6.Epart (Fin.append fib fib') (es.map fun e => (Fin.castAdd nf' e.1, e.2)) g = C6.Epart fib es g := by
-  simp [C6.Epart, Function.comp_def, Fin.append_left]
 
-theorem epart_right {nf nf' : ℕ} (fib : Fin nf → B.Mat k r → C6.EndH Wp Wq)
-    (fib' : Fin nf' → B.Mat k r → C6.EndH Wp Wq) (es : List (Fin nf' × List (B.Mat k r))) (g : B.Mat k r) :
-    C6.Epart (Fin.append fib fib') (es.map fun e => (Fin.natAdd nf e.1, e.2)) g = C6.Epart fib' es g := by
-  simp [C6.Epart, Function.comp_def, Fin.append_right]
 
-theorem inDDPlus_diff (D : B.RealPlaceData k r Wp Wq) {nf nf' : ℕ} {fib : Fin nf → B.Mat k r → C6.EndH Wp Wq}
-    {fib' : Fin nf' → B.Mat k r → C6.EndH Wp Wq} {L : Finset (Fin (r + 2))} {o κ o' κ' : ℕ}
-    {Θ₁ Θ₂ : B.DiffOp k r Wp Wq} (h₁ : C6.InDDPlus D fib L o κ Θ₁) (h₂ : C6.InDDPlus D fib' L o' κ' Θ₂) :
-    C6.InDDPlus D (Fin.append fib fib') L (max o o') (max κ κ') (diffOp Θ₁ Θ₂) := by
-  unfold C6.InDDPlus at h₁ h₂ ⊢
-  obtain ⟨hs₁, hc₁, ht₁⟩ := h₁
-  obtain ⟨hs₂, hc₂, ht₂⟩ := h₂
-  refine ⟨?_, ?_, ?_⟩
-  · intro T hT
-    rcases List.mem_append.1 hT with hT | hT
-    · exact hs₁ T hT
-    · obtain ⟨T₂, hT₂, rfl⟩ := List.mem_map.1 hT
-      exact ⟨ckOn_neg (hs₂ T₂ hT₂).1, ckOn_neg (hs₂ T₂ hT₂).2⟩
-  · intro p hp f hf g hg
-    have mono : ∀ (m m' : ℕ∞), m' ≤ m → B.CkOn m (B.GV k r) f → B.CkOn m' (B.GV k r) f := by
-      intro m m' hm h g₀ hg₀
-      obtain ⟨U, f', hU, hgU, hcd, heq⟩ := h g₀ hg₀
-      exact ⟨U, f', hU, hgU, hcd.of_le (by exact_mod_cast hm), heq⟩
-    rw [opOrder_diffOp] at hf
-    have e1 := hc₁ p hp f (mono _ _ (by exact_mod_cast le_max_left _ _) hf) g hg
-    have e2 := hc₂ p hp f (mono _ _ (by exact_mod_cast le_max_right _ _) hf) g hg
-    have hfun : B.opApply (diffOp Θ₁ Θ₂) f = fun x => B.opApply Θ₁ f x - B.opApply Θ₂ f x := by
-      funext x
-      exact opApply_diffOp Θ₁ Θ₂ f x
-    rw [opApply_diffOp, e1, e2, hfun, rho_sub]
-  · intro T hT
-    rcases List.mem_append.1 hT with hT | hT
-    · obtain ⟨P, a, b, c, es, hP, hab, hlen, hlie, hco⟩ := ht₁ T hT
-      refine ⟨P, a, b, c, es.map fun e => (Fin.castAdd nf' e.1, e.2), ?_, hab, ?_, ?_, ?_⟩
-      · obtain ⟨q, hq, hqe⟩ := hP
-        exact ⟨q, hq.trans (le_max_left _ _), hqe⟩
-      · simp only [List.map_map, Function.comp_def]
-        exact hlen.trans (le_max_left _ _)
-      · intro e he X hX
-        obtain ⟨e', he', rfl⟩ := List.mem_map.1 he
-        exact hlie e' he' X hX
-      · intro g hg
-        rw [hco g hg, epart_left]
-    · obtain ⟨T₂, hT₂, rfl⟩ := List.mem_map.1 hT
-      obtain ⟨P, a, b, c, es, hP, hab, hlen, hlie, hco⟩ := ht₂ T₂ hT₂
-      refine ⟨fun g => -P g, a, b, c, es.map fun e => (Fin.natAdd nf e.1, e.2), ?_, hab, ?_, ?_, ?_⟩
-      · obtain ⟨q, hq, hqe⟩ := hP
-        refine ⟨-q, ?_, fun g => ?_⟩
-        · rw [MvPolynomial.totalDegree_neg]
-          exact hq.trans (le_max_right _ _)
-        · rw [map_neg, ← hqe g]
-      · simp only [List.map_map, Function.comp_def]
-        exact hlen.trans (le_max_right _ _)
-      · intro e he X hX
-        obtain ⟨e', he', rfl⟩ := List.mem_map.1 he
-        exact hlie e' he' X hX
-      · intro g hg
-        show -T₂.coef g = _
-        rw [hco g hg, epart_right]
-        simp [neg_mul, neg_smul]
 
 end diff
 
@@ -358,128 +272,8 @@ theorem thr_arith {c₃ CV R Nn : ℝ} (hc₃ : 0 ≤ c₃) (hCV : 8 * c₃ ≤ 
     _ ≤ R * (8 * c₃ * (R ^ 3 * Nn + Nn ^ 2 + R ^ 4)) := h5
     _ ≤ R * (CV * (R ^ 3 * Nn + Nn ^ 2 + R ^ 4)) := mul_le_mul_of_nonneg_left h4 hR0
 
-theorem cutAll_empty {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
-    [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] (D : B.RealPlaceData k r Wp Wq)
-    (χ₀ : ℝ → ℝ) (de : ℝ) (F : B.Mat k r → (Wq →L[ℂ] Wp)) : C6.cutAll D χ₀ de ∅ F = F := by
-  funext g
-  simp [C6.cutAll, C6.chiAll]
 
-theorem topLiftVanishing_of_density_of_radialOp (hDens : C6.LemmaDens) (hRad : LiftRadialOp) : Top.TopLiftVanishing := by
-  intro Cb hCb
-  obtain ⟨C₀v, hC₀v⟩ := Formalism.FourierDecayAlt.P.vanishing_at_relevant_points Formalism.FourierDecayAlt.P.orbital_integral_commutes_large hDens Cb hCb
-  obtain ⟨c₃, hc₃, hConv⟩ := orbConv_common
-  obtain ⟨C₀b, hC₀b⟩ := Formalism.FourierDecayAlt.P.c6_budgetArith_proof Cb (⌈8 * c₃⌉₊ + 1) hCb
-  refine ⟨max C₀v C₀b, ?_⟩
-  intro Wp Wq _ _ _ _ _ _ P Bs ν' m₀ L st Θ Θ' hr hpl _hbf hT hT' hD hD' w As A ε F h1 h2 _hAu hA hcl e p _hp
-  obtain ⟨nf, fib, o, κ, Dop, hfib, hDD, ho, hκ, hΘ⟩ := hD w e
-  obtain ⟨nf', fib', o', κ', Dop', hfib', hDD', ho', hκ', hΘ'⟩ := hD' w e
-  obtain ⟨hε, -, hclm, hsupp⟩ := hcl
-  have hrr : (1 : ℝ) ≤ P.r := by exact_mod_cast hr
-  have hAs0 : (0 : ℝ) ≤ As := Nat.cast_nonneg _
-  have hr4 : (0 : ℝ) ≤ ((P.r : ℝ) + 1) ^ 4 := by positivity
-  have hAv : C₀v * ((P.r : ℝ) + 1) ^ 4 * (As : ℝ) ≤ A :=
-    le_trans (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (le_max_left _ _) hr4) hAs0) hA
-  have hAb : C₀b * ((P.r : ℝ) + 1) ^ 4 * (As : ℝ) ≤ A :=
-    le_trans (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (le_max_right _ _) hr4) hAs0) hA
-  have hn2 : 2 * P.r + 2 ≤ 2 * P.r + P.k + 1 := by have := Bs.k_pos; omega
-  have hn1 : (1 : ℝ) ≤ ((2 * P.r + P.k + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ 2 * P.r + P.k + 1)
-  have hCV : 8 * c₃ ≤ ((⌈8 * c₃⌉₊ + 1 : ℕ) : ℝ) := by
-    have := Nat.le_ceil (8 * c₃); push_cast; linarith
-
-  have hdecay : ∀ (nf₁ : ℕ) (fib₁ : Fin nf₁ → B.Mat P.k P.r → C6.EndH Wp Wq) (o₁ κ₁ : ℕ)
-      (Dop₁ : B.DiffOp P.k P.r Wp Wq), (∀ j, C6.FibBound Bs (fib₁ j)) → C6.InDDPlus Bs fib₁ ∅ o₁ κ₁ Dop₁ →
-      (o₁ : ℝ) ≤ Cb * (w.length : ℝ) * ((2 * P.r + P.k + 1 : ℕ) : ℝ) →
-      (κ₁ : ℝ) ≤ Cb * ((P.r : ℝ) + 1) * (o₁ : ℝ) →
-      B.InCC (c₃ * ((P.r : ℝ) + 1) ^ 2 * ((P.r : ℝ) * ((2 * P.r + P.k + 1 : ℕ) : ℝ) + 1)) 1 (B.opApply Dop₁ F) := by
-    intro nf₁ fib₁ o₁ κ₁ Dop₁ hf₁ hd₁ ho₁ hκ₁
-    have hB := Formalism.FourierDecayAlt.P.budget_class_estimate P.k P.r Wp Wq Bs nf₁ fib₁ ∅ o₁ κ₁ Dop₁ ε 1 chi0 A F hε one_pos
-      base_cutoff_is_truncation hf₁ hd₁ hclm hsupp 1
-    rw [cutAll_empty] at hB
-    refine inCC_le ?_ hB
-    have hBA := hC₀b P.r (2 * P.r + P.k + 1) w.length o₁ κ₁ As A hr hn2 h1 h2 ho₁ hκ₁ hAb
-    have hthr := thr_arith hc₃ hCV hrr hn1
-    have hmm : (1 : ℝ) ≤ (C6.mmV (⌈8 * c₃⌉₊ + 1) P.r : ℝ) := by
-      unfold C6.mmV
-      exact_mod_cast Nat.one_le_iff_ne_zero.mpr (by positivity)
-    have hkey : 3 * ((P.r : ℝ) + 1) * (((1 : ℕ) : ℝ) + o₁) ≤
-        3 * ((P.r : ℝ) + 1) * ((C6.mmV (⌈8 * c₃⌉₊ + 1) P.r : ℝ) + o₁) :=
-      mul_le_mul_of_nonneg_left (by push_cast; linarith) (by positivity)
-    unfold C6.AV at hBA
-    push_cast at hBA hthr hkey ⊢
-    linarith
-
-  unfold D.vecV
-  by_cases h : D.IsLocPt p (P.r + 1) ∧ 0 < D.ptG (Tz P.k P.r Bs.z * Tz P.k P.r Bs.z') P.r p
-  swap
-  · rw [dif_neg h, dif_neg h]
-  rw [dif_pos h, dif_pos h]
-  by_cases h' : ∃ γ ∈ B.GV P.k P.r, Zhat P.k P.r Bs.z Bs.z' γ = D.ptMatN p (P.r + 1) ∧ D.IsDFrame Bs ν' m₀ γ
-  swap
-  · rw [dif_neg h', dif_neg h']
-  rw [dif_pos h', dif_pos h']
-  obtain ⟨hγ, hZ, -⟩ := h'.choose_spec
-  obtain ⟨hmono, hd⟩ := Formalism.FourierDecayAlt.P.Dx2.VV.ptMatN_monoP' p (P.r + 1) h.1.2 h.1.1
-  have hZm := hZ.trans hmono
-  have hrel : C6.IsRelevant Bs h'.choose := Formalism.FourierDecayAlt.P.relevant_points_holds P.k P.r Wp Wq Bs p h'.choose h.1 hγ hZ
-  have hGpos : 0 < Gf P.k P.r Bs.z Bs.z' h'.choose := by
-    rw [← Formalism.FourierDecayAlt.P.ptG_spec P.k P.r Bs.z Bs.z' p h'.choose h.1 hZ]; exact h.2
-  obtain ⟨O, hOμ, hOJ⟩ := Formalism.FourierDecayAlt.P.orbital_data_of_parts Formalism.FourierDecayAlt.P.radial_measure_is_haar Formalism.FourierDecayAlt.P.orbital_integral_indep_choice P.k P.r Wp Wq Bs
-    h'.choose _ _ hrel hd hZm
-  obtain ⟨θ, hθ, hθint⟩ := hConv P.k P.r Wp Wq Bs h'.choose _ _ _ hγ hd hZm hGpos le_rfl
-
-  have horb : ∀ (G₁ G₂ : B.Mat P.k P.r → (Wq →L[ℂ] Wp)), (∀ g ∈ C6.domL Bs ∅, G₁ g = G₂ g) →
-      ∀ᵐ q ∂Bs.μSS, D.orbIntegrand Bs h'.choose G₁ q = (1 : ℂ) • D.orbIntegrand Bs h'.choose G₂ q := by
-    intro G₁ G₂ hG
-    filter_upwards [Formalism.FourierDecayAlt.P.B5.ae_inSS Bs] with q hq
-    have hm : B.sgs q h'.choose ∈ C6.domL Bs ∅ :=
-      ⟨Formalism.FourierDecayAlt.P.B7.sgs_mem Bs hq hγ, by rw [Formalism.FourierDecayAlt.P.JCx1.needs.gf_sgs Bs hq]; exact hGpos, by simp⟩
-    simp only [D.orbIntegrand, B.rho, hG _ hm, one_smul]
-  rw [Formalism.FourierDecayAlt.P.JCx1.needs.orbJ_smul_of_ae Bs h'.choose _ _ _ 1 (horb _ _ (hΘ F)),
-    Formalism.FourierDecayAlt.P.JCx1.needs.orbJ_smul_of_ae Bs h'.choose _ _ _ 1 (horb _ _ (hΘ' F)), one_smul, one_smul]
-  have hi₁ := hθint _ (hdecay _ fib _ _ Dop hfib hDD ho hκ)
-  have hi₂ := hθint _ (hdecay _ fib' _ _ Dop' hfib' hDD' ho' hκ')
-  have hθO : D.IsNormCut Bs h'.choose O.μR θ := by rw [hOμ]; exact hθ
-  rw [← hOJ _ ⟨θ, hθO, hi₁⟩, ← hOJ _ ⟨θ, hθO, hi₂⟩]
-  have hw₁ := O.weil (B.opApply Dop F) θ hθO.1 hθO.2.1 hθO.2.2 hi₁
-  have hw₂ := O.weil (B.opApply Dop' F) θ hθO.1 hθO.2.1 hθO.2.2 hi₂
-
-  have hΔ := inDDPlus_diff Bs hDD hDD'
-  have hRZ : C6.RadZero Bs (diffOp Dop Dop') := by
-    intro J hJ hE g hg
-    rw [opApply_diffOp, sub_eq_zero]
-    exact hRad Wp Wq P Bs L st Θ Θ' hr hpl hT hT' w e Dop Dop' hDD.1 hDD.2.1 hDD'.1 hDD'.2.1 hΘ hΘ' J
-      (by rw [← opOrder_diffOp]; exact hJ) hE g hg
-  have hfibA : ∀ j, C6.FibBound Bs (Fin.append fib fib' j) := by
-    intro j
-    refine Fin.addCases (fun i => ?_) (fun i => ?_) j
-    · rw [Fin.append_left]; exact hfib i
-    · rw [Fin.append_right]; exact hfib' i
-  have hoΔ : ((max o o' : ℕ) : ℝ) ≤ Cb * (w.length : ℝ) * ((2 * P.r + P.k + 1 : ℕ) : ℝ) := by
-    rw [Nat.cast_max]; exact max_le ho ho'
-  have hκΔ : ((max κ κ' : ℕ) : ℝ) ≤ Cb * ((P.r : ℝ) + 1) * ((max o o' : ℕ) : ℝ) := by
-    rw [Nat.cast_max, Nat.cast_max]
-    have hc0 : 0 ≤ Cb * ((P.r : ℝ) + 1) := by positivity
-    exact max_le (le_trans hκ (mul_le_mul_of_nonneg_left (le_max_left _ _) hc0))
-      (le_trans hκ' (mul_le_mul_of_nonneg_left (le_max_right _ _) hc0))
-  have hV := hC₀v P.k P.r Wp Wq Bs (nf + nf') (Fin.append fib fib') ∅ (max o o') (max κ κ') w.length As
-    (diffOp Dop Dop') ε 1 chi0 A F h'.choose O hr hε one_pos base_cutoff_is_truncation hfibA hΔ hRZ hoΔ hκΔ h1 h2 hAv hclm
-    hsupp hrel hGpos
-  rw [cutAll_empty] at hV
-  have e3 : B.opApply (diffOp Dop Dop') F = fun x => B.opApply Dop F x - B.opApply Dop' F x :=
-    funext fun x => opApply_diffOp Dop Dop' F x
-  have hsplit : (fun q => θ q • D.orbIntegrand Bs h'.choose (B.opApply (diffOp Dop Dop') F) q) =
-      fun q => θ q • D.orbIntegrand Bs h'.choose (B.opApply Dop F) q -
-        θ q • D.orbIntegrand Bs h'.choose (B.opApply Dop' F) q := by
-    funext q
-    simp only [D.orbIntegrand, e3, rho_sub, smul_sub]
-  have hi₃ : Integrable (fun q => θ q • D.orbIntegrand Bs h'.choose (B.opApply (diffOp Dop Dop') F) q)
-      Bs.μSS := by
-    rw [hsplit]; exact hi₁.sub hi₂
-  have hw₃ := O.weil (B.opApply (diffOp Dop Dop') F) θ hθO.1 hθO.2.1 hθO.2.2 hi₃
-  rw [hV] at hw₃
-  change ∫ q, θ q • D.orbIntegrand Bs h'.choose (B.opApply (diffOp Dop Dop') F) q ∂Bs.μSS = 0 at hw₃
-  rw [hsplit, integral_sub hi₁ hi₂, sub_eq_zero] at hw₃
-  rw [← hw₁, ← hw₂]
-  exact hw₃
 
 end Formalism.FourierDecayAlt.P.Topx2
+end
+end

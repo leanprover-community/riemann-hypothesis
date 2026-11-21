@@ -76,9 +76,6 @@ structure IsCubSymIso (m : CubeMap G' G) (L' : CubSym G') (L : CubSym G)
       val (L := L.L.L) L.sym (ψ ≫ m.F) z J * isoV w z J' J ψ =
         isoV w z J' J (ψ ≫ (ι[G']).left) * val (L := L'.L.L) L'.sym ψ z J'
 
-theorem IsCubSymIso.isPullCubical {m : CubeMap G' G} {L' : CubSym G'} {L : CubSym G}
-    {w : LB.Iso L'.L.L (L.L.L.pull m.F)} (h : IsCubSymIso m L' L w) :
-    m.IsPullCubical L'.cub L.cub := ⟨w, h.gen, h.rig, h.cub⟩
 
 end Iso
 
@@ -204,9 +201,6 @@ theorem existsUnique_isPairing (N : ℕ) {T : Over S} (x x' : T ⟶ G) (hx : x ^
 def pairing (N : ℕ) {T : Over S} (x x' : T ⟶ G) (hx : x ^ N = 1) (hx' : x' ^ N = 1) :
     Γ(T.left, ⊤)ˣ := (existsUnique_isPairing c N x x' hx hx').exists.choose
 
-theorem isPairing_pairing (N : ℕ) {T : Over S} (x x' : T ⟶ G) (hx : x ^ N = 1) (hx' : x' ^ N = 1) :
-    IsPairing c N x x' (pairing c N x x' hx hx') :=
-  (existsUnique_isPairing c N x x' hx hx').exists.choose_spec
 
 end Pairing
 
@@ -256,15 +250,6 @@ def IsLocalWeightGen (i : splitTorus S X ⟶ G) (q : G ⟶ B) (χ : X) (V : B.le
 def IsWeightBundle (i : splitTorus S X ⟶ G) (q : G ⟶ B) (χ : X) (N : LB B.left) : Prop :=
   N.IsLB ∧ ∃ u, IsWeightGen i χ N (K := PUnit) (fun _ => q.left) (fun _ => -1) u
 
-theorem IsTorusExt.isStable {i : splitTorus S X ⟶ G} {q : G ⟶ B} (h : IsTorusExt i q)
-    (V : B.left.Opens) : IsStable i (q.left ⁻¹ᵁ V) := by
-  intro T z t x hx
-  have := h.q_hom
-  have e : ((t ≫ i) * x) ≫ q = x ≫ q := by
-    rw [MonObj.mul_comp, Category.assoc, h.isKernel.w, ← Category.assoc, comp_toUnit,
-      ← Hom.one_def, _root_.one_mul]
-  have e' : (((t ≫ i) * x) ≫ q).left z ∈ V := by rw [e]; exact hx
-  exact e'
 
 end Torus
 

@@ -84,102 +84,11 @@ namespace Formalism.FourierDecayAlt.P
 
 open Jx6
 
-theorem estimates_mono : Formalism.FourierDecayAlt.J.EstimatesMono := by
-  intro E W _ D szD' szL' vol' C₄ hC4 hav hD hL hV hG hW
-  refine ⟨?_, ?_, ?_⟩
-  · intro h ε hε i hi1 hi2 w hw hcnt
-    obtain ⟨θ, hθ, H⟩ := h ε hε i hi1 hi2 w hw hcnt
-    refine ⟨θ, hθ, ?_⟩
-    intro Y hY κ hκ
-    obtain ⟨e0, el⟩ := H Y hY κ hκ
-    refine ⟨e0, fun l hl hl0 => ?_⟩
-    obtain ⟨A, hA⟩ := el l hl hl0
-    refine ⟨A, le_trans hA ?_⟩
-    exact mul_le_mul_of_nonneg_right
-      (maj_mono D (D.szD i) (szD' i) l (fun v => hD i v) (fun v => hav v l))
-      (Finset.sum_nonneg fun w' _ => mul_nonneg ((hθ A).1 w') (baseGram_nonneg D hG hW hε _ w' Y hκ))
-  · intro h ε hε i s hs hsi hi hns w hw hcnt
-    obtain ⟨θ, hθ, H⟩ := h ε hε i s hs hsi hi hns w hw hcnt
-    refine ⟨θ, hθ, ?_⟩
-    intro Y S κ hY hκ t ht t' ht' h0 h0' hne
-    obtain ⟨π, hπ⟩ := H Y S κ hY hκ t ht t' ht' h0 h0' hne
-    refine ⟨π, le_trans hπ ?_⟩
-    exact mul_le_mul_of_nonneg_right
-      (maj_mono D (D.szL (i - s + 1) s) (szL' (i - s + 1) s) _ (fun v => hL _ _ v)
-        (fun v => hav v _))
-      (Finset.sum_nonneg fun x _ => mul_nonneg ((hθ π).1 x) (div_nonneg (add_nonneg
-        (Nst_nonneg D hG hW hε i s x.1 Y (blk_psd hκ ht) t)
-        (Nst_nonneg D hG hW hε i s x.2 Y (blk_psd hκ ht') t')) (by norm_num)))
-  · intro h ε hε i s hs hsi hi w hw hcnt hvol
-    obtain ⟨θ, hθ, H⟩ := h ε hε i s hs hsi hi w hw hcnt (le_trans (hV _ _).2 hvol)
-    refine ⟨θ, hθ, ?_⟩
-    intro Y hY κ hκ t₀ S hS
-    refine le_trans (H Y hY κ hκ t₀ S hS) ?_
-    exact mul_le_mul_of_nonneg_right
-      (mul_le_mul_of_nonneg_left
-        (Finset.prod_le_prod (fun s' _ => (hV _ s').1) (fun s' _ => (hV _ s').2)) (pow_nonneg hC4 _))
-      (Finset.sum_nonneg fun w' _ => mul_nonneg (hθ.1 w') (baseGram_nonneg D hG hW hε _ w' Y hκ))
 
-theorem product_of_energies : Formalism.FourierDecayAlt.J.ProductOfE := by
-  intro r e sd h0 h1
-  rw [Finset.prod_Icc_succ_top (by omega), h1, Finset.prod_eq_one, one_mul]
-  intro i hi; rw [h0 i hi, add_zero]
 
-theorem recursion_gives_explicit_form : Formalism.FourierDecayAlt.J.RecursionGivesBounds := by
-  intro hA C₁ C₄ h1 h4
-  obtain ⟨C, C', h⟩ := hA C₁ C₄ h1 h4
-  refine ⟨C, C', ?_⟩
-  intro E W _ D Θ jn H _ _ _ Vt c hyp hC' hr he P _ B hI hδ hS
-  obtain ⟨a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17⟩ := hyp
-  unfold S3.MassData.InTheoremA
-  apply hS
-  intro R
-  have := h E W D Θ jn H Vt c a1 a2 a3 hC' hr a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 R
-  rw [Finset.prod_eq_one (fun i hi => by rw [he i hi, add_zero]), mul_one] at this
-  rw [hδ, hI]; exact this
 
-theorem recursion_gives_form : Formalism.FourierDecayAlt.J.RecursionGivesForm := by
-  intro hA C₁ C₄ h1 h4
-  obtain ⟨C, C', h⟩ := hA C₁ C₄ h1 h4
-  refine ⟨C, C', ?_⟩
-  intro E W _ D Θ jn H _ _ _ Vt c hyp hC' hr he P _ B he1 hI hδ hS
-  obtain ⟨a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17⟩ := hyp
-  have hprod : ∏ i ∈ Icc 1 (D.r + 1), (1 + D.e i) = B.e1 := by
-    rw [Finset.prod_Icc_succ_top (by omega : 1 ≤ D.r + 1),
-      Finset.prod_eq_one (fun i hi => by rw [he i hi, add_zero]), one_mul, he1]
-  have key := hS ((1 + B.δ) * B.e1 * B.IntN) (fun R => by
-    have := h E W D Θ jn H Vt c a1 a2 a3 hC' hr a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 R
-    rw [hprod] at this
-    rw [hδ, hI]; exact this)
-  calc B.c0 * B.c0' * B.KV ≤ B.n0c * ((1 + B.δ) * B.e1 * B.IntN) := key
-    _ = _ := by ring
 
-theorem top_energy : Formalism.FourierDecayAlt.J.TopE := by
-  intro sd e h hs
-  have h1 : (1 : ℝ) ≤ max sd 1 := le_max_right _ _
-  have h2 : sd ≤ max sd 1 := le_max_left _ _
-  have h3 : max sd 1 ≤ 2 := max_le hs (by norm_num)
-  refine ⟨by linarith, by linarith, by linarith⟩
 
-theorem each_level_counted_once : Formalism.FourierDecayAlt.J.OnceOnly := by
-  intro P _ B hpos hk hA
-  unfold S3.MassData.InTheoremA S3.MassData.Smod at hA
-  obtain ⟨hk1, hk2⟩ := hk
-  have hp := hpos.2
-  have hvN : 0 < B.volN := by tauto
-  have hvH : 0 < B.volH := by tauto
-  have hvN' : 0 < B.volN' := by tauto
-  have hvH' : 0 < B.volH' := by tauto
-  have hd : 0 < B.dimπ := by tauto
-  have hd' : 0 < B.dimπ' := by tauto
-  have hn : 0 < B.n0c := by tauto
-  have hs : 0 ≤ B.supdens := by tauto
-  have c0 : 0 ≤ B.c0 * B.c0' := by unfold S3.MassData.c0 S3.MassData.c0'; positivity
-  calc B.c0 * B.c0' * B.KV ≤ B.c0 * B.c0' * (B.supdens * B.n0c * B.KtopV) :=
-        mul_le_mul_of_nonneg_left hk1 c0
-    _ = B.supdens * B.n0c * (B.c0 * B.c0' * B.KtopV) := by ring
-    _ ≤ B.supdens * B.n0c * ((1 + B.δ) * B.IntN) := mul_le_mul_of_nonneg_left hA (by positivity)
-    _ = _ := by ring
 
 theorem form_gives_theorem_A : Formalism.FourierDecayAlt.J.FormGivesMain := by
   intro hM P _ B hPos he hKV h2A hF hMass hform hJ hNu hInf hVol hLev hMas hCol hOrd hTyp hInd

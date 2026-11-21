@@ -74,42 +74,6 @@ def symGrp : Subgroup (GL (Fin κ ⊕ Fin (2 * ρ + 1)) F) :=
 
 variable {F κ ρ}
 
-theorem mem_symGrp_iff {g : GL (Fin κ ⊕ Fin (2 * ρ + 1)) F} :
-    g ∈ symGrp F κ ρ ↔ ∃ n ∈ radN F κ ρ, ∃ u ∈ epsU F κ ρ, g = n * u := by
-  constructor
-  · intro hg
-    have hg' := mem_patGrp.1 hg
-    have ht : g.val.toBlocks₁₁.BlockTriangular id := fun i j hij => by
-      have : ¬ i < j := not_lt.2 (le_of_lt hij)
-      have hne : i ≠ j := ne_of_gt hij
-      simpa [toBlocks₁₁, Matrix.one_apply, hne] using hg' (.inl i) (.inl j) (by simpa [SymFree, EpsLt, symmetricBlockIndex] using hij.le)
-    have hd : (fromBlocks g.val.toBlocks₁₁ 0 0 1 : Matrix (Fin κ ⊕ Fin (2 * ρ + 1)) _ F).det ≠ 0 := by
-      rw [det_fromBlocks_zero₂₁, det_of_upperTriangular ht, det_one, mul_one]
-      refine Finset.prod_ne_zero_iff.2 fun i _ => ?_
-      have := hg' (.inl i) (.inl i) (symFree_irrefl κ ρ _)
-      simp only [toBlocks₁₁, of_apply, this]; simp
-    let u : GL (Fin κ ⊕ Fin (2 * ρ + 1)) F := Matrix.GeneralLinearGroup.mkOfDetNeZero _ hd
-    have uv : u.val = fromBlocks g.val.toBlocks₁₁ 0 0 1 := rfl
-    have hu : u ∈ epsU F κ ρ := mem_patGrp.2 <| by
-      rintro (i | i) (j | j) h
-      · rw [uv]; exact hg' _ _ (by simpa [SymFree, symmetricBlockIndex] using h)
-      · simp [uv]
-      · simp [uv]
-      · simp [uv, Matrix.one_apply]
-    have hu' : u⁻¹ ∈ symGrp F κ ρ :=
-      mem_patGrp.2 fun r s h => mem_patGrp.1 (inv_mem hu) r s fun h' => h (Or.inr h')
-    refine ⟨g * u⁻¹, mem_patGrp.2 fun r s h => ?_, u, hu, by simp⟩
-    by_cases h2 : EpsLt κ ρ r s
-    · rcases r with i | i <;> rcases s with j | j <;> try exact h2.elim
-      rw [← u.mul_inv, Units.val_mul, Matrix.mul_apply, Matrix.mul_apply]
-      refine Finset.sum_congr rfl ?_
-      rintro (l | l) -
-      · rfl
-      · rw [mem_patGrp.1 (inv_mem hu) (.inr l) (.inl j) (by simp [EpsLt])]; simp
-    · exact mem_patGrp.1 (mul_mem hg hu') r s fun h' => h'.elim h h2
-  · rintro ⟨n, hn, u, hu, rfl⟩
-    exact mul_mem (mem_patGrp.2 fun r s h => mem_patGrp.1 hn r s fun h' => h (Or.inl h'))
-      (mem_patGrp.2 fun r s h => mem_patGrp.1 hu r s fun h' => h (Or.inr h'))
 
 def sumB (g : GL (Fin κ ⊕ Fin (2 * ρ + 1)) F) : F :=
   ∑ i : Fin (2 * ρ + 1), ∑ j : Fin (2 * ρ + 1), if j.val = i.val + 1 then g.val (.inr i) (.inr j) else 0
@@ -183,9 +147,6 @@ def psiZero {ψ : AddChar k Circle} (hψ : HasConductor ψ 1) {ϖ : kˣ} (hϖ : 
     rw [← AddChar.map_add_eq_mul, ← add_div, ← Subring.coe_add]
     exact psi_congr hψ hϖ (by simp only [map_add, Function.surjInv_eq (IsLocalRing.residue_surjective (R := 𝒪[k]))])
 
-theorem psiZero_residue {ψ : AddChar k Circle} (hψ : HasConductor ψ 1) {ϖ : kˣ} (hϖ : IsUnif ϖ) (u : 𝒪[k]) :
-    psiZero hψ hϖ (IsLocalRing.residue 𝒪[k] u) = ψ ((u : k) / ϖ) :=
-  psi_congr hψ hϖ (Function.surjInv_eq (IsLocalRing.residue_surjective (R := 𝒪[k])) _)
 
 def symLevel {ψ : AddChar k Circle} (hψ : HasConductor ψ 1) {ϖ : kˣ} (hϖ : IsUnif ϖ) (κ ρ : ℕ) :
     TypeDatum k (Fin κ ⊕ Fin (2 * ρ + 1)) :=

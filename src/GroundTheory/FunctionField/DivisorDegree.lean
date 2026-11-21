@@ -217,13 +217,6 @@ noncomputable def deg : Pic k K →+ ℤ :=
 theorem deg_mk (D : Divisor k K) :
     deg (QuotientAddGroup.mk D : Pic k K) = Divisor.deg D := rfl
 
-theorem finrank_L_eq_of_mk_eq {D E : Divisor k K}
-    (h : (QuotientAddGroup.mk D : Pic k K) = QuotientAddGroup.mk E) :
-    finrank k (Divisor.L E) = finrank k (Divisor.L D) := by
-  rw [QuotientAddGroup.eq] at h
-  obtain ⟨x, hx, hxD⟩ := mem_principalDivisors.1 h
-  have hE : E = D + divisor x := by rw [hxD]; abel
-  rw [hE, Divisor.finrank_L_add_divisor D hx]
 
 end Pic
 

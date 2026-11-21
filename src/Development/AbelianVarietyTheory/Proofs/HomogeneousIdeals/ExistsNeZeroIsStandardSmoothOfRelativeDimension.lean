@@ -1,9 +1,222 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsApplyEqZeroAndEqOne
+import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ContinuousAevalMvPolynomial
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.HasAlgebraicChartsOfIsStandardSmooth
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.RingKrullDimQuotientEqOfMemMinimalPrimes
 import ReciprocityTheory.SemistableReduction.AeBlockSphereEvalNeZero
 
+section
+namespace GlobalTheory.RootNormBound
+
+open Polynomial
+
+theorem pow_card_le_norm_prod {ε : ℝ} (hε : 0 ≤ ε) (s : Multiset ℂ)
+    (hs : ∀ t ∈ s, ε ≤ ‖t‖) :
+    ε ^ Multiset.card s ≤ ‖(s.map (fun a => (0 : ℂ) - a)).prod‖ := by
+  induction s using Multiset.induction_on with
+  | empty => simp
+  | cons a s ih =>
+    rw [Multiset.card_cons, pow_succ, Multiset.map_cons, Multiset.prod_cons, norm_mul, mul_comm]
+    have ha : ε ≤ ‖(0 : ℂ) - a‖ := by
+      rw [zero_sub, norm_neg]
+      exact hs a (Multiset.mem_cons_self a s)
+    exact mul_le_mul ha (ih fun t ht => hs t (Multiset.mem_cons_of_mem ht)) (pow_nonneg hε _)
+      (norm_nonneg _)
+
+theorem exists_root_norm_lt {h : Polynomial ℂ} (hm : h.Monic) {ε : ℝ} (hε : 0 ≤ ε)
+    (hc : ‖h.coeff 0‖ < ε ^ h.natDegree) : ∃ t : ℂ, h.IsRoot t ∧ ‖t‖ < ε := by
+  by_contra hne
+  push Not at hne
+  have hsp : h.Splits := IsAlgClosed.splits h
+  have hne0 : h ≠ 0 := hm.ne_zero
+  have key := pow_card_le_norm_prod hε h.roots fun t ht => hne t ((mem_roots hne0).1 ht)
+  rw [← hsp.eval_eq_prod_roots_of_monic hm 0, ← coeff_zero_eq_eval_zero,
+    ← hsp.natDegree_eq_card_roots] at key
+  exact absurd hc (not_lt.2 key)
+
+end GlobalTheory.RootNormBound
+end
+
+section
+namespace GlobalTheory.AffinePoints
+
+open Topology Filter Set Polynomial
+
+variable {A B : Type*} [CommRing A] [Algebra ℂ A] [CommRing B] [Algebra ℂ B]
+
+theorem exists_comap_eq_of_isIntegral {K A B : Type*} [Field K] [IsAlgClosed K] [CommRing A]
+    [Algebra K A] [CommRing B] [Algebra K B] (φ : A →ₐ[K] B) (hφ : φ.toRingHom.IsIntegral)
+    (p : A →ₐ[K] K) (hp : ∀ a, φ a = 0 → p a = 0) : ∃ q : B →ₐ[K] K, comap φ q = p := by
+  letI : Algebra A B := φ.toRingHom.toAlgebra
+  haveI : Algebra.IsIntegral A B := ⟨hφ⟩
+  have hsurj : Function.Surjective p := fun c => ⟨algebraMap K A c, by simp⟩
+  haveI : (RingHom.ker p).IsMaximal := RingHom.ker_isMaximal_of_surjective p hsurj
+  obtain ⟨Q, hQ, hQp⟩ := Ideal.exists_ideal_over_maximal_of_isIntegral (S := B) (RingHom.ker p) hp
+  have hcomp : ∀ a, Ideal.Quotient.mk Q (φ a) = algebraMap K (B ⧸ Q) (p a) := by
+    intro a
+    have : a - algebraMap K A (p a) ∈ Q.comap (algebraMap A B) := by
+      rw [hQp]; simp [RingHom.mem_ker]
+    have h2 : φ (a - algebraMap K A (p a)) ∈ Q := this
+    rw [map_sub, AlgHom.commutes] at h2
+    exact Ideal.Quotient.eq.2 h2
+  haveI : Algebra.IsIntegral K (B ⧸ Q) := ⟨fun x => by
+    obtain ⟨b, rfl⟩ := Ideal.Quotient.mk_surjective x
+    obtain ⟨h, hm, hb⟩ := hφ b
+    refine ⟨h.map p.toRingHom, hm.map _, ?_⟩
+    have : (algebraMap K (B ⧸ Q)).comp p.toRingHom = (Ideal.Quotient.mk Q).comp φ.toRingHom := by
+      ext a; exact (hcomp a).symm
+    rw [eval₂_map, this, ← hom_eval₂, hb, map_zero]⟩
+  let e : K ≃ₐ[K] (B ⧸ Q) := AlgEquiv.ofBijective (Algebra.ofId K (B ⧸ Q))
+    IsAlgClosed.algebraMap_bijective_of_isIntegral
+  refine ⟨e.symm.toAlgHom.comp (Ideal.Quotient.mkₐ K Q), ?_⟩
+  ext a
+  change e.symm (Ideal.Quotient.mk Q (φ a)) = p a
+  rw [hcomp, AlgEquiv.commutes]; rfl
+
+
+theorem finite_fiber_comap {R A B K : Type*} [CommRing R] [CommRing A] [Algebra R A] [CommRing B]
+    [Algebra R B] [Field K] [Algebra R K] (φ : A →ₐ[R] B) (hφ : φ.Finite) (p : A →ₐ[R] K) :
+    ((comap φ : (B →ₐ[R] K) → (A →ₐ[R] K)) ⁻¹' {p}).Finite := by
+  letI : Algebra A B := φ.toRingHom.toAlgebra
+  letI : Algebra A K := p.toRingHom.toAlgebra
+  haveI : Module.Finite A B := hφ
+  let F : ((comap φ : (B →ₐ[R] K) → (A →ₐ[R] K)) ⁻¹' {p}) → (B →ₐ[A] K) := fun q =>
+    { q.1.toRingHom with commutes' := fun a => DFunLike.congr_fun q.2 a }
+  refine Set.finite_coe_iff.1 (Finite.of_injective F fun q q' h => ?_)
+  ext b
+  exact DFunLike.congr_fun h b
+
+theorem norm_le_of_isRoot_monic {h : ℂ[X]} (hm : h.Monic) {t : ℂ} (ht : h.IsRoot t) :
+    ‖t‖ ≤ ∑ i ∈ Finset.range h.natDegree, ‖h.coeff i‖ + 1 := by
+  have h1 := ht.norm_lt_cauchyBound hm.ne_zero
+  have h2 : h.cauchyBound ≤ ∑ i ∈ Finset.range h.natDegree, ‖h.coeff i‖₊ + 1 := by
+    simp only [cauchyBound, hm.leadingCoeff, nnnorm_one, div_one, add_le_add_iff_right]
+    exact Finset.sup_le fun i hi =>
+      Finset.single_le_sum (f := fun i => ‖h.coeff i‖₊) (fun _ _ => zero_le) hi
+  have h3 := h1.le.trans h2
+  simpa [NNReal.coe_sum] using NNReal.coe_le_coe.2 h3
+
+theorem isProperMap_comap (φ : A →ₐ[ℂ] B) (hφ : φ.toRingHom.IsIntegral) :
+    IsProperMap (comap φ : (B →ₐ[ℂ] ℂ) → (A →ₐ[ℂ] ℂ)) := by
+  refine isProperMap_iff_ultrafilter_of_t2.2 ⟨continuous_comap φ, fun 𝒰 p hp => ?_⟩
+  have hlim : ∀ b : B, ∃ t : ℂ, Tendsto (fun q : B →ₐ[ℂ] ℂ => q b) 𝒰 (𝓝 t) := by
+    intro b
+    obtain ⟨h, hm, hb⟩ := hφ b
+    let M : (A →ₐ[ℂ] ℂ) → ℝ := fun r => ∑ i ∈ Finset.range h.natDegree, ‖r (h.coeff i)‖ + 1
+    have hM : Continuous M :=
+      (continuous_finset_sum _ fun i _ => (continuous_eval _).norm).add continuous_const
+    have hbd : ∀ q : B →ₐ[ℂ] ℂ, ‖q b‖ ≤ M (comap φ q) := by
+      intro q
+      have hr : (h.map (comap φ q).toRingHom).IsRoot (q b) := by
+        have : (comap φ q).toRingHom = q.toRingHom.comp φ.toRingHom := rfl
+        rw [IsRoot, eval_map, this]
+        change eval₂ _ (q.toRingHom b) h = 0
+        rw [← hom_eval₂, hb, map_zero]
+      have := norm_le_of_isRoot_monic (hm.map _) hr
+      simpa [hm.natDegree_map, M] using this
+    have hev : ∀ᶠ q in (𝒰 : Filter (B →ₐ[ℂ] ℂ)), q b ∈ Metric.closedBall (0 : ℂ) (M p + 1) := by
+      filter_upwards [((hM.tendsto p).comp hp).eventually (gt_mem_nhds (lt_add_one (M p)))]
+        with q hq
+      exact mem_closedBall_zero_iff.2 ((hbd q).trans hq.le)
+    obtain ⟨t, -, ht⟩ := (isCompact_closedBall (0 : ℂ) (M p + 1)).ultrafilter_le_nhds
+      (𝒰.map fun q : B →ₐ[ℂ] ℂ => q b) (le_principal_iff.2 hev)
+    exact ⟨t, ht⟩
+  choose u hu using hlim
+  have hu' : Tendsto (fun q : B →ₐ[ℂ] ℂ => (q : B → ℂ)) 𝒰 (𝓝 u) := tendsto_pi_nhds.2 hu
+  obtain ⟨q, hq⟩ := (isClosedEmbedding_coe (R := ℂ) (A := B) (C := ℂ)).isClosed_range.mem_of_tendsto
+    hu' (Eventually.of_forall fun q => ⟨q, rfl⟩)
+  refine ⟨q, ?_⟩
+  rw [← tendsto_id', tendsto_nhds_iff]
+  intro b
+  rw [show q b = u b from congrFun hq b]
+  exact hu b
+
+theorem exists_isRoot_norm_lt {h : ℂ[X]} (hm : h.Monic) {ε : ℝ} (hε : 0 ≤ ε)
+    (h0 : ‖h.coeff 0‖ < ε ^ h.natDegree) : ∃ t, h.IsRoot t ∧ ‖t‖ < ε := by
+  first
+  | exact @_root_.GlobalTheory.RootNormBound.exists_root_norm_lt
+  | exact _root_.GlobalTheory.RootNormBound.exists_root_norm_lt
+  | (apply _root_.GlobalTheory.RootNormBound.exists_root_norm_lt <;> assumption)
+  | (intros; apply _root_.GlobalTheory.RootNormBound.exists_root_norm_lt <;> assumption)
+  | (intros; apply @_root_.GlobalTheory.RootNormBound.exists_root_norm_lt <;> first | assumption | infer_instance)
+  | (intros; exact _root_.GlobalTheory.RootNormBound.exists_root_norm_lt ..)
+
+theorem exists_apply_eq_zero_and_eq_one {K : Type*} [Field K] [Algebra K A] (p : A →ₐ[K] K)
+    {S : Set (A →ₐ[K] K)} (hS : S.Finite) (hp : p ∉ S) :
+    ∃ a : A, p a = 0 ∧ ∀ q ∈ S, q a = 1 := by
+  classical
+  have : ∀ q ∈ S, ∃ e : A, p e = 1 ∧ q e = 0 := by
+    intro q hq
+    obtain ⟨b, hb⟩ : ∃ b, p b ≠ q b := by
+      by_contra h
+      push Not at h
+      exact hp (by rwa [AlgHom.ext h])
+    refine ⟨(p b - q b)⁻¹ • (b - algebraMap K A (q b)), ?_, by simp⟩
+    simp [inv_mul_cancel₀ (sub_ne_zero.2 hb)]
+  choose! e he using this
+  refine ⟨1 - ∏ q ∈ hS.toFinset, e q, ?_, fun q hq => ?_⟩
+  · rw [map_sub, map_one, map_prod, Finset.prod_eq_one fun q hq => (he q (by simpa using hq)).1,
+      sub_self]
+  · rw [map_sub, map_one, map_prod, Finset.prod_eq_zero (i := q) (by simpa using hq) (he q hq).2,
+      sub_zero]
+
+theorem isOpenMap_comap [IsDomain A] [IsIntegrallyClosed A] [IsDomain B] (φ : A →ₐ[ℂ] B)
+    (hφ : φ.Finite) (hinj : Function.Injective φ) :
+    IsOpenMap (comap φ : (B →ₐ[ℂ] ℂ) → (A →ₐ[ℂ] ℂ)) := by
+  have hint : φ.toRingHom.IsIntegral := RingHom.Finite.to_isIntegral hφ
+  letI : Algebra A B := φ.toRingHom.toAlgebra
+  haveI : IsScalarTower ℂ A B := IsScalarTower.of_algebraMap_eq fun x => (φ.commutes x).symm
+  haveI : FaithfulSMul A B := (faithfulSMul_iff_algebraMap_injective A B).2 hinj
+  intro U hU
+  rw [isOpen_iff_mem_nhds]
+  rintro _ ⟨p, hpU, rfl⟩
+  obtain ⟨a, hpa, ha⟩ := exists_apply_eq_zero_and_eq_one p
+    ((finite_fiber_comap φ hφ (comap φ p)).diff (t := U)) (fun h => h.2 hpU)
+  have hai : IsIntegral A a := hint a
+  have hm := minpoly.monic hai
+  have hK : IsClosed (comap φ '' (Uᶜ ∩ {q : B →ₐ[ℂ] ℂ | ‖q a‖ ≤ 1 / 2})) :=
+    (isProperMap_comap φ hint).isClosedMap _ (hU.isClosed_compl.inter
+      (isClosed_le (continuous_eval a).norm continuous_const))
+  have hW : IsOpen {r : A →ₐ[ℂ] ℂ |
+      ‖r ((minpoly A a).coeff 0)‖ < (1 / 2) ^ (minpoly A a).natDegree} :=
+    isOpen_lt (continuous_eval _).norm continuous_const
+  refine mem_of_superset ((hK.isOpen_compl.inter hW).mem_nhds ⟨?_, ?_⟩) ?_
+  · rintro ⟨q, ⟨hqU, hqa⟩, hq⟩
+    rw [mem_setOf_eq, ha q ⟨hq, hqU⟩] at hqa
+    norm_num at hqa
+  · have h1 : p (φ ((minpoly A a).coeff 0)) = 0 := by
+      have h2 : p.toRingHom (eval₂ φ.toRingHom a (minpoly A a)) = 0 := by
+        rw [show eval₂ φ.toRingHom a (minpoly A a) = 0 from minpoly.aeval A a, map_zero]
+      rw [hom_eval₂, show p.toRingHom a = 0 from hpa, eval₂_at_zero] at h2
+      exact h2
+    rw [mem_setOf_eq, comap_apply, h1, norm_zero]
+    positivity
+  · rintro r ⟨hrK, hrW⟩
+    obtain ⟨t, ht, htn⟩ := exists_isRoot_norm_lt (h := (minpoly A a).map r.toRingHom) (hm.map _)
+      (ε := 1 / 2) (by norm_num) (by simpa [hm.natDegree_map] using hrW)
+    let χ : A[X] →ₐ[ℂ] B := (aeval a).restrictScalars ℂ
+    have hχ : χ.toRingHom.IsIntegral := by
+      refine RingHom.IsIntegral.tower_top (C : A →+* A[X]) χ.toRingHom ?_
+      convert hint
+      ext x
+      simp [χ, RingHom.algebraMap_toAlgebra]
+    obtain ⟨q, hq⟩ := exists_comap_eq_of_isIntegral χ hχ (aevalTower r t) fun f hf => by
+      obtain ⟨k, rfl⟩ := minpoly.isIntegrallyClosed_dvd hai (p := f) hf
+      have : aevalTower r t (minpoly A a) = 0 := by
+        rw [IsRoot, eval_map] at ht
+        exact ht
+      rw [map_mul, this, zero_mul]
+    have hqr : comap φ q = r := by
+      ext x
+      simpa [χ, RingHom.algebraMap_toAlgebra] using DFunLike.congr_fun hq (C x)
+    have hqa : q a = t := by simpa [χ] using DFunLike.congr_fun hq X
+    refine ⟨q, ?_, hqr⟩
+    by_contra hqU
+    exact hrK ⟨q, ⟨hqU, by rw [mem_setOf_eq, hqa]; exact htn.le⟩, hqr⟩
+
+end GlobalTheory.AffinePoints
+end
+
+section
 namespace GlobalTheory.AffinePoints
 
 open Topology Filter Set MvPolynomial MeasureTheory Module
@@ -42,21 +255,6 @@ theorem volume_image_eq_zero_of_finrank_lt {E : Type*} [NormedAddCommGroup E] [N
   rw [finrank_real_of_complex, finrank_real_of_complex]
   simpa using h
 
-theorem volume_range_eq_zero_of_mdifferentiable {E H M : Type*} [NormedAddCommGroup E]
-    [NormedSpace ℂ E] [FiniteDimensional ℂ E] [TopologicalSpace H] {I : ModelWithCorners ℂ E H}
-    [TopologicalSpace M] [ChartedSpace H M] [IsManifold I 1 M] [LindelofSpace M]
-    (h : finrank ℂ E < d) {f : M → Fin d → ℂ} (hf : MDifferentiable I 𝓘(ℂ, Fin d → ℂ) f) :
-    volume (range f) = 0 := by
-  obtain ⟨t, htc, ht⟩ := countable_cover_nhds (U := fun x : M => (extChartAt I x).source)
-    fun x => extChartAt_source_mem_nhds x
-  have : range f ⊆ ⋃ x ∈ t, (f ∘ (extChartAt I x).symm) '' (extChartAt I x).target := by
-    rintro _ ⟨m, rfl⟩
-    obtain ⟨x, hx, hm⟩ := mem_iUnion₂.1 (ht.symm ▸ mem_univ m)
-    exact mem_iUnion₂.2 ⟨x, hx, extChartAt I x m, (extChartAt I x).map_source hm, by
-      rw [Function.comp_apply, (extChartAt I x).left_inv hm]⟩
-  refine measure_mono_null this ((measure_biUnion_null_iff htc).2 fun x _ => ?_)
-  exact volume_image_eq_zero_of_finrank_lt h (mdifferentiableOn_iff_differentiableOn.1
-    (hf.comp_mdifferentiableOn mdifferentiableOn_extChartAt_symm))
 
 end Null
 
@@ -66,23 +264,6 @@ universe u
 
 variable {K A : Type u} [Field K] [CommRing A] [Algebra K A] {d : ℕ}
 
-theorem exists_finite_injective_of_ringKrullDim_eq [Algebra.FiniteType K A]
-    (hd : ringKrullDim A = d) :
-    ∃ g : MvPolynomial (Fin d) K →ₐ[K] A, Function.Injective g ∧ g.Finite := by
-  haveI : Nontrivial A := by
-    by_contra h
-    rw [not_nontrivial_iff_subsingleton] at h
-    rw [ringKrullDim_eq_bot_of_subsingleton] at hd
-    exact WithBot.bot_ne_natCast _ hd
-  obtain ⟨s, g, hg, hfin⟩ := exists_finite_inj_algHom_of_fg K A
-  letI := g.toRingHom.toAlgebra
-  haveI : FaithfulSMul (MvPolynomial (Fin s) K) A :=
-    (faithfulSMul_iff_algebraMap_injective _ _).mpr hg
-  haveI : Algebra.IsIntegral (MvPolynomial (Fin s) K) A := ⟨RingHom.Finite.to_isIntegral hfin⟩
-  rw [ringKrullDim_eq_of_isIntegral (MvPolynomial (Fin s) K) A,
-    MvPolynomial.ringKrullDim_of_isNoetherianRing, ringKrullDim_eq_zero_of_field] at hd
-  obtain rfl : s = d := by simpa using hd
-  exact ⟨g, hg, hfin⟩
 
 theorem faithfulSMul_and_isAlgebraic_of_etale (R S : Type*) [CommRing R] [IsDomain R] [CommRing S]
     [IsDomain S] [Algebra R S] [Algebra.Etale R S] :
@@ -160,22 +341,8 @@ theorem volume_coords_image_zeroSet [IsDomain A] (g : MvPolynomial (Fin d) ℂ �
   simp only [mem_compl_iff, mem_setOf_eq, not_not]
   rw [h1, h2, map_mul, hp, zero_mul]
 
-theorem volume_coords_image_zeroSet_of_etale [IsDomain A] (g : MvPolynomial (Fin d) ℂ →ₐ[ℂ] A)
-    (hg : g.Etale) {f : A} (hf : f ≠ 0) :
-    volume (coords g '' {p : A →ₐ[ℂ] ℂ | p f = 0}) = 0 := by
-  letI : Algebra (MvPolynomial (Fin d) ℂ) A := g.toRingHom.toAlgebra
-  haveI : Algebra.Etale (MvPolynomial (Fin d) ℂ) A := hg
-  exact volume_coords_image_zeroSet g (faithfulSMul_and_isAlgebraic_of_etale _ A).2 hf
 
-theorem isProperMap_coords (g : MvPolynomial (Fin d) ℂ →ₐ[ℂ] A) (hg : g.Finite) :
-    IsProperMap (coords g : (A →ₐ[ℂ] ℂ) → Fin d → ℂ) :=
-  (mvPolynomialHomeomorph ℂ ℂ (Fin d)).isProperMap.comp
-    (isProperMap_comap g (RingHom.Finite.to_isIntegral hg))
 
-theorem surjective_coords (g : MvPolynomial (Fin d) ℂ →ₐ[ℂ] A) (hg : g.Finite)
-    (hinj : Function.Injective g) : Function.Surjective (coords g : (A →ₐ[ℂ] ℂ) → Fin d → ℂ) :=
-  (mvPolynomialHomeomorph ℂ ℂ (Fin d)).surjective.comp
-    (surjective_comap_of_isIntegral g (RingHom.Finite.to_isIntegral hg) hinj)
 
 theorem isOpenMap_coords [IsDomain A] (g : MvPolynomial (Fin d) ℂ →ₐ[ℂ] A) (hg : g.Finite)
     (hinj : Function.Injective g) : IsOpenMap (coords g : (A →ₐ[ℂ] ℂ) → Fin d → ℂ) :=
@@ -198,75 +365,9 @@ theorem dense_nonvanishing [IsDomain A] [Algebra.FiniteType ℂ A] {f : A} (hf :
   haveI : Module.Finite (MvPolynomial (Fin s) ℂ) A := hg
   infer_instance
 
-theorem interior_zeroSet_eq_empty [IsDomain A] [Algebra.FiniteType ℂ A] {f : A} (hf : f ≠ 0) :
-    interior {p : A →ₐ[ℂ] ℂ | p f = 0} = ∅ :=
-  interior_eq_empty_iff_dense_compl.2 (dense_nonvanishing hf)
 
-theorem IsAlgebraicChart.volume_image_zeroSet [IsDomain A] [Algebra.FiniteType ℂ A]
-    (hd : ringKrullDim A = d) {e : OpenPartialHomeomorph (A →ₐ[ℂ] ℂ) (Fin d → ℂ)}
-    (he : IsAlgebraicChart e) {f : A} (hf : f ≠ 0) :
-    volume (e '' (e.source ∩ {p | p f = 0})) = 0 := by
-  obtain ⟨x, s, hx⟩ := he.exists_eq_div
-  by_cases hs : s = 0
-  · have : e.source = ∅ := eq_empty_of_forall_notMem fun p hp => (hx p hp).1 (by simp [hs])
-    simp [this]
-  have hs0 : Submonoid.powers s ≤ nonZeroDivisors A :=
-    powers_le_nonZeroDivisors_of_noZeroDivisors hs
-  let B := Localization.Away s
-  haveI : IsDomain B := IsLocalization.isDomain_localization hs0
-  have hAB : Function.Injective (algebraMap A B) := IsLocalization.injective _ hs0
-  let g : MvPolynomial (Fin d) ℂ →ₐ[ℂ] B :=
-    aeval fun i => algebraMap A B (x i) * IsLocalization.Away.invSelf s
-  have hsub : e '' (e.source ∩ {p | p f = 0}) ⊆
-      coords g '' {q : B →ₐ[ℂ] ℂ | q (algebraMap A B f) = 0} := by
-    rintro _ ⟨p, ⟨hp, hpf⟩, rfl⟩
-    obtain ⟨q, rfl⟩ : p ∈ range (comap (IsScalarTower.toAlgHom ℂ A B)) := by
-      rw [range_comap_away s]; exact (hx p hp).1
-    refine ⟨q, hpf, funext fun i => ?_⟩
-    rw [(hx _ hp).2 i]
-    refine apply_eq_div_of_mul_eq q (IsLocalization.Away.algebraMap_isUnit s) ?_
-    simp only [g, aeval_X]
-    rw [mul_assoc, mul_comm _ (algebraMap A B s), IsLocalization.Away.mul_invSelf, mul_one]
-  refine measure_mono_null hsub ?_
-  by_cases hinj : Function.Injective g
-  · refine volume_coords_image_zeroSet g ?_ ((map_ne_zero_iff _ hAB).2 hf)
-    letI : Algebra (MvPolynomial (Fin d) ℂ) B := g.toRingHom.toAlgebra
-    haveI : IsScalarTower ℂ (MvPolynomial (Fin d) ℂ) B :=
-      IsScalarTower.of_algebraMap_eq fun x => (g.commutes x).symm
-    haveI : FaithfulSMul (MvPolynomial (Fin d) ℂ) B :=
-      (faithfulSMul_iff_algebraMap_injective _ _).mpr hinj
-    haveI : FaithfulSMul A B := (faithfulSMul_iff_algebraMap_injective _ _).mpr hAB
-    haveI : Algebra.IsAlgebraic A B := IsLocalization.isAlgebraic _ (Submonoid.powers s)
-    obtain ⟨n, h1, h2⟩ := exists_ringKrullDim_eq_and_trdeg_eq ℂ A
-    rw [hd] at h1
-    obtain rfl : d = n := by exact_mod_cast h1
-    have h3 := trdeg_add_eq ℂ (MvPolynomial (Fin d) ℂ) (A := B)
-    rw [trdeg_eq_of_isAlgebraic_top ℂ A B, h2, MvPolynomial.trdeg_of_isDomain] at h3
-    simp only [Cardinal.mk_fintype, Fintype.card_fin, Cardinal.lift_natCast] at h3
-    have h4 : Algebra.trdeg (MvPolynomial (Fin d) ℂ) B = 0 :=
-      Cardinal.eq_of_add_eq_add_left (h3.trans (add_zero _).symm) (Cardinal.natCast_lt_aleph0)
-    exact trdeg_eq_zero_iff.1 h4
-  · rw [injective_iff_map_eq_zero] at hinj
-    push Not at hinj
-    obtain ⟨r, hr0, hr⟩ := hinj
-    refine measure_mono_null ?_ (ReciprocityTheory.MultiplicativeHeights.ae_eval_ne_zero_of_ne_zero_fin d r hr)
-    rintro _ ⟨p, -, rfl⟩
-    have h1 : eval (coords g p) r = p (g r) := aeval_coords g p r
-    simp only [mem_compl_iff, mem_setOf_eq, not_not]
-    rw [h1, hr0, map_zero]
 
-theorem exists_isAlgebraicChart_of_isSmoothAt [IsDomain A] [Algebra.FiniteType ℂ A]
-    (hd : ringKrullDim A = d) (p : A →ₐ[ℂ] ℂ)
-    (hp : haveI := RingHom.ker_isPrime p; Algebra.IsSmoothAt ℂ (RingHom.ker p)) :
-    ∃ e : OpenPartialHomeomorph (A →ₐ[ℂ] ℂ) (Fin d → ℂ), IsAlgebraicChart e ∧ p ∈ e.source := by
-  haveI := RingHom.ker_isPrime p
-  obtain ⟨s, hs, H⟩ := exists_notMem_isStandardSmoothOfRelativeDimension (K := ℂ) hd
-    (RingHom.ker p)
-  exact exists_isAlgebraicChart_of_away s (Localization.Away s) p hs
 
-theorem hasAlgebraicCharts_of_smooth [IsDomain A] [Algebra.Smooth ℂ A]
-    (hd : ringKrullDim A = d) : HasAlgebraicCharts ℂ A d := fun p =>
-  exists_isAlgebraicChart_of_isSmoothAt hd p inferInstance
 
 section Cover
 
@@ -275,30 +376,8 @@ variable {ι : Type*} [Countable ι] {E H M : ι → Type*} [∀ i, NormedAddCom
   {I : ∀ i, ModelWithCorners ℂ (E i) (H i)} [∀ i, TopologicalSpace (M i)]
   [∀ i, ChartedSpace (H i) (M i)] [∀ i, IsManifold (I i) 1 (M i)] [∀ i, LindelofSpace (M i)]
 
-theorem volume_coords_image_iUnion_range (g : MvPolynomial (Fin d) ℂ →ₐ[ℂ] A)
-    (hE : ∀ i, finrank ℂ (E i) < d) (φ : ∀ i, M i → (A →ₐ[ℂ] ℂ))
-    (hφ : ∀ i a, MDifferentiable (I i) 𝓘(ℂ) fun m => φ i m a) :
-    volume (coords g '' ⋃ i, range (φ i)) = 0 := by
-  rw [image_iUnion]
-  refine measure_iUnion_null fun i => ?_
-  rw [← range_comp]
-  exact volume_range_eq_zero_of_mdifferentiable (I := I i) (hE i) fun m =>
-    mdifferentiableAt_pi_of_forall fun j => hφ i _ m
 
-theorem iUnion_range_ne_univ [Algebra.FiniteType ℂ A] (hd : ringKrullDim A = d)
-    (hE : ∀ i, finrank ℂ (E i) < d) (φ : ∀ i, M i → (A →ₐ[ℂ] ℂ))
-    (hφ : ∀ i a, MDifferentiable (I i) 𝓘(ℂ) fun m => φ i m a) : ⋃ i, range (φ i) ≠ univ := by
-  obtain ⟨g, hinj, hg⟩ := exists_finite_injective_of_ringKrullDim_eq (K := ℂ) hd
-  intro h
-  have := volume_coords_image_iUnion_range g hE φ hφ
-  rw [h, image_univ, (surjective_coords g hg hinj).range_eq] at this
-  exact (isOpen_univ.measure_ne_zero volume univ_nonempty) this
 
-theorem dense_compl_iUnion_range [IsDomain A] [Algebra.FiniteType ℂ A] (hd : ringKrullDim A = d)
-    (hE : ∀ i, finrank ℂ (E i) < d) (φ : ∀ i, M i → (A →ₐ[ℂ] ℂ))
-    (hφ : ∀ i a, MDifferentiable (I i) 𝓘(ℂ) fun m => φ i m a) : Dense (⋃ i, range (φ i))ᶜ := by
-  obtain ⟨g, hinj, hg⟩ := exists_finite_injective_of_ringKrullDim_eq (K := ℂ) hd
-  exact dense_compl_of_volume_coords_image g hg hinj (volume_coords_image_iUnion_range g hE φ hφ)
 
 end Cover
 
@@ -320,15 +399,6 @@ theorem fderiv_apply_add {z : E} (hφ : ∀ a, DifferentiableAt ℂ (fun z => φ
   rw [fderiv_fun_add (hφ a) (hφ b)]
   simp
 
-theorem fderiv_apply_eq_zero_of_mem_adjoin {z : E}
-    (hφ : ∀ a, DifferentiableAt ℂ (fun z => φ z a) z) (v : E) {s : Set A}
-    (hs : ∀ a ∈ s, fderiv ℂ (fun z => φ z a) z v = 0) {a : A} (ha : a ∈ Algebra.adjoin ℂ s) :
-    fderiv ℂ (fun z => φ z a) z v = 0 := by
-  induction ha using Algebra.adjoin_induction with
-  | mem a ha => exact hs a ha
-  | algebraMap c => simp
-  | add a b _ _ ha hb => rw [fderiv_apply_add hφ, ha, hb, add_zero]
-  | mul a b _ _ ha hb => rw [fderiv_apply_mul hφ, ha, hb]; simp
 
 theorem fderiv_apply_eval₂ {R : Type*} [CommRing R] (g : R →+* A) {z : E}
     (hφ : ∀ a, DifferentiableAt ℂ (fun z => φ z a) z) (v : E)
@@ -347,118 +417,10 @@ theorem fderiv_apply_eval₂ {R : Type*} [CommRing R] (g : R →+* A) {z : E}
     simp only [map_add, map_mul]
     ring
 
-theorem exists_isOpen_fderiv_eq_zero {R : Type*} [CommRing R] (g : R →+* A) {a : A}
-    (ha : g.IsIntegralElem a) (hU : IsOpen U) (hne : U.Nonempty)
-    (hφ : ∀ a, DifferentiableOn ℂ (fun z => φ z a) U) :
-    ∃ V ⊆ U, IsOpen V ∧ V.Nonempty ∧ ∀ z ∈ V, ∀ v,
-      (∀ r, fderiv ℂ (fun z => φ z (g r)) z v = 0) → fderiv ℂ (fun z => φ z a) z v = 0 := by
-  obtain ⟨h, hm, hh⟩ := ha
-  let c : ℕ → A := fun k => (Polynomial.derivative^[k] h).eval₂ g a
-  obtain ⟨k, hk, z₀, hz₀, hk'⟩ : ∃ k, (∀ z ∈ U, φ z (c k) = 0) ∧ ∃ z ∈ U, φ z (c (k + 1)) ≠ 0 := by
-    by_contra hcon
-    push Not at hcon
-    have hall : ∀ k, ∀ z ∈ U, φ z (c k) = 0 := by
-      intro k
-      induction k with
-      | zero => intro z _; simp [c, hh]
-      | succ k ih => exact hcon k ih
-    obtain ⟨z, hz⟩ := hne
-    have h1 := hall h.natDegree z hz
-    have h2 : Polynomial.derivative^[h.natDegree] h = Polynomial.C (h.natDegree.factorial : R) := by
-      rw [Polynomial.eq_C_of_natDegree_le_zero (p := Polynomial.derivative^[h.natDegree] h)
-        ((Polynomial.natDegree_iterate_derivative h _).trans (by simp)),
-        Polynomial.coeff_iterate_derivative, zero_add, Nat.descFactorial_self,
-        hm.coeff_natDegree, nsmul_eq_mul, mul_one]
-    simp [c, h2, Nat.factorial_ne_zero] at h1
-  refine ⟨U ∩ (fun z => φ z (c (k + 1))) ⁻¹' {0}ᶜ, inter_subset_left,
-    (hφ _).continuousOn.isOpen_inter_preimage hU isOpen_compl_singleton, ⟨z₀, hz₀, hk'⟩,
-    fun z hz v hv => ?_⟩
-  have h1 := fderiv_apply_eval₂ g (fun a => (hφ a).differentiableAt (hU.mem_nhds hz.1)) v hv a
-    (Polynomial.derivative^[k] h)
-  have h2 : (fun z => φ z (c k)) =ᶠ[𝓝 z] fun _ => 0 := by
-    filter_upwards [hU.mem_nhds hz.1] with w hw using hk w hw
-  rw [← Function.iterate_succ_apply' Polynomial.derivative] at h1
-  rw [show (fun z => φ z ((Polynomial.derivative^[k] h).eval₂ g a)) = fun z => φ z (c k) from rfl,
-    h2.fderiv_eq] at h1
-  simp only [fderiv_fun_const, Pi.zero_apply, ContinuousLinearMap.zero_apply] at h1
-  exact (mul_eq_zero.1 h1.symm).resolve_left hz.2
 
-theorem rank_le_of_immersion [Algebra.FiniteType ℂ A] (hd : ringKrullDim A = d)
-    (hU : IsOpen U) (hne : U.Nonempty) (hφ : ∀ a, DifferentiableOn ℂ (fun z => φ z a) U)
-    (himm : ∀ z ∈ U, ∀ v, (∀ a, fderiv ℂ (fun z => φ z a) z v = 0) → v = 0) :
-    Module.rank ℂ E ≤ d := by
-  classical
-  obtain ⟨g, -, hg⟩ := exists_finite_injective_of_ringKrullDim_eq (K := ℂ) hd
-  have hint : g.toRingHom.IsIntegral := RingHom.Finite.to_isIntegral hg
-  obtain ⟨s, hs⟩ := (inferInstance : Algebra.FiniteType ℂ A).out
-  have key : ∀ t : Finset A, ∃ V ⊆ U, IsOpen V ∧ V.Nonempty ∧ ∀ z ∈ V, ∀ v,
-      (∀ r, fderiv ℂ (fun z => φ z (g r)) z v = 0) →
-        ∀ a ∈ t, fderiv ℂ (fun z => φ z a) z v = 0 := by
-    intro t
-    induction t using Finset.induction_on with
-    | empty => exact ⟨U, subset_rfl, hU, hne, by simp⟩
-    | insert a t _ ih =>
-      obtain ⟨V, hVU, hV, hVne, H⟩ := ih
-      obtain ⟨W, hWV, hW, hWne, H'⟩ := exists_isOpen_fderiv_eq_zero (φ := φ) g.toRingHom (hint a)
-        hV hVne fun a => (hφ a).mono hVU
-      refine ⟨W, hWV.trans hVU, hW, hWne, fun z hz v hv b hb => ?_⟩
-      rcases Finset.mem_insert.1 hb with rfl | hb
-      · exact H' z hz v hv
-      · exact H z (hWV hz) v hv b hb
-  obtain ⟨V, hVU, -, ⟨z, hz⟩, H⟩ := key s
-  have hd' : ∀ a, DifferentiableAt ℂ (fun z => φ z a) z := fun a =>
-    (hφ a).differentiableAt (hU.mem_nhds (hVU hz))
-  let L : E →ₗ[ℂ] (Fin d → ℂ) :=
-    LinearMap.pi fun i => (fderiv ℂ (fun z => φ z (g (X i))) z : E →ₗ[ℂ] ℂ)
-  have hL : Function.Injective L := by
-    rw [injective_iff_map_eq_zero]
-    intro v hv
-    refine himm z (hVU hz) v fun a => fderiv_apply_eq_zero_of_mem_adjoin hd' v
-      (H z hz v fun r => ?_) (hs ▸ Algebra.mem_top)
-    refine fderiv_apply_eq_zero_of_mem_adjoin hd' v (s := range fun i => g (X i)) ?_ ?_
-    · rintro _ ⟨i, rfl⟩
-      exact congrFun hv i
-    · rw [Algebra.adjoin_range_eq_range_aeval]
-      exact ⟨r, (DFunLike.congr_fun (MvPolynomial.aeval_unique g) r).symm⟩
-  simpa using L.lift_rank_le_of_injective hL
 
 end Immersion
 
-theorem complexPoints_manifold_and_dimension (A : Type) [CommRing A] [Algebra ℂ A]
-    [Algebra.FiniteType ℂ A] (d : ℕ) :
-    (∀ g : MvPolynomial (Fin d) ℂ →ₐ[ℂ] A, g.Etale →
-      IsLocalHomeomorph (coords g : (A →ₐ[ℂ] ℂ) → Fin d → ℂ) ∧
-      ∀ p : A →ₐ[ℂ] ℂ, ∃ e : OpenPartialHomeomorph (A →ₐ[ℂ] ℂ) (Fin d → ℂ), p ∈ e.source ∧
-        (e : (A →ₐ[ℂ] ℂ) → Fin d → ℂ) = coords g ∧
-        ∀ a, AnalyticOnNhd ℂ (fun z => e.symm z a) e.target) ∧
-    (Algebra.IsStandardSmoothOfRelativeDimension d ℂ A →
-      (∃ g : MvPolynomial (Fin d) ℂ →ₐ[ℂ] A, g.Etale) ∧
-      ∃ h : HasAlgebraicCharts ℂ A d,
-        letI := h.chartedSpace
-        IsManifold 𝓘(ℂ, Fin d → ℂ) ω (A →ₐ[ℂ] ℂ) ∧
-          ∀ a : A, ContMDiff 𝓘(ℂ, Fin d → ℂ) 𝓘(ℂ) ω fun p : A →ₐ[ℂ] ℂ => p a) ∧
-    (IsDomain A → ringKrullDim A = d →
-      (∀ f : A, f ≠ 0 →
-        IsClosed {p : A →ₐ[ℂ] ℂ | p f = 0} ∧ interior {p : A →ₐ[ℂ] ℂ | p f = 0} = ∅ ∧
-        (∀ g : MvPolynomial (Fin d) ℂ →ₐ[ℂ] A, g.Etale →
-          volume (coords g '' {p : A →ₐ[ℂ] ℂ | p f = 0}) = 0) ∧
-        ∀ e : OpenPartialHomeomorph (A →ₐ[ℂ] ℂ) (Fin d → ℂ), IsAlgebraicChart e →
-          volume (e '' (e.source ∩ {p | p f = 0})) = 0) ∧
-      ∀ (ι : Type) [Countable ι] (E H M : ι → Type) [∀ i, NormedAddCommGroup (E i)]
-        [∀ i, NormedSpace ℂ (E i)] [∀ i, FiniteDimensional ℂ (E i)] [∀ i, TopologicalSpace (H i)]
-        (I : ∀ i, ModelWithCorners ℂ (E i) (H i)) [∀ i, TopologicalSpace (M i)]
-        [∀ i, ChartedSpace (H i) (M i)] [∀ i, IsManifold (I i) 1 (M i)] [∀ i, LindelofSpace (M i)]
-        (φ : ∀ i, M i → (A →ₐ[ℂ] ℂ)), (∀ i, finrank ℂ (E i) < d) →
-        (∀ i a, MDifferentiable (I i) 𝓘(ℂ) fun m => φ i m a) →
-        ⋃ i, range (φ i) ≠ univ ∧ Dense (⋃ i, range (φ i))ᶜ) := by
-  refine ⟨fun g hg => ⟨isLocalHomeomorph_coords_of_etale g hg, exists_chart_of_etale g hg⟩,
-    fun _ => ⟨Algebra.IsStandardSmoothOfRelativeDimension.exists_etale_mvPolynomial d ℂ A,
-      hasAlgebraicCharts_of_isStandardSmooth, HasAlgebraicCharts.isManifold _,
-      HasAlgebraicCharts.contMDiff_eval _⟩,
-    fun _ hd => ⟨fun f hf => ⟨isClosed_zeroSet f, interior_zeroSet_eq_empty hf,
-      fun g hg => volume_coords_image_zeroSet_of_etale g hg hf,
-      fun e he => he.volume_image_zeroSet hd hf⟩, ?_⟩⟩
-  intro ι _ E H M _ _ _ _ I _ _ _ _ φ hE hφ
-  exact ⟨iUnion_range_ne_univ hd hE φ hφ, dense_compl_iUnion_range hd hE φ hφ⟩
 
 end GlobalTheory.AffinePoints
+end

@@ -52,29 +52,6 @@ theorem pt_eq (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ] Wp)) (c :
     rw [hw, zero_mul, TBBx2.Tri.Ew_top p F hl, hV, TBBx2.Tri.hsVec_zero, norm_zero]
     simp
 
-theorem norm_square_transfer_identity_holds : NormSquareTransferIdentity := by
-  intro P Wp Wq _ _ _ _ _ _ p F
-  unfold B.normSq Formalism.QuantumDeterminants.jNormSq
-  let e : (Fin (P.r + 1) → ℂ) ≃ᵐ (Fin P.r → ℂ) × ℂ :=
-    (MeasurableEquiv.piFinSuccAbove (fun _ => ℂ) (Fin.last P.r)).trans MeasurableEquiv.prodComm
-  have hmp : MeasurePreserving e volume volume :=
-    (Measure.measurePreserving_swap).comp (volume_preserving_piFinSuccAbove (fun _ : Fin (P.r + 1) => ℂ) (Fin.last P.r))
-  have he : ∀ c, e c = ((fun j => c j.castSucc), c (Fin.last P.r)) := by
-    intro c
-    simp [e, MeasurableEquiv.piFinSuccAbove]
-    rfl
-  rw [← hmp.lintegral_comp_emb e.measurableEmbedding]
-  unfold TBB.jN2
-  have hnull : ∀ᵐ c : Fin (P.r + 1) → ℂ, ∀ a, c a ≠ 0 := by
-    rw [ae_all_iff]
-    intro a
-    rw [ae_iff]
-    simp only [ne_eq, not_not]
-    exact Measure.pi_hyperplane _ a 0
-  refine lintegral_congr_ae ?_
-  filter_upwards [hnull] with c hc
-  rw [he c]
-  exact (pt_eq p F c hc).symm
 
 end
 

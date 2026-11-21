@@ -12,9 +12,6 @@ open Formalism.MainNotions.SumRepresentations.At GlobalTheory.TwistLG
 
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} (N : NData R H what₂) (A : NAut N) (i : N.Loc)
 
-theorem awayRepN_zero_lpZero : UpperTheory.GalS.AwayRepN N A i 0 A.lpZero := by
-  refine ⟨1, continuous_const, ss_zero _, fun w hw _ => eq_lpZero N A _ ?_ (A.wdOf_dim i _ w)⟩
-  exact (A.wdOf_unr i _ w hw continuous_const).2 fun σ _ => rfl
 
 theorem awayRepN_congr {m m' : ℕ} {L L' : ∀ w, A.LP w} (h : UpperTheory.GalS.AwayRepN N A i m L) (hm : m = m')
     (hL : ∀ w, L w = L' w) : UpperTheory.GalS.AwayRepN N A i m' L' := by
@@ -85,12 +82,5 @@ theorem galois_relation_away_from_l (hLP : TieLP N A) (hAut : TieAut N A) (hGal 
     push_cast
     ring
 
-theorem awayRep_piece_alt (hLP : TieLP N A) (hAut : TieAut N A) (hGal : TieGal N A) (hG : UpperTheory.GalS.AutomorphicGaloisAdmissible N A)
-    {a : ℕ} (ha : 1 ≤ a) (π : A.CG a) (hc : A.csd π) (m : ℤ)
-    (hinf : ∀ τ, (A.infG π τ).Nodup ∧
-      ∀ z ∈ A.infG π τ, ∃ n : ℤ, z + (((m : ℝ) / 2 : ℝ) : ℂ) = (n : ℂ) + ((a : ℂ) - 1) / 2) :
-    UpperTheory.GalS.AwayRepN N A i a fun w => A.lpTw (A.locG π w) ((m : ℝ) / 2 + (1 - (a : ℝ)) / 2) := by
-  obtain ⟨r, c, s, f⟩ := galois_relation_away_from_l N A i hLP hAut hGal hG ha π hc m hinf
-  exact ⟨r, c, s, fun w hw => (f w hw).eq_of_unr⟩
 
 end GlobalTheory.BCGal

@@ -1,5 +1,20 @@
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.SpectralGap.GapLapStepGapStatement
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.EquivariantL2Space
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceEstimates.StepDownStatement
 
+section
+noncomputable section
+
+namespace ReciprocityTheory.ChartRestriction.DS.Lap
+
+def GapLapStepGapStatement : Prop :=
+  ∀ (n : ℕ) (ε : Fin n → Bool) (lam : Fin n → ℝ) (h : ℝ), 1 ≤ pOf ε → 1 ≤ qOf ε → GapLap ε lam h →
+    StepGap ε (qOf ε - 1) h
+
+end ReciprocityTheory.ChartRestriction.DS.Lap
+end
+end
+
+section
 noncomputable section
 
 namespace ReciprocityTheory.ChartRestriction.DS.Lap
@@ -18,3 +33,9 @@ theorem gapLap_stepGap : GapLapStepGapStatement := by
   refine ⟨by linarith, ?_⟩
   rw [hcast, lt_sub_iff_add_lt, lt_div_iff₀ (by positivity)]
   linarith
+end Lap
+end DS
+end ChartRestriction
+end ReciprocityTheory
+end
+end

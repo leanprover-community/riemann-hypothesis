@@ -65,11 +65,6 @@ theorem rL_rT {l k : J} (g : l ⟶ k) (f : k ⟶ j0) (f' : l ⟶ j0) (h : g ≫ 
   rw [← cancel_mono (Scheme.Opens.ι _)]
   simp [rL, rT, Scheme.Hom.resLE_comp_ι, Scheme.Hom.resLE_comp_ι_assoc]
 
-theorem rT_rT {l' l k : J} (g' : l' ⟶ l) (g : l ⟶ k) (f : k ⟶ j0) (f' : l ⟶ j0) (f'' : l' ⟶ j0)
-    (h : g ≫ f = f') (h' : g' ≫ f' = f'') :
-    rT D j0 W g' f' f'' h' ≫ rT D j0 W g f f' h = rT D j0 W (g' ≫ g) f f'' (by rw [Category.assoc, h, h']) := by
-  rw [← cancel_mono (Scheme.Opens.ι _)]
-  simp [rT, Scheme.Hom.resLE_comp_ι, Scheme.Hom.resLE_comp_ι_assoc]
 
 end
 

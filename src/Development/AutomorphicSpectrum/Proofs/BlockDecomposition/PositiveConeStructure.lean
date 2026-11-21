@@ -5,13 +5,635 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HasDerivAtTwist
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LengthFunctionFactsHold
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IntegralConjInnerMulInnerOfIsEmptyEquiv
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PositiveConeIsOpen
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothCholeskyFactor
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CongruenceActionDeterminantStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureCongruenceInvariant
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureLocallyFinite
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureDensityFormula
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactGroupDisintegration
+import BuildAid.ForwardExisting
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CongruenceActionDeterminant
 
+section
+section
+open MeasureTheory Matrix Topology Filter
+open scoped ContDiff ENNReal ComplexOrder Pointwise
+open PositivityTheory.RgTw (Mat G hb)
+open PositivityTheory.RgBcC
+open GlobalTheory.CompanionTheory.ConeHaar
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.ConeHaar.Chol
+
+variable {n m k : ℕ}
+
+def invRoot (P : Mat (n + 1)) : ℝ := (Real.sqrt (P 0 0).re)⁻¹
+
+def col (P : Mat (n + 1)) (i : Fin n) : ℂ := P i.succ 0 * (invRoot P : ℂ)
+
+def schur (P : Mat (n + 1)) : Mat n :=
+  Matrix.of fun i j => P i.succ j.succ - col P i * star (col P j)
+
+def step (σ : Mat n → Mat n) (P : Mat (n + 1)) : Mat (n + 1) :=
+  Matrix.of fun i j =>
+    Fin.cases (motive := fun _ => ℂ)
+      (Fin.cases (motive := fun _ => ℂ) ((Real.sqrt (P 0 0).re : ℝ) : ℂ) (fun _ => 0) j)
+      (fun i' => Fin.cases (motive := fun _ => ℂ) (col P i') (fun j' => σ (schur P) i' j') j) i
+
+lemma step_zero_zero (σ : Mat n → Mat n) (P : Mat (n + 1)) :
+    step σ P 0 0 = ((Real.sqrt (P 0 0).re : ℝ) : ℂ) := rfl
+
+lemma step_zero_succ (σ : Mat n → Mat n) (P : Mat (n + 1)) (j : Fin n) :
+    step σ P 0 j.succ = 0 := rfl
+
+lemma step_succ_zero (σ : Mat n → Mat n) (P : Mat (n + 1)) (i : Fin n) :
+    step σ P i.succ 0 = col P i := rfl
+
+lemma step_succ_succ (σ : Mat n → Mat n) (P : Mat (n + 1)) (i j : Fin n) :
+    step σ P i.succ j.succ = σ (schur P) i j := rfl
+
+lemma lead_pos {P : Mat (n + 1)} (hP : P.PosDef) : 0 < (P 0 0).re :=
+  (Complex.pos_iff.1 (hP.diag_pos (i := 0))).1
+
+lemma lead_eq {P : Mat (n + 1)} (hP : P.PosDef) : (((P 0 0).re : ℝ) : ℂ) = P 0 0 := by
+  apply Complex.ext
+  · simp
+  · simpa using (Complex.pos_iff.1 (hP.diag_pos (i := 0))).2
+
+lemma root_mul_invRoot {P : Mat (n + 1)} (hP : P.PosDef) :
+    Real.sqrt (P 0 0).re * invRoot P = 1 :=
+  mul_inv_cancel₀ (Real.sqrt_pos.2 (lead_pos hP)).ne'
+
+lemma lead_mul_invRoot {P : Mat (n + 1)} (hP : P.PosDef) :
+    P 0 0 * ((invRoot P : ℂ) * (invRoot P : ℂ)) = 1 := by
+  have h : (P 0 0).re * (invRoot P * invRoot P) = 1 := by
+    have h1 := root_mul_invRoot hP
+    have h2 := Real.mul_self_sqrt (lead_pos hP).le
+    calc (P 0 0).re * (invRoot P * invRoot P)
+        = (Real.sqrt (P 0 0).re * Real.sqrt (P 0 0).re) * (invRoot P * invRoot P) := by rw [h2]
+      _ = (Real.sqrt (P 0 0).re * invRoot P) * (Real.sqrt (P 0 0).re * invRoot P) := by ring
+      _ = 1 := by rw [h1]; ring
+  rw [← lead_eq hP]
+  exact_mod_cast h
+
+lemma schur_posDef {P : Mat (n + 1)} (hP : P.PosDef) : (schur P).PosDef := by
+  have hH : ∀ i j, star (P j i) = P i j := fun i j => hP.isHermitian.apply i j
+  have hcs : star ((invRoot P : ℝ) : ℂ) = (invRoot P : ℂ) := by simp
+  refine PosDef.of_dotProduct_mulVec_pos ?_ ?_
+  · ext i j
+    simp only [conjTranspose_apply, schur, of_apply, star_sub, star_mul', star_star, hH]
+    ring
+  · intro x hx
+    set c : ℂ := (invRoot P : ℂ) with hc
+    set w : ℂ := ∑ j, P 0 j.succ * x j with hw
+    set u : ℂ := ∑ i, star (x i) * P i.succ 0 with hu
+    set q : ℂ := ∑ i, star (x i) * ∑ j, P i.succ j.succ * x j with hq
+    set t : ℂ := -(w * (c * c)) with ht
+    let y : Fin (n + 1) → ℂ := Fin.cons t x
+    have y0 : y 0 = t := rfl
+    have ys : ∀ i : Fin n, y i.succ = x i := fun i => rfl
+    have hy : y ≠ 0 := fun h => hx (funext fun i => by simpa [ys] using congrFun h i.succ)
+    have hpos := hP.dotProduct_mulVec_pos hy
+    have hW : ∑ j, star (col P j) * x j = w * c := by
+      rw [hw, Finset.sum_mul]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      simp only [col, star_mul', hH, hcs, ← hc]
+      ring
+    have hrow : ∀ i, (schur P *ᵥ x) i = (∑ j, P i.succ j.succ * x j) - col P i * (w * c) := by
+      intro i
+      rw [← hW]
+      simp only [mulVec, dotProduct, schur, of_apply, sub_mul, Finset.sum_sub_distrib,
+        Finset.mul_sum, mul_assoc]
+    have hU : ∑ i, star (x i) * col P i = u * c := by
+      rw [hu, Finset.sum_mul]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      simp only [col, ← hc]
+      ring
+    have hL : star x ⬝ᵥ (schur P *ᵥ x) = q - (u * c) * (w * c) := by
+      simp only [dotProduct, hrow, Pi.star_apply, mul_sub, Finset.sum_sub_distrib]
+      congr 1
+      generalize w * c = v
+      rw [← hU, Finset.sum_mul]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      ring
+    have h0 : (P *ᵥ y) 0 = P 0 0 * t + w := by
+      simp only [mulVec, dotProduct, Fin.sum_univ_succ, y0, ys, hw]
+    have hs : ∀ i : Fin n, (P *ᵥ y) i.succ = P i.succ 0 * t + ∑ j, P i.succ j.succ * x j := by
+      intro i
+      simp only [mulVec, dotProduct, Fin.sum_univ_succ, y0, ys]
+    have hz : P 0 0 * t + w = 0 := by
+      have := lead_mul_invRoot hP
+      rw [← hc] at this
+      rw [ht]
+      linear_combination (-w) * this
+    have hR : star y ⬝ᵥ (P *ᵥ y) = u * t + q := by
+      rw [dotProduct, Fin.sum_univ_succ]
+      simp only [Pi.star_apply, h0, hs, y0, ys, hz, mul_zero, zero_add, mul_add,
+        Finset.sum_add_distrib]
+      congr 1
+      rw [hu, Finset.sum_mul]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      ring
+    have hk : star x ⬝ᵥ (schur P *ᵥ x) = star y ⬝ᵥ (P *ᵥ y) := by
+      rw [hL, hR, ht]
+      ring
+    rw [hk]
+    exact hpos
+
+lemma step_mul {σ : Mat n → Mat n} {P : Mat (n + 1)} (hP : P.PosDef)
+    (hσ : σ (schur P) * (σ (schur P))ᴴ = schur P) : step σ P * (step σ P)ᴴ = P := by
+  have hH : ∀ i j, star (P j i) = P i j := fun i j => hP.isHermitian.apply i j
+  have hr : ((Real.sqrt (P 0 0).re : ℝ) : ℂ) * (invRoot P : ℂ) = 1 := by
+    exact_mod_cast root_mul_invRoot hP
+  have hrr : ((Real.sqrt (P 0 0).re : ℝ) : ℂ) * ((Real.sqrt (P 0 0).re : ℝ) : ℂ) = P 0 0 := by
+    rw [← lead_eq hP]
+    exact_mod_cast Real.mul_self_sqrt (lead_pos hP).le
+  ext i j
+  refine Fin.cases ?_ (fun i => ?_) i <;> refine Fin.cases ?_ (fun j => ?_) j
+  · simp only [mul_apply, conjTranspose_apply, Fin.sum_univ_succ, step_zero_zero, step_zero_succ]
+    simp [hrr]
+  · simp only [mul_apply, conjTranspose_apply, Fin.sum_univ_succ, step_zero_zero, step_zero_succ,
+      step_succ_zero]
+    simp only [col, star_mul', hH]
+    simp
+    linear_combination (P 0 j.succ) * hr
+  · simp only [mul_apply, conjTranspose_apply, Fin.sum_univ_succ, step_zero_zero, step_zero_succ,
+      step_succ_zero, step_succ_succ]
+    simp [col]
+    linear_combination (P i.succ 0) * hr
+  · have h := congrFun (congrFun hσ i) j
+    simp only [mul_apply, conjTranspose_apply] at h
+    simp only [mul_apply, conjTranspose_apply, Fin.sum_univ_succ, step_succ_zero, step_succ_succ, h]
+    simp [schur]
+
+lemma contDiff_entry (i j : Fin m) : ContDiff ℝ ∞ (fun P : Mat m => P i j) :=
+  contDiff_apply_apply ℝ ℂ i j
+
+lemma contDiffOn_mat {s : Set (Mat k)} {f : Mat k → Mat m}
+    (h : ∀ i j, ContDiffOn ℝ ∞ (fun P => f P i j) s) : ContDiffOn ℝ ∞ f s :=
+  contDiffOn_pi.2 fun i => contDiffOn_pi.2 fun j => h i j
+
+lemma contDiffOn_entry {s : Set (Mat k)} {f : Mat k → Mat m} (h : ContDiffOn ℝ ∞ f s)
+    (i j : Fin m) : ContDiffOn ℝ ∞ (fun P => f P i j) s :=
+  (contDiff_entry i j).comp_contDiffOn h
+
+lemma contDiffOn_root :
+    ContDiffOn ℝ ∞ (fun P : Mat (n + 1) => Real.sqrt (P 0 0).re) {P | P.PosDef} :=
+  ContDiffOn.sqrt (Complex.reCLM.contDiff.comp (contDiff_entry 0 0)).contDiffOn
+    fun _ hP => (lead_pos hP).ne'
+
+lemma contDiffOn_invRoot :
+    ContDiffOn ℝ ∞ (fun P : Mat (n + 1) => ((invRoot P : ℝ) : ℂ)) {P | P.PosDef} :=
+  Complex.ofRealCLM.contDiff.comp_contDiffOn
+    (contDiffOn_root.inv fun _ hP => (Real.sqrt_pos.2 (lead_pos hP)).ne')
+
+lemma contDiffOn_col (i : Fin n) :
+    ContDiffOn ℝ ∞ (fun P : Mat (n + 1) => col P i) {P | P.PosDef} :=
+  (contDiff_entry i.succ 0).contDiffOn.mul contDiffOn_invRoot
+
+lemma contDiffOn_star_col (i : Fin n) :
+    ContDiffOn ℝ ∞ (fun P : Mat (n + 1) => star (col P i)) {P | P.PosDef} :=
+  Complex.conjCLE.contDiff.comp_contDiffOn (contDiffOn_col i)
+
+lemma contDiffOn_schur : ContDiffOn ℝ ∞ (schur (n := n)) {P | P.PosDef} :=
+  contDiffOn_mat fun i j =>
+    (contDiff_entry i.succ j.succ).contDiffOn.sub ((contDiffOn_col i).mul (contDiffOn_star_col j))
+
+lemma contDiffOn_step {σ : Mat n → Mat n} (hσ : ContDiffOn ℝ ∞ σ {P | P.PosDef}) :
+    ContDiffOn ℝ ∞ (step σ) {P | P.PosDef} := by
+  refine contDiffOn_mat fun i j => ?_
+  refine Fin.cases ?_ (fun i => ?_) i <;> refine Fin.cases ?_ (fun j => ?_) j
+  · exact Complex.ofRealCLM.contDiff.comp_contDiffOn contDiffOn_root
+  · exact contDiffOn_const
+  · exact contDiffOn_col i
+  · exact contDiffOn_entry (hσ.comp contDiffOn_schur fun _ hP => schur_posDef hP) i j
+
+theorem exists_smooth_section :
+    ∀ n : ℕ, ∃ σ₀ : Mat n → Mat n, ContDiffOn ℝ ∞ σ₀ {P | P.PosDef} ∧
+      ∀ P : Mat n, P.PosDef → σ₀ P * (σ₀ P)ᴴ = P := by
+  intro n
+  induction n with
+  | zero => exact ⟨id, contDiffOn_id, fun P _ => Subsingleton.elim _ _⟩
+  | succ n ih =>
+    obtain ⟨σ, hσ, hf⟩ := ih
+    exact ⟨step σ, contDiffOn_step hσ, fun P hP => step_mul hP (hf _ (schur_posDef hP))⟩
+
+end GlobalTheory.CompanionTheory.ConeHaar.Chol
+end
+end
+
+open MeasureTheory Matrix Topology Filter
+open scoped ContDiff ENNReal ComplexOrder Pointwise
+open PositivityTheory.RgTw (Mat G hb)
+open PositivityTheory.RgBcC
+open GlobalTheory.CompanionTheory.ConeHaar
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.smooth_positive_definite_sqrt : ∀ n : ℕ, ∃ σ₀ : Mat n → Mat n, ContDiffOn ℝ ∞ σ₀ {P | P.PosDef} ∧ ∀ P : Mat n, P.PosDef → σ₀ P * (σ₀ P)ᴴ = P := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ConeHaar.Chol.exists_smooth_section
+end
+
+section
+open MeasureTheory Matrix Topology Filter
+open scoped ContDiff ENNReal ComplexOrder Pointwise
+open PositivityTheory.RgTw (Mat G hb)
+open PositivityTheory.RgBcC
+open GlobalTheory.CompanionTheory.ConeHaar
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.congruence_action_determinant : ∀ (n : ℕ) (g : Mat n), g.det ≠ 0 → ∃ T : (Fin n × Fin n → ℝ) →ₗ[ℝ] (Fin n × Fin n → ℝ), (∀ v, hOf (T v) = g * hOf v * gᴴ) ∧ LinearMap.det T = ‖g.det‖ ^ (2 * n) := by
+  first | exact @GlobalTheory.CompanionTheory.ConeLin.cone_lin | exact GlobalTheory.CompanionTheory.ConeLin.cone_lin | (intros; apply GlobalTheory.CompanionTheory.ConeLin.cone_lin <;> assumption)
+end
+
+section
+section
+open MeasureTheory Matrix Topology Filter
+open scoped ContDiff ENNReal ComplexOrder Pointwise
+open PositivityTheory.RgTw (Mat G hb)
+open PositivityTheory.RgBcC
+open GlobalTheory.CompanionTheory.ConeHaar
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.ConeHaar
+
+variable {n : ℕ}
+
+theorem posDef_congr_iff (g H : Mat n) (hg : g.det ≠ 0) : (g * H * gᴴ).PosDef ↔ H.PosDef := by
+  have hU : IsUnit (star g) := ((Matrix.isUnit_iff_isUnit_det g).2 (isUnit_iff_ne_zero.2 hg)).star
+  have h := Matrix.IsUnit.posDef_star_left_conjugate_iff (x := H) hU
+  rwa [star_star, Matrix.star_eq_conjTranspose] at h
+
+theorem det_congr_re (g H : Mat n) : (g * H * gᴴ).det.re = ‖g.det‖ ^ 2 * H.det.re := by
+  have h1 : (g * H * gᴴ).det = ((‖g.det‖ ^ 2 : ℝ) : ℂ) * H.det := by
+    rw [Matrix.det_mul, Matrix.det_mul, Matrix.det_conjTranspose, Complex.star_def,
+      ← Complex.normSq_eq_norm_sq, ← Complex.mul_conj]
+    ring
+  rw [h1, Complex.re_ofReal_mul]
+
+theorem coneW_congr (g : Mat n) (v w : Fin n × Fin n → ℝ) (h : hOf w = g * hOf v * gᴴ) :
+    coneW n w = ENNReal.ofReal ((‖g.det‖ ^ (2 * n))⁻¹) * coneW n v := by
+  unfold coneW
+  rw [h, det_congr_re, ← ENNReal.ofReal_mul (inv_nonneg.2 (pow_nonneg (norm_nonneg g.det) (2 * n))),
+    mul_pow, ← pow_mul, mul_inv]
+
+theorem map_coneMeas_eq (n : ℕ) (g : Mat n) (hg : g.det ≠ 0)
+    (T : (Fin n × Fin n → ℝ) →ₗ[ℝ] (Fin n × Fin n → ℝ)) (hT : ∀ v, hOf (T v) = g * hOf v * gᴴ)
+    (hdet : LinearMap.det T = ‖g.det‖ ^ (2 * n)) : Measure.map T (coneMeas n) = coneMeas n := by
+  have hd : 0 < LinearMap.det T := by
+    rw [hdet]
+    exact pow_pos (norm_pos_iff.2 hg) _
+  have hdT : LinearMap.det T ≠ 0 := hd.ne'
+  let e : (Fin n × Fin n → ℝ) ≃ᵐ (Fin n × Fin n → ℝ) :=
+    (LinearMap.equivOfDetNeZero T hdT).toContinuousLinearEquiv.toHomeomorph.toMeasurableEquiv
+  have he : (e : (Fin n × Fin n → ℝ) → (Fin n × Fin n → ℝ)) = T := rfl
+  have hC : e ⁻¹' cone n = cone n := by
+    ext v
+    show (hOf (T v)).PosDef ↔ (hOf v).PosDef
+    rw [hT v]
+    exact posDef_congr_iff g (hOf v) hg
+  have hW : ∀ v, coneW n (e v) = ENNReal.ofReal (LinearMap.det T)⁻¹ * coneW n v := by
+    intro v
+    rw [hdet]
+    exact coneW_congr g v (T v) (hT v)
+  have hvol : Measure.map e volume
+      = ENNReal.ofReal (LinearMap.det T)⁻¹ • (volume : Measure (Fin n × Fin n → ℝ)) := by
+    rw [he, Real.map_linearMap_volume_pi_eq_smul_volume_pi hdT, abs_of_pos (inv_pos.2 hd)]
+  have hmap : Measure.map e ((volume : Measure (Fin n × Fin n → ℝ)).restrict (cone n))
+      = ENNReal.ofReal (LinearMap.det T)⁻¹ •
+        (volume : Measure (Fin n × Fin n → ℝ)).restrict (cone n) := by
+    conv_lhs => rw [← hC]
+    rw [← MeasurableEquiv.restrict_map, hvol, Measure.restrict_smul]
+  have ha0 : ENNReal.ofReal (LinearMap.det T)⁻¹ ≠ 0 := (ENNReal.ofReal_pos.2 (inv_pos.2 hd)).ne'
+  have hatop : ENNReal.ofReal (LinearMap.det T)⁻¹ ≠ ⊤ := ENNReal.ofReal_ne_top
+  rw [← he]
+  ext s hs
+  rw [MeasurableEquiv.map_apply]
+  unfold coneMeas
+  rw [withDensity_apply _ (e.measurable hs), withDensity_apply _ hs,
+    ← ENNReal.mul_right_inj ha0 hatop]
+  calc ENNReal.ofReal (LinearMap.det T)⁻¹ *
+        ∫⁻ v in e ⁻¹' s, coneW n v ∂(volume : Measure (Fin n × Fin n → ℝ)).restrict (cone n)
+      = ∫⁻ v in e ⁻¹' s, coneW n (e v) ∂(volume : Measure (Fin n × Fin n → ℝ)).restrict (cone n) := by
+        simp_rw [hW]
+        rw [lintegral_const_mul' _ _ hatop]
+    _ = ∫⁻ w in s, coneW n w
+          ∂Measure.map e ((volume : Measure (Fin n × Fin n → ℝ)).restrict (cone n)) := by
+        rw [MeasurableEquiv.restrict_map, lintegral_map_equiv]
+    _ = ENNReal.ofReal (LinearMap.det T)⁻¹ *
+          ∫⁻ w in s, coneW n w ∂(volume : Measure (Fin n × Fin n → ℝ)).restrict (cone n) := by
+        rw [hmap, Measure.restrict_smul, lintegral_smul_measure, smul_eq_mul]
+
+end GlobalTheory.CompanionTheory.ConeHaar
+end
+end
+
+open MeasureTheory Matrix Topology Filter
+open scoped ContDiff ENNReal ComplexOrder Pointwise
+open PositivityTheory.RgTw (Mat G hb)
+open PositivityTheory.RgBcC
+open GlobalTheory.CompanionTheory.ConeHaar
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cone_measure_congruence_invariant : ∀ (n : ℕ) (g : Mat n), g.det ≠ 0 → ∀ T : (Fin n × Fin n → ℝ) →ₗ[ℝ] (Fin n × Fin n → ℝ), (∀ v, hOf (T v) = g * hOf v * gᴴ) → LinearMap.det T = ‖g.det‖ ^ (2 * n) → Measure.map T (coneMeas n) = coneMeas n := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ConeHaar.map_coneMeas_eq
+end
+
+section
+section
+noncomputable section
+
+open MeasureTheory Matrix Topology Filter
+open scoped ContDiff ENNReal ComplexOrder Pointwise
+
+open PositivityTheory.RgTw (Mat G hb)
+open PositivityTheory.RgBcC
+open GlobalTheory.CompanionTheory.ConeHaar
+
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+
+namespace GlobalTheory.CompanionTheory.ConeHaar.Fin
+
+variable {n : ℕ}
+
+theorem continuous_hOf : Continuous (hOf (n := n)) := by
+  unfold hOf
+  refine continuous_finset_sum _ fun p _ => ?_
+  exact (Complex.continuous_ofReal.comp (continuous_apply p)).smul continuous_const
+
+theorem continuous_detRe : Continuous fun v : Fin n × Fin n → ℝ => (hOf v).det.re :=
+  Complex.continuous_re.comp (continuous_hOf.matrix_det)
+
+theorem detRe_pos {v : Fin n × Fin n → ℝ} (hv : v ∈ cone n) : 0 < (hOf v).det.re := by
+  have h : 0 < (hOf v).det := Matrix.PosDef.det_pos hv
+  exact (Complex.pos_iff.1 h).1
+
+theorem measurable_coneW : Measurable (coneW n) := by
+  unfold coneW
+  exact ENNReal.measurable_ofReal.comp ((continuous_detRe.measurable.pow_const n).inv)
+
+theorem exists_hOf_eq_one : ∃ v : Fin n × Fin n → ℝ, hOf v = 1 := by
+  refine ⟨fun p => ((1 * hb p : Mat n).trace).re, ?_⟩
+  have hre : ∀ p : Fin n × Fin n, ((((1 * hb p : Mat n).trace).re : ℝ) : ℂ) = (1 * hb p : Mat n).trace := by
+    intro p
+    apply Complex.conj_eq_iff_re.1
+    have h1 : star (hb p : Mat n).trace = (hb p : Mat n).trace := by
+      rw [← Matrix.trace_conjTranspose, GlobalTheory.CompanionTheory.TwistHomotopy.hb_conjTranspose]
+    simpa using h1
+  have h := (GlobalTheory.CompanionTheory.TopClass.hbB n).sum_repr (1 : Mat n)
+  simp only [GlobalTheory.CompanionTheory.TopClass.hbB_repr, GlobalTheory.CompanionTheory.TopClass.hbB_apply] at h
+  conv_rhs => rw [← h]
+  simp only [hOf, hre]
+
+theorem cone_nonempty : (cone n).Nonempty := by
+  obtain ⟨v, hv⟩ := exists_hOf_eq_one (n := n)
+  refine ⟨v, ?_⟩
+  show (hOf v).PosDef
+  rw [hv]
+  exact Matrix.PosDef.one
+
+theorem coneW_pos {v : Fin n × Fin n → ℝ} (hv : v ∈ cone n) : coneW n v ≠ 0 := by
+  unfold coneW
+  have : 0 < ((hOf v).det.re ^ n)⁻¹ := inv_pos.2 (pow_pos (detRe_pos hv) n)
+  exact (ENNReal.ofReal_pos.2 this).ne'
+
+theorem coneMeas_ne_zero : coneMeas n ≠ 0 := by
+  intro h0
+  have hz := (withDensity_eq_zero measurable_coneW.aemeasurable h0)
+  have hopen : IsOpen (cone n) := GlobalTheory.T.positive_cone_isOpen n
+  have hvol : 0 < volume (cone n) := hopen.measure_pos volume cone_nonempty
+  rw [Filter.EventuallyEq, ae_restrict_iff' hopen.measurableSet] at hz
+  have hnull : volume (cone n) = 0 := by
+    refine measure_mono_null (t := {v | ¬ (v ∈ cone n → coneW n v = (0 : (Fin n × Fin n → ℝ) → ℝ≥0∞) v)}) ?_ hz
+    intro v hv
+    simpa using ⟨hv, coneW_pos hv⟩
+  exact hvol.ne' hnull
+
+theorem coneMeas_lt_top (C : Set (Fin n × Fin n → ℝ)) (hC : IsCompact C) (hCc : C ⊆ cone n) :
+    coneMeas n C < ⊤ := by
+  have hcont : ContinuousOn (fun v : Fin n × Fin n → ℝ => ((hOf v).det.re ^ n)⁻¹) C :=
+    ContinuousOn.inv₀ (continuous_detRe.pow n).continuousOn
+      fun v hv => (pow_pos (detRe_pos (hCc hv)) n).ne'
+  obtain ⟨M, hM⟩ := hC.exists_bound_of_continuousOn hcont
+  have hle : ∀ v ∈ C, coneW n v ≤ ENNReal.ofReal M := fun v hv =>
+    ENNReal.ofReal_le_ofReal ((le_abs_self _).trans (hM v hv))
+  unfold coneMeas
+  rw [withDensity_apply _ hC.measurableSet]
+  calc ∫⁻ v in C, coneW n v ∂(volume.restrict (cone n))
+      ≤ ∫⁻ _ in C, ENNReal.ofReal M ∂(volume.restrict (cone n)) :=
+        setLIntegral_mono' hC.measurableSet hle
+    _ = ENNReal.ofReal M * (volume.restrict (cone n)) C := by simp
+    _ ≤ ENNReal.ofReal M * volume C := by
+        gcongr
+        exact Measure.restrict_le_self
+    _ < ⊤ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top hC.measure_lt_top
+
+theorem coneMeas_ne_zero_and_lt_top : ∀ n : ℕ, coneMeas n ≠ 0 ∧ ∀ C : Set (Fin n × Fin n → ℝ), IsCompact C →
+    C ⊆ PositivityTheory.RgBcC.cone n → coneMeas n C < ⊤ :=
+  fun _ => ⟨coneMeas_ne_zero, coneMeas_lt_top⟩
+
+end GlobalTheory.CompanionTheory.ConeHaar.Fin
+end
+end
+
+open MeasureTheory Matrix Topology Filter
+open scoped ContDiff ENNReal ComplexOrder Pointwise
+open PositivityTheory.RgTw (Mat G hb)
+open PositivityTheory.RgBcC
+open GlobalTheory.CompanionTheory.ConeHaar
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cone_measure_locally_finite : ∀ n : ℕ, coneMeas n ≠ 0 ∧ ∀ C : Set (Fin n × Fin n → ℝ), IsCompact C → C ⊆ PositivityTheory.RgBcC.cone n → coneMeas n C < ⊤ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ConeHaar.Fin.coneMeas_ne_zero_and_lt_top
+end
+
+section
+section
+open MeasureTheory Matrix Topology Filter
+open scoped ContDiff ENNReal ComplexOrder Pointwise
+open PositivityTheory.RgTw (Mat G hb)
+open PositivityTheory.RgBcC
+open GlobalTheory.CompanionTheory.ConeHaar
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+
+namespace GlobalTheory.CompanionTheory.ConeHaar
+
+theorem continuous_hOf (n : ℕ) : Continuous (hOf : (Fin n × Fin n → ℝ) → Mat n) := by
+  unfold hOf
+  fun_prop
+
+theorem isClosed_posSemidef (n : ℕ) : IsClosed {M : Mat n | M.PosSemidef} := by
+  have h : {M : Mat n | M.PosSemidef} =
+      {M : Mat n | Mᴴ = M} ∩ ⋂ x : Fin n → ℂ, {M : Mat n | 0 ≤ star x ⬝ᵥ M *ᵥ x} := by
+    ext M
+    simp only [Set.mem_setOf_eq, Set.mem_inter_iff, Set.mem_iInter,
+      Matrix.posSemidef_iff_dotProduct_mulVec]
+    rfl
+  rw [h]
+  refine IsClosed.inter (isClosed_eq (continuous_id.matrix_conjTranspose) continuous_id) ?_
+  refine isClosed_iInter fun x => isClosed_le continuous_const ?_
+  exact continuous_const.dotProduct (continuous_id.matrix_mulVec continuous_const)
+
+theorem measurableSet_cone (n : ℕ) : MeasurableSet (cone n) := by
+  have h : cone n = (hOf ⁻¹' {M : Mat n | M.PosSemidef}) ∩
+      ((fun v => (hOf v : Mat n).det) ⁻¹' {(0 : ℂ)}ᶜ) := by
+    ext v
+    simp only [cone, Set.mem_setOf_eq, Set.mem_inter_iff, Set.mem_preimage,
+      Set.mem_compl_iff, Set.mem_singleton_iff]
+    exact ⟨fun hv => ⟨hv.posSemidef, hv.det_pos.ne'⟩,
+      fun hv => (Matrix.PosSemidef.posDef_iff_det_ne_zero hv.1).2 hv.2⟩
+  rw [h]
+  refine MeasurableSet.inter ((isClosed_posSemidef n).preimage (continuous_hOf n)).measurableSet ?_
+  exact (isClosed_singleton.isOpen_compl.preimage
+    (continuous_hOf n).matrix_det).measurableSet
+
+theorem measurable_coneW (n : ℕ) : Measurable (coneW n) := by
+  have h : Continuous fun v : Fin n × Fin n → ℝ => (hOf v : Mat n).det.re :=
+    Complex.continuous_re.comp (continuous_hOf n).matrix_det
+  unfold coneW
+  exact ((h.measurable.pow_const n).inv).ennreal_ofReal
+
+theorem coneW_toReal_smul (n : ℕ) (f : (Fin n × Fin n → ℝ) → ℂ) {v : Fin n × Fin n → ℝ}
+    (hv : v ∈ cone n) : (coneW n v).toReal • f v = f v * ((hOf v).det ^ n)⁻¹ := by
+  have hpos : (0 : ℂ) < (hOf v : Mat n).det := Matrix.PosDef.det_pos hv
+  obtain ⟨hre, him⟩ := Complex.pos_iff.1 hpos
+  have hdet : (hOf v : Mat n).det = (((hOf v : Mat n).det.re : ℝ) : ℂ) :=
+    Complex.ext (by simp) (by simpa using him.symm)
+  have hnn : 0 ≤ ((hOf v : Mat n).det.re ^ n)⁻¹ := inv_nonneg.2 (pow_nonneg hre.le n)
+  unfold coneW
+  rw [ENNReal.toReal_ofReal hnn, Complex.real_smul, mul_comm]
+  congr 1
+  conv_rhs => rw [hdet]
+  push_cast
+  rfl
+
+theorem cone_integral : ∀ n : ℕ, (∀ᵐ v ∂(coneMeas n), v ∈ PositivityTheory.RgBcC.cone n) ∧ ∀ f : (Fin n × Fin n → ℝ) → ℂ, ∫ v, f v ∂(coneMeas n) = ∫ v in PositivityTheory.RgBcC.cone n, f v * ((hOf v).det ^ n)⁻¹ := by
+  intro n
+  refine ⟨?_, fun f => ?_⟩
+  · exact (withDensity_absolutelyContinuous _ _).ae_le (ae_restrict_mem (measurableSet_cone n))
+  · unfold coneMeas
+    rw [integral_withDensity_eq_integral_toReal_smul₀ (measurable_coneW n).aemeasurable
+      (Eventually.of_forall fun v => ENNReal.ofReal_lt_top) f]
+    exact setIntegral_congr_fun (measurableSet_cone n) fun v hv => coneW_toReal_smul n f hv
+
+end GlobalTheory.CompanionTheory.ConeHaar
+end
+
+open MeasureTheory Matrix Topology Filter
+open scoped ContDiff ENNReal ComplexOrder Pointwise
+open PositivityTheory.RgTw (Mat G hb)
+open PositivityTheory.RgBcC
+open GlobalTheory.CompanionTheory.ConeHaar
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cone_measure_density_formula : ∀ n : ℕ, (∀ᵐ v ∂(coneMeas n), v ∈ PositivityTheory.RgBcC.cone n) ∧ ∀ f : (Fin n × Fin n → ℝ) → ℂ, ∫ v, f v ∂(coneMeas n) = ∫ v in PositivityTheory.RgBcC.cone n, f v * ((hOf v).det ^ n)⁻¹ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ConeHaar.cone_integral
+end
+
+section
+section
+open MeasureTheory Matrix Topology Filter
+open scoped ContDiff ENNReal ComplexOrder Pointwise
+open PositivityTheory.RgTw (Mat G hb)
+open PositivityTheory.RgBcC
+open GlobalTheory.CompanionTheory.ConeHaar
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+
+namespace GlobalTheory.CompanionTheory.ConeHaar
+
+theorem leftInvariant_of_section : ∀ {Γ K X : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [T2Space Γ] [LocallyCompactSpace Γ] [SecondCountableTopology Γ] [MeasurableSpace Γ] [BorelSpace Γ] [Group K] [TopologicalSpace K] [IsTopologicalGroup K] [T2Space K] [CompactSpace K] [SecondCountableTopology K] [MeasurableSpace K] [BorelSpace K] (e : K →* Γ) (_ : Continuous e) [MeasurableSpace X] (ρ : Measure X) [SFinite ρ] (s : X → Γ) (_ : Measurable s) (_ : ρ ≠ 0) (_ : ∀ g : Γ, ∃ a : X → X, Measurable a ∧ Measure.map a ρ = ρ ∧ ∀ᵐ x ∂ρ, ∃ k, g * s x = s (a x) * e k) (_ : ∀ A : Set Γ, IsCompact A → ρ (s ⁻¹' (A * Set.range e)) < ⊤) (μ : Measure Γ) [μ.IsHaarMeasure], ∃ c : ℝ, 0 < c ∧ ∀ F : Γ → ℂ, Continuous F → HasCompactSupport F → (∀ y k, F (y * e k) = F y) → ∫ y, F y ∂μ = c * ∫ x, F (s x) ∂ρ := by
+  intro Γ K X _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ e he _ ρ _ s hs hρ hinv hfin μ _
+  obtain ⟨m, hmH, hm1⟩ : ∃ m : Measure K, m.IsHaarMeasure ∧ m Set.univ = 1 := by
+    refine ⟨Measure.haarMeasure (⊤ : TopologicalSpace.PositiveCompacts K), inferInstance, ?_⟩
+    have h := Measure.haarMeasure_self (G := K) (K₀ := ⊤)
+    rwa [TopologicalSpace.PositiveCompacts.coe_top] at h
+  haveI := hmH
+  haveI : IsFiniteMeasure m := ⟨by rw [hm1]; exact ENNReal.one_lt_top⟩
+  set φ : X × K → Γ := fun p => s p.1 * e p.2 with hφ_def
+  have hφ : Measurable φ := (hs.comp measurable_fst).mul (he.measurable.comp measurable_snd)
+  set ν : Measure Γ := Measure.map φ (ρ.prod m) with hν_def
+  have key : ∀ (B : Set Γ) (y : Γ) (k : K),
+      m ((fun k' => y * e k * e k') ⁻¹' B) = m ((fun k' => y * e k') ⁻¹' B) := by
+    intro B y k
+    have h : (fun k' => y * e k * e k') ⁻¹' B = (fun k' => k * k') ⁻¹' ((fun k' => y * e k') ⁻¹' B) := by
+      ext k'; simp [map_mul, mul_assoc]
+    rw [h, measure_preimage_mul]
+  have hνapp : ∀ B : Set Γ, MeasurableSet B →
+      ν B = ∫⁻ x, m ((fun k => s x * e k) ⁻¹' B) ∂ρ := by
+    intro B hB
+    rw [hν_def, Measure.map_apply hφ hB, Measure.prod_apply (hφ hB)]
+    rfl
+  have hmeasψ : ∀ B : Set Γ, MeasurableSet B →
+      Measurable (fun x => m ((fun k => s x * e k) ⁻¹' B)) := by
+    intro B hB
+    exact measurable_measure_prodMk_left (hφ hB)
+  haveI : ν.IsMulLeftInvariant := by
+    constructor
+    intro g
+    ext B hB
+    rw [Measure.map_apply (measurable_const_mul g) hB, hνapp _ (measurable_const_mul g hB), hνapp B hB]
+    obtain ⟨a, ha, hamap, hae⟩ := hinv g
+    calc ∫⁻ x, m ((fun k => s x * e k) ⁻¹' ((fun h => g * h) ⁻¹' B)) ∂ρ
+        = ∫⁻ x, m ((fun k => s (a x) * e k) ⁻¹' B) ∂ρ := by
+          refine lintegral_congr_ae ?_
+          filter_upwards [hae] with x hx
+          obtain ⟨k, hk⟩ := hx
+          have h1 : (fun k' => s x * e k') ⁻¹' ((fun h => g * h) ⁻¹' B)
+              = (fun k' => s (a x) * e k * e k') ⁻¹' B := by
+            ext k'
+            simp only [Set.mem_preimage]
+            rw [← mul_assoc, hk]
+          rw [h1, key]
+      _ = ∫⁻ y, m ((fun k => s y * e k) ⁻¹' B) ∂(Measure.map a ρ) := by
+          rw [lintegral_map (hmeasψ B hB) ha]
+      _ = ∫⁻ y, m ((fun k => s y * e k) ⁻¹' B) ∂ρ := by rw [hamap]
+  haveI : IsFiniteMeasureOnCompacts ν := by
+    constructor
+    intro A hA
+    have hsub : φ ⁻¹' A ⊆ (s ⁻¹' (A * Set.range e)) ×ˢ Set.univ := by
+      intro p hp
+      refine ⟨?_, Set.mem_univ _⟩
+      simp only [Set.mem_preimage] at hp ⊢
+      exact Set.mem_mul.mpr ⟨s p.1 * e p.2, hp, e (p.2⁻¹), ⟨p.2⁻¹, rfl⟩, by simp [mul_assoc]⟩
+    calc ν A = (ρ.prod m) (φ ⁻¹' A) := Measure.map_apply hφ hA.isClosed.measurableSet
+      _ ≤ (ρ.prod m) ((s ⁻¹' (A * Set.range e)) ×ˢ Set.univ) := measure_mono hsub
+      _ = ρ (s ⁻¹' (A * Set.range e)) * m Set.univ := Measure.prod_prod _ _
+      _ < ⊤ := by rw [hm1, mul_one]; exact hfin A hA
+  have hνeq := Measure.isMulLeftInvariant_eq_smul ν μ
+  set c := ν.haarScalarFactor μ with hc_def
+  have hc0 : c ≠ 0 := by
+    intro h0
+    have h : ν Set.univ = 0 := by rw [hνeq, h0, zero_smul]; rfl
+    rw [hνapp _ MeasurableSet.univ] at h
+    simp only [Set.preimage_univ, hm1, lintegral_const, one_mul] at h
+    exact hρ (Measure.measure_univ_eq_zero.mp h)
+  have hcR : (c : ℝ) ≠ 0 := NNReal.coe_ne_zero.mpr hc0
+  refine ⟨(c : ℝ)⁻¹, inv_pos.mpr (NNReal.coe_pos.mpr (pos_iff_ne_zero.mpr hc0)), ?_⟩
+  intro F hF _ hFK
+  have h1 : ∫ y, F y ∂ν = ∫ x, F (s x) ∂ρ := by
+    rw [hν_def, integral_map hφ.aemeasurable hF.aestronglyMeasurable]
+    have h : (fun p : X × K => F (φ p)) = fun p => F (s p.1) := by
+      funext p; exact hFK (s p.1) p.2
+    have hf := integral_fun_fst (μ := ρ) (ν := m) (fun x => F (s x))
+    rw [h, hf, measureReal_def, hm1]
+    simp
+  have h2 : ∫ y, F y ∂ν = ((c : ℝ) : ℂ) * ∫ y, F y ∂μ := by
+    conv_lhs => rw [hνeq]
+    rw [integral_smul_nnreal_measure, NNReal.smul_def, Complex.real_smul]
+  rw [← h1, h2, ← mul_assoc, ← Complex.ofReal_mul, inv_mul_cancel₀ hcR, Complex.ofReal_one, one_mul]
+
+end GlobalTheory.CompanionTheory.ConeHaar
+end
+
+open MeasureTheory Matrix Topology Filter
+open scoped ContDiff ENNReal ComplexOrder Pointwise
+open PositivityTheory.RgTw (Mat G hb)
+open PositivityTheory.RgBcC
+open GlobalTheory.CompanionTheory.ConeHaar
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.compact_group_disintegration : ∀ {Γ K X : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [T2Space Γ] [LocallyCompactSpace Γ] [SecondCountableTopology Γ] [MeasurableSpace Γ] [BorelSpace Γ] [Group K] [TopologicalSpace K] [IsTopologicalGroup K] [T2Space K] [CompactSpace K] [SecondCountableTopology K] [MeasurableSpace K] [BorelSpace K] (e : K →* Γ) (_ : Continuous e) [MeasurableSpace X] (ρ : Measure X) [SFinite ρ] (s : X → Γ) (_ : Measurable s) (_ : ρ ≠ 0) (_ : ∀ g : Γ, ∃ a : X → X, Measurable a ∧ Measure.map a ρ = ρ ∧ ∀ᵐ x ∂ρ, ∃ k, g * s x = s (a x) * e k) (_ : ∀ A : Set Γ, IsCompact A → ρ (s ⁻¹' (A * Set.range e)) < ⊤) (μ : Measure Γ) [μ.IsHaarMeasure], ∃ c : ℝ, 0 < c ∧ ∀ F : Γ → ℂ, Continuous F → HasCompactSupport F → (∀ y k, F (y * e k) = F y) → ∫ y, F y ∂μ = c * ∫ x, F (s x) ∂ρ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ConeHaar.leftInvariant_of_section
+end
+
+section
 noncomputable section
 
 open MeasureTheory Matrix Topology Filter
@@ -285,3 +907,5 @@ theorem coneSt : ConeSt := by
   simp only [sec_val σ₀ hσ hv]
 
 end GlobalTheory.CompanionTheory.ConeHaar
+end
+end

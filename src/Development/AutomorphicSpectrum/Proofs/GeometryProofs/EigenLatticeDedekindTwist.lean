@@ -6,17 +6,270 @@ import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IntegralClosur
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GlueApplyOfNotInFibre
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GenWeil
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.NotInFibreOfIsUnit
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeTateEigenLatticeEqStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeTateEigenLatticeEq
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LabelEmbeddingInjectiveStatement
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieOmegaLatticeVectorBundleStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PredualVectorBundle
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
+import BuildAid.ForwardExisting
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenLatticeConstantRankStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IdealSaturatedVectorBundle
+import Development.WeilBound.CoreStatements.HodgeTatePoints.NearMemSpan
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeTateOmegaCoherent
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsGenericWeilPairingStatement
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeEigenVectorBundleStatement
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeGlueOverPrimes
 
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hodge_tate_eigen_lattice_eq : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X) (G : Over X) [GrpObj G] (Li : Type) [AddCommGroup Li] [Module Ω Li] (M : LieModel G ξ Li) (L : LB G.left) (n g : ℕ) (O : Type) [CommRing O] (ρ : O →+* Module.End Ω Li) (σ : O →+* Ω) (q : Cpt ξ), M.lat.IsVBOn {q} g ⊤ → M.htOm L n q = M.omLat q → M.htDual L n ρ σ q = M.eigLat ρ σ q ∧ ∀ 𝔡 : Ideal O, (∀ a, σ a ∈ regAt ξ q) → (∃ d ∈ 𝔡, unitAt ξ q (σ d)) → M.htW L n ρ σ 𝔡 q = M.eigLat ρ σ q := by
+  first | exact @GlobalTheory.CompanionTheory.Ar.LieModel.htDual_htW_eq_eigLat_of_htOm_eq_omLat | exact GlobalTheory.CompanionTheory.Ar.LieModel.htDual_htW_eq_eigLat_of_htOm_eq_omLat | (intros; apply GlobalTheory.CompanionTheory.Ar.LieModel.htDual_htW_eq_eigLat_of_htOm_eq_omLat <;> assumption)
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar
+
+def preDualBasis {Ω : Type} [Field Ω] {V : Type} [AddCommGroup V] [Module Ω V] [FiniteDimensional Ω V] {r : ℕ}
+    (B : Module.Basis (Fin r) Ω (Module.Dual Ω V)) : Module.Basis (Fin r) Ω V :=
+  B.dualBasis.map (Module.evalEquiv Ω V).symm
+
+theorem apply_preDualBasis {Ω : Type} [Field Ω] {V : Type} [AddCommGroup V] [Module Ω V] [FiniteDimensional Ω V]
+    {r : ℕ} (B : Module.Basis (Fin r) Ω (Module.Dual Ω V)) (i j : Fin r) :
+    B i (preDualBasis B j) = if i = j then 1 else 0 := by
+  have h : ∀ x : Module.Dual Ω (Module.Dual Ω V), B i ((Module.evalEquiv Ω V).symm x) = x (B i) := by
+    intro x
+    obtain ⟨y, rfl⟩ := (Module.evalEquiv Ω V).surjective x
+    rw [LinearEquiv.symm_apply_apply]
+    rfl
+  rw [preDualBasis, Module.Basis.map_apply, h, Module.Basis.dualBasis_apply_self]
+
+theorem sum_apply_smul_preDualBasis {Ω : Type} [Field Ω] {V : Type} [AddCommGroup V] [Module Ω V]
+    [FiniteDimensional Ω V] {r : ℕ} (B : Module.Basis (Fin r) Ω (Module.Dual Ω V)) (v : V) :
+    ∑ i, B i v • preDualBasis B i = v := by
+  have hc : ∀ i, (preDualBasis B).coord i = B i := by
+    intro i
+    refine (preDualBasis B).ext (fun j => ?_)
+    rw [Module.Basis.coord_apply, Module.Basis.repr_self, apply_preDualBasis, Finsupp.single_apply]
+    by_cases h : i = j
+    · subst h
+      simp
+    · rw [if_neg h, if_neg (Ne.symm h)]
+  conv_rhs => rw [← (preDualBasis B).sum_repr v]
+  refine Finset.sum_congr rfl (fun i _ => ?_)
+  rw [← Module.Basis.coord_apply, hc]
+
+theorem Lat.predualIn_isFrameAt {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Sp Ω ⟶ X} {Li : Type} [AddCommGroup Li]
+    [Module Ω Li] {L : Lat ξ (Module.Dual Ω Li)} {V : Submodule Ω Li} [FiniteDimensional Ω V] {r : ℕ}
+    (B : Module.Basis (Fin r) Ω (Module.Dual Ω V)) {q : Cpt ξ}
+    (h : (L.map V.dualRestrict) q = Submodule.span (regAt ξ q) (Set.range B)) :
+    (L.predualIn V).IsFrameAt (fun j => (preDualBasis B j : Li)) q := by
+  have hB : ∀ i, ∃ w ∈ L q, V.dualRestrict w = B i := by
+    intro i
+    have hi : B i ∈ (L.map V.dualRestrict) q := by
+      rw [h]
+      exact Submodule.subset_span (Set.mem_range_self i)
+    obtain ⟨w, hw, hwe⟩ := (Submodule.mem_map).mp hi
+    exact ⟨w, hw, hwe⟩
+  have hw : ∀ w ∈ L q, ∀ j, w (preDualBasis B j : Li) ∈ regAt ξ q := by
+    intro w hwL j
+    have hm : V.dualRestrict w ∈ (L.map V.dualRestrict) q := Submodule.mem_map_of_mem hwL
+    rw [h] at hm
+    obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun _).mp hm
+    have hj : (∑ i, c i • B i) (preDualBasis B j) = w (preDualBasis B j : Li) := by
+      rw [hc]
+      rfl
+    have hj' : (∑ i, c i • B i) (preDualBasis B j) = (c j : Ω) := by
+      rw [LinearMap.sum_apply]
+      simp only [LinearMap.smul_apply, apply_preDualBasis]
+      rw [Finset.sum_eq_single j]
+      · rw [if_pos rfl, Subring.smul_def, smul_eq_mul, _root_.mul_one]
+      · intro b _ hb
+        rw [if_neg hb, smul_zero]
+      · intro hj0
+        exact absurd (Finset.mem_univ j) hj0
+    rw [← hj, hj']
+    exact (c j).2
+  refine ⟨(preDualBasis B).linearIndependent.map' V.subtype (Submodule.ker_subtype V), ?_⟩
+  apply le_antisymm
+  · intro v hv
+    obtain ⟨hvV, hvw⟩ := hv
+    have hcoef : ∀ i, B i ⟨v, hvV⟩ ∈ regAt ξ q := by
+      intro i
+      obtain ⟨w, hwL, hwe⟩ := hB i
+      rw [← hwe, Submodule.dualRestrict_apply]
+      exact hvw w hwL
+    have hv' : v = ∑ i, B i ⟨v, hvV⟩ • (preDualBasis B i : Li) := by
+      have hs := congrArg Subtype.val (sum_apply_smul_preDualBasis B ⟨v, hvV⟩)
+      rw [Submodule.coe_sum] at hs
+      simpa only [Submodule.coe_smul] using hs.symm
+    rw [hv']
+    refine Submodule.sum_mem _ (fun i _ => ?_)
+    have he : B i ⟨v, hvV⟩ • (preDualBasis B i : Li) =
+        (⟨B i ⟨v, hvV⟩, hcoef i⟩ : regAt ξ q) • (preDualBasis B i : Li) := rfl
+    rw [he]
+    exact Submodule.smul_mem _ _ (Submodule.subset_span (Set.mem_range_self i))
+  · rw [Submodule.span_le]
+    rintro _ ⟨j, rfl⟩
+    show (preDualBasis B j : Li) ∈ V ∧ ∀ w ∈ L q, w (preDualBasis B j : Li) ∈ regAt ξ q
+    exact ⟨(preDualBasis B j).2, fun w hwL => hw w hwL j⟩
+
+theorem Lat.predualIn_isVBOn : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X) (Li : Type) [AddCommGroup Li]
+    [Module Ω Li] (L : Lat ξ (Module.Dual Ω Li)) (T : Set (Cpt ξ)) (r : ℕ) (V : Submodule Ω Li)
+    [FiniteDimensional Ω V],
+    (L.map V.dualRestrict).IsVBOn T r ⊤ → (L.predualIn V).IsVBOn T r V := by
+  intro X Ω _ ξ Li _ _ L T r V _ hL p hp
+  obtain ⟨U, hpU, b, hbspan, hfr⟩ := hL p hp
+  have hli : LinearIndependent Ω b := (hfr p hp hpU).1
+  refine ⟨U, hpU, fun j => (preDualBasis (Module.Basis.mk hli hbspan.ge) j : Li), ?_, ?_⟩
+  · have he : (fun j => (preDualBasis (Module.Basis.mk hli hbspan.ge) j : Li)) =
+        V.subtype ∘ preDualBasis (Module.Basis.mk hli hbspan.ge) := rfl
+    rw [he, Set.range_comp, Submodule.span_image, (preDualBasis (Module.Basis.mk hli hbspan.ge)).span_eq,
+      Submodule.map_subtype_top]
+  · intro q hq hqU
+    apply Lat.predualIn_isFrameAt (Module.Basis.mk hli hbspan.ge)
+    rw [(hfr q hq hqU).2, Module.Basis.coe_mk]
+
+end GlobalTheory.CompanionTheory.Ar
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.predual_vector_bundle : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X) (Li : Type) [AddCommGroup Li] [Module Ω Li] (L : Lat ξ (Module.Dual Ω Li)) (T : Set (Cpt ξ)) (r : ℕ) (V : Submodule Ω Li) [FiniteDimensional Ω V], (L.map V.dualRestrict).IsVBOn T r ⊤ → (L.predualIn V).IsVBOn T r V := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Lat.predualIn_isVBOn
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
+private theorem exists_open_forall_mem_regAt' {X : Scheme.{0}} {Ω : Type} [Field Ω] (ξ : Sp Ω ⟶ X) (q : Cpt ξ) (w : Ω)
+    (hw : w ∈ regAt ξ q) : ∃ W : X.Opens, q.1 ∈ W ∧ ∀ q' : Cpt ξ, q'.1 ∈ W → w ∈ regAt ξ q' := by
+  obtain ⟨g, rfl⟩ := hw
+  obtain ⟨W, hq, s, rfl⟩ := X.presheaf.exists_germ_eq g
+  refine ⟨W, hq, fun q' hq' => ⟨X.presheaf.germ W q'.1 hq' s, ?_⟩⟩
+  have key : ∀ (y : X) (hy : y ∈ W) (h : genPt ξ ⤳ y),
+      X.presheaf.germ W y hy ≫ X.presheaf.stalkSpecializes h ≫ Scheme.stalkClosedPointTo ξ =
+        X.presheaf.germ W (genPt ξ) (h.mem_open W.isOpen hy) ≫ Scheme.stalkClosedPointTo ξ := by
+    intro y hy h
+    exact TopCat.Presheaf.germ_stalkSpecializes_assoc X.presheaf hy h _
+  simp only [genMap]
+  rw [← CommRingCat.comp_apply, ← CommRingCat.comp_apply]
+  erw [key q'.1 hq' q'.2, key q.1 hq q.2]
+
+private theorem exists_mul_eq_one_of_dedekind_ideal_ne_bot {Ω : Type} [Field Ω] (O : Type) [CommRing O] [IsDedekindDomain O] (σ : O →+* Ω)
+    (𝔡 : Ideal O) (R : Subring Ω) [IsLocalRing R] (hσ : ∀ a, σ a ∈ R) (hinj : Function.Injective σ)
+    (h𝔡 : 𝔡 ≠ ⊥) : ∃ d ∈ 𝔡, ∃ u : Ω, (∀ d' ∈ 𝔡, ∃ o : O, σ d' * u = σ o) ∧ ∃ v ∈ R, σ d * u * v = 1 := by
+  obtain ⟨x, hx𝔡, hx0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot h𝔡
+  obtain ⟨𝔞, h𝔞⟩ : 𝔡 ∣ Ideal.span {x} :=
+    Ideal.dvd_iff_le.mpr ((Ideal.span_singleton_le_iff_mem _).mpr hx𝔡)
+  have hσx : σ x ≠ 0 := fun h => hx0 (hinj (by rw [h, map_zero]))
+  have hgood : ∀ n ∈ 𝔞, ∀ d' ∈ 𝔡, ∃ o : O, σ d' * (σ n / σ x) = σ o := by
+    intro n hn d' hd'
+    have hmem : d' * n ∈ Ideal.span {x} := h𝔞 ▸ Ideal.mul_mem_mul hd' hn
+    obtain ⟨o, ho⟩ := Ideal.mem_span_singleton'.mp hmem
+    refine ⟨o, ?_⟩
+    rw [← mul_div_assoc, ← map_mul, ← ho, map_mul, mul_div_cancel_right₀ _ hσx]
+  by_contra hne
+  push_neg at hne
+  let C : O → Prop := fun y => ∃ h : σ y / σ x ∈ R, (⟨_, h⟩ : R) ∈ IsLocalRing.maximalIdeal R
+  have hx : x ∈ 𝔡 * 𝔞 := h𝔞 ▸ Ideal.mem_span_singleton_self x
+  have hC : C x := by
+    refine Submodule.mul_induction_on hx ?_ ?_
+    · intro m hm n hn
+      obtain ⟨o, ho⟩ := hgood n hn m hm
+      have hR : σ (m * n) / σ x ∈ R := by
+        rw [map_mul, mul_div_assoc, ho]; exact hσ o
+      refine ⟨hR, ?_⟩
+      by_contra hnot
+      have hu : IsUnit (⟨_, hR⟩ : R) := by
+        by_contra h'
+        exact hnot ((IsLocalRing.mem_maximalIdeal _).mpr h')
+      obtain ⟨w, hw⟩ := hu.exists_right_inv
+      refine hne m hm (σ n / σ x) (hgood n hn) w w.2 ?_
+      have := congrArg Subtype.val hw
+      simpa [map_mul, mul_div_assoc] using this
+    · rintro a b ⟨ha, ha'⟩ ⟨hb, hb'⟩
+      have hab : σ (a + b) / σ x ∈ R := by rw [map_add, add_div]; exact add_mem ha hb
+      refine ⟨hab, ?_⟩
+      have : (⟨_, hab⟩ : R) = ⟨_, ha⟩ + ⟨_, hb⟩ := by
+        ext; simp [map_add, add_div]
+      rw [this]; exact add_mem ha' hb'
+  obtain ⟨h1, h2⟩ := hC
+  have : (⟨_, h1⟩ : R) = 1 := by ext; simp [div_self hσx]
+  rw [this] at h2
+  exact (IsLocalRing.maximalIdeal.isMaximal R).ne_top ((Ideal.eq_top_iff_one _).mpr h2)
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.CompanionTheory.Relay.ideal_saturated_vector_bundle : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X) (Li : Type) [AddCommGroup Li] [Module Ω Li] (O : Type) [CommRing O] [IsDedekindDomain O] (σ : O →+* Ω) (𝔡 : Ideal O) (L : Lat ξ Li) (T : Set (Cpt ξ)) (r : ℕ) (V : Submodule Ω Li), Function.Injective σ → 𝔡 ≠ ⊥ → (∀ q ∈ T, ∀ a, σ a ∈ regAt ξ q) → L.IsVBOn T r V → Lat.IsVBOn (fun q => Submodule.span (regAt ξ q) {e | e ∈ V ∧ ∀ d ∈ 𝔡, σ d • e ∈ L q} : Lat ξ Li) T r V := by
+  intro X Ω _ ξ Li _ _ O _ _ σ 𝔡 L T r V hinj h𝔡 hσ hL p hp
+  obtain ⟨U₀, hpU₀, b, hbV, hb⟩ := hL p hp
+  haveI : IsLocalRing (regAt ξ p) :=
+    IsLocalRing.of_surjective' (genMap ξ p).rangeRestrict (genMap ξ p).rangeRestrict_surjective
+  obtain ⟨d, hd, u, hu, v, hv, hdu⟩ := exists_mul_eq_one_of_dedekind_ideal_ne_bot O σ 𝔡 (regAt ξ p) (hσ p hp) hinj h𝔡
+  obtain ⟨W₂, hpW₂, hW₂⟩ := exists_open_forall_mem_regAt' ξ p v hv
+  have hu0 : u ≠ 0 := by rintro rfl; simp at hdu
+  refine ⟨U₀ ⊓ W₂, ⟨hpU₀, hpW₂⟩, fun i => u • b i, ?_, ?_⟩
+  · rw [← hbV]
+    apply le_antisymm
+    · rw [Submodule.span_le]
+      rintro _ ⟨i, rfl⟩
+      exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+    · rw [Submodule.span_le]
+      rintro _ ⟨i, rfl⟩
+      have : b i = u⁻¹ • (u • b i) := by rw [smul_smul, inv_mul_cancel₀ hu0, one_smul]
+      rw [this]
+      exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+  · intro q hq hqU
+    obtain ⟨hli, hLq⟩ := hb q hq hqU.1
+    have hvq : v ∈ regAt ξ q := hW₂ q hqU.2
+    refine ⟨?_, ?_⟩
+    · have := hli.units_smul (fun _ => Units.mk0 u hu0)
+      convert this using 1
+      funext i
+      simp [Units.smul_def]
+    · apply le_antisymm
+      · rw [Submodule.span_le]
+        rintro e ⟨heV, he⟩
+        have h1 : σ d • e ∈ L q := he d hd
+        rw [hLq] at h1
+        have h2 : (⟨v, hvq⟩ : regAt ξ q) • (σ d • e) ∈ Submodule.span (regAt ξ q) (Set.range b) :=
+          Submodule.smul_mem _ _ h1
+        obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun _).mp h2
+        have he' : e = u • ((⟨v, hvq⟩ : regAt ξ q) • (σ d • e)) := by
+          rw [Subring.smul_def, smul_smul, smul_smul]
+          rw [show u * v * σ d = 1 by rw [← hdu]; ring, one_smul]
+        rw [SetLike.mem_coe, he', ← hc, Finset.smul_sum]
+        refine Submodule.sum_mem _ (fun i _ => ?_)
+        rw [Subring.smul_def, smul_comm]
+        exact Submodule.smul_mem _ (c i) (Submodule.subset_span ⟨i, rfl⟩)
+      · rw [Submodule.span_le]
+        rintro _ ⟨i, rfl⟩
+        apply Submodule.subset_span
+        refine ⟨?_, fun d' hd' => ?_⟩
+        · rw [← hbV]
+          exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+        · obtain ⟨o, ho⟩ := hu d' hd'
+          have hbi : b i ∈ L q := by rw [hLq]; exact Submodule.subset_span ⟨i, rfl⟩
+          rw [smul_smul, ho]
+          exact Submodule.smul_mem (L q) (⟨σ o, hσ q hq o⟩ : regAt ξ q) hbi
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ideal_saturated_vector_bundle : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X) (Li : Type) [AddCommGroup Li] [Module Ω Li] (O : Type) [CommRing O] [IsDedekindDomain O] (σ : O →+* Ω) (𝔡 : Ideal O) (L : Lat ξ Li) (T : Set (Cpt ξ)) (r : ℕ) (V : Submodule Ω Li), Function.Injective σ → 𝔡 ≠ ⊥ → (∀ q ∈ T, ∀ a, σ a ∈ regAt ξ q) → L.IsVBOn T r V → Lat.IsVBOn (fun q => Submodule.span (regAt ξ q) {e | e ∈ V ∧ ∀ d ∈ 𝔡, σ d • e ∈ L q} : Lat ξ Li) T r V := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Relay.ideal_saturated_vector_bundle
+end
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
 
@@ -204,3 +457,5 @@ theorem hodgeLattices_isVB : Out.WeilSt → ∀ (E : Type) [Field E] [NumberFiel
   exact hL
 
 end GlobalTheory.CompanionTheory.Ar
+end
+end

@@ -1,5 +1,92 @@
 import Mathlib
-import GroundTheory.TateCohomology.HerbrandTate
+import GroundTheory.TateCohomology.HerbrandAbstract
+import GroundTheory.TateCohomology.TateLow
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.GroupCoh
+
+universe w u v
+
+variable {k : Type u} {G : Type v} [CommRing k] [Group G]
+
+def repSubOne (A : Rep.{w} k G) (σ : G) : A →+ A :=
+  (A.ρ σ - 1 : Module.End k A).toAddMonoidHom
+
+theorem repSubOne_apply (A : Rep.{w} k G) (σ : G) (x : A) : repSubOne A σ x = A.ρ σ x - x :=
+  rfl
+
+variable [Fintype G]
+
+def repNorm (A : Rep.{w} k G) : A →+ A :=
+  A.ρ.norm.toAddMonoidHom
+
+noncomputable def repHerbrandQuotient (A : Rep.{w} k G) (σ : G) : ℚ :=
+  herbrandQuotient (repSubOne A σ) (repNorm A)
+
+def RepHasHerbrandQuotient (A : Rep.{w} k G) (σ : G) : Prop :=
+  HasHerbrandQuotient (repSubOne A σ) (repNorm A)
+
+end GroundTheory.GroupCoh
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.GroupCoh
+
+universe u
+
+open CategoryTheory
+
+theorem natCard_kerModRange_eq_relIndex {A : Type*} [AddCommGroup A] (f g : A →+ A) :
+    Nat.card (KerModRange f g) = g.range.relIndex f.ker :=
+  rfl
+
+variable {R G : Type u} [CommRing R] [Group G] [Fintype G]
+
+omit [Fintype G] in
+
+theorem ker_repSubOne (A : Rep.{u} R G) {σ : G} (hσ : ∀ x, x ∈ Subgroup.zpowers σ) :
+    (repSubOne A σ).ker = A.ρ.invariants.toAddSubgroup := by
+  ext x
+  rw [AddMonoidHom.mem_ker, repSubOne_apply, sub_eq_zero, Submodule.mem_toAddSubgroup,
+    Representation.mem_invariants_iff_of_forall_mem_zpowers A.ρ σ hσ]
+
+theorem range_repSubOne (A : Rep.{u} R G) {σ : G} (hσ : ∀ x, x ∈ Subgroup.zpowers σ) :
+    (repSubOne A σ).range = (Representation.Coinvariants.ker A.ρ).toAddSubgroup := by
+  rw [Representation.FiniteCyclicGroup.coinvariantsKer_eq_range A.ρ σ hσ]
+  ext x
+  rw [AddMonoidHom.mem_range, Submodule.mem_toAddSubgroup, LinearMap.mem_range]
+  rfl
+
+theorem ker_repNorm (A : Rep.{u} R G) :
+    (repNorm A).ker = (LinearMap.ker A.ρ.norm).toAddSubgroup :=
+  rfl
+
+theorem range_repNorm (A : Rep.{u} R G) :
+    (repNorm A).range = (LinearMap.range A.ρ.norm).toAddSubgroup := by
+  ext x
+  rw [AddMonoidHom.mem_range, Submodule.mem_toAddSubgroup, LinearMap.mem_range]
+  rfl
+
+theorem natCard_tateCohomology_zero (A : Rep.{u} R G) {σ : G}
+    (hσ : ∀ x, x ∈ Subgroup.zpowers σ) :
+    Nat.card (tateCohomology A 0) = Nat.card (KerModRange (repSubOne A σ) (repNorm A)) := by
+  rw [natCard_kerModRange_eq_relIndex, ker_repSubOne A hσ, range_repNorm]
+  exact Nat.card_congr ((tateCohomologyZeroIso R G).app A).toLinearEquiv.toEquiv
+
+theorem natCard_tateCohomology_neg_one (A : Rep.{u} R G) {σ : G}
+    (hσ : ∀ x, x ∈ Subgroup.zpowers σ) :
+    Nat.card (tateCohomology A (-1)) = Nat.card (KerModRange (repNorm A) (repSubOne A σ)) := by
+  rw [natCard_kerModRange_eq_relIndex, ker_repNorm, range_repSubOne A hσ]
+  exact Nat.card_congr ((tateCohomologyNegOneIso R G).app A).toLinearEquiv.toEquiv
+
+end GroundTheory.GroupCoh
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.GroupCoh
@@ -146,3 +233,4 @@ noncomputable def tateCohomologyPeriodicIso {R G : Type u} [CommRing R] [Group G
   exact tateCohomologyPeriodicIsoOfComm A hσ n
 
 end GroundTheory.GroupCoh
+end

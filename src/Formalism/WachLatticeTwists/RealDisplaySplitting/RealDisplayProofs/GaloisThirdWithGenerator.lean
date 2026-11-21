@@ -176,40 +176,8 @@ theorem realDisplayAllWA3_of (ℓ : ℕ) [Fact ℓ.Prime] (O : Type) [CommRing O
     (fun Kc k0 _ _ c φ =>
       colPsi_lc ℓ (M := blockRestrictedRepresentationType bl ρk c) r χ E e₁ δ hO hA hur (fun m => pi_ko_torsion O _ m) _ _ Kc k0 φ)
 
-theorem primOver3_of (ℓ : ℕ) [Fact ℓ.Prime] (O O' : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
-    [CommRing O'] [IsDomain O'] [IsDiscreteValuationRing O'] [Algebra O O'] (e : ℕ) {X d : Type}
-    [Fintype d] [DecidableEq d] (Ek Ω : Type) [Field Ek] [NumberField Ek] [Field Ω] [Algebra Ek Ω]
-    [IsAlgClosure Ek Ω] (T : Subalgebra O (X → O)) (r : (Ω ≃ₐ[Ek] Ω) →* (X → Matrix d d O))
-    (π : X) (t : ℕ) (ht : 1 ≤ t) (bl : d → Fin (t + 1)) (χ₁ ε : (Ω ≃ₐ[Ek] Ω) →* Oˣ) (g₀ : (Ω ≃ₐ[Ek] Ω))
-    (eB e₁ s : X → Matrix d d O) (h : PrimOver ℓ O O' e Ek Ω T r π t ht bl χ₁ ε g₀ eB e₁ s) :
-    PrimOver3 ℓ O O' e Ek Ω T r π t ht bl χ₁ ε g₀ eB e₁ s := by
-  obtain ⟨D, hD, h1, h2, h3, h4, i1, i2, i3, i4, i5, hall⟩ := h
-  refine ⟨D, hD, h1, h2, h3, h4, i1, i2, i3, i4, i5, ?_⟩
-  intro _ _ _ _ _ _ _ _ _ _ Z
-  obtain ⟨a1, a2, a3, a4⟩ := hall Z
-  exact ⟨realDisplay3_of _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ a1,
-    realDisplayWA3_of _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ a2,
-    realDisplayAll3_of _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ a3,
-    realDisplayAllWA3_of _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ a4⟩
 
-theorem galois_theorem_third_form : GaloisTheoremThirdForm := by
-  intro ℓ _ O _ _ _ _ X _ T d _ _ Ek Ω _ _ _ _ _ r π t ht bl χ₁ ε g₀ hyp L ϖ hϖ
-  obtain ⟨eB, e₁, s, hAB, hall⟩ := galois_theorem_primitive_data ℓ O X T d Ek Ω r π t ht bl χ₁ ε g₀ hyp L ϖ hϖ
-  exact ⟨eB, e₁, s, hAB, fun O' _ _ _ _ _ _ e he hspl =>
-    primOver3_of ℓ O O' e Ek Ω T r π t ht bl χ₁ ε g₀ eB e₁ s (hall O' e he hspl)⟩
 
-theorem galois_third_with_extension : GaloisThirdWithExtension := by
-  intro ℓ _ O _ _ _ _ X _ T d _ _ Ek Ω _ _ _ _ _ r π t ht bl χ₁ ε g₀ hyp L ϖ hϖ
-  obtain ⟨eB, e₁, s, hAB, O', i1, i2, i3, i4, i5, i6, e, he, hO⟩ :=
-    galois_theorem_with_extension ℓ O X T d Ek Ω r π t ht bl χ₁ ε g₀ hyp L ϖ hϖ
-  exact ⟨eB, e₁, s, hAB, O', i1, i2, i3, i4, i5, i6, e, he,
-    primOver3_of ℓ O O' e Ek Ω T r π t ht bl χ₁ ε g₀ eB e₁ s hO⟩
 
-theorem galois_third_with_generator : GaloisThirdWithGenerator := by
-  intro ℓ _ O _ _ _ _ X _ T d _ _ Ek Ω _ _ _ _ _ r π t ht bl χ₁ ε g₀ s₀ y hP hA h2 hG3 hg hcyc L ϖ hϖ
-  obtain ⟨eB, e₁, s, hAB, O', i1, i2, i3, i4, i5, i6, e, he, hO, hc, hg'⟩ :=
-    galois_theorem_with_generator ℓ O X T d Ek Ω r π t ht bl χ₁ ε g₀ s₀ y hP hA h2 hG3 hg hcyc L ϖ hϖ
-  exact ⟨eB, e₁, s, hAB, O', i1, i2, i3, i4, i5, i6, e, he,
-    primOver3_of ℓ O O' e Ek Ω T r π t ht bl χ₁ ε g₀ eB e₁ s hO, hc, hg'⟩
 
 end Formalism.RepresentationBoundsCohomology.SF

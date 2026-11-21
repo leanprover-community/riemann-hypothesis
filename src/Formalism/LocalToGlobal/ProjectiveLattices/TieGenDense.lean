@@ -1,7 +1,83 @@
-import Formalism.LocalToGlobal.ProjectiveLattices.TieRecog
+import Formalism.LocalToGlobal.ProjectiveLattices.RatRgOfSecRat
+import Formalism.LocalToGlobal.ProjectiveLattices.GenSpecDesc
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.ExpBCChart
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.FrMapComp
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.GGConn
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.DivStatementPfLA
 
+section
+noncomputable section
+
+namespace Formalism.L2.Pj
+
+open NumberField AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+section Fr
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
+  {Xo : Moduli Dw l} {c : Coeff l}
+
+theorem adjoin_weight {Z : Comp Xo c} {I : Type} {wL : WTZ E} {ws : I → AC Z} (hws : ∀ i, ws i ∈ AG Z wL)
+    {p : AC Z} (hp : p ∈ Algebra.adjoin c.F (Set.range ws)) : ∀ G, p.coeff G ≠ 0 → ∃ m : ℕ, G = m • wL := by
+  classical
+  induction hp using Algebra.adjoin_induction with
+  | mem x hx =>
+    obtain ⟨i, rfl⟩ := hx
+    obtain ⟨r, hr⟩ := mem_AG.1 (hws i)
+    intro G hG
+    rw [hr, AddMonoidAlgebra.coeff_single, Finsupp.single_apply] at hG
+    split_ifs at hG with e
+    · exact ⟨1, by rw [one_smul, e]⟩
+    · exact absurd rfl hG
+  | algebraMap r =>
+    intro G hG
+    rw [AddMonoidAlgebra.coe_algebraMap, Function.comp_apply, AddMonoidAlgebra.coeff_single,
+      Finsupp.single_apply] at hG
+    split_ifs at hG with e
+    · exact ⟨0, by rw [zero_smul, e]⟩
+    · exact absurd rfl hG
+  | add x y _ _ hx hy =>
+    intro G hG
+    rw [AddMonoidAlgebra.coeff_add, Finsupp.add_apply] at hG
+    by_cases h1 : x.coeff G = 0
+    · rw [h1, zero_add] at hG; exact hy G hG
+    · exact hx G h1
+  | mul x y _ _ hx hy =>
+    intro G hG
+    rw [AddMonoidAlgebra.coeff_mul] at hG
+    unfold Finsupp.sum at hG
+    obtain ⟨g1, hg1, hne⟩ := Finset.exists_ne_zero_of_sum_ne_zero hG
+    obtain ⟨g2, hg2, hne2⟩ := Finset.exists_ne_zero_of_sum_ne_zero hne
+    dsimp only at hne2
+    split_ifs at hne2 with e
+    · obtain ⟨m1, e1⟩ := hx g1 (Finsupp.mem_support_iff.1 hg1)
+      obtain ⟨m2, e2⟩ := hy g2 (Finsupp.mem_support_iff.1 hg2)
+      exact ⟨m1 + m2, by rw [← e, e1, e2, add_smul]⟩
+    · exact absurd rfl hne2
+
+end Fr
+
+open IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.WeightAlgebra ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.T0
+
+variable {D : D7} {T : Top D}
+
+def SpreadRgSt {j : ℕ} (hG : GenFrEx (T.Q.Xo j) T.Q.c) (κ : Comp (T.Q.Xo j) T.Q.c → (T.U j T.σ₀).Comp) : Prop :=
+  ∀ (Z : Comp (T.Q.Xo j) T.Q.c) (x : Frame ((T.U j T.σ₀).X (κ Z)).Ψ D.R.r)
+    (hx : x ∈ ((T.U j T.σ₀).X (κ Z)).dom),
+    ∃ (A : TRing T.Q.c.F) (yA : FrPt (T.Q.Xo j) T.Q.c A.R) (io : A.R →ₐ[T.Q.c.F] Om Z)
+      (ev : A.R →ₐ[T.Q.c.F] CAt T.σ₀) (w : FrPt (T.Q.Xo j) T.Q.c (CAt T.σ₀)) (t : Ix (T.Q.Dw j) → (CAt T.σ₀)ˣ)
+      (wO : FrPt (T.Q.Xo j) T.Q.c (Om Z)) (tO : Ix (T.Q.Dw j) → (Om Z)ˣ),
+      Function.Injective io ∧ FrMap ev yA w ∧ FrBor t w ((T.U j T.σ₀).un (κ Z) ⟨x, hx⟩) ∧
+        FrMap io yA wO ∧ FrBor tO wO (genFr hG Z)
+
+end Formalism.L2.Pj
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.L2.Pj
@@ -62,29 +138,6 @@ theorem countable_closure {A : Type} [CommRing A] {s : Set A} (hs : s.Countable)
   rw [e, Algebra.adjoin_eq_range, AlgHom.coe_range]
   exact Set.countable_range _
 
-theorem countable_Rg (h : LawsP T) {j : ℕ} (hj : InR D j) (hG : GenFrEx (T.Q.Xo j) T.Q.c)
-    (Z : Comp (T.Q.Xo j) T.Q.c) : (RgR h hj hG Z : Set (AC Z)).Countable := by
-  haveI : Countable T.Q.c.F := Finsupp.Countable.of_moduleFinite (R := ℚ) (M := T.Q.c.F)
-  haveI : Countable (WeightFamilies.Wt D j) := by
-    have hi : Function.Injective (fun w : WeightFamilies.Wt D j => (w.aP, w.aM, w.n)) := by
-      rintro ⟨a1, b1, _, _, n1, _⟩ ⟨a2, b2, _, _, n2, _⟩ e
-      simp only [Prod.mk.injEq] at e
-      obtain ⟨rfl, rfl, rfl⟩ := e
-      rfl
-    exact hi.countable
-  have hgen : (gensR h j).Countable := by
-    have hsub : gensR h j ⊆ ⋃ u : WeightFamilies.Wt D j,
-        Set.range (fun F : (recB h.toLawsCore).Cusp j u => AddMonoidAlgebra.single (wtZ (wtA u) u.n) F.1) := by
-      rintro b ⟨u, F, rfl⟩
-      exact Set.mem_iUnion.2 ⟨u, F, rfl⟩
-    refine Set.Countable.mono hsub (Set.countable_iUnion fun u => ?_)
-    haveI : Module.Finite T.Q.c.F ((recB h.toLawsCore).Cusp j u) := (recB h.toLawsCore).fdC j u
-    haveI : Countable ((recB h.toLawsCore).Cusp j u) :=
-      Finsupp.Countable.of_moduleFinite (R := T.Q.c.F) (M := (recB h.toLawsCore).Cusp j u)
-    exact Set.countable_range _
-  haveI : Countable (BcR h j) := (countable_closure hgen).to_subtype
-  rw [show (RgR h hj hG Z : Set (AC Z)) = Set.range (PsiC h hj hG Z) from RingHom.coe_range _]
-  exact Set.countable_range _
 
 set_option maxHeartbeats 1600000 in
 
@@ -265,46 +318,7 @@ theorem mem_genRg_of (h : LawsP T) {j : ℕ} (hj : InR D j) (hG : GenFrEx (T.Q.X
   have hg1 := hgood g hg hg0 G hGE hgA
   rw [hPf, cons (ratio (Ω := Om Z) f g) f g hf hg hfA hgA hg0 hGE rfl, div_mul_cancel₀ _ hg1]
 
-theorem genDenseRg (h : LawsP T) {j : ℕ} (hj : InR D j) (hG : GenFrEx (T.Q.Xo j) T.Q.c)
-    (d : ReciprocityTheory.ChartRestriction.G.T0.Data T.Q.c.F (Comp (T.Q.Xo j) T.Q.c) (fun Z => Om Z) (WTZ D.host.E) (fun Z => AC Z))
-    {κ : Comp (T.Q.Xo j) T.Q.c → (T.U j T.σ₀).Comp} (hκ : KappaTie j hG κ) (hd : DTie h j hG d)
-    (Z : Comp (T.Q.Xo j) T.Q.c)
-    (hbir : ∀ a : Om Z, ∃ (G : WTZ D.host.E) (f p : AC Z), f ∈ (rdData1 h hj hG d hκ hd Z).Rg ∧ p ∈ (rdData1 h hj hG d hκ hd Z).Rg ∧
-      f ∈ AG Z G ∧ p ∈ AG Z G ∧ p ≠ 0 ∧ p ∈ Algebra.adjoin T.Q.c.F (Set.range fun i => d.w i Z) ∧
-      a = ratio (Ω := Om Z) f p) :
-    GenDenseRgSt (rdData1 h hj hG d hκ hd Z) := by
-  classical
-  have hRd := tieRd1 h hj hG d hκ hd Z
-  let Hs : Set (AC Z) := {g | ∃ (_ : g ∈ (rdData1 h hj hG d hκ hd Z).Rg), g ≠ 0 ∧ ∃ G ∈ (rdData1 h hj hG d hκ hd Z).WE, g ∈ AG Z G}
-  have hHc : Hs.Countable := (countable_Rg h hj hG Z).mono fun g hg => hg.1
-  let S0 : AC Z → Set (Frame ((T.U j T.σ₀).X (κ Z)).Ψ D.R.r) := fun g =>
-    if hg : g ∈ (rdData1 h hj hG d hκ hd Z).Rg then closure {x | x ∈ ((T.U j T.σ₀).X (κ Z)).dom ∧ (rdData1 h hj hG d hκ hd Z).rd ⟨g, hg⟩ x = 0} else ∅
-  have hS0 : ∀ g ∈ Hs, IsClosed (S0 g) ∧ interior (S0 g) = ∅ := by
-    rintro g ⟨hg, hg0, G, hGE, hgA⟩
-    simp only [S0, dif_pos hg]
-    refine ⟨isClosed_closure, interior_closure_zero _ (hRd.1 G hGE g hg hgA).1 ?_⟩
-    by_contra hno
-    push Not at hno
-    exact hg0 (hRd.2.1 G g hg hgA hno)
-  have hcov : ((T.U j T.σ₀).X (κ Z)).dom \ genRg (rdData1 h hj hG d hκ hd Z) ⊆ ⋃ g ∈ Hs, S0 g := by
-    rintro x ⟨hx, hxg⟩
-    by_contra hno
-    refine hxg (mem_genRg_of h hj hG d hκ hd Z hbir hx fun g hg hg0 G hGE hgA hz => hno ?_)
-    refine Set.mem_biUnion (x := g) ⟨hg, hg0, G, hGE, hgA⟩ ?_
-    simp only [S0, dif_pos hg]
-    exact subset_closure ⟨hx, hz⟩
-  rcases Hs.eq_empty_or_nonempty with he | hne
-  · refine ⟨fun _ => ∅, fun _ => ⟨isClosed_empty, interior_empty⟩, ?_⟩
-    intro x hx
-    have := hcov hx
-    rw [he] at this
-    simp at this
-  · obtain ⟨f, hf⟩ := hHc.exists_eq_range hne
-    refine ⟨fun n => S0 (f n), fun n => hS0 _ (by rw [hf]; exact Set.mem_range_self n), ?_⟩
-    intro x hx
-    obtain ⟨g, hg, hxg⟩ := Set.mem_iUnion₂.1 (hcov hx)
-    rw [hf] at hg
-    obtain ⟨n, rfl⟩ := hg
-    exact Set.mem_iUnion.2 ⟨n, hxg⟩
 
 end Formalism.L2.Pj
+end
+end

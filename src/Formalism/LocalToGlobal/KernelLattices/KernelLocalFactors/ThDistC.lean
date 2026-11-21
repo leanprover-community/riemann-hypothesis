@@ -250,41 +250,9 @@ theorem unitInv_rho (i : ℕ) : UnitInv (rhoS Ch sel mu i) (rhoT Ch sel mu i) :=
 
 variable {u : Pr.Word} {m2 : ℕ} (T : ChTh W sel mu u m2) (b : L.β (m2 + 1)) (hY : YbHyp (R := R) sel mu cst L u m2 b)
 
-theorem chKer_mat (P : LevFam X.E X.K R.r Pr.vGs) (hM : MatEquiv W Ch sel mu cst L T) (h1 : Cp1Equiv W Ch sel mu cst L T b hY)
-    (h2 : Cp2Equiv W Ch sel mu cst L T b hY P) (i : ℕ) (hi : i < m2) (al : L.β i) (be : L.β (i + 1))
-    (p : ChPt (R := R) sel mu u i) (p' : ChPt (R := R) sel mu u (i + 1)) :
-    ((chKer W Ch sel mu cst L T b hY P hM h1 h2).kk i al be).k p p' =
-      kerOf (T.th i) (Sall sel mu u) (cAof sel mu cst) (cBof sel mu cst u) p.deco.1.N (frsF sel mu p)
-        p'.deco.1.N (frsF sel mu p') (XiEntry Ch sel mu cst L i al be p p') := by
-  show ((if h : i < m2 then ClsKer.mk (matK W Ch sel mu cst L T i al be) (hM i h al be) else zeroKer _ _ :
-    ClsKer ((chF W sel mu L u i).mem al) ((chF W sel mu L u (i + 1)).mem be))).k p p' = _
-  rw [dif_pos hi]
-  rfl
 
-theorem chainKernel_penultimate_eq_on (P : LevFam X.E X.K R.r Pr.vGs) (hM : MatEquiv W Ch sel mu cst L T) (h1 : Cp1Equiv W Ch sel mu cst L T b hY)
-    (h2 : Cp2Equiv W Ch sel mu cst L T b hY P) (al : L.β m2) (p₀ : ChPt (R := R) sel mu u m2) (p : ChPt (R := R) sel mu u (m2 + 1))
-    (Y : Set (Sp X.E (R.N (m2 + 1)))) (hYm : Y ∈ ybSet sel mu cst p.deco.1.N) :
-    ((chKer W Ch sel mu cst L T b hY P hM h1 h2).cp al).k1 p₀ p Y =
-      kerOf (T.th m2) (Sall sel mu u) (cAof sel mu cst) (cBof sel mu cst u) p₀.deco.1.N (frsF sel mu p₀)
-        p.deco.1.N (frsF sel mu p) (XiCpl1 Ch sel mu cst L m2 al p₀ p Y) :=
-  if_pos hYm
 
-theorem chainKernel_coupled_eq_on (P : LevFam X.E X.K R.r Pr.vGs) (hM : MatEquiv W Ch sel mu cst L T) (h1 : Cp1Equiv W Ch sel mu cst L T b hY)
-    (h2 : Cp2Equiv W Ch sel mu cst L T b hY P) (al : L.β m2) (p : ChPt (R := R) sel mu u (m2 + 1))
-    (Y : Set (Sp X.E (R.N (m2 + 1)))) (d : RowPt Pr R sel mu) (hYm : Y ∈ ybSet sel mu cst p.deco.1.N) :
-    ((chKer W Ch sel mu cst L T b hY P hM h1 h2).cp al).k2 p Y d =
-      kerOf T.top (Sall sel mu u) (cAof sel mu cst) (cBof sel mu cst u) p.deco.1.N (frsF sel mu p)
-        (tilQ sel mu u d).1.N (frsT sel mu u d) (XiCpl2 Ch sel mu cst m2 p Y d) :=
-  if_pos hYm
 
-theorem chKer_shape (P : LevFam X.E X.K R.r Pr.vGs) (hM : MatEquiv W Ch sel mu cst L T) (h1 : Cp1Equiv W Ch sel mu cst L T b hY)
-    (h2 : Cp2Equiv W Ch sel mu cst L T b hY P)
-    (hlev : (cst.sharp = false ∧ P = rP0 Ch) ∨ (cst.sharp = true ∧ P = rPsymF Ch)) :
-    (chKer W Ch sel mu cst L T b hY P hM h1 h2).Shape T where
-  lev := hlev
-  mat i hi al be p p' := chKer_mat W Ch sel mu cst L T b hY P hM h1 h2 i hi al be p p'
-  cp1 al p₀ p Y hYm := chainKernel_penultimate_eq_on W Ch sel mu cst L T b hY P hM h1 h2 al p₀ p Y hYm
-  cp2 al p Y d hYm := chainKernel_coupled_eq_on W Ch sel mu cst L T b hY P hM h1 h2 al p Y d hYm
 
 end Chain
 
@@ -510,11 +478,6 @@ theorem chTh_ok (A : Amb X) (u : Pr.Word) (m2 : ℕ) (hm : m2 + 1 < R.m) (hT : 0
   th i hi := stepC_ok W Ch sel mu cst A u i (by omega) _ hT _ _ hq (hs i hi) (heq i hi)
   top := stepC_ok W Ch sel mu cst A u (m2 + 1) hm _ hT _ _ hq hst htop
 
-theorem chKerC_shape (A : Amb X) (u : Pr.Word) (m2 : ℕ) (b : L.β (m2 + 1)) (hY : YbHyp (R := R) sel mu cst L u m2 b)
-    (P : LevFam X.E X.K R.r Pr.vGs) (h : KerEquivC W Ch sel mu cst L A u m2 b hY P)
-    (hlev : (cst.sharp = false ∧ P = rP0 Ch) ∨ (cst.sharp = true ∧ P = rPsymF Ch)) :
-    (chKerC W Ch sel mu cst L A u m2 b hY P h).Shape (chTh W Ch sel mu cst A u m2) :=
-  chKer_shape W Ch sel mu cst L _ b hY P h.1 h.2.1 h.2.2 hlev
 
 end Final2
 
@@ -770,19 +733,10 @@ theorem cplEq1_of_on {K : Type} [Field K] [NumberField K] [StarRing K] {S₀ S :
   · exact h g₀ g d₀ d y hy
   · rw [h0 d₀ d y hy, h0 _ _ _ (fun h' => hy ((Y.equiv g d y).1 h')), LinearMap.zero_comp, LinearMap.comp_zero]
 
-theorem cplEq2_of_on {K : Type} [Field K] [NumberField K] [StarRing K] {S S₁ : GSD K} (Y : Cpl S) (k2 : S.D → Y.Yb → S₁.D → (S.V →ₗ[K] S₁.V))
-    (h : CplEq2On Y k2) (h0 : ∀ d y d₁, y ∉ Y.ys d → k2 d y d₁ = 0) : CplEq2 Y k2 := by
-  intro g g₁ d y d₁
-  by_cases hy : y ∈ Y.ys d
-  · exact h g g₁ d y d₁ hy
-  · rw [h0 d y d₁ hy, h0 _ _ _ (fun h' => hy ((Y.equiv g d y).1 h')), LinearMap.zero_comp, LinearMap.comp_zero]
 
 theorem cp1Equiv_of_on (h : Cp1EquivOn W Ch sel mu cst L T b hY) : Cp1Equiv W Ch sel mu cst L T b hY := fun al =>
   cplEq1_of_on _ _ (h al) fun _ _ _ hy => if_neg hy
 
-theorem cp2Equiv_of_on (P : LevFam X.E X.K R.r Pr.vGs) (h : Cp2EquivOn W Ch sel mu cst L T b hY P) :
-    Cp2Equiv W Ch sel mu cst L T b hY P :=
-  cplEq2_of_on _ _ h fun _ _ _ hy => if_neg hy
 
 end OnYs
 
@@ -1967,14 +1921,7 @@ theorem qu_one_sub_mem (v : HeightOneSpectrum (𝓞 F)) (I : Ideal (𝓞 E)) (k 
   rw [e2]
   exact Ideal.add_mem _ (Ideal.mem_map_of_mem _ (hI a hak)) (Ideal.mul_mem_right _ _ (Ideal.mem_map_of_mem _ (hI r hrk)))
 
-theorem qu_idem (v : HeightOneSpectrum (𝓞 F)) : quE E v * quE E v = quE E v := by
-  apply Subtype.ext
-  show ((1 : E) ⊗ₜ[F] Formalism.L2.G.sgl F v 1) * ((1 : E) ⊗ₜ[F] Formalism.L2.G.sgl F v 1) = (1 : E) ⊗ₜ[F] Formalism.L2.G.sgl F v 1
-  rw [Algebra.TensorProduct.tmul_mul_tmul, one_mul, ← Formalism.L2.G.sgl_mul, one_mul]
 
-theorem qu_prV (v v' : HeightOneSpectrum (𝓞 F)) (h : v' ≠ v) : prV (E := E) v' ((quE E v : RInt F E) : AfE F E) = 0 := by
-  show (Algebra.TensorProduct.map (AlgHom.id F E) (evalV F v')) ((1 : E) ⊗ₜ[F] Formalism.L2.G.sgl F v 1) = 0
-  rw [Algebra.TensorProduct.map_tmul, Formalism.L2.G.sgl_apply_ne F v 1 h, TensorProduct.tmul_zero]
 
 end QU
 

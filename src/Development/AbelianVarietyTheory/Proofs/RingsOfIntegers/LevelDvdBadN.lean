@@ -9,8 +9,6 @@ namespace GlobalTheory.TrivLevel
 theorem level_dvd_badN (D : D7) {p : ℕ} (hp : p ∈ D.host.levelPrimes) : p ∣ badN D :=
   dvd_mul_of_dvd_right (Finset.dvd_prod_of_mem _ hp) _
 
-theorem two_dvd_badN (D : D7) : 2 ∣ badN D :=
-  dvd_mul_of_dvd_left (dvd_mul_of_dvd_left (dvd_mul_of_dvd_left D.host.two_dvd_QS _) _) _
 
 theorem badN_pos_iff (D : D7) : 0 < badN D ↔ 0 ∉ D.host.levelPrimes := by
   have h := D.host.qd_big
@@ -35,8 +33,5 @@ theorem coprime_level {D : D7} (T : Full D) (hF : LawsFull T) (j : ℕ) (hj : In
   rw [hM, hl, hpd j hj n]
   exact ((hc _ (D.host.g_level 0)).mul_right (hc _ (D.host.g_level 1))).mul_right (hc p hpl)
 
-theorem trivAt_level : ∀ (D : D7) (T : Full D), LawsFull T → (0 < badN D ↔ 0 ∉ D.host.levelPrimes) ∧ ∀ j, InR D j → ∀ (n m : ℕ) (Λ : GenLat D.host.E m), Λ.TrivAt (badN D) → Λ.TrivAt (T.dδ j n).l₂.M := by
-  intro D T hF
-  refine ⟨badN_pos_iff D, fun j hj n m Λ ⟨k, hk, h1, h2⟩ => ⟨k, coprime_level T hF j hj n hk, h1, h2⟩⟩
 
 end GlobalTheory.TrivLevel

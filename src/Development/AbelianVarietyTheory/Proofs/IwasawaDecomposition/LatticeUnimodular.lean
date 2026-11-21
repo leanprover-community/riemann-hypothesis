@@ -80,15 +80,6 @@ section Space
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {T : E}
   {Λ : Submodule (𝓞 E) (Fin S.rank → E)} {F : LFlag S r T}
 
-theorem lattice_unimodular (h : SelfDual (starRingEnd E) S.gram Λ) :
-    Submodule.IsLattice E (latV S Λ) ∧ Formalism.HermitianLatticesTheory.IsUnimodular S.hT (latV S Λ) := by
-  have hd (x : S.V) : x ∈ latV S Λ ↔ ∀ y ∈ latV S Λ, S.hT y x ∈ (1 : Submodule (𝓞 E) E) := by
-    rw [mem_latV, h.2, co_surjective.forall]
-    simp only [← B_eq, mem_latV, Submodule.mem_one, RingHom.mem_range, GlobalTheory.SA.ofHSpace_B]
-  refine ⟨⟨?_, (isUnimod_latV h).1.2⟩, Submodule.ext fun x => ?_⟩
-  · rw [latV, Submodule.comap_equiv_eq_map_symm]; exact h.1.map _
-  · rw [hd]
-    simp [Formalism.HermitianLatticesTheory.dual, Formalism.E.hdual]
 
 variable (h : IntFrame (starRingEnd E) S.gram T Λ (coMat S (Formalism.MainNotions.S.Lat.frame F)))
 include h
@@ -195,14 +186,6 @@ theorem frameOK {T : D.host.E} {Λ : Submodule (𝓞 D.host.E) (Fin (hS D).rank 
   rw [xLam_eq_span h, XS]
   simp only [e]
 
-theorem conventions : ∀ (D : D7) (u u' : D.what₂.Word) (t : RecTerm D u u'),
-    Formalism.MainNotions.S.Lat.FixedHyp D t.abelian₂ t.fl ∧ Formalism.MainNotions.S.Lat.IsFixedConv t.abelian₂ (Formalism.MainNotions.S.Lat.gS D) t.fl' ∧
-      Formalism.MainNotions.S.FrameOK D t.abelian₂ t.fl' ∧ Formalism.MainNotions.S.Lat.XLam t.abelian₂ t.fl = Formalism.MainNotions.S.XS D t.fl.fl := by
-  intro D u u' t
-  have h1 : FrameOK D t.abelian₂ t.fl := frameOK (by rw [t.coMat_fl]; exact ⟨isFrame_recFrame D u, t.lat_mem.2⟩)
-  have h2 : FrameOK D t.abelian₂ t.fl' := frameOK (by rw [t.coMat_fl']; exact t.adm.1)
-  have h3 := lattice_unimodular (S := hS D) t.lat_mem.1
-  exact ⟨⟨h3.1, h3.2, t.isLift_fl, h1.1⟩, h2.1, h2, h1.2⟩
 
 end Record
 

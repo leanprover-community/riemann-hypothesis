@@ -217,9 +217,6 @@ theorem ideleClassNorm_mk (x : IdeleGroup L) :
     ideleClassNorm K L (IdeleClassGroup.mk L x) = IdeleClassGroup.mk K (ideleNorm K L x) :=
   rfl
 
-theorem continuous_ideleClassMap : Continuous (ideleClassMap K L) :=
-  (QuotientGroup.isQuotientMap_mk _).continuous_iff.2
-    ((IdeleClassGroup.continuous_mk L).comp continuous_ideleEmbedding)
 
 theorem continuous_ideleClassNorm : Continuous (ideleClassNorm K L) :=
   (QuotientGroup.isQuotientMap_mk _).continuous_iff.2

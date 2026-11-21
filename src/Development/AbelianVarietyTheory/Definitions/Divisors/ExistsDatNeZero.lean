@@ -204,56 +204,16 @@ def Dat.ofForm (t : G.TorsionTower A) (f : Form (A.hom ≫ 𝟙 _)) (hf : Form.c
   h := 0
   res := fun n ↦ by simp [fv_of_form]
 
-theorem Dat.coc_ofForm (t : G.TorsionTower A) (f : Form (A.hom ≫ 𝟙 _)) (hf : Form.cl _ f ∈ primDR A) (n : ℕ) :
-    (Dat.ofForm t f hf).coc n = 0 := by
-  simp [Dat.coc, Dat.ofForm, fv_of_form]
 
-theorem Dat.om_ofForm (t : G.TorsionTower A) (f : Form (A.hom ≫ 𝟙 _)) (hf : Form.cl _ f ∈ primDR A) (n : ℕ) :
-    (Dat.ofForm t f hf).om n = cotVal f.1 (t.y n) := by
-  change cotVal f.1 (t.y n) - dUnit R (0 : G.A n) = _
-  rw [dUnit, map_zero, sub_zero]
 
-theorem cotVal_form_res (t : G.TorsionTower A) (f : Form (A.hom ≫ 𝟙 _)) (n : ℕ) :
-    cotMap (G.res n) (cotVal f.1 (t.y (n + 1))) = cotVal f.1 (t.y n) := by
-  letI := cotOp R (G.A n)
-  letI := cotOp R (G.A (n + 1))
-  haveI := cotCentral R (G.A n)
-  haveI := cotCentral R (G.A (n + 1))
-  haveI := cotTower R (G.A n)
-  haveI := cotTower R (G.A (n + 1))
-  have e : spOver (TrivSqZeroExt.map (cotMap (G.res n))) ≫ spOver (cotPt R (G.A (n + 1))) ≫ t.y (n + 1) =
-      spOver (cotPt R (G.A n)) ≫ t.y n := by
-    rw [← t.res n, ← Category.assoc, ← Category.assoc, spOver_comp, spOver_comp]
-    congr 2
-    refine AlgHom.ext fun a ↦ ?_
-    ext
-    · simp [cotPt, TrivSqZeroExt.algebraMap_eq_inl]
-    · simp [cotPt, TrivSqZeroExt.algebraMap_eq_inl]
-  have := (cotExt R (G.A (n + 1))).val_map (cotExt R (G.A n)) (TrivSqZeroExt.map (cotMap (G.res n))) (AlgHom.id R R)
-    (fun c ↦ (TrivSqZeroExt.fst_map _ c).symm) (fun c ↦ TrivSqZeroExt.map_inl _ c) _ (Pt.w _) _ (Pt.w _)
-    (congrArg Over.Hom.left e) f
-  simp only [cotVal, fv_of_form, sub_zero]
-  rw [this]
-  exact (TrivSqZeroExt.snd_map _ _).symm
 
-theorem isCan_ofForm (t : G.TorsionTower A) (f : Form (A.hom ≫ 𝟙 _)) (hf : Form.cl _ f ∈ primDR A) :
-    IsCan t ⟨_, hf⟩ (G.rigOfOmega ⟨fun n ↦ cotVal f.1 (t.y n), cotVal_form_res t f⟩) :=
-  ⟨Dat.ofForm t f hf, 0, _, fun n ↦ (Dat.coc_ofForm t f hf n).symm, fun n ↦ (Dat.om_ofForm t f hf n).symm, rfl⟩
 
 def Dat.dlog (p : ℕ) [Fact p.Prime] (R : Type) [CommRing R] :
     Dat (PDivGroup.muTower p R) ⟨_, MultGrp.cl_dlog_mem (R := R)⟩ :=
   Dat.ofForm _ (MultGrp.dlog R) _
 
-theorem prim_dlog_ne_zero [Nontrivial R] :
-    (⟨_, MultGrp.cl_dlog_mem (R := R)⟩ : primDR (ReciprocityTheory.ChartRestriction.G.Semi.Gm (Sp R))) ≠ 0 :=
-  fun h ↦ MultGrp.cl_dlog_ne_zero (congrArg Subtype.val h)
 
-theorem Dat.dlog_f_ne_zero (p : ℕ) [Fact p.Prime] [Nontrivial R] : (Dat.dlog p R).f ≠ 0 := fun h ↦
-  MultGrp.cl_dlog_ne_zero (R := R) ((Dat.dlog p R).cl.symm.trans (by rw [h]; exact map_zero _))
 
-theorem exists_dat_ne_zero (R : Type) [CommRing R] [Nontrivial R] (p : ℕ) [Fact p.Prime] :
-    ∃ c, Nonempty (Dat (PDivGroup.muTower p R) c) ∧ c ≠ 0 :=
-  ⟨_, ⟨Dat.dlog p R⟩, prim_dlog_ne_zero⟩
 
 end Can
 

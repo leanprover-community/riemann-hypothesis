@@ -3,17 +3,847 @@ import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.WeightSpaceVal
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ShortestVectorStrictOfMul
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.UniformisedModelValuationData
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.UniformisedModelTorsionPointsGroupPairing
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsThetaSystemTestSectionsOnGeometricFibre
+import Development.AbelianVarietyTheory.Statements.SemistableTorsion.UTorsSt
+import Development.AbelianVarietyTheory.PublishedTheorems.SemistableReduction₂.SemistableReductionSt
+import Development.AbelianVarietyTheory.Definitions.Uniformization.AllDV
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.IsNormPull
+import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.IsThetaPtOverMove
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsFramesOnUniformisedModelFibre
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.UtestGeomNonempty
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsSymmetricLiftActionGeometricFibre
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.IsFibreSectionValueInFrameLinearUniqueExistsStatement
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ThetaSystemOrthogonalLabelsAreTorusPoints
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.TorusOperatorEigenOfExpansionSingleClass
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ThetaSystemWeightProjectorFixesEigenvector
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsIntegralBasisCombinationOfIntegralFamily
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.NormThetaConstantLePrimitiveGeneratorScaleStatement
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsValLeOfValuedSumAgainstCharactersStatement
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ThetaSystemSumCharacterOrthogonalEqZero
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ThetaSystemExistsRootOfUnitySumNormAttained
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExpBijFAndExpandsFLin
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.UnivIdentity
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.SymmetricLiftOddOrderActsAsExpansionOperatorStatement
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.TxFrameOfOne
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.FibreSectionLinearCombExistsUniqueThetaAction
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.UniformisationTorsionMapsCompatibleInLevelStatement
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsGlobalGenerators
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ValuationNonnegIffSpanMultiplicationTranslatesStatement
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.IsFibreSectionLinearCombIffExpansionSum
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsUniqueThetaConst
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ValuationsTorusPointsFramesFamilyTerms
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.SectionValueAtTorsionPointEqSumTermsStatement
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.IsFibreSectionValueInFrameLinearUniqueExists
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ThetaSysFFMemFinitePerpProj
 
+section
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH
+open Classical
+open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.UT
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.TestFibre
+
+noncomputable section
+
+namespace GlobalTheory.TestFibre
+
+open GlobalTheory.ThetaPtMove GlobalTheory.ConstFam
+
+theorem exists_secsOver : Laws → ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [ArithBase o Ω] (S : ThetaSys o Ω) (ρ : S.Real) (p : ℕ) [Fact p.Prime] (y₀ : S.R →+* PadicAlgCl p) (u : ρ.UTest p y₀) (x : S.Gam → (TFK (R := u.V) (PadicAlgCl p) ⟶ u.A.A)), PtsOver u x → ∃ rig e th s, SecsOver u x rig e th s := by
+  intro _ o Ω _ _ _ _ S ρ p _ y₀ u x hx
+  obtain ⟨w, hw⟩ := u.lb
+  have hp := u.cart
+  have hL₀ := ρ.P.isLB
+  have hL₁ := u.A.isLB
+  have := u.A.isAb.comm
+  have := ρ.P.isAb.comm
+  let τ : (TFK (R := u.V) (PadicAlgCl p)).left ⟶ (baseOver (Sp S.R)).left := spMap y₀
+  have hτ : τ ≫ (baseOver (Sp S.R)).hom = (TFK (R := u.V) (PadicAlgCl p)).hom ≫ spMap u.yK := by
+    refine (Category.comp_id _).trans (Eq.trans ?_ (Spec.map_comp _ _))
+    exact congrArg (fun q => spMap q) u.fac.symm
+  have hx' : ∀ a, (x a).left ≫ u.φ = τ ≫ (ρ.pt a).left := hx
+  obtain ⟨rig, hrig, Hr⟩ := exists_gen_through (K := PUnit) (φ' := fun _ => eSec u.A.A) (φ := fun _ => eSec ρ.P.A)
+    (ε := fun _ => 1) (h := spMap u.yK) hw hL₀ hL₁ (fun _ => PolBaseChange.eSec_comm hp) ρ.rig ρ.rig_gen
+  choose e he He using fun a => exists_gen_through (φ' := fun _ : Fin 1 => (x a).left) (h := τ) hw hL₀ hL₁
+    (fun _ => hx' a) (ρ.fr a) (ρ.fr_tors a).2.1
+  have hfr : ∀ a, IsTorsFrame u.A rig (S.r * S.N) (x a) (e a) := fun a =>
+    FrameMove.isTorsFrame_move hp hw
+      (fun Z r z J J' hJ hJ' =>
+        (Hr Z r z J J' hJ hJ').trans (congrArg (· * _) ((Fintype.prod_unique _).trans (zpow_one _))))
+      (hx' a) (ρ.fr_tors a) (he a) (fun z J J' hJ hJ' => by
+        have := He a _ (𝟙 _) z J J' hJ hJ'
+        rwa [Fin.prod_univ_one, zpow_one, Category.id_comp, Category.id_comp] at this)
+  obtain ⟨th, hth⟩ := exists_secRel hp τ hτ hw hL₀ hL₁ ρ.th₁
+  choose s hs using fun i => exists_secRel hp τ hτ hw hL₀ hL₁ (ρ.s i)
+  obtain ⟨α, hα, vα⟩ := exists_genThrough₂ hp τ hτ hw hL₀ hL₁ (psi_pow hp τ hτ (ρ.n ^ ρ.k)) ρ.α ρ.α_gen
+  have hpow : ∀ (n : ℕ) a, ρ.pt (n • a) = ρ.pt a ^ n := fun n a => by
+    induction n with
+    | zero =>
+      have h := ρ.pt_add 0 0
+      rw [add_zero] at h
+      rw [zero_smul, pow_zero]
+      exact left_eq_mul.1 h
+    | succ n ih => rw [succ_nsmul, ρ.pt_add, ih, pow_succ]
+  have hN : ∀ a, x (S.r • a) ^ S.N = 1 := fun a => FrameMove.pow_eq_one_of hp (hx' _) (by
+    rw [hpow, ← pow_mul]
+    exact (ρ.fr_tors a).1)
+  refine ⟨rig, e, th, s, hrig, hfr, fun a z J hJ => ?_, fun i a z J hJ => ?_,
+    ⟨α, hα, ThetaGeom.norm_move hp τ hτ hL₀ hL₁ Hr vα ρ.α_norm,
+      isTwistPull_move hp τ hτ hL₀ hL₁ (psi_pow hp τ hτ (ρ.n ^ ρ.k)) hα vα hth (hs ρ.i₀) ρ.s_zero⟩, fun a => ?_⟩
+  · have h := isValueAt_move hp τ hτ hL₀ hL₁ (hx' a).symm (He a) hth (ρ.th_val a)
+    have q := sv_of_isValueAt h (𝟙 _) z hJ
+    rw [Category.id_comp, spMap_appTop_fn] at q
+    rw [ThetaGeom.val_powFrame, Nat.cast_one, zpow_one]
+    exact q
+  · have h := isValueAt_move hp τ hτ hL₀ hL₁ (hx' a).symm (ThetaGeom.genThrough_pow τ (He a) S.N) (hs i)
+      (ρ.ev_val i a)
+    have q := sv_of_isValueAt h (𝟙 _) z hJ
+    rw [Category.id_comp, spMap_appTop_fn] at q
+    exact q
+  · obtain ⟨θ, hθ, H⟩ := ClassWeight.symLift_act_move hp τ hτ hw hL₀ hL₁ (hx' _).symm (hN a) (ρ.U_sym a)
+      (fun l i => fn (algebraMap o S.R (S.ρ a l i))) (fun l i => cF u.V (y₀ (algebraMap o S.R (S.ρ a l i))))
+      (fun l i => spMap_appTop_fn y₀ _) hs (ρ.U_act a)
+    exact ⟨θ, hθ, fun i σ h => (ThetaGeom.comb_iff _ _ _).2 (H i σ h)⟩
+
+end GlobalTheory.TestFibre
+end
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH
+open Classical
+open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.UT
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.TestFibre
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_thetaSystem_test_sections_on_geometric_fibre : Laws → ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [ArithBase o Ω] (S : ThetaSys o Ω) (ρ : S.Real) (p : ℕ) [Fact p.Prime] (y₀ : S.R →+* PadicAlgCl p) (u : ρ.UTest p y₀) (x : S.Gam → (TFK (R := u.V) (PadicAlgCl p) ⟶ u.A.A)), PtsOver u x → ∃ rig e th s, SecsOver u x rig e th s := by
+  atlas_forward_decl GlobalTheory.TestFibre.exists_secsOver
+end
+
+section
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH
+open Classical
+open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.UT
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.TestFibre
+
+noncomputable section
+
+namespace GlobalTheory.TestFibre
+
+open GlobalTheory.TorusExt
+
+theorem torus_points_level_weights : Laws → Laws2 → UTorsSt → ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [ArithBase o Ω] (S : ThetaSys o Ω) (ρ : S.Real) (p : ℕ) [Fact p.Prime] (y₀ : S.R →+* PadicAlgCl p) (u : ρ.UTest p y₀) (l : u.Lab), (∀ a : o, ‖y₀ (algebraMap o S.R a)‖ ≤ 1) → ∀ (x : S.Gam → (TFK (R := u.V) (PadicAlgCl p) ⟶ u.A.A)), PtsOver u x → ∀ t : S.perp l.yy.ker, ∃ (τ : Multiplicative u.D.toPre.X →* (PadicAlgCl p)ˣ) (q : QkPt u.D.toPre (PadicAlgCl p) S.N), q.y = 0 ∧ IsTor τ q.g ∧ QkToAkU u.U.toUnifPre (PadicAlgCl p) S.N q (x (S.r • (t : S.Gam))) ∧ ∀ β, (τ (Multiplicative.ofAdd β) : PadicAlgCl p) = y₀ (algebraMap o S.R S.ζN) ^ (l.wt β t).val := by
+  intro h₁ h₂ hT o Ω _ _ _ _ S ρ p _ y₀ u l hy x hx t
+  obtain ⟨hc, -, hA, -, -, -⟩ := GlobalTheory.T.uniformisedModel_valuation_data o Ω S ρ p y₀ u l hy
+  obtain ⟨hadd, -⟩ := (GlobalTheory.T.uniformisedModel_torsionPoints_group_pairing h₁ o Ω S ρ p y₀ u).2 x hx
+  obtain ⟨τ, q, hq0, hqτ, hq, hval⟩ := GlobalTheory.T.thetaSystem_orthogonal_labels_are_torus_points h₁ h₂ hT o Ω S ρ p y₀ u l hy x hx t
+  have hL : LL := (laws_all h₁ h₂).1
+  letI := gtGroup u.D.toPre (PadicAlgCl p)
+  have hB := u.D.tau_bimult
+  have hN : 1 ≤ S.N := le_trans (by norm_num) S.N_ge
+  have hx0 : x 0 = 1 := by
+    have e := hadd 0 0
+    rw [add_zero] at e
+    exact mul_eq_left.1 e.symm
+  have hpow : ∀ (n : ℕ) (a : S.Gam), x (n • a) = x a ^ n := fun n a => by
+    induction n with
+    | zero => rw [zero_nsmul, pow_zero, hx0]
+    | succ n ih => rw [succ_nsmul, hadd, ih, pow_succ]
+  have hg : S.N • (S.r • q.g) = iota hB (PadicAlgCl p) q.y := by
+    rw [← mul_nsmul, qk_nsmul hB q]
+  refine ⟨τ ^ S.r, qkMk hB q.y (S.r • q.g) hg, hq0, ?_, ?_, fun β => ?_⟩
+  · rw [isTor_iff, isTorusPtF_iff_eq] at hqτ ⊢
+    show S.r • q.g = _
+    rw [hqτ, ofMul_pow, map_nsmul]
+  · rw [hpow]
+    exact (GlobalTheory.T.uniformisation_torsion_maps_compatible_in_level hL u.V _ hA u.D u.A u.G u.semi u.U (PadicAlgCl p) S.N S.r (S.r * S.N) hN S.r_pos
+      (mul_comm _ _) (qkMk hB q.y (S.r • q.g) hg) q (x t)).2 rfl ((isNsmul_iff_eq _ _ _).2 rfl) hq
+  · obtain ⟨a, ha⟩ := l.yy_onto (QuotientAddGroup.mk β)
+    haveI : NeZero (S.r * S.N) := ⟨Nat.mul_ne_zero (by have := S.r_pos; omega) (by omega)⟩
+    have hζ : y₀ (algebraMap o S.R S.ζN) ^ S.N = 1 := by
+      rw [← map_pow, ← map_pow, ThetaSys.ζN, ← pow_mul,
+        show S.r ^ 2 * S.N * S.N = (S.r * S.N) ^ 2 by ring, S.prim.pow_eq_one, map_one, map_one]
+    rw [MonoidHom.pow_apply, Units.val_pow_eq_pow_val, hval a β ha, l.wt_eq a β ha t, ZMod.castHom_apply,
+      ZMod.cast_eq_val, ZMod.val_natCast, ← pow_eq_pow_mod _ hζ, ThetaSys.ζN, map_pow, map_pow, ← pow_mul, ← pow_mul]
+    congr 1
+    ring
+
+end GlobalTheory.TestFibre
+end
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH
+open Classical
+open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.UT
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.TestFibre
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.torusPoints_level_weights_from_orthogonal_labels : Laws → Laws2 → UTorsSt → ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [ArithBase o Ω] (S : ThetaSys o Ω) (ρ : S.Real) (p : ℕ) [Fact p.Prime] (y₀ : S.R →+* PadicAlgCl p) (u : ρ.UTest p y₀) (l : u.Lab), (∀ a : o, ‖y₀ (algebraMap o S.R a)‖ ≤ 1) → ∀ (x : S.Gam → (TFK (R := u.V) (PadicAlgCl p) ⟶ u.A.A)), PtsOver u x → ∀ t : S.perp l.yy.ker, ∃ (τ : Multiplicative u.D.toPre.X →* (PadicAlgCl p)ˣ) (q : QkPt u.D.toPre (PadicAlgCl p) S.N), q.y = 0 ∧ IsTor τ q.g ∧ QkToAkU u.U.toUnifPre (PadicAlgCl p) S.N q (x (S.r • (t : S.Gam))) ∧ ∀ β, (τ (Multiplicative.ofAdd β) : PadicAlgCl p) = y₀ (algebraMap o S.R S.ζN) ^ (l.wt β t).val := by
+  atlas_forward_decl GlobalTheory.TestFibre.torus_points_level_weights
+end
+
+section
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH
+open Classical
+open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.UT
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.TestFibre
+
+namespace GlobalTheory.TestFibre
+
+theorem eigen_of_expansion_in_class : Laws → Laws2 → UTorsSt → ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [ArithBase o Ω] (S : ThetaSys o Ω) (ρ : S.Real) (p : ℕ) [Fact p.Prime] (y₀ : S.R →+* PadicAlgCl p) (u : ρ.UTest p y₀) (l : u.Lab), (∀ a : o, ‖y₀ (algebraMap o S.R a)‖ ≤ 1) → ∀ (x : S.Gam → (TFK (R := u.V) (PadicAlgCl p) ⟶ u.A.A)) (rig : LB.Gen (u.A.L.pull (eSec u.A.A))) (e : ∀ a, FrameAt u.A (x a)) (th : SecA u.A (PadicAlgCl p) 1) (s : S.J → SecA u.A (PadicAlgCl p) S.N), PtsOver u x → SecsOver u x rig e th s → ∀ (w₀ : W0 u.U.toUnifPre), w₀.IsGen → ∀ (α : u.D.toPre.X) (b : S.J → PadicAlgCl p) (σ : SecA u.A (PadicAlgCl p) S.N) (Φ : Fam u.D.toPre (PadicAlgCl p) S.N), IsComb u.A s b σ → u.U.ExpandsF (PadicAlgCl p) S.N w₀ σ Φ → (∀ β, (∀ z : u.D.toPre.X, β ≠ α + S.N • z) → ∀ j, (Φ.s β).f j = 0) → ∀ (t : S.perp l.yy.ker) (h : S.Gam), ∑ j, (∑ i, y₀ (algebraMap o S.R (S.ρ t j i)) * b i) * y₀ ⟨S.ev h j, S.ev_mem h j⟩ = y₀ (algebraMap o S.R S.ζN) ^ (l.wt α t).val * ∑ j, b j * y₀ ⟨S.ev h j, S.ev_mem h j⟩ := by
+  intro h1 h2 hT o Ω _ _ _ _ S ρ p _ y₀ u l hy x rig e th s hx hs w₀ hw₀ α b σ Φ hσ hΦ hsupp t h
+  obtain ⟨hLL, -⟩ := laws_all h1 h2
+  obtain ⟨hc, -, hadm, -⟩ := GlobalTheory.T.uniformisedModel_valuation_data o Ω S ρ p y₀ u l hy
+  have hodd : Odd S.N := by
+    rw [ρ.N_eq]; exact (ρ.n_odd.pow).pow
+  have hN1 : 1 ≤ S.N := le_trans (by norm_num) S.N_ge
+  obtain ⟨-, -, -, hval, -, hθ⟩ := hs
+  obtain ⟨θ, hθs, hθa⟩ := hθ (t : S.Gam)
+  obtain ⟨τ, q, hqy, hqt, hqx, hτ⟩ := GlobalTheory.T.torusPoints_level_weights_from_orthogonal_labels h1 h2 hT o Ω S ρ p y₀ u l hy x hx t
+  obtain ⟨⟨w, hw⟩, -⟩ := GlobalTheory.UT.SymFrame.main hLL u.V _ hadm u.D (PadicAlgCl p) S.N hodd q
+  obtain ⟨-, -, c3, c4, c5⟩ := GlobalTheory.T.fibreSection_linearComb_exists_unique_thetaAction u.V u.A (PadicAlgCl p) S.N S.J s b
+  choose s' hs' using fun i => (c4 θ (s i)).exists
+  obtain ⟨σ', hσ'⟩ := (c4 θ σ).exists
+  have hσ'c : IsComb u.A s' b σ' := (c3 θ s' σ σ' hs' hσ).1 hσ'
+  have hσ'c2 := c5 S.J (fun i j => y₀ (algebraMap o S.R (S.ρ t j i))) s' b σ' (fun i => hθa i _ (hs' i)) hσ'c
+  obtain ⟨hbij, hlin⟩ := GlobalTheory.UT.expBijF_and_expandsF_lin hLL u.V _ hadm u.D u.A u.G u.semi u.U
+  obtain ⟨hb1, hb2⟩ := hbij (PadicAlgCl p) S.N hN1 w₀ hw₀
+  obtain ⟨Φ', hΦ'⟩ := (hb1 σ').exists
+  have hrel := GlobalTheory.T.symmetricLift_oddOrder_acts_as_expansionOperator hLL u.V _ hadm u.D u.A u.G u.semi u.U (PadicAlgCl p) S.N hodd q _ hqx θ hθs w₀ hw₀ w hw
+    σ σ' Φ Φ' hΦ hΦ' hσ'
+  have hwt := ((GlobalTheory.UT.TorusWeight.torus_weight hLL u.V _ hadm u.D u.A u.G u.semi u.U (PadicAlgCl p) S.N hodd q τ hqy
+    hqt w hw).2 Φ Φ').1 hrel
+  set κ : PadicAlgCl p := y₀ (algebraMap o S.R S.ζN) ^ (l.wt α t).val with hκ
+  have hΦeq : Φ' = (κ - 1) • Φ + Φ := by
+    rw [sub_smul, one_smul, sub_add_cancel]
+    refine fam_ext fun β j => ?_
+    rw [hwt β j, smul_f, ← constBF_eq]
+    by_cases hβ : ∀ z : u.D.toPre.X, β ≠ α + S.N • z
+    · rw [hsupp β hβ j, mul_zero, mul_zero]
+    · push Not at hβ
+      obtain ⟨z, rfl⟩ := hβ
+      rw [hτ, hκ]
+      simp
+  obtain ⟨⟨σ'', hσ''⟩, -⟩ := GlobalTheory.T.fibreSection_linearComb_exists_unique_thetaAction u.V u.A (PadicAlgCl p) S.N (Fin 2) (fun _ => σ) ![κ - 1, 1]
+  have hσ''e : u.U.ExpandsF (PadicAlgCl p) S.N w₀ σ'' ((κ - 1) • Φ + Φ) := by
+    refine hlin (PadicAlgCl p) S.N w₀ σ σ σ'' Φ Φ (κ - 1) hΦ hΦ fun j => ?_
+    rw [hσ'' j, Fin.sum_univ_two]
+    simp [liftFun, cF]
+  have heq : σ'' = σ' := (hb2 Φ').unique (hΦeq ▸ hσ''e) hΦ'
+  subst heq
+  obtain ⟨v1, -, v3, -⟩ := GlobalTheory.T.isFibreSectionValueInFrame_linear_unique_exists h1 u.V u.A (PadicAlgCl p) S.N (x h) (e h)
+  have a1 := v1 S.J s b _ σ hσ (fun i => hval i h)
+  have a2 := v1 S.J s _ _ σ'' hσ'c2 (fun i => hval i h)
+  have a3 := v1 (Fin 2) (fun _ => σ) _ _ σ'' hσ'' (fun _ => a1)
+  rw [v3 _ _ _ a2 a3, Fin.sum_univ_two]
+  simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
+  ring
+
+end GlobalTheory.TestFibre
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH
+open Classical
+open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.UT
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.TestFibre
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.torusOperator_eigen_of_expansion_single_class : Laws → Laws2 → UTorsSt → ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [ArithBase o Ω] (S : ThetaSys o Ω) (ρ : S.Real) (p : ℕ) [Fact p.Prime] (y₀ : S.R →+* PadicAlgCl p) (u : ρ.UTest p y₀) (l : u.Lab), (∀ a : o, ‖y₀ (algebraMap o S.R a)‖ ≤ 1) → ∀ (x : S.Gam → (TFK (R := u.V) (PadicAlgCl p) ⟶ u.A.A)) (rig : LB.Gen (u.A.L.pull (eSec u.A.A))) (e : ∀ a, FrameAt u.A (x a)) (th : SecA u.A (PadicAlgCl p) 1) (s : S.J → SecA u.A (PadicAlgCl p) S.N), PtsOver u x → SecsOver u x rig e th s → ∀ (w₀ : W0 u.U.toUnifPre), w₀.IsGen → ∀ (α : u.D.toPre.X) (b : S.J → PadicAlgCl p) (σ : SecA u.A (PadicAlgCl p) S.N) (Φ : Fam u.D.toPre (PadicAlgCl p) S.N), IsComb u.A s b σ → u.U.ExpandsF (PadicAlgCl p) S.N w₀ σ Φ → (∀ β, (∀ z : u.D.toPre.X, β ≠ α + S.N • z) → ∀ j, (Φ.s β).f j = 0) → ∀ (t : S.perp l.yy.ker) (h : S.Gam), ∑ j, (∑ i, y₀ (algebraMap o S.R (S.ρ t j i)) * b i) * y₀ ⟨S.ev h j, S.ev_mem h j⟩ = y₀ (algebraMap o S.R S.ζN) ^ (l.wt α t).val * ∑ j, b j * y₀ ⟨S.ev h j, S.ev_mem h j⟩ := by
+  atlas_forward_decl GlobalTheory.TestFibre.eigen_of_expansion_in_class
+end
+
+section
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH
+open Classical
+open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.UT
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.TestFibre
+
+noncomputable section
+namespace GlobalTheory.TestFibre
+
+theorem proj_fixes_eigen : ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] (S : ThetaSys o Ω) (F : Type) [Field F] (y : o →+* F) (T : AddSubgroup S.Gam) (c : T →+ ZMod S.N), S.IsoFree T → ∀ (b E : S.J → F), (∀ t : T, ∑ j, (∑ i, y (S.ρ t j i) * b i) * E j = y S.ζN ^ (c t).val * ∑ j, b j * E j) → ∑ i, b i * ∑ j, y (S.proj T c j i) * E j = ∑ j, b j * E j := by
+  intro o Ω _ _ _ S F _ y T c hT b E h
+  have := Fintype.ofFinite T
+  have h1 : ∀ t : T, y (GlobalGen.chi S (c t)) * y S.ζN ^ (c t).val = 1 := fun t => by
+    have h2 := GlobalGen.chi_add S (c t) (-(c t))
+    rw [add_neg_cancel, GlobalGen.chi_zero] at h2
+    rw [← map_pow, ← map_one y, h2, map_mul, GlobalGen.chi.eq_1 S (-(c t)), neg_neg]
+  have h3 : y (Ring.inverse (Nat.card T : o)) * (Fintype.card T : F) = 1 := by
+    rw [← Nat.card_eq_fintype_card, ← map_natCast y, ← map_mul,
+      Ring.inverse_mul_cancel _ (GlobalGen.isUnit_card hT), map_one]
+  have h4 : ∑ i, b i * ∑ j, y (S.proj T c j i) * E j =
+      y (Ring.inverse (Nat.card T : o)) * ∑ t : T, y (GlobalGen.chi S (c t)) *
+        ∑ j, (∑ i, y (S.ρ t j i) * b i) * E j := by
+    simp only [GlobalGen.proj_eq, Matrix.smul_apply, Matrix.sum_apply, smul_eq_mul, map_mul, map_sum,
+      Finset.mul_sum, Finset.sum_mul]
+    rw [Finset.sum_comm]
+    conv_rhs => rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun t _ => Finset.sum_congr rfl fun i _ => ?_
+    ring
+  rw [h4]
+  simp only [h, ← _root_.mul_assoc, h1, _root_.one_mul]
+  rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, ← _root_.mul_assoc, h3, _root_.one_mul]
+
+end GlobalTheory.TestFibre
+end
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH
+open Classical
+open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.UT
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.TestFibre
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.thetaSystem_weightProjector_fixes_eigenvector : ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] (S : ThetaSys o Ω) (F : Type) [Field F] (y : o →+* F) (T : AddSubgroup S.Gam) (c : T →+ ZMod S.N), S.IsoFree T → ∀ (b E : S.J → F), (∀ t : T, ∑ j, (∑ i, y (S.ρ t j i) * b i) * E j = y S.ζN ^ (c t).val * ∑ j, b j * E j) → ∑ i, b i * ∑ j, y (S.proj T c j i) * E j = ∑ j, b j * E j := by
+  atlas_forward_decl GlobalTheory.TestFibre.proj_fixes_eigen
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH
+open Classical
+open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.UT
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.TestFibre
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isFibreSectionLinearComb_iff_expansion_sum : LL → AllU fun {R} _ _ {I} {D} {A} {G} _ _ U => ∀ (F : Type) [Field F] [Algebra (FractionRing R) F] (k : ℕ), 1 ≤ k → ∀ (w₀ : W0 U.toUnifPre), w₀.IsGen → ∀ (J : Type) [Fintype J] (s : J → SecA A F k) (Φ : J → Fam D.toPre F k) (b : J → F) (t : SecA A F k), (∀ i, U.ExpandsF F k w₀ (s i) (Φ i)) → (IsComb A s b t ↔ U.ExpandsF F k w₀ t (∑ i, b i • Φ i)) := by
+  first | exact @GlobalTheory.TestFibre.isComb_iff_expandsF_sum | exact GlobalTheory.TestFibre.isComb_iff_expandsF_sum | (intros; apply GlobalTheory.TestFibre.isComb_iff_expandsF_sum <;> assumption)
+end
+
+section
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH
+open Classical
+open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.UT
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.TestFibre
+
+noncomputable section
+
+namespace GlobalTheory.TestFibre
+
+theorem act_normPull_smul : LL → ∀ (R : Type) [CommRing R] [IsDomain R] [CharZero R] (A : PolAV (Spec (CommRingCat.of (FractionRing R)))) (F : Type) [Field F] [Algebra (FractionRing R) F] (ρ : LB.Gen (A.L.pull (eSec A.A))), ρ.IsGen → ∀ (m : ℕ), Odd m → ∀ (th th' : SecA A F 1) (c : F), (∀ j, th.f j = liftFun A.A _ (cF R c) * th'.f j) → ∀ (s₁ σ t : SecA A F (m ^ 2)) (x : TFK (R := R) F ⟶ A.A) (θ : ThetaGrp A.A A.L ((m ^ 2 : ℕ) : ℤ) (TFK (R := R) F)) (c' : F), x ^ (m ^ 2) = 1 → IsNormPull A ρ m (m ^ 2) th s₁ → SymLift A.A A.L ((m ^ 2 : ℕ) : ℤ) (m ^ 2) x θ → IsActOf A.A A.L ((m ^ 2 : ℕ) : ℤ) θ s₁ σ → ThC A ρ m th' x t c' → ∀ j, σ.f j = liftFun A.A _ (cF R c) * t.f j := by
+  intro hLL R _ _ _ A F _ _ ρ hρ m hm th th' c hc s₁ σ t x θ c' hx ⟨α, hα, hn, hs₁⟩ hθ hσ
+    ⟨α', s₁', θ', hα', hn', hs₁', hθ', ht', _⟩
+  have hLaw : Laws := hLL.1
+  have hL := A.isLB
+  let T := TFK (R := R) F
+  have hu : IsUnit ((m ^ 2 : ℕ) : Γ(Spec (CommRingCat.of (FractionRing R)), ⊤)) := by
+    let e := (Scheme.ΓSpecIso (CommRingCat.of (FractionRing R))).commRingCatIsoToRingEquiv.symm
+    rw [← map_natCast e]
+    refine (IsUnit.mk0 _ ?_).map e
+    rw [← map_natCast (algebraMap R (FractionRing R))]
+    exact (map_ne_zero_iff _ (IsFractionRing.injective R (FractionRing R))).2
+      (Nat.cast_ne_zero.2 (pow_ne_zero 2 hm.pos.ne'))
+  obtain ⟨-, huniq⟩ := hLaw.symLift _ A (m ^ 2) hm.pow hu T x hx
+  have ea := gen_unique hL (fst T A.A).left (ptSecT A.A 1).left NormTheta.ptSec_fst
+    (CommPairing.surj_fst hLaw.globalFns A.isAb T) hα hα' (fun y J hJ => by
+      have a := (val_corr hJ hn (𝟙 _)).trans (val_corr hJ hn' (𝟙 _)).symm
+      rwa [val_pull hJ, val_pull hJ, Category.id_comp] at a)
+  have eθ := huniq θ θ' hθ hθ'
+  have ept : θ.pt = θ'.pt := hθ.pt_eq.trans hθ'.pt_eq.symm
+  have f₁ : (mulT A.A T m).left ≫ (fst T A.A).left = (fst T A.A).left := by
+    rw [← Over.comp_left, mulT, lift_fst]
+  have f₂ : (translT A.A θ.pt).left ≫ (fst T A.A).left = (fst T A.A).left := by
+    rw [← Over.comp_left, translT, lift_fst]
+  have key : SecM.ofSec A.A σ = cF R c • SecM.ofSec A.A t := ThetaAct.sv_ext hL fun y J hJ => by
+    refine Eq.trans ?_ (ThetaAct.sv_smul _ _ _ _ hJ).symm
+    have a₁ := ThetaLin.sval_of_isTwistPull A.A hσ (𝟙 _) y hJ
+    have a₂ := ThetaLin.sval_of_isTwistPull A.A hs₁ (𝟙 _ ≫ (translT A.A θ.pt).left) y hJ
+    have a₃ := ThetaPtMove.sv_of_eq_mul hc ((𝟙 _ ≫ (translT A.A θ.pt).left) ≫ (mulT A.A T m).left) y hJ
+    have b₁ := ThetaLin.sval_of_isTwistPull A.A ht' (𝟙 _) y hJ
+    have b₂ := ThetaLin.sval_of_isTwistPull A.A hs₁' (𝟙 _ ≫ (translT A.A θ.pt).left) y hJ
+    rw [← val_corr hJ eθ, ← ept, b₂, ← ea _ _ y J hJ] at b₁
+    rw [Category.assoc _ (mulT A.A T m).left (fst T A.A).left, f₁, Category.assoc _ _ (fst T A.A).left, f₂] at a₃
+    refine a₁.trans (Eq.trans ?_ (congrArg (_ * ·) b₁.symm))
+    rw [a₂]
+    refine (congrArg (fun q => _ * (_ * q)) a₃).trans ?_
+    ring
+  exact fun j => congrArg (fun q => q.1 j) key
+
+end GlobalTheory.TestFibre
+end
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH
+open Classical
+open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.UT
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.TestFibre
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.symmetricLift_normalisedPullback_theta_smul : LL → ∀ (R : Type) [CommRing R] [IsDomain R] [CharZero R] (A : PolAV (Spec (CommRingCat.of (FractionRing R)))) (F : Type) [Field F] [Algebra (FractionRing R) F] (ρ : LB.Gen (A.L.pull (eSec A.A))), ρ.IsGen → ∀ (m : ℕ), Odd m → ∀ (th th' : SecA A F 1) (c : F), (∀ j, th.f j = liftFun A.A _ (cF R c) * th'.f j) → ∀ (s₁ σ t : SecA A F (m ^ 2)) (x : TFK (R := R) F ⟶ A.A) (θ : ThetaGrp A.A A.L ((m ^ 2 : ℕ) : ℤ) (TFK (R := R) F)) (c' : F), x ^ (m ^ 2) = 1 → IsNormPull A ρ m (m ^ 2) th s₁ → SymLift A.A A.L ((m ^ 2 : ℕ) : ℤ) (m ^ 2) x θ → IsActOf A.A A.L ((m ^ 2 : ℕ) : ℤ) θ s₁ σ → ThC A ρ m th' x t c' → ∀ j, σ.f j = liftFun A.A _ (cF R c) * t.f j := by
+  atlas_forward_decl GlobalTheory.TestFibre.act_normPull_smul
+end
+
+section
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH
+open Classical
+open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.UT
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.TestFibre
+
+namespace GlobalTheory.TestFibre
+
+theorem exists_nsmul_of_nsmul_eq_zero {K : Type} {r N : ℕ} (hr : 0 < r) (hN : 0 < N) (a₀ : K → ZMod (r * N))
+    (h : N • a₀ = 0) : ∃ a : K → ZMod (r * N), r • a = a₀ := by
+  haveI : NeZero (r * N) := ⟨(Nat.mul_pos hr hN).ne'⟩
+  have key : ∀ i, ∃ b : ZMod (r * N), r • b = a₀ i := by
+    intro i
+    have h1 : ((N * (a₀ i).val : ℕ) : ZMod (r * N)) = 0 := by
+      have := congrFun h i
+      simpa [nsmul_eq_mul] using this
+    rw [ZMod.natCast_eq_zero_iff, _root_.mul_comm N] at h1
+    obtain ⟨d, hd⟩ := Nat.dvd_of_mul_dvd_mul_right hN h1
+    refine ⟨(d : ZMod (r * N)), ?_⟩
+    rw [nsmul_eq_mul, ← Nat.cast_mul, ← hd, ZMod.natCast_zmod_val]
+  choose a ha using key
+  exact ⟨a, funext ha⟩
+
+theorem exists_span_translates_of_eq_sq (h : Laws) (h₂ : Laws2) {V : Type} [CommRing V] [IsDomain V]
+    [IsDiscreteValuationRing V] [CharZero V] (hc : IsAdicComplete (IsLocalRing.maximalIdeal V) V) {ϖ : V}
+    (hϖ : Irreducible ϖ) {D : DegData V (IsLocalRing.maximalIdeal V)} {Q : D.toPre.X → ℤ} (hQ : QForm.IsQ D.toPre ϖ Q)
+    {F : Type} [Field F] [IsAlgClosed F] [Algebra (FractionRing V) F] {v : AddValuation F (WithTop ℚ)}
+    (hv : ValOver ϖ F v) {A : PolAV (Spec (CommRingCat.of (FractionRing V)))} {G : Over (Spec (CommRingCat.of V))}
+    [GrpObj G] [IsCommMonObj G] (hG : IsSemiAbelian G) (U : Unif (IsLocalRing.maximalIdeal V) D A G)
+    (w₀ : W0 U.toUnifPre) (rig : LB.Gen (A.L.pull (eSec A.A))) (hw : NormW U.toUnifPre w₀ rig)
+    (th th' : SecA A F 1) (ϑ : Fam D.toPre F 1) (hϑ : U.ExpandsF F 1 w₀ th' ϑ) (hP : Prim D Q v ϑ) (c : F)
+    (hth : ∀ j, th.f j = liftFun A.A _ (cF V c) * th'.f j) (m : ℕ) (hm : Odd m) (hu : IsUnit (m : V)) (h3 : 3 ≤ m)
+    (N : ℕ) (hN : N = m ^ 2) (Φ : Fam D.toPre F N) (hΦ : NuGe D Q F v N Φ 0) :
+    ∃ (n : ℕ) (a : Fin n → F) (z : Fin n → (TFK (R := V) F ⟶ A.A)) (t : Fin n → SecA A F N)
+      (r : Fin n → Fam D.toPre F N),
+      (∀ i, 0 ≤ v (a i) ∧ z i ^ N = 1 ∧ U.ExpandsF F N w₀ (t i) (r i) ∧
+        ∀ (s₁ σ : SecA A F N) (θ : ThetaGrp A.A A.L (N : ℤ) (TFK (R := V) F)), IsNormPull A rig m N th s₁ →
+          SymLift A.A A.L (N : ℤ) N (z i) θ → IsActOf A.A A.L (N : ℤ) θ s₁ σ →
+          ∀ j, σ.f j = liftFun A.A _ (cF V c) * (t i).f j) ∧ Φ = ∑ i, a i • r i := by
+  subst hN
+  obtain ⟨hL, h1, h2, h3', h4⟩ := laws_all h h₂
+  obtain ⟨n, a, z, t, c', r, H, hs⟩ :=
+    (GlobalTheory.T.valuation_nonneg_iff_span_multiplicationTranslates hL h1 h2 h3' h4 V hc ϖ hϖ D Q hQ F v hv A G hG U w₀ rig hw th' ϑ hϑ hP m hm hu h3 Φ).1 hΦ
+  refine ⟨n, a, z, t, r, fun i => ?_, hs⟩
+  obtain ⟨ha, hz, hT, hE⟩ := H i
+  exact ⟨ha, hz, hE, fun s₁ σ θ hs₁ hθ hσ =>
+    GlobalTheory.T.symmetricLift_normalisedPullback_theta_smul hL V A F rig hw.2.1 m hm th th' c hth s₁ σ (t i) (z i) θ (c' i) hz hs₁ hθ hσ hT⟩
+
+theorem IsComb.of_eq_mul {R : Type} [CommRing R] [IsDomain R] {A : PolAV (Spec (CommRingCat.of (FractionRing R)))}
+    {F : Type} [Field F] [Algebra (FractionRing R) F] {k : ℕ} {J : Type} [Fintype J] {s : J → SecA A F k} {b : J → F}
+    {σ t : SecA A F k} (hσ : IsComb A s b σ) {c : F} (hc : c ≠ 0)
+    (ht : ∀ j, σ.f j = liftFun A.A _ (cF R c) * t.f j) : IsComb A s (fun l => c⁻¹ * b l) t := by
+  intro j
+  have hmul : ∀ x y : F, (liftFun A.A _ (cF R (x * y)) : Γ((TFK (R := R) F ⊗ A.A).left, (LPow A.A A.L (k : ℤ) (TFK (R := R) F)).U j)) = liftFun A.A _ (cF R x) * liftFun A.A _ (cF R y) := by
+    intro x y
+    simp only [liftFun, cF, map_mul]
+  have hone : (liftFun A.A _ (cF R (1 : F)) : Γ((TFK (R := R) F ⊗ A.A).left, (LPow A.A A.L (k : ℤ) (TFK (R := R) F)).U j)) = 1 := by
+    simp only [liftFun, cF, map_one]
+  have h1 : t.f j = liftFun A.A _ (cF R c⁻¹) * σ.f j := by
+    rw [ht j, ← _root_.mul_assoc, ← hmul, inv_mul_cancel₀ hc, hone, _root_.one_mul]
+  rw [h1, hσ j, Finset.mul_sum]
+  exact Finset.sum_congr rfl fun l _ => by rw [hmul, _root_.mul_assoc]
+
+theorem exists_isComb_expands_of_nuGe_zero : Laws → Laws2 → UTorsSt → ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [ArithBase o Ω] (S : ThetaSys o Ω) (ρ : S.Real) (p : ℕ) [Fact p.Prime] (y₀ : S.R →+* PadicAlgCl p) (u : ρ.UTest p y₀) (l : u.Lab), (∀ a : o, ‖y₀ (algebraMap o S.R a)‖ ≤ 1) → ∀ (x : S.Gam → (TFK (R := u.V) (PadicAlgCl p) ⟶ u.A.A)) (rig : LB.Gen (u.A.L.pull (eSec u.A.A))) (e : ∀ a, FrameAt u.A (x a)) (th : SecA u.A (PadicAlgCl p) 1) (s : S.J → SecA u.A (PadicAlgCl p) S.N), PtsOver u x → SecsOver u x rig e th s → ∀ (ϖ : u.V) (Q : u.D.toPre.X → ℤ) (v : AddValuation (PadicAlgCl p) (WithTop ℚ)) (lam : ℝ), Irreducible ϖ → ValOver ϖ (PadicAlgCl p) v → NormIs u l ϖ Q v lam → ∀ (w₀ : W0 u.U.toUnifPre) (th' : SecA u.A (PadicAlgCl p) 1) (ϑ : Fam u.D.toPre (PadicAlgCl p) 1) (c : PadicAlgCl p), NormW u.U.toUnifPre w₀ rig → u.U.ExpandsF (PadicAlgCl p) 1 w₀ th' ϑ → Prim u.D Q v ϑ → (∀ j, th.f j = liftFun u.A.A _ (cF u.V c) * th'.f j) → c ≠ 0 → ∀ Φ : Fam u.D.toPre (PadicAlgCl p) S.N, NuGe u.D Q (PadicAlgCl p) v S.N Φ 0 → ∃ (b : S.J → PadicAlgCl p) (σ : SecA u.A (PadicAlgCl p) S.N), (∀ j, ‖c * b j‖ ≤ 1) ∧ IsComb u.A s b σ ∧ u.U.ExpandsF (PadicAlgCl p) S.N w₀ σ Φ := by
+  intro h h₂ _ o Ω _ _ _ _ S ρ p _ y₀ u l hy x rig e th s hx hs ϖ Q v lam hϖ hv hNorm w₀ th' ϑ c hw hϑ hP hth hc Φ hΦ
+  obtain ⟨hchar, hun, hadm, -⟩ := GlobalTheory.T.uniformisedModel_valuation_data o Ω S ρ p y₀ u l hy
+  obtain ⟨hadd, -, hbij, -⟩ := (GlobalTheory.T.uniformisedModel_torsionPoints_group_pairing h o Ω S ρ p y₀ u).2 x hx
+  obtain ⟨-, -, -, -, hpull, hact⟩ := hs
+  obtain ⟨-, hQ, -, hle, -⟩ := hNorm
+  have hN0 : 0 < S.N := lt_of_lt_of_le (by norm_num) S.N_ge
+  have hn3 : 3 ≤ ρ.n := by
+    have h2 := ρ.n_prime.two_le
+    obtain ⟨d, hd⟩ := ρ.n_odd
+    omega
+  have hm3 : 3 ≤ ρ.n ^ ρ.k :=
+    hn3.trans (Nat.le_self_pow (by have := ρ.two_le; omega) _)
+  have hmu : IsUnit ((ρ.n ^ ρ.k : ℕ) : u.V) := by
+    rw [Nat.cast_pow]; exact hun.pow _
+  obtain ⟨n, a, z, t, r, H, hΦs⟩ := exists_span_translates_of_eq_sq h h₂ u.complete hϖ hQ hv u.semi u.U w₀ rig hw
+    th th' ϑ hϑ hP c hth (ρ.n ^ ρ.k) ρ.n_odd.pow hmu hm3 S.N ρ.N_eq Φ hΦ
+  have hx0 : x 0 = 1 := by
+    have := hadd 0 0
+    rw [add_zero] at this
+    exact left_eq_mul.1 this
+  have hxs : ∀ (k : ℕ) (b : S.Gam), x (k • b) = x b ^ k := by
+    intro k b
+    induction k with
+    | zero => rw [zero_nsmul, hx0, pow_zero]
+    | succ k ih => rw [succ_nsmul, hadd, ih, pow_succ]
+  have hpt : ∀ i, ∃ g : S.Gam, x (S.r • g) = z i := by
+    intro i
+    obtain ⟨a₀, ha₀, -⟩ := hbij (z i) (by rw [_root_.mul_comm S.r, pow_mul, (H i).2.1, one_pow])
+    obtain ⟨a₁, -, hu₁⟩ := hbij 1 (one_pow _)
+    have h0 : S.N • a₀ = 0 :=
+      (hu₁ _ (by show x _ = 1; rw [hxs, ha₀, (H i).2.1])).trans (hu₁ 0 hx0).symm
+    obtain ⟨g, hg⟩ := exists_nsmul_of_nsmul_eq_zero S.r_pos hN0 a₀ h0
+    exact ⟨g, by rw [← ha₀, ← hg]⟩
+  choose g hg using hpt
+  have ht : ∀ i, IsComb u.A s (fun j => c⁻¹ * y₀ (algebraMap o S.R (S.ρ (g i) j ρ.i₀))) (t i) := by
+    intro i
+    obtain ⟨θ, hθ, hθa⟩ := hact (g i)
+    obtain ⟨σ, hσ, -⟩ := (GlobalTheory.T.fibreSection_linearComb_exists_unique_thetaAction u.V u.A (PadicAlgCl p) S.N S.J s (fun _ => 0)).2.2.2.1 θ (s ρ.i₀)
+    rw [hg] at hθ
+    exact IsComb.of_eq_mul (hθa _ _ hσ) hc ((H i).2.2.2 _ σ θ hpull hθ hσ)
+  obtain ⟨σ, hσ⟩ := (GlobalTheory.T.fibreSection_linearComb_exists_unique_thetaAction u.V u.A (PadicAlgCl p) S.N (Fin n) t a).1
+  refine ⟨_, σ, fun j => ?_,
+    (GlobalTheory.T.fibreSection_linearComb_exists_unique_thetaAction u.V u.A (PadicAlgCl p) S.N S.J s (fun _ => 0)).2.2.2.2 (Fin n) _ t a σ ht hσ, ?_⟩
+  · rw [Finset.mul_sum]
+    refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg zero_le_one fun i _ => ?_
+    rw [← _root_.mul_assoc, mul_inv_cancel_left₀ hc, norm_mul]
+    have h1 : ‖a i‖ ≤ 1 := by
+      have := (hle (a i) 0).1 (by simpa using (H i).1)
+      simpa using this
+    exact mul_le_one₀ (hy _) (norm_nonneg _) h1
+  · rw [hΦs]
+    exact (GlobalTheory.T.isFibreSectionLinearComb_iff_expansion_sum (laws_all h h₂).1 u.V _ hadm u.D u.A u.G u.semi u.U (PadicAlgCl p) S.N hN0 w₀ hw.1
+      (Fin n) t r a σ fun i => (H i).2.2.1).1 hσ
+
+end GlobalTheory.TestFibre
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH
+open Classical
+open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.UT
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.TestFibre
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_integral_basis_combination_of_integral_family : Laws → Laws2 → UTorsSt → ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [ArithBase o Ω] (S : ThetaSys o Ω) (ρ : S.Real) (p : ℕ) [Fact p.Prime] (y₀ : S.R →+* PadicAlgCl p) (u : ρ.UTest p y₀) (l : u.Lab), (∀ a : o, ‖y₀ (algebraMap o S.R a)‖ ≤ 1) → ∀ (x : S.Gam → (TFK (R := u.V) (PadicAlgCl p) ⟶ u.A.A)) (rig : LB.Gen (u.A.L.pull (eSec u.A.A))) (e : ∀ a, FrameAt u.A (x a)) (th : SecA u.A (PadicAlgCl p) 1) (s : S.J → SecA u.A (PadicAlgCl p) S.N), PtsOver u x → SecsOver u x rig e th s → ∀ (ϖ : u.V) (Q : u.D.toPre.X → ℤ) (v : AddValuation (PadicAlgCl p) (WithTop ℚ)) (lam : ℝ), Irreducible ϖ → ValOver ϖ (PadicAlgCl p) v → NormIs u l ϖ Q v lam → ∀ (w₀ : W0 u.U.toUnifPre) (th' : SecA u.A (PadicAlgCl p) 1) (ϑ : Fam u.D.toPre (PadicAlgCl p) 1) (c : PadicAlgCl p), NormW u.U.toUnifPre w₀ rig → u.U.ExpandsF (PadicAlgCl p) 1 w₀ th' ϑ → Prim u.D Q v ϑ → (∀ j, th.f j = liftFun u.A.A _ (cF u.V c) * th'.f j) → c ≠ 0 → ∀ Φ : Fam u.D.toPre (PadicAlgCl p) S.N, NuGe u.D Q (PadicAlgCl p) v S.N Φ 0 → ∃ (b : S.J → PadicAlgCl p) (σ : SecA u.A (PadicAlgCl p) S.N), (∀ j, ‖c * b j‖ ≤ 1) ∧ IsComb u.A s b σ ∧ u.U.ExpandsF (PadicAlgCl p) S.N w₀ σ Φ := by
+  atlas_forward_decl GlobalTheory.TestFibre.exists_isComb_expands_of_nuGe_zero
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH
+open Classical
+open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.UT
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.TestFibre
+
+noncomputable section
+
+namespace GlobalTheory.ThetaBound
+
+theorem le_of_sum {F : Type} [Field F] {v : AddValuation F (WithTop ℚ)} {Ix : Type} {x : Ix → F} {s : F}
+    (h : SumV v x s) {q : ℚ} (hq : ∀ i, (q : WithTop ℚ) ≤ v (x i)) : (q : WithTop ℚ) ≤ v s := by
+  obtain ⟨T, hT⟩ := h q
+  have := v.map_le_add (hT T le_rfl) (v.map_le_sum (s := T) fun i _ => hq i)
+  rwa [sub_add_cancel] at this
+
+theorem square_nonneg {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] {ϖ : V}
+    {D : DegData V (IsLocalRing.maximalIdeal V)} {Q : D.toPre.X → ℤ} (hϖ : Irreducible ϖ)
+    (hQ : QForm.IsQ D.toPre ϖ Q) (n : ℕ) (hn : 1 ≤ n) (y χ : D.toPre.X) :
+    (0 : ℚ) ≤ 0 + (Q χ : ℚ) / (1 : ℕ) + (QForm.bOf D.toPre Q y χ : ℚ) / n + (Q y : ℚ) / (n : ℚ) ^ 2 := by
+  have h0 : 0 ≤ Q (n • χ + y) := by
+    by_cases h : n • χ + y = 0
+    · rw [h, QForm.Q_zero hϖ D hQ]
+    · exact le_trans zero_le_one (QForm.Q_pos hϖ D hQ h)
+  have e : Q (n • χ + y) = n ^ 2 * Q χ + n * QForm.bOf D.toPre Q y χ + Q y := by
+    have e₁ : Q (n • χ + y) = Q (n • χ) + Q y + QForm.bOf D.toPre Q (n • χ) y := by
+      simp only [QForm.bOf]; ring
+    have e₂ : QForm.bOf D.toPre Q χ y = QForm.bOf D.toPre Q y χ := by
+      simp only [QForm.bOf, add_comm χ y]; ring
+    rw [e₁, DVR.Q_nsmul hϖ hQ, DVR.bOf_nsmul_left hϖ hQ, e₂]; ring
+  have hn' : (0 : ℚ) < n := by exact_mod_cast hn
+  have h1 : (0 : ℚ) ≤ (n : ℚ) ^ 2 * Q χ + n * (QForm.bOf D.toPre Q y χ : ℚ) + Q y := by
+    rw [e] at h0; exact_mod_cast h0
+  have e₃ : 0 + (Q χ : ℚ) / (1 : ℕ) + (QForm.bOf D.toPre Q y χ : ℚ) / n + (Q y : ℚ) / (n : ℚ) ^ 2 =
+      ((n : ℚ) ^ 2 * Q χ + n * (QForm.bOf D.toPre Q y χ : ℚ) + Q y) / (n : ℚ) ^ 2 := by
+    field_simp
+    push_cast
+    ring
+  rw [e₃]
+  positivity
+
+theorem norm_theta_le : Laws → Laws2 → UTorsSt → ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [ArithBase o Ω] (S : ThetaSys o Ω) (ρ : S.Real) (p : ℕ) [Fact p.Prime] (y₀ : S.R →+* PadicAlgCl p) (u : ρ.UTest p y₀) (l : u.Lab), (∀ a : o, ‖y₀ (algebraMap o S.R a)‖ ≤ 1) → ∀ (x : S.Gam → (TFK (R := u.V) (PadicAlgCl p) ⟶ u.A.A)) (rig : LB.Gen (u.A.L.pull (eSec u.A.A))) (e : ∀ a, FrameAt u.A (x a)) (th : SecA u.A (PadicAlgCl p) 1) (s : S.J → SecA u.A (PadicAlgCl p) S.N), PtsOver u x → SecsOver u x rig e th s → ∀ (ϖ : u.V) (Q : u.D.toPre.X → ℤ) (v : AddValuation (PadicAlgCl p) (WithTop ℚ)) (lam : ℝ), Irreducible ϖ → ValOver ϖ (PadicAlgCl p) v → NormIs u l ϖ Q v lam → ∀ (w₀ : W0 u.U.toUnifPre) (th' : SecA u.A (PadicAlgCl p) 1) (ϑ : Fam u.D.toPre (PadicAlgCl p) 1) (c : PadicAlgCl p), NormW u.U.toUnifPre w₀ rig → u.U.ExpandsF (PadicAlgCl p) 1 w₀ th' ϑ → Prim u.D Q v ϑ → (∀ j, th.f j = liftFun u.A.A _ (cF u.V c) * th'.f j) → ∀ a, ‖y₀ ⟨S.th a, S.th_mem a⟩‖ ≤ ‖c‖ := by
+  intro hL hL₂ hT o Ω _ _ _ _ S ρ p _ y₀ u l _ x rig e th s _ hS ϖ Q v lam hϖ hv hN w₀ th' ϑ c hW hE hP hc a
+  obtain ⟨-, htf, hth, -⟩ := hS
+  obtain ⟨-, hQ, -, hle, -⟩ := hN
+  obtain ⟨hLL, h₁, h₂, h₃, h₄⟩ := laws_all hL hL₂
+  have : CharZero u.V :=
+    ((algebraMap (FractionRing u.V) (PadicAlgCl p)).comp (algebraMap u.V (FractionRing u.V))).charZero
+  have hn : 1 ≤ S.r * S.N := Nat.mul_pos S.r_pos (le_trans one_le_two S.N_ge)
+  obtain ⟨f, hf, hsurj, -⟩ := hT u.V u.complete u.A u.G u.D u.U (PadicAlgCl p) (S.r * S.N) hn
+  obtain ⟨q, hq⟩ := hsurj (x a) (htf a).1
+  have hqx := (hf q (x a)).2 hq.symm
+  obtain ⟨-, hmul, huniq, hex⟩ := GlobalTheory.TestFibre.CombValue.valIs_linear hL u.V u.A (PadicAlgCl p) 1 (x a) (e a)
+  obtain ⟨c', hc'⟩ := hex (htf a).2.1 th'
+  have hval : y₀ ⟨S.th a, S.th_mem a⟩ = c * c' := huniq th _ _ (hth a) (hmul th' th c c' hc hc')
+  obtain ⟨w₁, hw₁, hv₁, hsum⟩ := GlobalTheory.T.section_value_at_torsionPoint_eq_sum_terms hLL h₁ h₂ h₃ h₄ u.V u.complete ϖ hϖ u.D Q hQ (PadicAlgCl p) v hv
+    u.A u.G u.semi u.U w₀ rig hW (S.r * S.N) hn q (x a) hqx (e a) (htf a)
+  obtain ⟨-, -, -, -, hqk, -, hterm⟩ := GlobalTheory.UT.CoefVal.main hLL h₁ h₂ h₃ h₄ u.V u.complete ϖ hϖ u.D Q hQ
+    (PadicAlgCl p) v hv q.g
+  have hsv := hsum 1 le_rfl w₁ ⟨hw₁, fun z J _ => (pow_one _).symm⟩ th' ϑ c' hE hc'
+  have h0 : ((0 : ℚ) : WithTop ℚ) ≤ v c' := le_of_sum hsv fun χ =>
+    le_trans (WithTop.coe_le_coe.2 (square_nonneg hϖ hQ (S.r * S.N) hn q.y χ))
+      ((hterm 1 le_rfl w₁ ϑ hw₁).2 _ _ 0 (hqk _ hn q) hv₁ hP.1 χ)
+  have h1 : ‖c'‖ ≤ 1 := by simpa using (hle c' 0).1 h0
+  rw [hval, norm_mul]
+  exact mul_le_of_le_one_right (norm_nonneg _) h1
+
+end GlobalTheory.ThetaBound
+end
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH
+open Classical
+open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.UT
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.TestFibre
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.norm_thetaConstant_le_primitiveGenerator_scale : Laws → Laws2 → UTorsSt → ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [ArithBase o Ω] (S : ThetaSys o Ω) (ρ : S.Real) (p : ℕ) [Fact p.Prime] (y₀ : S.R →+* PadicAlgCl p) (u : ρ.UTest p y₀) (l : u.Lab), (∀ a : o, ‖y₀ (algebraMap o S.R a)‖ ≤ 1) → ∀ (x : S.Gam → (TFK (R := u.V) (PadicAlgCl p) ⟶ u.A.A)) (rig : LB.Gen (u.A.L.pull (eSec u.A.A))) (e : ∀ a, FrameAt u.A (x a)) (th : SecA u.A (PadicAlgCl p) 1) (s : S.J → SecA u.A (PadicAlgCl p) S.N), PtsOver u x → SecsOver u x rig e th s → ∀ (ϖ : u.V) (Q : u.D.toPre.X → ℤ) (v : AddValuation (PadicAlgCl p) (WithTop ℚ)) (lam : ℝ), Irreducible ϖ → ValOver ϖ (PadicAlgCl p) v → NormIs u l ϖ Q v lam → ∀ (w₀ : W0 u.U.toUnifPre) (th' : SecA u.A (PadicAlgCl p) 1) (ϑ : Fam u.D.toPre (PadicAlgCl p) 1) (c : PadicAlgCl p), NormW u.U.toUnifPre w₀ rig → u.U.ExpandsF (PadicAlgCl p) 1 w₀ th' ϑ → Prim u.D Q v ϑ → (∀ j, th.f j = liftFun u.A.A _ (cF u.V c) * th'.f j) → ∀ a, ‖y₀ ⟨S.th a, S.th_mem a⟩‖ ≤ ‖c‖ := by
+  first | exact @GlobalTheory.ThetaBound.norm_theta_le | exact GlobalTheory.ThetaBound.norm_theta_le | (intros; apply GlobalTheory.ThetaBound.norm_theta_le <;> assumption)
+end
+
+section
+open GlobalTheory.UT
+
+namespace GlobalTheory.TestFibre
+
+theorem exists_val_le_of_sumV_characters : ∀ (F : Type) [Field F] (v : AddValuation F (WithTop ℚ)) (X T : Type) [Fintype T] (χ : T → X → F) (cf : X → F) (ζ w : T → F) (α : X) (q : ℚ), (∀ t, SumV v (fun β => χ t β * cf β) (ζ t * w t)) → (∀ t, v (ζ t) = 0) → (∀ t β, v (χ t β) = 0) → v ((Fintype.card T : ℕ) : F) = 0 → v (cf α) = (q : WithTop ℚ) → (∀ β, β ≠ α → ∑ t, (χ t α)⁻¹ * χ t β = 0 ∨ (q : WithTop ℚ) < v (cf β)) → ∃ t, v (w t) ≤ (q : WithTop ℚ) := by
+  classical
+  intro F _ v X T _ χ cf ζ w α q hS hζ hχ hT hα hβ
+  by_contra hcon
+  have hw : ∀ t, (q : WithTop ℚ) < v (w t) := fun t => lt_of_not_ge fun h => hcon ⟨t, h⟩
+  have hq : (q : WithTop ℚ) ≠ ⊤ := WithTop.coe_ne_top
+  have hne : ∀ t, χ t α ≠ 0 := fun t h => by
+    have h1 := hχ t α
+    rw [h, v.map_zero] at h1
+    exact WithTop.top_ne_zero h1
+  have hinv : ∀ t, v (χ t α)⁻¹ = 0 := fun t => by
+    have h1 : v ((χ t α)⁻¹ * χ t α) = 0 := by rw [inv_mul_cancel₀ (hne t), v.map_one]
+    rwa [v.map_mul, hχ t α, add_zero] at h1
+  choose S hS' using fun t => hS t (q + 1)
+  set U : Finset X := insert α (Finset.univ.biUnion S) with hU
+  have hαU : α ∈ U := Finset.mem_insert_self _ _
+  have hSU : ∀ t, S t ⊆ U := fun t x hx =>
+    Finset.mem_insert_of_mem (Finset.mem_biUnion.2 ⟨t, Finset.mem_univ _, hx⟩)
+  have hq1 : (q : WithTop ℚ) < ((q + 1 : ℚ) : WithTop ℚ) := WithTop.coe_lt_coe.2 (by linarith)
+  have hA : (q : WithTop ℚ) < v (∑ t, (χ t α)⁻¹ * (ζ t * w t)) :=
+    v.map_lt_sum hq fun t _ => by
+      rw [v.map_mul, v.map_mul, hinv, hζ, zero_add, zero_add]; exact hw t
+  have hB : (q : WithTop ℚ) < v (∑ t, (χ t α)⁻¹ * (ζ t * w t - ∑ β ∈ U, χ t β * cf β)) :=
+    v.map_lt_sum hq fun t _ => by
+      rw [v.map_mul, hinv, zero_add]; exact hq1.trans_le (hS' t U (hSU t))
+  have hC : (q : WithTop ℚ) < v (∑ β ∈ U.erase α, (∑ t, (χ t α)⁻¹ * χ t β) * cf β) :=
+    v.map_lt_sum hq fun β hb => by
+      rcases hβ β (Finset.ne_of_mem_erase hb) with h | h
+      · rw [h, zero_mul, v.map_zero]; exact WithTop.coe_lt_top q
+      · rw [v.map_mul]
+        have h0 : (0 : WithTop ℚ) ≤ v (∑ t, (χ t α)⁻¹ * χ t β) :=
+          v.map_le_sum fun t _ => by rw [v.map_mul, hinv, hχ, add_zero]
+        exact h.trans_le (le_add_of_nonneg_left h0)
+  have e1 : ∑ t, (χ t α)⁻¹ * χ t α = ((Fintype.card T : ℕ) : F) := by
+    rw [Finset.sum_congr rfl fun t _ => inv_mul_cancel₀ (hne t)]
+    simp
+  have e2 : ∑ t, (χ t α)⁻¹ * (∑ β ∈ U, χ t β * cf β) = ∑ β ∈ U, (∑ t, (χ t α)⁻¹ * χ t β) * cf β := by
+    simp only [Finset.mul_sum, Finset.sum_mul, mul_assoc]
+    exact Finset.sum_comm
+  have e : ((Fintype.card T : ℕ) : F) * cf α =
+      (∑ t, (χ t α)⁻¹ * (ζ t * w t)) +
+        (-(∑ t, (χ t α)⁻¹ * (ζ t * w t - ∑ β ∈ U, χ t β * cf β)) +
+          -(∑ β ∈ U.erase α, (∑ t, (χ t α)⁻¹ * χ t β) * cf β)) := by
+    simp only [mul_sub, Finset.sum_sub_distrib]
+    rw [e2, ← Finset.add_sum_erase U _ hαU, e1]
+    ring
+  have hfin : (q : WithTop ℚ) < v (((Fintype.card T : ℕ) : F) * cf α) := by
+    rw [e]
+    exact v.map_lt_add hA (v.map_lt_add (by rwa [v.map_neg]) (by rwa [v.map_neg]))
+  rw [v.map_mul, hT, zero_add, hα] at hfin
+  exact lt_irrefl _ hfin
+
+end GlobalTheory.TestFibre
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH
+open Classical
+open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.UT
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.TestFibre
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_val_le_of_valuedSum_against_characters : ∀ (F : Type) [Field F] (v : AddValuation F (WithTop ℚ)) (X T : Type) [Fintype T] (χ : T → X → F) (cf : X → F) (ζ w : T → F) (α : X) (q : ℚ), (∀ t, SumV v (fun β => χ t β * cf β) (ζ t * w t)) → (∀ t, v (ζ t) = 0) → (∀ t β, v (χ t β) = 0) → v ((Fintype.card T : ℕ) : F) = 0 → v (cf α) = (q : WithTop ℚ) → (∀ β, β ≠ α → ∑ t, (χ t α)⁻¹ * χ t β = 0 ∨ (q : WithTop ℚ) < v (cf β)) → ∃ t, v (w t) ≤ (q : WithTop ℚ) := by
+  atlas_forward_decl GlobalTheory.TestFibre.exists_val_le_of_sumV_characters
+end
+
+section
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH
+open Classical
+open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.UT
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.TestFibre
+
+namespace GlobalTheory
+
+theorem thetaSys_sum_perp_char_eq_zero :
+    ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [ArithBase o Ω] (S : ThetaSys o Ω) (F : Type) [Field F] (ζ : F), IsPrimitiveRoot ζ ((S.r * S.N) ^ 2) → ∀ (H : AddSubgroup S.Gam) [Fintype (S.perp H)] (a : S.Gam), a ∉ H → ∑ t : S.perp H, ζ ^ (S.r * S.N * (eStd S.g _ (t : S.Gam) a).val) = 0 := by
+  intro o Ω _ _ _ _ S F _ ζ hζ H _ a ha
+  have hN := S.N_ge
+  have hr := S.r_pos
+  have : NeZero (S.r * S.N) := ⟨Nat.mul_ne_zero (by omega) (by omega)⟩
+  have : NeZero ((S.r * S.N) ^ 2) := ⟨pow_ne_zero _ (NeZero.ne _)⟩
+  have hω : IsPrimitiveRoot (ζ ^ (S.r * S.N)) (S.r * S.N) :=
+    hζ.pow (NeZero.pos _) (by ring)
+  let χ : AddChar (ZMod (S.r * S.N)) F := AddChar.zmodChar _ hω.pow_eq_one
+  have hχ : ∀ b, χ b = 1 → b = 0 := fun b hb =>
+    ((AddChar.zmodChar_primitive_of_primitive_root _ hω).zmod_char_eq_one_iff _ b).mp hb
+  let f : S.perp H →+ ZMod (S.r * S.N) :=
+    { toFun := fun t => eStd S.g _ (t : S.Gam) a
+      map_zero' := by simp [eStd]
+      map_add' := fun x y => by
+        simp only [eStd, AddSubgroup.coe_add, Pi.add_apply, ← Finset.sum_add_distrib]
+        exact Finset.sum_congr rfl fun i _ => by ring }
+  have hne : χ.compAddMonoidHom f ≠ 1 := by
+    intro h
+    apply ha
+    rw [← (thetaSys_FF_mem_finite_perp_proj o Ω S).2.2.1 H]
+    intro t ht
+    have h1 : f ⟨t, ht⟩ = 0 := hχ _ (DFunLike.congr_fun h ⟨t, ht⟩)
+    have h2 : eStd S.g _ t a = 0 := h1
+    rw [ThetaProj.eStd_swap, h2, neg_zero]
+  have h0 : ∑ t : S.perp H, χ (f t) = 0 := AddChar.sum_eq_zero_of_ne_one hne
+  rw [← h0]
+  refine Finset.sum_congr rfl fun t _ => ?_
+  rw [pow_mul]
+  rfl
+
+end GlobalTheory
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH
+open Classical
+open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.UT
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.TestFibre
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.thetaSystem_sum_character_orthogonal_eq_zero : ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [ArithBase o Ω] (S : ThetaSys o Ω) (F : Type) [Field F] (ζ : F), IsPrimitiveRoot ζ ((S.r * S.N) ^ 2) → ∀ (H : AddSubgroup S.Gam) [Fintype (S.perp H)] (a : S.Gam), a ∉ H → ∑ t : S.perp H, ζ ^ (S.r * S.N * (eStd S.g _ (t : S.Gam) a).val) = 0 := by
+  atlas_forward_decl GlobalTheory.thetaSys_sum_perp_char_eq_zero
+end
+
+section
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH
+open Classical
+open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.UT
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.TestFibre
+
+namespace GlobalTheory
+
+theorem thetaSys_exists_norm_FF_eq :
+    ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [ArithBase o Ω] (S : ThetaSys o Ω) (p : ℕ) [Fact p.Prime] (y₀ : S.R →+* PadicAlgCl p), (∀ a : o, ‖y₀ (algebraMap o S.R a)‖ ≤ 1) → ∀ (T : AddSubgroup S.Gam) (c : T →+ ZMod S.N) (B : ℝ), (∀ (t : T) i, ‖∑ j, y₀ (algebraMap o S.R (S.proj T c j i)) * y₀ ⟨S.ev t j, S.ev_mem t j⟩‖ ≤ B) → (∃ (t : T) (i : S.J), B ≤ ‖∑ j, y₀ (algebraMap o S.R (S.proj T c j i)) * y₀ ⟨S.ev t j, S.ev_mem t j⟩‖) → ∃ (k : _) (hk : S.FF T c k ∈ S.R), ‖y₀ ⟨S.FF T c k, hk⟩‖ = B := by
+  intro o Ω _ _ _ hA S p _ y₀ hy T c B hle ⟨t, i, hge⟩
+  have hN := S.N_ge
+  have hr := S.r_pos
+  have hrN : 2 ≤ S.r * S.N := le_trans hN (Nat.le_mul_of_pos_left _ hr)
+  have hn : 1 < (S.r * S.N) ^ 2 := Nat.one_lt_pow (by norm_num) (by omega)
+  have : Fact (1 < (S.r * S.N) ^ 2) := ⟨hn⟩
+  have : IsDomain o := hA.inj.isDomain _
+  have : NeZero (S.r * S.N) := ⟨by omega⟩
+  have := Fintype.ofFinite T
+  have hmem := (thetaSys_FF_mem_finite_perp_proj o Ω S).1 T c
+  set E : T → PadicAlgCl p := fun s =>
+    ∑ j, y₀ (algebraMap o S.R (S.proj T c j i)) * y₀ ⟨S.ev s j, S.ev_mem s j⟩ with hE
+  have hval : ∀ k : T → ZMod ((S.r * S.N) ^ 2), y₀ ⟨S.FF T c (i, k), hmem _⟩
+      = ∑ s, y₀ (algebraMap o S.R S.ζ) ^ (k s).val * E s := fun k => by
+    have : (⟨S.FF T c (i, k), hmem _⟩ : S.R) = ∑ s : T, algebraMap o S.R S.ζ ^ (k s).val *
+        ∑ j, algebraMap o S.R (S.proj T c j i) * ⟨S.ev s j, S.ev_mem s j⟩ := by
+      apply Subtype.ext
+      simp [ThetaSys.FF, finsum_eq_sum_of_fintype]
+    rw [this]
+    simp [hE, map_sum]
+  have hB : ‖E t‖ = B := le_antisymm (hle t i) hge
+  have hB0 : 0 ≤ B := hB ▸ norm_nonneg _
+  have h0 : ‖∑ s, E s‖ ≤ B :=
+    IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg hB0 fun s _ => hle s i
+  rcases h0.eq_or_lt with h0 | h0
+  · refine ⟨(i, 0), hmem _, ?_⟩
+    rw [hval]
+    simpa using h0
+  · have hu : IsUnit (1 - S.ζ) := by
+      obtain ⟨m, hm⟩ : ∃ m, (S.r * S.N) ^ 2 = m + 1 + 1 := ⟨(S.r * S.N) ^ 2 - 2, by omega⟩
+      have hp := S.prim
+      rw [hm] at hp
+      have h1 := hp.prod_one_sub_pow_eq_order
+      have h2 : IsUnit ((((S.r * S.N) ^ 2 : ℕ)) : o) := by
+        rw [Nat.cast_pow]; exact S.unit.pow _
+      rw [hm, Nat.cast_succ, ← h1, Finset.prod_range_succ'] at h2
+      simpa using isUnit_of_mul_isUnit_right h2
+    have hone : ‖1 - y₀ (algebraMap o S.R S.ζ)‖ = 1 := by
+      obtain ⟨v, hv⟩ := hu.exists_right_inv
+      have h1 := hy (1 - S.ζ)
+      have h2 := hy v
+      have h3 : ‖y₀ (algebraMap o S.R (1 - S.ζ))‖ * ‖y₀ (algebraMap o S.R v)‖ = 1 := by
+        rw [← norm_mul, ← map_mul, ← map_mul, hv, map_one, map_one, norm_one]
+      rw [map_sub, map_sub, map_one, map_one] at h1 h3
+      refine le_antisymm h1 ?_
+      calc (1 : ℝ) = _ := h3.symm
+        _ ≤ _ := mul_le_of_le_one_right (norm_nonneg _) h2
+    refine ⟨(i, Pi.single t 1), hmem _, ?_⟩
+    have hs : ∑ s, y₀ (algebraMap o S.R S.ζ) ^ ((Pi.single t 1 : T → ZMod ((S.r * S.N) ^ 2)) s).val * E s
+        = ∑ s, E s + -((1 - y₀ (algebraMap o S.R S.ζ)) * E t) := by
+      rw [← Finset.add_sum_erase _ _ (Finset.mem_univ t),
+        ← Finset.add_sum_erase _ E (Finset.mem_univ t),
+        Finset.sum_congr rfl (g := E) fun s hs => by
+          rw [Pi.single_eq_of_ne (Finset.ne_of_mem_erase hs), ZMod.val_zero, pow_zero,
+            _root_.one_mul]]
+      rw [Pi.single_eq_same, ZMod.val_one, pow_one]
+      ring
+    have hn' : ‖-((1 - y₀ (algebraMap o S.R S.ζ)) * E t)‖ = B := by
+      rw [norm_neg, norm_mul, hone, _root_.one_mul, hB]
+    rw [hval, hs, IsUltrametricDist.norm_add_eq_max_of_norm_ne_norm (by rw [hn']; exact h0.ne),
+      hn', max_eq_right h0.le]
+
+end GlobalTheory
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH
+open Classical
+open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.UT
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.TestFibre
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.thetaSystem_exists_rootOfUnity_sum_norm_attained : ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [ArithBase o Ω] (S : ThetaSys o Ω) (p : ℕ) [Fact p.Prime] (y₀ : S.R →+* PadicAlgCl p), (∀ a : o, ‖y₀ (algebraMap o S.R a)‖ ≤ 1) → ∀ (T : AddSubgroup S.Gam) (c : T →+ ZMod S.N) (B : ℝ), (∀ (t : T) i, ‖∑ j, y₀ (algebraMap o S.R (S.proj T c j i)) * y₀ ⟨S.ev t j, S.ev_mem t j⟩‖ ≤ B) → (∃ (t : T) (i : S.J), B ≤ ‖∑ j, y₀ (algebraMap o S.R (S.proj T c j i)) * y₀ ⟨S.ev t j, S.ev_mem t j⟩‖) → ∃ (k : _) (hk : S.FF T c k ∈ S.R), ‖y₀ ⟨S.FF T c k, hk⟩‖ = B := by
+  atlas_forward_decl GlobalTheory.thetaSys_exists_norm_FF_eq
+end
+
+section
 section
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open scoped CategoryTheory.Obj
@@ -185,3 +1015,4 @@ attribute [local instance] Over.cartesianMonoidalCategory
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.exists_norm_torsionSum_shortestVector_eq : Laws → Laws2 → UTorsSt → ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [ArithBase o Ω] (S : ThetaSys o Ω) (ρ : S.Real) (p : ℕ) [Fact p.Prime] (y₀ : S.R →+* PadicAlgCl p) (u : ρ.UTest p y₀) (l : u.Lab), (∀ a : o, ‖y₀ (algebraMap o S.R a)‖ ≤ 1) → (∀ α : u.D.toPre.X, (∀ v₀, l.q α ≤ l.q (α + S.N • v₀)) → ∃ (k : _) (hk : S.FF _ (l.wt α) k ∈ S.R), ‖y₀ ⟨S.FF _ (l.wt α) k, hk⟩‖ = S.delta y₀ * Real.exp (-(l.q α / S.N))) := by
   atlas_forward_decl GlobalTheory.TestFibre.exists_norm_FF_eq
+end

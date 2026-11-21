@@ -1,12 +1,9 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PMahlerSectionOfConst
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PDefectConstStep
+import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsMahler
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PDefectConstZero
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PDefectAverage
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PMahlerAverageSplit
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PMahlerIntegrand
+import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LogIntSphere
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PSphereMeanFubini
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PEvalSpecFirst
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PCycleAverage
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeAverage
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeFubini
@@ -14,27 +11,20 @@ import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PFsLogAverage
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PFsLogPointOf
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PBallAverageLinear
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PSphereMeanLinearBall
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PFsLogMeasurable
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowDegreePos
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PBallVolume
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PAdmissibleAE
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PAdmissibleAENrm
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PDefectSymm
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PCycleSectionData
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PSpecFirstHomog
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PSupportCycleSection
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PCycleIntegralSection
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormAssoc
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormCycleAdd
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormCycleSmul
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PCycleSectionChow
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PSpecFirstRename
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowCycleSwap
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PSpecFirstSwapMahler
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PProperSymmCycle
+import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.RenameProdMapMul
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PMahlerZeroSpec
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PDefectPoint
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PMahlerSection
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.OfLeaves
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PAreaFormulaInj
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PAreaFormulaInjSet
@@ -48,7 +38,8 @@ import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormReducedRad
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeFiniteFibreDim
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeGraphCover
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeJacMeasurable
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeKrullDimLe
+import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeKrullDimLe
+import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeFiniteFibreDim
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeMapArea
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeMapAreaOne
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeSmoothLocalGraph
@@ -62,7 +53,7 @@ import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PIncIdealSeparate
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PIncidenceZeroLocus
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PKernelProjMeasurable
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PPolyLocalGenerators
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PProjPrimeHasPoint
+import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Imports
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PRadicalBaseChange
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PTangentGaussInvariant
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PTangentJacComp
@@ -163,6 +154,392 @@ import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.AssemblyBase
 import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PConormalGenerationGeneric
 import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PFrameGraphGeneric
 import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PJacobianRankGeneric
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+open MeasureTheory
+
+theorem MahlerSectionOfConst.proof (h1 : DefectAverage.Statement) (h2 : AdmissibleAENrm.Statement)
+    (h3 : BallVolume.Statement) : MahlerSectionOfConst.Statement := by
+  intro e hconst n δ h Z f u data hu
+  set K := mahlerDefect h e Z f u with hK
+  have hrel : ∀ W ∈ Z.support, IsRelevant W := fun W hW => (data.prime W hW).isRelevant
+  have hae : (fun v => mahlerDefect h e Z f (nrmv h v)) =ᵐ[volume.restrict (ballH h)] fun _ => K := by
+    filter_upwards [h2 n h Z hrel] with v hv
+    exact hconst n δ h Z f (nrmv h v) u data hv hu
+  have havg : ⨍ v in ballH h, mahlerDefect h e Z f (nrmv h v) = K := by
+    rw [average_congr hae]
+    obtain ⟨hpos, hfin⟩ := h3 n h
+    exact setAverage_const hpos.ne' hfin.ne K
+  have hmean := (h1 n e δ h Z f data).2
+  rw [havg] at hmean
+  have hK' : K = mahler h e (specFirst f u) - cycleIntegral h Z e (fsLog h u) := rfl
+  linarith
+end Heights
+end Heights₂
+end GroundTheory
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+open MeasureTheory
+
+theorem DefectConstStep.proof (h1 : DefectSymm.Statement) (h2 : ProperSymmCycle.Statement)
+    (h3 : AdmissibleAE.Statement) (h4 : CycleSectionData.Statement) : DefectConstStep.Statement := by
+  intro e hA n δ h Z f u u' hd hu hu'
+  have hdu := h4 n e δ Z f u hd hu
+  have hdu' := h4 n e δ Z f u' hd hu'
+  have rel : ∀ {Y : ProjCycle ℂ n} {g : ℕ} {d : ℕ} {F : MvPolynomial (Fin (g + 1) × Fin n) ℂ},
+      IsChowCycleData Y g d F → ∀ W ∈ Y.support, IsRelevant W :=
+    fun hY W hW => (hY.prime W hW).isRelevant
+  have hae := (h3 n Z (rel hd)).and ((h3 n _ (rel hdu)).and (h3 n _ (rel hdu')))
+  obtain ⟨v, hvZ, hvu, hvu'⟩ := hae.exists
+  have s1 : IsAdmissible (cycleSection Z v) u := h2 n Z u v hd.prime hu hvZ hvu
+  have s2 : IsAdmissible (cycleSection Z v) u' := h2 n Z u' v hd.prime hu' hvZ hvu'
+  rw [h1 e hA n δ h Z f u v hd hu hvZ hvu s1, h1 e hA n δ h Z f v u' hd hvZ hu' s2 hvu']
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+open MvPolynomial MeasureTheory
+
+noncomputable section
+
+theorem mahler_specFirst_eq (h3 : EvalSpecFirst.Statement) {n e : ℕ} (h : HermNorm n)
+    (f : MvPolynomial (Fin (e + 1) × Fin n) ℂ) (v : Fin n → ℂ) :
+    mahler h e (specFirst f v) =
+      sphereMean h e (fun w => Real.log ‖eval (consGroup v w) f‖) := by
+  unfold mahler
+  congr 1
+  funext w
+  rw [h3]
+
+theorem MahlerAverageSplit.proof (h1 : MahlerIntegrand.Statement) (h2 : SphereMeanFubini.Statement)
+    (h3 : EvalSpecFirst.Statement) : MahlerAverageSplit.Statement := by
+  intro n e δ h f hf hhom
+  have hint := h1 n (e + 1) δ h f hf hhom
+  obtain ⟨hI, hM⟩ := h2 n e h (fun u => Real.log ‖eval u f‖) hint
+  have key : (fun v => mahler h e (specFirst f (nrmv h v))) =
+      fun v => sphereMean h e (fun w => Real.log ‖eval (consGroup (nrmv h v) w) f‖) := by
+    funext v
+    exact mahler_specFirst_eq h3 h f (nrmv h v)
+  rw [key]
+  exact ⟨hI, hM⟩
+
+end
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+open MeasureTheory
+
+theorem ballProd_subset_polydisc {n k : ℕ} (h : HermNorm n) (C : ℝ) (hC0 : 0 ≤ C)
+    (hC : ∀ (v : Fin n → ℂ) (j : Fin n), ‖v j‖ ≤ C * h.norm v) :
+    ballProd h k ⊆ LogInt.polydisc _ C := by
+  intro u hu
+  simp only [LogInt.polydisc, Set.mem_univ_pi, Metric.mem_closedBall, dist_zero_right]
+  intro ij
+  exact (hC (fun j => u (ij.1, j)) ij.2).trans (mul_le_of_le_one_right hC0 (hu ij.1).le)
+
+theorem MahlerIntegrand.proof : MahlerIntegrand.Statement := by
+  intro n k δ h f hf _
+  obtain ⟨C, hC0, hC⟩ := h.li_exists_coord_le
+  have e : nrmGroups h k = LogInt.normT h Finset.univ := by
+    funext u ij
+    simp [nrmGroups, LogInt.normT]
+  rw [e]
+  exact (LogInt.logNormT h C hC0 hC Finset.univ f hf).1.mono_set (ballProd_subset_polydisc h C hC0 hC)
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+open MvPolynomial
+
+theorem EvalSpecFirst.proof : EvalSpecFirst.Statement := by
+  intro n k f v w
+  change eval₂Hom (RingHom.id ℂ) w (bind₁ (specFirstVar v) f) =
+    eval₂Hom (RingHom.id ℂ) (consGroup v w) f
+  rw [eval₂Hom_bind₁]
+  congr 2
+  funext ij
+  obtain ⟨i, j⟩ := ij
+  induction i using Fin.cases with
+  | zero => simp [specFirstVar, consGroup]
+  | succ i => simp [specFirstVar, consGroup]
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+open MeasureTheory Matrix
+
+theorem FsLogMeasurable.proof : FsLogMeasurable.Statement := by
+  intro n h
+  have hn : Continuous h.norm := by
+    unfold HermNorm.norm
+    fun_prop
+  have hd : Continuous h.dualNorm := by
+    unfold HermNorm.dualNorm
+    fun_prop
+  have hp : Continuous h.pointOf := by
+    unfold HermNorm.pointOf
+    fun_prop
+  have hinv : Measurable fun v : Fin n → ℂ => ((h.norm v : ℝ) : ℂ)⁻¹ :=
+    (Complex.continuous_ofReal.comp hn).measurable.inv
+  have hv : Measurable fun p : (Fin n → ℂ) × EuclideanSpace ℂ (Fin n) => nrmv h p.1 := by
+    unfold nrmv
+    refine measurable_pi_lambda _ fun j => ?_
+    exact (hinv.comp measurable_fst).mul ((measurable_pi_apply j).comp measurable_fst)
+  have hy : Measurable fun p : (Fin n → ℂ) × EuclideanSpace ℂ (Fin n) => h.pointOf p.2 :=
+    hp.measurable.comp measurable_snd
+  unfold fsLog
+  refine Real.measurable_log.comp (Measurable.div ?_ (hd.measurable.comp hy))
+  refine Measurable.norm ?_
+  refine Finset.measurable_sum _ fun j _ => ?_
+  exact ((measurable_pi_apply j).comp hv).mul ((measurable_pi_apply j).comp hy)
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+theorem CycleSectionData.proof (h1 : CycleSectionChow.Statement) (h2 : DivCyclePrime.Statement)
+    (h3 : SpecFirstHomog.Statement) (h4 : SupportCycleSection.Statement) :
+    CycleSectionData.Statement := by
+  intro n e δ Z f u hZ hu
+  refine ⟨?_, ?_, ?_⟩
+  · intro W' hW'
+    obtain ⟨W, hW, hW'W⟩ := (h4 n Z u).2 W' hW'
+    exact h2 n W u (hZ.prime W hW) W' hW'W
+  · exact h1 n (e + 1) Z f u hZ.prime hZ.chow hu
+  · exact h3 n (e + 1) δ f u hZ.homog
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+theorem mem_support_cycleSection_iff {n : ℕ} (Z : ProjCycle ℂ n) (u : Fin n → ℂ)
+    (W' : Ideal (MvPolynomial (Fin n) ℂ)) :
+    W' ∈ (cycleSection Z u).support ↔ ∃ W ∈ Z.support, W' ∈ (divCycle W u).support := by
+  simp only [Finsupp.mem_support_iff, cycleSection, Finsupp.finsetSum_apply, Finsupp.smul_apply,
+    smul_eq_mul, ne_eq, Finset.sum_eq_zero_iff, not_forall, mul_eq_zero, not_or, exists_prop]
+  constructor <;> rintro ⟨W, h⟩ <;> exact ⟨W, by tauto⟩
+
+theorem SupportCycleSection.proof : SupportCycleSection.Statement := by
+  intro n Z u
+  refine ⟨fun W hW W' hW' => (mem_support_cycleSection_iff Z u W').mpr ⟨W, hW, hW'⟩,
+    fun W' hW' => (mem_support_cycleSection_iff Z u W').mp hW'⟩
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+open MvPolynomial MeasureTheory
+
+noncomputable section
+
+theorem cycleIntegral_eq_sum {n : ℕ} (h : HermNorm n) (Z : ProjCycle ℂ n) (e : ℕ)
+    (g : (Fin n → ℂ) → ℝ) :
+    cycleIntegral h Z e g = Z.sum (fun W m => (m : ℝ) * coneIntegral h W e g) := rfl
+
+theorem CycleIntegralSection.proof : CycleIntegralSection.Statement := by
+  intro n h Z u e g
+  rw [cycleIntegral_eq_sum, cycleSection,
+    ← Finsupp.sum_finsetSum_index (by intro W; simp) (by intro W a b; push_cast; ring)]
+  refine Finset.sum_congr rfl fun W _ => ?_
+  rw [Finsupp.sum_smul_index' (by intro W'; simp), cycleIntegral_eq_sum, Finsupp.mul_sum]
+  refine Finset.sum_congr rfl fun W' _ => ?_
+  simp only [smul_eq_mul, Nat.cast_mul]
+  ring
+
+end
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+open MvPolynomial
+
+noncomputable section
+
+theorem ChowCycleSwap.proof : ChowCycleSwap.Statement := by
+  intro F _ n k Z f hf τ
+  obtain ⟨c, -, g, hg, rfl⟩ := hf
+  have hex : ∀ W, ∃ d : F, W ∈ Z.support →
+      d ^ 2 = 1 ∧ rename (Prod.map τ id) (g W) = C d * g W := by
+    intro W
+    by_cases hW : W ∈ Z.support
+    · obtain ⟨d, hd2, hdg⟩ := chowFormSwap F n k W (g W) (hg W hW) τ
+      exact ⟨d, fun _ => ⟨hd2, hdg⟩⟩
+    · exact ⟨1, fun h => absurd h hW⟩
+  choose d hd using hex
+  refine ⟨∏ W ∈ Z.support, d W ^ Z W, ?_, ?_⟩
+  · rw [← Finset.prod_pow]
+    refine Finset.prod_eq_one fun W hW => ?_
+    rw [← pow_mul, mul_comm, pow_mul, (hd W hW).1, one_pow]
+  · rw [map_mul, rename_C, map_prod]
+    rw [Finset.prod_congr rfl fun W hW => by
+      rw [map_pow, (hd W hW).2, mul_pow, ← C_pow]]
+    rw [Finset.prod_mul_distrib, map_prod C]
+    ring
+
+end
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+open MvPolynomial
+
+noncomputable section
+
+theorem mahler_C_mul_of_norm_eq_one {n k : ℕ} (h : HermNorm n) (c : ℂ) (hc : ‖c‖ = 1)
+    (g : MvPolynomial (Fin k × Fin n) ℂ) : mahler h k (C c * g) = mahler h k g := by
+  have hfun : (fun v : Fin k × Fin n → ℂ => Real.log ‖eval v (C c * g)‖) =
+      fun v => Real.log ‖eval v g‖ := by
+    funext v
+    rw [eval_mul, eval_C, norm_mul, hc, one_mul]
+  unfold mahler
+  rw [hfun]
+
+theorem specFirst_C_mul {n k : ℕ} (c : ℂ) (f : MvPolynomial (Fin (k + 1) × Fin n) ℂ) (u : Fin n → ℂ) :
+    specFirst (C c * f) u = C c * specFirst f u := by
+  unfold specFirst
+  rw [map_mul, bind₁_C_right]
+
+theorem SpecFirstSwapMahler.proof (h1 : SpecFirstRename.Statement) (h2 : ChowCycleSwap.Statement) :
+    SpecFirstSwapMahler.Statement := by
+  intro n e h Z f u u' hf
+  obtain ⟨c, hc2, hren⟩ := h2 ℂ n (e + 1 + 1) Z f hf (Equiv.swap 0 1)
+  have hc : ‖c‖ = 1 := by
+    have hsq : ‖c‖ ^ 2 = 1 := by rw [← norm_pow, hc2, norm_one]
+    exact (pow_eq_one_iff_of_nonneg (norm_nonneg c) two_ne_zero).1 hsq
+  have key : specFirst (specFirst f u) u' = C c * specFirst (specFirst f u') u := by
+    rw [← h1 n e f u' u, hren, specFirst_C_mul, specFirst_C_mul]
+  rw [key, mahler_C_mul_of_norm_eq_one h c hc]
+
+end
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+theorem ProperSymmCycle.proof (h1 : ProperSymm.Statement) (h2 : SupportCycleSection.Statement) :
+    ProperSymmCycle.Statement := by
+  intro n Z u u' hprime hu hu' hadm W'' hW''
+  obtain ⟨W, hW, hW''W⟩ := (h2 n Z u').2 W'' hW''
+  have hadmW : IsAdmissible (divCycle W u) u' := fun W' hW' =>
+    hadm W' ((h2 n Z u).1 W hW hW')
+  exact h1 n W u u' (hprime W hW) (hu W hW) (hu' W hW) hadmW W'' hW''W
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+theorem MahlerSection.proof (h₁ : MahlerSectionOfConst.Statement) (h₂ : DefectConstZero.Statement)
+    (h₃ : DefectConstStep.Statement) : MahlerSection.Statement := by
+  have hdim : ∀ e, MahlerSectionDim e := by
+    intro e
+    induction e with
+    | zero => exact h₁ 0 h₂
+    | succ e ih => exact h₁ (e + 1) (h₃ e ih)
+  intro n e δ h Z f u hprime hchow hhom hadm
+  exact hdim e n δ h Z f u ⟨hprime, hchow, hhom⟩ hadm
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+theorem ConeKrullDimLe.proof (hDim : ConeFiniteFibreDim.Statement) : ConeKrullDimLe.Statement :=
+  fun n m h J hJ hm hmn hae => hDim n m h J hJ hm hmn hae
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+open MvPolynomial
+
+theorem ProjPrimeHasPoint.proof : ProjPrimeHasPoint.Statement := by
+  intro F _ n W hW
+  have := hW.isPrime
+  obtain ⟨j, hj⟩ := hW.isRelevant
+  by_contra hcon
+  push Not at hcon
+  apply hj
+  have hmem : (X j : MvPolynomial (Fin n) F) ∈
+      vanishingIdeal F (zeroLocus (AlgebraicClosure F) W) := by
+    intro x hx
+    by_cases hx0 : x = 0
+    · subst hx0
+      simp
+    · obtain ⟨q, hq, hne⟩ := hcon x hx0
+      exact absurd (hx q hq) hne
+  rwa [IsPrime.vanishingIdeal_zeroLocus] at hmem
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
@@ -576,3 +953,4 @@ theorem GreenSymmetry.of_remaining
   exact hGreenSymmetry
 
 end GroundTheory.Heights₂.Heights
+end

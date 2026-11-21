@@ -86,18 +86,6 @@ theorem isPrecomplete : IsPrecomplete (span {((p : ℕ) : 𝓞_ℂ_[p])}) 𝓞_�
 theorem isAdicComplete : IsAdicComplete (span {((p : ℕ) : 𝓞_ℂ_[p])}) 𝓞_ℂ_[p] :=
   { isHausdorff p, isPrecomplete p with }
 
-theorem setting_padicComplex : HidaSetting p (PadicComplex.valued p).v 𝓞_ℂ_[p] where
-  prime := hp.out
-  algClosed := inferInstance
-  charZero := inferInstance
-  integers := PadicComplexInt.integers p
-  p_lt := by
-    have h := valuation_coe_eq_norm p ((p : ℕ) : ℂ_[p])
-    rw [norm_p] at h
-    have h1 := inv_p_lt_one p
-    rw [← h] at h1
-    exact_mod_cast h1
-  complete := isAdicComplete p
 
 end Inhabitant
 

@@ -1,7 +1,332 @@
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassType.IdxGrp
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassType.IdxAbs
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SpanMulMem
+import Mathlib
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassOrder.IsTopRingTens
 
+section
+noncomputable section
+
+namespace PI.LocMassTypW
+
+open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.Sub Formalism.L2.SG.Measures Formalism.L2.SG.LocVol MeasureTheory NumberField
+  IsDedekindDomain
+open scoped TensorProduct Classical
+
+section Ring
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] (v : HeightOneSpectrum (𝓞 F)) {n : ℕ}
+
+theorem mem_oev_iff (x : Fv F v ⊗[F] E) :
+    x ∈ OEv (E := E) v ↔ x ∈ Submodule.span (v.adicCompletionIntegers F)
+      ((fun x : 𝓞 E => inclR (F := F) (Fv F v) (x : E)) '' Set.univ) := Iff.rfl
+
+theorem oev_zero : (0 : Fv F v ⊗[F] E) ∈ OEv (E := E) v := by
+  rw [mem_oev_iff]; exact Submodule.zero_mem _
+
+theorem oev_add {a b : Fv F v ⊗[F] E} (ha : a ∈ OEv (E := E) v) (hb : b ∈ OEv (E := E) v) :
+    a + b ∈ OEv (E := E) v := by
+  rw [mem_oev_iff] at *; exact Submodule.add_mem _ ha hb
+
+theorem oev_neg {a : Fv F v ⊗[F] E} (ha : a ∈ OEv (E := E) v) : -a ∈ OEv (E := E) v := by
+  rw [mem_oev_iff] at *; exact Submodule.neg_mem _ ha
+
+theorem oev_mul {a b : Fv F v ⊗[F] E} (ha : a ∈ OEv (E := E) v) (hb : b ∈ OEv (E := E) v) :
+    a * b ∈ OEv (E := E) v := by
+  first | exact GlobalTheory.SpanMulInertiaEigenvalues.main .. | (apply GlobalTheory.SpanMulInertiaEigenvalues.main <;> assumption) | (intros; apply GlobalTheory.SpanMulInertiaEigenvalues.main <;> assumption) | (apply @GlobalTheory.SpanMulInertiaEigenvalues.main <;> assumption) | (intros; apply @GlobalTheory.SpanMulInertiaEigenvalues.main <;> assumption) | (apply @GlobalTheory.SpanMulInertiaEigenvalues.main <;> first | assumption | infer_instance) | exact @GlobalTheory.SpanMulInertiaEigenvalues.main F E ‹_› ‹_› ‹_› ‹_› v a b ha hb | exact @GlobalTheory.SpanMulInertiaEigenvalues.main F E ‹_› ‹_› ‹_› ‹_› v a b ha | exact @GlobalTheory.SpanMulInertiaEigenvalues.main F E ‹_› ‹_› ‹_› ‹_› v a b | exact @GlobalTheory.SpanMulInertiaEigenvalues.main F E ‹_› ‹_› ‹_› ‹_› v a | exact @GlobalTheory.SpanMulInertiaEigenvalues.main F E ‹_› ‹_› ‹_› ‹_› v | exact @GlobalTheory.SpanMulInertiaEigenvalues.main F E ‹_› ‹_› ‹_› ‹_› | exact @GlobalTheory.SpanMulInertiaEigenvalues.main F E ‹_› ‹_› ‹_› | exact @GlobalTheory.SpanMulInertiaEigenvalues.main F E ‹_› ‹_› | exact @GlobalTheory.SpanMulInertiaEigenvalues.main F E ‹_› | exact @GlobalTheory.SpanMulInertiaEigenvalues.main F E | exact @GlobalTheory.SpanMulInertiaEigenvalues.main F
+
+theorem sc_mul' (a b : Fv F v) : sc (E := E) v a * sc (E := E) v b = sc (E := E) v (a * b) := by
+  simp [sc, Algebra.TensorProduct.tmul_mul_tmul]
+
+theorem sc_one' : sc (E := E) v (1 : Fv F v) = 1 := rfl
+
+theorem sc_smul_sc (a b : Fv F v) (w : Fin n → Fv F v ⊗[F] E) :
+    sc (E := E) v a • sc (E := E) v b • w = sc (E := E) v (a * b) • w := by
+  rw [smul_smul, sc_mul']
+
+theorem osmul_eq (c : v.adicCompletionIntegers F) (z : Fin n → Fv F v ⊗[F] E) :
+    c • z = sc (E := E) v (c : Fv F v) • z := by
+  funext i
+  simp only [Pi.smul_apply, smul_eq_mul, sc]
+  rw [show c • z i = (c : Fv F v) • z i from rfl, Algebra.smul_def]
+  rfl
+
+theorem nat_osmul (g : ℕ) (z : Fin n → Fv F v ⊗[F] E) :
+    (g : v.adicCompletionIntegers F) • z = sc (E := E) v (g : Fv F v) • z := by
+  rw [osmul_eq]; simp
+
+theorem dV_ne' : dV v ≠ 0 := by
+  unfold dV
+  split_ifs with h
+  · exact h.choose_spec.1
+  · exact one_ne_zero
+
+theorem alp_ne' (r : ℕ) (a : Fin (r + 1)) : alp v r a ≠ 0 := by
+  unfold alp
+  split_ifs
+  · exact pow_ne_zero _ (inv_ne_zero (dV_ne' v))
+  · exact one_ne_zero
+
+end Ring
+
+end PI.LocMassTypW
+end
+end
+
+section
+noncomputable section
+
+namespace PI.LocMassTypW
+
+open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.Sub Formalism.L2.SG.Measures Formalism.L2.SG.LocVol MeasureTheory NumberField
+  IsDedekindDomain
+open scoped TensorProduct Classical
+
+def frU {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E]
+    (v : HeightOneSpectrum (𝓞 F)) {n r : ℕ} (P : Frame E n r) (u : UIdx r → Fv F v ⊗[F] E) :
+    TupV (E := E) v n (r + 1) :=
+  fun b => ∑ a, uMat v u a b • ratTup (Fv F v) (F0 P) a
+
+def Cong {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+    (σ : E →ₐ[F] E) {n : ℕ} (J : Matrix (Fin n) (Fin n) E) (v : HeightOneSpectrum (𝓞 F))
+    (Λ : Set (Fin n → E)) {r : ℕ} (g : ℕ) (P : Frame E n r) (x : HA (Fv F v) σ J)
+    (u : UIdx r → Fv F v ⊗[F] E) : Prop :=
+  ∀ b, ∃ w ∈ latLoc (E := E) v Λ,
+    locF v (x • ratTup (Fv F v) (F0 P)) b - locF v (frU v P u) b = sc (E := E) v (g : Fv F v) • w
+
+section Grp
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+  {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {v : HeightOneSpectrum (𝓞 F)}
+  {Λ : Set (Fin n → E)}
+
+theorem smul_tup (k : HA (Fv F v) σ J) {a : ℕ} (X : Fin a → Fin n → Fv F v ⊗[F] E) (b : Fin a) :
+    (k • X) b = lin (Fv F v) σ J k (X b) := rfl
+
+theorem kv_lat {k : HA (Fv F v) σ J} (hk : k ∈ Formalism.L2.SG.TypedSets.Kv σ J Λ v)
+    {w : Fin n → Fv F v ⊗[F] E} (hw : w ∈ latLoc (E := E) v Λ) :
+    lin (Fv F v) σ J k w ∈ latLoc (E := E) v Λ := (hk w).1 hw
+
+theorem kv_mul {a b : HA (Fv F v) σ J} (ha : a ∈ Formalism.L2.SG.TypedSets.Kv σ J Λ v)
+    (hb : b ∈ Formalism.L2.SG.TypedSets.Kv σ J Λ v) : a * b ∈ Formalism.L2.SG.TypedSets.Kv σ J Λ v :=
+  Subgroup.mul_mem (Kloc (E := E) v Λ) ha hb
+
+theorem kv_inv {a : HA (Fv F v) σ J} (ha : a ∈ Formalism.L2.SG.TypedSets.Kv σ J Λ v) :
+    a⁻¹ ∈ Formalism.L2.SG.TypedSets.Kv σ J Λ v :=
+  Subgroup.inv_mem (Kloc (E := E) v Λ) ha
+
+theorem kv_one : (1 : HA (Fv F v) σ J) ∈ Formalism.L2.SG.TypedSets.Kv σ J Λ v :=
+  Subgroup.one_mem (Kloc (E := E) v Λ)
+
+theorem locF_act (k : HA (Fv F v) σ J) {r : ℕ} (Y : TupV (E := E) v n (r + 1)) (b : Fin (r + 1)) :
+    locF v (k • Y) b = lin (Fv F v) σ J k (locF v Y b) := by
+  show sc (E := E) v (alp v r b) • (k • Y) b = _
+  rw [smul_tup, locF, map_smul]
+
+theorem locF_comb {r : ℕ} (M : Matrix (Fin (r + 1)) (Fin (r + 1)) (Fv F v ⊗[F] E))
+    (X : TupV (E := E) v n (r + 1)) (b : Fin (r + 1)) :
+    locF v (fun b => ∑ a, M a b • X a) b =
+      ∑ a, (sc (E := E) v ((alp v r a)⁻¹ * alp v r b) * M a b) • locF v X a := by
+  simp only [locF, Finset.smul_sum, smul_smul]
+  refine Finset.sum_congr rfl fun a _ => ?_
+  congr 1
+  have h : (alp v r a)⁻¹ * alp v r b * alp v r a = alp v r b := by
+    rw [mul_comm (alp v r a)⁻¹, mul_assoc, inv_mul_cancel₀ (alp_ne' v r a), mul_one]
+  rw [mul_right_comm, sc_mul', h]
+
+theorem prim_div {r : ℕ} {Y : TupV (E := E) v n (r + 1)} (hP : IsPrim v Λ Y)
+    (c : Fin (r + 1) → Fv F v ⊗[F] E) {t : Fv F v} (ht : t ≠ 0) {y : Fin n → Fv F v ⊗[F] E}
+    (hy : y ∈ latLoc (E := E) v Λ) (h : ∑ a, c a • Y a = sc (E := E) v t • y) (a : Fin (r + 1)) :
+    sc (E := E) v t⁻¹ * c a ∈ OEv (E := E) v := by
+  apply hP.2 (fun a => sc (E := E) v t⁻¹ * c a) _ a
+  have : ∑ a, (sc (E := E) v t⁻¹ * c a) • Y a = sc (E := E) v t⁻¹ • ∑ a, c a • Y a := by
+    rw [Finset.smul_sum]; simp only [smul_smul]
+  rw [this, h, sc_smul_sc, inv_mul_cancel₀ ht, sc_one', one_smul]
+  exact hy
+
+theorem hR_smul (x w : Fin n → Fv F v ⊗[F] E) (c : Fv F v ⊗[F] E) :
+    hR (Fv F v) σ J x (c • w) = c * hR (Fv F v) σ J x w := by
+  simp only [hR, Formalism.UG.hform, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
+  exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
+
+theorem sd_smul (hSD : IsSDLoc σ J v Λ) {c : Fv F v ⊗[F] E} (hc : c ∈ OEv (E := E) v)
+    {w : Fin n → Fv F v ⊗[F] E} (hw : w ∈ latLoc (E := E) v Λ) : c • w ∈ latLoc (E := E) v Λ :=
+  (hSD (c • w)).2 fun x hx => by rw [hR_smul]; exact oev_mul v hc ((hSD w).1 hw x hx)
+
+theorem lat_comb (hSD : IsSDLoc σ J v Λ) {r : ℕ} {Y : Fin (r + 1) → Fin n → Fv F v ⊗[F] E}
+    (hY : ∀ a, Y a ∈ latLoc (E := E) v Λ) {c : Fin (r + 1) → Fv F v ⊗[F] E}
+    (hc : ∀ a, c a ∈ OEv (E := E) v) : ∑ a, c a • Y a ∈ latLoc (E := E) v Λ :=
+  Submodule.sum_mem _ fun a _ => sd_smul hSD (hc a) (hY a)
+
+theorem uMat_sub {r : ℕ} (u u' : UIdx r → Fv F v ⊗[F] E) (a b : Fin (r + 1)) :
+    uMat v u' a b - uMat v u a b =
+      if h : a < b then u' ⟨(a, b), h⟩ - u ⟨(a, b), h⟩ else 0 := by
+  by_cases h1 : a = b
+  · subst h1; simp [uMat]
+  · by_cases h2 : a < b <;> simp [uMat, h1, h2]
+
+theorem locF_frU_sub {r : ℕ} (P : Frame E n r) (u u' : UIdx r → Fv F v ⊗[F] E) (b : Fin (r + 1)) :
+    locF v (frU v P u') b - locF v (frU v P u) b =
+      ∑ a, (sc (E := E) v ((alp v r a)⁻¹ * alp v r b) * (uMat v u' a b - uMat v u a b)) •
+        locF v (ratTup (Fv F v) (F0 P)) a := by
+  unfold frU
+  rw [locF_comb, locF_comb, ← Finset.sum_sub_distrib]
+  refine Finset.sum_congr rfl fun a _ => ?_
+  rw [← sub_smul, mul_sub]
+
+theorem cong_lat_iff (hSD : IsSDLoc σ J v Λ) {r : ℕ} {P : Frame E n r}
+    (hP : IsPrim v Λ (locF v (ratTup (Fv F v) (F0 P)))) {g : ℕ} (hg : (g : Fv F v) ≠ 0)
+    (u u' : UIdx r → Fv F v ⊗[F] E) :
+    (∀ b, ∃ z ∈ latLoc (E := E) v Λ,
+      locF v (frU v P u') b - locF v (frU v P u) b = sc (E := E) v (g : Fv F v) • z) ↔
+      -u + u' ∈ UOg (E := E) v g r := by
+  constructor
+  · rintro h ⟨⟨a, b⟩, hab⟩
+    obtain ⟨z, hz, hzeq⟩ := h b
+    rw [locF_frU_sub] at hzeq
+    have := prim_div hP _ hg hz hzeq a
+    rw [uMat_sub, dif_pos hab] at this
+    dsimp only
+    convert this using 1
+    rw [Pi.add_apply, Pi.neg_apply, neg_add_eq_sub, ← mul_assoc, sc_mul']
+    congr 1; congr 1; ring
+  · intro h b
+    refine ⟨∑ a, (sc (E := E) v (g : Fv F v)⁻¹ * (sc (E := E) v ((alp v r a)⁻¹ * alp v r b) *
+      (uMat v u' a b - uMat v u a b))) • locF v (ratTup (Fv F v) (F0 P)) a,
+      lat_comb hSD hP.1 ?_, ?_⟩
+    · intro a
+      rw [uMat_sub]
+      split_ifs with hab
+      · have := h ⟨(a, b), hab⟩
+        simp only [Pi.add_apply, Pi.neg_apply, neg_add_eq_sub] at this
+        convert this using 1
+        rw [← mul_assoc, sc_mul']
+        congr 1; congr 1; ring
+      · rw [mul_zero, mul_zero]; exact oev_zero v
+    · rw [locF_frU_sub, Finset.smul_sum]
+      refine Finset.sum_congr rfl fun a _ => ?_
+      rw [smul_smul, ← mul_assoc, sc_mul', mul_inv_cancel₀ hg, sc_one', one_mul]
+
+theorem cong_iff (hSD : IsSDLoc σ J v Λ) {r : ℕ} {P : Frame E n r}
+    (hP : IsPrim v Λ (locF v (ratTup (Fv F v) (F0 P)))) {g : ℕ} (hg : (g : Fv F v) ≠ 0)
+    {x y : HA (Fv F v) σ J} (hx : x ∈ Formalism.L2.SG.TypedSets.Kv σ J Λ v)
+    (hy : y ∈ Formalism.L2.SG.TypedSets.Kv σ J Λ v) {u u' : UIdx r → Fv F v ⊗[F] E}
+    (hcx : Cong σ J v Λ g P x u) (hcy : Cong σ J v Λ g P y u') :
+    x⁻¹ * y ∈ K1 σ J v Λ g P ↔ -u + u' ∈ UOg (E := E) v g r := by
+  rw [← cong_lat_iff hSD hP hg u u']
+  have key : ∀ b, locF v ((x⁻¹ * y) • ratTup (Fv F v) (F0 P)) b - locF v (ratTup (Fv F v) (F0 P)) b =
+      lin (Fv F v) σ J x⁻¹ (locF v (y • ratTup (Fv F v) (F0 P)) b -
+        locF v (x • ratTup (Fv F v) (F0 P)) b) := by
+    intro b
+    rw [map_sub, locF_act, locF_act, locF_act, lin_mul, lin_inv_lin]
+  constructor
+  · rintro ⟨-, hk⟩ b
+    obtain ⟨z, hz, hzeq⟩ := hk b
+    obtain ⟨wx, hwx, hwxe⟩ := hcx b
+    obtain ⟨wy, hwy, hwye⟩ := hcy b
+    refine ⟨lin (Fv F v) σ J x z - wy + wx,
+      Submodule.add_mem _ (Submodule.sub_mem _ (kv_lat hx hz) hwy) hwx, ?_⟩
+    have e1 : locF v (y • ratTup (Fv F v) (F0 P)) b - locF v (x • ratTup (Fv F v) (F0 P)) b =
+        sc (E := E) v (g : Fv F v) • lin (Fv F v) σ J x z := by
+      rw [key] at hzeq
+      have := congrArg (lin (Fv F v) σ J x) hzeq
+      rwa [← lin_mul, mul_inv_cancel, lin_one, map_smul] at this
+    rw [smul_add, smul_sub, ← e1, ← hwye, ← hwxe]
+    abel
+  · intro h
+    refine ⟨kv_mul (kv_inv hx) hy, fun b => ?_⟩
+    obtain ⟨z, hz, hzeq⟩ := h b
+    obtain ⟨wx, hwx, hwxe⟩ := hcx b
+    obtain ⟨wy, hwy, hwye⟩ := hcy b
+    refine ⟨lin (Fv F v) σ J x⁻¹ (z + wy - wx),
+      kv_lat (kv_inv hx) (Submodule.sub_mem _ (Submodule.add_mem _ hz hwy) hwx), ?_⟩
+    rw [key, ← map_smul]
+    congr 1
+    rw [smul_sub, smul_add, ← hzeq, ← hwye, ← hwxe]
+    abel
+
+end Grp
+
+end PI.LocMassTypW
+end
+end
+
+section
+noncomputable section
+
+namespace PI.LocMassTypW
+
+open MeasureTheory
+
+theorem idx_abs {G V : Type*} [Group G] [MeasurableSpace G] [MeasurableMul G]
+    [AddCommGroup V] [MeasurableSpace V] [MeasurableAdd V]
+    (μ : Measure G) [μ.IsMulLeftInvariant] (ν : Measure V) [ν.IsAddLeftInvariant]
+    (K : Subgroup G) (hK : MeasurableSet (K : Set G)) (B : AddSubgroup V)
+    (hB : MeasurableSet (B : Set V)) [Countable (V ⧸ B)] (N : Set G) (C : Set V) (φ : G → V)
+    (hNK : ∀ x ∈ N, ∀ k ∈ K, x * k ∈ N) (hCB : ∀ u ∈ C, ∀ b ∈ B, u + b ∈ C)
+    (hφ : ∀ x ∈ N, φ x ∈ C) (hco : ∀ x ∈ N, ∀ y ∈ N, x⁻¹ * y ∈ K ↔ -φ x + φ y ∈ B)
+    (hsur : ∀ u ∈ C, ∃ x ∈ N, -φ x + u ∈ B) :
+    μ N * ν B = μ K * ν C := by
+  classical
+  have hI : ∀ q : {q : V ⧸ B | ∃ x ∈ N, (QuotientAddGroup.mk (φ x) : V ⧸ B) = q},
+      ∃ x ∈ N, (QuotientAddGroup.mk (φ x) : V ⧸ B) = q := fun q => q.2
+  choose x hxN hxq using hI
+  have hmk : ∀ a b : V, -a + b ∈ B ↔ (QuotientAddGroup.mk a : V ⧸ B) = QuotientAddGroup.mk b :=
+    fun a b => QuotientAddGroup.eq.symm
+  have hC : C = ⋃ q, (fun v => -φ (x q) + v) ⁻¹' (B : Set V) := by
+    ext v
+    simp only [Set.mem_iUnion, Set.mem_preimage, SetLike.mem_coe]
+    constructor
+    · intro hv
+      obtain ⟨y, hy, hyB⟩ := hsur v hv
+      refine ⟨⟨QuotientAddGroup.mk (φ y), y, hy, rfl⟩, ?_⟩
+      rw [hmk] at hyB ⊢
+      rw [hxq]
+      exact hyB
+    · rintro ⟨q, hq⟩
+      have hc := hCB _ (hφ _ (hxN q)) _ hq
+      simpa using hc
+  have hN : N = ⋃ q, (fun y => (x q)⁻¹ * y) ⁻¹' (K : Set G) := by
+    ext y
+    simp only [Set.mem_iUnion, Set.mem_preimage, SetLike.mem_coe]
+    constructor
+    · intro hy
+      refine ⟨⟨QuotientAddGroup.mk (φ y), y, hy, rfl⟩, ?_⟩
+      rw [hco _ (hxN _) _ hy, hmk, hxq]
+    · rintro ⟨q, hq⟩
+      have hc := hNK _ (hxN q) _ hq
+      simpa using hc
+  have hdC : Pairwise (Function.onFun Disjoint fun q => (fun v => -φ (x q) + v) ⁻¹' (B : Set V)) := by
+    intro q q' hqq
+    rw [Function.onFun, Set.disjoint_left]
+    intro v h1 h2
+    apply hqq
+    apply Subtype.ext
+    simp only [Set.mem_preimage, SetLike.mem_coe, hmk] at h1 h2
+    rw [← hxq q, ← hxq q', h1, h2]
+  have hdN : Pairwise (Function.onFun Disjoint fun q => (fun y => (x q)⁻¹ * y) ⁻¹' (K : Set G)) := by
+    intro q q' hqq
+    rw [Function.onFun, Set.disjoint_left]
+    intro y h1 h2
+    apply hqq
+    apply Subtype.ext
+    simp only [Set.mem_preimage, SetLike.mem_coe] at h1 h2
+    have hy : y ∈ N := by simpa using hNK _ (hxN q) _ h1
+    rw [hco _ (hxN q) _ hy, hmk] at h1
+    rw [hco _ (hxN q') _ hy, hmk] at h2
+    rw [← hxq q, ← hxq q', h1, h2]
+  have e1 : μ N = ∑' q : {q : V ⧸ B | ∃ x ∈ N, (QuotientAddGroup.mk (φ x) : V ⧸ B) = q}, μ K := by
+    conv_lhs => rw [hN]
+    rw [measure_iUnion hdN fun q => (measurable_const_mul _) hK]
+    exact tsum_congr fun q => measure_preimage_mul μ _ _
+  have e2 : ν C = ∑' q : {q : V ⧸ B | ∃ x ∈ N, (QuotientAddGroup.mk (φ x) : V ⧸ B) = q}, ν B := by
+    rw [hC, measure_iUnion hdC fun q => (measurable_const_add _) hB]
+    exact tsum_congr fun q => measure_preimage_add ν _ _
+  rw [e1, e2, ← ENNReal.tsum_mul_right, ← ENNReal.tsum_mul_left]
+
+end PI.LocMassTypW
+end
+end
+
+section
 noncomputable section
 
 namespace PI.LocMassTypW
@@ -293,3 +618,5 @@ theorem stepIdx_of (hL : CongruenceSubgroupLift) (hU : KUnip1) (hM : CongruenceS
   exact this
 
 end PI.LocMassTypW
+end
+end

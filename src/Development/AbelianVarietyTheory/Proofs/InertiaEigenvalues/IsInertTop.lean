@@ -150,9 +150,6 @@ def formLat (O : Subring ℂ) {c : Coeff l} (la : HeightOneSpectrum (𝓞 c.F)) 
   Submodule.span O {φ | ∃ f ∈ GlobalTheory.GoodPts.supSet Xo c la (cusp Xo c U a n),
     φ = (lieFac Dw (xiR D) a : ℂ) • adel W dict (muPin W dict mu cc) (rdU (U σ) f)}
 
-theorem isInert_top (A : ValuationSubring ℂ) : IsInert A ⊤ := fun τ h x _ _ => by
-  rw [h x trivial, sub_self]
-  exact zero_mem _
 
 theorem IsInert.mono {A : ValuationSubring ℂ} {K K' : Subfield ℂ} (h : IsInert A K) (hK : K ≤ K') : IsInert A K' :=
   fun τ hτ => h τ fun x hx => hτ x (hK hx)

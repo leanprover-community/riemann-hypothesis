@@ -4,14 +4,457 @@ import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.Cu
 import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsHeight
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmMemArchSmooth
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsOpenLevel
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteZSpanIntegralRepresentation
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteAdelicRestrictionMeasure
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FundamentalDomainIntegralCountBound
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactAdelicIntegralDenominator
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegersBoundedArchimedeanCount
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactConjugateCentrePowerBounded
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactConjugateRationalEntriesBoundedStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsGrowthUniform
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ArchLieDerivativeExists
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.CuspDiscreteDecompositionGL
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdicCompactDensity.ExistsNatLocal
+import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.FiniteAndNcardBound
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactConjugateRationalEntriesBounded
 
+section
+section
+open NumberField MeasureTheory Topology Matrix GlobalTheory.AutomorphicL2Unitary GlobalTheory.DiscreteSum GlobalTheory.OpTrace GlobalTheory.UnitaryBC GlobalTheory.DiscSpec GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL
+open GroundTheory.Automorphic
+open scoped ENNReal
+
+set_option maxSynthPendingDepth 1
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.HCRep.GrowthKernel
+
+open GroundTheory.Global GroundTheory.Automorphic.Reduction AutomorphicForm GlobalTheory.CompanionTheory.ArchSmooth GlobalTheory.CompanionTheory.HCRep
+
+variable {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {a : ℕ}
+
+theorem exists_aeval_lapOp_eq_zero_of_finite (φ : Sm E a)
+    (hk : FiniteDimensional ℂ (Submodule.span ℂ (Set.range fun k => cptRep E a k φ)))
+    (hz : FiniteDimensional ℂ (Submodule.span ℂ ((fun z : Module.End ℂ (Sm E a) => z φ) '' Zalg E a)))
+    {d : ℕ}
+    (b : Module.Basis (Fin d) ℝ (isExpLieAlgebra E a).lieSubalgebra) (ε : Fin d → ℝ)
+    (hε : ∀ i, ε i = 1 ∨ ε i = -1)
+    (horth : ∀ i j, archTraceForm E a (b i) (b j) = if i = j then ε i else 0)
+    (hskew : ∀ i, ε i = -1 → b i ∈ archSkew E a) :
+    ∃ P : Polynomial ℂ, P.Monic ∧ 0 < P.natDegree ∧ Polynomial.aeval (lapOp (⇑b)) P φ = 0 := by
+  classical
+  set Ω := omegaOp (E := E) (a := a) (⇑b) ε with hΩ
+  set W := Submodule.span ℂ (Set.range fun k => cptRep E a k φ) with hWdef
+  haveI : FiniteDimensional ℂ W := hk
+  have hZ : Ω ∈ Zalg E a := by
+    rw [hΩ, GlobalTheory.T.omega_operator_eq_casimir_sum E a d b ε hε horth]
+    refine Subalgebra.smul_mem _ (Subalgebra.sum_mem _ fun w _ => Subalgebra.add_mem _ ?_ ?_) _
+    · exact GlobalTheory.T.casimir_mem_center_enveloping E a _
+    · exact GlobalTheory.T.casimir_mem_center_enveloping E a _
+  set Vz := Submodule.span ℂ ((fun z : Module.End ℂ (Sm E a) => z φ) '' Zalg E a) with hVz
+  haveI : FiniteDimensional ℂ Vz := hz
+  have hVs : ∀ w ∈ Vz, Ω w ∈ Vz := by
+    intro w hw
+    refine Submodule.span_induction (p := fun w _ => Ω w ∈ Vz) ?_ ?_ ?_ ?_ hw
+    · rintro _ ⟨z, hz, rfl⟩
+      exact Submodule.subset_span ⟨Ω * z, Subalgebra.mul_mem _ hZ hz, rfl⟩
+    · rw [map_zero]; exact Submodule.zero_mem _
+    · intro x y _ _ hx hy; rw [map_add]; exact Submodule.add_mem _ hx hy
+    · intro c x _ hx; rw [map_smul]; exact Submodule.smul_mem _ c hx
+  have hφV : φ ∈ Vz := Submodule.subset_span ⟨1, Subalgebra.one_mem _, rfl⟩
+  obtain ⟨q, hqm, -, hq⟩ := AutomorphicForm.exists_monic_aeval_apply_eq_zero Ω Vz hVs hφV
+  have hqW : ∀ w ∈ W, Polynomial.aeval Ω q w = 0 := by
+    intro w hw
+    refine Submodule.span_induction (p := fun w _ => Polynomial.aeval Ω q w = 0) ?_ ?_ ?_ ?_ hw
+    · rintro _ ⟨k, rfl⟩
+      have hcomm : ∀ m, cptRep E a k (Ω m) = Ω (cptRep E a k m) := fun m =>
+        (congrArg (fun T : Module.End ℂ (Sm E a) => T m)
+          (GlobalTheory.T.omega_operator_commutes_infinite_gl E a d b ε hε horth (Unitary.toUnits k))).symm
+      have := AutomorphicForm.map_aeval_apply_of_intertwine (cptRep E a k) hcomm q φ
+      rw [hq, map_zero] at this
+      exact this.symm
+    · rw [map_zero]
+    · intro x y _ _ hx hy; rw [map_add, hx, hy, add_zero]
+    · intro c x _ hx; rw [map_smul, hx, smul_zero]
+  have hlap : Commute Ω (lapOp (⇑b)) := by
+    simp only [lapOp, Commute, SemiconjBy]
+    rw [Finset.mul_sum, Finset.sum_mul]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    have h1 : Ω * liB (b i) = liB (b i) * Ω := omegaOp_comm_liB b ε hε horth (b i)
+    rw [← mul_assoc, h1, mul_assoc, h1, mul_assoc]
+  have hTW : ∀ w ∈ W, (lapOp (⇑b) - Ω) w ∈ W := by
+    intro w hw
+    have e : (lapOp (E := E) (a := a) (⇑b) - Ω) w =
+        ∑ i, ((1 : ℂ) - (ε i : ℂ)) • liB (b i) (liB (b i) w) := by
+      simp only [hΩ, lapOp, omegaOp, LinearMap.sub_apply, LinearMap.sum_apply, LinearMap.smul_apply,
+        Module.End.mul_apply]
+      rw [← Finset.sum_sub_distrib]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      module
+    rw [e]
+    refine Submodule.sum_mem _ fun i _ => ?_
+    rcases hε i with h | h
+    · simp [h]
+    · refine W.smul_mem _ ?_
+      have hs := mem_archSkew.1 (hskew i h)
+      exact GlobalTheory.T.compact_span_finite_dim_stable E a φ (b i) hs hk _ (GlobalTheory.T.compact_span_finite_dim_stable E a φ (b i) hs hk _ hw)
+  have hφW : φ ∈ W := by
+    refine Submodule.subset_span ⟨1, ?_⟩
+    change cptRep E a 1 φ = φ
+    rw [map_one]
+    rfl
+  have hc : Commute Ω (lapOp (⇑b) - Ω) := by
+    refine LinearMap.ext fun x => ?_
+    have h2 := LinearMap.congr_fun hlap.eq x
+    simp only [Module.End.mul_apply] at h2 ⊢
+    rw [LinearMap.sub_apply, LinearMap.sub_apply, map_sub, h2]
+  have hsum : Ω + (lapOp (⇑b) - Ω) = lapOp (⇑b) := LinearMap.ext fun x => by simp
+  obtain ⟨P, hP1, hP2, hP3⟩ := exists_monic_aeval_add Ω (lapOp (⇑b) - Ω) hc W hTW q hqm hqW hφW
+  refine ⟨P, hP1, hP2, ?_⟩
+  rwa [hsum] at hP3
+
+theorem exists_kernel_of_finite : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ) (φ : Sm E a),
+    FiniteDimensional ℂ (Submodule.span ℂ (Set.range fun k => cptRep E a k φ)) →
+    FiniteDimensional ℂ (Submodule.span ℂ ((fun z : Module.End ℂ (Sm E a) => z φ) '' Zalg E a)) →
+    ∀ [MeasurableSpace (AutomorphicForm.archGroup E a)] [BorelSpace (AutomorphicForm.archGroup E a)]
+      (ν : Measure (AutomorphicForm.archGroup E a)) [ν.IsHaarMeasure],
+      ∃ κ : AutomorphicForm.archGroup E a → ℂ, Continuous κ ∧ HasCompactSupport κ ∧
+        ∀ g : GA E a, φ.1 g = ∫ y, φ.1 (g * AutomorphicForm.infEmb E a y) * κ y ∂ν := by
+  intro E _ _ _ a φ hk hz _ _ ν _
+  obtain ⟨d, b, ε, hε, horth, hskew⟩ := exists_archCartanBasis (K := E) (n := a)
+  obtain ⟨P, hm, hd, hP⟩ := exists_aeval_lapOp_eq_zero_of_finite φ hk hz b ε hε horth hskew
+  obtain ⟨κ, hκs, hκc, -, hκ⟩ := (isExpLieAlgebra E a).exists_kernel_eq_conv_of_aeval_laplacian ν b P
+    hm hd Filter.univ_mem
+  refine ⟨κ, IsExpLieAlgebra.continuous_of_isSmoothFun hκs, hκc, fun g => ?_⟩
+  have h1 := hκ (sliceL g (smL E a φ)) (by rw [← sliceL_aeval_lapOp, hP, map_zero, map_zero]) 1
+  simpa [archSlice_apply, smL] using h1
+
+end GlobalTheory.CompanionTheory.HCRep.GrowthKernel
+
+end
+end
+
+open NumberField MeasureTheory Topology Matrix GlobalTheory.AutomorphicL2Unitary GlobalTheory.DiscreteSum GlobalTheory.OpTrace GlobalTheory.UnitaryBC GlobalTheory.DiscSpec GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL
+open GroundTheory.Automorphic
+open scoped ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_z_span_integral_representation : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ) (φ : Sm E a),
+    FiniteDimensional ℂ (Submodule.span ℂ (Set.range fun k => cptRep E a k φ)) →
+    FiniteDimensional ℂ (Submodule.span ℂ ((fun z : Module.End ℂ (Sm E a) => z φ) '' Zalg E a)) →
+    ∀ [MeasurableSpace (AutomorphicForm.archGroup E a)] [BorelSpace (AutomorphicForm.archGroup E a)]
+      (ν : Measure (AutomorphicForm.archGroup E a)) [ν.IsHaarMeasure],
+      ∃ κ : AutomorphicForm.archGroup E a → ℂ, Continuous κ ∧ HasCompactSupport κ ∧
+        ∀ g : GA E a, φ.1 g = ∫ y, φ.1 (g * AutomorphicForm.infEmb E a y) * κ y ∂ν := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.HCRep.GrowthKernel.exists_kernel_of_finite
+end
+
+section
+section
+open NumberField MeasureTheory Topology Matrix GlobalTheory.AutomorphicL2Unitary GlobalTheory.DiscreteSum GlobalTheory.OpTrace GlobalTheory.UnitaryBC GlobalTheory.DiscSpec GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL
+open GroundTheory.Automorphic
+open scoped ENNReal
+
+namespace GlobalTheory.CompanionTheory.GrowthHaar
+
+theorem isHaarMeasure_map_restrict (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ)
+    (μ : Measure (GA E a)) [μ.IsHaarMeasure] [MeasurableSpace (AutomorphicForm.archGroup E a)]
+    [BorelSpace (AutomorphicForm.archGroup E a)] (U : Set (AdelicGLn.FiniteAdelicGL E a))
+    (hUc : IsCompact U) (hU1 : U ∈ 𝓝 (1 : AdelicGLn.FiniteAdelicGL E a)) :
+    ((μ.restrict ((fun h : GA E a => (AdelicGLn.prodEquiv E a h).2) ⁻¹' U)).map
+      (fun h : GA E a => AutomorphicForm.archEquiv E a (AdelicGLn.prodEquiv E a h).1)).IsHaarMeasure := by
+  haveI : T2Space (AdelicGLn.FiniteAdelicGL E a) := inferInstance
+  haveI : T2Space (AutomorphicForm.archGroup E a) := inferInstance
+  haveI : BorelSpace (GA E a) := inferInstance
+  set q : GA E a → AdelicGLn.FiniteAdelicGL E a := fun h => (AdelicGLn.prodEquiv E a h).2 with hq_def
+  set p : GA E a → AutomorphicForm.archGroup E a :=
+    fun h => AutomorphicForm.archEquiv E a (AdelicGLn.prodEquiv E a h).1 with hp_def
+  have hΦ : Continuous (AdelicGLn.prodEquiv E a) := (AdelicGLn.prodEquiv E a).continuous
+  have hq : Continuous q := continuous_snd.comp hΦ
+  have hp : Continuous p := (AutomorphicForm.archEquiv E a).continuous.comp (continuous_fst.comp hΦ)
+  have hpm : Measurable p := hp.measurable
+  have hS : MeasurableSet (q ⁻¹' U) := (hUc.isClosed.preimage hq).measurableSet
+  have happly : ∀ B : Set (AutomorphicForm.archGroup E a), MeasurableSet B →
+      ((μ.restrict (q ⁻¹' U)).map p) B = μ (p ⁻¹' B ∩ q ⁻¹' U) := fun B hB => by
+    rw [Measure.map_apply hpm hB, Measure.restrict_apply (hpm hB)]
+  have h1 : IsFiniteMeasureOnCompacts ((μ.restrict (q ⁻¹' U)).map p) := by
+    refine ⟨fun K hK => ?_⟩
+    rw [happly K hK.isClosed.measurableSet]
+    have hK' : IsCompact ((AutomorphicForm.archEquiv E a).symm '' K) :=
+      hK.image (AutomorphicForm.archEquiv E a).symm.continuous
+    have hc : IsCompact (p ⁻¹' K ∩ q ⁻¹' U) := by
+      have : p ⁻¹' K ∩ q ⁻¹' U = (AdelicGLn.prodEquiv E a).symm ''
+          (((AutomorphicForm.archEquiv E a).symm '' K) ×ˢ U) := by
+        ext h
+        constructor
+        · rintro ⟨hk, hu⟩
+          exact ⟨AdelicGLn.prodEquiv E a h,
+            ⟨⟨_, hk, (AutomorphicForm.archEquiv E a).symm_apply_apply _⟩, hu⟩,
+            (AdelicGLn.prodEquiv E a).symm_apply_apply h⟩
+        · rintro ⟨⟨x, y⟩, ⟨⟨k, hk, rfl⟩, hy⟩, rfl⟩
+          refine ⟨?_, ?_⟩
+          · simpa [hp_def] using hk
+          · simpa [hq_def] using hy
+      rw [this]
+      exact (hK'.prod hUc).image (AdelicGLn.prodEquiv E a).symm.continuous
+    exact hc.measure_lt_top
+  have hpL : ∀ (s : AutomorphicForm.archGroup E a) (h : GA E a),
+      p (AutomorphicForm.infEmb E a s * h) = s * p h := fun s h => by
+    simp [hp_def, AutomorphicForm.prodEquiv_infEmb]
+  have hqL : ∀ (s : AutomorphicForm.archGroup E a) (h : GA E a),
+      q (AutomorphicForm.infEmb E a s * h) = q h := fun s h => by
+    simp [hq_def, AutomorphicForm.prodEquiv_infEmb]
+  have h2 : Measure.IsMulLeftInvariant ((μ.restrict (q ⁻¹' U)).map p) := by
+    refine ⟨fun s => ?_⟩
+    have hms : Measurable fun x : AutomorphicForm.archGroup E a => s * x :=
+      (continuous_const.mul continuous_id).measurable
+    ext B hB
+    rw [Measure.map_apply hms hB, happly _ (hms hB), happly B hB,
+      ← measure_preimage_mul μ (AutomorphicForm.infEmb E a s) (p ⁻¹' B ∩ q ⁻¹' U)]
+    congr 1
+    ext h
+    simp only [Set.mem_inter_iff, Set.mem_preimage, hpL, hqL]
+  have h3 : Measure.IsOpenPosMeasure ((μ.restrict (q ⁻¹' U)).map p) := by
+    refine ⟨fun O hO ⟨s, hs⟩ => ?_⟩
+    rw [happly O hO.measurableSet]
+    have hV : IsOpen (p ⁻¹' O ∩ q ⁻¹' interior U) :=
+      (hO.preimage hp).inter (isOpen_interior.preimage hq)
+    have hne : (p ⁻¹' O ∩ q ⁻¹' interior U).Nonempty := by
+      refine ⟨AutomorphicForm.infEmb E a s, ?_, ?_⟩
+      · simpa [hp_def, AutomorphicForm.prodEquiv_infEmb] using hs
+      · simpa [hq_def, AutomorphicForm.prodEquiv_infEmb] using mem_interior_iff_mem_nhds.2 hU1
+    refine fun h0 => hV.measure_ne_zero μ hne (measure_mono_null ?_ h0)
+    exact Set.inter_subset_inter_right _ (Set.preimage_mono interior_subset)
+  exact { toIsFiniteMeasureOnCompacts := h1, toIsMulLeftInvariant := h2, toIsOpenPosMeasure := h3 }
+
+end GlobalTheory.CompanionTheory.GrowthHaar
+end
+
+open NumberField MeasureTheory Topology Matrix GlobalTheory.AutomorphicL2Unitary GlobalTheory.DiscreteSum GlobalTheory.OpTrace GlobalTheory.UnitaryBC GlobalTheory.DiscSpec GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL
+open GroundTheory.Automorphic
+open scoped ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_adelic_restriction_measure : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ) (μ : Measure (GA E a))
+    [μ.IsHaarMeasure] [MeasurableSpace (AutomorphicForm.archGroup E a)]
+    [BorelSpace (AutomorphicForm.archGroup E a)] (U : Set (AdelicGLn.FiniteAdelicGL E a)),
+    IsCompact U → U ∈ 𝓝 (1 : AdelicGLn.FiniteAdelicGL E a) →
+    ((μ.restrict ((fun h : GA E a => (AdelicGLn.prodEquiv E a h).2) ⁻¹' U)).map
+      (fun h : GA E a => AutomorphicForm.archEquiv E a (AdelicGLn.prodEquiv E a h).1)).IsHaarMeasure := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GrowthHaar.isHaarMeasure_map_restrict
+end
+
+section
+section
+open MeasureTheory Topology
+open scoped ENNReal
+
+namespace GlobalTheory.CompanionTheory.Growth
+
+theorem lintegral_le_mul_of_encard_le {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
+    [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G] (Γ : Subgroup G) [Countable Γ]
+    (μ : Measure G) [μ.IsMulLeftInvariant] (𝓕 : Set G) (h𝓕 : IsFundamentalDomain Γ 𝓕 μ)
+    (M : Set G) (hM : MeasurableSet M) (f : G → ℝ≥0∞) (hf : Measurable f)
+    (hinv : ∀ γ ∈ Γ, ∀ x, f (γ * x) = f x) (n : ℕ)
+    (hn : ∀ x, Set.encard {γ : Γ | (γ : G) * x ∈ M} ≤ n) :
+    ∫⁻ x in M, f x ∂μ ≤ n * ∫⁻ x in 𝓕, f x ∂μ := by
+  have hmul : ∀ γ : Γ, Measurable fun x : G => (γ : G) * x := fun γ => measurable_const_mul _
+  have hterm : ∀ (γ : Γ) (x : G), M.indicator f (γ • x) =
+      f x * (M.indicator (fun _ => (1 : ℝ≥0∞)) ((γ : G) * x)) := by
+    intro γ x
+    rw [Subgroup.smul_def, smul_eq_mul]
+    by_cases hx : (γ : G) * x ∈ M
+    · simp [Set.indicator_of_mem hx, hinv γ γ.2 x]
+    · simp [Set.indicator_of_notMem hx]
+  have hcount : ∀ x : G, ∑' γ : Γ, M.indicator (fun _ => (1 : ℝ≥0∞)) ((γ : G) * x) ≤ n := by
+    intro x
+    have h1 : (fun γ : Γ => M.indicator (fun _ => (1 : ℝ≥0∞)) ((γ : G) * x)) =
+        ({γ : Γ | (γ : G) * x ∈ M}).indicator (fun _ => (1 : ℝ≥0∞)) := by
+      funext γ
+      by_cases hx : (γ : G) * x ∈ M
+      · simp [Set.indicator, hx]
+      · simp [Set.indicator, hx]
+    rw [h1, ← tsum_subtype, ENNReal.tsum_set_one]
+    calc _ ≤ (((n : ℕ∞)) : ℝ≥0∞) := ENat.toENNReal_le.2 (hn x)
+      _ = n := by simp
+  calc ∫⁻ x in M, f x ∂μ = ∫⁻ x, M.indicator f x ∂μ := (lintegral_indicator hM f).symm
+    _ = ∑' γ : Γ, ∫⁻ x in 𝓕, M.indicator f (γ • x) ∂μ := h𝓕.lintegral_eq_tsum'' _
+    _ = ∫⁻ x in 𝓕, ∑' γ : Γ, M.indicator f (γ • x) ∂μ := by
+        rw [lintegral_tsum]
+        intro γ
+        exact ((hf.indicator hM).comp (hmul γ)).aemeasurable
+    _ ≤ ∫⁻ x in 𝓕, n * f x ∂μ := by
+        refine lintegral_mono fun x => ?_
+        simp only [hterm]
+        rw [ENNReal.tsum_mul_left, mul_comm]
+        exact mul_le_mul_left (hcount x) _
+    _ = n * ∫⁻ x in 𝓕, f x ∂μ := by
+        rw [lintegral_const_mul _ hf]
+
+end GlobalTheory.CompanionTheory.Growth
+end
+
+open MeasureTheory Topology
+open scoped ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fundamental_domain_integral_count_bound : ∀ {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [SecondCountableTopology G]
+    [MeasurableSpace G] [BorelSpace G] (Γ : Subgroup G) [Countable Γ] (μ : Measure G) [μ.IsMulLeftInvariant]
+    (𝓕 : Set G), IsFundamentalDomain Γ 𝓕 μ → ∀ (M : Set G), MeasurableSet M → ∀ (f : G → ℝ≥0∞), Measurable f →
+    (∀ γ ∈ Γ, ∀ x, f (γ * x) = f x) → ∀ n : ℕ, (∀ x, Set.encard {γ : Γ | (γ : G) * x ∈ M} ≤ n) →
+    ∫⁻ x in M, f x ∂μ ≤ n * ∫⁻ x in 𝓕, f x ∂μ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Growth.lintegral_le_mul_of_encard_le
+end
+
+section
+section
+open NumberField GlobalTheory.CuspRep
+
+namespace GlobalTheory.CompanionTheory.AdeleDen
+
+private theorem natCast_mul_mem_intAd {F : Type} [Field F] [NumberField F] (m : ℕ)
+    {a : IsDedekindDomain.FiniteAdeleRing (𝓞 F) F} (ha : a ∈ PI.AdCpctDenWork.intAd F) :
+    (m : IsDedekindDomain.FiniteAdeleRing (𝓞 F) F) * a ∈ PI.AdCpctDenWork.intAd F := by
+  rw [PI.AdCpctDenWork.mem_intAd] at ha ⊢
+  intro v
+  rw [PI.AdCpctDenWork.natCast_mul_apply]
+  exact mul_mem (PI.AdCpctDenWork.natCast_mem_int v m) (ha v)
+
+theorem exists_common_denominator :
+    ∀ (E : Type) [Field E] [NumberField E] (Q : Set (Af E)), IsCompact Q →
+    ∃ D : ℕ, D ≠ 0 ∧ ∀ x : E, algebraMap E (Af E) x ∈ Q → ∃ r : 𝓞 E, (r : E) = D * x := by
+  intro E _ _ Q hQ
+  let U : ℕ → Set (IsDedekindDomain.FiniteAdeleRing (𝓞 E) E) := fun N =>
+    {a | ((N.factorial : ℕ) : IsDedekindDomain.FiniteAdeleRing (𝓞 E) E) * a ∈ PI.AdCpctDenWork.intAd E}
+  have hUo : ∀ N, IsOpen (U N) := fun N =>
+    (continuous_const.mul continuous_id).isOpen_preimage _ PI.AdCpctDenWork.isOpen_intAd
+  have hUc : Q ⊆ ⋃ N, U N := by
+    intro a _
+    obtain ⟨m, hm, hma⟩ := PI.AdCpctDenWork.exists_nat_adele a
+    refine Set.mem_iUnion.2 ⟨m, ?_⟩
+    obtain ⟨k, hk⟩ := Nat.dvd_factorial hm le_rfl
+    show ((m.factorial : ℕ) : IsDedekindDomain.FiniteAdeleRing (𝓞 E) E) * a ∈ PI.AdCpctDenWork.intAd E
+    rw [hk, Nat.cast_mul, mul_comm (m : IsDedekindDomain.FiniteAdeleRing (𝓞 E) E), mul_assoc]
+    exact natCast_mul_mem_intAd k hma
+  have hUd : Directed (· ⊆ ·) U := by
+    refine Monotone.directed_le ?_
+    intro N M hNM a ha
+    obtain ⟨k, hk⟩ := Nat.factorial_dvd_factorial hNM
+    show ((M.factorial : ℕ) : IsDedekindDomain.FiniteAdeleRing (𝓞 E) E) * a ∈ PI.AdCpctDenWork.intAd E
+    rw [hk, Nat.cast_mul, mul_comm ((N.factorial : ℕ) : IsDedekindDomain.FiniteAdeleRing (𝓞 E) E), mul_assoc]
+    exact natCast_mul_mem_intAd k ha
+  obtain ⟨N, hN⟩ := hQ.elim_directed_cover U hUo hUc hUd
+  refine ⟨N.factorial, Nat.factorial_ne_zero N, fun x hx => ?_⟩
+  have hmem := hN hx
+  have hint : ∀ v : IsDedekindDomain.HeightOneSpectrum (𝓞 E),
+      IsDedekindDomain.HeightOneSpectrum.valuation E v ((N.factorial : E) * x) ≤ 1 := by
+    intro v
+    have h1 : algebraMap E (IsDedekindDomain.FiniteAdeleRing (𝓞 E) E) ((N.factorial : E) * x) ∈
+        PI.AdCpctDenWork.intAd E := by
+      rw [map_mul, map_natCast]
+      exact hmem
+    have h2 := (PI.AdCpctDenWork.mem_intAd _).1 h1 v
+    rw [IsDedekindDomain.FiniteAdeleRing.algebraMap_apply,
+      IsDedekindDomain.HeightOneSpectrum.mem_adicCompletionIntegers,
+      IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_eq_valuation'] at h2
+    exact h2
+  obtain ⟨r, hr⟩ := IsDedekindDomain.HeightOneSpectrum.mem_integers_of_valuation_le_one E _ hint
+  exact ⟨r, by rw [NumberField.RingOfIntegers.coe_eq_algebraMap, hr]⟩
+
+end GlobalTheory.CompanionTheory.AdeleDen
+end
+
+open NumberField GlobalTheory.CuspRep
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.compact_adelic_integral_denominator : ∀ (E : Type) [Field E] [NumberField E] (Q : Set (Af E)), IsCompact Q →
+    ∃ D : ℕ, D ≠ 0 ∧ ∀ x : E, algebraMap E (Af E) x ∈ Q → ∃ r : 𝓞 E, (r : E) = D * x := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.AdeleDen.exists_common_denominator
+end
+
+section
+section
+open NumberField NumberField.mixedEmbedding Module
+
+namespace GlobalTheory.CompanionTheory.IntCount
+
+theorem finite_and_ncard_le :
+    ∀ (E : Type) [Field E] [NumberField E], ∃ (C : ℝ) (N : ℕ), ∀ R : ℝ, 1 ≤ R →
+      {r : 𝓞 E | ∀ w : InfinitePlace E, w (r : E) ≤ R}.Finite ∧
+      ({r : 𝓞 E | ∀ w : InfinitePlace E, w (r : E) ≤ R}.ncard : ℝ) ≤ C * R ^ N :=
+  _root_.UpperTheory.Reformulated.B.FiniteAndNcardBound.finite_and_ncard_le
+
+end GlobalTheory.CompanionTheory.IntCount
+end
+
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integers_bounded_archimedean_count : ∀ (E : Type) [Field E] [NumberField E], ∃ (C : ℝ) (N : ℕ), ∀ R : ℝ, 1 ≤ R →
+    {r : 𝓞 E | ∀ w : InfinitePlace E, w (r : E) ≤ R}.Finite ∧
+    ({r : 𝓞 E | ∀ w : InfinitePlace E, w (r : E) ≤ R}.ncard : ℝ) ≤ C * R ^ N := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.IntCount.finite_and_ncard_le
+end
+
+section
+section
+open NumberField MeasureTheory Topology Matrix GlobalTheory.AutomorphicL2Unitary GlobalTheory.DiscreteSum GlobalTheory.OpTrace GlobalTheory.UnitaryBC GlobalTheory.DiscSpec GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL
+open GroundTheory.Automorphic
+open scoped ENNReal
+
+namespace GlobalTheory.CompanionTheory.CuspGrowth
+
+open GlobalTheory.IdeleCovolume GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele in
+
+theorem abs_le_of_conj_mem_compact : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ), 0 < a →
+    ∀ Q : Set (GA E a), IsCompact Q → ∃ n₀ : ℕ, ∀ (γ : GL (Fin a) E) (n : ℤ) (x : GA E a),
+      x⁻¹ * (ratGL E a γ * splitCentre E a 1 ^ n) * x ∈ Q → |n| ≤ n₀ := by
+  intro E _ _ _ a ha Q hQ
+  have hf : Continuous fun g : GA E a => Real.log (ideleNorm (E := E) (GeneralLinearGroup.det g)) :=
+    (continuous_ideleNorm.comp GeneralLinearGroup.continuous_det).log fun _ => ideleNorm_ne_zero _
+  obtain ⟨B, hB⟩ := (hQ.image hf).isBounded.exists_norm_le
+  have hL : 0 < Real.log (ideleNorm (E := E) (eIdele E)) := Real.log_pos (one_lt_ideleNorm_eIdele E)
+  set L := Real.log (ideleNorm (E := E) (eIdele E)) with hLdef
+  have ha' : (0 : ℝ) < a := by exact_mod_cast ha
+  refine ⟨⌈B / (a * L)⌉₊, fun γ n x hx => ?_⟩
+  have hd : GeneralLinearGroup.det (ratGL E a γ) = diag E (GeneralLinearGroup.det γ) :=
+    Units.ext (by rw [ratGL, GlobalTheory.CuspRep.det_map]; rfl)
+  have hv : Real.log (ideleNorm (E := E) (GeneralLinearGroup.det
+      (x⁻¹ * (ratGL E a γ * splitCentre E a 1 ^ n) * x))) = (n : ℝ) * (a * L) := by
+    have h1 : GeneralLinearGroup.det (x⁻¹ * (ratGL E a γ * splitCentre E a 1 ^ n) * x) =
+        diag E (GeneralLinearGroup.det γ) * (eIdele E ^ a) ^ n := by
+      rw [map_mul, map_mul, map_mul, map_inv, map_zpow, hd, det_splitCentre_one, mul_comm, ← mul_assoc,
+        mul_inv_cancel, one_mul]
+    rw [h1, map_mul, show ideleNorm (E := E) (diag E _) = 1 from ideleNorm_principalIdele _, one_mul,
+      map_zpow, map_pow, Real.log_zpow, Real.log_pow]
+  have hb := hB _ ⟨_, hx, rfl⟩
+  beta_reduce at hb
+  rw [hv, Real.norm_eq_abs, abs_mul, abs_of_pos (mul_pos ha' hL)] at hb
+  have h2 : ((|n| : ℤ) : ℝ) ≤ B / (a * L) := by
+    rw [le_div_iff₀ (mul_pos ha' hL)]
+    simpa using hb
+  have h3 : ((|n| : ℤ) : ℝ) ≤ ((⌈B / (a * L)⌉₊ : ℤ) : ℝ) := by
+    rw [Int.cast_natCast]
+    exact h2.trans (Nat.le_ceil _)
+  exact Int.cast_le.1 h3
+
+end GlobalTheory.CompanionTheory.CuspGrowth
+end
+
+open NumberField MeasureTheory Topology Matrix GlobalTheory.AutomorphicL2Unitary GlobalTheory.DiscreteSum GlobalTheory.OpTrace GlobalTheory.UnitaryBC GlobalTheory.DiscSpec GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL
+open GroundTheory.Automorphic
+open scoped ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.compact_conjugate_centre_power_bounded : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ), 0 < a →
+    ∀ Q : Set (GA E a), IsCompact Q → ∃ n₀ : ℕ, ∀ (γ : GL (Fin a) E) (n : ℤ) (x : GA E a),
+      x⁻¹ * (ratGL E a γ * splitCentre E a 1 ^ n) * x ∈ Q → |n| ≤ n₀ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CuspGrowth.abs_le_of_conj_mem_compact
+end
+
+section
+open NumberField MeasureTheory Topology Matrix GlobalTheory.AutomorphicL2Unitary GlobalTheory.DiscreteSum GlobalTheory.OpTrace GlobalTheory.UnitaryBC GlobalTheory.DiscSpec GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL
+open GroundTheory.Automorphic
+open scoped ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.compact_conjugate_rational_entries_bounded : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ) (g₀ : GA E a)
+    (Q : Set (GA E a)), IsCompact Q → ∀ n₀ : ℕ, ∃ (Qf : Set (Af E)) (C : ℝ), IsCompact Qf ∧ 0 ≤ C ∧
+      ∀ (y : GL (Fin a) (Cinf E)) (γ : GL (Fin a) E) (n : ℤ), |n| ≤ n₀ →
+        (g₀ * infGL E a y)⁻¹ * (ratGL E a γ * splitCentre E a 1 ^ n) * (g₀ * infGL E a y) ∈ Q →
+        ∀ i j, algebraMap E (Af E) (γ.val i j) ∈ Qf ∧ ∀ w : InfinitePlace E, w (γ.val i j) ≤ C * height y ^ 2 := by
+  first | exact @GlobalTheory.CompanionTheory.GrowthEntries.entries_bound | exact GlobalTheory.CompanionTheory.GrowthEntries.entries_bound | (intros; apply GlobalTheory.CompanionTheory.GrowthEntries.entries_bound <;> assumption)
+end
+
+section
 section
 open NumberField MeasureTheory Topology Matrix GlobalTheory.AutomorphicL2Unitary GlobalTheory.DiscreteSum GlobalTheory.OpTrace GlobalTheory.UnitaryBC GlobalTheory.DiscSpec GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL
 open GroundTheory.Automorphic
@@ -312,3 +755,4 @@ open NumberField MeasureTheory Topology Matrix GlobalTheory.AutomorphicL2Unitary
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.smooth_K_finite_center : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ) (μ : Measure (GA E a)) [μ.IsHaarMeasure] [μ.IsMulRightInvariant] (φ : Sm E a), (∀ γ g, φ.1 (ratGL E a γ * g) = φ.1 g) → (∀ t g, φ.1 (splitCentre E a t * g) = φ.1 g) → IsOpen {k | finRep E a k φ = φ} → FiniteDimensional ℂ (Submodule.span ℂ (Set.range fun k => cptRep E a k φ)) → FiniteDimensional ℂ (Submodule.span ℂ ((fun z : Module.End ℂ (Sm E a) => z φ) '' Zalg E a)) → MemL2Quotient (latticeGL E a) μ φ.1 → ∀ g, ∃ (C : ℝ) (N : ℕ), ∀ y, ‖φ.1 (g * infGL E a y)‖ ≤ C * height y ^ N := by
   atlas_forward_decl GlobalTheory.CompanionTheory.Growth.moderate_growth
+end

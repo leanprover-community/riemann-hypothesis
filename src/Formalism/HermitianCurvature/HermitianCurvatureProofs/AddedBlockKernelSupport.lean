@@ -694,8 +694,3 @@ theorem datum : LocalDatum ℚ_[p] (PadicInt.subring p) (stdChar p) where
 end Padic
 end Formalism.FourierDecayAlt.P.A5x7
 
-theorem Formalism.FourierDecayAlt.P.padic_local_datum_facts : Formalism.FourierDecayAlt.A5.DatumPadic := by
-  intro p hp
-  refine ⟨⟨Formalism.FourierDecayAlt.P.A5x7.stdChar p, Formalism.FourierDecayAlt.P.A5x7.datum p⟩, fun n hn => ?_⟩
-  rw [isUnit_iff_ne_zero]
-  exact_mod_cast hn

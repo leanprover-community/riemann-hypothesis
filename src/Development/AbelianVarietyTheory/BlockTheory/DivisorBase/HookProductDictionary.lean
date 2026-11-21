@@ -17,10 +17,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 def hookProduct (n : ℕ) (a : ℕ → ℕ) : ℕ :=
   ∏ i ∈ Finset.range n, ∏ j ∈ Finset.range (a i), ((a i - j) + ((Finset.Ioo i n).filter fun l => j < a l).card)
 
-theorem hookProduct_pos (n : ℕ) (a : ℕ → ℕ) : 0 < hookProduct n a :=
-  Finset.prod_pos fun i _ => Finset.prod_pos fun j hj => by
-    have := Finset.mem_range.1 hj
-    omega
 
 example : hookProduct 2 (fun i => if i = 0 then 2 else 1) = 3 := by decide
 

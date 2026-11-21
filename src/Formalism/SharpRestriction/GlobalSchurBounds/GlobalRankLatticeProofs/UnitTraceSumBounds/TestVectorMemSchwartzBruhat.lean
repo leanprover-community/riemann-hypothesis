@@ -1,7 +1,104 @@
 import Formalism.SharpRestriction.GlobalSchurBounds.GL3Theta
 import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.EqOfLeOfAbsNormEq
-import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.FamilyLogGammaSmallHolds
+import Formalism.SharpRestriction.GlobalSchurBounds.GL3Columns
+import Formalism.SharpRestriction.GlobalSchurBounds.ShortIntervalPrimes
+import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.LocBasisPlace
+import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.KernelEntryData
+import Formalism.SharpRestriction.GlobalSchurBounds.FirstClaimLemmaTwoFourOfLemmaTwoThree
+import Formalism.SharpRestriction.DesignExistsOfChoices
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.NormOnePowerPrincipal.PowPrincipal
+import Mathlib
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemilocalBasis.IsPID
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalBasisAtPrime.Imports
 
+section
+namespace Formalism.MainNotions.GL3Theta
+
+open Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric
+
+end Formalism.MainNotions.GL3Theta
+
+namespace Formalism.MainNotions.GL3Theta
+
+open Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric NumberField
+
+theorem lamC_mem' {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) {x : ℂ} (h : x ∈ Qbar) :
+    lamC lam x = lam ⟨x, h⟩ := by
+  unfold lamC; rw [dif_pos h]
+
+theorem embT_mem (D : D7) (τ : D.what₂.Tau) (x : D.host.E) : embT D τ x ∈ Qbar := by
+  have hx : IsAlgebraic ℚ x := Algebra.IsAlgebraic.isAlgebraic x
+  have : IsAlgebraic ℚ ((embT D τ).toRatAlgHom x) := hx.algHom _
+  exact (mem_algebraicClosure_iff).2 this
+
+end Formalism.MainNotions.GL3Theta
+
+namespace Formalism.MainNotions.GL3Theta
+
+open Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric NumberField
+
+end Formalism.MainNotions.GL3Theta
+
+namespace Formalism.MainNotions.GL3Theta
+
+open Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric NumberField
+
+end Formalism.MainNotions.GL3Theta
+
+namespace Formalism.MainNotions.GL3Theta
+
+open Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric NumberField
+
+instance instUltraCp (p : ℕ) [Fact p.Prime] : IsUltrametricDist ℂ_[p] :=
+  IsUltrametricDist.isUltrametricDist_of_isNonarchimedean_norm (PadicComplex.isNonarchimedean p)
+
+section Nu
+
+variable {E : Type} [Field E] [NumberField E] {K : Type} [NormedField K] [IsUltrametricDist K] (ψ : E →+* K)
+
+end Nu
+
+noncomputable def psiT (D : D7) {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) (τ : D.what₂.Tau) : D.host.E →+* ℂ_[p] :=
+  lam.comp ((embT D τ).codRestrict Qbar (embT_mem D τ))
+
+theorem lamC_embT (D : D7) {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) (τ : D.what₂.Tau) (x : D.host.E) :
+    lamC lam (embT D τ x) = psiT D lam τ x := lamC_mem' lam (embT_mem D τ x)
+
+end Formalism.MainNotions.GL3Theta
+
+namespace Formalism.MainNotions.GL3Theta
+
+open Formalism.BasicNotions
+
+end Formalism.MainNotions.GL3Theta
+
+namespace Formalism.MainNotions.GL3Columns
+
+open Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.GL3Theta Classical
+
+end Formalism.MainNotions.GL3Columns
+
+namespace Formalism.MainNotions.GL3Theta
+
+open Formalism.BasicNotions
+
+end Formalism.MainNotions.GL3Theta
+
+namespace Formalism.MainNotions.GL3Columns
+
+open Formalism.BasicNotions
+
+end Formalism.MainNotions.GL3Columns
+
+namespace Formalism.MainNotions.ShortIntervalPrimes
+
+open Formalism.BasicNotions Formalism.MainNotions
+
+
+end Formalism.MainNotions.ShortIntervalPrimes
+end
+
+section
 namespace Formalism.MainNotions.Ext
 
 open Formalism.BasicNotions Formalism.MainNotions.GL3Theta Formalism.MainNotions.TaylorLogMetric NumberField
@@ -79,10 +176,6 @@ theorem okp_zero : (0 : ℂ_[p] × ℂ_[p]) ∈ OKp D lam := by
   refine ⟨0, ?_⟩
   simp [tauK, tauKc, h0]
 
-theorem okp_hP {ι : Type} [Fintype ι] (x y : ι → ℂ_[p] × ℂ_[p]) (hx : InOKp D lam x) (hy : InOKp D lam y) :
-    hP x y ∈ OKp D lam := by
-  show (∑ k, x k * (y k).swap) ∈ OKp D lam
-  exact Finset.sum_induction _ (· ∈ OKp D lam) (fun a b ha hb => okp_add D lam a b ha hb)
-    (okp_zero D lam) (fun k _ => okp_mul D lam _ _ (hx k) (okp_swap D lam _ (hy k)))
 
 end Formalism.MainNotions.Ext
+end

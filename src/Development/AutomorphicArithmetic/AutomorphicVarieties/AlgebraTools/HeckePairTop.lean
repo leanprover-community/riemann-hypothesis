@@ -15,9 +15,6 @@ def FinOrb (K K' : Subgroup G) (x : G) : Prop := (MulAction.orbit K (x : G ⧸ K
 
 def HeckePair (I : Subgroup G) : Prop := ∀ x : G, FinOrb I I x
 
-theorem heckePair_top : HeckePair (⊤ : Subgroup G) := fun _ =>
-  have : Subsingleton (G ⧸ (⊤ : Subgroup G)) := QuotientGroup.subsingleton_quotient_top
-  Set.toFinite _
 
 open Classical in
 

@@ -148,7 +148,6 @@ def ChooseH : Prop :=
 theorem IsCj.unique {g g' g'' : GE N} (h : IsCj X g g') (h' : IsCj X g g'') : g' = g'' :=
   AlgEquiv.ext fun x => (h x).trans (h' x).symm
 
-theorem isCj_one : IsCj X (1 : GE N) 1 := fun x => by simp
 
 theorem IsCj.mul {g g' h h' : GE N} (hg : IsCj X g g') (hh : IsCj X h h') : IsCj X (g * h) (g' * h') := fun x => by
   rw [AlgEquiv.mul_apply, AlgEquiv.mul_apply, hh x, hg]

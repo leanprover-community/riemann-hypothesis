@@ -9,8 +9,40 @@ import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsFurtherSide
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsRestMore
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsBisRest
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsMoreRest
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsMoreBis
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.OnePt
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.IsGraphGenTwistBundleZero
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
+
+def DomRingTwist.Statement : Prop :=
+  ∀ (S : Type) [CommRing S] (Ω : Type) [Field Ω] [Algebra S Ω] (N N' : ℕ) (x : Fin (N + 1) → Ω)
+    (x' : Fin (N' + 1) → Ω) (i : Fin (N + 1)), x i ≠ 0 → ∀ b ∈ Kleiman.domRing S x x' i,
+      ∃ c : ℕ, b * x i ^ c ∈ Kleiman.pullSecs x' (Kleiman.twistSys S x (c : ℤ))
+
+end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
+
+noncomputable def onePt (k : Type) [Field k] : Fin (0 + 1) → RatFunc k := fun _ => 1
+
+def GenericHypGap.Statement : Prop :=
+  ∀ (k : Type) [Field k],
+    Kleiman.IsDomination k (onePt k) (Kleiman.lineX k) ∧
+    (∀ (i : Fin (0 + 1)) (hi : onePt k i ≠ 0), ∀ b ∈ Kleiman.domRing k (onePt k) (Kleiman.lineX k) i,
+      ∃ s : k, algebraMap k (RatFunc k) s ≠ 0 ∧
+        algebraMap k (RatFunc k) s * b ∈ Kleiman.chartRing k (onePt k) (Kleiman.singleChart hi)) ∧
+    ¬ IndefiniteRowSideFullHecke.Kleiman2.SameModel k (IndefiniteRowSideFullHecke.Kleiman2.oneBlock (Kleiman.lineX k)) (IndefiniteRowSideFullHecke.Kleiman2.oneBlock (onePt k))
+
+end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
@@ -90,3 +122,4 @@ def Domination.Reading.Statement : Prop :=
 end
 
 end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
+end

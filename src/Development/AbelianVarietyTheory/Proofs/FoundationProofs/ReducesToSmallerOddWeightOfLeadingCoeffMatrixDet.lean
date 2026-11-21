@@ -2,9 +2,89 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SlashQExpansionCoeffWidthTransform
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CoeffEqZeroOfSumPlusMinusRepsEqZero
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SlashSubQExpansionPartialSumIsBigO
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsLevelOneFormOneAddExpDecay
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsEqDiscriminantMulOfExpDecayCusps
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FiniteIndexOfGammaLe
+import BuildAid.ForwardExisting
 
+section
+section
+open UpperHalfPlane Filter GlobalTheory.OddFrame
+open ModularForm (E₄ E₆)
+open scoped MatrixGroups ModularForm Manifold Topology
+
+namespace GlobalTheory
+
+theorem levelOne_form_one_add_expDecay :
+    ∀ d : ℤ, 4 ≤ d → Even d → ∃ e : ℍ → ℂ, IsMF ⊤ d e ∧
+      (fun τ : ℍ => e τ - 1) =O[atImInfty] fun τ : ℍ => Real.exp (-2 * Real.pi * τ.im) := by
+  intro d hd hev
+  obtain ⟨k, rfl⟩ := Int.eq_ofNat_of_zero_le (by omega : (0 : ℤ) ≤ d)
+  have hk : 3 ≤ k := by omega
+  have hk2 : Even k := by simpa [Int.even_coe_nat] using hev
+  let f : ModularForm 𝒮ℒ (k : ℤ) := ModularForm.E hk
+  refine ⟨f, isMF_coe_top f, ?_⟩
+  have h0 : valueAtInfty (f : ℍ → ℂ) = 1 := by
+    rw [← qExpansion_coeff_zero one_pos
+      (ModularFormClass.analyticAt_cuspFunction_zero f one_pos one_mem_strictPeriods_SL)
+      (SlashInvariantFormClass.periodic_comp_ofComplex f one_mem_strictPeriods_SL)]
+    exact EisensteinSeries.E_qExpansion_coeff_zero hk hk2
+  have h := exp_decay_sub_atImInfty one_pos
+    (SlashInvariantFormClass.periodic_comp_ofComplex f one_mem_strictPeriods_SL)
+    (ModularFormClass.holo f) (ModularFormClass.bdd_at_infty f)
+  rw [h0] at h
+  simpa using h
+
+end GlobalTheory
+end
+
+open UpperHalfPlane Filter GlobalTheory.OddFrame
+open ModularForm (E₄ E₆)
+open scoped MatrixGroups ModularForm Manifold Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_levelOne_form_one_add_expDecay : ∀ d : ℤ, 4 ≤ d → Even d → ∃ e : ℍ → ℂ, IsMF ⊤ d e ∧ (fun τ : ℍ => e τ - 1) =O[atImInfty] fun τ : ℍ => Real.exp (-2 * Real.pi * τ.im) := by
+  atlas_forward_decl GlobalTheory.levelOne_form_one_add_expDecay
+end
+
+section
+section
+open UpperHalfPlane Filter GlobalTheory.OddFrame
+open ModularForm (E₄ E₆)
+open scoped MatrixGroups ModularForm Manifold Topology
+
+namespace GlobalTheory
+
+theorem discriminant_slash_specialLinearGroup (x : SL(2, ℤ)) :
+    (ModularForm.discriminant ∣[(12 : ℤ)] x) = ModularForm.discriminant :=
+  (isCF_coe_top CuspForm.discriminant).1 x (Subgroup.mem_top x)
+
+theorem exists_eq_discriminant_mul (Γ : Subgroup SL(2, ℤ)) (K : ℤ) (H : ℍ → ℂ) (hH : IsMF Γ K H)
+    (hdec : ∀ x : SL(2, ℤ), (H ∣[K] x) =O[atImInfty] fun τ : ℍ => Real.exp (-2 * Real.pi * τ.im)) :
+    ∃ G : ℍ → ℂ, IsMF Γ (K - 12) G ∧ H = ModularForm.discriminant * G := by
+  have hsl : ∀ x : SL(2, ℤ), (H / ModularForm.discriminant) ∣[K - 12] x =
+      (H ∣[K] x) / ModularForm.discriminant := by
+    intro x
+    have := ModularForm.div_slash_SL2 K 12 x H ModularForm.discriminant
+    rw [discriminant_slash_specialLinearGroup] at this
+    exact this
+  refine ⟨H / ModularForm.discriminant, ⟨fun γ hγ => ?_, ?_, fun x => ?_⟩, ?_⟩
+  · rw [hsl, hH.1 γ hγ]
+  · exact hH.2.1.div CuspForm.discriminant.holo' ModularForm.discriminant_ne_zero
+  · rw [hsl, IsBoundedAtImInfty, BoundedAtFilter]
+    exact (Asymptotics.div_isBoundedUnder_of_isBigO ((hdec x).trans ModularForm.exp_isBigO_discriminant)).isBigO_one ℝ
+  · ext τ
+    simp [mul_div_cancel₀ _ (ModularForm.discriminant_ne_zero τ)]
+
+end GlobalTheory
+end
+
+open UpperHalfPlane Filter GlobalTheory.OddFrame
+open ModularForm (E₄ E₆)
+open scoped MatrixGroups ModularForm Manifold Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_eq_discriminant_mul_of_expDecay_cusps : ∀ (Γ : Subgroup SL(2, ℤ)) (K : ℤ) (H : ℍ → ℂ), IsMF Γ K H → (∀ x : SL(2, ℤ), (H ∣[K] x) =O[atImInfty] fun τ : ℍ => Real.exp (-2 * Real.pi * τ.im)) → ∃ G : ℍ → ℂ, IsMF Γ (K - 12) G ∧ H = ModularForm.discriminant * G := by
+  atlas_forward_decl GlobalTheory.exists_eq_discriminant_mul
+end
+
+section
 section
 open UpperHalfPlane Filter GlobalTheory.OddFrame Asymptotics
 open ModularForm (E₄ E₆)
@@ -124,3 +204,4 @@ open scoped MatrixGroups ModularForm Manifold Topology
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.reducesToSmallerOddWeight_of_leadingCoeffMatrix_det_zero : ∀ (M : ℕ) (Γ : Subgroup SL(2, ℤ)) (r : ℕ) (s : Fin r → SL(2, ℤ)) (w : Fin r → ℤ) (F : Fin r → ℍ → ℂ), 0 < M → CongruenceSubgroup.Gamma M ≤ Γ → IsReps Γ s → (∀ j, Odd (w j) ∧ IsMF Γ (w j) (F j)) → (leadM M s w F).det = 0 → Reduces Γ w F := by
   atlas_forward_decl GlobalTheory.OddFrame.reduces_of_det_leadM_eq_zero
+end

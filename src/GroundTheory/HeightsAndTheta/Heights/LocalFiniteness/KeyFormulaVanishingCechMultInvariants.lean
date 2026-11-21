@@ -23,7 +23,20 @@ import GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.InjectiveHolomorphic
 import GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.NumbersDVRC3ResidualContractionComponent
 import GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.ParametrisationSheetsConnectedHolds
 import GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.FieldNumbersLocalIntegralClosureFinite
-import GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.PuncturedBranchSameOrder
+import GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.RegularLocusIdentityHolds
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PBranchImageNhdOffCentre
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCurveCoordinateGraph
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNormalCurveBranchOrder
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceBundleRadicalAway
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceMultGeneral
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceReducedAwayZariski
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceUnmixedGeneral
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PTransverseSliceGeneral
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PFibreHilbertFlat
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPuncturedBranchInOneBranch
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPuncturedCurveDiscInverse
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPuncturedBranchSameOrder
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceReducedGeneral
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PBranchSheetAE
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PChartIntCountAdd
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCircleArgumentPrinciple
@@ -169,13 +182,37 @@ import GroundTheory.HeightsAndTheta.Heights.MultinomialWeights.PDelDividesDeg
 import GroundTheory.HeightsAndTheta.Heights.MultinomialWeights.Imports
 import GroundTheory.HeightsAndTheta.Heights.MultinomialWeights.SecondVolumeConstantNonneg
 import GroundTheory.HeightsAndTheta.Heights.MultinomialWeights.StatementsShTotSmall
+
+section
+set_option maxSynthPendingDepth 1
+
+theorem GroundTheory.Heights₂.Heights.AutoClose.BranchImageNhdOffCentre : GroundTheory.Heights₂.Heights.BranchImageNhdOffCentre.Statement :=
+  @GroundTheory.Heights₂.Heights.BranchImageNhdOffCentre.proof GroundTheory.Heights₂.Heights.AutoClose.CurveRegularOffCentre
+
+theorem GroundTheory.Heights₂.Heights.AutoClose.CurveCoordinateGraph : GroundTheory.Heights₂.Heights.CurveCoordinateGraph.Statement :=
+  @GroundTheory.Heights₂.Heights.CurveCoordinateGraph.proof GroundTheory.Heights₂.Heights.AutoClose.CurveRegularOffCentre
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+theorem GroundTheory.Heights₂.Heights.AutoClose.PuncturedBranchInOneBranch : GroundTheory.Heights₂.Heights.PuncturedBranchInOneBranch.Statement :=
+  @GroundTheory.Heights₂.Heights.PuncturedBranchInOneBranch.proof GroundTheory.Heights₂.Heights.AutoClose.BranchImageNhdOffCentre
+
+theorem GroundTheory.Heights₂.Heights.AutoClose.PuncturedCurveDiscInverse : GroundTheory.Heights₂.Heights.PuncturedCurveDiscInverse.Statement :=
+  @GroundTheory.Heights₂.Heights.PuncturedCurveDiscInverse.proof GroundTheory.Heights₂.Heights.AutoClose.CurveCoordinateGraph GroundTheory.Heights₂.Heights.InjectiveHolomorphicDerivNeZero.proof
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+theorem GroundTheory.Heights₂.Heights.AutoClose.PuncturedBranchSameOrder : GroundTheory.Heights₂.Heights.PuncturedBranchSameOrder.Statement :=
+  @GroundTheory.Heights₂.Heights.PuncturedBranchSameOrder.proof GroundTheory.Heights₂.Heights.AutoClose.PuncturedCurveDiscInverse
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.Targets_LiftGraphMetric : GroundTheory.Heights₂.Heights.Targets.LiftGraphMetric.Statement :=
   @GroundTheory.Heights₂.Heights.Targets.LiftGraphMetric.proof GroundTheory.Heights₂.Heights.Targets.LiftGraphFactor.closed
-
-theorem GroundTheory.Heights₂.Heights.AutoClose.model_very_ample_equality_holds : GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ModelVeryAmpleEq.Statement :=
-  @GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ModelVeryAmpleEq.proof GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.VeryAmpleEq.full GroundTheory.Heights₂.Heights.AutoClose.model_mul_sections_holds GroundTheory.Heights₂.Heights.AutoClose.model_change_very_ample_holds
-
-theorem GroundTheory.Heights₂.Heights.AutoClose.very_ample_model_holds : GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.VeryAmpleModel.Statement :=
-  @GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.VeryAmpleModel.proof GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.VeryAmpleEq.full GroundTheory.Heights₂.Heights.AutoClose.model_change_generated_holds
+end

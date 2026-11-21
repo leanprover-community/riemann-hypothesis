@@ -61,11 +61,6 @@ theorem tr_self (α : C.A) (z : Sp S ⟶ Z) (h : ⊤ ≤ z ⁻¹ᵁ C.B α) : C.
 theorem tr_mul (α β γ : C.A) (z : Sp S ⟶ Z) (hα : ⊤ ≤ z ⁻¹ᵁ C.B α) (hβ : ⊤ ≤ z ⁻¹ᵁ C.B β) (hγ : ⊤ ≤ z ⁻¹ᵁ C.B γ) :
     C.tr α β z hα hβ * C.tr β γ z hβ hγ = C.tr α γ z hα hγ := C.coc α β γ S z hα hβ hγ
 
-theorem tr_spMap (α β : C.A) (φ : S →+* S') (z : Sp S ⟶ Z) (hα : ⊤ ≤ z ⁻¹ᵁ C.B α) (hβ : ⊤ ≤ z ⁻¹ᵁ C.B β)
-    {z' : Sp S' ⟶ Z} (e : spMap φ ≫ z = z') (hα' : ⊤ ≤ z' ⁻¹ᵁ C.B α) (hβ' : ⊤ ≤ z' ⁻¹ᵁ C.B β) :
-    C.tr α β z' hα' hβ' = (C.tr α β z hα hβ).map φ := by
-  subst e
-  rw [tr, tr, ev_spMap φ z _ (le_preimage_inf hα hβ), Matrix.map_map]; rfl
 
 def refine {Γ : Type} (a : Γ → C.A) (D : Γ → Z.Opens) (aff : ∀ γ, IsAffineOpen (D γ)) (cover : ∀ x : Z, ∃ γ, x ∈ D γ)
     (le : ∀ γ, D γ ≤ C.B (a γ)) : Coc Z where

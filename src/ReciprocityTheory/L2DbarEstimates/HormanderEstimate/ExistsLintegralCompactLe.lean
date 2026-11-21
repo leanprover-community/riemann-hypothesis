@@ -1,5 +1,34 @@
-import ReciprocityTheory.L2DbarEstimates.HormanderEstimate.ClosedSt
+import ReciprocityTheory.L2DbarEstimates.SkodaWeights.NeedBergmanClosed
+import ReciprocityTheory.L2DbarEstimates.LeviForms.HoloClosedNeed
+import ReciprocityTheory.L2DbarEstimates.Localization.UnweightBackStatement
 
+section
+namespace ReciprocityTheory.L2DbarEstimates.F
+
+open MeasureTheory Filter Topology Set
+open scoped ENNReal
+
+noncomputable section
+
+def ClosedCoreStatement (n : ℕ) (M : Type*) [TopologicalSpace M] [T2Space M]
+    [SecondCountableTopology M] [MeasurableSpace M] [BorelSpace M] : Prop :=
+  ∀ (z : M → V n), IsLocalHomeomorph z → ∀ (ψ : M → ℝ), Continuous ψ →
+    ∀ (F : ℕ → M → ℂ) (f : M → ℂ), (∀ k, Holo n z (F k)) → AEStronglyMeasurable f (vol n z) →
+    Tendsto (fun k => wint n z (fun x => F k x - f x) ψ) atTop (𝓝 0) →
+    ∃ G : M → ℂ, Holo n z G ∧ f =ᵐ[vol n z] G
+
+def EvalPtStatement (n : ℕ) (M : Type*) [TopologicalSpace M] [T2Space M]
+    [SecondCountableTopology M] [MeasurableSpace M] [BorelSpace M] : Prop :=
+  ∀ (z : M → V n), IsLocalHomeomorph z → ∀ (ψ : M → ℝ), Continuous ψ → ∀ x0 : M,
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ F : M → ℂ, Holo n z F →
+      ENNReal.ofReal (‖F x0‖ ^ 2) ≤ ENNReal.ofReal C * wint n z F ψ
+
+end
+
+end ReciprocityTheory.L2DbarEstimates.F
+end
+
+section
 namespace ReciprocityTheory.L2DbarEstimates.F
 
 open MeasureTheory Filter Topology Set
@@ -209,12 +238,8 @@ theorem integral_holo_mul_db (n : ℕ) {M : Type*} [TopologicalSpace M] [T2Space
   rw [h0, integral_zero] at h
   exact neg_eq_zero.mp h.symm
 
-theorem sq_eLpNorm_two {α : Type*} [MeasurableSpace α] (μ : Measure α) (g : α → ℂ) :
-    eLpNorm g 2 μ ^ 2 = ∫⁻ x, ‖g x‖ₑ ^ 2 ∂μ := by
-  have h := MeasureTheory.eLpNorm_nnreal_pow_eq_lintegral (f := g) (μ := μ) (p := (2 : NNReal)) two_ne_zero
-  norm_num at h
-  simpa [ENNReal.rpow_two] using h
 
 end
 
 end ReciprocityTheory.L2DbarEstimates.F
+end

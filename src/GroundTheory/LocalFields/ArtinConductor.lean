@@ -222,10 +222,6 @@ theorem artinCharacter_one :
   unfold artinCharacter
   rw [if_pos rfl, differentExponent_eq_sum_toNat]
 
-theorem addVal_discr_eq_artinCharacter_one {ι : Type*} [Fintype ι] [DecidableEq ι]
-    (b : Module.Basis ι 𝒪[K] 𝒪[L]) :
-    IsDiscreteValuationRing.addVal 𝒪[K] (Algebra.discr 𝒪[K] b) = (artinCharacter K L 1).toNat := by
-  rw [addVal_discr, artinCharacter_one, Int.toNat_natCast]
 
 open Classical in
 
@@ -366,54 +362,6 @@ variable (K L) in
 def charSwanConductor (χ : (L ≃ₐ[K] L) → ℂ) : ℂ :=
   (Nat.card (L ≃ₐ[K] L) : ℂ)⁻¹ * ∑ σ : L ≃ₐ[K] L, χ σ * swanCharacter K L σ
 
-theorem swanConductor_eq_charSwanConductor [IsGalois K L] (ρ : Representation ℂ (L ≃ₐ[K] L) V) :
-    (swanConductor ρ : ℂ) = charSwanConductor K L ρ.character := by
-  classical
-  have hG0 : (Nat.card (lowerRamificationGroup K L 0) : ℂ) ≠ 0 :=
-    Nat.cast_ne_zero.mpr Nat.card_pos.ne'
-  have hf : (residueDegree K L : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr (residueDegree_pos K L).ne'
-  have hcard : (Nat.card (L ≃ₐ[K] L) : ℂ) =
-      Nat.card (lowerRamificationGroup K L 0) * residueDegree K L := by
-    exact_mod_cast card_aut_eq_card_lowerRamificationGroup_zero_mul
-  have hsub : ∑ σ : L ≃ₐ[K] L,
-      (if σ ∈ lowerRamificationGroup K L 0 then ρ.character σ else 0) =
-        ∑ h : lowerRamificationGroup K L 0, ρ.character h := by
-    rw [← Finset.sum_filter]
-    exact Finset.sum_subtype _ (by simp) _
-  have hc := codim_invariants_eq (ρ.comp (lowerRamificationGroup K L 0).subtype)
-  have hc' : ∑ h : lowerRamificationGroup K L 0,
-      (Representation.character (ρ.comp (lowerRamificationGroup K L 0).subtype) 1 -
-        Representation.character (ρ.comp (lowerRamificationGroup K L 0).subtype) h) =
-      Nat.card (lowerRamificationGroup K L 0) * ρ.character 1 -
-        ∑ h : lowerRamificationGroup K L 0, ρ.character h := by
-    rw [Finset.sum_sub_distrib, Finset.sum_const, Finset.card_univ, nsmul_eq_mul,
-      Nat.card_eq_fintype_card]
-    rfl
-  have hsplit := artinConductor_eq_codim_add_swanConductor ρ
-  have hswan : (swanConductor ρ : ℂ) = (artinConductor ρ : ℂ) -
-      ((finrank ℂ V - finrank ℂ (invariants (ρ.comp (lowerRamificationGroup K L 0).subtype)) : ℕ)
-        : ℂ) := by
-    rw [hsplit]
-    push_cast
-    ring
-  have hsum : ∑ σ : L ≃ₐ[K] L, ρ.character σ * (swanCharacter K L σ : ℂ) =
-      ∑ σ : L ≃ₐ[K] L, ρ.character σ * (artinCharacter K L σ : ℂ) -
-        (Nat.card (L ≃ₐ[K] L) * ρ.character 1 -
-          residueDegree K L * ∑ h : lowerRamificationGroup K L 0, ρ.character h) := by
-    have hpt : ∀ σ : L ≃ₐ[K] L, ρ.character σ * (swanCharacter K L σ : ℂ) =
-        ρ.character σ * artinCharacter K L σ -
-          ((if σ = 1 then (Nat.card (L ≃ₐ[K] L) : ℂ) * ρ.character 1 else 0) -
-            residueDegree K L *
-              (if σ ∈ lowerRamificationGroup K L 0 then ρ.character σ else 0)) := by
-      intro σ
-      simp only [swanCharacter]
-      push_cast
-      split_ifs with h1 h2 <;> (try subst h1) <;> ring
-    rw [Finset.sum_congr rfl fun σ _ ↦ hpt σ, Finset.sum_sub_distrib, Finset.sum_sub_distrib,
-      Finset.sum_ite_eq', if_pos (Finset.mem_univ _), ← Finset.mul_sum, hsub]
-  rw [hswan, artinConductor_eq_charArtinConductor, hc, hc', charSwanConductor, charArtinConductor,
-    hsum, hcard]
-  field_simp
 
 end Swan
 

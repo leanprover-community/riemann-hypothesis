@@ -87,9 +87,6 @@ theorem zcoeff_map (x : Γ) (n : ℤ) : T.zcoeff (G.ψ x) n = G.g (T.zcoeff x n)
 theorem norm_zcoeff_map (x : Γ) (n : ℤ) : ‖T.zcoeff (G.ψ x) n‖ = ‖T.zcoeff x n‖ := by
   rw [zcoeff_map, norm_g]
 
-theorem convergesAt_zcoeff_map_iff {x : Γ} {ρ : ℝ} :
-    ConvergesAt (T.zcoeff (G.ψ x)) ρ ↔ ConvergesAt (T.zcoeff x) ρ := by
-  simp only [ConvergesAt, G.norm_zcoeff_map]
 
 theorem gaussNorm_zcoeff_map (x : Γ) (ρ : ℝ) :
     gaussNorm (T.zcoeff (G.ψ x)) ρ = gaussNorm (T.zcoeff x) ρ := by
@@ -132,7 +129,6 @@ theorem toB_eq_self (h : ∀ x, G.ψ x = x) (b : T.B) : G.toB b = b := by
       simp [toB_algebraMap, h])
   exact congrArg (fun f : T.B →+* T.B => f b) this
 
-theorem toB_symm_apply (b : T.B) : G.toB.symm b = G.symm.toB b := rfl
 
 theorem coeffB_toB (b : T.B) (k : ℤ) : T.coeffB (G.toB b) k = G.g (T.coeffB b k) := by
   obtain ⟨N, x, hx⟩ := IsLocalization.Away.surj T.π b
@@ -203,11 +199,6 @@ theorem extMap_coe (b : T.Econ ρ0) :
 
 theorem continuous_extMap : Continuous (G.extMap ρ0) := Completion.continuous_map
 
-theorem extNorm_extMap (ρ : Set.Ioc (0 : ℝ) ρ0) (x : T.RobbaExt ρ0) :
-    T.extNorm ρ0 ρ (G.extMap ρ0 x) = T.extNorm ρ0 ρ x :=
-  Completion.induction_on x
-    (isClosed_eq ((T.continuous_extNorm ρ).comp G.continuous_extMap) (T.continuous_extNorm ρ))
-    fun b => by rw [extMap_coe, extNorm_coe, extNorm_coe, coe_econMap, gaussNorm_coeffB_toB]
 
 theorem res_extMap {ρ1 : Set.Ioo (0 : ℝ) 1} (h : (ρ1 : ℝ) ≤ ρ0) (x : T.RobbaExt ρ0) :
     T.res h (G.extMap ρ0 x) = G.extMap ρ1 (T.res h x) :=
@@ -267,7 +258,6 @@ def tildeEquiv : T.RobbaTilde ≃+* T.RobbaTilde :=
   RingEquiv.ofRingHom G.tildeMap G.symm.tildeMap (RingHom.ext G.tildeMap_tildeMap_symm)
     (RingHom.ext G.tildeMap_symm_tildeMap)
 
-theorem tildeEquiv_apply (x : T.RobbaTilde) : G.tildeEquiv x = G.tildeMap x := rfl
 
 theorem tildeMap_edagToTilde (b : T.Edag) :
     G.tildeMap (T.edagToTilde b) = T.edagToTilde (G.edagEquiv b) := by
@@ -281,12 +271,6 @@ theorem tildeMap_edagToTilde (b : T.Edag) :
   congr 1
   exact G.extMap_coe ⟨b, hσ⟩
 
-theorem tildeMap_econToTilde (σ : Set.Ioo (0 : ℝ) 1) (b : T.Econ σ) :
-    G.tildeMap (T.econToTilde σ b) = T.econToTilde σ (G.econMap σ b) := by
-  simp only [econToTilde, RingHom.comp_apply]
-  rw [tildeMap_ofRad]
-  congr 1
-  exact G.extMap_coe b
 
 theorem tildeOrd_map [CompleteSpace L] (x : T.RobbaTildeˣ) :
     T.tildeOrd (Units.map (G.tildeMap : T.RobbaTilde →* T.RobbaTilde) x) = T.tildeOrd x := by

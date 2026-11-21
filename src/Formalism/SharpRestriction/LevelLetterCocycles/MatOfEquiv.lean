@@ -1,8 +1,9 @@
 import Formalism.SharpRestriction.LevelLetterCocycles.BaseChangeMapMemLattice
-import Formalism.SharpRestriction.LevelLetterCocycles.Imports
+import Formalism.AdmissibleDesigns.InvariantsEqBotIff
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.CoefExt
 import Formalism.SharpRestriction.LevelLetterCocycles.JointConditionsZpowers.BaseCoefJump
 
+section
 noncomputable section
 
 open Classical TensorProduct
@@ -148,3 +149,5 @@ theorem bcAt_of (hc : Continuous (algebraMap LL LL')) (hO' : Function.Injective 
 end Assemble
 
 end Formalism.MainNotions.UnusedSlot80.BCW
+end
+end

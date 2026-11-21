@@ -1,11 +1,938 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.CharacterTheory.MonicFactorizationConvolutionCancelOfOne
-import Development.AbelianVarietyTheory.Proofs.CharacterTheory.AdditiveMulEqVonMangoldtConvolution
+import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.InvariantSubspaceMobiusInverseRecEqOfFinrankLt
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.CharacterTheory.AdditiveEqPolynomialVonMangoldtConvolutionOneStatement
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.EndomorphismMassEqOfLinearEquivInvariant
-import Development.AbelianVarietyTheory.Proofs.CharacterTheory.CharpolyEndomorphismDensityGLRecursion
+import Development.AbelianVarietyTheory.Proofs.CharacterTheory.CharpolyBlockAndInvariantUnderStabilizerNilradicStatement
+import Development.AbelianVarietyTheory.Proofs.CharacterTheory.CardSubspacesOfFinrankMulCardBasesStatement
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.InvariantSubspaceMobiusInverseCharpolyLinearEquiStatement
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.CharpolyEqFinsumPsi
 
+section
+section
+open Polynomial GlobalTheory.CuspGL
+
+namespace GlobalTheory.CuspGL.ConvCancel
+
+theorem finite_pairs {F : Type} [Field F] (P : F[X]) (hP : P ≠ 0) :
+    {x : F[X] × F[X] | x.1.Monic ∧ x.2.Monic ∧ x.1 * x.2 = P}.Finite := by
+  classical
+  have hfin : {g : F[X] | g.Monic ∧ g ∣ P}.Finite := by
+    have h := Polynomial.fintypeSubtypeMonicDvd P hP
+    exact @Finite.of_fintype _ h
+  refine (hfin.prod hfin).subset ?_
+  rintro ⟨D, E⟩ ⟨hD, hE, h⟩
+  exact ⟨⟨hD, Dvd.intro _ h⟩, ⟨hE, Dvd.intro_left _ h⟩⟩
+
+theorem conv_cancel : ∀ (F : Type) [Field F] (a b m : F[X] → ℂ), m 1 = 1 →
+    (∀ P : F[X], P.Monic → conv a m P = conv b m P) → ∀ P : F[X], P.Monic → a P = b P := by
+  intro F _ a b m hm h P
+  classical
+  induction hn : P.natDegree using Nat.strong_induction_on generalizing P with
+  | _ n ih =>
+    intro hP
+    have hfin := finite_pairs P hP.ne_zero
+    have h1 := h P hP
+    unfold conv at h1
+    rw [finsum_mem_eq_finite_toFinset_sum _ hfin, finsum_mem_eq_finite_toFinset_sum _ hfin] at h1
+    have hmem : ((P, 1) : F[X] × F[X]) ∈ hfin.toFinset := by
+      simp [hP]
+    rw [← Finset.add_sum_erase _ _ hmem, ← Finset.add_sum_erase _ _ hmem] at h1
+    have h2 : ∑ x ∈ hfin.toFinset.erase (P, 1), a x.1 * m x.2
+        = ∑ x ∈ hfin.toFinset.erase (P, 1), b x.1 * m x.2 := by
+      refine Finset.sum_congr rfl ?_
+      rintro ⟨D, E⟩ hx
+      rw [Finset.mem_erase, Set.Finite.mem_toFinset] at hx
+      obtain ⟨hne, hD, hE, hDE⟩ := hx
+      simp only at hD hE hDE ⊢
+      have hE1 : E ≠ 1 := by
+        rintro rfl
+        apply hne
+        rw [← hDE, mul_one]
+      have hdeg : D.natDegree < n := by
+        rw [← hn, ← hDE, hD.natDegree_mul hE]
+        have : E.natDegree ≠ 0 := fun h0 => hE1 (hE.natDegree_eq_zero.mp h0)
+        omega
+      rw [ih _ hdeg D rfl hD]
+    rw [h2] at h1
+    simpa [hm] using h1
+
+end GlobalTheory.CuspGL.ConvCancel
+end
+
+open Polynomial GlobalTheory.CuspGL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.monicFactorizationConvolution_cancel_of_one : ∀ (F : Type) [Field F] (a b m : F[X] → ℂ), m 1 = 1 → (∀ P : F[X], P.Monic → conv a m P = conv b m P) → ∀ P : F[X], P.Monic → a P = b P := by
+  atlas_forward_decl GlobalTheory.CuspGL.ConvCancel.conv_cancel
+end
+
+section
+section
+open Polynomial GlobalTheory.CuspGL
+
+namespace GlobalTheory.CuspGL
+
+variable {F : Type} [Field F]
+
+theorem finite_monic_factorisations (P : F[X]) :
+    {x : F[X] × F[X] | x.1.Monic ∧ x.2.Monic ∧ x.1 * x.2 = P}.Finite := by
+  by_cases hP : P = 0
+  · convert Set.finite_empty
+    ext x
+    simp only [Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false]
+    rintro ⟨h1, h2, h3⟩
+    exact (h1.mul h2).ne_zero (h3.trans hP)
+  · have hfin : {D : F[X] | D.Monic ∧ D ∣ P}.Finite := by
+      letI : Fintype {D : F[X] | D.Monic ∧ D ∣ P} := Polynomial.fintypeSubtypeMonicDvd P hP
+      exact Set.toFinite _
+    refine (hfin.prod hfin).subset ?_
+    rintro x ⟨h1, h2, h3⟩
+    exact ⟨⟨h1, h3 ▸ dvd_mul_right _ _⟩, ⟨h2, h3 ▸ dvd_mul_left _ _⟩⟩
+
+theorem conv_eq_sum (a b : F[X] → ℂ) (P : F[X]) :
+    conv a b P = ∑ x ∈ (finite_monic_factorisations P).toFinset, a x.1 * b x.2 :=
+  finsum_mem_eq_finite_toFinset_sum _ (finite_monic_factorisations P)
+
+theorem conv_comm (a b : F[X] → ℂ) (P : F[X]) : conv a b P = conv b a P := by
+  rw [conv_eq_sum, conv_eq_sum]
+  refine Finset.sum_nbij' Prod.swap Prod.swap ?_ ?_ ?_ ?_ ?_
+  · intro x hx
+    simp only [Set.Finite.mem_toFinset, Set.mem_setOf_eq] at hx ⊢
+    exact ⟨hx.2.1, hx.1, by rw [← hx.2.2]; exact mul_comm _ _⟩
+  · intro x hx
+    simp only [Set.Finite.mem_toFinset, Set.mem_setOf_eq] at hx ⊢
+    exact ⟨hx.2.1, hx.1, by rw [← hx.2.2]; exact mul_comm _ _⟩
+  · intro x _; rfl
+  · intro x _; rfl
+  · intro x _; exact mul_comm _ _
+
+theorem conv_assoc (a b c : F[X] → ℂ) (P : F[X]) :
+    conv (conv a b) c P = conv a (conv b c) P := by
+  rw [conv_eq_sum, conv_eq_sum]
+  simp only [conv_eq_sum, Finset.sum_mul, Finset.mul_sum]
+  rw [Finset.sum_sigma', Finset.sum_sigma']
+  refine Finset.sum_nbij' (fun z => ⟨(z.2.1, z.2.2 * z.1.2), (z.2.2, z.1.2)⟩)
+    (fun z => ⟨(z.1.1 * z.2.1, z.2.2), (z.1.1, z.2.1)⟩) ?_ ?_ ?_ ?_ ?_
+  · rintro ⟨⟨D, E⟩, ⟨A, B⟩⟩ hx
+    simp only [Finset.mem_sigma, Set.Finite.mem_toFinset, Set.mem_setOf_eq] at hx ⊢
+    obtain ⟨⟨h1, h2, h3⟩, h4, h5, h6⟩ := hx
+    exact ⟨⟨h4, h5.mul h2, by rw [← mul_assoc, h6, h3]⟩, h5, h2, trivial⟩
+  · rintro ⟨⟨D, E⟩, ⟨A, B⟩⟩ hx
+    simp only [Finset.mem_sigma, Set.Finite.mem_toFinset, Set.mem_setOf_eq] at hx ⊢
+    obtain ⟨⟨h1, h2, h3⟩, h4, h5, h6⟩ := hx
+    exact ⟨⟨h1.mul h4, h5, by rw [mul_assoc, h6, h3]⟩, h1, h4, trivial⟩
+  · rintro ⟨⟨D, E⟩, ⟨A, B⟩⟩ hx
+    simp only [Finset.mem_sigma, Set.Finite.mem_toFinset, Set.mem_setOf_eq] at hx
+    obtain ⟨⟨h1, h2, h3⟩, h4, h5, h6⟩ := hx
+    subst h6
+    rfl
+  · rintro ⟨⟨D, E⟩, ⟨A, B⟩⟩ hx
+    simp only [Finset.mem_sigma, Set.Finite.mem_toFinset, Set.mem_setOf_eq] at hx
+    obtain ⟨⟨h1, h2, h3⟩, h4, h5, h6⟩ := hx
+    subst h6
+    rfl
+  · rintro ⟨⟨D, E⟩, ⟨A, B⟩⟩ _
+    exact mul_assoc _ _ _
+
+theorem conv_add_left (a b c : F[X] → ℂ) (P : F[X]) :
+    conv (a + b) c P = conv a c P + conv b c P := by
+  simp only [conv_eq_sum, Pi.add_apply, add_mul, Finset.sum_add_distrib]
+
+theorem conv_sub_left (a b c : F[X] → ℂ) (P : F[X]) :
+    conv (a - b) c P = conv a c P - conv b c P := by
+  simp only [conv_eq_sum, Pi.sub_apply, sub_mul, Finset.sum_sub_distrib]
+
+theorem conv_basic : ∀ (F : Type) [Field F] (P : F[X]), P.Monic → {x : F[X] × F[X] | x.1.Monic ∧ x.2.Monic ∧ x.1 * x.2 = P}.Finite ∧ ∀ a b c : F[X] → ℂ, conv a b P = conv b a P ∧ conv (conv a b) c P = conv a (conv b c) P ∧ conv (a + b) c P = conv a c P + conv b c P ∧ conv (a - b) c P = conv a c P - conv b c P :=
+  fun _ _ P _ => ⟨finite_monic_factorisations P, fun a b c =>
+    ⟨conv_comm a b P, conv_assoc a b c P, conv_add_left a b c P, conv_sub_left a b c P⟩⟩
+
+end GlobalTheory.CuspGL
+end
+
+open Polynomial GlobalTheory.CuspGL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.monicFactorizationConvolution_finite_comm_assoc_add : ∀ (F : Type) [Field F] (P : F[X]), P.Monic → {x : F[X] × F[X] | x.1.Monic ∧ x.2.Monic ∧ x.1 * x.2 = P}.Finite ∧ ∀ a b c : F[X] → ℂ, conv a b P = conv b a P ∧ conv (conv a b) c P = conv a (conv b c) P ∧ conv (a + b) c P = conv a c P + conv b c P ∧ conv (a - b) c P = conv a c P - conv b c P := by
+  atlas_forward_decl GlobalTheory.CuspGL.conv_basic
+end
+
+section
+section
+open Polynomial GlobalTheory.CuspGL
+
+noncomputable section
+
+namespace GlobalTheory.CuspGL.LogDeriv
+
+variable {F : Type} [Field F]
+
+theorem conv_congr_monic {a a' b b' : F[X] → ℂ} (ha : ∀ P : F[X], P.Monic → a P = a' P)
+    (hb : ∀ P : F[X], P.Monic → b P = b' P) (P : F[X]) : conv a b P = conv a' b' P := by
+  unfold conv
+  refine finsum_mem_congr rfl fun x hx => ?_
+  rw [ha _ hx.1, hb _ hx.2.1]
+
+theorem conv_eq_sum (a b : F[X] → ℂ) {P : F[X]} (hP : P.Monic) :
+    conv a b P = ∑ x ∈ (GlobalTheory.T.monicFactorizationConvolution_finite_comm_assoc_add F P hP).1.toFinset, a x.1 * b x.2 := by
+  unfold conv
+  rw [finsum_mem_eq_finite_toFinset_sum]
+
+theorem pow_mul_conv (q : ℂ) (a b : F[X] → ℂ) {P : F[X]} (hP : P.Monic) :
+    q ^ P.natDegree * conv a b P =
+      conv (fun D => q ^ D.natDegree * a D) (fun D => q ^ D.natDegree * b D) P := by
+  rw [conv_eq_sum _ _ hP, conv_eq_sum _ _ hP, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun x hx => ?_
+  rw [Set.Finite.mem_toFinset] at hx
+  obtain ⟨h1, h2, h3⟩ := hx
+  rw [← h3, h1.natDegree_mul h2, pow_add]
+  ring
+
+theorem additive_mul_conv {s : F[X] → ℂ} (hs : IsAdditive s) (a b : F[X] → ℂ) {P : F[X]}
+    (hP : P.Monic) :
+    s P * conv a b P = conv (fun D => s D * a D) b P + conv a (fun D => s D * b D) P := by
+  rw [conv_eq_sum _ _ hP, conv_eq_sum _ _ hP, conv_eq_sum _ _ hP, Finset.mul_sum,
+    ← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun x hx => ?_
+  rw [Set.Finite.mem_toFinset] at hx
+  obtain ⟨h1, h2, h3⟩ := hx
+  rw [← h3, hs _ _ h1 h2]
+  ring
+
+theorem pow_natDegree_ne_one {q : ℕ} (hq : 2 ≤ q) {n : ℕ} (hn : n ≠ 0) : (q : ℂ) ^ n - 1 ≠ 0 := by
+  rw [sub_ne_zero]
+  have : q ^ n ≠ 1 := (Nat.one_lt_pow hn (by omega)).ne'
+  exact_mod_cast this
+
+theorem eq_zero_of_rec {q : ℕ} (hq : 2 ≤ q) {E : F[X] → ℂ} (h1 : E 1 = 0)
+    (hE : ∀ P : F[X], P.Monic → (q : ℂ) ^ P.natDegree * E P = conv (fun _ => 1) E P) :
+    ∀ P : F[X], P.Monic → E P = 0 := by
+  intro P
+  induction h : P.natDegree using Nat.strong_induction_on generalizing P with
+  | _ n ih =>
+    intro hP
+    by_cases hn : n = 0
+    · rw [hP.natDegree_eq_zero.mp (h.trans hn)]; exact h1
+    have key : conv (fun _ => 1) E P = E P := by
+      rw [conv_eq_sum _ _ hP, Finset.sum_eq_single ((1 : F[X]), P)]
+      · simp
+      · intro x hx hne
+        rw [Set.Finite.mem_toFinset] at hx
+        obtain ⟨h1, h2, h3⟩ := hx
+        have hd : x.1.natDegree ≠ 0 := by
+          intro h0
+          have := h1.natDegree_eq_zero.mp h0
+          apply hne
+          rw [this, one_mul] at h3
+          exact Prod.ext this h3
+        have hdeg := h1.natDegree_mul h2
+        rw [h3, h] at hdeg
+        rw [ih x.2.natDegree (by omega) x.2 rfl h2, mul_zero]
+      · intro hx
+        exact absurd (by simp [hP]) hx
+    have h2 := hE P hP
+    rw [key, h] at h2
+    have h3 : ((q : ℂ) ^ n - 1) * E P = 0 := by linear_combination h2
+    exact (mul_eq_zero.mp h3).resolve_left (pow_natDegree_ne_one hq hn)
+
+theorem mangoldt_one (s : F[X] → ℂ) : mangoldt s 1 = 0 := by
+  unfold mangoldt
+  refine finsum_mem_eq_zero_of_forall_eq_zero ?_
+  rintro f ⟨_, hf, m, hm, h⟩
+  exact absurd (IsUnit.of_pow_eq_one h.symm hm.ne') hf.not_isUnit
+
+theorem conv_at_one (a b : F[X] → ℂ) : conv a b 1 = a 1 * b 1 := by
+  unfold conv
+  have : {x : F[X] × F[X] | x.1.Monic ∧ x.2.Monic ∧ x.1 * x.2 = 1} = {(1, 1)} := by
+    ext x
+    simp only [Set.mem_setOf_eq, Set.mem_singleton_iff]
+    constructor
+    · rintro ⟨h1, h2, h3⟩
+      have hdeg := h1.natDegree_mul h2
+      rw [h3, natDegree_one] at hdeg
+      exact Prod.ext (h1.natDegree_eq_zero.mp (by omega)) (h2.natDegree_eq_zero.mp (by omega))
+    · rintro rfl
+      simp
+  rw [this, finsum_mem_singleton]
+
+theorem additive_mul_eq_conv (F : Type) [Field F] (q : ℕ) (hq : 2 ≤ q) (s m : F[X] → ℂ)
+    (hs : IsAdditive s) (_hm1 : m 1 = 1)
+    (hm : ∀ P : F[X], P.Monic → (q : ℂ) ^ P.natDegree * m P = conv (fun _ => 1) m P)
+    (P : F[X]) (hP : P.Monic) :
+    s P * m P = conv (fun D => mangoldt s D / ((q : ℂ) ^ D.natDegree - 1)) m P := by
+  set L : F[X] → ℂ := fun D => mangoldt s D / ((q : ℂ) ^ D.natDegree - 1) with hL
+  set o : F[X] → ℂ := fun _ => 1 with ho
+  have hs1 : s 1 = 0 := by
+    have := hs 1 1 monic_one monic_one
+    rw [mul_one] at this
+    linear_combination -this
+  have hσL : ∀ D : F[X], D.Monic → (q : ℂ) ^ D.natDegree * L D = (L + mangoldt s) D := by
+    intro D hD
+    by_cases h0 : D.natDegree = 0
+    · rw [hD.natDegree_eq_zero.mp h0]
+      simp [hL, mangoldt_one]
+    · have := pow_natDegree_ne_one hq h0
+      simp only [hL, Pi.add_apply]
+      field_simp
+      ring
+  have hA : ∀ Q : F[X], Q.Monic → (q : ℂ) ^ Q.natDegree * (s Q * m Q) =
+      conv (conv (mangoldt s) o) m Q + conv o (fun D => s D * m D) Q := by
+    intro Q hQ
+    rw [mul_left_comm, hm Q hQ, additive_mul_conv hs _ _ hQ]
+    congr 1
+    refine conv_congr_monic (fun D hD => ?_) (fun _ _ => rfl) Q
+    rw [← (GlobalTheory.T.additive_eq_polynomialVonMangoldt_convolution_one F s hs).1 D hD]
+    simp [ho]
+  have hB : ∀ Q : F[X], Q.Monic → (q : ℂ) ^ Q.natDegree * conv L m Q =
+      conv (conv (mangoldt s) o) m Q + conv o (conv L m) Q := by
+    intro Q hQ
+    have H := (GlobalTheory.T.monicFactorizationConvolution_finite_comm_assoc_add F Q hQ).2
+    rw [pow_mul_conv _ _ _ hQ, conv_congr_monic hσL hm Q, (H L (mangoldt s) (conv o m)).2.2.1,
+      (H (mangoldt s) o m).2.1, add_comm, ← (H L o m).2.1, ← (H o L m).2.1]
+    congr 1
+    exact conv_congr_monic (fun D hD => ((GlobalTheory.T.monicFactorizationConvolution_finite_comm_assoc_add F D hD).2 L o o).1) (fun _ _ => rfl) Q
+  have hE := eq_zero_of_rec hq (E := (fun D => s D * m D) - conv L m)
+    (by simp [hs1, conv_at_one, hL, mangoldt_one]) (fun Q hQ => by
+      have H := (GlobalTheory.T.monicFactorizationConvolution_finite_comm_assoc_add F Q hQ).2
+      rw [(H _ _ o).1, (H _ _ _).2.2.2, ← (H o _ o).1, ← (H o _ o).1, Pi.sub_apply, mul_sub,
+        hA Q hQ, hB Q hQ]
+      ring) P hP
+  exact sub_eq_zero.mp hE
+
+end GlobalTheory.CuspGL.LogDeriv
+end
+end
+
+open Polynomial GlobalTheory.CuspGL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.additive_mul_eq_vonMangoldt_convolution : ∀ (F : Type) [Field F] (q : ℕ), 2 ≤ q → ∀ (s m : F[X] → ℂ), IsAdditive s → m 1 = 1 → (∀ P : F[X], P.Monic → (q : ℂ) ^ P.natDegree * m P = conv (fun _ => 1) m P) → ∀ P : F[X], P.Monic → s P * m P = conv (fun D => mangoldt s D / ((q : ℂ) ^ D.natDegree - 1)) m P := by
+  atlas_forward_decl GlobalTheory.CuspGL.LogDeriv.additive_mul_eq_conv
+end
+
+section
+section
+open Polynomial GlobalTheory.CuspGL
+
+namespace GlobalTheory.CuspGL
+
+theorem finsum_stabiliser_mul_blocks (F : Type) [Field F] [Finite F] (V : Type) [AddCommGroup V]
+    [Module F V] [FiniteDimensional F V] (W : Submodule F V) (Φ : Module.End F W → ℂ)
+    (Φ' : Module.End F (V ⧸ W) → ℂ) :
+    ∑ᶠ g : {g : Module.End F V // ∀ x ∈ W, g x ∈ W},
+        Φ (g.1.restrict g.2) * Φ' (W.mapQ W g.1 (fun x hx => g.2 x hx)) =
+      (Nat.card F : ℂ) ^ (Module.finrank F W * Module.finrank F (V ⧸ W)) *
+        ((∑ᶠ a, Φ a) * ∑ᶠ b, Φ' b) := by
+  classical
+  obtain ⟨s, hs⟩ := W.mkQ.exists_rightInverse_of_surjective W.range_mkQ
+  have hs' : ∀ y, W.mkQ (s y) = y := fun y => LinearMap.congr_fun hs y
+  have hmem : ∀ x : V, (LinearMap.id - s ∘ₗ W.mkQ : V →ₗ[F] V) x ∈ W := by
+    intro x
+    rw [← Submodule.Quotient.mk_eq_zero, ← Submodule.mkQ_apply]
+    simp only [LinearMap.sub_apply, LinearMap.id_apply, LinearMap.comp_apply, map_sub, hs',
+      sub_self]
+  let p : V →ₗ[F] W := LinearMap.codRestrict W _ hmem
+  have hp : ∀ x : V, (p x : V) = x - s (W.mkQ x) := fun x => rfl
+  have hπ : ∀ x : W, W.mkQ (x : V) = 0 := fun x => by
+    rw [Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]; exact x.2
+  have hpι : ∀ x : W, p (x : V) = x := fun x => Subtype.ext (by rw [hp, hπ, map_zero, sub_zero])
+  have hps : ∀ y, p (s y) = 0 := fun y => Subtype.ext (by rw [hp, hs', sub_self]; rfl)
+  let G : Module.End F W × Module.End F (V ⧸ W) × ((V ⧸ W) →ₗ[F] W) → Module.End F V :=
+    fun t => W.subtype ∘ₗ t.1 ∘ₗ p + s ∘ₗ t.2.1 ∘ₗ W.mkQ + W.subtype ∘ₗ t.2.2 ∘ₗ W.mkQ
+  have hG : ∀ t x, G t x = (t.1 (p x) : V) + s (t.2.1 (W.mkQ x)) + (t.2.2 (W.mkQ x) : V) :=
+    fun t x => rfl
+  have hGι : ∀ t (x : W), G t x = (t.1 x : V) := by
+    intro t x
+    rw [hG, hpι, hπ]; simp
+  have hGW : ∀ t, ∀ x ∈ W, G t x ∈ W := by
+    intro t x hx
+    rw [hGι t ⟨x, hx⟩]; exact (t.1 _).2
+  have h1 : ∀ t, (G t).restrict (hGW t) = t.1 := by
+    intro t
+    ext x
+    rw [LinearMap.restrict_coe_apply, hGι]
+  have h2 : ∀ t, W.mapQ W (G t) (fun x hx => hGW t x hx) = t.2.1 := by
+    intro t
+    apply Submodule.linearMap_qext
+    ext x
+    simp only [LinearMap.comp_apply]
+    rw [Submodule.mkQ_apply, Submodule.mapQ_apply, ← Submodule.mkQ_apply, hG, map_add, map_add,
+      hπ, hπ, hs', zero_add, add_zero, Submodule.mkQ_apply]
+  have h3 : ∀ t, p ∘ₗ G t ∘ₗ s = t.2.2 := by
+    intro t
+    refine LinearMap.ext fun y => ?_
+    simp only [LinearMap.comp_apply]
+    rw [hG, hps, hs', map_add, map_add, hps, hpι, hpι, map_zero, zero_add, zero_add]
+  let e : (Module.End F W × Module.End F (V ⧸ W) × ((V ⧸ W) →ₗ[F] W)) ≃
+      {g : Module.End F V // ∀ x ∈ W, g x ∈ W} :=
+    { toFun := fun t => ⟨G t, hGW t⟩
+      invFun := fun g => (g.1.restrict g.2, W.mapQ W g.1 (fun x hx => g.2 x hx), p ∘ₗ g.1 ∘ₗ s)
+      left_inv := fun t => Prod.ext (h1 t) (Prod.ext (h2 t) (h3 t))
+      right_inv := by
+        intro g
+        refine Subtype.ext (LinearMap.ext fun x => ?_)
+        show G _ x = _
+        rw [hG]
+        simp only [LinearMap.restrict_coe_apply, LinearMap.comp_apply]
+        have hq : W.mapQ W g.1 (fun x hx => g.2 x hx) (W.mkQ x) = W.mkQ (g.1 (s (W.mkQ x))) := by
+          conv_lhs => rw [← hs' (W.mkQ x)]
+          rfl
+        rw [hq, hp, hp, map_sub]
+        abel }
+  haveI : Finite V := Module.finite_of_finite F
+  haveI : Finite (Module.End F W) := Module.finite_of_finite F
+  haveI : Finite (Module.End F (V ⧸ W)) := Module.finite_of_finite F
+  haveI : Finite ((V ⧸ W) →ₗ[F] W) := Module.finite_of_finite F
+  haveI := Fintype.ofFinite (Module.End F W)
+  haveI := Fintype.ofFinite (Module.End F (V ⧸ W))
+  haveI := Fintype.ofFinite ((V ⧸ W) →ₗ[F] W)
+  have hcard : Fintype.card ((V ⧸ W) →ₗ[F] W) =
+      Nat.card F ^ (Module.finrank F W * Module.finrank F (V ⧸ W)) := by
+    rw [← Nat.card_eq_fintype_card, Module.natCard_eq_pow_finrank (K := F),
+      Module.finrank_linearMap, mul_comm]
+  rw [← finsum_comp_equiv e]
+  have : ∀ t, Φ ((e t).1.restrict (e t).2) * Φ' (W.mapQ W (e t).1 (fun x hx => (e t).2 x hx))
+      = Φ t.1 * Φ' t.2.1 := by
+    intro t
+    show Φ ((G t).restrict (hGW t)) * Φ' (W.mapQ W (G t) (fun x hx => hGW t x hx)) = _
+    rw [h1, h2]
+  rw [finsum_congr this, finsum_eq_sum_of_fintype, finsum_eq_sum_of_fintype,
+    finsum_eq_sum_of_fintype, Fintype.sum_prod_type, Finset.sum_mul_sum, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun a _ => ?_
+  rw [Fintype.sum_prod_type, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun b _ => ?_
+  simp only [Finset.sum_const, Finset.card_univ, hcard, nsmul_eq_mul, Nat.cast_pow]
+
+end GlobalTheory.CuspGL
+end
+
+open Polynomial GlobalTheory.CuspGL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finsum_subspaceStabilizer_mul_block_functions : ∀ (F : Type) [Field F] [Finite F] (V : Type) [AddCommGroup V] [Module F V] [FiniteDimensional F V] (W : Submodule F V) (Φ : Module.End F W → ℂ) (Φ' : Module.End F (V ⧸ W) → ℂ), ∑ᶠ g : {g : Module.End F V // ∀ x ∈ W, g x ∈ W}, Φ (g.1.restrict g.2) * Φ' (W.mapQ W g.1 (fun x hx => g.2 x hx)) = (Nat.card F : ℂ) ^ (Module.finrank F W * Module.finrank F (V ⧸ W)) * ((∑ᶠ a, Φ a) * ∑ᶠ b, Φ' b) := by
+  atlas_forward_decl GlobalTheory.CuspGL.finsum_stabiliser_mul_blocks
+end
+
+section
+section
+open Polynomial GlobalTheory.CuspGL
+
+namespace GlobalTheory.CuspGL
+
+theorem card_GL_eq_prod_range (F : Type) [Field F] [Finite F] (n : ℕ) :
+    Nat.card (GL (Fin n) F) = ∏ i ∈ Finset.range n, (Nat.card F ^ n - Nat.card F ^ i) := by
+  classical
+  haveI := Fintype.ofFinite F
+  rw [Matrix.card_GL_field, Nat.card_eq_fintype_card,
+    ← Fin.prod_univ_eq_prod_range (fun i => Fintype.card F ^ n - Fintype.card F ^ i)]
+
+theorem card_subspaces_mul_glCard : ∀ (F : Type) [Field F] [Finite F] (V : Type) [AddCommGroup V] [Module F V] [FiniteDimensional F V] (a : ℕ), a ≤ Module.finrank F V → (Nat.card {W : Submodule F V // Module.finrank F W = a} : ℂ) * (Nat.card F : ℂ) ^ (a * (Module.finrank F V - a)) * glCard F a * glCard F (Module.finrank F V - a) = glCard F (Module.finrank F V) := by
+  intro F _ _ V _ _ _ a ha
+  have h := GlobalTheory.T.card_subspaces_of_finrank_mul_card_bases F V a ha
+  obtain ⟨b, hb⟩ := Nat.exists_eq_add_of_le ha
+  have hb' : Module.finrank F V - a = b := by omega
+  rw [hb']
+  rw [hb] at h ⊢
+  unfold glCard
+  rw [card_GL_eq_prod_range, card_GL_eq_prod_range, card_GL_eq_prod_range]
+  have key : Nat.card {W : Submodule F V // Module.finrank F W = a} * Nat.card F ^ (a * b) *
+      (∏ i ∈ Finset.range a, (Nat.card F ^ a - Nat.card F ^ i)) *
+      (∏ i ∈ Finset.range b, (Nat.card F ^ b - Nat.card F ^ i)) =
+      ∏ i ∈ Finset.range (a + b), (Nat.card F ^ (a + b) - Nat.card F ^ i) := by
+    rw [Finset.prod_range_add, ← h]
+    have h2 : ∏ i ∈ Finset.range b, (Nat.card F ^ (a + b) - Nat.card F ^ (a + i)) =
+        Nat.card F ^ (a * b) * ∏ i ∈ Finset.range b, (Nat.card F ^ b - Nat.card F ^ i) := by
+      simp only [pow_add, ← Nat.mul_sub, Finset.prod_mul_distrib, Finset.prod_const,
+        Finset.card_range, pow_mul]
+    rw [h2]
+    ring
+  exact_mod_cast key
+
+end GlobalTheory.CuspGL
+end
+
+open Polynomial GlobalTheory.CuspGL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_subspaces_mul_generalLinearGroupCard : ∀ (F : Type) [Field F] [Finite F] (V : Type) [AddCommGroup V] [Module F V] [FiniteDimensional F V] (a : ℕ), a ≤ Module.finrank F V → (Nat.card {W : Submodule F V // Module.finrank F W = a} : ℂ) * (Nat.card F : ℂ) ^ (a * (Module.finrank F V - a)) * glCard F a * glCard F (Module.finrank F V - a) = glCard F (Module.finrank F V) := by
+  atlas_forward_decl GlobalTheory.CuspGL.card_subspaces_mul_glCard
+end
+
+section
+section
+open Polynomial GlobalTheory.CuspGL
+
+namespace GlobalTheory.CuspGL.MassMult
+
+open Classical in
+
+theorem finsum_subtype_dite {α : Type} [Fintype α] (p : α → Prop) (f : {x // p x} → ℂ) :
+    ∑ᶠ x, f x = ∑ x, if h : p x then f ⟨x, h⟩ else 0 := by
+  rw [finsum_eq_sum_of_fintype, ← Fintype.sum_subtype_add_sum_subtype p]
+  have h1 : ∑ i : {x // ¬ p x}, (if h : p i.1 then f ⟨i.1, h⟩ else 0) = 0 :=
+    Finset.sum_eq_zero fun i _ => dif_neg i.2
+  rw [h1, add_zero]
+  exact Finset.sum_congr rfl fun i _ => by rw [dif_pos i.2]
+
+open Classical in
+
+theorem mass_eq {F : Type} [Field F] {V : Type} [AddCommGroup V] [Module F V] [FiniteDimensional F V]
+    (φ : Module.End F V → ℂ) (P : F[X]) :
+    mass φ P = ∑ᶠ g, if LinearMap.charpoly g = P then φ g else 0 := by
+  unfold mass
+  refine finsum_congr fun g => ?_
+  rw [finsum_eq_if]
+  rfl
+
+theorem finite_pairs {F : Type} [Field F] (P : F[X]) (hP : P.Monic) :
+    {x : F[X] × F[X] | x.1.Monic ∧ x.2.Monic ∧ x.1 * x.2 = P}.Finite := by
+  have h : {g : F[X] | g.Monic ∧ g ∣ P}.Finite := by
+    have := Polynomial.fintypeSubtypeMonicDvd P hP.ne_zero
+    exact Set.finite_coe_iff.mp (Finite.of_fintype {g : F[X] // g.Monic ∧ g ∣ P})
+  refine (h.prod h).subset ?_
+  rintro x ⟨h1, h2, h3⟩
+  exact ⟨⟨h1, h3 ▸ dvd_mul_right _ _⟩, ⟨h2, h3 ▸ dvd_mul_left _ _⟩⟩
+
+theorem finite_end (F : Type) [Field F] [Finite F] (V : Type) [AddCommGroup V] [Module F V]
+    [FiniteDimensional F V] : Finite (Module.End F V) :=
+  Module.finite_of_finite F
+
+theorem mass_eq_zero {F : Type} [Field F] {V : Type} [AddCommGroup V] [Module F V] [FiniteDimensional F V]
+    (φ : Module.End F V → ℂ) (P : F[X]) (h : Module.finrank F V ≠ P.natDegree) : mass φ P = 0 := by
+  rw [mass_eq]
+  refine finsum_eq_zero_of_forall_eq_zero fun g => if_neg ?_
+  rintro rfl
+  exact h (LinearMap.charpoly_natDegree g).symm
+
+open Classical in
+
+theorem indicator_split {F : Type} [Field F] (P : F[X])
+    (T : Finset (F[X] × F[X])) (hT : ∀ x, x ∈ T ↔ x.1.Monic ∧ x.2.Monic ∧ x.1 * x.2 = P)
+    {a b c : F[X]} (ha : a.Monic) (hb : b.Monic) (hc : c = a * b) (z : ℂ) :
+    (if c = P then z else 0) =
+      ∑ x ∈ T, (if a = x.1 then z else 0) * (if b = x.2 then (1 : ℂ) else 0) := by
+  by_cases hg : c = P
+  · rw [if_pos hg, Finset.sum_eq_single (a, b)]
+    · rw [if_pos rfl, if_pos rfl, mul_one]
+    · rintro ⟨b1, b2⟩ _ hb
+      by_cases h1 : a = b1
+      · by_cases h2 : b = b2
+        · exact absurd (by rw [h1, h2]) hb
+        · rw [if_neg h2, mul_zero]
+      · rw [if_neg h1, zero_mul]
+    · intro hn
+      exact (hn ((hT (a, b)).2 ⟨ha, hb, hc.symm.trans hg⟩)).elim
+  · rw [if_neg hg]
+    refine (Finset.sum_eq_zero ?_).symm
+    rintro ⟨b1, b2⟩ hb
+    by_cases h1 : a = b1
+    · by_cases h2 : b = b2
+      · refine absurd ?_ hg
+        rw [hc, h1, h2]
+        exact ((hT (b1, b2)).1 hb).2.2
+      · rw [if_neg h2, mul_zero]
+    · rw [if_neg h1, zero_mul]
+
+open Classical in
+
+theorem stab_sum (F : Type) [Field F] [Finite F] (V : Type) [AddCommGroup V] [Module F V]
+    [FiniteDimensional F V] (W : Submodule F V) (φ : Module.End F W → ℂ) (P : F[X])
+    (T : Finset (F[X] × F[X])) (hT : ∀ x, x ∈ T ↔ x.1.Monic ∧ x.2.Monic ∧ x.1 * x.2 = P) :
+    ∑ᶠ g : {g : Module.End F V // ∀ x ∈ W, g x ∈ W},
+        (if LinearMap.charpoly g.1 = P then φ (g.1.restrict g.2) else 0) =
+      ∑ x ∈ T, (Nat.card F : ℂ) ^ (Module.finrank F W * Module.finrank F (V ⧸ W)) *
+        (mass φ x.1 * mass (fun _ : Module.End F (V ⧸ W) => (1 : ℂ)) x.2) := by
+  have := finite_end F V
+  have := Fintype.ofFinite {g : Module.End F V // ∀ x ∈ W, g x ∈ W}
+  have key : ∀ g : {g : Module.End F V // ∀ x ∈ W, g x ∈ W},
+      (if LinearMap.charpoly g.1 = P then φ (g.1.restrict g.2) else 0) =
+      ∑ x ∈ T, (if LinearMap.charpoly (g.1.restrict g.2) = x.1 then φ (g.1.restrict g.2) else 0) *
+        (if LinearMap.charpoly (W.mapQ W g.1 (fun x hx => g.2 x hx)) = x.2 then (1 : ℂ) else 0) := by
+    intro g
+    have hc := (GlobalTheory.T.charpoly_block_and_invariant_under_stabilizerNilradical F V W g.1 g.2).1
+    exact indicator_split P T hT (LinearMap.charpoly_monic _) (LinearMap.charpoly_monic _) hc _
+  rw [finsum_congr key, finsum_eq_sum_of_fintype, Finset.sum_comm]
+  refine Finset.sum_congr rfl fun x _ => ?_
+  rw [mass_eq, mass_eq, ← finsum_eq_sum_of_fintype]
+  exact GlobalTheory.T.finsum_subspaceStabilizer_mul_block_functions F V W (fun a => if LinearMap.charpoly a = x.1 then φ a else 0)
+    (fun b => if LinearMap.charpoly b = x.2 then (1 : ℂ) else 0)
+
+theorem glCard_ne_zero (F : Type) [Field F] [Finite F] (n : ℕ) : glCard F n ≠ 0 := by
+  unfold glCard
+  exact_mod_cast (Nat.card_pos (α := GL (Fin n) F)).ne'
+
+theorem mass_mult : ∀ (F : Type) [Field F] [Finite F] (V : Type) [AddCommGroup V] [Module F V] [FiniteDimensional F V] (Φ : ∀ (V : Type) [AddCommGroup V] [Module F V] [FiniteDimensional F V], Module.End F V → ℂ), (∀ (V V' : Type) [AddCommGroup V] [Module F V] [FiniteDimensional F V] [AddCommGroup V'] [Module F V'] [FiniteDimensional F V'] (e : V ≃ₗ[F] V') (g : Module.End F V), Φ V' (e.conj g) = Φ V g) → ∀ P : F[X], P.Monic → P.natDegree = Module.finrank F V → mass (fun g : Module.End F V => ∑ᶠ W : {W : Submodule F V // ∀ x ∈ W, g x ∈ W}, Φ W.1 (g.restrict W.2)) P / glCard F P.natDegree = conv (fun D => mass (Φ (Fin D.natDegree → F)) D / glCard F D.natDegree) mu P := by
+  classical
+  intro F _ _ V _ _ _ Φ hΦ P hP hdeg
+  have := finite_end F V
+  have : Finite V := Module.finite_of_finite F
+  have := Fintype.ofFinite (Module.End F V)
+  have := Fintype.ofFinite (Submodule F V)
+  have hfin := finite_pairs P hP
+  have hT : ∀ x, x ∈ hfin.toFinset ↔ x.1.Monic ∧ x.2.Monic ∧ x.1 * x.2 = P := fun x => by
+    rw [Set.Finite.mem_toFinset]; rfl
+  have h1 : mass (fun g : Module.End F V => ∑ᶠ W : {W : Submodule F V // ∀ x ∈ W, g x ∈ W},
+      Φ W.1 (g.restrict W.2)) P = ∑ W : Submodule F V,
+      ∑ᶠ g : {g : Module.End F V // ∀ x ∈ W, g x ∈ W},
+        (if LinearMap.charpoly g.1 = P then Φ W (g.1.restrict g.2) else 0) := by
+    rw [mass_eq, finsum_eq_sum_of_fintype]
+    simp only [finsum_subtype_dite]
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun g _ => ?_
+    by_cases hg : LinearMap.charpoly g = P
+    · simp only [if_pos hg]
+    · simp only [if_neg hg, dite_eq_ite, ite_self, Finset.sum_const_zero]
+  rw [h1, conv, finsum_mem_eq_finite_toFinset_sum _ hfin]
+  simp only [fun W : Submodule F V => stab_sum F V W (Φ W) P _ hT]
+  rw [Finset.sum_comm, Finset.sum_div]
+  refine Finset.sum_congr rfl ?_
+  rintro ⟨D, E⟩ hx
+  obtain ⟨hD, hE, hDE⟩ := (hT _).1 hx
+  simp only at hD hE hDE ⊢
+  have hsum : D.natDegree + E.natDegree = Module.finrank F V := by
+    rw [← hdeg, ← hDE, hD.natDegree_mul hE]
+  have h2 : ∀ W : Submodule F V, (Nat.card F : ℂ) ^ (Module.finrank F W * Module.finrank F (V ⧸ W)) *
+      (mass (Φ W) D * mass (fun _ : Module.End F (V ⧸ W) => (1 : ℂ)) E) =
+      if Module.finrank F W = D.natDegree then (Nat.card F : ℂ) ^ (D.natDegree * E.natDegree) *
+        (mass (Φ (Fin D.natDegree → F)) D *
+          mass (fun _ : Module.End F (Fin E.natDegree → F) => (1 : ℂ)) E) else 0 := by
+    intro W
+    by_cases hW : Module.finrank F W = D.natDegree
+    · have hq : Module.finrank F (V ⧸ W) = E.natDegree := by
+        have := Submodule.finrank_quotient_add_finrank W
+        omega
+      rw [if_pos hW, GlobalTheory.T.endomorphismMass_eq_of_linearEquiv_invariant F W Φ hΦ D hW.symm,
+        GlobalTheory.T.endomorphismMass_eq_of_linearEquiv_invariant F (V ⧸ W) (fun _ _ _ _ _ => (1 : ℂ)) (fun _ _ _ _ _ _ _ _ _ _ => rfl) E hq.symm,
+        hW, hq]
+    · rw [if_neg hW, mass_eq_zero _ _ hW, zero_mul, mul_zero]
+  have h3 := GlobalTheory.T.card_subspaces_mul_generalLinearGroupCard F V D.natDegree (by omega)
+  have h4 : Module.finrank F V - D.natDegree = E.natDegree := by omega
+  rw [h4, Nat.card_eq_fintype_card (α := {W : Submodule F V // Module.finrank F W = D.natDegree}),
+    Fintype.card_subtype] at h3
+  rw [Finset.sum_congr rfl fun W _ => h2 W, ← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul, hdeg, mu]
+  have g1 := glCard_ne_zero F D.natDegree
+  have g2 := glCard_ne_zero F E.natDegree
+  have g3 := glCard_ne_zero F (Module.finrank F V)
+  rw [div_mul_div_comm, div_eq_div_iff g3 (mul_ne_zero g1 g2), ← h3]
+  ring
+
+end GlobalTheory.CuspGL.MassMult
+end
+
+open Polynomial GlobalTheory.CuspGL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.endomorphismMass_mul_parabolic_induction_trivial : ∀ (F : Type) [Field F] [Finite F] (V : Type) [AddCommGroup V] [Module F V] [FiniteDimensional F V] (Φ : ∀ (V : Type) [AddCommGroup V] [Module F V] [FiniteDimensional F V], Module.End F V → ℂ), (∀ (V V' : Type) [AddCommGroup V] [Module F V] [FiniteDimensional F V] [AddCommGroup V'] [Module F V'] [FiniteDimensional F V'] (e : V ≃ₗ[F] V') (g : Module.End F V), Φ V' (e.conj g) = Φ V g) → ∀ P : F[X], P.Monic → P.natDegree = Module.finrank F V → mass (fun g : Module.End F V => ∑ᶠ W : {W : Submodule F V // ∀ x ∈ W, g x ∈ W}, Φ W.1 (g.restrict W.2)) P / glCard F P.natDegree = conv (fun D => mass (Φ (Fin D.natDegree → F)) D / glCard F D.natDegree) mu P := by
+  atlas_forward_decl GlobalTheory.CuspGL.MassMult.mass_mult
+end
+
+section
+section
+open Polynomial GlobalTheory.CuspGL
+
+namespace GlobalTheory.CuspGL
+
+theorem finsum_card_cyclic_eq (F : Type) [Field F] [Finite F] (V : Type) [AddCommGroup V]
+    [Module F V] [FiniteDimensional F V] (g : Module.End F V) :
+    ∑ᶠ W : {W : Submodule F V // ∀ x ∈ W, g x ∈ W},
+      (Nat.card {v : W.1 // ∀ U : Submodule F (W.1),
+        (∀ x ∈ U, (g.restrict W.2) x ∈ U) → v ∈ U → U = ⊤} : ℂ)
+      = (Nat.card F : ℂ) ^ Module.finrank F V := by
+  classical
+  haveI : Finite V := Module.finite_of_finite F
+  haveI : Finite (Submodule F V) :=
+    Finite.of_injective (fun W : Submodule F V => (W : Set V)) SetLike.coe_injective
+  haveI : Fintype {W : Submodule F V // ∀ x ∈ W, g x ∈ W} := Fintype.ofFinite _
+  have key : ∀ (W W' : {W : Submodule F V // ∀ x ∈ W, g x ∈ W}) (v : W.1),
+      (∀ U : Submodule F (W.1), (∀ x ∈ U, (g.restrict W.2) x ∈ U) → v ∈ U → U = ⊤) →
+      (v : V) ∈ W'.1 → W.1 ≤ W'.1 := by
+    intro W W' v hv hv' x hx
+    have h := hv (W'.1.comap W.1.subtype) (fun y hy => W'.2 _ hy) hv'
+    have : (⟨x, hx⟩ : W.1) ∈ W'.1.comap W.1.subtype := h ▸ Submodule.mem_top
+    exact this
+  let f : (Σ W : {W : Submodule F V // ∀ x ∈ W, g x ∈ W}, {v : W.1 // ∀ U : Submodule F (W.1),
+        (∀ x ∈ U, (g.restrict W.2) x ∈ U) → v ∈ U → U = ⊤}) → V := fun p => (p.2.1 : V)
+  have hf : Function.Bijective f := by
+    constructor
+    · rintro ⟨W, v, hv⟩ ⟨W', v', hv'⟩ h
+      have h' : (v : V) = v' := h
+      have hW : W = W' := Subtype.ext (le_antisymm (key W W' v hv (h' ▸ v'.2))
+        (key W' W v' hv' (h' ▸ v.2)))
+      subst hW
+      have : v = v' := Subtype.ext h'
+      subst this
+      rfl
+    · intro v
+      let S : Set (Submodule F V) := {U | (∀ x ∈ U, g x ∈ U) ∧ v ∈ U}
+      have hinv : ∀ x ∈ sInf S, g x ∈ sInf S := by
+        intro x hx
+        rw [Submodule.mem_sInf] at hx ⊢
+        exact fun p hp => hp.1 x (hx p hp)
+      have hv : v ∈ sInf S := by
+        rw [Submodule.mem_sInf]
+        exact fun p hp => hp.2
+      refine ⟨⟨⟨sInf S, hinv⟩, ⟨v, hv⟩, ?_⟩, rfl⟩
+      intro U hU hvU
+      have hle : sInf S ≤ U.map (sInf S).subtype := by
+        refine sInf_le ⟨?_, ⟨_, hvU, rfl⟩⟩
+        rintro _ ⟨y, hy, rfl⟩
+        exact ⟨_, hU y hy, rfl⟩
+      rw [eq_top_iff]
+      rintro ⟨x, hx⟩ -
+      obtain ⟨y, hy, hyx⟩ := hle hx
+      have : y = ⟨x, hx⟩ := Subtype.ext hyx
+      exact this ▸ hy
+  have hc := Nat.card_congr (Equiv.ofBijective f hf)
+  rw [Nat.card_sigma, Module.natCard_eq_pow_finrank (K := F)] at hc
+  rw [finsum_eq_sum_of_fintype]
+  exact_mod_cast hc
+
+end GlobalTheory.CuspGL
+end
+
+open Polynomial GlobalTheory.CuspGL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finsum_card_cyclic_vectors_invariant_subspaces : ∀ (F : Type) [Field F] [Finite F] (V : Type) [AddCommGroup V] [Module F V] [FiniteDimensional F V] (g : Module.End F V), ∑ᶠ W : {W : Submodule F V // ∀ x ∈ W, g x ∈ W}, (Nat.card {v : W.1 // ∀ U : Submodule F (W.1), (∀ x ∈ U, (g.restrict W.2) x ∈ U) → v ∈ U → U = ⊤} : ℂ) = (Nat.card F : ℂ) ^ Module.finrank F V := by
+  atlas_forward_decl GlobalTheory.CuspGL.finsum_card_cyclic_eq
+end
+
+section
+section
+open Polynomial GlobalTheory.CuspGL
+
+noncomputable section
+
+namespace GlobalTheory.CuspGL.CyclicMass
+
+variable {F : Type} [Field F]
+
+theorem charpoly_mulLeft_root (D : F[X]) (hD : D.Monic) [FiniteDimensional F (AdjoinRoot D)] :
+    LinearMap.charpoly (LinearMap.mulLeft F (AdjoinRoot.root D)) = D := by
+  have h := charpoly_leftMulMatrix (AdjoinRoot.powerBasis' hD)
+  rw [AdjoinRoot.powerBasis'_gen] at h
+  have h2 : minpoly F (AdjoinRoot.root D) = D := by
+    rw [AdjoinRoot.minpoly_root hD.ne_zero, hD.leadingCoeff]; simp
+  rw [h2] at h
+  rw [← LinearMap.charpoly_toMatrix _ (AdjoinRoot.powerBasis' hD).basis]
+  exact h
+
+theorem map_mk {V : Type} [AddCommGroup V] [Module F V] (D : F[X]) (f : AdjoinRoot D →ₗ[F] V)
+    (g : Module.End F V) (h : ∀ a, f (AdjoinRoot.root D * a) = g (f a)) (p : F[X]) :
+    f (AdjoinRoot.mk D p) = aeval g p (f 1) := by
+  induction p using Polynomial.induction_on with
+  | C a =>
+    have : AdjoinRoot.mk D (C a) = a • (1 : AdjoinRoot D) := by
+      rw [Algebra.smul_def, mul_one]; rfl
+    rw [this, map_smul]; simp
+  | add p q hp hq => simp [hp, hq]
+  | monomial n a ih =>
+    have : C a * X ^ (n + 1) = X * (C a * X ^ n) := by ring
+    rw [this, map_mul, AdjoinRoot.mk_X, h, ih, map_mul (aeval g) X, aeval_X, Module.End.mul_apply]
+
+theorem cyclic_one (D : F[X]) (U : Submodule F (AdjoinRoot D))
+    (hU : ∀ a ∈ U, AdjoinRoot.root D * a ∈ U) (h1 : (1 : AdjoinRoot D) ∈ U) : U = ⊤ := by
+  rw [eq_top_iff]
+  intro a _
+  obtain ⟨p, rfl⟩ := AdjoinRoot.mk_surjective a
+  induction p using Polynomial.induction_on with
+  | C a =>
+    have : AdjoinRoot.mk D (C a) = a • (1 : AdjoinRoot D) := by
+      rw [Algebra.smul_def, mul_one]; rfl
+    rw [this]; exact U.smul_mem _ h1
+  | add p q hp hq => rw [map_add]; exact U.add_mem (hp trivial) (hq trivial)
+  | monomial n a ih =>
+    have : C a * X ^ (n + 1) = X * (C a * X ^ n) := by ring
+    rw [this, map_mul, AdjoinRoot.mk_X]
+    exact hU _ (ih trivial)
+
+theorem card_pairs {V : Type} [AddCommGroup V] [Module F V] [FiniteDimensional F V] (D : F[X]) (hD : D.Monic)
+    (hV : Module.finrank F V = D.natDegree) :
+    Nat.card (AdjoinRoot D ≃ₗ[F] V) =
+      Nat.card (Σ g : {g : Module.End F V // LinearMap.charpoly g = D},
+        {v : V // ∀ U : Submodule F V, (∀ x ∈ U, g.1 x ∈ U) → v ∈ U → U = ⊤}) := by
+  haveI : FiniteDimensional F (AdjoinRoot D) := (AdjoinRoot.powerBasis' hD).finite
+  have hA : Module.finrank F (AdjoinRoot D) = D.natDegree := (AdjoinRoot.powerBasis' hD).finrank
+  let Φ : (AdjoinRoot D ≃ₗ[F] V) → (Σ g : {g : Module.End F V // LinearMap.charpoly g = D},
+        {v : V // ∀ U : Submodule F V, (∀ x ∈ U, g.1 x ∈ U) → v ∈ U → U = ⊤}) := fun e =>
+    ⟨⟨e.conj (LinearMap.mulLeft F (AdjoinRoot.root D)), by
+        rw [LinearEquiv.charpoly_conj, charpoly_mulLeft_root D hD]⟩,
+      ⟨e 1, fun U hU h1 => by
+        have := cyclic_one D (U.comap e.toLinearMap) (fun a ha => by
+          have := hU _ ha
+          simpa [LinearEquiv.conj_apply] using this) h1
+        rw [eq_top_iff]
+        intro v _
+        have h2 : e.symm v ∈ U.comap e.toLinearMap := this ▸ Submodule.mem_top
+        simpa using h2⟩⟩
+  have hΦ : ∀ (e : AdjoinRoot D ≃ₗ[F] V) (p : F[X]),
+      e (AdjoinRoot.mk D p) = aeval (Φ e).1.1 p (Φ e).2.1 := fun e p =>
+    map_mk D e.toLinearMap _ (fun a => by simp [Φ, LinearEquiv.conj_apply]) p
+  refine Nat.card_congr (Equiv.ofBijective Φ ⟨?_, ?_⟩)
+  · intro e e' h
+    ext a
+    obtain ⟨p, rfl⟩ := AdjoinRoot.mk_surjective a
+    rw [hΦ, hΦ, h]
+  · rintro ⟨⟨g, hg⟩, ⟨v, hv⟩⟩
+    have h0 : aeval g D = 0 := hg ▸ LinearMap.aeval_self_charpoly g
+    let f : AdjoinRoot D →ₗ[F] V :=
+      (LinearMap.applyₗ v) ∘ₗ (aeval g).toLinearMap ∘ₗ AdjoinRoot.modByMonicHom hD
+    have hf : ∀ p, f (AdjoinRoot.mk D p) = aeval g p v := fun p => by
+      simp [f, AdjoinRoot.modByMonicHom_mk, Polynomial.aeval_modByMonic_eq_self_of_root h0]
+    have hf1 : f 1 = v := by simpa using hf 1
+    have hfx : ∀ a, f (AdjoinRoot.root D * a) = g (f a) := fun a => by
+      obtain ⟨p, rfl⟩ := AdjoinRoot.mk_surjective a
+      rw [← AdjoinRoot.mk_X, ← map_mul, hf, hf]; simp
+    have hs : Function.Surjective f := by
+      rw [← LinearMap.range_eq_top]
+      refine hv _ ?_ ⟨1, hf1⟩
+      rintro _ ⟨a, rfl⟩
+      exact ⟨_, hfx a⟩
+    have hi : Function.Injective f :=
+      (LinearMap.injective_iff_surjective_of_finrank_eq_finrank (hA.trans hV.symm)).2 hs
+    refine ⟨LinearEquiv.ofBijective f ⟨hi, hs⟩, ?_⟩
+    have hg' : (Φ (LinearEquiv.ofBijective f ⟨hi, hs⟩)).1 = ⟨g, hg⟩ := by
+      apply Subtype.ext
+      ext w
+      obtain ⟨a, rfl⟩ := (LinearEquiv.ofBijective f ⟨hi, hs⟩).surjective w
+      simp only [Φ, LinearEquiv.conj_apply, LinearMap.comp_apply, LinearEquiv.coe_coe,
+        LinearEquiv.symm_apply_apply]
+      exact hfx a
+    refine Sigma.ext hg' ?_
+    refine (Subtype.heq_iff_coe_eq ?_).2 hf1
+    intro w
+    rw [hg']
+
+end GlobalTheory.CuspGL.CyclicMass
+
+namespace GlobalTheory.CuspGL
+
+theorem mass_card_cyclic (F : Type) [Field F] [Finite F] (D : F[X]) (hD : D.Monic) :
+    mass (fun g : Module.End F (Fin D.natDegree → F) =>
+      (Nat.card {v : Fin D.natDegree → F // ∀ U : Submodule F (Fin D.natDegree → F),
+        (∀ x ∈ U, g x ∈ U) → v ∈ U → U = ⊤} : ℂ)) D = glCard F D.natDegree := by
+  classical
+  haveI : FiniteDimensional F (AdjoinRoot D) := (AdjoinRoot.powerBasis' hD).finite
+  have hA : Module.finrank F (AdjoinRoot D) = D.natDegree := (AdjoinRoot.powerBasis' hD).finrank
+  have h := CyclicMass.card_pairs (V := Fin D.natDegree → F) D hD (by simp)
+  haveI : Finite (Module.End F (Fin D.natDegree → F)) :=
+    Finite.of_injective _ DFunLike.coe_injective
+  haveI := Fintype.ofFinite {g : Module.End F (Fin D.natDegree → F) // LinearMap.charpoly g = D}
+  rw [Nat.card_sigma] at h
+  let e0 : AdjoinRoot D ≃ₗ[F] (Fin D.natDegree → F) :=
+    LinearEquiv.ofFinrankEq _ _ (by simp [hA])
+  have h2 : Nat.card (AdjoinRoot D ≃ₗ[F] (Fin D.natDegree → F)) = Nat.card (GL (Fin D.natDegree) F) := by
+    refine Nat.card_congr (Equiv.trans ?_ (Matrix.GeneralLinearGroup.toLin.trans
+      (LinearMap.GeneralLinearGroup.generalLinearEquiv F _)).toEquiv.symm)
+    exact ⟨fun e => e0.symm.trans e, fun e => e0.trans e, fun e => by ext; simp, fun e => by ext; simp⟩
+  rw [glCard, ← h2, h, mass, ← finsum_set_coe_eq_finsum_mem, Nat.cast_sum]
+  exact finsum_eq_sum_of_fintype (α := {g : Module.End F (Fin D.natDegree → F) // LinearMap.charpoly g = D}) _
+
+end GlobalTheory.CuspGL
+end
+end
+
+open Polynomial GlobalTheory.CuspGL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.endomorphismMassOfCharpoly_card_cyclic_vectors : ∀ (F : Type) [Field F] [Finite F] (D : F[X]), D.Monic → mass (fun g : Module.End F (Fin D.natDegree → F) => (Nat.card {v : Fin D.natDegree → F // ∀ U : Submodule F (Fin D.natDegree → F), (∀ x ∈ U, g x ∈ U) → v ∈ U → U = ⊤} : ℂ)) D = glCard F D.natDegree := by
+  atlas_forward_decl GlobalTheory.CuspGL.mass_card_cyclic
+end
+
+section
+section
+open Polynomial GlobalTheory.CuspGL
+
+namespace GlobalTheory.CuspGL
+
+theorem cyclic_conj {F : Type} [Field F] {V V' : Type} [AddCommGroup V] [Module F V]
+    [AddCommGroup V'] [Module F V'] (e : V ≃ₗ[F] V') (g : Module.End F V) (v : V) :
+    (∀ U : Submodule F V, (∀ x ∈ U, g x ∈ U) → v ∈ U → U = ⊤) ↔
+      (∀ U : Submodule F V', (∀ x ∈ U, (e.conj g) x ∈ U) → e v ∈ U → U = ⊤) := by
+  constructor
+  · intro h U hU hv
+    have h1 : U.comap (e : V →ₗ[F] V') = ⊤ := by
+      refine h _ (fun x hx => ?_) hv
+      have := hU (e x) hx
+      simpa [LinearEquiv.conj_apply] using this
+    refine eq_top_iff.2 fun y _ => ?_
+    have : e.symm y ∈ U.comap (e : V →ₗ[F] V') := h1 ▸ Submodule.mem_top
+    simpa using this
+  · intro h U hU hv
+    have h1 : U.comap (e.symm : V' →ₗ[F] V) = ⊤ := by
+      refine h _ (fun x hx => ?_) (by simpa using hv)
+      have := hU (e.symm x) hx
+      simpa [LinearEquiv.conj_apply] using this
+    refine eq_top_iff.2 fun y _ => ?_
+    have : e y ∈ U.comap (e.symm : V' →ₗ[F] V) := h1 ▸ Submodule.mem_top
+    simpa using this
+
+theorem glCard_ne_zero_of_finite (F : Type) [Field F] [Finite F] (n : ℕ) : glCard F n ≠ 0 := by
+  unfold glCard
+  exact_mod_cast (Nat.card_pos (α := GL (Fin n) F)).ne'
+
+theorem mass_const {F : Type} [Field F] [Finite F] {V : Type} [AddCommGroup V] [Module F V]
+    [FiniteDimensional F V] (c : ℂ) (P : F[X]) :
+    mass (fun _ : Module.End F V => c) P = c * mass (fun _ : Module.End F V => (1 : ℂ)) P := by
+  unfold mass
+  haveI : Finite V := Module.finite_of_finite F
+  haveI : Finite (Module.End F V) := Finite.of_injective (fun g : Module.End F V => (g : V → V))
+    DFunLike.coe_injective
+  have hs : {g : Module.End F V | LinearMap.charpoly g = P}.Finite := Set.toFinite _
+  rw [finsum_mem_eq_finite_toFinset_sum _ hs, finsum_mem_eq_finite_toFinset_sum _ hs]
+  simp [mul_comm]
+
+theorem mu_one (F : Type) [Field F] : mu (1 : F[X]) = 1 := by
+  unfold mu
+  have h : ∀ n : ℕ, n = 0 →
+      mass (fun _ : Module.End F (Fin n → F) => (1 : ℂ)) 1 / glCard F n = 1 := by
+    rintro n rfl
+    have h1 : glCard F 0 = 1 := by
+      unfold glCard
+      haveI : Subsingleton (GL (Fin 0) F) := ⟨fun a b => Units.ext (Subsingleton.elim _ _)⟩
+      rw [Nat.card_unique]
+      simp
+    have h2 : {g : Module.End F (Fin 0 → F) | LinearMap.charpoly g = 1} = {0} := by
+      ext g
+      have hg : g = 0 := Subsingleton.elim _ _
+      have hc : LinearMap.charpoly g = 1 := by
+        apply (LinearMap.charpoly_monic g).natDegree_eq_zero.1
+        rw [LinearMap.charpoly_natDegree]
+        simp
+      simp only [Set.mem_setOf_eq, Set.mem_singleton_iff]
+      exact ⟨fun _ => hg, fun _ => hc⟩
+    unfold mass
+    rw [h1, h2, finsum_mem_singleton]
+    simp
+  exact h _ natDegree_one
+
+theorem mu_rec : ∀ (F : Type) [Field F] [Finite F] (P : F[X]), P.Monic →
+    (Nat.card F : ℂ) ^ P.natDegree * mu P = conv (fun _ => 1) mu P ∧ mu (1 : F[X]) = 1 := by
+  intro F _ _ P hP
+  refine ⟨?_, mu_one F⟩
+  have key := GlobalTheory.T.endomorphismMass_mul_parabolic_induction_trivial F (Fin P.natDegree → F)
+    (fun V _ _ _ g => (Nat.card {v : V // ∀ U : Submodule F V, (∀ x ∈ U, g x ∈ U) → v ∈ U → U = ⊤} : ℂ))
+    (by
+      intro V V' _ _ _ _ _ _ e g
+      congr 1
+      exact (Nat.card_congr (e.toEquiv.subtypeEquiv fun v => cyclic_conj e g v)).symm)
+    P hP (by simp)
+  simp only [GlobalTheory.T.finsum_card_cyclic_vectors_invariant_subspaces] at key
+  rw [mass_const] at key
+  have hr : conv (fun D : F[X] => mass (fun g : Module.End F (Fin D.natDegree → F) =>
+      (Nat.card {v : Fin D.natDegree → F // ∀ U : Submodule F (Fin D.natDegree → F),
+        (∀ x ∈ U, g x ∈ U) → v ∈ U → U = ⊤} : ℂ)) D / glCard F D.natDegree) mu P
+      = conv (fun _ => 1) mu P := by
+    unfold conv
+    refine finsum_mem_congr rfl fun x hx => ?_
+    beta_reduce
+    rw [GlobalTheory.T.endomorphismMassOfCharpoly_card_cyclic_vectors F x.1 hx.1, div_self (glCard_ne_zero_of_finite F _)]
+  rw [← hr, ← key]
+  unfold mu
+  simp [mul_div_assoc]
+
+end GlobalTheory.CuspGL
+end
+
+open Polynomial GlobalTheory.CuspGL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.charpolyEndomorphismDensityGL_recursion : ∀ (F : Type) [Field F] [Finite F] (P : F[X]), P.Monic → (Nat.card F : ℂ) ^ P.natDegree * mu P = conv (fun _ => 1) mu P ∧ mu (1 : F[X]) = 1 := by
+  atlas_forward_decl GlobalTheory.CuspGL.mu_rec
+end
+
+section
 open Polynomial GlobalTheory.CuspGL
 
 namespace GlobalTheory.CuspGL
@@ -50,3 +977,4 @@ theorem mass_psi_eq_glCard_mul_mangoldt_div :
   rw [hV, mul_div_assoc, ← hc, mul_div_cancel₀ _ hg]
 
 end GlobalTheory.CuspGL
+end

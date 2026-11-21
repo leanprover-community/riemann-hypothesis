@@ -30,13 +30,6 @@ theorem hom_eq_iff_forall_isAlgClosed [IsReduced T] (s : Y ⟶ S) [IsSeparated s
   refine ext_of_isDominant_of_isSeparated s (by simp only [Category.assoc, h]) ι ?_
   simpa only [Category.assoc] using H _ (ι ≫ x)
 
-theorem over_hom_eq_iff_forall_field {T Y : Over S} [IsReduced T.left] [IsSeparated Y.hom]
-    {f g : T ⟶ Y} :
-    f = g ↔ ∀ (k : Type u) [Field k] (t : Spec (.of k) ⟶ S) (x : Over.mk t ⟶ T),
-      x ≫ f = x ≫ g := by
-  refine ⟨fun e _ _ _ _ => e ▸ rfl, fun H => Over.OverMorphism.ext ?_⟩
-  refine (hom_eq_iff_forall_field Y.hom ((Over.w f).trans (Over.w g).symm)).mpr fun k _ x => ?_
-  exact congrArg (·.left) (H k (x ≫ T.hom) (Over.homMk x rfl))
 
 variable {R : Type u} [CommRing R]
 
@@ -375,11 +368,6 @@ theorem ofAffinePoint_of_represents {P : Fin 3 → k} {p : (W.baseChange k).toAf
     ofAffinePoint W k p = ptOver W P (.of_nonsingular h.left) :=
   h.right ▸ ofAffinePoint_toAffine W h.left
 
-theorem ofAffinePoint_injective : Function.Injective (ofAffinePoint W k) := by
-  classical
-  exact (ofProjectivePoint_injective W k).comp
-    (WeierstrassCurve.Projective.Point.toAffineAddEquiv
-      (W.baseChange k).toProjective).symm.injective
 
 variable {k K} in
 
@@ -472,12 +460,6 @@ theorem affinePointEquiv_symm_of_left_eq [DecidableEq k] [DecidableEq K] {S : Ty
 
 end Field
 
-theorem hom_schemeOver_eq_iff {T : Over (Spec (.of R))} [IsReduced T.left]
-    {f g : T ⟶ schemeOver W} :
-    f = g ↔ ∀ (k : Type u) [Field k] [Algebra R k]
-      (x : Over.mk (Spec.map (CommRingCat.ofHom (algebraMap R k))) ⟶ T), x ≫ f = x ≫ g :=
-  have : IsSeparated (schemeOver W).hom := inferInstanceAs (IsSeparated (toSpec W))
-  over_hom_eq_iff_forall_field_algebra
 
 theorem points :
     (∀ (A : Type u) [CommRing A] [Algebra R A] (P Q : Fin 3 → A)

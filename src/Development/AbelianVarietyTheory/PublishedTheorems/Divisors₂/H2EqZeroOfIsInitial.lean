@@ -71,30 +71,9 @@ theorem dual_unique {B' : Over S} [GrpObj B'] {P' : LB (A ⊗ B').left} (h : IsD
   exact ⟨⟨x, y, point_ext h (by rw [← Category.assoc, hy, hx, Category.comp_id]),
     point_ext h' (by rw [← Category.assoc, hx, hy, Category.comp_id])⟩⟩
 
-theorem id_eq_one_of_dual (h : IsDual A B P) (h' : IsDual B A (swap P)) (e : 𝟙 B = 1) : 𝟙 A = 1 := by
-  have p := h.isPerfect h'
-  refine p.ker_left _ _ ((triv_ev_iff h.isLB _ _).2 ?_)
-  rw [← Category.comp_id (snd A B), e, MonObj.comp_one, evc_one_right h.isLB h.zero]
 
-theorem id_eq_one_of_triv (h : IsDual A B (LB.triv _)) : 𝟙 B = 1 :=
-  h.eq_one _ ((triv_ev_iff h.isLB _ _).2 (map_zero _))
 
-theorem isDual_unit_swap : IsDual (𝟙_ (Over S)) (𝟙_ (Over S)) (swap (LB.triv _)) := by
-  have hs : (swap (LB.triv (𝟙_ (Over S) ⊗ 𝟙_ (Over S)).left)).IsLB := pull_isLB (LB.isLB_triv _) _
-  have h0 : ∀ (Y : Over S) (a b : Y ⟶ 𝟙_ (Over S)), evc hs a b = 0 := fun _ _ _ ↦ by
-    rw [evc_swap (LB.isLB_triv _)]; exact map_zero _
-  refine ⟨hs, (isAdditive_iff hs).2 fun _ _ _ _ ↦ by simp only [h0, add_zero],
-    (triv_ev_iff hs _ _).2 (h0 _ _ _), fun T M hM ha ↦ ⟨toUnit T, ?_, fun _ _ ↦ toUnit_unique _ _⟩⟩
-  refine (cls_eq_iff hM (pull_isLB hs _)).1 ?_
-  have e := ha.evc_one hM (snd (𝟙_ (Over S)) T)
-  rw [toUnit_unique 1 (fst _ T), evc, lift_fst_snd, Over.id_left, CechPic.pull_id] at e
-  rw [e, cls_ev hs, h0]
 
-theorem elliptic_dual (H : DualAbelianScheme) {R : Type} [CommRing R] (W : WeierstrassCurve R) [W.IsElliptic] :
-    ∃ (B : Over (Sp R)) (_ : GrpObj B) (P : LB ((WeierstrassCurve.ellPolAV W).A ⊗ B).left), IsAbelianScheme B ∧
-      SmoothOfRelativeDimension 1 B.hom ∧ IsPerfect _ B P := by
-  obtain ⟨B, _, P, hB, hg, h, h'⟩ := H _ _ (WeierstrassCurve.ellPolAV W).isAb
-  exact ⟨B, _, P, hB, hg 1 (WeierstrassCurve.ellPolAV W).smoothDim, h.isPerfect h'⟩
 
 end Dual
 
@@ -152,17 +131,6 @@ theorem trivial_case {X : Scheme.{0}} (s : X ⟶ Sp R) (m : IsMor (dp0 R) s (dp0
   ⟨by rw [show (m.pull1 : _ → _) = id from funext m.pullCohomologyOne_id]; exact Function.bijective_id,
     by rw [show (m.pull2 : _ → _) = id from funext m.pullCohomologyTwo_id]; exact Function.bijective_id⟩
 
-theorem elliptic_crystal (H : CrystallineDeRham) (R : Type) [CommRing R] (W : WeierstrassCurve (DualNumber R))
-    [W.IsElliptic] : ∃ (i : _) (m : IsMor (dp0 _) (WeierstrassCurve.ellPolAV W).A.hom (epsDP R)
-      ((WeierstrassCurve.ellPolAV (W.map (TrivSqZeroExt.fstHom R R R).toRingHom)).A.hom ≫
-        spMap (TrivSqZeroExt.fstHom R R R).toRingHom) (RingHom.id _) i),
-      Function.Bijective m.pull1 ∧ Function.Bijective m.pull2 := by
-  have h := GlobalTheory.WeierstrassCurve.isGrpPullback_ellPolAV W (TrivSqZeroExt.fstHom R R R).toRingHom rfl
-  have := (WeierstrassCurve.ellPolAV W).isAb.smooth
-  have := (WeierstrassCurve.ellPolAV W).isAb.proper
-  exact ⟨_, IsMor.of_dividedPowersZeroIdeal _ (by rw [Cris.spMap_id, Category.comp_id]; exact h.1.w),
-    H _ _ _ (isDPNilpotent_squareZero _) R _ (fun r ↦ ⟨TrivSqZeroExt.inl r, rfl⟩) rfl _ _ _ _ _ inferInstance inferInstance
-      inferInstance h.1 _⟩
 
 end Crystal
 

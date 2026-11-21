@@ -7,11 +7,204 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.F
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeckeCharacterAbsoluteValuePower
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeckeCharacterRamifiedFinite
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormHeckeEigenvalueLeCardCosets
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeckeTjCosetsFiniteCardLeStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeckeTnScalarUniformiserSingleTranslation
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormRootLeCardMulBoundOfEsymmNormLe
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormInvLePowCardOfNormProdEqOneStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeckeTjCosetsFiniteCardLe
+import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatVecUOfIsSphericalU
+import BuildAid.ForwardExisting
 
+section
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heckeTj_cosets_finite_card_le : ∀ (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (n : ℕ) (ϖ : w.adicCompletion E), Formalism.UG.IsUnifV E w ϖ → ∀ j ≤ n, {q : GL (Fin n) (w.adicCompletion E) ⧸ GlobalTheory.LFun.KGL w n | Formalism.UG.Tj ℂ n (Formalism.UG.Ov E w) ϖ j q.out ≠ 0}.Finite ∧ Nat.card {q : GL (Fin n) (w.adicCompletion E) ⧸ GlobalTheory.LFun.KGL w n // Formalism.UG.Tj ℂ n (Formalism.UG.Ov E w) ϖ j q.out ≠ 0} ≤ Formalism.UG.qV E w ^ (n * j) := by
+  first | exact @GlobalTheory.TjCount.tj_cosets_finite_card_le | exact GlobalTheory.TjCount.tj_cosets_finite_card_le | (intros; apply GlobalTheory.TjCount.tj_cosets_finite_card_le <;> assumption)
+end
+
+section
+section
+open NumberField IsDedekindDomain
+
+namespace GlobalTheory.LFun
+
+theorem tn_single (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (n : ℕ) (V : Type)
+    [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ (GL (Fin n) (w.adicCompletion E)) V)
+    (ϖ : w.adicCompletion E) (hϖ : Formalism.UG.IsUnifV E w ϖ) :
+    ∀ x ∈ GlobalTheory.PRep.fixed ρ (GlobalTheory.LFun.KGL w n), ∃ g,
+      GlobalTheory.LFun.heckeVec ρ (GlobalTheory.LFun.KGL w n) (Formalism.UG.Tj ℂ n (Formalism.UG.Ov E w) ϖ n) x = ρ g x := by
+  classical
+  intro x hx
+  have h0 : ϖ ≠ 0 := Formalism.UG.P.tjcosets_ne_zero w ϖ hϖ
+  set g := Formalism.UG.P.tjcosets_dG n n ϖ h0 with hg
+  have hdiag : Formalism.UG.diagJ n ϖ n = ϖ • (1 : Matrix (Fin n) (Fin n) (w.adicCompletion E)) := by
+    unfold Formalism.UG.diagJ
+    ext i j
+    by_cases h : i = j
+    · subst h; simp [i.2]
+    · simp [Matrix.diagonal_apply_ne _ h, Matrix.one_apply_ne h]
+  have hcomm : ∀ a : GL (Fin n) (w.adicCompletion E), g * a = a * g := fun a => by
+    ext : 1
+    rw [Units.val_mul, Units.val_mul, hg, Formalism.UG.P.tjcosets_dG_val, hdiag]
+    simp
+  have hT : Formalism.UG.Tj ℂ n (Formalism.UG.Ov E w) ϖ n = Formalism.UG.dosetInd ℂ (GlobalTheory.LFun.KGL w n) g := by
+    unfold Formalism.UG.Tj Formalism.UG.dosetInd
+    congr 1
+    ext y
+    simp only [Set.mem_setOf_eq, DoubleCoset.mem_doubleCoset, SetLike.mem_coe]
+    constructor
+    · rintro ⟨a, ha, b, hb, e⟩
+      exact ⟨a, ha, b, hb, Units.ext (by rw [Units.val_mul, Units.val_mul, hg, Formalism.UG.P.tjcosets_dG_val]; exact e)⟩
+    · rintro ⟨a, ha, b, hb, rfl⟩
+      exact ⟨a, ha, b, hb, by rw [Units.val_mul, Units.val_mul, hg, Formalism.UG.P.tjcosets_dG_val]⟩
+  refine ⟨g, ?_⟩
+  rw [hT, GlobalTheory.LFun.heckeVec_dosetInd hx (R := {g})]
+  · simp
+  · intro γ hγ
+    rw [Finset.mem_singleton.1 hγ]
+    exact DoubleCoset.mem_doubleCoset.2 ⟨1, one_mem _, 1, one_mem _, by simp⟩
+  · intro y hy
+    obtain ⟨a, ha, b, hb, rfl⟩ := DoubleCoset.mem_doubleCoset.1 hy
+    refine ⟨g, ⟨Finset.mem_singleton_self _, ?_⟩, fun γ hγ => Finset.mem_singleton.1 hγ.1⟩
+    have : g⁻¹ * (a * g * b) = a * b := by
+      rw [← hcomm a]; group
+    rw [this]
+    exact (GlobalTheory.LFun.KGL w n).mul_mem ha hb
+
+end GlobalTheory.LFun
+end
+
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heckeTn_scalar_uniformiser_single_translation : ∀ (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (n : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ (GL (Fin n) (w.adicCompletion E)) V) (ϖ : w.adicCompletion E), Formalism.UG.IsUnifV E w ϖ → ∀ x ∈ GlobalTheory.PRep.fixed ρ (GlobalTheory.LFun.KGL w n), ∃ g, GlobalTheory.LFun.heckeVec ρ (GlobalTheory.LFun.KGL w n) (Formalism.UG.Tj ℂ n (Formalism.UG.Ov E w) ϖ n) x = ρ g x := by
+  atlas_forward_decl GlobalTheory.LFun.tn_single
+end
+
+section
+namespace GlobalTheory.ElementarySymmetricNormBound
+
+open Polynomial
+
+theorem sum_esymm_eq_zero (s : Multiset ℂ) (x : ℂ) (hx : x ∈ s) :
+    ∑ j ∈ Finset.range (Multiset.card s + 1),
+      (-1) ^ j * (s.esymm j * x ^ (Multiset.card s - j)) = 0 := by
+  have h := congrArg (Polynomial.eval x) (Multiset.prod_X_sub_X_eq_sum_esymm s)
+  rw [Polynomial.eval_multiset_prod, Polynomial.eval_finset_sum] at h
+  simp only [Multiset.map_map, Function.comp_def, Polynomial.eval_sub, Polynomial.eval_X,
+    Polynomial.eval_C, Polynomial.eval_mul, Polynomial.eval_pow, Polynomial.eval_neg,
+    Polynomial.eval_one] at h
+  rw [← h]
+  exact Multiset.prod_eq_zero (Multiset.mem_map.mpr ⟨x, hx, sub_self x⟩)
+
+theorem norm_le_of_esymm (s : Multiset ℂ) (M : ℝ) (hM : 1 ≤ M)
+    (h : ∀ j, 1 ≤ j → j ≤ Multiset.card s → ‖s.esymm j‖ ≤ M) (x : ℂ) (hx : x ∈ s) :
+    ‖x‖ ≤ (Multiset.card s : ℝ) * M := by
+  have hn1 : 1 ≤ Multiset.card s := Multiset.card_pos_iff_exists_mem.mpr ⟨x, hx⟩
+  by_cases hx1 : ‖x‖ ≤ 1
+  · calc ‖x‖ ≤ 1 := hx1
+      _ ≤ M := hM
+      _ ≤ (Multiset.card s : ℝ) * M :=
+          le_mul_of_one_le_left (by linarith) (by exact_mod_cast hn1)
+  push_neg at hx1
+  have h0 := sum_esymm_eq_zero s x hx
+  have he0 : s.esymm 0 = 1 := by simp [Multiset.esymm]
+  rw [Finset.sum_range_succ'] at h0
+  simp only [pow_zero, he0, one_mul, Nat.sub_zero] at h0
+  have hxn : x ^ Multiset.card s = -∑ i ∈ Finset.range (Multiset.card s),
+      (-1) ^ (i + 1) * (s.esymm (i + 1) * x ^ (Multiset.card s - (i + 1))) :=
+    eq_neg_of_add_eq_zero_right h0
+  have hbound : ‖x‖ ^ Multiset.card s ≤
+      (Multiset.card s : ℝ) * M * ‖x‖ ^ (Multiset.card s - 1) := by
+    rw [← norm_pow, hxn, norm_neg]
+    calc _ ≤ ∑ i ∈ Finset.range (Multiset.card s),
+          ‖(-1 : ℂ) ^ (i + 1) * (s.esymm (i + 1) * x ^ (Multiset.card s - (i + 1)))‖ := norm_sum_le _ _
+      _ ≤ ∑ i ∈ Finset.range (Multiset.card s), M * ‖x‖ ^ (Multiset.card s - 1) := by
+          apply Finset.sum_le_sum
+          intro i hi
+          have hi' := Finset.mem_range.mp hi
+          simp only [norm_mul, norm_pow, norm_neg, norm_one, one_pow, one_mul]
+          exact mul_le_mul (h (i + 1) (by omega) (by omega)) (pow_le_pow_right₀ hx1.le (by omega))
+            (pow_nonneg (norm_nonneg _) _) (by linarith)
+      _ = (Multiset.card s : ℝ) * M * ‖x‖ ^ (Multiset.card s - 1) := by
+          simp [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+          ring
+  have hpos : 0 < ‖x‖ ^ (Multiset.card s - 1) := pow_pos (by linarith) _
+  have hsplit : ‖x‖ ^ Multiset.card s = ‖x‖ * ‖x‖ ^ (Multiset.card s - 1) := by
+    rw [← pow_succ']
+    congr 1
+    omega
+  rw [hsplit] at hbound
+  exact le_of_mul_le_mul_right hbound hpos
+
+theorem norm_unit_le_of_esymm :
+    ∀ (n : ℕ) (B : Multiset ℂˣ) (M : ℝ), Multiset.card B = n → (1 : ℝ) ≤ M →
+      (∀ (j : ℕ), (1 : ℕ) ≤ j → j ≤ n →
+        ‖Multiset.esymm (Multiset.map (fun (b : ℂˣ) ↦ (↑b : ℂ)) B) j‖ ≤ M) →
+      ∀ b ∈ B, ‖(↑b : ℂ)‖ ≤ (↑n : ℝ) * M := by
+  intro n B M hcard hM h b hb
+  have hb' := norm_le_of_esymm (B.map (fun b : ℂˣ => (b : ℂ))) M hM
+    (fun j hj1 hj2 => by
+      rw [Multiset.card_map, hcard] at hj2
+      exact h j hj1 hj2) (b : ℂ) (Multiset.mem_map_of_mem _ hb)
+  rwa [Multiset.card_map, hcard] at hb'
+
+end GlobalTheory.ElementarySymmetricNormBound
+end
+
+section
+section
+namespace GlobalTheory
+
+open Polynomial in
+
+theorem cauchy_roots_bound : ∀ (n : ℕ) (B : Multiset ℂˣ) (M : ℝ), B.card = n → 1 ≤ M →
+    (∀ j, 1 ≤ j → j ≤ n → ‖(B.map fun b : ℂˣ => (b : ℂ)).esymm j‖ ≤ M) →
+    ∀ b ∈ B, ‖(b : ℂ)‖ ≤ n * M := by
+  first
+  | exact @_root_.GlobalTheory.ElementarySymmetricNormBound.norm_unit_le_of_esymm
+  | exact _root_.GlobalTheory.ElementarySymmetricNormBound.norm_unit_le_of_esymm
+  | (apply _root_.GlobalTheory.ElementarySymmetricNormBound.norm_unit_le_of_esymm <;> assumption)
+  | (intros; apply _root_.GlobalTheory.ElementarySymmetricNormBound.norm_unit_le_of_esymm <;> assumption)
+  | (intros; apply @_root_.GlobalTheory.ElementarySymmetricNormBound.norm_unit_le_of_esymm <;> first | assumption | infer_instance)
+  | (intros; exact _root_.GlobalTheory.ElementarySymmetricNormBound.norm_unit_le_of_esymm ..)
+
+end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.norm_root_le_card_mul_bound_of_esymm_norm_le : ∀ (n : ℕ) (B : Multiset ℂˣ) (M : ℝ), B.card = n → 1 ≤ M → (∀ j, 1 ≤ j → j ≤ n → ‖(B.map fun b : ℂˣ => (b : ℂ)).esymm j‖ ≤ M) → ∀ b ∈ B, ‖(b : ℂ)‖ ≤ n * M := by
+  atlas_forward_decl GlobalTheory.cauchy_roots_bound
+end
+
+section
+namespace GlobalTheory
+
+theorem norm_inv_le_pow_card_of_norm_prod_eq_one :
+    ∀ (B : Multiset ℂˣ) (M : ℝ), 1 ≤ M → (∀ b ∈ B, ‖(b : ℂ)‖ ≤ M) →
+      ‖(B.map fun b : ℂˣ => (b : ℂ)).prod‖ = 1 → ∀ b ∈ B, ‖((b⁻¹ : ℂˣ) : ℂ)‖ ≤ M ^ B.card := by
+  intro B M hM hB hprod b hb
+  have aux : ∀ C : Multiset ℂˣ, (∀ c ∈ C, ‖(c : ℂ)‖ ≤ M) →
+      ‖(C.map fun c : ℂˣ => (c : ℂ)).prod‖ ≤ M ^ C.card := by
+    intro C
+    induction C using Multiset.induction_on with
+    | empty => intro _; simp
+    | cons a C ih =>
+      intro hC
+      rw [Multiset.map_cons, Multiset.prod_cons, Multiset.card_cons, pow_succ, norm_mul,
+        mul_comm (M ^ _)]
+      exact mul_le_mul (hC a (Multiset.mem_cons_self a C))
+        (ih fun c hc => hC c (Multiset.mem_cons_of_mem hc)) (norm_nonneg _) (by linarith)
+  obtain ⟨C, rfl⟩ := Multiset.exists_cons_of_mem hb
+  have hC : ∀ c ∈ C, ‖(c : ℂ)‖ ≤ M := fun c hc => hB c (Multiset.mem_cons_of_mem hc)
+  rw [Multiset.map_cons, Multiset.prod_cons, norm_mul] at hprod
+  have hinv : ‖((b⁻¹ : ℂˣ) : ℂ)‖ = ‖(C.map fun c : ℂˣ => (c : ℂ)).prod‖ := by
+    rw [Units.val_inv_eq_inv_val, norm_inv]
+    exact (eq_inv_of_mul_eq_one_right hprod).symm
+  rw [hinv, Multiset.card_cons]
+  exact (aux C hC).trans (pow_le_pow_right₀ hM (Nat.le_succ _))
+
+end GlobalTheory
+
+alias _root_.GlobalTheory.T.norm_inv_le_pow_card_of_norm_prod_eq_one' := _root_.GlobalTheory.norm_inv_le_pow_card_of_norm_prod_eq_one
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain UpperTheory.V
@@ -91,3 +284,5 @@ theorem local_bound (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum 
   rwa [hcard] at this
 
 end GlobalTheory.HenQ
+end
+end

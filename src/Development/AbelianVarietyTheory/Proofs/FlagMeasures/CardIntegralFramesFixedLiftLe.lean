@@ -2,14 +2,968 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsUniquePlace
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StandardBaseFlagComplementIntegralLatticeStatement
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegralOfUnimodular
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CentralMapMemIntegralUnipotentFixingFrame
+import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.RowMinor
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PerpendicularRankIdealBound
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FixedFramesPerpendicularVectors
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FramesSameGramDifferBySkewSolution
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MinorSmulEqRowSpaceOfCofVecOrth
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.XClassesDenom
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.OneLeNormMulAbsNormSq
+import BuildAid.ForwardExisting
+import Formalism.LocalRingCardinality.DataSpaces
+import Formalism.FlagUnipotentLattices.CardSubgroupsOfIndexLe
 
+section
+noncomputable section
+
+namespace GlobalTheory.LoopC.Centre
+
+open NumberField Module Matrix Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt GlobalTheory.LoopC
+open scoped ENNReal Classical
+
+section Gen
+
+variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ}
+
+def nil (e : Fin r → S.V) (c : Matrix (Fin r) (Fin r) E) : S.V →ₗ[E] S.V :=
+  ∑ a, ∑ a', (c a a' • S.hT (e a')).smulRight (e a)
+
+theorem nil_apply (e : Fin r → S.V) (c : Matrix (Fin r) (Fin r) E) (x : S.V) :
+    nil e c x = ∑ a, ∑ a', (c a a' * S.hT (e a') x) • e a := by
+  simp [nil]
+
+theorem nil_eq_zero (e : Fin r → S.V) (c : Matrix (Fin r) (Fin r) E) (x : S.V)
+    (hx : ∀ a, S.hT (e a) x = 0) : nil e c x = 0 := by
+  rw [nil_apply]
+  simp [hx]
+
+theorem hT_nil (e : Fin r → S.V) (he : ∀ a b, S.hT (e a) (e b) = 0) (c : Matrix (Fin r) (Fin r) E)
+    (x : S.V) (a : Fin r) : S.hT (e a) (nil e c x) = 0 := by
+  rw [nil_apply, map_sum]
+  refine Finset.sum_eq_zero fun b _ => ?_
+  rw [map_sum]
+  refine Finset.sum_eq_zero fun b' _ => ?_
+  rw [LinearMap.map_smul, he, smul_zero]
+
+def cen (e : Fin r → S.V) (he : ∀ a b, S.hT (e a) (e b) = 0) (c : Matrix (Fin r) (Fin r) E) :
+    S.V ≃ₗ[E] S.V :=
+  LinearEquiv.ofLinear (LinearMap.id + nil e c) (LinearMap.id - nil e c)
+    (by
+      ext x
+      simp [nil_eq_zero e c _ (hT_nil e he c x)])
+    (by
+      ext x
+      simp [nil_eq_zero e c _ (hT_nil e he c x)])
+
+theorem cen_apply (e : Fin r → S.V) (he : ∀ a b, S.hT (e a) (e b) = 0) (c : Matrix (Fin r) (Fin r) E)
+    (x : S.V) : cen e he c x = x + nil e c x := rfl
+
+theorem cen_symm_apply (e : Fin r → S.V) (he : ∀ a b, S.hT (e a) (e b) = 0)
+    (c : Matrix (Fin r) (Fin r) E) (x : S.V) : (cen e he c).symm x = x - nil e c x := rfl
+
+theorem cen_isom (e : Fin r → S.V) (he : ∀ a b, S.hT (e a) (e b) = 0) (c : Matrix (Fin r) (Fin r) E)
+    (hc : cᴴ = -c) : cen e he c ∈ Formalism.HermitianLatticesTheory.isom S.hT := by
+  have hstar : ∀ a a', starRingEnd E (c a a') = -c a' a := by
+    intro a a'
+    have h := congrFun (congrFun hc a') a
+    rw [starRingEnd_apply]
+    simpa [Matrix.conjTranspose_apply] using h
+  have hsym : ∀ u v, starRingEnd E (S.hT u v) = S.hT v u := S.herm.eq
+
+  have hnn : ∀ x y, S.hT (nil e c x) (nil e c y) = 0 := by
+    intro x y
+    rw [nil_apply e c x, map_sum, LinearMap.sum_apply]
+    refine Finset.sum_eq_zero fun a _ => ?_
+    rw [map_sum, LinearMap.sum_apply]
+    refine Finset.sum_eq_zero fun a' _ => ?_
+    rw [LinearMap.map_smulₛₗ, LinearMap.smul_apply, hT_nil e he c y a, smul_zero]
+
+  have hcross : ∀ x y, S.hT (nil e c x) y + S.hT x (nil e c y) = 0 := by
+    intro x y
+    simp only [nil_apply, map_sum, LinearMap.sum_apply, LinearMap.map_smulₛₗ, LinearMap.smul_apply,
+      LinearMap.map_smul, smul_eq_mul, map_mul, RingHom.id_apply, hstar, hsym]
+    rw [Finset.sum_comm, ← Finset.sum_add_distrib]
+    refine Finset.sum_eq_zero fun a _ => ?_
+    rw [← Finset.sum_add_distrib]
+    refine Finset.sum_eq_zero fun a' _ => ?_
+    ring
+  show ∀ x y, S.hT (cen e he c x) (cen e he c y) = S.hT x y
+  intro x y
+  rw [cen_apply, cen_apply]
+  simp only [map_add, LinearMap.add_apply]
+  rw [hnn, add_zero]
+  linear_combination hcross x y
+
+theorem nil_mem (Λ : Submodule (𝓞 E) S.V) (hΛ : Formalism.HermitianLatticesTheory.IsUnimodular S.hT Λ) (e : Fin r → S.V)
+    (heΛ : ∀ a, e a ∈ Λ) (c : Matrix (Fin r) (Fin r) (𝓞 E)) (x : S.V) (hx : x ∈ Λ) :
+    nil e (c.map (algebraMap (𝓞 E) E)) x ∈ Λ := by
+  rw [nil_apply]
+  refine Submodule.sum_mem _ fun a _ => Submodule.sum_mem _ fun a' _ => ?_
+  have hd : x ∈ Formalism.HermitianLatticesTheory.dual S.hT Λ := by
+    have h' : Formalism.HermitianLatticesTheory.dual S.hT Λ = Λ := hΛ
+    rw [h']
+    exact hx
+  have h1 : S.hT (e a') x ∈ (1 : Submodule (𝓞 E) E) := by
+    have h2 := (Submodule.mem_iInf _).mp hd (e a')
+    have h3 := (Submodule.mem_iInf _).mp h2 (heΛ a')
+    exact h3
+  obtain ⟨o, ho⟩ := Submodule.mem_one.mp h1
+  rw [Matrix.map_apply, ← ho, ← map_mul, algebraMap_smul]
+  exact Λ.smul_mem _ (heΛ a)
+
+theorem centre_gen {T : E} (F : LFlag S r T) (Λ : Submodule (𝓞 E) S.V)
+    (hΛ : Formalism.HermitianLatticesTheory.IsUnimodular S.hT Λ) (heΛ : ∀ a, F.fl.e a ∈ Λ)
+    (c : Matrix (Fin r) (Fin r) (𝓞 E))
+    (hc : (c.map (algebraMap (𝓞 E) E))ᴴ = -c.map (algebraMap (𝓞 E) E)) :
+    ∃ n : S.V ≃ₗ[E] S.V, (n ∈ NLam Λ F ∧ ∀ b, n (frame F b) = frame F b) ∧
+      (∀ x ∈ orth S (Xsp F), n x = x) ∧
+      ∀ x, n x = x + ∑ a, ∑ a', ((c a a' : E) * S.hT (F.fl.e a') x) • F.fl.e a := by
+  have hiso : ∀ a b, S.hT (F.fl.e a) (F.fl.e b) = 0 := F.fl.e_iso
+
+  have hXz : ∀ a', ∀ x ∈ Xsp F, S.hT (F.fl.e a') x = 0 := by
+    intro a' x hx
+    have hle : Xsp F ≤ LinearMap.ker (S.hT (F.fl.e a')) := by
+      show Submodule.span E (Set.range F.fl.e) ≤ _
+      rw [Submodule.span_le]
+      rintro _ ⟨b, rfl⟩
+      exact LinearMap.mem_ker.mpr (hiso a' b)
+    exact LinearMap.mem_ker.mp (hle hx)
+  have hXe : ∀ a, F.fl.e a ∈ Xsp F := by
+    intro a
+    show F.fl.e a ∈ Submodule.span E (Set.range F.fl.e)
+    exact Submodule.subset_span ⟨a, rfl⟩
+
+  have hfix : ∀ x ∈ orth S (Xsp F), cen F.fl.e hiso (c.map (algebraMap (𝓞 E) E)) x = x := by
+    intro x hx
+    rw [cen_apply, nil_eq_zero _ _ _ ?_, add_zero]
+    intro a'
+    have h2 := (Submodule.mem_iInf _).mp hx (F.fl.e a')
+    exact LinearMap.mem_ker.mp ((Submodule.mem_iInf _).mp h2 (hXe a'))
+
+  have hframe : ∀ b, cen F.fl.e hiso (c.map (algebraMap (𝓞 E) E)) (frame F b) = frame F b := by
+    intro b
+    rw [cen_apply, nil_eq_zero _ _ _ ?_, add_zero]
+    intro a'
+    induction b using Fin.lastCases with
+    | last => simpa [frame, Formalism.MainNotions.S.FlagG.fvec] using F.fl.z_orth a'
+    | cast i => simpa [frame, Formalism.MainNotions.S.FlagG.fvec] using hiso a' i
+
+  have hflag : ∀ j, ∀ x ∈ Xflag F (j + 1),
+      cen F.fl.e hiso (c.map (algebraMap (𝓞 E) E)) x - x ∈ Xflag F j := by
+    intro j x hx
+    have hle : Xflag F (j + 1) ≤ Xsp F := by
+      show Submodule.span E (F.fl.e '' {i | i.1 < j + 1}) ≤ Submodule.span E (Set.range F.fl.e)
+      exact Submodule.span_mono (Set.image_subset_range _ _)
+    rw [cen_apply, nil_eq_zero _ _ _ (fun a' => hXz a' x (hle hx)), add_zero, sub_self]
+    exact zero_mem _
+  have horth : ∀ x ∈ orth S (Xsp F), cen F.fl.e hiso (c.map (algebraMap (𝓞 E) E)) x - x ∈ Xsp F := by
+    intro x hx
+    rw [hfix x hx, sub_self]
+    exact zero_mem _
+
+  have hmap : Formalism.HermitianLatticesTheory.gmap (cen F.fl.e hiso (c.map (algebraMap (𝓞 E) E))) Λ = Λ := by
+    show Submodule.map _ Λ = Λ
+    apply le_antisymm
+    · intro y hy
+      obtain ⟨x, hx, rfl⟩ := Submodule.mem_map.mp hy
+      show cen F.fl.e hiso (c.map (algebraMap (𝓞 E) E)) x ∈ Λ
+      rw [cen_apply]
+      exact Λ.add_mem hx (nil_mem Λ hΛ _ heΛ c x hx)
+    · intro y hy
+      refine Submodule.mem_map.mpr ⟨y - nil F.fl.e (c.map (algebraMap (𝓞 E) E)) y,
+        Λ.sub_mem hy (nil_mem Λ hΛ _ heΛ c y hy), ?_⟩
+      show cen F.fl.e hiso (c.map (algebraMap (𝓞 E) E)) _ = y
+      rw [← cen_symm_apply F.fl.e hiso _ y]
+      exact LinearEquiv.apply_symm_apply _ y
+  have hN : cen F.fl.e hiso (c.map (algebraMap (𝓞 E) E)) ∈ NLam Λ F := by
+    simp only [NLam, IsAutLam, Set.mem_setOf_eq]
+    exact ⟨⟨cen_isom _ _ _ hc, hmap⟩, hflag, horth⟩
+  refine ⟨cen F.fl.e hiso (c.map (algebraMap (𝓞 E) E)), ⟨hN, hframe⟩, hfix, fun x => ?_⟩
+  rw [cen_apply, nil_apply]
+  rfl
+
+end Gen
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+theorem centralMap_mem_integralUnipotentFixingFrame : ∀ (D : D7) (T : D.host.E) (F : Fg D T) (Λ : LatV D), Formalism.HermitianLatticesTheory.IsUnimodular (hS D).hT Λ → (∀ a, F.fl.e a ∈ Λ) → ∀ c : Matrix (Fin D.R.rS) (Fin D.R.rS) (𝓞 D.host.E), (c.map (algebraMap (𝓞 D.host.E) D.host.E))ᴴ = -c.map (algebraMap (𝓞 D.host.E) D.host.E) → ∃ n ∈ N1 D Λ F, (∀ x ∈ orth (hS D) (Xsp F), n x = x) ∧ ∀ x, n x = x + ∑ a, ∑ a', ((c a a' : D.host.E) * (hS D).hT (F.fl.e a') x) • F.fl.e a := by
+  intro D T F Λ hΛ heΛ c hc
+  obtain ⟨n, h1, hfix, hform⟩ := centre_gen F Λ hΛ heΛ c hc
+  exact ⟨n, h1, hfix, hform⟩
+
+end GlobalTheory.LoopC.Centre
+
+end
+end
+
+section
+section
+open NumberField Module Matrix Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt GlobalTheory.LoopC
+open scoped ENNReal Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.LoopC.FrameDiff
+
+theorem dd_zpow_le (D : D7) (a : Fin D.R.rS) :
+    (ddS D ^ (-((D.R.rS : ℤ) - (a : ℕ))) : FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E) ≤
+      ddS D ^ (-(D.R.rS : ℤ)) := by
+  have ha := a.2
+  by_cases h0 : ddS D = 0
+  · rw [h0, _root_.zero_zpow _ (by omega)]
+    exact FractionalIdeal.zero_le _
+  · have h1 : (-((D.R.rS : ℤ) - (a : ℕ))) = -(D.R.rS : ℤ) + ((a : ℕ) : ℤ) := by ring
+    rw [h1, zpow_add₀ h0, zpow_natCast]
+    have h2 : ddS D ^ (a : ℕ) ≤ 1 := by
+      unfold ddS
+      rw [← FractionalIdeal.coeIdeal_pow]
+      exact FractionalIdeal.coeIdeal_le_one
+    calc _ ≤ ddS D ^ (-(D.R.rS : ℤ)) * 1 := by gcongr
+      _ = _ := mul_one _
+
+theorem coords_of_mem_XS (D : D7) {T : D.host.E} (F0 : FlagG (VS D) D.R.rS T) (y : (VS D).V)
+    (hy : y ∈ XS D F0) :
+    ∃ c : Fin D.R.rS → D.host.E,
+      (∀ a, c a ∈ (ddS D ^ (-(D.R.rS : ℤ)) : FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E)) ∧
+      y = ∑ a, c a • F0.e a := by
+  unfold XS at hy
+  induction hy using Submodule.span_induction with
+  | mem y hy =>
+    obtain ⟨a, x, hx, rfl⟩ := hy
+    refine ⟨Pi.single a x, fun a' => ?_, ?_⟩
+    · by_cases h : a' = a
+      · subst h
+        rw [Pi.single_eq_same]
+        exact dd_zpow_le D a' hx
+      · rw [Pi.single_eq_of_ne h]
+        exact FractionalIdeal.zero_mem _
+    · rw [Finset.sum_eq_single a]
+      · simp
+      · intro b _ hb
+        simp [Pi.single_eq_of_ne hb]
+      · simp
+  | zero => exact ⟨0, fun _ => FractionalIdeal.zero_mem _, by simp⟩
+  | add y y' _ _ h h' =>
+    obtain ⟨c, hc, rfl⟩ := h
+    obtain ⟨c', hc', rfl⟩ := h'
+    refine ⟨c + c', fun a => ?_, by simp [add_smul, Finset.sum_add_distrib]⟩
+    exact Submodule.add_mem (FractionalIdeal.coeToSubmodule _) (hc a) (hc' a)
+  | smul o y _ h =>
+    obtain ⟨c, hc, rfl⟩ := h
+    refine ⟨o • c, fun a => ?_, by simp [Finset.smul_sum, smul_assoc]⟩
+    exact Submodule.smul_mem (FractionalIdeal.coeToSubmodule _) o (hc a)
+
+section Gen
+
+variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {T : E}
+
+theorem star_hT (x y : S.V) : star (S.hT x y) = S.hT y x := S.herm.eq x y
+
+theorem gram_eq (F F' : FlagG S r T) (b b' : Fin (r + 1)) :
+    S.hT (F.fvec b) (F.fvec b') = S.hT (F'.fvec b) (F'.fvec b') := by
+  have hz : ∀ (G : FlagG S r T) a, S.hT G.z (G.e a) = 0 := fun G a => by
+    rw [← star_hT, G.z_orth, star_zero]
+  induction b using Fin.lastCases <;> induction b' using Fin.lastCases <;>
+    simp [FlagG.fvec, F.e_iso, F'.e_iso, F.z_orth, F'.z_orth, F.z_norm, F'.z_norm, hz]
+
+theorem mem_orth_iff (U : Submodule E S.V) (v : S.V) : v ∈ orth S U ↔ ∀ x ∈ U, S.hT x v = 0 := by
+  simp [orth, Submodule.mem_iInf]
+
+theorem hT_X_eq_zero (F : FlagG S r T) (v : S.V) (hv : ∀ a, S.hT (F.e a) v = 0) (x : S.V) (hx : x ∈ F.X) :
+    S.hT x v = 0 := by
+  unfold FlagG.X at hx
+  induction hx using Submodule.span_induction with
+  | mem y hy => obtain ⟨a, rfl⟩ := hy; exact hv a
+  | zero => simp
+  | add y y' _ _ h h' => simp [h, h']
+  | smul c y _ h => simp [h]
+
+theorem frame_mem (Λ : Submodule (𝓞 E) S.V) (F : LFlag S r T) (h : IsLift Λ F) (he : ∀ a, F.fl.e a ∈ Λ)
+    (b : Fin (r + 1)) : frame F b ∈ Λ := by
+  induction b using Fin.lastCases with
+  | last => simpa [FlagG.fvec] using h.1
+  | cast a => simpa [FlagG.fvec] using he a
+
+end Gen
+
+theorem mem_perpE_iff (D : D7) (P : LatW D) (w : (D.sp.X 0).V) :
+    w ∈ perpE D P ↔ ∀ p ∈ P, (D.sp.X 0).hT p w = 0 := by
+  simp [perpE, Submodule.mem_iInf]
+
+theorem frame_diff : ∀ (D : D7) (u u' : D.what₂.Word) (F0 : Fb D u) (Λ : LatV D), Stand D u u' → IsBase D u F0 → IsRowLat D F0 Λ → ∀ (P : LatW D) (φ : P →ₗ[𝓞 D.host.E] (hS D).V) (Z : GramM D), (∀ p, φ p ∈ XLam Λ (lf D F0)) → ∀ F₁ ∈ FixSet D Λ (lf D F0) ((Tu D u' : ℕ) : D.host.E) Z P φ, ∀ F₂ ∈ FixSet D Λ (lf D F0) ((Tu D u' : ℕ) : D.host.E) Z P φ, (∀ b, ∃ w, IsWcomp D P (frame F₁ b) w ∧ IsWcomp D P (frame F₂ b) w) → ∃ x : Matrix (Fin D.R.rS) (Fin (D.R.rS + 1)) D.host.E, (∀ b, frame F₂ b = frame F₁ b + ∑ a, x a b • F0.e a) ∧ (∀ a b, x a b ∈ (ddS D ^ (-(D.R.rS : ℤ)) : FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E)) ∧ xᴴ * Z.submatrix Fin.castSucc id + (Z.submatrix Fin.castSucc id)ᴴ * x = 0 := by
+  intro D u u' F0 Λ hst hb hrow P φ Z hφ F₁ h₁ F₂ h₂ hw
+  obtain ⟨hW, -, hpos, -⟩ := GlobalTheory.T.standardBaseFlag_complement_integralLattice D u u' F0 Λ hst hb hrow
+  obtain ⟨l₁, e₁, z₁, o₁⟩ := h₁
+  obtain ⟨l₂, e₂, z₂, o₂⟩ := h₂
+  have hiso : ∀ x y, (hS D).hT (D.sp.iXY 0 x) (D.sp.iXY 0 y) = (D.sp.X 0).hT x y :=
+    D.sp.iXY_isom 0 (by have := D.R.two_le_m; omega)
+  have hZ₁ : ∀ a b, (hS D).hT (F0.fvec a) (frame F₁ b) = Z a b := fun a b => by rw [← z₁]; rfl
+  have hZ₂ : ∀ a b, (hS D).hT (F0.fvec a) (frame F₂ b) = Z a b := fun a b => by rw [← z₂]; rfl
+  have hWX : ∀ (w : (D.sp.X 0).V), ∀ x ∈ F0.X, (hS D).hT (D.sp.iXY 0 w) x = 0 := by
+    intro w x hx
+    rw [← star_hT, hT_X_eq_zero F0 (D.sp.iXY 0 w) (fun a => ?_) x hx, star_zero]
+    rw [← star_hT, hb.1, (D.sp.hyp_orthX a w).1, star_zero]
+  have hd : ∀ b, frame F₂ b - frame F₁ b ∈ XS D F0 := by
+    intro b
+    rw [← hrow.2.2]
+    refine ⟨Λ.sub_mem (frame_mem Λ F₂ l₂ e₂ b) (frame_mem Λ F₁ l₁ e₁ b), ?_⟩
+    set d := frame F₂ b - frame F₁ b with hdd
+    have hf : ∀ a, (hS D).hT (F0.fvec a) d = 0 := fun a => by rw [hdd, map_sub, hZ₁, hZ₂, sub_self]
+    have hX : ∀ x ∈ F0.X, (hS D).hT x d = 0 :=
+      hT_X_eq_zero F0 d (fun a => by simpa [FlagG.fvec] using hf a.castSucc)
+    have hz : (hS D).hT F0.z d = 0 := by simpa [FlagG.fvec] using hf (Fin.last _)
+    have hmem : d ∈ Wsp D ⊔ Xsp (lf D F0) := by
+      rw [hW.1, mem_orth_iff]
+      intro y hy
+      obtain ⟨x, hx, y', hy', rfl⟩ := Submodule.mem_sup.1 hy
+      obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.1 hy'
+      simp [hX x hx, hz]
+    obtain ⟨_, ⟨w, rfl⟩, x, hx, hwx⟩ := Submodule.mem_sup.1 hmem
+    have hwd : ∀ σ, (hS D).hT (D.sp.iXY 0 σ) d = (D.sp.X 0).hT σ w := fun σ => by
+      rw [← hwx, map_add, hiso, hWX σ x hx, add_zero]
+    have hwP : w ∈ perpE D P := by
+      rw [mem_perpE_iff]
+      intro p hp
+      have h1 : (hS D).hT (D.sp.iXY 0 p + φ ⟨p, hp⟩) d = 0 := by
+        rw [hdd, map_sub, o₁ ⟨p, hp⟩ b, o₂ ⟨p, hp⟩ b, sub_self]
+      rw [map_add, LinearMap.add_apply, hX _ (hφ ⟨p, hp⟩).2, add_zero, hwd] at h1
+      exact h1
+    obtain ⟨w', c₁, c₂⟩ := hw b
+    have hww : (D.sp.X 0).hT w w = 0 := by
+      rw [← hwd, hdd, map_sub, c₁.2 w hwP, c₂.2 w hwP, sub_self]
+    have hw0 : w = 0 := by
+      by_contra hne
+      obtain ⟨τ⟩ : Nonempty (D.host.E →+* ℂ) := inferInstance
+      have := hpos τ w hne
+      rw [hww] at this
+      simp at this
+    rw [hw0, map_zero, zero_add] at hwx
+    rw [← hwx]
+    exact hx
+  choose c hc hcd using fun b => coords_of_mem_XS D F0 _ (hd b)
+  have hfr : ∀ b, frame F₂ b = frame F₁ b + ∑ a, c b a • F0.e a := fun b => by
+    rw [← hcd]; abel
+  refine ⟨Matrix.of fun a b => c b a, hfr, fun a b => hc b a, ?_⟩
+  refine Matrix.ext fun b b' => ?_
+  have hg : (hS D).hT (frame F₂ b) (frame F₂ b') = (hS D).hT (frame F₁ b) (frame F₁ b') :=
+    gram_eq F₂.fl F₁.fl b b'
+  have hY : ∀ a b, (hS D).hT (F0.e a) (frame F₁ b) = Z a.castSucc b := fun a b => by
+    simpa [FlagG.fvec] using hZ₁ a.castSucc b
+  have hY' : ∀ a b, (hS D).hT (frame F₁ b) (F0.e a) = star (Z a.castSucc b) := fun a b => by
+    rw [← hY, star_hT]
+  rw [hfr b, hfr b'] at hg
+  simp only [map_add, map_sum, LinearMap.add_apply, LinearMap.sum_apply, map_smul, LinearMap.map_smulₛₗ,
+    LinearMap.smul_apply, hY, hY', F0.e_iso, smul_eq_mul, mul_zero, Finset.sum_const_zero, add_zero,
+    starRingEnd_apply] at hg
+  simp only [Matrix.add_apply, Matrix.mul_apply, Matrix.conjTranspose_apply, Matrix.of_apply,
+    Matrix.submatrix_apply, id, Matrix.zero_apply]
+  have : ∑ a, star (Z a.castSucc b) * c b' a = ∑ a, c b' a * star (Z a.castSucc b) :=
+    Finset.sum_congr rfl fun a _ => mul_comm _ _
+  rw [this]
+  linear_combination hg
+
+end GlobalTheory.LoopC.FrameDiff
+end
+
+open NumberField Module Matrix Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt GlobalTheory.LoopC
+open scoped ENNReal Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frames_same_gram_differ_by_skew_solution : ∀ (D : D7) (u u' : D.what₂.Word) (F0 : Fb D u) (Λ : LatV D), Stand D u u' → IsBase D u F0 → IsRowLat D F0 Λ → ∀ (P : LatW D) (φ : P →ₗ[𝓞 D.host.E] (hS D).V) (Z : GramM D), (∀ p, φ p ∈ XLam Λ (lf D F0)) → ∀ F₁ ∈ FixSet D Λ (lf D F0) ((Tu D u' : ℕ) : D.host.E) Z P φ, ∀ F₂ ∈ FixSet D Λ (lf D F0) ((Tu D u' : ℕ) : D.host.E) Z P φ, (∀ b, ∃ w, IsWcomp D P (frame F₁ b) w ∧ IsWcomp D P (frame F₂ b) w) → ∃ x : Matrix (Fin D.R.rS) (Fin (D.R.rS + 1)) D.host.E, (∀ b, frame F₂ b = frame F₁ b + ∑ a, x a b • F0.e a) ∧ (∀ a b, x a b ∈ (ddS D ^ (-(D.R.rS : ℤ)) : FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E)) ∧ xᴴ * Z.submatrix Fin.castSucc id + (Z.submatrix Fin.castSucc id)ᴴ * x = 0 := by
+  atlas_forward_decl GlobalTheory.LoopC.FrameDiff.frame_diff
+end
+
+section
+open NumberField Module Matrix Formalism.BasicNotions
+open scoped ENNReal
+
+namespace GlobalTheory
+
+theorem minor_smul_eq_rowSpace_of_cofVec_orth (K V : Type) [Field K] [NumberField K]
+    [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (r : ℕ)
+    (Y : Matrix (Fin r) (Fin (r + 1)) (𝓞 K)) (b₀ : Fin (r + 1)) (u : Fin (r + 1) → V)
+    (hu : ∑ b, Formalism.HermitianLatticeCounting.LatticeSumBounds.cofVec Y b • u b = 0) (b : Fin (r + 1)) :
+    (Y.submatrix id b₀.succAbove).det • u b =
+      ∑ a, Y a b • ∑ c, (Y.submatrix id b₀.succAbove).adjugate c a • u (b₀.succAbove c) := by
+  rw [← sub_eq_zero, ← Module.forall_dual_apply_eq_zero_iff K]
+  intro φ
+  have hφ : ∀ (x : 𝓞 K) (v : V), φ (x • v) = algebraMap (𝓞 K) K x * φ v := by
+    intro x v
+    rw [← algebraMap_smul K x v, map_smul, smul_eq_mul]
+  have hsub : ∀ b' : Fin (r + 1), (Y.map (algebraMap (𝓞 K) K)).submatrix id b'.succAbove
+      = (algebraMap (𝓞 K) K).mapMatrix (Y.submatrix id b'.succAbove) := by
+    intro b'; ext i j; simp
+  have h0 : ∑ b, φ (u b) * Formalism.HermitianLatticeCounting.LatticeSumBounds.cofVec (Y.map (algebraMap (𝓞 K) K)) b = 0 := by
+    have := congrArg φ hu
+    rw [map_sum, map_zero] at this
+    rw [← this]
+    refine Finset.sum_congr rfl fun b' _ => ?_
+    rw [hφ, mul_comm]
+    congr 1
+    unfold Formalism.HermitianLatticeCounting.LatticeSumBounds.cofVec
+    rw [hsub, ← RingHom.map_det, map_mul, map_pow, map_neg, map_one]
+  have h := congrFun ((Formalism.HermitianLatticeCounting.Final.LatticeSumBounds.kernelRowSpace K r (Y.map (algebraMap (𝓞 K) K))).2
+    (fun b => φ (u b)) h0 b₀) b
+  rw [hsub, ← RingHom.map_det, ← RingHom.map_adjugate] at h
+  rw [map_sub, sub_eq_zero, hφ, map_sum]
+  simp only [Pi.smul_apply, smul_eq_mul] at h
+  rw [h]
+  simp only [Matrix.vecMul, dotProduct, hφ, map_sum, RingHom.mapMatrix_apply, Matrix.map_apply]
+  refine Finset.sum_congr rfl fun a _ => ?_
+  rw [mul_comm]
+  congr 1
+  refine Finset.sum_congr rfl fun c _ => ?_
+  rw [mul_comm]
+
+theorem exists_reps_ideal_inv_lattice (K V : Type) [Field K] [NumberField K]
+    [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V]
+    [IsScalarTower (𝓞 K) K V] (S0 : Submodule (𝓞 K) V) (J : Ideal (𝓞 K)) (hS : S0.FG)
+    (hJ : J ≠ ⊥) :
+    ∃ R : Finset V, R.card ≤ Ideal.absNorm J ^ finrank K (Submodule.span K (S0 : Set V)) ∧
+      ∀ x : V, (∀ j ∈ J, j • x ∈ S0) → ∃ y ∈ R, x - y ∈ S0 := by
+  classical
+  let P : Submodule (𝓞 K) V :=
+    { carrier := {x | ∀ j ∈ J, j • x ∈ S0}
+      add_mem' := fun {a b} ha hb j hj => by
+        rw [smul_add]; exact S0.add_mem (ha j hj) (hb j hj)
+      zero_mem' := fun j hj => by simp
+      smul_mem' := fun c x hx j hj => by
+        rw [smul_comm]; exact S0.smul_mem c (hx j hj) }
+  obtain ⟨j₀, hj₀, hj₀0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hJ
+  have hinj : Function.Injective (algebraMap (𝓞 K) K) := IsFractionRing.injective _ _
+  have hj₀K : algebraMap (𝓞 K) K j₀ ≠ 0 := fun h => hj₀0 (hinj (by simpa using h))
+  have : Module.IsTorsionFree (𝓞 K) V := by
+    refine Module.IsTorsionFree.of_smul_eq_zero fun c x h => ?_
+    rw [← algebraMap_smul K c x, smul_eq_zero] at h
+    rcases h with h | h
+    · exact Or.inl (hinj (by simpa using h))
+    · exact Or.inr h
+  have : Module.Finite (𝓞 K) S0 := Module.Finite.iff_fg.mpr hS
+  let f : P →ₗ[𝓞 K] S0 := (j₀ • P.subtype).codRestrict S0 (fun x => x.2 j₀ hj₀)
+  have hf : Function.Injective f := by
+    intro x y h
+    have h' : j₀ • (x : V) = j₀ • (y : V) := congrArg Subtype.val h
+    exact Subtype.ext (smul_right_injective V hj₀0 h')
+  have : Module.Finite (𝓞 K) P := Module.Finite.of_injective f hf
+  have : Module.FinitePresentation (𝓞 K) P := Module.finitePresentation_of_finite _ _
+  have : Module.Flat (𝓞 K) P := inferInstance
+  have : Module.Projective (𝓞 K) P := Module.Flat.projective_of_finitePresentation
+  have hcard := Formalism.HermitianLatticeCounting.Final.LatticeSumBounds.projQuotCard K P J hJ
+  have hN : Ideal.absNorm J ≠ 0 := by rwa [Ne, Ideal.absNorm_eq_zero_iff]
+  have hrk : finrank (𝓞 K) P ≤ finrank K (Submodule.span K (S0 : Set V)) := by
+    obtain ⟨g, hg⟩ := exists_linearIndependent_of_le_finrank (R := 𝓞 K) (M := P) le_rfl
+    have hmem : ∀ i, (g i : V) ∈ Submodule.span K (S0 : Set V) := by
+      intro i
+      have h1 : j₀ • (g i : V) ∈ Submodule.span K (S0 : Set V) :=
+        Submodule.subset_span ((g i).2 j₀ hj₀)
+      rw [← algebraMap_smul K j₀] at h1
+      exact (Submodule.smul_mem_iff _ hj₀K).mp h1
+    have hg1 : LinearIndependent (𝓞 K) (fun i => (g i : V)) :=
+      hg.map' P.subtype (Submodule.ker_subtype P)
+    have hg2 : LinearIndependent K (fun i => (g i : V)) :=
+      (LinearIndependent.iff_fractionRing (𝓞 K) K).mp hg1
+    have hg3 : LinearIndependent K
+        (fun i => (⟨g i, hmem i⟩ : Submodule.span K (S0 : Set V))) :=
+      LinearIndependent.of_comp (Submodule.span K (S0 : Set V)).subtype hg2
+    simpa using hg3.fintype_card_le_finrank
+  have : Finite (P ⧸ (J • ⊤ : Submodule (𝓞 K) P)) :=
+    Nat.finite_of_card_ne_zero (by rw [hcard]; exact pow_ne_zero _ hN)
+  have : Fintype (P ⧸ (J • ⊤ : Submodule (𝓞 K) P)) := Fintype.ofFinite _
+  refine ⟨Finset.univ.image (fun q : P ⧸ (J • ⊤ : Submodule (𝓞 K) P) => ((Quotient.out q : P) : V)),
+    ?_, ?_⟩
+  · refine Finset.card_image_le.trans ?_
+    rw [Finset.card_univ, ← Nat.card_eq_fintype_card, hcard]
+    exact Nat.pow_le_pow_right (Nat.pos_of_ne_zero hN) hrk
+  · intro x hx
+    let x' : P := ⟨x, hx⟩
+    let q : P ⧸ (J • ⊤ : Submodule (𝓞 K) P) := Submodule.Quotient.mk x'
+    refine ⟨_, Finset.mem_image_of_mem _ (Finset.mem_univ q), ?_⟩
+    have h1 : x' - Quotient.out q ∈ (J • ⊤ : Submodule (𝓞 K) P) :=
+      (Submodule.Quotient.eq _).mp (Quotient.out_eq q).symm
+    have h2 : ∀ z ∈ (J • ⊤ : Submodule (𝓞 K) P), (z : V) ∈ S0 := by
+      intro z hz
+      refine Submodule.smul_induction_on hz (fun j hj n _ => n.2 j hj) (fun a b ha hb => ?_)
+      exact S0.add_mem ha hb
+    exact h2 _ h1
+
+theorem exists_reps_cofVec_orth_mod_rowSpace :
+    ∀ (K V : Type) [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (S0 B : Submodule (𝓞 K) V) (I : Ideal (𝓞 K)) (r s : ℕ) (Y : Matrix (Fin r) (Fin (r + 1)) (𝓞 K)) (b₀ : Fin (r + 1)), S0.FG → finrank K (Submodule.span K (S0 : Set V)) = s → I ≠ ⊥ → I • B ≤ S0 → (Y.submatrix id b₀.succAbove).det ≠ 0 → ∃ reps : Finset (Fin (r + 1) → V), reps.card ≤ Ideal.absNorm (Ideal.span {(Y.submatrix id b₀.succAbove).det} * I) ^ (s * r) ∧ ∀ u : Fin (r + 1) → V, (∀ b, u b ∈ B) → ∑ b, Formalism.HermitianLatticeCounting.LatticeSumBounds.cofVec Y b • u b = 0 → ∃ u₀ ∈ reps, ∃ v : Fin r → V, (∀ a, v a ∈ S0) ∧ ∀ b, u b = u₀ b + ∑ a, Y a b • v a := by
+  intro K V _ _ _ _ _ _ _ _ S0 B I r s Y b₀ hS hs hI hIB hd
+  classical
+  set d := (Y.submatrix id b₀.succAbove).det with hd_def
+  have hJ : Ideal.span {d} * I ≠ ⊥ := by
+    refine mul_ne_zero ?_ hI
+    simpa using hd
+  obtain ⟨R, hR, hrep⟩ := exists_reps_ideal_inv_lattice K V S0 _ hS hJ
+  rw [hs] at hR
+  have hdK : algebraMap (𝓞 K) K d ≠ 0 := fun h =>
+    hd (IsFractionRing.injective (𝓞 K) K (by simpa using h))
+  refine ⟨(Fintype.piFinset fun _ : Fin r => R).image (fun w b => ∑ a, Y a b • w a), ?_, ?_⟩
+  · refine Finset.card_image_le.trans ?_
+    rw [Fintype.card_piFinset, Finset.prod_const, Finset.card_univ, Fintype.card_fin, pow_mul]
+    exact Nat.pow_le_pow_left hR r
+  · intro u huB hu
+    let w : Fin r → V := fun a =>
+      ∑ c, (Y.submatrix id b₀.succAbove).adjugate c a • u (b₀.succAbove c)
+    have hwB : ∀ a, w a ∈ B := fun a =>
+      B.sum_mem fun c _ => B.smul_mem _ (huB _)
+    let v' : Fin r → V := fun a => (algebraMap (𝓞 K) K d)⁻¹ • w a
+    have hdv : ∀ a, d • v' a = w a := fun a => by
+      rw [← algebraMap_smul K d, smul_inv_smul₀ hdK]
+    have huv : ∀ b, u b = ∑ a, Y a b • v' a := by
+      intro b
+      have h := minor_smul_eq_rowSpace_of_cofVec_orth K V r Y b₀ u hu b
+      apply smul_right_injective V hdK
+      simp only [algebraMap_smul]
+      rw [h, Finset.smul_sum]
+      refine Finset.sum_congr rfl fun a _ => ?_
+      rw [smul_comm d, hdv]
+    have hv' : ∀ a, ∀ j ∈ Ideal.span {d} * I, j • v' a ∈ S0 := by
+      intro a j hj
+      obtain ⟨i, hi, rfl⟩ := Ideal.mem_span_singleton_mul.mp hj
+      rw [mul_comm, mul_smul, hdv]
+      exact hIB (Submodule.smul_mem_smul hi (hwB a))
+    choose y hyR hy using fun a => hrep (v' a) (hv' a)
+    refine ⟨_, Finset.mem_image_of_mem _ (Fintype.mem_piFinset.mpr hyR), fun a => v' a - y a, hy, ?_⟩
+    intro b
+    rw [huv b, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    rw [← smul_add, add_sub_cancel]
+
+end GlobalTheory
+end
+
+section
+open NumberField Module Matrix Formalism.BasicNotions
+open scoped ENNReal
+
+namespace GlobalTheory
+
+theorem xClasses_index {K : Type} [Field K] [NumberField K] (I J : Ideal (𝓞 K)) (a : 𝓞 K)
+    (ha : a ≠ 0) (h : Ideal.span {a} = I * J) :
+    ((Ideal.span {a}).toAddSubgroup.addSubgroupOf J.toAddSubgroup).index = Ideal.absNorm I := by
+  have hle : Ideal.span {a} ≤ J := by rw [h]; exact Ideal.mul_le_right
+  have hJ : J ≠ ⊥ := by
+    rintro rfl
+    rw [Ideal.mul_bot, Ideal.span_singleton_eq_bot] at h
+    exact ha h
+  have hNJ : Ideal.absNorm J ≠ 0 := fun h0 => hJ (Ideal.absNorm_eq_zero_iff.mp h0)
+  have key := AddSubgroup.relIndex_mul_index
+    (H := (Ideal.span {a}).toAddSubgroup) (K := J.toAddSubgroup) hle
+  have e1 : J.toAddSubgroup.index = Ideal.absNorm J := rfl
+  have e2 : (Ideal.span {a}).toAddSubgroup.index = Ideal.absNorm I * Ideal.absNorm J := by
+    rw [← map_mul, ← h]; rfl
+  rw [e1, e2] at key
+  exact Nat.eq_of_mul_eq_mul_right (Nat.pos_of_ne_zero hNJ) key
+
+theorem xClasses_mem {K : Type} [Field K] [NumberField K] (I J : Ideal (𝓞 K)) (a : 𝓞 K)
+    (hI : I ≠ ⊥) (haI : a ∈ I) (h : Ideal.span {a} = I * J) (z : K)
+    (hz : ∀ α ∈ I, ∃ o : 𝓞 K, (o : K) = (α : K) * z) :
+    ∃ o : J.toAddSubgroup, ((o : 𝓞 K) : K) = (a : K) * z := by
+  obtain ⟨o, ho⟩ := hz a haI
+  have hmem : o ∈ J := by
+    have hle : Ideal.span {o} * I ≤ J * I := by
+      rw [Ideal.span_singleton_mul_le_iff]
+      intro α hα
+      obtain ⟨p, hp⟩ := hz α hα
+      have hop : o * α = a * p := by
+        apply IsFractionRing.injective (𝓞 K) K
+        simp only [map_mul]
+        change (o : K) * (α : K) = (a : K) * (p : K)
+        rw [ho, hp]; ring
+      rw [hop, mul_comm J I, ← h]
+      exact Ideal.mul_mem_right p _ (Ideal.mem_span_singleton_self a)
+    have hdvd : J * I ∣ Ideal.span {o} * I := Ideal.dvd_iff_le.mpr hle
+    rw [mul_dvd_mul_iff_right hI] at hdvd
+    exact Ideal.dvd_span_singleton.mp hdvd
+  exact ⟨⟨o, hmem⟩, ho⟩
+
+theorem xClasses_denom {K : Type} [Field K] [NumberField K] (A : Ideal (𝓞 K)) {r : ℕ}
+    (Y : Matrix (Fin r) (Fin (r + 1)) (𝓞 K)) (f : Fin r → Fin (r + 1))
+    (S : Matrix (Fin r) (Fin r) K)
+    (hx : ∀ a b, ∀ α ∈ A, ∃ o : 𝓞 K,
+      (o : K) = (α : K) * (S * Y.map (algebraMap (𝓞 K) K)) a b) (i j : Fin r) :
+    ∀ α ∈ Ideal.span {(Y.submatrix id f).det} * A, ∃ o : 𝓞 K, (o : K) = (α : K) * S i j := by
+  classical
+  intro α hα
+  obtain ⟨β, hβ, rfl⟩ := Ideal.mem_span_singleton_mul.mp hα
+  set φ := algebraMap (𝓞 K) K with hφ
+  set B := Y.submatrix id f with hB
+  have hM : B.map φ * (B.map φ).adjugate = (φ B.det) • (1 : Matrix (Fin r) (Fin r) K) := by
+    rw [Matrix.mul_adjugate, RingHom.map_det]; rfl
+  have e1 : ∀ k, (S * Y.map φ) i (f k) = (S * B.map φ) i k := by
+    intro k; simp [Matrix.mul_apply, B]
+  have e2 : ∀ k, φ (B.adjugate k j) = (B.map φ).adjugate k j := by
+    intro k; exact congrFun (congrFun (RingHom.map_adjugate φ B) k) j
+  have hkey : ∑ k, (S * Y.map φ) i (f k) * φ (B.adjugate k j) = φ B.det * S i j := by
+    simp_rw [e1, e2]
+    rw [← Matrix.mul_apply, Matrix.mul_assoc, hM]
+    simp [Matrix.mul_apply, Matrix.one_apply, mul_comm]
+  choose g hg using fun k => hx i (f k) β hβ
+  refine ⟨∑ k, g k * B.adjugate k j, ?_⟩
+  have hc : ∀ u : 𝓞 K, (u : K) = φ u := fun u => rfl
+  simp only [hc, map_sum, map_mul] at hg ⊢
+  simp_rw [hg]
+  rw [mul_comm (φ B.det) (φ β), mul_assoc, ← hkey, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun k _ => ?_
+  ring
+
+theorem xClasses : ∀ (K : Type) [Field K] [NumberField K] [StarRing K] (A : Ideal (𝓞 K)) (r : ℕ) (Y : Matrix (Fin r) (Fin (r + 1)) (𝓞 K)) (b₀ : Fin (r + 1)), A ≠ ⊥ → (Y.submatrix id b₀.succAbove).det ≠ 0 → ∃ reps : Finset (Matrix (Fin r) (Fin (r + 1)) K), reps.card ≤ Ideal.absNorm (Ideal.span {(Y.submatrix id b₀.succAbove).det} * A) ^ (r ^ 2) ∧ ∀ x : Matrix (Fin r) (Fin (r + 1)) K, (∀ a b, ∀ α ∈ A, ∃ o : 𝓞 K, (o : K) = (α : K) * x a b) → xᴴ * Y.map (algebraMap (𝓞 K) K) + (Y.map (algebraMap (𝓞 K) K))ᴴ * x = 0 → ∃ x₀ ∈ reps, ∃ c : Matrix (Fin r) (Fin r) (𝓞 K), (c.map (algebraMap (𝓞 K) K))ᴴ = -c.map (algebraMap (𝓞 K) K) ∧ x = x₀ + c.map (algebraMap (𝓞 K) K) * Y.map (algebraMap (𝓞 K) K) := by
+  classical
+  intro K _ _ _ A r Y b₀ hA hdet
+  set f := b₀.succAbove with hf
+  set φ := algebraMap (𝓞 K) K with hφ
+  set D := (Y.submatrix id f).det with hD
+  set I := Ideal.span {D} * A with hI
+  set YK := Y.map φ with hYK
+  have hφinj : Function.Injective φ := IsFractionRing.injective (𝓞 K) K
+  have hc : ∀ u : 𝓞 K, (u : K) = φ u := fun u => rfl
+  have hI0 : I ≠ ⊥ := by
+    intro h0
+    rcases mul_eq_zero.mp (show Ideal.span {D} * A = 0 from h0) with h1 | h1
+    · exact hdet (Ideal.span_singleton_eq_bot.mp h1)
+    · exact hA h1
+  obtain ⟨a, haI, ha0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hI0
+  obtain ⟨J, hJ⟩ : I ∣ Ideal.span {a} := Ideal.dvd_span_singleton.mpr haI
+  have haK : φ a ≠ 0 := fun h0 => ha0 (hφinj (h0.trans (map_zero φ).symm))
+
+  let C : Matrix (Fin (r + 1)) (Fin r) K :=
+    (1 : Matrix (Fin (r + 1)) (Fin (r + 1)) K).submatrix id f
+  have hC : ∀ M : Matrix (Fin r) (Fin (r + 1)) K, M * C = M.submatrix id f := fun M => by
+    simpa [C] using Matrix.mul_submatrix_one (Equiv.refl (Fin (r + 1))) f M
+  have hYf : YK * C = (Y.submatrix id f).map φ := by
+    rw [hC, hYK, Matrix.submatrix_map]
+  have hdetYf : IsUnit (YK * C).det := by
+    rw [hYf, show ((Y.submatrix id f).map φ).det = φ D from (RingHom.map_det φ _).symm]
+    exact isUnit_iff_ne_zero.mpr (fun h0 => hdet (hφinj (h0.trans (map_zero φ).symm)))
+  have hdetYfH : IsUnit (YK * C)ᴴ.det := by
+    rw [Matrix.det_conjTranspose]
+    exact isUnit_iff_ne_zero.mpr (star_ne_zero.mpr (isUnit_iff_ne_zero.mp hdetYf))
+  obtain ⟨Good, hGood⟩ : ∃ G : Matrix (Fin r) (Fin (r + 1)) K → Prop, ∀ x, G x ↔
+      (∀ p q, ∀ α ∈ A, ∃ o : 𝓞 K, (o : K) = (α : K) * x p q) ∧ xᴴ * YK + YKᴴ * x = 0 :=
+    ⟨_, fun _ => Iff.rfl⟩
+
+  obtain ⟨Sx, hSx⟩ : ∃ Sx : Matrix (Fin r) (Fin (r + 1)) K → Matrix (Fin r) (Fin r) K,
+      ∀ x, Good x → x = Sx x * YK ∧ (Sx x)ᴴ = -Sx x := by
+    refine ⟨fun x => x * C * (YK * C)⁻¹, fun x hG => ?_⟩
+    have hxY := ((hGood x).mp hG).2
+    set Yf := YK * C with hYfdef
+    set S := x * C * Yf⁻¹ with hS
+    have hSYf : S * Yf = x * C := Matrix.nonsing_inv_mul_cancel_right _ _ hdetYf
+    set P := x - S * YK with hP
+    have hxP : x = S * YK + P := by rw [hP]; abel
+    have hPC : P * C = 0 := by
+      rw [hP, Matrix.sub_mul, Matrix.mul_assoc, ← hYfdef, hSYf, sub_self]
+    have h1 : Cᴴ * xᴴ = Yfᴴ * Sᴴ := by
+      rw [← Matrix.conjTranspose_mul, ← Matrix.conjTranspose_mul, hSYf]
+    have h2 : Cᴴ * YKᴴ = Yfᴴ := by rw [← Matrix.conjTranspose_mul]
+    have h3 : Yfᴴ * Sᴴ * YK + Yfᴴ * x = 0 := by
+      have h0 : Cᴴ * (xᴴ * YK + YKᴴ * x) = 0 := by rw [hxY, Matrix.mul_zero]
+      rwa [Matrix.mul_add, ← Matrix.mul_assoc, ← Matrix.mul_assoc, h1, h2] at h0
+    have h4 : Yfᴴ * ((Sᴴ + S) * YK + P) = 0 := by
+      calc Yfᴴ * ((Sᴴ + S) * YK + P) = Yfᴴ * Sᴴ * YK + Yfᴴ * (S * YK + P) := by
+            simp only [Matrix.add_mul, Matrix.mul_add, Matrix.mul_assoc]; abel
+        _ = 0 := by rw [← hxP]; exact h3
+    have h5 : (Sᴴ + S) * YK + P = 0 := by
+      have h0 := congrArg (fun M => Yfᴴ⁻¹ * M) h4
+      rwa [Matrix.nonsing_inv_mul_cancel_left _ _ hdetYfH, Matrix.mul_zero] at h0
+    have h6 : Sᴴ + S = 0 := by
+      have h0 := congrArg (fun M => M * C * Yf⁻¹) h5
+      rwa [Matrix.add_mul, hPC, add_zero, Matrix.mul_assoc ((Sᴴ + S)) YK C, ← hYfdef,
+        Matrix.mul_nonsing_inv_cancel_right _ _ hdetYf, Matrix.zero_mul, Matrix.zero_mul] at h0
+    have h7 : P = 0 := by rwa [h6, Matrix.zero_mul, zero_add] at h5
+    rw [h7, add_zero] at hxP
+    exact ⟨hxP, eq_neg_of_add_eq_zero_left h6⟩
+
+  have hent : ∀ x, Good x → ∀ i j, ∃ o : J.toAddSubgroup, ((o : 𝓞 K) : K) = (a : K) * Sx x i j := by
+    intro x hG i j
+    have hx := ((hGood x).mp hG).1
+    have h1 := (hSx x hG).1
+    apply xClasses_mem I J a hI0 haI hJ
+    have hx' : ∀ p q, ∀ α ∈ A, ∃ o : 𝓞 K, (o : K) = (α : K) * (Sx x * Y.map φ) p q := by
+      intro p q α hα; rw [← hYK, ← h1]; exact hx p q α hα
+    exact xClasses_denom A Y f (Sx x) hx' i j
+  set Q := ↥J.toAddSubgroup ⧸ (Ideal.span {a}).toAddSubgroup.addSubgroupOf J.toAddSubgroup
+  have hcardQ : Nat.card Q = Ideal.absNorm I := xClasses_index I J a ha0 hJ
+  have : Finite Q := Nat.finite_of_card_ne_zero (by
+    rw [hcardQ]; exact fun h0 => hI0 (Ideal.absNorm_eq_zero_iff.mp h0))
+  let _ : Fintype Q := Fintype.ofFinite Q
+  obtain ⟨key, hkey⟩ : ∃ key : Matrix (Fin r) (Fin (r + 1)) K → (Fin r → Fin r → Q),
+      ∀ x, Good x → ∀ i j, ∃ o : J.toAddSubgroup,
+        ((o : 𝓞 K) : K) = (a : K) * Sx x i j ∧ key x i j = (o : Q) := by
+    refine ⟨fun x i j => if h : ∃ o : J.toAddSubgroup, ((o : 𝓞 K) : K) = (a : K) * Sx x i j
+      then ((Classical.choose h : J.toAddSubgroup) : Q) else 0, fun x hG i j => ?_⟩
+    have h := hent x hG i j
+    exact ⟨Classical.choose h, Classical.choose_spec h, by simp only [dif_pos h]⟩
+  obtain ⟨g, hg⟩ : ∃ g : (Fin r → Fin r → Q) → Matrix (Fin r) (Fin (r + 1)) K,
+      ∀ q, (∃ x, Good x ∧ key x = q) → Good (g q) ∧ key (g q) = q := by
+    refine ⟨fun q => if h : ∃ x, Good x ∧ key x = q then Classical.choose h else 0,
+      fun q h => ?_⟩
+    simp only [dif_pos h]
+    exact Classical.choose_spec h
+  refine ⟨Finset.univ.image g, ?_, ?_⟩
+  · calc (Finset.univ.image g).card ≤ (Finset.univ : Finset (Fin r → Fin r → Q)).card :=
+          Finset.card_image_le
+      _ = Fintype.card Q ^ (r ^ 2) := by
+          rw [Finset.card_univ, Fintype.card_fun, Fintype.card_fun, Fintype.card_fin, ← pow_mul, sq]
+      _ = Ideal.absNorm I ^ (r ^ 2) := by rw [← Nat.card_eq_fintype_card, hcardQ]
+  · intro x hx hxY
+    have hG : Good x := (hGood x).mpr ⟨hx, hxY⟩
+    obtain ⟨hG', hk⟩ := hg (key x) ⟨x, hG, rfl⟩
+    set x' := g (key x) with hx'
+    have hdiff : ∀ i j, ∃ t : 𝓞 K, φ t = Sx x i j - Sx x' i j := by
+      intro i j
+      obtain ⟨o, ho, hko⟩ := hkey x hG i j
+      obtain ⟨o', ho', hko'⟩ := hkey x' hG' i j
+      have e : ((o' : J.toAddSubgroup) : Q) = (o : Q) := by
+        rw [← hko, ← hko', hk]
+      have hm := QuotientAddGroup.eq.mp e
+      rw [AddSubgroup.mem_addSubgroupOf] at hm
+      obtain ⟨t, ht⟩ := Ideal.mem_span_singleton'.mp hm
+      refine ⟨t, ?_⟩
+      have ht' : φ t * φ a = φ a * (Sx x i j - Sx x' i j) := by
+        rw [← map_mul, ht]
+        simp only [AddSubgroup.coe_add, AddSubgroup.coe_neg, map_add, map_neg]
+        rw [← hc, ← hc, ho, ho']; ring
+      exact mul_left_cancel₀ haK (by rw [mul_comm]; exact ht')
+    obtain ⟨c, hcc⟩ : ∃ c : Matrix (Fin r) (Fin r) (𝓞 K), ∀ i j, φ (c i j) = Sx x i j - Sx x' i j :=
+      ⟨fun i j => Classical.choose (hdiff i j), fun i j => Classical.choose_spec (hdiff i j)⟩
+    have hcm : c.map φ = Sx x - Sx x' := by
+      ext i j; simp [hcc]
+    refine ⟨x', Finset.mem_image_of_mem _ (Finset.mem_univ _), c, ?_, ?_⟩
+    · rw [hcm, Matrix.conjTranspose_sub, (hSx x hG).2, (hSx x' hG').2]; abel
+    · rw [hcm, Matrix.sub_mul, ← (hSx x hG).1, ← (hSx x' hG').1]; abel
+
+end GlobalTheory
+end
+
+section
+open NumberField Module Matrix Formalism.BasicNotions
+open scoped ENNReal
+
+namespace GlobalTheory.DefinitePacking
+
+theorem exists_diag {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V]
+    [FiniteDimensional K V] (h : V →ₗ⋆[K] V →ₗ[K] K) (hs : h.IsSymm)
+    (ha : ∀ x : V, x ≠ 0 → h x x ≠ 0) (s : ℕ) :
+    ∀ W : Submodule K V, finrank K W ≤ s → ∃ (f : Fin s → V →ₗ[K] K) (e : Fin s → V),
+      ∀ x ∈ W, h x x = ∑ i, star (f i x) * f i x * h (e i) (e i) := by
+  induction s with
+  | zero =>
+    intro W hW
+    have : W = ⊥ := Submodule.finrank_eq_zero.mp (Nat.le_zero.mp hW)
+    subst this
+    refine ⟨fun _ => 0, fun _ => 0, fun x hx => ?_⟩
+    rw [Submodule.mem_bot] at hx
+    simp [hx]
+  | succ n ih =>
+    intro W hW
+    by_cases h0 : W = ⊥
+    · subst h0
+      refine ⟨fun _ => 0, fun _ => 0, fun x hx => ?_⟩
+      rw [Submodule.mem_bot] at hx
+      simp [hx]
+    obtain ⟨e, heW, he⟩ := Submodule.exists_mem_ne_zero_of_ne_bot h0
+    have hee := ha e he
+    have hlt : W ⊓ LinearMap.ker (h e) < W := by
+      refine lt_of_le_of_ne inf_le_left fun hc => ?_
+      have : e ∈ W ⊓ LinearMap.ker (h e) := by rw [hc]; exact heW
+      exact hee this.2
+    have hr := Submodule.finrank_lt_finrank_of_lt hlt
+    obtain ⟨f, e', hf⟩ := ih (W ⊓ LinearMap.ker (h e)) (by omega)
+    let g : V →ₗ[K] K := (h e e)⁻¹ • h e
+    let P : V →ₗ[K] V := LinearMap.id - g.smulRight e
+    refine ⟨Fin.cons g (fun i => f i ∘ₗ P), Fin.cons e e', fun x hx => ?_⟩
+    have hP : P x = x - g x • e := rfl
+    have hg : g x * h e e = h e x := by
+      simp only [g, LinearMap.smul_apply, smul_eq_mul]
+      field_simp
+    have hk : h e (P x) = 0 := by
+      rw [hP, map_sub, map_smul, smul_eq_mul, hg, sub_self]
+    have hk' : h (P x) e = 0 := by
+      rw [← hs.eq e (P x), hk, map_zero]
+    have hmem : P x ∈ W ⊓ LinearMap.ker (h e) :=
+      ⟨by rw [hP]; exact W.sub_mem hx (W.smul_mem _ heW), hk⟩
+    have hx' : x = P x + g x • e := by rw [hP]; abel
+    rw [Fin.sum_univ_succ]
+    simp only [Fin.cons_zero, Fin.cons_succ, LinearMap.comp_apply]
+    rw [← hf _ hmem]
+    generalize P x = y at *
+    generalize g x = c at *
+    rw [hx']
+    simp only [map_add, LinearMap.add_apply, map_smul, LinearMap.map_smulₛₗ, LinearMap.smul_apply,
+      smul_eq_mul, hk, hk', starRingEnd_apply]
+    ring
+
+theorem one_le_norm_mul_absNorm {K : Type} [Field K] [NumberField K] (c : K) (hc : c ≠ 0)
+    (J : Ideal (𝓞 K)) (hJ : J ≠ ⊥) (h : ∀ a ∈ J, ∃ o : 𝓞 K, (o : K) = c * a) :
+    (1 : ℝ) ≤ |((Algebra.norm ℚ c : ℚ) : ℝ)| * (Ideal.absNorm J : ℝ) := by
+  obtain ⟨a, d, hd, rfl⟩ := IsFractionRing.div_surjective (A := 𝓞 K) c
+  have hd0 : d ≠ 0 := nonZeroDivisors.ne_zero hd
+  have hdK : algebraMap (𝓞 K) K d ≠ 0 := by simpa using hd0
+  have ha0 : a ≠ 0 := by rintro rfl; simp at hc
+  have hle : Ideal.span {a} * J ≤ Ideal.span {d} := by
+    rw [Ideal.span_singleton_mul_le_iff]
+    intro z hz
+    obtain ⟨o, ho⟩ := h z hz
+    rw [Ideal.mem_span_singleton']
+    refine ⟨o, ?_⟩
+    apply IsFractionRing.injective (𝓞 K) K
+    rw [map_mul, map_mul]
+    change (o : K) * _ = _ * (z : K)
+    rw [ho]
+    field_simp
+  have hdvd := Ideal.absNorm_dvd_absNorm_of_le hle
+  have hne : Ideal.absNorm (Ideal.span {a} * J) ≠ 0 := by
+    rw [Ne, Ideal.absNorm_eq_zero_iff]
+    exact mul_ne_zero (by simpa using ha0) hJ
+  have hl := Nat.le_of_dvd (Nat.pos_of_ne_zero hne) hdvd
+  rw [map_mul, Ideal.absNorm_span_singleton, Ideal.absNorm_span_singleton] at hl
+  have hl' : (((Algebra.norm ℤ d).natAbs : ℕ) : ℝ) ≤ (((Algebra.norm ℤ a).natAbs : ℕ) : ℝ) * (Ideal.absNorm J : ℝ) := by
+    exact_mod_cast hl
+  have key : ∀ z : 𝓞 K, (((Algebra.norm ℤ z).natAbs : ℕ) : ℝ) = |((Algebra.norm ℚ (z : K) : ℚ) : ℝ)| := by
+    intro z
+    rw [← Algebra.coe_norm_int, Nat.cast_natAbs]
+    push_cast
+    rfl
+  rw [key, key] at hl'
+  have hdn : (0 : ℝ) < |((Algebra.norm ℚ (d : K) : ℚ) : ℝ)| := by
+    rw [abs_pos]
+    exact_mod_cast (Algebra.norm_ne_zero_iff.mpr hdK)
+  have hm : Algebra.norm ℚ (algebraMap (𝓞 K) K a / algebraMap (𝓞 K) K d) * Algebra.norm ℚ (d : K)
+      = Algebra.norm ℚ (a : K) := by
+    rw [← map_mul]
+    congr 1
+    exact div_mul_cancel₀ _ hdK
+  rw [← hm] at hl'
+  push_cast at hl'
+  rw [abs_mul] at hl'
+  refine le_of_mul_le_mul_right ?_ hdn
+  linarith
+
+theorem absNorm_map_equiv {K : Type} [Field K] [NumberField K] (e : 𝓞 K ≃+* 𝓞 K)
+    (I : Ideal (𝓞 K)) : Ideal.absNorm (I.map (e : 𝓞 K →+* 𝓞 K)) = Ideal.absNorm I := by
+  rw [Ideal.absNorm_apply, Ideal.absNorm_apply, Submodule.cardQuot_apply, Submodule.cardQuot_apply]
+  exact (Nat.card_congr (Ideal.quotientEquiv I _ e rfl).toEquiv).symm
+
+theorem one_le_norm_mul_absNorm_sq {K : Type} [Field K] [NumberField K] [StarRing K] (c : K)
+    (hc : c ≠ 0) (I : Ideal (𝓞 K)) (hI : I ≠ ⊥)
+    (h : ∀ a ∈ I, ∀ b ∈ I, ∃ o : 𝓞 K, (o : K) = c * (star (a : K) * b)) :
+    (1 : ℝ) ≤ |((Algebra.norm ℚ c : ℚ) : ℝ)| * (Ideal.absNorm I : ℝ) ^ 2 := by
+  let e : 𝓞 K ≃+* 𝓞 K := RingOfIntegers.mapRingEquiv (starRingAut : K ≃+* K)
+  have he : ∀ a : 𝓞 K, (e a : K) = star (a : K) := fun a => rfl
+  have hN := absNorm_map_equiv e I
+  have h1 : I.map (e : 𝓞 K →+* 𝓞 K) ≠ ⊥ := by
+    rw [Ne, ← Ideal.absNorm_eq_zero_iff, hN, Ideal.absNorm_eq_zero_iff]
+    exact hI
+  have := one_le_norm_mul_absNorm c hc (I.map (e : 𝓞 K →+* 𝓞 K) * I) (mul_ne_zero h1 hI) (by
+    intro a ha
+    refine Submodule.mul_induction_on ha ?_ ?_
+    · intro m hm n hn
+      obtain ⟨m', hm', rfl⟩ := (Ideal.mem_map_iff_of_surjective (e : 𝓞 K →+* 𝓞 K) e.surjective).mp hm
+      obtain ⟨o, ho⟩ := h m' hm' n hn
+      refine ⟨o, ?_⟩
+      rw [ho, ← he]
+      simp
+    · rintro x y ⟨o, ho⟩ ⟨o', ho'⟩
+      refine ⟨o + o', ?_⟩
+      change algebraMap _ K (o + o') = c * algebraMap _ K (x + y)
+      rw [map_add, map_add, mul_add]
+      exact congrArg₂ (· + ·) ho ho')
+  rw [map_mul, hN] at this
+  push_cast at this
+  rw [sq]
+  exact this
+
+theorem dualPack : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (h : V →ₗ⋆[K] V →ₗ[K] K) (ι : Type) [Fintype ι] (τ : ι → (K →+* ℂ)) (S : Submodule (𝓞 K) V) (I : Ideal (𝓞 K)) (s : ℕ) (ρ : ι → ℝ), h.IsSymm → (∀ v a, τ v (star a) = starRingEnd ℂ (τ v a)) → (∀ a : K, ∏ v, ‖τ v a‖ ^ 2 = |((Algebra.norm ℚ a : ℚ) : ℝ)|) → (∀ v, ∀ x : V, x ≠ 0 → 0 < (τ v (h x x)).re) → Nonempty ι → finrank K (Submodule.span K (S : Set V)) = s → I ≠ ⊥ → (∀ x ∈ I • S, ∀ y ∈ I • S, ∃ o : 𝓞 K, (o : K) = h x y) → (∀ v, 0 < ρ v) → {x | x ∈ S ∧ ∀ v, (τ v (h x x)).re ≤ ρ v}.Finite ∧ ({x | x ∈ S ∧ ∀ v, (τ v (h x x)).re ≤ ρ v}.ncard : ℝ) ≤ 9 ^ (s * Fintype.card ι) * (max 1 ((Ideal.absNorm I : ℝ) * ∏ v, ρ v)) ^ s := by
+  intro K V _ _ _ _ _ _ _ _ h ι _ τ S I s ρ hs hτ hN hpos hne hrk hI hint hρ
+  obtain ⟨v₀⟩ := hne
+  have ha : ∀ x : V, x ≠ 0 → h x x ≠ 0 := by
+    intro x hx h0
+    have := hpos v₀ x hx
+    simp [h0] at this
+  have hnn : ∀ v x, 0 ≤ (τ v (h x x)).re := by
+    intro v x
+    by_cases hx : x = 0
+    · simp [hx]
+    · exact (hpos v x hx).le
+  have hreal : ∀ v x, τ v (h x x) = ((τ v (h x x)).re : ℂ) := by
+    intro v x
+    have h1 : star (h x x) = h x x := hs.eq x x
+    have h2 := hτ v (h x x)
+    rw [h1] at h2
+    exact (Complex.conj_eq_iff_re.mp h2.symm).symm
+  obtain ⟨f, e, hf⟩ := exists_diag h hs ha s (Submodule.span K (S : Set V)) hrk.le
+  let Φ : V →+ (ι → EuclideanSpace ℂ (Fin s)) :=
+    { toFun := fun x v => WithLp.toLp 2 fun i =>
+        τ v (f i x) * (Real.sqrt (τ v (h (e i) (e i))).re : ℂ)
+      map_zero' := by ext v i; simp
+      map_add' := by intro x y; ext v i; simp [add_mul] }
+  have hΦ : ∀ x ∈ S, ∀ v, ‖Φ x v‖ ^ 2 = (τ v (h x x)).re := by
+    intro x hx v
+    rw [EuclideanSpace.norm_sq_eq, hf x (Submodule.subset_span hx), map_sum, Complex.re_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    change ‖τ v (f i x) * (Real.sqrt (τ v (h (e i) (e i))).re : ℂ)‖ ^ 2 = _
+    rw [norm_mul, mul_pow, Complex.norm_real, Real.norm_eq_abs, sq_abs, Real.sq_sqrt (hnn _ _),
+      map_mul, map_mul, hτ, ← Complex.normSq_eq_conj_mul_self, Complex.re_ofReal_mul,
+      Complex.normSq_eq_norm_sq]
+  have hinj : Set.InjOn Φ S := by
+    intro x hx y hy hxy
+    by_contra hne
+    have h1 := hpos v₀ (x - y) (sub_ne_zero.mpr hne)
+    rw [← hΦ _ (S.sub_mem hx hy), map_sub, hxy] at h1
+    simp at h1
+  have hIpos : (0 : ℝ) < (Ideal.absNorm I : ℝ) := by
+    have : Ideal.absNorm I ≠ 0 := by rw [Ne, Ideal.absNorm_eq_zero_iff]; exact hI
+    positivity
+  have hlow : ∀ x ∈ S, x ≠ 0 → (Ideal.absNorm I : ℝ)⁻¹ ≤ ∏ v, (τ v (h x x)).re := by
+    intro x hx hx0
+    have h1 := one_le_norm_mul_absNorm_sq (h x x) (ha x hx0) I hI (by
+      intro a ha b hb
+      obtain ⟨o, ho⟩ := hint _ (Submodule.smul_mem_smul ha hx) _ (Submodule.smul_mem_smul hb hx)
+      refine ⟨o, ?_⟩
+      rw [ho, ← algebraMap_smul K a x, ← algebraMap_smul K b x]
+      simp only [map_smul, LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul,
+        starRingEnd_apply]
+      change (b : K) * (star (a : K) * h x x) = _
+      ring)
+    have h2 : |((Algebra.norm ℚ (h x x) : ℚ) : ℝ)| = (∏ v, (τ v (h x x)).re) ^ 2 := by
+      rw [← hN, ← Finset.prod_pow]
+      refine Finset.prod_congr rfl fun v _ => ?_
+      rw [hreal v x, Complex.norm_real, Complex.ofReal_re, Real.norm_eq_abs, sq_abs]
+    have h3 : 0 ≤ ∏ v, (τ v (h x x)).re := Finset.prod_nonneg fun v _ => hnn v x
+    rw [h2, ← mul_pow] at h1
+    have h4 : 1 ≤ (∏ v, (τ v (h x x)).re) * (Ideal.absNorm I : ℝ) :=
+      (one_le_sq_iff₀ (by positivity)).mp h1
+    rw [inv_eq_one_div, div_le_iff₀ hIpos]
+    exact h4
+  obtain ⟨hfin, hcard⟩ := Formalism.HermitianLatticeCounting.Final.LatticeSumBounds.boxCount ι s (S.toAddSubgroup.map Φ)
+    (Ideal.absNorm I : ℝ)⁻¹ (fun v => Real.sqrt (ρ v)) (inv_pos.mpr hIpos)
+    (fun v => Real.sqrt_pos.mpr (hρ v)) (by
+      rintro _ ⟨x, hx, rfl⟩ hx0
+      have hx0' : x ≠ 0 := by rintro rfl; exact hx0 (map_zero Φ)
+      rw [Finset.prod_congr rfl fun v _ => hΦ x hx v]
+      exact hlow x hx hx0')
+  have hset : {x | x ∈ S.toAddSubgroup.map Φ ∧ ∀ v, ‖x v‖ ≤ Real.sqrt (ρ v)}
+      = Φ '' {x | x ∈ S ∧ ∀ v, (τ v (h x x)).re ≤ ρ v} := by
+    ext y
+    constructor
+    · rintro ⟨⟨x, hx, rfl⟩, hy⟩
+      refine ⟨x, ⟨hx, fun v => ?_⟩, rfl⟩
+      rw [← hΦ x hx v]
+      exact (Real.le_sqrt (norm_nonneg _) (hρ v).le).mp (hy v)
+    · rintro ⟨x, ⟨hx, hy⟩, rfl⟩
+      refine ⟨⟨x, hx, rfl⟩, fun v => ?_⟩
+      apply Real.le_sqrt_of_sq_le
+      rw [hΦ x hx v]
+      exact hy v
+  have hinj' : Set.InjOn Φ {x | x ∈ S ∧ ∀ v, (τ v (h x x)).re ≤ ρ v} :=
+    hinj.mono fun x hx => hx.1
+  rw [hset] at hfin hcard
+  refine ⟨Set.Finite.of_finite_image hfin hinj', ?_⟩
+  rw [hinj'.ncard_image, Finset.prod_congr rfl fun v _ => Real.sq_sqrt (hρ v).le,
+    div_inv_eq_mul, mul_comm (∏ v, ρ v)] at hcard
+  exact hcard
+
+end GlobalTheory.DefinitePacking
+end
+
+section
 section
 open NumberField Module Matrix Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt GlobalTheory.LoopC
 open scoped ENNReal Classical
@@ -550,3 +1504,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.card_integral_frames_fixed_lift_le : ∀ (D : D7) (u u' : D.what₂.Word) (F0 : Fb D u) (Λ : LatV D), Stand D u u' → IsBase D u F0 → IsRowLat D F0 Λ → IsSplit D F0 Λ → ∀ (P : LatW D) (φ : P →ₗ[𝓞 D.host.E] (hS D).V) (Z : GramM D) (s : ℕ) (De Q : ℝ), 1 ≤ s → s ≤ D.R.k → (∀ p, φ p ∈ XLam Λ (lf D F0)) → SubOK D (L0X D Λ (lf D F0)) P s De → QOK D u u' Z Q → (cntCl (FixSet D Λ (lf D F0) ((Tu D u' : ℕ) : D.host.E) Z P φ) (TEqv D Λ (lf D F0)) : ℝ≥0∞) ≤ ENNReal.ofReal (fixB D s (NT D u) De Q) := by
   atlas_forward_decl GlobalTheory.LoopC.FixedLift.card_frames_le
+end

@@ -141,13 +141,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [NormedSpace ℝ
   [IsScalarTower ℝ ℂ E]
 variable {m l k : Type*} [Fintype m] [Fintype l] [DecidableEq m] [DecidableEq l]
 
-theorem homCovDel_leibniz (A : E → Matrix m m ℂ) (B : E → Matrix l l ℂ) {T : E → Matrix l m ℂ}
-    {S : E → Matrix m k ℂ} {z : E} (hT : MContDiffAt 1 T z) (hS : MContDiffAt 1 S z) (ξ : E) :
-    mdel (fun x => T x * S x) z ξ + conn B z ξ * (T z * S z) =
-      homCovDel A B T z ξ * S z + T z * (mdel S z ξ + conn A z ξ * S z) := by
-  rw [mdel_mul hT hS, homCovDel]
-  simp only [Matrix.sub_mul, Matrix.add_mul, Matrix.mul_add, Matrix.mul_assoc]
-  abel
 
 theorem contDiff_tautPairGram (a b : Unit ⊕ Unit) :
     ContDiff ℝ ∞ fun x => tautPairGram x a b := by
@@ -168,54 +161,10 @@ theorem isPosFrame_tautPairGram : IsPosFrame Set.univ tautPairGram := by
   rw [e]
   exact PosDef.one.mul_mul_conjTranspose_same (vecMul_injective_iff_isUnit.2 hP)
 
-theorem vertForm_tautPairGram_zero (ξ η : ℂ) :
-    vertForm tautPairGram 0 ξ η = kappa * (ξ * conj η) := by
-  have hF := isPosFrame_tautPairGram.isHermFrame
-  have h : tautPairGram 0 = 1 := by
-    rw [← fromBlocks_one]; ext (a | a) (b | b) <;> simp [tautPairGram]
-  have hs : subGram (tautPairGram 0) = 1 := by rw [h]; ext a b; simp [subGram, toBlocks₁₁]
-  have hq : quotGram (tautPairGram 0) = 1 := by
-    rw [h, ← fromBlocks_one, quotGram, toBlocks_fromBlocks₂₂, toBlocks_fromBlocks₂₁]; simp
-  have hb : ∀ ξ : ℂ, secondForm tautPairGram 0 ξ () () = ξ := fun ξ => by
-    rw [secondForm_eq, conn, h, transpose_one, inv_one, Matrix.one_mul]
-    change del (fun x : ℂ => x) 0 ξ = ξ
-    rw [del_eq_fderiv differentiableAt_fun_id]; simp
-  have hu : IsUnit (subGram (tautPairGram 0)).det := by rw [hs]; simp
-  rw [vertForm, extFormAdj_eq_neg_secondForm (hF.one trivial) (hF.eventually_herm trivial)
-    (hF.isUnit 0 trivial) hu, extForm_eq_neg_secondFormAdj (hF.one trivial)
-    (hF.eventually_herm trivial) (hF.isUnit 0 trivial) hu, secondFormAdj, hs, hq, adj]
-  simp [hb]
 
 def lorentzPairGram (z : ℂ) : Matrix (Unit ⊕ Unit) (Unit ⊕ Unit) ℂ :=
   fromBlocks (of fun _ _ => 1 - z * conj z) (of fun _ _ => -z) (of fun _ _ => -conj z) (-1)
 
-theorem lorentzPairGram_spec : IsHermFrame (Metric.ball 0 1) lorentzPairGram ∧
-    (∀ z ∈ Metric.ball (0 : ℂ) 1, IsUnit (subField lorentzPairGram z).det) ∧
-    ¬ (lorentzPairGram 0).PosDef := by
-  have hc : ContDiff ℝ ∞ fun x : ℂ => conj x := conjCLE.contDiff
-  have hs : ∀ z ∈ Metric.ball (0 : ℂ) 1, (1 - z * conj z) ≠ 0 := fun z hz h => by
-    have h1 : ‖z‖ < 1 := by simpa using hz
-    rw [mul_conj', sub_eq_zero] at h
-    have h2 : (1 : ℝ) = ‖z‖ ^ 2 := by exact_mod_cast h
-    nlinarith [norm_nonneg z]
-  refine ⟨⟨Metric.isOpen_ball, fun a b => ContDiff.contDiffOn ?_, fun z _ => ?_, fun z _ => ?_⟩,
-    fun z hz => ?_, fun h => ?_⟩
-  · rcases a with a | a <;> rcases b with b | b
-    · exact contDiff_const.sub (contDiff_id.mul hc)
-    · exact contDiff_id.neg
-    · exact hc.neg
-    · exact contDiff_const
-  · ext (a | a) (b | b) <;> simp [lorentzPairGram, mul_comm]
-  · let P : Matrix (Unit ⊕ Unit) (Unit ⊕ Unit) ℂ := fromBlocks 1 (of fun _ _ => z) 0 1
-    let Q : Matrix (Unit ⊕ Unit) (Unit ⊕ Unit) ℂ := fromBlocks 1 0 (of fun _ _ => -conj z) (-1)
-    have e : lorentzPairGram z = P * Q := by
-      ext (a | a) (b | b) <;> simp [lorentzPairGram, P, Q, mul_apply, sub_eq_add_neg]
-    rw [e, det_mul, det_fromBlocks_zero₂₁, det_fromBlocks_zero₁₂]
-    simp
-  · rw [det_unique]; exact (hs z hz).isUnit
-  · have := h.diag_pos (i := Sum.inr ())
-    simp [lorentzPairGram] at this
-    exact absurd this (by norm_num)
 
 end Basic₂
 

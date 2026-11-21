@@ -58,31 +58,5 @@ theorem zhatLoc_eq (D : Formalism.BasicNotions.D7) (δ : ∀ p : PlF D, (D.s.atP
   simp only [ZhatLoc, Matrix.of_apply]
   rw [h, cj_frFac]
 
-theorem normG_of (h1 : FrIntG) (h2 : CongG) : NormG := by
-  intro D δ M hA u u' hu F0 what₂ hrows Λ hΛ Z F' hF' p g hg a b
-  obtain ⟨c1, c2, c3⟩ := h2 D δ M hA u u' hu F0 what₂ hrows Λ hΛ Z F' hF' p g hg a b
-  have hfa := h1 D δ M hA p g hg a
-  have hfb := h1 D δ M hA p g hg b
-  have ea := frFac_coord D δ M hA p g a
-  have eb := frFac_coord D δ M hA p g b
-  unfold NormAt
-  rw [zhatLoc_eq D δ M hA p Z a b, zhatLoc_eq D δ M hA p Z b a]
-  by_cases hab : a = Fin.last D.R.rS ∧ b = Fin.last D.R.rS
-  · obtain ⟨rfl, rfl⟩ := hab
-    simp only [frFac_last, one_mul] at c1 c2 c3 ⊢
-    exact ⟨c1, c2, c3⟩
-  · simp only [map_mul, Prod.fst_mul, Prod.snd_mul, ea, eb]
-    simp only [if_neg hab, add_zero] at c1 c2 c3 ⊢
-    obtain ⟨s1, hs1⟩ := c1
-    obtain ⟨s2, hs2⟩ := c2
-    obtain ⟨s3, hs3⟩ := c3
-    refine ⟨⟨⟨_, mul_mem (mul_mem hfb hfa) s1.2⟩, ?_⟩, ⟨⟨_, mul_mem (mul_mem hfb hfa) s2.2⟩, ?_⟩,
-      ⟨⟨_, mul_mem (mul_mem hfb hfa) s3.2⟩, ?_⟩⟩
-    · show _ = (g.q : (D.s.atP p).Fp) * ((g.e (frFac δ p b)).1 * (g.e (frFac δ p a)).1 * (s1 : (D.s.atP p).Fp))
-      linear_combination ((g.e (frFac δ p b)).1 * (g.e (frFac δ p a)).1) * hs1
-    · show _ = (g.q : (D.s.atP p).Fp) * ((g.e (frFac δ p b)).1 * (g.e (frFac δ p a)).1 * (s2 : (D.s.atP p).Fp))
-      linear_combination ((g.e (frFac δ p b)).1 * (g.e (frFac δ p a)).1) * hs2
-    · show _ = (g.q : (D.s.atP p).Fp) ^ 2 * ((g.e (frFac δ p b)).1 * (g.e (frFac δ p a)).1 * (s3 : (D.s.atP p).Fp))
-      linear_combination ((g.e (frFac δ p b)).1 * (g.e (frFac δ p a)).1) * hs3
 
 end PI.CntNotIntW

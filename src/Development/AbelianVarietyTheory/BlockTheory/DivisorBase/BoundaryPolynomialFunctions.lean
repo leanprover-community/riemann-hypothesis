@@ -105,13 +105,6 @@ def LogNormIntegrablePoincare : Prop :=
     regIntegral A Z n (poincarePot α Λ σ c) (regularLocus A Z n \ boundary σ)
       (absLogNorm L s) < ∞
 
-theorem regularLocus_univ (A : FinHolAtlas d X) : regularLocus A Set.univ d = Set.univ := by
-  refine Set.eq_univ_of_forall fun x => ⟨trivial, ?_⟩
-  obtain ⟨j, hj⟩ := A.cover x
-  refine ⟨A.chart j, ⟨le_rfl, fun i => ⟨A.holo i j, A.holo j i⟩, ?_⟩, hj⟩
-  ext y
-  simp only [Set.univ_inter, Set.mem_setOf_eq]
-  exact ⟨fun h => ⟨h, fun k hk => absurd k.2 (not_lt.2 hk)⟩, fun h => h.1⟩
 
 end
 

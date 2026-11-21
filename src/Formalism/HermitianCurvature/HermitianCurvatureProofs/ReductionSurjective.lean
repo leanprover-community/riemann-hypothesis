@@ -125,17 +125,6 @@ def prodG (N H : Subgroup G) (hnorm : ∀ h ∈ H, ∀ n ∈ N, h * n * h⁻¹ �
     rintro _ ⟨n, hn, h, hh, rfl⟩
     exact ⟨h⁻¹ * n⁻¹ * (h⁻¹)⁻¹, hnorm _ (H.inv_mem hh) _ (N.inv_mem hn), h⁻¹, H.inv_mem hh, by group⟩
 
-theorem card_prodG (N H : Subgroup G) (hnorm : ∀ h ∈ H, ∀ n ∈ N, h * n * h⁻¹ ∈ N)
-    (hd : Disjoint N H) : Nat.card (prodG N H hnorm) = Nat.card N * Nat.card H := by
-  rw [← Nat.card_prod]
-  symm
-  apply Nat.card_congr
-  refine Equiv.ofBijective
-    (fun p : N × H => ⟨(p.1 : G) * (p.2 : G), p.1, p.1.2, p.2, p.2.2, rfl⟩) ⟨?_, ?_⟩
-  · intro a b hab
-    exact Subgroup.mul_injective_of_disjoint hd (congrArg Subtype.val hab)
-  · rintro ⟨_, n, hn, h, hh, rfl⟩
-    exact ⟨(⟨n, hn⟩, ⟨h, hh⟩), rfl⟩
 
 end Prod
 
@@ -259,25 +248,12 @@ theorem norm_phi (V : Subgroup (GL (Fin k) A)) :
   refine IsUc.conj (isLc_hEmb _) (isLc_hEmb _) ?_ hn
   rw [← hEmb_mul, ← Units.val_mul, mul_inv_cancel, Units.val_one, hEmb_one]
 
-theorem disj_phi (V : Subgroup (GL (Fin k) A)) : Disjoint (UcG A (cI r k)) (V.map (phi A r k)) := by
-  rw [Subgroup.disjoint_def]
-  rintro _ hx ⟨h, -, rfl⟩
-  have h1 : h = 1 := by
-    apply Units.ext
-    ext a b
-    have := hx (Sum.inr (Sum.inl (Sum.inl a))) (Sum.inr (Sum.inl (Sum.inl b))) le_rfl
-    rw [coe_phi, hEmb_apply] at this
-    simpa [Matrix.one_apply] using this
-  rw [h1, map_one]
 
 variable (r) in
 
 def PG (V : Subgroup (GL (Fin k) A)) : Subgroup (GL (Idx r k) A) :=
   prodG (UcG A (cI r k)) (V.map (phi A r k)) (norm_phi V)
 
-theorem card_PG (V : Subgroup (GL (Fin k) A)) :
-    Nat.card (PG r V) = Nat.card (UcG A (cI r k)) * Nat.card V := by
-  rw [PG, card_prodG _ _ _ (disj_phi V), Subgroup.card_map_of_injective phi_injective]
 
 theorem mem_PG (V : Subgroup (GL (Fin k) A)) (g : GL (Idx r k) A) :
     g ∈ PG r V ↔ ∃ n : GL (Idx r k) A, ∃ h ∈ V, IsN (n : Matrix (Idx r k) (Idx r k) A) ∧
@@ -291,13 +267,6 @@ theorem mem_PG (V : Subgroup (GL (Fin k) A)) (g : GL (Idx r k) A) :
 theorem isN_isUnit_det {x : Matrix (Idx r k) (Idx r k) A} (hx : IsN x) : IsUnit x.det := by
   rw [((isN_iff x).1 hx).det]; exact isUnit_one
 
-theorem isN_set (x : Matrix (Idx r k) (Idx r k) A) :
-    IsN x ↔ ∃ g ∈ UcG A (cI r k), (g : Matrix (Idx r k) (Idx r k) A) = x := by
-  constructor
-  · intro hx
-    exact ⟨toGL x (isN_isUnit_det hx), (isN_iff x).1 hx, rfl⟩
-  · rintro ⟨g, hg, rfl⟩
-    exact (isN_iff _).2 hg
 
 theorem isS_set (x : Matrix (Idx r k) (Idx r k) A) :
     IsS x ↔ ∃ g ∈ PG r (⊤ : Subgroup (GL (Fin k) A)), (g : Matrix (Idx r k) (Idx r k) A) = x := by
@@ -334,13 +303,7 @@ theorem isNU_iff (g : GL (Idx r k) A) :
   · rintro ⟨g', hg', e⟩; rwa [← Units.ext e]
   · intro hg; exact ⟨g, hg, rfl⟩
 
-theorem PG_mono {V W : Subgroup (GL (Fin k) A)} (h : V ≤ W) : PG r V ≤ PG r W := by
-  intro g hg
-  obtain ⟨n, u, hu, hn, rfl⟩ := (mem_PG _ _).1 hg
-  exact (mem_PG _ _).2 ⟨n, u, h hu, hn, rfl⟩
 
-theorem card_N : Nat.card {x : Matrix (Idx r k) (Idx r k) A // IsN x} = Nat.card (UcG A (cI r k)) :=
-  card_of_subgroupSet _ _ isN_set
 
 theorem card_S : Nat.card {x : Matrix (Idx r k) (Idx r k) A // IsS x} =
     Nat.card (PG r (⊤ : Subgroup (GL (Fin k) A))) :=
@@ -379,46 +342,10 @@ theorem red_phi (h : GL (Fin k) o) :
   apply Units.ext
   rw [coe_red, coe_phi, coe_phi, coe_red, hEmb_map]
 
-theorem lift_decomp (x : GL (Idx r k) o) (nb : GL (Idx r k) 𝔽) (hb : GL (Fin k) 𝔽)
-    (hn : IsN (nb : Matrix (Idx r k) (Idx r k) 𝔽)) (hx : red o (Idx r k) x = nb * phi 𝔽 r k hb) :
-    ∃ (n κ : GL (Idx r k) o) (h : GL (Fin k) o), IsN (n : Matrix (Idx r k) (Idx r k) o) ∧
-      red o (Fin k) h = hb ∧ κ ∈ (red o (Idx r k)).ker ∧ x = n * phi o r k h * κ := by
-  obtain ⟨h, rfl⟩ := red_surjective o (Fin k) hb
-  let n0 : Matrix (Idx r k) (Idx r k) o := Matrix.of fun i j =>
-    if cI r k j ≤ cI r k i then (1 : Matrix (Idx r k) (Idx r k) o) i j
-    else Function.surjInv IsLocalRing.residue_surjective ((nb : Matrix (Idx r k) (Idx r k) 𝔽) i j)
-  have hU : IsUc (cI r k) n0 := by
-    intro i j hij
-    simp [n0, hij]
-  have hN : IsN n0 := (isN_iff _).2 hU
-  have hmap : n0.map (IsLocalRing.residue o) = (nb : Matrix (Idx r k) (Idx r k) 𝔽) := by
-    ext i j
-    by_cases hij : cI r k j ≤ cI r k i
-    · rw [(hU.map (IsLocalRing.residue o)) i j hij, (isN_iff _).1 hn i j hij]
-    · simp [n0, hij, Function.surjInv_eq]
-  let n : GL (Idx r k) o := toGL n0 (isN_isUnit_det hN)
-  have hred : red o (Idx r k) n = nb := Units.ext hmap
-  refine ⟨n, (n * phi o r k h)⁻¹ * x, h, hN, rfl, ?_, by group⟩
-  rw [MonoidHom.mem_ker, map_mul, map_inv, map_mul, hred, red_phi, hx]
-  group
 
-theorem isN_red {n : GL (Idx r k) o} (hn : IsN (n : Matrix (Idx r k) (Idx r k) o)) :
-    IsN (red o (Idx r k) n : Matrix (Idx r k) (Idx r k) 𝔽) :=
-  (isN_iff _).2 (((isN_iff _).1 hn).map _)
 
-theorem Kpp_eq (L : Levels o r k) : L.Kpp = (PG r (upUniG 𝔽 k)).comap (red o (Idx r k)) := by
-  ext x
-  rw [L.mem_Kpp, Subgroup.mem_comap, isNU_iff]
 
-theorem Knat_eq (L : Levels o r k) :
-    L.Knat = (PG r (⊤ : Subgroup (GL (Fin k) 𝔽))).comap (red o (Idx r k)) := by
-  ext x
-  rw [L.mem_Knat, Subgroup.mem_comap, isS_iff]
 
-theorem JH_eq (L : Levels o r k) : L.JH = (upUniG 𝔽 k).comap (red o (Fin k)) := by
-  ext x
-  rw [L.mem_JH, Subgroup.mem_comap]
-  rfl
 
 end Local
 
@@ -428,73 +355,11 @@ namespace Formalism.FourierDecayAlt.P
 
 open Matrix Formalism.DoubleCosetMeasures Formalism.FourierDecayAlt.S3 Formalism.FourierDecayAlt.P.S3x2
 
-theorem levels_exist' : Formalism.FourierDecayAlt.S3.LevelsExist := by
-  intro o _ _ r k
-  exact ⟨⟨(PG r (upUniG _ k)).comap (red o (Idx r k)), (PG r ⊤).comap (red o (Idx r k)),
-    (upUniG _ k).comap (red o (Fin k)),
-    fun x => by rw [Subgroup.mem_comap, isNU_iff], fun x => by rw [Subgroup.mem_comap, isS_iff],
-    fun x => Iff.rfl⟩⟩
 
-theorem reductionOnto_statement : Formalism.FourierDecayAlt.S3.ReductionOnto := by
-  intro o _ _ ι _ _
-  exact red_surjective o ι
 
-theorem corner_level_index : Formalism.FourierDecayAlt.S3.IndexKpp := by
-  intro o _ _ _ r k L
-  rw [Kpp_eq L, Subgroup.index_comap_of_surjective _ (red_surjective o _), card_N, ← card_PG,
-    Subgroup.index_mul_card]
 
-theorem jordan_holder_index : Formalism.FourierDecayAlt.S3.IndexJH := by
-  intro o _ _ _ r k L
-  rw [JH_eq L, Subgroup.index_comap_of_surjective _ (red_surjective o _), Subgroup.index_mul_card]
 
-theorem natural_level_index : Formalism.FourierDecayAlt.S3.IndexKnat := by
-  intro o _ _ _ r k L
-  refine ⟨?_, ?_, ?_⟩
-  · rw [Knat_eq L, Subgroup.index_comap_of_surjective _ (red_surjective o _), card_S,
-      Subgroup.index_mul_card]
-  · rw [Kpp_eq L, Knat_eq L]
-    exact Subgroup.comap_mono (PG_mono le_top)
-  · rw [Kpp_eq L, Knat_eq L, Subgroup.relIndex_comap,
-      Subgroup.map_comap_eq_self_of_surjective (red_surjective o _)]
-    have h1 := Subgroup.relIndex_mul_relIndex ⊥ (PG r (upUniG (IsLocalRing.ResidueField o) k))
-      (PG r ⊤) bot_le (PG_mono le_top)
-    rw [Subgroup.relIndex_bot_left, Subgroup.relIndex_bot_left, card_PG, card_PG,
-      Subgroup.card_top] at h1
-    have hpos : 0 < Nat.card (UcG (IsLocalRing.ResidueField o) (cI r k)) := Nat.card_pos
-    have h2 : Nat.card (UcG (IsLocalRing.ResidueField o) (cI r k)) *
-        ((PG r (upUniG (IsLocalRing.ResidueField o) k)).relIndex (PG r ⊤) *
-          Nat.card (upUniG (IsLocalRing.ResidueField o) k)) =
-        Nat.card (UcG (IsLocalRing.ResidueField o) (cI r k)) *
-          Nat.card (GL (Fin k) (IsLocalRing.ResidueField o)) := by
-      rw [← h1]; ring
-    exact Nat.eq_of_mul_eq_mul_left hpos h2
 
-theorem natural_level_product : Formalism.FourierDecayAlt.S3.KnatProduct := by
-  intro o _ _ r k L x
-  rw [L.mem_Knat, isS_iff]
-  constructor
-  · intro hx
-    obtain ⟨nb, hb, -, hn, hx⟩ := (mem_PG _ _).1 hx
-    obtain ⟨n, κ, h, hN, -, hκ, rfl⟩ := lift_decomp x nb hb hn hx
-    exact ⟨n * phi o r k h, κ, (isS_iff _).2 ((mem_PG _ _).2 ⟨n, h, Subgroup.mem_top _, hN, rfl⟩),
-      hκ, rfl⟩
-  · rintro ⟨s, κ, hs, hκ, rfl⟩
-    obtain ⟨n, h, -, hN, rfl⟩ := (mem_PG _ _).1 ((isS_iff _).1 hs)
-    rw [map_mul, MonoidHom.mem_ker.1 hκ, mul_one, map_mul, red_phi]
-    exact (mem_PG _ _).2 ⟨_, _, Subgroup.mem_top _, isN_red hN, rfl⟩
 
-theorem corner_level_product : Formalism.FourierDecayAlt.S3.KppProduct := by
-  intro o _ _ r k L x
-  rw [L.mem_Kpp, isNU_iff]
-  constructor
-  · intro hx
-    obtain ⟨nb, hb, hbU, hn, hx⟩ := (mem_PG _ _).1 hx
-    obtain ⟨n, κ, h, hN, rfl, hκ, rfl⟩ := lift_decomp x nb hb hn hx
-    exact ⟨n, κ, h, hN, (L.mem_JH h).2 hbU, hκ, rfl⟩
-  · rintro ⟨n, κ, h, hN, hh, hκ, hx⟩
-    have hx' : x = n * phi o r k h * κ := Units.ext hx
-    rw [hx', map_mul, MonoidHom.mem_ker.1 hκ, mul_one, map_mul, red_phi]
-    exact (mem_PG _ _).2 ⟨_, _, (L.mem_JH h).1 hh, isN_red hN, rfl⟩
 
 end Formalism.FourierDecayAlt.P

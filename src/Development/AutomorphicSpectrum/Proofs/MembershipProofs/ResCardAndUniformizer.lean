@@ -1,6 +1,81 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.MembershipProofs.SwapCApply
+import Development.AutomorphicSpectrum.Definitions.MembershipCriteria.OrderOKOneInert
+import Development.AutomorphicSpectrum.Proofs.MembershipProofs.IsArtinianRingKummerAdjoinRootQuotientRoot
 import GroundTheory.GlobalFields.LocalFieldAtPlace
+
+section
+open GlobalTheory.CompanionTheory.VacLoc GlobalTheory.CompanionTheory.FinHeis GlobalTheory.WeilM MeasureTheory Matrix ValuativeRel NumberField IsDedekindDomain
+open scoped TensorProduct
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.SplitIdx
+
+section Lattice
+
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+variable {α β : Type} [Fintype α] [DecidableEq α] [Fintype β] [DecidableEq β]
+
+end Lattice
+
+def invT {k : Type} [CommRing k] {β : Type} [Fintype β] [DecidableEq β] (u : GL β k) : GL β k :=
+  ⟨((u⁻¹ : GL β k) : Matrix β β k)ᵀ, (u : Matrix β β k)ᵀ,
+    by rw [← Matrix.transpose_mul, Units.mul_inv, Matrix.transpose_one],
+    by rw [← Matrix.transpose_mul, Units.inv_mul, Matrix.transpose_one]⟩
+
+def swapAlg (k : Type) [CommRing k] : (k × k) ≃ₐ[k] k × k :=
+  { (RingEquiv.prodComm : k × k ≃+* k × k) with commutes' := fun _ => rfl }
+
+section Split
+
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+variable {E : Type} [CommRing E] [Algebra k E] [TopologicalSpace E] [IsModuleTopology k E]
+variable {α β : Type} [Fintype α] [DecidableEq α] [Fintype β] [DecidableEq β]
+
+end Split
+
+end GlobalTheory.CompanionTheory.SplitIdx
+end
+end
+
+section
+open GlobalTheory.CompanionTheory.VacLoc GlobalTheory.CompanionTheory.FinHeis GlobalTheory.WeilM MeasureTheory Matrix ValuativeRel NumberField IsDedekindDomain
+open scoped TensorProduct
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.IdxAd
+
+section Single
+
+variable {F : Type} [Field F] [NumberField F]
+
+open Classical in
+
+def sgl (v : HeightOneSpectrum (𝓞 F)) : v.adicCompletion F →+ FiniteAdeleRing (𝓞 F) F where
+  toFun x := RestrictedProduct.single (fun w : HeightOneSpectrum (𝓞 F) => w.adicCompletionIntegers F) v x
+  map_zero' := RestrictedProduct.single_zero _ v
+  map_add' := RestrictedProduct.single_add _ v
+
+theorem sgl_same (v : HeightOneSpectrum (𝓞 F)) (x : v.adicCompletion F) : sgl v x v = x := by
+  classical
+  exact RestrictedProduct.single_eq_same (fun w : HeightOneSpectrum (𝓞 F) => w.adicCompletionIntegers F) v x
+
+theorem sgl_ne {v w : HeightOneSpectrum (𝓞 F)} (h : w ≠ v) (x : v.adicCompletion F) : sgl v x w = 0 := by
+  classical
+  exact RestrictedProduct.single_eq_of_ne (fun w : HeightOneSpectrum (𝓞 F) => w.adicCompletionIntegers F) x h
+
+end Single
+
+def swapC (k : Type) [CommRing k] : (k × k) →ₐ[k] k × k := (GlobalTheory.CompanionTheory.SplitIdx.swapAlg k).toAlgHom
+
+theorem swapC_apply {k : Type} [CommRing k] (z : k × k) : swapC k z = z.swap := rfl
+
+end GlobalTheory.CompanionTheory.IdxAd
+end
+end
+
+section
 open GlobalTheory.CompanionTheory.VacLoc GlobalTheory.CompanionTheory.FinHeis GlobalTheory.WeilM MeasureTheory Matrix ValuativeRel NumberField IsDedekindDomain GlobalTheory.CompanionTheory.IdxAd
 open scoped TensorProduct
 
@@ -41,3 +116,4 @@ theorem resCard_and_uniformizer : ∀ (F : Type) [Field F] [NumberField F] (v : 
     · rw [ha, Int.natAbs_neg]
 
 end GlobalTheory.CompanionTheory.IdxAd.Unif
+end

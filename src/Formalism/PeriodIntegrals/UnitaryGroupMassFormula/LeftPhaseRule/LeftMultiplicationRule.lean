@@ -1,5 +1,632 @@
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LeftPhaseRule.HasDerivAtPhase
+import Formalism.HermitianCurvature.StatementQ
+import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
+import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
+import Formalism.FormalDegreeBessel.FormalDegreeRatio.CapelliHighestWeightConjugated
 
+section
+open Matrix
+open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
+
+noncomputable section
+
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+
+namespace Formalism.FourierDecayAlt.Q.LeftMultiplicationRule
+
+variable {k r : ℕ}
+
+def SP (k r : ℕ) (l : Fin r) (p q : Fin (2 * r + k + 1)) : Prop :=
+  (p.val = l.val ∧ l.val < q.val ∧ q.val ≤ 2 * r + k - l.val) ∨
+  (q.val = 2 * r + k - l.val ∧ l.val < p.val ∧ p.val < 2 * r + k - l.val)
+
+def InS (k r : ℕ) (l : Fin r) (M : Mx k r) : Prop := ∀ p q, ¬ SP k r l p q → M p q = 0
+
+lemma eI_val (a : Fin r) : (eI k r a).val = a.val := rfl
+lemma esI_val (a : Fin r) : (esI k r a).val = 2 * r + k - a.val := rfl
+
+lemma inS_add {l : Fin r} {M N : Mx k r} (hM : InS k r l M) (hN : InS k r l N) :
+    InS k r l (M + N) := fun p q h => by
+  rw [Matrix.add_apply, hM p q h, hN p q h, add_zero]
+
+lemma inS_sub {l : Fin r} {M N : Mx k r} (hM : InS k r l M) (hN : InS k r l N) :
+    InS k r l (M - N) := fun p q h => by
+  rw [Matrix.sub_apply, hM p q h, hN p q h, sub_zero]
+
+lemma inS_smul {l : Fin r} {M : Mx k r} (s : ℂ) (hM : InS k r l M) : InS k r l (s • M) := fun p q h => by
+  rw [Matrix.smul_apply, hM p q h, smul_zero]
+
+lemma mul_apply_S {l : Fin r} {M N : Mx k r} (hM : InS k r l M) (hN : InS k r l N)
+    (p q : Fin (2 * r + k + 1)) (h : ¬ (p.val = l.val ∧ q.val = 2 * r + k - l.val)) :
+    (M * N) p q = 0 := by
+  rw [Matrix.mul_apply]
+  apply Finset.sum_eq_zero
+  intro j _
+  by_cases h1 : SP k r l p j
+  · by_cases h2 : SP k r l j q
+    · exfalso
+      unfold SP at h1 h2
+      have := l.isLt
+      omega
+    · rw [hN j q h2, mul_zero]
+  · rw [hM p j h1, zero_mul]
+
+lemma cube_S {l : Fin r} {Y : Mx k r} (hY : InS k r l Y) : Y * Y * Y = 0 := by
+  ext p q
+  rw [Matrix.mul_apply, Matrix.zero_apply]
+  apply Finset.sum_eq_zero
+  intro j _
+  by_cases h1 : p.val = l.val ∧ j.val = 2 * r + k - l.val
+  · have h2 : ¬ SP k r l j q := by
+      unfold SP
+      have := l.isLt
+      omega
+    rw [hY j q h2, mul_zero]
+  · rw [mul_apply_S hY hY p j h1, zero_mul]
+
+lemma exp_S {l : Fin r} {Y : Mx k r} (hY : InS k r l Y) :
+    NormedSpace.exp Y = 1 + Y + (1 / 2 : ℂ) • (Y * Y) := by
+  have h3 : ∀ n, 3 ≤ n → Y ^ n = 0 := by
+    intro n hn
+    obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hn
+    rw [pow_add, pow_three', cube_S hY, zero_mul]
+  have hz : ∀ n ∉ Finset.range 3, ((n.factorial : ℂ))⁻¹ • Y ^ n = 0 := by
+    intro n hn
+    rw [Finset.mem_range, not_lt] at hn
+    rw [h3 n hn, smul_zero]
+  rw [NormedSpace.exp_eq_tsum (𝕂 := ℂ)]
+  dsimp only
+  rw [tsum_eq_sum hz]
+  simp [Finset.sum_range_succ, Nat.factorial, sq, one_div]
+
+private lemma gent_lemma {l : Fin r} {Y : Mx k r} (hY : InS k r l Y) (i j : Fin (2 * r + k + 1))
+    (h1 : ¬ SP k r l i j) (h2 : ¬ (i.val = l.val ∧ j.val = 2 * r + k - l.val)) :
+    (1 + Y + (1 / 2 : ℂ) • (Y * Y)) i j = (1 : Mx k r) i j := by
+  rw [Matrix.add_apply, Matrix.add_apply, Matrix.smul_apply, hY i j h1, mul_apply_S hY hY i j h2,
+    smul_zero, add_zero, add_zero]
+
+private lemma mulVec_bvec_lemma_2 (M : Mx k r) (q : Fin (2 * r + k + 1)) :
+    M *ᵥ bvec q = fun p => M p q := by
+  funext p
+  simp [bvec, Matrix.mulVec, dotProduct, Pi.single_apply]
+
+lemma memN_S {l : Fin r} {Y : Mx k r} (hY : InS k r l Y)
+    (hU : 1 + Y + (1 / 2 : ℂ) • (Y * Y) ∈ UH (Hpk k r)) :
+    1 + Y + (1 / 2 : ℂ) • (Y * Y) ∈ Nlev k r l.castSucc := by
+  have hl := l.isLt
+  refine ⟨⟨hU, fun a i hai => ?_, fun i j hj1 hj2 hi => ?_⟩, hU, fun a ha => ⟨?_, ?_⟩⟩
+  · have ha := a.isLt
+    rw [gent_lemma hY _ _ (by unfold SP; simp only [eI_val]; omega) (by simp only [eI_val]; omega)]
+    exact Matrix.one_apply
+  · rw [gent_lemma hY _ _ (by unfold SP; omega) (by omega)]
+    exact Matrix.one_apply
+  · have ha' : a.val < l.val := ha
+    have ha2 := a.isLt
+    rw [mulVec_bvec_lemma_2]
+    funext p
+    rw [gent_lemma hY _ _ (by unfold SP; simp only [eI_val]; omega) (by simp only [eI_val]; omega)]
+    simp [bvec, Pi.single_apply, Matrix.one_apply]
+  · have ha' : a.val < l.val := ha
+    have ha2 := a.isLt
+    rw [mulVec_bvec_lemma_2]
+    funext p
+    rw [gent_lemma hY _ _ (by unfold SP; simp only [esI_val]; omega) (by simp only [esI_val]; omega)]
+    simp [bvec, Pi.single_apply, Matrix.one_apply]
+
+lemma ell_add (z : Fin (2 * r + k + 1) → ℂ) (A B : Mx k r) :
+    ell k r z (A + B) = ell k r z A + ell k r z B := by
+  unfold ell
+  rw [← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun a _ => ?_
+  split_ifs <;> simp [Matrix.add_mulVec]
+
+lemma ell_smul (z : Fin (2 * r + k + 1) → ℂ) (s : ℂ) (A : Mx k r) :
+    ell k r z (s • A) = s * ell k r z A := by
+  unfold ell
+  rw [Finset.mul_sum]
+  refine Finset.sum_congr rfl fun a _ => ?_
+  split_ifs <;> simp [Matrix.smul_mulVec]
+
+lemma ell_sub (z : Fin (2 * r + k + 1) → ℂ) (A B : Mx k r) :
+    ell k r z (A - B) = ell k r z A - ell k r z B := by
+  unfold ell
+  rw [← Finset.sum_sub_distrib]
+  refine Finset.sum_congr rfl fun a _ => ?_
+  split_ifs <;> simp [Matrix.sub_mulVec]
+
+lemma ell_one (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) : ell k r z 1 = 0 := by
+  unfold ell
+  apply Finset.sum_eq_zero
+  intro a _
+  split_ifs with h
+  · apply Matrix.one_apply_ne
+    intro he
+    have := congrArg Fin.val he
+    simp only [eI_val] at this
+    omega
+  · rw [Matrix.one_mulVec]
+    exact hz _ (Or.inl a.isLt)
+
+
+end Formalism.FourierDecayAlt.Q.LeftMultiplicationRule
+end
+end
+
+section
+open Matrix
+open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.QuantumDeterminants.WeylGroupFacts
+
+noncomputable section
+
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+
+namespace Formalism.FourierDecayAlt.Q.LeftMultiplicationRule
+
+variable {k r : ℕ}
+
+lemma tau_val (i : Fin (2 * r + k + 1)) :
+    (tau k r i).val = if i.val < r ∨ r + k < i.val then 2 * r + k - i.val else i.val := rfl
+
+lemma tau_e (l : Fin r) : tau k r (eI k r l) = esI k r l := by
+  apply Fin.ext; rw [tau_val, eI_val, esI_val]; have := l.isLt; split_ifs <;> omega
+
+lemma tau_es (l : Fin r) : tau k r (esI k r l) = eI k r l := by
+  apply Fin.ext; rw [tau_val, eI_val, esI_val]; have := l.isLt; split_ifs <;> omega
+
+lemma sgn_e (l : Fin r) : WeylGroupFacts.sgn k r (eI k r l) = 1 := by
+  unfold WeylGroupFacts.sgn; rw [if_neg]; rw [eI_val]; have := l.isLt; omega
+
+lemma sgn_es (l : Fin r) : WeylGroupFacts.sgn k r (esI k r l) = 1 := by
+  unfold WeylGroupFacts.sgn; rw [if_neg]; rw [esI_val]; have := l.isLt; omega
+
+lemma star_sgn (i : Fin (2 * r + k + 1)) : star (WeylGroupFacts.sgn k r i) = WeylGroupFacts.sgn k r i := by
+  unfold WeylGroupFacts.sgn; split_ifs <;> simp
+
+lemma e_ne_es (l : Fin r) : eI k r l ≠ esI k r l := by
+  intro h; have := congrArg Fin.val h; rw [eI_val, esI_val] at this; have := l.isLt; omega
+
+lemma reflection_off_support (l : Fin r) (c : ℂ) (p q : Fin (2 * r + k + 1)) (hq1 : q ≠ eI k r l)
+    (hq2 : q ≠ esI k r l) : w1 k r l c p q = if p = q then 1 else 0 := by
+  unfold w1
+  by_cases hpq : p = q
+  · subst hpq; simp [hq1, hq2]
+  · simp [hpq, hq1, hq2]
+
+lemma reflection_off_support_row (l : Fin r) (c : ℂ) (p q : Fin (2 * r + k + 1)) (hp1 : p ≠ eI k r l)
+    (hp2 : p ≠ esI k r l) : w1 k r l c p q = if p = q then 1 else 0 := by
+  unfold w1
+  by_cases hpq : p = q
+  · subst hpq; simp [hp1, hp2]
+  · simp [hpq, hp1, hp2]
+
+lemma reflection_column_isotropic (l : Fin r) (c : ℂ) (p : Fin (2 * r + k + 1)) :
+    w1 k r l c p (eI k r l) = if p = esI k r l then c else 0 := by
+  have hne := e_ne_es (k := k) l
+  unfold w1
+  by_cases hp : p = esI k r l
+  · subst hp; simp
+  · by_cases hp' : p = eI k r l
+    · subst hp'; simp [hp, hne]
+    · simp [hp, hp']
+
+lemma reflection_column_dual_isotropic (l : Fin r) (c : ℂ) (p : Fin (2 * r + k + 1)) :
+    w1 k r l c p (esI k r l) = if p = eI k r l then (star c)⁻¹ else 0 := by
+  have hne := e_ne_es (k := k) l
+  unfold w1
+  by_cases hp : p = eI k r l
+  · subst hp; simp [hne.symm]
+  · by_cases hp' : p = esI k r l
+    · subst hp'; simp [hp, hne.symm]
+    · simp [hp, hp']
+
+lemma weyl_cell_apply_basis (l : Fin r) (c : ℂ) (q : Fin (2 * r + k + 1)) :
+    w1 k r l c (eI k r l) q = if q = esI k r l then (star c)⁻¹ else 0 := by
+  have hne := e_ne_es (k := k) l
+  unfold w1
+  by_cases hq : q = esI k r l
+  · subst hq; simp [hne]
+  · simp [hq, hne]
+
+lemma weyl_cell_apply_dual_basis (l : Fin r) (c : ℂ) (q : Fin (2 * r + k + 1)) :
+    w1 k r l c (esI k r l) q = if q = eI k r l then c else 0 := by
+  have hne := e_ne_es (k := k) l
+  unfold w1
+  by_cases hq : q = eI k r l
+  · subst hq; simp
+  · simp [hq, hne.symm]
+
+lemma reflection_mul_star (l : Fin r) (c : ℂ) (hc : c ≠ 0) : w1 k r l c * w1 k r l (star c) = 1 := by
+  have hsc : star c ≠ 0 := star_ne_zero.2 hc
+  ext p q
+  rw [Matrix.mul_apply, Matrix.one_apply]
+  by_cases hq1 : q = eI k r l
+  · subst hq1
+    rw [Finset.sum_eq_single (esI k r l)]
+    · rw [reflection_column_isotropic, if_pos rfl, reflection_column_dual_isotropic]
+      by_cases hp : p = eI k r l
+      · rw [if_pos hp, if_pos hp, inv_mul_cancel₀ hsc]
+      · rw [if_neg hp, if_neg hp, zero_mul]
+    · intro t _ ht; rw [reflection_column_isotropic, if_neg ht, mul_zero]
+    · simp
+  · by_cases hq2 : q = esI k r l
+    · subst hq2
+      rw [Finset.sum_eq_single (eI k r l)]
+      · rw [reflection_column_dual_isotropic, if_pos rfl, reflection_column_isotropic, star_star]
+        by_cases hp : p = esI k r l
+        · rw [if_pos hp, if_pos hp, mul_inv_cancel₀ hc]
+        · rw [if_neg hp, if_neg hp, zero_mul]
+      · intro t _ ht; rw [reflection_column_dual_isotropic, if_neg ht, mul_zero]
+      · simp
+    · rw [Finset.sum_eq_single q]
+      · rw [reflection_off_support _ _ q q hq1 hq2, if_pos rfl, mul_one, reflection_off_support _ _ p q hq1 hq2]
+      · intro t _ ht; rw [reflection_off_support _ _ t q hq1 hq2, if_neg ht, mul_zero]
+      · simp
+
+lemma weyl_cell_inv (l : Fin r) (c : ℂ) (hc : c ≠ 0) : (w1 k r l c)⁻¹ = w1 k r l (star c) :=
+  Matrix.inv_eq_right_inv (reflection_mul_star l c hc)
+
+lemma weyl_cell_mem_unitary (l : Fin r) (c : ℂ) (hc : c ≠ 0) : w1 k r l c ∈ UH (Hpk k r) := by
+  have hsc : star c ≠ 0 := star_ne_zero.2 hc
+  show (w1 k r l c)ᴴ * Hpk k r * w1 k r l c = Hpk k r
+  ext p q
+  rw [Matrix.mul_assoc, Matrix.mul_apply]
+  simp only [conjTranspose_apply, hpk_mul_apply]
+  rw [hpk_row]
+  by_cases hp1 : p = eI k r l
+  · subst hp1
+    rw [Finset.sum_eq_single (esI k r l)]
+    · rw [reflection_column_isotropic, if_pos rfl, tau_es, sgn_es, weyl_cell_apply_basis, tau_e, sgn_e]
+      by_cases hq : q = esI k r l
+      · rw [if_pos hq, if_pos hq, one_mul, ← star_inv₀, ← star_mul, inv_mul_cancel₀ hc, star_one]
+      · rw [if_neg hq, if_neg hq, mul_zero, mul_zero]
+    · intro t _ ht; rw [reflection_column_isotropic, if_neg ht, star_zero, zero_mul]
+    · simp
+  · by_cases hp2 : p = esI k r l
+    · subst hp2
+      rw [Finset.sum_eq_single (eI k r l)]
+      · rw [reflection_column_dual_isotropic, if_pos rfl, tau_e, sgn_e, weyl_cell_apply_dual_basis, tau_es, sgn_es]
+        by_cases hq : q = eI k r l
+        · rw [if_pos hq, if_pos hq, one_mul, star_inv₀, star_star, inv_mul_cancel₀ hc]
+        · rw [if_neg hq, if_neg hq, mul_zero, mul_zero]
+      · intro t _ ht; rw [reflection_column_dual_isotropic, if_neg ht, star_zero, zero_mul]
+      · simp
+    · have ht1 : tau k r p ≠ eI k r l := by
+        intro h; apply hp2; rw [← tau_tau p, h, tau_e]
+      have ht2 : tau k r p ≠ esI k r l := by
+        intro h; apply hp1; rw [← tau_tau p, h, tau_es]
+      rw [Finset.sum_eq_single p]
+      · rw [reflection_off_support _ _ p p hp1 hp2, if_pos rfl, star_one, one_mul,
+          reflection_off_support_row _ _ (tau k r p) q ht1 ht2]
+        by_cases hq : q = tau k r p
+        · rw [if_pos hq, if_pos hq.symm, mul_one]
+        · rw [if_neg hq, if_neg (Ne.symm hq), mul_zero]
+      · intro t _ ht; rw [reflection_off_support _ _ t p hp1 hp2, if_neg ht, star_zero, zero_mul]
+      · simp
+
+lemma glev_inv {i : Fin (r + 1)} {g : Mx k r} (hg : g ∈ Glev k r i) : g⁻¹ ∈ Glev k r i := by
+  have hu := isUnit_of_uh hg.1
+  have key : ∀ b : Fin (2 * r + k + 1) → ℂ, g *ᵥ b = b → g⁻¹ *ᵥ b = b := by
+    intro b hb
+    calc g⁻¹ *ᵥ b = g⁻¹ *ᵥ (g *ᵥ b) := by rw [hb]
+      _ = b := by rw [Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ hu, Matrix.one_mulVec]
+  exact ⟨uh_inv hg.1, fun a ha => ⟨key _ (hg.2 a ha).1, key _ (hg.2 a ha).2⟩⟩
+
+lemma glev_out {l : Fin r} {g : Mx k r} (hg : g ∈ Glev k r l.succ) (p : Fin (2 * r + k + 1))
+    (hp : ¬ (l.val < p.val ∧ p.val < 2 * r + k - l.val)) :
+    (∀ q, g p q = if p = q then 1 else 0) ∧ (∀ q, g q p = if q = p then 1 else 0) := by
+  have hl := l.isLt
+  by_cases h1 : p.val ≤ l.val
+  · let a : Fin r := ⟨p.val, by omega⟩
+    have hpa : eI k r a = p := Fin.ext rfl
+    have ha : a.val < l.succ.val := by simp [a]; omega
+    have hc1 := col_of_fix (hg.2 a ha).1
+    have hc2 := col_of_fix (hg.2 a ha).2
+    have hrow := row_of_fixed_col hg.1 (esI k r a) hc2
+    rw [tau_es, hpa] at hrow
+    rw [hpa] at hc1
+    exact ⟨hrow, hc1⟩
+  · let a : Fin r := ⟨2 * r + k - p.val, by omega⟩
+    have hpa : esI k r a = p := by apply Fin.ext; rw [esI_val]; simp [a]; omega
+    have ha : a.val < l.succ.val := by simp [a]; omega
+    have hc1 := col_of_fix (hg.2 a ha).1
+    have hc2 := col_of_fix (hg.2 a ha).2
+    have hrow := row_of_fixed_col hg.1 (eI k r a) hc1
+    rw [tau_e, hpa] at hrow
+    rw [hpa] at hc2
+    exact ⟨hrow, hc2⟩
+
+lemma reflection_fixes_basis_vector (l : Fin r) (c : ℂ) (q : Fin (2 * r + k + 1)) (hq1 : q ≠ eI k r l)
+    (hq2 : q ≠ esI k r l) : w1 k r l c *ᵥ bvec q = bvec q := by
+  funext p
+  simp only [bvec, Matrix.mulVec, dotProduct_single, mul_one]
+  rw [reflection_off_support _ _ p q hq1 hq2, Pi.single_apply]
+
+lemma wg_glev (l : Fin r) (c : ℂ) (hc : c ≠ 0) {g₁ : Mx k r} (hg : g₁ ∈ Glev k r l.succ) :
+    w1 k r l c * g₁ ∈ Glev k r l.castSucc := by
+  refine ⟨uh_mul (weyl_cell_mem_unitary l c hc) hg.1, fun a ha => ?_⟩
+  have hal : a.val < l.val := by simpa using ha
+  have ha' : a.val < l.succ.val := by simp; omega
+  have hl := l.isLt
+  obtain ⟨h1, h2⟩ := hg.2 a ha'
+  constructor
+  · rw [← Matrix.mulVec_mulVec, h1]
+    apply reflection_fixes_basis_vector
+    · intro h; have := congrArg Fin.val h; rw [eI_val, eI_val] at this; omega
+    · intro h; have := congrArg Fin.val h; rw [eI_val, esI_val] at this; omega
+  · rw [← Matrix.mulVec_mulVec, h2]
+    apply reflection_fixes_basis_vector
+    · intro h; have := congrArg Fin.val h; rw [esI_val, eI_val] at this; omega
+    · intro h; have := congrArg Fin.val h; rw [esI_val, esI_val] at this; omega
+
+lemma weyl_cell_mul_apply (l : Fin r) (c : ℂ) (A : Mx k r) (p q : Fin (2 * r + k + 1))
+    (h1 : A (eI k r l) q = 0) (h2 : A (esI k r l) q = 0) : (w1 k r l c * A) p q = A p q := by
+  rw [Matrix.mul_apply, Finset.sum_eq_single p]
+  · by_cases hp1 : p = eI k r l
+    · subst hp1; rw [h1, mul_zero]
+    · by_cases hp2 : p = esI k r l
+      · subst hp2; rw [h2, mul_zero]
+      · rw [reflection_off_support _ _ p p hp1 hp2, if_pos rfl, one_mul]
+  · intro t _ ht
+    by_cases ht1 : t = eI k r l
+    · subst ht1; rw [h1, mul_zero]
+    · by_cases ht2 : t = esI k r l
+      · subst ht2; rw [h2, mul_zero]
+      · rw [reflection_off_support _ _ p t ht1 ht2, if_neg (Ne.symm ht), zero_mul]
+  · simp
+
+lemma mul_weyl_cell_apply (l : Fin r) (c : ℂ) (A : Mx k r) (p q : Fin (2 * r + k + 1))
+    (h1 : A p (eI k r l) = 0) (h2 : A p (esI k r l) = 0) : (A * w1 k r l c) p q = A p q := by
+  rw [Matrix.mul_apply, Finset.sum_eq_single q]
+  · by_cases hq1 : q = eI k r l
+    · subst hq1; rw [h1, zero_mul]
+    · by_cases hq2 : q = esI k r l
+      · subst hq2; rw [h2, zero_mul]
+      · rw [reflection_off_support _ _ q q hq1 hq2, if_pos rfl, mul_one]
+  · intro t _ ht
+    by_cases ht1 : t = eI k r l
+    · subst ht1; rw [h1, zero_mul]
+    · by_cases ht2 : t = esI k r l
+      · subst ht2; rw [h2, zero_mul]
+      · rw [reflection_off_support_row _ _ t q ht1 ht2, if_neg ht, mul_zero]
+  · simp
+
+end Formalism.FourierDecayAlt.Q.LeftMultiplicationRule
+end
+end
+
+section
+open Matrix
+open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.QuantumDeterminants.WeylGroupFacts
+
+noncomputable section
+
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+
+namespace Formalism.FourierDecayAlt.Q.LeftMultiplicationRule
+
+variable {k r : ℕ}
+
+lemma hinv : (Hpk k r)⁻¹ = Hpk k r := Matrix.inv_eq_left_inv (Formalism.QuantumDeterminants.GBasic.Hpk_sq k r)
+
+lemma hH2 (X : Mx k r) : Hpk k r * (Hpk k r * X) = X := by
+  rw [← mul_assoc, Formalism.QuantumDeterminants.GBasic.Hpk_sq k r, one_mul]
+
+lemma uh_inv_eq {g : Mx k r} (hg : g ∈ UH (Hpk k r)) : g⁻¹ = Hpk k r * gᴴ * Hpk k r := by
+  have hg' : gᴴ * Hpk k r * g = Hpk k r := hg
+  apply Matrix.inv_eq_left_inv
+  calc Hpk k r * gᴴ * Hpk k r * g = Hpk k r * (gᴴ * Hpk k r * g) := by simp only [mul_assoc]
+    _ = 1 := by rw [hg', Formalism.QuantumDeterminants.GBasic.Hpk_sq k r]
+
+lemma dag_conj {g : Mx k r} (hg : g ∈ UH (Hpk k r)) (Z : Mx k r) :
+    g * (Hpk k r * Zᴴ * Hpk k r) * g⁻¹ = Hpk k r * (g * Z * g⁻¹)ᴴ * Hpk k r := by
+  rw [uh_inv_eq hg]
+  simp only [Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, Formalism.QuantumDeterminants.GBasic.Hpk_herm, mul_assoc, hH2]
+
+lemma hpart1_conj {g : Mx k r} (hg : g ∈ UH (Hpk k r)) (Z : Mx k r) :
+    g * hpart1 (Hpk k r) Z * g⁻¹ = hpart1 (Hpk k r) (g * Z * g⁻¹) := by
+  simp only [hpart1, hinv]
+  rw [mul_smul_comm, smul_mul_assoc, mul_sub, sub_mul, dag_conj hg]
+
+lemma hpart2_conj {g : Mx k r} (hg : g ∈ UH (Hpk k r)) (Z : Mx k r) :
+    g * hpart2 (Hpk k r) Z * g⁻¹ = hpart2 (Hpk k r) (g * Z * g⁻¹) := by
+  simp only [hpart2, hinv]
+  rw [mul_smul_comm, smul_mul_assoc, mul_add, add_mul, dag_conj hg]
+
+lemma dagdag (M : Mx k r) : Hpk k r * (Hpk k r * Mᴴ * Hpk k r)ᴴ * Hpk k r = M := by
+  simp only [Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, Formalism.QuantumDeterminants.GBasic.Hpk_herm, mul_assoc, hH2,
+    Formalism.QuantumDeterminants.GBasic.Hpk_sq, mul_one]
+
+lemma hpart1_skew (Z : Mx k r) :
+    Hpk k r * (hpart1 (Hpk k r) Z)ᴴ * Hpk k r = -hpart1 (Hpk k r) Z := by
+  simp only [hpart1, hinv, Matrix.conjTranspose_smul, Matrix.conjTranspose_sub, mul_smul_comm, smul_mul_assoc,
+    mul_sub, sub_mul, dagdag]
+  ext i j
+  simp
+  ring
+
+lemma hpart2_skew (Z : Mx k r) :
+    Hpk k r * (hpart2 (Hpk k r) Z)ᴴ * Hpk k r = -hpart2 (Hpk k r) Z := by
+  have hc : star (1 / (2 * Complex.I)) = -(1 / (2 * Complex.I)) := by
+    rw [Complex.star_def, map_div₀, map_one, map_mul, Complex.conj_I, map_ofNat, mul_neg,
+      one_div_neg_eq_neg_one_div]
+  simp only [hpart2, hinv, Matrix.conjTranspose_smul, Matrix.conjTranspose_add, mul_smul_comm, smul_mul_assoc,
+    mul_add, add_mul, dagdag, hc]
+  rw [neg_smul, add_comm (Hpk k r * Zᴴ * Hpk k r) Z]
+
+lemma exp_uh {Y : Mx k r} (hY : Hpk k r * Yᴴ * Hpk k r = -Y) (t : ℝ) :
+    NormedSpace.exp ((t : ℂ) • Y) ∈ UH (Hpk k r) := by
+  have hH := Formalism.QuantumDeterminants.GBasic.Hpk_sq k r
+  have hU : IsUnit (Hpk k r) := ⟨⟨Hpk k r, Hpk k r, hH, hH⟩, rfl⟩
+  have hY' : Yᴴ = Hpk k r * -Y * Hpk k r := by
+    rw [← hY]
+    simp only [← mul_assoc, hH, one_mul]
+    rw [mul_assoc, hH, mul_one]
+  have hYH : ((t : ℂ) • Y)ᴴ = Hpk k r * -((t : ℂ) • Y) * (Hpk k r)⁻¹ := by
+    rw [hinv, Matrix.conjTranspose_smul, Complex.star_def, Complex.conj_ofReal, hY']
+    simp only [smul_neg, mul_neg, neg_mul, mul_smul_comm, smul_mul_assoc]
+  show (NormedSpace.exp ((t : ℂ) • Y))ᴴ * Hpk k r * NormedSpace.exp ((t : ℂ) • Y) = Hpk k r
+  rw [← Matrix.exp_conjTranspose, hYH, Matrix.exp_conj _ _ hU, hinv]
+  simp only [mul_assoc]
+  rw [← mul_assoc (Hpk k r) (Hpk k r), hH, one_mul,
+    ← Matrix.exp_add_of_commute _ _ (Commute.neg_left (Commute.refl ((t : ℂ) • Y))), neg_add_cancel,
+    NormedSpace.exp_zero, mul_one]
+
+lemma dag_apply (M : Mx k r) (p q : Fin (2 * r + k + 1)) :
+    (Hpk k r * Mᴴ * Hpk k r) p q =
+      WeylGroupFacts.sgn k r p * (star (M (tau k r q) (tau k r p)) * WeylGroupFacts.sgn k r q) := by
+  have hs : ∀ i, star (WeylGroupFacts.sgn k r i) = WeylGroupFacts.sgn k r i := by
+    intro i; unfold WeylGroupFacts.sgn; split_ifs <;> simp
+  have e : Mᴴ * Hpk k r = (Hpk k r * M)ᴴ := by
+    rw [Matrix.conjTranspose_mul, Formalism.QuantumDeterminants.GBasic.Hpk_herm]
+  rw [mul_assoc, hpk_mul_apply, e, Matrix.conjTranspose_apply, hpk_mul_apply, star_mul', hs]
+  ring
+
+lemma inS_dag {l : Fin r} {M : Mx k r} (hM : InS k r l M) : InS k r l (Hpk k r * Mᴴ * Hpk k r) := by
+  unfold InS at hM ⊢
+  intro p q hpq
+  rw [dag_apply, hM (tau k r q) (tau k r p) ?_, star_zero, zero_mul, mul_zero]
+  intro h
+  apply hpq
+  unfold SP at h ⊢
+  simp only [tau, Fin.val_mk] at h
+  have hl := l.isLt
+  have hp := p.isLt
+  have hq := q.isLt
+  split_ifs at h <;> omega
+
+lemma hasDerivAt_phase (A B : ℂ) :
+    HasDerivAt (fun t : ℝ => Complex.exp (Complex.I * (((cStd * ((t : ℂ) * A + (t : ℂ) ^ 2 * B)).re : ℝ) : ℂ)))
+      (Complex.I * (((cStd * A).re : ℝ) : ℂ)) 0 := by
+  have e : ∀ t : ℝ, (cStd * ((t : ℂ) * A + (t : ℂ) ^ 2 * B)).re = t * (cStd * A).re + t ^ 2 * (cStd * B).re := by
+    intro t
+    have h : cStd * ((t : ℂ) * A + (t : ℂ) ^ 2 * B) = (t : ℂ) * (cStd * A) + ((t ^ 2 : ℝ) : ℂ) * (cStd * B) := by
+      push_cast; ring
+    rw [h, Complex.add_re, Complex.re_ofReal_mul, Complex.re_ofReal_mul]
+  simp_rw [e]
+  have ha : HasDerivAt (fun t : ℝ => t * (cStd * A).re) (1 * (cStd * A).re) 0 :=
+    (hasDerivAt_id' (0 : ℝ)).mul_const _
+  have hb : HasDerivAt (fun t : ℝ => t ^ 2 * (cStd * B).re) (((2 : ℕ) : ℝ) * (0 : ℝ) ^ (2 - 1) * (cStd * B).re) 0 :=
+    (hasDerivAt_pow 2 (0 : ℝ)).mul_const _
+  have h1 : HasDerivAt (fun t : ℝ => t * (cStd * A).re + t ^ 2 * (cStd * B).re) ((cStd * A).re) 0 :=
+    (ha.add hb).congr_deriv (by simp)
+  have h2 := (h1.ofReal_comp.const_mul Complex.I).cexp
+  exact h2.congr_deriv (by simp)
+
+lemma rdV_left {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] {z : Fin (2 * r + k + 1) → ℂ}
+    (hz : inWb k r z) {l : Fin r} {D : Set (Mx k r)} {f : Mx k r → E} (hL : LeftEq k r z l.castSucc D f)
+    {g : Mx k r} (hg : g ∈ Glev k r l.castSucc ∩ D) (X : Mx k r) (hS : InS k r l (g * X * g⁻¹))
+    (hk : Hpk k r * (g * X * g⁻¹)ᴴ * Hpk k r = -(g * X * g⁻¹)) :
+    RdV X f g = (Complex.I * (((cStd * ell k r z (g * X * g⁻¹)).re : ℝ) : ℂ)) • f g := by
+  have ell_sm : ∀ (c : ℂ) (M : Mx k r), ell k r z (c • M) = c * ell k r z M := by
+    intro c M
+    simp only [ell, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    split_ifs <;> simp [Matrix.mulVec, dotProduct, Finset.mul_sum, mul_assoc]
+  obtain ⟨hgG, hgD⟩ := hg
+  have hgU : g ∈ UH (Hpk k r) := by
+    have h := hgG
+    simp only [Glev, Set.mem_setOf_eq] at h
+    exact h.1
+  have hleft : Hpk k r * gᴴ * Hpk k r * g = 1 := by
+    have hg' : gᴴ * Hpk k r * g = Hpk k r := hgU
+    calc Hpk k r * gᴴ * Hpk k r * g = Hpk k r * (gᴴ * Hpk k r * g) := by simp only [mul_assoc]
+      _ = 1 := by rw [hg', Formalism.QuantumDeterminants.GBasic.Hpk_sq k r]
+  have hdet : IsUnit g.det := Matrix.isUnit_det_of_left_inverse hleft
+  have hU : IsUnit g := (Matrix.isUnit_iff_isUnit_det g).mpr hdet
+  have hgi : g⁻¹ * g = 1 := Matrix.nonsing_inv_mul g hdet
+  set Y := g * X * g⁻¹ with hYdef
+  have hconj : ∀ u : ℝ, g * NormedSpace.exp ((u : ℂ) • X) = NormedSpace.exp ((u : ℂ) • Y) * g := by
+    intro u
+    have h1 : (u : ℂ) • Y = g * ((u : ℂ) • X) * g⁻¹ := by
+      rw [hYdef, mul_smul_comm, smul_mul_assoc]
+    rw [h1, Matrix.exp_conj _ _ hU, mul_assoc, hgi, mul_one]
+  have hSu : ∀ u : ℝ, InS k r l ((u : ℂ) • Y) := fun u => inS_smul _ hS
+  have hmemN : ∀ u : ℝ, NormedSpace.exp ((u : ℂ) • Y) ∈ Nlev k r l.castSucc := by
+    intro u
+    have hUu := exp_uh hk u
+    rw [exp_S (hSu u)] at hUu ⊢
+    exact memN_S (hSu u) hUu
+  have hfe : ∀ u : ℝ, f (g * NormedSpace.exp ((u : ℂ) • X)) =
+      psi k r z cStd (NormedSpace.exp ((u : ℂ) • Y)) • f g := by
+    intro u
+    rw [hconj u]
+    exact hL g ⟨hgG, hgD⟩ _ (hmemN u)
+  have hell : ∀ u : ℝ, ell k r z (NormedSpace.exp ((u : ℂ) • Y)) =
+      (u : ℂ) * ell k r z Y + (u : ℂ) ^ 2 * ((1 / 2 : ℂ) * ell k r z (Y * Y)) := by
+    intro u
+    rw [exp_S (hSu u), ell_add, ell_add, ell_one z hz]
+    simp only [smul_mul_assoc, mul_smul_comm, smul_smul, ell_sm]
+    ring
+  have hfun : (fun u : ℝ => f (g * NormedSpace.exp ((u : ℂ) • X))) =
+      fun u : ℝ => Complex.exp (Complex.I * (((cStd * ((u : ℂ) * ell k r z Y +
+        (u : ℂ) ^ 2 * ((1 / 2 : ℂ) * ell k r z (Y * Y)))).re : ℝ) : ℂ)) • f g := by
+    funext u
+    rw [hfe u, ← hell u]
+    rfl
+  have hd := (hasDerivAt_phase (ell k r z Y) ((1 / 2 : ℂ) * ell k r z (Y * Y))).smul_const (f g)
+  show deriv (fun u : ℝ => f (g * NormedSpace.exp ((u : ℂ) • X))) 0 = _
+  rw [hfun]
+  exact hd.deriv
+
+lemma phase_sum (A B : ℂ) :
+    Complex.I * (((cStd * ((1 / 2 : ℂ) * (A - B))).re : ℝ) : ℂ) +
+      Complex.I * (Complex.I * (((cStd * ((1 / (2 * Complex.I) : ℂ) * (A + B))).re : ℝ) : ℂ)) = A + star B := by
+  have h1 : cStd * ((1 / 2 : ℂ) * (A - B)) = -Complex.I * (A - B) := by
+    simp only [cStd]; ring
+  have h2 : cStd * ((1 / (2 * Complex.I) : ℂ) * (A + B)) = -(A + B) := by
+    simp only [cStd]; field_simp
+  rw [h1, h2]
+  apply Complex.ext <;> simp [Complex.mul_re, Complex.mul_im] <;> ring
+
+lemma core {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] {z : Fin (2 * r + k + 1) → ℂ}
+    (hz : inWb k r z) {l : Fin r} {D : Set (Mx k r)} {f : Mx k r → E} (hL : LeftEq k r z l.castSucc D f)
+    {g : Mx k r} (hg : g ∈ Glev k r l.castSucc ∩ D) (a b : Fin (2 * r + k + 1))
+    (hS : InS k r l (g * Matrix.single a b 1 * g⁻¹)) :
+    EH k r a b f g = (ell k r z (g * Matrix.single a b 1 * g⁻¹) +
+      star (ell k r z (Hpk k r * (g * Matrix.single a b 1 * g⁻¹)ᴴ * Hpk k r))) • f g := by
+  have ell_sm : ∀ (c : ℂ) (M : Mx k r), ell k r z (c • M) = c * ell k r z M := by
+    intro c M
+    simp only [ell, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    split_ifs <;> simp [Matrix.mulVec, dotProduct, Finset.mul_sum, mul_assoc]
+  set W := g * Matrix.single a b 1 * g⁻¹ with hW
+  have hgU : g ∈ UH (Hpk k r) := by
+    have h := hg.1
+    simp only [Glev, Set.mem_setOf_eq] at h
+    exact h.1
+  have hp1 : hpart1 (Hpk k r) W = (1 / 2 : ℂ) • (W - Hpk k r * Wᴴ * Hpk k r) := by
+    simp only [hpart1, hinv]
+  have hp2 : hpart2 (Hpk k r) W = (1 / (2 * Complex.I) : ℂ) • (W + Hpk k r * Wᴴ * Hpk k r) := by
+    simp only [hpart2, hinv]
+  have hS1 : InS k r l (g * hpart1 (Hpk k r) (Matrix.single a b 1) * g⁻¹) := by
+    rw [hpart1_conj hgU, ← hW, hp1]
+    exact inS_smul _ (inS_sub hS (inS_dag hS))
+  have hS2 : InS k r l (g * hpart2 (Hpk k r) (Matrix.single a b 1) * g⁻¹) := by
+    rw [hpart2_conj hgU, ← hW, hp2]
+    exact inS_smul _ (inS_add hS (inS_dag hS))
+  have hk1 : Hpk k r * (g * hpart1 (Hpk k r) (Matrix.single a b 1) * g⁻¹)ᴴ * Hpk k r =
+      -(g * hpart1 (Hpk k r) (Matrix.single a b 1) * g⁻¹) := by
+    rw [hpart1_conj hgU]; exact hpart1_skew _
+  have hk2 : Hpk k r * (g * hpart2 (Hpk k r) (Matrix.single a b 1) * g⁻¹)ᴴ * Hpk k r =
+      -(g * hpart2 (Hpk k r) (Matrix.single a b 1) * g⁻¹) := by
+    rw [hpart2_conj hgU]; exact hpart2_skew _
+  have r1 := rdV_left hz hL hg _ hS1 hk1
+  have r2 := rdV_left hz hL hg _ hS2 hk2
+  rw [hpart1_conj hgU, ← hW] at r1
+  rw [hpart2_conj hgU, ← hW] at r2
+  show RdV (hpart1 (Hpk k r) (Matrix.single a b 1)) f g +
+    Complex.I • RdV (hpart2 (Hpk k r) (Matrix.single a b 1)) f g = _
+  rw [r1, r2, smul_smul, ← add_smul, hp1, hp2, ell_sm, ell_sm]
+  congr 1
+  have hsub : ell k r z (W - Hpk k r * Wᴴ * Hpk k r) = ell k r z W - ell k r z (Hpk k r * Wᴴ * Hpk k r) := by
+    rw [sub_eq_add_neg, ell_add, ← neg_one_smul ℂ (Hpk k r * Wᴴ * Hpk k r), ell_sm]; ring
+  rw [hsub, ell_add]
+  exact phase_sum _ _
+
+end Formalism.FourierDecayAlt.Q.LeftMultiplicationRule
+end
+end
+
+section
 open Matrix
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.QuantumDeterminants.WeylGroupFacts
 
@@ -307,3 +934,5 @@ theorem left_multiplication_rule : RuleLeft := by
   · exact case2 hz hL hc hg₁ hgD _ (posL_in l j)
 
 end Formalism.FourierDecayAlt.Q.LeftMultiplicationRule
+end
+end

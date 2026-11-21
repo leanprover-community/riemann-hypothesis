@@ -320,11 +320,7 @@ theorem emb_mem_levelOff {v : HeightOneSpectrum (𝓞 F)} (hv : v ∉ S) {k : GL
   · subst e; simpa using hk
   · rw [proj_emb_ne σ J e]; exact one_mem _
 
-theorem isLatticeFrame_one : IsLatticeFrame (stdLattice E n) (1 : GL (Fin n) (AF F ⊗[F] E)) := fun v y => by
-  rw [map_one, Units.val_one, Matrix.one_mulVec, mem_latLoc_stdLattice]
 
-theorem isMajorantFrame_one : IsMajorantFrame σ (1 : Matrix (Fin n) (Fin n) E) 1 := fun w =>
-  ⟨fun _ => true, by simp [JR, cT_one]⟩
 
 end Level
 
@@ -380,10 +376,6 @@ theorem htFin_one (v : HeightOneSpectrum (𝓞 F)) : htFin F v (1 : GL (Fin n) (
 theorem htInf_one (w : InfinitePlace F) : htInf F w (1 : GL (Fin n) (w.Completion ⊗[F] E)) = 1 :=
   htOf_eq_one.2 ⟨normInf_one_le F w, normInf_one_le F w⟩
 
-theorem height_emb (v : HeightOneSpectrum (𝓞 F)) (x : GLoc σ J v) :
-    height σ J (emb σ J v x) = htFin F v (matHom _ σ J x) := by
-  rw [height_eq, finprod_eq_single _ v fun u hu => by rw [proj_emb_ne σ J hu, map_one, htFin_one], proj_emb_self]
-  simp only [projArch_emb, map_one, htInf_one, Finset.prod_const_one, one_mul]
 
 theorem height_embArch (w : InfinitePlace F) (x : GArch σ J w) :
     height σ J (embArch σ J w x) = htInf F w (matHom _ σ J x) := by

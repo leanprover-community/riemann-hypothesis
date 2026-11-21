@@ -4,10 +4,242 @@ import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginFrameNona
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FiniteResidueAbsoluteValueStatement
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieLatticeEvalAtLocalRingStatement
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GlueApplyOfNotInFibre
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DiscriminantValuationDifferent
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.NonarchValuationOfPrime
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsElementSamePrimeCountStatement
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.PadicValNatAbsNormEqZero
+import BuildAid.ForwardExisting
 
+section
+section
+open NumberField IsDedekindDomain UniqueFactorizationMonoid
+
+namespace GlobalTheory.CompanionTheory.Different
+
+theorem padicValInt_discr_mul_count_eq :
+    ∀ (E : Type) [Field E] [NumberField E] [IsGalois ℚ E] (p : ℕ) [Fact p.Prime] (P : Ideal (𝓞 E)),
+      P.IsPrime → (p : 𝓞 E) ∈ P →
+      ((padicValInt p (discr E) : ℕ)) * (normalizedFactors (Ideal.span {(p : 𝓞 E)})).count P =
+        (normalizedFactors (differentIdeal ℤ (𝓞 E))).count P * Module.finrank ℚ E := by
+  intro E _ _ _ p hp P hP hpP
+  have hd : (discr E).natAbs ≠ 0 := Int.natAbs_ne_zero.2 (discr_ne_zero E)
+  have hdecomp : (discr E).natAbs =
+      p ^ padicValNat p (discr E).natAbs * ((discr E).natAbs / p ^ (discr E).natAbs.factorization p) := by
+    conv_lhs => rw [← Nat.ordProj_mul_ordCompl_eq_self (discr E).natAbs p]
+    rw [Nat.factorization_def _ hp.out]
+  have hnd : ¬ p ∣ (discr E).natAbs / p ^ (discr E).natAbs.factorization p :=
+    Nat.not_dvd_ordCompl hp.out hd
+  have h := ReciprocityTheory.ChartRestriction.G.PullbackSections.Pf.diffExp E p _ _ hp.out hnd hdecomp P hP hpP
+  rw [h]
+  rfl
+
+end GlobalTheory.CompanionTheory.Different
+end
+
+open NumberField IsDedekindDomain UniqueFactorizationMonoid
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.discriminant_valuation_different : ∀ (E : Type) [Field E] [NumberField E] [IsGalois ℚ E] (p : ℕ) [Fact p.Prime] (P : Ideal (𝓞 E)), P.IsPrime → (p : 𝓞 E) ∈ P → ((padicValInt p (discr E) : ℕ)) * (normalizedFactors (Ideal.span {(p : 𝓞 E)})).count P = (normalizedFactors (differentIdeal ℤ (𝓞 E))).count P * Module.finrank ℚ E := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Different.padicValInt_discr_mul_count_eq
+end
+
+section
+section
+open NumberField IsDedekindDomain UniqueFactorizationMonoid
+
+namespace GlobalTheory.CompanionTheory.Ggeo
+
+def ltOneIdeal {R : Type} [CommRing R] [IsDomain R] (μ : R →*₀ ℝ)
+    (h0 : ∀ x, 0 ≤ μ x) (h1 : ∀ x, μ x ≤ 1)
+    (hadd : ∀ x y, μ (x + y) ≤ max (μ x) (μ y)) : Ideal R where
+  carrier := {x | μ x < 1}
+  add_mem' := by
+    intro x y hx hy
+    exact lt_of_le_of_lt (hadd x y) (max_lt hx hy)
+  zero_mem' := by
+    show μ 0 < 1
+    simp
+  smul_mem' := by
+    intro c x hx
+    show μ (c * x) < 1
+    rw [map_mul]
+    have hx' : μ x < 1 := hx
+    nlinarith [h0 c, h0 x, h1 c]
+
+private theorem eq_pow_count_normalizedFactors_of_uniformizer {R : Type} [CommRing R] [IsDedekindDomain R]
+    (μ : R →*₀ ℝ) (P : Ideal R) [P.IsPrime] (hone : ∀ x, x ∉ P → μ x = 1)
+    (π : R) (hπ : π ∈ P) (hπ2 : π ∉ P ^ 2) (x : R) (hx : x ≠ 0) :
+    μ x = μ π ^ (normalizedFactors (Ideal.span {x})).count P := by
+  have hspan : ∀ y : R, y ≠ 0 → Ideal.span {y} ≠ 0 := fun y hy => by
+    rw [Ne, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]
+    exact hy
+  have hadd : ∀ y z : R, y ≠ 0 → z ≠ 0 → (normalizedFactors (Ideal.span {y * z})).count P =
+      (normalizedFactors (Ideal.span {y})).count P + (normalizedFactors (Ideal.span {z})).count P := by
+    intro y z hy hz
+    rw [← Ideal.span_singleton_mul_span_singleton, normalizedFactors_mul (hspan y hy) (hspan z hz),
+      Multiset.count_add]
+  have hzero : ∀ y : R, y ∉ P → (normalizedFactors (Ideal.span {y})).count P = 0 := by
+    intro y hy
+    apply Ideal.count_normalizedFactors_eq
+    · rw [pow_zero, Ideal.one_eq_top]
+      exact le_top
+    · rw [zero_add, pow_one, Ideal.span_singleton_le_iff_mem]
+      exact hy
+  have hπ0 : π ≠ 0 := by
+    rintro rfl
+    exact hπ2 (zero_mem _)
+  have hπ1 : (normalizedFactors (Ideal.span {π})).count P = 1 := by
+    apply Ideal.count_normalizedFactors_eq
+    · rw [pow_one, Ideal.span_singleton_le_iff_mem]
+      exact hπ
+    · rw [Ideal.span_singleton_le_iff_mem]
+      exact hπ2
+  obtain ⟨A, hA⟩ : P ∣ Ideal.span {π} :=
+    Ideal.dvd_iff_le.2 ((Ideal.span_singleton_le_iff_mem P).2 hπ)
+  have hAP : ¬A ≤ P := by
+    intro hle
+    apply hπ2
+    rw [← Ideal.span_singleton_le_iff_mem, hA, pow_two]
+    exact Ideal.mul_mono_right hle
+  obtain ⟨s, hsA, hsP⟩ := SetLike.not_le_iff_exists.1 hAP
+  have hs0 : s ≠ 0 := by
+    rintro rfl
+    exact hsP (zero_mem _)
+  have hstep : ∀ y : R, y ∈ P → ∃ z, s * y = π * z := by
+    intro y hy
+    have : s * y ∈ Ideal.span {π} := by
+      rw [hA, mul_comm s y]
+      exact Ideal.mul_mem_mul hy hsA
+    exact Ideal.mem_span_singleton.1 this
+  have hdiv : ∀ y : R, y ≠ 0 → y ∈ P → ∃ z, z ≠ 0 ∧
+      (normalizedFactors (Ideal.span {y})).count P =
+        (normalizedFactors (Ideal.span {z})).count P + 1 ∧ μ y = μ π * μ z := by
+    intro y hy hyP
+    obtain ⟨z, hz⟩ := hstep y hyP
+    have hz0 : z ≠ 0 := by
+      rintro rfl
+      rw [mul_zero] at hz
+      exact mul_ne_zero hs0 hy hz
+    have hc := hadd s y hs0 hy
+    rw [hz, hadd π z hπ0 hz0, hπ1, hzero s hsP] at hc
+    refine ⟨z, hz0, by omega, ?_⟩
+    have hμ : μ s * μ y = μ π * μ z := by rw [← map_mul, ← map_mul, hz]
+    rwa [hone s hsP, one_mul] at hμ
+  suffices H : ∀ n : ℕ, ∀ y : R, y ≠ 0 → (normalizedFactors (Ideal.span {y})).count P = n →
+      μ y = μ π ^ n from H _ x hx rfl
+  intro n
+  induction n with
+  | zero =>
+    intro y hy hn
+    by_cases hyP : y ∈ P
+    · obtain ⟨z, _, hc, _⟩ := hdiv y hy hyP
+      omega
+    · rw [hone y hyP, pow_zero]
+  | succ n ih =>
+    intro y hy hn
+    by_cases hyP : y ∈ P
+    · obtain ⟨z, hz0, hc, hμ⟩ := hdiv y hy hyP
+      rw [hμ, ih z hz0 (by omega), pow_succ, mul_comm]
+    · rw [hzero y hyP] at hn
+      omega
+
+theorem map_eq_pow_count_of_ultrametric :
+    ∀ (R : Type) [CommRing R] [IsDedekindDomain R] (μ : R →*₀ ℝ) (a : R), a ≠ 0 →
+      (∀ x, 0 ≤ μ x) → (∀ x, μ x ≤ 1) → (∀ x y, μ (x + y) ≤ max (μ x) (μ y)) →
+      μ a < 1 → μ a ≠ 0 →
+      ∃ (P : Ideal R) (c : ℝ), P.IsPrime ∧ P ≠ ⊥ ∧ a ∈ P ∧ 0 < c ∧
+        ∀ x : R, x ≠ 0 → μ x = c ^ (normalizedFactors (Ideal.span {x})).count P := by
+  intro R _ _ μ a ha h0 h1 hadd hlt hne
+  set P := GlobalTheory.CompanionTheory.Ggeo.ltOneIdeal μ h0 h1 hadd with hPdef
+  have hmem : ∀ x, x ∈ P ↔ μ x < 1 := fun x => Iff.rfl
+  have hPtop : P ≠ ⊤ := by
+    intro htop
+    have h1P := (Ideal.eq_top_iff_one P).1 htop
+    rw [hmem, map_one] at h1P
+    exact lt_irrefl _ h1P
+  have hPprime : P.IsPrime := by
+    refine ⟨hPtop, ?_⟩
+    intro x y hxy
+    have hxy' : μ x * μ y < 1 := by
+      rw [← map_mul]
+      exact (hmem _).1 hxy
+    by_contra hc
+    rw [not_or] at hc
+    have hx1 : ¬μ x < 1 := fun h => hc.1 ((hmem x).2 h)
+    have hy1 : ¬μ y < 1 := fun h => hc.2 ((hmem y).2 h)
+    rw [not_lt] at hx1 hy1
+    nlinarith [h0 x, h0 y]
+  haveI := hPprime
+  have haP : a ∈ P := (hmem a).2 hlt
+  have hbot : P ≠ ⊥ := by
+    intro h
+    rw [h, Submodule.mem_bot] at haP
+    exact ha haP
+  obtain ⟨π, hπ, hπ2⟩ : ∃ π ∈ P ^ 1, π ∉ P ^ 2 := SetLike.exists_of_lt
+    (Ideal.pow_right_strictAnti P hbot hPtop (by norm_num : 1 < 2))
+  rw [pow_one] at hπ
+  have hone : ∀ x, x ∉ P → μ x = 1 := fun x hx =>
+    le_antisymm (h1 x) (not_lt.1 fun h => hx ((hmem x).2 h))
+  have hkey := eq_pow_count_normalizedFactors_of_uniformizer μ P hone π hπ hπ2
+  have hπne : μ π ≠ 0 := by
+    intro h
+    have ha' := hkey a ha
+    rw [h] at ha'
+    rcases Nat.eq_zero_or_pos ((normalizedFactors (Ideal.span {a})).count P) with hk | hk
+    · rw [hk, pow_zero] at ha'
+      rw [ha'] at hlt
+      exact lt_irrefl _ hlt
+    · rw [zero_pow hk.ne'] at ha'
+      exact hne ha'
+  exact ⟨P, μ π, hPprime, hbot, haP, lt_of_le_of_ne (h0 π) (Ne.symm hπne), hkey⟩
+
+end GlobalTheory.CompanionTheory.Ggeo
+end
+
+open NumberField IsDedekindDomain UniqueFactorizationMonoid
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.nonarch_valuation_of_prime : ∀ (R : Type) [CommRing R] [IsDedekindDomain R] (μ : R →*₀ ℝ) (a : R), a ≠ 0 → (∀ x, 0 ≤ μ x) → (∀ x, μ x ≤ 1) → (∀ x y, μ (x + y) ≤ max (μ x) (μ y)) → μ a < 1 → μ a ≠ 0 → ∃ (P : Ideal R) (c : ℝ), P.IsPrime ∧ P ≠ ⊥ ∧ a ∈ P ∧ 0 < c ∧ ∀ x : R, x ≠ 0 → μ x = c ^ (normalizedFactors (Ideal.span {x})).count P := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ggeo.map_eq_pow_count_of_ultrametric
+end
+
+section
+open NumberField IsDedekindDomain UniqueFactorizationMonoid
+
+namespace GlobalTheory.CompanionTheory.Ggeo
+
+theorem exists_mem_count_normalizedFactors_span_eq :
+    ∀ (R : Type) [CommRing R] [IsDedekindDomain R] (I P : Ideal R), I ≠ ⊥ → P.IsPrime → P ≠ ⊥ →
+      ∃ x ∈ I, x ≠ 0 ∧
+        (normalizedFactors (Ideal.span {x})).count P = (normalizedFactors I).count P := by
+  intro R _ _ I P hI hP hP0
+  have hlt : I * P < I := by
+    refine lt_of_le_of_ne Ideal.mul_le_left fun h => hP.ne_top ?_
+    have h' : I * P = I * ⊤ := by rw [h, Ideal.mul_top]
+    exact mul_left_cancel₀ hI h'
+  obtain ⟨x, hxI, hxIP⟩ := SetLike.exists_of_lt hlt
+  have hx0 : x ≠ 0 := by
+    rintro rfl
+    exact hxIP (Submodule.zero_mem _)
+  refine ⟨x, hxI, hx0, ?_⟩
+  obtain ⟨J, hJ⟩ : I ∣ Ideal.span {x} :=
+    Ideal.dvd_iff_le.2 ((Ideal.span_singleton_le_iff_mem _).2 hxI)
+  have hJ0 : J ≠ ⊥ := by
+    rintro rfl
+    rw [Ideal.mul_bot, Ideal.span_singleton_eq_bot] at hJ
+    exact hx0 hJ
+  have hPJ : (normalizedFactors J).count P = 0 := by
+    rw [Multiset.count_eq_zero]
+    intro hmem
+    obtain ⟨K, rfl⟩ := dvd_of_mem_normalizedFactors hmem
+    apply hxIP
+    have hle : Ideal.span {x} ≤ I * P := by
+      rw [hJ, ← mul_assoc]
+      exact Ideal.mul_le_left
+    exact hle (Ideal.mem_span_singleton_self x)
+  rw [hJ, normalizedFactors_mul hI hJ0, Multiset.count_add, hPJ, add_zero]
+
+end GlobalTheory.CompanionTheory.Ggeo
+
+alias _root_.GlobalTheory.T.exists_element_same_prime_count := _root_.GlobalTheory.CompanionTheory.Ggeo.exists_mem_count_normalizedFactors_span_eq
+end
+
+section
 open NumberField IsDedekindDomain MeasureTheory Filter Topology
 open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.ChartRestriction.G.AR.Inst Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
 open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Rec
@@ -236,3 +468,5 @@ theorem fib_V_htDual : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] [I
       exact fibAt_mono _ _ _ (fun hh => (hVq hh).le) hw
 
 end GlobalTheory.CompanionTheory.Ar.Rec.FinRd.Roots.OnW
+end
+end

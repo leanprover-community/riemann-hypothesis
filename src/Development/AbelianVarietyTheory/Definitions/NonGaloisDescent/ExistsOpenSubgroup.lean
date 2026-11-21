@@ -211,10 +211,6 @@ theorem exists_tameOm (γ : Fin 2 → PlE D.host → GE D.nd) (hγ : GenFam D γ
   · rw [← hγ.1 k v]
     exact hv k _ (D.naut.plGw_over k v) x hx
 
-theorem nonempty_tameOm : Nonempty (TameOm D) := by
-  obtain ⟨γ, hγ⟩ := exists_genFam D
-  obtain ⟨Ω, -⟩ := exists_tameOm D γ hγ
-  exact ⟨Ω⟩
 
 end Om
 
@@ -327,97 +323,13 @@ variable {D : D7}
 
 def io (i : D.nd.Loc) : KK D.nd i →+* ℂ := (D.naut.iotaQC i).toRingHom.comp (D.naut.iotaQ i)
 
-theorem heckeEig_eq_top (i : D.nd.Loc) [Subsingleton (D.nd.X i)] (x : D.nd.X i) :
-    heckeEig (D.nd.T i) (D.nd.act i) x = ⊤ := by
-  refine iInf_eq_top.mpr fun f => eq_top_iff.mpr fun v _ => Module.End.mem_eigenspace_iff.mpr ?_
-  have hf : f = algebraMap (D.nd.O i) (D.nd.T i) ((f : D.nd.X i → D.nd.O i) x) :=
-    Subtype.ext (funext fun y => by rw [Subsingleton.elim y x]; rfl)
-  conv_lhs => rw [hf, AlgHom.commutes, Algebra.algebraMap_eq_smul_one, LinearMap.baseChange_smul]
-  rw [algebraMap_smul, LinearMap.smul_apply]
-  congr 1
-  exact LinearMap.congr_fun (LinearMap.baseChange_id) v
 
-theorem nonempty_sec (i : D.nd.Loc) (x : D.nd.X i) (hx : ∀ P, D.naut.ptV i P = some x) : Nonempty (Sec D i) := by
-  have hs : Subsingleton (D.nd.X i) := ⟨fun a b => by
-    obtain ⟨P, hP⟩ := D.naut.pt_surj i a
-    obtain ⟨Q, hQ⟩ := D.naut.pt_surj i b
-    rw [hx] at hP hQ
-    exact Option.some_injective _ (hP.symm.trans hQ)⟩
-  have htop : typeSum D i (some x) = ⊤ := by
-    rw [← D.naut.typeV_top i, typeSum]
-    simp [hx]
-  let b := Module.Free.chooseBasis D.what₂.LL (D.what₂.MtL (D.nd.mu i) (D.nd.j i))
-  obtain ⟨hli, hsp⟩ := D.what₂.jMt_basis _ _ b
-  have : Finite (Module.Free.ChooseBasisIndex D.what₂.LL (D.what₂.MtL (D.nd.mu i) (D.nd.j i))) := hli.finite
-  let := Fintype.ofFinite (Module.Free.ChooseBasisIndex D.what₂.LL (D.what₂.MtL (D.nd.mu i) (D.nd.j i)))
-  let bC := Basis.mk hli hsp.ge
-  have hdim : Fintype.card (Module.Free.ChooseBasisIndex D.what₂.LL (D.what₂.MtL (D.nd.mu i) (D.nd.j i))) =
-      finrank (KK D.nd i) (TensorProduct (D.nd.O i) (KK D.nd i) (D.nd.Mt i)) := by
-    have h1 := D.naut.eig_dim i x
-    rw [NData.mult, heckeMult, heckeEig_eq_top, finrank_top] at h1
-    rw [h1, ← finrank_eq_card_basis bC, ← finrank_top ℂ, ← htop]
-    rfl
-  have hspan : ⊤ ≤ Submodule.span (KK D.nd i) (Set.range fun s => D.nd.prMt i (b s)) := by
-    rw [← D.nd.prMt_span i, Submodule.span_le]
-    rintro _ ⟨y, rfl⟩
-    rw [← b.sum_repr y, map_sum]
-    exact Submodule.sum_mem _ fun s _ => by
-      rw [map_smulₛₗ]
-      exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨s, rfl⟩)
-  let bK := basisOfTopLeSpanOfCardEqFinrank _ hspan hdim
-  have hbK : ∀ s, bK s = D.nd.prMt i (b s) := fun s => congrFun (coe_basisOfTopLeSpanOfCardEqFinrank _ hspan hdim) s
-  let Φ : TensorProduct (D.nd.O i) (KK D.nd i) (D.nd.Mt i) →+ D.what₂.Mt (D.nd.mu i) (D.nd.j i) :=
-    { toFun := fun v => ∑ s, io i (bK.repr v s) • bC s
-      map_zero' := by simp
-      map_add' := fun u v => by simp [add_smul, Finset.sum_add_distrib] }
-  have hΦ : ∀ v, Φ v = ∑ s, io i (bK.repr v s) • bC s := fun _ => rfl
-  refine ⟨⟨Φ, (injective_iff_map_eq_zero Φ).mpr fun v hv => ?_, fun k v => ?_, fun y u _ => ?_, fun y => ?_⟩⟩
-  · have := Fintype.linearIndependent_iff.mp bC.linearIndependent _ ((hΦ v).symm.trans hv)
-    refine bK.repr.injective (Finsupp.ext fun s => ?_)
-    simpa using this s
-  · rw [hΦ, hΦ, Finset.smul_sum]
-    refine Finset.sum_congr rfl fun s _ => ?_
-    rw [map_smul, Finsupp.smul_apply, smul_eq_mul, map_mul, mul_smul]
-    rfl
-  · rw [Subsingleton.elim y x, htop]
-    trivial
-  · have h1 : D.nd.prMt i y = ∑ s, D.nd.embK i (b.repr y s) • bK s := by
-      conv_lhs => rw [← b.sum_repr y, map_sum]
-      simp only [map_smulₛₗ, hbK]
-    have h2 : D.what₂.jMt _ _ y = Φ (D.nd.prMt i y) := by
-      rw [hΦ]
-      conv_lhs => rw [← b.sum_repr y, map_sum]
-      refine Finset.sum_congr rfl fun s _ => ?_
-      rw [map_smulₛₗ, h1, bK.repr_sum_self, Basis.mk_apply]
-      congr 1
-      exact (D.naut.iota_LL i _).symm
-    rw [h2, sub_self]
-    exact zero_mem _
 
 theorem sec_ne_zero {i : D.nd.Loc} (S : Sec D i) : S.Φ ≠ 0 := by
   obtain ⟨x⟩ := D.nd.neX i
   obtain ⟨u, -, hu⟩ := (Submodule.ne_bot_iff _).mp (D.nd.eig_ne i x)
   exact fun h => hu (S.inj (by simp [h]))
 
-theorem nonempty_cenO (S : ∀ i, Sec D i) (hpt : ∀ i P, D.naut.ptV i P ≠ none)
-    (a : ∀ i, ↥(Subalgebra.center (D.nd.O i) (MonoidAlgebra (D.nd.O i) (G0g D.nd))) →ₐ[D.nd.O i] D.nd.O i)
-    (ha : ∀ i z F, D.ntypes.onMt (D.nd.mu i) (D.nd.j i)
-      (PairedCharacterCondition.mapCoef (iotaO D.nd D.naut i) ((z : ↥(Subalgebra.center (D.nd.O i) (MonoidAlgebra (D.nd.O i) (G0g D.nd)))) :
-        MonoidAlgebra (D.nd.O i) (G0g D.nd))) F = iotaO D.nd D.naut i (a i z) • F) : Nonempty (CenO D) := by
-  refine ⟨⟨fun i => (Algebra.ofId _ _).comp (a i), fun i z f => Algebra.commutes (a i z) (D.nd.act i f), fun i z x y h => ?_⟩⟩
-  have h0 : typeSum D i none = ⊥ := by simp [typeSum, hpt]
-  have h1 : ∀ y, D.what₂.jMt _ _ y = (S i).Φ (D.nd.prMt i y) := fun y => by
-    have := (S i).split y
-    rwa [h0, Submodule.mem_bot, sub_eq_zero] at this
-  apply (S i).inj
-  have h2 : LinearMap.baseChange (KK D.nd i) (((Algebra.ofId _ (Module.End (D.nd.O i) (D.nd.Mt i))).comp (a i)) z)
-      (D.nd.prMt i x) = algebraMap _ (KK D.nd i) (a i z) • D.nd.prMt i x := by
-    rw [AlgHom.comp_apply, Algebra.ofId_apply, Algebra.algebraMap_eq_smul_one, LinearMap.baseChange_smul,
-      algebraMap_smul, LinearMap.smul_apply]
-    congr 1
-    exact LinearMap.congr_fun (LinearMap.baseChange_id) _
-  rw [h2, (S i).semi, ← h1, ← h1, h, ha]
-  rfl
 
 def omOf (P : PairedCharacterCondition.Pend D) : TameOm D :=
   ⟨P.om, P.om_one, P.om_mul, P.tameInertiaChar_mul_root, P.om_wild, P.om_open, P.om_inj, P.om_tg⟩

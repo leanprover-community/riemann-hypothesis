@@ -285,18 +285,6 @@ theorem cut_tensorUp {O : Type} [CommRing O] [IsDedekindDomain O] {K : Type} [Fi
 
 theorem restRowsFiniteGroupCard_pos (D : Formalism.BasicNotions.D7) : 0 < D.what₂.restRowsFiniteGroupCard := D.what₂.restRowsFiniteGroupCard_pos
 
-theorem cut_tensorUp_row {D : Formalism.BasicNotions.D7} {EE : Type} [NormedAddCommGroup EE] [InnerProductSpace ℂ EE] [FiniteDimensional ℂ EE]
-    (X : Formalism.BasicNotions.RowSide D EE) (hO : IsDedekindDomain D.what₂.O) (ι : D.what₂.O →+* 𝓞 D.what₂.LL)
-    (hι : Function.Injective ι) (hιO : ∀ a, ((ι a : 𝓞 D.what₂.LL) : D.what₂.LL) = D.what₂.OtoLL a)
-    (hA : X.AIntegral) (μ : D.what₂.Tup) (hF : OForm (X.Mtilde μ)) (x : X.Amb μ) :
-    (∃ (s : Finset (X.Amb μ)) (c : X.Amb μ → 𝓞 D.what₂.LL),
-        (s : Set (X.Amb μ)) ⊆ (X.Mtilde μ).carrier ∩ (X.V0 μ : Set (X.Amb μ)) ∧
-        x = ∑ y ∈ s, D.what₂.embLL (c y : D.what₂.LL) • y) ↔
-      ((∃ c : X.Amb μ → 𝓞 D.what₂.LL, x = ∑ v ∈ (X.Mtilde μ).gen, D.what₂.embLL (c v : D.what₂.LL) • v) ∧
-        x ∈ X.V0 μ) := by
-  haveI := hO
-  exact cut_tensorUp D.what₂.embLL ι hι (fun a => by rw [hιO]; rfl) (X.Mtilde μ) hF (X.eOp μ)
-    (X.eOp_idem μ) (restRowsFiniteGroupCard_pos D).ne' (fun y hy => hA μ y hy) x
 
 end CutRec
 

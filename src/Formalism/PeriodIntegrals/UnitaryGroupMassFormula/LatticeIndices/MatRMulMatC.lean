@@ -1,5 +1,289 @@
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.PsiVIteOne
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.SecondCoordsMulGL
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.ReductionImageOfAdaptedMod
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.SecondEmbeddingEqStar
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeColumns.ThetaEpsCases
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.TwoPrimes
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.CharZeroAdicCompletion
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeColumns.SecondProjWeightVectorZero
 
+section
+noncomputable section
+
+namespace MassDataIdxSteps
+
+open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.Sub Formalism.L2.SG.Measures Formalism.L2.SG.TypedSets MeasureTheory NumberField
+  IsDedekindDomain Formalism.BasicNotions Formalism.L2.SG.HidaSetting Formalism.L2.SG.AdBridge MassDataIdxStIm MassDataIdxRed MassDataIdxSpl Matrix
+  MassDataIdxFrA MassDataIdxAdA
+open scoped TensorProduct
+
+section Loc
+
+variable {D : D7} (X : HidaSetting D) (p : TypX X) (θ : TpX X p ≃ₐ[FpX X p] FpX X p × FpX X p)
+  (Q : GL (IdxD D) (FpX X p))
+
+theorem pair_sum (v w : Fin X.B.I.n → TpX X p) :
+    crd2 X p θ Q v ⬝ᵥ crd1 X p θ Q w =
+      ∑ i, ∑ j, (θ (v i)).2 * ((θ (inclR (FpX X p) (X.B.I.J i j))).1 * (θ (w j)).1) := by
+  unfold crd1 crd2
+  rw [Matrix.mulVec_transpose, Matrix.mulVec_transpose, ← Matrix.dotProduct_mulVec, Matrix.mulVec_mulVec,
+    ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.one_mulVec, ← Matrix.dotProduct_mulVec,
+    Matrix.reindex_apply, Matrix.submatrix_mulVec_equiv]
+  simp only [dotProduct, Matrix.mulVec, Function.comp_apply]
+  rw [← Equiv.sum_comp (idxEquiv X).symm.symm]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  simp only [Equiv.symm_symm, Equiv.symm_apply_apply, fst_apply_alt, snd_apply_alt, jm1, JR, Matrix.map_apply]
+  rw [Finset.mul_sum]
+
+theorem pair1 (hθ : IsSplitEquiv X p θ) (v w : Fin X.B.I.n → TpX X p) :
+    crd2 X p θ Q v ⬝ᵥ crd1 X p θ Q w = (θ (hR (FpX X p) X.B.I.cm.sig X.B.I.J v w)).1 := by
+  rw [pair_sum]
+  simp only [hR, Formalism.UG.hform, map_sum, Prod.fst_sum, map_mul, Prod.fst_mul, JR, Matrix.map_apply]
+  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+  rw [hθ (v i), Prod.fst_swap]
+  ring
+
+theorem pair2 (hθ : IsSplitEquiv X p θ) (v w : Fin X.B.I.n → TpX X p) :
+    crd1 X p θ Q v ⬝ᵥ crd2 X p θ Q w = (θ (hR (FpX X p) X.B.I.cm.sig X.B.I.J v w)).2 := by
+  rw [dotProduct_comm, pair_sum]
+  simp only [hR, Formalism.UG.hform, map_sum, Prod.snd_sum, map_mul, Prod.snd_mul, JR, Matrix.map_apply]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+  rw [hθ (v i), Prod.snd_swap]
+  have h := secondEmbedding_eq_star X p θ hθ (X.B.I.J i j)
+  rw [herm_entry] at h
+  have h' : (θ (inclR (FpX X p) (X.B.I.J i j))).2 = (θ (inclR (FpX X p) (X.B.I.J j i))).1 := h
+  rw [h']
+  ring
+
+theorem psiV_hA' (x y : Formalism.L2.SG.HidaSetting.VA X.B.I) :
+    PI.FinKW.psiV X.B.I p.1 (hA X.B.I x y) =
+      hR (FpX X p) X.B.I.cm.sig X.B.I.J (PI.FinKW.vecV X.B.I p.1 x) (PI.FinKW.vecV X.B.I p.1 y) := by
+  have hi : ∀ a : X.B.I.E, PI.FinKW.psiV X.B.I p.1 (Formalism.UG.inclE (F := X.B.I.F) (Formalism.MainNotions.S.Af X.B.I.F) a) =
+      inclR (FpX X p) a := by
+    intro a
+    show (Algebra.TensorProduct.map (evalV X.B.I.F p.1) (AlgHom.id X.B.I.F X.B.I.E))
+        ((Algebra.TensorProduct.comm X.B.I.F X.B.I.E (Formalism.MainNotions.S.Af X.B.I.F)) (a ⊗ₜ[X.B.I.F] (1 : Formalism.MainNotions.S.Af X.B.I.F))) =
+      (1 : FpX X p) ⊗ₜ[X.B.I.F] a
+    rw [Algebra.TensorProduct.comm_tmul, Algebra.TensorProduct.map_tmul, map_one]
+    rfl
+  have hs := PIW.MassDataColumns.psiV_sigA X p
+  simp only [hA, hR, Formalism.UG.hform, map_sum, map_mul, Matrix.map_apply, JR, PI.FinKW.vecV]
+  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+  rw [← hs, hi]
+
+end Loc
+
+end MassDataIdxSteps
+end
+end
+
+section
+noncomputable section
+
+namespace MassDataIdxSteps
+
+open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.Sub Formalism.L2.SG.Measures Formalism.L2.SG.TypedSets MeasureTheory NumberField
+  IsDedekindDomain Formalism.BasicNotions Formalism.L2.SG.HidaSetting Formalism.L2.SG.AdBridge MassDataIdxStIm MassDataIdxRed MassDataIdxSpl Matrix
+  MassDataIdxFrA MassDataIdxAdA
+open scoped TensorProduct
+
+section Loc
+
+variable {D : D7} (X : HidaSetting D) (p : TypX X) (θ : TpX X p ≃ₐ[FpX X p] FpX X p × FpX X p)
+  (Q : GL (IdxD D) (FpX X p))
+
+theorem zmod_comp (hL : LatBasis X p θ (reindex₂ X p Q)) (c : X.B.I.E ⊗[X.B.I.F] Formalism.MainNotions.S.Af X.B.I.F)
+    (hc : ZMod' X.B.I X.B.g c) :
+    (∃ y : OvA X p, (θ (PI.FinKW.psiV X.B.I p.1 c)).1 = ((gOf p : ℕ) : FpX X p) * (y : FpX X p)) ∧
+    (∃ y : OvA X p, (θ (PI.FinKW.psiV X.B.I p.1 c)).2 = ((gOf p : ℕ) : FpX X p) * (y : FpX X p)) := by
+  obtain ⟨t, ht, rfl⟩ := hc
+  have hs : PI.FinKW.psiV X.B.I p.1 t ∈ OEp X p := ⟨t, ht, rfl⟩
+  obtain ⟨h1, h2⟩ := oEp_int X p θ Q hL _ hs
+  rw [map_mul, map_natCast, map_mul, map_natCast, imA_g_eq_mul X p]
+  refine ⟨⟨((gOth X p : ℕ) : OvA X p) * ⟨_, h1⟩, ?_⟩, ⟨((gOth X p : ℕ) : OvA X p) * ⟨_, h2⟩, ?_⟩⟩
+  · simp only [Prod.fst_mul, Prod.fst_natCast]
+    push_cast
+    ring
+  · simp only [Prod.snd_mul, Prod.snd_natCast]
+    push_cast
+    ring
+
+theorem cong_dir (hθ : IsSplitEquiv X p θ) (hL : LatBasis X p θ (reindex₂ X p Q))
+    (x y : Formalism.L2.SG.HidaSetting.VA X.B.I) (d : X.B.I.E ⊗[X.B.I.F] Formalism.MainNotions.S.Af X.B.I.F)
+    (h : ZMod' X.B.I X.B.g (hA X.B.I x y - d)) :
+    ∃ z : OvA X p, crd2 X p θ Q (PI.FinKW.vecV X.B.I p.1 x) ⬝ᵥ crd1 X p θ Q (PI.FinKW.vecV X.B.I p.1 y) =
+      (θ (PI.FinKW.psiV X.B.I p.1 d)).1 + ((gOf p : ℕ) : FpX X p) * (z : FpX X p) := by
+  obtain ⟨z, hz⟩ := (zmod_comp X p θ Q hL _ h).1
+  refine ⟨z, ?_⟩
+  rw [pair1 X p θ Q hθ, ← psiV_hA']
+  rw [map_sub, map_sub, Prod.fst_sub] at hz
+  linear_combination hz
+
+theorem cong_sym (hθ : IsSplitEquiv X p θ) (hL : LatBasis X p θ (reindex₂ X p Q))
+    (x y : Formalism.L2.SG.HidaSetting.VA X.B.I) (d : X.B.I.E ⊗[X.B.I.F] Formalism.MainNotions.S.Af X.B.I.F)
+    (h : ZMod' X.B.I X.B.g (hA X.B.I y x - d)) :
+    ∃ z : OvA X p, crd2 X p θ Q (PI.FinKW.vecV X.B.I p.1 x) ⬝ᵥ crd1 X p θ Q (PI.FinKW.vecV X.B.I p.1 y) =
+      (θ (PI.FinKW.psiV X.B.I p.1 d)).2 + ((gOf p : ℕ) : FpX X p) * (z : FpX X p) := by
+  obtain ⟨z, hz⟩ := (zmod_comp X p θ Q hL _ h).2
+  refine ⟨z, ?_⟩
+  rw [dotProduct_comm, pair2 X p θ Q hθ, ← psiV_hA']
+  rw [map_sub, map_sub, Prod.snd_sub] at hz
+  linear_combination hz
+
+end Loc
+
+section Orient
+
+variable {D : D7} (X : HidaSetting D) (p : TypX X)
+
+def swapA : (FpX X p × FpX X p) ≃ₐ[FpX X p] (FpX X p × FpX X p) :=
+  AlgEquiv.ofRingEquiv (f := RingEquiv.prodComm) (fun _ => rfl)
+
+theorem exists_split_eps : ∃ θ : TpX X p ≃ₐ[FpX X p] FpX X p × FpX X p,
+    IsSplitEquiv X p θ ∧ θ (epsP X p) = (1, 0) := by
+  obtain ⟨θ₀, h₀⟩ := splitTheta_of X p (embP_holds X p)
+  rcases PIW.MassDataColumns.theta_eps_cases X p θ₀ h₀ with h | h
+  · exact ⟨θ₀, h₀, h⟩
+  · refine ⟨θ₀.trans (swapA X p), ?_, ?_⟩
+    · intro t
+      rw [AlgEquiv.trans_apply, AlgEquiv.trans_apply, h₀ t]
+      rfl
+    · rw [AlgEquiv.trans_apply, h]
+      rfl
+
+theorem exists_GL_latBasis_of_isSplitEquiv (θ : TpX X p ≃ₐ[FpX X p] FpX X p × FpX X p) (hθ : IsSplitEquiv X p θ) :
+    ∃ Q : GL (IdxD D) (FpX X p), LatBasis X p θ (reindex₂ X p Q) := by
+  obtain ⟨P, hP⟩ := latBasisAll_holds' X p θ hθ
+  refine ⟨Units.map (Matrix.reindexAlgEquiv (FpX X p) (FpX X p) (idxEquiv X)).toMonoidHom P, ?_⟩
+  have e : reindex₂ X p (Units.map (Matrix.reindexAlgEquiv (FpX X p) (FpX X p) (idxEquiv X)).toMonoidHom P) = P := by
+    ext i j
+    simp [reindex₂]
+  rw [e]
+  exact hP
+
+end Orient
+
+end MassDataIdxSteps
+end
+end
+
+section
+noncomputable section
+
+namespace MassDataIdxSteps
+
+open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.Sub Formalism.L2.SG.Measures Formalism.L2.SG.TypedSets MeasureTheory NumberField
+  IsDedekindDomain Formalism.BasicNotions Formalism.L2.SG.HidaSetting Formalism.L2.SG.AdBridge MassDataIdxStIm MassDataIdxRed MassDataIdxSpl Matrix
+  MassDataIdxFrA MassDataIdxAdA
+open scoped TensorProduct
+
+section Loc
+
+variable {D : D7} (X : HidaSetting D) (p : TypX X) (θ : TpX X p ≃ₐ[FpX X p] FpX X p × FpX X p)
+  (Q : GL (IdxD D) (FpX X p))
+
+def colV : IdxD D → Formalism.L2.SG.HidaSetting.VA X.B.I
+  | Sum.inl a => X.e0 a
+  | Sum.inr (Sum.inl (Sum.inl i)) => X.bw i
+  | Sum.inr (Sum.inl (Sum.inr _)) => X.z0
+  | Sum.inr (Sum.inr c) => X.f0 (Fin.rev c)
+
+def rowV : IdxD D → Formalism.L2.SG.HidaSetting.VA X.B.I
+  | Sum.inl a => X.f0 a
+  | Sum.inr (Sum.inl (Sum.inl i)) => X.bwd i
+  | Sum.inr (Sum.inl (Sum.inr _)) => X.z0
+  | Sum.inr (Sum.inr c) => X.e0 (Fin.rev c)
+
+def sgnV : IdxD D → FpX X p
+  | Sum.inr (Sum.inl (Sum.inr _)) => -1
+  | _ => 1
+
+theorem fin_dir (hθ : IsSplitEquiv X p θ) (hL : LatBasis X p θ (reindex₂ X p Q)) (x y : Formalism.L2.SG.HidaSetting.VA X.B.I)
+    (h : ZMod' X.B.I X.B.g (hA X.B.I x y)) :
+    ∃ z : OvA X p, crd2 X p θ Q (PI.FinKW.vecV X.B.I p.1 x) ⬝ᵥ crd1 X p θ Q (PI.FinKW.vecV X.B.I p.1 y) =
+      ((gOf p : ℕ) : FpX X p) * (z : FpX X p) := by
+  obtain ⟨z, hz⟩ := cong_dir X p θ Q hθ hL x y 0 (by simpa using h)
+  exact ⟨z, by simpa using hz⟩
+
+theorem fin_sym (hθ : IsSplitEquiv X p θ) (hL : LatBasis X p θ (reindex₂ X p Q)) (x y : Formalism.L2.SG.HidaSetting.VA X.B.I)
+    (h : ZMod' X.B.I X.B.g (hA X.B.I y x)) :
+    ∃ z : OvA X p, crd2 X p θ Q (PI.FinKW.vecV X.B.I p.1 x) ⬝ᵥ crd1 X p θ Q (PI.FinKW.vecV X.B.I p.1 y) =
+      ((gOf p : ℕ) : FpX X p) * (z : FpX X p) := by
+  obtain ⟨z, hz⟩ := cong_sym X p θ Q hθ hL x y 0 (by simpa using h)
+  exact ⟨z, by simpa using hz⟩
+
+theorem psiV_ite_one (c : Prop) [Decidable c] :
+    θ (PI.FinKW.psiV X.B.I p.1 (if c then 1 else 0)) = if c then 1 else 0 := by
+  split_ifs <;> simp
+
+theorem rc_cong (hθ : IsSplitEquiv X p θ) (hε : θ (epsP X p) = (1, 0)) (hL : LatBasis X p θ (reindex₂ X p Q))
+    (s t : IdxD D) :
+    ∃ z : OvA X p, sgnV X p s * (crd2 X p θ Q (PI.FinKW.vecV X.B.I p.1 (rowV X s)) ⬝ᵥ
+      crd1 X p θ Q (PI.FinKW.vecV X.B.I p.1 (colV X t))) =
+      (1 : Matrix (IdxD D) (IdxD D) (FpX X p)) s t + ((gOf p : ℕ) : FpX X p) * (z : FpX X p) := by
+  have hg := X.gramIntegral
+  have hz := X.formsAtZero
+  have hW := X.weightVectorsIntegral
+  rcases s with a | ((i | u) | c) <;> rcases t with b | ((j | v) | c') <;> simp only [rowV, colV, sgnV, one_mul]
+  · obtain ⟨z, e⟩ := cong_sym X p θ Q hθ hL _ _ _ (hg b a).2.2
+    refine ⟨z, ?_⟩
+    rw [e, psiV_ite_one]
+    by_cases hab : a = b
+    · subst hab; simp
+    · simp [hab, Ne.symm hab]
+  · obtain ⟨z, e⟩ := fin_dir X p θ Q hθ hL _ _ ((hW j).2.2 a).2.1
+    exact ⟨z, by rw [e]; simp⟩
+  · obtain ⟨z, e⟩ := fin_dir X p θ Q hθ hL _ _ (hz.2 a).2
+    exact ⟨z, by rw [e]; simp⟩
+  · obtain ⟨z, e⟩ := fin_dir X p θ Q hθ hL _ _ (hg a (Fin.rev c')).2.1
+    exact ⟨z, by rw [e]; simp⟩
+  · obtain ⟨z, e⟩ := fin_sym X p θ Q hθ hL _ _ ((hW i).2.2 b).2.2.1
+    exact ⟨z, by rw [e]; simp⟩
+  · obtain ⟨z, e⟩ := cong_dir X p θ Q hθ hL _ _ _ (X.bw_dual i j)
+    refine ⟨z, ?_⟩
+    rw [e]
+    by_cases hij : i = j
+    · subst hij
+      simp only [if_true]
+      have : PI.FinKW.psiV X.B.I p.1 X.ew = epsP X p := rfl
+      rw [this, hε]
+      simp
+    · simp [hij]
+  · obtain ⟨z, e⟩ := fin_sym X p θ Q hθ hL _ _ (hW i).2.1
+    exact ⟨z, by rw [e]; simp⟩
+  · obtain ⟨z, e⟩ := fin_sym X p θ Q hθ hL _ _ ((hW i).2.2 (Fin.rev c')).2.2.2
+    exact ⟨z, by rw [e]; simp⟩
+  · obtain ⟨z, e⟩ := fin_sym X p θ Q hθ hL _ _ (hz.2 b).1
+    exact ⟨-z, by rw [e]; simp⟩
+  · obtain ⟨z, e⟩ := fin_dir X p θ Q hθ hL _ _ (hW j).1
+    exact ⟨-z, by rw [e]; simp⟩
+  · obtain ⟨z, e⟩ := cong_dir X p θ Q hθ hL _ _ (-1) (by rw [sub_neg_eq_add]; exact hz.1)
+    refine ⟨-z, ?_⟩
+    rw [e]
+    simp
+    ring
+  · obtain ⟨z, e⟩ := fin_sym X p θ Q hθ hL _ _ (hz.2 (Fin.rev c')).2
+    exact ⟨-z, by rw [e]; simp⟩
+  · obtain ⟨z, e⟩ := fin_dir X p θ Q hθ hL _ _ (hg (Fin.rev c) b).1
+    exact ⟨z, by rw [e]; simp⟩
+  · obtain ⟨z, e⟩ := fin_dir X p θ Q hθ hL _ _ ((hW j).2.2 (Fin.rev c)).1
+    exact ⟨z, by rw [e]; simp⟩
+  · obtain ⟨z, e⟩ := fin_dir X p θ Q hθ hL _ _ (hz.2 (Fin.rev c)).1
+    exact ⟨z, by rw [e]; simp⟩
+  · obtain ⟨z, e⟩ := cong_dir X p θ Q hθ hL _ _ _ (hg (Fin.rev c) (Fin.rev c')).2.2
+    refine ⟨z, ?_⟩
+    rw [e, psiV_ite_one]
+    by_cases hcc : c = c'
+    · subst hcc; simp
+    · simp [hcc]
+
+end Loc
+
+end MassDataIdxSteps
+end
+end
+
+section
 noncomputable section
 
 namespace MassDataIdxSteps
@@ -197,3 +481,5 @@ theorem adaptA_holds : ∃ θ : TpX X p ≃ₐ[FpX X p] FpX X p × FpX X p, IsSp
 end Loc
 
 end MassDataIdxSteps
+end
+end

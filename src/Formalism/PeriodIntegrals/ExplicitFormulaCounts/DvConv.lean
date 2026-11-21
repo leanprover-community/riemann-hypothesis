@@ -23,17 +23,8 @@ def toM {K : Type} [Field K] {σ : K →+* ℂ} {G : Type} [Group G] [Fintype G]
 theorem c8 : PI.Dv.Conclusion8 → Formalism.MainNotions.PrimeDegreeVariant.Conclusion8 :=
   fun H K _ σ G _ _ T P0 h EE _ _ ρE M hr => H K σ G (toT T) (toP P0) h EE ρE (toM M) hr
 
-theorem c8b : PI.Dv.SameFormAllLevels → Formalism.MainNotions.PrimeDegreeVariant.SameFormAllLevels :=
-  fun H K _ σ G _ _ T P0 h EE _ _ ρE M M' hr =>
-    ⟨(H K σ G (toT T) (toP P0) h EE ρE (toM M) (toM M') hr).1,
-     fun P => (H K σ G (toT T) (toP P0) h EE ρE (toM M) (toM M') hr).2 (toP P)⟩
 
-theorem c2E : PI.Dv.projection_lemma_base_level ↔ Formalism.MainNotions.PrimeDegreeVariant.projection_lemma_base_level := Iff.rfl
-theorem c2dE : PI.Dv.gram_det_kernel_base_level ↔ Formalism.MainNotions.PrimeDegreeVariant.gram_det_kernel_base_level := Iff.rfl
-theorem c7E : PI.Dv.division_rows_base_level ↔ Formalism.MainNotions.PrimeDegreeVariant.division_rows_base_level := Iff.rfl
 
-theorem c2E' : PI.Dv.ProjA → PI.Dv.ProjB → PI.Dv.ProjC → Formalism.MainNotions.PrimeDegreeVariant.projection_lemma_base_level :=
-  fun a b c K _ _ _ _ A e n h => ⟨a K A e n h, b K A e n h, c K A e n h⟩
 
 theorem c2a : PI.Dv.ProjA → PI.Dv.GLatProj → Formalism.MainNotions.PrimeDegreeVariant.projection_sandwich_lattice :=
   fun a g K _ _ _ _ G _ _ T A ρ h => a K A _ _ (g K G (toT T) A ρ h)

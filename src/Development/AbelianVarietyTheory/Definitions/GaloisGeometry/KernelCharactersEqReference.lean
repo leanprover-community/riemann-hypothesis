@@ -54,41 +54,9 @@ theorem eDt_finPart (a : Ideles D.host.E) : Dt.eDt (finPartI D.host.E a) = Dt.eD
 theorem kernelCharacters_eq_reference : MtIs Dt Tp D.what₂.mu0 D.muTil := fun j a ha => by
   rw [Dt.muTil_eq j a ha, TupTied.tup, Tp.trueColumnChoices_heckeChar_reference_eq_one, mul_one]
 
-theorem mtIs_unique {μ : D.what₂.Tup} {mt mt' : ℕ → D.Dt →* ℂˣ} (h : MtIs Dt Tp μ mt) (h' : MtIs Dt Tp μ mt')
-    (j : Fin D.R.m) : mt (j.1 + 1) = mt' (j.1 + 1) := by
-  refine MonoidHom.ext fun t => ?_
-  obtain ⟨a, rfl⟩ := Dt.surj t
-  rw [← eDt_finPart Dt a, h j _ (isFin_finPart a), h' j _ (isFin_finPart a)]
 
-theorem exists_mtIs_iff (hm : 0 < D.R.m) (μ : D.what₂.Tup) :
-    (∃ mt, MtIs Dt Tp μ mt) ↔ ∀ a, Dt.eDt a = 1 → (Tp.xi μ).1 (finPartI D.host.E a) = 1 := by
-  constructor
-  · rintro ⟨mt, h⟩ a ha
-    have h1 := h ⟨0, hm⟩ _ (isFin_finPart a)
-    have h2 := Dt.muTil_eq ⟨0, hm⟩ _ (isFin_finPart a)
-    rw [eDt_finPart, ha, map_one] at h1 h2
-    have h3 : (Tp.tup μ ⟨0, hm⟩).1 (finPartI D.host.E a) =
-      (C.mu0 ⟨0, hm⟩).1 (finPartI D.host.E a) * (Tp.xi μ).1 (finPartI D.host.E a) := rfl
-    rw [h3, ← h2, one_mul] at h1
-    exact h1.symm
-  · intro h
-    let ξ : D.Dt →* ℂˣ := Dt.eDt.liftOfSurjective Dt.surj ⟨(Tp.xi μ).1.comp (finPartI D.host.E), fun a ha => h a ha⟩
-    have hξ : ∀ a, ξ (Dt.eDt a) = (Tp.xi μ).1 (finPartI D.host.E a) := fun a =>
-      MonoidHom.liftOfRightInverse_comp_apply _ _ _ _ a
-    refine ⟨fun j => D.muTil j * ξ, fun j a ha => ?_⟩
-    rw [MonoidHom.mul_apply, Dt.muTil_eq j a ha, hξ, finPartI_eq_self ha]
-    rfl
 
-theorem not_mtIs (hm : 0 < D.R.m) {μ : D.what₂.Tup} {v : HeightOneSpectrum (𝓞 D.host.E)} {x : (v.adicCompletion D.host.E)ˣ}
-    (hx : Dt.eDt (localIdele D.host.E v x) = 1) (hξ : (Tp.xi μ).loc v x ≠ 1) (mt : ℕ → D.Dt →* ℂˣ) : ¬ MtIs Dt Tp μ mt :=
-  fun h => hξ (by
-    have := (exists_mtIs_iff Dt Tp hm μ).1 ⟨mt, h⟩ _ hx
-    rwa [finPartI_eq_self fun _ => rfl] at this)
 
-theorem tup_eq_of_mtIs (hm : 0 < D.R.m) {μ μ' : D.what₂.Tup} {mt : ℕ → D.Dt →* ℂˣ} (h : MtIs Dt Tp μ mt)
-    (h' : MtIs Dt Tp μ' mt) (a : Ideles D.host.E) (ha : IsFinIdele a) : (Tp.xi μ).1 a = (Tp.xi μ').1 a := by
-  have h1 := (h ⟨0, hm⟩ a ha).symm.trans (h' ⟨0, hm⟩ a ha)
-  exact mul_left_cancel (a := (C.mu0 ⟨0, hm⟩).1 a) h1
 
 theorem mtType_of_mtIs {μ : D.what₂.Tup} {mt : ℕ → D.Dt →* ℂˣ} (h : MtIs Dt Tp μ mt) (u : D.what₂.Word) : MtType u mt := by
   letI := D.host.cmStar
@@ -136,8 +104,5 @@ include Dt Tp in
 
 theorem mtType_muTil (u : D.what₂.Word) : MtType u D.muTil := mtType_of_mtIs Dt Tp (kernelCharacters_eq_reference Dt Tp) u
 
-theorem mtType_word {u u' : D.what₂.Word} {mt : ℕ → D.Dt →* ℂˣ} (h : MtType u mt) : MtType u' mt := fun i hi => by
-  obtain ⟨h1, e, he, h2⟩ := h i hi
-  exact ⟨h1, e, fun τ => by rw [he τ, D.hcW_e, D.hcW_e], h2⟩
 
 end GlobalTheory.KerJ.CharModel

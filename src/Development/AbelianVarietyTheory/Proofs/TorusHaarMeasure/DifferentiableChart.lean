@@ -11,10 +11,88 @@ import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.OneAddInvFirstMi
 import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.LeviFormWeightMetricOrthonormalDiagonal
 import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.BorelDiagNeZero
 import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.PhlaBlockWtCpt
-import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.SqLeQyOfLeFirstMinimum
-import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.ExistsInvariantGe
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FlowDomainCriterionHolds
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.SublatticeCoefficients
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.ConjugateConjugate
+import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.MajLactRmul
+import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.EventuallyComparable
+import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.MahlerCompactness
+import Development.AbelianVarietyTheory.BlockTheory.PoincareCuspForms.RealPointModes
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.WeightFunctionOnFrames
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.FundSetPf
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.InterpStatementPfH
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsotropicThreshold
+import Development.AbelianVarietyTheory.BlockTheory.PoincareCuspForms.CMTypeLowModes
+import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.MeasureStatements
+import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.FirstMinimumInvariantContinuousPosOnFrames
+import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.MeasurablePhi
 import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.CfwMOfExtraBounds
 
+section
+namespace GlobalTheory.FJCompare
+
+open NumberField Complex MeasureTheory ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.IndefiniteRowSideFullHecke.RealPointModes
+open scoped ComplexConjugate
+
+noncomputable section
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : Data E r)
+
+def vec (i : Idx E) : X.Ψ → ℝ := modeAt X (integralBasis (maximalRealSubfield E) i)
+
+def SignDecayOn (S : Set ℝ) (E : Type) [Field E] [NumberField E] [IsCMField E] : Prop :=
+  ∀ (r : ℕ) (X : Data E r) (la : Wt X.Ψ r) (P : Frame X.Ψ r → ℂ) (C A : ℝ), A ∈ S → X.IsSec la P →
+    (∀ x ∈ X.dom, X.pnorm la P x ≤ C * X.la1 x ^ (-A)) →
+    (∀ ξ, X.IsIso ξ → ∀ (ν : X.Ψ → ℝ), ∀ x ∈ X.dom, X.fj la ξ ν P x ≠ 0 → ∀ τ, 0 ≤ ν τ) ∧
+    ∀ η : ℝ, 0 < η → η < 1 → ∃ Cη : ℝ, ∀ ξ, X.IsIso ξ → ∀ (ν : X.Ψ → ℝ), ∀ x ∈ X.dom,
+      (∀ τ, X.c τ * X.maj x τ (Data.emb τ.1 ξ) ≤ 1) →
+      ‖X.fj la ξ ν P x‖ * X.nfac la x ≤
+        Cη * X.la1 x ^ (-A) * Real.exp (-4 * Real.pi * (1 - η) * ∑ τ, ν τ * X.tt ξ x τ)
+
+theorem SignDecayOn.mono {S T : Set ℝ} (h : SignDecayOn T E) (hST : S ⊆ T) : SignDecayOn S E :=
+  fun r X la P C A hA => h r X la P C A (hST hA)
+
+def ProductSupport (E : Type) [Field E] [NumberField E] [IsCMField E] : Prop :=
+  ∀ (r : ℕ) (X : Data E r) (la la' : Wt X.Ψ r) (P Q : Frame X.Ψ r → ℂ),
+    X.IsSec la P → X.IsSec la' Q → X.IsModerate la P → X.IsModerate la' Q →
+    ∀ ξ, X.IsIso ξ → ∀ x ∈ X.dom, ∀ ν : X.Ψ → ℝ, X.fj (la + la') ξ ν (P * Q) x ≠ 0 →
+      ∃ ν' : X.Ψ → ℝ, X.fj la ξ ν' P x * X.fj la' ξ (ν - ν') Q x ≠ 0
+
+end
+
+end GlobalTheory.FJCompare
+end
+
+section
+namespace GlobalTheory.FinVolModes
+
+open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.L2DbarEstimates
+open MeasureTheory
+open GlobalTheory.IndefiniteRowSideFullHecke.CMTypeLowModes (IsInvariant TwoBounds PointBound NoModesBelow LowModes Inputs)
+
+noncomputable section
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
+
+def Covers (X : Data E r) (x y : Frame X.Ψ r) : Prop :=
+  y ∈ X.dom ∧ X.la1 y = X.la1 x ∧ ∀ ξ, X.IsIso ξ → ∃ ξ', X.IsIso ξ' ∧ X.tt ξ' y = X.tt ξ x
+
+theorem Covers.trans {X : Data E r} {x y z : Frame X.Ψ r} (h : Covers X x y) (h' : Covers X y z) :
+    Covers X x z := by
+  refine ⟨h'.1, h'.2.1.trans h.2.1, fun ξ hξ => ?_⟩
+  obtain ⟨ξ1, h1, e1⟩ := h.2.2 ξ hξ
+  obtain ⟨ξ2, h2, e2⟩ := h'.2.2 ξ1 h1
+  exact ⟨ξ2, h2, e2.trans e1⟩
+
+def hull (X : Data E r) (ps : Frame X.Ψ r → ℝ) (x : Frame X.Ψ r) : ℝ :=
+  sSup (ps '' {y | Covers X x y})
+
+end
+
+end GlobalTheory.FinVolModes
+end
+
+section
 namespace GlobalTheory.InterpCompare
 
 open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.L2DbarEstimates
@@ -121,53 +199,7 @@ theorem levi_transport (X : Data E r) {x0 x1 : Frame X.Ψ r} (ho : IsOrth X x1) 
     rw [leviV_congr hev]
     exact congrArg Complex.re hc
 
-theorem frequently_overlap (X : Data E r) {x0 x1 : Frame X.Ψ r} (h0 : IsOrth X x0) (h1 : IsOrth X x1)
-    {z : V (nd X)} (hz : z ∈ OmF X x0) :
-    ∃ᶠ w in 𝓝 z, w ∈ OmF X x0 ∧ ∃ z1 ∈ OmF X x1, ∃ b ∈ Bor X.Ψ r, cpt X x0 w = rmul (cpt X x1 z1) b := by
-  obtain ⟨Δ, zOf, bOf, hΔ, -, hzd, -, hsplit, hinv⟩ := lu_holds r X x0 h0
-  obtain ⟨Δ', zOf', bOf', -, hden, -, -, hsplit', -⟩ := lu_holds r X x1 h1
-  have hone := hinv z hz _ (ExtFPf.oneF_mem X)
-  rw [ExtFPf.rmul_oneF] at hone
-  have hU : IsOpen {y | y ∈ X.dom ∧ Δ y ≠ 0} :=
-    (IW.isOpen_dom X).inter (isOpen_ne_fun hΔ.continuous continuous_const)
-  have hmem : cpt X x0 z ∈ {y | y ∈ X.dom ∧ Δ y ≠ 0} := ⟨hz, hone.1⟩
-  have hc : Filter.Tendsto zOf (𝓝 (cpt X x0 z)) (𝓝 z) := by
-    have := (hzd.continuousOn.continuousAt (hU.mem_nhds hmem)).tendsto
-    rwa [hone.2.1] at this
-  refine hc.frequently ?_
-  have hfr : ∃ᶠ y in 𝓝 (cpt X x0 z), Δ' y ≠ 0 := by
-    rw [Metric.nhds_basis_ball.frequently_iff]
-    intro ε hε
-    exact hden _ hz ε hε
-  refine (hfr.and_eventually (hU.mem_nhds hmem)).mono ?_
-  rintro y ⟨hy', hy, hyΔ⟩
-  obtain ⟨a1, a2, a3⟩ := hsplit y hy hyΔ
-  obtain ⟨b1, b2, b3⟩ := hsplit' y hy hy'
-  refine ⟨a1, _, b1, IW.bmul X (bOf' y) (IW.binv X (bOf y)), IW.bmul_mem X b2 (IW.binv_mem X a2), ?_⟩
-  rw [← IW.rmul_rmul, ← b3]
-  have := IW.rmul_binv X (cpt X x0 (zOf y)) a2
-  rw [← a3] at this
-  exact this.symm
 
-theorem ineq_transport (X : Data E r) {x0 x1 : Frame X.Ψ r} (h0 : IsOrth X x0) (h1 : IsOrth X x1)
-    (la la' : Wt X.Ψ r) (c : ℝ) {ψ : Frame X.Ψ r → ℝ} (hψ : IsInvFn X ψ)
-    (hs : ∀ x, IsOrth X x → ContDiffOn ℝ ∞ (fun z => ψ (cpt X x z)) (OmF X x))
-    (h : ∀ z ∈ OmF X x1, ∀ ξ, c * leviM X (phla X la') x1 z ξ ≤ leviM X (phla X la) x1 z ξ + leviM X ψ x1 z ξ) :
-    ∀ z ∈ OmF X x0, ∀ ξ, c * leviM X (phla X la') x0 z ξ ≤ leviM X (phla X la) x0 z ξ + leviM X ψ x0 z ξ := by
-  intro z hz ξ
-  have hfr : ∃ᶠ w in 𝓝 z, c * leviM X (phla X la') x0 w ξ ≤
-      leviM X (phla X la) x0 w ξ + leviM X ψ x0 w ξ := by
-    refine (frequently_overlap X h0 h1 hz).mono ?_
-    rintro w ⟨hw, z1, hz1, b, hb, e⟩
-    obtain ⟨ξ', e1, e2⟩ := levi_transport X h1 hw hz1 hb e ξ
-    rw [e1, e1, e2 ψ hψ (((hs x1 h1).contDiffAt ((ExF.isOpen_OmF X x1).mem_nhds hz1)).of_le HE.two_le_inf)]
-    exact h z1 hz1 ξ'
-  have c1 := continuousAt_levi (IW.phla_cpt_cdAt X x0 hz la') ξ
-  have c2 := continuousAt_levi (IW.phla_cpt_cdAt X x0 hz la) ξ
-  have c3 := continuousAt_levi ((hs x0 h0).contDiffAt ((ExF.isOpen_OmF X x0).mem_nhds hz)) ξ
-  by_contra hn
-  have := (c2.add c3).eventually_lt ((continuousAt_const (y := c)).mul c1) (not_le.1 hn)
-  obtain ⟨w, a, b⟩ := (hfr.and_eventually this).exists
-  exact absurd a (not_le.2 b)
 
 end GlobalTheory.InterpCompare
+end

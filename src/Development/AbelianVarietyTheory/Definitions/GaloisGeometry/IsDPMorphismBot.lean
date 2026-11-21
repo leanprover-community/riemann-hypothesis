@@ -406,8 +406,6 @@ abbrev node (k : Type) [CommRing k] (τ : k) : LogFun k τ where
   prod_f {_ _ y} _ := by simpa [Fin.prod_univ_two] using y.2
   prod_g _ _ := by simp
 
-theorem node_covers (k : Type) [CommRing k] (τ : k) : (node k τ).Covers :=
-  fun _ _ => ⟨{1}, by simp, fun _ _ => ⟨(), trivial⟩⟩
 
 abbrev nodeL : base.Fun := node _ _
 
@@ -444,11 +442,6 @@ def T : Thick nodeL where
   hs := by simp [Fin.prod_univ_two, DualNumber.eps_mul_eps, base]
   hv := by simp
 
-theorem T_J_ne_bot : T.J ≠ ⊥ := by
-  intro h
-  have : (DualNumber.eps : D) ∈ (⊥ : Ideal D) := h ▸ Ideal.subset_span rfl
-  have h0 : (DualNumber.eps : D) = 0 := (Submodule.mem_bot _).1 this
-  simpa using congrArg TrivSqZeroExt.snd h0
 
 def sq : Mor nodeL nodeL (RingHom.id ℚ) where
   hp := rfl

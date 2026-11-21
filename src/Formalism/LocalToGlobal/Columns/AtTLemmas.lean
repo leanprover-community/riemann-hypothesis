@@ -193,19 +193,8 @@ theorem DaG_apply (P : ST) (q : 𝓞 X.E) (a : 𝓞 X.E ⧸ P.1.asIdeal) (φ : (
   unfold DaG
   exact LocOp.ofNbr_op_apply (S := formGSD C Λ) (S' := formGSD C Λ) _ _ _ _ _ φ d
 
-theorem NmG_eq (P : ST) [Fintype (𝓞 X.E ⧸ P.1.asIdeal)ˣ] : NmG C Λ P = ∑ c, diamondOperatorOnForms' C Λ P c := by
-  unfold NmG
-  exact Finset.sum_congr (by ext; simp) fun _ _ => rfl
 
-theorem GsG_eq (P : ST) (ψ : AddChar (𝓞 X.E ⧸ P.1.asIdeal) X.K) [Fintype (𝓞 X.E ⧸ P.1.asIdeal)ˣ] :
-    GsG C Λ P ψ = ∑ c : (𝓞 X.E ⧸ P.1.asIdeal)ˣ, ψ (c : 𝓞 X.E ⧸ P.1.asIdeal) • diamondOperatorOnForms' C Λ P c := by
-  unfold GsG
-  exact Finset.sum_congr (by ext; simp) fun _ _ => rfl
 
-theorem FFG_eq (P : ST) (q : 𝓞 X.E) (ψ : AddChar (𝓞 X.E ⧸ P.1.asIdeal) X.K) [Fintype (𝓞 X.E ⧸ P.1.asIdeal)] :
-    FFG C Λ P q ψ = ∑ a : 𝓞 X.E ⧸ P.1.asIdeal, ψ a • DaG C Λ P q a := by
-  unfold FFG
-  exact Finset.sum_congr (by ext; simp) fun _ _ => rfl
 
 theorem diaG_one : diaG C Λ 1 = 1 := by
   apply LinearMap.ext
@@ -227,10 +216,6 @@ def diaHom : DiaG X.E ST →* Module.End X.K (formGSD C Λ).EqFun where
   map_one' := diaG_one C Λ
   map_mul' := diaG_mul C Λ
 
-theorem diaG_eq_dia (c : DiaG X.E ST) :
-    haveI : SMulCommClass (DiaG X.E ST) (formGSD C Λ).G (formGSD C Λ).D :=
-      ⟨fun c a d => DecoSet.dia_smul c (FormG.incl Λ a) d⟩
-    diaG C Λ c = (GSD.Slice.dia (formGSD C Λ) c).op := rfl
 
 theorem UG_diaG (P : ST) (q : 𝓞 X.E) (c : DiaG X.E ST) :
     UG C Λ P q * diaG C Λ c = diaG C Λ c * UG C Λ P q := by
@@ -266,8 +251,6 @@ theorem comm_NmG {A : Module.End X.K (formGSD C Λ).EqFun} (hA : ∀ c, A * diaG
   rw [Finset.mul_sum, Finset.sum_mul]
   exact Finset.sum_congr rfl fun c _ => hA _
 
-theorem diaG_comm (c c' : DiaG X.E ST) : diaG C Λ c * diaG C Λ c' = diaG C Λ c' * diaG C Λ c := by
-  rw [← diaG_mul, ← diaG_mul, mul_comm]
 
 end OpsL
 
@@ -300,9 +283,6 @@ theorem DOp_mem_ColRamV (u : Pr.Word) (j : ℕ) (P : {P // P ∈ Pr.vT u}) {φ :
     (hφ : φ ∈ ColRamV W Ch u j) : DOp W Ch u j P φ ∈ ColRamV W Ch u j :=
   DaOp_mem_ColRamV W Ch u j P 1 hφ
 
-theorem diaOp_mem_ColRamV (u : Pr.Word) (j : ℕ) (P : {P // P ∈ Pr.vT u}) (c : (𝓞 X.E ⧸ P.1.asIdeal)ˣ)
-    {φ : ColV W Ch u j} (hφ : φ ∈ ColRamV W Ch u j) : diaOp W Ch u j P c φ ∈ ColRamV W Ch u j :=
-  mem_ColRamV_of_comm W Ch u j (A := diaOp W Ch u j P c) (fun c' => diaG_comm _ _ _ c') hφ
 
 theorem list_prod_mem {M : Type*} [AddCommGroup M] [Module X.K M] (p : Submodule X.K M)
     (l : List (Module.End X.K M)) (h : ∀ A ∈ l, ∀ φ ∈ p, A φ ∈ p) : ∀ φ ∈ p, l.prod φ ∈ p := by
@@ -336,18 +316,10 @@ theorem TUmC_mem_MramV (u : Pr.Word) (w : HeightOneSpectrum (𝓞 X.K)) {φ : Mf
   exact Submodule.smul_mem _ _
     (pow_mem (MramV W Ch u) _ (fun ψ hψ => UprodC_mem_ColRamV W Ch u 0 w hψ) R.m φ hφ)
 
-theorem mem_ramified_sublattice_iff (u : Pr.Word) (φ : MfV W Ch u) :
-    φ ∈ ramifiedSublattice W Ch u ↔ φ ∈ MfL W Ch u ∧ φ ∈ MramV W Ch u := Iff.rfl
 
-theorem mem_MramL (u : Pr.Word) (φ : MramV W Ch u) : φ ∈ MramL W Ch u ↔ ramIncl W Ch u φ ∈ MfL W Ch u := Iff.rfl
 
-theorem ramIncl_injective (u : Pr.Word) : Function.Injective (ramIncl W Ch u) := Subtype.val_injective
 
-theorem range_ramIncl (u : Pr.Word) : LinearMap.range (ramIncl W Ch u) = MramV W Ch u :=
-  Submodule.range_subtype _
 
-theorem MramL_eq_comap (u : Pr.Word) :
-    MramL W Ch u = (MfL W Ch u).comap ((ramIncl W Ch u).restrictScalars (𝓞 X.K)) := rfl
 
 theorem MramL_map (u : Pr.Word) :
     (MramL W Ch u).map ((ramIncl W Ch u).restrictScalars (𝓞 X.K)) = ramifiedSublattice W Ch u := by
@@ -358,32 +330,9 @@ theorem MramL_map (u : Pr.Word) :
   · rintro ⟨h1, h2⟩
     exact ⟨⟨φ, h2⟩, h1, rfl⟩
 
-theorem ramified_sublattice_le_integral (u : Pr.Word) : ramifiedSublattice W Ch u ≤ MfL W Ch u := inf_le_left
 
-theorem ramified_sublattice_saturated (u : Pr.Word) {a : 𝓞 X.K} (ha : a ≠ 0) {φ : MfV W Ch u} (hφ : φ ∈ MfL W Ch u)
-    (h : a • φ ∈ ramifiedSublattice W Ch u) : φ ∈ ramifiedSublattice W Ch u := by
-  refine ⟨hφ, ?_⟩
-  have h1 : (algebraMap (𝓞 X.K) X.K a) • φ ∈ MramV W Ch u := by
-    rw [algebraMap_smul]
-    exact h.2
-  have h2 : algebraMap (𝓞 X.K) X.K a ≠ 0 := by
-    intro h0
-    exact ha (RingOfIntegers.coe_injective (by simpa using h0))
-  exact ((MramV W Ch u).smul_mem_iff h2).1 h1
 
-theorem scaled_ramified_le_span (u : Pr.Word) (w : HeightOneSpectrum (𝓞 X.K)) :
-    scaledRamifiedLattice W Ch u w ≤ (MramV W Ch u).restrictScalars (𝓞 X.K) := by
-  rintro _ ⟨φ, hφ, rfl⟩
-  exact TUmC_mem_MramV W Ch u w hφ.2
 
-theorem NlamG_map (u : Pr.Word) (w : HeightOneSpectrum (𝓞 X.K)) :
-    (NlamG W Ch u w).map ((ramIncl W Ch u).restrictScalars (𝓞 X.K)) = scaledRamifiedLattice W Ch u w := by
-  ext φ
-  constructor
-  · rintro ⟨ψ, hψ, rfl⟩
-    exact hψ
-  · intro h
-    exact ⟨⟨φ, scaled_ramified_le_span W Ch u w h⟩, h, rfl⟩
 
 def TUmR (u : Pr.Word) (w : HeightOneSpectrum (𝓞 X.K)) : Module.End X.K (MramV W Ch u) :=
   (TUmC W Ch u w).restrict fun _ h => TUmC_mem_MramV W Ch u w h
@@ -406,7 +355,6 @@ variable {X : Fields} {Pr : Primes X}
 theorem mem_pullW (τ : X.Tau) (w : HeightOneSpectrum (𝓞 X.K)) (x : 𝓞 X.E) :
     x ∈ (pullW τ w).asIdeal ↔ X.embO τ x ∈ w.asIdeal := Iff.rfl
 
-theorem coe_embO (τ : X.Tau) (x : 𝓞 X.E) : ((X.embO τ x : 𝓞 X.K) : X.K) = X.emb τ (x : X.E) := rfl
 
 theorem pullW_mem_vT (hPr : Pr.Ok) (u : Pr.Word) (τ : X.Tau) (w : HeightOneSpectrum (𝓞 X.K)) :
     pullW τ w ∈ Pr.vT u ↔ X.embO τ (Pr.piT u) ∈ w.asIdeal :=

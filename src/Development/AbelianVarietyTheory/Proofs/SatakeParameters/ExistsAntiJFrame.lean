@@ -365,27 +365,6 @@ theorem dc_GU (hU : IsUnramInv ϖ σ q) {g g' : GU σ n} {a b : GL (Fin n) (v.ad
   calc (g' : GL (Fin n) (v.adicCompletion K)) = h⁻¹ * (h⁻¹⁻¹ * g' * h⁻¹) * h := by group
     _ = _ := by rw [e']; group
 
-theorem divInd_eq_labInd (hU : IsUnramInv ϖ σ q) {d : List ℤ} (h : Good n d) :
-    GlobalTheory.IndefiniteRowSideFullHecke.SphericalThetaInertPlaces.divInd σ n ϖ d = GlobalTheory.IndefiniteRowSideFullHecke.InertPlaceSetting.labInd σ n ϖ d := by
-  funext g
-  unfold GlobalTheory.IndefiniteRowSideFullHecke.SphericalThetaInertPlaces.divInd GlobalTheory.IndefiniteRowSideFullHecke.InertPlaceSetting.labInd
-  split_ifs with hg
-  · obtain ⟨k₁, k₂, e⟩ := hg
-    obtain ⟨t, ht⟩ := exists_diag hU h
-    obtain ⟨l₁, m₁, l₂, m₂, e'⟩ := dc_GU hU (g := t) (g' := g) (a := bc (intL _).subtype k₁)
-      (b := bc (intL _).subtype k₂) ⟨k₁, rfl⟩ ⟨k₂, rfl⟩ (Units.ext (by
-        simp only [Units.val_mul, ht]
-        exact e))
-    refine (Set.indicator_of_mem (f := (1 : GU σ n → ℂ)) ?_).symm
-    refine ⟨l₁, m₁, l₂, m₂, ?_⟩
-    rw [e']
-    simp only [Subgroup.coe_mul, Units.val_mul, ht]
-  · refine (Set.indicator_of_notMem ?_ _).symm
-    rintro ⟨l₁, ⟨-, k₁, e₁⟩, l₂, ⟨-, k₂, e₂⟩, e⟩
-    refine hg ⟨k₁, k₂, e.trans ?_⟩
-    congr 2
-    · exact congrArg Units.val e₁.symm
-    · exact congrArg Units.val e₂.symm
 
 theorem good_of_unitary (hU : IsUnramInv ϖ σ q) {π : v.adicCompletion K} (hπ : Valued.v π = WithZero.exp (-1 : ℤ))
     {d : List ℤ} (h1 : d.length = n) (h2 : d.Pairwise fun a b => b ≤ a) {g : GL (Fin n) (v.adicCompletion K)}

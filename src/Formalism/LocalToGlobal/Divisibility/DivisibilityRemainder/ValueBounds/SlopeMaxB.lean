@@ -158,11 +158,6 @@ theorem boundB_of_sel {eps : ℝ} {Fm : FamP eps} (s : Formalism.L2.TSelF Fm) (h
       (((Fm.D x i).fm u).lat 0).muMax ≤ (Fm.L x i).sc.x ^ EbMu Fm.cOut * (Fm.L x i).sc.b :=
   boundB_of_slopes Fm hT (slopes_of_sel s hT)
 
-theorem closed_boundB (𝒜 : FamClass) (sel : Formalism.L2.TSel 𝒜) :
-    Closed (Formalism.L2.Top3.D3 3 𝒜) fun Fm _ => ∀ _ : Formalism.L2.Top3.D3 3 𝒜 Fm, TuSize Fm → Formalism.MainNotions.DGamSize Fm →
-      ∃ x0 : ℝ, ∀ x ≥ x0, Fm.x1 < x → ∀ (i : Fm.Ix x) u,
-        (((Fm.D x i).fm u).lat 0).muMax ≤ (Fm.L x i).sc.x ^ EbMu Fm.cOut * (Fm.L x i).sc.b :=
-  Closed.of_class fun Fm _ _ hc hT _ => boundB_of_sel (sel Fm (Formalism.L2.Top3.d3_a hc)) hT
 
 end Formalism.L2.DIV.SlopeMaxB
 

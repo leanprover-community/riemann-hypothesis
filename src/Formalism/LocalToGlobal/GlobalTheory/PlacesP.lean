@@ -1,7 +1,34 @@
-import Formalism.LocalToGlobal.GlobalTheory.Places
+import Formalism.SharpRestriction.GlobalSchurBounds.LinkPk
 import Formalism.SharpRestriction.AdmissibleParameterJoins.DIVfromGLo
 import Formalism.SharpRestriction.GrowthBounds.TopChoiceBounds
 
+section
+noncomputable section
+
+namespace Formalism.L2.GlobalTheoryTheory.Places
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory
+
+def PlaceConditionsFamily : Prop :=
+  ∀ {eps : ℝ} (Fm : FamP eps) (crystallineComparison : ℝ), product_first_zeroth_parts.ConclusionOnFamily Fm crystallineComparison → SettingEventually Fm → TuSize Fm → J.MuRank Fm →
+    LinkG Fm → LinkMu Fm → Lnk.PlacesF Fm
+
+def SlopeBoundOfMuRank : Prop :=
+  ∀ {eps : ℝ} (Fm : FamP eps) (crystallineComparison : ℝ), product_first_zeroth_parts.ConclusionOnFamily Fm crystallineComparison → SettingEventually Fm → TuSize Fm → J.MuRank Fm →
+    LinkG Fm → LinkMu Fm → LocalQuadraticParts.SlopeLemmaFamily Fm
+
+def LevelPrimeSettingFamily : Prop := ∀ {eps : ℝ} (Fm : FamP eps), TuSize Fm → SettingEventually Fm
+
+def SlopeLemmaLinkForm : Prop :=
+  ∀ {eps : ℝ} (Fm : FamP eps) (Cabs CH C0 crystallineComparison : ℝ), 0 < C0 → product_first_zeroth_parts.ConclusionOnFamily Fm crystallineComparison → TuSize Fm →
+    ChosenE Fm C0 CH → GlobalTheoremInputs Fm Cabs CH C0 → LocalQuadraticParts.SlopeLemmaFamily Fm
+
+end Formalism.L2.GlobalTheoryTheory.Places
+
+end
+end
+
+section
 open Module NumberField IsDedekindDomain
 
 noncomputable section
@@ -52,8 +79,6 @@ variable {K V ι : Type} [Field K] [NumberField K] [StarRing K] [IsTotallyComple
 
 def toFinPl (v : HeightOneSpectrum (𝓞 K)) : slopeLatticeData.FinPl K := ⟨v.asIdeal, v.isMaximal⟩
 
-theorem lenLoc_eq_lenAt (v : HeightOneSpectrum (𝓞 K)) (M N : Submodule (𝓞 K) V) :
-    DV.lenLoc v N M = slopeLatticeData.lenAt (toFinPl v) M N := rfl
 
 theorem mu_index_sum (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι ℂ) (hX : ∀ v, IsUnit (X v).det)
     {M N : Submodule (𝓞 K) V} (hM : M.FG) (hNM : N ≤ M) (hN0 : N ≠ ⊥) (hrk : rkK N = rkK M) :
@@ -791,3 +816,4 @@ example {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (crystallineComparison
 example {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (Cabs CH C0 crystallineComparison : ℝ) (h : 0 < C0) (a : Formalism.MainNotions.product_first_zeroth_parts.ConclusionOnFamily Fm crystallineComparison) (c : Formalism.MainNotions.TuSize Fm) :
     Formalism.MainNotions.ChosenE Fm C0 CH → Formalism.MainNotions.GlobalTheoremInputs Fm Cabs CH C0 → Formalism.MainNotions.LocalQuadraticParts.SlopeLemmaFamily Fm :=
   Formalism.L2.GlobalTheoryTheory.Places.slope_lemma_link_form Fm Cabs CH C0 crystallineComparison h a c
+end

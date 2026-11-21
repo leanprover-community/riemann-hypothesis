@@ -1,5 +1,25 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WirtConst
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory.MatDeriv
+
+variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {m : ℕ}
+
+def dMat (H : E → Matrix (Fin m) (Fin m) ℂ) (w ξ : E) : Matrix (Fin m) (Fin m) ℂ :=
+  Matrix.of fun a b => fderiv ℝ (fun w' => H w' a b) w ξ
+
+def wirt (H : E → Matrix (Fin m) (Fin m) ℂ) (w ξ : E) : Matrix (Fin m) (Fin m) ℂ :=
+  (1 / 2 : ℂ) • (dMat H w ξ - Complex.I • dMat H w (Complex.I • ξ))
+
+end GlobalTheory.MatDeriv
+end
+end
+
+section
 open Matrix GlobalTheory.MatDeriv
 open scoped Topology
 
@@ -53,3 +73,5 @@ theorem jacobi_fderiv_det : ∀ {E : Type} [NormedAddCommGroup E] [NormedSpace �
   simp [dMat, ContinuousLinearMap.sum_apply, Finset.smul_sum, smul_eq_mul, Finset.mul_sum]
 
 end GlobalTheory.MatDeriv
+end
+end

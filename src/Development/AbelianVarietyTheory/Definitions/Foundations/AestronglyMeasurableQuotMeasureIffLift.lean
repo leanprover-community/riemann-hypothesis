@@ -89,12 +89,7 @@ theorem IsSubrep.isIrredSubrep_iff (hW : IsSubrep π W) : IsIrredSubrep π W ↔
     exact (h2 _ (hW.isSubrep_rep_iff.2 (e.symm ▸ hU'))).imp
       (fun h => by rw [← e, h, Submodule.map_bot]) fun h => by rw [← e, h, Submodule.map_subtype_top]
 
-theorem isTopIrreducible_iff_top : IsTopIrreducible π ↔ IsIrredSubrep π ⊤ :=
-  ⟨fun h => ⟨isSubrep_top, by have := h.1; exact top_ne_bot, fun U _ hU => h.2 U hU⟩,
-    fun h => ⟨(Submodule.nontrivial_iff ℂ).1 ⟨_, _, h.2.1⟩, fun U hU => h.2.2 U le_top hU⟩⟩
 
-theorem IsTopIrreducible.disc_eq_top (h : IsTopIrreducible π) : disc π = ⊤ :=
-  top_le_iff.1 (isTopIrreducible_iff_top.1 h).le_disc
 
 theorem isIrredSubrep_span_singleton {v : H} (hv : v ≠ 0) (h : ∀ g, ∃ c : ℂ, π g v = c • v) :
     IsIrredSubrep π (ℂ ∙ v) := by

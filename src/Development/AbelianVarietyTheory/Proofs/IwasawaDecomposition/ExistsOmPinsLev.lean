@@ -54,22 +54,6 @@ theorem levOver_iff (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D 
     (lev : G → (T.Q.Dw ((i : ℕ) + 1)).La →ₗ[𝓞 D.host.E] (T.Q.Dw ((i : ℕ) + 1)).La) :
     LevOver D i R.Pg R.βW R.eG T.Q.l T.Q.Dw T.iota lev ↔ LevIs R i (iotaW T i) T.Q.l.M (Mfr T.Q.l) lev := Iff.rfl
 
-theorem levOver_cast {S₁ S₂ : Finset (HeightOneSpectrum (𝓞 D.host.E))} {Pg₁ Pg₂ : Finset (Formalism.L2.DIV.Pl D.host.E)}
-    {β₁ β₂ : ∀ i, GL (Fin (Wc D i).rank) (EAf D)}
-    {e₁ : Formalism.L2.Col.G0 D.host.E S₁ D.R.r ≃* G0 Pg₁ D.R.r} {e₂ : Formalism.L2.Col.G0 D.host.E S₂ D.R.r ≃* G0 Pg₂ D.R.r}
-    {H₁ H₂ : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {l₁ : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H₁} {l₂ : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H₂}
-    {Dw₁ : ℕ → ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H₁} {Dw₂ : ℕ → ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H₂}
-    {ι₁ : ∀ j : ℕ, (Dw₁ j).La →ₗ[𝓞 D.host.E] (Fin D.R.r → D.host.E)}
-    {ι₂ : ∀ j : ℕ, (Dw₂ j).La →ₗ[𝓞 D.host.E] (Fin D.R.r → D.host.E)}
-    (hS : S₂ = S₁) (hP : HEq Pg₂ Pg₁) (hβ : HEq β₂ β₁) (he : HEq e₂ e₁) (hH : HEq H₂ H₁) (hl : HEq l₂ l₁) (hD : HEq Dw₂ Dw₁)
-    (hι : HEq ι₂ ι₁)
-    (lev₁ : ∀ i : Fin D.R.m, Formalism.L2.Col.G0 D.host.E S₁ D.R.r → (Dw₁ ((i : ℕ) + 1)).La →ₗ[𝓞 D.host.E] (Dw₁ ((i : ℕ) + 1)).La)
-    (h : ∀ i, LevOver D i Pg₁ β₁ e₁ l₁ Dw₁ ι₁ (lev₁ i)) :
-    ∃ lev₂ : ∀ i : Fin D.R.m, Formalism.L2.Col.G0 D.host.E S₂ D.R.r → (Dw₂ ((i : ℕ) + 1)).La →ₗ[𝓞 D.host.E] (Dw₂ ((i : ℕ) + 1)).La,
-      (∀ i, LevOver D i Pg₂ β₂ e₂ l₂ Dw₂ ι₂ (lev₂ i)) ∧ ∀ i i' : Fin D.R.m, (i : ℕ) = i' → HEq (lev₂ i') (lev₁ i) := by
-  subst hS
-  cases hP; cases hβ; cases he; cases hH; cases hl; cases hD; cases hι
-  exact ⟨lev₁, h, fun i i' e => by obtain rfl := Fin.ext e; exact HEq.rfl⟩
 
 def CoefFam {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks)
     (c0L : ∀ i : Fin D.R.m, VsV D i D.what₂.LL →ₛₗ[D.what₂.embLL] (R.cV i).W) : Prop :=

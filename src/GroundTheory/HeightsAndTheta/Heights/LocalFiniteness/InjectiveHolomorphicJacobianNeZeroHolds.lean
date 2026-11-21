@@ -112,14 +112,8 @@ import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PTwistFiniteNe
 import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PXiMetric
 set_option maxSynthPendingDepth 1
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.block_generation_transfer_holds : GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.BlockGenTransfer.Statement :=
-  @GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.BlockGenTransfer.proof GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ChartKernel.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.tensor_product_realises_holds : GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.TensorRealises.Statement :=
-  @GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.TensorRealises.proof GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ModelGenerated.proof GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.SpanSecs.proof
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.model_twist_generated_holds : GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ModelTwistGenerated.Statement :=
-  @GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ModelTwistGenerated.proof GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.ChartSecGen.full
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.FrameJacobianGeneric : GroundTheory.Heights₂.Heights.FrameJacobianGeneric.Statement :=
   @GroundTheory.Heights₂.Heights.FrameJacobianGeneric.proof GroundTheory.Heights₂.Heights.JacobianRankGeneric.proof GroundTheory.Heights₂.Heights.ConormalGenerationGeneric.proof

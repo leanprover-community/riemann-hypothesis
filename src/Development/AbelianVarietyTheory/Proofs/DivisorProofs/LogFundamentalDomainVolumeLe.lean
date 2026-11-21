@@ -13,16 +13,379 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LocallyCompactSe
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsInertPlOfInertOff
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UpqLocallyCompactGroup
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsContinuousEquivariantDetOneFactorProjectio
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryGroupMeasureDecompositionStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryGroupMeasureDecomposition
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFlagDomainOrthonormalFrameIdentification
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsContinuousRealComponentHomUnitaryAdelicStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MeasureTranslateLevelRealBoxLeIndexMulStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCountableCosetRepresentatives
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ComponentRepresentativesInjectiveDoubleCoset
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAdelicSplit
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinitePartMemFullLevelOfKeepsSelfDualLattice
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatticeCompletionImageFinHomMulVec
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFundamentalSetMeasureRealSUStabilizer
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExplicitHeightBoundLogDiscriminant
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PrincipalCongruenceConjMemArithmeticGroup
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatticeCongruenceIffCompletion
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SignatureUnitaryLatticeFamily
+import BuildAid.ForwardExisting
 
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.AdLat GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.CovTop.VolUp
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev Formalism.IndefR.Datum GlobalTheory.AdelicScalar
+open scoped ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_group_measure_decomposition : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (κ : Type) [Fintype κ] (p q : κ → ℕ) (Ψ : Finset (E →+* ℂ)) (G : Matrix (Fin r) (Fin r) E) (x : Frame Ψ r) (σ : κ ≃ Ψ) (A : ∀ ρ, Matrix (Fin (p ρ) ⊕ Fin (q ρ)) (Fin r) ℂ) (e : ∀ ρ, Fin (p ρ) ⊕ Fin (q ρ) ≃ Fin r) (a₀ : ∀ ρ, Fin (p ρ) ⊕ Fin (q ρ)) (π : (∀ ρ, UpqT (p ρ) (q ρ)) → realSU Ψ G) (m : ∀ ρ, Measure (UpqT (p ρ) (q ρ))), 1 ≤ r → 1 ≤ Ψ.card → IsIdent p q Ψ G x σ A e → Continuous π → IsProj p q Ψ G σ A a₀ π → (∀ (s : realSU Ψ G) (b₀ : ∀ ρ, UpqT (p ρ) (q ρ)), (∀ ρ, UpqT.mat (b₀ ρ) * A ρ = A ρ * ((s.1 (σ ρ) : GL (Fin r) ℂ) : Matrix (Fin r) (Fin r) ℂ)) → ∀ b, π (b₀ * b) = s * π b) → (∀ ρ, IsMinf (m ρ)) → ∀ S : Set (realSU Ψ G), MeasurableSet S → Measure.pi m (π ⁻¹' S) ≤ ENNReal.ofReal ((1000 * (Ψ.card : ℝ) * (r : ℝ) ^ 3) ^ (Ψ.card * r ^ 2)) * riemHaar Ψ G x S := by
+  first | exact @GlobalTheory.CovTop.VolUp.MassUp.massUp | exact GlobalTheory.CovTop.VolUp.MassUp.massUp | (intros; apply GlobalTheory.CovTop.VolUp.MassUp.massUp <;> assumption)
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.AdLat GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.CovTop.VolUp
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev Formalism.IndefR.Datum GlobalTheory.AdelicScalar
+open scoped ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+namespace GlobalTheory.CovTop.VolUp.Reps
+
+theorem isKM_one_of_three {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] {n : ℕ}
+    (c : Gal(E/F)) (G : Matrix (Fin n) (Fin n) E) (L : Set (Fin n → E)) (k : Matrix (Fin n) (Fin n) (RA F E))
+    (h : IsKM c G L 3 k) : IsKM c G L 1 k := by
+  refine ⟨h.1, fun x hx => ?_, h.2.2⟩
+  obtain ⟨y, hy, e⟩ := h.2.1 x hx
+  exact ⟨3 • y, nsmul_mem hy 3, by rw [e, one_smul]⟩
+
+theorem exists_reps : ∀ (D : D7) (V : HSp D) (Λ : Set (Fin V.rank → D.host.E)) (K₀ : Subgroup (GL (Fin V.rank) (Formalism.IndefR.Lev.EAf D))), IsOpen {h : GA D V | finE V h ∈ K₀} → (∀ h : GA D V, IsKM (IsCMField.complexConj D.host.E) (-(V.gram)ᵀ) Λ 1 ((finHom V h).1 : Matrix (Fin V.rank) (Fin V.rank) (RA (maximalRealSubfield D.host.E) D.host.E)) → finE V h ∈ K₀) → ∃ (J : Type) (_ : Countable J) (g : J → GA D V), (∀ j, g j ∈ GfC V) ∧ (∀ i j, UEquiv (IsCMField.complexConj D.host.E) (-(V.gram)ᵀ) Λ 3 ((finHom V (g i)).1 : Matrix (Fin V.rank) (Fin V.rank) (RA (maximalRealSubfield D.host.E) D.host.E)) ((finHom V (g j)).1 : Matrix (Fin V.rank) (Fin V.rank) (RA (maximalRealSubfield D.host.E) D.host.E)) → i = j) ∧ ∀ h : GA D V, ∃ j, ∃ γ ∈ GQ V, finE V ((g j)⁻¹ * γ * h) ∈ K₀ := by
+  intro D V Λ K₀ hKo hK1
+  haveI : IsTopologicalGroup (GA D V) := Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.topGroupHA _ _
+  haveI := (GlobalTheory.TwistAdelicTop.locallyCompact_secondCountable_borel_countable V).2.1
+  let H : Subgroup (GA D V) := K₀.comap (finE V)
+  have hHo : IsOpen (H : Set (GA D V)) := hKo
+  obtain ⟨e0, he0⟩ := GlobalTheory.Mem.VolSplit.exists_adelic_split D.host.F D.host.E D.sp.cm.sig V.rank V.gram
+  let jm : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.HA (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af D.host.F) D.sp.cm.sig V.gram →* GA D V :=
+    (e0.symm.toMulEquiv.toMonoidHom).comp (MonoidHom.inr _ _)
+  have hj0 : ∀ k, e0 (jm k) = (1, k) := fun k => e0.apply_symm_apply _
+  have hfin : ∀ h : GA D V, finE V (jm (e0 h).2) = finE V h := by
+    intro h
+    have h1 : finHom V (jm (e0 h).2) = finHom V h := by
+      refine Units.ext ?_
+      have a1 := (he0 (jm (e0 h).2)).1
+      have a2 := (he0 h).1
+      rw [hj0] at a1
+      exact a1.symm.trans a2
+    rw [finE_eq, finE_eq, h1]
+  have hinf : ∀ k, jm k ∈ GfC V := by
+    intro k
+    have a1 := (he0 (jm k)).2
+    rw [hj0] at a1
+    exact Units.ext a1.symm
+  have hmk : ∀ h : GA D V, DoubleCoset.mk (GQ V) H (jm (e0 h).2) = DoubleCoset.mk (GQ V) H h := by
+    intro h
+    refine (DoubleCoset.eq _ _ _ _).2 ⟨1, one_mem _, (jm (e0 h).2)⁻¹ * h, ?_, by group⟩
+    show finE V ((jm (e0 h).2)⁻¹ * h) ∈ K₀
+    rw [map_mul, map_inv, hfin, inv_mul_cancel]
+    exact one_mem _
+  let g : DoubleCoset.Quotient (GQ V : Set (GA D V)) (H : Set (GA D V)) → GA D V :=
+    fun q => jm (e0 (Quotient.out q)).2
+  have hgj : ∀ q, DoubleCoset.mk (GQ V) H (g q) = q := fun q => (hmk _).trans (Quotient.out_eq' q)
+  have hJc : Countable (DoubleCoset.Quotient (GQ V : Set (GA D V)) (H : Set (GA D V))) := by
+    obtain ⟨s, hs, hd⟩ := TopologicalSpace.exists_countable_dense (GA D V)
+    haveI := hs.to_subtype
+    have hsurj : Function.Surjective (fun x : s => DoubleCoset.mk (GQ V) H (x : GA D V)) := by
+      intro q
+      have hU : IsOpen ((fun x => Quotient.out q * x) '' (H : Set (GA D V))) := isOpenMap_mul_left _ _ hHo
+      obtain ⟨x, hxs, ⟨k, hk, rfl⟩⟩ := hd.exists_mem_open hU ⟨_, 1, one_mem _, mul_one _⟩
+      refine ⟨⟨_, hxs⟩, ?_⟩
+      refine ((DoubleCoset.eq _ _ _ _).2 ⟨1, one_mem _, k⁻¹, inv_mem hk, by group⟩).trans (Quotient.out_eq' q)
+    exact hsurj.countable
+  refine ⟨_, hJc, g, fun j => hinf _, fun i j hE => ?_, fun h => ?_⟩
+  · obtain ⟨γ, hγ, κ, hκ, he⟩ := hE
+    obtain ⟨γ₀, hγ₀, hγf⟩ := GlobalTheory.RepsInj.gq_of_isUA D V γ hγ
+    have hx : ((finHom V ((γ₀ * g i)⁻¹ * g j)).1 : Matrix (Fin V.rank) (Fin V.rank)
+        (RA (maximalRealSubfield D.host.E) D.host.E)) = κ := by
+      have h1 : ((finHom V (γ₀ * g i)).1 : Matrix (Fin V.rank) (Fin V.rank)
+          (RA (maximalRealSubfield D.host.E) D.host.E)) * κ = (finHom V (g j)).1 := by
+        rw [map_mul, Units.val_mul, hγf, he]
+      rw [map_mul, map_inv, Units.val_mul, ← h1, ← Matrix.mul_assoc, ← Units.val_mul, inv_mul_cancel, Units.val_one,
+        Matrix.one_mul]
+    have hxH : finE V ((γ₀ * g i)⁻¹ * g j) ∈ K₀ := by
+      have h3 := isKM_one_of_three _ _ _ _ hκ
+      rw [← hx] at h3
+      exact hK1 _ h3
+    have e : DoubleCoset.mk (GQ V) H (g i) = DoubleCoset.mk (GQ V) H (g j) :=
+      (DoubleCoset.eq _ _ _ _).2 ⟨γ₀, hγ₀, (γ₀ * g i)⁻¹ * g j, hxH, by group⟩
+    exact (hgj i).symm.trans (e.trans (hgj j))
+  · obtain ⟨γ, hγ, k, hk, e⟩ := (DoubleCoset.eq _ _ _ _).1 (hgj (DoubleCoset.mk (GQ V) H h))
+    refine ⟨DoubleCoset.mk (GQ V) H h, γ⁻¹, inv_mem hγ, ?_⟩
+    generalize g (DoubleCoset.mk (GQ V) H h) = x at e ⊢
+    subst e
+    have e2 : x⁻¹ * γ⁻¹ * (γ * x * k) = k := by group
+    rw [e2]
+    exact hk
+
+end GlobalTheory.CovTop.VolUp.Reps
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.AdLat GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.CovTop.VolUp
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev Formalism.IndefR.Datum GlobalTheory.AdelicScalar
+open scoped ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_countable_coset_representatives : ∀ (D : D7) (V : HSp D) (Λ : Set (Fin V.rank → D.host.E)) (K₀ : Subgroup (GL (Fin V.rank) (Formalism.IndefR.Lev.EAf D))), IsOpen {h : GA D V | finE V h ∈ K₀} → (∀ h : GA D V, IsKM (IsCMField.complexConj D.host.E) (-(V.gram)ᵀ) Λ 1 ((finHom V h).1 : Matrix (Fin V.rank) (Fin V.rank) (RA (maximalRealSubfield D.host.E) D.host.E)) → finE V h ∈ K₀) → ∃ (J : Type) (_ : Countable J) (g : J → GA D V), (∀ j, g j ∈ GfC V) ∧ (∀ i j, UEquiv (IsCMField.complexConj D.host.E) (-(V.gram)ᵀ) Λ 3 ((finHom V (g i)).1 : Matrix (Fin V.rank) (Fin V.rank) (RA (maximalRealSubfield D.host.E) D.host.E)) ((finHom V (g j)).1 : Matrix (Fin V.rank) (Fin V.rank) (RA (maximalRealSubfield D.host.E) D.host.E)) → i = j) ∧ ∀ h : GA D V, ∃ j, ∃ γ ∈ GQ V, finE V ((g j)⁻¹ * γ * h) ∈ K₀ := by
+  atlas_forward_decl GlobalTheory.CovTop.VolUp.Reps.exists_reps
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.AdLat GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.CovTop.VolUp
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev Formalism.IndefR.Datum GlobalTheory.AdelicScalar
+open scoped ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open scoped TensorProduct
+
+namespace GlobalTheory.CovTop.VolUp.RatStab
+
+set_option maxHeartbeats 1000000 in
+
+theorem main : ∀ (D : D7) (V : HSp D) (Λ L : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)) (g : GA D V) (δ : GL (Fin V.rank) D.host.E), (hat (maximalRealSubfield D.host.E) (L : Set (Fin V.rank → D.host.E)) : Set (Fin V.rank → RA (maximalRealSubfield D.host.E) D.host.E)) = ((finHom V g).1 : Matrix (Fin V.rank) (Fin V.rank) (RA (maximalRealSubfield D.host.E) D.host.E)).mulVec '' (hat (maximalRealSubfield D.host.E) (Λ : Set (Fin V.rank → D.host.E)) : Set (Fin V.rank → RA (maximalRealSubfield D.host.E) D.host.E)) → IsUStab (-(V.gram)ᵀ) L δ → ∃ γ ∈ GQ V, (∀ τ θ, IsInfEmb τ θ → infMat D.sp.cm.sig V.gram θ γ = (δ : Matrix (Fin V.rank) (Fin V.rank) D.host.E).map τ) ∧ IsKM (IsCMField.complexConj D.host.E) (-(V.gram)ᵀ) (Λ : Set (Fin V.rank → D.host.E)) 1 ((finHom V (g⁻¹ * γ * g)).1 : Matrix (Fin V.rank) (Fin V.rank) (RA (maximalRealSubfield D.host.E) D.host.E)) := by
+  intro D V Λ L g δ hhat hδ
+  have : IsTotallyReal D.host.F := D.sp.cm.totReal
+  obtain ⟨γ₀, hQ, hfin, harch⟩ := GlobalTheory.RepConv.exists_rat V δ hδ.1
+  refine ⟨γ₀, hQ, fun τ θ hθ => harch τ θ hθ, ?_⟩
+  have hLδ : ∀ x ∈ L, ∃ y ∈ L, (δ : Matrix (Fin V.rank) (Fin V.rank) D.host.E).mulVec x - x = (1 : ℕ) • y :=
+    fun x hx => ⟨_, sub_mem ((hδ.2 x).1 hx) hx, by simp⟩
+  have hLδi : ∀ x ∈ L, ∃ y ∈ L, ((δ⁻¹ : GL (Fin V.rank) D.host.E) : Matrix (Fin V.rank) (Fin V.rank) D.host.E).mulVec x - x = (1 : ℕ) • y := by
+    intro x hx
+    have hx' : ((δ⁻¹ : GL (Fin V.rank) D.host.E) : Matrix (Fin V.rank) (Fin V.rank) D.host.E).mulVec x ∈ L := by
+      rw [hδ.2]
+      rw [Matrix.mulVec_mulVec, ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.one_mulVec]
+      exact hx
+    exact ⟨_, sub_mem hx' hx, by simp⟩
+  have hf : (finHom V (g⁻¹ * γ₀ * g)).1 =
+      ((finHom V g)⁻¹).1 * (δ : Matrix (Fin V.rank) (Fin V.rank) D.host.E).map (inclR (Af D.host.F)) * (finHom V g).1 := by
+    rw [← hfin]
+    simp only [map_mul, map_inv, Units.val_mul]
+  have hfi : (finHom V (g⁻¹ * γ₀⁻¹ * g)).1 =
+      ((finHom V g)⁻¹).1 * ((δ⁻¹ : GL (Fin V.rank) D.host.E) : Matrix (Fin V.rank) (Fin V.rank) D.host.E).map (inclR (Af D.host.F)) * (finHom V g).1 := by
+    have hfin' : ((finHom V γ₀)⁻¹).1 = ((δ⁻¹ : GL (Fin V.rank) D.host.E) : Matrix (Fin V.rank) (Fin V.rank) D.host.E).map (inclR (Af D.host.F)) := by
+      apply Units.inv_eq_of_mul_eq_one_left
+      rw [hfin, ← Matrix.map_mul, ← Units.val_mul, inv_mul_cancel, Units.val_one]
+      exact Matrix.map_one _ (map_zero _) (map_one _)
+    rw [← hfin']
+    simp only [map_mul, map_inv, Units.val_mul]
+  have c1 := GlobalTheory.RepConv.hat_cong_conj (F := D.host.F) (Λ : Set (Fin V.rank → D.host.E))
+      (L : Set (Fin V.rank → D.host.E)) (finHom V g) hhat δ.1 1 hLδ
+  have c2 := GlobalTheory.RepConv.hat_cong_conj (F := D.host.F) (Λ : Set (Fin V.rank → D.host.E))
+      (L : Set (Fin V.rank → D.host.E)) (finHom V g) hhat (δ⁻¹ : GL (Fin V.rank) D.host.E).1 1 hLδi
+  refine ⟨GlobalTheory.FinUA.isUA_finHom D V _, ?_, ?_⟩
+  · intro x hx
+    rw [hf]
+    exact c1 x hx
+  · intro x hx
+    obtain ⟨y, hy, e⟩ := c2 x hx
+    refine ⟨(finHom V (g⁻¹ * γ₀⁻¹ * g)).1 *ᵥ x, ?_, ?_⟩
+    · rw [hfi]
+      have : (((finHom V g)⁻¹).1 * ((δ⁻¹ : GL (Fin V.rank) D.host.E) : Matrix (Fin V.rank) (Fin V.rank) D.host.E).map (inclR (Af D.host.F)) * (finHom V g).1) *ᵥ x = x + (1 : ℕ) • y := by
+        rw [← e]; abel
+      rw [this]; exact add_mem hx (by simpa using hy)
+    · rw [Matrix.mulVec_mulVec, ← Units.val_mul, ← map_mul]
+      have : g⁻¹ * γ₀ * g * (g⁻¹ * γ₀⁻¹ * g) = 1 := by group
+      rw [this, map_one, Units.val_one, Matrix.one_mulVec]
+
+end GlobalTheory.CovTop.VolUp.RatStab
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.AdLat GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.CovTop.VolUp
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev Formalism.IndefR.Datum GlobalTheory.AdelicScalar
+open scoped ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lattice_completion_image_finHom_mulVec : ∀ (D : D7) (V : HSp D) (Λ L : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)) (g : GA D V) (δ : GL (Fin V.rank) D.host.E), (hat (maximalRealSubfield D.host.E) (L : Set (Fin V.rank → D.host.E)) : Set (Fin V.rank → RA (maximalRealSubfield D.host.E) D.host.E)) = ((finHom V g).1 : Matrix (Fin V.rank) (Fin V.rank) (RA (maximalRealSubfield D.host.E) D.host.E)).mulVec '' (hat (maximalRealSubfield D.host.E) (Λ : Set (Fin V.rank → D.host.E)) : Set (Fin V.rank → RA (maximalRealSubfield D.host.E) D.host.E)) → IsUStab (-(V.gram)ᵀ) L δ → ∃ γ ∈ GQ V, (∀ τ θ, IsInfEmb τ θ → infMat D.sp.cm.sig V.gram θ γ = (δ : Matrix (Fin V.rank) (Fin V.rank) D.host.E).map τ) ∧ IsKM (IsCMField.complexConj D.host.E) (-(V.gram)ᵀ) (Λ : Set (Fin V.rank → D.host.E)) 1 ((finHom V (g⁻¹ * γ * g)).1 : Matrix (Fin V.rank) (Fin V.rank) (RA (maximalRealSubfield D.host.E) D.host.E)) := by
+  atlas_forward_decl GlobalTheory.CovTop.VolUp.RatStab.main
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.AdLat GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.CovTop.VolUp
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev Formalism.IndefR.Datum GlobalTheory.AdelicScalar
+open scoped ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.CovTop.VolUp
+
+theorem exists_measurableSet_reps_covolume : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (Ψ : Finset (E →+* ℂ)) (G : Matrix (Fin r) (Fin r) E) (Λ : Submodule (𝓞 E) (Fin r → E)) (Γ : Subgroup (GL (Fin r) E)) (ν : Measure (realSU Ψ G)) [ν.IsMulLeftInvariant], (∀ τ : E →+* ℂ, τ ∈ Ψ ↔ ComplexEmbedding.conjugate τ ∉ Ψ) → Λ.FG → Submodule.span E (Λ : Set (Fin r → E)) = ⊤ → (∀ γ ∈ Γ, IsUStab G Λ γ) → ∃ S : Set (realSU Ψ G), MeasurableSet S ∧ ν S = covolume (inReal Ψ G Γ) (realSU Ψ G) ν ∧ ∀ s : realSU Ψ G, ∃ δ ∈ Γ, ∃ hδ : embGL Ψ r δ ∈ realSU Ψ G, (⟨embGL Ψ r δ, hδ⟩ : realSU Ψ G) * s ∈ S := by
+  intro E _ _ _ r Ψ G Λ Γ ν _ hΨ hfg hsp hΓ
+  haveI := GlobalTheory.SUCount.discrete_inReal hΨ G Γ Λ hfg hsp (fun γ hγ x hx => ((hΓ γ hγ).2 x).1 hx)
+  haveI := GlobalTheory.countable_of_discrete_subgroup (inReal Ψ G Γ)
+  obtain ⟨D, hD, hu, hF⟩ := GlobalTheory.exists_isFundamentalDomain_subgroup (inReal Ψ G Γ)
+  refine ⟨D, hD, ((hF ν).covolume_eq_volume).symm, fun s => ?_⟩
+  obtain ⟨g, hg, -⟩ := hu s
+  obtain ⟨δ, hδ, e⟩ := Subgroup.mem_map.1 (Subgroup.mem_subgroupOf.1 g.2)
+  have hmem : embGL Ψ r δ ∈ realSU Ψ G := e ▸ g.1.2
+  refine ⟨δ, hδ, hmem, ?_⟩
+  have hg' : ((g : realSU Ψ G)) = ⟨embGL Ψ r δ, hmem⟩ := Subtype.ext e.symm
+  rw [← hg']
+  exact hg
+
+end GlobalTheory.CovTop.VolUp
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.AdLat GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.CovTop.VolUp
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev Formalism.IndefR.Datum GlobalTheory.AdelicScalar
+open scoped ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_fundamental_set_measure_realSU_stabilizer : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (Ψ : Finset (E →+* ℂ)) (G : Matrix (Fin r) (Fin r) E) (Λ : Submodule (𝓞 E) (Fin r → E)) (Γ : Subgroup (GL (Fin r) E)) (ν : Measure (realSU Ψ G)) [ν.IsMulLeftInvariant], (∀ τ : E →+* ℂ, τ ∈ Ψ ↔ ComplexEmbedding.conjugate τ ∉ Ψ) → Λ.FG → Submodule.span E (Λ : Set (Fin r → E)) = ⊤ → (∀ γ ∈ Γ, IsUStab G Λ γ) → ∃ S : Set (realSU Ψ G), MeasurableSet S ∧ ν S = covolume (inReal Ψ G Γ) (realSU Ψ G) ν ∧ ∀ s : realSU Ψ G, ∃ δ ∈ Γ, ∃ hδ : embGL Ψ r δ ∈ realSU Ψ G, (⟨embGL Ψ r δ, hδ⟩ : realSU Ψ G) * s ∈ S := by
+  atlas_forward_decl GlobalTheory.CovTop.VolUp.exists_measurableSet_reps_covolume
+end
+
+section
+section
+namespace GlobalTheory.CovTop.VolUp
+
+set_option maxHeartbeats 2000000 in
+theorem mass_bound_numbers_le_exp : ∀ (f r : ℕ) (L n g h rd P : ℝ), 2 ≤ f → 2 ≤ r → 1 ≤ L → (f : ℝ) * (r : ℝ) ^ 2 ≤ Real.exp L → 1 ≤ rd → Real.log rd ≤ 2 * L → 0 < n → Real.log n ≤ 2 * f * (r : ℝ) ^ 2 * Real.log g → Real.log g ≤ 30 * L → 0 < h → Real.log h ≤ f * Real.log rd + 2 * f * Real.log (1 + f * Real.log rd) → 0 ≤ P → P ≤ 2 ^ (r * (r - 1) / 2) * (2 * Real.pi) ^ (r - 1) * √r → n * (1000 * (f : ℝ) * (r : ℝ) ^ 3) ^ (f * r ^ 2) * (h * 3 ^ (2 * f) * ((3 : ℝ) ^ (2 * f * r ^ 2) * rd ^ ((f : ℝ) * ((r : ℝ) ^ 2 - 1) / 2) * P ^ f)) ≤ Real.exp (119 * (f * (r : ℝ) ^ 2 * L)) := by
+  intro f r L n g h rd P hf hr hL hfr hrd hlrd hn hlogn hlogg hh hlogh hP0 hP
+  have hf' : (2:ℝ) ≤ f := by exact_mod_cast hf
+  have hr' : (2:ℝ) ≤ r := by exact_mod_cast hr
+  have hf0 : (0:ℝ) ≤ f := by linarith
+  have hr2 : (4:ℝ) ≤ (r:ℝ)^2 := by nlinarith
+  have hfL : 0 ≤ (f:ℝ) * L := by positivity
+  have hfr0 : 0 ≤ (f:ℝ) * (r:ℝ)^2 := by positivity
+  have hU4 : 4 * ((f:ℝ) * L) ≤ (f:ℝ) * (r:ℝ)^2 * L := by nlinarith
+  have hUfr : (f:ℝ) * (r:ℝ)^2 ≤ (f:ℝ) * (r:ℝ)^2 * L := by nlinarith
+  have hUf : 4 * (f:ℝ) ≤ (f:ℝ) * (r:ℝ)^2 * L := by nlinarith
+  set U : ℝ := (f:ℝ) * (r:ℝ)^2 * L with hU
+  have hU0 : 0 ≤ U := by linarith
+  have hlrd0 : 0 ≤ Real.log rd := Real.log_nonneg hrd
+  have he2 : (3:ℝ) ≤ Real.exp 2 := by linarith [Real.add_one_le_exp (2:ℝ)]
+  have hexpL : 0 < Real.exp L := Real.exp_pos L
+
+  have hA : n ≤ Real.exp (60 * U) := by
+    rw [← Real.log_le_iff_le_exp hn]
+    have : 2 * (f:ℝ) * (r:ℝ)^2 * Real.log g ≤ 2 * f * (r:ℝ)^2 * (30 * L) :=
+      mul_le_mul_of_nonneg_left hlogg (by positivity)
+    rw [hU]; linarith
+
+  have he7 : (1000:ℝ) ≤ Real.exp 7 := by
+    have h1 := Real.exp_one_gt_d9
+    have : Real.exp 7 = Real.exp 1 ^ 7 := by rw [← Real.exp_nat_mul]; norm_num
+    rw [this]
+    calc (1000:ℝ) ≤ 2.7182818283 ^ 7 := by norm_num
+      _ ≤ Real.exp 1 ^ 7 := by gcongr
+  have hB1 : 1000 * (f:ℝ) * (r:ℝ)^3 ≤ Real.exp (9 * L) := by
+    have hfr3 : (f:ℝ) * (r:ℝ)^3 ≤ ((f:ℝ) * (r:ℝ)^2)^2 := by
+      nlinarith [mul_nonneg (by positivity : (0:ℝ) ≤ f * r^3) (by nlinarith : (0:ℝ) ≤ f * r - 1)]
+    have hsq : ((f:ℝ) * (r:ℝ)^2)^2 ≤ Real.exp L ^ 2 := by gcongr
+    have h9 : Real.exp 7 * Real.exp L ^ 2 ≤ Real.exp (9 * L) := by
+      rw [← Real.exp_nat_mul, ← Real.exp_add]; apply Real.exp_le_exp.mpr; push_cast; linarith
+    nlinarith [mul_le_mul he7 hsq (by positivity) (by positivity)]
+  have hB : (1000 * (f:ℝ) * (r:ℝ)^3) ^ (f * r^2) ≤ Real.exp (9 * U) := by
+    calc _ ≤ Real.exp (9 * L) ^ (f * r^2) := by gcongr
+      _ = Real.exp (9 * U) := by rw [← Real.exp_nat_mul]; congr 1; rw [hU]; push_cast; ring
+
+  have h4f : 4 * (f:ℝ) ≤ Real.exp L := by nlinarith
+  have hflrd : (f:ℝ) * Real.log rd ≤ (f:ℝ) * (2 * L) := mul_le_mul_of_nonneg_left hlrd hf0
+  have hlin : 1 + (f:ℝ) * Real.log rd ≤ Real.exp (2 * L) := by
+    have h1 := Real.add_one_le_exp L
+    have : Real.exp (2 * L) = Real.exp L * Real.exp L := by rw [← Real.exp_add]; ring_nf
+    rw [this]
+    have : 4 * (f:ℝ) * (L + 1) ≤ Real.exp L * Real.exp L := mul_le_mul h4f h1 (by linarith) hexpL.le
+    nlinarith
+  have hC : h ≤ Real.exp (2 * U) := by
+    rw [← Real.log_le_iff_le_exp hh]
+    have hl1 : Real.log (1 + (f:ℝ) * Real.log rd) ≤ 2 * L := by
+      rw [Real.log_le_iff_le_exp (by positivity)]; exact hlin
+    have : 2 * (f:ℝ) * Real.log (1 + f * Real.log rd) ≤ 2 * f * (2 * L) :=
+      mul_le_mul_of_nonneg_left hl1 (by positivity)
+    linarith
+
+  have hD : (3:ℝ) ^ (2 * f) ≤ Real.exp U := by
+    calc (3:ℝ) ^ (2 * f) ≤ Real.exp 2 ^ (2 * f) := by gcongr
+      _ = Real.exp (4 * f) := by rw [← Real.exp_nat_mul]; push_cast; ring_nf
+      _ ≤ Real.exp U := Real.exp_le_exp.mpr (by linarith)
+
+  have hE : (3:ℝ) ^ (2 * f * r ^ 2) ≤ Real.exp (4 * U) := by
+    calc (3:ℝ) ^ (2 * f * r ^ 2) ≤ Real.exp 2 ^ (2 * f * r ^ 2) := by gcongr
+      _ = Real.exp (4 * ((f:ℝ) * (r:ℝ)^2)) := by rw [← Real.exp_nat_mul]; push_cast; ring_nf
+      _ ≤ Real.exp (4 * U) := Real.exp_le_exp.mpr (by linarith)
+
+  have hy0 : 0 ≤ (f:ℝ) * ((r:ℝ)^2 - 1) / 2 := by
+    have : 0 ≤ (r:ℝ)^2 - 1 := by linarith
+    positivity
+  have hF : rd ^ ((f:ℝ) * ((r:ℝ)^2 - 1) / 2) ≤ Real.exp U := by
+    rw [Real.rpow_def_of_pos (by linarith)]
+    apply Real.exp_le_exp.mpr
+    have : Real.log rd * ((f:ℝ) * ((r:ℝ)^2 - 1) / 2) ≤ 2 * L * ((f:ℝ) * ((r:ℝ)^2 - 1) / 2) :=
+      mul_le_mul_of_nonneg_right hlrd hy0
+    linarith
+
+  have hP1 : P ≤ Real.exp (3 * (r:ℝ)^2) := by
+    have h2 : (2:ℝ) ≤ Real.exp 1 := by linarith [Real.add_one_le_exp (1:ℝ)]
+    have hpi : 2 * Real.pi ≤ Real.exp 2 := by
+      have := Real.pi_lt_d2
+      have h1 := Real.exp_one_gt_d9
+      have he : Real.exp 2 = Real.exp 1 ^ 2 := by rw [← Real.exp_nat_mul]; norm_num
+      have h3 : (2.7182818283:ℝ) ^ 2 ≤ Real.exp 1 ^ 2 := by gcongr
+      have h4 : (6.3:ℝ) ≤ 2.7182818283 ^ 2 := by norm_num
+      rw [he]; linarith
+    have hA1 : (2:ℝ) ^ (r * (r - 1) / 2) ≤ Real.exp ((r:ℝ)^2) := by
+      calc (2:ℝ) ^ (r * (r - 1) / 2) ≤ Real.exp 1 ^ (r * (r - 1) / 2) := by gcongr
+        _ ≤ Real.exp 1 ^ (r ^ 2) := by
+            apply pow_le_pow_right₀ (by linarith)
+            calc r * (r - 1) / 2 ≤ r * (r - 1) := Nat.div_le_self _ _
+              _ ≤ r * r := Nat.mul_le_mul_left _ (Nat.sub_le _ _)
+              _ = r ^ 2 := (sq r).symm
+        _ = Real.exp ((r:ℝ)^2) := by rw [← Real.exp_nat_mul]; push_cast; ring_nf
+    have hA2 : (2 * Real.pi) ^ (r - 1) ≤ Real.exp (2 * r) := by
+      calc (2 * Real.pi) ^ (r - 1) ≤ Real.exp 2 ^ (r - 1) := by gcongr
+        _ ≤ Real.exp 2 ^ r := pow_le_pow_right₀ (Real.one_le_exp (by norm_num)) (Nat.sub_le _ _)
+        _ = Real.exp (2 * r) := by rw [← Real.exp_nat_mul]; ring_nf
+    have hA3 : √(r:ℝ) ≤ Real.exp r := by
+      have h1 := Real.add_one_le_exp (r:ℝ)
+      calc √(r:ℝ) ≤ √((Real.exp r)^2) := Real.sqrt_le_sqrt (by nlinarith)
+        _ = Real.exp r := Real.sqrt_sq (Real.exp_pos _).le
+    calc P ≤ _ := hP
+      _ ≤ Real.exp ((r:ℝ)^2) * Real.exp (2 * r) * Real.exp r := by gcongr
+      _ = Real.exp ((r:ℝ)^2 + 2 * r + r) := by rw [Real.exp_add, Real.exp_add]
+      _ ≤ Real.exp (3 * (r:ℝ)^2) := Real.exp_le_exp.mpr (by nlinarith)
+  have hG : P ^ f ≤ Real.exp (3 * U) := by
+    calc P ^ f ≤ Real.exp (3 * (r:ℝ)^2) ^ f := pow_le_pow_left₀ hP0 hP1 f
+      _ = Real.exp (f * (3 * (r:ℝ)^2)) := by rw [← Real.exp_nat_mul]
+      _ ≤ Real.exp (3 * U) := Real.exp_le_exp.mpr (by linarith)
+
+  have hEFG : (3:ℝ) ^ (2 * f * r ^ 2) * rd ^ ((f:ℝ) * ((r:ℝ)^2 - 1) / 2) * P ^ f
+      ≤ Real.exp (4 * U) * Real.exp U * Real.exp (3 * U) :=
+    mul_le_mul (mul_le_mul hE hF (Real.rpow_nonneg (by linarith) _) (Real.exp_pos _).le) hG
+      (pow_nonneg hP0 _) (by positivity)
+  have hCD : h * (3:ℝ) ^ (2 * f) ≤ Real.exp (2 * U) * Real.exp U :=
+    mul_le_mul hC hD (by positivity) (Real.exp_pos _).le
+  have hCG := mul_le_mul hCD hEFG
+    (mul_nonneg (mul_nonneg (by positivity) (Real.rpow_nonneg (by linarith) _)) (pow_nonneg hP0 _))
+    (by positivity)
+  have hAB : n * (1000 * (f:ℝ) * (r:ℝ)^3) ^ (f * r^2) ≤ Real.exp (60 * U) * Real.exp (9 * U) :=
+    mul_le_mul hA hB (by positivity) (Real.exp_pos _).le
+  have hall := mul_le_mul hAB hCG
+    (mul_nonneg (mul_nonneg hh.le (by positivity))
+      (mul_nonneg (mul_nonneg (by positivity) (Real.rpow_nonneg (by linarith) _)) (pow_nonneg hP0 _)))
+    (by positivity)
+  refine hall.trans ?_
+  simp only [← Real.exp_add]
+  apply Real.exp_le_exp.mpr
+  linarith
+
+end GlobalTheory.CovTop.VolUp
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.explicit_height_bound_log_discriminant : ∀ (f r : ℕ) (L n g h rd P : ℝ), 2 ≤ f → 2 ≤ r → 1 ≤ L → (f : ℝ) * (r : ℝ) ^ 2 ≤ Real.exp L → 1 ≤ rd → Real.log rd ≤ 2 * L → 0 < n → Real.log n ≤ 2 * f * (r : ℝ) ^ 2 * Real.log g → Real.log g ≤ 30 * L → 0 < h → Real.log h ≤ f * Real.log rd + 2 * f * Real.log (1 + f * Real.log rd) → 0 ≤ P → P ≤ 2 ^ (r * (r - 1) / 2) * (2 * Real.pi) ^ (r - 1) * √r → n * (1000 * (f : ℝ) * (r : ℝ) ^ 3) ^ (f * r ^ 2) * (h * 3 ^ (2 * f) * ((3 : ℝ) ^ (2 * f * r ^ 2) * rd ^ ((f : ℝ) * ((r : ℝ) ^ 2 - 1) / 2) * P ^ f)) ≤ Real.exp (119 * (f * (r : ℝ) ^ 2 * L)) := by
+  atlas_forward_decl GlobalTheory.CovTop.VolUp.mass_bound_numbers_le_exp
+end
+
+section
 section
 open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.AdLat GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.CovTop.VolUp
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev Formalism.IndefR.Datum GlobalTheory.AdelicScalar
@@ -268,3 +631,4 @@ open MeasureTheory Formalism.IndefR.Lev Formalism.IndefR.Datum Formalism.IndefR.
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.log_fundamental_domain_volume_le : ∀ (hP : Hypotheses2) (D : D7) (Tu : Type) (C : LevCh D Tu) (t0 : Tu) (hC : C.Is t0) (i : Fin D.R.m) (P : LevelP C.Pg D.R.r ℂ) (μ : MeasureTheory.Measure (GA D (Wc D i))) (𝓕 : Set (GA D (Wc D i))) (hF : IsMeasFD (Wc D i) (GlobalTheory.IndefiniteRowSideFullHecke.OneMeasureSizes.levW C i P) μ 𝓕) (L : ℝ) (hL : GlobalTheory.IndefiniteRowSideFullHecke.OneMeasureSizes.Sizes D L), Real.log (μ 𝓕).toReal ≤ D.R.f * (D.R.r : ℝ) ^ 2 * Real.log ((D.R.r : ℝ) + 3) + (38 + 81) * (D.R.f * (D.R.r : ℝ) ^ 2 * L) := by
   atlas_forward_decl GlobalTheory.CovTop.VolUp.log_mass_le
+end

@@ -86,27 +86,6 @@ def frobUnitMod (M p : ℕ) : (ZMod M)ˣ := by
 def hArt {φ : Formalism.HC.Frame} (H : Formalism.HC.HostRaw φ) (p : ℕ) : φ.A :=
   φ.iotaInv (H.art (frobUnitMod H.condN p)).2
 
-theorem frobUnitMod_of_coprime {M p : ℕ} (h : Nat.Coprime p M) : frobUnitMod M p = ZMod.unitOfCoprime p h := by
-  have h0 : M.factorization p = 0 := by
-    by_cases hp : p.Prime
-    · exact Nat.factorization_eq_zero_of_not_dvd (hp.coprime_iff_not_dvd.1 h)
-    · exact Nat.factorization_eq_zero_of_not_prime M hp
-  have k1 : ∀ (A : ℕ), A = M → ∀ w : ZMod M, ((w.cast : ZMod A) = (p : ZMod A) ↔ w = (p : ZMod M)) := by
-    rintro A rfl w
-    rw [ZMod.cast_id]
-  have k2 : ∀ (B : ℕ), B = 1 → ∀ w : ZMod M, (w.cast : ZMod B) = 1 := by
-    rintro B rfl w
-    exact Subsingleton.elim _ _
-  have key : ∀ w : (ZMod M)ˣ, (((w : ZMod M).cast : ZMod (ordCompl[p] M)) = (p : ZMod (ordCompl[p] M)) ∧
-      ((w : ZMod M).cast : ZMod (ordProj[p] M)) = 1) ↔ w = ZMod.unitOfCoprime p h := by
-    intro w
-    rw [k1 _ (by rw [h0, pow_zero, Nat.div_one]), and_iff_left (k2 _ (by rw [h0, pow_zero]) _), Units.ext_iff,
-      ZMod.coe_unitOfCoprime]
-  have hex : ∃ w : (ZMod M)ˣ, ((w : ZMod M).cast : ZMod (ordCompl[p] M)) = (p : ZMod (ordCompl[p] M)) ∧
-      ((w : ZMod M).cast : ZMod (ordProj[p] M)) = 1 := ⟨_, (key _).2 rfl⟩
-  unfold frobUnitMod
-  rw [dif_pos hex]
-  exact (key _).1 hex.choose_spec
 
 namespace NumDatum
 
@@ -118,12 +97,6 @@ def hP (p : ℕ) : N.R.A :=
   if h : Nat.Coprime p N.H.condN then N.R.iotaInv (N.H.art (ZMod.unitOfCoprime p h)).2
   else N.R.iotaInv (N.H.art (frobUnitMod N.H.condN p)).2
 
-theorem hP_eq_hArt (p : ℕ) : N.hP p = hArt N.H.toHostRaw p := by
-  unfold hP hArt
-  split
-  · rename_i h
-    rw [frobUnitMod_of_coprime h]
-  · rfl
 
 def pos (p : ℕ) (z : RPl N.R) (s : ℕ) : RPl N.R :=
   (xor z.1 (decide (N.cls p = PrimeClass.signal ∧ Odd s)), z.2 + s • N.hP p)

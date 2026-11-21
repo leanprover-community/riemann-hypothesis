@@ -2,8 +2,317 @@ import Mathlib
 import Formalism.LocalToGlobal.Columns.AtTRank
 import Formalism.LocalToGlobal.Columns.ToHLatLemmas
 import Formalism.LocalToGlobal.Columns.AtTOwedS
-import Formalism.LocalToGlobal.Columns.RamifiedOperatorsNonvacuous
+import Formalism.LocalToGlobal.Columns.AtTLemmas
+import Formalism.LocalToGlobal.Columns.BtExistsSmulLeOfFg
+import Formalism.LocalToGlobal.Columns.AtTOwedV
+import Formalism.LocalToGlobal.Columns.AtTOwedC
+import Formalism.LocalToGlobal.Columns.Inputs
+import Formalism.GL3MeanSquares.PrimeOrderRamificationResults
+import Formalism.LocalRingCardinality.CoeNeZeroOfNotMem
 
+section
+open NumberField IsDedekindDomain Module
+
+noncomputable section
+
+namespace Formalism.L2.Col
+
+open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV
+
+section Gen
+
+variable {K : Type} [Field K] [NumberField K] {V : Type} [AddCommGroup V] [Module K V]
+
+def lenO (w : HeightOneSpectrum (𝓞 K)) (A B : Submodule (Ow w) V) : ℕ∞ :=
+  Module.length (Ow w) (A ⧸ B.comap A.subtype)
+
+def lenOU (w : HeightOneSpectrum (𝓞 K)) (A B : Submodule (Ow w) V) : ℚ :=
+  ((lenO w A B).toNat : ℚ) / (eW w : ℚ)
+
+def mapO {V' : Type} [AddCommGroup V'] [Module K V'] (w : HeightOneSpectrum (𝓞 K)) (f : V →ₗ[K] V') (A : Submodule (Ow w) V) :
+    Submodule (Ow w) V' :=
+  A.map (f.restrictScalars (Ow w))
+
+def piO {ι : Type} (w : HeightOneSpectrum (𝓞 K)) (A : ι → Submodule (Ow w) V) : Submodule (Ow w) (ι → V) where
+  carrier := {x | ∀ i, x i ∈ A i}
+  add_mem' := fun hx hy i => (A i).add_mem (hx i) (hy i)
+  zero_mem' := fun i => (A i).zero_mem
+  smul_mem' := fun r _ hx i => (A i).smul_mem r (hx i)
+
+def scalO (w : HeightOneSpectrum (𝓞 K)) (c : K) (A : Submodule (Ow w) V) : Submodule (Ow w) V :=
+  mapO w (c • (LinearMap.id : V →ₗ[K] V)) A
+
+end Gen
+
+def sumShiftW {n : ℕ} (lam : DomWeight n) (b : ℤ) : ℤ := ∑ i, (lam.w i + b)
+
+section LemB
+
+variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
+
+def TbSwC (u : Pr.Word) (j : ℕ) (w : HeightOneSpectrum (𝓞 X.K)) (b : ℤ) : Submodule (Ow w) (ColV W Ch u j) :=
+  scalO w ((Pr.T u : X.K) ^ b) (SwC W Ch u j w)
+
+def TbSwNabC (u : Pr.Word) (j : ℕ) (w : HeightOneSpectrum (𝓞 X.K)) (b : ℤ) : Submodule (Ow w) (ColV W Ch u j) :=
+  scalO w ((Pr.T u : X.K) ^ b) (SwNabC W Ch u j w)
+
+def LemBInclAt (u : Pr.Word) (j : ℕ) (w : HeightOneSpectrum (𝓞 X.K)) (P : {P // P ∈ Pr.vT u}) (b : ℤ) : Prop :=
+  TbSwC W Ch u j w b ≤ BvWC W Ch u j w P
+
+def LemBIdxAt (u : Pr.Word) (w : HeightOneSpectrum (𝓞 X.K)) (P : {P // P ∈ Pr.vT u}) (τ : X.Tau) (b : ℤ) : Prop :=
+  ∃ n : ℕ, lenO w (BvWC W Ch u 0 w P) (TbSwC W Ch u 0 w b) = n ∧
+    (R.N 0 : ℤ) * (n : ℤ) = (eW w : ℤ) * (finrank X.K (MfV W Ch u) : ℤ) * sumShiftW (W.lamTrue u 0 τ) b
+
+def LemBInclNabAt (u : Pr.Word) (j : ℕ) (w : HeightOneSpectrum (𝓞 X.K)) (P : {P // P ∈ Pr.vT u}) (b : ℤ) : Prop :=
+  TbSwNabC W Ch u j w b ≤ BvNabWC W Ch u j w P
+
+def LemBIdxNabAt (u : Pr.Word) (w : HeightOneSpectrum (𝓞 X.K)) (P : {P // P ∈ Pr.vT u}) (τ : X.Tau) (b : ℤ) : Prop :=
+  ∃ n : ℕ, lenO w (BvNabWC W Ch u 0 w P) (TbSwNabC W Ch u 0 w b) = n ∧
+    (R.N 0 : ℤ) * (n : ℤ) = (eW w : ℤ) * (finrank X.K (MfV W Ch u) : ℤ) * sumShiftW (W.lamTrue u 0 τ) b
+
+def LemmaBIncl : Prop :=
+  X.Ok → Pr.Ok → ∀ (u : Pr.Word) (j : ℕ), j ≤ R.m → ∀ (w : HeightOneSpectrum (𝓞 X.K)) (τ : X.Tau) (P : {P // P ∈ Pr.vT u}), SeesP w τ P.1 →
+    ∀ b : ℤ, -(W.lamTrue u j τ).detShift ≤ b → LemBInclAt W Ch u j w P b
+
+def LemmaBIdx : Prop :=
+  X.Ok → Pr.Ok → 2 * X.f * R.k < Pr.g 0 - 1 →
+    ∀ (u : Pr.Word) (w : HeightOneSpectrum (𝓞 X.K)) (τ : X.Tau) (P : {P // P ∈ Pr.vT u}), SeesP w τ P.1 →
+      ∀ b : ℤ, -(W.lamTrue u 0 τ).detShift ≤ b → LemBIdxAt W Ch u w P τ b
+
+def LemmaBInclNab : Prop :=
+  X.Ok → Pr.Ok → ∀ (u : Pr.Word) (j : ℕ), j ≤ R.m → ∀ (w : HeightOneSpectrum (𝓞 X.K)) (τ : X.Tau) (P : {P // P ∈ Pr.vT u}), SeesP w τ P.1 →
+    ∀ b : ℤ, -(W.lamTrue u j τ).detShift ≤ b → LemBInclNabAt W Ch u j w P b
+
+def LemmaBIdxNab : Prop :=
+  X.Ok → Pr.Ok → 2 * X.f * R.k < Pr.g 0 - 1 →
+    ∀ (u : Pr.Word) (w : HeightOneSpectrum (𝓞 X.K)) (τ : X.Tau) (P : {P // P ∈ Pr.vT u}), SeesP w τ P.1 →
+      ∀ b : ℤ, -(W.lamTrue u 0 τ).detShift ≤ b → LemBIdxNabAt W Ch u w P τ b
+
+def CoefBInclAt (u : Pr.Word) (j : ℕ) (w : HeightOneSpectrum (𝓞 X.K)) (P : {P // P ∈ Pr.vT u}) (b : ℤ) : Prop :=
+  ∀ d : ColDeco X Pr u (R.N j),
+    scalO w ((Pr.T u : X.K) ^ b) (atW w (delAtr X.emb (W.lamTrue u j) d.1.Lsh)) ≤ atW w (BvLat W u j P d)
+
+def CoefBIdxAt (u : Pr.Word) (w : HeightOneSpectrum (𝓞 X.K)) (P : {P // P ∈ Pr.vT u}) (τ : X.Tau) (b : ℤ) : Prop :=
+  ∀ d : ColDeco X Pr u (R.N 0), ∃ n : ℕ,
+    lenO w (atW w (BvLat W u 0 P d)) (scalO w ((Pr.T u : X.K) ^ b) (atW w (delAtr X.emb (W.lamTrue u 0) d.1.Lsh))) = n ∧
+      (R.N 0 : ℤ) * (n : ℤ) = (eW w : ℤ) * (finrank X.K (VV X.K (W.lamTrue u 0)) : ℤ) * sumShiftW (W.lamTrue u 0 τ) b
+
+def CoefLemmaBIncl : Prop :=
+  X.Ok → Pr.Ok → ∀ (u : Pr.Word) (j : ℕ), j ≤ R.m → ∀ (w : HeightOneSpectrum (𝓞 X.K)) (τ : X.Tau) (P : {P // P ∈ Pr.vT u}), SeesP w τ P.1 →
+    ∀ b : ℤ, -(W.lamTrue u j τ).detShift ≤ b → CoefBInclAt W u j w P b
+
+def CoefLemmaBIdx : Prop :=
+  X.Ok → Pr.Ok → ∀ (u : Pr.Word) (w : HeightOneSpectrum (𝓞 X.K)) (τ : X.Tau) (P : {P // P ∈ Pr.vT u}), SeesP w τ P.1 →
+    ∀ b : ℤ, -(W.lamTrue u 0 τ).detShift ≤ b → CoefBIdxAt W u w P τ b
+
+end LemB
+
+section LemC
+
+variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
+
+def UramOp (u : Pr.Word) (j : ℕ) (P : {P // P ∈ Pr.vT u}) : Module.End X.K (ColRamV W Ch u j) :=
+  (UOp W Ch u j P).restrict fun _ h => UOp_mem_ColRamV W Ch u j P h
+
+def DramOp (u : Pr.Word) (j : ℕ) (P : {P // P ∈ Pr.vT u}) : Module.End X.K (ColRamV W Ch u j) :=
+  (DOp W Ch u j P).restrict fun _ h => DOp_mem_ColRamV W Ch u j P h
+
+def TbUC (u : Pr.Word) (j : ℕ) (P : {P // P ∈ Pr.vT u}) (b : ℤ) : Module.End X.K (ColV W Ch u j) :=
+  ((Pr.T u : X.K) ^ b) • UOp W Ch u j P
+
+def TbUR (u : Pr.Word) (j : ℕ) (P : {P // P ∈ Pr.vT u}) (b : ℤ) : Module.End X.K (ColRamV W Ch u j) :=
+  ((Pr.T u : X.K) ^ b) • UramOp W Ch u j P
+
+def SramWC (u : Pr.Word) (j : ℕ) (w : HeightOneSpectrum (𝓞 X.K)) : Submodule (Ow w) (ColV W Ch u j) :=
+  SwC W Ch u j w ⊓ (ColRamV W Ch u j).restrictScalars (Ow w)
+
+def BramWC (u : Pr.Word) (j : ℕ) (w : HeightOneSpectrum (𝓞 X.K)) (P : {P // P ∈ Pr.vT u}) : Submodule (Ow w) (ColV W Ch u j) :=
+  BvWC W Ch u j w P ⊓ (ColRamV W Ch u j).restrictScalars (Ow w)
+
+def vdetTbU (u : Pr.Word) (j : ℕ) (w : HeightOneSpectrum (𝓞 X.K)) (P : {P // P ∈ Pr.vT u}) (b : ℤ) : ℚ :=
+  (vAdd w (LinearMap.det (TbUR W Ch u j P b)) : ℚ) / (eW w : ℚ)
+
+end LemC
+
+section T5
+
+variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
+
+def bAtC [Nonempty X.Tau] (u : Pr.Word) (w : HeightOneSpectrum (𝓞 X.K)) (P : {P // P ∈ Pr.vT u}) : ℤ := W.bTop u (tauOfC w P.1)
+
+def TUprodR [Nonempty X.Tau] (u : Pr.Word) (w : HeightOneSpectrum (𝓞 X.K)) : Module.End X.K (MramV W Ch u) :=
+  ((VVTc W u w).toList.map fun P => TbUR W Ch u 0 P (bAtC W u w P)).prod
+
+def idxNlamC (u : Pr.Word) (w : HeightOneSpectrum (𝓞 X.K)) : ℚ :=
+  lidxUW w (MramL W Ch u) (NlamG W Ch u w)
+
+def bndLemC (u : Pr.Word) (τ : X.Tau) : ℚ :=
+  (finrank X.K (MfV W Ch u) : ℚ) * (sumShiftW (W.lamTrue u 0 τ) (W.bTop u τ) : ℚ) / (R.N 0 : ℚ) +
+    ((R.N 0 : ℚ) - 1) * (finrank X.K (MramV W Ch u) : ℚ)
+
+def idxBndC (u : Pr.Word) (w : HeightOneSpectrum (𝓞 X.K)) : ℚ :=
+  (R.m : ℚ) * ∑ τ ∈ topsP W u w, bndLemC W Ch u τ
+
+def indexBoundPerDegree (u : Pr.Word) (Wt : X.Tau → ℕ) : ℝ :=
+  (R.m : ℝ) * ∑ τ ∈ W.tops, ((W.aTop u τ : ℝ) / (R.k : ℝ) + 2 * (Wt τ : ℝ) + (R.k : ℝ) - 1)
+
+def IsWtBound (u : Pr.Word) (Wt : X.Tau → ℕ) : Prop :=
+  ∀ (τ : X.Tau) (i : Fin (R.N 0)), i.1 ≠ 0 → ((W.lamTrue u 0 τ).w i).natAbs ≤ Wt τ
+
+def wtT {K : Type} [Field K] [NumberField K] (w : HeightOneSpectrum (𝓞 K)) : ℝ := 2 * lW w * (eW w : ℝ)
+
+def priceIC (u : Pr.Word) : ℝ :=
+  (1 / (finrank X.K (MramV W Ch u) : ℝ)) *
+    ∑ᶠ w : {w : HeightOneSpectrum (𝓞 X.K) // prW w = Pr.T u}, wtT w.1 * ((idxNlamC W Ch u w.1 : ℚ) : ℝ)
+
+def WeightHalf (Pr : Primes X) : Prop :=
+  ∀ u : Pr.Word, ∑ᶠ w : {w : HeightOneSpectrum (𝓞 X.K) // seenC Pr u w}, wtT w.1 = Real.log (Pr.T u)
+
+end T5
+
+section Col
+
+variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
+
+abbrev KerArg (u : Pr.Word) : Type := ∀ j : ℕ, ColV W Ch u j →ₗ[X.K] ColV W Ch u (j + 1)
+
+variable {W Ch}
+
+def colArg {u : Pr.Word} (kk : KerArg W Ch u) (i : ℕ) : MfV W Ch u →ₗ[X.K] ColV W Ch u i :=
+  Formalism.HermitianLattices.LocalLatticeBases.chainK X.K (fun j => ColV W Ch u j) kk i
+
+def KernelFourierIntegralBound {u : Pr.Word} (kk : KerArg W Ch u) (w : HeightOneSpectrum (𝓞 X.K)) (e1 : ℕ) : Prop :=
+  ∀ j, j < R.m → ∀ s ∈ SwC W Ch u j w, ((Pr.T u : X.K) ^ e1) • UprodC W Ch u (j + 1) w (kk j s) ∈ SwC W Ch u (j + 1) w
+
+def KernelArgumentHypothesisScalar {u : Pr.Word} (kk : KerArg W Ch u) (c : ℕ → {P // P ∈ Pr.vT u} → X.Kˣ) : Prop :=
+  ∀ j, j < R.m → ∀ P, (UOp W Ch u (j + 1) P).comp (kk j) = ((c j P : X.Kˣ) : X.K) • (kk j).comp (UOp W Ch u j P)
+
+def cProdC (W : Wts X Pr.Word R) {u : Pr.Word} (c : ℕ → {P // P ∈ Pr.vT u} → X.Kˣ) (w : HeightOneSpectrum (𝓞 X.K)) (j : ℕ) : X.Kˣ :=
+  ∏ P ∈ VVTc W u w, c j P
+
+def ScalarIntegralAtPlace (W : Wts X Pr.Word R) {u : Pr.Word} (c : ℕ → {P // P ∈ Pr.vT u} → X.Kˣ) (w : HeightOneSpectrum (𝓞 X.K)) (ga : ℕ → ℕ) : Prop :=
+  ∀ j, j < R.m → ∃ r : Ow w, algebraMap (Ow w) X.K r = ((cProdC W c w j)⁻¹ : X.Kˣ) * (Pr.T u : X.K) ^ ga j
+
+def eColC (R : Ranks) (e1 : ℕ) (ga : ℕ → ℕ) : ℕ := R.m * e1 + ∑ j ∈ Finset.range R.m, (R.m - j) * ga j
+
+end Col
+
+end Formalism.L2.Col
+end
+end
+
+section
+open NumberField IsDedekindDomain Module
+
+noncomputable section
+
+namespace Formalism.L2.Col
+
+open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV
+
+section Gen
+
+variable {K : Type} [Field K] [NumberField K] {V : Type} [AddCommGroup V] [Module K V]
+  {V' : Type} [AddCommGroup V'] [Module K V']
+
+end Gen
+
+section LemC
+
+variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
+
+end LemC
+
+section Det
+
+variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
+
+end Det
+
+section T5
+
+variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
+
+variable [Nonempty X.Tau]
+
+end T5
+
+section Nab
+
+variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
+
+end Nab
+
+section Col
+
+variable {X : Fields} {Pr : Primes X} {R : Ranks} {W : Wts X Pr.Word R} {Ch : Chars X Pr R.m}
+
+theorem list_prod_intertwines {K : Type} [Field K] {V V' ι : Type} [AddCommGroup V] [Module K V] [AddCommGroup V'] [Module K V']
+    (k : V →ₗ[K] V') (A : ι → Module.End K V) (A' : ι → Module.End K V') (c : ι → K)
+    (h : ∀ i, (A' i).comp k = c i • k.comp (A i)) (l : List ι) :
+    ((l.map A').prod).comp k = (l.map c).prod • k.comp (l.map A).prod := by
+  induction l with
+  | nil => simp only [List.map_nil, List.prod_nil, one_smul]; rfl
+  | cons i l ih =>
+    simp only [List.map_cons, List.prod_cons]
+    have e1 : (A' i * (l.map A').prod).comp k = (A' i).comp (((l.map A').prod).comp k) := rfl
+    rw [e1, ih, LinearMap.comp_smul, ← LinearMap.comp_assoc, h i, LinearMap.smul_comp, smul_smul, mul_comm (l.map c).prod]
+    rfl
+
+theorem KernelArgumentHypothesisScalar.prod {u : Pr.Word} {kk : KerArg W Ch u} {c : ℕ → {P // P ∈ Pr.vT u} → X.Kˣ} (h : KernelArgumentHypothesisScalar kk c) (w : HeightOneSpectrum (𝓞 X.K))
+    (j : ℕ) (hj : j < R.m) :
+    (UprodC W Ch u (j + 1) w).comp (kk j) = ((cProdC W c w j : X.Kˣ) : X.K) • (kk j).comp (UprodC W Ch u j w) := by
+  have := list_prod_intertwines (kk j) (fun P => UOp W Ch u j P) (fun P => UOp W Ch u (j + 1) P) (fun P => ((c j P : X.Kˣ) : X.K))
+    (fun P => h j hj P) (VVTc W u w).toList
+  unfold UprodC cProdC
+  rw [this, Units.coe_prod, Finset.prod_map_toList]
+
+end Col
+
+section NonDeg
+
+variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
+
+
+end NonDeg
+
+section AutomorphicFormsHyp
+
+variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
+
+end AutomorphicFormsHyp
+
+section Price
+
+variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
+
+end Price
+
+section Vals
+
+variable {K : Type} [Field K] [NumberField K] {V : Type} [AddCommGroup V] [Module K V]
+
+variable [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
+
+end Vals
+
+namespace GSD
+
+variable {K : Type} [Field K] [NumberField K] [StarRing K] (S : GSD K)
+
+end GSD
+
+section ValsCol
+
+variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
+
+end ValsCol
+
+end Formalism.L2.Col
+end
+end
+
+section
 open NumberField IsDedekindDomain Module IntermediateField
 
 noncomputable section
@@ -49,10 +358,6 @@ open GSD
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {S : GSD K}
 
-theorem GSD.Slice.card_Cl {B : Type} [Group B] [MulAction B S.D] [SMulCommClass B S.G S.D] (σ : S.Slice B) :
-    Nat.card S.Cl = Nat.card B * Nat.card (S.restr σ.T).Cl := by
-  rw [← Nat.card_prod]
-  exact (Nat.card_congr (σ.clEquiv (S.restr σ.T).outSec)).symm
 
 end Gen
 
@@ -60,80 +365,12 @@ section ColsRam
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
 
-theorem exists_finrank_Mf_Mram (hX : X.Ok) (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) (u : Pr.Word) :
-    ∃ d0 : ℕ, 0 < d0 ∧ finrank X.K (MfV W Ch u) = (Pr.T u - 1) ^ X.f * d0 ∧
-      finrank X.K (MramV W Ch u) = (Pr.T u - 2) ^ X.f * d0 := by
-  obtain ⟨σ⟩ := (colGSD W Ch u 0).exists_slice (DiaG X.E (Pr.vT u)) (colDiaFree W Ch hX hPr hbig u)
-  have h1 := finrank_ColV_of_slice W Ch hX u 0 σ
-  have h2 := finrank_ColRamV_of_slice W Ch hX u 0 σ
-  simp only [card_resU hPr u, Finset.prod_const, Finset.card_univ, Fintype.card_coe, hPr.vT_card u, Nat.sub_sub] at h1 h2
-  refine ⟨finrank X.K ((colGSD W Ch u 0).restr σ.T).EqFun, ?_, h1.trans (mul_comm _ _), h2.trans (mul_comm _ _)⟩
-  rcases Nat.eq_zero_or_pos (finrank X.K ((colGSD W Ch u 0).restr σ.T).EqFun) with h0 | h0
-  · have := finrank_MfV_pos W Ch hX hPr hbig u
-    rw [h1, h0, zero_mul] at this
-    exact absurd this (lt_irrefl 0)
-  · exact h0
 
-theorem le_finrank_MramV (hX : X.Ok) (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) (u : Pr.Word) :
-    (Pr.T u - 2) ^ X.f ≤ finrank X.K (MramV W Ch u) := by
-  obtain ⟨d0, hd0, -, h2⟩ := exists_finrank_Mf_Mram W Ch hX hPr hbig u
-  rw [h2]
-  exact Nat.le_mul_of_pos_right _ hd0
 
-theorem le_finrank_MfV (hX : X.Ok) (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) (u : Pr.Word) :
-    (Pr.T u - 1) ^ X.f ≤ finrank X.K (MfV W Ch u) := by
-  obtain ⟨d0, hd0, h1, -⟩ := exists_finrank_Mf_Mram W Ch hX hPr hbig u
-  rw [h1]
-  exact Nat.le_mul_of_pos_right _ hd0
 
-theorem finrank_MramV_pos_ok (hX : X.Ok) (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) (u : Pr.Word) :
-    0 < finrank X.K (MramV W Ch u) := by
-  have hT := hPr.two_lt_alt u
-  exact lt_of_lt_of_le (pow_pos (by omega) _) (le_finrank_MramV W Ch hX hPr hbig u)
 
-theorem finrank_MramV_lt (hX : X.Ok) (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) (u : Pr.Word) :
-    finrank X.K (MramV W Ch u) < finrank X.K (MfV W Ch u) := by
-  obtain ⟨d0, h0, h1, h2⟩ := exists_finrank_Mf_Mram W Ch hX hPr hbig u
-  rw [h1, h2]
-  have hT := (hPr.T_prime u).two_le
-  exact Nat.mul_lt_mul_of_pos_right (Nat.pow_lt_pow_left (by omega) hX.f_pos.ne') h0
 
-theorem exists_card_colCl (hX : X.Ok) (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) (u : Pr.Word) :
-    ∃ c0 : ℕ, 0 < c0 ∧ Nat.card (colGSD W Ch u 0).Cl = (Pr.T u - 1) ^ X.f * c0 := by
-  obtain ⟨σ⟩ := (colGSD W Ch u 0).exists_slice (DiaG X.E (Pr.vT u)) (colDiaFree W Ch hX hPr hbig u)
-  have h1 : Nat.card (DiaG X.E (Pr.vT u)) = (Pr.T u - 1) ^ X.f := by
-    rw [Nat.card_pi]
-    simp only [card_resU hPr u, Finset.prod_const, Finset.card_univ, Fintype.card_coe, hPr.vT_card u]
-  have h2 := σ.card_Cl
-  rw [h1] at h2
-  refine ⟨_, ?_, h2⟩
-  rcases Nat.eq_zero_or_pos (Nat.card ((colGSD W Ch u 0).restr σ.T).Cl) with h0 | h0
-  · rw [h0, mul_zero] at h2
-    have : NeZero (R.N 0) := ⟨(R.N_pos 0).ne'⟩
-    have h3 : Finite (colGSD W Ch u 0).Cl := (colOk W Ch hX u 0).fin_orb
-    have h4 : Nonempty (colGSD W Ch u 0).Cl :=
-      ⟨(colGSD W Ch u 0).cls (DecoSet.base X.E (R.N 0) (Pr.vT u) Pr.vGs)⟩
-    exact absurd h2 Nat.card_pos.ne'
-  · exact h0
 
-theorem NmOp_ne_zero (hX : X.Ok) (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) (u : Pr.Word)
-    (P : {P // P ∈ Pr.vT u}) : NmOp W Ch u 0 P ≠ 0 := by
-  classical
-  let _ : ∀ P : {P // P ∈ Pr.vT u}, Fintype (𝓞 X.E ⧸ P.1.asIdeal)ˣ := fun P => fintypeResU P.1
-  obtain ⟨σ⟩ := (colGSD W Ch u 0).exists_slice (DiaG X.E (Pr.vT u)) (colDiaFree W Ch hX hPr hbig u)
-  have : Nontrivial (ColV W Ch u 0) :=
-    Module.nontrivial_of_finrank_pos (R := X.K) (finrank_MfV_pos W Ch hX hPr hbig u)
-  obtain ⟨φ, hφ⟩ := exists_ne (0 : ColV W Ch u 0)
-  have h1 : σ.split φ ≠ 0 := fun h => hφ (σ.split.injective (h.trans (map_zero _).symm))
-  obtain ⟨c, hc⟩ := Function.ne_iff.mp h1
-  intro h0
-  have h2 := congrFun (split_NmOp W Ch u 0 σ P (σ.split.symm fun _ => σ.split φ c)) c
-  rw [h0, LinearMap.zero_apply, map_zero, LinearEquiv.apply_symm_apply] at h2
-  unfold RamFun.nmF at h2
-  rw [LinearMap.sum_apply, Finset.sum_apply] at h2
-  simp only [RamFun.trl_apply, Finset.sum_const, Finset.card_univ] at h2
-  rw [← Nat.cast_smul_eq_nsmul X.K] at h2
-  exact smul_ne_zero (Nat.cast_ne_zero.2 Fintype.card_ne_zero) hc h2.symm
 
 end ColsRam
 
@@ -160,16 +397,6 @@ theorem GSD.exists_delta (h : S.Ok) (hf : S.Free) (d0 : S.D) (v : S.V) :
   · intro d hd
     rw [hval, Pi.single_eq_of_ne hd, map_zero]
 
-theorem GSD.nbr_ne_zero [Nontrivial S.V] (h : S.Ok) (hf : S.Free) (A : Module.End K S.EqFun) (nb : S.D → Finset S.D)
-    (hA : ∀ (φ : S.EqFun) (d : S.D), ((A φ : S.EqFun) : S.D → S.V) d = ∑ d' ∈ nb d, (φ : S.D → S.V) d')
-    {d d0 : S.D} (hd0 : d0 ∈ nb d) (hinj : ∀ d' ∈ nb d, S.cls d' = S.cls d0 → d' = d0) : A ≠ 0 := by
-  obtain ⟨v, hv⟩ := exists_ne (0 : S.V)
-  obtain ⟨φ, h1, h2⟩ := S.exists_delta h hf d0 v
-  intro h0
-  have h3 := hA φ d
-  rw [h0, Finset.sum_eq_single d0 (fun d' hd' hne => h2 d' fun hc => hne (hinj d' hd' hc))
-    (fun hn => absurd hd0 hn), h1] at h3
-  exact hv h3.symm
 
 end Delta
 
@@ -177,92 +404,10 @@ section ColsUD
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
 
-theorem col_eq_one_of_N_be (hX : X.Ok) (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) (u : Pr.Word)
-    (a : FormG (colLev Ch 0)) (d : DecoSet X.E (R.N 0) (Pr.vT u) Pr.vGs)
-    (hN : (FormG.incl (colLev Ch 0) a • d).1.N = d.1.N) (hbe : (FormG.incl (colLev Ch 0) a • d).1.be = d.1.be) : a = 1 := by
-  have hpos : 0 < (Pr.vG 0).card := by
-    rw [hPr.vG_card 0]
-    exact hX.f_pos
-  obtain ⟨w, hw⟩ := Finset.card_pos.mp hpos
-  have hw' : w ∈ Pr.vGs := by
-    classical
-    unfold Primes.vGs
-    exact Finset.mem_union_left _ hw
-  have hN0 : R.N 0 = R.k := by simp [Ranks.N]
-  have hm : 0 < R.m := lt_of_lt_of_le (by norm_num) R.two_le_m
-  have hmem : (a.2 : GLG X.E (R.N 0) Pr.vGs) ⟨w, hw'⟩ ∈ (colLev Ch 0 ⟨w, hw'⟩).H :=
-    (Subgroup.mem_pi _).mp a.2.2 ⟨w, hw'⟩ (Set.mem_univ _)
-  rw [colLev_of_lt Ch hm] at hmem
-  obtain ⟨h1, h2⟩ := Deco.stab0 (hStd_trace_pos hX.conjE) d.2 (FormG.incl (colLev Ch 0) a).1.2 hN hbe ⟨w, hw'⟩
-    (hPr.g_prime 0) (hPr.g_mem hw) (by rw [hX.finrank_E, hN0]; omega) (isNilpotent_of_mem_HX_zero hN0.le hmem)
-  exact FormG.incl_injective _ (Prod.ext (Subtype.ext h1) h2)
 
-theorem col_dnSet_class_inj (hX : X.Ok) (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) (u : Pr.Word)
-    (P : {P // P ∈ Pr.vT u}) (q : 𝓞 X.E) (d d1 d2 : DecoSet X.E (R.N 0) (Pr.vT u) Pr.vGs)
-    (h1 : d1 ∈ d.dnSet P q) (h2 : d2 ∈ d.dnSet P q) (hc : (colGSD W Ch u 0).cls d1 = (colGSD W Ch u 0).cls d2) :
-    d1 = d2 := by
-  obtain ⟨a, ha⟩ := ((colGSD W Ch u 0).cls_eq_iff _ _).mp hc
-  have ha' : FormG.incl (colLev Ch 0) a • d2 = d1 := ha
-  have e1 := h1.1
-  have e2 := h2.1
-  have hN : (FormG.incl (colLev Ch 0) a • d2).1.N = d2.1.N := by
-    rw [ha', e1, e2]
-    rfl
-  have hbe : (FormG.incl (colLev Ch 0) a • d2).1.be = d2.1.be := by
-    rw [ha', e1, e2]
-    rfl
-  have := col_eq_one_of_N_be Ch hX hPr hbig u a d2 hN hbe
-  rw [this, map_one, one_smul] at ha'
-  exact ha'.symm
 
-theorem col_upSet_class_inj (hX : X.Ok) (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) (u : Pr.Word)
-    (P : {P // P ∈ Pr.vT u}) (d d1 d2 : DecoSet X.E (R.N 0) (Pr.vT u) Pr.vGs)
-    (h1 : d1 ∈ d.upSet P (Pr.T u : 𝓞 X.E)) (h2 : d2 ∈ d.upSet P (Pr.T u : 𝓞 X.E))
-    (hc : (colGSD W Ch u 0).cls d1 = (colGSD W Ch u 0).cls d2) : d1 = d2 := by
-  obtain ⟨a, ha⟩ := ((colGSD W Ch u 0).cls_eq_iff _ _).mp hc
-  have ha' : FormG.incl (colLev Ch 0) a • d2 = d1 := ha
-  have hP := moveHyp_of_ok hPr u P
-  have hq := T_unif hX hPr u P
-  have g1 : d ∈ d1.dnSet P (Pr.T u : 𝓞 X.E) := (DecoSet.mem_upSet_iff_mem_dnSet hP hq.1 hq.2 d d1).1 h1
-  have g2 : d ∈ d2.dnSet P (Pr.T u : 𝓞 X.E) := (DecoSet.mem_upSet_iff_mem_dnSet hP hq.1 hq.2 d d2).1 h2
-  have g3 : FormG.incl (colLev Ch 0) a • d ∈ d1.dnSet P (Pr.T u : 𝓞 X.E) := by
-    rw [← ha']
-    exact (DecoSet.smul_mem_dnSet _ P _ d2 d).2 g2
-  have e1 := g1.1
-  have e3 := g3.1
-  have hN : (FormG.incl (colLev Ch 0) a • d).1.N = d.1.N := by
-    rw [e3, e1]
-    rfl
-  have hbe : (FormG.incl (colLev Ch 0) a • d).1.be = d.1.be := by
-    rw [e3, e1]
-    rfl
-  have := col_eq_one_of_N_be Ch hX hPr hbig u a d hN hbe
-  rw [this, map_one, one_smul] at ha'
-  exact ha'.symm
 
-theorem UOp_ne_zero (hX : X.Ok) (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) (u : Pr.Word)
-    (P : {P // P ∈ Pr.vT u}) : UOp W Ch u 0 P ≠ 0 := by
-  have : NeZero (R.N 0) := ⟨(R.N_pos 0).ne'⟩
-  have : Nontrivial (colGSD W Ch u 0).V := (colVal W u 0 (Pr.vT u) Pr.vGs).V_nontrivial
-  let d : DecoSet X.E (R.N 0) (Pr.vT u) Pr.vGs := DecoSet.base X.E (R.N 0) (Pr.vT u) Pr.vGs
-  obtain ⟨d0, hd0⟩ := (upD_finite_nonempty hX hPr u P d).2
-  refine (colGSD W Ch u 0).nbr_ne_zero (colOk W Ch hX u 0) (colFree W Ch hX hPr hbig u) (UOp W Ch u 0 P)
-    (fun d => (DecoSet.upSet_finite d P (Pr.T u : 𝓞 X.E)).toFinset)
-    (fun φ d => UG_apply _ _ P _ φ d) (d := d) (d0 := d0) ((Set.Finite.mem_toFinset _).2 hd0) ?_
-  intro d' hd' hc
-  exact col_upSet_class_inj W Ch hX hPr hbig u P d d' d0 ((Set.Finite.mem_toFinset _).1 hd') hd0 hc
 
-theorem DOp_ne_zero (hX : X.Ok) (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) (u : Pr.Word)
-    (P : {P // P ∈ Pr.vT u}) : DOp W Ch u 0 P ≠ 0 := by
-  have : NeZero (R.N 0) := ⟨(R.N_pos 0).ne'⟩
-  have : Nontrivial (colGSD W Ch u 0).V := (colVal W u 0 (Pr.vT u) Pr.vGs).V_nontrivial
-  let d : DecoSet X.E (R.N 0) (Pr.vT u) Pr.vGs := DecoSet.base X.E (R.N 0) (Pr.vT u) Pr.vGs
-  obtain ⟨d0, hd0⟩ := d.dnSet_nonempty P (moveHyp_of_ok hPr u P) (T_unif hX hPr u P).1 (T_unif hX hPr u P).2
-  refine (colGSD W Ch u 0).nbr_ne_zero (colOk W Ch hX u 0) (colFree W Ch hX hPr hbig u) (DOp W Ch u 0 P)
-    (fun d => (DecoSet.dnSetA_finite d P (Pr.T u : 𝓞 X.E) 1).toFinset)
-    (fun φ d => DaG_apply _ _ P _ 1 φ d) (d := d) (d0 := d0) ((Set.Finite.mem_toFinset _).2 hd0) ?_
-  intro d' hd' hc
-  exact col_dnSet_class_inj W Ch hX hPr hbig u P _ d d' d0 ((Set.Finite.mem_toFinset _).1 hd') hd0 hc
 
 end ColsUD
 
@@ -270,31 +415,6 @@ section SeenEx
 
 variable {X : Fields} {Pr : Primes X}
 
-theorem nd_embO_not_isUnit (τ : X.Tau) {x : 𝓞 X.E} (hx : ¬ IsUnit x) : ¬ IsUnit (X.embO τ x) := by
-  intro hu
-  obtain ⟨y, hy⟩ := hu.exists_right_inv
-  apply hx
-  have hx0 : (x : X.E) ≠ 0 := by
-    intro h0
-    have h1 : x = 0 := RingOfIntegers.ext h0
-    rw [h1, map_zero, zero_mul] at hy
-    exact zero_ne_one hy
-  have hy' : X.emb τ (x : X.E) * (y : X.K) = 1 := by
-    have := congrArg (fun z : 𝓞 X.K => (z : X.K)) hy
-    simpa [coe_embO] using this
-  have e : (y : X.K) = X.emb τ ((x : X.E)⁻¹) := by
-    rw [map_inv₀]
-    exact eq_inv_of_mul_eq_one_right hy'
-  have hint : IsIntegral ℤ ((x : X.E)⁻¹) := by
-    have h1 : IsIntegral ℤ ((X.emb τ).toIntAlgHom ((x : X.E)⁻¹)) := by
-      show IsIntegral ℤ (X.emb τ ((x : X.E)⁻¹))
-      rw [← e]
-      exact y.2
-    exact (isIntegral_algHom_iff _ (X.emb τ).injective).1 h1
-  refine IsUnit.of_mul_eq_one (⟨(x : X.E)⁻¹, hint⟩ : 𝓞 X.E) ?_
-  apply RingOfIntegers.ext
-  show (x : X.E) * (x : X.E)⁻¹ = 1
-  exact mul_inv_cancel₀ hx0
 
 end SeenEx
 
@@ -307,7 +427,6 @@ variable {K : Type} [Field K] [NumberField K] [StarRing K] (S : GSD K)
 def GSD.pairEmb (σ : K →+* ℂ) (x y : S.V) : ℂ :=
   ∑ i, ∑ j, starRingEnd ℂ (σ (S.bV.repr x i)) * σ (S.gramV i j) * σ (S.bV.repr y j)
 
-theorem GSD.pairAt_eq_pairEmb (v : InfinitePlace K) (x y : S.V) : S.pairAt v x y = S.pairEmb v.embedding x y := rfl
 
 theorem GSD.map_pair (σ : K →+* ℂ) (hσ : ∀ a : K, σ (star a) = starRingEnd ℂ (σ a)) (x y : S.V) :
     σ (S.pair x y) = S.pairEmb σ x y := by
@@ -398,9 +517,6 @@ theorem nd_gramKd_one (n : ℕ) (τ : X.Tau) : gramKd X.emb (1 : Matrix (Fin n) 
   unfold gramKd
   rw [Matrix.map_one _ (map_zero _) (map_one _), inv_one, Matrix.transpose_one]
 
-theorem nd_gramK_one (n : ℕ) (τ : X.Tau) : gramK X.emb (1 : Matrix (Fin n) (Fin n) X.E) τ = 1 := by
-  unfold gramK
-  rw [Matrix.map_one _ (map_zero _) (map_one _)]
 
 theorem roundPk_gram_pos {n : ℕ} (lam : X.Tau → DomWeight n) {D : Type} (L : D → Submodule (𝓞 X.E) (Sp X.E n))
     (σ : X.K →+* ℂ) :
@@ -409,34 +525,12 @@ theorem roundPk_gram_pos {n : ℕ} (lam : X.Tau → DomWeight n) {D : Type} (L :
   rw [nd_gramKd_one, Matrix.map_one _ (map_zero _) (map_one _)]
   exact Matrix.PosDef.one
 
-theorem squarePk_gram_pos {n : ℕ} (lam : X.Tau → DomWeight n) {D : Type} (L : D → Submodule (𝓞 X.E) (Sp X.E n))
-    (σ : X.K →+* ℂ) :
-    (Matrix.of fun i j : VVIdx lam => σ ((squarePk X lam L).pair (bVV X.K lam i) (bVV X.K lam j))).PosDef := by
-  refine pairPos X.K X.Tau n lam (gramK X.emb 1) σ fun τ => ?_
-  rw [nd_gramK_one, Matrix.map_one _ (map_zero _) (map_one _)]
-  exact Matrix.PosDef.one
 
 variable {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
 
-theorem col_gram_pos (u : Pr.Word) (j : ℕ) (σ : X.K →+* ℂ) : ((colGSD W Ch u j).gramV.map σ).PosDef :=
-  roundPk_gram_pos (W.lamTrue u j) (fun d : DecoSet X.E (R.N j) (Pr.vT u) Pr.vGs => d.1.Lsh) σ
 
-theorem col_ip_pos (hX : X.Ok) (u : Pr.Word) (j : ℕ) (σ : X.K →+* ℂ)
-    (hσ : ∀ a : X.K, σ (star a) = starRingEnd ℂ (σ a)) {φ : ColV W Ch u j} (hφ : φ ≠ 0) :
-    0 < σ ((colGSD W Ch u j).ip (colOk W Ch hX u j) φ φ) := by
-  exact GSD.ip_pos _ _ σ hσ (col_gram_pos W Ch u j σ) hφ
 
-theorem col_ipAt_pos (hX : X.Ok) (u : Pr.Word) (j : ℕ) (v : InfinitePlace X.K) {φ : ColV W Ch u j} (hφ : φ ≠ 0) :
-    0 < (colGSD W Ch u j).ipAt (colOk W Ch hX u j) v φ φ := by
-  exact (colGSD W Ch u j).ipEmb_pos (colOk W Ch hX u j) v.embedding (col_gram_pos W Ch u j v.embedding) hφ
 
-theorem col_ip_ne_zero (hX : X.Ok) (u : Pr.Word) (j : ℕ) {φ : ColV W Ch u j} (hφ : φ ≠ 0) :
-    (colGSD W Ch u j).ip (colOk W Ch hX u j) φ φ ≠ 0 := by
-  obtain ⟨σ, hσ⟩ := hX.conjK
-  intro h0
-  have := col_ip_pos W Ch hX u j σ hσ hφ
-  rw [h0, map_zero] at this
-  exact lt_irrefl _ this
 
 end ColPos
 
@@ -445,33 +539,7 @@ section LatGen
 variable {K : Type} [Field K] [NumberField K] {V : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V]
   [IsScalarTower (𝓞 K) K V]
 
-theorem nd_isLattice_comap {L : Submodule (𝓞 K) V} (hL : Submodule.IsLattice K L) (U : Submodule K V) :
-    Submodule.IsLattice K (L.comap (U.subtype.restrictScalars (𝓞 K))) := by
-  constructor
-  · have h1 : Module.Finite (𝓞 K) L := Module.Finite.iff_fg.mpr hL.fg
-    have h2 : IsNoetherian (𝓞 K) L := isNoetherian_of_isNoetherianRing_of_finite (𝓞 K) L
-    let f : L.comap (U.subtype.restrictScalars (𝓞 K)) →ₗ[𝓞 K] L :=
-      { toFun := fun x => ⟨((x : U) : V), x.2⟩
-        map_add' := fun _ _ => rfl
-        map_smul' := fun _ _ => rfl }
-    have hf : Function.Injective f := fun x y hxy =>
-      Subtype.ext (Subtype.ext (congrArg (fun z : L => (z : V)) hxy))
-    exact Module.Finite.iff_fg.mp (Module.Finite.of_injective f hf)
-  · rw [eq_top_iff]
-    intro x _
-    obtain ⟨a, ha, hax⟩ := lc_exists_smul_mem L (x := (x : V)) (by rw [hL.span_eq_top]; trivial)
-    have ha' : algebraMap (𝓞 K) K a ≠ 0 := by
-      rwa [Ne, FaithfulSMul.algebraMap_eq_zero_iff]
-    have h1 : a • x ∈ Submodule.span K ((L.comap (U.subtype.restrictScalars (𝓞 K)) : Submodule (𝓞 K) U) : Set U) :=
-      Submodule.subset_span hax
-    have h2 := Submodule.smul_mem _ (algebraMap (𝓞 K) K a)⁻¹ h1
-    rwa [← algebraMap_smul K a x, smul_smul, inv_mul_cancel₀ ha', one_smul] at h2
 
-theorem nd_lattice_ne_bot [Nontrivial V] {L : Submodule (𝓞 K) V} (hL : Submodule.IsLattice K L) : L ≠ ⊥ := by
-  intro h
-  have h2 := hL.span_eq_top
-  rw [h, Submodule.bot_coe, Submodule.span_zero_singleton] at h2
-  exact bot_ne_top h2
 
 end LatGen
 
@@ -479,48 +547,17 @@ section ColLat
 
 variable {X : Fields}
 
-theorem roundPk_isLattice {n : ℕ} (lam : X.Tau → DomWeight n) {D : Type} (L : D → Submodule (𝓞 X.E) (Sp X.E n)) (d : D)
-    (hL : Submodule.IsLattice X.E (L d)) :
-    Submodule.IsLattice X.K ((roundPk X lam L).Nab d) ∧ Submodule.IsLattice X.K ((roundPk X lam L).Del d) :=
-  nabDelLattice X.K X.Tau n lam _ fun τ =>
-    (dualFrLattice X.K n 1 _ (by simp) (tauLatLattice X.E X.K X.Tau n X.emb τ (L d) hL)).1
 
-theorem squarePk_isLattice {n : ℕ} (lam : X.Tau → DomWeight n) {D : Type} (L : D → Submodule (𝓞 X.E) (Sp X.E n)) (d : D)
-    (hL : Submodule.IsLattice X.E (L d)) :
-    Submodule.IsLattice X.K ((squarePk X lam L).Nab d) ∧ Submodule.IsLattice X.K ((squarePk X lam L).Del d) :=
-  nabDelLattice X.K X.Tau n lam _ fun τ => tauLatLattice X.E X.K X.Tau n X.emb τ (L d) hL
 
 variable {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
 
-theorem colVal_isLattice (u : Pr.Word) (j : ℕ) (d : DecoSet X.E (R.N j) (Pr.vT u) Pr.vGs) :
-    Submodule.IsLattice X.K ((colGSD W Ch u j).Nab d) ∧ Submodule.IsLattice X.K ((colGSD W Ch u j).Del d) :=
-  roundPk_isLattice (W.lamTrue u j) (fun d : DecoSet X.E (R.N j) (Pr.vT u) Pr.vGs => d.1.Lsh) d d.2.Lsh_lattice
 
-theorem colVal_del_ne_bot (u : Pr.Word) (j : ℕ) (d : DecoSet X.E (R.N j) (Pr.vT u) Pr.vGs) :
-    (colGSD W Ch u j).Del d ≠ ⊥ := by
-  have : Nontrivial (colGSD W Ch u j).V := (colVal W u j (Pr.vT u) Pr.vGs).V_nontrivial
-  exact nd_lattice_ne_bot (colVal_isLattice W Ch u j d).2
 
-theorem ColLnab_isLattice (hX : X.Ok) (u : Pr.Word) (j : ℕ) : Submodule.IsLattice X.K (ColLnab W Ch u j) :=
-  (colGSD W Ch u j).intNab_isLattice (colOk W Ch hX u j) fun d => (colVal_isLattice W Ch u j d).1
 
-theorem ColRamL_isLattice (hX : X.Ok) (u : Pr.Word) (j : ℕ) : Submodule.IsLattice X.K (ColRamL W Ch u j) :=
-  nd_isLattice_comap (thl_ColL_isLattice W Ch hX u j) (ColRamV W Ch u j)
 
-theorem MfL_isLattice (hX : X.Ok) (u : Pr.Word) : Submodule.IsLattice X.K (MfL W Ch u) := thl_ColL_isLattice W Ch hX u 0
 
-theorem MramL_isLattice (hX : X.Ok) (u : Pr.Word) : Submodule.IsLattice X.K (MramL W Ch u) :=
-  ColRamL_isLattice W Ch hX u 0
 
-theorem MfL_ne_bot (hX : X.Ok) (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) (u : Pr.Word) : MfL W Ch u ≠ ⊥ := by
-  haveI : Nontrivial (MfV W Ch u) := Module.nontrivial_of_finrank_pos
-    (lt_of_lt_of_le (finrank_MramV_pos_ok W Ch hX hPr hbig u) (le_of_lt (finrank_MramV_lt W Ch hX hPr hbig u)))
-  exact nd_lattice_ne_bot (MfL_isLattice W Ch hX u)
 
-theorem MramL_ne_bot (hX : X.Ok) (hPr : Pr.Ok) (hbig : 2 * X.f * R.k < Pr.g 0 - 1) (u : Pr.Word) :
-    MramL W Ch u ≠ ⊥ := by
-  haveI : Nontrivial (MramV W Ch u) := Module.nontrivial_of_finrank_pos (finrank_MramV_pos_ok W Ch hX hPr hbig u)
-  exact nd_lattice_ne_bot (MramL_isLattice W Ch hX u)
 
 end ColLat
 
@@ -766,29 +803,7 @@ def exampleTopWeights (X : Fields) (Word : Type) : Wts X Word Examples₂.R0 whe
   hc := fun _ _ => Examples₂.hc0
   tops := Finset.univ
 
-theorem exampleTopWeights_isAdmissible (X : Fields) (Word : Type) : (exampleTopWeights X Word).Ok where
-  row_ok := fun _ => ⟨Examples₂.hc0, rfl⟩
-  hc_row := fun _ _ => rfl
-  u_first := fun _ _ _ _ => rfl
-  u_last := fun _ _ _ _ => rfl
 
-theorem exampleParameter_weight_bounds (j : ℕ) (hj : j ≤ Examples₂.R0.m) (i : Fin (Examples₂.R0.N j)) :
-    -90 ≤ (Examples₂.lamOf Examples₂.hc0 j).w i ∧ (Examples₂.lamOf Examples₂.hc0 j).w i ≤ 53 := by
-  have hu : ∀ a : Fin 8, (-90 : ℚ) ≤ hcToWeightQ Examples₂.hcU a ∧ hcToWeightQ Examples₂.hcU a ≤ 53 := by
-    intro a
-    fin_cases a <;> simp [hcToWeightQ, rhoVec, Examples₂.hcU] <;> norm_num
-  have he : ∀ b : Fin 2, (-90 : ℚ) ≤ -wG Examples₂.R0 (Examples₂.hcE b) (b.1 + 1) ∧ -wG Examples₂.R0 (Examples₂.hcE b) (b.1 + 1) ≤ 53 := by
-    intro b
-    fin_cases b <;> simp [wG, Examples₂.hcE, Examples₂.R0] <;> norm_num
-  have key : (-90 : ℚ) ≤ Examples₂.wtQ Examples₂.hc0 j hj i ∧ Examples₂.wtQ Examples₂.hc0 j hj i ≤ 53 := by
-    unfold Examples₂.wtQ
-    by_cases h : i.1 < Examples₂.R0.k
-    · rw [dif_pos h]
-      exact hu ⟨i.1, h⟩
-    · rw [dif_neg h]
-      exact he ⟨(i.1 - Examples₂.R0.k) / (Examples₂.R0.t + 1), Examples₂.R0.blk_lt hj i h⟩
-  rw [← Examples₂.lamOf_eq Examples₂.hc0 j hj i] at key
-  exact ⟨by exact_mod_cast key.1, by exact_mod_cast key.2⟩
 
 def ndN : ℕ := 4 * 51613301813429074383
 
@@ -826,49 +841,13 @@ def ndPr : Primes ndX := gaussianPrimesLarge ndIota (cycQ ndN) gaussianRationals
 
 def ndW : Wts ndX ndPr.Word Examples₂.R0 := exampleTopWeights _ _
 
-theorem ndX_ok : ndX.Ok := quadFields_ok 1 ndIota (cycQ ndN) gaussianRationals_le_cyclotomic_level one_pos
 
 theorem ndPr_ok : ndPr.Ok := gaussianPrimesLarge_ok ndIota (cycQ ndN) gaussianRationals_le_cyclotomic_level
 
-theorem ndW_ok : ndW.Ok := exampleTopWeights_isAdmissible _ _
 
-theorem ndX_f : ndX.f = 1 := gauss_f ndIota (cycQ ndN) gaussianRationals_le_cyclotomic_level
 
-theorem ndPr_alt (u : ndPr.Word) : ndPr.T u = 763521676554817 := rfl
 
-theorem nd_sizes : Sizes ndPr ndW 100 where
-  g_big := by
-    rw [ndX_f]
-    exact Fin.forall_fin_two.2 ⟨(by norm_num : 2 * 1 * 8 < 29 - 1), (by norm_num : 2 * 1 * 8 < 37 - 1)⟩
-  T_gt := by
-    intro u
-    rw [ndPr_alt]
-    norm_num
-  a_gt := by
-    rw [ndX_f]
-    have h2 : Examples₂.R0.N Examples₂.R0.m = 40 := rfl
-    rw [h2]
-    norm_num
-  spread_le := by
-    intro u j hj τ
-    unfold Wts.lamTrue
-    rw [spread_shiftW]
-    have key : (Examples₂.lamOf Examples₂.hc0 j).spread ≤ 200 := by
-      have hN : ((Examples₂.R0.N j : ℕ) : ℤ) ≤ 40 := by
-        have h1 : Examples₂.R0.N j ≤ Examples₂.R0.N Examples₂.R0.m := Examples₂.N_mono hj
-        have h2 : Examples₂.R0.N Examples₂.R0.m = 40 := rfl
-        rw [h2] at h1
-        exact_mod_cast h1
-      unfold DomWeight.spread
-      split_ifs with h
-      · have h1 := (exampleParameter_weight_bounds j hj ⟨0, h⟩).2
-        have h2 := (exampleParameter_weight_bounds j hj ⟨Examples₂.R0.N j - 1, by omega⟩).1
-        linarith
-      · norm_num
-    have key' : ((ndW.lamN u j τ).spread : ℝ) ≤ 200 := by exact_mod_cast key
-    linarith
 
-theorem nd_big : 2 * ndX.f * Examples₂.R0.k < ndPr.g 0 - 1 := nd_sizes.g_big 0
 
 theorem ndCh_exists : ∃ Ch : Chars ndX ndPr Examples₂.R0.m, Ch.Ok :=
   gaussChars_of ndIota (cycQ ndN) gaussianRationals_le_cyclotomic_level _ ndPr_ok ndN_pos
@@ -883,21 +862,14 @@ theorem ndPs_exists : ∃ Ps : CharT ndX ndPr, Ps.Ok :=
 
 def ndCh : Chars ndX ndPr Examples₂.R0.m := ndCh_exists.choose
 
-theorem ndCh_ok : ndCh.Ok := by
-  exact ndCh_exists.choose_spec
 
 def ndPs : CharT ndX ndPr := ndPs_exists.choose
 
-theorem ndPs_ok : ndPs.Ok := by
-  exact ndPs_exists.choose_spec
 
 section OfSizes
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
 
-theorem finrank_MramV_pos_of_sizes (hX : X.Ok) (hPr : Pr.Ok) {a : ℝ} (hS : Sizes Pr W a) (u : Pr.Word) :
-    0 < finrank X.K (MramV W Ch u) :=
-  finrank_MramV_pos_ok W Ch hX hPr (hS.g_big 0) u
 
 end OfSizes
 
@@ -905,63 +877,15 @@ section InstThms
 
 open ComplexOrder
 
-theorem nd_free (u : ndPr.Word) :
-    (colGSD ndW ndCh u 0).Free ∧ (colGSD ndW ndCh u 0).FreeOnCl (DiaG ndX.E (ndPr.vT u)) :=
-  ⟨colFree ndW ndCh ndX_ok ndPr_ok nd_big u, colDiaFree ndW ndCh ndX_ok ndPr_ok nd_big u⟩
 
-theorem nd_card_Cl (u : ndPr.Word) : 763521676554816 ≤ Nat.card (colGSD ndW ndCh u 0).Cl := by
-  obtain ⟨c0, hc0, h⟩ := exists_card_colCl ndW ndCh ndX_ok ndPr_ok nd_big u
-  rw [h, ndX_f, ndPr_alt, pow_one]
-  exact Nat.le_mul_of_pos_right _ hc0
 
-theorem nd_finrank_MfV (u : ndPr.Word) : 763521676554816 ≤ finrank ndX.K (MfV ndW ndCh u) := by
-  have := le_finrank_MfV ndW ndCh ndX_ok ndPr_ok nd_big u
-  rw [ndX_f, ndPr_alt, pow_one] at this
-  exact this
 
-theorem nd_finrank_MramV (u : ndPr.Word) : 763521676554815 ≤ finrank ndX.K (MramV ndW ndCh u) := by
-  have := le_finrank_MramV ndW ndCh ndX_ok ndPr_ok nd_big u
-  rw [ndX_f, ndPr_alt, pow_one] at this
-  exact this
 
-theorem nd_rank_formula (u : ndPr.Word) :
-    finrank ndX.K (MramV ndW ndCh u) * 763521676554816 = finrank ndX.K (MfV ndW ndCh u) * 763521676554815 := by
-  obtain ⟨d0, -, h1, h2⟩ := exists_finrank_Mf_Mram ndW ndCh ndX_ok ndPr_ok nd_big u
-  rw [h1, h2, ndX_f, ndPr_alt, pow_one, pow_one]
-  have e1 : (763521676554817 : ℕ) - 2 = 763521676554815 := by norm_num
-  have e2 : (763521676554817 : ℕ) - 1 = 763521676554816 := by norm_num
-  rw [e1, e2]
-  ring
 
-theorem nd_exists_VV (u : ndPr.Word) : ∃ w : HeightOneSpectrum (𝓞 ndX.K), seenC ndPr u w ∧ (VVTc ndW u w).Nonempty := by
-  obtain ⟨w, hw⟩ := exists_seenC ndX_ok ndPr_ok u
-  exact ⟨w, hw, VVTc_nonempty ndW ndPr_ok hw ⟨(), Finset.mem_univ _⟩⟩
 
-theorem cols_nondegenerate : ∃ (X : Fields) (Pr : Primes X) (Ch : Chars X Pr Examples₂.R0.m) (Ps : CharT X Pr)
-    (W : Wts X Pr.Word Examples₂.R0) (hX : X.Ok) (a : ℝ),
-    Pr.Ok ∧ Ch.Ok ∧ Ps.Ok ∧ W.Ok ∧ Sizes Pr W a ∧ W.tops.Nonempty ∧ Nonempty Pr.Word ∧
-      ∀ u : Pr.Word,
-        (colGSD W Ch u 0).Free ∧ (colGSD W Ch u 0).FreeOnCl (DiaG X.E (Pr.vT u)) ∧
-        0 < finrank X.K (MramV W Ch u) ∧ finrank X.K (MramV W Ch u) < finrank X.K (MfV W Ch u) ∧
-        (∀ P, NmOp W Ch u 0 P ≠ 0 ∧ UOp W Ch u 0 P ≠ 0 ∧ DOp W Ch u 0 P ≠ 0) ∧
-        (∃ w : HeightOneSpectrum (𝓞 X.K), seenC Pr u w ∧ (VVTc W u w).Nonempty) ∧
-        Submodule.IsLattice X.K (MfL W Ch u) ∧ Submodule.IsLattice X.K (MramL W Ch u) ∧
-        MfL W Ch u ≠ ⊥ ∧ MramL W Ch u ≠ ⊥ ∧ (Mu0H W Ch hX u).Good ∧ (MramH W Ch hX u).Good ∧
-        (∀ j d, Submodule.IsLattice X.K ((colGSD W Ch u j).Del d) ∧ (colGSD W Ch u j).Del d ≠ ⊥) ∧
-        ∀ (j : ℕ) (v : InfinitePlace X.K) (φ : ColV W Ch u j), φ ≠ 0 →
-          0 < (colGSD W Ch u j).ipAt (colOk W Ch hX u j) v φ φ := by
-  refine ⟨ndX, ndPr, ndCh, ndPs, ndW, ndX_ok, 100, ndPr_ok, ndCh_ok, ndPs_ok, ndW_ok, nd_sizes, ⟨(), Finset.mem_univ _⟩, ⟨()⟩,
-    fun u => ⟨(nd_free u).1, (nd_free u).2, finrank_MramV_pos_ok ndW ndCh ndX_ok ndPr_ok nd_big u,
-      finrank_MramV_lt ndW ndCh ndX_ok ndPr_ok nd_big u,
-      fun P => ⟨NmOp_ne_zero ndW ndCh ndX_ok ndPr_ok nd_big u P, UOp_ne_zero ndW ndCh ndX_ok ndPr_ok nd_big u P,
-        DOp_ne_zero ndW ndCh ndX_ok ndPr_ok nd_big u P⟩,
-      nd_exists_VV u,
-      MfL_isLattice ndW ndCh ndX_ok u, MramL_isLattice ndW ndCh ndX_ok u,
-      MfL_ne_bot ndW ndCh ndX_ok ndPr_ok nd_big u, MramL_ne_bot ndW ndCh ndX_ok ndPr_ok nd_big u,
-      Mu0H_good ndW ndCh ndX_ok u, MramH_good ndW ndCh ndX_ok u,
-      fun j d => ⟨(colVal_isLattice ndW ndCh u j d).2, colVal_del_ne_bot ndW ndCh u j d⟩,
-      fun j v φ hφ => col_ipAt_pos ndW ndCh ndX_ok u j v hφ⟩⟩
 
 end InstThms
 
 end Formalism.L2.Col
+end
+end

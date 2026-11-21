@@ -9,9 +9,102 @@ import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.IsProperOfIs
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.VeryAmpleByPull
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsHomOfVeryAmpleBy
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.HomEqOfPullSections
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsProjectiveAlgebraisationFormalEmbeddingStatement
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.IsIsoOfIsClosedImmersion
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsProjectiveAlgebraisationFormalEmbedding
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.IsIsoOfIsClosedImmersionOfThickenings
 
+section
+open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_projective_algebraisation_formal_embedding : ∀ (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [IsAdicComplete (IsLocalRing.maximalIdeal V) V] (Y : ∀ e : ℕ, Over (Spec (CommRingCat.of (V ⧸ (IsLocalRing.maximalIdeal V) ^ (e + 1))))) (β : ∀ e, (Y e).left ⟶ (Y (e + 1)).left), (∀ e, IsPullback (β e) (Y e).hom (Y (e + 1)).hom (thickTrans V (IsLocalRing.maximalIdeal V) e)) → (∀ e, Flat (Y e).hom) → ∀ (H : ∀ e, LB (Y e).left) (v : ∀ e, LB.Iso (H e) ((H (e + 1)).pull (β e))), (∀ e, (H e).IsLB ∧ (v e).IsGen) → ∀ (n : ℕ) (s : ∀ e, Fin (n + 1) → LB.Sec (H e)), (∀ e, (∀ j, (∀ z (k : (H (e + 1)).ι) (k' : (H e).ι), (β e) z ∈ (H (e + 1)).U k → z ∈ (H e).U k' → gs (β e) z _ ((s (e + 1) j).f k) = (Geo.Tor.gw (v e) (𝟙 _) z k k').val * gs (𝟙 _) z _ ((s e j).f k')))) → VeryAmpleBy (Y 0).hom (H 0) (s 0) → ∃ (B : Over (Spec (CommRingCat.of V))) (H' : LB B.left) (s' : Fin (n + 1) → LB.Sec H') (b : ∀ e, (Y e).left ⟶ B.left) (w : ∀ e, LB.Iso (H e) (H'.pull (b e))), H'.IsLB ∧ VeryAmpleBy B.hom H' s' ∧ (∀ e, IsPullback (b e) (Y e).hom B.hom (thick V (IsLocalRing.maximalIdeal V) e)) ∧ (∀ e, β e ≫ b (e + 1) = b e) ∧ (∀ e, (w e).IsGen ∧ (∀ j, (∀ z (k : (H').ι) (k' : (H e).ι), (b e) z ∈ (H').U k → z ∈ (H e).U k' → gs (b e) z _ ((s' j).f k) = (Geo.Tor.gw (w e) (𝟙 _) z k k').val * gs (𝟙 _) z _ ((s e j).f k')))) ∧ ∀ (t : ℕ) (F : MvPolynomial (Fin (n + 1)) V), F.IsHomogeneous t → (∀ e, (∀ k : (H e).ι, MvPolynomial.eval₂Hom (cst ((Y (e)).hom ≫ thick V (IsLocalRing.maximalIdeal V) (e)) ((H e).U k)) (fun j => (s e j).f k) (F) = 0)) → (∀ k : (H').ι, MvPolynomial.eval₂Hom (cst (B.hom) ((H').U k)) (fun j => (s' j).f k) (F) = 0) := by
+  first | exact @GlobalTheory.Unif.exists_projective_of_formal_embedding | exact GlobalTheory.Unif.exists_projective_of_formal_embedding | (intros; apply GlobalTheory.Unif.exists_projective_of_formal_embedding <;> assumption)
+end
+
+section
+open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+
+namespace GlobalTheory.IsoLimit
+
+open ThickeningClosed
+
+theorem isIso_of_isClosedImmersion {V : Type} [CommRing V] [IsLocalRing V] [IsNoetherianRing V]
+    {X Z : Scheme.{0}} (f : X ⟶ Spec (CommRingCat.of V)) [IsProper f] (j : Z ⟶ X)
+    [IsClosedImmersion j]
+    (h : ∀ n : ℕ, ∃ l : pullback f (thick V (IsLocalRing.maximalIdeal V) n) ⟶ Z,
+      l ≫ j = pullback.fst f (thick V (IsLocalRing.maximalIdeal V) n)) : IsIso j := by
+  have : IsLocallyNoetherian X := LocallyOfFiniteType.isLocallyNoetherian f
+  have key : ∀ x, x ∈ zeroLocusOpen j.ker := by
+    intro x
+    by_contra hx
+    have hc : IsClosed (f '' (zeroLocusOpen j.ker)ᶜ) :=
+      f.isClosedMap _ (isOpen_zeroLocusOpen _).isClosed_compl
+    obtain ⟨y, hy, hy'⟩ :=
+      (IsLocalRing.specializes_closedPoint (R := V) (f x)).mem_closed hc ⟨x, hx, rfl⟩
+    refine hy (mem_of_thickenings _ f j h y ?_)
+    rw [hy']
+    exact le_rfl
+  rw [IsClosedImmersion.isIso_iff_ker_eq_bot]
+  refine le_bot_iff.1 fun U a ha ↦ ?_
+  change a = 0
+  refine eq_zero_of_localization a fun J hJ ↦ ?_
+  obtain ⟨s, hs, hsa⟩ := exists_mul_eq_zero_of_mem j.ker U ⟨J, hJ.isPrime⟩ (key _) ha
+  exact (IsLocalization.map_eq_zero_iff J.primeCompl _ a).2 ⟨⟨s, hs⟩, hsa⟩
+
+theorem main : ∀ (V : Type) [CommRing V] [IsDomain V] [IsLocalRing V] [IsNoetherianRing V] (Γ₁ Y : Over (Spec (CommRingCat.of V))) (p : Γ₁ ⟶ Y) [IsProper Y.hom] [IsProper p.left], (∀ e, IsIso ((Over.pullback (thick V (IsLocalRing.maximalIdeal V) e)).map p)) → IsIso p := by
+  intro V _ _ _ _ Γ₁ Y p _ _ h
+  have hw : p.left ≫ Y.hom = Γ₁.hom := Over.w p
+  let q (e : ℕ) : pullback Γ₁.hom (thick V (IsLocalRing.maximalIdeal V) e) ⟶
+      pullback Y.hom (thick V (IsLocalRing.maximalIdeal V) e) :=
+    ((Over.pullback (thick V (IsLocalRing.maximalIdeal V) e)).map p).left
+  have hq (e : ℕ) : IsIso (q e) := by
+    haveI := h e
+    exact inferInstanceAs (IsIso ((Over.forget _).map
+      ((Over.pullback (thick V (IsLocalRing.maximalIdeal V) e)).map p)))
+  have q1 (e : ℕ) : q e ≫ pullback.fst _ _ = pullback.fst _ _ ≫ p.left := pullback.lift_fst _ _ _
+  have q2 (e : ℕ) : q e ≫ pullback.snd _ _ = pullback.snd _ _ := pullback.lift_snd _ _ _
+  have hd : IsIso (pullback.diagonal p.left) := by
+    refine isIso_of_isClosedImmersion (pullback.fst p.left p.left ≫ p.left ≫ Y.hom) _ fun n ↦ ?_
+    have c := pullback.condition (f := pullback.fst p.left p.left ≫ p.left ≫ Y.hom)
+      (g := thick V (IsLocalRing.maximalIdeal V) n)
+    have c' := pullback.condition (f := p.left) (g := p.left)
+    set u := pullback.fst (pullback.fst p.left p.left ≫ p.left ≫ Y.hom)
+      (thick V (IsLocalRing.maximalIdeal V) n)
+    set v := pullback.snd (pullback.fst p.left p.left ≫ p.left ≫ Y.hom)
+      (thick V (IsLocalRing.maximalIdeal V) n)
+    have e : pullback.lift (f := Γ₁.hom) (u ≫ pullback.fst _ _) v
+          (by rw [← c, ← hw, Category.assoc]) =
+        pullback.lift (f := Γ₁.hom) (u ≫ pullback.snd _ _) v
+          (by rw [← c, ← hw, Category.assoc, ← reassoc_of% c']) := by
+      haveI := hq n
+      rw [← cancel_mono (q n)]
+      apply pullback.hom_ext
+      · simp only [Category.assoc, q1, pullback.lift_fst_assoc, c']
+      · simp only [Category.assoc, q2, pullback.lift_snd]
+    have e' := congrArg (· ≫ pullback.fst _ _) e
+    simp only [pullback.lift_fst] at e'
+    refine ⟨u ≫ pullback.fst _ _, ?_⟩
+    apply pullback.hom_ext
+    · simp
+    · simp [e']
+  have hm : Mono p.left := (pullback.isIso_diagonal_iff p.left).1 hd
+  have hc : IsClosedImmersion p.left :=
+    (IsClosedImmersion.iff_isProper_and_mono p.left).2 ⟨‹_›, hm⟩
+  have hi : IsIso p.left := by
+    refine isIso_of_isClosedImmersion Y.hom _ fun n ↦ ?_
+    haveI := hq n
+    exact ⟨inv (q n) ≫ pullback.fst _ _, by rw [Category.assoc, ← q1, IsIso.inv_hom_id_assoc]⟩
+  have : IsIso ((Over.forget _).map p) := hi
+  exact isIso_of_reflects_iso p (Over.forget _)
+
+end GlobalTheory.IsoLimit
+end
+
+section
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw
 open scoped CategoryTheory.Obj
@@ -212,3 +305,4 @@ theorem exists_hom_of_thickenings : ∀ (V : Type) [CommRing V] [IsDomain V] [Is
   exact ((Category.assoc _ _ _).symm.trans this).trans (pullback.lift_snd _ _ _)
 
 end GlobalTheory.MorAlg
+end

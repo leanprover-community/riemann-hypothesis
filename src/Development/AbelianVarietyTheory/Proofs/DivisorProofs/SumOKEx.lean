@@ -1,10 +1,670 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlatTensorDependsBelowAndSmallTranslationInvariaStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlatTensorSupportBoundedByUniformizerPowStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlatTensorVanishesUnlessLastRowBoundedStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFinsetCosetRepsBoundedHalfPoints
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IndicatorSmallCosetHalfIsSchwartzBruhatStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GridMovedTensorBoundedSupportLocallyConstant
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsSBArgs
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IndicatorSmallCosetHalfIsSchwartzBruhat
 
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links
+open IsDedekindDomain NumberField Matrix MeasureTheory ValuativeRel
+open scoped TensorProduct nonZeroDivisors
+open GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StepData GlobalTheory.StdFrames Formalism.L2.Host Formalism.L2.DIV
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gridMovedTensor_bounded_support_locallyConstant : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (G : Grid k) (ϖ : kˣ) (e : ℕ) (T : G.Args → ℂ) (keep : Bool) (g : G.VertexGroup), IsUnif ϖ → G.IsTensor ϖ e (oppositePath G.m) T → ∃ n : ℕ, (∀ z : G.Args, moved G keep g T z ≠ 0 → ∀ b ∈ oppositePath G.m, ∀ r s, valuation k (z b r s) ≤ valuation k (((ϖ ^ n)⁻¹ : kˣ) : k)) ∧ ∀ z δ : G.Args, (∀ b ∈ oppositePath G.m, ∀ r s, valuation k (δ b r s) ≤ valuation k ((ϖ ^ n : kˣ) : k)) → moved G keep g T (z + δ) = moved G keep g T z := by
+  first | exact @GlobalTheory.MovedBound.moved_bounded_locConst | exact GlobalTheory.MovedBound.moved_bounded_locConst | (intros; apply GlobalTheory.MovedBound.moved_bounded_locConst <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links
+open IsDedekindDomain NumberField Matrix MeasureTheory ValuativeRel
+open scoped TensorProduct nonZeroDivisors
+open GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StepData GlobalTheory.StdFrames Formalism.L2.Host Formalism.L2.DIV
+
+noncomputable section
+namespace GlobalTheory.FunObj.FlatDep
+open GlobalTheory.RootEx
+
+variable {k : Type} [Field k]
+
+theorem stepPt_add {n n' : Type*} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ}
+    (x₀ a₀ : Matrix n n' k) (u : StepVar n c n' → k) :
+    stepPt (x₀ + a₀) u = stepPt x₀ u + fromBlocks a₀ 0 0 0 := by
+  ext r s
+  rcases r with r | r <;> rcases s with s | s <;> (simp [stepPt, basePt]; try abel)
+
+variable {G : Grid k}
+
+theorem colVar_add (x a : ColArgs G) (u : Vars G) (j : Fin (G.m - 1)) (r : Fin (topRank G (j + 1))) :
+    colVar (x + a) u j r = colVar x u j r := by
+  simp [colVar, stepPt_add]
+
+theorem rowVar_add (x a : ColArgs G) (u : Vars G) (j : ℕ) (s : Fin (topRank G j)) :
+    rowVar (x + a) u j s = rowVar x u j s + if j < G.m - 1 then 0 else a j (topLast G (j + 1)) s := by
+  unfold rowVar
+  split_ifs with h
+  · simp [stepPt_add]
+  · simp
+
+theorem ch_add {n n' : Type*} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ}
+    (x₀ a₀ : Matrix n n' k) (u : StepVar n c n' → k) : ch (stepPt (x₀ + a₀) u) = ch (stepPt x₀ u) := by
+  simp [ch, stepPt_add]
+
+theorem phase_add (x a : ColArgs G) (u : Vars G) : phase (x + a) u = phase x u +
+    ∑ j : Fin (G.m - 1), if Even (G.m - 2 - j) then ∑ r, (if (j : ℕ) + 1 < G.m - 1 then 0 else
+      a (j + 1) (topLast G (j + 1 + 1)) r) * colVar x u j r else 0 := by
+  unfold phase
+  rw [← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  rw [Pi.add_apply, ch_add]
+  by_cases hE : Even (G.m - 2 - (j : ℕ))
+  · simp only [if_pos hE, rowVar_add, colVar_add, add_mul, Finset.sum_add_distrib, add_assoc]
+  · simp only [if_neg hE, add_zero]
+
+section Loc
+variable [ValuativeRel k] (hs : 1 ≤ G.s)
+
+omit [ValuativeRel k] in
+theorem mem_opp_theta {j : ℕ} (hj : j < G.m) : Edge.theta G.m j ∈ oppositePath G.m := by
+  simp [oppositePath]; omega
+
+omit [ValuativeRel k] in
+theorem mem_opp {b : Edge} (hb : b ∈ oppositePath G.m) :
+    (∃ i, i < G.m ∧ b = .ex i G.m) ∨ ∃ j, j < G.m ∧ b = .theta G.m j := by
+  simp only [oppositePath, List.mem_append, List.mem_map, List.mem_range, List.mem_reverse] at hb
+  rcases hb with ⟨i, hi, rfl⟩ | ⟨j, hj, rfl⟩
+  · exact .inl ⟨i, hi, rfl⟩
+  · exact .inr ⟨j, hj, rfl⟩
+
+omit [ValuativeRel k] in
+theorem downMap_congr {x x' : ColArgs G} (hx : ∀ j, j < G.m → x j = x' j) (u : Vars G) {j : ℕ} (hj : j < G.m) :
+    downMap hs x u j = downMap hs x' u j := by
+  unfold downMap; rw [hx j hj]
+
+omit [ValuativeRel k] in
+theorem fill_congr {x x' : ColArgs G} {y y' : RowArgs G} (hx : ∀ j, j < G.m → x j = x' j)
+    (hy : ∀ i, i < G.m → y i = y' i) (u : Vars G) {b : Edge} (hb : b ∈ oppositePath G.m) :
+    fill hs x y u b = fill hs x' y' u b := by
+  rcases mem_opp hb with ⟨i, hi, rfl⟩ | ⟨j, hj, rfl⟩
+  · rw [fill_ex, fill_ex, hy i hi]
+  · rw [fill_theta, fill_theta, downMap_congr hs hx u hj]
+
+omit [ValuativeRel k] in
+theorem phase_congr {x x' : ColArgs G} (hx : ∀ j, j < G.m → x j = x' j) (u : Vars G) :
+    phase x u = phase x' u := by
+  unfold phase colVar rowVar
+  refine Finset.sum_congr rfl fun j _ => ?_
+  have h1 := hx j (by have := j.2; omega)
+  have h2 := hx (j + 1) (by have := j.2; omega)
+  rw [h1, h2]
+
+theorem fromBlocks_le {n n' m m' : Type*} {A : Matrix n n' k} {t : ValueGroupWithZero k}
+    (hA : ∀ r s, valuation k (A r s) ≤ t) (r : n ⊕ m) (s : n' ⊕ m') :
+    valuation k (fromBlocks A 0 0 (0 : Matrix m m' k) r s) ≤ t := by
+  rcases r with r | r <;> rcases s with s | s <;> simp [hA]
+
+theorem fill_sub_le {x a : ColArgs G} {y b : RowArgs G} {t : ValueGroupWithZero k}
+    (ha : ∀ j, j < G.m → ∀ r s, valuation k (a j r s) ≤ t) (hb : ∀ i, i < G.m → ∀ r s, valuation k (b i r s) ≤ t)
+    (u : Vars G) {c : Edge} (hc : c ∈ oppositePath G.m) (r : Fin (G.rank c.tgt)) (s : Fin (G.rank c.src)) :
+    valuation k ((fill hs (x + a) (y + b) u - fill hs x y u) c r s) ≤ t := by
+  rcases mem_opp hc with ⟨i, hi, rfl⟩ | ⟨j, hj, rfl⟩
+  · simp only [Pi.sub_apply, fill_ex, Matrix.sub_apply, transpose_apply, Pi.add_apply, Matrix.add_apply,
+      add_sub_cancel_left]
+    exact hb i hi s r
+  · simp only [Pi.sub_apply, fill_theta, Matrix.sub_apply, transpose_apply]
+    unfold downMap
+    split_ifs with h h'
+    · simp only [reindex_apply, submatrix_apply, Pi.add_apply, stepPt_add, Matrix.add_apply, add_sub_cancel_left]
+      exact fromBlocks_le (ha j hj) _ _
+    · simp only [submatrix_apply, Pi.add_apply, Matrix.add_apply, add_sub_cancel_left]
+      exact ha j hj _ _
+    · simp
+
+omit [ValuativeRel k] in
+theorem exists_colVar_eq (x : ColArgs G) (y : RowArgs G) (u : Vars G) (j : Fin (G.m - 1))
+    (r : Fin (topRank G (j + 1))) : ∃ p q, colVar x u j r = fill hs x y u (.theta G.m j) p q := by
+  refine ⟨frame (a := topRank G j) (c := G.m - 2 - j + 1) (b := G.rank (G.m, j)) (by have := topRank_add hs j; have := j.2; omega)
+      (.inr ⟨(G.m - 2 - j) / 2, by omega⟩),
+    frame (a := topRank G (j + 1)) (c := G.m - 2 - j) (b := G.rank (G.m, j + 1)) (by have := topRank_add hs (j + 1); have := j.2; omega) (.inl r), ?_⟩
+  rw [fill_theta, transpose_apply, downMap, dif_pos j.2]
+  simp only [reindex_apply, submatrix_apply, Equiv.symm_apply_apply, colVar, Fin.eta]
+
+end Loc
+end GlobalTheory.FunObj.FlatDep
+
+open GlobalTheory.FunObj.FlatDep in
+theorem GlobalTheory.FunObj.FlatDep.flatTensor_dep_and_per : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (G : Grid k) (hs : 1 ≤ G.s) (ψ : AddChar k Circle) (ν : Measure k) (ϖ : kˣ) (e : ℕ) (T : G.Args → ℂ) (keep : Bool) (g : G.VertexGroup), IsUnif ϖ → HasConductor ψ 1 → G.IsTensor ϖ e (oppositePath G.m) T → (∀ (x x' : ColArgs G) (y y' : RowArgs G), (∀ j, j < G.m → x j = x' j) → (∀ i, i < G.m → y i = y' i) → flatTensor hs ψ ν (moved G keep g T) x y = flatTensor hs ψ ν (moved G keep g T) x' y') ∧ ∃ n : ℕ, ∀ (x a : ColArgs G) (y b : RowArgs G), (∀ j, j < G.m → ∀ r s, valuation k (a j r s) ≤ valuation k ((ϖ ^ n : kˣ) : k)) → (∀ i, i < G.m → ∀ r s, valuation k (b i r s) ≤ valuation k ((ϖ ^ n : kˣ) : k)) → flatTensor hs ψ ν (moved G keep g T) (x + a) (y + b) = flatTensor hs ψ ν (moved G keep g T) x y := by
+  intro k _ _ _ _ _ _ G hs ψ ν ϖ e T keep g hϖ hψ hT
+  obtain ⟨n, hA, hB⟩ := GlobalTheory.T.gridMovedTensor_bounded_support_locallyConstant G ϖ e T keep g hϖ hT
+  refine ⟨fun x x' y y' hx hy => ?_, n, fun x a y b ha hb => ?_⟩
+  · unfold flatTensor
+    refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
+    simp only [flatIntegrand]
+    rw [phase_congr hx u]
+    have hTe : T (G.moveArgs .one g (fill hs x y u)) = T (G.moveArgs .one g (fill hs x' y' u)) :=
+      hT.1 fun c hc => by simp only [Grid.moveArgs, fill_congr hs hx hy u hc]
+    simp only [moved, Grid.pathAct, hTe]
+  · unfold flatTensor
+    refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
+    simp only [flatIntegrand]
+    have hS : moved G keep g T (fill hs (x + a) (y + b) u) = moved G keep g T (fill hs x y u) := by
+      have h := hB (fill hs x y u) (fill hs (x + a) (y + b) u - fill hs x y u)
+        fun c hc r s => fill_sub_le hs ha hb u hc r s
+      rwa [add_sub_cancel] at h
+    rw [hS]
+    by_cases h0 : moved G keep g T (fill hs x y u) = 0
+    · simp [h0]
+    have hbd := hA _ h0
+    have hD : ∀ (j : Fin (G.m - 1)) r, valuation k ((if (j : ℕ) + 1 < G.m - 1 then 0 else
+        a (j + 1) (topLast G (j + 1 + 1)) r) * colVar x u j r) ≤ 1 := by
+      intro j r
+      have := j.2
+      split_ifs with h
+      · simp
+      · obtain ⟨p, q, hpq⟩ := exists_colVar_eq hs x y u j r
+        rw [map_mul, hpq]
+        calc _ ≤ valuation k ((ϖ ^ n : kˣ) : k) * valuation k (((ϖ ^ n)⁻¹ : kˣ) : k) :=
+              mul_le_mul' (ha _ (by omega) _ _) (hbd _ (mem_opp_theta (by omega)) _ _)
+          _ = 1 := by rw [← map_mul, Units.mul_inv, map_one]
+    have hsum : valuation k (-(∑ j : Fin (G.m - 1), if Even (G.m - 2 - j) then ∑ r, (if (j : ℕ) + 1 < G.m - 1 then 0
+        else a (j + 1) (topLast G (j + 1 + 1)) r) * colVar x u j r else 0)) ≤ valuation k ((1 : kˣ) : k) := by
+      rw [Valuation.map_neg, Units.val_one, map_one]
+      refine (valuation k).map_sum_le fun j _ => ?_
+      by_cases hE : Even (G.m - 2 - (j : ℕ))
+      · rw [if_pos hE]; exact (valuation k).map_sum_le fun r _ => hD j r
+      · rw [if_neg hE, map_zero]; exact zero_le'
+    rw [phase_add, neg_add, AddChar.map_add_eq_mul, (hψ 1).2 le_rfl _ hsum, mul_one]
+end
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links
+open IsDedekindDomain NumberField Matrix MeasureTheory ValuativeRel
+open scoped TensorProduct nonZeroDivisors
+open GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StepData GlobalTheory.StdFrames Formalism.L2.Host Formalism.L2.DIV
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flatTensor_depends_below_and_small_translation_invariant : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (G : Grid k) (hs : 1 ≤ G.s) (ψ : AddChar k Circle) (ν : Measure k) (ϖ : kˣ) (e : ℕ) (T : G.Args → ℂ) (keep : Bool) (g : G.VertexGroup), IsUnif ϖ → HasConductor ψ 1 → G.IsTensor ϖ e (oppositePath G.m) T → (∀ (x x' : ColArgs G) (y y' : RowArgs G), (∀ j, j < G.m → x j = x' j) → (∀ i, i < G.m → y i = y' i) → flatTensor hs ψ ν (moved G keep g T) x y = flatTensor hs ψ ν (moved G keep g T) x' y') ∧ ∃ n : ℕ, ∀ (x a : ColArgs G) (y b : RowArgs G), (∀ j, j < G.m → ∀ r s, valuation k (a j r s) ≤ valuation k ((ϖ ^ n : kˣ) : k)) → (∀ i, i < G.m → ∀ r s, valuation k (b i r s) ≤ valuation k ((ϖ ^ n : kˣ) : k)) → flatTensor hs ψ ν (moved G keep g T) (x + a) (y + b) = flatTensor hs ψ ν (moved G keep g T) x y := by
+  first | exact @GlobalTheory.FunObj.FlatDep.flatTensor_dep_and_per | exact GlobalTheory.FunObj.FlatDep.flatTensor_dep_and_per | (intros; apply GlobalTheory.FunObj.FlatDep.flatTensor_dep_and_per <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links
+open IsDedekindDomain NumberField Matrix MeasureTheory ValuativeRel
+open scoped TensorProduct nonZeroDivisors
+open GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StepData GlobalTheory.StdFrames Formalism.L2.Host Formalism.L2.DIV
+
+noncomputable section
+
+namespace GlobalTheory.FunObj.FlatSupp
+
+open GlobalTheory.RootEx
+
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+
+theorem val_inv_pow {ϖ : kˣ} (n : ℕ) :
+    valuation k (((ϖ ^ n)⁻¹ : kˣ) : k) = (valuation k (ϖ : k) ^ n)⁻¹ := by
+  rw [Units.val_inv_eq_inv_val, Units.val_pow_eq_pow_val, map_inv₀, map_pow]
+
+theorem val_inv_pow_mono {ϖ : kˣ} (hϖ : IsUnif ϖ) {n n' : ℕ} (h : n ≤ n') :
+    valuation k (((ϖ ^ n)⁻¹ : kˣ) : k) ≤ valuation k (((ϖ ^ n')⁻¹ : kˣ) : k) := by
+  rw [val_inv_pow, val_inv_pow]
+  have h0 : valuation k (ϖ : k) ≠ 0 := by simp
+  have h1 : valuation k (ϖ : k) ≤ 1 := hϖ ▸ uniformizer_lt_one.le
+  exact inv_anti₀ (pow_pos (zero_lt_iff.2 h0) _) (pow_le_pow_of_le_one zero_le' h1 h)
+
+theorem exists_le {ϖ : kˣ} (hϖ : IsUnif ϖ) (a : k) :
+    ∃ n : ℕ, valuation k a ≤ valuation k (((ϖ ^ n)⁻¹ : kˣ) : k) := by
+  by_cases ha : a = 0
+  · exact ⟨0, by simp [ha]⟩
+  have hv : valuation k a ≠ 0 := by simpa using ha
+  obtain ⟨n, hn⟩ := exists_pow_lt₀ (hϖ ▸ uniformizer_lt_one : valuation k (ϖ : k) < 1) (Units.mk0 _ hv)⁻¹
+  refine ⟨n, ?_⟩
+  rw [val_inv_pow]
+  have h0 : valuation k (ϖ : k) ≠ 0 := by simp
+  simp only [Units.val_inv_eq_inv_val, Units.val_mk0] at hn
+  have := le_of_lt hn
+  rwa [le_inv_comm₀ (pow_pos (zero_lt_iff.2 h0) _) (zero_lt_iff.2 hv)] at this
+
+theorem exists_bound_conj {ϖ : kˣ} (hϖ : IsUnif ϖ) {m n : Type} [Fintype m] [DecidableEq m] [Fintype n]
+    [DecidableEq n] (A : GL m k) (B : GL n k) :
+    ∃ N : ℕ, ∀ Z : Matrix m n k, (∀ r s, ((A⁻¹ : GL m k).val * Z * B.val) r s ∈ 𝒪[k]) →
+      ∀ r s, valuation k (Z r s) ≤ valuation k (((ϖ ^ N)⁻¹ : kˣ) : k) := by
+  classical
+  choose nA hnA using fun p : m × m => exists_le hϖ (A.val p.1 p.2)
+  choose nB hnB using fun p : n × n => exists_le hϖ ((B⁻¹ : GL n k).val p.1 p.2)
+  set N0 := Finset.univ.sup nA ⊔ Finset.univ.sup nB
+  have hc : valuation k (((ϖ ^ (N0 + N0))⁻¹ : kˣ) : k) =
+      valuation k (((ϖ ^ N0)⁻¹ : kˣ) : k) * valuation k (((ϖ ^ N0)⁻¹ : kˣ) : k) := by
+    rw [val_inv_pow, val_inv_pow, pow_add, mul_inv]
+  set c := valuation k (((ϖ ^ N0)⁻¹ : kˣ) : k)
+  have hA : ∀ r a, valuation k (A.val r a) ≤ c := fun r a =>
+    (hnA (r, a)).trans (val_inv_pow_mono hϖ (le_sup_left.trans' (Finset.le_sup (f := nA) (Finset.mem_univ (r, a)))))
+  have hB : ∀ b s, valuation k ((B⁻¹ : GL n k).val b s) ≤ c := fun b s =>
+    (hnB (b, s)).trans (val_inv_pow_mono hϖ (le_sup_right.trans' (Finset.le_sup (f := nB) (Finset.mem_univ (b, s)))))
+  refine ⟨N0 + N0, fun Z hZ r s => ?_⟩
+  have hZ' : Z = A.val * ((A⁻¹ : GL m k).val * Z * B.val) * (B⁻¹ : GL n k).val := by
+    rw [Matrix.mul_assoc, Matrix.mul_assoc, Units.mul_inv, Matrix.mul_one, ← Matrix.mul_assoc, Units.mul_inv,
+      Matrix.one_mul]
+  rw [hZ', hc]
+  set W := (A⁻¹ : GL m k).val * Z * B.val
+  simp only [Matrix.mul_apply]
+  refine Valuation.map_sum_le _ fun b _ => ?_
+  rw [map_mul]
+  refine mul_le_mul' (Valuation.map_sum_le _ fun a _ => ?_) (hB b s)
+  rw [map_mul]
+  simpa using mul_le_mul' (hA r a) (show valuation k (W a b) ≤ 1 from hZ a b)
+
+open Matrix in
+
+theorem flatTensor_support : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (G : Grid k) (hs : 1 ≤ G.s) (ψ : AddChar k Circle) (ν : Measure k) (ϖ : kˣ) (e : ℕ) (T : G.Args → ℂ) (keep : Bool) (g : G.VertexGroup), IsUnif ϖ → G.IsTensor ϖ e (oppositePath G.m) T → ∃ n : ℕ, ∀ (x : ColArgs G) (y : RowArgs G), flatTensor hs ψ ν (moved G keep g T) x y ≠ 0 → (∀ j, j < G.m → ∀ r s, (j + 1 = G.m → r ≠ topLast G (j + 1)) → valuation k (x j r s) ≤ valuation k (((ϖ ^ n)⁻¹ : kˣ) : k)) ∧ ∀ i, i < G.m → ∀ r s, valuation k (y i r s) ≤ valuation k (((ϖ ^ n)⁻¹ : kˣ) : k) := by
+  classical
+  intro k _ _ _ _ _ _ G hs ψ ν ϖ e T keep g hϖ hT
+  choose N hN using fun b : Edge => exists_bound_conj hϖ (Assignment.one.read (g b.tgt)) (Assignment.one.read (g b.src))
+  refine ⟨(oppositePath G.m).toFinset.sup N, fun x y hne => ?_⟩
+  obtain ⟨v, hv⟩ : ∃ v, flatIntegrand hs ψ (moved G keep g T) x y v ≠ 0 := by
+    by_contra h
+    push_neg at h
+    apply hne
+    unfold flatTensor
+    simp [h]
+  have hT0 : T (G.moveArgs .one g (fill hs x y v)) ≠ 0 := by
+    intro h0
+    apply hv
+    simp [flatIntegrand, moved, Grid.pathAct, h0]
+  have key : ∀ b ∈ oppositePath G.m, ∀ r s, valuation k (fill hs x y v b r s) ≤
+      valuation k (((ϖ ^ (oppositePath G.m).toFinset.sup N)⁻¹ : kˣ) : k) := by
+    intro b hb r s
+    refine le_trans (hN b _ (fun r s => ?_) r s)
+      (val_inv_pow_mono hϖ (Finset.le_sup (f := N) (List.mem_toFinset.2 hb)))
+    have hm : (G.moveArgs .one g (fill hs x y v)) b ∈ matLat _ (GlobalTheory.SplitFlip.stdLat k _) := by
+      by_contra h
+      exact hT0 (hT.2.1 _ b hb h)
+    exact mem_matLat_stdLat.1 hm r s
+  refine ⟨fun j hj r s hr => ?_, fun i hi r s => ?_⟩
+  · have hmem : Edge.theta G.m j ∈ oppositePath G.m := by simp [oppositePath]; omega
+    by_cases hj' : j < G.m - 1
+    · have h := key _ hmem (frame (b := G.rank (G.m, j)) (c := G.m - 2 - j + 1) (by have := topRank_add hs j; omega) (Sum.inl s))
+        (frame (b := G.rank (G.m, j + 1)) (c := G.m - 2 - j) (by have := topRank_add hs (j + 1); omega) (Sum.inl r))
+      rw [fill_theta, transpose_apply, downMap, dif_pos hj'] at h
+      simpa [reindex_apply, submatrix_apply, Equiv.symm_apply_apply, stepPt, basePt, Free, Kept] using h
+    · have hjm : j + 1 = G.m := by omega
+      have hrk := topRank_add hs (j + 1)
+      have hrk' := topRank_add hs j
+      have hr' : r.val < G.rank (G.m, j + 1) := by
+        have := hr hjm
+        have h2 : (topLast G (j + 1)).val = topRank G (j + 1) - 1 := rfl
+        rw [Ne, Fin.ext_iff, h2] at this
+        have := r.2
+        omega
+      have h := key _ hmem (show Fin (G.rank (G.m, j)) from ⟨s.val, by have := s.2; omega⟩)
+        (show Fin (G.rank (G.m, j + 1)) from ⟨r.val, hr'⟩)
+      rw [fill_theta, transpose_apply, downMap, dif_neg hj', dif_pos hjm] at h
+      simpa using h
+  · have hmem : Edge.ex i G.m ∈ oppositePath G.m := by simp [oppositePath]; omega
+    have h := key _ hmem s r
+    rwa [fill_ex, transpose_apply] at h
+
+end GlobalTheory.FunObj.FlatSupp
+end
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links
+open IsDedekindDomain NumberField Matrix MeasureTheory ValuativeRel
+open scoped TensorProduct nonZeroDivisors
+open GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StepData GlobalTheory.StdFrames Formalism.L2.Host Formalism.L2.DIV
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flatTensor_support_bounded_by_uniformizer_pow : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (G : Grid k) (hs : 1 ≤ G.s) (ψ : AddChar k Circle) (ν : Measure k) (ϖ : kˣ) (e : ℕ) (T : G.Args → ℂ) (keep : Bool) (g : G.VertexGroup), IsUnif ϖ → G.IsTensor ϖ e (oppositePath G.m) T → ∃ n : ℕ, ∀ (x : ColArgs G) (y : RowArgs G), flatTensor hs ψ ν (moved G keep g T) x y ≠ 0 → (∀ j, j < G.m → ∀ r s, (j + 1 = G.m → r ≠ topLast G (j + 1)) → valuation k (x j r s) ≤ valuation k (((ϖ ^ n)⁻¹ : kˣ) : k)) ∧ ∀ i, i < G.m → ∀ r s, valuation k (y i r s) ≤ valuation k (((ϖ ^ n)⁻¹ : kˣ) : k) := by
+  first | exact @GlobalTheory.FunObj.FlatSupp.flatTensor_support | exact GlobalTheory.FunObj.FlatSupp.flatTensor_support | (intros; apply GlobalTheory.FunObj.FlatSupp.flatTensor_support <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links
+open IsDedekindDomain NumberField Matrix MeasureTheory ValuativeRel
+open scoped TensorProduct nonZeroDivisors
+open GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StepData GlobalTheory.StdFrames Formalism.L2.Host Formalism.L2.DIV
+
+noncomputable section
+
+namespace GlobalTheory.FunObj.FlatLast
+
+open GlobalTheory.RootEx
+
+section Step
+variable {k : Type} [Field k] {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ}
+
+open Classical in
+
+theorem stepPt_add_apply (x₀ : Matrix n n' k) (e δ : StepVar n c n' → k) (a : n ⊕ Fin c) (b : n' ⊕ Fin (c + 1)) :
+    stepPt x₀ (e + δ) a b =
+      stepPt x₀ e a b + if h : Free (c / 2 + 1) (a, b) ∨ Kept (a, b) then δ ⟨(a, b), h⟩ else 0 := by
+  simp only [stepPt, Matrix.add_apply, Matrix.of_apply, Pi.add_apply]
+  split_ifs <;> ring
+
+end Step
+
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {G : Grid k}
+
+open Classical in
+
+def shiftVar (j₀ : Fin (G.m - 1)) (r : ℕ) (t : k) : Vars G := fun j w =>
+  if j = j₀ ∧ Sum.elim (fun a : Fin (topRank G (j + 1)) => (a : ℕ) = r) (fun _ => False) w.1.1 ∧
+    w.1.2.isRight = true then t else 0
+
+theorem valuation_shiftVar_le (j₀ : Fin (G.m - 1)) (r : ℕ) {t s₀ : k} (ht : valuation k t ≤ valuation k s₀)
+    (j : Fin (G.m - 1)) (w) : valuation k (shiftVar j₀ r t j w) ≤ valuation k s₀ := by
+  unfold shiftVar
+  split_ifs
+  · exact ht
+  · simp
+
+theorem ch_shift (x : ColArgs G) (e : Vars G) (j₀ : Fin (G.m - 1)) (r : ℕ) (t : k) (j : Fin (G.m - 1)) :
+    ch (stepPt (x j) ((e + shiftVar j₀ r t) j)) = ch (stepPt (x j) (e j)) := by
+  unfold ch
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [Pi.add_apply, stepPt_add_apply]
+  split_ifs <;> simp [shiftVar]
+
+theorem rowVar_shift (x : ColArgs G) (e : Vars G) (j₀ : Fin (G.m - 1)) (r : ℕ) (t : k) (j : ℕ) (s) :
+    rowVar x (e + shiftVar j₀ r t) j s = rowVar x e j s := by
+  unfold rowVar
+  split_ifs with h
+  · refine Finset.sum_congr rfl fun l _ => ?_
+    split_ifs
+    · rw [Pi.add_apply, stepPt_add_apply]
+      split_ifs <;> simp [shiftVar]
+    · rfl
+  · rfl
+
+theorem colVar_shift (x : ColArgs G) (e : Vars G) (j₀ : Fin (G.m - 1)) (hj₀ : (j₀ : ℕ) + 2 = G.m) (r : ℕ) (t : k)
+    (j : Fin (G.m - 1)) (r' : Fin (topRank G (j + 1))) :
+    colVar x (e + shiftVar j₀ r t) j r' = colVar x e j r' + if j = j₀ ∧ (r' : ℕ) = r then t else 0 := by
+  unfold colVar
+  rw [Pi.add_apply, stepPt_add_apply]
+  congr 1
+  by_cases hj : j = j₀
+  · subst hj
+    rw [dif_pos (Or.inr ⟨by rw [show G.m - 2 - (j : ℕ) = 0 by omega]; exact ⟨0, rfl⟩, rfl⟩)]
+    simp [shiftVar]
+  · simp [shiftVar, hj]
+
+theorem phase_shift (x : ColArgs G) (e : Vars G) (j₀ : Fin (G.m - 1)) (hj₀ : (j₀ : ℕ) + 2 = G.m)
+    (r : Fin (topRank G ((j₀ : ℕ) + 1))) (t : k) :
+    phase x (e + shiftVar j₀ r t) = phase x e + rowVar x e ((j₀ : ℕ) + 1) r * t := by
+  unfold phase
+  have key : ∀ j : Fin (G.m - 1), (ch (stepPt (x j) ((e + shiftVar j₀ r t) j)) +
+      if Even (G.m - 2 - j) then ∑ r', rowVar x (e + shiftVar j₀ r t) (j + 1) r' *
+        colVar x (e + shiftVar j₀ r t) j r' else 0) =
+      (ch (stepPt (x j) (e j)) + if Even (G.m - 2 - j) then ∑ r', rowVar x e (j + 1) r' * colVar x e j r' else 0) +
+      if j = j₀ then rowVar x e ((j₀ : ℕ) + 1) r * t else 0 := by
+    intro j
+    rw [ch_shift]
+    simp only [rowVar_shift, colVar_shift x e j₀ hj₀]
+    by_cases hj : j = j₀
+    · subst hj
+      have hev : Even (G.m - 2 - (j : ℕ)) := by rw [show G.m - 2 - (j : ℕ) = 0 by omega]; exact ⟨0, rfl⟩
+      rw [if_pos hev, if_pos hev, if_pos rfl]
+      simp only [true_and, mul_add, Finset.sum_add_distrib, add_assoc]
+      congr 2
+      simp_rw [Fin.val_inj, mul_ite, mul_zero]
+      rw [Finset.sum_ite_eq']
+      simp
+    · simp [hj]
+  rw [Finset.sum_congr rfl fun j _ => key j, Finset.sum_add_distrib, Finset.sum_ite_eq']
+  simp
+
+variable (hs : 1 ≤ G.s)
+
+theorem valuation_downMap_sub_le (x : ColArgs G) (e δ : Vars G) {s₀ : k}
+    (hδ : ∀ j w, valuation k (δ j w) ≤ valuation k s₀) (j : ℕ) (a b) :
+    valuation k (downMap hs x (e + δ) j a b - downMap hs x e j a b) ≤ valuation k s₀ := by
+  classical
+  unfold downMap
+  split_ifs with h1 h2
+  · simp only [reindex_apply, submatrix_apply, Pi.add_apply]
+    rw [stepPt_add_apply, add_sub_cancel_left]
+    split_ifs
+    · exact hδ _ _
+    · simp
+  · simp
+  · simp
+
+theorem valuation_fill_sub_le (x : ColArgs G) (y : RowArgs G) (e δ : Vars G) {s₀ : k}
+    (hδ : ∀ j w, valuation k (δ j w) ≤ valuation k s₀) (b : Edge) (r s) :
+    valuation k ((fill hs x y (e + δ) - fill hs x y e) b r s) ≤ valuation k s₀ := by
+  rcases b with ⟨i, j⟩ | ⟨i, j⟩
+  · simp only [fill, Pi.sub_apply]
+    split_ifs with h
+    · simp only [Matrix.sub_apply, transpose_apply, submatrix_apply]
+      exact valuation_downMap_sub_le hs x e δ hδ j _ _
+    · simp
+  · simp only [fill, Pi.sub_apply]
+    split_ifs with h
+    · simp
+    · simp
+
+end GlobalTheory.FunObj.FlatLast
+
+namespace GlobalTheory.FunObj.FlatLast
+open GlobalTheory.RootEx
+
+theorem flatTensor_lastRow_bounded : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (G : Grid k) (hs : 1 ≤ G.s) (ψ : AddChar k Circle) (ν : Measure k) [ν.IsAddHaarMeasure] (ϖ : kˣ) (e : ℕ) (T : G.Args → ℂ) (keep : Bool) (g : G.VertexGroup), 2 ≤ G.m → IsUnif ϖ → HasConductor ψ 1 → G.IsTensor ϖ e (oppositePath G.m) T → ∃ n : ℕ, ∀ (x : ColArgs G) (y : RowArgs G), flatTensor hs ψ ν (moved G keep g T) x y ≠ 0 → ∀ s, valuation k (x (G.m - 1) (topLast G (G.m - 1 + 1)) s) ≤ valuation k (((ϖ ^ n)⁻¹ : kˣ) : k) := by
+  intro k _ _ _ _ _ _ G hs ψ ν _ ϖ e T keep g hm hϖ hψ hT
+  obtain ⟨n, -, hper⟩ := GlobalTheory.MovedBound.moved_bounded_locConst G ϖ e T keep g hϖ hT
+  refine ⟨n, fun x y hF => ?_⟩
+  let j₀ : Fin (G.m - 1) := ⟨G.m - 2, by omega⟩
+  have hj₀ : (j₀ : ℕ) + 2 = G.m := by simp only [j₀]; omega
+  suffices key : ∀ r : Fin (topRank G ((j₀ : ℕ) + 1)),
+      valuation k (x ((j₀ : ℕ) + 1) (topLast G ((j₀ : ℕ) + 1 + 1)) r) ≤ valuation k (((ϖ ^ n)⁻¹ : kˣ) : k) by
+    have h : G.m - 1 = (j₀ : ℕ) + 1 := by omega
+    rw [h]
+    exact key
+  intro r
+  by_contra hlt
+  have hu : x ((j₀ : ℕ) + 1) (topLast G ((j₀ : ℕ) + 1 + 1)) r ∉ cball (1 * (ϖ ^ n)⁻¹) := by
+    simpa [cball] using hlt
+  obtain ⟨t, ht, hne⟩ := hψ.exists_ne_one (ϖ ^ n) hu
+  set u := x ((j₀ : ℕ) + 1) (topLast G ((j₀ : ℕ) + 1 + 1)) r with hu_def
+  have hrow : ∀ e' : Vars G, rowVar x e' ((j₀ : ℕ) + 1) r = u := fun e' => by
+    rw [rowVar, dif_neg (by omega)]
+  let δ : Vars G := shiftVar j₀ r (-t)
+  have hδ : ∀ j w, valuation k (δ j w) ≤ valuation k ((ϖ ^ n : kˣ) : k) :=
+    valuation_shiftVar_le _ _ (by simpa [cball, Valuation.map_neg] using ht)
+  have hS : ∀ e' : Vars G, moved G keep g T (fill hs x y (e' + δ)) = moved G keep g T (fill hs x y e') := fun e' => by
+    have := hper (fill hs x y e') (fill hs x y (e' + δ) - fill hs x y e')
+      (fun b _ r s => valuation_fill_sub_le hs x y e' δ hδ b r s)
+    rwa [add_sub_cancel] at this
+  have hI : ∀ e' : Vars G, flatIntegrand hs ψ (moved G keep g T) x y (e' + δ) =
+      (ψ (t * u) : ℂ) * flatIntegrand hs ψ (moved G keep g T) x y e' := fun e' => by
+    unfold flatIntegrand
+    rw [hS, phase_shift x e' j₀ hj₀ r (-t), hrow,
+      show -(phase x e' + u * -t) = -phase x e' + t * u by ring, AddChar.map_add_eq_mul, Circle.coe_mul]
+    ring
+  obtain ⟨_, _⟩ := GlobalTheory.SplitWeil.Model.secondCountable_and_t2_local_field (k := k)
+  have hFeq : flatTensor hs ψ ν (moved G keep g T) x y =
+      (ψ (t * u) : ℂ) * flatTensor hs ψ ν (moved G keep g T) x y := by
+    have : SigmaFinite ν := inferInstance
+    have : ν.IsAddRightInvariant := inferInstance
+    have : (varsVol G ν).IsAddRightInvariant := by unfold varsVol; infer_instance
+    unfold flatTensor
+    calc ∫ e', flatIntegrand hs ψ (moved G keep g T) x y e' ∂(varsVol G ν)
+        = ∫ e', flatIntegrand hs ψ (moved G keep g T) x y (e' + δ) ∂(varsVol G ν) :=
+          (integral_add_right_eq_self _ δ).symm
+      _ = ∫ e', (ψ (t * u) : ℂ) * flatIntegrand hs ψ (moved G keep g T) x y e' ∂(varsVol G ν) := by simp_rw [hI]
+      _ = _ := integral_const_mul (ψ (t * u) : ℂ) _
+  have hne' : (ψ (t * u) : ℂ) ≠ 1 := fun h => hne (Circle.ext (by simpa using h))
+  have : (1 - (ψ (t * u) : ℂ)) * flatTensor hs ψ ν (moved G keep g T) x y = 0 := by
+    rw [sub_mul, one_mul, ← hFeq, sub_self]
+  rcases mul_eq_zero.1 this with h | h
+  · exact hne' (sub_eq_zero.1 h).symm
+  · exact hF h
+
+end GlobalTheory.FunObj.FlatLast
+end
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links
+open IsDedekindDomain NumberField Matrix MeasureTheory ValuativeRel
+open scoped TensorProduct nonZeroDivisors
+open GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StepData GlobalTheory.StdFrames Formalism.L2.Host Formalism.L2.DIV
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flatTensor_vanishes_unless_lastRow_bounded : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (G : Grid k) (hs : 1 ≤ G.s) (ψ : AddChar k Circle) (ν : Measure k) [ν.IsAddHaarMeasure] (ϖ : kˣ) (e : ℕ) (T : G.Args → ℂ) (keep : Bool) (g : G.VertexGroup), 2 ≤ G.m → IsUnif ϖ → HasConductor ψ 1 → G.IsTensor ϖ e (oppositePath G.m) T → ∃ n : ℕ, ∀ (x : ColArgs G) (y : RowArgs G), flatTensor hs ψ ν (moved G keep g T) x y ≠ 0 → ∀ s, valuation k (x (G.m - 1) (topLast G (G.m - 1 + 1)) s) ≤ valuation k (((ϖ ^ n)⁻¹ : kˣ) : k) := by
+  first | exact @GlobalTheory.FunObj.FlatLast.flatTensor_lastRow_bounded | exact GlobalTheory.FunObj.FlatLast.flatTensor_lastRow_bounded | (intros; apply GlobalTheory.FunObj.FlatLast.flatTensor_lastRow_bounded <;> assumption)
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links
+open IsDedekindDomain NumberField Matrix MeasureTheory ValuativeRel
+open scoped TensorProduct nonZeroDivisors
+open GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StepData GlobalTheory.StdFrames Formalism.L2.Host Formalism.L2.DIV
+
+noncomputable section
+namespace GlobalTheory.FunObj
+attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
+variable {D : D7} {a b : ℕ}
+
+theorem frAt_sub_reps (w : Pl D.host.E) (β' : GL (Fin b) (Lev.EAf D)) (β : GL (Fin a) (Lev.EAf D))
+    (x y : Mx D b a) : frAt w β' β (x - y) = frAt w β' β x - frAt w β' β y := by
+  unfold frAt
+  rw [Matrix.map_sub _ (map_sub (toEAf D)), Comparison₂.fr_sub, Matrix.map_sub _ (map_sub (cpt (D := D) w))]
+
+theorem isOpen_valBall_reps {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] (γ : ValueGroupWithZero k) (hγ : γ ≠ 0) :
+    IsOpen {x : k | valuation k x ≤ γ} := by
+  rw [isOpen_iff_mem_nhds]
+  intro x hx
+  rw [IsValuativeTopology.mem_nhds_iff']
+  refine ⟨Units.mk0 γ hγ, fun y hy => ?_⟩
+  simp only [Set.mem_ofPred_eq, Units.val_mk0] at hx hy ⊢
+  have h := (valuation k).map_add (y - x) x
+  rw [sub_add_cancel] at h
+  exact h.trans (max_le hy.le hx)
+
+theorem exists_finset_cosetReps : ∀ {D : D7} {a b : ℕ} (β' : GL (Fin b) (Lev.EAf D)) (β : GL (Fin a) (Lev.EAf D))
+    (P : Finset (Pl D.host.E)) (e : AE D) (n : ℕ), IsIdemSum e P → ∃ R : Finset (Mx D b a),
+    (∀ r ∈ R, IsHalf e r ∧ IsSmall P β' β (-(n : ℤ)) r) ∧
+    (∀ t, IsHalf e t → IsSmall P β' β (-(n : ℤ)) t → ∃ r ∈ R, IsSmall P β' β n (t - r)) ∧
+    ∀ r ∈ R, ∀ r' ∈ R, IsSmall P β' β n (r - r') → r = r' := by
+  intro D a b β' β P e n _
+  classical
+  let V := (w : P) → Fin b → Fin a → Kw w.1
+  let φ : Mx D b a → V := fun t w r s => frAt w.1 β' β t r s
+  have hφ : ∀ x y, φ (x - y) = φ x - φ y := by
+    intro x y; funext w r s
+    show frAt _ β' β (x - y) r s = frAt _ β' β x r s - frAt _ β' β y r s
+    rw [frAt_sub_reps]; rfl
+  let ρ : ∀ w : P, ValueGroupWithZero (Kw w.1) := fun w =>
+    valuation (Kw w.1) ((unifAt w.1 ^ (n : ℤ) : (Kw w.1)ˣ) : Kw w.1)
+  have hρ : ∀ w, ρ w ≠ 0 := fun w => by simp [ρ]
+  let H : AddSubgroup V :=
+    { carrier := {x | ∀ w r s, valuation (Kw w.1) (x w r s) ≤ ρ w}
+      add_mem' := fun {x y} hx hy w r s =>
+        ((valuation (Kw w.1)).map_add _ _).trans (max_le (hx w r s) (hy w r s))
+      zero_mem' := fun w r s => by
+        show valuation _ (0 : Kw w.1) ≤ _
+        rw [map_zero]; exact zero_le'
+      neg_mem' := fun {x} hx w r s => by
+        show valuation _ (-(x w r s)) ≤ _
+        rw [Valuation.map_neg]; exact hx w r s }
+  have hH : ∀ x : V, x ∈ H ↔ ∀ w r s, valuation (Kw w.1) (x w r s) ≤ ρ w := fun x => Iff.rfl
+  have hHset : (H : Set V) = Set.univ.pi fun w => Set.univ.pi fun r => Set.univ.pi fun s =>
+      {z : Kw w.1 | valuation (Kw w.1) z ≤ ρ w} := by
+    ext x
+    rw [SetLike.mem_coe, hH]
+    constructor
+    · intro h
+      exact Set.mem_univ_pi.2 fun w => Set.mem_univ_pi.2 fun r => Set.mem_univ_pi.2 fun s => h w r s
+    · intro h w r s
+      exact Set.mem_univ_pi.1 (Set.mem_univ_pi.1 (Set.mem_univ_pi.1 h w) r) s
+  have hHo : IsOpen (H : Set V) := by
+    rw [hHset]
+    exact isOpen_set_pi Set.finite_univ fun w _ => isOpen_set_pi Set.finite_univ fun r _ =>
+      isOpen_set_pi Set.finite_univ fun s _ => isOpen_valBall_reps _ (hρ w)
+  let K : Set V := Set.univ.pi fun w => Set.univ.pi fun r => Set.univ.pi fun s =>
+      {z : Kw w.1 | valuation (Kw w.1) z ≤
+        valuation (Kw w.1) ((unifAt w.1 ^ (-(n : ℤ)) : (Kw w.1)ˣ) : Kw w.1)}
+  have hK : IsCompact K := isCompact_univ_pi fun w => isCompact_univ_pi fun r => isCompact_univ_pi fun s =>
+    IsNonarchimedeanLocalField.isCompact_closedBall _ _
+  let U : V → Set V := fun x => (fun y => y - x) ⁻¹' (H : Set V)
+  have hUo : ∀ x, IsOpen (U x) := fun x => hHo.preimage (continuous_id.sub continuous_const)
+  obtain ⟨F, hF⟩ := hK.elim_finite_subcover U hUo (fun y _ => Set.mem_iUnion.2 ⟨y, by
+    simp [U, H.zero_mem]⟩)
+  have hsmall : ∀ (m : ℤ) t, IsSmall P β' β m t ↔ ∀ (w : P) r s,
+      valuation (Kw w.1) (φ t w r s) ≤ valuation (Kw w.1) ((unifAt w.1 ^ m : (Kw w.1)ˣ) : Kw w.1) := by
+    intro m t
+    exact ⟨fun h w r s => h w.1 w.2 r s, fun h w hw r s => h ⟨w, hw⟩ r s⟩
+  let S : Set (Mx D b a) := {t | IsHalf e t ∧ IsSmall P β' β (-(n : ℤ)) t}
+  have hSK : ∀ t ∈ S, φ t ∈ K := fun t ht => by
+    have h := (hsmall _ t).1 ht.2
+    exact Set.mem_univ_pi.2 fun w => Set.mem_univ_pi.2 fun r => Set.mem_univ_pi.2 fun s => h w r s
+  have hSmallH : ∀ t, IsSmall P β' β n t ↔ φ t ∈ H := fun t => hsmall _ t
+  let C : Finset (V ⧸ H) := (Finset.image (fun x : V => (QuotientAddGroup.mk x : V ⧸ H)) F).filter
+    (fun c => ∃ t, t ∈ S ∧ ((φ t : V) : V ⧸ H) = c)
+  let rep : V ⧸ H → Mx D b a := fun c =>
+    if h : ∃ t, t ∈ S ∧ ((φ t : V) : V ⧸ H) = c then h.choose else 0
+  have hrep : ∀ c ∈ C, rep c ∈ S ∧ ((φ (rep c) : V) : V ⧸ H) = c := by
+    intro c hc
+    have h : ∃ t, t ∈ S ∧ ((φ t : V) : V ⧸ H) = c := (Finset.mem_filter.1 hc).2
+    simp only [rep, dif_pos h]
+    exact h.choose_spec
+  refine ⟨C.image rep, ?_, ?_, ?_⟩
+  · intro r hr
+    obtain ⟨c, hc, rfl⟩ := Finset.mem_image.1 hr
+    exact (hrep c hc).1
+  · intro t ht1 ht2
+    have ht : t ∈ S := ⟨ht1, ht2⟩
+    obtain ⟨x, hxF, hx⟩ := Set.mem_iUnion₂.1 (hF (hSK t ht))
+    have hc : ((φ t : V) : V ⧸ H) ∈ C := by
+      have heq : ((x : V) : V ⧸ H) = ((φ t : V) : V ⧸ H) :=
+        (QuotientAddGroup.eq_iff_sub_mem).2 (by
+          have : φ t - x ∈ H := hx
+          simpa using H.neg_mem this)
+      have hmem : ((φ t : V) : V ⧸ H) ∈ Finset.image (fun x : V => (QuotientAddGroup.mk x : V ⧸ H)) F :=
+        Finset.mem_image.2 ⟨x, hxF, heq⟩
+      exact Finset.mem_filter.2 ⟨hmem, t, ht, rfl⟩
+    refine ⟨rep _, Finset.mem_image.2 ⟨_, hc, rfl⟩, ?_⟩
+    rw [hSmallH, hφ]
+    exact (QuotientAddGroup.eq_iff_sub_mem).1 (hrep _ hc).2.symm
+  · intro r hr r' hr' hs
+    obtain ⟨c, hc, rfl⟩ := Finset.mem_image.1 hr
+    obtain ⟨c', hc', rfl⟩ := Finset.mem_image.1 hr'
+    rw [hSmallH, hφ] at hs
+    have : c = c' := by
+      rw [← (hrep c hc).2, ← (hrep c' hc').2]
+      exact (QuotientAddGroup.eq_iff_sub_mem).2 hs
+    rw [this]
+
+end GlobalTheory.FunObj
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links
+open IsDedekindDomain NumberField Matrix MeasureTheory ValuativeRel
+open scoped TensorProduct nonZeroDivisors
+open GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StepData GlobalTheory.StdFrames Formalism.L2.Host Formalism.L2.DIV
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_finset_cosetReps_bounded_half_points : ∀ {D : D7} {a b : ℕ} (β' : GL (Fin b) (Lev.EAf D)) (β : GL (Fin a) (Lev.EAf D)) (P : Finset (Pl D.host.E)) (e : AE D) (n : ℕ), IsIdemSum e P → ∃ R : Finset (Mx D b a), (∀ r ∈ R, IsHalf e r ∧ IsSmall P β' β (-(n : ℤ)) r) ∧ (∀ t, IsHalf e t → IsSmall P β' β (-(n : ℤ)) t → ∃ r ∈ R, IsSmall P β' β n (t - r)) ∧ ∀ r ∈ R, ∀ r' ∈ R, IsSmall P β' β n (r - r') → r = r' := by
+  atlas_forward_decl GlobalTheory.FunObj.exists_finset_cosetReps
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links
+open IsDedekindDomain NumberField Matrix MeasureTheory ValuativeRel
+open scoped TensorProduct nonZeroDivisors
+open GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StepData GlobalTheory.StdFrames Formalism.L2.Host Formalism.L2.DIV
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.indicator_smallCoset_half_isSchwartzBruhat : ∀ {D : D7} (S T : HSp D) (ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)) (βS : GL (Fin S.rank) (Lev.EAf D)) (βT : GL (Fin T.rank) (Lev.EAf D)) (P : Finset (Pl D.host.E)) (e : AE D) (n : ℕ) (r : WO S T), Submodule.IsLattice D.host.E ΛS → Submodule.IsLattice D.host.E ΛT → IsFrame βS ΛS → IsFrame βT ΛT → IsIdemSum e P → IsHalf e r → IsSBHalf e (latO S T ΛS ΛT fun _ => True) (cosLoc P e βT βS n r) := by
+  first | exact @GlobalTheory.FunObj.CosSB.isSBHalf_cosLoc | exact GlobalTheory.FunObj.CosSB.isSBHalf_cosLoc | (intros; apply GlobalTheory.FunObj.CosSB.isSBHalf_cosLoc <;> assumption)
+end
+
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links
@@ -635,4 +1295,5 @@ end Main
 
 end GlobalTheory.FunObj
 
+end
 end

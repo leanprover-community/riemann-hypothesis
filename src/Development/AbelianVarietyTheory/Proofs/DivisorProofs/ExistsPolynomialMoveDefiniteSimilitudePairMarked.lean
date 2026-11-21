@@ -1,11 +1,652 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.DiagHermitianTrivialOfSumFourSquares
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MoveMarkOfIrreducible
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsTotallyRealEvenNegPlacesLocalNorm
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianCongrOfPositiveIndexEqStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NegDefOfHermitianMatrixPositiveIndexEqZeroStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SimilitudePairGramInvCongruentStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SimilitudePairHermitianFormInvertibleSimilitudeStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MarkedSimilitudePairMinpolyRootsNormSqEq
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRealSubfieldNegativeTwoPlacesNormEverywherStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MarkedRootRealSignatureOne
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEigenbasisPsiInfinitePlaceDistinctRoots
+import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsRootSelectionUnitaryRankOne
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KottwitzIsogenyClassPointSumCompMulEquiv
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KottwitzPairTermEqPointSumAnyTrivialisationStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianTripleTrivialOverRealsOfGramCongruent
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianFormNegOnOrthogonalOfPositiveIndexOne
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianCongrOfPositiveIndexEq
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NegDefOfHermitianMatrixPositiveIndexEqZero
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CardSubtypeEqOfMultiset
 
+section
+open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount
+open scoped TensorProduct Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.marked_similitude_pair_minpoly_roots_normSq_eq : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (P : Pair G) (μ : ℂ), G.a = 1 → P.Mark μ → ∀ (φ : G.F →+* ℂ) (z : ℂ), P.pol.eval₂ φ z = 0 → ‖z‖ ^ 2 = ((P.c : ℚ) : ℝ) := by
+  first | (exact @GlobalTheory.LKMid.MarkEll.mark_ell) | (exact GlobalTheory.LKMid.MarkEll.mark_ell) | (intros; apply GlobalTheory.LKMid.MarkEll.mark_ell  <;> assumption)
+end
+
+section
+open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount
+open scoped TensorProduct Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_eigenbasis_psi_infinitePlace_distinct_roots : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (P : Pair G) (v : InfinitePlace G.F), ∃ (Z : GL (Fin G.n) ℂ) (lam : Fin G.n → ℂ), Function.Injective lam ∧ (∀ z : ℂ, P.pol.eval₂ v.embedding z = 0 ↔ ∃ i, lam i = z) ∧ G.psi v (P.γ : G.C) * (Z : Matrix (Fin G.n) (Fin G.n) ℂ) = (Z : Matrix (Fin G.n) (Fin G.n) ℂ) * Matrix.diagonal lam := by
+  first | (exact @GlobalTheory.LKMid.psi_eigenbasis) | (exact GlobalTheory.LKMid.psi_eigenbasis) | (intros; apply GlobalTheory.LKMid.psi_eigenbasis  <;> assumption)
+end
+
+section
+open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount
+open scoped TensorProduct Classical
+
+namespace GlobalTheory
+
+theorem cm_conj_extends_of_adjoin :
+    ∀ (F M : Type) [Field F] [NumberField F] [IsCMField F] [Field M] [NumberField M] [Algebra F M]
+      (π : M) (c : ℚ), Algebra.adjoin F {π} = ⊤ → c ≠ 0 → (∀ φ : M →+* ℂ, ‖φ π‖ ^ 2 = (c : ℝ)) →
+      ∃ σ : M →+* M, (∀ x : F, σ (algebraMap F M x) = algebraMap F M (IsCMField.complexConj F x)) ∧
+        σ π * π = (c : M) ∧ ∀ (φ : M →+* ℂ) (x : M), φ (σ x) = (starRingEnd ℂ) (φ x) := by
+  intro F M _ _ _ _ _ _ π c hadj hc hπ
+
+  have gen : ∀ S : Subring M, (∀ x : F, algebraMap F M x ∈ S) → π ∈ S → ∀ y : M, y ∈ S := by
+    intro S hS hpS y
+    let A : Subalgebra F M := { S with algebraMap_mem' := hS }
+    have hle : Algebra.adjoin F {π} ≤ A := Algebra.adjoin_le (Set.singleton_subset_iff.mpr (show π ∈ A from hpS))
+    rw [hadj] at hle
+    exact hle (Algebra.mem_top (x := y))
+
+  have hconj : ∀ φ : M →+* ℂ, φ π ≠ 0 ∧ (starRingEnd ℂ) (φ π) = φ ((c : M) / π) := by
+    intro φ
+    have hn : Complex.normSq (φ π) = (c : ℝ) := by rw [← Complex.sq_norm]; exact hπ φ
+    have hne : φ π ≠ 0 := by
+      intro h0
+      rw [h0, map_zero] at hn
+      exact hc (by exact_mod_cast hn.symm)
+    refine ⟨hne, ?_⟩
+    rw [map_div₀, map_ratCast, eq_div_iff hne, mul_comm, Complex.mul_conj, hn]
+    norm_cast
+  obtain ⟨φ₀⟩ : Nonempty (M →+* ℂ) := inferInstance
+  let ψ : M →+* ℂ := (starRingEnd ℂ).comp φ₀
+  have hrange : ∀ y : M, ψ y ∈ φ₀.range := by
+    refine gen (Subring.comap ψ φ₀.range) ?_ ?_
+    · intro x
+      show ψ (algebraMap F M x) ∈ φ₀.range
+      refine ⟨algebraMap F M (IsCMField.complexConj F x), ?_⟩
+      exact (IsCMField.complexEmbedding_complexConj F (φ₀.comp (algebraMap F M)) x)
+    · show ψ π ∈ φ₀.range
+      exact ⟨(c : M) / π, ((hconj φ₀).2).symm⟩
+  let e : M ≃+* φ₀.range := RingEquiv.ofBijective φ₀.rangeRestrict
+    ⟨fun a b h => φ₀.injective (congrArg Subtype.val h), φ₀.rangeRestrict_surjective⟩
+  let σ : M →+* M := e.symm.toRingHom.comp (ψ.codRestrict φ₀.range hrange)
+  have hσ0 : ∀ x : M, φ₀ (σ x) = (starRingEnd ℂ) (φ₀ x) := by
+    intro x
+    have h1 : e (σ x) = ψ.codRestrict φ₀.range hrange x := by simp [σ]
+    have h2 : ((e (σ x) : φ₀.range) : ℂ) = ((ψ.codRestrict φ₀.range hrange x : φ₀.range) : ℂ) := congrArg Subtype.val h1
+    exact h2
+  have hσF : ∀ x : F, σ (algebraMap F M x) = algebraMap F M (IsCMField.complexConj F x) := by
+    intro x
+    apply φ₀.injective
+    rw [hσ0]
+    exact (IsCMField.complexEmbedding_complexConj F (φ₀.comp (algebraMap F M)) x).symm
+  have hσπ : σ π = (c : M) / π := by
+    apply φ₀.injective
+    rw [hσ0]; exact (hconj φ₀).2
+  have hπ0 : π ≠ 0 := fun h => (hconj φ₀).1 (by rw [h, map_zero])
+  refine ⟨σ, hσF, ?_, ?_⟩
+  · rw [hσπ, div_mul_cancel₀ _ hπ0]
+  · intro φ
+    have := gen (RingHom.eqLocus (φ.comp σ) ((starRingEnd ℂ).comp φ)) ?_ ?_
+    · intro x; exact this x
+    · intro x
+      show φ (σ (algebraMap F M x)) = (starRingEnd ℂ) (φ (algebraMap F M x))
+      rw [hσF]
+      exact IsCMField.complexEmbedding_complexConj F (φ.comp (algebraMap F M)) x
+    · show φ (σ π) = (starRingEnd ℂ) (φ π)
+      rw [hσπ]; exact ((hconj φ).2).symm
+
+end GlobalTheory
+end
+
+section
+open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount
+open scoped TensorProduct Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cmField_conj_extends_of_adjoin_absSq : ∀ (F M : Type) [Field F] [NumberField F] [IsCMField F] [Field M] [NumberField M] [Algebra F M] (π : M) (c : ℚ), Algebra.adjoin F {π} = ⊤ → c ≠ 0 → (∀ φ : M →+* ℂ, ‖φ π‖ ^ 2 = (c : ℝ)) → ∃ σ : M →+* M, (∀ x : F, σ (algebraMap F M x) = algebraMap F M (IsCMField.complexConj F x)) ∧ σ π * π = (c : M) ∧ ∀ (φ : M →+* ℂ) (x : M), φ (σ x) = (starRingEnd ℂ) (φ x) := by
+  first | (exact @GlobalTheory.cm_conj_extends_of_adjoin) | (exact GlobalTheory.cm_conj_extends_of_adjoin) | (intros; apply GlobalTheory.cm_conj_extends_of_adjoin  <;> assumption)
+end
+
+section
+open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount
+open scoped TensorProduct Classical
+
+namespace GlobalTheory
+
+theorem adelic_norm_move : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (β : G.C) (M : Type) [Field M] [NumberField M] (j : M →+* G.C) (σ : M →+* M), (∀ y : M, β * sh G (j y) = j (σ y) * β) → ∀ (a : M) (u : (AfP p ⊗[ℚ] M)ˣ), (u : AfP p ⊗[ℚ] M) * Algebra.TensorProduct.map (AlgHom.id ℚ (AfP p)) σ.toRatAlgHom u = 1 ⊗ₜ a → ∃ U : (AfP p ⊗[ℚ] G.C)ˣ, (U : AfP p ⊗[ℚ] G.C) * inC G (AfP p) β * (starT G.star (AfP p) U).unop = inC G (AfP p) (j a * β) ∧ ∀ y : G.C, (∀ m : M, y * j m = j m * y) → inC G (AfP p) y * U = U * inC G (AfP p) y := by
+  intro p _ G β M _ _ j σ hβ a u hu
+  let J : AfP p ⊗[ℚ] M →ₐ[ℚ] AfP p ⊗[ℚ] G.C := Algebra.TensorProduct.map (AlgHom.id ℚ (AfP p)) j.toRatAlgHom
+  have hJ : ∀ (r : AfP p) (m : M), J (r ⊗ₜ m) = r ⊗ₜ j m := fun r m => rfl
+  have key : ∀ w : AfP p ⊗[ℚ] M, inC G (AfP p) β * (starT G.star (AfP p) (J w)).unop =
+      J (Algebra.TensorProduct.map (AlgHom.id ℚ (AfP p)) σ.toRatAlgHom w) * inC G (AfP p) β := by
+    intro w
+    induction w using TensorProduct.induction_on with
+    | zero => simp
+    | tmul r m =>
+      have e2 : J (Algebra.TensorProduct.map (AlgHom.id ℚ (AfP p)) σ.toRatAlgHom (r ⊗ₜ m)) = r ⊗ₜ j (σ m) := rfl
+      rw [hJ, e2, starT_tmul]
+      show ((1 : AfP p) ⊗ₜ β) * (r ⊗ₜ (G.star (j m)).unop) = (r ⊗ₜ j (σ m)) * ((1 : AfP p) ⊗ₜ β)
+      rw [Algebra.TensorProduct.tmul_mul_tmul, Algebra.TensorProduct.tmul_mul_tmul, one_mul, mul_one]
+      congr 1
+      exact hβ m
+    | add x y hx hy => rw [map_add, map_add, map_add, MulOpposite.unop_add, mul_add, hx, hy, map_add, add_mul]
+  refine ⟨Units.map J.toMonoidHom u, ?_, ?_⟩
+  · show J u * inC G (AfP p) β * (starT G.star (AfP p) (J u)).unop = _
+    rw [mul_assoc, key, ← mul_assoc, ← map_mul, hu, hJ]
+    show ((1 : AfP p) ⊗ₜ j a) * ((1 : AfP p) ⊗ₜ β) = (1 : AfP p) ⊗ₜ (j a * β)
+    rw [Algebra.TensorProduct.tmul_mul_tmul, one_mul]
+  · intro y hy
+    show inC G (AfP p) y * J u = J u * inC G (AfP p) y
+    generalize (u : AfP p ⊗[ℚ] M) = w
+    induction w using TensorProduct.induction_on with
+    | zero => simp
+    | tmul r m =>
+      rw [hJ]
+      show ((1 : AfP p) ⊗ₜ y) * (r ⊗ₜ j m) = (r ⊗ₜ j m) * ((1 : AfP p) ⊗ₜ y)
+      rw [Algebra.TensorProduct.tmul_mul_tmul, Algebra.TensorProduct.tmul_mul_tmul, one_mul, mul_one, hy m]
+    | add x z hx hz => rw [map_add, mul_add, add_mul, hx, hz]
+
+end GlobalTheory
+end
+
+section
+open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount
+open scoped TensorProduct Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_adelicUnit_carrying_form_to_normMultiple : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (β : G.C) (M : Type) [Field M] [NumberField M] (j : M →+* G.C) (σ : M →+* M), (∀ y : M, β * sh G (j y) = j (σ y) * β) → ∀ (a : M) (u : (AfP p ⊗[ℚ] M)ˣ), (u : AfP p ⊗[ℚ] M) * Algebra.TensorProduct.map (AlgHom.id ℚ (AfP p)) σ.toRatAlgHom u = 1 ⊗ₜ a → ∃ U : (AfP p ⊗[ℚ] G.C)ˣ, (U : AfP p ⊗[ℚ] G.C) * inC G (AfP p) β * (starT G.star (AfP p) U).unop = inC G (AfP p) (j a * β) ∧ ∀ y : G.C, (∀ m : M, y * j m = j m * y) → inC G (AfP p) y * U = U * inC G (AfP p) y := by
+  first | (exact @GlobalTheory.adelic_norm_move) | (exact GlobalTheory.adelic_norm_move) | (intros; apply GlobalTheory.adelic_norm_move  <;> assumption)
+end
+
+section
+open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount
+open scoped TensorProduct Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermitianTriple_trivial_over_reals_of_gram_congruent : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (β : G.Cˣ), (∀ v : InfinitePlace G.F, ∃ W : GL (Fin G.n) ℂ, G.gram v * G.psi v ((β⁻¹ : G.Cˣ) : G.C) = (W : Matrix (Fin G.n) (Fin G.n) ℂ)ᴴ * G.gram v * (W : Matrix (Fin G.n) (Fin G.n) ℂ)) → ∃ z : (ℝ ⊗[ℚ] G.C)ˣ, Triv G ℝ β z 1 := by
+  first | (exact @GlobalTheory.LKMid.trivR_of_gram_psi_inv_congr) | (exact GlobalTheory.LKMid.trivR_of_gram_psi_inv_congr) | (intros; apply GlobalTheory.LKMid.trivR_of_gram_psi_inv_congr  <;> assumption)
+end
+
+section
+open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount
+open scoped TensorProduct Classical
+
+namespace GlobalTheory
+
+theorem similitude_eigvec_orthogonal : ∀ {n : ℕ} (h g : Matrix (Fin n) (Fin n) ℂ) (c : ℝ) (Z : GL (Fin n) ℂ) (lam : Fin n → ℂ), h.IsHermitian → h.det ≠ 0 → c ≠ 0 → gᴴ * h * g = (c : ℂ) • h → Function.Injective lam → (∀ i, ‖lam i‖ ^ 2 = c) → g * (Z : Matrix (Fin n) (Fin n) ℂ) = (Z : Matrix (Fin n) (Fin n) ℂ) * Matrix.diagonal lam → ∃ d : Fin n → ℝ, (∀ i, d i ≠ 0) ∧ (Z : Matrix (Fin n) (Fin n) ℂ)ᴴ * h * (Z : Matrix (Fin n) (Fin n) ℂ) = Matrix.diagonal (fun i => (d i : ℂ)) := by
+  intro n h g c Z lam hh hdet hc hg hinj hnorm hgZ
+  set M : Matrix (Fin n) (Fin n) ℂ := (Z : Matrix (Fin n) (Fin n) ℂ) with hM
+  set H : Matrix (Fin n) (Fin n) ℂ := Mᴴ * h * M with hH
+  have hHherm : H.IsHermitian := by
+    simp only [hH, IsHermitian, conjTranspose_mul, conjTranspose_conjTranspose, hh.eq, Matrix.mul_assoc]
+  have key : (Matrix.diagonal lam)ᴴ * H * Matrix.diagonal lam = (c : ℂ) • H := by
+    have e1 : (M * Matrix.diagonal lam)ᴴ * h * (M * Matrix.diagonal lam) = (Matrix.diagonal lam)ᴴ * H * Matrix.diagonal lam := by
+      simp only [hH, conjTranspose_mul, Matrix.mul_assoc]
+    rw [← e1, ← hgZ]
+    simp only [hH, conjTranspose_mul, Matrix.mul_assoc]
+    rw [← Matrix.mul_assoc gᴴ, ← Matrix.mul_assoc (gᴴ * h), hg]
+    simp [Matrix.mul_smul, Matrix.smul_mul, Matrix.mul_assoc]
+  have hc' : ∀ i, (starRingEnd ℂ) (lam i) * lam i = (c : ℂ) := by
+    intro i
+    rw [mul_comm, Complex.mul_conj, Complex.normSq_eq_norm_sq]
+    exact_mod_cast hnorm i
+  have hlam0 : ∀ i, lam i ≠ 0 := by
+    intro i h0
+    have := hnorm i
+    rw [h0, norm_zero] at this
+    exact hc (by simpa using this.symm)
+  have hoff : ∀ i j, i ≠ j → H i j = 0 := by
+    intro i j hij
+    have e := congrFun (congrFun key i) j
+    rw [Matrix.mul_diagonal, Matrix.diagonal_conjTranspose, Matrix.diagonal_mul] at e
+    simp only [Matrix.smul_apply, smul_eq_mul] at e
+    have hne : lam j - lam i ≠ 0 := sub_ne_zero.mpr (fun h => hij (hinj h).symm)
+    have hstar : (starRingEnd ℂ) (lam i) ≠ 0 := by simpa using hlam0 i
+    have e2 : (starRingEnd ℂ) (lam i) * (lam j - lam i) * H i j = 0 := by
+      rw [← hc' i] at e
+      simp only [Pi.star_apply] at e
+      have : star (lam i) = (starRingEnd ℂ) (lam i) := rfl
+      rw [this] at e
+      linear_combination e
+    rcases mul_eq_zero.mp e2 with h1 | h1
+    · exact absurd h1 (mul_ne_zero hstar hne)
+    · exact h1
+  have hdiag : H = Matrix.diagonal (fun i => (((H i i).re : ℝ) : ℂ)) := by
+    ext i j
+    by_cases hij : i = j
+    · subst hij
+      simp only [Matrix.diagonal_apply_eq]
+      exact (hHherm.coe_re_apply_self i).symm
+    · rw [Matrix.diagonal_apply_ne _ hij, hoff i j hij]
+  refine ⟨fun i => (H i i).re, ?_, hdiag⟩
+  have hdetH : H.det ≠ 0 := by
+    have hMdet : M.det ≠ 0 := by
+      rw [hM]; exact (Matrix.isUnit_iff_isUnit_det _).mp Z.isUnit |>.ne_zero
+    simp only [hH, Matrix.det_mul, Matrix.det_conjTranspose]
+    exact mul_ne_zero (mul_ne_zero (by simpa using hMdet) hdet) hMdet
+  intro i hi
+  rw [hdiag, Matrix.det_diagonal] at hdetH
+  apply hdetH
+  exact Finset.prod_eq_zero (Finset.mem_univ i) (by simp [hi])
+
+end GlobalTheory
+end
+
+section
+open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount
+open scoped TensorProduct Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_diagonal_congr_of_similitude_distinct_eigenvalues : ∀ {n : ℕ} (h g : Matrix (Fin n) (Fin n) ℂ) (c : ℝ) (Z : GL (Fin n) ℂ) (lam : Fin n → ℂ), h.IsHermitian → h.det ≠ 0 → c ≠ 0 → gᴴ * h * g = (c : ℂ) • h → Function.Injective lam → (∀ i, ‖lam i‖ ^ 2 = c) → g * (Z : Matrix (Fin n) (Fin n) ℂ) = (Z : Matrix (Fin n) (Fin n) ℂ) * Matrix.diagonal lam → ∃ d : Fin n → ℝ, (∀ i, d i ≠ 0) ∧ (Z : Matrix (Fin n) (Fin n) ℂ)ᴴ * h * (Z : Matrix (Fin n) (Fin n) ℂ) = Matrix.diagonal (fun i => (d i : ℂ)) := by
+  first | (exact @GlobalTheory.similitude_eigvec_orthogonal) | (exact GlobalTheory.similitude_eigvec_orthogonal) | (intros; apply GlobalTheory.similitude_eigvec_orthogonal  <;> assumption)
+end
+
+section
+open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount
+open scoped TensorProduct Classical
+
+namespace GlobalTheory
+
+theorem diag_sign_of_pos_eigenvector : ∀ {n : ℕ} (A h g : Matrix (Fin n) (Fin n) ℂ) (hA : A.IsHermitian) (W Z : GL (Fin n) ℂ) (lam : Fin n → ℂ) (d : Fin n → ℝ), A.det ≠ 0 → sigPosH hA = 1 → h = (W : Matrix (Fin n) (Fin n) ℂ)ᴴ * A * (W : Matrix (Fin n) (Fin n) ℂ) → (Z : Matrix (Fin n) (Fin n) ℂ)ᴴ * h * (Z : Matrix (Fin n) (Fin n) ℂ) = Matrix.diagonal (fun i => (d i : ℂ)) → Function.Injective lam → g * (Z : Matrix (Fin n) (Fin n) ℂ) = (Z : Matrix (Fin n) (Fin n) ℂ) * Matrix.diagonal lam → ∀ (i₀ : Fin n) (x : Fin n → ℂ), g *ᵥ x = lam i₀ • x → 0 < (star x ⬝ᵥ (h *ᵥ x)).re → 0 < d i₀ ∧ ∀ i, i ≠ i₀ → d i < 0 := by
+  intro n A h g hA W Z lam d hdet hsig hh hZ hlam hg i₀ x hx hxpos
+  have key : ∀ (N B : Matrix (Fin n) (Fin n) ℂ) (u u' : Fin n → ℂ),
+      star (N *ᵥ u) ⬝ᵥ B *ᵥ (N *ᵥ u') = star u ⬝ᵥ (Nᴴ * B * N) *ᵥ u' := by
+    intro N B u u'
+    rw [star_mulVec, ← dotProduct_mulVec, mulVec_mulVec, mulVec_mulVec, Matrix.mul_assoc]
+  set M : Matrix (Fin n) (Fin n) ℂ := (W : Matrix (Fin n) (Fin n) ℂ) * (Z : Matrix (Fin n) (Fin n) ℂ) with hM
+  have hMd : Mᴴ * A * M = diagonal (fun i => (d i : ℂ)) := by
+    rw [← hZ, hh, hM, conjTranspose_mul]
+    simp only [Matrix.mul_assoc]
+  obtain ⟨y, rfl⟩ : ∃ y, x = (Z : Matrix (Fin n) (Fin n) ℂ) *ᵥ y :=
+    ⟨(↑Z⁻¹ : Matrix (Fin n) (Fin n) ℂ) *ᵥ x, by rw [mulVec_mulVec, Units.mul_inv, one_mulVec]⟩
+  have hy : ∀ i, i ≠ i₀ → y i = 0 := by
+    have h1 : (Z : Matrix (Fin n) (Fin n) ℂ) *ᵥ (diagonal lam *ᵥ y)
+        = (Z : Matrix (Fin n) (Fin n) ℂ) *ᵥ (lam i₀ • y) := by
+      rw [mulVec_mulVec, ← hg, ← mulVec_mulVec, hx, mulVec_smul]
+    have h2 : diagonal lam *ᵥ y = lam i₀ • y := by
+      have := congrArg (fun v => (↑Z⁻¹ : Matrix (Fin n) (Fin n) ℂ) *ᵥ v) h1
+      simpa only [mulVec_mulVec, ← Matrix.mul_assoc, Units.inv_mul, Matrix.one_mul, one_mulVec] using this
+    intro i hi
+    have h3 := congrFun h2 i
+    rw [mulVec_diagonal, Pi.smul_apply, smul_eq_mul] at h3
+    have h4 : (lam i - lam i₀) * y i = 0 := by rw [sub_mul, h3, sub_self]
+    rcases mul_eq_zero.mp h4 with h5 | h5
+    · exact absurd (hlam (sub_eq_zero.mp h5)) hi
+    · exact h5
+  have hform : star ((Z : Matrix (Fin n) (Fin n) ℂ) *ᵥ y) ⬝ᵥ h *ᵥ ((Z : Matrix (Fin n) (Fin n) ℂ) *ᵥ y)
+      = ((d i₀ * Complex.normSq (y i₀) : ℝ) : ℂ) := by
+    rw [key, hZ]
+    simp only [dotProduct, mulVec_diagonal, Pi.star_apply]
+    rw [Finset.sum_eq_single i₀ (fun i _ hi => by simp [hy i hi]) (by simp)]
+    rw [Complex.ofReal_mul, Complex.normSq_eq_conj_mul_self]
+    simp only [RCLike.star_def]
+    ring
+  rw [hform, Complex.ofReal_re] at hxpos
+  have hd0 : 0 < d i₀ := by
+    by_contra hc
+    push_neg at hc
+    nlinarith [Complex.normSq_nonneg (y i₀)]
+  refine ⟨hd0, fun i hi => ?_⟩
+  have hNM : ((↑Z⁻¹ : Matrix (Fin n) (Fin n) ℂ) * (↑W⁻¹ : Matrix (Fin n) (Fin n) ℂ)) * M = 1 := by
+    rw [hM, Matrix.mul_assoc, ← Matrix.mul_assoc (↑W⁻¹ : Matrix (Fin n) (Fin n) ℂ), Units.inv_mul,
+      Matrix.one_mul, Units.inv_mul]
+  have hval : ∀ j k : Fin n, star (M *ᵥ Pi.single j 1) ⬝ᵥ A *ᵥ (M *ᵥ Pi.single k 1)
+      = if j = k then (d j : ℂ) else 0 := by
+    intro j k
+    rw [key, hMd]
+    by_cases hjk : j = k
+    · subst hjk; simp [dotProduct, mulVec_diagonal, Pi.single_apply]
+    · simp [dotProduct, mulVec_diagonal, Pi.single_apply, hjk]
+      intro hkj; exact absurd hkj.symm hjk
+  have hne : M *ᵥ Pi.single i (1 : ℂ) ≠ 0 := by
+    intro h0
+    have := congrArg (fun v => ((↑Z⁻¹ : Matrix (Fin n) (Fin n) ℂ) * (↑W⁻¹ : Matrix (Fin n) (Fin n) ℂ)) *ᵥ v) h0
+    simp only [mulVec_mulVec, hNM, one_mulVec, mulVec_zero] at this
+    have := congrFun this i
+    simp at this
+  have hneg := re_form_neg_of_orth_of_sigPosH_eq_one A hA hdet hsig (M *ᵥ Pi.single i₀ 1)
+    (M *ᵥ Pi.single i 1) (by rw [hval]; simpa using hd0) (by rw [hval, if_neg (Ne.symm hi)]) hne
+  rw [hval, if_pos rfl, Complex.ofReal_re] at hneg
+  exact hneg
+
+end GlobalTheory
+end
+
+section
+open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount
+open scoped TensorProduct Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.diagonal_sign_of_positive_eigenvector_one_positive : ∀ {n : ℕ} (A h g : Matrix (Fin n) (Fin n) ℂ) (hA : A.IsHermitian) (W Z : GL (Fin n) ℂ) (lam : Fin n → ℂ) (d : Fin n → ℝ), A.det ≠ 0 → sigPosH hA = 1 → h = (W : Matrix (Fin n) (Fin n) ℂ)ᴴ * A * (W : Matrix (Fin n) (Fin n) ℂ) → (Z : Matrix (Fin n) (Fin n) ℂ)ᴴ * h * (Z : Matrix (Fin n) (Fin n) ℂ) = Matrix.diagonal (fun i => (d i : ℂ)) → Function.Injective lam → g * (Z : Matrix (Fin n) (Fin n) ℂ) = (Z : Matrix (Fin n) (Fin n) ℂ) * Matrix.diagonal lam → ∀ (i₀ : Fin n) (x : Fin n → ℂ), g *ᵥ x = lam i₀ • x → 0 < (star x ⬝ᵥ (h *ᵥ x)).re → 0 < d i₀ ∧ ∀ i, i ≠ i₀ → d i < 0 := by
+  first | (exact @GlobalTheory.diag_sign_of_pos_eigenvector) | (exact GlobalTheory.diag_sign_of_pos_eigenvector) | (intros; apply GlobalTheory.diag_sign_of_pos_eigenvector  <;> assumption)
+end
+
+section
+noncomputable section
+
+open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount
+open scoped TensorProduct Classical
+
+namespace GlobalTheory.LKMid.MoveMark
+
+section Field
+
+variable {F M : Type} [Field F] [Field M] [Algebra F M]
+
+theorem exists_emb (pb : PowerBasis F M) (τ : F →+* ℂ) (z : ℂ) (hz : (minpoly F pb.gen).eval₂ τ z = 0) :
+    ∃ e : M →+* ℂ, (∀ x, e (algebraMap F M x) = τ x) ∧ e pb.gen = z := by
+  letI : Algebra F ℂ := τ.toAlgebra
+  have h : Polynomial.aeval z (minpoly F pb.gen) = 0 := hz
+  exact ⟨(pb.lift z h : M →ₐ[F] ℂ), fun x => (pb.lift z h).commutes x, pb.lift_gen z h⟩
+
+theorem gen_ind (pb : PowerBasis F M) (q : M → Prop) (h0 : q pb.gen) (h1 : ∀ x, q (algebraMap F M x))
+    (h2 : ∀ x y, q x → q y → q (x + y)) (h3 : ∀ x y, q x → q y → q (x * y)) (y : M) : q y := by
+  have hy : y ∈ Algebra.adjoin F {pb.gen} := by rw [pb.adjoin_gen_eq_top]; trivial
+  induction hy using Algebra.adjoin_induction with
+  | mem x hx => rw [Set.mem_singleton_iff.1 hx]; exact h0
+  | algebraMap r => exact h1 r
+  | add x y _ _ hx hy => exact h2 x y hx hy
+  | mul x y _ _ hx hy => exact h3 x y hx hy
+
+theorem emb_ext (pb : PowerBasis F M) (e e' : M →+* ℂ) (h1 : ∀ x, e (algebraMap F M x) = e' (algebraMap F M x))
+    (h0 : e pb.gen = e' pb.gen) : e = e' :=
+  RingHom.ext (gen_ind pb (fun y => e y = e' y) h0 h1 (fun x y hx hy => by simp only [map_add, hx, hy])
+    (fun x y hx hy => by simp only [map_mul, hx, hy]))
+
+theorem emb_root (pb : PowerBasis F M) (e : M →+* ℂ) :
+    (minpoly F pb.gen).eval₂ (e.comp (algebraMap F M)) (e pb.gen) = 0 := by
+  rw [← Polynomial.hom_eval₂, ← Polynomial.aeval_def, minpoly.aeval, map_zero]
+
+variable [NumberField F] [IsCMField F]
+
+theorem ne_conj (τ : F →+* ℂ) (e e' : M →+* ℂ) (h : ∀ x, e (algebraMap F M x) = τ x)
+    (h' : ∀ x, e' (algebraMap F M x) = τ x) : e ≠ ComplexEmbedding.conjugate e' := by
+  intro he
+  apply IsCMField.complexConj_ne_one F
+  ext x
+  apply τ.injective
+  rw [IsCMField.complexEmbedding_complexConj, ← h' x]
+  have := DFunLike.congr_fun he (algebraMap F M x)
+  rw [ComplexEmbedding.conjugate_coe_eq] at this
+  rw [← this, h]
+  rfl
+
+omit [NumberField F] [IsCMField F] in
+theorem place_eq (v w : InfinitePlace F) (e e' : M →+* ℂ) (h : ∀ x, e (algebraMap F M x) = w.embedding x)
+    (h' : ∀ x, e' (algebraMap F M x) = v.embedding x) (he : e = e' ∨ e = ComplexEmbedding.conjugate e') : w = v := by
+  rw [← w.mk_embedding, ← v.mk_embedding]
+  rcases he with he | he
+  · congr 1
+    ext x
+    rw [← h, ← h', he]
+  · rw [← InfinitePlace.mk_conjugate_eq v.embedding]
+    congr 1
+    ext x
+    rw [← h, he, ComplexEmbedding.conjugate_coe_eq, ComplexEmbedding.conjugate_coe_eq, h']
+
+end Field
+
+variable {p : ℕ} [Fact p.Prime] {G : HTGroup p}
+
+theorem sh_mul (x y : G.C) : sh G (x * y) = sh G y * sh G x := by
+  simp only [sh, map_mul, MulOpposite.unop_mul]
+
+theorem sh_add (x y : G.C) : sh G (x + y) = sh G x + sh G y := by
+  simp only [sh, map_add, MulOpposite.unop_add]
+
+variable {M : Type} [Field M] [NumberField M] [Algebra G.F M]
+
+theorem conj_law (P : Pair G) (pb : PowerBasis G.F M) (j : M →ₐ[G.F] G.C) (hj : j pb.gen = P.γ) (σ : M →+* M)
+    (hσ : ∀ x : G.F, σ (algebraMap G.F M x) = algebraMap G.F M (IsCMField.complexConj G.F x))
+    (hπ : σ pb.gen * pb.gen = ((P.c : ℚ) : M)) (y : M) : (P.β : G.C) * sh G (j y) = j (σ y) * P.β := by
+  refine gen_ind pb (fun y => (P.β : G.C) * sh G (j y) = j (σ y) * P.β) ?_ ?_ ?_ ?_ y
+  · have h1 : (P.γ : G.C) * j (σ pb.gen) = algebraMap ℚ G.C P.c := by
+      rw [← hj, ← map_mul, mul_comm, hπ, IsScalarTower.algebraMap_apply ℚ G.F G.C, ← j.commutes]
+      congr 1
+      simp
+    show (P.β : G.C) * sh G (j pb.gen) = j (σ pb.gen) * P.β
+    apply P.γ.isUnit.mul_left_cancel
+    rw [hj, ← mul_assoc, P.sim, ← mul_assoc, h1]
+  · intro x
+    show (P.β : G.C) * sh G (j (algebraMap G.F M x)) = j (σ (algebraMap G.F M x)) * P.β
+    rw [hσ, j.commutes, j.commutes, sh, G.star_F, Algebra.commutes]
+  · intro x y hx hy
+    show (P.β : G.C) * sh G (j (x + y)) = j (σ (x + y)) * P.β
+    rw [map_add, sh_add, mul_add, hx, hy, map_add, map_add, add_mul]
+  · intro x y hx hy
+    show (P.β : G.C) * sh G (j (x * y)) = j (σ (x * y)) * P.β
+    rw [map_mul, sh_mul, ← mul_assoc, hy, mul_assoc, hx, ← mul_assoc, ← map_mul, ← map_mul, mul_comm y x]
+
+omit [NumberField M] in
+theorem comm_law (γ : G.C) (pb : PowerBasis G.F M) (j : M →ₐ[G.F] G.C) (hj : j pb.gen = γ) (y : G.C)
+    (hy : y * γ = γ * y) (m : M) : y * j m = j m * y := by
+  refine gen_ind pb (fun m => y * j m = j m * y) ?_ ?_ ?_ ?_ m
+  · show y * j pb.gen = j pb.gen * y
+    rw [hj, hy]
+  · intro x
+    show y * j (algebraMap G.F M x) = j (algebraMap G.F M x) * y
+    rw [j.commutes, Algebra.commutes]
+  · intro a b ha hb
+    show y * j (a + b) = j (a + b) * y
+    rw [map_add, mul_add, add_mul, ha, hb]
+  · intro a b ha hb
+    show y * j (a * b) = j (a * b) * y
+    rw [map_mul, ← mul_assoc, ha, mul_assoc, hb, mul_assoc]
+
+theorem triv_mul_inv (R : Type) [CommRing R] [Algebra ℚ R] (β β' : G.C) (x U : (R ⊗[ℚ] G.C)ˣ) (t : Rˣ)
+    (hU : (U : R ⊗[ℚ] G.C) * inC G R β * (starT G.star R U).unop = inC G R β') (hx : Triv G R β x t) :
+    Triv G R β' (x * U⁻¹) t := by
+  unfold Triv at hx ⊢
+  have h1 : (starT G.star R U).unop * (starT G.star R ((U⁻¹ : (R ⊗[ℚ] G.C)ˣ) : R ⊗[ℚ] G.C)).unop = 1 := by
+    rw [← MulOpposite.unop_mul, ← map_mul, Units.inv_mul, map_one, MulOpposite.unop_one]
+  rw [← hx, ← hU, Units.val_mul, map_mul, MulOpposite.unop_mul]
+  calc _ = (x : R ⊗[ℚ] G.C) * (((U⁻¹ : (R ⊗[ℚ] G.C)ˣ) : R ⊗[ℚ] G.C) * U) * inC G R β *
+        ((starT G.star R U).unop * (starT G.star R ((U⁻¹ : (R ⊗[ℚ] G.C)ˣ) : R ⊗[ℚ] G.C)).unop) *
+        (starT G.star R x).unop := by simp only [mul_assoc]
+    _ = _ := by rw [h1, Units.inv_mul, mul_one, mul_one]
+
+omit [NumberField M] in
+
+theorem exists_basis (ha : G.a = 1) (P : Pair G) (μ : ℂ) (hm : P.Mark μ) (pb : PowerBasis G.F M)
+    (hpol : P.pol = minpoly G.F pb.gen) (j : M →ₐ[G.F] G.C) (hj : j pb.gen = P.γ) (w : InfinitePlace G.F) :
+    ∃ (Z : GL (Fin G.n) ℂ) (d : Fin G.n → ℝ) (e : Fin G.n → (M →+* ℂ)),
+      (∀ i x, e i (algebraMap G.F M x) = w.embedding x) ∧ Function.Injective (fun i => e i pb.gen) ∧
+      (∀ z : ℂ, P.pol.eval₂ w.embedding z = 0 → ∃ i, e i pb.gen = z) ∧
+      (∀ y, G.psi w (j y) * (Z : Matrix (Fin G.n) (Fin G.n) ℂ) =
+        (Z : Matrix (Fin G.n) (Fin G.n) ℂ) * Matrix.diagonal (fun i => e i y)) ∧ (∀ i, d i ≠ 0) ∧
+      (Z : Matrix (Fin G.n) (Fin G.n) ℂ)ᴴ * (G.gram w * G.psi w ((P.β⁻¹ : G.Cˣ) : G.C)) *
+        (Z : Matrix (Fin G.n) (Fin G.n) ℂ) = Matrix.diagonal (fun i => (d i : ℂ)) := by
+  obtain ⟨Z, lam, hinj, hroot, hZ⟩ := GlobalTheory.T.exists_eigenbasis_psi_infinitePlace_distinct_roots p G P w
+  have hr : ∀ i, P.pol.eval₂ w.embedding (lam i) = 0 := fun i => (hroot _).2 ⟨i, rfl⟩
+  choose e he he' using fun i => exists_emb pb w.embedding (lam i) (hpol ▸ hr i)
+  obtain ⟨h1, h2, h3⟩ := GlobalTheory.T.similitudePair_hermitianForm_invertible_similitude p G P w
+  obtain ⟨d, hd, hD⟩ := GlobalTheory.T.exists_diagonal_congr_of_similitude_distinct_eigenvalues _ (G.psi w P.γ) ((P.c : ℚ) : ℝ) Z lam h1 h2
+    (by exact_mod_cast P.c.ne_zero) (by rw [h3]; simp) hinj
+    (fun i => GlobalTheory.T.marked_similitude_pair_minpoly_roots_normSq_eq p G P μ ha hm _ _ (hr i)) hZ
+  have hl : (fun i => e i pb.gen) = lam := funext he'
+  refine ⟨Z, d, e, he, hl ▸ hinj, fun z hz => ?_, fun y => ?_, hd, hD⟩
+  · obtain ⟨i, hi⟩ := (hroot z).1 hz
+    exact ⟨i, (he' i).trans hi⟩
+  · refine gen_ind pb (fun y => G.psi w (j y) * (Z : Matrix (Fin G.n) (Fin G.n) ℂ) =
+        (Z : Matrix (Fin G.n) (Fin G.n) ℂ) * Matrix.diagonal (fun i => e i y)) ?_ ?_ ?_ ?_ y
+    · show G.psi w (j pb.gen) * _ = _
+      rw [hj, hl, hZ]
+    · intro x
+      show G.psi w (j (algebraMap G.F M x)) * _ = _
+      simp only [he]
+      rw [j.commutes, G.psi_F]
+      exact (Matrix.scalar_commute _ (fun _ => Commute.all _ _) _).eq
+    · intro a b h h'
+      show G.psi w (j (a + b)) * _ = _
+      simp only [map_add]
+      rw [Matrix.add_mul, h, h', ← Matrix.mul_add, Matrix.diagonal_add]
+    · intro a b h h'
+      show G.psi w (j (a * b)) * _ = _
+      simp only [map_mul]
+      rw [Matrix.mul_assoc, h', ← Matrix.mul_assoc, h, Matrix.mul_assoc, Matrix.diagonal_mul_diagonal]
+
+end GlobalTheory.LKMid.MoveMark
+
+namespace GlobalTheory.LKMid
+
+end GlobalTheory.LKMid
+end
+end
+
+section
+section
+open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKDef GlobalTheory.LKCount
+open scoped TensorProduct Classical
+
+noncomputable section
+
+namespace GlobalTheory.NormSignEven
+
+variable {M : Type} [Field M] [NumberField M]
+
+lemma cc (φ : M →+* ℂ) : ComplexEmbedding.conjugate (ComplexEmbedding.conjugate φ) = φ := star_star φ
+
+lemma conj_re (φ : M →+* ℂ) (x : M) : (ComplexEmbedding.conjugate φ x).re = (φ x).re := by
+  rw [ComplexEmbedding.conjugate_coe_eq]; simp
+
+lemma conj_ne {σ : M →+* M} (hσ : σ ≠ RingHom.id M)
+    (hc : ∀ (φ : M →+* ℂ) (x : M), φ (σ x) = (starRingEnd ℂ) (φ x)) (φ : M →+* ℂ) :
+    ComplexEmbedding.conjugate φ ≠ φ := by
+  intro h
+  apply hσ
+  ext x
+  apply φ.injective
+  rw [hc, RingHom.id_apply]
+  have := congrArg (fun ψ : M →+* ℂ => ψ x) h
+  simpa [ComplexEmbedding.conjugate_coe_eq] using this
+
+lemma im_eq_zero {σ : M →+* M}
+    (hc : ∀ (φ : M →+* ℂ) (x : M), φ (σ x) = (starRingEnd ℂ) (φ x)) (φ : M →+* ℂ) {x : M} (hx : σ x = x) :
+    (φ x).im = 0 := by
+  have h := hc φ x
+  rw [hx] at h
+  exact Complex.conj_eq_iff_im.mp h.symm
+
+lemma re_mul {σ : M →+* M}
+    (hc : ∀ (φ : M →+* ℂ) (x : M), φ (σ x) = (starRingEnd ℂ) (φ x)) (φ : M →+* ℂ) {x y : M}
+    (hx : σ x = x) :
+    (φ (x * y)).re = (φ x).re * (φ y).re := by
+  rw [map_mul, Complex.mul_re, im_eq_zero hc φ hx, zero_mul, sub_zero]
+
+end GlobalTheory.NormSignEven
+
+open GlobalTheory.NormSignEven in
+theorem GlobalTheory.NormSign.exists_neg_even_norm_away : ∀ (M : Type) [Field M] [NumberField M] (σ : M →+* M), σ ≠ RingHom.id M → (∀ (φ : M →+* ℂ) (x : M), φ (σ x) = (starRingEnd ℂ) (φ x)) → ∀ (S : Finset (M →+* ℂ)), (∀ φ ∈ S, ComplexEmbedding.conjugate φ ∈ S) → 4 ∣ S.card → ∀ (p : ℕ) [Fact p.Prime], ∃ a : M, a ≠ 0 ∧ σ a = a ∧ (∀ φ ∈ S, (φ a).re < 0) ∧ (∀ φ : M →+* ℂ, φ ∉ S → 0 < (φ a).re) ∧ ∃ u : (AfP p ⊗[ℚ] M)ˣ, (u : AfP p ⊗[ℚ] M) * Algebra.TensorProduct.map (AlgHom.id ℚ (AfP p)) σ.toRatAlgHom u = 1 ⊗ₜ a := by
+  intro M _ _ σ hσ hc S hS h4 p _
+  obtain ⟨n, hn⟩ := h4
+  induction n generalizing S with
+  | zero =>
+    have hS0 : S = ∅ := Finset.card_eq_zero.mp (by simpa using hn)
+    subst hS0
+    refine ⟨1, one_ne_zero, map_one σ, by simp, fun φ _ => by simp, 1, ?_⟩
+    simp [Algebra.TensorProduct.one_def]
+  | succ n ih =>
+    obtain ⟨ε, hε⟩ : S.Nonempty := Finset.card_pos.mp (by omega)
+    have hε1 : ComplexEmbedding.conjugate ε ∈ (S.erase ε) :=
+      Finset.mem_erase.mpr ⟨conj_ne hσ hc ε, hS ε hε⟩
+    have hT : 0 < ((S.erase ε).erase (ComplexEmbedding.conjugate ε)).card := by
+      rw [Finset.card_erase_of_mem hε1, Finset.card_erase_of_mem hε]; omega
+    obtain ⟨ε', hε'⟩ := Finset.card_pos.mp hT
+    simp only [Finset.mem_erase] at hε'
+    obtain ⟨h1, h2, hε'S⟩ := hε'
+    have hcc : ∀ φ ψ : M →+* ℂ, ComplexEmbedding.conjugate φ = ψ → φ = ComplexEmbedding.conjugate ψ := by
+      intro φ ψ h; rw [← h, cc]
+    have h3 : ε ≠ ComplexEmbedding.conjugate ε' := by
+      intro h; apply h1; rw [h, cc]
+    set S' := (((S.erase ε).erase (ComplexEmbedding.conjugate ε)).erase ε').erase
+      (ComplexEmbedding.conjugate ε') with hS'def
+    have hmem : ∀ φ, φ ∈ S' ↔ φ ≠ ComplexEmbedding.conjugate ε' ∧ φ ≠ ε' ∧
+        φ ≠ ComplexEmbedding.conjugate ε ∧ φ ≠ ε ∧ φ ∈ S := by
+      intro φ; simp [hS'def, Finset.mem_erase]
+    have hcard : S'.card = 4 * n := by
+      have e1 : ε' ∈ ((S.erase ε).erase (ComplexEmbedding.conjugate ε)) := by
+        simp [Finset.mem_erase]; exact ⟨h1, h2, hε'S⟩
+      have e2 : ComplexEmbedding.conjugate ε' ∈
+          ((S.erase ε).erase (ComplexEmbedding.conjugate ε)).erase ε' := by
+        simp only [Finset.mem_erase]
+        refine ⟨conj_ne hσ hc ε', ?_, fun h => h3 h.symm, hS _ hε'S⟩
+        intro h
+        exact h2 (by have := congrArg ComplexEmbedding.conjugate h; simpa [cc] using this)
+      rw [hS'def, Finset.card_erase_of_mem e2, Finset.card_erase_of_mem e1,
+        Finset.card_erase_of_mem hε1, Finset.card_erase_of_mem hε]
+      omega
+    have hS'stab : ∀ φ ∈ S', ComplexEmbedding.conjugate φ ∈ S' := by
+      intro φ hφ
+      rw [hmem] at hφ ⊢
+      obtain ⟨a1, a2, a3, a4, a5⟩ := hφ
+      refine ⟨fun h => a2 ?_, fun h => a1 ?_, fun h => a4 ?_, fun h => a3 ?_, hS φ a5⟩
+      · have := congrArg ComplexEmbedding.conjugate h; simpa [cc] using this
+      · exact hcc _ _ h
+      · have := congrArg ComplexEmbedding.conjugate h; simpa [cc] using this
+      · exact hcc _ _ h
+    obtain ⟨b, hb0, hbσ, hbneg, hbpos, ub, hub⟩ := ih S' hS'stab hcard
+    obtain ⟨c, hc0, hcσ, hcε, hcε', hcpos, uc, huc⟩ :=
+      GlobalTheory.T.exists_realSubfield_negative_twoPlaces_normEverywhere M σ hσ hc ε ε' (Ne.symm h2) h3 p
+    have hcneg : ∀ φ, φ = ε ∨ φ = ComplexEmbedding.conjugate ε ∨ φ = ε' ∨ φ = ComplexEmbedding.conjugate ε' →
+        (φ c).re < 0 := by
+      rintro φ (rfl | rfl | rfl | rfl)
+      · exact hcε
+      · rw [conj_re]; exact hcε
+      · exact hcε'
+      · rw [conj_re]; exact hcε'
+    refine ⟨b * c, mul_ne_zero hb0 hc0, by rw [map_mul, hbσ, hcσ], ?_, ?_, ub * uc, ?_⟩
+    · intro φ hφ
+      rw [re_mul hc φ hbσ]
+      by_cases hφ' : φ ∈ S'
+      · exact mul_neg_of_neg_of_pos (hbneg φ hφ') (hcpos φ (by rw [hmem] at hφ'; exact hφ'.2.2.2.1)
+          (by rw [hmem] at hφ'; exact hφ'.2.2.1) (by rw [hmem] at hφ'; exact hφ'.2.1)
+          (by rw [hmem] at hφ'; exact hφ'.1))
+      · refine mul_neg_of_pos_of_neg (hbpos φ hφ') (hcneg φ ?_)
+        rw [hmem] at hφ'
+        by_contra hne
+        push_neg at hne
+        exact hφ' ⟨hne.2.2.2, hne.2.2.1, hne.2.1, hne.1, hφ⟩
+    · intro φ hφ
+      rw [re_mul hc φ hbσ]
+      have hφ' : φ ∉ S' := fun h => hφ (((hmem φ).mp h).2.2.2.2)
+      refine mul_pos (hbpos φ hφ') (hcpos φ ?_ ?_ ?_ ?_)
+      · rintro rfl; exact hφ hε
+      · rintro rfl; exact hφ (hS ε hε)
+      · rintro rfl; exact hφ hε'S
+      · rintro rfl; exact hφ (hS ε' hε'S)
+    · rw [Units.val_mul, map_mul]
+      calc (ub : AfP p ⊗[ℚ] M) * uc * (Algebra.TensorProduct.map (AlgHom.id ℚ (AfP p)) σ.toRatAlgHom ub *
+            Algebra.TensorProduct.map (AlgHom.id ℚ (AfP p)) σ.toRatAlgHom uc)
+          = ((ub : AfP p ⊗[ℚ] M) * Algebra.TensorProduct.map (AlgHom.id ℚ (AfP p)) σ.toRatAlgHom ub) *
+            ((uc : AfP p ⊗[ℚ] M) * Algebra.TensorProduct.map (AlgHom.id ℚ (AfP p)) σ.toRatAlgHom uc) := by ring
+        _ = 1 ⊗ₜ (b * c) := by rw [hub, huc, Algebra.TensorProduct.tmul_mul_tmul, one_mul]
+end
+end
+
+open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKDef GlobalTheory.LKCount
+open scoped TensorProduct Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_totallyReal_even_neg_places_local_norm : ∀ (M : Type) [Field M] [NumberField M] (σ : M →+* M), σ ≠ RingHom.id M → (∀ (φ : M →+* ℂ) (x : M), φ (σ x) = (starRingEnd ℂ) (φ x)) → ∀ (S : Finset (M →+* ℂ)), (∀ φ ∈ S, ComplexEmbedding.conjugate φ ∈ S) → 4 ∣ S.card → ∀ (p : ℕ) [Fact p.Prime], ∃ a : M, a ≠ 0 ∧ σ a = a ∧ (∀ φ ∈ S, (φ a).re < 0) ∧ (∀ φ : M →+* ℂ, φ ∉ S → 0 < (φ a).re) ∧ ∃ u : (AfP p ⊗[ℚ] M)ˣ, (u : AfP p ⊗[ℚ] M) * Algebra.TensorProduct.map (AlgHom.id ℚ (AfP p)) σ.toRatAlgHom u = 1 ⊗ₜ a := by
+  atlas_forward_decl GlobalTheory.NormSign.exists_neg_even_norm_away
+end
+
+section
+open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount
+open scoped TensorProduct Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermitian_congr_of_positiveIndex_eq : ∀ {n : ℕ} (A B : Matrix (Fin n) (Fin n) ℂ) (hA : A.IsHermitian) (hB : B.IsHermitian), A.det ≠ 0 → B.det ≠ 0 → sigPosH hA = sigPosH hB → ∃ Z : GL (Fin n) ℂ, B = (Z : Matrix (Fin n) (Fin n) ℂ)ᴴ * A * (Z : Matrix (Fin n) (Fin n) ℂ) := by
+  first | exact @GlobalTheory.HermCongruence.congr_of_sigPosH_eq | exact GlobalTheory.HermCongruence.congr_of_sigPosH_eq | (intros; apply GlobalTheory.HermCongruence.congr_of_sigPosH_eq <;> assumption)
+end
+
+section
+open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount
+open scoped TensorProduct Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.negDef_of_hermitianMatrixPositiveIndex_eq_zero : ∀ {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (hA : A.IsHermitian), A.det ≠ 0 → sigPosH hA = 0 → ∀ y : Fin n → ℂ, y ≠ 0 → (star y ⬝ᵥ A *ᵥ y).re < 0 := by
+  first | (exact @GlobalTheory.herm_negDef_of_sigPosH_eq_zero) | (exact GlobalTheory.herm_negDef_of_sigPosH_eq_zero) | (intros; apply GlobalTheory.herm_negDef_of_sigPosH_eq_zero  <;> assumption)
+end
+
+section
 open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKDef GlobalTheory.LKCount
 open scoped TensorProduct Classical
 
@@ -769,3 +1410,5 @@ theorem move_definite : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p), G.a = 1 �
     exact Units.ext (by exact_mod_cast e1.symm.trans e2)
 
 end GlobalTheory.LKDef
+end
+end

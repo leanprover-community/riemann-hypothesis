@@ -33,12 +33,6 @@ theorem leftReg_mul (g : G) (a b : HeckeAlgebra μ) : leftReg μ g (a * b) = lef
   rw [← heckeAct_leftReg, heckeAct_ltrans g a.mem (isSmooth_leftReg b), ← heckeAct_leftReg]
   rfl
 
-theorem heckeAct_mem_subrep (X : Subrepresentation ρ) {f : G → ℂ}
-    (hf : f ∈ locallyConstantCompactSupport G ℂ ℂ) {x : V} (hx : x ∈ smoothVectors ρ)
-    (hX : x ∈ X) : heckeAct μ ρ f x ∈ X :=
-  heckeAct_mem_of_forall (X := X.toSubmodule)
-    (range_finite_of_mem_locallyConstantCompactSupport (smul_orbit_mem hf hx))
-    fun g => X.toSubmodule.smul_mem _ (X.apply_mem_toSubmodule g hX)
 
 theorem heckeAct_corner {v : V} (hv : v ∈ fixedVectors ρ K) (f : HeckeAlgebra μ) :
     heckeAct μ ρ (HeckeAlgebraLevel.corner hKc hKo f : HeckeAlgebra μ) v =
@@ -283,65 +277,6 @@ def fixedQuotEquiv :
   (Submodule.quotEquivOfEq I _ (ker_toFixedQuot hKc hKo I).symm).trans
     ((toFixedQuot hKc hKo I).quotKerEquivOfSurjective (toFixedQuot_surjective hKc hKo I))
 
-theorem isIrreducible_quotRep (hI : IsCoatom I) : (quotRep hKc hKo I).IsIrreducible := by
-  have hne : (toFixedQuot hKc hKo I 1 : HeckeAlgebra μ ⧸ heckeKernel hKc hKo I) ≠ 0 := by
-    intro h0
-    apply hI.1
-    rw [Ideal.eq_top_iff_one, ← ker_toFixedQuot hKc hKo I, LinearMap.mem_ker]
-    exact Subtype.ext h0
-  refine { exists_pair_ne := ⟨⊥, ⊤, fun h => hne ?_⟩, eq_bot_or_eq_top := fun X => ?_ }
-  · have : (toFixedQuot hKc hKo I 1 : HeckeAlgebra μ ⧸ heckeKernel hKc hKo I) ∈
-        (⊤ : Subrepresentation (quotRep hKc hKo I)) := Submodule.mem_top
-    rw [← h] at this
-    exact (Submodule.mem_bot ℂ).1 this
-  · by_cases hX : ∃ y ∈ X, y ∈ fixedVectors (quotRep hKc hKo I) K ∧ y ≠ 0
-    · right
-      obtain ⟨y, hyX, hyK, hy0⟩ := hX
-      obtain ⟨h₀, hh₀⟩ := toFixedQuot_surjective hKc hKo I ⟨y, hyK⟩
-      let I' : Submodule (HeckeAlgebraLevel μ K hKc hKo) (HeckeAlgebraLevel μ K hKc hKo) :=
-        { carrier := {h | (toFixedQuot hKc hKo I h : HeckeAlgebra μ ⧸ heckeKernel hKc hKo I) ∈ X}
-          add_mem' := fun {a b} ha hb => by
-            simp only [mem_setOf_eq, map_add, Submodule.coe_add]
-            exact X.toSubmodule.add_mem ha hb
-          zero_mem' := by
-            simp only [mem_setOf_eq, map_zero, ZeroMemClass.coe_zero]
-            exact X.toSubmodule.zero_mem
-          smul_mem' := fun a h hh => by
-            simp only [mem_setOf_eq, map_smul, coe_smul_fixedVectors]
-            exact heckeAct_mem_subrep X (a : HeckeAlgebra μ).mem (isSmooth_quotRep hKc hKo I _) hh }
-      have hII' : I < I' := by
-        refine lt_of_le_of_ne (fun h hh => ?_) fun heq => ?_
-        · show _ ∈ X
-          have : toFixedQuot hKc hKo I h = 0 := by rwa [← LinearMap.mem_ker, ker_toFixedQuot]
-          rw [this]
-          exact X.toSubmodule.zero_mem
-        · have : h₀ ∈ I' := show _ ∈ X by rw [hh₀]; exact hyX
-          rw [← heq, ← ker_toFixedQuot hKc hKo I, LinearMap.mem_ker, hh₀] at this
-          exact hy0 (congrArg Subtype.val this)
-      have h1 : (1 : HeckeAlgebraLevel μ K hKc hKo) ∈ I' := by
-        rw [hI.2 I' hII']
-        trivial
-      rw [eq_top_iff]
-      intro z _
-      obtain ⟨φ, rfl⟩ := (heckeKernel hKc hKo I).mkQ_surjective z
-      rw [← mkQ_mul_idem hKc hKo I φ, ← heckeAct_quotRep]
-      exact heckeAct_mem_subrep X φ.mem (isSmooth_quotRep hKc hKo I _) h1
-    · left
-      push_neg at hX
-      rw [eq_bot_iff]
-      intro z hz
-      obtain ⟨φ, rfl⟩ := (heckeKernel hKc hKo I).mkQ_surjective z
-      show _ ∈ (⊥ : Submodule ℂ _)
-      rw [Submodule.mem_bot, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
-      intro g
-      have hmem : heckeAct μ (quotRep hKc hKo I) (idem μ hKc hKo)
-          (quotRep hKc hKo I g ((heckeKernel hKc hKo I).mkQ φ)) = 0 :=
-        hX _ (heckeAct_mem_subrep X (idem μ hKc hKo).mem (isSmooth_quotRep hKc hKo I _)
-          (X.apply_mem_toSubmodule g hz))
-          (heckeAct_idem_mem hKc hKo (isSmooth_quotRep hKc hKo I _))
-      rw [quotRep_mkQ, heckeAct_quotRep, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero] at hmem
-      have := hmem 1
-      rwa [map_one, Module.End.one_apply, cornerₗ_idem_mul] at this
 
 end Construction
 
@@ -420,21 +355,6 @@ theorem nonempty_equiv_quotRep (I : Submodule (HeckeAlgebraLevel μ K hKc hKo)
   · obtain ⟨φ, rfl⟩ := hsurj w
     exact ⟨(heckeKernel hKc hKo I).mkQ φ, rfl⟩
 
-theorem exists_irreducible_fixedVectors_equiv (M : Type*) [AddCommGroup M]
-    [Module (HeckeAlgebraLevel μ K hKc hKo) M] [IsSimpleModule (HeckeAlgebraLevel μ K hKc hKo) M] :
-    ∃ (V : Type u) (_ : AddCommGroup V) (_ : Module ℂ V) (ρ : Representation ℂ G V),
-      IsSmooth ρ ∧ ρ.IsIrreducible ∧
-        Nonempty (fixedVectors ρ K ≃ₗ[HeckeAlgebraLevel μ K hKc hKo] M) := by
-  have hs := (isSimpleModule_iff_toSpanSingleton_surjective (R := HeckeAlgebraLevel μ K hKc hKo)
-    (M := M)).1 inferInstance
-  haveI := hs.1
-  obtain ⟨m, hm⟩ := exists_ne (0 : M)
-  set I := LinearMap.ker (LinearMap.toSpanSingleton (HeckeAlgebraLevel μ K hKc hKo) M m)
-  let eM : (HeckeAlgebraLevel μ K hKc hKo ⧸ I) ≃ₗ[HeckeAlgebraLevel μ K hKc hKo] M :=
-    LinearMap.quotKerEquivOfSurjective _ (hs.2 m hm)
-  have hI : IsCoatom I := isSimpleModule_iff_isCoatom.1 (IsSimpleModule.congr eM)
-  exact ⟨_, _, _, quotRep hKc hKo I, isSmooth_quotRep hKc hKo I, isIrreducible_quotRep hKc hKo I hI,
-    ⟨(fixedQuotEquiv hKc hKo I).symm.trans eM⟩⟩
 
 theorem nonempty_equiv_of_fixedVectors_equiv {W : Type*} [AddCommGroup W] [Module ℂ W]
     {σ : Representation ℂ G W} (hρ : IsSmooth ρ) (hσ : IsSmooth σ) [ρ.IsIrreducible]

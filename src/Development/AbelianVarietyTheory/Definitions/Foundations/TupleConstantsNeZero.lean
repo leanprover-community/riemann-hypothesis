@@ -319,18 +319,6 @@ theorem twisted (σ₀ : K →+* ℂ) (w : Pl K) {n m d Q : ℕ} (hn : n ≠ 0) 
   · intro i
     exact ⟨1, fun _ => n, fun _ => 1, IsAwayUnit.one Q, by simp, by simp [numbers, square]⟩
 
-theorem exists_twisted_ne_base (σ₀ : K →+* ℂ) (w : Pl K) :
-    ∃ (S : Sq K) (cw : ℂ) (dl : ℝ), S.OK 3 2 ∧ 0 ≤ dl ∧ cw = 12 * S.base.c ∧ cw ≠ S.base.c ∧
-      S.Twisted σ₀ w cw 1 1 (fun _ => 1) (fun _ => 3) (fun _ => 0) (fun _ => 0) 0 dl (univ : Finset Unit) (fun _ => 1)
-        (fun _ => 2) := by
-  have h1 : ((1 : ℕ) : 𝓞 K) ∉ w.asIdeal := by simpa using (Ideal.ne_top_iff_one _).1 w.isPrime.ne_top
-  have h := twisted σ₀ w (n := 2) (m := 3) (d := 3) (Q := 1) (er := 0) (by norm_num) (by norm_num) (by norm_num) h1 (by simp)
-  have h12 : σ₀ ((2 ^ 2 * 3 * 1 : ℕ) : K) = 12 := by rw [map_natCast]; norm_num
-  rw [h12] at h
-  refine ⟨square K, _, _, square_ok, vw_natCast_nonneg w 2, rfl, ?_, by simpa using h⟩
-  intro h'
-  have h0 : (11 : ℂ) * (square K).base.c = 0 := by linear_combination h'
-  exact mul_ne_zero (by norm_num) (square_ok (K := K)).c_ne h0
 
 end TwoStep
 

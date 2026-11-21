@@ -1,8 +1,50 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsSlTwoIntSmulOfFixesJK
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DiagMod
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemTranslationInvariantSubfieldIffExponents
 import BuildAid.ForwardExisting
 
+section
+open scoped MatrixGroups TensorProduct
+open Matrix GlobalTheory.KZ GlobalTheory.KZ.ES
+
+noncomputable section
+
+namespace GlobalTheory.KZ.ES.JStab
+
+theorem eps_eOm_of_alg {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ)
+    (x : ℚ) : ε (eOm ε x) = Complex.exp (2 * Real.pi * Complex.I * (x : ℂ)) := by
+  haveI : IsAlgClosed Ω := IsAlgClosure.isAlgClosed ℚ
+  haveI : CharZero Ω := charZero_of_injective_algebraMap (algebraMap ℚ Ω).injective
+  have hε : Function.Injective ε := ε.injective
+  unfold eOm
+  apply Function.invFun_eq
+  haveI : NeZero (x.den : Ω) := ⟨by exact_mod_cast x.den_nz⟩
+  obtain ⟨ζ, hζ0⟩ := IsAlgClosed.exists_root (Polynomial.cyclotomic x.den Ω)
+    (by rw [Polynomial.degree_cyclotomic]; exact_mod_cast (Nat.totient_pos.2 x.den_pos).ne')
+  have hζ : IsPrimitiveRoot ζ x.den := (Polynomial.isRoot_cyclotomic_iff).1 hζ0
+  have hζ' : IsPrimitiveRoot (ε ζ) x.den := hζ.map_of_injective hε
+  haveI : NeZero x.den := ⟨x.den_nz⟩
+  have hpow : (Complex.exp (2 * Real.pi * Complex.I * (x : ℂ))) ^ x.den = 1 := by
+    rw [← Complex.exp_nat_mul, Complex.exp_eq_one_iff]
+    refine ⟨x.num, ?_⟩
+    have hx : (x : ℂ) * x.den = x.num := by exact_mod_cast Rat.mul_den_eq_num x
+    calc (x.den : ℂ) * (2 * Real.pi * Complex.I * (x : ℂ)) = ((x : ℂ) * x.den) * (2 * Real.pi * Complex.I) := by ring
+      _ = _ := by rw [hx]
+  obtain ⟨i, -, hi⟩ := hζ'.eq_pow_of_pow_eq_one hpow
+  exact ⟨ζ ^ i, by rw [map_pow, hi]⟩
+
+theorem eOm_ne_zero' {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (x : ℚ) :
+    eOm ε x ≠ 0 := by
+  intro h0
+  have := eps_eOm_of_alg ε x
+  rw [h0, map_zero] at this
+  exact Complex.exp_ne_zero _ this.symm
+
+end GlobalTheory.KZ.ES.JStab
+end
+end
+
+section
 section
 open scoped MatrixGroups TensorProduct
 open Matrix GlobalTheory.KZ GlobalTheory.KZ.ES
@@ -391,3 +433,4 @@ open Matrix GlobalTheory.KZ GlobalTheory.KZ.ES
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.jTranslates_level_and_scalar_mod : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε), ∀ m : ℕ, 0 < m → (∀ g ∈ ({!![(m : ℤ), 0; 0, 1], !![1, 0; 0, (m : ℤ)], !![1, 1; 0, (m : ℤ)]} : Set (Matrix (Fin 2) (Fin 2) ℤ)), Lev X m (X.sl (toGQ g) X.jK)) ∧ ∀ γ : SL(2, ℤ), (∀ g ∈ ({!![(m : ℤ), 0; 0, 1], !![1, 0; 0, (m : ℤ)], !![1, 1; 0, (m : ℤ)]} : Set (Matrix (Fin 2) (Fin 2) ℤ)), X.sl (ofSL γ) (X.sl (toGQ g) X.jK) = X.sl (toGQ g) X.jK) → (en γ 0 1 : ZMod m) = 0 ∧ (en γ 1 0 : ZMod m) = 0 ∧ (en γ 0 0 : ZMod m) = en γ 1 1 := by
   atlas_forward_decl GlobalTheory.KZ.ES.Scal.lev_and_scalar
+end

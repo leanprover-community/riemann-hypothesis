@@ -4,8 +4,30 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsIntegralOfMemAdjo
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.UniformisationCompleteDVR
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.EgaHolds
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OverExtOfPoints
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ImportsExtraMore
 
+section
+namespace GlobalTheory.ClosingLemmaSecond
+
+theorem main : ∀ {R : Type} [inst : CommRing R] [IsDomain R] [IsNoetherianRing R] (I : Ideal R) {q : R}, q ≠ (0 : R) → ∃ (c : ℕ), ∀ (n : ℕ) (a : R), q * a ∈ I ^ (n + c) → a ∈ I ^ n := by
+  intro R _ _ _ I q hq
+  obtain ⟨k, hk⟩ := Ideal.exists_pow_inf_eq_pow_smul I (Ideal.span {q} : Submodule R R)
+  refine ⟨k, fun n a ha => ?_⟩
+  have hmem : q * a ∈ I ^ (n + k) • (⊤ : Submodule R R) ⊓ Ideal.span {q} := by
+    refine Submodule.mem_inf.2 ⟨?_, Ideal.mem_span_singleton.2 ⟨a, rfl⟩⟩
+    rw [Ideal.smul_eq_mul, Ideal.mul_top]
+    exact ha
+  rw [hk (n + k) (by omega), Nat.add_sub_cancel] at hmem
+  have hle : I ^ n • (I ^ k • (⊤ : Submodule R R) ⊓ Ideal.span {q}) ≤ I ^ n • Ideal.span {q} :=
+    Submodule.smul_le.2 fun r hr x hx => Submodule.smul_mem_smul hr (Submodule.mem_inf.1 hx).2
+  have h2 := hle hmem
+  rw [Ideal.smul_eq_mul, mul_comm, Ideal.mem_span_singleton_mul] at h2
+  obtain ⟨z, hz, hzq⟩ := h2
+  rwa [← mul_left_cancel₀ hq hzq]
+
+end GlobalTheory.ClosingLemmaSecond
+end
+
+section
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
@@ -237,4 +259,5 @@ theorem exists_unif_of_ne_zero : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLoc
   exact ⟨Dd, U₁, hU₁.2.1.symm.trans (congrArg CP.L eP), hU₁.1.symm.trans eg⟩
 
 end GlobalTheory.SectionUnif
+end
 end

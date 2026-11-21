@@ -1,5 +1,460 @@
 import Mathlib
-import GroundTheory.ArithmeticGeometry.AbelianVarieties.KodairaNeronIstar
+import GroundTheory.ArithmeticGeometry.AbelianVarieties.KodairaNeron
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Arith.Abelian
+
+open WeierstrassCurve WeierstrassCurve.Affine
+
+noncomputable section
+
+section Line
+
+variable {F : Type*} [Field F] [DecidableEq F] {W : WeierstrassCurve F}
+
+theorem exists_line_of_add_eq_zero {x₁ y₁ x₂ y₂ x₃ y₃ : F} (h₁ : W.toAffine.Nonsingular x₁ y₁)
+    (h₂ : W.toAffine.Nonsingular x₂ y₂) (h₃ : W.toAffine.Nonsingular x₃ y₃)
+    (hs : Point.some _ _ h₁ + Point.some _ _ h₂ + Point.some _ _ h₃ = 0) :
+    ∃ ℓ ν : F, y₁ = ℓ * x₁ + ν ∧ y₂ = ℓ * x₂ + ν ∧ y₃ = ℓ * x₃ + ν ∧
+      x₁ + x₂ + x₃ = ℓ ^ 2 + W.a₁ * ℓ - W.a₂ ∧
+      x₁ * x₂ + x₁ * x₃ + x₂ * x₃ = W.a₄ - 2 * ℓ * ν - W.a₁ * ν - W.a₃ * ℓ ∧
+      x₁ * x₂ * x₃ = ν ^ 2 + W.a₃ * ν - W.a₆ := by
+  have hxy : ¬(x₁ = x₂ ∧ y₁ = W.toAffine.negY x₂ y₂) := by
+    intro hxy
+    rw [Point.add_of_Y_eq hxy.1 hxy.2, zero_add] at hs
+    exact Point.some_ne_zero _ hs
+  set ℓ := W.toAffine.slope x₁ x₂ y₁ y₂ with hℓ
+  rw [Point.add_some hxy, add_eq_zero_iff_eq_neg, Point.neg_some, Point.some.injEq] at hs
+  obtain ⟨hx3, hy3⟩ := hs
+  rw [← hℓ] at hx3 hy3
+  refine ⟨ℓ, y₁ - ℓ * x₁, by ring, ?_, ?_, ?_⟩
+  · by_cases hx : x₁ = x₂
+    · subst hx
+      have hy := Y_eq_of_Y_ne h₁.1 h₂.1 rfl (fun h => hxy ⟨rfl, h⟩)
+      rw [← hy]; ring
+    · rw [hℓ, slope_of_X_ne hx]
+      have hd : x₁ - x₂ ≠ 0 := sub_ne_zero.2 hx
+      field_simp
+      ring
+  · rw [← W.toAffine.negY_negY x₃ y₃, ← hy3, ← hx3]
+    simp only [addY, negY_negY, negAddY]
+    ring
+  have e := W.toAffine.addPolynomial_slope h₁.1 h₂.1 hxy
+  rw [addPolynomial_eq, Cubic.prod_X_sub_C_eq, neg_inj, Cubic.toPoly_injective,
+    Cubic.mk.injEq, hx3] at e
+  obtain ⟨-, e2, e3, e4⟩ := e
+  rw [← hℓ] at e2 e3 e4
+  refine ⟨by linear_combination e2, by linear_combination -e3, by linear_combination e4⟩
+
+end Line
+
+section Counting
+
+variable {G : Type*} [AddCommGroup G] (H : AddSubgroup G)
+
+
+
+end Counting
+
+section DVR
+
+open IsLocalRing
+
+variable {𝒪 : Type*} [CommRing 𝒪] [IsDomain 𝒪] [IsDiscreteValuationRing 𝒪]
+  (K : Type*) [Field K] [Algebra 𝒪 K] [IsFractionRing 𝒪 K] (W : WeierstrassCurve 𝒪)
+
+local notation "ι" => algebraMap 𝒪 K
+
+omit [IsFractionRing 𝒪 K] in
+theorem notMem_E0Set_iff (P : (curveK K W).Point) :
+    P ∉ E0Set K W ↔ ∃ (x y : 𝒪) (h : (curveK K W).Nonsingular (ι x) (ι y)),
+      P = .some _ _ h ∧ ¬(curveRed W).Nonsingular (residue 𝒪 x) (residue 𝒪 y) := by
+  simp only [E0Set, Set.mem_ofPred_eq, not_forall, exists_prop]
+
+theorem exists_integral_line [DecidableEq K] {x₁ y₁ x₂ y₂ x₃ y₃ : 𝒪}
+    (h₁ : (curveK K W).Nonsingular (ι x₁) (ι y₁)) (h₂ : (curveK K W).Nonsingular (ι x₂) (ι y₂))
+    (h₃ : (curveK K W).Nonsingular (ι x₃) (ι y₃))
+    (hs : Point.some _ _ h₁ + Point.some _ _ h₂ + Point.some _ _ h₃ = 0) :
+    ∃ ℓ ν : 𝒪, y₁ = ℓ * x₁ + ν ∧ y₂ = ℓ * x₂ + ν ∧ y₃ = ℓ * x₃ + ν ∧
+      x₁ + x₂ + x₃ = ℓ ^ 2 + W.a₁ * ℓ - W.a₂ ∧
+      x₁ * x₂ + x₁ * x₃ + x₂ * x₃ = W.a₄ - 2 * ℓ * ν - W.a₁ * ν - W.a₃ * ℓ ∧
+      x₁ * x₂ * x₃ = ν ^ 2 + W.a₃ * ν - W.a₆ := by
+  obtain ⟨L, N, e1, e2, e3, v1, v2, v3⟩ := exists_line_of_add_eq_zero h₁ h₂ h₃ hs
+  have hinj := IsFractionRing.injective 𝒪 K
+
+  have hL : ∃ ℓ : 𝒪, ι ℓ = L := by
+    by_cases hL0 : L = 0
+    · exact ⟨0, by rw [hL0, map_zero]⟩
+    rcases ValuationRing.isInteger_or_isInteger 𝒪 L with ⟨ℓ, hℓ⟩ | ⟨t, ht⟩
+    · exact ⟨ℓ, hℓ⟩
+    have hLt : L * ι t = 1 := by rw [ht, mul_inv_cancel₀ hL0]
+    by_cases hu : IsUnit t
+    · refine ⟨↑hu.unit⁻¹, ?_⟩
+      have h1 : ι t * ι ↑hu.unit⁻¹ = 1 := by rw [← map_mul, hu.mul_val_inv, map_one]
+      calc ι ↑hu.unit⁻¹ = ι ↑hu.unit⁻¹ * (L * ι t) := by rw [hLt, mul_one]
+        _ = L * (ι t * ι ↑hu.unit⁻¹) := by ring
+        _ = L := by rw [h1, mul_one]
+    · exfalso
+      have key : ι (1 : 𝒪) = ι ((x₁ + x₂ + x₃) * t ^ 2 - W.a₁ * t + W.a₂ * t ^ 2) := by
+        simp only [map_add, map_sub, map_mul, map_pow, map_one]
+        rw [v1]
+        simp only [WeierstrassCurve.map_a₁, WeierstrassCurve.map_a₂]
+        linear_combination (-(L * ι t + 1) - ι W.a₁ * ι t) * hLt
+      have h1 := hinj key
+      have ht' : t ∈ maximalIdeal 𝒪 := (mem_maximalIdeal t).2 hu
+      have hm : (1 : 𝒪) ∈ maximalIdeal 𝒪 := by
+        rw [h1]
+        refine Ideal.add_mem _ (Ideal.sub_mem _ ?_ ?_) ?_
+        · exact Ideal.mul_mem_left _ _ (by rw [pow_two]; exact Ideal.mul_mem_left _ _ ht')
+        · exact Ideal.mul_mem_left _ _ ht'
+        · exact Ideal.mul_mem_left _ _ (by rw [pow_two]; exact Ideal.mul_mem_left _ _ ht')
+      exact (maximalIdeal.isMaximal 𝒪).ne_top ((Ideal.eq_top_iff_one _).2 hm)
+  obtain ⟨ℓ, rfl⟩ := hL
+  refine ⟨ℓ, y₁ - ℓ * x₁, by ring, hinj ?_, hinj ?_, hinj ?_, hinj ?_, hinj ?_⟩
+  · simp only [map_add, map_sub, map_mul]; rw [e1, e2]; ring
+  · simp only [map_add, map_sub, map_mul]; rw [e1, e3]; ring
+  · simp only [map_add, map_sub, map_mul, map_pow]; rw [v1]; simp
+  · have hN : N = ι y₁ - ι ℓ * ι x₁ := by rw [e1]; ring
+    simp only [map_add, map_sub, map_mul, map_pow, map_ofNat]; rw [v2, hN]; simp
+  · have hN : N = ι y₁ - ι ℓ * ι x₁ := by rw [e1]; ring
+    simp only [map_add, map_sub, map_mul, map_pow]; rw [v3, hN]; simp
+
+section Origin
+
+variable {π : 𝒪} (hπ : Irreducible π)
+include hπ
+
+omit [IsFractionRing 𝒪 K] in
+theorem dvd_iff_residue_eq_zero {a : 𝒪} : π ∣ a ↔ residue 𝒪 a = 0 := by
+  rw [residue_eq_zero_iff, hπ.maximalIdeal_eq, Ideal.mem_span_singleton]
+
+omit [IsFractionRing 𝒪 K] in
+
+theorem dvd_partials_of_singular {x y : 𝒪} (h : W.toAffine.Equation x y)
+    (hs : ¬(curveRed W).Nonsingular (residue 𝒪 x) (residue 𝒪 y)) :
+    π ∣ W.a₁ * y - (3 * x ^ 2 + 2 * W.a₂ * x + W.a₄) ∧ π ∣ 2 * y + W.a₁ * x + W.a₃ := by
+  rw [WeierstrassCurve.Affine.nonsingular_iff'] at hs
+  push Not at hs
+  obtain ⟨hA, hB⟩ := hs (equation_residue W h)
+  rw [dvd_iff_residue_eq_zero hπ, dvd_iff_residue_eq_zero hπ]
+  simp only [map_sub, map_add, map_mul, map_pow, map_ofNat, WeierstrassCurve.map_a₁,
+    WeierstrassCurve.map_a₂, WeierstrassCurve.map_a₃, WeierstrassCurve.map_a₄] at hA hB ⊢
+  exact ⟨hA, hB⟩
+
+omit [IsFractionRing 𝒪 K] in
+
+theorem dvd_of_singular_origin (h3 : π ∣ W.a₃) (h4 : π ∣ W.a₄) (h6 : π ∣ W.a₆) {x y : 𝒪}
+    (h : W.toAffine.Equation x y) (hs : ¬(curveRed W).Nonsingular (residue 𝒪 x) (residue 𝒪 y)) :
+    π ∣ x ∧ π ∣ y := by
+  obtain ⟨hA, hB⟩ := dvd_partials_of_singular W hπ h hs
+  rw [dvd_iff_residue_eq_zero hπ] at h3 h4 h6 hA hB ⊢
+  rw [dvd_iff_residue_eq_zero hπ]
+  have he := equation_residue W h
+  rw [WeierstrassCurve.Affine.equation_iff] at he
+  simp only [map_sub, map_add, map_mul, map_pow, map_ofNat, WeierstrassCurve.map_a₁,
+    WeierstrassCurve.map_a₂, WeierstrassCurve.map_a₃, WeierstrassCurve.map_a₄,
+    WeierstrassCurve.map_a₆] at hA hB he
+  set X := residue 𝒪 x
+  set Y := residue 𝒪 y
+  have hX3 : X ^ 3 = 0 := by
+    linear_combination (-X) * hA + (-Y) * hB + 2 * he + X * h4 - Y * h3 + 2 * h6
+  have hX : X = 0 := pow_eq_zero_iff (by norm_num) |>.1 hX3
+  refine ⟨hX, ?_⟩
+  have hY2 : Y ^ 2 = 0 := by
+    rw [hX] at he
+    linear_combination he - Y * h3 + h6
+  exact pow_eq_zero_iff (by norm_num) |>.1 hY2
+
+omit [IsFractionRing 𝒪 K] in
+
+theorem singular_of_dvd_origin (h3 : π ∣ W.a₃) (h4 : π ∣ W.a₄) {x y : 𝒪} (hx : π ∣ x)
+    (hy : π ∣ y) : ¬(curveRed W).Nonsingular (residue 𝒪 x) (residue 𝒪 y) := by
+  rw [WeierstrassCurve.Affine.nonsingular_iff']
+  rw [dvd_iff_residue_eq_zero hπ] at h3 h4 hx hy
+  rintro ⟨-, hn⟩
+  simp only [WeierstrassCurve.map_a₁, WeierstrassCurve.map_a₂, WeierstrassCurve.map_a₃,
+    WeierstrassCurve.map_a₄, hx, hy, h3, h4] at hn
+  simp at hn
+
+theorem notMem_E0Set_of_dvd (h3 : π ∣ W.a₃) (h4 : π ∣ W.a₄) {x y : 𝒪}
+    (h : (curveK K W).Nonsingular (ι x) (ι y)) (hx : π ∣ x) (hy : π ∣ y) :
+    Point.some _ _ h ∉ E0Set K W := by
+  rw [notMem_E0Set_iff]
+  exact ⟨x, y, h, rfl, singular_of_dvd_origin W hπ h3 h4 hx hy⟩
+
+theorem exists_of_notMem_E0Set (h3 : π ∣ W.a₃) (h4 : π ∣ W.a₄) (h6 : π ∣ W.a₆)
+    {P : (curveK K W).Point} (hP : P ∉ E0Set K W) :
+    ∃ (x y : 𝒪) (h : (curveK K W).Nonsingular (ι x) (ι y)), P = .some _ _ h ∧
+      W.toAffine.Equation x y ∧ π ∣ x ∧ π ∣ y := by
+  obtain ⟨x, y, h, rfl, hs⟩ := (notMem_E0Set_iff K W P).1 hP
+  have he := equation_of_map K W h.1
+  exact ⟨x, y, h, rfl, he, dvd_of_singular_origin W hπ h3 h4 h6 he hs⟩
+
+
+theorem triple_origin [DecidableEq K] (h3 : π ∣ W.a₃) (h4 : π ∣ W.a₄) (h6 : π ∣ W.a₆)
+    {P₁ P₂ P₃ : (curveK K W).Point} (hP₁ : P₁ ∉ E0Set K W) (hP₂ : P₂ ∉ E0Set K W)
+    (hP₃ : P₃ ∉ E0Set K W) (hs : P₁ + P₂ + P₃ = 0) :
+    ∃ x₁ y₁ x₂ y₂ x₃ y₃ ℓ ν : 𝒪,
+      (∃ h, P₁ = Point.some (ι x₁) (ι y₁) h) ∧ (∃ h, P₂ = Point.some (ι x₂) (ι y₂) h) ∧
+      (∃ h, P₃ = Point.some (ι x₃) (ι y₃) h) ∧
+      W.toAffine.Equation x₁ y₁ ∧ W.toAffine.Equation x₂ y₂ ∧ W.toAffine.Equation x₃ y₃ ∧
+      π ∣ x₁ ∧ π ∣ y₁ ∧ π ∣ x₂ ∧ π ∣ y₂ ∧ π ∣ x₃ ∧ π ∣ y₃ ∧
+      y₁ = ℓ * x₁ + ν ∧ y₂ = ℓ * x₂ + ν ∧ y₃ = ℓ * x₃ + ν ∧
+      x₁ + x₂ + x₃ = ℓ ^ 2 + W.a₁ * ℓ - W.a₂ ∧
+      x₁ * x₂ + x₁ * x₃ + x₂ * x₃ = W.a₄ - 2 * ℓ * ν - W.a₁ * ν - W.a₃ * ℓ ∧
+      x₁ * x₂ * x₃ = ν ^ 2 + W.a₃ * ν - W.a₆ := by
+  obtain ⟨x₁, y₁, h₁, rfl, e₁, dx₁, dy₁⟩ := exists_of_notMem_E0Set K W hπ h3 h4 h6 hP₁
+  obtain ⟨x₂, y₂, h₂, rfl, e₂, dx₂, dy₂⟩ := exists_of_notMem_E0Set K W hπ h3 h4 h6 hP₂
+  obtain ⟨x₃, y₃, h₃, rfl, e₃, dx₃, dy₃⟩ := exists_of_notMem_E0Set K W hπ h3 h4 h6 hP₃
+  obtain ⟨ℓ, ν, l1, l2, l3, v1, v2, v3⟩ := exists_integral_line K W h₁ h₂ h₃ hs
+  exact ⟨x₁, y₁, x₂, y₂, x₃, y₃, ℓ, ν, ⟨h₁, rfl⟩, ⟨h₂, rfl⟩, ⟨h₃, rfl⟩, e₁, e₂, e₃, dx₁, dy₁,
+    dx₂, dy₂, dx₃, dy₃, l1, l2, l3, v1, v2, v3⟩
+
+end Origin
+
+omit [IsFractionRing 𝒪 K] in
+
+theorem neg_some_integral [DecidableEq K] {x y : 𝒪} (h : (curveK K W).Nonsingular (ι x) (ι y)) :
+    ∃ h', -(Point.some _ _ h : (curveK K W).Point) =
+      Point.some (ι x) (ι (-y - W.a₁ * x - W.a₃)) h' := by
+  have e : (curveK K W).negY (ι x) (ι y) = ι (-y - W.a₁ * x - W.a₃) := by
+    simp [negY]
+  refine ⟨e ▸ (nonsingular_neg _ _).2 h, ?_⟩
+  rw [Point.neg_some, Point.some.injEq]
+  exact ⟨rfl, e⟩
+
+omit [IsFractionRing 𝒪 K] in
+
+theorem coords_eq_of_some_eq {x y x' y' : 𝒪} {h : (curveK K W).Nonsingular (ι x) (ι y)}
+    {h' : (curveK K W).Nonsingular (ι x') (ι y')} [IsFractionRing 𝒪 K]
+    (e : (Point.some _ _ h : (curveK K W).Point) = Point.some _ _ h') : x = x' ∧ y = y' := by
+  rw [Point.some.injEq] at e
+  exact ⟨IsFractionRing.injective 𝒪 K e.1, IsFractionRing.injective 𝒪 K e.2⟩
+
+end DVR
+
+end
+
+end GroundTheory.Arith.Abelian
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Arith.Abelian
+
+open WeierstrassCurve WeierstrassCurve.Affine IsLocalRing Polynomial
+
+noncomputable section
+
+section Roots
+
+variable {k : Type*} [Field k] [DecidableEq k]
+
+def quadRoots (a b c : k) : Finset k := (C a * X ^ 2 + C b * X + C c).roots.toFinset
+
+
+
+def cubicRoots (a b c d : k) : Finset k := (C a * X ^ 3 + C b * X ^ 2 + C c * X + C d).roots.toFinset
+
+
+
+end Roots
+
+section Algebra
+
+variable {𝒪 : Type*} [CommRing 𝒪] [IsDomain 𝒪] (W : WeierstrassCurve 𝒪) {π : 𝒪}
+  (hπ : Irreducible π)
+include hπ
+
+
+
+end Algebra
+
+section Bound
+
+variable {𝒪 : Type*} [CommRing 𝒪] [IsDomain 𝒪] [IsDiscreteValuationRing 𝒪]
+  (K : Type*) [Field K] [Algebra 𝒪 K] [IsFractionRing 𝒪 K] [DecidableEq K]
+  [DecidableEq (ResidueField 𝒪)] [IsAdicComplete (maximalIdeal 𝒪) 𝒪]
+
+def KNBound (W : WeierstrassCurve 𝒪) [(W.map (algebraMap 𝒪 K)).IsElliptic] (n : ℕ) : Prop :=
+  Finite ((curveK K W).Point ⧸ E0 K W) ∧ Nat.card ((curveK K W).Point ⧸ E0 K W) ≤ n
+
+variable (W : WeierstrassCurve 𝒪) [(W.map (algebraMap 𝒪 K)).IsElliptic]
+
+local notation "ι" => algebraMap 𝒪 K
+
+theorem KNBound.mono {W : WeierstrassCurve 𝒪} [(W.map (algebraMap 𝒪 K)).IsElliptic] {n m : ℕ}
+    (h : KNBound K W n) (hnm : n ≤ m) : KNBound K W m :=
+  ⟨h.1, h.2.trans hnm⟩
+
+
+
+
+
+theorem neg_notMem_E0Set {P : (curveK K W).Point} (hP : P ∉ E0Set K W) : -P ∉ E0Set K W :=
+  fun h => hP (by simpa using (E0 K W).neg_mem (show -P ∈ E0 K W from h) : P ∈ E0 K W)
+
+
+variable {π : 𝒪} (hπ : Irreducible π)
+include hπ
+
+
+
+
+end Bound
+
+end
+
+end GroundTheory.Arith.Abelian
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Arith.Abelian
+
+open WeierstrassCurve WeierstrassCurve.Affine IsLocalRing Polynomial
+
+noncomputable section
+
+def Scalable {𝒪 : Type*} [CommRing 𝒪] (π : 𝒪) (W : WeierstrassCurve 𝒪) : Prop :=
+  π ∣ W.a₁ ∧ π ^ 2 ∣ W.a₂ ∧ π ^ 3 ∣ W.a₃ ∧ π ^ 4 ∣ W.a₄ ∧ π ^ 6 ∣ W.a₆
+
+section Algebra
+
+variable {𝒪 : Type*} [CommRing 𝒪] [IsDomain 𝒪] [IsDiscreteValuationRing 𝒪] (W : WeierstrassCurve 𝒪) {π : 𝒪}
+  (hπ : Irreducible π)
+include hπ
+
+
+
+
+
+
+end Algebra
+
+section Bound
+
+variable {𝒪 : Type*} [CommRing 𝒪] [IsDomain 𝒪] [IsDiscreteValuationRing 𝒪]
+  (K : Type*) [Field K] [Algebra 𝒪 K] [IsFractionRing 𝒪 K] [DecidableEq K]
+  [DecidableEq (ResidueField 𝒪)] [IsAdicComplete (maximalIdeal 𝒪) 𝒪]
+  (W : WeierstrassCurve 𝒪) [(W.map (algebraMap 𝒪 K)).IsElliptic] {π : 𝒪} (hπ : Irreducible π)
+include hπ
+
+local notation "ι" => algebraMap 𝒪 K
+
+
+
+
+
+end Bound
+
+end
+
+end GroundTheory.Arith.Abelian
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Arith.Abelian
+
+open WeierstrassCurve WeierstrassCurve.Affine IsLocalRing Polynomial
+
+noncomputable section
+
+def StageY {𝒪 : Type*} [CommRing 𝒪] (π : 𝒪) (j : ℕ) (W : WeierstrassCurve 𝒪) : Prop :=
+  π ∣ W.a₁ ∧ (∃ A₂, W.a₂ = π * A₂ ∧ ¬π ∣ A₂) ∧ π ^ j ∣ W.a₃ ∧ π ^ (j + 1) ∣ W.a₄ ∧
+    π ^ (2 * j) ∣ W.a₆
+
+def StageX {𝒪 : Type*} [CommRing 𝒪] (π : 𝒪) (j : ℕ) (W : WeierstrassCurve 𝒪) : Prop :=
+  π ∣ W.a₁ ∧ (∃ A₂, W.a₂ = π * A₂ ∧ ¬π ∣ A₂) ∧ π ^ (j + 1) ∣ W.a₃ ∧ π ^ (j + 1) ∣ W.a₄ ∧
+    π ^ (2 * j + 1) ∣ W.a₆
+
+section Algebra
+
+variable {𝒪 : Type*} [CommRing 𝒪] [IsDomain 𝒪] [IsDiscreteValuationRing 𝒪]
+  (W : WeierstrassCurve 𝒪) {π : 𝒪} (hπ : Irreducible π)
+include hπ
+
+theorem StageX.stageY {j : ℕ} (h : StageX π j W) : StageY π j W :=
+  ⟨h.1, h.2.1, (pow_dvd_pow π (by omega)).trans h.2.2.1, h.2.2.2.1,
+    (pow_dvd_pow π (by omega)).trans h.2.2.2.2⟩
+
+
+
+
+
+
+
+
+theorem stageY_dvd_Δ {i : ℕ} (hS : StageY π (i + 2) W) : π ^ (2 * i + 7) ∣ W.Δ := by
+  obtain ⟨⟨A₁, hA₁⟩, ⟨A₂, hA₂, -⟩, ⟨B₃, hB₃⟩, ⟨B₄, hB₄⟩, ⟨B₆, hB₆⟩⟩ := hS
+  set c₂ := π * A₁ ^ 2 + 4 * A₂
+  set c₄ := 2 * B₄ + A₁ * B₃
+  set c₆ := B₃ ^ 2 + 4 * B₆
+  set c₈ := π * A₁ ^ 2 * B₆ + 4 * A₂ * B₆ - π * A₁ * B₃ * B₄ + A₂ * B₃ ^ 2 - π * B₄ ^ 2
+  have e2 : W.b₂ = π * c₂ := by
+    rw [WeierstrassCurve.b₂, hA₁, hA₂]; ring
+  have e4 : W.b₄ = π ^ (i + 3) * c₄ := by
+    rw [WeierstrassCurve.b₄, hA₁, hB₃, hB₄]; ring
+  have e6 : W.b₆ = π ^ (2 * i + 4) * c₆ := by
+    rw [WeierstrassCurve.b₆, hB₃, hB₆]; ring
+  have e8 : W.b₈ = π ^ (2 * i + 5) * c₈ := by
+    rw [WeierstrassCurve.b₈, hA₁, hA₂, hB₃, hB₄, hB₆]; ring
+  rw [WeierstrassCurve.Δ, e2, e4, e6, e8]
+  exact ⟨-c₂ ^ 2 * c₈ - 8 * π ^ (i + 2) * c₄ ^ 3 - 27 * π ^ (2 * i + 1) * c₆ ^ 2 +
+    9 * π ^ (i + 1) * c₂ * c₄ * c₆, by ring⟩
+
+end Algebra
+
+section Bound
+
+variable {𝒪 : Type*} [CommRing 𝒪] [IsDomain 𝒪] [IsDiscreteValuationRing 𝒪]
+  (K : Type*) [Field K] [Algebra 𝒪 K] [IsFractionRing 𝒪 K] [DecidableEq K]
+  [DecidableEq (ResidueField 𝒪)] [IsAdicComplete (maximalIdeal 𝒪) 𝒪]
+  (W : WeierstrassCurve 𝒪) [(W.map (algebraMap 𝒪 K)).IsElliptic] {π : 𝒪} (hπ : Irreducible π)
+include hπ
+
+local notation "ι" => algebraMap 𝒪 K
+
+
+omit [IsDiscreteValuationRing 𝒪] in
+theorem not_dvd_of_not_sq_dvd {X : 𝒪} (h : ¬π ^ 2 ∣ π * X) : ¬π ∣ X := by
+  rintro ⟨c, rfl⟩; exact h ⟨c, by ring⟩
+
+
+
+
+omit [IsFractionRing 𝒪 K] [DecidableEq K] [DecidableEq (ResidueField 𝒪)]
+  [IsAdicComplete (maximalIdeal 𝒪) 𝒪] [(W.map (algebraMap 𝒪 K)).IsElliptic] hπ in
+theorem vc_Δ_one (r s t : 𝒪) : ((⟨1, r, s, t⟩ : VariableChange 𝒪) • W).Δ = W.Δ := by
+  simp [variableChange_Δ]
+
+omit [IsFractionRing 𝒪 K] [DecidableEq K] [DecidableEq (ResidueField 𝒪)]
+  [IsAdicComplete (maximalIdeal 𝒪) 𝒪] [(W.map (algebraMap 𝒪 K)).IsElliptic] in
+
+theorem exists_not_pow_dvd {a : 𝒪} (ha : a ≠ 0) : ∃ n, ¬π ^ n ∣ a := by
+  obtain ⟨n, u, rfl⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible ha hπ
+  refine ⟨n + 1, fun ⟨c, hc⟩ => hπ.not_isUnit ?_⟩
+  have : (u : 𝒪) = π * c := by
+    apply mul_right_cancel₀ (pow_ne_zero n hπ.ne_zero)
+    rw [hc]; ring
+  exact isUnit_of_dvd_unit ⟨c, this⟩ u.isUnit
+
+
+
+end Bound
+
+end
+
+end GroundTheory.Arith.Abelian
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.Abelian
@@ -25,117 +480,14 @@ theorem notScalable_vc {W : WeierstrassCurve 𝒪} (hmin : ∀ C : VariableChang
   rw [← mul_smul]
   exact hmin _
 
-theorem knBound_of_no_tangent (h3 : π ∣ W.a₃) (h4 : π ∣ W.a₄) (h6 : π ∣ W.a₆)
-    (hno : ∀ s : 𝒪, ¬π ∣ s ^ 2 + W.a₁ * s - W.a₂) : KNBound K W 2 := by
-  refine knBound_two K W fun P Q R hP hQ hR hs => ?_
-  obtain ⟨x₁, y₁, x₂, y₂, x₃, y₃, ℓ, ν, -, -, -, -, -, -, dx₁, -, dx₂, -, dx₃, -, -, -, -, v1, -,
-    -⟩ := triple_origin K W hπ h3 h4 h6 hP hQ hR hs
-  apply hno ℓ
-  rw [← v1]
-  exact dvd_add (dvd_add dx₁ dx₂) dx₃
 
-theorem kodairaNeron_bound_of_pi_cube_a6 (hΔ : W.Δ ≠ 0) (hmin : ∀ C : VariableChange 𝒪, ¬Scalable π (C • W))
-    {A₁ A₂ A₃ A₄ A₆ : 𝒪} (h1 : W.a₁ = π * A₁) (h2 : W.a₂ = π * A₂)
-    (h3 : W.a₃ = π ^ 2 * A₃) (h4 : W.a₄ = π ^ 2 * A₄) (h6 : W.a₆ = π ^ 3 * A₆) :
-    KNBound K W 4 := by
-  by_cases hex : ∃ x y X : 𝒪, W.toAffine.Equation x y ∧ x = π * X ∧ π ∣ y ∧
-      π ∣ 3 * X ^ 2 + 2 * A₂ * X + A₄
-  · obtain ⟨x, y, X, e, rfl, dy, hD⟩ := hex
-    have hP := (pi_sq_dvd_y_of_double_root W hπ h1 h2 h3 h4 h6 e rfl dy).2
-    obtain ⟨s1, s2, s3, s4, s6⟩ := variableChange_raises_divisibility W hπ h1 h2 h3 h4 h6 hP hD
-    refine KNBound.of_vc K W ⟨1, π * X, 0, 0⟩ ?_
-    have hmin' := notScalable_vc hmin ⟨1, π * X, 0, 0⟩
-    obtain ⟨B₃, hB₃⟩ := s3
-    obtain ⟨B₆', hB₆'⟩ := s6
-    by_cases hA : π ^ 2 ∣ ((⟨1, π * X, 0, 0⟩ : VariableChange 𝒪) • W).a₂
-    · refine (knBound_star K _ hπ s1 hA hB₃ s4 hB₆' ?_).mono K (by norm_num)
-      intro C'
-      exact hmin' C'
-    · obtain ⟨A₂', hA₂'⟩ := s2
-      have hA₂'' : ¬π ∣ A₂' := by
-        rintro ⟨c, rfl⟩; exact hA ⟨c, by rw [hA₂']; ring⟩
-      exact knBound_Istar K _ hπ (by rwa [vc_Δ_one]) ⟨s1, ⟨A₂', hA₂', hA₂''⟩, ⟨B₃, hB₃⟩, s4,
-        ⟨B₆', hB₆'⟩⟩
-  · push Not at hex
-    exact knBound_I0star K W hπ h1 h2 h3 h4 h6 fun x y X e hx hy hD => hex x y X e hx hy hD
 
-theorem kodairaNeron_bound_of_pi_sq_dvd_a6 (hΔ : W.Δ ≠ 0) (hmin : ∀ C : VariableChange 𝒪, ¬Scalable π (C • W))
-    (h1 : π ∣ W.a₁) (h2 : π ∣ W.a₂) (h3 : π ∣ W.a₃) (h4 : π ∣ W.a₄) (h6 : π ^ 2 ∣ W.a₆) :
-    KNBound K W 4 := by
-  have d6 : π ∣ W.a₆ := (dvd_pow_self π two_ne_zero).trans h6
-  by_cases h4' : π ^ 2 ∣ W.a₄
-  · obtain ⟨A₃, hA₃⟩ := h3
-    obtain ⟨A₆, hA₆⟩ := h6
-    by_cases hex : ∃ x y Y : 𝒪, W.toAffine.Equation x y ∧ π ∣ x ∧ y = π * Y ∧ π ∣ 2 * Y + A₃
-    · obtain ⟨x, y, Y, e, dx, hy, hD⟩ := hex
-      obtain ⟨s1, s2, s3, s4, s6⟩ := vc_IV_step W hπ h1 h2 hA₃ h4' hA₆ e dx hy hD
-      refine KNBound.of_vc K W ⟨1, 0, 0, y⟩ ?_
-      obtain ⟨B₁, hB₁⟩ := s1
-      obtain ⟨B₂, hB₂⟩ := s2
-      obtain ⟨B₃, hB₃⟩ := s3
-      obtain ⟨B₄, hB₄⟩ := s4
-      obtain ⟨B₆, hB₆⟩ := s6
-      exact kodairaNeron_bound_of_pi_cube_a6 K _ hπ (by rwa [vc_Δ_one]) (notScalable_vc hmin _) hB₁ hB₂ hB₃ hB₄ hB₆
-    · push Not at hex
-      exact (knBound_IV K W hπ h1 h2 hA₃ h4' hA₆ fun x y Y e dx hy hD =>
-        hex x y Y e dx hy hD).mono K (by norm_num)
-  · exact (knBound_III K W hπ h1 h2 h3 h4 d6 h4').mono K (by norm_num)
 
-theorem knBound_cusp_origin (hΔ : W.Δ ≠ 0) (hmin : ∀ C : VariableChange 𝒪, ¬Scalable π (C • W))
-    (h3 : π ∣ W.a₃) (h4 : π ∣ W.a₄) (h6 : π ^ 2 ∣ W.a₆) (hb₂ : π ∣ W.b₂) : KNBound K W 4 := by
-  have d6 : π ∣ W.a₆ := (dvd_pow_self π two_ne_zero).trans h6
-  by_cases hex : ∃ s : 𝒪, π ∣ s ^ 2 + W.a₁ * s - W.a₂
-  · obtain ⟨s, hs⟩ := hex
-    refine KNBound.of_vc K W ⟨1, 0, s, 0⟩ ?_
-    have e1 : ((⟨1, 0, s, 0⟩ : VariableChange 𝒪) • W).a₁ = W.a₁ + 2 * s := by
-      simp [variableChange_a₁]
-    have e2 : ((⟨1, 0, s, 0⟩ : VariableChange 𝒪) • W).a₂ = -(s ^ 2 + W.a₁ * s - W.a₂) := by
-      simp [variableChange_a₂]; ring
-    have e3 : ((⟨1, 0, s, 0⟩ : VariableChange 𝒪) • W).a₃ = W.a₃ := by
-      simp [variableChange_a₃]
-    have e4 : ((⟨1, 0, s, 0⟩ : VariableChange 𝒪) • W).a₄ = W.a₄ - s * W.a₃ := by
-      simp [variableChange_a₄]
-    have e6 : ((⟨1, 0, s, 0⟩ : VariableChange 𝒪) • W).a₆ = W.a₆ := by
-      simp [variableChange_a₆]
-    have d1 : π ∣ W.a₁ + 2 * s := by
-      apply hπ.prime.dvd_of_dvd_pow (n := 2)
-      have : (W.a₁ + 2 * s) ^ 2 = W.b₂ + 4 * (s ^ 2 + W.a₁ * s - W.a₂) := by
-        rw [WeierstrassCurve.b₂]; ring
-      rw [this]
-      exact dvd_add hb₂ (dvd_mul_of_dvd_right hs 4)
-    refine kodairaNeron_bound_of_pi_sq_dvd_a6 K _ hπ (by rwa [vc_Δ_one]) (notScalable_vc hmin _) (by rw [e1]; exact d1)
-      (by rw [e2]; exact hs.neg_right) (by rw [e3]; exact h3)
-      (by rw [e4]; exact dvd_sub h4 (dvd_mul_of_dvd_right h3 s)) (by rw [e6]; exact h6)
-  · push Not at hex
-    exact (knBound_of_no_tangent K W hπ h3 h4 d6 hex).mono K (by norm_num)
 
-theorem knBound_additive (hΔ : W.Δ ≠ 0) (hmin : ∀ C : VariableChange 𝒪, ¬Scalable π (C • W))
-    (hc₄ : π ∣ W.c₄) : KNBound K W 4 := by
-  by_cases hall : ∀ P, P ∈ E0Set K W
-  · exact (knBound_one K W hall).mono K (by norm_num)
-  push Not at hall
-  obtain ⟨P, hP⟩ := hall
-  obtain ⟨x₀, y₀, h₀, -, hs⟩ := (notMem_E0Set_iff K W P).1 hP
-  have e₀ := equation_of_map K W h₀.1
-  obtain ⟨h6, h3, h4⟩ := origin_vc W hπ e₀ hs
-  refine KNBound.of_vc K W ⟨1, x₀, 0, y₀⟩ ?_
-  refine knBound_cusp_origin K _ hπ (by rwa [vc_Δ_one]) (notScalable_vc hmin _) h3 h4
-    (by rw [h6]; exact dvd_zero _) ?_
-  have hc : π ∣ ((⟨1, x₀, 0, y₀⟩ : VariableChange 𝒪) • W).c₄ := by
-    rw [variableChange_c₄]; simpa using hc₄
-  apply hπ.prime.dvd_of_dvd_pow (n := 2)
-  have hb4 : π ∣ ((⟨1, x₀, 0, y₀⟩ : VariableChange 𝒪) • W).b₄ := by
-    rw [WeierstrassCurve.b₄]
-    exact dvd_add (dvd_mul_of_dvd_right h4 2) (dvd_mul_of_dvd_right h3 _)
-  have : ((⟨1, x₀, 0, y₀⟩ : VariableChange 𝒪) • W).b₂ ^ 2 =
-      ((⟨1, x₀, 0, y₀⟩ : VariableChange 𝒪) • W).c₄ +
-        24 * ((⟨1, x₀, 0, y₀⟩ : VariableChange 𝒪) • W).b₄ := by
-    rw [WeierstrassCurve.c₄]; ring
-  rw [this]
-  exact dvd_add hc (dvd_mul_of_dvd_right hb4 24)
 
 end Bound
 
 end
 
 end GroundTheory.Arith.Abelian
+end

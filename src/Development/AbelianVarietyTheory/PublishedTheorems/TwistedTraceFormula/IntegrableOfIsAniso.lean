@@ -62,34 +62,8 @@ theorem hypotheses_inhabited (H : GlobalTheory.Published.WeilRepresentationUnita
   obtain ⟨μ, 𝓨, hμ⟩ := exists_isCovolOne D B.rank A.rank
   exact ⟨ψ, A, B, _, ω, a, μ, 𝓨, Measure.haar, rfl, rfl, isAniso_posSpace m, hω, ha, hμ, inferInstance⟩
 
-theorem integrable_of_isAniso {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D} {χ χ' : (AE D)ˣ →* Circle}
-    {ω : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)} (hω : IsWeilDatumO ψ S T χ χ' ω) (hT : IsAniso T)
-    {f : WO S T → ℂ} (hf : IsThetaFunO ψ S T f) (ν : Measure (GA D T)) [ν.IsHaarMeasure] (g : GA D S) :
-    Integrable (AutomorphicL2Unitary.descend (GQ T) fun h => thetaKO ω g h f) (autMeasure T ν) :=
-  integrable_theta hω hf (GlobalTheory.Mem.AnisoQuotient.exists_compact D T hT) g
 
-theorem average_const_aut (T : HSp D) (ν : Measure (GA D T)) [ν.IsHaarMeasure] (c : ℂ) :
-    ⨍ _, c ∂autMeasure T ν = c := average_const _ c
 
-theorem conclusion_zero (A B : HSp D) (ω : GA D (dblSp A) × GA D B →* Module.End ℂ (WO (dblSp A) B → ℂ))
-    (a : GL (Fin A.rank) (AE D)) (μ : Measure (WO A B)) (𝓨 : Set (WO A B)) (ν : Measure (GA D B)) :
-    Eis.EisValueAt A (flat A a (swSec A B ω μ 𝓨 0) (sZero A B)) (sZero A B)
-      ((if A.rank < B.rank then 1 else 2 : ℂ) • thetaMean ω ν 0) := by
-  have h1 : flat A a (swSec A B ω μ 𝓨 0) (sZero A B) = fun _ _ => 0 := by
-    funext s g
-    refine (flatH_apply _ _ _ _).trans ?_
-    simp [swSec, evZero]
-  have h2 : thetaMean ω ν 0 = 0 := by
-    funext g
-    simp [thetaMean, thetaKO, AutomorphicL2Unitary.descend]
-  rw [h1, h2, smul_zero]
-  refine ⟨fun s _ => ⟨fun _ _ _ => rfl, fun g => ?_⟩, fun g => ?_⟩
-  · simp [Eis.EisConv, Eis.CosetConv, Eis.term, summable_zero]
-  · have : Eis.eisSer A (fun _ _ => (0 : ℂ)) g = fun _ => 0 := by
-      funext s
-      simp [Eis.eisSer, Eis.eis, Eis.cosetSum, Eis.term]
-    rw [this]
-    exact GlobalTheory.Cont.holValueAt_const 0 _
 
 end GlobalTheory.ThetaMean.Model
 

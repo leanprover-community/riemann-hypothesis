@@ -1,11 +1,276 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SharpBundleFibre
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SharpTorsionDefOver
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ValMemOfCorrPull
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueScalar
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFromBase
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LbIsoSecOnto
+import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsOfPoint
+import Development.AbelianVarietyTheory.Definitions.Divisors.PerFactor
+import Development.AbelianVarietyTheory.Definitions.Divisors.IsMumfordFamOfSubsingleton
+import Development.AbelianVarietyTheory.Definitions.Divisors.FromBase
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TautBaseChangeTripleLiftLeft
+import Development.AbelianVarietyTheory.Definitions.Divisors.KeyPBIff
+import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.AbsoluteSiegel
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoeffTopMonEqZero
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsNormalizedBoth
 
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.PolDeg
+open scoped CategoryTheory.Obj
+open GlobalTheory.Poinc.Sep
+attribute [local instance] Over.cartesianMonoidalCategory
+
+noncomputable section
+
+namespace GlobalTheory.Poinc.Sep
+
+variable {V V₁ : Type} [CommRing V] [IsDomain V] [CommRing V₁] [IsDomain V₁]
+
+def sharpPair (ρ : V →+* V₁) (Q : Data V) (D : DegPre V₁) (pr : Fin 8 → (D.P.A ⟶ (Over.pullback (spMap ρ)).obj Q.B))
+    (a b : Fin 8) : D.P.A.left ⟶ (G2 Q.B).left :=
+  (lift (pushPt (isGrpPullback_pullback Q.B (spMap ρ)).1.w (pr a))
+    (pushPt (isGrpPullback_pullback Q.B (spMap ρ)).1.w (pr b))).left
+
+theorem sharp_cls_pair (W : Matrix (Fin 8) (Fin 8) ℤ) (ρ : V →+* V₁) (Q : Data V) (D : DegPre V₁)
+    (pr : Fin 8 → (D.P.A ⟶ (Over.pullback (spMap ρ)).obj Q.B)) (a b : Fin 8) :
+    (∏ I : ULift.{0} (Finset (Fin 2)), GlobalTheory.PrimNorm.cls Q.M.L (sharpPair ρ Q D pr a b ≫ (psum Q.B (x2 Q.B) I.down).left) ^
+        ((-1 : ℤ) ^ (2 - I.down.card))) ^ W a b =
+      ∏ k : Fin 4, GlobalTheory.PrimNorm.cls Q.M.L (lamPts (pr a) (pr b) k ≫ pullback.fst Q.B.hom (spMap ρ)) ^
+        (-(W a b * negε k)) := by
+  have h := isGrpPullback_pullback Q.B (spMap ρ)
+  set xa := pushPt h.1.w (pr a) with hxa
+  set xb := pushPt h.1.w (pr b) with hxb
+  have e := GlobalTheory.PrimNorm.prod_square (lift xa xb) (fst Q.B Q.B) (snd Q.B Q.B) (GlobalTheory.PrimNorm.cls Q.M.L)
+  rw [lift_fst, lift_snd] at e
+  have e' : sharpPair ρ Q D pr a b = (lift xa xb).left := rfl
+  rw [e', show x2 Q.B = ![fst Q.B Q.B, snd Q.B Q.B] from rfl, e]
+  have m : (pr a * pr b).left ≫ pullback.fst Q.B.hom (spMap ρ) = (xa * xb).left :=
+    (h.2 D.P.A (pr a) (pr b) xa xb rfl rfl).symm
+  have o : (1 : D.P.A ⟶ (Over.pullback (spMap ρ)).obj Q.B).left ≫ pullback.fst Q.B.hom (spMap ρ) =
+      (1 : Over.mk (D.P.A.hom ≫ spMap ρ) ⟶ Q.B).left :=
+    congrArg (fun z => z.left) (map_one (pushHom h D.P.A))
+  rw [Fin.prod_univ_four]
+  simp only [lamPts, negε, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two, Matrix.cons_val_three,
+    Matrix.head_cons, Matrix.tail_cons, m, o]
+  change GlobalTheory.PrimNorm.diff₂ _ xa xb ^ W a b = _
+  simp only [GlobalTheory.PrimNorm.diff₂]
+  have ha : (pr a).left ≫ pullback.fst Q.B.hom (spMap ρ) = xa.left := rfl
+  have hb : (pr b).left ≫ pullback.fst Q.B.hom (spMap ρ) = xb.left := rfl
+  rw [ha, hb]
+  simp only [mul_neg, neg_neg, zpow_neg, mul_zpow, inv_zpow]
+  ac_rfl
+
+theorem sharp_bundle {W₀ : Type} [CommRing W₀] (W : Matrix (Fin 8) (Fin 8) ℤ) (ρ : V →+* V₁) (Q : Data V) (D : DegPre V₁)
+    (pr : Fin 8 → (D.P.A ⟶ (Over.pullback (spMap ρ)).obj Q.B))
+    (w : LB.Iso D.P.L (LB.LinComb Q.M.L (K := (Fin 8 × Fin 8) × Fin 4)
+      (fun k => lamPts (pr k.1.1) (pr k.1.2) k.2 ≫ pullback.fst Q.B.hom (spMap ρ)) (fun k => -(W k.1.1 k.1.2 * negε k.2))))
+    (hw : w.IsGen) (B₀ : Over (Sp W₀)) [GrpObj B₀] [IsCommMonObj B₀] (M₀ : LB B₀.left) (hM₀ : M₀.IsLB)
+    (β₂ : (G2 Q.B).left ⟶ (G2 B₀).left) (w₀ : LB.Iso (abelian₂ Q.B Q.M.L) ((abelian₂ B₀ M₀).pull β₂)) (hw₀ : w₀.IsGen) :
+    LBIso D.P.L (LB.LinComb (abelian₂ B₀ M₀) (K := Fin 8 × Fin 8) (fun p => sharpPair ρ Q D pr p.1 p.2 ≫ β₂)
+      (fun p => W p.1 p.2)) := by
+  have hL : Q.M.L.IsLB := Q.M.isLB
+  have hLam : (abelian₂ Q.B Q.M.L).IsLB := DVR.linComb_isLB _ hL _ _
+  have hLam₀ : (abelian₂ B₀ M₀).IsLB := DVR.linComb_isLB _ hM₀ _ _
+  have hS : (LB.LinComb Q.M.L (K := (Fin 8 × Fin 8) × Fin 4)
+      (fun k => lamPts (pr k.1.1) (pr k.1.2) k.2 ≫ pullback.fst Q.B.hom (spMap ρ))
+      (fun k => -(W k.1.1 k.1.2 * negε k.2))).IsLB := DVR.linComb_isLB _ hL _ _
+  have h₂ : LBIso (LB.LinComb (abelian₂ Q.B Q.M.L) (K := Fin 8 × Fin 8) (fun p => sharpPair ρ Q D pr p.1 p.2)
+      (fun p => W p.1 p.2)) (LB.LinComb Q.M.L (K := (Fin 8 × Fin 8) × Fin 4)
+      (fun k => lamPts (pr k.1.1) (pr k.1.2) k.2 ≫ pullback.fst Q.B.hom (spMap ρ))
+      (fun k => -(W k.1.1 k.1.2 * negε k.2))) := by
+    refine GlobalTheory.PrimNorm.lbIso_nested hL _ _ _ _ _ _ ?_
+    refine Eq.trans ?_ (Fintype.prod_prod_type _).symm
+    exact Finset.prod_congr rfl fun p _ => sharp_cls_pair W ρ Q D pr p.1 p.2
+  have h₃ : LBIso (LB.LinComb (abelian₂ Q.B Q.M.L) (K := Fin 8 × Fin 8) (fun p => sharpPair ρ Q D pr p.1 p.2)
+      (fun p => W p.1 p.2)) (LB.LinComb ((abelian₂ B₀ M₀).pull β₂) (K := Fin 8 × Fin 8)
+      (fun p => sharpPair ρ Q D pr p.1 p.2) (fun p => W p.1 p.2)) :=
+    GlobalTheory.PowPrimitive.lbIso_linComb ⟨w₀, hw₀⟩ _ _
+  have h₄ : LBIso (LB.LinComb ((abelian₂ B₀ M₀).pull β₂) (K := Fin 8 × Fin 8)
+      (fun p => sharpPair ρ Q D pr p.1 p.2) (fun p => W p.1 p.2))
+      (LB.LinComb (abelian₂ B₀ M₀) (K := Fin 8 × Fin 8) (fun p => sharpPair ρ Q D pr p.1 p.2 ≫ β₂)
+        (fun p => W p.1 p.2)) :=
+    LBIso.chartPull (chartPullLinComb (abelian₂ B₀ M₀) β₂ _ _ _ (𝟙 _) fun p => (Category.id_comp _).symm)
+      (chartPullId _) ((GlobalTheory.PrimNorm.lbIso_iff hLam₀ _ _ _ _).2 rfl)
+  have hN₁ := DVR.linComb_isLB (abelian₂ Q.B Q.M.L) hLam (fun p : Fin 8 × Fin 8 => sharpPair ρ Q D pr p.1 p.2)
+    (fun p => W p.1 p.2)
+  have hN₂ := DVR.linComb_isLB _ (pull_isLB hLam₀ β₂) (fun p : Fin 8 × Fin 8 => sharpPair ρ Q D pr p.1 p.2)
+    (fun p => W p.1 p.2)
+  have hN₃ := DVR.linComb_isLB (abelian₂ B₀ M₀) hLam₀ (fun p : Fin 8 × Fin 8 => sharpPair ρ Q D pr p.1 p.2 ≫ β₂)
+    (fun p => W p.1 p.2)
+  exact LBIso.trans D.P.isLB hS hN₃ ⟨w, hw⟩
+    (LBIso.trans hS hN₁ hN₃ h₂.symm (LBIso.trans hN₁ hN₂ hN₃ h₃ h₄))
+
+example {W₀ : Type} [CommRing W₀] (W : Matrix (Fin 8) (Fin 8) ℤ) (Q : Data V) (ρ : V →+* V₁) (D : DegPre V₁)
+    (e : (Fin 8 → Q.X) ≃+ D.X) (τ₀ : Gens Q) (ib : W₀ →+* V) (h₁ : SharpRef W Q ρ D e) (h₂ : FromBase Q τ₀ ib) :
+    ∃ (pr : Fin 8 → (D.P.A ⟶ (Over.pullback (spMap ρ)).obj Q.B)) (B₀ : Over (Sp W₀)) (_ : GrpObj B₀)
+      (_ : IsCommMonObj B₀) (M₀ : LB B₀.left) (β₂ : (G2 Q.B).left ⟶ (G2 B₀).left),
+      LBIso D.P.L (LB.LinComb (abelian₂ B₀ M₀) (K := Fin 8 × Fin 8) (fun p => sharpPair ρ Q D pr p.1 p.2 ≫ β₂)
+        (fun p => W p.1 p.2)) := by
+  obtain ⟨pr, w, -, -, hw, -, -⟩ := h₁
+  obtain ⟨B₀, iG, iC, M₀, -, -, -, β₂, w₀, -, hM₀, -, -, hw₀, -, -, -⟩ := h₂
+  exact ⟨pr, B₀, iG, iC, M₀, β₂, sharp_bundle W ρ Q D pr w hw B₀ M₀ hM₀ β₂ w₀ hw₀⟩
+
+end GlobalTheory.Poinc.Sep
+end
+end
+
+section
+noncomputable section
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.PolDeg GlobalTheory.Poinc.Sep
+open scoped CategoryTheory.Obj
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+namespace GlobalTheory.PolDeg.TautFrom
+
+open GlobalTheory.PolDeg.TautEx
+
+section Chart
+
+variable {Y Y' : Scheme.{0}}
+
+theorem chartPull_le {A' B' : LB Y'} {A B : LB Y} {h : Y' ⟶ Y} (a : ChartPull A' A h) (b : ChartPull B' B h)
+    (p : B'.ι × A'.ι) : B'.U p.1 ⊓ A'.U p.2 ≤ h ⁻¹ᵁ (B.U (b.idx p.1) ⊓ A.U (a.idx p.2)) :=
+  fun _ hy => ⟨b.le _ hy.1, a.le _ hy.2⟩
+
+def isoPull {A' B' : LB Y'} {A B : LB Y} {h : Y' ⟶ Y} (a : ChartPull A' A h) (b : ChartPull B' B h)
+    (w : LB.Iso A B) : LB.Iso A' B' :=
+  ⟨fun p => res (chartPull_le a b p) (pullU h _ (w.s (b.idx p.1, a.idx p.2)))⟩
+
+theorem gm_isoPull {A' B' : LB Y'} {A B : LB Y} {h : Y' ⟶ Y} (a : ChartPull A' A h) (b : ChartPull B' B h)
+    (w : LB.Iso A B) {Z : Scheme.{0}} (r : Z ⟶ Y') (z : Z) (p : B'.ι × A'.ι) (hz : r z ∈ B'.U p.1 ⊓ A'.U p.2) :
+    gm r z (B'.U p.1 ⊓ A'.U p.2) ((isoPull a b w).s p) =
+      gm (r ≫ h) z (B.U (b.idx p.1) ⊓ A.U (a.idx p.2)) (w.s (b.idx p.1, a.idx p.2)) :=
+  (gm_res r z (chartPull_le a b p) hz _).trans (gm_pull r h z _ (chartPull_le a b p hz) _)
+
+theorem isoPull_isGen {A' B' : LB Y'} {A B : LB Y} {h : Y' ⟶ Y} (a : ChartPull A' A h) (b : ChartPull B' B h)
+    (w : LB.Iso A B) (hw : w.IsGen) : (isoPull a b w).IsGen := by
+  intro p q
+  refine unit_ext fun y hy => ?_
+  have val : ∀ p : B'.ι × A'.ι, y ∈ B'.U p.1 ⊓ A'.U p.2 →
+      gm (𝟙 Y') y _ ((isoPull a b w).s p) =
+        gm h y (B.U (b.idx p.1) ⊓ A.U (a.idx p.2)) (w.s (b.idx p.1, a.idx p.2)) := fun p hp =>
+    (gm_isoPull a b w (𝟙 Y') y p hp).trans (by rw [Category.id_comp])
+  have hm : h y ∈ B.U (b.idx p.1) ⊓ A.U (a.idx p.2) ⊓ (B.U (b.idx q.1) ⊓ A.U (a.idx q.2)) :=
+    ⟨chartPull_le a b p hy.1, chartPull_le a b q hy.2⟩
+  have e := congrArg (gm h y (B.U (b.idx p.1) ⊓ A.U (a.idx p.2) ⊓ (B.U (b.idx q.1) ⊓ A.U (a.idx q.2))))
+    (hw (b.idx p.1, a.idx p.2) (b.idx q.1, a.idx q.2))
+  have e' := (gm_res h y _ hm _).symm.trans (e.trans ((map_mul _ _ _).trans (congrArg₂ (· * ·)
+    (gm_div A B h y (b.idx p.1, a.idx p.2) (b.idx q.1, a.idx q.2) hm) (gm_res h y _ hm _))))
+  refine ((gm_res (𝟙 Y') y _ hy _).trans (val p hy.1)).trans (e'.trans (Eq.symm ?_))
+  refine (map_mul _ _ _).trans (congrArg₂ (· * ·) ((gm_div A' B' (𝟙 Y') y p q hy).trans ?_)
+    ((gm_res (𝟙 Y') y _ hy _).trans (val q hy.2)))
+  rw [a.g y _ _ hy.1.2 hy.2.2, b.g y _ _ hy.1.1 hy.2.1]
+
+end Chart
+
+end GlobalTheory.PolDeg.TautFrom
+
+namespace GlobalTheory.PolDeg.TautFrom
+
+open GlobalTheory.PolDeg.TautEx GlobalTheory.PrimCocycle
+
+section Base
+
+variable {o W : Type} [CommRing o] [CommRing W] [IsDomain W] [IsLocalRing W] (T : TautBase o W) (N : ℕ)
+
+def sq : (G2 (Bp T N)).left ⟶ (G2 T.B).left :=
+  (lift (pushPt (cart T N).1.w (fst (Bp T N) (Bp T N))) (pushPt (cart T N).1.w (snd (Bp T N) (Bp T N)))).left
+
+theorem lamφ_sq (I : ULift.{0} (Finset (Fin 2))) :
+    lamφ (Bp T N) I ≫ pullback.fst T.B.hom (fC N) = sq T N ≫ lamφ T.B I :=
+  psum_push (cart T N) _ _ (lift (pushPt (cart T N).1.w (fst (Bp T N) (Bp T N)))
+    (pushPt (cart T N).1.w (snd (Bp T N) (Bp T N)))) (fun i => by fin_cases i <;> simp [x2]) I.down
+
+end Base
+
+end GlobalTheory.PolDeg.TautFrom
+
+namespace GlobalTheory.PolDeg.TautFrom
+
+open GlobalTheory.PolDeg.TautEx GlobalTheory.PrimCocycle
+
+section Iso
+
+variable {o W : Type} [CommRing o] [CommRing W] [IsDomain W] [IsLocalRing W] (T : TautBase o W) (N : ℕ)
+
+def w0 : LB.Iso (abelian₂ T.B T.M.L) (abelian₂ T.B T.M.L) := ⟨fun p => (abelian₂ T.B T.M.L).g p.1 p.2⟩
+
+def wT : LB.Iso (abelian₂ (Bp T N) (Mp T N).L) ((abelian₂ T.B T.M.L).pull (sq T N)) :=
+  isoPull (chartPullLinComb T.M.L (pullback.fst T.B.hom (fC N)) (lamφ (Bp T N)) (lamφ T.B) lamε (sq T N)
+    (lamφ_sq T N)) (ReciprocityTheory.ChartRestriction.G.Geo.Tor.chartPullPull (abelian₂ T.B T.M.L) (sq T N) (sq T N) rfl) (w0 T)
+
+end Iso
+
+end GlobalTheory.PolDeg.TautFrom
+
+namespace GlobalTheory.PolDeg.TautFrom
+
+open GlobalTheory.PolDeg.TautEx GlobalTheory.PrimCocycle
+
+section Val
+
+variable {o W : Type} [CommRing o] [CommRing W] [IsDomain W] [IsLocalRing W] (T : TautBase o W) (N : ℕ)
+
+end Val
+
+end GlobalTheory.PolDeg.TautFrom
+
+namespace GlobalTheory.PolDeg.TautFrom
+
+open GlobalTheory.PolDeg.TautEx GlobalTheory.PrimCocycle
+
+section Main
+
+variable {o W : Type} [CommRing o] [CommRing W] [IsDomain W] [IsLocalRing W] (T : TautBase o W) (N : ℕ)
+
+end Main
+
+end GlobalTheory.PolDeg.TautFrom
+end
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.GeometryOfNumbersTheory
+open GlobalTheory GlobalTheory.LieHt GlobalTheory.Cartier GlobalTheory.ThetaOnto GlobalTheory.MBModel GlobalTheory.KeyCl GlobalTheory.Ex GlobalTheory.MBLow GlobalTheory.SecJet
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory.MBLow
+
+theorem lbIso_sec_onto : ∀ (X : Scheme.{0}) (A B : LB X) (w : LB.Iso A B), A.IsLB → B.IsLB → w.IsGen →
+    ∀ b : B.Sec, ∃ a : A.Sec, SecMaps w a b := by
+  intro X A B w hA hB hw b
+  refine ⟨ReciprocityTheory.ChartRestriction.G.DVR.secOfIso b hw hA hB, fun p => ?_⟩
+  obtain ⟨p, q⟩ := p
+  have hV : B.U p ⊓ A.U q ≤ A.U q ⊓ B.U p := fun _ h => ⟨h.2, h.1⟩
+  have e := congrArg (ReciprocityTheory.ChartRestriction.G.DVR.rs hV) (ReciprocityTheory.ChartRestriction.G.DVR.secOfIso_spec b hw hA hB q p)
+  rw [ReciprocityTheory.ChartRestriction.G.DVR.isoCand_rs] at e
+  have hs : res (hV.trans (ReciprocityTheory.ChartRestriction.G.DVR.divLe (A := A) (B := B) q p)) (w.s (p, q)) = w.s (p, q) :=
+    Units.ext (GlobalTheory.Cartier.resG_self _ _)
+  rw [hs] at e
+  have e2 : resG X (inf_le_right : B.U p ⊓ A.U q ≤ A.U q) ((ReciprocityTheory.ChartRestriction.G.DVR.secOfIso b hw hA hB).f q) =
+      (((w.s (p, q))⁻¹ : Γ(X, B.U p ⊓ A.U q)ˣ) : Γ(X, B.U p ⊓ A.U q)) * resG X inf_le_left (b.f p) := by
+    refine Eq.trans ?_ e
+    exact (GlobalTheory.Cartier.resG_resG _ _ _).symm
+  change resG X inf_le_left (b.f p) = ((@id (Γ(X, B.U p ⊓ A.U q)ˣ) (w.s (p, q)) : Γ(X, B.U p ⊓ A.U q)ˣ) : Γ(X, B.U p ⊓ A.U q)) * _
+  simp only [id]
+  rw [e2]
+  exact (Units.mul_inv_cancel_left _ _).symm
+
+end GlobalTheory.MBLow
+end
+end
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.PolDeg
@@ -395,3 +660,5 @@ example {W₀ : Type} [CommRing W₀] [IsLocalRing V₁] (hV : IsCN V₁) (W : M
   exact ⟨θ, pr, B₀, iG, iC, M₀, β, β₂, u, hnz K ev, hu, rest⟩
 
 end GlobalTheory.Poinc.Sep
+end
+end

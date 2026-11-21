@@ -1,15 +1,35 @@
 import Mathlib
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.Assemble
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.ClosedStep
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.SubgroupLocallyCompactHolds
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.ProdHaar
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.LocallyCompactAdelicUnitary
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.DiscAll
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.StabilizerFixesFrameVector
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.ProjStep
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.ConjInvOfExists
 
+section
+noncomputable section
+
 namespace PI.VolSemiDirect.W
 
-theorem volume_unipotent_of_modulus_one (hM : Cj.ModOne) (hC : PiCont) (hR : PiRat) : PI.VolSemiDirect.VolumeUnipotentAllCM :=
-  volume_unipotent_of_adelic Lc.locally_compact_adelic_unitary discrete_adelic_unitary closed_subgroup_holds
-    (semiStep_of Lc.locally_compact_adelic_unitary normal_subgroup_holds (projStep_of hC hR)) (Cj.conjStep_of hM)
+open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.Sub NumberField IsDedekindDomain MeasureTheory
+
 
 end PI.VolSemiDirect.W
+end
+end
+
+section
+namespace PI.VolSemiDirect.W
+
+
+end PI.VolSemiDirect.W
+end
+
+section
+namespace PI.VolSemiDirect.W
+
+
+end PI.VolSemiDirect.W
+end

@@ -350,9 +350,6 @@ theorem chTh_ok_amb (hm : m2 + 1 < R.m) (hT : 0 < Pr.T u) (hq : MuqTie Ch sel mu
   chTh_ok W Ch sel mu cst A u m2 hm hT hq (fun i hi => stepHyp_of A (modulus_pos sel mu cst u hT) (h.1 i hi))
     (stepHyp_of A (modulus_pos sel mu cst u hT) h.2.1) h.2.2.1 h.2.2.2
 
-theorem kerEquivC_of (b : L.β (m2 + 1)) (hY : YbHyp (R := R) sel mu cst L u m2 b) (P : LevFam X.E X.K R.r Pr.vGs)
-    (h : KerHypOn W Ch sel mu cst L A u m2 b hY P) : KerEquivC W Ch sel mu cst L A u m2 b hY P :=
-  ⟨h.1, cp1Equiv_of_on W Ch sel mu cst L _ b hY h.2.1, cp2Equiv_of_on W Ch sel mu cst L _ b hY P h.2.2⟩
 
 end Inst
 
@@ -604,11 +601,6 @@ end Ne
 
 section Zero
 
-theorem jetOp_zero {K : Type} [Field K] {ι : Type} [Fintype ι] {a b : ℕ} (lam : ι → DomWeight a) (lam' : ι → DomWeight b) (n : ι → ℕ) :
-    jetOp lam lam' (fun _ => (0 : K)) n = 0 := by
-  have h := jetOp_smul lam lam' (0 : K) (fun _ => (0 : K)) n
-  simp only [zero_mul, zero_smul] at h
-  exact h
 
 variable {X : Fields} (A : Amb X) {a b : ℕ}
 
@@ -941,9 +933,6 @@ section Red
 
 variable {E : Type} [Field E] [NumberField E] {P : HeightOneSpectrum (𝓞 E)} {q : ℕ}
 
-theorem xqIntAt_q : IntAt P (q : E) := by
-  have := IntAt.coe P ((q : ℕ) : 𝓞 E)
-  rwa [map_natCast] at this
 
 theorem reduction_natCast_eq_zero₂ (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) : redP P (q : E) = 0 := by
   have := reduction_coe P ((q : ℕ) : 𝓞 E)

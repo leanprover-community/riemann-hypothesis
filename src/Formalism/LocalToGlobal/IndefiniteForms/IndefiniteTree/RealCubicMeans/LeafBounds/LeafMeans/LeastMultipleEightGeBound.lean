@@ -1,6 +1,220 @@
-import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.RealCubicMeans.LeafBounds.LeafMeans.MeansTie
+import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.RealCubicMeans.LeafBounds.PackedMeans.IndexMeans.MeansPf
+import Mathlib.NumberTheory.NumberField.Discriminant.Defs
 import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.RealCubicMeans.LeafBounds.PackedMeans.IndexMeans.MeansBridge
 
+section
+noncomputable section
+
+open Finset
+
+namespace IxMeans.MeansTie
+
+def kap (N p : ℕ) (i : Fin N) : ℝ :=
+  if (i : ℕ) < p then (N : ℝ) - 2 * p + 1 + 2 * (i : ℕ) else -(2 * (p : ℝ)) - N + 1 + 2 * (i : ℕ)
+
+def de (N p : ℕ) (i : Fin N) : ℝ := if (i : ℕ) < p then 0 else -1
+
+def gap {N : ℕ} (v : Fin N → ℝ) (k : ℕ) : ℝ :=
+  if h : k + 1 < N then v ⟨k, by omega⟩ - v ⟨k + 1, h⟩ else 0
+
+def anchored {N : ℕ} (G : ℕ → ℝ) (A : ℕ) (i : Fin N) : ℝ :=
+  if (i : ℕ) ≤ A then ∑ k ∈ Ico (i : ℕ) A, G k else -∑ k ∈ Ico A (i : ℕ), G k
+
+def uMinus (N p : ℕ) (c0 : ℝ) (u : Fin N → ℝ) : Fin N → ℝ := fun i => u i - c0 * de N p i
+
+def firstVectorGaps (N p T D : ℕ) (c0 : ℝ) (u : Fin N → ℝ) (k : ℕ) : ℝ :=
+  ((⌊gap (fun i => uMinus N p c0 u i - kap N p i) k / ((T : ℝ) + D + 1)⌋ : ℤ) : ℝ)
+
+def firstGapVector (N p A T D : ℕ) (c0 : ℝ) (u : Fin N → ℝ) : Fin N → ℝ := anchored (firstVectorGaps N p T D c0 u) A
+
+def upDef (N p A T D : ℕ) (c0 : ℝ) (u : Fin N → ℝ) : Fin N → ℝ :=
+  fun i => firstGapVector N p A T D c0 u i - 3 * N * de N p i
+
+
+
+
+
+
+
+
+structure Leaves (Tau : Type) where
+
+  dE : ℕ
+
+  level : ℕ
+
+  q1 : ℕ
+
+  d : ℕ
+
+  g1 : ℕ
+
+  g2 : ℕ
+
+  rr : ℕ
+
+  rr' : ℕ
+
+  r0 : ℕ
+
+  P0 : ℝ
+
+  logmu : ℝ
+
+  cubicPeriodConstant : ℝ
+
+  c1 : ℝ
+
+  Nc : ℕ
+
+  bigp : Tau → ℕ
+
+  A : ℕ
+
+  eloc : ℕ → Finset ℝ
+
+def cppDef (q : ℕ) : ℝ := if q = 2 then 1 else 1 / ((q : ℝ) - 1)
+
+def XWDef {Tau ι : Type} [Fintype Tau] [Fintype ι] (P : MeansPack Tau ι) : ℝ :=
+  66 * P.L + (P.nc : ℝ) * P.f * P.N * Real.log P.rd
+
+def kpDef {Tau ι : Type} [Fintype Tau] [Fintype ι] (P : MeansPack Tau ι) (q : ℕ) : ℝ :=
+  (P.nc : ℝ) * P.f * P.N * P.vdd q / 2
+
+namespace Leaves
+
+variable {Tau ι : Type} [Fintype Tau] [Fintype ι] (Lv : Leaves Tau) (P : MeansPack Tau ι)
+
+def rdDef : ℝ := (Lv.dE : ℝ) ^ ((1 : ℝ) / (2 * (P.f : ℝ)))
+
+def vddDef (q : ℕ) : ℝ := (padicValNat q Lv.dE : ℝ) / (2 * (P.f : ℝ))
+
+def SBDef : Finset ℕ := ((range (⌊P.B0⌋₊ + 1)).filter Nat.Prime) ∪ (2 * Lv.dE * Lv.level).primeFactors
+
+def PPeDef : ℝ :=
+  3 / 2 * (P.f : ℝ) * (P.N : ℝ) ^ 4 * P.L
+    + (((P.f : ℝ) * (P.N : ℝ) ^ 2 + 3) * P.f * P.N * Real.log P.rd + 3 * Real.log ((2 * Lv.q1 * Lv.d : ℕ) : ℝ))
+    + (3 * Real.log ((Lv.g1 * Lv.g2 : ℕ) : ℝ) + Real.log ((Lv.rr * Lv.rr' : ℕ) : ℝ))
+
+def Xde : ℝ := Lv.logmu + 3 * (P.D : ℝ) * P.L
+
+def Psup : ℝ := 1 / 2 * Real.log (Lv.r0 : ℝ) + Lv.P0 + 2 * (P.f : ℝ) * (P.N : ℝ) ^ 2
+
+def Ptau0 : ℝ := 1 / 2 * Real.log (Lv.r0 : ℝ) + Real.log (Real.exp (Lv.Xde P) + 1) + Lv.Psup P
+
+def PPA : ℝ := 3 * (P.D : ℝ) + 3 * Lv.cubicPeriodConstant
+
+def PinfDef : ℝ :=
+  2 * Lv.Ptau0 P + Lv.PPA P + 2 * (P.f : ℝ) * P.N * Lv.c1 + 7 * (P.f : ℝ) * (P.N : ℝ) ^ 2 + 2 * Real.log (Lv.Nc : ℝ)
+
+def rnd (q : ℕ) : ℝ :=
+  (if q ∣ 2 * Lv.dE * Lv.level then 1 else 0) + (if q ∣ 2 * Lv.q1 * Lv.d then kpDef P q + 1 else 0)
+
+def eDef (q : ℕ) : ℝ := (Lv.eloc q).fold max 0 (fun x => x + Lv.rnd P q)
+
+end Leaves
+
+variable {Tau ι : Type} [Fintype Tau] [Fintype ι]
+
+structure DefTie (P : MeansPack Tau ι) (Lv : Leaves Tau) : Prop where
+  hu1 : ∀ τ, P.u1 τ = firstGapVector P.N (Lv.bigp τ) Lv.A P.T P.D P.c0 (P.u τ)
+  hup : ∀ τ, P.up τ = upDef P.N (Lv.bigp τ) Lv.A P.T P.D P.c0 (P.u τ)
+  hrd : P.rd = Lv.rdDef P
+  hvdd : ∀ q, P.vdd q = Lv.vddDef P q
+  hcpp : ∀ q, P.cpp q = cppDef q
+  hSB : P.SB = Lv.SBDef P
+  hPPe : P.PPe = Lv.PPeDef P
+  hXW : P.XW = XWDef P
+  hPinf : P.Pinf = Lv.PinfDef P
+  he : ∀ q, P.e q = Lv.eDef P q
+
+structure FieldTie (P : MeansPack Tau ι) (Lv : Leaves Tau) (E : Type) [Field E] [NumberField E] : Prop where
+  hdeg : Module.finrank ℚ E = 2 * P.f
+  hdisc : Lv.dE = (NumberField.discr E).natAbs
+
+theorem FieldTie.dE_pos {P : MeansPack Tau ι} {Lv : Leaves Tau} {E : Type} [Field E] [NumberField E]
+    (h : FieldTie P Lv E) : 1 ≤ Lv.dE := by
+  rw [h.hdisc]
+  exact Int.natAbs_pos.mpr (NumberField.discr_ne_zero E)
+
+
+theorem e_nonneg {P : MeansPack Tau ι} {Lv : Leaves Tau} (t : DefTie P Lv) (q : ℕ) : 0 ≤ P.e q := by
+  rw [t.he]
+  unfold Leaves.eDef
+  exact (Finset.le_fold_max (0 : ℝ)).mpr (Or.inl le_rfl)
+
+
+
+def packOf (P : MeansPack Tau ι) (Lv : Leaves Tau) (e : ℕ →₀ ℝ) : MeansPack Tau ι :=
+  let P1 : MeansPack Tau ι :=
+    { P with
+      u1 := fun τ => firstGapVector P.N (Lv.bigp τ) Lv.A P.T P.D P.c0 (P.u τ)
+      up := fun τ => upDef P.N (Lv.bigp τ) Lv.A P.T P.D P.c0 (P.u τ)
+      rd := Lv.rdDef P
+      vdd := Lv.vddDef P
+      cpp := cppDef
+      e := e }
+  let P2 : MeansPack Tau ι := { P1 with PPe := Lv.PPeDef P1, XW := XWDef P1, Pinf := Lv.PinfDef P1 }
+  { P2 with SB := Lv.SBDef P2 }
+
+
+def basePack : MeansPack (Fin 1) (Fin 1) where
+  N := 1
+  f := 1
+  T := 0
+  D := 0
+  jp := 0
+  m := 1
+  nc := 0
+  u := 0
+  u1 := 0
+  up := 0
+  c0 := 0
+  b := Real.exp 4
+  rd := 1
+  x := Real.exp (Real.exp 1)
+  Lp := 0
+  h0 := 32
+  fourthRootConstant := 0
+  sl := 0
+  e := 0
+  SB := ∅
+  cpp := 0
+  vdd := 0
+  Pinf := 0
+  PPe := 0
+  XW := 0
+
+def baseLeaves : Leaves (Fin 1) where
+  dE := 1
+  level := 1
+  q1 := 1
+  d := 1
+  g1 := 1
+  g2 := 1
+  rr := 1
+  rr' := 1
+  r0 := 1
+  P0 := 0
+  logmu := 0
+  cubicPeriodConstant := 0
+  c1 := 0
+  Nc := 1
+  bigp := fun _ => 1
+  A := 0
+  eloc := fun _ => ∅
+
+
+
+
+
+
+
+end IxMeans.MeansTie
+end
+end
+
+section
 noncomputable section
 
 open Finset NumberField IsDedekindDomain
@@ -16,16 +230,8 @@ def zeroConstantLowerBound (f r jp : ℕ) : ℕ := max (r + (nX f r jp + 1).choo
 
 def leastMultipleEightBound (f r jp : ℕ) : ℕ := 8 * ((zeroConstantLowerBound f r jp + 7) / 8)
 
-theorem eight_dvd_least_multiple (f r jp : ℕ) : 8 ∣ leastMultipleEightBound f r jp := Dvd.intro _ rfl
 
-theorem least_multiple_eight_ge_bound (f r jp : ℕ) : zeroConstantLowerBound f r jp ≤ leastMultipleEightBound f r jp := by
-  unfold leastMultipleEightBound
-  omega
 
-theorem least_multiple_eight_le (f r jp c : ℕ) (h8 : 8 ∣ c) (hc : zeroConstantLowerBound f r jp ≤ c) : leastMultipleEightBound f r jp ≤ c := by
-  obtain ⟨t, rfl⟩ := h8
-  unfold leastMultipleEightBound
-  omega
 
 structure PgNums where
 
@@ -71,18 +277,7 @@ def pgOf (R : RealDat3 D A3 Ks) (F : Face3 D A3) (I : OnIn R.toRealDat) (J : Slo
   Lc := (faceLiftPage R F I J hd).Lc
   eta := (faceLiftPage R F I J hd).η
 
-theorem pgOf_ranks (R : RealDat3 D A3 Ks) (F : Face3 D A3) (I : OnIn R.toRealDat) (J : SlopeArithmeticParameters R.toRealDat)
-    (hd : NeZero D.host.d) (j : Fin D.R.m) :
-    (pgOf R F I J hd j).Nr = (D.R.r : ℝ) ∧ (pgOf R F I J hd j).f = (D.R.f : ℝ) ∧
-      (pgOf R F I J hd j).m = (D.R.m : ℝ) ∧ (pgOf R F I J hd j).k = (D.R.k : ℝ) ∧
-      (pgOf R F I J hd j).jp = D.R.m - ((j : ℕ) + 1) :=
-  ⟨rfl, rfl, rfl, rfl, rfl⟩
 
-theorem pgOf_jp_le (R : RealDat3 D A3 Ks) (F : Face3 D A3) (I : OnIn R.toRealDat) (J : SlopeArithmeticParameters R.toRealDat)
-    (hd : NeZero D.host.d) (j : Fin D.R.m) : (pgOf R F I J hd j).jp ≤ D.R.r := by
-  show D.R.m - ((j : ℕ) + 1) ≤ D.R.k + D.R.m - 1
-  have := D.R.m_add_three_le_k
-  omega
 
 variable {Tau ι : Type} [Fintype Tau] [Fintype ι]
 
@@ -120,29 +315,9 @@ structure LeafTie (P : MeansPack Tau ι) (Lv : Leaves Tau) (pg : PgNums) : Prop 
 
   hlevel : 1 ≤ Lv.level
 
-theorem seventh_constant_eq {r4 : ℝ} {P : MeansPack Tau ι} {pg : PgNums} (t : PackPage r4 P pg) : P.indexMeanConstant = 100 + 9 * |r4| := by
-  unfold MeansPack.indexMeanConstant
-  rw [t.fourth_root_eq]
 
-theorem error_bound_eq_defined {r4 : ℝ} {P : MeansPack Tau ι} {pg : PgNums} (t : PackPage r4 P pg) :
-    P.E0 = (P.f : ℝ) * P.N * ((leastMultipleEightBound P.f P.N P.jp : ℝ) + 4 * P.N) := by
-  unfold MeansPack.E0
-  rw [t.hc0]
 
-theorem rnd_le_e {P : MeansPack Tau ι} {Lv : Leaves Tau} {pg : PgNums} (td : DefTie P Lv) (tl : LeafTie P Lv pg)
-    (q : ℕ) (hq : q.Prime) : ∃ y ∈ Lv.eloc q, y + Lv.rnd P q ≤ P.e q := by
-  obtain ⟨y, hy⟩ := tl.heloc q hq
-  refine ⟨y, hy, ?_⟩
-  rw [td.he]
-  unfold Leaves.eDef
-  exact (Finset.le_fold_max _).mpr (Or.inr ⟨y, hy, le_rfl⟩)
 
-theorem log_scale_eq_page_value {r4 : ℝ} (R : RealDat3 D A3 Ks) (F : Face3 D A3) (I : OnIn R.toRealDat) (J : SlopeArithmeticParameters R.toRealDat)
-    (hd : NeZero D.host.d) (j : Fin D.R.m) {P : MeansPack Tau ι} (t : PackPage r4 P (pgOf R F I J hd j)) :
-    (faceLiftPage R F I J hd).LL0 = P.LL0 := by
-  unfold MeansPack.LL0 SlopeBoundParameters.LL0 SlopeBoundParameters.llx SlopeBoundParameters.Lc
-  rw [t.hb, t.hx, t.hrd, t.hLp]
-  rfl
 
 structure RecTie6 (R : RealDat3 D A3 Ks) (F : Face3 D A3) (I : OnIn R.toRealDat) (J : SlopeArithmeticParameters R.toRealDat)
     (hd : NeZero D.host.d) (j : Fin D.R.m) (P : MeansPack Tau (J.ι j)) : Prop where
@@ -153,10 +328,6 @@ structure RecTie6 (R : RealDat3 D A3 Ks) (F : Face3 D A3) (I : OnIn R.toRealDat)
   hcc : J.cc j = P.cc
   hQ : J.Qcc j = P.Qcc
 
-theorem recTie_of {r4 : ℝ} (R : RealDat3 D A3 Ks) (F : Face3 D A3) (I : OnIn R.toRealDat) (J : SlopeArithmeticParameters R.toRealDat)
-    (hd : NeZero D.host.d) (j : Fin D.R.m) {P : MeansPack Tau (J.ι j)} (t6 : RecTie6 R F I J hd j P)
-    (tp : PackPage r4 P (pgOf R F I J hd j)) : RecTie R F I J hd j P :=
-  ⟨t6.hX, t6.hsl, tp.hT.symm, log_scale_eq_page_value R F I J hd j tp, t6.hU, t6.hE, t6.hcc, t6.hQ⟩
 
 structure FullTie (r4 : ℝ) (R : RealDat3 D A3 Ks) (F : Face3 D A3) (I : OnIn R.toRealDat) (J : SlopeArithmeticParameters R.toRealDat)
     (hd : NeZero D.host.d) (j : Fin D.R.m) (P : MeansPack Tau (J.ι j)) (Lv : Leaves Tau) : Prop where
@@ -165,13 +336,6 @@ structure FullTie (r4 : ℝ) (R : RealDat3 D A3 Ks) (F : Face3 D A3) (I : OnIn R
   defs : DefTie P Lv
   leaves : LeafTie P Lv (pgOf R F I J hd j)
 
-theorem leafMeans_of_tied (r4 : ℝ) (R : RealDat3 D A3 Ks) (F : Face3 D A3) (I : OnIn R.toRealDat)
-    (J : SlopeArithmeticParameters R.toRealDat) (hd : NeZero D.host.d) (j : Fin D.R.m) (P : MeansPack Tau (J.ι j)) (Lv : Leaves Tau)
-    (t : FullTie r4 R F I J hd j P Lv) (h : Rows P) (ha : P.IntermediateScaleBounds) (hdd : P.HeightGapBound) (he : P.SpreadBoundVariant) (h6 : P.I6)
-    (hp : P.PrimeSum) (h7 : P.I7) {Ca Cb : ℝ} (hCa : 100 + 9 * |r4| ≤ Ca) (hCb : Ce + 105 ≤ Cb) :
-    Formalism.L2.Indef.Tree.LeafMeans Ca Cb (faceLiftFactor R F I J hd j) :=
-  leafMeans_of_pack R F I J hd j P (recTie_of R F I J hd j t.recs t.page) h ha hdd he h6 hp h7
-    (by rw [seventh_constant_eq t.page]; exact hCa) hCb
 
 def basePg : PgNums where
   Nr := 2
@@ -237,94 +401,14 @@ def baseE : ℕ →₀ ℝ := Finsupp.single 2 2
 
 def tiedPack : MeansPack (Fin 1) (Fin 1) := packOf basePack2 baseLeaves2 baseE
 
-theorem tiedPack_vdd (q : ℕ) : tiedPack.vdd q = 0 := by
-  show Leaves.vddDef baseLeaves2 basePack2 q = 0
-  simp [Leaves.vddDef, baseLeaves2]
 
-theorem tiedPack_rnd (q : ℕ) : Leaves.rnd baseLeaves2 tiedPack q = if q ∣ 2 then 2 else 0 := by
-  unfold Leaves.rnd kpDef
-  rw [tiedPack_vdd]
-  simp only [baseLeaves2, mul_one]
-  split_ifs <;> norm_num
 
-theorem tie_tiedPack : DefTie tiedPack baseLeaves2 := by
-  refine ⟨fun _ => rfl, fun _ => rfl, rfl, fun _ => rfl, fun _ => rfl, rfl, rfl, rfl, rfl, fun q => ?_⟩
-  show baseE q = Leaves.eDef baseLeaves2 tiedPack q
-  unfold Leaves.eDef
-  rw [tiedPack_rnd]
-  by_cases hq : q.Prime
-  · have hel : baseLeaves2.eloc q = {0} := if_pos hq
-    rw [hel, Finset.fold_singleton]
-    by_cases h2 : q = 2
-    · subst h2
-      simp [baseE]
-    · have hn : ¬ q ∣ 2 := by
-        intro hd
-        rcases (Nat.dvd_prime Nat.prime_two).mp hd with h | h
-        · exact hq.one_lt.ne' h
-        · exact h2 h
-      rw [if_neg hn]
-      simp [baseE, Ne.symm h2]
-  · have hel : baseLeaves2.eloc q = ∅ := if_neg hq
-    rw [hel, Finset.fold_empty]
-    have h2 : q ≠ 2 := fun h => hq (h ▸ Nat.prime_two)
-    simp [baseE, Ne.symm h2]
 
-theorem least_multiple_eight_base_eq : leastMultipleEightBound 1 2 0 = 24 := by decide
 
-theorem page_tiedPack : PackPage 0 tiedPack basePg := by
-  refine ⟨?_, ?_, ?_, rfl, ?_, ?_, rfl, rfl, ?_, rfl, ?_, ?_, ?_, ?_, ?_, rfl⟩
-  · show ((2 : ℕ) : ℝ) = 2; norm_num
-  · show ((1 : ℕ) : ℝ) = 1; norm_num
-  · show ((1 : ℕ) : ℝ) = 1; norm_num
-  · show ((0 : ℕ) : ℝ) = 0; norm_num
-  · show ((0 : ℕ) : ℝ) = 0; norm_num
-  · show Leaves.rdDef baseLeaves2 basePack2 = 1
-    simp [Leaves.rdDef, baseLeaves2]
-  · show (128 : ℝ) = 128 / 1; norm_num
-  · show (24 : ℝ) = ((leastMultipleEightBound 1 2 0 : ℕ) : ℝ)
-    rw [least_multiple_eight_base_eq]; norm_num
-  · show 8 ∣ 24; decide
-  · show 8 * 1 * 2 + 4 ≤ 24; decide
-  · show 24 ≤ 16 * 1 * 2 ^ 2 + 8; decide
 
-theorem leaf_tiedPack : LeafTie tiedPack baseLeaves2 basePg := by
-  refine ⟨fun _ => rfl, ?_, ?_, ?_, le_rfl⟩
-  · show ((0 : ℕ) : ℝ) + 2 = 2; norm_num
-  · intro q hq
-    show (if q.Prime then ({0} : Finset ℝ) else ∅).Nonempty
-    rw [if_pos hq]; exact Finset.singleton_nonempty 0
-  · intro q hq
-    show (if q.Prime then ({0} : Finset ℝ) else ∅) = ∅
-    rw [if_neg hq]
 
-theorem rows_tiedPack : Rows tiedPack := by
-  have e2 : (5 : ℝ) ≤ Real.exp 2 := by
-    have h := Real.quadratic_le_exp_of_nonneg (by norm_num : (0 : ℝ) ≤ 2)
-    norm_num at h; linarith
-  have e4 : Real.exp 4 = Real.exp 2 * Real.exp 2 := by rw [← Real.exp_add]; norm_num
-  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
-  · show (0 : ℝ) < Real.exp 4
-    exact Real.exp_pos 4
-  · show (1 : ℝ) ≤ Real.log (Real.exp 4)
-    rw [Real.log_exp]; norm_num
-  · show (1 : ℝ) ≤ Leaves.rdDef baseLeaves2 basePack2
-    simp [Leaves.rdDef, baseLeaves2]
-  · show (1 : ℝ) ≤ Real.exp (Real.exp 1)
-    exact Real.one_le_exp (Real.exp_pos 1).le
-  · show (1 : ℝ) ≤ Real.log (Real.log (Real.exp (Real.exp 1)))
-    rw [Real.log_exp, Real.log_exp]
-  · show (1 : ℕ) ≤ 1
-    exact le_rfl
-  · show (1 : ℕ) ≤ 2
-    norm_num
-  · show 32 * ((1 : ℕ) : ℝ) * ((2 : ℕ) : ℝ) ^ 2 ≤ 128
-    norm_num
-  · show 4 * ((1 : ℕ) : ℝ) * ((2 : ℕ) : ℝ) ^ 2 ≤ Real.exp 4
-    rw [e4]; norm_num; nlinarith
 
-theorem ties_and_rows :
-    DefTie tiedPack baseLeaves2 ∧ PackPage 0 tiedPack basePg ∧ LeafTie tiedPack baseLeaves2 basePg ∧ Rows tiedPack :=
-  ⟨tie_tiedPack, page_tiedPack, leaf_tiedPack, rows_tiedPack⟩
 
 end IxMeans.MeansTie2
+end
+end

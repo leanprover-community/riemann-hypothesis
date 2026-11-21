@@ -1,5 +1,531 @@
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.ThirdPeelingMinorMemIdeal
+import Formalism.HermitianCurvature.OperatorsCommuteTranslations
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.LemmaDDeterminantIdentity
 
+section
+open Matrix Finset
+
+namespace Formalism.FourierDecayAlt.P.SignAntidiagonal
+
+open Formalism.FourierDecayAlt.C3
+
+theorem sgn_step (s : ℕ) : s * (s - 1) / 2 + (s + 1) * (s + 1 - 1) / 2 = s * s := by
+  have h1 : s * (s - 1) / 2 * 2 = s * (s - 1) := Nat.div_mul_cancel (Nat.even_mul_pred_self s).two_dvd
+  have h2 : (s + 1) * (s + 1 - 1) / 2 * 2 = (s + 1) * (s + 1 - 1) := Nat.div_mul_cancel (Nat.even_mul_pred_self (s + 1)).two_dvd
+  have h3 : s * (s - 1) + (s + 1) * (s + 1 - 1) = 2 * (s * s) := by
+    cases s with
+    | zero => simp
+    | succ n => simp only [Nat.add_sub_cancel]; ring
+  generalize s * (s - 1) = A at *
+  generalize (s + 1) * (s + 1 - 1) = B at *
+  generalize s * s = C at *
+  omega
+
+theorem sgn_step2 (s : ℕ) : s * (s - 1) / 2 + (s + 2) * (s + 2 - 1) / 2 = s * (s + 1) + 1 := by
+  have h1 : s * (s - 1) / 2 * 2 = s * (s - 1) := Nat.div_mul_cancel (Nat.even_mul_pred_self s).two_dvd
+  have h2 : (s + 2) * (s + 2 - 1) / 2 * 2 = (s + 2) * (s + 2 - 1) := Nat.div_mul_cancel (Nat.even_mul_pred_self (s + 2)).two_dvd
+  have h3 : s * (s - 1) + (s + 2) * (s + 2 - 1) = 2 * (s * (s + 1) + 1) := by
+    cases s with
+    | zero => simp
+    | succ n => simp only [Nat.add_sub_cancel, show n + 1 + 2 - 1 = n + 2 by omega]; ring
+  generalize s * (s - 1) = A at *
+  generalize (s + 2) * (s + 2 - 1) = B at *
+  generalize s * (s + 1) = C at *
+  omega
+
+theorem neg_one_pow_sq (s : ℕ) : (-1 : ℂ) ^ (s * s) = (-1) ^ s := by
+  rcases Nat.even_or_odd s with h | h
+  · rw [Even.neg_one_pow h, Even.neg_one_pow (h.mul_left s)]
+  · rw [Odd.neg_one_pow h, Odd.neg_one_pow (h.mul h)]
+
+theorem sign_permutation_identity : SignE := by
+  intro s
+  refine ⟨?_, ?_⟩
+  · unfold sgnW; rw [← pow_add, sgn_step, neg_one_pow_sq]
+  · unfold sgnW; rw [← pow_add, sgn_step2, pow_succ, Even.neg_one_pow (Nat.even_mul_succ_self s)]; ring
+
+theorem sgnW_succ (m : ℕ) : sgnW (m + 1) = (-1) ^ m * sgnW m := by
+  have h := (sign_permutation_identity m).1
+  have hsq : sgnW m * sgnW m = 1 := by
+    unfold sgnW; rw [← pow_add, ← two_mul, pow_mul]; simp
+  calc sgnW (m + 1) = (sgnW m * sgnW m) * sgnW (m + 1) := by rw [hsq, one_mul]
+    _ = sgnW m * (sgnW m * sgnW (m + 1)) := by ring
+    _ = (-1) ^ m * sgnW m := by rw [h]; ring
+
+
+end Formalism.FourierDecayAlt.P.SignAntidiagonal
+end
+
+section
+open Matrix Finset
+
+namespace Formalism.FourierDecayAlt.P.SignAntidiagonal
+
+open Formalism.FourierDecayAlt.C3
+
+theorem succAbove_val {n : ℕ} (p : Fin (n + 1)) (l : Fin n) :
+    (p.succAbove l).val = if l.val < p.val then l.val else l.val + 1 := by
+  unfold Fin.succAbove
+  split_ifs with h1 h2 h2 <;> simp_all [Fin.lt_def] <;> omega
+
+private theorem sgnW_succ' (s : ℕ) : sgnW (s + 1) = (-1) ^ s * sgnW s := by
+  unfold sgnW
+  rw [← pow_add]
+  congr 1
+  cases s with
+  | zero => rfl
+  | succ k =>
+    have e : (k + 1 + 1) * (k + 1 + 1 - 1) = (k + 1) * (k + 1 - 1) + 2 * (k + 1) := by
+      simp only [Nat.add_sub_cancel]
+      ring
+    rw [e, Nat.add_mul_div_left _ _ (by norm_num : 0 < 2)]
+    ring
+
+theorem zb_det (i0 s : ℕ) (h : Matrix (Fin i0) (Fin i0) ℂ) (t : ℂ) :
+    (Matrix.of fun a b : Fin (i0 + s) => Zb i0 s h t a.val b.val).det = h.det * t ^ s * sgnW s := by
+  induction s with
+  | zero =>
+    have hs : sgnW 0 = 1 := by simp [sgnW]
+    rw [hs, pow_zero, mul_one, mul_one]
+    show Matrix.det (Matrix.of fun a b : Fin i0 => Zb i0 0 h t a.val b.val) = _
+    congr 1
+    ext a b
+    simp [Zb, a.isLt, b.isLt]
+  | succ s ih =>
+    rw [Matrix.det_succ_row _ (⟨i0, by omega⟩ : Fin (i0 + s + 1)), Finset.sum_eq_single (Fin.last _)]
+    · have hsub : (Matrix.of fun a b : Fin (i0 + (s + 1)) => Zb i0 (s + 1) h t a.val b.val).submatrix
+          (⟨i0, by omega⟩ : Fin (i0 + s + 1)).succAbove (Fin.last (i0 + s)).succAbove =
+          Matrix.of fun a b : Fin (i0 + s) => Zb i0 s h t a.val b.val := by
+        ext a b
+        simp only [Matrix.submatrix_apply, Matrix.of_apply, succAbove_val, Fin.succAbove_last,
+          Fin.coe_castSucc]
+        have hb := b.isLt
+        by_cases ha : (a : ℕ) < i0
+        · simp only [ha, if_true]
+          unfold Zb
+          split_ifs <;> first | rfl | omega
+        · simp only [ha, if_false]
+          unfold Zb
+          split_ifs <;> first | rfl | omega
+      rw [hsub, ih, sgnW_succ']
+      have he : Zb i0 (s + 1) h t i0 (i0 + s) = t := by
+        simp only [Zb]
+        rw [dif_neg (lt_irrefl _), if_pos (by omega)]
+      simp only [Matrix.of_apply, Fin.val_last]
+      rw [he]
+      rw [show i0 + (i0 + s) = 2 * i0 + s by ring, pow_add, pow_mul]
+      norm_num
+      ring
+    · intro j _ hj
+      have hj' : (j : ℕ) ≠ i0 + s := fun e => hj (Fin.ext (by simp [e]))
+      have he : Zb i0 (s + 1) h t i0 j = 0 := by
+        have := j.isLt
+        simp only [Zb]
+        rw [dif_neg (lt_irrefl _), if_neg (by omega)]
+      simp only [Matrix.of_apply]
+      rw [he, mul_zero, zero_mul]
+    · intro hn
+      exact absurd (Finset.mem_univ _) hn
+
+theorem derivative_leading_zb : DleadZb := by
+  intro i0 s h t
+  refine ⟨?_, zb_det i0 s h t⟩
+  unfold Dlead
+  congr 1
+  ext a b
+  simp [Zb, a.isLt, b.isLt]
+
+theorem minors_first_case : MinorsFirstCase := by
+  intro i0 s' h t c
+  by_cases hc : c.val = i0
+  · rw [if_pos hc, ← zb_det i0 s' h t]
+    congr 1
+    ext a l
+    simp only [Matrix.of_apply, succAbove_val, hc]
+    have hl := l.isLt
+    by_cases hl0 : (l : ℕ) < i0
+    · simp only [hl0, if_true]
+      unfold Zb
+      split_ifs <;> first | rfl | omega
+    · simp only [hl0, if_false]
+      unfold Zb
+      split_ifs <;> first | rfl | omega
+  · rw [if_neg hc]
+    have hne : (⟨i0, by omega⟩ : Fin (i0 + s' + 1)) ≠ c := fun e => hc (by rw [← e])
+    obtain ⟨l0, hl0⟩ := Fin.exists_succAbove_eq hne
+    apply Matrix.det_eq_zero_of_column_eq_zero l0
+    intro a
+    simp only [Matrix.of_apply, hl0]
+    have ha := a.isLt
+    unfold Zb
+    split_ifs <;> first | rfl | omega
+
+theorem third_polynomial_expansion : MinorsThirdCase := by
+  intro i0 s'' h t
+  rw [← zb_det i0 s'' h t]
+  congr 1
+  ext a b
+  simp only [Matrix.of_apply, succAbove_val]
+  have ha := a.isLt
+  have hb := b.isLt
+  by_cases ha0 : (a : ℕ) < i0 <;> by_cases hb0 : (b : ℕ) < i0 <;>
+    simp only [ha0, hb0, if_true, if_false] <;>
+    unfold Zb <;> split_ifs <;> first | rfl | omega
+
+end Formalism.FourierDecayAlt.P.SignAntidiagonal
+end
+
+section
+open Matrix Finset
+
+namespace Formalism.FourierDecayAlt.P.SignAntidiagonal
+
+open Formalism.FourierDecayAlt.C3 Formalism.REAL Formalism.QuantumDeterminants
+
+section peel
+
+variable {A : Type} [Ring A] [Algebra ℂ A]
+
+theorem sign_last (m : ℕ) : ((((-1 : ℤ) ^ (m + m) : ℤ) : A)) = 1 := by
+  rw [← two_mul, pow_mul]
+  norm_num
+
+theorem smul_mem' (I : Ideal A) (c : ℂ) {x : A} (hx : x ∈ I) : c • x ∈ I := by
+  rw [Algebra.smul_def]
+  exact I.mul_mem_left _ hx
+
+theorem peel_core {m : ℕ} (I : Ideal A) {ι : Type} [Fintype ι] (η : ι → ℂ) (Q : Fin (m + 1) → A)
+    (T : Fin (m + 1) → ι → A) (κ : ℂ)
+    (hT : ∀ l, (∑ w, η w • T l w) - algebraMap ℂ A (if l = Fin.last m then κ else 0) ∈ I) :
+    (∑ w, η w • ∑ l : Fin (m + 1), ((((-1 : ℤ) ^ (m + (l : ℕ)) : ℤ) : A)) * (Q l * T l w)) -
+      κ • Q (Fin.last m) ∈ I := by
+  have key : (∑ w, η w • ∑ l : Fin (m + 1), ((((-1 : ℤ) ^ (m + (l : ℕ)) : ℤ) : A)) * (Q l * T l w)) -
+      κ • Q (Fin.last m) = ∑ l : Fin (m + 1), ((((-1 : ℤ) ^ (m + (l : ℕ)) : ℤ) : A)) *
+        (Q l * ((∑ w, η w • T l w) - algebraMap ℂ A (if l = Fin.last m then κ else 0))) := by
+    simp only [mul_sub, Finset.sum_sub_distrib, Finset.mul_sum, mul_smul_comm, Finset.smul_sum]
+    congr 1
+    · exact Finset.sum_comm
+    · rw [Finset.sum_eq_single (Fin.last m)]
+      · rw [if_pos rfl, Fin.val_last, sign_last, one_mul, Algebra.smul_def, Algebra.commutes]
+      · intro l _ hl
+        rw [if_neg hl, map_zero, mul_zero, mul_zero]
+      · intro hn
+        exact absurd (Finset.mem_univ _) hn
+  rw [key]
+  exact Submodule.sum_mem _ fun l _ => I.mul_mem_left _ (I.mul_mem_left _ (hT l))
+
+theorem peel_col {n m : ℕ} (I : Ideal A) (E : Fin n → Fin n → A) {ι : Type} [Fintype ι] (η : ι → ℂ)
+    (a : Fin (m + 1) → Fin n) (b0 : Fin m → Fin n) (bw : ι → Fin n) (u κ : ℂ)
+    (hT : ∀ l, (∑ w, η w • Tm E (u - (m : ℂ)) (a l) (bw w)) - algebraMap ℂ A (if l = Fin.last m then κ else 0) ∈ I) :
+    (∑ w, η w • qminor E a (Fin.snoc (α := fun _ => Fin n) b0 (bw w)) u) - κ • qminor E (a ∘ Fin.castSucc) b0 u ∈ I := by
+  have hexp : ∀ w, qminor E a (Fin.snoc (α := fun _ => Fin n) b0 (bw w)) u =
+      ∑ l : Fin (m + 1), ((((-1 : ℤ) ^ (m + (l : ℕ)) : ℤ) : A)) *
+        (qminor E (a ∘ l.succAbove) b0 u * Tm E (u - (m : ℂ)) (a l) (bw w)) := by
+    intro w
+    rw [Formalism.FourierDecayAlt.P.expansion_last_column A n m E a (Fin.snoc (α := fun _ => Fin n) b0 (bw w)) u]
+    congr 1; ext l
+    have h1 : (Fin.snoc (α := fun _ => Fin n) b0 (bw w) : Fin (m + 1) → Fin n) ∘ Fin.castSucc = b0 := by
+      funext x; simp [Fin.snoc_castSucc]
+    rw [h1, Fin.snoc_last]
+  simp_rw [hexp]
+  have := peel_core I η (fun l => qminor E (a ∘ l.succAbove) b0 u) (fun l w => Tm E (u - (m : ℂ)) (a l) (bw w)) κ hT
+  simpa [Fin.succAbove_last] using this
+
+
+theorem hT_of (I : Ideal A) {ι : Type} [Fintype ι] (η : ι → ℂ) (X : ι → A) (d : ι → ℂ) (c : ℂ)
+    (hX : ∀ w, X w - algebraMap ℂ A (d w) ∈ I) (hc : ∑ w, η w * d w = c) :
+    (∑ w, η w • X w) - algebraMap ℂ A c ∈ I := by
+  have e : (∑ w, η w • X w) - algebraMap ℂ A c = ∑ w, η w • (X w - algebraMap ℂ A (d w)) := by
+    rw [← hc]
+    simp only [smul_sub, Finset.sum_sub_distrib, map_sum, map_mul, Algebra.smul_def, mul_sub]
+  rw [e]
+  exact Submodule.sum_mem _ fun w _ => smul_mem' I _ (hX w)
+
+end peel
+
+def pe (k r p : ℕ) : Fin (2 * r + k + 1) := ⟨min p (2 * r + k), by omega⟩
+def ps (k r p : ℕ) : Fin (2 * r + k + 1) := ⟨2 * r + k - p, by omega⟩
+
+@[simp] theorem pe_val (k r p : ℕ) : (pe k r p).val = min p (2 * r + k) := rfl
+@[simp] theorem ps_val (k r p : ℕ) : (ps k r p).val = 2 * r + k - p := rfl
+
+theorem mem_gen {A : Type} [Ring A] [Algebra ℂ A] {k r : ℕ} {z' : Fin (2 * r + k + 1) → ℂ}
+    {E : Fin (2 * r + k + 1) → Fin (2 * r + k + 1) → A} {p q : Fin (2 * r + k + 1)} (h : InNp k r p q) :
+    E p q - algebraMap ℂ A (dpsiP k r z' p q) ∈ Ideal.span (rgen k r z' E) := Ideal.subset_span ⟨p, q, h, rfl⟩
+
+theorem tm_offdiag {A : Type} [Ring A] [Algebra ℂ A] {n : ℕ} (E : Fin n → Fin n → A) (u : ℂ) {p q : Fin n}
+    (h : p ≠ q) : Tm E u p q = E p q := by
+  simp [Tm, h]
+
+theorem last_iff {m : ℕ} (l : Fin (m + 1)) : l = Fin.last m ↔ l.val = m := by
+  rw [Fin.ext_iff, Fin.val_last]
+
+theorem first_peeling_minor_mem_ideal {A : Type} [Ring A] [Algebra ℂ A] (k r : ℕ) (z' : Fin (2 * r + k + 1) → ℂ)
+    (E : Fin (2 * r + k + 1) → Fin (2 * r + k + 1) → A) (u : ℂ) : ∀ (m i : ℕ), i ≤ m → m + 1 ≤ r →
+    qminor E (fun l : Fin m => pe k r l.val) (fun l : Fin m => pe k r (if l.val < i then l.val else l.val + 1)) u -
+      qminor E (fun l : Fin i => pe k r l.val) (fun l : Fin i => pe k r l.val) u ∈ Ideal.span (rgen k r z' E) := by
+  intro m
+  induction m with
+  | zero =>
+    intro i hi _
+    have hi0 : i = 0 := by omega
+    subst hi0
+    have e : (fun l : Fin 0 => pe k r (if l.val < 0 then l.val else l.val + 1)) = fun l : Fin 0 => pe k r l.val :=
+      funext fun l => l.elim0
+    rw [e, sub_self]
+    exact Submodule.zero_mem _
+  | succ m ih =>
+    intro i hi hr
+    rcases Nat.lt_or_ge i (m + 1) with hlt | hge
+    · have hih := ih i (by omega) (by omega)
+      have hstep : qminor E (fun l : Fin (m + 1) => pe k r l.val)
+            (fun l : Fin (m + 1) => pe k r (if l.val < i then l.val else l.val + 1)) u -
+          qminor E (fun l : Fin m => pe k r l.val)
+            (fun l : Fin m => pe k r (if l.val < i then l.val else l.val + 1)) u ∈
+            Ideal.span (rgen k r z' E) := by
+        have hc := peel_core (Ideal.span (rgen k r z' E)) (ι := Unit) (fun _ => (1 : ℂ))
+          (fun l : Fin (m + 1) => qminor E ((fun l : Fin (m + 1) => pe k r l.val) ∘ l.succAbove)
+              (fun l : Fin m => pe k r (if l.val < i then l.val else l.val + 1)) u)
+          (fun l _ => Tm E (u - (m : ℂ)) (pe k r l.val) (pe k r (m + 1))) 1 ?_
+        · rw [Formalism.FourierDecayAlt.P.expansion_last_column A (2 * r + k + 1) m E]
+          have hm : ¬ (m < i) := by omega
+          simpa [Fin.succAbove_last, Fin.val_last, hm, Function.comp_def, Fin.coe_castSucc] using hc
+        · intro l
+          have hl := l.isLt
+          have h1 : min (l.val) (2 * r + k) = l.val := Nat.min_eq_left (by omega)
+          have h2 : min (m + 1) (2 * r + k) = m + 1 := Nat.min_eq_left (by omega)
+          have hne : pe k r l.val ≠ pe k r (m + 1) := by
+            intro e
+            have := congrArg Fin.val e
+            simp only [pe_val, h1, h2] at this
+            omega
+          have hin : InNp k r (pe k r l.val) (pe k r (m + 1)) := by
+            simp only [InNp, pe_val, h1, h2]
+            omega
+          have hd : dpsiP k r z' (pe k r l.val) (pe k r (m + 1)) = if l.val = m then 1 else 0 := by
+            simp only [dpsiP, pe_val, h1, h2]
+            rw [if_pos ⟨by omega, by omega⟩]
+            split_ifs <;> first | rfl | (exfalso; omega)
+          simp only [Finset.univ_unique, Finset.sum_singleton, one_smul, last_iff]
+          rw [tm_offdiag _ _ hne, ← hd]
+          exact mem_gen hin
+      have hsum := (Ideal.span (rgen k r z' E)).add_mem hstep hih
+      rwa [sub_add_sub_cancel] at hsum
+    · have hi1 : i = m + 1 := by omega
+      subst hi1
+      have e : (fun l : Fin (m + 1) => pe k r (if l.val < m + 1 then l.val else l.val + 1)) =
+          fun l : Fin (m + 1) => pe k r l.val := by
+        funext l
+        rw [if_pos l.isLt]
+      rw [e, sub_self]
+      exact Submodule.zero_mem _
+
+theorem first_peeling_identity : PeelingOmittedColumn := by
+  intro A _ _ k r z' E m hm i u
+  have e1 : ∀ (j : ℕ) (hj : j ≤ r), xR k r j hj = fun l : Fin j => pe k r l.val := by
+    intro j hj
+    funext l
+    apply Fin.ext
+    simp only [xR, Formalism.QuantumDeterminants.eI, Fin.coe_castLE, pe_val]
+    have := l.isLt
+    omega
+  have e2 : (fun l : Fin m => xR k r (m + 1) hm (i.succAbove l)) =
+      fun l : Fin m => pe k r (if l.val < i.val then l.val else l.val + 1) := by
+    funext l
+    apply Fin.ext
+    simp only [xR, Formalism.QuantumDeterminants.eI, Fin.coe_castLE, pe_val, succAbove_val]
+    have := l.isLt
+    split_ifs <;> omega
+  rw [e2, e1, e1]
+  exact first_peeling_minor_mem_ideal k r z' E u m i.val (by have := i.isLt; omega) hm
+
+end Formalism.FourierDecayAlt.P.SignAntidiagonal
+end
+
+section
+open Matrix Finset
+
+namespace Formalism.FourierDecayAlt.P.SignAntidiagonal
+
+open Formalism.FourierDecayAlt.C3 Formalism.REAL Formalism.QuantumDeterminants
+
+theorem pe_lt {k r p : ℕ} (h : p < 2 * r + k + 1) : (pe k r p).val = p := by
+  rw [pe_val]
+  omega
+
+theorem herm_wsum (k r : ℕ) (v y : Fin (2 * r + k + 1) → ℂ) (hv : inWb k r v) :
+    herm (Hpk k r) v y = ∑ w : Fin (k + 1), v (wI k r w) * herm (Hpk k r) (bvec (wI k r w)) y := by
+  have hv' : v = ∑ w : Fin (k + 1), v (wI k r w) • bvec (wI k r w) := by
+    funext i
+    rw [Finset.sum_apply]
+    simp only [Pi.smul_apply, bvec, smul_eq_mul]
+    by_cases hi : r ≤ i.val ∧ i.val ≤ r + k
+    · rw [Finset.sum_eq_single ⟨i.val - r, by omega⟩]
+      · have e : wI k r ⟨i.val - r, by omega⟩ = i := Fin.ext (by simp only [wI]; omega)
+        rw [e, Pi.single_eq_same, mul_one]
+      · intro w _ hw
+        rw [Pi.single_eq_of_ne, mul_zero]
+        intro e
+        apply hw
+        apply Fin.ext
+        have := congrArg Fin.val e
+        simp only [wI, Fin.val_mk] at this ⊢
+        omega
+      · intro hn
+        exact absurd (Finset.mem_univ _) hn
+    · rw [hv i (by omega)]
+      symm
+      apply Finset.sum_eq_zero
+      intro w _
+      rw [Pi.single_eq_of_ne, mul_zero]
+      intro e
+      have := congrArg Fin.val e
+      simp only [wI] at this
+      omega
+  conv_lhs => rw [hv']
+  simp only [herm, Matrix.mulVec_sum, Matrix.mulVec_smul, dotProduct_sum, dotProduct_smul, smul_eq_mul]
+
+theorem dpsi_e_w (k r : ℕ) (z' : Fin (2 * r + k + 1) → ℂ) (p : ℕ) (hp : p < r) (w : Fin (k + 1)) :
+    dpsiP k r z' (pe k r p) (wI k r w) = if p + 1 = r then z' (wI k r w) else 0 := by
+  have h1 : min p (2 * r + k) = p := by omega
+  have hw : (wI k r w).val = r + w.val := rfl
+  have hwk := w.isLt
+  simp only [dpsiP, pe_val, h1, hw]
+  rw [if_neg (by omega), if_pos (by omega)]
+
+
+theorem dpsi_last_basis_shift (k r : ℕ) (z' : Fin (2 * r + k + 1) → ℂ) (a b : ℕ) (ha : a < r) (hb : b < r) :
+    dpsiP k r z' (ps k r a) (ps k r b) = if b + 1 = a then 1 else 0 := by
+  have c1 : ¬(2 * r + k - a < r ∧ 2 * r + k - b < r) := by omega
+  have c2 : ¬(2 * r + k - a < r ∧ r ≤ 2 * r + k - b ∧ 2 * r + k - b ≤ r + k) := by omega
+  have c3 : ¬(r ≤ 2 * r + k - a ∧ 2 * r + k - a ≤ r + k ∧ r + k < 2 * r + k - b) := by omega
+  have c4 : r + k < 2 * r + k - a ∧ r + k < 2 * r + k - b := by omega
+  have c5 : (2 * r + k - b = 2 * r + k - a + 1) ↔ (b + 1 = a) := by omega
+  have c6 : ¬(2 * r + k - a ≤ r + k) := by omega
+  simp only [dpsiP, ps_val, c1, c2, c3, c4, c5, c6, if_false, if_true, and_self, and_false, false_and, and_true]
+
+theorem third_peeling_minor_mem_ideal {A : Type} [Ring A] [Algebra ℂ A] (k r : ℕ) (z' : Fin (2 * r + k + 1) → ℂ)
+    (E : Fin (2 * r + k + 1) → Fin (2 * r + k + 1) → A) (hG : GlRel E) (ell : ℂ) : ∀ (m i : ℕ), i ≤ m → m + 1 ≤ r →
+    qminor E (fun l : Fin m => ps k r (if l.val < i then l.val else l.val + 1)) (fun l : Fin m => ps k r l.val)
+        (ell + (m : ℂ) - 1) -
+      qminor E (fun l : Fin i => ps k r l.val) (fun l : Fin i => ps k r l.val) (ell + (i : ℂ) - 1) ∈
+      Ideal.span (rgen k r z' E) := by
+  intro m
+  induction m with
+  | zero =>
+    intro i hi _
+    have hi0 : i = 0 := by omega
+    subst hi0
+    have e : (fun l : Fin 0 => ps k r (if l.val < 0 then l.val else l.val + 1)) = fun l : Fin 0 => ps k r l.val :=
+      funext fun l => l.elim0
+    rw [e, sub_self]
+    exact Submodule.zero_mem _
+  | succ m ih =>
+    intro i hi hr
+    rcases Nat.lt_or_ge i (m + 1) with hlt | hge
+    · have hih := ih i (by omega) (by omega)
+      have hu : ell + ((m + 1 : ℕ) : ℂ) - 1 = ell + (m : ℂ) := by push_cast; ring
+      rw [hu]
+      have hstep : qminor E (fun l : Fin (m + 1) => ps k r (if l.val < i then l.val else l.val + 1))
+            (fun l : Fin (m + 1) => ps k r l.val) (ell + (m : ℂ)) -
+          qminor E (fun l : Fin m => ps k r (if l.val < i then l.val else l.val + 1))
+            (fun l : Fin m => ps k r l.val) (ell + (m : ℂ) - 1) ∈ Ideal.span (rgen k r z' E) := by
+        have hc := peel_core (Ideal.span (rgen k r z' E)) (ι := Unit) (fun _ => (1 : ℂ))
+          (fun l : Fin (m + 1) => qminor E
+              ((fun l : Fin (m + 1) => ps k r (if l.val < i then l.val else l.val + 1)) ∘ Fin.castSucc)
+              ((fun l : Fin (m + 1) => ps k r l.val) ∘ l.succAbove) (ell + (m : ℂ) - 1))
+          (fun l _ => Tm E (ell + (m : ℂ)) (ps k r (m + 1)) (ps k r l.val)) 1 ?_
+        · rw [Formalism.FourierDecayAlt.P.expansion_last_line A (2 * r + k + 1) m E hG]
+          have hm : ¬ (m < i) := by omega
+          simpa [Fin.succAbove_last, Fin.val_last, hm, Function.comp_def, Fin.coe_castSucc] using hc
+        · intro l
+          have hl := l.isLt
+          have hne : ps k r (m + 1) ≠ ps k r l.val := by
+            intro e
+            have := congrArg Fin.val e
+            simp only [ps_val] at this
+            omega
+          have hin : InNp k r (ps k r (m + 1)) (ps k r l.val) := by
+            simp only [InNp, ps_val]
+            omega
+          have hd : dpsiP k r z' (ps k r (m + 1)) (ps k r l.val) = if l.val = m then 1 else 0 := by
+            rw [dpsi_last_basis_shift k r z' (m + 1) l.val (by omega) (by omega)]
+            split_ifs <;> first | rfl | (exfalso; omega)
+          simp only [Finset.univ_unique, Finset.sum_singleton, one_smul, last_iff]
+          rw [tm_offdiag _ _ hne, ← hd]
+          exact mem_gen hin
+      have hsum := (Ideal.span (rgen k r z' E)).add_mem hstep hih
+      rwa [sub_add_sub_cancel] at hsum
+    · have hi1 : i = m + 1 := by omega
+      subst hi1
+      have e : (fun l : Fin (m + 1) => ps k r (if l.val < m + 1 then l.val else l.val + 1)) =
+          fun l : Fin (m + 1) => ps k r l.val := by
+        funext l
+        rw [if_pos l.isLt]
+      rw [e, sub_self]
+      exact Submodule.zero_mem _
+
+private theorem sR_eq_ps (k r j : ℕ) (hj : j ≤ r) : sR k r j hj = fun l : Fin j => ps k r l.val := by
+  funext l
+  apply Fin.ext
+  simp only [sR, Formalism.QuantumDeterminants.esI, Fin.coe_castLE, ps_val]
+
+private theorem sR_succAbove_eq_ps (k r m : ℕ) (hm : m + 1 ≤ r) (i : Fin (m + 1)) :
+    (fun l : Fin m => sR k r (m + 1) hm (i.succAbove l)) =
+      fun l : Fin m => ps k r (if l.val < i.val then l.val else l.val + 1) := by
+  funext l
+  apply Fin.ext
+  simp only [sR, Formalism.QuantumDeterminants.esI, Fin.coe_castLE, ps_val, succAbove_val]
+
+theorem third_peeling_identity : PeelingDualColumn := by
+  intro A _ _ k r z' E hG m hm i ell
+  rw [sR_succAbove_eq_ps, sR_eq_ps, sR_eq_ps]
+  exact third_peeling_minor_mem_ideal k r z' E hG ell m i.val (by have := i.isLt; omega) hm
+
+theorem second_peeling_identity : PeelingCovector := by
+  intro A _ _ k m z' yb E i u hz'
+  have ha : xR k (m + 1) (m + 1) le_rfl = fun l : Fin (m + 1) => pe k (m + 1) l.val := by
+    funext l; ext; simp only [xR, eI, Fin.val_castLE]; rw [pe_lt (by omega)]
+  have hb : (fun l : Fin m => xR k (m + 1) (m + 1) le_rfl (i.succAbove l)) =
+      fun l : Fin m => pe k (m + 1) (if l.val < i.val then l.val else l.val + 1) := by
+    funext l; ext; simp only [xR, eI, Fin.val_castLE, succAbove_val, pe_val]; all_goals (split_ifs <;> omega)
+  have hi : xR k (m + 1) i.val (by have := i.isLt; omega) = fun l : Fin i.val => pe k (m + 1) l.val := by
+    funext l; ext; simp only [xR, eI, Fin.val_castLE]; rw [pe_lt (by omega)]
+  rw [hb, ha, hi]
+  have step := peel_col (Ideal.span (rgen k (m + 1) z' E)) E (fun w => herm (Hpk k (m + 1)) (bvec (wI k (m + 1) w)) yb)
+    (fun l : Fin (m + 1) => pe k (m + 1) l.val) (fun l : Fin m => pe k (m + 1) (if l.val < i.val then l.val else l.val + 1))
+    (wI k (m + 1)) u (herm (Hpk k (m + 1)) z' yb) (by
+      intro l
+      have := l.isLt
+      apply hT_of _ _ _ (fun w => dpsiP k (m + 1) z' (pe k (m + 1) l.val) (wI k (m + 1) w))
+      · intro w
+        have hw := w.isLt
+        have hne : pe k (m + 1) l.val ≠ wI k (m + 1) w := by
+          intro h2; have h3 := congrArg Fin.val h2; rw [pe_lt (by omega)] at h3; simp only [wI] at h3; omega
+        rw [tm_offdiag _ _ hne]
+        apply mem_gen
+        simp only [InNp, wI]; rw [pe_lt (by omega)]; omega
+      · simp only [dpsi_e_w k (m + 1) z' l.val (by omega), last_iff]
+        by_cases hl : l.val = m
+        · have e : l.val + 1 = m + 1 := by omega
+          simp only [e, if_true, hl]
+          rw [herm_wsum k (m + 1) z' yb hz']
+          congr 1; ext w; ring
+        · have e : ¬ (l.val + 1 = m + 1) := by omega
+          simp [e, hl])
+  have hc : ((fun l : Fin (m + 1) => pe k (m + 1) l.val) ∘ Fin.castSucc) = fun l : Fin m => pe k (m + 1) l.val := by
+    funext l; simp
+  rw [hc] at step
+  have h2 := smul_mem' _ (herm (Hpk k (m + 1)) z' yb) (first_peeling_minor_mem_ideal k (m + 1) z' E u m i.val (by omega) (by omega))
+  have := Ideal.add_mem _ step h2
+  rw [smul_sub] at this
+  simpa using this
+
+
+
+end Formalism.FourierDecayAlt.P.SignAntidiagonal
+end
+
+section
 open Matrix Finset
 
 namespace Formalism.FourierDecayAlt.P.SignAntidiagonal
@@ -99,3 +625,4 @@ theorem AAx_head {A : Type} [Ring A] [Algebra ℂ A] (k r : ℕ) (E : Fin (2 * r
     exact uniq_mono _ _ (fun a b hab => by simp only [xR, eI]; exact hab) hc hS
 
 end Formalism.FourierDecayAlt.P.SignAntidiagonal
+end

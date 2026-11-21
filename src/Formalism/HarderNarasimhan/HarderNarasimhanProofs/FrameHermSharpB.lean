@@ -95,11 +95,6 @@ theorem frameB_rkK_top (b : Basis ι K V) (L : Submodule (𝓞 K) V)
   unfold rkK
   rw [hL, finrank_top, Module.finrank_eq_card_basis b]
 
-theorem frameB_ne_bot [Nontrivial V] (L : Submodule (𝓞 K) V)
-    (hL : Submodule.span K (L : Set V) = ⊤) : L ≠ ⊥ := by
-  intro h0
-  rw [h0, Submodule.bot_coe, Submodule.span_zero_singleton] at hL
-  exact bot_ne_top hL
 
 end Herm
 

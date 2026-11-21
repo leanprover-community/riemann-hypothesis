@@ -1,9 +1,67 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.DecompositionInvariantsCondition
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CLLUnitIntervalLe
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FinrankMaxUnramifiedSubfieldPadicFinExtPos
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PadicValNatFinrankKs
 import BuildAid.ForwardExisting
 
+section
+open NumberField IsDedekindDomain Formalism Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations GlobalTheory.HubLoc Module
+
+namespace GlobalTheory.HubLoc
+
+theorem cLL_unit_interval_le : ∀ (l h N v : ℕ) (U : Finset ℤ) (U' : Set ℤ), l.Prime → 1 ≤ N → U' ⊆ U → U.card ≤ N →
+    (∀ u ∈ U, -(h : ℤ) ≤ u ∧ u ≤ h) → v ≤ LocalSituation.mN l 1 (h + h) - 1 →
+    LocalSituation.cLL l (LocalSituation.mN l 1 (h + h)) v U' 0 1 ≤ 5 + Nat.log l (2 * h) + N * (4 + 2 * Nat.log l (2 * h)) := by
+  classical
+  intro l h N v U U' hl hN hU hcard hb hv
+  haveI : Fact l.Prime := ⟨hl⟩
+  unfold LocalSituation.cLL LocalSituation.mN LocalSituation.rI LocalSituation.n0 at *
+  set L := Nat.log l (2 * h) with hL
+  set n0 := sInf {n | h + h ≤ l ^ n * (l - 1)} with hn0
+  have hl1 : 1 < l := hl.one_lt
+
+  have hn0le : n0 ≤ L + 1 := by
+    apply Nat.sInf_le
+    show h + h ≤ l ^ (L + 1) * (l - 1)
+    have h1 : 2 * h < l ^ (L + 1) := Nat.lt_pow_succ_log_self hl1 (2 * h)
+    have h2 : l ^ (L + 1) ≤ l ^ (L + 1) * (l - 1) := Nat.le_mul_of_pos_right _ (by omega)
+    omega
+  have hI : Finset.Ico (0 : ℤ) 1 = {0} := by
+    ext x
+    simp only [Finset.mem_Ico, Finset.mem_singleton]
+    omega
+  rw [hI, Finset.sum_singleton]
+
+  have hterm : ∀ u ∈ U,
+      (∑ᶠ (_ : u ∈ U') (_ : u ≠ 0), (2 * 1 + n0 + 1 + LocalSituation.vZ l (u - 0))) ≤ 4 + 2 * L := by
+    intro u hu
+    have hz : LocalSituation.vZ l u ≤ Nat.log l h := vZ_le_log l h u (hb u hu)
+    have hlog : Nat.log l h ≤ L := Nat.log_mono_right (by omega)
+    simp only [finsum_eq_if, sub_zero]
+    split_ifs <;> omega
+
+  have hS : (∑ᶠ (u : ℤ) (_ : u ∈ U') (_ : u ≠ 0), (2 * 1 + n0 + 1 + LocalSituation.vZ l (u - 0)))
+      ≤ N * (4 + 2 * L) := by
+    rw [finsum_eq_sum_of_support_subset _ (s := U) ?_]
+    · calc _ ≤ U.card • (4 + 2 * L) := Finset.sum_le_card_nsmul _ _ _ hterm
+        _ ≤ N * (4 + 2 * L) := by
+          rw [smul_eq_mul]
+          exact Nat.mul_le_mul_right _ hcard
+    · intro u hu
+      rw [Function.mem_support] at hu
+      by_contra hnot
+      have hnU' : u ∉ U' := fun h' => hnot (Finset.mem_coe.mpr (hU h'))
+      exact hu (by simp only [finsum_eq_if, if_neg hnU'])
+  have hNL : 1 ≤ N * (4 + 2 * L) := by
+    have := Nat.mul_le_mul hN (show 1 ≤ 4 + 2 * L by omega)
+    omega
+  have hmax := max_le hNL hS
+  omega
+
+end GlobalTheory.HubLoc
+end
+
+section
 section
 open NumberField IsDedekindDomain Formalism Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations Module
 
@@ -69,3 +127,4 @@ open NumberField IsDedekindDomain Formalism Formalism.ConjugateSelfDual Reciproc
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.torsionExponent_le_of_jumps_at_embeddings_unramified : ∀ (LT : LocTheory) (HW : HWOf LT) (AI : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (hs : Good K 1 LL) (h r n : ℕ) (T : LocLat (LocalSituation.sit LT HW l (AI l) K 1 LL hs).G (LocalSituation.sit LT HW l (AI l) K 1 LL hs).Qp (LocalSituation.sit LT HW l (AI l) K 1 LL hs).LL (LocalSituation.sit LT HW l (AI l) K 1 LL hs).O), K.1 ≤ MaximalUnramifiedExtension l → finrank ℚ_[l] ↥K.1 ≤ n → 1 ≤ r → (∀ τ, ∃ U : Finset ℤ, U.card ≤ r ∧ (∀ u ∈ U, -(h : ℤ) ≤ u ∧ u ≤ h) ∧ ∀ a, IsJumpV (LocalSituation.sit LT HW l (AI l) K 1 LL hs).PD T.ρ τ a → a ∈ U) → (∀ a ∈ LocalSituation.Jset (LocalSituation.sit LT HW l (AI l) K 1 LL hs) T, -(h : ℤ) ≤ a ∧ a ≤ h) ∧ GlobalTheory.HubX.invariantsCountConstant LT HW AI l K 1 LL hs h h T ≤ 5 + Nat.log l (2 * h) + n * r * (4 + 2 * Nat.log l (2 * h)) := by
   atlas_forward_decl GlobalTheory.HubX.cH0all_le_of_jumps_at_embeddings
+end

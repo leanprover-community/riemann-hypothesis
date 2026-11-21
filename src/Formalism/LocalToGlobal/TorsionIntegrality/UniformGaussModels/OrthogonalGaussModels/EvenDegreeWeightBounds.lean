@@ -89,26 +89,7 @@ theorem one_letter_gauss_integral_disc_seven : OneLetterGaussInt7 := by
   obtain ⟨s2, hs2, hc2, tail⟩ := one_letter_gauss_every_integral_disc_seven dK L hsq hd4 hcm l h5 hd hin ι g2 g3 ε hg hε hth
   exact ⟨g2, g3, ε, s2, hg, hε, hth, hs2, hc2, tail⟩
 
-theorem ThmAEntryEveryPh7_of (hS : HypShape) : ThmAEntryEveryPh7 := by
-  intro dK L hsq hd4 hcm l _ h5 hd hin ι g2 g3 ε hg hε hth
-  obtain ⟨s2, hs2, hc2, hN⟩ :=
-    nrcmOfCM4 cm4 dK L hsq hd4 hcm l h5 hd hin ι g2 g3 ε hg hε hth
-  refine ⟨s2, hs2, hc2, ?_⟩
-  intro σ hσ F hF d N0 N1 _ hd2 hev hN0' ιr _ _ om oms hO hT hζ n _ f f' hH Θ hInt
-  obtain ⟨U0, Φ, hU, hΦ, hsim, hΘ⟩ := hS l h5 g2 g3 ε s2 hg.2.2.1 hg.2.2.2.1 hε hth σ hσ F hF (hN σ hσ) N0 N1 ιr n f f' hH Θ hInt
-  rw [hΘ]
-  exact matrix_entries_all_disc_seven l h5 g2 g3 ε hg.2.2.1 hg.2.2.2.1 hε hth σ hσ F hF s2 (hN σ hσ) d N0 N1 hd2 hev hN0' ιr om oms hO hT hζ U0 Φ hU hΦ hsim
 
-theorem matrix_entries_sharp_of_kappa_integral (hK : uniformGaussModelConditionReformulated) (hS : HypShape) : MatrixEntriesSharpCM := by
-  intro dK L hsq hd4 hcm l _ h5 hd hin ι g2 g3 ε hg hε hth
-  obtain ⟨s2, hs2, hc2, hN⟩ :=
-    nrcmOfCM4 cm4 dK L hsq hd4 hcm l h5 hd hin ι g2 g3 ε hg hε hth
-  refine ⟨s2, hs2, hc2, ?_⟩
-  intro σ hσ F hF d N0 N1 _ hd2 hev hN0' ιr _ _ om oms hO hT hζ n _ _ f f' hH Θ γ hγ hK1
-  have hInt := hK l h5 g2 g3 ε s2 hg.2.2.1 hg.2.2.2.1 hε hth σ hσ F hF (hN σ hσ) n Θ γ hγ hK1
-  obtain ⟨U0, Φ, hU, hΦ, hsim, hΘ⟩ := hS l h5 g2 g3 ε s2 hg.2.2.1 hg.2.2.2.1 hε hth σ hσ F hF (hN σ hσ) N0 N1 ιr n f f' hH Θ hInt
-  rw [hΘ]
-  exact matrix_entries_all_disc_seven l h5 g2 g3 ε hg.2.2.1 hg.2.2.2.1 hε hth σ hσ F hF s2 (hN σ hσ) d N0 N1 hd2 hev hN0' ιr om oms hO hT hζ U0 Φ hU hΦ hsim
 
 theorem ThmAEntryEveryOrth7_of (hS : OrthShape) : ThmAEntryEveryOrth7 := by
   intro dK L hsq hd4 hcm l _ h5 hd hin ι g2 g3 ε hg hε hth
@@ -122,26 +103,7 @@ theorem ThmAEntryEveryOrth7_of (hS : OrthShape) : ThmAEntryEveryOrth7 := by
   rw [hΘ]
   exact matrix_entries_all_disc_seven l h5 g2 g3 ε hg.2.2.1 hg.2.2.2.1 hε hth σ hσ F hF s2 (hN σ hσ) d N0 N1 hd2 hev hN0' ιr om oms hO hT hζ U0 Φ hU hΦ hsim
 
-theorem ThmAGaussEveryPh7_of (hS : HypShape) : ThmAGaussEveryPh7 := by
-  intro dK L hsq hd4 hcm l _ h5 hd hin ι g2 g3 ε hg hε hth
-  obtain ⟨s2, hs2, hc2, hN⟩ :=
-    nrcmOfCM4 cm4 dK L hsq hd4 hcm l h5 hd hin ι g2 g3 ε hg hε hth
-  refine ⟨s2, hs2, hc2, ?_⟩
-  intro σ hσ F hF d N0 N1 _ hd2 hev hN0' ιr _ _ om oms hO hT hζ n _ f f' hH Θ hInt
-  obtain ⟨U0, Φ, hU, hΦ, hsim, hΘ⟩ := hS l h5 g2 g3 ε s2 hg.2.2.1 hg.2.2.2.1 hε hth σ hσ F hF (hN σ hσ) N0 N1 ιr n f f' hH Θ hInt
-  rw [hΘ]
-  exact gauss_form_all_disc_seven l h5 g2 g3 ε hg.2.2.1 hg.2.2.2.1 hε hth σ hσ F hF s2 (hN σ hσ) d N0 N1 hd2 hev hN0' ιr om oms hO hT hζ U0 Φ hU hΦ hsim
 
-theorem gauss_form_sharp_of_kappa_integral (hK : uniformGaussModelConditionReformulated) (hS : HypShape) : GaussFormSharpCM := by
-  intro dK L hsq hd4 hcm l _ h5 hd hin ι g2 g3 ε hg hε hth
-  obtain ⟨s2, hs2, hc2, hN⟩ :=
-    nrcmOfCM4 cm4 dK L hsq hd4 hcm l h5 hd hin ι g2 g3 ε hg hε hth
-  refine ⟨s2, hs2, hc2, ?_⟩
-  intro σ hσ F hF d N0 N1 _ hd2 hev hN0' ιr _ _ om oms hO hT hζ n _ _ f f' hH Θ γ hγ hK1
-  have hInt := hK l h5 g2 g3 ε s2 hg.2.2.1 hg.2.2.2.1 hε hth σ hσ F hF (hN σ hσ) n Θ γ hγ hK1
-  obtain ⟨U0, Φ, hU, hΦ, hsim, hΘ⟩ := hS l h5 g2 g3 ε s2 hg.2.2.1 hg.2.2.2.1 hε hth σ hσ F hF (hN σ hσ) N0 N1 ιr n f f' hH Θ hInt
-  rw [hΘ]
-  exact gauss_form_all_disc_seven l h5 g2 g3 ε hg.2.2.1 hg.2.2.2.1 hε hth σ hσ F hF s2 (hN σ hσ) d N0 N1 hd2 hev hN0' ιr om oms hO hT hζ U0 Φ hU hΦ hsim
 
 theorem ThmAGaussEveryOrth7_of (hS : OrthShape) : ThmAGaussEveryOrth7 := by
   intro dK L hsq hd4 hcm l _ h5 hd hin ι g2 g3 ε hg hε hth
@@ -183,26 +145,7 @@ theorem split {l : ℕ} [Fact l.Prime] (h5 : 5 ≤ l) (g2 g3 s2 ε : CM.MaximalU
 
 end DiscriminantSevenGaussModels
 
-theorem one_letter_gauss_every_principal_seven : OneLetterGaussEveryPh7 := by
-  intro dK L hsq hd4 hcm l _ h5 hd hin ι g2 g3 ε hg hε hth
-  obtain ⟨s2, hs2, hc2, hN⟩ :=
-    nrcmOfCM4 cm4 dK L hsq hd4 hcm l h5 hd hin ι g2 g3 ε hg hε hth
-  refine ⟨s2, hs2, hc2, ?_⟩
-  intro σ hσ F hF N0 N1 C Θ hInt
-  rw [DiscriminantSevenGaussModels.split h5 g2 g3 s2 ε (Fin N0 × Fin N1) Θ]
-  exact one_letter_gauss_all_disc_seven l h5 g2 g3 ε hg.2.2.1 hg.2.2.2.1 hε hth σ hσ F hF s2 (hN σ hσ) N0 N1 C
-    _ _ hInt (DiscriminantSevenGaussModels.cc_phSum h5 g2 g3 s2 ε _) (InverseCommuting.sim_refl _)
 
-theorem one_letter_gauss_sharp_of_kappa_integral (hK : uniformGaussModelConditionReformulated) : OneLetterGaussSharpCM := by
-  intro dK L hsq hd4 hcm l _ h5 hd hin ι g2 g3 ε hg hε hth
-  obtain ⟨s2, hs2, hc2, hN⟩ :=
-    nrcmOfCM4 cm4 dK L hsq hd4 hcm l h5 hd hin ι g2 g3 ε hg hε hth
-  refine ⟨s2, hs2, hc2, ?_⟩
-  intro σ hσ F hF N0 N1 C Θ γ hγ hK1
-  have hInt := hK l h5 g2 g3 ε s2 hg.2.2.1 hg.2.2.2.1 hε hth σ hσ F hF (hN σ hσ) (Fin N0 × Fin N1) Θ γ hγ hK1
-  rw [DiscriminantSevenGaussModels.split h5 g2 g3 s2 ε (Fin N0 × Fin N1) Θ]
-  exact one_letter_gauss_all_disc_seven l h5 g2 g3 ε hg.2.2.1 hg.2.2.2.1 hε hth σ hσ F hF s2 (hN σ hσ) N0 N1 C
-    _ _ hInt (DiscriminantSevenGaussModels.cc_phSum h5 g2 g3 s2 ε _) (InverseCommuting.sim_refl _)
 
 theorem OneLetterGaussEveryOrth7_of (hS : OrthShapeOne) : OneLetterGaussEveryOrth7 := by
   intro dK L hsq hd4 hcm l _ h5 hd hin ι g2 g3 ε hg hε hth

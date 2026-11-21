@@ -45,40 +45,8 @@ def slice2 {X : Type} (E : (X → C) →ₗ[C] (X → C)) : (X × X → C) →�
     rw [h2, map_smul]
     rfl
 
-theorem slice2_tmul {X : Type} (E : (X → C) →ₗ[C] (X → C)) (g h : X → C) :
-    slice2 E (fun p => g p.1 * h p.2) = fun p => E g p.1 * E h p.2 := by
-  funext p
-  show E (fun a => E (fun b => g a * h b) p.2) p.1 = E g p.1 * E h p.2
-  have h1 : (fun a => E (fun b => g a * h b) p.2) = E h p.2 • g := by
-    funext a
-    rw [show (fun b => g a * h b) = g a • h from rfl, map_smul]
-    simp [mul_comm]
-  rw [h1, map_smul]
-  simp [mul_comm]
 
-theorem slice2_eq_self {X : Type} (E : (X → C) →ₗ[C] (X → C)) (W : Submodule C (X → C))
-    (hE : ∀ f ∈ W, E f = f) (F : X × X → C) (h1 : ∀ a, (fun b => F (a, b)) ∈ W)
-    (h2 : ∀ y, (fun a => F (a, y)) ∈ W) : slice2 E F = F := by
-  funext p
-  show E (fun a => E (fun b => F (a, b)) p.2) p.1 = F p
-  have h3 : (fun a => E (fun b => F (a, b)) p.2) = fun a => F (a, p.2) := by
-    funext a
-    rw [hE _ (h1 a)]
-  rw [h3, hE _ (h2 p.2)]
 
-theorem slice2_mem {X : Type} (E : (X → C) →ₗ[C] (X → C)) (M M' : Submodule R (X → C))
-    (hM : ∀ f ∈ M, E f ∈ M') {F : X × X → C} (hF : F ∈ tensorSpan R M) :
-    slice2 E F ∈ tensorSpan R M' := by
-  induction hF using Submodule.span_induction with
-  | mem F hF =>
-    obtain ⟨g, hg, h, hh, rfl⟩ := hF
-    rw [slice2_tmul]
-    exact Submodule.subset_span ⟨E g, hM g hg, E h, hM h hh, rfl⟩
-  | zero => rw [map_zero]; exact Submodule.zero_mem _
-  | add F G _ _ hF hG => rw [map_add]; exact Submodule.add_mem _ hF hG
-  | smul r F _ hF =>
-    rw [← algebraMap_smul C r F, map_smul, algebraMap_smul]
-    exact Submodule.smul_mem _ r hF
 
 theorem apply_eq_sum {X : Type} [Fintype X] [DecidableEq X] (E : (X → C) →ₗ[C] (X → C))
     (f : X → C) (y : X) :

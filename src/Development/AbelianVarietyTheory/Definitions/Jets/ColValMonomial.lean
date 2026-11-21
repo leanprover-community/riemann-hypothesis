@@ -124,49 +124,13 @@ theorem Pt1.Transl.mul {y : Pt1 E H V F} {q : ℕ} {c : 𝓞 E} {s h : Fam y.P.D
 section ColVal
 variable [Algebra V F] [CharZero F] (h : PS F 2 y.d) (q : ℕ) {Λ : Type} [Fintype Λ] (e : Λ → Fin y.d → F) {n : ℕ}
 
-theorem Pt1.colVal_monomial (mo : Λ × Fin n →₀ ℕ) (c : F) (f : Fin n → PS F 1 y.d) :
-    y.colVal h q e (MvPolynomial.monomial mo c) f =
-      c * ∏ b, (letI := H.starRing; y.B.nabVal F h H.w0 q (f b) e (MvPolynomial.monomial (colM mo b) 1)) := by
-  classical
-  unfold Pt1.colVal
-  by_cases hc : c = 0
-  · simp [hc]
-  · rw [MvPolynomial.support_monomial, if_neg hc, Finset.sum_singleton, MvPolynomial.coeff_monomial, if_pos rfl]
 
-theorem Pt1.colVal_zero (f : Fin n → PS F 1 y.d) : y.colVal h q e (0 : MvPolynomial (Λ × Fin n) F) f = 0 := by
-  simp [Pt1.colVal]
 
-theorem Pt1.colVal_add (P P' : MvPolynomial (Λ × Fin n) F) (f : Fin n → PS F 1 y.d) :
-    y.colVal h q e (P + P') f = y.colVal h q e P f + y.colVal h q e P' f := by
-  classical
-  unfold Pt1.colVal
-  have key : ∀ R : MvPolynomial (Λ × Fin n) F, R.support ⊆ P.support ∪ P'.support → ∀ g : (Λ × Fin n →₀ ℕ) → F,
-      ∑ mo ∈ R.support, R.coeff mo * g mo = ∑ mo ∈ P.support ∪ P'.support, R.coeff mo * g mo := fun R hR g =>
-    Finset.sum_subset hR fun mo _ hm => by rw [MvPolynomial.notMem_support_iff.1 hm, zero_mul]
-  rw [key _ MvPolynomial.support_add, key P Finset.subset_union_left, key P' Finset.subset_union_right,
-    ← Finset.sum_add_distrib]
-  exact Finset.sum_congr rfl fun mo _ => by rw [MvPolynomial.coeff_add, add_mul]
 
-theorem Pt1.colVal_smul (c : F) (P : MvPolynomial (Λ × Fin n) F) (f : Fin n → PS F 1 y.d) :
-    y.colVal h q e (c • P) f = c * y.colVal h q e P f := by
-  classical
-  unfold Pt1.colVal
-  rw [Finset.mul_sum, Finset.sum_subset (MvPolynomial.support_smul (a := c) (f := P))
-    fun mo _ hm => by rw [MvPolynomial.notMem_support_iff.1 hm, zero_mul]]
-  exact Finset.sum_congr rfl fun mo _ => by rw [MvPolynomial.coeff_smul, smul_eq_mul, _root_.mul_assoc]
 
-theorem Pt1.colVal_sum {I : Type} (S : Finset I) (c : I → F) (P : I → MvPolynomial (Λ × Fin n) F)
-    (f : Fin n → PS F 1 y.d) : y.colVal h q e (∑ i ∈ S, c i • P i) f = ∑ i ∈ S, c i * y.colVal h q e (P i) f := by
-  classical
-  induction S using Finset.induction_on with
-  | empty => simp [Pt1.colVal]
-  | insert i S hi ih => rw [Finset.sum_insert hi, Finset.sum_insert hi, y.colVal_add, y.colVal_smul, ih]
 
 end ColVal
 
-theorem minorMonomial_zero (k : Type) [CommRing k] {T : Type} [Fintype T] [DecidableEq T] {r : T → ℕ} {n : ℕ}
-    (col : ∀ τ, Fin (r τ) → Fin n) : minorsP k col (fun _ _ => 0) = 1 := by
-  simp [minorsP]
 
 example (k : Type) [CommRing k] {n : ℕ} (b : Fin n) (m : ℕ) :
     minorsP k (T := Unit) (r := fun _ => 1) (fun _ _ => b) (fun _ _ => m) = MvPolynomial.X (⟨(), 0⟩, b) ^ m := by

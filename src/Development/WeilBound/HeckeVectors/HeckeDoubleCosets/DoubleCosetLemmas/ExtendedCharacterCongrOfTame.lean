@@ -117,10 +117,6 @@ theorem bAA_one : bAA (1 : Matrix (Fin (r + c)) (Fin (r + c)) F) = 1 := by
 theorem bDD_one : bDD (1 : Matrix (Fin (r + c)) (Fin (r + c)) F) = 1 := by
   ext i j; simp [bDD, Matrix.one_apply]
 
-theorem blocks_pEl (m₁ : GL (Fin r) F) (B : Matrix (Fin r) (Fin c) F) (m₂ : GL (Fin c) F) :
-    bAA (pEl m₁ B m₂).1 = m₁.1 ∧ bAD (pEl m₁ B m₂).1 = B ∧ bDA (pEl m₁ B m₂).1 = 0 ∧
-      bDD (pEl m₁ B m₂).1 = m₂.1 := by
-  refine ⟨?_, ?_, ?_, ?_⟩ <;> ext i j <;> simp [pEl, bAA, bAD, bDA, bDD]
 
 end Blocks
 
@@ -167,9 +163,6 @@ theorem IsPar.v_det (hJ : IsPar v r c J) {k} (hk : k ∈ J) :
   · rw [e2, sub_add_cancel_right]
     exact (hs.mul_int fun i j => hi _ _).neg
 
-theorem lamD_blk (δ : (Cv v)ˣ →* ℂˣ) (m : GL (Fin c) (Cv v)) :
-    lamD v δ (blk v r m) = δ (GeneralLinearGroup.det m) := by
-  rw [lamD, blk, (blocks_pEl _ _ _).2.2.2, ← extendedCharacter_units]; rfl
 
 end CompanionTheory.D.Upq.DoubleCosetLemmas
 

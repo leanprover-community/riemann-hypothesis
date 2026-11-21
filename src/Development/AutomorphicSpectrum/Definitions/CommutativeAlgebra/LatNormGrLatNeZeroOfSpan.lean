@@ -314,19 +314,6 @@ theorem regAct_basis (k) :
       Algebra.TensorProduct.basis K (RingOfIntegers.basis E) k := by
   simp [regAct, Algebra.TensorProduct.basis_apply]
 
-theorem isFreeOn_reg :
-    IsFreeOn (A := A) (regAct K E)
-      (Submodule.span A (Set.range (Algebra.TensorProduct.basis K (RingOfIntegers.basis E))))
-      (fun _ : Fin 1 => 1) := by
-  refine ⟨?_, ?_, ?_⟩
-  · simp only [regAct_basis]
-    exact (Algebra.TensorProduct.basis K (RingOfIntegers.basis E)).linearIndependent.comp
-      (fun q : Fin 1 × _ => q.2) (fun p q h => Prod.ext (Subsingleton.elim _ _) h)
-  · rw [Submodule.span_span_of_tower, Basis.span_eq]
-  · simp only [regAct_basis]
-    congr 1
-    ext x
-    simp
 
 example (σ : E →+* K) : eigProj (regAct K E) σ 1 ≠ 0 := by
   intro h
@@ -346,28 +333,9 @@ theorem val_le_one (v : Valuation K NNReal) (σ : E →+* K) (x : 𝓞 E) : v (�
   (Valuation.integer.integers v).isIntegral_iff_v_le_one.1
     ((map_isIntegral_int σ (RingOfIntegers.isIntegral_coe x)).tower_top)
 
-theorem bddAbove_diff (v : Valuation K NNReal) (σ : E →+* K) :
-    BddAbove (Set.range fun x : differentIdeal ℤ (𝓞 E) => v (σ ((x : 𝓞 E) : E))) :=
-  ⟨1, by rintro _ ⟨x, rfl⟩; exact val_le_one v σ x⟩
 
-theorem le_diffAbs (v : Valuation K NNReal) (σ : E →+* K) {x : 𝓞 E}
-    (hx : x ∈ differentIdeal ℤ (𝓞 E)) : v (σ (x : E)) ≤ diffAbs v σ :=
-  le_ciSup (bddAbove_diff v σ) ⟨x, hx⟩
 
-theorem diffAbs_pos (v : Valuation K NNReal) (σ : E →+* K) : 0 < diffAbs v σ := by
-  obtain ⟨x, hx, hx0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot
-    (differentIdeal_ne_bot (A := ℤ) (B := 𝓞 E))
-  refine lt_of_lt_of_le ?_ (le_diffAbs v σ hx)
-  rw [pos_iff_ne_zero, Valuation.ne_zero_iff, map_ne_zero]
-  exact_mod_cast hx0
 
-theorem diffAbs_of_span (v : Valuation K NNReal) (σ : E →+* K) {δ : 𝓞 E}
-    (h : differentIdeal ℤ (𝓞 E) = Ideal.span {δ}) : diffAbs v σ = v (σ (δ : E)) := by
-  refine le_antisymm (ciSup_le fun x => ?_)
-    (le_diffAbs v σ (h ▸ Ideal.mem_span_singleton_self δ))
-  obtain ⟨y, hy⟩ := Ideal.mem_span_singleton'.1 (h.le x.2)
-  rw [← hy, RingOfIntegers.coe_eq_algebraMap, map_mul, map_mul, map_mul]
-  exact mul_le_of_le_one_left' (val_le_one v σ y)
 
 end Eigen
 

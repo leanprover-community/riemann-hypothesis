@@ -38,17 +38,7 @@ instance : Group (Heisenberg B) :=
 instance [TopologicalSpace F] [TopologicalSpace W] : TopologicalSpace (Heisenberg B) :=
   TopologicalSpace.induced (fun g => (g.vec, g.cen)) inferInstance
 
-theorem mul_eq_central_mul (h2 : (2 : F) ≠ 0) (hB : B.IsAlt) (g h : Heisenberg B) :
-    g * h = (⟨0, B g.vec h.vec⟩ : Heisenberg B) * (h * g) := by
-  ext
-  · simp [add_comm]
-  · simp [← hB.neg_eq g.vec h.vec]; field_simp; ring
 
-theorem mul_ne_mul (h2 : (2 : F) ≠ 0) (hB : B.IsAlt) {x y : W} (hxy : B x y ≠ 0) :
-    (⟨x, 0⟩ : Heisenberg B) * ⟨y, 0⟩ ≠ ⟨y, 0⟩ * ⟨x, 0⟩ := by
-  intro h
-  rw [mul_eq_central_mul h2 hB, mul_eq_right] at h
-  exact hxy (congrArg Heisenberg.cen h)
 
 def IsIrrSmoothOf [TopologicalSpace F] [TopologicalSpace W] (ψ : AddChar F ℂ) {S : Type} [AddCommGroup S] [Module ℂ S]
     (ρ : Representation ℂ (Heisenberg B) S) : Prop :=
@@ -718,19 +708,8 @@ def planeForm (F : Type) [Field F] : LinearMap.BilinForm F (F × F) :=
   LinearMap.mk₂ F (fun x y => x.1 * y.2 - x.2 * y.1) (fun _ _ _ => by simp; ring) (fun _ _ _ => by simp; ring)
     (fun _ _ _ => by simp; ring) (fun _ _ _ => by simp; ring)
 
-theorem planeForm_isAlt (F : Type) [Field F] : (planeForm F).IsAlt := fun x => by simp [planeForm, mul_comm]
 
-theorem planeForm_nondegenerate (F : Type) [Field F] : (planeForm F).Nondegenerate := by
-  constructor <;> intro x hx <;> have h1 := hx (1, 0) <;> have h2 := hx (0, 1) <;> simp [planeForm] at h1 h2 <;>
-    exact Prod.ext (by assumption) (by assumption)
 
-theorem plane_model (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] (h2 : (2 : F) ≠ 0) :
-    (∃ g k : Heisenberg (planeForm F), g * k ≠ k * g) ∧
-    ∃ ψ : AddChar F ℂ, Continuous ψ ∧ ψ ≠ 1 ∧ ∃ (S : Type) (_ : AddCommGroup S) (_ : Module ℂ S)
-      (ρ : Representation ℂ (Heisenberg (planeForm F)) S), Heisenberg.IsIrrSmoothOf ψ ρ := by
-  refine ⟨⟨_, _, Heisenberg.mul_ne_mul h2 (planeForm_isAlt F) (x := (1, 0)) (y := (0, 1)) (by simp [planeForm])⟩, ?_⟩
-  obtain ⟨ψ, h, h'⟩ := exists_char F
-  exact ⟨ψ, h, h', (StoneVonNeumann_holds F h2 (F × F) _ (planeForm_isAlt F) (planeForm_nondegenerate F) ψ h h').1⟩
 
 end SvN
 

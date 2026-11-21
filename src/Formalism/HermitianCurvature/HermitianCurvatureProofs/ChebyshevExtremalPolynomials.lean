@@ -227,119 +227,11 @@ lemma lead_complex {V : Type} [AddCommGroup V] [Module ℂ V] {d : ℕ} (y : Fin
   simp_rw [this]
   simp
 
-theorem leadBound : Formalism.FourierDecayAlt.F7.ChebLeadBound := by
-  intro V _ _ α β n a B hαβ hn hB
-  obtain ⟨hinj, hsum⟩ := sharp α β n hαβ hn
-  rw [lead_complex _ hinj a, ← hsum, sum_mul]
-  refine (norm_sum_le _ _).trans (sum_le_sum fun j _ => ?_)
-  rw [norm_smul, Complex.norm_real, Real.norm_eq_abs]
-  exact mul_le_mul_of_nonneg_left (hB j) (abs_nonneg _)
 
-lemma prod_abs_int (j k : ℕ) :
-    ∏ i ∈ range (j + 1 + k), (if i = j then (1:ℝ) else |(j:ℝ) - i|) = j.factorial * k.factorial := by
-  rw [prod_range_add, prod_range_succ, if_pos rfl, mul_one]
-  congr 1
-  · rw [← prod_range_reflect, ← prod_range_add_one_eq_factorial]
-    push_cast
-    refine prod_congr rfl fun i hi => ?_
-    have hi' : i < j := mem_range.mp hi
-    rw [if_neg (by omega)]
-    have : ((j - 1 - i : ℕ) : ℝ) = (j:ℝ) - 1 - i := by
-      rw [Nat.cast_sub (by omega), Nat.cast_sub (by omega)]; simp
-    rw [this, abs_of_nonneg (by ring_nf; positivity)]
-    ring
-  · rw [← prod_range_add_one_eq_factorial]
-    push_cast
-    refine prod_congr rfl fun i _ => ?_
-    rw [if_neg (by omega)]
-    rw [abs_sub_comm, abs_of_nonneg (by ring_nf; positivity)]
-    ring
 
-lemma abs_lagCo_nat (n : ℕ) (j : Fin (n + 1)) :
-    |lagCo (fun i : Fin (n + 1) => ((i:ℕ):ℝ)) j| =
-      ((j:ℕ).factorial * (n - (j:ℕ)).factorial : ℝ)⁻¹ := by
-  unfold lagCo
-  rw [prod_inv_distrib, abs_inv, abs_prod]
-  congr 1
-  have h1 : ∏ i ∈ univ.erase j, |(((j:ℕ):ℝ)) - ((i:ℕ):ℝ)| =
-      ∏ i : Fin (n + 1), (if (i:ℕ) = (j:ℕ) then (1:ℝ) else |((j:ℕ):ℝ) - ((i:ℕ):ℝ)|) := by
-    rw [← mul_prod_erase univ _ (mem_univ j), if_pos rfl, one_mul]
-    refine prod_congr rfl fun i hi => ?_
-    rw [if_neg (fun h => (mem_erase.mp hi).1 (Fin.ext h))]
-  rw [h1, Fin.prod_univ_eq_prod_range (fun i => if i = (j:ℕ) then (1:ℝ) else |((j:ℕ):ℝ) - (i:ℝ)|) (n + 1)]
-  have hj := j.isLt
-  have e : n + 1 = (j:ℕ) + 1 + (n - (j:ℕ)) := by omega
-  have h2 := prod_abs_int (j:ℕ) (n - (j:ℕ))
-  rw [← e] at h2
-  exact h2
 
-theorem equiCo : Formalism.FourierDecayAlt.F7.EquiCo := by
-  intro n y₀ h hh
-  have e : (fun i : Fin (n + 1) => y₀ + ((i:ℕ):ℝ) * h) =
-      fun i : Fin (n + 1) => y₀ + h * ((i:ℕ):ℝ) := by
-    funext i; ring
-  rw [e]
-  simp_rw [lagCo_affine, abs_mul, abs_lagCo_nat]
-  rw [← mul_sum, abs_of_nonneg (by positivity)]
-  have hs : ∑ j : Fin (n + 1), (((j:ℕ).factorial * (n - (j:ℕ)).factorial : ℝ))⁻¹ =
-      2 ^ n / (n.factorial : ℝ) := by
-    rw [Fin.sum_univ_eq_sum_range (fun j => ((j.factorial * (n - j).factorial : ℝ))⁻¹) (n + 1)]
-    have hf : (n.factorial : ℝ) ≠ 0 := by exact_mod_cast n.factorial_ne_zero
-    rw [eq_div_iff hf, sum_mul]
-    have := Nat.sum_range_choose n
-    have h2 : ((∑ m ∈ range (n + 1), n.choose m : ℕ) : ℝ) = 2 ^ n := by rw [this]; push_cast; rfl
-    rw [← h2]
-    push_cast
-    refine sum_congr rfl fun j hj => ?_
-    have hj' : j ≤ n := Nat.lt_succ_iff.mp (mem_range.mp hj)
-    have hc := Nat.choose_mul_factorial_mul_factorial hj'
-    have hc' : (n.choose j : ℝ) * j.factorial * (n - j).factorial = n.factorial := by exact_mod_cast hc
-    have h1 : (j.factorial : ℝ) ≠ 0 := by exact_mod_cast j.factorial_ne_zero
-    have h3 : ((n - j).factorial : ℝ) ≠ 0 := by exact_mod_cast (n - j).factorial_ne_zero
-    rw [← hc']; field_simp
-  rw [hs, div_pow, inv_pow]
-  ring
 
-theorem spacing : Formalism.FourierDecayAlt.F7.ChebSpacing := by
-  intro α β n hαβ hn j
-  have hnpos : (0:ℝ) < n := by exact_mod_cast hn
-  have h := Formalism.SA.P.node_sub_node_ge (n := n) (i := j) (k := j + 1) hn (Nat.lt_succ_self _) j.isLt
-  rw [chebPt_eq, chebPt_eq, abs_sub_comm]
-  simp only [Fin.val_succ, Fin.val_castSucc]
-  have e : ((((j:ℕ) + 1 : ℕ) : ℝ) - (j:ℕ)) = 1 := by push_cast; ring
-  rw [e] at h
-  have h2 : (β - α) / (n:ℝ) ^ 2 = (β - α) / 2 * (2 * 1 ^ 2 / (n:ℝ) ^ 2) := by ring
-  have h3 : (β - α) / 2 * (2 * 1 ^ 2 / (n:ℝ) ^ 2) ≤
-      (β - α) / 2 * (Chebyshev.node n j - Chebyshev.node n (j + 1)) :=
-    mul_le_mul_of_nonneg_left h (by linarith)
-  rw [h2]
-  refine h3.trans ((le_abs_self _).trans (le_of_eq ?_))
-  congr 1; ring
 
-theorem equiCoBound : Formalism.FourierDecayAlt.F7.EquiCoBound := by
-  intro n L hn hL
-  have hnpos : (0:ℝ) < n := by exact_mod_cast hn
-  have hLpos : 0 < L := lt_of_lt_of_le hnpos hL
-  have h1 : (1:ℝ) ≤ L / n := by rw [le_div_iff₀ hnpos]; linarith
-  have hfl : (1:ℤ) ≤ ⌊L / (n:ℝ)⌋ := Int.le_floor.mpr (by exact_mod_cast h1)
-  set h : ℝ := ((⌊L / (n:ℝ)⌋ : ℤ) : ℝ) with hh
-  have hh1 : (1:ℝ) ≤ h := by rw [hh]; exact_mod_cast hfl
-  have hlt : L / n < h + 1 := Int.lt_floor_add_one _
-  have hpos : 0 < h := by linarith
-  have h2 : 2 / h ≤ 4 * n / L := by
-    rw [div_le_div_iff₀ hpos hLpos]
-    have : L < (h + 1) * n := by rwa [div_lt_iff₀ hnpos] at hlt
-    nlinarith
-  have h3 : (2 / h) ^ n ≤ (4 * n / L) ^ n := pow_le_pow_left₀ (by positivity) h2 n
-  have hf : (0:ℝ) < n.factorial := by exact_mod_cast n.factorial_pos
-  calc (2 / h) ^ n / (n.factorial : ℝ) ≤ (4 * n / L) ^ n / (n.factorial : ℝ) := by gcongr
-    _ = (4 / L) ^ n * ((n:ℝ) ^ n / n.factorial) := by
-        rw [show 4 * (n:ℝ) / L = 4 / L * n by ring, mul_pow]; ring
-    _ ≤ (4 / L) ^ n * Real.exp n := by
-        gcongr
-        exact Real.pow_div_factorial_le_exp _ hnpos.le n
-    _ = (4 * Real.exp 1 / L) ^ n := by
-        rw [show 4 * Real.exp 1 / L = 4 / L * Real.exp 1 by ring, mul_pow, ← Real.exp_nat_mul, mul_one]
 
 theorem attained : Formalism.FourierDecayAlt.F7.ChebAttained := by
   intro α β n hαβ hn
@@ -388,16 +280,10 @@ namespace Formalism.FourierDecayAlt.P
 
 theorem chebyshev_bound_sharp : Formalism.FourierDecayAlt.F7.ChebSharp := ChebyshevExtremalPolynomials.sharp
 
-theorem chebyshev_coeff_value : Formalism.FourierDecayAlt.F7.ChebCoValue := ChebyshevExtremalPolynomials.coValue
 
-theorem chebyshev_bound_attained : Formalism.FourierDecayAlt.F7.ChebAttained := ChebyshevExtremalPolynomials.attained
 
-theorem chebyshev_leading_coeff_bound : Formalism.FourierDecayAlt.F7.ChebLeadBound := ChebyshevExtremalPolynomials.leadBound
 
-theorem chebyshevNodeSpacing_true : Formalism.FourierDecayAlt.F7.ChebSpacing := ChebyshevExtremalPolynomials.spacing
 
-theorem equioscillation_coeff : Formalism.FourierDecayAlt.F7.EquiCo := ChebyshevExtremalPolynomials.equiCo
 
-theorem equioscillation_coeff_bound : Formalism.FourierDecayAlt.F7.EquiCoBound := ChebyshevExtremalPolynomials.equiCoBound
 
 end Formalism.FourierDecayAlt.P

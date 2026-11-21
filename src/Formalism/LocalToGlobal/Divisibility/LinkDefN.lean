@@ -21,13 +21,6 @@ theorem zero_le_logWeight (w : D.what₂.places.Pl) : 0 ≤ SizeData₂.lwP w :=
   unfold SizeData₂.lwP Formalism.BasicNotions.lw
   exact div_nonneg (Real.log_natCast_nonneg _) (Nat.cast_nonneg _)
 
-theorem Nc_nonneg_rec (L : SizeData₂ D) : 0 ≤ L.Nc := by
-  have hx : 0 < L.sc.x := lt_trans one_pos L.sc.one_lt_alt
-  have h1 := Real.rpow_pos_of_pos hx L.sc.eps
-  have h2 := Real.rpow_pos_of_pos hx (-L.sc.eps)
-  unfold SizeData₂.Nc budgetNc rankBudget bSize
-  refine div_nonneg ?_ (mul_nonneg (Nat.cast_nonneg _) (mul_nonneg (Nat.cast_nonneg _) h2.le))
-  exact mul_nonneg (mul_nonneg (mul_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)) (Real.exp_pos _).le) h1.le
 
 def rowSize (L : SizeData₂ D) (C : ℝ) : ℝ := (C + 1) * L.sc.x ^ L.sc.eps * (L.B0 + L.Nc)
 
@@ -56,23 +49,7 @@ def RowCountEqDimension : Prop := D.what₂.D0 = (F.R F.μ0).dZ (F.lvl P ψ) (Zs
 
 end Ties
 
-theorem log_sq_le_rpow_eventually {e : ℝ} (he : 0 < e) : ∃ X : ℝ, ∀ x ≥ X, Real.log x ^ 2 ≤ x ^ e := by
-  have h := (isLittleO_log_rpow_atTop (half_pos he)).bound one_pos
-  obtain ⟨X, hX⟩ := Filter.eventually_atTop.1 h
-  refine ⟨max X 1, fun x hx => ?_⟩
-  have hx1 : 1 ≤ x := le_trans (le_max_right _ _) hx
-  have h1 := hX x (le_trans (le_max_left _ _) hx)
-  rw [one_mul, Real.norm_eq_abs, Real.norm_eq_abs] at h1
-  have hl : 0 ≤ Real.log x := Real.log_nonneg hx1
-  have hp : 0 ≤ x ^ (e / 2) := Real.rpow_nonneg (by linarith) _
-  rw [abs_of_nonneg hl, abs_of_nonneg hp] at h1
-  calc Real.log x ^ 2 ≤ (x ^ (e / 2)) ^ 2 := pow_le_pow_left₀ hl h1 2
-    _ = x ^ e := by
-      rw [← Real.rpow_natCast, ← Real.rpow_mul (by linarith)]
-      norm_num
 
-theorem subspace_rank_at_of_family {eps : ℝ} (Fm : FamP eps) (h : SmallLevelRankEq Fm) :
-    ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, SubspaceRankAt (Fm.L x i) := h
 
 section Inputs
 
@@ -155,8 +132,6 @@ def DivInputsDefN.toDef (I : DivInputsDefN A s P0 ψ0 P1 ψ1 Dc Sp Zsc C CH Pk R
     DivInputsDef A s P0 ψ0 P1 ψ1 Dc Sp Zsc C CH Pk R u Nu sg :=
   { I with bd := bd, hN := hN }
 
-theorem DivInputsDefN.toDef_bd (I : DivInputsDefN A s P0 ψ0 P1 ψ1 Dc Sp Zsc C CH Pk R u Nu sg bd)
-    (hN : InEta A.fam P0 ψ0 Pk.Zs Pk.core.base.μ Pk.core.base.Tw bd) : (I.toDef hN).bd = bd := rfl
 
 end Inputs
 

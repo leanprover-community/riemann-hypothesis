@@ -53,19 +53,6 @@ theorem etaExpr_comp {S : Type} [CommRing S] (k : ℕ) {J : Type} [Fintype J] {n
     etaExpr k cf x (fun q => w (h q)) = etaExpr k cf x w :=
   finprod_comp_equiv (Equiv.mulLeft h) (f := fun g : LevGrp Dw k => ∑ j, (cf j : S) * ∏ b, w (g (x j b)))
 
-theorem etaExpr_smul {S : Type} [CommRing S] {k : ℕ} (hk : k ≠ 0) {J : Type} [Fintype J] {n : ℕ} (cf : J → ℤ)
-    (x : J → Fin n → LatMod Dw k) (w : LatMod Dw k → S) (t : S) :
-    etaExpr k cf x (fun q => t * w q) = t ^ (n * Nat.card (LevGrp Dw k)) * etaExpr k cf x w := by
-  haveI := finite_levGrp (Dw := Dw) hk
-  haveI := Fintype.ofFinite (LevGrp Dw k)
-  unfold etaExpr
-  rw [finprod_eq_prod_of_fintype, finprod_eq_prod_of_fintype, Nat.card_eq_fintype_card, pow_mul,
-    ← Finset.card_univ, ← Finset.prod_const, ← Finset.prod_mul_distrib]
-  refine Finset.prod_congr rfl fun g _ => ?_
-  rw [Finset.mul_sum]
-  refine Finset.sum_congr rfl fun j _ => ?_
-  rw [Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ, Fintype.card_fin]
-  ring
 
 variable (Xo : Moduli Dw l) (c : Coeff l)
 
@@ -181,33 +168,6 @@ theorem exists_cover (hL : Laws) {R : ℕ} (hR : Odd R) {S : Type} [CommRing S] 
   choose w hw using this
   exact ⟨B, inferInstance, inferInstance, φ, _, _, w, hψ, hy', hev, hw⟩
 
-theorem isEtaRule_zero_columns (hL : Laws) {R : ℕ} (hR : Odd R) {J : Type} [Fintype J] (cf : J → ℤ)
-    (x : J → Fin 0 → LatMod Dw (R ^ 4)) :
-    IsEtaRule Xo c R cf x fun p _ => ((∑ j, cf j : ℤ) : p.R) ^ Nat.card (LevGrp Dw (R ^ 4)) := by
-  intro p y
-  obtain ⟨S', _, _, φ, y', ev, w, h1, h2, h3, h4⟩ := exists_cover Xo c hL hR y
-  refine ⟨S', _, _, φ, y', ev, w, h1, h2, h3, h4, ?_⟩
-  haveI := finite_levGrp (Dw := Dw) (pow_pos hR.pos 4).ne'
-  haveI := Fintype.ofFinite (LevGrp Dw (R ^ 4))
-  unfold etaExpr
-  rw [finprod_eq_prod_of_fintype, Nat.card_eq_fintype_card]
-  simp
 
-theorem exists_isEtaRule_one (hL : Laws) {J : Type} [Fintype J] {n : ℕ} (cf : J → ℤ)
-    (x : J → Fin n → LatMod Dw (1 ^ 4)) : ∃ f, IsEtaRule Xo c 1 cf x f := by
-  have hs : ∀ a b : LatMod Dw (1 ^ 4), a = b := fun a b => by
-    obtain ⟨a, rfl⟩ := Submodule.Quotient.mk_surjective _ a
-    obtain ⟨b, rfl⟩ := Submodule.Quotient.mk_surjective _ b
-    exact (Submodule.Quotient.eq _).2 ((mem_iff _ _).2 ⟨a - b, by simp⟩)
-  have : ∀ (p : TRing c.F) (y : FrPt Xo c p.R), ∃ v, EtaValAt Xo c 1 cf x y v := fun p y => by
-    obtain ⟨w, hw⟩ := exists_isNullVal Xo c hL (N := 1 ^ 2) odd_one.pow y 1 (one_pow _)
-    exact ⟨_, p.R, inferInstance, inferInstance, AlgHom.id _ _, y, fun _ => 1, fun _ => w,
-      RingHom.FaithfullyFlat.of_bijective Function.bijective_id,
-      (GlobalTheory.framedPoint_baseChange_laws E H Dw l Xo c).1 _ y,
-      ⟨fun _ _ => (_root_.one_mul _).symm, fun o _ => by
-        haveI := Xo.univ.t.act.hom o
-        exact (MonObj.one_comp _).symm, fun _ _ _ a b _ => hs a b⟩, fun _ => hw, rfl⟩
-  choose f hf using this
-  exact ⟨f, hf⟩
 
 end GlobalTheory.EtaForm.Model

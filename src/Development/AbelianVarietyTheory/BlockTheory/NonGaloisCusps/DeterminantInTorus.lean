@@ -60,8 +60,6 @@ def RxDetInTF {eps : ℝ} (Fm : FamP eps) : Prop :=
 def RxDetInT (C : FamClass) : Prop :=
   Closed C (fun Fm _ => RxDetInTF Fm)
 
-theorem isRx_iff (D : D7) (i : D.nd.Loc) (r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i))) :
-    (∀ x, IsRx D i x (r x)) ↔ GoodR D.nd i r := Iff.rfl
 
 end GlobalTheory.IndefiniteRowSideFullHecke.DeterminantInTorus
 

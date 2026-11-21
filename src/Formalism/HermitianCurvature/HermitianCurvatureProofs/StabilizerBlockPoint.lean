@@ -177,11 +177,7 @@ theorem upper_mul_inv {d : ℕ} {u : Matrix (Fin d) (Fin d) ℂ} (hu : IsUpperUn
 theorem upper_inv_mul {d : ℕ} {u : Matrix (Fin d) (Fin d) ℂ} (hu : IsUpperUni u) : u⁻¹ * u = 1 :=
   Matrix.nonsing_inv_mul u (by rw [upperUni_det hu]; exact isUnit_one)
 
-theorem lower_mul_inv {d : ℕ} {l : Matrix (Fin d) (Fin d) ℂ} (hl : IsLowerUni l) : l * l⁻¹ = 1 :=
-  Matrix.mul_nonsing_inv l (by rw [lowerUni_det hl]; exact isUnit_one)
 
-theorem lower_inv_mul {d : ℕ} {l : Matrix (Fin d) (Fin d) ℂ} (hl : IsLowerUni l) : l⁻¹ * l = 1 :=
-  Matrix.nonsing_inv_mul l (by rw [lowerUni_det hl]; exact isUnit_one)
 
 theorem upperUni_inv {d : ℕ} {u : Matrix (Fin d) (Fin d) ℂ} (hu : IsUpperUni u) : IsUpperUni u⁻¹ := by
   have h : u.BlockTriangular id := fun i j hij => hu.2 i j hij
@@ -210,11 +206,6 @@ theorem upper_coordU {d : ℕ} {u : Matrix (Fin d) (Fin d) ℂ} (hu : IsUpperUni
   · subst h; simp [upper, strictUpper, hu.1]
   · simp [upper, strictUpper, h.ne', not_lt.2 h.le, hu.2 _ _ h]
 
-theorem upper_injective {d : ℕ} {v v' : UT d → ℂ} (h : upper v = upper v') : v = v' := by
-  ext ⟨⟨i, j⟩, hij⟩
-  have hij' : i < j := hij
-  have := congrFun (congrFun h i) j
-  simpa [upper, strictUpper, hij', hij'.ne] using this
 
 theorem w_mul_apply {d : ℕ} (M : Matrix (Fin d) (Fin d) ℂ) (i j : Fin d) :
     (wMat d * M) i j = M i.rev j := by
@@ -331,11 +322,6 @@ theorem stab_smul {d : ℕ} {z : ℂ} (hz : z ≠ 0) (l u : Matrix (Fin d) (Fin 
   rw [Matrix.mul_smul, Matrix.smul_mul]
   exact (smul_right_injective _ hz).eq_iff
 
-theorem stab_exists {d : ℕ} {l : Matrix (Fin d) (Fin d) ℂ} (hl : IsLowerUni l) :
-    l⁻¹ * wMat d * (wMat d * l * wMat d) = wMat d := by
-  calc l⁻¹ * wMat d * (wMat d * l * wMat d) = l⁻¹ * ((wMat d * wMat d) * l) * wMat d := by
-          simp only [Matrix.mul_assoc]
-    _ = wMat d := by rw [w_mul_w, Matrix.one_mul, lower_inv_mul hl, Matrix.one_mul]
 
 theorem block_prod {n : ℕ} (t c : ℂ) (l' u' : Matrix (Fin n) (Fin n) ℂ) (α β : Fin n → ℂ) :
     blk l' 0 α 1 * ptBlock n t c * blk u' β 0 1 =
@@ -345,15 +331,7 @@ theorem block_prod {n : ℕ} (t c : ℂ) (l' u' : Matrix (Fin n) (Fin n) ℂ) (�
   rw [blk_mul, blk_mul, blk_inj]
   exact ⟨by simp, by simp, by simp [Matrix.vecMul_vecMul], by simp⟩
 
-theorem blk_mul_diag_right {n : ℕ} (A K : Matrix (Fin n) (Fin n) ℂ) (a : Fin n → ℂ) :
-    blk A 0 a 1 * blk K 0 0 1 = blk (A * K) 0 (a ᵥ* K) 1 := by
-  rw [blk_mul, blk_inj]
-  exact ⟨by simp, by simp, by simp, by simp⟩
 
-theorem blk_mul_diag_left {n : ℕ} (A K : Matrix (Fin n) (Fin n) ℂ) (b : Fin n → ℂ) :
-    blk K 0 0 1 * blk A b 0 1 = blk (K * A) (K *ᵥ b) 0 1 := by
-  rw [blk_mul, blk_inj]
-  exact ⟨by simp, by simp, by simp, by simp⟩
 
 theorem char_blk : ∀ {n : ℕ} {k : Matrix (Fin n) (Fin n) ℂ}, IsUpperUni k →
     subSum (blk (wMat n * k⁻¹ * wMat n) 0 0 1) + superSum (blk k 0 0 1) = 0
@@ -368,28 +346,7 @@ namespace Formalism.FourierDecayAlt.P
 
 open G4
 
-theorem stabilizer_long_point : Formalism.FourierDecayAlt.G.StabLong := by
-  intro n z hz l u _ hu
-  have h1 : l * ptLong (n + 1) z * u = ptLong (n + 1) z ↔ l = wMat (n + 1) * u⁻¹ * wMat (n + 1) := by
-    unfold ptLong
-    rw [stab_smul hz, stab_core hu]
-  refine ⟨h1, fun h => ?_⟩
-  rw [h1.1 h, subSum_conj, superSum_inv hu]
 
-theorem section_at_long_point : Formalism.FourierDecayAlt.G.SectionLong := by
-  intro n z hz l u hl hu
-  have hk' := upperUni_conj hl
-  refine ⟨coordU (wMat (n + 1) * l * wMat (n + 1) * u),
-    ⟨l⁻¹, wMat (n + 1) * l * wMat (n + 1), lowerUni_inv hl, hk', ?_, lower_mul_inv hl, ?_⟩, ?_⟩
-  · unfold ptLong
-    rw [stab_smul hz]
-    exact stab_exists hl
-  · exact (upper_coordU (upperUni_mul hk' hu)).symm
-  · rintro v ⟨k, k', _, _, h3, h4, h5⟩
-    unfold ptLong at h3
-    rw [stab_smul hz] at h3
-    apply upper_injective
-    rw [← h5, stab_right h4 h3, upper_coordU (upperUni_mul hk' hu)]
 
 theorem stabilizer_block_point : Formalism.FourierDecayAlt.G.StabBlock := by
   intro n t c ht l u hl hu
@@ -426,41 +383,5 @@ theorem stabilizer_block_point : Formalism.FourierDecayAlt.G.StabBlock := by
   obtain ⟨k, hk, rfl, rfl⟩ := h1.1 h
   exact char_blk hk
 
-theorem section_at_block_point : Formalism.FourierDecayAlt.G.SectionBlock := by
-  intro n t c ht l u hl hu
-  obtain ⟨l', α, hl', rfl⟩ := exists_blk_lower hl
-  obtain ⟨u', β, hu', rfl⟩ := exists_blk_upper hu
-  have hk0 := upperUni_conj hl'
-  refine ⟨(α ᵥ* l'⁻¹, coordU (wMat n * l' * wMat n * u'), (wMat n * l' * wMat n) *ᵥ β),
-    ⟨blk l'⁻¹ 0 0 1, blk (wMat n * l' * wMat n) 0 0 1, ?_, ?_, ?_, ?_, ?_⟩, ?_⟩
-  · exact (lowerUni_blk_iff _ _ _ _).2 ⟨lowerUni_inv hl', rfl, rfl⟩
-  · exact (upperUni_blk_iff _ _ _ _).2 ⟨hk0, rfl, rfl⟩
-  · rw [block_prod]
-    unfold ptBlock
-    rw [blk_inj]
-    exact ⟨(stab_smul ht _ _).2 (stab_exists hl'), by simp, by simp, by simp⟩
-  · rw [blk_mul_diag_right, lower_mul_inv hl']
-    rfl
-  · rw [blk_mul_diag_left]
-    dsimp only
-    rw [upper_coordU (upperUni_mul hk0 hu')]
-  · rintro ⟨a, v, b⟩ ⟨k, k', hk, hk', h3, h4, h5⟩
-    obtain ⟨κ, hκ, rfl, rfl⟩ := ((stabilizer_block_point n t c ht k k' hk hk').1).1 h3
-    dsimp only at h4 h5
-    unfold lowRow at h4
-    rw [blk_mul_diag_right, blk_inj] at h4
-    rw [blk_mul_diag_left, blk_inj] at h5
-    obtain ⟨h41, _, h43, _⟩ := h4
-    obtain ⟨h51, h52, _, _⟩ := h5
-    have hκ0 : κ = wMat n * l' * wMat n := stab_right h41 ((stab_core hκ).2 rfl)
-    have hinv : l'⁻¹ = wMat n * κ⁻¹ * wMat n := Matrix.inv_eq_right_inv h41
-    refine Prod.ext ?_ (Prod.ext ?_ ?_)
-    · show a = α ᵥ* l'⁻¹
-      rw [hinv, h43]
-    · show v = coordU (wMat n * l' * wMat n * u')
-      apply upper_injective
-      rw [upper_coordU (upperUni_mul hk0 hu'), ← h51, hκ0]
-    · show b = (wMat n * l' * wMat n) *ᵥ β
-      rw [← h52, hκ0]
 
 end Formalism.FourierDecayAlt.P

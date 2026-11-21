@@ -298,18 +298,6 @@ theorem act_sm (g : V →ₗ[A] V) (u : P →ₗ[Q] P) (hu : ∀ (k : F) b, u (k
   | add x y hx hy => simp only [map_add, hx, hy]
   | tmul v b => simp only [sm_tmul, AlgebraTensorModule.map_tmul, map_smul, hu]
 
-theorem sm_mem_range (Φ : Submodule Q P) (hΦ : ∀ (k : F), ∀ b ∈ Φ, k • b ∈ Φ) (c : A ⊗[Q] F) {y : V ⊗[Q] P}
-    (hy : y ∈ LinearMap.range (AlgebraTensorModule.map (LinearMap.id : V →ₗ[A] V) Φ.subtype)) :
-    sm V P c y ∈ LinearMap.range (AlgebraTensorModule.map (LinearMap.id : V →ₗ[A] V) Φ.subtype) := by
-  obtain ⟨y, rfl⟩ := hy
-  induction c using TensorProduct.induction_on with
-  | zero => simp
-  | add x y hx hy => rw [map_add, LinearMap.add_apply]; exact Submodule.add_mem _ hx hy
-  | tmul a k =>
-  induction y using TensorProduct.induction_on with
-  | zero => simp
-  | add x y hx hy => rw [map_add, map_add]; exact Submodule.add_mem _ hx hy
-  | tmul v b => exact ⟨(a • v) ⊗ₜ ⟨k • b.1, hΦ k _ b.2⟩, by simp [sm_tmul]⟩
 
 noncomputable def par (F : Type) [Field F] [Algebra Q F] [Algebra F P] [IsScalarTower Q F P] {ι : Type} [Fintype ι]
     (x : ι → V ⊗[Q] P) : (ι → A ⊗[Q] F) →ₗ[A] V ⊗[Q] P where
@@ -320,16 +308,6 @@ noncomputable def par (F : Type) [Field F] [Algebra Q F] [Algebra F P] [IsScalar
 variable {A' V' : Type} [CommRing A'] [Algebra Q A'] [AddCommGroup V'] [Module A' V'] [Module Q V']
   [IsScalarTower Q A' V']
 
-theorem rTensor_sm (q : A →ₗ[Q] A') (p : V →ₗ[Q] V') (hp : ∀ a v, p (a • v) = q a • p v) (c : A ⊗[Q] F)
-    (y : V ⊗[Q] P) : p.rTensor P (sm V P c y) = sm V' P (q.rTensor F c) (p.rTensor P y) := by
-  induction c using TensorProduct.induction_on with
-  | zero => simp
-  | add x y hx hy => simp only [map_add, LinearMap.add_apply, hx, hy]
-  | tmul a k =>
-  induction y using TensorProduct.induction_on with
-  | zero => simp
-  | add x y hx hy => simp only [map_add, hx, hy]
-  | tmul v b => simp only [sm_tmul, LinearMap.rTensor_tmul, hp]
 
 omit [Algebra Q P] in
 theorem rTensor_act [Module Q P] (p : V →ₗ[Q] V') (g : V →ₗ[A] V) (g' : V' →ₗ[A'] V')
@@ -340,15 +318,6 @@ theorem rTensor_act [Module Q P] (p : V →ₗ[Q] V') (g : V →ₗ[A] V) (g' : 
   | add x y hx hy => simp only [map_add, hx, hy]
   | tmul v b => simp only [AlgebraTensorModule.map_tmul, LinearMap.rTensor_tmul, hp]
 
-theorem rTensor_mem_range (p : V →ₗ[Q] V') (Φ : Submodule Q P) {y : V ⊗[Q] P}
-    (hy : y ∈ LinearMap.range (AlgebraTensorModule.map (LinearMap.id : V →ₗ[A] V) Φ.subtype)) :
-    p.rTensor P y ∈ LinearMap.range (AlgebraTensorModule.map (LinearMap.id : V' →ₗ[A'] V') Φ.subtype) := by
-  obtain ⟨y, rfl⟩ := hy
-  refine ⟨p.rTensor _ y, ?_⟩
-  induction y using TensorProduct.induction_on with
-  | zero => simp
-  | add x y hx hy => simp only [map_add, hx, hy]
-  | tmul v b => simp
 
 end Sm
 

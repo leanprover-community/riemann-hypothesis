@@ -195,36 +195,8 @@ section Inhabitants
 
 abbrev ProjLineSquareBlocks : Fin 2 → Type := fun _ => Fin 2
 
-theorem isArithVar_bot_sq : IsArithVar (⊥ : Ideal (MRing ProjLineSquareBlocks)) 3 := by
-  refine ⟨⟨0⟩, ⟨Ideal.isPrime_bot, ⟨∅, by simp, by simp⟩, fun _ => ⟨0, ?_⟩⟩, ?_, ?_⟩
-  · rw [Ideal.mem_bot]
-    exact X_ne_zero _
-  · exact Ideal.comap_bot_of_injective _ (C_injective _ _)
-  · rw [ringKrullDim_eq_of_ringEquiv (RingEquiv.quotientBot _),
-      MvPolynomial.ringKrullDim_of_isNoetherianRing,
-      IsPrincipalIdealRing.ringKrullDim_eq_one ℤ Int.not_isField]
-    simp [Nat.card_eq_fintype_card]
-    rfl
 
-theorem imageZ_blkV_bot : imageZ (blkV (Fin 2) 0) (⊥ : Ideal (MRing ProjLineSquareBlocks)) = ⊥ :=
-  Ideal.comap_bot_of_injective _ (rename_injective _ (isBlockMap_blkV (Fin 2) 0).2.1)
 
-theorem projPoint_pushforward_hypotheses :
-    IsBlockMap (blkOf 0) (blkV (Fin 2) 0) ∧ IsArithVar (⊥ : Ideal (MRing ProjLineSquareBlocks)) 3 ∧
-    IsArithVar (⊥ : Ideal (MRing (GlobalTheory 2))) 2 ∧
-    (⊥ : Ideal (MRing (GlobalTheory 2))) ≤ imageZ (blkV (Fin 2) 0) (⊥ : Ideal (MRing ProjLineSquareBlocks)) ∧
-    ringKrullDim (MRing (GlobalTheory 2) ⧸ imageZ (blkV (Fin 2) 0) (⊥ : Ideal (MRing ProjLineSquareBlocks))) <
-      ((3 + Fintype.card Unit : ℕ) : WithBot ℕ∞) ∧
-    AllSmooth (fun _ : Fin 3 => fsO1 2) ∧
-    ∀ _ : Fin 3, IsPullHerm (blkOf 0) (blkV (Fin 2) 0) (fsO1 2)
-      (pullHerm (isBlockMap_blkV (Fin 2) 0) (fsO1 2)) := by
-  refine ⟨isBlockMap_blkV (Fin 2) 0, isArithVar_bot_sq, isArithVar_bot 1, bot_le, ?_,
-    fun _ => isSmoothHerm_fubiniStudyO1 2, fun _ => isPullHerm_pullHerm _ _⟩
-  rw [imageZ_blkV_bot, ringKrullDim_eq_of_ringEquiv (RingEquiv.quotientBot _),
-    MvPolynomial.ringKrullDim_of_isNoetherianRing,
-    IsPrincipalIdealRing.ringKrullDim_eq_one ℤ Int.not_isField]
-  simp [Nat.card_eq_fintype_card]
-  decide
 
 theorem aeval_algebraMap_X {Φ : Type} [Field Φ] [Algebra (MRing (GlobalTheory 2)) Φ] (f : MRing (GlobalTheory 2)) :
     aeval (R := ℤ) (fun p => algebraMap (MRing (GlobalTheory 2)) Φ (X p)) f = algebraMap (MRing (GlobalTheory 2)) Φ f := by
@@ -267,13 +239,6 @@ def genFibreId : GenFibre (ι := GlobalTheory 2) (ι' := GlobalTheory 2) id ⊥ 
 
 def chartId : ∀ k : FibreBlock (id : Unit → Unit), fibreIdx (GlobalTheory 2) id k := fun k => (k.2 ⟨k.1, rfl⟩).elim
 
-theorem pfAI3_hyps :
-    IsBlockMap (ι := GlobalTheory 2) (ι' := GlobalTheory 2) id id ∧ IsArithVar (⊥ : Ideal (MRing (GlobalTheory 2))) 2 ∧
-    imageZ (ι := GlobalTheory 2) (ι' := GlobalTheory 2) id ⊥ = ⊥ ∧ IsChart (fibreIdeal id genFibreId) chartId ∧
-    AllSmooth ![fsO1 2, fsO1 2] ∧
-    ∀ j, IsPullHerm id id (![fsO1 2, fsO1 2] j) (pullHerm isBlockMap_id (![fsO1 2, fsO1 2] j)) :=
-  ⟨isBlockMap_id, isArithVar_bot 1, imageZ_id_bot, fun k => (k.2 ⟨k.1, rfl⟩).elim,
-    fun j => by fin_cases j <;> exact isSmoothHerm_fubiniStudyO1 2, fun _ => isPullHerm_pullHerm _ _⟩
 
 def noRows (n : ℕ) : Fin 0 → Fin n → MRing (GlobalTheory 2) := fun a => a.elim0
 
@@ -284,44 +249,14 @@ theorem isQuotRows_noRows (n : ℕ) : IsQuotRows (⊥ : Ideal (MRing (GlobalTheo
   refine ⟨fun a => a.elim0, fun F _ x _ => ?_⟩
   rw [Subsingleton.elim (Matrix.of fun a j => evalAt x (noRows n a j)) 0, Matrix.rank_zero, zero_add]
 
-theorem isKerBasis_idRows (n : ℕ) : IsKerBasis (⊥ : Ideal (MRing (GlobalTheory 2))) (noRows n) (idRows n) := by
-  refine ⟨(Pi.basisFun _ _).linearIndependent, ?_⟩
-  rw [idRows, (Pi.basisFun _ _).span_eq]
-  symm
-  rw [LinearMap.ker_eq_top]
-  exact LinearMap.ext fun _ => Subsingleton.elim _ _
 
 def fibreFubiniStudyO1 : HermLine (PBlk (GlobalTheory 2) 2) := HermLine.sqMetric (Sum.elim (fun _ => 0) fun _ => 1)
 
-theorem projLineRankTwo_pushforward_hypotheses :
-    IsArithVar (⊥ : Ideal (MRing (GlobalTheory 2))) 2 ∧ IsQuotRows (⊥ : Ideal (MRing (GlobalTheory 2))) (noRows 2) 0 2 ∧
-    IsKerBasis (⊥ : Ideal (MRing (GlobalTheory 2))) (noRows 2) (idRows 2) ∧ AllSmooth ![fsO1 2, fsO1 2] ∧
-    (∀ j, IsPullHerm Sum.inl (inlV (ι := GlobalTheory 2) (ι₂ := fun _ : Unit => Fin 2)) (![fsO1 2, fsO1 2] j)
-      (pullHerm isBlockMap_inl (![fsO1 2, fsO1 2] j))) ∧
-    IsSmoothHerm fibreFubiniStudyO1 ∧ fibreFubiniStudyO1.a (Sum.inr ()) = 1 :=
-  ⟨isArithVar_bot 1, isQuotRows_noRows 2, isKerBasis_idRows 2,
-    fun j => by fin_cases j <;> exact isSmoothHerm_fubiniStudyO1 2, fun _ => isPullHerm_pullHerm _ _,
-    isSmoothHerm_sqMetric _, rfl⟩
 
 def pluckerFubiniStudyO1 : HermLine (FlagBundleBlocks (GlobalTheory 2) 3 3) := HermLine.sqMetric (Sum.elim (fun _ => 0) fun _ => 1)
 
-theorem projLineFlag_pushforward_hypotheses :
-    flagDim 3 = 3 ∧
-    IsArithVar (⊥ : Ideal (MRing (GlobalTheory 2))) 2 ∧ IsQuotRows (⊥ : Ideal (MRing (GlobalTheory 2))) (noRows 3) 0 3 ∧
-    IsKerBasis (⊥ : Ideal (MRing (GlobalTheory 2))) (noRows 3) (idRows 3) ∧ AllSmooth ![fsO1 2, fsO1 2] ∧
-    (∀ j, IsPullHerm Sum.inl (inlV (ι := GlobalTheory 2) (ι₂ := PluckerBlocks 3 3)) (![fsO1 2, fsO1 2] j)
-      (pullHerm isBlockMap_inl (![fsO1 2, fsO1 2] j))) ∧
-    AllSmooth (fun _ : Fin (flagDim 3) => pluckerFubiniStudyO1) :=
-  ⟨rfl, isArithVar_bot 1, isQuotRows_noRows 3, isKerBasis_idRows 3,
-    fun j => by fin_cases j <;> exact isSmoothHerm_fubiniStudyO1 2, fun _ => isPullHerm_pullHerm _ _,
-    fun _ => isSmoothHerm_sqMetric _⟩
 
-theorem specIntHeightFormula_hypotheses : IsArithVar (⊥ : Ideal (MRing (GlobalTheory 1))) 1 ∧ IsSmoothHerm (fsO1 1) ∧
-    IsSec (⊥ : Ideal (MRing (GlobalTheory 1))) (fsO1 1) (Xb 1 0) :=
-  specInt_hypotheses_hold
 
-theorem isSecOf_X : IsSecOf (⊥ : Ideal (MRing (GlobalTheory 1))) (fun _ => 1) (genPt ⊥ ⟨(), 0⟩) := fun _ _ =>
-  ⟨0, Xb 1 0, fun _ => 1, isMultiHomog_Xb 1 0, fun _ => by simp, by simp [genPt]⟩
 
 end Inhabitants
 

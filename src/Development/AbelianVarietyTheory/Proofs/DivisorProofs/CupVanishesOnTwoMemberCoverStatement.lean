@@ -1,6 +1,24 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CupVanishesOnTwoMemberCover
+import Development.AbelianVarietyTheory.Definitions.Divisors.DivisorSupportCondition
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CupProductEqZeroOfVanishingOnCoverStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChosenInjectiveResolutionEtaleSheafProperties
+
+section
+open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC
+
+namespace GlobalTheory.EtC
+
+theorem a6supp : DivisorSupportCondition := by
+  intro q _ U V E f g hc n m i j a b ha hb
+  exact GlobalTheory.T.cupProduct_eq_zero_of_vanishing_on_cover (ZMod q) (twPair q i j) ((GlobalTheory.T.chosenInjectiveResolution_etaleSheaf_properties (ZMod q) (tw q i)).2.1)
+    ((GlobalTheory.T.chosenInjectiveResolution_etaleSheaf_properties (ZMod q) (tw q j)).2.1) f g hc rfl a b ha hb
+
+end GlobalTheory.EtC
+end
+
+section
 open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.cup_vanishes_on_two_member_cover : GlobalTheory.EtC.DivisorSupportCondition := by
   first | (exact @GlobalTheory.EtC.a6supp) | (exact GlobalTheory.EtC.a6supp) | (intros; apply GlobalTheory.EtC.a6supp  <;> assumption)
+end

@@ -162,26 +162,10 @@ lemma term_bound {p : ℕ} (hp : p.Prime) (hp1 : ‖(p : K)‖ < 1) (z : PowerSe
   exact (mul_le_of_le_one_right (norm_nonneg _) (norm_coeff_monomial_le _ _ _)).trans
     (scalar_bound hp hp1 _ d m hmd hc)
 
-theorem quasiLogShift : Formalism.LT.QuasiLogShift.{u} := by
-  intro K _ _ p hp hp1 z hz0 hdz e
-  have ha : PowerSeries.HasSubst
-      (MvPowerSeries.X (0 : Fin 2) + (p : K) • MvPowerSeries.X (1 : Fin 2) : MvPowerSeries (Fin 2) K) :=
-    PowerSeries.HasSubst.of_constantCoeff_zero (by simp)
-  have hb : PowerSeries.HasSubst (MvPowerSeries.X (0 : Fin 2) : MvPowerSeries (Fin 2) K) :=
-    PowerSeries.HasSubst.X 0
-  unfold Formalism.G.atX
-  rw [map_sub, PowerSeries.coeff_subst ha, PowerSeries.coeff_subst hb,
-    ← finsum_sub_distrib (PowerSeries.coeff_subst_finite ha z e) (PowerSeries.coeff_subst_finite hb z e)]
-  refine norm_finsum_le (norm_nonneg _) fun d => ?_
-  rw [← smul_sub, ← map_sub]
-  exact term_bound hp hp1 z hdz d e
 
-theorem Formalism.LT.ExpP.ExpIntegral_valid : Formalism.LT.ExpIntegral.{u} := expIntegral
 
-theorem Formalism.LT.ExpP.QuasiLogShift_valid_direct : Formalism.LT.QuasiLogShift.{u} := quasiLogShift
 
 end Formalism.LT.ExpP
 
 theorem Formalism.LT.exp_integral : Formalism.LT.ExpIntegral.{u} := Formalism.LT.ExpP.expIntegral
 
-theorem Formalism.LT.QuasiLogShift_valid : Formalism.LT.QuasiLogShift.{u} := Formalism.LT.ExpP.quasiLogShift

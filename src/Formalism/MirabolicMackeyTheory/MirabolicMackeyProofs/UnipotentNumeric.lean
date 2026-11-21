@@ -11,17 +11,6 @@ theorem depth_cases : DepthCases := by
     fun s T β h1 h2 h3 h4 => by linarith, fun s T h1 h2 h3 => by linarith,
     fun T nn nnc g2 h1 h2 h3 => by linarith⟩
 
-theorem unipotent_numeric : UnipNum := by
-  unfold UnipNum
-  intro f r d dK δq hf hr hd hq
-  have hr0 : 0 ≤ r - 1 := by linarith
-  have hA : 0 ≤ f * r * (r - 1) / 2 :=
-    div_nonneg (mul_nonneg (mul_nonneg hf (by linarith)) hr0) (by norm_num)
-  have h1 : f * r * (r - 1) / 2 * (d + dK / δq) ≤ f * r * (r - 1) / 2 * (4 * d) :=
-    mul_le_mul_of_nonneg_left (by linarith) hA
-  have h2 : 0 ≤ f * r * d := mul_nonneg (mul_nonneg hf (by linarith)) hd
-  have h3 : f * r * (r - 1) / 2 * (4 * d) = 2 * f * r ^ 2 * d - 2 * (f * r * d) := by ring
-  linarith
 
 theorem budget_numeric : BudgetNum := by
   unfold BudgetNum
@@ -52,32 +41,6 @@ theorem level_pair : LevelPair := by
   subst hvs hvsc hF
   refine ⟨by linarith, by linarith, by linarith, by linarith⟩
 
-theorem normaliser_pair : NormaliserPair := by
-  unfold NormaliserPair
-  intro K _ _ _ w π hπ Dp Dm
-  have hV := Formalism.DivisionValues.valuation_basic_properties K w
-  have hsπ : star π ≠ 0 := star_ne_zero.mpr hπ
-  have hpow : ∀ x : K, x ≠ 0 → ∀ n : ℕ, Formalism.DivisionValues.vw w (x ^ n) = (n : ℤ) * Formalism.DivisionValues.vw w x := by
-    intro x hx n
-    induction n with
-    | zero => simp [hV.2.2.2.2.1]
-    | succ n ih =>
-      rw [pow_succ, hV.1 _ _ (pow_ne_zero _ hx) hx, ih]
-      push_cast
-      ring
-  rw [← hV.2.1, star_mul, star_pow, star_pow, star_star,
-    hV.1 (star π ^ Dp) (π ^ Dm) (pow_ne_zero _ hsπ) (pow_ne_zero _ hπ),
-    hV.1 (star π ^ Dm) (π ^ Dp) (pow_ne_zero _ hsπ) (pow_ne_zero _ hπ),
-    hV.1 π (star π) hπ hsπ, hpow _ hsπ Dp, hpow _ hπ Dm, hpow _ hsπ Dm, hpow _ hπ Dp]
-  ring
 
-theorem unit_change' : UnitChange := by
-  unfold UnitChange
-  intro ρ x y d r k δ ε hρ hδ
-  have hρ' : ρ ≠ 0 := hρ.ne'
-  have hδ' : δ ≠ 0 := hδ.ne'
-  first
-    | (field_simp; ring)
-    | field_simp
 
 end Formalism.EigenvalueLevelCeiling

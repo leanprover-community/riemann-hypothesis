@@ -6,7 +6,5 @@ import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCou
 
 namespace Formalism.L2.SG.Closed
 
-theorem StepPinExists_holds : Formalism.L2.SG.NGAnalytic.StepPinExists :=
-  Formalism.L2.SG.NGPin.stepPinExists_of_place (Formalism.L2.SG.RootPatterns.placeHaar_of_loc Formalism.L2.SG.Pf.RootHaarLoc.locRootHaar)
 
 end Formalism.L2.SG.Closed

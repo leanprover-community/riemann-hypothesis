@@ -221,10 +221,6 @@ theorem proj_mul_of_weight [IsDomain o] {T : AddSubgroup S.Gam} (c c₀ : T →+
       Ring.inverse_mul_cancel _ (S.isUnit_natCard T), one_smul]
   · rw [if_neg h, if_neg fun h' => h (sub_eq_zero.1 h').symm, mul_zero, zero_smul]
 
-theorem proj_mul_proj_of_le [IsDomain o] {T T' : AddSubgroup S.Gam} (h : T' ≤ T) (hT : T ≤ S.perp T)
-    (c' : T' →+ ZMod S.N) (c : T →+ ZMod S.N) :
-    S.proj T' c' * S.proj T c = if c' = c.comp (AddSubgroup.inclusion h) then S.proj T c else 0 :=
-  proj_mul_of_weight c' _ fun t => ρ_mul_proj hT c (AddSubgroup.inclusion h t)
 
 theorem proj_mul_proj [IsDomain o] {T : AddSubgroup S.Gam} (hT : T ≤ S.perp T) (c c' : T →+ ZMod S.N) :
     S.proj T c * S.proj T c' = if c = c' then S.proj T c else 0 := by
@@ -267,10 +263,6 @@ theorem finsum_proj_eq_one [IsDomain o] (T : AddSubgroup S.Gam) : ∑ᶠ c, S.pr
   have := Fintype.ofFinite (T →+ ZMod S.N)
   rw [finsum_eq_sum_of_fintype, sum_proj_eq_one]
 
-theorem IsoFree.proj_spec [IsDomain o] {T : AddSubgroup S.Gam} (hT : S.IsoFree T) :
-    (∀ c c', S.proj T c * S.proj T c' = if c = c' then S.proj T c else 0) ∧ ∑ᶠ c, S.proj T c = 1 ∧
-      ∀ c, ∀ h ∈ S.perp T, S.ρ h * S.proj T c = S.proj T c * S.ρ h :=
-  ⟨proj_mul_proj hT.1, S.finsum_proj_eq_one T, fun c _ hh => (commute_ρ_proj c hh).eq⟩
 
 variable (S)
 
@@ -340,7 +332,6 @@ theorem shortest_zero (v0 : τ.X) : τ.q 0 ≤ τ.q (0 + S.N • v0) := by
 
 theorem perp_ker_le_ker : S.perp τ.yy.ker ≤ τ.yy.ker := τ.isoFree.1.trans (S.perp_perp _).le
 
-theorem norm_th_le (x : S.Gam) : ‖y ⟨S.th x, S.th_mem x⟩‖ ≤ τ.δ := τ.δ_max.2 ⟨x, rfl⟩
 
 theorem δ_eq (τ' : S.Test p y) : τ.δ = τ'.δ := τ.δ_max.unique τ'.δ_max
 
@@ -351,7 +342,6 @@ end Test
 
 variable (M : RatModel o Ω)
 
-theorem mem_supI {z : M.Z} {x : S.Gam} : x ∈ S.supI M z ↔ M.Div S.th x z := Iff.rfl
 
 @[simp] theorem perp_TT (z : M.Z) : S.perp (S.TT M z) = S.HH M z := S.perp_perp _
 
@@ -426,9 +416,6 @@ def Test.ofNormOne {p : ℕ} [Fact p.Prime] (y : S.R →+* PadicAlgCl p) (hth : 
     (hev : ∀ x i, ‖y ⟨S.ev x i, S.ev_mem x i⟩‖ = 1) : S.Test p y :=
   Test.good S y 1 (by simp [hth]) one_pos (by simp [hth]) fun h => by simp [hev]
 
-theorem hasTests_of_eq_one (hth : ∀ x, S.th x = 1) (hev : ∀ x i, S.ev x i = 1) : S.HasTests := fun _ _ y _ =>
-  ⟨Test.ofNormOne S y (fun x => by rw [show (⟨_, S.th_mem x⟩ : S.R) = 1 from Subtype.ext (hth x), map_one, norm_one])
-    fun x i => by rw [show (⟨_, S.ev_mem x i⟩ : S.R) = 1 from Subtype.ext (hev x i), map_one, norm_one]⟩
 
 variable {S} in
 
@@ -467,27 +454,6 @@ theorem Test.mem_E_iff_of_norm_eq_one {p : ℕ} [Fact p.Prime] {y : S.R →+* Pa
     rw [S.proj_eq_one_of_eq_bot hT, Matrix.one_apply, Pi.single_apply]
     split_ifs <;> simp
 
-theorem isEE_const_of_eq_one (hth : ∀ x, S.th x = 1) (hev : ∀ x i, S.ev x i = 1) (M : RatModel o Ω)
-    (U₀ : M.Z.Opens) : S.IsEE M U₀ (RatModel.Lat.const M S.J) := by
-  refine ⟨fun _ _ => rfl, fun z p _ y y₀ τ hc _ => ?_⟩
-  have hE := τ.mem_E_iff_of_norm_eq_one
-    (fun x => by rw [show (⟨_, S.th_mem x⟩ : S.R) = 1 from Subtype.ext (hth x), map_one, norm_one])
-    fun x i => by rw [show (⟨_, S.ev_mem x i⟩ : S.R) = 1 from Subtype.ext (hev x i), map_one, norm_one]
-  refine le_antisymm (Submodule.span_le.2 ?_) fun v hv => ?_
-  · rintro _ ⟨v, hv, rfl⟩
-    exact (hE _).2 fun j => hc.norm_val_le_one ((RatModel.Lat.mem_const_iff M).1 hv j)
-  · rw [← Finset.univ_sum_single v]
-    refine sum_mem fun i _ => ?_
-    have e : (Pi.single i (v i) : S.J → PadicAlgCl p) = (⟨v i, (mem_OO_iff _).2 ((hE v).1 hv i)⟩ : OO p) •
-        fun j => M.val (gPt p ≫ y) ((Pi.single i 1 : S.J → Ω) j) := by
-      funext j
-      rw [Pi.smul_apply, Pi.single_apply, Pi.single_apply]
-      split_ifs
-      · rw [RatModel.val_one]
-        exact (_root_.mul_one _).symm
-      · rw [RatModel.val_zero, smul_zero]
-    rw [e]
-    exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨_, Submodule.subset_span ⟨i, rfl⟩, rfl⟩)
 
 theorem exists_at_of_cen (M : RatModel o Ω) {U₀ : M.Z.Opens} (hle : S.R ≤ M.ringOn U₀) {z : M.Z} {p : ℕ} [Fact p.Prime]
     {y : Sp (OO p) ⟶ M.Z} (hc : M.Cen U₀ z y) :
@@ -561,30 +527,7 @@ theorem ThetaSys.exists_adm (S : ThetaSys o Ω) (h : S.R = ⊥) :
     hasDiv_ofAffine_self o Ω (Function.ne_iff.2 S.th_ne), hU, h.trans_le bot_le, fun x _ => h1 x,
     fun T c k _ _ => h2 T c k⟩, fun _ _ _ h => hasDiv_ofAffine_self o Ω h⟩
 
-theorem exists_cen_ofAffine_self {p : ℕ} [Fact p.Prime] (φ : o →+* PadicAlgCl p) (hφ : ∀ a, ‖φ a‖ ≤ 1)
-    (hinj : Function.Injective φ) {U : (RatModel.ofAffine o Ω o).Z.Opens}
-    (hU : (U : Set (RatModel.ofAffine o Ω o).Z).Nonempty) :
-    ∃ (z : _) (y : Sp (OO p) ⟶ (RatModel.ofAffine o Ω o).Z), (RatModel.ofAffine o Ω o).Cen U z y := by
-  let σ : o →+* OO p := φ.codRestrict (OO p).toSubring fun b => (mem_OO_iff _).2 (hφ b)
-  refine ⟨_, spMap σ, rfl, ?_⟩
-  rintro _ ⟨w, rfl⟩
-  obtain ⟨u, hu⟩ := hU
-  refine Specializes.mem_open ?_ U.isOpen hu
-  refine (PrimeSpectrum.le_iff_specializes _ _).1 fun a ha => ?_
-  have h1 : φ a ∈ w.asIdeal := ha
-  rw [@Ideal.eq_bot_of_prime _ _ w.asIdeal w.isPrime, Ideal.mem_bot, map_eq_zero_iff φ hinj] at h1
-  exact h1 ▸ zero_mem _
 
-theorem ThetaSys.exists_admissible_isEulerSystem (S : ThetaSys o Ω) (h : S.R = ⊥) (hth : ∀ x, S.th x = 1) (hev : ∀ x i, S.ev x i = 1) :
-    ∃ (M : RatModel o Ω) (U₀ : M.Z.Opens) (EE : M.Lat S.J), S.admitted M U₀ ∧ S.IsEE M U₀ EE ∧
-      ∀ (p : ℕ) [Fact p.Prime], (∃ φ : o →+* PadicAlgCl p, (∀ a, ‖φ a‖ ≤ 1) ∧ Function.Injective φ) →
-        ∃ (z : M.Z) (y : Sp (OO p) ⟶ M.Z) (y₀ : S.R →+* PadicAlgCl p),
-          M.Cen U₀ z y ∧ S.At M y y₀ ∧ (∀ a, ‖y₀ (algebraMap o S.R a)‖ ≤ 1) ∧ Nonempty (S.Test p y₀) := by
-  obtain ⟨U, hU⟩ := S.exists_adm h
-  refine ⟨_, U, _, hU, S.isEE_const_of_eq_one hth hev _ U, fun p _ ⟨φ, hφ, hinj⟩ => ?_⟩
-  obtain ⟨z, y, hc⟩ := exists_cen_ofAffine_self φ hφ hinj hU.1.ne
-  obtain ⟨y₀, h1, h2⟩ := S.exists_at_of_cen _ hU.1.le hc
-  exact ⟨z, y, y₀, hc, h1, h2, S.hasTests_of_eq_one hth hev p y₀ h2⟩
 
 end Dedekind
 
@@ -655,8 +598,6 @@ def pointSys : ThetaSys o Ω where
   supp := by simp
   th_ne := ⟨0, one_ne_zero⟩
 
-theorem hasTests_pointSys : (pointSys Ω hN hr hζ hu).HasTests :=
-  ThetaSys.hasTests_of_eq_one _ (fun _ => rfl) fun _ _ => rfl
 
 variable (hodd : Odd N) (ϖ : o) (hϖ : ϖ ≠ 0)
 
@@ -729,8 +670,6 @@ def heisTestGood (h : ‖y (algebraMap o _ ϖ)‖ = 1) : (𝐒).Test p y :=
 
 end HeisTests
 
-theorem hasTests_heisSys_one [Nontrivial o] : (heisSys Ω hN hr hζ hu hodd 1 one_ne_zero).HasTests :=
-  ThetaSys.hasTests_of_eq_one _ (fun _ => by simp [heisSys]) fun _ _ => by simp [heisSys]
 
 theorem heisSys_ρ_ne_one [Nontrivial o] :
     (heisSys Ω hN hr hζ hu hodd ϖ hϖ).ρ (Pi.single (.inl (0 : Fin 1)) 1) ≠ 1 := fun h => by
@@ -825,44 +764,10 @@ theorem AwayBase.exists_point (p : ℕ) [Fact p.Prime] (hp : p.Coprime n) :
     rw [(map_eq_zero_iff ψ hψi).1 h.symm, map_zero] at hb
     exact ((IsLocalization.Away.algebraMap_isUnit (n : 𝓞 K)).pow k).mul_left_eq_zero.1 hb
 
-theorem AwayBase.exists_point_bot [NeZero n] (p : ℕ) [Fact p.Prime] (hp : p.Coprime n) :
-    ∃ y : (⊥ : Subalgebra (AwayBase K n) (FractionRing (AwayBase K n))) →+* PadicAlgCl p,
-      ∀ a, ‖y (algebraMap (AwayBase K n) _ a)‖ ≤ 1 := by
-  obtain ⟨φ, hφ, -⟩ := AwayBase.exists_point K n p hp
-  exact ⟨φ.comp (Algebra.botEquivOfInjective (IsFractionRing.injective _ _)).toRingEquiv.toRingHom, fun a => hφ _⟩
 
 end Away
 
-theorem exists_thetaSys_dim_zero {r N : ℕ} (hN : 2 ≤ N) (hr : 1 ≤ r) :
-    ∃ (o Ω : Type) (_ : CommRing o) (_ : Field Ω) (_ : Algebra o Ω) (_ : ArithBase o Ω) (S : ThetaSys o Ω),
-      S.g = 0 ∧ S.N = N ∧ S.r = r ∧ S.HasTests ∧
-      ∃ (M : RatModel o Ω) (U₀ : M.Z.Opens) (EE : M.Lat S.J), S.admitted M U₀ ∧ S.IsEE M U₀ EE ∧
-        ∀ (p : ℕ) [Fact p.Prime], p.Coprime (r * N) →
-          ∃ (z : M.Z) (y : Sp (OO p) ⟶ M.Z) (y₀ : S.R →+* PadicAlgCl p),
-            M.Cen U₀ z y ∧ S.At M y y₀ ∧ (∀ a, ‖y₀ (algebraMap o S.R a)‖ ≤ 1) ∧ Nonempty (S.Test p y₀) := by
-  haveI : NeZero (r * N) := ⟨Nat.mul_ne_zero (by omega) (by omega)⟩
-  obtain ⟨ζ, hζ⟩ := AwayBase.exists_isPrimitiveRoot (r * N) ((r * N) ^ 2)
-  let S := pointSys (FractionRing (AwayBase (CyclotomicField ((r * N) ^ 2) ℚ) (r * N))) hN hr hζ
-    (AwayBase.isUnit_natCast _ _)
-  obtain ⟨M, U, EE, h1, h2, h3⟩ := S.exists_admissible_isEulerSystem rfl (fun _ => rfl) fun _ _ => rfl
-  exact ⟨_, _, _, _, _, inferInstance, S, rfl, rfl, rfl, hasTests_pointSys _ _ _ _ _, M, U, EE, h1, h2,
-    fun p _ hp => h3 p (AwayBase.exists_point _ _ p hp)⟩
 
-theorem exists_thetaSys_dim_one {r N : ℕ} (hN : 2 ≤ N) (hr : 1 ≤ r) (hodd : Odd N) :
-    ∃ (o Ω : Type) (_ : CommRing o) (_ : Field Ω) (_ : Algebra o Ω) (_ : ArithBase o Ω) (S : ThetaSys o Ω),
-      S.g = 1 ∧ S.N = N ∧ S.r = r ∧ Nat.card S.J = N ∧ (∃ a, S.ρ a ≠ 1) ∧ S.HasTests ∧
-      ∃ (M : RatModel o Ω) (U₀ : M.Z.Opens) (EE : M.Lat S.J), S.admitted M U₀ ∧ S.IsEE M U₀ EE ∧
-        ∀ (p : ℕ) [Fact p.Prime], p.Coprime (r * N) →
-          ∃ (z : M.Z) (y : Sp (OO p) ⟶ M.Z) (y₀ : S.R →+* PadicAlgCl p),
-            M.Cen U₀ z y ∧ S.At M y y₀ ∧ (∀ a, ‖y₀ (algebraMap o S.R a)‖ ≤ 1) ∧ Nonempty (S.Test p y₀) := by
-  haveI : NeZero (r * N) := ⟨Nat.mul_ne_zero (by omega) (by omega)⟩
-  obtain ⟨ζ, hζ⟩ := AwayBase.exists_isPrimitiveRoot (r * N) ((r * N) ^ 2)
-  let S := heisSys (FractionRing (AwayBase (CyclotomicField ((r * N) ^ 2) ℚ) (r * N))) hN hr hζ
-    (AwayBase.isUnit_natCast _ _) hodd 1 one_ne_zero
-  obtain ⟨M, U, EE, h1, h2, h3⟩ := S.exists_admissible_isEulerSystem rfl (fun _ => by simp [S, heisSys])
-    fun _ _ => by simp [S, heisSys]
-  exact ⟨_, _, _, _, _, inferInstance, S, rfl, rfl, rfl, Nat.card_zmod N, ⟨_, heisSys_ρ_ne_one _ _ _ _ _ _ _ _⟩,
-    hasTests_heisSys_one _ _ _ _ _ _, M, U, EE, h1, h2, fun p _ hp => h3 p (AwayBase.exists_point _ _ p hp)⟩
 
 example : eStd 1 3 (Pi.single (.inl 0) 1) (Pi.single (.inr 0) 1) = 1 := by simp [eStd]
 

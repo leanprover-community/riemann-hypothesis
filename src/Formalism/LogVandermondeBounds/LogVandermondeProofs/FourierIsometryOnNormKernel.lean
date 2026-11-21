@@ -11,17 +11,11 @@ variable {k : Type*} [Field k] [Fintype k] [DecidableEq k] {r : ℕ}
 private lemma pair_smul_left (a : k) (f x : Fin r → k) : pair (a • f) x = a * pair f x := by
   simp only [pair, Pi.smul_apply, smul_eq_mul, Finset.mul_sum, mul_assoc]
 
-private lemma pair_add_right (f x y : Fin r → k) : pair f (x + y) = pair f x + pair f y := by
-  simp only [pair, Pi.add_apply, mul_add, Finset.sum_add_distrib]
 
-private lemma pair_sub_left (f g x : Fin r → k) : pair (g - f) x = pair g x - pair f x := by
-  simp only [pair, Pi.sub_apply, sub_mul, Finset.sum_sub_distrib]
 
 private lemma pair_zero_left (x : Fin r → k) : pair (0 : Fin r → k) x = 0 := by
   simp [pair]
 
-private lemma pair_single (f : Fin r → k) (i : Fin r) (a : k) : pair f (Pi.single i a) = f i * a := by
-  simp [pair, Pi.single_apply]
 
 private def smulEquiv (c : kˣ) : (Fin r → k) ≃ (Fin r → k) where
   toFun f := (c : k) • f

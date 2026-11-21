@@ -374,20 +374,6 @@ theorem frS_det (A : HLat K) (hA : ∀ v, IsUnit (A.X v).det) (s : K →+* ℂ) 
     rw [this]
     exact (hA _).map (starRingEnd ℂ)
 
-theorem mapS_ptS (A B : HLat K) (hA : ∀ v, IsUnit (A.X v).det) (s : K →+* ℂ) (φ : A.V →ₗ[K] B.V) (x : A.V) :
-    mapS A B s φ (ptS A s x) = ptS B s (φ x) := by
-  unfold mapS ptS
-  have h1 : Matrix.mulVec ((LinearMap.toMatrix A.b B.b φ).map s) (fun i => s (A.b.repr x i)) =
-      fun i => s (B.b.repr (φ x) i) := by
-    funext i
-    have := RingHom.map_mulVec s (LinearMap.toMatrix A.b B.b φ) (fun i => A.b.repr x i) i
-    rw [LinearMap.toMatrix_mulVec_repr] at this
-    exact this.symm
-  have h2 : (frS A s) * (frS A s)⁻¹ = 1 := Matrix.mul_nonsing_inv _ (frS_det A hA s)
-  rw [Matrix.toLpLin_apply]
-  congr 1
-  show Matrix.mulVec _ (Matrix.mulVec (frS A s)⁻¹ _) = _
-  rw [Matrix.mulVec_mulVec, Matrix.mul_assoc, h2, Matrix.mul_one, ← Matrix.mulVec_mulVec, h1]
 
 theorem ptS_inj (A : HLat K) (hA : ∀ v, IsUnit (A.X v).det) (s : K →+* ℂ) (x : A.V) (h : ptS A s x = 0) : x = 0 := by
   unfold ptS at h
@@ -431,12 +417,6 @@ theorem isotypicPart_ne_bot {D : D7} {Z : DivX D} (E : EigIdx D Z) (j : ℕ) (π
     le_iSup₂ (f := fun (π' : D.what₂.FT) (_ : E.cOf π' = E.cOf π) => D.what₂.isot j π') π rfl
   exact le_bot_iff.mp (h0 ▸ this)
 
-theorem logLamC_cOf {D : D7} {Z : DivX D} (E : EigIdx D Z) (j : ℕ) (hj : j ∈ SizeData₂.lifts D) (π : D.what₂.FT)
-    (hπ : D.what₂.isot j π ≠ ⊥) (s : D.what₂.LL →+* ℂ) : DV.logLamC E j (E.cOf π) s = Z.logLam j π s := by
-  have h : ∃ π', E.cOf π' = E.cOf π ∧ D.what₂.isot j π' ≠ ⊥ := ⟨π, rfl, hπ⟩
-  unfold DV.logLamC
-  rw [dif_pos h]
-  exact E.lam_const j hj _ _ s h.choose_spec.2 hπ h.choose_spec.1
 
 theorem MjPart_ne_bot (hR : ThetaRationalityOverField D Z Y) (j : ℕ) (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) (π : D.what₂.FT)
     (h : D.what₂.isot j π ≠ ⊥) : MjPart D Z Y j π ≠ ⊥ := by
@@ -445,15 +425,6 @@ theorem MjPart_ne_bot (hR : ThetaRationalityOverField D Z Y) (j : ℕ) (h1 : 1 �
   rw [← ((hR j h1 h2).2.1 π), h0]
   simp
 
-theorem IsLamS_unique (j : ℕ) (π : D.what₂.FT) (s : D.what₂.LL →+* ℂ) (c c' : ℝ) (h0 : MjPart D Z Y j π ≠ ⊥)
-    (h : IsLamS D Z Y j π s c) (h' : IsLamS D Z Y j π s c') : c = c' := by
-  have hne := spS_ne_bot (Z.MjH j) (Z.MjH_good j).1 s _ h0
-  obtain ⟨y, hy, hy0⟩ := (Submodule.ne_bot_iff _).mp hne
-  have e := (h y hy).symm.trans (h' y hy)
-  have : ((c : ℂ) - c') • y = 0 := by rw [sub_smul, e, sub_self]
-  rcases smul_eq_zero.mp this with h3 | h3
-  · exact_mod_cast sub_eq_zero.mp h3
-  · exact absurd h3 hy0
 
 theorem lamS_of_ident (C : ℝ) (hR : ThetaRationalityOverField D Z Y) (hA : ConjugateDatumSingularValueBound D L Cj C) (hI : EmbeddingIsometryIdentity D Z Y Cj)
     (s : D.what₂.LL →+* ℂ) (h : SameK D s) (j : ℕ) (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) (π : D.what₂.FT)
@@ -506,39 +477,8 @@ theorem stmtD (C : ℝ) (hR : ThetaRationalityOverField D Z Y) (hK : EmbeddingAg
     have := (hc j (ComplexEmbedding.conjugate s)).2.2 π lam hl
     rwa [conj_conj'] at this
 
-theorem stmtDlog (C : ℝ) (hR : ThetaRationalityOverField D Z Y) (hD : ThetaAdjointPositiveScalar D L Z Y C) : LogEigenvalueDeviation D L Z Y C := by
-  intro hdef j h1 h2 π hne s
-  obtain ⟨lam, _, hl, hs⟩ := hD s j h1 h2 π hne
-  rw [hdef j h1 h2 π (MjPart_ne_bot D Z Y hR j h1 h2 π hne) s lam hl]
-  exact hs
 
-theorem stmtConj (C : ℝ) (hR : ThetaRationalityOverField D Z Y) (hD : ThetaAdjointPositiveScalar D L Z Y C) (hc : ConjugationNormInvariance D Z Y) : LogEigenvaluesConjugateInvariant D Z Y := by
-  intro hdef j h1 h2 π hne s
-  obtain ⟨lam, _, hl, _⟩ := hD s j h1 h2 π hne
-  rw [hdef j h1 h2 π (MjPart_ne_bot D Z Y hR j h1 h2 π hne) s lam hl,
-    hdef j h1 h2 π (MjPart_ne_bot D Z Y hR j h1 h2 π hne) _ lam ((hc j s).2.2 π lam hl)]
 
-theorem log_singular_value_bound_scaled (C K : ℝ) (hm : RealPlaceHeightSumNonneg D) (hD : LogEigenvalueDeviation D L Z Y C) (hC : 0 ≤ C) (h0 : 0 ≤ InnerProductFormulaField.Lp D L)
-    (hK : InnerProductFormulaField.Lp D L ≤ K * L.La) (hN : D.R.nV ≤ D.R.N D.R.m) : LogEigenvalueLowerBound D L Z Y (C * K) := by
-  intro hdef j hj π hne s
-  have hj' := Finset.mem_Icc.mp hj
-  have h := abs_le.mp (hD hdef j hj'.1 hj'.2 π hne s)
-  have e : InnerProductFormulaField.sumHk D j = InnerProductFormulaField.sumHkP D j + InnerProductFormulaField.sumHkM D j := by
-    unfold InnerProductFormulaField.sumHk InnerProductFormulaField.sumHkP InnerProductFormulaField.sumHkM
-    rw [Finset.sum_add_distrib]
-  have hmm := hm j hj'.1 hj'.2
-  have hN' : (D.R.nV : ℝ) ^ 2 ≤ (D.R.N D.R.m : ℝ) ^ 2 := by
-    have : (D.R.nV : ℝ) ≤ (D.R.N D.R.m : ℝ) := by exact_mod_cast hN
-    exact pow_le_pow_left₀ (Nat.cast_nonneg _) this 2
-  have hf : (0 : ℝ) ≤ D.R.f := Nat.cast_nonneg _
-  have b1 : C * D.R.f * (D.R.nV : ℝ) ^ 2 * InnerProductFormulaField.Lp D L ≤ C * D.R.f * (D.R.N D.R.m : ℝ) ^ 2 * (K * L.La) := by
-    have hKL : 0 ≤ K * L.La := h0.trans hK
-    calc C * D.R.f * (D.R.nV : ℝ) ^ 2 * InnerProductFormulaField.Lp D L ≤ C * D.R.f * (D.R.nV : ℝ) ^ 2 * (K * L.La) :=
-          mul_le_mul_of_nonneg_left hK (by positivity)
-      _ ≤ C * D.R.f * (D.R.N D.R.m : ℝ) ^ 2 * (K * L.La) :=
-          mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hN' (by positivity)) hKL
-  have := h.1
-  nlinarith [this, b1, hmm]
 
 end GlueD
 
@@ -608,23 +548,7 @@ theorem adj_conj (A B : HLat K) (hB : ∀ v, IsUnit (B.X v).det) (s : K →+* �
   conv_rhs => rw [← cj_cj w]
   rw [mapS_conj A B hB s hs, cj_inner, cj_inner, LinearMap.adjoint_inner_left]
 
-theorem spS_conj (A : HLat K) (hA : ∀ v, IsUnit (A.X v).det) (s : K →+* ℂ) (hs : ComplexEmbedding.conjugate s ≠ s)
-    (U : Submodule K A.V) (y : EuclideanSpace ℂ A.ι) (hy : y ∈ spS A (ComplexEmbedding.conjugate s) U) :
-    cj y ∈ spS A s U := by
-  unfold spS at hy ⊢
-  induction hy using Submodule.span_induction with
-  | mem z hz =>
-    obtain ⟨x, hx, rfl⟩ := hz
-    rw [ptS_conj A hA s hs, cj_cj]
-    exact Submodule.subset_span ⟨x, hx, rfl⟩
-  | zero =>
-    have : cj (0 : EuclideanSpace ℂ A.ι) = 0 := by ext i; simp [cj]
-    rw [this]; exact Submodule.zero_mem _
-  | add a b _ _ ha hb => rw [cj_add]; exact Submodule.add_mem _ ha hb
-  | smul a z _ hz => rw [cj_smul]; exact Submodule.smul_mem _ _ hz
 
-theorem cj_norm {ι : Type} [Fintype ι] (v : EuclideanSpace ℂ ι) : ‖cj v‖ = ‖v‖ := by
-  simp [cj, EuclideanSpace.norm_eq]
 
 end
 
@@ -634,18 +558,6 @@ theorem conj_ne (D : D7) (s : D.what₂.LL →+* ℂ) : ComplexEmbedding.conjuga
   have h1 : (InfinitePlace.mk s).IsReal := ⟨s, hr, rfl⟩
   exact (InfinitePlace.not_isReal_iff_isComplex.mpr (IsTotallyComplex.isComplex (InfinitePlace.mk s))) h1
 
-theorem conjugation_norm_invariance_holds (D : D7) (Z : DivX D) (Y : Loc D Z) : ConjugationNormInvariance D Z Y := by
-  intro j s
-  have hs := conj_ne D s
-  refine ⟨fun x => ?_, fun x => ?_, fun π c h y hy => ?_⟩
-  · rw [ptS_conj _ (Z.MjH_good j).1 s hs, cj_norm]
-  · rw [ptS_conj _ (Y.MtjH_good j).1 s hs, cj_norm]
-  · have hy' := spS_conj _ (Z.MjH_good j).1 s hs _ y hy
-    have e := h (cj y) hy'
-    have e2 := congrArg cj e
-    unfold thS at e2 ⊢
-    rw [← mapS_conj _ _ (Z.MjH_good j).1 s hs, ← adj_conj _ _ (Z.MjH_good j).1 s hs, cj_cj, cj_smul, cj_cj] at e2
-    simpa using e2
 
 theorem nV_le (R : Ranks) : R.nV ≤ R.N R.m := by
   unfold Ranks.nV Ranks.N Ranks.r
@@ -657,37 +569,9 @@ theorem nV_le (R : Ranks) : R.nV ≤ R.N R.m := by
 section
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 
-theorem ptS_norm (A : HLat K) (hA : ∀ v, IsUnit (A.X v).det) (s : K →+* ℂ) (x : A.V) :
-    ‖ptS A s x‖ = Formalism.HermitianLatticesTheory.normAt A.b A.X (InfinitePlace.mk s) x := by
-  have key : ∀ s' : K →+* ℂ, (InfinitePlace.mk s').embedding = s' →
-      ‖ptS A s' x‖ = Formalism.HermitianLatticesTheory.normAt A.b A.X (InfinitePlace.mk s') x := by
-    intro s' h
-    unfold ptS frS Formalism.HermitianLatticesTheory.normAt Formalism.HermitianLatticesTheory.cnorm Formalism.HermitianLatticesTheory.fcoord Formalism.HermitianLatticesTheory.vecAt
-    rw [if_pos h, h, EuclideanSpace.norm_eq]
-    rfl
-  by_cases h : (InfinitePlace.mk s).embedding = s
-  · exact key s h
-  · have h' : (InfinitePlace.mk s).embedding = ComplexEmbedding.conjugate s :=
-      (InfinitePlace.embedding_mk_eq s).resolve_left h
-    have hcc : ComplexEmbedding.conjugate (ComplexEmbedding.conjugate s) = s := by ext y; simp
-    have hne : ComplexEmbedding.conjugate (ComplexEmbedding.conjugate s) ≠ ComplexEmbedding.conjugate s := by
-      rw [hcc]; intro e; exact h (by rw [h', ← e])
-    have e1 := ptS_conj A hA (ComplexEmbedding.conjugate s) hne x
-    rw [hcc] at e1
-    rw [e1, cj_norm, key (ComplexEmbedding.conjugate s) (by rw [InfinitePlace.mk_conjugate_eq]; exact h'),
-      InfinitePlace.mk_conjugate_eq]
 
 end
 
-theorem stmt_singular (D : D7) (L : SizeData₂ D) (Z : DivX D) (Y : Loc D Z) (Cj : CjFam D) (C K : ℝ)
-    (hR : ThetaRationalityOverField D Z Y) (hK : EmbeddingAgreesOnSubfieldUpToConjugation D) (hA : ConjugateDatumSingularValueBound D L Cj C) (hm : RealPlaceHeightSumNonneg D) (hI : EmbeddingIsometryIdentity D Z Y Cj) :
-    ConjugationNormInvariance D Z Y ∧ ThetaAdjointPositiveScalar D L Z Y C ∧ LogEigenvalueDeviation D L Z Y C ∧ LogEigenvaluesConjugateInvariant D Z Y ∧
-      (0 ≤ C → 0 ≤ InnerProductFormulaField.Lp D L → InnerProductFormulaField.Lp D L ≤ K * L.La → LogEigenvalueLowerBound D L Z Y (C * K)) := by
-  have hc := conjugation_norm_invariance_holds D Z Y
-  have hD := stmtD D L Z Y Cj C hR hK hA hI hc
-  have hl := stmtDlog D L Z Y C hR hD
-  exact ⟨hc, hD, hl, stmtConj D L Z Y C hR hD hc,
-    fun h0 h1 h2 => log_singular_value_bound_scaled D L Z Y C K hm hl h0 h1 h2 (nV_le D.R)⟩
 
 end Formalism.MainNotions.PGAL
 

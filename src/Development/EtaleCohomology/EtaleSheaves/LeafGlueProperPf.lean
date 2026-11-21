@@ -93,9 +93,6 @@ theorem glued_affine_curve_stalks_integrally_closed : LeafGlueNormal := by
   · haveI := h.2.2.2.2.2.1; exact normal_of_openImm G.iA z (normal_spec A z)
   · haveI := h.2.2.2.2.2.2.1; exact normal_of_openImm G.iB z (normal_spec B z)
 
-theorem LeafGlueProper_of' (h1 : LeafGlueExists) (h2 : LeafGlueIntegral) (h4 : LeafGlueDim)
-    (h5 : LeafGlueIsProper) (h6 : LeafGlueGeneric) : LateralTheory.E.LeafNormalModelPf.LeafGlueProper :=
-  LeafGlueProper_of h1 h2 glued_affine_curve_stalks_integrally_closed h4 h5 h6
 
 theorem irr_union {X : Type} [TopologicalSpace X] {U V : Set X} (hU : IsIrreducible U) (hV : IsIrreducible V)
     (hVo : IsOpen U) (hi : (U ∩ V).Nonempty) (hc : U ∪ V = Set.univ) : IrreducibleSpace X := by
@@ -129,6 +126,3 @@ theorem glued_affine_curve_is_integral_scheme : LeafGlueIntegral := by
   haveI : IsReduced G.C0 := isReduced_of_isReduced_stalk _
   exact isIntegral_of_irreducibleSpace_of_isReduced _
 
-theorem LeafGlueProper_of'' (h1 : LeafGlueExists) (h4 : LeafGlueDim) (h5 : LeafGlueIsProper) (h6 : LeafGlueGeneric) :
-    LateralTheory.E.LeafNormalModelPf.LeafGlueProper :=
-  LeafGlueProper_of h1 glued_affine_curve_is_integral_scheme glued_affine_curve_stalks_integrally_closed h4 h5 h6

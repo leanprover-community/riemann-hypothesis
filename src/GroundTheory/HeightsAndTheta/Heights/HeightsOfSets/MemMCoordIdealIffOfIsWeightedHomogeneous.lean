@@ -3,8 +3,25 @@ import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Statements
 import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.IsSaturatedFirstCoordinateLine
 import GroundTheory.HeightsAndTheta.Heights.HeightComparison.Height
 import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.CurveIsOrbit
-import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.NoCommonZeroComplex
 import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Reading
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+def NoCommonZeroComplex.Statement : Prop :=
+  ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (n : ι → ℕ) (P : ArithVariety n) (a : ι → ℤ)
+    (J : Type) [Fintype J] (s : J → IntegralSection P a),
+    (∀ x ∈ P.points (AlgebraicClosure ℚ), ∃ j, (s j).NonzeroAt x) →
+    ∀ z ∈ P.points ℂ, ∃ (j : J) (c : (k : ι) → Fin (n k + 1)) (d : ι → ℕ)
+      (e : MvPolynomial (Coord n) ℤ),
+      IsChartForm P a (s j).num (s j).den c d e ∧ (∀ k, z k (c k) ≠ 0) ∧ evalCone z e ≠ 0
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
@@ -195,27 +212,9 @@ theorem ofGeo_toGeo_metric (A : HermLine n) {z : Cone n ℂ} (hz : BlockNonzero 
     (ofGeo A.toGeo A.isSmoothHerm_toGeo).metric z = A.metric z :=
   toGeo_h_of_blockNonzero A (w := flatCone z) hz
 
-theorem log_div_toGeo_h (A A' : HermLine n) {z : Cone n ℂ} (hz : BlockNonzero z) :
-    Real.log (A.toGeo.h (flatCone z) / A'.toGeo.h (flatCone z)) =
-      Real.log (A.metric z) - Real.log (A'.metric z) := by
-  rw [toGeo_h_of_blockNonzero A (w := flatCone z) hz,
-    toGeo_h_of_blockNonzero A' (w := flatCone z) hz]
-  exact Real.log_div (A.metric_pos z hz).ne' (A'.metric_pos z hz).ne'
 
 end HermLine
 
-theorem metricBound_iff (P : ArithVariety n) (A A' : HermLine n) (c : ℝ) :
-    (∀ z ∈ Geo.mcPts (ι := blockIdx n) P.ideal,
-        |Real.log (A.toGeo.h z / A'.toGeo.h z)| ≤ c) ↔
-      ∀ z ∈ P.points ℂ, |Real.log (A.metric z) - Real.log (A'.metric z)| ≤ c := by
-  constructor
-  · intro h z hz
-    rw [← HermLine.log_div_toGeo_h A A' hz.1]
-    exact h _ ((P.mem_mcPts_iff _).mpr hz)
-  · intro h w hw
-    have hz := (P.mem_mcPts_iff w).mp hw
-    have := h _ hz
-    rwa [← HermLine.log_div_toGeo_h A A' hz.1] at this
 
 omit [DecidableEq ι] in
 
@@ -270,81 +269,8 @@ theorem recR_congr (I : Ideal (Geo.MRing κ) → (m : ℕ) → (Fin m → Geo.He
 
 end Curves
 
-theorem inter_congr_of_curve
-    (II : Ideal (MvPolynomial (Coord n) ℤ) → (m : ℕ) → (Fin m → Geo.HermLine (blockIdx n)) → ℝ)
-    (hII : Geo.IsIntersectionFamily II) {W : Ideal (MvPolynomial (Coord n) ℤ)}
-    (hW : Geo.IsArithVar (ι := blockIdx n) W 1) {B B' : Geo.HermLine (blockIdx n)}
-    (hB : Geo.IsSmoothHerm B) (hB' : Geo.IsSmoothHerm B') (ha : B.a = B'.a)
-    (hh : ∀ z ∈ Geo.mcPts W, B.h z = B'.h z) : II W 1 ![B] = II W 1 ![B'] := by
-  obtain ⟨-, hAdd, hR⟩ := hII
-  have hW' : Geo.IsArithVar (ι := blockIdx n) W (0 + 1) := hW
-  have hprime : W.IsPrime := hW.2.1.1
-  have hrel : ∀ k, ∃ i, (X ⟨k, i⟩ : MvPolynomial (Coord n) ℤ) ∉ W := hW.2.1.2.2
-  let c : (k : ι) → Fin (n k + 1) := fun k ↦ (hrel k).choose
-  have hc : ∀ k, (X ⟨k, c k⟩ : MvPolynomial (Coord n) ℤ) ∉ W := fun k ↦ (hrel k).choose_spec
-  have hmon : ∀ d : ι → ℕ, chartMonomial c d ∉ W := by
-    intro d h
-    obtain ⟨k, -, hk⟩ := Ideal.IsPrime.prod_mem_iff.mp h
-    exact hc k (hprime.mem_of_pow_mem _ hk)
-  have hsnoc : ∀ C : Geo.HermLine (blockIdx n),
-      (Fin.snoc (Fin.elim0 : Fin 0 → Geo.HermLine (blockIdx n)) C : Fin 1 → _) = ![C] := by
-    intro C
-    funext i
-    fin_cases i
-    rfl
-  have hL : ∀ j : Fin 0, Geo.IsSmoothHerm ((Fin.elim0 : Fin 0 → Geo.HermLine (blockIdx n)) j) :=
-    fun j ↦ j.elim0
-  have key : ∀ (C C' : Geo.HermLine (blockIdx n)) (d : ι → ℕ), Geo.IsSmoothHerm C →
-      Geo.IsSmoothHerm C' → (∀ k, C.a k = d k) → (∀ k, C'.a k = d k) →
-      (∀ z ∈ Geo.mcPts W, C.h z = C'.h z) → II W 1 ![C] = II W 1 ![C'] := by
-    intro C C' d hC hC' hd hd' hCC
-    have hs := (geoMultiHomog_iff _ d).mpr (isWeightedHomogeneous_chartMonomial c d)
-    have h1 := hR W 0 Fin.elim0 C (chartMonomial c d) d hW' hL hC hd hs (hmon d)
-    have h2 := hR W 0 Fin.elim0 C' (chartMonomial c d) d hW' hL hC' hd' hs (hmon d)
-    rw [hsnoc] at h1 h2
-    rw [h1, h2, recR_congr II W Fin.elim0 (chartMonomial c d) hCC]
-  let m : ι → ℕ := fun k ↦ (B.a k).natAbs
-  let S : Geo.HermLine (blockIdx n) := (HermLine.standardPow (n := n) m).toGeo
-  have hS : Geo.IsSmoothHerm S := HermLine.isSmoothHerm_toGeo _
-  have hSa : ∀ k, S.a k = m k := fun k ↦ rfl
-  have hBS : Geo.IsSmoothHerm (B.tensor S) := ContDiffOn.mul hB hS
-  have hBS' : Geo.IsSmoothHerm (B'.tensor S) := ContDiffOn.mul hB' hS
-  have hsum := key (B.tensor S) (B'.tensor S) (fun k ↦ (B.a k + m k).toNat) hBS hBS'
-    (fun k ↦ by
-      show B.a k + S.a k = _
-      rw [hSa]
-      simp only [m]
-      omega)
-    (fun k ↦ by
-      show B'.a k + S.a k = _
-      rw [hSa, ← ha]
-      simp only [m]
-      omega)
-    (fun z hz ↦ by
-      show B.h z * S.h z = B'.h z * S.h z
-      rw [hh z hz])
-  have hadd := hAdd W 0 Fin.elim0 B S hW' hL hB hS
-  have hadd' := hAdd W 0 Fin.elim0 B' S hW' hL hB' hS
-  rw [hsnoc, hsnoc, hsnoc] at hadd hadd'
-  linarith
 
-theorem height_eq_intersectionHeight [Nonempty ι] (h₁ : OrbitCurve.Statement) (h₂ : OrbitDegree.Statement)
-    (h₃ : HeightRecR.Statement)
-    (II : Ideal (MvPolynomial (Coord n) ℤ) → (m : ℕ) → (Fin m → Geo.HermLine (blockIdx n)) → ℝ)
-    (hII : Geo.IsIntersectionFamily II) (A : HermLine n) {x : Cone n (AlgebraicClosure ℚ)}
-    (hx : BlockNonzero x) : height A x = IndefiniteRowSideFullHecke.HeightsSet.height II A.toGeo (orbitIdeal x) :=
-  HeightAsIntersection.proof h₁ h₂ h₃ ι n II hII A x hx
 
-theorem intersectionHeight_eq_height [Nonempty ι] (h₁ : OrbitCurve.Statement) (h₂ : OrbitDegree.Statement)
-    (h₃ : HeightRecR.Statement)
-    (II : Ideal (MvPolynomial (Coord n) ℤ) → (m : ℕ) → (Fin m → Geo.HermLine (blockIdx n)) → ℝ)
-    (hII : Geo.IsIntersectionFamily II) (B : Geo.HermLine (blockIdx n)) (hB : Geo.IsSmoothHerm B)
-    {x : Cone n (AlgebraicClosure ℚ)} (hx : BlockNonzero x) :
-    IndefiniteRowSideFullHecke.HeightsSet.height II B (orbitIdeal x) = height (HermLine.ofGeo B hB) x := by
-  rw [height_eq_intersectionHeight h₁ h₂ h₃ II hII _ hx]
-  unfold IndefiniteRowSideFullHecke.HeightsSet.height
-  rw [inter_congr_of_curve II hII (h₁ ι n x hx) hB (HermLine.isSmoothHerm_toGeo _) rfl
-    fun z hz ↦ (HermLine.toGeo_ofGeo_h B hB ((blockNonzero_unflatCone_iff z).mpr hz.1)).symm]
 
 section Sections
 
@@ -511,39 +437,12 @@ theorem nonzeroAt_of_noCommonZero {J : ℕ} (s : Fin J → IntegralSection P a) 
     exact Finset.prod_ne_zero_iff.mpr fun k _ ↦ pow_ne_zero _ ((map_ne_zero τ).mpr (hc k))
   exact hg0 ((mul_eq_zero.mp hrel).resolve_right hmon)
 
-theorem exists_multihomog_witness_of_nonzeroAt (s : IntegralSection P a) {y : Coord n → Ω}
-    (hy : Geo.mCoordIdeal (ι := blockIdx n) y = P.ideal) (τ : AlgebraicClosure ℚ →+* ℂ)
-    {x : Cone n (AlgebraicClosure ℚ)} (hxs : s.NonzeroAt x) :
-    ∃ (dg dh : ι → ℕ) (g h : MvPolynomial (Coord n) ℤ),
-      Geo.IsMultiHomog (ι := blockIdx n) g dg ∧ Geo.IsMultiHomog (ι := blockIdx n) h dh ∧
-      (∀ k, (dg k : ℤ) = dh k + a k) ∧ aeval y g = s.valueAt y * aeval y h ∧
-      eval (flatCone fun k i ↦ τ (x k i)) (map (Int.castRingHom ℂ) g) ≠ 0 ∧
-      eval (flatCone fun k i ↦ τ (x k i)) (map (Int.castRingHom ℂ) h) ≠ 0 := by
-  obtain ⟨c, d, e, hce, hc, he⟩ := hxs
-  obtain ⟨δ, hδe, hδ⟩ := hce.1
-  refine ⟨δ, d, e, chartMonomial c d, (geoMultiHomog_iff e δ).mpr hδe,
-    (geoMultiHomog_iff _ d).mpr (isWeightedHomogeneous_chartMonomial c d),
-    fun k ↦ by have := hδ k; omega, s.aeval_chartForm hy hce, ?_, ?_⟩
-  · rw [eval_map_flatCone, evalCone_map]
-    exact (map_ne_zero τ).mpr he
-  · rw [eval_map_flatCone, evalCone_chartMonomial]
-    exact Finset.prod_ne_zero_iff.mpr fun k _ ↦ pow_ne_zero _ ((map_ne_zero τ).mpr (hc k))
 
 end IntegralSection
 
 end Sections
 
-theorem exists_point_of_curve (hC : CurveIsOrbit.Statement) (P : ArithVariety n)
-    {W : Ideal (MvPolynomial (Coord n) ℤ)} (hW : Geo.IsArithVar (ι := blockIdx n) W 1)
-    (hPW : P.ideal ≤ W) : ∃ x ∈ P.points (AlgebraicClosure ℚ), W = orbitIdeal x := by
-  obtain ⟨x, hx, rfl⟩ := hC ι n W hW
-  exact ⟨x, (mem_points_iff_le_orbitIdeal P x).mpr ⟨hx, hPW⟩, rfl⟩
 
-theorem orbitIdeal_curve_of_mem_points [Nonempty ι] (h₁ : OrbitCurve.Statement)
-    (P : ArithVariety n) {x : Cone n (AlgebraicClosure ℚ)}
-    (hx : x ∈ P.points (AlgebraicClosure ℚ)) :
-    Geo.IsArithVar (ι := blockIdx n) (orbitIdeal x) 1 ∧ P.ideal ≤ orbitIdeal x :=
-  ⟨h₁ ι n x hx.1, ((mem_points_iff_le_orbitIdeal P x).mp hx).2⟩
 
 theorem IntegralSection.noCommonZero_of_nonzeroAt (hS : NoCommonZeroComplex.Statement)
     {P : ArithVariety n} {a : ι → ℤ} {J : ℕ} (s : Fin J → IntegralSection P a)
@@ -600,3 +499,4 @@ example : (IntegralSection.chartSection (ArithVariety.whole (fun _ : Unit ↦ 1)
 end
 
 end GroundTheory.Heights₂.Heights
+end

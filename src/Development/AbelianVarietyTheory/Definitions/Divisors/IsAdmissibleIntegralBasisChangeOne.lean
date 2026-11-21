@@ -63,7 +63,6 @@ namespace Lib
 open scoped WithZero
 open IsDedekindDomain GroundTheory.FunctionField
 
-theorem isFF_iff : IsFF k F ↔ IsFunctionField k F := ⟨fun h => ⟨h⟩, fun h => h.1⟩
 
 def toRing (v : Nef.Place k F) : GroundTheory.FunctionField.Place k F where
   ring := v.1.valuationSubring
@@ -130,21 +129,6 @@ end Line
 
 section Product
 
-theorem sum_ramificationIdx [IsAlgClosed k] {E : Type} [Field E] [Algebra k E] [Algebra F E] [IsScalarTower k F E]
-    [IsFunctionField k F] [IsFunctionField k E] [FiniteDimensional F E] [Algebra.IsSeparable F E]
-    (v : GroundTheory.FunctionField.Place k F) :
-    ∑ w ∈ (v.finite_liesOver (K' := E)).toFinset, w.ramificationIdx v = Module.finrank F E := by
-  rw [← v.sum_ramificationIdx_mul_inertiaDeg (K' := E)]
-  refine Finset.sum_congr rfl fun w _ => ?_
-  have d1 : v.deg = 1 := by
-    have : Algebra.IsIntegral k v.ResidueField := Algebra.IsIntegral.of_finite _ _
-    exact (LinearEquiv.ofBijective (Algebra.linearMap k v.ResidueField)
-      IsAlgClosed.algebraMap_bijective_of_isIntegral).finrank_eq.symm.trans (Module.finrank_self k)
-  have d2 : w.deg = 1 := by
-    have : Algebra.IsIntegral k w.ResidueField := Algebra.IsIntegral.of_finite _ _
-    exact (LinearEquiv.ofBijective (Algebra.linearMap k w.ResidueField)
-      IsAlgClosed.algebraMap_bijective_of_isIntegral).finrank_eq.symm.trans (Module.finrank_self k)
-  simp [GroundTheory.FunctionField.Place.inertiaDeg, d1, d2]
 
 end Product
 

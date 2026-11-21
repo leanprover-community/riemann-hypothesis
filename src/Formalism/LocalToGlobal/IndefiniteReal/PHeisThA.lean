@@ -121,15 +121,6 @@ def symplB (V W : HSp D) : WA V W →ₗ[AF D.host.F] WA V W →ₗ[AF D.host.F]
 def eV (V W : HSp D) (a : Ix V W) : WA V W :=
   Matrix.single a.1 a.2.1 (incA D (Module.finBasis D.host.F D.host.E a.2.2))
 
-theorem sum_eV (V W : HSp D) (x : WA V W) : ∑ a, Co V W x a • eV V W a = x := by
-  ext i j
-  simp only [Matrix.sum_apply, Matrix.smul_apply, eV, Matrix.single_apply, Fintype.sum_prod_type, Co, Phi, smul_ite,
-    smul_zero, ite_and]
-  simp only [Finset.sum_ite_irrel, Finset.sum_const_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
-  conv_rhs => rw [← (bA D.host.F D.host.E).sum_repr (x i j)]
-  refine Finset.sum_congr rfl fun k _ => ?_
-  rw [Algebra.TensorProduct.basis_apply]
-  rfl
 
 end Sympl
 

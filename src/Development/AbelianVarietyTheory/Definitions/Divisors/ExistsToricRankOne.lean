@@ -150,30 +150,7 @@ def Modif.ofSubalgebra {R : Type} [CommRing R] [IsDomain R] (B : Subalgebra R (F
   dominant := ⟨(PrimeSpectrum.denseRange_comap_iff_ker_le_nilRadical B.val.toRingHom).2 (by
     rw [(RingHom.injective_iff_ker_eq_bot _).1 Subtype.val_injective]; exact bot_le)⟩
 
-theorem Modif.exists_not_isIso {R : Type} [CommRing R] [IsDomain R] (h : ¬ IsIntegrallyClosed R) :
-    ∃ M : Modif R, ¬ IsIso M.π := by
-  rw [isIntegrallyClosed_iff (FractionRing R)] at h
-  push Not at h
-  obtain ⟨x, hx, hn⟩ := h
-  have : Module.Finite R (Algebra.adjoin R {x}) := Algebra.finite_adjoin_simple_of_isIntegral hx
-  refine ⟨Modif.ofSubalgebra (Algebra.adjoin R {x}), fun hi => ?_⟩
-  have hi' : IsIso (Spec.map (CommRingCat.ofHom (algebraMap R (Algebra.adjoin R {x})))) := hi
-  have hb : Function.Bijective (algebraMap R (Algebra.adjoin R {x})) :=
-    (ConcreteCategory.isIso_iff_bijective (CommRingCat.ofHom (algebraMap R (Algebra.adjoin R {x})))).1
-      (isIso_SpecMap_iff.1 hi' |> fun e => (ConcreteCategory.isIso_iff_bijective _).2 e)
-  obtain ⟨y, hy⟩ := hb.2 ⟨x, Algebra.self_mem_adjoin_singleton R x⟩
-  exact hn y (congrArg Subtype.val hy)
 
-theorem Modif.exists_nontrivial : ∃ (R : Type) (_ : CommRing R) (_ : IsDomain R) (M : Modif R), ¬ IsIso M.π := by
-  have hns : Zsqrtd.Nonsquare 8 := ⟨fun n hn => by
-    have : n ≤ 2 := by nlinarith
-    interval_cases n <;> omega⟩
-  refine ⟨ℤ√((8 : ℕ) : ℤ), inferInstance, inferInstance, Modif.exists_not_isIso fun h => ?_⟩
-  have hd : (2 : ℤ√((8 : ℕ) : ℤ)) ^ 2 ∣ Zsqrtd.sqrtd ^ 2 := ⟨2, by decide⟩
-  obtain ⟨c, hc⟩ := (IsIntegrallyClosed.pow_dvd_pow_iff two_ne_zero).1 hd
-  have := congrArg Zsqrtd.im hc
-  simp at this
-  omega
 
 variable {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R]
 
@@ -226,29 +203,12 @@ theorem Has.labCover (hR : Base R) {D : DegData R (maximalIdeal R)} (h : Has D) 
     rw [hx, Category.assoc]
     exact h₄
 
-theorem Has.hasFin (hR : Base R) {D : DegData R (maximalIdeal R)} (h : Has D) : HasFin D := by
-  have := hR.2
-  obtain ⟨G, iG, cG, A, hG, ⟨U⟩⟩ := h
-  obtain ⟨hL, -, -, h4, h5⟩ := GlobalTheory.firstFiveLaws
-  obtain ⟨D', hD, A', U', -⟩ := GlobalTheory.UT.EndBaseChange.exists_pull hL.polBaseChange h4.unifBaseChange h5.psiOnExists
-    hR.1 hR.1 (RingHom.id R) Function.injective_id (by simp) hG U
-  exact ⟨R, inferInstance, inferInstance, inferInstance, RingHom.id R, D', ⟨hR.1, Function.injective_id, RingHom.Finite.id R⟩,
-    ⟨hD⟩, _, inferInstance, inferInstance, A', IsSemiAbelian.pullback _ G hG, ⟨U'⟩⟩
 
 theorem base_powerSeries : Base (PowerSeries ℚ) := by
   have hc : IsAdicComplete (maximalIdeal (PowerSeries ℚ)) (PowerSeries ℚ) := by
     rw [PowerSeries.maximalIdeal_eq_span_X]; infer_instance
   exact ⟨⟨inferInstance, inferInstance, inferInstance, hc⟩, algebraRat.charZero _⟩
 
-theorem LabCover.exists_toric_rank_one : ∃ D : DegData (PowerSeries ℚ) (maximalIdeal (PowerSeries ℚ)),
-    Module.finrank ℤ D.toPre.X = 1 ∧ Has D ∧ HasFin D ∧ ∃ C : LabCover D, C.n = 3 := by
-  obtain ⟨A, G, _, _, D, U, hG, -, hr, -⟩ := GlobalTheory.TateUnif.exists_unif_rank_one
-  have hu : IsUnit ((3 : ℕ) : PowerSeries ℚ) := by
-    rw [← map_natCast (algebraMap ℚ (PowerSeries ℚ))]
-    exact (IsUnit.mk0 _ (by norm_num)).map _
-  have h : Has D := ⟨G, _, _, A, hG, ⟨U⟩⟩
-  obtain ⟨C, -, h₂⟩ := h.labCover base_powerSeries 3 Nat.prime_three (by decide) hu
-  exact ⟨D, hr, h, h.hasFin base_powerSeries, C, h₂⟩
 
 end Inhabitants
 

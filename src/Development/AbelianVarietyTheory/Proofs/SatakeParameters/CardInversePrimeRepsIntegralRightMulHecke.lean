@@ -5,19 +5,465 @@ import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 import Formalism.LocalToGlobal.Columns.HeckeSp
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsIntOv
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsInvariantForm
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CardKerSubspacesAndHeckePolyOfConvolutionStatement
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CardKerSubspacesAndHeckePolyOfConvolution
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsPlaceChartOfSplitIdempotentStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SplitChartUniformiserAndResidueCardStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsSplitFrameSelfDualLatticeCompletionStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemHomLatticeIffIntegralMatrixSplitChartStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemHyperspecialIffGIntOfSuppAtSplitStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsSplitSupportedUnitaryComponentStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HeckeElementComponentMemStandardDoubleCosetStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FinrankReductionRangeAddCorankStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CardCosetsEqSubspacesKernelResidueStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.NatCardMatricesMulEqZeroStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CardSubspacesKerTransposeEqCardRange
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SplitChartUniformiserAndResidueCard
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsSplitFrameSelfDualLatticeCompletion
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemHomLatticeIffIntegralMatrixSplitChart
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemHyperspecialIffGIntOfSuppAtSplit
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsSplitSupportedUnitaryComponent
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HeckeElementComponentMemStandardDoubleCoset
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FinrankReductionRangeAddCorank
+import BuildAid.ForwardExisting
 
+section
+open Formalism.IndefR.Bridge Formalism.L2.DIV Formalism.DivisionValues Formalism.L2.Col NumberField MeasureTheory Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_ker_subspaces_and_heckePolyOf_convolution : (∀ (k U U' : Type) [Field k] [Fintype k] [AddCommGroup U] [Module k U] [FiniteDimensional k U] [AddCommGroup U'] [Module k U'] [FiniteDimensional k U'] (n t d : ℕ) (f : U →ₗ[k] U'), Module.finrank k U = n + t → Module.finrank k U' = n → Nat.card {W : Submodule k U // Module.finrank k W + d = n + t ∧ W ≤ LinearMap.ker f} = ∑ j ∈ Finset.range (d + 1), Fintype.card k ^ ((n - j) * (d - j)) * gaussBin (Fintype.card k) t (d - j) * Nat.card {W' : Submodule k U' // Module.finrank k W' = j ∧ LinearMap.range f ≤ W'}) ∧ ∀ (L : Type) [Field L] (q n t : ℕ) (a : ℕ → L) (ν s : L), (∀ j, n < j → a j = 0) → heckePolyOf (n + t) q (fun d => ∑ j ∈ Finset.range (d + 1), (q : L) ^ ((n - j) * (d - j)) * (gaussBin q t (d - j) : L) * ν ^ (d - j) * s ^ j * a j) = (heckePolyOf n q a).comp (C s * X) * blockPoly (ν * (q : L) ^ n) q t := by
+  first | exact @GlobalTheory.KerRangeCount.card_ker_and_heckePolyOf_conv | exact GlobalTheory.KerRangeCount.card_ker_and_heckePolyOf_conv | (intros; apply GlobalTheory.KerRangeCount.card_ker_and_heckePolyOf_conv <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.NTheta Formalism.IndefR.Datum IsDedekindDomain NumberField Matrix GlobalTheory.SplitHecke
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.splitChart_uniformiser_and_residueCard : ∀ {D : D7} (e : AE D) (P : HeightOneSpectrum (𝓞 D.host.E)) (v : HeightOneSpectrum (𝓞 D.host.F)) (π : AE D →+* Fv D.host.F v), IsIdemAt e P → Chart e v π → ∀ ϖ : 𝓞 D.host.E, ϖ ∈ P.asIdeal → ϖ ∉ P.asIdeal ^ 2 → (∃ p : Ov D v, algebraMap (Ov D v) (Fv D.host.F v) p = π (incA D (ϖ : D.host.E)) ∧ Irreducible p) ∧ Nat.card (IsLocalRing.ResidueField (Ov D v)) = Ideal.absNorm P.asIdeal := by
+  first | exact @GlobalTheory.SplitUnif.unif_chart | exact GlobalTheory.SplitUnif.unif_chart | (intros; apply GlobalTheory.SplitUnif.unif_chart <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.NTheta Formalism.IndefR.Datum IsDedekindDomain NumberField Matrix GlobalTheory.SplitHecke
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_splitFrame_selfDualLattice_completion : ∀ {D : D7} (e : AE D) (v : HeightOneSpectrum (𝓞 D.host.F)) (π : AE D →+* Fv D.host.F v), IsSplitIdem D e → Chart e v π → ∀ V : HSp D, ∃ β : GL (Fin V.rank) (Fv D.host.F v), Frame V e π β := by
+  first | exact @GlobalTheory.SplitFrame.exists_frame | exact GlobalTheory.SplitFrame.exists_frame | (intros; apply GlobalTheory.SplitFrame.exists_frame <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.NTheta Formalism.IndefR.Datum IsDedekindDomain NumberField Matrix GlobalTheory.SplitHecke
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_homLattice_iff_integralMatrix_splitChart : ∀ {D : D7} (e : AE D) (v : HeightOneSpectrum (𝓞 D.host.F)) (π : AE D →+* Fv D.host.F v), IsSplitIdem D e → Chart e v π → ∀ (S T : HSp D) (βS : GL (Fin S.rank) (Fv D.host.F v)) (βT : GL (Fin T.rank) (Fv D.host.F v)), Frame S e π βS → Frame T e π βT → ∃ c : Fv D.host.F v, c ≠ 0 ∧ ∀ u : WO S T, IsHalf e u → (u ∈ latO S T (L0c D S) (L0c D T) (fun _ => True) ↔ IntM (Ov D v) (c • ((βT⁻¹).1 * Matrix.map u π * βS.1))) := by
+  first | exact @GlobalTheory.SplitHomLattice.mem_latO_iff_intM | exact GlobalTheory.SplitHomLattice.mem_latO_iff_intM | (intros; apply GlobalTheory.SplitHomLattice.mem_latO_iff_intM <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.NTheta Formalism.IndefR.Datum IsDedekindDomain NumberField Matrix GlobalTheory.SplitHecke
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_hyperspecial_iff_gInt_of_suppAt_split : ∀ {D : D7} (e : AE D) (v : HeightOneSpectrum (𝓞 D.host.F)) (π : AE D →+* Fv D.host.F v), IsSplitIdem D e → Chart e v π → ∀ (V : HSp D) (β : GL (Fin V.rank) (Fv D.host.F v)), Frame V e π β → ∀ g : GA D V, SuppAt e V g → (g ∈ KsphC V ∅ ↔ GInt (Ov D v) (rho V π β g)) := by
+  first | exact @GlobalTheory.SplitHecke.Stab.mem_KsphC_iff_gInt | exact GlobalTheory.SplitHecke.Stab.mem_KsphC_iff_gInt | (intros; apply GlobalTheory.SplitHecke.Stab.mem_KsphC_iff_gInt <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.NTheta Formalism.IndefR.Datum IsDedekindDomain NumberField Matrix GlobalTheory.SplitHecke
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_splitSupported_unitary_component : ∀ {D : D7} (e : AE D) (v : HeightOneSpectrum (𝓞 D.host.F)) (π : AE D →+* Fv D.host.F v), IsSplitIdem D e → Chart e v π → ∀ (V : HSp D) (β x : GL (Fin V.rank) (Fv D.host.F v)), ∃ g : GA D V, SuppAt e V g ∧ rho V π β g = x := by
+  first | exact @GlobalTheory.SplitOnto.exists_suppAt_rho_eq | exact GlobalTheory.SplitOnto.exists_suppAt_rho_eq | (intros; apply GlobalTheory.SplitOnto.exists_suppAt_rho_eq <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.NTheta Formalism.IndefR.Datum IsDedekindDomain NumberField Matrix GlobalTheory.SplitHecke
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heckeElement_component_mem_standardDoubleCoset : ∀ {D : D7} (e : AE D) (v : HeightOneSpectrum (𝓞 D.host.F)) (π : AE D →+* Fv D.host.F v), IsSplitIdem D e → Chart e v π → ∀ (V : HSp D) (β : GL (Fin V.rank) (Fv D.host.F v)), Frame V e π β → ∀ (ϖ : D.host.E) (p : Ov D v) (k : ℕ) (α : GA D V), algebraMap (Ov D v) (Fv D.host.F v) p = π (incA D ϖ) → IsHeckeElt V e ϖ k α → Hk (Ov D v) p k (rho V π β α) := by
+  first | exact @GlobalTheory.SplitHecke.HeckeComp.hk_of_isHeckeElt | exact GlobalTheory.SplitHecke.HeckeComp.hk_of_isHeckeElt | (intros; apply GlobalTheory.SplitHecke.HeckeComp.hk_of_isHeckeElt <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.NTheta Formalism.IndefR.Datum IsDedekindDomain NumberField Matrix GlobalTheory.SplitHecke
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finrank_reduction_range_add_corank : ∀ (O K : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field K] [Algebra O K] [IsFractionRing O K] (p : O), Irreducible p → ∀ (n j : ℕ) (a : GL (Fin n) K) (A : Matrix (Fin n) (Fin n) O), j ≤ n → Hk O p j a → A.map (algebraMap O K) = a.1 → Module.finrank (IsLocalRing.ResidueField O) (LinearMap.range (A.map (IsLocalRing.residue O)).mulVecLin) + j = n := by
+  first | exact @GlobalTheory.SplitHecke.finrank_range_reduction | exact GlobalTheory.SplitHecke.finrank_range_reduction | (intros; apply GlobalTheory.SplitHecke.finrank_range_reduction <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.NTheta Formalism.IndefR.Datum IsDedekindDomain NumberField Matrix GlobalTheory.SplitHecke
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.SplitHecke
+
+theorem exists_linearEquiv_map_eq_of_finrank_eq {k V : Type} [Field k] [AddCommGroup V]
+    [Module k V] [FiniteDimensional k V] (W W' : Submodule k V)
+    (h : Module.finrank k W = Module.finrank k W') :
+    ∃ e : V ≃ₗ[k] V, W.map e.toLinearMap = W' := by
+  obtain ⟨U, hU⟩ := W.exists_isCompl
+  obtain ⟨U', hU'⟩ := W'.exists_isCompl
+  have h1 := Submodule.finrank_add_eq_of_isCompl hU
+  have h2 := Submodule.finrank_add_eq_of_isCompl hU'
+  have h3 : Module.finrank k U = Module.finrank k U' := by omega
+  let a : W ≃ₗ[k] W' := LinearEquiv.ofFinrankEq _ _ h
+  let b : U ≃ₗ[k] U' := LinearEquiv.ofFinrankEq _ _ h3
+  let e : V ≃ₗ[k] V := (Submodule.prodEquivOfIsCompl W U hU).symm ≪≫ₗ (a.prodCongr b) ≪≫ₗ
+    Submodule.prodEquivOfIsCompl W' U' hU'
+  have he : ∀ w : W, e w = a w := by
+    intro w
+    simp [e]
+  refine ⟨e, ?_⟩
+  apply le_antisymm
+  · rintro _ ⟨w, hw, rfl⟩
+    have := he ⟨w, hw⟩
+    change e w ∈ W'
+    simp only at this
+    rw [this]
+    exact (a ⟨w, hw⟩).2
+  · intro w hw
+    refine ⟨a.symm ⟨w, hw⟩, (a.symm ⟨w, hw⟩).2, ?_⟩
+    change e _ = w
+    rw [he]
+    simp
+
+theorem exists_gl_map_residue_eq (O : Type) [CommRing O] [IsLocalRing O] (n : ℕ)
+    (W W' : Submodule (IsLocalRing.ResidueField O) (Fin n → IsLocalRing.ResidueField O))
+    (h : Module.finrank (IsLocalRing.ResidueField O) W =
+      Module.finrank (IsLocalRing.ResidueField O) W') :
+    ∃ g : GL (Fin n) O, W.map (g.1.map (IsLocalRing.residue O)).mulVecLin = W' := by
+  obtain ⟨e, he⟩ := exists_linearEquiv_map_eq_of_finrank_eq W W' h
+  let M : Matrix (Fin n) (Fin n) (IsLocalRing.ResidueField O) := LinearMap.toMatrix' e.toLinearMap
+  choose A hA using fun i j => IsLocalRing.residue_surjective (R := O) (M i j)
+  have hAM : (Matrix.of A).map (IsLocalRing.residue O) = M := by
+    ext i j
+    exact hA i j
+  have hM : M.det ≠ 0 := by
+    have : M.det = LinearMap.det e.toLinearMap := LinearMap.det_toMatrix' _
+    rw [this]
+    exact (LinearEquiv.isUnit_det' e).ne_zero
+  have hu : IsUnit (Matrix.of A).det := by
+    rw [← IsLocalRing.residue_ne_zero_iff_isUnit, RingHom.map_det]
+    change ((Matrix.of A).map (IsLocalRing.residue O)).det ≠ 0
+    rw [hAM]
+    exact hM
+  obtain ⟨g, hg⟩ := (Matrix.isUnit_iff_isUnit_det _).2 hu
+  refine ⟨g, ?_⟩
+  rw [hg, hAM, ← he]
+  congr 1
+  exact Matrix.toLin'_toMatrix' e.toLinearMap
+
+end GlobalTheory.SplitHecke
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.NTheta Formalism.IndefR.Datum IsDedekindDomain NumberField Matrix GlobalTheory.SplitHecke
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.SplitHecke.Cosets
+
+open IsLocalRing
+
+variable {O K : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field K] [Algebra O K]
+  [IsFractionRing O K] {p : O}
+
+theorem map_res_eq_zero_iff (hp : Irreducible p) {m n : ℕ} (X : Matrix (Fin m) (Fin n) O) :
+    X.map (residue O) = 0 ↔ ∃ C : Matrix (Fin m) (Fin n) O, X = p • C := by
+  have hm : maximalIdeal O = Ideal.span {p} := hp.maximalIdeal_eq
+  constructor
+  · intro h
+    have : ∀ i j, ∃ c, X i j = p * c := by
+      intro i j
+      have h1 : residue O (X i j) = 0 := congrFun (congrFun h i) j
+      rw [residue_eq_zero_iff, hm, Ideal.mem_span_singleton] at h1
+      exact h1
+    choose C hC using this
+    exact ⟨Matrix.of C, Matrix.ext hC⟩
+  · rintro ⟨C, rfl⟩
+    ext i j
+    have : residue O (p * C i j) = 0 := by
+      rw [residue_eq_zero_iff, hm, Ideal.mem_span_singleton]
+      exact dvd_mul_right _ _
+    exact this
+
+theorem map_inj {m n : ℕ} {X Y : Matrix (Fin m) (Fin n) O}
+    (h : X.map (algebraMap O K) = Y.map (algebraMap O K)) : X = Y := by
+  ext i j
+  exact IsFractionRing.injective O K (congrFun (congrFun h i) j)
+
+omit [IsDomain O] [IsDiscreteValuationRing O] [IsFractionRing O K] in
+theorem map_smul' {m n : ℕ} (c : O) (X : Matrix (Fin m) (Fin n) O) :
+    (c • X).map (algebraMap O K) = algebraMap O K c • X.map (algebraMap O K) := by
+  ext i j
+  simp
+
+theorem intM_inv_smul_iff (hp : Irreducible p) {m n : ℕ} (X : Matrix (Fin m) (Fin n) O) :
+    IntM O ((algebraMap O K p)⁻¹ • X.map (algebraMap O K)) ↔ X.map (residue O) = 0 := by
+  have h0 : algebraMap O K p ≠ 0 := by
+    intro h
+    exact hp.ne_zero (IsFractionRing.injective O K (by rw [h, map_zero]))
+  rw [map_res_eq_zero_iff hp, intM_iff]
+  constructor
+  · rintro ⟨C, hC⟩
+    refine ⟨C, map_inj (K := K) ?_⟩
+    rw [map_smul', hC, smul_smul, mul_inv_cancel₀ h0, one_smul]
+  · rintro ⟨C, rfl⟩
+    refine ⟨C, ?_⟩
+    rw [map_smul', smul_smul, inv_mul_cancel₀ h0, one_smul]
+
+theorem exists_of_range_le (hp : Irreducible p) {n : ℕ} {A A' : Matrix (Fin n) (Fin n) O}
+    (h : LinearMap.range (A'.map (residue O)).mulVecLin ≤ LinearMap.range (A.map (residue O)).mulVecLin) :
+    ∃ B C : Matrix (Fin n) (Fin n) O, A' = A * B + p • C := by
+  have h1 : ∀ j, ∃ b : Fin n → O, (A.map (residue O)) *ᵥ (fun i => residue O (b i)) =
+      (A'.map (residue O)) *ᵥ Pi.single j 1 := by
+    intro j
+    obtain ⟨y, hy⟩ := h ⟨Pi.single j 1, rfl⟩
+    choose b hb using fun i => residue_surjective (R := O) (y i)
+    refine ⟨b, ?_⟩
+    have : (fun i => residue O (b i)) = y := funext hb
+    rw [this]
+    exact hy
+  choose b hb using h1
+  obtain ⟨C, hC⟩ := (map_res_eq_zero_iff hp (A' - A * Matrix.of fun i j => b j i)).1 (by
+    ext i j
+    have := congrFun (hb j) i
+    rw [Matrix.mulVec_single_one] at this
+    simp only [Matrix.mulVec, dotProduct, Matrix.map_apply, Matrix.col_apply] at this
+    simp [Matrix.mul_apply, ← this])
+  exact ⟨_, C, by rw [← hC]; abel⟩
+
+theorem range_le_of_mul {n : ℕ} {A A' : Matrix (Fin n) (Fin n) O} {a a' : GL (Fin n) K}
+    (hA : A.map (algebraMap O K) = a.1) (hA' : A'.map (algebraMap O K) = a'.1) (h : IntM O (a⁻¹ * a').1) :
+    LinearMap.range (A'.map (residue O)).mulVecLin ≤ LinearMap.range (A.map (residue O)).mulVecLin := by
+  obtain ⟨B, hB⟩ := intM_iff.1 h
+  have : A' = A * B := by
+    refine map_inj (K := K) ?_
+    rw [Matrix.map_mul, hA, hA', hB, ← Units.val_mul, mul_inv_cancel_left]
+  rw [this, Matrix.map_mul, Matrix.mulVecLin_mul]
+  exact LinearMap.range_comp_le_range _ _
+
+theorem intM_of_range_le (hp : Irreducible p) {n : ℕ} {A A' : Matrix (Fin n) (Fin n) O} {a a' : GL (Fin n) K}
+    (hA : A.map (algebraMap O K) = a.1) (hA' : A'.map (algebraMap O K) = a'.1)
+    (ha : IntM O (algebraMap O K p • (a⁻¹).1))
+    (h : LinearMap.range (A'.map (residue O)).mulVecLin ≤ LinearMap.range (A.map (residue O)).mulVecLin) :
+    IntM O (a⁻¹ * a').1 := by
+  obtain ⟨B, C, hBC⟩ := exists_of_range_le hp h
+  have : (a⁻¹ * a').1 = B.map (algebraMap O K) + (algebraMap O K p • (a⁻¹).1) * C.map (algebraMap O K) := by
+    rw [Units.val_mul, ← hA', hBC, Matrix.map_add _ (map_add _), Matrix.map_mul, map_smul', hA, Matrix.mul_add,
+      ← Matrix.mul_assoc, ← Units.val_mul, inv_mul_cancel, Units.val_one, Matrix.one_mul, Matrix.mul_smul,
+      Matrix.smul_mul]
+  rw [this]
+  exact (intM_iff.2 ⟨B, rfl⟩).add (ha.mul (intM_iff.2 ⟨C, rfl⟩))
+
+theorem GInt.exists_det {n : ℕ} {k : GL (Fin n) K} (hk : GInt O k) : ∃ u : Oˣ, k.1.det = algebraMap O K u := by
+  obtain ⟨A, hA⟩ := intM_iff.1 hk.1
+  obtain ⟨B, hB⟩ := intM_iff.1 hk.2
+  have : A * B = 1 := by
+    refine map_inj (K := K) ?_
+    rw [Matrix.map_mul, hA, hB, ← Units.val_mul, mul_inv_cancel, Units.val_one,
+      Matrix.map_one _ (map_zero _) (map_one _)]
+  have hu : IsUnit A.det := Matrix.isUnit_det_of_right_inverse this
+  refine ⟨hu.unit, ?_⟩
+  rw [← hA, IsUnit.unit_spec, RingHom.map_det]
+  rfl
+
+theorem hk_mul {n j : ℕ} {α k₁ k₂ : GL (Fin n) K} (hα : Hk O p j α) (h₁ : GInt O k₁) (h₂ : GInt O k₂) :
+    Hk O p j (k₁ * α * k₂) := by
+  refine ⟨(h₁.1.mul hα.1).mul h₂.1, ?_, ?_⟩
+  · have := (h₂.2.mul hα.2.1).mul h₁.2
+    rw [_root_.mul_inv_rev, _root_.mul_inv_rev, Units.val_mul, Units.val_mul]
+    rwa [Matrix.mul_smul, Matrix.smul_mul, Matrix.mul_assoc] at this
+  · obtain ⟨u, hu⟩ := hα.2.2
+    obtain ⟨u₁, hu₁⟩ := GInt.exists_det h₁
+    obtain ⟨u₂, hu₂⟩ := GInt.exists_det h₂
+    refine ⟨u₁ * u * u₂, ?_⟩
+    rw [Units.val_mul, Units.val_mul, Matrix.det_mul, Matrix.det_mul, hu, hu₁, hu₂, ← map_mul, ← map_mul]
+    congr 1
+    push_cast
+    ring
+
+omit [IsDomain O] [IsDiscreteValuationRing O] [IsFractionRing O K] in
+theorem gInt_map {n : ℕ} (g : GL (Fin n) O) : GInt O (Matrix.GeneralLinearGroup.map (algebraMap O K) g) :=
+  ⟨intM_iff.2 ⟨g.1, rfl⟩, by rw [← map_inv]; exact intM_iff.2 ⟨(g⁻¹).1, rfl⟩⟩
+
+theorem cond_iff (hp : Irreducible p) {m n : ℕ} (z : Matrix (Fin m) (Fin n) O) {A : Matrix (Fin n) (Fin n) O}
+    {a : Matrix (Fin n) (Fin n) K} (hA : A.map (algebraMap O K) = a) :
+    IntM O (((algebraMap O K p)⁻¹ • z.map (algebraMap O K)) * a) ↔
+      LinearMap.range (A.map (residue O)).mulVecLin ≤ LinearMap.ker (z.map (residue O)).mulVecLin := by
+  rw [← hA, Matrix.smul_mul, ← Matrix.map_mul, intM_inv_smul_iff hp, LinearMap.range_le_ker_iff,
+    ← Matrix.mulVecLin_mul, Matrix.map_mul]
+  constructor
+  · intro h
+    rw [h, Matrix.mulVecLin_zero]
+  · intro h
+    apply Matrix.toLin'.injective
+    rw [map_zero]
+    exact h
+
+theorem card_cosets : ∀ (O K : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field K] [Algebra O K] [IsFractionRing O K] (p : O), Irreducible p → ∀ (m n j : ℕ) (ι : Type) (α : GL (Fin n) K) (R : Finset ι) (ρ : ι → GL (Fin n) K) (z : Matrix (Fin m) (Fin n) O), j ≤ n → Hk O p j α → Reps O α R ρ → Nat.card {γ : ι // γ ∈ R ∧ IntM O (((algebraMap O K p)⁻¹ • z.map (algebraMap O K)) * (ρ γ).1)} = Nat.card {W : Submodule (IsLocalRing.ResidueField O) (Fin n → IsLocalRing.ResidueField O) // Module.finrank (IsLocalRing.ResidueField O) W + j = n ∧ W ≤ LinearMap.ker (z.map (IsLocalRing.residue O)).mulVecLin} := by
+  intro O K _ _ _ _ _ _ p hp m n j ι α R ρ z hj hα hR
+  have hH : ∀ γ ∈ R, Hk O p j (ρ γ) := by
+    intro γ hγ
+    obtain ⟨k₁, k₂, h₁, h₂, h⟩ := hR.1 γ hγ
+    rw [h]
+    exact hk_mul hα h₁ h₂
+  choose A hA using fun γ (hγ : γ ∈ R) => intM_iff.1 (hH γ hγ).1
+  refine Nat.card_eq_of_bijective (fun γ => ⟨LinearMap.range ((A γ.1 γ.2.1).map (residue O)).mulVecLin,
+    GlobalTheory.SplitHecke.finrank_range_reduction O K p hp n j _ _ hj (hH _ γ.2.1) (hA _ γ.2.1), (cond_iff hp z (hA _ γ.2.1)).1 γ.2.2⟩) ⟨?_, ?_⟩
+  · rintro ⟨γ, hγ, hγ1⟩ ⟨γ', hγ', hγ2⟩ h
+    have h' : LinearMap.range ((A γ hγ).map (residue O)).mulVecLin =
+        LinearMap.range ((A γ' hγ').map (residue O)).mulVecLin := congrArg Subtype.val h
+    have hG : GInt O ((ρ γ)⁻¹ * ρ γ') := by
+      refine ⟨intM_of_range_le hp (hA γ hγ) (hA γ' hγ') (hH γ hγ).2.1 h'.ge, ?_⟩
+      rw [_root_.mul_inv_rev, inv_inv]
+      exact intM_of_range_le hp (hA γ' hγ') (hA γ hγ) (hH γ' hγ').2.1 h'.le
+    obtain ⟨k₁, k₂, h₁, h₂, he⟩ := hR.1 γ' hγ'
+    have hu := hR.2 k₁ k₂ h₁ h₂
+    rw [← he] at hu
+    exact Subtype.ext (hu.unique ⟨hγ, hG⟩ ⟨hγ', by rw [inv_mul_cancel]; exact gInt_one⟩)
+  · rintro ⟨W, hW, hWz⟩
+    obtain ⟨A₀, hA₀⟩ := intM_iff.1 hα.1
+    have h0 := GlobalTheory.SplitHecke.finrank_range_reduction O K p hp n j _ _ hj hα hA₀
+    obtain ⟨g, hg⟩ := GlobalTheory.SplitHecke.exists_gl_map_residue_eq O n (LinearMap.range (A₀.map (residue O)).mulVecLin) W (by omega)
+    obtain ⟨γ, ⟨hγ, hG⟩, -⟩ := hR.2 _ 1 (gInt_map g) gInt_one
+    rw [mul_one] at hG
+    have hgA : (g.1 * A₀).map (algebraMap O K) =
+        (Matrix.GeneralLinearGroup.map (algebraMap O K) g * α).1 := by
+      rw [Matrix.map_mul, hA₀]
+      rfl
+    have hr : LinearMap.range ((A γ hγ).map (residue O)).mulVecLin = W := by
+      rw [← hg, ← LinearMap.range_comp, ← Matrix.mulVecLin_mul, ← Matrix.map_mul]
+      refine le_antisymm (range_le_of_mul hgA (hA γ hγ) ?_) (range_le_of_mul (hA γ hγ) hgA hG.1)
+      have := hG.2
+      rwa [_root_.mul_inv_rev, inv_inv] at this
+    exact ⟨⟨γ, hγ, (cond_iff hp z (hA γ hγ)).2 (hr ▸ hWz)⟩, Subtype.ext hr⟩
+
+end GlobalTheory.SplitHecke.Cosets
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.NTheta Formalism.IndefR.Datum IsDedekindDomain NumberField Matrix GlobalTheory.SplitHecke
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_cosets_eq_subspaces_kernel_residue : ∀ (O K : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field K] [Algebra O K] [IsFractionRing O K] (p : O), Irreducible p → ∀ (m n j : ℕ) (ι : Type) (α : GL (Fin n) K) (R : Finset ι) (ρ : ι → GL (Fin n) K) (z : Matrix (Fin m) (Fin n) O), j ≤ n → Hk O p j α → Reps O α R ρ → Nat.card {γ : ι // γ ∈ R ∧ IntM O (((algebraMap O K p)⁻¹ • z.map (algebraMap O K)) * (ρ γ).1)} = Nat.card {W : Submodule (IsLocalRing.ResidueField O) (Fin n → IsLocalRing.ResidueField O) // Module.finrank (IsLocalRing.ResidueField O) W + j = n ∧ W ≤ LinearMap.ker (z.map (IsLocalRing.residue O)).mulVecLin} := by
+  first | exact @GlobalTheory.SplitHecke.Cosets.card_cosets | exact GlobalTheory.SplitHecke.Cosets.card_cosets | (intros; apply GlobalTheory.SplitHecke.Cosets.card_cosets <;> assumption)
+end
+
+section
+open Matrix
+
+namespace GlobalTheory
+
+def killersEquiv {k : Type} [Field k] {m n : ℕ} (A : Matrix (Fin n) (Fin n) k) :
+    {w : Matrix (Fin m) (Fin n) k // w * A = 0} ≃ (Fin m → LinearMap.ker (Aᵀ).mulVecLin) where
+  toFun w i := ⟨w.1 i, by
+    rw [LinearMap.mem_ker, Matrix.mulVecLin_apply, Matrix.mulVec_transpose]
+    funext l
+    have := congrFun (congrFun w.2 i) l
+    simpa [Matrix.mul_apply, Matrix.vecMul, dotProduct] using this⟩
+  invFun f := ⟨Matrix.of fun i => (f i).1, by
+    ext i l
+    have h := (f i).2
+    rw [LinearMap.mem_ker, Matrix.mulVecLin_apply, Matrix.mulVec_transpose] at h
+    have := congrFun h l
+    simpa [Matrix.mul_apply, Matrix.vecMul, dotProduct] using this⟩
+  left_inv w := by ext i l; rfl
+  right_inv f := by ext i l; rfl
+
+theorem natCard_matrices_mul_eq_zero (k : Type) [Field k] [Finite k] (m n j : ℕ)
+    (A : Matrix (Fin n) (Fin n) k)
+    (h : Module.finrank k (LinearMap.range A.mulVecLin) + j = n) :
+    Nat.card {w : Matrix (Fin m) (Fin n) k // w * A = 0} = Nat.card k ^ (j * m) := by
+  have h1 : Module.finrank k (LinearMap.range (Aᵀ).mulVecLin)
+      = Module.finrank k (LinearMap.range A.mulVecLin) := Matrix.rank_transpose A
+  have h2 := LinearMap.finrank_range_add_finrank_ker (Aᵀ).mulVecLin
+  rw [h1, Module.finrank_fin_fun] at h2
+  have h3 : Module.finrank k (LinearMap.ker (Aᵀ).mulVecLin) = j := by omega
+  rw [Nat.card_congr (killersEquiv A), Nat.card_fun, Module.natCard_eq_pow_finrank (K := k), h3,
+    Nat.card_eq_fintype_card (α := Fin m), Fintype.card_fin, pow_mul]
+
+end GlobalTheory
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.NTheta Formalism.IndefR.Datum IsDedekindDomain NumberField Matrix GlobalTheory.SplitHecke
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.natCard_left_kernel_matrices_eq_pow : ∀ (k : Type) [Field k] [Finite k] (m n j : ℕ) (A : Matrix (Fin n) (Fin n) k), Module.finrank k (LinearMap.range A.mulVecLin) + j = n → Nat.card {w : Matrix (Fin m) (Fin n) k // w * A = 0} = Nat.card k ^ (j * m) := by
+  atlas_forward_decl GlobalTheory.natCard_matrices_mul_eq_zero
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.NTheta Formalism.IndefR.Datum IsDedekindDomain NumberField Matrix GlobalTheory.SplitHecke
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.SplitHecke
+
+theorem card_le_ker_transpose_eq_card_range_le :
+    ∀ (k : Type) [Field k] (m n j : ℕ) (z : Matrix (Fin m) (Fin n) k), Nat.card {W : Submodule k (Fin m → k) // Module.finrank k W + j = m ∧ W ≤ LinearMap.ker zᵀ.mulVecLin} = Nat.card {W' : Submodule k (Fin m → k) // Module.finrank k W' = j ∧ LinearMap.range z.mulVecLin ≤ W'} := by
+  intro k _ m n j z
+  set B : LinearMap.BilinForm k (Fin m → k) := Matrix.toBilin' (1 : Matrix (Fin m) (Fin m) k) with hBdef
+  have hB : ∀ x y, B x y = x ⬝ᵥ y := by
+    intro x y
+    rw [hBdef, Matrix.toBilin'_apply', Matrix.one_mulVec]
+  have hrefl : B.IsRefl := by
+    intro x y h
+    rw [hB] at h ⊢
+    rw [dotProduct_comm]; exact h
+  have hnd : B.Nondegenerate := by
+    rw [hBdef]
+    exact Matrix.Nondegenerate.toBilin' (Matrix.nondegenerate_of_det_ne_zero (by simp))
+  have hinv : ∀ W : Submodule k (Fin m → k), B.orthogonal (B.orthogonal W) = W :=
+    fun W => LinearMap.BilinForm.orthogonal_orthogonal hnd hrefl W
+  have hdim : ∀ W : Submodule k (Fin m → k),
+      Module.finrank k W + Module.finrank k (B.orthogonal W) = m := by
+    intro W
+    have h1 := LinearMap.BilinForm.finrank_orthogonal hnd W
+    have h2 := Submodule.finrank_le W
+    simp only [Module.finrank_fin_fun] at h1 h2
+    omega
+  have hker : LinearMap.ker zᵀ.mulVecLin = B.orthogonal (LinearMap.range z.mulVecLin) := by
+    ext x
+    rw [LinearMap.mem_ker, LinearMap.BilinForm.mem_orthogonal_iff, Matrix.mulVecLin_apply]
+    constructor
+    · rintro h _ ⟨y, rfl⟩
+      show B (z.mulVecLin y) x = 0
+      rw [hB, Matrix.mulVecLin_apply, dotProduct_comm, Matrix.dotProduct_mulVec,
+        ← Matrix.mulVec_transpose, h, zero_dotProduct]
+    · intro h
+      ext i
+      have h1 : B (z.mulVecLin (Pi.single i 1)) x = 0 := h _ ⟨_, rfl⟩
+      rw [hB, Matrix.mulVecLin_apply, dotProduct_comm, Matrix.dotProduct_mulVec,
+        ← Matrix.mulVec_transpose, dotProduct_single, mul_one] at h1
+      simpa using h1
+  let e : Submodule k (Fin m → k) ≃ Submodule k (Fin m → k) :=
+    ⟨B.orthogonal, B.orthogonal, hinv, hinv⟩
+  refine Nat.card_congr (e.subtypeEquiv fun W => ?_)
+  show _ ↔ Module.finrank k (B.orthogonal W) = j ∧ LinearMap.range z.mulVecLin ≤ B.orthogonal W
+  have hd := hdim W
+  refine and_congr ⟨fun h => by omega, fun h => by omega⟩ ?_
+  rw [hker]
+  constructor
+  · intro h
+    have := LinearMap.BilinForm.orthogonal_le (B := B) h
+    rwa [hinv] at this
+  · intro h
+    have := LinearMap.BilinForm.orthogonal_le (B := B) h
+    rwa [hinv] at this
+
+end GlobalTheory.SplitHecke
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.NTheta Formalism.IndefR.Datum IsDedekindDomain NumberField Matrix GlobalTheory.SplitHecke
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_subspaces_ker_transpose_eq_card_range : ∀ (k : Type) [Field k] (m n j : ℕ) (z : Matrix (Fin m) (Fin n) k), Nat.card {W : Submodule k (Fin m → k) // Module.finrank k W + j = m ∧ W ≤ LinearMap.ker zᵀ.mulVecLin} = Nat.card {W' : Submodule k (Fin m → k) // Module.finrank k W' = j ∧ LinearMap.range z.mulVecLin ≤ W'} := by
+  atlas_forward_decl GlobalTheory.SplitHecke.card_le_ker_transpose_eq_card_range_le
+end
+
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.NTheta Formalism.IndefR.Datum Formalism.IndefR.Mult IsDedekindDomain NumberField Matrix
@@ -501,4 +947,5 @@ theorem hecke_identity_split : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (S 
 
 end GlobalTheory.SplitHecke
 
+end
 end

@@ -84,10 +84,5 @@ noncomputable def model : FibreSquare.{0} 1 where
 
 end Inhabit
 
-theorem inhabit_thm : InhabitStatement := by
-  refine ⟨Inhabit.model, ?_⟩
-  change Inhabit.formI (fun _ => ![1, 0]) ≠ 0
-  rw [Inhabit.formI_apply]
-  simp
 
 end ReciprocityTheory.ChartRestriction.G.AI

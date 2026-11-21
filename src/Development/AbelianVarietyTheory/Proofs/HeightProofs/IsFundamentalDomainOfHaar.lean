@@ -3,14 +3,362 @@ import Formalism.LocalToGlobal.BesselHermitianTheta.DefsReal
 import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
 import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.UnitaryVolumePairs
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroupStatement
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.HaarUpqIsMulRightInvariantStatement
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsHyperbolicCompletionStatement
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.FinrankAddTwoMulOfHyperbolicPairs
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.QuadraticExtNormFormOverAlgebraStatement
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.QuadraticFormIdeleValuesMemNhdsOneStatement
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsIdeleNotMulNormStatement
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.HaarUpqIsMulRightInvariant
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.QuadraticExtNormFormOverAlgebra
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.QuadraticFormIdeleValuesMemNhdsOne
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SUnitsSupUnitsLocalNormsSqrtNeTop
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsAdmissibleLocalNormMemSUnitsSupGlobalNorm
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.IsInfEmbUnique
 
+section
+open MeasureTheory Formalism.BasicNotions
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.haar_upq_is_mul_right_invariant : ∀ (P Q : ℕ) (μ : Measure (UpqT P Q)), μ.IsHaarMeasure → μ.IsMulRightInvariant := by
+  first | exact @GlobalTheory.UpqUnimodular.isMulRightInvariant_of_isHaarMeasure | exact GlobalTheory.UpqUnimodular.isMulRightInvariant_of_isHaarMeasure | (intros; apply GlobalTheory.UpqUnimodular.isMulRightInvariant_of_isHaarMeasure <;> assumption)
+end
+
+section
+namespace GlobalTheory
+
+open Module
+
+open Module in
+
+theorem _root_.GlobalTheory.exists_hyperbolic_completion :
+    ∀ (E V : Type) [Field E] [CharZero E] [StarRing E] [AddCommGroup V] [Module E V] [FiniteDimensional E V] (h : V →ₗ⋆[E] V →ₗ[E] E), h.IsSymm → h.Nondegenerate → ∀ (W : Submodule E V), (∀ x ∈ W, (∀ y ∈ W, h x y = 0) → x = 0) → ∀ (i : ℕ) (e : Fin i → V), LinearIndependent E e → (∀ a b, h (e a) (e b) = 0) → (∀ a, ∀ x ∈ W, h x (e a) = 0) → Module.finrank E W + 2 * i = Module.finrank E V → ∃ f : Fin i → V, (∀ a b, h (f a) (f b) = 0) ∧ (∀ a b, h (f a) (e b) = if a = b then 1 else 0) ∧ (∀ a, ∀ x ∈ W, h x (f a) = 0) ∧ W ⊔ Submodule.span E (Set.range e ∪ Set.range f) = ⊤ := by
+  intro E V _ _ _ _ _ _ h hs hn W hW i e he hee heW hdim
+  set m := finrank E W with hm
+  let b := Module.finBasis E W
+  let w : Fin m → V := fun j => (b j : V)
+  have hwW : ∀ j, w j ∈ W := fun j => (b j).2
+  let u : Fin i ⊕ Fin m → V := Sum.elim e w
+  have hw : LinearIndependent E w := b.linearIndependent.map' W.subtype (Submodule.ker_subtype W)
+  have hu : LinearIndependent E u := by
+    refine he.sum_type hw ?_
+    rw [Submodule.disjoint_def]
+    intro x hx1 hx2
+    have hxW : x ∈ W := (Submodule.span_le.mpr (by rintro _ ⟨j, rfl⟩; exact hwW j)) hx2
+    refine hW x hxW fun y hy => ?_
+    have hle : Submodule.span E (Set.range e) ≤ LinearMap.ker (h y) :=
+      Submodule.span_le.mpr (by rintro _ ⟨a, rfl⟩; exact heW a y hy)
+    rw [← hs.eq, show h y x = 0 from hle hx1, map_zero]
+  let L : V →ₗ[E] (Fin i ⊕ Fin m → E) := LinearMap.pi fun k => h (u k)
+  have hL : Function.Surjective L := by
+    rw [← LinearMap.range_eq_top]
+    by_contra hne
+    obtain ⟨μ, hμ, hle⟩ := Submodule.exists_le_ker_of_lt_top _ (lt_top_iff_ne_top.mpr hne)
+    have hz : ∑ k, star (μ fun j => if k = j then (1 : E) else 0) • u k = 0 := by
+      refine hn.1 _ fun y => ?_
+      have h0 : μ (L y) = 0 := hle (LinearMap.mem_range_self L y)
+      rw [LinearMap.pi_apply_eq_sum_univ] at h0
+      have h1 : h (∑ k, star (μ fun j => if k = j then (1 : E) else 0) • u k) y = ∑ k, L y k • μ fun j => if k = j then (1 : E) else 0 := by
+        simp only [map_sum, LinearMap.map_smulₛₗ, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul, starRingEnd_apply, star_star, L, LinearMap.pi_apply]
+        exact Finset.sum_congr rfl fun k _ => mul_comm _ _
+      rw [h1, h0]
+    have hc0 : ∀ k, μ (fun j => if k = j then (1 : E) else 0) = 0 := fun k => by
+      have := Fintype.linearIndependent_iff.mp hu _ hz k
+      simpa using this
+    apply hμ
+    refine LinearMap.ext fun x => ?_
+    rw [LinearMap.pi_apply_eq_sum_univ]
+    simp only [hc0, smul_zero, Finset.sum_const_zero, LinearMap.zero_apply]
+  choose g hg using fun a : Fin i => hL fun k => if k = Sum.inl a then (1 : E) else 0
+  have hge : ∀ a b, h (e b) (g a) = if b = a then 1 else 0 := fun a b => by
+    have := congrFun (hg a) (Sum.inl b)
+    simpa [L, u] using this
+  have hgw : ∀ a j, h (w j) (g a) = 0 := fun a j => by
+    have := congrFun (hg a) (Sum.inr j)
+    simpa [L, u] using this
+  have hgW : ∀ a, ∀ x ∈ W, h x (g a) = 0 := by
+    intro a x hx
+    have hx' : x = ∑ j, b.repr ⟨x, hx⟩ j • w j := by
+      have := congrArg Subtype.val (b.sum_repr ⟨x, hx⟩)
+      rw [Submodule.coe_sum] at this
+      simp only [Submodule.coe_smul] at this
+      exact this.symm
+    rw [hx']
+    simp [map_sum, hgw]
+  set f : Fin i → V := fun a => g a - ∑ c, (2⁻¹ * h (g c) (g a)) • e c with hf
+  have hfa : ∀ a, f a = g a - ∑ c, (2⁻¹ * h (g c) (g a)) • e c := fun a => rfl
+  have hfe : ∀ a b, h (e b) (f a) = if b = a then 1 else 0 := by
+    intro a b
+    rw [hfa]
+    simp [map_sub, map_sum, hee, hge]
+  have hfe' : ∀ a b, h (f a) (e b) = if a = b then 1 else 0 := by
+    intro a b
+    rw [← hs.eq, hfe]
+    by_cases hab : a = b
+    · simp [hab]
+    · simp [hab, Ne.symm hab]
+  have hfW : ∀ a, ∀ x ∈ W, h x (f a) = 0 := by
+    intro a x hx
+    rw [hfa]
+    simp [map_sub, map_sum, hgW a x hx, heW _ x hx]
+  have hff : ∀ a b, h (f a) (f b) = 0 := by
+    intro a b
+    have hs' : starRingEnd E (h (g b) (g a)) = h (g a) (g b) := hs.eq (g b) (g a)
+    have h1 : h (f a) (f b) = h (f a) (g b) - 2⁻¹ * h (g a) (g b) := by
+      conv_lhs => rw [hfa b]
+      simp [map_sub, map_sum, hfe']
+    rw [h1, hfa a]
+    simp [map_sub, map_sum, hge, hs', map_ofNat]
+    ring
+  let v : Fin i ⊕ (Fin i ⊕ Fin m) → V := Sum.elim f u
+  have hu0 : ∀ c k, h (e c) (u k) = 0 := by
+    intro c k
+    rcases k with d | j
+    · exact hee c d
+    · show h (e c) (w j) = 0
+      rw [← hs.eq, heW c _ (hwW j)]
+      simp
+  have hv : LinearIndependent E v := by
+    rw [Fintype.linearIndependent_iff]
+    intro γ hγ
+    simp only [v] at hγ
+    rw [Fintype.sum_sum_type] at hγ
+    simp only [Sum.elim_inl, Sum.elim_inr] at hγ
+    have hfst : ∀ a, γ (Sum.inl a) = 0 := by
+      intro a
+      have := congrArg (h (e a)) hγ
+      simpa [map_add, map_sum, hfe, hu0] using this
+    have hrest : ∑ k, γ (Sum.inr k) • u k = 0 := by simpa [hfst] using hγ
+    intro k
+    rcases k with a | k
+    · exact hfst a
+    · exact Fintype.linearIndependent_iff.mp hu _ hrest k
+  have hspan : Submodule.span E (Set.range v) = ⊤ :=
+    hv.span_eq_top_of_card_eq_finrank' (by simp; omega)
+  refine ⟨f, hff, hfe', hfW, ?_⟩
+  rw [eq_top_iff, ← hspan, Submodule.span_le]
+  rintro _ ⟨k, rfl⟩
+  rcases k with a | c | j
+  · exact Submodule.mem_sup_right (Submodule.subset_span (Or.inr ⟨a, rfl⟩))
+  · exact Submodule.mem_sup_right (Submodule.subset_span (Or.inl ⟨c, rfl⟩))
+  · exact Submodule.mem_sup_left (hwW j)
+
+end GlobalTheory
+end
+
+section
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_hyperbolic_dual_family_of_finrank_add_two_mul : ∀ (E V : Type) [Field E] [CharZero E] [StarRing E] [AddCommGroup V] [Module E V] [FiniteDimensional E V] (h : V →ₗ⋆[E] V →ₗ[E] E), h.IsSymm → h.Nondegenerate → ∀ (W : Submodule E V), (∀ x ∈ W, (∀ y ∈ W, h x y = 0) → x = 0) → ∀ (i : ℕ) (e : Fin i → V), LinearIndependent E e → (∀ a b, h (e a) (e b) = 0) → (∀ a, ∀ x ∈ W, h x (e a) = 0) → Module.finrank E W + 2 * i = Module.finrank E V → ∃ f : Fin i → V, (∀ a b, h (f a) (f b) = 0) ∧ (∀ a b, h (f a) (e b) = if a = b then 1 else 0) ∧ (∀ a, ∀ x ∈ W, h x (f a) = 0) ∧ W ⊔ Submodule.span E (Set.range e ∪ Set.range f) = ⊤ := by
+  first | exact @GlobalTheory.exists_hyperbolic_completion | exact GlobalTheory.exists_hyperbolic_completion | (intros; apply GlobalTheory.exists_hyperbolic_completion <;> assumption)
+end
+
+section
+section
+namespace GlobalTheory
+
+theorem finrank_add_two_mul_of_hyperbolic_pairs :
+    ∀ (E V : Type) [Field E] [StarRing E] [AddCommGroup V] [Module E V] [FiniteDimensional E V] (h : V →ₗ⋆[E] V →ₗ[E] E), h.IsSymm → ∀ (W : Submodule E V) (i : ℕ) (e f : Fin i → V), (∀ a b, h (e a) (e b) = 0) → (∀ a b, h (f a) (f b) = 0) → (∀ a b, h (f a) (e b) = if a = b then 1 else 0) → (∀ a, ∀ x ∈ W, h x (e a) = 0 ∧ h x (f a) = 0) → W ⊔ Submodule.span E (Set.range e ∪ Set.range f) = ⊤ → LinearIndependent E e ∧ Module.finrank E W + 2 * i = Module.finrank E V := by
+  intro E V _ _ _ _ _ h hS W i e f hee hff hfe hW hspan
+  classical
+
+  have hef : ∀ a b, h (e a) (f b) = if a = b then 1 else 0 := by
+    intro a b
+    rw [← hS.eq (f b) (e a), hfe]
+    by_cases hab : a = b
+    · subst hab; simp
+    · simp [hab, Ne.symm hab]
+
+  have coeff_e : ∀ (c : Fin i ⊕ Fin i → E) (a : Fin i),
+      h (e a) (∑ j, c j • Sum.elim e f j) = c (Sum.inr a) := by
+    intro c a
+    simp [map_sum, map_smul, Fintype.sum_sum_type, hee, hef]
+  have coeff_f : ∀ (c : Fin i ⊕ Fin i → E) (a : Fin i),
+      h (f a) (∑ j, c j • Sum.elim e f j) = c (Sum.inl a) := by
+    intro c a
+    simp [map_sum, map_smul, Fintype.sum_sum_type, hff, hfe]
+  have hli : LinearIndependent E (Sum.elim e f) := by
+    refine Fintype.linearIndependent_iff.2 fun c hc j => ?_
+    rcases j with a | a
+    · rw [← coeff_f c a, hc, map_zero]
+    · rw [← coeff_e c a, hc, map_zero]
+  have hrange : Set.range e ∪ Set.range f = Set.range (Sum.elim e f) :=
+    (Set.Sum.elim_range e f).symm
+  rw [hrange] at hspan
+  set U := Submodule.span E (Set.range (Sum.elim e f)) with hU
+  have hinf : W ⊓ U = ⊥ := by
+    rw [Submodule.eq_bot_iff]
+    intro u hu
+    obtain ⟨huW, huU⟩ := Submodule.mem_inf.1 hu
+    obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun E).1 huU
+    have hc : ∀ j, c j = 0 := by
+      rintro (a | a)
+      · rw [← coeff_f c a, ← hS.eq _ (f a), (hW a _ huW).2, map_zero]
+      · rw [← coeff_e c a, ← hS.eq _ (e a), (hW a _ huW).1, map_zero]
+    simp [hc]
+  have hUdim : Module.finrank E U = 2 * i := by
+    rw [hU, finrank_span_eq_card hli, Fintype.card_sum, Fintype.card_fin]
+    ring
+  refine ⟨by simpa using hli.comp Sum.inl Sum.inl_injective, ?_⟩
+  have key := Submodule.finrank_sup_add_finrank_inf_eq W U
+  rw [hspan, hinf, finrank_top, finrank_bot, add_zero, hUdim] at key
+  exact key.symm
+
+end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.linearIndependent_and_finrank_add_two_mul_of_hyperbolic : ∀ (E V : Type) [Field E] [StarRing E] [AddCommGroup V] [Module E V] [FiniteDimensional E V] (h : V →ₗ⋆[E] V →ₗ[E] E), h.IsSymm → ∀ (W : Submodule E V) (i : ℕ) (e f : Fin i → V), (∀ a b, h (e a) (e b) = 0) → (∀ a b, h (f a) (f b) = 0) → (∀ a b, h (f a) (e b) = if a = b then 1 else 0) → (∀ a, ∀ x ∈ W, h x (e a) = 0 ∧ h x (f a) = 0) → W ⊔ Submodule.span E (Set.range e ∪ Set.range f) = ⊤ → LinearIndependent E e ∧ Module.finrank E W + 2 * i = Module.finrank E V := by
+  atlas_forward_decl GlobalTheory.finrank_add_two_mul_of_hyperbolic_pairs
+end
+
+section
+open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.quadraticExt_norm_form_over_algebra : ∀ (F E : Type) [Field F] [CharZero F] [Field E] [Algebra F E] (σ : E →ₐ[F] E), Module.finrank F E = 2 → (∀ x, σ (σ x) = x) → (∃ x, σ x ≠ x) → ∃ δ : F, ¬ IsSquare δ ∧ ∀ (R : Type) [CommRing R] [Algebra F R], (∀ z : R ⊗[F] E, ∃ x y : R, Algebra.norm R z = x ^ 2 - algebraMap F R δ * y ^ 2 ∧ z * sigR R σ z = algebraMap R (R ⊗[F] E) (x ^ 2 - algebraMap F R δ * y ^ 2)) ∧ ∀ x y : R, ∃ z : R ⊗[F] E, z * sigR R σ z = algebraMap R (R ⊗[F] E) (x ^ 2 - algebraMap F R δ * y ^ 2) := by
+  first | exact @GlobalTheory.QuadNormBase.norm_form | exact GlobalTheory.QuadNormBase.norm_form | (intros; apply GlobalTheory.QuadNormBase.norm_form <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain
+open scoped Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.quadraticForm_ideleValues_mem_nhds_one : ∀ (F : Type) [Field F] [NumberField F] (δ : F), δ ≠ 0 → {a : (AdeleRing (𝓞 F) F)ˣ | ∃ x y : AdeleRing (𝓞 F) F, (a : AdeleRing (𝓞 F) F) = x ^ 2 - algebraMap F (AdeleRing (𝓞 F) F) δ * y ^ 2} ∈ 𝓝 (1 : (AdeleRing (𝓞 F) F)ˣ) := by
+  first | exact @GlobalTheory.QNorm.norm_form_mem_nhds_one | exact GlobalTheory.QNorm.norm_form_mem_nhds_one | (intros; apply GlobalTheory.QNorm.norm_form_mem_nhds_one <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain GlobalTheory.QNorm
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_admissible_localNorm_mem_sUnits_sup_globalNorm : ∀ (F : Type) [Field F] [NumberField F] (δ : Fˣ), ¬ IsSquare (δ : F) → ∃ S : Finset (HeightOneSpectrum (𝓞 F)), admitted F S ∧ δ ∈ sUnits F S ∧ ∀ t : Fˣ, (∀ v : HeightOneSpectrum (𝓞 F), v ∉ S → t ∈ normSub (algebraMap F (v.adicCompletion F)) (δ : F)) → t ∈ sUnits F S ⊔ normSub (RingHom.id F) (δ : F) := by
+  first | exact @GlobalTheory.QNorm.exists_adm_mem_sUnits_local_norm_mem_sUnits_sup_normSub | exact GlobalTheory.QNorm.exists_adm_mem_sUnits_local_norm_mem_sUnits_sup_normSub | (intros; apply GlobalTheory.QNorm.exists_adm_mem_sUnits_local_norm_mem_sUnits_sup_normSub <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain
+
+namespace GlobalTheory.QNorm
+
+theorem exists_adele_finite_component (F : Type) [Field F] [NumberField F]
+    (v : HeightOneSpectrum (𝓞 F)) :
+    ∃ e : AdeleRing (𝓞 F) F →+* v.adicCompletion F, (∀ x, e x = x.2 v) ∧
+      ∀ t : F, e (algebraMap F (AdeleRing (𝓞 F) F) t) = algebraMap F (v.adicCompletion F) t :=
+  ⟨{ toFun := fun x => x.2 v
+     map_one' := rfl
+     map_mul' := fun _ _ => rfl
+     map_zero' := rfl
+     map_add' := fun _ _ => rfl }, fun _ => rfl, fun _ => rfl⟩
+
+theorem exists_infiniteAdele_real_component (F : Type) [Field F] [NumberField F]
+    (σ : F →+* ℝ) :
+    ∃ e : InfiniteAdeleRing F →+* ℝ,
+      ∀ t : F, e (algebraMap F (InfiniteAdeleRing F) t) = σ t := by
+  have hφ : ComplexEmbedding.IsReal (Complex.ofRealHom.comp σ) := by
+    rw [ComplexEmbedding.isReal_iff]
+    ext x
+    simp
+  have hw : (InfinitePlace.mk (Complex.ofRealHom.comp σ)).IsReal := ⟨_, hφ, rfl⟩
+  refine ⟨(InfinitePlace.Completion.extensionEmbeddingOfIsReal hw).comp
+    (Pi.evalRingHom (fun v : InfinitePlace F => v.Completion) _), fun t => ?_⟩
+  have he := InfinitePlace.Completion.extensionEmbeddingOfIsReal_coe hw
+    ((WithAbs.equiv (InfinitePlace.mk (Complex.ofRealHom.comp σ)).1).symm t)
+  refine he.trans ?_
+  apply Complex.ofReal_injective
+  rw [InfinitePlace.embedding_of_isReal_apply, InfinitePlace.embedding_mk_eq_of_isReal hφ]
+  simp
+
+open Classical in
+
+noncomputable def adeleOn (F : Type) [Field F] [NumberField F]
+    (S : Finset (HeightOneSpectrum (𝓞 F))) (z : F) : AdeleRing (𝓞 F) F :=
+  (algebraMap F (InfiniteAdeleRing F) z,
+    (⟨fun v => if v ∈ S then algebraMap F (v.adicCompletion F) z else 1, by
+      filter_upwards [S.finite_toSet.compl_mem_cofinite] with v hv
+      have hv' : v ∉ S := hv
+      simp only [if_neg hv', SetLike.mem_coe]
+      exact one_mem _⟩ : FiniteAdeleRing (𝓞 F) F))
+
+theorem adeleOn_snd_of_mem (F : Type) [Field F] [NumberField F]
+    (S : Finset (HeightOneSpectrum (𝓞 F))) (z : F) {v : HeightOneSpectrum (𝓞 F)} (hv : v ∈ S) :
+    (adeleOn F S z).2 v = algebraMap F (v.adicCompletion F) z := if_pos hv
+
+theorem adeleOn_snd_of_notMem (F : Type) [Field F] [NumberField F]
+    (S : Finset (HeightOneSpectrum (𝓞 F))) (z : F) {v : HeightOneSpectrum (𝓞 F)} (hv : v ∉ S) :
+    (adeleOn F S z).2 v = 1 := if_neg hv
+
+theorem adeleOn_mul_inv (F : Type) [Field F] [NumberField F]
+    (S : Finset (HeightOneSpectrum (𝓞 F))) {z : F} (hz : z ≠ 0) :
+    adeleOn F S z * adeleOn F S z⁻¹ = 1 := by
+  refine Prod.ext ?_ (FiniteAdeleRing.ext F fun v => ?_)
+  · change algebraMap F (InfiniteAdeleRing F) z * algebraMap F (InfiniteAdeleRing F) z⁻¹ = 1
+    rw [← map_mul, mul_inv_cancel₀ hz, map_one]
+  · change (adeleOn F S z).2 v * (adeleOn F S z⁻¹).2 v = 1
+    by_cases hv : v ∈ S
+    · rw [adeleOn_snd_of_mem F S _ hv, adeleOn_snd_of_mem F S _ hv, ← map_mul,
+        mul_inv_cancel₀ hz, map_one]
+    · rw [adeleOn_snd_of_notMem F S _ hv, adeleOn_snd_of_notMem F S _ hv, mul_one]
+
+theorem div_mem_normSub {F L : Type} [Field F] [Field L] (φ : F →+* L) (δ : F) (z t : Fˣ)
+    (a b : L) (h : φ (z : F) = φ (t : F) * (a ^ 2 - φ δ * b ^ 2)) : z / t ∈ normSub φ δ := by
+  refine ⟨a, b, ?_⟩
+  have ht : φ (t : F) ≠ 0 := by simp
+  rw [Units.val_div_eq_div_val, map_div₀, h]
+  field_simp
+
+theorem exists_idele_not_mul_norm : ∀ (F : Type) [Field F] [NumberField F] (δ : F), ¬ IsSquare δ → ∃ a : (AdeleRing (𝓞 F) F)ˣ, ∀ (t : F) (x y : AdeleRing (𝓞 F) F), (a : AdeleRing (𝓞 F) F) ≠ algebraMap F (AdeleRing (𝓞 F) F) t * (x ^ 2 - algebraMap F (AdeleRing (𝓞 F) F) δ * y ^ 2) := by
+  intro F _ _ δ hsq
+  have hδ0 : δ ≠ 0 := by
+    rintro rfl
+    exact hsq IsSquare.zero
+  obtain ⟨S, hS, hδ, hadj⟩ := GlobalTheory.T.exists_admissible_localNorm_mem_sUnits_sup_globalNorm F (Units.mk0 δ hδ0) hsq
+  have hne := sUnits_sup_locNorm_ne_top F (Units.mk0 δ hδ0) S hS hδ hsq
+  simp only [Units.val_mk0] at hadj hne
+  obtain ⟨z, hz⟩ : ∃ z : Fˣ, z ∉ sUnits F S ⊔ locNorm F δ S := by
+    by_contra hcon
+    push Not at hcon
+    exact hne (Subgroup.eq_top_iff' _ |>.2 hcon)
+  refine ⟨Units.mkOfMulEqOne _ _ (adeleOn_mul_inv F S z.ne_zero), fun t x y h => hz ?_⟩
+  replace h : adeleOn F S z = algebraMap F (AdeleRing (𝓞 F) F) t *
+      (x ^ 2 - algebraMap F (AdeleRing (𝓞 F) F) δ * y ^ 2) := h
+  have ht : t ≠ 0 := by
+    rintro rfl
+    rw [map_zero, zero_mul] at h
+    have h1 : algebraMap F (InfiniteAdeleRing F) z = 0 := congrArg Prod.fst h
+    exact z.ne_zero ((map_eq_zero _).1 h1)
+  have hfin : ∀ v : HeightOneSpectrum (𝓞 F), ∃ a b : v.adicCompletion F,
+      (adeleOn F S z).2 v = algebraMap F (v.adicCompletion F) t *
+        (a ^ 2 - algebraMap F (v.adicCompletion F) δ * b ^ 2) := by
+    intro v
+    obtain ⟨e, he, he'⟩ := exists_adele_finite_component F v
+    refine ⟨e x, e y, ?_⟩
+    rw [← he, h, map_mul, map_sub, map_mul, map_pow, map_pow, he', he']
+  have h1 : Units.mk0 t ht ∈ sUnits F S ⊔ locNorm F δ S := by
+    refine sup_le_sup_left (normSub_id_le_locNorm F δ S) _ (hadj _ fun v hv => ?_)
+    obtain ⟨a, b, hab⟩ := hfin v
+    rw [adeleOn_snd_of_notMem F S _ hv] at hab
+    have h2 := div_mem_normSub (algebraMap F (v.adicCompletion F)) δ 1 (Units.mk0 t ht) a b
+      (by simpa using hab)
+    rwa [one_div, inv_mem_iff] at h2
+  have h2 : z / Units.mk0 t ht ∈ locNorm F δ S := by
+    refine ⟨Subgroup.mem_iInf.2 fun v => Subgroup.mem_iInf.2 fun hv => ?_,
+      Subgroup.mem_iInf.2 fun σ => ?_⟩
+    · obtain ⟨a, b, hab⟩ := hfin v
+      rw [adeleOn_snd_of_mem F S _ hv] at hab
+      exact div_mem_normSub _ δ z (Units.mk0 t ht) a b hab
+    · obtain ⟨e, he⟩ := exists_infiniteAdele_real_component F σ
+      refine div_mem_normSub σ δ z (Units.mk0 t ht) (e x.1) (e y.1) ?_
+      have h3 : algebraMap F (InfiniteAdeleRing F) z = algebraMap F (InfiniteAdeleRing F) t *
+          (x.1 ^ 2 - algebraMap F (InfiniteAdeleRing F) δ * y.1 ^ 2) := congrArg Prod.fst h
+      have h4 := congrArg e h3
+      rwa [map_mul, map_sub, map_mul, map_pow, map_pow, he, he, he] at h4
+  have h3 := mul_mem (Subgroup.mem_sup_right (S := sUnits F S) h2) h1
+  rwa [div_mul_cancel] at h3
+
+end GlobalTheory.QNorm
+end
+
+section
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_idele_ne_algebraMap_mul_norm_of_not_isSquare : ∀ (F : Type) [Field F] [NumberField F] (δ : F), ¬ IsSquare δ → ∃ a : (AdeleRing (𝓞 F) F)ˣ, ∀ (t : F) (x y : AdeleRing (𝓞 F) F), (a : AdeleRing (𝓞 F) F) ≠ algebraMap F (AdeleRing (𝓞 F) F) t * (x ^ 2 - algebraMap F (AdeleRing (𝓞 F) F) δ * y ^ 2) := by
+  first | exact @GlobalTheory.QNorm.exists_idele_not_mul_norm | exact GlobalTheory.QNorm.exists_idele_not_mul_norm | (intros; apply GlobalTheory.QNorm.exists_idele_not_mul_norm <;> assumption)
+end
+
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta MeasureTheory IsDedekindDomain NumberField Matrix
@@ -649,4 +997,5 @@ theorem compare (D : D7) :
 
 end GlobalTheory.VolHeckeCompare
 
+end
 end

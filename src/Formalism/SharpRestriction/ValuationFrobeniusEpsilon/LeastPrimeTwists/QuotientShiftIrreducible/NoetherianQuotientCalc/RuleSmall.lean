@@ -5,8 +5,86 @@ import Formalism.SharpRestriction.ValuationFrobeniusEpsilon.LeastPrimeTwists.Quo
 import Formalism.SharpRestriction.ValuationFrobeniusEpsilon.LeastPrimeTwists.QuotientShiftIrreducible.NoetherianQuotientCalc.RuleShift
 import Formalism.SharpRestriction.ValuationFrobeniusEpsilon.LeastPrimeTwists.QuotientShiftIrreducible.NoetherianQuotientCalc.EulerAdditivityExactSequence
 import Formalism.SharpRestriction.ValuationFrobeniusEpsilon.LeastPrimeTwists.QuotientShiftIrreducible.NoetherianQuotientCalc.EulerAdditivityInSection
-import Formalism.SharpRestriction.ValuationFrobeniusEpsilon.LeastPrimeTwists.QuotientShiftIrreducible.NoetherianQuotientCalc.SumPowersetFinSucc
 
+section
+noncomputable section
+
+namespace Formalism.MainNotions.V.Pf.V2.Calc
+
+variable {k : ℕ} {B R : Type} [CommRing B] [CommRing R] [Algebra B R]
+
+def GIso.quoBot (F : GMod B R k) (N : Submodule R F.M) (h : N = ⊥) : GIso (F.quo N) F where
+  e := Submodule.quotEquivOfEqBot N h
+  map_gr m := by
+    ext y
+    constructor
+    · rintro ⟨_, ⟨x, hx, rfl⟩, rfl⟩
+      exact hx
+    · intro hy
+      exact ⟨N.mkQ y, ⟨y, hy, rfl⟩, rfl⟩
+
+def GIso.subTop (F : GMod B R k) (N : Submodule R F.M) (h : N = ⊤) : GIso (F.sub N) F where
+  e := LinearEquiv.ofTop N h
+  map_gr m := by
+    ext y
+    constructor
+    · rintro ⟨x, hx, rfl⟩
+      exact hx
+    · intro hy
+      exact ⟨⟨y, h ▸ Submodule.mem_top⟩, hy, rfl⟩
+
+def GIso.quotOfZero (F : GMod B R k) (s : R) (h : ∀ x : F.M, s • x = 0) : GIso (F.quot s) F :=
+  GIso.quoBot F _ (by
+    rw [eq_bot_iff]
+    rintro _ ⟨x, rfl⟩
+    exact h x)
+
+def GIso.annOfZero (F : GMod B R k) (s : R) (d : Deg k) (h : ∀ x : F.M, s • x = 0) :
+    GIso (F.ann s d) (F.shift d) :=
+  (GIso.subTop F _ (by
+    rw [eq_top_iff]
+    intro x _
+    exact h x)).shift d
+
+
+end Formalism.MainNotions.V.Pf.V2.Calc
+end
+end
+
+section
+noncomputable section
+
+namespace Formalism.MainNotions.V.Pf.V2.Calc
+
+open Finset
+
+variable {k : ℕ} {B R : Type} [CommRing B] [CommRing R] [Algebra B R]
+
+theorem sum_powerset_fin_succ {n : ℕ} (f : Finset (Fin (n + 1)) → ℤ) :
+    ∑ I ∈ (univ : Finset (Fin (n + 1))).powerset, f I =
+      ∑ J ∈ (univ : Finset (Fin n)).powerset, f (J.image Fin.succ) +
+        ∑ J ∈ (univ : Finset (Fin n)).powerset, f (insert 0 (J.image Fin.succ)) := by
+  have hu : (univ : Finset (Fin (n + 1))) = insert 0 ((univ : Finset (Fin n)).image Fin.succ) := by
+    ext i
+    simp only [mem_univ, mem_insert, mem_image, true_and, true_iff]
+    rcases Fin.eq_zero_or_eq_succ i with h | ⟨j, h⟩
+    · exact Or.inl h
+    · exact Or.inr ⟨j, h.symm⟩
+  have h0 : (0 : Fin (n + 1)) ∉ (univ : Finset (Fin n)).image Fin.succ := by
+    simp only [mem_image, mem_univ, true_and, not_exists]
+    exact fun j => Fin.succ_ne_zero j
+  have hinj : Function.Injective (fun J : Finset (Fin n) => J.image Fin.succ) :=
+    Finset.image_injective (Fin.succ_injective n)
+  rw [hu, Finset.sum_powerset_insert h0, Finset.powerset_image,
+    Finset.sum_image (fun a _ b _ hab => hinj hab), Finset.sum_image (fun a _ b _ hab => hinj hab)]
+
+
+
+end Formalism.MainNotions.V.Pf.V2.Calc
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.MainNotions.V.Pf.V2.Calc
@@ -138,3 +216,5 @@ theorem ruleSmall : RuleSmall := by
     exact (hdiff_cons d s ts F m).symm
 
 end Formalism.MainNotions.V.Pf.V2.Calc
+end
+end

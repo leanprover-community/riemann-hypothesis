@@ -45,11 +45,6 @@ def torusChar {O : Type} [CommRing O] (x : Sp O ⟶ X) (q : ℕ) (a : 𝓞 E) : 
   nat B B' _ _ _ _ _ _ φ g g' _ h :=
     (GlobalTheory.Diag.left_eq_iff φ.toRingHom (by rw [← Category.assoc, sp_comp]; congr 2; exact φ.comp_algebraMap.symm) g' g).1 h a
 
-theorem torusChar_epsVec {O : Type} [CommRing O] (x : Sp O ⟶ X) (q : ℕ) (a : 𝓞 E) (I : Ideal O) (c : 𝓞 E →+ O ⧸ I) :
-    (((torusChar H x q a).χ (DualNumber (O ⧸ I)) (GlobalTheory.Diag.epsVec _ c) : (DualNumber (O ⧸ I))ˣ) :
-      DualNumber (O ⧸ I)).snd = c a := by
-  refine (congrArg TrivSqZeroExt.snd (GlobalTheory.Diag.charVal_epsVec c a)).trans ?_
-  simp
 
 theorem dual_base {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) :
     spMap (dualMap f) ≫ spMap (algebraMap A (DualNumber A)) = spMap (algebraMap B (DualNumber B)) ≫ spMap f := by
@@ -57,63 +52,6 @@ theorem dual_base {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) :
   congr 1
   ext r <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl]
 
-theorem latHT_torus {C : Type} [NontriviallyNormedField C] [IsUltrametricDist C] (p : ℕ) (hp : (p : C) ≠ 0)
-    (x : Sp C ⟶ X) : latHT (torus H X) p x = latDR (torus H X) x := by
-  refine Set.Subset.antisymm ?_ (latDR_subset_latHT _ p x)
-  rintro v ⟨xO, hx, m, vO, hv, e, hd⟩
-  let O : Type := intO C
-  let w : Over.mk (spMap (algebraMap O (DualNumber O)) ≫ xO) ⟶ splitTorus X (𝓞 E) := Over.homMk vO hv.1
-  have hb : xO = spMap (TrivSqZeroExt.fstHom O O O).toRingHom ≫ spMap (algebraMap O (DualNumber O)) ≫ xO := by
-    rw [← Category.assoc, GlobalTheory.Diag.fstHom_base, Category.id_comp]
-  obtain ⟨c, hc⟩ := (GlobalTheory.Diag.exists_epsVec_iff w).2 ((GlobalTheory.Diag.reduces_iff hb w).1 hv.2)
-  have hdiv : ∀ a, (p : O) ^ m ∣ c a := fun a => by
-    let I : Ideal O := Ideal.span {(p : O) ^ m}
-    have hg : spMap (algebraMap O (DualNumber (O ⧸ I))) ≫ xO =
-        spMap (dualMap (Ideal.Quotient.mk I)) ≫ spMap (algebraMap O (DualNumber O)) ≫ xO := by
-      rw [← Category.assoc, sp_comp]
-      congr 2
-      ext r <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl, TrivSqZeroExt.algebraMap_eq_inl']
-    have h := hd m (torusChar H xO _ a) (GlobalTheory.Diag.epsVec _ ((Ideal.Quotient.mk I).toAddMonoidHom.comp c)) (by
-      change _ = spMap _ ≫ w.left
-      rw [← hc]
-      refine (GlobalTheory.Diag.left_eq_iff _ hg _ _).2 fun b => ?_
-      rw [GlobalTheory.Diag.charVal_epsVec, GlobalTheory.Diag.charVal_epsVec]
-      ext <;> simp [dualMap])
-    rw [torusChar_epsVec] at h
-    have h0 : (p : O ⧸ I) ^ m = 0 := by
-      rw [← map_natCast (Ideal.Quotient.mk I), ← map_pow, Ideal.Quotient.eq_zero_iff_mem]
-      exact Ideal.mem_span_singleton_self _
-    rw [h0, Ideal.span_singleton_zero, Ideal.mem_bot] at h
-    exact Ideal.mem_span_singleton.1 (Ideal.Quotient.eq_zero_iff_mem.1 h)
-  choose d hdd using hdiv
-  have hp' : (p : O) ^ m ≠ 0 := pow_ne_zero _ fun h => hp (by simpa using congrArg (intO C).subtype h)
-  let c' : 𝓞 E →+ O := AddMonoidHom.mk' d fun a b => mul_left_cancel₀ hp' (by rw [mul_add, ← hdd, ← hdd, ← hdd, map_add])
-  let w' : Over.mk (spMap (algebraMap O (DualNumber O)) ≫ xO) ⟶ splitTorus X (𝓞 E) := GlobalTheory.Diag.epsVec _ c'
-  refine ⟨xO, hx, w'.left, ⟨Over.w w', (GlobalTheory.Diag.reduces_iff hb w').2 ((GlobalTheory.Diag.exists_epsVec_iff w').1 ⟨_, rfl⟩)⟩, ?_⟩
-  have h1 : vO = spMap (epsMul ((p : O) ^ m)) ≫ w'.left := by
-    change w.left = _
-    rw [← hc]
-    refine (GlobalTheory.Diag.left_eq_iff _ ?_ _ _).2 fun b => ?_
-    · rw [← Category.assoc, sp_comp]
-      congr 2
-      ext r <;> simp [epsMul, TrivSqZeroExt.algebraMap_eq_inl]
-    · rw [GlobalTheory.Diag.charVal_epsVec, GlobalTheory.Diag.charVal_epsVec, hdd]
-      ext <;> simp [epsMul, c', mul_comm]
-  have h2 : spMap (epsMul ((p : C) ^ m)⁻¹) ≫ spMap (epsMul ((p : C) ^ m)) = 𝟙 _ := by
-    rw [sp_comp, ← sp_epsMul_one]
-    congr 1
-    ext r <;> simp [epsMul, hp]
-  have h3 : spMap (epsMul ((p : C) ^ m)⁻¹) ≫ spMap (dualMap (intO C).subtype) ≫ spMap (epsMul ((p : O) ^ m)) =
-      spMap (dualMap (intO C).subtype) := by
-    rw [sp_comp, sp_comp]
-    congr 1
-    refine RingHom.ext fun r => ?_
-    ext
-    · simp [epsMul, dualMap, O]
-    · simp [epsMul, dualMap, O]
-      field_simp
-  rw [← Category.id_comp v, ← h2, Category.assoc, ← e, h1]
-  exact (congrArg (· ≫ w'.left) h3.symm).trans (by simp only [Category.assoc]; rfl)
 
 end Lat
 
@@ -186,11 +124,6 @@ theorem polar_sq (a b : ℝ) : polar (fun x : ℝ => x ^ 2) {a, b} = a * b := by
   simp
   ring
 
-theorem polar_cube (a b c : ℝ) : polar (fun x : ℝ => x ^ 3) {a, b, c} = a * b * c := by
-  have h : ({a, b, c} : Multiset ℝ) = a ::ₘ b ::ₘ c ::ₘ 0 := rfl
-  simp only [h, polar, Multiset.powerset_cons, Multiset.powerset_zero]
-  simp [Nat.factorial]
-  ring
 
 def arReal (Tau : Type) (N g : ℕ) : ArIn Tau N g Unit where
   A _ := ℝ
@@ -198,20 +131,7 @@ def arReal (Tau : Type) (N g : ℕ) : ArIn Tau N g Unit where
   root a R _ _ := if a 2 then R else 1
   whole _ _ _ _ := 1
 
-theorem numL_pow {A : Type} (num : Multiset A → ℝ) (d : ℕ) (a : A) :
-    numL num d (MvPolynomial.X a ^ d) = num (Multiset.replicate d a) := by
-  have : (MvPolynomial.X a ^ d : MvPolynomial A ℝ) = MvPolynomial.basisMonomials A ℝ (Finsupp.single a d) := by
-    simp [MvPolynomial.X_pow_eq_monomial]
-  rw [this, numL, Module.Basis.constr_basis]
-  simp [Multiset.nsmul_singleton]
 
-theorem arReal_deg {Tau : Type} [Fintype Tau] {N g : ℕ} (x : Tau × Fin N) (S : Finset ℕ) (R : ℝ) :
-    (arReal Tau N g).arDeg S R (MvPolynomial.X x ^ (Formalism.DegreeFormula.dimFl Tau N + 1)) =
-      (if 2 ∈ S then R else 1) ^ (Formalism.DegreeFormula.dimFl Tau N + 1) := by
-  rw [ArIn.arDeg, LinearMap.sum_apply, Fintype.sum_unique]
-  change numL _ _ (MvPolynomial.rename _ _) = _
-  rw [map_pow, MvPolynomial.rename_X, numL_pow]
-  simp [arReal, ArIn.ind, -Multiset.replicate_succ]
 
 section Stages
 
@@ -231,27 +151,6 @@ def admissibleStageOfPackage : AdmSt D N j jC :=
 
 end Stages
 
-theorem nonempty_flagPt {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E}
-    {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F}
-    (Z : Model Xo c β) [Nonempty (gen Z)] : Nonempty (FlagPt Z Qb) := by
-  have := isProper_genStr Z
-  have : CompactSpace (gen Z) := QuasiCompact.compactSpace_of_compactSpace (genStr Z)
-  obtain ⟨x, -, hx⟩ := (isClosed_univ (X := gen Z)).exists_closed_singleton Set.univ_nonempty
-  have := isClosed_singleton_iff_isClosedImmersion.1 hx
-  let φ := Spec.preimage ((gen Z).fromSpecResidueField x ≫ genStr Z)
-  have h1 : IsFinite (Spec.map φ) := by
-    rw [Spec.map_preimage]
-    exact isFinite_iff_locallyOfFiniteType_of_jacobsonSpace.2 inferInstance
-  let k : Type := (gen Z).residueField x
-  let _ : Algebra c.F k := φ.hom.toAlgebra
-  have : Module.Finite c.F k := (IsFinite.SpecMap_iff φ).1 h1
-  have : Algebra.IsAlgebraic ℚ c.F := have := c.fin; inferInstance
-  let em : c.F →+* Qb := (IntermediateField.inclusion (le_algebraicClosure ℚ ℂ c.F)).toRingHom
-  let _ : Algebra c.F Qb := em.toAlgebra
-  have : IsAlgClosed Qb := (algebraicClosure.isAlgClosure ℚ ℂ).isAlgClosed
-  let ψ : k →ₐ[c.F] Qb := IsAlgClosed.lift
-  obtain ⟨z, -⟩ := exists_flagPt Z Qb (spMap ψ.toRingHom ≫ (gen Z).fromSpecResidueField x)
-  exact ⟨z⟩
 
 section Sign
 
@@ -338,24 +237,6 @@ theorem phi_bounds (hB : HTBoundSt) (p : ℕ) [Fact p.Prime] (y : Pt s) (x : DV.
     simp only [FlagPt.lnRoot, if_neg h']
     constructor <;> linarith [this.1, this.2]
 
-theorem root_in_range (x : DV.Rt D.what₂.Tau N) :
-    ((x.2 : ℕ) < S.Dw.p → (x.2 : ℕ) < S.Dw.mult (DV.tauEmb D x.1)) ∧
-    (¬ (x.2 : ℕ) < S.Dw.p → S.Dw.p + S.Dw.q - 1 - x.2 < S.Dw.mult (conjEmb (DV.tauEmb D x.1))) := by
-  have h := A.cm x.1
-  refine ⟨fun h' => by rwa [Datum.mult, if_pos h], fun h' => ?_⟩
-  have hne : conjEmb (DV.tauEmb D x.1) (A.H.rt : D.host.E) ≠ A.H.rt0 := by
-    change starRingEnd ℂ (DV.tauEmb D x.1 _) ≠ _
-    rw [h]
-    intro e
-    have him : A.H.rt0.im = 0 := Complex.conj_eq_iff_im.1 e
-    have h2 := congrArg Complex.re A.H.sqrt_neg_disc_sq
-    have h3 : (0 : ℝ) < A.H.d := Nat.cast_pos.2 A.H.d_prime.pos
-    simp [pow_two, him] at h2
-    nlinarith [mul_self_nonneg A.H.rt0.re]
-  have := x.2.2
-  have := S.rank_eq
-  rw [Datum.mult, if_neg hne]
-  omega
 
 def admissibleTrivialStage (D : D7) {N j : ℕ} (hj : j ≤ N) (jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW p →+* ℂ)) : AdmSt D N j jC where
   admitted _ _ _ := Unit

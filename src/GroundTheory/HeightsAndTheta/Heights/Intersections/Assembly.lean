@@ -6,17 +6,21 @@ import GroundTheory.HeightsAndTheta.Heights.Intersections.AevalNeZeroOfNotMem
 import GroundTheory.HeightsAndTheta.Heights.Intersections.IsHorizontalImageZIff
 import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsAlt
 import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsBis
-import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTer
+import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsMoreLast
+import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsEvalKerKrullDim
+import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherAlt
 import GroundTheory.HeightsAndTheta.Heights.Intersections.LiftZComponent
 import GroundTheory.HeightsAndTheta.Heights.Intersections.AevalMemAdjoin
 import GroundTheory.HeightsAndTheta.Heights.Intersections.ExistsNormalise
 import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsMore
 import GroundTheory.HeightsAndTheta.Heights.Intersections.IsMultiHomogProdInt
-import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurther
+import GroundTheory.HeightsAndTheta.Heights.Intersections.PullWMemFibre
+import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherRest
 import GroundTheory.HeightsAndTheta.Heights.Intersections.IsMultiHomogOfPullWeight
 import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsRest
 import GroundTheory.HeightsAndTheta.Heights.Intersections.ChartCongr
-import GroundTheory.HeightsAndTheta.Heights.Intersections.PAPrime
+import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsAntisym
+import GroundTheory.HeightsAndTheta.Heights.Intersections.ProjLineRankTwoPushforwardHypotheses
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PAdjoinIndepRelfinrank
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PBCMult
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PBaseRatioBasis
@@ -39,12 +43,12 @@ import GroundTheory.HeightsAndTheta.Heights.Intersections.PDiagOffUnit
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PDiagOrdOne
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PDiagPull
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PDiagPullI
-import GroundTheory.HeightsAndTheta.Heights.Intersections.PDiagRatioBasis
+import GroundTheory.HeightsAndTheta.Heights.Intersections.StDiagRatioBasis
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PDiagRelevant
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PEvalKerKrullDim
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PFibreDivSupp
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PFibreLocal
-import GroundTheory.HeightsAndTheta.Heights.Intersections.PFibreOverFinite
+import GroundTheory.HeightsAndTheta.Heights.Intersections.StFibreOverFinite
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PFibreProduct
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PFinrankAdjoinRange
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PFlagArith
@@ -66,7 +70,9 @@ import GroundTheory.HeightsAndTheta.Heights.Intersections.PLocRingDimOne
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PLocRingInj
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PLocRingIntClosure
 import GroundTheory.HeightsAndTheta.Heights.Intersections.POrbitCompNonvanish
-import GroundTheory.HeightsAndTheta.Heights.Intersections.PrimePairSetFirst
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.ExistsUniqueStatement
+import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsArith
+import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsLineFibre
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PfAtZero
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PPFFibreBij
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PPFFibreMult
@@ -74,8 +80,10 @@ import GroundTheory.HeightsAndTheta.Heights.Intersections.PPFHoriz
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PPFSecRed
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PPFStep
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PPFVert
-import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsSide
-import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTail
+import ReciprocityTheory.AnalyticForms.PotentialTheory.PLLocalStatement
+import GroundTheory.HeightsAndTheta.Heights.Intersections.AnalyticResolutionHypothesesProjectiveLine
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterHironaka
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivPush
 import GroundTheory.HeightsAndTheta.Heights.Intersections.DeEqZeroOfSemiPosOff
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PProjBundleArith
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PProjBundleDim
@@ -87,17 +95,31 @@ import GroundTheory.HeightsAndTheta.Heights.Intersections.PPtsMonoSemiPos
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PPtsRegLimit
 import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsBisAlt
 import GroundTheory.HeightsAndTheta.Heights.Intersections.FunFieldLeLocRing
-import GroundTheory.HeightsAndTheta.Heights.Intersections.ProofOfNoethPow
-import GroundTheory.HeightsAndTheta.Heights.Intersections.LogNormDivSameOrbit
-import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsBisMore
+import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTerTail
+import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsBisBis
+import GroundTheory.HeightsAndTheta.Heights.Intersections.NotIsUnitOfNumMem
+import GroundTheory.HeightsAndTheta.Heights.Intersections.PLocRingFrac
+import GroundTheory.HeightsAndTheta.Heights.Intersections.PLocRingLocal
+import GroundTheory.HeightsAndTheta.Heights.Intersections.SpanSingletonEqRangeLsmul
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
+import GroundTheory.HeightsAndTheta.Heights.Intersections.IsMultiHomogTwoXc
+import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherLast
+import GroundTheory.HeightsAndTheta.Heights.Intersections.SameOrbitOneSpecZ
+import GroundTheory.HeightsAndTheta.Heights.Intersections.ExistsIntValuationLtOne
+import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsMoreExtra
 import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsBisFurther
 import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsBisExtra
 import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsBisRest
 import GroundTheory.HeightsAndTheta.Heights.Intersections.OrderOfIntegral
-import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsBisSide
+import GroundTheory.HeightsAndTheta.Heights.Intersections.TwoMemFunFieldSpecZ
+import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTerFurther
+import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsMoreBis
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.CardQuotEqNatAbsNorm
 import GroundTheory.HeightsAndTheta.Heights.Intersections.KerIsMultiHomogIdeal
 import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsBisTail
-import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsBisLast
+import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsExtraAlt
+import GroundTheory.HeightsAndTheta.Heights.Intersections.ArithVarZero
+import GroundTheory.HeightsAndTheta.Heights.Intersections.NotIsHorizontalOfDimOne
 import GroundTheory.HeightsAndTheta.Heights.Intersections.ArIntMul
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PRankAdjoinFrac
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PRankFracDegree
@@ -108,9 +130,12 @@ import GroundTheory.HeightsAndTheta.Heights.Intersections.UnitChartOperator
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PSemilocChartRatio
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PSemilocFinite
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PSemilocIntegral
-import GroundTheory.HeightsAndTheta.Heights.Intersections.PSemilocLength
+import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocLengthSum
+import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsFibreDivSupp
+import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTerBis
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PSemilocLengthSum
-import GroundTheory.HeightsAndTheta.Heights.Intersections.PSemilocRank
+import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocRankAdjoin
+import GroundTheory.HeightsAndTheta.Heights.Intersections.PChartRankAdjoin
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PSemilocRankAdjoin
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PSemilocRankFrac
 import GroundTheory.HeightsAndTheta.Heights.Intersections.NotLtLtOfMemMinimalPrimes
@@ -141,6 +166,489 @@ import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PFibreMultiHomog
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PGenFibreChartDeg
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSymmRelabel
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ProjContract
+
+section
+set_option maxSynthPendingDepth 1
+
+noncomputable section
+
+namespace GroundTheory.Heights₂.Heights.Inter
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I4
+
+theorem FibreDimensionZero.proof (h₁ : ArithmeticIntersectionFibreMultiHomogeneous.Statement) (h₂ : EvalKerKrullDim.Statement)
+    (h₃ : FibreTranscendenceDegreeAlt.Statement) : FibreDimensionZero.Statement := by
+  intro K _ ι _ K' _ ι' _ κ v p _ W' n hv hp hW hV G'
+  refine ⟨⟨RingHom.ker_isPrime _, h₁ K ι K' ι' κ v p W' hv hp hW.1.2.1 G', fun k => ?_⟩, ?_⟩
+  · obtain ⟨i, hi⟩ := hW.1.2.2 k.1
+    refine ⟨i, fun h => hi ?_⟩
+    rw [fibreIdeal, RingHom.mem_ker, aeval_X] at h
+    have hX : (X ⟨k.1, i⟩ : MRing ι') ∈ W' := by
+      rw [← G'.genericFibre_ker_target, RingHom.mem_ker, aeval_X]
+      exact h
+    simpa using Ideal.mem_map_of_mem (MvPolynomial.map (Int.castRingHom (ZMod p))) hX
+  · rw [fibreIdeal, h₂ (FibreBlock κ) (fibreIdx ι' κ) G'.Φ G'.Φ', h₃ K ι K' ι' κ v p W' n hv hp hW hV G']
+    simp
+
+end GroundTheory.Heights₂.Heights.Inter
+end
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+noncomputable section
+
+namespace GroundTheory.Heights₂.Heights.Inter
+
+open MvPolynomial MeasureTheory ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I4
+
+theorem PullbackVanishingOfNullCycle.proof (hElim : PullbackEliminationOfVariable.Statement) : PullbackVanishingOfNullCycle.Statement := by
+  classical
+  intro K _ ι _ K' _ ι' _ κ v P' J' n Ψ hv hP' hP hΨ hJ hJP
+  obtain ⟨h, a, hha, hhP, hvan⟩ := hElim K ι K' ι' κ v P' J' n hv hP' hP hJ hJP
+  have hJh : IsMultiHomogIdeal (Ideal.span {h}) :=
+    ⟨{h}, fun f hf => ⟨a, (Set.mem_singleton_iff.mp hf) ▸ hha⟩, rfl⟩
+  have hJhP : ¬ Ideal.span {h} ≤ imageZ v P' := fun hle => hhP (hle (Ideal.subset_span rfl))
+  refine measure_mono_null ?_ (projB_null Ψ hP hΨ hJh hJhP)
+  rintro y ⟨z', hz'P, hz'J, -, -, -, hΨy⟩
+  set w : (Σ k, ι k) → ℂ := fun p => z' (v p) with hw
+  have hw1 : (Ψ (segre w) 0)⁻¹ * Ψ (segre w) 0 = 1 := by
+    have := congrFun hΨy 0
+    simpa [map_smul] using this
+  have h0 : Ψ (segre w) 0 ≠ 0 := fun h0 => by simp [h0] at hw1
+  obtain ⟨k0⟩ := hP.1
+  let c : K → ℂ := Function.update (fun _ => (1 : ℂ)) k0 (Ψ (segre w) 0)⁻¹
+  have hc : ∀ k, c k ≠ 0 := by
+    intro k
+    by_cases hk : k = k0
+    · subst hk; simp [c, h0]
+    · simp [c, Function.update_of_ne hk]
+  have hpc : ∏ k, c k = (Ψ (segre w) 0)⁻¹ := by
+    simp [c, Finset.prod_update_of_mem (Finset.mem_univ k0)]
+  have hwP : w ∈ mcPts (imageZ v P') := IntersectionWithSection.comp_mem_mcPts hv hz'P
+  have hwh : w ∈ mcPts (Ideal.span {h}) := by
+    refine ⟨hwP.1, fun f hf => ?_⟩
+    obtain ⟨q, rfl⟩ := Ideal.mem_span_singleton'.mp hf
+    rw [map_mul, map_mul, hvan z' hz'P hz'J, mul_zero]
+  refine ⟨fun p => c p.1 * w p, mcPts_smul hP.2.1.2.1 c hc hwP, mcPts_smul hJh c hc hwh, ?_⟩
+  rw [segre_smul, hpc]
+  exact hΨy
+
+end GroundTheory.Heights₂.Heights.Inter
+end
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.Inter
+
+open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4
+
+theorem yyBlockMap_thm : YYBlockMapStatement := by
+  intro ι ν κ j
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro a b h
+    fin_cases j <;> cases a <;> cases b <;> simp_all [diagonalBlockIndex]
+  · rintro ⟨a, x⟩ ⟨b, y⟩ h
+    fin_cases j <;> cases a <;> cases b <;> simp [T.yyEmb] at h <;> injection h with h1 h2 <;>
+      first | (cases h2; rfl) | cases h1
+  · rintro ⟨a, x⟩
+    fin_cases j <;> cases a <;> rfl
+  · rintro ⟨b, y⟩ ⟨a, ha⟩
+    fin_cases j <;> cases a <;> cases b <;>
+      first
+        | (refine ⟨⟨.base, y⟩, ?_⟩; simp [T.yyEmb]; done)
+        | (refine ⟨⟨.det, y⟩, ?_⟩; simp [T.yyEmb]; done)
+        | (refine ⟨⟨.line, y⟩, ?_⟩; simp [T.yyEmb]; done)
+        | simp [diagonalBlockIndex] at ha
+
+theorem PropAPrime.proof (h₁ : ToFibreSquare.Statement) (h₂ : FibreInt.Statement) : PropAPrime.Statement := by
+  intro I hI D S X A hX hAs hAb k hk hkD
+  have hb := yyBlockMap_thm S.ι S.ν S.κ
+  have p0 := IndefiniteRowSideFullHecke.Inter.isPullHerm_pullHerm (hb 0) X
+  have p1 := IndefiniteRowSideFullHecke.Inter.isPullHerm_pullHerm (hb 1) X
+  have pA := IndefiniteRowSideFullHecke.Inter.isPullHerm_pullHerm (hb 0) A
+  obtain ⟨F, hFI, hFΦ⟩ := h₁ I hI D S X A _ _ _ hX hAs hAb p0 p1 pA
+  have hfib := h₂ D S X A _ _ _ hX hAs hAb p0 p1 pA k hk hkD
+  have hF := aPrime_thm D F k hk hkD
+  rw [hFI (2 * k) (by omega),
+    Finset.sum_congr rfl (fun i hi => hFΦ k i hk hkD (Finset.mem_range.1 hi)), ← Finset.mul_sum, hfib,
+    ← mul_neg] at hF
+  exact mul_left_cancel₀ (by positivity) hF
+
+end GroundTheory.Heights₂.Heights.Inter
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.Inter
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI
+
+noncomputable section
+
+def diagChart {ι ν κ : Type} (c : ∀ k, T.yyIdx ι ν κ k) : ∀ k, T.wwIdx ι ν κ k
+  | .base => (c .base : ι)
+  | .det => (c .det : ν)
+  | .line0 => (c .line : κ)
+  | .line1 => (c .line : κ)
+
+theorem coneRatios_wwCoord_diag {Ω : Type} [Field Ω] {ι ν κ : Type} {E : Type} [AddCommGroup E] [Module Ω E]
+    {Φ : Type} [Field Φ] [Algebra Ω Φ] (x : ι → Ω) (δ : ν → Ω) (e : Module.Basis (Fin 2) Ω E)
+    (φ : κ → E →ₗ[Ω] Ω) (a : Φ) (c : ∀ k, T.yyIdx ι ν κ k) :
+    coneRatios (T.wwCoord x δ e φ a a) (diagChart c) = coneRatios (T.yyCoord x δ e φ a) c := by
+  ext r
+  constructor
+  · rintro ⟨⟨k, i⟩, rfl⟩
+    cases k
+    · exact ⟨⟨.base, (i : ι)⟩, rfl⟩
+    · exact ⟨⟨.det, (i : ν)⟩, rfl⟩
+    · exact ⟨⟨.line, (i : κ)⟩, rfl⟩
+    · exact ⟨⟨.line, (i : κ)⟩, rfl⟩
+  · rintro ⟨⟨k, i⟩, rfl⟩
+    cases k
+    · exact ⟨⟨.base, (i : ι)⟩, rfl⟩
+    · exact ⟨⟨.det, (i : ν)⟩, rfl⟩
+    · exact ⟨⟨.line0, (i : κ)⟩, rfl⟩
+
+theorem DiagRatioBasis.proof (hY : YYRatioBasis.Statement) : DiagRatioBasis.Statement := by
+  intro Ω _ _ ι ν κ _ _ _ E _ _ Φ _ _ _ x e b φ δ g i₀ l₀ k₀ k₁ d t a hx ht htF htA hδ hδF hφ hgF hg ha
+  obtain ⟨c, t', hc, hind, hmem, halg⟩ :=
+    hY Ω ι ν κ E Φ x e b φ δ g i₀ l₀ k₀ k₁ d t a hx ht htF htA hδ hδF hφ hgF hg ha
+  refine ⟨diagChart c, t', fun k => ?_, hind, ?_, ?_⟩
+  · cases k
+    exacts [hc .base, hc .det, hc .line, hc .line]
+  · rw [coneRatios_wwCoord_diag]; exact hmem
+  · rw [coneRatios_wwCoord_diag]; exact halg
+
+end
+
+end GroundTheory.Heights₂.Heights.Inter
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+noncomputable section
+
+namespace GroundTheory.Heights₂.Heights.Inter
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I4
+
+theorem FibreOverFinite.proof (h : FibreIncomp.Statement) : FibreOverFinite.Statement := by
+  intro K _ ι _ K' _ ι' _ κ v P' n s α W hv hP' hQ hs hsQ hW
+  refine (divSupp_finite P' (rename v s)).subset fun W' hW' => ?_
+  have hsW : s ∈ W := hW.1.1.2 (Ideal.mem_sup_right (Ideal.mem_span_singleton_self s))
+  have hsW' : rename v s ∈ W' := by
+    rw [← hW'.2.2] at hsW
+    exact hsW
+  exact ((FibreDivSupp.proof h K ι K' ι' κ v P' n s α W hv hP' hQ hs hsQ hW W').mp ⟨hW', hsW'⟩).1
+
+end GroundTheory.Heights₂.Heights.Inter
+end
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+noncomputable section
+
+namespace GroundTheory.Heights₂.Heights.Inter
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4
+
+theorem PushforwardProjLineRankTwo.proof (hPF : PushforwardProjLineFlag.Statement) (hF : FibreDimStatement)
+    (hR4 : ∀ (F : Type) [Field F] (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)],
+      ExistsUniqueStatement F ι)
+    (hLine : LineFibreBlocks.Statement) : PushforwardProjLineRankTwo.Statement := by
+  unfold PushforwardProjLineRankTwo.Statement
+  intro I hI K _ ι _ K' _ ι' _ κ v P' d G k₀ L L' N hv hP' hP hk₀ hS hL hLL' hN
+  obtain ⟨J, hJ, -⟩ := hR4 G.Φ (FibreBlock κ) (fibreIdx ι' κ)
+  have hV : IsProjVarF (fibreIdeal κ G) 1 := hF K ι K' ι' κ v P' d 1 G hv hP' hP
+  have h1 := hPF I hI K ι K' ι' κ v P' d 1 G J L L' ![N] hv hP' hP hJ hL hLL'
+    (fun j => by fin_cases j; exact hN)
+  have h2 := hLine G.Φ (FibreBlock κ) (fibreIdx ι' κ) k₀ (fibreIdeal κ G) J hk₀ hV hS hJ (fibreDeg κ N.a)
+  have h3 : (fun j : Fin 1 => fibreDeg κ ((![N] : Fin 1 → HermLine ι') j).a) = ![fibreDeg κ N.a] := by
+    funext j
+    fin_cases j
+    rfl
+  rw [h1, h3, h2]
+  rfl
+
+end GroundTheory.Heights₂.Heights.Inter
+end
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+noncomputable section
+
+namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Inter
+
+open ReciprocityTheory.AnForm.M
+
+theorem projectiveLineZeroForm_holds.proof : projectiveLineZeroForm_holds.Statement := by
+  intro e X _ _ _ A L s W B hL hs hSNC hB v hv Φ hΦ
+  have h := poincareLelong A L s ![1] ![W]
+    (Fin.cons B (fun i => i.elim0) : ∀ k, FinHolAtlas e ((![W] : Fin 1 → Set X) k))
+    hL hs hSNC (Fin.cons hB (fun i => i.elim0)) v hv Φ hΦ
+  rw [Fin.sum_univ_one] at h
+  have h1 : (((![1] : Fin 1 → ℕ) 0 : ℕ) : ℝ) = 1 := by simp
+  rw [h1, one_mul] at h
+  exact h
+
+end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Inter
+end
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.Inter
+
+open ReciprocityTheory.ChartRestriction.G.Geo
+
+theorem PoincareLelongAlt.proof (hRes : ReciprocityTheory.AnForm.R.FinalTheorems.GFLogStC ∧ ReciprocityTheory.AnForm.R.FinalTheorems.FinTypeQE)
+    (hInt : PtsIntegrableStatement) (hSide : DivPushResSideStatement)
+    (hPt : DivPushPointStatement) : ArithmeticPoincareLelongFormula :=
+  poincareLelong_of_hironaka hRes (resDivPush_of (resExists_of_hironaka hRes) resBridge hInt hSide hPt)
+
+end GroundTheory.Heights₂.Heights.Inter
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.Inter
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
+
+noncomputable section
+
+theorem RegularityLocalFinite.proof (hD : regularityLocalDimension_holds.Statement) : RegularityLocalFinite.Statement := by
+  intro K _ ι _ P s a W y hP hs hsP hW hy hy0
+  obtain ⟨hloc, hnoeth, hdim⟩ := hD K ι P s a W hP hs hsP hW
+  have := hloc
+  have := hnoeth
+  have : P.IsPrime := hP.2.1.1
+  have : IsDomain (locRing P W) := inferInstance
+  have : Ring.KrullDimLE 1 (locRing P W) := ReciprocityTheory.ChartRestriction.G.AI.krullDimLE_one_of_krullDim_eq hdim
+  obtain ⟨hfinRes, -⟩ := regularityLocalResidue_holds.proof K ι P s a W (fun i => i.elim0) hP hs hsP hW
+  have hy0' : (⟨y, hy⟩ : locRing P W) ≠ 0 := fun h => hy0 (congrArg Subtype.val h)
+  have hfin : Module.length (locRing P W) (locRing P W ⧸ locIdeal P W y) ≠ ⊤ := by
+    rw [locIdeal_eq_span hy, span_singleton_eq_range_lsmul]
+    exact ReciprocityTheory.ChartRestriction.G.AI.length_coker_ne_top (locRing P W) hy0'
+  have hcard := card_eq_card_residueField_pow_length (locRing P W ⧸ locIdeal P W y) hfin
+  have hpos : 0 < Nat.card (IsLocalRing.ResidueField (locRing P W)) := Nat.card_pos
+  apply Nat.finite_of_card_ne_zero
+  rw [hcard]
+  exact pow_ne_zero _ hpos.ne'
+
+end
+
+end GroundTheory.Heights₂.Heights.Inter
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.Inter
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I2
+
+noncomputable section
+
+theorem log_norm_div_sameOrbit {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
+    {f g : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a) (hg : IsMultiHomog g a)
+    {z z' : (Σ k, ι k) → ℂ} (h : SameOrbit z z') :
+    Real.log (‖eval z (map (Int.castRingHom ℂ) f)‖ / ‖eval z (map (Int.castRingHom ℂ) g)‖) =
+      Real.log (‖eval z' (map (Int.castRingHom ℂ) f)‖ / ‖eval z' (map (Int.castRingHom ℂ) g)‖) := by
+  obtain ⟨c, hc, rfl⟩ := h
+  have hc0 : ‖∏ k, c k ^ a k‖ ≠ 0 :=
+    norm_ne_zero_iff.mpr (Finset.prod_ne_zero_iff.mpr fun k _ => pow_ne_zero _ (hc k))
+  rw [eval_smul_homog f a hf c z', eval_smul_homog g a hg c z', norm_mul, norm_mul,
+    mul_div_mul_left _ _ hc0]
+
+theorem RegularityProductFormula.proof (hPts : regularityPointsSum_holds.Statement) (hVert : VerticalClosedPoints.Statement) :
+    RegularityProductFormula.Statement := by
+  intro K _ ι _ P f g a hP hf hg hfP hgP
+  obtain ⟨R, hRP, hRu, hsum⟩ := hPts K ι P hP
+  rw [hVert K ι P f g a R hP hf hg hfP hgP hRP hRu]
+  exact (hsum _ fun z z' _ h => log_norm_div_sameOrbit hf hg h).symm
+
+end
+
+end GroundTheory.Heights₂.Heights.Inter
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.Inter
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
+
+noncomputable section
+
+theorem RegularityIntegral.proof (hC : RegularityValuationCentre.Statement) (hB : RegularityRelativeClosedPoint.Statement) :
+    RegularityIntegral.Statement := by
+  intro K _ ι _ P hP x
+  obtain ⟨hF, hNF⟩ := RegularityFunctionFieldNumber.proof K ι P hP
+  let _ := hF.toField
+  have hv : ∀ v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers (funField P)),
+      v.valuation (funField P) (x : funField P) ≤ 1 := by
+    intro v
+    obtain ⟨n, hn0, hn⟩ := RegularityValuationCentre.exists_int_valuation_lt_one v
+    obtain ⟨W, hW, hPW, hnW, hsub⟩ := hC K ι P hP.2.1 _ (v.valuation (funField P)) n hn
+    have hWP : W ≠ P := by
+      rintro rfl
+      have h0 : n ∈ W.comap (C : ℤ →+* MRing ι) := hnW
+      rw [show W.comap (C : ℤ →+* MRing ι) = ⊥ from hP.2.2.1, Ideal.mem_bot] at h0
+      exact hn0 h0
+    exact hsub x (x.2 W (hB K ι P W hP hW hPW hWP) hPW)
+  obtain ⟨y, hy⟩ := IsDedekindDomain.HeightOneSpectrum.mem_integers_of_valuation_le_one (funField P)
+    (x : funField P) hv
+  have hint : IsIntegral ℤ (x : funField P) := hy ▸ (Algebra.IsIntegral.isIntegral y).algebraMap
+  let f : funField P →ₐ[ℤ] FractionRing (MRing ι ⧸ P) :=
+    { (funField P).subtype with commutes' := fun n => by simp }
+  exact hint.map f
+
+end
+
+end GroundTheory.Heights₂.Heights.Inter
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.Inter
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo
+
+noncomputable section
+
+theorem RegularityFormula.proof (hN : RegularityFunctionFieldNumber.Statement) (hO : RegularityOrder.Statement)
+    (hL : RegularityLocal.Statement) : RegularityFormula.Statement := by
+  classical
+  intro K _ ι _ P b hP hb hbW
+  obtain ⟨hF, hNF⟩ := hN K ι P hP
+  let _ := hF.toField
+  have := hNF
+  obtain ⟨hfree, hfin, hrank⟩ := hO K ι P hP
+  let b' : regRing P := ⟨b, hbW⟩
+  have hb' : b' ≠ 0 := fun h => hb (congrArg Subtype.val h)
+  obtain ⟨hfs, hsum⟩ := hL K ι P b' hP hb'
+  refine ⟨hfs, hsum.trans ?_⟩
+  have hI := (ReciprocityTheory.ChartRestriction.G.AI.index_thm (funField P) (regRing P) hfree hfin (hrank hF) b' hb').2
+  exact hI.trans (finsum_eq_sum_of_fintype _).symm
+
+end
+
+end GroundTheory.Heights₂.Heights.Inter
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.Inter
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I2
+
+noncomputable section
+
+theorem VerticalClosedPoints.proof (hE : regularityEmbedding_holds.Statement) (hV : VerticalEmbedding.Statement) : VerticalClosedPoints.Statement := by
+  intro K _ ι _ P f g a R hP hf hg hfP hgP hR hRu
+  have : P.IsPrime := hP.2.1.1
+  obtain ⟨x, hx⟩ := exists_funField_mul_eq hf hg hgP
+  obtain ⟨e, he⟩ := hE K ι P R hP hR hRu
+  rw [hV K ι P f g a x hP hf hg hfP hgP hx]
+  have hA : IsSectionOn P (HermLine.ofMetrics (fun k => fsMetric (ι k)) (fun k => (a k : ℤ))) g :=
+    ⟨a, fun _ => rfl, hg, hgP⟩
+  have key : ∀ t : R, Real.log ‖e t x‖ =
+      Real.log (‖eval (t : (Σ k, ι k) → ℂ) (map (Int.castRingHom ℂ) f)‖ /
+        ‖eval (t : (Σ k, ι k) → ℂ) (map (Int.castRingHom ℂ) g)‖) := by
+    intro t
+    have hg0 := eval_ne_zero_of_dimOne arithVarZero hP hA (hR t t.2)
+    rw [← he t f g a hf hg hgP x hx, norm_mul, mul_div_cancel_right₀ _ (norm_ne_zero_iff.mpr hg0)]
+  rw [← finsum_comp_equiv e, finsum_eq_sum_of_fintype, Fintype.sum_congr _ _ key]
+  exact Finset.sum_coe_sort R (fun t => Real.log (‖eval t (map (Int.castRingHom ℂ) f)‖ /
+    ‖eval t (map (Int.castRingHom ℂ) g)‖))
+
+end
+
+end GroundTheory.Heights₂.Heights.Inter
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+noncomputable section
+
+namespace GroundTheory.Heights₂.Heights.Inter
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I4 IndefiniteRowSideFullHecke.Inter
+
+theorem SemilocLength.proof (h₁ : SemilocLengthSum.Statement) (h₂ : FibreDivSupp.Statement)
+    (h₃ : regularityDehomogenization_holds.Statement) : SemilocLength.Statement := by
+  intro K _ ι _ K' _ ι' _ κ v P' n s t α W E hv hP' y hPn hs ht hsP hW htW hy hE
+  have := hP'.2.1.1
+  have hfib := h₂ K ι K' ι' κ v P' n s α W hv hP' hPn hs hsP hW
+  obtain ⟨-, N, hN, hsum⟩ := h₁ K ι K' ι' κ v P' n s t α W E hv hP' y hPn hs ht hsP hW htW hy
+    (fun W' hW' hsW' => hE W' ((hfib W').1 ⟨hW', hsW'⟩).1 ((hfib W').1 ⟨hW', hsW'⟩).2)
+  refine ⟨N, hN, hsum.trans (finsum_mem_congr (Set.ext fun W' => hfib W') fun W' hW' => ?_)⟩
+  obtain ⟨hW'd, hW'i⟩ := hW'
+  have hs' : rename v s ∉ P' := hsP
+  have ht' : rename v t ∉ W' := fun h => htW (hW'i ▸ h)
+  have hy' : fracMapZ v P' y * algebraMap (MRing ι' ⧸ P') (FractionRing (MRing ι' ⧸ P'))
+      (Ideal.Quotient.mk P' (rename v t)) =
+      algebraMap (MRing ι' ⧸ P') (FractionRing (MRing ι' ⧸ P')) (Ideal.Quotient.mk P' (rename v s)) := by
+    rw [← fracMapZ_algebraMap, ← fracMapZ_algebraMap, ← map_mul, hy]
+  rw [(h₃ K' ι' P' (rename v s) (rename v t) (Function.extend κ α 0) W' (fracMapZ v P' y) hP'.2.1
+    (rename_isMultiHomog hv hs) hs' hW'd (rename_isMultiHomog hv ht) ht' hy').2]
+
+end GroundTheory.Heights₂.Heights.Inter
+end
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+noncomputable section
+
+namespace GroundTheory.Heights₂.Heights.Inter
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I4
+
+theorem SemilocRank.proof (hDim : FibreDimStatement) (hAdj : SemilocRankAdjoin.Statement) :
+    SemilocRank.Statement := by
+  intro K _ ι _ K' _ ι' _ κ v P' n G J s α W hv hP' hZ hJ hs hsP hW
+  have hrel : ∀ k', ∃ i, (X ⟨k', i⟩ : MRing ι') ∉ P' := hP'.2.1.2.2
+  choose i' hi' using hrel
+  have hfib : IsProjVarF (fibreIdeal κ G) 0 := hDim K ι K' ι' κ v P' (n + 1) 0 G hv hP' hZ
+  have hz : ∀ k : FibreBlock κ, G.x' ⟨k.1, i' k.1⟩ ≠ 0 := by
+    intro k h0
+    apply hi' k.1
+    rw [← G.genericFibre_ker_target, RingHom.mem_ker, aeval_X]
+    exact h0
+  have hj : IsChart (fibreIdeal κ G) (fun k => i' k.1) := by
+    intro k hk
+    apply hz k
+    rw [fibreIdeal, RingHom.mem_ker, aeval_X] at hk
+    exact hk
+  rw [hJ.1 _ Fin.elim0 _ hfib hj, hAdj K ι K' ι' κ v P' n G s α W i' hv hP' hZ hs hsP hW hi']
+  congr 1
+  exact (ChartRankAdjoin.proof (FibreBlock κ) (fibreIdx ι' κ) G.Φ G.Φ' (fun q => G.x' ⟨q.1.1, q.2⟩)
+    (fun k => i' k.1) hz hfib.1.2.1).symm
+
+end GroundTheory.Heights₂.Heights.Inter
+end
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
@@ -923,3 +1431,4 @@ theorem TheoremI.of_remaining
   And.intro (GroundTheory.Heights₂.Heights.Inter.ThmIExists.of_remaining hR1RegMaxSurj hFinTypeQE hGFLogStC hFibreComp hDivPushPoint hDivPushResSide hPtsIntegrable) (And.intro GroundTheory.Heights₂.Heights.Inter.Closed.ReciprocityTheory.ChartRestriction.G.AI.I2.Unique (And.intro (GroundTheory.Heights₂.Heights.Inter.ThmISymm.of_remaining hFinTypeQE hGFLogStC hFibreComp hDivPushPoint hDivPushResSide hPtsIntegrable) (GroundTheory.Heights₂.Heights.Inter.ThmIMultilin.of_remaining hFinTypeQE hGFLogStC hFibreComp hDivPushPoint hDivPushResSide hPtsIntegrable)))
 
 end GroundTheory.Heights₂.Heights.Inter
+end

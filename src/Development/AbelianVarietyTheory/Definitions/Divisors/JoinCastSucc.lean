@@ -115,11 +115,6 @@ theorem shortLat_std (M : ℕ) : ShortLat (1 : Matrix (Fin (M + 1)) (Fin (M + 1)
 
 theorem sl2 : ShortLat (1 : Matrix (Fin 2) (Fin 2) ℚ) (fun _ => 1) 1 := shortLat_std 1
 
-theorem shear2 : ShearInv (D := 1) (det2 ℚ) := by
-  intro i t
-  obtain rfl : i = 0 := Subsingleton.elim _ _
-  simp [det2, show Fin.last 1 = 1 from rfl]
-  ring
 
 theorem join_eval {R : Type} [CommRing R] (v : Fin 1 → Fin 2 → R) (u : Fin 2 → R) :
     eval (join v u) (det2 R) = v 0 0 * u 1 - v 0 1 * u 0 := by
@@ -136,35 +131,8 @@ theorem last2 : LastNonzero (D := 1) (det2 ℚ) := by
   funext j
   fin_cases j <;> simp <;> nlinarith [mul_self_nonneg (u 0), mul_self_nonneg (u 1)]
 
-theorem max2 : IsMaxPt (1 : Matrix (Fin 2) (Fin 2) ℂ) 1 (det2 ℂ) (fun p => if p.1 = p.2 then 1 else 0) := by
-  refine ⟨fun i => ?_, by simp [det2], fun u => ?_⟩
-  · fin_cases i <;> simp [frameNorm, Fin.sum_univ_two]
-  · simp only [det2, frameNorm, Fin.prod_univ_two, Fin.sum_univ_two, map_sub, map_mul, eval_X, inv_one, Matrix.one_mulVec, pow_one]
-    simp
-    rw [← Real.sqrt_mul (by positivity)]
-    apply Real.le_sqrt_of_sq_le
-    have h := norm_sub_le (u (0,0) * u (1,1)) (u (0,1) * u (1,0))
-    rw [norm_mul, norm_mul] at h
-    have h2 := pow_le_pow_left₀ (norm_nonneg _) h 2
-    nlinarith [sq_nonneg (‖u (0,0)‖ * ‖u (1,0)‖ - ‖u (0,1)‖ * ‖u (1,1)‖)]
 
-theorem mh2 : IsMultiHomogeneous (fun _ => 1) (det2 ℚ) := by
-  have := (GlobalTheory.ChowHt.Model.isChowForm_line ℚ).homog
-  rwa [Matrix.det_fin_two] at this
 
-theorem core_hyp : ∃ h Θ : ℝ, ShortLat (1 : Matrix (Fin 2) (Fin 2) ℚ) (fun _ => 1) 1 ∧ IsMultiHomogeneous (fun _ => 1) (det2 ℚ) ∧
-    ShearInv (D := 1) (det2 ℚ) ∧ LastNonzero (D := 1) (det2 ℚ) ∧
-    (((1 : ℕ) : ℝ) + 1) * (1 : ℕ) * h = formHeight 1 (1 : Matrix (Fin 2) (Fin 2) ℚ) (fun _ => 1) (det2 ℚ) ∧
-    ((2 : ℕ) : ℝ) * (1 : ℕ) * (1 : ℕ) * (2 + |h| + Real.log 1) ≤ Θ ∧
-    (X (0, 0) : MvPolynomial (Fin 1 × Fin 2) ℚ) ≠ 0 ∧
-    (((X (0, 0) : MvPolynomial (Fin 1 × Fin 2) ℚ).totalDegree : ℕ) : ℝ) ≤ Θ ^ 3 := by
-  refine ⟨formHeight 1 (1 : Matrix (Fin 2) (Fin 2) ℚ) (fun _ => 1) (det2 ℚ) / 2, _, sl2, mh2, shear2, last2, by push_cast; ring, le_rfl,
-    X_ne_zero _, ?_⟩
-  rw [totalDegree_X]
-  push_cast
-  apply one_le_pow₀
-  simp
-  linarith [abs_nonneg (formHeight 1 (1 : Matrix (Fin 2) (Fin 2) ℚ) (fun _ => 1) (det2 ℚ) / 2)]
 
 theorem lin_ne {K : Type} [Field K] {N : ℕ} {y : Fin N → K} (hy : y ≠ 0) : lin y ≠ 0 := by
   intro h
@@ -182,8 +150,6 @@ theorem nosq {K : Type} [Field K] {N : ℕ} {z : Fin N → K} (hz : z ≠ 0) : N
   rw [(lin_hom z).totalDegree (lin_ne hz), ((lin_hom y).pow 2).totalDegree (pow_ne_zero _ (lin_ne hy))] at this
   omega
 
-theorem not_nosq {K : Type} [Field K] {N : ℕ} {z : Fin N → K} (hz : z ≠ 0) : ¬ NoSquare (lin z ^ 2) :=
-  fun h => h.2 z hz dvd_rfl
 
 theorem avoid : AvoidPoly (projTuple 1) 1 := by
   refine ⟨X ((0 : Fin 1), (0 : Fin 2)), X_ne_zero _, (totalDegree_X _).le, fun K _ _ _ s hs x hx => ?_⟩

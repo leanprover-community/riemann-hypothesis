@@ -367,30 +367,6 @@ def codeRecord : D7 :=
     gat_d := fun _ _ _ => (gAtPExample_d _).trans (finrank_bot ℂ _).symm
     Y_sigval := spaces_signature_eq R _ _ _ _ _ _ _ }
 
-theorem codeRecord_ranks :
-    (codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).R = R := rfl
-theorem codeRecord_wordType :
-    (codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).what₂.Word = W := rfl
-theorem codeRecord_weight_sign :
-    (codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).hcW = hcW := rfl
-theorem codeRecord_letter :
-    (codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).s.letter = lt := rfl
-theorem codeRecord_delta :
-    (codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).s.Del = Del := rfl
-theorem codeRecord_height :
-    (codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).div.h = hv := rfl
-theorem codeRecord_dimensionBound :
-    (codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).what₂.Dstar = Dst := rfl
-theorem codeRecord_twistAt :
-    (codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).what₂.muAt = tw := rfl
-theorem codeRecord_volume :
-    (codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).vol = vol := rfl
-theorem codeRecord_dsig :
-    (codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).dsig = dsg := rfl
-theorem codeRecord_cdScale :
-    (codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).s.cdScale = cdS := rfl
-theorem codeRecord_mem_A_T (u) : ((codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).mem u).A.T = T u := rfl
-theorem codeRecord_discriminantLevel (u) : ((codeRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol K T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw).mem u).A.duStar = du u := rfl
 
 end Record
 
@@ -442,23 +418,9 @@ def hcWord : HCParam R :=
       · exact ⟨z, by rw [hz]; ring⟩
       · exact ⟨z, hz⟩ }
 
-theorem hcWord_letter (l : ℕ) (hl : l < R.k - 2) :
-    (hcWord h n hgap hlet hn a).u ⟨l + 1, by omega⟩ =
-      (hcWord h n hgap hlet hn a).v ⟨l, by omega⟩ - 1 / 2 - (if a ⟨l, hl⟩ then (n : ℚ) else 0) := by
-  show hcLet h n a ⟨l + 1, _⟩ = h.v ⟨l, _⟩ - 1 / 2 - _
-  rw [hcLet_mid h n a l hl, hlet l hl]
 
 end Words
 
-theorem card_word_le (D : D7) : Fintype.card D.what₂.Word ≤ 2 ^ (D.R.k - 2) := by
-  simpa using Fintype.card_le_of_injective _ D.s.letter_inj
 
-theorem del_int_of_low (D : D7) (u : D.what₂.Word) (l : Fin (D.R.k - 2)) (h : D.s.letter u l = true)
-    (τ : D.what₂.Tau) : ∃ z : ℤ, D.s.Del = z := by
-  have h1 := D.s.u_letter u τ l.1 l.2
-  obtain ⟨a, ha⟩ := (D.hcW u τ).u_half ⟨l.1 + 1, by omega⟩
-  obtain ⟨b, hb⟩ := (D.hcW u τ).v_int ⟨l.1, by omega⟩
-  rw [ha, hb, show D.s.letter u ⟨l.1, l.2⟩ = true from h, if_pos rfl] at h1
-  exact ⟨b - a - 1, by push_cast; linarith⟩
 
 end Formalism.BasicNotions.Examples₂

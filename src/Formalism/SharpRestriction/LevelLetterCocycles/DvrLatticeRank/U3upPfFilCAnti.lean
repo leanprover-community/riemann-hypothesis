@@ -159,10 +159,6 @@ theorem u3upPf_ofR (D : D7) (HW : HWOf D.loc) (hMF : modelFR D HW) (hW : wKillR 
     hall f hf x hx hFil
   exact u3upPf_lift _ F _ π' _ h' _ _ c α β hMF2 hM hW' hNL1 hG1 hG2 _ h1 hxN y hy hα
 
-theorem u3upPf_step (hMF : ModelFStep) (hW : WStep) : UpSlotHypothesis := by
-  intro D HW F Cm CA CB CK hA
-  exact u3upPf_ofR D HW (hMF D HW F Cm CA CB CK hA) (hW D HW F Cm CA CB CK hA)
-    (ninlam_pf D HW F Cm CA CB CK hA) (gamPiCondition D HW F Cm CA CB CK hA)
 
 end Formalism.MainNotions.N.Ln34
 

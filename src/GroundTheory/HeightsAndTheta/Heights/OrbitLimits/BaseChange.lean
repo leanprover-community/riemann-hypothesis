@@ -1,8 +1,33 @@
 import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ExistsUnique
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.BaseChangeMinimal
-import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsBaseChangeRelabel
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.ExistsUniqueStatement
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.AssemblyCN
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.Targets
+
+open ReciprocityTheory.ChartRestriction.G.AI.I1
+
+universe u u' v w v' w'
+
+def BaseChangeRelabel.Statement : Prop :=
+  ∀ (F : Type u) [Field F] (F' : Type u') [Field F'] [Algebra F F'] (K : Type v) [Fintype K]
+    (ι : K → Type w) [∀ k, Fintype (ι k)] (K' : Type v') [Fintype K'] (ι' : K' → Type w')
+    [∀ k, Fintype (ι' k)] (e : K ≃ K'),
+    (∀ k, ι k ≃ ι' (e k)) → BaseChangeStatement F F' ι' → BaseChangeStatement F F' ι
+
+def BaseChangeRelabel.renaming_example :
+    (PUnit.{2} ≃ Unit) ×
+      (∀ k : PUnit.{2}, ULift.{1} (Fin 2) ≃ (fun _ : Unit => Fin 2) (Equiv.punitEquivPUnit k)) :=
+  ⟨Equiv.punitEquivPUnit, fun _ => Equiv.ulift⟩
+
+end GroundTheory.Heights₂.Heights.Targets
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
@@ -90,3 +115,4 @@ theorem BaseChange.full (F : Type u) (F' : Type u') [Field F] [Field F'] [Algebr
 end
 
 end GroundTheory.Heights₂.Heights.Targets
+end

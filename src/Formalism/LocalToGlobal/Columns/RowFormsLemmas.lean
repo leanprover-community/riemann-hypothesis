@@ -90,12 +90,6 @@ theorem lamPar_psiU (h : r ≤ n) (bl : List ℕ) (ψ : AddChar κ K) (χ : ℕ 
   show ψ (supSum r (Finset.range (r - 1)) (restr h (M : Matrix (Fin n) (Fin n) κ))) = _
   rw [supSum_restr]
 
-theorem lamPar_bot (h : r ≤ n) (bl : List ℕ) (χ : ℕ → κˣ →* Kˣ) (M : GL (Fin n) κ)
-    (h1 : M ∈ HPar n κ h bl ⊥) (h2 : M ∈ HK n κ r bl) :
-    lamPar h bl (1 : ↥(⊥ : Subgroup (GL (Fin r) κ)) →* Kˣ) χ ⟨M, h1⟩ = lamK χ n r bl ⟨M, h2⟩ := by
-  unfold lamPar lamK
-  rw [MonoidHom.mul_apply, MonoidHom.comp_apply, MonoidHom.one_apply, one_mul]
-  rfl
 
 theorem HPar_inf_fixCol (h : r ≤ n) (bl : List ℕ) {c : ℕ} (hc : c < r) :
     HPar n κ h bl (HU κ r ⊓ fixCol r κ c) = uniUT n κ r bl ⊓ fixCol n κ c := by
@@ -128,22 +122,8 @@ theorem HPar_inf_fixCol (h : r ≤ n) (bl : List ℕ) {c : ℕ} (hc : c < r) :
     rw [this]
     simp only [Matrix.one_apply, Fin.ext_iff, Fin.val_castLE]
 
-theorem supChar_inv (ψ : AddChar κ K) (a : ℕ) (bl : List ℕ) (S : Finset ℕ) :
-    supChar ψ⁻¹ n a bl S = (supChar ψ n a bl S)⁻¹ := by
-  ext M
-  rw [MonoidHom.inv_apply, supChar_val, Units.val_inv_eq_inv_val, supChar_val, AddChar.inv_apply, AddChar.map_neg_eq_inv]
 
-theorem detChar_inv (χ : ℕ → κˣ →* Kˣ) (a : ℕ) (bl : List ℕ) :
-    detChar (fun s => (χ s)⁻¹) n a bl = (detChar χ n a bl)⁻¹ := by
-  ext M
-  rw [MonoidHom.inv_apply, detChar_apply, detChar_apply, ← Finset.prod_inv_distrib]
-  rfl
 
-theorem lamGen_inv (ψ : AddChar κ K) (χ : ℕ → κˣ →* Kˣ) (a : ℕ) (bl : List ℕ) (S : Finset ℕ) :
-    lamGen ψ⁻¹ (fun s => (χ s)⁻¹) n a bl S = (lamGen ψ χ n a bl S)⁻¹ := by
-  unfold lamGen
-  rw [supChar_inv, detChar_inv, mul_inv]
-  rfl
 
 end Ties
 
@@ -163,33 +143,11 @@ theorem rowTyG_sharp_H :
     (rowTyG Ch (rPsharp Ch) w).H = HJsharp (𝓞 X.E ⧸ w.1.asIdeal) (R.N R.m - 1) R.k R.r R.t R.m :=
   HPar_inf_fixCol (r_le_X' R) _ (by have := R.two_le_m; unfold Ranks.r; omega)
 
-theorem rowTyG_Kg_H : (rowTyG Ch (rKg X Pr R) w).H = (rowTyK Ch w).H := (HK_eq_HPar (r_le_X' R) _).symm
 
-theorem rowTyG_Kg_lam (M : GL (Fin (R.N R.m - 1)) (𝓞 X.E ⧸ w.1.asIdeal)) (h1 : M ∈ (rowTyG Ch (rKg X Pr R) w).H)
-    (h2 : M ∈ (rowTyK Ch w).H) : (rowTyG Ch (rKg X Pr R) w).lam ⟨M, h1⟩ = (rowTyK Ch w).lam ⟨M, h2⟩ :=
-  lamPar_bot (r_le_X' R) _ _ M h1 h2
 
-theorem levelV_unipotent_group (j : ℕ) : (mtTyG Ch (rP0 Ch) j w).H = HV (𝓞 X.E ⧸ w.1.asIdeal) R.nV R.r R.t :=
-  (uniUT_eq_HPar (r_le_nV R) _).symm
 
-theorem levelV_unipotent_character (j : ℕ) (M : GL (Fin R.nV) (𝓞 X.E ⧸ w.1.asIdeal)) (h1 : M ∈ (mtTyG Ch (rP0 Ch) j w).H)
-    (h2 : M ∈ HV (𝓞 X.E ⧸ w.1.asIdeal) R.nV R.r R.t) :
-    (mtTyG Ch (rP0 Ch) j w).lam ⟨M, h1⟩ = lamV (Ch.psi0 w) (chiAt Ch w (j - 1)) R.nV R.r R.t ⟨M, h2⟩ := by
-  unfold lamV
-  rw [lamGen_inv (Ch.psi0 w) (fun _ => chiAt Ch w (j - 1)), MonoidHom.inv_apply,
-    ← lamPar_psiU (r_le_nV R) _ _ _ M h1 h2]
-  rfl
 
-theorem mtTyG_Kg_H (j : ℕ) : (mtTyG Ch (rKg X Pr R) j w).H = (mtTyK Ch j w).H := (HK_eq_HPar (r_le_nV R) _).symm
 
-theorem mtTyG_Kg_lam (j : ℕ) (M : GL (Fin R.nV) (𝓞 X.E ⧸ w.1.asIdeal)) (h1 : M ∈ (mtTyG Ch (rKg X Pr R) j w).H)
-    (h2 : M ∈ (mtTyK Ch j w).H) : (mtTyG Ch (rKg X Pr R) j w).lam ⟨M, h1⟩ = (mtTyK Ch j w).lam ⟨M, h2⟩ := by
-  show (lamPar (r_le_nV R) [R.t] (1 : ↥(⊥ : Subgroup _) →* X.Kˣ) fun _ => chiAt Ch w (j - 1))⁻¹ ⟨M, h1⟩ =
-    lamK (fun _ => (chiAt Ch w (j - 1))⁻¹) R.nV R.r [R.t] ⟨M, h2⟩
-  rw [MonoidHom.inv_apply, lamPar_bot (r_le_nV R) _ _ M h1 h2]
-  unfold lamK
-  rw [detChar_inv (fun _ => chiAt Ch w (j - 1))]
-  rfl
 
 end Ties2
 
@@ -353,13 +311,7 @@ theorem nV_pos (R : Ranks) : 0 < R.nV := by
   unfold Ranks.nV Ranks.r
   omega
 
-theorem mtilde_cl_nonempty (P : LevFam X.E X.K R.r Pr.vGs) : Nonempty (mtildeGSD W Ch sel mu P).Cl :=
-  have : NeZero (R.N R.m - 1) := ⟨(X'_pos R).ne'⟩
-  ⟨(mtildeGSD W Ch sel mu P).cls (DecoSet.base X.E (R.N R.m - 1) ∅ (rowSG Pr sel mu))⟩
 
-theorem mt_cl_nonempty (P : LevFam X.E X.K R.r Pr.vGs) (j : ℕ) : Nonempty (mtGSD W Ch sel mu P j).Cl :=
-  have : NeZero R.nV := ⟨(nV_pos R).ne'⟩
-  ⟨(mtGSD W Ch sel mu P j).cls (DecoSet.base X.E R.nV ∅ (rowSG Pr sel mu))⟩
 
 end G0Good
 
@@ -685,40 +637,9 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Ch
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
   (P : LevFam X.E X.K R.r Pr.vGs)
 
-theorem lamK_inv {κ K : Type} [CommRing κ] [Field K] {n : ℕ} (χ : ℕ → κˣ →* Kˣ) (r : ℕ) (bl : List ℕ) :
-    lamK (fun s => (χ s)⁻¹) n r bl = (lamK χ n r bl)⁻¹ := by
-  unfold lamK
-  rw [detChar_inv]
-  rfl
 
-theorem mtTyG_split (j : ℕ) (w : {w // w ∈ Pr.vGs}) :
-    Lev.Split (diagEmb _ (r_le_nV R)) (mtTyG Ch P j w) (mtTyK Ch j w) (P w).inv := by
-  have e : mtTyK Ch j w =
-      (⟨HK R.nV _ R.r [R.t], lamK (fun _ => chiAt Ch w (j - 1)) R.nV R.r [R.t]⟩ : Lev _ X.K R.nV).inv :=
-    congrArg (Lev.mk (HK R.nV (𝓞 X.E ⧸ w.1.asIdeal) R.r [R.t])) (lamK_inv (fun _ => chiAt Ch w (j - 1)) R.r [R.t])
-  rw [e]
-  exact (HPar_split (r_le_nV R) [R.t] (P w).H (P w).lam fun _ => chiAt Ch w (j - 1)).inv
 
-theorem mtTy_split (j : ℕ) :
-    LevFam.Split (unipotentGroupBlockEmbedding Pr sel mu (r_le_nV R)) (mtTy Ch sel mu P j) (mtTyKK Ch sel mu j) P.inv :=
-  LevFam.glue_split (r_le_nV R) _ _ P.inv _ fun w => mtTyG_split Ch P j w
 
-theorem mem_MtV_iff (j : ℕ) (φ : DecoSet X.E R.nV ∅ (rowSG Pr sel mu) → VV X.K (W.lamV j)) :
-    φ ∈ (mtGSD W Ch sel mu P j).EqFun ↔ ∃ hφ : φ ∈ (mtKGSD W Ch sel mu j).EqFun,
-      ∀ a : ↥P.grp, unipotentRightActionFormsV W Ch sel mu j a.1 ⟨φ, hφ⟩ =
-        (((P.chr a)⁻¹ : X.Kˣ) : X.K) • (⟨φ, hφ⟩ : (mtKGSD W Ch sel mu j).EqFun) := by
-  refine (mem_EqFun_split (mtVal W j (rowSG Pr sel mu)) (mtTy_split Ch sel mu P j).inv φ).trans ?_
-  constructor
-  · rintro ⟨h1, h2⟩
-    refine ⟨h1, fun a => Subtype.ext ?_⟩
-    have := h2 ⟨a.1, a.2⟩
-    rw [P.inv.inv_chr ⟨a.1, a.2⟩, P.inv_chr a, inv_inv] at this
-    exact this
-  · rintro ⟨h1, h2⟩
-    refine ⟨h1, fun a => ?_⟩
-    have := congrArg Subtype.val (h2 ⟨a.1, a.2⟩)
-    rw [P.inv.inv_chr ⟨a.1, a.2⟩, P.inv_chr ⟨a.1, a.2⟩, inv_inv]
-    exact this
 
 end LevelPMt
 

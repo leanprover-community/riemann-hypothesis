@@ -1,6 +1,156 @@
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnfoldingCompactness.MatrixOfUnipotentFrame
-import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnfoldingCompactness.CellsSub
+import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnfoldingCompactness.IncMTranspose
+import Mathlib
+import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnfoldingCompactness.FrameInvPf
 
+section
+open Matrix
+
+namespace PositivityTheory.SiegelWeilFormula.kunf
+
+theorem exists_beta_pf {K : Type} [Field K] (s : K →+* K) (hs : ∀ x, s (s x) = x) {n : ℕ} (e : K) (he : e * e = 1)
+    (hse : s e = e) (a c d' : Matrix (Fin n) (Fin n) K) (hc : c.det = 0) (hda : e • (c.map s)ᵀ * a + d' * c = 0)
+    (T : Matrix (Fin n) (Fin n) K) (hT : Tᵀ = -(e • T.map s)) (hTd : T.det ≠ 0) :
+    ∃ β₁ : Matrix (Fin n) (Fin n) K, β₁ᵀ = -(e • β₁.map s) ∧ c * β₁ * (e • (c.map s)ᵀ) = 0 ∧
+      (∃ v w : Fin n → K, a * β₁ * (e • (c.map s)ᵀ) = Matrix.vecMulVec v w ∧ w ⬝ᵥ v = 0) ∧ (T * β₁).trace = 2 := by
+  classical
+  obtain ⟨u, hu0, hcu⟩ := Matrix.exists_mulVec_eq_zero_iff.mpr hc
+  have hTu : T *ᵥ u ≠ 0 := fun h0 => hTd (Matrix.exists_mulVec_eq_zero_iff.mp ⟨u, hu0, h0⟩)
+  obtain ⟨i, hi⟩ := Function.ne_iff.mp hTu
+  have hi' : (T *ᵥ u) i ≠ 0 := hi
+  obtain ⟨y, hy⟩ : ∃ y : Fin n → K, y ⬝ᵥ (T *ᵥ u) = 1 :=
+    ⟨Pi.single i ((T *ᵥ u) i)⁻¹, by rw [single_dotProduct, inv_mul_cancel₀ hi']⟩
+  obtain ⟨su, hsu⟩ : ∃ w : Fin n → K, w = s ∘ u := ⟨_, rfl⟩
+  obtain ⟨sy, hsy⟩ : ∃ w : Fin n → K, w = s ∘ y := ⟨_, rfl⟩
+  have hcsu : c.map s *ᵥ su = 0 := by
+    rw [hsu]
+    ext j
+    rw [← RingHom.map_mulVec, hcu]
+    simp
+  have he0 : e ≠ 0 := by
+    rintro rfl
+    simp at he
+  have hM : (e • (c.map s)ᵀ * a) *ᵥ u = 0 := by
+    rw [eq_neg_of_add_eq_zero_left hda, Matrix.neg_mulVec, ← Matrix.mulVec_mulVec, hcu,
+      Matrix.mulVec_zero, neg_zero]
+  have hM' : ((c.map s)ᵀ * a) *ᵥ u = 0 := by
+    rw [Matrix.smul_mul, Matrix.smul_mulVec] at hM
+    exact (smul_eq_zero.mp hM).resolve_left he0
+  have key : (c.map s *ᵥ y) ⬝ᵥ (a *ᵥ u) = y ⬝ᵥ (((c.map s)ᵀ * a) *ᵥ u) := by
+    simp only [Matrix.dotProduct_mulVec, ← Matrix.vecMul_vecMul, Matrix.vecMul_transpose]
+  refine ⟨vecMulVec u y - e • vecMulVec sy su, ?_, ?_, ?_, ?_⟩
+  · subst hsu hsy
+    ext j k
+    simp only [Matrix.transpose_apply, Matrix.neg_apply, Matrix.smul_apply, Matrix.map_apply,
+      Matrix.sub_apply, Matrix.vecMulVec_apply, Function.comp_apply, smul_eq_mul, map_sub, map_mul, hs, hse]
+    linear_combination (-(y j * u k)) * he
+  · simp [Matrix.mul_sub, Matrix.mul_vecMulVec, Matrix.vecMulVec_mul, Matrix.vecMul_transpose, hcu, hcsu]
+  · refine ⟨a *ᵥ u, e • (c.map s *ᵥ y), ?_, ?_⟩
+    · simp [Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_vecMulVec, Matrix.vecMulVec_mul, Matrix.vecMul_transpose,
+        hcsu]
+    · rw [smul_dotProduct, key, hM', dotProduct_zero, smul_zero]
+  · have h1 : (T *ᵥ u) ⬝ᵥ y = 1 := by rw [dotProduct_comm, hy]
+    have hsy1 : sy ⬝ᵥ (T.map s *ᵥ su) = 1 := by
+      have hmv : T.map s *ᵥ su = s ∘ (T *ᵥ u) := by
+        rw [hsu]
+        ext j
+        exact (RingHom.map_mulVec s T u j).symm
+      rw [hmv, hsy, ← RingHom.map_dotProduct, hy, map_one]
+    have h2 : (T *ᵥ sy) ⬝ᵥ su = -e := by
+      calc (T *ᵥ sy) ⬝ᵥ su = sy ⬝ᵥ (Tᵀ *ᵥ su) := by
+            rw [← Matrix.vecMul_transpose, ← Matrix.dotProduct_mulVec]
+        _ = sy ⬝ᵥ ((-(e • T.map s)) *ᵥ su) := by rw [hT]
+        _ = -e * (sy ⬝ᵥ (T.map s *ᵥ su)) := by
+            rw [Matrix.neg_mulVec, Matrix.smul_mulVec, dotProduct_neg, dotProduct_smul,
+              smul_eq_mul]
+            ring
+        _ = -e := by rw [hsy1, mul_one]
+    rw [Matrix.mul_sub, Matrix.mul_smul, Matrix.mul_vecMulVec, Matrix.mul_vecMulVec, Matrix.trace_sub,
+      Matrix.trace_smul, Matrix.trace_vecMulVec, Matrix.trace_vecMulVec, h1, h2, smul_eq_mul]
+    linear_combination he
+
+end PositivityTheory.SiegelWeilFormula.kunf
+end
+
+section
+noncomputable section
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
+
+namespace PositivityTheory.SiegelWeilFormula.kunf
+
+theorem at_realAd_ks {F : Type} [Field F] [NumberField F] (t : ℝ) : At (evI F) (realAd F t) := by
+  intro u hu
+  have hu1 : u.1 = 0 := (RingEquiv.map_eq_zero_iff _).mp hu
+  obtain ⟨a, b⟩ := u
+  simp only at hu1
+  subst hu1
+  show ((0 : Ainf F) * _, b * 0) = ((0 : Ainf F), (0 : Af F))
+  simp
+
+theorem evI_realAd_ks {F : Type} [Field F] [NumberField F] (t : ℝ) :
+    evI F (realAd F t) = algebraMap ℝ (mixedEmbedding.mixedSpace F) t := by
+  simp [evI, realAd]
+
+theorem psi_moves_pf {F : Type} [Field F] [NumberField F] {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ) (x : F) (hx : x ≠ 0) :
+    ∃ l : AF F, ψ (-(l * algebraMap F (AF F) x)) ≠ 1 := by
+  set c : ℝ := (Module.finrank ℚ F : ℝ) with hc
+  have hcpos : 0 < c := by
+    rw [hc]; exact_mod_cast Module.finrank_pos
+  set t : ℝ := 1 / (2 * c) with ht
+  refine ⟨-(realAd F t) * algebraMap F (AF F) x⁻¹, ?_⟩
+  have hl : -(-(realAd F t) * algebraMap F (AF F) x⁻¹ * algebraMap F (AF F) x) = realAd F t := by
+    rw [neg_mul, neg_mul, neg_neg, mul_assoc, ← map_mul, inv_mul_cancel₀ hx, map_one, mul_one]
+  rw [hl, hψ.2.2 _ (at_realAd_ks t), evI_realAd_ks, Algebra.trace_algebraMap, mixedEmbedding.finrank]
+  have : ((Module.finrank ℚ F • t : ℝ) : ℂ) = 1 / 2 := by
+    rw [nsmul_eq_mul, ← hc, ht]; push_cast; field_simp
+    exact div_self (by exact_mod_cast hcpos.ne')
+  rw [this]
+  have h2 : -(2 * (Real.pi : ℂ) * Complex.I) * (1 / 2) = -(Real.pi * Complex.I) := by ring
+  rw [h2, Complex.exp_neg, Complex.exp_pi_mul_I]
+  norm_num
+
+end PositivityTheory.SiegelWeilFormula.kunf
+
+end
+end
+
+section
+noncomputable section
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
+
+namespace PositivityTheory.SiegelWeilFormula.kunf
+
+theorem frame_inv {R : Type} [CommRing R] (s : R →+* R) (hs : ∀ x, s (s x) = x) {n : ℕ} (e : R) (he : e * e = 1)
+    (hse : s e = e) (M : Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fin n) R) (hM : Mᵀ * jw n e * M.map s = jw n e) :
+    M * Matrix.fromBlocks (M.toBlocks₂₂.map s)ᵀ (e • (M.toBlocks₁₂.map s)ᵀ) (e • (M.toBlocks₂₁.map s)ᵀ)
+      (M.toBlocks₁₁.map s)ᵀ = 1 ∧
+    Matrix.fromBlocks (M.toBlocks₂₂.map s)ᵀ (e • (M.toBlocks₁₂.map s)ᵀ) (e • (M.toBlocks₂₁.map s)ᵀ)
+      (M.toBlocks₁₁.map s)ᵀ * M = 1 :=
+  frame_inv_pf s hs e he hse M hM
+
+theorem exists_beta {K : Type} [Field K] (s : K →+* K) (hs : ∀ x, s (s x) = x) {n : ℕ} (e : K) (he : e * e = 1)
+    (hse : s e = e) (a c d' : Matrix (Fin n) (Fin n) K) (hc : c.det = 0) (hda : e • (c.map s)ᵀ * a + d' * c = 0)
+    (T : Matrix (Fin n) (Fin n) K) (hT : Tᵀ = -(e • T.map s)) (hTd : T.det ≠ 0) :
+    ∃ β₁ : Matrix (Fin n) (Fin n) K, β₁ᵀ = -(e • β₁.map s) ∧ c * β₁ * (e • (c.map s)ᵀ) = 0 ∧
+      (∃ v w : Fin n → K, a * β₁ * (e • (c.map s)ᵀ) = Matrix.vecMulVec v w ∧ w ⬝ᵥ v = 0) ∧ (T * β₁).trace = 2 :=
+  exists_beta_pf s hs e he hse a c d' hc hda T hT hTd
+
+theorem psi_moves {F : Type} [Field F] [NumberField F] {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ) (x : F) (hx : x ≠ 0) :
+    ∃ l : AF F, ψ (-(l * algebraMap F (AF F) x)) ≠ 1 :=
+  psi_moves_pf hψ x hx
+
+end PositivityTheory.SiegelWeilFormula.kunf
+
+end
+end
+
+section
 noncomputable section
 
 open scoped TensorProduct NNReal Matrix
@@ -305,4 +455,5 @@ theorem cells (B : Base F E) (hB : B.IsGood σ) (hb : IsFrame2 σ Y b) {ε : ℤ
 
 end PositivityTheory.SiegelWeilFormula.kunf
 
+end
 end

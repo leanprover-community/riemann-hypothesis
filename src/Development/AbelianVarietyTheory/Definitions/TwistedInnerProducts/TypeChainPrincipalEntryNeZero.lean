@@ -12,23 +12,6 @@ variable {k : Type*} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchi
 section A
 variable {n n' : Type*} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ}
 
-theorem isColChar_full {ψ : AddChar k Circle} (hψ : HasConductor ψ 1) :
-    IsColChar ψ (TypeDatum.full k (n ⊕ Fin c)).toLevel 1 1 := by
-  intro g u _ hm
-  have hK : IntM (u * embX c (g : GL n k)).val := by
-    have : u * embX c (g : GL n k) ∈ (TypeDatum.full k (n ⊕ Fin c)).J := by simpa using hm
-    exact intM_of_mem_KO this
-  have hs : simpleSum u ∈ 𝒪[k] := by
-    refine sum_mem fun i _ => sum_mem fun j _ => ?_
-    split_ifs
-    · have := hK (.inr i) (.inr j)
-      rw [Units.val_mul, ← fromBlocks_toBlocks u.val] at this
-      change (_ * fromBlocks _ 0 0 1 : Matrix _ _ k) _ _ ∈ _ at this
-      simpa [fromBlocks_multiply, toBlocks₂₂] using this
-    · exact zero_mem _
-  rw [hψ.eq_one (show _ ∈ cball (1 : kˣ) from hs)]
-  change _ = _ * (((1 : ℂˣ)⁻¹ : ℂˣ) : ℂ)
-  simp
 
 variable [MeasurableSpace k] [BorelSpace k]
 
@@ -121,96 +104,7 @@ end B
 section C
 variable [MeasurableSpace k] [BorelSpace k] {κ t : Type*} [Fintype κ] [DecidableEq κ] [Fintype t] [DecidableEq t]
 
-theorem typeChain_entry_ne_zero (ψ : AddChar k Circle) (ν : Measure k) [ν.IsAddHaarMeasure] (ϖ : kˣ) (s c : ℕ)
-    (h : 0 + 1 + c = s) (P : TypeDatum k (κ ⊕ Fin (s + 1))) (μ : ℕ → kˣ →* ℂˣ) (hμ : ∀ j, IsTame (μ j))
-    (hP : ∀ g : P.J, (P.rho (μ 1) g : ℂ) =
-      ψ (∑ i : Fin s, (g : GL (κ ⊕ Fin (s + 1)) k).val (.inr i.castSucc) (.inr i.succ) / ϖ)) :
-    DoubleCoset.mk _ _ 1 ∈ (typeChain t ϖ P μ hμ).idx ψ ν 0 c h 1 ∧
-      (typeChain t ϖ P μ hμ).entry ψ ν 0 c h 1 1 ≠ 0 := by
-  obtain rfl : s = c + 1 := by omega
-  set T := typeChain t ϖ P μ hμ
-  have hT : T.Regular := Chain.ofType_regular _ _ _ _ _
-  let o := stdOrd κ t (l := c + 1 + 1) (0 + 1) (c + 1) (by omega)
-  let o' := stdOrd κ t (l := c + 1 + 1) 0 (c + 1 + 1) (by omega)
-  let Q := P.reindex (ixZero _ t)
-  have hQ : ∀ x, T.Phi 0 (c + 1) (by omega) x = Q.Phi t (μ 1)
-      (((typeFrame ϖ o).coords (typeFrame ϖ o') x).submatrix (ixSucc _ t 0) id) := fun x => rfl
-  have b1 : ∀ i : Fin (c + 1), o (.inl (.inr i.castSucc)) = .inr i := fun i => standardOrderExtendedBasis_apply_low_block κ t _ _ _ i
-  have b2 : ∀ i : Fin (c + 1 + 1), o' (.inl (.inr i)) = .inr i := fun i => standardOrderExtendedBasis_apply_low_block κ t _ _ _ i
-  let x : Matrix _ _ k := Matrix.of fun r q =>
-    wt ϖ r * (fromBlocks (1 : Matrix _ _ k) 0 0 0).submatrix o.symm o'.symm r q * (wt ϖ q)⁻¹
-  have a1 : ∀ i, o.symm (.inr i) = .inl (.inr ⟨i.val, by omega⟩) := fun i =>
-    o.symm_apply_eq.2 (standardOrderExtendedBasis_apply_low_block κ t _ _ _ i).symm
-  have a2 : ∀ i, o'.symm (.inr i) = .inl (.inr ⟨i.val, by omega⟩) := fun i =>
-    o'.symm_apply_eq.2 (standardOrderExtendedBasis_apply_low_block κ t _ _ _ i).symm
-  have a3 : ∀ i, o.symm (.inl (.inl (.inr i))) = .inl (.inr ⟨c + 1 + i.val, by omega⟩) := fun i =>
-    o.symm_apply_eq.2 (stdOrd_f κ t _ _ _ i).symm
-  have a4 : ∀ i, o.symm (.inl (.inl (.inl i))) = .inl (.inl i) := fun i => o.symm_apply_eq.2 rfl
-  have a5 : ∀ i, o'.symm (.inl (.inl (.inl i))) = .inl (.inl i) := fun i => o'.symm_apply_eq.2 rfl
-  have a6 : ∀ i, o.symm (.inl (.inr i)) = .inr i := fun i => o.symm_apply_eq.2 rfl
-  obtain ⟨e, he⟩ := exists_affPt (p := 1) (x := x) (by
-    rintro (r | r) (i | i) hf
-    · rfl
-    · have hi : i.val = 0 := by simp only [Free] at hf; omega
-      rcases r with (r | r) | r
-      · simp [x, basePt, a2, a4]
-      · simp [x, basePt, a2, a3, hi]
-      · simp [x, basePt, a2, a6]
-    · rcases i with (i | i) | i
-      · simp [x, basePt, a1, a5]
-      · exact i.elim0
-      · exact i.1.elim0
-    · by_cases hri : r.val = i.val
-      · simp [x, basePt, a1, a2, wt, hri]
-      · simp [x, basePt, a1, a2, Matrix.one_apply, wt, hri, Fin.ext_iff])
-  have hflat : flat ψ ν (T.mu (0 + 1)) (T.Phi 0 (c + 1) (by omega)) 1 1 ≠ 0 := by
-    rw [flat, om_one]
-    refine fun h0 => opE_ne_zero' ψ ν 1 (hT.1 0 (c + 1) (by omega)) (fun y hy => ?_) (e₀ := e) ?_
-      (congrFun h0 x.toBlocks₁₁)
-    · rw [hQ] at hy ⊢
-      obtain ⟨⟨g, hg, eg⟩, h2⟩ := (Q.Phi_ne_zero_iff _).1 hy
-      rw [Q.Phi_of_mem _ ⟨g, hg⟩ eg h2]
-      have := hP ⟨(reGL (ixZero _ t)).symm g, hg⟩
-      rw [TypeDatum.rho_apply, Units.val_mul, ← det_reGL (ixZero _ t), MulEquiv.apply_symm_apply] at this
-      refine this.trans (congrArg _ (congrArg _ (Finset.sum_congr rfl fun i _ => ?_)))
-      change g.val (.inl (.inr i.castSucc)) (.inl (.inr i.succ)) / _ = _
-      rw [eg]
-      change (typeFrame ϖ o).coords (typeFrame ϖ o') y (.inl (.inr i.castSucc)) (.inl (.inr i.succ)) / _ = _
-      rw [coords_typeFrame, b1, b2]
-      simp only [wt, Sum.elim_inr, Fin.val_succ]
-      field_simp
-      ring
-    · rw [he, hQ]
-      have ex : (typeFrame ϖ o).coords (typeFrame ϖ o') x = fromBlocks 1 0 0 0 := by
-        ext i j
-        rw [coords_typeFrame]
-        have := wt_ne_zero ϖ (o i)
-        have := wt_ne_zero ϖ (o' j)
-        simp only [x, of_apply, submatrix_apply, Equiv.symm_apply_apply]
-        field_simp
-      rw [ex, Q.Phi_ne_zero_iff]
-      refine ⟨⟨1, one_mem _, ?_⟩, fun i j => ?_⟩
-      · ext (i | i) (j | j)
-        · simp [ixSucc, toRows₁, Matrix.one_apply]
-        · exact j.1.elim0
-        · exact i.1.elim0
-        · exact i.1.elim0
-      · rcases j with j | j <;> simp [ixSucc, toRows₂]
-  exact ⟨⟨1, rfl, hflat⟩, fun h0 => hflat ((xi_eq_zero_iff ψ ν _ _ (hT.2.2 _ _ _).1 (hT.2.2 _ _ _).2.1 _ _ _).1 h0)⟩
 
-theorem typeChain_principal_entry_ne_zero {ψ : AddChar k Circle} (hψ : HasConductor ψ 1) (ν : Measure k)
-    [ν.IsAddHaarMeasure] {ϖ : kˣ} (hϖ : ∀ z : k, valuation k z < 1 → valuation k z ≤ valuation k (ϖ : k)) (s c : ℕ)
-    (h : 0 + 1 + c = s) (μ : ℕ → kˣ →* ℂˣ) (hμ : ∀ j, IsTame (μ j)) :
-    (typeChain t ϖ (TypeDatum.principal k (κ ⊕ Fin (s + 1))) μ hμ).entry ψ ν 0 c h 1 1 ≠ 0 := by
-  refine (typeChain_entry_ne_zero ψ ν ϖ s c h _ μ hμ fun g => ?_).2
-  have hi : ∑ i : Fin s, (g : GL (κ ⊕ Fin (s + 1)) k).val (.inr i.castSucc) (.inr i.succ) / ϖ ∈ 𝒪[k] := sum_mem fun i _ => by
-    have := hϖ _ (mem_KOne.1 g.2 (.inr i.castSucc) (.inr i.succ))
-    rw [Matrix.sub_apply, Matrix.one_apply_ne (by simp [Fin.ext_iff]), sub_zero] at this
-    rw [Valuation.mem_integer_iff, map_div₀]
-    exact div_le_one_of_le₀ this zero_le
-  rw [hψ.eq_one (show _ ∈ cball (1 : kˣ) from hi), TypeDatum.rho_apply, tame_det_of_mem_KOne (hμ 1) g.2]
-  change ((1 * 1⁻¹ : ℂˣ) : ℂ) = _
-  simp
 
 omit [MeasurableSpace k] [BorelSpace k] in
 
@@ -284,43 +178,7 @@ theorem coords_surjective {ι ι' Y Y' : Type*} [Fintype Y] [DecidableEq Y] [Fin
     simp only [LatFrame.coords, Matrix.mul_assoc, Units.inv_mul, Matrix.mul_one]
     rw [← Matrix.mul_assoc, Units.inv_mul, Matrix.one_mul]; simp⟩
 
-theorem typeChain_coupIdx {ϖ : kˣ} (hϖ : valuation k (ϖ : k) < 1) {s : ℕ} (P : TypeDatum k (κ ⊕ Fin (s + 1)))
-    (μ : ℕ → kˣ →* ℂˣ) (hμ : ∀ j, IsTame (μ j)) (A : RepFam k s (XIx κ t))
-    (hA : (typeChain t ϖ P μ hμ).RepsInStab A) (h1 : 1 ∈ A s 0 rfl) :
-    ∃ yb ∈ (typeChain t ϖ P μ hμ).coupIdx A (box _ ϖ⁻¹) (box _ 1),
-      (typeChain t ϖ P μ hμ).xiPen (box _ 1) 1 yb ≠ 0 := by
-  have H := typeChain_adapted hϖ P μ hμ A hA
-  obtain ⟨x, hx⟩ := coords_surjective (typeFrame ϖ (stdOrd κ t (l := s + 1) (s + 1) 0 rfl))
-    (typeFrame ϖ (stdOrd κ t (l := s + 1) s (0 + 1) rfl))
-    ((fromRows (1 : Matrix _ _ k) (0 : Matrix t _ k)).submatrix (ixSucc _ t s).symm id)
-  have hne : (typeChain t ϖ P μ hμ).Psi 1 x.toBlocks₁₁ (fun r => x (.inl r) (.inr 0)) ≠ 0 := by
-    rw [Chain.Psi, om_one, withCol_blocks]
-    change P.iterPhi t μ hμ s (LatFrame.coords _ _ x) ≠ 0
-    rw [hx, TypeDatum.iterPhi, TypeDatum.Phi_ne_zero_iff]
-    simp only [submatrix_submatrix, Equiv.symm_comp_self, Function.comp_id, submatrix_id_id]
-    exact ⟨⟨1, one_mem _, by simp⟩, by simpa using maxM_zero⟩
-  exact ⟨_, ⟨_, (H 1 h1 _ _).1 hne, rfl, 1, h1, _, hne⟩,
-    fun h0 => hne ((Chain.xiPen_mk H h1 _ _).symm.trans (congrFun h0 _))⟩
 
-theorem twistChain_reps_zero [MeasurableSpace k] (ψ : AddChar k Circle) (ν : Measure k) (ϖ : kˣ)
-    (δ : kˣ →* ℂˣ) (hδ : IsTame δ) (ν' : ℕ → kˣ →* ℂˣ) :
-    let T := twistChain 0 t κ δ hδ ν'
-    let A : RepFam k 0 (XIx κ t) := fun _ _ _ => {1}
-    T.IsRepSystem A ψ ν ∧ T.RepsInStab A ∧ T.RepsMeet A ∧ T.RepsNormal A ϖ ∧ T.RepsOne A := by
-  refine ⟨⟨fun _ _ => rfl, fun j c h => by omega⟩, ?_, ?_, ?_, fun _ _ _ _ hg _ => hg⟩
-  · rintro j c h _ rfl; exact one_mem _
-  · rintro j c h _ rfl y
-    change _ ∈ latOf (1 * 1) ↔ _
-    simp [mem_latOf_one]
-  · rintro j c h _ rfl
-    refine ⟨0, 0, by simp, by simp, ?_⟩
-    change latOf (1 * 1) = _
-    congr 1
-    refine Units.ext ?_
-    rw [normalBasis_val, mul_one, Units.val_one, ← fromBlocks_one]
-    congr 1
-    · ext; simp
-    · simp
 
 end D
 

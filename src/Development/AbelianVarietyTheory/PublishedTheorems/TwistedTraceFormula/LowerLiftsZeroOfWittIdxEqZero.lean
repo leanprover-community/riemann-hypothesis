@@ -81,9 +81,6 @@ theorem lowerLiftsZero_of_wittIdx_eq_zero (h : Formalism.MainNotions.SchurIrredu
 
 variable {ω : GA D A × GA D B →* Module.End ℂ (WO A B → ℂ)} {m : Measure (GA D A)} {Φ : WO A B → ℂ} {f : GA D A → ℂ}
 
-theorem thetaLift_smul (c : ℂ) : thetaLift ω m Φ (c • f) = conj c • thetaLift ω m Φ f := funext fun h => by
-  simp only [thetaLift, Pi.smul_apply, smul_eq_mul]
-  rw [← petersson_conj_symm, petersson_smul_left, map_mul, petersson_conj_symm]
 
 example (D : D7) : ∃ A B : HSp D, A.SigOK ∧ A.rank < B.rank ∧ B.rank ≤ 2 * A.rank ∧
     A.rank + Formalism.MainNotions.SchurIrreducible.wittIdx B < B.rank ∧ ∀ τ, B.SigOK ∧ B.sig τ = (8, 1) := by

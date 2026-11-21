@@ -55,7 +55,7 @@ import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PAreaGraph
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PAreaGraphBound
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PAreaGraphPartition
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PAreaGraphPiece
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PAreaLinear
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsArea
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PAreaMultiplicity
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PBadSetSmaller
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCauchyBinetMinors
@@ -68,18 +68,32 @@ import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PConeAvoidsOpen
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PConeChartGram
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PConePolar
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PConeScaling
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PConeSheetGram
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PConeToProjective
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StConeSheetGramLintegral
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.LogIntegrableOnOfLogIntegrable
+import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeSheetArea
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StConePolar
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPlaneSliceMass
+import GroundTheory.HeightsAndTheta.Heights.ChowForms.Statements
+import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeIntegralMass
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PContinuousRootHolomorphic
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PContinuousSectionHolomorphic
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.EqZeroOfMemZeroLocusLineOriginIdeal
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StRiemannExtensionPolynomial
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StContinuousRootHolomorphic
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StProjectionCoordinateEquation
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCriticalImageNull
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCutOffBoundaryBound
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCutOffDominated
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCutOffLimit
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCutOffLimit
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StChartMassCompact
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCutOffDominated
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCutOffBoundaryBound
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCutOffShape
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCutOffTube
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PDiscriminantCover
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PEnergyDensNonneg
+import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsAlg
+import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCutOffBoundaryParts
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PTubeFormCompare
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFibreSectionsCovering
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFiniteCoverPuncturedPolydisc
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFiniteMapOpen
@@ -111,10 +125,13 @@ import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PLocalGraphProje
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PLogIntegrable
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PLogLogCutHess
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PMaDensLeibniz
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PMassFromLelong
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceSectionMass
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSectionHyperplaneAvoid
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSectionDegreeSum
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPointSliceMass
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNullSmaller
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.POneComponentGeneralPoint
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPoincareLelong
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLelongLimit
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPointSliceMass
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPolySublevel
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPosPartIndependent
@@ -128,30 +145,530 @@ import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPuncturedCoverC
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PRegConeLimit
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PRemovableHyperplane
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PRiemannExtensionPolynomial
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSectionDegreeSum
+import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LowerBoundConditional
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetAreaCompare
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetComass
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetImageArea
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetLogNormDens
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetOnlyNull
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSlabBound
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.AffineOfCone
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceComponents
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceCutBoundary
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceBoundaryBound
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceCutDecay
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceCutOffLimit
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceDim
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceExhaustion
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceExhaustion
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceIdeal
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceComponents
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceMassFinite
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceLelongError
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceImmersiveGeneral
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceFormMass
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceIdeal
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceMatricesOpen
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PStokesOffDiscriminant
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PStokesOnVariety
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StStokesOffDiscriminant
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PUnitaryZariskiDense
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PVanishNearPoint
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PVarIntAdd
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PVarSlabMeasure
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StVarSlabMeasure
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StVarietySlabMeasure
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PVarietyProjectionMass
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PVarietySlabMeasure
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PZeroSetOpenMass
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+open MeasureTheory Module
+
+noncomputable section
+
+theorem AreaLinear.sqrt_det_adjoint_comp_eq_normDet {k m : ℕ}
+    (L : EuclideanSpace ℝ (Fin k) →ₗ[ℝ] EuclideanSpace ℝ (Fin m)) :
+    √(LinearMap.det (LinearMap.adjoint L ∘ₗ L)) = L.normDet := by
+  rw [← LinearMap.normDet_sq L]
+  push_cast
+  exact Real.sqrt_sq (LinearMap.normDet_nonneg L)
+
+theorem AreaLinear.proof : AreaLinear.Statement := by
+  intro k m L _ A
+  have h := LinearMap.hausdorffMeasure_image L A
+  rw [finrank_euclideanSpace_fin] at h
+  rw [h, AreaLinear.sqrt_det_adjoint_comp_eq_normDet]
+
+end
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+open MvPolynomial MeasureTheory Matrix ComplexSets
+
+noncomputable section
+
+theorem gramVol_const_zero {e n : ℕ} (y : Fin e → ℂ) :
+    gramVol (fun _ : Fin e → ℂ => (0 : Fin n → ℂ)) y = 0 := by
+  unfold gramVol
+  have hw : (Fin.cons 0 (fun _ => 0) : Fin (e + 1) → Fin n → ℂ) = 0 := by
+    funext a
+    refine Fin.cases ?_ (fun j => ?_) a <;> simp
+  have h0 : (Matrix.of fun (_ _ : Fin (e + 1)) => (0 : ℂ)).det = 0 := Matrix.det_zero
+  simp [hw, h0]
+
+theorem succ_le_of_ringKrullDim_quotient {n e : ℕ} (J : Ideal (MvPolynomial (Fin n) ℂ))
+    (hdim : ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ J) = ((e + 1 : ℕ) : WithBot ℕ∞)) : e + 1 ≤ n := by
+  have h := ringKrullDim_quotient_le J
+  rw [hdim, MvPolynomial.ringKrullDim_of_isNoetherianRing, ringKrullDim_eq_zero_of_field,
+    Nat.card_eq_fintype_card, Fintype.card_fin, zero_add] at h
+  exact_mod_cast h
+
+theorem ConeSheetGram.proof (hL : ConeSheetGramLintegral.Statement) : ConeSheetGram.Statement := by
+  intro n e h J ℓ A f hJ hdim hℓ hA hf
+  obtain ⟨hb0, -⟩ := coordBall_mass (n := n) (m := e + 1) (succ_le_of_ringKrullDim_quotient J hdim)
+  rw [mul_setIntegral_eq_of_lintegral (ν := volume) (fun y => IndefiniteRowSideFullHecke.ComplexSets.fibre_finite hA y)
+    (fun y x => WithLp.toLp 2 ((h.matᵀ)⁻¹ *ᵥ sheetThrough (J ⊔ Ideal.span {linForm ℓ - 1}) A x y))
+    (fun y x t => ‖t‖ ^ (2 * e) *
+      gramVol (fun y' => (h.matᵀ)⁻¹ *ᵥ sheetThrough (J ⊔ Ideal.span {linForm ℓ - 1}) A x y') y)
+    (fun y x t => mul_nonneg (pow_nonneg (norm_nonneg t) _) (gramVol_nonneg _ y))
+    (fun y x => (continuous_norm.pow _).mul continuous_const)
+    (by positivity) hb0.ne' (fun F hF => hL n e h J ℓ A F hJ hdim hℓ hA hF) hf]
+  congr 1
+  refine integral_congr_ae (ae_of_all _ fun y => ?_)
+  unfold sheetSum
+  refine finsum_congr fun x => finsum_congr fun _ => ?_
+  unfold sheetThrough
+  split_ifs with hs
+  · rfl
+  · simp [gramVol_const_zero]
+
+end
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+open MvPolynomial MeasureTheory
+
+noncomputable section
+
+theorem coneIntegral_space_one (e : ℕ) :
+    coneIntegral (HermNorm.std (e + 1)) (⊥ : Ideal (MvPolynomial (Fin (e + 1)) ℂ)) e
+      (fun _ => 1) = 1 := by
+  have hS : {y : EuclideanSpace ℂ (Fin (e + 1)) | ‖y‖ < 1 ∧
+        ∀ q ∈ (⊥ : Ideal (MvPolynomial (Fin (e + 1)) ℂ)),
+          eval ((HermNorm.std (e + 1)).pointOf y) q = 0} =
+      {y : EuclideanSpace ℂ (Fin (e + 1)) | ‖y‖ < 1 ∧ ∀ j : Fin (e + 1), e + 1 ≤ (j : ℕ) → y j = 0} := by
+    ext y
+    simp only [Set.mem_ofPred_eq, Ideal.mem_bot]
+    refine and_congr_right fun _ => ⟨fun _ j hj => absurd j.isLt (by omega), fun _ q hq => ?_⟩
+    rw [hq, map_zero]
+  obtain ⟨h0, htop⟩ := coordBall_mass (n := e + 1) (m := e + 1) le_rfl
+  rw [coneIntegral, hS, setIntegral_const, smul_eq_mul, mul_one, Measure.real]
+  exact div_self (ENNReal.toReal_ne_zero.mpr ⟨h0.ne', htop.ne⟩)
+
+theorem ConeToProjective.proof (h₁ : ConeDimOfChowForm.Statement) (h₂ : ConePolar.Statement)
+    (h₃ : PlaneSliceMass.Statement) : ConeToProjective.Statement := by
+  intro n e h J F ℓ g hJ hF hℓ hg hgc
+  obtain ⟨κ, hκ⟩ := h₂ e
+  have hplane := hκ (e + 1) (HermNorm.std (e + 1)) ⊥ (Pi.single 0 1) (fun _ => 1)
+    (isProjPrime_bot_space e) (space_dim (e + 1)) (linForm_single_not_mem_bot 0)
+    (fun _ _ _ => rfl) continuousOn_const
+  rw [coneIntegral_space_one, linForm_single, bot_sup_eq, h₃ e, mul_one] at hplane
+  rw [hκ n h J ℓ g hJ (h₁ ℂ n (e + 1) J F hJ hF) hℓ hg hgc, ← hplane, one_mul]
+
+end
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
+
+open MvPolynomial Filter Topology Matrix
+
+noncomputable section
+
+def ContinuousSectionHolomorphic.Statement : Prop :=
+  ∀ (n k : ℕ) (J : Ideal (MvPolynomial (Fin n) ℂ)) (A : Matrix (Fin k) (Fin n) ℂ)
+    (O : Set (Fin k → ℂ)) (g : (Fin k → ℂ) → Fin n → ℂ),
+    IsAffVariety J k → IsOpen O → ContinuousOn g O → (∀ y ∈ O, g y ∈ zeroLocus J) →
+    (∀ y ∈ O, A *ᵥ g y = y) → DifferentiableOn ℂ g O
+
+end
+
+end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
+
+open MvPolynomial Matrix
+
+noncomputable section
+
+theorem ContinuousSectionHolomorphic.proof (hP : ProjectionCoordinateEquation.Statement)
+    (hR : ContinuousRootHolomorphic.Statement) (hE : RiemannExtensionPolynomial.Statement) :
+    ContinuousSectionHolomorphic.Statement := by
+  intro n k J A O g hJ hO hg hZ hA
+  rcases O.eq_empty_or_nonempty with rfl | hne
+  · exact differentiableOn_empty
+  have hsurj : ∀ y ∈ O, ∃ x ∈ zeroLocus J, A *ᵥ x = y := fun y hy => ⟨g y, hZ y hy, hA y hy⟩
+  choose Q D hD0 hQ hQ' using hP n k J A O hJ hO hne hsurj
+  have hP0 : (∏ j, D j) ≠ 0 := Finset.prod_ne_zero_iff.mpr fun j _ => hD0 j
+  rw [differentiableOn_pi]
+  intro j
+  have hcont : ContinuousOn (fun y => g y j) O := (continuous_apply j).comp_continuousOn hg
+  refine hE k (∏ j, D j) O (fun y => g y j) hP0 hO hcont ?_
+  rintro y ⟨hy, hPy⟩
+  have hyx : A *ᵥ g y = y := hA y hy
+  have hDj : eval y (D j) ≠ 0 := by
+    intro h0
+    apply hPy
+    show eval y (∏ i, D i) = 0
+    rw [map_prod]
+    exact Finset.prod_eq_zero (Finset.mem_univ j) h0
+  have hroot : ∀ t ∈ O, eval (Fin.cons (g t j) t : Fin (k + 1) → ℂ) (Q j) = 0 := by
+    intro t ht
+    have h := hQ j (g t) (hZ t ht)
+    rwa [hA t ht] at h
+  have hder : eval (Fin.cons (g y j) y : Fin (k + 1) → ℂ) (pderiv 0 (Q j)) ≠ 0 := by
+    have h := hQ' j (g y) (hZ y hy) (by rwa [hyx])
+    rwa [hyx] at h
+  exact (hR k (Q j) O (fun t => g t j) hO hcont hroot y hy hder).differentiableWithinAt
+
+end
+
+end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+open MvPolynomial MeasureTheory Filter Topology Matrix ComplexSets
+open scoped ContDiff
+
+theorem CutOffLimit.proof (hC : CutOff.Statement) (hM : ChartMassCompact.Statement)
+    (hD : CutOffDominated.Statement) (hB : CutOffBoundaryBound.Statement) :
+    CutOffLimit.Statement := by
+  intro n d J A P hJ hdim hA hP
+  obtain ⟨χ, hχs, hχI, hχU, hχ1, hχE, hχM⟩ := hC n d J A P hJ hdim hA hP
+  refine ⟨χ, hχs, hχU, fun F G φ hF hG hφ hc => ?_⟩
+  have hcont : ∀ f, SmoothNear (zeroSet J) f → ContinuousOn f (zeroSet J) := by
+    rintro f ⟨U, -, hU, hf⟩
+    exact hf.continuousOn.mono hU
+  have hcons : ∀ f, SmoothNear (zeroSet J) f → ∀ i, SmoothNear (zeroSet J) (vecCons f φ i) := by
+    intro f hf i
+    refine Fin.cases ?_ (fun i => ?_) i
+    · simpa using hf
+    · simpa using hφ i
+  have hmeas : ∀ k, Measurable (χ k) := fun k => (hχs k).continuous.measurable
+  refine ⟨hD n (d + 1) J A P χ F (vecCons G φ) hJ hdim hA hP hmeas hχI hχ1 (hcont F hF) (hcons G hG)
+    (hM n (d + 1) J A F (vecCons G φ) hJ hdim hA (hcont F hF) (hcons G hG) (Or.inl hc)), ?_⟩
+  have h1 := hD n (d + 1) J A P χ G (vecCons F φ) hJ hdim hA hP hmeas hχI hχ1 (hcont G hG) (hcons F hF)
+    (hM n (d + 1) J A G (vecCons F φ) hJ hdim hA (hcont G hG) (hcons F hF) (Or.inr ⟨0, by simpa using hc⟩))
+  obtain ⟨R, C, hRC⟩ := hB n d J A F G φ hJ hdim hA hF hG hφ hc
+  have h0 : Tendsto (fun k => C * ((∫ y, chartAbsDens J A ((Metric.closedBall 0 R).indicator fun _ => 1)
+      (vecCons (χ k) φ) y) + Real.sqrt (energyInt J A (Metric.closedBall 0 R) (χ k)))) atTop (𝓝 0) := by
+    simpa using ((hχM R φ hφ).add (hχE R).sqrt).const_mul C
+  refine h1.congr_dist (squeeze_zero (fun _ => dist_nonneg) (fun k => ?_) h0)
+  rw [Real.dist_eq, abs_sub_comm]
+  exact hRC (χ k) (hχs k)
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+open ReciprocityTheory.AnForm ReciprocityTheory.AnForm.A
+
+noncomputable section
+
+theorem EnergyDensNonneg.proof : EnergyDensNonneg.Statement := by
+  intro n d s y v hs
+  have hV : IsOpen {z | AnalyticAt ℂ s z} := isOpen_analyticAt ℂ s
+  have hC : ∀ z ∈ {z | AnalyticAt ℂ s z}, ContDiffAt ℝ 2 (euclPot ∘ s) z := fun z hz =>
+    ((contDiff_euclPot n).of_le (WithTop.coe_le_coe.mpr le_top)).contDiffAt.comp z
+      (hz.restrictScalars (𝕜 := ℝ)).contDiffAt
+  refine gradDensNonneg_thm d (fun _ => euclPot ∘ s) v _ hV
+    (fun _ => fun z hz => (hC z hz).contDiffWithinAt) ?_ y hs
+  intro _ z hz ξ
+  rw [levi_comp ξ hz ((contDiff_euclPot n).of_le (WithTop.coe_le_coe.mpr le_top)).contDiffAt,
+    TubeFormComparison.levi_euclPot]
+  exact Finset.sum_nonneg fun _ _ => sq_nonneg _
+
+end
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+open MvPolynomial
+
+theorem ConeIntegralMass.of_slices (hCP : ConeToProjective.Statement)
+    (hS : SliceSectionMass.Statement) (hA : SectionHyperplaneAvoid.Statement)
+    (hD : SectionDegreeSum.Statement) (hP : PointSliceMass.Statement) :
+    ConeIntegralMass.Statement := by
+  intro n e
+  induction e with
+  | zero =>
+    intro δ h W f hW hf hδ
+    obtain ⟨j, hj⟩ := hW.isRelevant
+    have hℓ : linForm (Pi.single j (1 : ℂ)) ∉ W := by rwa [linForm_single]
+    rw [hCP n 0 h W f (Pi.single j 1) (fun _ => 1) hW hf hℓ (fun _ _ _ => rfl) continuousOn_const]
+    exact hP n δ h W f _ hW hf hδ hℓ
+  | succ e ih =>
+    intro δ h J f hJ hf hδ
+    obtain ⟨j, hj⟩ := hJ.isRelevant
+    have hu : linForm (Pi.single j (1 : ℂ)) ∉ J := by rwa [linForm_single]
+    obtain ⟨ℓ, hℓ, hℓW⟩ := hA n J (Pi.single j 1) hJ
+    obtain ⟨g, δW, hW, hsum⟩ := hD ℂ n e δ J f (Pi.single j 1) hJ hf hδ hu
+    rw [hCP n (e + 1) h J f ℓ (fun _ => 1) hJ hf hℓ (fun _ _ _ => rfl) continuousOn_const,
+      hS n e h J f (Pi.single j 1) ℓ hJ hf hu hℓ hℓW, hsum]
+    push_cast
+    refine Finset.sum_congr rfl fun W hWm => ?_
+    obtain ⟨hWp, hWc, hWδ⟩ := hW W hWm
+    rw [← hCP n e h W (g W) ℓ (fun _ => 1) hWp hWc (hℓW W hWm) (fun _ _ _ => rfl)
+      continuousOn_const, ih (δW W) h W (g W) hWp hWc hWδ]
+
+theorem MassFromLelong.proof (hS : SliceSectionMass.Statement)
+    (hA : SectionHyperplaneAvoid.Statement) (hD : SectionDegreeSum.Statement)
+    (hP : PointSliceMass.Statement) : MassFromLelong.Statement :=
+  fun _ _ _ _ _ hCP _ => ConeIntegralMass.of_slices hCP hS hA hD hP
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+open MvPolynomial MeasureTheory Filter Topology Matrix ComplexSets
+open scoped ContDiff
+
+theorem PoincareLelong.proof (hStokes : StokesOnVariety.Statement)
+    (hReg : LelongRegularise.Statement) (hLim : LelongLimit.Statement) :
+    PoincareLelong.Statement := by
+  intro n d J u f φ hJ hdim hu hf hfc hφ
+  have hS : ∀ ε ∈ Set.Ioi (0 : ℝ), varInt J (d + 1) f (vecCons (logReg u ε) φ) =
+      varInt J (d + 1) (logReg u ε) (vecCons f φ) := fun ε hε =>
+    hStokes n d J f (logReg u ε) φ hJ hdim (smoothNear_of_contDiff hf)
+      (smoothNear_of_contDiff (contDiff_logReg u hε)) hφ (Or.inl hfc)
+  exact tendsto_nhds_unique (hReg n d J u f φ hJ hdim hu hf hfc hφ)
+    ((hLim n d J u f φ hJ hdim hu hf hfc hφ).congr' (eventually_nhdsWithin_of_forall hS))
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+open MvPolynomial
+
+theorem SectionDegreeSum.proof (h : ChowFormSection.Statement) : SectionDegreeSum.Statement := by
+  intro F _ _ n e δ I f u hI hf hδ hu
+  obtain ⟨c, hc, g, hg, heq⟩ := h F n (e + 1) I f u hI hf hu
+  have hδs : IsMultiHomog δ (specFirst f u) := hδ.specFirst u
+  rw [heq] at hδs
+  have hne : C c * ∏ W ∈ (divCycle I u).support, g W ^ (divCycle I u) W ≠ 0 :=
+    mul_ne_zero (C_ne_zero.mpr hc)
+      (Finset.prod_ne_zero_iff.mpr fun W hW => pow_ne_zero _ (hg W hW).1)
+  obtain ⟨δW, hδW, hsum⟩ :=
+    exists_degrees_of_chowFormCycle (Nat.succ_pos e) (divCycle I u) c g hg hδs hne
+  exact ⟨g, δW, fun W hW => ⟨isProjPrime_of_mem_support_divCycle hI u hW, hg W hW, hδW W hW⟩,
+    hsum.symm⟩
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+theorem SlabBound.proof : SlabBound.Statement :=
+  GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets.SlabBound.affine
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+open MvPolynomial MeasureTheory Filter Topology Matrix ComplexSets
+open scoped ContDiff
+
+theorem SliceCutBoundary.proof (hB : SliceBoundaryBound.Statement) (hD : SliceCutDecay.Statement) :
+    SliceCutBoundary.Statement := by
+  intro n e h W g ℓ A F G hW hg hℓ hA hF0 hG0 hF hG
+  obtain ⟨C, hC0, hC⟩ := hB n e h W g ℓ A F G hW hg hℓ hA hF0 hG0 hF hG
+  obtain ⟨D, hDk⟩ := hD n e h W g ℓ A hW hg hℓ hA
+  have h1 : Tendsto (fun k : ℕ => D / ((k : ℝ) + 1)) atTop (𝓝 0) :=
+    tendsto_const_nhds.div_atTop (tendsto_natCast_atTop_atTop.atTop_add tendsto_const_nhds)
+  have hlim : Tendsto (fun k : ℕ => C * (D / ((k : ℝ) + 1) + Real.sqrt (D / ((k : ℝ) + 1)))) atTop
+      (𝓝 0) := by
+    simpa using (h1.add h1.sqrt).const_mul C
+  refine squeeze_zero_norm (fun k => ?_) hlim
+  rw [Real.norm_eq_abs]
+  refine (hC _ (SliceCut.contDiff h k) (SliceCut.hasCompactSupport h k)).trans ?_
+  obtain ⟨hm, he⟩ := hDk k
+  gcongr
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+open MvPolynomial Filter Topology Matrix ComplexSets
+open scoped ContDiff
+
+theorem SliceExhaustion.varInt_tendsto_sliceCut {n d : ℕ} (h : HermNorm n)
+    (I : Ideal (MvPolynomial (Fin n) ℂ)) (ℓ : Fin n → ℂ) (hM : SliceMassFinite.Statement)
+    (hI : I.IsPrime) (hℓ : linForm ℓ - 1 ∈ I) (hdim : ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ I) = d)
+    (hsm : SmoothNear (zeroSet I) fun x => Real.log (h.dualNorm x)) :
+    Tendsto (fun k => varInt I d (sliceCut h k) fun _ x => Real.log (h.dualNorm x)) atTop
+      (𝓝 (varInt I d (fun _ => 1) fun _ x => Real.log (h.dualNorm x))) := by
+  by_cases hA : ∃ A : Matrix (Fin d) (Fin n) ℂ, IsFiniteProjection I A
+  · simp only [varInt, dif_pos hA]
+    have := CutOffDominated.proof n d I hA.choose 1 (sliceCut h) (fun _ => 1)
+      (fun _ x => Real.log (h.dualNorm x)) hI hdim hA.choose_spec one_ne_zero (SliceCut.measurable h)
+      (SliceCut.mem_Icc h) (fun x _ _ => SliceCut.tendsto_one h x) continuousOn_const (fun _ => hsm)
+      (hM n d h I ℓ hA.choose hI hℓ hdim hA.choose_spec)
+    simpa only [mul_one] using this
+  · simp only [varInt, dif_neg hA]
+    exact tendsto_const_nhds
+
+theorem SliceExhaustion.proof (hI : SliceIdeal.Statement) (hC : SliceComponents.Statement)
+    (hM : SliceMassFinite.Statement) (hE : SliceLelongError.Statement) : SliceExhaustion.Statement := by
+  intro n e h J F u ℓ hJ hF hu hℓ hℓW
+  obtain ⟨hprime, hdim, huJ⟩ := hI n (e + 1) J F ℓ hJ hF hℓ
+  obtain ⟨-, himg, -⟩ := hC n J u ℓ hJ hℓW
+  have hmem1 : ∀ K : Ideal (MvPolynomial (Fin n) ℂ), linForm ℓ - 1 ∈ K ⊔ Ideal.span {linForm ℓ - 1} :=
+    fun _ => Ideal.mem_sup_right (Ideal.mem_span_singleton_self _)
+  refine ⟨sliceCut h, SliceCut.contDiff h, SliceCut.hasCompactSupport h, SliceCut.mem_Icc h,
+    SliceCut.tendsto_one h,
+    SliceExhaustion.varInt_tendsto_sliceCut h _ ℓ hM hprime (hmem1 J) hdim
+      (smoothNear_log_dualNorm_slice h J ℓ), fun W hW => ?_, hE n e h J F u ℓ hJ hF hu hℓ hℓW⟩
+  have hmin : W ⊔ Ideal.span {linForm ℓ - 1} ∈
+      (J ⊔ Ideal.span {linForm ℓ - 1} ⊔ Ideal.span {linForm u}).minimalPrimes := by
+    rw [← himg]
+    exact Set.mem_image_of_mem _ (Finset.mem_coe.mpr hW)
+  exact SliceExhaustion.varInt_tendsto_sliceCut h _ ℓ hM hmin.1.1 (hmem1 W)
+    (IndefiniteRowSideFullHecke.ComplexSets.dim_component_linForm hprime hdim (huJ u hu) hmin)
+    (smoothNear_log_dualNorm_slice h W ℓ)
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+open MvPolynomial MeasureTheory Filter Topology Matrix ComplexSets
+open scoped ContDiff
+
+theorem StokesOnVariety.proof (hD : ComplexSets.DiscriminantCover.Statement)
+    (hS : StokesOffDiscriminant.Statement) (hL : CutOffLimit.Statement) :
+    StokesOnVariety.Statement := by
+  have key : ∀ (n d : ℕ) (J : Ideal (MvPolynomial (Fin n) ℂ)) (f g : (Fin n → ℂ) → ℝ)
+      (φ : Fin d → (Fin n → ℂ) → ℝ), J.IsPrime →
+      ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ J) = (d + 1 : ℕ) →
+      SmoothNear (zeroSet J) f → SmoothNear (zeroSet J) g → (∀ i, SmoothNear (zeroSet J) (φ i)) →
+      HasCompactSupport f → varInt J (d + 1) f (vecCons g φ) = varInt J (d + 1) g (vecCons f φ) := by
+    intro n d J f g φ hJ hdim hf hg hφ hc
+    unfold varInt
+    split_ifs with hA
+    · have hAf := hA.choose_spec
+      generalize hA.choose = A at hAf ⊢
+      obtain ⟨P, hP0, hPcov⟩ := hD n (d + 1) J A hJ hdim hAf
+
+      have hsheet : ∀ x ∈ zeroSet J, eval (A *ᵥ x) P ≠ 0 → ∃ s, IsSheetAt J A x s := by
+        intro x hx hPx
+        obtain ⟨-, -, hloc⟩ := hPcov (A *ᵥ x) hPx
+        obtain ⟨U, V, s, hU, hyU, hV, hxV, hs, hsy, hAs, hZV⟩ := hloc x ⟨hx, rfl⟩
+        refine ⟨s, U, hU, hyU, hs, hsy, fun w hw => ⟨hAs w hw, ?_⟩, V, hV.mem_nhds hxV, ?_⟩
+        · have hw' : s w ∈ zeroSet J ∩ V := hZV ▸ Set.mem_image_of_mem s hw
+          exact hw'.1
+        · rintro x' hx' -
+          rw [hZV] at hx'
+          obtain ⟨w, hw, rfl⟩ := hx'
+          rw [hAs w hw]
+      obtain ⟨χ, hχs, hχU, hlim⟩ := hL n d J A P hJ hdim hAf hP0
+      obtain ⟨h1, h2⟩ := hlim f g φ hf hg hφ hc
+      refine tendsto_nhds_unique h1 (Tendsto.congr (fun k => ?_) h2)
+      obtain ⟨U, hU, hDU, hχ0⟩ := hχU k
+      obtain ⟨V, hV, hZV, hfV⟩ := hf
+      have hcχ : HasCompactSupport (fun x => χ k x * f x) := hc.mul_left (f := χ k)
+      refine (hS n d J A P hJ hdim hAf hP0 hsheet (fun x => χ k x * f x) g φ
+        ⟨V, hV, hZV, (hχs k).contDiffOn.mul hfV⟩ hg hφ hcχ ⟨U, hU, hDU, fun x hx => ?_⟩).symm
+      rw [hχ0 x hx, zero_mul]
+    · rfl
+  intro n d J f g φ hJ hdim hf hg hφ hc
+  rcases hc with hc | hc
+  · exact key n d J f g φ hJ hdim hf hg hφ hc
+  · exact (key n d J g f φ hJ hdim hg hf hφ hc).symm
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+open MvPolynomial MeasureTheory
+
+noncomputable section
+
+theorem VarSlabMeasure.proof (hV : VarietySlabMeasure.Statement) : VarSlabMeasure.Statement := by
+  intro n d J u R hJ hd hu
+  obtain ⟨C, α, -, hα, hb⟩ := hV n d J u hJ hd.le hu R
+  refine ⟨C, α, hα, fun ε hε hε1 => ?_⟩
+  have hset : zeroSetEuc J ∩ {z | ‖z‖ ≤ R} ∩ {z | ‖∑ j, u j * z j‖ ≤ ε} =
+      {z | z ∈ zeroSetEuc J ∧ ‖z‖ ≤ R ∧ ‖∑ j, u j * z j‖ ≤ ε} := by
+    ext z
+    simp only [Set.mem_inter_iff, Set.mem_ofPred_eq, and_assoc]
+  rw [hset]
+  exact hb ε hε hε1
+
+end
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
@@ -736,3 +1253,4 @@ theorem ConeMassOfFibre.of_open (hConeFiniteFibreDim : GroundTheory.Heights₂.H
   GroundTheory.Heights₂.Heights.ConeMassOfFibre.proof (GroundTheory.Heights₂.Heights.ConeFibreAverage.of_open hConeFiniteFibreDim hConeGraphCover hConeJacMeasurable hConeTangentDim hGraphAreaFibre hTangentGaussInvariant)
 
 end GroundTheory.Heights₂.Heights
+end

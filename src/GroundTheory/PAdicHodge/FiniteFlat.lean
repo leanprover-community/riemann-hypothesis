@@ -16,8 +16,6 @@ variable {R H A : Type*} [CommRing R] [CommRing H] [HopfAlgebra R H] [CommRing A
 instance pointsInv : Inv (WithConv (H →ₐ[R] A)) where
   inv f := toConv (f.ofConv.comp (HopfAlgebra.antipodeAlgHom R H))
 
-theorem points_inv_def (f : WithConv (H →ₐ[R] A)) :
-    f⁻¹ = toConv (f.ofConv.comp (HopfAlgebra.antipodeAlgHom R H)) := rfl
 
 instance pointsGroup : Group (WithConv (H →ₐ[R] A)) where
   inv_mul_cancel f := by
@@ -63,17 +61,8 @@ abbrev of (H : Type v) [CommRing H] [HopfAlgebra R H] [IsCocomm R H] [Module.Fin
 noncomputable def order (G : FiniteFlatGroupScheme.{u, v} R) : PrimeSpectrum R → ℕ :=
   Module.rankAtStalk G.H
 
-theorem order_apply (G : FiniteFlatGroupScheme.{u, v} R) (p : PrimeSpectrum R) :
-    G.order p = Module.rankAtStalk G.H p := rfl
 
-theorem isLocallyConstant_order (G : FiniteFlatGroupScheme.{u, v} R) :
-    IsLocallyConstant G.order :=
-  haveI := Module.finitePresentation_of_projective R G.H
-  Module.isLocallyConstant_rankAtStalk
 
-theorem order_eq_finrank (G : FiniteFlatGroupScheme.{u, v} R) [Module.Free R G.H]
-    (p : PrimeSpectrum R) : G.order p = Module.finrank R G.H := by
-  simp [order]
 
 @[ext]
 structure Hom (G G' : FiniteFlatGroupScheme.{u, v} R) where
@@ -119,14 +108,8 @@ variable (G : FiniteFlatGroupScheme.{u, v} R)
 variable {A : Type w} {B : Type w'} {C : Type*} [CommRing A] [Algebra R A] [CommRing B]
   [Algebra R B] [CommRing C] [Algebra R C]
 
-theorem points_one_apply (h : G.H) :
-    (1 : G.Points A) h = algebraMap R A (counit h) := rfl
 
-theorem points_mul_apply (x y : G.Points A) (h : G.H) :
-    (x * y) h = lmul' R (Algebra.TensorProduct.map x.ofConv y.ofConv (comul h)) := rfl
 
-theorem points_inv_apply (x : G.Points A) (h : G.H) :
-    x⁻¹ h = x (antipode R h) := rfl
 
 def mapPoints (f : A →ₐ[R] B) : G.Points A →* G.Points B where
   toFun x := toConv (f.comp x.ofConv)
@@ -143,8 +126,6 @@ def mapPoints (f : A →ₐ[R] B) : G.Points A →* G.Points B where
 
 @[simp] theorem mapPoints_id : G.mapPoints (AlgHom.id R A) = MonoidHom.id _ := rfl
 
-theorem mapPoints_comp (f : A →ₐ[R] B) (g : B →ₐ[R] C) :
-    G.mapPoints (g.comp f) = (G.mapPoints g).comp (G.mapPoints f) := rfl
 
 def Hom.mapPoints {G G' : FiniteFlatGroupScheme.{u, v} R} (φ : G ⟶ G') (A : Type w) [CommRing A]
     [Algebra R A] : G.Points A →* G'.Points A where
@@ -162,12 +143,7 @@ def Hom.mapPoints {G G' : FiniteFlatGroupScheme.{u, v} R} (φ : G ⟶ G') (A : T
 
 @[simp] theorem Hom.mapPoints_id : (𝟙 G : G ⟶ G).mapPoints A = MonoidHom.id _ := rfl
 
-theorem Hom.mapPoints_comp {G G' G'' : FiniteFlatGroupScheme.{u, v} R} (f : G ⟶ G')
-    (g : G' ⟶ G'') : (f ≫ g).mapPoints A = (g.mapPoints A).comp (f.mapPoints A) := rfl
 
-theorem Hom.mapPoints_mapPoints {G G' : FiniteFlatGroupScheme.{u, v} R} (φ : G ⟶ G')
-    (f : A →ₐ[R] B) (x : G.Points A) :
-    φ.mapPoints B (G.mapPoints f x) = G'.mapPoints f (φ.mapPoints A x) := rfl
 
 def pointsFunctor : CommAlgCat.{w} R ⥤ CommGrpCat.{max v w} where
   obj A := CommGrpCat.of (G.Points A)

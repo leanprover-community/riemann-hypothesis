@@ -1,13 +1,1055 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.UpperTriangularUnitaryLowerHalfBlockTriangular
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BorelMultiplicativeEqProdDiagonalValuations
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsPairingSingleNe
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InvMemDoubleCosetAndComm
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SumDiagOrderEqOfIntegralTranslateIndicatorRelati
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MixedModelInvariantFormUpperTriangularPairAction
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsMixedModelSelfDualLatticeInvariantLinearFo
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsHeisenbergInvariantLinearFormIsotropicVacu
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MixedModelFormValueTorusGeneratorFirstGroup
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MixedFormTorusTranslateVacuumValue
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HeckeVecSatakeSumUnitaryBorelRepresentatives
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HeisenbergQuotientOpSumVacuumCommensurableSelfDu
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SumOpTransversalStatement
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RelIndexIntegralMatricesUnitaryDiagonalTranslate
 
+section
+section
+open Matrix Formalism.UG GlobalTheory.Hk3 GlobalTheory.FinWeil GlobalTheory.SphTheta ValuativeRel Classical
+open GlobalTheory.LFun (HasSatU IsSatVecU heckeVec)
+open GlobalTheory.LGrp (bcParam extProd)
+open GlobalTheory.WeilM (UG IsQuad Darboux symp sbClass SB IsWeilB IsWeilPair TestClass schr dbl diagCols)
+open GlobalTheory.IndefiniteRowSideFullHecke.SphericalThetaInertPlace (str chi IsUnramAdd)
+open scoped TensorProduct
+
+noncomputable section
+
+namespace GlobalTheory.SphTheta.LowBlocks
+
+variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))]
+
+theorem ordL_congr_v {x y : L} (h : Valued.v x = Valued.v y) : Formalism.UG.ordL x = Formalism.UG.ordL y := by
+  unfold Formalism.UG.ordL
+  by_cases hx : Valued.v x = 0
+  · have hy : Valued.v y = 0 := h ▸ hx
+    rw [dif_pos hx, dif_pos hy]
+  · have hy : Valued.v y ≠ 0 := h ▸ hx
+    rw [dif_neg hx, dif_neg hy]
+    congr 2
+    apply WithZero.coe_injective
+    rw [WithZero.coe_unzero, WithZero.coe_unzero, h]
+
+theorem ordL_one_eq : Formalism.UG.ordL (1 : L) = 0 :=
+  Formalism.UG.P.fIwasawa_ordL_unit 1 1 (by simp) (by simp) (by simp)
+
+theorem ordL_of_mul_eq_one {x y : L} (h : x * y = 1) : Formalism.UG.ordL y = - Formalism.UG.ordL x := by
+  have hx : x ≠ 0 := left_ne_zero_of_mul_eq_one h
+  have hy : y ≠ 0 := right_ne_zero_of_mul_eq_one h
+  have := Formalism.UG.P.fIwasawa_ordL_mul x y hx hy
+  rw [h, ordL_one_eq] at this
+  omega
+
+variable {σ : L →+* L} {n : ℕ}
+
+theorem ordL_rev_diag (hv : ∀ x, Valued.v (σ x) = Valued.v x) {b : GU σ n} (hb : IsBorelU b) (i : Fin n) :
+    Formalism.UG.ordL (b.1.1 i.rev i.rev) = - Formalism.UG.ordL (b.1.1 i i) := by
+  rw [ordL_of_mul_eq_one (Formalism.UG.P.fSatake_unit_diag hb i), ordL_congr_v (hv _)]
+
+theorem diag_ne_zero {b : GU σ n} (hb : IsBorelU b) (i : Fin n) : b.1.1 i i ≠ 0 := fun h0 => by
+  have := Formalism.UG.P.fSatake_unit_diag hb i
+  rw [show (((b : GU σ n) : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) i i = 0 from h0, map_zero, zero_mul] at this
+  exact zero_ne_one this
+
+theorem lowBlock_tri {M : Matrix (Fin n) (Fin n) L} (hM : ∀ i j : Fin n, j < i → M i j = 0) :
+    (lowBlock M).BlockTriangular id := fun i j hij => by
+  apply hM
+  rw [Fin.lt_def] at hij ⊢
+  simp only [hi, id] at *
+  omega
+
+theorem hi_eq_rev_lo (r : Fin (n / 2)) : hi n r = (lo n r.rev).rev := by
+  ext; simp only [hi, lo, Fin.val_rev]; omega
+
+end GlobalTheory.SphTheta.LowBlocks
+
+open GlobalTheory.SphTheta.LowBlocks in
+
+theorem GlobalTheory.SphTheta.lowBlocks_borel : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (ϖ : L) (σ : L →+* L) (q : ℕ), IsUnramInv ϖ σ q → ∀ (n n' : ℕ) (hn : n ≤ n'), (∀ g : GU σ n, IsBorelU g → ∃ U : GL (Fin (n / 2)) L, U.1 = lowBlock g.1.1 ∧ U.1.BlockTriangular id ∧ ∀ r, ordL (U.1 r r) = -ordL (g.1.1 (lo n r.rev) (lo n r.rev))) ∧ ∀ h : GU σ n', IsBorelU h → ∃ V : GL (Fin (n / 2)) L, V.1.BlockTriangular id ∧ (∀ r : Fin (n / 2), ordL (V.1 r.rev r.rev) = ordL (h.1.1 (lo n' ⟨n' / 2 - n / 2 + r.1, by omega⟩) (lo n' ⟨n' / 2 - n / 2 + r.1, by omega⟩))) ∧ ∀ t : Matrix (Fin (n / 2)) (Fin (n / 2)) L, lowBlock (h⁻¹).1.1 * (Matrix.of fun (r : Fin (n' / 2)) (c : Fin (n / 2)) => if e : r.1 < n / 2 then t ⟨r.1, e⟩ c else 0) = Matrix.of fun (r : Fin (n' / 2)) (c : Fin (n / 2)) => if e : r.1 < n / 2 then (V.1 * t) ⟨r.1, e⟩ c else 0 := by
+  intro L _ _ ϖ σ q hU n n' hn
+  have hv : ∀ x, Valued.v (σ x) = Valued.v x := hU.2.1
+  refine ⟨fun g hg => ?_, fun h hh => ?_⟩
+  · have htri : (lowBlock g.1.1).BlockTriangular id := lowBlock_tri hg
+    have hdet : (lowBlock g.1.1).det ≠ 0 := by
+      rw [Matrix.det_of_upperTriangular htri, Finset.prod_ne_zero_iff]
+      intro r _
+      exact diag_ne_zero hg _
+    refine ⟨Matrix.GeneralLinearGroup.mkOfDetNeZero _ hdet, rfl, htri, fun r => ?_⟩
+    show Formalism.UG.ordL (g.1.1 (hi n r) (hi n r)) = _
+    rw [hi_eq_rev_lo, ordL_rev_diag hv hg]
+  · have hle : n / 2 ≤ n' / 2 := Nat.div_le_div_right hn
+    have hb' : IsBorelU h⁻¹ := Formalism.UG.P.fSatake_borel_inv hh
+    set W := lowBlock (h⁻¹).1.1 with hW
+    have hWt : W.BlockTriangular id := lowBlock_tri hb'
+    set V0 : Matrix (Fin (n / 2)) (Fin (n / 2)) L := W.submatrix (Fin.castLE hle) (Fin.castLE hle) with hV0
+    have htri : V0.BlockTriangular id := fun i j hij => hWt (by rw [Fin.lt_def] at hij ⊢; exact hij)
+    have hdet : V0.det ≠ 0 := by
+      rw [Matrix.det_of_upperTriangular htri, Finset.prod_ne_zero_iff]
+      intro r _
+      exact diag_ne_zero hb' _
+    refine ⟨Matrix.GeneralLinearGroup.mkOfDetNeZero _ hdet, htri, fun r => ?_, fun t => ?_⟩
+    · show Formalism.UG.ordL ((h⁻¹).1.1 (hi n' (Fin.castLE hle r.rev)) (hi n' (Fin.castLE hle r.rev))) = _
+      have e : hi n' (Fin.castLE hle r.rev) = (lo n' ⟨n' / 2 - n / 2 + r.1, by omega⟩).rev := by
+        ext; simp only [hi, lo, Fin.val_rev, Fin.coe_castLE]; omega
+      rw [e]
+      have a := ordL_of_mul_eq_one (Formalism.UG.P.fSatake_borel_diag_inv hh (lo n' ⟨n' / 2 - n / 2 + r.1, by omega⟩).rev)
+      have b := ordL_rev_diag hv hh (lo n' ⟨n' / 2 - n / 2 + r.1, by omega⟩)
+      change Formalism.UG.ordL (h.1.1 _ _) = - Formalism.UG.ordL ((h⁻¹).1.1 _ _) at a
+      linarith
+    · ext r c
+      simp only [Matrix.mul_apply, Matrix.of_apply]
+      split_ifs with hr
+      · have hr' : (Fin.castLE hle ⟨r.1, hr⟩ : Fin (n' / 2)) = r := Fin.ext rfl
+        let emb : Fin (n / 2) ↪ Fin (n' / 2) := ⟨Fin.castLE hle, Fin.castLE_injective hle⟩
+        rw [← Finset.sum_subset (s₁ := Finset.univ.map emb) (Finset.subset_univ _), Finset.sum_map]
+        · refine Finset.sum_congr rfl fun k _ => ?_
+          have hk : ((emb k : Fin (n' / 2)) : ℕ) < n / 2 := k.2
+          rw [dif_pos hk]
+          show W r (Fin.castLE hle k) * t ⟨k.1, hk⟩ c = W (Fin.castLE hle ⟨r.1, hr⟩) (Fin.castLE hle k) * t k c
+          rw [hr']
+        · intro k _ hk
+          have : ¬ (k : ℕ) < n / 2 := fun e => hk (Finset.mem_map.2 ⟨⟨k.1, e⟩, Finset.mem_univ _, Fin.ext rfl⟩)
+          rw [dif_neg this, mul_zero]
+      · refine Finset.sum_eq_zero fun k _ => ?_
+        split_ifs with hk
+        · rw [hWt (show k < r by rw [Fin.lt_def]; omega), zero_mul]
+        · rw [mul_zero]
+end
+end
+
+open Matrix Formalism.UG GlobalTheory.Hk3 GlobalTheory.FinWeil GlobalTheory.SphTheta ValuativeRel Classical
+open GlobalTheory.LFun (HasSatU IsSatVecU heckeVec)
+open GlobalTheory.LGrp (bcParam extProd)
+open GlobalTheory.WeilM (UG IsQuad Darboux symp sbClass SB IsWeilB IsWeilPair TestClass schr dbl diagCols)
+open GlobalTheory.IndefiniteRowSideFullHecke.SphericalThetaInertPlace (str chi IsUnramAdd)
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.upperTriangularUnitary_lowerHalfBlock_triangular : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (ϖ : L) (σ : L →+* L) (q : ℕ), IsUnramInv ϖ σ q → ∀ (n n' : ℕ) (hn : n ≤ n'), (∀ g : GU σ n, IsBorelU g → ∃ U : GL (Fin (n / 2)) L, U.1 = lowBlock g.1.1 ∧ U.1.BlockTriangular id ∧ ∀ r, ordL (U.1 r r) = -ordL (g.1.1 (lo n r.rev) (lo n r.rev))) ∧ ∀ h : GU σ n', IsBorelU h → ∃ V : GL (Fin (n / 2)) L, V.1.BlockTriangular id ∧ (∀ r : Fin (n / 2), ordL (V.1 r.rev r.rev) = ordL (h.1.1 (lo n' ⟨n' / 2 - n / 2 + r.1, by omega⟩) (lo n' ⟨n' / 2 - n / 2 + r.1, by omega⟩))) ∧ ∀ t : Matrix (Fin (n / 2)) (Fin (n / 2)) L, lowBlock (h⁻¹).1.1 * (Matrix.of fun (r : Fin (n' / 2)) (c : Fin (n / 2)) => if e : r.1 < n / 2 then t ⟨r.1, e⟩ c else 0) = Matrix.of fun (r : Fin (n' / 2)) (c : Fin (n / 2)) => if e : r.1 < n / 2 then (V.1 * t) ⟨r.1, e⟩ c else 0 := by
+  atlas_forward_decl GlobalTheory.SphTheta.lowBlocks_borel
+end
+
+section
+section
+noncomputable section
+
+namespace GlobalTheory.BorelChar
+
+open Matrix Formalism.UG
+
+variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] {σ : L →+* L} {n : ℕ}
+
+local notation "⟪" b "⟫" => (((b : GU σ n) : GL (Fin n) L) : Matrix (Fin n) (Fin n) L)
+
+theorem ext_mat {g h : GU σ n} (e : ⟪g⟫ = ⟪h⟫) : g = h := Subtype.ext (Units.ext e)
+
+theorem exists_conj_mem_K {ϖ : L} {q : ℕ} (hU : IsUnramInv ϖ σ q) {u : GU σ n} (hu : IsUnipU u) :
+    ∃ s : GU σ n, IsBorelU s ∧ s * u * s⁻¹ ∈ KU σ n := by
+  obtain ⟨hσσ, hσv, hσϖ, hϖ, -, -, -⟩ := hU
+  have hϖ' : Valued.v ϖ = WithZero.exp (-1 : ℤ) := hϖ
+  have h0 : ϖ ≠ 0 := by
+    intro h; rw [h, map_zero] at hϖ'; exact WithZero.exp_ne_zero hϖ'.symm
+  have hϖ1 : Valued.v ϖ ≤ 1 := by
+    rw [hϖ', ← WithZero.exp_zero, WithZero.exp_le_exp]; norm_num
+  set U := ⟪u⟫ with hUdef
+  obtain ⟨M, hM⟩ := GlobalTheory.UnitarySwap.exists_pow_mem hϖ' U
+  let b : Fin n → ℤ := fun i => (M : ℤ) * ((n : ℤ) - 1 - 2 * (i.val : ℤ))
+  have hb : ∀ i : Fin n, b i.rev = -b i := by
+    intro i
+    have := i.isLt
+    simp only [b, Fin.val_rev]
+    rw [Nat.cast_sub (by omega)]
+    push_cast
+    ring
+  obtain ⟨s, hs, hs'⟩ := Formalism.UG.P.fSatake_diag_exists (σ := σ) (fun i => ϖ ^ b i) (fun i => by
+    rw [map_zpow₀, hσϖ, hb, ← zpow_add₀ h0, add_neg_cancel, zpow_zero])
+  have hpow : ∀ k : ℤ, 0 ≤ k → Valued.v (ϖ ^ k) ≤ 1 := by
+    intro k hk
+    obtain ⟨m, rfl⟩ := Int.eq_ofNat_of_zero_le hk
+    rw [zpow_natCast, map_pow]
+    exact pow_le_one₀ zero_le hϖ1
+  set k := s * u * s⁻¹ with hkdef
+  have hkm : ⟪k⟫ = Matrix.diagonal (fun i => ϖ ^ b i) * U * Matrix.diagonal (fun i => (ϖ ^ b i)⁻¹) := by
+    rw [hkdef, Subgroup.coe_mul, Subgroup.coe_mul, Units.val_mul, Units.val_mul, hs, hs']
+  have hI : Formalism.UG.P.fIwasawaInt ⟪k⟫ := by
+    intro i j
+    rw [hkm, Matrix.mul_diagonal, Matrix.diagonal_mul]
+    rcases lt_trichotomy i j with hij | rfl | hij
+    · have hle : (M : ℤ) ≤ b i - b j := by
+        have : (i.val : ℤ) + 1 ≤ j.val := by exact_mod_cast hij
+        simp only [b]
+        nlinarith
+      have e : ϖ ^ b i * U i j * (ϖ ^ b j)⁻¹ = ϖ ^ (b i - b j - M) * (ϖ ^ M * U i j) := by
+        rw [zpow_sub₀ h0, zpow_sub₀ h0, zpow_natCast]
+        field_simp
+      rw [e, map_mul]
+      exact mul_le_one' (hpow _ (by omega)) (hM i j)
+    · have e1 : U i i = 1 := hu.2 i
+      rw [e1, mul_one, mul_inv_cancel₀ (zpow_ne_zero _ h0), map_one]
+    · have e1 : U i j = 0 := hu.1 i j hij
+      rw [e1, mul_zero, zero_mul, map_zero]; exact zero_le
+  have hkK : k ∈ Formalism.UG.KU σ n := by
+    have := Formalism.UG.P.fIwasawa_mk_mem_K σ hσv _ (Formalism.UG.P.fIwasawa_mem_un σ k) hI
+    have e : Formalism.UG.P.fIwasawaMk σ _ (Formalism.UG.P.fIwasawa_mem_un σ k) = k := Subtype.ext (Units.ext rfl)
+    rwa [e] at this
+  exact ⟨s, Formalism.UG.P.fSatake_borel_of_diag hs, hkK⟩
+
+theorem tMat_add (ϖ : L) (h0 : ϖ ≠ 0) (m : ℕ) (a c : Fin m → ℤ) :
+    tMat ϖ n m (a + c) = tMat ϖ n m a * tMat ϖ n m c := by
+  unfold tMat
+  rw [diagonal_mul_diagonal]
+  congr 1; funext i
+  split_ifs <;> simp [zpow_add₀ h0, neg_add] <;> ring
+
+theorem tMat_zero (ϖ : L) (m : ℕ) : tMat ϖ n m 0 = 1 := by
+  unfold tMat
+  rw [← diagonal_one]
+  congr 1; funext i
+  split_ifs <;> simp
+
+theorem borel_char : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (ϖ : L) (σ : L →+* L) (q : ℕ),
+    IsUnramInv ϖ σ q → ∀ (n : ℕ) (f : GU σ n → ℂ), (∀ b b', IsBorelU b → IsBorelU b' → f (b * b') = f b * f b') →
+    (∀ k ∈ KU σ n, IsBorelU k → f k = 1) → ∀ y : Fin (n / 2) → ℂ,
+    (∀ (k : Fin (n / 2)) (t : GU σ n), t.1.1 = tMat ϖ n (n / 2) (Pi.single k 1) → f t = y k) →
+    ∀ b, IsBorelU b → f b = ∏ k, y k ^ ordL (b.1.1 (GlobalTheory.SphTheta.lo n k) (GlobalTheory.SphTheta.lo n k)) := by
+  intro L _ _ ϖ σ q hU n f hmul hK y hy b hb
+  have hϖ0 : ϖ ≠ 0 := by
+    intro h; have := hU.2.2.2.1; rw [h, Valuation.map_zero] at this; exact absurd this WithZero.zero_ne_coe
+  have h1 : f 1 = 1 := hK 1 (one_mem _) Formalism.UG.P.fSatake_borel_one
+  have hinv : ∀ b, IsBorelU b → f b * f b⁻¹ = 1 := fun b hb => by
+    rw [← hmul _ _ hb (Formalism.UG.P.fSatake_borel_inv hb), mul_inv_cancel, h1]
+
+  have hunip : ∀ u, IsUnipU u → f u = 1 := by
+    intro u hu
+    obtain ⟨s, hs, hsK⟩ := exists_conj_mem_K hU hu
+    have hsu := Formalism.UG.P.fSatake_borel_mul hs hu.1
+    have := hK _ hsK (Formalism.UG.P.fSatake_borel_mul hsu (Formalism.UG.P.fSatake_borel_inv hs))
+    rw [hmul _ _ hsu (Formalism.UG.P.fSatake_borel_inv hs), hmul _ _ hs hu.1] at this
+    calc f u = f u * (f s * f s⁻¹) := by rw [hinv s hs, mul_one]
+      _ = f s * f u * f s⁻¹ := by ring
+      _ = 1 := this
+
+  have hm : 2 * (n / 2) ≤ n := by omega
+  have hT : ∀ a : Fin (n / 2) → ℤ, ∃ t : GU σ n, (t).1.1 = tMat ϖ n (n / 2) a :=
+    fun a => Formalism.UG.P.fSatake_tMat_exists hU hm a
+  choose T hTm using hT
+  have hTb : ∀ a, IsBorelU (T a) := fun a => Formalism.UG.P.fSatake_borel_tMat (hTm a)
+  have hTadd : ∀ a c, T (a + c) = T a * T c := fun a c => ext_mat (by
+    rw [Subgroup.coe_mul, Units.val_mul, hTm, hTm, hTm, tMat_add ϖ hϖ0])
+  have hT0 : T 0 = 1 := ext_mat (by rw [hTm, tMat_zero]; rfl)
+  have hg : ∀ a c, f (T (a + c)) = f (T a) * f (T c) := fun a c => by
+    rw [hTadd, hmul _ _ (hTb a) (hTb c)]
+  have hgu : ∀ a, f (T a) * f (T (-a)) = 1 := fun a => by
+    rw [← hg, add_neg_cancel, hT0, h1]
+  let G : Multiplicative (Fin (n / 2) → ℤ) →* ℂˣ := MonoidHom.mk'
+    (fun a => ⟨f (T a.toAdd), f (T (-a.toAdd)), hgu _, by rw [mul_comm]; exact hgu _⟩)
+    (fun a c => Units.ext (by simp only [toAdd_mul, Units.val_mul]; exact hg _ _))
+  have hGs : ∀ k, (G (Multiplicative.ofAdd (Pi.single k 1)) : ℂ) = y k := fun k => hy k _ (hTm _)
+  have hTval : ∀ a, f (T a) = ∏ k, y k ^ a k := by
+    intro a
+    have ea : Multiplicative.ofAdd a = ∏ k, (Multiplicative.ofAdd (Pi.single k (1 : ℤ))) ^ a k := by
+      simp_rw [← ofAdd_zsmul, ← ofAdd_sum]
+      congr 1
+      conv_lhs => rw [← Finset.univ_sum_single a]
+      refine Finset.sum_congr rfl fun k _ => ?_
+      funext j
+      simp [Pi.single_apply]
+    have := congrArg (fun z => (G z : ℂ)) ea
+    simp only [map_prod, map_zpow, Units.coe_prod, Units.val_zpow_eq_zpow_val, hGs] at this
+    exact this
+
+  obtain ⟨a, u, hu, k', hk', he⟩ := Formalism.UG.P.fSatake_cell_exists hU hm (by omega) hb (one_mem (KU σ n))
+  have hbe : b = T a * u * k' := ext_mat (by
+    rw [Subgroup.coe_mul, Units.val_mul, Subgroup.coe_mul, Units.val_mul, hTm, ← he, mul_one])
+  have htu := Formalism.UG.P.fSatake_borel_mul (hTb a) hu.1
+  have hkb : IsBorelU k' := by
+    have e : k' = (T a * u)⁻¹ * b := by rw [hbe]; group
+    rw [e]; exact Formalism.UG.P.fSatake_borel_mul (Formalism.UG.P.fSatake_borel_inv htu) hb
+  have hfb : f b = f (T a) := by
+    rw [hbe, hmul _ _ htu hkb, hmul _ _ (hTb a) hu.1, hunip u hu, hK k' hk' hkb, mul_one, mul_one]
+  rw [hfb, hTval]
+  refine Finset.prod_congr rfl fun j _ => ?_
+  congr 1
+
+  have hj : (j : ℕ) < n := by omega
+  have hd : (b).1.1 ⟨j, hj⟩ ⟨j, hj⟩ = ϖ ^ (a j) * (k').1.1 ⟨j, hj⟩ ⟨j, hj⟩ := by
+    rw [hbe, Formalism.UG.P.fSatake_borel_diag_mul htu hkb, Formalism.UG.P.fSatake_borel_diag_mul (hTb a) hu.1, hu.2, mul_one,
+      hTm, Formalism.UG.P.fSatake_tMat_apply_lt ϖ a j hj]
+  have hw0 := Formalism.UG.P.fSatake_ne_zero_of_borel hkb ⟨j, hj⟩
+  have hwr0 := Formalism.UG.P.fSatake_ne_zero_of_borel hkb (⟨j, hj⟩ : Fin n).rev
+  have hpair := congrArg ordL (Formalism.UG.P.fSatake_unit_diag hkb ⟨j, hj⟩)
+  rw [Formalism.UG.P.fSatake_ord_mul ((map_ne_zero σ).2 hw0) hwr0, Formalism.UG.P.fSatake_ord_of_v (hU.2.1 _),
+    Formalism.UG.P.fSatake_ord_one] at hpair
+  have hn1 := Formalism.UG.P.fSatake_ord_nonneg hw0 (Formalism.UG.P.fSatake_K_int hk' _ _)
+  have hn2 := Formalism.UG.P.fSatake_ord_nonneg hwr0 (Formalism.UG.P.fSatake_K_int hk' _ _)
+  have h3 := congrArg ordL hd
+  rw [Formalism.UG.P.fSatake_ord_mul (zpow_ne_zero _ hϖ0) hw0, Formalism.UG.P.fSatake_ord_zpow hU.2.2.2.1] at h3
+  show a j = ordL ((b).1.1 ⟨j, hj⟩ ⟨j, hj⟩)
+  omega
+
+end GlobalTheory.BorelChar
+end
+end
+
+open Matrix Formalism.UG GlobalTheory.Hk3 GlobalTheory.FinWeil GlobalTheory.SphTheta ValuativeRel Classical
+open GlobalTheory.LFun (HasSatU IsSatVecU heckeVec)
+open GlobalTheory.LGrp (bcParam extProd)
+open GlobalTheory.WeilM (UG IsQuad Darboux symp sbClass SB IsWeilB IsWeilPair TestClass schr dbl diagCols)
+open GlobalTheory.IndefiniteRowSideFullHecke.SphericalThetaInertPlace (str chi IsUnramAdd)
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.borelMultiplicative_eq_prod_diagonal_valuations : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (ϖ : L) (σ : L →+* L) (q : ℕ), IsUnramInv ϖ σ q → ∀ (n : ℕ) (f : GU σ n → ℂ), (∀ b b', IsBorelU b → IsBorelU b' → f (b * b') = f b * f b') → (∀ k ∈ KU σ n, IsBorelU k → f k = 1) → ∀ y : Fin (n / 2) → ℂ, (∀ (k : Fin (n / 2)) (t : GU σ n), t.1.1 = tMat ϖ n (n / 2) (Pi.single k 1) → f t = y k) → ∀ b, IsBorelU b → f b = ∏ k, y k ^ ordL (b.1.1 (lo n k) (lo n k)) := by
+  atlas_forward_decl GlobalTheory.BorelChar.borel_char
+end
+
+section
+section
+open Matrix Formalism.UG GlobalTheory.Hk3 GlobalTheory.FinWeil GlobalTheory.SphTheta ValuativeRel Classical
+open GlobalTheory.LFun (HasSatU IsSatVecU heckeVec)
+open GlobalTheory.LGrp (bcParam extProd)
+open GlobalTheory.WeilM (UG IsQuad Darboux symp sbClass SB IsWeilB IsWeilPair TestClass schr dbl diagCols)
+open GlobalTheory.IndefiniteRowSideFullHecke.SphericalThetaInertPlace (str chi IsUnramAdd)
+open scoped TensorProduct
+
+noncomputable section
+
+namespace GlobalTheory.SphTheta.MixStab
+
+variable {L : Type} [Field L]
+
+theorem sum_hi {M : Type} [AddCommMonoid M] (N : ℕ) (f : Fin N → M)
+    (hf : ∀ i : Fin N, i.1 < N - N / 2 → f i = 0) : ∑ i, f i = ∑ k, f (hi N k) := by
+  rw [← Finset.sum_image (s := Finset.univ) (g := hi N) (f := f)]
+  · symm
+    refine Finset.sum_subset (Finset.subset_univ _) fun i _ hni => hf i ?_
+    by_contra hc
+    have := i.isLt
+    exact hni (Finset.mem_image.2 ⟨⟨i.1 - (N - N / 2), by omega⟩, Finset.mem_univ _, Fin.ext (by simp only [hi]; omega)⟩)
+  · intro x _ y _ hxy
+    have := congrArg Fin.val hxy
+    simp only [hi] at this
+    exact Fin.ext (by omega)
+
+theorem embLow_hi {n' n : ℕ} (z : Matrix (Fin (n' / 2)) (Fin (n / 2)) L) (k : Fin (n' / 2)) (l : Fin (n / 2)) :
+    embLow n' n z (hi n' k) (hi n l) = z k l := by
+  rw [embLow, dif_pos ⟨by simp [hi], by simp [hi]⟩]
+  congr 1 <;> ext <;> simp [hi]
+
+theorem embLow_eq_zero {n' n : ℕ} (z : Matrix (Fin (n' / 2)) (Fin (n / 2)) L) (r : Fin n') (c : Fin n)
+    (h : r.1 < n' - n' / 2 ∨ c.1 < n - n / 2) : embLow n' n z r c = 0 := by
+  rw [embLow, dif_neg (by omega)]
+
+theorem mul_embLow_mul_apply {n' n : ℕ} (A : Matrix (Fin n') (Fin n') L) (B : Matrix (Fin n) (Fin n) L)
+    (z : Matrix (Fin (n' / 2)) (Fin (n / 2)) L) (r : Fin n') (c : Fin n) :
+    (A * embLow n' n z * B) r c = ∑ l, (∑ k, A r (hi n' k) * z k l) * B (hi n l) c := by
+  rw [Matrix.mul_apply, sum_hi n]
+  · refine Finset.sum_congr rfl fun l _ => ?_
+    rw [Matrix.mul_apply, sum_hi n']
+    · simp only [embLow_hi]
+    · intro i hi'
+      rw [embLow_eq_zero z i _ (Or.inl hi'), mul_zero]
+  · intro j hj
+    rw [Matrix.mul_apply, Finset.sum_eq_zero, zero_mul]
+    intro i _
+    rw [embLow_eq_zero z i j (Or.inr hj), mul_zero]
+
+theorem lowBlock_mul_apply {n' n : ℕ} (A : Matrix (Fin n') (Fin n') L) (B : Matrix (Fin n) (Fin n) L)
+    (z : Matrix (Fin (n' / 2)) (Fin (n / 2)) L) (r : Fin (n' / 2)) (c : Fin (n / 2)) :
+    (lowBlock A * z * lowBlock B) r c = ∑ l, (∑ k, A (hi n' r) (hi n' k) * z k l) * B (hi n l) (hi n c) := by
+  simp only [Matrix.mul_apply, lowBlock, Matrix.submatrix_apply]
+
+theorem exists_hi {N : ℕ} (r : Fin N) (hr : N - N / 2 ≤ r.1) : ∃ k, r = hi N k :=
+  ⟨⟨r.1 - (N - N / 2), by have := r.isLt; omega⟩, Fin.ext (by simp only [hi]; omega)⟩
+
+theorem mul_embLow_mul_eq {n' n : ℕ} (A : Matrix (Fin n') (Fin n') L) (B : Matrix (Fin n) (Fin n) L)
+    (hB : ∀ i j : Fin n, j < i → B i j = 0) (z : Matrix (Fin (n' / 2)) (Fin (n / 2)) L) (r : Fin n') (c : Fin n)
+    (h : n' - n' / 2 ≤ r.1 ∨ c.1 < n - n / 2) :
+    (A * embLow n' n z * B) r c = embLow n' n (lowBlock A * z * lowBlock B) r c := by
+  by_cases hc : c.1 < n - n / 2
+  · rw [embLow_eq_zero _ r c (Or.inr hc), mul_embLow_mul_apply]
+    refine Finset.sum_eq_zero fun l _ => ?_
+    rw [hB (hi n l) c (Fin.lt_def.2 (by simp only [hi]; omega)), mul_zero]
+  · have hr : n' - n' / 2 ≤ r.1 := by omega
+    obtain ⟨r', rfl⟩ := exists_hi r hr
+    obtain ⟨c', rfl⟩ := exists_hi c (by omega)
+    rw [mul_embLow_mul_apply, embLow_hi, lowBlock_mul_apply]
+
+variable [Valued L (WithZero (Multiplicative ℤ))]
+
+theorem mem_mixLat_iff {n' n : ℕ} (x : Matrix (Fin n') (Fin n) L) : x ∈ mixLat L n' n ↔
+    ∀ r c, (n' - n' / 2 ≤ r.1 ∨ n' / 2 ≤ r.1 ∧ c.1 < n / 2 → x r c = 0) ∧
+      (n' / 2 ≤ r.1 → c.1 < n - n / 2 → x r c ∈ intL L) := Iff.rfl
+
+theorem borel_mid_int {σ : L →+* L} {N : ℕ} (hv : ∀ x, Valued.v (σ x) = Valued.v x) {b : GU σ N}
+    (hb : IsBorelU b) (i : Fin N) (hi' : i.rev = i) : b.1.1 i i ∈ intL L := by
+  have h := P.fSatake_unit_diag hb i
+  rw [hi'] at h
+  have h2 := congrArg Valued.v h
+  rw [map_mul, hv, map_one] at h2
+  rw [mem_intL]
+  by_contra hc
+  rw [not_le] at hc
+  have : (1 : WithZero (Multiplicative ℤ)) < Valued.v (b.1.1 i i) * Valued.v (b.1.1 i i) := one_lt_mul'' hc hc
+  rw [h2] at this
+  exact lt_irrefl _ this
+
+theorem row_mul_eq {n' n : ℕ} (A : Matrix (Fin n') (Fin n') L) (hA : ∀ i j : Fin n', j < i → A i j = 0)
+    (a : Matrix (Fin n') (Fin n) L) (ha : a ∈ mixLat L n' n) (r : Fin n') (hr : n' / 2 ≤ r.1) (j : Fin n) :
+    (A * a) r j = A r r * a r j := by
+  rw [mem_mixLat_iff] at ha
+  rw [Matrix.mul_apply, Finset.sum_eq_single r]
+  · intro i _ hir
+    rcases lt_or_gt_of_ne hir with h1 | h1
+    · rw [hA r i h1, zero_mul]
+    · rw [(ha i j).1 (Or.inl (by have := Fin.lt_def.1 h1; omega)), mul_zero]
+  · simp
+
+theorem borel_mul_mem {σ : L →+* L} {n' n : ℕ} (hv : ∀ x, Valued.v (σ x) = Valued.v x) {g : GU σ n} {h : GU σ n'}
+    (hg : IsBorelU g) (hh : IsBorelU h) (a : Matrix (Fin n') (Fin n) L) (ha : a ∈ mixLat L n' n) :
+    (h.1.1 * a * g.1.1 : Matrix (Fin n') (Fin n) L) ∈ mixLat L n' n := by
+  have ha' := (mem_mixLat_iff a).1 ha
+  rw [mem_mixLat_iff]
+  intro r c
+  constructor
+  · intro hrc
+    rw [Matrix.mul_apply]
+    refine Finset.sum_eq_zero fun j _ => ?_
+    rw [row_mul_eq _ hh a ha r (by omega)]
+    rcases hrc with hr | ⟨hr, hc⟩
+    · rw [(ha' r j).1 (Or.inl hr), mul_zero, zero_mul]
+    · by_cases hjc : j.1 ≤ c.1
+      · rw [(ha' r j).1 (Or.inr ⟨hr, by omega⟩), mul_zero, zero_mul]
+      · rw [hg j c (Fin.lt_def.2 (by omega)), mul_zero]
+  · intro hr hc
+    rw [Matrix.mul_apply, Finset.sum_eq_single c]
+    · rw [row_mul_eq _ hh a ha r hr]
+      by_cases hz : a r c = 0
+      · rw [hz, mul_zero, zero_mul]; exact zero_mem _
+      · have h1 : ¬ (n' - n' / 2 ≤ r.1 ∨ n' / 2 ≤ r.1 ∧ c.1 < n / 2) := fun e => hz ((ha' r c).1 e)
+        have hrr : r.rev = r := Fin.ext (by rw [Fin.val_rev]; omega)
+        have hcc : c.rev = c := Fin.ext (by rw [Fin.val_rev]; omega)
+        exact mul_mem (mul_mem (borel_mid_int hv hh r hrr) ((ha' r c).2 hr hc)) (borel_mid_int hv hg c hcc)
+    · intro j _ hjc
+      rcases lt_or_gt_of_ne hjc with h1 | h1
+      · rw [row_mul_eq _ hh a ha r hr, (ha' r j).1 (Or.inr ⟨hr, by have := Fin.lt_def.1 h1; omega⟩), mul_zero, zero_mul]
+      · rw [hg j c h1, mul_zero]
+    · simp
+
+end GlobalTheory.SphTheta.MixStab
+
+namespace GlobalTheory.SphTheta
+
+open MixStab in
+
+theorem borel_mixLat_lowBlock : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (ϖ : L) (σ : L →+* L) (q : ℕ), IsUnramInv ϖ σ q → ∀ (n n' : ℕ) (g : GU σ n) (h : GU σ n'), IsBorelU g → IsBorelU h → (∀ a : Matrix (Fin n') (Fin n) L, a ∈ mixLat L n' n → (h.1.1 * a * g.1.1 : Matrix (Fin n') (Fin n) L) ∈ mixLat L n' n) ∧ ∀ (z : Matrix (Fin (n' / 2)) (Fin (n / 2)) L), ∃ a ∈ mixLat L n' n, (∀ (r : Fin n') (c : Fin n), c.1 < n - n / 2 → a r c = 0) ∧ (h.1.1 * embLow n' n z * g.1.1 : Matrix (Fin n') (Fin n) L) = a + embLow n' n (lowBlock h.1.1 * z * lowBlock g.1.1) := by
+  intro L _ _ ϖ σ q hU n n' g h hg hh
+  refine ⟨fun a ha => borel_mul_mem hU.2.1 hg hh a ha, fun z => ?_⟩
+  have key : ∀ (r : Fin n') (c : Fin n), n' - n' / 2 ≤ r.1 ∨ c.1 < n - n / 2 →
+      (h.1.1 * embLow n' n z * g.1.1 - embLow n' n (lowBlock h.1.1 * z * lowBlock g.1.1)) r c = 0 := fun r c e => by
+    rw [Matrix.sub_apply, sub_eq_zero]
+    exact mul_embLow_mul_eq _ _ hg _ r c e
+  refine ⟨h.1.1 * embLow n' n z * g.1.1 - embLow n' n (lowBlock h.1.1 * z * lowBlock g.1.1), ?_,
+    fun r c hc => key r c (Or.inr hc), (sub_add_cancel _ _).symm⟩
+  rw [mem_mixLat_iff]
+  intro r c
+  refine ⟨fun e => key r c (by omega), fun _ hc => ?_⟩
+  rw [key r c (Or.inr hc)]
+  exact zero_mem _
+
+end GlobalTheory.SphTheta
+end
+end
+
+open Matrix Formalism.UG GlobalTheory.Hk3 GlobalTheory.FinWeil GlobalTheory.SphTheta ValuativeRel Classical
+open GlobalTheory.LFun (HasSatU IsSatVecU heckeVec)
+open GlobalTheory.LGrp (bcParam extProd)
+open GlobalTheory.WeilM (UG IsQuad Darboux symp sbClass SB IsWeilB IsWeilPair TestClass schr dbl diagCols)
+open GlobalTheory.IndefiniteRowSideFullHecke.SphericalThetaInertPlace (str chi IsUnramAdd)
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitaryBorel_preserves_mixedModelLattice_lowerBlock : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (ϖ : L) (σ : L →+* L) (q : ℕ), IsUnramInv ϖ σ q → ∀ (n n' : ℕ) (g : GU σ n) (h : GU σ n'), IsBorelU g → IsBorelU h → (∀ a : Matrix (Fin n') (Fin n) L, a ∈ mixLat L n' n → (h.1.1 * a * g.1.1 : Matrix (Fin n') (Fin n) L) ∈ mixLat L n' n) ∧ ∀ (z : Matrix (Fin (n' / 2)) (Fin (n / 2)) L), ∃ a ∈ mixLat L n' n, (∀ (r : Fin n') (c : Fin n), c.1 < n - n / 2 → a r c = 0) ∧ (h.1.1 * embLow n' n z * g.1.1 : Matrix (Fin n') (Fin n) L) = a + embLow n' n (lowBlock h.1.1 * z * lowBlock g.1.1) := by
+  atlas_forward_decl GlobalTheory.SphTheta.borel_mixLat_lowBlock
+end
+
+section
+section
+open Matrix Formalism.UG GlobalTheory.Hk3 GlobalTheory.FinWeil GlobalTheory.SphTheta ValuativeRel Classical
+open GlobalTheory.LFun (HasSatU IsSatVecU heckeVec)
+open GlobalTheory.LGrp (bcParam extProd)
+open GlobalTheory.WeilM (UG IsQuad Darboux symp sbClass SB IsWeilB IsWeilPair TestClass schr dbl diagCols)
+open GlobalTheory.IndefiniteRowSideFullHecke.SphericalThetaInertPlace (str chi IsUnramAdd)
+open scoped TensorProduct
+
+namespace GlobalTheory.SphTheta
+
+theorem isBorelU_inv_mixeq {L : Type} [Field L] {σ : L →+* L} {n : ℕ} {g : GU σ n} (hg : IsBorelU g) :
+    IsBorelU g⁻¹ := by
+  intro i j hij
+  exact Formalism.UG.P.spherical_upper_inv (g : GL (Fin n) L) ((Formalism.UG.P.spherical_upper_iff _).1 hg) hij
+
+theorem mixLat_form_borel : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (ϖ : L) (σ : L →+* L) (q : ℕ) (δ : L) (ψ : AddChar L ℂ) (n n' : ℕ) (M : Type) [AddCommGroup M] [Module ℂ M] (ρ : Matrix (Fin n') (Fin n) L → Module.End ℂ M) (ω : GU σ n × GU σ n' →* Module.End ℂ M) (s : M), IsStd ϖ σ q δ ψ ρ ω s → ∀ ℓ : M →ₗ[ℂ] ℂ, (∀ a ∈ mixLat L n' n, ∀ v, ℓ (ρ a v) = ℓ v) → (∀ ℓ' : M →ₗ[ℂ] ℂ, (∀ a ∈ mixLat L n' n, ∀ v, ℓ' (ρ a v) = ℓ' v) → ∀ v, ℓ' v = ℓ' s * ℓ v) → ∀ (g : GU σ n) (h : GU σ n'), IsBorelU g → IsBorelU h → (∀ v, ℓ (ω (g, h) v) = ℓ (ω (g, h) s) * ℓ v) ∧ ∀ (z : Matrix (Fin (n' / 2)) (Fin (n / 2)) L) (v : M), ℓ (ρ (embLow n' n z) (ω (g, h) v)) = ℓ (ω (g, h) s) * ℓ (ρ (embLow n' n (lowBlock (h⁻¹).1.1 * z * lowBlock g.1.1)) v) := by
+  intro L _ _ ϖ σ q δ ψ n n' M _ _ ρ ω s hS ℓ hℓ huniq g h hg hh
+  have hU := hS.1.unr
+  have hnorm : ∀ (g : GU σ n) (h : GU σ n') (x : Matrix (Fin n') (Fin n) L),
+      ω (g, h) * ρ x = ρ (h.1.1 * x * ((g.1)⁻¹ : GL (Fin n) L).1) * ω (g, h) := hS.1.norm
+  have c1 : ∀ (g : GU σ n) (h : GU σ n'), IsBorelU g → IsBorelU h →
+      ∀ v, ℓ (ω (g, h) v) = ℓ (ω (g, h) s) * ℓ v := by
+    intro g h hg hh
+    refine huniq (ℓ.comp (ω (g, h))) (fun a ha v => ?_)
+    have hm := (GlobalTheory.T.unitaryBorel_preserves_mixedModelLattice_lowerBlock L ϖ σ q hU n n' g⁻¹ h (isBorelU_inv_mixeq hg) hh).1 a ha
+    show ℓ (ω (g, h) (ρ a v)) = ℓ (ω (g, h) v)
+    rw [← Module.End.mul_apply, hnorm, Module.End.mul_apply]
+    exact hℓ _ hm _
+  refine ⟨c1 g h hg hh, fun z v => ?_⟩
+  obtain ⟨a, ha, ha0, he⟩ := (GlobalTheory.T.unitaryBorel_preserves_mixedModelLattice_lowerBlock L ϖ σ q hU n n' g h⁻¹ hg (isBorelU_inv_mixeq hh)).2 z
+  have key : ρ (embLow n' n z) * ω (g, h) = ω (g, h) * ρ ((h⁻¹).1.1 * embLow n' n z * g.1.1) := by
+    rw [hnorm]
+    congr 2
+    simp [Matrix.mul_assoc]
+  set E' := embLow n' n (lowBlock (h⁻¹).1.1 * z * lowBlock g.1.1) with hE'
+  have h0 : locH σ δ (antiG L n) (antiG L n') a E' = 0 := by
+    rw [locH_antiG]
+    refine mul_eq_zero_of_right _ (Finset.sum_eq_zero fun i _ => Finset.sum_eq_zero fun j _ => ?_)
+    by_cases hj : j.1 < n - n / 2
+    · rw [ha0 i j hj, zero_mul]
+    · rw [hE', embLow, dif_neg (by simp only [Fin.val_rev]; omega), map_zero, mul_zero]
+  have hsplit : ρ (a + E') = ρ a * ρ E' := by
+    rw [hS.1.rho_mul, h0]
+    simp
+  rw [← Module.End.mul_apply, key, Module.End.mul_apply, c1 g h hg hh, he, hsplit, Module.End.mul_apply, hℓ a ha]
+
+end GlobalTheory.SphTheta
+end
+
+open Matrix Formalism.UG GlobalTheory.Hk3 GlobalTheory.FinWeil GlobalTheory.SphTheta ValuativeRel Classical
+open GlobalTheory.LFun (HasSatU IsSatVecU heckeVec)
+open GlobalTheory.LGrp (bcParam extProd)
+open GlobalTheory.WeilM (UG IsQuad Darboux symp sbClass SB IsWeilB IsWeilPair TestClass schr dbl diagCols)
+open GlobalTheory.IndefiniteRowSideFullHecke.SphericalThetaInertPlace (str chi IsUnramAdd)
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mixedModelInvariantForm_upperTriangular_pair_action : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (ϖ : L) (σ : L →+* L) (q : ℕ) (δ : L) (ψ : AddChar L ℂ) (n n' : ℕ) (M : Type) [AddCommGroup M] [Module ℂ M] (ρ : Matrix (Fin n') (Fin n) L → Module.End ℂ M) (ω : GU σ n × GU σ n' →* Module.End ℂ M) (s : M), IsStd ϖ σ q δ ψ ρ ω s → ∀ ℓ : M →ₗ[ℂ] ℂ, (∀ a ∈ mixLat L n' n, ∀ v, ℓ (ρ a v) = ℓ v) → (∀ ℓ' : M →ₗ[ℂ] ℂ, (∀ a ∈ mixLat L n' n, ∀ v, ℓ' (ρ a v) = ℓ' v) → ∀ v, ℓ' v = ℓ' s * ℓ v) → ∀ (g : GU σ n) (h : GU σ n'), IsBorelU g → IsBorelU h → (∀ v, ℓ (ω (g, h) v) = ℓ (ω (g, h) s) * ℓ v) ∧ ∀ (z : Matrix (Fin (n' / 2)) (Fin (n / 2)) L) (v : M), ℓ (ρ (embLow n' n z) (ω (g, h) v)) = ℓ (ω (g, h) s) * ℓ (ρ (embLow n' n (lowBlock (h⁻¹).1.1 * z * lowBlock g.1.1)) v) := by
+  atlas_forward_decl GlobalTheory.SphTheta.mixLat_form_borel
+end
+
+section
+section
+open Matrix Formalism.UG GlobalTheory.Hk3 GlobalTheory.FinWeil GlobalTheory.SphTheta ValuativeRel Classical
+open GlobalTheory.LFun (HasSatU IsSatVecU heckeVec)
+open GlobalTheory.LGrp (bcParam extProd)
+open GlobalTheory.WeilM (UG IsQuad Darboux symp sbClass SB IsWeilB IsWeilPair TestClass schr dbl diagCols)
+open GlobalTheory.IndefiniteRowSideFullHecke.SphericalThetaInertPlace (str chi IsUnramAdd)
+open scoped TensorProduct
+
+noncomputable section
+
+namespace GlobalTheory.SphTheta
+
+section
+
+variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))]
+variable {ϖ : L} {σ : L →+* L} {q : ℕ} {δ : L} {ψ : AddChar L ℂ} {n n' : ℕ}
+
+theorem mem_mixLat_iff {x : Matrix (Fin n') (Fin n) L} : x ∈ mixLat L n' n ↔ ∀ r c,
+    (n' - n' / 2 ≤ r.1 ∨ n' / 2 ≤ r.1 ∧ c.1 < n / 2 → x r c = 0) ∧ (n' / 2 ≤ r.1 → c.1 < n - n / 2 → x r c ∈ intL L) :=
+  Iff.rfl
+
+theorem pairing_mixLat (hσ : ∀ x, σ (σ x) = x) (hv : ∀ x, Valued.v (σ x) = Valued.v x) (hδ : Valued.v δ = 1)
+    (hψ0 : ∀ a ∈ intL L, σ a = a → ψ a = 1) {a b : Matrix (Fin n') (Fin n) L} (ha : a ∈ mixLat L n' n)
+    (hb : b ∈ mixLat L n' n) : pairing σ δ ψ a b = 1 := by
+  have hs : ∀ x ∈ intL L, σ x ∈ intL L := fun x hx => mem_intL.2 ((hv x).trans_le hx)
+  rw [mem_mixLat_iff] at ha hb
+  have hS : ∑ i, ∑ j, a i j * σ (b i.rev j.rev) ∈ intL L := by
+    refine sum_mem fun i _ => sum_mem fun j _ => ?_
+    have hai := ha i j
+    have hbi := hb i.rev j.rev
+    simp only [Fin.val_rev] at hbi
+    have := i.isLt
+    have := j.isLt
+    by_cases h1 : n' - n' / 2 ≤ i.1 ∨ n' / 2 ≤ i.1 ∧ j.1 < n / 2
+    · rw [hai.1 h1, zero_mul]; exact zero_mem _
+    by_cases h2 : n' - n' / 2 ≤ n' - (i.1 + 1) ∨ n' / 2 ≤ n' - (i.1 + 1) ∧ n - (j.1 + 1) < n / 2
+    · rw [hbi.1 h2, map_zero, mul_zero]; exact zero_mem _
+    exact mul_mem (hai.2 (by omega) (by omega)) (hs _ (hbi.2 (by omega) (by omega)))
+  have hi : δ * ∑ i, ∑ j, a i j * σ (b i.rev j.rev) ∈ intL L := mul_mem (mem_intL.2 hδ.le) hS
+  exact hψ0 _ (add_mem hi (hs _ hi)) (by rw [map_add, hσ, add_comm])
+
+theorem exists_bad_entry (x : Matrix (Fin n') (Fin n) L)
+    (hx : ¬ ∃ a ∈ mixLat L n' n, x - a ∈ intMat L (Fin n') (Fin n)) :
+    ∃ r c, x r c ∉ intL L ∧ (n' - n' / 2 ≤ r.1 ∨ n' / 2 ≤ r.1 ∧ c.1 < n - n / 2) := by
+  by_contra hc
+  refine hx ⟨fun r c => if n' - n' / 2 ≤ r.1 ∨ n' / 2 ≤ r.1 ∧ c.1 < n - n / 2 then 0 else x r c, fun r c =>
+    ⟨fun e => by dsimp only; rw [if_pos (by omega)], fun e e' => by dsimp only; rw [if_pos (by omega)]; exact zero_mem _⟩,
+    fun r c => ?_⟩
+  show x r c - (if n' - n' / 2 ≤ r.1 ∨ n' / 2 ≤ r.1 ∧ c.1 < n - n / 2 then 0 else x r c) ∈ intL L
+  split_ifs with hb
+  · rw [sub_zero]
+    by_contra hi
+    exact hc ⟨r, c, hi, hb⟩
+  · rw [sub_self]; exact zero_mem _
+
+variable {M : Type} [AddCommGroup M] [Module ℂ M]
+variable {ρ : Matrix (Fin n') (Fin n) L → Module.End ℂ M} {ω : GU σ n × GU σ n' →* Module.End ℂ M} {s : M}
+
+theorem IsStd.form_eq_zero (h : IsStd ϖ σ q δ ψ ρ ω s) (ℓ' : M →ₗ[ℂ] ℂ)
+    (hℓ' : ∀ a ∈ mixLat L n' n, ∀ v, ℓ' (ρ a v) = ℓ' v) (x : Matrix (Fin n') (Fin n) L) (r : Fin n') (c : Fin n)
+    (hx : x r c ∉ intL L) (hrc : n' - n' / 2 ≤ r.1 ∨ n' / 2 ≤ r.1 ∧ c.1 < n - n / 2) : ℓ' (ρ x s) = 0 := by
+  obtain ⟨u, hu, hne⟩ := exists_pairing_single_ne h.1.unr h.v_two h.1.delta.1 h.1.psi_ne x hx
+  have := r.isLt
+  have := c.isLt
+  have hyA : Matrix.single r.rev c.rev u ∈ mixLat L n' n := by
+    intro r' c'
+    rw [Matrix.single_apply]
+    split_ifs with he
+    · obtain ⟨rfl, rfl⟩ := he
+      simp only [Fin.val_rev]
+      exact ⟨fun e => by omega, fun _ _ => hu⟩
+    · exact ⟨fun _ => rfl, fun _ _ => zero_mem _⟩
+  have hyL : Matrix.single r.rev c.rev u ∈ intMat L (Fin n') (Fin n) := by
+    intro i j
+    rw [Matrix.single_apply]
+    split_ifs
+    exacts [hu, zero_mem _]
+  have e1 := h.isHeis.comm x (Matrix.single r.rev c.rev u) s
+  rw [h.fixes _ hyL] at e1
+  have e2 := congrArg ℓ' e1
+  rw [map_smul, hℓ' _ hyA, smul_eq_mul] at e2
+  have e3 : (pairing σ δ ψ x (Matrix.single r.rev c.rev u) - 1) * ℓ' (ρ x s) = 0 := by linear_combination -e2
+  rcases mul_eq_zero.1 e3 with h' | h'
+  · exact absurd (sub_eq_zero.1 h') hne
+  · exact h'
+
+end
+
+theorem exists_mixLat_form : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (ϖ : L) (σ : L →+* L) (q : ℕ) (δ : L) (ψ : AddChar L ℂ) (n n' : ℕ) (M : Type) [AddCommGroup M] [Module ℂ M] (ρ : Matrix (Fin n') (Fin n) L → Module.End ℂ M) (ω : GU σ n × GU σ n' →* Module.End ℂ M) (s : M), IsStd ϖ σ q δ ψ ρ ω s → ∃ ℓ : M →ₗ[ℂ] ℂ, ℓ s = 1 ∧ (∀ a ∈ mixLat L n' n, ∀ v, ℓ (ρ a v) = ℓ v) ∧ (∀ x, (¬ ∃ a ∈ mixLat L n' n, x - a ∈ intMat L (Fin n') (Fin n)) → ℓ (ρ x s) = 0) ∧ (∀ ℓ' : M →ₗ[ℂ] ℂ, (∀ a ∈ mixLat L n' n, ∀ v, ℓ' (ρ a v) = ℓ' v) → ∀ v, ℓ' v = ℓ' s * ℓ v) ∧ ∀ (z : Matrix (Fin (n' / 2)) (Fin (n / 2)) L), ℓ (ρ (embLow n' n z) s) = if z ∈ intMat L (Fin (n' / 2)) (Fin (n / 2)) then 1 else 0 := by
+  intro L _ _ ϖ σ q δ ψ n n' M _ _ ρ ω s h
+  obtain ⟨ℓ, h1, h2⟩ := GlobalTheory.T.exists_heisenbergInvariant_linearForm_isotropic_vacuum h.isHeis (intMat L (Fin n') (Fin n)) h.selfDual s h.2.1 h.fixes h.2.2.2
+    (mixLat L n' n) fun a ha b hb => pairing_mixLat h.1.unr.1 h.1.unr.2.1 h.1.delta.1 h.1.psi_int ha hb
+  have hz : ∀ ℓ' : M →ₗ[ℂ] ℂ, (∀ a ∈ mixLat L n' n, ∀ v, ℓ' (ρ a v) = ℓ' v) → ∀ x,
+      (¬ ∃ a ∈ mixLat L n' n, x - a ∈ intMat L (Fin n') (Fin n)) → ℓ' (ρ x s) = 0 := fun ℓ' hℓ' x hx => by
+    obtain ⟨r, c, hr, hrc⟩ := exists_bad_entry x hx
+    exact h.form_eq_zero ℓ' hℓ' x r c hr hrc
+  refine ⟨ℓ, h1, h2, hz ℓ h2, fun ℓ' hℓ' => ?_, fun z => ?_⟩
+  · have key : ℓ' = ℓ' s • ℓ := LinearMap.ext_on_range h.2.2.2 fun x => ?_
+    · exact fun v => LinearMap.congr_fun key v
+    show ℓ' (ρ x s) = (ℓ' s • ℓ) (ρ x s)
+    by_cases hx : ∃ a ∈ mixLat L n' n, x - a ∈ intMat L (Fin n') (Fin n)
+    · obtain ⟨a, ha, hxa⟩ := hx
+      have e := h.isHeis.comp a (x - a) s
+      rw [h.fixes _ hxa, show a + (x - a) = x by abel] at e
+      have hg := h.isHeis.ne_zero (half h.v_two • a) (x - a)
+      have hx' : ρ x s = (pairing σ δ ψ (half h.v_two • a) (x - a))⁻¹ • ρ a s := by
+        rw [e, smul_smul, inv_mul_cancel₀ hg, one_smul]
+      rw [LinearMap.smul_apply, hx', map_smul, map_smul, hℓ' a ha, h2 a ha, h1, smul_eq_mul, smul_eq_mul, smul_eq_mul,
+        mul_one, mul_comm]
+    · rw [LinearMap.smul_apply, hz ℓ' hℓ' x hx, hz ℓ h2 x hx, smul_zero]
+  · have := (n' / 2).le_refl
+    split_ifs with hzi
+    · have hm : embLow n' n z ∈ intMat L (Fin n') (Fin n) := fun r c => by
+        unfold embLow
+        split_ifs
+        exacts [hzi _ _, zero_mem _]
+      rw [h.fixes _ hm, h1]
+    · obtain ⟨i, j, hij⟩ : ∃ i j, z i j ∉ intL L := by
+        by_contra hc
+        push_neg at hc
+        exact hzi hc
+      have he : embLow n' n z (hi n' i) (hi n j) = z i j := by
+        simp [embLow, hi]
+      refine h.form_eq_zero ℓ h2 _ (hi n' i) (hi n j) (by rwa [he]) (Or.inl ?_)
+      simp only [hi]
+      omega
+
+end GlobalTheory.SphTheta
+
+end
+end
+
+open Matrix Formalism.UG GlobalTheory.Hk3 GlobalTheory.FinWeil GlobalTheory.SphTheta ValuativeRel Classical
+open GlobalTheory.LFun (HasSatU IsSatVecU heckeVec)
+open GlobalTheory.LGrp (bcParam extProd)
+open GlobalTheory.WeilM (UG IsQuad Darboux symp sbClass SB IsWeilB IsWeilPair TestClass schr dbl diagCols)
+open GlobalTheory.IndefiniteRowSideFullHecke.SphericalThetaInertPlace (str chi IsUnramAdd)
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_mixedModelSelfDualLattice_invariant_linearForm : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (ϖ : L) (σ : L →+* L) (q : ℕ) (δ : L) (ψ : AddChar L ℂ) (n n' : ℕ) (M : Type) [AddCommGroup M] [Module ℂ M] (ρ : Matrix (Fin n') (Fin n) L → Module.End ℂ M) (ω : GU σ n × GU σ n' →* Module.End ℂ M) (s : M), IsStd ϖ σ q δ ψ ρ ω s → ∃ ℓ : M →ₗ[ℂ] ℂ, ℓ s = 1 ∧ (∀ a ∈ mixLat L n' n, ∀ v, ℓ (ρ a v) = ℓ v) ∧ (∀ x, (¬ ∃ a ∈ mixLat L n' n, x - a ∈ intMat L (Fin n') (Fin n)) → ℓ (ρ x s) = 0) ∧ (∀ ℓ' : M →ₗ[ℂ] ℂ, (∀ a ∈ mixLat L n' n, ∀ v, ℓ' (ρ a v) = ℓ' v) → ∀ v, ℓ' v = ℓ' s * ℓ v) ∧ ∀ (z : Matrix (Fin (n' / 2)) (Fin (n / 2)) L), ℓ (ρ (embLow n' n z) s) = if z ∈ intMat L (Fin (n' / 2)) (Fin (n / 2)) then 1 else 0 := by
+  atlas_forward_decl GlobalTheory.SphTheta.exists_mixLat_form
+end
+
+section
+section
+open Matrix Formalism.UG GlobalTheory.Hk3 GlobalTheory.FinWeil GlobalTheory.SphTheta ValuativeRel Classical
+open GlobalTheory.LFun (HasSatU IsSatVecU heckeVec)
+open GlobalTheory.LGrp (bcParam extProd)
+open GlobalTheory.WeilM (UG IsQuad Darboux symp sbClass SB IsWeilB IsWeilPair TestClass schr dbl diagCols)
+open GlobalTheory.IndefiniteRowSideFullHecke.SphericalThetaInertPlace (str chi IsUnramAdd)
+open scoped TensorProduct
+
+noncomputable section
+
+namespace GlobalTheory.CayleyTorus
+
+variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))]
+
+theorem v_one_add_inv_unif {ϖ : L}
+    (hv : Valued.v ϖ = ((Multiplicative.ofAdd (-1 : ℤ) : Multiplicative ℤ) : WithZero (Multiplicative ℤ))) :
+    Valued.v (1 + ϖ⁻¹) = ((Multiplicative.ofAdd (1 : ℤ) : Multiplicative ℤ) : WithZero (Multiplicative ℤ)) := by
+  have h1 : Valued.v (ϖ⁻¹) = ((Multiplicative.ofAdd (1 : ℤ) : Multiplicative ℤ) : WithZero (Multiplicative ℤ)) := by
+    rw [map_inv₀, hv]; rfl
+  rw [Valuation.map_add_eq_of_lt_right, h1]
+  rw [h1, map_one]; exact WithZero.coe_lt_coe.2 (by decide)
+
+theorem v_one_add_unif {ϖ : L}
+    (hv : Valued.v ϖ = ((Multiplicative.ofAdd (-1 : ℤ) : Multiplicative ℤ) : WithZero (Multiplicative ℤ))) :
+    Valued.v (1 + ϖ) = 1 := by
+  rw [Valuation.map_add_eq_of_lt_left, map_one]
+  rw [hv, map_one]; exact WithZero.coe_lt_coe.2 (by decide)
+
+theorem inv_diagonal_field {ι : Type} [Fintype ι] [DecidableEq ι] (f : ι → L) (hf : ∀ i, f i ≠ 0) :
+    (Matrix.diagonal f)⁻¹ = Matrix.diagonal (fun i => (f i)⁻¹) := by
+  apply Matrix.inv_eq_left_inv
+  rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
+  congr 1; ext i; exact inv_mul_cancel₀ (hf i)
+
+theorem cayley_torus_inv : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (ϖ : L) (σ : L →+* L) (q : ℕ), IsUnramInv ϖ σ q → Valued.v (2 : L) = 1 → ∀ (n' : ℕ) (k : Fin (n' / 2)) (t : GU σ n'), t.1.1 = tMat ϖ n' (n' / 2) (Pi.single k 1) → (1 + (t⁻¹).1.1).det ≠ 0 ∧ (1 + (t⁻¹).1.1)⁻¹ ∈ intMat L (Fin n') (Fin n') ∧ ordL (1 + (t⁻¹).1.1).det = -1 := by
+  intro L _ _ ϖ σ q hU h2 n' k t ht
+  have hv : Valued.v ϖ = ((Multiplicative.ofAdd (-1 : ℤ) : Multiplicative ℤ) : WithZero (Multiplicative ℤ)) :=
+    hU.2.2.2.1
+  have hϖ : ϖ ≠ 0 := by
+    intro h; rw [h, map_zero] at hv; exact WithZero.zero_ne_coe hv
+  set d : Fin n' → L := fun i => if h : i.val < n' / 2 then ϖ ^ ((Pi.single k (1 : ℤ) : Fin (n' / 2) → ℤ) ⟨i.val, h⟩)
+    else if h' : n' - n' / 2 ≤ i.val ∧ n' - 1 - i.val < n' / 2 then
+      ϖ ^ (-((Pi.single k (1 : ℤ) : Fin (n' / 2) → ℤ) ⟨n' - 1 - i.val, h'.2⟩)) else 1 with hd
+  have htd : t.1.1 = Matrix.diagonal d := ht
+  have hdne : ∀ i, d i ≠ 0 := by
+    intro i; simp only [hd]; split_ifs <;> simp [zpow_ne_zero, hϖ]
+  have hinv : (t⁻¹).1.1 = Matrix.diagonal (fun i => (d i)⁻¹) := by
+    rw [show (t⁻¹).1.1 = (t.1.1)⁻¹ by simp [Matrix.coe_units_inv], htd, inv_diagonal_field d hdne]
+  have hone : 1 + (t⁻¹).1.1 = Matrix.diagonal (fun i => 1 + (d i)⁻¹) := by
+    rw [hinv, ← Matrix.diagonal_one, Matrix.diagonal_add]
+  have hk : k.val < n' := by omega
+  have hval : ∀ i, Valued.v (1 + (d i)⁻¹) =
+      if i = ⟨k.val, hk⟩ then ((Multiplicative.ofAdd (1 : ℤ) : Multiplicative ℤ) : WithZero (Multiplicative ℤ)) else 1 := by
+    intro i
+    by_cases hi : i.val < n' / 2
+    · by_cases hik : (⟨i.val, hi⟩ : Fin (n' / 2)) = k
+      · have : d i = ϖ := by simp only [hd, dif_pos hi, hik, Pi.single_eq_same, zpow_one]
+        rw [this, v_one_add_inv_unif hv, if_pos (show i = ⟨k.val, hk⟩ from Fin.ext (by have e := congrArg Fin.val hik; simpa using e))]
+      · have : d i = 1 := by simp only [hd, dif_pos hi, Pi.single_eq_of_ne hik, zpow_zero]
+        rw [this, inv_one, one_add_one_eq_two, h2, if_neg]
+        intro e; apply hik; ext; simp [e]
+    · rw [if_neg (fun e => hi (by rw [e]; exact k.2))]
+      by_cases h' : n' - n' / 2 ≤ i.val ∧ n' - 1 - i.val < n' / 2
+      · by_cases hik : (⟨n' - 1 - i.val, h'.2⟩ : Fin (n' / 2)) = k
+        · have : d i = ϖ⁻¹ := by simp only [hd, dif_neg hi, dif_pos h', hik, Pi.single_eq_same, _root_.zpow_neg, zpow_one]
+          rw [this, inv_inv, v_one_add_unif hv]
+        · have : d i = 1 := by simp only [hd, dif_neg hi, dif_pos h', Pi.single_eq_of_ne hik, neg_zero, zpow_zero]
+          rw [this, inv_one, one_add_one_eq_two, h2]
+      · have : d i = 1 := by simp only [hd, dif_neg hi, dif_neg h']
+        rw [this, inv_one, one_add_one_eq_two, h2]
+  have hfne : ∀ i, 1 + (d i)⁻¹ ≠ 0 := by
+    intro i e
+    have := hval i
+    rw [e, map_zero] at this
+    split_ifs at this with h
+    · exact WithZero.zero_ne_coe this
+    · exact zero_ne_one this
+  have hdet : Valued.v (1 + (t⁻¹).1.1).det =
+      ((Multiplicative.ofAdd (1 : ℤ) : Multiplicative ℤ) : WithZero (Multiplicative ℤ)) := by
+    rw [hone, Matrix.det_diagonal, map_prod]
+    simp_rw [hval]
+    rw [Finset.prod_ite_eq']; simp
+  refine ⟨?_, ?_, ?_⟩
+  · intro e; rw [e, map_zero] at hdet; exact WithZero.zero_ne_coe hdet
+  · rw [hone, inv_diagonal_field _ hfne]
+    intro i j
+    rw [mem_intL, Matrix.diagonal_apply]
+    split_ifs with hij
+    · rw [map_inv₀, hval i]
+      split_ifs
+      · rw [← WithZero.coe_inv]; exact WithZero.coe_le_coe.2 (by decide)
+      · simp
+    · simp
+  · have hne : Valued.v (1 + (t⁻¹).1.1).det ≠ 0 := by rw [hdet]; exact WithZero.coe_ne_zero
+    have hu : WithZero.unzero hne = Multiplicative.ofAdd (1 : ℤ) :=
+      WithZero.coe_inj.mp ((WithZero.coe_unzero hne).trans hdet)
+    rw [ordL, dif_neg hne, hu]; rfl
+
+end GlobalTheory.CayleyTorus
+end
+end
+
+open Matrix Formalism.UG GlobalTheory.Hk3 GlobalTheory.FinWeil GlobalTheory.SphTheta ValuativeRel Classical
+open GlobalTheory.LFun (HasSatU IsSatVecU heckeVec)
+open GlobalTheory.LGrp (bcParam extProd)
+open GlobalTheory.WeilM (UG IsQuad Darboux symp sbClass SB IsWeilB IsWeilPair TestClass schr dbl diagCols)
+open GlobalTheory.IndefiniteRowSideFullHecke.SphericalThetaInertPlace (str chi IsUnramAdd)
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cayley_unitaryTorus_inv_det_integral_order : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (ϖ : L) (σ : L →+* L) (q : ℕ), IsUnramInv ϖ σ q → Valued.v (2 : L) = 1 → ∀ (n' : ℕ) (k : Fin (n' / 2)) (t : GU σ n'), t.1.1 = tMat ϖ n' (n' / 2) (Pi.single k 1) → (1 + (t⁻¹).1.1).det ≠ 0 ∧ (1 + (t⁻¹).1.1)⁻¹ ∈ intMat L (Fin n') (Fin n') ∧ ordL (1 + (t⁻¹).1.1).det = -1 := by
+  atlas_forward_decl GlobalTheory.CayleyTorus.cayley_torus_inv
+end
+
+section
+section
+open Matrix Formalism.UG GlobalTheory.Hk3 GlobalTheory.FinWeil GlobalTheory.SphTheta ValuativeRel Classical
+open GlobalTheory.LFun (HasSatU IsSatVecU heckeVec)
+open GlobalTheory.LGrp (bcParam extProd)
+open GlobalTheory.WeilM (UG IsQuad Darboux symp sbClass SB IsWeilB IsWeilPair TestClass schr dbl diagCols)
+open GlobalTheory.IndefiniteRowSideFullHecke.SphericalThetaInertPlace (str chi IsUnramAdd)
+open scoped TensorProduct
+
+noncomputable section
+namespace GlobalTheory.SphTheta.TorusVac
+
+variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))]
+
+def lmulI {n' n : ℕ} (A : Matrix (Fin n') (Fin n') L) : Matrix (Fin n') (Fin n) L →ₗ[intL L] Matrix (Fin n') (Fin n) L where
+  toFun x := A * x
+  map_add' := Matrix.mul_add A
+  map_smul' r x := Matrix.mul_smul A r x
+
+def ex (n' : ℕ) (k : Fin (n' / 2)) (i : Fin n') : ℤ :=
+  if i = lo n' k then 1 else if i = (lo n' k).rev then -1 else 0
+
+theorem tMat_single (ϖ : L) (n' : ℕ) (k : Fin (n' / 2)) :
+    tMat ϖ n' (n' / 2) (Pi.single k 1) = Matrix.diagonal (fun i => ϖ ^ ex n' k i) := by
+  unfold tMat
+  congr 1
+  funext i
+  simp only [ex, lo, Fin.ext_iff, Fin.val_rev, Pi.single_apply]
+  have hk := k.2
+  have hi := i.2
+  split_ifs <;> first | (exfalso; omega) | simp_all
+
+variable {σ : L →+* L} {δ : L} {ψ : AddChar L ℂ} {n n' : ℕ}
+
+theorem pairing_unitary (h : GU σ n') (x y : Matrix (Fin n') (Fin n) L) :
+    pairing σ δ ψ (h.1.1 * x) (h.1.1 * y) = pairing σ δ ψ x y := by
+  have hu : cT σ h.1.1 * antiJ L n' * h.1.1 = antiJ L n' := h.2
+  have hl : locH σ δ (antiG L n) (antiG L n') (h.1.1 * x) (h.1.1 * y) = locH σ δ (antiG L n) (antiG L n') x y := by
+    unfold locH
+    congr 1
+    have e1 : ((h.1.1 * y).map σ)ᵀ = (y.map σ)ᵀ * cT σ h.1.1 := by
+      rw [Matrix.map_mul, Matrix.transpose_mul]; rfl
+    have e2 : ((antiG L n' : GL (Fin n') L) : Matrix (Fin n') (Fin n') L) = antiJ L n' := rfl
+    rw [e1, e2]
+    congr 1
+    calc _ = (((antiG L n)⁻¹ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) * (y.map σ)ᵀ * (cT σ h.1.1 * antiJ L n' * h.1.1) * x := by
+          simp only [Matrix.mul_assoc]
+      _ = _ := by rw [hu]
+  have e3 : ∀ a b : Matrix (Fin n') (Fin n) L, pairing σ δ ψ a b =
+      ψ (locH σ δ (antiG L n) (antiG L n') a b + σ (locH σ δ (antiG L n) (antiG L n') a b)) := by
+    intro a b; rw [locH_antiG]; rfl
+  rw [e3, e3, hl]
+
+theorem mul_inv_val (t : GU σ n') : t.1.1 * (t⁻¹).1.1 = 1 := by
+  rw [show t.1.1 * (t⁻¹).1.1 = (t * t⁻¹).1.1 from rfl, mul_inv_cancel]; rfl
+
+theorem selfDual_map (t : GU σ n') {A : Submodule (intL L) (Matrix (Fin n') (Fin n) L)}
+    (hA : SelfDual (pairing σ δ ψ) A) : SelfDual (pairing σ δ ψ) (A.map (lmulI t.1.1)) := by
+  intro x
+  constructor
+  · rintro ⟨y, hy, rfl⟩ _ ⟨b, hb, rfl⟩
+    show pairing σ δ ψ (t.1.1 * y) (t.1.1 * b) = 1
+    rw [pairing_unitary]
+    exact (hA y).1 hy b hb
+  · intro H
+    have hy : (t⁻¹).1.1 * x ∈ A := by
+      refine (hA _).2 fun b hb => ?_
+      rw [← pairing_unitary t, ← Matrix.mul_assoc, mul_inv_val, Matrix.one_mul]
+      exact H _ ⟨b, hb, rfl⟩
+    refine ⟨_, hy, ?_⟩
+    show t.1.1 * ((t⁻¹).1.1 * x) = x
+    rw [← Matrix.mul_assoc, mul_inv_val, Matrix.one_mul]
+
+theorem idx_translate_ne {ϖ : L} {q : ℕ} (hU : IsUnramInv ϖ σ q) (t : GU σ n') (d : Fin n' → ℤ)
+    (ht : t.1.1 = Matrix.diagonal fun i => ϖ ^ d i) :
+    idx (intMat L (Fin n') (Fin n)) ((intMat L (Fin n') (Fin n)).map (lmulI t.1.1)) ≠ 0 := by
+  have h := GlobalTheory.LatIdx.relIndex_intMat_translate ϖ σ q hU n' n d t ht 1 (one_mem _) 1 (one_mem _)
+  simp only [one_mul, mul_one] at h
+  have e1 : (intMat L (Fin n') (Fin n)).toAddSubgroup = GlobalTheory.InertHomIdx.intMat L n' n :=
+    AddSubgroup.ext fun _ => Iff.rfl
+  have e2 : ((intMat L (Fin n') (Fin n)).map (lmulI (n := n) t.1.1)).toAddSubgroup =
+      AddSubgroup.map (GlobalTheory.InertHomIdx.lmul t.1.1) (GlobalTheory.InertHomIdx.intMat L n' n) :=
+    AddSubgroup.ext fun _ => Iff.rfl
+  unfold idx
+  rw [e1, e2, h]
+  exact pow_ne_zero _ (pow_ne_zero _ (by have := hU.2.2.2.2.2.1; omega))
+
+theorem mem_of_mixLat {ϖ : L} (hϖ : Valued.v ϖ ≤ 1) (k : Fin (n' / 2)) (t : GU σ n')
+    (hT : t.1.1 = Matrix.diagonal fun i => ϖ ^ ex n' k i) {x a : Matrix (Fin n') (Fin n) L}
+    (hx : x ∈ (intMat L (Fin n') (Fin n)).map (lmulI t.1.1)) (ha : a ∈ mixLat L n' n)
+    (hxa : x - a ∈ intMat L (Fin n') (Fin n)) : x ∈ intMat L (Fin n') (Fin n) := by
+  obtain ⟨y, hy, rfl⟩ := hx
+  intro r c
+  by_cases hr : r = (lo n' k).rev
+  · have hk := k.2
+    have h0 : a r c = 0 := (ha r c).1 (Or.inl (by subst hr; simp only [lo, Fin.val_rev]; omega))
+    have := hxa r c
+    rwa [Matrix.sub_apply, h0, sub_zero] at this
+  · show (t.1.1 * y) r c ∈ intL L
+    rw [hT, Matrix.diagonal_mul]
+    have hp : ϖ ^ ex n' k r ∈ intL L := by
+      have he : ex n' k r = 1 ∨ ex n' k r = 0 := by
+        unfold ex; split_ifs <;> simp_all
+      rcases he with he | he <;> rw [he]
+      · simpa using mem_intL.2 hϖ
+      · simpa using one_mem (intL L)
+    exact mul_mem hp (hy r c)
+
+end GlobalTheory.SphTheta.TorusVac
+
+open GlobalTheory.SphTheta.TorusVac in
+
+theorem GlobalTheory.SphTheta.mixed_torus_value : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (ϖ : L) (σ : L →+* L) (q : ℕ) (δ : L) (ψ : AddChar L ℂ) (n n' : ℕ) (M : Type) [AddCommGroup M] [Module ℂ M] (ρ : Matrix (Fin n') (Fin n) L → Module.End ℂ M) (ω : GU σ n × GU σ n' →* Module.End ℂ M) (s : M), IsStd ϖ σ q δ ψ ρ ω s → CayleyRule q n ρ (ω.comp (MonoidHom.inr _ _)) s → ∀ ℓ : M →ₗ[ℂ] ℂ, ℓ s = 1 → (∀ a ∈ mixLat L n' n, ∀ v, ℓ (ρ a v) = ℓ v) → (∀ x, (¬ ∃ a ∈ mixLat L n' n, x - a ∈ intMat L (Fin n') (Fin n)) → ℓ (ρ x s) = 0) → ∀ (k : Fin (n' / 2)) (t : GU σ n'), t.1.1 = tMat ϖ n' (n' / 2) (Pi.single k 1) → ℓ (ω (1, t) s) = (-1) ^ n * (q : ℂ) ^ (-(n : ℤ)) := by
+  intro L _ _ ϖ σ q δ ψ n n' M _ _ ρ ω s hS hC ℓ hℓs hℓmix hℓzero k t ht
+  have hU := hS.1.unr
+  have hH := hS.isHeis
+  have hΛ := hS.selfDual
+  have hϖle : Valued.v ϖ ≤ 1 := by
+    rw [hU.2.2.2.1]; exact_mod_cast (by decide : (Multiplicative.ofAdd (-1:ℤ)) ≤ 1)
+  have hT : t.1.1 = Matrix.diagonal (fun i => ϖ ^ ex n' k i) := ht.trans (tMat_single ϖ n' k)
+  have hΛ' := selfDual_map (n := n) (δ := δ) (ψ := ψ) t hΛ
+  have hidx := idx_translate_ne (n := n) hU t _ hT
+  obtain ⟨e, he1, heinv⟩ := GlobalTheory.T.exists_heisenbergInvariant_linearForm_isotropic_vacuum hH _ hΛ s hS.2.1 hS.fixes hS.2.2.2 _ (fun a ha b hb => hH.iso hΛ ha hb)
+  have hv : Fixes ρ ((intMat L (Fin n') (Fin n)).map (lmulI t.1.1)) (ω (1, t) s) := by
+    rintro _ ⟨y, hy, rfl⟩
+    have h1 := congrArg (fun F : Module.End ℂ M => F s) (hS.1.norm 1 t y)
+    simp only [Module.End.mul_apply] at h1
+    rw [hS.fixes y hy] at h1
+    simp at h1
+    exact h1.symm
+  have hsum : ℓ (sumOp ρ (intMat L (Fin n') (Fin n)) ((intMat L (Fin n') (Fin n)).map (lmulI t.1.1)) s) = 1 := by
+    obtain ⟨N, f, hf, hu⟩ := ((GlobalTheory.T.sumOp_transversal_fixes_linear_and_of_le hH _ _ hΛ').2.1 hidx).1
+    rw [((GlobalTheory.T.sumOp_transversal_fixes_linear_and_of_le hH _ _ hΛ').1 s hS.fixes (Fin N) f hf hu).1, map_sum]
+    obtain ⟨i0, hi0, huniq⟩ := hu 0 (zero_mem _)
+    have key : ∀ i, ℓ (ρ (f i) s) = if i = i0 then 1 else 0 := by
+      intro i
+      by_cases hfi : f i ∈ intMat L (Fin n') (Fin n)
+      · have : i = i0 := huniq i (by show 0 - f i ∈ _; rw [zero_sub]; exact neg_mem hfi)
+        rw [if_pos this, hS.fixes _ hfi, hℓs]
+      · have hne : i ≠ i0 := by
+          rintro rfl
+          apply hfi
+          have := neg_mem hi0
+          rwa [zero_sub, neg_neg] at this
+        rw [if_neg hne]
+        apply hℓzero
+        rintro ⟨a, ha, hxa⟩
+        exact hfi (mem_of_mixLat hϖle k t hT (hf i) ha hxa)
+    simp only [key, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  obtain ⟨hd, hint, hord⟩ := GlobalTheory.T.cayley_unitaryTorus_inv_det_integral_order L ϖ σ q hU hS.v_two n' k t ht
+  have hev := hC e heinv t⁻¹ hd hint
+  rw [inv_inv, hord, he1, mul_one] at hev
+  have hco := (GlobalTheory.T.heisenbergQuotientOpSum_vacuum_commensurable_selfDualLattice hH _ hΛ s hS.2.1 hS.fixes hS.2.2.2 _ hΛ' hidx).2 e he1 heinv _ hv
+  rw [hco, map_smul, hsum, smul_eq_mul, mul_one]
+  simp only [MonoidHom.comp_apply, MonoidHom.inr_apply] at hev
+  rw [hev, _root_.zpow_neg, zpow_one, mul_inv, _root_.zpow_neg, zpow_natCast, ← inv_pow, inv_neg, inv_one]
+end
+end
+
+open Matrix Formalism.UG GlobalTheory.Hk3 GlobalTheory.FinWeil GlobalTheory.SphTheta ValuativeRel Classical
+open GlobalTheory.LFun (HasSatU IsSatVecU heckeVec)
+open GlobalTheory.LGrp (bcParam extProd)
+open GlobalTheory.WeilM (UG IsQuad Darboux symp sbClass SB IsWeilB IsWeilPair TestClass schr dbl diagCols)
+open GlobalTheory.IndefiniteRowSideFullHecke.SphericalThetaInertPlace (str chi IsUnramAdd)
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mixedForm_torusTranslate_vacuum_value : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (ϖ : L) (σ : L →+* L) (q : ℕ) (δ : L) (ψ : AddChar L ℂ) (n n' : ℕ) (M : Type) [AddCommGroup M] [Module ℂ M] (ρ : Matrix (Fin n') (Fin n) L → Module.End ℂ M) (ω : GU σ n × GU σ n' →* Module.End ℂ M) (s : M), IsStd ϖ σ q δ ψ ρ ω s → CayleyRule q n ρ (ω.comp (MonoidHom.inr _ _)) s → ∀ ℓ : M →ₗ[ℂ] ℂ, ℓ s = 1 → (∀ a ∈ mixLat L n' n, ∀ v, ℓ (ρ a v) = ℓ v) → (∀ x, (¬ ∃ a ∈ mixLat L n' n, x - a ∈ intMat L (Fin n') (Fin n)) → ℓ (ρ x s) = 0) → ∀ (k : Fin (n' / 2)) (t : GU σ n'), t.1.1 = tMat ϖ n' (n' / 2) (Pi.single k 1) → ℓ (ω (1, t) s) = (-1) ^ n * (q : ℂ) ^ (-(n : ℤ)) := by
+  atlas_forward_decl GlobalTheory.SphTheta.mixed_torus_value
+end
+
+section
+section
+open Matrix Formalism.UG GlobalTheory.Hk3 GlobalTheory.FinWeil GlobalTheory.SphTheta ValuativeRel Classical
+open GlobalTheory.LFun (HasSatU IsSatVecU heckeVec)
+open GlobalTheory.LGrp (bcParam extProd)
+open GlobalTheory.WeilM (UG IsQuad Darboux symp sbClass SB IsWeilB IsWeilPair TestClass schr dbl diagCols)
+open GlobalTheory.IndefiniteRowSideFullHecke.SphericalThetaInertPlace (str chi IsUnramAdd)
+open scoped TensorProduct
+
+noncomputable section
+
+namespace GlobalTheory.SatBorel
+
+theorem heckeVec_satU_borel : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] [CompleteSpace L] (ϖ : L) (σ : L →+* L) (q : ℕ), IsUnramInv ϖ σ q → ∀ (n : ℕ), ∀ h ∈ Hecke ℂ (KU σ n), ∃ (ι : Type) (_ : Fintype ι) (b : ι → GU σ n), (∀ i, IsBorelU (b i)) ∧ (∀ (M : Type) [AddCommGroup M] [Module ℂ M] (π : Representation ℂ (GU σ n) M) (s : M), (∀ k ∈ KU σ n, π k s = s) → heckeVec π (KU σ n) h s = ∑ i, h (b i) • π (b i) s) ∧ ∀ α : Fin (n / 2) → ℂˣ, SatU ϖ q h (fun i => (α i : ℂ)) = ∑ i, h (b i) * ∏ k : Fin (n / 2), ((α k : ℂ) * (q : ℂ) ^ (-((n : ℤ) - 1 - 2 * (k.1 : ℤ)))) ^ ordL ((b i).1.1 (lo n k) (lo n k)) := by
+  intro L _ _ _ ϖ σ q hU n h hh
+  have hK := P.isCommensurated_integral_unitary_of_unramified hU n
+  have hfin := P.finite_support_cosets hK hh.2
+  have hI : ∀ c : GU σ n ⧸ KU σ n, ∃ b : GU σ n, IsBorelU b ∧ (b : GU σ n ⧸ KU σ n) = c := by
+    intro c
+    obtain ⟨b, k, hb, hk, e⟩ := P.fIwasawa_iwasawa σ hU.1 hU.2.1 c.out
+    refine ⟨b, hb, ?_⟩
+    conv_rhs => rw [← QuotientGroup.out_eq' c, e]
+    exact QuotientGroup.eq.2 (by simpa using hk)
+  choose s hsB hs using hI
+  have hhs : ∀ c, h (s c) = h c.out := by
+    intro c
+    have hk : (c.out)⁻¹ * s c ∈ KU σ n := QuotientGroup.eq.1 (c.out_eq'.trans (hs c).symm)
+    have e : s c = 1 * c.out * ((c.out)⁻¹ * s c) := by group
+    rw [e]
+    exact hh.1 1 ⟨_, hk⟩ c.out
+  have c1 : ∀ (M : Type) [AddCommGroup M] [Module ℂ M] (π : Representation ℂ (GU σ n) M) (x : M),
+      (∀ k ∈ KU σ n, π k x = x) →
+      heckeVec π (KU σ n) h x = ∑ i : hfin.toFinset, h (s i.1) • π (s i.1) x := by
+    intro M _ _ π x hx
+    rw [GlobalTheory.LFun.heckeVec_eq_of_section hh.1 (GlobalTheory.LGrp.mem_fixed.2 hx) s hs,
+      finsum_eq_sum_of_support_subset _ (s := hfin.toFinset) ?_, ← Finset.sum_coe_sort]
+    intro c hc
+    rw [Set.Finite.coe_toFinset, Set.mem_setOf_eq, ← hhs]
+    intro h0
+    exact hc (by simp [h0])
+  refine ⟨hfin.toFinset, inferInstance, fun i => s i.1, fun i => hsB _, c1, fun α => ?_⟩
+  obtain ⟨φ, hφ, h1, -⟩ := Final.SphericalExistsU L ϖ σ q n (n / 2) hU (by omega) (by omega)
+    (fun i => (α i : ℂ)) fun i => (α i).ne_zero
+  have e := congrFun (Final.SatakeInert L ϖ σ q n (n / 2) hU (by omega) (by omega) _
+    (fun i => (α i).ne_zero) h hh φ hφ) 1
+  have hfix : ∀ k ∈ KU σ n, GlobalTheory.PRep.rightReg ℂ (GU σ n) ℂ k φ = φ := by
+    intro k hk
+    funext g
+    change φ (g * k) = φ g
+    simpa [GlobalTheory.LFun.chiDeltaU_one] using hφ 1 g k GlobalTheory.LFun.isBorelU_one hk
+  rw [← GlobalTheory.LFun.heckeVec_rightReg hK hh, c1 _ _ φ hfix] at e
+  have hχ : ∀ i : hfin.toFinset, φ (s i.1) = ∏ k : Fin (n / 2),
+      ((α k : ℂ) * (q : ℂ) ^ (-((n : ℤ) - 1 - 2 * (k.1 : ℤ)))) ^ ordL ((s i.1).1.1 (lo n k) (lo n k)) := by
+    intro i
+    have := hφ (s i.1) 1 1 (hsB _) (one_mem _)
+    simp only [mul_one, h1] at this
+    rw [this]
+    unfold chiDeltaU
+    refine Finset.prod_congr rfl fun k _ => ?_
+    rw [dif_pos (by omega), mul_zpow, ← _root_.zpow_mul]
+    have hl : lo n k = ⟨k.1, by omega⟩ := rfl
+    rw [hl]
+    congr 2
+    ring
+  simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, h1, mul_one] at e
+  rw [← e]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [← hχ i]
+  exact congrArg (h (s i.1) * ·) (congrArg φ (one_mul _))
+
+end GlobalTheory.SatBorel
+end
+end
+
+open Matrix Formalism.UG GlobalTheory.Hk3 GlobalTheory.FinWeil GlobalTheory.SphTheta ValuativeRel Classical
+open GlobalTheory.LFun (HasSatU IsSatVecU heckeVec)
+open GlobalTheory.LGrp (bcParam extProd)
+open GlobalTheory.WeilM (UG IsQuad Darboux symp sbClass SB IsWeilB IsWeilPair TestClass schr dbl diagCols)
+open GlobalTheory.IndefiniteRowSideFullHecke.SphericalThetaInertPlace (str chi IsUnramAdd)
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heckeVec_satake_sum_unitaryBorel_representatives : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] [CompleteSpace L] (ϖ : L) (σ : L →+* L) (q : ℕ), IsUnramInv ϖ σ q → ∀ (n : ℕ), ∀ h ∈ Hecke ℂ (KU σ n), ∃ (ι : Type) (_ : Fintype ι) (b : ι → GU σ n), (∀ i, IsBorelU (b i)) ∧ (∀ (M : Type) [AddCommGroup M] [Module ℂ M] (π : Representation ℂ (GU σ n) M) (s : M), (∀ k ∈ KU σ n, π k s = s) → heckeVec π (KU σ n) h s = ∑ i, h (b i) • π (b i) s) ∧ ∀ α : Fin (n / 2) → ℂˣ, SatU ϖ q h (fun i => (α i : ℂ)) = ∑ i, h (b i) * ∏ k : Fin (n / 2), ((α k : ℂ) * (q : ℂ) ^ (-((n : ℤ) - 1 - 2 * (k.1 : ℤ)))) ^ ordL ((b i).1.1 (lo n k) (lo n k)) := by
+  atlas_forward_decl GlobalTheory.SatBorel.heckeVec_satU_borel
+end
+
+section
 section
 open Matrix Formalism.UG GlobalTheory.Hk3 GlobalTheory.FinWeil GlobalTheory.SphTheta ValuativeRel Classical
 open GlobalTheory.LFun (HasSatU IsSatVecU heckeVec)
@@ -189,3 +1231,4 @@ open scoped TensorProduct
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.satakeTransform_eq_at_thetaLift_of_vacuum_eq : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] [CompleteSpace L] (ϖ : L) (σ : L →+* L) (q : ℕ) (δ : L) (ψ : AddChar L ℂ) (n n' : ℕ) (M : Type) [AddCommGroup M] [Module ℂ M] (ρ : Matrix (Fin n') (Fin n) L → Module.End ℂ M) (ω : GU σ n × GU σ n' →* Module.End ℂ M) (s : M), IsStd ϖ σ q δ ψ ρ ω s → CayleyRule q n' ρ (ω.comp (MonoidHom.inl _ _)) s → CayleyRule q n ρ (ω.comp (MonoidHom.inr _ _)) s → n ≤ n' → ∀ h ∈ Hecke ℂ (KU σ n), ∀ h' ∈ Hecke ℂ (KU σ n'), heckeVec (ω.comp (MonoidHom.inl _ _)) (KU σ n) h s = heckeVec (ω.comp (MonoidHom.inr _ _)) (KU σ n') h' s → ∀ qu : ℂˣ, (qu : ℂ) = q → ∀ α : Fin (n / 2) → ℂˣ, SatU ϖ q h (fun i => (α i : ℂ)) = SatU ϖ q h' (fun i => (liftPar qu n n' α i : ℂ)) := by
   atlas_forward_decl GlobalTheory.SphTheta.satU_eq_satU_liftPar_of_heckeVec_eq
+end

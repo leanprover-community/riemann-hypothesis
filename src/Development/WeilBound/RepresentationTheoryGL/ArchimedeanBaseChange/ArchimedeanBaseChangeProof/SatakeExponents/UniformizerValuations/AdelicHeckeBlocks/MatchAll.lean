@@ -27,17 +27,14 @@ theorem hM1 : M1 := m1
 
 theorem matchT_of (h4 : M4) : MT.MatchT := TorusMatching.match_torus_of_twisted_matching h4
 
-theorem matchT : MT.MatchT := matchT_of archimedean_base_change_fourth
 
 theorem matchUnitI_of (h1 : M1) : MB.MatchUnitI := MB.matchUnitIOf h1
 
-theorem matchUnitI : MB.MatchUnitI := matchUnitI_of m1
 
 theorem matchSplit (h3 : M3) : MT.MatchSplit := GlobalTheory.T.matching_split_of h3 ctMul
 
 theorem matchLMId : MLM.MatchLMId := MLM.matchLMIdOf idemAlg BlockFiniteConvolution.locOk₀
 
-theorem macInv : MLM.MacInv := MLM.macInvOf locOp3 idemAlg
 
 theorem generator_pow_split_places : MLM.SplitPlaceGeneratorPowers := MLM.generator_pow_split_places_of_idempotent idemAlg
 

@@ -406,16 +406,6 @@ theorem divisor_bounds_first : BoundsI := by
   convert h1 using 1
   rw [mulVec_osmul, mulVec_osmul, Matrix.mulVec_mulVec, Nat.cast_mul, smul_smul]
 
-theorem bounds_fourth_general : BoundsIVal := by
-  intro K _ _ _ _ K0 hcm v0 hv0 n' n D H' hH hdet E Pr hO hK0 hpos P hP A B hA s hs0 hAB G hG0 hG
-    w e he
-  obtain ⟨hL, hincl⟩ := divisor_bounds_first K n' n H' hH hdet E Pr hO A B hA s hAB G hG
-  have h := reduction_lemma_first K K0 hcm v0 hv0 n D (Eᴴ * H' * E) hK0 hpos P hP (cutLat E A) hL (G * s) 1
-    (Nat.mul_pos hG0 hs0) (by intro x hx; rw [pow_one]; exact hincl x hx) w e he
-  have hG' : (G : K) ≠ 0 := by exact_mod_cast hG0.ne'
-  have hs' : (s : K) ≠ 0 := by exact_mod_cast hs0.ne'
-  rw [Nat.cast_mul, ValuationRepresentative.vw_mul w _ _ hG' hs'] at h
-  simpa using h
 
 theorem projection_integral : ProjIntegral := by
   intro K _ _ _ n G0 _ r c G hc B hB x hx

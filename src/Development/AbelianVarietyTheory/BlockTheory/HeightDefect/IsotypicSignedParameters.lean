@@ -69,15 +69,7 @@ def signedParameterU11 : SignedPar 2 where
       · exact ⟨0, by norm_num⟩
       · exact ⟨-1, by norm_num⟩
 
-theorem signedParameter_one_one_isOfSig : signedParameterU11.IsOfSig 1 1 := by
-  constructor <;> decide
 
-theorem signedParameter_one_one_dimV_eq_one : signedParameterU11.dimV = 1 := by
-  have h0 : (Finset.univ.filter fun b : Fin 2 => (0 : Fin 2) < b) = {1} := by decide
-  have h1 : (Finset.univ.filter fun b : Fin 2 => (1 : Fin 2) < b) = ∅ := by decide
-  simp only [SignedPar.dimV, Fin.prod_univ_two, h0, h1, Finset.prod_range_succ]
-  simp [signedParameterU11]
-  norm_num
 
 section Chains
 

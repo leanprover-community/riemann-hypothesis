@@ -3,8 +3,141 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.Multip
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsKSValueOneOfRetraction
 import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.IsWeightedHomogeneousOfMemOrbitSpan
 import Development.AbelianVarietyTheory.Definitions.Divisors.LogAbsVpOfNormalised
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NatToBEquivariant
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsLinearHomPull
 
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open scoped CategoryTheory.Obj TensorProduct
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open Formalism.L2.Pj GlobalTheory.Serre
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+namespace GlobalTheory.RayEv
+
+section Alg
+
+variable {S : Type} [CommRing S] {ρ V : Type}
+
+def apolar (P : MvPolynomial V S) (f : MvPowerSeries V S) : S :=
+  ∑ m ∈ P.support, P.coeff m * ((m.prod fun _ n => (n.factorial : S)) * MvPowerSeries.coeff m f)
+
+theorem apolar_monomial (m : V →₀ ℕ) (c : S) (f : MvPowerSeries V S) :
+    apolar (MvPolynomial.monomial m c) f = c * ((m.prod fun _ n => (n.factorial : S)) * MvPowerSeries.coeff m f) := by
+  classical
+  rw [apolar, Finset.sum_subset (MvPolynomial.support_monomial_subset) fun x _ hx => by
+    rw [MvPolynomial.notMem_support_iff.1 hx, zero_mul], Finset.sum_singleton, MvPolynomial.coeff_monomial, if_pos rfl]
+
+example : apolar (MvPolynomial.monomial (Finsupp.single () 2) (1 : ℚ))
+    (MvPowerSeries.monomial (Finsupp.single () 2) 1) = 2 := by
+  rw [apolar_monomial, MvPowerSeries.coeff_monomial_same, Finsupp.prod_single_index (by simp)]
+  norm_num [Nat.factorial]
+
+def jetAt (c : ρ → V) (m : ℕ) : Jet S ρ m →ₐ[S] Jet S V m :=
+  jetMap (fun r => MvPolynomial.X (c r)) fun r => X_mem_orig (c r)
+
+def serAt (c : ρ → V) (g : MvPowerSeries ρ S) : MvPowerSeries V S :=
+  MvPowerSeries.subst (fun r => (MvPowerSeries.X (c r) : MvPowerSeries V S)) g
+
+end Alg
+
+section Exp
+
+variable {X : Scheme.{0}} {G : Over X} [GrpObj G] [IsCommMonObj G] {O : Type} [CommRing O] (a : OAct O G)
+  {S : Type} [CommRing S] (x0 : Sp S ⟶ X) {ρ V : Type} [Fintype ρ] [DecidableEq ρ] [Fintype V] [DecidableEq V]
+  (ch : ρ → O →+* S)
+
+structure IsExp (u : ρ → (Sp (DualNumber S) ⟶ G.left)) (x : ∀ m, overAt x0 (Jet S ρ m) ⟶ G) : Prop where
+  zero : ∀ m, homAt x0 (jetAug : Jet S ρ m →ₐ[S] S) ≫ x m = 1
+  trunc : ∀ m, homAt x0 (jetTrunc : Jet S ρ (m + 1) →ₐ[S] Jet S ρ m) ≫ x (m + 1) = x m
+  law : ∀ m, homAt x0 (jetSum (Finset.univ : Finset (Fin 2))) ≫ x m =
+    (homAt x0 (jetIn (0 : Fin 2)) ≫ x m) * (homAt x0 (jetIn (1 : Fin 2)) ≫ x m)
+  act : ∀ m (c : O), x m ≫ a.act c = homAt x0 (jetScale fun r => ch r c) ≫ x m
+  tan : ∀ r, (homAt x0 (jetTan r : Jet S ρ (0 + 1) →ₐ[S] DualNumber S) ≫ x 1).left = u r
+
+variable (bar : O → O) (L : LB G.left) (rig : LB.Gen (LB.LinComb L (K := PUnit) (fun _ => eSec G) fun _ => 1))
+
+abbrev Fr (x : ∀ m, overAt x0 (Jet S ρ m) ⟶ G) : Type :=
+  ∀ m, LB.Gen (LB.LinComb L (K := PUnit) (fun _ => (x m).left) fun _ => 1)
+
+structure IsHoriz (x : ∀ m, overAt x0 (Jet S ρ m) ⟶ G) (e : Fr x0 L x) : Prop where
+  gen : ∀ m, (e m).IsGen
+  trunc : ∀ m y J, Good L y J →
+    val (e (m + 1)) (homAt x0 (jetTrunc : Jet S ρ (m + 1) →ₐ[S] Jet S ρ m)).left y J = val (e m) (𝟙 _) y J
+  zero : ∀ y J, Good L y J → val (e 0) (homAt x0 (jetAug : Jet S ρ 0 →ₐ[S] S)).left y J = val rig x0 y J
+  coc : ∀ c : O, ∃ β : LB.Gen (LB.LinComb L (K := Fin 4)
+      ![(a.act (1 + c * bar c)).left, (a.act c).left, 𝟙 _, (a.act (c * bar c)).left] ![1, -2, -1, -1]), β.IsGen ∧
+    (∀ y J, Good L y J → val β (eSec G) y J = (val rig (𝟙 _) y J ^ 3)⁻¹) ∧
+    ∀ m y J, Good L y J → val (e m) (homAt x0 (jetScale fun r => ch r (1 + c * bar c))).left y J =
+      val β (x m).left y J * val (e m) (homAt x0 (jetScale fun r => ch r c)).left y J ^ 2 * val (e m) (𝟙 _) y J *
+        val (e m) (homAt x0 (jetScale fun r => ch r (c * bar c))).left y J
+
+variable (G) in
+
+abbrev Pw (n : ℕ) : Over X := Over.mk x0 ⊗ powObj G n
+
+variable (G) in
+
+abbrev pr {n : ℕ} (b : Fin n) : (Pw G x0 n).left ⟶ G.left := (snd _ _ ≫ powPr G b).left
+
+abbrev SecPw (n k : ℕ) : Type := LB.Sec (LB.LinComb L (pr G x0 (n := n)) fun _ => (k : ℤ))
+
+def pwPt {n : ℕ} (col : Fin n → ρ → V) (x : ∀ m, overAt x0 (Jet S ρ m) ⟶ G) (m : ℕ) :
+    overAt x0 (Jet S V m) ⟶ Pw G x0 n :=
+  lift (Over.homMk (spMap (algebraMap S (Jet S V m))) rfl)
+    ((powIsLimit G n).lift (Fan.mk _ fun b => homAt x0 (jetAt (col b) m) ≫ x m))
+
+def IsGermPw {n k : ℕ} (col : Fin n → ρ → V) (x : ∀ m, overAt x0 (Jet S ρ m) ⟶ G) (e : Fr x0 L x)
+    (s : SecPw x0 L n k) (f : MvPowerSeries V S) : Prop :=
+  ∀ m y J, Good L y J → sval s (pwPt x0 col x m).left y J =
+    gs (𝟙 _) y ⊤ (toΓ _ (psJet m f)) * ∏ b, (val (e m) (homAt x0 (jetAt (col b) m)).left y J ^ k).val
+
+def IsVal (u : ρ → (Sp (DualNumber S) ⟶ G.left)) {n k : ℕ} (col : Fin n → ρ → V) (P : MvPolynomial V S)
+    (s : SecPw x0 L n k) (v : S) : Prop :=
+  ∃ (x : ∀ m, overAt x0 (Jet S ρ m) ⟶ G) (e : Fr x0 L x) (f : MvPowerSeries V S),
+    IsExp a x0 ch u x ∧ IsHoriz a x0 ch bar L rig x e ∧ IsGermPw x0 L col x e s f ∧ v = apolar P f
+
+def IsBoxSum {n k N : ℕ} (s : SecPw x0 L n k) (c : Fin N → S) (σ : Fin N → Fin n → H0 L k) : Prop :=
+  ∀ y J, Good L y J → sval s (𝟙 _) y J =
+    ∑ i, gs (fst (Over.mk x0) (powObj G n)).left y ⊤ (toΓ S (c i)) * ∏ b, sval (σ i b) (pr G x0 b) y J
+
+end Exp
+
+section Gt
+
+variable {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {D : DegData R I} {A : PolAV (Sp (FractionRing R))}
+  {G : Over (Sp R)} [GrpObj G] [IsCommMonObj G] (U : UnifPre I D A G)
+  {O : Type} [CommRing O] [StarRing O] [Module O D.toPre.X] {oa : D.toPre.OAct O} (Y : Ray oa)
+  {S : Type} [CommRing S] (x0 : Sp S ⟶ Sp R) {ρ V : Type} [Fintype ρ] [DecidableEq ρ] [Fintype V] [DecidableEq V]
+  (ch : ρ → O →+* S)
+
+def IsTermGerm {k : ℕ} (x : ∀ m, overAt x0 (Jet S ρ m) ⟶ Y.H) (e : Fr x0 D.toPre.P.L fun m => x m ≫ Y.q)
+    {α : D.toPre.X} (σ : D.toPre.SecB k α) (g : MvPowerSeries ρ S) : Prop :=
+  ∀ m y J, Good D.toPre.P.L y J → sval σ (x m ≫ Y.q).left y J * (val ((Y.Φ _ (x m)).s α) (𝟙 _) y J).val =
+    gs (𝟙 _) y ⊤ (toΓ _ (psJet m g)) * (val (e m) (𝟙 _) y J ^ k).val
+
+def IsValGt [TopologicalSpace S] (u : ρ → (Sp (DualNumber S) ⟶ Y.H.left)) {n k : ℕ} (col : Fin n → ρ → V)
+    (P : MvPolynomial V S) (s : SecPw x0 U.LG.L n k) (v : S) : Prop :=
+  ∃ (N : ℕ) (c : Fin N → S) (σ : Fin N → Fin n → H0 U.LG.L k) (F : Fin N → Fin n → ∀ α, D.toPre.SecB k α)
+    (x : ∀ m, overAt x0 (Jet S ρ m) ⟶ Y.H) (e : Fr x0 D.toPre.P.L fun m => x m ≫ Y.q)
+    (g : Fin N → Fin n → D.toPre.X → MvPowerSeries ρ S),
+    IsBoxSum x0 U.LG.L s c σ ∧ (∀ i b l, U.ExpandsAt l k (σ i b) (F i b)) ∧ IsExp Y.act x0 ch u x ∧
+    IsHoriz (Ray.actB oa) x0 ch star D.toPre.P.L D.toPre.rig (fun m => x m ≫ Y.q) e ∧
+    (∀ i b α, IsTermGerm Y x0 x e (F i b α) (g i b α)) ∧
+    HasSum (fun χ : Fin n → D.toPre.X =>
+      apolar P (∑ i, MvPowerSeries.C (c i) * ∏ b, serAt (col b) (g i b (χ b)))) v
+
+end Gt
+
+end GlobalTheory.RayEv
+end
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -19,10 +152,144 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.RayEv
 
-theorem mapLinear_coe {R S O : Type} [CommRing R] [CommRing S] [CommRing O] (f : R →+* S) {G B : Over (Sp R)}
-    [GrpObj G] [IsCommMonObj G] [GrpObj B] [IsCommMonObj B] {a : OAct O G} {b : OAct O B} {q : G ⟶ B}
-    (hq : IsLinearHom a b q) (σ : O →+* S) (v : LieEig f a σ) :
-    Lie.mapLinear (isLinearHom_pull f hq) v.1 = (eigMap f hq σ v).1 := rfl
+
+
+section Contr
+
+variable {O C Λ J : Type} [CommRing O] [Field C] [Algebra O C] [CommRing Λ] [DecidableEq J] {σ : J → Λ →+* C}
+  (h : IsSplitting σ) {M M' : Type*} [AddCommGroup M] [Module O M] [AddCommGroup M'] [Module O M']
+
+def eigDefect (ρ : Λ →+* Module.End O M) (i : J) (x : M) : C ⊗[O] M :=
+  proj h (baseChangeAction C ρ) i (1 ⊗ₜ x) - 1 ⊗ₜ x
+
+def contr (ρ : Λ →+* Module.End O M) (ψ : LinearMap.BilinForm O M) (i : J) (x x' : M) : C :=
+  ψ.baseChange C (eigDefect h ρ i x) (1 ⊗ₜ x')
+
+theorem eigDefect_map {ρ : Λ →+* Module.End O M} {ρ' : Λ →+* Module.End O M'} {f : M →ₗ[O] M'}
+    (hf : IsEquivariant ρ ρ' f) (i : J) (x : M) :
+    f.baseChange C (eigDefect h ρ i x) = eigDefect h ρ' i (f x) := by
+  have e : IsEquivariant (baseChangeAction C ρ) (baseChangeAction C ρ') (f.baseChange C) := fun a z => by
+    induction z with
+    | zero => simp
+    | add z w hz hw => simp only [map_add, hz, hw]
+    | tmul c m => exact congrArg (c ⊗ₜ[O] ·) (hf a m)
+  rw [eigDefect, map_sub, e.proj h]
+  rfl
+
+theorem contr_comp {ρ : Λ →+* Module.End O M} {ρ' : Λ →+* Module.End O M'} {f : M →ₗ[O] M'}
+    (hf : IsEquivariant ρ ρ' f) (ψ : LinearMap.BilinForm O M') (i : J) (x x' : M) :
+    contr h ρ (ψ.compl₁₂ f f) i x x' = contr h ρ' ψ i (f x) (f x') := by
+  rw [contr, contr, ← eigDefect_map h hf]
+  induction eigDefect h ρ i x with
+  | zero => simp
+  | add z w hz hw => simp only [map_add, LinearMap.add_apply, hz, hw]
+  | tmul c m => simp [LinearMap.BilinForm.baseChange_tmul]
+
+
+example {ρ : Λ →+* Module.End O M} (ψ : LinearMap.BilinForm O M) {i j : J} (hij : j ≠ i) {x : M}
+    (hx : (1 : C) ⊗ₜ[O] x ∈ eigenSub (baseChangeAction C ρ) (σ j)) (x' : M) :
+    contr h ρ ψ i x x' = -algebraMap O C (ψ x x') := by
+  rw [contr, eigDefect, proj_of_mem_ne h hij hx, zero_sub, map_neg, LinearMap.neg_apply,
+    LinearMap.BilinForm.baseChange_tmul, _root_.mul_one, Algebra.algebraMap_eq_smul_one]
+
+end Contr
+
+section Nat
+
+variable {O Λ : Type} [CommRing O] [CommRing Λ] {G B : Over (Sp O)} [GrpObj G] [IsCommMonObj G] [GrpObj B]
+  [IsCommMonObj B] {a : OAct Λ G} {b : OAct Λ B}
+
+variable (b) in
+
+structure PolSplit (L : LB B.left) : Type 1 where
+
+  ψ : LinearMap.BilinForm O (HdR B)
+  pol : IsPolForm (dp0 O) (𝟙 _) B L ψ
+
+  s : Lie b →ₗ[O] HdR B
+  lift : ∀ v, IsLieImage (s v) v.hom
+  lag : ∀ v w, ψ (s v) (s w) = 0
+
+variable {q : G ⟶ B} (hq : IsLinearHom a b q)
+
+def NatLie (_hq : IsLinearHom a b q) : Submodule O (Lie a × HdR B) where
+  carrier := {z | IsLieImage z.2 (z.1.hom ≫ q)}
+  add_mem' {z w} hz hw := by
+    haveI := _hq.isMonHom
+    have := IsLieImage.add hz hw
+    rwa [← MonObj.mul_comp] at this
+  zero_mem' := by
+    haveI := _hq.isMonHom
+    change IsLieImage 0 ((1 : epsR O ⟶ G) ≫ q)
+    rw [MonObj.one_comp]
+    exact isLieImage_one_iff.2 (zero_mem _)
+  smul_mem' r z hz := by
+    have := IsLieImage.smul hz r
+    rwa [← Category.assoc] at this
+
+def natToB : NatLie hq →ₗ[O] HdR B := LinearMap.snd O _ _ ∘ₗ (NatLie hq).subtype
+
+def natToLie : NatLie hq →ₗ[O] Lie a := LinearMap.fst O _ _ ∘ₗ (NatLie hq).subtype
+
+def natEnd (c : Λ) : Module.End O (NatLie hq) :=
+  ((DistribSMul.toLinearMap O (Lie a) c).prodMap (DeRham.act (dp0 O) (𝟙 _) b c)).restrict fun z hz => by
+    haveI := b.hom c
+    have := IsLieImage.push hz (b.act c)
+    rwa [Category.assoc, ← hq.comm, ← Category.assoc] at this
+
+def natAct : Λ →+* Module.End O (NatLie hq) where
+  toFun := natEnd hq
+  map_one' := LinearMap.ext fun z => Subtype.ext (Prod.ext (one_smul Λ z.1.1)
+    (LinearMap.congr_fun (map_one (DeRham.act (dp0 O) (𝟙 _) b)) z.1.2))
+  map_mul' c c' := LinearMap.ext fun z => Subtype.ext (Prod.ext (mul_smul c c' z.1.1)
+    (LinearMap.congr_fun (map_mul (DeRham.act (dp0 O) (𝟙 _) b) c c') z.1.2))
+  map_zero' := LinearMap.ext fun z => Subtype.ext (Prod.ext (zero_smul Λ z.1.1)
+    (LinearMap.congr_fun (map_zero (DeRham.act (dp0 O) (𝟙 _) b)) z.1.2))
+  map_add' c c' := LinearMap.ext fun z => Subtype.ext (Prod.ext (add_smul c c' z.1.1)
+    (LinearMap.congr_fun (map_add (DeRham.act (dp0 O) (𝟙 _) b) c c') z.1.2))
+
+
+variable {L : LB B.left} (sp : PolSplit b L)
+
+def natForm : LinearMap.BilinForm O (NatLie hq) := sp.ψ.compl₁₂ (natToB hq) (natToB hq)
+
+def natLift (v : Lie a) : NatLie hq :=
+  ⟨(v, sp.s (Lie.mapLinear hq v)), sp.lift (Lie.mapLinear hq v)⟩
+
+
+variable {C J : Type} [Field C] [Algebra O C] [DecidableEq J] {σ : J → Λ →+* C} (h : IsSplitting σ)
+
+def kapAb (i : J) (u u' : Lie b) : C := contr h (DeRham.act (dp0 O) (𝟙 _) b) sp.ψ i (sp.s u) (sp.s u')
+
+def kapExt (i : J) (u u' : Lie a) : C :=
+  contr h (natAct hq) (natForm hq sp) i (natLift hq sp u) (natLift hq sp u')
+
+
+example (b : OAct Λ (𝟙_ (Over (Sp O)))) (L : LB (𝟙_ (Over (Sp O))).left) (hL : ∀ i j, L.g i j = 1) :
+    Nonempty (PolSplit b L) :=
+  ⟨⟨0, isPolForm_zero L hL, 0, fun v => toUnit_unique 1 v.hom ▸ isLieImage_one_iff.2 (zero_mem _), fun _ _ => rfl⟩⟩
+
+end Nat
+
+end GlobalTheory.RayEv
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open scoped CategoryTheory.Obj TensorProduct
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open Formalism.L2.Pj GlobalTheory.Serre GlobalTheory.EigenSplit GlobalTheory.DeRham GlobalTheory.Cris
+open Formalism.MainNotions.DIV.Cons (SCF intO)
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+namespace GlobalTheory.RayEv
+
 
 section Point
 
@@ -41,8 +308,6 @@ def embP (τ : E →+* ℂ) : E →+* ↥C.S := P.fK.comp (embF c τ)
 
 abbrev intEmb (φ : E →+* ↥C.S) : 𝓞 E →+* ↥(intO ↥C.S) := HTLat.embO (integers C) φ
 
-theorem coe_intEmb_embP (τ : E →+* ℂ) (x : 𝓞 E) : (intEmb (embP P τ) x : ↥C.S) = P.emb τ x :=
-  HTLat.algebraMap_embO (integers C) _ x
 
 variable (A : DatAt Y P)
 
@@ -190,30 +455,16 @@ open Classical in
 
 def evGt (s : SecAt A) : ↥C.S := if h : ∃! v, Q.IsValG s v then h.choose else 1
 
-theorem evA_eq {s : SecAt A} (h : ∃! v, Q.IsValA s v) {v : ↥C.S} : Q.evA s = v ↔ Q.IsValA s v := by
-  rw [evA, dif_pos h]
-  exact ⟨fun e => e ▸ h.choose_spec.1, fun e => (h.choose_spec.2 v e).symm⟩
 
-theorem evGt_eq {s : SecAt A} (h : ∃! v, Q.IsValG s v) {v : ↥C.S} : Q.evGt s = v ↔ Q.IsValG s v := by
-  rw [evGt, dif_pos h]
-  exact ⟨fun e => e ▸ h.choose_spec.1, fun e => (h.choose_spec.2 v e).symm⟩
 
 end HarmAt
 
 variable (A)
 
-theorem incT_exact (τ : E →+* ℂ) : Function.Injective (incT A τ) ∧ Function.Exact (incT A τ) (resB A τ) :=
-  letI := H.starRing
-  eigMap_exact A.f (i_lin A) (q_lin A) (ray A).isKernel _
 
-theorem kapGt_eq (τ : E →+* ℂ) (u u' : LieGt A τ) : kapGt A τ u u' = kapB A τ (resB A τ u) (resB A τ u') := by
-  classical
-  by_cases h : Nonempty (Split A)
-  · rw [kapGt_of A h, kapB_of A h, kapExt_eq]
-    exact congrArg₂ (kapAb h.some _ _) (mapLinear_coe A.f (q_lin A) _ u) (mapLinear_coe A.f (q_lin A) _ u')
-  · have e : ∀ v v', kapB A τ v v' = 0 := fun _ _ => dif_neg h
-    exact (dif_neg h).trans (e _ _).symm
 
 end Point
 
 end GlobalTheory.RayEv
+end
+end

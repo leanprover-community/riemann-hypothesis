@@ -17,14 +17,6 @@ theorem galois_rep_rank_two_of_hypotheses (P : HypothesesH) : ExRTwo := fun F Ω
   let ⟨r, _, _, H, h, _⟩ := exR P F Ω l ι 2 one_le_two π χ h1 h2
   ⟨r, H.cont, h⟩
 
-private theorem cusp_unique {F : Type} [Field F] [NumberField F] {n : ℕ} {sat : HeightOneSpectrum (𝓞 F) → Multiset ℂˣ → Prop}
-    {inf : (F →+* ℂ) → Multiset ℂ → Prop} (h : IsCusp n sat inf) : ∀ v B B', sat v B → sat v B' → B = B' := by
-  rcases h with ⟨_, π, rfl, -⟩ | ⟨_, π, rfl, -⟩
-  · exact fun _ _ _ h h' => h.unique h'
-  · exact fun _ _ _ h h' => h.unique h'
 
-private theorem not_both (F : Type) [Field F] [NumberField F] (h : IsTotallyReal F) (h' : IsTotallyComplex F) : False := by
-  obtain ⟨v⟩ : Nonempty (InfinitePlace F) := inferInstance
-  exact (InfinitePlace.not_isReal_iff_isComplex.2 (h'.isComplex v)) (h.isReal v)
 
 end UpperTheory.V.Z.Bc

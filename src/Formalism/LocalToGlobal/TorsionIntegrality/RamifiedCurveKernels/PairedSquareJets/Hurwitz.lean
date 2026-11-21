@@ -104,10 +104,6 @@ theorem jetsIn_prod {α : Type} (s : Finset α) (f : α → MvPowerSeries ι K)
   exact Finset.prod_induction f (JetsIn R) (fun a b ha hb => jetsIn_mul ha hb)
     jetsIn_one hf
 
-theorem jetsIn_pow {f : MvPowerSeries ι K} (hf : JetsIn R f) (n : ℕ) : JetsIn R (f ^ n) := by
-  induction n with
-  | zero => simpa using (jetsIn_one (R := R) (ι := ι))
-  | succ n ih => rw [pow_succ]; exact jetsIn_mul ih hf
 
 theorem jet_pderiv (f : MvPowerSeries ι K) (i : ι) (κ : ι →₀ ℕ) :
     ((mfact κ : ℕ) : K) * MvPowerSeries.coeff κ (MvPowerSeries.pderiv K i f) =
@@ -156,9 +152,6 @@ theorem integral_jets_holds : IntJets := by
   intro K _ R ι f hf
   exact jetsIn_of_int hf
 
-theorem jets_deriv_holds : JetsDeriv := by
-  intro K _ R ι f
-  exact jetsIn_iff_pderiv f
 
 section CharZero
 

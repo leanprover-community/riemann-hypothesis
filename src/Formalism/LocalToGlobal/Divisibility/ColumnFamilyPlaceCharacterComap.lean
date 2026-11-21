@@ -106,7 +106,6 @@ def comap (f : T' → T) (μ0' : T') : FamIn3 K G Pl0 I0 Ty T' m where
   heckeLI j τ := A3.heckeLI j (f τ)
   trI := A3.trI
 
-theorem family_inputs_comap_eq (f : T' → T) (μ0' : T') : (A3.comap f μ0').fam3 = A3.fam3.comap f μ0' := rfl
 
 end FamIn3
 
@@ -134,87 +133,27 @@ variable (v0 : InfinitePlace X.K) {TU TC : Finset (Tup X.F X.E X.K S)} (h : TU �
   (xiVal : Tup X.F X.E X.K S → HeightOneSpectrum (𝓞 X.E) → X.Kˣ)
   (trIv : Fin R.m → (Col.LevOffI ∅ Pr.vGs S0 × List ℕ → X.K) → Col.LevOffI ∅ Pr.vGs S0 × List ℕ → X.K)
 
-theorem colIn_comap :
-    colIn W Ch sel hX v0 TU Xg S0 xiVal = (colIn W Ch sel hX v0 TC Xg S0 xiVal).comap (TupF.incl h) (mu0F TU) := rfl
 
-theorem colIn3_comap :
-    colIn3 W Ch sel hX v0 TU Xg S0 xiVal trIv =
-      (colIn3 W Ch sel hX v0 TC Xg S0 xiVal trIv).comap (TupF.incl h) (mu0F TU) := rfl
 
 theorem colFam3_comap :
     colFam3 W Ch sel hX v0 TU Xg S0 xiVal trIv =
       (colFam3 W Ch sel hX v0 TC Xg S0 xiVal trIv).comap (TupF.incl h) (mu0F TU) := rfl
 
-theorem column_family_base_tuple_comap :
-    TupF.incl h (colFam3 W Ch sel hX v0 TU Xg S0 xiVal trIv).F.μ0 = (colFam3 W Ch sel hX v0 TC Xg S0 xiVal trIv).F.μ0 := rfl
 
-theorem column_family_place_character_comap :
-    (colFam3 W Ch sel hX v0 TU Xg S0 xiVal trIv).F.v0 = (colFam3 W Ch sel hX v0 TC Xg S0 xiVal trIv).F.v0 ∧
-      (colFam3 W Ch sel hX v0 TU Xg S0 xiVal trIv).F.X = (colFam3 W Ch sel hX v0 TC Xg S0 xiVal trIv).F.X := by
-  exact ⟨rfl, rfl⟩
 
-theorem colFam3_R_comap (t : TupF TU) :
-    (colFam3 W Ch sel hX v0 TU Xg S0 xiVal trIv).F.R t = (colFam3 W Ch sel hX v0 TC Xg S0 xiVal trIv).F.R (TupF.incl h t) := rfl
 
-theorem colFam3_L_comap (j : Fin R.m) (t : TupF TU) :
-    (colFam3 W Ch sel hX v0 TU Xg S0 xiVal trIv).F.L j t =
-      (colFam3 W Ch sel hX v0 TC Xg S0 xiVal trIv).F.L j (TupF.incl h t) := rfl
 
-theorem colFam3_tr_comap :
-    (colFam3 W Ch sel hX v0 TU Xg S0 xiVal trIv).F.tr = (colFam3 W Ch sel hX v0 TC Xg S0 xiVal trIv).F.tr := rfl
 
-theorem colFam3_lvl_comap (P : Subgroup (Col.G0 X.E Pr.vGs R.r)) (ψ : P →* X.Kˣ) :
-    (colFam3 W Ch sel hX v0 TU Xg S0 xiVal trIv).F.lvl P ψ = (colFam3 W Ch sel hX v0 TC Xg S0 xiVal trIv).F.lvl P ψ ∧
-      (colFam3 W Ch sel hX v0 TU Xg S0 xiVal trIv).F.lvlA P ψ = (colFam3 W Ch sel hX v0 TC Xg S0 xiVal trIv).F.lvlA P ψ := by
-  exact ⟨rfl, rfl⟩
 
-theorem colIn3_ok_comap (t : TupF TU) :
-    (colIn3 W Ch sel hX v0 TU Xg S0 xiVal trIv).A.ok t = (colIn3 W Ch sel hX v0 TC Xg S0 xiVal trIv).A.ok (TupF.incl h t) := rfl
 
-theorem colIn3_muVal_comap (j : Fin R.m) (t : TupF TU) :
-    (colIn3 W Ch sel hX v0 TU Xg S0 xiVal trIv).A.muVal j t =
-      (colIn3 W Ch sel hX v0 TC Xg S0 xiVal trIv).A.muVal j (TupF.incl h t) := rfl
 
-theorem colIn3_forms_comap (t : TupF TU) :
-    (colIn3 W Ch sel hX v0 TU Xg S0 xiVal trIv).A.MtildeCSD t =
-        (colIn3 W Ch sel hX v0 TC Xg S0 xiVal trIv).A.MtildeCSD (TupF.incl h t) ∧
-      ∀ j, (colIn3 W Ch sel hX v0 TU Xg S0 xiVal trIv).A.MtCSD j t =
-        (colIn3 W Ch sel hX v0 TC Xg S0 xiVal trIv).A.MtCSD j (TupF.incl h t) := by
-  exact ⟨rfl, fun _ => rfl⟩
 
-theorem colIn3_hecke_comap (t : TupF TU) :
-    (colIn3 W Ch sel hX v0 TU Xg S0 xiVal trIv).A.heckeR t =
-        (colIn3 W Ch sel hX v0 TC Xg S0 xiVal trIv).A.heckeR (TupF.incl h t) ∧
-      ∀ j, (colIn3 W Ch sel hX v0 TU Xg S0 xiVal trIv).A.heckeL j t =
-        (colIn3 W Ch sel hX v0 TC Xg S0 xiVal trIv).A.heckeL j (TupF.incl h t) := by
-  exact ⟨rfl, fun _ => rfl⟩
 
-theorem colIn3_g0Act_comap (t : TupF TU) :
-    (colIn3 W Ch sel hX v0 TU Xg S0 xiVal trIv).A.leftGroupActionRight t =
-        (colIn3 W Ch sel hX v0 TC Xg S0 xiVal trIv).A.leftGroupActionRight (TupF.incl h t) ∧
-      ∀ j, (colIn3 W Ch sel hX v0 TU Xg S0 xiVal trIv).A.leftGroupActionLift j t =
-        (colIn3 W Ch sel hX v0 TC Xg S0 xiVal trIv).A.leftGroupActionLift j (TupF.incl h t) := by
-  exact ⟨rfl, fun _ => rfl⟩
 
-theorem colIn3_okI_comap (t : TupF TU) :
-    (colIn3 W Ch sel hX v0 TU Xg S0 xiVal trIv).okI t = (colIn3 W Ch sel hX v0 TC Xg S0 xiVal trIv).okI (TupF.incl h t) := rfl
 
-theorem colIn3_heckeRI_comap (t : TupF TU) :
-    (colIn3 W Ch sel hX v0 TU Xg S0 xiVal trIv).heckeRI t =
-      (colIn3 W Ch sel hX v0 TC Xg S0 xiVal trIv).heckeRI (TupF.incl h t) := rfl
 
-theorem colIn3_heckeLI_comap (j : Fin R.m) (t : TupF TU) :
-    (colIn3 W Ch sel hX v0 TU Xg S0 xiVal trIv).heckeLI j t =
-      (colIn3 W Ch sel hX v0 TC Xg S0 xiVal trIv).heckeLI j (TupF.incl h t) := rfl
 
-theorem colIn3_trI_comap :
-    (colIn3 W Ch sel hX v0 TU Xg S0 xiVal trIv).trI = (colIn3 W Ch sel hX v0 TC Xg S0 xiVal trIv).trI := rfl
 
-theorem colFam3_RI_LI_comap (t : TupF TU) :
-    (colFam3 W Ch sel hX v0 TU Xg S0 xiVal trIv).RI t = (colFam3 W Ch sel hX v0 TC Xg S0 xiVal trIv).RI (TupF.incl h t) ∧
-      ∀ j, (colFam3 W Ch sel hX v0 TU Xg S0 xiVal trIv).LI j t =
-        (colFam3 W Ch sel hX v0 TC Xg S0 xiVal trIv).LI j (TupF.incl h t) := by
-  exact ⟨rfl, fun _ => rfl⟩
 
 include h in
 
@@ -268,11 +207,7 @@ theorem colFam3_typesSep_restrict (hH : ColHyp3 W Ch sel v0 TC Xg S0)
   exact (colFam3_typesSep3_restrict_iff W Ch sel hX v0 h Xg S0 xiVal trIv).mpr
     (colFam3_typesSep' W Ch sel hX v0 TC Xg S0 xiVal trIv hH hI)
 
-theorem colFam_comap :
-    colFam W Ch sel hX v0 TU Xg S0 xiVal = (colFam W Ch sel hX v0 TC Xg S0 xiVal).comap (TupF.incl h) (mu0F TU) := rfl
 
-theorem colFam3_ix_comap :
-    (colFam3 W Ch sel hX v0 TU Xg S0 xiVal trIv).base3.Ix = (colFam3 W Ch sel hX v0 TC Xg S0 xiVal trIv).base3.Ix := rfl
 
 def colSubRes3 (Zs : DefSub (colFam3 W Ch sel hX v0 TC Xg S0 xiVal trIv).amb3) :
     DefSub (colFam3 W Ch sel hX v0 TU Xg S0 xiVal trIv).amb3 :=
@@ -280,58 +215,11 @@ def colSubRes3 (Zs : DefSub (colFam3 W Ch sel hX v0 TC Xg S0 xiVal trIv).amb3) :
 
 variable (Zs : DefSub (colFam3 W Ch sel hX v0 TC Xg S0 xiVal trIv).amb3)
 
-theorem colSubRes3_stable (hst : Zs.Stable) : (colSubRes3 W Ch sel hX v0 h Xg S0 xiVal trIv Zs).Stable := by
-  unfold DefSub.Stable at hst ⊢
-  exact ⟨fun t i => hst.1 (TupF.incl h t) i, fun j t i => hst.2 j (TupF.incl h t) i⟩
 
-theorem colSubRes3_inBlock (hin : Zs.InBlock) : (colSubRes3 W Ch sel hX v0 h Xg S0 xiVal trIv Zs).InBlock := by
-  unfold DefSub.InBlock at hin ⊢
-  exact ⟨fun t => hin.1 (TupF.incl h t), fun j t => hin.2 j (TupF.incl h t)⟩
 
-theorem colFam3_sameTypes3_restrict_iff (P : Subgroup (Col.G0 X.E Pr.vGs R.r)) (ψ : P →* X.Kˣ) :
-    (colFam3 W Ch sel hX v0 TU Xg S0 xiVal trIv).SameTypes3 P ψ (colSubRes3 W Ch sel hX v0 h Xg S0 xiVal trIv Zs) ↔
-      (colFam3 W Ch sel hX v0 TC Xg S0 xiVal trIv).SameTypes3 P ψ Zs := by
-  exact Iff.rfl
 
-theorem colSide3_rows_comap (P : Col.LevFam X.E X.K R.r Pr.vGs) (t : TupF TU) :
-    (colSide3 W Ch sel hX v0 TU Xg S0 xiVal trIv P (colSubRes3 W Ch sel hX v0 h Xg S0 xiVal trIv Zs)).nV t =
-        (colSide3 W Ch sel hX v0 TC Xg S0 xiVal trIv P Zs).nV (TupF.incl h t) ∧
-      (colSide3 W Ch sel hX v0 TU Xg S0 xiVal trIv P (colSubRes3 W Ch sel hX v0 h Xg S0 xiVal trIv Zs)).HV t =
-        (colSide3 W Ch sel hX v0 TC Xg S0 xiVal trIv P Zs).HV (TupF.incl h t) ∧
-      (colSide3 W Ch sel hX v0 TU Xg S0 xiVal trIv P (colSubRes3 W Ch sel hX v0 h Xg S0 xiVal trIv Zs)).Mt t =
-        (colSide3 W Ch sel hX v0 TC Xg S0 xiVal trIv P Zs).Mt (TupF.incl h t) ∧
-      (colSide3 W Ch sel hX v0 TU Xg S0 xiVal trIv P (colSubRes3 W Ch sel hX v0 h Xg S0 xiVal trIv Zs)).dQ t =
-        (colSide3 W Ch sel hX v0 TC Xg S0 xiVal trIv P Zs).dQ (TupF.incl h t) ∧
-      (colSide3 W Ch sel hX v0 TU Xg S0 xiVal trIv P (colSubRes3 W Ch sel hX v0 h Xg S0 xiVal trIv Zs)).Pq t =
-        (colSide3 W Ch sel hX v0 TC Xg S0 xiVal trIv P Zs).Pq (TupF.incl h t) ∧
-      (colSide3 W Ch sel hX v0 TU Xg S0 xiVal trIv P (colSubRes3 W Ch sel hX v0 h Xg S0 xiVal trIv Zs)).XQ t =
-        (colSide3 W Ch sel hX v0 TC Xg S0 xiVal trIv P Zs).XQ (TupF.incl h t) ∧
-      (colSide3 W Ch sel hX v0 TU Xg S0 xiVal trIv P (colSubRes3 W Ch sel hX v0 h Xg S0 xiVal trIv Zs)).Qp t =
-        (colSide3 W Ch sel hX v0 TC Xg S0 xiVal trIv P Zs).Qp (TupF.incl h t) := by
-  exact ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
 
-theorem colSide3_lifts_comap (P : Col.LevFam X.E X.K R.r Pr.vGs) (j : Fin R.m) (t : TupF TU) :
-    (colSide3 W Ch sel hX v0 TU Xg S0 xiVal trIv P (colSubRes3 W Ch sel hX v0 h Xg S0 xiVal trIv Zs)).dZ j t =
-        (colSide3 W Ch sel hX v0 TC Xg S0 xiVal trIv P Zs).dZ j (TupF.incl h t) ∧
-      (colSide3 W Ch sel hX v0 TU Xg S0 xiVal trIv P (colSubRes3 W Ch sel hX v0 h Xg S0 xiVal trIv Zs)).HT j t =
-        (colSide3 W Ch sel hX v0 TC Xg S0 xiVal trIv P Zs).HT j (TupF.incl h t) ∧
-      (colSide3 W Ch sel hX v0 TU Xg S0 xiVal trIv P (colSubRes3 W Ch sel hX v0 h Xg S0 xiVal trIv Zs)).XT j t =
-        (colSide3 W Ch sel hX v0 TC Xg S0 xiVal trIv P Zs).XT j (TupF.incl h t) ∧
-      (colSide3 W Ch sel hX v0 TU Xg S0 xiVal trIv P (colSubRes3 W Ch sel hX v0 h Xg S0 xiVal trIv Zs)).Tl j t =
-        (colSide3 W Ch sel hX v0 TC Xg S0 xiVal trIv P Zs).Tl j (TupF.incl h t) ∧
-      (colSide3 W Ch sel hX v0 TU Xg S0 xiVal trIv P (colSubRes3 W Ch sel hX v0 h Xg S0 xiVal trIv Zs)).Zp j t =
-        (colSide3 W Ch sel hX v0 TC Xg S0 xiVal trIv P Zs).Zp j (TupF.incl h t) := by
-  exact ⟨rfl, rfl, rfl, rfl, rfl⟩
 
-theorem colSide3_WF_restrict (hH : ColHyp3 W Ch sel v0 TC Xg S0)
-    (hI : (colFam3 W Ch sel hX v0 TC Xg S0 xiVal trIv).TrISep) (P : Col.LevFam X.E X.K R.r Pr.vGs)
-    (hst : Zs.Stable) (hin : Zs.InBlock) :
-    (colSide3 W Ch sel hX v0 TU Xg S0 xiVal trIv P (colSubRes3 W Ch sel hX v0 h Xg S0 xiVal trIv Zs)).WF := by
-  exact colSide3_WF W Ch sel hX v0 TU Xg S0 xiVal trIv (colHyp3_restrict (h := h) (hH := hH) ..)
-    ((colFam3_trISep_restrict_iff W Ch sel hX v0 h Xg S0 xiVal trIv).mpr hI) P
-    (colSubRes3 W Ch sel hX v0 h Xg S0 xiVal trIv Zs)
-    (colSubRes3_stable (h := h) (Zs := Zs) (hst := hst) ..)
-    (colSubRes3_inBlock (h := h) (Zs := Zs) (hin := hin) ..)
 
 end Inst
 

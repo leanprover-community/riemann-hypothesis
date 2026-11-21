@@ -45,12 +45,7 @@ theorem sub_eq_map_of_pow_mul {F : Type*} [Field F] (j : D →+* F) {T w c a : D
   apply mul_right_cancel₀ (pow_ne_zero n hT)
   rw [sub_mul, mul_comm X, hX, hz, ← map_sub, ← hc, map_mul, map_pow]
 
-theorem map_add_eq_of_eq (f : R →+* R) {x y : R} (hx : f x = x) (hy : f y = y) :
-    f (x + y) = x + y := by
-  rw [map_add, hx, hy]
 
-theorem map_mul_eq_of_eq (f : R →+* R) {a x : R} (ha : f a = a) (hx : f x = x) : f (a * x) = a * x := by
-  rw [map_mul, ha, hx]
 
 end Abstract
 

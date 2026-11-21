@@ -75,8 +75,6 @@ def lev1 : Subgroup (Gc B px) := (Formalism.L2.Col.rPsymF (R := B.R) I.Ch).grp
 
 def chr1 : lev1 I →* B.LLˣ := (Formalism.L2.Col.rPsymF (R := B.R) I.Ch).chr
 
-theorem famC_A (hX : B.fields.Ok) (U : Set I.ι) (Xg : Finset (Gc B px → B.LL)) (tr tr' : TrI B px) :
-    (famC I hX U Xg tr).A = (famC I hX U Xg tr').A := rfl
 
 def usedOf (T : Top.TwDat B) (Wt : Set B.places.Pl) : Set I.ι := {a | ∃ w ∈ Wt, I.xi a = T.xiTw I.C w}
 
@@ -132,20 +130,13 @@ section Fields
 
 variable (hX : B.fields.Ok) (U : Set I.ι) (Xg : Finset (Gc B px → B.LL)) (tr : TrI B px)
 
-theorem family_infinitePlace : (famC I hX U Xg tr).A.v0 = InfinitePlace.mk B.embLL := rfl
 
 theorem famC_μ0 : (famC I hX U Xg tr).A.μ0 = mu0F (X := B.fields) (tuOf I U) := rfl
 
-theorem famC_X : (famC I hX U Xg tr).A.X = Xg := rfl
 
-theorem famC_r : (famC I hX U Xg tr).A.r = B.R.r := rfl
 
-theorem famC_A_t : (famC I hX U Xg tr).A.t = B.R.t := rfl
 
-theorem famC_trI : (famC I hX U Xg tr).trI = tr := rfl
 
-theorem famC_muVal (j : Fin B.R.m) (t : TupU I U) (P : PlS B px) :
-    (famC I hX U Xg tr).A.muVal j t P = I.Ch.muVal j P.1 * xiValOf I t.1 P.1 := rfl
 
 end Fields
 
@@ -167,9 +158,6 @@ theorem psiC_of_mem {PP : Pl B.host.E} (h : PP ∈ (B.primes px).vGs) : psiC I P
   unfold psiC
   rw [dif_pos h]
 
-theorem psiC_of_notMem {PP : Pl B.host.E} (h : PP ∉ (B.primes px).vGs) : psiC I PP = 1 := by
-  unfold psiC
-  rw [dif_neg h]
 
 theorem ValsIn.embLL_xiValOf {I : ColIn B px} (h : ValsIn I) (a : I.ι) (P : HeightOneSpectrum (𝓞 B.fields.E))
     (hP : (I.xi a).UnrAt P) : B.embLL (xiValOf I (I.tup a) P : B.LL) = (((I.xi a).val P : ℂˣ) : ℂ) :=
@@ -242,7 +230,6 @@ theorem GoodSet.irr {eR : Gc X.B px ≃* G0g X.toD7.nd} {Xg : Finset (Gc X.B px 
     (h : GoodSet X (px := px) eR Xg) : ∀ χ ∈ Xg, IsAbsIrrChar χ :=
   fun χ hχ => ((((goodSet_iff X eR Xg).1 h).1 χ).1 hχ).1
 
-theorem isIdG_refl : IsPlacewiseIdentity X (px := px) (Pg := (X.B.primes px).vGs) (MulEquiv.refl _) := fun _ _ _ _ => rfl
 
 structure GrpAt : Prop where
 

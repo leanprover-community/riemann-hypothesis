@@ -7,8 +7,18 @@ import Formalism.LocalToGlobal.ProjectiveLattices.RealPtGeo
 import Formalism.LocalToGlobal.ProjectiveLattices.UnitIndepOfCharts
 import Formalism.LocalToGlobal.ProjectiveLattices.GenFrPf
 import Formalism.LocalToGlobal.ProjectiveLattices.ReadAlg
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AlgebraicPointsModuliEveryPlaceStatement
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AlgebraicPointsModuliEveryPlace
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IntFrExtOfGoodLevelStatement
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.Frames
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.algebraicPoints_moduli_every_place : N1c → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l), 1 ≤ Dw.p + Dw.q → AlgPtLa Xo c := by
+  first | exact @GlobalTheory.algPtLa_moduli | exact GlobalTheory.algPtLa_moduli | (intros; apply GlobalTheory.algPtLa_moduli <;> assumption)
+end
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.Frames
 
@@ -19,3 +29,4 @@ theorem integralAlgebraicFramedPoint_exists : PartI → N1ab → N1c → Out.Sec
     intFrNe_of (GlobalTheory.T.algebraicPoints_moduli_every_place hc E H Dw l Xo c hpq) (GlobalTheory.T.intFrExt_of_good_level hP hab hB hT E H Dw l Xo c hpq hg)
 
 end GlobalTheory
+end

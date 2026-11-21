@@ -46,23 +46,6 @@ theorem D7.perCol_zero (D : D7) (u : D.what₂.Word) (φ : D.what₂.Mu u) :
     D.what₂.perCol u D.what₂.mu0 φ 0 = 0 := by
   simp only [D.perCol_base_eq_PtilCol, PeriodMap.PtilCol, PeriodMap.Ptil, map_zero]
 
-theorem D7.periodIdentity_iff_period_kills (D : D7) (h : Rows.BuDefQ D.what₂) : Rows.PeriodIdentityOnDegreeZero D.what₂ ↔ Rows.PerKillsU D.what₂ := by
-  constructor
-  · intro hV u φ F hF
-    have h0 : D.what₂.iota D.what₂.mu0 F = 0 := hF.2
-    rw [hV u φ F hF.1, h0, h u φ 0, map_zero, D.perCol_zero]
-  · intro hK u φ F hF
-    set n : D.what₂.Amb D.what₂.mu0 := (D.what₂.Usp D.what₂.mu0).starProjection F with hn
-    have hnU : n ∈ D.what₂.Usp D.what₂.mu0 := Submodule.starProjection_apply_mem _ _
-    have hq : F - n ∈ D.what₂.Qsp D.what₂.mu0 :=
-      ⟨Submodule.sub_mem _ hF hnU.1, Submodule.sub_starProjection_mem_orthogonal F⟩
-    have hι : D.what₂.iota D.what₂.mu0 F = D.what₂.iota D.what₂.mu0 (F - n) := by
-      have : D.what₂.iota D.what₂.mu0 n = 0 := hnU.2
-      rw [map_sub, this, sub_zero]
-    have hF' : F = (F - n) + n := by abel
-    rw [h u φ, hι, D.what₂.sec_iota _ _ hq]
-    conv_lhs => rw [hF']
-    rw [D.perCol_add, hK u φ n hnU, add_zero]
 
 end Formalism.BasicNotions
 end

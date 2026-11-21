@@ -53,9 +53,6 @@ theorem block13_mul (x y : Matrix (Idx r k) (Idx r k) A) :
   ext a b
   simp [b13, b11, b12, b13, b13, b23, b33, Matrix.mul_apply, Fintype.sum_sum_type, add_assoc]
 
-theorem block13_one : b13 (1 : Matrix (Idx r k) (Idx r k) A) = 0 := by
-  ext a b
-  simp [b13, Matrix.one_apply]
 
 theorem block21_mul (x y : Matrix (Idx r k) (Idx r k) A) :
     b21 (x * y) = b21 x * b11 y + b22 x * b21 y + b23 x * b31 y := by

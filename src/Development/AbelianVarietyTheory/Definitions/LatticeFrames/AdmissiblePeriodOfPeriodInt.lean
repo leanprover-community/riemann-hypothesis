@@ -15,16 +15,9 @@ section General
 
 variable (D : D7) (u : D.what₂.Word)
 
-theorem vGam_eq (w : D.what₂.places.Pl) : vGam D u w = WeilJacquetShalikaLaw.vDG D u w := rfl
 
-theorem colGe_iff (w : D.what₂.places.Pl) (x : ((D.fm u).lat 0).V) (s : ℝ) :
-    ColGe D u w x s ↔ WeilJacquetShalikaLaw.ColGe0 D u w x s := Iff.rfl
 
-theorem nprime_iff (L : SizeData₂ D) : DV.NprimeDef D L ↔
-    ∀ u, (D.div.Nu u).L = shift D u L.supp (fun w => ⌊DV.ur D w (L.sg u w)⌋) (L.NuLat u) := Iff.rfl
 
-theorem admissiblePeriod_of_periodInt (h : ∀ u, PeriodInt D u) : WeightDegreeSizes.PeriodClassSumWeyl D :=
-  fun _ u x hx F hF _ => h u x hx F hF
 
 theorem second_hypothesis_of_lifting (L : SizeData₂ D) (hμ : ∀ w, D.what₂.muAt w = D.what₂.mu0)
     (h : ∀ u w, PerGeOn D u (L.NuLat u) w ((⌊DV.ur D w (L.sg u w)⌋ : ℤ) : ℝ)) : LocalQuadraticParts.adm2 D L := by
@@ -38,37 +31,14 @@ theorem valGe_emb (w : D.what₂.places.Pl) (y : D.what₂.LL) (s : ℝ) :
     ValGe D w (D.what₂.embLL y) s ↔ (y = 0 ∨ s ≤ (vAdd (D.plEq w) y : ℝ)) :=
   ⟨fun ⟨y', h, hv⟩ => D.what₂.embLL.injective h ▸ hv, fun h => ⟨y, rfl, h⟩⟩
 
-theorem vAdd_resChar (w : D.what₂.places.Pl) :
-    vAdd (D.plEq w) ((D.what₂.places.resChar w : ℕ) : D.what₂.LL) = (D.what₂.places.ramIdx w : ℕ) := by
-  have h1 := D.what₂.places.val_resChar w
-  rw [D.val_eq w _ (Nat.cast_ne_zero.2 (D.what₂.places.resChar_prime w).ne_zero)] at h1
-  exact_mod_cast h1
 
-theorem valGe_resChar (w : D.what₂.places.Pl) (s : ℝ) :
-    ValGe D w ((D.what₂.places.resChar w : ℕ) : ℂ) s ↔ s ≤ (D.what₂.places.ramIdx w : ℝ) := by
-  rw [← map_natCast D.what₂.embLL, valGe_emb, vAdd_resChar]
-  have : ((D.what₂.places.resChar w : ℕ) : D.what₂.LL) ≠ 0 := Nat.cast_ne_zero.2 (D.what₂.places.resChar_prime w).ne_zero
-  simp [this]
 
 theorem vAdd_inv (w : D.what₂.places.Pl) (y : D.what₂.LL) : vAdd (D.plEq w) y⁻¹ = - vAdd (D.plEq w) y := by
   simp [vAdd]
 
-theorem not_valGe_inv (w : D.what₂.places.Pl) : ¬ ValGe D w ((D.what₂.places.resChar w : ℕ) : ℂ)⁻¹ 0 := by
-  rw [← map_natCast D.what₂.embLL, ← map_inv₀, valGe_emb, vAdd_inv, vAdd_resChar]
-  have h : ((D.what₂.places.resChar w : ℕ) : D.what₂.LL) ≠ 0 := Nat.cast_ne_zero.2 (D.what₂.places.resChar_prime w).ne_zero
-  have := D.what₂.places.ramIdx_pos w
-  simp [h]; omega
 
-theorem not_valGe_of_notMem (w : D.what₂.places.Pl) {z : ℂ} (hz : z ∉ Set.range D.what₂.embLL) (s : ℝ) : ¬ ValGe D w z s :=
-  fun ⟨y, hy, _⟩ => hz ⟨y, hy⟩
 
-theorem valGe_ceil (w : D.what₂.places.Pl) (z : ℂ) (s : ℝ) : ValGe D w z s ↔ ValGe D w z ((⌈s⌉ : ℤ) : ℝ) := by
-  unfold ValGe
-  simp only [Int.cast_le, Int.ceil_le]
 
-theorem valGe_mono {w : D.what₂.places.Pl} {z : ℂ} {s t : ℝ} (hst : t ≤ s) (h : ValGe D w z s) : ValGe D w z t :=
-  let ⟨y, hy, hv⟩ := h
-  ⟨y, hy, hv.imp id hst.trans⟩
 
 theorem valGe_mul {w : D.what₂.places.Pl} {z z' : ℂ} {s t : ℝ} (h : ValGe D w z s) (h' : ValGe D w z' t) :
     ValGe D w (z * z') (s + t) := by
@@ -90,42 +60,8 @@ theorem valGe_add {w : D.what₂.places.Pl} {z z' : ℂ} {s : ℝ} (h : ValGe D 
   obtain ⟨y', rfl, hv'⟩ := h'
   exact ⟨y + y', map_add _ _ _, WeightDegreeSizes.pair_add_ge D w hv hv'⟩
 
-theorem valGe_of_mem_intW {w : D.what₂.places.Pl} (a : intW D.what₂.places w) : ValGe D w (D.what₂.embLL a) 0 := by
-  rw [valGe_emb]
-  by_cases h : (a : D.what₂.LL) = 0
-  · exact Or.inl h
-  right
-  have h1 : (0 : WithTop ℤ) ≤ D.what₂.places.val w a := a.2
-  rw [D.val_eq w _ h] at h1
-  exact_mod_cast h1
 
-theorem pairInt_of (h1 : PtInt D u) (h2 : PeriodInt D u) (w : D.what₂.places.Pl) : PairInt D u w := by
-  obtain ⟨hR, hI⟩ := h1
-  intro z hz F hF
-  induction hz using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨y, hy, hv⟩ := h2 _ (hI x hx) F hF
-    rw [(D.fm u).PtL_spec] at hy
-    exact ⟨y, hy, hv w⟩
-  | zero => exact ⟨0, by simp [PeriodMap.Ptil], Or.inl rfl⟩
-  | add x y _ _ hx hy =>
-    have := valGe_add hx hy
-    simpa [PeriodMap.Ptil] using this
-  | smul a x _ hx =>
-    have := valGe_mul (valGe_of_mem_intW a) hx
-    rw [zero_add] at this
-    have e : a • x = (a : D.what₂.LL) • x := rfl
-    rw [e, LinearMap.map_smulₛₗ]
-    simpa [PeriodMap.Ptil] using this
 
-theorem perGeOn_of {N : Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V} {w : D.what₂.places.Pl} {s : ℝ}
-    (h1 : ColGeOn D u N w s) (h2 : PairInt D u w) :
-    PerGeOn D u N w ((D.what₂.places.ramIdx w : ℝ) * (s - vGam D u w)) := by
-  intro φ hφ F hF
-  obtain ⟨y, hy, a, z, hz, rfl, ha⟩ := h1 φ hφ
-  have := valGe_mul ((valGe_emb w a _).2 ha) (h2 z hz F hF)
-  rw [D.perCol_base_eq_PtilCol, D.nuIn_jN, PeriodMap.PtilCol, ← hy, LinearMap.map_smulₛₗ, mul_sub, sub_eq_add_neg]
-  simpa [PeriodMap.Ptil] using this
 
 theorem per_smul (a : D.what₂.LL) (φ : (D.div.Nu u).V) (F : D.what₂.Amb D.what₂.mu0) :
     D.what₂.perCol u D.what₂.mu0 (D.jN u (a • φ)) F = D.what₂.embLL a * D.what₂.perCol u D.what₂.mu0 (D.jN u φ) F := by
@@ -278,80 +214,7 @@ theorem gen_mem (μ : D.what₂.Tup) {v : D.what₂.Amb μ} (hv : v ∈ (D.what�
   rw [Finset.sum_eq_single v (fun b _ hb => by simp [hb]) (fun h => (h hv).elim)]
   simp
 
-theorem perIntOnAmb_iff (A : AmbForm D (RowSide.sharp D)) (N : Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V) :
-    PerIntOnAmb D u A N ↔ PerIntOn D u N := by
-  have lin : ∀ (φ : D.what₂.Mu u) (s : Finset (D.what₂.Amb D.what₂.mu0)) (c : D.what₂.Amb D.what₂.mu0 → ℂ),
-      D.what₂.perCol u D.what₂.mu0 φ (∑ v ∈ s, c v • v) = ∑ v ∈ s, c v * D.what₂.perCol u D.what₂.mu0 φ v := by
-    intro φ s c
-    simp [D.perCol_base_eq_PtilCol, PeriodMap.PtilCol, PeriodMap.Ptil]
-  constructor
-  · intro h φ hφ F hF
-    obtain ⟨c, rfl⟩ := hF
-    have hg : ∀ v : D.what₂.Amb D.what₂.mu0, ∃ y : 𝓞 D.what₂.LL, v ∈ (D.what₂.Mtilde D.what₂.mu0).gen →
-        D.what₂.embLL (y : D.what₂.LL) = D.what₂.perCol u D.what₂.mu0 (D.jN u φ) v := fun v => by
-      classical
-      by_cases hv : v ∈ (D.what₂.Mtilde D.what₂.mu0).gen
-      · obtain ⟨x, hx⟩ := A.jAmb_gen _ (Or.inl rfl) v hv
-        have hxL : x ∈ (A.MtH D.what₂.mu0).L := by
-          refine (A.jAmb_lat _ (Or.inl rfl) x).2 ⟨fun x => if x = v then 1 else 0, ?_⟩
-          rw [hx]
-          symm
-          refine (Finset.sum_eq_single (v : (RowSide.sharp D).Amb D.what₂.mu0) (fun b _ hb => ?_) (fun h => (h hv).elim)).trans ?_
-          · beta_reduce
-            erw [if_neg hb]; simp; exact zero_smul ℂ (b : D.what₂.Amb D.what₂.mu0)
-          · beta_reduce
-            erw [if_pos rfl]; simp; exact one_smul ℂ (v : D.what₂.Amb D.what₂.mu0)
-        obtain ⟨y, hy⟩ := h φ hφ x hxL
-        exact ⟨y, fun _ => hx ▸ hy⟩
-      · exact ⟨0, fun h => (hv h).elim⟩
-    choose y hy using hg
-    refine ⟨∑ v ∈ (D.what₂.Mtilde D.what₂.mu0).gen, (show 𝓞 D.what₂.LL from ⟨D.what₂.OtoLL (c v), D.O_int (c v)⟩) * y v, ?_⟩
-    rw [lin]
-    rw [show ∀ t : 𝓞 D.what₂.LL, (t : D.what₂.LL) = algebraMap (𝓞 D.what₂.LL) D.what₂.LL t from fun _ => rfl, map_sum, map_sum]
-    refine Finset.sum_congr rfl fun v hv => ?_
-    rw [map_mul, map_mul, ← hy v hv]
-    rfl
-  · intro h φ hφ z hz
-    obtain ⟨c, hc⟩ := (A.jAmb_lat _ (Or.inl rfl) z).1 hz
-    have hg : ∀ v : D.what₂.Amb D.what₂.mu0, ∃ y : 𝓞 D.what₂.LL, v ∈ (D.what₂.Mtilde D.what₂.mu0).gen →
-        D.what₂.embLL (y : D.what₂.LL) = D.what₂.perCol u D.what₂.mu0 (D.jN u φ) v := fun v => by
-      by_cases hv : v ∈ (D.what₂.Mtilde D.what₂.mu0).gen
-      · obtain ⟨y, hy⟩ := h φ hφ v (gen_mem _ hv)
-        exact ⟨y, fun _ => hy⟩
-      · exact ⟨0, fun h => (hv h).elim⟩
-    choose y hy using hg
-    refine ⟨∑ v ∈ (D.what₂.Mtilde D.what₂.mu0).gen, c v * y v, ?_⟩
-    rw [hc]
-    refine Eq.trans ?_ (lin _ _ _).symm
-    rw [show ∀ t : 𝓞 D.what₂.LL, (t : D.what₂.LL) = algebraMap (𝓞 D.what₂.LL) D.what₂.LL t from fun _ => rfl, map_sum, map_sum]
-    refine Finset.sum_congr rfl fun v hv => ?_
-    rw [map_mul, map_mul, ← hy v hv]
 
-theorem le_zero_of_functional {V : Type} [AddCommGroup V] [Module D.what₂.LL V] [Module (𝓞 D.what₂.LL) V]
-    (Λ : Submodule (𝓞 D.what₂.LL) V) (l : V →ₗ[D.what₂.LL] D.what₂.LL)
-    (hl : ∀ x ∈ Λ, ∃ c : 𝓞 D.what₂.LL, l x = (c : D.what₂.LL)) (w : D.what₂.places.Pl) {a : D.what₂.LL} {x : V}
-    (hx : x ∈ locW D.what₂.places w Λ) (h1 : l (a • x) = 1) {s : ℝ}
-    (ha : a = 0 ∨ (D.what₂.places.ramIdx w : ℝ) * s ≤ (vAdd (D.plEq w) a : ℝ)) : s ≤ 0 := by
-  have he : (0 : ℝ) < D.what₂.places.ramIdx w := by exact_mod_cast D.what₂.places.ramIdx_pos w
-  have h3 : ValGe D w (D.what₂.embLL (l x)) 0 := by
-    clear h1
-    induction hx using Submodule.span_induction with
-    | mem x hx =>
-      obtain ⟨c, hc⟩ := hl x hx
-      rw [hc]; exact valGe_of_int w c
-    | zero => exact ⟨0, by simp, Or.inl rfl⟩
-    | add x y _ _ hx hy =>
-      rw [map_add, map_add]; exact valGe_add hx hy
-    | smul b x _ hx =>
-      have := valGe_mul (valGe_of_mem_intW b) hx
-      rw [show b • x = (b : D.what₂.LL) • x from rfl, map_smul, smul_eq_mul, map_mul]
-      rwa [add_zero] at this
-  have h4 := valGe_mul ((valGe_emb w a _).2 ha) h3
-  rw [map_smul, smul_eq_mul] at h1
-  rw [← map_mul, add_zero, h1, valGe_emb] at h4
-  have h5 : (D.what₂.places.ramIdx w : ℝ) * s ≤ 0 := by simpa [vAdd] using h4
-  by_contra hs
-  nlinarith [not_le.1 hs]
 
 end General
 
@@ -426,25 +289,7 @@ variable (Lb : Lbl H) (hT2 : ∀ u, T u ≠ 2) (z : ℂ)
 
 local notation "DR" => (hostLevelRecord H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol (fun _ => oneCls nG hnG) T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw 1 1 1 le_rfl Unit (fun _ => ()) (fun _ => ()) Lb hT2 (fun _ _ => linePer z) NuL gat hgat)
 
-theorem fam_per (u : W) (φ : Unit → H.E) (F : En 1) :
-    (DR).what₂.perCol u (DR).what₂.mu0 ((DR).jN u φ) F = z * H.φ₀ (φ ()) * F 0 := by
-  show linePer z ((chainN (hcW u) (oneCls nG hnG)).col (eE _ (jE H.φ₀ φ))) F = _
-  rw [col_one, eE_jE]
-  rfl
 
-theorem fam_Mt (F : En 1) : F ∈ ((DR).what₂.Mtilde (DR).what₂.mu0).carrier ↔ ∃ c : 𝓞 H.E, F 0 = H.φ₀ (c : H.E) := by
-  show (∃ c : En 1 → 𝓞 H.E, F = ∑ v ∈ genB (eb 1), H.φ₀ (c v : H.E) • v) ↔ _
-  have hg : genB (eb 1) = {eb 1 0} := by
-    ext v; simp [genB, eq_comm]
-  rw [hg]
-  simp only [Finset.sum_singleton]
-  constructor
-  · rintro ⟨c, hc⟩
-    exact ⟨c (eb 1 0), by rw [hc]; simp⟩
-  · rintro ⟨c, hc⟩
-    refine ⟨fun _ => c, ?_⟩
-    ext i
-    rw [Subsingleton.elim i 0, hc]; simp
 
 theorem mem_std (K : Type) [Field K] [NumberField K] [StarRing K] (x : Unit → K) :
     x ∈ (stdHLat K Unit).L ↔ ∃ c : 𝓞 K, x () = (c : K) := by
@@ -456,70 +301,9 @@ theorem mem_std (K : Type) [Field K] [NumberField K] [StarRing K] (x : Unit → 
   · rintro ⟨c, hc⟩
     exact ⟨c, by funext i; cases i; simp [Algebra.smul_def, hc]⟩
 
-theorem fam_perGeOn (u : W) (w : (DR).what₂.places.Pl) (s : ℝ) :
-    PerGeOn DR u (DV.MramL DR u) w s ↔ ValGe DR w z s := by
-  letI : StarRing H.E := H.cmStar
-  constructor
-  · intro h
-    have := h (fun _ => 1) ((mem_std H.E _).2 ⟨1, rfl⟩) (eb 1 0) ((fam_Mt H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol nG hnG T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw Lb hT2 z NuL gat hgat _).2 ⟨1, by simp⟩)
-    have e := fam_per H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol nG hnG T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw Lb hT2 z NuL gat hgat u (fun _ => 1) (eb 1 0)
-    have e' : z * H.φ₀ ((fun _ => 1 : Unit → H.E) ()) * (eb 1 0 : En 1) 0 = z := by simp
-    exact (congrArg (fun t => ValGe DR w t s) (e.trans e')).mp this
-  · intro h φ hφ F hF
-    obtain ⟨a, ha⟩ := (mem_std H.E φ).1 hφ
-    obtain ⟨c, hc⟩ := (fam_Mt H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol nG hnG T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw Lb hT2 z NuL gat hgat F).1 hF
-    have e := fam_per H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol nG hnG T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw Lb hT2 z NuL gat hgat u φ F
-    rw [ha, hc] at e
-    have h1 := valGe_mul (valGe_mul h (valGe_of_int (D := DR) w a)) (valGe_of_int (D := DR) w c)
-    rw [add_zero, add_zero] at h1
-    exact (congrArg (fun t => ValGe DR w t s) e).mpr h1
 
-theorem fam_ptInt (u : W) : PtInt DR u := by
-  have h : ((DR).fm u).PRat := fun x => ⟨x, rfl⟩
-  refine ⟨h, fun x hx => ?_⟩
-  have : ((DR).fm u).PtL h x = x := ((DR).fm u).ptEmb_inj (((DR).fm u).PtL_spec h x)
-  rw [this]
-  exact hx
 
-theorem fam_periodInt (u : W) : PeriodInt DR u ↔
-    ∀ w : (DR).what₂.places.Pl, ValGe DR w z (-(((DR).what₂.places.ramIdx w : ℝ) * vGam DR u w)) := by
-  letI : StarRing H.E := H.cmStar
-  have e : ∀ (x : Unit → H.E) (F : En 1), ((DR).mem u).P.period (((DR).fm u).ptEmb x) (((DR).eMt u).symm F) =
-      z * H.φ₀ (x ()) * F 0 := fun _ _ => rfl
-  constructor
-  · intro h w
-    obtain ⟨y, hy, hv⟩ := h (fun _ => 1) ((mem_std H.E _).2 ⟨1, rfl⟩) (eb 1 0) ((fam_Mt H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol nG hnG T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw Lb hT2 z NuL gat hgat _).2 ⟨1, by simp⟩)
-    have e' : z * H.φ₀ ((fun _ => 1 : Unit → H.E) ()) * (eb 1 0 : En 1) 0 = z := by simp
-    exact ⟨y, hy.trans ((e _ _).trans e'), hv w⟩
-  · intro h x hx F hF
-    obtain ⟨a, ha⟩ := (mem_std H.E x).1 hx
-    obtain ⟨c, hc⟩ := (fam_Mt H u0 hcW hv0 hb0 he0 hf0 hl0 Del hDel hgap lt hlt hlet cdS hcdS dsg hdsg etaF hv vol hvol nG hnG T Dst hD du hdu Gam hG hwin hg ht hlev hpde pz hK hpz hcong lat hlat G kb ks tw htw Lb hT2 z NuL gat hgat F).1 hF
-    have e1 := e x F
-    rw [ha, hc] at e1
-    have h1 := fun w => valGe_mul (valGe_mul (h w) (valGe_of_int (D := DR) w a)) (valGe_of_int (D := DR) w c)
-    obtain ⟨w0⟩ := nonempty_place (D := DR)
-    obtain ⟨y, hy, -⟩ := h1 w0
-    refine ⟨y, hy.trans e1.symm, fun w => ?_⟩
-    have h2 := h1 w
-    rw [← hy, valGe_emb] at h2
-    simpa using h2
 
-theorem fam_colGeOn (u : W) (w : (DR).what₂.places.Pl) (s : ℝ) : ColGeOn DR u (DV.MramL DR u) w s ↔ s ≤ 0 := by
-  letI : StarRing H.E := H.cmStar
-  have he : (0 : ℝ) < (DR).what₂.places.ramIdx w := by exact_mod_cast (DR).what₂.places.ramIdx_pos w
-  have hcol : ∀ x : Unit → H.E, ((DR).mem u).C.col (((DR).fm u).emb 0 x) = ((DR).fm u).emb (DR).R.m x :=
-    fun x => col_one (hcW u) nG hnG _
-  constructor
-  · intro h
-    obtain ⟨y, hy, a, x, hx, rfl, ha⟩ := h (fun _ => 1) ((mem_std H.E _).2 ⟨1, rfl⟩)
-    have h1 : a • x = (fun _ => 1 : Unit → H.E) := ((DR).fm u).emb_inj _ (hy.trans (hcol _))
-    exact le_zero_of_functional (D := DR) (V := (((DR).fm u).lat (DR).R.m).V) _ (LinearMap.proj (R := H.E) (φ := fun _ : Unit => H.E) ())
-      (fun x hx => (mem_std H.E x).1 hx) w hx (congrFun h1 ()) ha
-  · intro hs φ hφ
-    refine ⟨φ, (hcol φ).symm, 1, φ, Submodule.subset_span hφ, (one_smul _ _).symm, Or.inr ?_⟩
-    have : vAdd ((DR).plEq w) (1 : (DR).what₂.LL) = 0 := by simp [vAdd]
-    rw [this]
-    simpa using mul_nonpos_of_nonneg_of_nonpos he.le hs
 
 end Family
 

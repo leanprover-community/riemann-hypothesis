@@ -267,49 +267,8 @@ theorem exists_frame {m : ℕ} (h : Lev l m) :
     have : (0 : ℝ) < l := by exact_mod_cast (Fact.out : l.Prime).pos
     exact absurd hn (zpow_pos this _).ne
 
-theorem htBasis_twist (G : Subgroup (GQ l)) : HTBasis actC chi G (Utw (l := l)) {-1} := by
-  refine ⟨fun _ _ => 1, fun _ => -1, ?_, fun _ => rfl, fun σ _ k => ?_⟩
-  · rw [linearIndependent_unique_iff]
-    intro h; exact one_ne_zero (congrFun h 0)
-  · ext a
-    simp [twAct, Utw, chiC, Matrix.mulVec, dotProduct]
 
-theorem zeta_mem_Xj (K : FinExt l) (j : ℕ) {ζ : PadicComplex l} (h : IsPrimitiveRoot ζ (l ^ (j + 1))) :
-    ζ ∈ Xj K j := by
-  apply AddSubgroup.le_topologicalClosure
-  refine (le_iSup₂_of_le (j + 1) (Nat.lt_succ_self j) le_rfl : Xlev K (j + 1) ≤ _) ?_
-  refine AddSubgroup.subset_closure ⟨ζ, 1, h, ⟨⟨1, one_mem _, rfl⟩, by simp⟩, (mul_one _).symm⟩
 
-theorem coc_twist (G : Subgroup (GQ l)) :
-    CobOn G (twAct actC chi 1 (fun _ => (1 : Matrix (Fin 1) (Fin 1) (PadicComplex l)))) (ball l 1)
-      (fun σ _ => chiC chi 1 σ - 1) ∧
-    CocOn G (twAct actC chi 1 (fun _ => (1 : Matrix (Fin 1) (Fin 1) (PadicComplex l)))) (ball l 1)
-      (fun σ _ => chiC chi 1 σ - 1) := by
-  refine ⟨⟨fun _ => 1, fun _ => by simp, fun g _ => ?_⟩, ?_, fun g _ a => ?_, fun g _ h _ => ?_⟩
-  · ext a; simp [twAct]
-  · refine Continuous.continuousOn (continuous_pi fun _ => Continuous.sub ?_ continuous_const)
-    change Continuous fun σ : GQ l => algebraMap ℚ_[l] (PadicComplex l) ((chi σ ^ (1 : ℤ) : ℚ_[l]ˣ) : ℚ_[l])
-    simp only [zpow_one]
-    exact (continuous_algebraMap ℚ_[l] (PadicComplex l)).comp chi_cont
-  · have h1 : ‖chiC chi 1 g‖ ≤ 1 := by
-      rw [chiC_one, PadicComplex.norm_extends', chi_val]
-      exact (chiZ g : ℤ_[l]).2
-    change ‖chiC chi 1 g - 1‖ ≤ 1
-    rw [sub_eq_add_neg]
-    exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le h1 (by simp))
-  · ext a
-    have h1 : actC g (chiC chi 1 h) = chiC chi 1 h := by
-      rw [chiC_one, isActC_actC.1, AlgEquiv.commutes]
-    have h2 : chiC chi 1 (g * h) = chiC chi 1 g * chiC chi 1 h := by simp [chiC]
-    simp only [twAct, Matrix.one_mulVec, Pi.add_apply, Pi.smul_apply, smul_eq_mul, map_sub, map_one, h1, h2]
-    ring
 
-theorem isActC_unique {a b : GQ l →* (PadicComplex l ≃+* PadicComplex l)} (ha : IsActC a)
-    (hb : IsActC b) : a = b := by
-  ext g y
-  induction y using UniformSpace.Completion.induction_on with
-  | hp => exact isClosed_eq (AddMonoidHomClass.isometry_of_norm (a g) (ha.2 g)).continuous
-            (AddMonoidHomClass.isometry_of_norm (b g) (hb.2 g)).continuous
-  | ih x => rw [ha.1, hb.1]
 
 end GlobalTheory.Cyc.Model

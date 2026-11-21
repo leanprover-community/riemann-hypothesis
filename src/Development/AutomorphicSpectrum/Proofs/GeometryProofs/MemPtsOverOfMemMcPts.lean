@@ -20,16 +20,335 @@ import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.RealCubicMeans.Log
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.CombLineHEqExp
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.SupMetricCombinationBound
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComponentNormConstantModels
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.UniformLawsRootModelBoundStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenericFormValuationEmbedding
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.UniformLawsRootModelBound
+import Development.AutomorphicSpectrum.Definitions.MetricPeriods.SectionInputs
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterNamed
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.ExistsUniqueStatement
+import Development.WeilBound.CoreStatements.RationalSupMetrics.ExistsFieldHomOnOpen
+import BuildAid.ForwardExisting
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FormOffVarietyMul
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.GoodTwistGoodTwist
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GoodOriginRootWeightBound
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CuspLatticeMulComponentSection
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PointValuesInValueSet
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LevelLawsSectionVolumeBound
+import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.YValComp
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.IndepPts
+import Development.WeilBound.CoreStatements.IntegralTransfer.PetTie
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.SpanResCharNeBot
 
+section
+open NumberField IsDedekindDomain MeasureTheory Filter Topology
+open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.ChartRestriction.G.AR.Inst Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
+open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Rec
+open scoped Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.uniform_laws_root_model_bound : (Top.Given → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] [IsGalois ℚ E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (r : ℕ) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r) (h : GenFrEx Xo c) (e : Comp Xo c → Rul Xo c), CompLaws U h e → Ref.UnifAll Xo c → ∀ (O : Type) [CommRing O] (β : O →+* c.F) (Y : Model Xo c β) (SS : Finset ℕ) (RM : Top.RootModel (CMType H) (Dw.p + Dw.q)) (Sys : PB.AnSys (Top.dimFl (CMType H) (Dw.p + Dw.q)) (Option (RootIx Dw))) (Fx : FixedData Y Sys) (Or : RootOrigin Y SS RM Fx) (Fr : Small.GenFrame Or) (Z : Comp Xo c) (Rd : Reading Fr h Z), Or.𝔐.OmVB → (∀ p : ℕ, p.Prime → (p : ℤ) ∣ discr E → p ∈ SS) → ∃ u : MRing RM.ι, Small.IsFormOff (mCoordIdeal RM.y) u ∧ ∀ (p : ℕ) [Fact p.Prime], ∀ z ∈ Small.algPts p (mCoordIdeal RM.y), MvPolynomial.aeval z u ≠ 0 → ∃ (la : HeightOneSpectrum (𝓞 c.F)) (y : (Ref.pjSys Xo c).Pt la) (rec : RootIx Dw → ℝ), (p : 𝓞 c.F) ∈ la.asIdeal ∧ (Ref.pjSys Xo c).val y (e Z) = 0 ∧ (∀ r', 0 < rec r' ∧ |Real.log (Small.supMet (RM.xdeg r') z) - Real.log (rec r')| ≤ (if p ∈ SS then 1 / ((p : ℝ) - 1) + (if p = 2 then 1 else 0) + (padicValInt p (discr E) : ℝ) / Module.finrank ℚ E else 0) * Real.log p) ∧ ∀ (a : WZ E) (n' : Option (RootIx Dw) → ℤ), (∀ j, (n' j : ℝ) = RM.coef (towerWt Dw a) 0 j) → ∀ f ∈ secZ Xo c a, ∃ v, Small.HasVal RM.y (Top.combLine (RM.line 1) n').a (Fr.rd f * (∏ r', Or.e r' ^ (-n' (some r')))) z v ∧ ((Ref.pjSys Xo c).val y f = ⊤ → v = 0) ∧ ∀ s : ℝ, (Ref.pjSys Xo c).val y f = ((ramOverZ la * s : ℝ) : EReal) → ‖v‖ = (p : ℝ) ^ (-s) * ∏ r', rec r' ^ n' (some r')) := by
+  first | exact @GlobalTheory.CompanionTheory.Ar.Rec.read_fin | exact GlobalTheory.CompanionTheory.Ar.Rec.read_fin | (intros; apply GlobalTheory.CompanionTheory.Ar.Rec.read_fin <;> assumption)
+end
+
+section
+section
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.Small Filter Topology
+
+namespace GlobalTheory.CompanionTheory.Ar.Small
+
+theorem exists_form_embedding_hasVal : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Ω : Type) [Field Ω] (y : (Σ k, ι k) → Ω) (F : Type) [Field F] [NumberField F] [Algebra F Ω], Birational y → IsRelevant (mCoordIdeal y) → ∃ h : MRing ι, IsFormOff (mCoordIdeal y) h ∧ ∀ (𝕜 : Type) [Field 𝕜] [CharZero 𝕜] (z : (Σ k, ι k) → 𝕜), z ∈ ptsOver 𝕜 (mCoordIdeal y) → aeval z h ≠ 0 → ∃ φ : F →+* 𝕜, ∀ θ : F, HasVal y 0 (algebraMap F Ω θ) z (φ θ) :=
+  @MultiProjectiveCoordinates.exists_field_hom_on_open
+
+end GlobalTheory.CompanionTheory.Ar.Small
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.Small Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.generic_form_valuation_embedding : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Ω : Type) [Field Ω] (y : (Σ k, ι k) → Ω) (F : Type) [Field F] [NumberField F] [Algebra F Ω], Birational y → IsRelevant (mCoordIdeal y) → ∃ h : MRing ι, IsFormOff (mCoordIdeal y) h ∧ ∀ (𝕜 : Type) [Field 𝕜] [CharZero 𝕜] (z : (Σ k, ι k) → 𝕜), z ∈ ptsOver 𝕜 (mCoordIdeal y) → aeval z h ≠ 0 → ∃ φ : F →+* 𝕜, ∀ θ : F, HasVal y 0 (algebraMap F Ω θ) z (φ θ) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Small.exists_form_embedding_hasVal
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Filter Topology
+open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.ChartRestriction.G.AR.Inst Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
+open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Rec
+open scoped Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.CompanionTheory.Relay.valuation_component_unique : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (r : ℕ) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r) (h : GenFrEx Xo c) (e : Comp Xo c → Rul Xo c), CompLaws U h e → (∀ la, ∀ v ∈ valSet Xo c (algCls Xo c) la, ∃ Z, v (e Z) = 0 ∧ ∀ Z', Z' ≠ Z → v (e Z') = ⊤ ∧ ∀ a, ∀ f ∈ cuspOn U h a Z', v f = ⊤) ∧ (∀ la Z, ∃ v ∈ valSet Xo c (algCls Xo c) la, v (e Z) = 0) ∧ ∀ a, (∀ Z, ∀ f ∈ cuspZ Xo c U a, e Z * f ∈ cuspOn U h a Z) ∧ ⨆ Z, cuspOn U h a Z = cuspZ Xo c U a := by
+  first | exact @PositivityTheory.UnitarySelfGeneration.y_val_comp | exact PositivityTheory.UnitarySelfGeneration.y_val_comp
+end
+
+open NumberField IsDedekindDomain MeasureTheory Filter Topology
+open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.ChartRestriction.G.AR.Inst Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
+open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Rec
+open scoped Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.valuation_component_unique : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (r : ℕ) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r) (h : GenFrEx Xo c) (e : Comp Xo c → Rul Xo c), CompLaws U h e → (∀ la, ∀ v ∈ valSet Xo c (algCls Xo c) la, ∃ Z, v (e Z) = 0 ∧ ∀ Z', Z' ≠ Z → v (e Z') = ⊤ ∧ ∀ a, ∀ f ∈ cuspOn U h a Z', v f = ⊤) ∧ (∀ la Z, ∃ v ∈ valSet Xo c (algCls Xo c) la, v (e Z) = 0) ∧ ∀ a, (∀ Z, ∀ f ∈ cuspZ Xo c U a, e Z * f ∈ cuspOn U h a Z) ∧ ⨆ Z, cuspOn U h a Z = cuspZ Xo c U a := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Relay.valuation_component_unique
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Filter Topology
+open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.ChartRestriction.G.AR.Inst Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
+open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Rec
+open scoped Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.Rec.LatMul
+
+theorem evI_of_isBC {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E}
+    {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l}
+    (hWD : EvalWD (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z)) (f : Rul Xo c)
+    (hf : IsNatural (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z) f)
+    {T T' : CDVR} {io : c.F →+* T.Fr} {φ : T.Fr →+* T'.Fr} (y : IntFr Xo c T io)
+    (z : IntFr Xo c T' (φ.comp io)) (h : Ref.IsBC φ y z) : evI z f = φ (evI y f) := by
+  letI := io.toAlgebra
+  letI := (φ.comp io).toAlgebra
+  obtain ⟨p, ψ, y0, h0⟩ := y.2.1
+  let φA : T.Fr →ₐ[c.F] T'.Fr := { φ with commutes' := fun _ => rfl }
+  have h1 : evI y f = ψ (f p y0) :=
+    ReciprocityTheory.ChartRestriction.G.PullbackSections.evalAt_eq_of (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z) hWD f hf p ψ y0 y.1 h0
+  have h2 : evI z f = (φA.comp ψ) (f p y0) :=
+    ReciprocityTheory.ChartRestriction.G.PullbackSections.evalAt_eq_of (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z) hWD f hf p (φA.comp ψ) y0 z.1
+      (ReciprocityTheory.ChartRestriction.G.PullbackSections.frMap_trans ψ φA h0 h)
+  rw [h2, h1]
+  rfl
+
+end GlobalTheory.CompanionTheory.Ar.Rec.LatMul
+
+open GlobalTheory.CompanionTheory.Ar.Rec.LatMul in
+
+theorem GlobalTheory.CompanionTheory.Ar.Rec.indicator_mul_mem_latOn : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (r : ℕ) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r) (h : GenFrEx Xo c) (e : Comp Xo c → Rul Xo c), CompLaws U h e → Ref.UnifAll Xo c → ∀ (a : WZ E) (Z : Comp Xo c) (w : Rul Xo c), w ∈ (Ref.pjSys Xo c).lat (cuspZ Xo c U a) → e Z * w ∈ latOn U h a Z := by
+  intro E _ _ _ H Dw l Xo c r U h e hL hU a Z w hw
+  have hI := GlobalTheory.T.valuation_component_unique E H Dw l Xo c r U h e hL
+  refine (mem_latIn _ _ _ _).2 ⟨(hI.2.2 a).1 Z w hw.1, ?_⟩
+  rintro la _ ⟨⟨q, T, io, e', ho, y, hy, eta, heta, rfl⟩, rfl⟩
+  have hv : ∃ Z₀, _ := hI.1 la _ ⟨⟨_, T, io, e', ho, y, hy, eta, heta, rfl⟩, rfl⟩
+  obtain ⟨T', φV, φ, r', z, t, hfin, hbc, hz, hphi⟩ := hU la T io e' ho y hy
+  have hw0 : (0 : EReal) ≤ nval T.V e' (evI y w) := by
+    have h0 := hw.2 la (show (Ref.pjSys Xo c).Pt la from PtV.mk la (hfin.overLa ho) z hz t hphi)
+    rw [Ref.pjSys_val_mk Xo c la (hfin.overLa ho) z hz t hphi w,
+      evI_of_isBC hL.evalWD w hw.1.1.1 y z hbc, hfin.nval_eq] at h0
+    exact h0
+  obtain ⟨Z₀, h0, h1⟩ := hv
+  let p : PtV Xo c (algCls Xo c) Unit (fun _ _ _ _ => True) la := PtV.mk la ho y hy eta heta
+  have hmul : vAtV p (e Z * w) =
+      vAtV p (e Z) + nval T.V e' (evI y w) := vAtV_mul _ _ _
+  show (0 : EReal) ≤ vAtV p (e Z * w)
+  rw [hmul]
+  by_cases hZ : Z = Z₀
+  · subst hZ
+    have h0' : vAtV p (e Z) = 0 := h0
+    rw [h0', zero_add]
+    exact hw0
+  · have h1' : vAtV p (e Z) = ⊤ := (h1 Z hZ).1
+    rw [h1', EReal.top_add_of_ne_bot (nval_ne_bot _ _)]
+    exact le_top
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Filter Topology
+open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.ChartRestriction.G.AR.Inst Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
+open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Rec
+open scoped Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cusp_lattice_mul_component_section : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (r : ℕ) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r) (h : GenFrEx Xo c) (e : Comp Xo c → Rul Xo c), CompLaws U h e → Ref.UnifAll Xo c → ∀ (a : WZ E) (Z : Comp Xo c) (w : Rul Xo c), w ∈ (Ref.pjSys Xo c).lat (cuspZ Xo c U a) → e Z * w ∈ latOn U h a Z := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Rec.indicator_mul_mem_latOn
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Filter Topology
+open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.ChartRestriction.G.AR.Inst Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
+open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Rec
+open scoped Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.CompanionTheory.Ar.Rec
+
+theorem val_mem_valSet_of_uniformised : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (la : HeightOneSpectrum (𝓞 c.F)) (y : (Ref.pjSys Xo c).Pt la), (fun f => (Ref.pjSys Xo c).val y f) ∈ valSet Xo c (algCls Xo c) la := by
+  intro E _ _ _ H Dw l Xo c la y
+  obtain ⟨q, T, io, e, ho, z, hz, t, ht, rfl⟩ := y
+  exact ⟨PtV.mk (cls := algCls Xo c) (PY := Unit) (lies := fun _ _ _ _ => True) la ho z hz () trivial, rfl⟩
+
+end GlobalTheory.CompanionTheory.Ar.Rec
+end
+
+open NumberField IsDedekindDomain MeasureTheory Filter Topology
+open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.ChartRestriction.G.AR.Inst Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
+open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Rec
+open scoped Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.point_values_in_value_set : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (la : HeightOneSpectrum (𝓞 c.F)) (y : (Ref.pjSys Xo c).Pt la), (fun f => (Ref.pjSys Xo c).val y f) ∈ valSet Xo c (algCls Xo c) la := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Rec.val_mem_valSet_of_uniformised
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Filter Topology
+open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.ChartRestriction.G.AR.Inst Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
+open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Rec
+open scoped Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.CompanionTheory.Relay.level_laws_frame_dictionary : ∀ (D : D7) (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ D.R.r) (h : GenFrEx Xo c) (e : Comp Xo c → Rul Xo c) (W : HSp D) (dict : ∀ σ : c.F →+* ℂ, GA D W → Σ k, Frame ((U σ).X k).Ψ D.R.r), CompLaws U h e → abelian₂.LevelLaws U W dict → FinVol W → ∀ σ, GoodEmb c σ → ∀ Z k, Over (U σ) (e Z) k → ∀ (a : WZ D.host.E) (x0 : Frame ((U σ).X k).Ψ D.R.r) (FF : Set (ReciprocityTheory.L2DbarEstimates.V (nd ((U σ).X k)))), IsOrth ((U σ).X k) x0 → IsFundSet ((U σ).X k) x0 FF → (0 < muF ((U σ).X k) x0 FF ∧ muF ((U σ).X k) x0 FF < ⊤) ∧ (∀ f ∈ cuspOn U h a Z, ∀ g ∈ cuspOn U h a Z, ipOn U W dict (xiR D) a (e Z) σ f g = ((lieFacZ Dw (xiR D) a ^ 2 : ℝ) : ℂ) * Deg.pet ((U σ).X k) (laZ (U σ) a k) (rdU (U σ) f k) (rdU (U σ) g k)) ∧ ∀ (m : ℕ) (as : Fin m → ℂ) (fs : Fin m → Rul Xo c), (∀ j, fs j ∈ cuspOn U h a Z) → (∑ j, ∑ j', as j * starRingEnd ℂ (as j') * ipOn U W dict (xiR D) a (e Z) σ (fs j) (fs j')).re = lieFacZ Dw (xiR D) a ^ 2 * ThA.nrm2 ((U σ).X k) x0 FF (laZ (U σ) a k) (fun y => ∑ j, as j * rdU (U σ) (fs j) k y) := by
+  first | exact @PositivityTheory.Xgy.pet_tie | exact PositivityTheory.Xgy.pet_tie
+end
+
+open NumberField IsDedekindDomain MeasureTheory Filter Topology
+open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.ChartRestriction.G.AR.Inst Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
+open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Rec
+open scoped Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.level_laws_frame_dictionary : ∀ (D : D7) (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ D.R.r) (h : GenFrEx Xo c) (e : Comp Xo c → Rul Xo c) (W : HSp D) (dict : ∀ σ : c.F →+* ℂ, GA D W → Σ k, Frame ((U σ).X k).Ψ D.R.r), CompLaws U h e → abelian₂.LevelLaws U W dict → FinVol W → ∀ σ, GoodEmb c σ → ∀ Z k, Over (U σ) (e Z) k → ∀ (a : WZ D.host.E) (x0 : Frame ((U σ).X k).Ψ D.R.r) (FF : Set (ReciprocityTheory.L2DbarEstimates.V (nd ((U σ).X k)))), IsOrth ((U σ).X k) x0 → IsFundSet ((U σ).X k) x0 FF → (0 < muF ((U σ).X k) x0 FF ∧ muF ((U σ).X k) x0 FF < ⊤) ∧ (∀ f ∈ cuspOn U h a Z, ∀ g ∈ cuspOn U h a Z, ipOn U W dict (xiR D) a (e Z) σ f g = ((lieFacZ Dw (xiR D) a ^ 2 : ℝ) : ℂ) * Deg.pet ((U σ).X k) (laZ (U σ) a k) (rdU (U σ) f k) (rdU (U σ) g k)) ∧ ∀ (m : ℕ) (as : Fin m → ℂ) (fs : Fin m → Rul Xo c), (∀ j, fs j ∈ cuspOn U h a Z) → (∑ j, ∑ j', as j * starRingEnd ℂ (as j') * ipOn U W dict (xiR D) a (e Z) σ (fs j) (fs j')).re = lieFacZ Dw (xiR D) a ^ 2 * ThA.nrm2 ((U σ).X k) x0 FF (laZ (U σ) a k) (fun y => ∑ j, as j * rdU (U σ) (fs j) k y) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Relay.level_laws_frame_dictionary
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Filter Topology
+open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.ChartRestriction.G.AR.Inst Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
+open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Rec
+open scoped Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.CompanionTheory.Ar.Rec.BergDual
+
+theorem re_twist (g : ℂ →+* ℂ) (hg : g = RingHom.id ℂ ∨ g = starRingEnd ℂ) {n : ℕ} (b : Fin n → ℂ)
+    (M : Fin n → Fin n → ℂ) :
+    (∑ j, ∑ j', g (b j) * starRingEnd ℂ (g (b j')) * g (M j j')).re =
+      (∑ j, ∑ j', b j * starRingEnd ℂ (b j') * M j j').re := by
+  rcases hg with rfl | rfl
+  · simp
+  · have e : (∑ j, ∑ j', starRingEnd ℂ (b j) * starRingEnd ℂ (starRingEnd ℂ (b j')) * starRingEnd ℂ (M j j')) =
+        starRingEnd ℂ (∑ j, ∑ j', b j * starRingEnd ℂ (b j') * M j j') := by
+      simp only [map_sum, map_mul]
+    rw [e, Complex.conj_re]
+
+theorem sqrt_le_of_bounds {t N A pn hh lf : ℝ} (hN : 0 < N) (h1 : t * N ≤ (A * pn) ^ 2)
+    (h2 : A ^ 2 ≤ lf ^ 2 * N * hh ^ 2) (hlf : 0 < lf) (hpn : 0 < pn) (hh0 : 0 < hh) :
+    Real.sqrt t ≤ lf * pn * hh := by
+  rw [Real.sqrt_le_left (by positivity)]
+  have h3 : t * N ≤ (lf * pn * hh) ^ 2 * N := by
+    calc t * N ≤ (A * pn) ^ 2 := h1
+      _ = A ^ 2 * pn ^ 2 := by ring
+      _ ≤ (lf ^ 2 * N * hh ^ 2) * pn ^ 2 := by gcongr
+      _ = (lf * pn * hh) ^ 2 * N := by ring
+  exact le_of_mul_le_mul_right h3 hN
+
+theorem goodOf_goodOf {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E}
+    {l : Level H} (c : Coeff l) (σ : c.F →+* ℂ) : goodOf c (goodOf c σ) = goodOf c σ := by
+  exact if_pos (goodEmb_goodOf c σ)
+
+theorem goodTwist_cases {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E}
+    {l : Level H} (c : Coeff l) (σ : c.F →+* ℂ) :
+    Small.goodTwist c σ = RingHom.id ℂ ∨ Small.goodTwist c σ = starRingEnd ℂ := by
+  unfold Small.goodTwist
+  split_ifs
+  · exact Or.inl rfl
+  · exact Or.inr rfl
+
+end GlobalTheory.CompanionTheory.Ar.Rec.BergDual
+
+open GlobalTheory.CompanionTheory.Ar.Rec.BergDual in
+
+theorem GlobalTheory.CompanionTheory.Ar.Rec.berg_dual : ∀ (D : D7) (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ D.R.r) (h : GenFrEx Xo c) (e : Comp Xo c → Rul Xo c) (W : HSp D) (dict : ∀ σ : c.F →+* ℂ, GA D W → Σ k, Frame ((U σ).X k).Ψ D.R.r), CompLaws U h e → abelian₂.LevelLaws U W dict → FinVol W → ∀ (a₁ : WZ D.host.E) (Z : Comp Xo c) (n : ℕ) (ω : Fin n → Rul Xo c) (I : Type) [Fintype I] (L : HermLine (fun _ : Unit => I)) (ei : I ≃ Fin n), OntoZ U h e a₁ Z → Submodule.span c.F (Set.range ω) = cuspOn U h a₁ Z → ∀ (σ : c.F →+* ℂ) (k : (U (goodOf c σ)).Comp) (y : Frame ((U (goodOf c σ)).X k).Ψ D.R.r) (lin : Rul Xo c →ₛₗ[σ] ℂ), (∀ f, lin f = Small.goodTwist c σ (rdU (U (goodOf c σ)) f k y)) → (∀ as : Fin n → ℂ, ‖∑ j, as j * lin (ω j)‖ ^ 2 ≤ (∑ j, ∑ j', as j * starRingEnd ℂ (as j') * ipOn U W dict (xiR D) a₁ (e Z) σ (ω j) (ω j')).re * L.h (fun x => lin (ω (ei x.2))) ^ 2) → Over (U (goodOf c σ)) (e Z) k → y ∈ ((U (goodOf c σ)).X k).dom → ∀ (x0 : Frame ((U (goodOf c σ)).X k).Ψ D.R.r) (FF : Set (ReciprocityTheory.L2DbarEstimates.V (nd ((U (goodOf c σ)).X k)))) (t : ℝ), IsOrth ((U (goodOf c σ)).X k) x0 → IsFundSet ((U (goodOf c σ)).X k) x0 FF → 0 < t → ThA.BergLB ((U (goodOf c σ)).X k) x0 FF (laZ (U (goodOf c σ)) a₁ k) y t → (∃ j, lin (ω j) ≠ 0) ∧ 0 < ((U (goodOf c σ)).X k).pnorm (laZ (U (goodOf c σ)) a₁ k) (fun _ => 1) y ∧ Real.sqrt t ≤ lieFacZ Dw (xiR D) a₁ * ((U (goodOf c σ)).X k).pnorm (laZ (U (goodOf c σ)) a₁ k) (fun _ => 1) y * L.h (fun x => lin (ω (ei x.2))) := by
+  intro D H Dw l Xo c U h e W dict hL hLev hV a₁ Z n ω I _ L ei hOn hsp σ k y lin hlin hmet hOver hy x0 FF t hO hF ht hB
+  have hg := goodEmb_goodOf c σ
+  obtain ⟨P, hP, hN, hPy⟩ := hB
+  obtain ⟨-, -, hTie⟩ := GlobalTheory.T.level_laws_frame_dictionary D H Dw l Xo c U h e W dict hL hLev hV (goodOf c σ) hg Z k hOver a₁ x0 FF hO hF
+  obtain ⟨m, as, fs, hfs, hPeq⟩ := hOn (goodOf c σ) hg k hOver P hP
+  have hω : ∀ j, ω j ∈ cuspOn U h a₁ Z := fun j => hsp ▸ Submodule.subset_span ⟨j, rfl⟩
+  have hb : ∀ i, ∃ b : Fin n → c.F, ∑ j, b j • ω j = fs i := fun i =>
+    (Submodule.mem_span_range_iff_exists_fun c.F).1 (hsp ▸ hfs i)
+  choose b hb using hb
+  obtain ⟨as', has'⟩ : ∃ as' : Fin n → ℂ, as' = fun j => ∑ i, as i * goodOf c σ (b i j) := ⟨_, rfl⟩
+  have hQ : ∀ x ∈ ((U (goodOf c σ)).X k).dom, P x = ∑ j, as' j * rdU (U (goodOf c σ)) (ω j) k x := by
+    intro x hx
+    rw [hPeq x hx]
+    have e1 : ∀ i, rdU (U (goodOf c σ)) (fs i) k x = ∑ j, goodOf c σ (b i j) * rdU (U (goodOf c σ)) (ω j) k x := by
+      intro i
+      rw [← hb i, map_sum]
+      simp [Finset.sum_apply, map_smulₛₗ]
+    simp only [e1, has', Finset.mul_sum, Finset.sum_mul]
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun i _ => ?_
+    ring
+  have hnrm : ThA.nrm2 ((U (goodOf c σ)).X k) x0 FF (laZ (U (goodOf c σ)) a₁ k) P =
+      ThA.nrm2 ((U (goodOf c σ)).X k) x0 FF (laZ (U (goodOf c σ)) a₁ k)
+        (fun y => ∑ j, as' j * rdU (U (goodOf c σ)) (ω j) k y) := by
+    unfold ThA.nrm2
+    congr 1
+    refine setIntegral_congr_fun hF.1 fun z hz => ?_
+    simp only [Data.pnorm]
+    rw [hQ _ (hF.2.1 hz)]
+  have hT := hTie n as' ω hω
+  rw [← hnrm] at hT
+  have hm := hmet (fun j => Small.goodTwist c σ (as' j))
+  have hip : ∀ f g, ipOn U W dict (xiR D) a₁ (e Z) σ f g =
+      Small.goodTwist c σ (ipOn U W dict (xiR D) a₁ (e Z) (goodOf c σ) f g) := by
+    intro f g
+    unfold ipOn
+    simp only [goodOf_goodOf, if_pos hg]
+    unfold Small.goodTwist
+    split_ifs <;> rfl
+  have hsum : ∑ j, Small.goodTwist c σ (as' j) * lin (ω j) =
+      Small.goodTwist c σ (P y) := by
+    rw [hQ y hy, map_sum]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [hlin, map_mul]
+  have hre : (∑ j, ∑ j', Small.goodTwist c σ (as' j) * starRingEnd ℂ (Small.goodTwist c σ (as' j')) *
+      ipOn U W dict (xiR D) a₁ (e Z) σ (ω j) (ω j')).re = lieFacZ Dw (xiR D) a₁ ^ 2 *
+        ThA.nrm2 ((U (goodOf c σ)).X k) x0 FF (laZ (U (goodOf c σ)) a₁ k) P := by
+    simp only [hip]
+    rw [re_twist _ (goodTwist_cases c σ), hT]
+  rw [hsum, Small.norm_goodTwist, hre] at hm
+  have hpn : ∀ Q : Frame ((U (goodOf c σ)).X k).Ψ D.R.r → ℂ,
+      ((U (goodOf c σ)).X k).pnorm (laZ (U (goodOf c σ)) a₁ k) Q y =
+        ‖Q y‖ * ((U (goodOf c σ)).X k).pnorm (laZ (U (goodOf c σ)) a₁ k) (fun _ => 1) y := by
+    intro Q
+    simp [Data.pnorm]
+  rw [hpn P] at hPy
+  have hpos : 0 < (‖P y‖ * ((U (goodOf c σ)).X k).pnorm (laZ (U (goodOf c σ)) a₁ k) (fun _ => 1) y) ^ 2 :=
+    lt_of_lt_of_le (mul_pos ht hN) hPy
+  have hne : ‖P y‖ * ((U (goodOf c σ)).X k).pnorm (laZ (U (goodOf c σ)) a₁ k) (fun _ => 1) y ≠ 0 := by
+    intro h0
+    rw [h0] at hpos
+    simp at hpos
+  have hPy0 : P y ≠ 0 := fun h0 => hne (by simp [h0])
+  have hpn0 : 0 < ((U (goodOf c σ)).X k).pnorm (laZ (U (goodOf c σ)) a₁ k) (fun _ => 1) y := by
+    have h1 : 0 ≤ ((U (goodOf c σ)).X k).pnorm (laZ (U (goodOf c σ)) a₁ k) (fun _ => 1) y := by
+      unfold Data.pnorm
+      positivity
+    exact lt_of_le_of_ne h1 fun h0 => hne (by rw [← h0, mul_zero])
+  obtain ⟨j, hj⟩ : ∃ j, lin (ω j) ≠ 0 := by
+    by_contra hc
+    push_neg at hc
+    have h0 : Small.goodTwist c σ (P y) = 0 := by
+      rw [← hsum]
+      simp [hc]
+    exact hPy0 ((map_eq_zero _).1 h0)
+  have hh0 : 0 < L.h (fun x => lin (ω (ei x.2))) :=
+    L.pos _ fun _ => ⟨ei.symm j, by simpa using hj⟩
+  refine ⟨⟨j, hj⟩, hpn0, ?_⟩
+  exact sqrt_le_of_bounds hN hPy hm (Real.exp_pos _) hpn0 hh0
+end
+
+open NumberField IsDedekindDomain MeasureTheory Filter Topology
+open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.ChartRestriction.G.AR.Inst Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
+open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Rec
+open scoped Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sqrt_bergman_lower_bound_le_pnorm_mul_height : ∀ (D : D7) (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ D.R.r) (h : GenFrEx Xo c) (e : Comp Xo c → Rul Xo c) (W : HSp D) (dict : ∀ σ : c.F →+* ℂ, GA D W → Σ k, Frame ((U σ).X k).Ψ D.R.r), CompLaws U h e → abelian₂.LevelLaws U W dict → FinVol W → ∀ (a₁ : WZ D.host.E) (Z : Comp Xo c) (n : ℕ) (ω : Fin n → Rul Xo c) (I : Type) [Fintype I] (L : HermLine (fun _ : Unit => I)) (ei : I ≃ Fin n), OntoZ U h e a₁ Z → Submodule.span c.F (Set.range ω) = cuspOn U h a₁ Z → ∀ (σ : c.F →+* ℂ) (k : (U (goodOf c σ)).Comp) (y : Frame ((U (goodOf c σ)).X k).Ψ D.R.r) (lin : Rul Xo c →ₛₗ[σ] ℂ), (∀ f, lin f = Small.goodTwist c σ (rdU (U (goodOf c σ)) f k y)) → (∀ as : Fin n → ℂ, ‖∑ j, as j * lin (ω j)‖ ^ 2 ≤ (∑ j, ∑ j', as j * starRingEnd ℂ (as j') * ipOn U W dict (xiR D) a₁ (e Z) σ (ω j) (ω j')).re * L.h (fun x => lin (ω (ei x.2))) ^ 2) → Over (U (goodOf c σ)) (e Z) k → y ∈ ((U (goodOf c σ)).X k).dom → ∀ (x0 : Frame ((U (goodOf c σ)).X k).Ψ D.R.r) (FF : Set (ReciprocityTheory.L2DbarEstimates.V (nd ((U (goodOf c σ)).X k)))) (t : ℝ), IsOrth ((U (goodOf c σ)).X k) x0 → IsFundSet ((U (goodOf c σ)).X k) x0 FF → 0 < t → ThA.BergLB ((U (goodOf c σ)).X k) x0 FF (laZ (U (goodOf c σ)) a₁ k) y t → (∃ j, lin (ω j) ≠ 0) ∧ 0 < ((U (goodOf c σ)).X k).pnorm (laZ (U (goodOf c σ)) a₁ k) (fun _ => 1) y ∧ Real.sqrt t ≤ lieFacZ Dw (xiR D) a₁ * ((U (goodOf c σ)).X k).pnorm (laZ (U (goodOf c σ)) a₁ k) (fun _ => 1) y * L.h (fun x => lin (ω (ei x.2))) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Rec.berg_dual
+end
+
+section
 open NumberField IsDedekindDomain MeasureTheory Filter Topology
 open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.ChartRestriction.G.AR.Inst Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
 open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Rec
@@ -645,3 +964,5 @@ theorem origin_small : Top.Given → ∀ (D : D7), IsGalois ℚ D.host.E → ∀
     exact hcinf
 
 end GlobalTheory.CompanionTheory.Ar.Rec
+end
+end

@@ -85,18 +85,6 @@ theorem exists_orthFrame (V : HSpace E) {n : ℕ} (hn : V.rank = n) (h : Formali
     rw [Module.Basis.mk_apply, h3]
     exact Submodule.subset_span ⟨a, rfl⟩
 
-theorem exists_gram_ne_one (V : HSpace E) (hr : 0 < V.rank) : ∃ b, (reframe V b).gram ≠ 1 := by
-  by_cases h : V.gram = 1
-  · refine ⟨V.frame.unitsSMul fun _ => Units.mk0 (2 : E) two_ne_zero, fun h' => ?_⟩
-    have h1 := congrFun (congrFun h ⟨0, hr⟩) ⟨0, hr⟩
-    have h2 : V.hT ((V.frame.unitsSMul fun _ => Units.mk0 (2 : E) two_ne_zero) ⟨0, hr⟩)
-        ((V.frame.unitsSMul fun _ => Units.mk0 (2 : E) two_ne_zero) ⟨0, hr⟩) = 1 :=
-      (congrFun (congrFun h' ⟨0, hr⟩) ⟨0, hr⟩).trans (Matrix.one_apply_eq _)
-    rw [Matrix.one_apply_eq, HSpace.gram] at h1
-    simp only [Module.Basis.unitsSMul_apply, Units.smul_def, Units.val_mk0, map_smul, LinearMap.map_smulₛₗ,
-      LinearMap.smul_apply, smul_eq_mul, h1, map_ofNat] at h2
-    norm_num at h2
-  · exact ⟨V.frame, h⟩
 
 end Space
 
@@ -131,28 +119,7 @@ theorem vStd_of_frameChoice : ∀ (D : D7) (i : Fin D.R.m), FrameChoice D i → 
   rw [SetLike.mem_coe, Submodule.mem_pi]
   exact (h.mem_iff x).trans ⟨fun k a _ => k a, fun k a => k a trivial⟩
 
-theorem vStd_iff_frameChoice (D : D7) (i : Fin D.R.m) : VStd D i ↔ FrameChoice D i := by
-  refine ⟨fun h => ?_, vStd_of_frameChoice D i⟩
-  obtain ⟨h1, h2⟩ := (vStd_iff_gram_and_lattice D i).1 h
-  refine ⟨fun a b => (congrFun (congrFun h1 a) b).trans Matrix.one_apply, fun a => ?_⟩
-  have h3 : (Pi.single a 1 : Fin (Vc D i).rank → D.host.E) ∈ L0c D (Vc D i) := by
-    rw [h2, SetLike.mem_coe, Submodule.mem_pi]
-    intro b _
-    by_cases hb : b = a
-    · subst hb
-      rw [Pi.single_eq_same]
-      exact Submodule.mem_one.2 ⟨1, map_one _⟩
-    · rw [Pi.single_eq_of_ne hb]
-      exact zero_mem _
-  have h4 : ∑ b, (Pi.single a 1 : Fin (Vc D i).rank → D.host.E) b • (Vc D i).frame b ∈ (Vc D i).L0 := h3
-  simpa [Pi.single_apply] using h4
 
-theorem vStd_of_eq_stdSpace (D : D7) (i : Fin D.R.m)
-    (hstar : ∀ x : D.host.E, IsIntegral ℤ x → IsIntegral ℤ (star x)) (n p q : ℕ)
-    (h : D.sp.V ((i : ℕ) + 1) = Examples₂.stdSpace hstar n (fun _ => false) p q) : VStd D i := by
-  refine vStd_of_frameChoice D i ?_
-  rw [FrameChoice, h]
-  exact orthFrame_stdSpace hstar n p q
 
 theorem nV_pos (R : Ranks) : 0 < R.nV := by
   have := R.rank_add_five_le
@@ -181,21 +148,6 @@ def reframeV (D : D7) (b : ∀ j, Module.Basis (Fin (D.sp.V j).rank) D.host.E (D
       V := fun j => reframe (D.sp.V j) (b j)
       V_sig := fun j => sigOK_reframe D.sp.cm.cmUnram.2.1 (D.sp.V_sig j) (b j) } }
 
-theorem exists_reframe_vStd (D : D7) (hpos : ∀ i : Fin D.R.m, D.sp.Vneg ((i : ℕ) + 1) = false) :
-    ∃ b, ∀ i : Fin D.R.m, VStd (reframeV D b) i := by
-  have key : ∀ j, ∃ b, 1 ≤ j → j ≤ D.R.m → OrthFrame (reframe (D.sp.V j) b) := by
-    intro j
-    by_cases hj : 1 ≤ j ∧ j ≤ D.R.m
-    · have h := D.sp.V_std j hj.1 hj.2
-      have hn : D.sp.Vneg j = false := by
-        have := hpos ⟨j - 1, by omega⟩
-        rwa [show j - 1 + 1 = j by omega] at this
-      rw [hn, if_neg Bool.false_ne_true] at h
-      obtain ⟨b, hb⟩ := exists_orthFrame _ (D.sp.V_rank j hj.1 hj.2) h
-      exact ⟨b, fun _ _ => hb⟩
-    · exact ⟨(D.sp.V j).frame, fun h1 h2 => absurd ⟨h1, h2⟩ hj⟩
-  choose b hb using key
-  exact ⟨b, fun i => vStd_of_frameChoice (reframeV D b) i (hb _ (by omega) i.2)⟩
 
 theorem neg_eq_false_of_posDef (D : D7) (i : Fin D.R.m) (h : (Vc D i).IsPosDef) :
     D.sp.Vneg ((i : ℕ) + 1) = false := by
@@ -206,18 +158,6 @@ theorem neg_eq_false_of_posDef (D : D7) (i : Fin D.R.m) (h : (Vc D i).IsPosDef) 
   have h2 := congrArg Prod.snd ((h D.host.φ₀).symm.trans h1)
   exact (nV_pos D.R).ne h2
 
-theorem exists_reframe_vStd_of_posDef (D : D7) (hpos : ∀ i : Fin D.R.m, (Vc D i).IsPosDef) :
-    ∃ b, ∀ i : Fin D.R.m, VStd (reframeV D b) i :=
-  exists_reframe_vStd D fun i => neg_eq_false_of_posDef D i (hpos i)
 
-theorem exists_reframe_not_vStd (D : D7) : ∃ b, ∀ i : Fin D.R.m, ¬ VStd (reframeV D b) i := by
-  have key : ∀ j, ∃ b, 1 ≤ j → j ≤ D.R.m → (reframe (D.sp.V j) b).gram ≠ 1 := by
-    intro j
-    by_cases hj : 1 ≤ j ∧ j ≤ D.R.m
-    · obtain ⟨b, hb⟩ := exists_gram_ne_one (D.sp.V j) (by rw [D.sp.V_rank j hj.1 hj.2]; exact nV_pos D.R)
-      exact ⟨b, fun _ _ => hb⟩
-    · exact ⟨(D.sp.V j).frame, fun h1 h2 => absurd ⟨h1, h2⟩ hj⟩
-  choose b hb using key
-  exact ⟨b, fun i h => hb _ (by omega) i.2 h.1⟩
 
 end GlobalTheory.StdFrame

@@ -531,8 +531,6 @@ def split_model_to_place_model (hs : EigenLatticeFibres.SplitsE E K) (σ₁ : K 
     | Sum.inl i => (polId_iff σ₁ (patOf Y.A Y.prinA) (patOf Y.B Y.prinB) _ (Y.lin i).1 _).1 (Y.pol i)
     | Sum.inr j => (polId_iff σ₁ (patOf Y.A' Y.prinA') (patOf Y.B Y.prinB) _ (Y.lin' j).1 _).1 (Y.pol' j)
 
-theorem toCMObj_ofCMObj (hs : EigenLatticeFibres.SplitsE E K) (σ₁ : K →+* ℂ) (Y : EigenLatticeFibres.CMObj H K ρ p q) :
-    toIndefiniteRowSideFullHecke (split_model_to_place_model hs σ₁ Y) = Y := rfl
 
 theorem pat_ext {S : Scheme.{0}} {T T' : PAT H S} (h : T.t = T'.t) (hg : T.g = T'.g) : T = T' := by
   cases T

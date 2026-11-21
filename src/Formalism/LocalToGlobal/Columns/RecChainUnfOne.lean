@@ -38,11 +38,6 @@ theorem unfTh_polFn (σ₀ : X.K →+* ℂ) (cD : X.Tau → ℂ) {a b : ℕ} (Θ
     unfTh σ₀ cD Θ (polFn σ₀ a Q) = polFn σ₀ b (jetMap (ι := X.Tau) (jetC cD Θ) (fun _ => 0) Q) := by
   simp only [unfTh_eq, LinearMap.comp_apply, polInv_polFn]
 
-theorem unfTh_apply (σ₀ : X.K →+* ℂ) (cD : X.Tau → ℂ) {a b : ℕ} (Θ : VCx X.Tau a b → ℂ) (Q : Pol ℂ X.Tau a) (y' : FrS X σ₀ b) :
-    unfTh σ₀ cD Θ (polFn σ₀ a Q) y' =
-      ∑ α ∈ (polDx cD (fun x : X.Tau × Fin b × Fin b => y'.1 x.1 x.2.1 x.2.2) Q).support,
-        coeff α (polDx cD (fun x : X.Tau × Fin b × Fin b => y'.1 x.1 x.2.1 x.2.2) Q) * derivAt0 Θ α := by
-  rw [unfTh_polFn, polFn_apply, jetMap_eval]
 
 theorem jetC_zero {ι : Type} [Fintype ι] {a b : ℕ} (cD : ι → ℂ) (Θ : VCx ι a b → ℂ) : jetC cD Θ 0 = Θ 0 := by
   have gen : ∀ (n : ℕ) (_ : n = 0) (v : Fin n → VCx ι a b), iteratedFDeriv ℂ n Θ 0 v = Θ 0 := by
@@ -52,14 +47,6 @@ theorem jetC_zero {ι : Type} [Fintype ι] {a b : ℕ} (cD : ι → ℂ) (Θ : V
   rw [Finsupp.prod_zero_index, one_mul]
   exact gen _ (by simp) _
 
-theorem unfTh_one (σ₀ : X.K →+* ℂ) (cD : X.Tau → ℂ) {a b : ℕ} (Θ : VCx X.Tau a b → ℂ) :
-    unfTh σ₀ cD Θ (fun _ : FrS X σ₀ a => (1 : ℂ)) = fun _ => Θ 0 := by
-  have h : (fun _ : FrS X σ₀ a => (1 : ℂ)) = polFn σ₀ a 1 := by
-    funext y
-    rw [polFn_apply, map_one]
-  rw [h, unfTh_polFn, jetMap_one, jetC_zero]
-  funext y'
-  rw [polFn_apply, eval_C]
 
 end Unf
 
@@ -202,16 +189,7 @@ def ChainArg.ofTheta {σ₀ : X.K →+* ℂ} {G : ChainGlob W σ₀} {u : Pr.Wor
   unf i L L' := unfTh σ₀ T.cD (T.Th i L L')
   unf_ev := h
 
-theorem recChain_unf_pol (hX : X.Ok) (σ₀ : X.K →+* ℂ) (G : ChainGlob W σ₀) (u : Pr.Word) (kk : ∀ i, ClsKer (stepGSD W Λ u i) (stepGSD W Λ u (i + 1)))
-    (T : ThetaDat W Λ u) (h : T.Comparison₂ G kk) (i : ℕ) (L : StCl W Λ u i) (L' : StCl W Λ u (i + 1)) (Q : Pol ℂ X.Tau (R.N i)) :
-    (recChain hX σ₀ G u (ChainArg.ofTheta kk T h)).unf i L L' (polFn σ₀ (R.N i) Q) =
-      polFn σ₀ (R.N (i + 1)) (jetMap (ι := X.Tau) (jetC T.cD (T.Th i L L')) (fun _ => 0) Q) :=
-  unfTh_polFn σ₀ T.cD (T.Th i L L') Q
 
-theorem recChain_unf_one (hX : X.Ok) (σ₀ : X.K →+* ℂ) (G : ChainGlob W σ₀) (u : Pr.Word) (kk : ∀ i, ClsKer (stepGSD W Λ u i) (stepGSD W Λ u (i + 1)))
-    (T : ThetaDat W Λ u) (h : T.Comparison₂ G kk) (i : ℕ) (L : StCl W Λ u i) (L' : StCl W Λ u (i + 1)) :
-    (recChain hX σ₀ G u (ChainArg.ofTheta kk T h)).unf i L L' (fun _ => 1) = fun _ => T.Th i L L' 0 :=
-  unfTh_one σ₀ T.cD (T.Th i L L')
 
 end Arg
 
@@ -339,31 +317,6 @@ def ChiDetTie (σ₀ : X.K →+* ℂ) (Dc : DetChr X R.m) (hc : Formalism.BasicN
 
 variable {W Λ Ch sel mu cst}
 
-theorem rhoScal_of {σ₀ : X.K →+* ℂ} (G : ChainGlob W σ₀) (Am : Amb X) (u : Pr.Word) (hc : Formalism.BasicNotions.CMData X.F X.E)
-    (h1 : MuDetTie W Λ Ch sel mu cst G.chr hc u) (h2 : ChiDetTie W Λ σ₀ G.chr hc Am u) : RhoScal W Λ Ch sel mu cst G Am u := by
-  intro i hi c c'
-  have a := h1 i hi i (Or.inl rfl) c
-  have b := h1 i hi (i + 1) (Or.inr rfl) c'
-  have e := h2 i hi c c'
-  unfold scalK
-  rw [← a, ← b]
-  unfold rhoK rhoK'
-  rw [dif_pos hc, dif_pos hc]
-  set A := Formalism.L2.DIV.detTw hc.sig (G.chr.muAt i) (repPt W Λ hc u i c)
-  set B := Formalism.L2.DIV.detTw hc.sig (G.chr.muAt i) (repPt W Λ hc u (i + 1) c')
-  set C := (Formalism.L2.DIV.detTw hc.sig G.chr.chi (repPt W Λ hc u i c)) ^ (-((R.N (i + 1) / 2 : ℕ) : ℤ))
-  set D := (Formalism.L2.DIV.detTw hc.sig G.chr.chi (repPt W Λ hc u (i + 1) c')) ^ (((R.N i / 2 : ℕ) : ℤ))
-  have e' : σ₀ (C : X.K) * σ₀ (D : X.K) * Am.chiF (R.N i) (R.N (i + 1)) (repN W Λ u i c) (repN W Λ u (i + 1) c') = 1 := by
-    rw [← map_mul, ← Units.val_mul]
-    exact e
-  have hB : (((B⁻¹ : X.Kˣ) : X.K))⁻¹ = (B : X.K) := by
-    rw [Units.val_inv_eq_inv_val, inv_inv]
-  rw [hB, Units.val_mul, Units.val_mul, map_mul, map_mul, map_mul]
-  calc σ₀ ((A⁻¹ : X.Kˣ) : X.K) * σ₀ (C : X.K) * (σ₀ (B : X.K) * σ₀ (D : X.K)) *
-        Am.chiF (R.N i) (R.N (i + 1)) (repN W Λ u i c) (repN W Λ u (i + 1) c')
-      = σ₀ ((A⁻¹ : X.Kˣ) : X.K) * σ₀ (B : X.K) *
-          (σ₀ (C : X.K) * σ₀ (D : X.K) * Am.chiF (R.N i) (R.N (i + 1)) (repN W Λ u i c) (repN W Λ u (i + 1) c')) := by ring
-    _ = σ₀ ((A⁻¹ : X.Kˣ) : X.K) * σ₀ (B : X.K) := by rw [e', mul_one]
 
 end Rho
 

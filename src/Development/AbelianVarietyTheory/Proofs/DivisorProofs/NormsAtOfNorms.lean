@@ -17,14 +17,6 @@ def FlagOfTriv {Z : Scheme.{0}} [IsIntegral Z] {N : ℕ} (g : Fin N → Pic Z) :
     ∀ z : Z, ∃ B : Matrix (Fin N) (Fin N) Z.functionField, B.BlockTriangular id ∧ (∀ a b, RegAt z ((A * B) a b)) ∧
       UnitAt z (A * B).det ∧ ∀ i c, z ∈ (G i).U c → UnitAt z (B i i * r i c)
 
-theorem flagOfTriv_zero (Z : Scheme.{0}) [IsIntegral Z] (N : ℕ) : FlagOfTriv (0 : Fin N → Pic Z) := by
-  refine ⟨fun _ => LB.triv Z, fun _ => LB.isLB_triv Z, fun _ _ => 1, 1, fun _ => rfl, fun _ a b h => ?_, fun z =>
-    ⟨1, Matrix.blockTriangular_one, fun a b => ?_, by simpa using unitAt_one z, fun i c _ => by simpa using unitAt_one z⟩⟩
-  · exact (map_one _).symm.trans (mul_one _).symm
-  · rw [mul_one, Matrix.one_apply]
-    split_ifs
-    · exact (unitAt_one z).regAt
-    · exact ⟨0, map_zero _⟩
 
 variable {F : Type} [Field F] [NumberField F] {Y : Var F}
 

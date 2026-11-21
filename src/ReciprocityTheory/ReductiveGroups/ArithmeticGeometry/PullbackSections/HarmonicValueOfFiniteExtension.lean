@@ -14,12 +14,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem nab_zCast {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
-    {Xo : Moduli Dw l} {c : Coeff l} (nab : NabV Xo c) {S : Type} [CommRing S] [Algebra c.F S] (y : FrPt Xo c S)
-    {k₁ k₂ : ℤ} (h : k₁ = k₂) (F : LB.Sec (LPow Xo.univ.t.G Xo.univ.t.PP.L k₁ (ptO Xo y.x))) (α : Lt1 Dw →₀ ℕ) :
-    nab y k₁ F α = nab y k₂ (zCast Xo.univ.t.G h F) α := by
-  subst h
-  rfl
 
 theorem vLa_natCast_inv_pow {K : Type} [Field K] [NumberField K] (la : HeightOneSpectrum (𝓞 K)) {M : ℕ}
     (hM : (M : 𝓞 K) ∉ la.asIdeal) (d : ℕ) : vLa la (((M : K) ^ d)⁻¹) = 0 := by

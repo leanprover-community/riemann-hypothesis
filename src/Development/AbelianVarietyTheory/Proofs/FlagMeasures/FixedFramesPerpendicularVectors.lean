@@ -1,9 +1,45 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StandardBaseFlagComplementIntegralLatticeStatement
 import Formalism.FlagUnipotentLattices.CardSubgroupsOfIndexLe
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ImportsExtra
 import BuildAid.ForwardExisting
 
+section
+namespace GlobalTheory.ClearingDenominatorsInOrder
+
+theorem main {E W : Type} [Field E] [NumberField E] [AddCommGroup W] [Module E W]
+    [Module (NumberField.RingOfIntegers E) W]
+    [IsScalarTower (NumberField.RingOfIntegers E) E W]
+    (L : Submodule (NumberField.RingOfIntegers E) W) :
+    ∀ v ∈ Submodule.span E (↑L : Set W),
+      ∃ (c : NumberField.RingOfIntegers E), c ≠ (0 : NumberField.RingOfIntegers E) ∧ c • v ∈ L := by
+  intro v hv
+  induction hv using Submodule.span_induction with
+  | mem x hx => exact ⟨1, one_ne_zero, by simpa using hx⟩
+  | zero => exact ⟨1, one_ne_zero, by simp⟩
+  | add x y _ _ hx hy =>
+    obtain ⟨c1, hc1, h1⟩ := hx
+    obtain ⟨c2, hc2, h2⟩ := hy
+    refine ⟨c1 * c2, mul_ne_zero hc1 hc2, ?_⟩
+    rw [smul_add]
+    apply L.add_mem
+    · rw [mul_comm, mul_smul]; exact L.smul_mem c2 h1
+    · rw [mul_smul]; exact L.smul_mem c1 h2
+  | smul a x _ hx =>
+    obtain ⟨c, hc, h⟩ := hx
+    obtain ⟨⟨n, d⟩, hnd⟩ := IsLocalization.surj (nonZeroDivisors (NumberField.RingOfIntegers E)) a
+    simp only at hnd
+    have hd : (d : NumberField.RingOfIntegers E) ≠ 0 := nonZeroDivisors.coe_ne_zero d
+    refine ⟨c * d, mul_ne_zero hc hd, ?_⟩
+    have key : (d : NumberField.RingOfIntegers E) • (a • x) = n • x := by
+      rw [← algebraMap_smul E (d : NumberField.RingOfIntegers E), smul_smul, mul_comm, hnd,
+        algebraMap_smul]
+    rw [mul_smul, key, smul_comm]
+    exact L.smul_mem n h
+
+end GlobalTheory.ClearingDenominatorsInOrder
+end
+
+section
 section
 open NumberField Module Matrix Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt GlobalTheory.LoopC
 open scoped ENNReal Classical
@@ -277,3 +313,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.fixed_frames_perpendicular_vectors : ∀ (D : D7) (u u' : D.what₂.Word) (F0 : Fb D u) (Λ : LatV D), Stand D u u' → IsBase D u F0 → IsRowLat D F0 Λ → IsSplit D F0 Λ → ∀ (P : LatW D) (φ : P →ₗ[𝓞 D.host.E] (hS D).V) (Z : GramM D), (∀ p, φ p ∈ XLam Λ (lf D F0)) → P ≤ L0X D Λ (lf D F0) → ∀ F' ∈ FixSet D Λ (lf D F0) ((Tu D u' : ℕ) : D.host.E) Z P φ, ∃ w : Fin (D.R.rS + 1) → (D.sp.X 0).V, (∀ b, IsWcomp D P (frame F' b) (w b) ∧ w b ∈ dualInH (D.sp.X 0).hT (perpW D (L0X D Λ (lf D F0)) P)) ∧ ((Tu D u : ℕ) : D.host.E) * (D.sp.X 0).hT (∑ b, Formalism.HermitianLatticeCounting.LatticeSumBounds.cofVec (Z.submatrix Fin.castSucc id) b • w b) (∑ b, Formalism.HermitianLatticeCounting.LatticeSumBounds.cofVec (Z.submatrix Fin.castSucc id) b • w b) = Gmat D ((Tu D u : ℕ) : D.host.E) ((Tu D u' : ℕ) : D.host.E) Z := by
   atlas_forward_decl GlobalTheory.LoopC.WMem.main
+end

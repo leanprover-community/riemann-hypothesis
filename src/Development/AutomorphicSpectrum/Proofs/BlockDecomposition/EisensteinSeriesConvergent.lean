@@ -1,17 +1,879 @@
 import Mathlib
 import Development.WeilBound.ThetaLifts.LatticeBasics.HypothesesE
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegersBoundedEmbeddingsCount
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DenominatorBoundByHeight
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.QuadraticIntegralCoefficientsBound
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SummableHeightPowOfPolynomialCount
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeftInvertibleExistsNonzeroMinor
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PluckerMinorsDetermineColumnSpace
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FinitePlaceMinorHeightBound
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ArchimedeanMinorHeightBound
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StandardCompactEntriesIntegral
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalNormFinitePlaceBound
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalNormInfinitePlaceBound
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EmbBar
 
+section
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
+open GlobalTheory.Doubling (absE)
+open GlobalTheory.CompanionTheory.GodementH
+
+namespace GlobalTheory.CompanionTheory.IntegerCount
+
+theorem card_bounded_conjugates_le :
+    ∀ (E : Type) [Field E] [NumberField E], ∃ C : ℝ, 0 < C ∧ ∀ R : ℝ, 1 ≤ R →
+    {β : 𝓞 E | ∀ τ : E →+* ℂ, ‖τ (β : E)‖ ≤ R}.Finite ∧
+    (Set.ncard {β : 𝓞 E | ∀ τ : E →+* ℂ, ‖τ (β : E)‖ ≤ R} : ℝ) ≤ C * R ^ Module.finrank ℚ E := by
+  intro E _ _
+  classical
+  let ι := Module.Free.ChooseBasisIndex ℤ (𝓞 E)
+  let b : Module.Basis ι ℤ (𝓞 E) := RingOfIntegers.basis E
+  let B := canonicalEmbedding.latticeBasis E
+
+  let L : ι → (((E →+* ℂ) → ℂ) →L[ℂ] ℂ) := fun i => LinearMap.toContinuousLinearMap (B.coord i)
+  let C₀ : ℝ := ∑ i, ‖L i‖
+  have hC₀ : 0 ≤ C₀ := Finset.sum_nonneg fun _ _ => norm_nonneg _
+  have hcoord : ∀ (β : 𝓞 E) (i : ι), L i (canonicalEmbedding E (β : E)) = ((b.repr β i : ℤ) : ℂ) := by
+    intro β i
+    have hx : canonicalEmbedding E (β : E) = ∑ j, ((b.repr β j : ℤ) : ℂ) • B j := by
+      have h0 : (β : E) = ∑ j, ((b.repr β j : ℤ) : E) * ((b j : 𝓞 E) : E) := by
+        conv_lhs => rw [← b.sum_repr β]
+        simp [map_sum, zsmul_eq_mul]
+      rw [h0, map_sum]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      ext τ
+      simp [B, b, canonicalEmbedding.latticeBasis_apply, integralBasis_apply]
+    change B.coord i _ = _
+    rw [hx, map_sum]
+    simp [Module.Basis.coord_apply, Finsupp.single_apply]
+  have hbound : ∀ (R : ℝ), 1 ≤ R → ∀ β : 𝓞 E, (∀ τ : E →+* ℂ, ‖τ (β : E)‖ ≤ R) →
+      ∀ i, |((b.repr β i : ℤ) : ℝ)| ≤ C₀ * R := by
+    intro R hR β hβ i
+    have hx : ‖canonicalEmbedding E (β : E)‖ ≤ R :=
+      (pi_norm_le_iff_of_nonneg (by linarith)).2 fun τ => by simpa using hβ τ
+    have h1 : ‖L i (canonicalEmbedding E (β : E))‖ ≤ ‖L i‖ * R :=
+      ((L i).le_opNorm _).trans (mul_le_mul_of_nonneg_left hx (norm_nonneg _))
+    rw [hcoord, Complex.norm_intCast] at h1
+    refine h1.trans (mul_le_mul_of_nonneg_right ?_ (by linarith))
+    exact Finset.single_le_sum (f := fun i => ‖L i‖) (fun _ _ => norm_nonneg _) (Finset.mem_univ i)
+  have hcard : Fintype.card ι = Module.finrank ℚ E := by
+    rw [← RingOfIntegers.rank E]
+    exact (Module.finrank_eq_card_chooseBasisIndex ℤ (𝓞 E)).symm
+  refine ⟨(2 * C₀ + 1) ^ Module.finrank ℚ E, by positivity, fun R hR => ?_⟩
+  set S : Set (𝓞 E) := {β : 𝓞 E | ∀ τ : E →+* ℂ, ‖τ (β : E)‖ ≤ R} with hS
+  let N : ℤ := ⌊C₀ * R⌋
+  have hN0 : 0 ≤ N := Int.floor_nonneg.2 (by nlinarith)
+  let box : Finset (ι → ℤ) := Fintype.piFinset fun _ => Finset.Icc (-N) N
+  let f : 𝓞 E → (ι → ℤ) := fun β i => b.repr β i
+  have hf : Function.Injective f := by
+    intro x y hxy
+    apply b.repr.injective
+    ext i
+    exact congrFun hxy i
+  have hmaps : Set.MapsTo f S (box : Set (ι → ℤ)) := by
+    intro β hβ
+    simp only [box, Finset.mem_coe, Fintype.mem_piFinset, Finset.mem_Icc]
+    intro i
+    have h := abs_le.1 (hbound R hR β hβ i)
+    constructor
+    · have h2 : -(b.repr β i) ≤ N := Int.le_floor.2 (by push_cast; linarith [h.1])
+      change -N ≤ b.repr β i
+      omega
+    · exact Int.le_floor.2 h.2
+  have hfin : S.Finite := Set.Finite.of_injOn hmaps hf.injOn box.finite_toSet
+  refine ⟨hfin, ?_⟩
+  have hle : S.ncard ≤ box.card := by
+    have h := Set.ncard_le_ncard_of_injOn f hmaps hf.injOn box.finite_toSet
+    rwa [Set.ncard_coe_finset] at h
+  have hboxcard : (box.card : ℝ) = (2 * (N : ℝ) + 1) ^ Module.finrank ℚ E := by
+    have h1 : ((Finset.Icc (-N) N).card : ℤ) = 2 * N + 1 := by
+      rw [Int.card_Icc]
+      omega
+    have h2 : ((Finset.Icc (-N) N).card : ℝ) = 2 * (N : ℝ) + 1 := by
+      exact_mod_cast h1
+    simp only [box, Fintype.card_piFinset, Finset.prod_const, Finset.card_univ, hcard]
+    push_cast
+    rw [h2]
+  have hNle : (N : ℝ) ≤ C₀ * R := Int.floor_le _
+  calc (S.ncard : ℝ) ≤ box.card := by exact_mod_cast hle
+    _ = (2 * (N : ℝ) + 1) ^ Module.finrank ℚ E := hboxcard
+    _ ≤ ((2 * C₀ + 1) * R) ^ Module.finrank ℚ E := by
+        have hN0' : (0 : ℝ) ≤ N := by exact_mod_cast hN0
+        exact pow_le_pow_left₀ (by positivity) (by nlinarith) _
+    _ = (2 * C₀ + 1) ^ Module.finrank ℚ E * R ^ Module.finrank ℚ E := mul_pow _ _ _
+
+end GlobalTheory.CompanionTheory.IntegerCount
+end
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
+open GlobalTheory.Doubling (absE)
+open GlobalTheory.CompanionTheory.GodementH
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integers_bounded_embeddings_count : ∀ (E : Type) [Field E] [NumberField E], ∃ C : ℝ, 0 < C ∧ ∀ R : ℝ, 1 ≤ R →
+    {β : 𝓞 E | ∀ τ : E →+* ℂ, ‖τ (β : E)‖ ≤ R}.Finite ∧
+    (Set.ncard {β : 𝓞 E | ∀ τ : E →+* ℂ, ‖τ (β : E)‖ ≤ R} : ℝ) ≤ C * R ^ Module.finrank ℚ E := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.IntegerCount.card_bounded_conjugates_le
+end
+
+section
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
+open GlobalTheory.Doubling (absE)
+open GlobalTheory.CompanionTheory.GodementH
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.GodementH.Den
+
+theorem local_exponent {F : Type} [Field F] [NumberField F] (v : Pl F) {y : F} (hy : y ≠ 0) :
+    ∃ e : ℕ, v.valuation F y ≤ WithZero.exp (e : ℤ) ∧
+      max 1 ‖algebraMap F (Fv F v) y‖₊ = (Ideal.absNorm v.asIdeal : ℝ≥0) ^ e := by
+  have ha : v.valuation F y ≠ 0 := (Valuation.ne_zero_iff _).2 hy
+  have hq : (1 : ℝ≥0) < (Ideal.absNorm v.asIdeal : ℝ≥0) := HeightOneSpectrum.one_lt_absNorm_nnreal v
+  have hnorm : ‖algebraMap F (Fv F v) y‖₊ =
+      WithZeroMulInt.toNNReal (HeightOneSpectrum.absNorm_ne_zero v) (v.valuation F y) :=
+    NNReal.eq (FinitePlace.norm_embedding' v y)
+  obtain ⟨n, hn⟩ : ∃ n : ℤ, v.valuation F y = WithZero.exp n := ⟨_, (WithZero.exp_log ha).symm⟩
+  have hval : WithZeroMulInt.toNNReal (HeightOneSpectrum.absNorm_ne_zero v) (WithZero.exp n) =
+      (Ideal.absNorm v.asIdeal : ℝ≥0) ^ n := by
+    rw [WithZeroMulInt.toNNReal_neg_apply _ WithZero.exp_ne_zero]
+    simp [WithZero.exp]
+  refine ⟨n.toNat, ?_, ?_⟩
+  · rw [hn]
+    exact WithZero.exp_le_exp.2 (Int.self_le_toNat n)
+  · rw [hnorm, hn, hval]
+    rcases le_total n 0 with h | h
+    · rw [Int.toNat_of_nonpos h, pow_zero]
+      exact max_eq_left (zpow_le_one_of_nonpos₀ hq.le h)
+    · have h1 : (Ideal.absNorm v.asIdeal : ℝ≥0) ^ n = (Ideal.absNorm v.asIdeal : ℝ≥0) ^ n.toNat := by
+        rw [← zpow_natCast, Int.toNat_of_nonneg h]
+      rw [h1]
+      exact max_eq_right (one_le_pow₀ hq.le)
+
+theorem finite_mulSupport {F : Type} [Field F] [NumberField F] {y : F} (hy : y ≠ 0) :
+    (Function.mulSupport fun v : Pl F => max 1 ‖algebraMap F (Fv F v) y‖₊).Finite := by
+  have h := (FinitePlace.hasFiniteMulSupport hy).comp_of_injective
+    (FinitePlace.equivHeightOneSpectrum (K := F)).symm.injective
+  refine Set.Finite.subset h ?_
+  intro v hv
+  simp only [Function.mem_mulSupport] at hv ⊢
+  intro h1
+  apply hv
+  have h2 : ‖algebraMap F (Fv F v) y‖₊ = 1 := by
+    apply NNReal.eq
+    have h3 : ‖FinitePlace.embedding v y‖ = 1 := by
+      simpa [FinitePlace.equivHeightOneSpectrum_symm_apply] using h1
+    exact h3
+  rw [h2, max_self]
+
+theorem denominator_le (F : Type) [Field F] [NumberField F] (y : F) :
+    ∃ m : ℕ, 0 < m ∧ (m : ℝ≥0) ≤ ∏ᶠ v : Pl F, max 1 ‖algebraMap F (Fv F v) y‖₊ ∧
+      IsIntegral ℤ ((m : F) * y) := by
+  classical
+  by_cases hy : y = 0
+  · subst hy
+    exact ⟨1, one_pos, by simp, by simpa using isIntegral_zero⟩
+  choose e he1 he2 using fun v : Pl F => local_exponent v hy
+  have hfin := finite_mulSupport hy
+  set S : Finset (Pl F) := hfin.toFinset with hS
+  set b : Ideal (𝓞 F) := ∏ v ∈ S, v.asIdeal ^ e v with hb
+  have hb0 : b ≠ ⊥ := by
+    rw [hb, ← Ideal.zero_eq_bot, Finset.prod_ne_zero_iff]
+    intro v _
+    exact pow_ne_zero _ v.ne_bot
+  have hm : 0 < Ideal.absNorm b :=
+    Nat.pos_of_ne_zero fun h => hb0 (Ideal.absNorm_eq_zero_iff.1 h)
+  refine ⟨Ideal.absNorm b, hm, le_of_eq ?_, ?_⟩
+  · rw [finprod_eq_prod_of_mulSupport_subset _ (s := S) (by simp [hS])]
+    simp only [he2]
+    simp [hb, map_prod, map_pow]
+  · have key : ∀ v : Pl F, v.valuation F ((Ideal.absNorm b : F) * y) ≤ 1 := by
+      intro v
+      have hmem : ((Ideal.absNorm b : ℕ) : 𝓞 F) ∈ v.asIdeal ^ e v := by
+        by_cases hv : v ∈ S
+        · exact Ideal.le_of_dvd (Finset.dvd_prod_of_mem _ hv) (Ideal.absNorm_mem b)
+        · have h1 : max 1 ‖algebraMap F (Fv F v) y‖₊ = 1 := by
+            simpa [hS] using hv
+          have h0 : e v = 0 := by
+            by_contra hne
+            have hq : (1 : ℝ≥0) < (Ideal.absNorm v.asIdeal : ℝ≥0) :=
+              HeightOneSpectrum.one_lt_absNorm_nnreal v
+            have := one_lt_pow₀ hq hne
+            rw [← he2 v, h1] at this
+            exact lt_irrefl _ this
+          simp [h0]
+      have h2 := (v.intValuation_le_pow_iff_mem _ (e v)).2 hmem
+      have h3 : v.valuation F (Ideal.absNorm b : F) ≤ WithZero.exp (-(e v : ℤ)) := by
+        have : (Ideal.absNorm b : F) = algebraMap (𝓞 F) F ((Ideal.absNorm b : ℕ) : 𝓞 F) := by simp
+        rw [this, HeightOneSpectrum.valuation_of_algebraMap]
+        exact h2
+      rw [map_mul]
+      calc _ ≤ WithZero.exp (-(e v : ℤ)) * WithZero.exp (e v : ℤ) := mul_le_mul' h3 (he1 v)
+        _ = 1 := by rw [← WithZero.exp_add]; simp
+    obtain ⟨c, hc⟩ := HeightOneSpectrum.mem_integers_of_valuation_le_one F _ key
+    rw [← hc]
+    exact c.isIntegral_coe
+
+end GlobalTheory.CompanionTheory.GodementH.Den
+
+end
+end
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
+open GlobalTheory.Doubling (absE)
+open GlobalTheory.CompanionTheory.GodementH
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.denominator_bound_by_height : ∀ (F : Type) [Field F] [NumberField F] (y : F), ∃ m : ℕ, 0 < m ∧ (m : ℝ≥0) ≤ ∏ᶠ v : Pl F, max 1 ‖algebraMap F (Fv F v) y‖₊ ∧
+    IsIntegral ℤ ((m : F) * y) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GodementH.Den.denominator_le
+end
+
+section
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
+open GlobalTheory.Doubling (absE)
+open GlobalTheory.CompanionTheory.GodementH
+
+namespace GlobalTheory.CompanionTheory.GodementH
+
+theorem trace_norm_local_sizes : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ x : E, ∃ y₁ y₂ : F,
+    x ^ 2 - algebraMap F E y₁ * x + algebraMap F E y₂ = 0 ∧ ∀ (v : Pl F) (τ : E →ₐ[F] FvBar F v),
+      ‖algebraMap F (Fv F v) y₁‖₊ ≤ max (absBar F v (τ x)) (absBar F v (τ (σ x))) ∧
+      ‖algebraMap F (Fv F v) y₂‖₊ = absBar F v (τ x) * absBar F v (τ (σ x)) := by
+  intro F E _ _ _ _ _ σ hCM x
+  obtain ⟨_, hEc, hfin2, hconj⟩ := hCM
+  obtain ⟨τ0⟩ : Nonempty (E →+* ℂ) := inferInstance
+  have hσσ : ∀ z, σ (σ z) = z := fun z => τ0.injective (by rw [hconj, hconj, star_star])
+  have hσne : ∃ w, σ w ≠ w := by
+    by_contra hcon
+    simp only [not_exists, not_not] at hcon
+    have hreal : NumberField.ComplexEmbedding.IsReal τ0 := by
+      rw [NumberField.ComplexEmbedding.isReal_iff]
+      refine RingHom.ext fun w => ?_
+      rw [NumberField.ComplexEmbedding.conjugate_coe_eq]
+      have h1 := hconj τ0 w
+      rw [hcon w] at h1
+      exact h1.symm
+    exact InfinitePlace.not_isReal_iff_isComplex.2 (hEc.isComplex (InfinitePlace.mk τ0)) ⟨τ0, hreal, rfl⟩
+  haveI : FiniteDimensional F E := Module.finite_of_finrank_pos (by omega)
+  have hfix : ∀ z : E, σ z = z → ∃ y : F, algebraMap F E y = z := by
+    intro z hz
+    have hSle : Submodule.span F {(1 : E)} ≤ LinearMap.ker (σ.toLinearMap - LinearMap.id) := by
+      rw [Submodule.span_le, Set.singleton_subset_iff]
+      simp
+    have hker : LinearMap.ker (σ.toLinearMap - LinearMap.id) ≠ ⊤ := by
+      intro htop
+      obtain ⟨w, hw⟩ := hσne
+      have hw' : w ∈ LinearMap.ker (σ.toLinearMap - LinearMap.id) := htop ▸ Submodule.mem_top
+      rw [LinearMap.mem_ker] at hw'
+      exact hw (sub_eq_zero.1 hw')
+    have h1 : Module.finrank F (Submodule.span F {(1 : E)}) = 1 := finrank_span_singleton one_ne_zero
+    have hlt := Submodule.finrank_lt hker
+    have hge := Submodule.finrank_mono hSle
+    have heq := Submodule.eq_of_le_of_finrank_eq hSle (by omega)
+    have hzk : z ∈ LinearMap.ker (σ.toLinearMap - LinearMap.id) := by
+      rw [LinearMap.mem_ker]
+      simp [hz]
+    rw [← heq] at hzk
+    obtain ⟨c, hc⟩ := Submodule.mem_span_singleton.1 hzk
+    exact ⟨c, by rw [Algebra.algebraMap_eq_smul_one]; exact hc⟩
+  obtain ⟨y₁, hy₁⟩ := hfix (x + σ x) (by rw [map_add, hσσ, add_comm])
+  obtain ⟨y₂, hy₂⟩ := hfix (x * σ x) (by rw [map_mul, hσσ, mul_comm])
+  refine ⟨y₁, y₂, by rw [hy₁, hy₂]; ring, fun v τ => ?_⟩
+  have key : ∀ y : F, τ (algebraMap F E y) =
+      algebraMap (Fv F v) (FvBar F v) (algebraMap F (Fv F v) y) := fun y => by
+    rw [τ.commutes]
+    exact IsScalarTower.algebraMap_apply F (Fv F v) (FvBar F v) y
+  constructor
+  · rw [← absBar_algebraMap F v, ← key, hy₁, map_add]
+    exact absBar_add_le F v _ _
+  · rw [← absBar_algebraMap F v, ← key, hy₂, map_mul]
+    exact absBar_mul F v _ _
+
+end GlobalTheory.CompanionTheory.GodementH
+end
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
+open GlobalTheory.Doubling (absE)
+open GlobalTheory.CompanionTheory.GodementH
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.quadratic_integral_coefficients_bound : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ x : E, ∃ y₁ y₂ : F,
+    x ^ 2 - algebraMap F E y₁ * x + algebraMap F E y₂ = 0 ∧ ∀ (v : Pl F) (τ : E →ₐ[F] FvBar F v),
+      ‖algebraMap F (Fv F v) y₁‖₊ ≤ max (absBar F v (τ x)) (absBar F v (τ (σ x))) ∧
+      ‖algebraMap F (Fv F v) y₂‖₊ = absBar F v (τ x) * absBar F v (τ (σ x)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GodementH.trace_norm_local_sizes
+end
+
+section
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
+open GlobalTheory.Doubling (absE)
+open GlobalTheory.CompanionTheory.GodementH
+
+namespace GlobalTheory.CompanionTheory.GodementH
+
+theorem summable_rpow_neg_of_polynomial_count :
+    ∀ (Q : Type) (h : Q → ℝ), (∀ q, 1 ≤ h q) → ∀ (C : ℝ) (c : ℕ),
+    (∀ T : ℝ, 1 ≤ T → {q | h q ≤ T}.Finite ∧ (Set.ncard {q | h q ≤ T} : ℝ) ≤ C * T ^ c) → ∀ s : ℝ, (c : ℝ) < s →
+    Summable fun q => h q ^ (-s) := by
+  intro Q h h1 C c hc s hs
+  classical
+  have hC : 0 ≤ C := by
+    have h2 := (hc 1 le_rfl).2
+    have h3 : (0:ℝ) ≤ (Set.ncard {q | h q ≤ 1} : ℝ) := Nat.cast_nonneg _
+    simp only [one_pow, mul_one] at h2
+    linarith
+  set r : ℝ := (2:ℝ) ^ ((c:ℝ) - s) with hr
+  have hr0 : 0 ≤ r := by positivity
+  have hr1 : r < 1 := Real.rpow_lt_one_of_one_lt_of_neg (by norm_num) (by linarith)
+  have hg : Summable fun k : ℕ => C * 2 ^ c * r ^ k :=
+    (summable_geometric_of_lt_one hr0 hr1).mul_left _
+  have hg0 : ∀ k : ℕ, 0 ≤ C * 2 ^ c * r ^ k := fun k => by positivity
+  set K : Q → ℕ := fun q => ⌊Real.logb 2 (h q)⌋₊ with hK
+  have hlog0 : ∀ q, 0 ≤ Real.logb 2 (h q) := fun q =>
+    Real.logb_nonneg (by norm_num) (h1 q)
+  have hlow : ∀ q, (2:ℝ) ^ (K q : ℝ) ≤ h q := fun q => by
+    have hq : (0:ℝ) < h q := lt_of_lt_of_le one_pos (h1 q)
+    have : (K q : ℝ) ≤ Real.logb 2 (h q) := Nat.floor_le (hlog0 q)
+    calc (2:ℝ) ^ (K q : ℝ) ≤ (2:ℝ) ^ (Real.logb 2 (h q)) :=
+          Real.rpow_le_rpow_of_exponent_le (by norm_num) this
+      _ = h q := Real.rpow_logb (by norm_num) (by norm_num) hq
+  have hupp : ∀ q, h q ≤ (2:ℝ) ^ (K q + 1) := fun q => by
+    have hq : (0:ℝ) < h q := lt_of_lt_of_le one_pos (h1 q)
+    have : Real.logb 2 (h q) ≤ ((K q + 1 : ℕ) : ℝ) := by
+      push_cast
+      exact (Nat.lt_floor_add_one _).le
+    calc h q = (2:ℝ) ^ (Real.logb 2 (h q)) :=
+          (Real.rpow_logb (by norm_num) (by norm_num) hq).symm
+      _ ≤ (2:ℝ) ^ (((K q + 1 : ℕ)) : ℝ) :=
+          Real.rpow_le_rpow_of_exponent_le (by norm_num) this
+      _ = (2:ℝ) ^ (K q + 1) := Real.rpow_natCast _ _
+  have hterm : ∀ q, h q ^ (-s) ≤ ((2:ℝ) ^ (K q : ℝ)) ^ (-s) := fun q =>
+    Real.rpow_le_rpow_of_nonpos (by positivity) (hlow q) (by linarith [(Nat.cast_nonneg c : (0:ℝ) ≤ c)])
+  have hfib : ∀ (u : Finset Q) (k : ℕ),
+      ∑ q ∈ u with K q = k, h q ^ (-s) ≤ C * 2 ^ c * r ^ k := by
+    intro u k
+    have hT : (1:ℝ) ≤ (2:ℝ) ^ (k + 1) := one_le_pow₀ (by norm_num)
+    obtain ⟨hfin, hcard⟩ := hc _ hT
+    have hsub : ((u.filter fun q => K q = k : Finset Q) : Set Q) ⊆ {q | h q ≤ (2:ℝ) ^ (k + 1)} := by
+      intro q hq
+      have hq' : K q = k := (Finset.mem_filter.mp (Finset.mem_coe.mp hq)).2
+      have := hupp q
+      rw [hq'] at this
+      exact this
+    have hcard2 : ((u.filter fun q => K q = k : Finset Q).card : ℝ) ≤ C * ((2:ℝ) ^ (k + 1)) ^ c := by
+      refine le_trans ?_ hcard
+      have := Set.ncard_le_ncard hsub hfin
+      rw [Set.ncard_coe_finset] at this
+      exact_mod_cast this
+    have hb : ∀ q ∈ u.filter (fun q => K q = k), h q ^ (-s) ≤ ((2:ℝ) ^ (k : ℝ)) ^ (-s) := by
+      intro q hq
+      have hq' : K q = k := (Finset.mem_filter.mp hq).2
+      have := hterm q
+      rw [hq'] at this
+      exact this
+    have hb0 : (0:ℝ) ≤ ((2:ℝ) ^ (k : ℝ)) ^ (-s) := by positivity
+    calc ∑ q ∈ u with K q = k, h q ^ (-s)
+        ≤ ((u.filter fun q => K q = k : Finset Q).card : ℝ) * ((2:ℝ) ^ (k : ℝ)) ^ (-s) := by
+          simpa [nsmul_eq_mul] using Finset.sum_le_card_nsmul _ _ _ hb
+      _ ≤ (C * ((2:ℝ) ^ (k + 1)) ^ c) * ((2:ℝ) ^ (k : ℝ)) ^ (-s) :=
+          mul_le_mul_of_nonneg_right hcard2 hb0
+      _ = C * 2 ^ c * r ^ k := by
+          have e1 : ((2:ℝ) ^ (k + 1)) ^ c = 2 ^ c * ((2:ℝ) ^ (k : ℝ)) ^ (c : ℝ) := by
+            rw [Real.rpow_natCast, Real.rpow_natCast, pow_succ, mul_pow, mul_comm]
+          have e2 : r ^ k = ((2:ℝ) ^ (k : ℝ)) ^ (c : ℝ) * ((2:ℝ) ^ (k : ℝ)) ^ (-s) := by
+            rw [← Real.rpow_add (by positivity), hr, ← Real.rpow_natCast, ← Real.rpow_mul (by norm_num),
+              ← Real.rpow_mul (by norm_num)]
+            congr 1
+            ring
+          rw [e1, e2]
+          ring
+  refine summable_of_sum_le (c := ∑' k : ℕ, C * 2 ^ c * r ^ k) (fun q => Real.rpow_nonneg (by linarith [h1 q]) _) ?_
+  intro u
+  calc ∑ q ∈ u, h q ^ (-s)
+      = ∑ k ∈ u.image K, ∑ q ∈ u with K q = k, h q ^ (-s) :=
+        (Finset.sum_fiberwise_of_maps_to (fun q hq => Finset.mem_image_of_mem K hq) _).symm
+    _ ≤ ∑ k ∈ u.image K, C * 2 ^ c * r ^ k := Finset.sum_le_sum fun k _ => hfib u k
+    _ ≤ ∑' k : ℕ, C * 2 ^ c * r ^ k := hg.sum_le_tsum _ fun k _ => hg0 k
+
+end GlobalTheory.CompanionTheory.GodementH
+end
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
+open GlobalTheory.Doubling (absE)
+open GlobalTheory.CompanionTheory.GodementH
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.summable_height_pow_of_polynomial_count : ∀ (Q : Type) (h : Q → ℝ), (∀ q, 1 ≤ h q) → ∀ (C : ℝ) (c : ℕ),
+    (∀ T : ℝ, 1 ≤ T → {q | h q ≤ T}.Finite ∧ (Set.ncard {q | h q ≤ T} : ℝ) ≤ C * T ^ c) → ∀ s : ℝ, (c : ℝ) < s →
+    Summable fun q => h q ^ (-s) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GodementH.summable_rpow_neg_of_polynomial_count
+end
+
+section
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
+open GlobalTheory.Doubling (absE)
+open GlobalTheory.CompanionTheory.GodementH
+
+namespace GlobalTheory.CompanionTheory.GodementH
+
+theorem det_mul_eq_sum_mnr {R : Type} [CommRing R] {ι : Type} [Fintype ι] [DecidableEq ι] {n : ℕ}
+    (M : Matrix ι (Fin n) R) (L : Matrix (Fin n) ι R) :
+    (L * M).det = ∑ g : Fin n → ι, (∏ i, L i (g i)) * mnr M g := by
+  have h1 : (L * M).det =
+      (Matrix.detRowAlternating (R := R) (n := Fin n)).toMultilinearMap
+        (fun i => ∑ j, L i j • M j) := by
+    have : (L * M) = Matrix.of (fun i => ∑ j, L i j • M j) := by
+      ext i k
+      simp [Matrix.mul_apply, Finset.sum_apply]
+    rw [this]
+    rfl
+  rw [h1, MultilinearMap.map_sum]
+  refine Finset.sum_congr rfl fun g _ => ?_
+  rw [MultilinearMap.map_smul_univ]
+  rfl
+
+theorem exists_mnr_ne_zero_of_left_inverse :
+    ∀ (R : Type) [CommRing R] [Nontrivial R] (ι : Type) [Fintype ι] [DecidableEq ι] (n : ℕ)
+      (M : Matrix ι (Fin n) R) (L : Matrix (Fin n) ι R),
+      L * M = 1 → ∃ f, mnr M f ≠ 0 := by
+  intro R _ _ ι _ _ n M L h
+  by_contra hc
+  push_neg at hc
+  have key := det_mul_eq_sum_mnr M L
+  rw [h, Matrix.det_one] at key
+  simp [hc] at key
+
+end GlobalTheory.CompanionTheory.GodementH
+end
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
+open GlobalTheory.Doubling (absE)
+open GlobalTheory.CompanionTheory.GodementH
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.left_invertible_exists_nonzero_minor : ∀ (R : Type) [CommRing R] [Nontrivial R] (ι : Type) [Fintype ι] [DecidableEq ι] (n : ℕ) (M : Matrix ι (Fin n) R) (L : Matrix (Fin n) ι R),
+    L * M = 1 → ∃ f, mnr M f ≠ 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GodementH.exists_mnr_ne_zero_of_left_inverse
+end
+
+section
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
+open GlobalTheory.Doubling (absE)
+open GlobalTheory.CompanionTheory.GodementH
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.GodementH.Cramer
+
+open Matrix
+
+variable {K : Type} [Field K] {ι : Type} [Fintype ι] [DecidableEq ι] {n : ℕ}
+
+theorem mul_adjugate_submatrix (M : Matrix ι (Fin n) K) (f₀ : Fin n → ι) (i : ι) (j : Fin n) :
+    (M * adjugate (M.submatrix f₀ id)) i j = mnr M (Function.update f₀ j i) := by
+  have h1 : (M * adjugate (M.submatrix f₀ id)) i j = cramer (M.submatrix f₀ id)ᵀ (M i) j := by
+    rw [cramer_eq_adjugate_mulVec, ← adjugate_transpose]
+    simp [mulVec, dotProduct, mul_apply, transpose_apply, mul_comm]
+  rw [h1, cramer_transpose_apply]
+  unfold mnr
+  congr 1
+  ext a b
+  by_cases hab : a = j
+  · subst hab; simp
+  · simp [updateRow_apply, hab, Function.update_apply]
+
+theorem eq_mul_of_minor_ratio (M M' : Matrix ι (Fin n) K) (f₀ f₀' : Fin n → ι)
+    (h0 : mnr M f₀ ≠ 0) (h0' : mnr M' f₀' ≠ 0)
+    (h : ∀ f, mnr M f / mnr M f₀ = mnr M' f / mnr M' f₀') : ∃ c : GL (Fin n) K, M' = M * c.1 := by
+  set c := mnr M' f₀' / mnr M f₀ with hcdef
+  have hc : ∀ f, mnr M' f = c * mnr M f := fun f => by
+    calc mnr M' f = mnr M' f / mnr M' f₀' * mnr M' f₀' := by rw [div_mul_cancel₀ _ h0']
+      _ = mnr M f / mnr M f₀ * mnr M' f₀' := by rw [h f]
+      _ = c * mnr M f := by rw [hcdef]; ring
+  have hc0 : c ≠ 0 := div_ne_zero h0' h0
+  set A := M.submatrix f₀ id with hA
+  set A' := M'.submatrix f₀ id with hA'
+  have hdA : A.det = mnr M f₀ := rfl
+  have hdA' : A'.det = c * A.det := hc f₀
+  have hA0 : A.det ≠ 0 := h0
+  have hdA'0 : A'.det ≠ 0 := by rw [hdA']; exact mul_ne_zero hc0 h0
+  have key : M' * adjugate A' = c • (M * adjugate A) := by
+    ext i j
+    rw [mul_adjugate_submatrix, Matrix.smul_apply, mul_adjugate_submatrix, hc, smul_eq_mul]
+  have e1 : M' * adjugate A' * A' = A'.det • M' := by
+    rw [Matrix.mul_assoc, adjugate_mul, Matrix.mul_smul, Matrix.mul_one]
+  have hP : (A⁻¹ * A').det ≠ 0 := by
+    rw [det_mul, det_nonsing_inv, Ring.inverse_eq_inv']
+    exact mul_ne_zero (inv_ne_zero h0) hdA'0
+  refine ⟨Matrix.GeneralLinearGroup.mkOfDetNeZero (A⁻¹ * A') hP, ?_⟩
+  show M' = M * (A⁻¹ * A')
+  rw [inv_def, Ring.inverse_eq_inv']
+  have e2 : M * ((A.det)⁻¹ • adjugate A * A') = ((A.det)⁻¹ * c⁻¹) • (M' * adjugate A' * A') := by
+    rw [key, Matrix.smul_mul, Matrix.smul_mul, Matrix.mul_smul, smul_smul, inv_mul_cancel_right₀ hc0, Matrix.mul_assoc]
+  rw [e2, e1, smul_smul, hdA']
+  rw [show A.det⁻¹ * c⁻¹ * (c * A.det) = 1 by field_simp, one_smul]
+
+end GlobalTheory.CompanionTheory.GodementH.Cramer
+
+theorem GlobalTheory.CompanionTheory.GodementH.Cramer.main : ∀ (K : Type) [Field K] (ι : Type) [Fintype ι] [DecidableEq ι] (n : ℕ) (M M' : Matrix ι (Fin n) K) (f₀ f₀' : Fin n → ι),
+    mnr M f₀ ≠ 0 → mnr M' f₀' ≠ 0 → (∀ f, mnr M f / mnr M f₀ = mnr M' f / mnr M' f₀') → ∃ c : GL (Fin n) K, M' = M * c.1 := by
+  intro K _ ι _ _ n M M' f₀ f₀' h0 h0' h
+  exact GlobalTheory.CompanionTheory.GodementH.Cramer.eq_mul_of_minor_ratio M M' f₀ f₀' h0 h0' h
+end
+end
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
+open GlobalTheory.Doubling (absE)
+open GlobalTheory.CompanionTheory.GodementH
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.plucker_minors_determine_column_space : ∀ (K : Type) [Field K] (ι : Type) [Fintype ι] [DecidableEq ι] (n : ℕ) (M M' : Matrix ι (Fin n) K) (f₀ f₀' : Fin n → ι),
+    mnr M f₀ ≠ 0 → mnr M' f₀' ≠ 0 → (∀ f, mnr M f / mnr M f₀ = mnr M' f / mnr M' f₀') → ∃ c : GL (Fin n) K, M' = M * c.1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GodementH.Cramer.main
+end
+
+section
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
+open GlobalTheory.Doubling (absE)
+open GlobalTheory.CompanionTheory.GodementH
+
+namespace GlobalTheory.CompanionTheory.GodementH
+
+theorem absFin_minor_mul_le (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (n : ℕ)
+    (ι : Type) [Fintype ι] [DecidableEq ι] (v : Pl F) (X : GL ι (AE F E)) (κ : Matrix ι ι (AE F E))
+    (hκ : ∀ i j, absFin F v (compFin F E v (κ i j)) ≤ 1) (f e : Fin n → ι) :
+    absFin F v (compFin F E v ((X.1 * κ).submatrix f e).det) ≤ htFin F v (Formalism.UG.bc (compFin F E v) X) ^ n := by
+  have hent : ∀ i j, absFin F v (compFin F E v ((X.1 * κ) i j)) ≤ htFin F v (Formalism.UG.bc (compFin F E v) X) := by
+    intro i j
+    have h1 : compFin F E v ((X.1 * κ) i j) = ((X.1.map (compFin F E v)) * (κ.map (compFin F E v))) i j := by
+      rw [← Matrix.map_mul]; rfl
+    rw [h1]
+    refine (absFin_le_normFin F v _ i j).trans ((normFin_mul_le F v _ _).trans ?_)
+    have h2 : normFin F v (κ.map (compFin F E v)) ≤ 1 := (normFin_le_iff F v).2 fun a b => hκ a b
+    exact (mul_le_of_le_one_right' h2).trans (le_htOf (normFin F v) (Formalism.UG.bc (compFin F E v) X))
+  rw [RingHom.map_det, Matrix.det_apply]
+  refine absFin_sum_le F v _ _ fun σ _ => ?_
+  have hprod : absFin F v (∏ i : Fin n, ((compFin F E v).mapMatrix ((X.1 * κ).submatrix f e)) (σ i) i)
+      ≤ htFin F v (Formalism.UG.bc (compFin F E v) X) ^ n := by
+    calc _ ≤ ∏ i : Fin n, absFin F v (((compFin F E v).mapMatrix ((X.1 * κ).submatrix f e)) (σ i) i) :=
+          Finset.le_prod_of_submultiplicative _ (absFin_one F v).le (absFin_mul_le F v) _ _
+      _ ≤ ∏ _i : Fin n, htFin F v (Formalism.UG.bc (compFin F E v) X) :=
+          Finset.prod_le_prod' fun i _ => hent _ _
+      _ = _ := by simp
+  rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h
+  · rw [h, one_smul]; exact hprod
+  · rw [h, Units.neg_smul, one_smul, absFin_neg]; exact hprod
+
+end GlobalTheory.CompanionTheory.GodementH
+end
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
+open GlobalTheory.Doubling (absE)
+open GlobalTheory.CompanionTheory.GodementH
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_place_minor_height_bound : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (n : ℕ) (ι : Type) [Fintype ι] [DecidableEq ι] (v : Pl F) (X : GL ι (AE F E)) (κ : Matrix ι ι (AE F E)),
+    (∀ i j, absFin F v (compFin F E v (κ i j)) ≤ 1) → ∀ f e : Fin n → ι,
+    absFin F v (compFin F E v ((X.1 * κ).submatrix f e).det) ≤ htFin F v (Formalism.UG.bc (compFin F E v) X) ^ n := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GodementH.absFin_minor_mul_le
+end
+
+section
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
+open GlobalTheory.Doubling (absE)
+open GlobalTheory.CompanionTheory.GodementH
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.GodementH.MinInf
+
+theorem opNorm_le_one_of_unitary {ι : Type} [Fintype ι] [DecidableEq ι] (U : Matrix ι ι ℂ) (hU : U * Uᴴ = 1) :
+    opNorm U ≤ 1 := by
+  have h1 : Uᴴ * U = 1 := mul_eq_one_comm.1 hU
+  set T := Matrix.toEuclideanCLM (n := ι) (𝕜 := ℂ) U with hT
+  have h2 : star T * T = 1 := by
+    rw [hT, ← map_star, ← map_mul, Matrix.star_eq_conjTranspose, h1, map_one]
+  have h3 : ‖T‖ * ‖T‖ ≤ 1 := by
+    rw [← CStarRing.norm_star_mul_self, h2]
+    exact ContinuousLinearMap.norm_id_le
+  have h4 : ‖T‖ ≤ 1 := by
+    by_contra h
+    have h' : 1 < ‖T‖ := not_le.1 h
+    nlinarith
+  exact_mod_cast h4
+
+theorem nnnorm_entry_le {ι : Type} [Fintype ι] [DecidableEq ι] (A : Matrix ι ι ℂ) (i j : ι) :
+    ‖A i j‖₊ ≤ opNorm A := by
+  unfold opNorm
+  have h1 : (Matrix.toEuclideanCLM (n := ι) (𝕜 := ℂ) A (EuclideanSpace.single j 1)) i = A i j := by
+    change ∑ d, A i d * (EuclideanSpace.single j (1 : ℂ) : EuclideanSpace ℂ ι) d = A i j
+    simp
+  have h2 := ContinuousLinearMap.le_opNNNorm (Matrix.toEuclideanCLM (n := ι) (𝕜 := ℂ) A) (EuclideanSpace.single j 1)
+  rw [PiLp.nnnorm_single, nnnorm_one, mul_one] at h2
+  rw [← h1]
+  exact (PiLp.nnnorm_apply_le _ i).trans h2
+
+theorem nnnorm_det_le {n : ℕ} (M : Matrix (Fin n) (Fin n) ℂ) (c : ℝ≥0) (h : ∀ i j, ‖M i j‖₊ ≤ c) :
+    ‖M.det‖₊ ≤ (n.factorial : ℝ≥0) * c ^ n := by
+  have h1 := Matrix.det_le (A := M) (abv := NormedField.toAbsoluteValue ℂ) (x := (c : ℝ))
+    (fun i j => NNReal.coe_le_coe.2 (h i j))
+  simp only [Fintype.card_fin, nsmul_eq_mul] at h1
+  exact_mod_cast h1
+
+theorem minor_le {R : Type} [CommRing R] (φ : R →+* ℂ) {n : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι]
+    (A κ : Matrix ι ι R) (c : ℝ≥0) (hA : opNorm (A.map φ) ≤ c) (hκ : κ.map φ * (κ.map φ)ᴴ = 1) (f e : Fin n → ι) :
+    ‖φ ((A * κ).submatrix f e).det‖₊ ≤ (n.factorial : ℝ≥0) * c ^ n := by
+  have hAU : opNorm (A.map φ * κ.map φ) ≤ c :=
+    (opNorm_mul_le _ _).trans ((mul_le_of_le_one_right' (opNorm_le_one_of_unitary _ hκ)).trans hA)
+  have hdet : φ ((A * κ).submatrix f e).det = ((A.map φ * κ.map φ).submatrix f e).det := by
+    rw [RingHom.map_det, RingHom.mapMatrix_apply, ← Matrix.submatrix_map, Matrix.map_mul]
+  rw [hdet]
+  exact nnnorm_det_le _ c fun i j => (nnnorm_entry_le (A.map φ * κ.map φ) (f i) (e j)).trans hAU
+
+theorem opNorm_le_htInf (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+    (ι : Type) [Fintype ι] [DecidableEq ι] (w : InfinitePlace F) (τ : EmbOver E w) (X : GL ι (AE F E)) :
+    opNorm (X.1.map (piInf τ)) ≤ htInf F w (Formalism.UG.bc (compInf F E w) X) := by
+  have e : X.1.map (piInf τ) = ((Formalism.UG.bc (compInf F E w) X).1).map (infEmb τ) := by
+    ext i j
+    rfl
+  rw [e]
+  exact ((normInf_le_iff F w).1 le_rfl τ).trans (le_htOf (normInf F w) (Formalism.UG.bc (compInf F E w) X))
+
+theorem minor_le_htInf (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (n : ℕ)
+    (ι : Type) [Fintype ι] [DecidableEq ι] (w : InfinitePlace F) (τ : EmbOver E w) (X : GL ι (AE F E))
+    (κ : Matrix ι ι (AE F E)) (hκ : κ.map (piInf τ) * (κ.map (piInf τ))ᴴ = 1) (f e : Fin n → ι) :
+    ‖piInf τ ((X.1 * κ).submatrix f e).det‖₊ ≤
+      (n.factorial : ℝ≥0) * htInf F w (Formalism.UG.bc (compInf F E w) X) ^ n :=
+  minor_le (piInf τ) X.1 κ _ (opNorm_le_htInf F E ι w τ X) hκ f e
+
+end GlobalTheory.CompanionTheory.GodementH.MinInf
+end
+end
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
+open GlobalTheory.Doubling (absE)
+open GlobalTheory.CompanionTheory.GodementH
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.archimedean_minor_height_bound : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (n : ℕ) (ι : Type) [Fintype ι] [DecidableEq ι] (w : InfinitePlace F) (τ : EmbOver E w) (X : GL ι (AE F E)) (κ : Matrix ι ι (AE F E)),
+    κ.map (piInf τ) * (κ.map (piInf τ))ᴴ = 1 → ∀ f e : Fin n → ι,
+    ‖piInf τ ((X.1 * κ).submatrix f e).det‖₊ ≤ (n.factorial : ℝ≥0) * htInf F w (Formalism.UG.bc (compInf F E w) X) ^ n := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GodementH.MinInf.minor_le_htInf
+end
+
+section
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
+open GlobalTheory.Doubling (absE)
+open GlobalTheory.CompanionTheory.GodementH
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.GodementH.StdInt
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+
+theorem compFin_finOne_smul' (v : HeightOneSpectrum (𝓞 F)) (z : AE F E) :
+    compFin F E v (finOne F • z) = compFin F E v z := by
+  have h1 : GlobalTheory.AdelicU.evFin F v (GlobalTheory.ThK.Dbl.finOne F) = 1 := by
+    simp only [GlobalTheory.AdelicU.evFin, GlobalTheory.ThK.Dbl.finOne, Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.sndA, LinearMap.inr_apply]
+    change (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F v) (1 : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af F) = 1
+    exact map_one _
+  induction z using TensorProduct.induction_on with
+  | zero => simp
+  | tmul x e =>
+    rw [TensorProduct.smul_tmul']
+    simp [GlobalTheory.AdelicU.compFin, h1]
+  | add x y hx hy => rw [smul_add, map_add, map_add, hx, hy]
+
+theorem absFin_compFin_le_one {z : AE F E} (hz : z ∈ intHat F E) (v : HeightOneSpectrum (𝓞 F)) :
+    absFin F v (compFin F E v z) ≤ 1 := by
+  let S : AddSubgroup (AE F E) :=
+    { carrier := {z | GlobalTheory.AdelicU.absFin F v (GlobalTheory.AdelicU.compFin F E v z) ≤ 1}
+      add_mem' := fun {x y} hx hy => by
+        simp only [Set.mem_ofPred_eq] at hx hy ⊢
+        rw [show GlobalTheory.AdelicU.compFin F E v (x + y) = GlobalTheory.AdelicU.compFin F E v x + GlobalTheory.AdelicU.compFin F E v y from map_add _ _ _]
+        exact (GlobalTheory.AdelicU.absFin_add_le F v _ _).trans (max_le hx hy)
+      zero_mem' := by
+        simp only [Set.mem_ofPred_eq]
+        rw [show GlobalTheory.AdelicU.compFin F E v 0 = 0 from map_zero _, GlobalTheory.AdelicU.absFin_zero]
+        exact zero_le_one
+      neg_mem' := fun {x} hx => by
+        simp only [Set.mem_ofPred_eq] at hx ⊢
+        rw [show GlobalTheory.AdelicU.compFin F E v (-x) = -GlobalTheory.AdelicU.compFin F E v x from map_neg _ _, GlobalTheory.AdelicU.absFin_neg]
+        exact hx }
+  have hle : intHat F E ≤ S := by
+    rw [GlobalTheory.ThK.Dbl.intHat, AddSubgroup.closure_le]
+    rintro z ⟨a, -, ha, o, rfl⟩
+    show GlobalTheory.AdelicU.absFin F v (GlobalTheory.AdelicU.compFin F E v _) ≤ 1
+    have h2 : GlobalTheory.AdelicU.compFin F E v (a • (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF F)) (o : E)) =
+        (GlobalTheory.AdelicU.evFin F v a) ⊗ₜ[F] (o : E) := by
+      simp [Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR, GlobalTheory.AdelicU.compFin, TensorProduct.smul_tmul']
+    rw [h2]
+    refine (GlobalTheory.AdelicU.absFin_tmul_le F v _ o).trans ?_
+    exact nnnorm_le_one_iff_mem.mpr (ha v)
+  exact hle hz
+
+theorem absFin_inFrame_le_one : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (n : ℕ) (Y : Spc F E n) (B : Base F E) (b : GL (Fin n ⊕ Fin n) E) (K : Subgroup (G2 σ Y)),
+    IsStdK (σ := σ) (Y := Y) B b K → ∀ k ∈ K, ∀ (v : Pl F) (i j : Fin n ⊕ Fin n), absFin F v (compFin F E v (inFrame b k i j)) ≤ 1 := by
+  intro F E _ _ _ _ _ σ n Y B b K hK k hk v i j
+  have h : GlobalTheory.ThK.Dbl.finOne F • GlobalTheory.ThK.Dbl.inFrame b k i j ∈ GlobalTheory.ThK.Dbl.intHat F E :=
+    ((hK k).1 hk).2 k (by simp) i j
+  have h' := absFin_compFin_le_one h v
+  rwa [compFin_finOne_smul'] at h'
+
+end GlobalTheory.CompanionTheory.GodementH.StdInt
+
+end
+end
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
+open GlobalTheory.Doubling (absE)
+open GlobalTheory.CompanionTheory.GodementH
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.standard_compact_entries_integral : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (n : ℕ) (Y : Spc F E n) (B : Base F E) (b : GL (Fin n ⊕ Fin n) E) (K : Subgroup (G2 σ Y)),
+    IsStdK (σ := σ) (Y := Y) B b K → ∀ k ∈ K, ∀ (v : Pl F) (i j : Fin n ⊕ Fin n), absFin F v (compFin F E v (inFrame b k i j)) ≤ 1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GodementH.StdInt.absFin_inFrame_le_one
+end
+
+section
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
+open GlobalTheory.Doubling (absE)
+open GlobalTheory.CompanionTheory.GodementH
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.GodementH
+
+theorem absEv_mul_locFin_le : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (J : Type) [Fintype J] (v : Pl F) (u : J → E) (δ : (Fv F v ⊗[F] E)ˣ) (z : J → Fv F v ⊗[F] E) (c : ℝ≥0),
+    (∀ f, z f = ((1 : Fv F v) ⊗ₜ[F] u f) * δ.1) → (∀ f, absFin F v (z f) ≤ c) →
+    GlobalTheory.Doubling.absEv F E v δ * locFin σ v u ≤ c ^ 2 := by
+  intro F E _ _ _ _ _ σ hσ J _ v u δ z c hz hc
+  have e2 : ∀ (τ : E →ₐ[F] FvBar F v) (w : Fv F v ⊗[F] E),
+      finEmb F v τ (sigR (Fv F v) σ w) = finEmb F v (τ.comp σ) w := by
+    intro τ w
+    induction w using TensorProduct.induction_on with
+    | zero => simp
+    | tmul a b => simp [sigR]
+    | add y z hy hz => simp only [map_add, hy, hz]
+  have hN := congrArg (fun y => absBar F v (finEmb F v (embBar F E v) y))
+    (GlobalTheory.Doubling.algebraMap_norm_eq hσ (R := Fv F v) δ.1)
+  simp only [map_mul, absBar_mul, e2, AlgHom.commutes, absBar_algebraMap] at hN
+  have key : ∀ τ : E →ₐ[F] FvBar F v, absBar F v (finEmb F v τ δ.1) * supBar v τ u ≤ c := by
+    intro τ
+    unfold supBar
+    rw [NNReal.mul_finset_sup]
+    refine Finset.sup_le fun f _ => ?_
+    refine le_trans (le_of_eq ?_) ((le_absFin F v τ (z f)).trans (hc f))
+    rw [hz f, map_mul, absBar_mul, finEmb_tmul, map_one, one_mul, mul_comm]
+  rw [GlobalTheory.Doubling.absEv_apply, hN]
+  unfold locFin
+  calc _ = (absBar F v (finEmb F v (embBar F E v) δ.1) * supBar v (embBar F E v) u) *
+        (absBar F v (finEmb F v ((embBar F E v).comp σ) δ.1) * supBar v ((embBar F E v).comp σ) u) := by ring
+    _ ≤ c * c := mul_le_mul' (key _) (key _)
+    _ = c ^ 2 := (sq c).symm
+
+end GlobalTheory.CompanionTheory.GodementH
+
+end
+end
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
+open GlobalTheory.Doubling (absE)
+open GlobalTheory.CompanionTheory.GodementH
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_norm_finite_place_bound : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (J : Type) [Fintype J] (v : Pl F) (u : J → E) (δ : (Fv F v ⊗[F] E)ˣ) (z : J → Fv F v ⊗[F] E) (c : ℝ≥0),
+    (∀ f, z f = ((1 : Fv F v) ⊗ₜ[F] u f) * δ.1) → (∀ f, absFin F v (z f) ≤ c) →
+    GlobalTheory.Doubling.absEv F E v δ * locFin σ v u ≤ c ^ 2 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GodementH.absEv_mul_locFin_le
+end
+
+section
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
+open GlobalTheory.Doubling (absE)
+open GlobalTheory.CompanionTheory.GodementH
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.GodementH
+
+theorem absEw_mul_locInf_le (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+    (σ : E →ₐ[F] E) (hσ : IsCMExt F E σ) (J : Type) [Fintype J] (w : InfinitePlace F) (e : EmbOver E w)
+    (u : J → E) (δ : (w.Completion ⊗[F] E)ˣ) (z : J → w.Completion ⊗[F] E) (c : ℝ≥0)
+    (hz : ∀ f, z f = ((1 : w.Completion) ⊗ₜ[F] u f) * δ.1) (hc : ∀ f, ‖infEmb e (z f)‖₊ ≤ c) :
+    GlobalTheory.Doubling.absEw F E w δ * locInf w u ≤ c ^ 2 := by
+  classical
+  have hnorm : ∀ (τ : EmbOver E w) (y : w.Completion ⊗[F] E), ‖infEmb τ y‖₊ = ‖infEmb e y‖₊ := by
+    intro τ y
+    rcases infEmb_eq_or_conj hσ e τ with h | h
+    · rw [h]
+    · rw [h, RingHom.comp_apply, RCLike.nnnorm_conj]
+  have hterm : ∀ p : EmbOver E w × J, ‖infEmb e δ.1‖₊ * ‖p.1.1 (u p.2)‖₊ ≤ c := by
+    rintro ⟨τ, f⟩
+    have h1 : infEmb τ (z f) = τ.1 (u f) * infEmb τ δ.1 := by
+      rw [hz f, map_mul, infEmb_tmul, map_one, one_mul]
+    calc ‖infEmb e δ.1‖₊ * ‖τ.1 (u f)‖₊ = ‖infEmb τ δ.1‖₊ * ‖τ.1 (u f)‖₊ := by rw [hnorm τ]
+      _ = ‖infEmb τ (z f)‖₊ := by rw [h1, nnnorm_mul, mul_comm]
+      _ = ‖infEmb e (z f)‖₊ := hnorm τ _
+      _ ≤ c := hc f
+  have hsup : ‖infEmb e δ.1‖₊ * (Finset.univ.sup fun p : EmbOver E w × J => ‖p.1.1 (u p.2)‖₊) ≤ c := by
+    rw [Finset.mul_sup₀]
+    exact Finset.sup_le fun p _ => hterm p
+  unfold locInf
+  rw [GlobalTheory.Doubling.absEw_eq_sq hσ e, ← mul_pow]
+  convert pow_le_pow_left' hsup 2
+end GlobalTheory.CompanionTheory.GodementH
+
+end
+end
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
+open GlobalTheory.Doubling (absE)
+open GlobalTheory.CompanionTheory.GodementH
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_norm_infinite_place_bound : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (J : Type) [Fintype J] (w : InfinitePlace F) (e : EmbOver E w) (u : J → E) (δ : (w.Completion ⊗[F] E)ˣ) (z : J → w.Completion ⊗[F] E) (c : ℝ≥0),
+    (∀ f, z f = ((1 : w.Completion) ⊗ₜ[F] u f) * δ.1) → (∀ f, ‖infEmb e (z f)‖₊ ≤ c) →
+    GlobalTheory.Doubling.absEw F E w δ * locInf w u ≤ c ^ 2 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GodementH.absEw_mul_locInf_le
+end
+
+section
 open scoped TensorProduct NNReal Matrix
 open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
@@ -508,4 +1370,5 @@ theorem godement_sum : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Num
     _ = _ := by ring
 
 end GlobalTheory.CompanionTheory.GodementH
+end
 end

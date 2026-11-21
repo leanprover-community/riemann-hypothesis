@@ -101,14 +101,5 @@ def ARead : Prop :=
       (rc : IrrGL (w.adicCompletion F) → WD h), IsRecT h rc → ∀ σ, π.IsLocComp w σ →
       GlobalTheory.RoadU.PlainTor (IrrGL.of σ.ρ σ.smooth σ.irred) ∧ ∀ x : WD h, UpperTheory.GalStar.AwayB x (rc (algNorm σ)) → x = rc (algNorm σ)
 
-theorem aRead_of (H : PlainRec) : ARead := by
-  intro F Ω _ _ _ _ _ _ l _ ι n r π hreg ha hW w hw A h rc hrc σ hσ
-  obtain ⟨t, ht⟩ := hW.2 π hreg ha
-  have hwin : WinAt π t w := ht w (by
-    by_cases e : ((l : ℕ) : 𝓞 F) ∈ w.asIdeal
-    · exact Or.inr (hW.1 w e (hw.resolve_left fun k => k e))
-    · exact Or.inl e)
-  obtain ⟨h1, h2, h3⟩ := H F Ω A w h rc hrc n π t hwin σ hσ
-  exact ⟨h1, fun x k => k.tor h2 h3⟩
 
 end UpperTheory.V.Z.Win

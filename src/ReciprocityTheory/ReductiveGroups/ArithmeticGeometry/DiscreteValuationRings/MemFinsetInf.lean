@@ -1,5 +1,264 @@
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.RsAppPullGen
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PullExp
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBCorr
 
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+namespace ReciprocityTheory.ChartRestriction.G.DVR
+
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out
+
+variable {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {D : DegData R I}
+  {A : PolAV (Spec (CommRingCat.of (FractionRing R)))} {G : Over (Spec (CommRingCat.of R))}
+  [GrpObj G] [IsCommMonObj G]
+
+def ExpIdent (U : UnifPre I D A G) (e k : ℕ)
+    (σ : LB.Sec (LB.LinComb U.LG.L (K := Fin 1) (fun _ => 𝟙 G.left) (fun _ => (k : ℤ))))
+    (f : ∀ α : D.toPre.X, D.toPre.SecB k α) (S : Finset D.toPre.X) : Prop :=
+  ∀ (p : (PUnit.{1} → D.toPre.P.L.ι) × (PUnit.{1} → U.LG.L.ι)) (j₁ : Fin 1 → U.LG.L.ι)
+      (jf jt : D.toPre.X → Fin 4 → D.toPre.P.L.ι),
+      j₁ 0 = p.2 PUnit.unit →
+      CohAll D.toPre.P.L
+        (Sum.elim (fun _ : PUnit.{1} => (U.gt e).pG.left)
+          (Sum.elim (fun a : S × Fin 4 => (U.gt e).pG.left ≫ D.toPre.famφB a.1.1 a.2)
+            (fun a : S × Fin 4 => D.toPre.Oφ (U.gt e).pG a.1.1 a.2)))
+        (Sum.elim (fun _ => p.1 PUnit.unit)
+          (Sum.elim (fun a : S × Fin 4 => jf a.1.1 a.2) (fun a : S × Fin 4 => jt a.1.1 a.2))) →
+      (res (inf_le_left.trans inf_le_left :
+          U.expW e p j₁ S jf jt ≤ (LB.div (D.toPre.P.L.pull (U.gt e).pG.left)
+            (U.LG.L.pull (fstG I e G).left)).U p) ((U.w e).s p)).val ^ k *
+        ((thickObj R I e G).left.presheaf.map (homOfLE (inf_le_left.trans inf_le_right :
+          U.expW e p j₁ S jf jt ≤
+            (fstG I e G).left ⁻¹ᵁ LB.wchart U.LG.L (fun _ : Fin 1 => 𝟙 G.left) j₁)).op).hom
+          (((fstG I e G).left.app _).hom (σ.f j₁)) =
+      ∑ α ∈ S.attach,
+        ((thickObj R I e G).left.presheaf.map
+            (homOfLE (U.expW_le_f e p j₁ jf jt α.2)).op).hom
+            (((U.gt e).pG.left.app _).hom ((f α.1).f (jf α.1))) *
+          (res (U.expWeight_le_chart_weight e p j₁ jf jt α.2) (((U.gt e).t α.1).s (jt α.1))).val
+
+lemma sum_attach_mono {X β : Type} [AddCommMonoid β] {S S' : Finset X} (hSS : S ⊆ S')
+    (T : S' → β) (h0 : ∀ α : S', α.1 ∉ S → T α = 0) :
+    ∑ α ∈ S'.attach, T α = ∑ α ∈ S.attach, T ⟨α.1, hSS α.2⟩ := by
+  classical
+  set g : X → β := fun α => if h : α ∈ S' then T ⟨α, h⟩ else 0 with hg
+  have h1 : ∑ α ∈ S'.attach, T α = ∑ α ∈ S', g α := by
+    rw [← Finset.sum_attach S' g]
+    exact Finset.sum_congr rfl fun α _ => by simp only [hg, dif_pos α.2]
+  have h2 : ∑ α ∈ S.attach, T ⟨α.1, hSS α.2⟩ = ∑ α ∈ S, g α := by
+    rw [← Finset.sum_attach S g]
+    exact Finset.sum_congr rfl fun α _ => by simp only [hg, dif_pos (hSS α.2)]
+  rw [h1, h2]
+  exact (Finset.sum_subset hSS fun α hα' hα => by
+    simp only [hg, dif_pos hα']
+    exact h0 ⟨α, hα'⟩ hα).symm
+
+theorem expIdent_mono (U : UnifPre I D A G) (e k : ℕ)
+    (σ : LB.Sec (LB.LinComb U.LG.L (K := Fin 1) (fun _ => 𝟙 G.left) (fun _ => (k : ℤ))))
+    (f : ∀ α : D.toPre.X, D.toPre.SecB k α) {S S' : Finset D.toPre.X} (hSS : S ⊆ S')
+    (hvan : ∀ α ∉ S, ∀ j : Fin 4 → D.toPre.P.L.ι, ((U.gt e).pG.left.app _).hom ((f α).f j) = 0)
+    (h : ExpIdent U e k σ f S) : ExpIdent U e k σ f S' := by
+  classical
+  intro p j₁ jf jt hj hcoh'
+  set m : PUnit.{1} ⊕ ((S × Fin 4) ⊕ (S × Fin 4)) → PUnit.{1} ⊕ ((S' × Fin 4) ⊕ (S' × Fin 4)) :=
+    Sum.map id (Sum.map (fun a => (⟨a.1.1, hSS a.1.2⟩, a.2)) (fun a => (⟨a.1.1, hSS a.1.2⟩, a.2)))
+    with hm
+  have hcoh : CohAll D.toPre.P.L
+      (Sum.elim (fun _ : PUnit.{1} => (U.gt e).pG.left)
+        (Sum.elim (fun a : S × Fin 4 => (U.gt e).pG.left ≫ D.toPre.famφB a.1.1 a.2)
+          (fun a : S × Fin 4 => D.toPre.Oφ (U.gt e).pG a.1.1 a.2)))
+      (Sum.elim (fun _ => p.1 PUnit.unit)
+        (Sum.elim (fun a : S × Fin 4 => jf a.1.1 a.2) (fun a : S × Fin 4 => jt a.1.1 a.2))) := by
+    intro a b hab
+    have h1 := hcoh' (m a) (m b) (by
+      rcases a with a | a | a <;> rcases b with b | b | b <;> exact hab)
+    rcases a with a | a | a <;> rcases b with b | b | b <;> exact h1
+  have hS := h p j₁ jf jt hj hcoh
+  have hle : U.expW e p j₁ S' jf jt ≤ U.expW e p j₁ S jf jt :=
+    inf_le_inf_left _ (Finset.inf_mono hSS)
+  have key := congrArg (rs hle) hS
+  simp only [rs, res, Units.coe_map, MonoidHom.coe_coe, map_mul, map_pow, map_sum] at key
+  rw [sum_attach_mono hSS _ (fun α hα => by
+    have h0 := hvan α.1 hα (jf α.1)
+    erw [h0, map_zero, zero_mul])]
+  simp only [res, Units.coe_map, MonoidHom.coe_coe]
+  simp only [← CommRingCat.comp_apply, ← Functor.map_comp] at key
+  convert key using 4
+  all_goals first | rfl | exact Subsingleton.elim _ _ | skip
+  all_goals (erw [Units.coe_map, Units.coe_map]; exact (rs_rs _ hle _).symm)
+
+lemma map_map_hom {Z : Scheme.{0}} {U W V : Z.Opens} (h : W ≤ U) (h' : V ≤ W) (x : Γ(Z, U)) :
+    (Z.presheaf.map (homOfLE h').op).hom ((Z.presheaf.map (homOfLE h).op).hom x) =
+      (Z.presheaf.map (homOfLE (h'.trans h)).op).hom x := rs_rs h h' x
+
+lemma sum_attach_dite {X β : Type} [DecidableEq X] [AddCommMonoid β] (S : Finset X) (g : S → β) :
+    ∑ x ∈ S.attach, g x = ∑ x ∈ S, (if h : x ∈ S then g ⟨x, h⟩ else 0) := by
+  rw [← Finset.sum_attach S (fun x => if h : x ∈ S then g ⟨x, h⟩ else 0)]
+  exact Finset.sum_congr rfl fun x _ => by simp only [dif_pos x.2]
+
+theorem expIdent_restrict [DecidableEq D.toPre.X] (U : UnifPre I D A G) (e k : ℕ)
+    (σ : LB.Sec (LB.LinComb U.LG.L (K := Fin 1) (fun _ => 𝟙 G.left) (fun _ => (k : ℤ))))
+    (f : ∀ α : D.toPre.X, D.toPre.SecB k α) (S : Finset D.toPre.X) (h : ExpIdent U e k σ f S)
+    (p : (PUnit.{1} → D.toPre.P.L.ι) × (PUnit.{1} → U.LG.L.ι)) (j₁ : Fin 1 → U.LG.L.ι)
+    (jf jt : D.toPre.X → Fin 4 → D.toPre.P.L.ι) (hj : j₁ 0 = p.2 PUnit.unit)
+    (hcoh : CohAll D.toPre.P.L
+        (Sum.elim (fun _ : PUnit.{1} => (U.gt e).pG.left)
+          (Sum.elim (fun a : S × Fin 4 => (U.gt e).pG.left ≫ D.toPre.famφB a.1.1 a.2)
+            (fun a : S × Fin 4 => D.toPre.Oφ (U.gt e).pG a.1.1 a.2)))
+        (Sum.elim (fun _ => p.1 PUnit.unit)
+          (Sum.elim (fun a : S × Fin 4 => jf a.1.1 a.2) (fun a : S × Fin 4 => jt a.1.1 a.2))))
+    {O : (thickObj R I e G).left.Opens} (hO : O ≤ U.expW e p j₁ S jf jt) :
+    (res (hO.trans (inf_le_left.trans inf_le_left)) ((U.w e).s p)).val ^ k *
+        rs (hO.trans (inf_le_left.trans inf_le_right)) (((fstG I e G).left.app _).hom (σ.f j₁)) =
+      ∑ α ∈ S, (if hα : α ∈ S then rs (hO.trans (U.expW_le_f e p j₁ jf jt hα))
+          (((U.gt e).pG.left.app _).hom ((f α).f (jf α))) *
+        (res (hO.trans (U.expWeight_le_chart_weight e p j₁ jf jt hα)) (((U.gt e).t α).s (jt α))).val else 0) := by
+  have key := congrArg (rs hO) (h p j₁ jf jt hj hcoh)
+  simp only [rs, res, Units.coe_map, MonoidHom.coe_coe, map_mul, map_pow, map_sum, map_map_hom] at key
+  rw [sum_attach_dite] at key
+  refine key.trans (Finset.sum_congr rfl fun α hα => ?_)
+  simp only [dif_pos hα]
+  congr 1
+  erw [Units.coe_map, map_map_hom]
+  rfl
+
+theorem expIdent_pull [DecidableEq D.toPre.X] (U : UnifPre I D A G) (e k : ℕ)
+    (σ : LB.Sec (LB.LinComb U.LG.L (K := Fin 1) (fun _ => 𝟙 G.left) (fun _ => (k : ℤ))))
+    (f : ∀ α : D.toPre.X, D.toPre.SecB k α) (S : Finset D.toPre.X) (h : ExpIdent U e k σ f S)
+    (p : (PUnit.{1} → D.toPre.P.L.ι) × (PUnit.{1} → U.LG.L.ι)) (j₁ : Fin 1 → U.LG.L.ι)
+    (jf jt : D.toPre.X → Fin 4 → D.toPre.P.L.ι) (hj : j₁ 0 = p.2 PUnit.unit)
+    (hcoh : CohAll D.toPre.P.L
+        (Sum.elim (fun _ : PUnit.{1} => (U.gt e).pG.left)
+          (Sum.elim (fun a : S × Fin 4 => (U.gt e).pG.left ≫ D.toPre.famφB a.1.1 a.2)
+            (fun a : S × Fin 4 => D.toPre.Oφ (U.gt e).pG a.1.1 a.2)))
+        (Sum.elim (fun _ => p.1 PUnit.unit)
+          (Sum.elim (fun a : S × Fin 4 => jf a.1.1 a.2) (fun a : S × Fin 4 => jt a.1.1 a.2))))
+    {Z : Scheme.{0}} (hh : Z ⟶ (thickObj R I e G).left) {O : Z.Opens}
+    (hO : O ≤ hh ⁻¹ᵁ U.expW e p j₁ S jf jt) :
+    rs hO ((hh.app _).hom (res (inf_le_left.trans inf_le_left :
+        U.expW e p j₁ S jf jt ≤ (LB.div (D.toPre.P.L.pull (U.gt e).pG.left)
+          (U.LG.L.pull (fstG I e G).left)).U p) ((U.w e).s p)).val) ^ k *
+      rs hO ((hh.app _).hom (rs (inf_le_left.trans inf_le_right : U.expW e p j₁ S jf jt ≤
+        (fstG I e G).left ⁻¹ᵁ LB.wchart U.LG.L (fun _ : Fin 1 => 𝟙 G.left) j₁)
+        (((fstG I e G).left.app _).hom (σ.f j₁)))) =
+      ∑ α ∈ S, (if hα : α ∈ S then
+        rs hO ((hh.app _).hom (rs (U.expW_le_f e p j₁ jf jt hα)
+          (((U.gt e).pG.left.app _).hom ((f α).f (jf α))))) *
+        rs hO ((hh.app _).hom (res (U.expWeight_le_chart_weight e p j₁ jf jt hα) (((U.gt e).t α).s (jt α))).val)
+        else 0) := by
+  have key := expIdent_restrict U e k σ f S h p j₁ jf jt hj hcoh (le_refl _)
+  have key2 := congrArg (fun x => rs hO ((hh.app _).hom x)) key
+  simp only [map_mul, map_pow, map_sum] at key2
+  refine key2.trans (Finset.sum_congr rfl fun α hα => ?_)
+  simp only [dif_pos hα, map_mul]
+
+end ReciprocityTheory.ChartRestriction.G.DVR
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory AlgebraicGeometry
+
+namespace ReciprocityTheory.ChartRestriction.G.DVR
+
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out
+
+variable {X Y Y' Z : Scheme.{0}} (L : LB X) {K₁ K₂ K₃ K K' : Type} [Fintype K₁] [Fintype K₂] [Fintype K₃]
+  [Fintype K] [Fintype K']
+
+theorem secRel_pull (φ₁ : K₁ → (Y' ⟶ X)) (ε₁ : K₁ → ℤ) (s₁ : LB.Sec (LB.LinComb L φ₁ ε₁))
+    (φ₂ : K₂ → (Y ⟶ X)) (ε₂ : K₂ → ℤ) (s₂ : LB.Sec (LB.LinComb L φ₂ ε₂)) (h : Y' ⟶ Y)
+    (φ₃ : K₃ → (Y' ⟶ X)) (ε₃ : K₃ → ℤ) (u : LB.Gen (LB.LinComb L φ₃ ε₃))
+    (hrel : GeneratorPullback.SecRel L φ₁ ε₁ s₁ φ₂ ε₂ s₂ h φ₃ ε₃ u)
+    (j₁ : K₁ → L.ι) (j₂ : K₂ → L.ι) (j₃ : K₃ → L.ι)
+    (hcoh : LB.Coh L (Sum.elim φ₁ (Sum.elim (fun k => h ≫ φ₂ k) φ₃)) (Sum.elim j₁ (Sum.elim j₂ j₃)))
+    (q : Z ⟶ Y') {O : Z.Opens}
+    (h₁ : O ≤ q ⁻¹ᵁ LB.wchart L φ₁ j₁) (h₂ : O ≤ (q ≫ h) ⁻¹ᵁ LB.wchart L φ₂ j₂)
+    (h₃ : O ≤ q ⁻¹ᵁ LB.wchart L φ₃ j₃) :
+    rs h₁ ((q.app _).hom (s₁.f j₁)) =
+      rs h₂ (((q ≫ h).app _).hom (s₂.f j₂)) * rs h₃ ((q.app _).hom (u.s j₃).val) := by
+  have hOb : O ≤ q ⁻¹ᵁ (LB.wchart L φ₁ j₁ ⊓ LB.wchart L (fun k => h ≫ φ₂ k) j₂ ⊓ LB.wchart L φ₃ j₃) := by
+    intro z hz
+    refine ⟨⟨h₁ hz, Set.mem_iInter.2 fun k => ?_⟩, h₃ hz⟩
+    have := Set.mem_iInter.1 (h₂ hz) k
+    simpa [Scheme.Hom.comp_apply] using this
+  have key : rs (inf_le_left.trans inf_le_left : _ ≤ LB.wchart L φ₁ j₁) (s₁.f j₁) =
+      rs ((inf_le_left.trans inf_le_right).trans (wchart_comp_le φ₂ h j₂)) ((h.app _).hom (s₂.f j₂)) *
+      rs (inf_le_right : _ ≤ LB.wchart L φ₃ j₃) (u.s j₃).val := hrel j₁ j₂ j₃ hcoh
+  have ha : LB.wchart L φ₁ j₁ ⊓ LB.wchart L (fun k => h ≫ φ₂ k) j₂ ⊓ LB.wchart L φ₃ j₃ ≤ LB.wchart L φ₁ j₁ :=
+    inf_le_left.trans inf_le_left
+  have hb : LB.wchart L φ₁ j₁ ⊓ LB.wchart L (fun k => h ≫ φ₂ k) j₂ ⊓ LB.wchart L φ₃ j₃ ≤
+      h ⁻¹ᵁ LB.wchart L φ₂ j₂ := (inf_le_left.trans inf_le_right).trans (wchart_comp_le φ₂ h j₂)
+  have hc : LB.wchart L φ₁ j₁ ⊓ LB.wchart L (fun k => h ≫ φ₂ k) j₂ ⊓ LB.wchart L φ₃ j₃ ≤
+      LB.wchart L φ₃ j₃ := inf_le_right
+  have e1 : rs hOb ((q.app _).hom (rs ha (s₁.f j₁))) = rs h₁ ((q.app _).hom (s₁.f j₁)) :=
+    (congrArg (rs hOb) (app_rs q ha (s₁.f j₁))).trans (rs_rs _ _ _)
+  have e2 : rs hOb ((q.app _).hom (rs hb ((h.app _).hom (s₂.f j₂)))) =
+      rs h₂ (((q ≫ h).app _).hom (s₂.f j₂)) := by
+    rw [app_rs, rs_rs]
+    rfl
+  have e3 : rs hOb ((q.app _).hom (rs hc (u.s j₃).val)) = rs h₃ ((q.app _).hom (u.s j₃).val) :=
+    (congrArg (rs hOb) (app_rs q hc (u.s j₃).val)).trans (rs_rs _ _ _)
+  rw [← e1, ← e2, ← e3, ← rs_mul, ← map_mul]
+  exact congrArg (fun x => rs hOb ((q.app _).hom x)) key
+
+theorem corr_pull (φ : K → (Y' ⟶ X)) (ε : K → ℤ) (φ' : K' → (Y' ⟶ X)) (ε' : K' → ℤ)
+    (t : LB.Gen (LB.LinComb L φ ε)) (t' : LB.Gen (LB.LinComb L φ' ε'))
+    (hc : LB.Gen.Corr L φ ε φ' ε' t t') (j : K → L.ι) (j' : K' → L.ι) (hj : LB.Coh L φ j)
+    (hj' : LB.Coh L φ' j') (hjj : ∀ k k', φ k = φ' k' → j k = j' k')
+    (q : Z ⟶ Y') {O : Z.Opens} (h₁ : O ≤ q ⁻¹ᵁ LB.wchart L φ j) (h₂ : O ≤ q ⁻¹ᵁ LB.wchart L φ' j') :
+    rs h₁ ((q.app _).hom (t.s j).val) = rs h₂ ((q.app _).hom (t'.s j').val) := by
+  have hO : O ≤ q ⁻¹ᵁ (LB.wchart L φ j ⊓ LB.wchart L φ' j') := fun z hz => ⟨h₁ hz, h₂ hz⟩
+  have key : rs (inf_le_left : _ ≤ LB.wchart L φ j) (t.s j).val =
+      rs (inf_le_right : _ ≤ LB.wchart L φ' j') (t'.s j').val := by
+    exact congrArg Units.val (hc j j' hj hj' hjj)
+  have e1 : rs hO ((q.app _).hom (rs (inf_le_left : _ ≤ LB.wchart L φ j) (t.s j).val)) =
+      rs h₁ ((q.app _).hom (t.s j).val) :=
+    (congrArg (rs hO) (app_rs q (inf_le_left : _ ≤ LB.wchart L φ j) (t.s j).val)).trans (rs_rs _ _ _)
+  have e2 : rs hO ((q.app _).hom (rs (inf_le_right : _ ≤ LB.wchart L φ' j') (t'.s j').val)) =
+      rs h₂ ((q.app _).hom (t'.s j').val) :=
+    (congrArg (rs hO) (app_rs q (inf_le_right : _ ≤ LB.wchart L φ' j') (t'.s j').val)).trans (rs_rs _ _ _)
+  rw [← e1, ← e2]
+  exact congrArg (fun x => rs hO ((q.app _).hom x)) key
+
+lemma rs_app_comp' {Z Y X : Scheme.{0}} (h : Z ⟶ Y) (ψ : Y ⟶ X) {U : X.Opens} {W : Y.Opens}
+    {V : Z.Opens} (hW : W ≤ ψ ⁻¹ᵁ U) (hV : V ≤ h ⁻¹ᵁ W) (hV' : V ≤ (h ≫ ψ) ⁻¹ᵁ U) (x : Γ(X, U)) :
+    rs hV ((h.app W).hom (rs hW ((ψ.app U).hom x))) = rs hV' (((h ≫ ψ).app U).hom x) := by
+  rw [app_rs, rs_rs, Scheme.Hom.comp_app]
+  rfl
+
+theorem rs_app_mulGen (φ : K → (Y' ⟶ X)) (ε : K → ℤ) (φ' : K' → (Y' ⟶ X)) (ε' : K' → ℤ)
+    (t : LB.Gen (LB.LinComb L φ ε)) (t' : LB.Gen (LB.LinComb L φ' ε')) (j : K ⊕ K' → L.ι)
+    (q : Z ⟶ Y') {O : Z.Opens} (h : O ≤ q ⁻¹ᵁ LB.wchart L (Sum.elim φ φ') j)
+    (h₁ : O ≤ q ⁻¹ᵁ LB.wchart L φ (j ∘ Sum.inl)) (h₂ : O ≤ q ⁻¹ᵁ LB.wchart L φ' (j ∘ Sum.inr)) :
+    rs h ((q.app _).hom ((LB.mulGen L φ ε φ' ε' t t').s j).val) =
+      rs h₁ ((q.app _).hom (t.s (j ∘ Sum.inl)).val) * rs h₂ ((q.app _).hom (t'.s (j ∘ Sum.inr)).val) := by
+  simp only [LB.mulGen, Units.val_mul, map_mul, rs_mul]
+  congr 1
+  · exact (congrArg (rs h) (app_rs q _ (t.s (j ∘ Sum.inl)).val)).trans (rs_rs _ _ _)
+  · exact (congrArg (rs h) (app_rs q _ (t'.s (j ∘ Sum.inr)).val)).trans (rs_rs _ _ _)
+
+theorem rs_app_pullGen {W : Scheme.{0}} (φ : K → (Y ⟶ X)) (ε : K → ℤ) (c : LB.Gen (LB.LinComb L φ ε))
+    (g : W ⟶ Y) (j : K → L.ι) (q : Z ⟶ W) {O : Z.Opens}
+    (h : O ≤ q ⁻¹ᵁ LB.wchart L (fun k => g ≫ φ k) j) (h' : O ≤ (q ≫ g) ⁻¹ᵁ LB.wchart L φ j) :
+    rs h ((q.app _).hom ((LB.pullGen L φ ε c g).s j).val) = rs h' (((q ≫ g).app _).hom (c.s j).val) :=
+  (congrArg (rs h) (app_rs q (wchart_comp_le φ g j) ((g.app _).hom (c.s j).val))).trans (rs_rs _ _ _)
+
+end ReciprocityTheory.ChartRestriction.G.DVR
+end
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -482,3 +741,5 @@ theorem cross_vanish (hL4 : Laws4) {E : Type} [Field E] [NumberField E] [NumberF
   exact TopologicalSpace.Opens.mem_iSup.2 ⟨⟨y, hy⟩, hyO ⟨y, hy⟩⟩
 
 end ReciprocityTheory.ChartRestriction.G.DVR
+end
+end

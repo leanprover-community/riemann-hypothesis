@@ -62,7 +62,6 @@ theorem guardPos_pos (x : ℝ) : 0 < guardPos x := by
   · exact h
   · exact one_pos
 
-theorem guardPos_of_pos {x : ℝ} (h : 0 < x) : guardPos x = x := if_pos h
 
 def gxOf (K : CurveDat host embLL eTau) : GlobalExtra LL Tau where
   Om τ s := guardPos (omVal K τ s)

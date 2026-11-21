@@ -190,12 +190,6 @@ theorem AdmissibleClosure.irreducible (h : AdmissibleClosure) {H : Type} [Normed
     exact (W.orthogonal_disjoint).eq_bot_of_le (hle.trans hcl)
   · exact Or.inr (le_antisymm hle (V.topologicalClosure_minimal (inf_eq_left.1 h1) hc))
 
-theorem infinitesimalEquivalence_hyp_det (ε : Fin n → Bool) :
-    IsURepOn (UJset ε) (fun g => g.det • (1 : ℂ →L[ℂ] ℂ)) ∧ IsIrredOn (UJset ε) (fun g => g.det • (1 : ℂ →L[ℂ] ℂ)) ∧
-      kFinVec ε (fun g => g.det • (1 : ℂ →L[ℂ] ℂ)) = ⊤ ∧
-      IsGKHom ε (fun g => g.det • (1 : ℂ →L[ℂ] ℂ)) (fun g => g.det • (1 : ℂ →L[ℂ] ℂ))
-        (LinearEquiv.refl ℂ _).toLinearMap :=
-  ⟨(det_isURepOn ε).1, (det_isURepOn ε).2.1, eq_top_iff.2 fun v _ => (det_isURepOn ε).2.2 v, isGKHom_id _ _⟩
 
 end Consequences
 

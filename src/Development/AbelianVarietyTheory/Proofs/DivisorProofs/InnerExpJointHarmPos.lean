@@ -3,13 +3,431 @@ import Formalism.SharpRestriction.Divisibility.SchurIrreducible
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockActionPowAnalyticVectorNormLe
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockDerivedActionsTensorMembersStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockOperatorsLieRepresentationCommuteStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianSpectralPartsAnticommute
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InnerFockOmegaActionAdjointLines
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TotalDegreeOmActKronBlockDiagonalLe
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockLoweringPartEqSubFockOperators
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PosOfPosMulInnerOnJointEigenvectors
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockAdjoints
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockPolynomialsLocallyFiniteRationalWeights
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SumLineMatrixKroneckerRightFactor
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AnalyticOnNhdOrbitOfDerivSeqNormEq
 
+section
+section
+open Matrix
+
+namespace GlobalTheory
+
+theorem spectral_parts_of_diag {n : Type} [Fintype n] [DecidableEq n] (Y J U : Matrix n n ℂ)
+    (μ : n → ℝ) (h1 : Uᴴ * U = 1) (h2 : U * Uᴴ = 1)
+    (hY : Y = U * diagonal (fun j => (μ j : ℂ)) * Uᴴ) (hJ : J * Y = -(Y * J)) :
+    ∃ (s : Finset ℝ) (N E : ℝ → Matrix n n ℂ), Y = ∑ ν ∈ s, (ν : ℂ) • N ν ∧
+      (∀ ν, (N ν).IsHermitian ∧ (E ν).IsHermitian ∧ Y * N ν = (ν : ℂ) • E ν ∧
+        N ν * Y = (ν : ℂ) • E ν ∧ Y * E ν = (ν : ℂ) • N ν ∧ E ν * Y = (ν : ℂ) • N ν ∧
+        J * N ν = -(N ν * J) ∧ J * E ν = E ν * J) ∧ ∀ ν ν', E ν * E ν' = E ν' * E ν := by
+  classical
+  set φ : (ℝ → ℝ) → Matrix n n ℂ := fun f => U * diagonal (fun j => ((f (μ j) : ℝ) : ℂ)) * Uᴴ
+    with hφ
+  have hcongr : ∀ f g : ℝ → ℝ, (∀ x, f x = g x) → φ f = φ g := by
+    intro f g h
+    rw [show f = g from funext h]
+  have hmul : ∀ f g : ℝ → ℝ, φ f * φ g = φ (fun x => f x * g x) := by
+    intro f g
+    simp only [hφ]
+    calc U * diagonal (fun j => ((f (μ j) : ℝ) : ℂ)) * Uᴴ *
+          (U * diagonal (fun j => ((g (μ j) : ℝ) : ℂ)) * Uᴴ)
+        = U * (diagonal (fun j => ((f (μ j) : ℝ) : ℂ)) * (Uᴴ * U) *
+          diagonal (fun j => ((g (μ j) : ℝ) : ℂ))) * Uᴴ := by simp only [Matrix.mul_assoc]
+      _ = _ := by
+        rw [h1, Matrix.mul_one, diagonal_mul_diagonal]
+        simp only [Complex.ofReal_mul]
+  have hsmul : ∀ (c : ℝ) (f : ℝ → ℝ), (c : ℂ) • φ f = φ (fun x => c * f x) := by
+    intro c f
+    simp only [hφ]
+    rw [← Matrix.smul_mul, ← Matrix.mul_smul, ← diagonal_smul]
+    congr 3
+    funext j
+    simp
+  have hherm : ∀ f : ℝ → ℝ, (φ f).IsHermitian := by
+    intro f
+    simp only [hφ]
+    apply isHermitian_mul_mul_conjTranspose
+    rw [isHermitian_diagonal_iff]
+    intro j
+    exact Complex.conj_ofReal _
+  have hid : Y = φ (fun x => x) := hY
+  set K := Uᴴ * J * U with hK
+  have hJK : J = U * K * Uᴴ := by
+    rw [hK]
+    calc J = (U * Uᴴ) * J * (U * Uᴴ) := by rw [h2]; simp
+      _ = _ := by simp only [Matrix.mul_assoc]
+  have hKD : K * diagonal (fun j => (μ j : ℂ)) = -(diagonal (fun j => (μ j : ℂ)) * K) := by
+    have e := congrArg (fun M => Uᴴ * M * U) hJ
+    simp only [hY] at e
+    have a1 : Uᴴ * (J * (U * diagonal (fun j => (μ j : ℂ)) * Uᴴ)) * U
+        = K * diagonal (fun j => (μ j : ℂ)) * (Uᴴ * U) := by
+      simp only [hK, Matrix.mul_assoc]
+    have a2 : Uᴴ * (-(U * diagonal (fun j => (μ j : ℂ)) * Uᴴ * J)) * U
+        = -((Uᴴ * U) * diagonal (fun j => (μ j : ℂ)) * K) := by
+      simp only [hK, Matrix.mul_assoc, Matrix.mul_neg, Matrix.neg_mul]
+    rw [a1, a2, h1, Matrix.mul_one, Matrix.one_mul] at e
+    exact e
+  have hkey : ∀ f : ℝ → ℝ, J * φ f = φ (fun x => f (-x)) * J := by
+    intro f
+    have hK2 : K * diagonal (fun j => ((f (μ j) : ℝ) : ℂ))
+        = diagonal (fun j => ((f (-μ j) : ℝ) : ℂ)) * K := by
+      ext i j
+      have e := congrFun (congrFun hKD i) j
+      simp only [mul_diagonal, diagonal_mul, Matrix.neg_apply] at e ⊢
+      by_cases h0 : K i j = 0
+      · simp [h0]
+      · have : (μ j : ℂ) = -(μ i : ℂ) := by
+          apply mul_left_cancel₀ h0
+          rw [e]; ring
+        have h3 : μ j = -μ i := by exact_mod_cast this
+        rw [h3, mul_comm]
+    simp only [hφ]
+    rw [hJK]
+    calc U * K * Uᴴ * (U * diagonal (fun j => ((f (μ j) : ℝ) : ℂ)) * Uᴴ)
+        = U * (K * (Uᴴ * U) * diagonal (fun j => ((f (μ j) : ℝ) : ℂ))) * Uᴴ := by
+          simp only [Matrix.mul_assoc]
+      _ = U * (diagonal (fun j => ((f (-μ j) : ℝ) : ℂ)) * (Uᴴ * U) * K) * Uᴴ := by
+          rw [h1, Matrix.mul_one, Matrix.mul_one, hK2]
+      _ = _ := by simp only [Matrix.mul_assoc]
+  have hs1 : ∀ x : ℝ, x * Real.sign x = |x| := by
+    intro x
+    rcases lt_trichotomy x 0 with h | h | h
+    · rw [Real.sign_of_neg h, abs_of_neg h]; ring
+    · simp [h]
+    · rw [Real.sign_of_pos h, abs_of_pos h]; ring
+  have hs2 : ∀ x : ℝ, |x| * Real.sign x = x := by
+    intro x
+    rcases lt_trichotomy x 0 with h | h | h
+    · rw [Real.sign_of_neg h, abs_of_neg h]; ring
+    · simp [h]
+    · rw [Real.sign_of_pos h, abs_of_pos h]; ring
+  refine ⟨Finset.univ.image (fun j => |μ j|),
+    fun ν => φ (fun x => if |x| = ν then Real.sign x else 0),
+    fun ν => φ (fun x => if |x| = ν then 1 else 0), ?_, ?_, ?_⟩
+  · simp only [hsmul]
+    simp only [hφ]
+    rw [← Finset.sum_mul, ← Finset.mul_sum, hY]
+    congr 2
+    ext i j
+    rw [Matrix.sum_apply]
+    by_cases hij : i = j
+    · subst hij
+      simp only [diagonal_apply_eq]
+      rw [Finset.sum_eq_single |μ i|]
+      · simp only [if_true, hs2]
+      · intro b _ hb
+        simp [Ne.symm hb]
+      · intro h
+        exact absurd (Finset.mem_image_of_mem (fun j => |μ j|) (Finset.mem_univ i)) h
+    · simp [diagonal_apply_ne _ hij]
+  · intro ν
+    clear hY hK hKD hJK hφ
+    clear_value φ
+    beta_reduce
+    refine ⟨hherm _, hherm _, ?_, ?_, ?_, ?_, ?_, ?_⟩
+    · rw [hsmul, hid, hmul]
+      apply hcongr; intro x
+      split_ifs with h
+      · rw [hs1, h, mul_one]
+      · simp
+    · rw [hsmul, hid, hmul]
+      apply hcongr; intro x
+      split_ifs with h
+      · rw [mul_comm, hs1, h, mul_one]
+      · simp
+    · rw [hsmul, hid, hmul]
+      apply hcongr; intro x
+      split_ifs with h
+      · rw [← h, hs2, mul_one]
+      · simp
+    · rw [hsmul, hid, hmul]
+      apply hcongr; intro x
+      split_ifs with h
+      · rw [← h, hs2, one_mul]
+      · simp
+    · have : ∀ f : ℝ → ℝ, -φ f = φ (fun x => -f x) := by
+        intro f
+        have := hsmul (-1) f
+        simpa using this
+      rw [hkey, ← Matrix.neg_mul, this]
+      congr 1
+      apply hcongr; intro x
+      rw [abs_neg]
+      split_ifs with h
+      · exact Real.sign_neg
+      · simp
+    · rw [hkey]
+      congr 1
+      apply hcongr; intro x
+      rw [abs_neg]
+  · intro ν ν'
+    clear hY hK hKD hJK hφ hkey hs1 hs2 hherm hsmul hid
+    clear_value φ
+    beta_reduce
+    exact (hmul _ _).trans ((hcongr _ _ fun x => mul_comm _ _).trans (hmul _ _).symm)
+
+theorem hermitian_spectral_parts_anticommute :
+    ∀ (n : Type) [Fintype n] [DecidableEq n] (Y J : Matrix n n ℂ), Y.IsHermitian →
+      J * Y = -(Y * J) →
+      ∃ (s : Finset ℝ) (N E : ℝ → Matrix n n ℂ), Y = ∑ ν ∈ s, (ν : ℂ) • N ν ∧
+      (∀ ν, (N ν).IsHermitian ∧ (E ν).IsHermitian ∧ Y * N ν = (ν : ℂ) • E ν ∧
+        N ν * Y = (ν : ℂ) • E ν ∧ Y * E ν = (ν : ℂ) • N ν ∧ E ν * Y = (ν : ℂ) • N ν ∧
+        J * N ν = -(N ν * J) ∧ J * E ν = E ν * J) ∧ ∀ ν ν', E ν * E ν' = E ν' * E ν := by
+  intro n _ _ Y J hY hJ
+  refine spectral_parts_of_diag Y J (hY.eigenvectorUnitary : Matrix n n ℂ) hY.eigenvalues
+    ?_ ?_ ?_ hJ
+  · exact hY.eigenvectorUnitary.2.1
+  · exact hY.eigenvectorUnitary.2.2
+  · exact hY.spectral_theorem
+
+end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermitian_spectral_projections_anticommute : ∀ (n : Type) [Fintype n] [DecidableEq n] (Y J : Matrix n n ℂ), Y.IsHermitian → J * Y = -(Y * J) → ∃ (s : Finset ℝ) (N E : ℝ → Matrix n n ℂ), Y = ∑ ν ∈ s, (ν : ℂ) • N ν ∧ (∀ ν, (N ν).IsHermitian ∧ (E ν).IsHermitian ∧ Y * N ν = (ν : ℂ) • E ν ∧ N ν * Y = (ν : ℂ) • E ν ∧ Y * E ν = (ν : ℂ) • N ν ∧ E ν * Y = (ν : ℂ) • N ν ∧ J * N ν = -(N ν * J) ∧ J * E ν = E ν * J) ∧ ∀ ν ν', E ν * E ν' = E ν' * E ν := by
+  atlas_forward_decl GlobalTheory.hermitian_spectral_parts_anticommute
+end
+
+section
+section
+noncomputable section
+namespace GlobalTheory.FockAdjLines
+open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.FockAlg MvPolynomial
+
+theorem Jm_eq_diagonal (p q : ℕ) :
+    Jm p q = Matrix.diagonal (Sum.elim (fun _ => 1) (fun _ => -1)) := by
+  ext a b
+  rcases a with a | a <;> rcases b with b | b <;>
+    simp [Jm, Formalism.UG.Jpq, Matrix.diagonal_apply, Matrix.one_apply]
+  split_ifs <;> simp
+
+theorem inner_omAct_adj : ∀ (p q r s : ℕ) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] (ι : Pol p q r s →ₗ[ℂ] H), IsFockIP ι → ∀ (Z : Matrix (Ln p q r s) (Ln p q r s) ℂ) (P Q : Pol p q r s), inner ℂ (ι (omAct p q r s Z P)) (ι Q) = inner ℂ (ι P) (ι (omAct p q r s (Matrix.kroneckerMap (· * ·) (Jm p q) (Jm r s) * Z.conjTranspose * Matrix.kroneckerMap (· * ·) (Jm p q) (Jm r s)) Q)) := by
+  intro p q r s H _ _ ι hι Z P Q
+  refine GlobalTheory.FockAdj.inner_omAct hι _ _ ?_ P Q
+  rintro ⟨a, c⟩ ⟨b, d⟩
+  rw [Jm_eq_diagonal, Jm_eq_diagonal, Matrix.kroneckerMap_diagonal_diagonal _ (by simp) (by simp),
+    Matrix.mul_diagonal, Matrix.diagonal_mul]
+  rcases a with a | a <;> rcases b with b | b <;> rcases c with c | c <;> rcases d with d | d <;>
+    simp [linePos]
+
+end GlobalTheory.FockAdjLines
+end
+end
+
+open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.FockAlg MvPolynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.inner_fockOmegaAction_adjoint_lines : ∀ (p q r s : ℕ) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] (ι : Pol p q r s →ₗ[ℂ] H), IsFockIP ι → ∀ (Z : Matrix (Ln p q r s) (Ln p q r s) ℂ) (P Q : Pol p q r s), inner ℂ (ι (omAct p q r s Z P)) (ι Q) = inner ℂ (ι P) (ι (omAct p q r s (Matrix.kroneckerMap (· * ·) (Jm p q) (Jm r s) * Z.conjTranspose * Matrix.kroneckerMap (· * ·) (Jm p q) (Jm r s)) Q)) := by
+  atlas_forward_decl GlobalTheory.FockAdjLines.inner_omAct_adj
+end
+
+section
+section
+open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.FockAlg MvPolynomial
+
+noncomputable section
+namespace GlobalTheory.FockBlockDeg
+
+theorem Jm_apply_of_ne {r s : ℕ} {c e : Ix r s} (h : c ≠ e) : Jm r s c e = 0 := by
+  rcases c with c | c <;> rcases e with e | e <;>
+    simp_all [Jm, Formalism.UG.Jpq]
+
+theorem totalDegree_omAct_kron_le : ∀ (p q r s : ℕ) (E : Mat p q), IsKC E → ∀ (d : ℕ) (P : Pol p q r s), P.totalDegree ≤ d → (omAct p q r s (Matrix.kroneckerMap (· * ·) E (Jm r s)) P).totalDegree ≤ d := by
+  intro p q r s E hE d P hP
+  rw [← mem_restrictTotalDegree] at hP ⊢
+  refine GlobalTheory.FockPolGK.omAct_mem d _ ?_ P hP
+  rintro ⟨a, c⟩ ⟨b, e⟩ h
+  change E a b * Jm r s c e = 0
+  by_cases hc : c = e
+  · subst hc
+    rw [hE a b, zero_mul]
+    rcases a with a | a <;> rcases b with b | b <;> rcases c with c | c <;>
+      simp_all [linePos, sameBlock]
+  · rw [Jm_apply_of_ne hc, mul_zero]
+
+end GlobalTheory.FockBlockDeg
+end
+end
+
+open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.FockAlg MvPolynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.totalDegree_omAct_kron_blockDiagonal_le : ∀ (p q r s : ℕ) (E : Mat p q), IsKC E → ∀ (d : ℕ) (P : Pol p q r s), P.totalDegree ≤ d → (omAct p q r s (Matrix.kroneckerMap (· * ·) E (Jm r s)) P).totalDegree ≤ d := by
+  atlas_forward_decl GlobalTheory.FockBlockDeg.totalDegree_omAct_kron_le
+end
+
+section
+section
+noncomputable section
+namespace GlobalTheory.FockLowDiff
+open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.FockAlg MvPolynomial
+
+def ixSign {p q : ℕ} : Ix p q → ℂ := Sum.elim (fun _ => 1) (fun _ => -1)
+
+theorem Jm_eq_diagonal (p q : ℕ) : Jm p q = Matrix.diagonal ixSign := by
+  ext a b
+  rcases a with a | a <;> rcases b with b | b <;>
+    simp [Jm, Formalism.UG.Jpq, ixSign, Matrix.diagonal_apply, Matrix.one_apply]
+  split_ifs <;> simp
+
+theorem omAct_kron_diagonal {p q r s : ℕ} (Z : Mat p q) (t : Ix r s → ℂ) (P : Pol p q r s) :
+    omAct p q r s (Matrix.kroneckerMap (· * ·) Z (Matrix.diagonal t)) P =
+      ∑ a, ∑ b, ∑ c, (Z a b * t c) • omE ((a, c) : Ln p q r s) (b, c) P := by
+  rw [omAct_apply, Fintype.sum_prod_type, LinearMap.sum_apply]
+  refine Finset.sum_congr rfl fun a _ => ?_
+  rw [Finset.sum_comm (f := fun b c => (Z a b * t c) • omE ((a, c) : Ln p q r s) (b, c) P),
+    LinearMap.sum_apply]
+  refine Finset.sum_congr rfl fun c _ => ?_
+  rw [Fintype.sum_prod_type, LinearMap.sum_apply]
+  refine Finset.sum_congr rfl fun b _ => ?_
+  rw [LinearMap.sum_apply, Finset.sum_eq_single c]
+  · simp
+  · intro d _ hd
+    simp [Matrix.diagonal_apply_ne _ (Ne.symm hd)]
+  · simp
+
+theorem lowering_eq_diff : ∀ (p q r s : ℕ) (Z : Mat p q), IsPC Z → ∀ P : Pol p q r s, omAct p q r s (Matrix.kroneckerMap (· * ·) Z (1 : Mat r s)) P - omAct p q r s (Matrix.kroneckerMap (· * ·) (Jm p q * Z) (Jm r s)) P = (2 : ℂ) • minusPart (fockAct1 p q r s Z) P := by
+  intro p q r s Z hZ P
+  rw [((GlobalTheory.FockParts.explicit_parts p q r s).1 Z hZ P).2, Jm_eq_diagonal, Jm_eq_diagonal,
+    ← Matrix.diagonal_one, omAct_kron_diagonal, omAct_kron_diagonal, ← Finset.sum_sub_distrib,
+    Finset.smul_sum]
+  refine Finset.sum_congr rfl fun a _ => ?_
+  rw [← Finset.sum_sub_distrib, Finset.smul_sum]
+  refine Finset.sum_congr rfl fun b _ => ?_
+  rw [← Finset.sum_sub_distrib, Finset.smul_sum]
+  refine Finset.sum_congr rfl fun c _ => ?_
+  rw [Matrix.diagonal_mul, ← sub_smul]
+  by_cases hab : sameBlock a b
+  · simp [hZ a b hab]
+  · rcases a with a | a <;> rcases b with b | b <;> rcases c with c | c <;>
+      simp [sameBlock] at hab <;>
+      simp [ixSign, linePos, omE, raiB, lowB, two_smul, add_smul, add_comm]
+
+end GlobalTheory.FockLowDiff
+end
+end
+
+open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.FockAlg MvPolynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fockLoweringPart_eq_sub_fockOperators : ∀ (p q r s : ℕ) (Z : Mat p q), IsPC Z → ∀ P : Pol p q r s, omAct p q r s (Matrix.kroneckerMap (· * ·) Z (1 : Mat r s)) P - omAct p q r s (Matrix.kroneckerMap (· * ·) (Jm p q * Z) (Jm r s)) P = (2 : ℂ) • minusPart (fockAct1 p q r s Z) P := by
+  atlas_forward_decl GlobalTheory.FockLowDiff.lowering_eq_diff
+end
+
+section
+section
+namespace GlobalTheory
+
+open Module.End
+
+theorem pos_of_pos_mul_inner_on_joint_eigenvectors_finiteDimensional {E H I : Type*} [NormedAddCommGroup E]
+    [InnerProductSpace ℂ E] [FiniteDimensional ℂ E] [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    (T : I → E →ₗ[ℂ] E) (hT : ∀ i, (T i).IsSymmetric) (hc : ∀ i j, Commute (T i) (T j))
+    (j u : E →ₗ[ℂ] H)
+    (hu : ∀ (m : I → ℝ) (y : E), (∀ i, T i y = (m i : ℂ) • y) →
+      ∃ c : ℝ, 0 < c ∧ ∀ x, inner ℂ (j x) (u y) = (c : ℂ) * inner ℂ x y)
+    (x : E) (hx : x ≠ 0) : (inner ℂ (j x) (u x)).im = 0 ∧ 0 < (inner ℂ (j x) (u x)).re := by
+  classical
+  have htop : (⨆ χ : I → ℂ, ⨅ i, eigenspace (T i) (χ i)) = ⊤ :=
+    LinearMap.IsSymmetric.iSup_iInf_eq_top_of_commute hT (fun a b _ => hc a b)
+  have hO := LinearMap.IsSymmetric.orthogonalFamily_iInf_eigenspaces hT
+  have key : ∀ (χ : I → ℂ) (y : ↥(⨅ i, eigenspace (T i) (χ i))), ∃ c : ℝ, 0 < c ∧
+      ∀ z, inner ℂ (j z) (u y) = (c : ℂ) * inner ℂ z (y : E) := by
+    intro χ y
+    apply hu (fun i => (χ i).re) (y : E)
+    intro i
+    have hmem : (y : E) ∈ eigenspace (T i) (χ i) := (Submodule.mem_iInf _).mp y.2 i
+    have hy : T i y = χ i • (y : E) := mem_eigenspace_iff.mp hmem
+    by_cases h0 : (y : E) = 0
+    · simp [h0]
+    · have hr := (hT i).conj_eigenvalue_eq_self (hasEigenvalue_of_hasEigenvector ⟨hmem, h0⟩)
+      have hre : ((χ i).re : ℂ) = χ i := Complex.conj_eq_iff_re.mp hr
+      rw [hy, hre]
+  have hx' : x ∈ ⨆ χ : I → ℂ, ⨅ i, eigenspace (T i) (χ i) := by
+    rw [htop]; exact Submodule.mem_top
+  obtain ⟨s, hs⟩ := Submodule.mem_iSup_iff_exists_finset.mp hx'
+  obtain ⟨μ, hμ⟩ := (Submodule.mem_iSup_finset_iff_exists_sum _ x).mp hs
+  choose c hc0 hcx using key
+  have hself : ∀ χ ∈ s, inner ℂ x (μ χ : E) = ((‖(μ χ : E)‖ ^ 2 : ℝ) : ℂ) := by
+    intro χ hχ
+    rw [← hμ, sum_inner, Finset.sum_eq_single χ]
+    · rw [inner_self_eq_norm_sq_to_K]; push_cast; rfl
+    · intro ψ _ hψ
+      simpa using hO hψ (μ ψ) (μ χ)
+    · intro h; exact absurd hχ h
+  have hux : u x = ∑ χ ∈ s, u (μ χ : E) := by rw [← hμ, map_sum]
+  have hval : inner ℂ (j x) (u x) = ((∑ χ ∈ s, c χ (μ χ) * ‖(μ χ : E)‖ ^ 2 : ℝ) : ℂ) := by
+    rw [hux, inner_sum, Complex.ofReal_sum]
+    refine Finset.sum_congr rfl fun χ hχ => ?_
+    rw [hcx, hself χ hχ, Complex.ofReal_mul]
+  rw [hval, Complex.ofReal_im, Complex.ofReal_re]
+  refine ⟨rfl, ?_⟩
+  obtain ⟨χ, hχ, hne⟩ : ∃ χ ∈ s, (μ χ : E) ≠ 0 := by
+    by_contra hcon
+    apply hx
+    rw [← hμ]
+    exact Finset.sum_eq_zero fun χ hχ => by_contra fun h => hcon ⟨χ, hχ, h⟩
+  exact Finset.sum_pos' (fun ψ _ => mul_nonneg (hc0 _ _).le (sq_nonneg _))
+    ⟨χ, hχ, mul_pos (hc0 _ _) (pow_pos (norm_pos_iff.mpr hne) 2)⟩
+
+theorem pos_of_pos_mul_inner_on_joint_eigenvectors :
+    ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] (ι : V →ₗ[ℂ] H), Function.Injective ι → ∀ (W : Submodule ℂ V), FiniteDimensional ℂ W → ∀ (I : Type) (T : I → Module.End ℂ V), (∀ i, ∀ w ∈ W, T i w ∈ W) → (∀ i x y, inner ℂ (ι (T i x)) (ι y) = inner ℂ (ι x) (ι (T i y))) → (∀ i j, T i * T j = T j * T i) → ∀ (u : V →ₗ[ℂ] H), (∀ (m : I → ℝ), ∀ y ∈ W, (∀ i, T i y = (m i : ℂ) • y) → ∃ c : ℝ, 0 < c ∧ ∀ x ∈ W, inner ℂ (ι x) (u y) = (c : ℂ) * inner ℂ (ι x) (ι y)) → ∀ x ∈ W, x ≠ 0 → (inner ℂ (ι x) (u x)).im = 0 ∧ 0 < (inner ℂ (ι x) (u x)).re := by
+  intro V _ _ H _ _ ι hι W hW I T hTW hsym hcomm u hu x hxW hx0
+  let e : W ≃ₗ[ℂ] W.map ι := Submodule.equivMapOfInjective ι hι W
+  have : FiniteDimensional ℂ (W.map ι) := e.finiteDimensional
+  let T' : I → (W.map ι) →ₗ[ℂ] (W.map ι) := fun i =>
+    e.toLinearMap ∘ₗ (T i).restrict (hTW i) ∘ₗ e.symm.toLinearMap
+  have hesymm : ∀ z : W.map ι, ι (e.symm z : V) = (z : H) := fun z =>
+    congrArg Subtype.val (e.apply_symm_apply z)
+  have hTe : ∀ i (z : W.map ι), (e.symm (T' i z) : V) = T i (e.symm z) := by
+    intro i z
+    simp [T']
+  have hT'coe : ∀ i (z : W.map ι), (T' i z : H) = ι (T i (e.symm z)) := by
+    intro i z
+    rw [← hesymm (T' i z), hTe]
+  have hsym' : ∀ i, (T' i).IsSymmetric := by
+    intro i a b
+    change inner ℂ (T' i a : H) (b : H) = inner ℂ (a : H) (T' i b : H)
+    rw [hT'coe, hT'coe, ← hesymm a, ← hesymm b]
+    exact hsym i _ _
+  have hc' : ∀ i k, Commute (T' i) (T' k) := by
+    intro i k
+    refine LinearMap.ext fun z => e.symm.injective (Subtype.ext ?_)
+    rw [Module.End.mul_apply, Module.End.mul_apply]
+    simp only [hTe]
+    exact LinearMap.congr_fun (hcomm i k) _
+  let u' : (W.map ι) →ₗ[ℂ] H := u ∘ₗ W.subtype ∘ₗ e.symm.toLinearMap
+  have hu' : ∀ (m : I → ℝ) (y : W.map ι), (∀ i, T' i y = (m i : ℂ) • y) →
+      ∃ c : ℝ, 0 < c ∧ ∀ z, inner ℂ ((W.map ι).subtype z) (u' y) = (c : ℂ) * inner ℂ z y := by
+    intro m y hy
+    have hy' : ∀ i, T i (e.symm y) = (m i : ℂ) • (e.symm y : V) := by
+      intro i
+      rw [← hTe, hy i, map_smul, Submodule.coe_smul]
+    obtain ⟨c, hc, hcx⟩ := hu m (e.symm y) (e.symm y).2 hy'
+    refine ⟨c, hc, fun z => ?_⟩
+    have h := hcx (e.symm z) (e.symm z).2
+    rw [hesymm z, hesymm y] at h
+    exact h
+  have hne : e ⟨x, hxW⟩ ≠ 0 := by
+    intro h
+    apply hx0
+    have h2 : ((e ⟨x, hxW⟩ : W.map ι) : H) = 0 := by rw [h]; rfl
+    exact hι ((show ι x = 0 from h2).trans (map_zero ι).symm)
+  have hmain := pos_of_pos_mul_inner_on_joint_eigenvectors_finiteDimensional T' hsym' hc' (W.map ι).subtype u' hu'
+    (e ⟨x, hxW⟩) hne
+  have h1 : (W.map ι).subtype (e ⟨x, hxW⟩) = ι x := rfl
+  have h2 : u' (e ⟨x, hxW⟩) = u x := by simp [u']
+  rw [h1, h2] at hmain
+  exact hmain
+
+end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.inner_pos_of_pos_on_joint_eigenvectors : ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] (ι : V →ₗ[ℂ] H), Function.Injective ι → ∀ (W : Submodule ℂ V), FiniteDimensional ℂ W → ∀ (I : Type) (T : I → Module.End ℂ V), (∀ i, ∀ w ∈ W, T i w ∈ W) → (∀ i x y, inner ℂ (ι (T i x)) (ι y) = inner ℂ (ι x) (ι (T i y))) → (∀ i j, T i * T j = T j * T i) → ∀ (u : V →ₗ[ℂ] H), (∀ (m : I → ℝ), ∀ y ∈ W, (∀ i, T i y = (m i : ℂ) • y) → ∃ c : ℝ, 0 < c ∧ ∀ x ∈ W, inner ℂ (ι x) (u y) = (c : ℂ) * inner ℂ (ι x) (ι y)) → ∀ x ∈ W, x ≠ 0 → (inner ℂ (ι x) (u x)).im = 0 ∧ 0 < (inner ℂ (ι x) (u x)).re := by
+  atlas_forward_decl GlobalTheory.pos_of_pos_mul_inner_on_joint_eigenvectors
+end
+
+section
 section
 open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.FockAlg MvPolynomial
 
@@ -337,3 +755,4 @@ open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheo
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.inner_expt_jointHarm_real_pos : ∀ (p q r s : ℕ) (T0 : GrpData (p * r + q * s) (p * s + q * r)) (T1 : GrpData p q) (T2 : GrpData r s) (F : FockData T0 T1 T2), ∀ Y ∈ pR p q, ∀ P ∈ jointHarm p q r s, P ≠ 0 → (inner ℂ (F.ι P) (F.π (T1.expt Y, 1) (F.ι P))).im = 0 ∧ 0 < (inner ℂ (F.ι P) (F.π (T1.expt Y, 1) (F.ι P))).re := by
   atlas_forward_decl GlobalTheory.HarmCoeff.inner_exp_jointHarm_pos
+end

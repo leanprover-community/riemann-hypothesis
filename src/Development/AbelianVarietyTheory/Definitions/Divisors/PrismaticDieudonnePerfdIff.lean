@@ -89,13 +89,6 @@ theorem PrismData.nonempty (h : PrismaticDieudonnePerfd) (p : ℕ) [Fact p.Prime
     fun S => (h4 S).1, fun S => (h4 S).2.1, fun S => (h4 S).2.2.1, fun S => (h4 S).2.2.2.1,
     fun S => (h4 S).2.2.2.2.1, fun S => (h4 S).2.2.2.2.2, h5⟩⟩
 
-theorem prismaticDieudonnePerfd_iff :
-    PrismaticDieudonnePerfd ↔ ∀ (p : ℕ) [Fact p.Prime], Nonempty (PrismData p) :=
-  ⟨PrismData.nonempty, fun h p _ => (h p).elim fun D => ⟨D.M, D.map, D.φ, D.lie, D.du, D.l, D.e,
-    fun S G => ⟨D.projective S G, D.finite S G, D.rank_eq S G, D.exists_φ_eq S G, D.lie_projective S G,
-      D.lie_finite S G, D.lie_surjective S G, D.lie_eq_zero_iff S G, D.map_id S G⟩, D.map_comp,
-    fun S G H f m => ⟨D.map_φ S G H f m, D.lie_map S G H f m, D.du_map S G H f m⟩,
-    fun S => ⟨D.l_bijective S, D.e_bijective S, D.φ_l S, D.φ_e S, D.map_eps S, D.du_e_l S⟩, D.baseChange⟩⟩
 
 section Const
 
@@ -223,10 +216,6 @@ def ofPerfect (t : Fin G.height → G.Tate) (t' : Fin G.height → G.dual.Tate) 
 
 variable (c : ConstTate ε G)
 
-theorem constHom_comp (i j : Fin G.height) : constHom G (c.t i) ≫ charHom G (c.t' j) =
-    if i = j then constHom (PDivGroup.mu p O) ε else 0 := by
-  rw [constHom_comp_charHom, c.pair]
-  split_ifs <;> simp
 
 def dual : ConstTate ε G.dual where
   t := c.t'
@@ -242,13 +231,7 @@ def ofIso {H : PDivGroup p O} (e : G ≅ H) (h : H.height = G.height) : ConstTat
 
 def toTate : (Fin G.height → ℤ_[p]) →ₗ[ℤ_[p]] G.Tate := Fintype.linearCombination ℤ_[p] c.t
 
-theorem pairing_toTate (x : Fin G.height → ℤ_[p]) (j : Fin G.height) :
-    pairing G O (c.toTate x) (c.t' j) = x j • ε := by
-  simp [toTate, Fintype.linearCombination_apply, LinearMap.sum_apply, c.pair]
 
-theorem toTate_injective (hε : ∀ a : ℤ_[p], a • ε = 0 → a = 0) : Function.Injective c.toTate :=
-  (injective_iff_map_eq_zero _).2 fun x hx => funext fun j => hε _ <| by
-    rw [← c.pairing_toTate, hx, map_zero, LinearMap.zero_apply]
 
 def Stable (f : End G) (ρ : Matrix (Fin G.height) (Fin G.height) ℤ_[p]) : Prop :=
   ∀ i, tateMap G G O f (c.t i) = ∑ k, ρ k i • c.t k
@@ -264,11 +247,6 @@ theorem stable_iff (f : End G) (ρ : Matrix (Fin G.height) (Fin G.height) ℤ_[p
   · intro h i
     simpa [toTate, Fintype.linearCombination_apply, Pi.single_apply] using h (Pi.single i 1)
 
-theorem stable_algebraMap (a : ℤ_[p]) : c.Stable (algebraMap _ _ a) (algebraMap _ _ a) :=
-  (c.stable_iff _ _).2 fun x => by
-    rw [Algebra.algebraMap_eq_smul_one, Algebra.algebraMap_eq_smul_one, Matrix.smul_mulVec, Matrix.one_mulVec,
-      map_smul c.toTate]
-    exact LinearMap.congr_fun (map_smul (tateMap G G O) a (𝟙 G)) _
 
 theorem Stable.add {c : ConstTate ε G} {f g : End G} {ρ σ : Matrix (Fin G.height) (Fin G.height) ℤ_[p]}
     (hf : c.Stable f ρ) (hg : c.Stable g σ) : c.Stable (f + g) (ρ + σ) :=
@@ -295,13 +273,6 @@ theorem al_apply (x : Fin G.height → O) : c.al x = ∑ i, x i • hodgeTate G 
 
 theorem mem_W (x : Fin G.height → O) : x ∈ c.W ↔ c.al x = 0 := Iff.rfl
 
-theorem omegaMap_dual_al (y : Fin G.height → O) :
-    omegaMap _ _ G.bidual.hom (c.dual.al y) = ∑ j, y j • dlog G (c.t' j) := by
-  rw [al_apply, map_sum]
-  refine Finset.sum_congr rfl fun j _ => ?_
-  rw [map_smul, hodgeTate_apply, ← dlog_tateMap, ← tateMap_comp, ← dualHom_bidual_inv, ← dualHom_comp, Iso.hom_inv_id,
-    dualHom_id, tateMap_id]
-  rfl
 
 theorem Stable.al {c : ConstTate ε G} {f : End G} {ρ : Matrix (Fin G.height) (Fin G.height) ℤ_[p]} (hf : c.Stable f ρ)
     (φ : ℤ_[p] →+* O) (x : Fin G.height → O) : c.al ((ρ.map φ).mulVec x) = omegaDualMap G G f (c.al x) := by
@@ -379,22 +350,6 @@ def quotProj {N P : Submodule R X} (h : N ≤ P) (Q : Submodule R X) :
     (Q ⧸ N.comap Q.subtype) →ₗ[R] Q ⧸ P.comap Q.subtype :=
   Submodule.mapQ _ _ LinearMap.id fun _ hx => h hx
 
-theorem quot_exact {N P Q : Submodule R X} (h : N ≤ P) (h' : P ≤ Q) : Function.Injective (quotIncl N h') ∧
-    Function.Exact (quotIncl N h') (quotProj h Q) ∧ Function.Surjective (quotProj h Q) := by
-  refine ⟨(injective_iff_map_eq_zero _).2 fun x hx => ?_, fun x => ?_, fun x => ?_⟩
-  · obtain ⟨x, rfl⟩ := Submodule.Quotient.mk_surjective _ x
-    have h1 : Submodule.inclusion h' x ∈ N.comap Q.subtype := (Submodule.Quotient.mk_eq_zero _).1 hx
-    exact (Submodule.Quotient.mk_eq_zero _).2 h1
-  · obtain ⟨x, rfl⟩ := Submodule.Quotient.mk_surjective _ x
-    refine ⟨fun hx => ?_, ?_⟩
-    · have h1 : x ∈ P.comap Q.subtype := (Submodule.Quotient.mk_eq_zero _).1 hx
-      exact ⟨Submodule.Quotient.mk ⟨x.1, h1⟩, rfl⟩
-    · rintro ⟨y, hy⟩
-      obtain ⟨y, rfl⟩ := Submodule.Quotient.mk_surjective _ y
-      rw [← hy]
-      exact (Submodule.Quotient.mk_eq_zero (P.comap Q.subtype) (x := Submodule.inclusion h' y)).2 y.2
-  · obtain ⟨x, rfl⟩ := Submodule.Quotient.mk_surjective _ x
-    exact ⟨Submodule.Quotient.mk x, rfl⟩
 
 end Quot
 
@@ -456,28 +411,8 @@ theorem isSMulRegular_zeta_sub_one (n : ℕ) : IsSMulRegular S.R (zeta S.ε (n +
   obtain ⟨a, ha⟩ := (zeta_sub_one_dvd S n).trans (zeta_one_sub_one_dvd S)
   exact IsSMulRegular.of_mul (a := a) (by rw [mul_comm, ← ha]; exact S.reg)
 
-theorem zeta_one_ne_one : zeta S.ε 1 ≠ 1 := fun h => (Fact.out : ¬IsUnit (p : S.R)) <| by
-  have h1 := isSMulRegular_zeta_sub_one S 0
-  rw [zero_add, h, sub_self] at h1
-  haveI := IsSMulRegular.zero_iff_subsingleton.1 h1
-  exact isUnit_of_subsingleton _
 
-theorem not_isUnit_zeta_sub_one : ¬IsUnit (zeta S.ε 1 - 1) := fun h => (Fact.out : ¬IsUnit (p : S.R)) <| by
-  obtain ⟨r, hr⟩ := exists_add_pow_prime_eq (Fact.out : p.Prime) (zeta S.ε 1 - 1) 1
-  rw [sub_add_cancel, zeta_succ_pow, S.zeta_zero, one_pow] at hr
-  exact isUnit_of_dvd_unit ⟨-((zeta S.ε 1 - 1) * r), by linear_combination -hr⟩ (h.pow p)
 
-theorem smul_eps_eq_zero (a : ℤ_[p]) (h : a • eps S = 0) : a = 0 := by
-  by_contra ha
-  rw [PadicInt.unitCoeff_spec ha, mul_smul, ← Units.smul_def, smul_eq_zero_iff_eq, ← Nat.cast_pow] at h
-  have h1 := congrArg (muRoot · (a.valuation + 1)) h
-  have h2 : ∀ k, zeta S.ε (k + 1) ^ p ^ k = zeta S.ε 1 := fun k => by
-    induction k with
-    | zero => simp
-    | succ k ih => rw [pow_succ', pow_mul, zeta_succ_pow, ih]
-  simp only [muRoot_smul, muRoot_zero] at h1
-  rw [PDiv.pow_digit_natCast (muRoot_pow_self _ _), muRoot_eps, h2] at h1
-  exact zeta_one_ne_one S h1
 
 theorem muRoot_eps_of_over {S S' : CycPerfd p} [Algebra S.R S'.R] {α : Ainf p S.R →+* Ainf p S'.R} (h : S.Over S' α)
     (n : ℕ) : muRoot (eps S') n = algebraMap S.R S'.R (muRoot (eps S) n) := by
@@ -572,7 +507,6 @@ theorem K_zero : K D c 0 = LinearMap.range (coord D c) := rfl
 
 theorem K_succ (n : ℕ) : K D c (n + 1) = (K D c n).comap (piMap frobenius _) := rfl
 
-theorem mem_K_zero (x : Fin G.height → Ainf p S.R) : x ∈ K D c 0 ↔ ∃ m, coord D c m = x := Iff.rfl
 
 theorem mem_K_succ (n : ℕ) (x : Fin G.height → Ainf p S.R) :
     x ∈ K D c (n + 1) ↔ piMap frobenius _ x ∈ K D c n := Iff.rfl
@@ -614,7 +548,6 @@ theorem b_apply (m : D.Cov G) (j : Fin G.height) : b D c m j = fontaineTheta S.R
 
 def thetaK (n : ℕ) : Submodule S.R (Fin G.height → S.R) := (K D c n).map (piMap (fontaineTheta S.R p) _)
 
-theorem thetaK_zero : thetaK D c 0 = LinearMap.range (b D c) := (LinearMap.range_comp _ _).symm
 
 def H (n : ℕ) : Submodule S.R (Fin G.height → S.R) :=
   ((zeta S.ε 1 - 1) • thetaK D c (n + 1)).comap (LinearMap.lsmul S.R _ (zeta S.ε (n + 1) - 1))
@@ -649,36 +582,9 @@ def qqIncl (r : ℕ) : QQ D c (r + 1) →ₗ[S.R] QQ D c r := quotIncl _ (H_succ
 
 def qqProj (r : ℕ) : QQ D c r →ₗ[S.R] LL D c r := quotProj (base_le_H D c (r + 1)) _
 
-theorem qq_exact (r : ℕ) : Function.Injective (qqIncl D c r) ∧ Function.Exact (qqIncl D c r) (qqProj D c r) ∧
-    Function.Surjective (qqProj D c r) := quot_exact (base_le_H D c (r + 1)) (H_succ_le D c r)
 
-theorem inj_const_surjective : Function.Surjective (inj D (ConstTate.ofConst (eps S))) := fun m => by
-  obtain ⟨a, ha⟩ := (D.l_bijective S).2 (D.map S _ _ (PDivGroup.mu p S.R).bidual.hom m)
-  have h : dualChar (const p S.R) (constGen p S.R) = (PDivGroup.mu p S.R).bidual.inv := by
-    rw [← dualHom_constHom, show constHom _ (constGen p S.R) = 𝟙 _ by
-      rw [← LinearEquiv.eq_symm_apply, constHom_symm_apply, tateMap_id], dualHom_id, Category.id_comp]
-  refine ⟨fun _ => a, (inj_apply ..).trans ((Fin.sum_univ_one _).trans ?_)⟩
-  change a • D.map S _ _ (dualChar (const p S.R) (constGen p S.R)) (D.l S) = m
-  rw [h, ← map_smul, ← LinearMap.toSpanSingleton_apply, ha, ← LinearMap.comp_apply, ← D.map_comp, Iso.inv_hom_id,
-    D.map_id, LinearMap.id_apply]
 
-theorem H_eq_base (h : Function.Surjective (inj D c)) (n : ℕ) : H D c n = base S G.height := by
-  have hK : ∀ n x, x ∈ K D c n → ∃ y, x = muN S n • y := fun n => by
-    induction n with
-    | zero => rintro _ ⟨m, rfl⟩; obtain ⟨y, rfl⟩ := h m; exact ⟨y, coord_inj D c y⟩
-    | succ n ih =>
-      intro x hx
-      obtain ⟨y, hy⟩ := ih _ hx
-      refine ⟨piMap (phiInv p S.R) _ y, ?_⟩
-      rw [← phiInv_muN, ← map_smulₛₗ, ← hy]
-      exact funext fun j => (Dieudonne.phiInv_frobenius _).symm
-  refine le_antisymm (fun x hx => ?_) (base_le_H D c n)
-  obtain ⟨k, hk, hx⟩ := (mem_H D c n x).1 hx
-  obtain ⟨y, rfl⟩ := hK _ _ hk
-  rw [map_smulₛₗ, theta_muN, smul_comm] at hx
-  exact (mem_base S x).2 ⟨_, funext fun j => isSMulRegular_zeta_sub_one S n (congrFun hx j)⟩
 
-theorem H_const (n : ℕ) : H D (ConstTate.ofConst (eps S)) n = base S 1 := H_eq_base D _ (inj_const_surjective D) n
 
 theorem K_mu (n : ℕ) : K D (ConstTate.ofMu (eps S)) n = ⊤ := by
   induction n with
@@ -689,17 +595,7 @@ theorem K_mu (n : ℕ) : K D (ConstTate.ofMu (eps S)) n = ⊤ := by
       D.map_id, LinearMap.id_apply, D.eCoord_smul_e, Subsingleton.elim (α := Fin 1) j 0]
   | succ n ih => rw [K_succ, ih, Submodule.comap_top]
 
-theorem mem_H_mu (n : ℕ) (x : Fin 1 → S.R) :
-    x ∈ H D (ConstTate.ofMu (eps S)) n ↔ (zeta S.ε (n + 1) - 1) • x ∈ base S 1 := by
-  rw [mem_base]
-  refine (mem_H D (ConstTate.ofMu (eps S)) n x).trans ⟨fun ⟨_, _, h⟩ => ⟨_, h⟩, fun ⟨y, h⟩ => ?_⟩
-  choose k hk using fun j => S.surj (y j)
-  exact ⟨k, by rw [K_mu]; trivial, (congrArg _ (funext hk)).trans h⟩
 
-theorem H_mu_zero : H D (ConstTate.ofMu (eps S)) 0 = ⊤ ∧ base S 1 ≠ ⊤ := by
-  refine ⟨eq_top_iff.2 fun x _ => (mem_H_mu D 0 x).2 ((mem_base S _).2 ⟨x, rfl⟩), fun h => ?_⟩
-  obtain ⟨y, hy⟩ := (mem_base S (1 : Fin 1 → S.R)).1 (h ▸ Submodule.mem_top)
-  exact not_isUnit_zeta_sub_one S (IsUnit.of_mul_eq_one _ (congrFun hy 0))
 
 open scoped Formalism.Per in
 

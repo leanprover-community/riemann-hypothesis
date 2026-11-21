@@ -113,9 +113,6 @@ def realHomeomorph : InfiniteAdeleRing ℚ ≃ₜ ℝ where
   continuous_toFun := RationalIdeles.continuous_realEquiv
   continuous_invFun := RationalIdeles.continuous_realEquiv_symm
 
-theorem realHomeomorph_apply (x : InfiniteAdeleRing ℚ) :
-    realHomeomorph x = RationalIdeles.realEquiv x :=
-  rfl
 
 variable (N : ℕ) [NeZero N]
 
@@ -265,10 +262,6 @@ theorem conj_unipFin_mem {w : FiniteAdelicGL ℚ 2} (hw : w ∈ integralFiniteGL
   have h1 := ((mem_integralFiniteGL_iff ℚ 2).1 hw)
   exact mul_mem (h1.2 1 0) (h1.1 1 0)
 
-theorem realEmb_finEmb_mul (a c : GL (Fin 2) ℝ) (b d : FiniteAdelicGL ℚ 2) :
-    realEmb a * finEmb ℚ 2 b * (realEmb c * finEmb ℚ 2 d) = realEmb (a * c) * finEmb ℚ 2 (b * d) := by
-  apply (prodEquiv ℚ 2).injective
-  simp only [map_mul, prodEquiv_realEmb, prodEquiv_finEmb, Prod.mk_mul_mk, mul_one, one_mul]
 
 instance isAddHaarMeasure_map_realHomeomorph :
     ((infiniteAdeleMeasure ℚ).map realHomeomorph).IsAddHaarMeasure :=
@@ -296,47 +289,6 @@ theorem levelConstant_pos : 0 < levelConstant N := by
 
 variable {N} {k : ℤ}
 
-theorem constantTerm_realEmb_mul_finEmb {φ : AdelicGL ℚ 2 → ℂ} (hφ : IsWeightLevel N k φ)
-    (h : GL (Fin 2) ℝ) {w : FiniteAdelicGL ℚ 2} (hw : w ∈ integralFiniteGL ℚ 2) :
-    constantTerm 1 φ (realEmb h * finEmb ℚ 2 w) =
-      levelConstant N • ∫ t in (0 : ℝ)..N, φ (realEmb (unipReal t * h) * finEmb ℚ 2 w) := by
-  set G : ℝ → ℂ := fun t => φ (realEmb (unipReal t * h) * finEmb ℚ 2 w)
-  rw [constantTerm_eq_setIntegral_adele hφ.isLeftInvariant (isAddFundamentalDomain_levelDomain N)]
-  have heq : Set.EqOn (fun x : 𝔸[ℚ] => φ (unipAdele x * (realEmb h * finEmb ℚ 2 w)))
-      (fun x => G (RationalIdeles.realEquiv x.1)) (levelDomain N) := by
-    intro x hx
-    have e : unipAdele x * (realEmb h * finEmb ℚ 2 w) =
-        realEmb (unipReal (RationalIdeles.realEquiv x.1) * h) * finEmb ℚ 2 w *
-          finEmb ℚ 2 (w⁻¹ * unipFin x.2 * w) := by
-      rw [unipAdele_eq]
-      apply (prodEquiv ℚ 2).injective
-      simp only [map_mul, prodEquiv_realEmb, prodEquiv_finEmb, Prod.mk_mul_mk, mul_one, one_mul]
-      rw [Prod.mk.injEq]
-      exact ⟨rfl, by group⟩
-    simp only [G]
-    rw [e, hφ.right_level _ _ (conj_unipFin_mem hw hx.2)]
-  rw [setIntegral_congr_fun (measurableSet_levelDomain N) heq]
-  set A : Set (InfiniteAdeleRing ℚ) := RationalIdeles.realEquiv ⁻¹' Set.Ico (0 : ℝ) N
-  calc ∫ x in levelDomain N, G (RationalIdeles.realEquiv x.1) ∂adeleMeasure ℚ
-      = ∫ x in (A ×ˢ levelIdeal N : Set (InfiniteAdeleRing ℚ × 𝔸f)), G (RationalIdeles.realEquiv x.1)
-          ∂((infiniteAdeleMeasure ℚ).prod (finiteAdeleMeasure ℚ)) := rfl
-    _ = (finiteAdeleMeasure ℚ (levelIdeal N)).toReal •
-          ∫ x in A, G (RationalIdeles.realEquiv x) ∂infiniteAdeleMeasure ℚ := by
-        have hf := integral_fun_fst (μ := (infiniteAdeleMeasure ℚ).restrict A)
-          (ν := (finiteAdeleMeasure ℚ).restrict (levelIdeal N))
-          (fun a : InfiniteAdeleRing ℚ => G (RationalIdeles.realEquiv a))
-        rw [← Measure.prod_restrict]
-        refine hf.trans ?_
-        rw [measureReal_restrict_apply_univ, measureReal_def]
-    _ = (finiteAdeleMeasure ℚ (levelIdeal N)).toReal •
-          ∫ t in Set.Ico (0 : ℝ) N, G t ∂(infiniteAdeleMeasure ℚ).map realHomeomorph := by
-        congr 1
-        exact (realHomeomorph.measurableEmbedding.setIntegral_map (μ := infiniteAdeleMeasure ℚ)
-          G (Set.Ico (0 : ℝ) N)).symm
-    _ = levelConstant N • ∫ t in (0 : ℝ)..N, G t := by
-        rw [map_infiniteAdeleMeasure, Measure.restrict_smul, integral_smul_nnreal_measure,
-          intervalIntegral.integral_of_le (Nat.cast_nonneg N), integral_Ico_eq_integral_Ioo,
-          ← integral_Ioc_eq_integral_Ioo, levelConstant, NNReal.smul_def, smul_smul]
 
 end GL2Classical
 

@@ -30,19 +30,7 @@ def level {X : ℕ → Type} [∀ j, MeasurableSpace (X j)] (α : ∀ j, Measure
     (∀ j, X j) → ℂ :=
   partInt α n f (n - j)
 
-theorem level_top {X : ℕ → Type} [∀ j, MeasurableSpace (X j)] (α : ∀ j, Measure (X j)) (n : ℕ)
-    (f : (∀ j, X j) → ℂ) : level α n f n = f := by
-  simp [level, partInt]
 
-theorem level_pred {X : ℕ → Type} [∀ j, MeasurableSpace (X j)] (α : ∀ j, Measure (X j)) (n : ℕ)
-    (f : (∀ j, X j) → ℂ) (j : ℕ) (hj : j + 1 ≤ n) (x : ∀ j, X j) :
-    level α n f j x = ∫ t, level α n f (j + 1) (Function.update x (j + 1) t) ∂(α (j + 1)) := by
-  have key : ∀ d k, n - d = k → partInt α n f (d + 1) x = ∫ t, partInt α n f d (Function.update x k t) ∂(α k) := by
-    intro d k h; subst h; rfl
-  have h1 : n - j = (n - (j + 1)) + 1 := by omega
-  unfold level
-  rw [h1]
-  exact key _ _ (by omega)
 
 def IsFiniteSum {G : Type} [Group G] [TopologicalSpace G] [MeasurableSpace G] (H : Subgroup G) (α : Measure G)
     (f : G → ℂ) : Prop :=
@@ -302,12 +290,6 @@ theorem sep_unique {a' : RealVec R → (∀ j, Ginf D j) → ℂ} {p' : ∀ fd :
   field_simp
   linear_combination -this
 
-theorem besselPeriod_eq_Au_mul_projection (h2 : PartII a p) (h3 : PartIII p) (fd : FreeData R) (hfd : fd.OK) (da : RealVec R) :
-    fd.IsBesselPeriod da (Au a p da * Pj p fd 0 1) := by
-  unfold Au
-  split_ifs with hl
-  · exact (h2 hl).2 fd hfd da
-  · simpa using (h3 hl fd hfd).2 da
 
 end Sep
 

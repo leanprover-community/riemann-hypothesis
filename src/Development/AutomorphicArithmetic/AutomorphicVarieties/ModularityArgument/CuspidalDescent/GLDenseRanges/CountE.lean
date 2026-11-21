@@ -58,11 +58,6 @@ theorem flathE : Flath :=
   flath (isotS secSp schurGL (boxIsot step) (piIsot (boxIsot step) (piIrr boxIrr)) (piIrr boxIrr) boxIrr) step boxIrr (piIrr boxIrr)
     schurGL infDim wtEx secSp
 
-theorem countE' : CountE :=
-  countE wtEx (decomp indepS) (zDecE zEq normS) zEq (sphSame zEq) atSame bcOf (yDimE flathE eigBoxE secSp) compsEx slope ord1 eigPi
 
-theorem numJE' : NumJE :=
-  numJE (muZ locSp) (muZE locSp) eEx spec2 normS
-    (zEqDimE countE' (resEq2 typePS2 psRes) invEq1 invBox (locE kirMove isoNe isoLe eOp) kirCusp) unitEv partRep
 
 end UpperTheory.V.Z.Desc.V0

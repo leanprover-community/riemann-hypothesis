@@ -113,10 +113,5 @@ theorem twoSegNonGenQuot_of_char {k : Type} [Field k] [ValuativeRel k] [Topologi
   obtain ⟨W, _, _, σ, f, hinj, hns, hgen⟩ := hsub Δ Δ' x y N hd hpre hx hy
   exact exists_nonGeneric_quot hψ h1 _ σ f hinj hns (isSmooth_prodIrr _ hd) (hrank ψ hψ h1 Δ Δ' x y N hd hx hy) hgen
 
-theorem twoSegNonGenQuot : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k],
-    GlobalTheory.BZSeg.TwoSegGenericSub k → GlobalTheory.BZSeg.WhitRankTwoSeg k → GlobalTheory.BZSeg.TwoSegNonGenQuot k := by
-  intro k _ _ _ _ hsub hrank
-  obtain ⟨ψ, hψ, h1⟩ := exists_continuous_addChar_ne_one k
-  exact twoSegNonGenQuot_of_char hψ h1 hsub hrank
 
 end GlobalTheory.CompanionTheory.BZSeg

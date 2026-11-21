@@ -77,30 +77,9 @@ def vOfB (u : D.what₂.Word) (w : D.what₂.places.Pl)
 variable (u : D.what₂.Word) (w : D.what₂.places.Pl)
   (h : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w))
 
-theorem vOfB_injOn
-    (hB : ∀ t ∈ B u (D.what₂.places.resChar w), ∀ t' ∈ B u (D.what₂.places.resChar w), ∀ i : ℕ,
-      t' = t + i • hP D (D.what₂.places.resChar w) → t' = t) :
-    Set.InjOn (vOfB D h0 rOf B u w h) (B u (D.what₂.places.resChar w)) := fun t ht t' ht' e =>
-  tau1P_injective _ (orbIdx_injOn _ _ (injOn_tau1P D (served_of h) _ hB) ⟨t, ht, rfl⟩ ⟨t', ht', rfl⟩ e)
 
-theorem withGatB_n' (v) :
-    ((withGatB D h0 rOf B).gat u w h).P.n' v = addOrderOf (hP D (D.what₂.places.resChar w)) :=
-  order_gPsi D (served_of h)
 
-theorem withGatB_r : ((withGatB D h0 rOf B).gat u w h).P.r = rOf u (D.what₂.places.resChar w) := rfl
 
-theorem gatTiesB_pos
-    (hB : ∀ t ∈ B u (D.what₂.places.resChar w), ∀ t' ∈ B u (D.what₂.places.resChar w), ∀ i : ℕ,
-      t' = t + i • hP D (D.what₂.places.resChar w) → t' = t)
-    {t0 : HH D} (ht0 : t0 ∈ B u (D.what₂.places.resChar w))
-    (s : Fin (((withGatB D h0 rOf B).gat u w h).P.n' (vOfB D h0 rOf B u w h t0))) :
-    ((D.eTau ((gatTiesB D h0 rOf B).gat_pos u w h ⟨vOfB D h0 rOf B u w h t0, s⟩) : D.R.Psi) :
-      D.R.GG) = D.R.tau1 (t0 + s.val • hP D (D.what₂.places.resChar w)) := by
-  have h1 := gatTies_pos_base D h0 rOf (fun u p => tau1P D.R.toFrame '' B u p) u w h
-    (injOn_tau1P D (served_of h) _ hB) ⟨t0, ht0, rfl⟩ s
-  exact congrArg (fun x : ↥(D.R.Psi) => (x : D.R.GG))
-    (h1.trans (tau1P_mul_gPsi_pow D (served_of h) t0 s.val))
 
-theorem hP_withGatB (p : ℕ) : hP (withGatB D h0 rOf B) p = hP D p := rfl
 
 end Formalism.BasicNotions.Examples₂

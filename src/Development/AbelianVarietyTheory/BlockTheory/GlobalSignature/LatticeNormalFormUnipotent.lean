@@ -72,11 +72,6 @@ section Basic₂
 
 variable {F Y : Type} [Field F] [AddCommGroup Y] [Module F Y] {c : ℕ}
 
-theorem isUnip_one (X : Submodule F Y) (a : Fin c → Y) : IsUnip X a 1 :=
-  ⟨fun _ _ => rfl, fun _ _ => rfl, fun i => by
-    show a i - a i ∈ _
-    rw [sub_self]
-    exact zero_mem _⟩
 
 example {O : Type} [CommRing O] [Algebra O F] [Module O Y] (q : O) (M : Submodule O Y) (a : Fin (c + 1) → Y)
     (e : Fin (c + 1) → ℤ) (z : Y) : (algebraMap O F q) ^ (e 0) • (a 0 + z) ∈ normalForm F q M a e z := by

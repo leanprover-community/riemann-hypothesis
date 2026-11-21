@@ -238,18 +238,6 @@ theorem hasSatGL_invT {w : HeightOneSpectrum (𝓞 E)} {V W : Type} [AddCommGrou
     have := GlobalTheory.LGrp.mem_fixed.1 hy _ ((hK k).1 hk)
     rwa [hT, show GlobalTheory.LFun.ConjPlace.invT _ a k = _ from hc k, invT_invT] at this
 
-theorem invT_mem_KLev {M : ℕ} {k : GL (Fin a) (Af E)} (hk : k ∈ Af.KLev E a M) : invT a (Af E) k ∈ Af.KLev E a M := by
-  obtain ⟨k, h, rfl⟩ := hk
-  refine ⟨invT a _ k, ?_, map_invT _ k⟩
-  have h' : GeneralLinearGroup.map _ k = 1 := h
-  change GeneralLinearGroup.map _ (invT a _ k) = 1
-  rw [map_invT, h', map_one]
 
-theorem hasFixed_invT {R V W : Type} [CommRing R] [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
-    {ρ : Representation ℂ (GL (Fin a) R) V} {ρ' : Representation ℂ (GL (Fin a) R) W}
-    (T : V ≃ₗ[ℂ] W) (hT : ∀ g x, ρ' g (T x) = T (ρ (invT a _ g) x)) {U : Subgroup (GL (Fin a) R)}
-    (hU : ∀ u ∈ U, invT a R u ∈ U) (h : Af.HasFixed ρ U) : Af.HasFixed ρ' U := by
-  obtain ⟨v, h0, hv⟩ := h
-  exact ⟨T v, (map_ne_zero_iff T T.injective).2 h0, fun u hu => by rw [hT, hv _ (hU u hu)]⟩
 
 end UpperTheory.V.InvT

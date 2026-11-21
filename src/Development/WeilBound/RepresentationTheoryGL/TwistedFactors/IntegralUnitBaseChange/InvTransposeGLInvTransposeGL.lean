@@ -429,32 +429,8 @@ variable {k E : Type*} [Field k] [Field E] [Algebra k E]
 
 def theta1 (σ : E ≃ₐ[k] E) : Monoid.End (GL n E) := thetaGL σ 1
 
-theorem sigmaGL_invTransposeGL (τ : E ≃ₐ[k] E) (g : GL n E) :
-    sigmaGL τ (invTransposeGL g) = invTransposeGL (sigmaGL τ g) := by
-  apply Units.ext
-  show (Matrix.transpose ((g⁻¹ : GL n E) : Matrix n n E)).map τ.toAlgHom.toRingHom =
-    Matrix.transpose (((sigmaGL τ g)⁻¹ : GL n E) : Matrix n n E)
-  rw [← map_inv]
-  rfl
 
-theorem invTransposeGL_invTransposeGL (g : GL n E) :
-    invTransposeGL (invTransposeGL g) = g :=
-  Units.ext (Matrix.transpose_transpose _)
 
-theorem theta1_sq (σ : E ≃ₐ[k] E) (hσ : σ ^ 2 = 1) :
-    (theta1 σ : Monoid.End (GL n E)) ^ 2 = 1 := by
-  have hθ : ∀ g : GL n E, theta1 σ g = invTransposeGL (sigmaGL σ g) := fun g => by
-    rw [theta1, thetaGL_apply, one_mul, inv_one, mul_one]
-  have h2 : (sigmaGL σ : Monoid.End (GL n E)) ^ 2 = 1 := by
-    rw [← sigmaGL_pow, hσ, sigmaGL_one]
-  have hσσ : ∀ g : GL n E, sigmaGL σ (sigmaGL σ g) = g := fun g => by
-    show (sigmaGL σ * sigmaGL σ : Monoid.End (GL n E)) g = g
-    rw [← pow_two, h2]
-    rfl
-  refine MonoidHom.ext fun g => ?_
-  rw [pow_two]
-  show theta1 σ (theta1 σ g) = g
-  rw [hθ, hθ, sigmaGL_invTransposeGL, invTransposeGL_invTransposeGL, hσσ]
 
 def unitFnC (F : Type*) [Field F] [ValuativeRel F] : GL n F → ℂ :=
   Set.indicator ((unitGL (n := n) F : Subgroup (GL n F)) : Set (GL n F)) 1

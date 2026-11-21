@@ -299,27 +299,7 @@ theorem level_zero_values_ne_bot (Tf : FormsTied D u) : ∃ w ∈ levelZeroValue
     simp only [Equiv.apply_symm_apply] at this
     exact this
 
-theorem rank_level_zero_pos (Tf : FormsTied D u) (hS : Formalism.MainNotions.product_first_zeroth_parts.admS D u) : 0 < D.duS u := by
-  obtain ⟨c0, -⟩ := (Tf.cls 0 (Nat.zero_le _)).y_bij.2 (Quotient.mk'' 1)
-  obtain ⟨w, hw, hw0⟩ := level_zero_values_ne_bot Tf
-  have hmem : (Pi.single c0 w : (D.mem u).C.cls 0 → (D.mem u).C.Y 0 → ℂ) ∈ (D.mem u).A.Mu0 := by
-    rw [mem_forms_level_zero_iff Tf hS]
-    intro c
-    by_cases hc : c = c0
-    · subst hc; rw [Pi.single_eq_same]; exact hw
-    · rw [Pi.single_eq_of_ne hc]; exact (levelZeroValues Tf).zero_mem
-  haveI := (D.mem u).A.Mu0_fd
-  unfold Formalism.BasicNotions.D7.duS
-  refine Module.finrank_pos_iff_exists_ne_zero.2 ⟨⟨_, hmem⟩, fun h => hw0 ?_⟩
-  have := congrFun (congrArg Subtype.val h) c0
-  simpa using this
 
-theorem ramified_lattice_of_slope_and_length (hs : ∀ (D : D7) (u : D.what₂.Word) (Tf : FormsTied D u), ChiFin Tf → SplitAtT Tf.atT)
-    (h : ∀ (D : D7) (u : D.what₂.Word), FormsCompatible D u → Formalism.MainNotions.product_first_zeroth_parts.HidaSetting D u → Formalism.MainNotions.product_first_zeroth_parts.admS D u →
-      RamifiedSlopeFormula D u ∧ LatticeInclusionLength D u) : RamifiedLatticeFamily :=
-  ramified_lattice_of_free_model fun D u hF hS hA => by
-    obtain ⟨Tf, hC⟩ := hF
-    exact ⟨free_rank_model_of_split Tf hA (hs D u Tf hC), rank_level_zero_pos Tf hA, h D u ⟨Tf, hC⟩ hS hA⟩
 
 end Formalism.L2.GlobalTheoryTheory.LocalLatticeBases
 

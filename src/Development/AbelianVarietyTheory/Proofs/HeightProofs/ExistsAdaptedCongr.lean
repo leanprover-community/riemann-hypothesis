@@ -101,59 +101,5 @@ theorem not_mem_of_coprime {R : Type} [CommRing R] {I : Ideal R} (hI : I ≠ ⊤
   obtain ⟨u, v, huv⟩ := (Nat.Coprime.cast (R := R) h)
   exact hI ((Ideal.eq_top_iff_one _).2 (huv ▸ I.add_mem (I.mul_mem_left _ ha) (I.mul_mem_left _ hb)))
 
-theorem exists_adapted_congr : ∀ (D : D7) (T : Full D) (_hF : LawsFull T) (j : ℕ) (_hj : InR D j) (n : ℕ) (Λ : GenLat D.host.E n) (e : ℕ), 0 < badN D → Λ.Unimod → Λ.TrivAt (badN D) → Λ.TrivAt (T.dδ j n).l₂.M → ∀ la : HeightOneSpectrum (𝓞 T.Q.c.F), (∀ p ∈ (D.host.small ∪ {D.host.q, D.host.d, D.host.g 0, D.host.g 1, (T.dδ j n).pd} : Finset ℕ), ((p : 𝓞 T.Q.c.F) ∉ la.asIdeal)) → ∃ Λ' : GenLat D.host.E n, (∃ ga : (Fin n → D.host.E) ≃ₗ[D.host.E] (Fin n → D.host.E), (∀ v w : Fin n → D.host.E, ∑ i, IsCMField.complexConj D.host.E (ga v i) * ga w i = ∑ i, IsCMField.complexConj D.host.E (v i) * w i) ∧ Λ'.La = Λ.La.map ((ga : (Fin n → D.host.E) →ₗ[D.host.E] (Fin n → D.host.E)).restrictScalars (𝓞 D.host.E)) ∧ ∃ t : ℕ, Nat.Coprime t ((badN D * (T.dδ j n).l₂.M) ^ (e + 1)) ∧ ∀ v ∈ stdLat D.host.E n, ∃ u ∈ stdLat D.host.E n, t • (ga v - v) = ((badN D * (T.dδ j n).l₂.M) ^ (e + 1)) • u) ∧ Λ'.Unimod ∧ Λ'.TrivAt (badN D) ∧ Λ'.TrivAt (T.dδ j n).l₂.M ∧ Λ'.TrivAt (Ideal.absNorm la.asIdeal) ∧ (∃ k : ℕ, (k : 𝓞 T.Q.c.F) ∉ la.asIdeal ∧ Ideal.span {(k : 𝓞 D.host.E)} • Λ'.La ≤ stdLat D.host.E n ∧ Ideal.span {(k : 𝓞 D.host.E)} • stdLat D.host.E n ≤ Λ'.La) ∧ (∃ m : 𝓞 D.host.E, m ≠ 0 ∧ Ideal.span {m} • Λ'.La ≤ stdLat D.host.E n ∧ Ideal.span {m} • stdLat D.host.E n ≤ Λ'.La ∧ ∀ P : Ideal (𝓞 D.host.E), P.IsPrime → m ∈ P → P.map (T.Q.H.bar : 𝓞 D.host.E →+* 𝓞 D.host.E) ≠ P ∧ ((badN D * (T.dδ j n).l₂.M * Ideal.absNorm la.asIdeal : ℕ) : 𝓞 D.host.E) ∉ P) ∧ GenLat.SplitSupp T.Q.H Λ' ∧ ∃ N' : ℕ, Λ'.LevOK N' (T.dδ j n).l₂.M ∧ ((N' : 𝓞 T.Q.c.F) ∉ la.asIdeal) := by
-  intro D T hF j hj n Λ e hb hU hTb hTM la hla
-  have hMpos : 0 < (T.dδ j n).l₂.M := by have := (T.dδ j n).l₂.three_le; omega
-  have hl : 0 < Ideal.absNorm la.asIdeal :=
-    Nat.pos_of_ne_zero fun h0 => la.ne_bot (Ideal.absNorm_eq_zero_iff.1 h0)
-  have hT : Λ.TrivAt ((badN D * (T.dδ j n).l₂.M) ^ (e + 1)) := by
-    obtain ⟨k, hk, h1, h2⟩ := trivAt_mul hTb hTM
-    exact ⟨k, hk.pow_right _, h1, h2⟩
-  obtain ⟨γ, Λ', hγ, ⟨t, ht, hc⟩, hmove, hU', s, hs0, hs1, hs2, hs, k, hk, hk1, hk2⟩ :=
-    exists_move_split D.host.E T.Q.H n _ (Ideal.absNorm la.asIdeal) Λ (pow_pos (Nat.mul_pos hb hMpos) _) hl hU hT
-  have hkl : k.Coprime (Ideal.absNorm la.asIdeal) := hk.coprime_mul_right_right
-  have hkbM : k.Coprime (badN D * (T.dδ j n).l₂.M) :=
-    hk.coprime_mul_left_right.coprime_dvd_right (dvd_pow_self _ (Nat.succ_ne_zero e))
-  have hkla : (k : 𝓞 T.Q.c.F) ∉ la.asIdeal := not_mem_of_coprime la.isPrime.ne_top hkl (Ideal.absNorm_mem _)
-  have h2b : 2 ∣ badN D := by
-    unfold badN
-    have hQ : 2 ∣ D.host.QS := (dvd_pow_self 2 (Nat.succ_ne_zero _)).trans D.host.tower_dvd
-    exact ((hQ.mul_right _).mul_right _).mul_right _
-  let ga : (Fin n → D.host.E) ≃ₗ[D.host.E] (Fin n → D.host.E) := Matrix.toLinearEquiv' γ.1 γ.invertible
-  have hga : ∀ v, ga v = γ.1 *ᵥ v := fun v => rfl
-  have hM : (T.dδ j n).l₂.M = T.Q.l.M * (T.dδ j n).pd := (hF.sh.dLev j hj n).2.1
-  have hlM : T.Q.l.M = D.host.g 0 * D.host.g 1 := hF.p.toLawsCore.pins.2.1.1
-  refine ⟨Λ', ⟨ga, fun v w => ?_, ?_, t, ht, fun v hv => ?_⟩, hU', ⟨k, hkbM.coprime_mul_right_right, hk1, hk2⟩,
-    ⟨k, hkbM.coprime_mul_left_right, hk1, hk2⟩, ⟨k, hkl, hk1, hk2⟩, ⟨k, hkla, hk1, hk2⟩,
-    ⟨s, hs0, hs1, hs2, fun P hP hsP => ⟨(hs P hP hsP).1, fun h => (hs P hP hsP).2 ?_⟩⟩,
-    ⟨s, hs0, hs1, hs2, fun P hP hsP => (hs P hP hsP).1⟩, (T.dδ j n).l₂.M * k, ⟨?_, dvd_mul_right _ _, ?_⟩, ?_⟩
-  · rw [hga, hga, ← hermE_one, hγ, hermE_one]
-  · ext v
-    constructor
-    · intro hv
-      obtain ⟨u, rfl⟩ := ga.surjective v
-      exact ⟨u, (hmove u).2 hv, rfl⟩
-    · rintro ⟨u, hu, rfl⟩
-      exact (hmove u).1 hu
-  · exact hc v hv
-  · refine Ideal.mem_of_dvd _ (Nat.cast_dvd_cast ?_) h
-    rw [mul_comm]
-    exact Nat.mul_dvd_mul_left _ (dvd_pow_self _ (Nat.succ_ne_zero e))
-  · exact (T.dδ j n).l₂.odd.mul
-      (Nat.coprime_two_right.1 (hkbM.coprime_mul_right_right.coprime_dvd_right h2b))
-  · show _ ≤ Λ'.La ⊓ stdLat D.host.E n
-    refine le_inf ((Submodule.smul_mono_left ?_).trans hk2) Submodule.smul_le_right
-    refine Ideal.span_singleton_le_span_singleton.2 ?_
-    rw [Nat.cast_mul]
-    exact dvd_mul_left _ _
-  · intro h
-    rw [hM, hlM, Nat.cast_mul, Nat.cast_mul, Nat.cast_mul] at h
-    rcases la.isPrime.mem_or_mem h with h | h
-    · rcases la.isPrime.mem_or_mem h with h | h
-      · rcases la.isPrime.mem_or_mem h with h | h
-        · exact hla _ (by simp) h
-        · exact hla _ (by simp) h
-      · exact hla _ (by simp) h
-    · exact hkla h
 
 end GlobalTheory.AdaptCongr

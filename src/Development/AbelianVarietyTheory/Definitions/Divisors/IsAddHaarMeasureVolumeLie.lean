@@ -88,43 +88,8 @@ theorem smoothInf_rt_fin (f : Lie E a → ℂ) (φ : GA E a → ℂ) (k : GL (Fi
     smoothInf f (fun x => φ (x * finGL E a k)) g = smoothInf f φ (g * finGL E a k) := by
   simp only [smoothInf, chart_rt_fin]
 
-theorem smoothInf_mem_smoothSpan (π : CuspSub E a) {f : Lie E a → ℂ} (hf : IsTestInf f) {φ : Sm E a} (hφ : φ ∈ π.V) :
-    smoothInf f φ.1 ∈ smoothSpan π :=
-  Submodule.subset_span ⟨f, φ, hf, hφ, rfl⟩
 
-theorem exists_smoothInf_ne_zero {φ : GA E a → ℂ} (hφ : φ ∈ Sm E a) {g : GA E a} (hg : φ g ≠ 0) :
-    ∃ f : Lie E a → ℂ, IsTestInf f ∧ smoothInf f φ g ≠ 0 := by
-  obtain ⟨ρ, h1, -, h2, h3⟩ := exists_isTestInf (E := E) (a := a) (y := oneL E a) isUnit_one Filter.univ_mem
-  have hc : ContDiffOn ℝ ∞ (fun x => starRingEnd ℂ (chart φ g x)) (invSet E a) :=
-    Complex.conjCLE.contDiff.comp_contDiffOn (hφ g)
-  have hf := h1.mul hc
-  refine ⟨_, hf, ?_⟩
-  have hF := hf.mul (hφ g)
-  have e : (fun x => (ρ x : ℂ) * starRingEnd ℂ (chart φ g x) * chart φ g x) =
-      fun x => ((ρ x * Complex.normSq (chart φ g x) : ℝ) : ℂ) := by
-    funext x
-    rw [mul_assoc, ← Complex.normSq_eq_conj_mul_self, Complex.ofReal_mul]
-  rw [smoothInf, e, integral_complex_ofReal, Complex.ofReal_ne_zero]
-  rw [e] at hF
-  have hcont : Continuous fun x => ρ x * Complex.normSq (chart φ g x) := Complex.continuous_re.comp hF.1.continuous
-  have hsupp : HasCompactSupport fun x => ρ x * Complex.normSq (chart φ g x) :=
-    hF.2.1.comp_left (g := Complex.re) rfl
-  have h4 : chart φ g (oneL E a) = φ g := (chart_val φ g 1).trans (by simp)
-  refine (hcont.integral_pos_of_hasCompactSupport_nonneg_nonzero hsupp
-    (fun x => mul_nonneg (h2 x).1 (Complex.normSq_nonneg _)) (x := oneL E a) ?_).ne'
-  simpa [h3, h4] using hg
 
-theorem smoothSpan_ne_bot (π : CuspSub E a) : smoothSpan π ≠ ⊥ := by
-  obtain ⟨φ, hφ, h0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot π.ne_bot
-  obtain ⟨g, hg⟩ : ∃ g, φ.1 g ≠ 0 := by
-    by_contra h
-    push Not at h
-    exact h0 (Subtype.ext (funext h))
-  obtain ⟨f, hf, h⟩ := exists_smoothInf_ne_zero φ.2 hg
-  intro hb
-  have := smoothInf_mem_smoothSpan π hf hφ
-  rw [hb, Submodule.mem_bot] at this
-  exact h (congrFun this g)
 
 example : schur 1 (fun _ => 0) = 1 := schur_zero 1
 

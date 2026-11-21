@@ -63,16 +63,6 @@ def IsPullUnifPre {I : Ideal R} {I' : Ideal R'} (φ : R →+* R') {D : DegData R
         res (X := (thickObj R' I' e G').left) inf_le_right
           (pullU (fstG I' e G').left _ (wL.s (jL, jL')))
 
-theorem IsPullUnifPre.toIsPullUnif {I : Ideal R} {I' : Ideal R'} {φ : R →+* R'} {D : DegData R I}
-    {D' : DegData R' I'} {hD : IsPullDeg φ D.toPre D'.toPre}
-    {A : PolAV (Spec (CommRingCat.of (FractionRing R)))}
-    {A' : PolAV (Spec (CommRingCat.of (FractionRing R')))}
-    {G : Over (Spec (CommRingCat.of R))} [GrpObj G] [IsCommMonObj G]
-    {G' : Over (Spec (CommRingCat.of R'))} [GrpObj G'] [IsCommMonObj G']
-    {bc : G' ≅ (Over.pullback (specOf φ)).obj G}
-    {U : Unif I D A G} {U' : Unif I' D' A' G'}
-    (h : IsPullUnifPre φ hD bc U.toUnifPre U'.toUnifPre) : IsPullUnif φ hD bc U U' :=
-  ⟨h⟩
 
 end Rel
 
@@ -168,17 +158,6 @@ def ExpPullInjSt : Prop :=
       U'.LG = L' → U'.gen = eA → IsPullUnifPre φ hD bc U.toUnifPre U' →
       ∀ k : ℕ, 1 ≤ k → U'.ExpBij k
 
-theorem unifBaseChangeInj_of_seams (h1 : PullDegInjSt) (h2 : PullPreInjSt) (h3 : ExpPullInjSt) :
-    UnifBaseChangeInjSt := by
-  intro R R' _ _ _ _ I I' hR hR' φ hI hφ D A G _ _ hG U W hW hgen G' _ _ bc hbc A' hA' eA heA hwA
-    L' wL he hwL hrig
-  obtain ⟨D', ⟨hD⟩⟩ := h1 R R' I I' hR hR' φ hI hφ D A G hG U W hW hgen G' bc hbc A' hA' eA heA hwA
-    L' wL he hwL hrig
-  obtain ⟨U', hL, hg, hP⟩ := h2 R R' I I' hR hR' φ hI hφ D A G hG U W hW hgen G' bc hbc A' hA' eA heA
-    hwA L' wL he hwL hrig D' hD
-  have hx := h3 R R' I I' hR hR' φ hI hφ D A G hG U W hW hgen G' bc hbc A' hA' eA heA hwA
-    L' wL he hwL hrig D' hD U' hL hg hP
-  exact ⟨D', hD, { toUnifPre := U', expand := hx }, hL, hg, IsPullUnifPre.toIsPullUnif hP⟩
 
 section CS
 
@@ -250,16 +229,5 @@ def PullPreCSInjSt : Prop :=
     ∀ (D' : DegData R' I') (hD : IsPullDeg φ D.toPre D'.toPre), IsPullDegCS hD →
       ∃ U' : UnifPre I' D' A' G', U'.LG = L' ∧ U'.gen = eA ∧ IsPullUnifPre φ hD bc U.toUnifPre U'
 
-theorem unifBaseChangeInj_of_seamsCS (h1 : PullDegCSInjSt) (h2 : PullPreCSInjSt)
-    (h3 : ExpPullInjSt) : UnifBaseChangeInjSt := by
-  intro R R' _ _ _ _ I I' hR hR' φ hI hφ D A G _ _ hG U W hW hgen G' _ _ bc hbc A' hA' eA heA hwA
-    L' wL he hwL hrig
-  obtain ⟨D', hD, hCS⟩ := h1 R R' I I' hR hR' φ hI hφ D A G hG U W hW hgen G' bc hbc A' hA' eA heA
-    hwA L' wL he hwL hrig
-  obtain ⟨U', hL, hg, hP⟩ := h2 R R' I I' hR hR' φ hI hφ D A G hG U W hW hgen G' bc hbc A' hA' eA heA
-    hwA L' wL he hwL hrig D' hD hCS
-  have hx := h3 R R' I I' hR hR' φ hI hφ D A G hG U W hW hgen G' bc hbc A' hA' eA heA hwA
-    L' wL he hwL hrig D' hD U' hL hg hP
-  exact ⟨D', hD, { toUnifPre := U', expand := hx }, hL, hg, IsPullUnifPre.toIsPullUnif hP⟩
 
 end ReciprocityTheory.ChartRestriction.G.Out

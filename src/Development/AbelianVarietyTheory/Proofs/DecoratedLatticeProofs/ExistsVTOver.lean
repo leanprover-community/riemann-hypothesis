@@ -143,32 +143,6 @@ variable {D : D7} {u : D.what₂.Word} {a : XPart D u} {ζ₀ : Fin a.Lz.rank �
 
 end Level
 
-theorem exists_vT_over {X : Formalism.L2.Col.Fields} {Pr : Formalism.L2.Col.Primes X} (hX : X.Ok) (hPr : Pr.Ok) (u : Pr.Word) (v' : HeightOneSpectrum (𝓞 X.F))
-    (hT : ((Pr.T u : ℕ) : 𝓞 X.F) ∈ v'.asIdeal) : ∃ P ∈ Pr.vT u, P.under (𝓞 X.F) = v' := by
-  have hinj : Function.Injective (algebraMap (𝓞 X.F) (𝓞 X.E)) := by
-    intro x y e
-    apply RingOfIntegers.ext
-    have := congrArg (fun z : 𝓞 X.E => (z : X.E)) e
-    simpa using this
-  haveI : Algebra.IsIntegral (𝓞 X.F) (𝓞 X.E) := inferInstance
-  obtain ⟨Q, -, hQp, hQ⟩ := Ideal.exists_ideal_over_prime_of_isIntegral (S := 𝓞 X.E) v'.asIdeal ⊥ (by
-    rw [Ideal.comap_bot_of_injective _ hinj]; exact bot_le)
-  have hQ0 : Q ≠ ⊥ := by
-    rintro rfl
-    rw [Ideal.comap_bot_of_injective _ hinj] at hQ
-    exact v'.ne_bot hQ.symm
-  let QQ : HeightOneSpectrum (𝓞 X.E) := ⟨Q, hQp, hQ0⟩
-  have hTQ : ((Pr.T u : ℕ) : 𝓞 X.E) ∈ QQ.asIdeal := by
-    have : ((Pr.T u : ℕ) : 𝓞 X.F) ∈ Ideal.comap (algebraMap (𝓞 X.F) (𝓞 X.E)) Q := hQ ▸ hT
-    simpa using this
-  rw [← hPr.piT_norm u] at hTQ
-  rcases hQp.mem_or_mem hTQ with hπ | hπ
-  · exact ⟨QQ, (GlobalTheory.MuOffMove.mem_vT hPr u QQ).2 hπ, HeightOneSpectrum.ext hQ⟩
-  · refine ⟨Formalism.L2.Col.conjPrime₂ QQ, (GlobalTheory.MuOffMove.mem_vT hPr u _).2 ((Formalism.L2.Col.mem_conjP _ _).2 ?_), HeightOneSpectrum.ext ?_⟩
-    · exact hπ
-    · show Ideal.under _ _ = _
-      rw [GlobalTheory.MuOffMove.under_conjP hX]
-      exact hQ
 
 end GlobalTheory.SeeSaw.StdOff
 

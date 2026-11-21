@@ -47,10 +47,6 @@ def TameAtTypePrimeStrong : Prop :=
 theorem exists_isFrobAtType (k : Fin 2) (v : D.nd.PlG k) : ∃ φ, IsFrobAtType D k v φ :=
   exists_isFrob (D.nd.plOm.2 _)
 
-theorem tameGenerator_of_strong (h : TameAtTypePrimeStrong D) : TameGeneratorAtTypePrime D := by
-  intro σ i k hg v
-  obtain ⟨φ, hφ⟩ := exists_isFrobAtType D k v
-  exact ⟨(h σ i k hg v).2.1, φ, hφ, (h σ i k hg v).2.2 φ hφ⟩
 
 theorem root_ne_zero (σ : D.what₂.FT) (hσ : D.nd.goodRow σ) (k : Fin 2) (v : D.nd.PlG k) :
     haveI : Fact (D.host.g k).Prime := ⟨D.host.g_prime k⟩

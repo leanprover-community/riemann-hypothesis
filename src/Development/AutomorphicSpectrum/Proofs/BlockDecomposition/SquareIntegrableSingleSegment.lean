@@ -9,8 +9,36 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NormLtOneOfPowT
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExponentLtOfPrecedes
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProdLeRevEqProdGe
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MultisetAntitoneEnumeration
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeightedAntitoneLastNonpos
 
+section
+namespace GlobalTheory.CompanionTheory.Inequalities
+
+theorem weighted_antitone_last_nonpos : ∀ (h : ℕ) (d e : Fin h → ℝ), 2 ≤ h → (∀ i, 0 < d i) →
+    Antitone e → ∑ i, d i * e i = 0 →
+    ∃ j : Fin h, 0 < j.val ∧ ∑ i ∈ Finset.univ.filter (fun i => j ≤ i), d i * e i ≤ 0 := by
+  intro h d e hh hd he hs
+  obtain ⟨n, rfl⟩ : ∃ n, h = n + 2 := ⟨h - 2, by omega⟩
+  refine ⟨Fin.last (n + 1), by simp, ?_⟩
+  have hf : Finset.univ.filter (fun i : Fin (n + 2) => Fin.last (n + 1) ≤ i)
+      = {Fin.last (n + 1)} := by
+    ext i
+    simp [Fin.last_le_iff]
+  rw [hf, Finset.sum_singleton]
+  have hle : (∑ i, d i) * e (Fin.last (n + 1)) ≤ 0 := by
+    rw [Finset.sum_mul, ← hs]
+    exact Finset.sum_le_sum fun i _ =>
+      mul_le_mul_of_nonneg_left (he (Fin.le_last i)) (hd i).le
+  have hpos : 0 < ∑ i, d i :=
+    Finset.sum_pos (fun i _ => hd i) ⟨Fin.last _, Finset.mem_univ _⟩
+  have hel : e (Fin.last (n + 1)) ≤ 0 := by
+    by_contra hc
+    exact absurd (mul_pos hpos (not_le.mp hc)) (not_lt.mpr hle)
+  exact mul_nonpos_of_nonneg_of_nonpos (hd _).le hel
+
+end GlobalTheory.CompanionTheory.Inequalities
+end
+
+section
 section
 open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL Filter Topology
 
@@ -110,3 +138,4 @@ open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.Loc
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.square_integrable_single_segment : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], Zc.LSocleGL k → Zl.CasselmanNecSq k → Zc.LSegExists k → ∀ (𝔪 : Multiset (Segment k)) (N : ℕ) {V : Type} [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin N) k) V), 1 ≤ N → IsSmooth π → π.IsIrreducible → IsSqIntCoeff π → IsL 𝔪 π → 𝔪.card = 1 := by
   atlas_forward_decl GlobalTheory.CompanionTheory.SquareIntegrableSegments.card_eq_one
+end

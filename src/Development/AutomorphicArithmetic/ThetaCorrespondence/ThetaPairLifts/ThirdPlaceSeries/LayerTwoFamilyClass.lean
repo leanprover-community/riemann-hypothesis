@@ -1,9 +1,47 @@
 import Formalism.LocalToGlobal.ClassRec
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RowsRowPinMin
+import Formalism.LocalToGlobal.HilbertRowConditions.RowPinMin
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RowsRowPin
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.JointsTiedS
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.HostDatumS
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.GTiedFOfC2S
+import Formalism.LocalToGlobal.ClassSLinks
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.LinkedFamiliesFixedValues
 
+section
+set_option synthInstance.maxHeartbeats 200000
+
+section
+noncomputable section
+open Formalism.BasicNotions Formalism.MainNotions
+namespace Formalism.L2.Rows
+variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : MainNotions.G.Inst D L} {Gl : MainNotions.G.LatInst D} {K : MainNotions.G.Consts} {Y : DivX D}
+  {cX : ExtraC} {ex : Extra D L hT Gi Gl K Y cX}
+structure RowPinMinAlt (T : _root_.Formalism.L2.TiedDataSKAlt ex) : Prop where
+  lowerMap : ∀ u, LowerMapTieS (T.cols.forms u)
+  lowerMapTw : ∀ u μ (hμ : μ ≠ D.what₂.mu0) (_hw : ∃ w, μ = D.what₂.muAt w) (h1 : 1 ≤ D.R.m), _root_.Formalism.L2.Rows.LowerMapTieTwAlt T u μ hμ h1
+  buDef : Formalism.BasicNotions.Rows.BuDefQ D.what₂
+end Formalism.L2.Rows
+end
+end
+end
+
+section
+set_option synthInstance.maxHeartbeats 200000
+
+section
+noncomputable section
+open Formalism.BasicNotions Formalism.MainNotions
+namespace Formalism.L2
+theorem gTiedF_of_C2S_alt {eps : ℝ} (Fm : FamP eps) (h : _root_.Formalism.L2.SecondChernLinkedClass Fm) : G.GroupCompatibilityFamily Fm := by
+  obtain ⟨x0, hx0⟩ := h
+  refine ⟨max x0 (Fm.x1 + 1), fun x hx i hx1 => ?_⟩
+  obtain ⟨T⟩ := hx0 x hx1 ((le_max_left _ _).trans hx) i
+  exact ⟨T.g⟩
+end Formalism.L2
+end
+end
+end
+
+section
 set_option synthInstance.maxHeartbeats 200000
 
 section
@@ -31,5 +69,6 @@ theorem SecondLayerFamilyClass.c2sk {eps : ℝ} {Fm : FamP eps} (h : _root_.Form
 theorem SecondLayerFamilyClass.c2s {eps : ℝ} {Fm : FamP eps} (h : _root_.Formalism.L2.SecondLayerFamilyClass Fm) : _root_.Formalism.L2.SecondChernLinkedClass Fm := h.c2sk.c2s
 theorem group_compatibility_of_second_layer_family {eps : ℝ} (Fm : FamP eps) (h : _root_.Formalism.L2.SecondLayerFamilyClass Fm) : G.GroupCompatibilityFamily Fm := _root_.Formalism.L2.gTiedF_of_C2S_alt Fm h.c2s
 end Formalism.L2
+end
 end
 end

@@ -3,10 +3,30 @@ import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GlueApplyOfNot
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsGenericFlag
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LatNormGrLatNeZeroOfSpan
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ChartPrimeExistsUniquePoint
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtLeIffSpecializes
+import Development.WeilBound.CoreStatements.HodgeTatePoints.MaBase
+import BuildAid.ForwardExisting
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtLocalOrderFraction
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtChartLocalization
 
+section
+section
+open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberField
+
+namespace GlobalTheory.CompanionTheory.Ar
+
+theorem regAt_le_regAt_iff_specializes : ∀ (o : Type) [CommRing o] (Ω : Type) [Field Ω] [Algebra o Ω] (κ : Type) [Finite κ] (x : κ → Ω) (M : PModel o x) (p q : Cpt M.ξ), regAt M.ξ p ≤ regAt M.ξ q ↔ q.1 ⤳ p.1 :=
+  @PositivityTheory.HtPt.Ma.reg_le_spec
+
+end GlobalTheory.CompanionTheory.Ar
+end
+
+open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.regAt_le_iff_specializes : ∀ (o : Type) [CommRing o] (Ω : Type) [Field Ω] [Algebra o Ω] (κ : Type) [Finite κ] (x : κ → Ω) (M : PModel o x) (p q : Cpt M.ξ), regAt M.ξ p ≤ regAt M.ξ q ↔ q.1 ⤳ p.1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.regAt_le_regAt_iff_specializes
+end
+
+section
 section
 open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberField
 
@@ -94,3 +114,4 @@ open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberFiel
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.centre_set_dominating_point : ∀ (o : Type) [CommRing o] (Ω : Type) [Field Ω] [Algebra o Ω] (κ : Type) [Finite κ] (x : κ → Ω) (M : PModel o x) (X' : Scheme.{0}) (Ω' : Type) [Field Ω'] (ξ' : Spec (CommRingCat.of Ω') ⟶ X') (i : Ω →+* Ω') (p' : Cpt ξ'), p' ∈ ctrSet o x i ξ' → ∃ p₀ : Cpt M.ξ, ((∀ a ∈ regAt M.ξ p₀, i a ∈ regAt ξ' p') ∧ ∀ a ∈ regAt M.ξ p₀, unitAt ξ' p' (i a) → unitAt M.ξ p₀ a) ∧ (∀ p : Cpt M.ξ, (∀ a ∈ regAt M.ξ p, i a ∈ regAt ξ' p') → p₀.1 ⤳ p.1) ∧ ∀ c, x c ≠ 0 → (∀ j, i (x j / x c) ∈ regAt ξ' p') → InChart M.ξ x c p₀ := by
   atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Centre.exists_centre
+end

@@ -8,6 +8,5 @@ namespace PositivityTheory.Rg.Ming
 
 open PositivityTheory.Tls2.Ming3
 
-theorem bridge_true : True → True := id
 
 end PositivityTheory.Rg.Ming

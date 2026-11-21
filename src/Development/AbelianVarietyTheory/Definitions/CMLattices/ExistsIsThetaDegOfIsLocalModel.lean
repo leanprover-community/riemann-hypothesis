@@ -105,15 +105,6 @@ example {S : Scheme.{0}} {A : Over S} [GrpObj A] {k : Type} [Field k] (t : Sp k 
   · simpa using h
   · exact (i 0).elim
 
-theorem exists_isThetaDeg_of_isLocalModel (hU : ThetaUnifAV) (x : KeyIn K)
-    (h : ∀ 𝔭, ∃ M, KeyPow.IsLocalModel x 𝔭 1 M) :
-    ∃ nth : (K →+* ℂ) → ℝ, IsThetaDeg x ((1 / 2) * (∑ σ, Real.log (nth σ)) / Module.finrank ℚ K) := by
-  obtain ⟨nth, nη, hn⟩ := KeyPow.exists_archNorms hU x
-  refine ⟨nth, 0, nth, fun 𝔭 => ?_, fun σ => ?_, by simp, by simp⟩
-  · obtain ⟨M, hM⟩ := h 𝔭
-    exact ⟨1, M, hM, by simp⟩
-  · obtain ⟨x', h₁, h₂⟩ := hn σ
-    exact ⟨x', _, h₁, h₂⟩
 
 namespace CMLat
 
@@ -179,14 +170,6 @@ theorem f_injective (Z : CMLat hP p q) (hpq : p + q = D.p + D.q) (j : Fin p ⊕ 
   simp at this
   omega
 
-theorem hh_ne_zero (Z : CMLat hP p q) (hpq : p + q = D.p + D.q) (j : Fin p ⊕ Fin q) : Z.hh j ≠ 0 := by
-  have : Nontrivial (Z.D₁ j.isLeft).La :=
-    Module.nontrivial_of_finrank_pos (R := 𝓞 E) (by rw [Z.finrank_D₁]; exact one_pos)
-  obtain ⟨a, ha⟩ := exists_ne (0 : (Z.D₁ j.isLeft).La)
-  intro h
-  refine PureType.form_w0_ne_zero hP (by split_ifs <;> simp [H.sqrt_neg_disc_sq]) (Z.pure j a)
-    (fun e => ha (Z.f_injective hpq j (e.trans (map_zero _).symm))) ?_
-  rw [← map_smul, Z.form, h, zero_smul, map_zero, LinearMap.zero_apply]
 
 def ofPositive (hp : D.p = 1) (hq : D.q = 0) (hP : IsPeriod D ty Pe) (hty : IsTypeFn H 1 0 ty) : CMLat hP 1 0 where
   D₁ b := match b with
@@ -248,14 +231,6 @@ theorem exists_of_rank_one (D : Datum H) (h : D.p + D.q = 1) :
   exact ⟨g, ty, Pe, hP, Z, hty, Module.nontrivial_of_finrank_pos (R := 𝓞 E) (by rw [D.rank, h]; exact one_pos),
     fun j => ⟨Z.f_injective rfl j, hZ j⟩⟩
 
-theorem exists_of_selfDual (𝔞 : Submodule (𝓞 E) E) (hfg : 𝔞.FG) (hne : 𝔞 ≠ ⊥)
-    (hd : ∀ y : E, y ∈ 𝔞 ↔ ∀ x ∈ 𝔞, ∃ n : ℤ, Algebra.trace ℚ E (x * IsCMField.complexConj E y / (H.rt : E)) = n) :
-    ∃ (D : Datum H) (_ : D.La ≃ₗ[𝓞 E] 𝔞) (g : ℕ) (ty : Fin g → (E →+* ℂ)) (Pe : D.La →+ (Fin g → ℂ))
-      (hP : IsPeriod D ty Pe) (Z : CMLat hP D.p D.q), D.p = 1 ∧ D.q = 0 ∧ IsTypeFn H D.p D.q ty ∧
-      ∀ j, Function.Injective (Z.f j) ∧ Z.hh j = 1 := by
-  obtain ⟨D, e, hp, hq, -⟩ := PrincipalDatum.exists_datum E H 𝔞 hfg hne hd
-  obtain ⟨g, ty, Pe, hP, Z, h₁, -, h₂⟩ := exists_of_rank_one D (by omega)
-  exact ⟨D, e, g, ty, Pe, hP, Z, hp, hq, h₁, h₂⟩
 
 theorem exists_cyclotomic (p q : ℕ) (h : p + q = 1) :
     ∃ (D : Datum CyclotomicTwentyEight.host) (g : ℕ) (ty : Fin g → (CyclotomicTwentyEight.CyclotomicFieldTwentyEight →+* ℂ)) (Pe : D.La →+ (Fin g → ℂ))

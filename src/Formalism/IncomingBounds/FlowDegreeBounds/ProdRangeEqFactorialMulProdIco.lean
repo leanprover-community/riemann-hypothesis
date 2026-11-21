@@ -5,99 +5,9 @@ open scoped BigOperators
 
 namespace Formalism.IncomingBounds
 
-theorem sqSubOneInvMulDvd : InvWeight := by
-  intro l hl n n' hdvd
-  obtain ⟨m, hm⟩ := hdvd
-  refine ⟨m, ?_⟩
-  have hl' : (2 : ℝ) ≤ l := by exact_mod_cast hl
-  have h1 : (l : ℝ) - 1 ≠ 0 := (by linarith : (0 : ℝ) < l - 1).ne'
-  have h3 : (l : ℝ) + 1 ≠ 0 := (by linarith : (0 : ℝ) < l + 1).ne'
-  have hmR : (n : ℝ) - l * n' = ((l : ℝ) ^ 2 - 1) * m := by exact_mod_cast hm
-  have hn : (n : ℝ) = ((l : ℝ) - 1) * ((l : ℝ) + 1) * m + l * n' := by linear_combination hmR
-  unfold rho
-  rw [hn, show (l : ℝ) ^ 2 - 1 = ((l : ℝ) - 1) * ((l : ℝ) + 1) by ring]
-  field_simp
-  ring
 
-private lemma binomGcd_lucas_lemma (l : ℕ) [Fact l.Prime] (m v : ℕ) :
-    (l ^ v * m).choose (l ^ v) ≡ m [MOD l] := by
-  have hl : 0 < l := (Fact.out : l.Prime).pos
-  induction v with
-  | zero => simp <;> exact Nat.ModEq.refl _
-  | succ v ih =>
-    rw [show l ^ (v + 1) * m = l * (l ^ v * m) by ring, show l ^ (v + 1) = l * l ^ v by ring]
-    refine Choose.choose_modEq_choose_mod_mul_choose_div_nat.trans ?_
-    simp only [Nat.mul_mod_right, Nat.mul_div_cancel_left _ hl, Nat.choose_self, one_mul]
-    exact ih
 
-private lemma binomGcd_lucas_lemma_2 (l : ℕ) [Fact l.Prime] (a : ℕ) :
-    (l ^ (a + 1) - 1).choose (l ^ a - 1) ≡ 1 [MOD l] := by
-  have hl2 : 2 ≤ l := (Fact.out : l.Prime).two_le
-  have hl0 : 0 < l := by omega
-  have hlt : l - 1 < l := by omega
-  induction a with
-  | zero => simp <;> exact Nat.ModEq.refl _
-  | succ a ih =>
-    have e1 : 1 ≤ l ^ a := Nat.one_le_pow _ _ hl0
-    have e2 : 1 ≤ l ^ (a + 1) := Nat.one_le_pow _ _ hl0
-    have e3 : 1 ≤ l ^ (a + 1 + 1) := Nat.one_le_pow _ _ hl0
-    have hn : l ^ (a + 1 + 1) - 1 = (l - 1) + l * (l ^ (a + 1) - 1) := by
-      zify [e2, e3, (by omega : 1 ≤ l)]
-      ring
-    have hk : l ^ (a + 1) - 1 = (l - 1) + l * (l ^ a - 1) := by
-      zify [e1, e2, (by omega : 1 ≤ l)]
-      ring
-    have hnk : (l ^ (a + 1 + 1) - 1).choose (l ^ (a + 1) - 1) =
-        ((l - 1) + l * (l ^ (a + 1) - 1)).choose ((l - 1) + l * (l ^ a - 1)) := by
-      rw [← hk, ← hn]
-    rw [hnk]
-    refine Choose.choose_modEq_choose_mod_mul_choose_div_nat.trans ?_
-    simp only [Nat.add_mul_mod_self_left, Nat.mod_eq_of_lt hlt, Nat.add_mul_div_left _ _ hl0,
-      Nat.div_eq_of_lt hlt, zero_add, Nat.choose_self, one_mul]
-    exact ih
 
-theorem primeDvdChooseIff : BinomGcd := by
-  intro l hl n hn
-  haveI := Fact.mk hl
-  refine ⟨⟨?_, ?_⟩, ?_⟩
-  · rintro ⟨k, hk0, hkn, hndvd⟩ ⟨e, rfl⟩
-    exact hndvd (hl.dvd_choose_pow (by omega) (by omega))
-  · intro hnp
-    have hd1 : l ^ padicValNat l n ∣ n := pow_padicValNat_dvd
-    have hd2 : ¬ l ^ (padicValNat l n + 1) ∣ n := pow_succ_padicValNat_not_dvd (by omega)
-    generalize padicValNat l n = v at hd1 hd2
-    obtain ⟨m, rfl⟩ := hd1
-    have hlm : ¬ l ∣ m := by
-      rintro ⟨c, rfl⟩
-      exact hd2 ⟨c, by ring⟩
-    have hm0 : m ≠ 0 := by
-      rintro rfl
-      rw [mul_zero] at hn
-      omega
-    have hm1 : m ≠ 1 := fun h => hnp ⟨v, by rw [h, mul_one]⟩
-    have hp : 0 < l ^ v := pow_pos hl.pos v
-    refine ⟨l ^ v, hp, lt_mul_of_one_lt_right hp (by omega), ?_⟩
-    intro hd
-    apply hlm
-    exact Nat.modEq_zero_iff_dvd.1
-      ((binomGcd_lucas_lemma l m v).symm.trans (Nat.modEq_zero_iff_dvd.2 hd))
-  · intro e he hne
-    subst hne
-    obtain ⟨a, rfl⟩ : ∃ a, e = a + 1 := ⟨e - 1, by omega⟩
-    refine ⟨l ^ a, pow_pos hl.pos a, Nat.pow_lt_pow_right hl.one_lt (by omega), ?_⟩
-    have h1 : 1 ≤ l ^ a := Nat.one_le_pow _ _ hl.pos
-    have h2 : 1 ≤ l ^ (a + 1) := Nat.one_le_pow _ _ hl.pos
-    have key := Nat.add_one_mul_choose_eq (l ^ (a + 1) - 1) (l ^ a - 1)
-    simp only [Nat.sub_add_cancel h1, Nat.sub_add_cancel h2] at key
-    have hc : (l ^ (a + 1)).choose (l ^ a) = l * (l ^ (a + 1) - 1).choose (l ^ a - 1) := by
-      apply Nat.eq_of_mul_eq_mul_right (pow_pos hl.pos a)
-      rw [← key, pow_succ]
-      ring
-    intro hdvd
-    rw [hc, pow_two, Nat.mul_dvd_mul_iff_left hl.pos] at hdvd
-    have h3 : l ∣ 1 := Nat.modEq_zero_iff_dvd.1
-      ((binomGcd_lucas_lemma_2 l a).symm.trans (Nat.modEq_zero_iff_dvd.2 hdvd))
-    exact hl.one_lt.ne' (Nat.dvd_one.1 h3)
 
 theorem padicValFactorialBounds : FactValBounds := by
   intro l hl N hN
@@ -131,48 +41,9 @@ theorem padicValFactorialBounds : FactValBounds := by
   · rw [le_div_iff₀ hl1]
     nlinarith
 
-lemma num_fact_add_q (a k : ℕ) :
-    (((a + k).factorial : ℕ) : ℚ) = (a.factorial : ℚ) * ∏ j ∈ Finset.range k, ((a : ℚ) + j + 1) := by
-  induction k with
-  | zero => simp
-  | succ k ih =>
-    rw [← add_assoc, Nat.factorial_succ, Nat.cast_mul, ih, Finset.prod_range_succ]
-    push_cast
-    ring
 
-lemma prod_range_eq_factorial_mul_prod_Ico (m x : ℕ) :
-    ∏ j ∈ Finset.range m, ((((m + 1) * x : ℕ) : ℚ) + j + 1) =
-      (m.factorial : ℚ) * ∏ i ∈ Finset.Ico 1 (m + 1), (1 + ((m + 1 : ℕ) : ℚ) * (x : ℚ) / (i : ℚ)) := by
-  rw [Finset.prod_Ico_eq_prod_range, show m + 1 - 1 = m by omega,
-    ← Finset.prod_range_add_one_eq_factorial, Nat.cast_prod, ← Finset.prod_mul_distrib]
-  refine Finset.prod_congr rfl fun j _ => ?_
-  have hj : ((j : ℚ) + 1) ≠ 0 := by positivity
-  push_cast
-  field_simp
-  ring
 
-lemma num_uFac_succ (m x : ℕ) :
-    uFac (m + 1) (x + 1) = uFac (m + 1) x * (-(m.factorial : ℚ) *
-      ∏ i ∈ Finset.Ico 1 (m + 1), (1 + ((m + 1 : ℕ) : ℚ) * (x : ℚ) / (i : ℚ))) := by
-  unfold uFac
-  rw [show (m + 1) * (x + 1) = (m + 1) * x + (m + 1) by ring, num_fact_add_q,
-    Finset.prod_range_succ, prod_range_eq_factorial_mul_prod_Ico m x, Nat.factorial_succ x]
-  have h1 : ((m : ℚ) + 1) ≠ 0 := by positivity
-  have h2 : ((x : ℚ) + 1) ≠ 0 := by positivity
-  have h3 : ((x.factorial : ℕ) : ℚ) ≠ 0 := by positivity
-  push_cast
-  field_simp
-  ring
 
-theorem unitFactorialProd : UProduct := by
-  intro l hl x
-  obtain ⟨m, rfl⟩ : ∃ m, l = m + 1 := ⟨l - 1, by omega⟩
-  rw [Nat.add_sub_cancel]
-  induction x with
-  | zero => simp [uFac]
-  | succ x ih =>
-    rw [num_uFac_succ, ih, Finset.prod_range_succ, pow_succ]
-    ring
 
 lemma num_one_add_four_mul_le (v : ℕ) : 1 + 4 * v ≤ 5 ^ v := by
   induction v with
@@ -182,33 +53,7 @@ lemma num_one_add_four_mul_le (v : ℕ) : 1 + 4 * v ≤ 5 ^ v := by
     have := Nat.one_le_pow v 5 (by norm_num)
     omega
 
-theorem logCoeffValuation : LogCoeffVal := by
-  intro l hl hl5 s hs
-  haveI := Fact.mk hl
-  have hdvd : l ^ padicValNat l s ∣ s := pow_padicValNat_dvd
-  have hle : l ^ padicValNat l s ≤ s := Nat.le_of_dvd (by omega) hdvd
-  have h5 : 5 ^ padicValNat l s ≤ l ^ padicValNat l s := Nat.pow_le_pow_left hl5 _
-  have h4 := num_one_add_four_mul_le (padicValNat l s)
-  have hN : 1 + 4 * padicValNat l s ≤ s := by omega
-  have hR : (1 : ℝ) + 4 * (padicValNat l s : ℝ) ≤ s := by exact_mod_cast hN
-  have hl5R : (5 : ℝ) ≤ l := by exact_mod_cast hl5
-  have h14 : 1 / ((l : ℝ) - 1) ≤ 1 / 4 := one_div_le_one_div_of_le (by norm_num) (by linarith)
-  have hs1 : (1 : ℝ) ≤ s := by exact_mod_cast hs
-  linarith
 
-theorem shiftExponentIdentity : LemmaMExponent := by
-  intro l hl s0
-  have hl' : (2 : ℝ) ≤ l := by exact_mod_cast hl
-  have hne : (l : ℝ) ^ 2 ≠ 1 := by nlinarith
-  have hne' : (l : ℝ) ^ 2 - 1 ≠ 0 := sub_ne_zero.2 hne
-  refine ⟨?_, ?_⟩
-  · rw [geom_sum_eq hne, rho, ← pow_mul, pow_succ]
-    field_simp
-    ring
-  · intro s
-    rw [Finset.sum_range_succ', Finset.mul_sum, pow_zero]
-    congr 1
-    exact Finset.sum_congr rfl fun t _ => by ring
 
 lemma num_bern_real (a : ℝ) (ha : 1 ≤ a) (w : ℕ) : 1 + (w : ℝ) * (a - 1) ≤ a ^ w := by
   have h := one_add_mul_le_pow (show (-2 : ℝ) ≤ a - 1 by linarith) w

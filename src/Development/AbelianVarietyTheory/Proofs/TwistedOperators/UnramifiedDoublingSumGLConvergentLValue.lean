@@ -1,9 +1,266 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RatFunDifferentiableOn
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BorelParam
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormLeCard
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIrreducibleFixed
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SummableNonnegFamilyOfDifferentiableOn
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasSumOfDominatedOfEqNearZero
+
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.Doubling GlobalTheory.GLDoubling GlobalTheory.IndefiniteRowSideFullHecke.VolumeFlatSection GlobalTheory.ZonalCellDecomposition GlobalTheory.SatakeBound
+
+noncomputable section
+
+namespace GlobalTheory.DoublingSeries
+
+def ratFun (q N : ℕ) (α : Fin N → ℂˣ) (X : ℂ) : ℂ :=
+  (∏ i, (1 - (α i : ℂ) * (q : ℂ) ^ (-(1 / 2 : ℂ)) * X)⁻¹) *
+    (∏ i, (1 - (((α i)⁻¹ : ℂˣ) : ℂ) * (q : ℂ) ^ (-(1 / 2 : ℂ)) * X)⁻¹) *
+      ∏ i ∈ Finset.Icc 1 N, (1 - (q : ℂ) ^ (-(i : ℂ)) * X ^ 2)
+
+theorem ratFun_cpow {q : ℕ} (hq : 1 < q) (N : ℕ) (α : Fin N → ℂˣ) (s : ℂ) :
+    lFactor q α (s + 1 / 2) * lFactor q α⁻¹ (s + 1 / 2) * invNormFactor q N s =
+      ratFun q N α ((q : ℂ) ^ (-s)) := by
+  have hq0 : (q : ℂ) ≠ 0 := by exact_mod_cast (show q ≠ 0 by omega)
+  have h1 : (q : ℂ) ^ (-(s + 1 / 2)) = (q : ℂ) ^ (-(1 / 2 : ℂ)) * (q : ℂ) ^ (-s) := by
+    rw [← Complex.cpow_add _ _ hq0]; ring_nf
+  have h2 : ∀ i : ℕ, (q : ℂ) ^ (-(2 * s + i)) = (q : ℂ) ^ (-(i : ℂ)) * ((q : ℂ) ^ (-s)) ^ 2 := fun i => by
+    rw [← Complex.cpow_nat_mul, ← Complex.cpow_add _ _ hq0]; push_cast; ring_nf
+  simp only [lFactor, invNormFactor, ratFun, h1, h2, Pi.inv_apply, mul_assoc]
+
+theorem ratFun_differentiableOn {q : ℕ} (hq : 1 < q) (N : ℕ) (α : Fin N → ℂˣ) (ρ : ℝ)
+    (hα : ∀ x, ‖(α x : ℂ)‖ ≤ (q : ℝ) ^ ρ ∧ ‖(α x : ℂ)‖⁻¹ ≤ (q : ℝ) ^ ρ) :
+    DifferentiableOn ℂ (ratFun q N α) (Metric.ball 0 ((q : ℝ) ^ (1 / 2 - ρ))) := by
+  have hq1 : (1 : ℝ) < q := by exact_mod_cast hq
+  have hq0 : (0 : ℝ) < q := by linarith
+  have key : ∀ a : ℂ, ‖a‖ ≤ (q : ℝ) ^ ρ → ∀ X ∈ Metric.ball (0 : ℂ) ((q : ℝ) ^ (1 / 2 - ρ)),
+      1 - a * (q : ℂ) ^ (-(1 / 2 : ℂ)) * X ≠ 0 := by
+    intro a ha X hX
+    rw [mem_ball_zero_iff] at hX
+    have hn : ‖a * (q : ℂ) ^ (-(1 / 2 : ℂ)) * X‖ < 1 := by
+      rw [norm_mul, norm_mul, Complex.norm_natCast_cpow_of_pos (by omega)]
+      have hre : (-(1 / 2 : ℂ)).re = -(1 / 2) := by norm_num
+      rw [hre]
+      calc ‖a‖ * (q : ℝ) ^ (-(1 / 2 : ℝ)) * ‖X‖ ≤ (q : ℝ) ^ ρ * (q : ℝ) ^ (-(1 / 2 : ℝ)) * ‖X‖ := by gcongr
+        _ < (q : ℝ) ^ ρ * (q : ℝ) ^ (-(1 / 2 : ℝ)) * (q : ℝ) ^ (1 / 2 - ρ) := by gcongr
+        _ = 1 := by rw [← Real.rpow_add hq0, ← Real.rpow_add hq0, show ρ + -(1 / 2 : ℝ) + (1 / 2 - ρ) = 0 by ring, Real.rpow_zero]
+    intro h
+    have e : a * (q : ℂ) ^ (-(1 / 2 : ℂ)) * X = 1 := by linear_combination -h
+    rw [e, norm_one] at hn
+    exact lt_irrefl _ hn
+  unfold ratFun
+  refine DifferentiableOn.mul (DifferentiableOn.mul ?_ ?_) ?_
+  · exact DifferentiableOn.fun_finsetProd fun i _ =>
+      ((differentiableOn_const _).sub ((differentiableOn_const _).mul differentiableOn_id)).inv
+        fun X hX => key _ (hα i).1 X hX
+  · exact DifferentiableOn.fun_finsetProd fun i _ =>
+      ((differentiableOn_const _).sub ((differentiableOn_const _).mul differentiableOn_id)).inv
+        fun X hX => key (((α i)⁻¹ : ℂˣ) : ℂ) (by rw [Units.val_inv_eq_inv_val, norm_inv]; exact (hα i).2) X hX
+  · exact DifferentiableOn.fun_finsetProd fun i _ =>
+      (differentiableOn_const (𝕜 := ℂ) (1 : ℂ)).sub ((differentiableOn_const (𝕜 := ℂ) ((q : ℂ) ^ (-(i : ℂ)))).mul (differentiableOn_id (𝕜 := ℂ).pow 2))
+
+theorem exists_cpow_neg_eq {q : ℕ} (hq : 1 < q) (s₀ : ℝ) {z : ℂ} (hz : z ≠ 0) (hzs : ‖z‖ < (q : ℝ) ^ (-s₀)) :
+    ∃ s : ℂ, s₀ < s.re ∧ (q : ℂ) ^ (-s) = z := by
+  have hq1 : (1 : ℝ) < q := by exact_mod_cast hq
+  have hl : 0 < Real.log q := Real.log_pos hq1
+  refine ⟨-Complex.log z / (Real.log q : ℂ), ?_, ?_⟩
+  · have e : (-Complex.log z / (Real.log q : ℂ)).re = -Real.log ‖z‖ / Real.log q := by
+      rw [Complex.div_ofReal_re, Complex.neg_re, Complex.log_re]
+    rw [e, lt_div_iff₀ hl]
+    have := Real.log_lt_log (norm_pos_iff.2 hz) hzs
+    rw [Real.log_rpow (by linarith)] at this
+    linarith
+  · have hq0 : (q : ℂ) ≠ 0 := by exact_mod_cast (show q ≠ 0 by omega)
+    rw [Complex.cpow_def_of_ne_zero hq0, ← Complex.ofReal_natCast, ← Complex.ofReal_log (Nat.cast_nonneg _)]
+    have hl' : (Real.log q : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 hl.ne'
+    rw [show (Real.log q : ℂ) * -(-Complex.log z / (Real.log q : ℂ)) = Complex.log z by field_simp]
+    exact Complex.exp_log hz
+
+theorem cpow_split {q : ℕ} (hq : 1 < q) (N : ℕ) (s : ℂ) {m : ℤ} (hm : 0 ≤ m) :
+    (q : ℂ) ^ (-((N : ℂ) / 2 + s) * (m : ℂ)) =
+      (((q : ℝ) ^ (-((N : ℝ) / 2) * (m : ℝ)) : ℝ) : ℂ) * ((q : ℂ) ^ (-s)) ^ m.toNat := by
+  have hq0 : (q : ℂ) ≠ 0 := by exact_mod_cast (show q ≠ 0 by omega)
+  rw [Complex.ofReal_cpow (Nat.cast_nonneg _), Complex.ofReal_natCast, ← Complex.cpow_nat_mul, ← Complex.cpow_add _ _ hq0]
+  congr 1
+  have : ((m.toNat : ℕ) : ℂ) = (m : ℂ) := by exact_mod_cast Int.toNat_of_nonneg hm
+  push_cast
+  rw [this]
+  ring
+
+theorem sumAbs_nonneg {D : Type} [Fintype D] (e : D → ℤ) : 0 ≤ sumAbs e :=
+  Finset.sum_nonneg fun i _ => abs_nonneg (e i)
+
+end GlobalTheory.DoublingSeries
+end
+end
+
+section
+open Filter Topology
+
+namespace GlobalTheory
+
+theorem summable_nonneg_family_of_differentiableOn {ι : Type} (c : ι → ℝ) (n : ι → ℕ)
+    (R : ℂ → ℂ) (r ε : ℝ) (hc : ∀ i, 0 ≤ c i) (hε : 0 < ε)
+    (hR : DifferentiableOn ℂ R (Metric.ball 0 r))
+    (hser : ∀ z : ℂ, 0 < ‖z‖ → ‖z‖ < ε → HasSum (fun i => (c i : ℂ) * z ^ n i) (R z))
+    (x : ℝ) (hx0 : 0 ≤ x) (hxr : x < r) : Summable (fun i => c i * x ^ n i) := by
+  have hr : 0 < r := lt_of_le_of_lt hx0 hxr
+  set t0 : ℝ := ε / 2 with ht0
+  have ht0pos : 0 < t0 := by positivity
+  have ht0ε : t0 < ε := by linarith
+  have hnt0 : ‖(t0 : ℂ)‖ = t0 := by simp [abs_of_pos ht0pos]
+  have hsum0 : Summable (fun i => c i * t0 ^ n i) := by
+    have h := (hser (t0 : ℂ) (by rw [hnt0]; exact ht0pos) (by rw [hnt0]; exact ht0ε)).summable
+    have e : (fun i => (c i : ℂ) * (t0 : ℂ) ^ n i) = fun i => ((c i * t0 ^ n i : ℝ) : ℂ) := by
+      funext i; push_cast; rfl
+    rw [e] at h
+    exact Complex.summable_ofReal.mp h
+  have hfib : ∀ m : ℕ, Summable (fun i : n ⁻¹' {m} => c i) := by
+    intro m
+    have h1 := (hsum0.subtype (n ⁻¹' {m})).mul_right (t0 ^ m)⁻¹
+    refine h1.congr fun i => ?_
+    have hi : n i.val = m := i.2
+    simp only [Function.comp_apply]
+    rw [hi, mul_assoc, mul_inv_cancel₀ (pow_ne_zero _ ht0pos.ne'), mul_one]
+  set C : ℕ → ℝ := fun m => ∑' i : n ⁻¹' {m}, c i with hC
+  have hCnn : ∀ m, 0 ≤ C m := fun m => tsum_nonneg (fun i => hc i)
+  have hgroup : ∀ z : ℂ, 0 < ‖z‖ → ‖z‖ < ε → HasSum (fun m => (C m : ℂ) * z ^ m) (R z) := by
+    intro z hz1 hz2
+    refine ((hser z hz1 hz2).tsum_fiberwise n).congr_fun fun m => ?_
+    have e1 : (∑' i : n ⁻¹' {m}, (c i : ℂ) * z ^ n i) = ∑' i : n ⁻¹' {m}, (c i : ℂ) * z ^ m :=
+      tsum_congr fun i => by rw [show n i = m from i.2]
+    rw [e1, tsum_mul_right, hC, Complex.ofReal_tsum]
+  have hCt0 : Summable (fun m => C m * t0 ^ m) := by
+    have h := (hgroup (t0 : ℂ) (by rw [hnt0]; exact ht0pos) (by rw [hnt0]; exact ht0ε)).summable
+    have e : (fun m => (C m : ℂ) * (t0 : ℂ) ^ m) = fun m => ((C m * t0 ^ m : ℝ) : ℂ) := by
+      funext m; push_cast; rfl
+    rw [e] at h
+    exact Complex.summable_ofReal.mp h
+  set q : FormalMultilinearSeries ℂ ℂ ℂ :=
+    FormalMultilinearSeries.ofScalars ℂ (fun m => (C m : ℂ)) with hq
+  have hqapply : ∀ (m : ℕ) (z : ℂ), q m (fun _ => z) = (C m : ℂ) * z ^ m := by
+    intro m z; rw [hq, FormalMultilinearSeries.ofScalars_apply_eq, smul_eq_mul]
+  set t0n : NNReal := ⟨t0, ht0pos.le⟩ with ht0n
+  have hrad : (t0n : ENNReal) ≤ q.radius := by
+    refine q.le_radius_of_bound (∑' m, C m * t0 ^ m) fun m => ?_
+    rw [show ((t0n : ℝ)) = t0 from rfl]
+    have hn : ‖q m‖ = C m := by
+      rw [hq, FormalMultilinearSeries.ofScalars_norm, Complex.norm_real, Real.norm_eq_abs,
+        abs_of_nonneg (hCnn m)]
+    rw [hn]
+    exact hCt0.le_tsum m (fun j _ => mul_nonneg (hCnn j) (pow_nonneg ht0pos.le _))
+  have hradpos : 0 < q.radius :=
+    lt_of_lt_of_le (ENNReal.coe_pos.mpr (NNReal.coe_pos.mp (show (0:ℝ) < (t0n : ℝ) from ht0pos))) hrad
+  have hqball := q.hasFPowerSeriesOnBall hradpos
+  have hRan : AnalyticAt ℂ R 0 := hR.analyticAt (Metric.ball_mem_nhds 0 hr)
+  have hfreq : ∃ᶠ z in 𝓝[≠] (0 : ℂ), R z = q.sum z := by
+    apply Eventually.frequently
+    have hb : ∀ᶠ z in 𝓝[≠] (0 : ℂ), z ∈ Metric.ball (0 : ℂ) ε :=
+      nhdsWithin_le_nhds (Metric.ball_mem_nhds 0 hε)
+    filter_upwards [hb, self_mem_nhdsWithin] with z hz hz0
+    have hz0' : 0 < ‖z‖ := norm_pos_iff.mpr hz0
+    rw [mem_ball_zero_iff] at hz
+    rw [FormalMultilinearSeries.sum]
+    simp_rw [hqapply]
+    exact ((hgroup z hz0' hz).tsum_eq).symm
+  have hev := (hRan.frequently_eq_iff_eventually_eq hqball.analyticAt).mp hfreq
+  have hRq : HasFPowerSeriesAt R q 0 := hqball.hasFPowerSeriesAt.congr (hev.mono fun z h => h.symm)
+  set ρ : ℝ := (x + r) / 2 with hρ
+  have hρpos : 0 < ρ := by linarith
+  set ρn : NNReal := ⟨ρ, hρpos.le⟩ with hρn
+  have hcl : DifferentiableOn ℂ R (Metric.closedBall 0 (ρn : ℝ)) :=
+    hR.mono (Metric.closedBall_subset_ball (by show ρ < r; linarith))
+  have hp := hcl.hasFPowerSeriesOnBall (by exact_mod_cast hρpos)
+  have hpq := hp.hasFPowerSeriesAt.eq_formalMultilinearSeries hRq
+  rw [hpq] at hp
+  have hxn : ‖(x : ℂ)‖₊ < ρn := by
+    rw [← NNReal.coe_lt_coe, coe_nnnorm, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hx0]
+    show x < ρ
+    linarith
+  have hxmem : (x : ℂ) ∈ EMetric.ball (0 : ℂ) (ρn : ENNReal) := by
+    show edist (x : ℂ) 0 < ρn
+    rw [edist_zero_right, enorm_eq_nnnorm]
+    exact_mod_cast hxn
+  have hsx := (hp.hasSum hxmem).summable
+  simp_rw [hqapply] at hsx
+  have hCx : Summable (fun m => C m * x ^ m) := by
+    have e : (fun m => (C m : ℂ) * (x : ℂ) ^ m) = fun m => ((C m * x ^ m : ℝ) : ℂ) := by
+      funext m; push_cast; rfl
+    rw [e] at hsx
+    exact Complex.summable_ofReal.mp hsx
+  rw [← (Equiv.sigmaFiberEquiv n).summable_iff]
+  refine (summable_sigma_of_nonneg fun p => ?_).mpr ⟨fun m => ?_, ?_⟩
+  · exact mul_nonneg (hc _) (pow_nonneg hx0 _)
+  · refine ((hfib m).mul_right (x ^ m)).congr fun i => ?_
+    simp [Equiv.sigmaFiberEquiv, show n i = m from i.2]
+  · refine hCx.congr fun m => ?_
+    have e1 : (∑' i : {i // n i = m}, ((fun i => c i * x ^ n i) ∘ (Equiv.sigmaFiberEquiv n))
+        ⟨m, i⟩) = ∑' i : n ⁻¹' {m}, c i * x ^ m :=
+      tsum_congr fun i => by simp [Equiv.sigmaFiberEquiv, show n i = m from i.2]
+    rw [e1, tsum_mul_right]
+
+end GlobalTheory
+end
+
+section
+open Metric Filter Topology
+
+namespace GlobalTheory
+
+theorem hasSum_of_dominated_of_eq_near_zero {ι : Type} (b : ι → ℂ) (c : ι → ℝ) (n : ι → ℕ)
+    (R : ℂ → ℂ) (r ε : ℝ)
+    (hbc : ∀ i, ‖b i‖ ≤ c i)
+    (hc : ∀ x : ℝ, 0 ≤ x → x < r → Summable (fun i => c i * x ^ n i)) (hε : 0 < ε)
+    (hR : DifferentiableOn ℂ R (Metric.ball 0 r))
+    (hnear : ∀ z : ℂ, 0 < ‖z‖ → ‖z‖ < ε → HasSum (fun i => b i * z ^ n i) (R z)) :
+    ∀ z : ℂ, ‖z‖ < r → HasSum (fun i => b i * z ^ n i) (R z) := by
+  intro z hz
+  have hr : 0 < r := lt_of_le_of_lt (norm_nonneg z) hz
+  have hbound : ∀ i (w : ℂ), ‖b i * w ^ n i‖ ≤ c i * ‖w‖ ^ n i := by
+    intro i w
+    rw [norm_mul, norm_pow]
+    exact mul_le_mul_of_nonneg_right (hbc i) (pow_nonneg (norm_nonneg w) _)
+  have hsum : ∀ w : ℂ, ‖w‖ < r → Summable (fun i => b i * w ^ n i) := by
+    intro w hw
+    exact Summable.of_norm_bounded (hc ‖w‖ (norm_nonneg w) hw) (fun i => hbound i w)
+  let F : ℂ → ℂ := fun w => ∑' i, b i * w ^ n i
+  have hFd : DifferentiableOn ℂ F (ball 0 r) := by
+    intro w hw
+    have hw' : ‖w‖ < r := by simpa using hw
+    obtain ⟨s, hws, hsr⟩ := exists_between hw'
+    have hs0 : 0 ≤ s := le_trans (norm_nonneg w) hws.le
+    have hd : DifferentiableOn ℂ F (ball 0 s) := by
+      refine Complex.differentiableOn_tsum_of_summable_norm (u := fun i => c i * s ^ n i) (hc s hs0 hsr)
+        (fun i => ?_) isOpen_ball (fun i v hv => ?_)
+      · exact ((differentiable_const _).mul (differentiable_id.pow _)).differentiableOn
+      · refine (hbound i v).trans ?_
+        have hv' : ‖v‖ < s := by simpa using hv
+        have hci : 0 ≤ c i := (norm_nonneg _).trans (hbc i)
+        exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (norm_nonneg v) hv'.le _) hci
+    exact (hd.differentiableAt (isOpen_ball.mem_nhds (by simpa using hws))).differentiableWithinAt
+  have hFa : AnalyticOnNhd ℂ F (ball 0 r) := hFd.analyticOnNhd isOpen_ball
+  have hRa : AnalyticOnNhd ℂ R (ball 0 r) := hR.analyticOnNhd isOpen_ball
+  have hfreq : ∃ᶠ w in 𝓝[≠] (0:ℂ), F w = R w := by
+    apply Eventually.frequently
+    have h1 : ∀ᶠ w in 𝓝 (0:ℂ), w ∈ ball (0:ℂ) ε := isOpen_ball.mem_nhds (mem_ball_self hε)
+    filter_upwards [nhdsWithin_le_nhds h1, self_mem_nhdsWithin] with w hw hw0
+    have hw0' : 0 < ‖w‖ := norm_pos_iff.mpr hw0
+    have hwε : ‖w‖ < ε := by simpa using hw
+    exact (hnear w hw0' hwε).tsum_eq
+  have heq := hFa.eqOn_of_preconnected_of_frequently_eq hRa (convex_ball (0:ℂ) r).isPreconnected
+    (mem_ball_self hr) hfreq
+  have hzb : z ∈ ball (0:ℂ) r := by simpa using hz
+  rw [← heq hzb]
+  exact (hsum z hz).hasSum
+
+theorem hasSum_of_dominated_of_eq_near_zero' : ∀ {ι : Type} (b : ι → ℂ) (c : ι → ℝ) (n : ι → ℕ) (R : ℂ → ℂ) (r ε : ℝ), (∀ i, ‖b i‖ ≤ c i) →
+    (∀ x : ℝ, 0 ≤ x → x < r → Summable (fun i => c i * x ^ n i)) → 0 < ε →
+    DifferentiableOn ℂ R (Metric.ball 0 r) →
+    (∀ z : ℂ, 0 < ‖z‖ → ‖z‖ < ε → HasSum (fun i => b i * z ^ n i) (R z)) →
+    ∀ z : ℂ, ‖z‖ < r → HasSum (fun i => b i * z ^ n i) (R z) :=
+  fun b c n R r ε h1 h2 h3 h4 h5 => hasSum_of_dominated_of_eq_near_zero b c n R r ε h1 h2 h3 h4 h5
+
+end GlobalTheory
+end
+
+section
 open MeasureTheory ValuativeRel Matrix GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.Doubling GlobalTheory.GLDoubling GlobalTheory.IndefiniteRowSideFullHecke.VolumeFlatSection GlobalTheory.ZonalCellDecomposition GlobalTheory.SatakeBound
 
 noncomputable section
@@ -254,3 +511,5 @@ theorem unramified_doubling_sum : GlobalTheory.Published.UnramifiedDoublingGL �
     exact (funext fun e => hterm e s _) ▸ this
 
 end GlobalTheory.DoublingSeries
+end
+end

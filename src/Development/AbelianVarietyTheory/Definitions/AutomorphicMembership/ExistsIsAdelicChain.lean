@@ -52,8 +52,6 @@ def topLift (t : T) : (R.HX t).H →ₗ[ℂ] R.CC t (D.R.m - 1) := R.ioX t ∘�
 
 def botLift (t : T) : R.CC t 1 →ₗ[ℂ] MMap (R.MY 0) := postOn (R.MY 0) R.e0 ∘ₗ toMM R t 0 ∘ₗ R.ioY t 0
 
-theorem toMM_apply (t : T) (j : ℕ) (U : R.CC t j) (v : (R.MY j).Vec) :
-    toMM R t j U v = (U : SmT (R.MY j) →ₗ[ℂ] (GA D (Yc D j) → ℂ)) (PiTensorProduct.tprod ℂ v) := rfl
 
 theorem toMM_injective (t : T) (j : ℕ) : Function.Injective (toMM R t j) :=
   (PiTensorProduct.lift.symm : (SmT (R.MY j) →ₗ[ℂ] (GA D (Yc D j) → ℂ)) ≃ₗ[ℂ] MMap (R.MY j)).injective.comp Subtype.val_injective
@@ -195,31 +193,7 @@ theorem haar_chain (hY : R.models_νY) (hY' : R.models_νY') (t : T) (j : ℕ) (
   · obtain rfl : j = D.R.m - 1 := by omega
     exact ⟨(hY' t).1.1, (hY' t).2⟩
 
-theorem finiteDimensional_CC (hF : GlobalTheory.Published.HarishChandraFinite) (hi : R.models_inf) (t : T) (j : ℕ) :
-    FiniteDimensional ℂ (R.CC t j) := by
-  obtain ⟨U, hU, hJ⟩ := GlobalTheory.DefiniteEnd.exists_open_level (Yc D j) (R.βY j) (R.datYt t j R.triv)
-  have : FiniteDimensional ℂ (multAt R R.triv t j) := GlobalTheory.MultFinite.hcFinite hF hi ⟨U, hU, fun k hk hk' => by
-    obtain ⟨h1, h2⟩ := hJ k hk
-    exact ⟨⟨hk', h1⟩, congrArg Units.val h2⟩⟩
-  rw [← range_toMM] at this
-  exact (LinearEquiv.ofInjective _ (toMM_injective R t j)).symm.finiteDimensional
 
-theorem exists_lvlModel (hF : GlobalTheory.Published.HarishChandraFinite) (hD : GlobalTheory.Published.CuspRapidDecay) (hi : R.models_inf)
-    (hY : R.models_νY) (hY' : R.models_νY') (P : LevelP R.Pg D.R.r ℂ) (c : ℝ) (hc : 0 < c) (t : T) (j : ℕ) (hj : j < D.R.m) :
-    ∃ H : HMod (R.CC t j), H.Is (lvlPart R P t j) fun U U' => (c : ℂ) * ipCC R t j U U' := by
-  have := finiteDimensional_CC hF hi t j
-  obtain ⟨hν, hf⟩ := haar_chain hY hY' t j hj
-  obtain ⟨h1, h2⟩ := GlobalTheory.SchurConst.ipM_posDef D R.θ _ _ (R.MY j) (levS _ (R.βY j) (R.datYt t j P))
-    (levChi _ (R.βY j) (R.datYt t j P)) (R.νY t j) (R.fdY t j) hi hν hf (GlobalTheory.MultFinite.schurMult hD _ _)
-    (GlobalTheory.GardingVec.sm_ne_bot D _ _ _)
-  refine GlobalTheory.HilbertModel.exists_hmod _ _ _ inferInstance (fun x hx y hy z hz a => ?_) fun x hx h0 => ?_
-  · obtain ⟨k1, k2⟩ := h1 _ hx _ hy _ hz a
-    unfold ipCC
-    rw [map_add, map_smul, k1, k2]
-    exact ⟨by ring, by simp⟩
-  · have := h2 _ hx fun h => h0 (toMM_injective R t j (h.trans (map_zero _).symm))
-    rw [Complex.re_ofReal_mul]
-    exact mul_pos hc this
 
 set_option genInjectivity false in
 set_option genSizeOfSpec false in
@@ -258,23 +232,8 @@ noncomputable def HChain.down {m : ℕ} {E B : Type} [NormedAddCommGroup E] [Inn
   | 0 => LinearMap.id
   | j + 1 => (c.down j).comp (c.io j)
 
-theorem downTo_withChain (S : RowSide D EE) (c : ∀ μ, HChain D.R.m EE (S.Amb μ)) (μ : D.what₂.Tup) (j : ℕ) :
-    (withChain S c).downTo μ j = (c μ).down j := by
-  induction j with
-  | zero => rfl
-  | succ j ih => exact congrArg (fun f : (c μ).Sp j →ₗ[ℂ] (c μ).Sp 0 => f.comp ((c μ).io j)) ih
 
-theorem down_chainOf (S : RowSide D EE) (μ : D.what₂.Tup) (j : ℕ) : (chainOf S μ).down j = S.downTo μ j := by
-  induction j with
-  | zero => rfl
-  | succ j ih => exact congrArg (fun f : S.Mult μ j →ₗ[ℂ] S.Mult μ 0 => f.comp (S.io μ j)) ih
 
-theorem iota_withChain (S : RowSide D EE) (c : ∀ μ, HChain D.R.m EE (S.Amb μ)) (μ : D.what₂.Tup) (h : c μ = chainOf S μ) :
-    (withChain S c).iota μ = S.iota μ := by
-  have e : (withChain S c).iota μ = (c μ).bot.toLinearEquiv.toLinearMap ∘ₗ (c μ).down D.R.m ∘ₗ
-      (c μ).top.symm.toLinearEquiv.toLinearMap := by
-    rw [← downTo_withChain]; rfl
-  rw [e, h, down_chainOf]; rfl
 
 def IsAdelicChain (Y : SideTie R F tup b S) (t : T) (c : HChain D.R.m EE (S.Amb (tup t))) : Prop :=
   ∃ e : ∀ j, c.Sp j →ₗ[ℂ] R.CC t j, (∀ x, toMM R t 0 (e 0 x) = R.HE.e (Y.eE (c.bot x))) ∧
@@ -382,27 +341,6 @@ def multTieOfChain (Y : SideTie R F tup b S) (hE : R.models_HE) (hT : R.chain_Th
   io_top t y := ((hc t).choose_spec.2.2.2.2.2 y).trans
     (congrArg (fun w => topLift R t (Y.eA t w)) (topEquiv_withChain S c _ y).symm)
 
-theorem exists_multTie (hF : GlobalTheory.Published.HarishChandraFinite) (hD : GlobalTheory.Published.CuspRapidDecay) (hM : R.IsModels) (hT : R.chain_Th)
-    (hK : KeepsLevel R F b) (hinj : Function.Injective tup) (Y : SideTie R F tup b S) :
-    ∃ (c : ∀ μ, HChain D.R.m EE (S.Amb μ)) (Y' : SideTie R F tup b (withChain S c)),
-      Y'.eE = Y.eE ∧ Y'.eA = Y.eA ∧ (∀ μ, (withChain S c).iota μ = S.iota μ) ∧ Nonempty (MultTie Y') := by
-  have key : ∀ μ, ∃ c : HChain D.R.m EE (S.Amb μ), (∀ t (h : tup t = μ), IsAdelicChain Y t (h ▸ c)) ∧
-      ((∀ t, tup t ≠ μ) → c = chainOf S μ) := fun μ => by
-    by_cases h : ∃ t, tup t = μ
-    · obtain ⟨t, rfl⟩ := h
-      obtain ⟨c, hc⟩ := exists_isAdelicChain Y hM.HE hK t fun j hj =>
-        exists_lvlModel hF hD hM.inf hM.νY hM.νY' _ _ (inv_pos.2 (RealDat.nP_pos (F := F) b)) t j hj
-      refine ⟨c, fun t' h => ?_, fun h => absurd rfl (h t)⟩
-      obtain rfl := hinj h
-      exact hc
-    · exact ⟨chainOf S μ, fun t ht => absurd ⟨t, ht⟩ h, fun _ => rfl⟩
-  choose c h1 h2 using key
-  have hc : ∀ t, IsAdelicChain Y t (c (tup t)) := fun t => h1 _ t rfl
-  refine ⟨c, sideOfChain Y hM.HE hT c hc, rfl, rfl, fun μ => ?_, ⟨multTieOfChain Y hM.HE hT c hc⟩⟩
-  by_cases h : ∃ t, tup t = μ
-  · obtain ⟨t, rfl⟩ := h
-    exact LinearMap.ext fun x => Y.eE_injective (((sideOfChain Y hM.HE hT c hc).iota_tie t x).trans (Y.iota_tie t x).symm)
-  · exact iota_withChain S c μ (h2 μ fun t ht => h ⟨t, ht⟩)
 
 end Inhabitant
 

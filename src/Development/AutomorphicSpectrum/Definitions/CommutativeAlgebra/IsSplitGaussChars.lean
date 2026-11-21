@@ -397,9 +397,6 @@ local instance factPrimeFive : Fact (Nat.Prime 5) := ⟨by norm_num⟩
 
 def gaussChar : GaussianInt →+* ZMod 5 := Zsqrtd.lift ⟨2, by decide⟩
 
-theorem gaussChar_star_ne : gaussChar (star ⟨0, 1⟩) ≠ gaussChar ⟨0, 1⟩ := by
-  simp only [gaussChar, Zsqrtd.lift_apply_apply]
-  decide
 
 def gaussData (d : ℕ) : ConjData (projLine (ZMod 5)) 5 GaussianInt d :=
   constData _ (by norm_num)
@@ -415,53 +412,6 @@ def gaussChars : Bool → (GaussianInt →+* ZMod 5)
   | false => gaussChar
   | true => gaussChar.comp (starRingEnd GaussianInt)
 
-theorem isSplit_gaussChars : IsSplit gaussChars := by
-  have hgen : ∀ x : TensorProduct ℤ (ZMod 5) GaussianInt, ∃ a b : ZMod 5,
-      x = a ⊗ₜ (1 : GaussianInt) + b ⊗ₜ (⟨0, 1⟩ : GaussianInt) := by
-    intro x
-    induction x using TensorProduct.induction_on with
-    | zero => exact ⟨0, 0, by simp⟩
-    | tmul c z =>
-      refine ⟨z.re • c, z.im • c, ?_⟩
-      rw [TensorProduct.smul_tmul, TensorProduct.smul_tmul, ← TensorProduct.tmul_add]
-      congr 1
-      ext <;> simp
-    | add x y hx hy =>
-      obtain ⟨a, b, rfl⟩ := hx
-      obtain ⟨a', b', rfl⟩ := hy
-      exact ⟨a + a', b + b', by simp only [TensorProduct.add_tmul]; abel⟩
-  have h0 : gaussChars false ⟨0, 1⟩ = 2 := by
-    simp [gaussChars, gaussChar, Zsqrtd.lift_apply_apply]
-  have h1 : gaussChars true ⟨0, 1⟩ = -2 := by
-    simp [gaussChars, gaussChar, Zsqrtd.lift_apply_apply, starRingEnd_apply]
-  unfold IsSplit
-  set F := Algebra.TensorProduct.lift (Algebra.ofId (ZMod 5) (Bool → ZMod 5))
-    (Pi.algHom ℤ (fun _ : Bool => ZMod 5) fun s => (gaussChars s).toIntAlgHom)
-    (fun _ _ => Commute.all _ _) with hF
-  have hv : ∀ (a b : ZMod 5) (s : Bool),
-      F (a ⊗ₜ (1 : GaussianInt) + b ⊗ₜ (⟨0, 1⟩ : GaussianInt)) s
-        = a + b * gaussChars s ⟨0, 1⟩ := by
-    intro a b s
-    simp [hF, Algebra.ofId_apply]
-  constructor
-  · rw [injective_iff_map_eq_zero]
-    intro x hx
-    obtain ⟨a, b, rfl⟩ := hgen x
-    have e0 := congrFun hx false
-    have e1 := congrFun hx true
-    rw [hv, h0] at e0
-    rw [hv, h1] at e1
-    have key : ∀ a b : ZMod 5, a + b * 2 = 0 → a + b * -2 = 0 → a = 0 ∧ b = 0 := by decide
-    obtain ⟨rfl, rfl⟩ := key a b e0 e1
-    simp
-  · intro y
-    have key : ∀ u w : ZMod 5, ∃ a b : ZMod 5, a + b * 2 = u ∧ a + b * -2 = w := by decide
-    obtain ⟨a, b, ha, hb⟩ := key (y false) (y true)
-    refine ⟨a ⊗ₜ (1 : GaussianInt) + b ⊗ₜ (⟨0, 1⟩ : GaussianInt), funext fun s => ?_⟩
-    rw [hv]
-    cases s
-    · rw [h0, ha]
-    · rw [h1, hb]
 
 end Gauss
 
@@ -477,12 +427,6 @@ def twistBasis (i : (projLine k).I) :
 
 def twistLat : (projLine k).I → AddSubgroup V := fun i => latOf (projLine k) i (twistBasis k V i)
 
-theorem isBun_twistLat : IsBun (projLine k) (twistLat k V) := by
-  refine ⟨fun i => ⟨_, isLatOf_latOf _ i _⟩, Module.finBasis (RatFunc k) V,
-    (Set.finite_singleton (show (projLine k).I from none)).subset ?_⟩
-  rintro (_ | q) hq
-  · rfl
-  · exact absurd (isLatOf_latOf _ _ _) hq
 
 open Classical in
 

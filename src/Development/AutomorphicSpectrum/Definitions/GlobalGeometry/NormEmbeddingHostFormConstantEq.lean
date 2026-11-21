@@ -75,30 +75,10 @@ theorem exists_levelLaws_at_lift (D : D7) (j : ℕ) (hj : 1 ≤ j ∧ j ≤ D.R.
   refine ⟨by unfold Ranks.r; omega, Xo, c, exists_levelLaws D _ rfl _ _ (D.sp.W_sig j) (D.sp.W_rank j hj.1 hj.2) _
     (GlobalTheory.Member.Inhab.iotaOK_at_lift D j hj) hpq l hA Xo c⟩
 
-theorem levelLaws_of_lawsM {D : D7} (T : Core D) (h : LawsM T) (j : ℕ) (hj : InR D j)
-    (dict : ∀ σ : T.Q.c.F →+* ℂ, GA D (D.sp.W j) → Σ k, Frame ((T.U j σ).X k).Ψ D.R.r)
-    (hd : ∀ σ, GoodEmb T.Q.c σ → HEq (dict σ) (T.dict j σ)) : LevelLaws (T.U j) (D.sp.W j) dict := by
-  refine ⟨h.pins.1.1, h.pins.2.1.2, D.sp.W_sig j, h.unf j hj, h.chiTriv j hj, fun σ hσ => ?_, h.xiAbs j hj⟩
-  obtain ⟨th, hr, h1, h2⟩ := h.dictU j hj σ hσ
-  have h3 := h.levelK j hj σ hσ
-  have h4 := (h.muUnit j hj σ hσ).2.2.2
-  have h5 := hd σ hσ
-  have e := h.spaceW j hj σ hσ
-  rw [← h.pins.2.1.1] at h3
-  generalize dict σ = d at h5 ⊢
-  generalize T.dict j σ = d' at h2 h4 h5
-  generalize T.Kf j σ = Kf at h2 h3
-  generalize T.V j σ = V at *
-  subst e
-  cases h5
-  exact ⟨Kf, th, hr, h3, h1, h2, h4⟩
 
 variable {D : D7} {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l}
   {c : Coeff l}
 
-theorem finVol_of_levelLaws {U : ∀ σ : c.F →+* ℂ, Unf Xo c σ D.R.r} {V : HSp D}
-    {dict : ∀ σ : c.F →+* ℂ, GA D V → Σ k, Frame ((U σ).X k).Ψ D.R.r} (h : LevelLaws U V dict) : FinVol V :=
-  (GlobalTheory.FinalJoin2.volPairEx_and_finVol D V h.sig).2
 
 theorem petProd_smul {σ : c.F →+* ℂ} (U : Unf Xo c σ D.R.r) (V : HSp D)
     (dict : GA D V → Σ k, Frame (U.X k).Ψ D.R.r) (t : ℝ) (x y : c.F) (f g : Rul Xo c) :
@@ -110,17 +90,6 @@ theorem petProd_smul {σ : c.F →+* ℂ} (U : Unf Xo c σ D.R.r) (V : HSp D)
   funext q
   ring
 
-theorem petProd_conj {σ : c.F →+* ℂ} (U : Unf Xo c σ D.R.r) (V : HSp D)
-    (dict : GA D V → Σ k, Frame (U.X k).Ψ D.R.r) (t : ℝ) (f g : Rul Xo c) :
-    starRingEnd ℂ (petProd U V dict t f g) = petProd U V dict t g f := by
-  unfold petProd
-  have key : ∀ (s : ℝ) (F G : AutQ V → ℂ),
-      starRingEnd ℂ ((s : ℂ) * ∫ q, starRingEnd ℂ (F q) * G q ∂(muQ1 V)) =
-        (s : ℂ) * ∫ q, starRingEnd ℂ (G q) * F q ∂(muQ1 V) := fun s F G => by
-    rw [map_mul, Complex.conj_ofReal, ← integral_conj]
-    refine congrArg _ (congrArg _ (funext fun q => ?_))
-    rw [map_mul, Complex.conj_conj, mul_comm]
-  exact key _ _ _
 
 theorem gramAt_smul (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ D.R.r) (V : HSp D)
     (dict : ∀ σ : c.F →+* ℂ, GA D V → Σ k, Frame ((U σ).X k).Ψ D.R.r) (t : ℝ) {N : ℕ} (b : Fin N → Rul Xo c)

@@ -1,10 +1,164 @@
 import Mathlib
 import GroundTheory.PAdicHodge.BCrisNewtonLift
-import GroundTheory.PAdicHodge.PhiGammaBase
+import GroundTheory.PAdicHodge.AInfGalois
+import GroundTheory.PAdicHodge.AInfXi
+import GroundTheory.PAdicHodge.TiltAlgClosed
+import GroundTheory.PAdicHodge.TateCpTwist
 import GroundTheory.PAdicHodge.SlopeDescentFixed
 import GroundTheory.PAdicHodge.ExtRobbaIsoLift
 import GroundTheory.PAdicHodge.ExtRobbaTrivialUnits
 import GroundTheory.PAdicHodge.BCrisEigenWitt
+
+section
+set_option maxSynthPendingDepth 1
+
+noncomputable section
+
+open WittVector
+
+namespace GroundTheory.PAdicHodge
+namespace PhiGamma
+
+variable (p : ℕ) [hp : Fact p.Prime]
+
+abbrev Ob : Type _ := PreTilt (normInteger ℂ_[p]) p
+
+abbrev Cb : Type _ :=
+  Tilt ℂ_[p] NormedField.valuation (normInteger ℂ_[p]) normInteger_integers p
+
+abbrev WC : Type _ := WittVector p (Cb p)
+
+instance : IsAlgClosed (Cb p) := isAlgClosed_tilt
+
+def toWC : AInf ℂ_[p] p →+* WC p := WittVector.map (algebraMap (Ob p) (Cb p))
+
+theorem toWC_coeff (x : AInf ℂ_[p] p) (n : ℕ) :
+    (toWC p x).coeff n = algebraMap (Ob p) (Cb p) (x.coeff n) :=
+  WittVector.map_coeff _ x n
+
+variable {p} {K : IntermediateField ℚ_[p] (PadicAlgCl p)}
+
+theorem preTiltMap_congr {f g : ℂ_[p] →+* ℂ_[p]} (hf : ∀ x, ‖f x‖ = ‖x‖) (hg : ∀ x, ‖g x‖ = ‖x‖)
+    (h : f = g) : preTiltMap p f hf = preTiltMap p g hg := by
+  subst h; rfl
+
+def galTilt (σ : Gal(PadicAlgCl p/K)) : Cb p →+* Cb p :=
+  tiltMap p (galCp σ : ℂ_[p] →+* ℂ_[p]) (AInf.norm_galCp_toRingHom σ)
+
+def galPreTilt (σ : Gal(PadicAlgCl p/K)) : Ob p →+* Ob p :=
+  preTiltMap p (galCp σ : ℂ_[p] →+* ℂ_[p]) (AInf.norm_galCp_toRingHom σ)
+
+theorem galTilt_algebraMap (σ : Gal(PadicAlgCl p/K)) (x : Ob p) :
+    galTilt σ (algebraMap (Ob p) (Cb p) x) = algebraMap (Ob p) (Cb p) (galPreTilt σ x) :=
+  tiltMap_algebraMap _ _ x
+
+theorem norm_galTilt (σ : Gal(PadicAlgCl p/K)) (x : Cb p) : ‖galTilt σ x‖ = ‖x‖ :=
+  norm_tiltMap _ _ x
+
+theorem galPreTilt_one (x : Ob p) : galPreTilt (1 : Gal(PadicAlgCl p/K)) x = x := by
+  have h : (galCp (1 : Gal(PadicAlgCl p/K)) : ℂ_[p] →+* ℂ_[p]) = RingHom.id ℂ_[p] := by
+    rw [galCp_one]; rfl
+  have key := AInf.preTiltMap_id (K := ℂ_[p]) (p := p) x
+  rw [galPreTilt, preTiltMap_congr _ (fun _ => rfl) h]
+  exact key
+
+theorem galPreTilt_mul (σ τ : Gal(PadicAlgCl p/K)) (x : Ob p) :
+    galPreTilt (σ * τ) x = galPreTilt σ (galPreTilt τ x) := by
+  have h : (galCp (σ * τ) : ℂ_[p] →+* ℂ_[p]) =
+      (galCp σ : ℂ_[p] →+* ℂ_[p]).comp (galCp τ : ℂ_[p] →+* ℂ_[p]) := by
+    rw [galCp_mul]; rfl
+  rw [galPreTilt, galPreTilt, galPreTilt, ← RingHom.comp_apply, ← preTiltMap_comp,
+    preTiltMap_congr _ (norm_comp_eq (AInf.norm_galCp_toRingHom τ) (AInf.norm_galCp_toRingHom σ)) h]
+
+theorem galTilt_one (x : Cb p) : galTilt (1 : Gal(PadicAlgCl p/K)) x = x := by
+  have : galTilt (1 : Gal(PadicAlgCl p/K)) = RingHom.id (Cb p) := by
+    refine IsLocalization.ringHom_ext (nonZeroDivisors (Ob p)) (RingHom.ext fun a => ?_)
+    rw [RingHom.comp_apply, RingHom.comp_apply, galTilt_algebraMap, galPreTilt_one,
+      RingHom.id_apply]
+  rw [this, RingHom.id_apply]
+
+theorem galTilt_mul (σ τ : Gal(PadicAlgCl p/K)) (x : Cb p) :
+    galTilt (σ * τ) x = galTilt σ (galTilt τ x) := by
+  have : galTilt (σ * τ) = (galTilt σ).comp (galTilt τ) := by
+    refine IsLocalization.ringHom_ext (nonZeroDivisors (Ob p)) (RingHom.ext fun a => ?_)
+    simp only [RingHom.comp_apply, galTilt_algebraMap, galPreTilt_mul]
+  rw [this, RingHom.comp_apply]
+
+instance instMulSemiringActionCb : MulSemiringAction Gal(PadicAlgCl p/K) (Cb p) where
+  smul σ x := galTilt σ x
+  one_smul x := galTilt_one x
+  mul_smul σ τ x := galTilt_mul σ τ x
+  smul_zero σ := map_zero (galTilt σ)
+  smul_add σ := map_add (galTilt σ)
+  smul_one σ := map_one (galTilt σ)
+  smul_mul σ := map_mul (galTilt σ)
+
+instance instMulSemiringActionOb : MulSemiringAction Gal(PadicAlgCl p/K) (Ob p) where
+  smul σ x := galPreTilt σ x
+  one_smul x := galPreTilt_one x
+  mul_smul σ τ x := galPreTilt_mul σ τ x
+  smul_zero σ := map_zero (galPreTilt σ)
+  smul_add σ := map_add (galPreTilt σ)
+  smul_one σ := map_one (galPreTilt σ)
+  smul_mul σ := map_mul (galPreTilt σ)
+
+theorem gal_smul_algebraMap_ob (σ : Gal(PadicAlgCl p/K)) (x : Ob p) :
+    σ • algebraMap (Ob p) (Cb p) x = algebraMap (Ob p) (Cb p) (σ • x) :=
+  galTilt_algebraMap σ x
+
+def galW (σ : Gal(PadicAlgCl p/K)) : WC p →+* WC p := WittVector.map (galTilt σ)
+
+theorem galW_coeff (σ : Gal(PadicAlgCl p/K)) (x : WC p) (n : ℕ) :
+    (galW σ x).coeff n = σ • x.coeff n :=
+  WittVector.map_coeff _ x n
+
+theorem galW_one (x : WC p) : galW (1 : Gal(PadicAlgCl p/K)) x = x := by
+  ext n
+  rw [galW_coeff, one_smul]
+
+theorem galW_mul (σ τ : Gal(PadicAlgCl p/K)) (x : WC p) :
+    galW (σ * τ) x = galW σ (galW τ x) := by
+  ext n
+  rw [galW_coeff, galW_coeff, galW_coeff, mul_smul]
+
+instance instMulSemiringActionWC : MulSemiringAction Gal(PadicAlgCl p/K) (WC p) where
+  smul σ x := galW σ x
+  one_smul x := galW_one x
+  mul_smul σ τ x := galW_mul σ τ x
+  smul_zero σ := map_zero (galW σ)
+  smul_add σ := map_add (galW σ)
+  smul_one σ := map_one (galW σ)
+  smul_mul σ := map_mul (galW σ)
+
+theorem gal_smul_wc_coeff (σ : Gal(PadicAlgCl p/K)) (x : WC p) (n : ℕ) :
+    (σ • x).coeff n = σ • x.coeff n :=
+  galW_coeff σ x n
+
+theorem gal_smul_natCast (σ : Gal(PadicAlgCl p/K)) (n : ℕ) : σ • (n : WC p) = n :=
+  map_natCast (galW σ) n
+
+theorem gal_smul_frobenius (σ : Gal(PadicAlgCl p/K)) (x : WC p) :
+    σ • WittVector.frobenius x = WittVector.frobenius (σ • x) := by
+  ext n
+  rw [gal_smul_wc_coeff, WittVector.frobenius_eq_map_frobenius, WittVector.map_coeff,
+    WittVector.map_coeff, gal_smul_wc_coeff, frobenius_def, frobenius_def, smul_pow']
+
+theorem gal_smul_frobeniusEquiv (σ : Gal(PadicAlgCl p/K)) (x : WC p) :
+    σ • WittVector.frobeniusEquiv p (Cb p) x = WittVector.frobeniusEquiv p (Cb p) (σ • x) :=
+  gal_smul_frobenius σ x
+
+theorem toWC_gal_smul (σ : Gal(PadicAlgCl p/K)) (x : AInf ℂ_[p] p) :
+    toWC p (σ • x) = σ • toWC p x := by
+  ext n
+  rw [toWC_coeff, gal_smul_wc_coeff, toWC_coeff, AInf.gal_smul_coeff, gal_smul_algebraMap_ob]
+  rfl
+
+end PhiGamma
+end GroundTheory.PAdicHodge
+end
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 noncomputable section
@@ -95,23 +249,7 @@ theorem coeff_frob (x : WittVector p K♭) (n : ℕ) :
     rw [h1]; simp [TeichLift.finSum]
   rw [e]; exact h2
 
-theorem zcoeff_frob (x : WittVector p K♭) (k : ℤ) :
-    (teichLift K p).zcoeff ((frob K p).φ x) k = (teichLift K p).zcoeff x k ^ p := by
-  unfold TeichLift.zcoeff
-  split_ifs
-  · exact coeff_frob x _
-  · exact (zero_pow hp.out.ne_zero).symm
 
-theorem coeffB_frob_toB (b : (teichLift K p).B) (k : ℤ) :
-    (teichLift K p).coeffB ((frob K p).toB b) k = (teichLift K p).coeffB b k ^ p := by
-  obtain ⟨N, x, hx⟩ := IsLocalization.Away.surj (teichLift K p).π b
-  have h' : (frob K p).toB b * algebraMap _ (teichLift K p).B (teichLift K p).π ^ N =
-      algebraMap _ (teichLift K p).B ((frob K p).φ x) := by
-    have := congrArg (frob K p).toB hx
-    rwa [map_mul, map_pow, TeichLift.TeichFrob.toB_algebraMap, TeichLift.TeichFrob.toB_algebraMap,
-      (frob K p).φ_π, frob_u, mul_one] at this
-  rw [(teichLift K p).coeffB_eq h', (teichLift K p).coeffB_eq hx]
-  exact zcoeff_frob x _
 
 end Frob
 
@@ -144,7 +282,6 @@ def galIso (σ : Gal(PadicAlgCl p/K)) : (teichLift ℂ_[p] p).TeichIso where
 
 theorem galIso_ψ (σ : Gal(PadicAlgCl p/K)) (x : WC p) : (galIso σ).ψ x = σ • x := rfl
 
-theorem galIso_g (σ : Gal(PadicAlgCl p/K)) (c : Cb p) : (galIso σ).g c = σ • c := rfl
 
 theorem TeichIso_eq {T : TeichLift p (Cb p) (WC p)} {G₁ G₂ : T.TeichIso}
     (hψ : ∀ x, G₁.ψ x = G₂.ψ x) (hg : ∀ c, G₁.g c = G₂.g c) : G₁ = G₂ := by
@@ -206,8 +343,6 @@ variable (p) in
 
 def wittFpbarToWC : W̄ →+* WC p := (incl ℂ_[p] p).comp wittToAInf
 
-theorem wittFpbarToWC_injective : Function.Injective (wittFpbarToWC p) :=
-  incl_injective.comp wittToAInf_injective
 
 theorem wittFpbarToWC_mem_int (w : W̄) : wittFpbarToWC p w ∈ (𝓣).int := ⟨_, rfl⟩
 
@@ -215,22 +350,7 @@ theorem wittFpbarToWC_coeff (w : W̄) (n : ℕ) :
     (wittFpbarToWC p w).coeff n = algebraMap 𝒪♭ (Cb p) (fpbarToPreTilt (w.coeff n)) := by
   rw [wittFpbarToWC, RingHom.comp_apply, incl_coeff, wittToAInf, WittVector.map_coeff]
 
-theorem red_wittFpbarToWC_ne_zero {w : W̄} (hw : w.coeff 0 ≠ 0) :
-    (𝓣).red (wittFpbarToWC p w) ≠ 0 := by
-  rw [teichLift_red, wittFpbarToWC_coeff]
-  intro h
-  apply hw
-  apply fpbarToPreTilt_injective
-  rw [map_zero]
-  apply algebraMap_preTilt_injective
-  rw [map_zero]
-  exact h
 
-theorem red_wittFpbarToWC_unit_ne_zero (u : W̄ˣ) : (𝓣).red (wittFpbarToWC p u) ≠ 0 := by
-  refine red_wittFpbarToWC_ne_zero fun h => ?_
-  have := congrArg (fun w : W̄ => w.coeff 0) (u.mul_inv)
-  simp only [WittVector.mul_coeff_zero, h, zero_mul, WittVector.one_coeff_zero] at this
-  exact zero_ne_one this
 
 theorem wittFpbarToWC_frobenius (w : W̄) :
     wittFpbarToWC p (WittVector.frobenius w) = (frob ℂ_[p] p).φ (wittFpbarToWC p w) := by
@@ -278,24 +398,7 @@ theorem wittFpbarToB_algebraMap (w : W̄) :
 theorem wittFpbarToB_p : wittFpbarToB p (algebraMap W̄ (WFrac p) p) = (𝓣).πB := by
   rw [wittFpbarToB_algebraMap, map_natCast]; rfl
 
-theorem wittFpbarToB_injective : Function.Injective (wittFpbarToB p) := by
-  have := (𝓣).nontrivial_B
-  exact (wittFpbarToB p).injective
 
-theorem exists_wittFpbarToB_eq (x : WFrac p) (hx : x ≠ 0) :
-    ∃ (n : ℤ) (u : W̄ˣ), wittFpbarToB p x = (((𝓣).piB ^ n : ((𝓣).B)ˣ) : (𝓣).B) *
-      algebraMap (WC p) (𝓣).B (wittFpbarToWC p u) := by
-  obtain ⟨n, u, rfl⟩ := exists_eq_zpow_mul x hx
-  refine ⟨n, u, ?_⟩
-  have hP : IsUnit (algebraMap W̄ (WFrac p) p) :=
-    ((map_ne_zero_iff _ (IsFractionRing.injective W̄ (WFrac p))).2
-      (WittVector.irreducible p).ne_zero).isUnit
-  have e1 : (algebraMap W̄ (WFrac p) p) ^ n = ((hP.unit ^ n : (WFrac p)ˣ) : WFrac p) := by
-    rw [Units.val_zpow_eq_zpow_val, IsUnit.unit_spec]
-  have e2 : Units.map (wittFpbarToB p : WFrac p →* (𝓣).B) hP.unit = (𝓣).piB := by
-    ext
-    rw [Units.coe_map, IsUnit.unit_spec, MonoidHom.coe_coe, wittFpbarToB_p, TeichLift.piB_val]
-  rw [map_mul, e1, wittFpbarToB_algebraMap, ← e2, ← map_zpow, Units.coe_map, MonoidHom.coe_coe]
 
 end Unramified
 
@@ -363,19 +466,8 @@ theorem wittFpbarToTilde_eq_tildeOf (x : WFrac p) :
     wittFpbarToTilde p x = (𝓣).tildeOf (wittFpbarToB p x) (convAll_wittFpbarToB x) :=
   (𝓣).edagToTilde_apply _
 
-theorem wittFpbarToTilde_injective : Function.Injective (wittFpbarToTilde p) :=
-  (𝓣).edagToTilde_injective.comp fun _ _ h => wittFpbarToB_injective (congrArg Subtype.val h)
 
-theorem isUnit_wittFpbarToTilde {x : WFrac p} (hx : x ≠ 0) : IsUnit (wittFpbarToTilde p x) :=
-  (IsUnit.mk0 x hx).map _
 
-theorem tildeOrd_wittFpbarToTilde (n : ℤ) (u : W̄ˣ)
-    (h : IsUnit (wittFpbarToTilde p ((algebraMap W̄ (WFrac p) p) ^ n * algebraMap W̄ (WFrac p) u))) :
-    (𝓣).tildeOrd h.unit = n := by
-  rw [(𝓣).tildeOrd_eq (b := wittFpbarToEdag p _) (by rw [IsUnit.unit_spec]; rfl)]
-  show (𝓣).ordB (wittFpbarToB p _) = n
-  rw [wittFpbarToB_zpow_mul]
-  exact (𝓣).ordB_piB_zpow_mul n (red_wittFpbarToWC_unit_ne_zero u)
 
 theorem isUnit_frobenius_fractionField (y : nonZeroDivisors W̄) :
     IsUnit ((algebraMap W̄ (WFrac p)).comp WittVector.frobenius (y : W̄)) := by
@@ -513,11 +605,11 @@ theorem tildeFrob_eq_self_iff (x : (𝓣).RobbaTilde) :
   rw [map_mul, map_zpow₀, map_natCast, padicToWFrac_padicInt, ← map_natCast (algebraMap W̄ (WFrac p)),
     wittFpbarToB_zpow_mul, val_piB_zpow, map_one, mul_one]
 
-theorem padicToTilde_injective : Function.Injective (padicToTilde p) :=
-  wittFpbarToTilde_injective.comp (padicToWFrac p).injective
 
 end Fixed
 
 end WittTilt
 
 end GroundTheory.PAdicHodge
+end
+end

@@ -1,7 +1,68 @@
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PhiFacts
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PhiCasA
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PhiCasB
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IsClosedKset
 
+section
+noncomputable section
+
+open Finset
+
+namespace ReciprocityTheory.ChartRestriction.DS.S7
+
+open ReciprocityTheory.ChartRestriction.DS
+
+variable {n : ℕ}
+
+def casCoef (μ : Fin n → ℤ) (a b : Fin n) : ℝ :=
+  (if a = b then (μ a : ℝ) ^ 2 else 0) + (if b < a then (μ a : ℝ) - μ b else 0)
+
+theorem sum_casCoef (μ : Fin n → ℤ) (lam : Fin n → ℝ) (hμ : IsMu lam μ) :
+    ∑ a, ∑ b, casCoef μ a b = casVal lam := by
+  have hcard : ∀ a : Fin n, (((univ.filter fun b : Fin n => b < a).card : ℕ) : ℝ) -
+      (((univ.filter fun b : Fin n => a < b).card : ℕ) : ℝ) = -2 * rho n a := by
+    intro a
+    rw [Finset.filter_gt_eq_Iio, Finset.filter_lt_eq_Ioi, Fin.card_Iio, Fin.card_Ioi]
+    have ha : 1 + (a : ℕ) ≤ n := by have := a.isLt; omega
+    rw [Nat.sub_sub, Nat.cast_sub ha]
+    simp only [rho]
+    push_cast
+    ring
+  have hrow : ∀ a, ∑ b, casCoef μ a b = (μ a : ℝ) ^ 2 +
+      ∑ b, ((if b < a then (μ a : ℝ) else 0) - if b < a then (μ b : ℝ) else 0) := by
+    intro a
+    rw [show (μ a : ℝ) ^ 2 = ∑ b, (if a = b then (μ a : ℝ) ^ 2 else 0) by simp, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun b _ => ?_
+    unfold casCoef
+    split_ifs <;> ring
+  have hswap : ∑ a : Fin n, ∑ b : Fin n, (if b < a then (μ b : ℝ) else 0) =
+      ∑ a : Fin n, ∑ b : Fin n, (if a < b then (μ a : ℝ) else 0) := Finset.sum_comm
+  have hA : ∀ a : Fin n, ∑ b : Fin n, (if b < a then (μ a : ℝ) else 0) =
+      (μ a : ℝ) * (((univ.filter fun b : Fin n => b < a).card : ℕ) : ℝ) := by
+    intro a
+    rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul, mul_comm]
+  have hB : ∀ a : Fin n, ∑ b : Fin n, (if a < b then (μ a : ℝ) else 0) =
+      (μ a : ℝ) * (((univ.filter fun b : Fin n => a < b).card : ℕ) : ℝ) := by
+    intro a
+    rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul, mul_comm]
+  calc ∑ a, ∑ b, casCoef μ a b = ∑ a, (μ a : ℝ) ^ 2 + ((∑ a, ∑ b, if b < a then (μ a : ℝ) else 0) -
+        ∑ a, ∑ b, if b < a then (μ b : ℝ) else 0) := by
+        simp only [hrow, Finset.sum_add_distrib, Finset.sum_sub_distrib]
+    _ = ∑ a, ((μ a : ℝ) ^ 2 + (μ a : ℝ) * (-2 * rho n a)) := by
+        rw [hswap, ← Finset.sum_sub_distrib, ← Finset.sum_add_distrib]
+        refine Finset.sum_congr rfl fun a _ => ?_
+        rw [hA, hB, ← hcard]
+        ring
+    _ = casVal lam := by
+        simp only [casVal, nsq, dot, ← Finset.sum_sub_distrib]
+        refine Finset.sum_congr rfl fun a _ => ?_
+        rw [hμ a]
+        ring
+
+end ReciprocityTheory.ChartRestriction.DS.S7
+end
+end
+
+section
 noncomputable section
 
 open Finset MeasureTheory Matrix
@@ -18,8 +79,6 @@ variable {n : ℕ}
 private theorem isUpperTri_one : IsUpperTri (1 : Matrix (Fin n) (Fin n) ℂ) :=
   fun _ _ h => Matrix.one_apply_ne h.ne'
 
-private theorem isLowerTri_one : IsLowerTri (1 : Matrix (Fin n) (Fin n) ℂ) :=
-  fun _ _ h => Matrix.one_apply_ne h.ne
 
 private theorem diag_line (a l : Fin n) (t : ℂ) :
     (1 + t • Matrix.single a a (1 : ℂ)) l l = if l = a then 1 + t else 1 := by
@@ -69,30 +128,6 @@ theorem lhol_phiM_lower (μ : Fin n → ℤ) {a b : Fin n} (hab : b < a) {z : Ma
     exact hasDerivAt_const _ _
   exact hd.unique h0
 
-theorem rhol_phiM_upper (μ : Fin n → ℤ) {a b : Fin n} (hab : a < b) {z : Matrix (Fin n) (Fin n) ℂ}
-    (hz : z ∈ OmegaSet n) : Rhol (Matrix.single a b 1) (PhiM μ) z = 0 := by
-  have hconst : ∀ t : ℂ, PhiM μ (z + t • (z * Matrix.single a b 1)) = PhiM μ z := by
-    intro t
-    have hc : IsUpperTri (1 + t • Matrix.single a b (1 : ℂ)) := by
-      intro i j hij
-      have : ¬(a = i ∧ b = j) := fun ⟨h1, h2⟩ => by
-        subst h1; subst h2; exact absurd (hab.trans hij) (lt_irrefl _)
-      simp [Matrix.one_apply_ne hij.ne', Matrix.single_apply_of_ne (h := this)]
-    have hcd : ∀ l, (1 + t • Matrix.single a b (1 : ℂ)) l l = 1 := by
-      intro l
-      have : ¬(a = l ∧ b = l) := fun ⟨h1, h2⟩ => hab.ne (h1.trans h2.symm)
-      simp [Matrix.single_apply_of_ne (h := this)]
-    obtain ⟨-, h⟩ := phiM_tri_mul μ isLowerTri_one hc (fun l => by simp)
-      (fun l => by rw [hcd l]; exact one_ne_zero) hz
-    have e : 1 * z * (1 + t • Matrix.single a b (1 : ℂ)) = z + t • (z * Matrix.single a b 1) := by
-      rw [Matrix.one_mul, mul_add, Matrix.mul_one, Matrix.mul_smul]
-    rw [← e, h, Finset.prod_eq_one (fun l _ => by rw [hcd l, Matrix.one_apply_eq, one_mul, _root_.one_zpow]),
-      one_mul]
-  have hd := hasDerivAt_line (differentiableAt_phiM μ hz) (z * Matrix.single a b 1)
-  have h0 : HasDerivAt (fun t : ℂ => PhiM μ (z + t • (z * Matrix.single a b 1))) 0 0 := by
-    simp only [hconst]
-    exact hasDerivAt_const _ _
-  exact hd.unique h0
 
 theorem lhol_phiM_diag (μ : Fin n → ℤ) (a : Fin n) {z : Matrix (Fin n) (Fin n) ℂ} (hz : z ∈ OmegaSet n) :
     Lhol (Matrix.single a a 1) (PhiM μ) z = -(μ a : ℂ) * PhiM μ z := by
@@ -117,28 +152,6 @@ theorem lhol_phiM_diag (μ : Fin n → ℤ) (a : Fin n) {z : Matrix (Fin n) (Fin
   have hd := hasDerivAt_line (differentiableAt_phiM μ hz) (Matrix.single a a 1 * z)
   exact hd.unique ((hasDerivAt_scale μ a _).congr_of_eventuallyEq hev)
 
-theorem rhol_phiM_diag (μ : Fin n → ℤ) (a : Fin n) {z : Matrix (Fin n) (Fin n) ℂ} (hz : z ∈ OmegaSet n) :
-    Rhol (Matrix.single a a 1) (PhiM μ) z = -(μ a : ℂ) * PhiM μ z := by
-  have key : ∀ t : ℂ, 1 + t ≠ 0 →
-      PhiM μ (z + t • (z * Matrix.single a a 1)) = (1 + t) ^ (-μ a) * PhiM μ z := by
-    intro t ht
-    have hc : IsUpperTri (1 + t • Matrix.single a a (1 : ℂ)) := by
-      intro i j hij
-      have : ¬(a = i ∧ a = j) := fun ⟨h1, h2⟩ => hij.ne' (h1.symm.trans h2)
-      simp [Matrix.one_apply_ne hij.ne', Matrix.single_apply_of_ne (h := this)]
-    obtain ⟨-, h⟩ := phiM_tri_mul μ isLowerTri_one hc (fun l => by simp)
-      (fun l => by rw [diag_line]; split_ifs <;> simp [ht]) hz
-    have e : 1 * z * (1 + t • Matrix.single a a (1 : ℂ)) = z + t • (z * Matrix.single a a 1) := by
-      rw [Matrix.one_mul, mul_add, Matrix.mul_one, Matrix.mul_smul]
-    rw [← e, h]
-    congr 1
-    simp only [Matrix.one_apply_eq, one_mul, diag_line]
-    exact diag_prod μ a t
-  have hev : (fun t : ℂ => PhiM μ (z + t • (z * Matrix.single a a 1))) =ᶠ[nhds 0]
-      fun t => (1 + t) ^ (-μ a) * PhiM μ z := by
-    filter_upwards [eventually_ne_line] with t ht using key t ht
-  have hd := hasDerivAt_line (differentiableAt_phiM μ hz) (z * Matrix.single a a 1)
-  exact hd.unique ((hasDerivAt_scale μ a _).congr_of_eventuallyEq hev)
 
 theorem lhol_lhol_phiM (μ : Fin n → ℤ) (a b : Fin n) {z : Matrix (Fin n) (Fin n) ℂ}
     (hz : z ∈ OmegaSet n) :
@@ -184,3 +197,5 @@ theorem casL_phiM (μ : Fin n → ℤ) (lam : Fin n → ℝ) (hμ : IsMu lam μ)
   rfl
 
 end ReciprocityTheory.ChartRestriction.DS.S7
+end
+end

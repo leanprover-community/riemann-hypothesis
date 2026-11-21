@@ -209,11 +209,6 @@ theorem dv_inv [Algebra ℚ Ω] {A : ValuationSubring Ω} {l m : ℕ} (hl : 0 < 
   rw [HahnSeries.C_mul_eq_smul, HahnSeries.coeff_smul, e, smul_eq_mul, pow_succ]
   field_simp
 
-theorem dv_of_succ {A : ValuationSubring Ω} {l m : ℕ} {χ : HahnSeries ℚ Ω} (h1 : Dv A l (m + 1) χ) : Dv A l m χ := by
-  intro r
-  obtain ⟨z, hz, e⟩ := h1 r
-  refine ⟨l * z, mul_mem (natCast_mem A l) hz, ?_⟩
-  rw [e, pow_succ]; ring
 
 theorem int_prod [Algebra ℚ Ω] {A : ValuationSubring Ω} (S : Finset ℕ) (F : ℕ → HahnSeries ℚ Ω) (h : ∀ j, ∀ r, (F j).coeff r ∈ A) :
     ∀ r, (∏ j ∈ S, F j).coeff r ∈ A := by

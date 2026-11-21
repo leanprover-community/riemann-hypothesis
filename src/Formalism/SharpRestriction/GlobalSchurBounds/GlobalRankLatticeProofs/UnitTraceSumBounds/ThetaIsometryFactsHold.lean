@@ -23,7 +23,6 @@ theorem isoScale_holds (D : D7) : isoScale D := fun N N' nu c s Θ φ => isometr
 
 theorem inverse_metric_isometry (D : D7) : InducedNormInvariantMetric D := fun N nu => isometry_invariant_metric (Bool × HH D) N nu
 
-theorem scal_holds (D : D7) : scal D := fun N N' s s' Qp dg hH y' => scalar_degree D.what₂.Tau N N' s s' Qp dg hH y'
 
 theorem isoB_holds (D : D7) : isoB D :=
   fun N N' nu s Θ φ Q hQ y' => isometry_derivative_bound (Bool × HH D) D.what₂.Tau (tauPl D) N N' nu s Θ φ Q hQ y'

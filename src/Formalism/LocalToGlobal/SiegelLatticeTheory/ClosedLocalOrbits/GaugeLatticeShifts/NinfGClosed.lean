@@ -1,9 +1,269 @@
 import Mathlib
-import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ProdFormula
-import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.HaarSubIsHaarS
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.PiMapMulRight
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.JacobianCoordinates
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.FrameLocX
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.NGClosed
 
+section
+noncomputable section
+
+open MeasureTheory Topology
+open scoped ENNReal
+
+namespace Formalism.L2.SG.RealObj.InfCut.ProductExactness
+
+open Formalism.L2.SG.RealObj Formalism.L2.SG.RealObj.InfCut Formalism.L2.SG.RealObj.InfCut.JacobianCoordinates
+
+instance sf2 : SigmaFinite ((2 : ℝ≥0∞) • (volume : Measure ℂ)) := by
+  rw [← ENNReal.coe_ofNat, ← ENNReal.smul_def]
+  infer_instance
+
+section PiProd
+
+variable {ι : Type} [Fintype ι] {α β : ι → Type} [∀ i, MeasurableSpace (α i)] [∀ i, MeasurableSpace (β i)]
+
+def piProdEquiv : ((i : ι) → α i × β i) ≃ᵐ ((i : ι) → α i) × ((i : ι) → β i) where
+  toFun x := (fun i => (x i).1, fun i => (x i).2)
+  invFun p i := (p.1 i, p.2 i)
+  left_inv x := rfl
+  right_inv p := rfl
+  measurable_toFun := (measurable_pi_lambda _ fun i => measurable_fst.comp (measurable_pi_apply i)).prodMk
+    (measurable_pi_lambda _ fun i => measurable_snd.comp (measurable_pi_apply i))
+  measurable_invFun := measurable_pi_lambda _ fun i =>
+    ((measurable_pi_apply i).comp measurable_fst).prodMk ((measurable_pi_apply i).comp measurable_snd)
+
+theorem measurePreserving_piProd (μ : ∀ i, Measure (α i)) (ν : ∀ i, Measure (β i)) [∀ i, SigmaFinite (μ i)]
+    [∀ i, SigmaFinite (ν i)] :
+    MeasurePreserving (piProdEquiv (α := α) (β := β)) (Measure.pi fun i => (μ i).prod (ν i))
+      ((Measure.pi μ).prod (Measure.pi ν)) := by
+  have hf := (piProdEquiv (α := α) (β := β)).measurable
+  refine ⟨hf, ?_⟩
+  refine (Measure.prod_eq_generateFrom generateFrom_pi generateFrom_pi isPiSystem_pi isPiSystem_pi
+    (Measure.FiniteSpanningSetsIn.pi fun i => (μ i).toFiniteSpanningSetsIn)
+    (Measure.FiniteSpanningSetsIn.pi fun i => (ν i).toFiniteSpanningSetsIn) ?_).symm
+  rintro _ ⟨A, hA, rfl⟩ _ ⟨B, hB, rfl⟩
+  have hA' : ∀ i, MeasurableSet (A i) := fun i => hA i (Set.mem_univ i)
+  have hB' : ∀ i, MeasurableSet (B i) := fun i => hB i (Set.mem_univ i)
+
+  have hpre : (piProdEquiv (α := α) (β := β)) ⁻¹' (Set.univ.pi A ×ˢ Set.univ.pi B) =
+      Set.univ.pi fun i => A i ×ˢ B i := by
+    ext x
+    simp [piProdEquiv, Set.mem_univ_pi, forall_and]
+  rw [Measure.map_apply hf ((MeasurableSet.univ_pi hA').prod (MeasurableSet.univ_pi hB')), hpre,
+    Measure.pi_pi, Measure.pi_pi, Measure.pi_pi, ← Finset.prod_mul_distrib]
+  exact Finset.prod_congr rfl fun i _ => Measure.prod_prod _ _
+
+end PiProd
+
+section Loc
+
+variable {n r : ℕ}
+
+private theorem continuous_Dl_diagonal (l : ℕ) :
+    Continuous (fun c : Fin (r + 1) → ℂ => Formalism.L2.SG.RealObj.Dl (Matrix.diagonal c) l) := by
+  unfold Formalism.L2.SG.RealObj.Dl
+  split_ifs with hl
+  · exact (Continuous.matrix_diagonal continuous_id).matrix_submatrix _ _ |>.matrix_det
+  · exact continuous_const
+
+theorem gv_cont (T T' : ℝ) : Continuous (fun c : Fin (r + 1) → ℂ => Gv T T' (Matrix.diagonal c)) := by
+  unfold Formalism.L2.SG.RealObj.Gv
+  exact ((continuous_Dl_diagonal _).norm.pow 2).sub (continuous_const.mul ((continuous_Dl_diagonal _).norm.pow 2))
+
+theorem wtLoc_cont (k : ℕ) (T T' : ℝ) : Continuous (fun c : Fin (r + 1) → ℂ => wtLoc k T T' c) := by
+  unfold wtLoc Formalism.L2.SG.RealObj.JacV
+  refine ((gv_cont T T').pow _).mul (continuous_finset_prod _ fun l _ => ?_)
+  unfold Formalism.L2.SG.RealObj.modC
+  exact (((continuous_Dl_diagonal l).norm).pow 2).pow 2
+
+theorem wtLoc_nonneg (k : ℕ) (T T' : ℝ) {c : Fin (r + 1) → ℂ} (hc : c ∈ GoodLoc (r := r) T T') :
+    0 ≤ wtLoc k T T' c := by
+  unfold wtLoc Formalism.L2.SG.RealObj.JacV
+  exact mul_nonneg (pow_nonneg hc.2.le _) (Finset.prod_nonneg fun _ _ => sq_nonneg _)
+
+theorem measurableSet_goodLoc (T T' : ℝ) : MeasurableSet (GoodLoc (r := r) T T') := by
+  have h1 : IsOpen {c : Fin (r + 1) → ℂ | ∀ l, c l ≠ 0} := by
+    simp only [Set.setOf_forall]
+    exact isOpen_iInter_of_finite fun l => isOpen_ne_fun (continuous_apply l) continuous_const
+  have h2 : IsOpen {c : Fin (r + 1) → ℂ | 0 < Gv T T' (Matrix.diagonal c)} :=
+    isOpen_lt continuous_const (gv_cont T T')
+  rw [GoodLoc, Set.setOf_and]
+  exact (h1.inter h2).measurableSet
+
+def nuLoc (k : ℕ) (T T' C : ℝ) : Measure (Fin (r + 1) → ℂ) :=
+  ((dcLoc (r := r)).restrict (GoodLoc (r := r) T T')).withDensity (fun c => ENNReal.ofReal (C * wtLoc k T T' c))
+
+instance (k : ℕ) (T T' C : ℝ) : SigmaFinite (nuLoc (r := r) k T T' C) := by
+  unfold nuLoc dcLoc
+  exact SigmaFinite.withDensity_ofReal _
+
+variable (ε : Fin n → Bool)
+
+def phiLoc (h : (Fin (r + 1) → ℂ) → Formalism.REAL.UJ ε) (x : (Fin (r + 1) → ℂ) × (Formalism.REAL.UJ ε × Formalism.REAL.UJ ε)) :
+    Formalism.REAL.UJ ε :=
+  x.2.1 * h x.1 * x.2.2⁻¹
+
+theorem phiLoc_meas {h : (Fin (r + 1) → ℂ) → Formalism.REAL.UJ ε} (hh : Measurable h) : Measurable (phiLoc ε h) := by
+  unfold phiLoc
+  exact ((measurable_fst.comp measurable_snd).mul (hh.comp measurable_fst)).mul
+    (measurable_snd.comp measurable_snd).inv
+
+theorem muG_eq_map (k : ℕ) (T T' : ℝ) (μS μS' : Measure (Formalism.REAL.UJ ε)) [SFinite μS] [SFinite μS']
+    (h : (Fin (r + 1) → ℂ) → Formalism.REAL.UJ ε) (hh : Measurable h) (C : ℝ)
+    (hD : DisintLoc ε k T T' μS μS' h C) :
+    Formalism.REAL.muG ε = ((nuLoc (r := r) k T T' C).prod (μS.prod μS')).map (phiLoc ε h) := by
+  have hp := phiLoc_meas ε hh
+  refine Measure.ext fun s hs => ?_
+  have hφ : Measurable (s.indicator (1 : Formalism.REAL.UJ ε → ℝ≥0∞)) := measurable_const.indicator hs
+  have hm : Measurable fun p => s.indicator (1 : Formalism.REAL.UJ ε → ℝ≥0∞) (phiLoc ε h p) := hφ.comp hp
+  have hw : Measurable fun c : Fin (r + 1) → ℂ => ENNReal.ofReal (C * wtLoc k T T' c) :=
+    ENNReal.measurable_ofReal.comp (measurable_const.mul (wtLoc_cont k T T').measurable)
+  have hg := hm.lintegral_prod_right' (ν := μS.prod μS')
+  rw [← lintegral_indicator_one hs, hD _ hφ, Measure.map_apply hp hs, ← lintegral_indicator_one (hp hs)]
+  have hind : ((phiLoc ε h) ⁻¹' s).indicator
+      (1 : (Fin (r + 1) → ℂ) × (Formalism.REAL.UJ ε × Formalism.REAL.UJ ε) → ℝ≥0∞) =
+      fun p => s.indicator (1 : Formalism.REAL.UJ ε → ℝ≥0∞) (phiLoc ε h p) := by
+    funext p
+    by_cases hx : phiLoc ε h p ∈ s <;> simp [hx]
+  rw [hind, lintegral_prod _ hm.aemeasurable, nuLoc, lintegral_withDensity_eq_lintegral_mul _ hw hg]
+  refine lintegral_congr fun c => ?_
+  congr 1
+  have hc : Measurable fun y : Formalism.REAL.UJ ε × Formalism.REAL.UJ ε =>
+      s.indicator (1 : Formalism.REAL.UJ ε → ℝ≥0∞) (phiLoc ε h (c, y)) := hm.comp measurable_prodMk_left
+  beta_reduce
+  rw [lintegral_prod _ hc.aemeasurable]
+  rfl
+
+end Loc
+
+end Formalism.L2.SG.RealObj.InfCut.ProductExactness
+end
+end
+
+section
+noncomputable section
+
+open MeasureTheory Topology
+open scoped ENNReal
+
+namespace Formalism.L2.SG.RealObj.InfCut.ProductExactness
+
+section ProdF
+
+variable {ι : Type} [Fintype ι] {r : ℕ} {G : ι → Type} [∀ v, Group (G v)] [∀ v, MeasurableSpace (G v)]
+  [∀ v, MeasurableMul₂ (G v)] [∀ v, MeasurableInv (G v)]
+
+theorem prod_formula (mG : ∀ v, Measure (G v)) [∀ v, SigmaFinite (mG v)]
+    (ν : ∀ v, Measure (Fin (r + 1) → ℂ)) [∀ v, SigmaFinite (ν v)]
+    (μ μ' : ∀ v, Measure (G v)) [∀ v, SigmaFinite (μ v)] [∀ v, SigmaFinite (μ' v)]
+    (h : ∀ v, (Fin (r + 1) → ℂ) → G v) (hh : ∀ v, Measurable (h v))
+    (hm : ∀ v, mG v = ((ν v).prod ((μ v).prod (μ' v))).map (fun x => x.2.1 * h v x.1 * x.2.2⁻¹))
+    (φ : ((v : ι) → G v) → ℝ≥0∞) (hφ : Measurable φ) :
+    ∫⁻ x, φ x ∂Measure.pi mG = ∫⁻ c, ∫⁻ s, ∫⁻ s', φ (s * (fun v => h v (c v)) * s'⁻¹)
+      ∂Measure.pi μ' ∂Measure.pi μ ∂Measure.pi ν := by
+  have hFm : ∀ v, Measurable
+      (fun x : (Fin (r + 1) → ℂ) × (G v × G v) => x.2.1 * h v x.1 * x.2.2⁻¹) :=
+    fun v => ((measurable_fst.comp measurable_snd).mul ((hh v).comp measurable_fst)).mul
+      (measurable_snd.comp measurable_snd).inv
+  have : ∀ v, SigmaFinite (((ν v).prod ((μ v).prod (μ' v))).map
+      (fun x : (Fin (r + 1) → ℂ) × (G v × G v) => x.2.1 * h v x.1 * x.2.2⁻¹)) := fun v => by
+    rw [← hm v]; infer_instance
+  have hpi : Measure.pi mG = (Measure.pi fun v => (ν v).prod ((μ v).prod (μ' v))).map
+      (fun y v => (y v).2.1 * h v (y v).1 * (y v).2.2⁻¹) := by
+    rw [Measure.pi_map_pi (fun v => (hFm v).aemeasurable)]
+    congr 1; funext v; exact hm v
+  have hYm : Measurable (fun (y : (v : ι) → (Fin (r + 1) → ℂ) × (G v × G v)) (v : ι) =>
+      (y v).2.1 * h v (y v).1 * (y v).2.2⁻¹) :=
+    measurable_pi_lambda _ fun v => (hFm v).comp (measurable_pi_apply v)
+  have hgm : Measurable (fun z : ((v : ι) → (Fin (r + 1) → ℂ)) × (((v : ι) → G v) × ((v : ι) → G v)) =>
+      φ (z.2.1 * (fun v => h v (z.1 v)) * z.2.2⁻¹)) := by
+    refine hφ.comp (((measurable_fst.comp measurable_snd).mul ?_).mul
+      (measurable_snd.comp measurable_snd).inv)
+    exact measurable_pi_lambda _ fun v => (hh v).comp ((measurable_pi_apply v).comp measurable_fst)
+  have hE1 := measurePreserving_piProd (α := fun _ => Fin (r + 1) → ℂ) (β := fun v => G v × G v)
+    ν (fun v => (μ v).prod (μ' v))
+  have hE2 := (MeasurePreserving.id (Measure.pi ν)).prod
+    (measurePreserving_piProd (α := G) (β := G) μ μ')
+  have hE := hE2.comp hE1
+  rw [hpi, lintegral_map hφ hYm]
+  refine Eq.trans ?_ ((hE.lintegral_comp hgm).trans ?_)
+  · rfl
+  rw [lintegral_prod _ hgm.aemeasurable]
+  refine lintegral_congr fun c => ?_
+  exact lintegral_prod (fun y : ((v : ι) → G v) × ((v : ι) → G v) =>
+    φ (y.1 * (fun v => h v (c v)) * y.2⁻¹)) (hgm.comp measurable_prodMk_left).aemeasurable
+
+theorem dc_switch (μ μ' : Measure ((v : ι) → G v)) [SFinite μ'] (φ : ((v : ι) → G v) → ℝ≥0∞) (hφ : Measurable φ)
+    (γ t t' : (v : ι) → G v) (ht : μ.map (fun x => x * t) = μ) (ht' : μ'.map (fun x => x * t') = μ') :
+    ∫⁻ s, ∫⁻ s', φ (s * (t * γ * t'⁻¹) * s'⁻¹) ∂μ' ∂μ = ∫⁻ s, ∫⁻ s', φ (s * γ * s'⁻¹) ∂μ' ∂μ := by
+  have hΦ : Measurable fun a : (v : ι) → G v => ∫⁻ s', φ (a * γ * s'⁻¹) ∂μ' :=
+    (hφ.comp ((measurable_fst.mul_const γ).mul measurable_snd.inv)).lintegral_prod_right'
+  have inner : ∀ a : (v : ι) → G v,
+      ∫⁻ s', φ (a * γ * (s' * t')⁻¹) ∂μ' = ∫⁻ s', φ (a * γ * s'⁻¹) ∂μ' := by
+    intro a
+    have hf : Measurable fun s' : (v : ι) → G v => φ (a * γ * s'⁻¹) :=
+      hφ.comp (measurable_const.mul measurable_inv)
+    rw [← lintegral_map hf (measurable_mul_const t'), ht']
+  calc ∫⁻ s, ∫⁻ s', φ (s * (t * γ * t'⁻¹) * s'⁻¹) ∂μ' ∂μ
+      = ∫⁻ s, ∫⁻ s', φ (s * t * γ * (s' * t')⁻¹) ∂μ' ∂μ := by
+        refine lintegral_congr fun s => lintegral_congr fun s' => ?_
+        congr 1; group
+    _ = ∫⁻ s, ∫⁻ s', φ (s * t * γ * s'⁻¹) ∂μ' ∂μ :=
+        lintegral_congr fun s => inner (s * t)
+    _ = ∫⁻ s, ∫⁻ s', φ (s * γ * s'⁻¹) ∂μ' ∂μ := by
+        rw [← lintegral_map hΦ (measurable_mul_const t), ht]
+
+end ProdF
+
+end Formalism.L2.SG.RealObj.InfCut.ProductExactness
+end
+end
+
+section
+noncomputable section
+
+open MeasureTheory Topology
+
+namespace Formalism.L2.SG.RealObj.InfCut.ProductExactness
+
+open Formalism.L2.SG.RealObj Formalism.L2.SG.RealObj.InfCut.JacobianCoordinates
+
+variable {n : ℕ} {ε : Fin n → Bool}
+
+def haarSub (G : Subgroup (Formalism.REAL.UJ ε)) (hG : IsClosed (G : Set (Formalism.REAL.UJ ε))) : Measure (Formalism.REAL.UJ ε) :=
+  haveI : LocallyCompactSpace G := hG.isClosedEmbedding_subtypeVal.locallyCompactSpace
+  (Measure.haar : Measure G).map Subtype.val
+
+theorem haarSub_isHaarS (G : Subgroup (Formalism.REAL.UJ ε)) (hG : IsClosed (G : Set (Formalism.REAL.UJ ε))) :
+    IsHaarS (G : Set (Formalism.REAL.UJ ε)) (haarSub G hG) := by
+  have : LocallyCompactSpace G := hG.isClosedEmbedding_subtypeVal.locallyCompactSpace
+  have hemb := hG.isClosedEmbedding_subtypeVal
+  have hι : Measurable (Subtype.val : G → Formalism.REAL.UJ ε) := measurable_subtype_coe
+  have hfin : IsFiniteMeasureOnCompacts (haarSub G hG) := by
+    refine ⟨fun K hK => ?_⟩
+    rw [haarSub, Measure.map_apply hι hK.measurableSet]
+    exact (hemb.isCompact_preimage hK).measure_lt_top
+  refine ⟨⟨?_, ?_, ?_, ?_⟩, hfin⟩
+  · have := hfin
+    infer_instance
+  · rw [haarSub, Ne, Measure.map_eq_zero_iff hι.aemeasurable]
+    exact NeZero.ne _
+  · rw [haarSub, Measure.map_apply hι hG.measurableSet.compl]
+    have hempty : (Subtype.val : G → Formalism.REAL.UJ ε) ⁻¹' (G : Set (Formalism.REAL.UJ ε))ᶜ = ∅ := by
+      ext x
+      simp
+    rw [hempty, measure_empty]
+  · intro s hs
+    rw [haarSub, Measure.map_map (measurable_const_mul s) hι]
+    have hcomp : (fun x => s * x) ∘ (Subtype.val : G → Formalism.REAL.UJ ε) =
+        Subtype.val ∘ (fun y : G => (⟨s, hs⟩ : G) * y) := rfl
+    rw [hcomp, ← Measure.map_map hι (measurable_const_mul _), map_mul_left_eq_self]
+
+end Formalism.L2.SG.RealObj.InfCut.ProductExactness
+end
+end
+
+section
 noncomputable section
 
 open MeasureTheory Topology NumberField Formalism.BasicNotions Formalism.MainNotions.S
@@ -142,3 +402,5 @@ theorem muS_eq (u : D.what₂.Word) (hσ : ∀ v, SigmaFinite (muSv X u v)) :
 end SetM
 
 end Formalism.L2.SG.RealObj.InfCut.ProductExactness
+end
+end

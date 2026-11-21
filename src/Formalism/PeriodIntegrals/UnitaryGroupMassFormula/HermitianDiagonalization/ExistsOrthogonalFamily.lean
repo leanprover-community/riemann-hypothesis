@@ -1,6 +1,21 @@
 import Mathlib
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HermitianDiagonalization.HermDiag
+import Formalism.LocalToGlobal.AdelicCompactOpens.HermDefONFamily
 
+section
+namespace PI.UnitaryGroupMassFormula.HermConj
+
+open Matrix
+
+def HermDiag : Prop :=
+  ∀ (E : Type) [Field E] [CharZero E] (σ : E →+* E), (∀ x, σ (σ x) = x) →
+    ∀ (n : ℕ) (J : Matrix (Fin n) (Fin n) E), (J.map σ)ᵀ = J →
+      ∃ (Q : Matrix (Fin n) (Fin n) E) (d : Fin n → E), IsUnit Q.det ∧ (∀ i, σ (d i) = d i) ∧
+        J = (Q.map σ)ᵀ * diagonal d * Q
+
+end PI.UnitaryGroupMassFormula.HermConj
+end
+
+section
 namespace PI.UnitaryGroupMassFormula.HermConj
 
 open Matrix
@@ -112,3 +127,4 @@ theorem exists_orthogonal_family [CharZero E] (σ : E →+* E) :
             exact hwo i j (fun e => hij (by rw [e]))
 
 end PI.UnitaryGroupMassFormula.HermConj
+end

@@ -165,30 +165,6 @@ theorem ConjugatePairPlaceSetting.no_conj (H : ConjugatePairPlaceSetting r cc a 
   show ((X o).G g).ty (Sum.inl ⟨t, i⟩) = ((X o).G (1 - g)).ty (Sum.inl ⟨t, i'⟩)
   rw [H.hty o g, H.hty o (1 - g)]
 
-theorem ConjugatePairPlaceSetting.no_conj_letter (H : ConjugatePairPlaceSetting r cc a tau X F Z ga n L pl) (τ : T) (a1 : Fin (r τ)) (a2 : Fin (r (cc τ)))
-    (b : Fin n)
-    (h1 : (⟨τ, a1, b⟩ : Letter T r n) ∈ (MvPolynomial.rename (phiL r tau n) (blkProd X F n L pl)).vars)
-    (h2 : (⟨cc τ, a2, b⟩ : Letter T r n) ∈ (MvPolynomial.rename (phiL r tau n) (blkProd X F n L pl)).vars) : False := by
-  obtain ⟨x, hx, ex⟩ := Finset.mem_image.1 (MvPolynomial.vars_rename _ _ h1)
-  obtain ⟨x', hx', ex'⟩ := Finset.mem_image.1 (MvPolynomial.vars_rename _ _ h2)
-  obtain ⟨ρ, o, g, t, i⟩ := x
-  obtain ⟨ρ', o', g', t', i'⟩ := x'
-  have e1 : tau o g t = τ := congrArg Sigma.fst ex
-  have e1' : tau o' g' t' = cc τ := congrArg Sigma.fst ex'
-  have eρ : ρ = b := congrArg (fun ℓ : Letter T r n => ℓ.2.2) ex
-  have eρ' : ρ' = b := congrArg (fun ℓ : Letter T r n => ℓ.2.2) ex'
-  have e2 : tau o' g' t' = tau o (1 - g) t := by
-    rw [e1', ← e1]
-    have hg : g = 0 ∨ g = 1 := by fin_cases g <;> simp
-    rcases hg with rfl | rfl
-    · exact H.conj o t
-    · exact H.conj' o t
-  have e3 := H.inj (a₁ := (o', g', t')) (a₂ := (o, 1 - g, t)) e2
-  simp only [Prod.mk.injEq] at e3
-  obtain ⟨rfl, rfl, rfl⟩ := e3
-  rw [eρ] at hx
-  rw [eρ'] at hx'
-  exact H.no_conj b o' g t' i i' hx hx'
 
 end Fam
 
@@ -199,19 +175,5 @@ theorem lap_one_apply {T : Type} (r : T → ℕ) (n : ℕ) (C : Type) [Field C] 
   simp only [lap, LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.comp_apply]
   rfl
 
-theorem harmonic_product_bound : NormOneHarmonic := by
-  intro C _ V d _ T r cc a Orb _ tau J _ X F Z ga n L pl H isX
-  simp only [harmK, Submodule.mem_iInf, LinearMap.mem_ker]
-  intro τ _ a1 a2
-  rw [lap_one_apply]
-  refine Finset.sum_eq_zero fun b _ => Finset.sum_eq_zero fun b' _ => ?_
-  by_cases hb : b = b'
-  · subst hb
-    by_cases h : (⟨τ, a1, b⟩ : Letter T r n) ∈ (MvPolynomial.rename (phiL r tau n) (blkProd X F n L pl)).vars
-    · have h' : (⟨cc τ, a2, b⟩ : Letter T r n) ∉ (MvPolynomial.rename (phiL r tau n) (blkProd X F n L pl)).vars :=
-        fun h2 => H.no_conj_letter τ a1 a2 b h h2
-      rw [MvPolynomial.pderiv_eq_zero_of_notMem_vars h', map_zero, smul_zero]
-    · rw [pderiv_comm', MvPolynomial.pderiv_eq_zero_of_notMem_vars h, map_zero, smul_zero]
-  · rw [Matrix.one_apply_ne hb, zero_smul]
 
 end Formalism.L2.FormalSeriesBounds.RF

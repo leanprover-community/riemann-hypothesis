@@ -1,7 +1,97 @@
 import Formalism.LocalToGlobal.InertKernelTheory.SubBSplit
-import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.QuadraticBaseChangeGL3
+import Formalism.LocalToGlobal.InertKernelTheory.DelPolOfTies
 import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.LocalLevelIsKOneAtT
 
+section
+noncomputable section
+
+open Formalism.MainNotions.G Formalism.MainNotions.FormalGroupSystem Finset
+
+namespace Formalism.L2.KerInert.QuadraticBaseChangeGL3
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Ker Formalism.L2.KerInert.K2 Formalism.L2.KerInert.SecondKernelInstances Formalism.L2.KerInert.SecondKernelDifference Formalism.L2.KerInert.SecondKernelSeries
+
+section Dict
+
+variable {p : ℕ} [Fact p.Prime] (X : Sys p) (Kc : Type) [Field Kc] [Algebra X.G.Kf Kc] (j : ℕ)
+
+theorem coeff_trDY (D : D7) {N N' : ℕ} {ι : ℂ →+* Kc} (e : GL3Theta.Idx D N N' → X.ZA j) (he : Function.Injective e)
+    (Φ₀ : MvPolynomial (GL3Theta.FrV D N') ℂ →ₛₗ[ι] XspC (X.Pj (j + 1)) Kc)
+    (R : MvPolynomial (GL3Theta.Idx D N N') (MvPolynomial (GL3Theta.FrV D N') ℂ)) (α : GL3Theta.Idx D N N' →₀ ℕ) :
+    MvPolynomial.coeff (α.mapDomain e) (trDY X Kc j D e Φ₀ R) = Φ₀ (MvPolynomial.coeff α R) := by
+  classical
+  unfold trDY
+  rw [MvPolynomial.coeff_sum]
+  by_cases hα : α ∈ R.support
+  · rw [Finset.sum_eq_single α]
+    · rw [MvPolynomial.coeff_monomial, if_pos rfl]
+    · intro β _ hβ
+      rw [MvPolynomial.coeff_monomial, if_neg]
+      intro h
+      exact hβ (Finsupp.mapDomain_injective he h)
+    · intro h
+      exact absurd hα h
+  · rw [Finset.sum_eq_zero]
+    · rw [MvPolynomial.notMem_support_iff.1 hα, map_zero]
+    · intro β hβ
+      rw [MvPolynomial.coeff_monomial, if_neg]
+      intro h
+      exact hα (by rwa [← Finsupp.mapDomain_injective he h])
+
+theorem support_trDY (D : D7) {N N' : ℕ} {ι : ℂ →+* Kc} (e : GL3Theta.Idx D N N' → X.ZA j)
+    (Φ₀ : MvPolynomial (GL3Theta.FrV D N') ℂ →ₛₗ[ι] XspC (X.Pj (j + 1)) Kc)
+    (R : MvPolynomial (GL3Theta.Idx D N N') (MvPolynomial (GL3Theta.FrV D N') ℂ)) [DecidableEq (X.ZA j →₀ ℕ)] :
+    (trDY X Kc j D e Φ₀ R).support ⊆ R.support.image (fun α => α.mapDomain e) := by
+  intro n hn
+  by_contra hni
+  apply MvPolynomial.mem_support_iff.1 hn
+  unfold trDY
+  rw [MvPolynomial.coeff_sum]
+  refine Finset.sum_eq_zero fun α hα => ?_
+  rw [MvPolynomial.coeff_monomial, if_neg]
+  intro h
+  exact hni (Finset.mem_image.2 ⟨α, hα, h⟩)
+
+end Dict
+
+theorem prod_fact_mapDomain (Kc : Type) [CommSemiring Kc] {A B : Type} (e : A → B) (he : Function.Injective e)
+    (α : A →₀ ℕ) :
+    (∏ x ∈ (α.mapDomain e).support, (((α.mapDomain e) x).factorial : Kc)) = α.prod fun _ n => (n.factorial : Kc) := by
+  show (α.mapDomain e).prod (fun _ n => (n.factorial : Kc)) = _
+  exact Finsupp.prod_mapDomain_index_inj he
+
+theorem pairing_dictionary : PairDict := by
+  intro p _ X Kc _ _ j D N N' ι e he Φ₀ R Θ f w hdeg hser
+  classical
+  rw [Formalism.L2.G.Pend.pairD_eq X Kc j _ f _ (support_trDY X Kc j D e Φ₀ R),
+    Finset.sum_image (fun a _ b _ h => Finsupp.mapDomain_injective he h)]
+  unfold pairR
+  rw [map_sum, Finset.smul_sum]
+  refine Finset.sum_congr rfl fun α hα => ?_
+  rw [coeff_trDY X Kc j D e he Φ₀ R α]
+  have hC : MvPolynomial.coeff α R * MvPolynomial.C ((α.prod fun _ n => (n.factorial : ℂ)) * TaylorLogMetric.taylor D Θ α) =
+      ((α.prod fun _ n => (n.factorial : ℂ)) * TaylorLogMetric.taylor D Θ α) • MvPolynomial.coeff α R := by
+    rw [MvPolynomial.smul_eq_C_mul]
+    exact mul_comm _ _
+  rw [hC, LinearMap.map_smulₛₗ, smul_smul]
+  unfold Formalism.L2.G.Pend.derAt
+  rw [if_pos (hdeg α hα), hser α hα, prod_fact_mapDomain Kc e he α]
+  congr 1
+  simp only [map_mul, Finsupp.prod, map_prod, map_natCast]
+  ring
+
+theorem eIdx_injective {p : ℕ} [Fact p.Prime] (X : Sys p) (D : D7) (pos : (Σ v : X.Pl, Fin (X.G.P.n' v)) ≃ D.what₂.Tau)
+    (j : ℕ) (hN : RankTie X D j) : Function.Injective (eIdx X D pos j hN) := by
+  refine Function.LeftInverse.injective (g := fun z : X.ZA j =>
+    ((pos ⟨z.1, z.2.1⟩, Fin.cast hN.2.symm z.2.2.2, Fin.cast hN.1.symm z.2.2.1) : GL3Theta.Idx D (D.R.N j) (D.R.N (j + 1)))) ?_
+  rintro ⟨τ, b, a⟩
+  simp [eIdx]
+
+end Formalism.L2.KerInert.QuadraticBaseChangeGL3
+end
+end
+
+section
 noncomputable section
 
 open Formalism.MainNotions.G Formalism.MainNotions.FormalGroupSystem Finset
@@ -269,45 +359,8 @@ theorem substitution_split : SubBSplit := by
     have h2 := blockDiag_LkB X ℂ_[p] j (BOf fd j La) z _ (right_ne_zero_of_mul hz)
     exact h (h2.trans h1)
 
-theorem delPolH_of (hSp : SubBSplit) : DelPolH := by
-  intro D L hT Gi Gl Kc0 Dx cX ex t u μ p _ X _ E hfin hst g hLT pos fd cc δ B χ lamK SS cl Ξ₀ muT
-  intro hFr hS hK Y σ cls cmp κ ι Φ₀ τ sc sH Gm j cK hN hMv hOp hDeg hSer hChi hYEq
-  intro La hLa x Q hQ c' L' hL'
-  have hTh : Y.ThF j La (c', L') = Formalism.L2.G.Pend.thFOf X pos (Formalism.L2.PairingIndexBounds.F.FrecG E.toCEmb pos fd B χ lamK SS cl Ξ₀ muT
-      (Formalism.L2.PairingIndexBounds.F.ltC g hLT)) j La (c', L') :=
-    Formalism.L2.G.Pend.pendR_ThF_rep X E.toCEmb hfin hst _ _ hS hK j La (c', L') hLa
-  have hsr : srOf Y j La (c', L') = (Y.eS j La * (Y.eT j (c', L'))⁻¹ : X.G.Kf) •
-      linSub (fun z y => ∑ w, VOf Y.Kc fd (Formalism.L2.PairingIndexBounds.F.ltC g hLT) j (c', L') z w *
-        Formalism.L2.G.Pend.LkB X Y.Kc j (BOf fd j La) w y)
-        (resV (Formalism.L2.G.Pend.kapOf X pos j) (serG fd B χ lamK SS cl Ξ₀ muT j La (c', L'))) := by
-    unfold srOf
-    rw [hTh]
-    congr 1
-    show resV (Formalism.L2.G.Pend.kapOf X pos j) (linSub (fun x y => Formalism.L2.PairingIndexBounds.F.ltC g hLT *
-      Formalism.L2.PairingIndexBounds.F.subBG E.toCEmb pos fd j La (c', L') x y) (serG fd B χ lamK SS cl Ξ₀ muT j La (c', L'))) = _
-    rw [rename_linear _ _ _ _ (kapOf_bij X pos j)]
-    congr 1
-    funext z y
-    exact hSp p X D E.toCEmb pos fd _ hFr j La (c', L') z y
-  obtain ⟨hMe, hG, hO⟩ := hMv La hLa x
-  beta_reduce at hMe
-  have hc := chain_core X Y.Kc j (VOf Y.Kc fd (Formalism.L2.PairingIndexBounds.F.ltC g hLT) j (c', L'))
-    (blockDiag_VOf X Y.Kc j fd _ (c', L')) (glInv X j (BOf fd j La)) (Gm j La x) hG hO (τ j c' L')
-    (hYEq c' L' hL' (Gm j La x) hG hO) (resV (Formalism.L2.G.Pend.kapOf X pos j) (serG fd B χ lamK SS cl Ξ₀ muT j La (c', L')))
-  rw [glAt_glInv] at hc
-  have hPD := pairing_dictionary p X Y.Kc j D (D.R.N j) (D.R.N (j + 1)) ι (eIdx X D pos j hN) (eIdx_injective X D pos j hN) (Φ₀ j)
-    (polDY D (t.O u μ).dgen (Q (cls j La.1 La.2)) (N' := D.R.N (j + 1)))
-    ((t.rd u μ).Th t.seam t.amb j (cls j La.1 La.2) (κ j c' L'))
-    (resV (Formalism.L2.G.Pend.kapOf X pos j) (serG fd B χ lamK SS cl Ξ₀ muT j La (c', L'))) (sH j La (c', L'))
-    (hDeg La hLa x Q hQ) (fun α hα => hSer La hLa c' L' hL' α (hDeg La hLa x Q hQ α hα))
-  show sc j c' L' • τ j c' L' (Φ₀ j (_ • pairR D (polDY D (t.O u μ).dgen (Q (cls j La.1 La.2)) (N' := D.R.N (j + 1)))
-      ((t.rd u μ).Th t.seam t.amb j (cls j La.1 La.2) (κ j c' L')))) =
-    cK • Formalism.L2.G.Pend.pairD X Y.Kc j (Formalism.L2.G.Pend.polDel X Y.Kc j (cmp j x La.1 La.2)) (srOf Y j La (c', L'))
-  rw [hsr, Formalism.L2.G.Pend.pairD_smul_right, ← hMe, hc, hOp La hLa x Q hQ, hPD, LinearMap.map_smulₛₗ, map_smul, map_smul,
-    ← algebraMap_smul Y.Kc (Y.eS j La * (Y.eT j (c', L'))⁻¹), smul_smul, smul_smul, smul_smul, smul_smul]
-  congr 1
-  rw [← hChi La hLa c' L' hL']
 
-theorem difference_polynomial_hecke : DelPolH := delPolH_of substitution_split
 
 end Formalism.L2.KerInert.SecondKernelHermitian
+end
+end

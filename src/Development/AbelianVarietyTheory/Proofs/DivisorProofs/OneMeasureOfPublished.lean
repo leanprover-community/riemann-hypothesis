@@ -1,12 +1,23 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LevelIndexBoundOfPrintsStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OneLeDimAtStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OneLeDimAt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FundamentalDomainMeasureNeZeroStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FundamentalDomainMeasureNeTopStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExactRatioOfFundamentalDomainStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LogLowestKTypeWeylDimensionLeOfSizeBounds
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LogMeasureRatioLeStatement
 
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2 Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Pj Formalism.IndefR.Links Formalism.IndefR.FWT
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.BigTop GlobalTheory.CovTop GlobalTheory.CovTop.MeasRd
+open Formalism.MainNotions
+open MeasureTheory Formalism.IndefR.Lev Formalism.IndefR.Datum Formalism.IndefR.Mult Formalism.BasicNotions.TH Formalism.L2.Theta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.one_le_dimAt' : ∀ (D : D7) (i : Fin D.R.m) (τ : D.what₂.Tau), 1 ≤ GlobalTheory.IndefiniteRowSideFullHecke.OneMeasureSizes.dimAt D i τ := by
+  first | exact @GlobalTheory.DimAtOne.one_le_dimAt | exact GlobalTheory.DimAtOne.one_le_dimAt | (intros; apply GlobalTheory.DimAtOne.one_le_dimAt <;> assumption)
+end
+
+section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2 Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Pj Formalism.IndefR.Links Formalism.IndefR.FWT
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.BigTop GlobalTheory.CovTop GlobalTheory.CovTop.MeasRd
 open Formalism.MainNotions
@@ -23,3 +34,4 @@ theorem oneMeasure : Hypotheses2 → ∀ D : D7, GlobalTheory.IndefiniteRowSideF
           GlobalTheory.T.log_measure_ratio_le hP D Tu C t0 hC i P μ 𝓕 hF L hL⟩⟩⟩
 
 end GlobalTheory.OneMeasureAll
+end

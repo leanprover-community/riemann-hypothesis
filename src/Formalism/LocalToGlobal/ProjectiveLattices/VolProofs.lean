@@ -53,19 +53,7 @@ theorem finVol_of_volTie (h : VolTieG D) (V : HSp D) (hs : V.SigOK) : FinVol V :
 
 theorem finVol_alt (h : VolTieG D) (j : ℕ) : FinVol (D.sp.W j) := finVol_of_volTie h _ (D.sp.W_sig j)
 
-theorem finVol_of_eqW (h : VolTieG D) {V : HSp D} {j : ℕ} (hV : V = D.sp.W j) : FinVol V := by
-  subst hV
-  exact finVol_alt h j
 
-theorem normalized_quotient_measure_eq (h : VolTieG D) (V : HSp D) (hs : V.SigOK) :
-    muQ1 V = (ENNReal.ofReal (D.vol V))⁻¹ • muQ V := by
-  have hf : muQ V Set.univ ≠ 0 ∧ muQ V Set.univ ≠ ⊤ := finVol_of_volTie h V hs
-  unfold muQ1
-  rw [if_pos hf, muQ_univ_eq_vol h V hs]
 
-theorem probability_measure_eq_pair (h : VolTieG D) (V : HSp D) (hs : V.SigOK) :
-    muQ1 V = (ENNReal.ofReal (D.vol V))⁻¹ • (((volPair V).1.restrict (volPair V).2).map (autMk V)) := by
-  rw [normalized_quotient_measure_eq h V hs]
-  rfl
 
 end Formalism.L2.Pj

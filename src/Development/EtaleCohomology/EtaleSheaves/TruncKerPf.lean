@@ -81,6 +81,5 @@ theorem fgt_injective_of_pull_surjective : ∀ (R : Type) [CommRing R] (F : Shv 
   · simp
 
 theorem relExact : RelExact := exists_fgt_eq_of_pull_eq_zero
-theorem fgtInj : FgtInj := fgt_injective_of_pull_surjective
 
 end LateralTheory.E.TruncationKernel

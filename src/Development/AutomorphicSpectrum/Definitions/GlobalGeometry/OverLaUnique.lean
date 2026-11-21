@@ -133,8 +133,6 @@ omit [StarRing (𝓞 E)]
 
 theorem cjE_coe (H : Host E) (a : 𝓞 E) : cjE E (a : E) = (H.bar a : E) := (H.bar_eq a).symm
 
-theorem isFinExt_id (T : CDVR) : IsFinExt (RingHom.id T.V) (RingHom.id T.Fr) 1 :=
-  ⟨Function.injective_id, inferInstance, RingHom.Finite.id _, rfl, one_pos, fun x => by simp⟩
 
 variable {c} in
 
@@ -162,9 +160,6 @@ theorem pjSys_val_mk (la : HeightOneSpectrum (𝓞 c.F)) {T : CDVR} {io : c.F �
     (f : Rul Xo c) :
     (pjSys Xo c).val (show PtU Xo c la from PtV.mk la ho y hy t ht) f = nval T.V e (evI y f) := rfl
 
-theorem phU_mk (la : HeightOneSpectrum (𝓞 c.F)) {T : CDVR} {io : c.F →+* T.Fr} {e : ℕ}
-    (ho : OverLa la T.V io e) (y : IntFr Xo c T io) (hy : y.IsAlg) (t : ℝ) (ht : IsPhiAt Xo c la T io y t) :
-    phU Xo c la (show PtU Xo c la from PtV.mk la ho y hy t ht) = t := rfl
 
 theorem phiC_nonneg {E : Type} [Field E] [NumberField E] (cj : E → E) {Y : Type} [AddCommGroup Y] [Module (𝓞 E) Y]
     (b : SymB cj Y) (hb : ∀ a, 0 ≤ (b : Y →ₗ[ℤ] Y →ₗ[ℤ] ℝ) a a) : 0 ≤ phiC cj b := by

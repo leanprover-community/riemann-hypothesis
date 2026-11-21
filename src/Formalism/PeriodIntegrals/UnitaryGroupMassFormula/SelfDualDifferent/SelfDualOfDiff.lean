@@ -1,40 +1,69 @@
 import Mathlib
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SelfDualDifferent.Imports
+import Formalism.PeriodIntegrals.SelfDualOfDiff
 
+section
 noncomputable section
 open NumberField
 
 namespace PI.UnitaryGroupMassFormula.KerSelfDual
 
-theorem selfDualOfDiff : PI.KerIso.SelfDualOfDiff := by
-  intro K E _ _ _ _ _ cj 𝔟 𝔟c hconj hc hd
-  have hD : ((differentIdeal (𝓞 K) (𝓞 E) : Ideal (𝓞 E)) : FractionalIdeal (nonZeroDivisors (𝓞 E)) E) =
-      (FractionalIdeal.dual (𝓞 K) K (1 : FractionalIdeal (nonZeroDivisors (𝓞 E)) E))⁻¹ :=
-    coeIdeal_differentIdeal (𝓞 K) K E (𝓞 E)
-  have hdual1 : FractionalIdeal.dual (𝓞 K) K (1 : FractionalIdeal (nonZeroDivisors (𝓞 E)) E) ≠ 0 :=
-    FractionalIdeal.dual_ne_zero (𝓞 K) K one_ne_zero
-  have hD0 : differentIdeal (𝓞 K) (𝓞 E) ≠ ⊥ := by
-    intro h
-    rw [h, FractionalIdeal.coeIdeal_bot] at hD
-    exact inv_ne_zero hdual1 hD.symm
-  have hb : 𝔟 ≠ ⊥ := by
-    rintro rfl
-    exact hD0 (by rw [hd, Ideal.bot_mul])
-  have hbc : 𝔟c ≠ ⊥ := by
-    rintro rfl
-    exact hD0 (by rw [hd, Ideal.mul_bot])
+theorem int_map {E : Type} [Field E] [NumberField E] (cj : E ≃ₐ[ℚ] E) (x : 𝓞 E) :
+    ∃ x' : 𝓞 E, algebraMap (𝓞 E) E x' = cj (algebraMap (𝓞 E) E x) := by
+  have h : IsIntegral ℤ (algebraMap (𝓞 E) E x) := (IsIntegralClosure.isIntegral ℤ E x).algebraMap
+  have h' : IsIntegral ℤ (cj (algebraMap (𝓞 E) E x)) :=
+    IsIntegral.map ((cj : E →+* E).toIntAlgHom) h
+  exact (IsIntegralClosure.isIntegral_iff (A := 𝓞 E)).mp h'
+
+theorem one_map {E : Type} [Field E] [NumberField E] (cj : E ≃ₐ[ℚ] E) {z : E}
+    (hz : z ∈ (1 : FractionalIdeal (nonZeroDivisors (𝓞 E)) E)) :
+    cj z ∈ (1 : FractionalIdeal (nonZeroDivisors (𝓞 E)) E) := by
+  rw [FractionalIdeal.mem_one_iff] at hz ⊢
+  obtain ⟨x, rfl⟩ := hz
+  exact int_map cj x
+
+theorem inv_map {E : Type} [Field E] [NumberField E] (cj : E ≃ₐ[ℚ] E) (hinv : ∀ x, cj (cj x) = x)
+    (𝔟 𝔟c : Ideal (𝓞 E)) (hc : ∀ x : 𝓞 E, x ∈ 𝔟c ↔ ∃ y ∈ 𝔟, cj (y : E) = (x : E))
+    (hb : 𝔟 ≠ ⊥) (hbc : 𝔟c ≠ ⊥) (y : E) :
+    y ∈ ((𝔟 : FractionalIdeal (nonZeroDivisors (𝓞 E)) E))⁻¹ ↔
+      cj y ∈ ((𝔟c : FractionalIdeal (nonZeroDivisors (𝓞 E)) E))⁻¹ := by
   have hb0 : ((𝔟 : FractionalIdeal (nonZeroDivisors (𝓞 E)) E)) ≠ 0 :=
     FractionalIdeal.coeIdeal_ne_zero.mpr hb
   have hbc0 : ((𝔟c : FractionalIdeal (nonZeroDivisors (𝓞 E)) E)) ≠ 0 :=
     FractionalIdeal.coeIdeal_ne_zero.mpr hbc
-  have hdual : FractionalIdeal.dual (𝓞 K) K ((𝔟 : FractionalIdeal (nonZeroDivisors (𝓞 E)) E))⁻¹ =
-      ((𝔟c : FractionalIdeal (nonZeroDivisors (𝓞 E)) E))⁻¹ := by
-    rw [FractionalIdeal.dual_inv, ← inv_inv (FractionalIdeal.dual (𝓞 K) K 1), ← hD, hd,
-      FractionalIdeal.coeIdeal_mul, mul_inv, mul_comm, ← mul_assoc, mul_inv_cancel₀ hb0, one_mul]
-  intro y
-  rw [inv_map cj hconj.1 𝔟 𝔟c hc hb hbc y, ← hdual,
-    FractionalIdeal.mem_dual (inv_ne_zero hb0)]
-  refine forall₂_congr fun x _ => ?_
-  rw [Algebra.traceForm_apply, mul_comm]
+  rw [FractionalIdeal.mem_inv_iff hb0, FractionalIdeal.mem_inv_iff hbc0]
+  constructor
+  · intro h w hw
+    rw [FractionalIdeal.mem_coeIdeal] at hw
+    obtain ⟨w', hw', rfl⟩ := hw
+    obtain ⟨b, hb𝔟, hbw⟩ := (hc w').mp hw'
+    have h1 := h (algebraMap (𝓞 E) E b) (FractionalIdeal.mem_coeIdeal_of_mem _ hb𝔟)
+    have h2 := one_map cj h1
+    rw [map_mul] at h2
+    have e : (algebraMap (𝓞 E) E w') = cj (algebraMap (𝓞 E) E b) := hbw.symm
+    rw [e]
+    exact h2
+  · intro h w hw
+    rw [FractionalIdeal.mem_coeIdeal] at hw
+    obtain ⟨b, hb𝔟, rfl⟩ := hw
+    obtain ⟨c, hcE⟩ := int_map cj b
+    have hc𝔟 : c ∈ 𝔟c := (hc c).mpr ⟨b, hb𝔟, hcE.symm⟩
+    have h1 := h (algebraMap (𝓞 E) E c) (FractionalIdeal.mem_coeIdeal_of_mem _ hc𝔟)
+    rw [hcE, ← map_mul] at h1
+    have h2 := one_map cj h1
+    rw [hinv] at h2
+    exact h2
 
 end PI.UnitaryGroupMassFormula.KerSelfDual
+end
+end
+
+section
+noncomputable section
+open NumberField
+
+namespace PI.UnitaryGroupMassFormula.KerSelfDual
+
+
+end PI.UnitaryGroupMassFormula.KerSelfDual
+end
+end

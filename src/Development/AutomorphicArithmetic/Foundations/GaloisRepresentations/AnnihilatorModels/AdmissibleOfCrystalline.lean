@@ -72,12 +72,5 @@ theorem admissible_of_crystalline : AdmOfCrys := by
   rw [e]
   exact h
 
-theorem joinSt_of (h1 : JoinAbs) (h2 : BoundSt) (h3 : StOfCr) (h4 : AnnTied) : JoinSt := by
-  intro l _ P AI hT K LL c hc V _ _ a b ρ f q n T hcr hann U _ _ ρU i TU θ a1 a2 a3 a4 a5 a6 W _ _ _ _ ρW I _ C _ _ ρC e b1 b2 b3
-  haveI : Module.Finite ℚ_[l] V := Module.Finite.of_basis b
-  obtain ⟨hB, hcm⟩ := h2 l P AI hT K LL
-  obtain ⟨hA, hD⟩ := h3 l P AI hT K V ρ (admissible_of_crystalline l P K V ρ hcr)
-  exact h1 ℚ_[l] _ _ (σSt P K) (ψSt P f) (hcm f) ↥LL.1 _ hB V ρ q n T hA (hD f q n T (h4 l P AI hT K c hc V a b ρ f q n T hann))
-    U ρU i TU θ a1 a2 a3 a4 a5 a6 W ρW I C ρC e b1 b2 b3
 
 end UpperTheory.Gal.crystallineComparison

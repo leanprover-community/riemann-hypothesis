@@ -36,12 +36,7 @@ def move {p : SplitPt D k} {S : HSp D} (β : Frame p S n) (g : GA D S) : Frame p
     by rw [Matrix.mul_assoc, ← Matrix.mul_assoc β.b, β.bb', Matrix.one_mul, ← Matrix.map_mul]; simp [Formalism.L2.Theta.mt],
     by rw [Matrix.mul_assoc, ← Matrix.mul_assoc _ _ β.b, ← Matrix.map_mul]; simp [Formalism.L2.Theta.mt, β.b'b]⟩
 
-theorem isMoved_move {p : SplitPt D k} {S : HSp D} (β : Frame p S n) (g : GA D S) : IsMoved g β (move β g) := rfl
 
-theorem isMoved_back {p : SplitPt D k} {S : HSp D} (β : Frame p S n) (g : GA D S) : IsMoved g (move β g⁻¹) β := by
-  change β.b = (mt S g).map p.pr * ((mt S g⁻¹).map p.pr * β.b)
-  rw [← Matrix.mul_assoc, ← Matrix.map_mul]
-  simp [Formalism.L2.Theta.mt]
 
 def IsCharBy (p : SplitPt D k) (ψ : AddChar (AF D.host.F) ℂ) (χ : AddChar k Circle) (θ : k) : Prop :=
   ∀ a, (χ a : ℂ) = psiE ψ (p.sec (θ * a))
@@ -59,13 +54,7 @@ def JacCols {p : SplitPt D k} {ρ : ℕ} (J : JacLev D ρ) (θ s a : k) (α : Fr
     ∀ (i : Fin ρ) (j : Fin c), j.val + i.val + 1 = 2 * ρ → ∀ r,
       β.b r (Sum.inr j) = s * a * (-1 / θ) ^ (ρ - 1 - i.val) * (ofSplit p).pr (J.d.e' r i)
 
-theorem besCols_toFin {p : SplitPt D k} {ρ : ℕ} (B : BesLev D ρ) (s : k) (α : GlobalTheory.LocMod.Frame k B.A.rank n)
-    (β : GlobalTheory.LocMod.Frame k B.V.rank (n ⊕ Fin c)) :
-    BesCols B (ofSplit p).xi s (toFin p _ α) (toFin p _ β) ↔ (ofSplit p).IsBesFrame B s α β := Iff.rfl
 
-theorem jacCols_toFin {p : SplitPt D k} {ρ : ℕ} (J : JacLev D ρ) (s h : k) (α : GlobalTheory.LocMod.Frame k J.W₀.rank n)
-    (β : GlobalTheory.LocMod.Frame k J.W.rank (n ⊕ Fin c)) :
-    JacCols J (ofSplit p).xi s (h / (ofSplit p).xi) (toFin p _ α) (toFin p _ β) ↔ (ofSplit p).IsJacFrame J s h α β := Iff.rfl
 
 open GlobalTheory.LocMod.Witness in
 

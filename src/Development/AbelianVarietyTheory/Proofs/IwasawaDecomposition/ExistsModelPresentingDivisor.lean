@@ -1,13 +1,177 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FromModelAddStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FromModelNegStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FromModelZeroLogConstant
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FromModelOfLocMaxStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNormalModelOverProjectiveStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TangentSectionsOnNormalModelStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FromModelAdd
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FromModelNeg
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsFlagFrame
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NefFibOfIsGenerated
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FromModelOfLocMax
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TopologicalKrullDimEqSucc
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RingKrullDimLeOfIsAlgebraic
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TangentSectionsOnNormalModel
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FrameCombinationCoeffUnique
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsFrameComposeRingHomBaseChangeStatement
 
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.Geo GlobalTheory.Toroidal GlobalTheory.ShFam GlobalTheory.ShFam.Pad GlobalTheory.LocM GlobalTheory.TrueGeo GlobalTheory.Cartier GlobalTheory.ProjVar
+open Formalism.MainNotions.DIV.Cons (intO)
+open GlobalTheory.LineNorm MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fromModel_add' : ∀ (F : Type) [Field F] [NumberField F] (Y : Var F) (Δ Δ' : Y.Dv) (t t' : Y.X → Y.Fnˣ) (φ φ' : PtFn Y), (∀ y, Δ.IsEqn y (t y)) → (∀ y, Δ'.IsEqn y (t' y)) → FromModel Y Δ t φ → FromModel Y Δ' t' φ' → FromModel Y (Δ + Δ') (fun y => t y * t' y) (fun v e y => φ v e y + φ' v e y) := by
+  first | exact @GlobalTheory.LineNorm.Add.fromModel_add | exact GlobalTheory.LineNorm.Add.fromModel_add | (intros; apply GlobalTheory.LineNorm.Add.fromModel_add <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.Geo GlobalTheory.Toroidal GlobalTheory.ShFam GlobalTheory.ShFam.Pad GlobalTheory.LocM GlobalTheory.TrueGeo GlobalTheory.Cartier GlobalTheory.ProjVar
+open Formalism.MainNotions.DIV.Cons (intO)
+open GlobalTheory.LineNorm MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fromModel_neg' : ∀ (F : Type) [Field F] [NumberField F] (Y : Var F) (Δ : Y.Dv) (t : Y.X → Y.Fnˣ) (φ : PtFn Y), (∀ y, Δ.IsEqn y (t y)) → FromModel Y Δ t φ → FromModel Y (-Δ) (fun y => (t y)⁻¹) (fun v e y => -φ v e y) := by
+  first | exact @GlobalTheory.LineNorm.Neg.fromModel_neg | exact GlobalTheory.LineNorm.Neg.fromModel_neg | (intros; apply GlobalTheory.LineNorm.Neg.fromModel_neg <;> assumption)
+end
+
+section
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.Geo GlobalTheory.Toroidal GlobalTheory.ShFam GlobalTheory.ShFam.Pad GlobalTheory.LocM GlobalTheory.TrueGeo GlobalTheory.Cartier GlobalTheory.ProjVar
+open Formalism.MainNotions.DIV.Cons (intO)
+open GlobalTheory.LineNorm MonObj
+
+namespace GlobalTheory.LineNorm
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+theorem fromModel_const : ∀ (F : Type) [Field F] [NumberField F] (Y : Var F) (a : F) (n : ℕ), a ≠ 0 → n ≠ 0 → FromModel Y 0 (fun _ => 1) (fun _ e _ => Real.log (e.w (algebraMap F (AlgebraicClosure F) a)) / n) := by
+  intro F _ _ Y a n ha hn
+  obtain ⟨M, -⟩ := GlobalTheory.IntModel.exists_model F Y 0
+  have ha' : algebraMap F Y.Fn a ≠ 0 := (map_ne_zero _).2 ha
+  have hu (x : Y.X) : UnitAt x (algebraMap F Y.Fn a) :=
+    (unitAt_iff ha').2 ⟨Y.regAt_algebraMap x a, map_inv₀ (algebraMap F Y.Fn) a ▸ Y.regAt_algebraMap x a⁻¹⟩
+  have hL := LB.isLB_pull (LB.isLB_triv M.X) M.j
+  refine ⟨M, LB.triv M.X, ⟨n, Nat.pos_of_ne_zero hn⟩, fun _ => Units.mk0 _ ha', LB.isLB_triv M.X,
+    ⟨hL, fun i j h => ?_, fun _ x _ => ?_⟩, fun v e y yt i _ _ => ?_⟩
+  · obtain rfl : i = j := Subsingleton.elim (α := PUnit → PUnit) _ _
+    have := congrArg (fun u : Γ(Y.X, _)ˣ => fnOf _ h.1 u.val) (hL.g_self i)
+    rw [Units.val_one, map_one] at this
+    rw [← (this.symm.trans (fnOf_resG _ h.1 _)), _root_.one_mul]
+  · rw [smul_zero]
+    exact (CartierDiv.isEqn_zero x).iff_unitAt.2 (by simpa using hu x)
+  · have hn' : (n : ℝ) ≠ 0 := by exact_mod_cast hn
+    have h := GlobalTheory.TrueGeo.OfLattice.valAt_const y.1 y.2 a
+    simp only [PNat.mk_coe, inv_one, one_pow, _root_.one_mul, Units.val_mk0, h]
+    field_simp
+
+end GlobalTheory.LineNorm
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.Geo GlobalTheory.Toroidal GlobalTheory.ShFam GlobalTheory.ShFam.Pad GlobalTheory.LocM GlobalTheory.TrueGeo GlobalTheory.Cartier GlobalTheory.ProjVar
+open Formalism.MainNotions.DIV.Cons (intO)
+open GlobalTheory.LineNorm MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fromModel_zero_log_constant : ∀ (F : Type) [Field F] [NumberField F] (Y : Var F) (a : F) (n : ℕ), a ≠ 0 → n ≠ 0 → FromModel Y 0 (fun _ => 1) (fun _ e _ => Real.log (e.w (algebraMap F (AlgebraicClosure F) a)) / n) := by
+  atlas_forward_decl GlobalTheory.LineNorm.fromModel_const
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.Geo GlobalTheory.Toroidal GlobalTheory.ShFam GlobalTheory.ShFam.Pad GlobalTheory.LocM GlobalTheory.TrueGeo GlobalTheory.Cartier GlobalTheory.ProjVar
+open Formalism.MainNotions.DIV.Cons (intO)
+open GlobalTheory.LineNorm MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fromModel_of_locMax' : ∀ (F : Type) [Field F] [NumberField F] (Y : Var F) (M : GlobalTheory.TrueGeo.Model Y) (Δ : Y.Dv) (t : Y.X → Y.Fnˣ) (φ : PtFn Y), (∀ y, Δ.IsEqn y (t y)) → (∀ z, LocMax M t φ z) → FromModel Y Δ t φ := by
+  first | exact @GlobalTheory.LineNorm.Glue.fromModel_of_locMax | exact GlobalTheory.LineNorm.Glue.fromModel_of_locMax | (intros; apply GlobalTheory.LineNorm.Glue.fromModel_of_locMax <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.Geo GlobalTheory.Toroidal GlobalTheory.ShFam GlobalTheory.ShFam.Pad GlobalTheory.LocM GlobalTheory.TrueGeo GlobalTheory.Cartier GlobalTheory.ProjVar
+open Formalism.MainNotions.DIV.Cons (intO)
+open GlobalTheory.LineNorm MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory.ModelOver
+
+theorem isProjOver_comp_spMap {R S : Type} [CommRing R] [CommRing S] (ε : R ≃+* S) {X : Scheme.{0}} {s : X ⟶ Sp S}
+    (h : IsProjOver s) : IsProjOver (s ≫ spMap ε.toRingHom) := by
+  obtain ⟨N, i, hi, rfl⟩ := h
+  have : IsIso (spMap ε.toRingHom) := by
+    have : IsIso (CommRingCat.ofHom ε.toRingHom) := (ε.toCommRingCatIso).isIso_hom
+    exact inferInstance
+  have hb : IsIso (GlobalTheory.ProjSpace.baseChange N ε.toRingHom) :=
+    MorphismProperty.of_isPullback (P := MorphismProperty.isomorphisms Scheme)
+      (GlobalTheory.ProjSpace.isPullback_baseChange N ε.toRingHom).flip ‹_›
+  refine ⟨N, i ≫ GlobalTheory.ProjSpace.baseChange N ε.toRingHom, inferInstance, ?_⟩
+  rw [Category.assoc, GlobalTheory.ProjSpace.baseChange_str, Category.assoc]
+
+theorem isSeparated_and_noetherian {R : Type} [CommRing R] [IsNoetherianRing R] {X : Scheme.{0}} {s : X ⟶ Sp R}
+    (h : IsProjOver s) : X.IsSeparated ∧ IsLocallyNoetherian X := by
+  have := CommonModel.isProper_of_isProjOver h
+  have hs : IsSeparated (terminal.from X) := by
+    rw [← terminal.comp_from s]
+    infer_instance
+  exact ⟨⟨hs⟩, LocallyOfFiniteType.isLocallyNoetherian s⟩
+
+theorem exists_normal_model : ∀ (F : Type) [Field F] [NumberField F] (Y : Var F) (O : Type) [CommRing O] (ε : 𝓞 F ≃+* O) (X : Scheme.{0}) (sX : X ⟶ Sp O) (ρ : Y.X ⟶ X), IsProjOver sX → ρ ≫ sX ≫ spMap ε.toRingHom = Y.str ≫ spMap (algebraMap (𝓞 F) F) → X.IsSeparated ∧ IsLocallyNoetherian X ∧ ∃ (M : GlobalTheory.TrueGeo.Model Y) (ρ' : M.X ⟶ X), ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNormalScheme M.X ∧ M.j ≫ ρ' = ρ := by
+  intro F _ _ Y O _ ε X sX ρ hX hρ
+  have hP := isProjOver_comp_spMap ε hX
+  obtain ⟨hs, hn⟩ := isSeparated_and_noetherian hP
+  refine ⟨hs, hn, ?_⟩
+  obtain ⟨X', π, j, hXi, hπ, hfl, H, hg⟩ := GlobalTheory.IntModel.exists_flat_model (O := 𝓞 F) Y.str Y.isProjOver
+    (fun _ : Unit => X) (fun _ => sX ≫ spMap ε.toRingHom) (fun _ => ρ) (fun _ => hP) (fun _ => hρ)
+  obtain ⟨g, hg₁, -⟩ := hg ()
+  have := CommonModel.isProper_of_isProjOver hπ
+  have hZ : Flat (spMap (Int.castRingHom (𝓞 F))) := by
+    rw [HasRingHomProperty.Spec_iff (P := @Flat)]
+    exact (RingHom.flat_algebraMap_iff (R := ℤ) (S := 𝓞 F)).2 inferInstance
+  have har : IsArithVar π Y.dim := ⟨inferInstance, inferInstance, hXi, hπ, inferInstance,
+    GlobalTheory.IntModel.topologicalKrullDim_eq_succ (RingOfIntegers.not_isField F) H Y.topologicalKrullDim_eq⟩
+  let M : GlobalTheory.TrueGeo.Model Y := ⟨X', π, har, j, H⟩
+  obtain ⟨N, π₁, -, hN, -, -, hj, -⟩ := GlobalTheory.ModelDom.exists_normal_dominating F Y M M
+  refine ⟨N, π₁ ≫ g, hN, ?_⟩
+  rw [← Category.assoc, hj]
+  exact hg₁
+
+end GlobalTheory.ModelOver
+end
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.Geo GlobalTheory.Toroidal GlobalTheory.ShFam GlobalTheory.ShFam.Pad GlobalTheory.LocM GlobalTheory.TrueGeo GlobalTheory.Cartier GlobalTheory.ProjVar
+open Formalism.MainNotions.DIV.Cons (intO)
+open GlobalTheory.LineNorm MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_normal_model_over_projective : ∀ (F : Type) [Field F] [NumberField F] (Y : Var F) (O : Type) [CommRing O] (ε : 𝓞 F ≃+* O) (X : Scheme.{0}) (sX : X ⟶ Sp O) (ρ : Y.X ⟶ X), IsProjOver sX → ρ ≫ sX ≫ spMap ε.toRingHom = Y.str ≫ spMap (algebraMap (𝓞 F) F) → X.IsSeparated ∧ IsLocallyNoetherian X ∧ ∃ (M : GlobalTheory.TrueGeo.Model Y) (ρ' : M.X ⟶ X), IsNormalScheme M.X ∧ M.j ≫ ρ' = ρ := by
+  first | exact @GlobalTheory.ModelOver.exists_normal_model | exact GlobalTheory.ModelOver.exists_normal_model | (intros; apply GlobalTheory.ModelOver.exists_normal_model <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.Geo GlobalTheory.Toroidal GlobalTheory.ShFam GlobalTheory.ShFam.Pad GlobalTheory.LocM GlobalTheory.TrueGeo GlobalTheory.Cartier GlobalTheory.ProjVar
+open Formalism.MainNotions.DIV.Cons (intO)
+open GlobalTheory.LineNorm MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tangent_sections_on_normal_model : HTBoundSt → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (X : Scheme.{0}) [IsLocallyNoetherian X] (t : SAB H X), X.IsSeparated → ∀ (F : Type) [Field F] [NumberField F] (Y : Var F) (M : GlobalTheory.TrueGeo.Model Y) (ρ' : M.X ⟶ X) (ρ : Y.X ⟶ X), IsNormalScheme M.X → M.j ≫ ρ' = ρ → ∀ (m : ℕ) (u₀ : Fin m → (Sp (DualNumber Y.Fn) ⟶ t.G.left)) (f : ∀ y : Y.X, Fin m → (Sp (DualNumber (Y.X.presheaf.stalk y)) ⟶ t.G.left)) (d : Y.X → Fin m → Y.Fnˣ), IsFlagFrame t ρ u₀ f d → ∀ (q k : ℕ) (hk : k ≤ m) (z : M.X), LocMax M (fun y => ∏ l : Fin k, d y (Fin.castLE hk l)) (fun v e y => ∑ l : Fin k, stepLog t ρ f q (Fin.castLE hk l) v e y) z := by
+  first | exact @GlobalTheory.LineNorm.Chart.locMax_flag | exact GlobalTheory.LineNorm.Chart.locMax_flag | (intros; apply GlobalTheory.LineNorm.Chart.locMax_flag <;> assumption)
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -363,3 +527,5 @@ theorem exists_model_lgOf : HTBoundSt → ∀ (D : D7) (A : Amb D) (N j : ℕ) (
   exact fromModel_lgOf (fl.C k) hB hX M ρ' hM hρ w hw
 
 end GlobalTheory.LineNorm
+end
+end

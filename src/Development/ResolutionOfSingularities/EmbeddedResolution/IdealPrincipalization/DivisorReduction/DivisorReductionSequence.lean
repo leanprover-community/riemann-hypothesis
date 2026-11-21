@@ -223,10 +223,6 @@ noncomputable def divisorReductionSeqFromLowerDim (hres : FunctorialResolution.B
     (alg : ∀ S : MarkedIdealWithBoundary.{u}, S.krullDimSucc < T.krullDimSucc → S.SequenceOfBlowups) (j : ℕ) : T.SequenceOfBlowups :=
   divisorReductionSeq hres hno T alg j
 
-theorem divisorReductionSeqFromLowerDim_eq (hres : FunctorialResolution.Blowup.StrictTransformIsBlowupOfClosedSubscheme.{u})
-    (hno : BlowupPreservesNoetherian.{u}) (T : MarkedIdealWithBoundary.{u})
-    (alg : ∀ S : MarkedIdealWithBoundary.{u}, S.krullDimSucc < T.krullDimSucc → S.SequenceOfBlowups) (j : ℕ) :
-    divisorReductionSeqFromLowerDim hres hno T alg j = divisorReductionSeq hres hno T alg j := rfl
 
 end DivisorReduction
 

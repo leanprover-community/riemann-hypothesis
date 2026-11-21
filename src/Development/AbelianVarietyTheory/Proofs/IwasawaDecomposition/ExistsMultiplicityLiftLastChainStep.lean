@@ -1,21 +1,750 @@
 import Mathlib
 import Formalism.LocalToGlobal.IndefiniteReal.ConcretePkgSpec
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsColumnHighestWeightPolynomialMap
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsSumUnitarySubstitutionsEqRowLie
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsJointIntEigenvectorOfStable
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ColumnHighestRowIntertwinersProportional
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsColStableDisjoint
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsBilinearFischerPairingMatrixEntryPolynomiaStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsDegreeBoundOfRowUnitaryInvariantPairing
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteSmoothIrreducibleStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TensorProductDefiniteUnitaryLocalModelsIrreducibStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DefiniteThetaIntegralIntegrableContinuousStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DefiniteThetaIntegralInvariantRealTranslate
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DefiniteUnitaryRealPointsActFockSubstitutionStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemMultTOfEquivariantStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MultiplicitySpaceDefiniteContinuousInvariantEquiStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ColLieApply
+import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.EventuallyExistsMulIsLowerTriangular
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsBilinearFischerPairingMatrixEntryPolynomia
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteSmoothIrreducible
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TensorProductDefiniteUnitaryLocalModelsIrreducib
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DefiniteThetaIntegralIntegrableContinuous
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DefiniteUnitaryCocompact
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegrableOnFundamentalDomain
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaKOContinuousAndRatInvariant
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FundamentalDomainSetIntegralMulRight
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LocallyCompactSecondCountableBorelCountable
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DefiniteUnitaryRealPointsActFockSubstitution
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemMultTOfEquivariant
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MultiplicitySpaceDefiniteContinuousInvariantEqui
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ChainStepsLevelCharacterConditionsHold
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsFockVacAtOfIsThetaAt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GoodFiniteOfHcFinite
 
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory GlobalTheory.DefLift GlobalTheory.Chain
+open scoped ComplexOrder
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_sum_unitarySubstitutions_eq_rowLie : ∀ (ι : Type) [Fintype ι] (m n d : ℕ) (τ : ι) (k l : Fin m), ∃ (s : Finset (Matrix.unitaryGroup (Fin m) ℂ)) (c : Matrix.unitaryGroup (Fin m) ℂ → ℂ), ∀ P : Pol ι m n, P.totalDegree ≤ d → ∑ u ∈ s, c u • rowSub n τ u P = rowLie n τ k l P := by
+  first | exact @GlobalTheory.DefLift.exists_sum_rowSub_eq_rowLie | exact GlobalTheory.DefLift.exists_sum_rowSub_eq_rowLie | (intros; apply GlobalTheory.DefLift.exists_sum_rowSub_eq_rowLie <;> assumption)
+end
+
+section
+section
+noncomputable section
+
+open Matrix
+
+namespace GlobalTheory.DefLift.ColComb
+
+variable {ι : Type} {m n : ℕ}
+
+def sw (ι : Type) (m n : ℕ) : ι × Fin m × Fin n → ι × Fin n × Fin m := fun v => (v.1, v.2.2, v.2.1)
+
+theorem sw_sw (v : ι × Fin m × Fin n) : sw ι n m (sw ι m n v) = v := rfl
+
+theorem sw_injective : Function.Injective (sw ι m n) := Function.LeftInverse.injective sw_sw
+
+theorem rename_subst (a : ι → Matrix (Fin m) (Fin m) ℂ) (b : ι → Matrix (Fin n) (Fin n) ℂ) (Q : Pol ι n m) :
+    MvPolynomial.rename (sw ι n m) (subst a b Q) =
+      subst (fun ρ => (b ρ)ᵀ) (fun ρ => (a ρ)ᵀ) (MvPolynomial.rename (sw ι n m) Q) := by
+  have : (MvPolynomial.rename (sw ι n m)).comp (subst a b) =
+      (subst (fun ρ => (b ρ)ᵀ) (fun ρ => (a ρ)ᵀ)).comp (MvPolynomial.rename (sw ι n m)) := by
+    apply MvPolynomial.algHom_ext
+    rintro ⟨ρ, c, i⟩
+    simp only [subst, AlgHom.comp_apply, MvPolynomial.aeval_X, MvPolynomial.rename_X, map_sum, map_smul, sw,
+      Matrix.transpose_apply]
+    rw [Finset.sum_comm]
+    simp only [mul_comm]
+  exact AlgHom.congr_fun this Q
+
+def cj (u : Matrix.unitaryGroup (Fin n) ℂ) : Matrix.unitaryGroup (Fin n) ℂ :=
+  ⟨star (u : Matrix (Fin n) (Fin n) ℂ)ᵀ, by
+    rw [Matrix.mem_unitaryGroup_iff', star_star]
+    have h : star (u : Matrix (Fin n) (Fin n) ℂ) * u = 1 := Matrix.mem_unitaryGroup_iff'.1 u.2
+    have e : star (u : Matrix (Fin n) (Fin n) ℂ)ᵀ = (star (u : Matrix (Fin n) (Fin n) ℂ))ᵀ := rfl
+    rw [e, ← Matrix.transpose_mul, h, Matrix.transpose_one]⟩
+
+theorem cj_cj (u : Matrix.unitaryGroup (Fin n) ℂ) : cj (cj u) = u := by
+  apply Subtype.ext
+  ext i j
+  simp [cj]
+
+theorem rename_rowSub (τ : ι) (u : Matrix.unitaryGroup (Fin n) ℂ) (Q : Pol ι n m) :
+    MvPolynomial.rename (sw ι n m) (rowSub m τ u Q) = colSub m τ (cj u) (MvPolynomial.rename (sw ι n m) Q) := by
+  simp only [rowSub, colSub, AlgHom.toLinearMap_apply, rename_subst]
+  congr 2
+  · funext ρ
+    split_ifs <;> simp [cj]
+  · funext ρ
+    simp
+
+theorem rename_rowLie (τ : ι) (k l : Fin n) (Q : Pol ι n m) :
+    MvPolynomial.rename (sw ι n m) (rowLie m τ k l Q) = colLie m τ k l (MvPolynomial.rename (sw ι n m) Q) := by
+  rw [rowLie_apply, colLie_apply, map_sum]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [map_mul, MvPolynomial.rename_X, ← MvPolynomial.pderiv_rename sw_injective]
+  rfl
+
+end GlobalTheory.DefLift.ColComb
+
+namespace GlobalTheory.DefLift
+
+open ColComb in
+
+theorem colLie_eq_sum_colSub : ∀ (ι : Type) [Fintype ι] (m n d : ℕ) (τ : ι) (k l : Fin n),
+    ∃ (s : Finset (Matrix.unitaryGroup (Fin n) ℂ)) (c : Matrix.unitaryGroup (Fin n) ℂ → ℂ),
+      ∀ P : Pol ι m n, P.totalDegree ≤ d → ∑ g ∈ s, c g • colSub m τ g P = colLie m τ k l P := by
+  intro ι _ m n d τ k l
+  obtain ⟨s, c, h⟩ := GlobalTheory.T.exists_sum_unitarySubstitutions_eq_rowLie ι n m d τ k l
+  refine ⟨s.map ⟨cj, Function.LeftInverse.injective cj_cj⟩, fun g => c (cj g), fun P hP => ?_⟩
+  have e : MvPolynomial.rename (sw ι n m) (MvPolynomial.rename (sw ι m n) P) = P := by
+    rw [MvPolynomial.rename_rename]
+    exact MvPolynomial.rename_id_apply P
+  have h1 := congrArg (MvPolynomial.rename (sw ι n m))
+    (h (MvPolynomial.rename (sw ι m n) P) ((MvPolynomial.totalDegree_rename_le _ _).trans hP))
+  rw [rename_rowLie, map_sum, e] at h1
+  rw [← h1, Finset.sum_map]
+  refine Finset.sum_congr rfl fun u _ => ?_
+  rw [map_smul, rename_rowSub, e]
+  simp [cj_cj]
+
+end GlobalTheory.DefLift
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory GlobalTheory.DefLift GlobalTheory.Chain
+open scoped ComplexOrder
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.colLieOperator_eq_sum_colUnitaryAction_bddDegree : ∀ (ι : Type) [Fintype ι] (m n d : ℕ) (τ : ι) (k l : Fin n), ∃ (s : Finset (Matrix.unitaryGroup (Fin n) ℂ)) (c : Matrix.unitaryGroup (Fin n) ℂ → ℂ), ∀ P : Pol ι m n, P.totalDegree ≤ d → ∑ g ∈ s, c g • colSub m τ g P = colLie m τ k l P := by
+  atlas_forward_decl GlobalTheory.DefLift.colLie_eq_sum_colSub
+end
+
+section
+section
+noncomputable section
+
+open MvPolynomial
+
+namespace GlobalTheory.DefLift
+
+namespace ColHigh
+
+variable {ι : Type} {m n : ℕ}
+
+def der (m : ℕ) (τ : ι) (k l : Fin n) : Derivation ℂ (Pol ι m n) (Pol ι m n) :=
+  ∑ i : Fin m, (X (τ, i, k) : Pol ι m n) • pderiv (τ, i, l)
+
+theorem der_apply (τ : ι) (k l : Fin n) (P : Pol ι m n) : der m τ k l P = colLie m τ k l P := by
+  have h (S : Finset (Fin m)) (D : Fin m → Derivation ℂ (Pol ι m n) (Pol ι m n)) :
+      (∑ i ∈ S, D i) P = ∑ i ∈ S, D i P := by
+    rw [← Finset.sum_apply]
+    exact congrFun (map_sum Derivation.coeFnAddMonoidHom D S) P
+  simp [der, h, colLie_apply]
+
+theorem der_X [DecidableEq ι] (t t' : ι) (k l j : Fin n) (a : Fin m) :
+    der m t k l (X (t', a, j)) = if t' = t ∧ j = l then X (t, a, k) else 0 := by
+  rw [der_apply, colLie_apply]
+  split_ifs with h
+  · obtain ⟨rfl, rfl⟩ := h
+    simp [pderiv_X, Pi.single_apply]
+  · have (a' : Fin m) : ((t', a, j) : ι × Fin m × Fin n) ≠ (t, a', l) := by
+      intro e; simp only [Prod.mk.injEq] at e; exact h ⟨e.1, e.2.2⟩
+    simp [pderiv_X, this]
+
+theorem comm [DecidableEq ι] (t t' : ι) (i k l : Fin n) (P : Pol ι m n) :
+    colLie m t i i (colLie m t' k l P) - colLie m t' k l (colLie m t i i P) =
+      (if t = t' then ((if i = k then 1 else 0) - (if i = l then 1 else 0) : ℂ) else 0) •
+        colLie m t' k l P := by
+  have : ⁅der m t i i, der m t' k l⁆ =
+      (if t = t' then ((if i = k then 1 else 0) - (if i = l then 1 else 0) : ℂ) else 0) •
+        der m t' k l := by
+    refine MvPolynomial.derivation_ext fun ⟨s, a, j⟩ => ?_
+    rw [Derivation.commutator_apply, Derivation.smul_apply]
+    simp only [der_X, apply_ite (der m t i i), apply_ite (der m t' k l), map_zero]
+    by_cases h1 : s = t' ∧ j = l
+    · obtain ⟨rfl, rfl⟩ := h1
+      by_cases h2 : s = t
+      · subst h2
+        by_cases h3 : i = k <;> by_cases h4 : i = j <;> simp [h3, h4, eq_comm, sub_smul] <;>
+          (try split_ifs) <;> simp_all
+      · simp [h2, Ne.symm h2]
+    · simp only [if_neg h1, smul_zero, zero_sub, neg_eq_zero]
+      split_ifs with h2 h3
+      · exact absurd ⟨h2.1.trans h3.1, h2.2.trans h3.2⟩ h1
+      · rfl
+      · rfl
+  have := DFunLike.congr_fun this P
+  rw [Derivation.commutator_apply, Derivation.smul_apply] at this
+  simpa only [der_apply] using this
+
+theorem diag_monomial (t : ι) (k : Fin n) (s : ι × Fin m × Fin n →₀ ℕ) (c : ℂ) :
+    colLie m t k k (monomial s c) = ((∑ a, (s (t, a, k) : ℤ) : ℤ) : ℂ) • monomial s c := by
+  simp only [colLie_apply, X_mul_pderiv_monomial, Int.cast_sum,
+    Int.cast_natCast, Finset.sum_smul, Nat.cast_smul_eq_nsmul]
+
+theorem X_mul_pderiv_mem {σ : Type} (d : ℕ) (a b : σ) (P : MvPolynomial σ ℂ)
+    (hP : P ∈ restrictTotalDegree σ ℂ d) : X a * pderiv b P ∈ restrictTotalDegree σ ℂ d := by
+  classical
+  rw [P.as_sum, map_sum, Finset.mul_sum]
+  refine Submodule.sum_mem _ fun s hs => ?_
+  rw [pderiv_monomial]
+  by_cases h : s b = 0
+  · simp [h]
+  · rw [mem_restrictTotalDegree] at hP ⊢
+    have h1 : (s.sum fun _ e => e) ≤ d := (le_totalDegree hs).trans hP
+    have h2 : s - Finsupp.single b 1 + Finsupp.single b 1 = s :=
+      Finsupp.sub_add_single_one_cancel h
+    have h3 : ((s - Finsupp.single b 1).sum fun _ e => e) + 1 = s.sum fun _ e => e := by
+      conv_rhs => rw [← h2]
+      rw [Finsupp.sum_add_index' (fun _ => rfl) (fun _ _ _ => rfl), Finsupp.sum_single_index rfl]
+    refine (totalDegree_mul _ _).trans ?_
+    have h4 := totalDegree_monomial_le (s - Finsupp.single b 1) (coeff s P * (s b : ℂ))
+    rw [totalDegree_X]
+    have h5 : ((s - Finsupp.single b 1).sum fun _ => id) = (s - Finsupp.single b 1).sum fun _ e => e := rfl
+    omega
+
+theorem colLie_mem (d : ℕ) (t : ι) (k l : Fin n) (P : Pol ι m n)
+    (hP : P ∈ restrictTotalDegree _ ℂ d) : colLie m t k l P ∈ restrictTotalDegree _ ℂ d := by
+  rw [colLie_apply]
+  exact Submodule.sum_mem _ fun i _ => X_mul_pderiv_mem d _ _ P hP
+
+theorem exists_bound {σ X : Type} [AddCommGroup X] [Module ℂ X] [FiniteDimensional ℂ X]
+    (Φ : X →ₗ[ℂ] MvPolynomial σ ℂ) : ∃ d, ∀ x, Φ x ∈ restrictTotalDegree σ ℂ d := by
+  let b := Module.finBasis ℂ X
+  refine ⟨Finset.univ.sup fun i => (Φ (b i)).totalDegree, fun x => ?_⟩
+  rw [← b.sum_repr x, map_sum]
+  refine Submodule.sum_mem _ fun i _ => ?_
+  rw [map_smul]
+  refine Submodule.smul_mem _ _ ?_
+  rw [mem_restrictTotalDegree]
+  exact Finset.le_sup (f := fun i => (Φ (b i)).totalDegree) (Finset.mem_univ i)
+
+end ColHigh
+
+open ColHigh in
+
+theorem exists_colHighest (ι : Type) [Fintype ι] (m n : ℕ) (X : Type) [AddCommGroup X] [Module ℂ X]
+    [FiniteDimensional ℂ X] (U : Submodule ℂ (X →ₗ[ℂ] Pol ι m n)) (hU0 : U ≠ ⊥)
+    (hU : ∀ Φ ∈ U, ∀ τ g, colSub m τ g ∘ₗ Φ ∈ U) :
+    ∃ Φ ∈ U, Φ ≠ 0 ∧ (∀ τ k l, k < l → colLie m τ k l ∘ₗ Φ = 0) ∧
+      ∃ μ : ι → Fin n → ℤ, ∀ τ k, colLie m τ k k ∘ₗ Φ = (μ τ k : ℂ) • Φ := by
+  classical
+  have hL : ∀ τ k l, ∀ Φ ∈ U, colLie m τ k l ∘ₗ Φ ∈ U := by
+    intro τ k l Φ hΦ
+    obtain ⟨d, hd⟩ := exists_bound Φ
+    obtain ⟨s, c, h⟩ := GlobalTheory.T.colLieOperator_eq_sum_colUnitaryAction_bddDegree ι m n d τ k l
+    have : colLie m τ k l ∘ₗ Φ = ∑ g ∈ s, c g • (colSub m τ g ∘ₗ Φ) := by
+      ext1 x
+      rw [LinearMap.comp_apply, ← h _ ((mem_restrictTotalDegree _ _ _).1 (hd x))]
+      simp [LinearMap.sum_apply]
+    rw [this]
+    exact U.sum_mem fun g _ => U.smul_mem _ (hU Φ hΦ τ g)
+  obtain ⟨Φ₀, hΦ₀, hne⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hU0
+  obtain ⟨d, hd⟩ := exists_bound Φ₀
+  let R : Submodule ℂ (Pol ι m n) := restrictTotalDegree _ ℂ d
+  let B : Submodule ℂ (X →ₗ[ℂ] Pol ι m n) := LinearMap.range (LinearMap.llcomp ℂ X R _ R.subtype : (X →ₗ[ℂ] R) →ₗ[ℂ] (X →ₗ[ℂ] Pol ι m n))
+  have hB : ∀ Φ, Φ ∈ B ↔ ∀ x, Φ x ∈ R := by
+    intro Φ
+    constructor
+    · rintro ⟨Ψ, rfl⟩ x
+      exact (Ψ x).2
+    · intro h
+      exact ⟨Φ.codRestrict R h, rfl⟩
+  have : FiniteDimensional ℂ B := inferInstance
+  have : FiniteDimensional ℂ (U ⊓ B : Submodule ℂ _) := Submodule.finiteDimensional_of_le inf_le_right
+  let e : ι → Fin n → Fin n → Module.End ℂ (X →ₗ[ℂ] Pol ι m n) :=
+    fun τ k l => LinearMap.llcomp ℂ X _ _ (colLie m τ k l)
+  have he : ∀ τ k l Φ, e τ k l Φ = colLie m τ k l ∘ₗ Φ := fun _ _ _ _ => rfl
+  obtain ⟨Φ, hΦ, h0, h1, μ, h2⟩ := GlobalTheory.exists_highest_vector e (by
+      intro t t' i k l
+      refine LinearMap.ext fun Φ => LinearMap.ext fun x => ?_
+      exact comm t t' i k l (Φ x))
+    (by
+      rw [eq_top_iff]
+      intro Φ _
+      let b := Module.finBasis ℂ X
+      have : Φ = ∑ i, ∑ s ∈ (Φ (b i)).support, (b.coord i).smulRight (monomial s (coeff s (Φ (b i)))) := by
+        refine LinearMap.ext fun x => ?_
+        conv_lhs => rw [← b.sum_repr x, map_sum]
+        simp only [LinearMap.sum_apply, LinearMap.smulRight_apply, ← Finset.smul_sum, map_smul,
+          ← as_sum, Module.Basis.coord_apply]
+      rw [this]
+      refine Submodule.sum_mem _ fun i _ => Submodule.sum_mem _ fun s _ => ?_
+      refine Submodule.mem_iSup_of_mem (fun t k => ∑ a, (s (t, a, k) : ℤ)) ?_
+      simp only [Submodule.mem_iInf, Module.End.mem_eigenspace_iff]
+      intro t k
+      refine LinearMap.ext fun x => ?_
+      rw [he, LinearMap.comp_apply, LinearMap.smul_apply, LinearMap.smulRight_apply, map_smul,
+        diag_monomial, smul_comm])
+    (U ⊓ B) (fun τ k l Φ hΦ => ⟨hL τ k l Φ hΦ.1,
+      (hB _).2 fun x => colLie_mem d τ k l _ ((hB _).1 hΦ.2 x)⟩)
+    ((Submodule.ne_bot_iff _).2 ⟨Φ₀, ⟨hΦ₀, (hB _).2 hd⟩, hne⟩)
+  exact ⟨Φ, hΦ.1, h0, h1, μ, h2⟩
+
+end GlobalTheory.DefLift
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory GlobalTheory.DefLift GlobalTheory.Chain
+open scoped ComplexOrder
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_column_highest_weight_polynomial_map : ∀ (ι : Type) [Fintype ι] (m n : ℕ) (X : Type) [AddCommGroup X] [Module ℂ X] [FiniteDimensional ℂ X] (U : Submodule ℂ (X →ₗ[ℂ] Pol ι m n)), U ≠ ⊥ → (∀ Φ ∈ U, ∀ τ g, colSub m τ g ∘ₗ Φ ∈ U) → ∃ Φ ∈ U, Φ ≠ 0 ∧ (∀ τ k l, k < l → colLie m τ k l ∘ₗ Φ = 0) ∧ ∃ μ : ι → Fin n → ℤ, ∀ τ k, colLie m τ k k ∘ₗ Φ = (μ τ k : ℂ) • Φ := by
+  atlas_forward_decl GlobalTheory.DefLift.exists_colHighest
+end
+
+section
+universe u_1
+namespace GlobalTheory.AevalTotalDegreeBound
+open MvPolynomial
+
+theorem aeval_totalDegree_le {σ : Type u_1} (f : σ → MvPolynomial σ ℂ)
+    (hf : ∀ v, (f v).totalDegree ≤ 1) (P : MvPolynomial σ ℂ) :
+    (aeval f P).totalDegree ≤ P.totalDegree := by
+  classical
+  conv_lhs => rw [P.as_sum]
+  rw [map_sum]
+  refine (totalDegree_finset_sum _ _).trans ?_
+  refine Finset.sup_le fun s hs => ?_
+  rw [aeval_monomial, algebraMap_eq]
+  refine (totalDegree_mul _ _).trans ?_
+  rw [totalDegree_C, zero_add]
+  refine le_trans ?_ (le_totalDegree hs)
+  unfold Finsupp.prod
+  refine (totalDegree_finset_prod _ _).trans ?_
+  unfold Finsupp.sum
+  refine Finset.sum_le_sum fun i _ => ?_
+  refine (totalDegree_pow _ _).trans ?_
+  simpa using Nat.mul_le_mul_left (s i) (hf i)
+
+theorem main : ∀ {σ : Type u_1} (f : σ → MvPolynomial σ ℂ), (∀ (v : σ), MvPolynomial.totalDegree (f v) ≤ (1 : ℕ)) → ∀ (P : MvPolynomial σ ℂ), MvPolynomial.totalDegree ((MvPolynomial.aeval f : MvPolynomial σ ℂ → MvPolynomial σ ℂ) P) ≤ MvPolynomial.totalDegree P :=
+  fun f hf P => aeval_totalDegree_le f hf P
+
+end GlobalTheory.AevalTotalDegreeBound
+end
+
+section
+section
+noncomputable section
+
+open MvPolynomial GlobalTheory.MvPoly GlobalTheory.Harm Matrix
+
+namespace GlobalTheory.DefLift
+
+namespace Compl
+
+theorem exists_sub_perp {E : Type*} [AddCommGroup E] [Module ℂ E] (B : E →ₗ[ℂ] E →ₗ⋆[ℂ] ℂ)
+    (hB : ∀ x, B x x = 0 → x = 0) (W : Submodule ℂ E) [FiniteDimensional ℂ W] (P : E) :
+    ∃ Q ∈ W, ∀ w ∈ W, B (P - Q) w = 0 := by
+  let b := Module.finBasis ℂ W
+  let L : E →ₗ[ℂ] (Fin (Module.finrank ℂ W) → ℂ) := LinearMap.pi fun i => B.flip (b i)
+  have hL (P) (h : L P = 0) (w) (hw : w ∈ W) : B P w = 0 := by
+    have := congrArg W.subtype (b.sum_repr ⟨w, hw⟩)
+    rw [map_sum, Submodule.subtype_apply] at this
+    change _ = w at this
+    rw [← this, map_sum]
+    refine Finset.sum_eq_zero fun i _ => ?_
+    rw [map_smul, map_smulₛₗ]
+    exact smul_eq_zero_of_right _ (congrFun h i)
+  have hinj : Function.Injective (L ∘ₗ W.subtype) := by
+    rw [injective_iff_map_eq_zero]
+    intro x hx
+    exact Subtype.ext (hB _ (hL x hx x x.2))
+  obtain ⟨x, hx⟩ := (LinearMap.injective_iff_surjective_of_finrank_eq_finrank (by simp)).mp hinj
+    (L P)
+  exact ⟨x, x.2, hL _ (by rw [map_sub, ← hx]; simp)⟩
+
+theorem totalDegree_aeval_le {σ : Type*} (f : σ → MvPolynomial σ ℂ) (hf : ∀ v, (f v).totalDegree ≤ 1)
+    (P : MvPolynomial σ ℂ) : (aeval f P).totalDegree ≤ P.totalDegree := by
+  first
+  | exact @_root_.GlobalTheory.AevalTotalDegreeBound.main
+  | exact _root_.GlobalTheory.AevalTotalDegreeBound.main
+  | (apply _root_.GlobalTheory.AevalTotalDegreeBound.main <;> assumption)
+  | (intros; apply _root_.GlobalTheory.AevalTotalDegreeBound.main <;> assumption)
+  | (intros; apply @_root_.GlobalTheory.AevalTotalDegreeBound.main <;> first | assumption | infer_instance)
+  | (intros; exact _root_.GlobalTheory.AevalTotalDegreeBound.main ..)
+
+variable {ι : Type} {m n : ℕ}
+
+theorem totalDegree_subst_le (a : ι → Matrix (Fin n) (Fin n) ℂ) (b : ι → Matrix (Fin m) (Fin m) ℂ) (P : Pol ι m n) :
+    (subst a b P).totalDegree ≤ P.totalDegree := by
+  refine totalDegree_aeval_le _ (fun v => ?_) P
+  refine totalDegree_finsetSum_le fun i _ => totalDegree_finsetSum_le fun c _ => ?_
+  exact (totalDegree_smul_le _ _).trans (totalDegree_X _).le
+
+theorem totalDegree_colSub_le (τ : ι) (g : Matrix.unitaryGroup (Fin n) ℂ) (P : Pol ι m n) :
+    (colSub m τ g P).totalDegree ≤ P.totalDegree := by
+  unfold colSub
+  rw [AlgHom.toLinearMap_apply]
+  exact totalDegree_subst_le _ _ _
+
+theorem fockInner_subst [Fintype ι] (a : ι → Matrix (Fin n) (Fin n) ℂ) (b : ι → Matrix (Fin m) (Fin m) ℂ)
+    (P Q : Pol ι m n) :
+    fockInner (subst a b P) Q = fockInner P (subst (fun τ => star (a τ)) (fun τ => star (b τ)) Q) := by
+  classical
+  refine fockInner_algHom_of_linear _ _
+    (fun v w => if v.1 = w.1 then b v.1 w.2.1 v.2.1 * a v.1 v.2.2 w.2.2 else 0) ?_ ?_ P Q
+  · rintro ⟨t, i, k⟩
+    simp [subst, Fintype.sum_prod_type]
+  · rintro ⟨t, i, k⟩
+    simp [subst, Fintype.sum_prod_type, apply_ite star, mul_comm]
+
+theorem fockInner_colSub [Fintype ι] (τ : ι) (g : Matrix.unitaryGroup (Fin n) ℂ) (P Q : Pol ι m n) :
+    fockInner (colSub m τ g P) Q = fockInner P (colSub m τ g⁻¹ Q) := by
+  unfold colSub
+  simp only [AlgHom.toLinearMap_apply]
+  rw [fockInner_subst]
+  congr 3
+  · funext ρ
+    split_ifs
+    · rfl
+    · simp
+  · funext ρ
+    simp
+
+end Compl
+
+open Compl in
+
+theorem exists_colStable_disjoint (ι : Type) [Fintype ι] (m n : ℕ) (X : Type) [AddCommGroup X] [Module ℂ X]
+    [FiniteDimensional ℂ X] (U W : Submodule ℂ (X →ₗ[ℂ] Pol ι m n))
+    (hU : ∀ Φ ∈ U, ∀ τ g, colSub m τ g ∘ₗ Φ ∈ U) (hW : ∀ Φ ∈ W, ∀ τ g, colSub m τ g ∘ₗ Φ ∈ W) (hlt : U < W) :
+    ∃ U' : Submodule ℂ (X →ₗ[ℂ] Pol ι m n), U' ≠ ⊥ ∧ U' ≤ W ∧ U ⊓ U' = ⊥ ∧
+      ∀ Φ ∈ U', ∀ τ g, colSub m τ g ∘ₗ Φ ∈ U' := by
+  classical
+  let b := Module.finBasis ℂ X
+  let B : (X →ₗ[ℂ] Pol ι m n) →ₗ[ℂ] (X →ₗ[ℂ] Pol ι m n) →ₗ⋆[ℂ] ℂ :=
+    LinearMap.mk₂'ₛₗ (RingHom.id ℂ) (starRingEnd ℂ) (fun Φ Ψ => ∑ i, fockInner (Φ (b i)) (Ψ (b i)))
+      (fun _ _ _ => by simp [fockInner_add_left, Finset.sum_add_distrib])
+      (fun _ _ _ => by simp [fockInner_smul_left, Finset.mul_sum])
+      (fun _ _ _ => by simp [fockInner_add_right, Finset.sum_add_distrib])
+      (fun _ _ _ => by simp [fockInner_smul_right, Finset.mul_sum])
+  have hBa (Φ Ψ) : B Φ Ψ = ∑ i, fockInner (Φ (b i)) (Ψ (b i)) := rfl
+  have hB (Φ) (h : B Φ Φ = 0) : Φ = 0 := by
+    rw [hBa] at h
+    simp only [fockInner_self] at h
+    have h' : ∑ i, fockNormSq (Φ (b i)) = 0 := by
+      rw [← RCLike.ofReal_sum] at h
+      exact RCLike.ofReal_eq_zero.mp h
+    rw [Finset.sum_eq_zero_iff_of_nonneg fun i _ => fockNormSq_nonneg _] at h'
+    exact b.ext fun i => fockNormSq_eq_zero.mp (h' i (Finset.mem_univ i))
+  have hadj (Φ Ψ τ g) : B (colSub m τ g ∘ₗ Φ) Ψ = B Φ (colSub m τ g⁻¹ ∘ₗ Ψ) := by
+    simp only [hBa, LinearMap.comp_apply, fockInner_colSub]
+  clear hBa
+  clear_value B
+  obtain ⟨β, hβW, hβU⟩ := SetLike.exists_of_lt hlt
+  obtain ⟨d, hd⟩ : ∃ d : ℕ, ∀ i, (β (b i)).totalDegree ≤ d :=
+    ⟨_, fun i => Finset.le_sup (f := fun i => (β (b i)).totalDegree) (Finset.mem_univ i)⟩
+  obtain ⟨R, hRf, hR⟩ : ∃ R : Submodule ℂ (Pol ι m n), FiniteDimensional ℂ R ∧ ∀ P, P ∈ R ↔ P.totalDegree ≤ d :=
+    ⟨restrictTotalDegree (ι × Fin m × Fin n) ℂ d, inferInstance, fun P => mem_restrictTotalDegree _ _ _⟩
+  let ψ : (X →ₗ[ℂ] R) →ₗ[ℂ] (X →ₗ[ℂ] Pol ι m n) :=
+    { toFun := fun Ψ => R.subtype ∘ₗ Ψ
+      map_add' := fun _ _ => rfl
+      map_smul' := fun _ _ => rfl }
+  let D : Submodule ℂ (X →ₗ[ℂ] Pol ι m n) := LinearMap.range ψ
+  have hD (Φ) : Φ ∈ D ↔ ∀ x, Φ x ∈ R := by
+    constructor
+    · rintro ⟨Ψ, rfl⟩ x
+      exact (Ψ x).2
+    · intro h
+      exact ⟨Φ.codRestrict R h, rfl⟩
+  haveI : FiniteDimensional ℂ D := inferInstance
+  clear_value D
+  have hDs (Φ) (h : Φ ∈ D) (τ g) : colSub m τ g ∘ₗ Φ ∈ D := by
+    rw [hD] at h ⊢
+    intro x
+    have := h x
+    rw [hR] at this ⊢
+    rw [LinearMap.comp_apply]
+    exact (totalDegree_colSub_le τ g _).trans this
+  have hβD : β ∈ D := by
+    rw [hD]
+    intro x
+    rw [← b.sum_repr x, map_sum]
+    refine R.sum_mem fun i _ => ?_
+    rw [map_smul]
+    exact R.smul_mem _ ((hR _).2 (hd i))
+  haveI : FiniteDimensional ℂ (U ⊓ D : Submodule ℂ _) := Submodule.finiteDimensional_inf_right _ _
+  let T : Submodule ℂ (X →ₗ[ℂ] Pol ι m n) := ⨅ w ∈ U ⊓ D, LinearMap.ker (B.flip w)
+  have hT (Φ) : Φ ∈ T ↔ ∀ w ∈ U ⊓ D, B Φ w = 0 := by simp [T, Submodule.mem_iInf]
+  obtain ⟨Q, hQ, hperp⟩ := exists_sub_perp B hB (U ⊓ D) β
+  refine ⟨W ⊓ D ⊓ T, ?_, inf_le_left.trans inf_le_left, ?_, ?_⟩
+  · intro h
+    have hm : β - Q ∈ W ⊓ D ⊓ T :=
+      ⟨⟨W.sub_mem hβW (hlt.le hQ.1), D.sub_mem hβD hQ.2⟩, (hT _).2 hperp⟩
+    rw [h, Submodule.mem_bot, sub_eq_zero] at hm
+    exact hβU (hm ▸ hQ.1)
+  · rw [Submodule.eq_bot_iff]
+    rintro Φ ⟨h1, ⟨-, h2⟩, h3⟩
+    exact hB Φ ((hT Φ).1 h3 Φ ⟨h1, h2⟩)
+  · rintro Φ ⟨⟨h1, h2⟩, h3⟩ τ g
+    refine ⟨⟨hW Φ h1 τ g, hDs Φ h2 τ g⟩, (hT _).2 fun w hw => ?_⟩
+    rw [hadj]
+    exact (hT Φ).1 h3 _ ⟨hU w hw.1 τ _, hDs w hw.2 τ _⟩
+
+end GlobalTheory.DefLift
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory GlobalTheory.DefLift GlobalTheory.Chain
+open scoped ComplexOrder
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_colStable_complement_of_lt : ∀ (ι : Type) [Fintype ι] (m n : ℕ) (X : Type) [AddCommGroup X] [Module ℂ X] [FiniteDimensional ℂ X] (U W : Submodule ℂ (X →ₗ[ℂ] Pol ι m n)), (∀ Φ ∈ U, ∀ τ g, colSub m τ g ∘ₗ Φ ∈ U) → (∀ Φ ∈ W, ∀ τ g, colSub m τ g ∘ₗ Φ ∈ W) → U < W → ∃ U' : Submodule ℂ (X →ₗ[ℂ] Pol ι m n), U' ≠ ⊥ ∧ U' ≤ W ∧ U ⊓ U' = ⊥ ∧ ∀ Φ ∈ U', ∀ τ g, colSub m τ g ∘ₗ Φ ∈ U' := by
+  atlas_forward_decl GlobalTheory.DefLift.exists_colStable_disjoint
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory GlobalTheory.DefLift GlobalTheory.Chain
+open scoped ComplexOrder
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_bilinearFischerPairing_matrixEntryPolynomialRing : ∀ (ι : Type) [Fintype ι] (m n : ℕ), ∃ B : Pol ι m n →ₗ[ℂ] Pol ι m n →ₗ[ℂ] ℂ, (∀ Q, (∀ P, B P Q = 0) → Q = 0) ∧ (∀ a b P Q, B (subst a b P) Q = B P (subst (fun τ => (a τ).transpose) (fun τ => (b τ).transpose) Q)) ∧ ∀ (ℓ : Pol ι m n →ₗ[ℂ] ℂ) (d : ℕ), (∀ α : ι × Fin m × Fin n →₀ ℕ, d < α.degree → ℓ (MvPolynomial.monomial α 1) = 0) → ∃ Q, ∀ P, B P Q = ℓ P := by
+  first | exact @GlobalTheory.DefLift.BilFischer.exists_pair | exact GlobalTheory.DefLift.BilFischer.exists_pair | (intros; apply GlobalTheory.DefLift.BilFischer.exists_pair <;> assumption)
+end
+
+section
+section
+noncomputable section
+
+open GlobalTheory.DefLift
+
+namespace GlobalTheory.RowSupport
+
+theorem exp_I_pow_injective : Function.Injective fun e : ℕ => Complex.exp Complex.I ^ e := by
+  intro a b h
+  simp only [← Complex.exp_nat_mul] at h
+  obtain ⟨k, hk⟩ := Complex.exp_eq_exp_iff_exists_int.1 h
+  have h2 : (a : ℝ) = b + k * (2 * Real.pi) := by
+    have := congrArg Complex.im hk
+    simpa using this
+  by_cases h0 : k = 0
+  · subst h0
+    exact_mod_cast (by simpa using h2 : (a : ℝ) = b)
+  · exfalso
+    have h3 : (2 * k : ℤ) ≠ 0 := mul_ne_zero two_ne_zero h0
+    refine (irrational_pi.intCast_mul h3).ne_int ((a : ℤ) - b) ?_
+    push_cast
+    linarith
+
+def scal (m : ℕ) : Matrix.unitaryGroup (Fin m) ℂ :=
+  ⟨Complex.exp Complex.I • 1, by
+    rw [Matrix.mem_unitaryGroup_iff, star_smul, star_one, smul_mul_smul_comm, mul_one]
+    have : Complex.exp Complex.I * star (Complex.exp Complex.I) = 1 := by
+      rw [Complex.star_def, ← Complex.exp_conj, ← Complex.exp_add]
+      simp
+    rw [this, one_smul]⟩
+
+open Classical in
+theorem rowSub_scal {ι : Type} [Fintype ι] {m n : ℕ} (τ : ι) (α : ι × Fin m × Fin n →₀ ℕ) :
+    rowSub n τ (scal m) (MvPolynomial.monomial α 1) =
+      Complex.exp Complex.I ^ (∑ v, if v.1 = τ then α v else 0) • MvPolynomial.monomial α 1 := by
+  have hv : ∀ v : ι × Fin m × Fin n,
+      (∑ i, ∑ c, ((if v.1 = τ then (scal m : Matrix (Fin m) (Fin m) ℂ) else 1) i v.2.1 *
+        (1 : Matrix (Fin n) (Fin n) ℂ) v.2.2 c) • (MvPolynomial.X (v.1, i, c) : Pol ι m n)) =
+      (if v.1 = τ then Complex.exp Complex.I else 1) • MvPolynomial.X v := by
+    rintro ⟨ρ, j, d⟩
+    by_cases h : ρ = τ
+    · simp [h, scal, Matrix.one_apply, ite_smul, Finset.sum_ite_eq, Finset.sum_ite_eq']
+    · simp [h, Matrix.one_apply, ite_smul, Finset.sum_ite_eq, Finset.sum_ite_eq']
+  unfold rowSub subst
+  rw [AlgHom.toLinearMap_apply, MvPolynomial.aeval_monomial, map_one, one_mul, MvPolynomial.monomial_eq, map_one, one_mul,
+    Finsupp.prod_fintype _ _ (by simp), Finsupp.prod_fintype _ _ (by simp)]
+  simp only [hv, smul_pow]
+  rw [Finset.prod_smul, ← Finset.prod_pow_eq_pow_sum]
+  congr 1
+  refine Finset.prod_congr rfl fun v _ => ?_
+  split_ifs <;> simp
+
+theorem exists_degree_bound (ι : Type) [Fintype ι] (m n : ℕ) (X : Type) [AddCommGroup X] [Module ℂ X] [FiniteDimensional ℂ X]
+    (π : ι → Matrix.unitaryGroup (Fin m) ℂ → Module.End ℂ X) (β : Pol ι m n →ₗ[ℂ] X →ₗ[ℂ] ℂ)
+    (h : ∀ τ u P x, β (rowSub n τ u P) (π τ u x) = β P x) :
+    ∃ d : ℕ, ∀ α : ι × Fin m × Fin n →₀ ℕ, d < α.degree → β (MvPolynomial.monomial α 1) = 0 := by
+  classical
+  have hfin : ∀ τ, ∃ d : ℕ, ∀ e : ℕ,
+      Module.End.HasEigenvalue (LinearMap.dualMap (π τ (scal m)) : Module.End ℂ (Module.Dual ℂ X))
+        (Complex.exp Complex.I ^ e)⁻¹ → e ≤ d := by
+    intro τ
+    have h1 := Module.End.finite_hasEigenvalue (LinearMap.dualMap (π τ (scal m)) : Module.End ℂ (Module.Dual ℂ X))
+    have h2 := h1.preimage (f := fun e : ℕ => (Complex.exp Complex.I ^ e)⁻¹)
+      (inv_injective.comp exp_I_pow_injective).injOn
+    obtain ⟨d, hd⟩ := h2.bddAbove
+    exact ⟨d, fun e he => hd he⟩
+  choose d hd using hfin
+  refine ⟨∑ τ, d τ, fun α hα => ?_⟩
+  by_contra hne
+  have hdeg : α.degree = ∑ τ, ∑ v, if v.1 = τ then α v else 0 := by
+    rw [Finset.sum_comm, Finsupp.degree_eq_sum]
+    simp
+  refine absurd hα (not_lt.2 ?_)
+  rw [hdeg]
+  refine Finset.sum_le_sum fun τ _ => hd τ _ ?_
+  refine Module.End.hasEigenvalue_of_hasEigenvector (x := β (MvPolynomial.monomial α 1)) ⟨?_, hne⟩
+  rw [Module.End.mem_eigenspace_iff]
+  ext x
+  have := h τ (scal m) (MvPolynomial.monomial α 1) x
+  rw [rowSub_scal, map_smul, LinearMap.smul_apply, smul_eq_mul] at this
+  rw [LinearMap.dualMap_apply, LinearMap.smul_apply, smul_eq_mul, eq_inv_mul_iff_mul_eq₀ (pow_ne_zero _ (Complex.exp_ne_zero _))]
+  convert this
+
+end GlobalTheory.RowSupport
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory GlobalTheory.DefLift GlobalTheory.Chain
+open scoped ComplexOrder
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_degree_bound_of_rowUnitary_invariant_pairing : ∀ (ι : Type) [Fintype ι] (m n : ℕ) (X : Type) [AddCommGroup X] [Module ℂ X] [FiniteDimensional ℂ X] (π : ι → Matrix.unitaryGroup (Fin m) ℂ → Module.End ℂ X) (β : Pol ι m n →ₗ[ℂ] X →ₗ[ℂ] ℂ), (∀ τ u P x, β (rowSub n τ u P) (π τ u x) = β P x) → ∃ d : ℕ, ∀ α : ι × Fin m × Fin n →₀ ℕ, d < α.degree → β (MvPolynomial.monomial α 1) = 0 := by
+  atlas_forward_decl GlobalTheory.RowSupport.exists_degree_bound
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory GlobalTheory.DefLift GlobalTheory.Chain
+open scoped ComplexOrder
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finiteDimensional_smooth_irreducible_of_allPlus : ∀ (D : D7) (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S), AllPlus M → ∀ τ, FiniteDimensional ℂ (M.H τ) ∧ M.sm τ = ⊤ ∧ ∀ U : Submodule ℂ (M.H τ), (∀ u : Matrix.unitaryGroup (Fin V.rank) ℂ, ∀ x ∈ U, M.σ τ u x ∈ U) → U = ⊥ ∨ U = ⊤ := by
+  first | exact @GlobalTheory.DefLift.AllPlus.finite_smooth_irreducible | exact GlobalTheory.DefLift.AllPlus.finite_smooth_irreducible | (intros; apply GlobalTheory.DefLift.AllPlus.finite_smooth_irreducible <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory GlobalTheory.DefLift GlobalTheory.Chain
+open scoped ComplexOrder
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tensorProduct_definiteUnitary_localModels_irreducible : ∀ (D : D7) (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S), (∀ τ, FiniteDimensional ℂ (M.H τ) ∧ M.sm τ = ⊤ ∧ ∀ U : Submodule ℂ (M.H τ), (∀ u : Matrix.unitaryGroup (Fin V.rank) ℂ, ∀ x ∈ U, M.σ τ u x ∈ U) → U = ⊥ ∨ U = ⊤) → AllPlus M → FiniteDimensional ℂ (SmT M) ∧ Function.Injective (inclT M) ∧ ∃ π, IsTensAct M π ∧ IrrFam π := by
+  first | exact @GlobalTheory.DefLift.tensor_irreducible | exact GlobalTheory.DefLift.tensor_irreducible | (intros; apply GlobalTheory.DefLift.tensor_irreducible <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory GlobalTheory.DefLift GlobalTheory.Chain
+open scoped ComplexOrder
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.definiteThetaIntegral_integrable_continuous : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (V W : HSp D) (χS χT : (AE D)ˣ →* Circle) (ω : GA D V × GA D W →* Module.End ℂ (WO V W → ℂ)) (ν : Measure (GA D W)) (𝓕 : Set (GA D W)) (s : WO V W → ℂ) (F : GA D W → ℂ), IsWeilDatumO ψ V W χS χT ω → (∀ τ, (gramAt D W τ).PosDef) → ν.IsHaarMeasure → IsFundamentalDomain (GQ W) 𝓕 ν → IsThetaFunO ψ V W s → Continuous F → (∀ γ ∈ GQ W, ∀ h, F (γ * h) = F h) → (∀ g, IntegrableOn (fun h => thetaKO ω g h s * F h) 𝓕 ν) ∧ Continuous (Lift.liftInt ν 𝓕 (thetaKO ω) s F) := by
+  first | exact @GlobalTheory.DefLiftCont.theta_integral_integrable_continuous | exact GlobalTheory.DefLiftCont.theta_integral_integrable_continuous | (intros; apply GlobalTheory.DefLiftCont.theta_integral_integrable_continuous <;> assumption)
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory GlobalTheory.DefLift GlobalTheory.Chain
+open scoped ComplexOrder NNReal ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.LiftShift
+
+theorem map_mul_right_of_cocompact {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
+    [LocallyCompactSpace G] [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G]
+    (Γ : Subgroup G) [Countable Γ] (μ : Measure G) [μ.IsHaarMeasure] (𝓕 C : Set G)
+    (h𝓕 : IsFundamentalDomain Γ 𝓕 μ) (hC : IsCompact C)
+    (hcov : ∀ h : G, ∃ γ ∈ Γ, ∃ c ∈ C, h = γ * c) (k : G) :
+    Measure.map (fun g => g * k) μ = μ := by
+  have hle : μ 𝓕 ≤ μ C := by
+    rw [h𝓕.measure_eq_tsum C]
+    refine le_trans (measure_mono ?_) (measure_iUnion_le _)
+    intro h hh
+    obtain ⟨γ, hγ, c, hc, rfl⟩ := hcov h
+    exact Set.mem_iUnion.2 ⟨⟨γ, hγ⟩, ⟨c, hc, rfl⟩, hh⟩
+  have hfin : μ 𝓕 ≠ ⊤ := (hle.trans_lt hC.measure_lt_top).ne
+  have hpos : μ 𝓕 ≠ 0 := h𝓕.measure_ne_zero (NeZero.ne μ)
+  have h := Measure.isMulLeftInvariant_eq_smul (Measure.map (fun g => g * k) μ) μ
+  set c := Measure.haarScalarFactor (Measure.map (fun g => g * k) μ) μ with hc
+  have hq : Measure.QuasiMeasurePreserving (fun g : G => g * k) μ μ :=
+    ⟨measurable_mul_const k, by rw [h]; exact Measure.smul_absolutelyContinuous⟩
+  have h2 : IsFundamentalDomain Γ ((fun g : G => g * k) ⁻¹' 𝓕) μ := by
+    refine h𝓕.preimage_of_equiv hq (e := id) Function.bijective_id ?_
+    intro γ g
+    simp only [id, Subgroup.smul_def, smul_eq_mul, mul_assoc]
+  have h1 : Measure.map (fun g => g * k) μ 𝓕 = μ 𝓕 := by
+    have := (MeasurableEquiv.mulRight k).map_apply (μ := μ) 𝓕
+    rw [MeasurableEquiv.coe_mulRight] at this
+    rw [this]
+    exact h2.measure_eq h𝓕
+  have h3 : (c : ℝ≥0∞) * μ 𝓕 = 1 * μ 𝓕 := by
+    rw [one_mul]
+    conv_rhs => rw [← h1, h]
+    simp
+  have h4 : (c : ℝ≥0∞) = 1 := (ENNReal.mul_left_inj hpos hfin).1 h3
+  have h5 : c = 1 := by exact_mod_cast h4
+  rw [h, h5, one_smul]
+
+theorem liftInt_shift : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (V W : HSp D) (χS χT : (AE D)ˣ →* Circle) (ω : GA D V × GA D W →* Module.End ℂ (WO V W → ℂ)) (ν : Measure (GA D W)) (𝓕 : Set (GA D W)) (s : WO V W → ℂ) (F : GA D W → ℂ), IsWeilDatumO ψ V W χS χT ω → (∀ τ, (gramAt D W τ).PosDef) → ν.IsHaarMeasure → IsFundamentalDomain (GQ W) 𝓕 ν → IsThetaFunO ψ V W s → Continuous F → (∀ γ ∈ GQ W, ∀ h, F (γ * h) = F h) → ∀ k ∈ GinfC W, Lift.liftInt ν 𝓕 (thetaKO ω) (ω (1, k) s) (rTr W k F) = Lift.liftInt ν 𝓕 (thetaKO ω) s F := by
+  intro D ψ V W χS χT ω ν 𝓕 s F H hpos hν h𝓕 hs hF hinv k _
+  have := Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.topGroupHA D.sp.cm.sig W.gram
+  obtain ⟨_, _, _, _⟩ := GlobalTheory.TwistAdelicTop.locallyCompact_secondCountable_borel_countable W
+  obtain ⟨C, hC, hcov⟩ := GlobalTheory.definite_unitary_cocompact W hpos
+  obtain ⟨hcont, hθ⟩ := GlobalTheory.thetaKO_continuous_and_rat_invariant ψ V W χS χT ω H s hs
+  have hk := map_mul_right_of_cocompact (GQ W) ν 𝓕 C h𝓕 hC hcov k
+  funext g
+  have hΦ : ∀ γ ∈ GQ W, ∀ h, thetaKO ω g (γ * h) s * F (γ * h) = thetaKO ω g h s * F h := by
+    intro γ hγ h
+    have := hθ 1 (one_mem _) γ hγ g h
+    rw [one_mul] at this
+    rw [this, hinv γ hγ]
+  have hi : IntegrableOn (fun h => thetaKO ω g h s * F h) 𝓕 ν :=
+    GlobalTheory.CocompactIntegrable.integrableOn_fundamentalDomain W ν 𝓕 C hν h𝓕 hC hcov _
+      ((hcont.comp (Continuous.prodMk_right g)).mul hF) hΦ
+  have key := (GlobalTheory.fundamentalDomain_setIntegral_mul_right (GQ W) ν 𝓕 h𝓕 k hk
+    (fun h => thetaKO ω g h s * F h) hΦ hi).2
+  have hsh : ∀ h, thetaKO ω g h (ω (1, k) s) = thetaKO ω g (h * k) s := by
+    intro h
+    have h1 : ω (g, h * k) = ω (g, h) * ω (1, k) := by
+      rw [← map_mul, Prod.mk_mul_mk, mul_one]
+    unfold thetaKO
+    rw [h1]
+    rfl
+  unfold Lift.liftInt
+  simp only [hsh, rTr]
+  exact key
+
+end GlobalTheory.LiftShift
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory GlobalTheory.DefLift GlobalTheory.Chain
+open scoped ComplexOrder
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.definiteThetaIntegral_invariant_real_translate : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (V W : HSp D) (χS χT : (AE D)ˣ →* Circle) (ω : GA D V × GA D W →* Module.End ℂ (WO V W → ℂ)) (ν : Measure (GA D W)) (𝓕 : Set (GA D W)) (s : WO V W → ℂ) (F : GA D W → ℂ), IsWeilDatumO ψ V W χS χT ω → (∀ τ, (gramAt D W τ).PosDef) → ν.IsHaarMeasure → IsFundamentalDomain (GQ W) 𝓕 ν → IsThetaFunO ψ V W s → Continuous F → (∀ γ ∈ GQ W, ∀ h, F (γ * h) = F h) → ∀ k ∈ GinfC W, Lift.liftInt ν 𝓕 (thetaKO ω) (ω (1, k) s) (rTr W k F) = Lift.liftInt ν 𝓕 (thetaKO ω) s F := by
+  atlas_forward_decl GlobalTheory.LiftShift.liftInt_shift
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory GlobalTheory.DefLift GlobalTheory.Chain
+open scoped ComplexOrder
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.definiteUnitary_realPoints_act_fock_substitution : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (V W : HSp D) (χS χT : (AE D)ˣ →* Circle) (ω : GA D V × GA D W →* Module.End ℂ (WO V W → ℂ)) (θ : InfFam D) (S S' : D.what₂.Tau → SPar) (M : DSModel V S) (M' : DSModel W S') (f : WO V W → ℂ), IsWeilDatumO ψ V W χS χT ω → IsInfFam θ → V.SigOK → W.SigOK → AllPlus M → AllPlus M' → IsThetaFunO ψ V W f → (∀ τ, IsFockVacAt (heisO ψ V W) θ τ (cplxO (cart M τ) (cart M' τ)) f) → ∀ τ, (∀ g : Matrix.unitaryGroup (Fin V.rank) ℂ, ∃ c : ℂ, c ≠ 0 ∧ ∀ P, ω (atTau θ V τ (unfr M τ g), 1) (ptOf ψ θ M M' f P) = c • ptOf ψ θ M M' f (colSub W.rank τ g P)) ∧ ∀ u : Matrix.unitaryGroup (Fin W.rank) ℂ, ∃ c : ℂ, c ≠ 0 ∧ ∀ P, ω (1, atTau θ W τ (unfr M' τ u)) (ptOf ψ θ M M' f P) = c • ptOf ψ θ M M' f (rowSub V.rank τ u P) := by
+  first | exact @GlobalTheory.DefLift.FockAct.fock_act | exact GlobalTheory.DefLift.FockAct.fock_act | (intros; apply GlobalTheory.DefLift.FockAct.fock_act <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory GlobalTheory.DefLift GlobalTheory.Chain
+open scoped ComplexOrder
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_multT_of_equivariant' : ∀ (D : D7) (θ : InfFam D) (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S) (π : D.what₂.Tau → Matrix.unitaryGroup (Fin V.rank) ℂ → Module.End ℂ (SmT M)) (J : Set (GA D V)) (χ : GA D V → ℂ) (L : SmT M →ₗ[ℂ] (GA D V → ℂ)), IsInfFam θ → V.SigOK → AllPlus M → (∀ τ, FiniteDimensional ℂ (M.H τ) ∧ M.sm τ = ⊤) → FiniteDimensional ℂ (SmT M) → Function.Injective (inclT M) → IsTensAct M π → (∀ x, IsAutFun V (L x)) → (∀ x, ∀ k ∈ J, ∀ g, L x (g * k) = χ k * L x g) → (∀ τ u x, L (π τ u x) = rTr V (atTau θ V τ (unfr M τ u)) (L x)) → L ∈ MultT θ M J χ := by
+  first | exact @GlobalTheory.DefLiftMult.mem_multT_of_equivariant | exact GlobalTheory.DefLiftMult.mem_multT_of_equivariant | (intros; apply GlobalTheory.DefLiftMult.mem_multT_of_equivariant <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory GlobalTheory.DefLift GlobalTheory.Chain
+open scoped ComplexOrder
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.multiplicitySpace_definite_continuous_invariant_equivariant : ∀ (D : D7) (θ : InfFam D) (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S) (π : D.what₂.Tau → Matrix.unitaryGroup (Fin V.rank) ℂ → Module.End ℂ (SmT M)) (J : Set (GA D V)) (χ : GA D V → ℂ), AllPlus M → (∀ τ, M.sm τ = ⊤) → Function.Injective (inclT M) → IsTensAct M π → ∀ L ∈ MultT θ M J χ, ∀ x, Continuous (L x) ∧ (∀ γ ∈ GQ V, ∀ h, L x (γ * h) = L x h) ∧ ∀ τ u, L (π τ u x) = rTr V (atTau θ V τ (unfr M τ u)) (L x) := by
+  first | exact @GlobalTheory.multT_cont_left_equiv | exact GlobalTheory.multT_cont_left_equiv | (intros; apply GlobalTheory.multT_cont_left_equiv <;> assumption)
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.DefLift
@@ -388,4 +1117,5 @@ end Last
 
 end GlobalTheory.DefLift
 
+end
 end

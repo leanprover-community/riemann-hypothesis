@@ -31,24 +31,6 @@ abbrev cbEnd (l : Fin m) : Module.End ℂ (WSm m E) := opEnd l 4
 
 abbrev cbiEnd (l : Fin m) : Module.End ℂ (WSm m E) := opEnd l 5
 
-theorem weylRel_end (l : Fin m) :
-    Formalism.YangianSpanCharacter.T.WeylRel (pEnd (E := E) l) (cEnd l) (ciEnd l) := by
-  have hw := weyl_functional_holds
-  unfold WeylFun at hw
-  unfold Formalism.YangianSpanCharacter.T.WeylRel
-  refine ⟨?_, ?_, ?_⟩ <;> refine LinearMap.ext fun f => Subtype.ext ?_
-  · exact (hw m E l f f.2).1
-  · exact (hw m E l f f.2).2.1
-  · exact (hw m E l f f.2).2.2.1
 
-theorem weylRel_end_bar (l : Fin m) :
-    Formalism.YangianSpanCharacter.T.WeylRel (pbEnd (E := E) l) (cbEnd l) (cbiEnd l) := by
-  have hw := weyl_functional_holds
-  unfold WeylFun at hw
-  unfold Formalism.YangianSpanCharacter.T.WeylRel
-  refine ⟨?_, ?_, ?_⟩ <;> refine LinearMap.ext fun f => Subtype.ext ?_
-  · exact (hw m E l f f.2).2.2.2.1
-  · exact (hw m E l f f.2).2.2.2.2.1
-  · exact (hw m E l f f.2).2.2.2.2.2
 
 end Formalism.QuantumDeterminants

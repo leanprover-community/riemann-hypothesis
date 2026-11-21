@@ -1,10 +1,297 @@
 import Mathlib
 import Formalism.PeriodIntegrals.DivisionRowsRationalLattice
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ProjectionLattices.FinrankIntertw
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ProjectionLattices.IsIntegralTraceOfPow
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ProjectionLattices.MajAtZeroRight
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ProjectionLattices.StarMapTraceOfPowEqOne
+import Formalism.PeriodIntegrals.SameFormAllLevels
+import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ArithmeticCylinders
 
+section
+noncomputable section
+
+namespace PI.Dv.GLP
+
+open Representation
+
+variable {K : Type} [Field K] {G : Type} [Group G] [Fintype G]
+
+theorem intertw_alg {V W : Type} [AddCommGroup V] [Module K V] [AddCommGroup W] [Module K W]
+    (ρ : Representation K G V) (σ : Representation K G W) (f : V →ₗ[K] W)
+    (hf : ∀ g x, f (ρ g x) = σ g (f x)) (a : MonoidAlgebra K G) (x : V) :
+    f (ρ.asAlgebraHom a x) = σ.asAlgebraHom a (f x) := by
+  induction a using MonoidAlgebra.induction_on with
+  | of g => simp [Representation.asAlgebraHom_of, hf]
+  | add a b ha hb => simp [map_add, ha, hb]
+  | smul r a ha => simp [map_smul, ha]
+
+theorem exists_end_map {W : Type} [AddCommGroup W] [Module K W] [FiniteDimensional K W]
+    {x : W} (hx : x ≠ 0) (y : W) : ∃ b : Module.End K W, b x = y := by
+  obtain ⟨φ, hφ⟩ : ∃ φ : Module.Dual K W, φ x ≠ 0 := by
+    by_contra h
+    push Not at h
+    exact hx ((Module.forall_dual_apply_eq_zero_iff K x).1 h)
+  refine ⟨(φ x)⁻¹ • LinearMap.smulRight φ y, ?_⟩
+  simp [LinearMap.smulRight_apply, smul_smul, inv_mul_cancel₀ hφ]
+
+theorem scalar_of_comm (T : GoodSet K G) (s : T.S) (F : Module.End K (T.W s))
+    (hF : ∀ g, F * T.tau s g = T.tau s g * F) : ∃ c : K, F = algebraMap K _ c := by
+  have hc : F ∈ Subalgebra.center K (Module.End K (T.W s)) := by
+    rw [Subalgebra.mem_center_iff]
+    intro b
+    obtain ⟨a, rfl⟩ := T.irr s b
+    ext x
+    simp only [Module.End.mul_apply]
+    exact (intertw_alg (T.tau s) (T.tau s) F (fun g x => LinearMap.congr_fun (hF g) x) a x).symm
+  rw [Algebra.IsCentral.center_eq_bot] at hc
+  obtain ⟨c, hc⟩ := Algebra.mem_bot.1 hc
+  exact ⟨c, hc.symm⟩
+
+theorem intertw_zero (T : GoodSet K G) {s t : T.S} (hst : s ≠ t) (f : T.W s →ₗ[K] T.W t)
+    (hf : ∀ g x, f (T.tau s g x) = T.tau t g (f x)) : f = 0 := by
+  by_contra hne
+  have hinj : Function.Injective f := by
+    rw [← LinearMap.ker_eq_bot, Submodule.eq_bot_iff]
+    intro x hx
+    by_contra hx0
+    apply hne
+    ext y
+    obtain ⟨b, hb⟩ := exists_end_map (K := K) hx0 y
+    obtain ⟨a, rfl⟩ := T.irr s b
+    rw [← hb, intertw_alg _ _ f hf a x, LinearMap.mem_ker.1 hx, map_zero]
+    rfl
+  have hsurj : Function.Surjective f := by
+    obtain ⟨y0, hy0⟩ : ∃ y0, f y0 ≠ 0 := by
+      by_contra h
+      push Not at h
+      exact hne (LinearMap.ext h)
+    intro z
+    obtain ⟨b, hb⟩ := exists_end_map (K := K) hy0 z
+    obtain ⟨a, rfl⟩ := T.irr t b
+    exact ⟨(T.tau s).asAlgebraHom a y0, by rw [intertw_alg _ _ f hf a y0, hb]⟩
+  let e := LinearEquiv.ofBijective f ⟨hinj, hsurj⟩
+  apply hst
+  apply T.inj
+  funext g
+  have : T.tau t g = e.conj (T.tau s g) := by
+    ext z
+    obtain ⟨x, rfl⟩ := hsurj z
+    have hx : e.symm (f x) = x := by
+      rw [LinearEquiv.symm_apply_eq]
+      rfl
+    simp only [LinearEquiv.conj_apply, LinearMap.comp_apply, LinearEquiv.coe_coe, hx]
+    rw [← hf g x]
+    rfl
+  simp only
+  rw [this, LinearMap.trace_conj']
+
+theorem finrank_intertw (T : GoodSet K G) (s t : T.S) :
+    Module.finrank K (IntertwiningMap (T.tau s) (T.tau t)) = if s = t then 1 else 0 := by
+  split_ifs with h
+  · subst h
+    have hne : (IntertwiningMap.id (T.tau s)) ≠ 0 := by
+      intro h0
+      obtain ⟨x, hx⟩ := exists_ne (0 : T.W s)
+      apply hx
+      have := congrArg (fun f : IntertwiningMap (T.tau s) (T.tau s) => f x) h0
+      simpa using this
+    rw [finrank_eq_one_iff_of_nonzero' _ hne]
+    intro f
+    obtain ⟨c, hc⟩ := scalar_of_comm T s f.toLinearMap (fun g => f.isIntertwining' g)
+    refine ⟨c, ?_⟩
+    ext x
+    rw [IntertwiningMap.toLinearMap_smul, LinearMap.smul_apply, IntertwiningMap.toLinearMap_id,
+      LinearMap.id_apply, hc, Module.algebraMap_end_apply]
+  · have : Subsingleton (IntertwiningMap (T.tau s) (T.tau t)) := ⟨fun f g => by
+      ext1
+      rw [intertw_zero T h f.toLinearMap (fun g x => LinearMap.congr_fun (f.isIntertwining' g) x),
+        intertw_zero T h g.toLinearMap (fun g' x => LinearMap.congr_fun (g.isIntertwining' g') x)]⟩
+    exact Module.finrank_zero_of_subsingleton
+
+theorem card_ne_zero [CharZero K] : ((Fintype.card G : ℕ) : K) ≠ 0 :=
+  Nat.cast_ne_zero.2 Fintype.card_ne_zero
+
+theorem char_orth [CharZero K] (T : GoodSet K G) (s t : T.S) :
+    ∑ g : G, LinearMap.trace K _ (T.tau t g) * LinearMap.trace K _ (T.tau s g⁻¹) =
+      if s = t then ((Fintype.card G : ℕ) : K) else 0 := by
+  have hG : ((Nat.card G : ℕ) : K) ≠ 0 := by
+    rw [Nat.card_eq_fintype_card]; exact card_ne_zero
+  haveI : Invertible ((Nat.card G : ℕ) : K) := invertibleOfNonzero hG
+  have h := Representation.card_inv_mul_sum_char_mul_char_eq_finrank (T.tau s) (T.tau t)
+  rw [finrank_intertw] at h
+  simp only [Representation.character] at h
+  rw [inv_mul_eq_iff_eq_mul₀ hG] at h
+  rw [h, Nat.card_eq_fintype_card]
+  split_ifs <;> simp
+
+def cS (T : GoodSet K G) (s : T.S) (x : G) : K :=
+  ((Module.finrank K (T.W s) : ℕ) : K) / ((Fintype.card G : ℕ) : K) *
+    LinearMap.trace K (T.W s) (T.tau s x⁻¹)
+
+theorem eS_eq (T : GoodSet K G) (s : T.S) :
+    eS T s = ∑ x : G, cS T s x • MonoidAlgebra.of K G x := rfl
+
+theorem asAlg_eS {V : Type} [AddCommGroup V] [Module K V] (ρ : Representation K G V)
+    (T : GoodSet K G) (s : T.S) :
+    ρ.asAlgebraHom (eS T s) = ∑ x : G, cS T s x • ρ x := by
+  rw [eS_eq, map_sum]
+  simp [map_smul, Representation.asAlgebraHom_of]
+
+theorem cS_conj (T : GoodSet K G) (s : T.S) (h x : G) : cS T s (h * x * h⁻¹) = cS T s x := by
+  have := Representation.char_conj (T.tau s) x⁻¹ h
+  simp only [Representation.character] at this
+  simp only [cS]
+  rw [show (h * x * h⁻¹)⁻¹ = h * x⁻¹ * h⁻¹ by group, this]
+
+theorem tau_eS_comm (T : GoodSet K G) (s t : T.S) (g : G) :
+    (T.tau t).asAlgebraHom (eS T s) * T.tau t g = T.tau t g * (T.tau t).asAlgebraHom (eS T s) := by
+  rw [asAlg_eS, Finset.sum_mul, Finset.mul_sum]
+  simp only [smul_mul_assoc, mul_smul_comm, ← map_mul]
+  refine Fintype.sum_equiv (MulAut.conj g⁻¹).toEquiv _ _ fun x => ?_
+  simp only [MulEquiv.toEquiv_eq_coe, MulEquiv.coe_toEquiv, MulAut.conj_apply, inv_inv]
+  have hc := cS_conj T s g⁻¹ x
+  rw [inv_inv] at hc
+  rw [hc]
+  congr 2
+  group
+
+theorem finrank_pos' (T : GoodSet K G) (s : T.S) : (0 : ℕ) < Module.finrank K (T.W s) :=
+  Module.finrank_pos
+
+theorem tau_eS [CharZero K] (T : GoodSet K G) (s t : T.S) :
+    (T.tau t).asAlgebraHom (eS T s) = if s = t then 1 else 0 := by
+  obtain ⟨c, hc⟩ := scalar_of_comm T t _ (tau_eS_comm T s t)
+  have htr : LinearMap.trace K _ ((T.tau t).asAlgebraHom (eS T s)) =
+      ((Module.finrank K (T.W s) : ℕ) : K) / ((Fintype.card G : ℕ) : K) *
+        (if s = t then ((Fintype.card G : ℕ) : K) else 0) := by
+    rw [asAlg_eS, map_sum, ← char_orth T s t, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun x _ => ?_
+    rw [map_smul, smul_eq_mul, cS]
+    ring
+  rw [hc, Module.algebraMap_end_eq_smul_id, map_smul, LinearMap.trace_id, smul_eq_mul] at htr
+  have hd : ((Module.finrank K (T.W t) : ℕ) : K) ≠ 0 := Nat.cast_ne_zero.2 (finrank_pos' T t).ne'
+  rw [hc]
+  split_ifs with h
+  · subst h
+    rw [if_pos rfl, div_mul_cancel₀ _ (card_ne_zero (K := K) (G := G))] at htr
+    have : c = 1 := by
+      have := mul_right_cancel₀ hd (htr.trans (one_mul _).symm)
+      exact this
+    rw [this, map_one]
+  · rw [if_neg h, mul_zero] at htr
+    have : c = 0 := by
+      rcases mul_eq_zero.1 htr with h1 | h1
+      · exact h1
+      · exact absurd h1 hd
+    rw [this, map_zero]
+
+theorem coef_mul [CharZero K] (T : GoodSet K G) (s t : T.S) (z : G) :
+    ∑ x : G, cS T s x * cS T t (x⁻¹ * z) = if s = t then cS T s z else 0 := by
+  have key : ∑ x : G, cS T s x * cS T t (x⁻¹ * z) =
+      ((Module.finrank K (T.W t) : ℕ) : K) / ((Fintype.card G : ℕ) : K) *
+        LinearMap.trace K _ (T.tau t z⁻¹ * (T.tau t).asAlgebraHom (eS T s)) := by
+    rw [asAlg_eS, Finset.mul_sum, map_sum, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun x _ => ?_
+    rw [mul_smul_comm, map_smul, smul_eq_mul, ← map_mul]
+    simp only [cS, mul_inv_rev, inv_inv]
+    ring
+  rw [key, tau_eS]
+  split_ifs with h
+  · subst h
+    rw [mul_one, cS]
+  · rw [mul_zero, map_zero, mul_zero]
+
+
+
+end PI.Dv.GLP
+end
+end
+
+section
+noncomputable section
+
+namespace PI.Dv.GLP
+
+open Polynomial
+
+
+
+end PI.Dv.GLP
+end
+end
+
+section
+noncomputable section
+
+namespace PI.Dv.GLP
+
+open Formalism.HermitianLatticesTheory NumberField
+
+variable {K V ι : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
+  [Fintype ι] [DecidableEq ι] (b : Module.Basis ι K V) (X : InfinitePlace K → Matrix ι ι ℂ)
+  (v : InfinitePlace K)
+
+theorem fcoord_smul' (c : K) (x : V) : fcoord b X v (c • x) = v.embedding c • fcoord b X v x := by
+  unfold fcoord vecAt
+  rw [← Matrix.mulVec_smul]
+  congr 1
+  funext i
+  simp
+
+private theorem fcoord_add_projection_lattices (x y : V) : fcoord b X v (x + y) = fcoord b X v x + fcoord b X v y := by
+  unfold fcoord vecAt
+  rw [← Matrix.mulVec_add]
+  congr 1
+  funext i
+  simp
+
+
+theorem majAt_add_right' (x y y' : V) : majAt b X v x (y + y') = majAt b X v x y + majAt b X v x y' := by
+  unfold majAt
+  rw [fcoord_add_projection_lattices]
+  simp [mul_add, Finset.sum_add_distrib]
+
+theorem majAt_smul_left' (c : K) (x y : V) :
+    majAt b X v (c • x) y = star (v.embedding c) * majAt b X v x y := by
+  unfold majAt
+  rw [fcoord_smul', Finset.mul_sum]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  simp only [Pi.smul_apply, smul_eq_mul, star_mul']
+  ring
+
+
+
+
+
+
+
+theorem exists_nonreal [NumberField.IsTotallyComplex K] : ∃ c : K, (v.embedding c).im ≠ 0 := by
+  by_contra h
+  push_neg at h
+  refine (InfinitePlace.not_isReal_iff_isComplex.mpr (NumberField.IsTotallyComplex.isComplex v)) ?_
+  rw [InfinitePlace.isReal_iff, ComplexEmbedding.isReal_iff]
+  ext c
+  rw [ComplexEmbedding.conjugate_coe_eq]
+  exact Complex.conj_eq_iff_im.mpr (h c)
+
+
+
+end PI.Dv.GLP
+end
+end
+
+section
+noncomputable section
+
+namespace PI.Dv.GLPTr
+
+open Matrix
+open scoped ComplexOrder
+
+
+
+
+end PI.Dv.GLPTr
+end
+end
+
+section
 noncomputable section
 
 namespace PI.Dv.GLP
@@ -15,56 +302,10 @@ variable {K : Type} [Field K] {G : Type} [Group G] [Fintype G]
 
 def cG (T : GoodSet K G) (x : G) : K := ∑ s, cS T s x
 
-theorem asAlg_eG {V : Type} [AddCommGroup V] [Module K V] (ρ : Representation K G V)
-    (T : GoodSet K G) : ρ.asAlgebraHom (eG T) = ∑ x : G, cG T x • ρ x := by
-  rw [eG, map_sum]
-  simp_rw [asAlg_eS]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun x _ => ?_
-  rw [cG, Finset.sum_smul]
 
-theorem cG_integral [CharZero K] (T : GoodSet K G) (x : G) :
-    IsIntegral ℤ (((Fintype.card G : ℕ) : K) * cG T x) := by
-  have h : ((Fintype.card G : ℕ) : K) * cG T x =
-      ∑ s, ((Module.finrank K (T.W s) : ℕ) : K) * LinearMap.trace K _ (T.tau s x⁻¹) := by
-    rw [cG, Finset.mul_sum]
-    refine Finset.sum_congr rfl fun s _ => ?_
-    have := card_ne_zero (K := K) (G := G)
-    rw [cS]
-    field_simp
-  rw [h]
-  refine IsIntegral.sum _ fun s _ => ?_
-  refine IsIntegral.mul ?_ ?_
-  · have := (isIntegral_algebraMap : IsIntegral ℤ (algebraMap ℤ K ((Module.finrank K (T.W s) : ℕ) : ℤ)))
-    simpa using this
-  · exact isIntegral_trace_of_pow _ (Fintype.card G) Fintype.card_pos
-      (by rw [← map_pow, pow_card_eq_one, map_one])
 
-theorem star_cG (σ : K →+* ℂ) (T : GoodSet K G) (g : G) :
-    star (σ (cG T g)) = σ (cG T g⁻¹) := by
-  simp only [cG, cS, map_sum, map_mul, map_div₀, map_natCast, star_sum, star_mul', star_div₀,
-    star_natCast, PI.Dv.GLPTr.star_map_trace_rep, inv_inv]
 
-theorem glatProj : PI.Dv.GLatProj := by
-  intro K _ _ _ _ G _ _ T A ρ hA
-  obtain ⟨hgood, hL, hnorm⟩ := hA
-  refine ⟨hgood, Fintype.card_pos, ?_, ?_, ?_⟩
-  · rw [← map_mul, eG_mul_eG]
-  · intro y hy
-    rw [asAlg_eG]
-    have hz : ∀ x : G, ∃ a : 𝓞 K, algebraMap (𝓞 K) K a = ((Fintype.card G : ℕ) : K) * cG T x :=
-      fun x => ⟨⟨_, cG_integral T x⟩, rfl⟩
-    choose a ha using hz
-    have h1 : (((Fintype.card G : ℕ) : 𝓞 K)) • (∑ x : G, cG T x • ρ x) y =
-        ∑ x : G, a x • ρ x y := by
-      rw [Nat.cast_smul_eq_nsmul, ← Nat.cast_smul_eq_nsmul K, LinearMap.sum_apply, Finset.smul_sum]
-      refine Finset.sum_congr rfl fun x _ => ?_
-      rw [LinearMap.smul_apply, smul_smul, ← ha, algebraMap_smul]
-    rw [h1]
-    exact Submodule.sum_mem _ fun x _ => Submodule.smul_mem _ _ (hL x y hy)
-  · intro v x y
-    rw [asAlg_eG]
-    exact majAt_selfadj' A.b A.X v ρ (fun g z => hnorm g v z) (cG T)
-      (fun g => star_cG v.embedding T g) x y
 
 end PI.Dv.GLP
+end
+end

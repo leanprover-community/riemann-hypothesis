@@ -1,7 +1,119 @@
-import Formalism.LocalToGlobal.IndefiniteReal.EvalTieOf
+import Formalism.LocalToGlobal.IndefiniteReal.SEEofApply
 import Formalism.LocalToGlobal.IndefiniteReal.EvalTieTOne
-import Formalism.LocalToGlobal.IndefiniteReal.MeasurableMulGA
+import Formalism.LocalToGlobal.IndefiniteReal.PeterssonHilbertSpace
+import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
 
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes MeasureTheory Formalism.L2.Theta Formalism.IndefR.Mult Formalism.L2.SG.RowDict
+open scoped TensorProduct
+
+namespace Formalism.IndefR.AutomorphicEvaluation
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+variable {D : D7} {S : D.what₂.Tau → SPar}
+
+section Halves
+
+variable (M : DSModel (D.sp.Y 0) S) (μ : Measure (GA D (D.sp.Y 0))) (𝓕 : Set (GA D (D.sp.Y 0)))
+  (E : Submodule ℂ (MMap M)) (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (G : GoodOp X) (ι : GA D (D.sp.Y 0) ≃* X.B.I.GA)
+  (c : ℝ) (v₀ : M.Vec)
+
+def EvalInto : Prop :=
+  ∀ T ∈ E, ∃ F : EEC X G, ((F : L2X X) =ᵐ[muX X] fun x => ev M v₀ T (ι.symm x)) ∧
+    ‖(F : L2X X)‖ ^ 2 = c * (ipM M μ 𝓕 T T).re
+
+def EvalOnto : Prop :=
+  ∀ F : EEC X G, ∃ T ∈ E, (F : L2X X) =ᵐ[muX X] fun x => ev M v₀ T (ι.symm x)
+
+def EvalInj : Prop :=
+  ∀ T ∈ E, ((fun x => ev M v₀ T (ι.symm x)) =ᵐ[muX X] 0) → T = 0
+
+end Halves
+
+open Classical in
+
+def sEEofT (M : DSModel (D.sp.Y 0) S) (μ : Measure (GA D (D.sp.Y 0))) (𝓕 : Set (GA D (D.sp.Y 0)))
+    (E : Submodule ℂ (MMap M)) (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (G : GoodOp X) (ι : GA D (D.sp.Y 0) ≃* X.B.I.GA)
+    (c : ℝ) : E →ₗ⋆[ℂ] Formalism.L2.SG.PoincareInHH.PoincareSetting.HHX X :=
+  if h : EvalTie M μ 𝓕 E X G ι c then sEEof h else 0
+
+end Formalism.IndefR.AutomorphicEvaluation
+
+end
+end
+
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice MeasureTheory
+open Formalism.L2.Theta
+
+namespace Formalism.IndefR.PeterssonHilbertSpace
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+variable {D : D7}
+
+theorem countable_GQ (V : HSp D) : Countable (GQ V) :=
+  Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.countableGamma (F := D.host.F) (E := D.host.E) D.sp.cm.sig V.gram
+
+theorem measurableMul_GA (V : HSp D) : MeasurableMul (GA D V) :=
+  Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.measurableMulHA (F := D.host.F) (E := D.host.E) D.sp.cm.sig V.gram
+
+theorem borel_GA (V : HSp D) : BorelSpace (GA D V) :=
+  Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.borelHA (F := D.host.F) (E := D.host.E) D.sp.cm.sig V.gram
+
+theorem petPos (V : HSp D) (μ : Measure (GA D V)) (𝓕 : Set (GA D V)) (hH : μ.IsHaarMeasure)
+    (hF : IsFundamentalDomain (GQ V) 𝓕 μ) : PetPos V μ 𝓕 := by
+  intro F hc hinv hne hint
+  have := countable_GQ V
+  have := measurableMul_GA V
+  have := borel_GA V
+  have := hH
+  set U : Set (GA D V) := {g | F g ≠ 0} with hUdef
+  have hUo : IsOpen U := isOpen_ne_fun hc continuous_const
+  have hUne : U.Nonempty := by
+    by_contra h
+    apply hne
+    funext g
+    by_contra hg
+    exact h ⟨g, hg⟩
+  have hUpos : 0 < μ U := hUo.measure_pos μ hUne
+  have hnn : 0 ≤ᵐ[μ.restrict 𝓕] fun g => ‖F g‖ ^ 2 := ae_of_all _ (fun g => by positivity)
+  refine lt_of_le_of_ne (integral_nonneg fun g => by positivity) ?_
+  intro h0
+  have hz : (fun g => ‖F g‖ ^ 2) =ᵐ[μ.restrict 𝓕] 0 :=
+    (integral_eq_zero_iff_of_nonneg_ae hnn hint).1 h0.symm
+  have hset : {g : GA D V | ¬ (‖F g‖ ^ 2 = (0 : GA D V → ℝ) g)} = U := by
+    ext g
+    simp [hUdef]
+  have hFU : μ (U ∩ 𝓕) = 0 := by
+    have h1 := ae_iff.1 hz
+    rw [hset, Measure.restrict_apply hUo.measurableSet] at h1
+    exact h1
+  have key : U ≤ᵐ[μ] (⋃ γ : GQ V, (fun x => (γ : GA D V) * x) ⁻¹' (U ∩ 𝓕) : Set (GA D V)) := by
+    filter_upwards [hF.ae_covers] with x hx hxU
+    obtain ⟨γ, hγ⟩ := hx
+    refine Set.mem_iUnion.2 ⟨γ, ?_, ?_⟩
+    · show F ((γ : GA D V) * x) ≠ 0
+      rw [hinv _ γ.2 x]
+      exact hxU
+    · exact hγ
+  have hU0 : μ U = 0 := by
+    refine le_antisymm ((measure_mono_ae key).trans ?_) bot_le
+    refine (measure_iUnion_le _).trans ?_
+    simp only [measure_preimage_mul, hFU, tsum_zero, le_refl]
+  exact hUpos.ne' hU0
+
+end Formalism.IndefR.PeterssonHilbertSpace
+
+end
+end
+
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes MeasureTheory Formalism.L2.Theta Formalism.IndefR.Mult Formalism.L2.SG.RowDict
@@ -138,54 +250,11 @@ theorem re_ipM_eq {T : MMap M} (hT : ∃ c', IsMultIP M μ 𝓕 T T c') (hv : �
   rw [integral_complex_ofReal]
   simp
 
-theorem evalIntoT_of (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)) (J : Set (GA D (D.sp.Y 0)))
-    (χ : GA D (D.sp.Y 0) → ℂ) (hE : E ≤ Mult θ M J χ)
-    (hL : SquareIntegrableTransfer μ 𝓕 X ι t c) (hRph : RphFix M E X ι t v₀) (hRe : ReFix M E X ι t v₀)
-    (hRg : RgFix M E X G ι t v₀) (hS : ∀ T ∈ E, ∃ c', IsMultIP M μ 𝓕 T T c')
-    (hL2 : ∀ T ∈ E, MemLp (T v₀) 2 (μ.restrict 𝓕)) (hv : ∀ τ, ‖(v₀ τ : M.H τ)‖ = 1) :
-    EvalIntoT M μ 𝓕 E X G ι t c v₀ := by
-  intro T hT
-  have hc := Formalism.IndefR.PeterssonHilbertSpace.mult_cont_left (θ := θ) (J := J) (χ := χ) (M := M) (hE hT) v₀
-  obtain ⟨hmem, hnorm⟩ := hL (T v₀) hc.1 hc.2 (hL2 T hT)
-  have hmem' : MemLp (fun x => ev M v₀ T (ι.symm x * t)) 2 (muX X) := hmem
-  have hstar : star (hmem'.toLp _) ∈ goodSub X G := by
-    refine Submodule.mem_inf.mpr ⟨LinearMap.mem_range.mpr ⟨star (hmem'.toLp _), ?_⟩, LinearMap.mem_ker.mpr ?_⟩
-    · simp only [ContinuousLinearMap.coe_coe, ContinuousLinearMap.comp_apply]
-      rw [hRph T hT hmem', hRe T hT hmem']
-    · simp only [LinearMap.sub_apply, ContinuousLinearMap.coe_coe, LinearMap.id_apply]
-      rw [hRg T hT hmem', sub_self]
-  refine ⟨⟨hmem'.toLp _, hstar⟩, hmem'.coeFn_toLp, ?_⟩
-  show ‖(hmem'.toLp _ : L2X X)‖ ^ 2 = _
-  rw [norm_sq_toLp hmem', re_ipM_eq (hS T hT) hv]
-  exact hnorm
 
-theorem evalInjT_of (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)) (J : Set (GA D (D.sp.Y 0)))
-    (χ : GA D (D.sp.Y 0) → ℂ) (hE : E ≤ Mult θ M J χ) (hH : μ.IsHaarMeasure)
-    (hF : IsFundamentalDomain (GQ (D.sp.Y 0)) 𝓕 μ) (hL : SquareIntegrableTransfer μ 𝓕 X ι t c) (hcpos : 0 < c)
-    (hR : ResInjVec M E) (hv0 : ∀ τ, (v₀ τ : M.H τ) ≠ 0) (hL2 : ∀ T ∈ E, MemLp (T v₀) 2 (μ.restrict 𝓕)) :
-    EvalInjT M E X ι t v₀ := by
-  intro T hT h0
-  have hc := Formalism.IndefR.PeterssonHilbertSpace.mult_cont_left (θ := θ) (J := J) (χ := χ) (M := M) (hE hT) v₀
-  obtain ⟨-, hnorm⟩ := hL (T v₀) hc.1 hc.2 (hL2 T hT)
-  have hz : ∫ x, ‖T v₀ (ι.symm x * t)‖ ^ 2 ∂(muX X) = 0 := by
-    refine (integral_congr_ae ?_).trans (integral_zero _ _)
-    filter_upwards [h0] with x hx
-    have : T v₀ (ι.symm x * t) = 0 := hx
-    simp [this]
-  rw [hz] at hnorm
-  have hI : ∫ x in 𝓕, ‖T v₀ x‖ ^ 2 ∂μ = 0 := by
-    rcases mul_eq_zero.mp hnorm.symm with h | h
-    · exact absurd h hcpos.ne'
-    · exact h
-  refine hR T hT v₀ hv0 ?_
-  by_contra hne
-  have hint : IntegrableOn (fun x => ‖T v₀ x‖ ^ 2) 𝓕 μ :=
-    (memLp_two_iff_integrable_sq_norm (hL2 T hT).1).1 (hL2 T hT)
-  have := Formalism.IndefR.PeterssonHilbertSpace.petPos (D.sp.Y 0) μ 𝓕 hH hF (T v₀) hc.1 hc.2 hne hint
-  linarith
 
 end Assembly
 
 end Formalism.IndefR.AutomorphicEvaluation
 
+end
 end

@@ -1,6 +1,228 @@
 import Mathlib
 import GroundTheory.PAdicHodge.WAEval
-import GroundTheory.PAdicHodge.WACommonKappa
+import GroundTheory.PAdicHodge.WACommon
+import GroundTheory.PAdicHodge.UnramifiedFrob
+
+section
+set_option maxSynthPendingDepth 1
+
+noncomputable section
+
+namespace GroundTheory.PAdicHodge
+
+namespace WittTilt
+
+open _root_.WittVector PhiGamma EigenWitt ACris
+
+variable {p : ℕ} [hp : Fact p.Prime]
+
+local notation "𝓣" => teichLift ℂ_[p] p
+local notation "W̄" => WittVector p (Fpbar p)
+local notation "𝒪♭" => PreTilt (normInteger ℂ_[p]) p
+local notation "𝔹" => BDeRhamPlus (normInteger ℂ_[p]) p
+local notation "𝔸" => Localization.Away (p : AInf ℂ_[p] p)
+
+section Embeddings
+
+theorem isUnit_of_isUnit_p {S : Type*} [CommRing S] (f : W̄ →+* S) (hf : IsUnit (f p))
+    (y : nonZeroDivisors W̄) : IsUnit (f y) := by
+  obtain ⟨m, u, hu⟩ := WittVector.exists_eq_pow_p_mul' (y : W̄) (nonZeroDivisors.coe_ne_zero y)
+  rw [hu, map_mul, map_pow]
+  exact (hf.pow _).mul (u.isUnit.map _)
+
+theorem isUnit_wittFpbar_to_BCrisPlus (y : nonZeroDivisors W̄) :
+    IsUnit (((algebraMap (ACris ℂ_[p] p) (BCrisPlus ℂ_[p] p)).comp
+      ((algebraMap (AInf ℂ_[p] p) (ACris ℂ_[p] p)).comp wittToAInf)) (y : W̄)) :=
+  isUnit_of_isUnit_p _ (by rw [map_natCast]; exact isUnit_p_bCrisPlus) y
+
+variable (p) in
+
+def wittFpbarToBCrisPlus : WFrac p →+* BCrisPlus ℂ_[p] p :=
+  IsLocalization.lift (M := nonZeroDivisors W̄) (isUnit_wittFpbar_to_BCrisPlus (p := p))
+
+theorem wittFpbarToBCrisPlus_algebraMap (w : W̄) :
+    wittFpbarToBCrisPlus p (algebraMap W̄ (WFrac p) w) =
+      algebraMap (ACris ℂ_[p] p) (BCrisPlus ℂ_[p] p)
+        (algebraMap (AInf ℂ_[p] p) (ACris ℂ_[p] p) (wittToAInf w)) :=
+  IsLocalization.lift_eq _ w
+
+theorem iotaPlus_wittFpbarToBCrisPlus_algebraMap (w : W̄) :
+    iotaPlus ℂ_[p] p (wittFpbarToBCrisPlus p (algebraMap W̄ (WFrac p) w)) =
+      wittToBDeRhamPlus (normInteger ℂ_[p]) p (wittToAInf w) := by
+  rw [wittFpbarToBCrisPlus_algebraMap, iotaPlus_algebraMap, iota_algebraMap]
+
+theorem wittFpbarToBCrisPlus_injective : Function.Injective (wittFpbarToBCrisPlus p) := by
+  have := (iotaPlus ℂ_[p] p).domain_nontrivial
+  exact (wittFpbarToBCrisPlus p).injective
+
+set_option maxHeartbeats 1600000 in
+theorem wittFpbarToBCrisPlus_frobFrac (x : WFrac p) :
+    wittFpbarToBCrisPlus p (frobFrac p x) = phiPlus ℂ_[p] p (wittFpbarToBCrisPlus p x) := by
+  have : (wittFpbarToBCrisPlus p).comp (frobFrac p) =
+      (phiPlus ℂ_[p] p).comp (wittFpbarToBCrisPlus p) :=
+    IsLocalization.ringHom_ext (nonZeroDivisors W̄) (RingHom.ext fun w => by
+      show wittFpbarToBCrisPlus p (frobFrac p (algebraMap W̄ (WFrac p) w)) =
+        phiPlus ℂ_[p] p (wittFpbarToBCrisPlus p (algebraMap W̄ (WFrac p) w))
+      rw [frobFrac_algebraMap, wittFpbarToBCrisPlus_algebraMap, wittFpbarToBCrisPlus_algebraMap,
+        phiPlus_algebraMap, phi_algebraMap, WittVector.frobeniusEquiv_apply, wittToAInf,
+        map_frobenius_comm])
+  exact RingHom.congr_fun this x
+
+set_option maxHeartbeats 1600000 in
+theorem wittFpbarToBCrisPlus_padicToWFrac (q : ℚ_[p]) :
+    wittFpbarToBCrisPlus p (padicToWFrac p q) = algebraMap ℚ_[p] (BCrisPlus ℂ_[p] p) q := by
+  have : (wittFpbarToBCrisPlus p).comp (padicToWFrac p) = padicToBCrisPlus :=
+    IsLocalization.ringHom_ext (nonZeroDivisors ℤ_[p]) (RingHom.ext fun z => by
+      show wittFpbarToBCrisPlus p (padicToWFrac p (algebraMap ℤ_[p] ℚ_[p] z)) =
+        padicToBCrisPlus (algebraMap ℤ_[p] ℚ_[p] z)
+      rw [padicToWFrac_padicInt, wittFpbarToBCrisPlus_algebraMap, wittToAInf_padicIntToWittFpbar,
+        padicToBCrisPlus, IsLocalization.lift_eq]
+      rfl)
+  exact RingHom.congr_fun this q
+
+theorem isUnit_wittFpbar_to_away_p (y : nonZeroDivisors W̄) :
+    IsUnit ((algebraMap (AInf ℂ_[p] p) 𝔸).comp wittToAInf (y : W̄)) :=
+  isUnit_of_isUnit_p _ (by
+    rw [RingHom.comp_apply, map_natCast]
+    simpa using IsLocalization.Away.algebraMap_isUnit (S := 𝔸) (p : AInf ℂ_[p] p)) y
+
+variable (p) in
+
+def wittFpbarToAway : WFrac p →+* 𝔸 :=
+  IsLocalization.lift (M := nonZeroDivisors W̄) (isUnit_wittFpbar_to_away_p (p := p))
+
+theorem wittFpbarToAway_algebraMap (w : W̄) :
+    wittFpbarToAway p (algebraMap W̄ (WFrac p) w) = algebraMap (AInf ℂ_[p] p) 𝔸 (wittToAInf w) :=
+  IsLocalization.lift_eq _ w
+
+theorem toB_wittFpbarToAway (x : WFrac p) : toB ℂ_[p] p (wittFpbarToAway p x) = wittFpbarToB p x := by
+  have : (toB ℂ_[p] p).comp (wittFpbarToAway p) = wittFpbarToB p :=
+    IsLocalization.ringHom_ext (nonZeroDivisors W̄) (RingHom.ext fun w => by
+      simp only [RingHom.comp_apply]
+      rw [wittFpbarToAway_algebraMap, toB_algebraMap, wittFpbarToB_algebraMap]
+      rfl)
+  exact RingHom.congr_fun this x
+
+theorem toBDeRhamPlus_wittFpbarToAway (x : WFrac p) :
+    toBDeRhamPlus (normInteger ℂ_[p]) p (wittFpbarToAway p x) =
+      iotaPlus ℂ_[p] p (wittFpbarToBCrisPlus p x) := by
+  have : (toBDeRhamPlus (normInteger ℂ_[p]) p).comp (wittFpbarToAway p) =
+      (iotaPlus ℂ_[p] p).comp (wittFpbarToBCrisPlus p) :=
+    IsLocalization.ringHom_ext (nonZeroDivisors W̄) (RingHom.ext fun w => by
+      simp only [RingHom.comp_apply]
+      rw [wittFpbarToAway_algebraMap, iotaPlus_wittFpbarToBCrisPlus_algebraMap]
+      rfl)
+  exact RingHom.congr_fun this x
+
+end Embeddings
+
+section Unramified
+
+theorem exists_fpbar_rootOfUnity {ζ : PadicAlgCl p} {m : ℕ} (hm : 0 < m) (hc : m.Coprime p)
+    (hζ : ζ ^ m = 1) :
+    ∃ a : Fpbar p, a ^ m = 1 ∧ ((fontaineTheta (normInteger ℂ_[p]) p
+      (teichmuller p (fpbarToPreTilt a)) : normInteger ℂ_[p]) : ℂ_[p]) = (ζ : ℂ_[p]) := by
+  set z : ℕ → PadicAlgCl p := fun n => ζ ^ p ^ (n * (m.totient - 1))
+  have hzm' : ∀ n, z n ^ m = 1 := fun n => by
+    simp only [z]
+    rw [← pow_mul, mul_comm, pow_mul, hζ, one_pow]
+  have hzm : ∀ n, (z n : ℂ_[p]) ^ m = 1 := fun n => by
+    rw [PadicComplex.coe_eq, ← map_pow, hzm' n, map_one]
+  have hmem : ∀ n, (z n : ℂ_[p]) ∈ normInteger ℂ_[p] := fun n =>
+    mem_normInteger.2 (ACris.norm_eq_one_of_pow_eq_one hm (hzm n)).le
+  set y : ℕ → normInteger ℂ_[p] := fun n => ⟨(z n : ℂ_[p]), hmem n⟩
+  have hy : ∀ n, y (n + 1) ^ p = y n := fun n => Subtype.ext (by
+    simp only [y, SubmonoidClass.coe_pow]
+    rw [PadicComplex.coe_eq, PadicComplex.coe_eq, ← map_pow]
+    exact congrArg _ (rootOfUnity_compatible hm hc hζ n))
+  set ζf : 𝒪♭ := IsPerfectoidField.ofCompatible p y hy
+  have hζf : ζf ^ m = 1 := IsPerfectoidField.preTilt_ext p fun n => by
+    rw [map_pow, IsPerfectoidField.coeff_ofCompatible, ← map_pow, map_one]
+    have : y n ^ m = 1 := Subtype.ext (by
+      simp only [y, SubmonoidClass.coe_pow, OneMemClass.coe_one]; exact hzm n)
+    rw [this, map_one]
+  have hfix : ζf ^ p ^ m.totient = ζf := by
+    have hmod : p ^ m.totient % m = 1 % m := Nat.ModEq.pow_totient (Nat.Coprime.symm hc)
+    rw [pow_eq_pow_mod_of_pow_eq_one hζf, hmod, ← pow_eq_pow_mod_of_pow_eq_one hζf, pow_one]
+  obtain ⟨a, ha⟩ := exists_fpbarToPreTilt_eq (Nat.totient_pos.2 hm) hfix
+  refine ⟨a, fpbarToPreTilt_injective (by rw [map_pow, ha, hζf, map_one]), ?_⟩
+  rw [ha, fontaineTheta_teichmuller, IsPerfectoidField.untilt_ofCompatible]
+  simp [y, z]
+
+theorem iota_teichmuller_fpbar {ζ : PadicAlgCl p} {m : ℕ} (hm : 0 < m) {a : Fpbar p}
+    (ha : a ^ m = 1) (hθ : ((fontaineTheta (normInteger ℂ_[p]) p
+      (teichmuller p (fpbarToPreTilt a)) : normInteger ℂ_[p]) : ℂ_[p]) = (ζ : ℂ_[p]))
+    (hζ : ζ ^ m = 1) :
+    iota ℂ_[p] p (algebraMap (AInf ℂ_[p] p) (ACris ℂ_[p] p) (teichmuller p (fpbarToPreTilt a))) =
+      algClToBdR p ζ := by
+  have hT : (teichmuller p (fpbarToPreTilt a) : AInf ℂ_[p] p) ^ m = 1 := by
+    rw [← map_pow, ← map_pow, ha, map_one, map_one]
+  have hζ0 : (ζ : ℂ_[p]) ≠ 0 := by
+    intro h
+    have := ACris.norm_eq_one_of_pow_eq_one hm (show (ζ : ℂ_[p]) ^ m = 1 by
+      rw [PadicComplex.coe_eq, ← map_pow, hζ, map_one])
+    rw [h, norm_zero] at this
+    exact zero_ne_one this
+  apply eq_of_pow_eq_one_of_theta_eq hm
+  · rw [← map_pow, ← map_pow, hT, map_one, map_one]
+  · rw [← map_pow, hζ, map_one]
+  · rw [thetaAlgHom_apply, thetaField_iota, theta_algebraMap, hθ, thetaAlgHom_algClToBdR]
+  · rw [thetaAlgHom_algClToBdR]; exact hζ0
+
+variable (p) in
+
+def wittFpbarRangeBdR : Subalgebra ℚ_[p] 𝔹 :=
+  { ((iotaPlus ℂ_[p] p).comp (wittFpbarToBCrisPlus p)).range with
+    algebraMap_mem' := fun q => ⟨padicToWFrac p q, by
+      rw [RingHom.comp_apply, wittFpbarToBCrisPlus_padicToWFrac, iotaPlus_algebraMap_padic]⟩ }
+
+theorem unramifiedClosure_le_wittFpbarRange :
+    (unramifiedClosure p).toSubalgebra ≤ (wittFpbarRangeBdR p).comap (algClToBdR p) := by
+  rw [unramifiedClosure, IntermediateField.adjoin_toSubalgebra_of_isAlgebraic
+    fun x _ => Algebra.IsAlgebraic.isAlgebraic x]
+  refine Algebra.adjoin_le fun ζ hζ => ?_
+  obtain ⟨m, hm, hc, hζm⟩ := hζ
+  obtain ⟨a, ha, hθ⟩ := exists_fpbar_rootOfUnity hm hc hζm
+  refine ⟨algebraMap W̄ (WFrac p) (teichmuller p a), ?_⟩
+  show iotaPlus ℂ_[p] p (wittFpbarToBCrisPlus p (algebraMap W̄ (WFrac p) (teichmuller p a))) =
+    algClToBdR p ζ
+  rw [iotaPlus_wittFpbarToBCrisPlus_algebraMap, wittToAInf, WittVector.map_teichmuller,
+    ← iota_teichmuller_fpbar hm ha hθ hζm, iota_algebraMap]
+
+theorem unramifiedToBCrisPlus_mem_range (u : unramifiedClosure p) :
+    unramifiedToBCrisPlus u ∈ (wittFpbarToBCrisPlus p).range := by
+  obtain ⟨w, hw⟩ := unramifiedClosure_le_wittFpbarRange u.2
+  refine ⟨w, iotaPlus_injective (K := ℂ_[p]) (p := p) ?_⟩
+  rw [iotaPlus_unramifiedToBCrisPlus]
+  exact hw
+
+variable (p) in
+
+def wittFpbarRangeEquiv : WFrac p ≃+* (wittFpbarToBCrisPlus p).range :=
+  RingEquiv.ofBijective (wittFpbarToBCrisPlus p).rangeRestrict
+    ⟨fun _ _ h => wittFpbarToBCrisPlus_injective (congrArg Subtype.val h),
+      RingHom.rangeRestrict_surjective _⟩
+
+variable (p) in
+
+def unramifiedToWFrac : unramifiedClosure p →+* WFrac p :=
+  (wittFpbarRangeEquiv p).symm.toRingHom.comp
+    ((unramifiedToBCrisPlus (p := p)).toRingHom.codRestrict _ unramifiedToBCrisPlus_mem_range)
+
+
+
+
+
+
+end Unramified
+
+end WittTilt
+
+end GroundTheory.PAdicHodge
+end
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 noncomputable section
@@ -255,8 +477,6 @@ theorem logOnePlus_congr {w w' : 𝔹} (h : w = w') (hw : w ∈ 𝔪) (hw' : w' 
     logOnePlus 𝔪 w hw = logOnePlus 𝔪 w' hw' := by
   subst h; rfl
 
-theorem toBDeRhamPlus_muA (ε : 𝒪♭) : toBDeRhamPlus (normInteger ℂ_[p]) p (muA p ε) = muBdR p ε :=
-  rfl
 
 theorem one_add_pow_sub_one_mem {w : 𝔹} (hw : w ∈ 𝔪) (k : ℕ) : (1 + w) ^ k - 1 ∈ 𝔪 := by
   obtain ⟨c, hc⟩ := sub_dvd_pow_sub_pow (1 + w) 1 k
@@ -307,17 +527,6 @@ variable {ε : PreTilt (normInteger ℂ_[p]) p} (hε : PreTilt.untilt ε = 1)
   (hζ : PreTilt.untilt ((_root_.frobeniusEquiv (PreTilt (normInteger ℂ_[p]) p) p).symm ε) ≠ 1)
 include hε hζ
 
-theorem tendsto_tTildeExt (ρ : Set.Ioo (0 : ℝ) 1) :
-    Tendsto (fun N => awayToExt p ρ (∑ i ∈ Finset.range N, logCoeff p (i + 1) * muA p ε ^ (i + 1)))
-      atTop (𝓝 (tTildeExt p ε ρ)) := by
-  have h := (tendsto_const_nhds (x := awayToExt p ρ (muA p ε))).mul
-    (tendsto_logTail (muBound_pos ε ρ) (muBound_lt_one hε hζ ρ) (extNorm_muA_le_bound ε ρ) 1)
-  refine h.congr fun N => ?_
-  rw [← map_mul, logPSum, Finset.mul_sum]
-  congr 1
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [pow_succ]
-  ring
 
 theorem tTildeExt_eq_sum (ρ : Set.Ioo (0 : ℝ) 1) (m : ℕ) :
     tTildeExt p ε ρ = awayToExt p ρ (∑ i ∈ Finset.range m, logCoeff p (i + 1) * muA p ε ^ (i + 1)) +
@@ -384,8 +593,6 @@ theorem tTilde_ne_zero : tTilde p ε ≠ 0 := by
   exact fun h => tTildeExt_ne_zero hε hζ (rhoMid p)
     ((𝓣).ofRad_injective _ (by rw [h, map_zero]))
 
-theorem tTilde_mem_tildeDom : tTilde p ε ∈ tildeDom p :=
-  ⟨rhoMid p, inv_p_lt_rhoMid, _, ofRad_tTildeExt hε hζ (rhoMid p)⟩
 
 theorem iotaTildeFun_tTilde : iotaTildeFun p (tTilde p ε) = fontaineT ε hε := by
   rw [← ofRad_tTildeExt hε hζ (rhoMid p), iotaTildeFun_ofRad inv_p_lt_rhoMid, iota_tTildeExt hε hζ]
@@ -419,49 +626,10 @@ theorem extFrob_tTildeExt (ρ : Set.Ioo (0 : ℝ) 1) :
   rw [← TeichLift.TeichFrob.tildeFrob_ofRad, ofRad_tTildeExt hε hζ, tildeFrob_tTilde hε hζ, map_mul,
     map_natCast, ofRad_tTildeExt hε hζ]
 
-theorem natCast_mul_tildeFrobSymm_tTilde :
-    (p : (𝓣).RobbaTilde) * (frob ℂ_[p] p).tildeFrobSymm (tTilde p ε) = tTilde p ε := by
-  have h := congrArg (frob ℂ_[p] p).tildeFrobSymm (tildeFrob_tTilde hε hζ)
-  rw [TeichLift.TeichFrob.tildeFrobSymm_tildeFrob, map_mul, map_natCast] at h
-  exact h.symm
 
-theorem pow_mul_phiNeg_tTilde (n : ℕ) :
-    (p : (𝓣).RobbaTilde) ^ n * phiNeg p n (tTilde p ε) = tTilde p ε := by
-  induction n with
-  | zero => simp [phiNeg_apply]
-  | succ n ih =>
-    have h1 := congrArg (frob ℂ_[p] p).tildeFrobSymm ih
-    rw [map_mul, map_pow, map_natCast] at h1
-    rw [phiNeg_succ, pow_succ, mul_comm ((p : (𝓣).RobbaTilde) ^ n) p, mul_assoc, h1,
-      natCast_mul_tildeFrobSymm_tTilde hε hζ]
 
-theorem phiNeg_tTilde_mem (n : ℕ) : phiNeg p n (tTilde p ε) ∈ tildeDom p := by
-  induction n with
-  | zero => simpa [phiNeg_apply] using tTilde_mem_tildeDom hε hζ
-  | succ n ih => rw [phiNeg_succ]; exact tildeFrobSymm_mem_tildeDom ih
 
-theorem pow_mul_iotaN_tTilde (n : ℕ) : (p : 𝔹) ^ n * iotaN p n (tTilde p ε) = fontaineT ε hε := by
-  have hm := phiNeg_tTilde_mem hε hζ n
-  have hpn : ((p : (𝓣).RobbaTilde) ^ n) ∈ tildeDom p :=
-    pow_mem (natCast_mem _ p) n
-  have h := iotaTildeFun_mul hpn hm
-  rw [pow_mul_phiNeg_tTilde hε hζ n, iotaTildeFun_tTilde hε hζ] at h
-  have e : iotaTildeFun p ((p : (𝓣).RobbaTilde) ^ n) = (p : 𝔹) ^ n := by
-    have := map_pow (iotaTilde p) (p : tildeDom p) n
-    rw [map_natCast, iotaTilde_apply] at this
-    simpa using this
-  rw [iotaN, ← e, ← h]
 
-theorem thetaN_tTilde (n : ℕ) : thetaN p n (tTilde p ε) = 0 := by
-  have h := congrArg (IsPerfectoidField.thetaBDeRhamPlusField p) (pow_mul_iotaN_tTilde hε hζ n)
-  rw [map_mul, map_pow, map_natCast] at h
-  have h0 : IsPerfectoidField.thetaBDeRhamPlusField p (fontaineT ε hε) = 0 := by
-    have := fontaineT_mem hε
-    rw [IsPerfectoidField.maximalIdeal_bDeRhamPlus, RingHom.mem_ker] at this
-    exact this
-  rw [h0] at h
-  have hp0 : (p : ℂ_[p]) ^ n ≠ 0 := pow_ne_zero _ (Nat.cast_ne_zero.2 hp.out.ne_zero)
-  exact (mul_eq_zero.1 h).resolve_left hp0
 
 theorem galIso_tildeMap_tTilde {K : IntermediateField ℚ_[p] (PadicAlgCl p)} (σ : Gal(PadicAlgCl p/K)) :
     (galIso σ).tildeMap (tTilde p ε) = padicToTilde p ((cycloChar K σ : ℤ_[p]) : ℚ_[p]) * tTilde p ε := by
@@ -480,3 +648,5 @@ end TTilde
 end WAPeriodT
 
 end GroundTheory.PAdicHodge
+end
+end

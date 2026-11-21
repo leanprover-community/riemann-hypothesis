@@ -99,17 +99,7 @@ theorem yy_eq (ij : Sq D) : d.O.yy ij =
   show D.R.m - 1 - ij.2 = (D.R.m - (ij.2 + 1)) / 2 + (D.R.m - ij.2) / 2
   omega
 
-theorem not_leafMM_zero (G : Grid p CF) (W : G.Weil) (h : W.Over p.R.toRealDat) (C : ℝ) :
-    ¬ LeafMM (FunIn.ofGrid G W h 0 fun _ => 0).O C := fun hM =>
-  hM.2.1 ((Submodule.eq_bot_iff _).2 fun _ _ => funext fun i => i.elim0)
 
-theorem ofGrid_lattice (G : Grid p CF) (W : G.Weil) (h : W.Over p.R.toRealDat) (V) :
-    (FunIn.ofGrid G W h 1 V).M.FG ∧ (FunIn.ofGrid G W h 1 V).M ≠ ⊥ ∧ ∀ v, IsUnit ((FunIn.ofGrid G W h 1 V).X' v).det := by
-  refine ⟨Submodule.fg_span (Set.finite_range _), fun e => ?_, fun v => ?_⟩
-  · have e' : Submodule.span (𝓞 D.what₂.LL) (Set.range (Pi.basisFun D.what₂.LL (Fin 1))) = ⊥ := e
-    exact (Pi.basisFun D.what₂.LL (Fin 1)).ne_zero 0 (Submodule.span_eq_bot.1 e' _ ⟨0, rfl⟩)
-  · show IsUnit (1 : Matrix (Fin 1) (Fin 1) ℂ).det
-    simp
 
 end GlobalTheory.BigTop.Fun.Model
 
@@ -128,13 +118,6 @@ theorem pow_le_finrank {K : Type} [Field K] [NumberField K] {q e : ℕ} (hq : q.
 
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts} {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ}
 
-theorem degree_of_fit (p : PtAt ex Csz) (CF : ℝ) (G : Grid p CF) (h : GridFit p G)
-    (h0 : Ideal.absNorm G.pl.v0.asIdeal = GlobalTheory.ChiGrid.q0 D) :
-    GlobalTheory.ChiGrid.q0 D ^ ⌊GlobalTheory.ChiGrid.sizeP D CF p.Z.b / Real.log (GlobalTheory.ChiGrid.q0 D)⌋₊ ≤ Module.finrank ℚ D.LL0 := by
-  obtain ⟨z, hz⟩ := h.field.roots _ (G.pl.mem_S0_of_sum_eq.2 (Or.inl rfl))
-  rw [h0] at hz
-  refine pow_le_finrank (GlobalTheory.ChiGrid.leastSplitAuxiliaryPrimeThetaChain_spec D).1 (z := z) ?_
-  simpa [GlobalTheory.ChiGrid.Places.depth, GlobalTheory.ChiGrid.depth0] using hz
 
 theorem nonempty_iff (p : PtAt ex Csz) (CF : ℝ) : Nonempty (FunIn p CF) ↔
     ∃ (G : GlobalTheory.ChiGrid.GridData p.R.toRealDat.toLevCh ⟨1, CF, p.Z.b⟩) (W : G.Weil), W.Over p.R.toRealDat :=

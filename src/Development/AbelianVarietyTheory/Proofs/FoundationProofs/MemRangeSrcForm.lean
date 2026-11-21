@@ -1,6 +1,6 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GoodLiftOnto
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InjAndRatOfLi
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ClassPresBasic
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IpMSelfEqZero
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EOpEqAsAlgebraHom
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MeasureToRealEqMass
@@ -8,9 +8,332 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntegralEqSumOfS
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MulVecMemHatSwap
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ResidueCharIsOfFinOrder
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GlDetEqOneOfMemUnip
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GoodFormsCoordinateMapMemOfLiftsMem
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaKernelFiniteAdelicLawsStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaKernelFiniteAdelicLaws
 
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open Formalism.IndefR.Bridge Formalism.L2.DIV NumberField GlobalTheory.PresBasic
+
+namespace GlobalTheory.TraceIncl
+
+section Scalar
+
+variable {K V W : Type} [Field K] [NumberField K] [AddCommGroup V] [Module K V] [AddCommGroup W] [Module ℂ W] {σ : K →+* ℂ}
+
+theorem exists_int_smul (f : V →ₛₗ[σ] W) (hinj : Function.Injective f)
+    (hs : ∀ x y (c : ℂ), f x = c • f y → y = 0 ∨ ∃ a, σ a = c) {x y : V} {c : ℂˣ} (hc : IsOfFinOrder c)
+    (h : f x = (c : ℂ) • f y) : ∃ a : 𝓞 K, x = (a : K) • y := by
+  rcases hs x y c h with rfl | ⟨a, ha⟩
+  · exact ⟨0, hinj (by rw [h]; simp)⟩
+  · obtain ⟨n, hn, e⟩ := isOfFinOrder_iff_pow_eq_one.1 hc
+    have h1 : a ^ n = 1 := σ.injective (by rw [map_pow, ha, ← Units.val_pow_eq_pow_val, e, Units.val_one, map_one])
+    refine ⟨⟨a, IsIntegral.of_pow hn (by rw [h1]; exact isIntegral_one)⟩, hinj ?_⟩
+    rw [h, map_smulₛₗ, ← ha]
+    rfl
+
+theorem inj_and_rat_of_li (f : V →ₛₗ[σ] W)
+    (hli : ∀ (n : ℕ) (b : Fin n → V), LinearIndependent K b → LinearIndependent ℂ fun k => f (b k)) :
+    Function.Injective f ∧ ∀ x y (c : ℂ), f x = c • f y → y = 0 ∨ ∃ a, σ a = c := by
+  have hinj : Function.Injective f := by
+    refine (injective_iff_map_eq_zero f).2 fun x hx => ?_
+    by_contra h0
+    have := (hli 1 (fun _ => x) (linearIndependent_unique_iff.2 h0)).ne_zero 0
+    exact this hx
+  refine ⟨hinj, fun x y c h => ?_⟩
+  by_cases hy : y = 0
+  · exact Or.inl hy
+  have hy' : f y ≠ 0 := fun h0 => hy (hinj (by rw [h0, map_zero]))
+  by_cases hl : LinearIndependent K ![y, x]
+  · have h2 : LinearIndependent ℂ ![f y, f x] := by
+      convert hli 2 _ hl using 1
+      funext k
+      fin_cases k <;> rfl
+    exact absurd h.symm ((LinearIndependent.pair_iff' hy').1 h2 c)
+  · rw [LinearIndependent.pair_iff' hy] at hl
+    push Not at hl
+    obtain ⟨a, rfl⟩ := hl
+    rw [map_smulₛₗ] at h
+    exact Or.inr ⟨a, smul_left_injective ℂ hy' h⟩
+
+end Scalar
+
+variable {G Γ W K X : Type} [Group G] [Group Γ] [NormedAddCommGroup W] [InnerProductSpace ℂ W] [Field K]
+  [NumberField K] [StarRing K] [AddCommGroup X] [Module ℂ X] {ι : Γ →* G} {S : CSD K} {σ : K →+* ℂ} {ρ : Γ →* Module.End ℂ W}
+  {J : Subgroup G} {χ : J →* ℂˣ} (P : ClassPres ι S σ ρ J χ) (k : G → W →ₗ[ℂ] X)
+
+theorem coef_rat (x y : S.V) (c : ℂ) (h : P.coef x = c • P.coef y) : y = 0 ∨ ∃ a, σ a = c := by
+  by_cases hy : y = 0
+  · exact Or.inl hy
+  obtain ⟨j, hj⟩ : ∃ j, S.bV.repr y j ≠ 0 := by
+    by_contra hn
+    push Not at hn
+    exact hy (S.bV.repr.injective (by ext j; simp [hn j]))
+  have e := congrArg (fun w => (bW P).repr w j) h
+  simp only [map_smul, Finsupp.smul_apply, repr_coef, smul_eq_mul] at e
+  refine Or.inr ⟨S.bV.repr x j / S.bV.repr y j, ?_⟩
+  rw [map_div₀, e, mul_div_cancel_right₀ _ ((map_ne_zero σ).2 hj)]
+
+theorem card_stab (γ : Γ) (y : G) (j : J) : Nat.card (stab ι J (ι γ * y * j)) = Nat.card (stab ι J y) := by
+  refine Nat.card_congr (Equiv.subtypeEquiv (MulAut.conj γ⁻¹).toEquiv fun δ => ?_)
+  rw [mem_stab, mem_stab]
+  have e : (ι γ * y * j)⁻¹ * ι δ * (ι γ * y * j) = (j : G)⁻¹ * (y⁻¹ * ι ((MulAut.conj γ⁻¹).toEquiv δ) * y) * j := by
+    simp [mul_assoc]
+  rw [e, J.mul_mem_cancel_right j.2, J.mul_mem_cancel_left (J.inv_mem j.2)]
+
+theorem sum_translate (κ : G) (h1 : ∀ j ∈ J, κ * j * κ⁻¹ ∈ J) (h2 : ∀ j ∈ J, κ⁻¹ * j * κ ∈ J) (Φ : G → X)
+    (hΦ : ∀ γ h (j : J), Φ (ι γ * h * j) = Φ h) :
+    ∑ c, (Nat.card (stab ι J (P.y c)) : ℂ)⁻¹ • Φ (P.y c * κ) = ∑ c, (Nat.card (stab ι J (P.y c)) : ℂ)⁻¹ • Φ (P.y c) := by
+  have hinj : Function.Injective fun c => P.decC (P.y c * κ) := by
+    intro c c' e
+    have e1 := P.dec_spec (P.y c * κ)
+    have e2 := P.dec_spec (P.y c' * κ)
+    simp only at e
+    rw [← e] at e2
+    generalize P.decC (P.y c * κ) = d at e1 e2
+    generalize P.decG (P.y c * κ) = γ at e1
+    generalize P.decK (P.y c * κ) = j at e1
+    generalize P.decG (P.y c' * κ) = γ' at e2
+    generalize P.decK (P.y c' * κ) = j' at e2
+    refine (P.reps (P.y c')).unique ⟨γ' * γ⁻¹, ⟨_, h1 _ (j⁻¹ * j').2⟩, ?_⟩ ⟨1, 1, by simp⟩
+    rw [eq_mul_inv_of_mul_eq e1, eq_mul_inv_of_mul_eq e2]
+    simp [mul_assoc]
+  refine Fintype.sum_bijective _ (Finite.injective_iff_bijective.1 hinj) _ _ fun c => ?_
+  have e1 := P.dec_spec (P.y c * κ)
+  have e2 : stab ι J (P.y c * κ) = stab ι J (P.y c) := by
+    ext δ
+    rw [mem_stab, mem_stab]
+    refine ⟨fun h => ?_, fun h => ?_⟩
+    · convert h1 _ h using 1
+      group
+    · convert h2 _ h using 1
+      group
+  rw [← e2]
+  conv_lhs => rw [e1, card_stab, hΦ]
+
+def clSum : S.Forms →ₛₗ[σ] X where
+  toFun f := ∑ c, (Nat.card (stab ι J (P.y c)) : ℂ)⁻¹ • k (P.y c) (P.extL f (P.y c))
+  map_add' f f' := by simp [Finset.sum_add_distrib]
+  map_smul' a f := by
+    simp only [map_smulₛₗ, Pi.smul_apply, map_smul, Finset.smul_sum, RingHom.id_apply]
+    exact Finset.sum_congr rfl fun c _ => smul_comm _ _ _
+
+theorem clSum_apply (f : S.Forms) :
+    clSum P k f = ∑ c, (Nat.card (stab ι J (P.y c)) : ℂ)⁻¹ • k (P.y c) (P.coef ((f : S.Cl → S.V) c)) :=
+  Finset.sum_congr rfl fun c _ => by rw [ClassPres.extL_apply, ext_y]
+
+structure KernelLaws (ι : Γ →* G) (ρ : Γ →* Module.End ℂ W) {J : Subgroup G} (χ : J →* ℂˣ) (k : G → W →ₗ[ℂ] X) : Prop where
+  aut : ∀ γ h w, k (ι γ * h) (ρ γ w) = k h w
+  typ : ∀ h (j : J) w, k (h * j) w = (((χ j)⁻¹ : ℂˣ) : ℂ) • k h w
+
+variable {k}
+
+theorem KernelLaws.dec (hk : KernelLaws ι ρ χ k) (γ : Γ) (h : G) (j : J) (w : W) :
+    (χ j : ℂ) • k (ι γ * h * j) (ρ γ w) = k h w := by
+  rw [hk.typ, hk.aut, smul_smul, Units.mul_inv, one_smul]
+
+theorem KernelLaws.form (hk : KernelLaws ι ρ χ k) {F : G → W} (hF : F ∈ AdForms ι ρ J χ) (γ : Γ) (h : G) (j : J) :
+    k (ι γ * h * j) (F (ι γ * h * j)) = k h (F h) := by
+  rw [hF γ h j, map_smul, hk.dec]
+
+theorem clSum_avgForm (hk : KernelLaws ι ρ χ k) (c : S.Cl) (x : S.V) :
+    clSum P k (avgForm S c x) = k (P.y c) (P.coef x) := by
+  classical
+  rw [clSum_apply, Finset.sum_eq_single c]
+  · have hg : ∀ g : S.Gam c, k (P.y c) (P.coef (S.ρ c g x)) = k (P.y c) (P.coef x) := fun g => by
+      have := hk.dec (P.stabI c g : Γ) (P.y c) (stabK ι (P.stabI c g)) (P.coef x)
+      rwa [stabK_spec, ← map_smul, ← P.coef_act] at this
+    simp only [avgForm, Pi.single_eq_same, map_sum, hg, Finset.sum_const, Finset.card_univ]
+    rw [← Nat.card_congr (P.stabI c).toEquiv, Nat.card_eq_fintype_card, ← Nat.cast_smul_eq_nsmul ℂ, smul_smul,
+      inv_mul_cancel₀ (by exact_mod_cast Fintype.card_ne_zero), one_smul]
+  · intro c' _ hc
+    simp [avgForm, Pi.single_eq_of_ne hc]
+  · simp
+
+theorem clSum_act (hk : KernelLaws ι ρ χ k) {Q : Subgroup G} {ch : Q →* ℂˣ} {G0 : Type} [Group G0]
+    {act : Representation K G0 S.Forms} (T : ActTie ι P Q ch act) (hJ : J ≤ Q) (a : G0 → X →ₗ[ℂ] X)
+    (ha : ∀ (q : Q) h w, a (T.red q) (k (h * q) w) = (((ch q)⁻¹ : ℂˣ) : ℂ) • k h w) (g : G0) (f : S.Forms) :
+    clSum P k (act g f) = a g (clSum P k f) := by
+  obtain ⟨q, rfl⟩ := T.red_surj g
+  have hn : ∀ (q : Q), ∀ j ∈ J, (q : G) * j * (q : G)⁻¹ ∈ J := fun q j hj =>
+    (T.red_ker (q * ⟨j, hJ hj⟩ * q⁻¹)).1 (by
+      rw [map_mul, map_mul, (T.red_ker ⟨j, hJ hj⟩).2 hj, mul_one, ← map_mul, mul_inv_cancel, map_one])
+  have key := sum_translate P (q : G) (hn q) (fun j hj => by simpa using hn q⁻¹ j hj)
+    (fun h => k h (P.ext f h)) (hk.form (extMem P f))
+  change ∑ c, _ • k (P.y c) (P.ext _ (P.y c)) = a _ (∑ c, _ • k (P.y c) (P.ext _ (P.y c)))
+  rw [← key, map_sum, T.act_eq _ q rfl]
+  refine Finset.sum_congr rfl fun c _ => ?_
+  rw [map_smul, ha, g0Act, map_smul]
+
+structure LatSys (r : Γ → S.V →ₗ[K] S.V) (L : G → Submodule (𝓞 K) S.V) : Prop where
+  coef : ∀ γ x, P.coef (r γ x) = ρ γ (P.coef x)
+  move : ∀ γ h (j : J), ∀ x ∈ L h, r γ x ∈ L (ι γ * h * j)
+  nab : ∀ c, L (P.y c) = S.Nab c
+
+variable {P} {r : Γ → S.V →ₗ[K] S.V} {L : G → Submodule (𝓞 K) S.V}
+
+theorem LatSys.avg_mem (hL : LatSys P r L) (hχ : ∀ j, IsOfFinOrder (χ j)) {c : S.Cl} {x : S.V} (hx : x ∈ S.Nab c) (c' : S.Cl) :
+    (avgForm S c x : S.Cl → S.V) c' ∈ S.Nab c' := by
+  classical
+  by_cases h : c' = c
+  · subst h
+    simp only [avgForm, Pi.single_eq_same]
+    refine Submodule.sum_mem _ fun g _ => ?_
+    have h1 := hL.move (P.stabI c' g : Γ) (P.y c') (stabK ι (P.stabI c' g)) x (hL.nab c' ▸ hx)
+    rw [stabK_spec, hL.nab] at h1
+    obtain ⟨a, ha⟩ := exists_int_smul P.coef (coef_injective P) (coef_rat P) (hχ _)
+      ((P.coef_act c' g x).trans (by rw [← hL.coef]))
+    rw [ha]
+    have h2 := Submodule.smul_mem _ a h1
+    rwa [← algebraMap_smul K a] at h2
+  · simp [avgForm, Pi.single_eq_of_ne h]
+
+theorem LatSys.exists_trace (hL : LatSys P r L) (hχ : ∀ j, IsOfFinOrder (χ j)) (hk : KernelLaws ι ρ χ k) {h : G} {x : S.V}
+    (hx : x ∈ L h) : ∃ f : S.Forms, (∀ c, (f : S.Cl → S.V) c ∈ S.Nab c) ∧
+      ∃ j : J, k h (P.coef x) = (((χ j)⁻¹ : ℂˣ) : ℂ) • clSum P k f := by
+  obtain ⟨c, ⟨γ, j, rfl⟩, -⟩ := P.reps h
+  have h1 := hL.move γ⁻¹ _ j⁻¹ x hx
+  rw [show ι γ⁻¹ * (ι γ * P.y c * j) * (j⁻¹ : J) = P.y c by simp [mul_assoc], hL.nab] at h1
+  refine ⟨avgForm S c (r γ⁻¹ x), hL.avg_mem hχ h1, j, ?_⟩
+  rw [clSum_avgForm P hk, ← hk.dec γ (P.y c) j, smul_smul, Units.inv_mul, one_smul, hL.coef, ← Module.End.mul_apply, ← map_mul,
+    mul_inv_cancel, map_one, Module.End.one_apply]
+
+end GlobalTheory.TraceIncl
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open NumberField IsDedekindDomain MeasureTheory Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.FWT Formalism.IndefR.Lev GlobalTheory.OnTies
+open Formalism.IndefR.Mult Formalism.IndefR.Cx
+open scoped TensorProduct Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.TraceIncl
+
+theorem mem_of_mem_span_image {K V H : Type} [Field K] [AddCommGroup V] [Module K V] [Module.Finite K V] [AddCommGroup H]
+    [Module ℂ H] {σ : K →+* ℂ} (j : V →ₛₗ[σ] H)
+    (hj : ∀ (n : ℕ) (b : Fin n → V), LinearIndependent K b → LinearIndependent ℂ fun k => j (b k))
+    (N : Submodule K V) {z : V} (hz : j z ∈ Submodule.span ℂ (j '' (N : Set V))) : z ∈ N := by
+  by_contra hn
+  let b : Fin (Module.finrank K N) → V := fun k => (Module.finBasis K N k : V)
+  have hb : LinearIndependent K b := (Module.finBasis K N).linearIndependent.map' N.subtype N.ker_subtype
+  have hs : Submodule.span K (Set.range b) ≤ N := Submodule.span_le.2 (by rintro _ ⟨k, rfl⟩; exact (Module.finBasis K N k).2)
+  have h1 := hj _ (Fin.cons z b) (linearIndependent_finCons.2 ⟨hb, fun h => hn (hs h)⟩)
+  have h2 : (fun k => j ((Fin.cons z b : Fin (Module.finrank K N + 1) → V) k)) =
+      (Fin.cons (j z) (fun k => j (b k)) : Fin (Module.finrank K N + 1) → H) := by
+    funext k
+    refine Fin.cases rfl (fun _ => rfl) k
+  rw [h2, linearIndependent_finCons] at h1
+  refine h1.2 (Submodule.span_le.2 ?_ hz)
+  rintro _ ⟨x, hx, rfl⟩
+  have h3 := congrArg (fun z : N => (z : V)) ((Module.finBasis K N).sum_repr ⟨x, hx⟩)
+  simp only [Submodule.coe_sum, Submodule.coe_smul] at h3
+  rw [← h3, map_sum]
+  refine Submodule.sum_mem _ fun k _ => ?_
+  rw [map_smulₛₗ]
+  exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨k, rfl⟩)
+
+theorem exists_lvlE_eq {K : Type} [Field K] [NumberField K] [StarRing K] (S : CSD K) {G : Type} [Group G] [Fintype G]
+    (r : Representation K G S.Forms) (X : Finset (G → K)) (hX : ∀ χ ∈ X, IsAbsIrrChar χ) (P : Subgroup G) (ψ : P →* Kˣ)
+    (y : Fin (S.BaseDimension r X P ψ) → K) : ∃ x, (S.lvlE r P ψ).mulVecLin x = (S.V0E r X P ψ).mulVecLin y := by
+  obtain ⟨u, hu⟩ := (image_idempotent_spec K _ (S.gaMat r (goodAt X P ψ))).2.le ⟨y, rfl⟩
+  have h : S.gaMat r (goodAt X P ψ) = S.gaMat r (lvlIdem P ψ) * S.gaMat r (idemOf X) := by
+    rw [← (group_action_matrix_hom K S G r).2, (idempotent_central K G X hX).2]
+    rfl
+  refine (image_idempotent_spec K _ (S.gaMat r (lvlIdem P ψ))).2.ge ⟨(S.gaMat r (idemOf X)).mulVec u, ?_⟩
+  refine Eq.trans ?_ hu
+  rw [Matrix.mulVecLin_apply, Matrix.mulVecLin_apply, Matrix.mulVec_mulVec, h]
+
+theorem goodFormsCoordinateMap_apply {K : Type} [Field K] [NumberField K] [StarRing K] {Bs : Formalism.L2.Indef.DefBase K} {Am : Formalism.L2.Indef.DefAmb Bs}
+    (X : CxData Am) (b : Bool) (j : Bs.J) (c : Fin (X.dW b j) → ℂ) :
+    X.w0C b j c = ∑ k, c k • X.eW b j (X.bW b j Bs.v0 k) := by
+  show X.eW b j (∑ k, c k • X.bW b j Bs.v0 k) = _
+  rw [map_sum]
+  exact Finset.sum_congr rfl fun k _ => map_smul _ _ _
+
+theorem goodFormsCoordinateMap_mem_of_lifts_mem {K : Type} [Field K] [NumberField K] [StarRing K] {Bs : Formalism.L2.Indef.DefBase K} {Am : Formalism.L2.Indef.DefAmb Bs}
+    (X : CxData Am) {fc : Formalism.L2.Indef.DefSub Am → Formalism.L2.Indef.DefFace Bs} (cr : Crd Am fc) (b : Bool) (h5 : X.H5 cr b)
+    (j : Bs.J) (t : Bs.Tup) (N : Submodule ℂ (X.W j)) (h : ∀ y, X.θ' j t (X.jL j t (cr.toL X.zs b j t y)) ∈ N)
+    (c : Fin (X.dW b j) → ℂ) : X.w0C b j c ∈ N := by
+  obtain ⟨d, hd⟩ := (h5 j t).2.ge ⟨c, rfl⟩
+  rw [← hd]
+  show ∑ k, d k • X.θ' j t (X.jL j t (cr.toL X.zs b j t (Pi.single k 1))) ∈ N
+  exact Submodule.sum_mem _ fun k _ => Submodule.smul_mem _ _ (h _)
+
+variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
+  {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A)
+
+theorem e_j_eOp (hU : R.LUnif) (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ) (y : Fin (R.nW i) → D.what₂.LL) :
+    (R.HW i σ).e ((R.FW i).j σ ((R.FW i).eOp (fun g => (idemOf A.X).coeff g) y)) =
+      postOn _ (R.eWf i σ) ((R.HW i σ).e ((R.FW i).j σ y)) := by
+  have htw : ∀ g, (R.HW i σ).e ((R.FW i).j σ (GlobalTheory.LevelForms.twRep (R.FW i) g y)) =
+      postOn _ (actL (Wc D i) (R.βW i) (R.datWp i R.triv) (R.eG g)) ((R.HW i σ).e ((R.FW i).j σ y)) := by
+    intro g
+    rw [GlobalTheory.LevelForms.twRep_apply, map_smulₛₗ, map_smul, (hU i σ).2.2, smul_smul, ← map_mul, Units.inv_mul, map_one,
+      one_smul]
+  rw [GlobalTheory.LevelForms.eOp_eq_sum, map_sum, map_sum]
+  simp only [map_smulₛₗ, map_smul, htw]
+  refine MultilinearMap.ext fun v => ?_
+  simp only [RealDat.eWf, gaL, RealDat.eC, LinearMap.sum_apply, LinearMap.smul_apply, MultilinearMap.sum_apply,
+    MultilinearMap.smul_apply, postOn_apply, RingHom.id_apply]
+  all_goals rfl
+
+theorem exists_w0C_eq (i : Fin D.R.m) {w : (R.HW i (sg0 D A)).H} (h1 : w ∈ R.WS F false i (sg0 D A)) :
+    ∃ c, Tw.out (s := twAt D.what₂.embLL A.v0) ((R.toCx F).w0C false i c) = w := by
+  obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℂ).1 h1
+  have hs : ((Real.sqrt (RealDat.nP F false) : ℝ) : ℂ) ≠ 0 := by
+    exact_mod_cast (Real.sqrt_pos.2 (RealDat.nP_pos (F := F) false)).ne'
+  let c' : Fin ((R.toCx F).dW false i) → ℂ :=
+    fun k => cj (twAt D.what₂.embLL A.v0) (c k * ((Real.sqrt (RealDat.nP F false) : ℝ) : ℂ)⁻¹)
+  have e1 := goodFormsCoordinateMap_apply (R.toCx F) false i c'
+  refine ⟨c', (congrArg (Tw.out (s := twAt D.what₂.embLL A.v0)) e1).trans (Eq.trans ?_ hc)⟩
+  show ∑ k, cj (twAt D.what₂.embLL A.v0) (c' k) • (((Real.sqrt (RealDat.nP F false) : ℝ) : ℂ) •
+    R.bC F false i (sg0 D A) k) = _
+  refine Finset.sum_congr rfl fun k _ => ?_
+  rw [cj_cj, smul_smul, inv_mul_cancel_right₀ hs]
+
+theorem exists_srcForm_eq (hX : ∀ χ ∈ A.X, IsAbsIrrChar χ) (i : Fin D.R.m) (t : T0)
+    (Z : Submodule D.what₂.LL (A.fam.L i t).S.Forms) (y : Fin ((A.fam.L i t).dZ (A.fam.lvlA F.P0 F.ψ0) Z) → D.what₂.LL) :
+    ∃ x, srcForm A i t F.P0 F.ψ0⁻¹ x = (A.fam.L i t).toF (A.fam.lvlA F.P0 F.ψ0) Z y := by
+  obtain ⟨x, hx⟩ := exists_lvlE_eq (A.MtCSD i t) (A.leftGroupActionLift i t) A.X hX F.P0 F.ψ0⁻¹
+    (((A.fam.L i t).zE (A.fam.lvlA F.P0 F.ψ0) Z).mulVecLin y)
+  exact ⟨x, congrArg (fun u => (A.MtCSD i t).basis.equivFun.symm u) hx⟩
+
+theorem out_lift_toL (i : Fin D.R.m) (t : T0)
+    (y : Fin ((A.fam.L i t).dZ (A.fam.lvlA F.P0 F.ψ0) ((R.toCx F).zs.Zl i t)) → D.what₂.LL) :
+    (R.toCx F).θ' i t ((R.toCx F).jL i t (F.cr.toL (R.toCx F).zs false i t y)) =
+      Tw.mk (twAt D.what₂.embLL A.v0) (R.thG i t (jVx R i t
+        ((A.fam.L i t).toF (A.fam.lvlA F.P0 F.ψ0) ((R.toCx F).zs.Zl i t) y))) := rfl
+
+theorem j_eOp_of_adForm (hW : R.models_HW) (hG : R.thP_thG) (hU : R.LUnif) (i : Fin D.R.m) (t : T0) (ph : ℂ)
+    (y : Fin (R.nW i) → D.what₂.LL) (u : (R.HV i t).H) (h0 : adForm R i y = ph • R.thF i t u) :
+    (R.FW i).j (sg0 D A) ((R.FW i).eOp (fun g => (idemOf A.X).coeff g) y) = ph • R.thG i t u := by
+  have h1 := e_j_eOp R hU i (sg0 D A) y
+  unfold adForm at h0
+  rw [h0, LinearMap.map_smul, ← hG i t u, ← LinearMap.map_smul] at h1
+  exact (hW i _).1 h1
+
+end GlobalTheory.TraceIncl
+end
+end
+
+section
+open NumberField IsDedekindDomain MeasureTheory Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.FWT Formalism.IndefR.Lev GlobalTheory.OnTies
+open scoped TensorProduct Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.thetaKernelFiniteAdelic_laws : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (i : Fin D.R.m) (t : T0), R.models_inf → R.models_cV → R.thP_ωP → R.thP_pt_theta → R.thP_ioP → GlobalTheory.TraceIncl.DatumType R i t → (∀ h, GlobalTheory.TraceIncl.kern R i t (fin (Vc D i) h) = GlobalTheory.TraceIncl.kernA R i t h) ∧ (∀ (γ : GQ (Vc D i)) h w, GlobalTheory.TraceIncl.kern R i t (Bridge.ratF (Vc D i) γ * h) ((R.cV i).coef.ρ γ w) = GlobalTheory.TraceIncl.kern R i t h w) ∧ (∀ h (k : (levEnv (Vc D i) (R.βV i) (R.datVt i t)).J) w, GlobalTheory.TraceIncl.kern R i t (h * k) w = ((((levEnv (Vc D i) (R.βV i) (R.datVt i t)).χ k)⁻¹ : ℂˣ) : ℂ) • GlobalTheory.TraceIncl.kern R i t h w) ∧ ∀ (g0 : G0 R.Pg D.R.r) (q : (levEnv (Vc D i) (R.βV i) (R.datVt i t)).Q), g0 = rTup (R.βV i) (R.datVt i t) (Formalism.UG.bc (swapAE D) ((q : Bridge.Gf (Vc D i)) : GL _ _)) → (∃ κ', IsLevelLift (Wc D i) (R.βW i) (R.datWp i R.triv) g0 κ') → ∀ h w v, actL (Wc D i) (R.βW i) (R.datWp i R.triv) g0 (GlobalTheory.TraceIncl.kern R i t (h * q) w v) = ((((levEnv (Vc D i) (R.βV i) (R.datVt i t)).ch q)⁻¹ : ℂˣ) : ℂ) • GlobalTheory.TraceIncl.kern R i t h w v := by
+  first | exact @GlobalTheory.TraceIncl.kern_laws | exact GlobalTheory.TraceIncl.kern_laws | (intros; apply GlobalTheory.TraceIncl.kern_laws <;> assumption)
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -477,3 +800,5 @@ end Local
 end Comparison₂
 
 end GlobalTheory.TraceIncl
+end
+end

@@ -1,16 +1,633 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsInvInvariantOfRight
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SumNormEntriesLeSumSingularValues
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MeasurableCoshPow
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LintegralExpNegMulSumNorm
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LamBallULeStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExpLogNearOneStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsHermitianLogUnitaryBlockDiagonalStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SumNormSqExpHermSubOneLeBlockMat
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsometricChartBlockHermitian
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InvariantMeasureLowerBoundOfChart
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CoshConstNumericalBound
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.StarMulOfMemKc
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsContinuousOnPolarLog
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LamBallULe
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExpLogNearOne
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsHermitianLogUnitaryBlockDiagonal
 
+section
+section
+namespace GlobalTheory.CartanInt.Frob
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshPower GlobalTheory.CartanInt Matrix MeasureTheory
+
+theorem sq_col_le {n : ℕ} {U : Matrix (Fin n) (Fin n) ℂ} (hU : U ∈ Matrix.unitaryGroup (Fin n) ℂ)
+    (a : Fin n) : (∑ i, ‖U i a‖) ^ 2 ≤ n := by
+  have h1 : star U * U = 1 := Matrix.mem_unitaryGroup_iff'.mp hU
+  have h2 := congrFun (congrFun h1 a) a
+  simp only [Matrix.mul_apply, Matrix.star_apply, Matrix.one_apply_eq, Complex.star_def,
+    Complex.conj_mul'] at h2
+  have h3 : ∑ i, ‖U i a‖ ^ 2 = 1 := by exact_mod_cast h2
+  have h4 := sq_sum_le_card_mul_sum_sq (s := Finset.univ) (f := fun i => ‖U i a‖)
+  simpa [h3] using h4
+
+theorem sum_diag (p q : ℕ) (s : ℕ → ℝ) :
+    ∑ a : Fin p, ∑ b : Fin q, (if (a : ℕ) = (b : ℕ) then s a else 0) =
+      ∑ i ∈ Finset.range (min p q), s i := by
+  rw [Fin.sum_univ_eq_sum_range (fun a => ∑ b : Fin q, (if a = (b : ℕ) then s a else 0)) p]
+  have h : ∀ a : ℕ, ∑ b : Fin q, (if a = (b : ℕ) then s a else 0) =
+      if a ∈ Finset.range q then s a else 0 := fun a => by
+    rw [Fin.sum_univ_eq_sum_range (fun b => if a = b then s a else 0) q, Finset.sum_ite_eq]
+  simp only [h]
+  rw [← Finset.sum_filter]
+  congr 1
+  ext i
+  simp
+
+theorem sum_norm_le_sum_singVal : ∀ (p q : ℕ) (B : Matrix (Fin p) (Fin q) ℂ),
+    ∑ i, ∑ j, ‖B i j‖ ≤
+      (((p + q : ℕ) : ℝ) + 1) / 2 * ∑ i ∈ Finset.range (min p q), singVal B i := by
+  intro p q B
+  obtain ⟨U, hU, V, hV, hB⟩ := GlobalTheory.RectSVD.exists_svd_singularValues p q B
+  set d : Fin p → Fin q → ℝ := fun a b => if (a : ℕ) = (b : ℕ) then singVal B a else 0 with hd
+  have hd0 : ∀ a b, 0 ≤ d a b := fun a b => by
+    simp only [hd]; split_ifs
+    · exact singVal_nonneg _ _
+    · exact le_rfl
+  have h1 : ∀ i j, ‖B i j‖ ≤ ∑ b, ∑ a, ‖U i a‖ * d a b * ‖V j b‖ := by
+    intro i j
+    have e := congrFun (congrFun hB i) j
+    rw [e, Matrix.mul_apply]
+    refine norm_sum_le_of_le _ fun b _ => ?_
+    rw [Matrix.mul_apply, Finset.sum_mul]
+    refine norm_sum_le_of_le _ fun a _ => le_of_eq ?_
+    rw [norm_mul, norm_mul, Matrix.conjTranspose_apply, norm_star, Matrix.of_apply]
+    congr 2
+    simp only [hd]
+    split_ifs
+    · rw [Complex.norm_real]; exact Real.norm_of_nonneg (singVal_nonneg B a)
+    · simp
+  calc ∑ i, ∑ j, ‖B i j‖ ≤ ∑ i, ∑ j, ∑ b, ∑ a, ‖U i a‖ * d a b * ‖V j b‖ :=
+        Finset.sum_le_sum fun i _ => Finset.sum_le_sum fun j _ => h1 i j
+    _ = ∑ b, ∑ a, ((∑ i, ‖U i a‖) * ∑ j, ‖V j b‖) * d a b := by
+        simp only [Finset.sum_mul_sum, Finset.sum_mul]
+        simp_rw [Finset.sum_comm (s := (Finset.univ : Finset (Fin q))) (t := (Finset.univ : Finset (Fin q))) (f := fun j b => ∑ a, ‖U _ a‖ * d a b * ‖V j b‖)]
+        rw [Finset.sum_comm]
+        refine Finset.sum_congr rfl fun b _ => ?_
+        simp_rw [Finset.sum_comm (s := (Finset.univ : Finset (Fin q))) (t := (Finset.univ : Finset (Fin p))) (f := fun j a => ‖U _ a‖ * d a b * ‖V j b‖)]
+        rw [Finset.sum_comm]
+        refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun i _ => ?_
+        rw [← Finset.mul_sum]; ring
+    _ ≤ ∑ b, ∑ a, (((p + q : ℕ) : ℝ) + 1) / 2 * d a b := by
+        refine Finset.sum_le_sum fun b _ => Finset.sum_le_sum fun a _ =>
+          mul_le_mul_of_nonneg_right ?_ (hd0 a b)
+        have := sq_col_le hU a
+        have := sq_col_le hV b
+        push_cast
+        nlinarith [sq_nonneg ((∑ i, ‖U i a‖) - ∑ j, ‖V j b‖)]
+    _ = _ := by
+        rw [← sum_diag, Finset.sum_comm]
+        simp only [Finset.mul_sum, hd]
+
+end GlobalTheory.CartanInt.Frob
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshPower GlobalTheory.CartanInt Matrix MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sum_norm_entries_le_sum_singularValues : ∀ (p q : ℕ) (B : Matrix (Fin p) (Fin q) ℂ), ∑ i, ∑ j, ‖B i j‖ ≤ (((p + q : ℕ) : ℝ) + 1) / 2 * ∑ i ∈ Finset.range (min p q), singVal B i := by
+  atlas_forward_decl GlobalTheory.CartanInt.Frob.sum_norm_le_sum_singVal
+end
+
+section
+section
+noncomputable section
+namespace GlobalTheory.CoshPowMeas
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshPower GlobalTheory.CartanInt Matrix MeasureTheory
+open Filter Topology
+
+variable {p q : ℕ}
+
+theorem continuous_cartanB : Continuous (cartanB : UpqT p q → Matrix (Fin p) (Fin q) ℂ) := by
+  have h : Continuous fun g : UpqT p q => GlobalTheory.PolarLogCont.halfLog (UpqT.mat g) :=
+    GlobalTheory.PolarLogCont.continuousOn_halfLog.comp_continuous GlobalTheory.UpqTopology.continuous_mat
+      fun g => Units.isUnit (show Formalism.UG.Upq p q from g).1
+  have hc : Continuous fun M : Mat p q => M.toBlocks₁₂ := by
+    refine continuous_matrix fun i j => ?_
+    exact continuous_id.matrix_elem (Sum.inl i) (Sum.inr j)
+  exact hc.comp h
+
+def sPad (B : Matrix (Fin p) (Fin q) ℂ) (j : Fin q) : ℝ := if (j : ℕ) < p then singVal B j else 0
+
+theorem exists_gram (B : Matrix (Fin p) (Fin q) ℂ) : ∃ V : Matrix (Fin q) (Fin q) ℂ, Vᴴ * V = 1 ∧
+    Bᴴ * B = V * Matrix.diagonal (fun j => ((sPad B j : ℝ) : ℂ) ^ 2) * Vᴴ := by
+  obtain ⟨U, hU, V, hV, hB⟩ := GlobalTheory.RectSVD.exists_svd_singularValues p q B
+  have h1 : Uᴴ * U = 1 := Matrix.mem_unitaryGroup_iff'.mp hU
+  have h2 : Vᴴ * V = 1 := Matrix.mem_unitaryGroup_iff'.mp hV
+  refine ⟨V, h2, ?_⟩
+  set D : Matrix (Fin p) (Fin q) ℂ := Matrix.of fun (i : Fin p) (j : Fin q) =>
+        if (i : ℕ) = (j : ℕ) then (((Matrix.toEuclideanLin B).singularValues i : ℝ) : ℂ) else 0 with hD
+  have hDD : Dᴴ * D = Matrix.diagonal (fun j => ((sPad B j : ℝ) : ℂ) ^ 2) := by
+    ext j j'
+    rw [Matrix.mul_apply]
+    by_cases hj : (j : ℕ) < p
+    · rw [Finset.sum_eq_single (⟨j, hj⟩ : Fin p)]
+      · by_cases hjj : j = j'
+        · subst hjj
+          simp [hD, sPad, hj, singVal, sq]
+        · have : (j : ℕ) ≠ j' := fun h => hjj (Fin.ext h)
+          simp [hD, hjj, this]
+      · intro i _ hi
+        have : (i : ℕ) ≠ j := fun h => hi (Fin.ext h)
+        simp [hD, this]
+      · simp
+    · rw [Finset.sum_eq_zero]
+      · by_cases hjj : j = j'
+        · subst hjj
+          simp [sPad, hj]
+        · simp [hjj]
+      · intro i _
+        have : (i : ℕ) ≠ j := fun h => hj (h ▸ i.isLt)
+        simp [hD, this]
+  rw [← hDD]
+  conv_lhs => rw [hB]
+  simp only [Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, Matrix.mul_assoc]
+  rw [← Matrix.mul_assoc Uᴴ U, h1, Matrix.one_mul]
+
+theorem conj_pow {n : Type} [Fintype n] [DecidableEq n] (V A : Matrix n n ℂ) (h : Vᴴ * V = 1) (k : ℕ) :
+    (V * A * Vᴴ) ^ k = V * A ^ k * Vᴴ := by
+  induction k with
+  | zero => simp [mul_eq_one_comm.1 h]
+  | succ k ih =>
+    rw [pow_succ, ih, pow_succ]
+    simp only [Matrix.mul_assoc]
+    rw [← Matrix.mul_assoc Vᴴ V, h, Matrix.one_mul]
+
+def coshSum (n : ℕ) (B : Matrix (Fin p) (Fin q) ℂ) : Matrix (Fin q) (Fin q) ℂ :=
+  ∑ k ∈ Finset.range n, (((2 * k).factorial : ℕ) : ℂ)⁻¹ • (Bᴴ * B) ^ k
+
+theorem continuous_coshSum (n : ℕ) : Continuous (coshSum n : Matrix (Fin p) (Fin q) ℂ → _) := by
+  unfold coshSum
+  refine continuous_finset_sum _ fun k _ => ?_
+  have h : Continuous fun B : Matrix (Fin p) (Fin q) ℂ => Bᴴ * B :=
+    continuous_id.matrix_conjTranspose.matrix_mul continuous_id
+  exact (h.pow k).const_smul ((((2 * k).factorial : ℕ) : ℂ)⁻¹)
+
+theorem det_coshSum (n : ℕ) (B : Matrix (Fin p) (Fin q) ℂ) : (coshSum n B).det.re =
+    ∏ j : Fin q, ∑ k ∈ Finset.range n, sPad B j ^ (2 * k) / ((2 * k).factorial : ℕ) := by
+  obtain ⟨V, hV, h⟩ := exists_gram B
+  have e : coshSum n B = V * Matrix.diagonal (fun j => ((∑ k ∈ Finset.range n,
+      sPad B j ^ (2 * k) / ((2 * k).factorial : ℕ) : ℝ) : ℂ)) * Vᴴ := by
+    have e1 : Matrix.diagonal (fun j => ((∑ k ∈ Finset.range n,
+      sPad B j ^ (2 * k) / ((2 * k).factorial : ℕ) : ℝ) : ℂ)) = ∑ k ∈ Finset.range n,
+        (((2 * k).factorial : ℕ) : ℂ)⁻¹ • (Matrix.diagonal (fun j => ((sPad B j : ℝ) : ℂ) ^ 2)) ^ k := by
+      ext i j
+      simp only [Matrix.diagonal_pow, Matrix.sum_apply, Matrix.smul_apply, Matrix.diagonal_apply]
+      split_ifs
+      · push_cast
+        refine Finset.sum_congr rfl fun k _ => ?_
+        simp [pow_mul, div_eq_inv_mul]
+      · simp
+    rw [e1, coshSum, h, Matrix.mul_sum, Matrix.sum_mul]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    rw [conj_pow _ _ hV, Matrix.mul_smul, Matrix.smul_mul]
+  rw [e, Matrix.det_mul_comm, ← Matrix.mul_assoc, hV, Matrix.one_mul, Matrix.det_diagonal,
+    ← Complex.ofReal_prod, Complex.ofReal_re]
+
+theorem prod_cosh_sPad (B : Matrix (Fin p) (Fin q) ℂ) :
+    ∏ j : Fin q, Real.cosh (sPad B j) = ∏ i ∈ Finset.range (min p q), Real.cosh (singVal B i) := by
+  unfold sPad
+  rw [Fin.prod_univ_eq_prod_range (fun j => Real.cosh (if j < p then singVal B j else 0)) q]
+  symm
+  refine Finset.prod_subset_one_on_sdiff (Finset.range_subset_range.2 (min_le_right p q)) ?_ ?_
+  · intro x hx
+    have : ¬ x < p := by
+      simp only [Finset.mem_sdiff, Finset.mem_range] at hx; omega
+    simp [this]
+  · intro x hx
+    have : x < p := by
+      simp only [Finset.mem_range] at hx; omega
+    simp [this]
+
+theorem tendsto_det_coshSum (B : Matrix (Fin p) (Fin q) ℂ) :
+    Tendsto (fun n => (coshSum n B).det.re) atTop
+      (𝓝 (∏ i ∈ Finset.range (min p q), Real.cosh (singVal B i))) := by
+  simp only [det_coshSum, ← prod_cosh_sPad]
+  exact tendsto_finset_prod _ fun j _ => (Real.hasSum_cosh (sPad B j)).tendsto_sum_nat
+
+theorem measurable_coshPow : ∀ (p q : ℕ) (c : ℝ), Measurable (coshPow c : UpqT p q → ℝ) := by
+  intro p q c
+  have : BorelSpace (UpqT p q) := (GlobalTheory.UpqTopology.upq_lcsc p q).2.2.2.2.1
+  have h : Measurable fun g : UpqT p q =>
+      ∏ i ∈ Finset.range (min p q), Real.cosh (singVal (cartanB g) i) := by
+    refine measurable_of_tendsto_metrizable
+      (f := fun n (g : UpqT p q) => (coshSum n (cartanB g)).det.re) (fun n => ?_)
+      (tendsto_pi_nhds.2 fun g => tendsto_det_coshSum _)
+    exact (Complex.continuous_re.comp
+      (((continuous_coshSum n).comp continuous_cartanB).matrix_det)).measurable
+  have e : (coshPow c : UpqT p q → ℝ) = fun g =>
+      (∏ i ∈ Finset.range (min p q), Real.cosh (singVal (cartanB g) i)) ^ (-c) := by
+    funext g
+    exact Real.finset_prod_rpow _ _ (fun i _ => (Real.cosh_pos _).le) _
+  rw [e]
+  exact h.pow_const _
+
+end GlobalTheory.CoshPowMeas
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshPower GlobalTheory.CartanInt Matrix MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.measurable_coshPow' : ∀ (p q : ℕ) (c : ℝ), Measurable (coshPow c : UpqT p q → ℝ) := by
+  atlas_forward_decl GlobalTheory.CoshPowMeas.measurable_coshPow
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshPower GlobalTheory.CartanInt Matrix MeasureTheory
+
+namespace GlobalTheory.CartanInt
+
+theorem integral_exp_neg_mul_norm_complex (b : ℝ) (hb : 0 < b) :
+    ∫ z : ℂ, Real.exp (-(b * ‖z‖)) = 2 * Real.pi / b ^ 2 := by
+  have h := Complex.integral_exp_neg_mul_rpow (p := 1) (b := b) le_rfl hb
+  simp only [Real.rpow_one, neg_mul, div_one] at h
+  rw [h]
+  have h3 : Real.Gamma (2 + 1) = 2 := by
+    have := Real.Gamma_nat_eq_factorial 2
+    simpa [Nat.factorial] using this
+  rw [h3, Real.rpow_neg hb.le, Real.rpow_two]
+  field_simp
+
+theorem lintegral_exp_neg_mul_sum_norm (p q : ℕ) (b : ℝ) (hb : 0 < b) :
+    ∫⁻ B : Fin p → Fin q → ℂ, ENNReal.ofReal (Real.exp (-(b * ∑ i, ∑ j, ‖B i j‖))) =
+      ENNReal.ofReal ((2 * Real.pi / b ^ 2) ^ (p * q)) := by
+  have h1 := integral_exp_neg_mul_norm_complex b hb
+  have hne : (2 * Real.pi / b ^ 2) ≠ 0 := by positivity
+  have hi : Integrable (fun z : ℂ => Real.exp (-(b * ‖z‖))) :=
+    Integrable.of_integral_ne_zero (by rw [h1]; exact hne)
+  have hprod : ∀ B : Fin p → Fin q → ℂ, Real.exp (-(b * ∑ i, ∑ j, ‖B i j‖)) =
+      ∏ i, ∏ j, Real.exp (-(b * ‖B i j‖)) := by
+    intro B
+    simp only [Finset.mul_sum, ← Finset.sum_neg_distrib, Real.exp_sum]
+  have hrow : Integrable (fun v : Fin q → ℂ => ∏ j, Real.exp (-(b * ‖v j‖))) := by
+    rw [volume_pi]
+    exact Integrable.fintype_prod (f := fun _ (z : ℂ) => Real.exp (-(b * ‖z‖))) (fun _ => hi)
+  have hall : Integrable (fun B : Fin p → Fin q → ℂ => ∏ i, ∏ j, Real.exp (-(b * ‖B i j‖))) := by
+    rw [volume_pi]
+    exact Integrable.fintype_prod
+      (f := fun _ (v : Fin q → ℂ) => ∏ j, Real.exp (-(b * ‖v j‖))) (fun _ => hrow)
+  have hrowv : ∫ v : Fin q → ℂ, ∏ j, Real.exp (-(b * ‖v j‖)) = (2 * Real.pi / b ^ 2) ^ q := by
+    rw [volume_pi, integral_fintype_prod_eq_prod (f := fun _ (z : ℂ) => Real.exp (-(b * ‖z‖)))]
+    simp only [h1, Finset.prod_const, Finset.card_univ, Fintype.card_fin]
+  have hallv : ∫ B : Fin p → Fin q → ℂ, ∏ i, ∏ j, Real.exp (-(b * ‖B i j‖)) =
+      (2 * Real.pi / b ^ 2) ^ (p * q) := by
+    rw [volume_pi, integral_fintype_prod_eq_prod
+      (f := fun _ (v : Fin q → ℂ) => ∏ j, Real.exp (-(b * ‖v j‖)))]
+    simp only [hrowv, Finset.prod_const, Finset.card_univ, Fintype.card_fin]
+    rw [← pow_mul, mul_comm q p]
+  simp only [hprod]
+  rw [← hallv, ofReal_integral_eq_lintegral_ofReal hall]
+  exact Filter.Eventually.of_forall fun B => by positivity
+
+end GlobalTheory.CartanInt
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshPower GlobalTheory.CartanInt Matrix MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lintegral_exp_neg_mul_sum_norm_matrix : ∀ (p q : ℕ) (b : ℝ), 0 < b → ∫⁻ B : Fin p → Fin q → ℂ, ENNReal.ofReal (Real.exp (-(b * ∑ i, ∑ j, ‖B i j‖))) = ENNReal.ofReal ((2 * Real.pi / b ^ 2) ^ (p * q)) := by
+  atlas_forward_decl GlobalTheory.CartanInt.lintegral_exp_neg_mul_sum_norm
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshPower GlobalTheory.CartanInt Matrix MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lam_ballU_le_ofReal_pow : ∀ (p q : ℕ) (lam : Measure (lieU p q)), IsOmegaLeb lam → ∀ r : ℝ, 0 < r → lam (ballU p q r) ≤ ENNReal.ofReal ((18 / 5 * r / ((p + q : ℕ) : ℝ)) ^ ((p + q) ^ 2)) := by
+  first | exact @GlobalTheory.CartanInt.LamBall.lam_ballU_le | exact GlobalTheory.CartanInt.LamBall.lam_ballU_le | (intros; apply GlobalTheory.CartanInt.LamBall.lam_ballU_le <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshPower GlobalTheory.CartanInt Matrix MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_radius_exp_sub_one_le_and_exists_log : ∀ (p q : ℕ), ∃ ρ : ℝ, 0 < ρ ∧ (∀ Y : Mat p q, l1 Y < ρ → l1 (NormedSpace.exp Y - 1) ≤ 21 / 20 * l1 Y) ∧ ∀ g : UpqT p q, l1 (UpqT.mat g - 1) < ρ → ∃ X : lieU p q, UpqT.mat g = NormedSpace.exp (X : Mat p q) ∧ l1 (X : Mat p q) ≤ 21 / 20 * l1 (UpqT.mat g - 1) := by
+  first | exact @GlobalTheory.CartanInt.ExpLocal.exp_log_near_one | exact GlobalTheory.CartanInt.ExpLocal.exp_log_near_one | (intros; apply GlobalTheory.CartanInt.ExpLocal.exp_log_near_one <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshPower GlobalTheory.CartanInt Matrix MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_hermitian_log_unitaryBlockDiagonal : ∀ (p q : ℕ) (k : UpqT p q), k ∈ Kc p q → ∃ H : Mat p q, Hᴴ = H ∧ IsKC H ∧ (∀ a b, ‖H a b‖ ≤ Real.pi) ∧ UpqT.mat k = NormedSpace.exp (Complex.I • H) := by
+  first | exact @GlobalTheory.CartanInt.UnitLog.exists_unitlog | exact GlobalTheory.CartanInt.UnitLog.exists_unitlog | (intros; apply GlobalTheory.CartanInt.UnitLog.exists_unitlog <;> assumption)
+end
+
+section
+section
+noncomputable section
+namespace GlobalTheory.CartanLip
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshPower GlobalTheory.CartanInt Matrix MeasureTheory
+open scoped Matrix.Norms.Frobenius
+
+section
+variable {n : Type} [Fintype n] [DecidableEq n]
+
+theorem frob_sq (A : Matrix n n ℂ) : ‖A‖ ^ 2 = ∑ a, ∑ b, ‖A a b‖ ^ 2 := by
+  rw [Matrix.frobenius_norm_def, ← Real.sqrt_eq_rpow, Real.sq_sqrt (by positivity)]
+  simp
+
+theorem frob_sq_trace (A : Matrix n n ℂ) : ‖A‖ ^ 2 = (Matrix.trace (A * Aᴴ)).re := by
+  rw [frob_sq]
+  simp [Matrix.trace, Matrix.mul_apply, Complex.sq_norm, Complex.normSq_apply]
+
+theorem frob_unitary (U A V : Matrix n n ℂ) (hU : Uᴴ * U = 1) (hV : V * Vᴴ = 1) :
+    ‖U * A * V‖ = ‖A‖ := by
+  rw [← sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _), frob_sq_trace, frob_sq_trace]
+  congr 1
+  calc trace (U * A * V * (U * A * V)ᴴ) = trace (U * (A * (V * Vᴴ) * Aᴴ * Uᴴ)) := by
+        simp only [conjTranspose_mul, Matrix.mul_assoc]
+    _ = trace (A * Aᴴ * (Uᴴ * U)) := by
+        rw [hV, trace_mul_comm]; simp only [Matrix.mul_assoc, Matrix.one_mul]
+    _ = _ := by rw [hU, Matrix.mul_one]
+
+theorem exp_skew (X : Matrix n n ℂ) (hX : Xᴴ = -X) :
+    (NormedSpace.exp X)ᴴ * NormedSpace.exp X = 1 ∧ NormedSpace.exp X * (NormedSpace.exp X)ᴴ = 1 := by
+  rw [← Matrix.exp_conjTranspose, hX]
+  constructor
+  · rw [← Matrix.exp_add_of_commute _ _ (Commute.refl X).neg_left]; simp
+  · rw [← Matrix.exp_add_of_commute _ _ (Commute.refl X).neg_right]; simp
+
+theorem norm_exp_mul_exp_sub_one (X Y : Matrix n n ℂ) (hX : Xᴴ = -X) (hY : Yᴴ = -Y) :
+    ‖NormedSpace.exp X * NormedSpace.exp Y - 1‖ ≤ ‖X + Y‖ := by
+  have h := norm_image_sub_le_of_norm_deriv_le_segment_01'
+    (f := fun t : ℝ => NormedSpace.exp (t • X) * NormedSpace.exp (t • Y))
+    (f' := fun t : ℝ => NormedSpace.exp (t • X) * (X + Y) * NormedSpace.exp (t • Y)) (C := ‖X + Y‖)
+    (fun t _ => by
+      have h1 := (hasDerivAt_exp_smul_const (𝕂 := ℝ) X t).fun_mul
+        (hasDerivAt_exp_smul_const' (𝕂 := ℝ) Y t)
+      refine (h1.congr_deriv ?_).hasDerivWithinAt
+      rw [mul_add, add_mul, mul_assoc _ Y]
+      rfl)
+    (fun t _ => le_of_eq (frob_unitary _ _ _
+      (exp_skew _ (by simp [hX])).1 (exp_skew _ (by simp [hY])).2))
+  simpa using h
+
+theorem sum_sq_le (H H' : Matrix n n ℂ) (hH : Hᴴ = H) (hH' : H'ᴴ = H') :
+    ∑ a, ∑ b, ‖(NormedSpace.exp (-(Complex.I • H')) * NormedSpace.exp (Complex.I • H) - 1) a b‖ ^ 2 ≤
+      ∑ a, ∑ b, ‖(H - H') a b‖ ^ 2 := by
+  rw [← frob_sq, ← frob_sq]
+  have h := norm_exp_mul_exp_sub_one (-(Complex.I • H')) (Complex.I • H)
+    (by simp [hH']) (by simp [hH])
+  have e : -(Complex.I • H') + Complex.I • H = Complex.I • (H - H') := by
+    rw [smul_sub]; abel
+  rw [e, norm_smul, Complex.norm_I, one_mul] at h
+  exact pow_le_pow_left₀ (norm_nonneg _) h 2
+
+end
+
+theorem exp_mul_exp_sub_one_le : ∀ (p q : ℕ) (H H' : Mat p q), Hᴴ = H → H'ᴴ = H' → ∑ a, ∑ b, ‖(NormedSpace.exp (-(Complex.I • H')) * NormedSpace.exp (Complex.I • H) - 1) a b‖ ^ 2 ≤ ∑ a, ∑ b, ‖(H - H') a b‖ ^ 2 :=
+  fun _ _ H H' hH hH' => sum_sq_le H H' hH hH'
+
+end GlobalTheory.CartanLip
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshPower GlobalTheory.CartanInt Matrix MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sum_norm_sq_exp_herm_sub_one_le_blockMat : ∀ (p q : ℕ) (H H' : Mat p q), Hᴴ = H → H'ᴴ = H' → ∑ a, ∑ b, ‖(NormedSpace.exp (-(Complex.I • H')) * NormedSpace.exp (Complex.I • H) - 1) a b‖ ^ 2 ≤ ∑ a, ∑ b, ‖(H - H') a b‖ ^ 2 := by
+  atlas_forward_decl GlobalTheory.CartanLip.exp_mul_exp_sub_one_le
+end
+
+section
+section
+noncomputable section
+namespace GlobalTheory.CartanInt.HermChart
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshPower GlobalTheory.CartanInt Matrix MeasureTheory
+
+def herm {n : Type} (S : n → n → ℝ) : Matrix n n ℂ :=
+  Matrix.of fun i j => (⟨(S i j + S j i) / 2, (S i j - S j i) / 2⟩ : ℂ)
+
+theorem herm_apply {n : Type} (S : n → n → ℝ) (i j : n) :
+    herm S i j = (⟨(S i j + S j i) / 2, (S i j - S j i) / 2⟩ : ℂ) := rfl
+
+theorem herm_conjTranspose {n : Type} (S : n → n → ℝ) : (herm S)ᴴ = herm S := by
+  ext i j
+  rw [Matrix.conjTranspose_apply, herm_apply, herm_apply]
+  apply Complex.ext
+  · simp only [Complex.star_def, Complex.conj_re]; ring
+  · simp only [Complex.star_def, Complex.conj_im]; ring
+
+theorem continuous_herm_entry {X n : Type} [TopologicalSpace X] {f : X → n → n → ℝ}
+    (hf : ∀ i j, Continuous fun x => f x i j) (i j : n) : Continuous fun x => herm (f x) i j := by
+  have e : (fun x => herm (f x) i j) = fun x => (((f x i j + f x j i) / 2 : ℝ) : ℂ) +
+      (((f x i j - f x j i) / 2 : ℝ) : ℂ) * Complex.I := by
+    funext x
+    rw [herm_apply, Complex.mk_eq_add_mul_I]
+  rw [e]
+  have h1 := hf i j
+  have h2 := hf j i
+  fun_prop
+
+theorem sum_norm_sq_herm_sub {n : Type} [Fintype n] (S T : n → n → ℝ) :
+    ∑ i, ∑ j, ‖herm S i j - herm T i j‖ ^ 2 = ∑ i, ∑ j, (S i j - T i j) ^ 2 := by
+  have h : ∀ i j, ‖herm S i j - herm T i j‖ ^ 2 =
+      (S i j - T i j) ^ 2 / 2 + (S j i - T j i) ^ 2 / 2 := by
+    intro i j
+    rw [Complex.sq_norm, Complex.normSq_apply, herm_apply, herm_apply]
+    simp only [Complex.sub_re, Complex.sub_im]
+    ring
+  simp only [h, Finset.sum_add_distrib]
+  rw [Finset.sum_comm (f := fun i j => (S j i - T j i) ^ 2 / 2), ← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [← Finset.sum_add_distrib]
+  exact Finset.sum_congr rfl fun j _ => by ring
+
+theorem herm_re_add_im {n : Type} (H : n → n → ℂ) (hH : ∀ i j, star (H j i) = H i j) (i j : n) :
+    herm (fun i j => (H i j).re + (H i j).im) i j = H i j := by
+  have h1 := congrArg Complex.re (hH i j)
+  have h2 := congrArg Complex.im (hH i j)
+  simp only [Complex.star_def, Complex.conj_re, Complex.conj_im] at h1 h2
+  rw [herm_apply]
+  apply Complex.ext
+  · show _ / (2 : ℝ) = _
+    linarith
+  · show _ / (2 : ℝ) = _
+    linarith
+
+theorem abs_re_add_im_le {z : ℂ} (hz : ‖z‖ ≤ Real.pi) : |z.re + z.im| ≤ 89 / 20 := by
+  have h1 : ‖z‖ ^ 2 = z.re * z.re + z.im * z.im := by rw [Complex.sq_norm, Complex.normSq_apply]
+  have h2 : ‖z‖ ≤ 3.1416 := hz.trans Real.pi_lt_d4.le
+  have h3 : ‖z‖ ^ 2 ≤ 3.1416 ^ 2 := pow_le_pow_left₀ (norm_nonneg z) h2 2
+  refine abs_le_of_sq_le_sq' ?_ (by norm_num) |> abs_le.2
+  nlinarith [sq_nonneg (z.re - z.im)]
+
+theorem exists_chart : ∀ (p q : ℕ), ∃ Φ : ((Fin p × Fin p) ⊕ (Fin q × Fin q) → ℝ) → Mat p q,
+    Continuous Φ ∧ (∀ R, (Φ R)ᴴ = Φ R ∧ IsKC (Φ R)) ∧
+    (∀ R R', ∑ a, ∑ b, ‖(Φ R - Φ R') a b‖ ^ 2 = ∑ i, (R i - R' i) ^ 2) ∧
+    ∀ H : Mat p q, Hᴴ = H → IsKC H → (∀ a b, ‖H a b‖ ≤ Real.pi) →
+      ∃ R, Φ R = H ∧ ∀ i, |R i| ≤ 89 / 20 := by
+  intro p q
+  refine ⟨fun R => Matrix.fromBlocks (herm fun i j => R (Sum.inl (i, j))) 0 0
+    (herm fun i j => R (Sum.inr (i, j))), ?_, fun R => ⟨?_, isKC_fromBlocks _ _⟩, fun R R' => ?_,
+    fun H hH hK hb => ?_⟩
+  · refine continuous_matrix fun a b => ?_
+    rcases a with a | a <;> rcases b with b | b
+    · exact continuous_herm_entry (f := fun (R : (Fin p × Fin p) ⊕ (Fin q × Fin q) → ℝ) i j =>
+        R (Sum.inl (i, j))) (fun i j => continuous_apply _) a b
+    · exact continuous_const
+    · exact continuous_const
+    · exact continuous_herm_entry (f := fun (R : (Fin p × Fin p) ⊕ (Fin q × Fin q) → ℝ) i j =>
+        R (Sum.inr (i, j))) (fun i j => continuous_apply _) a b
+  · simp only [Matrix.fromBlocks_conjTranspose, herm_conjTranspose, Matrix.conjTranspose_zero]
+  · rw [Fintype.sum_sum_type, Fintype.sum_sum_type, Fintype.sum_prod_type, Fintype.sum_prod_type,
+      ← sum_norm_sq_herm_sub (fun i j => R (Sum.inl (i, j))) (fun i j => R' (Sum.inl (i, j))),
+      ← sum_norm_sq_herm_sub (fun i j => R (Sum.inr (i, j))) (fun i j => R' (Sum.inr (i, j)))]
+    simp [Fintype.sum_sum_type]
+  · have hs : ∀ a b, star (H b a) = H a b := fun a b => by
+      rw [← Matrix.conjTranspose_apply, hH]
+    refine ⟨Sum.elim (fun x => (H (Sum.inl x.1) (Sum.inl x.2)).re + (H (Sum.inl x.1) (Sum.inl x.2)).im)
+      (fun x => (H (Sum.inr x.1) (Sum.inr x.2)).re + (H (Sum.inr x.1) (Sum.inr x.2)).im), ?_, ?_⟩
+    · ext a b
+      rcases a with a | a <;> rcases b with b | b
+      · exact herm_re_add_im (fun i j => H (Sum.inl i) (Sum.inl j)) (fun i j => hs _ _) a b
+      · exact (hK _ _ (by simp [sameBlock])).symm
+      · exact (hK _ _ (by simp [sameBlock])).symm
+      · exact herm_re_add_im (fun i j => H (Sum.inr i) (Sum.inr j)) (fun i j => hs _ _) a b
+    · rintro (x | x)
+      · exact abs_re_add_im_le (hb _ _)
+      · exact abs_re_add_im_le (hb _ _)
+
+end GlobalTheory.CartanInt.HermChart
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshPower GlobalTheory.CartanInt Matrix MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_isometric_chart_blockHermitian : ∀ (p q : ℕ), ∃ Φ : ((Fin p × Fin p) ⊕ (Fin q × Fin q) → ℝ) → Mat p q, Continuous Φ ∧ (∀ R, (Φ R)ᴴ = Φ R ∧ IsKC (Φ R)) ∧ (∀ R R', ∑ a, ∑ b, ‖(Φ R - Φ R') a b‖ ^ 2 = ∑ i, (R i - R' i) ^ 2) ∧ ∀ H : Mat p q, Hᴴ = H → IsKC H → (∀ a b, ‖H a b‖ ≤ Real.pi) → ∃ R, Φ R = H ∧ ∀ i, |R i| ≤ 89 / 20 := by
+  atlas_forward_decl GlobalTheory.CartanInt.HermChart.exists_chart
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshPower GlobalTheory.CartanInt Matrix MeasureTheory
+
+namespace GlobalTheory.CartanInt
+
+theorem invariant_measure_lower_bound_of_chart :
+    ∀ (G ι : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G] [Fintype ι] (mK : Measure G) [IsProbabilityMeasure mK] (K U : Set G) (θ : (ι → ℝ) → G) (T δ : ℝ), Continuous θ → IsClosed U → mK Kᶜ = 0 → (∀ R, Measure.map (fun x => θ R * x) mK = mK) → 0 < δ → 0 ≤ T → (∀ x ∈ K, ∃ R₀ : ι → ℝ, (∀ i, |R₀ i| ≤ T) ∧ ∀ R : ι → ℝ, (∀ i, |R i - R₀ i| ≤ δ) → (θ R)⁻¹ * x ∈ U) → ENNReal.ofReal ((δ / (T + δ)) ^ Fintype.card ι) ≤ mK U := by
+  intro G ι _ _ _ _ _ _ _ mK _ K U θ T δ hθ hU hK hinv hδ hT hch
+  have hTδ : 0 < T + δ := by linarith
+  set Q : Set (ι → ℝ) := Metric.closedBall 0 (T + δ) with hQ
+  set S : Set ((ι → ℝ) × G) := {p | (θ p.1)⁻¹ * p.2 ∈ U} with hS
+  have hSc : IsClosed S := hU.preimage (by fun_prop : Continuous fun p : (ι → ℝ) × G => (θ p.1)⁻¹ * p.2)
+  have hSm : MeasurableSet S := hSc.measurableSet
+  have hQv : volume Q = ENNReal.ofReal ((2 * (T + δ)) ^ Fintype.card ι) :=
+    Real.volume_pi_closedBall _ hTδ.le
+  have hsec : ∀ R, mK (Prod.mk R ⁻¹' S) = mK U := by
+    intro R
+    have hm : MeasurableSet (Prod.mk R ⁻¹' S) := measurable_prodMk_left hSm
+    conv_lhs => rw [← hinv R]
+    rw [Measure.map_apply (by fun_prop) hm]
+    congr 1
+    ext x
+    simp [hS]
+  have h1 : ((volume.restrict Q).prod mK) S = mK U * volume Q := by
+    rw [Measure.prod_apply hSm]
+    simp [hsec]
+  have h2 : ENNReal.ofReal ((2 * δ) ^ Fintype.card ι) ≤ ((volume.restrict Q).prod mK) S := by
+    rw [Measure.prod_apply_symm hSm]
+    have hae : ∀ᵐ x ∂mK, x ∈ K := hK
+    calc ENNReal.ofReal ((2 * δ) ^ Fintype.card ι)
+        = ∫⁻ _x, ENNReal.ofReal ((2 * δ) ^ Fintype.card ι) ∂mK := by simp
+      _ ≤ _ := by
+        refine lintegral_mono_ae (hae.mono fun x hx => ?_)
+        obtain ⟨R₀, hR₀, hR⟩ := hch x hx
+        have hm : MeasurableSet ((fun R => (R, x)) ⁻¹' S) := measurable_prodMk_right hSm
+        rw [Measure.restrict_apply hm, ← Real.volume_pi_closedBall R₀ hδ.le]
+        refine measure_mono fun R hRm => ?_
+        have hd : ∀ i, |R i - R₀ i| ≤ δ := fun i => by
+          have := (dist_pi_le_iff hδ.le).1 (Metric.mem_closedBall.1 hRm) i
+          rwa [Real.dist_eq] at this
+        refine ⟨hR R hd, ?_⟩
+        rw [hQ, Metric.mem_closedBall, dist_pi_le_iff hTδ.le]
+        intro i
+        have h3 := abs_le.1 (hd i)
+        have h4 := abs_le.1 (hR₀ i)
+        rw [Real.dist_eq, Pi.zero_apply, sub_zero, abs_le]
+        constructor <;> linarith [h3.1, h3.2, h4.1, h4.2]
+  rw [h1, hQv] at h2
+  have hpos : 0 < (2 * (T + δ)) ^ Fintype.card ι := by positivity
+  have he : (δ / (T + δ)) ^ Fintype.card ι
+      = (2 * δ) ^ Fintype.card ι / (2 * (T + δ)) ^ Fintype.card ι := by
+    rw [← div_pow, mul_div_mul_left _ _ (two_ne_zero)]
+  rw [he, ENNReal.ofReal_div_of_pos hpos]
+  exact ENNReal.div_le_of_le_mul h2
+
+end GlobalTheory.CartanInt
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshPower GlobalTheory.CartanInt Matrix MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ofReal_pow_le_measure_of_chart_cover : ∀ (G ι : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G] [Fintype ι] (mK : Measure G) [IsProbabilityMeasure mK] (K U : Set G) (θ : (ι → ℝ) → G) (T δ : ℝ), Continuous θ → IsClosed U → mK Kᶜ = 0 → (∀ R, Measure.map (fun x => θ R * x) mK = mK) → 0 < δ → 0 ≤ T → (∀ x ∈ K, ∃ R₀ : ι → ℝ, (∀ i, |R₀ i| ≤ T) ∧ ∀ R : ι → ℝ, (∀ i, |R i - R₀ i| ≤ δ) → (θ R)⁻¹ * x ∈ U) → ENNReal.ofReal ((δ / (T + δ)) ^ Fintype.card ι) ≤ mK U := by
+  atlas_forward_decl GlobalTheory.CartanInt.invariant_measure_lower_bound_of_chart
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshPower GlobalTheory.CartanInt Matrix MeasureTheory
+
+namespace GlobalTheory.CartanInt
+
+theorem cosh_const_numerical_bound (p q : ℕ) :
+    (18 / 5 * max 1 (3 / 2 * ((p + q : ℕ) : ℝ) ^ 2) / ((p + q : ℕ) : ℝ)) ^ ((p + q) ^ 2) * (9 / 2) ^ (p ^ 2 + q ^ 2) / Real.pi ^ (p * q) * (2 ^ (2 * (p + q) * min p q) * (2 * Real.pi / (2 / ((((p + q : ℕ) : ℝ) + 1) / 2)) ^ 2) ^ (p * q)) ≤ Real.exp (3 * ((p + q : ℕ) : ℝ) ^ 2 * Real.log (((p + q : ℕ) : ℝ) + 2)) := by
+  rcases Nat.eq_zero_or_pos (p + q) with h0 | hpos
+  · have hp : p = 0 := by omega
+    have hq : q = 0 := by omega
+    subst hp hq
+    simp
+  have hsq : (p + q) ^ 2 = (p ^ 2 + q ^ 2) + 2 * (p * q) := by ring
+  have hmin : 2 * (p + q) * min p q ≤ 4 * (p * q) := by
+    rcases le_total p q with h | h
+    · rw [min_eq_left h]; nlinarith
+    · rw [min_eq_right h]; nlinarith
+  have hR : Real.exp (3 * ((p + q : ℕ) : ℝ) ^ 2 * Real.log (((p + q : ℕ) : ℝ) + 2))
+      = (((p + q : ℕ) : ℝ) + 2) ^ (3 * (p + q) ^ 2) := by
+    have : (3 * ((p + q : ℕ) : ℝ) ^ 2) = ((3 * (p + q) ^ 2 : ℕ) : ℝ) := by push_cast; ring
+    rw [this, Real.exp_nat_mul, Real.exp_log (by positivity)]
+  rw [hR, hsq]
+  have ha : (1 : ℝ) ≤ ((p + q : ℕ) : ℝ) := by exact_mod_cast hpos
+  generalize ((p + q : ℕ) : ℝ) = a at ha
+  generalize p ^ 2 + q ^ 2 = d
+  generalize 2 * (p + q) * min p q = m at hmin
+  generalize p * q = n at hmin
+  have ha0 : 0 < a := by linarith
+  have hpi := Real.pi_pos
+  have hmax : max 1 (3 / 2 * a ^ 2) = 3 / 2 * a ^ 2 := max_eq_right (by nlinarith)
+  have h1 : 18 / 5 * (3 / 2 * a ^ 2) / a = 27 / 5 * a := by field_simp; ring
+  have h2 : 2 * Real.pi / (2 / ((a + 1) / 2)) ^ 2 = Real.pi * ((a + 1) ^ 2 / 8) := by
+    field_simp; ring
+  rw [hmax, h1, h2]
+  have h3 : (2 : ℝ) ^ m ≤ 16 ^ n := by
+    calc (2 : ℝ) ^ m ≤ 2 ^ (4 * n) := pow_le_pow_right₀ (by norm_num) hmin
+      _ = 16 ^ n := by rw [pow_mul]; norm_num
+  have h4 : 27 / 5 * a * (9 / 2) ≤ (a + 2) ^ 3 := by
+    nlinarith [mul_nonneg (sq_nonneg (a - 1)) (show (0 : ℝ) ≤ a + 8 by linarith)]
+  have h5 : 8 * a * (a + 1) ≤ (a + 2) ^ 3 := by
+    nlinarith [mul_nonneg (sq_nonneg (a - 1)) ha0.le]
+  have h6 : (27 / 5 * a) ^ 2 * 16 * ((a + 1) ^ 2 / 8) ≤ (a + 2) ^ 6 := by
+    have h7 : (8 * a * (a + 1)) ^ 2 ≤ ((a + 2) ^ 3) ^ 2 := by gcongr
+    have h8 : 0 ≤ (a * (a + 1)) ^ 2 := by positivity
+    nlinarith
+  calc (27 / 5 * a) ^ (d + 2 * n) * (9 / 2) ^ d / Real.pi ^ n *
+        (2 ^ m * (Real.pi * ((a + 1) ^ 2 / 8)) ^ n)
+      ≤ (27 / 5 * a) ^ (d + 2 * n) * (9 / 2) ^ d / Real.pi ^ n *
+        (16 ^ n * (Real.pi * ((a + 1) ^ 2 / 8)) ^ n) := by gcongr
+    _ = (27 / 5 * a * (9 / 2)) ^ d * ((27 / 5 * a) ^ 2 * 16 * ((a + 1) ^ 2 / 8)) ^ n := by
+        rw [pow_add, pow_mul, mul_pow Real.pi, mul_pow (27 / 5 * a) (9 / 2),
+          mul_pow _ ((a + 1) ^ 2 / 8), mul_pow _ (16 : ℝ)]
+        field_simp
+    _ ≤ ((a + 2) ^ 3) ^ d * ((a + 2) ^ 6) ^ n := by gcongr
+    _ = (a + 2) ^ (3 * (d + 2 * n)) := by
+        rw [← pow_mul, ← pow_mul, ← pow_add]; congr 1; ring
+
+end GlobalTheory.CartanInt
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshPower GlobalTheory.CartanInt Matrix MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cosh_constant_le_exp_three_mul_sq_mul_log : ∀ (p q : ℕ), (18 / 5 * max 1 (3 / 2 * ((p + q : ℕ) : ℝ) ^ 2) / ((p + q : ℕ) : ℝ)) ^ ((p + q) ^ 2) * (9 / 2) ^ (p ^ 2 + q ^ 2) / Real.pi ^ (p * q) * (2 ^ (2 * (p + q) * min p q) * (2 * Real.pi / (2 / ((((p + q : ℕ) : ℝ) + 1) / 2)) ^ 2) ^ (p * q)) ≤ Real.exp (3 * ((p + q : ℕ) : ℝ) ^ 2 * Real.log (((p + q : ℕ) : ℝ) + 2)) := by
+  atlas_forward_decl GlobalTheory.CartanInt.cosh_const_numerical_bound
+end
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshPower GlobalTheory.CartanInt Matrix MeasureTheory
 
 noncomputable section
@@ -324,3 +941,5 @@ theorem coshBound : CoshBound := by
 theorem coshIntegral : CoshIntegral := ⟨coshFinite, coshLocUnif, coshBound⟩
 
 end GlobalTheory.CartanInt
+end
+end

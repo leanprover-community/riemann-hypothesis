@@ -1,7 +1,26 @@
 import Formalism.SharpRestriction.LevelLetterCocycles.ExistsGoodPlacesEveryConjugate
 import Formalism.SharpRestriction.SmoothDesignExistence.EvSplit
-import Formalism.SharpRestriction.LevelLetterCocycles.TwQDist
+import Formalism.SharpRestriction.LevelLetterCocycles.TwGood
 
+section
+noncomputable section
+
+open Formalism.BasicNotions NumberField IsDedekindDomain
+
+namespace Formalism.MainNotions
+
+def QDistinct (D : D7) (Q : Finset (PlE D.host)) : Prop :=
+  ∀ P ∈ Q, ∀ P' ∈ Q, P.asIdeal.comap (algebraMap ℤ (𝓞 D.host.E)) = P'.asIdeal.comap (algebraMap ℤ (𝓞 D.host.E)) →
+    P' = P ∨ IsConjPl D.host P P'
+
+def QDistinctAt (D : D7) (C : NChoice D) : Prop :=
+  ∀ w, D.what₂.muAt w ≠ D.what₂.mu0 → QDistinct D (C.Q w)
+
+end Formalism.MainNotions
+end
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions
@@ -26,3 +45,5 @@ def QDistinctF {eps : ℝ} (Fm : FamP eps) : Prop :=
   Formalism.MainNotions.Pk.EvL Fm fun x hx i => QDistinctAt (Fm.D x i) (Fm.ex x hx i).nch
 
 end Formalism.MainNotions
+end
+end

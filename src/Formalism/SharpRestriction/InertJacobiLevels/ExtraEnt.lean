@@ -52,8 +52,6 @@ def entZero (D : D7) (Dx : DivX D) (Tw : TwForms D) (PE : PlEmb D) [∀ u μ i, 
   un_ne := fun _ _ _ _ _ _ => one_ne_zero
   kform := fun _ _ _ _ _ _ _ c' => isEmptyElim c'
 
-theorem entZero_lam (D : D7) (Dx : DivX D) (Tw : TwForms D) (PE : PlEmb D) [∀ u μ i, IsEmpty ((D.chTw u μ).Y i)]
-    [∀ u μ j, IsEmpty ((D.chTw u μ).cls (j + 1))] (w) : (entZero D Dx Tw PE).lam w = PE.lam w := rfl
 
 section Ker
 

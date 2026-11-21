@@ -13,8 +13,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.Mem.R3.StdModel
 
-theorem matEq_refl {A : Type} [CommRing A] {a : ℕ} (x : GL (Fin a) A) : MatEq x x :=
-  ⟨rfl, fun i j i' j' a b => by obtain rfl := Fin.ext a; obtain rfl := Fin.ext b; rfl⟩
 
 theorem eq_of_matEq {A : Type} [CommRing A] {a : ℕ} {x y : GL (Fin a) A} (h : MatEq x y) : x = y :=
   Units.ext (Matrix.ext fun i j => h.2 i j i j rfl rfl)
@@ -28,17 +26,6 @@ def crd (lam : X.Tau → DomWeight n) : VV X.K lam →ₛₗ[σ] (VVIdx lam → 
   map_add' v w := by funext i; simp
   map_smul' a v := by funext i; simp
 
-theorem crd_li (lam : X.Tau → DomWeight n) : LinearIndependent ℂ fun i => crd σ lam (bVV X.K lam i) := by
-  classical
-  have : (fun i => crd σ lam (bVV X.K lam i)) = fun i => Pi.basisFun ℂ (VVIdx lam) i := by
-    funext i j
-    show σ ((bVV X.K lam).repr (bVV X.K lam i) j) = _
-    rw [Module.Basis.repr_self, Pi.basisFun_apply, Finsupp.single_apply, Pi.single_apply]
-    by_cases h : i = j
-    · simp [h]
-    · simp [h, Ne.symm h]
-  rw [this]
-  exact (Pi.basisFun ℂ (VVIdx lam)).linearIndependent
 
 def actC (lam : X.Tau → DomWeight n) (f : Module.End X.K (VV X.K lam)) (w : VVIdx lam → ℂ) : VVIdx lam → ℂ :=
   ∑ j, w j • crd σ lam (f (bVV X.K lam j))
@@ -49,10 +36,6 @@ theorem expand {W : Type} [AddCommGroup W] [Module ℂ W] {lam : X.Tau → DomWe
   rw [map_sum]
   simp only [map_smulₛₗ]
 
-theorem crd_act (lam : X.Tau → DomWeight n) (f : Module.End X.K (VV X.K lam)) (v : VV X.K lam) :
-    crd σ lam (f v) = actC σ lam f (crd σ lam v) := by
-  have := expand σ ((crd σ lam).comp f) v
-  exact this
 
 theorem inj_of_li {W : Type} [AddCommGroup W] [Module ℂ W] {lam : X.Tau → DomWeight n} (c : VV X.K lam →ₛₗ[σ] W)
     (h : LinearIndependent ℂ fun i => c (bVV X.K lam i)) (v : VV X.K lam) (hv : c v = 0) : v = 0 := by
@@ -64,31 +47,11 @@ theorem inj_of_li {W : Type} [AddCommGroup W] [Module ℂ W] {lam : X.Tau → Do
 
 variable [NeZero n]
 
-theorem stdSide_model (hc : CMData X.F X.E) {ι : Type} (lam : X.Tau → DomWeight n)
-    (rho : GL (Fin n) X.E →* Module.End X.K (VV X.K lam)) (SG : ι → Finset (Pl X.E)) (Fm : ι → Type)
-    (val : ∀ t, Fm t → DecoSet X.E n ∅ (SG t) → VV X.K lam) :
-    StdSide (a := n) (H := Formalism.L2.Col.UAd hc n) (Γ := GL (Fin n) X.E) σ (fun h => h.1) (fun γ g => γ = g)
-      (fun γ => actC σ lam (rho γ)) lam rho SG Fm val
-      fun t φ h => crd σ lam (val t φ (decoPt hc n ∅ (SG t) (QuotientGroup.mk h))) := by
-  refine ⟨crd σ lam, ?_, ?_, crd_li σ lam, hc, fun h => ⟨h, matEq_refl _⟩⟩
-  · rintro γ _ g rfl hm v
-    rw [← eq_of_matEq hm]
-    exact crd_act σ lam _ v
-  · intro hc' t φ h x hm
-    obtain rfl : h = x := Subtype.ext (eq_of_matEq hm)
-    rfl
 
 variable {σ} {a : ℕ} {H Γ W : Type} [AddCommGroup W] [Module ℂ W]
   {mat : H → GL (Fin a) (X.E ⊗[X.F] Formalism.L2.Herm.Af X.F)} {rat : Γ → GL (Fin a) X.E → Prop} {ρ : Γ → W → W}
   {ι : Type} {lam : X.Tau → DomWeight n} {rho : GL (Fin n) X.E →* Module.End X.K (VV X.K lam)}
 
-theorem ad_ne_zero {SG : ι → Finset (Pl X.E)} {Fm : ι → Type} {val : ∀ t, Fm t → DecoSet X.E n ∅ (SG t) → VV X.K lam}
-    {ad : ∀ t, Fm t → H → W} (s : StdSide σ mat rat ρ lam rho SG Fm val ad) (t : ι) (φ : Fm t) (hφ : ∀ d, val t φ d ≠ 0) (h : H) :
-    ad t φ h ≠ 0 := by
-  obtain ⟨c, hli, hv⟩ := s.value
-  obtain ⟨d, hd⟩ := hv h t
-  rw [hd]
-  exact fun e => hφ d (inj_of_li σ c hli _ e)
 
 theorem ad_eq {S : Finset (Pl X.E)} {Fm : ι → Type} {val : ∀ t, Fm t → DecoSet X.E n ∅ S → VV X.K lam}
     {ad : ∀ t, Fm t → H → W} (s : StdSide σ mat rat ρ lam rho (fun _ => S) Fm val ad) (t t' : ι) (φ : Fm t) (φ' : Fm t')
@@ -113,15 +76,6 @@ theorem one_map {SG : ι → Finset (Pl X.E)} {Fm : ι → Type} {val : ∀ t, F
   rw [hr hc t φ h x hm, hr' hc t φ h x hm, expand σ c, expand σ c', map_sum]
   simp only [map_smul, hb]
 
-theorem not_sign [Nonempty H] {S : Finset (Pl X.E)} (v : VV X.K lam) (hv : v ≠ 0) (f : H → W) :
-    ¬ StdSide σ mat rat ρ lam rho (fun _ : Bool => S) (fun _ => Unit) (fun _ _ _ => v) fun b _ => cond b f (-f) := by
-  intro s
-  have e := ad_eq s true false () () rfl
-  obtain ⟨h⟩ := ‹Nonempty H›
-  have h0 := ad_ne_zero s true () (fun _ => hv) h
-  have e1 : f h = -f h := congrFun e h
-  have h2 : (2 : ℂ) • f h = 0 := by rw [two_smul]; exact add_eq_zero_iff_eq_neg.2 e1
-  exact h0 ((smul_eq_zero.1 h2).resolve_left two_ne_zero)
 
 theorem transport {K E ι' : Type} [Field K] [NumberField K] [Field E] [NumberField E] [Fintype ι'] (σ : K →+* ℂ) {a n : ℕ} (e : a = n)
     (lam : ι' → DomWeight a) (lam' : ι' → DomWeight n)
@@ -219,7 +173,6 @@ theorem lamRdef_eq (X : Stages) (τ) (i : Fin X.toD7.sp.X'.rank) (i' : Fin (X.B.
   obtain ⟨_, -, rfl⟩ := Finset.mem_image.1 hx
   rfl
 
-theorem labLL_eq (X : Stages) : labLL X.toD7 = X.B.fields.emb := rfl
 
 theorem exists_matEq {D : D7} (V : HSp D) {n : ℕ} (hn : V.rank = n) (hG : V.gram = 1) (h : Bridge.Gf V) :
     ∃ x : UAd D.sp.cm n, R3.MatEq (R3.matIn V 1 h) (x : GL (Fin n) _) := by

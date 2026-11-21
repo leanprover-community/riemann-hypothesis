@@ -1,7 +1,32 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsSchemeTheoreticallyDominantSpecMap
 
+section
+universe u_1
+
+open CategoryTheory AlgebraicGeometry
+
+namespace GlobalTheory.SchemeDominantSpecMap
+
+theorem appTop_injective {R A : CommRingCat.{u_1}} (φ : R ⟶ A) (h : Function.Injective φ) :
+    Function.Injective (Spec.map φ).appTop := by
+
+  have e : (Spec.map φ).appTop = (Scheme.ΓSpecIso R).hom ≫ φ ≫ (Scheme.ΓSpecIso A).inv := by
+    rw [← Category.assoc, ← Scheme.ΓSpecIso_naturality φ, Category.assoc, Iso.hom_inv_id, Category.comp_id]
+  rw [e]
+  exact (ConcreteCategory.bijective_of_isIso (Scheme.ΓSpecIso A).inv).1.comp
+    (h.comp (ConcreteCategory.bijective_of_isIso (Scheme.ΓSpecIso R).hom).1)
+
+theorem isSchemeTheoreticallyDominant_specMap {R A : CommRingCat.{u_1}} (φ : R ⟶ A)
+    (h : Function.Injective φ) : IsSchemeTheoreticallyDominant (Spec.map φ) := by
+  rw [isSchemeTheoreticallyDominant_iff, Scheme.ker_of_isAffine,
+    (RingHom.injective_iff_ker_eq_bot (Spec.map φ).appTop.hom).1 (appTop_injective φ h),
+    ← Scheme.IdealSheafData.equivOfIsAffine_symm_apply, map_bot]
+
+end GlobalTheory.SchemeDominantSpecMap
+end
+
+section
 noncomputable section
 
 universe u
@@ -219,11 +244,6 @@ def intAct {S : Scheme.{0}} (G : Over S) [GrpObj G] [IsCommMonObj G] : OAct ℤ 
   mul a b := by rw [GrpObj.comp_zpow, Category.comp_id, zpow_mul]
   add a b := zpow_add _ _ _
 
-theorem intAct_pullback {U S : Scheme.{0}} (j : U ⟶ S) (G : Over S) [GrpObj G] [IsCommMonObj G] (n : ℤ) :
-    (Over.pullback j).map ((intAct G).act n) = (intAct ((Over.pullback j).obj G)).act n := by
-  have h := map_zpow (MonoidHom.mk' (fun f : G ⟶ G => (Over.pullback j).map f)
-    fun _ _ => CategoryTheory.Functor.map_mul _ _ _) (𝟙 G) n
-  simpa [intAct] using h
 
 theorem splitTorusAff_flat_and_isSeparated (R : CommRingCat.{u}) (X : Type u) [AddCommGroup X] :
     Flat (splitTorusAff R X).hom ∧ IsSeparated (splitTorusAff R X).hom := by
@@ -234,31 +254,7 @@ theorem splitTorusAff_flat_and_isSeparated (R : CommRingCat.{u}) (X : Type u) [A
   · change IsSeparated (Spec.map (CommRingCat.ofHom (algebraMap R (AddMonoidAlgebra R X))))
     infer_instance
 
-theorem intAct_splitTorusAff_zero_ne_one (R : CommRingCat.{0}) [Nontrivial R] (X : Type) [AddCommGroup X]
-    [Nontrivial X] : (intAct (splitTorusAff R X)).act 0 ≠ (intAct (splitTorusAff R X)).act 1 := by
-  intro h
-  rw [(intAct _).one] at h
-  change (𝟙 _ : splitTorusAff R X ⟶ _) ^ (0 : ℤ) = _ at h
-  rw [zpow_zero, Hom.one_def] at h
-  have h₁ : Spec.map (CommRingCat.ofHom (algebraMap R (AddMonoidAlgebra R X))) ≫ (η[splitTorusAff R X]).left =
-      𝟙 (Spec (torusRing R X)) := congrArg (fun z => z.left) h
-  obtain ⟨ψ, hψ⟩ := Spec.map_surjective (R := torusRing R X) (S := R) (η[splitTorusAff R X]).left
-  rw [← hψ] at h₁
-  have h₂ : ψ ≫ CommRingCat.ofHom (algebraMap R (AddMonoidAlgebra R X)) = 𝟙 (torusRing R X) :=
-    Spec.map_injective (by rw [Spec.map_comp, Spec.map_id]; exact h₁)
-  obtain ⟨x, hx⟩ := exists_ne (0 : X)
-  have h₃ : algebraMap R (AddMonoidAlgebra R X) (ψ (AddMonoidAlgebra.single x 1)) = AddMonoidAlgebra.single x 1 :=
-    congrArg (fun z => z.hom (AddMonoidAlgebra.single x 1)) h₂
-  rw [AddMonoidAlgebra.coe_algebraMap, Function.comp_apply] at h₃
-  have h₄ := congrArg (fun z : AddMonoidAlgebra R X => z.coeff x) h₃
-  simp [hx] at h₄
 
-theorem intAct_unique_extension (a : OAct ℤ (splitTorusAff (CommRingCat.of ℤ) ℤ))
-    (ha : OAct.pullback (Spec.map (CommRingCat.ofHom (algebraMap ℤ ℚ))) _ a = intAct _) : a = intAct _ := by
-  obtain ⟨_, _⟩ := spec_fractionRing ℤ ℚ
-  obtain ⟨_, _⟩ := splitTorusAff_flat_and_isSeparated (CommRingCat.of ℤ) ℤ
-  exact (existsUnique_oAct_pullback _ _ fun n => ⟨_, intAct_pullback _ _ n⟩).unique ha
-    (oAct_ext fun n => intAct_pullback _ _ n)
 
 end GlobalTheory.ExtUnique
 
@@ -314,3 +310,5 @@ theorem extension_unique :
         ⟨isIso_of_isPullback hX hY e f g hf hg, comp_eq_id_of_isPullback hX hY e f g hf hg⟩⟩⟩⟩
 
 end GlobalTheory
+end
+end

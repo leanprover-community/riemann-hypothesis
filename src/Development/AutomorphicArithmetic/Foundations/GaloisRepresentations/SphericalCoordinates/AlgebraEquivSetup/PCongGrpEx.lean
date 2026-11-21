@@ -82,8 +82,6 @@ private def congGrp (N : ℕ) (w : Plc E) : Subgroup (GL (Fin n) (w.adicCompleti
   mul_mem' := fun {x y} hx hy => ⟨cong_mul hx.1 hy.1, by rw [_root_.mul_inv_rev]; exact cong_mul hy.2 hx.2⟩
   inv_mem' := fun {x} hx => ⟨hx.2, by simpa using hx.1⟩
 
-private theorem mem_congGrp {N : ℕ} {w : Plc E} {y : GL (Fin n) (w.adicCompletion E)} :
-    y ∈ congGrp N w ↔ Cong1 N w y ∧ Cong1 N w y⁻¹ := Iff.rfl
 
 private theorem isOpen_ball {w : Plc E} {c : w.adicCompletion E} (hc : c ≠ 0) :
     IsOpen {x : w.adicCompletion E | Valued.v x ≤ Valued.v c} := by

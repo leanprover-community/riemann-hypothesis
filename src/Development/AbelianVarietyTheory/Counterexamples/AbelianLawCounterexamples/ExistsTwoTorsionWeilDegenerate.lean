@@ -99,89 +99,10 @@ theorem exists_order_two (K : Type) [Field K] (h : (63 : K) ≠ 0) :
   · rw [← cancel_epi e.hom, hx, MonObj.comp_one]
   · rw [← MonObj.comp_pow, hsq, MonObj.comp_one]
 
-theorem exists_value_ne_one :
-    ∃ (P : PolAV (Spec (CommRingCat.of ℂ))) (x y : baseOver (Spec (CommRingCat.of ℂ)) ⟶ P.A) (c : _),
-      x ^ 2 = 1 ∧ y ^ 2 = 1 ∧ WeilIs P.A P.L ((2 : ℕ) : ℤ) x y c ∧ c ≠ 1 ∧
-        ¬ WeilIs P.A P.L ((2 : ℕ) : ℤ) x y 1 := by
-  obtain ⟨P, x, -, hx, hx2⟩ := exists_order_two ℂ (by norm_num)
-  have := mt (laws.2.1 ℂ P 2 (by norm_num) x hx2) hx
-  push_neg at this
-  obtain ⟨y, hy, hn⟩ := this
-  obtain ⟨c, hc, -⟩ := (laws.1 _ P 2 _).1 x y hx2 hy
-  exact ⟨P, x, y, c, hx2, hy, hc, fun e => hn (e ▸ hc), hn⟩
 
-theorem nondeg_fails_at_zero :
-    ∃ (P : PolAV (Spec (CommRingCat.of ℂ))) (x : baseOver (Spec (CommRingCat.of ℂ)) ⟶ P.A),
-      x ^ 0 = 1 ∧ (∀ y : baseOver _ ⟶ P.A, y ^ 0 = 1 → WeilIs P.A P.L ((0 : ℕ) : ℤ) x y 1) ∧ x ≠ 1 := by
-  obtain ⟨P, x, -, hx, -⟩ := exists_order_two ℂ (by norm_num)
-  exact ⟨P, x, pow_zero x, fun y _ => weilIs_zero P x y, hx⟩
 
-theorem value_pow {S : Scheme.{0}} [IsLocallyNoetherian S] (P : PolAV S) (k : ℕ) {T : Over S}
-    {x y : T ⟶ P.A} {c : Γ(T.left, ⊤)ˣ} (hx : x ^ k = 1) (hy : y ^ k = 1)
-    (h : WeilIs P.A P.L k x y c) : c ^ k = 1 := by
-  obtain ⟨hu, hm, -, -⟩ := laws.1 S P k T
-  obtain ⟨d, hd, hd'⟩ := hu 1 y (one_pow k) hy
-  have hd1 : d = 1 := by
-    have := hm 1 1 y d d hd hd
-    rw [_root_.mul_one] at this
-    simpa using hd' _ this
-  have : ∀ n : ℕ, WeilIs P.A P.L k (x ^ n) y (c ^ n) := by
-    intro n
-    induction n with
-    | zero => simpa [hd1] using hd
-    | succ n ih => rw [pow_succ, pow_succ]; exact hm _ _ _ _ _ ih h
-  have h2 := this k
-  rw [hx] at h2
-  exact (hd' _ h2).trans hd1
 
-theorem exists_twoTorsion_weil_degenerate :
-    ∃ (K : Type) (_ : Field K) (_ : IsAlgClosed K) (P : PolAV (Spec (CommRingCat.of K)))
-      (x : baseOver (Spec (CommRingCat.of K)) ⟶ P.A),
-      x ^ 2 = 1 ∧ (∀ y : baseOver _ ⟶ P.A, y ^ 2 = 1 → WeilIs P.A P.L ((2 : ℕ) : ℤ) x y 1) ∧ x ≠ 1 := by
-  let K := AlgebraicClosure (ZMod 2)
-  have h2 : (2 : K) = 0 := by exact_mod_cast CharP.cast_eq_zero K 2
-  obtain ⟨P, x, -, hx, hx2⟩ := exists_order_two K (by
-    intro h
-    have : (1 : K) = 0 := by linear_combination h - 31 * h2
-    exact one_ne_zero this)
-  refine ⟨K, inferInstance, inferInstance, P, x, hx2, fun y hy => ?_, hx⟩
-  obtain ⟨c, hc, -⟩ := (laws.1 _ P 2 _).1 x y hx2 hy
-  have hc2 := value_pow P 2 hx2 hy hc
-  let e : Γ((baseOver (Spec (CommRingCat.of K))).left, ⊤) ≃+* K :=
-    (Scheme.ΓSpecIso (CommRingCat.of K)).commRingCatIsoToRingEquiv
-  have : c = 1 := by
-    ext
-    apply e.injective
-    have h3 : (e c) ^ 2 = 1 := by
-      rw [← map_pow, ← Units.val_pow_eq_pow_val, hc2, Units.val_one, map_one]
-    have h4 : (e c - 1) ^ 2 = 0 := by linear_combination h3 + (1 - e c) * h2
-    rw [Units.val_one, map_one]
-    exact sub_eq_zero.1 (pow_eq_zero_iff two_ne_zero |>.1 h4)
-  exact this ▸ hc
 
-theorem isotropic_at_sq {S : Scheme.{0}} [IsLocallyNoetherian S] (P : PolAV S) (m : ℕ) {T : Over S}
-    (hm : IsUnit ((m * m : ℕ) : Γ(T.left, ⊤))) {x y : T ⟶ P.A} (hx : x ^ m = 1) (hy : y ^ m = 1) :
-    WeilIs P.A P.L (m * m) x y 1 := by
-  obtain ⟨hu, hmul, -, hl⟩ := laws.1 S P m T
-  refine (hl m x y 1 hm (by rw [pow_mul, hx, one_pow]) hy).2 ?_
-  rw [hx]
-  obtain ⟨d, hd, hd'⟩ := hu 1 y (one_pow m) hy
-  have hd1 : d = 1 := by
-    have := hmul 1 1 y d d hd hd
-    rw [_root_.mul_one] at this
-    simpa using hd' _ this
-  exact hd1 ▸ hd
 
-theorem levels_differ :
-    ∃ (P : PolAV (Spec (CommRingCat.of ℂ))) (x y : baseOver (Spec (CommRingCat.of ℂ)) ⟶ P.A),
-      x ^ 2 = 1 ∧ y ^ 2 = 1 ∧ WeilIs P.A P.L (((2 : ℕ) : ℤ) * ((2 : ℕ) : ℤ)) x y 1 ∧
-        ¬ WeilIs P.A P.L ((2 : ℕ) : ℤ) x y 1 := by
-  obtain ⟨P, x, y, c, hx, hy, -, -, hn⟩ := exists_value_ne_one
-  refine ⟨P, x, y, hx, hy, isotropic_at_sq P 2 ?_ hx hy, hn⟩
-  let e : Γ((baseOver (Spec (CommRingCat.of ℂ))).left, ⊤) ≃+* ℂ :=
-    (Scheme.ΓSpecIso (CommRingCat.of ℂ)).commRingCatIsoToRingEquiv
-  have : IsUnit (((2 * 2 : ℕ) : ℂ)) := Ne.isUnit (by norm_num)
-  rw [← map_natCast e.symm]
-  exact this.map e.symm
 
 end GlobalTheory.PairingLawZeroCounterexample

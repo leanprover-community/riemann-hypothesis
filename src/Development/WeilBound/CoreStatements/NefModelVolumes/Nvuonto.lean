@@ -5,7 +5,19 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.WedgeNrmLeOfWedgeNo
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsVanBdOfMemExtVanZ
 import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.VuOntoC
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VanBdLeSpace
-import Development.WeilBound.CoreStatements.NefModelVolumes.NV
+import Formalism.LocalToGlobal.ProjectiveLattices.PetersonNormSubspace
+
+section
+open NumberField Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor
+
+namespace PositivityTheory.Xj7N
+
+def NV : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (σ : c.F →+* ℂ), 1 ≤ Dw.p + Dw.q → ∀ (a : (E →+* ℂ) × ℕ → ℕ) (n : ℕ), Dom a n → ∀ y : FrPt Xo c (CAt σ), ∃ (a' : (E →+* ℂ) × ℕ → ℕ) (n' : ℕ), Dom a' n' ∧ ∃ g ∈ sec Xo c a' n', ∃ f ∈ sec Xo c (a + a') (n + n'), evR Xo c g y ≠ 0 ∧ evR Xo c f y ≠ 0
+
+end PositivityTheory.Xj7N
+end
+
+section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.BasicNotions.TH Formalism.L2.Theta ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.CovTop GlobalTheory.CovHt GlobalTheory.Mean4 GlobalTheory.Mean4O
 open scoped ENNReal Classical
 
@@ -37,3 +49,4 @@ theorem PositivityTheory.Xj7N.vuonto' : PositivityTheory.Xj7N.NV → Hypotheses2
     (PositivityTheory.UnitarySelfGeneration.VuOnto.tw_of_dec hσ hU κ (fun a n hD => hNV _ _ _ _ _ _ σ hpq a n hD) (wtOf (T.Q.Dw j) u 0) rfl hdec)
     (GlobalTheory.CuspSecFin.mem_SS_of_mem_holSub _ _ hP)
   exact ⟨m, as, fs, h1, fun w hw => h2 w.1 w.2 hw.1⟩
+end

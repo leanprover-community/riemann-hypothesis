@@ -33,12 +33,6 @@ theorem _root_.GlobalTheory.NL.Model.conv_one (u : ℤ → M) :
   · intro j hj
     simp [PowerSeries.coeff_one, hj]
 
-theorem conv_X (u : ℤ → M) (k : ℤ) : conv (PowerSeries.X : PowerSeries L) u k = u (k - 1) := by
-  unfold conv
-  rw [finsum_eq_single _ 1]
-  · simp
-  · intro j hj
-    simp [PowerSeries.coeff_X, hj]
 
 theorem conv_single (e : PowerSeries L) (a : ℤ) (d : M) (k : ℤ) :
     conv e (Pi.single a d : ℤ → M) k =
@@ -140,74 +134,7 @@ theorem Std.graded {D : Submodule L M} {Λ : Submodule L (ℤ → M)} (h : Std D
     · simpa using ((h _).1 (hf k)).1 k
     · simpa using ((h _).1 (hf k)).2 k hk
 
-theorem line_tests (a : ℤ) :
-    Full (⊤ : Submodule L L) (latSpan (LL := L) (fun _ : Unit => (Pi.single a 1 : ℤ → L))) ∧
-    Graded (latSpan (LL := L) (fun _ : Unit => (Pi.single a 1 : ℤ → L))) ∧
-    (Std (⊤ : Submodule L L) (latSpan (LL := L) (fun _ : Unit => (Pi.single a 1 : ℤ → L))) ↔ a = 0) := by
-  refine ⟨⟨a.toNat, fun f _ hf => (mem_latSpan_single a f).2 fun k hk => hf k (by omega)⟩, ?_, ?_⟩
-  · intro f
-    simp only [mem_latSpan_single]
-    constructor
-    · intro hf
-      refine ⟨⟨a, hf⟩, fun k j hj => ?_⟩
-      by_cases hjk : j = k
-      · subst hjk; simpa using hf j hj
-      · simp [Pi.single_eq_of_ne hjk]
-    · rintro ⟨-, hf⟩ k hk
-      simpa using hf k k hk
-  · constructor
-    · intro h
-      have h1 := ((h _).1 (mem_latSpan (L := L) (fun _ : Unit => (Pi.single a 1 : ℤ → L)) ())).2
-      have h2 := (mem_latSpan_single a _).1 ((h (Pi.single 0 1)).2
-        ⟨fun _ => trivial, fun k hk => Pi.single_eq_of_ne hk.ne _⟩)
-      by_contra hne
-      rcases lt_or_gt_of_ne hne with h' | h'
-      · simpa using h1 a h'
-      · simpa using h2 0 h'
-    · rintro rfl f
-      simp [mem_latSpan_single]
 
-theorem not_graded :
-    ¬ Graded (latSpan (LL := L) (fun _ : Unit =>
-      (((Pi.single 0 (1, 0) : ℤ → L × L) + (Pi.single (-1) (0, 1) : ℤ → L × L))))) := by
-  intro h
-  have key : ∀ f ∈ latSpan (LL := L) (fun _ : Unit =>
-      (((Pi.single 0 (1, 0) : ℤ → L × L) + (Pi.single (-1) (0, 1) : ℤ → L × L)))), (f 0).1 = (f (-1)).2 := by
-    intro f hf
-    induction hf using Submodule.span_induction with
-    | mem f hf =>
-      obtain ⟨e, x, rfl⟩ := hf
-      have h1 : conv e (((Pi.single 0 (1, 0) : ℤ → L × L) + (Pi.single (-1) (0, 1) : ℤ → L × L))) (-1)
-          = PowerSeries.coeff 0 e • ((0, 1) : L × L) := by
-        unfold conv
-        rw [finsum_eq_single _ 0]
-        · simp
-        · intro j hj
-          have h1 : (-1 : ℤ) - (j : ℤ) ≠ 0 := by omega
-          have h2 : (-1 : ℤ) - (j : ℤ) ≠ -1 := by omega
-          simp [Pi.single_eq_of_ne h1, Pi.single_eq_of_ne h2]
-      have h2 : conv e (((Pi.single 0 (1, 0) : ℤ → L × L) + (Pi.single (-1) (0, 1) : ℤ → L × L))) 0
-          = PowerSeries.coeff 0 e • ((1, 0) : L × L) + PowerSeries.coeff 1 e • ((0, 1) : L × L) := by
-        unfold conv
-        rw [finsum_eq_sum_of_support_subset (s := {0, 1})]
-        · simp
-        · intro j hj
-          by_contra hc
-          apply hj
-          simp only [Finset.coe_insert, Finset.coe_singleton, Set.mem_insert_iff,
-            Set.mem_singleton_iff, not_or] at hc
-          have h1 : (0 : ℤ) - (j : ℤ) ≠ 0 := by omega
-          have h2 : (0 : ℤ) - (j : ℤ) ≠ -1 := by omega
-          simp only [Pi.add_apply, Pi.single_eq_of_ne h1, Pi.single_eq_of_ne h2, add_zero, smul_zero]
-      rw [h1, h2]
-      simp
-    | zero => rfl
-    | add f g _ _ hf hg => simp [hf, hg]
-    | smul c f _ hf => simp [hf]
-  have h1 := ((h _).1 (mem_latSpan (L := L) (fun _ : Unit =>
-      (((Pi.single 0 (1, 0) : ℤ → L × L) + (Pi.single (-1) (0, 1) : ℤ → L × L)))) ())).2 0
-  have h2 := key _ h1
-  simp at h2
 
 end Series
 
@@ -265,16 +192,6 @@ theorem _root_.GlobalTheory.NL.Model.pi_van_one (W : _root_.Formalism.BasicNotio
   · have := h 1 (by norm_num)
     simp [h1] at this
 
-theorem pi_not_van (W : LocWach PD LL O v n) (i : ZMod n) (ζ : LL) (j : ℕ)
-    (hζ : IsPrimitiveRoot ζ (PD.p ^ j)) (h1 : ζ ≠ 1) : (letπ : LetA O n) ∉ van W i ζ 1 := by
-  obtain ⟨E, h0, -, h2⟩ := W.lev_π i ζ ⟨j, hζ⟩
-  rw [mem_van]
-  intro h
-  have h3 := h 0 (by omega)
-  have h4 := congrArg (PowerSeries.coeff 0) h2
-  rw [map_add, h3] at h4
-  simp [h0] at h4
-  exact h1 h4.symm
 
 open TensorProduct in
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
@@ -408,24 +325,6 @@ theorem zetaQ_mem (P : LocPrime l) (K : FinExt l) (s : ℕ) : P.ζQ s ∈ Ks K s
 
 theorem unramifiedSubfield_le_cyclotomicExt (K : FinExt l) (s : ℕ) : K0 K ≤ Ks K s := le_sup_left
 
-theorem comp_of_pt (h : Good K s LL) (i : Let K) (ζ : ↥LL.1) (τ : ↥K.1 →ₐ[ℚ_[l]] ↥LL.1)
-    (hp : Pt H h i ζ τ) : ∃ ι : ↥LL.1 →ₐ[ℚ_[l]] P.R.BdR, Comp H h i ζ τ ι := by
-  obtain ⟨τs, ⟨h1, h2⟩, h3⟩ := hp
-  haveI : FiniteDimensional ℚ_[l] ↥LL.1 := LL.2
-  obtain ⟨σ, hσ'⟩ := ext_aux τs (Ks K s).val
-  have hσ : ∀ y : ↥(Ks K s), σ (τs y) = (y : Om l) := hσ'
-  refine ⟨(IsScalarTower.toAlgHom ℚ_[l] (Om l) P.R.BdR).comp σ, ?_, ?_, ?_⟩
-  · intro c
-    rw [← h1 c ⟨c, unramifiedSubfield_le_cyclotomicExt K s c.2⟩ rfl]
-    change algebraMap (Om l) P.R.BdR (σ (τs _)) = _
-    rw [hσ]; rfl
-  · rw [← h2 ⟨_, zetaQ_mem P K s⟩ rfl]
-    change algebraMap (Om l) P.R.BdR (σ (τs _)) = _
-    rw [hσ]
-  · intro c
-    rw [h3 c ⟨c, h.2.2.1 c.2⟩ rfl]
-    change algebraMap (Om l) P.R.BdR (σ (τs _)) = _
-    rw [hσ]; rfl
 
 theorem exists_pt (h : Good K s LL) (i : Let K) :
     ∃ (ζ : ↥LL.1) (τ : ↥K.1 →ₐ[ℚ_[l]] ↥LL.1), Pt H h i ζ τ := by
@@ -449,18 +348,6 @@ theorem exists_pt (h : Good K s LL) (i : Let K) :
     obtain rfl : y = ⟨x, h.2.2.1 x.2⟩ := Subtype.ext hy
     rfl
 
-theorem not_pt_one (h : Good K s LL) (i : Let K) (τ : ↥K.1 →ₐ[ℚ_[l]] ↥LL.1) : ¬ Pt H h i 1 τ := by
-  rintro ⟨τs, ⟨-, h2⟩, -⟩
-  have h3 := h2 ⟨_, zetaQ_mem P K s⟩ rfl
-  rw [← map_one τs] at h3
-  have h4 : P.ζQ s = 1 := congrArg Subtype.val (τs.toRingHom.injective h3)
-  have key : ∀ m, P.ζQ (m + 1) ≠ 1 := by
-    intro m
-    induction m with
-    | zero => exact P.ζQ_one
-    | succ m ih => intro h; apply ih; rw [← P.ζQ_succ (m + 1), h, one_pow]
-  obtain ⟨m, rfl⟩ : ∃ m, s = m + 1 := ⟨s - 1, by have := h.1; omega⟩
-  exact key m h4
 
 set_option synthInstance.maxHeartbeats 400000 in
 set_option maxHeartbeats 2000000 in

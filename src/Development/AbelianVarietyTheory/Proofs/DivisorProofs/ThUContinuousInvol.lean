@@ -18,12 +18,5 @@ theorem continuous_prjG (E : Type) [Field E] [NumberField E] [IsCMField E] (n : 
       (continuous_const (y := (1 - idem E T) • (1 : Matrix (Fin n) (Fin n) (FiniteAdeleRing (𝓞 E) E))))
   exact Continuous.units_map (prjM E n T) hc
 
-theorem thU_continuous_invol : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (u : Pl E),
-    Continuous (GlobalTheory.EulerTw.thU E n u) ∧ ∀ g, GlobalTheory.EulerTw.thU E n u (GlobalTheory.EulerTw.thU E n u g) = g := by
-  intro E _ _ _ n u
-  refine ⟨?_, fun g => Subtype.ext ?_⟩
-  · have hT : Continuous (thF E n) := GlobalTheory.ThetaPull.continuous_thetaGL _ (continuous_conjFin _)
-    exact (((continuous_prjG E n (orb E u)).comp hT).comp continuous_subtype_val).subtype_mk _
-  · rw [Comm.thU_val, Comm.thU_val, Comm.thF_thF]
 
 end GlobalTheory.EulerTw

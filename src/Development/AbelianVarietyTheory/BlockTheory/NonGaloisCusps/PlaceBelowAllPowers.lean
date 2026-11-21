@@ -69,16 +69,7 @@ def AllConjugatesGood (D : Formalism.BasicNotions.D7) (bkP : Formalism.MainNotio
 def AllPowers (D : Formalism.BasicNotions.D7) (bkP : Formalism.MainNotions.BlochKatoReduction.BK D) (E : XD D) (N0 : D.ntw.Tw → ℕ) : Prop :=
   ∀ i, D.ntw.NonzeroIndexPlace i → AllPowersAt D.nexp (Formalism.MainNotions.BlochKatoReduction.pin bkP) E N0 i
 
-theorem samePlace_refl (i : X.Tw) (b : Bool) : SamePlace i b i b := ⟨rfl, rfl⟩
 
-theorem isReading_zpow (i : X.Tw) (k : ℕ) (ψ : G D.host.E N.Om →* (X.Ok i k)ˣ)
-    (hψ : ∀ g, ψ g ∈ Subgroup.zpowers (X.zk i k)) (a : ℤ) (ha : IsCoprime a (X.l i : ℤ)) :
-    IsReading i i k ψ (ψ ^ a) := by
-  refine ⟨a, ha, fun g => ?_⟩
-  obtain ⟨n, hn⟩ := Subgroup.mem_zpowers_iff.1 (hψ g)
-  refine ⟨n, hn.symm, ?_⟩
-  rw [mul_comm, zpow_mul, hn]
-  rfl
 
 variable {Y bkP E}
 
@@ -90,11 +81,6 @@ theorem AllPowersGood.self_inv {N0 : X.Tw → ℕ} {i : X.Tw} {eps' : ℝ}
   · simpa using h 1 isCoprime_one_left
   · simpa using h (-1) isCoprime_one_left.neg_left
 
-theorem AllConjugatesGood.allPowers {D : Formalism.BasicNotions.D7} {bkP : Formalism.MainNotions.BlochKatoReduction.BK D} {E : XD D} {N0 : D.ntw.Tw → ℕ}
-    (h : AllConjugatesGood D bkP E N0) : AllPowers D bkP E N0 := by
-  intro i hi hs eps' he hF S hS A
-  obtain ⟨Q, k', ψ', h1, -⟩ := h i hi hs eps' he hF S hS A
-  exact ⟨Q, k', ψ', h1⟩
 
 theorem AllPowers.aux₃ {D : Formalism.BasicNotions.D7} {bkP : Formalism.MainNotions.BlochKatoReduction.BK D} {E : XD D} {N0 : D.ntw.Tw → ℕ}
     (h : AllPowers D bkP E N0) : Formalism.MainNotions.IntegralHeckeForms.aux₃ D bkP E N0 := by

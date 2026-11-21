@@ -104,9 +104,6 @@ def ContrTensorModels : Prop :=
           PiTensorProduct.tprod ℂ fun τ => Itl τ (P τ) (v τ)) ∧
       ((∀ τ, Itl τ ≠ 0) → It ≠ 0)
 
-theorem contrTensorModels_of (h : ContrTensor) : ContrTensorModels := fun D V W _ _ M M' Itl =>
-  h D.what₂.Tau (fun _ => Fin W.rank × Fin V.rank) _ (Equiv.sigmaEquivProd _ _) (fun τ => M'.sm τ)
-    (fun τ => M.sm τ) Itl
 
 end Models
 

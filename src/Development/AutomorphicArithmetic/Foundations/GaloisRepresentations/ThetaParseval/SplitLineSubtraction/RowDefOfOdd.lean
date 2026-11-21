@@ -112,11 +112,6 @@ def Subtract : Prop :=
   ∀ (E Ω : Type) [Field E] [NumberField E] [IsCMField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (l : ℕ) [Fact l.Prime]
     (ι : Qbar l ≃+* ℂ) (n : ℕ), (∀ d, Odd d → RowAt E Ω ι d) → TwoUp E n → RowAt E Ω ι n
 
-theorem rowDef_of_odd (hS : Subtract) (hT : TwoUpAll) (hO : ∀ d, Odd d → RowDef d) (a : ℕ) (ha : 1 ≤ a) : RowDef a := by
-  rcases Nat.even_or_odd a with he | ho
-  · intro E Ω _ _ _ _ _ _ l _ ι hs
-    exact hS E Ω l ι a (fun d hd => hO d hd E Ω l ι hs) (hT E hs.unram hs.even a ha he)
-  · exact hO a ho
 
 omit [IsAlgClosure E Ω] in
 theorem jumpsOf_eq (ι : Qbar l ≃+* ℂ) (lam : (E →+* ℂ) → DomWeight a) (τ : E →+* Qbar l) :

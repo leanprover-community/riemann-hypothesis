@@ -6,9 +6,6 @@ namespace Formalism.MainNotions.DIV.Inh
 
 open Formalism.BasicNotions NumberField
 
-theorem nonempty_zero_weight (D : D7) (j : ℕ) : Nonempty (Formalism.MainNotions.WeightFamilies.Wt D j) :=
-  ⟨{ aP := fun _ _ => 0, aM := fun _ _ => 0, aPlus_antitone := fun _ _ _ _ => le_rfl,
-     aM_anti := fun _ _ _ _ => le_rfl, n := 0, n_even := ⟨0, rfl⟩ }⟩
 
 def OsRingOfIntegers (D : D7) : Prop :=
   ∃ (K : Type) (_ : Field K) (_ : NumberField K), Nonempty (𝓞 K ≃+* D.what₂.O)
@@ -74,16 +71,8 @@ def zeroCuspModel (D : D7) (K : Type) [Field K] [NumberField K] (e : 𝓞 K ≃+
   FJt := fun _ _ _ _ => PUnit
   sg := fun _ _ _ _ => 0
 
-theorem zero_cusp_model_subsingleton (D : D7) (K : Type) [Field K] [NumberField K] (e : 𝓞 K ≃+* D.what₂.O) (j : ℕ)
-    (w : Formalism.MainNotions.WeightFamilies.Wt D j) : Subsingleton ((zeroCuspModel D K e).Cusp j w) :=
-  inferInstanceAs (Subsingleton PUnit)
 
-theorem nonempty_cusp_provision (D : D7) (h : OsRingOfIntegers D) : Nonempty (Formalism.MainNotions.WeightFamilies.Prov D) := by
-  obtain ⟨K, hf, hn, ⟨e⟩⟩ := h
-  exact ⟨zeroCuspModel D K e⟩
 
-theorem nonempty_cusp_provision_iff (D : D7) : Nonempty (Formalism.MainNotions.WeightFamilies.Prov D) ↔ OsRingOfIntegers D :=
-  ⟨fun ⟨p⟩ => ⟨p.KO, p.fKO, p.nfKO, ⟨p.eO⟩⟩, nonempty_cusp_provision D⟩
 
 end Formalism.MainNotions.DIV.Inh
 

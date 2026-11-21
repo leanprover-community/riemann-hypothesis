@@ -31,18 +31,6 @@ def IsComb (M : Adl C Y) {ι : Type} [Fintype ι] (ρ : ι → Adl C Y) (t : ι 
       Real.log (e.w (valAt y.1 (genAt M.D (below y.1) ^ q / ∏ i, genAt (ρ i).D (below y.1) ^ b i))) +
         ∑ i, b i * (ρ i).lg v e y
 
-theorem isComb_twist (M : Adl C Y) (h : ∀ σ z, PosAt (M.m σ) z) (c : InfinitePlace F → ℝ) :
-    IsComb (M.twist c 0) (fun _ : Unit => M) (fun _ => 1) fun σ _ => c (InfinitePlace.mk σ) := by
-  have e (x : Y.X) : genAt M.D x ^ 1 / ∏ _i : Unit, genAt M.D x ^ (1 : ℤ) = 1 := by
-    simp [genAt]
-  refine ⟨1, fun _ => 1, one_pos, fun _ => by simp [Adl.twist], by simp [Adl.twist], fun σ z => ⟨h σ z, ?_⟩,
-    fun v w y => ?_⟩
-  · rw [show (M.twist c 0).D = M.D from rfl, e, Base.ratVal_one]
-    simp [lnAdl, Adl.twist]
-    ring
-  · have h₁ : valAt y.1 (1 : Y.Fn) = 1 := by simpa using Base.valAt_stalk y.1 1
-    rw [show (M.twist c 0).D = M.D from rfl, e, h₁]
-    simp [Adl.twist]
 
 end Comb
 
@@ -187,18 +175,6 @@ def ofKit {A : Amb D} {N j : ℕ} (h : 1 ≤ j ∧ j < N) {S : Sig A N j} {κ : 
     (adm : AdmSt D N j jC) (met : MetIn k.Φ) : Setup D :=
   ⟨A, N, j, h, S, κ, s, L, k.Φ, k.dim_eq, k.B, k.fl, k.Mb, jC, ng, .ofPkg k.pad, .ofPkg k.pad, adm, met⟩
 
-theorem shimXAt_eq {A : Amb D} {F : SrcFam A} {L : CmList A}
-    {jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW p →+* ℂ)} {ng : NgPkg} (k : Kits F L (cxSt D.what₂.LL) jC ng)
-    {N j : ℕ} (hN : 2 ≤ N) (hj : j ≤ N) (κ : Lv A) (h : 1 ≤ j ∧ j < N) (loc : LocSt D N j ng)
-    (glob : GlobSt fun p => (loc.loc p).Mdl) (adm : AdmSt D N j jC) (met : MetIn (k N j hN hj κ).Φ)
-    (e : (k N j hN hj κ).pad = padAt _ loc glob adm (flatSt _ _ met.hm) (arIn _ _ met.hm)) :
-    shimXAt (cutSt _) (resSt _) k N j hN hj κ h = (ofKit h (k N j hN hj κ) adm met).Y := by
-  unfold shimXAt Y
-  congr 1
-  change _ = padAt _ (.ofPkg (k N j hN hj κ).pad) (.ofPkg (k N j hN hj κ).pad) adm _ _
-  generalize (k N j hN hj κ).pad = P at e ⊢
-  subst e
-  rfl
 
 abbrev var (c : O.s.Comp) : Var D.what₂.LL := (O.Φ.C c).Y
 
@@ -320,12 +296,6 @@ def aux (Ps : ℝ → O.s.Comp → MvPolynomial (Option (D.what₂.Tau × Fin O.
 theorem heightData_satisfies (Ps : ℝ → O.s.Comp → MvPolynomial (Option (D.what₂.Tau × Fin O.N)) ℝ) : O.IsFlagHeightData (O.aux Ps) :=
   ⟨rfl, rfl, fun _ _ => rfl, fun _ _ => Iff.rfl⟩
 
-theorem IsFlagHeightData.eq_aux {O : Setup D} {A : SlopeTestRemainingChoices O.Y} (h : O.IsFlagHeightData A) : A = O.aux A.Ps := by
-  obtain ⟨_, _, _, _, _⟩ := A
-  obtain ⟨rfl, rfl, h₁, h₂⟩ := h
-  congr
-  · exact funext₂ h₁
-  · exact funext₂ fun c Z => propext (h₂ c Z)
 
 def hts : Ht O.Y where
   h0 u (y : Pt O.s) := O.htWt (O.root0 _ ∅) u (basePt O.Φ y)

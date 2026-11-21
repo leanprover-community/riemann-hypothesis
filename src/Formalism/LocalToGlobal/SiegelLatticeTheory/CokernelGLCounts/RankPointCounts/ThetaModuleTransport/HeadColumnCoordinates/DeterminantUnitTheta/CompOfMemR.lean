@@ -1,5 +1,374 @@
-import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.DeterminantUnitTheta.MemSpanOfSharpG
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.DeterminantUnitTheta.ThetaGC
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.SharpSpanCounting.CoordLHolds
 
+section
+noncomputable section
+
+open ValuativeRel Formalism.MainNotions.S.Loc Formalism.L2.SG.LsDatumA Formalism.L2.SG.LocalCountModules.LocCntCommon
+
+namespace Formalism.L2.SG.LocalCountModules.ThetaMbe0GWork
+
+section Steps
+
+def DetG : Prop :=
+  ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F]
+    (E : Type) [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
+    (M : Model F E) (g : SplitG M.L), M.split = some g →
+  ∀ (r : ℕ) (Zh : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (T T' : F),
+    (Zh.submatrix Fin.castSucc Fin.castSucc).det = 0 →
+    IsUnit (HermSp.ZZplusOf M Zh T T').det → IsUnit Zh.det
+
+def CoordG : Prop :=
+  ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F]
+    (E : Type) [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
+    (M : Model F E) (g : SplitG M.L), M.split = some g →
+  ∀ (r n : ℕ) (V : Type) [AddCommGroup V] [Module E V] (H : HermSp M V), Module.finrank E V = n →
+  ∀ (t₁ : Term V M r) (f₂ f₂' : Fin (r + 1) → V)
+    (φ : H.Wb t₁.f ≃ₗ[E] H.Wb f₂) (φ' : H.Wb t₁.f' ≃ₗ[E] H.Wb f₂'), LocalCountHypotheses H t₁ f₂ f₂' φ φ' →
+    H.Dl t₁.f t₁.f' r = 0 → IsUnit (H.Dl f₂ f₂' (r + 1)) →
+    (∀ a b, HermSp.ZZplusOf M (H.Zhat f₂ f₂') t₁.T t₁.T' a b ∈ M.R) →
+    Nat.card (Theta H t₁ ⟨⊥, f₂, f₂', t₁.T, t₁.T'⟩ φ φ') =
+      Nat.card (ThetaGC M.L.O (M.L.cj : E →+* E) (algebraMap F E (g.q : F))
+        (algebraMap F E ((g.q : F)⁻¹)) (H.Zhat t₁.f t₁.f') (H.Zhat f₂ f₂')
+        (algebraMap F E t₁.T) (algebraMap F E t₁.T'))
+
+def SplitIsometryCountVanishes : Prop :=
+  ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F]
+    (E : Type) [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
+    (M : Model F E) (g : SplitG M.L), M.split = some g →
+  ∀ (r : ℕ) (T T' : F), (∃ u v : 𝒪[F], (u : F) * T = 1 ∧ (v : F) * T' = 1) →
+    (∃ c : 𝒪[F], T - T' = (g.q : F) ^ 2 * c) →
+  ∀ (Zh₁ Zh₂ : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (Z₁ Z₂ : Matrix (Fin (r + 1)) (Fin (r + 1)) M.R),
+    Z₁.map M.R.subtype = HermSp.ZZplusOf M Zh₁ T T' → Z₂.map M.R.subtype = HermSp.ZZplusOf M Zh₂ T T' →
+    IsUnit Zh₁.det → IsUnit Zh₂.det →
+    (Zh₁.submatrix Fin.castSucc Fin.castSucc).det = 0 → (Zh₂.submatrix Fin.castSucc Fin.castSucc).det = 0 →
+    Nat.card (ThetaGC M.L.O (M.L.cj : E →+* E) (algebraMap F E (g.q : F))
+        (algebraMap F E ((g.q : F)⁻¹)) Zh₁ Zh₂ (algebraMap F E T) (algebraMap F E T')) =
+      Nat.card (IsoMbe Z₁ Z₂)
+
+end Steps
+
+section Deriv
+
+variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
+variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
+
+
+end Deriv
+
+end Formalism.L2.SG.LocalCountModules.ThetaMbe0GWork
+end
+end
+
+section
+noncomputable section
+
+open ValuativeRel Formalism.MainNotions.S.Loc Formalism.L2.SG.LsDatumA Formalism.L2.SG.LocalCountModules.LocCntCommon
+
+namespace Formalism.L2.SG.LocalCountModules.ThetaMbe0GWork
+
+theorem det_add_cor {K : Type} [CommRing K] {r : ℕ} (A : Matrix (Fin (r + 1)) (Fin (r + 1)) K) (c : K) :
+    (A + Matrix.of fun a b => cor r a b c).det = A.det + c * (A.submatrix Fin.castSucc Fin.castSucc).det := by
+  have e1 : A + Matrix.of (fun a b => cor r a b c) =
+      A.updateRow (Fin.last r) (A (Fin.last r) + c • Pi.single (Fin.last r) 1) := by
+    ext a b
+    by_cases ha : a = Fin.last r
+    · subst ha
+      by_cases hb : b = Fin.last r
+      · subst hb
+        simp [cor]
+      · simp [cor, hb, Pi.single_apply]
+    · simp [cor, ha, Matrix.updateRow_ne ha]
+  rw [e1, Matrix.det_updateRow_add, Matrix.updateRow_eq_self, Matrix.det_updateRow_smul]
+  congr 2
+  rw [Matrix.det_succ_row _ (Fin.last r), Finset.sum_eq_single (Fin.last r)]
+  · have hsub : (A.updateRow (Fin.last r) (Pi.single (Fin.last r) 1)).submatrix (Fin.last r).succAbove
+        (Fin.last r).succAbove = A.submatrix Fin.castSucc Fin.castSucc := by
+      ext a b
+      simp [Fin.succAbove_last, Matrix.updateRow_ne (Fin.castSucc_lt_last a).ne]
+    rw [hsub, Matrix.updateRow_self, Pi.single_eq_same, mul_one, Fin.val_last, ← two_mul, pow_mul, neg_one_sq,
+      one_pow, one_mul]
+  · intro j _ hj
+    rw [Matrix.updateRow_self, Pi.single_eq_of_ne hj, mul_zero, zero_mul]
+  · simp
+
+theorem detG_holds : DetG := by
+  intro F _ _ _ E _ _ _ _ M g hs r Zh T T' hh hu
+  let φ₁ : E →+* F := (RingHom.fst F F).comp g.e.toRingEquiv.toRingHom
+  let φ₂ : E →+* F := (RingHom.snd F F).comp g.e.toRingEquiv.toRingHom
+  have hφ₁ : ∀ x, φ₁ x = (g.e x).1 := fun _ => rfl
+  have hφ₂ : ∀ x, φ₂ x = (g.e x).2 := fun _ => rfl
+  have key : ∀ x : E, IsUnit x ↔ φ₁ x ≠ 0 ∧ φ₂ x ≠ 0 := by
+    intro x
+    rw [← isUnit_map_iff g.e x, Prod.isUnit_iff, isUnit_iff_ne_zero, isUnit_iff_ne_zero]
+    rfl
+  have hq : (g.q : F) ≠ 0 := by
+    intro h
+    exact g.q_irr.ne_zero (Subtype.ext h)
+  set Zz := HermSp.ZZplusOf M Zh T T' with hZz
+  have e1 : Zz.map φ₁ = (g.q : F)⁻¹ • Zh.map φ₁ + Matrix.of fun a b => cor r a b (T / (g.q : F)) := by
+    ext a b
+    rw [hZz]
+    unfold HermSp.ZZplusOf
+    rw [hs]
+    by_cases h : a = Fin.last r ∧ b = Fin.last r
+    · simp [hφ₁, cor, h, div_eq_inv_mul]
+      try ring
+    · simp [hφ₁, cor, h, div_eq_inv_mul]
+  have e2 : Zz.map φ₂ = (-(g.q : F)⁻¹) • (Zh.map φ₂).transpose +
+      Matrix.of fun a b => cor r a b (-(T' / (g.q : F))) := by
+    ext a b
+    rw [hZz]
+    unfold HermSp.ZZplusOf
+    rw [hs]
+    by_cases h : a = Fin.last r ∧ b = Fin.last r
+    · simp [hφ₂, cor, h, div_eq_inv_mul]
+      try ring
+    · simp [hφ₂, cor, h, div_eq_inv_mul]
+  have hh1 : φ₁ ((Zh.submatrix Fin.castSucc Fin.castSucc).det) = 0 := by rw [hh, map_zero]
+  have hh2 : φ₂ ((Zh.submatrix Fin.castSucc Fin.castSucc).det) = 0 := by rw [hh, map_zero]
+  rw [RingHom.map_det, RingHom.mapMatrix_apply] at hh1 hh2
+  obtain ⟨u1, u2⟩ := (key _).1 hu
+  rw [RingHom.map_det, RingHom.mapMatrix_apply, e1, det_add_cor] at u1
+  rw [RingHom.map_det, RingHom.mapMatrix_apply, e2, det_add_cor] at u2
+  rw [key, RingHom.map_det, RingHom.map_det, RingHom.mapMatrix_apply, RingHom.mapMatrix_apply]
+  constructor
+  · intro h0
+    apply u1
+    have hs1 : (((g.q : F)⁻¹ • Zh.map φ₁).submatrix Fin.castSucc Fin.castSucc) =
+        (g.q : F)⁻¹ • ((Zh.submatrix Fin.castSucc Fin.castSucc).map φ₁) := by
+      ext a b; simp
+    rw [Matrix.det_smul, h0, hs1, Matrix.det_smul, hh1]
+    ring
+  · intro h0
+    apply u2
+    have hs2 : ((-(g.q : F)⁻¹) • (Zh.map φ₂).transpose).submatrix Fin.castSucc Fin.castSucc =
+        (-(g.q : F)⁻¹) • ((Zh.submatrix Fin.castSucc Fin.castSucc).map φ₂).transpose := by
+      ext a b; simp
+    rw [Matrix.det_smul, Matrix.det_transpose, h0, hs2, Matrix.det_smul, Matrix.det_transpose, hh2]
+    ring
+
+end Formalism.L2.SG.LocalCountModules.ThetaMbe0GWork
+end
+end
+
+section
+noncomputable section
+
+open ValuativeRel Formalism.MainNotions.S.Loc Formalism.L2.SG.LsDatumA Formalism.L2.SG.LocalCountModules.LocCntCommon
+
+namespace Formalism.L2.SG.LocalCountModules.ThetaMbe0GWork
+
+variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
+variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
+variable {M : Model F E} {V : Type} [AddCommGroup V] [Module E V] (H : HermSp M V)
+variable {r : ℕ}
+
+def GoodG (g : SplitG M.L) (t : Term V M r) : Prop :=
+  M.split = some g ∧ Formalism.MainNotions.ThinScalesBound.FrameK H t.f t.T ∧ Formalism.MainNotions.ThinScalesBound.FrameK H t.f' t.T' ∧
+    IsUnit (H.Dl t.f t.f' (r + 1)) ∧ IsUnit (gramH H (H.MMfam t)).det
+
+theorem q_ne (g : SplitG M.L) : (g.q : F) ≠ 0 := by
+  intro h
+  exact g.q_irr.ne_zero (by exact_mod_cast h)
+
+theorem qi_mul_q (g : SplitG M.L) :
+    algebraMap F E ((g.q : F)⁻¹) * algebraMap F E (g.q : F) = 1 := by
+  rw [← map_mul, inv_mul_cancel₀ (q_ne g), map_one]
+
+theorem cj_alg (a : F) : M.L.cj (algebraMap F E a) = algebraMap F E a := M.L.cj.commutes a
+
+theorem mmfam_some {g : SplitG M.L} (hs : M.split = some g) (t : Term V M r) :
+    H.MMfam t = Sum.elim t.f (fun a => algebraMap F E ((g.q : F)⁻¹) • (t.f' a - t.f a)) := by
+  simp only [HermSp.MMfam, hs]
+
+theorem h_sub_right (x y y' : V) : H.h x (y - y') = H.h x y - H.h x y' := by
+  have h1 : H.h (y - y') x = H.h y x - H.h y' x := by
+    have h2 := H.h_add_left (y - y') y' x
+    rw [sub_add_cancel] at h2
+    rw [h2]
+    ring
+  rw [H.h_herm (y - y') x, h1, map_sub, ← H.h_herm, ← H.h_herm]
+
+theorem gramH_eqG {g : SplitG M.L} {t : Term V M r} (hg : GoodG H g t) :
+    gramH H (H.MMfam t) = gramG (M.L.cj : E →+* E) (algebraMap F E ((g.q : F)⁻¹)) (H.Zhat t.f t.f')
+      (algebraMap F E t.T) (algebraMap F E t.T') := by
+  obtain ⟨hs, hF, hF', -, -⟩ := hg
+  have hff : ∀ a b, H.h (t.f a) (t.f b) = cor r a b (-algebraMap F E t.T) := by
+    intro a b
+    unfold cor
+    split_ifs with h
+    · rw [h.1, h.2]
+      exact hF.2
+    · exact hF.1 a b (by tauto)
+  have hf'f' : ∀ a b, H.h (t.f' a) (t.f' b) = cor r a b (-algebraMap F E t.T') := by
+    intro a b
+    unfold cor
+    split_ifs with h
+    · rw [h.1, h.2]
+      exact hF'.2
+    · exact hF'.1 a b (by tauto)
+  have hZ : ∀ a b, H.Zhat t.f t.f' a b = H.h (t.f' b) (t.f a) := fun a b => rfl
+  have hZc : ∀ a b, (M.L.cj : E →+* E) (H.Zhat t.f t.f' a b) = H.h (t.f a) (t.f' b) := fun a b => by
+    show M.L.cj (H.Zhat t.f t.f' a b) = _
+    rw [hZ, ← H.h_herm]
+  have hsr : ∀ (c : E) (x y : V), H.h x (c • y) = M.L.cj c * H.h x y := fun c x y => by
+    rw [H.h_herm, H.h_smul_left, map_mul, ← H.h_herm]
+  have hsl : ∀ (x y z : V), H.h (x - y) z = H.h x z - H.h y z := fun x y z => by
+    have h2 := H.h_add_left (x - y) y z
+    rw [sub_add_cancel] at h2
+    rw [h2]
+    ring
+  rw [mmfam_some H hs]
+  ext i j
+  rcases i with a | a <;> rcases j with b | b
+  · simp only [gramH, Matrix.of_apply, Sum.elim_inl, gramG, Matrix.fromBlocks_apply₁₁]
+    exact hff a b
+  · simp only [gramH, Matrix.of_apply, Sum.elim_inl, Sum.elim_inr, gramG, Matrix.fromBlocks_apply₁₂]
+    rw [hsr, cj_alg, h_sub_right, hff, hZc]
+    unfold cor
+    split_ifs <;> ring
+  · simp only [gramH, Matrix.of_apply, Sum.elim_inl, Sum.elim_inr, gramG, Matrix.fromBlocks_apply₂₁]
+    rw [H.h_smul_left, hsl, hff, hZ]
+    unfold cor
+    split_ifs <;> ring
+  · simp only [gramH, Matrix.of_apply, Sum.elim_inr, gramG, Matrix.fromBlocks_apply₂₂]
+    rw [H.h_smul_left, hsr, cj_alg, hsl, h_sub_right, h_sub_right, hf'f', hff, hZc, hZ]
+    unfold cor
+    split_ifs <;> ring
+
+theorem gramH_comb {ι : Type} [Fintype ι] (B : Matrix ι ι E) (v : ι → V) :
+    gramH H (fun i => ∑ j, B i j • v j) = B * gramH H v * (B.map M.L.cj).transpose := by
+  classical
+  have hsl : ∀ (s : Finset ι) (f : ι → V) (y : V), H.h (∑ i ∈ s, f i) y = ∑ i ∈ s, H.h (f i) y := by
+    intro s f y
+    induction s using Finset.induction_on with
+    | empty =>
+      have h0 := H.h_smul_left 0 0 y
+      simpa using h0
+    | @insert a s ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, H.h_add_left, ih]
+  have hsr : ∀ (x : V) (s : Finset ι) (f : ι → V), H.h x (∑ i ∈ s, f i) = ∑ i ∈ s, H.h x (f i) := by
+    intro x s f
+    rw [H.h_herm (∑ i ∈ s, f i) x, hsl, map_sum]
+    simp_rw [← H.h_herm]
+  have hsmr : ∀ (a : E) (x y : V), H.h x (a • y) = M.L.cj a * H.h x y := by
+    intro a x y
+    rw [H.h_herm (a • y) x, H.h_smul_left, map_mul, ← H.h_herm]
+  ext i k
+  simp only [gramH, Matrix.of_apply, Matrix.mul_apply, Matrix.transpose_apply, Matrix.map_apply, hsl, H.h_smul_left,
+    hsr, hsmr, Finset.mul_sum, Finset.sum_mul]
+  rw [Finset.sum_comm]
+  exact Finset.sum_congr rfl (fun j _ => Finset.sum_congr rfl (fun l _ => by ring))
+
+theorem unit_gramH_of {g : SplitG M.L} (hs : M.split = some g) {t : Term V M r}
+    (hF : Formalism.MainNotions.ThinScalesBound.FrameK H t.f t.T) (hF' : Formalism.MainNotions.ThinScalesBound.FrameK H t.f' t.T')
+    (hD1 : IsUnit (H.Dl t.f t.f' (r + 1))) (hD0 : H.Dl t.f t.f' r = 0) :
+    IsUnit (gramH H (H.MMfam t)).det := by
+  set qi := algebraMap F E ((g.q : F)⁻¹) with hqi
+  let B : Matrix (Ix r) (Ix r) E := Matrix.fromBlocks 1 0 (-qi • (1 : Matrix (Fin (r + 1)) (Fin (r + 1)) E))
+    (qi • (1 : Matrix (Fin (r + 1)) (Fin (r + 1)) E))
+  have hfam : H.MMfam t = fun i => ∑ j, B i j • Sum.elim t.f t.f' j := by
+    rw [mmfam_some H hs]
+    funext i
+    rcases i with a | a
+    · simp [B, Fintype.sum_sum_type, Matrix.one_apply]
+    · simp [B, Fintype.sum_sum_type, Matrix.one_apply, sub_eq_add_neg, add_comm, neg_smul]
+      rfl
+  have hqu : IsUnit qi := by
+    refine ⟨⟨qi, algebraMap F E (g.q : F), qi_mul_q g, ?_⟩, rfl⟩
+    rw [mul_comm]; exact qi_mul_q g
+  have hB : IsUnit B.det := by
+    simp only [B]
+    rw [Matrix.det_fromBlocks_zero₁₂, Matrix.det_one, one_mul, Matrix.det_smul, Matrix.det_one, mul_one]
+    exact hqu.pow _
+  have hV : gramH H (Sum.elim t.f t.f') = gramC (M.L.cj : E →+* E) (H.Zhat t.f t.f')
+      (algebraMap F E t.T) (algebraMap F E t.T') := by
+    rw [gramC_eq H _ _ _ _ hF hF']
+    ext i j; rfl
+  have hG := unit_gramC H _ _ _ _ hF hF' hD1 hD0
+  rw [hfam, gramH_comb, Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, hV]
+  have hBc : IsUnit (B.map M.L.cj).det := by
+    have : (B.map M.L.cj).det = M.L.cj B.det := by
+      rw [show (B.map M.L.cj) = (M.L.cj : E →+* E).mapMatrix B from rfl, ← RingHom.map_det]; rfl
+    rw [this]; exact hB.map _
+  exact (hB.mul hG).mul hBc
+
+theorem unit_gramHG {g : SplitG M.L} {t : Term V M r} (hg : GoodG H g t) :
+    IsUnit (gramH H (H.MMfam t)).det := hg.2.2.2.2
+
+theorem relSub_eqG {g : SplitG M.L} {t : Term V M r} (hg : GoodG H g t) :
+    relSub H t = relG M.L.O (M.L.cj : E →+* E) (algebraMap F E ((g.q : F)⁻¹)) (H.Zhat t.f t.f')
+      (algebraMap F E t.T) (algebraMap F E t.T') := by
+  have e : ∀ i j, H.h (H.MMfam t i) (H.MMfam t j) = gramG (M.L.cj : E →+* E) (algebraMap F E ((g.q : F)⁻¹))
+      (H.Zhat t.f t.f') (algebraMap F E t.T) (algebraMap F E t.T') i j := by
+    intro i j
+    rw [← gramH_eqG H hg]
+    rfl
+  ext y
+  constructor
+  · rintro ⟨c, hc⟩
+    exact ⟨c, fun j => by rw [hc j]; simp only [e]⟩
+  · rintro ⟨c, hc⟩
+    exact ⟨c, fun j => by rw [hc j]; simp only [e]⟩
+
+def PsiG {g : SplitG M.L} {t : Term V M r} (hg : GoodG H g t) :
+    DDt H t ≃ₗ[M.L.O] DDg M.L.O (M.L.cj : E →+* E) (algebraMap F E ((g.q : F)⁻¹)) (H.Zhat t.f t.f')
+      (algebraMap F E t.T) (algebraMap F E t.T') :=
+  (ddEquiv H t (unit_gramHG H hg)).trans (Submodule.quotEquivOfEq _ _ (relSub_eqG H hg))
+
+theorem PsiG_mk {g : SplitG M.L} {t : Term V M r} (hg : GoodG H g t) (u : ↥(MMsharp H t)) :
+    PsiG H hg (ddMk H t u) = Submodule.Quotient.mk (sharpEquiv H t (unit_gramHG H hg) u) := rfl
+
+theorem PsiG_symm_mk {g : SplitG M.L} {t : Term V M r} (hg : GoodG H g t) (Y : Ix r → M.L.O) :
+    (PsiG H hg).symm (Submodule.Quotient.mk Y) =
+      ddMk H t ((sharpEquiv H t (unit_gramHG H hg)).symm Y) := by
+  rw [LinearEquiv.symm_apply_eq, PsiG_mk, LinearEquiv.apply_symm_apply]
+
+theorem h_eq_formG {g : SplitG M.L} {t : Term V M r} (hg : GoodG H g t) (u w : ↥(MMsharp H t)) :
+    H.h u w = formG M.L.O (M.L.cj : E →+* E) (algebraMap F E ((g.q : F)⁻¹)) (H.Zhat t.f t.f')
+      (algebraMap F E t.T) (algebraMap F E t.T') (sharpEquiv H t (unit_gramHG H hg) u)
+      (sharpEquiv H t (unit_gramHG H hg) w) := by
+  rw [h_eq_form H (H.MMfam t) (unit_gramHG H hg) u w ((mem_MMsharp_iff H t u).1 u.2).1]
+  unfold formG
+  rw [← gramH_eqG H hg]
+  simp only [sharpEquiv_apply]
+  rfl
+
+theorem sharpG_inl {g : SplitG M.L} {t : Term V M r} (hg : GoodG H g t) (u : ↥(MMsharp H t))
+    (a : Fin (r + 1)) : (sharpEquiv H t (unit_gramHG H hg) u (Sum.inl a) : E) = H.h u (t.f a) := by
+  rw [sharpEquiv_apply, mmfam_some H hg.1]
+  rfl
+
+theorem sharpG_inr {g : SplitG M.L} {t : Term V M r} (hg : GoodG H g t) (u : ↥(MMsharp H t))
+    (a : Fin (r + 1)) : (sharpEquiv H t (unit_gramHG H hg) u (Sum.inr a) : E) =
+      algebraMap F E ((g.q : F)⁻¹) * (H.h u (t.f' a) - H.h u (t.f a)) := by
+  rw [sharpEquiv_apply, mmfam_some H hg.1]
+  simp only [Sum.elim_inr]
+  rw [H.h_herm, H.h_smul_left, map_mul, ← H.h_herm, cj_alg, h_sub_right]
+
+theorem sharpG_f' {g : SplitG M.L} {t : Term V M r} (hg : GoodG H g t) (u : ↥(MMsharp H t))
+    (a : Fin (r + 1)) : H.h u (t.f' a) = (sharpEquiv H t (unit_gramHG H hg) u (Sum.inl a) : E) +
+      algebraMap F E (g.q : F) * (sharpEquiv H t (unit_gramHG H hg) u (Sum.inr a) : E) := by
+  rw [sharpG_inl H hg, sharpG_inr H hg, ← mul_assoc, mul_comm (algebraMap F E (g.q : F)), qi_mul_q g, one_mul]
+  ring
+
+theorem mem_span_of_sharpG {g : SplitG M.L} {t : Term V M r} (hg : GoodG H g t) (u : ↥(MMsharp H t)) :
+    (u : V) ∈ Submodule.span E (Set.range (Sum.elim t.f t.f')) := by
+  have h1 := ((mem_MMsharp_iff H t u).1 u.2).1
+  rw [mmfam_some H hg.1] at h1
+  refine Submodule.span_le.2 ?_ h1
+  rintro _ ⟨i, rfl⟩
+  rcases i with a | a
+  · exact Submodule.subset_span ⟨Sum.inl a, rfl⟩
+  · simp only [Sum.elim_inr]
+    exact Submodule.smul_mem _ _ (Submodule.sub_mem _ (Submodule.subset_span ⟨Sum.inr a, rfl⟩)
+      (Submodule.subset_span ⟨Sum.inl a, rfl⟩))
+
+end Formalism.L2.SG.LocalCountModules.ThetaMbe0GWork
+end
+end
+
+section
 noncomputable section
 
 open ValuativeRel Formalism.MainNotions.S.Loc Formalism.L2.SG.LsDatumA Formalism.L2.SG.LocalCountModules.LocCntCommon
@@ -199,3 +568,5 @@ theorem mmInt_G {g : SplitG M.L} {t : Term V M r} (hg : GoodG H g t) (hT : t.T �
   | smul a x _ hx => rw [Subring.smul_def, H.h_smul_left]; exact M.L.O.mul_mem a.2 hx
 
 end Formalism.L2.SG.LocalCountModules.ThetaMbe0GWork
+end
+end

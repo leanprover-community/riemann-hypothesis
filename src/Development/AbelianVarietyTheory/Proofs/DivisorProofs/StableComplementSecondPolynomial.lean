@@ -5,7 +5,7 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SplitPlaceUn
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DivisorIndicatorMemHecke
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsFamilyIffRationalHecke
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsSatakeParameterOfUnramifiedInertDefiniteUn
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryDivisorIndicatorMemHecke
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GaloisOfPolarized
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SpehShapeIffOfDiscreteSpectrum
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsHeckeLOfHasInf
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NontrivialOfNeBot
@@ -13,6 +13,22 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsDefiniteOf
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RealPointActsLinearlyOnMultiplicityValuesPosDef
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.PairVrGramPRatPosDef
 
+section
+open IsDedekindDomain NumberField Formalism.UG GlobalTheory.SphPar GlobalTheory.CuspRep
+
+namespace GlobalTheory.DivIndU
+
+variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))]
+
+noncomputable def diagGL {n : ℕ} (x : Fin n → L) (hx : ∀ i, x i ≠ 0) : GL (Fin n) L :=
+  ⟨Matrix.diagonal x, Matrix.diagonal fun i => (x i)⁻¹,
+    by rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]; congr 1; funext i; exact mul_inv_cancel₀ (hx i),
+    by rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]; congr 1; funext i; exact inv_mul_cancel₀ (hx i)⟩
+
+end GlobalTheory.DivIndU
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.SplitTransfer
@@ -177,4 +193,5 @@ theorem heckeVec_divInd {D : D7} [IsCMField D.host.E] {V : HSp D}
 
 end GlobalTheory.SplitTransfer
 
+end
 end

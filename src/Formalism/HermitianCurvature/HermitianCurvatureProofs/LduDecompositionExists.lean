@@ -50,13 +50,6 @@ theorem not_range_castLE {l r : ℕ} (hl : l ≤ r) {k : Fin r} (hk : k ∉ Set.
   by_contra hlt
   exact hk ⟨⟨k.val, by omega⟩, Fin.ext rfl⟩
 
-theorem not_range_rev {l r : ℕ} (hl : l ≤ r) {k : Fin r}
-    (hk : k ∉ Set.range (fun i : Fin l => (Fin.castLE hl i).rev)) : k.val + l < r := by
-  by_contra hlt
-  refine hk ⟨⟨r - 1 - k.val, by have := k.isLt; omega⟩, Fin.ext ?_⟩
-  have := k.isLt
-  simp only [Fin.val_rev, Fin.val_castLE]
-  omega
 
 theorem rev_inj {l r : ℕ} (hl : l ≤ r) :
     Function.Injective (fun i : Fin l => (Fin.castLE hl i).rev) := by
@@ -80,27 +73,6 @@ theorem lead_invariant {r : ℕ} {L M U : Matrix (Fin r) (Fin r) A} (hL : IsLowU
     have := not_range_castLE hl hk
     exact up_apply hU (by rw [Fin.lt_def]; have := b.isLt; simp only [Fin.val_castLE]; omega)
 
-theorem corner_invariant {r : ℕ} {v₂ X v₁ : Matrix (Fin r) (Fin r) A} (h₂ : IsUpUni v₂) (h₁ : IsUpUni v₁)
-    (l : ℕ) (hl : l ≤ r) : cm (v₂ * X * v₁) l hl = cm X l hl := by
-  unfold cm
-  rw [submatrix_mul_right _ (Fin.castLE_injective hl), submatrix_mul_left _ (rev_inj hl),
-    Matrix.det_mul, Matrix.det_mul]
-  · have h1 : IsLowUni (v₂.submatrix (fun i : Fin l => (Fin.castLE hl i).rev)
-        (fun i : Fin l => (Fin.castLE hl i).rev)) :=
-      mk_low (fun i j hij => up_apply h₂ (by
-        rw [Fin.lt_def] at hij ⊢
-        have := j.isLt
-        simp only [Fin.val_rev, Fin.val_castLE]; omega)) (fun i => h₂.2 _)
-    have h2 : IsUpUni (v₁.submatrix (Fin.castLE hl) (Fin.castLE hl)) :=
-      mk_up (fun i j hij => up_apply h₁ (by rw [Fin.lt_def] at hij ⊢; exact hij)) (fun i => h₁.2 _)
-    rw [isLowUni_det A h1, isUpUni_det A h2, one_mul, mul_one]
-  · intro a k hk
-    have := not_range_rev hl hk
-    exact up_apply h₂ (by
-      rw [Fin.lt_def]; have := a.isLt; simp only [Fin.val_rev, Fin.val_castLE]; omega)
-  · intro k b hk
-    have := not_range_castLE hl hk
-    exact up_apply h₁ (by rw [Fin.lt_def]; have := b.isLt; simp only [Fin.val_castLE]; omega)
 
 theorem lead_diagonal {r : ℕ} (d : Fin r → A) (l : ℕ) (hl : l ≤ r) :
     lead (Matrix.diagonal d) l hl = ∏ i : Fin l, d (Fin.castLE hl i) := by
@@ -356,17 +328,6 @@ theorem levi_embedding_block33 (h : Matrix (Fin k) (Fin k) A) : b33 (hEmb r h) =
 theorem midEmb_det (h : Matrix (Fin k) (Fin k) A) : (midEmb h).det = h.det := by
   simp [midEmb]
 
-theorem nu_blocks {x : Matrix (Idx r k) (Idx r k) A} (hx : IsNU x) :
-    IsUpUni (b11 x) ∧ IsUpUni (b33 x) ∧ b21 x = 0 ∧ b31 x = 0 ∧ b32 x = 0 ∧ IsUnit (b22 x).det := by
-  obtain ⟨n, _, ⟨h11, h33, h22, h21, h31, h32⟩, ⟨h, hh, rfl⟩, rfl⟩ := hx
-  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
-  · rw [block11_mul, levi_embedding_block11, levi_embedding_block21, levi_embedding_block31]; simpa using h11
-  · rw [block33_mul, levi_embedding_block13, levi_embedding_block23, levi_embedding_block33]; simpa using h33
-  · rw [block21_mul, levi_embedding_block11, levi_embedding_block21, levi_embedding_block31, h21]; simp
-  · rw [block31_mul, levi_embedding_block11, levi_embedding_block21, levi_embedding_block31, h31]; simp
-  · rw [block32_mul, levi_embedding_block12, levi_embedding_block22, levi_embedding_block32, h32]; simp
-  · rw [block22_mul, levi_embedding_block12, levi_embedding_block22, levi_embedding_block32, h22]
-    simp [midEmb_det, isUpUni_det A hh]
 
 theorem eq_zero_of_mul {n m : Type} [Fintype n] [DecidableEq n] {f : Matrix n n A} (hf : IsUnit f.det)
     {Y : Matrix n m A} (h : f * Y = 0) : Y = 0 := by
@@ -399,56 +360,6 @@ theorem exists_smul {ϖ : o} (hϖ : Irreducible ϖ) {m n : Type} (Z : Matrix m n
   choose W hW using h
   exact ⟨Matrix.of W, by ext a b; simpa using hW a b⟩
 
-theorem inverse_corner {ϖ : o} (hϖ : Irreducible ϖ) {r k : ℕ} (j : Matrix (Idx r k) (Idx r k) o)
-    (X : Matrix (Fin r) (Fin r) o) (hj : KppO j) (hX : b31 j = ϖ • X) :
-    ∃ Y : Matrix (Fin r) (Fin r) o, b31 j⁻¹ = ϖ • Y ∧
-      ((b33 j) * Y * (b11 j)).map (IsLocalRing.residue o) = -(X.map (IsLocalRing.residue o)) ∧
-      ∀ (l : ℕ) (hl : l ≤ r),
-        IsLocalRing.residue o (cm Y l hl) = (-1) ^ l * IsLocalRing.residue o (cm X l hl) := by
-  obtain ⟨hdet, hNU⟩ := hj
-  obtain ⟨h11, h33, h21, h31, h32, h22⟩ := nu_blocks hNU
-  have hJI : j.map (IsLocalRing.residue o) * j⁻¹.map (IsLocalRing.residue o) = 1 := by
-    rw [← Matrix.map_mul, Matrix.mul_nonsing_inv _ hdet, Matrix.map_one _ (map_zero _) (map_one _)]
-  have hIJ : j⁻¹.map (IsLocalRing.residue o) * j.map (IsLocalRing.residue o) = 1 := by
-    rw [← Matrix.map_mul, Matrix.nonsing_inv_mul _ hdet, Matrix.map_one _ (map_zero _) (map_one _)]
-  have u33 : IsUnit (b33 (j.map (IsLocalRing.residue o))).det := by
-    rw [isUpUni_det _ h33]; exact isUnit_one
-  have i31 : b31 (j⁻¹.map (IsLocalRing.residue o)) = 0 := by
-    have := block31_mul (j.map (IsLocalRing.residue o)) (j⁻¹.map (IsLocalRing.residue o))
-    rw [hJI, one_block31, h31, h32] at this
-    exact eq_zero_of_mul u33 (by simpa using this.symm)
-  have i21 : b21 (j⁻¹.map (IsLocalRing.residue o)) = 0 := by
-    have := block21_mul (j.map (IsLocalRing.residue o)) (j⁻¹.map (IsLocalRing.residue o))
-    rw [hJI, one_block21, h21, i31] at this
-    exact eq_zero_of_mul h22 (by simpa using this.symm)
-  have i11 : b11 (j⁻¹.map (IsLocalRing.residue o)) * b11 (j.map (IsLocalRing.residue o)) = 1 := by
-    have := block11_mul (j⁻¹.map (IsLocalRing.residue o)) (j.map (IsLocalRing.residue o))
-    rw [hIJ, one_block11, h21, h31] at this
-    simpa using this.symm
-  obtain ⟨Y, hY⟩ := exists_smul hϖ (b31 j⁻¹) i31
-  obtain ⟨C, hC⟩ := exists_smul hϖ (b32 j) h32
-  have e0 : X * b11 j⁻¹ + C * b21 j⁻¹ + b33 j * Y = 0 := by
-    have := block31_mul j j⁻¹
-    rw [Matrix.mul_nonsing_inv _ hdet, one_block31, hX, hC, hY, Matrix.smul_mul, Matrix.smul_mul,
-      Matrix.mul_smul, ← smul_add, ← smul_add] at this
-    ext a b
-    have h0 := congrFun (congrFun this a) b
-    simp only [Matrix.zero_apply, Matrix.smul_apply, smul_eq_mul] at h0
-    exact (mul_eq_zero.mp h0.symm).resolve_left hϖ.ne_zero
-  have e1 : X.map (IsLocalRing.residue o) * b11 (j⁻¹.map (IsLocalRing.residue o)) +
-      b33 (j.map (IsLocalRing.residue o)) * Y.map (IsLocalRing.residue o) = 0 := by
-    have := congrArg (fun Z => Z.map (IsLocalRing.residue o)) e0
-    simp only [Matrix.map_add _ (map_add _), Matrix.map_mul, Matrix.map_zero _ (map_zero _)] at this
-    have i21' : (b21 j⁻¹).map (IsLocalRing.residue o) = 0 := i21
-    rw [i21', Matrix.mul_zero, add_zero] at this
-    exact this
-  have e2 : b33 (j.map (IsLocalRing.residue o)) * Y.map (IsLocalRing.residue o) *
-      b11 (j.map (IsLocalRing.residue o)) = -(X.map (IsLocalRing.residue o)) := by
-    rw [eq_neg_of_add_eq_zero_right e1, Matrix.neg_mul, Matrix.mul_assoc, i11, Matrix.mul_one]
-  refine ⟨Y, hY, ?_, ?_⟩
-  · rw [Matrix.map_mul, Matrix.map_mul]; exact e2
-  · intro l hl
-    rw [cm_map, cm_map, ← cm_neg, ← e2, corner_invariant h33 h11]
 
 end Corner
 
@@ -465,20 +376,8 @@ theorem ldu_decomposition_exists : Formalism.FourierDecayAlt.S3.LDUExists := by
   rw [e]
   exact lead_ldu_succ d hL hU l hl
 
-theorem ldu_decomposition_unique : Formalism.FourierDecayAlt.S3.LDUUnique := by
-  intro A _ r L U L' U' d d' hL hU hL' hU' _ hd e
-  exact ldu_unique hL hU hL' hU' hd e
 
-theorem lead_invariant_bis : Formalism.FourierDecayAlt.S3.LeadInvariant := by
-  intro A _ r L M U hL hU l hl
-  exact lead_invariant hL hU l hl
 
-theorem corner_invariant_bis : Formalism.FourierDecayAlt.S3.CornerInvariant := by
-  intro A _ r v₂ X v₁ h₂ h₁ l hl
-  exact corner_invariant h₂ h₁ l hl
 
-theorem inverse_corner_identity : Formalism.FourierDecayAlt.S3.InverseCorner := by
-  intro o _ _ _ ϖ hϖ r k j X hj hX
-  exact inverse_corner hϖ j X hj hX
 
 end Formalism.FourierDecayAlt.P

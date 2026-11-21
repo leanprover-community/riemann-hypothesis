@@ -291,51 +291,11 @@ def VF.ofDerivation (d : Derivation K B B) : VF (Over.mk (spMap (algebraMap K B)
     exact (congrArg (secDer d U) (cstK_spec U c)).trans this
   res U V h a := rfl
 
-theorem VF.ofDerivation_fnOn (d : Derivation K B B) (U : (Sp B).Opens) (b : B) :
-    (VF.ofDerivation d).D U (fnOn B U b) = fnOn B U (d b) := secDer_fnOn d U b
 
-theorem jac_pderiv (n : ℕ) (U : (Sp (MvPolynomial (Fin n) K)).Opens) :
-    jac (A := Over.mk (spMap (algebraMap K (MvPolynomial (Fin n) K))))
-      (fun i : Fin n => VF.ofDerivation (MvPolynomial.pderiv i)) U
-      (fun j => fnOn _ U (MvPolynomial.X j)) = 1 := by
-  unfold jac
-  convert Matrix.det_one (n := Fin n)
-  ext i j
-  rw [Matrix.of_apply, VF.ofDerivation_fnOn, MvPolynomial.pderiv_X, Matrix.one_apply]
-  by_cases h : i = j
-  · subst h; simp
-  · simp [h, Ne.symm h]
 
-theorem isFrame_pderiv (n : ℕ) :
-    IsFrame (A := Over.mk (spMap (algebraMap K (MvPolynomial (Fin n) K))))
-      (fun i : Fin n => VF.ofDerivation (MvPolynomial.pderiv i)) := by
-  refine ⟨?_, fun x => ⟨⊤, fun j => fnOn _ ⊤ (MvPolynomial.X j), trivial, ?_⟩⟩
-  · rw [Fintype.card_fin]
-    have hA : Algebra.IsStandardSmoothOfRelativeDimension n K (MvPolynomial (Fin n) K) := by
-      let v : PEmpty.{1} → MvPolynomial (Fin n) K := PEmpty.elim
-      let P0 := Algebra.PreSubmersivePresentation.naive (v := v) (PEmpty.elim : PEmpty.{1} → Fin n)
-        (fun a => a.elim)
-      let P : Algebra.SubmersivePresentation K _ (Fin n) PEmpty.{1} := ⟨P0, by
-        rw [Algebra.PreSubmersivePresentation.jacobian_eq_jacobiMatrix_det, Matrix.det_isEmpty, map_one]
-        exact isUnit_one⟩
-      have hI : Ideal.span (Set.range v) = ⊥ := by simp [v]
-      let e : (MvPolynomial (Fin n) K ⧸ Ideal.span (Set.range v)) ≃ₐ[K] MvPolynomial (Fin n) K :=
-        (Ideal.quotientEquivAlgOfEq K hI).trans
-          (AlgEquiv.ofRingEquiv (f := RingEquiv.quotientBot _) (fun r => RingEquiv.quotientBot_mk _))
-      exact (P.ofAlgEquiv e).isStandardSmoothOfRelativeDimension (by simp [Algebra.Presentation.dimension])
-    show SmoothOfRelativeDimension n (Spec.map (CommRingCat.ofHom (algebraMap K (MvPolynomial (Fin n) K))))
-    rw [HasRingHomProperty.Spec_iff (P := @SmoothOfRelativeDimension n)]
-    exact RingHom.locally_of RingHom.isStandardSmoothOfRelativeDimension_respectsIso _
-      ((RingHom.isStandardSmoothOfRelativeDimension_algebraMap n).mpr hA)
-  · rw [jac_pderiv]; exact isUnit_one
 end SpecVF
 
-theorem polyPt_X {S : Scheme.{0}} {G Z : Over S} [GrpObj G] (F : End G) (x : Z ⟶ G) :
-    polyPt F Polynomial.X x = x ≫ (show G ⟶ G from F) := by
-  simp [polyPt, List.range_succ, Polynomial.coeff_X]
 
-theorem unr_self {R : Type} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] {π : R} (h : Irreducible π) :
-    Unr π R := ⟨inferInstance, inferInstance, h⟩
 
 end GlobalTheory.SS
 end

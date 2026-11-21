@@ -163,19 +163,6 @@ theorem four_mul (f : ℕ) : FOURMulStatement f := by
   intro Ω h1 h2 hΩ hd1 hd2 hp1 hp2 b hb _ _ ν
   exact (four_mul' f Ω h1 h2 hΩ hd1 hd2 hp1 hp2 b hb ν).tsum_eq.symm
 
-theorem four_mul_supp (f : ℕ) : FOURMulSuppStatement f := by
-  intro Ω h1 h2 hΩ hd1 hd2 hp1 hp2 b hb ν hne
-  by_contra hno
-  push Not at hno
-  have H := four_mul' f Ω h1 h2 hΩ hd1 hd2 hp1 hp2 b hb ν
-  have hz : ∀ ν' : Fin f → ℤ, fourCoeff h1 b ν' * fourCoeff h2 b (ν - ν') = 0 := by
-    intro ν'
-    by_cases h0 : fourCoeff h1 b ν' = 0
-    · rw [h0, zero_mul]
-    · rw [hno ν' (ν - ν') (by abel) h0, mul_zero]
-  have H0 : HasSum (fun ν' : Fin f → ℤ => fourCoeff h1 b ν' * fourCoeff h2 b (ν - ν')) 0 := by
-    simp [hz]
-  exact hne (H.unique H0)
 
 end
 

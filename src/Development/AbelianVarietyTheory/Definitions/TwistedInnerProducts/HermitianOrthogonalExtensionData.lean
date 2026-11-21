@@ -47,7 +47,6 @@ variable {E : Type} [Field E] [NumberField E] [StarRing E]
 
 abbrev neg (V : Formalism.BasicNotions.HSpace E) : Formalism.BasicNotions.HSpace E := sgn true V
 
-theorem sgn_false (V : Formalism.BasicNotions.HSpace E) : sgn false V = V := rfl
 
 theorem neg_hT (V : Formalism.BasicNotions.HSpace E) (x y : V.V) : (neg V).hT x y = -V.hT x y := rfl
 
@@ -55,7 +54,6 @@ theorem neg_gram (V : Formalism.BasicNotions.HSpace E) : (neg V).gram = -V.gram 
 
 theorem neg_sig (V : Formalism.BasicNotions.HSpace E) (τ : E →+* ℂ) : (neg V).sig τ = ((V.sig τ).2, (V.sig τ).1) := rfl
 
-theorem sgn_rank (ε : Bool) (V : Formalism.BasicNotions.HSpace E) : (sgn ε V).rank = V.rank := rfl
 
 theorem hasSignature_neg {n : Type} {J : Matrix n n ℂ} {p q : ℕ} (h : Formalism.UG.HasSignature J p q) :
     Formalism.UG.HasSignature (-J) q p := by
@@ -99,7 +97,6 @@ def ofSgn (ε : Bool) (V : HSp D) : GA D (sgn ε V) ≃* GA D V where
 
 theorem mt_ofSgn (ε : Bool) (V : HSp D) (g : GA D (sgn ε V)) : Formalism.L2.Theta.mt V (ofSgn ε V g) = Formalism.L2.Theta.mt (sgn ε V) g := rfl
 
-theorem ofSgn_false (V : HSp D) (g : GA D V) : ofSgn false V g = g := rfl
 
 theorem continuous_ofSgn (ε : Bool) (V : HSp D) : Continuous (ofSgn ε V) :=
   Continuous.subtype_mk continuous_subtype_val _
@@ -117,9 +114,6 @@ theorem hO_neg (S T : HSp D) (x y : WO S T) : hO (neg S) T x y = -hO S T x y := 
   rw [neg_gram_inv]
   simp [Finset.sum_neg_distrib]
 
-theorem symplO_neg (S T : HSp D) (x y : WO S T) : symplO (neg S) T x y = -symplO S T x y := by
-  unfold symplO
-  rw [hO_neg, mul_neg, map_neg]
 
 def sgnM (ε : Bool) {k : ℕ} (s : Matrix (Fin k) (Fin k) ℂ) : Matrix (Fin k) (Fin k) ℂ := cond ε (-s) s
 
@@ -217,8 +211,6 @@ theorem mem_princ {I : Ideal (𝓞 D.host.E)} {x : GL (Fin N.V.rank) (Lev.EAf D)
 theorem princ_top : N.princ ⊤ = UA D.sp.cm N.V.gram ⊓ St N.β := by
   rw [princ, princGL_top]
 
-theorem princ_mono {I I' : Ideal (𝓞 D.host.E)} (h : I ≤ I') : N.princ I ≤ N.princ I' :=
-  inf_le_inf_left _ (princGL_mono _ h)
 
 structure MeasDat where
 
@@ -289,11 +281,6 @@ theorem InCosetOf.unique {I : Ideal (𝓞 D.host.E)} (hI : I ≠ ⊥) {c c' : Co
   obtain ⟨_, h2⟩ := h' i j
   exact cmpS_inj I hI (h1.symm.trans h2)
 
-theorem exists_inCosetOf {I : Ideal (𝓞 D.host.E)} (hI : I ≠ ⊥) (x : WO S.V T.V) :
-    (∃ c, InCosetOf S T I c x) ↔ IsIntM (frMapO S.V T.V S.β T.β x) := by
-  refine ⟨fun ⟨c, h⟩ i j => (h i j).1, fun h => ?_⟩
-  choose c hc using fun i j => cmpS_surj (F := D.host.F) I hI (Ideal.Quotient.mk _ ⟨_, h i j⟩)
-  exact ⟨fun i j => c i j, fun i j => ⟨h i j, (hc i j).symm⟩⟩
 
 theorem finite_coset {I : Ideal (𝓞 D.host.E)} (hI : I ≠ ⊥) : Finite (Coset S T I) := by
   have := Ideal.finiteQuotientOfFreeOfNeBot I hI
@@ -415,29 +402,14 @@ def Node.castMaps (h : S = S') : S.Maps ≃ₗ[ℂ] S'.Maps := h ▸ LinearEquiv
 
 def Node.castCusp (θ : InfFam D) (h : S = S') : S.Cusp θ ≃ₗ[ℂ] S'.Cusp θ := h ▸ LinearEquiv.refl ℂ (S.Cusp θ)
 
-theorem Node.coe_castCusp (θ : InfFam D) (h : S = S') (F : S.Cusp θ) :
-    (Node.castCusp θ h F).1 = Node.castMaps h F.1 := by subst h; rfl
 
-theorem Node.castMaps_mem (θ : InfFam D) (h : S = S') (F : S.Maps) : Node.castMaps h F ∈ S'.Cusp θ ↔ F ∈ S.Cusp θ := by
-  subst h; rfl
 
 theorem ArrS.is_cast (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (ε : Bool) (hS : S = S') (hT : T = T') (a : ArrS S T)
     (χS χT : (AE D)ˣ →* Circle) : (a.cast hS hT).Is ψ θ ε χS χT ↔ a.Is ψ θ ε χS χT := by subst hS hT; rfl
 
-theorem isFinVec_cast (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (ε : Bool) (hS : S = S') (hT : T = T')
-    (f : WO S.V T.V → ℂ) : IsFinVec ψ θ ε S' T' (castFun hS hT f) ↔ IsFinVec ψ θ ε S T f := by subst hS hT; rfl
 
-theorem ArrS.isLift_cast (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (ε : Bool) (hS : S = S') (hT : T = T') (a : ArrS S T)
-    (m : T.MeasDat) (f : WO S.V T.V → ℂ) (io : T'.Cusp θ →ₗ[ℂ] S'.Cusp θ) :
-    (a.cast hS hT).IsLift ψ θ ε (m.cast hT) (castFun hS hT f) io ↔
-      a.IsLift ψ θ ε m f ((Node.castCusp θ hS).symm.toLinearMap ∘ₗ io ∘ₗ (Node.castCusp θ hT).toLinearMap) := by
-  subst hS hT; rfl
 
-theorem ArrS.cast_vac (hS : S = S') (hT : T = T') (a : ArrS S T) : (a.cast hS hT).vac = castFun hS hT a.vac := by
-  subst hS hT; rfl
 
-theorem ArrS.cast_It_congr (hS : S = S') (hT : T = T') {a b : ArrS S T} (h : a.It = b.It) :
-    (a.cast hS hT).It = (b.cast hS hT).It := by subst hS hT; exact h
 
 end Cast
 

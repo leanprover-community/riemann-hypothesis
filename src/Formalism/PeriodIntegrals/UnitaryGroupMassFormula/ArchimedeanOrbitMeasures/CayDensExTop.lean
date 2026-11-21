@@ -1,5 +1,652 @@
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.CayDensExSk
+import Mathlib
 
+section
+open Matrix LinearMap Module
+
+noncomputable section
+
+namespace HcS.E
+
+def hdual {S K V : Type*} [CommRing S] [Field K] [StarRing K] [Algebra S K] [AddCommGroup V]
+    [Module K V] [Module S V] [IsScalarTower S K V] (B : V →ₗ⋆[K] V →ₗ[K] K)
+    (L : Submodule S V) : Submodule S V :=
+  ⨅ y ∈ L, (1 : Submodule S K).comap ((B y).restrictScalars S)
+
+end HcS.E
+end
+end
+
+section
+open Module
+
+noncomputable section
+
+namespace HcS.HermitianLatticesTheory
+
+section Defs
+
+variable {R K V : Type*} [CommRing R] [Field K] [StarRing K] [Algebra R K]
+  [AddCommGroup V] [Module K V] [Module R V] [IsScalarTower R K V]
+
+def isom (h : V →ₗ⋆[K] V →ₗ[K] K) : Subgroup (V ≃ₗ[K] V) where
+  carrier := {g | ∀ x y, h (g x) (g y) = h x y}
+  one_mem' := fun _ _ => rfl
+  mul_mem' := by
+    intro a b ha hb x y
+    change h (a (b x)) (a (b y)) = h x y
+    rw [ha, hb]
+  inv_mem' := by
+    intro a ha x y
+    have := ha (a.symm x) (a.symm y)
+    change h (a.symm x) (a.symm y) = h x y
+    simpa using this.symm
+
+def dual (h : V →ₗ⋆[K] V →ₗ[K] K) (L : Submodule R V) : Submodule R V :=
+  HcS.E.hdual h L
+
+def IsUnimodular (h : V →ₗ⋆[K] V →ₗ[K] K) (L : Submodule R V) : Prop :=
+  dual h L = L
+
+end Defs
+
+end HcS.HermitianLatticesTheory
+end
+end
+
+section
+noncomputable section
+
+open Matrix TensorProduct
+
+namespace HcS.UG
+
+section Group
+
+variable {A : Type} [CommRing A] {n : Type} [Fintype n] [DecidableEq n]
+
+def cT (σ : A →+* A) {m p : Type} (M : Matrix m p A) : Matrix p m A := (M.map σ)ᵀ
+
+theorem cT_mul (σ : A →+* A) {m p q : Type} [Fintype p] (M : Matrix m p A) (N : Matrix p q A) :
+    cT σ (M * N) = cT σ N * cT σ M := by
+  simp [cT, Matrix.map_mul, Matrix.transpose_mul]
+
+theorem cT_one (σ : A →+* A) : cT σ (1 : Matrix n n A) = 1 := by
+  simp [cT, Matrix.map_one]
+
+def UJ (σ : A →+* A) (J : Matrix n n A) : Subgroup (GL n A) where
+  carrier := {g | cT σ (g : Matrix n n A) * J * (g : Matrix n n A) = J}
+  one_mem' := by simp [cT_one]
+  mul_mem' := by
+    intro a b ha hb
+    simp only [Set.mem_ofPred_eq, Units.val_mul] at *
+    calc cT σ ((a : Matrix n n A) * (b : Matrix n n A)) * J * ((a : Matrix n n A) * (b : Matrix n n A))
+        = cT σ (b : Matrix n n A) * (cT σ (a : Matrix n n A) * J * (a : Matrix n n A)) * (b : Matrix n n A) := by
+          rw [cT_mul]; simp only [Matrix.mul_assoc]
+      _ = J := by rw [ha, hb]
+  inv_mem' := by
+    intro g hg
+    simp only [Set.mem_ofPred_eq] at *
+    calc cT σ ((g⁻¹ : GL n A) : Matrix n n A) * J * ((g⁻¹ : GL n A) : Matrix n n A)
+        = cT σ ((g⁻¹ : GL n A) : Matrix n n A) * (cT σ (g : Matrix n n A) * J * (g : Matrix n n A))
+            * ((g⁻¹ : GL n A) : Matrix n n A) := by rw [hg]
+      _ = cT σ ((g : Matrix n n A) * ((g⁻¹ : GL n A) : Matrix n n A)) * J
+            * ((g : Matrix n n A) * ((g⁻¹ : GL n A) : Matrix n n A)) := by
+          rw [cT_mul]; simp only [Matrix.mul_assoc]
+      _ = J := by rw [Units.mul_inv, cT_one, Matrix.one_mul, Matrix.mul_one]
+
+end Group
+
+section Points
+
+variable {F E : Type} [Field F] [CommRing E] [Algebra F E] {n : Type} [Fintype n] [DecidableEq n]
+
+def Jpq (p q : ℕ) : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ := Matrix.fromBlocks 1 0 0 (-1)
+
+def Upq (p q : ℕ) : Subgroup (GL (Fin p ⊕ Fin q) ℂ) := UJ (starRingEnd ℂ) (Jpq p q)
+
+end Points
+
+section Split
+
+variable {R : Type} [CommRing R] {n : Type} [Fintype n] [DecidableEq n]
+
+end Split
+
+section Abstract
+
+variable {G : Type} [Group G]
+
+end Abstract
+
+section Tj
+
+variable {L : Type} [Field L]
+
+end Tj
+
+section Coeff
+
+variable (O : Type) [CommRing O] (n : Type) [Fintype n] [DecidableEq n]
+
+end Coeff
+
+section More
+
+open NumberField IsDedekindDomain
+
+variable {F E : Type} [Field F] [CommRing E] [Algebra F E] {n : Type} [Fintype n] [DecidableEq n]
+
+end More
+
+open NumberField IsDedekindDomain
+
+end HcS.UG
+end
+end
+
+section
+open NumberField
+
+noncomputable section
+
+namespace HcS.HermitianLatticesTheory
+
+def IsCMUnram (K : Type*) [Field K] [NumberField K] [StarRing K] : Prop :=
+  IsTotallyComplex K ∧ (∀ (φ : K →+* ℂ) (a : K), φ (star a) = starRingEnd ℂ (φ a)) ∧
+    ∀ P : Ideal (RingOfIntegers K), P.IsMaximal →
+      ∃ θ t : RingOfIntegers K, algebraMap (RingOfIntegers K) K t =
+        star (algebraMap (RingOfIntegers K) K θ) ∧ θ - t ∉ P
+
+end HcS.HermitianLatticesTheory
+
+namespace HcS.HermitianLatticesTheory
+
+open NumberField
+
+end HcS.HermitianLatticesTheory
+end
+end
+
+section
+noncomputable section
+
+namespace HcS.BasicNotions
+
+open NumberField IsDedekindDomain
+open scoped TensorProduct
+
+structure CMData (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E]
+    [Algebra F E] : Prop where
+  cmUnram : HcS.HermitianLatticesTheory.IsCMUnram E
+  totReal : NumberField.IsTotallyReal F
+  deg2 : Module.finrank F E = 2
+  fixed : ∀ a : E, star a = a ↔ a ∈ (algebraMap F E).range
+
+def CMData.sig {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E]
+    [Algebra F E] (hc : CMData F E) : E →ₐ[F] E :=
+  { starRingEnd E with
+    commutes' := fun a => (hc.fixed (algebraMap F E a)).2 ⟨a, rfl⟩ }
+
+structure HSpace (E : Type) [Field E] [NumberField E] [StarRing E] where
+  V : Type
+  [acg : AddCommGroup V]
+  [modE : Module E V]
+  [modO : Module (𝓞 E) V]
+  [tower : IsScalarTower (𝓞 E) E V]
+  [fd : FiniteDimensional E V]
+
+  hT : V →ₗ⋆[E] V →ₗ[E] E
+  herm : hT.IsSymm
+  nondeg : hT.Nondegenerate
+  rank : ℕ
+  rank_eq : Module.finrank E V = rank
+
+  frame : Module.Basis (Fin rank) E V
+
+  sig : (E →+* ℂ) → ℕ × ℕ
+
+  L0 : Submodule (𝓞 E) V
+  standardTuple_isLattice : Submodule.IsLattice E L0
+  baseLattice_isUnimodular : HcS.HermitianLatticesTheory.IsUnimodular hT L0
+
+attribute [instance] HSpace.acg HSpace.modE HSpace.modO HSpace.tower HSpace.fd
+
+namespace HSpace
+
+variable {E : Type} [Field E] [NumberField E] [StarRing E]
+
+def gram (S : HSpace E) : Matrix (Fin S.rank) (Fin S.rank) E :=
+  fun i j => S.hT (S.frame i) (S.frame j)
+
+end HSpace
+
+namespace Spaces
+
+end Spaces
+
+end HcS.BasicNotions
+
+end
+end
+
+section
+noncomputable section
+
+namespace HcS.BasicNotions
+
+open MeasureTheory Filter Topology Matrix
+
+def UpqT (P Q : ℕ) : Type := HcS.UG.Upq P Q
+
+instance (P Q : ℕ) : Group (UpqT P Q) := inferInstanceAs (Group (HcS.UG.Upq P Q))
+instance (P Q : ℕ) : TopologicalSpace (UpqT P Q) :=
+  inferInstanceAs (TopologicalSpace (HcS.UG.Upq P Q))
+instance (P Q : ℕ) : MeasurableSpace (UpqT P Q) := borel (UpqT P Q)
+
+def UpqT.mat {P Q : ℕ} (g : UpqT P Q) : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ :=
+  let g' : HcS.UG.Upq P Q := g; ((g'.1 : GL (Fin P ⊕ Fin Q) ℂ) : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ)
+
+def lieU (P Q : ℕ) : Submodule ℝ (Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ) where
+  carrier := {X | Xᴴ * HcS.UG.Jpq P Q + HcS.UG.Jpq P Q * X = 0}
+  zero_mem' := by simp
+  add_mem' := by
+    intro X Y hX hY
+    simp only [Set.mem_setOf_eq] at *
+    rw [Matrix.conjTranspose_add, Matrix.add_mul, Matrix.mul_add]
+    calc Xᴴ * HcS.UG.Jpq P Q + Yᴴ * HcS.UG.Jpq P Q + (HcS.UG.Jpq P Q * X + HcS.UG.Jpq P Q * Y)
+        = (Xᴴ * HcS.UG.Jpq P Q + HcS.UG.Jpq P Q * X) + (Yᴴ * HcS.UG.Jpq P Q + HcS.UG.Jpq P Q * Y) := by
+          abel
+      _ = 0 := by rw [hX, hY, add_zero]
+  smul_mem' := by
+    intro c X hX
+    simp only [Set.mem_setOf_eq] at *
+    rw [Matrix.conjTranspose_smul, Matrix.smul_mul, Matrix.mul_smul, star_trivial, ← smul_add, hX,
+      smul_zero]
+
+instance (P Q : ℕ) : MeasurableSpace (lieU P Q) := borel (lieU P Q)
+
+def entries {P Q : ℕ} (Z : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ) :
+    (Fin P ⊕ Fin Q) × (Fin P ⊕ Fin Q) → ℂ := fun ij => Z ij.1 ij.2
+
+def IsOmegaLeb {P Q : ℕ} (lam : Measure (lieU P Q)) : Prop :=
+  lam.IsAddHaarMeasure ∧
+    ((lam.prod lam).map (fun ab : lieU P Q × lieU P Q =>
+      entries ((ab.1 : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ) +
+        Complex.I • (ab.2 : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ)))) = volume
+
+def ballU (P Q : ℕ) (r : ℝ) : Set (lieU P Q) :=
+  {X | ∑ i, ∑ j, ‖(X : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ) i j‖ < r}
+
+def OmegaDensity {P Q : ℕ} (μ : Measure (UpqT P Q)) (c : ENNReal) : Prop :=
+  ∃ lam : Measure (lieU P Q), IsOmegaLeb lam ∧
+    Tendsto (fun r : ℝ => μ {g | ∃ X ∈ ballU P Q r, UpqT.mat g =
+      NormedSpace.exp (X : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ)} /
+      lam (ballU P Q r)) (𝓝[>] 0) (𝓝 c)
+
+structure CDHaar where
+  cd : ∀ P Q : ℕ, Measure (UpqT P Q)
+  haar : ∀ P Q, (cd P Q).IsHaarMeasure
+  prob : ∀ N, IsProbabilityMeasure (cd N 0)
+  trick : ∀ P Q, ∃ c : ENNReal, c ≠ 0 ∧ c ≠ ⊤ ∧ OmegaDensity (cd P Q) c ∧ OmegaDensity (cd (P + Q) 0) c
+
+end HcS.BasicNotions
+end
+end
+
+section
+noncomputable section
+
+namespace HcS.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+
+open scoped TensorProduct
+open NumberField IsDedekindDomain MeasureTheory Topology
+
+section Alg
+
+variable {F E : Type} [Field F] [Field E] [Algebra F E]
+
+variable (R : Type) [CommRing R] [Algebra F R]
+
+def sigR (σ : E →ₐ[F] E) : R ⊗[F] E →+* R ⊗[F] E :=
+  (Algebra.TensorProduct.map (AlgHom.id F R) σ).toRingHom
+
+def inclR : E →+* R ⊗[F] E := (Algebra.TensorProduct.includeRight : E →ₐ[F] R ⊗[F] E).toRingHom
+
+def JR {M : ℕ} (J : Matrix (Fin M) (Fin M) E) : Matrix (Fin M) (Fin M) (R ⊗[F] E) :=
+  J.map (inclR R)
+
+def HR (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M) E) :
+    Subgroup (GL (Fin M) (R ⊗[F] E)) :=
+  HcS.UG.UJ (sigR R σ) (JR R J)
+
+end Alg
+
+end HcS.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+
+namespace HcS.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+
+open scoped TensorProduct
+open NumberField IsDedekindDomain MeasureTheory Topology
+
+section Top
+
+variable {F E : Type} [Field F] [Field E] [Algebra F E]
+
+scoped instance topTens (R : Type) [CommRing R] [Algebra F R] [TopologicalSpace R] :
+    TopologicalSpace (R ⊗[F] E) := moduleTopology R (R ⊗[F] E)
+
+scoped instance measTens (R : Type) [CommRing R] [Algebra F R] [TopologicalSpace R] :
+    MeasurableSpace (R ⊗[F] E) := borel (R ⊗[F] E)
+
+def HA (R : Type) [CommRing R] [Algebra F R] (σ : E →ₐ[F] E) {M : ℕ}
+    (J : Matrix (Fin M) (Fin M) E) : Type := HR R σ J
+
+variable (R : Type) [CommRing R] [Algebra F R] (σ : E →ₐ[F] E) {M : ℕ}
+  (J : Matrix (Fin M) (Fin M) E)
+
+instance : Group (HA R σ J) := inferInstanceAs (Group (HR R σ J))
+instance [TopologicalSpace R] : TopologicalSpace (HA R σ J) :=
+  inferInstanceAs (TopologicalSpace (HR R σ J))
+instance [TopologicalSpace R] : MeasurableSpace (HA R σ J) := borel (HA R σ J)
+
+def HA.mat (h : HA R σ J) : GL (Fin M) (R ⊗[F] E) := let h' : HR R σ J := h; h'.1
+
+end Top
+
+def SelfDual {V : Type} [AddCommGroup V] [TopologicalSpace V] [MeasurableSpace V] (μ : Measure V)
+    (χ : V → V → ℂ) : Prop :=
+  μ.IsAddHaarMeasure ∧
+  ∀ Φ : V → ℂ, Continuous Φ → HasCompactSupport Φ →
+    Integrable (fun y => ∫ x, Φ x * χ x y ∂μ) μ →
+      ∀ z, ∫ y, (∫ x, Φ x * χ x y ∂μ) * χ y z ∂μ = Φ (-z)
+
+section Adeles
+
+variable (F : Type) [Field F] [NumberField F]
+
+abbrev AF := AdeleRing (𝓞 F) F
+
+abbrev Ainf := InfiniteAdeleRing F
+
+abbrev Af := FiniteAdeleRing (𝓞 F) F
+
+end Adeles
+
+end HcS.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+
+namespace HcS.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+
+open scoped TensorProduct
+open NumberField IsDedekindDomain MeasureTheory Topology
+
+section AdeleAnalysis
+
+variable {F : Type} [Field F] [NumberField F]
+
+scoped instance measAF : MeasurableSpace (AF F) := borel _
+scoped instance measAinf : MeasurableSpace (Ainf F) := borel _
+scoped instance measAf : MeasurableSpace (Af F) := borel _
+
+variable (F)
+
+def pairA (x : Ainf F) (y : Af F) : AF F := (x, y)
+
+def fstA : AF F →ₐ[F] Ainf F := AlgHom.fst F (Ainf F) (Af F)
+
+def IsCharAF (ψ : AddChar (AF F) ℂ) : Prop :=
+  Continuous ψ ∧ (∀ x, ‖ψ x‖ = 1) ∧ (∀ a : F, ψ (algebraMap F (AF F) a) = 1) ∧ ∃ x, ψ x ≠ 1
+
+def psiInf (ψ : AddChar (AF F) ℂ) (x : Ainf F) : ℂ := ψ (pairA F x 0)
+
+end AdeleAnalysis
+
+section Tuples
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E]
+
+end Tuples
+
+end HcS.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+
+namespace HcS.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+
+open scoped TensorProduct
+open NumberField IsDedekindDomain MeasureTheory Topology
+
+section More
+
+variable {F E : Type} [Field F] [Field E] [Algebra F E] (R : Type) [CommRing R] [Algebra F R]
+
+variable (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M) E)
+
+end More
+
+end HcS.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+
+namespace HcS.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+
+open scoped TensorProduct
+open NumberField IsDedekindDomain MeasureTheory Topology
+
+section HMeasures
+
+variable (F E : Type) [Field F] [NumberField F] [Field E] [Algebra F E]
+  (σ : E →ₐ[F] E) (M : ℕ) (J : Matrix (Fin M) (Fin M) E)
+
+end HMeasures
+
+end HcS.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+end
+end
+
+section
+noncomputable section
+
+namespace HcS.MainNotions.StandardLattice
+
+open NumberField HcS.BasicNotions Finset
+open scoped ENNReal
+
+section SW
+
+open HcS.MainNotions.GlobalTheoryTheory.GenusMassVolumes MeasureTheory IsDedekindDomain
+open scoped TensorProduct
+
+variable (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+  (σ : E →ₐ[F] E) (M : ℕ) (J : Matrix (Fin M) (Fin M) E)
+
+end SW
+
+section Vol
+
+open HcS.MainNotions.GlobalTheoryTheory.GenusMassVolumes MeasureTheory IsDedekindDomain
+open scoped TensorProduct
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+  (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M) E)
+
+def infMat (θ : Ainf F ⊗[F] E →+* ℂ) (h : HA (AF F) σ J) : Matrix (Fin M) (Fin M) ℂ :=
+  (((HA.mat (AF F) σ J h : GL (Fin M) (AF F ⊗[F] E)) : Matrix (Fin M) (Fin M) (AF F ⊗[F] E)).map
+    (Algebra.TensorProduct.map (fstA F) (AlgHom.id F E))).map θ
+
+def IsInfEmb (τ : E →+* ℂ) (θ : Ainf F ⊗[F] E →+* ℂ) : Prop :=
+  (∀ x : E, θ ((1 : Ainf F) ⊗ₜ[F] x) = τ x) ∧ Continuous fun a : Ainf F => θ (a ⊗ₜ[F] (1 : E))
+
+end Vol
+
+section DS
+
+open MeasureTheory Matrix
+open scoped InnerProductSpace ComplexOrder
+
+end DS
+
+section Fam
+
+end Fam
+
+end HcS.MainNotions.StandardLattice
+end
+end
+
+section
+noncomputable section
+
+namespace HcS.L2.Fam.SG.Tau
+
+open NumberField IsDedekindDomain HcS.BasicNotions HcS.MainNotions HcS.MainNotions.StandardLattice HcS.MainNotions.GlobalTheoryTheory.GenusMassVolumes Matrix MeasureTheory Filter
+open scoped TensorProduct Topology ENNReal NNReal
+
+section Defs
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+
+section Loc
+
+variable (R : Type) [CommRing R] [Algebra F R] (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M) E)
+
+def LieU : AddSubgroup (Matrix (Fin M) (Fin M) (R ⊗[F] E)) where
+  carrier := {X | HcS.UG.cT (sigR R σ) X * JR R J + JR R J * X = 0}
+  zero_mem' := by
+    show HcS.UG.cT (sigR R σ) 0 * JR R J + JR R J * 0 = 0
+    simp [HcS.UG.cT]
+  add_mem' := by
+    intro X Y hX hY
+    have e : HcS.UG.cT (sigR R σ) (X + Y) = HcS.UG.cT (sigR R σ) X + HcS.UG.cT (sigR R σ) Y := by
+      ext i j; simp [HcS.UG.cT]
+    show HcS.UG.cT (sigR R σ) (X + Y) * JR R J + JR R J * (X + Y) = 0
+    have h1 : HcS.UG.cT (sigR R σ) X * JR R J + JR R J * X = 0 := hX
+    have h2 : HcS.UG.cT (sigR R σ) Y * JR R J + JR R J * Y = 0 := hY
+    rw [e, add_mul, mul_add, add_add_add_comm, h1, h2, add_zero]
+  neg_mem' := by
+    intro X hX
+    have e : HcS.UG.cT (sigR R σ) (-X) = -HcS.UG.cT (sigR R σ) X := by
+      ext i j; simp [HcS.UG.cT]
+    show HcS.UG.cT (sigR R σ) (-X) * JR R J + JR R J * (-X) = 0
+    have h1 : HcS.UG.cT (sigR R σ) X * JR R J + JR R J * X = 0 := hX
+    rw [e, neg_mul, mul_neg, ← neg_add, h1, neg_zero]
+
+instance measLie [TopologicalSpace R] : MeasurableSpace (LieU R σ J) := borel _
+
+def trF (X Y : LieU R σ J) : R :=
+  algebraMap F R (1 / 2) * Algebra.trace R (R ⊗[F] E) (Matrix.trace (X.1 * Y.1))
+
+def cay (U : Set (LieU R σ J)) : Set (HA R σ J) :=
+  {g | ∃ X ∈ U, Units.val (HA.mat R σ J g) * ((1 + 1) - X.1) = (1 + 1) + X.1}
+
+def LocTam [TopologicalSpace R] (ψR : R → ℂ) (μ : Measure (HA R σ J)) : Prop :=
+  μ.IsHaarMeasure ∧ ∃ ν : Measure (LieU R σ J), SelfDual ν (fun X Y => ψR (trF R σ J X Y)) ∧
+    ∀ ε : ℝ≥0, 0 < ε → ∃ V ∈ 𝓝 (0 : LieU R σ J), ∀ U ⊆ V, MeasurableSet U →
+      μ (cay R σ J U) ≤ (1 + ε) * ν U ∧ ν U ≤ (1 + ε) * μ (cay R σ J U)
+
+variable {J} {J' : Matrix (Fin M) (Fin M) E} (g : GL (Fin M) (R ⊗[F] E))
+
+variable [TopologicalSpace R] [IsTopologicalRing R]
+
+end Loc
+
+end Defs
+
+section Gaps
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E] (hc : CMData F E)
+
+end Gaps
+
+end HcS.L2.Fam.SG.Tau
+
+end
+end
+
+section
+noncomputable section
+
+namespace HcS.L2.Fam.SG.Tau.InfCmpCut
+
+open NumberField IsDedekindDomain HcS.BasicNotions HcS.MainNotions HcS.MainNotions.StandardLattice HcS.MainNotions.GlobalTheoryTheory.GenusMassVolumes HcS.L2.Fam.SG.Tau Matrix
+  MeasureTheory Filter
+open scoped TensorProduct Topology ENNReal NNReal
+
+def OnePerPlace {F E : Type} [Field F] [Field E] [Algebra F E] {T : Type} (emb : T → (E →+* ℂ)) : Prop :=
+  Function.Bijective fun ρ : T => (emb ρ).comp (algebraMap F E)
+
+def InfCmpG (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
+    (hc : CMData F E) (T : Type) [Fintype T] (emb : T → (E →+* ℂ)) (cd : CDHaar) : Prop :=
+  OnePerPlace (F := F) emb →
+  ∀ ψ : AddChar (AF F) ℂ, IsCharAF F ψ → ∃ a : ℕ → ℝ, (∀ M, 0 < a M) ∧
+  ∀ (W : HSpace E) (P Q : ℕ), P + Q = W.rank →
+  ∀ θ : T → (Ainf F ⊗[F] E →+* ℂ), (∀ ρ, IsInfEmb (emb ρ) (θ ρ)) →
+  ∀ A : T → Matrix (Fin P ⊕ Fin Q) (Fin W.rank) ℂ,
+    (∀ ρ, (A ρ).conjTranspose * HcS.UG.Jpq P Q * A ρ = W.gram.map (emb ρ)) →
+  ∃ μ : Measure (HA (Ainf F) hc.sig W.gram), LocTam (Ainf F) hc.sig W.gram (psiInf F ψ) μ ∧
+  ∀ B : T → Set (UpqT P Q), (∀ ρ, MeasurableSet (B ρ)) →
+    let S : Set (HA (Ainf F) hc.sig W.gram) := {b | ∀ ρ, ∃ x ∈ B ρ, UpqT.mat x * A ρ = A ρ *
+      (Units.val (HA.mat (Ainf F) hc.sig W.gram b)).map (θ ρ)}
+    MeasurableSet S ∧ μ S = ENNReal.ofReal (a W.rank) * ∏ ρ, cd.cd P Q (B ρ)
+
+end HcS.L2.Fam.SG.Tau.InfCmpCut
+end
+end
+
+section
+noncomputable section
+
+namespace HcInf
+
+open NumberField IsDedekindDomain HcS.BasicNotions HcS.MainNotions HcS.MainNotions.StandardLattice HcS.MainNotions.GlobalTheoryTheory.GenusMassVolumes HcS.L2.Fam.SG.Tau
+  HcS.L2.Fam.SG.Tau.InfCmpCut Matrix MeasureTheory Filter
+open scoped TensorProduct Topology ENNReal NNReal
+
+variable (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
+  (hc : CMData F E) (T : Type) [Fintype T] (emb : T → (E →+* ℂ)) (cd : CDHaar)
+
+def Rel {W : HSpace E} {P Q : ℕ} (θ : T → (Ainf F ⊗[F] E →+* ℂ))
+    (A : T → Matrix (Fin P ⊕ Fin Q) (Fin W.rank) ℂ) (b : HA (Ainf F) hc.sig W.gram) (ρ : T)
+    (x : UpqT P Q) : Prop :=
+  UpqT.mat x * A ρ = A ρ * (Units.val (HA.mat (Ainf F) hc.sig W.gram b)).map (θ ρ)
+
+def CdFin : Prop := ∀ P Q : ℕ, SigmaFinite (cd.cd P Q)
+
+def ArchSplit : Prop :=
+  OnePerPlace (F := F) emb → ∀ (W : HSpace E) (P Q : ℕ), P + Q = W.rank →
+  ∀ θ : T → (Ainf F ⊗[F] E →+* ℂ), (∀ ρ, IsInfEmb (emb ρ) (θ ρ)) →
+  ∀ A : T → Matrix (Fin P ⊕ Fin Q) (Fin W.rank) ℂ,
+    (∀ ρ, (A ρ).conjTranspose * HcS.UG.Jpq P Q * A ρ = W.gram.map (emb ρ)) →
+  ∃ Φ : HA (Ainf F) hc.sig W.gram ≃ᵐ (T → UpqT P Q),
+    (∀ b c, Φ (b * c) = Φ b * Φ c) ∧ Continuous Φ ∧ Continuous Φ.symm ∧
+    ∀ b ρ x, (Rel F E hc T θ A b ρ x ↔ x = Φ b ρ)
+
+def LocTamExists : Prop :=
+  ∀ ψ : AddChar (AF F) ℂ, IsCharAF F ψ → ∀ W : HSpace E,
+    ∃ μ : Measure (HA (Ainf F) hc.sig W.gram), LocTam (Ainf F) hc.sig W.gram (psiInf F ψ) μ
+
+def HaarUnique : Prop :=
+  ∀ (W : HSpace E) (P Q : ℕ) (Φ : HA (Ainf F) hc.sig W.gram ≃ᵐ (T → UpqT P Q)),
+    (∀ b c, Φ (b * c) = Φ b * Φ c) → Continuous Φ → Continuous Φ.symm →
+    ∀ μ : Measure (HA (Ainf F) hc.sig W.gram), μ.IsHaarMeasure →
+      ∃ k : ℝ≥0∞, μ.map Φ = k • Measure.pi (fun _ : T => cd.cd P Q)
+
+def DensityConst : Prop :=
+  OnePerPlace (F := F) emb → ∀ ψ : AddChar (AF F) ℂ, IsCharAF F ψ →
+  ∃ a : ℕ → ℝ, (∀ M, 0 < a M) ∧
+  ∀ (W : HSpace E) (P Q : ℕ), P + Q = W.rank →
+  ∀ θ : T → (Ainf F ⊗[F] E →+* ℂ), (∀ ρ, IsInfEmb (emb ρ) (θ ρ)) →
+  ∀ A : T → Matrix (Fin P ⊕ Fin Q) (Fin W.rank) ℂ,
+    (∀ ρ, (A ρ).conjTranspose * HcS.UG.Jpq P Q * A ρ = W.gram.map (emb ρ)) →
+  ∀ Φ : HA (Ainf F) hc.sig W.gram ≃ᵐ (T → UpqT P Q),
+    (∀ b c, Φ (b * c) = Φ b * Φ c) → Continuous Φ → Continuous Φ.symm →
+    (∀ b ρ x, (Rel F E hc T θ A b ρ x ↔ x = Φ b ρ)) →
+  ∀ (μ : Measure (HA (Ainf F) hc.sig W.gram)) (k : ℝ≥0∞),
+    LocTam (Ainf F) hc.sig W.gram (psiInf F ψ) μ →
+    μ.map Φ = k • Measure.pi (fun _ : T => cd.cd P Q) → k = ENNReal.ofReal (a W.rank)
+
+variable {F E hc T emb cd}
+
+end HcInf
+end
+end
+
+section
 noncomputable section
 
 namespace HcInf
@@ -116,46 +763,11 @@ instance : SigmaCompactSpace (UpqT P Q) := inferInstance
 
 end Upq
 
-theorem cd_haar_finite (cd : CDHaar) : CdFin cd := by
-  intro P Q
-  haveI := cd.haar P Q
-  infer_instance
 
 variable (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
   (hc : CMData F E) (T : Type) [Fintype T] (cd : CDHaar)
 
-theorem haar_unique' : HaarUnique F E hc T cd := by
-  intro W P Q Φ hmul hΦ hΦs μ hμ
-  haveI : SigmaFinite (cd.cd P Q) := cd_haar_finite cd P Q
-  haveI : (cd.cd P Q).IsHaarMeasure := cd.haar P Q
-  haveI : (μ.map Φ).IsMulLeftInvariant := by
-    constructor
-    intro h
-    have hLg : (fun x => Φ.symm h * x) = Φ.symm ∘ (fun y => h * y) ∘ Φ := by
-      funext x
-      apply Φ.injective
-      simp [hmul]
-    have hLgm : Measurable (fun x => Φ.symm h * x) := by
-      rw [hLg]
-      exact Φ.symm.measurable.comp ((measurable_const_mul h).comp Φ.measurable)
-    have hc : (fun x => h * x) ∘ Φ = Φ ∘ (fun x => Φ.symm h * x) := by
-      funext x
-      simp [hmul]
-    rw [Measure.map_map (measurable_const_mul h) Φ.measurable, hc,
-      ← Measure.map_map Φ.measurable hLgm, map_mul_left_eq_self]
-  haveI : IsFiniteMeasureOnCompacts (μ.map Φ) := by
-    constructor
-    intro K hK
-    rw [MeasurableEquiv.map_apply]
-    have hpre : Φ ⁻¹' K = Φ.symm '' K := by
-      ext x
-      constructor
-      · intro hx
-        exact ⟨Φ x, hx, Φ.symm_apply_apply x⟩
-      · rintro ⟨y, hy, rfl⟩
-        simpa using hy
-    rw [hpre]
-    exact (hK.image hΦs).measure_lt_top
-  exact ⟨_, Measure.isMulLeftInvariant_eq_smul (μ.map Φ) (Measure.pi fun _ : T => cd.cd P Q)⟩
 
 end HcInf
+end
+end

@@ -23,12 +23,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Da
   {O : Type} [CommRing O] {β : O →+* c.F} [Algebra (FractionRing ℂ) ℂ] [IsScalarTower ℂ (FractionRing ℂ) ℂ]
   {b : O →+* ℂ} {a : ArcIn D l β ℂ b} (Λ : GtAn₀ a)
 
-theorem y_of_lifts {k : ℕ} [NeZero k] (p : Out.QkPt a.D₀ (FractionRing ℂ) k) : letI := H.starRing
-    ∀ la : Λ.A.La, Λ.Lifts p la → ∃ z, p.y = Λ.y la + k • z := by
-  intro la h
-  obtain ⟨q, hq, -⟩ := TorusExt.existsUnique_qkExt a.bimult (algebraMap (FractionRing ℂ) ℂ) (RingHom.comp_id _) p
-  obtain ⟨z, hz, -⟩ := h q hq
-  exact ⟨z, hq.1.symm.trans hz⟩
 
 end
 
@@ -62,11 +56,6 @@ section Determined
 variable {O : Type} [CommRing O] [StarRing O] [Algebra (FractionRing ℂ) ℂ] [IsScalarTower ℂ (FractionRing ℂ) ℂ]
   {D₀ : Out.DegPre ℂ} [Module O D₀.X] {oa : D₀.OAct O} (d : GtDict D₀ oa)
 
-theorem subsingleton_secFn : Subsingleton d.SecFn := ⟨fun ⟨f, hf⟩ ⟨g, hg⟩ => by
-  obtain rfl : @f = @g := by
-    funext j hj α
-    exact Equiv.ext fun s => Subtype.ext (GtDict.IsFamFn.unique d (hf j α s) (hg j α s))
-  rfl⟩
 
 theorem psi_eq (x : d.A.X) : ∃ j : PUnit → D₀.P.L.ι, (d.A.psi x : ℂ) =
     valAt' (Out.jFK (R := ℂ) ℂ) _ ((D₀.psi (d.eX x)).s j).val * d.u.fr (j PUnit.unit) (d.A.ct x) := by
@@ -74,30 +63,8 @@ theorem psi_eq (x : d.A.X) : ∃ j : PUnit → D₀.P.L.ι, (d.A.psi x : ℂ) =
   refine ⟨fun _ => i, ?_⟩
   rw [d.psi_val x (fun _ => i) hi, inv_mul_cancel_right₀ (d.u.fr_ne i _ hi)]
 
-theorem isZero_torus_iff (w : d.A.X →+ ℂ) : (d.ex₀ (w, 0)).IsZero ↔ ∃ n : d.A.X →+ ℤ, ∀ x, w x = n x := by
-  rw [d.ker]
-  constructor
-  · rintro ⟨la, hy, e⟩
-    have hl : la.l = 0 := Subtype.ext (by simpa [hy] using (congrArg Prod.snd e).symm)
-    exact ⟨la.n, fun x => by simpa [hy, hl] using congrArg (fun v : d.A.V => v.1 x) e⟩
-  · rintro ⟨n, hn⟩
-    exact ⟨AnArc.La.mk 0 n 0, rfl, Prod.ext (AddMonoidHom.ext fun x => by simp [hn]) (by simp)⟩
 
 end Determined
 
-theorem exists_not_isZero {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H}
-    {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F} [Algebra (FractionRing ℂ) ℂ]
-    [IsScalarTower ℂ (FractionRing ℂ) ℂ] {b : O →+* ℂ} {a : ArcIn D l β ℂ b} (Λ : GtAn₀ a) :
-    letI := H.starRing; ∃ v, ¬ (Λ.ex₀ v).IsZero := by
-  letI := H.starRing
-  haveI := a.nontriv
-  haveI : Nontrivial Λ.A.X := Λ.eX.toEquiv.nontrivial
-  obtain ⟨y, hy⟩ := exists_ne (0 : Λ.A.X)
-  refine ⟨(Complex.I • (Int.castAddHom ℂ).comp (Λ.A.be y).toAddMonoidHom, 0), fun h => ?_⟩
-  obtain ⟨n, hn⟩ := (isZero_torus_iff Λ.toGtDict _).1 h
-  have h1 := congrArg Complex.im (hn y)
-  have h2 := Λ.A.be_pos y hy
-  simp at h1
-  omega
 
 end GlobalTheory.ArcDictModel

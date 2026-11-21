@@ -70,9 +70,6 @@ noncomputable def galFixedFieldEquivOpen (U : OpenSubgroup Gal(Ksep/K)) :
     Gal(Ksep/fixedField (U : Subgroup Gal(Ksep/K))) ≃* (U : Subgroup Gal(Ksep/K)) :=
   MulEquiv.ofBijective (galFixedFieldToOpen U) (galFixedFieldToOpen_bijective U)
 
-theorem galFixedFieldEquivOpen_toMonoidHom (U : OpenSubgroup Gal(Ksep/K)) :
-    (galFixedFieldEquivOpen U).toMonoidHom = galFixedFieldToOpen U :=
-  rfl
 
 theorem continuous_galFixedFieldEquivOpen (U : OpenSubgroup Gal(Ksep/K)) :
     Continuous (galFixedFieldEquivOpen U).toMonoidHom :=
@@ -186,9 +183,6 @@ noncomputable def localClassFormation : ClassFormation (galUnits.{0} K Ksep) whe
   inv_res := localInv_res K Ksep
   inv_bijective := localInv_bijective K Ksep
 
-theorem localClassFormation_inv (U : OpenSubgroup Gal(Ksep/K)) :
-    (localClassFormation K Ksep).inv U = localInv K Ksep U := by
-  simp only [localClassFormation]
 
 end Formation
 

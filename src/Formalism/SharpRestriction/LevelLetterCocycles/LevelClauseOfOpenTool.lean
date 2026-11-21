@@ -323,7 +323,6 @@ theorem truncation_clause_of_tools (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D
       TTool1 ((HW l).W K 1 LL hg) ∧ TTool2 ((HW l).W K 1 LL hg)) : adm15 D HW F Cm :=
   ⟨TToolAlg_holds, h⟩
 
-theorem exists_pos_const_Lagrange_condition (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : adm5 D HW F := Formalism.MainNotions.RamifiedCoefficientChains.exists_pos_const_Lagrange_condition D HW F
 
 theorem Theorem_C_of_open (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (C CA CB CK : ℝ) (h10 : adm10 D HW F CA CB CK)
     (h : Formalism.MainNotions.RamifiedCoefficientChains.openKR D HW F (fun m => 1 ≤ m) C) : aux₃ D HW F C :=
@@ -462,30 +461,6 @@ theorem module_clause_of_tools (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.loc
   intro l _ K LL hg _
   exact RTool_of _ (RToolNum_holds (D.loc l) (HW l) K LL hg) (h l K LL hg)
 
-theorem LemmaG_E (l : ℕ) [Fact l.Prime] (R : Type) [CommRing R] [IsDomain R] (c : ℤ → R)
-    (hc : ∀ j j' : ℤ, j ≠ j' → Associated (c j - c j') ((l : R) ^ padicValInt l (j - j')))
-    (h η S b : ℕ) (hb : 2 * Formalism.MainNotions.RamifiedCoefficientChains.aR l (h + η) + (η : ℝ) + 1 ≤ (b : ℝ)) (hbh : b + S ≤ h)
-    (S₂ : Finset ℤ)
-    (hS₂ : S₂ ⊆ Finset.Icc ((b : ℤ) + 1) ((b : ℤ) + S + ⌊Formalism.MainNotions.RamifiedCoefficientChains.aR l (h + η)⌋₊) ∪
-      Finset.Icc (1 - (η : ℤ)) ((η : ℤ) + ⌊Formalism.MainNotions.RamifiedCoefficientChains.aR l (h + η)⌋₊)) :
-    ∃ E : ℕ, (E : ℝ) ≤ (3 * Formalism.MainNotions.RamifiedCoefficientChains.aR l (h + η) + S + 2 * η) / ((l : ℝ) - 1) +
-        3 * Formalism.MainNotions.RamifiedCoefficientChains.lam l (h + η) ∧
-      Polynomial.C ((l : R) ^ E) ∈
-        Ideal.span ({∏ j ∈ Finset.Icc ((b : ℤ) - ⌊Formalism.MainNotions.RamifiedCoefficientChains.aR l (h + η)⌋₊ + 1) (b : ℤ),
-            (Polynomial.X - Polynomial.C (c j)),
-          ∏ j ∈ S₂, (Polynomial.X - Polynomial.C (c j))} : Set (Polynomial R)) := by
-  have hl : 2 ≤ l := (Fact.out : l.Prime).two_le
-  have hl' : (2 : ℝ) ≤ l := by exact_mod_cast hl
-  obtain ⟨E, hE, hmem⟩ := Formalism.TruncatedSeriesCounting.RamifiedCoefficientChains.ramified_coefficient_chain_bounds.2.2.2.2.2.1 l R c hc h η S b
-    ⌊Formalism.MainNotions.RamifiedCoefficientChains.aR l (h + η)⌋₊ S₂ (Formalism.MainNotions.RamifiedCoefficientChains.floor_a_le l (h + η) η b hl hb) hbh hS₂
-  refine ⟨E, hE.trans ?_, hmem⟩
-  have ha : ((⌊Formalism.MainNotions.RamifiedCoefficientChains.aR l (h + η)⌋₊ : ℕ) : ℝ) ≤ Formalism.MainNotions.RamifiedCoefficientChains.aR l (h + η) :=
-    Nat.floor_le (Formalism.MainNotions.RamifiedCoefficientChains.aR_nonneg l (h + η) hl)
-  have h1 : (3 * ((⌊Formalism.MainNotions.RamifiedCoefficientChains.aR l (h + η)⌋₊ : ℕ) : ℝ) + (S : ℝ) + 2 * (η : ℝ)) / ((l : ℝ) - 1) ≤
-      (3 * Formalism.MainNotions.RamifiedCoefficientChains.aR l (h + η) + S + 2 * η) / ((l : ℝ) - 1) :=
-    div_le_div_of_nonneg_right (by linarith) (by linarith)
-  rw [Formalism.MainNotions.RamifiedCoefficientChains.lam_eq]
-  linarith
 
 theorem trunc_floor_one (A : Type) [CommRing A] (l : ℕ) [Fact l.Prime] (hl : 3 ≤ l) (X u : A)
     (M η y : ℕ) (hM : 1 ≤ M) :
@@ -496,15 +471,5 @@ theorem trunc_floor_one (A : Type) [CommRing A] (l : ℕ) [Fact l.Prime] (hl : 3
   rw [Nat.floor_add_one h0]
   exact Formalism.KernelCokernelLengths.length_theorems_with_earlier.2.2.2.2.1 A l hl X u M η y hM
 
-theorem trunc_floor_two (O : Type) [CommRing O] (l : ℕ) [Fact l.Prime] (hl : 3 ≤ l)
-    (ε u' w : PowerSeries O) (X y : ℕ) :
-    PowerSeries.C ((l : O) ^ ⌊(X : ℝ) / ((l : ℝ) - 1) ^ 2 + 1⌋₊) *
-        (w * (PowerSeries.X - PowerSeries.C (l : O)) * PowerSeries.X ^ (l - 1) *
-          (PowerSeries.C (l : O) * ε + u' * PowerSeries.X ^ l) ^ (l - 1)) ^ y ∈
-      Ideal.span {PowerSeries.C ((l : O) ^ eY l y),
-        (PowerSeries.X - PowerSeries.C (l : O)) * PowerSeries.X ^ X} := by
-  have h0 : 0 ≤ (X : ℝ) / ((l : ℝ) - 1) ^ 2 := by positivity
-  rw [Nat.floor_add_one h0]
-  exact Formalism.KernelCokernelLengths.length_theorems_with_earlier.2.2.2.2.2.1 O l hl ε u' w X y
 
 end Formalism.MainNotions.CrystallineLiftingInputs

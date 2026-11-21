@@ -196,8 +196,6 @@ theorem Pt.From.isCharED_iff (h : p.From H a b c u0) {N : ℕ} (χ : DirichletCh
   rw [← isCharH_iff_isCharED, isCharH_iff, isCharH_iff]
   exact iff_of_eq (h.congr_field fun _ X => X.IsCharE χ)
 
-theorem Pt.From.chThin (h : p.From H a b c u0) {s : Scale} {c6 : ℝ} (hT : ThinOK s c6 H) : ChThin_at p.D s.x s.eps c6 :=
-  fun N _ χ hχ => hT N χ ((h.isCharED_iff χ).1 hχ)
 
 theorem Pt.From.boxE (h : p.From H a b c u0) {Y eps : ℝ} (hB : BoxH H Y eps) : GlobalTheoryTheory.BoxE p.D Y eps := by
   intro N _ χ hχ hr

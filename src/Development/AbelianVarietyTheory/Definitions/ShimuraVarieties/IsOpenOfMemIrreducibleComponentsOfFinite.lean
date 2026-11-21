@@ -145,15 +145,6 @@ theorem iff_forall_isAffineOpen (X : Scheme.{u}) :
   rw [iff_of_iSup_eq_top _ (iSup_affineOpens_eq_top X)]
   exact fun U ↦ (iff_spec_of_isAffineOpen U.2).mpr ((spec_iff _).mpr (h U U.2))
 
-theorem of_isIntegral_of_isIntegrallyClosed (X : Scheme.{u}) [IsIntegral X]
-    (h : ∀ (U : X.Opens) [Nonempty U], IsAffineOpen U → IsIntegrallyClosed Γ(X, U)) :
-    IsNormalScheme X := by
-  refine of_forall_exists_opens fun x ↦ ?_
-  obtain ⟨_, ⟨U, hU, rfl⟩, hx, -⟩ :=
-    X.isBasis_affineOpens.exists_subset_of_mem_open (Set.mem_univ x) isOpen_univ
-  have : Nonempty U := ⟨⟨x, hx⟩⟩
-  have := h U hU
-  exact ⟨U, hx, (iff_spec_of_isAffineOpen hU).mpr inferInstance⟩
 
 theorem isDiscreteValuationRing_stalk {X : Scheme.{u}} [IsNormalScheme X] [IsLocallyNoetherian X]
     {x : X} (hx : Order.coheight x = 1) : IsDiscreteValuationRing (X.presheaf.stalk x) := by
@@ -198,10 +189,6 @@ theorem pairwiseDisjoint_irreducibleComponents (X : Scheme.{u}) [IsNormalScheme 
     (irreducibleComponents X).PairwiseDisjoint id := fun _ hZ _ hW hne ↦
   Set.disjoint_left.mpr fun _ hxZ hxW ↦ hne (eq_of_mem_irreducibleComponents hZ hW hxZ hxW)
 
-theorem irreducibleComponent_eq {X : Scheme.{u}} [IsNormalScheme X] {x : X} {Z : Set X}
-    (hZ : Z ∈ irreducibleComponents X) (hx : x ∈ Z) : irreducibleComponent x = Z :=
-  eq_of_mem_irreducibleComponents (irreducibleComponent_mem_irreducibleComponents x) hZ
-    mem_irreducibleComponent hx
 
 theorem isOpen_of_mem_irreducibleComponents_of_finite {X : Scheme.{u}} [IsNormalScheme X]
     (hX : (irreducibleComponents X).Finite) {Z : Set X} (hZ : Z ∈ irreducibleComponents X) :
@@ -390,9 +377,6 @@ instance isIntegrallyClosed_globalSections {X : Scheme.{u}} [IsNormalScheme X] [
   have : Nonempty (⊤ : X.Opens) := ⟨Nonempty.some inferInstance, trivial⟩
   isIntegrallyClosed_sections ⊤
 
-theorem iff_isIntegrallyClosed_sections (X : Scheme.{u}) [IsIntegral X] :
-    IsNormalScheme X ↔ ∀ (U : X.Opens) [Nonempty U], IsIntegrallyClosed Γ(X, U) :=
-  ⟨fun _ _ _ ↦ inferInstance, fun h ↦ of_isIntegral_of_isIntegrallyClosed X fun U _ _ ↦ h U⟩
 
 theorem isDomain_and_isIntegrallyClosed_of_isIrreducible {X : Scheme.{u}} [IsNormalScheme X]
     {U : X.Opens} (hU : IsIrreducible (U : Set X)) :
@@ -566,9 +550,6 @@ theorem spec_of_isIntegrallyClosedIn {X : Scheme.{u}} [IsNormalScheme X] [IsLoca
   rw [PrimeSpectrum.localization_away_comap_range _ (a Z)]
   exact hZ
 
-theorem spec_sections_of_isCompact {X : Scheme.{u}} [IsNormalScheme X] [IsLocallyNoetherian X]
-    {U : X.Opens} (hU : IsCompact (U : Set X)) : IsNormalScheme (Spec Γ(X, U)) :=
-  spec_of_isIntegrallyClosedIn hU Γ(X, U)
 
 theorem spec_of_isIntegrallyClosedIn_of_isIntegral {X : Scheme.{u}} [IsNormalScheme X]
     [IsIntegral X] (U : X.Opens) (A : Type u) [CommRing A] [Algebra A Γ(X, U)]

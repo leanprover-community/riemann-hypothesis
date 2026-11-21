@@ -73,13 +73,6 @@ omit [Fintype n] [DecidableEq n] in
 theorem zCol_zero (ρ : ℕ) : zCol n' ρ (fun _ : n => (0 : k)) = 0 := by
   ext (r | r) (s | s) <;> simp [zCol]
 
-theorem flatE_zero (χ : AddChar k Circle) (ν : Measure k) (ρ : ℕ)
-    (Φ : Matrix (n ⊕ Fin (2 * ρ)) (n' ⊕ Fin (2 * ρ + 1)) k → ℂ) (x₀ : Matrix n n' k) :
-    flatE χ ν ρ Φ (fromCols x₀ 0) = GlobalTheory.RootEx.opE χ ν (ρ + 1) Φ x₀ := by
-  have h : (fun r => fromCols x₀ (0 : Matrix n (Fin 1) k) r (Sum.inr 0)) = fun _ => 0 := rfl
-  rw [flatE, h, zCol_zero]
-  simp only [add_zero]
-  rfl
 
 def FlatSplitBF (D : D7) : Prop :=
   ∀ (ψ : AddChar (AF D.host.F) ℂ) (ρ : ℕ) (B : BesLev D ρ) (J : JacLev D ρ) (s : StepBF ψ B J)

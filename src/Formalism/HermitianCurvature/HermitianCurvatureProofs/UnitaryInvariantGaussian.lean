@@ -38,10 +38,6 @@ theorem measurable_mulVec (d : ℕ) (W : Matrix (Fin d) (Fin d) ℂ) :
   have : Continuous (fun x : Fin d → ℂ => W *ᵥ x) := by fun_prop
   exact this.measurable
 
-theorem unitaryInvariant : UnitaryInvariant := by
-  intro d β W hW
-  refine ⟨measurable_mulVec d W, ?_⟩
-  rw [muPi_eq, Measure.map_smul, volume_unitary d W hW]
 
 theorem cpow_half_mul (u : ℂ) (hu : 0 < u.re) (R : ℝ) (hR : 0 < R) :
     ((Real.pi : ℂ) / u) ^ (1 / 2 : ℂ) * ((Real.pi : ℂ) / ((R : ℂ) / u)) ^ (1 / 2 : ℂ) =
@@ -208,9 +204,6 @@ theorem sum_norm_sq_unitary (d : ℕ) (U : Matrix (Fin d) (Fin d) ℂ)
       ← Matrix.star_eq_conjTranspose, h, Matrix.one_mulVec]
   exact_mod_cast this
 
-theorem quad_form_takagi (d : ℕ) (W D : Matrix (Fin d) (Fin d) ℂ) (x : Fin d → ℂ) :
-    x ⬝ᵥ ((W * D * Wᵀ) *ᵥ x) = (Wᵀ *ᵥ x) ⬝ᵥ (D *ᵥ (Wᵀ *ᵥ x)) := by
-  rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec, Matrix.mulVec_transpose]
 
 noncomputable def diagF (β : ℂ) (d : ℕ) (σ : Fin d → ℝ) (t : ℂ) (δ : ℝ) (y : Fin d → ℂ) : ℂ :=
   ((Real.exp (-δ * ∑ k, ‖y k‖ ^ 2) : ℝ) : ℂ) *
@@ -222,94 +215,17 @@ theorem continuous_diagF (β : ℂ) (d : ℕ) (σ : Fin d → ℝ) (t : ℂ) (δ
   refine Continuous.mul (by fun_prop) ((continuous_psi β).comp ?_)
   fun_prop
 
-theorem diagF_eq_prod (β : ℂ) (d : ℕ) (σ : Fin d → ℝ) (t : ℂ) (δ : ℝ) (y : Fin d → ℂ) :
-    diagF β d σ t δ y =
-      ∏ k, (((Real.exp (-δ * ‖y k‖ ^ 2) : ℝ) : ℂ) * psi β (((σ k : ℂ) / t) * (y k) ^ 2 / 2)) := by
-  rw [Finset.prod_mul_distrib, ← psi_sum, ← Complex.ofReal_prod, ← Real.exp_sum, ← Finset.mul_sum, diagF]
-  congr 2
-  simp only [dotProduct, Matrix.mulVec_diagonal, Finset.sum_div]
-  refine Finset.sum_congr rfl fun k _ => ?_
-  rw [div_mul_eq_mul_div, div_div, mul_comm t 2]
-  congr 1
-  ring
 
-theorem gaussInt_takagi (hU : UnitaryInvariant) (d : ℕ) (β t : ℂ) (W : Matrix (Fin d) (Fin d) ℂ)
-    (hW : W ∈ Matrix.unitaryGroup (Fin d) ℂ) (σ : Fin d → ℝ) (δ : ℝ) :
-    gaussInt β d (W * Matrix.diagonal (fun i => ((σ i : ℝ) : ℂ)) * Wᵀ) t δ =
-      ∏ k, ∫ w : ℂ, ((Real.exp (-δ * ‖w‖ ^ 2) : ℝ) : ℂ) * psi β (((σ k : ℂ) / t) * w ^ 2 / 2) ∂(mu β) := by
-  have hWt := transpose_mem_unitary d W hW
-  have hmp := hU d β Wᵀ hWt
-  have h1 : gaussInt β d (W * Matrix.diagonal (fun i => ((σ i : ℝ) : ℂ)) * Wᵀ) t δ =
-      ∫ x : Fin d → ℂ, diagF β d σ t δ (Wᵀ *ᵥ x) ∂(muPi β (Fin d)) := by
-    unfold gaussInt diagF
-    refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-    simp only [quad_form_takagi, sum_norm_sq_unitary d Wᵀ hWt x]
-  rw [h1, ← integral_map hmp.measurable.aemeasurable
-    (continuous_diagF β d σ t δ).aestronglyMeasurable, hmp.map_eq]
-  simp_rw [diagF_eq_prod]
-  exact integral_fintype_prod_eq_prod (μ := fun _ : Fin d => mu β)
-    (fun k w => ((Real.exp (-δ * ‖w‖ ^ 2) : ℝ) : ℂ) * psi β (((σ k : ℂ) / t) * w ^ 2 / 2))
 
-theorem gaussMultiOfOne : GaussMultiOfOne := by
-  intro hT hU hG d β t H hβ ht hsym hdet
-  obtain ⟨W, hW, σ, hσ, hH⟩ := hT d H hsym
-  have hnW : ‖W.det‖ = 1 := by
-    have h := normSq_det_unitary d W hW
-    rw [Complex.normSq_eq_norm_sq] at h
-    nlinarith [norm_nonneg W.det, sq_nonneg (‖W.det‖ - 1)]
-  have hdH : H.det = W.det * (∏ k, ((σ k : ℝ) : ℂ)) * W.det := by
-    rw [hH, Matrix.det_mul, Matrix.det_mul, Matrix.det_diagonal, Matrix.det_transpose]
-  have hσ0 : ∀ k, σ k ≠ 0 := by
-    intro k hk
-    apply hdet
-    rw [hdH, Finset.prod_eq_zero (Finset.mem_univ k) (by rw [hk]; simp)]
-    simp
-  have hkey : gaussInt β d H t = fun δ => ∏ k, ∫ w : ℂ, ((Real.exp (-δ * ‖w‖ ^ 2) : ℝ) : ℂ) *
-      psi β (((σ k : ℂ) / t) * w ^ 2 / 2) ∂(mu β) := by
-    funext δ; rw [hH]; exact gaussInt_takagi hU d β t W hW σ δ
-  have hlim : ((‖t‖ ^ d / ‖H.det‖ : ℝ) : ℂ) = ∏ k : Fin d, (((‖(σ k : ℂ) / t‖)⁻¹ : ℝ) : ℂ) := by
-    rw [← Complex.ofReal_prod]
-    congr 1
-    rw [hdH, norm_mul, norm_mul, hnW, norm_prod]
-    simp only [norm_div, inv_div, Finset.prod_div_distrib, Finset.prod_const, Finset.card_univ,
-      Fintype.card_fin, one_mul, mul_one]
-  rw [hkey, hlim]
-  refine tendsto_finsetProd _ fun k _ => ?_
-  exact gaussOne_of_damped hG β _ hβ (div_ne_zero (by exact_mod_cast hσ0 k) ht)
 
-theorem gaussHessOfMulti : GaussHessOfMulti := by
-  intro hG hD m β t z hβ ht hz
-  have hdet : (z⁻¹ • (1 + Matrix.of fun _ _ => (1 : ℂ)) : Matrix (Fin (m + 1)) (Fin (m + 1)) ℂ).det ≠ 0 := by
-    rw [hD m z]
-    have : ((m:ℂ)+2) ≠ 0 := by
-      have : ((m:ℂ)+2) = ((m+2 : ℕ) : ℂ) := by push_cast; ring
-      rw [this]; exact_mod_cast (Nat.succ_ne_zero (m+1))
-    exact mul_ne_zero this (pow_ne_zero _ (inv_ne_zero hz))
-  have hs : (z⁻¹ • (1 + Matrix.of fun _ _ => (1 : ℂ)) : Matrix (Fin (m + 1)) (Fin (m + 1)) ℂ).IsSymm := by
-    ext i j; simp [Matrix.transpose_apply, Matrix.one_apply, eq_comm, mul_add]
-  have h := hG (m+1) β t _ hβ ht hs hdet
-  rw [hD m z] at h
-  convert h using 3
-  have h2 : ‖(m:ℂ)+2‖ = (m:ℝ)+2 := by
-    have : ((m:ℂ)+2) = (((m:ℝ)+2 : ℝ):ℂ) := by push_cast; ring
-    rw [this, Complex.norm_real, Real.norm_of_nonneg (by positivity)]
-  rw [norm_mul, norm_pow, norm_inv, h2]
-  have : 0 < ‖z‖ := norm_pos_iff.2 hz
-  field_simp
-  rw [← mul_pow]; simp [this.ne']
 
 end Formalism.FourierDecayAlt.P.G8
 
 namespace Formalism.FourierDecayAlt.P
 
-theorem gaussian_one_damped : Formalism.FourierDecayAlt.G.GaussOneDamped := G8.gaussOneDamped
 
-theorem gaussian_one_dim : Formalism.FourierDecayAlt.G.GaussOne := G8.gaussOne_of_damped G8.gaussOneDamped
 
-theorem gaussian_multi_of_one : Formalism.FourierDecayAlt.G.GaussMultiOfOne := G8.gaussMultiOfOne
 
-theorem gaussian_hessian_of_multi : Formalism.FourierDecayAlt.G.GaussHessOfMulti := G8.gaussHessOfMulti
 
-theorem unitary_invariant_gaussian : Formalism.FourierDecayAlt.G.UnitaryInvariant := G8.unitaryInvariant
 
 end Formalism.FourierDecayAlt.P

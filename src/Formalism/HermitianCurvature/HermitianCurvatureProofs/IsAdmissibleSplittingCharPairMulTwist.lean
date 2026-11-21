@@ -44,9 +44,6 @@ open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA MeasureTheory
 theorem roots_outside : Formalism.FourierDecayAlt.MA.RootsOutQ :=
   roots_outside_of_parts_alt roots_outside_jointly
 
-theorem jacobi_base : Formalism.FourierDecayAlt.MA.EmptyWordEnergyDensity := by
-  intro P l L j lam α β Lb c Ntot hH ω
-  exact MAx3.dens_nil P l L j lam α β Lb c Ntot ω
 
 theorem jacobi_square_integrable : Formalism.FourierDecayAlt.MA.SourceSquareIntegrable := by
   intro P l L j lam α β Lb c Ntot hH
@@ -358,11 +355,6 @@ theorem apply_matrix_zero {N : ℕ} (U : Qp P.r P.TT → Iota P N → ℂ) (q : 
   refine Finset.sum_eq_zero fun e' _ => Finset.sum_eq_zero fun π' _ => ?_
   rfl
 
-theorem apply_matrix_sub {N : ℕ} (b c : SlopeTestRemainingChoices (Fin N) (A P (DQ P))) (U : Qp P.r P.TT → Iota P N → ℂ) (q : Qp P.r P.TT)
-    (i : Iota P N) : wordModuleApply P (b - c) U q i = wordModuleApply P b U q i - wordModuleApply P c U q i := by
-  have h := apply_matrix_add P (b - c) c U q i
-  rw [sub_add_cancel] at h
-  rw [h]; ring
 
 theorem apply_matrix_sum {N : ℕ} {ι : Type} (s : Finset ι) (b : ι → SlopeTestRemainingChoices (Fin N) (A P (DQ P)))
     (U : Qp P.r P.TT → Iota P N → ℂ) (q : Qp P.r P.TT) (i : Iota P N) :
@@ -1023,11 +1015,6 @@ theorem polyIn_smul_var {f : ℂ → R} {d : ℕ} (hf : PolyIn f d) : PolyIn (fu
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [if_neg (Nat.succ_ne_zero k), Nat.add_sub_cancel, pow_succ, mul_comm, mul_smul]
 
-theorem polyIn_mul_affine {f : ℂ → R} {d : ℕ} (hf : PolyIn f d) (u v : R) :
-    PolyIn (fun s => f s * (s • u + v)) (d + 1) := by
-  have h := polyIn_add (polyIn_smul_var (polyIn_mul_const hf u)) (polyIn_mono (polyIn_mul_const hf v) (Nat.le_succ d))
-  refine (congrArg (fun F => PolyIn F (d + 1)) (funext fun s => ?_)).mp h
-  simp only [mul_add, mul_smul_comm]
 
 theorem polyIn_affine_mul {f : ℂ → R} {d : ℕ} (u v : R) (hf : PolyIn f d) :
     PolyIn (fun s => (s • u + v) * f s) (d + 1) := by
@@ -1484,7 +1471,6 @@ def embR (A : Type) [Ring A] (N : ℕ) : SlopeTestRemainingChoices (Fin N) A →
   map_zero' := embM_zero
   map_add' := embM_add
 
-theorem embR_apply (M : SlopeTestRemainingChoices (Fin N) A) : embR A N M = embM M := rfl
 
 theorem embM_sum {ι : Type*} (s : Finset ι) (f : ι → SlopeTestRemainingChoices (Fin N) A) : embM (∑ i ∈ s, f i) = ∑ i ∈ s, embM (f i) :=
   map_sum (embR A N) f s
@@ -3868,12 +3854,7 @@ theorem coordinate_real (P : M.Par) (l : ℕ) (π : M.Ty P) (Y : ℝ) : M.x0 P l
 theorem qC_real (P : M.Par) (Y : ℝ) : M.qC P (Y : ℂ) = ((qp P Y : ℝ) : ℂ) := by
   simp [M.qC, qp, I.qpoly]
 
-theorem ixOf_last (P : M.Par) (N : ℕ) (b : Bool) (i : Iota P N) :
-    (ixOf P (N + 1) (b, i)).1 (Fin.last N) = if b then 1 else 0 := by
-  simp [ixOf]
 
-theorem ixOf_snd (P : M.Par) (N : ℕ) (b : Bool) (i : Iota P N) :
-    (ixOf P (N + 1) (b, i)).2 = (ixOf P N i).2 := rfl
 
 theorem dw_true (P : M.Par) (l : ℕ) (w : List ℝ) (Y : ℝ) (q : Qp P.r P.TT) (i : Iota P w.length) :
     dwW P l (Y :: w) q (true, i) = Wq P q ^ (w.length + 1) *
@@ -4942,9 +4923,6 @@ theorem phR_cons (b : Letter ℂ S) (v : List (Letter ℂ S)) (e : Ix S) (Z : �
     phR (b :: v) e Z = (if e b.intersection_update_fsHerm_neg_one = 0 then (Z - b.pt.re) / (Z - b.pt.re - 1) else 1) * phR v e Z := by
   simp [phR]
 
-theorem psR_cons (b : Letter ℂ S) (v : List (Letter ℂ S)) (Z : ℝ) :
-    psR (b :: v) Z = (Z - b.pt.re + 1) / (Z - b.pt.re) * psR v Z := by
-  simp [psR]
 
 theorem phR_congr : ∀ (v : List (Letter ℂ S)) (e e' : Ix S), (∀ b ∈ v, e b.intersection_update_fsHerm_neg_one = e' b.intersection_update_fsHerm_neg_one) →
     ∀ Z, phR v e Z = phR v e' Z
@@ -5232,8 +5210,6 @@ theorem evalOne_algebraMap_mul (z : ℂ) (x : (DQ P).Pr) (q) : ev1 P (algebraMap
   rw [← Algebra.smul_def, evalOne_smul]
 theorem evalOne_mul_algebraMap (z : ℂ) (x : (DQ P).Pr) (q) : ev1 P (x * algebraMap ℂ (DQ P).Pr z) q = z * ev1 P x q := by
   rw [← Algebra.commutes, evalOne_algebraMap_mul]
-theorem evalOne_function_mul (f fb : SmQ P.r P.TT) (x : (DQ P).Pr) (q) :
-    ev1 P ((DQ P).fnP f fb * x) q = evQ P f q * ev1 P x q := rfl
 theorem evalOne_sum {ι : Type} (s : Finset ι) (x : ι → (DQ P).Pr) (q) :
     ev1 P (∑ i ∈ s, x i) q = ∑ i ∈ s, ev1 P (x i) q := by
   classical
@@ -6145,8 +6121,6 @@ theorem ixOf_inj (P : M.Par) : ∀ (N : ℕ) (i i' : Iota P N), ixOf P N i = ixO
     have := ixOf_inj P N i i' (Prod.ext hi h2)
     rw [hb, this]
 
-theorem plusWord_get_point (w : List ℝ) (n : Fin (wordP w).length) : ∃ p ∈ w, ((wordP w).get n).pt = (p : ℂ) :=
-  MAx2.mem_wordP (List.get_mem _ _)
 
 theorem mult_real {S : Type} [Fintype S] [DecidableEq S] (ρm : ℝ) (e : Ix S) : ∀ (v : List (Letter ℂ S)),
     (∀ a ∈ v, a.pt.im = 0) → multS v (-((ρm + 1 : ℝ) : ℂ)) e = ((multR v ρm e : ℝ) : ℂ)
@@ -8701,37 +8675,7 @@ theorem term_mem {n : ℕ} {b : A} (hb : b ∈ S) {i i' : ℕ} {H : List A} (h1 
     (h3 : ∀ h ∈ H, h ∈ plusHats L) : tm L b i i' H ∈ NF L S n :=
   Submodule.subset_span ⟨b, hb, i, i', H, h1, h2, h3, rfl⟩
 
-theorem sum_mem_NF {n : ℕ} {ι : Type} (ts : List ι) (f : ι → A) (h : ∀ x ∈ ts, f x ∈ NF L S n) :
-    (ts.map f).sum ∈ NF L S n := by
-  induction ts with
-  | nil => simp
-  | cons a ts ih =>
-    rw [List.map_cons, List.sum_cons]
-    exact Submodule.add_mem _ (h a (by simp)) (ih fun x hx => h x (by simp [hx]))
 
-theorem a_term (hS : Hyp L S) (y : ℂ) {n : ℕ} {x : A} (hx : x ∈ Term L S n) :
-    L.Di * L.Ahat y * x ∈ NF L S (n + 1) := by
-  obtain ⟨b, hb, i, i', H, h1, h2, h3, rfl⟩ := hx
-  obtain ⟨t, ht⟩ := hS.ahat b hb
-  have ht' : ∀ z, L.Ahat y * (b * z) = b * (L.Ahat (y + t) * z) := fun z => by
-    rw [← mul_assoc, ht, mul_assoc]
-  have hb' : ∀ z, L.Di * (b * z) = b * (L.Di * z) := fun z => by
-    rw [← mul_assoc, ← hS.comm_Di b hb, mul_assoc]
-  have hA1 : ∀ z, L.Ahat (y + t) * (L.Di ^ i * z) = L.Di ^ i * (L.Ahat (y + t - i) * z) := fun z => by
-    rw [← mul_assoc, Ahat_Dipow, mul_assoc]
-  have hA2 : ∀ z, L.Ahat (y + t - i) * (L.Dbi ^ i' * z) = L.Dbi ^ i' * (L.Ahat (y + t - i) * z) := fun z => by
-    rw [← mul_assoc, comm_Dbipow_A, mul_assoc]
-  have e : L.Di * L.Ahat y * tm L b i i' H = tm L b (i + 1) i' (L.Ahat (y + t - i) :: H) := by
-    unfold tm
-    rw [List.prod_cons, pow_succ']
-    simp only [mul_assoc]
-    rw [ht', hb', hA1, hA2]
-  rw [e]
-  exact term_mem hb (by omega) (by simp [h2]) (by
-    intro h hh
-    rcases List.mem_cons.1 hh with rfl | hh
-    · exact Or.inl ⟨_, rfl⟩
-    · exact h3 h hh)
 
 end Formalism.FourierDecayAlt.P.MAx3.H
 
@@ -8834,8 +8778,6 @@ theorem bAPQ (b : A) (y' : ℂ) (i i' : ℕ) (H : List A) :
 
 theorem drb_comm_P (i : ℕ) : L.Drb * L.Di * L.Di ^ i = L.Di ^ i * (L.Drb * L.Di) :=
   cl_comm L (Subring.mul_mem _ (memDrb L) (memDi L)) (memPow L (memDi L) i)
-theorem drb_comm_Q (i : ℕ) : L.Drb * L.Di * L.Dbi ^ i = L.Dbi ^ i * (L.Drb * L.Di) :=
-  cl_comm L (Subring.mul_mem _ (memDrb L) (memDi L)) (memPow L (memDbi L) i)
 
 theorem bRPQ (b : A) (y : ℂ) (i i' : ℕ) (H : List A) : ∃ cs : List (ℂ × ℂ),
     b * L.R0 y * (L.Di ^ i * L.Dbi ^ i') * H.prod = tm L b i i' (L.R0 (y - i) :: H) +
@@ -9178,7 +9120,6 @@ theorem raising_mul_D_inv_expanded (Y : ℂ) : L.R0 Y * L.Di = L.Di * L.R0 (Y - 
 
 theorem memDD : L.D * L.Dbi ∈ Subring.closure (FS L) := Subring.mul_mem _ (memD L) (memDbi L)
 theorem memDbD : L.Db * L.Di ∈ Subring.closure (FS L) := Subring.mul_mem _ (memDb L) (memDi L)
-theorem memDrbDi : L.Drb * L.Di ∈ Subring.closure (FS L) := Subring.mul_mem _ (memDrb L) (memDi L)
 
 theorem gen_DD_A (Y : ℂ) : L.Ahat Y * (L.D * L.Dbi) = L.D * L.Dbi * L.Ahat (Y + 1) := by
   rw [← mul_assoc, Ahat_D, mul_assoc, ← (hat_Dbi L (Y + 1)).1, mul_assoc]
@@ -9883,9 +9824,6 @@ theorem PW_mul {x y : A P (DQ P)} {C₁ C₂ : ℝ} (hx : PW x C₁) (hy : PW y 
     rw [Finset.sum_mul]
     exact Finset.sum_congr rfl fun π' _ => by ring
 
-theorem PW_mono {x : A P (DQ P)} {C C' : ℝ} (h : PW x C) (hC : C ≤ C') : PW x C' := by
-  obtain ⟨h0, Mx, b, e⟩ := h
-  exact ⟨h0.trans hC, Mx, fun q π π' => (b q π π').trans hC, e⟩
 
 theorem PW_fn {x : A P (DQ P)} {g : Qp P.r P.TT → ℂ} (hx : IsFn x g) {C : ℝ} (hC : 0 ≤ C) (hg : ∀ q, ‖g q‖ ≤ C) :
     PW x C := by
@@ -11489,7 +11427,6 @@ theorem Gs_conj_entry (x : A P (DQ P)) (s : ℝ) (π π' : M.Ty P) :
       (DQ P).fnP (G.GpD P (-s)) (G.GpD P (-s)) * x π π' * (DQ P).fnP (G.GpD P s) (G.GpD P s) := by
   simp only [G.Gs, sc, Matrix.scalar_apply, Matrix.diagonal_mul, Matrix.mul_diagonal]
 
-theorem multiplierPair_fst_apply (f g h : SmQ P.r P.TT) : ((DQ P).fnP f g).1 h = f * h := rfl
 
 theorem act_leibniz (x : A P (DQ P)) (hx : x ∈ MAx2.Jet.TS P) (d : ℕ) (c : ℕ → A P (DQ P))
     (hconj : ∀ s : ℝ, G.Gs P (-s) * x * G.Gs P s = ∑ k ∈ Finset.range (d + 1), ((s : ℂ) ^ k) • c k)
@@ -12523,7 +12460,6 @@ def asS (f : (DQ P).R) : SmQ P.r P.TT := f
 theorem isJ_const_mul (p : ℕ) (f : SmQ P.r P.TT) : IsJ P (fun ψ => Phi P ψ p * f) :=
   ⟨1, fun _ => p, fun _ => f, fun φ hφ => by simp⟩
 
-theorem Phi0_rpow (s : ℝ) : Phi P (fun x : ℝ => x ^ s) 0 = G.Gpow P s := rfl
 
 theorem real_pow_conj (σ s : ℝ) (k : ℕ) : starRingEnd ℂ (((σ * s : ℝ) : ℂ) ^ k) = ((σ * s : ℝ) : ℂ) ^ k := by
   rw [map_pow, Complex.conj_ofReal]
@@ -13087,8 +13023,6 @@ theorem mem3 {d ℓ : ℕ} {b : A} (hb : b ∈ S) {i i' : ℕ} {H : List A} (h1 
     (h3 : ∀ h ∈ H, h ∈ Hs) : tm L b i i' H ∈ NormalFormThree L S Hs d ℓ :=
   Submodule.subset_span ⟨b, hb, i, i', H, h1, h2, h3, rfl⟩
 
-theorem cons3 {h : A} (hh : h ∈ Hs) {H : List A} (h3 : ∀ x ∈ H, x ∈ Hs) : ∀ x ∈ h :: H, x ∈ Hs := by
-  intro x hx; rcases List.mem_cons.1 hx with rfl | hx; exacts [hh, h3 x hx]
 
 theorem sum3 {d ℓ : ℕ} {ι : Type} (ts : List ι) (f : ι → A) (h : ∀ x ∈ ts, f x ∈ NormalFormThree L S Hs d ℓ) :
     (ts.map f).sum ∈ NormalFormThree L S Hs d ℓ := by
@@ -13098,57 +13032,11 @@ theorem sum3 {d ℓ : ℕ} {ι : Type} (ts : List ι) (f : ι → A) (h : ∀ x 
     rw [List.map_cons, List.sum_cons]
     exact Submodule.add_mem _ (h a (by simp)) (ih fun x hx => h x (by simp [hx]))
 
-theorem normal_form_three_D_inv (hS : Hyp L S) {d ℓ : ℕ} {x : A} (hx : x ∈ NormalFormThree L S Hs d ℓ) : L.Di * x ∈ NormalFormThree L S Hs (d + 1) ℓ := by
-  refine span_mul _ (fun x hx => ?_) hx
-  obtain ⟨b, hb, i, i', H, h1, h2, h3, rfl⟩ := hx
-  rw [Di_tm hS hb]; exact mem3 hb (by omega) h2 h3
 
-theorem normal_form_three_D_bar_inv (hS : Hyp L S) {d ℓ : ℕ} {x : A} (hx : x ∈ NormalFormThree L S Hs d ℓ) : L.Dbi * x ∈ NormalFormThree L S Hs (d + 1) ℓ := by
-  refine span_mul _ (fun x hx => ?_) hx
-  obtain ⟨b, hb, i, i', H, h1, h2, h3, rfl⟩ := hx
-  rw [Dbi_tm hS hb]; exact mem3 hb (by omega) h2 h3
 
-theorem normal_form_three_hat (hS : Hyp L S) (hP : plusHats L ⊆ Hs) (y : ℂ) {d ℓ : ℕ} {x : A} (hx : x ∈ NormalFormThree L S Hs d ℓ) :
-    L.Ahat y * x ∈ NormalFormThree L S Hs d (ℓ + 1) := by
-  refine span_mul _ (fun x hx => ?_) hx
-  obtain ⟨b, hb, i, i', H, h1, h2, h3, rfl⟩ := hx
-  obtain ⟨y', e⟩ := Ahat_tm hS y hb i i' H
-  rw [e]; exact mem3 hb h1 (by simp [h2]) (cons3 (hP (Or.inl ⟨_, rfl⟩)) h3)
 
-theorem normal_form_three_raising (hS : Hyp L S) (hP : plusHats L ⊆ Hs) (y : ℂ) {d ℓ : ℕ} {x : A} (hx : x ∈ NormalFormThree L S Hs d ℓ) :
-    L.R0 y * x ∈ NormalFormThree L S Hs d (ℓ + 1) := by
-  refine span_mul _ (fun x hx => ?_) hx
-  obtain ⟨b, hb, i, i', H, h1, h2, h3, rfl⟩ := hx
-  obtain ⟨t, ts, hts, e⟩ := hS.r0 b hb y
-  obtain ⟨cs, hcs⟩ := bRPQ (L := L) b (y + t) i i' H
-  have e2 : L.R0 y * tm L b i i' H = (b * L.R0 (y + t) * (L.Di ^ i * L.Dbi ^ i') * H.prod) +
-      (ts.map fun x => x.1 • (x.2.1 * L.Ahat x.2.2 * (L.Di ^ i * L.Dbi ^ i') * H.prod)).sum := by
-    unfold tm
-    rw [← mul_assoc, ← mul_assoc, e, add_mul, add_mul, ← List.sum_map_mul_right, ← List.sum_map_mul_right]
-    congr 1
-    congr 1
-    refine List.map_congr_left fun x _ => ?_
-    rw [smul_mul_assoc, smul_mul_assoc]
-  rw [e2, hcs]
-  refine Submodule.add_mem _ (Submodule.add_mem _ (mem3 hb h1 (by simp [h2]) (cons3 (hP (Or.inr ⟨_, rfl⟩)) h3))
-    (sum3 _ _ fun x _ => Submodule.smul_mem _ _ (mem3 (S.mul_mem hb hS.drb) h1 (by simp [h2])
-      (cons3 (hP (Or.inl ⟨_, rfl⟩)) h3)))) (sum3 _ _ fun x hx => ?_)
-  rw [bAPQ]
-  exact Submodule.smul_mem _ _ (mem3 (hts x hx) h1 (by simp [h2]) (cons3 (hP (Or.inl ⟨_, rfl⟩)) h3))
 
-theorem normal_form_three_monoid_mul {b : A} (hb : b ∈ S) {d ℓ : ℕ} {x : A} (hx : x ∈ NormalFormThree L S Hs d ℓ) : b * x ∈ NormalFormThree L S Hs d ℓ := by
-  refine span_mul _ (fun x hx => ?_) hx
-  obtain ⟨b', hb', i, i', H, h1, h2, h3, rfl⟩ := hx
-  have : b * tm L b' i i' H = tm L (b * b') i i' H := by unfold tm; simp only [mul_assoc]
-  rw [this]; exact mem3 (S.mul_mem hb hb') h1 h2 h3
 
-theorem normal_form_three_span_mul {z : A} (hz : z ∈ Submodule.span ℂ (S : Set A)) {d ℓ : ℕ} {x : A}
-    (hx : x ∈ NormalFormThree L S Hs d ℓ) : z * x ∈ NormalFormThree L S Hs d ℓ := by
-  induction hz using Submodule.span_induction with
-  | mem b hb => exact normal_form_three_monoid_mul hb hx
-  | zero => simp
-  | add a b _ _ h1 h2 => rw [add_mul]; exact Submodule.add_mem _ h1 h2
-  | smul c a _ h1 => rw [smul_mul_assoc]; exact Submodule.smul_mem _ c h1
 
 end Formalism.FourierDecayAlt.P.MAx3.K
 
@@ -13201,11 +13089,7 @@ theorem Ahatv_Dbipow (i : ℕ) (Y : ℂ) : L.Ahatv Y * L.Dbi ^ i = L.Dbi ^ i * L
     rw [pow_succ', ← mul_assoc, Ahatv_Dbi, mul_assoc, ih, ← mul_assoc]
     congr 2; push_cast; ring
 
-theorem Ahatv_Dipow (i : ℕ) (Y : ℂ) : L.Ahatv Y * L.Di ^ i = L.Di ^ i * L.Ahatv Y :=
-  (Commute.pow_right ((hatv_D_fns L).1 Y) i).eq
 
-theorem raising_variant_D_inv_pow (i : ℕ) (Y : ℂ) : L.R0v Y * L.Di ^ i = L.Di ^ i * L.R0v Y :=
-  (Commute.pow_right ((hatv_D_fns L).2 Y) i).eq
 
 theorem raising_variant_D_bar_inv_pow (i : ℕ) (Y : ℂ) : ∃ cs : List (ℂ × ℂ), L.R0v Y * L.Dbi ^ i =
     L.Dbi ^ i * (L.R0v (Y + i) + (cs.map fun x => x.1 • (L.Dr * L.Dbi * L.Ahatv x.2)).sum) := by
@@ -13250,72 +13134,10 @@ structure HypV (L : LevelData A r) (S : Submonoid A) : Prop where
     L.R0v Y * b = b * L.R0v (Y + t) + (ts.map fun x => x.1 • (x.2.1 * L.Ahatv x.2.2)).sum
   drv : L.Dr * L.Dbi ∈ S
 
-theorem bVPQ (b : A) (y' : ℂ) (i i' : ℕ) (H : List A) :
-    b * L.Ahatv y' * (L.Di ^ i * L.Dbi ^ i') * H.prod = tm L b i i' (L.Ahatv (y' + i') :: H) := by
-  unfold tm
-  rw [List.prod_cons]
-  simp only [mul_assoc]
-  rw [← mul_assoc (L.Ahatv y'), Ahatv_Dipow, mul_assoc, ← mul_assoc (L.Ahatv y'), Ahatv_Dbipow, mul_assoc]
 
-theorem drv_comm_P (i : ℕ) : L.Dr * L.Dbi * L.Di ^ i = L.Di ^ i * (L.Dr * L.Dbi) :=
-  cl_comm L (Subring.mul_mem _ (memDr L) (memDbi L)) (memPow L (memDi L) i)
-theorem drv_comm_Q (i : ℕ) : L.Dr * L.Dbi * L.Dbi ^ i = L.Dbi ^ i * (L.Dr * L.Dbi) :=
-  cl_comm L (Subring.mul_mem _ (memDr L) (memDbi L)) (memPow L (memDbi L) i)
 
-theorem bRvPQ (b : A) (y : ℂ) (i i' : ℕ) (H : List A) : ∃ cs : List (ℂ × ℂ),
-    b * L.R0v y * (L.Di ^ i * L.Dbi ^ i') * H.prod = tm L b i i' (L.R0v (y + i') :: H) +
-      (cs.map fun x => x.1 • tm L (b * (L.Dr * L.Dbi)) i i' (L.Ahatv x.2 :: H)).sum := by
-  obtain ⟨cs, hcs⟩ := raising_variant_D_bar_inv_pow L i' y
-  refine ⟨cs, ?_⟩
-  have e1 : b * L.R0v y * (L.Di ^ i * L.Dbi ^ i') * H.prod =
-      b * L.Di ^ i * (L.Dbi ^ i' * (L.R0v (y + i') + (cs.map fun x => x.1 • (L.Dr * L.Dbi * L.Ahatv x.2)).sum)) *
-        H.prod := by
-    rw [← hcs, mul_assoc b (L.R0v y), ← mul_assoc (L.R0v y), raising_variant_D_inv_pow]; simp only [mul_assoc]
-  rw [e1, mul_add, mul_add, add_mul]
-  congr 1
-  · unfold tm; rw [List.prod_cons]; simp only [mul_assoc]
-  · rw [← List.sum_map_mul_left, ← List.sum_map_mul_left, ← List.sum_map_mul_right]
-    congr 1
-    refine List.map_congr_left fun x _ => ?_
-    rw [mul_smul_comm, mul_smul_comm, smul_mul_assoc]
-    congr 1
-    have tQ : ∀ z, L.Dbi ^ i' * (L.Dr * (L.Dbi * z)) = L.Dr * (L.Dbi * (L.Dbi ^ i' * z)) := fun z => by
-      rw [← mul_assoc L.Dr, ← mul_assoc, ← drv_comm_Q, mul_assoc, mul_assoc]
-    have tP : ∀ z, L.Di ^ i * (L.Dr * (L.Dbi * z)) = L.Dr * (L.Dbi * (L.Di ^ i * z)) := fun z => by
-      rw [← mul_assoc L.Dr, ← mul_assoc, ← drv_comm_P, mul_assoc, mul_assoc]
-    unfold tm; rw [List.prod_cons]; simp only [mul_assoc]
-    rw [tQ, tP]
 
-theorem normal_form_three_hat_variant (hS : HypV L S) (hM : minusHats L ⊆ Hs) (y : ℂ) {d ℓ : ℕ} {x : A}
-    (hx : x ∈ NormalFormThree L S Hs d ℓ) : L.Ahatv y * x ∈ NormalFormThree L S Hs d (ℓ + 1) := by
-  refine span_mul _ (fun x hx => ?_) hx
-  obtain ⟨b, hb, i, i', H, h1, h2, h3, rfl⟩ := hx
-  obtain ⟨t, ht⟩ := hS.ahatv b hb
-  have e : L.Ahatv y * tm L b i i' H = b * L.Ahatv (y + t) * (L.Di ^ i * L.Dbi ^ i') * H.prod := by
-    unfold tm; rw [← mul_assoc, ← mul_assoc, ht]
-  rw [e, bVPQ]
-  exact mem3 hb h1 (by simp [h2]) (cons3 (hM (Or.inl ⟨_, rfl⟩)) h3)
 
-theorem normal_form_three_raising_variant (hS : HypV L S) (hM : minusHats L ⊆ Hs) (y : ℂ) {d ℓ : ℕ} {x : A}
-    (hx : x ∈ NormalFormThree L S Hs d ℓ) : L.R0v y * x ∈ NormalFormThree L S Hs d (ℓ + 1) := by
-  refine span_mul _ (fun x hx => ?_) hx
-  obtain ⟨b, hb, i, i', H, h1, h2, h3, rfl⟩ := hx
-  obtain ⟨t, ts, hts, e⟩ := hS.r0v b hb y
-  obtain ⟨cs, hcs⟩ := bRvPQ (L := L) b (y + t) i i' H
-  have e2 : L.R0v y * tm L b i i' H = (b * L.R0v (y + t) * (L.Di ^ i * L.Dbi ^ i') * H.prod) +
-      (ts.map fun x => x.1 • (x.2.1 * L.Ahatv x.2.2 * (L.Di ^ i * L.Dbi ^ i') * H.prod)).sum := by
-    unfold tm
-    rw [← mul_assoc, ← mul_assoc, e, add_mul, add_mul, ← List.sum_map_mul_right, ← List.sum_map_mul_right]
-    congr 1
-    congr 1
-    refine List.map_congr_left fun x _ => ?_
-    rw [smul_mul_assoc, smul_mul_assoc]
-  rw [e2, hcs]
-  refine Submodule.add_mem _ (Submodule.add_mem _ (mem3 hb h1 (by simp [h2]) (cons3 (hM (Or.inr ⟨_, rfl⟩)) h3))
-    (sum3 _ _ fun x _ => Submodule.smul_mem _ _ (mem3 (S.mul_mem hb hS.drv) h1 (by simp [h2])
-      (cons3 (hM (Or.inl ⟨_, rfl⟩)) h3)))) (sum3 _ _ fun x hx => ?_)
-  rw [bVPQ]
-  exact Submodule.smul_mem _ _ (mem3 (hts x hx) h1 (by simp [h2]) (cons3 (hM (Or.inl ⟨_, rfl⟩)) h3))
 
 def RaisingVariantCommutesModulo (L : LevelData A r) (M : Set A) (b : A) : Prop :=
   ∀ Y, ∃ (t : ℂ) (ts : List (ℂ × A × ℂ)), (∀ x ∈ ts, x.2.1 ∈ M) ∧
@@ -13937,8 +13759,6 @@ def Z (k : ℕ) : Submodule ℂ (A P (DQ P)) := Submodule.span ℂ (Gen P L k)
 def HB : Submodule ℂ (A P (DQ P)) :=
   Submodule.span ℂ {x | ∃ b h, b ∈ Submonoid.closure (bddSet P L) ∧ h ∈ hatSet P L ∧ x = b * h}
 
-theorem Z_mono {k k' : ℕ} (h : k ≤ k') : Z P L k ≤ Z P L k' :=
-  Submodule.span_mono fun x ⟨φ, b, v, h1, h2, h3, h4, e⟩ => ⟨φ, b, v, h1, h2, h3, h4.trans h, e⟩
 
 variable {P L}
 
@@ -14554,8 +14374,6 @@ theorem PR_add {f g : ℝ → R} {d : ℕ} (hf : PR f d) (hg : PR g d) : PR (fun
   obtain ⟨a, ha⟩ := hf; obtain ⟨b, hb⟩ := hg
   exact ⟨fun k => a k + b k, fun s => by dsimp only; rw [ha, hb, ← Finset.sum_add_distrib]; simp only [smul_add]⟩
 
-theorem PR_add' {f g : ℝ → R} {d1 d2 : ℕ} (hf : PR f d1) (hg : PR g d2) : PR (fun s => f s + g s) (max d1 d2) :=
-  PR_add (PR_mono hf (le_max_left _ _)) (PR_mono hg (le_max_right _ _))
 
 theorem PR_neg {f : ℝ → R} {d : ℕ} (hf : PR f d) : PR (fun s => -f s) d := by
   obtain ⟨a, ha⟩ := hf
@@ -15837,22 +15655,6 @@ variable {P : M.Par}
 
 def Good (ψ : ℝ → ℝ) : Prop := LE.SmoothLog ψ ∧ ∀ p, ∃ C, ∀ x, 0 < x → |LE.ld p ψ x| ≤ C
 
-theorem admissible_mul_good {φ ψ : ℝ → ℝ} (hφ : admitted φ) (hψ : Good ψ) : admitted (fun x => φ x * ψ x) := by
-  obtain ⟨hs, ⟨ε, hε, h0⟩, hb⟩ := hφ
-  obtain ⟨hs', hb'⟩ := hψ
-  refine ⟨?_, ⟨ε, hε, fun x hx => by simp [h0 x hx]⟩, fun q => ?_⟩
-  · unfold LE.SmoothLog; exact hs.mul hs'
-  · choose C hC using hb
-    choose C' hC' using hb'
-    refine ⟨∑ i ∈ Finset.range (q + 1), (q.choose i : ℝ) * C i * C' (q - i), fun x hx => ?_⟩
-    rw [ld_mul hs hs']
-    refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun i _ => ?_)
-    rw [abs_mul, abs_mul, abs_of_nonneg (Nat.cast_nonneg _)]
-    have h1 := hC i x hx
-    have h2 := hC' (q - i) x hx
-    have hc0 : 0 ≤ C i := (abs_nonneg _).trans h1
-    exact mul_le_mul (mul_le_mul_of_nonneg_left h1 (Nat.cast_nonneg _)) h2 (abs_nonneg _)
-      (mul_nonneg (Nat.cast_nonneg _) hc0)
 
 theorem Fq_star (φ : ℝ → ℝ) : star (Fq P φ 0) = Fq P φ 0 := rfl
 
@@ -15919,36 +15721,7 @@ theorem b_mul_Z {b : A P (DQ P)} (hb : b ∈ Submonoid.closure (bddSet P L)) {k 
   | add x y _ _ h1 h2 => rw [mul_add]; exact Submodule.add_mem _ h1 h2
   | smul c x _ h1 => rw [mul_smul_comm]; exact Submodule.smul_mem _ c h1
 
-theorem good_mul_Z {ψ : ℝ → ℝ} (hψ : Good ψ) {k : ℕ} {z : A P (DQ P)} (hz : z ∈ Z P L k) :
-    Ph P ψ * z ∈ Z P L k := by
-  induction hz using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨φ, b', v, hφ, hb', hv, hlen, rfl⟩ := hx
-    refine Submodule.subset_span ⟨fun x => φ x * ψ x, b', v, admissible_mul_good hφ hψ, hb', hv, hlen, ?_⟩
-    rw [← Ph_mul P hφ.1 hψ.1, ← mul_assoc, ← mul_assoc]
-    congr 2
-    unfold Ph
-    rw [G.sc_mul, G.sc_mul]
-    congr 1
-    exact Formalism.FourierDecayAlt.P.MAx1.multiplierPair_comm (DQ P) _ _ _ _
-  | zero => simp
-  | add x y _ _ h1 h2 => rw [mul_add]; exact Submodule.add_mem _ h1 h2
-  | smul c x _ h1 => rw [mul_smul_comm]; exact Submodule.smul_mem _ c h1
 
-theorem Gs_mul_Z {t : ℝ} (ht : t ≤ 0) {k : ℕ} {z : A P (DQ P)} (hz : z ∈ Z P L k) : G.Gs P t * z ∈ Z P L k := by
-  induction hz using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨φ, b', v, hφ, hb', hv, hlen, rfl⟩ := hx
-    refine Submodule.subset_span ⟨fun x => φ x * x ^ t, b', v, admissible_mul_rpow hφ ht, hb', hv, hlen, ?_⟩
-    rw [← Ph_Gs P hφ.1, ← mul_assoc, ← mul_assoc]
-    congr 2
-    unfold Ph G.Gs
-    rw [G.sc_mul, G.sc_mul]
-    congr 1
-    exact Formalism.FourierDecayAlt.P.MAx1.multiplierPair_comm (DQ P) _ _ _ _
-  | zero => simp
-  | add x y _ _ h1 h2 => rw [mul_add]; exact Submodule.add_mem _ h1 h2
-  | smul c x _ h1 => rw [mul_smul_comm]; exact Submodule.smul_mem _ c h1
 
 end
 
@@ -15982,9 +15755,6 @@ theorem CF_act {s : A P (DQ P)} {g : Qp P.r P.TT → ℂ} (hs : CF s g) (f : M.T
       (by simp)]
     simp
 
-theorem star_CF {s : A P (DQ P)} {g : Qp P.r P.TT → ℂ} (hs : CF s g) : CF (star s) (fun q => conj (g q)) := by
-  obtain ⟨F, Fb, rfl, h1, h2⟩ := hs
-  exact ⟨Fb, F, by rw [MAx2.R2.star_sc]; rfl, h2, fun q => by rw [Complex.conj_conj, h1]⟩
 
 variable {L : LevelData (A P (DQ P)) P.r} (hL : IsModelLevel P (DQ P) L) (hLaw : (DQ P).Laws P.TT)
 include hL hLaw
@@ -16842,44 +16612,6 @@ theorem minus_sub_hat {X : A P (DQ P)} (hX : X ∈ minusHats L) : X ∈ hatSet P
   · exact Or.inl (Or.inr hX)
   · exact Or.inr hX
 
-theorem MSG_Z {N n k m : ℕ} (hγ : L.Di ^ N * (L.D ^ n * L.Dbi ^ k) ∈ Formalism.FourierDecayAlt.P.MAx3.I4.SB L) {ψ : ℝ → ℝ} (hψ : admitted ψ)
-    {H : List (A P (DQ P))} (hH : ∀ h ∈ H, h ∈ hatSet P L) {z : A P (DQ P)} (hz : z ∈ MSG L n k m) :
-    L.Di ^ N * Ph P ψ * (z * H.prod) ∈ Z P L (H.length + 1) := by
-  obtain ⟨hD, hDi, hDb, hDbi, -⟩ := fnP_D hL
-  have hDD : IsFnP (L.D ^ n * L.Dbi ^ k) := isFnP_mul (isFnP_pow hD n) (isFnP_pow hDbi k)
-  have hGm : IsFnP (G.Gs P (-1) ^ m) := isFnP_pow (isFnP_Gs (-1)) m
-  have hDiN : IsFnP (L.Di ^ N) := isFnP_pow hDi N
-  induction hz using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨β, X, hβ, hX, rfl⟩ := hx
-    have e : L.Di ^ N * Ph P ψ * (β * (L.D ^ n * L.Dbi ^ k) * G.Gs P (-1) ^ m * X * H.prod) =
-        G.Gs P (-1) ^ m * (Ph P ψ * (β * (L.Di ^ N * (L.D ^ n * L.Dbi ^ k))) * (X :: H).prod) := by
-      have c1 : L.Di ^ N * Ph P ψ = Ph P ψ * L.Di ^ N := isFnP_comm hDiN (isFnP_Ph ψ)
-      have c2 : L.Di ^ N * β = β * L.Di ^ N := (SB_comm_fnP hL hLaw hβ hDiN).symm
-      have c3 : L.D ^ n * L.Dbi ^ k * G.Gs P (-1) ^ m = G.Gs P (-1) ^ m * (L.D ^ n * L.Dbi ^ k) := isFnP_comm hDD hGm
-      have c4 : L.Di ^ N * G.Gs P (-1) ^ m = G.Gs P (-1) ^ m * L.Di ^ N := isFnP_comm hDiN hGm
-      have c5 : β * G.Gs P (-1) ^ m = G.Gs P (-1) ^ m * β := SB_comm_fnP hL hLaw hβ hGm
-      have c6 : Ph P ψ * G.Gs P (-1) ^ m = G.Gs P (-1) ^ m * Ph P ψ := isFnP_comm (isFnP_Ph ψ) hGm
-      rw [List.prod_cons]
-      calc L.Di ^ N * Ph P ψ * (β * (L.D ^ n * L.Dbi ^ k) * G.Gs P (-1) ^ m * X * H.prod)
-          = Ph P ψ * (L.Di ^ N * β) * ((L.D ^ n * L.Dbi ^ k) * G.Gs P (-1) ^ m) * (X * H.prod) := by
-            rw [c1]; simp only [mul_assoc]
-        _ = Ph P ψ * β * (L.Di ^ N * (G.Gs P (-1) ^ m * (L.D ^ n * L.Dbi ^ k))) * (X * H.prod) := by
-            rw [c2, c3]; simp only [mul_assoc]
-        _ = Ph P ψ * (β * G.Gs P (-1) ^ m) * (L.Di ^ N * (L.D ^ n * L.Dbi ^ k)) * (X * H.prod) := by
-            rw [← mul_assoc (L.Di ^ N), c4]; simp only [mul_assoc]
-        _ = (Ph P ψ * G.Gs P (-1) ^ m) * β * (L.Di ^ N * (L.D ^ n * L.Dbi ^ k)) * (X * H.prod) := by
-            rw [c5]; simp only [mul_assoc]
-        _ = _ := by rw [c6]; simp only [mul_assoc]
-    rw [e]
-    refine Gspow_memZ hTTp hL hLaw m (Submodule.subset_span ⟨ψ, _, X :: H, hψ, Submonoid.mul_mem _ hβ hγ, ?_, by simp, rfl⟩)
-    intro h hh
-    rcases List.mem_cons.1 hh with rfl | hh
-    · exact minus_sub_hat hTTp hL hLaw hX
-    · exact hH h hh
-  | zero => simp
-  | add a b _ _ h1 h2 => rw [add_mul, mul_add]; exact Submodule.add_mem _ h1 h2
-  | smul c a _ h1 => rw [smul_mul_assoc, mul_smul_comm]; exact Submodule.smul_mem _ c h1
 
 end
 
@@ -17004,28 +16736,12 @@ theorem cf_Gs (t : ℝ) : CF (G.Gs P t) (fun q => ((Gq P q ^ t : ℝ) : ℂ)) :=
 
 variable {L : LevelData (A P (DQ P)) P.r} {j : M.Ty P → SmQ P.r P.TT}
 
-theorem Ph_mem_Z {φ : ℝ → ℝ} (hφ : admitted φ) : Ph P φ ∈ Z P L 0 :=
-  Submodule.subset_span ⟨φ, 1, [], hφ, Submonoid.one_mem _, by simp, by simp, by simp⟩
 
-theorem DDbi_pow_mem (n : ℕ) : (L.D * L.Dbi) ^ n ∈ Submonoid.closure (bddSet P L) := by
-  have h : L.D * L.Dbi ∈ bddSet P L := Or.inl (Or.inl (Or.inl (by simp)))
-  exact Submonoid.pow_mem _ (Submonoid.subset_closure h) n
 
-theorem DbDi_pow_mem (n : ℕ) : (L.Db * L.Di) ^ n ∈ Submonoid.closure (bddSet P L) := by
-  have h : L.Db * L.Di ∈ bddSet P L := Or.inl (Or.inl (Or.inl (by simp)))
-  exact Submonoid.pow_mem _ (Submonoid.subset_closure h) n
 
 variable (hTTp : 0 < P.TT) (hL : IsModelLevel P (DQ P) L) (hLaw : (DQ P).Laws P.TT)
 include hTTp hL hLaw
 
-theorem word_mul_Z : ∀ (W : List (A P (DQ P))), (∀ x ∈ W, x ∈ hatSet P L) → ∀ {k : ℕ} {z : A P (DQ P)},
-    z ∈ Z P L k → W.prod * z ∈ Z P L (k + W.length)
-  | [], _, k, z, hz => by simpa using hz
-  | X :: W, hW, k, z, hz => by
-    rw [List.prod_cons, mul_assoc]
-    have h1 := word_mul_Z W (fun x hx => hW x (by simp [hx])) hz
-    have h2 := hatPast hTTp.le hL hLaw (hW X (by simp)) h1
-    simpa [Nat.add_assoc, Nat.add_comm 1] using h2
 
 theorem canon {m : ℕ} (hD : JDecay P L j m) (hA : JAdj P L j m) (a : A P (DQ P))
     (ts : List (ℂ × A P (DQ P) × A P (DQ P) × List (A P (DQ P)))) (hts : ∀ t ∈ ts, CanonTerm L m a t) :
@@ -17080,13 +16796,6 @@ theorem QA_term {m : ℕ} (hD : JDecay P L j m) (hA : JAdj P L j m) {a : A P (DQ
     simpa [MAx2.R2.act_one] using this
   · rw [eq1, hp, star_mul (β * s) W.prod, mul_assoc]
 
-theorem QA_span {a : A P (DQ P)} {T : Set (A P (DQ P))} (h : ∀ w ∈ T, QA L j a w) {w : A P (DQ P)}
-    (hw : w ∈ Submodule.span ℂ T) : QA L j a w := by
-  induction hw using Submodule.span_induction with
-  | mem x hx => exact h x hx
-  | zero => exact QA_zero a
-  | add x y _ _ h1 h2 => exact QA_add h1 h2
-  | smul c x _ h1 => exact QA_smul c h1
 
 end
 

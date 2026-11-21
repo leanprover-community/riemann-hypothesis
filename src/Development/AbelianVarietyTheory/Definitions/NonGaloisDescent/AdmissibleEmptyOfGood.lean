@@ -399,65 +399,7 @@ theorem exists_frame_good (S T : HSp D) (hS : S.SigOK) (hpos : S.IsPosDef) (hT :
     (fun τ => GlobalTheory.GalLift.Vec.isCartanInv_one (hBS τ)) hsT _ _ dS dT
   exact ⟨⟨ψ, θ, sT, BS, BT, _, _, βS, βT, f₀⟩, hr, hBS, hsT, hBT, dS, dT, hβS, hβT, hf₀⟩
 
-theorem exists_base_good (D : D7) (k : ℕ) : ∃ (S T : HSp D) (B : Base S T), S.rank = 2 * k + 2 ∧ T.rank = 2 * k + 1 ∧
-    B.Good ∧ B.admitted ∅ ∧ ∀ τ, B.w.ap τ 0 = 1 := by
-  let S : HSp D := Examples₂.posSpace Examples₂.star_isIntegral (2 * k + 2)
-  let T : HSp D := Examples₂.posSpace Examples₂.star_isIntegral (2 * k + 1)
-  have hr : T.rank ≤ S.rank := Nat.le_succ _
-  obtain ⟨F, hF⟩ := exists_frame_good S T (Examples₂.posSpace_sigOK _ _) (fun _ => rfl) (Examples₂.posSpace_sigOK _ _) hr
-  obtain ⟨η, hη⟩ := GlobalTheory.WeilParts.exists_isEtaTilde_unramified D
-  let B : Base S T := ⟨hr, F, TypeDat.empty D _, Twist.triv Circle ∅,
-    Weight.first D _ (fun _ => 2 * k + 1) (fun _ => 0) fun _ => k, 1, η⟩
-  have hB : B.Good :=
-    { even := ⟨k + 1, by change 2 * k + 2 = _; ring⟩
-      odd := ⟨k, rfl⟩
-      frame := hF
-      de := Twist.triv_good splitSet_empty
-      places := placesOK_empty
-      wt := Weight.first_good _ (fun _ => Nat.succ_pos _) fun _ => Nat.le_succ _
-      sig := fun _ => rfl
-      sigOK := Examples₂.posSpace_sigOK _ _
-      eta := hη
-      hecke := ⟨continuous_const, fun _ => rfl⟩
-      real := fun _ => rfl
-      unram := fun _ _ _ _ _ => rfl
-      tame := fun _ h => absurd h (Finset.notMem_empty _)
-      inf := fun τ => ⟨0, by simp [B, Weight.first]; ring, ⟨_, hF.vac.2.inf⟩, fun _ _ _ _ _ => by simp [B]⟩ }
-  exact ⟨S, T, B, rfl, rfl, hB, Base.admissible_empty_of_good hB, fun _ => rfl⟩
 
-theorem vec_empty {F : Frame S T} (hF : F.Good) : F.vec (TypeDat.empty D T.rank) ∅ (fun _ => 1) = F.f₀ := by
-  classical
-  have h := (Frame.isPlaceModel_placeMap (G := TypeDat.empty D T.rank) hF placesOK_empty).vac
-  rw [one_smul] at h
-  rw [← h, Frame.vec]
-  congr 1
-  funext x
-  have h0 : halfIdem (TypeDat.empty D T.rank).Pg (∅ : Finset (Pl D.host.E)) = 0 := by
-    change cA D (idem ∅) + idem ∅ = 0
-    rw [idem_empty, RingHom.map_zero, add_zero]
-  have h1 : ∀ y : Reds D S.rank T.rank, omegaG (TypeDat.empty D T.rank).levT (TypeDat.empty D T.rank).muC y = 1 := fun y => by
-    haveI : IsEmpty ↥(TypeDat.empty D T.rank).levT.Pg := ⟨fun PP => absurd PP.2 (Finset.notMem_empty _)⟩
-    unfold omegaG
-    rw [dif_pos ⟨fun _ h => absurd h (Finset.notMem_empty _), fun PP => isEmptyElim PP, fun PP => isEmptyElim PP,
-      fun PP => isEmptyElim PP, Subgroup.mem_bot.2 (Subsingleton.elim _ _)⟩, Finset.univ_eq_empty, Finset.prod_empty,
-      Finset.prod_empty, mul_one, mul_one]
-    rfl
-  rw [Frame.datumFn, halfInd, h0]
-  by_cases hx : IsHalf (0 : AE D) x
-  · obtain rfl : x = 0 := Matrix.ext fun i j => by rw [← hx i j, zero_mul]; rfl
-    have i1 : IsIntM (frMapAdj S T F.βS F.βT 0) := by
-      have := GlobalTheory.PlaceVec.frMapAdj_add S T F.βS F.βT 0 0
-      rw [add_zero, left_eq_add] at this
-      rw [this]
-      exact fun _ _ => zero_mem _
-    have i2 : IsIntM (frMapO S T F.βS F.βT 0) := by
-      intro i j
-      have := GlobalTheory.PlaceDatum.frMapO_add F.βS F.βT 0 0 1 i j
-      rw [one_smul, add_zero, Nat.cast_one, one_mul, left_eq_add] at this
-      rw [this]
-      exact zero_mem _
-    rw [if_pos ⟨hx, i1⟩, if_pos ⟨hx, i2⟩, if_pos ⟨zero_mem _, hx⟩, h1, one_mul]
-  · rw [if_neg fun h => hx h.1, zero_mul, if_neg fun h => hx h.2]
 
 example (D : D7) : IsCoefRing D.what₂.embLL (Links.labLL D) ⊤ :=
   ⟨fun τ => FWT.embV_spec (RingHom.id _) D.what₂.embLL (RingHom.comp_id _) τ, fun _ => trivial⟩

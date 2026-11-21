@@ -196,12 +196,6 @@ instance padicComplex (p : ℕ) [Fact p.Prime] : IsPerfectoidField ℂ_[p] p :=
     rw [← hc, h]
     exact Padic.norm_p_lt_one)
 
-theorem coe_normInteger_padicComplex (p : ℕ) [Fact p.Prime] :
-    (normInteger ℂ_[p] : Set ℂ_[p]) = (𝓞_ℂ_[p] : Set ℂ_[p]) := by
-  ext x
-  rw [SetLike.mem_coe, mem_normInteger, PadicComplex.norm_eq_norm, SetLike.mem_coe,
-    PadicComplexInt, Valuation.mem_valuationSubring_iff]
-  exact Valued.toNormedField.norm_le_one_iff (L := ℂ_[p]) (Γ₀ := ℝ≥0)
 
 theorem of_perfectRing (p : ℕ) [Fact p.Prime] [CharP K p] [PerfectRing K p] [CompleteSpace K]
     (h : ∀ r : ℝ, r < 1 → ∃ x : K, r < ‖x‖ ∧ ‖x‖ < 1) : IsPerfectoidField K p where
@@ -237,10 +231,6 @@ theorem perfectRing (p : ℕ) [Fact p.Prime] [CharP K p] [IsPerfectoidField K p]
     obtain ⟨y, hy⟩ := h1 x⁻¹ (by rw [norm_inv]; exact inv_le_one_of_one_le₀ hx.le)
     exact ⟨y⁻¹, by rw [frobenius_def, inv_pow, hy, inv_inv]⟩
 
-theorem iff_perfectRing (p : ℕ) [Fact p.Prime] [CharP K p] [CompleteSpace K]
-    (h : ∀ r : ℝ, r < 1 → ∃ x : K, r < ‖x‖ ∧ ‖x‖ < 1) :
-    IsPerfectoidField K p ↔ PerfectRing K p :=
-  ⟨fun _ => perfectRing p, fun _ => of_perfectRing p h⟩
 
 end IsPerfectoidField
 

@@ -8,13 +8,295 @@ import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.Equidistribu
 import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.JacobiThetaHalfCharacteristic
 import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.ThetaConstantWeber
 import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.PeriodLatticeAgreement
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExplicitPosMeanOfPositivePart
+import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.AbsoluteLogMeanBounds
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsAnalyticSetupPeriodLatticePair
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsReduced
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.CmBaseFieldIntegersAndCurveIdealFacts
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.UniformizationHolds
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsIntegralPeriodElementStatement
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.NormThetaCharTermLe
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsIntegralPeriodElement
 
+section
+noncomputable section
+
+namespace GlobalTheory.Theta0MeanCompare
+
+open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric GlobalTheory.Glob.IntegralWittCoefficients GlobalTheory.IndefiniteRowSideFullHecke
+
+theorem setting_iff (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (M : IntermediateField ℚ ℂ)
+    (t : (M →ₐ[ℚ] ℂ) → ℂ) : SignedLogMeans.HidaSetting D cc δ M t ↔ AbsoluteLogMeanBounds.HidaSetting D cc δ M t := Iff.rfl
+
+theorem bound_eq (D : D7) : SignedLogMeans.bound D = AbsoluteLogMeanBounds.kronBound D := rfl
+
+theorem meanLog_eq (M : IntermediateField ℚ ℂ) [FiniteDimensional ℚ M] (Λ : AddSubgroup ℂ)
+    (t : (M →ₐ[ℚ] ℂ) → ℂ) : SignedLogMeans.meanLog M Λ t = AbsoluteLogMeanBounds.meanLog Λ M t := by
+  unfold SignedLogMeans.meanLog AbsoluteLogMeanBounds.meanLog AbsoluteLogMeanBounds.mean SignedLogMeans.conjNormSq AbsoluteLogMeanBounds.th0NormSq
+  congr!
+
+theorem meanPosLog_eq (M : IntermediateField ℚ ℂ) [FiniteDimensional ℚ M] (Λ : AddSubgroup ℂ)
+    (t : (M →ₐ[ℚ] ℂ) → ℂ) : SignedLogMeans.meanPosLog M Λ t = AbsoluteLogMeanBounds.meanLogPos Λ M t := by
+  unfold SignedLogMeans.meanPosLog AbsoluteLogMeanBounds.meanLogPos AbsoluteLogMeanBounds.mean SignedLogMeans.conjNormSq AbsoluteLogMeanBounds.th0NormSq
+  simp only [max_comm (0 : ℝ)]
+  try congr!
+
+theorem one_le_d (D : D7) : (1 : ℝ) ≤ D.host.d := by
+  have h := D.host.qd_big.2
+  exact_mod_cast (by omega : 1 ≤ D.host.d)
+
+theorem two_sqrt_le_rd (D : D7) : 2 * Real.sqrt D.host.d ≤ D.host.rdE := by
+  refine le_trans ?_ (factRd D.R D.host).1
+  have he : (2 : ℝ) ≤ D.R.e := by exact_mod_cast D.host.two_le_e
+  have h1 : (2 : ℝ) ^ (-(D.R.e : ℝ)) ≤ 1 :=
+    Real.rpow_le_one_of_one_le_of_nonpos (by norm_num) (by linarith)
+  have h2 : (2 : ℝ) ≤ (2 : ℝ) ^ ((D.R.e : ℝ) + 1 - (2 : ℝ) ^ (-(D.R.e : ℝ))) := by
+    calc (2 : ℝ) = (2 : ℝ) ^ (1 : ℝ) := (Real.rpow_one 2).symm
+      _ ≤ _ := Real.rpow_le_rpow_of_exponent_le (by norm_num) (by linarith)
+  exact mul_le_mul_of_nonneg_right h2 (Real.sqrt_nonneg _)
+
+theorem one_le_sqrt_d (D : D7) : 1 ≤ Real.sqrt D.host.d := Real.one_le_sqrt.mpr (one_le_d D)
+
+theorem log_v_nonneg (D : D7) : 0 ≤ Real.log D.host.v := by
+  apply Real.log_nonneg
+  have h1 := two_sqrt_le_rd D
+  have h2 := one_le_sqrt_d D
+  unfold Host.v
+  linarith
+
+theorem kronBound_le (D : D7) {L : ℝ} (h : Real.log D.host.rdE + |logDerivativeAtOne D| ≤ 2 * L) :
+    AbsoluteLogMeanBounds.kronBound D ≤ L := by
+  have h1 := two_sqrt_le_rd D
+  have h2 := one_le_sqrt_d D
+  have h3 : Real.log (Real.sqrt D.host.d) ≤ Real.log D.host.rdE :=
+    Real.log_le_log (by linarith) (by linarith)
+  have h4 := Real.one_half_lt_eulerMascheroniConstant
+  have h5 := le_abs_self (logDerivativeAtOne D)
+  unfold AbsoluteLogMeanBounds.kronBound
+  linarith
+
+theorem signedMean_iff :
+    ((∀ D : D7, SignedLogMeans.SignedMean D) ∧ ∀ D : D7, SignedLogMeans.MeanLeL D) ↔ AbsoluteLogMeanBounds.SignedMean := by
+  constructor
+  · rintro ⟨h1, h2⟩ D cc δ M _ t hS
+    rw [← meanLog_eq]
+    exact ⟨h1 D cc δ M t hS, fun L hL => ⟨kronBound_le D hL, h2 D cc δ M t hS L hL⟩⟩
+  · intro h
+    refine ⟨fun D cc δ M _ t hS => ?_, fun D cc δ M _ t hS L hL => ?_⟩
+    · rw [meanLog_eq]; exact (h D cc δ M t hS).1
+    · rw [meanLog_eq]; exact ((h D cc δ M t hS).2 L hL).2
+
+theorem absoluteMean_iff :
+    ((∃ C : ℝ, 0 ≤ C ∧ ∀ D : D7, SignedLogMeans.MeanLeC C D) ∧
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ D : D7, SignedLogMeans.PosMeanLeC C D) ↔ AbsoluteLogMeanBounds.AbsoluteMean := by
+  constructor
+  · rintro ⟨⟨C₁, hC₁, h1⟩, C₂, hC₂, h2⟩
+    refine ⟨C₁ + C₂ + 1, by linarith, fun D cc δ M _ t hS L hL => ?_⟩
+    have hL0 : 0 ≤ L := by
+      have := log_v_nonneg D
+      have := abs_nonneg (logDerivativeAtOne D)
+      linarith
+    have a1 := h1 D cc δ M t hS L hL
+    have a2 := h2 D cc δ M t hS L hL
+    rw [← meanLog_eq, ← meanPosLog_eq]
+    have := mul_nonneg hC₁ hL0
+    have := mul_nonneg hC₂ hL0
+    constructor <;> nlinarith
+  · rintro ⟨C, hC, h⟩
+    refine ⟨⟨C, hC.le, fun D cc δ M _ t hS L hL => ?_⟩, C, hC.le, fun D cc δ M _ t hS L hL => ?_⟩
+    · rw [meanLog_eq]; exact (h D cc δ M t hS L hL).1
+    · rw [meanPosLog_eq]; exact (h D cc δ M t hS L hL).2
+
+def ExplicitPosMean : Prop :=
+  ∃ C : ℝ, ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (M : IntermediateField ℚ ℂ)
+    [FiniteDimensional ℚ M] (t : (M →ₐ[ℚ] ℂ) → ℂ), AbsoluteLogMeanBounds.HidaSetting D cc δ M t →
+    AbsoluteLogMeanBounds.meanLogPos (lamOf D cc δ) M t ≤
+      AbsoluteLogMeanBounds.kronBound D + (1 / 4) * Real.log (D.host.d : ℝ) + C
+
+
+
+theorem core_iff :
+    (SignedLogMeans.Theta0SignedMean ∧ ∃ C : ℝ, 0 ≤ C ∧ ∀ D : D7, SignedLogMeans.PosMeanLeC C D) ↔ AbsoluteLogMeanBounds.ThetaNullMean := by
+  unfold SignedLogMeans.Theta0SignedMean AbsoluteLogMeanBounds.ThetaNullMean
+  rw [← signedMean_iff, ← absoluteMean_iff]
+  tauto
+
+
+
+
+end GlobalTheory.Theta0MeanCompare
+end
+end
+
+section
+open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric GlobalTheory.Glob.IntegralWittCoefficients GlobalTheory.IndefiniteRowSideFullHecke
+
+noncomputable section
+
+namespace GlobalTheory.IdealLattice
+
+open scoped MatrixGroups UpperHalfPlane
+
+theorem wK_mul_mem (D : D7) (c : Ideal (𝓞 D.host.K)) (x : ℂ) :
+    ∀ z ∈ lamOf D c x, ((1 + Complex.I * (Real.sqrt D.host.d : ℂ)) / 2) * z ∈ lamOf D c x := by
+  intro z hz
+  obtain ⟨o, ho⟩ := (GlobalTheory.MomDict.inOK_iff D ((1 + Complex.I * (Real.sqrt D.host.d : ℂ)) / 2)).1
+    ⟨0, 1, by simp [GlobalTheory.MomOne.wK]⟩
+  obtain ⟨a, ha, rfl⟩ := (GlobalTheory.CurveLattice.mem_lamOf D c x z).1 hz
+  refine (GlobalTheory.CurveLattice.mem_lamOf D c x _).2 ⟨o * a, c.mul_mem_left o ha, ?_⟩
+  rw [ho]; simp; ring
+
+theorem exists_reduced {Λ : AddSubgroup ℂ} {b : ℂ} {τ₀ : ℍ} (hb : b ≠ 0)
+    (h : ∀ z, z ∈ Λ ↔ ∃ m n : ℤ, b * (m * (τ₀ : ℂ) + n) = z) :
+    ∃ ω₁ : ℂ, ∃ τ : ℍ, ω₁ ≠ 0 ∧ τ ∈ ModularGroup.fd ∧ JacobiThetaHalfCharacteristic.IsPeriodLattice Λ ω₁ τ := by
+  obtain ⟨g, hg⟩ := ModularGroup.exists_smul_mem_fd τ₀
+  set A : ℤ := g 0 0 with hA
+  set B : ℤ := g 0 1 with hB
+  set C : ℤ := g 1 0 with hC
+  set E : ℤ := g 1 1 with hE
+  have hdet : A * E - B * C = 1 := by
+    have := g.2
+    rw [Matrix.det_fin_two] at this
+    exact this
+  have hdetC : (A : ℂ) * E - B * C = 1 := by exact_mod_cast hdet
+  have hco : ((g • τ₀ : ℍ) : ℂ) = (A * τ₀ + B) / (C * τ₀ + E) := by
+    rw [UpperHalfPlane.coe_specialLinearGroup_apply]
+    simp [A, B, C, E]
+  have hden : (C * (τ₀ : ℂ) + E) ≠ 0 := by
+    intro h0
+    have := (g • τ₀).im_pos
+    rw [← UpperHalfPlane.coe_im, hco, h0, div_zero] at this
+    simp at this
+  refine ⟨b * (C * τ₀ + E), g • τ₀, mul_ne_zero hb hden, hg, fun z => ?_⟩
+  rw [h, hco]
+  have key : ∀ m n : ℂ, (C * (τ₀ : ℂ) + E) * (m + n * ((A * τ₀ + B) / (C * τ₀ + E))) =
+      m * (C * τ₀ + E) + n * (A * τ₀ + B) := fun m n => by
+    field_simp
+  constructor
+  · rintro ⟨M, N, rfl⟩
+    refine ⟨N * A - M * B, M * E - N * C, ?_⟩
+    rw [mul_assoc, key]
+    push_cast
+    linear_combination (-b * (M * (τ₀ : ℂ) + N)) * hdetC
+  · rintro ⟨m, n, rfl⟩
+    refine ⟨m * C + n * A, m * E + n * B, ?_⟩
+    rw [mul_assoc, key]
+    push_cast
+    ring
+
+theorem main : ∀ (D : D7) (c : Ideal (𝓞 D.host.K)), c ≠ ⊥ → ∀ x : ℂ, x ≠ 0 →
+    (∀ z ∈ lamOf D c x, ((1 + Complex.I * (Real.sqrt D.host.d : ℂ)) / 2) * z ∈ lamOf D c x) ∧
+    ∃ ω₁ τ : ℂ, ω₁ ≠ 0 ∧ 0 < τ.im ∧ JacobiThetaHalfCharacteristic.IsPeriodLattice (lamOf D c x) ω₁ τ ∧
+      1 / 2 ≤ τ.im ∧ 2 * τ.im ≤ Real.sqrt D.host.d := by
+  intro D c hc x hx
+  have hst := wK_mul_mem D c x
+  refine ⟨hst, ?_⟩
+  obtain ⟨a, τ₀, ha, -, hlat⟩ := GlobalTheory.CurveLattice.exists_tau D c hc
+  obtain ⟨ω₁, τ, hω, hfd, hper⟩ := exists_reduced (Λ := lamOf D c x) (b := x * a) (τ₀ := τ₀)
+    (mul_ne_zero hx ha) (hlat x)
+  have him : 0 < (τ : ℂ).im := τ.im_pos
+  have him' : 0 < τ.im := τ.im_pos
+  have hci : (τ : ℂ).im = τ.im := rfl
+  refine ⟨ω₁, τ, hω, him, hper, ?_, ?_⟩
+  · have h1 := hfd.1
+    have h2 := hfd.2
+    rw [Complex.normSq_apply] at h1
+    have hre : ((τ : ℂ).re) ^ 2 ≤ 1 / 4 := by
+      have := abs_le.1 h2
+      simp only [UpperHalfPlane.re] at this
+      nlinarith [this.1, this.2]
+    nlinarith
+  · have hmem : ω₁ ∈ lamOf D c x := (hper ω₁).2 ⟨1, 0, by simp⟩
+    obtain ⟨m, n, hmn⟩ := (hper _).1 (hst ω₁ hmem)
+    have hw : (1 + Complex.I * (Real.sqrt D.host.d : ℂ)) / 2 = (m : ℂ) + n * τ := by
+      have := hmn
+      rw [mul_comm] at this
+      exact mul_left_cancel₀ hω (by rw [← this])
+    have him2 := congrArg Complex.im hw
+    simp at him2
+    have hd : 0 < Real.sqrt D.host.d := Real.sqrt_pos.2 (by exact_mod_cast D.host.hyp.2.1.pos)
+    have hn : (0 : ℝ) < n := by
+      by_contra hn
+      have hn' : (n : ℝ) ≤ 0 := le_of_not_gt hn
+      nlinarith
+    have hn1 : (1 : ℝ) ≤ n := by
+      have : (0 : ℤ) < n := by exact_mod_cast hn
+      exact_mod_cast this
+    rw [hci]
+    nlinarith
+
+end GlobalTheory.IdealLattice
+end
+end
+
+section
+open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric GlobalTheory.Glob.IntegralWittCoefficients GlobalTheory.IndefiniteRowSideFullHecke
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_integral_period_element : EquidistributedConjugates.ConjugatesEquidistributed → PeriodLatticeAgreement.LatticePeriodEta → ThetaConstantWeber.ThetaWeberStatement →
+    ∀ (D : D7), Formalism.MainNotions.GL3Theta.admJ D → ∀ (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (M : IntermediateField ℚ ℂ)
+      [FiniteDimensional ℚ M] (t : (M →ₐ[ℚ] ℂ) → ℂ), SignedLogMeans.HidaSetting D cc δ M t →
+      ∃ X : M, X ≠ 0 ∧ IsIntegral ℤ (X : ℂ) ∧ ∀ (ρ : M →ₐ[ℚ] ℂ) (ω₁ τ : ℂ), ω₁ ≠ 0 → 0 < τ.im →
+        JacobiThetaHalfCharacteristic.IsPeriodLattice (lamConj M ρ (lamOf D cc δ)) ω₁ τ → ∀ a b : Fin 2, JacobiThetaHalfCharacteristic.IsEvenChar a b →
+        JacobiThetaHalfCharacteristic.thetaChar a b (t ρ / ω₁) τ = 0 →
+        ‖ρ X‖ = (‖JacobiThetaHalfCharacteristic.thetaChar a b 0 τ‖ / ‖ModularForm.eta τ‖) ^ 12 := by
+  first | exact @GlobalTheory.IntegralX.exists_integral_theta_ratio | exact GlobalTheory.IntegralX.exists_integral_theta_ratio | (intros; apply GlobalTheory.IntegralX.exists_integral_theta_ratio <;> assumption)
+end
+
+section
+open GlobalTheory.IndefiniteRowSideFullHecke
+
+namespace GlobalTheory.Glob.EvenThetaBound
+
+open Complex
+
+theorem norm_thetaChar_term_le (a b : Fin 2) (τ : ℂ) (hτ : 1 / 2 ≤ τ.im) (n : ℤ) :
+    ‖cexp ((Real.pi : ℂ) * I * ((n : ℂ) + ((a : ℕ) : ℂ) / 2) ^ 2 * τ +
+      2 * (Real.pi : ℂ) * I * ((n : ℂ) + ((a : ℕ) : ℂ) / 2) * (0 + ((b : ℕ) : ℂ) / 2))‖ ≤
+      Real.exp (-Real.pi * (1 / 2 * (n : ℝ) ^ 2 - 2 * 1 * |(n : ℝ)|)) := by
+  set r : ℝ := (n : ℝ) + ((a : ℕ) : ℝ) / 2 with hr
+  have hw : (Real.pi : ℂ) * I * ((n : ℂ) + ((a : ℕ) : ℂ) / 2) ^ 2 * τ +
+      2 * (Real.pi : ℂ) * I * ((n : ℂ) + ((a : ℕ) : ℂ) / 2) * (0 + ((b : ℕ) : ℂ) / 2) =
+      ((Real.pi * r ^ 2 : ℝ) : ℂ) * τ * I + ((Real.pi * r * ((b : ℕ) : ℝ) : ℝ) : ℂ) * I := by
+    rw [hr]; push_cast; ring
+  rw [hw, Complex.norm_exp, Real.exp_le_exp, add_re, mul_I_re, mul_I_re, im_ofReal_mul,
+    ofReal_im, neg_zero, add_zero]
+  have ha : ((a : ℕ) : ℝ) = 0 ∨ ((a : ℕ) : ℝ) = 1 := by
+    rcases a with ⟨_ | _ | k, hk⟩
+    · left; simp
+    · right; simp
+    · omega
+  have hpi := Real.pi_pos
+  have hr2 : (n : ℝ) ^ 2 / 2 - |(n : ℝ)| ≤ r ^ 2 / 2 := by
+    have h1 : -|(n : ℝ)| ≤ (n : ℝ) := neg_abs_le _
+    have h0 : 0 ≤ |(n : ℝ)| := abs_nonneg _
+    rcases ha with h | h <;> rw [hr, h] <;> nlinarith
+  have hr3 : r ^ 2 / 2 ≤ r ^ 2 * τ.im := by nlinarith [sq_nonneg r]
+  have h0 : 0 ≤ |(n : ℝ)| := abs_nonneg _
+  nlinarith [mul_le_mul_of_nonneg_left (hr2.trans hr3) hpi.le]
+
+theorem evenThetaConst_bounded :
+    ∃ C₀ : ℝ, 0 < C₀ ∧ ∀ (a b : Fin 2) (τ : ℂ), 1 / 2 ≤ τ.im → ‖JacobiThetaHalfCharacteristic.thetaChar a b 0 τ‖ ≤ C₀ := by
+  have hs := summable_pow_mul_jacobiTheta₂_term_bound 1 (by norm_num : (0 : ℝ) < 1 / 2) 0
+  simp only [pow_zero, one_mul] at hs
+  have hs' : Summable (fun n : ℤ => Real.exp (-Real.pi * (1 / 2 * (n : ℝ) ^ 2 - 2 * 1 * |(n : ℝ)|))) := by
+    simpa [Int.cast_abs] using hs
+  refine ⟨1 + ∑' n : ℤ, Real.exp (-Real.pi * (1 / 2 * (n : ℝ) ^ 2 - 2 * 1 * |(n : ℝ)|)), ?_, ?_⟩
+  · have : 0 ≤ ∑' n : ℤ, Real.exp (-Real.pi * (1 / 2 * (n : ℝ) ^ 2 - 2 * 1 * |(n : ℝ)|)) :=
+      tsum_nonneg fun n => (Real.exp_pos _).le
+    linarith
+  · intro a b τ hτ
+    rw [JacobiThetaHalfCharacteristic.thetaChar_eq_tsum]
+    have hb : Summable (fun n : ℤ => ‖cexp ((Real.pi : ℂ) * I * ((n : ℂ) + ((a : ℕ) : ℂ) / 2) ^ 2 * τ +
+        2 * (Real.pi : ℂ) * I * ((n : ℂ) + ((a : ℕ) : ℂ) / 2) * (0 + ((b : ℕ) : ℂ) / 2))‖) :=
+      hs'.of_nonneg_of_le (fun _ => norm_nonneg _) (norm_thetaChar_term_le a b τ hτ)
+    calc _ ≤ ∑' n : ℤ, ‖cexp ((Real.pi : ℂ) * I * ((n : ℂ) + ((a : ℕ) : ℂ) / 2) ^ 2 * τ +
+          2 * (Real.pi : ℂ) * I * ((n : ℂ) + ((a : ℕ) : ℂ) / 2) * (0 + ((b : ℕ) : ℂ) / 2))‖ :=
+          norm_tsum_le_tsum_norm hb
+      _ ≤ ∑' n : ℤ, Real.exp (-Real.pi * (1 / 2 * (n : ℝ) ^ 2 - 2 * 1 * |(n : ℝ)|)) :=
+          hb.tsum_le_tsum (norm_thetaChar_term_le a b τ hτ) hs'
+      _ ≤ _ := le_add_of_nonneg_left zero_le_one
+
+end GlobalTheory.Glob.EvenThetaBound
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.Theta0MeanProof
@@ -313,3 +595,5 @@ theorem theta0Mean (hN : JacobiThetaHalfCharacteristic.NormTheta0) (hC : ClassMe
     linarith
 
 end GlobalTheory.Theta0MeanProof
+end
+end

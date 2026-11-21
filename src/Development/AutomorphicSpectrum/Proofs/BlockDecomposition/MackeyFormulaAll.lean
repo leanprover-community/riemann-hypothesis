@@ -5,10 +5,18 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CuspidalVanishi
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FrobeniusReciprocityInnerProduct
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HarishChandraCharacter
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntertwinerInnerProduct
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InnerProductCuspidalIsoStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InnerProductCuspidalIso
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MackeyInnerProduct
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SamePartitionStatement
 
+section
+open ReciprocityTheory.Ty.Fin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.inner_product_cuspidal_iso : ReciprocityTheory.Ty.Fin.St.IpCuspIso := by
+  first | exact @GlobalTheory.CompanionTheory.TyFin.IpIso.main | exact GlobalTheory.CompanionTheory.TyFin.IpIso.main | (intros; apply GlobalTheory.CompanionTheory.TyFin.IpIso.main <;> assumption)
+end
+
+section
 section
 open CategoryTheory
 open ReciprocityTheory.Ty.Fin
@@ -295,3 +303,4 @@ open ReciprocityTheory.Ty.Fin
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.mackey_formula_all : ReciprocityTheory.Ty.Fin.St.MackeyAll := by
   atlas_forward_decl GlobalTheory.CompanionTheory.TyFin.mackeyAll
+end

@@ -97,9 +97,6 @@ theorem harmonic_iff [IsCMField E] (r : (E →+* k) → ℕ) {n : ℕ}
 theorem eigen_eq [StarRing (𝓞 E)] {R : Type} [CommRing R] [Algebra R k] {d : ℕ} (B : FB R d (𝓞 E))
     (τ : E →+* k) : BalancedFrameGauge.lieEigen k B τ = BiadditiveBalancedSeries.lieEig B τ := rfl
 
-theorem card_iff [CharZero k] :
-    Fintype.card (E →+* k) = Module.finrank ℚ E ↔ Nat.card (E →+* k) = Module.finrank ℚ E := by
-  rw [Nat.card_eq_fintype_card]
 
 end Letters
 
@@ -151,11 +148,5 @@ theorem fixed_iff (E : Type) [Field E] [NumberField E] [IsCMField E] [StarRing (
     rw [val_eq k B hh.ax0, val_eq k B hh'.ax0, e]
     exact (H b n N P ((harmonic_iff r P).1 hP) f h h' hh ((gauge_iff k B h').1 hh')).symm
 
-theorem balancedFrameValue_iff : BalancedFrameGauge.BalancedFrameValue ↔ BiadditiveBalancedSeries.BiaddBalancedValue := by
-  constructor
-  · intro H E _ _ _ _ hs k _ _ hk R _ _ d B w0 hw r
-    exact (fixed_iff E k R d B w0 r).1 (H E hs k (card_iff.2 hk) R d B w0 hw r)
-  · intro H E _ _ _ _ hs k _ _ hk R _ _ d B w0 hw r
-    exact (fixed_iff E k R d B w0 r).2 (H E hs k (card_iff.1 hk) R d B w0 hw r)
 
 end GlobalTheory.IndefiniteRowSideFullHecke.HarmonicEigenCriterion

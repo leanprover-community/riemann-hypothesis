@@ -3,8 +3,11 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.FactorBounds
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeightedNormSquareRows
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.OrthogonalNormSquareSum
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CosetRefinement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinrankEqTwoMul
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LogNormConjVacuumEqRankProductMul
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormalisedFamilyStandardLatticesEqBaseVector
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KernelConstantExponentsFinite
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsTwoTorsionCMPointAllConjugates
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.VacuumNormConjCmPointsAllEmbeddings
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormalisedFamilyEqTensorPowerVacuumStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ErrorUnitExponentialEstimate
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CharacterSumLocalConstantTenthStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CharacterSumLocalConstantEleventhStatement
@@ -13,8 +16,212 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MeanLogMetricGenera
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormalisedFamilyStandardLatticesEqBaseVectorStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KernelConstantExponentsFiniteStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NumDatumNumbersEqHostOfCompatible
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FamIpAtNonneg
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsClassFam
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsClassSumPairingFormsLat
 
+section
+namespace GlobalTheory.EmbeddingMean
+
+theorem card_fibre {K A B C : Type} [Field K] [Field A] [Field B] [Field C] [CharZero K]
+    [Algebra K A] [Algebra K B] [Algebra K C] [Algebra A B] [IsScalarTower K A B]
+    [FiniteDimensional K A] [FiniteDimensional K B] [IsAlgClosed C] [DecidableEq (A →ₐ[K] C)]
+    (f : A →ₐ[K] C) :
+    (Finset.univ.filter (fun g : B →ₐ[K] C => g.comp (IsScalarTower.toAlgHom K A B) = f)).card
+      = Module.finrank A B := by
+  letI : Algebra A C := f.toRingHom.toAlgebra
+  haveI : IsScalarTower K A C := IsScalarTower.of_algebraMap_eq (fun x => (f.commutes x).symm)
+  haveI : FiniteDimensional A B := Module.Finite.of_restrictScalars_finite K A B
+  haveI : CharZero A := charZero_of_injective_algebraMap (algebraMap K A).injective
+  rw [← AlgHom.card A B C, ← Fintype.card_subtype]
+  refine Fintype.card_congr
+    { toFun := fun g => { g.1.toRingHom with
+        commutes' := fun a => by
+          have := DFunLike.congr_fun g.2 a
+          exact this }
+      invFun := fun h => ⟨h.restrictScalars K, AlgHom.ext fun a => h.commutes a⟩
+      left_inv := fun g => Subtype.ext (AlgHom.ext fun _ => rfl)
+      right_inv := fun h => AlgHom.ext fun _ => rfl }
+
+theorem tower {K A B C : Type} [Field K] [Field A] [Field B] [Field C] [CharZero K]
+    [Algebra K A] [Algebra K B] [Algebra K C] [Algebra A B] [IsScalarTower K A B]
+    [FiniteDimensional K A] [FiniteDimensional K B] [IsAlgClosed C] :
+    (∀ f : A →ₐ[K] C, ∃ g : B →ₐ[K] C, g.comp (IsScalarTower.toAlgHom K A B) = f) ∧
+    ∀ F : (A →ₐ[K] C) → ℝ,
+      (∑ g : B →ₐ[K] C, F (g.comp (IsScalarTower.toAlgHom K A B))) / (Module.finrank K B : ℝ)
+        = (∑ f : A →ₐ[K] C, F f) / (Module.finrank K A : ℝ) := by
+  classical
+  haveI : FiniteDimensional A B := Module.Finite.of_restrictScalars_finite K A B
+  have hpos : 0 < Module.finrank A B := Module.finrank_pos
+  refine ⟨fun f => ?_, fun F => ?_⟩
+  · have h := card_fibre (B := B) f
+    obtain ⟨g, hg⟩ := Finset.card_pos.mp (h ▸ hpos)
+    exact ⟨g, (Finset.mem_filter.mp hg).2⟩
+  · have hsum : (∑ g : B →ₐ[K] C, F (g.comp (IsScalarTower.toAlgHom K A B)))
+        = (Module.finrank A B : ℝ) * ∑ f : A →ₐ[K] C, F f := by
+      rw [← Finset.sum_fiberwise Finset.univ
+        (fun g : B →ₐ[K] C => g.comp (IsScalarTower.toAlgHom K A B)), Finset.mul_sum]
+      refine Finset.sum_congr rfl fun f _ => ?_
+      rw [Finset.sum_congr rfl (g := fun _ => F f)
+        (fun g hg => by rw [(Finset.mem_filter.mp hg).2]),
+        Finset.sum_const, nsmul_eq_mul]
+      congr 2
+      convert card_fibre (B := B) f
+    have hA : (Module.finrank K A : ℝ) ≠ 0 := by
+      exact_mod_cast (Module.finrank_pos (R := K) (M := A)).ne'
+    have hB : (Module.finrank A B : ℝ) ≠ 0 := by exact_mod_cast hpos.ne'
+    rw [hsum, ← Module.finrank_mul_finrank K A B]
+    push_cast
+    field_simp
+
+end GlobalTheory.EmbeddingMean
+end
+
+section
+open Module NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.PlaceLogThetaBounds GlobalTheory.ColRows
+
+namespace GlobalTheory.PlaceWeights
+
+open Classical in
+
+theorem sum_ind_algHom (K : Type) [Field K] [NumberField K] [IsTotallyComplex K] (v : InfinitePlace K) :
+    (∑ f : K →ₐ[ℚ] ℂ, (if InfinitePlace.mk (f : K →+* ℂ) = v then (1 : ℝ) else 0)) = 2 := by
+  have h1 : (∑ f : K →ₐ[ℚ] ℂ, (if InfinitePlace.mk (f : K →+* ℂ) = v then (1 : ℝ) else 0))
+      = ∑ f : K →+* ℂ, (if InfinitePlace.mk f = v then (1 : ℝ) else 0) :=
+    (Fintype.sum_equiv (RingHom.equivRatAlgHom (R := K) (S := ℂ)) _ _ (fun _ => rfl)).symm
+  rw [h1, Finset.sum_boole, InfinitePlace.card_filter_mk_eq, IsTotallyComplex.mult_eq]
+  norm_num
+
+theorem finrank_eq_two_mul (K : Type) [Field K] [NumberField K] [IsTotallyComplex K] :
+    Module.finrank ℚ K = 2 * Fintype.card (InfinitePlace K) := by
+  rw [← InfinitePlace.sum_mult_eq]
+  simp [IsTotallyComplex.mult_eq, mul_comm]
+
+open Classical in
+
+theorem sum_ind_placeUnder (K : Type) [Field K] [NumberField K] [IsTotallyComplex K] (σ₀ : K →+* ℂ)
+    (M : IntermediateField ℚ ℂ) [FiniteDimensional ℚ M] (h : ∀ k, σ₀ k ∈ M) (v : InfinitePlace K) :
+    (∑ ρ : M →ₐ[ℚ] ℂ, (if placeUnder σ₀ h ρ = v then (1 : ℝ) else 0)) / (Module.finrank ℚ M : ℝ)
+      = 1 / (Fintype.card (InfinitePlace K) : ℝ) := by
+  let _ : Algebra K M := (σ₀.codRestrict M h).toAlgebra
+  have : IsScalarTower ℚ K M := IsScalarTower.of_algebraMap_eq (fun x => by simp)
+  have key := (GlobalTheory.EmbeddingMean.tower (K := ℚ) (A := K) (B := M) (C := ℂ)).2
+    (fun f => if InfinitePlace.mk (f : K →+* ℂ) = v then (1 : ℝ) else 0)
+  rw [sum_ind_algHom, finrank_eq_two_mul K] at key
+  have hc : (Fintype.card (InfinitePlace K) : ℝ) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero
+  refine Eq.trans ?_ (key.trans ?_)
+  · rfl
+  · push_cast
+    field_simp
+
+theorem exists_weights : ∀ (K : Type) [Field K] [NumberField K] [IsTotallyComplex K] (σ₀ : K →+* ℂ) (M : IntermediateField ℚ ℂ) [FiniteDimensional ℚ M] (h : ∀ k, σ₀ k ∈ M), ∃ wt : InfinitePlace K → (M →ₐ[ℚ] ℂ) → ℝ, (∀ v ρ, 0 ≤ wt v ρ) ∧ (∀ v, ∑ ρ, wt v ρ = 1) ∧ (∀ v ρ, wt v ρ ≠ 0 → placeUnder σ₀ h ρ = v) ∧ ∀ ρ, (∑ v, wt v ρ) / (Fintype.card (InfinitePlace K) : ℝ) = 1 / (Module.finrank ℚ M : ℝ) := by
+  classical
+  intro K _ _ _ σ₀ M _ h
+  have hc : (Fintype.card (InfinitePlace K) : ℝ) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero
+  have hM : (Module.finrank ℚ M : ℝ) ≠ 0 := by
+    exact_mod_cast (Module.finrank_pos (R := ℚ) (M := M)).ne'
+  refine ⟨fun v ρ => (if placeUnder σ₀ h ρ = v then (1 : ℝ) else 0) *
+    ((Fintype.card (InfinitePlace K) : ℝ) / (Module.finrank ℚ M : ℝ)), ?_, ?_, ?_, ?_⟩
+  · intro v ρ
+    refine mul_nonneg ?_ (by positivity)
+    split_ifs <;> norm_num
+  · intro v
+    have key := sum_ind_placeUnder K σ₀ M h v
+    rw [← Finset.sum_mul]
+    rw [div_eq_div_iff hM hc] at key
+    rw [← mul_div_assoc, div_eq_one_iff_eq hM]
+    convert key using 1
+    ring
+  · intro v ρ hw
+    by_contra hne
+    exact hw (by simp [hne])
+  · intro ρ
+    rw [← Finset.sum_mul, Finset.sum_ite_eq]
+    simp only [Finset.mem_univ, if_true]
+    field_simp
+
+end GlobalTheory.PlaceWeights
+end
+
+section
+section
+open Module NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.PlaceLogThetaBounds GlobalTheory.ColRows
+
+namespace GlobalTheory.ConjVacuumPower
+
+theorem even_rank (R : Ranks) (l : ℕ) : Even (R.N l) := by
+  unfold Ranks.N
+  exact R.k_even.add ((R.t_odd.add_one).mul_left l)
+
+theorem logThAt_eq_mul : ∀ (D : D7) (dl : ℂ) (B : Base D D.host.ccK dl) (χ : TaylorLogMetric.IdE D → ℂ) (cD : D.what₂.Tau → ℂ) (K : Type) [Field K] (σ₀ : K →+* ℂ) (R : Ranks) (M : IntermediateField ℚ ℂ) [FiniteDimensional ℚ M], TaylorLogMetric.adm1 D → GL3Theta.InducedCMType D → TaylorLogMetric.IsCurveIdeal D D.host.ccK → TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D D.host.ccK dl → TaylorLogMetric.IsChi D χ → B.VecP χ → ThetaFieldData B cD σ₀ R M → ∀ ρ : M →ₐ[ℚ] ℂ, ∃ lt : ℝ, ∀ i < R.m, logThAt B M ρ (R.N i) (R.N (i + 1)) = (R.N i : ℝ) * (R.N (i + 1) : ℝ) * lt := by
+  intro D dl B χ cD K _ σ₀ R M _ hadm hpsi hcur hdel hχ hV hH ρ
+  have hc : StandardLatticesGL3.Crv D D.host.ccK dl := ⟨hcur, hdel⟩
+  have hY := GlobalTheory.ExponentsFinite.yFinite D B.γ₀ B.kc
+  have hT := GlobalTheory.T.normalisedFamily_eq_tensorPower_vacuum D _ dl B χ hadm hpsi hcur hdel hχ hY
+  have hD : TaylorLogMetric.DataIn D (TaylorLogMetric.tor0 D D.host.ccK dl) M := hH.2.1
+  obtain ⟨t', ht'⟩ := (GlobalTheory.TwoTorsionPt.exists_point D _ dl hc).2 M ρ hD.2.1 hD.2.2
+  refine ⟨(TaylorLogMetric.fF D : ℝ) * Real.log (StandardLatticesGL3.nrm1Sq (TaylorLogMetric.lamConj M ρ (TaylorLogMetric.lamOf D D.host.ccK dl))
+    (GL3Theta.th0 (TaylorLogMetric.lamConj M ρ (TaylorLogMetric.lamOf D D.host.ccK dl)) t')), fun i hi => ?_⟩
+  obtain ⟨hAdm, hbase⟩ := GlobalTheory.NatAtStd.eNat_std D _ dl B χ hχ hV _ _ (even_rank R i) (even_rank R (i + 1))
+  have hE := hT _ B.t0 _ _ _ _ hAdm
+  rw [hbase] at hE
+  have hs : ∀ n, StandardLatticesGL3.SD D (StandardLatticesGL3.stdL D n) := fun n => by
+    letI := D.host.cmStar
+    exact GlobalTheory.NatAtStd.isSD_pi _ n
+  have h := (GlobalTheory.ConjNorm.useNorm_all D _ dl hc _ B.t0 _ _ _ _ (hs _) (hs _) ((even_rank R i).mul_right _) _ hE M ρ hD
+    (hH.2.2.2 i hi) t' ht').1
+  unfold logThAt
+  erw [h]
+  rw [Real.log_pow]
+  push_cast
+  ring
+
+end GlobalTheory.ConjVacuumPower
+end
+
+open Module NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.PlaceLogThetaBounds GlobalTheory.ColRows
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.log_norm_conj_vacuum_eq_rank_product_mul : ∀ (D : D7) (dl : ℂ) (B : Base D D.host.ccK dl) (χ : TaylorLogMetric.IdE D → ℂ) (cD : D.what₂.Tau → ℂ) (K : Type) [Field K] (σ₀ : K →+* ℂ) (R : Ranks) (M : IntermediateField ℚ ℂ) [FiniteDimensional ℚ M], TaylorLogMetric.adm1 D → GL3Theta.InducedCMType D → TaylorLogMetric.IsCurveIdeal D D.host.ccK → TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D D.host.ccK dl → TaylorLogMetric.IsChi D χ → B.VecP χ → ThetaFieldData B cD σ₀ R M → ∀ ρ : M →ₐ[ℚ] ℂ, ∃ lt : ℝ, ∀ i < R.m, logThAt B M ρ (R.N i) (R.N (i + 1)) = (R.N i : ℝ) * (R.N (i + 1) : ℝ) * lt := by
+  atlas_forward_decl GlobalTheory.ConjVacuumPower.logThAt_eq_mul
+end
+
+section
+open NumberField IsDedekindDomain
+open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker
+open GlobalTheory.IndefiniteRowSideFullHecke GlobalTheory.ColumnNormCompare
+open GlobalTheory.IndefiniteRowSideFullHecke.BadPrimesPeriodBound (recFields recPrimes recWts recSeam recGlob Twist)
+open scoped ComplexOrder
+
+namespace GlobalTheory.ColumnFamilyMetric
+
+open GlobalTheory.PeriodClassSum GlobalTheory.TestLat.Compare
+
+theorem chF_gramV (X : Fields) (Pr : Primes X) (R : Ranks) (W : Wts X Pr.Word R)
+    (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (Sg : Set ℕ) (mu : Tup X.F X.E X.K Sg)
+    (I : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K))) (u : Pr.Word) (j : ℕ) (b : (chF W sel mu I u j).β) :
+    ((chF W sel mu I u j).mem b).gramV = GlobalTheory.TestLat.Compare.gramB X.K (W.lamTrue u j) := by
+  ext i k
+  have e : gramKd X.emb (1 : Matrix (Fin (R.N j)) (Fin (R.N j)) X.E) = fun _ => 1 := by
+    funext τ
+    rw [gramKd, Matrix.map_one _ (map_zero _) (map_one _), inv_one, Matrix.transpose_one]
+  show pairK (W.lamTrue u j) (gramKd X.emb 1) (bVV _ _ i) (bVV _ _ k) = _
+  rw [e]
+  exact pairK_one_basis (W.lamTrue u j) i k
+
+theorem famIpAt_nonneg : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (W : Wts X Pr.Word R) (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (Sg : Set ℕ) (mu : Tup X.F X.E X.K Sg) (I : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K))) (u : Pr.Word) (j : ℕ) (h : (chF W sel mu I u j).Ok) (v : InfinitePlace X.K) (φ : (chF W sel mu I u j).Forms), 0 ≤ (famIpAt (chF W sel mu I u j) h v φ φ).re := by
+  intro X Pr R W sel Sg mu I u j h v φ
+  refine (Complex.nonneg_iff.1 ?_).1
+  unfold famIpAt
+  refine Finset.sum_nonneg fun b _ => ?_
+  have hG : ((((chF W sel mu I u j).mem b).gramV).map v.embedding).PosSemidef := by
+    rw [chF_gramV]
+    exact (gramB_posDef (W.lamTrue u j) v.embedding).posSemidef
+  letI := (h b).fintypeCl
+  exact (ipAt_eq _ (h b) v _ _).symm ▸ wForm_nonneg _ hG _
+
+end GlobalTheory.ColumnFamilyMetric
+end
+
+section
 open Module NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Col Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.PlaceLogThetaBounds GlobalTheory.ColRows
 open scoped ComplexOrder
 
@@ -456,3 +663,4 @@ theorem kerSide_chain : ColumnNorms → GlobalTheory.IndefiniteRowSideFullHecke.
     rw [hlt ρ _ (eJ l).2]
 
 end GlobalTheory.KernelHalf
+end

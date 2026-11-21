@@ -124,10 +124,7 @@ theorem keepsSup_iff {h : WL →ₗ[LL] WL} {hK : ∀ x ∈ X.WK, h x ∈ X.WK} 
   · exact baseChange_mem _ _ (ht J lam) x
   · exact baseChange_mem _ _ (hw J lam eC) x
 
-theorem keepsSup_id (la : HeightOneSpectrum (𝓞 Ks)) : KeepsSup X LinearMap.id (fun _ hx => hx) la :=
-  keepsSup_iff.2 ⟨fun _ hf => hf, fun _ => rfl⟩
 
-theorem liesOver_self (la : HeightOneSpectrum (𝓞 Ks)) : LiesOver la (la.valuation Ks).valuationSubring := fun _ => Iff.rfl
 
 end Forms
 
@@ -179,11 +176,5 @@ theorem ReadPinned.eval (fw : FWTie T R κ v₀) (H : ReadPinned T R κ v₀ i)
   obtain ⟨j', hj'⟩ := exists_ext_of_isKsForm (R.FW i) (fw.ks i) (fw.e i) (sg0 D A) jK
   exact fw.ev i _ (base_of_tie (i := i) fw).2.1 hV ⟨j', fun f => (congrArg (evAt R i _ (v₀ i _)) (hj' f)).trans (hjK f)⟩ f
 
-theorem readPinned_of_unif (hu : R.LUnif) (hV : T.V ((i : ℕ) + 1) (res T (sg0 D A)) = Wc D i)
-    (hf : FramePin T R i (res T (sg0 D A)) hV) (hj : JEvAt T R κ v₀ i (sg0 D A) hV) : ReadPinned T R κ v₀ i := by
-  refine ⟨⟨hV, hf, hj⟩, (injective_iff_map_eq_zero _).2 fun x hx => ?_, (hu i _).2.2⟩
-  by_contra h0
-  have h1 := (hu i (sg0 D A)).1 1 (fun _ => x) (linearIndependent_unique_iff.2 h0)
-  exact h1.ne_zero 0 hx
 
 end GlobalTheory.IndefiniteRowSideFullHecke.LatticePartsOverBalls

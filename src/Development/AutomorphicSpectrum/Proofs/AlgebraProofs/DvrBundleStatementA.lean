@@ -8,8 +8,29 @@ import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SameGenericFlagDiffe
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SameGenericBundleChainStatement
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SameGenericFlagComparison
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ChartBundleBaseExtensionUniqueStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PairCocycle
+import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PPairCocycle
+import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.OfSteps
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.VerticalDivisorsCommuteStatement
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FlagIndependence
 
+section
+section
+namespace GlobalTheory.CompanionTheory.CommAlg.PairCocycleClosed
+
+open GroundTheory.Heights₂.Heights.NumbersDVR
+
+theorem pairCocycle : PairCocycle.Statement :=
+  PairCocycle.proof GlobalTheory.T.flag_independence GlobalTheory.T.vertical_divisors_commute IntNumAddFirst.full
+
+end GlobalTheory.CompanionTheory.CommAlg.PairCocycleClosed
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pair_cocycle : GroundTheory.Heights₂.Heights.NumbersDVR.PairCocycle.Statement := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CommAlg.PairCocycleClosed.pairCocycle
+end
+
+section
 section
 open MvPolynomial GlobalTheory.CompanionTheory.Ar.Num GroundTheory.Heights₂.Heights.NumbersDVR
 open ReciprocityTheory.ChartRestriction.G.Geo (ChartBundle chartRing)
@@ -120,3 +141,4 @@ open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundl
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.dvr_bundle_statement_a : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (Ω : Type) [Field Ω] [Algebra O Ω] (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)], GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundles.Ba.Statement.{0,0,0} O Ω ι := by
   atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Num.Cocycle.main
+end

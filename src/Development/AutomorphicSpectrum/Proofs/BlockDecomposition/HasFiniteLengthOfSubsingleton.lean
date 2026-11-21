@@ -1,11 +1,270 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteLengthCoinvariantsExact
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteTwistedRankQuotientStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FibRepApply
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteTwistedRankQuotient
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OmegaEquivInducedFibre
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CoinvariantsFiniteOfSmoothLeviStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CoinvariantsFiniteOfSmoothLevi
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FibreRepresentationSmooth
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteLengthCoinvariantsSwap
+import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.NontrivialOfIrreducible
 
+section
+section
+noncomputable section
+
+open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.IndefiniteRowSideFullHecke.OpenClosedSequences GlobalTheory.RankStrataProof GlobalTheory.CompanionTheory.ThetaGLLen Matrix Topology
+
+namespace GlobalTheory.CompanionTheory.CoinvExact
+
+theorem hasFiniteLength_of_exact {G A B C : Type} [Group G] [AddCommGroup A] [Module ℂ A]
+    [AddCommGroup B] [Module ℂ B] [AddCommGroup C] [Module ℂ C]
+    (α : Representation ℂ G A) (β : Representation ℂ G B) (γ : Representation ℂ G C)
+    (f : α.IntertwiningMap β) (g : β.IntertwiningMap γ)
+    (hg : Function.Surjective g) (hfg : Function.Exact f g)
+    (hA : HasFiniteLength α) (hC : HasFiniteLength γ) : HasFiniteLength β := by
+  let f' := Representation.IntertwiningMap.equivLinearMapAsModule α β f
+  let g' := Representation.IntertwiningMap.equivLinearMapAsModule β γ g
+  have hg' : Function.Surjective g' := hg
+  have hr : IsFiniteLength (MonoidAlgebra ℂ G) (LinearMap.range f') :=
+    IsFiniteLength.of_surjective hA f'.surjective_rangeRestrict
+  have hex : Function.Exact (LinearMap.range f').subtype g' := by
+    intro y
+    have h1 : g' y = 0 ↔ g y = 0 := Iff.rfl
+    have h2 : y ∈ Set.range (LinearMap.range f').subtype ↔ y ∈ Set.range f := by
+      constructor
+      · rintro ⟨⟨_, ⟨a, rfl⟩⟩, rfl⟩
+        exact ⟨a, rfl⟩
+      · rintro ⟨a, rfl⟩
+        exact ⟨⟨f' a, ⟨a, rfl⟩⟩, rfl⟩
+    rw [h1, h2]
+    exact hfg y
+  have hlen := Module.length_eq_add_of_exact (LinearMap.range f').subtype g'
+    (LinearMap.range f').injective_subtype hg' hex
+  rw [HasFiniteLength, ← Module.length_ne_top_iff, hlen]
+  exact WithTop.add_ne_top.2 ⟨Module.length_ne_top_iff.2 hr, Module.length_ne_top_iff.2 hC⟩
+
+section Coinv
+
+variable {Γ G V₁ V₂ : Type} [Group Γ] [Group G] [AddCommGroup V₁] [Module ℂ V₁]
+  [AddCommGroup V₂] [Module ℂ V₂] {τ₁ : Representation ℂ (Γ × G) V₁} {τ₂ : Representation ℂ (Γ × G) V₂}
+
+theorem twRel_le_comap (φ : τ₁.IntertwiningMap τ₂) (ψ : Γ →* ℂˣ) :
+    twRel (τ₁.comp (MonoidHom.inl Γ G)) ψ ≤
+      (twRel (τ₂.comp (MonoidHom.inl Γ G)) ψ).comap φ.toLinearMap := by
+  refine Submodule.span_le.2 ?_
+  rintro _ ⟨γ, v, rfl⟩
+  refine Submodule.subset_span ⟨γ, φ v, ?_⟩
+  have e : φ (τ₁ (γ, 1) v) = τ₂ (γ, 1) (φ v) := φ.isIntertwining _ _ _ _
+  show φ (τ₁ (γ, 1) v - (ψ γ : ℂ) • v) = τ₂ (γ, 1) (φ v) - (ψ γ : ℂ) • φ v
+  rw [map_sub, e, map_smul]
+
+def coinvMap (φ : τ₁.IntertwiningMap τ₂) (ψ : Γ →* ℂˣ) :
+    (coinv τ₁ ψ).IntertwiningMap (coinv τ₂ ψ) where
+  toLinearMap := Submodule.mapQ _ _ φ.toLinearMap (twRel_le_comap φ ψ)
+  isIntertwining' := fun g => by
+    refine Submodule.linearMap_qext _ ?_
+    ext v
+    exact congrArg (Submodule.Quotient.mk (p := twRel (τ₂.comp (MonoidHom.inl Γ G)) ψ))
+      (φ.isIntertwining _ _ (1, g) v)
+
+theorem coinvMap_mk (φ : τ₁.IntertwiningMap τ₂) (ψ : Γ →* ℂˣ) (v : V₁) :
+    coinvMap φ ψ (Submodule.Quotient.mk v) = Submodule.Quotient.mk (φ v) := rfl
+
+theorem twRel_le_map (φ : τ₁.IntertwiningMap τ₂) (hφ : Function.Surjective φ) (ψ : Γ →* ℂˣ) :
+    twRel (τ₂.comp (MonoidHom.inl Γ G)) ψ ≤
+      (twRel (τ₁.comp (MonoidHom.inl Γ G)) ψ).map φ.toLinearMap := by
+  refine Submodule.span_le.2 ?_
+  rintro _ ⟨γ, u, rfl⟩
+  obtain ⟨v, rfl⟩ := hφ u
+  refine ⟨τ₁ (γ, 1) v - (ψ γ : ℂ) • v, Submodule.subset_span ⟨γ, v, rfl⟩, ?_⟩
+  have e : φ (τ₁ (γ, 1) v) = τ₂ (γ, 1) (φ v) := φ.isIntertwining _ _ _ _
+  show φ (τ₁ (γ, 1) v - (ψ γ : ℂ) • v) = τ₂ (γ, 1) (φ v) - (ψ γ : ℂ) • φ v
+  rw [map_sub, e, map_smul]
+
+theorem coinvMap_surjective (φ : τ₁.IntertwiningMap τ₂) (hφ : Function.Surjective φ) (ψ : Γ →* ℂˣ) :
+    Function.Surjective (coinvMap φ ψ) := by
+  intro y
+  obtain ⟨u, rfl⟩ := Submodule.Quotient.mk_surjective _ y
+  obtain ⟨v, rfl⟩ := hφ u
+  exact ⟨Submodule.Quotient.mk v, rfl⟩
+
+end Coinv
+
+theorem coinvMap_exact {Γ G W V U : Type} [Group Γ] [Group G] [AddCommGroup W] [Module ℂ W]
+    [AddCommGroup V] [Module ℂ V] [AddCommGroup U] [Module ℂ U]
+    {τW : Representation ℂ (Γ × G) W} {τ : Representation ℂ (Γ × G) V}
+    {τU : Representation ℂ (Γ × G) U} (i : τW.IntertwiningMap τ) (f : τ.IntertwiningMap τU)
+    (hf : Function.Surjective f) (hif : Function.Exact i f) (ψ : Γ →* ℂˣ) :
+    Function.Exact (coinvMap i ψ) (coinvMap f ψ) := by
+  intro x
+  obtain ⟨v, rfl⟩ := Submodule.Quotient.mk_surjective _ x
+  constructor
+  · intro h
+    have hv : f v ∈ twRel (τU.comp (MonoidHom.inl Γ G)) ψ :=
+      (Submodule.Quotient.mk_eq_zero _).1 h
+    obtain ⟨r, hr, hrv⟩ := twRel_le_map f hf ψ hv
+    have hrv' : f r = f v := hrv
+    have hz : f (v - r) = 0 := by rw [map_sub, hrv', sub_self]
+    obtain ⟨w, hw⟩ := (hif (v - r)).1 hz
+    refine ⟨Submodule.Quotient.mk w, ?_⟩
+    rw [coinvMap_mk, hw]
+    exact (Submodule.Quotient.eq _).2 (by simpa using (Submodule.neg_mem _ hr))
+  · rintro ⟨y, hy⟩
+    obtain ⟨w, rfl⟩ := Submodule.Quotient.mk_surjective _ y
+    have h0 : f (i w) = 0 := (hif (i w)).2 ⟨w, rfl⟩
+    rw [← hy, coinvMap_mk, coinvMap_mk, h0]
+    rfl
+
+theorem main : ∀ (Γ G W V U : Type) [Group Γ] [Group G] [AddCommGroup W] [Module ℂ W] [AddCommGroup V] [Module ℂ V] [AddCommGroup U] [Module ℂ U] (τW : Representation ℂ (Γ × G) W) (τ : Representation ℂ (Γ × G) V) (τU : Representation ℂ (Γ × G) U) (i : τW.IntertwiningMap τ) (f : τ.IntertwiningMap τU), Function.Surjective f → Function.Exact i f → ∀ ψ : Γ →* ℂˣ, HasFiniteLength (coinv τW ψ) → HasFiniteLength (coinv τU ψ) → HasFiniteLength (coinv τ ψ) := by
+  intro Γ G W V U _ _ _ _ _ _ _ _ τW τ τU i f hf hif ψ hW hU
+  exact hasFiniteLength_of_exact _ _ _ (coinvMap i ψ) (coinvMap f ψ)
+    (coinvMap_surjective f hf ψ) (coinvMap_exact i f hf hif ψ) hW hU
+
+end GlobalTheory.CompanionTheory.CoinvExact
+end
+end
+
+open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.IndefiniteRowSideFullHecke.OpenClosedSequences GlobalTheory.RankStrataProof GlobalTheory.CompanionTheory.ThetaGLLen Matrix Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_length_coinvariants_exact : ∀ (Γ G W V U : Type) [Group Γ] [Group G] [AddCommGroup W] [Module ℂ W] [AddCommGroup V] [Module ℂ V] [AddCommGroup U] [Module ℂ U] (τW : Representation ℂ (Γ × G) W) (τ : Representation ℂ (Γ × G) V) (τU : Representation ℂ (Γ × G) U) (i : τW.IntertwiningMap τ) (f : τ.IntertwiningMap τU), Function.Surjective f → Function.Exact i f → ∀ ψ : Γ →* ℂˣ, HasFiniteLength (coinv τW ψ) → HasFiniteLength (coinv τU ψ) → HasFiniteLength (coinv τ ψ) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CoinvExact.main
+end
+
+section
+open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.IndefiniteRowSideFullHecke.OpenClosedSequences GlobalTheory.RankStrataProof GlobalTheory.CompanionTheory.ThetaGLLen Matrix Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_twisted_rank_quotient : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (a c : Type) [Fintype a] [DecidableEq a] [Fintype c] [DecidableEq c] (κ : ℕ), κ = Fintype.card c → ∀ θ : GL a k →* ℂˣ, Module.Finite ℂ (SB (RankIn k a c {κ}) ⧸ twRel (rightRep (k := k) a c κ) θ) := by
+  first | exact @GlobalTheory.CompanionTheory.ThetaGLLen.FullRank.finite_coinv_rightRep | exact GlobalTheory.CompanionTheory.ThetaGLLen.FullRank.finite_coinv_rightRep | (intros; apply GlobalTheory.CompanionTheory.ThetaGLLen.FullRank.finite_coinv_rightRep <;> assumption)
+end
+
+section
+open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.IndefiniteRowSideFullHecke.OpenClosedSequences GlobalTheory.RankStrataProof GlobalTheory.CompanionTheory.ThetaGLLen Matrix Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coinvariants_finite_of_smooth_levi : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], InductionFiniteLength k → ∀ (Γ W b c d : Type) [Group Γ] [AddCommGroup W] [Module ℂ W] [Fintype b] [DecidableEq b] [Fintype c] [DecidableEq c] [Fintype d] [DecidableEq d] (e : c ⊕ d ≃ b) (τ : Representation ℂ (Γ × (GL c k × GL d k)) W), IsSmooth (τ.comp (MonoidHom.inr Γ (GL c k × GL d k))) → ∀ ψ : Γ →* ℂˣ, Module.Finite ℂ (W ⧸ twRel (τ.comp (MonoidHom.inl Γ (GL c k × GL d k))) ψ) → HasFiniteLength (coinv (indSnd e τ) ψ) := by
+  first | exact @GlobalTheory.CompanionTheory.ThetaGLLen.hasFiniteLength_coinv_indSnd | exact GlobalTheory.CompanionTheory.ThetaGLLen.hasFiniteLength_coinv_indSnd | (intros; apply GlobalTheory.CompanionTheory.ThetaGLLen.hasFiniteLength_coinv_indSnd <;> assumption)
+end
+
+section
+section
+noncomputable section
+
+open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.IndefiniteRowSideFullHecke.OpenClosedSequences GlobalTheory.RankStrataProof GlobalTheory.CompanionTheory.ThetaGLLen Matrix Topology
+
+namespace GlobalTheory.CompanionTheory.ThetaGLLen.Swap
+
+section Abstract
+
+variable {Γ G V V' : Type} [Group Γ] [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Module ℂ V']
+
+theorem coinv_of_intertwine (τ : Representation ℂ (Γ × G) V) (τ' : Representation ℂ (Γ × G) V')
+    (ψ ψ' : Γ →* ℂˣ) (T : V ≃ₗ[ℂ] V') (θ : Γ →* Γ) (θ' : G →* G)
+    (hθ : Function.Surjective θ) (hθ' : Function.Surjective θ')
+    (hT : ∀ γ g v, T (τ (γ, g) v) = τ' (θ γ, θ' g) (T v)) (hψ : ∀ γ, ψ' (θ γ) = ψ γ)
+    (h : HasFiniteLength (coinv τ' ψ')) : HasFiniteLength (coinv τ ψ) := by
+  have key : ∀ (γ : Γ) (v : V), T (τ (γ, 1) v - (ψ γ : ℂ) • v) =
+      τ' (θ γ, 1) (T v) - (ψ' (θ γ) : ℂ) • T v := fun γ v => by
+    rw [map_sub, map_smul, hT, map_one, hψ]
+  have hrel : (twRel (τ.comp (MonoidHom.inl Γ G)) ψ).map (T : V →ₗ[ℂ] V') =
+      twRel (τ'.comp (MonoidHom.inl Γ G)) ψ' := by
+    unfold twRel
+    rw [Submodule.map_span]
+    congr 1
+    ext w
+    constructor
+    · rintro ⟨_, ⟨γ, v, rfl⟩, rfl⟩
+      exact ⟨θ γ, T v, key γ v⟩
+    · rintro ⟨γ', v', rfl⟩
+      obtain ⟨γ, rfl⟩ := hθ γ'
+      refine ⟨_, ⟨γ, T.symm v', rfl⟩, ?_⟩
+      have := key γ (T.symm v')
+      rw [LinearEquiv.apply_symm_apply] at this
+      exact this
+  let E : (coinv τ ψ).Equiv ((coinv τ' ψ').comp θ' : Representation ℂ G _) :=
+    Representation.Equiv.mk (Submodule.Quotient.equiv _ _ T hrel) fun g =>
+      Submodule.linearMap_qext _ (LinearMap.ext fun v => by
+        show Submodule.Quotient.mk (T (τ (1, g) v)) = Submodule.Quotient.mk (τ' (1, θ' g) (T v))
+        rw [hT, map_one])
+  exact HasFiniteLength.of_equiv ((hasFiniteLength_comp_iff _ θ' hθ').2 h) E.symm
+
+end Abstract
+
+section Model
+
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+
+def invT (n : Type) [Fintype n] [DecidableEq n] : GL n k →* GL n k where
+  toFun g := ⟨(g⁻¹).valᵀ, g.valᵀ, by rw [← transpose_mul]; simp, by rw [← transpose_mul]; simp⟩
+  map_one' := Units.ext (by simp)
+  map_mul' g h := Units.ext (by simp [transpose_mul])
+
+variable {a b : Type} [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b]
+
+omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
+theorem invT_invT (g : GL a k) : invT a (invT a g) = g := Units.ext (transpose_transpose _)
+
+omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
+theorem invT_surjective : Function.Surjective (invT a : GL a k → GL a k) :=
+  fun g => ⟨invT a g, invT_invT g⟩
+
+omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
+theorem det_invT (g : GL a k) :
+    GeneralLinearGroup.det (invT a g) = (GeneralLinearGroup.det g)⁻¹ := by
+  rw [← map_inv]
+  refine Units.ext ?_
+  show ((g⁻¹).valᵀ).det = ((g⁻¹ : GL a k).val).det
+  rw [det_transpose]
+
+def trHomeo (a b : Type) : Matrix b a k ≃ₜ Matrix a b k where
+  toFun := transpose
+  invFun := transpose
+  left_inv := transpose_transpose
+  right_inv := transpose_transpose
+  continuous_toFun := continuous_id.matrix_transpose
+  continuous_invFun := continuous_id.matrix_transpose
+
+def trSB (a b : Type) : SB (Matrix b a k) ≃ₗ[ℂ] SB (Matrix a b k) where
+  toFun Φ := ⟨fun y => Φ.1 yᵀ, Φ.2.1.comp_continuous (trHomeo b a).continuous,
+    Φ.2.2.comp_homeomorph (trHomeo b a)⟩
+  invFun Φ := ⟨fun y => Φ.1 yᵀ, Φ.2.1.comp_continuous (trHomeo a b).continuous,
+    Φ.2.2.comp_homeomorph (trHomeo a b)⟩
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
+  left_inv Φ := Subtype.ext (funext fun y => congrArg Φ.1 (transpose_transpose y))
+  right_inv Φ := Subtype.ext (funext fun y => congrArg Φ.1 (transpose_transpose y))
+
+theorem omChar_swap (μ : kˣ →* ℂˣ) (g : GL a k) (h : GL b k) :
+    omChar b a μ (invT b h, invT a g) = omChar a b μ (g, h) := by
+  simp only [omChar, MonoidHom.mul_apply, MonoidHom.comp_apply, MonoidHom.coe_fst, MonoidHom.coe_snd,
+    detChar_apply, det_invT, MonoidHom.inv_apply, map_inv, neg_div, absPow_neg, inv_inv, mul_inv]
+  exact mul_comm _ _
+
+theorem trSB_omega (μ : kˣ →* ℂˣ) (g : GL a k) (h : GL b k) (Φ : SB (Matrix b a k)) :
+    trSB a b (omega a b μ (g, h) Φ) = omega b a μ (invT b h, invT a g) (trSB a b Φ) := by
+  refine Subtype.ext (funext fun y => ?_)
+  show (omChar a b μ (g, h) : ℂ) * Φ.1 (act yᵀ (g, h)) =
+    (omChar b a μ (invT b h, invT a g) : ℂ) * Φ.1 (act y (invT b h, invT a g))ᵀ
+  have e : act yᵀ (g, h) = (act y (invT b h, invT a g))ᵀ := by
+    show (h⁻¹).val * yᵀ * g.val = (g.valᵀ * y * (h⁻¹).valᵀ)ᵀ
+    simp only [transpose_mul, transpose_transpose, Matrix.mul_assoc]
+  rw [omChar_swap, e]
+
+end Model
+
+theorem coinv_swap_finiteLength : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (a b : Type) [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b] (μ χ : kˣ →* ℂˣ), HasFiniteLength (coinv (omega b a μ⁻¹) (detChar b χ⁻¹)) → HasFiniteLength (coinv ((omega a b μ⁻¹).comp (MulEquiv.prodComm (M := GL b k) (N := GL a k)).toMonoidHom) (detChar b χ)) := by
+  intro k _ _ _ _ a b _ _ _ _ μ χ h
+  refine coinv_of_intertwine _ _ _ _ (trSB a b) (invT b) (invT a) invT_surjective invT_surjective
+    (fun γ g v => trSB_omega μ⁻¹ g γ v) (fun γ => ?_) h
+  simp [det_invT]
+
+end GlobalTheory.CompanionTheory.ThetaGLLen.Swap
+end
+end
+
+open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.IndefiniteRowSideFullHecke.OpenClosedSequences GlobalTheory.RankStrataProof GlobalTheory.CompanionTheory.ThetaGLLen Matrix Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_length_coinvariants_swap : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (a b : Type) [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b] (μ χ : kˣ →* ℂˣ), HasFiniteLength (coinv (omega b a μ⁻¹) (detChar b χ⁻¹)) → HasFiniteLength (coinv ((omega a b μ⁻¹).comp (MulEquiv.prodComm (M := GL b k) (N := GL a k)).toMonoidHom) (detChar b χ)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ThetaGLLen.Swap.coinv_swap_finiteLength
+end
+
+section
 noncomputable section
 
 open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.IndefiniteRowSideFullHecke.OpenClosedSequences GlobalTheory.RankStrataProof GlobalTheory.CompanionTheory.ThetaGLLen Matrix Topology
@@ -134,23 +393,6 @@ abbrev thetaQuot (μ χ : kˣ →* ℂˣ) := coinv (omega a b μ⁻¹) (detChar 
 
 variable {a b}
 
-theorem twRel_omega (μ χ : kˣ →* ℂˣ) :
-    twRel ((omega a b μ⁻¹).comp (MonoidHom.inl _ _)) (detChar a χ) =
-      Submodule.span ℂ {w : SB (Matrix b a k) | ∃ (g : GL a k) (Φ : SB (Matrix b a k)),
-        w.1 = om μ g 1 Φ.1 - (χ (GeneralLinearGroup.det g) : ℂ) • Φ.1} := by
-  unfold twRel
-  refine congrArg (Submodule.span ℂ) (Set.ext fun w => ?_)
-  constructor
-  · rintro ⟨g, Φ, rfl⟩
-    refine ⟨g, Φ, ?_⟩
-    have := omega_eq_om μ⁻¹ g (1 : GL b k) Φ
-    rw [inv_inv] at this
-    exact congrArg₂ (· - ·) this rfl
-  · rintro ⟨g, Φ, h⟩
-    refine ⟨g, Φ, Subtype.ext ?_⟩
-    have := omega_eq_om μ⁻¹ g (1 : GL b k) Φ
-    rw [inv_inv] at this
-    exact h.trans (congrArg₂ (· - ·) this.symm rfl)
 
 theorem thetaQuot_mk (μ χ : kˣ →* ℂˣ) (h : GL b k) (Φ Ψ : SB (Matrix b a k)) (hΨ : Ψ.1 = om μ 1 h Φ.1) :
     thetaQuot a b μ χ h (Submodule.Quotient.mk Φ) = Submodule.Quotient.mk Ψ := by
@@ -185,3 +427,5 @@ theorem main (hBZ : GlobalTheory.Published.BernsteinZelevinskyFiniteness) (n r :
 end Main
 
 end GlobalTheory.CompanionTheory.ThetaGLLen
+end
+end

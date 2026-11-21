@@ -42,8 +42,6 @@ theorem term_apply (p : ℕ) (x : Cube.Term A p) (t : {s : Finset κ // s.card =
     (h : (t.1.image τ).card = p) :
     ψ.term p x t = sortSign τ t.1 • ψ.app t.1 (x ⟨t.1.image τ, h⟩) := dif_pos h
 
-theorem term_apply_of_ne (p : ℕ) (x : Cube.Term A p) (t : {s : Finset κ // s.card = p})
-    (h : (t.1.image τ).card ≠ p) : ψ.term p x t = 0 := dif_neg h
 
 end AltHom
 

@@ -1,10 +1,184 @@
-import Development.WeilBound.CoreStatements.SesquilinearFractions.GLieIntC
+import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsTransition
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFunctorialMapStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelExistsUniqueSemilinearStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelIsBaseChangeStatement
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelPullbackEquivalenceStatement
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFreeOfSmooth
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DualFamilyIsBasis
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelEigenvectorsActionStatement
 
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open Matrix GlobalTheory GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl
+open scoped ComplexOrder
+
+noncomputable section
+
+namespace PositivityTheory.Xgf.isogeny_decomposition_product
+
+variable {S : Scheme.{0}} {R : Type} [CommRing R]
+
+theorem pt_zero {G : Over S} [GrpObj G] {x : Sp R ⟶ S} {E : Type} [AddCommGroup E] [Module R E]
+    (M : LieModel G x E) : M.pt 0 = 1 := by
+  have h := M.add 0 0
+  rw [add_zero] at h
+  exact (mul_eq_left.1 h.symm)
+
+theorem pt_nsmul {G : Over S} [GrpObj G] {x : Sp R ⟶ S} {E : Type} [AddCommGroup E] [Module R E]
+    (M : LieModel G x E) (e : E) : ∀ N : ℕ, M.pt (N • e) = M.pt e ^ N
+  | 0 => by rw [zero_smul, pt_zero, pow_zero]
+  | N + 1 => by rw [succ_nsmul, M.add, pt_nsmul M e N, pow_succ]
+
+theorem comp_pow' {X A : Over S} [GrpObj A] (x : X ⟶ A) (g : A ⟶ A) : ∀ N : ℕ, x ≫ g ^ N = (x ≫ g) ^ N
+  | 0 => by rw [pow_zero, pow_zero, MonObj.comp_one]
+  | N + 1 => by rw [pow_succ, pow_succ, comp_mul, comp_pow' x g N]
+
+def castM {G : Over S} [GrpObj G] {x x' : Sp R ⟶ S} (h : x = x') {E : Type} [AddCommGroup E] [Module R E]
+    (M : LieModel G x E) : LieModel G x' E := h ▸ M
+
+theorem castM_left {G : Over S} [GrpObj G] {x x' : Sp R ⟶ S} (h : x = x') {E : Type} [AddCommGroup E] [Module R E]
+    (M : LieModel G x E) (e : E) : ((castM h M).pt e).left = (M.pt e).left := by
+  subst h; rfl
+
+def toAt {A : Over (Sp R)} (v : epsR R ⟶ A) : epsAt (𝟙 (Sp R)) ⟶ A :=
+  Over.homMk v.left (by simp [Over.w v])
+
+theorem toAt_left {A : Over (Sp R)} (v : epsR R ⟶ A) : (toAt v).left = v.left := rfl
+
+theorem toAt_tan {A : Over (Sp R)} [GrpObj A] (v : epsR R ⟶ A) (hv : IsTangent v) : IsTanAt A (𝟙 (Sp R)) (toAt v) := by
+  unfold IsTanAt
+  rw [toAt_left]
+  unfold IsTangent at hv
+  rw [hv]
+  first
+  | (rw [Hom.one_def]; simp)
+  | simp [Hom.one_def]
+  | (rw [Hom.one_def, Over.comp_left]; congr 1; simp)
+  | rfl
+
+end PositivityTheory.Xgf.isogeny_decomposition_product
+
+end
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl
+
+noncomputable section
+
+namespace PositivityTheory.Xgf.isogeny_decomposition_product
+
+variable {R : Type} [CommRing R]
+
+def toR {A : Over (Sp R)} (t : epsAt (𝟙 (Sp R)) ⟶ A) : epsR R ⟶ A :=
+  Over.homMk t.left (by simp [Over.w t])
+
+theorem toR_left {A : Over (Sp R)} (t : epsAt (𝟙 (Sp R)) ⟶ A) : (toR t).left = t.left := rfl
+
+theorem toR_tan {A : Over (Sp R)} [GrpObj A] (t : epsAt (𝟙 (Sp R)) ⟶ A) (ht : IsTanAt A (𝟙 (Sp R)) t) :
+    IsTangent (toR t) := by
+  unfold IsTangent
+  rw [toR_left]
+  unfold IsTanAt at ht
+  rw [ht]
+  rw [Hom.one_def]; simp
+
+theorem epsScaleR_eq (c : R) : epsScaleR c = GlobalTheory.CompanionTheory.Ar.epsMul c := rfl
+
+theorem basis_of_lieBasis {A : Over (Sp R)} [GrpObj A] (v : epsR R ⟶ A) (hv : IsLieBasis ![v]) {E : Type}
+    [AddCommGroup E] [Module R E] (M : LieModel A (𝟙 (Sp R)) E) :
+    ∃ b : Module.Basis (Fin 1) R E, (M.pt (b 0)).left = v.left := by
+  obtain ⟨e₀, he₀⟩ := M.onto (toAt v) (toAt_tan v (hv.1 0))
+  have key : ∀ e, ∃! c : Fin 1 → R, IsLieComb c ![v] (toR (M.pt e)) :=
+    fun e => hv.2 _ (toR_tan _ (M.tan e))
+  have hsm : ∀ (c : R) e, (M.pt (c • e)).left = spMap (epsScaleR c) ≫ (M.pt e).left := fun c e => M.smul c e
+  have comb : ∀ c : R, IsLieComb ![c] ![v] (toR (M.pt (c • e₀))) := by
+    intro c
+    refine ⟨![toR (M.pt (c • e₀))], fun i => ?_, ?_⟩
+    · fin_cases i
+      simp only [Fin.zero_eta, Fin.isValue, Matrix.cons_val_zero]
+      rw [toR_left, hsm, he₀, toAt_left]
+    · simp
+  have hinj : Function.Injective fun c : R => c • e₀ := by
+    intro c c' h
+    have h1 := (key (c • e₀)).unique (comb c) (by simpa [h] using comb c')
+    simpa using congrFun h1 0
+  have hsurj : Function.Surjective fun c : R => c • e₀ := by
+    intro e
+    obtain ⟨c, ⟨u, hu, hw⟩, -⟩ := key e
+    refine ⟨c 0, M.inj (Over.OverMorphism.ext ?_)⟩
+    have h0 := hu 0
+    simp only [Matrix.cons_val_zero] at h0
+    have hw' : (toR (M.pt e)).left = (u 0).left := by
+      rw [hw]; simp [List.ofFn_succ]
+    simp only
+    rw [hsm, he₀, toAt_left, ← h0, ← hw', toR_left]
+  let eqv : R ≃ₗ[R] E := LinearEquiv.ofBijective (LinearMap.toSpanSingleton R E e₀) ⟨hinj, hsurj⟩
+  refine ⟨(Module.Basis.singleton (Fin 1) R).map eqv, ?_⟩
+  simp only [eqv, Module.Basis.map_apply, Module.Basis.singleton_apply]
+  show (M.pt (LinearMap.toSpanSingleton R E e₀ 1)).left = v.left
+  rw [LinearMap.toSpanSingleton_apply, one_smul, he₀, toAt_left]
+
+end PositivityTheory.Xgf.isogeny_decomposition_product
+
+end
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl
+
+noncomputable section
+
+namespace PositivityTheory.Xgf.isogeny_decomposition_product
+
+variable {R : Type} [CommRing R]
+
+theorem lc (C : Out.PolAV (Sp R)) (v : epsR R ⟶ C.A) (hv : IsLieBasis ![v]) (V : Type) [CommRing V] (f : R →+* V) :
+    ∃ (E : Type) (_ : AddCommGroup E) (_ : Module V E) (M : LieModel C.A (spMap f ≫ 𝟙 (Sp R)) E)
+      (b : Module.Basis (Fin 1) V E), (M.pt (b 0)).left = spMap (dualMap f) ≫ v.left := by
+  obtain ⟨E0, i0, m0, ⟨M0⟩⟩ := lieModel_exists (Sp R) C.A R (𝟙 (Sp R))
+  obtain ⟨b0, hb0⟩ := basis_of_lieBasis v hv M0
+  obtain ⟨E1, i1, m1, ⟨M1⟩⟩ := lieModel_exists (Sp R) C.A V (spMap f ≫ 𝟙 (Sp R))
+  obtain ⟨j, hj, -⟩ := GlobalTheory.T.lie_model_existsUnique_semilinear (Sp R) C.A R V f (𝟙 _) E0 E1 M0 M1
+  letI : Algebra R V := f.toAlgebra
+  letI : Module R E1 := Module.compHom E1 f
+  haveI : IsScalarTower R V E1 := ⟨fun r x e => by
+    show (f r * x) • e = f r • (x • e)
+    rw [mul_smul]⟩
+  let jR : E0 →ₗ[R] E1 :=
+    { toFun := j
+      map_add' := j.map_add
+      map_smul' := fun r e => by
+        show j (r • e) = f r • j e
+        exact j.map_smulₛₗ r e }
+  haveI : SmoothOfRelativeDimension C.g C.A.hom := C.smoothDim
+  haveI : Smooth C.A.hom := by
+    first
+    | exact SmoothOfRelativeDimension.smooth C.g C.A.hom
+    | exact SmoothOfRelativeDimension.smooth C.g
+    | exact SmoothOfRelativeDimension.smooth (n := C.g)
+  have hbc : IsBaseChange V jR := GlobalTheory.T.lie_model_isBaseChange (Sp R) C.A R V (𝟙 _) E0 E1 M0 M1 jR (fun e => hj e)
+  refine ⟨E1, i1, m1, M1, hbc.basis b0, ?_⟩
+  rw [IsBaseChange.basis_apply]
+  have h := hj (b0 0)
+  unfold LieModel.Lifts at h
+  have h' := (Category.comp_id (M1.pt (j (b0 0))).left).symm.trans h
+  show (M1.pt (j (b0 0))).left = _
+  rw [h', hb0]
+
+end PositivityTheory.Xgf.isogeny_decomposition_product
+
+end
+end
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Matrix GlobalTheory GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl
@@ -119,4 +293,5 @@ theorem isogeny_decomposition_product : ∀ (R V : Type) [CommRing R] [CommRing 
 
 end PositivityTheory.Xgf
 
+end
 end

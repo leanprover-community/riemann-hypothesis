@@ -2,7 +2,15 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TotalEqCurve
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdjacentPullPull
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UniREqUni
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtalePolynomialSubstitutionStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtalePolynomialSubstitution
+
+section
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.etale_polynomial_substitution : ∀ {k A R N : Type} [CommRing k] [CommRing A] [CommRing R] (α : k →+* A) (t : A) (f : A →+* R) (n : N → R) {d : ℕ} (e : Fin (d + 1) ≃ Option N), (MvPolynomial.eval₂Hom α (fun _ : Fin 1 => t)).Etale → Function.Bijective (MvPolynomial.eval₂Hom f n) → (MvPolynomial.eval₂Hom (f.comp α) (fun j => (e j).elim (f t) n)).Etale := by
+  first | exact @GlobalTheory.etale_eval₂Hom_option_of_bijective | exact GlobalTheory.etale_eval₂Hom_option_of_bijective | (intros; apply GlobalTheory.etale_eval₂Hom_option_of_bijective <;> assumption)
+end
+
+section
 open CategoryTheory AlgebraicGeometry TopologicalSpace Filter Topology MeasureTheory Matrix
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.Points GlobalTheory.CxPts GlobalTheory.VB GlobalTheory.HermFrame GlobalTheory.ArInt GlobalTheory.MixDens GlobalTheory.CovTest
@@ -270,3 +278,5 @@ theorem GlobalTheory.cell_chart : ∀ (k : Type) [CommRing k] (B Y : Scheme.{0})
     ⟨rfl, rfl, fun y _ => ?_⟩, inter_subset_right, fun y _ a s => ?_⟩
   · exact base_pt e (c.e (PtsOver.map π w (spMap σ) y)) fun a s => ev p σ W (n ⟨a, s⟩) y
   · exact congrFun (congrFun (fib_pt e (c.e (PtsOver.map π w (spMap σ) y)) fun a s => ev p σ W (n ⟨a, s⟩) y) a) s
+end
+end

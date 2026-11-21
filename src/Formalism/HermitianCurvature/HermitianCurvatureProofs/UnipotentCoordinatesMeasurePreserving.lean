@@ -3392,12 +3392,6 @@ end Formalism.FourierDecayAlt.P.Dx2.SplitF
 
 namespace Formalism.FourierDecayAlt.P
 
-theorem unipotent_measure_splitting : Formalism.FourierDecayAlt.D.MuNSplit := by
-  intro k r j hj
-  have h := Dx2.SplitF.split_all (k := k) j (r - j)
-  rw [Dx2.SplitF.muN_cast (show j + (r - j) = r by omega), h,
-    Measure.map_map (Dx2.MN.castMt_cont _).measurable (Dx2.SplitF.psi_meas j (r - j))]
-  rfl
 
 end Formalism.FourierDecayAlt.P
 

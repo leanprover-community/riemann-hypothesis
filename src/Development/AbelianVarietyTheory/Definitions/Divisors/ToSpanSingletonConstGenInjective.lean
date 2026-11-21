@@ -731,11 +731,6 @@ abbrev const : PDivGroup p O := (mu p O).dual
 def constFun (n : ℕ) : (const p O).A n ≃ₐ[O] (ZMod (p ^ n) → O) :=
   CartierDual.addMonoidAlgebraEquiv O (ZMod (p ^ n))
 
-theorem constFun_res (n : ℕ) (φ : (const p O).A (n + 1)) (k : ℕ) :
-    constFun p O n ((const p O).res n φ) k = constFun p O (n + 1) φ (p * k : ℕ) := by
-  simp only [constFun, CartierDual.addMonoidAlgebraEquiv_apply, ← muT_pow]
-  change φ.ofConv ((mu p O).mulP n (muT O (p ^ n) ^ k)) = _
-  rw [map_pow, mu_mulP_muT, pow_mul]
 
 theorem constFun_mulP (n : ℕ) (φ : (const p O).A n) (k : ℕ) :
     constFun p O (n + 1) ((const p O).mulP n φ) k = constFun p O n φ k := by
@@ -1075,11 +1070,6 @@ def hodgeTateLinear [Algebra ℤ_[p] O] : O ⊗[ℤ_[p]] G.Tate →ₗ[O] G.dual
 def epsHom (ζ : ℕ → O) (h0 : ζ 0 = 1) (h : ∀ n, ζ (n + 1) ^ p = ζ n) : const p O ⟶ mu p O :=
   constHom (mu p O) (muTate O ζ h0 h)
 
-theorem constFun_epsHom (ζ : ℕ → O) (h0 : ζ 0 = 1) (h : ∀ n, ζ (n + 1) ^ p = ζ n) (n k : ℕ) :
-    constFun p O n ((epsHom ζ h0 h).app n (muT O _)) k = ζ n ^ k :=
-  (constFun_constHom _ n k _).trans <|
-    (convPow_apply_groupLike _ (isGroupLikeElem_muT O _) k).trans
-      (congrArg (· ^ k) (muRoot_muTate ζ h0 h n))
 
 variable {B : Type} [CommRing B] [Algebra O B]
 

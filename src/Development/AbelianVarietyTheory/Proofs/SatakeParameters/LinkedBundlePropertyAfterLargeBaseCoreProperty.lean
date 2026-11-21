@@ -20,11 +20,8 @@ variable {hL : GlobalTheory.Published.LocalLanglandsGL}
 def OverNE (N : NExt hL) : Prop :=
   ∀ K B f T w Z Wt p0 t nch n xd c, N K B f T w Z Wt p0 t nch n xd c → Nonempty (NE hL K B f T w Z Wt p0 t nch n xd c)
 
-theorem overNE_NE : OverNE (NE hL) := fun _ _ _ _ _ _ _ _ _ _ _ _ _ x => ⟨x⟩
 
-theorem overNE_NEb : OverNE (NEb hL) := fun _ _ _ _ _ _ _ _ _ _ _ _ _ x => ⟨x.1⟩
 
-theorem overNE_NEg : OverNE (NEg hL) := fun _ _ _ _ _ _ _ _ _ _ _ _ _ x => ⟨x.1.1⟩
 
 def memberProperty (P : LayP hL) : V4.Slot := fun K X f T _ =>
   ∀ w Z Wt p0 t nch n xd c, Nonempty (NE hL K X.B f T w Z Wt p0 t nch n xd c) → Nonempty (RXs t) → ColPin w →
@@ -88,21 +85,8 @@ theorem linkedBundleProperty_after_largeBaseCoreProperty {KP : BaseP} {Q Q' R : 
   ⟨_, GlobalTheory.Fc.LgModel.largeBaseProperty_conditional (R := R),
     ((EvP.of_evGd h).and he).mono fun _ _ _ t β q c b l => t.2 β ⟨q.1, q.2 t.1⟩ c b l⟩
 
-theorem lg1_entryPred_and {KP : BaseP} {Q Q' : V4.Slot} {Bd : BdT} {Lk : LkT Bd} {E E' : Par → BdP Bd}
-    (h : Lg1 KP Q Q' fun U => RowE U Lk E) (h' : Lg1 KP Q Q' fun U => RowE U Lk E') :
-    Lg1 KP Q Q' fun U => RowE U Lk fun κ D O c b => E κ D O c b ∧ E' κ D O c b :=
-  let ⟨_, r, e⟩ := h
-  let ⟨_, r', e'⟩ := h'
-  ⟨_, r.and r', (EvP.and e e').mono fun _ _ _ t β q c b l => ⟨t.1 β ⟨q.1, q.2.1⟩ c b l, t.2 β ⟨q.1, q.2.2⟩ c b l⟩⟩
 
-theorem lg1_entryPred_mono {KP : BaseP} {Q Q' : V4.Slot} {Bd : BdT} {Lk : LkT Bd} {E E' : Par → BdP Bd}
-    (h : Lg1 KP Q Q' fun U => RowE U Lk E) (hi : ∀ κ D O c b, E κ D O c b → E' κ D O c b) : Lg1 KP Q Q' fun U => RowE U Lk E' :=
-  let ⟨R, r, e⟩ := h
-  ⟨R, r, e.imp fun κ _ _ c b _ _ _ t => hi κ _ _ c b t⟩
 
-theorem lg1_of_entryPred_at_target {KP : BaseP} {Q Q' : V4.Slot} {Bd : BdT} {Lk : LkT Bd} {E : Par → BdP Bd} (h : RowE Q' Lk E) :
-    Lg1 KP Q Q' fun U => RowE U Lk E :=
-  ⟨fun _ _ _ _ _ => True, largeBaseProperty_true, EvP.mono (fun _ _ _ t β q c b l => t β q.1 c b l) h⟩
 
 theorem lg1_entryPred_of_atMem_witMv {N : NExt hL} {S : SExt} {Γ : GeoP} {P : LayP hL} (h : AtMem hL P) (hN : OverNE N)
     (H : WitMv (prmR N S Γ).s) {r : ∀ D : D7, Obj D → Prop}
@@ -110,24 +94,7 @@ theorem lg1_entryPred_of_atMem_witMv {N : NExt hL} {S : SExt} {Γ : GeoP} {P : L
     Lg1 KPx (IsBuiltE (prmR N S Γ).s) (IsGoodE (prmR N S Γ).s) fun U => RowE U Lk fun _ D O _ _ => r D O :=
   linkedBundleProperty_after_largeBaseCoreProperty (largeBasePropertyG_memberProperty h _) (rowE_memPosition hN H hr Lk)
 
-theorem lg1_entryPred_of_atMem_D7 {N : NExt hL} {S : SExt} {Γ : GeoP} {r : D7 → Prop}
-    (h : AtMem hL fun _ _ _ _ w Z _ _ _ _ _ _ => r (w.D Z)) (hN : OverNE N) (H : WitMv (prmR N S Γ).s) {Bd : BdT} (Lk : LkT Bd) :
-    Lg1 KPx (IsBuiltE (prmR N S Γ).s) (IsGoodE (prmR N S Γ).s) fun U => RowE U Lk fun _ D _ _ _ => r D :=
-  lg1_entryPred_of_atMem_witMv h hN H (r := fun D _ => r D) (fun _ _ _ t => t) Lk
 
-theorem exists_loc_of_tied {D : D7} (T : Tied hL D) (w : D.what₂.places.Pl) (hw : D.what₂.muAt w ≠ D.what₂.mu0) (j : ℕ) (h1 : 1 ≤ j)
-    (h2 : j ≤ D.R.m) (hne : ∃ F : D.what₂.Mt (D.what₂.muTw w) j, F ≠ 0) : ∃ i : D.nd.Loc, D.nd.j i = j ∧ D.nd.w i = w := by
-  obtain ⟨F, hF⟩ := hne
-  let b := Module.Free.chooseBasis D.what₂.LL (D.what₂.MtL (D.what₂.muTw w) j)
-  have hidx : Nonempty (Module.Free.ChooseBasisIndex D.what₂.LL (D.what₂.MtL (D.what₂.muTw w) j)) := by
-    by_contra hn
-    rw [not_nonempty_iff] at hn
-    have h3 := (D.what₂.jMt_basis (D.what₂.muTw w) j b).2
-    rw [Set.range_eq_empty, Submodule.span_empty] at h3
-    exact hF ((Submodule.mem_bot ℂ).1 (h3 ▸ Submodule.mem_top))
-  obtain ⟨k⟩ := hidx
-  haveI : Nontrivial (T.P.H.cover.B.V j w) := ⟨⟨_, 0, (T.P.H.cover.B.iV_basis j w b).1.ne_zero k⟩⟩
-  exact GlobalTheory.NRows.Model.loc_of_tied T j h1 h2 w hw
 
 end GlobalTheory.NRows.AtPt
 

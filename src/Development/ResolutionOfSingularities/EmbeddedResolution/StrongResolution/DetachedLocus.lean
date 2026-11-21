@@ -568,10 +568,6 @@ def vanishingIdealClosureImage {X Z : Scheme.{u}} (f : Z ⟶ X) (C : Set ↥Z) :
   Scheme.IdealSheafData.vanishingIdeal
     (⟨closure (⇑f.base '' C), isClosed_closure⟩ : TopologicalSpace.Closeds ↥X)
 
-theorem vanishingIdealClosureImage_eq {X Z : Scheme.{u}} (f : Z ⟶ X) (C : Set ↥Z) :
-    vanishingIdealClosureImage f C =
-      Scheme.IdealSheafData.vanishingIdeal
-        (⟨closure (⇑f.base '' C), isClosed_closure⟩ : TopologicalSpace.Closeds ↥X) := rfl
 
 theorem isClopen_of_mem_irreducibleComponents_of_smooth {k : Type u} [Field k] {X : Scheme.{u}}
     (p : X ⟶ Spec (CommRingCat.of k)) [AlgebraicGeometry.Smooth p]

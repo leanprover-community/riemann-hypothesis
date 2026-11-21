@@ -31,10 +31,6 @@ def globalSec {x : ι → Ω} {r : ℕ} {E : Type*} [AddCommGroup E] [Module Ω 
     (B : ChartBundle o x r E) : AddSubgroup E :=
   ⨅ (i) (_ : x i ≠ 0), B.lat i
 
-theorem mem_globalSec {x : ι → Ω} {r : ℕ} {E : Type*} [AddCommGroup E] [Module Ω E]
-    (B : ChartBundle o x r E) (e : E) :
-    e ∈ globalSec B ↔ ∀ i, x i ≠ 0 → e ∈ B.lat i := by
-  simp [globalSec, AddSubgroup.mem_iInf]
 
 theorem div_mem_chartRing (x : ι → Ω) (i j : ι) :
     x j / x i ∈ chartRing o x i :=

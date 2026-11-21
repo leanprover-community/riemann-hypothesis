@@ -1,6 +1,14 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSmulEqSumVecMulVecSpanningFamilyStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSmulEqSumVecMulVecSpanningFamily
 
+section
+open IsLocalRing GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.Poinc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_smul_eq_sum_vecMulVec_spanning_family : ∀ (r : ℕ) (L : Matrix (Fin r) (Fin r) ℤ), (L.map (Int.cast : ℤ → ℝ)).PosDef → ∃ (D m : ℕ) (a : Fin m → Fin r → ℤ), 1 ≤ D ∧ Submodule.span ℤ (Set.range a) = ⊤ ∧ (D : ℤ) • L = ∑ i, Matrix.vecMulVec (a i) (a i) := by
+  first | exact @GlobalTheory.Poinc.SumSq.exists_smul_eq_sum_vecMulVec_span | exact GlobalTheory.Poinc.SumSq.exists_smul_eq_sum_vecMulVec_span | (intros; apply GlobalTheory.Poinc.SumSq.exists_smul_eq_sum_vecMulVec_span <;> assumption)
+end
+
+section
 open IsLocalRing GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.Poinc Matrix
 
 namespace GlobalTheory.Poinc
@@ -174,3 +182,4 @@ theorem exists_supports_int : ∀ (φ : InvFun ℤ) (X : Type) [AddCommGroup X] 
     linear_combination he
 
 end GlobalTheory.Poinc
+end

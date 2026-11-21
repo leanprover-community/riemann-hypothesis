@@ -1,5 +1,176 @@
 import Mathlib
-import GroundTheory.PAdicHodge.BCrisTensorK
+import GroundTheory.PAdicHodge.BCrisNewton
+
+section
+set_option maxSynthPendingDepth 1
+
+noncomputable section
+
+namespace GroundTheory.PAdicHodge
+
+open Polynomial TensorProduct
+
+section Lifts
+
+variable {R E : Type*} [Field R] [Field E]
+
+
+end Lifts
+
+section Disjoint
+
+variable {K₀ C E : Type*} [Field K₀] [Field C] [Field E] [Algebra K₀ C] [Algebra K₀ E]
+  (j : C →ₐ[K₀] E) (F : IntermediateField K₀ E) (M N : IntermediateField K₀ C)
+  (L : Type*) [Field L] [Algebra K₀ L] [Algebra L C] [IsScalarTower K₀ L C]
+
+
+
+
+end Disjoint
+
+end GroundTheory.PAdicHodge
+end
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+noncomputable section
+
+namespace GroundTheory.PAdicHodge
+
+variable {p : ℕ} [hp : Fact p.Prime]
+
+local notation "𝔹" => BDeRhamPlus (normInteger ℂ_[p]) p
+local notation "𝔹dR" => BDeRham (normInteger ℂ_[p]) p
+
+section MaxUnramified
+
+variable (K : IntermediateField ℚ_[p] (PadicAlgCl p))
+
+instance algebraMaxUnramified : Algebra (maxUnramified p K) K :=
+  (IntermediateField.inclusion (inf_le_left : maxUnramified p K ≤ K)).toRingHom.toAlgebra
+
+
+instance isScalarTower_maxUnramified_algCl :
+    IsScalarTower (maxUnramified p K) K (PadicAlgCl p) :=
+  IsScalarTower.of_algebraMap_eq fun _ => rfl
+
+instance isScalarTower_padic_maxUnramified :
+    IsScalarTower ℚ_[p] (maxUnramified p K) K :=
+  IsScalarTower.of_algebraMap_eq fun _ => rfl
+
+instance finiteDimensional_maxUnramified [FiniteDimensional ℚ_[p] K] :
+    FiniteDimensional (maxUnramified p K) K :=
+  Module.Finite.of_restrictScalars_finite ℚ_[p] (maxUnramified p K) K
+
+def unramifiedOver : IntermediateField (maxUnramified p K) (PadicAlgCl p) :=
+  IntermediateField.extendScalars (inf_le_right : maxUnramified p K ≤ unramifiedClosure p)
+
+
+instance isAlgClosure_maxUnramified : IsAlgClosure (maxUnramified p K) (PadicAlgCl p) :=
+  ⟨inferInstance, Algebra.IsAlgebraic.tower_top (K := ℚ_[p]) (maxUnramified p K)⟩
+
+instance normal_unramifiedOver : Normal (maxUnramified p K) (unramifiedOver K) := by
+  refine IntermediateField.normal_iff_forall_map_le'.2 fun σ x hx => ?_
+  obtain ⟨y, hy, rfl⟩ := (IntermediateField.mem_map _).1 hx
+  exact gal_mem_unramifiedClosure (σ.restrictScalars ℚ_[p]) hy
+
+
+
+end MaxUnramified
+
+namespace ACris
+
+open scoped TensorProduct
+
+section Tensor
+
+set_option maxHeartbeats 1600000
+set_option synthInstance.maxHeartbeats 400000
+
+variable (K : IntermediateField ℚ_[p] (PadicAlgCl p))
+
+def unramifiedToBCrisPlus : unramifiedClosure p →ₐ[ℚ_[p]] BCrisPlus ℂ_[p] p :=
+  ((AlgEquiv.ofInjective (iotaPlusAlg (p := p))
+      fun _ _ h => iotaPlus_injective (K := ℂ_[p]) (p := p) h).symm :
+      (iotaPlusAlg (p := p)).range →ₐ[ℚ_[p]] BCrisPlus ℂ_[p] p).comp
+    (((algClToBdR p).comp (unramifiedClosure p).val).codRestrict _ fun u => unramifiedClosure_le u.2)
+
+theorem iotaPlus_unramifiedToBCrisPlus (u : unramifiedClosure p) :
+    iotaPlus ℂ_[p] p (unramifiedToBCrisPlus u) = algClToBdR p u :=
+  congrArg Subtype.val ((AlgEquiv.ofInjective (iotaPlusAlg (p := p)) fun _ _ h =>
+    iotaPlus_injective (K := ℂ_[p]) (p := p) h).apply_symm_apply
+      ⟨algClToBdR p u, unramifiedClosure_le u.2⟩)
+
+instance algebraMaxUnramifiedBCrisPlus : Algebra (maxUnramified p K) (BCrisPlus ℂ_[p] p) :=
+  (unramifiedToBCrisPlus.comp (IntermediateField.inclusion
+    (inf_le_right : maxUnramified p K ≤ unramifiedClosure p))).toRingHom.toAlgebra
+
+instance moduleMaxUnramifiedBCrisPlus : Module (maxUnramified p K) (BCrisPlus ℂ_[p] p) :=
+  Algebra.toModule
+
+theorem iotaPlus_algebraMap_maxUnramified (k : maxUnramified p K) :
+    iotaPlus ℂ_[p] p (algebraMap (maxUnramified p K) (BCrisPlus ℂ_[p] p) k) = algClToBdR p k :=
+  iotaPlus_unramifiedToBCrisPlus _
+
+instance algebraMaxUnramifiedBdRPlus : Algebra (maxUnramified p K) 𝔹 :=
+  ((algClToBdR p).comp (maxUnramified p K).val).toRingHom.toAlgebra
+
+def algToBdRPlus : K →ₐ[maxUnramified p K] 𝔹 :=
+  { (algClToBdR p).toRingHom.comp (algebraMap K (PadicAlgCl p)) with commutes' := fun _ => rfl }
+
+def iotaPlusMaxUnramified : BCrisPlus ℂ_[p] p →ₐ[maxUnramified p K] 𝔹 :=
+  { iotaPlus ℂ_[p] p with commutes' := iotaPlus_algebraMap_maxUnramified K }
+
+def tensorBCrisPlusToBdRPlus :
+    K ⊗[maxUnramified p K] BCrisPlus ℂ_[p] p →ₐ[maxUnramified p K] 𝔹 :=
+  Algebra.TensorProduct.lift (algToBdRPlus K) (iotaPlusMaxUnramified K) fun _ _ => Commute.all _ _
+
+
+def algClToBdRFieldMaxUnramified : PadicAlgCl p →ₐ[maxUnramified p K] 𝔹dR :=
+  { algClToBdRField p with commutes' := fun _ => rfl }
+
+variable {ε : PreTilt (normInteger ℂ_[p]) p} (hε : PreTilt.untilt ε = 1)
+  (hζ : PreTilt.untilt ((_root_.frobeniusEquiv (PreTilt (normInteger ℂ_[p]) p) p).symm ε) ≠ 1)
+
+def iotaBMaxUnramified : BCris hε →ₐ[maxUnramified p K] 𝔹dR :=
+  { iotaB hε hζ with
+    commutes' := fun k => by
+      change iotaB hε hζ (algebraMap (maxUnramified p K) (BCris hε) k) = _
+      rw [IsScalarTower.algebraMap_apply (maxUnramified p K) (BCrisPlus ℂ_[p] p) (BCris hε),
+        iotaB_algebraMap, iotaPlus_algebraMap_maxUnramified]
+      rfl }
+
+def tensorBCrisToBdR : K ⊗[maxUnramified p K] BCris hε →ₐ[maxUnramified p K] 𝔹dR :=
+  Algebra.TensorProduct.lift ((algClToBdRFieldMaxUnramified K).comp
+    (IsScalarTower.toAlgHom (maxUnramified p K) K (PadicAlgCl p))) (iotaBMaxUnramified K hε hζ)
+    fun _ _ => Commute.all _ _
+
+
+def fracBCrisOver : IntermediateField (maxUnramified p K) 𝔹dR :=
+  (fracBCris hε hζ).toIntermediateField fun k => (mem_fracBCris_of_mem_maxUnramified hε hζ k.2).1
+
+def tensorFracBCrisToBdR :
+    K ⊗[maxUnramified p K] fracBCrisOver K hε hζ →ₐ[maxUnramified p K] 𝔹dR :=
+  Algebra.TensorProduct.lift ((algClToBdRFieldMaxUnramified K).comp
+    (IsScalarTower.toAlgHom (maxUnramified p K) K (PadicAlgCl p))) (fracBCrisOver K hε hζ).val
+    fun _ _ => Commute.all _ _
+
+
+variable [FiniteDimensional ℚ_[p] K]
+
+
+
+end Tensor
+
+end ACris
+
+end GroundTheory.PAdicHodge
+end
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 noncomputable section
@@ -78,24 +249,7 @@ def maxUnramifiedFrobeniusHom : K₀ →ₐ[ℚ_[p]] K₀ where
 def maxUnramifiedFrobenius : K₀ ≃ₐ[ℚ_[p]] K₀ :=
   AlgEquiv.ofBijective (maxUnramifiedFrobeniusHom K) (maxUnramifiedFrobeniusHom K).bijective
 
-theorem phiPlus_algebraMap_maxUnramified (k : K₀) :
-    phiPlus ℂ_[p] p (algebraMap K₀ (BCrisPlus ℂ_[p] p) k) =
-      algebraMap K₀ (BCrisPlus ℂ_[p] p) (maxUnramifiedFrobenius K k) :=
-  phiPlus_algebraMap_maxUnramifiedFrobeniusFun K k
 
-theorem phiB_algebraMap_maxUnramified {ε : PreTilt (normInteger ℂ_[p]) p}
-    (hε : PreTilt.untilt ε = 1) (k : K₀) :
-    phiB hε (algebraMap K₀ (BCris hε) k) = algebraMap K₀ (BCris hε) (maxUnramifiedFrobenius K k) :=
-  calc phiB hε (algebraMap K₀ (BCris hε) k)
-      = phiB hε (algebraMap (BCrisPlus ℂ_[p] p) (BCris hε) (algebraMap K₀ (BCrisPlus ℂ_[p] p) k)) :=
-        congrArg _ (IsScalarTower.algebraMap_apply K₀ (BCrisPlus ℂ_[p] p) (BCris hε) k)
-    _ = algebraMap (BCrisPlus ℂ_[p] p) (BCris hε)
-          (phiPlus ℂ_[p] p (algebraMap K₀ (BCrisPlus ℂ_[p] p) k)) :=
-        phiB_algebraMap hε _
-    _ = algebraMap (BCrisPlus ℂ_[p] p) (BCris hε) (algebraMap K₀ (BCrisPlus ℂ_[p] p) (maxUnramifiedFrobenius K k)) :=
-        congrArg _ (phiPlus_algebraMap_maxUnramified K k)
-    _ = algebraMap K₀ (BCris hε) (maxUnramifiedFrobenius K k) :=
-        (IsScalarTower.algebraMap_apply K₀ (BCrisPlus ℂ_[p] p) (BCris hε) (maxUnramifiedFrobenius K k)).symm
 
 end Frob
 
@@ -171,24 +325,9 @@ variable (K) in
 def maxUnramifiedValuation : AddValuation K₀ (WithTop ℤ) :=
   AddValuation.of maxUnramifiedValFun maxUnramifiedValFun_zero maxUnramifiedValFun_one maxUnramifiedValFun_add_le maxUnramifiedValFun_mul
 
-theorem maxUnramifiedValuation_apply (x : K₀) : maxUnramifiedValuation K x = maxUnramifiedValFun x := rfl
 
-theorem maxUnramifiedValuation_eq_coe_iff {x : K₀} (hx : x ≠ 0) {D : ℤ} :
-    maxUnramifiedValuation K x = D ↔ ‖(x : PadicAlgCl p)‖ = ‖(p : PadicAlgCl p)‖ ^ D := by
-  refine ⟨fun h => ?_, maxUnramifiedValFun_eq hx⟩
-  obtain ⟨E, hE⟩ := exists_norm_eq_zpow_maxUnramified hx
-  rw [maxUnramifiedValuation_apply, maxUnramifiedValFun_eq hx hE, WithTop.coe_eq_coe] at h
-  rw [hE, h]
 
-theorem maxUnramifiedValuation_ne_top {x : K₀} (hx : x ≠ 0) : maxUnramifiedValuation K x ≠ ⊤ := by
-  obtain ⟨E, hE⟩ := exists_norm_eq_zpow_maxUnramified hx
-  rw [maxUnramifiedValuation_apply, maxUnramifiedValFun_eq hx hE]
-  exact WithTop.coe_ne_top
 
-theorem maxUnramifiedValuation_natCast_p : maxUnramifiedValuation K (p : K₀) = 1 := by
-  have hp0 : (p : K₀) ≠ 0 := Nat.cast_ne_zero.2 hp.out.ne_zero
-  rw [show (1 : WithTop ℤ) = ((1 : ℤ) : WithTop ℤ) from rfl, maxUnramifiedValuation_eq_coe_iff hp0, zpow_one]
-  simp
 
 end Valuation
 
@@ -196,25 +335,12 @@ section FrobValuation
 
 variable [FiniteDimensional ℚ_[p] K]
 
-theorem norm_maxUnramifiedFrobenius (x : K₀) : ‖((maxUnramifiedFrobenius K x : K₀) : PadicAlgCl p)‖ = ‖(x : PadicAlgCl p)‖ := by
-  have hm : minpoly ℚ_[p] ((maxUnramifiedFrobenius K x : K₀) : PadicAlgCl p) = minpoly ℚ_[p] (x : PadicAlgCl p) := by
-    rw [← IntermediateField.minpoly_eq, ← IntermediateField.minpoly_eq, minpoly.algEquiv_eq]
-  have h1 := norm_pow_natDegree_minpoly ((maxUnramifiedFrobenius K x : K₀) : PadicAlgCl p)
-  have h2 := norm_pow_natDegree_minpoly (x : PadicAlgCl p)
-  rw [hm] at h1
-  have hd : (minpoly ℚ_[p] (x : PadicAlgCl p)).natDegree ≠ 0 :=
-    (minpoly.natDegree_pos (Algebra.IsIntegral.isIntegral (x : PadicAlgCl p))).ne'
-  exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) hd).1 (h1.trans h2.symm)
 
-theorem maxUnramifiedValuation_frobenius (x : K₀) : maxUnramifiedValuation K (maxUnramifiedFrobenius K x) = maxUnramifiedValuation K x := by
-  by_cases hx : x = 0
-  · rw [hx, map_zero]
-  obtain ⟨D, hD⟩ := exists_norm_eq_zpow_maxUnramified hx
-  have hσx : maxUnramifiedFrobenius K x ≠ 0 := (map_ne_zero_iff _ (maxUnramifiedFrobenius K).injective).2 hx
-  rw [(maxUnramifiedValuation_eq_coe_iff hx).2 hD, maxUnramifiedValuation_eq_coe_iff hσx, norm_maxUnramifiedFrobenius, hD]
 
 end FrobValuation
 
 end ACris
 
 end GroundTheory.PAdicHodge
+end
+end

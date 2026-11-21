@@ -282,43 +282,13 @@ def PolarisationDegreeD.Statement : Prop :=
 
 def exampleFamily : LowerPairs 2 → ℤ := fun _ => 5
 
-theorem unipotentMatrix_exampleFamily : unipotentMatrix exampleFamily = !![1, 5; 0, 1] := by
-  ext i j
-  fin_cases i <;> fin_cases j <;> simp [unipotentMatrix, exampleFamily]
 
-theorem example_unipotent_hyps :
-    (1 : ℕ) ≤ 2 ∧ (0 : Fin 2) < 1 ∧ ({1} : Finset (Fin 2)).card = 1 :=
-  ⟨by norm_num, by decide, rfl⟩
 
-theorem gKernel_one : gKernel ℤ 1 = X 0 * X 1 - X 1 ^ 2 := by
-  simp [gKernel]
 
-theorem norm_single_zero : ‖EuclideanSpace.single (0 : Fin 2) (1 : ℂ)‖ = 1 := by
-  simp
 
-theorem norm_single_one : ‖EuclideanSpace.single (1 : Fin 2) (1 : ℂ)‖ = 1 := by
-  simp
 
-theorem example_lineQuotientDeterminant_hyps :
-    Module.finrank ℂ (EuclideanSpace ℂ (Fin 2)) = 2 ∧
-    Module.finrank ℂ (ℂ ∙ EuclideanSpace.single (0 : Fin 2) (1 : ℂ)) = 1 ∧
-    EuclideanSpace.single (0 : Fin 2) (1 : ℂ) ∈ ℂ ∙ EuclideanSpace.single (0 : Fin 2) (1 : ℂ) ∧
-    EuclideanSpace.single (0 : Fin 2) (1 : ℂ) ≠ 0 := by
-  have hne : EuclideanSpace.single (0 : Fin 2) (1 : ℂ) ≠ 0 := by
-    rw [← norm_ne_zero_iff, norm_single_zero]; exact one_ne_zero
-  exact ⟨finrank_euclideanSpace_fin, finrank_span_singleton hne,
-    Submodule.mem_span_singleton_self _, hne⟩
 
-theorem example_diagonal_hyps : IsDomain ℤ ∧ IsNoetherianRing ℤ := ⟨inferInstance, inferInstance⟩
 
-theorem example_sectionNormLog_hyps :
-    ‖EuclideanSpace.single (0 : Fin 2) (1 : ℂ)‖ = 1 ∧ ‖EuclideanSpace.single (1 : Fin 2) (1 : ℂ)‖ = 1 ∧
-    EuclideanSpace.single (0 : Fin 2) (1 : ℂ) ∉ ℂ ∙ EuclideanSpace.single (1 : Fin 2) (1 : ℂ) := by
-  refine ⟨norm_single_zero, norm_single_one, ?_⟩
-  rw [Submodule.mem_span_singleton]
-  rintro ⟨a, ha⟩
-  have h := congrArg (fun v : EuclideanSpace ℂ (Fin 2) => v 0) ha
-  simp at h
 
 abbrev SqZeroRing := MvPolynomial (Fin 2) ℚ ⧸ (Ideal.span {X 0 ^ 2, X 1 ^ 2} : Ideal (MvPolynomial (Fin 2) ℚ))
 
@@ -339,15 +309,8 @@ theorem sphereMeasure_univ : sphereMeasure Set.univ = 1 := by
   rw [sphereMeasure, Measure.smul_apply, smul_eq_mul]
   exact ENNReal.inv_mul_cancel h0 h1
 
-theorem example_sphereHeightUniform_hyp : ‖EuclideanSpace.single (2 : Fin 3) (1 : ℝ)‖ = 1 := by
-  simp
 
-theorem example_fibre_hyps :
-    1 ≤ 1 ∧ (0 : ℝ) ∈ Set.Icc (-1 : ℝ) 1 ∧ (1 / 2 : ℝ) ∈ Set.Icc (-1 : ℝ) 1 ∧ (0 : ℝ) ≠ 1 / 2 := by
-  refine ⟨le_rfl, ⟨by norm_num, by norm_num⟩, ⟨by norm_num, by norm_num⟩, by norm_num⟩
 
-theorem example_curveForm_hyps : ContDiff ℝ 2 (fun z : ℂ => ‖z‖ ^ 2) ∧ ‖(0 : ℂ)‖ < 1 :=
-  ⟨contDiff_norm_sq ℝ, by simp⟩
 
 def exampleChar : Fin 2 → Circle →* Circle := ![1, MonoidHom.id Circle]
 
@@ -371,49 +334,7 @@ def exampleForm : (Fin 2 → ℂ) →ₗ⋆[ℂ] (Fin 2 → ℂ) →ₗ[ℂ] ℂ
     (fun x y y' => by simp [mul_add, Finset.sum_add_distrib])
     (fun c x y => by simp; ring)
 
-theorem example_torusInvariantDiagonal_hyps :
-    DirectSum.IsInternal exampleLine ∧ (∀ i, Module.finrank ℂ (exampleLine i) = 1) ∧
-    Function.Injective exampleChar ∧
-    (∀ i, ∀ v ∈ exampleLine i, ∀ t : Circle, exampleRep t v = ((exampleChar i t : Circle) : ℂ) • v) ∧
-    (∀ x y, exampleForm y x = conj (exampleForm x y)) ∧
-    (∀ t x y, exampleForm (exampleRep t x) (exampleRep t y) = exampleForm x y) := by
-  refine ⟨?_, fun i => finrank_span_singleton ((Pi.basisFun ℂ (Fin 2)).ne_zero i), ?_, ?_, ?_, ?_⟩
-  · refine DirectSum.isInternal_submodule_of_iSupIndep_of_iSup_eq_top
-      (Pi.basisFun ℂ (Fin 2)).linearIndependent.iSupIndep_span_singleton ?_
-    show ⨆ i, ℂ ∙ Pi.basisFun ℂ (Fin 2) i = ⊤
-    rw [← Submodule.span_range_eq_iSup, Module.Basis.span_eq]
-  · intro i j h
-    fin_cases i <;> fin_cases j
-    · rfl
-    · have := DFunLike.congr_fun h (Circle.exp Real.pi)
-      have h2 := congrArg (fun z : Circle => (z : ℂ)) this
-      simp [exampleChar, Circle.coe_exp] at h2
-      norm_num at h2
-    · have := DFunLike.congr_fun h (Circle.exp Real.pi)
-      have h2 := congrArg (fun z : Circle => (z : ℂ)) this
-      simp [exampleChar, Circle.coe_exp] at h2
-      norm_num at h2
-    · rfl
-  · intro i v hv t
-    obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.mp hv
-    ext j
-    simp [exampleRep, Pi.single_apply]
-    split_ifs with hj
-    · subst hj; ring
-    · simp
-  · intro x y
-    simp [exampleForm, mul_comm]
-  · intro t x y
-    have hc : ∀ z : Circle, conj (z : ℂ) * z = 1 := fun z => by
-      rw [Complex.conj_mul', Circle.norm_coe]; simp
-    simp only [exampleForm, exampleRep, LinearMap.mk₂'ₛₗ_apply, MonoidHom.coe_mk, OneHom.coe_mk,
-      Matrix.toLin'_apply, Matrix.mulVec_diagonal, map_mul]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    linear_combination (conj (x i) * y i) * hc (exampleChar i t)
 
-theorem example_polarisation_hyp :
-    ∀ c : Fin 2 → ℚ, MvPolynomial.lcoeff ℚ (Finsupp.single 0 2) ((∑ i, C (c i) * X i) ^ 2) =
-      MvPolynomial.lcoeff ℚ (Finsupp.single 0 2) ((∑ i, C (c i) * X i) ^ 2) := fun _ => rfl
 
 end
 

@@ -249,12 +249,6 @@ def RegularAdelic : Prop :=
 
 def RegularSemisimple : Prop := RegularStructure ∧ RegularAdelic
 
-theorem isQuadInvol_complex : IsQuadInvol ℝ ℂ (Complex.conjAe : ℂ →ₐ[ℝ] ℂ) where
-  etale := ⟨Algebra.FormallyEtale.of_isSeparable ℝ ℂ,
-    Algebra.FinitePresentation.of_finiteType.1 inferInstance⟩
-  finrank_eq := Complex.finrank_real_complex
-  invol := by intro e; simp
-  ne_id := ⟨Complex.I, by simp [Complex.ext_iff]; norm_num⟩
 
 def exElt : GL (Fin 2) ℂ where
   val := !![2, 0; 0, 1 / 2]
@@ -262,23 +256,6 @@ def exElt : GL (Fin 2) ℂ where
   val_inv := by ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two]
   inv_val := by ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two]
 
-theorem isRegular_exElt :
-    IsRegular (Complex.conjAe : ℂ →ₐ[ℝ] ℂ) (!![0, 1; 1, 0] : Matrix (Fin 2) (Fin 2) ℂ) exElt where
-  quad := isQuadInvol_complex
-  herm := by ext i j; fin_cases i <;> fin_cases j <;> simp [cT]
-  nondeg := by simp [Matrix.det_fin_two]
-  mem := by
-    show cT _ _ * _ * _ = _
-    have h2 : (starRingEnd ℂ) 2 = 2 := map_ofNat _ 2
-    ext i j; fin_cases i <;> fin_cases j <;>
-      simp [cT, exElt, Matrix.mul_apply, Fin.sum_univ_two, h2]
-  sep := by
-    have h : (exElt : Matrix (Fin 2) (Fin 2) ℂ) = Matrix.diagonal ![2, 1 / 2] := by
-      ext i j; fin_cases i <;> fin_cases j <;> simp [exElt]
-    rw [h, Matrix.charpoly_diagonal]
-    refine Polynomial.separable_prod_X_sub_C_iff.2 ?_
-    intro i j hij
-    fin_cases i <;> fin_cases j <;> simp at hij ⊢ <;> norm_num at hij
 
 def exDiag (R : Type) [CommRing R] [Algebra ℝ R] :
     (Fin 1 → Rˣ) →* Matrix (Fin 2) (Fin 2) (ℂ ⊗[ℝ] R) where

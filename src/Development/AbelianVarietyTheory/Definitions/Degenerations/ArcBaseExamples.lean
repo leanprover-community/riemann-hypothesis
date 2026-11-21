@@ -160,20 +160,10 @@ theorem exists_ampFrames [IsProper G.hom] [Flat G.hom] [GeometricallyIntegral G.
 theorem abLocus_eq_univ [IsProper G.hom] : abLocus G = Set.univ :=
   Set.eq_univ_of_forall fun _ _ _ _ _ _ => inferInstance
 
-theorem cDvr_padicInt (p : ℕ) [Fact p.Prime] : CDvr ℤ_[p] := ⟨inferInstance, inferInstance, inferInstance⟩
 
 def constFamily (C : _root_.WeierstrassCurve ℤ) : Over (PSpace ℤ 1) :=
   Over.mk (pullback.snd (WeierstrassCurve.toSpec C) (PSpace.str ℤ 1))
 
-theorem ampFrames_constFamily (C : _root_.WeierstrassCurve ℤ) :
-    (∃ F : AmpFrames (constFamily C) ((ProjSpace.O1 ℤ 1).pull (constFamily C).hom) N, F.A = ProjSpace.O1 ℤ 1 ∧ F.n = 1) ∧
-      abLocus (constFamily C) = Set.univ := by
-  obtain ⟨h₁, h₂, -, h₃, -⟩ := WeierstrassCurve.proper_flat_geometricallyIntegral_smooth C
-  have : IsProper (constFamily C).hom := inferInstanceAs (IsProper (pullback.snd _ _))
-  have : Flat (constFamily C).hom := inferInstanceAs (Flat (pullback.snd _ _))
-  have : GeometricallyIntegral (constFamily C).hom := inferInstanceAs (GeometricallyIntegral (pullback.snd _ _))
-  obtain ⟨F, a, b, -⟩ := exists_ampFrames (constFamily C) _ N (isAmple_projective_O_one ℤ 1)
-  exact ⟨⟨F, a, b⟩, abLocus_eq_univ _⟩
 
 theorem bijective_fst [IsProper G.hom] [Flat G.hom] [GeometricallyIntegral G.hom] {V : Type} [CommRing V] [IsNoetherianRing V]
     (χ : Sp V ⟶ Z) : Function.Bijective (fst (Over.mk χ) G).left.appTop.hom := by
@@ -201,23 +191,8 @@ theorem exists_isFrame [IsProper G.hom] [Flat G.hom] [GeometricallyIntegral G.ho
     lin_of G A N hA _ (fun _ => hi _) (fun _ => hi _) he hs _ rfl _ h1,
     lin_of G A N hA _ (fun _ => hi _) (fun _ => hi _) he' hs _ rfl _ h1⟩⟩
 
-theorem not_basisAlong_of_isEmpty (L : LB G.left) [IsEmpty L.ι] {T T' : Over Z} (h : T' ⟶ T) [Nontrivial Γ(T'.left, ⊤)]
-    (b : Fin 1 → LB.Sec (LPow G L (N : ℤ) T)) : ¬ BasisAlong G L N h b := by
-  intro H
-  have hE : IsEmpty (LPow G L (N : ℤ) T').ι := ⟨fun j => isEmptyElim (j (0 : Fin 1))⟩
-  obtain ⟨c, -, hc⟩ := H ⟨fun j => hE.elim j, fun j => hE.elim j⟩
-  have v : ∀ c', Lin G L N h b c' ⟨fun j => hE.elim j, fun j => hE.elim j⟩ := fun c' z J _ =>
-    isEmptyElim (J (snd T' G).left)
-  exact zero_ne_one (congrFun ((hc (fun _ => 0) (v _)).trans (hc (fun _ => 1) (v _)).symm) 0)
 
-theorem admissible_padicInt_maximalIdeal (p : ℕ) [Fact p.Prime] : admitted ℤ_[p] (IsLocalRing.maximalIdeal ℤ_[p]) := by
-  refine ⟨⟨inferInstance, inferInstance, inferInstance, inferInstance⟩, inferInstance, inferInstance, inferInstance, ?_⟩
-  letI := Ideal.Quotient.field (IsLocalRing.maximalIdeal ℤ_[p])
-  infer_instance
 
-theorem arcBase_examples (p : ℕ) [Fact p.Prime] : ArcBase ℚ 1 ∧ ArcBase ℤ_[p] (p : ℤ_[p]) :=
-  ⟨.inl ⟨Field.toIsField ℚ, rfl⟩, .inr ⟨inferInstance, PadicInt.irreducible_p, by
-    rw [← PadicInt.maximalIdeal_eq_span_p]; infer_instance⟩⟩
 
 end GlobalTheory.LN.Model
 end

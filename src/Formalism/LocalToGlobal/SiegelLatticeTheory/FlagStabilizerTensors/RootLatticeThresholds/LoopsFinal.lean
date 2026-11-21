@@ -1,11 +1,39 @@
 import Mathlib
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.LoopTieOfInhab
-import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.WRowPinHolds
+import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.LoopTieOf
+import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.MemPerpMapFlag
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.SubMemOfIndQ
 import Formalism.SharpRestriction.CuspSpanNormBounds.CayleyDegreeNondegeneracy.RowsFinal
 import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.LocalFormOfHypotheses
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.BetaLUniq
 
+section
+noncomputable section
+
+open scoped Classical
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.PackageTie2
+
+namespace Formalism.L2.SG.Pf.WittFlags
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+theorem WRowPin_holds {D : D7} {X : HidaSetting D} {Y : Formalism.L2.SG.Full.Full X} (hF : FinX Y)
+    (hI : SIso D.s (sOf hF)) (W : Formalism.L2.SG.TermTieOf.WittDat X) (H : Formalism.L2.SG.TermTieOf.TieHyp W hI)
+    (A : Formalism.L2.SG.TermTieOf.AmpDat X) (hV : Formalism.L2.SG.TermTieOf.PvalForm W hI A) :
+    Formalism.L2.SG.LoopTieOf.WRowPin hF hI (Formalism.L2.SG.TermTieOf.termTieOf W hI H A hV) := by
+  intro u u' p s hs
+  have h2 : (Formalism.L2.SG.TermTieOf.tc hI (D.s.pfst p)).lam = s.lam :=
+    (congrArg (fun t => t.lam) hs).symm
+  show Formalism.MainNotions.S.wRow D (Formalism.L2.SG.TermTieOf.FlagOfWord W u) (Formalism.L2.SG.TermTieOf.lamOf W hI (D.s.pfst p)) = _
+  unfold Formalism.L2.SG.TermTieOf.lamOf
+  rw [h2]
+  exact WRowIso_holds D (W.δ u) (W.isom u) (X.Fu u) s.lam
+
+end Formalism.L2.SG.Pf.WittFlags
+end
+end
+
+section
 noncomputable section
 
 open scoped Classical
@@ -44,13 +72,6 @@ theorem family_admitted_of_parts (h : AdmRec Fm C1) (hV : ∀ Cg cb Cu cT CT C0 
   obtain ⟨b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19⟩ := h Cg cb Cu cT CT C0 A
   exact ⟨b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, hV Cg cb Cu cT CT C0 A⟩
 
-theorem admissible_split_volumes (h : VanishingOnXAndXPlus.AdmF Fm C1 At Yt) : AdmRec Fm C1 ∧
-    ∀ Cg cb Cu cT CT C0 A : ℝ, VanishingOnXAndXPlus.FamilyTermVolumeSmallCellBound Fm C1 At Yt Cg cb Cu cT CT C0 A := by
-  obtain ⟨a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, h⟩ := h
-  refine ⟨⟨a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, fun Cg cb Cu cT CT C0 A => ?_⟩,
-    fun Cg cb Cu cT CT C0 A => (h Cg cb Cu cT CT C0 A).2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2⟩
-  obtain ⟨b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, -⟩ := h Cg cb Cu cT CT C0 A
-  exact ⟨b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19⟩
 
 end admitted
 
@@ -93,25 +114,6 @@ variable {eps : ℝ} (Fm : FamP eps) (C1 : ℝ) (At : ∀ x, Fm.x1 < x → ∀ i
     LoopTie (Fm.D x i) (Fm.L x i) (At x hx i) u u' C1)
   (Cc : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), ConcAt (Fm.D x i) (At x hx i))
 
-theorem rowLoopsF_of_ev
-    (hFo : ∀ Cg cb Cu cT CT C0 : ℝ, OwnEv Fm fun C' Cl x i =>
-      Hyp0 (Fm.D x i) (Fm.L x i) C' Cl Cg cb Cu cT CT C0 → ∀ u, UnitaryVolumeMass.FormAt (Fm.D x i) u)
-    (hR : Formalism.MainNotions.BridgeLemma.RowsF Fm C1 At Yt) : RowLoopsF Fm At Cc := by
-  intro Cg cb Cu cT CT C0 A
-  obtain ⟨C₀, H⟩ := hR Cg cb Cu cT CT C0 A
-  refine ⟨C₀, fun C hC => ?_⟩
-  obtain ⟨a, Ha⟩ := H C hC
-  obtain ⟨b, Hb⟩ := hFo Cg cb Cu cT CT C0
-  refine ⟨max a b, fun x hx i => ?_⟩
-  intro hx1 u u' hH
-  obtain ⟨hn, hd, h1⟩ := Ha x (le_trans (le_max_left _ _) hx) i hx1 u u' hH
-  have hF := Hb x (le_trans (le_max_right _ _) hx) i hH.1 u
-  let K := Cc x hx1 i
-  refine ⟨fun s h2 hk => ?_, ?_⟩
-  · exact gam_mul_le K.gam (Yt x hx1 i u u') hF
-      (classS_le (hI := K.hI) (At x hx1 i) K.jt K.wr K.fc (Yt x hx1 i u u') C hn hd s h2 hk)
-  · exact gam_mul_le K.gam (Yt x hx1 i u u') hF
-      (classOne_le (hI := K.hI) (At x hx1 i) K.jt K.wr K.fc (Yt x hx1 i u u') C h1)
 
 end Ev
 
@@ -181,28 +183,6 @@ theorem termInjF (x : ℝ) (hx : Fm.x1 < x) (i : Fm.Ix x) (u u' : (Fm.D x i).wha
     BridgeLemma₂.wordPairTermInjective (AtF Fm X Y hF hI W H A hV x hx i) (YtF Fm C1 X Y hF hI W H A hV hFC B M x hx i u u') :=
   fun t t' hL hE => frameEqvInj_of (W x hx i) (hI x hx i) (H x hx i) (A x hx i) (hV x hx i) (hFC x hx i) u u' t t' hL hE
 
-theorem loop_bound_families
-    (hRk : ∀ Cg cb Cu cT CT C0 : ℝ, PX.RanksF Fm C0 Cg cb Cu cT CT) (hL3 : VanishingOnXAndXPlusMass.Conclusion3Family Fm)
-    (hAdm : AdmRec Fm C1)
-    (hVol : ∀ Cg cb Cu cT CT C0 Aa : ℝ, VanishingOnXAndXPlus.FamilyTermVolumeSmallCellBound Fm C1 (AtF Fm X Y hF hI W H A hV)
-      (YtF Fm C1 X Y hF hI W H A hV hFC B M) Cg cb Cu cT CT C0 Aa)
-    (hAmp : BridgeLemma₂.FamilyAmplitudeBounds Fm C1)
-    (hN : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x) (u u' : (Fm.D x i).what₂.Word),
-      BridgeLemma₂.wordPairNormRelation (AtF Fm X Y hF hI W H A hV x hx i) u u')
-    (hG0 : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x) (u u' : (Fm.D x i).what₂.Word),
-      @Formalism.MainNotions.BridgeLemma.LatticeDeterminantFactorization (Fm.D x i) (AtF Fm X Y hF hI W H A hV x hx i) u u')
-    (hEL : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x) (u u' : (Fm.D x i).what₂.Word),
-      BridgeLemma₂.wordPairEntriesInLattice (AtF Fm X Y hF hI W H A hV x hx i) u u') :
-    RowLoopsF Fm (AtF Fm X Y hF hI W H A hV) (CcF Fm X Y hF hI W H A hV hAF hRF gam) :=
-  rowLoopsF_of_ev Fm C1 (AtF Fm X Y hF hI W H A hV) (YtF Fm C1 X Y hF hI W H A hV hFC B M)
-    (CcF Fm X Y hF hI W H A hV hAF hRF gam)
-    (fun Cg cb Cu cT CT C0 => Formalism.MainNotions.BridgeLemma.formAt_family Fm Cg cb Cu cT CT C0 (hRk Cg cb Cu cT CT C0) hL3
-      (hAdm.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2 Cg cb Cu cT CT C0 0).2.2.2.2.2.2.2.2.2.2.2.2.1)
-    (BridgeLemma₂.family_gluing_bounds_of_beta Fm C1 (AtF Fm X Y hF hI W H A hV) (YtF Fm C1 X Y hF hI W H A hV hFC B M)
-      (family_admitted_of_parts Fm C1 _ _ hAdm hVol) hAmp
-      (fun x hx i u u' => ⟨hN x hx i u u', hG0 x hx i u u', hEL x hx i u u',
-        termInjF Fm C1 X Y hF hI W H A hV hFC B M x hx i u u'⟩)
-      (fun x i => beta_l_unique (Fm.D x i)))
 
 end Fam
 
@@ -239,24 +219,9 @@ variable {eps : ℝ} (Fm : FamP eps) (C1 : ℝ)
 def hFCOf (hFC : FrameChangeC) : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), FrameChangeAt (W x hx i) (hI x hx i) :=
   fun x hx i => hFC _ _ _ (hF x hx i) (hI x hx i) (W x hx i)
 
-theorem loop_bound_concrete_families (hFC : FrameChangeC) (hNC : NormTieC) (hGC : GramDeterminantCount) (hEC : EntryLatC)
-    (B : ∀ x (_ : Fm.x1 < x) (i : Fm.Ix x) (u u' : (Fm.D x i).what₂.Word), LoopLocDat (Fm.D x i) (Fm.L x i) u u' C1)
-    (M : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x) (u u' : (Fm.D x i).what₂.Word),
-      LoopTermDat (Fm.D x i) (Fm.L x i) (AtF Fm X Y hF hI W H A hV x hx i) u u' C1 (B x hx i u u'))
-    (hAF : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), AmpFibreConst (Y x hx i))
-    (hRF : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), Formalism.L2.SG.Pf.FibreCounting.RowFree (Y x hx i))
-    (gam : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), GamPin (Y x hx i))
-    (hRk : ∀ Cg cb Cu cT CT C0 : ℝ, PX.RanksF Fm C0 Cg cb Cu cT CT) (hL3 : VanishingOnXAndXPlusMass.Conclusion3Family Fm)
-    (hAdm : AdmRec Fm C1)
-    (hVol : ∀ Cg cb Cu cT CT C0 Aa : ℝ, VanishingOnXAndXPlus.FamilyTermVolumeSmallCellBound Fm C1 (AtF Fm X Y hF hI W H A hV)
-      (YtF Fm C1 X Y hF hI W H A hV (hFCOf Fm X Y hF hI W hFC) B M) Cg cb Cu cT CT C0 Aa)
-    (hAmp : BridgeLemma₂.FamilyAmplitudeBounds Fm C1) :
-    RowLoopsF Fm (AtF Fm X Y hF hI W H A hV) (CcF Fm X Y hF hI W H A hV hAF hRF gam) :=
-  loop_bound_families Fm C1 X Y hF hI W H A hV (hFCOf Fm X Y hF hI W hFC) B M hAF hRF gam hRk hL3 hAdm hVol hAmp
-    (fun x hx i u u' => hNC _ _ _ (hF x hx i) (hI x hx i) (W x hx i) (H x hx i) (A x hx i) (hV x hx i) u u')
-    (fun x hx i u u' => hGC _ _ _ (hF x hx i) (hI x hx i) (W x hx i) (H x hx i) (A x hx i) (hV x hx i) u u')
-    (fun x hx i u u' => hEC _ _ _ (hF x hx i) (hI x hx i) (W x hx i) (H x hx i) (A x hx i) (hV x hx i) u u')
 
 end Closed
 
 end Formalism.L2.SG.LoopsFinal
+end
+end

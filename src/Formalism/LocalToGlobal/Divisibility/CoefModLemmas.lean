@@ -291,15 +291,6 @@ theorem conjTranspose_transpose' {K : Type} [Field K] [StarRing K] {n : ℕ} (A 
   ext i j
   simp [Matrix.conjTranspose_apply]
 
-theorem gramHerm : GramHerm := by
-  intro E K _ _ _ ι n emb cE τ h J hJ
-  have h1 : (gramK emb J τ)ᴴ = gramK emb J τ := by
-    unfold gramK
-    rw [map_conjTranspose_eq (emb τ) cE h, hJ]
-  refine ⟨h1, ?_⟩
-  unfold gramKd
-  unfold gramK at h1
-  rw [conjTranspose_transpose', Matrix.conjTranspose_nonsing_inv, h1]
 
 theorem uJUnitary : UJUnitary := by
   intro E K _ _ _ ι n emb cE τ h J γ hγ
@@ -676,61 +667,17 @@ def lamVec : DomWeight 2 where
 
 def vecP (v : Fin 2 → K) : Pol K Unit 2 := ∑ a : Fin 2, C (v a) * X ((), (a, 0))
 
-theorem lamVec_detShift : lamVec.detShift = 0 := by
-  simp [DomWeight.detShift, lamVec]
 
-theorem lamVec_natW : lamVec.natW = ![1, 0] := by
-  funext i
-  fin_cases i <;> simp only [DomWeight.natW, lamVec_detShift] <;> simp [lamVec]
 
-theorem extremal_lamVec : extremal K 2 lamVec = X (0, 0) := by
-  unfold extremal Formalism.GradedWeylDivisibility.hw
-  rw [lamVec_natW, Fin.prod_univ_two]
-  simp [Formalism.GradedWeylDivisibility.nuNext, Formalism.GradedWeylDivisibility.lpMinor]
 
 variable [StarRing K]
 
-theorem fockL_X_X {σ : Type} [DecidableEq σ] (i j : σ) :
-    fockL (X i : MvPolynomial σ K) (X j) = if i = j then 1 else 0 := by
-  have h := fockL_X_pderiv (K := K) i 1 (X j)
-  rw [mul_one] at h
-  rw [h, ← C_1, fockL_C_left, pderiv_X]
-  by_cases hij : i = j
-  · subst hij; simp
-  · simp [hij, Ne.symm hij]
 
-theorem pairP_vecP (G : Unit → Matrix (Fin 2) (Fin 2) K) (v w : Fin 2 → K) :
-    pairP (fun _ => lamVec) G (vecP v) (vecP w) = star v ⬝ᵥ (G () *ᵥ w) := by
-  have h1 : gramTw (fun _ : Unit => lamVec) G = 1 := by simp [gramTw, lamVec_detShift]
-  have h2 : extNorm K (fun _ : Unit => lamVec) = 1 := by
-    simp only [extNorm, Finset.univ_unique, Finset.prod_singleton, extremal_lamVec]
-    rw [← fockL_apply, fockL_X_X, if_pos rfl]
-  rw [pairP_apply, h1, h2]
-  simp only [vecP, blockAct_X, Fin.sum_univ_two, Matrix.transpose_apply,
-    ← smul_eq_C_mul, map_add, map_smul, LinearMap.map_smulₛₗ, LinearMap.add_apply, LinearMap.smul_apply, fockL_X_X,
-    smul_add, smul_smul]
-  simp [Matrix.mulVec, dotProduct, Fin.sum_univ_two]
-  simp only [starRingEnd_apply]
-  ring
 
 def lamChar (e : ℤ) : DomWeight 1 where
   w := fun _ => e
   anti := fun _ _ _ => le_rfl
 
-theorem pairP_char (e : ℤ) (G : Unit → Matrix (Fin 1) (Fin 1) K) :
-    pairP (fun _ => lamChar e) G (1 : Pol K Unit 1) 1 = G () 0 0 ^ e := by
-  have h0 : (lamChar e).natW = fun _ => 0 := by
-    funext i
-    simp [DomWeight.natW, DomWeight.detShift, lamChar]
-  have h2 : extNorm K (fun _ : Unit => lamChar e) = 1 := by
-    simp only [extNorm, Finset.univ_unique, Finset.prod_singleton, extremal, Formalism.GradedWeylDivisibility.hw, h0]
-    simp only [Formalism.GradedWeylDivisibility.nuNext]
-    simp only [Nat.sub_self, dite_eq_ite, ite_self, pow_zero]
-    rw [← fockL_apply, ← C_1, fockL_C_left]
-    simp
-  have hb : Formalism.GradedWeylDivisibility.blockAct K (fun τ => (G τ)ᵀ) (1 : Pol K Unit 1) = 1 := map_one _
-  rw [pairP_apply, h2, hb, ← C_1, fockL_C_left]
-  simp [gramTw, lamChar, DomWeight.detShift]
 
 end Checks
 

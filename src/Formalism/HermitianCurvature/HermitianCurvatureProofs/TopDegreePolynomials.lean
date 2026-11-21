@@ -91,61 +91,7 @@ theorem pairing_top_degree : Formalism.FourierDecayAlt.F7.PairTop := by
       map_add, Complex.conj_ofReal, Complex.ofReal_add]
     ring
 
-theorem j_pairing_formula : Formalism.FourierDecayAlt.F7.JPairing := by
-  intro R M _ _ _ _ _ _ Ξ A B Av Bv s Y Y' X X'
-  simp [pair2, act2, vec, Formalism.YangianSpanCharacter.T.J, Formalism.YangianSpanCharacter.T.Uinv, Fin.sum_univ_two, Matrix.mul_apply, add_smul,
-    mul_smul, algebraMap_smul]
-  ring
 
-theorem plane_wave_top_degree : Formalism.FourierDecayAlt.F7.PlaneWaveTop := by
-  intro R M _ _ _ _ _ _ Ξ n A B Av Bv s X X' hS hSv
-  obtain ⟨hA, hAn, hB⟩ := hS
-  obtain ⟨hAv, hAvn, hBv⟩ := hSv
-  have cA : A.coeff n = 1 := by rw [← hAn]; exact hA.coeff_natDegree
-  have cAv : Av.coeff n = 1 := by rw [← hAvn]; exact hAv.coeff_natDegree
-  have cB : B.coeff n = 0 := coeff_eq_zero_of_degree_lt hB
-  have cBv : Bv.coeff n = 0 := coeff_eq_zero_of_degree_lt hBv
-  have dB : B.natDegree ≤ n := natDegree_le_of_degree_le hB.le
-  have dBv : Bv.natDegree ≤ n := natDegree_le_of_degree_le hBv.le
-  have h1 := pairing_top_degree R M Ξ (B + C (algebraMap ℂ R s) * A) Av n n 1 X X'
-    (natDegree_add_le_of_degree_le dB ((natDegree_C_mul_le _ _).trans hAn.le)) hAvn.le
-  have h2 := pairing_top_degree R M Ξ A Bv n n 1 X X' hAn.le dBv
-  have h3 := isTop_sub h1 h2
-  rw [two_mul]
-  convert h3 using 1
-  · funext Y
-    rw [j_pairing_formula R M Ξ A B Av Bv s Y (Y + 1) X X']
-    simp [evR, eval_add, eval_C_mul]
-  · simp [cA, cAv, cB, cBv, algebraMap_smul]
 
-theorem lift_top_degree : Formalism.FourierDecayAlt.F7.LiftTop := by
-  intro R M _ _ _ _ _ _ Ξ n s A B Av Bv A₀ A₀v e t t' h X X' _ he ht ht' hA hAn hAv hAvn
-    hA₀ hA₀n hA₀v hA₀vn hB hBv
-  have cA : A.coeff (n + s) = 1 := by rw [← hAn]; exact hA.coeff_natDegree
-  have cAv : Av.coeff (n + s) = 1 := by rw [← hAvn]; exact hAv.coeff_natDegree
-  have cA₀ : A₀.coeff n = 1 := by rw [← hA₀n]; exact hA₀.coeff_natDegree
-  have cA₀v : A₀v.coeff n = 1 := by rw [← hA₀vn]; exact hA₀v.coeff_natDegree
-  have h1 := isTop_const_mul (e * t⁻¹)
-    (pairing_top_degree R M Ξ A₀ Av n (n + s) h X X' hA₀n.le hAvn.le)
-  have h2 := isTop_const_mul (e * t'⁻¹)
-    (pairing_top_degree R M Ξ A A₀v (n + s) n h X X' hAn.le hA₀vn.le)
-  have e1 : n + (n + s) = 2 * n + s := by ring
-  have e2 : n + s + n = 2 * n + s := by ring
-  rw [e1] at h1
-  rw [e2] at h2
-  have h3 := isTop_sub h1 h2
-  have hce : (starRingEnd ℂ) e = e := by
-    rcases he with rfl | rfl <;> simp
-  convert h3 using 1
-  · funext Y
-    have := j_pairing_formula R M Ξ A B Av Bv 0 Y (Y + h) X X'
-    have hU : Formalism.YangianSpanCharacter.T.Uinv (A := R) (0 : ℂ) = 1 := by
-      ext i j; fin_cases i <;> fin_cases j <;> simp [Formalism.YangianSpanCharacter.T.Uinv]
-    rw [hU, mul_one] at this
-    rw [this, map_zero, zero_mul, add_zero, hB, hBv, map_smul Ξ, LinearMap.smul_apply,
-      LinearMap.map_smulₛₗ (Ξ (evR A Y • X))]
-    simp [hce]
-  · simp [cA, cAv, cA₀, cA₀v]
-    ring
 
 end Formalism.FourierDecayAlt.P

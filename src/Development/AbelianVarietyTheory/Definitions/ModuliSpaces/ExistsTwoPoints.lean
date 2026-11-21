@@ -89,16 +89,6 @@ omit [CommRing A] in
 theorem range_comp_symm {σ τ : Type} (e : σ ≃ τ) (v : σ → A) : Set.range (v ∘ e.symm) = Set.range v :=
   e.symm.surjective.range_comp v
 
-theorem projRep_pspace (R : Type) [CommRing R] (N : ℕ) :
-    ProjRep (⊥ : Ideal (MvPolynomial (Fin (N + 1)) R)) (PSpace.str R N) ((O1 R N).pull (𝟙 _))
-      (fun a => Cartier.secPull (coord R N a) (𝟙 _)) := by
-  refine ⟨LB.isLB_pull (O1_isLB R N) _, fun R' _ β x v hx h => ?_, fun R' _ β v hv _ => ?_⟩
-  · obtain ⟨hv, -⟩ := (secCoord_iff (Equiv.refl _) (𝟙 _) β x (by simpa using hx) v).1 h
-    exact ⟨hv, fun F hF => by rw [Ideal.mem_bot.1 hF, eval₂_zero]⟩
-  · refine ⟨pt β v hv, ⟨pt_str _ _ _, ?_⟩, fun x hx => ?_⟩
-    · exact (secCoord_iff (Equiv.refl _) (𝟙 _) β _ (by simpa using pt_str β v hv) v).2 ⟨hv, Category.comp_id _⟩
-    · obtain ⟨_, h⟩ := (secCoord_iff (Equiv.refl _) (𝟙 _) β x (by simpa using hx.1) v).1 hx.2
-      exact (Category.comp_id _).symm.trans h
 
 section
 variable (K : Type) [Field K] (g n N' : ℕ) {M : ℕ} (e : Ix g (N' ^ 2) ≃ Fin (M + 1))

@@ -69,20 +69,6 @@ theorem crd_tmul {ι : Type} (b : Module.Basis ι F E) (i : ι) (e : E) (r : R) 
   show TensorProduct.lid F R ((b.coord i).rTensor R (e ⊗ₜ[F] r)) = _
   rw [LinearMap.rTensor_tmul, TensorProduct.lid_tmul, Module.Basis.coord_apply]
 
-theorem comb_crd {ι : Type} [Fintype ι] (b : Module.Basis ι F E) (x : E ⊗[F] R) :
-    comb R b (fun i => crd R b i x) = x := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp only [map_zero]; exact map_zero _
-  | add x y hx hy =>
-    have : (fun i => crd R b i (x + y)) = (fun i => crd R b i x) + (fun i => crd R b i y) := by
-      ext i; simp
-    rw [this, map_add, hx, hy]
-  | tmul e r =>
-    rw [comb_apply]
-    simp only [crd_tmul]
-    conv_rhs => rw [← b.sum_repr e, TensorProduct.sum_tmul]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [TensorProduct.smul_tmul]
 
 variable [TopologicalSpace R] [IsTopologicalRing R]
 
@@ -100,22 +86,8 @@ theorem ringT : IsTopologicalRing (E ⊗[F] R) :=
   haveI := finT (F := F) (E := E) R
   IsModuleTopology.isTopologicalRing R (E ⊗[F] R)
 
-theorem t2T [T2Space R] : T2Space (E ⊗[F] R) := by
-  refine T2Space.of_injective_continuous
-    (f := fun x : E ⊗[F] R => fun i => crd R (Module.finBasis F E) i x) ?_ ?_
-  · intro x y h
-    rw [← comb_crd R (Module.finBasis F E) x, ← comb_crd R (Module.finBasis F E) y]
-    exact congrArg _ h
-  · exact continuous_pi fun i => IsModuleTopology.continuous_of_linearMap (crd R (Module.finBasis F E) i)
 
-theorem comb_cont {ι : Type} [Fintype ι] (e : ι → E) : Continuous (comb (F := F) R e) :=
-  haveI := IsModuleTopology.toContinuousAdd R (E ⊗[F] R)
-  IsModuleTopology.continuous_of_linearMap _
 
-theorem comb_open {ι : Type} [Fintype ι] (e : ι → E) (he : Submodule.span F (Set.range e) = ⊤) :
-    IsOpenMap (comb (F := F) R e) :=
-  haveI := IsModuleTopology.toContinuousAdd R (E ⊗[F] R)
-  IsModuleTopology.isOpenMap_of_surjective (comb_surj R e he)
 
 theorem sigR_cont (σ : E →ₐ[F] E) : Continuous (sigR σ R) := by
   have := ringT (F := F) (E := E) R
@@ -127,16 +99,6 @@ theorem sigR_cont (σ : E →ₐ[F] E) : Continuous (sigR σ R) := by
   rw [h]
   exact continuous_algebraMap R (E ⊗[F] R)
 
-theorem isClosed_UPts [T2Space R] {n : Type} [Fintype n] [DecidableEq n] (σ : E →ₐ[F] E)
-    (J : Matrix n n E) : IsClosed (UPts σ J R : Set (GL n (E ⊗[F] R))) := by
-  have := ringT (F := F) (E := E) R
-  have := t2T (F := F) (E := E) R
-  have hc : Continuous fun g : GL n (E ⊗[F] R) =>
-      cT (sigR σ R) (g : Matrix n n (E ⊗[F] R)) * J.map (inclE (F := F) R) * (g : Matrix n n (E ⊗[F] R)) := by
-    unfold cT
-    exact (((Units.continuous_val.matrix_map (sigR_cont R σ)).matrix_transpose).matrix_mul
-      continuous_const).matrix_mul Units.continuous_val
-  exact isClosed_eq hc continuous_const
 
 end Gen
 
@@ -145,25 +107,6 @@ section GLc
 variable {M : Type} [CommRing M] [TopologicalSpace M] [IsTopologicalRing M] [T2Space M]
   {n : Type} [Fintype n] [DecidableEq n]
 
-theorem isCompact_GL_of (C : Set M) (hC : IsCompact C) :
-    IsCompact {g : GL n M | ∀ i j, (g : Matrix n n M) i j ∈ C ∧ ((g⁻¹ : GL n M) : Matrix n n M) i j ∈ C} := by
-  have hCM : IsCompact {X : Matrix n n M | ∀ i j, X i j ∈ C} := by
-    have := isCompact_univ_pi (fun _ : n => isCompact_univ_pi (fun _ : n => hC))
-    have e : {X : Matrix n n M | ∀ i j, X i j ∈ C} =
-        (Set.pi Set.univ fun _ : n => Set.pi Set.univ fun _ : n => C : Set (n → n → M)) := by
-      ext X; exact ⟨fun h i _ j _ => h i j, fun h i j => h i trivial j trivial⟩
-    rw [e]; exact this
-  have h2 := (Units.isClosedEmbedding_embedProduct (α := Matrix n n M)).isCompact_preimage
-    (hCM.prod (hCM.image MulOpposite.continuous_op))
-  convert h2 using 1
-  ext g
-  simp only [Set.mem_ofPred_eq, Set.mem_preimage, Set.mem_prod, Units.embedProduct_apply, Set.mem_image]
-  constructor
-  · intro h
-    exact ⟨fun i j => (h i j).1, _, fun i j => (h i j).2, rfl⟩
-  · rintro ⟨h1, X, hX, hXe⟩ i j
-    have : X = ((g⁻¹ : GL n M) : Matrix n n M) := MulOpposite.op_injective hXe
-    exact ⟨h1 i j, this ▸ hX i j⟩
 
 end GLc
 
@@ -172,14 +115,6 @@ section Dec
 variable {F E : Type} [Field F] [Field E] [NumberField E] [Algebra F E]
 variable {R : Type} [CommRing R] [Algebra F R] (O : Subring R)
 
-theorem tmul_mem_tensInt (e : 𝓞 E) {y : R} (hy : y ∈ O) :
-    algebraMap (𝓞 E) E e ⊗ₜ[F] y ∈ tensInt (F := F) R (intOE E) O := by
-  have : algebraMap (𝓞 E) E e ⊗ₜ[F] y =
-      (algebraMap (𝓞 E) E e ⊗ₜ[F] (1 : R)) * ((1 : E) ⊗ₜ[F] y) := by
-    rw [Algebra.TensorProduct.tmul_mul_tmul, mul_one, one_mul]
-  rw [this]
-  exact mul_mem (Subring.subset_closure (Or.inl ⟨⟨_, ⟨e, rfl⟩⟩, rfl⟩))
-    (Subring.subset_closure (Or.inr ⟨⟨y, hy⟩, rfl⟩))
 
 def QD {m : ℕ} (b : Fin m → 𝓞 E) (s : E ⊗[F] R) : Prop :=
   ∃ r : Fin m → R, (∀ j, r j ∈ O) ∧ s = ∑ j, algebraMap (𝓞 E) E (b j) ⊗ₜ[F] r j
@@ -372,11 +307,6 @@ theorem crd_prV {ι : Type} (b : Module.Basis ι F E) (l : ι) (v : HeightOneSpe
   | tmul e a =>
     rw [Formalism.UG.P.afsplit_prV_tmul, crd_tmul, crd_tmul, Formalism.UG.P.afsplit_smul_apply]
 
-theorem hO_v (v : HeightOneSpectrum (𝓞 F)) (t : 𝓞 F) :
-    algebraMap F (v.adicCompletion F) (algebraMap (𝓞 F) F t) ∈
-      (v.adicCompletionIntegers F).toSubring := by
-  rw [← IsScalarTower.algebraMap_apply (𝓞 F) F (v.adicCompletion F)]
-  exact Formalism.UG.P.levelaf_int_mem_v v t
 
 theorem exists_int_span : ∃ e : Fin (Module.finrank F E) → 𝓞 E,
     Submodule.span F (Set.range fun l => algebraMap (𝓞 E) E (e l)) = ⊤ := by
@@ -391,13 +321,6 @@ theorem exists_int_span : ∃ e : Fin (Module.finrank F E) → 𝓞 E,
   rw [hx]
   exact sum_mem fun l _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨l, rfl⟩)
 
-theorem prV_comb_mem {ι : Type} [Fintype ι] (e : ι → 𝓞 E) (a : ι → 𝔸) (ha : ∀ l, a l ∈ intAd F)
-    (v : HeightOneSpectrum (𝓞 F)) :
-    prV (E := E) v (comb 𝔸 (fun l => algebraMap (𝓞 E) E (e l)) a) ∈ intV E v := by
-  rw [comb_apply, map_sum]
-  refine sum_mem fun l _ => ?_
-  rw [Formalism.UG.P.afsplit_prV_tmul]
-  exact tmul_mem_tensInt _ (e l) (ha l v)
 
 theorem exists_den {ι : Type} [Finite ι] (b : Module.Basis ι F E) {m : ℕ} (β : Fin m → 𝓞 E) :
     ∃ N1 : F, N1 ≠ 0 ∧
@@ -428,122 +351,8 @@ local instance topT' (R : Type) [CommRing R] [Algebra F R] [TopologicalSpace R] 
 theorem bc_apply {A B : Type} [CommRing A] [CommRing B] (φ : A →+* B) (g : GL n A) (i j : n) :
     (bc φ g : Matrix n n B) i j = φ ((g : Matrix n n A) i j) := rfl
 
-theorem congAt_of {ι : Type} [Fintype ι] (e : ι → 𝓞 E) (c : ℕ) (hc : c ≠ 0) (g : GL n (E ⊗[F] 𝔸))
-    (hg : ∀ i j, algebraMap F (E ⊗[F] 𝔸) (c : F)⁻¹ * ((g : Matrix n n (E ⊗[F] 𝔸)) i j -
-      (1 : Matrix n n (E ⊗[F] 𝔸)) i j) ∈
-        comb 𝔸 (fun l => algebraMap (𝓞 E) E (e l)) '' (Set.pi Set.univ fun _ => (intAd F : Set 𝔸)))
-    (v : HeightOneSpectrum (𝓞 F)) : CongAt v c (bc (prV (E := E) v) g) := by
-  intro i j
-  obtain ⟨a, ha, hae⟩ := hg i j
-  refine ⟨_, prV_comb_mem e a (fun l => ha l trivial) v, ?_⟩
-  have h1 : ((c : ℕ) : E ⊗[F] 𝔸) * algebraMap F (E ⊗[F] 𝔸) (c : F)⁻¹ = 1 := by
-    rw [← map_natCast (algebraMap F (E ⊗[F] 𝔸)) c, ← map_mul,
-      mul_inv_cancel₀ (Nat.cast_ne_zero.2 hc), map_one]
-  have h3 : (1 : Matrix n n (E ⊗[F] v.adicCompletion F)) i j =
-      prV (E := E) v ((1 : Matrix n n (E ⊗[F] 𝔸)) i j) := by
-    by_cases h : i = j
-    · subst h; simp
-    · simp [h]
-  rw [hae, bc_apply, h3, ← map_sub, ← map_natCast (prV (E := E) v) c, ← map_mul, ← mul_assoc, h1,
-    one_mul]
 
-theorem level_top (σ : E →ₐ[F] E) (J : Matrix n n E) (Λ : Submodule (𝓞 E) (n → E))
-    (N N' c : ℕ) (hN : N ≠ 0) (hN' : N' ≠ 0) (hc : c ≠ 0)
-    (h1 : ∀ j, (N : E) • (Pi.single j 1 : n → E) ∈ Λ)
-    (h2 : ∀ x ∈ Λ, ∀ i, (N' : E) * x i ∈ intOE E)
-    (Uloc : ∀ v : HeightOneSpectrum (𝓞 F), Subgroup (GL n (E ⊗[F] v.adicCompletion F)))
-    (hlev : ∀ v, Uloc v ≤ levelVL σ J v Λ)
-    (hcong : ∀ v : HeightOneSpectrum (𝓞 F), ∀ g ∈ UPts σ J (v.adicCompletion F), CongAt v c g → CongAt v c g⁻¹ → g ∈ Uloc v)
-    (U : Subgroup (GL n (E ⊗[F] 𝔸)))
-    (hU : ∀ x, x ∈ U ↔ x ∈ UPts σ J 𝔸 ∧ ∀ v, bc (prV (E := E) v) x ∈ Uloc v) :
-    IsCompact (U : Set (GL n (E ⊗[F] 𝔸))) ∧ IsOpen {x : UPts σ J 𝔸 | (x : GL n (E ⊗[F] 𝔸)) ∈ U} := by
-  have iR : IsTopologicalRing (E ⊗[F] 𝔸) := ringT (F := F) (E := E) 𝔸
-  have iA : T2Space 𝔸 := t2Space_adeleRing_numberField
-  have iT : T2Space (E ⊗[F] 𝔸) := t2T (F := F) (E := E) 𝔸
 
-  obtain ⟨e, he⟩ := exists_int_span (F := F) (E := E)
-  set O1 : Set (E ⊗[F] 𝔸) :=
-    comb 𝔸 (fun l => algebraMap (𝓞 E) E (e l)) '' (Set.pi Set.univ fun _ => (intAd F : Set 𝔸)) with hO1
-  have hO1o : IsOpen O1 :=
-    comb_open 𝔸 _ he _ (isOpen_set_pi Set.finite_univ fun _ _ => isOpen_intAd)
-  have hO10 : (0 : E ⊗[F] 𝔸) ∈ O1 := ⟨0, fun _ _ => zero_mem _, map_zero _⟩
-  set ci : E ⊗[F] 𝔸 := algebraMap F (E ⊗[F] 𝔸) (c : F)⁻¹ with hci
-  set W : Set (GL n (E ⊗[F] 𝔸)) := {g | ∀ i j,
-    ci * ((g : Matrix n n (E ⊗[F] 𝔸)) i j - (1 : Matrix n n (E ⊗[F] 𝔸)) i j) ∈ O1 ∧
-    ci * (((g⁻¹ : GL n (E ⊗[F] 𝔸)) : Matrix n n (E ⊗[F] 𝔸)) i j -
-      (1 : Matrix n n (E ⊗[F] 𝔸)) i j) ∈ O1} with hW
-  have hWo : IsOpen W := by
-    rw [hW]
-    simp only [Set.ofPred_forall, Set.ofPred_and]
-    refine isOpen_iInter_of_finite fun i => isOpen_iInter_of_finite fun j => IsOpen.inter ?_ ?_
-    · exact hO1o.preimage (continuous_const.mul
-        ((Units.continuous_val.matrix_elem i j).sub continuous_const))
-    · exact hO1o.preimage (continuous_const.mul
-        ((Units.continuous_coe_inv.matrix_elem i j).sub continuous_const))
-  have hW1 : (1 : GL n (E ⊗[F] 𝔸)) ∈ W := by
-    intro i j
-    simp only [inv_one, Units.val_one, sub_self, mul_zero]
-    exact ⟨hO10, hO10⟩
-  have hWU : ∀ g ∈ UPts σ J 𝔸, g ∈ W → g ∈ U := by
-    intro g hg hgW
-    refine (hU g).2 ⟨hg, fun v => hcong v _ (Formalism.UG.P.afsplit_bc_mem σ J v g hg) ?_ ?_⟩
-    · exact congAt_of e c hc g (fun i j => (hgW i j).1) v
-    · rw [← map_inv]
-      exact congAt_of e c hc g⁻¹ (fun i j => (hgW i j).2) v
-  have hopen : IsOpen ((U.subgroupOf (UPts σ J 𝔸) : Subgroup (UPts σ J 𝔸)) : Set (UPts σ J 𝔸)) := by
-    refine Subgroup.isOpen_of_mem_nhds _ (g := 1) ?_
-    refine Filter.mem_of_superset ((hWo.preimage continuous_subtype_val).mem_nhds hW1) ?_
-    intro x hx
-    exact Subgroup.mem_subgroupOf.2 (hWU x x.2 hx)
-  have hclosed : IsClosed (U : Set (GL n (E ⊗[F] 𝔸))) := by
-    have hc1 := Subgroup.isClosed_of_isOpen _ hopen
-    have hc2 := (isClosed_UPts 𝔸 σ J).isClosedEmbedding_subtypeVal.isClosedMap _ hc1
-    convert hc2 using 1
-    ext g
-    constructor
-    · intro hg
-      exact ⟨⟨g, ((hU g).1 hg).1⟩, Subgroup.mem_subgroupOf.2 hg, rfl⟩
-    · rintro ⟨x, hx, rfl⟩
-      exact Subgroup.mem_subgroupOf.1 hx
-  refine ⟨?_, hopen⟩
-
-  set b := Module.finBasis F E
-  set β := Module.finBasis ℤ (𝓞 E)
-  obtain ⟨N1, hN10, hN1⟩ := exists_den b (fun j => β j)
-  set c' : F := N1 * N' * N with hc'
-  have hc'0 : c' ≠ 0 :=
-    mul_ne_zero (mul_ne_zero hN10 (Nat.cast_ne_zero.2 hN')) (Nat.cast_ne_zero.2 hN)
-  set C : Set (E ⊗[F] 𝔸) :=
-    comb 𝔸 b '' (Set.pi Set.univ fun _ => {a : 𝔸 | algebraMap F 𝔸 c' * a ∈ intAd F}) with hC
-  have hCc : IsCompact C :=
-    (isCompact_univ_pi fun _ => isCompact_scaled c' hc'0).image (comb_cont 𝔸 _)
-  have hent : ∀ g ∈ U, ∀ i j, (g : Matrix n n (E ⊗[F] 𝔸)) i j ∈ C := by
-    intro g hg i j
-    refine ⟨fun l => crd 𝔸 b l ((g : Matrix n n (E ⊗[F] 𝔸)) i j), fun l _ v => ?_, comb_crd 𝔸 b _⟩
-    have hs := (Subgroup.mem_inf.1 (hlev v (((hU g).1 hg).2 v))).2
-    have := entry_bd (v.adicCompletionIntegers F).toSubring (hO_v v) b (fun j => β j)
-      β.span_eq N1 hN1 Λ N N' h1 h2 _ hs i j l
-    rw [bc_apply, crd_prV] at this
-    exact this
-  refine (isCompact_GL_of C hCc).of_isClosed_subset hclosed ?_
-  intro g hg i j
-  exact ⟨hent g hg i j, hent g⁻¹ (inv_mem hg) i j⟩
-
-theorem level_top' (σ : E →ₐ[F] E) (J : Matrix n n E) (Λ : Submodule (𝓞 E) (n → E))
-    (N N' c : ℕ) (hN : N ≠ 0) (hN' : N' ≠ 0) (hc : c ≠ 0)
-    (h1 : ∀ j, (N : E) • (Pi.single j 1 : n → E) ∈ Λ)
-    (h2 : ∀ x ∈ Λ, ∀ i, (N' : E) * x i ∈ intOE E)
-    (Uloc : ∀ v : HeightOneSpectrum (𝓞 F), Subgroup (GL n (E ⊗[F] v.adicCompletion F)))
-    (hlev : ∀ v, Uloc v ≤ levelVL σ J v Λ)
-    (hcong : ∀ v : HeightOneSpectrum (𝓞 F), ∀ g ∈ UPts σ J (v.adicCompletion F),
-      CongAt v c g → CongAt v c g⁻¹ → g ∈ Uloc v)
-    (U : Subgroup (GL n (E ⊗[F] 𝔸)))
-    (hU : ∀ x, x ∈ U ↔ x ∈ UPts σ J 𝔸 ∧ ∀ v, bc (prV (E := E) v) x ∈ Uloc v) :
-    (letI := tensTopL (F := F) (E := E) (FiniteAdeleRing (𝓞 F) F);
-      IsCompact (U : Set (GL n (E ⊗[F] 𝔸)))) ∧
-    (letI := tensTopL (F := F) (E := E) (FiniteAdeleRing (𝓞 F) F);
-      IsOpen {x : UPts σ J 𝔸 | (x : GL n (E ⊗[F] 𝔸)) ∈ U}) :=
-  level_top σ J Λ N N' c hN hN' hc h1 h2 Uloc hlev hcong U hU
 
 end Main
 
@@ -659,12 +468,6 @@ theorem cong_map (Λ : Submodule (𝓞 E) (n → E)) (N : ℕ)
   rw [h]
   exact add_mem hy (smul_mem_lat v _ (natCast_mem _ 1) hz)
 
-theorem cong_levelVL (σ : E →ₐ[F] E) (J : Matrix n n E) (Λ : Submodule (𝓞 E) (n → E)) (N : ℕ)
-    (hN : ∀ j, (N : E) • (Pi.single j 1 : n → E) ∈ Λ) (hint : ∀ x ∈ Λ, ∀ i, x i ∈ intOE E)
-    (g : GL n (E ⊗[F] v.adicCompletion F)) (hU : g ∈ UPts σ J (v.adicCompletion F))
-    (hg : CongAt v N g) (hg' : CongAt v N g⁻¹) : g ∈ levelVL σ J v Λ :=
-  ⟨hU, mem_stabGL_of _ g (fun _ hy => cong_map v Λ N hN hint g hg hy)
-    (fun _ hy => cong_map v Λ N hN hint g⁻¹ hg' hy)⟩
 
 theorem isUnit_natCast {T : ℕ} (hT : T ≠ 0) : IsUnit ((T : ℕ) : E ⊗[F] v.adicCompletion F) := by
   have h : ((T : ℕ) : E ⊗[F] v.adicCompletion F) =
@@ -695,9 +498,6 @@ theorem lb_int : ∀ x ∈ P.Lb, ∀ i, x i ∈ intOE E := by
   | add a b _ _ ha hb => exact add_mem ha hb
   | smul r a _ ha => exact mul_mem ⟨r, rfl⟩ ha
 
-theorem lb_int' : ∀ x ∈ P.Lb, ∀ i, ((1 : ℕ) : E) * x i ∈ intOE E := by
-  intro x hx i
-  rw [Nat.cast_one, one_mul]; exact lb_int P x hx i
 
 theorem lbV_le_ldV {d : ℕ} (hL : P.LbOK d) : P.LbV v ≤ P.LdV v :=
   Submodule.span_mono (Set.image_mono fun x hx => Submodule.subset_span (hL.int x hx))
@@ -748,23 +548,7 @@ theorem ld_map {d : ℕ} (hL : P.LbOK d) (hT : P.T ≠ 0) (N : ℕ)
   have h := add_mem (lbV_le_ldV P v hL (ld_sub P v hL hT N hN g hg hy)) hy
   rwa [sub_add_cancel] at h
 
-theorem cong_stabFun {d : ℕ} (hL : P.LbOK d) (hT : P.T ≠ 0) (N : ℕ)
-    (hN : ∀ j, (N : E) • (Pi.single j 1 : Fin k → E) ∈ P.Lb)
-    (g : GL (Fin k) (E ⊗[F] v.adicCompletion F)) (hg : CongAt v (N * P.T) g)
-    (hg' : CongAt v (N * P.T) g⁻¹) : g ∈ stabFun _ (P.fT v) := by
-  refine ⟨mem_stabGL_of _ g (fun _ hy => ld_map P v hL hT N hN g hg hy)
-    (fun _ hy => ld_map P v hL hT N hN g⁻¹ hg' hy), fun x => ?_⟩
-  unfold Par.fT
-  rw [Submodule.mkQ_apply, Submodule.mkQ_apply, Submodule.Quotient.eq]
-  exact Submodule.mem_sup_left (ld_sub P v hL hT N hN g hg x.2)
 
-theorem par_lev (hIw : P.IwLe) (S : P.Splits) : P.Uloc S v ≤ levelVL P.σ P.J v P.Lb := by
-  unfold Par.Uloc
-  split_ifs with h h0 h1
-  · exact inf_le_left
-  · exact hIw 0 v h0 _
-  · exact hIw 1 v h1 _
-  · exact le_rfl
 
 theorem natCast_mem_max {p : ℕ} (hp : (p : 𝓞 F) ∈ v.asIdeal) :
     ((p : ℕ) : v.adicCompletionIntegers F) ∈ IsLocalRing.maximalIdeal (v.adicCompletionIntegers F) := by
@@ -785,69 +569,7 @@ theorem map_one_apply {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) (i 
   rw [Matrix.one_apply, Matrix.one_apply]
   split_ifs <;> simp
 
-theorem cong_iw {a : E} (s : SplitAt P.σ v a) {p : ℕ} (hp : (p : 𝓞 F) ∈ v.asIdeal)
-    (g : GL (Fin k) (E ⊗[F] v.adicCompletion F)) (hU : g ∈ UPts P.σ P.J (v.adicCompletion F))
-    (hg : CongAt v p g) (hg' : CongAt v p g⁻¹) : g ∈ P.iwPre v s.φ := by
-  refine ⟨hU, ?_⟩
-  set ψ : E ⊗[F] v.adicCompletion F →+* v.adicCompletion F :=
-    (RingHom.fst _ _).comp s.φ.toRingHom with hψ
-  have hint : ∀ x ∈ intV E v, ψ x ∈ v.adicCompletionIntegers F := fun x hx => ((s.int x).1 hx).1
-  let ι : v.adicCompletionIntegers F →+* v.adicCompletion F := algebraMap _ _
-  have key : ∀ g : GL (Fin k) (E ⊗[F] v.adicCompletion F), CongAt v p g →
-      ∃ A : Matrix (Fin k) (Fin k) (v.adicCompletionIntegers F),
-        RingHom.mapMatrix ι A = ((bc ψ g : GL (Fin k) (v.adicCompletion F)) :
-          Matrix (Fin k) (Fin k) (v.adicCompletion F)) ∧
-        ∀ i j, Ideal.Quotient.mk (IsLocalRing.maximalIdeal (v.adicCompletionIntegers F)) (A i j) =
-          (1 : Matrix (Fin k) (Fin k) _) i j := by
-    intro g hg
-    choose t ht he using hg
-    refine ⟨fun i j => (1 : Matrix (Fin k) (Fin k) (v.adicCompletionIntegers F)) i j +
-      ((p : ℕ) : v.adicCompletionIntegers F) * ⟨ψ (t i j), hint _ (ht i j)⟩, ?_, fun i j => ?_⟩
-    · refine Matrix.ext fun i j => ?_
-      have h1 : (g : Matrix (Fin k) (Fin k) (E ⊗[F] v.adicCompletion F)) i j =
-          (1 : Matrix (Fin k) (Fin k) (E ⊗[F] v.adicCompletion F)) i j +
-            (p : E ⊗[F] v.adicCompletion F) * t i j := by rw [← he i j]; ring
-      show ι ((1 : Matrix (Fin k) (Fin k) (v.adicCompletionIntegers F)) i j +
-        ((p : ℕ) : v.adicCompletionIntegers F) * ⟨ψ (t i j), hint _ (ht i j)⟩) =
-        ψ ((g : Matrix (Fin k) (Fin k) (E ⊗[F] v.adicCompletion F)) i j)
-      rw [h1, map_add, map_add, map_mul, map_mul, map_one_apply, map_one_apply, map_natCast,
-        map_natCast]
-      rfl
-    · rw [map_add, map_mul, Ideal.Quotient.eq_zero_iff_mem.2 (natCast_mem_max v hp), zero_mul,
-        add_zero, map_one_apply]
-  obtain ⟨A, hA, hA1⟩ := key g hg
-  obtain ⟨B, hB, _⟩ := key g⁻¹ hg'
-  have inj : Function.Injective (RingHom.mapMatrix (m := Fin k) ι) := by
-    intro X Y h
-    exact Matrix.ext fun i j => Subtype.ext (congrFun (congrFun h i) j)
-  rw [map_inv] at hB
-  have hAB : A * B = 1 := inj (by rw [map_mul, map_one, hA, hB, Units.mul_inv])
-  have hBA : B * A = 1 := inj (by rw [map_mul, map_one, hA, hB, Units.inv_mul])
-  refine Subgroup.mem_map.2 ⟨⟨A, B, hAB, hBA⟩, ?_, Units.ext hA⟩
-  have h1 : redGL (IsLocalRing.maximalIdeal (v.adicCompletionIntegers F))
-      (⟨A, B, hAB, hBA⟩ : GL (Fin k) (v.adicCompletionIntegers F)) = 1 :=
-    Units.ext (Matrix.ext fun i j => hA1 i j)
-  rw [Subgroup.mem_comap, h1]
-  exact one_mem _
 
-theorem par_cong {d : ℕ} (hL : P.LbOK d) (hT : P.T ≠ 0) (hg : ∀ i, P.gp i ≠ 0) :
-    ∃ c : ℕ, c ≠ 0 ∧ ∀ (S : P.Splits) (v : HeightOneSpectrum (𝓞 F)),
-      ∀ g ∈ UPts P.σ P.J (v.adicCompletion F), CongAt v c g → CongAt v c g⁻¹ → g ∈ P.Uloc S v := by
-  obtain ⟨N, hN0, hN⟩ := exists_nat_smul_mem P.Lb hL.span
-  refine ⟨N * P.T * (P.gp 0 * P.gp 1),
-    mul_ne_zero (mul_ne_zero hN0 hT) (mul_ne_zero (hg 0) (hg 1)), fun S v g hU h h' => ?_⟩
-  have d1 : N ∣ N * P.T * (P.gp 0 * P.gp 1) := Dvd.dvd.mul_right (Dvd.intro _ rfl) _
-  have d2 : N * P.T ∣ N * P.T * (P.gp 0 * P.gp 1) := Dvd.intro _ rfl
-  have d3 : P.gp 0 ∣ N * P.T * (P.gp 0 * P.gp 1) := Dvd.dvd.mul_left (Dvd.intro _ rfl) _
-  have d4 : P.gp 1 ∣ N * P.T * (P.gp 0 * P.gp 1) := Dvd.dvd.mul_left (Dvd.intro_left _ rfl) _
-  have hlev : g ∈ levelVL P.σ P.J v P.Lb :=
-    cong_levelVL v P.σ P.J P.Lb N hN (lb_int P) g hU (CongAt.mono v d1 h) (CongAt.mono v d1 h')
-  unfold Par.Uloc
-  split_ifs with hTv h0 h1
-  · exact ⟨hlev, cong_stabFun P v hL hT N hN g (CongAt.mono v d2 h) (CongAt.mono v d2 h')⟩
-  · exact cong_iw P v _ h0 g hU (CongAt.mono v d3 h) (CongAt.mono v d3 h')
-  · exact cong_iw P v _ h1 g hU (CongAt.mono v d4 h) (CongAt.mono v d4 h')
-  · exact hlev
 
 end ParSec
 
@@ -859,26 +581,10 @@ open Formalism.MainNotions.Gaps.LG
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {k : ℕ}
 
-theorem par_top (P : Par F E k) {d : ℕ} (hL : P.LbOK d) (hIw : P.IwLe) (hT : P.T ≠ 0)
-    (hg : ∀ i, P.gp i ≠ 0) : P.UCompact ∧ P.UOpen := by
-  obtain ⟨N, hN, h1⟩ := exists_nat_smul_mem P.Lb hL.span
-  obtain ⟨c, hc, hcong⟩ := par_cong P hL hT hg
-  have key := fun S : P.Splits => level_top' P.σ P.J P.Lb N 1 c hN one_ne_zero hc h1 (lb_int' P)
-    (P.Uloc S) (fun v => par_lev P v hIw S) (hcong S) (P.U S)
-    (fun x => by simp only [Par.U, Subgroup.mem_inf, Subgroup.mem_iInf, Subgroup.mem_comap])
-  exact ⟨fun S => (key S).1, fun S => (key S).2⟩
 
-theorem factUCompact_of (h2 : FactLb) (h4 : FactIwLe) : FactUCompact :=
-  fun H T pz piG h => (par_top _ (h2 H T pz piG h) (h4 H T pz piG h) h.T_prime.ne_zero
-    (fun i => (H.g_prime i).ne_zero)).1
 
-theorem factUOpen_of (h2 : FactLb) (h4 : FactIwLe) : FactUOpen :=
-  fun H T pz piG h => (par_top _ (h2 H T pz piG h) (h4 H T pz piG h) h.T_prime.ne_zero
-    (fun i => (H.g_prime i).ne_zero)).2
 
-theorem factUCompact : FactUCompact := factUCompact_of factLb factIwLe
 
-theorem factUOpen : FactUOpen := factUOpen_of factLb factIwLe
 
 end Facts
 

@@ -47,11 +47,6 @@ theorem row_act_rat (hX : X.Ok) (g : (mtildeGSD W Ch sel mu P).G) (i j) :
   exact mul_mem (root_mem_cmMax hX (LevFam.chr_root _ _))
     (coefAction_repr_mem_subfield X.emb _ W.sgTrue (emb_mem_cmMax hX) _ i j).1
 
-theorem dual_act_rat (hX : X.Ok) (g : (dualGSD W Ch sel mu P).G) (i j) :
-    (dualGSD W Ch sel mu P).bV.repr ((dualGSD W Ch sel mu P).ρ g ((dualGSD W Ch sel mu P).bV j)) i ∈ cmMax X.K := by
-  rw [formGSD_rho, map_smul, Finsupp.smul_apply, smul_eq_mul]
-  exact mul_mem (root_mem_cmMax hX (LevFam.chr_root _ _))
-    (coefAction_repr_mem_subfield X.emb _ W.sgTrue (emb_mem_cmMax hX) _ i j).2
 
 theorem isFormsOf_MtildeH (hX : X.Ok) : IsFormsOf _ (mtildeOk W Ch sel mu hX P) (MtildeL W Ch sel mu P)
     (MtildeH W Ch hX sel mu P) (LinearEquiv.refl _ _) :=
@@ -106,13 +101,7 @@ def dualSec : (dualGSD W Ch sel mu P).Sec where
   rep c := rowPt Ch sel mu P ((dualEquiv W Ch sel mu P hd).symm c)
   spec c := (clInv_cls _ _ _ _).symm.trans ((dualEquiv W Ch sel mu P hd).apply_symm_apply c)
 
-theorem dualSec_rep (c : (stepX Ch sel mu P).Cl) :
-    (dualSec W Ch sel mu P hd).rep (dualEquiv W Ch sel mu P hd c) = rowPt Ch sel mu P c :=
-  congrArg (rowPt Ch sel mu P) ((dualEquiv W Ch sel mu P hd).symm_apply_apply c)
 
-theorem rowSec_rep (c : (stepX Ch sel mu P).Cl) :
-    (rowSec W Ch sel mu P hd).rep (clEquiv W Ch sel mu P hd c) = rowPt Ch sel mu P c :=
-  congrArg (rowPt Ch sel mu P) ((clEquiv W Ch sel mu P hd).symm_apply_apply c)
 
 include hd in
 
@@ -165,10 +154,6 @@ def ofStep (h' : (dualGSD W Ch sel mu P).Ok) :
     (stepX Ch sel mu P).FormsK X.emb W.sgTrue hF ≃ₗ[X.K] (dualGSD W Ch sel mu P).EqFun :=
   (LinearEquiv.ofBijective _ (toStep_bijective W Ch sel mu P hd hF h')).symm
 
-theorem ofStep_val (h' : (dualGSD W Ch sel mu P).Ok) (x : (stepX Ch sel mu P).FormsK X.emb W.sgTrue hF)
-    (c : (stepX Ch sel mu P).Cl) : (ofStep W Ch sel mu P hd hF h' x).1 (rowPt Ch sel mu P c) = x.1 c :=
-  congrFun (congrArg Subtype.val
-    ((LinearEquiv.ofBijective _ (toStep_bijective W Ch sel mu P hd hF h')).apply_symm_apply x)) c
 
 end Step
 
@@ -179,41 +164,8 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Ch
   (P : LevFam X.E X.K R.r Pr.vGs) (hd : Disjoint Pr.vGs (QE sel (mu : Chr X.F X.E X.K)))
   (hF : ((stepX Ch sel mu P).fam X.emb W.sgTrue).Ok) (h' : (dualGSD W Ch sel mu P).Ok)
 
-theorem mem_hlat_iff (x : (stepX Ch sel mu P).FormsK X.emb W.sgTrue hF) :
-    x ∈ ((stepX Ch sel mu P).hlat X.emb W.sgTrue hF).L ↔
-      ofStep W Ch sel mu P hd hF h' x ∈ (dualGSD W Ch sel mu P).intDel := by
-  rw [GSD.mem_intDel_iff _ h' (dualSec W Ch sel mu P hd), (dualEquiv W Ch sel mu P hd).surjective.forall]
-  refine forall_congr' fun c => ?_
-  rw [dualSec_rep, ofStep_val]
-  exact Iff.of_eq (congrArg (fun L => x.1 c ∈ delAtr X.emb W.sgTrue L) (Lsh_eq_N (rowPt Ch sel mu P c)))
 
-theorem isFormsOf_hlat (hX : X.Ok) : IsFormsOf _ h' (dualGSD W Ch sel mu P).intDel
-    ((stepX Ch sel mu P).hlat X.emb W.sgTrue hF) (ofStep W Ch sel mu P hd hF h') := by
-  refine ⟨mem_hlat_iff W Ch sel mu P hd hF h', fun v x => ?_⟩
-  have hG : ((dualGSD W Ch sel mu P).gramV.map v.embedding).PosDef := by
-    rw [dual_gramV]; exact gramB_posDef _ _
-  have hb : ((stepX Ch sel mu P).csd X.emb W.sgTrue hF).HasRatBasis := FormsDescent.hasRatBasis_of_act _ fun c γ i j => by
-    have h1 := dual_act_rat W Ch sel mu P hX (toRowG Ch sel mu P γ.1) i j
-    rw [dual_rho W Ch sel mu P hd] at h1
-    exact h1
-  refine (normAt_sq ((stepX Ch sel mu P).csd X.emb W.sgTrue hF) v hb hG x).trans ?_
-  letI := h'.fintypeCl
-  rw [ipAt_sec v _ h' (dual_act_rat W Ch sel mu P hX) (dualSec W Ch sel mu P hd)]
-  letI : Fintype (stepX Ch sel mu P).Cl := ((stepX Ch sel mu P).csd X.emb W.sgTrue hF).finCl
-  refine Fintype.sum_equiv (dualEquiv W Ch sel mu P hd) _ _ fun c => ?_
-  rw [dualSec_rep, ofStep_val, ← card_stab_inv _ (rowVal W (rowSG Pr sel mu)), ← card_stab W Ch sel mu P hd]
-  exact congrArg₂ (fun (k : ℕ) (a : ℂ) => (k : ℂ)⁻¹ * a) (@Nat.card_eq_fintype_card _ (_)).symm
-    (pairAt_eq (dualGSD W Ch sel mu P) v (x.1 c)).symm
 
-theorem classSum_ofStep [Fintype (stepX Ch sel mu P).Cl] (h : (mtildeGSD W Ch sel mu P).Ok)
-    (x : (stepX Ch sel mu P).FormsK X.emb W.sgTrue hF) (z : (mtildeGSD W Ch sel mu P).EqFun) :
-    classSum W Ch sel mu P h (ofStep W Ch sel mu P hd hF h' x) z = ∑ c : (stepX Ch sel mu P).Cl,
-      ((Nat.card ((stepX Ch sel mu P).Stab c) : ℕ) : X.K)⁻¹ * pairBK W.sgTrue (x.1 c) (z.1 (rowPt Ch sel mu P c)) := by
-  letI := h.fintypeCl
-  refine ((rowPair W Ch sel mu P).sumOf_indep h _ (rowSec W Ch sel mu P hd) _ z).trans ?_
-  refine (Fintype.sum_equiv (clEquiv W Ch sel mu P hd) _ _ fun c => ?_).symm
-  rw [GSD.wt_eq, rowSec_rep, card_stab W Ch sel mu P hd, ← ofStep_val W Ch sel mu P hd hF h' x c]
-  rfl
 
 end Lattice
 
@@ -238,16 +190,6 @@ theorem polOf_evV {E ι : Type} [Field E] [Fintype ι] {n : ℕ} (emb : ι → E
 
 end Pol
 
-theorem period_embF {E K ι : Type} [Field E] [NumberField E] [StarRing E] [Field K] [NumberField K] [StarRing K] [Fintype ι]
-    {R : Ranks} {I : ChainIn E K ι R} (Q : PerIn I) (emb : ι → E →+* K) (σ : K →+* ℂ) (hI : I.Ok) (hQ : Q.Ok)
-    (hc : ι → HCParam R) (hF : (Q.S'.fam emb Q.sgT).Ok) (x : Q.S'.FormsK emb Q.sgT hF) (F : Q.Mt emb σ)
-    (y : Q.S'.Cl → VV K Q.sgT) (hy : ∀ c, Q.rd emb σ F c = MvPolynomial.map σ (y c).1) :
-    (Q.per emb σ hI hQ hc).period (Q.S'.embF emb σ Q.sgT hF x) F = letI := Q.clFin hQ
-      σ (∑ c : Q.S'.Cl, ((Nat.card (Q.S'.Stab c) : ℕ) : K)⁻¹ * pairBK Q.sgT (x.1 c) (y c)) := by
-  simp only [LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul, map_sum, map_mul, map_inv₀, map_natCast]
-  refine Finset.sum_congr rfl fun c _ => congrArg _ ?_
-  rw [pairBK_apply, map_pairB, ← hy, ← polOf_evV σ emb]
-  rfl
 
 section Layer
 
@@ -301,16 +243,6 @@ variable {Λ' : HLat X.K} {ι : Λ'.V ≃ₗ[X.K] (mtildeGSD W Ch sel mu P).EqFu
 
 include hι
 
-theorem isConcrete_forms : IsConcrete W Ch sel mu P (mtildeOk W Ch sel mu hX P) (dualOk W Ch sel mu P hX) σ
-    (forms J (perOn W Ch sel mu P b0 til ext tz H) X.emb σ hc Z hI hJ hQ l lf hT).ptLat Λ' fun x z =>
-      ((perOn W Ch sel mu P b0 til ext tz H).per X.emb σ hI hQ hc).period
-        ((forms J (perOn W Ch sel mu P b0 til ext tz H) X.emb σ hc Z hI hJ hQ l lf hT).ptEmb x)
-        (rowEmb W Ch sel mu P b0 til ext tz H hd σ (ι z)) := by
-  refine ⟨ofStep W Ch sel mu P hd lf.famP _, ι, isFormsOf_hlat W Ch sel mu P hd lf.famP _ hX, hι, fun x z => ?_⟩
-  letI : Fintype (stepX Ch sel mu P).Cl := (perOn W Ch sel mu P b0 til ext tz H).clFin hQ
-  exact (period_embF (perOn W Ch sel mu P b0 til ext tz H) X.emb σ hI hQ hc lf.famP x _
-    (fun c => (ι z).1 (rowPt Ch sel mu P c)) fun _ => rfl).trans
-    (congrArg σ (classSum_ofStep W Ch sel mu P hd lf.famP _ _ x (ι z)).symm)
 
 end AnyLattice
 

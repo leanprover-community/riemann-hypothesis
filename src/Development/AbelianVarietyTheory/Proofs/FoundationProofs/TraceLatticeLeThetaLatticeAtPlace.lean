@@ -1,6 +1,256 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.KernelSpanOverClasses
+import Development.AbelianVarietyTheory.Definitions.Foundations.ThetaSeriesTies
+import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.ResidueInjectivityAt
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SplitOffBadOfSuppSplitOff
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NablaDeltaOperatorLatticePreserved
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LatticeExtensionAlongFieldEmbeddingDuals
+import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DualLatticeIsLatticeAndHermitianDual
+import Formalism.LocalToGlobal.IndefiniteReal.ConcretePkgSpec
 
+section
+namespace GlobalTheory
+
+theorem dualFrLattice_holds : Formalism.L2.DIV.DualFrLattice :=
+  GlobalTheory.DualLat.dualFr_lattice_and_hdual.1
+
+end GlobalTheory
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory.TraceClassRank
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.DIV.Cons Formalism.L2.Pj Formalism.L2.Indef Formalism.L2.Indef.Tree
+open Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.FWT
+open GlobalTheory.FormTies GlobalTheory.OnTies
+open Formalism.HermitianLatticesTheory (localization₂)
+open scoped TensorProduct Matrix
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+section Lat
+
+theorem fg_of_graph {R P X : Type} [CommRing R] [IsNoetherianRing R] [AddCommGroup P] [Module R P] [AddCommGroup X]
+    [Module R X] {N : Submodule R P} (hN : N.FG) (Γ : Submodule R (P × X)) (hΓ : ∀ x, ((0 : P), x) ∈ Γ → x = 0)
+    {s : Set X} (hs : ∀ x ∈ s, ∃ p ∈ N, (p, x) ∈ Γ) : (Submodule.span R s).FG := by
+  have h1 : (Γ ⊓ N.comap (LinearMap.fst R P X)).FG := by
+    refine Submodule.fg_of_fg_map_of_fg_inf_ker (LinearMap.fst R P X) (hN.of_le ?_) ?_
+    · rintro _ ⟨y, hy, rfl⟩
+      exact hy.2
+    · have : Γ ⊓ N.comap (LinearMap.fst R P X) ⊓ LinearMap.ker (LinearMap.fst R P X) = ⊥ := by
+        refine eq_bot_iff.2 ?_
+        rintro ⟨p, x⟩ ⟨⟨h, -⟩, hp⟩
+        have hp' : p = 0 := hp
+        subst hp'
+        rw [hΓ x h]
+        exact Submodule.zero_mem _
+      rw [this]
+      exact Submodule.fg_bot
+  refine (h1.map (LinearMap.snd R P X)).of_le (Submodule.span_le.2 fun x hx => ?_)
+  obtain ⟨p, hp, h⟩ := hs x hx
+  exact ⟨(p, x), ⟨h, hp⟩, rfl⟩
+
+variable {K : Type} [Field K] [NumberField K] {n n' : ℕ}
+
+
+
+theorem localization_comap_le (v : HeightOneSpectrum (𝓞 K)) (f : (Fin n → K) →ₗ[K] (Fin n' → K))
+    {A B : Submodule (𝓞 K) (Fin n' → K)} (h : localization₂ v.asIdeal A ≤ localization₂ v.asIdeal B) :
+    localization₂ v.asIdeal (A.comap (f.restrictScalars (𝓞 K))) ≤ localization₂ v.asIdeal (B.comap (f.restrictScalars (𝓞 K))) := by
+  rintro x ⟨s, hs, hx⟩
+  obtain ⟨t, ht, hy⟩ := h (x := f x) ⟨s, hs, (f.restrictScalars (𝓞 K)).map_smul s x ▸ (hx : (f.restrictScalars (𝓞 K)) (s • x) ∈ A)⟩
+  exact ⟨t, ht, by rwa [Submodule.mem_comap, map_smul]⟩
+
+end Lat
+
+variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
+
+section Adelic
+
+variable {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (i : Fin D.R.m)
+
+def dataLevel (Q : Finset (Pl D.host.E)) : Subgroup (Bridge.Gf (Vc D i)) :=
+  (levEnv (Vc D i) (R.βV i) (Lev.datY _ D.R.r D.R.t 1 (r_le_V i) R.Pg Q (LevelP.triv _ _ _) (fun _ _ => 1) (fun _ => 1)
+    Lev.Frm.A)).J
+
+variable {i} in
+
+def MeetsClasses (J : Subgroup (Bridge.Gf (Vc D i))) {Cl : Type} (h : Cl → GA D (Vc D i)) : Prop :=
+  (∀ c, h c ∈ GfC (Vc D i)) ∧
+    ∀ x : Bridge.Gf (Vc D i), ∃ (c : Cl) (γ : GQ (Vc D i)) (k : J), x = Bridge.ratF (Vc D i) γ * fin (Vc D i) (h c) * k
+
+def seriesAt (U : Subgroup G) (ψ : U →* D.what₂.LLˣ) (ph : ℂ) (ω : WeilRep D i) (φ : Datum.WO (Vc D i) (Wc D i) → ℂ)
+    (h : GA D (Vc D i)) : Set (Fin (R.nW i) → D.what₂.LL) :=
+  {x | ∃ w, InCoefLat R i h w ∧ ∀ v : ∀ ρ, lowT (R.MW i (sg0 D A)) ρ,
+    adForm R i x (fun ρ => v ρ) = ph • levelTrace R i U ψ (singleSeries R i ω φ h w v)}
+
+def IsBaseKernel (v : HeightOneSpectrum (𝓞 D.what₂.LL)) (p : ℕ) (ω : WeilRep D i) (φ : Datum.WO (Vc D i) (Wc D i) → ℂ) : Prop :=
+  IsKernel R i (R.C.delAt (Formalism.EigenvalueLevelCeiling.plc v)) (placesOver R (R.mu v) p) ω φ
+
+def SpanOverClasses (U : Subgroup G) (ψ : U →* D.what₂.LLˣ) (ph : ℂ) (v : HeightOneSpectrum (𝓞 D.what₂.LL)) (p : ℕ) : Prop :=
+  ∀ ω φ, IsBaseKernel R i v p ω φ → ∀ (Cl : Type) (h : Cl → GA D (Vc D i)),
+    MeetsClasses (dataLevel R i (placesOver R (R.mu v) p)) h →
+      thetaBase R i U ψ ph v p = Submodule.span (𝓞 D.what₂.LL) (⋃ c, seriesAt R i U ψ ph ω φ (h c))
+
+abbrev goodOp : (Fin (R.nW i) → D.what₂.LL) →ₗ[D.what₂.LL] (Fin (R.nW i) → D.what₂.LL) :=
+  (R.FW i).eOp fun g => (idemOf A.X).coeff g
+
+abbrev goodType (U : Subgroup G) (ψ : U →* D.what₂.LLˣ) : Submodule D.what₂.LL (Fin (R.nW i) → D.what₂.LL) :=
+  (R.FW i).Wgood U ψ fun g => (idemOf A.X).coeff g
+
+def ClassFullRank (U : Subgroup G) (ψ : U →* D.what₂.LLˣ) (ph : ℂ) (v : HeightOneSpectrum (𝓞 D.what₂.LL)) (p : ℕ) : Prop :=
+  Submodule.span D.what₂.LL ((thetaBase R i U ψ ph v p).map ((goodOp R i).restrictScalars (𝓞 D.what₂.LL)) :
+    Set (Fin (R.nW i) → D.what₂.LL)) = goodType R i U ψ
+
+def FormsDetermined : Prop :=
+  ∀ x, (∀ v : ∀ ρ, lowT (R.MW i (sg0 D A)) ρ, adForm R i x (fun ρ => v ρ) = 0) → x = 0
+
+def BaseKernelUnique (v : HeightOneSpectrum (𝓞 D.what₂.LL)) (p : ℕ) : Prop :=
+  ∀ ω φ ω' φ', IsBaseKernel R i v p ω φ → IsBaseKernel R i v p ω' φ' → singleSeries R i ω φ = singleSeries R i ω' φ'
+
+def KernelSpanOverClasses (U : Subgroup G) (ψ : U →* D.what₂.LLˣ) (ph : ℂ) (v : HeightOneSpectrum (𝓞 D.what₂.LL)) (p : ℕ) : Prop :=
+  ∀ ω φ, IsBaseKernel R i v p ω φ → ∀ (Cl : Type) (h : Cl → GA D (Vc D i)),
+    MeetsClasses (dataLevel R i (placesOver R (R.mu v) p)) h →
+      Submodule.span (𝓞 D.what₂.LL) (seriesSet R i U ψ ph ω φ) =
+        Submodule.span (𝓞 D.what₂.LL) (⋃ c, seriesAt R i U ψ ph ω φ (h c))
+
+variable {R i}
+
+theorem spanOverClasses_of {U : Subgroup G} {ψ : U →* D.what₂.LLˣ} {ph : ℂ} {v : HeightOneSpectrum (𝓞 D.what₂.LL)} {p : ℕ}
+    (h1 : BaseKernelUnique R i v p) (h2 : KernelSpanOverClasses R i U ψ ph v p) : SpanOverClasses R i U ψ ph v p := by
+  intro ω φ hk Cl h hh
+  rw [← h2 ω φ hk Cl h hh]
+  unfold thetaBase
+  congr 1
+  ext x
+  refine ⟨?_, fun hx => ⟨ω, φ, hk, hx⟩⟩
+  rintro ⟨ω', φ', hk', hx⟩
+  unfold seriesSet at hx ⊢
+  rwa [h1 ω φ ω' φ' hk hk']
+
+theorem formsDetermined_of (hres : GlobalTheory.IndefiniteRowSideFullHecke.ResidueInjectivityAt.ResInjAt R) (hW : R.models_HW) (hu : R.LUnif) : FormsDetermined R i := by
+  intro x hx
+  obtain ⟨h1, h2, -⟩ := hW i (sg0 D A)
+  have h3 : adForm R i x = 0 := hres i _ (h2 ▸ LinearMap.mem_range_self _ _) hx
+  have h4 : (R.FW i).j (sg0 D A) x = 0 := h1 (h3.trans (map_zero _).symm)
+  by_contra h0
+  have h5 := (hu i (sg0 D A)).1 1 (fun _ => x) (linearIndependent_unique_iff.2 h0)
+  exact h5.ne_zero 0 h4
+
+theorem levJ_le_dataLevel (t : T0) {Q : Finset (Pl D.host.E)} (hQ : Q ⊆ R.Q t) : levJ R i t ≤ dataLevel R i Q := by
+  intro x hx
+  exact ⟨⟨hx.1.1, Subgroup.mem_iInf.2 fun PP => Subgroup.mem_iInf.2 fun hP =>
+    Subgroup.mem_iInf.1 (Subgroup.mem_iInf.1 hx.1.2 PP) (hQ hP)⟩, hx.2⟩
+
+theorem nabAtr_hLat_fg (g : Bridge.Gf (Vc D i)) : (nabAtr (labLL D) (lamV D i) (Bridge.hLat (Vc D i) g)).FG :=
+  (GlobalTheory.TransLattice.nabDelLattice _ _ _ _ _ fun τ => (GlobalTheory.dualFrLattice_holds D.what₂.LL _ 1 _ (by simp)
+    (GlobalTheory.TauLat.tauLatLattice _ _ _ _ (labLL D) τ _ (GlobalTheory.RepsCompare.isLattice_hLat _ g))).1).1.fg
+
+theorem coefTie_class {V : HSp D} {C : Bridge.CoefDat D V} {S : CSD D.what₂.LL} {J : Subgroup (Bridge.Gf V)} {χ : J →* ℂˣ}
+    {P : Bridge.ClassPres (Bridge.ratF V) S D.what₂.embLL C.ρ J χ} {lam : D.what₂.Tau → DomWeight V.rank}
+    {c0 : VV D.what₂.LL lam →ₛₗ[D.what₂.embLL] C.W}
+    {pair : VV D.what₂.LL lam →ₗ⋆[D.what₂.LL] VV D.what₂.LL lam →ₗ[D.what₂.LL] D.what₂.LL}
+    {nab del : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E) → Submodule (𝓞 D.what₂.LL) (VV D.what₂.LL lam)}
+    (h : Bridge.CoefTie V C P lam c0 pair nab del) (c : S.Cl) :
+    ((nab (Bridge.hLat V (P.y c))).FG → (S.Nab c).FG) ∧
+      ∀ x ∈ nab (Bridge.hLat V (P.y c)), ∃ y ∈ S.Nab c, c0 x = P.coef y := by
+  obtain ⟨e, -, h2, -, h4, -⟩ := h
+  refine ⟨fun hf => ?_, fun x hx => ?_⟩
+  · rw [← h4 c] at hf
+    exact Submodule.fg_of_fg_map_injective (e.toLinearMap.restrictScalars (𝓞 D.what₂.LL)) e.injective hf
+  · rw [← h4 c] at hx
+    obtain ⟨y, hy, rfl⟩ := hx
+    exact ⟨y, hy, (h2 y).symm⟩
+
+theorem exists_coef_fg (t : T0) (c : (A.MtCSD i t).Cl) {h : GA D (Vc D i)} (hh : fin (Vc D i) h = (R.B.L i t).pres.y c) :
+    ∃ N : Submodule (𝓞 D.what₂.LL) (A.MtCSD i t).V, N.FG ∧
+      ∀ w, InCoefLat R i h w → ∃ P ∈ N, w = (R.B.L i t).pres.coef P := by
+  by_cases hex : ∃ w, InCoefLat R i h w
+  · obtain ⟨-, gramR, c0R, c0L, hT, -⟩ := hex
+    refine ⟨(A.MtCSD i t).Nab c, ?_, ?_⟩
+    · exact (coefTie_class (hT.coefL i t) c).1 (nabAtr_hLat_fg _)
+    · rintro w ⟨gramR', c0R', c0L', hT', P, hP, rfl⟩
+      rw [hh] at hP
+      exact (coefTie_class (hT'.coefL i t) c).2 P hP
+  · exact ⟨⊥, Submodule.fg_bot, fun w hw => absurd ⟨w, hw⟩ hex⟩
+
+theorem singleSeries_add (ω : WeilRep D i) (φ : Datum.WO (Vc D i) (Wc D i) → ℂ) (h : GA D (Vc D i)) (w w' : (R.cV i).W)
+    (v : ∀ ρ, lowT (R.MW i (sg0 D A)) ρ) :
+    singleSeries R i ω φ h (w + w') v = singleSeries R i ω φ h w v + singleSeries R i ω φ h w' v := by
+  funext g
+  simp only [singleSeries, Datum.thetaKO, map_add, Pi.add_apply]
+
+theorem singleSeries_smul (ω : WeilRep D i) (φ : Datum.WO (Vc D i) (Wc D i) → ℂ) (h : GA D (Vc D i)) (a : ℂ) (w : (R.cV i).W)
+    (v : ∀ ρ, lowT (R.MW i (sg0 D A)) ρ) :
+    singleSeries R i ω φ h (a • w) v = a • singleSeries R i ω φ h w v := by
+  funext g
+  simp only [singleSeries, Datum.thetaKO, map_smul, Pi.smul_apply]
+
+theorem adForm_add (x y : Fin (R.nW i) → D.what₂.LL) : adForm R i (x + y) = adForm R i x + adForm R i y := by
+  unfold adForm
+  rw [map_add, map_add]
+
+theorem adForm_smul (a : D.what₂.LL) (x : Fin (R.nW i) → D.what₂.LL) : adForm R i (a • x) = D.what₂.embLL a • adForm R i x := by
+  unfold adForm
+  rw [LinearMap.map_smulₛₗ, map_smul]
+  congr 1
+  exact RingHom.congr_fun (sgAt_mk _ R.hv0) a
+
+theorem seriesAt_fg (hd : FormsDetermined R i) (U : Subgroup G) (ψ : U →* D.what₂.LLˣ) (ph : ℂ) (ω : WeilRep D i)
+    (φ : Datum.WO (Vc D i) (Wc D i) → ℂ) (t : T0) (c : (A.MtCSD i t).Cl) {h : GA D (Vc D i)}
+    (hh : fin (Vc D i) h = (R.B.L i t).pres.y c) : (Submodule.span (𝓞 D.what₂.LL) (seriesAt R i U ψ ph ω φ h)).FG := by
+  obtain ⟨N, hN, H⟩ := exists_coef_fg t c hh
+  let cf : (A.MtCSD i t).V →ₛₗ[D.what₂.embLL] (R.cV i).W := (R.B.L i t).pres.coef
+  let Γ : Submodule D.what₂.LL ((A.MtCSD i t).V × (Fin (R.nW i) → D.what₂.LL)) :=
+    { carrier := {q | ∀ v : ∀ ρ, lowT (R.MW i (sg0 D A)) ρ,
+        adForm R i q.2 (fun ρ => v ρ) = ph • levelTrace R i U ψ (singleSeries R i ω φ h (cf q.1) v)}
+      add_mem' := fun {a b} ha hb v => by
+        rw [Prod.fst_add, Prod.snd_add, adForm_add, map_add, singleSeries_add, map_add, smul_add, ← ha v, ← hb v]
+        rfl
+      zero_mem' := fun v => by
+        have h1 := adForm_smul (R := R) (i := i) 0 0
+        have h2 := singleSeries_smul (R := R) ω φ h 0 0 v
+        rw [zero_smul, map_zero, zero_smul] at h1
+        rw [zero_smul, zero_smul] at h2
+        rw [Prod.fst_zero, Prod.snd_zero, h1, map_zero, h2, map_zero, smul_zero]
+        rfl
+      smul_mem' := fun a q hq v => by
+        rw [Prod.smul_fst, Prod.smul_snd, adForm_smul, LinearMap.map_smulₛₗ, singleSeries_smul, map_smul, smul_comm, ← hq v]
+        rfl }
+  refine fg_of_graph hN (Γ.restrictScalars (𝓞 D.what₂.LL)) (fun x hx => hd x fun v => ?_) ?_
+  · have h2 := singleSeries_smul (R := R) ω φ h 0 0 v
+    rw [zero_smul, zero_smul] at h2
+    have h3 : adForm R i x (fun ρ => v ρ) = ph • levelTrace R i U ψ (singleSeries R i ω φ h (cf 0) v) := hx v
+    rw [h3, map_zero, h2, map_zero, smul_zero]
+  · rintro x ⟨w, hw, hx⟩
+    obtain ⟨P, hP, rfl⟩ := H w hw
+    exact ⟨P, hP, hx⟩
+
+theorem thetaBase_fg (hd : FormsDetermined R i) {U : Subgroup G} {ψ : U →* D.what₂.LLˣ} {ph : ℂ}
+    {v : HeightOneSpectrum (𝓞 D.what₂.LL)} {p : ℕ} (hM : SpanOverClasses R i U ψ ph v p) : (thetaBase R i U ψ ph v p).FG := by
+  classical
+  by_cases hex : ∃ ω φ, IsBaseKernel R i v p ω φ
+  · obtain ⟨ω, φ, hk⟩ := hex
+    choose h hh using fun c => (GlobalTheory.RepsCompare.existsUnique_lift (Vc D i) ((R.B.L i (R.mu v)).pres.y c)).exists
+    rw [hM ω φ hk _ h ⟨fun c => (hh c).1, fun x => ?_⟩, Submodule.span_iUnion]
+    · exact Submodule.fg_iSup _ fun c => seriesAt_fg hd U ψ ph ω φ _ c (hh c).2
+    · obtain ⟨c, γ, k, e⟩ := ((R.B.L i (R.mu v)).pres.reps x).exists
+      exact ⟨c, γ, ⟨k, levJ_le_dataLevel (R.mu v) (Finset.filter_subset _ _) k.2⟩, by rw [(hh c).2]; exact e⟩
+  · have : thetaBase R i U ψ ph v p = ⊥ := Submodule.span_eq_bot.2 fun x ⟨ω, φ, hk, _⟩ => absurd ⟨ω, φ, hk⟩ hex
+    rw [this]
+    exact Submodule.fg_bot
+
+end Adelic
+
+end GlobalTheory.TraceClassRank
+end
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -53,10 +303,6 @@ variable {h fw ι ℓ U ψ ph v p} {hinj : Function.Injective D.what₂.OtoLL} {
     {inc : P →* G}
     {y : (Fin (O.nX v i) → D.what₂.LL) ≃ₗ[D.what₂.LL] (Fin (srcDim A ι (R.mu v) U ψ) → D.what₂.LL)}
 
-theorem traceLat_le (h1 : CompareOffOwn h fw ι ℓ U ψ ph v p) (h2 : CompareAtOwn h fw ι ℓ U ψ ph v p) :
-    traceLat h fw ι ℓ U ψ ≤ thetaBase R ι U ψ ph v p :=
-  Formalism.DivisionValues.GluingInclusion.le_of_forall_localized_le_of_not_isField (RingOfIntegers.not_isField _) _ _ fun lam =>
-    (em (Formalism.EigenvalueLevelCeiling.plc lam = p)).elim (h2 lam) (h1 lam)
 
 def comapEquiv {P G : Type} [Group P] [Group G] {inc : P →* G} (hi : Function.Injective inc) {U : Subgroup G}
     (hU : U ≤ inc.range) : U.comap inc ≃ U :=
@@ -108,53 +354,8 @@ theorem Th0_eq_comap (t : OnTie h fw hinj EX p ι wL wF nT O v i z act inc ℓ U
   exact (Submodule.comap_map_eq_of_injective (f := (toForms h fw ι z).restrictScalars (𝓞 D.what₂.LL))
     (toForms_bijective h fw ι z).1 _).symm
 
-theorem Zg_eq_comap (t : OnTie h fw hinj EX p ι wL wF nT O v i z act inc ℓ U ψ ph y) (ha : ActionPin h fw ι ℓ)
-    (hU : U ≤ inc.range) (hχ : ∀ u : U, (R.FW ι).chi u = 1) :
-    O.Zg i = (goodType R ι U ψ).comap (toForms h fw ι z) := by
-  have hb := toForms_bijective h fw ι z
-  ext x
-  refine and_congr ?_ ?_
-  · change x ∈ Formalism.EigenvalueLevelCeiling.eig _ _ _ ↔ ∀ u : U, _
-    unfold Formalism.EigenvalueLevelCeiling.eig
-    rw [t.U_eq]
-    simp only [Submodule.mem_iInf, LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.smul_apply, LinearMap.id_apply,
-      sub_eq_zero]
-    constructor
-    · intro hx u
-      obtain ⟨g, hg⟩ := hU u.2
-      have hg' : inc g ∈ U := hg ▸ u.2
-      obtain rfl : u = ⟨inc g, hg'⟩ := Subtype.ext hg.symm
-      rw [hχ, one_mul, ← t.rho_eq_of_actionPin ha, hx ⟨g, hg'⟩, map_smul, t.ψ_eq g hg']
-    · intro hx u
-      apply hb.1
-      rw [t.rho_eq_of_actionPin ha, hx ⟨inc u, u.2⟩, hχ, one_mul, map_smul, t.ψ_eq u u.2]
-  · change x ∈ O.V₀ i ↔ _
-    rw [t.V₀_eq]
-    constructor
-    · rintro ⟨a, rfl⟩
-      exact ⟨_, (t.e_eOp a).symm⟩
-    · rintro ⟨a, ha⟩
-      obtain ⟨b, rfl⟩ := hb.2 a
-      exact ⟨b, hb.1 ((t.e_eOp b).trans ha)⟩
 
-theorem isLatIn_eJ (t : OnTie h fw hinj EX p ι wL wF nT O v i z act inc ℓ U ψ ph y) (ha : ActionPin h fw ι ℓ)
-    (hU : U ≤ inc.range) (hχ : ∀ u : U, (R.FW ι).chi u = 1) (hd : FormsDetermined R ι)
-    (hM : SpanOverClasses R ι U ψ ph v p) (hR : ClassFullRank R ι U ψ ph v p) : Formalism.EigenvalueLevelCeiling.IsLatIn (O.Zg i) (O.eJ v i) := by
-  unfold OnObj.eJ
-  rw [Zg_eq_comap t ha hU hχ, t.ThJ_eq]
-  exact isLatIn_comap (coordEquiv h fw ι z) t.e_eOp ⟨(thetaBase_fg hd hM).map _, hR⟩
 
-theorem theta_lattice_full_rank (t : OnTie h fw hinj EX p ι wL wF nT O v i z act inc ℓ U ψ ph y) (ha : ActionPin h fw ι ℓ)
-    (hi : Function.Injective inc) (hU : U ≤ inc.range) (hχ : ∀ u : U, (R.FW ι).chi u = 1)
-    (hR : ClassFullRank R ι U ψ ph v p) (hC : CompareSpan h fw ι ℓ U ψ ph v p) (hfg : (O.Th0 v i).FG) :
-    Formalism.EigenvalueLevelCeiling.IsLatIn (O.Zg i) ((O.Th0 v i).map ((O.e i).restrictScalars (𝓞 D.what₂.LL))) := by
-  have hb := toForms_bijective h fw ι z
-  have e := Th0_eq_comap t hi hU
-  have hfg' : (traceLat h fw ι ℓ U ψ).FG := by
-    have := hfg.map ((toForms h fw ι z).restrictScalars (𝓞 D.what₂.LL))
-    rwa [e, Submodule.map_comap_eq_of_surjective (f := (toForms h fw ι z).restrictScalars (𝓞 D.what₂.LL)) hb.2] at this
-  rw [Zg_eq_comap t ha hU hχ, e]
-  exact isLatIn_comap (coordEquiv h fw ι z) t.e_eOp ⟨hfg'.map _, (span_map_congr _ hC).trans hR⟩
 
 theorem trace_lattice_le_theta_lattice_at_place (t : OnTie h fw hinj EX p ι wL wF nT O v i z act inc ℓ U ψ ph y) (hi : Function.Injective inc)
     (hU : U ≤ inc.range) {n : ℕ} (hp : RunPin R ι n v p) (hA : CompareOffOwn h fw ι ℓ U ψ ph v p) :
@@ -166,18 +367,6 @@ theorem trace_lattice_le_theta_lattice_at_place (t : OnTie h fw hinj EX p ι wL 
   · exact D.host.pde_ne (h2.symm.trans (e.trans h1))
   · exact h2 (e.trans h1)
 
-theorem Th0_le_ThJ (t : OnTie h fw hinj EX p ι wL wF nT O v i z act inc ℓ U ψ ph y) (hi : Function.Injective inc)
-    (hU : U ≤ inc.range) (hd : FormsDetermined R ι) (hM : SpanOverClasses R ι U ψ ph v p)
-    (hA : CompareOffOwn h fw ι ℓ U ψ ph v p) (hO : CompareAtOwn h fw ι ℓ U ψ ph v p) :
-    O.Th0 v i ≤ O.ThJ v i ∧ (O.Th0 v i).FG := by
-  have hle : O.Th0 v i ≤ O.ThJ v i := by
-    rw [Th0_eq_comap t hi hU, t.ThJ_eq]
-    exact Submodule.comap_mono (traceLat_le hA hO)
-  refine ⟨hle, Submodule.FG.of_le ?_ hle⟩
-  have hb := toForms_bijective h fw ι z
-  refine Submodule.fg_of_fg_map_injective ((toForms h fw ι z).restrictScalars (𝓞 D.what₂.LL)) hb.1 ?_
-  rw [t.ThJ_eq, Submodule.map_comap_eq_of_surjective (f := (toForms h fw ι z).restrictScalars (𝓞 D.what₂.LL)) hb.2]
-  exact thetaBase_fg hd hM
 
 end Trace
 
@@ -192,9 +381,6 @@ def RankAtPlaces (O : OnObj S P c) : Prop :=
 
 def fillJ (O : OnObj S P c) : OnObj S P c := { O with ThJ := fun v j => O.ThJ v j ⊔ O.Th0 v j }
 
-theorem rankAtPlaces_of {O : OnObj S P c} (h : LeafRankJ O) : RankAtPlaces O := fun w hw =>
-  ⟨fun j => ⟨((h w hw).1 j).1, ((h w hw).1 j).2.1, Formalism.HermitianLatticesTheory.locBasic_locS_mono _ ((h w hw).1 j).2.2⟩,
-    fun j => ⟨((h w hw).2 j).1, ((h w hw).2 j).2.1, Formalism.HermitianLatticesTheory.locBasic_locS_mono _ ((h w hw).2 j).2.2⟩⟩
 
 theorem leafRankJ_fillJ {O : OnObj S P c} (h : RankAtPlaces O) : LeafRankJ (fillJ O) := by
   have key : ∀ v j, Formalism.EigenvalueLevelCeiling.IsLatIn (O.Zg j) ((O.Th0 v j).map ((O.e j).restrictScalars (𝓞 K))) →
@@ -261,59 +447,10 @@ variable {T : HeightOneSpectrum (𝓞 D.what₂.LL) → Full D} [inst : ∀ v, A
   {U : Subgroup G} {ψ : U →* D.what₂.LLˣ} {ph : HeightOneSpectrum (𝓞 D.what₂.LL) → Bs.J → ℂ}
   {y : ∀ v i, (Fin (O.nX v i) → D.what₂.LL) ≃ₗ[D.what₂.LL] (Fin (srcDim A (ι i) ((R v).mu v) U ψ) → D.what₂.LL)}
 
-theorem rankAtPlaces_of_tie
-    (t : AtPair S fun v => ∀ i, OnTie (h v) (fw v) hinj EX (p v) (ι i) (wL i) (wF i) nT O v i (z v i) (act v i) inc (ℓ v i) U ψ
-      (ph v i) (y v i))
-    (ha : AtPair S fun v => ∀ i, ActionPin (h v) (fw v) (ι i) (ℓ v i))
-    (hp : AtPair S fun v => ∀ i, RunPin (R v) (ι i) (κ (ι i)).n v (p v))
-    (hi : Function.Injective inc) (hU : U ≤ inc.range)
-    (hχ : AtPair S fun v => ∀ i (u : U), ((R v).FW (ι i)).chi u = 1)
-    (hd : AtPair S fun v => ∀ i, FormsDetermined (R v) (ι i))
-    (hK : LeafSpan O)
-    (hM : AtPair S fun v => ∀ i, SpanOverClasses (R v) (ι i) U ψ (ph v i) v (p v))
-    (hR : AtPair S fun v => ∀ i, ClassFullRank (R v) (ι i) U ψ (ph v i) v (p v))
-    (hA : AtPair S fun v => ∀ i, CompareOffOwn (h v) (fw v) (ι i) (ℓ v i) U ψ (ph v i) v (p v))
-    (hC : AtPair S fun v => ∀ i, CompareSpan (h v) (fw v) (ι i) (ℓ v i) U ψ (ph v i) v (p v)) :
-    RankAtPlaces O := by
-  have hn : ∀ v (i : Fin D.R.m), (κ i).n = D.R.nV := fun v i =>
-    ((fw v).kap i (D.eTau.symm ⟨1, Subgroup.one_mem _⟩)).2.2
-  intro w hw
-  refine ⟨fun i => ?_, fun i => ?_⟩
-  · have t := (t w hw).1 i
-    exact ⟨theta_lattice_full_rank t ((ha w hw).1 i) hi hU ((hχ w hw).1 i) ((hR w hw).1 i) ((hC w hw).1 i)
-        (((hK w hw).1 i).2.1.of_le (t.Th0_le_ThK (hn w _))),
-      isLatIn_eJ t ((ha w hw).1 i) hU ((hχ w hw).1 i) ((hd w hw).1 i) ((hM w hw).1 i) ((hR w hw).1 i),
-      trace_lattice_le_theta_lattice_at_place t hi hU ((hp w hw).1 i) ((hA w hw).1 i)⟩
-  · have t := (t w hw).2 i
-    exact ⟨theta_lattice_full_rank t ((ha w hw).2 i) hi hU ((hχ w hw).2 i) ((hR w hw).2 i) ((hC w hw).2 i)
-        (((hK w hw).2 i).2.1.of_le (t.Th0_le_ThK (hn w _))),
-      isLatIn_eJ t ((ha w hw).2 i) hU ((hχ w hw).2 i) ((hd w hw).2 i) ((hM w hw).2 i) ((hR w hw).2 i),
-      trace_lattice_le_theta_lattice_at_place t hi hU ((hp w hw).2 i) ((hA w hw).2 i)⟩
 
-theorem leafRankJ_of_tie
-    (t : AtPair S fun v => ∀ i, OnTie (h v) (fw v) hinj EX (p v) (ι i) (wL i) (wF i) nT O v i (z v i) (act v i) inc (ℓ v i) U ψ
-      (ph v i) (y v i))
-    (ha : AtPair S fun v => ∀ i, ActionPin (h v) (fw v) (ι i) (ℓ v i))
-    (hi : Function.Injective inc) (hU : U ≤ inc.range)
-    (hχ : AtPair S fun v => ∀ i (u : U), ((R v).FW (ι i)).chi u = 1)
-    (hd : AtPair S fun v => ∀ i, FormsDetermined (R v) (ι i))
-    (hM : AtPair S fun v => ∀ i, SpanOverClasses (R v) (ι i) U ψ (ph v i) v (p v))
-    (hR : AtPair S fun v => ∀ i, ClassFullRank (R v) (ι i) U ψ (ph v i) v (p v))
-    (hA : AtPair S fun v => ∀ i, CompareOffOwn (h v) (fw v) (ι i) (ℓ v i) U ψ (ph v i) v (p v))
-    (hC : AtPair S fun v => ∀ i, CompareSpan (h v) (fw v) (ι i) (ℓ v i) U ψ (ph v i) v (p v))
-    (hO : AtPair S fun v => ∀ i, CompareAtOwn (h v) (fw v) (ι i) (ℓ v i) U ψ (ph v i) v (p v)) :
-    LeafRankJ O := by
-  intro w hw
-  refine ⟨fun i => ?_, fun i => ?_⟩
-  · have t := (t w hw).1 i
-    have k := Th0_le_ThJ t hi hU ((hd w hw).1 i) ((hM w hw).1 i) ((hA w hw).1 i) ((hO w hw).1 i)
-    exact ⟨theta_lattice_full_rank t ((ha w hw).1 i) hi hU ((hχ w hw).1 i) ((hR w hw).1 i) ((hC w hw).1 i) k.2,
-      isLatIn_eJ t ((ha w hw).1 i) hU ((hχ w hw).1 i) ((hd w hw).1 i) ((hM w hw).1 i) ((hR w hw).1 i), k.1⟩
-  · have t := (t w hw).2 i
-    have k := Th0_le_ThJ t hi hU ((hd w hw).2 i) ((hM w hw).2 i) ((hA w hw).2 i) ((hO w hw).2 i)
-    exact ⟨theta_lattice_full_rank t ((ha w hw).2 i) hi hU ((hχ w hw).2 i) ((hR w hw).2 i) ((hC w hw).2 i) k.2,
-      isLatIn_eJ t ((ha w hw).2 i) hU ((hχ w hw).2 i) ((hd w hw).2 i) ((hM w hw).2 i) ((hR w hw).2 i), k.1⟩
 
 end Row
 
 end GlobalTheory.TraceClassRank
+end
+end

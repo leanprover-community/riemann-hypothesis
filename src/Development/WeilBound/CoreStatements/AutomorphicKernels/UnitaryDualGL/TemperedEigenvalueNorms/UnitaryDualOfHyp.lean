@@ -1,9 +1,79 @@
 import Mathlib
 import Formalism.SharpRestriction.LevelLetterCocycles.SphericalInertData
 import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitaryDualGL.RecurrenceBaseChange.UnitaryDualOfHyp
-import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitaryDualGL.TemperedEigenvalueNorms.RecSpehPRecT
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FinIso
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RingSpecNormalisedCharacterEq
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.RecT
+import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.IsComplementaryProductOfIsCuspidal
+import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.StandardCosocleGL
+import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.IsTemperedGLOfIsUnitaryLSeg
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RecProductSpehSatake
+import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitaryDualGL.RecurrenceBaseChange.RecSpehQuot
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TemperedOfTemperedLpSum
+import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitaryDualGL.TemperedEigenvalueNorms.AddOneLeOfPrecedes
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AdjacentQuotientOfTwoSegment
+import BuildAid.D4
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmGaloisRepresentationCrystalline
 import GroundTheory.PAdicHodge.AInfGalois
+
+section
+noncomputable section
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL ValuativeRel Matrix
+
+namespace PositivityTheory.UdReth2
+
+section SpehAux
+
+
+def piTensorInt {α : Type} {Γ Y Z : α → Type} [∀ a, Group (Γ a)] [∀ a, AddCommGroup (Y a)]
+    [∀ a, Module ℂ (Y a)] [∀ a, AddCommGroup (Z a)] [∀ a, Module ℂ (Z a)]
+    {π : ∀ a, Representation ℂ (Γ a) (Y a)} {σ : ∀ a, Representation ℂ (Γ a) (Z a)}
+    (f : ∀ a, (π a).IntertwiningMap (σ a)) : (piTensor π).IntertwiningMap (piTensor σ) where
+  toLinearMap := PiTensorProduct.map fun a => (f a).toLinearMap
+  isIntertwining' g := by
+    ext x
+    simp [Representation.IntertwiningMap.isIntertwining]
+
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+
+
+
+end SpehAux
+
+
+end PositivityTheory.UdReth2
+end
+end
+
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host GlobalTheory.HeightCounting NumberField IsDedekindDomain GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.FormDict GlobalTheory.DefiniteBC
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+noncomputable section
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands
+
+namespace PositivityTheory.UdReth2
+
+def ParTemp {E : Type} [Field E] [NumberField E] {w : HeightOneSpectrum (𝓞 E)} {a : ℕ} (σ : LocIrr w a) : Prop :=
+  ∀ (Ω : Type) [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (B : ValuationSubring Ω) (hB : IsPlaceOver B w)
+    (r : IrrGL (w.adicCompletion E) → WD hB), IsRec hB r → (r (cls (ParLaws.toRep σ))).tempered
+
+variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} {N : NData R H what₂} {A : NAut N}
+
+def RecSpehP (rc : RecMap A) : Prop :=
+  ∀ (w : PlE H) (a d n : ℕ) (h : ∑ _ : Fin d, a = n) (σ : LocIrr w a) (σ' : LocIrr w n),
+    ParTemp σ →
+    IsSpehQuot h σ σ' →
+    rc w n σ' = lpSumList ((List.range d).map fun k : ℕ => A.lpTw (rc w a σ) (((d : ℝ) - 1) / 2 - k))
+
+end PositivityTheory.UdReth2
+
+end
+end
+
+section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host GlobalTheory.HeightCounting NumberField IsDedekindDomain GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.FormDict GlobalTheory.DefiniteBC
 
 noncomputable section
@@ -107,4 +177,5 @@ theorem exists_parts' {R : Ranks} {H : Host R} {what₂ : Rows.Data R} {N : NDat
 
 end PositivityTheory.UdReth2
 
+end
 end

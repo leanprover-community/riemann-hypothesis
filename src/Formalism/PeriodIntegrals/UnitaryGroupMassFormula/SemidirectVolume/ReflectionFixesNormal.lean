@@ -27,9 +27,6 @@ theorem L_f (H : D.Hyp) (w : Fin r → n → A) (s : Fin r → Fin r → A) (b :
   have hz0 : ∀ x, D.h x 0 = 0 := fun x => by simpa using h_smul_right (D := D) x 0 0
   simp [L_apply, pW_f H, H.ef, hz0, Finset.sum_add_distrib]
 
-theorem L_fixEZ (H : D.Hyp) (w : Fin r → n → A) (s : Fin r → Fin r → A) : D.FixEZ (D.L w s) := by
-  show (∀ a, _ = _) ∧ _ = _
-  exact ⟨fun a => L_e H w s a, reflection_fixes_normal H w s⟩
 
 theorem L_perp (H : D.Hyp) (w : Fin r → n → A) (s : Fin r → Fin r → A) : D.PerpX (D.L w s) := by
   intro v hv

@@ -1,200 +1,321 @@
 import Mathlib
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ProjectionGramMatrices.IdxDet
+import Formalism.PeriodIntegrals.IdxCalc
+import Formalism.HermitianLattices.HermitianLatticesProofs.IndexBasic
 
+section
 noncomputable section
 
 namespace PI.Dv.ProjGramW
 
 open NumberField IsDedekindDomain Formalism.BasicNotions
 
-theorem dvProjGram_of' (hA : ProjA) (hI : IdxCalc) (hD : IdxDet) : gram_det_kernel_base_level := by
-  intro K _ _ _ _ A e n h _hconj hP hH w w' hww hDw _hDw' d a hB
-  classical
-  have hee : e * e = e := hP.2.2.1
-  obtain ⟨hherm, hnd, hself⟩ := hH
-  have hL2a := hA K A e n hP
-  set M := cutE A e A.L with hM
-  set P := imgE A e A.L with hPdef
-  set G : Matrix (Fin d) (Fin d) K := Matrix.of fun i j => h (a i) (a j) with hGdef
-  have hvn := vAdd_natCast_nonneg w n
-  by_cases hG0 : G.det = 0
-  · rw [hG0, vAdd_zero']
-    exact mul_nonneg (mul_nonneg (by norm_num) (Nat.cast_nonneg _)) hvn
-  have hGu : IsUnit G.det := isUnit_iff_ne_zero.mpr hG0
-  set a' : Fin d → A.V := fun i => ∑ k, (G⁻¹) k i • a k with ha'
+def IdxDet : Prop :=
+  ∀ (K : Type) [Field K] [NumberField K] (V : Type) [AddCommGroup V] [Module K V] [Module (𝓞 K) V]
+    [IsScalarTower (𝓞 K) K V] (w : HeightOneSpectrum (𝓞 K)) (d : ℕ) (b : Fin d → V),
+    LinearIndependent K b → ∀ C : Matrix (Fin d) (Fin d) K, C.det ≠ 0 →
+    idxAt w (Submodule.span (𝓞 K) (Set.range b))
+      (Submodule.span (𝓞 K) (Set.range fun j => ∑ i, C i j • b i)) = vAdd w C.det
 
-  have hGH : G.conjTranspose = G := by
-    ext i j
-    simp only [Matrix.conjTranspose_apply, hGdef, Matrix.of_apply]
-    exact (hherm (a j) (a i)).symm
+section Gen
 
-  have hdual : ∀ i j, h (a' i) (a j) = if i = j then 1 else 0 := by
-    intro i j
-    have e1 : h (a' i) (a j) = ∑ k, star ((G⁻¹) k i) * G k j := by
-      simp only [ha', map_sum, LinearMap.map_smulₛₗ, starRingEnd_apply, hGdef, Matrix.of_apply]
-      rw [LinearMap.sum_apply]
-      simp only [LinearMap.smul_apply, smul_eq_mul]
-    have e2 : ∑ k, star ((G⁻¹) k i) * G k j = ((G⁻¹).conjTranspose * G) i j := by
-      rw [Matrix.mul_apply]
-      rfl
-    rw [e1, e2, Matrix.conjTranspose_nonsing_inv, hGH, Matrix.nonsing_inv_mul G hGu, Matrix.one_apply]
-  have ha_eq : ∀ j, ∑ i, G i j • a' i = a j := by
-    intro j
-    simp only [ha', Finset.smul_sum, smul_smul]
-    rw [Finset.sum_comm]
-    simp_rw [← Finset.sum_smul]
-    have : ∀ k, ∑ i, G i j * (G⁻¹) k i = (G⁻¹ * G) k j := by
-      intro k
-      rw [Matrix.mul_apply]
-      exact Finset.sum_congr rfl fun i _ => mul_comm _ _
-    simp_rw [this, Matrix.nonsing_inv_mul G hGu, Matrix.one_apply, ite_smul, one_smul, zero_smul]
-    simp
-  have hli' : LinearIndependent K a' := linIndep_mat hB.1 G⁻¹
-    (Matrix.isUnit_nonsing_inv_det G hGu).ne_zero
-  set D := Submodule.span (𝓞 K) (Set.range a') with hDdef
-  set S := Submodule.span (𝓞 K) (Set.range a) with hSdef
-  have hDS : idxAt w D S = vAdd w G.det := by
-    have := hD K A.V w d a' hli' G hG0
-    have e : (fun j => ∑ i, G i j • a' i) = a := funext ha_eq
-    rw [e] at this
-    exact this
+variable {K : Type} [Field K] [NumberField K] {V : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V]
+  [IsScalarTower (𝓞 K) K V]
 
-  have hBw := hB.2 w (by simp)
-  have hBw' := hB.2 w' (by simp)
+lemma idxAt_antisymm (w : HeightOneSpectrum (𝓞 K)) (M N : Submodule (𝓞 K) V) :
+    idxAt w M N = - idxAt w N M := by
+  unfold PI.Dv.idxAt
+  ring
 
-  have hak : ∀ k, e (a k) = a k := by
-    intro k
-    obtain ⟨s, hs, hsx⟩ := (locLe_zero_iff w _ _).mp hBw.1 (a k) (Submodule.subset_span ⟨k, rfl⟩)
-    have hr : (algebraMap (𝓞 K) K s) • a k ∈ LinearMap.range e := by
-      rw [algebraMap_smul]; exact hsx.2
-    have hr' := Submodule.smul_mem _ (algebraMap (𝓞 K) K s)⁻¹ hr
-    rw [smul_smul, inv_mul_cancel₀ (algebraMap_ne_zero_of_not_mem w hs), one_smul] at hr'
-    obtain ⟨z, hz⟩ := hr'
-    rw [← hz]
-    change (e * e) z = e z
-    rw [hee]
-  have ha'e : ∀ i, e (a' i) = a' i := by
-    intro i
-    simp only [ha', map_sum, map_smul, hak]
+lemma locLe_zero_iff (w : HeightOneSpectrum (𝓞 K)) (X Y : Submodule (𝓞 K) V) :
+    LocLe w 0 X Y ↔ ∀ x ∈ X, ∃ s : 𝓞 K, s ∉ w.asIdeal ∧ s • x ∈ Y := by
+  unfold PI.Dv.LocLe
+  simp only [pow_zero, Ideal.one_eq_top, Submodule.top_smul]
 
-  have hLfg : A.L.FG := hP.1.2.1
-  have hMfg : M.FG := Submodule.FG.of_le hLfg inf_le_left
-  have hPfg : P.FG := hLfg.map _
-  have hDfg : D.FG := Submodule.fg_span (Set.finite_range _)
-  have hSfg : S.FG := Submodule.fg_span (Set.finite_range _)
-  have hsDS : Submodule.span K (D : Set A.V) = Submodule.span K (S : Set A.V) := by
-    rw [hDdef, hSdef, Submodule.span_span_of_tower, Submodule.span_span_of_tower]
-    apply le_antisymm
-    · rw [Submodule.span_le]
-      rintro _ ⟨i, rfl⟩
-      exact Submodule.sum_mem _ fun k _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨k, rfl⟩)
-    · rw [Submodule.span_le]
-      rintro _ ⟨j, rfl⟩
-      rw [← ha_eq j]
-      exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
-  have hsSM : Submodule.span K (S : Set A.V) = Submodule.span K (M : Set A.V) :=
-    le_antisymm (span_le_of_locLe w hBw.1) (span_le_of_locLe w hBw.2)
-  have hn0 : ((n : ℕ) : K) ≠ 0 := Nat.cast_ne_zero.mpr hP.2.1.ne'
-  have hsMP : Submodule.span K (M : Set A.V) = Submodule.span K (P : Set A.V) := by
-    apply le_antisymm (Submodule.span_mono hL2a.2.1)
-    rw [Submodule.span_le]
-    intro x hx
-    have h1 := hL2a.1 x hx
-    have h2 : ((n : ℕ) : K) • x ∈ Submodule.span K (M : Set A.V) := by
-      have : ((n : ℕ) : K) • x = ((n : ℕ) : 𝓞 K) • x := by
-        rw [← algebraMap_smul K ((n : ℕ) : 𝓞 K) x, map_natCast]
-      rw [this]
-      exact Submodule.subset_span h1
-    have h3 := Submodule.smul_mem _ ((n : ℕ) : K)⁻¹ h2
-    rwa [smul_smul, inv_mul_cancel₀ hn0, one_smul] at h3
+lemma algebraMap_ne_zero_of_not_mem (w : HeightOneSpectrum (𝓞 K)) {s : 𝓞 K} (hs : s ∉ w.asIdeal) :
+    algebraMap (𝓞 K) K s ≠ 0 := by
+  intro h0
+  apply hs
+  have : s = 0 := (IsFractionRing.injective (𝓞 K) K) (h0.trans (map_zero _).symm)
+  rw [this]
+  exact w.asIdeal.zero_mem
 
-  obtain ⟨s', hs'S, hs'⟩ := Formalism.HermitianLatticesTheory.indexBasic_denom w'.asIdeal.primeCompl M S hMfg
-    (fun x hx => (locLe_zero_iff w' _ _).mp hBw'.2 x hx)
-  have hs'w : s' ∉ w'.asIdeal := hs'S
-  have hs'0 : s' ≠ 0 := fun h0 => hs'w (h0 ▸ w'.asIdeal.zero_mem)
-  set t : 𝓞 K := RingOfIntegers.mapRingHom (starRingEnd K) s' with ht
-  have htK : algebraMap (𝓞 K) K t = star (algebraMap (𝓞 K) K s') := rfl
-  have ht0 : t ≠ 0 := by
-    intro h0
-    have : algebraMap (𝓞 K) K t = 0 := by rw [h0, map_zero]
-    rw [htK, star_eq_zero] at this
-    exact algebraMap_ne_zero_of_not_mem w' hs'w this
-  have htw : t ∉ w.asIdeal := by
-    rw [← vAdd_eq_zero_iff w ht0, htK, ← hww, vAdd_eq_zero_iff w' hs'0]
-    exact hs'w
-  have hint : ∀ i, ∀ x ∈ S, h (a' i) x ∈ Set.range (algebraMap (𝓞 K) K) := by
-    intro i
-    have hle : S ≤ (LinearMap.range (Algebra.linearMap (𝓞 K) K)).comap
-        ((h (a' i)).restrictScalars (𝓞 K)) := by
-      rw [hSdef, Submodule.span_le]
-      rintro _ ⟨j, rfl⟩
-      simp only [SetLike.mem_coe, Submodule.mem_comap, LinearMap.restrictScalars_apply,
-        LinearMap.mem_range, Algebra.linearMap_apply]
-      rw [hdual]
-      split_ifs
-      · exact ⟨1, map_one _⟩
-      · exact ⟨0, map_zero _⟩
-    intro x hx
-    obtain ⟨r, hr⟩ := hle hx
-    exact ⟨r, by simpa using hr⟩
-  have hDP : ∀ i, ∃ s : 𝓞 K, s ∉ w.asIdeal ∧ s • a' i ∈ P := by
-    intro i
-    set ψ : Module.Dual K A.V := h (algebraMap (𝓞 K) K t • a' i) with hψ
-    have hψe : ψ ∘ₗ e = ψ := by
-      ext y
-      simp only [LinearMap.comp_apply, hψ]
-      rw [← hself, map_smul, ha'e]
-    have hψM : ψ ∈ Formalism.HN.dualLat M := by
-      intro m hm
-      have e1 : ψ m = h (a' i) (s' • m) := by
-        rw [hψ, LinearMap.map_smulₛₗ, ← algebraMap_smul K s' m, map_smul, htK]
-        simp [starRingEnd_apply, star_star, smul_eq_mul]
-        rw [Algebra.smul_def]
-      rw [e1]
-      exact hint i _ (hs' m hm)
-    obtain ⟨φ, hφ, hψφ⟩ := (hL2a.2.2.2.2 ψ hψe).mp hψM
-    obtain ⟨u, hu⟩ := exists_rep A h hnd φ
-    obtain ⟨s, hs, hsu⟩ := hDw u (fun x hx => by rw [hu]; exact hφ x hx)
-    have heu : e u = algebraMap (𝓞 K) K t • a' i := by
-      apply sub_eq_zero.mp
-      apply hnd
-      intro y
-      rw [map_sub, LinearMap.sub_apply, hself, hu]
-      change φ (e y) - ψ y = 0
-      rw [hψφ]
-      simp
-    refine ⟨s * t, fun hm => ?_, ?_⟩
-    · rcases w.isPrime.mem_or_mem hm with h1 | h1
-      · exact hs h1
-      · exact htw h1
-    · refine ⟨s • u, hsu, ?_⟩
-      rw [map_smul, LinearMap.restrictScalars_apply, heu, algebraMap_smul, smul_smul]
-  have hLocDP : LocLe w 0 D P := by
-    rw [locLe_zero_iff]
-    have hle : D ≤ Formalism.HermitianLatticesTheory.locS w.asIdeal.primeCompl P := by
-      rw [hDdef, Submodule.span_le]
-      rintro _ ⟨i, rfl⟩
-      obtain ⟨s, hs, hsP⟩ := hDP i
-      exact ⟨s, hs, hsP⟩
-    intro x hx
-    obtain ⟨s, hs, hsP⟩ := hle hx
-    exact ⟨s, hs, hsP⟩
+lemma span_le_of_locLe (w : HeightOneSpectrum (𝓞 K)) {X Y : Submodule (𝓞 K) V} (h : LocLe w 0 X Y) :
+    Submodule.span K (X : Set V) ≤ Submodule.span K (Y : Set V) := by
+  rw [Submodule.span_le]
+  intro x hx
+  obtain ⟨s, hs, hsx⟩ := (locLe_zero_iff w X Y).mp h x hx
+  have hs0 := algebraMap_ne_zero_of_not_mem w hs
+  have h1 : (algebraMap (𝓞 K) K s) • x ∈ Submodule.span K (Y : Set V) := by
+    rw [algebraMap_smul]
+    exact Submodule.subset_span hsx
+  have h2 := Submodule.smul_mem (Submodule.span K (Y : Set V)) (algebraMap (𝓞 K) K s)⁻¹ h1
+  rwa [smul_smul, inv_mul_cancel₀ hs0, one_smul] at h2
 
-  have hsDP : Submodule.span K (D : Set A.V) = Submodule.span K (P : Set A.V) := by
-    rw [hsDS, hsSM, hsMP]
-  have h2 := (hI K A.V w D P hDfg hPfg hsDP).2.1 S hSfg (by rw [← hsMP, ← hsSM])
-  have h3 := idx_nonpos_of_loc hI w hDfg hPfg hsDP hLocDP
-  have h4 := (hI K A.V w P M hPfg hMfg hsMP.symm).2.1 S hSfg hsSM
-  have h5 := idx_eq_zero_of_loc hI w hMfg hSfg hBw.2 hBw.1
-  have h6 := (hL2a.2.2.2.1 w).2.2
-  have h7 : ((min (dimE A e) (dimE A (1 - e)) : ℕ) : ℤ) ≤ (dimE A (1 - e) : ℤ) :=
-    Nat.cast_le.mpr (min_le_right _ _)
-  have h8 := mul_le_mul_of_nonneg_right h7 hvn
-  have h9 : 0 ≤ (dimE A (1 - e) : ℤ) * vAdd w ((n : ℕ) : K) := mul_nonneg (Nat.cast_nonneg _) hvn
-  rw [← hDS]
+lemma idx_eq_zero_of_loc (hI : IdxCalc) (w : HeightOneSpectrum (𝓞 K)) {X Y : Submodule (𝓞 K) V}
+    (hX : X.FG) (hY : Y.FG) (hXY : LocLe w 0 X Y) (hYX : LocLe w 0 Y X) : idxAt w X Y = 0 := by
+  have hs : Submodule.span K (X : Set V) = Submodule.span K (Y : Set V) :=
+    le_antisymm (span_le_of_locLe w hXY) (span_le_of_locLe w hYX)
+  have h1 := (hI K V w Y X hY hX hs.symm).2.2.2.1 0 hXY
+  have h2 := (hI K V w X Y hX hY hs).2.2.2.1 0 hYX
+  have h3 := idxAt_antisymm w Y X
+  simp only [Nat.cast_zero, zero_mul] at h1 h2
   linarith
 
-theorem dvProjGram_of (hA : ProjA) (hI : IdxCalc) : gram_det_kernel_base_level :=
-  dvProjGram_of' hA hI (idxDet_of hI)
+
+
+lemma vAdd_algebraMap_nonneg (w : HeightOneSpectrum (𝓞 K)) (r : 𝓞 K) :
+    0 ≤ vAdd w (algebraMap (𝓞 K) K r) := by
+  unfold Formalism.BasicNotions.vAdd
+  have h1 : w.valuation K (algebraMap (𝓞 K) K r) ≤ 1 := w.valuation_le_one r
+  by_cases h0 : w.valuation K (algebraMap (𝓞 K) K r) = 0
+  · rw [h0, WithZero.log_zero]
+    simp
+  · have h2 : WithZero.exp (WithZero.log (w.valuation K (algebraMap (𝓞 K) K r))) ≤ WithZero.exp 0 := by
+      rw [WithZero.exp_log h0, WithZero.exp_zero]
+      exact h1
+    rw [WithZero.exp_le_exp] at h2
+    omega
+
+
+
+
+end Gen
+
+section Herm
+
+variable {K : Type} [Field K] [NumberField K] [StarRing K]
+
+lemma exists_rep (A : HLat K) (h : A.V →ₗ⋆[K] A.V →ₗ[K] K) (hnd : ∀ x, (∀ y, h x y = 0) → x = 0)
+    (φ : Module.Dual K A.V) : ∃ u, h u = φ := by
+  classical
+  let G : Matrix A.ι A.ι K := fun i j => h (A.b i) (A.b j)
+  have hsum : ∀ (c : A.ι → K) (j : A.ι), h (∑ i, star (c i) • A.b i) (A.b j) = Matrix.vecMul c G j := by
+    intro c j
+    simp only [map_sum, map_smulₛₗ, LinearMap.sum_apply, LinearMap.smul_apply, starRingEnd_apply, star_star,
+      smul_eq_mul, Matrix.vecMul, dotProduct, G]
+  have key : ∀ c : A.ι → K, Matrix.vecMul c G = 0 → c = 0 := by
+    intro c hc
+    have hu : h (∑ i, star (c i) • A.b i) = 0 := A.b.ext fun j => by
+      rw [hsum c j, hc]
+      rfl
+    have hu0 := hnd (∑ i, star (c i) • A.b i) (fun y => by rw [hu]; rfl)
+    have h0 := (Fintype.linearIndependent_iff.mp A.b.linearIndependent) (fun i => star (c i)) hu0
+    funext i
+    exact star_eq_zero.mp (h0 i)
+  have hinj : Function.Injective (fun c : A.ι → K => Matrix.vecMul c G) := by
+    intro c c' hcc
+    have := key (c - c') (by rw [Matrix.sub_vecMul]; exact sub_eq_zero.mpr hcc)
+    exact sub_eq_zero.mp this
+  have hsurj : Function.Surjective (fun c : A.ι → K => Matrix.vecMul c G) :=
+    Matrix.vecMul_surjective_iff_isUnit.mpr (Matrix.vecMul_injective_iff_isUnit.mp hinj)
+  obtain ⟨c, hc⟩ := hsurj (fun j => φ (A.b j))
+  refine ⟨∑ i, star (c i) • A.b i, A.b.ext fun j => ?_⟩
+  rw [hsum c j]
+  exact congrFun hc j
+
+end Herm
 
 end PI.Dv.ProjGramW
+end
+end
+
+section
+noncomputable section
+
+namespace PI.Dv.ProjGramW
+
+open NumberField IsDedekindDomain Formalism.BasicNotions
+
+section Det
+
+variable {K : Type} [Field K] [NumberField K]
+
+def famC {V : Type} [AddCommGroup V] [Module K V] {d : ℕ} (b : Fin d → V)
+    (C : Matrix (Fin d) (Fin d) K) : Fin d → V :=
+  fun j => ∑ i, C i j • b i
+
+
+lemma famC_one {V : Type} [AddCommGroup V] [Module K V] {d : ℕ} (b : Fin d → V) :
+    famC b (1 : Matrix (Fin d) (Fin d) K) = b := by
+  funext j
+  simp [famC, Matrix.one_apply]
+
+
+variable {V : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
+
+
+lemma idx_self (hI : IdxCalc) (w : HeightOneSpectrum (𝓞 K)) {X : Submodule (𝓞 K) V} (hX : X.FG) :
+    idxAt w X X = 0 := by
+  have hl : LocLe w 0 X X := (locLe_zero_iff w X X).mpr fun x hx =>
+    ⟨1, fun h => w.isPrime.ne_top ((Ideal.eq_top_iff_one _).mpr h), by rw [one_smul]; exact hx⟩
+  exact idx_eq_zero_of_loc hI w hX hX hl hl
+
+lemma idx_add (hI : IdxCalc) (w : HeightOneSpectrum (𝓞 K)) {M N P : Submodule (𝓞 K) V}
+    (hM : M.FG) (hN : N.FG) (hP : P.FG) (hMN : Submodule.span K (M : Set V) = Submodule.span K (N : Set V))
+    (hPN : Submodule.span K (P : Set V) = Submodule.span K (N : Set V)) :
+    idxAt w M P = idxAt w M N + idxAt w N P :=
+  (hI K V w M N hM hN hMN).2.1 P hP hPN
+
+lemma vAdd_mul (w : HeightOneSpectrum (𝓞 K)) {x y : K} (hx : x ≠ 0) (hy : y ≠ 0) :
+    vAdd w (x * y) = vAdd w x + vAdd w y := by
+  unfold vAdd
+  rw [map_mul, WithZero.log_mul ((Valuation.ne_zero_iff _).mpr hx) ((Valuation.ne_zero_iff _).mpr hy)]
+  ring
+
+def stdE (d : ℕ) : Fin d → (Fin d →₀ K) := fun k => Finsupp.single k 1
+
+
+def idxStd (w : HeightOneSpectrum (𝓞 K)) {d : ℕ} (C : Matrix (Fin d) (Fin d) K) : ℤ :=
+  idxAt w (Submodule.span (𝓞 K) (Set.range (stdE (K := K) d)))
+    (Submodule.span (𝓞 K) (Set.range (famC (stdE d) C)))
+
+
+
+
+
+def colOp {d : ℕ} (j0 : Fin d) (v : Fin d → K) : Matrix (Fin d) (Fin d) K :=
+  Matrix.of fun i j => if j = j0 then v i else (if i = j then 1 else 0)
+
+lemma famC_std_apply {d : ℕ} (C : Matrix (Fin d) (Fin d) K) (j i : Fin d) :
+    famC (stdE (K := K) d) C j i = C i j := by
+  simp [famC, stdE, Finsupp.finsetSum_apply, Finsupp.single_apply]
+
+lemma sum_smul_apply {d : ℕ} (r : Fin d → 𝓞 K) (u : Fin d → (Fin d →₀ K)) (i : Fin d) :
+    (∑ k, r k • u k) i = ∑ k, r k • u k i := by
+  rw [Finsupp.finsetSum_apply]
+  rfl
+
+lemma colOp_col {d : ℕ} (j0 : Fin d) (v : Fin d → K) (k : Fin d) (hk : k ≠ j0) :
+    famC (stdE (K := K) d) (colOp j0 v) k = stdE d k := by
+  ext i
+  rw [famC_std_apply]
+  by_cases h : i = k
+  · subst h
+    simp [colOp, stdE, hk]
+  · simp [colOp, stdE, hk, h]
+
+lemma sums_eq {d : ℕ} (j0 : Fin d) (v : Fin d → K) (r : Fin d → 𝓞 K) (hr : r j0 = 0) :
+    ∑ k, r k • famC (stdE (K := K) d) (colOp j0 v) k = ∑ k, r k • stdE d k := by
+  refine Finset.sum_congr rfl fun k _ => ?_
+  by_cases hk : k = j0
+  · rw [hk, hr, zero_smul, zero_smul]
+  · rw [colOp_col j0 v k hk]
+
+
+
+lemma algebraMap_eq_zero {r : 𝓞 K} (h : algebraMap (𝓞 K) K r = 0) : r = 0 :=
+  IsFractionRing.injective (𝓞 K) K (by rw [h, map_zero])
+
+
+lemma span_top_of_mem {Z : Submodule (𝓞 K) K} {z : K} (hz : z ∈ Z) (hz0 : z ≠ 0) :
+    Submodule.span K (Z : Set K) = ⊤ :=
+  Ideal.eq_top_of_isUnit_mem _ (Submodule.subset_span hz) (isUnit_iff_ne_zero.mpr hz0)
+
+lemma one_not_mem (w : HeightOneSpectrum (𝓞 K)) : (1 : 𝓞 K) ∉ w.asIdeal :=
+  fun h => w.isPrime.ne_top ((Ideal.eq_top_iff_one _).mpr h)
+
+lemma idx_int (hI : IdxCalc) (w : HeightOneSpectrum (𝓞 K)) {y : K} (hy : y ≠ 0) {r : 𝓞 K} (hr : r ≠ 0) :
+    idxAt w (Submodule.span (𝓞 K) {y}) (Submodule.span (𝓞 K) {algebraMap (𝓞 K) K r * y}) =
+      vAdd w (algebraMap (𝓞 K) K r) := by
+  classical
+  have hv0 := vAdd_algebraMap_nonneg w r
+  set F : ℕ := (vAdd w (algebraMap (𝓞 K) K r)).toNat with hFdef
+  have hF : (F : ℤ) = vAdd w (algebraMap (𝓞 K) K r) := Int.toNat_of_nonneg hv0
+  have hne := w.intValuation_ne_zero r hr
+  have hval : w.intValuation r = WithZero.exp (-(F : ℤ)) := by
+    rw [hF]
+    unfold vAdd
+    rw [HeightOneSpectrum.valuation_of_algebraMap, neg_neg, WithZero.exp_log hne]
+  have hmem : r ∈ w.asIdeal ^ F := (w.intValuation_le_pow_iff_mem r F).mp (le_of_eq hval)
+  obtain ⟨J, hJ⟩ := (w.intValuation_le_pow_iff_dvd r F).mp (le_of_eq hval)
+  have hJw : ¬ J ≤ w.asIdeal := by
+    intro hle
+    have hd : w.asIdeal ^ (F + 1) ∣ Ideal.span {r} := by
+      rw [hJ, pow_succ]
+      exact mul_dvd_mul_left _ (Ideal.dvd_iff_le.mpr hle)
+    have := (w.intValuation_le_pow_iff_dvd r (F + 1)).mpr hd
+    rw [hval, WithZero.exp_le_exp] at this
+    push_cast at this
+    linarith
+  obtain ⟨t, htJ, htw⟩ := SetLike.not_le_iff_exists.mp hJw
+  set X := Submodule.span (𝓞 K) {y} with hX
+  set Y := Submodule.span (𝓞 K) {algebraMap (𝓞 K) K r * y} with hY
+  set Z := (w.asIdeal ^ F) • X with hZ
+  have hry : algebraMap (𝓞 K) K r * y = r • y := (Algebra.smul_def r y).symm
+  have hry0 : algebraMap (𝓞 K) K r * y ≠ 0 :=
+    mul_ne_zero (fun h => hr (algebraMap_eq_zero h)) hy
+  have hyX : y ∈ X := Submodule.mem_span_singleton_self y
+  have hryZ : algebraMap (𝓞 K) K r * y ∈ Z := by
+    rw [hry]; exact Submodule.smul_mem_smul hmem hyX
+  have hXfg : X.FG := Submodule.fg_span (Set.finite_singleton _)
+  have hYfg : Y.FG := Submodule.fg_span (Set.finite_singleton _)
+  have hZfg : Z.FG := Submodule.FG.of_le hXfg Submodule.smul_le_right
+  have hsX : Submodule.span K (X : Set K) = ⊤ := span_top_of_mem hyX hy
+  have hsY : Submodule.span K (Y : Set K) = ⊤ := span_top_of_mem (Submodule.mem_span_singleton_self _) hry0
+  have hsZ : Submodule.span K (Z : Set K) = ⊤ := span_top_of_mem hryZ hry0
+  have hYZ : LocLe w 0 Y Z := by
+    rw [locLe_zero_iff]
+    intro z hz
+    obtain ⟨m, rfl⟩ := Submodule.mem_span_singleton.mp hz
+    refine ⟨1, one_not_mem w, ?_⟩
+    rw [one_smul, hry, smul_smul]
+    exact Submodule.smul_mem_smul (Ideal.mul_mem_left _ m hmem) hyX
+  have hZY : LocLe w 0 Z Y := by
+    rw [locLe_zero_iff]
+    intro z hz
+    obtain ⟨i, hi, rfl⟩ := Submodule.mem_smul_span_singleton.mp hz
+    have hit : i * t ∈ Ideal.span {r} := by rw [hJ]; exact Ideal.mul_mem_mul hi htJ
+    obtain ⟨m, hm⟩ := Ideal.mem_span_singleton'.mp hit
+    refine ⟨t, htw, ?_⟩
+    have e : t • i • y = m • (algebraMap (𝓞 K) K r * y) := by
+      rw [hry, smul_smul, smul_smul, hm, mul_comm]
+    rw [e]
+    exact Submodule.smul_mem _ m (Submodule.mem_span_singleton_self _)
+  have hrk : Formalism.HN.rkK X = 1 := by
+    unfold Formalism.HN.rkK
+    rw [hsX, finrank_top, Module.finrank_self]
+  have h5 := (hI K K w X X hXfg hXfg rfl).2.2.2.2.1 F
+  have hadd := idx_add hI w hXfg hZfg hYfg (hsX.trans hsZ.symm) (hsY.trans hsZ.symm)
+  have h0 := idx_eq_zero_of_loc hI w hZfg hYfg hZY hYZ
+  rw [hadd, h5, h0, hrk, ← hF]
+  simp
+
+
+
+lemma colOp_diag {d : ℕ} (k : Fin d) (c : K) :
+    colOp k (fun i => if i = k then c else 0) = Matrix.diagonal (fun m => if m = k then c else 1) := by
+  ext p q
+  simp only [colOp, Matrix.of_apply, Matrix.diagonal_apply]
+  by_cases hq : q = k
+  · subst hq
+    by_cases hp : p = q
+    · subst hp; simp
+    · simp [hp]
+  · by_cases hp : p = q
+    · subst hp; simp [hq]
+    · simp [hp, hq]
+
+
+
+
+
+
+end Det
+
+
+end PI.Dv.ProjGramW
+end
+end
+
+section
+noncomputable section
+
+namespace PI.Dv.ProjGramW
+
+open NumberField IsDedekindDomain Formalism.BasicNotions
+
+
+
+end PI.Dv.ProjGramW
+end
+end

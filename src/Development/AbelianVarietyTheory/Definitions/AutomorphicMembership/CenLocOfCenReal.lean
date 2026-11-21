@@ -25,8 +25,6 @@ def CenLoc (D : D7) (M : MtFam D) : Prop :=
         (M.loc i).real (D.ntypes.cenMt (D.nd.mu i) (D.nd.j i) z x) =
           GlobalTheory.PendOf.actSum D L (z : MonoidAlgebra ℂ (G0g D.nd)) ((M.loc i).real x)
 
-theorem cenLoc_of_cenReal {D : D7} {M : MtFam D} (h : GlobalTheory.PendOf.CenReal D M) : CenLoc D M :=
-  fun i => h (D.nd.mu i) (D.nd.j i) (D.nd.j_range i).1 (D.nd.j_range i).2
 
 def SumTw (D : D7) (M : MtFam D) : Prop :=
   ∀ w, TwistedAt D w → ∀ (j : ℕ) (h1 : 1 ≤ j) (h2 : j ≤ D.R.m), GlobalTheory.CoefDuty.ClassSum (M (D.what₂.muTw w) j h1 h2)

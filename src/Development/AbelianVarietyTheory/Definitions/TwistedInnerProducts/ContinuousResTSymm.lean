@@ -192,9 +192,6 @@ theorem embRel_left (ι : A.V →ₗ[D.host.E] S.V) (hι : frameMat S A ι = d.i
   rw [mt_emb, mt_one, Matrix.mul_one, Matrix.add_mulVec, ← Matrix.mulVec_mulVec, h2, Matrix.mulVec_zero,
     ← Matrix.mulVec_mulVec, h3]
 
-theorem embRel_right (ι : B.V →ₗ[D.host.E] S.V) (hι : frameMat S B ι = d.iB) (b : GA D B) :
-    EmbRel S B ι (d.emb (1, b)) b := by
-  rw [← emb_symm]; exact d.symm.embRel_left ι hι b
 
 def resS (T : HSp D) : WO S T ≃+ WO A T × WO B T where
   toFun x := (x ⬝ d.jA, x ⬝ d.jB)

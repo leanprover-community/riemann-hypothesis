@@ -143,9 +143,6 @@ def chartPush (ψ : OpenPartialHomeomorph X (Fin e → ℂ)) (F : (Fin e → ℂ
 def chartExt (ψ : OpenPartialHomeomorph X (Fin e → ℂ)) (v : X → ℝ) : (Fin e → ℂ) → ℝ :=
   ψ.target.indicator (v ∘ ψ.symm)
 
-theorem chartPush_symm (ψ : OpenPartialHomeomorph X (Fin e → ℂ)) (F : (Fin e → ℂ) → ℝ)
-    {y : Fin e → ℂ} (hy : y ∈ ψ.target) : chartPush ψ F (ψ.symm y) = F y := by
-  simp [chartPush, Set.indicator_of_mem (ψ.map_target hy), ψ.right_inv hy]
 
 theorem chartPush_eq_zero (ψ : OpenPartialHomeomorph X (Fin e → ℂ))
     {F : (Fin e → ℂ) → ℝ} {p : X}

@@ -1,11 +1,314 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSmallTorsionSetForEndomorphism
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LevelStructureChangeFramedGeometricPointUnique
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFiniteOrderLevelMoveUniversalSemiAbelian
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NatCardQuotSmulTopLePowFinrank
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TateIsometryTorsionEqLevelSmul
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsUnipotentModIdealLiftLaInv
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GapGeSubKapBase
+import BuildAid.ForwardExisting
 
+section
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.BasicNotions
+open GlobalTheory.LevDesc (move)
+open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
+open GlobalTheory.OrbitSep
+
+set_option autoImplicit false
+
+namespace GlobalTheory.MoveOrder
+
+theorem finite_order : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) («γ» : LevelAut Dw l) (ρ : Xo.X ⟶ Xo.X) (ν : SABMap Xo.univ.t Xo.univ.t ρ), 1 ≤ Dw.p + Dw.q → l.A = 1 → IsIso ρ → IsLevMove ρ ν (liftLa «γ») LinearMap.id → ∃ n : ℕ, 0 < n ∧ (fun f : Xo.univ.t.G.left ⟶ Xo.univ.t.G.left => f ≫ ν.φ)^[n] (𝟙 _) = 𝟙 _ := by
+  intro E _ _ _ H Dw l Xo c γ ρ ν hpq hl hρ hm
+  have hA : l.A.Coprime l.M := by rw [hl]; exact Nat.coprime_one_left _
+  obtain ⟨⟨ι, hι, -⟩, hmul, -⟩ := GlobalTheory.T.framedPointMove_calculus E H Dw l Xo c
+  have h₀ : IsLevMove (𝟙 Xo.X) ι (liftLa (1 : LevelAut Dw l)) LinearMap.id := by
+    refine ⟨Category.id_comp _, fun a => ?_, fun a => ?_⟩
+    · rw [hι, Category.comp_id, Category.id_comp]
+      exact congrArg _ (GlobalTheory.LevelActionLaws.eta_congr Xo (GlobalTheory.LevelActionLaws.liftLa_one_sub a))
+    · rw [hι, Category.comp_id, Category.id_comp]
+      rfl
+  have key : ∀ k : ℕ, ∃ (ρk : Xo.X ⟶ Xo.X) (μ : SABMap Xo.univ.t Xo.univ.t ρk), IsIso ρk ∧
+      IsLevMove ρk μ (liftLa («γ» ^ k)) LinearMap.id ∧
+      μ.φ = (fun f : Xo.univ.t.G.left ⟶ Xo.univ.t.G.left => f ≫ ν.φ)^[k] (𝟙 _) := by
+    intro k
+    induction k with
+    | zero => exact ⟨𝟙 _, ι, inferInstance, by rw [pow_zero]; exact h₀, by rw [hι]; rfl⟩
+    | succ k ih =>
+      obtain ⟨ρk, μ, ik, hk, hφ⟩ := ih
+      obtain ⟨κ, hκ, -⟩ := hmul ρk ρ μ ν
+      refine ⟨ρk ≫ ρ, κ, inferInstance, ⟨?_, fun a => ?_, fun a => ?_⟩, ?_⟩
+      · rw [Category.assoc, hm.1, hk.1]
+      · rw [pow_succ, GlobalTheory.LevelActionLaws.eta_congr Xo (GlobalTheory.LevelActionLaws.liftLa_mul_sub («γ» ^ k) «γ» a), hκ,
+          ← Category.assoc, hk.2.1, Category.assoc, hm.2.1, Category.assoc]
+      · have e : (LinearMap.id : Dw.La →ₗ[𝓞 E] Dw.La) a =
+            (LinearMap.id : Dw.La →ₗ[𝓞 E] Dw.La) ((LinearMap.id : Dw.La →ₗ[𝓞 E] Dw.La) a) := rfl
+        rw [e, hκ, ← Category.assoc, hk.2.2, Category.assoc, hm.2.2, Category.assoc]
+      · rw [hκ, hφ, Function.iterate_succ_apply']
+  refine ⟨orderOf «γ», orderOf_pos «γ», ?_⟩
+  obtain ⟨ρn, μ, i, h, hφ⟩ := key (orderOf «γ»)
+  rw [pow_orderOf_eq_one] at h
+  rw [← hφ, (GlobalTheory.LevelActionLaws.move_unique hpq hA Xo c 1 i inferInstance h h₀).2, hι]
+
+end GlobalTheory.MoveOrder
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.BasicNotions
+open GlobalTheory.LevDesc (move)
+open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
+open GlobalTheory.OrbitSep
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_finite_order_levelMove_universalSemiAbelian : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) («γ» : LevelAut Dw l) (ρ : Xo.X ⟶ Xo.X) (ν : SABMap Xo.univ.t Xo.univ.t ρ), 1 ≤ Dw.p + Dw.q → l.A = 1 → IsIso ρ → IsLevMove ρ ν (liftLa «γ») LinearMap.id → ∃ n : ℕ, 0 < n ∧ (fun f : Xo.univ.t.G.left ⟶ Xo.univ.t.G.left => f ≫ ν.φ)^[n] (𝟙 _) = 𝟙 _ := by
+  atlas_forward_decl GlobalTheory.MoveOrder.finite_order
+end
+
+section
+section
+open NumberField
+
+namespace GlobalTheory
+
+open TensorProduct in
+
+theorem natCard_quot_maximal_smul_top_eq {R M : Type} [CommRing R] [IsDomain R] [AddCommGroup M]
+    [Module R M] [Module.Finite R M] [Module.Flat R M] (P : Ideal R) [P.IsMaximal] :
+    Nat.card (M ⧸ (P • (⊤ : Submodule R M))) = Nat.card (R ⧸ P) ^ Module.finrank R M := by
+  let _ := Ideal.Quotient.field P
+  have e : ((R ⧸ P) ⊗[R] M) ≃ₗ[R] M ⧸ (P • (⊤ : Submodule R M)) :=
+    TensorProduct.quotTensorEquivQuotSMul M P
+  rw [← Nat.card_congr e.toEquiv, Module.natCard_eq_pow_finrank (K := R ⧸ P)]
+  congr 1
+  let q : PrimeSpectrum (R ⧸ P) := ⟨⊥, Ideal.isPrime_bot⟩
+  have h1 := Module.rankAtStalk_baseChange (R := R) (M := M) (S := R ⧸ P) q
+  rw [Module.rankAtStalk_eq_finrank_of_free] at h1
+  have h2 : Module.rankAtStalk M (q.comap (algebraMap R (R ⧸ P))) = Module.finrank R M := by
+    rw [Module.rankAtStalk_eq]
+    exact Ideal.finrank_fiber_eq_finrank _
+  rw [← h2, ← h1]
+  rfl
+
+theorem natCard_quot_smul_top_le_pow_finrank : ∀ (E : Type) [Field E] [NumberField E] (La : Type)
+    [AddCommGroup La] [Module (𝓞 E) La], Module.Finite (𝓞 E) La → Module.Projective (𝓞 E) La →
+    ∀ (I : Ideal (𝓞 E)) (g : ℕ), g.Prime → Ideal.absNorm I = g →
+    Finite (La ⧸ I • (⊤ : Submodule (𝓞 E) La)) ∧
+      Nat.card (La ⧸ I • (⊤ : Submodule (𝓞 E) La)) ≤ g ^ Module.finrank (𝓞 E) La := by
+  intro E _ _ La _ _ hfin hproj I g hg hI
+  have hprime : I.IsPrime := Ideal.isPrime_of_irreducible_absNorm (by rw [hI]; exact hg.prime.irreducible)
+  have hne : I ≠ ⊥ := by
+    rintro rfl
+    rw [Ideal.absNorm_bot] at hI
+    exact hg.ne_zero hI.symm
+  have hmax : I.IsMaximal := hprime.isMaximal hne
+  have hR : Nat.card (𝓞 E ⧸ I) = g := by
+    rw [← hI, Ideal.absNorm_apply, Submodule.cardQuot_apply]
+  have hcard := natCard_quot_maximal_smul_top_eq (R := 𝓞 E) (M := La) I
+  rw [hR] at hcard
+  refine ⟨?_, hcard.le⟩
+  apply Nat.finite_of_card_ne_zero
+  rw [hcard]
+  exact pow_ne_zero _ hg.ne_zero
+
+end GlobalTheory
+end
+
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.natCard_quot_smul_le_pow_finrank : ∀ (E : Type) [Field E] [NumberField E] (La : Type) [AddCommGroup La] [Module (𝓞 E) La], Module.Finite (𝓞 E) La → Module.Projective (𝓞 E) La → ∀ (I : Ideal (𝓞 E)) (g : ℕ), g.Prime → Ideal.absNorm I = g → Finite (La ⧸ I • (⊤ : Submodule (𝓞 E) La)) ∧ Nat.card (La ⧸ I • (⊤ : Submodule (𝓞 E) La)) ≤ g ^ Module.finrank (𝓞 E) La := by
+  atlas_forward_decl GlobalTheory.natCard_quot_smul_top_le_pow_finrank
+end
+
+section
+section
+set_option autoImplicit false
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.BasicNotions
+open GlobalTheory.LevDesc (move)
+open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
+open GlobalTheory.OrbitSep
+
+namespace GlobalTheory.TateTorsion
+
+open NumberField in
+
+theorem _root_.GlobalTheory.TateTorsion.torsion_eq_level_smul : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H) (l : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H) (k : Type) [Field k] (Q : Type) [Group Q] (act : 𝓞 E → Q → Q) (e : ℕ → Q → Q → kˣ → Prop) (T : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.TateIso Dw k Q act e) (eta : Dw.La → Q) (I : Ideal (𝓞 E)) (g : ℕ), (∀ a b x, act (a + b) x = act a x * act b x) → (∀ x, act 1 x = x) → (∀ (n : ℕ) x, act (n : 𝓞 E) x = x ^ n) → (∀ a ∈ l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E) • (⊤ : Submodule (𝓞 E) Dw.La), eta a = T.ev l.M a) → g.Prime → Ideal.absNorm I = g → (g : 𝓞 E) ∉ I ^ 2 → l.Mb ≤ I → ∃ t : 𝓞 E, (∀ c ∈ I • (⊤ : Submodule (𝓞 E) Dw.La), t • c ∈ l.Mb • (⊤ : Submodule (𝓞 E) Dw.La)) ∧ ∀ x : Q, (∀ a ∈ I, act a x = 1) → ∃ c : Dw.La, x = eta (t • c) := by
+  intro E _ _ _ H Dw l k _ Q _ act e T eta I g hadd hone hnat heta hg hI hsq hle
+  have hMb : (l.M : 𝓞 E) ∈ l.Mb := by
+    have h : (l.M : 𝓞 E) ∈ Ideal.span {(l.M : 𝓞 E)} := Ideal.mem_span_singleton_self _
+    rw [← l.prod] at h
+    exact Ideal.mul_le_left h
+  have hgI : (g : 𝓞 E) ∈ I := hI ▸ Ideal.absNorm_mem I
+  have hprime : I.IsPrime := by
+    apply Ideal.isPrime_of_irreducible_absNorm
+    rw [hI]
+    exact (Nat.prime_iff.mp hg).irreducible
+  have hne : I ≠ ⊥ := by
+    rintro rfl
+    simp only [Ideal.absNorm_bot] at hI
+    exact hg.ne_zero hI.symm
+  have hmax : I.IsMaximal := hprime.isMaximal hne
+  obtain ⟨B, hB⟩ : I ∣ Ideal.span {(g : 𝓞 E)} :=
+    Ideal.dvd_iff_le.mpr ((Ideal.span_singleton_le_iff_mem _).mpr hgI)
+  have hIB : I ⊔ B = ⊤ := by
+    by_contra h
+    have hBI : B ≤ I := (hmax.eq_of_le h le_sup_left).symm ▸ le_sup_right
+    apply hsq
+    have hgB : (g : 𝓞 E) ∈ I * B := hB ▸ Ideal.mem_span_singleton_self _
+    rw [pow_two]
+    exact Ideal.mul_mono_right hBI hgB
+  have hIbar : I ⊔ l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E) = ⊤ :=
+    eq_top_iff.mpr (l.coprime ▸ sup_le_sup_right hle _)
+  have hIK : I ⊔ l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E) * B = ⊤ := by
+    rw [← Ideal.isCoprime_iff_sup_eq] at hIB hIbar ⊢
+    exact hIbar.mul_right hIB
+  obtain ⟨i, hi, u, hu, hiu⟩ :=
+    Submodule.mem_sup.mp (hIK ▸ Submodule.mem_top : (1 : 𝓞 E) ∈ I ⊔ l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E) * B)
+  have huB : u ∈ B := Ideal.mul_le_right hu
+  have huBar : u ∈ l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E) := Ideal.mul_le_left hu
+  have hgN : g ∣ l.M := by
+    have h := Ideal.absNorm_dvd_absNorm_of_le ((Ideal.span_singleton_le_iff_mem _).mpr (hle hMb))
+    have h' : ((l.M : ℕ) : 𝓞 E) = algebraMap ℤ (𝓞 E) (l.M : ℤ) := by simp
+    rw [hI, Ideal.absNorm_span_singleton, h', Algebra.norm_algebraMap, Int.natAbs_pow,
+      Int.natAbs_natCast] at h
+    exact hg.dvd_of_dvd_pow h
+  obtain ⟨m, hm⟩ := hgN
+  have hm0 : 0 < m := Nat.pos_of_ne_zero (by rintro rfl; have := l.three_le; omega)
+  have key : ∀ j ∈ I, (m : 𝓞 E) * u * j ∈ l.Mb := by
+    intro j hj
+    have h : u * j ∈ Ideal.span {(g : 𝓞 E)} := hB ▸ (mul_comm j u ▸ Ideal.mul_mem_mul hj huB)
+    obtain ⟨r, hr⟩ := Ideal.mem_span_singleton'.mp h
+    have h2 : (m : 𝓞 E) * u * j = r * (l.M : 𝓞 E) := by
+      rw [mul_assoc, ← hr, hm]; push_cast; ring
+    rw [h2]
+    exact Ideal.mul_mem_left _ r hMb
+  refine ⟨(m : 𝓞 E) * u, ?_, ?_⟩
+  · intro c hc
+    refine Submodule.smul_induction_on hc (fun j hj y _ => ?_) (fun y z hy hz => ?_)
+    · rw [smul_smul]
+      exact Submodule.smul_mem_smul (key j hj) Submodule.mem_top
+    · rw [smul_add]
+      exact add_mem hy hz
+  · intro x hx
+    have hxg : x ^ g = 1 := by rw [← hnat]; exact hx _ hgI
+    obtain ⟨b, hb⟩ := (T.onto g hg.pos x).mp hxg
+    have hpow : ∀ (n j : ℕ) (a : Dw.La), T.ev n (j • a) = T.ev n a ^ j := by
+      intro n j a
+      induction j with
+      | zero =>
+        have h := T.add n 0 0
+        rw [add_zero] at h
+        simpa using h
+      | succ j ih => rw [succ_nsmul, T.add, ih, pow_succ]
+    have hux : act u x = x := by
+      have h := hone x
+      rwa [← hiu, hadd, hx i hi, one_mul] at h
+    refine ⟨b, ?_⟩
+    have hmem : ((m : 𝓞 E) * u) • b ∈
+        l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E) • (⊤ : Submodule (𝓞 E) Dw.La) :=
+      Submodule.smul_mem_smul (Ideal.mul_mem_left _ _ huBar) Submodule.mem_top
+    rw [heta _ hmem, mul_comm, mul_smul, T.lin, Nat.cast_smul_eq_nsmul, hpow, hm,
+      T.tower g m hg.pos hm0, hb, hux]
+
+end GlobalTheory.TateTorsion
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.BasicNotions
+open GlobalTheory.LevDesc (move)
+open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
+open GlobalTheory.OrbitSep
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tateIsometry_torsion_eq_level_smul : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (k : Type) [Field k] (Q : Type) [Group Q] (act : 𝓞 E → Q → Q) (e : ℕ → Q → Q → kˣ → Prop) (T : TateIso Dw k Q act e) (eta : Dw.La → Q) (I : Ideal (𝓞 E)) (g : ℕ), (∀ a b x, act (a + b) x = act a x * act b x) → (∀ x, act 1 x = x) → (∀ (n : ℕ) x, act (n : 𝓞 E) x = x ^ n) → (∀ a ∈ l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E) • (⊤ : Submodule (𝓞 E) Dw.La), eta a = T.ev l.M a) → g.Prime → Ideal.absNorm I = g → (g : 𝓞 E) ∉ I ^ 2 → l.Mb ≤ I → ∃ t : 𝓞 E, (∀ c ∈ I • (⊤ : Submodule (𝓞 E) Dw.La), t • c ∈ l.Mb • (⊤ : Submodule (𝓞 E) Dw.La)) ∧ ∀ x : Q, (∀ a ∈ I, act a x = 1) → ∃ c : Dw.La, x = eta (t • c) := by
+  atlas_forward_decl GlobalTheory.TateTorsion.torsion_eq_level_smul
+end
+
+section
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.BasicNotions
+open GlobalTheory.LevDesc (move)
+open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
+open GlobalTheory.OrbitSep
+
+namespace GlobalTheory.OrbitSep
+
+theorem unipAt_inv_liftLa : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (I : Ideal (𝓞 E)) («γ» : LevelAut Dw l), l.Mb ≤ I → UnipAt I «γ» → ∃ m : ℕ, ∀ x : Dw.La, ((liftLa «γ»⁻¹ - 1) ^ m) x ∈ I • (⊤ : Submodule (𝓞 E) Dw.La) := by
+  intro E _ _ _ H Dw l I γ hI hU
+  obtain ⟨m, hm⟩ := hU
+  set M : Submodule (𝓞 E) Dw.La := I • ⊤ with hMdef
+  set f := liftLa γ with hfdef
+  set g := liftLa γ⁻¹ with hgdef
+  have hN : l.Mb • (⊤ : Submodule (𝓞 E) Dw.La) ≤ M := Submodule.smul_mono_left hI
+  have hpres : ∀ φ : Dw.La →ₗ[𝓞 E] Dw.La, M ≤ M.comap φ := by
+    intro φ
+    rw [← Submodule.map_le_iff_le_comap, hMdef, Submodule.map_smul'']
+    exact Submodule.smul_mono le_rfl le_top
+  have hgf : ∀ x, g (f x) - x ∈ M := by
+    intro x
+    apply hN
+    rw [← Submodule.Quotient.eq]
+    have h1 := liftLa_spec (γ⁻¹) (f x)
+    have h2 := liftLa_spec γ x
+    simp only [Submodule.mkQ_apply] at h1 h2
+    rw [hgdef, h1, hfdef, h2]
+    exact γ.symm_apply_apply _
+  have hfg : ∀ x, f (g x) - x ∈ M := by
+    intro x
+    apply hN
+    rw [← Submodule.Quotient.eq]
+    have h1 := liftLa_spec γ (g x)
+    have h2 := liftLa_spec (γ⁻¹) x
+    simp only [Submodule.mkQ_apply] at h1 h2
+    rw [hfdef, h1, hgdef, h2]
+    exact γ.apply_symm_apply _
+  let A := M.mapQ M f (hpres f)
+  let B := M.mapQ M g (hpres g)
+  have hBA : B * A = 1 := by
+    ext x
+    simp only [Module.End.mul_apply, A, B, Submodule.mapQ_apply, Module.End.one_apply, LinearMap.coe_comp,
+      Function.comp_apply, Submodule.mkQ_apply]
+    exact (Submodule.Quotient.eq M).2 (hgf x)
+  have hAB : A * B = 1 := by
+    ext x
+    simp only [Module.End.mul_apply, A, B, Submodule.mapQ_apply, Module.End.one_apply, LinearMap.coe_comp,
+      Function.comp_apply, Submodule.mkQ_apply]
+    exact (Submodule.Quotient.eq M).2 (hfg x)
+  have hdesc : ∀ (φ : Dw.La →ₗ[𝓞 E] Dw.La) (k : ℕ) (x : Dw.La),
+      M.mkQ (((φ - 1) ^ k) x) = ((M.mapQ M φ (hpres φ) - 1) ^ k) (M.mkQ x) := by
+    intro φ k
+    induction k with
+    | zero => intro x; simp
+    | succ k ih =>
+      intro x
+      rw [pow_succ, pow_succ, Module.End.mul_apply, Module.End.mul_apply, ih]
+      congr 1
+  have hA0 : (A - 1) ^ m = 0 := by
+    ext x
+    simp only [LinearMap.coe_comp, Function.comp_apply, Submodule.mkQ_apply, LinearMap.zero_apply]
+    rw [← Submodule.mkQ_apply, ← hdesc f m x, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
+    exact hm x
+  have hcomm : Commute B (1 - A) := by
+    refine Commute.sub_right (Commute.one_right B) ?_
+    exact (hBA.trans hAB.symm)
+  have hB0 : (B - 1) ^ m = 0 := by
+    have e : B - 1 = B * (1 - A) := by rw [mul_sub, mul_one, hBA]
+    rw [e, hcomm.mul_pow, show (1 - A) = -(A - 1) by abel, neg_pow, hA0, mul_zero, mul_zero]
+  refine ⟨m, fun x => ?_⟩
+  rw [← Submodule.Quotient.mk_eq_zero, ← Submodule.mkQ_apply, hdesc g m x, hB0, LinearMap.zero_apply]
+
+end GlobalTheory.OrbitSep
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.BasicNotions
+open GlobalTheory.LevDesc (move)
+open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
+open GlobalTheory.OrbitSep
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isUnipotentModIdeal_liftLa_inv : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (I : Ideal (𝓞 E)) («γ» : LevelAut Dw l), l.Mb ≤ I → UnipAt I «γ» → ∃ m : ℕ, ∀ x : Dw.La, ((liftLa «γ»⁻¹ - 1) ^ m) x ∈ I • (⊤ : Submodule (𝓞 E) Dw.La) := by
+  atlas_forward_decl GlobalTheory.OrbitSep.unipAt_inv_liftLa
+end
+
+section
 section
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.BasicNotions
@@ -242,3 +545,4 @@ open GlobalTheory.OrbitSep
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.levelAutomorphism_unipotent_fixes_complexPoint_eq_one : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l), 1 ≤ Dw.p + Dw.q → l.A = 1 → ∀ (I : Ideal (𝓞 E)) (g : ℕ), NeatPrime I g (Dw.p + Dw.q) → l.Mb ≤ I → ∀ γ : LevelAut Dw l, UnipAt I γ → ∀ y : FrPt Xo c ℂ, ptF (move Xo c γ y) = ptF y → γ = 1 := by
   atlas_forward_decl GlobalTheory.UnipFree.free
+end

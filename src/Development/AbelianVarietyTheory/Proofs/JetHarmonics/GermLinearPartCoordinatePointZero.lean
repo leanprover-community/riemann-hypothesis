@@ -123,11 +123,6 @@ theorem additive_eq_lin (F : Fin d → PS k 2 d) (hF : ∀ i, constantCoeff (F i
       simp at he
   rw [← e3, gt_comp1_comp1 _ _ hε _ hℓ0, hi.2.2.2, gt_comp1_pt_right]
 
-theorem exists_isLogExp {R : Type} [CommRing R] [Algebra R k] (G : FGLaw R d) :
-    ∃ ℓ ε : Pt k 1 d, LogExpAdaptedGauge.IsLogExp k G ℓ ε := by
-  obtain ⟨ℓ, h0, h1, h2⟩ := FormalLog.logSt k d (FBMap.mapLaw (algebraMap R k) G)
-  obtain ⟨ε, hε⟩ := ChartInv.exists_isInvPair k d ℓ h0 (by rw [h1, Matrix.det_one]; exact isUnit_one)
-  exact ⟨ℓ, ε, h1, h2, hε⟩
 
 end Log
 

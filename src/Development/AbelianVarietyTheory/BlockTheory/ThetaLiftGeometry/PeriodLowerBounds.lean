@@ -52,10 +52,6 @@ def FamilyErrorExponentBound {eps : ℝ} (Fm : FamP eps) (C1 : ℝ) : Prop :=
     ExpLe (Fm.L x i) (Fm.ex x hx i).errX C1 ∧
       (PeriodBound (Fm.L x i) (Fm.ex x hx i).errX C1 → LinkRam (Fm.L x i) ∧ LinkNu (Fm.L x i))
 
-theorem stmtFam_of (h : Stmt) {eps : ℝ} (Fm : FamP eps) (C1 : ℝ) : FamilyErrorExponentBound Fm C1 := fun hC x hx i =>
-  have h1 := h _ (Fm.L x i) (Fm.ex x hx i).errX (Fm.ex x hx i).lev Fm.GK Fm.cX.err C1
-    (Fm.ex x hx i).fdef (Fm.ex x hx i).err hC
-  ⟨h1.1, fun hP => ⟨(h1.2 hP).1, (h1.2 hP).2 (Fm.nuDef x hx i)⟩⟩
 
 theorem T_ne_g {D : D7} (X : ErrX D) (u : D.what₂.Word) (i : Fin 2) : D.host.g i ≠ (D.mem u).A.T := by
   intro h

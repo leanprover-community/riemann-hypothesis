@@ -107,35 +107,8 @@ theorem goodProjector_levelMultiplicitySpace_mem_goodRows (hl : R.toLevCh.Is A.�
   obtain ⟨g, rfl⟩ := R.eG.surjective g
   exact (GlobalTheory.ProjComm.proj_comm R hl hr).1 g _ a0
 
-theorem topLift_mem (hD : GlobalTheory.Published.CuspRapidDecay) (hl : R.toLevCh.Is A.μ0) (hr : R.grp_red_R) (hM : R.IsModels) (hc : R.IsChain)
-    (Q : Subgroup G) (ψ : Q →* D.what₂.LLˣ) (t : T) (f : (A.MtildeCSD t).Forms)
-    (hf : f ∈ lvlForms (A.MtildeCSD t) (A.leftGroupActionRight t) Q ψ) :
-    topLift R t (R.jX t f) ∈ lvlPart R (levPOf R.eG D.what₂.embLL Q ψ) t (D.R.m - 1) := by
-  refine (mem_lvlPart_iff _ t _ _).2 fun p => ?_
-  refine (GlobalTheory.FormAction.act_eq_translate R hr hM.jX t (R.eG.symm p) f).elim fun κ h => ?_
-  have hκ : IsLevelLift D.sp.X' R.βX (R.datXt t) p.1 κ :=
-    (congrArg (fun g => IsLevelLift D.sp.X' R.βX (R.datXt t) g κ) (R.eG.apply_symm_apply p.1)).mp h.1
-  have a : Rel R t p (D.R.m - 1) (topLift R t (R.jX t f)) (topLift R t (R.jX t ((A.fam.R t).r (R.eG.symm p) f))) :=
-    rel_ioX hl hM.inf hM.νY hM.νY' hc hM.νX hM.cX hM.HX (fun _ _ _ => GlobalTheory.MultFinite.schurMult hD _ _) t p κ hκ _ _ h.2
-  have e : topLift R t (R.jX t ((A.fam.R t).r (R.eG.symm p) f)) =
-      (((levPOf R.eG D.what₂.embLL Q ψ).chi p : ℂˣ) : ℂ) • topLift R t (R.jX t f) :=
-    (congrArg (fun z => topLift R t (R.jX t z)) (hf ⟨R.eG.symm p, p.2⟩)).trans
-      ((congrArg (topLift R t) ((R.jX t).map_smulₛₗ _ f)).trans ((topLift R t).map_smul _ _))
-  exact (congrArg (Rel R t p (D.R.m - 1) (topLift R t (R.jX t f))) e).mp a
 
-theorem keepsLevel : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A) (b : Bool), GlobalTheory.Published.CuspRapidDecay → R.toLevCh.Is A.μ0 → R.IsGrp F → R.IsModels → R.IsChain → GlobalTheory.Mem.Th.KeepsLevel R F b := by
-  intro D G _ _ Pl0 T A Ks _ _ _ R F b hD hl hg hM hc t
-  exact ⟨fun U hU => goodProjector_levelMultiplicitySpace_mem_goodRows hl hM.inf hg.record _ t (ioY_mem hD hl hM.inf hM.νY hM.νY' hc _ t 0 D.R.two_le_m U hU),
-    fun j _ hj U hU => ioY_mem hD hl hM.inf hM.νY hM.νY' hc _ t j hj U hU,
-    fun f hf => topLift_mem hD hl hg.red_R hM hc _ _ t f hf⟩
 
-theorem exists_multTie {F : Face D A} {tup : T → D.what₂.Tup} {b : Bool} {EE : Type} [NormedAddCommGroup EE]
-    [InnerProductSpace ℂ EE] [FiniteDimensional ℂ EE] {S : RowSide D EE} (hF : GlobalTheory.Published.HarishChandraFinite)
-    (hD : GlobalTheory.Published.CuspRapidDecay) (hl : R.toLevCh.Is A.μ0) (hg : R.IsGrp F) (hM : R.IsModels) (hc : R.IsChain)
-    (hinj : Function.Injective tup) (Y : SideTie R F tup b S) :
-    ∃ (c : ∀ μ, HChain D.R.m EE (S.Amb μ)) (Y' : SideTie R F tup b (withChain S c)),
-      Y'.eE = Y.eE ∧ Y'.eA = Y.eA ∧ (∀ μ, (withChain S c).iota μ = S.iota μ) ∧ Nonempty (MultTie Y') :=
-  GlobalTheory.Mem.Th.exists_multTie hF hD hM hc.Th (keepsLevel D G Pl0 T A Ks R F b hD hl hg hM hc) hinj Y
 
 end GlobalTheory.KeepLevel
 

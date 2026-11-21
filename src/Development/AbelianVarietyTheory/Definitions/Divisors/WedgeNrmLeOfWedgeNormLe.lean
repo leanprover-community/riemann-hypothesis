@@ -147,9 +147,6 @@ theorem abs_φ (a : K) : F.abs (F.φ a) = v a := by
   rw [← nval_smul F.lies ha, mul_one, FinitePlace.mk_maximalIdeal, ← abs_apply, ← abs_apply, map_one, mul_one] at h
   exact h
 
-theorem abs_add_le_max (a b : F.T.Fr) : F.abs (a + b) ≤ max (F.abs a) (F.abs b) :=
-  le_max_iff.2 ((min_le_iff.1 (nval_add (V := F.T.V) F.e a b)).imp (nrmOf_anti _ (nval_ne_bot _ _))
-    (nrmOf_anti _ (nval_ne_bot _ _)))
 
 theorem abs_φ_le_one (a : 𝓞 K) : F.abs (F.φ a) ≤ 1 := by
   rw [F.abs_φ, ← v.norm_embedding_eq]
@@ -222,37 +219,13 @@ theorem latMax_le_iff {C : Submodule c.F (Rul Xo c)} {B : ℝ} : F.latMax C ≤ 
 theorem latMax_mem (C : Submodule c.F (Rul Xo c)) : 0 ≤ F.latMax C ∧ F.latMax C ≤ 1 :=
   ⟨(F.nrm_nonneg _).trans (F.nrm_le_latMax (zero_mem _)), F.latMax_le_iff.2 fun _ => F.nrm_le_one⟩
 
-theorem latMax_le_of_span {C : Submodule c.F (Rul Xo c)} {κ : Type} {g : κ → C}
-    (hg : supLat C ≤ Submodule.span (𝓞 c.F) (Set.range g)) {B : ℝ} (hB : 0 ≤ B) (h : ∀ k, F.nrm (g k) ≤ B) :
-    F.latMax C ≤ B := F.latMax_le_iff.2 fun f hf => by
-  replace hf := hg hf
-  induction hf using Submodule.span_induction with
-  | mem _ e => obtain ⟨k, rfl⟩ := e; exact h k
-  | zero => exact (congrArg F.abs ((isEval_evI F.pt).zero ())).le.trans (by simpa using hB)
-  | add a b _ _ ha hb => exact (congrArg F.abs (evI_add F.pt _ _)).le.trans ((F.abs_add_le_max _ _).trans (max_le ha hb))
-  | smul a f _ hf =>
-    refine (congrArg F.abs (evI_smul F.pt (a : c.F) f.1)).le.trans ?_
-    rw [map_mul, show F.io a = F.φ (algebraMap (𝓞 c.F) (𝓞 K) a) from (F.φ.commutes _).symm]
-    exact (mul_le_of_le_one_left (F.abs.nonneg _) (F.abs_φ_le_one _)).trans hf
 
 variable {ι : Type} [Fintype ι]
 
 def wedgeNrm (s : ι → RulK Xo c K) : ℝ≥0∞ :=
   normOfOrd (Ideal.absNorm v.maximalIdeal.asIdeal) (wedgeOrd (psiSet H) F.e F.φ F.pt s)
 
-theorem wedgeNrm_spec {s : ι → RulK Xo c K} (h : F.wedgeNrm s ≠ ⊤) :
-    (∃ o d, IsWedgeVal (psiSet H) o F.φ F.pt.1 s d) ∧
-      ∀ o d, IsWedgeVal (psiSet H) o F.φ F.pt.1 s d → F.wedgeNrm s = ENNReal.ofReal (F.abs d) := by
-  have hb : wedgeOrd (psiSet H) F.e F.φ F.pt s ≠ ⊥ := fun e => h (by
-    rw [wedgeNrm, e, normOfOrd, EReal.bot_mul_coe_of_pos (Real.log_pos (one_lt_absNorm_real _))]
-    simp)
-  obtain ⟨w, ⟨o, d, hd, -⟩, -⟩ := wedgeOrd_ne_bot_iff.1 hb
-  exact ⟨⟨o, d, hd⟩, fun o d hd => by rw [wedgeNrm, wedgeOrd_eq hb ⟨o, d, hd, rfl⟩, ofReal_abs]⟩
 
-theorem wedgeNrm_eq (h : KSIso (psiSet H) F.pt.1) {e : Ix Dw → ℤ} {s : ι → RulK Xo c K}
-    (hs : ∀ i, s i ∈ secK Xo c K e) {o : ι ≃ TIx Dw (psiSet H)} {d : F.T.Fr}
-    (hd : IsWedgeVal (psiSet H) o F.φ F.pt.1 s d) : F.wedgeNrm s = ENNReal.ofReal (F.abs d) := by
-  rw [wedgeNrm, h.wedgeOrd_eq F.e hs hd, ofReal_abs]
 
 example (hq : Dw.q = 0) {e : Ix Dw → ℤ} {s : Fin (dimFlag Dw) → RulK Xo c K} (hs : ∀ i, s i ∈ secK Xo c K e)
     (h0 : ∀ i, val (AlgHom.id c.F K) y (s i) = 0) : F.wedgeNrm s ≠ ⊤ := by
@@ -283,12 +256,6 @@ theorem finsum_log_natCast {p : ℕ} (hp : p ≠ 0) :
     show (p : K) = algebraMap ℚ K p from (map_natCast _ p).symm, Algebra.norm_algebraMap]
   simp
 
-theorem finite_support_primeWt {S : Finset ℕ} (hS : 0 ∉ S) (b : ℕ → ℝ) :
-    (Function.support (primeWt (K := K) S b)).Finite := by
-  refine (S.finite_toSet.biUnion fun p hp => finite_support_log (K := K) (a := p)
-    (Nat.cast_ne_zero.2 fun e => hS (e ▸ hp))).subset fun v hv => ?_
-  obtain ⟨p, hp, h⟩ := Finset.exists_ne_zero_of_sum_ne_zero hv
-  exact Set.mem_biUnion hp fun e => h (by simp only at e; rw [e, neg_zero, mul_zero])
 
 theorem finsum_primeWt {S : Finset ℕ} (hS : 0 ∉ S) (b : ℕ → ℝ) :
     (∑ᶠ v, primeWt (K := K) S b v) / (Module.finrank ℚ K : ℝ) = ∑ p ∈ S, b p * Real.log p := by
@@ -301,15 +268,7 @@ theorem finsum_primeWt {S : Finset ℕ} (hS : 0 ∉ S) (b : ℕ → ℝ) :
   rw [← mul_finsum, finsum_neg_distrib, finsum_log_natCast (h0 p hp)]
   field_simp
 
-theorem exp_primeWt {S : Finset ℕ} (b : ℕ → ℝ) (v : FinitePlace K) {p : ℕ} (hp : p ∈ S) (h0 : p ≠ 0)
-    (h : ∀ q ∈ S, q ≠ p → v (q : K) = 1) : Real.exp (primeWt S b v) = v (p : K) ^ (-b p) := by
-  rw [primeWt, Finset.sum_eq_single_of_mem p hp fun q hq e => by simp [h q hq e],
-    Real.rpow_def_of_pos (FinitePlace.pos_iff.2 (Nat.cast_ne_zero.2 h0))]
-  congr 1
-  ring
 
-theorem primeWt_eq_zero {S : Finset ℕ} (b : ℕ → ℝ) (v : FinitePlace K) (h : ∀ q ∈ S, v (q : K) = 1) :
-    primeWt S b v = 0 := Finset.sum_eq_zero fun q hq => by simp [h q hq]
 
 example : (∑ᶠ v, primeWt (K := K) {2} (fun _ => 3) v) / (Module.finrank ℚ K : ℝ) = 3 * Real.log 2 := by
   rw [finsum_primeWt (by simp)]; simp
@@ -318,23 +277,6 @@ variable [Algebra c.F K] {y : FrPt Xo c K} {v : FinitePlace K} (F : FinFr y v)
 
 namespace FinFr
 
-theorem abs_eq_rpow {p : ℕ} (hp : p ≠ 0) (h : (p : F.T.V) ∈ IsLocalRing.maximalIdeal F.T.V) {a : F.T.Fr} {w : ℝ}
-    (hw : nval F.T.V (ramIdx F.T p) a = w) : F.abs a = v (p : K) ^ w ∧ v (p : K) < 1 := by
-  have h1 := one_lt_absNorm_real v.maximalIdeal
-  obtain ⟨hr, hv⟩ := ramIdx_spec hp h
-  have hr' : (0 : ℝ) < ramIdx F.T p := by exact_mod_cast hr
-  have he : (0 : ℝ) < F.e := by exact_mod_cast F.lies.1
-  have ha : a ≠ 0 := fun e => by rw [e, nval_zero] at hw; exact EReal.top_ne_coe _ hw
-  have h0 : (p : F.T.Fr) ≠ 0 := fun e => by rw [e, nval_zero] at hv; exact EReal.top_ne_coe 1 hv
-  rw [nval_of_ne h0] at hv
-  rw [nval_of_ne ha] at hw
-  replace hv : (vV F.T.V (p : F.T.Fr) : ℝ) = ramIdx F.T p := (div_eq_one_iff_eq hr'.ne').1 (EReal.coe_injective hv)
-  rw [← F.abs_φ, map_natCast, abs_apply, abs_apply, nval_of_ne ha, nval_of_ne h0, ← EReal.coe_injective hw, hv]
-  simp only [nrmOf, EReal.coe_ne_top, if_false, EReal.toReal_coe]
-  refine ⟨?_, Real.rpow_lt_one_of_one_lt_of_neg h1 (neg_lt_zero.2 (div_pos hr' he))⟩
-  rw [← Real.rpow_mul (by linarith)]
-  congr 1
-  field_simp
 
 theorem exists_prime : ∃ p : ℕ, p.Prime ∧ (p : F.T.V) ∈ IsLocalRing.maximalIdeal F.T.V ∧
     ∀ q : ℕ, q.Prime → q ≠ p → v (q : K) = 1 := by
@@ -351,35 +293,6 @@ theorem exists_prime : ∃ p : ℕ, p.Prime ∧ (p : F.T.V) ∈ IsLocalRing.maxi
   rw [← F.abs_φ, map_natCast, abs_apply, nval_of_ne h0, vV, h1]
   simp [nrmOf]
 
-theorem wedgeNrm_le_of_wedgeNorm_le {ι : Type} [Fintype ι] {s : ι → RulK Xo c K} {p : ℕ} (hp : 1 < p)
-    (h : (p : F.T.V) ∈ IsLocalRing.maximalIdeal F.T.V) {b : ℝ}
-    (hb : wedgeNorm (psiSet H) p F.φ F.pt s ≤ ENNReal.ofReal ((p : ℝ) ^ b)) :
-    F.wedgeNrm s ≤ ENNReal.ofReal (v (p : K) ^ (-b)) := by
-  have hp0 : p ≠ 0 := by omega
-  rw [wedgeNorm_le_iff hp, wedgeOrd_vp] at hb
-  have hne := ((EReal.bot_lt_coe _).trans_le hb).ne'
-  obtain ⟨w, ⟨o, d, hd, -⟩, -⟩ := wedgeOrd_ne_bot_iff.1 hne
-  have key : ∀ o d, IsWedgeVal (psiSet H) o F.φ F.pt.1 s d → _ = nval F.T.V (ramIdx F.T p) d :=
-    fun o d hd => wedgeOrd_eq hne ⟨o, d, hd, rfl⟩
-  have hr : ((ramIdx F.T p : ℕ) : ℝ) ≠ 0 := Nat.cast_ne_zero.2 (ramIdx_spec hp0 h).1.ne'
-  have hu : ∃! w, IsWedgeOrd (psiSet H) F.e F.φ F.pt s w := ⟨_, ⟨o, d, hd, rfl⟩, by
-    rintro _ ⟨o', d', hd', rfl⟩
-    have e := (key o' d' hd').symm.trans (key o d hd)
-    unfold nval at e ⊢
-    split_ifs at e ⊢ with h₁ h₂ h₂
-    · rfl
-    · exact absurd e (EReal.top_ne_coe _)
-    · exact absurd e (EReal.coe_ne_top _)
-    · rw [(div_left_inj' hr).1 (EReal.coe_injective e)]⟩
-  rw [wedgeNrm, wedgeOrd_eq (wedgeOrd_ne_bot_iff.2 hu) ⟨o, d, hd, rfl⟩, ← ofReal_abs]
-  refine ENNReal.ofReal_le_ofReal ?_
-  by_cases h0 : d = 0
-  · rw [h0, map_zero]; positivity
-  rw [key o d hd, nval_of_ne h0] at hb
-  obtain ⟨e₁, e₂⟩ := F.abs_eq_rpow hp0 h (nval_of_ne h0)
-  rw [e₁]
-  exact Real.rpow_le_rpow_of_exponent_ge (FinitePlace.pos_iff.2 (Nat.cast_ne_zero.2 hp0)) e₂.le
-    (EReal.coe_le_coe_iff.1 hb)
 
 end FinFr
 
@@ -532,9 +445,6 @@ theorem FinFr.abs_val_le_one {K : Type} [Field K] [NumberField K] [Algebra c.F K
 
 def WtPar.tauWt : AllWt.Weight Dw := (dimFlag Dw + 3) • P.u₁ - P.uc
 
-theorem WtPar.kap_add_tauWt :
-    (kap Dw + dimFlag Dw • P.u₁) + P.u₂ + P.tauWt = (dimFlag Dw + 3) • P.u₁ := by
-  rw [WtPar.tauWt, WtPar.uc]; abel
 
 section At
 
@@ -567,20 +477,6 @@ theorem TauPtAt.mono {X X' : ℝ} (h : TauPtAt U x V dict Z P y X) (e : X ≤ X'
   obtain ⟨m, τ, t, A, h₁, h₂, h₃, h₄, h₅, h₆, h₇⟩ := h
   exact ⟨m, τ, t, A, h₁, h₂, h₃, h₄, h₅, h₆, h₇.trans (mul_le_mul_of_nonneg_left e m.cast_nonneg)⟩
 
-theorem JacFinAt.of_primes (S : Finset ℕ) (hS : ∀ p ∈ S, p.Prime) (b : ℕ → ℝ)
-    (h : ∀ s : Fin (dimFlag Dw) → RulK Xo c K, (∀ i, s i ∈ latExt U Z K P.u₁) →
-      (∀ i, val (AlgHom.id c.F K) y (s i) = 0) → ∀ v (F : FinFr y v) (p : ℕ), p.Prime →
-      (p : F.T.V) ∈ IsLocalRing.maximalIdeal F.T.V →
-      wedgeNorm (psiSet H) p F.φ F.pt s ≤ ENNReal.ofReal ((p : ℝ) ^ (if p ∈ S then b p else 0))) :
-    JacFinAt U Z P y (∑ p ∈ S, b p * Real.log p) := fun s hs h0 => by
-  have hS0 : 0 ∉ S := fun e => Nat.not_prime_zero (hS 0 e)
-  refine ⟨primeWt S b, finite_support_primeWt hS0 b, fun v F => ?_, (finsum_primeWt hS0 b).le⟩
-  obtain ⟨p, hp, hm, hq⟩ := F.exists_prime
-  refine (F.wedgeNrm_le_of_wedgeNorm_le hp.one_lt hm (h s hs h0 v F p hp hm)).trans (le_of_eq (congrArg _ ?_))
-  split_ifs with hpS
-  · exact (exp_primeWt b v hpS hp.ne_zero fun q h e => hq q (hS q h) e).symm
-  · rw [primeWt_eq_zero b v fun q h => hq q (hS q h) fun e => hpS (e ▸ h)]
-    simp
 
 theorem TauPtAt.latMax_pos {X : ℝ} (h : TauPtAt U x V dict Z P y X) {v : FinitePlace K} (F : FinFr y v) :
     0 < F.latMax (Cusp Z U P.u₁) := by
@@ -624,8 +520,6 @@ theorem SupBdWt.mono {la : AllWt.Weight Dw} {β β' : ℝ} (h : SupBdWt U x V di
 
 theorem SupBd.mono {β β' : ℝ} (h : SupBd U x V dict Z P β) (e : β ≤ β') : SupBd U x V dict Z P β' := SupBdWt.mono h e
 
-theorem supBd_iff_wt_zero {β : ℝ} : SupBd U x V dict Z P β ↔ SupBdWt U x V dict Z (P.wt 0) β := by
-  rw [SupBd, WtPar.wt, zero_smul, add_zero]
 
 theorem supBdWt_iff {la : AllWt.Weight Dw} {β : ℝ} (hβ : 0 ≤ β) : SupBdWt U x V dict Z la β ↔
     ∀ σ, ∀ z ∈ framesOn (U (goodOf c σ)) Z, bergCusp U x V dict Z (wtOf Dw la 0) σ z ≤ ENNReal.ofReal β :=
@@ -638,11 +532,6 @@ theorem SupBdWt.of_bergOn {la : AllWt.Weight Dw} {β : ℝ} (hβ : 0 ≤ β)
   (supBdWt_iff hβ).2 fun σ z hz => (bergCusp_le_bergOn (hd _ (goodEmb_goodOf c σ)) ⟨z.1, z.2, hz.1⟩).trans
     (h _ (goodEmb_goodOf c σ) ⟨z.1, z.2, hz.1⟩ hz)
 
-theorem SupBdWt.nrm_sq_le {la : AllWt.Weight Dw} {β : ℝ} (h : SupBdWt U x V dict Z la β) {K : Type} [Field K]
-    [Algebra c.F K] {y : FrPt Xo c K} (hy : LiesOn Z y) {ρ : K →+* ℂ} (F : InfFr U y ρ) {f : Rul Xo c}
-    (hf : f ∈ Cusp Z U la) : F.nrm x (wtOf Dw la 0) f ^ 2 ≤
-      β * petOn U x V dict Z (wtOf Dw la 0) (ρ.comp (algebraMap c.F K)) f ^ 2 :=
-  h _ _ (F.mem_framesOn hy) f hf
 
 end Statements
 

@@ -5,8 +5,5 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.DiscriminantEstimates.DiscriminantLemmas.SchwarzBallNumerics.EBasis
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.DiscriminantEstimates.DiscriminantLemmas.SchwarzBallNumerics.ArithmeticFourInequalityNum
 
-theorem net_supremum_bound_alt : ReciprocityTheory.ChartRestriction.G.TB.NetHermSt := PI.UnitaryGroupMassFormula.TBNum.netHerm
-theorem net_supremum_bound : ReciprocityTheory.ChartRestriction.G.TB.NetSupSt := PI.UnitaryGroupMassFormula.TBNum.netSup
 theorem schwarz_ball_bound : ReciprocityTheory.ChartRestriction.G.TB.SchwarzBallSt := PI.UnitaryGroupMassFormula.TBNum.schwarzBall
 theorem euclidean_basis_exists : ReciprocityTheory.ChartRestriction.G.TB.EBasisSt := PI.UnitaryGroupMassFormula.TBNum.eBasis
-theorem scaled_bound_inequality : ReciprocityTheory.ChartRestriction.G.TB.ScaledBoundInequality := PI.UnitaryGroupMassFormula.TBNum.arithmetic_four_inequality_num

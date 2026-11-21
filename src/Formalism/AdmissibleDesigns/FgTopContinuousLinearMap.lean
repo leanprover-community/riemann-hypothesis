@@ -10,17 +10,6 @@ open Matrix
 open Formalism.NG Formalism.RepresentationBoundsCohomology.LOC Formalism.RepresentationBoundsCohomology.FIN Formalism.RepresentationBoundsCohomology.LocallyConstantCohomology ReciprocityTheory.Gal
 open ReciprocityTheory.ChartRestriction.T2 (PadicCoeff FracTop IsFGTop)
 
-theorem padic_isOpen_span {ℓ : ℕ} {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [TopologicalSpace O]
-    (hO : PadicCoeff ℓ O) {a : O} (ha : a ≠ 0) : IsOpen ((Ideal.span {a} : Ideal O) : Set O) := by
-  haveI := hO.ring
-  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible O
-  have hne : (Ideal.span {a} : Ideal O) ≠ ⊥ := by rwa [Ne, Ideal.span_singleton_eq_bot]
-  obtain ⟨k, hk⟩ := IsDiscreteValuationRing.ideal_eq_span_pow_irreducible hne hϖ
-  have hm : IsLocalRing.maximalIdeal O = Ideal.span {ϖ} := (IsDiscreteValuationRing.irreducible_iff_uniformizer ϖ).1 hϖ
-  have h := (isAdic_iff.1 hO.adic).1 k
-  rw [hm, Ideal.span_singleton_pow] at h
-  rw [hk]
-  exact h
 
 theorem fgTop_continuous_linearMap {ℓ : ℕ} {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     [TopologicalSpace O] {M N : Type} [AddCommGroup M] [Module O M] [TopologicalSpace M] [ContinuousAdd M]
@@ -100,8 +89,6 @@ def repL' (ε : Γ →* Oˣ) (M : Γ →* Matrix n n O) : Representation O Γ (n
       Matrix.mulVecLin_apply, Module.End.mul_apply, Matrix.mulVec_smul, smul_smul]
     rw [_root_.mul_inv_rev, map_mul, Matrix.transpose_mul, ← Matrix.mulVec_mulVec]
 
-theorem repL'_apply (ε : Γ →* Oˣ) (M : Γ →* Matrix n n O) (g : Γ) (v : n → O) :
-    repL' ε M g v = ((ε g : Oˣ) : O) • ((M g⁻¹)ᵀ *ᵥ v) := rfl
 
 def pairStd : (n → FractionRing O) →ₗ[O] (n → FractionRing O) →ₗ[O] FractionRing O :=
   LinearMap.mk₂ O (fun x y => x ⬝ᵥ y) (fun x x' y => add_dotProduct x x' y)
@@ -282,57 +269,9 @@ theorem t2Space_fractionRing_of_padicCoeff (ℓ : ℕ) (hO : PadicCoeff ℓ O) (
     exact Set.disjoint_left.1 hd hv hw'
   · exact ⟨_, hF.emb.isOpen_range.mem_nhds ⟨0, map_zero _⟩, h⟩
 
-theorem frac_nhds {ℓ : ℕ} (hO : PadicCoeff ℓ O) (hF : FracTop O) {ϖ : O} (hϖ : Irreducible ϖ)
-    {U : Set (FractionRing O)} (hU : U ∈ nhds (0 : FractionRing O)) :
-    ∃ k : ℕ, algebraMap O (FractionRing O) '' ((Ideal.span {ϖ ^ k} : Ideal O) : Set O) ⊆ U := by
-  haveI := hO.ring
-  have hpre : algebraMap O (FractionRing O) ⁻¹' U ∈ nhds (0 : O) :=
-    hF.emb.continuous.continuousAt.preimage_mem_nhds (by rwa [map_zero])
-  obtain ⟨k, hk⟩ := (isAdic_iff.1 hO.adic).2 _ hpre
-  have hm : IsLocalRing.maximalIdeal O = Ideal.span {ϖ} :=
-    (IsDiscreteValuationRing.irreducible_iff_uniformizer ϖ).1 hϖ
-  refine ⟨k, ?_⟩
-  rw [Set.image_subset_iff, ← Ideal.span_singleton_pow, ← hm]
-  exact hk
 
-theorem frac_open {ℓ : ℕ} (hO : PadicCoeff ℓ O) (hF : FracTop O) {a : O} (ha : a ≠ 0) :
-    algebraMap O (FractionRing O) '' ((Ideal.span {a} : Ideal O) : Set O) ∈ nhds (0 : FractionRing O) := by
-  exact (hF.emb.isOpenMap _ (padic_isOpen_span hO ha)).mem_nhds ⟨0, (Ideal.span {a}).zero_mem, map_zero _⟩
 
-theorem frac_topRing {ℓ : ℕ} (hO : PadicCoeff ℓ O) (hF : FracTop O) : IsTopologicalRing (FractionRing O) := by
-  haveI := hO.ring
-  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible O
-  have hϖ0 : ϖ ≠ 0 := hϖ.ne_zero
-  have key : ∀ x₀ : FractionRing O, Filter.Tendsto (fun x => x₀ * x) (nhds 0) (nhds 0) := by
-    intro x₀
-    obtain ⟨⟨p, q⟩, hpq⟩ := IsLocalization.surj (nonZeroDivisors O) x₀
-    have hpq' : x₀ * algebraMap O (FractionRing O) q = algebraMap O (FractionRing O) p := hpq
-    have hq0 : (q : O) ≠ 0 := nonZeroDivisors.ne_zero q.2
-    refine Filter.tendsto_def.2 fun U hU => ?_
-    obtain ⟨k, hk⟩ := frac_nhds hO hF hϖ (by simpa using hU)
-    refine Filter.mem_of_superset (frac_open hO hF (mul_ne_zero hq0 (pow_ne_zero k hϖ0))) ?_
-    rintro _ ⟨y, hy, rfl⟩
-    obtain ⟨c, rfl⟩ := Ideal.mem_span_singleton'.1 hy
-    rw [Set.mem_preimage]
-    refine hk ⟨p * c * ϖ ^ k, Ideal.mem_span_singleton'.2 ⟨p * c, rfl⟩, ?_⟩
-    simp only [map_mul]
-    rw [← hpq']
-    ring
-  have hmul : Filter.Tendsto (Function.uncurry ((· * ·) : FractionRing O → FractionRing O → FractionRing O))
-      (nhds 0 ×ˢ nhds 0) (nhds 0) := by
-    refine Filter.tendsto_def.2 fun U hU => ?_
-    obtain ⟨k, hk⟩ := frac_nhds hO hF hϖ hU
-    have hV := frac_open hO hF (pow_ne_zero k hϖ0)
-    refine Filter.mem_of_superset (Filter.prod_mem_prod hV hV) ?_
-    rintro ⟨_, _⟩ ⟨⟨a, ha, rfl⟩, ⟨b, hb, rfl⟩⟩
-    rw [Set.mem_preimage]
-    exact hk ⟨a * b, Ideal.mul_mem_right b _ ha, map_mul _ _ _⟩
-  exact IsTopologicalRing.of_addGroup_of_nhds_zero hmul key
-    (fun x₀ => Filter.Tendsto.congr (fun x => mul_comm x₀ x) (key x₀))
 
-theorem frac_contMul {ℓ : ℕ} (hO : PadicCoeff ℓ O) (hF : FracTop O) : ContinuousMul (FractionRing O) := by
-  haveI := frac_topRing hO hF
-  infer_instance
 
 theorem latT_fg : (latT : Submodule O (n → FractionRing O)).FG := by
   have h : (latT : Submodule O (n → FractionRing O)) = Submodule.map
@@ -550,7 +489,6 @@ def uHom : (Ω ≃ₐ[Ek] Ω) →* R' where
 def M0 : (Ω ≃ₐ[Ek] Ω) →* Matrix {a // bl a = 0} {a // bl a = 0} O :=
   (ρk 0).toRingHom.toMonoidHom.comp (uHom r χ)
 
-theorem block_zero_apply (g : Ω ≃ₐ[Ek] Ω) : M0 r χ bl ρk g = ρk 0 (uElt r χ g) := rfl
 
 def Mw (w : ℕ) : decs Ek Aw w →* Matrix {a // bl a = 0} {a // bl a = 0} O :=
   (M0 r χ bl ρk).comp (decs Ek Aw w).subtype
@@ -593,7 +531,6 @@ def gam : ({a // bl a = 0} → O) →ₗ[O] blockRestrictedRepresentationType bl
 theorem gam_apply (y : {a // bl a = 0} → O) (m : blockRestrictedRepresentationType bl ρk 0) :
     gam bl ρk y m = ∑ a, y a • blkEquiv bl ρk m a := rfl
 
-theorem dat_eps (w : ℕ) (g : decs Ek Aw w) : (Dat r χ bl ρk ε Aw hK hε hM w).ε g = ε g := rfl
 
 theorem vD_equiv (w : ℕ) (g : decs Ek Aw w) (y : {a // bl a = 0} → O) :
     vD r χ bl ρk ε Aw hK hε hM w (rho2 r χ bl ρk ε g y) =

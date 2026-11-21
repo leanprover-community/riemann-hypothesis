@@ -170,23 +170,7 @@ theorem linForm_single {n : ℕ} (i : Fin n) : linForm (Pi.single i (1 : ℂ)) =
   classical
   simp [linForm, Pi.single_apply]
 
-theorem projHom_space (n : ℕ) :
-    projHom (⊥ : Ideal (MvPolynomial (Fin n) ℂ)) (1 : Matrix (Fin n) (Fin n) ℂ) =
-      Ideal.Quotient.mkₐ ℂ ⊥ := by
-  classical
-  apply MvPolynomial.algHom_ext
-  intro i
-  simp [projHom, pullback, linPoly, Matrix.one_apply]
 
-theorem isFiniteProjection_space (n : ℕ) :
-    IsFiniteProjection (⊥ : Ideal (MvPolynomial (Fin n) ℂ)) (1 : Matrix (Fin n) (Fin n) ℂ) := by
-  refine ⟨?_, ?_⟩
-  · rw [projHom_space]
-    intro a b h
-    rw [Ideal.Quotient.mkₐ_eq_mk, Ideal.Quotient.eq, Ideal.mem_bot, sub_eq_zero] at h
-    exact h
-  · rw [projHom_space]
-    exact RingHom.Finite.of_surjective _ (Ideal.Quotient.mkₐ_surjective ℂ _)
 
 theorem space_dim (n : ℕ) :
     ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ (⊥ : Ideal (MvPolynomial (Fin n) ℂ))) = (n : ℕ) := by
@@ -252,14 +236,6 @@ theorem linForm_single_not_mem_bot {n : ℕ} (i : Fin n) :
   rw [linForm_single, Ideal.mem_bot]
   exact X_ne_zero i
 
-theorem isSheetAt_space {n : ℕ} (x : Fin n → ℂ) :
-    IsSheetAt (⊥ : Ideal (MvPolynomial (Fin n) ℂ)) (1 : Matrix (Fin n) (Fin n) ℂ) x id := by
-  have hZ : ∀ y : Fin n → ℂ, y ∈ zeroSet (⊥ : Ideal (MvPolynomial (Fin n) ℂ)) := by
-    intro y q hq
-    rw [Ideal.mem_bot] at hq
-    simp [hq]
-  exact ⟨Set.univ, isOpen_univ, Set.mem_univ _, differentiableOn_id, by simp,
-    fun y _ => ⟨by simp, hZ y⟩, Set.univ, Filter.univ_mem, fun x' _ _ => by simp⟩
 
 def lineBranch : VarBranch (⊥ : Ideal (MvPolynomial (Fin 1) ℂ)) 1 0 where
   radius := 1

@@ -15,9 +15,6 @@ def plF (D : D7) (w : D.what₂.places.Pl) : slopeLatticeData.FinPl D.what₂.LL
 def plB (D : D7) (z : slopeLatticeData.FinPl D.what₂.LL) : D.what₂.places.Pl :=
   D.plEq.symm ⟨z.1, z.2.isPrime, Ring.ne_bot_of_isMaximal_of_not_isField z.2 (RingOfIntegers.not_isField D.what₂.LL)⟩
 
-theorem plB_plF (D : D7) (w : D.what₂.places.Pl) : plB D (plF D w) = w := by
-  unfold plB plF
-  exact D.plEq.symm_apply_apply w
 
 theorem plF_plB (D : D7) (z : slopeLatticeData.FinPl D.what₂.LL) : plF D (plB D z) = z := by
   unfold plB plF

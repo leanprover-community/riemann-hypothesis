@@ -1,8 +1,752 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicExistsIff
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ZpowSmulMem
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CompOneAddPowMul
+import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.OnePlusPowerAssembly
+import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.KernelCharacterDelta
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SubIdBijOfContracting
 
+section
+noncomputable section
+namespace GlobalTheory.PsiLemmaCompare
+open scoped LaurentSeries PowerSeries
+open GlobalTheory.PhiGam GlobalTheory.IndefiniteRowSideFullHecke
+
+section Subst
+variable {k : Type} [Field k]
+
+theorem vv_eq : vv k = ((PowerSeries.X : k⟦X⟧) : k⸨X⸩) := by simp [vv]
+
+theorem vv_ne : vv k ≠ 0 := by simp [vv]
+
+theorem single_eq (m : ℤ) : (HahnSeries.single m 1 : k⸨X⸩) = vv k ^ m := by
+  rw [vv, ← RatFunc.single_zpow]
+
+theorem coe_ne {f : k⟦X⟧} (h : f ≠ 0) : (f : k⸨X⸩) ≠ 0 := fun e =>
+  h (HahnSeries.ofPowerSeries_injective (e.trans (map_zero _).symm))
+
+def substHom (f : k⟦X⟧) (h0 : PowerSeries.constantCoeff f = 0) (h1 : f ≠ 0) : k⸨X⸩ →+* k⸨X⸩ :=
+  IsLocalization.lift (M := Submonoid.powers (PowerSeries.X : k⟦X⟧))
+    (g := (HahnSeries.ofPowerSeries ℤ k).comp
+      (PowerSeries.substAlgHom (PowerSeries.HasSubst.of_constantCoeff_zero' h0) : k⟦X⟧ →ₐ[k] k⟦X⟧).toRingHom)
+    (by
+      rintro ⟨_, n, rfl⟩
+      refine IsUnit.mk0 _ ?_
+      simp only [map_pow]
+      refine pow_ne_zero _ ?_
+      simpa [PowerSeries.substAlgHom_X] using coe_ne h1)
+
+theorem substHom_coe (f : k⟦X⟧) (h0 : PowerSeries.constantCoeff f = 0) (h1 : f ≠ 0) (a : k⟦X⟧) :
+    substHom f h0 h1 (a : k⸨X⸩) = ((a.subst f : k⟦X⟧) : k⸨X⸩) := by
+  have := IsLocalization.lift_eq (S := k⸨X⸩) (M := Submonoid.powers (PowerSeries.X : k⟦X⟧))
+    (g := (HahnSeries.ofPowerSeries ℤ k).comp
+      (PowerSeries.substAlgHom (PowerSeries.HasSubst.of_constantCoeff_zero' h0) : k⟦X⟧ →ₐ[k] k⟦X⟧).toRingHom)
+    (by
+      rintro ⟨_, n, rfl⟩
+      refine IsUnit.mk0 _ ?_
+      simp only [map_pow]
+      refine pow_ne_zero _ ?_
+      simpa [PowerSeries.substAlgHom_X] using coe_ne h1) a
+  refine this.trans ?_
+  simp [PowerSeries.coe_substAlgHom]
+
+theorem substL_eq (f : k⟦X⟧) (h0 : PowerSeries.constantCoeff f = 0) (h1 : f ≠ 0) (x : k⸨X⸩) :
+    FrobeniusBinomialReduction.substL f x = substHom f h0 h1 x := by
+  conv_rhs => rw [← LaurentSeries.single_order_mul_powerSeriesPart x]
+  rw [map_mul, substHom_coe, single_eq, map_zpow₀, vv_eq, substHom_coe,
+    PowerSeries.subst_X (PowerSeries.HasSubst.of_constantCoeff_zero' h0), FrobeniusBinomialReduction.substL]
+
+theorem hom_ext {F G : k⸨X⸩ →+* k⸨X⸩} (h : ∀ a : k⟦X⟧, F (a : k⸨X⸩) = G (a : k⸨X⸩)) : F = G :=
+  IsLocalization.ringHom_ext (Submonoid.powers (PowerSeries.X : k⟦X⟧)) (RingHom.ext h)
+
+theorem exists_mul_pow (x : k⸨X⸩) : ∃ (n : ℕ) (a : k⟦X⟧), x * vv k ^ n = (a : k⸨X⸩) := by
+  obtain ⟨⟨a, _, n, rfl⟩, h⟩ := IsLocalization.surj (Submonoid.powers (PowerSeries.X : k⟦X⟧)) x
+  refine ⟨n, a, ?_⟩
+  simpa [vv_eq] using h
+
+end Subst
+
+section Frob
+variable (k : Type) [Field k] (l : ℕ) [hl : Fact l.Prime]
+
+theorem phiPi_coeff_mul (x : k⸨X⸩) (q : ℤ) : (OnePlusPowerCharacters.phiPi k l x).coeff (l * q) = x.coeff q := by
+  unfold OnePlusPowerCharacters.phiPi
+  erw [HahnSeries.embDomainRingHom_apply]
+  exact HahnSeries.embDomain_coeff (a := q)
+
+theorem phiPi_coeff_not (x : k⸨X⸩) (n : ℤ) (h : ¬ (l : ℤ) ∣ n) : (OnePlusPowerCharacters.phiPi k l x).coeff n = 0 := by
+  unfold OnePlusPowerCharacters.phiPi
+  erw [HahnSeries.embDomainRingHom_apply]
+  refine HahnSeries.embDomain_of_notMem_range ?_
+  rintro ⟨q, rfl⟩
+  exact h ⟨q, rfl⟩
+
+theorem coeff_neg (a : k⟦X⟧) {n : ℤ} (h : n < 0) : (a : k⸨X⸩).coeff n = 0 := by
+  rw [PowerSeries.coeff_coe, if_pos h]
+
+theorem phiPi_eq (x : k⸨X⸩) : OnePlusPowerCharacters.phiPi k l x = FrobeniusBinomialReduction.frobπ k l x := by
+  have hp := hl.out.ne_zero
+  have h0 : PowerSeries.constantCoeff ((PowerSeries.X : k⟦X⟧) ^ l) = 0 := by simp [hp]
+  have h1 : ((PowerSeries.X : k⟦X⟧) ^ l) ≠ 0 := pow_ne_zero _ PowerSeries.X_ne_zero
+  rw [FrobeniusBinomialReduction.frobπ, substL_eq _ h0 h1]
+  congr 1
+  refine hom_ext fun a => ?_
+  rw [substHom_coe]
+  ext n
+  have hpos : (0 : ℤ) < l := by exact_mod_cast hl.out.pos
+  by_cases hd : (l : ℤ) ∣ n
+  · obtain ⟨q, rfl⟩ := hd
+    rw [phiPi_coeff_mul]
+    rcases lt_or_ge q 0 with hq | hq
+    · rw [coeff_neg k a hq, coeff_neg k _ (mul_neg_of_pos_of_neg hpos hq)]
+    · obtain ⟨m, rfl⟩ := Int.eq_ofNat_of_zero_le hq
+      rw [← Nat.cast_mul, LaurentSeries.coeff_coe_powerSeries, LaurentSeries.coeff_coe_powerSeries,
+        PowerSeries.coeff_subst_X_pow hp, if_pos (dvd_mul_right _ _), Nat.mul_div_cancel_left _ hl.out.pos]
+      simp
+  · rw [phiPi_coeff_not k l _ _ hd]
+    rcases lt_or_ge n 0 with hq | hq
+    · rw [coeff_neg k _ hq]
+    · obtain ⟨m, rfl⟩ := Int.eq_ofNat_of_zero_le hq
+      rw [LaurentSeries.coeff_coe_powerSeries, PowerSeries.coeff_subst_X_pow hp, if_neg]
+      exact fun h => hd (Int.natCast_dvd_natCast.2 h)
+
+def assembleX (y : Fin l → k⸨X⸩) : k⸨X⸩ := ∑ j : Fin l, vv k ^ (j : ℕ) * OnePlusPowerCharacters.phiPi k l (y j)
+
+theorem assembleX_coeff (y : Fin l → k⸨X⸩) (q : ℤ) (j : Fin l) :
+    (assembleX k l y).coeff (l * q + (j : ℕ)) = (y j).coeff q := by
+  have hv : ∀ (i : ℕ) (z : k⸨X⸩) (n : ℤ), (vv k ^ i * z).coeff n = z.coeff (n - i) := by
+    intro i z n
+    rw [← zpow_natCast, ← single_eq]
+    conv_lhs => rw [← sub_add_cancel n i]
+    rw [HahnSeries.coeff_single_mul_add, one_mul]
+  rw [assembleX, HahnSeries.coeff_sum, Finset.sum_eq_single j]
+  · rw [hv, add_sub_cancel_right, phiPi_coeff_mul]
+  · intro i _ hij
+    rw [hv, phiPi_coeff_not]
+    intro hd
+    rw [add_sub_assoc] at hd
+    have h2 : (l : ℤ) ∣ ((j : ℕ) : ℤ) - (i : ℕ) := (dvd_add_right (dvd_mul_right _ _)).1 hd
+    have h3 := Int.eq_zero_of_abs_lt_dvd h2 (by
+      have := i.2; have := j.2
+      rw [abs_lt]; constructor <;> omega)
+    exact hij (Fin.ext (by omega))
+  · simp
+
+theorem assembleX_bijective : Function.Bijective (assembleX k l) := by
+  have hpos : (0 : ℤ) < l := by exact_mod_cast hl.out.pos
+  constructor
+  · intro y z h
+    funext j
+    ext q
+    rw [← assembleX_coeff, h, assembleX_coeff]
+  · intro x
+    have hb : ∀ j : Fin l, BddBelow (Function.support fun q : ℤ => x.coeff (l * q + (j : ℕ))) := by
+      intro j
+      refine ⟨-|x.order| - 1, fun q hq => ?_⟩
+      have h1 : x.order ≤ l * q + (j : ℕ) := HahnSeries.order_le_of_coeff_ne_zero hq
+      have h2 : ((j : ℕ) : ℤ) < l := by exact_mod_cast j.2
+      by_contra hc
+      push Not at hc
+      have h3 := neg_abs_le x.order
+      have h4 := abs_nonneg x.order
+      nlinarith
+    refine ⟨fun j => HahnSeries.ofSuppBddBelow _ (hb j), ?_⟩
+    ext n
+    have hn : n = l * (n / l) + ((⟨(n % l).toNat, by
+        have := Int.emod_lt_of_pos n hpos; have := Int.emod_nonneg n hpos.ne'; omega⟩ : Fin l) : ℕ) := by
+      have := Int.emod_nonneg n hpos.ne'
+      simp only [Int.toNat_of_nonneg this]
+      exact (Int.mul_ediv_add_emod n l).symm
+    rw [hn, assembleX_coeff]
+    simp
+
+theorem assemble_bijective : Function.Bijective (OnePlusPowerCharacters.assemble k l) := by
+  let T : Matrix (Fin l) (Fin l) k⸨X⸩ := Matrix.of fun m j => (((j : ℕ).choose m : ℕ) : k⸨X⸩)
+  have hdet : T.det = 1 := by
+    rw [Matrix.det_of_upperTriangular]
+    · simp [T]
+    · intro i j h
+      simp only [T, Matrix.of_apply]
+      rw [Nat.choose_eq_zero_of_lt (show (j : ℕ) < i from h), Nat.cast_zero]
+  have hT : Function.Bijective T.mulVec :=
+    ⟨Matrix.mulVec_injective_iff_isUnit.2 ((Matrix.isUnit_iff_isUnit_det T).2 (hdet ▸ isUnit_one)),
+     Matrix.mulVec_surjective_iff_isUnit.2 ((Matrix.isUnit_iff_isUnit_det T).2 (hdet ▸ isUnit_one))⟩
+  have e : OnePlusPowerCharacters.assemble k l = assembleX k l ∘ T.mulVec := by
+    funext y
+    simp only [Function.comp, OnePlusPowerCharacters.assemble, assembleX, Matrix.mulVec, dotProduct, map_sum, map_mul, T,
+      Matrix.of_apply, map_natCast, Finset.mul_sum]
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    simp only [← mul_assoc]
+    rw [← Finset.sum_mul, add_comm, add_pow]
+    congr 1
+    rw [Fin.sum_univ_eq_sum_range (fun m => vv k ^ m * (((j : ℕ).choose m : ℕ) : k⸨X⸩))]
+    simp only [one_pow, mul_one]
+    refine Finset.sum_subset (Finset.range_subset_range.2 j.2) fun m _ hm => ?_
+    rw [Nat.choose_eq_zero_of_lt (by simpa using hm), Nat.cast_zero, mul_zero]
+  rw [e]
+  exact (assembleX_bijective k l).comp hT
+
+end Frob
+
+section Ring
+variable {k : Type} [Field k] {l : ℕ} [hl : Fact l.Prime] [CharP k l]
+
+theorem binom_const (t : ℤ_[l]) : PowerSeries.constantCoeff (FrobeniusBinomialReduction.binomPow k l t - 1) = 0 := by
+  rw [map_sub, ← PowerSeries.coeff_zero_eq_constantCoeff_apply, FrobeniusBinomialReduction.binomPow, PowerSeries.coeff_map,
+    PowerSeries.binomialSeries_coeff]
+  simp
+
+theorem binom_ne (t : ℤ_[l]) (h : FrobeniusBinomialReduction.red k l t ≠ 0) : FrobeniusBinomialReduction.binomPow k l t - 1 ≠ 0 := by
+  intro e
+  have := congrArg (PowerSeries.coeff 1) e
+  rw [map_sub, FrobeniusBinomialReduction.binomPow, PowerSeries.coeff_map, PowerSeries.binomialSeries_coeff] at this
+  exact h (by simpa [PowerSeries.coeff_one] using this)
+
+theorem binom_unit_ne (t : ℤ_[l]ˣ) : FrobeniusBinomialReduction.binomPow k l t - 1 ≠ 0 :=
+  binom_ne _ (t.isUnit.map (FrobeniusBinomialReduction.red k l)).ne_zero
+
+theorem gam_const : PowerSeries.constantCoeff ((1 + PowerSeries.X : k⟦X⟧) ^ (1 + l) - 1) = 0 := by simp
+
+theorem gam_ne : (1 + PowerSeries.X : k⟦X⟧) ^ (1 + l) - 1 ≠ 0 := by
+  rw [← FrobeniusBinomialReduction.binomPow_natCast k l]
+  refine binom_ne _ ?_
+  rw [map_natCast]
+  simp
+
+theorem gam_coe (b : k⟦X⟧) : FrobeniusBinomialReduction.gamπ k l (b : k⸨X⸩) = ((OnePlusPowerCharacters.gammaPi k l b : k⟦X⟧) : k⸨X⸩) := by
+  rw [FrobeniusBinomialReduction.gamπ, substL_eq _ gam_const gam_ne, substHom_coe, OnePlusPowerCharacters.gammaPi]
+
+theorem act_coe (t : ℤ_[l]ˣ) (b : k⟦X⟧) :
+    FrobeniusBinomialReduction.actπ k l t (b : k⸨X⸩) = ((OnePlusPowerCharacters.deltaPi k l t b : k⟦X⟧) : k⸨X⸩) := by
+  rw [FrobeniusBinomialReduction.actπ, substL_eq _ (binom_const _) (binom_unit_ne t), substHom_coe]
+  rfl
+
+theorem deltaInv_coe (b : k⟦X⟧) : FrobeniusBinomialReduction.DeltaInv k l (b : k⸨X⸩) ↔
+    ∀ z : ℤ_[l], z ^ (l - 1) = 1 → OnePlusPowerCharacters.deltaPi k l z b = b := by
+  have h1 : l - 1 ≠ 0 := by have := hl.out.two_le; omega
+  constructor
+  · intro h z hz
+    obtain ⟨t, rfl⟩ := IsUnit.of_pow_eq_one hz h1
+    have := h t (Units.ext (by simpa using hz))
+    rw [act_coe] at this
+    exact HahnSeries.ofPowerSeries_injective this
+  · intro h t ht
+    rw [act_coe, h t (by rw [← Units.val_pow_eq_pow_val, ht, Units.val_one])]
+
+theorem deltaInv_mul {x y : k⸨X⸩} (hx : FrobeniusBinomialReduction.DeltaInv k l x) (hy : FrobeniusBinomialReduction.DeltaInv k l y) :
+    FrobeniusBinomialReduction.DeltaInv k l (x * y) := by
+  intro t ht
+  have h1 := hx t ht
+  have h2 := hy t ht
+  rw [FrobeniusBinomialReduction.actπ, substL_eq _ (binom_const _) (binom_unit_ne t)] at h1 h2 ⊢
+  rw [map_mul, h1, h2]
+
+theorem deltaInv_zpow {x : k⸨X⸩} (hx : FrobeniusBinomialReduction.DeltaInv k l x) (m : ℤ) :
+    FrobeniusBinomialReduction.DeltaInv k l (x ^ m) := by
+  intro t ht
+  have h1 := hx t ht
+  rw [FrobeniusBinomialReduction.actπ, substL_eq _ (binom_const _) (binom_unit_ne t)] at h1 ⊢
+  rw [map_zpow₀, h1]
+
+theorem isCyclotomic_iff (R : RingPG k l) (ι : k⸨X⸩ →ₐ[k] k⸨X⸩) :
+    OnePlusPowerCharacters.IsCyclotomic R ι ↔ FrobeniusBinomialReduction.IsCyclotomic R ι := by
+  constructor
+  · rintro ⟨⟨u, hu⟩, hint, hinv, hφ, hγ⟩
+    have hA : ∀ a : k⟦X⟧, FrobeniusBinomialReduction.DeltaInv k l (ι (a : k⸨X⸩)) := by
+      intro a
+      obtain ⟨b, hb⟩ := hint a
+      rw [hb, deltaInv_coe, hinv]
+      exact ⟨a, hb⟩
+    have hv : FrobeniusBinomialReduction.DeltaInv k l (ι (vv k)) := by rw [vv_eq]; exact hA _
+    refine ⟨?_, ?_, ⟨u, hu⟩, fun x => by rw [hφ, phiPi_eq], ?_⟩
+    · ext y
+      constructor
+      · rintro ⟨x, rfl⟩
+        rw [← LaurentSeries.single_order_mul_powerSeriesPart x, single_eq, map_mul, map_zpow₀]
+        exact deltaInv_mul (deltaInv_zpow hv _) (hA _)
+      · intro hy
+        obtain ⟨n, c, hc⟩ := exists_mul_pow y
+        obtain ⟨e, he⟩ : ∃ e, l - 1 = e + 1 := ⟨l - 2, by have := hl.out.two_le; omega⟩
+        have hb : y * ι (vv k) ^ n = ((c * ((u : k⟦X⟧) * PowerSeries.X ^ e) ^ n : k⟦X⟧) : k⸨X⸩) := by
+          rw [hu, he, map_mul, map_pow, map_mul, map_pow, ← hc, ← vv_eq]
+          ring
+        have h2 : FrobeniusBinomialReduction.DeltaInv k l (y * ι (vv k) ^ n) :=
+          deltaInv_mul hy (by simpa using deltaInv_zpow hv n)
+        rw [hb, deltaInv_coe, hinv] at h2
+        obtain ⟨a, ha⟩ := h2
+        have hne : ι (vv k) ≠ 0 := (map_ne_zero ι).2 vv_ne
+        refine ⟨(a : k⸨X⸩) / vv k ^ n, ?_⟩
+        rw [map_div₀, map_pow, ha, ← hb, mul_div_cancel_right₀ _ (pow_ne_zero _ hne)]
+    · ext y
+      constructor
+      · rintro ⟨a, rfl⟩
+        exact ⟨hint a, hA a⟩
+      · rintro ⟨⟨b, rfl⟩, hb⟩
+        rw [deltaInv_coe, hinv] at hb
+        exact hb
+    · have : (ι : k⸨X⸩ →+* k⸨X⸩).comp (R.γ : k⸨X⸩ →+* k⸨X⸩) =
+          (substHom _ (gam_const (k := k) (l := l)) gam_ne).comp (ι : k⸨X⸩ →+* k⸨X⸩) := by
+        refine hom_ext fun a => ?_
+        obtain ⟨b, hb⟩ := hint a
+        simp only [RingHom.comp_apply, RingHom.coe_coe]
+        rw [hγ a b hb, hb, substHom_coe, OnePlusPowerCharacters.gammaPi]
+      intro x
+      rw [FrobeniusBinomialReduction.gamπ, substL_eq _ gam_const gam_ne]
+      simpa only [RingHom.comp_apply, RingHom.coe_coe] using RingHom.congr_fun this x
+  · rintro ⟨-, hA, hu, hφ, hγ⟩
+    refine ⟨hu, fun a => ?_, fun b => ?_, fun x => by rw [hφ, phiPi_eq], fun a b hab => ?_⟩
+    · have : ι (a : k⸨X⸩) ∈ Set.range (fun a : k⟦X⟧ => ι (a : k⸨X⸩)) := ⟨a, rfl⟩
+      rw [hA] at this
+      exact this.1
+    · rw [← deltaInv_coe]
+      change _ ↔ (b : k⸨X⸩) ∈ Set.range (fun a : k⟦X⟧ => ι (a : k⸨X⸩))
+      rw [hA]
+      exact ⟨fun h => ⟨⟨b, rfl⟩, h⟩, fun h => h.2⟩
+    · rw [hγ, hab, gam_coe]
+
+omit hl [CharP k l] in
+
+theorem psiRing_iff (R : RingPG k l) (ψ : k⸨X⸩ →ₗ[k] k⸨X⸩) :
+    OnePlusPowerCharacters.PsiRing R ψ ↔ FrobeniusBinomialReduction.PsiRing R ψ := by
+  have e : {x : k⸨X⸩ | ∃ b : k⟦X⟧, x = (b : k⸨X⸩)} = Set.range (fun b : k⟦X⟧ => (b : k⸨X⸩)) := by
+    ext x
+    simp [eq_comm]
+  unfold OnePlusPowerCharacters.PsiRing FrobeniusBinomialReduction.PsiRing
+  rw [e]
+  refine and_congr_right fun h => and_congr_left fun _ => ⟨fun h1 => by simpa using h1 1, fun h1 a => ?_⟩
+  have := h a 1
+  rwa [mul_one, h1, mul_one] at this
+
+end Ring
+
+section Mod
+variable {k : Type} [Field k] {V : Type} [AddCommGroup V] [Module k⸨X⸩ V] [Module k⟦X⟧ V] [Module k V]
+  [IsScalarTower k⟦X⟧ k⸨X⸩ V] [IsScalarTower k k⸨X⸩ V] [IsScalarTower k k⟦X⟧ V]
+
+theorem coe_smul (b : k⟦X⟧) (x : V) : (b : k⸨X⸩) • x = b • x := algebraMap_smul k⸨X⸩ b x
+
+theorem image_sh_pull (ψ : k⸨X⸩ →ₗ[k] k⸨X⸩) (f Ψ : V →ₗ[k] V) (a : ℤ)
+    (h3 : ψ '' {x | ∃ b : k⟦X⟧, x = vv k ^ a * (b : k⸨X⸩)} = Set.range (fun b : k⟦X⟧ => (b : k⸨X⸩)))
+    (h1 : ∀ (a : k⸨X⸩) (x : V), Ψ (a • f x) = ψ a • x) (M₀ : Submodule k⟦X⟧ V) :
+    Ψ '' (sh a (pull f M₀) : Set V) = (M₀ : Set V) := by
+  ext m
+  constructor
+  · rintro ⟨_, ⟨y, hy, rfl⟩, rfl⟩
+    have key : ∀ b : k⟦X⟧, Ψ (vv k ^ a • b • y) ∈ M₀ := by
+      induction hy using Submodule.span_induction with
+      | mem x hx =>
+        obtain ⟨m, hm, rfl⟩ := hx
+        intro b
+        have : ψ (vv k ^ a * (b : k⸨X⸩)) ∈ Set.range (fun b : k⟦X⟧ => (b : k⸨X⸩)) :=
+          h3 ▸ ⟨_, ⟨b, rfl⟩, rfl⟩
+        obtain ⟨c, hc⟩ := this
+        rw [← coe_smul, ← mul_smul, h1, ← hc, coe_smul]
+        exact M₀.smul_mem c hm
+      | zero => intro b; simp
+      | add x y _ _ hx hy => intro b; rw [smul_add, smul_add, map_add]; exact M₀.add_mem (hx b) (hy b)
+      | smul c x _ hx => intro b; rw [← mul_smul b]; exact hx _
+    simpa using key 1
+  · intro hm
+    have : (1 : k⸨X⸩) ∈ Set.range (fun b : k⟦X⟧ => (b : k⸨X⸩)) := ⟨1, map_one _⟩
+    rw [← h3] at this
+    obtain ⟨_, ⟨b, rfl⟩, hb⟩ := this
+    refine ⟨_, ⟨b • f m, Submodule.smul_mem _ b (Submodule.subset_span ⟨m, hm, rfl⟩), rfl⟩, ?_⟩
+    change Ψ (vv k ^ a • b • f m) = m
+    rw [← coe_smul, ← mul_smul, h1, hb, one_smul]
+
+theorem psiMod_iff {l : ℕ} (R : RingPG k l) (ψ : k⸨X⸩ →ₗ[k] k⸨X⸩) (hψ : FrobeniusBinomialReduction.PsiRing R ψ)
+    (f g₀ g Ψ : V →ₗ[k] V) :
+    OnePlusPowerCharacters.PsiMod l ψ f g₀ g Ψ ↔
+      (∀ a x, Ψ (a • f x) = ψ a • x) ∧ (∀ x, Ψ (g x) = g₀ (Ψ x)) ∧
+        ∀ M₀ : Submodule k⟦X⟧ V, IsLat M₀ → CondC g₀ M₀ → FrobeniusBinomialReduction.PsiShift l g Ψ (pull f M₀) :=
+  ⟨fun h => ⟨h.1, h.2.1, fun M₀ hM hc => (h.2.2 M₀ hM).2 hc⟩,
+   fun h => ⟨h.1, h.2.1, fun M₀ hM =>
+    ⟨fun a h1 h2 => image_sh_pull ψ f Ψ a (hψ.2.2.2 a h1 h2) h.1 M₀, h.2.2 M₀ hM⟩⟩⟩
+
+end Mod
+
+def LemmaPsiEtale : Prop :=
+  ∀ (l : ℕ) [Fact l.Prime] (k : Type) [Field k] [CharP k l], 5 ≤ l →
+  ∀ (R : RingPG k l) (ι : k⸨X⸩ →ₐ[k] k⸨X⸩), OnePlusPowerCharacters.IsCyclotomic R ι →
+    Function.Bijective (OnePlusPowerCharacters.assemble k l) ∧
+    ∃ ψ : k⸨X⸩ →ₗ[k] k⸨X⸩, OnePlusPowerCharacters.IsPsi l ι ψ ∧ OnePlusPowerCharacters.PsiRing R ψ ∧
+      ∀ (n : ℕ) [NeZero n] (V : Type) [AddCommGroup V] [Module k⸨X⸩ V] [Module k⟦X⟧ V] [Module k V]
+        [IsScalarTower k⟦X⟧ k⸨X⸩ V] [IsScalarTower k k⸨X⸩ V] [IsScalarTower k k⟦X⟧ V]
+        [FiniteDimensional k⸨X⸩ V] (D : ModPG R n V) (i : ZMod n),
+        ∃ Ψ : V →ₗ[k] V, OnePlusPowerCharacters.PsiMod l ψ (D.φ i) (D.γ (i - 1)) (D.γ i) Ψ
+
+end GlobalTheory.PsiLemmaCompare
+end
+end
+
+section
+noncomputable section
+namespace GlobalTheory.PhiGam.TwistShift
+open GlobalTheory.PhiGam
+open scoped LaurentSeries PowerSeries
+
+variable {k : Type} [Field k]
+
+theorem zpow_one_add (c : k⟦X⟧) (s : ℤ) :
+    ∃ d : k⟦X⟧, (1 + (c : k⸨X⸩) * vv k ^ 2) ^ s = 1 + (d : k⸨X⸩) * vv k ^ 2 := by
+  have hw : (1 + c * PowerSeries.X ^ 2) * PowerSeries.invOfUnit (1 + c * PowerSeries.X ^ 2) 1 = 1 :=
+    PowerSeries.mul_invOfUnit _ _ (by simp)
+  set w := PowerSeries.invOfUnit (1 + c * PowerSeries.X ^ 2) 1
+  have hw' := congrArg (fun a : k⟦X⟧ => (a : k⸨X⸩)) hw
+  simp only [map_mul, map_add, map_one, map_pow, ← vv_eq_coe_X] at hw'
+  have hne : 1 + (c : k⸨X⸩) * vv k ^ 2 ≠ 0 := left_ne_zero_of_mul_eq_one hw'
+  induction s using Int.induction_on with
+  | zero => exact ⟨0, by simp⟩
+  | succ n ih =>
+    obtain ⟨d, hd⟩ := ih
+    refine ⟨d + c + d * c * PowerSeries.X ^ 2, ?_⟩
+    rw [zpow_add_one₀ hne, hd]
+    simp only [map_mul, map_add, map_pow, ← vv_eq_coe_X]
+    ring
+  | pred n ih =>
+    obtain ⟨d, hd⟩ := ih
+    refine ⟨(d - c) * w, ?_⟩
+    rw [zpow_sub_one₀ hne, hd, ← eq_inv_of_mul_eq_one_right hw']
+    simp only [map_mul, map_sub]
+    linear_combination hw'
+
+theorem one_add_pow (j : ℕ) :
+    ∃ e : k⟦X⟧, (1 + vv k) ^ j = 1 + j * vv k + (e : k⸨X⸩) * vv k ^ 2 := by
+  induction j with
+  | zero => exact ⟨0, by simp⟩
+  | succ n ih =>
+    obtain ⟨e, he⟩ := ih
+    refine ⟨e + (n : k⟦X⟧) + e * PowerSeries.X, ?_⟩
+    rw [pow_succ, he]
+    simp only [map_mul, map_add, map_natCast, ← vv_eq_coe_X]
+    push_cast
+    ring
+
+variable {V : Type} [AddCommGroup V] [Module k⸨X⸩ V] [Module k⟦X⟧ V] [IsScalarTower k⟦X⟧ k⸨X⸩ V]
+
+theorem coe_smul_mem {N : Submodule k⟦X⟧ V} (a : k⟦X⟧) {x : V} (hx : x ∈ N) : (a : k⸨X⸩) • x ∈ N := by
+  have := N.smul_mem a hx
+  rwa [← algebraMap_smul k⸨X⸩ a x] at this
+
+theorem zpow_smul_mem {N : Submodule k⟦X⟧ V} (a : ℤ) {s t : ℤ} (h : a + s = t) {x : V} (hx : x ∈ sh s N) :
+    vv k ^ a • x ∈ sh t N := by
+  rw [← h, ← sh_sh_eq]
+  exact mem_sh_iff_exists.2 ⟨x, hx, rfl⟩
+
+variable [Module k V]
+
+theorem sub_mem_sh {σ : k⸨X⸩ →ₐ[k] k⸨X⸩} {g : V →ₗ[k] V} (hg : Semi σ g)
+    (hv : ∃ c : k⟦X⟧, σ (vv k) = vv k * (1 + (c : k⸨X⸩) * vv k ^ 2)) {N : Submodule k⟦X⟧ V}
+    (hN : ∀ x ∈ N, g x - x ∈ sh 2 N) {s : ℤ} {y : V} (hy : y ∈ sh s N) : g y - y ∈ sh (s + 2) N := by
+  obtain ⟨c, hc⟩ := hv
+  obtain ⟨d, hd⟩ := zpow_one_add c s
+  obtain ⟨x, hx, rfl⟩ := mem_sh_iff_exists.1 hy
+  have h1 : g (vv k ^ s • x) - vv k ^ s • x =
+      ((1 + d * PowerSeries.X ^ 2 : k⟦X⟧) : k⸨X⸩) • vv k ^ s • (g x - x) +
+        (d : k⸨X⸩) • vv k ^ (2 : ℤ) • vv k ^ s • x := by
+    rw [hg, map_zpow₀, hc, mul_zpow, hd, zpow_ofNat]
+    simp only [map_mul, map_add, map_one, map_pow, ← vv_eq_coe_X, smul_sub, smul_smul]
+    rw [sub_eq_iff_eq_add, mul_comm (vv k ^ s), add_assoc, ← add_smul,
+      add_mul _ _ (vv k ^ s), one_mul, mul_assoc, add_comm (_ * _) (vv k ^ s), sub_add_cancel]
+  rw [h1]
+  exact Submodule.add_mem _ (coe_smul_mem _ (zpow_smul_mem s rfl (hN x hx)))
+    (coe_smul_mem _ (zpow_smul_mem 2 (add_comm _ _) hy))
+
+theorem bijOn_twist : ∀ {k : Type} [Field k] {V : Type} [AddCommGroup V] [Module k⸨X⸩ V] [Module k⟦X⟧ V] [Module k V] [IsScalarTower k⟦X⟧ k⸨X⸩ V] [IsScalarTower k k⸨X⸩ V] [IsScalarTower k k⟦X⟧ V] [FiniteDimensional k⸨X⸩ V] (σ : k⸨X⸩ →ₐ[k] k⸨X⸩) (g : V →ₗ[k] V), Semi σ g → (∀ a : k⟦X⟧, ∃ b : k⟦X⟧, σ (a : k⸨X⸩) = b) → (∃ c : k⟦X⟧, σ (vv k) = vv k * (1 + (c : k⸨X⸩) * vv k ^ 2)) → ∀ N : Submodule k⟦X⟧ V, IsLat N → (∀ x ∈ N, g x - x ∈ sh 2 N) → ∀ j : ℕ, (j : k) ≠ 0 → ∀ s : ℤ, Set.BijOn (fun y => (1 + vv k) ^ j • g y - y) (sh s N) (sh (s + 1) N) := by
+  intro k _ V _ _ _ _ _ _ _ _ σ g hg _ hv N hL hN j hj s
+  have hv0 := vv_ne_zero k
+  obtain ⟨e, he⟩ := one_add_pow (k := k) j
+  obtain ⟨r, hr⟩ : ∃ r : k⟦X⟧, (r : k⸨X⸩) * j = 1 :=
+    ⟨PowerSeries.C (j : k)⁻¹, by
+      rw [← map_natCast (HahnSeries.ofPowerSeries ℤ k), ← map_mul, ← map_natCast (PowerSeries.C (R := k)),
+        ← map_mul, inv_mul_cancel₀ hj, map_one, map_one]⟩
+  have hvv : vv k ^ (-1 : ℤ) * vv k = 1 := by rw [zpow_neg_one, inv_mul_cancel₀ hv0]
+  let θ : V →+ V :=
+    { toFun := fun y => (1 + vv k) ^ j • g y - y
+      map_zero' := by simp
+      map_add' := fun a b => by simp only [map_add, smul_add]; abel }
+  have hθ : ∀ y, θ y = (1 + vv k) ^ j • g y - y := fun _ => rfl
+  let E : V →+ V :=
+    { toFun := fun y => y - (r : k⸨X⸩) • vv k ^ (-1 : ℤ) • θ y
+      map_zero' := by simp
+      map_add' := fun a b => by simp only [map_add, smul_add]; abel }
+  have hE : ∀ y, E y = y - (r : k⸨X⸩) • vv k ^ (-1 : ℤ) • θ y := fun _ => rfl
+  have hθE : ∀ y, θ y = ((j : k⟦X⟧) : k⸨X⸩) • vv k ^ (1 : ℤ) • (y - E y) := by
+    intro y
+    rw [hE, sub_sub_cancel, smul_smul, smul_smul, smul_smul, map_natCast, zpow_one]
+    rw [show (j : k⸨X⸩) * vv k * r * vv k ^ (-1 : ℤ) = 1 by linear_combination (r * j) * hvv + hr, one_smul]
+  have hEm : ∀ (t : ℤ), ∀ y ∈ sh t N, E y ∈ sh (t + 1) N := by
+    intro t y hy
+    have h1 : θ y = (((1 + PowerSeries.X) ^ j : k⟦X⟧) : k⸨X⸩) • (g y - y) + (e : k⸨X⸩) • vv k ^ (2 : ℤ) • y
+        + (j * vv k) • y := by
+      rw [hθ, map_pow, map_add, map_one, ← vv_eq_coe_X, smul_sub, zpow_ofNat]
+      generalize (1 + vv k) ^ j • g y = z
+      rw [he, add_smul, add_smul, one_smul, mul_smul (e : k⸨X⸩)]
+      abel
+    have h2 : E y = -((r : k⸨X⸩) • vv k ^ (-1 : ℤ) • ((((1 + PowerSeries.X) ^ j : k⟦X⟧) : k⸨X⸩) • (g y - y) +
+        (e : k⸨X⸩) • vv k ^ (2 : ℤ) • y)) := by
+      rw [hE, h1, smul_add _ _ ((j * vv k) • y), smul_add _ _ (_ • (j * vv k) • y),
+        smul_smul _ (j * vv k), smul_smul _ (_ * (j * vv k)),
+        show (r : k⸨X⸩) * (vv k ^ (-1 : ℤ) * (j * vv k)) = 1 by linear_combination (r * j) * hvv + hr, one_smul]
+      abel
+    rw [h2]
+    refine Submodule.neg_mem _ (coe_smul_mem _ (zpow_smul_mem (s := t + 2) _ (by ring) ?_))
+    exact Submodule.add_mem _ (coe_smul_mem _ (sub_mem_sh hg hv hN hy))
+      (coe_smul_mem _ (zpow_smul_mem 2 (add_comm _ _) hy))
+  have hEs : ∀ y ∈ sh s N, E y ∈ sh s N := fun y hy => sh_le_sh_of_le (by omega) N (hEm s y hy)
+  let T : sh s N →+ sh s N :=
+    { toFun := fun m => ⟨E m, hEs _ m.2⟩
+      map_zero' := by ext; simp
+      map_add' := fun a b => by ext; simp }
+  have hT : ∀ m, ((T m : sh s N) : V) = E m := fun _ => rfl
+  haveI : Module.Finite k⟦X⟧ (sh s N) := Module.Finite.iff_fg.2 (hL.shift s).1
+  haveI : IsPrecomplete (Ideal.span {(PowerSeries.X : k⟦X⟧)}) (sh s N) :=
+    ReciprocityTheory.ChartRestriction.G.T0.FiniteAlgebraLocalCompletion.isPrecomplete_finite_module _ _
+  haveI : IsHausdorff (Ideal.span {(PowerSeries.X : k⟦X⟧)}) (sh s N) := by
+    rw [← PowerSeries.maximalIdeal_eq_span_X]; infer_instance
+  have hXs : ∀ (i : ℕ) (x : V), (PowerSeries.X ^ i : k⟦X⟧) • x = vv k ^ (i : ℤ) • x := by
+    intro i x
+    rw [← algebraMap_smul k⸨X⸩ (PowerSeries.X ^ i : k⟦X⟧) x, zpow_natCast, map_pow, vv_eq_coe_X]
+    rfl
+  have hfil : ∀ (i : ℕ) (m : sh s N),
+      m ∈ (Ideal.span {(PowerSeries.X : k⟦X⟧)} ^ i • ⊤ : Submodule k⟦X⟧ (sh s N)) ↔ (m : V) ∈ sh (i + s) N := by
+    intro i m
+    rw [mem_span_pow_smul_top, ← sh_sh_eq, mem_sh_iff_exists]
+    constructor
+    · rintro ⟨y, rfl⟩
+      exact ⟨y, y.2, (hXs i y).symm⟩
+    · rintro ⟨y, hy, h⟩
+      exact ⟨⟨y, hy⟩, Subtype.ext ((hXs i y).trans h)⟩
+  have key := sub_id_bij_of_contracting (Ideal.span {(PowerSeries.X : k⟦X⟧)}) T (by
+    intro i m hm
+    rw [hfil] at hm ⊢
+    have := hEm _ _ hm
+    rw [hT]
+    convert this using 2
+    push_cast
+    ring)
+  change Set.BijOn θ _ _
+  refine ⟨fun y hy => ?_, fun a ha b hb hab => ?_, fun z hz => ?_⟩
+  · rw [hθE]
+    exact coe_smul_mem _ (zpow_smul_mem 1 (add_comm _ _) (Submodule.sub_mem _ hy (hEs y hy)))
+  · have := key.2 ⟨a - b, Submodule.sub_mem _ ha hb⟩ (Subtype.ext (by
+      rw [hT, hE, map_sub θ, hab]; simp))
+    exact sub_eq_zero.1 (congrArg Subtype.val this)
+  · obtain ⟨m, hm⟩ := key.1 ⟨-((r : k⸨X⸩) • vv k ^ (-1 : ℤ) • z),
+      Submodule.neg_mem _ (coe_smul_mem _ (zpow_smul_mem _ (by ring) hz))⟩
+    refine ⟨m, m.2, ?_⟩
+    have h1 : E m - m = -((r : k⸨X⸩) • vv k ^ (-1 : ℤ) • z) := congrArg Subtype.val hm
+    rw [hθE, ← neg_sub, h1, neg_neg, smul_smul, smul_smul, smul_smul, map_natCast, zpow_one,
+      show (j : k⸨X⸩) * vv k * r * vv k ^ (-1 : ℤ) = 1 by linear_combination (r * j) * hvv + hr, one_smul]
+
+end GlobalTheory.PhiGam.TwistShift
+end
+end
+
+section
+open scoped LaurentSeries PowerSeries
+
+namespace GlobalTheory.PsiBasis
+
+variable {k : Type} [Field k]
+
+noncomputable def comp (l : ℕ) (hl : 0 < l) (i : ℕ) : k⸨X⸩ →ₗ[k] k⸨X⸩ where
+  toFun y :=
+    { coeff := fun m => y.coeff (l * m + i)
+      isPWO_support' := by
+        apply Set.IsWF.isPWO
+        apply BddBelow.isWF
+        refine ⟨min 0 (y.order - i), fun m hm => ?_⟩
+        by_contra h
+        apply hm
+        apply HahnSeries.coeff_eq_zero_of_lt_order
+        have h1 : m < 0 := lt_of_lt_of_le (not_le.1 h) (min_le_left _ _)
+        have h2 : m < y.order - i := lt_of_lt_of_le (not_le.1 h) (min_le_right _ _)
+        have h3 : (1 : ℤ) ≤ l := by exact_mod_cast hl
+        nlinarith }
+  map_add' x y := by ext m; simp
+  map_smul' c x := by ext m; simp
+
+theorem comp_coeff (l : ℕ) (hl : 0 < l) (i : ℕ) (y : k⸨X⸩) (m : ℤ) :
+    (comp l hl i y).coeff m = y.coeff (l * m + i) := rfl
+
+theorem p_zpow (s : ℤ) :
+    (HahnSeries.single (1 : ℤ) (1 : k) : k⸨X⸩) ^ s = HahnSeries.single s 1 := by
+  cases s with
+  | ofNat n => simp [HahnSeries.single_pow]
+  | negSucc n =>
+    rw [zpow_negSucc, HahnSeries.single_pow, HahnSeries.inv_single]
+    simp [Int.negSucc_eq]
+
+theorem p_pow (s : ℕ) :
+    (HahnSeries.single (1 : ℤ) (1 : k) : k⸨X⸩) ^ s = HahnSeries.single (s : ℤ) 1 := by
+  simp [HahnSeries.single_pow]
+
+theorem mem_iff (s : ℤ) (x : k⸨X⸩) :
+    (∃ b : k⟦X⟧, x = (HahnSeries.single (1 : ℤ) (1 : k) : k⸨X⸩) ^ s * (b : k⸨X⸩)) ↔
+      ∀ m < s, x.coeff m = 0 := by
+  rw [p_zpow]
+  constructor
+  · rintro ⟨b, rfl⟩ m hm
+    rw [HahnSeries.coeff_single_mul, PowerSeries.coeff_coe, if_pos (by omega), mul_zero]
+  · intro h
+    refine ⟨PowerSeries.mk fun n => x.coeff (s + n), ?_⟩
+    ext m
+    rw [HahnSeries.coeff_single_mul, PowerSeries.coeff_coe, one_mul]
+    split_ifs with hm
+    · exact h m (by omega)
+    · rw [PowerSeries.coeff_mk]; congr 1; omega
+
+section
+variable (l : ℕ) (hl : 0 < l) (φ : k⸨X⸩ →+* k⸨X⸩)
+  (hφ : ∀ (x : k⸨X⸩) (m : ℤ), (φ x).coeff m = if (l : ℤ) ∣ m then x.coeff (m / l) else 0)
+include hl hφ
+
+theorem comp_pow_mul {i j : ℕ} (hi : i < l) (hj : j < l) (a : k⸨X⸩) :
+    comp l hl i ((HahnSeries.single (1 : ℤ) (1 : k) : k⸨X⸩) ^ j * φ a)
+      = if j = i then a else 0 := by
+  ext m
+  have hl' : (l : ℤ) ≠ 0 := by exact_mod_cast hl.ne'
+  rw [comp_coeff, p_pow, HahnSeries.coeff_single_mul, one_mul, hφ]
+  by_cases h : j = i
+  · subst h
+    simp [Int.mul_ediv_cancel_left _ hl']
+  · rw [if_neg h, if_neg]
+    · simp
+    · intro hd
+      have : (l : ℤ) ∣ (i : ℤ) - j := by
+        have h2 := dvd_sub hd (dvd_mul_right (l : ℤ) m)
+        have e : (l : ℤ) * m + i - j - l * m = i - j := by ring
+        rwa [e] at h2
+      have := Int.eq_zero_of_abs_lt_dvd this (by rw [abs_lt]; constructor <;> omega)
+      omega
+
+theorem eq_of_comp_eq {y z : k⸨X⸩} (h : ∀ i < l, comp l hl i y = comp l hl i z) : y = z := by
+  ext m
+  have hl' : (0 : ℤ) < l := by exact_mod_cast hl
+  have h0 := Int.emod_nonneg m hl'.ne'
+  have h1 := Int.emod_lt_of_pos m hl'
+  have := congrArg (fun w => w.coeff (m / l)) (h (m % l).toNat (by omega))
+  simp only [comp_coeff] at this
+  rw [Int.toNat_of_nonneg h0, Int.mul_ediv_add_emod] at this
+  exact this
+
+theorem comp_one_add_pow_mul {i j : ℕ} (hi : i < l) (hj : j < l) (a : k⸨X⸩) :
+    comp l hl i ((1 + (HahnSeries.single (1 : ℤ) (1 : k) : k⸨X⸩)) ^ j * φ a)
+      = (j.choose i) • a := by
+  rw [add_comm, add_pow, Finset.sum_mul, map_sum]
+  have : ∀ m ∈ Finset.range (j + 1),
+      comp l hl i ((HahnSeries.single (1 : ℤ) (1 : k) : k⸨X⸩) ^ m * 1 ^ (j - m) *
+        (j.choose m : k⸨X⸩) * φ a) = if m = i then (j.choose i) • a else 0 := by
+    intro m hm
+    have hm' : m < l := by have := Finset.mem_range.1 hm; omega
+    rw [one_pow, mul_one, mul_assoc, ← map_natCast φ, ← map_mul,
+      comp_pow_mul l hl φ hφ hi hm']
+    split_ifs with h
+    · subst h; rw [nsmul_eq_mul]
+    · rfl
+  rw [Finset.sum_congr rfl this, Finset.sum_ite_eq']
+  split_ifs with h
+  · rfl
+  · rw [Nat.choose_eq_zero_of_lt (by simpa using h), zero_smul]
+
+theorem existsUnique_decomp (y : k⸨X⸩) :
+    ∃! x : Fin l → k⸨X⸩, y = ∑ j : Fin l,
+      (1 + (HahnSeries.single (1 : ℤ) (1 : k) : k⸨X⸩)) ^ j.val * φ (x j) := by
+  let M : Matrix (Fin l) (Fin l) k⸨X⸩ := fun i j => (j.val.choose i.val : k⸨X⸩)
+  have hM : IsUnit M := by
+    rw [Matrix.isUnit_iff_isUnit_det, Matrix.det_of_upperTriangular]
+    · simp [M]
+    · intro i j hij
+      have : j.val < i.val := hij
+      simp [M, Nat.choose_eq_zero_of_lt this]
+  have hb : Function.Bijective M.mulVec :=
+    ⟨Matrix.mulVec_injective_iff_isUnit.2 hM, Matrix.mulVec_surjective_iff_isUnit.2 hM⟩
+  have key : ∀ (x : Fin l → k⸨X⸩) (i : Fin l), comp l hl i (∑ j : Fin l,
+      (1 + (HahnSeries.single (1 : ℤ) (1 : k) : k⸨X⸩)) ^ j.val * φ (x j)) = M.mulVec x i := by
+    intro x i
+    rw [map_sum, Matrix.mulVec, dotProduct]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [comp_one_add_pow_mul l hl φ hφ i.2 j.2, nsmul_eq_mul]
+  have := hb.existsUnique (fun i : Fin l => comp l hl i y)
+  refine (existsUnique_congr fun x => ?_).1 this
+  constructor
+  · intro h
+    refine eq_of_comp_eq l hl φ hφ fun i hi => ?_
+    rw [key x ⟨i, hi⟩, h]
+  · intro h
+    funext i
+    rw [← key, ← h]
+
+end
+
+noncomputable def psi (l : ℕ) (hl : 0 < l) : k⸨X⸩ →ₗ[k] k⸨X⸩ :=
+  ∑ i ∈ Finset.range l, ((-1 : ℤ) ^ i) • comp l hl i
+
+theorem psi_apply (l : ℕ) (hl : 0 < l) (y : k⸨X⸩) :
+    psi l hl y = ∑ i ∈ Finset.range l, ((-1 : ℤ) ^ i) • comp l hl i y := by
+  simp only [psi, LinearMap.sum_apply, LinearMap.smul_apply]
+
+theorem finiteRing_sq_sub_mul_sq_eq_of_card : ∀ {k : Type} [Field k] (l : ℕ) (_ : 0 < l) (φ : k⸨X⸩ →+* k⸨X⸩), (∀ (x : k⸨X⸩) (m : ℤ), (φ x).coeff m = if (l : ℤ) ∣ m then x.coeff (m / l) else 0) → let p : k⸨X⸩ := HahnSeries.single 1 1; (∀ y : k⸨X⸩, ∃! x : Fin l → k⸨X⸩, y = ∑ j : Fin l, (1 + p) ^ j.val * φ (x j)) ∧ ∃ ψ : k⸨X⸩ →ₗ[k] k⸨X⸩, (∀ a, ψ (φ a) = a) ∧ (∀ (a) (j : ℕ), 0 < j → j < l → ψ ((1 + p) ^ j * φ a) = 0) ∧ ∀ s : ℤ, ψ '' {x | ∃ b : k⟦X⟧, x = p ^ s * (b : k⸨X⸩)} = {x | ∃ b : k⟦X⟧, x = p ^ (s / l) * (b : k⸨X⸩)} := by
+  intro k _ l hl φ hφ p
+  have hl' : (0 : ℤ) < l := by exact_mod_cast hl
+  have hpow : ∀ j < l, ∀ a, psi l hl (p ^ j * φ a) = ((-1 : ℤ) ^ j) • a := by
+    intro j hj a
+    rw [psi_apply, Finset.sum_eq_single j]
+    · congr 1
+      exact (comp_pow_mul l hl φ hφ hj hj a).trans (if_pos rfl)
+    · intro i hi hij
+      have := (comp_pow_mul l hl φ hφ (Finset.mem_range.1 hi) hj a).trans (if_neg hij.symm)
+      rw [this, smul_zero]
+    · intro h; exact absurd (Finset.mem_range.2 hj) h
+  refine ⟨existsUnique_decomp l hl φ hφ, psi l hl, fun a => ?_, fun a j hj0 hj => ?_, fun s => ?_⟩
+  · simpa using hpow 0 hl a
+  · rw [psi_apply]
+    have : ∀ i ∈ Finset.range l, ((-1 : ℤ) ^ i) • comp l hl i ((1 + p) ^ j * φ a)
+        = ((-1 : ℤ) ^ i * (j.choose i : ℤ)) • a := by
+      intro i hi
+      have := comp_one_add_pow_mul l hl φ hφ (Finset.mem_range.1 hi) hj a
+      rw [this]
+      rw [mul_smul, natCast_zsmul]
+    rw [Finset.sum_congr rfl this, ← Finset.sum_smul,
+      ← Finset.sum_subset (Finset.range_subset_range.2 (show j + 1 ≤ l from hj)),
+      Int.alternating_sum_range_choose_of_ne hj0.ne', zero_smul]
+    intro i _ hi
+    rw [Nat.choose_eq_zero_of_lt (by simpa using hi)]
+    simp
+  · have h0 := Int.emod_nonneg s hl'.ne'
+    have h1 := Int.emod_lt_of_pos s hl'
+    have h2 := Int.mul_ediv_add_emod s l
+    ext z
+    simp only [Set.mem_image, Set.mem_setOf_eq, p, mem_iff]
+    constructor
+    · rintro ⟨y, hy, rfl⟩ m hm
+      rw [psi_apply, HahnSeries.coeff_sum]
+      refine Finset.sum_eq_zero fun i hi => ?_
+      have hi' : (i : ℤ) < l := by exact_mod_cast Finset.mem_range.1 hi
+      have : (comp l hl i y).coeff m = 0 := by
+        rw [comp_coeff]
+        apply hy
+        nlinarith
+      rw [HahnSeries.coeff_smul, this, smul_zero]
+    · intro hz
+      refine ⟨p ^ (l - 1) * φ (((-1 : ℤ) ^ (l - 1)) • z), fun m hm => ?_, ?_⟩
+      · rw [p_pow, HahnSeries.coeff_single_mul, one_mul, hφ]
+        split_ifs with hd
+        · obtain ⟨c, hc⟩ := hd
+          rw [hc, Int.mul_ediv_cancel_left _ hl'.ne', HahnSeries.coeff_smul, hz, smul_zero]
+          have : ((l - 1 : ℕ) : ℤ) = l - 1 := by omega
+          rw [this] at hc
+          nlinarith
+        · rfl
+      · rw [hpow _ (by omega), smul_smul, ← mul_pow]
+        simp
+
+theorem main : ∀ {k : Type} [Field k] (l : ℕ) [Fact l.Prime] [CharP k l] (φ : k⸨X⸩ →ₐ[k] k⸨X⸩), (∀ (x : k⸨X⸩) (m : ℤ), (φ x).coeff m = if (l : ℤ) ∣ m then x.coeff (m / l) else 0) → let p : k⸨X⸩ := HahnSeries.single 1 1; (∀ y : k⸨X⸩, ∃! x : Fin l → k⸨X⸩, y = ∑ j : Fin l, (1 + p) ^ j.val * φ (x j)) ∧ ∃ ψ : k⸨X⸩ →ₗ[k] k⸨X⸩, (∀ a, ψ (φ a) = a) ∧ (∀ (a) (j : ℕ), 0 < j → j < l → ψ ((1 + p) ^ j * φ a) = 0) ∧ ∀ s : ℤ, ψ '' {x | ∃ b : k⟦X⟧, x = p ^ s * (b : k⸨X⸩)} = {x | ∃ b : k⟦X⟧, x = p ^ (s / l) * (b : k⸨X⸩)} :=
+  fun l hp _ φ hφ => finiteRing_sq_sub_mul_sq_eq_of_card l hp.out.pos φ.toRingHom hφ
+
+end GlobalTheory.PsiBasis
+end
+
+section
 noncomputable section
 namespace GlobalTheory.PsiShiftProof
 open scoped LaurentSeries PowerSeries
@@ -541,3 +1285,5 @@ theorem core_surj {s : ℤ} (z : Fin n → k⸨X⸩) (hz : ∀ i, psiPi k l (z i
 end Core
 
 end GlobalTheory.PsiShiftProof
+end
+end

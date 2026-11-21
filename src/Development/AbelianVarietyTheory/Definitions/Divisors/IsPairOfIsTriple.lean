@@ -17,45 +17,13 @@ variable {n d n₁ d₁ : ℕ} {X : Spc F E n} {W : Spc F E d} {W₁ : Spc F E d
 
 theorem incM_one : incM F (1 : Matrix (Fin n) (Fin n) E) = 1 := Matrix.map_one _ (map_zero _) (map_one _)
 
-theorem isEv_id (B : Base F E) (M : Model σ X W) : IsEv B M M 1 1 ∅ LinearMap.id where
-  maps := fun _ h => h
-  Heisenberg₂ := fun z Φ _ => by simp [incM_one]
-  inv := fun _ h => h.elim
-  loc := ⟨ContinuousLinearMap.id _ _, fun _ => LinearMap.id, by
-    classical
-    intro h
-    let b : ContDiffBump (0 : Fin n × Fin d → mixedEmbedding.mixedSpace F) := ⟨1, 2, one_pos, one_lt_two⟩
-    have hs : HasCompactSupport (fun x => ((b x : ℝ) : ℂ)) := b.hasCompactSupport.comp_left (g := fun t : ℝ => (t : ℂ)) (by simp)
-    have hc : ContDiff ℝ (⊤ : ℕ∞) (fun x => ((b x : ℝ) : ℂ)) := Complex.ofRealCLM.contDiff.comp b.contDiff
-    have h1 := congrArg (fun T : SInf F (Fin n × Fin d) →L[ℂ] SInf F (Fin n × Fin d) => T (hs.toSchwartzMap hc) 0) h
-    have h2 : b 0 = 1 := b.one_of_mem_closedBall (by simp [b])
-    simp [h2] at h1,
-    fun v => ⟨rfl, Submodule.map_id _⟩, fun _ _ _ _ => rfl⟩
 
 theorem isLevi_one (H' : Plane E d d₁) : IsLevi (σ := σ) (W := W) (W₁ := W₁) H' 1 1 1 := by
   simp [IsLevi, mat]
 
-theorem shiftA_levi (H : Plane E n n₁) (H' : Plane E d d₁) {t : (AE F E)ˣ} {h₁ : UA σ W₁.J} {m : UA σ W.J}
-    (h : IsLevi H' t h₁ m) (l : (AE F E)ˣ) : shiftA H H' l * (mat m)ᵀ = cA σ (t⁻¹).1 • shiftA H H' l := by
-  rw [shiftA, Matrix.smul_mul, Matrix.vecMulVec_mul, Matrix.vecMul_transpose, h.2.1, smul_comm]
-  congr 1
-  ext i j
-  simp [Matrix.vecMulVec_apply, mul_left_comm]
 
-theorem shiftB_levi (H : Plane E n n₁) (H' : Plane E d d₁) {t : (AE F E)ˣ} {h₁ : UA σ W₁.J} {m : UA σ W.J}
-    (h : IsLevi H' t h₁ m) (l : (AE F E)ˣ) : shiftB σ H H' l * (mat m)ᵀ = t.1 • shiftB σ H H' l := by
-  rw [shiftB, Matrix.smul_mul, Matrix.vecMulVec_mul, Matrix.vecMul_transpose, h.1, smul_comm]
-  congr 1
-  ext i j
-  simp [Matrix.vecMulVec_apply, mul_left_comm]
 
-theorem isCT_const (H' : Plane E d d₁) (c : ℂ) : IsCT (σ := σ) (W := W) H' (fun _ => c) fun _ => c := by
-  intro μ 𝓕 _ _ h1 h
-  rw [integral_const, Measure.real, Measure.restrict_apply_univ, h1, ENNReal.toReal_one, one_smul]
 
-theorem hasLaw_const (H' : Plane E d d₁) (c : ℂ) : HasLaw (σ := σ) (W := W) W₁ H' 1 0 fun _ => c := by
-  intro t m _ h
-  simp
 
 theorem eq_zero_of_hasLaw (H' : Plane E d d₁) {χ χ' : Chr F E} {z z' : ℝ} (hz : z ≠ z') {T : UA σ W.J → ℂ}
     (h : HasLaw W₁ H' χ z T) (h' : HasLaw W₁ H' χ' z' T) {t : (AE F E)ˣ} {m : UA σ W.J} (hm : IsLevi (W₁ := W₁) H' t 1 m)
@@ -85,62 +53,12 @@ variable (E) in
 
 def pl : Plane E 2 0 := ⟨![1, 0], ![0, 1], 0, 1⟩
 
-theorem pl_adapted (B : Base F E) (ε : E) : (pl E).IsAdapted σ B (hyp F ε) (pt F E) 0 1 where
-  rank := rfl
-  xx := by simp [form, pl, hyp, dotProduct, Matrix.mulVec, Fin.sum_univ_two]
-  yy := by simp [form, pl, hyp, dotProduct, Matrix.mulVec, Fin.sum_univ_two]
-  xy := by simp [form, pl, hyp, dotProduct, Matrix.mulVec, Fin.sum_univ_two]
-  orth := fun u => by simp [form, pl]
-  gram := Subsingleton.elim _ _
-  low := fun u => by simp [pl, pt]
-  split := fun z hz => by
-    refine ⟨z 0, z 1, 0, ?_, ?_, trivial, ?_⟩
-    · intro i _
-      fin_cases i
-      · simpa [pl] using hz 0 trivial
-      · simp [pl]
-    · intro i _
-      fin_cases i
-      · simp [pl]
-      · simpa [pl] using hz 1 trivial
-    · funext i
-      fin_cases i <;> simp [pl]
-  ideal := fun s => by
-    constructor
-    · intro h i _
-      fin_cases i
-      · simpa [pl] using h
-      · simp [pl]
-    · intro h
-      simpa [pl] using h 0 trivial
-  cartan := fun w => ⟨Subsingleton.elim _ _, 1, one_ne_zero, by
-    funext i
-    fin_cases i <;> simp [pl, hyp, Matrix.mulVec, dotProduct, Fin.sum_univ_two]⟩
-  bas := fun v i => by
-    refine ⟨fun h r => ?_, fun h r => ?_, fun j => j.elim0⟩ <;> fin_cases i <;> fin_cases r <;> simp_all [pl, hyp]
 
 theorem nonempty_model (h2 : Module.finrank F E = 2) (hσ : ∀ x, σ (σ x) = x) (h1 : ∀ i j, σ (X.J j i) = X.J i j)
     (h5 : ∀ i j, σ (W.J j i) = -W.J i j) (h1' : X.J.det ≠ 0) (h5' : W.J.det ≠ 0) : Nonempty (Model σ X W) := by
   obtain ⟨co, -⟩ := GlobalTheory.RatDarboux.exists_darboux (AF F) h2 σ hσ h1 h5 h1' h5'
   exact ⟨⟨co, fun _ => 0, 0, ∅⟩⟩
 
-theorem exists_cfg (h2 : Module.finrank F E = 2) (hσ : ∀ x, σ (σ x) = x) (B : Base F E) :
-    (∃ (G : Geo σ 0 (0 + 2)) (G₁ : Geo σ 0 0) (H : Plane E (0 + 2) 0) (H' : Plane E (0 + (0 + 2)) (0 + 0)), CfgB B G G₁ H H') ∧
-    ∃ (G : Geo σ (0 + 2) 0) (G₁ : Geo σ 0 0) (H : Plane E (0 + 2) 0) (H' : Plane E (0 + 2 + 0) (0 + 0)), CfgA B G G₁ H H' := by
-  have a1 : ∀ i j, σ ((hyp F (1 : E)).J j i) = (hyp F (1 : E)).J i j := fun i j => by
-    fin_cases i <;> fin_cases j <;> simp [hyp]
-  have a2 : ∀ i j, σ ((hyp F (-1 : E)).J j i) = -(hyp F (-1 : E)).J i j := fun i j => by
-    fin_cases i <;> fin_cases j <;> simp [hyp]
-  have d1 : (hyp F (1 : E)).J.det ≠ 0 := by simp [hyp, Matrix.det_fin_two]
-  have d2 : (hyp F (-1 : E)).J.det ≠ 0 := by simp [hyp, Matrix.det_fin_two]
-  have d0 : (pt F E).J.det ≠ 0 := by simp
-  obtain ⟨M⟩ := nonempty_model h2 hσ a1 a2 d1 d2
-  obtain ⟨M₀⟩ := nonempty_model (X := pt F E) h2 hσ (fun i => i.elim0) a2 d0 d2
-  obtain ⟨M₁⟩ := nonempty_model (X := pt F E) (W := pt F E) h2 hσ (fun i => i.elim0) (fun i => i.elim0) d0 d0
-  exact ⟨⟨⟨0, 1, pt F E, hyp F 1, hyp F (-1), M₀, M⟩, ⟨0, 0, pt F E, pt F E, pt F E, M₁, M₁⟩, pl E, pl E,
-      rfl, rfl, rfl, pl_adapted B _, pl_adapted B _⟩,
-    ⟨1, 0, hyp F 1, pt F E, hyp F (-1), M, M₀⟩, ⟨0, 0, pt F E, pt F E, pt F E, M₁, M₁⟩, pl E, pl E,
-      rfl, rfl, rfl, rfl, pl_adapted B _, pl_adapted B _⟩
 
 theorem resEta_div {K : Subgroup (AF F)ˣ} {χ χ' : Chr F E} {a b m : ℕ} (h : ResEtaPow K χ a) (h' : ResEtaPow K χ' b)
     (hm : m = a + b) : ResEtaPow K (χ / χ') m := fun x => by
@@ -257,8 +175,6 @@ theorem isEv_origin (B : Base F E) {n₁ d₁ : ℕ} [IsEmpty (Fin n₁ × Fin d
       simp only [GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure, evOrigin, LinearMap.coe_mk, AddHom.coe_mk, e1, e2]
       simp [oneS]
 
-theorem isStab_unique (B : Base F E) {K K' : Subgroup (UA σ X.J)} (h : IsStab B K) (h' : IsStab B K') : K = K' :=
-  Subgroup.ext fun g => (h g).trans (h' g).symm
 
 theorem split2_unique {a a' : ℕ} (ha : a ≠ a') {W : Spc F E (a + a')} {H' : Plane E (a + a') d₁} {Y : Chars F E}
     {f fa fb ga gb : UA σ W.J → ℂ} (h : Split2 W₁ H' Y f fa fb) (h' : Split2 W₁ H' Y f ga gb)

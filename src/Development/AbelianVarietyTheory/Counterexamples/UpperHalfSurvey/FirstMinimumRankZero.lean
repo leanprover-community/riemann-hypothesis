@@ -26,20 +26,6 @@ theorem tt_pos {x : Frame X.Ψ r} (hx : x ∈ X.dom) {ξ : Fin r → E} (hξ : �
   unfold Data.tt
   positivity
 
-theorem scaled_maj_flow {x : Frame X.Ψ r} (hx : x ∈ X.dom) {ξ : Fin r → E} (hξ : X.IsIso ξ)
-    (s : X.Ψ → ℂ) (hs : X.flow ξ s x ∈ X.dom) (τ : X.Ψ) :
-    X.c τ * X.maj (X.flow ξ s x) τ (Data.emb τ.1 ξ) = 1 / (X.tt ξ x τ + (s τ).im) := by
-  have he : X.IsIsoV (fun τ => Data.emb τ.1 ξ) := by
-    intro σ
-    refine ⟨?_, fun h => hξ.2.2 ?_⟩
-    · have h0 := congrArg σ.1 hξ.2.1
-      simpa [herm, hermC, Data.emb, emb_cc] using h0
-    · funext a
-      exact (map_eq_zero_iff σ.1 σ.1.injective).1 (congrFun h a)
-  have h := (flowDomainCriterion_holds r X _ he x hx s).2 hs τ
-  have h' : X.tt ξ (X.flow ξ s x) τ = X.tt ξ x τ + (s τ).im := h
-  rw [← h']
-  simp [Data.tt]
 
 theorem flowMat_eq_transv (ξ : Fin r → E) (τ : X.Ψ) (s : E) :
     X.flowMat ξ τ (τ.1 s) = (transvMat X.Gm ξ (s * X.κ0)).map τ.1 := by
@@ -69,14 +55,5 @@ theorem flowMat_eq_transv (ξ : Fin r → E) (τ : X.Ψ) (s : E) :
     h1, hk, emb_cc]
   ring
 
-theorem first_minimum_rank_zero (Y : Data E 0) (x : Frame Y.Ψ 0) : Y.la1 x = 0 := by
-  have : {t | ∃ v ∈ Y.Λ, v ≠ 0 ∧ t = ∑ τ, Y.c τ * Y.maj x τ (Data.emb τ.1 v)} = (∅ : Set ℝ) := by
-    ext t
-    simp only [Set.mem_ofPred_eq, Set.mem_empty_iff_false, iff_false]
-    rintro ⟨v, -, hv, -⟩
-    exact hv (Subsingleton.elim _ _)
-  unfold Data.la1 Data.firstMinimumSq
-  rw [this]
-  simp
 
 end GlobalTheory.FlagFlowCheck

@@ -1,13 +1,489 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.SameOrbitRefl
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ConjugationInvariantSingularPotential
+import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsTwiceDifferentiableAt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.CompRightEqZero
+import Development.WeilBound.CoreStatements.PluriharmonicCharts.XAnConj
+import BuildAid.ForwardExisting
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.SingularWeightMonotoneRegularizationStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.HolomorphicDegreeOneBiholomorphismStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.BiholomorphicLiftSystemStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.LiftSystemComplexConjugation
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ConjugationAntiholomorphicCharts
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.LiftSystemRealStructure
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.HolomorphicDegreeOneBiholomorphism
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.BiholomorphicLiftSystem
+import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DifferentiableOnOfTendstoLocallyUniformlyOn
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.HolomorphicConjugatePullback
 
+section
+section
+open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights
+open scoped ComplexOrder
+
+namespace GlobalTheory.CompanionTheory.Ar.PB
+
+theorem an_conj_symmetrise : ∀ (e : ℕ) (X : Type) [TopologicalSpace X] [CompactSpace X] [T2Space X] (A : FinHolAtlas e X) (Θ : LocPot X) (L : LocPot X) (s : X → X → ℂ) (nb : ℕ) (m : Fin nb → ℕ) (W : Fin nb → Set X), IsPotential A L → IsSection A L s → IsSNC A L s m W → (∀ y, logNormSec L s y ≤ 0) → IsPotential A Θ → IsPosPot A Θ → ∀ (c : X → X), Continuous c → (∀ x, c (c x) = x) → (∀ j k, AnalyticOnNhd ℂ (fun z => star (A.chart k (c ((A.chart j).symm z)))) ((A.chart j).target ∩ (A.chart j).symm ⁻¹' (c ⁻¹' (A.chart k).source))) → (∀ y, c y ∈ bdry s ↔ y ∈ bdry s) → (∀ y, rW L s (c y) = rW L s y) → ∀ (th : LocPot X) (ph : X → ℝ) (phT : ℝ → X → ℝ) (C t₀ : ℝ), IsPotential A th → (∀ x, ∃ V : Set X, IsOpen V ∧ x ∈ V ∧ ∃ G : X → ℂ, A.HoloOn V G ∧ ∀ y ∈ V, th.φ (c x) (c y) - th.φ x y = (G y).re) → (∀ y ∉ bdry s, ph (c y) = ph y) → IsRegFamily A Θ L s th ph phT C t₀ → IsRegFamilyC2 A s ph phT → ∃ C' t₀' : ℝ, IsRegFamily A Θ L s th ph (fun t y => (phT t y + phT t (c y)) / 2) C' t₀' ∧ IsRegFamilyC2 A s ph fun t y => (phT t y + phT t (c y)) / 2 :=
+  @PositivityTheory.Xgp.t_an_conj
+
+end GlobalTheory.CompanionTheory.Ar.PB
+end
+
+open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.conjugation_invariant_singular_potential : ∀ (e : ℕ) (X : Type) [TopologicalSpace X] [CompactSpace X] [T2Space X] (A : FinHolAtlas e X) (Θ : LocPot X) (L : LocPot X) (s : X → X → ℂ) (nb : ℕ) (m : Fin nb → ℕ) (W : Fin nb → Set X), IsPotential A L → IsSection A L s → IsSNC A L s m W → (∀ y, logNormSec L s y ≤ 0) → IsPotential A Θ → IsPosPot A Θ → ∀ (c : X → X), Continuous c → (∀ x, c (c x) = x) → (∀ j k, AnalyticOnNhd ℂ (fun z => star (A.chart k (c ((A.chart j).symm z)))) ((A.chart j).target ∩ (A.chart j).symm ⁻¹' (c ⁻¹' (A.chart k).source))) → (∀ y, c y ∈ bdry s ↔ y ∈ bdry s) → (∀ y, rW L s (c y) = rW L s y) → ∀ (th : LocPot X) (ph : X → ℝ) (phT : ℝ → X → ℝ) (C t₀ : ℝ), IsPotential A th → (∀ x, ∃ V : Set X, IsOpen V ∧ x ∈ V ∧ ∃ G : X → ℂ, A.HoloOn V G ∧ ∀ y ∈ V, th.φ (c x) (c y) - th.φ x y = (G y).re) → (∀ y ∉ bdry s, ph (c y) = ph y) → IsRegFamily A Θ L s th ph phT C t₀ → IsRegFamilyC2 A s ph phT → ∃ C' t₀' : ℝ, IsRegFamily A Θ L s th ph (fun t y => (phT t y + phT t (c y)) / 2) C' t₀' ∧ IsRegFamilyC2 A s ph fun t y => (phT t y + phT t (c y)) / 2 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.PB.an_conj_symmetrise
+end
+
+section
+open MvPolynomial Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo GlobalTheory.CompanionTheory.Ar.PB GlobalTheory.CompanionTheory.Ar.PB.Cj GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.holomorphic_degree_one_biholomorphism : ∀ {e : ℕ} {X Y : Type} [TopologicalSpace X] [T2Space X] [TopologicalSpace Y] [CompactSpace Y] [T2Space Y] (A : FinHolAtlas e X) (B : FinHolAtlas e Y) (h : Y → X), HoloMap B A h → IsDegreeOff A B h 1 ∅ → ∃ g : X → Y, (∀ y, g (h y) = y) ∧ (∀ x, h (g x) = x) ∧ HoloMap A B g := by
+  first | exact @GlobalTheory.CompanionTheory.Ar.PB.Cj.exists_holoMap_inverse_of_degree_one | exact GlobalTheory.CompanionTheory.Ar.PB.Cj.exists_holoMap_inverse_of_degree_one | (intros; apply GlobalTheory.CompanionTheory.Ar.PB.Cj.exists_holoMap_inverse_of_degree_one <;> assumption)
+end
+
+section
+open MvPolynomial Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo GlobalTheory.CompanionTheory.Ar.PB GlobalTheory.CompanionTheory.Ar.PB.Cj GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.biholomorphic_lift_system : ∀ {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {P J : Ideal (MRing ι)}, J = ⊤ → ∀ {e : ℕ} (R : AnLogRes P J e) {X : Type} [TopologicalSpace X] (A : FinHolAtlas e X) (g : X → R.X) (h : R.X → X), (∀ y, g (h y) = y) → (∀ x, h (g x) = x) → HoloMap A R.A g → HoloMap R.A A h → IsLiftSys A P (fun x => g ⁻¹' R.U (g x)) (fun x y => R.lift (g x) (g y)) := by
+  first | exact @GlobalTheory.CompanionTheory.Ar.PB.Cj.ResTop.isLiftSys_of_top | exact GlobalTheory.CompanionTheory.Ar.PB.Cj.ResTop.isLiftSys_of_top | (intros; apply GlobalTheory.CompanionTheory.Ar.PB.Cj.ResTop.isLiftSys_of_top <;> assumption)
+end
+
+section
+section
+open MvPolynomial Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo GlobalTheory.CompanionTheory.Ar.PB GlobalTheory.CompanionTheory.Ar.PB.Cj GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped ComplexOrder
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.PB.Cj
+
+open Filter Topology
+
+variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
+
+theorem sameOrbit_cross {z z' : (Σ k, ι k) → ℂ} (h : SameOrbit z z') (k : K) (a b : ι k) :
+    z ⟨k, a⟩ * z' ⟨k, b⟩ = z ⟨k, b⟩ * z' ⟨k, a⟩ := by
+  obtain ⟨c, -, rfl⟩ := h
+  simp only
+  ring
+
+theorem sameOrbit_of_cross {z z' : (Σ k, ι k) → ℂ} (hz : ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0)
+    (hz' : ∀ k, ∃ i, z' ⟨k, i⟩ ≠ 0)
+    (h : ∀ (k : K) (a b : ι k), z ⟨k, a⟩ * z' ⟨k, b⟩ = z ⟨k, b⟩ * z' ⟨k, a⟩) :
+    SameOrbit z z' := by
+  choose j hj using hz'
+  refine ⟨fun k => z ⟨k, j k⟩ / z' ⟨k, j k⟩, fun k => ?_, ?_⟩
+  · obtain ⟨i, hi⟩ := hz k
+    refine div_ne_zero (fun h0 => ?_) (hj k)
+    have := h k i (j k)
+    rw [h0, zero_mul] at this
+    exact (mul_ne_zero hi (hj k)) this
+  · funext ⟨k, a⟩
+    have := h k a (j k)
+    have hjk := hj k
+    simp only
+    field_simp
+    linear_combination this
+
+theorem continuousAt_of_holo {e : ℕ} {X : Type} [TopologicalSpace X] (A : FinHolAtlas e X)
+    {U : Set X} {g : X → ℂ} (hg : A.HoloOn U g) {y : X} (hy : y ∈ U) : ContinuousAt g y := by
+  obtain ⟨j, hj⟩ := A.cover y
+  have h1 : ContinuousAt ((g ∘ (A.chart j).symm) ∘ A.chart j) y :=
+    ContinuousAt.comp (g := g ∘ (A.chart j).symm)
+      (hg j _ ⟨(A.chart j).map_source hj, by simpa [(A.chart j).left_inv hj] using hy⟩).continuousAt
+      ((A.chart j).continuousAt hj)
+  refine h1.congr ?_
+  filter_upwards [(A.chart j).open_source.mem_nhds hj] with z hz
+  simp [Function.comp, (A.chart j).left_inv hz]
+
+theorem exists_conj_of_isLiftSys {e : ℕ} {X : Type} [TopologicalSpace X] [CompactSpace X]
+    [T2Space X] {A : FinHolAtlas e X} {P : Ideal (MRing ι)} {U : X → Set X}
+    {lift : X → X → (Σ k, ι k) → ℂ} (hS : IsLiftSys A P U lift) :
+    ∃ c : X → X, (∀ x, SameOrbit (lift (c x) (c x)) (cj (lift x x))) ∧ Continuous c ∧
+      ∀ x, c (c x) = x := by
+  obtain ⟨hU, hmem, hholo, hlift, hcompat, hsurj, hinj, -⟩ := hS
+  choose c hc using fun x => hsurj _ (cj_mem_mcPts (hlift x x (hmem x)))
+  refine ⟨c, hc, ?_, fun x => ?_⟩
+  · refine continuous_iff_ultrafilter.2 fun x F hF => ?_
+    obtain ⟨x', -, hx'⟩ := isCompact_univ.ultrafilter_le_nhds (F.map c) (by simp)
+    have hcF : Tendsto c F (𝓝 x') := hx'
+    have hev : ∀ᶠ y in (F : Filter X), y ∈ U x ∧ c y ∈ U x' :=
+      Filter.Eventually.and (hF ((hU x).mem_nhds (hmem x))) (hcF ((hU x').mem_nhds (hmem x')))
+    have horb : ∀ᶠ y in (F : Filter X), SameOrbit (lift x' (c y)) (cj (lift x y)) := by
+      filter_upwards [hev] with y hy
+      exact sameOrbit_trans (hcompat x' (c y) (c y) ⟨hy.2, hmem _⟩)
+        (sameOrbit_trans (hc y) (sameOrbit_cj (hcompat y x y ⟨hmem y, hy.1⟩)))
+    have hl1 : ∀ p, Tendsto (fun y => lift x' (c y) p) F (𝓝 (lift x' x' p)) := fun p =>
+      (continuousAt_of_holo A (hholo x' p) (hmem x')).tendsto.comp hcF
+    have hl2 : ∀ p, Tendsto (fun y => cj (lift x y) p) F (𝓝 (cj (lift x x) p)) := fun p =>
+      (Complex.continuous_conj.tendsto _).comp
+        ((continuousAt_of_holo A (hholo x p) (hmem x)).tendsto.mono_left hF)
+    have hcross : ∀ (k : K) (a b : ι k),
+        lift x' x' ⟨k, a⟩ * cj (lift x x) ⟨k, b⟩ = lift x' x' ⟨k, b⟩ * cj (lift x x) ⟨k, a⟩ :=
+      fun k a b => tendsto_nhds_unique_of_eventuallyEq
+        ((hl1 ⟨k, a⟩).mul (hl2 ⟨k, b⟩)) ((hl1 ⟨k, b⟩).mul (hl2 ⟨k, a⟩))
+        (horb.mono fun y hy => sameOrbit_cross hy k a b)
+    have horb' : SameOrbit (lift x' x') (cj (lift x x)) :=
+      sameOrbit_of_cross (hlift x' x' (hmem x')).1 (cj_nonzero (hlift x x (hmem x)).1) hcross
+    have hxx : x' = c x := hinj _ _ (sameOrbit_trans horb' (sameOrbit_symm (hc x)))
+    exact hxx ▸ hcF
+  · refine hinj _ _ (sameOrbit_trans (hc (c x)) ?_)
+    have := sameOrbit_cj (hc x)
+    rwa [cj_cj] at this
+
+end GlobalTheory.CompanionTheory.Ar.PB.Cj
+end
+end
+
+open MvPolynomial Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo GlobalTheory.CompanionTheory.Ar.PB GlobalTheory.CompanionTheory.Ar.PB.Cj GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lift_system_complex_conjugation : ∀ {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {e : ℕ} {X : Type} [TopologicalSpace X] [CompactSpace X] [T2Space X] {A : FinHolAtlas e X} {P : Ideal (MRing ι)} {U : X → Set X} {lift : X → X → (Σ k, ι k) → ℂ}, IsLiftSys A P U lift → ∃ c : X → X, (∀ x, SameOrbit (lift (c x) (c x)) (cj (lift x x))) ∧ Continuous c ∧ ∀ x, c (c x) = x := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.PB.Cj.exists_conj_of_isLiftSys
+end
+
+section
+section
+namespace GlobalTheory.CompanionTheory.Metric.Rigid
+
+theorem analyticAt_of_comp_immersion {e : ℕ} {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V]
+    [FiniteDimensional ℂ V] (F : (Fin e → ℂ) → Fin e → ℂ) (ψ : (Fin e → ℂ) → V)
+    (H : (Fin e → ℂ) → V) (y₀ : Fin e → ℂ) (hψ : AnalyticAt ℂ ψ (F y₀))
+    (hker : (fderiv ℂ ψ (F y₀)).ker = ⊥) (hH : AnalyticAt ℂ H y₀) (hF : ContinuousAt F y₀)
+    (hEq : ∀ᶠ y in nhds y₀, ψ (F y) = H y) : AnalyticAt ℂ F y₀ := by
+  classical
+  obtain ⟨P₀, hP₀⟩ := ((fderiv ℂ ψ (F y₀) : (Fin e → ℂ) →L[ℂ] V) :
+    (Fin e → ℂ) →ₗ[ℂ] V).exists_leftInverse_of_injective hker
+  let P : V →L[ℂ] (Fin e → ℂ) := LinearMap.toContinuousLinearMap P₀
+  have hPL : P.comp (fderiv ℂ ψ (F y₀)) = ContinuousLinearMap.id ℂ _ := by
+    ext1 v
+    exact LinearMap.congr_fun hP₀ v
+  have hψd : HasFDerivAt ψ (fderiv ℂ ψ (F y₀)) (F y₀) := hψ.differentiableAt.hasFDerivAt
+  have hgd : HasFDerivAt (fun x => P (ψ x))
+      ((ContinuousLinearEquiv.refl ℂ (Fin e → ℂ) : (Fin e → ℂ) →L[ℂ] (Fin e → ℂ))) (F y₀) := by
+    have h1 := P.hasFDerivAt.comp (F y₀) hψd
+    rw [hPL] at h1
+    simpa using h1
+  have hga : AnalyticAt ℂ (fun x => P (ψ x)) (F y₀) := (P.analyticAt _).comp hψ
+  have hgc : ContDiffAt ℂ (⊤ : WithTop ℕ∞) (fun x => P (ψ x)) (F y₀) := hga.contDiffAt
+  have hn : (⊤ : WithTop ℕ∞) ≠ 0 := by simp
+  have hφa := (hgc.to_localInverse hgd hn).analyticAt
+  have hleft := (hgc.hasStrictFDerivAt' hgd hn).eventually_left_inverse
+  have hH0 : ψ (F y₀) = H y₀ := hEq.self_of_nhds
+  have hev : (fun y => hgc.localInverse hgd hn (P (H y))) =ᶠ[nhds y₀] F := by
+    filter_upwards [hF.tendsto.eventually hleft, hEq] with y h1 h2
+    rw [← h2]
+    exact h1
+  have hcomp : AnalyticAt ℂ (fun y => hgc.localInverse hgd hn (P (H y))) y₀ := by
+    have h0 : AnalyticAt ℂ (hgc.localInverse hgd hn) (P (H y₀)) := by
+      rw [← hH0]
+      exact hφa
+    have hPH : AnalyticAt ℂ (fun y => P (H y)) y₀ := (P.analyticAt (H y₀)).comp hH
+    exact h0.comp_of_eq hPH rfl
+  exact hcomp.congr hev
+
+end GlobalTheory.CompanionTheory.Metric.Rigid
+end
+
+open MvPolynomial Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo GlobalTheory.CompanionTheory.Ar.PB GlobalTheory.CompanionTheory.Ar.PB.Cj GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.analytic_of_immersion_composition : ∀ {e : ℕ} {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] [FiniteDimensional ℂ V] (F : (Fin e → ℂ) → Fin e → ℂ) (ψ : (Fin e → ℂ) → V) (H : (Fin e → ℂ) → V) (y₀ : Fin e → ℂ), AnalyticAt ℂ ψ (F y₀) → (fderiv ℂ ψ (F y₀)).ker = ⊥ → AnalyticAt ℂ H y₀ → ContinuousAt F y₀ → (∀ᶠ y in nhds y₀, ψ (F y) = H y) → AnalyticAt ℂ F y₀ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Metric.Rigid.analyticAt_of_comp_immersion
+end
+
+section
+section
+open MvPolynomial Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo GlobalTheory.CompanionTheory.Ar.PB GlobalTheory.CompanionTheory.Ar.PB.Cj GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped ComplexOrder Topology
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.PB.Cj
+
+section Helpers
+
+variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
+
+theorem affCoord_eq_of_orbit (p : (k : K) → ι k) {z z' : (Σ k, ι k) → ℂ} (h : SameOrbit z z') :
+    affCoord p z = affCoord p z' := by
+  obtain ⟨c, hc, rfl⟩ := h
+  funext q
+  simp only [affCoord]
+  exact mul_div_mul_left _ _ (hc q.1)
+
+theorem affCoord_cj (p : (k : K) → ι k) (z : (Σ k, ι k) → ℂ) :
+    affCoord p (cj z) = cj (affCoord p z) := by
+  funext q
+  simp [affCoord, cj, map_div₀]
+
+theorem ne_zero_of_orbit_cj {z z' : (Σ k, ι k) → ℂ} (h : SameOrbit z (cj z')) {q : Σ k, ι k}
+    (hq : z q ≠ 0) : z' q ≠ 0 := by
+  obtain ⟨c, -, rfl⟩ := h
+  intro h0
+  exact hq (by simp [cj, h0])
+
+theorem analyticAt_affCoord {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
+    {f : E → (Σ k, ι k) → ℂ} {a : E} (p : (k : K) → ι k)
+    (hf : ∀ q, AnalyticAt ℂ (fun y => f y q) a) (h0 : ∀ k, f a ⟨k, p k⟩ ≠ 0) :
+    AnalyticAt ℂ (fun y => affCoord p (f y)) a := by
+  rw [analyticAt_pi_iff]
+  intro q
+  exact (hf q).div (hf ⟨q.1, p q.1⟩) (h0 q.1)
+
+theorem analyticAt_star_comp {e : ℕ} {ψ : (Fin e → ℂ) → (Σ k, ι k) → ℂ} {w : Fin e → ℂ}
+    (h : AnalyticAt ℂ ψ w) : AnalyticAt ℂ (star ∘ ψ ∘ star) (star w) := by
+  refine GlobalTheory.SCV.analyticAt_iff_eventually_differentiableAt.2 ?_
+  have hs : Filter.Tendsto (star : (Fin e → ℂ) → Fin e → ℂ) (𝓝 (star w)) (𝓝 w) := by
+    simpa using (continuous_star.tendsto (star w))
+  filter_upwards [hs.eventually h.eventually_analyticAt] with v hv
+  simpa using hv.differentiableAt.star_star
+
+theorem ker_fderiv_star_comp {e : ℕ} {ψ : (Fin e → ℂ) → (Σ k, ι k) → ℂ} {w : Fin e → ℂ}
+    (h : DifferentiableAt ℂ ψ w) (hk : (fderiv ℂ ψ w).ker = ⊥) :
+    (fderiv ℂ (star ∘ ψ ∘ star) (star w)).ker = ⊥ := by
+  rw [h.hasFDerivAt.star_star.fderiv, eq_bot_iff]
+  intro v hv
+  have hv' : star (fderiv ℂ ψ w (star v)) = 0 := by simpa using hv
+  have h1 : fderiv ℂ ψ w (star v) = 0 := by simpa using hv'
+  have h2 : star v ∈ (fderiv ℂ ψ w).ker := by simpa using h1
+  rw [hk] at h2
+  have h3 : star v = 0 := by simpa using h2
+  simpa using h3
+
+end Helpers
+
+theorem conj_analytic : ∀ {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {e : ℕ} {X : Type} [TopologicalSpace X] {A : FinHolAtlas e X} {P : Ideal (MRing ι)} {U : X → Set X} {lift : X → X → (Σ k, ι k) → ℂ}, IsLiftSys A P U lift → ∀ (c : X → X), (∀ x, SameOrbit (lift (c x) (c x)) (cj (lift x x))) → Continuous c → ∀ j k, AnalyticOnNhd ℂ (fun z => star (A.chart k (c ((A.chart j).symm z)))) ((A.chart j).target ∩ (A.chart j).symm ⁻¹' (c ⁻¹' (A.chart k).source)) := by
+  intro K _ ι _ e X _ A P U lift hL c hc hcc j k w hw
+  obtain ⟨hUo, hUm, hH, hM, hCp, -, -, hIm⟩ := hL
+  obtain ⟨hw1, hw2⟩ := hw
+  have hw2' : c ((A.chart j).symm w) ∈ (A.chart k).source := hw2
+  generalize hx₀ : (A.chart j).symm w = x₀ at hw2'
+  generalize hx₁ : c x₀ = x₁ at hw2'
+  choose p hp using (hM x₁ x₁ (hUm x₁)).1
+  have hp0 : ∀ b, lift x₀ x₀ ⟨b, p b⟩ ≠ 0 := fun b =>
+    ne_zero_of_orbit_cj (hx₁ ▸ hc x₀) (by subst hx₁; exact hp b)
+  have hsym₁ : (A.chart k).symm (A.chart k x₁) = x₁ := (A.chart k).left_inv hw2'
+  have hψ : AnalyticAt ℂ (fun w' => affCoord p (lift x₁ ((A.chart k).symm w'))) (A.chart k x₁) := by
+    refine analyticAt_affCoord p (fun q => ?_) (fun b => ?_)
+    · exact hH x₁ q k (A.chart k x₁) ⟨(A.chart k).map_source hw2', by simpa [hsym₁] using hUm x₁⟩
+    · simpa [hsym₁] using hp b
+  have hker := hIm x₁ p hp k hw2'
+  have hHa : AnalyticAt ℂ (fun y => affCoord p (lift x₀ ((A.chart j).symm y))) w := by
+    refine analyticAt_affCoord p (fun q => ?_) (fun b => ?_)
+    · exact hH x₀ q j w ⟨hw1, by simpa [Set.mem_preimage, hx₀] using hUm x₀⟩
+    · simpa [hx₀] using hp0 b
+  have hsc : ContinuousAt (A.chart j).symm w := (A.chart j).continuousAt_symm hw1
+  have hcs : ContinuousAt (fun y => c ((A.chart j).symm y)) w := hcc.continuousAt.comp hsc
+  have hFc : ContinuousAt (fun z => star (A.chart k (c ((A.chart j).symm z)))) w := by
+    have h1 : ContinuousAt (A.chart k) (c ((A.chart j).symm w)) := by
+      rw [hx₀, hx₁]; exact (A.chart k).continuousAt hw2'
+    exact continuous_star.continuousAt.comp (ContinuousAt.comp (f := fun y => c ((A.chart j).symm y)) h1 hcs)
+  have hFw : star (A.chart k (c ((A.chart j).symm w))) = star (A.chart k x₁) := by
+    rw [hx₀, hx₁]
+  have e1 : ∀ᶠ y in 𝓝 w, (A.chart j).symm y ∈ U x₀ :=
+    hsc ((hUo x₀).mem_nhds (by rw [hx₀]; exact hUm x₀))
+  have e2 : ∀ᶠ y in 𝓝 w, c ((A.chart j).symm y) ∈ (A.chart k).source ∩ U x₁ :=
+    hcs (((A.chart k).open_source.inter (hUo x₁)).mem_nhds (by
+      change c ((A.chart j).symm w) ∈ _
+      rw [hx₀, hx₁]; exact ⟨hw2', hUm x₁⟩))
+  refine GlobalTheory.T.analytic_of_immersion_composition (fun z => star (A.chart k (c ((A.chart j).symm z))))
+    (star ∘ (fun w' => affCoord p (lift x₁ ((A.chart k).symm w'))) ∘ star)
+    (fun y => affCoord p (lift x₀ ((A.chart j).symm y))) w ?_ ?_ hHa hFc ?_
+  · rw [hFw]; exact analyticAt_star_comp hψ
+  · rw [hFw]; exact ker_fderiv_star_comp hψ.differentiableAt hker
+  · filter_upwards [e1, e2] with y h1 h2
+    obtain ⟨h2s, h2u⟩ := h2
+    generalize hy' : (A.chart j).symm y = y' at h1 h2s h2u
+    have ho1 : SameOrbit (lift x₁ (c y')) (lift (c y') (c y')) := hCp _ _ _ ⟨h2u, hUm _⟩
+    have ho2 : SameOrbit (lift y' y') (lift x₀ y') := hCp _ _ _ ⟨hUm _, h1⟩
+    have ho : SameOrbit (lift x₁ (c y')) (cj (lift x₀ y')) :=
+      sameOrbit_trans ho1 (sameOrbit_trans (hc y') (sameOrbit_cj ho2))
+    have hst : (star : ((Σ k, ι k) → ℂ) → _) (cj (affCoord p (lift x₀ y'))) = affCoord p (lift x₀ y') := by
+      funext q; simp [cj]
+    simp only [Function.comp, star_star, hy', (A.chart k).left_inv h2s]
+    rw [affCoord_eq_of_orbit p ho, affCoord_cj, hst]
+
+end GlobalTheory.CompanionTheory.Ar.PB.Cj
+end
+end
+
+open MvPolynomial Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo GlobalTheory.CompanionTheory.Ar.PB GlobalTheory.CompanionTheory.Ar.PB.Cj GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.conjugation_antiholomorphic_charts : ∀ {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {e : ℕ} {X : Type} [TopologicalSpace X] {A : FinHolAtlas e X} {P : Ideal (MRing ι)} {U : X → Set X} {lift : X → X → (Σ k, ι k) → ℂ}, IsLiftSys A P U lift → ∀ (c : X → X), (∀ x, SameOrbit (lift (c x) (c x)) (cj (lift x x))) → Continuous c → ∀ j k, AnalyticOnNhd ℂ (fun z => star (A.chart k (c ((A.chart j).symm z)))) ((A.chart j).target ∩ (A.chart j).symm ⁻¹' (c ⁻¹' (A.chart k).source)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.PB.Cj.conj_analytic
+end
+
+section
+open MvPolynomial Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo GlobalTheory.CompanionTheory.Ar.PB GlobalTheory.CompanionTheory.Ar.PB.Cj GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.holomorphic_conjugate_pullback : ∀ {e : ℕ} {X : Type} [TopologicalSpace X] {A : FinHolAtlas e X} (c : X → X), Continuous c → (∀ j k, AnalyticOnNhd ℂ (fun z => star (A.chart k (c ((A.chart j).symm z)))) ((A.chart j).target ∩ (A.chart j).symm ⁻¹' (c ⁻¹' (A.chart k).source))) → ∀ {V : Set X} {g : X → ℂ}, A.HoloOn V g → A.HoloOn (c ⁻¹' V) (fun y => starRingEnd ℂ (g (c y))) := by
+  first | exact @GlobalTheory.CompanionTheory.Ar.PB.Cj.holoOn_conj_comp | exact GlobalTheory.CompanionTheory.Ar.PB.Cj.holoOn_conj_comp | (intros; apply GlobalTheory.CompanionTheory.Ar.PB.Cj.holoOn_conj_comp <;> assumption)
+end
+
+section
+section
+open MvPolynomial Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo GlobalTheory.CompanionTheory.Ar.PB GlobalTheory.CompanionTheory.Ar.PB.Cj GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped ComplexOrder
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.PB.Cj
+
+section Holo
+
+variable {e : ℕ} {X : Type} [TopologicalSpace X] {A : FinHolAtlas e X}
+
+theorem pot_holoOn_mono {V W : Set X} {g : X → ℂ} (h : A.HoloOn V g) (hW : W ⊆ V) :
+    A.HoloOn W g :=
+  fun j w hw => h j w ⟨hw.1, hW hw.2⟩
+
+theorem pot_holoOn_continuousOn {V : Set X} (hV : IsOpen V) {g : X → ℂ} (h : A.HoloOn V g) :
+    ContinuousOn g V := by
+  intro y hy
+  obtain ⟨j, hj⟩ := A.cover y
+  have hw : A.chart j y ∈ (A.chart j).target ∩ (A.chart j).symm ⁻¹' V :=
+    ⟨(A.chart j).map_source hj, by simpa [(A.chart j).left_inv hj] using hy⟩
+  have h1 := (h j _ hw).continuousAt
+  have h2 : ContinuousAt (A.chart j) y := (A.chart j).continuousAt hj
+  have h3 : ContinuousAt (fun y' => (g ∘ (A.chart j).symm) (A.chart j y')) y :=
+    ContinuousAt.comp (g := g ∘ (A.chart j).symm) h1 h2
+  refine (h3.congr ?_).continuousWithinAt
+  filter_upwards [(A.chart j).open_source.mem_nhds hj] with y' hy'
+  simp [(A.chart j).left_inv hy']
+
+theorem pot_holoOn_sub_add {V : Set X} {g₁ g₂ g₃ : X → ℂ} (h₁ : A.HoloOn V g₁)
+    (h₂ : A.HoloOn V g₂) (h₃ : A.HoloOn V g₃) :
+    A.HoloOn V (fun y => g₁ y - g₂ y + g₃ y) :=
+  fun j w hw => ((h₁ j w hw).sub (h₂ j w hw)).add (h₃ j w hw)
+
+theorem pot_holoOn_div {V : Set X} {g₁ g₂ : X → ℂ} (h₁ : A.HoloOn V g₁) (h₂ : A.HoloOn V g₂)
+    (hne : ∀ y ∈ V, g₂ y ≠ 0) : A.HoloOn V (fun y => g₁ y / g₂ y) :=
+  fun j w hw => (h₁ j w hw).div (h₂ j w hw) (hne _ hw.2)
+
+theorem pot_holoOn_sum_log {K : Type} [Fintype K] {V : Set X} {g : K → X → ℂ} (m : K → ℤ)
+    (r : K → ℝ) (h : ∀ k, A.HoloOn V (g k)) (hs : ∀ k, ∀ y ∈ V, g k y ∈ Complex.slitPlane) :
+    A.HoloOn V (fun y => ∑ k, (m k : ℂ) * (Complex.log (g k y) + (r k : ℂ))) := by
+  intro j w hw
+  have : ∀ k, AnalyticAt ℂ (fun z => (m k : ℂ) *
+      (Complex.log (g k ((A.chart j).symm z)) + (r k : ℂ))) w := fun k =>
+    analyticAt_const.mul ((AnalyticAt.clog (h k j w hw) (hs k _ hw.2)).add analyticAt_const)
+  exact Finset.analyticAt_fun_sum _ fun k _ => this k
+
+end Holo
+
+theorem pot_re_sum_log {K : Type} [Fintype K] (m : K → ℤ) (u v : K → ℂ) (hu : ∀ k, u k ≠ 0)
+    (hv : ∀ k, v k ≠ 0) :
+    (∑ k, (m k : ℂ) * (Complex.log (u k / v k) + ((Real.log ‖v k‖ : ℝ) : ℂ))).re =
+      ∑ k, (m k : ℝ) * Real.log ‖u k‖ := by
+  rw [Complex.re_sum]
+  refine Finset.sum_congr rfl fun k _ => ?_
+  have h1 : (Complex.log (u k / v k) + ((Real.log ‖v k‖ : ℝ) : ℂ)).re = Real.log ‖u k‖ := by
+    rw [Complex.add_re, Complex.log_re, Complex.ofReal_re, norm_div,
+      Real.log_div (norm_ne_zero_iff.2 (hu k)) (norm_ne_zero_iff.2 (hv k))]
+    ring
+  simp [Complex.mul_re, h1]
+
+theorem pot_log_h_conj {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] (f : HermLine ι)
+    (hf : IsConjInvariantH f) {z : (Σ k, ι k) → ℂ} (hz : ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0) {a : K → ℂ}
+    (ha : ∀ k, a k ≠ 0) :
+    Real.log (f.h (fun p => a p.1 * cj z p)) - Real.log (f.h z) =
+      ∑ k, (f.a k : ℝ) * Real.log ‖a k‖ := by
+  have hP : ∀ k ∈ (Finset.univ : Finset K), ‖a k‖ ^ f.a k ≠ 0 := fun k _ =>
+    (zpow_pos (norm_pos_iff.mpr (ha k)) _).ne'
+  have hP' : (∏ k, ‖a k‖ ^ f.a k) ≠ 0 := Finset.prod_ne_zero_iff.2 hP
+  rw [f.smul a (cj z) ha, show f.h (cj z) = f.h z from hf z,
+    Real.log_mul hP' (f.pos z hz).ne', Real.log_prod hP]
+  simp [Real.log_zpow]
+
+theorem pot_conj_pluriharmonic : ∀ {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {e : ℕ} {X : Type} [TopologicalSpace X] {A : FinHolAtlas e X} {P : Ideal (MRing ι)} {U : X → Set X} {lift : X → X → (Σ k, ι k) → ℂ}, IsLiftSys A P U lift → ∀ (c : X → X), (∀ x, SameOrbit (lift (c x) (c x)) (cj (lift x x))) → Continuous c → (∀ j k, AnalyticOnNhd ℂ (fun z => star (A.chart k (c ((A.chart j).symm z)))) ((A.chart j).target ∩ (A.chart j).symm ⁻¹' (c ⁻¹' (A.chart k).source))) → ∀ (f : HermLine ι), IsConjInvariantH f → ∀ (th : LocPot X), (∀ x, ∃ V : Set X, IsOpen V ∧ x ∈ V ∧ ∃ G : X → ℂ, A.HoloOn V G ∧ ∀ y ∈ V, Real.log (f.h (lift x y)) - th.φ x y = (G y).re) → ∀ x, ∃ V : Set X, IsOpen V ∧ x ∈ V ∧ ∃ G : X → ℂ, A.HoloOn V G ∧ ∀ y ∈ V, th.φ (c x) (c y) - th.φ x y = (G y).re := by
+  intro K _ ι _ e X _ A P U lift hL c horb hcc hanti f hf th hth x
+  obtain ⟨hUo, hUm, hUh, hUpts, hUor, -, -, -⟩ := hL
+  choose i hi using (hUpts x x (hUm x)).1
+  obtain ⟨V₁, hV₁o, hxV₁, G₁, hG₁, hφ₁⟩ := hth x
+  obtain ⟨V₂, hV₂o, hxV₂, G₂, hG₂, hφ₂⟩ := hth (c x)
+
+  have horbit : ∀ y ∈ U x, c y ∈ U (c x) → ∃ a : K → ℂ, (∀ k, a k ≠ 0) ∧
+      lift (c x) (c y) = fun p => a p.1 * cj (lift x y) p := fun y hy hcy =>
+    sameOrbit_trans (sameOrbit_trans (hUor (c x) (c y) (c y) ⟨hcy, hUm (c y)⟩) (horb y))
+      (sameOrbit_cj (hUor y x y ⟨hUm y, hy⟩))
+
+  let b : K → X → ℂ := fun k y =>
+    starRingEnd ℂ (lift (c x) (c y) ⟨k, i k⟩) / lift x y ⟨k, i k⟩
+  let D : K → Set X := fun k => U x ∩ (fun y => lift x y ⟨k, i k⟩) ⁻¹' {0}ᶜ
+  have hDo : ∀ k, IsOpen (D k) := fun k =>
+    (pot_holoOn_continuousOn (hUo x) (hUh x _)).isOpen_inter_preimage (hUo x) isOpen_compl_singleton
+  let W₁ : Set X := (U x ∩ c ⁻¹' U (c x)) ∩ ⋂ k, D k
+  have hW₁o : IsOpen W₁ :=
+    ((hUo x).inter ((hUo (c x)).preimage hcc)).inter (isOpen_iInter_of_finite hDo)
+  have hxW₁ : x ∈ W₁ :=
+    ⟨⟨hUm x, hUm (c x)⟩, Set.mem_iInter.2 fun k => ⟨hUm x, hi k⟩⟩
+  have hden : ∀ y ∈ W₁, ∀ k, lift x y ⟨k, i k⟩ ≠ 0 := fun y hy k =>
+    (Set.mem_iInter.1 hy.2 k).2
+
+  have hba : ∀ y ∈ W₁, ∀ a : K → ℂ, lift (c x) (c y) = (fun p => a p.1 * cj (lift x y) p) →
+      ∀ k, b k y = starRingEnd ℂ (a k) := fun y hy a ha k => by
+    change starRingEnd ℂ (lift (c x) (c y) ⟨k, i k⟩) / lift x y ⟨k, i k⟩ = _
+    rw [ha]
+    simp only [cj, map_mul, Complex.conj_conj]
+    exact mul_div_cancel_right₀ _ (hden y hy k)
+  have hbne : ∀ y ∈ W₁, ∀ k, b k y ≠ 0 := fun y hy k => by
+    obtain ⟨a, ha, hl⟩ := horbit y hy.1.1 hy.1.2
+    rw [hba y hy a hl k]
+    simpa using ha k
+  have hbH : ∀ k, A.HoloOn W₁ (b k) := fun k =>
+    pot_holoOn_div
+      (pot_holoOn_mono (GlobalTheory.T.holomorphic_conjugate_pullback c hcc hanti (hUh (c x) ⟨k, i k⟩)) fun y hy => hy.1.2)
+      (pot_holoOn_mono (hUh x ⟨k, i k⟩) fun y hy => hy.1.1) fun y hy => hden y hy k
+  have hqH : ∀ k, A.HoloOn W₁ (fun y => b k y / b k x) := fun k =>
+    pot_holoOn_div (hbH k) (fun j w _ => analyticAt_const) fun _ _ => hbne x hxW₁ k
+  let B : K → Set X := fun k => W₁ ∩ (fun y => b k y / b k x) ⁻¹' Metric.ball 1 1
+  have hBo : ∀ k, IsOpen (B k) := fun k =>
+    (pot_holoOn_continuousOn hW₁o (hqH k)).isOpen_inter_preimage hW₁o Metric.isOpen_ball
+  let W₂ : Set X := W₁ ∩ ⋂ k, B k
+  let V : Set X := (W₂ ∩ V₁) ∩ c ⁻¹' V₂
+  have hVo : IsOpen V :=
+    ((hW₁o.inter (isOpen_iInter_of_finite hBo)).inter hV₁o).inter (hV₂o.preimage hcc)
+  have hVW : V ⊆ W₁ := fun y hy => hy.1.1.1
+  have hxV : x ∈ V := by
+    refine ⟨⟨⟨hxW₁, Set.mem_iInter.2 fun k => ⟨hxW₁, ?_⟩⟩, hxV₁⟩, hxV₂⟩
+    simp [div_self (hbne x hxW₁ k)]
+  have hslit : ∀ k, ∀ y ∈ V, b k y / b k x ∈ Complex.slitPlane := fun k y hy => by
+    have h1 : b k y / b k x ∈ Metric.ball (1 : ℂ) 1 := (Set.mem_iInter.1 hy.1.1.2 k).2
+    have h2 : ‖b k y / b k x - 1‖ < 1 := by simpa [dist_eq_norm] using h1
+    simpa using Complex.mem_slitPlane_of_norm_lt_one h2
+  refine ⟨V, hVo, hxV,
+    fun y => G₁ y - starRingEnd ℂ (G₂ (c y)) +
+      ∑ k, (f.a k : ℂ) * (Complex.log (b k y / b k x) + ((Real.log ‖b k x‖ : ℝ) : ℂ)), ?_, ?_⟩
+  · refine pot_holoOn_sub_add (pot_holoOn_mono hG₁ fun y hy => hy.1.2)
+      (pot_holoOn_mono (GlobalTheory.T.holomorphic_conjugate_pullback c hcc hanti hG₂) fun y hy => hy.2) ?_
+    exact pot_holoOn_sum_log f.a _ (fun k => pot_holoOn_mono (hqH k) hVW) fun k => hslit k
+  · intro y hy
+    have hyW := hVW hy
+    obtain ⟨a, ha, hl⟩ := horbit y hyW.1.1 hyW.1.2
+    have e₁ := hφ₁ y hy.1.2
+    have e₂ := hφ₂ (c y) hy.2
+    have e₃ := pot_log_h_conj f hf (hUpts x y hyW.1.1).1 ha
+    rw [← hl] at e₃
+    have e₄ := pot_re_sum_log f.a (fun k => b k y) (fun k => b k x) (hbne y hyW) (hbne x hxW₁)
+    have e₅ : ∑ k, (f.a k : ℝ) * Real.log ‖b k y‖ = ∑ k, (f.a k : ℝ) * Real.log ‖a k‖ :=
+      Finset.sum_congr rfl fun k _ => by rw [hba y hyW a hl k, RCLike.norm_conj]
+    simp only [Complex.add_re, Complex.sub_re, Complex.conj_re]
+    rw [e₄, e₅, ← e₃]
+    linarith
+
+end GlobalTheory.CompanionTheory.Ar.PB.Cj
+end
+end
+
+open MvPolynomial Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo GlobalTheory.CompanionTheory.Ar.PB GlobalTheory.CompanionTheory.Ar.PB.Cj GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lift_system_real_structure : ∀ {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {e : ℕ} {X : Type} [TopologicalSpace X] {A : FinHolAtlas e X} {P : Ideal (MRing ι)} {U : X → Set X} {lift : X → X → (Σ k, ι k) → ℂ}, IsLiftSys A P U lift → ∀ (c : X → X), (∀ x, SameOrbit (lift (c x) (c x)) (cj (lift x x))) → Continuous c → (∀ j k, AnalyticOnNhd ℂ (fun z => star (A.chart k (c ((A.chart j).symm z)))) ((A.chart j).target ∩ (A.chart j).symm ⁻¹' (c ⁻¹' (A.chart k).source))) → ∀ (f : HermLine ι), IsConjInvariantH f → ∀ (th : LocPot X), (∀ x, ∃ V : Set X, IsOpen V ∧ x ∈ V ∧ ∃ G : X → ℂ, A.HoloOn V G ∧ ∀ y ∈ V, Real.log (f.h (lift x y)) - th.φ x y = (G y).re) → ∀ x, ∃ V : Set X, IsOpen V ∧ x ∈ V ∧ ∃ G : X → ℂ, A.HoloOn V G ∧ ∀ y ∈ V, th.φ (c x) (c y) - th.φ x y = (G y).re := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.PB.Cj.pot_conj_pluriharmonic
+end
+
+section
 open MvPolynomial Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights.LowerBoundFree
 open scoped ComplexOrder Classical
 
@@ -341,3 +817,5 @@ theorem flagAn_conj : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Finty
   exact Cj.conj_of_flagAn FA h1 h2
 
 end GlobalTheory.CompanionTheory.Ar.PB
+end
+end

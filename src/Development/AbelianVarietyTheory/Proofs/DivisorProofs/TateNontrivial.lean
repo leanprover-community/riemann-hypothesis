@@ -120,8 +120,6 @@ def VSys.tate : VSys (O := ℤ) id 1 !![1] 3 (PowerSeries ℚ) where
       by_contra h
       exact h2 (mem_lowF.2 ⟨(mem_lowF.1 h1).1, by push_neg at h; exact h⟩)
 
-theorem VSys.tate_nontrivial : ∀ y, VSys.tate.m y = 1 ∧ ∀ i, VSys.tate.t y i = PowerSeries.X ∧ VSys.tate.t y i ≠ 0 :=
-  fun _ => ⟨rfl, fun _ => ⟨rfl, PowerSeries.X_ne_zero⟩⟩
 
 theorem TateSys.unit_eq_one {e : ℤ ≃ₗ[ℤ] ℤ} : e 1 = 1 ∨ e 1 = -1 := by
   have h : e 1 * e.symm 1 = 1 := by
@@ -130,43 +128,5 @@ theorem TateSys.unit_eq_one {e : ℤ ≃ₗ[ℤ] ℤ} : e 1 = 1 ∨ e 1 = -1 := 
     linarith
   exact Int.eq_one_or_neg_one_of_mul_eq_one h
 
-theorem dominant_tate : Dominant (O := ℤ) id (InvFun.minVal ℤ) 1 3 !![1] (X := ℤ) (fun _ : Fin 1 => LinearMap.mul ℤ ℤ)
-    (fun _ : Fin 1 × Fin 1 => (1 : ℤ)) where
-  span := by
-    rw [eq_top_iff]; intro x _
-    have : (1 : ℤ) ∈ Submodule.span ℤ (Set.range fun _ : Fin 1 × Fin 1 => (1 : ℤ)) :=
-      Submodule.subset_span ⟨(0, 0), rfl⟩
-    simpa using Submodule.smul_mem _ x this
-  le β _ hβ := by
-    have hlin : (lin !![1] (fun _ : Fin 1 × Fin 1 => (1 : ℤ)) β : ℝ) = β 1 1 := by simp [lin, qW]
-    rw [hlin, Nat.cast_one, one_mul, InvFun.evalZ,
-      (InvFun.minVal ℤ).eval_eq (n := 1) (r := LinearMap.proj 0) fun x => ⟨fun _ => x, rfl⟩]
-    show sInf _ ≤ _
-    have hsq : ∀ y : ℤ, β y y = y * y * β 1 1 := fun y => by
-      have h1 : β y y = β (y • 1) (y • 1) := by simp
-      rw [h1, LinearMap.map_smul₂, LinearMap.map_smul]; simp [mul_assoc]
-    by_cases h0 : (β 1 1 : ℝ) = 0
-    · rw [h0]
-      refine Real.sInf_nonpos fun x ⟨⟨y, hy⟩, hx⟩ => ?_
-      exfalso; apply hx; rw [← hy]
-      have h00 : β 1 1 = 0 := by exact_mod_cast h0
-      show (β (y 0) (y 0) : ℝ) = (β ((LinearMap.proj 0 : (Fin 1 → ℤ) →ₗ[ℤ] ℤ) 0) ((LinearMap.proj 0 : (Fin 1 → ℤ) →ₗ[ℤ] ℤ) 0) : ℝ)
-      rw [hsq (y 0), h00]; simp
-    · refine csInf_le ⟨0, ?_⟩ ⟨⟨fun _ => 1, rfl⟩, by
-        simp only [LinearMap.proj_apply, map_zero, LinearMap.zero_apply, Int.cast_zero]; exact h0⟩
-      rintro x ⟨⟨y, rfl⟩, -⟩
-      show (0 : ℝ) ≤ (β (y 0) (y 0) : ℝ); exact_mod_cast hβ _
-  min e _ j := by
-    simp only [lin, TateSys.qW_mul, Finset.univ_unique, Finset.sum_singleton, LinearMap.mul_apply']
-    rcases TateSys.unit_eq_one (e := e) with h | h <;> simp [h]
-  strict e he := by
-    rintro ⟨x, hx⟩
-    exfalso; apply hx
-    have h1 : e 1 = 1 := by
-      obtain ⟨w, hw⟩ := he 1
-      rcases TateSys.unit_eq_one (e := e) with h | h
-      · exact h
-      · rw [h] at hw; simp at hw; omega
-    rw [show x = x • (1 : ℤ) by simp, map_smul, h1]
 
 end GlobalTheory.Poinc

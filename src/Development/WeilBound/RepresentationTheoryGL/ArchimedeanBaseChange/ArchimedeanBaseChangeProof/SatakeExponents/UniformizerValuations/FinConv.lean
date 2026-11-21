@@ -19,9 +19,6 @@ def adL (φ : Fam E a b) : Fam E a b := fun w y => starRingEnd ℂ (φ w y⁻¹)
 def szL (w : Pl E) (g : GLw n w) : ℝ :=
   Real.posLog (⨆ p : Fin n × Fin n, ‖g.val p.1 p.2‖) + Real.posLog (⨆ p : Fin n × Fin n, ‖(g⁻¹ : GLw n w).val p.1 p.2‖)
 
-theorem adL_adL (φ : Fam E a b) : adL (adL φ) = φ := by
-  funext w y
-  simp [adL]
 
 def FamCl : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (a b : ℕ) (φ ψ : Fam E a b), IsTestP φ →
   IsTestP ψ → IsTestP (cvL φ ψ) ∧ IsTestP (adL φ)

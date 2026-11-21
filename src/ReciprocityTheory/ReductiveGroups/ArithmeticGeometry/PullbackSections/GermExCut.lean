@@ -120,13 +120,5 @@ def GermChartSplitFibre : Prop :=
         (∀ b, IsGerm yI.1 C.ch.d C.ch.x C.ch.B.A.act C.ch.e C.ch.wP (T.Q.l.M ^ 2)
           (zCast (T.Q.Xo j).univ.t.G (natCast_sq T.Q.l.M) (F b)) (g b)) ∧ ∀ b, IsIntPS Tc (g b)
 
-theorem germ_chart_split_fibre_exists (hT : TruncatedIntegralChartExists) (hR : RegTieSt) (hG : GermTieSt) : GermChartSplitFibre := by
-  intro D T h j hj _ hstar Tc io yI e la ho hy hM hsplit n x F hV
-  obtain ⟨C, hC⟩ := hT D T h j hj hstar Tc io yI hy
-  letI := io.toAlgebra
-  choose σ hσ using fun b => hR D T h j hj hstar Tc io yI e la ho hy hM C.I (hsplit C.I) (x b) (F b) (hV b)
-  choose g hg hgI using fun b => hG D T h j hj hstar Tc io yI C hC (T.Q.l.M ^ 2)
-    (zCast (T.Q.Xo j).univ.t.G (natCast_sq T.Q.l.M) (F b)) (σ b) (hσ b)
-  exact ⟨C, g, hg, hgI⟩
 
 end ReciprocityTheory.ChartRestriction.G.PullbackSections

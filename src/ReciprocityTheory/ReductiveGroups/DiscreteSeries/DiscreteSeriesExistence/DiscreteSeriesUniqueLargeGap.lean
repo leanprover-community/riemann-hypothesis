@@ -1,7 +1,334 @@
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.AllSmoothOfKType
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.FinalA
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.Arbitrary
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.EquivSigLamOfIsDS
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.DatumEmbeddingMemHlam
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.SmoothDefs
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.VNormSqLowKSubRootLt
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.IsKUnitaryOfIsInfUnitary
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.FinalExists
 
+section
+noncomputable section
+
+open Finset Matrix
+
+namespace ReciprocityTheory.ChartRestriction.DS
+
+variable {n : ℕ} {ε : Fin n → Bool} {lam : Fin n → ℝ} {T : S7.KType ε (lowK ε lam)}
+  {Ψ : Matrix (Fin n) (Fin n) ℂ → (T.V →L[ℂ] T.V)} {v₀ : T.V}
+
+theorem sigLam_casOnSmooth (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) : CasOnSmooth ε lam (sigLam ε Ψ v₀) :=
+  casOnSmooth_of_isDS (isDS_sigLam hgap hP hv₀) hgap
+
+end ReciprocityTheory.ChartRestriction.DS
+end
+end
+
+section
+noncomputable section
+
+open Matrix
+
+namespace ReciprocityTheory.ChartRestriction.DS
+
+variable {n : ℕ}
+
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+
+theorem isSmoothVecU_restrict {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+    {ε : Fin n → Bool} {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (hσ : IsURepOn (UJset ε) σ)
+    (S : Submodule ℂ H) [S.HasOrthogonalProjection] (hSG : ∀ g ∈ UJset ε, ∀ x ∈ S, σ g x ∈ S) (x : S) :
+    IsSmoothVecU ε (fun g => (S.orthogonalProjectionOnto ∘L σ g ∘L S.subtypeL : S →L[ℂ] S)) x ↔
+      IsSmoothVecU ε σ (x : H) := by
+  set P := S.orthogonalProjectionOnto
+  have hP : ∀ w : H, w ∈ S → ((P w : S) : H) = w := by
+    intro w hw
+    have e : P w = ⟨w, hw⟩ := by
+      first
+        | exact Submodule.orthogonalProjectionOnto_mem_subspace_eq_self (⟨w, hw⟩ : S)
+        | exact Submodule.orthogonalProjection_mem_subspace_eq_self (⟨w, hw⟩ : S)
+        | exact (Submodule.orthogonalProjectionOnto_mem_subspace_eq_self (K := S) ⟨w, hw⟩ : _)
+        | (show P ((⟨w, hw⟩ : S) : H) = ⟨w, hw⟩; simp [P])
+    rw [e]
+  constructor
+  · intro h g₀ hg₀
+    obtain ⟨U, F, hU, hg₀U, hF, hFe⟩ := h g₀ hg₀
+    refine ⟨U, fun g => ((F g : S) : H), hU, hg₀U, (S.subtypeL.restrictScalars ℝ).contDiff.comp_contDiffOn hF, ?_⟩
+    intro g hgU hg
+    have e1 := hFe g hgU hg
+    have hmem : σ g (x : H) ∈ S := hSG g hg x x.2
+    dsimp only at e1 ⊢
+    rw [← e1]
+    simp only [ContinuousLinearMap.comp_apply, Submodule.subtypeL_apply]
+    exact (hP _ hmem).symm
+  · intro h g₀ hg₀
+    obtain ⟨U, F, hU, hg₀U, hF, hFe⟩ := h g₀ hg₀
+    refine ⟨U, fun g => P (F g), hU, hg₀U, (P.restrictScalars ℝ).contDiff.comp_contDiffOn hF, ?_⟩
+    intro g hgU hg
+    have e1 := hFe g hgU hg
+    dsimp only at e1 ⊢
+    simp only [ContinuousLinearMap.comp_apply, Submodule.subtypeL_apply]
+    rw [e1]
+
+end ReciprocityTheory.ChartRestriction.DS
+end
+end
+
+section
+noncomputable section
+
+open Finset Matrix
+
+namespace ReciprocityTheory.ChartRestriction.DS
+
+variable {n : ℕ} {ε : Fin n → Bool} {lam : Fin n → ℝ} {T : S7.KType ε (lowK ε lam)}
+  {Ψ : Matrix (Fin n) (Fin n) ℂ → (T.V →L[ℂ] T.V)} {v₀ : T.V}
+
+theorem sigLam_kfin_smooth (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) (x : Hlam ε Ψ v₀) (hx : x ∈ kfinLam ε Ψ v₀) :
+    IsSmoothVecU ε (sigLam ε Ψ v₀) x := by
+
+  obtain ⟨w, -, hw⟩ := Submodule.mem_map.mp (Submodule.mem_comap.mp hx)
+  have hsm : IsSmoothVecU ε (rreg ε) ((x : Hlam ε Ψ v₀) : L2 ε) := by
+    have hw' : (w : L2 ε) = (x : L2 ε) := hw
+    rw [← hw']
+    exact (mem_smD_iff ε (rreg ε) _).mp w.2
+
+  exact (isSmoothVecU_restrict (rreg_isURepOn ε) (Hlam ε Ψ v₀)
+    (rreg_mem_Hlam hgap hP hv₀) x).mpr hsm
+
+end ReciprocityTheory.ChartRestriction.DS
+end
+end
+
+section
+noncomputable section
+
+open Finset Matrix
+
+namespace ReciprocityTheory.ChartRestriction.DS
+
+theorem stdGap_of_mir {n : ℕ} {ε : Fin n → Bool} {lam : Fin n → ℝ} {h : ℝ} (hlam : Formalism.QuantumDeterminants.IsHCParam lam)
+    (hh : Formalism.QuantumDeterminants.GapAtLeast ε lam h) (hlt : (n : ℝ) * (pOf ε : ℝ) * (qOf ε : ℝ) + 1 < h) : StdGap ε lam := ⟨hlam.1, h, hh, hlt⟩
+
+theorem all_smooth_of_kType {n : ℕ} {ε : Fin n → Bool} {lam : Fin n → ℝ} {Λ : Fin n → ℝ} (T : S7.KType ε Λ)
+    {σ : Matrix (Fin n) (Fin n) ℂ → (T.V →L[ℂ] T.V)} (hDS : Formalism.MainNotions.S.IsDS ε lam σ)
+    (hK : ∀ k : S7.KG ε, σ (S7.toMK k) = T.op k) (v : T.V) : IsSmoothVecU ε σ v := by
+  obtain ⟨-, -, hσ, hirr, -, ⟨S, hS⟩, -⟩ := hDS
+  have hinv : ∀ g ∈ Formalism.MainNotions.S.UJset ε, ∀ w ∈ smD ε σ, σ g w ∈ smD ε σ := by
+    intro g hg w hw
+    rw [mem_smD_iff] at hw ⊢
+    unfold IsSmoothVecU at hw ⊢
+    let _ : NormedAddCommGroup (Matrix (Fin n) (Fin n) ℂ) := Matrix.normedAddCommGroup
+    let _ : NormedSpace ℝ (Matrix (Fin n) (Fin n) ℂ) := Matrix.normedSpace
+    intro g₀ hg₀
+    obtain ⟨U, F, hU, hmem, hF, hEq⟩ := hw (g₀ * g) (pdA_inUJ_mul hg₀ hg)
+    let L : Matrix (Fin n) (Fin n) ℂ →L[ℝ] Matrix (Fin n) (Fin n) ℂ :=
+      LinearMap.toContinuousLinearMap (LinearMap.mulRight ℝ g)
+    have hL : ∀ x, L x = x * g := fun x => rfl
+    refine ⟨L ⁻¹' U, F ∘ L, hU.preimage L.continuous, by simpa [hL] using hmem,
+      hF.comp L.contDiff.contDiffOn (fun x hx => hx), ?_⟩
+    intro x hx hxUJ
+    have hx' : x * g ∈ U := by simpa [hL] using hx
+    have hrep := hσ.1.2 x hxUJ g hg
+    simp only [Function.comp_apply, hL]
+    rw [← hEq (x * g) hx' (pdA_inUJ_mul hxUJ hg)]
+    show σ x (σ g w) = σ (x * g) w
+    rw [hrep]
+    rfl
+  have hne : smD ε σ ≠ ⊥ := by
+    obtain ⟨V, -, hV0, -⟩ := exists_datum_of_isKTypeOf hσ hS
+    intro hbot
+    apply hV0
+    have : Subsingleton (smD ε σ) := by
+      rw [hbot]
+      infer_instance
+    exact Subsingleton.elim _ _
+  have hcl : IsClosed ((smD ε σ : Submodule ℂ T.V) : Set T.V) := Submodule.closed_of_finiteDimensional _
+  rcases hirr (smD ε σ) hcl hinv with h | h
+  · exact absurd h hne
+  · have hv : v ∈ smD ε σ := by
+      rw [h]
+      exact Submodule.mem_top
+    exact (mem_smD_iff ε σ v).mp hv
+
+theorem dsExistsG (hS7 : ∀ m : ℕ, S7.PsiExistsStatement m) :
+    ∀ (n : ℕ) (ε : Fin n → Bool) (lam : Fin n → ℝ), Formalism.QuantumDeterminants.IsHCParam lam →
+      ∀ h : ℝ, Formalism.QuantumDeterminants.GapAtLeast ε lam h →
+        max ((n : ℝ) * (pOf ε : ℝ) * (qOf ε : ℝ) + 1)
+          (16 * (n : ℝ) * (S7.q0 ε : ℝ) + 8 * Real.sqrt (2 * (S7.q0 ε : ℝ))) < h →
+        ∃ (H : Type) (_ : NormedAddCommGroup H) (_ : InnerProductSpace ℂ H)
+          (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)),
+          Formalism.MainNotions.S.IsDS ε lam σ ∧ CasOnSmooth ε lam σ ∧
+          (∀ S S' : Submodule ℂ H, Formalism.MainNotions.S.IsKTypeOf ε σ (Formalism.QuantumDeterminants.lowK ε lam) S →
+            Formalism.MainNotions.S.IsKTypeOf ε σ (Formalism.QuantumDeterminants.lowK ε lam) S' → S = S') ∧
+          (∀ μ : Fin n → ℝ, FiniteDimensional ℂ (sSup {S : Submodule ℂ H | Formalism.MainNotions.S.IsKTypeOf ε σ μ S} :
+            Submodule ℂ H)) ∧
+          (∀ S : Submodule ℂ H, FiniteDimensional ℂ S → Formalism.MainNotions.S.IsKStableOn ε σ S →
+            ∀ v ∈ S, IsSmoothVecU ε σ v) := by
+  intro n ε lam hlam h hh hmax
+  have h1 : (n : ℝ) * (pOf ε : ℝ) * (qOf ε : ℝ) + 1 < h := lt_of_le_of_lt (le_max_left _ _) hmax
+  have h2 : 16 * (n : ℝ) * (S7.q0 ε : ℝ) + 8 * Real.sqrt (2 * (S7.q0 ε : ℝ)) < h :=
+    lt_of_le_of_lt (le_max_right _ _) hmax
+  have hgap : StdGap ε lam := stdGap_of_mir hlam hh h1
+  obtain ⟨T⟩ := HW.kType_exists ε lam hlam
+  rcases Nat.eq_zero_or_pos (S7.q0 ε) with hq | hq
+  · have hm : min (pOf ε) (qOf ε) = 0 := hq
+    have hpq : pOf ε = 0 ∨ qOf ε = 0 := by omega
+    obtain ⟨σ, hDS, hcas, hK⟩ := isDS_compact hpq hlam T
+    refine ⟨T.V, inferInstance, inferInstance, σ, hDS, hcas, ?_, ?_, ?_⟩
+    · intro S S' hS hS'
+      exact lowKMultOne_of_cas hDS hgap hcas S S' hS hS'
+    · intro μ
+      infer_instance
+    · intro S _ _ v _
+      exact all_smooth_of_kType T hDS hK v
+  · have h8 : 8 * (n : ℝ) * S7.q0 ε < h := by
+      have hs : 0 ≤ Real.sqrt (2 * (S7.q0 ε : ℝ)) := Real.sqrt_nonneg _
+      have hn : 0 ≤ (n : ℝ) * S7.q0 ε := by positivity
+      nlinarith
+    obtain ⟨Ψ, hP, -⟩ := exists_isPsiFor (hS7 n) T hlam hh hq h8
+    have hv₀ : T.w ≠ 0 := by
+      intro h0
+      have h1' := T.w_norm
+      rw [h0, norm_zero] at h1'
+      exact zero_ne_one h1'
+    refine ⟨Hlam ε Ψ T.w, inferInstance, inferInstance, sigLam ε Ψ T.w, ?_, ?_, ?_, ?_, ?_⟩
+    · exact isDS_sigLam hgap hP hv₀
+    · exact sigLam_casOnSmooth hgap hP hv₀
+    · intro S S' hS hS'
+      obtain ⟨-, huniq⟩ := sigLam_lowK hgap hP hv₀
+      rw [huniq S hS, huniq S' hS']
+    · exact sigLam_admissible hgap hP hv₀
+    · intro S hSf hSK v hv
+      exact sigLam_kfin_smooth hgap hP hv₀ v (sigLam_kfin hgap hP hv₀ S hSf hSK hv)
+
+theorem lowKMultOneG_of_cas :
+    ∀ (n : ℕ) (ε : Fin n → Bool) (lam : Fin n → ℝ) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+      (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)), Formalism.QuantumDeterminants.IsHCParam lam → Formalism.MainNotions.S.IsDS ε lam σ →
+      ∀ h : ℝ, Formalism.QuantumDeterminants.GapAtLeast ε lam h → (n : ℝ) * (pOf ε : ℝ) * (qOf ε : ℝ) + 1 < h →
+      CasOnSmooth ε lam σ →
+      ∀ S S' : Submodule ℂ H, Formalism.MainNotions.S.IsKTypeOf ε σ (Formalism.QuantumDeterminants.lowK ε lam) S →
+        Formalism.MainNotions.S.IsKTypeOf ε σ (Formalism.QuantumDeterminants.lowK ε lam) S' → S = S' := by
+  intro n ε lam H _ _ σ hlam hDS h hh hlt hcas S S' hS hS'
+  have : CompleteSpace H := hDS.1
+  exact lowKMultOne_of_cas hDS (stdGap_of_mir hlam hh hlt) hcas S S' hS hS'
+
+end ReciprocityTheory.ChartRestriction.DS
+end
+end
+
+section
+noncomputable section
+
+open Finset Matrix
+
+namespace ReciprocityTheory.ChartRestriction.DS
+
+variable {n : ℕ}
+
+section FinalA
+
+variable {M : Type*} [NormedAddCommGroup M] [InnerProductSpace ℂ M] {ε : Fin n → Bool}
+  {E : Fin n → Fin n → Module.End ℂ M}
+
+theorem finalA_le_sup (hE : IsGlRep E) (hU : IsInfUnitary ε E) (G : Submodule ℂ M)
+    (T : (Fin n → ℝ) → Submodule ℂ M) (hTk : ∀ μ, IsKStableSub ε E (T μ))
+    (hTG : ∀ μ, ∀ w ∈ G, IsKHWVec ε E μ w → w ∈ T μ) (F : Finset (Fin n → ℝ)) :
+    ∀ (m : ℕ) (W : Submodule ℂ M), Module.finrank ℂ W = m → FiniteDimensional ℂ W → W ≤ G →
+      IsKStableSub ε E W → (∀ w ∈ W, w ≠ 0 → ∀ μ, IsKHWVec ε E μ w → μ ∈ F) → W ≤ F.sup T := by
+  intro m
+  induction m using Nat.strong_induction_on with
+  | _ m ih =>
+  intro W hm hfd hWG hWk hWF
+  by_cases hW0 : W = ⊥
+  · rw [hW0]
+    exact bot_le
+  obtain ⟨y, hyW, hy0, μ, hy⟩ := exists_khw hE (isKUnitary_of_isInfUnitary hU) hfd hWk hW0
+  obtain ⟨S', hS'W, hyS', hS'⟩ := exists_irr_sub_of_khw hE hU W hfd hWk hyW hy0 hy
+  have hμF : μ ∈ F := hWF y hyW hy0 μ hy
+  have hS'T : S' ≤ T μ := by
+    have hst : IsKStableSub ε E (S' ⊓ T μ) := fun a b hab v hv =>
+      Submodule.mem_inf.2 ⟨hS'.2.1 a b hab v (Submodule.mem_inf.1 hv).1,
+        hTk μ a b hab v (Submodule.mem_inf.1 hv).2⟩
+    rcases hS'.2.2.1 (S' ⊓ T μ) inf_le_left hst with h | h
+    · exfalso
+      have hyI : y ∈ S' ⊓ T μ := Submodule.mem_inf.2 ⟨hyS', hTG μ y (hWG hyW) hy⟩
+      rw [h, Submodule.mem_bot] at hyI
+      exact hy0 hyI
+    · rw [← h]
+      exact inf_le_right
+  haveI : FiniteDimensional ℂ S' := hS'.1
+  haveI : FiniteDimensional ℂ W := hfd
+  have hW'W : S'ᗮ ⊓ W ≤ W := inf_le_right
+  have hlt : S'ᗮ ⊓ W < W := by
+    refine lt_of_le_of_ne hW'W fun heq => hy0 ?_
+    have hyW' : y ∈ S'ᗮ ⊓ W := by
+      rw [heq]
+      exact hyW
+    exact inner_self_eq_zero.mp (Submodule.inner_right_of_mem_orthogonal hyS' (Submodule.mem_inf.1 hyW').1)
+  have hfd' : FiniteDimensional ℂ (S'ᗮ ⊓ W : Submodule ℂ M) := Submodule.finiteDimensional_of_le hW'W
+  have hk' : IsKStableSub ε E (S'ᗮ ⊓ W) := fun a b hab v hv =>
+    Submodule.mem_inf.2 ⟨orthogonal_kStable (isKUnitary_of_isInfUnitary hU) hS'.2.1 a b hab v
+      (Submodule.mem_inf.1 hv).1, hWk a b hab v (Submodule.mem_inf.1 hv).2⟩
+  have key : S'ᗮ ⊓ W ≤ F.sup T :=
+    ih _ (by rw [← hm]; exact Submodule.finrank_lt_finrank_of_lt hlt) (S'ᗮ ⊓ W) rfl hfd' (hW'W.trans hWG) hk'
+      (fun w hw hw0 ν hν => hWF w (hW'W hw) hw0 ν hν)
+  rw [← Submodule.sup_orthogonal_inf_of_hasOrthogonalProjection hS'W]
+  exact sup_le (hS'T.trans (Finset.le_sup (f := T) hμF)) key
+
+theorem finalA_wt_mem (hE : IsGlRep E) (hU : IsKUnitary ε E) (S : Submodule ℂ M) [FiniteDimensional ℂ S]
+    (hS : ∀ c, ∀ v ∈ S, E c c v ∈ S) (f : S →ₗ[ℂ] M)
+    (hf : ∀ (ν : Fin n → ℝ) (s : S), (∀ c, E c c (s : M) = (ν c : ℂ) • (s : M)) →
+      ∀ c, E c c (f s) = (ν c : ℂ) • f s)
+    {y : M} (hy : y ∈ LinearMap.range f) (hy0 : y ≠ 0) {μ : Fin n → ℝ}
+    (hμ : ∀ c, E c c y = (μ c : ℂ) • y) :
+    ∃ s ∈ S, s ≠ 0 ∧ ∀ c, E c c s = (μ c : ℂ) • s := by
+  classical
+  by_contra hno
+  push_neg at hno
+  let T : Fin n → Module.End ℂ S := fun c => (E c c).restrict (hS c)
+  have hTs : ∀ c, (T c).IsSymmetric := by
+    intro c x z
+    exact hU c c rfl (x : M) (z : M)
+  have hcomm : Pairwise (Function.onFun Commute T) := by
+    intro a c _
+    exact LinearMap.ext fun x => Subtype.ext (kUnit_diag_comm hE a c (x : M))
+  have htop := LinearMap.IsSymmetric.iSup_iInf_eq_top_of_commute hTs hcomm
+  have hle : ∀ χ : Fin n → ℂ, (⨅ c, Module.End.eigenspace (T c) (χ c)).map f ≤ (ℂ ∙ y)ᗮ := by
+    intro χ
+    rintro _ ⟨x, hx, rfl⟩
+    rw [Submodule.mem_orthogonal_singleton_iff_inner_right]
+    by_cases hx0 : x = 0
+    · rw [hx0, map_zero, inner_zero_right]
+    have hxc : ∀ c, E c c (x : M) = χ c • (x : M) := by
+      intro c
+      have h1 := Module.End.mem_eigenspace_iff.mp ((Submodule.mem_iInf _).mp hx c)
+      exact congrArg Subtype.val h1
+    have hx0' : (x : M) ≠ 0 := fun h => hx0 (Subtype.ext h)
+    have hreal : ∀ c, χ c = (((χ c).re : ℝ) : ℂ) := fun c => kUnit_eig_real hU hx0' (hxc c)
+    have hxν : ∀ c, E c c (x : M) = ((((χ c).re : ℝ)) : ℂ) • (x : M) := fun c =>
+      (hxc c).trans (congrArg (· • (x : M)) (hreal c))
+    obtain ⟨c, hc⟩ := hno (x : M) x.2 hx0'
+    have hfx : E c c (f x) = (((χ c).re : ℝ) : ℂ) • f x := hf (fun c => (χ c).re) x hxν c
+    have hne : (χ c).re ≠ μ c := fun h => hc (by rw [hxν c, h])
+    have h1 := hU c c rfl y (f x)
+    rw [hμ c, hfx, inner_smul_left, inner_smul_right, Complex.conj_ofReal] at h1
+    have h2 : ((μ c : ℂ) - (((χ c).re : ℝ) : ℂ)) * inner ℂ y (f x) = 0 := by
+      rw [sub_mul, h1, sub_self]
+    rcases mul_eq_zero.mp h2 with h | h
+    · exact absurd (Complex.ofReal_injective (sub_eq_zero.mp h)).symm hne
+    · exact h
+  have hR : LinearMap.range f ≤ (ℂ ∙ y)ᗮ := by
+    rw [LinearMap.range_eq_map, ← htop, Submodule.map_iSup]
+    exact iSup_le hle
+  exact hy0 (inner_self_eq_zero.mp ((Submodule.mem_orthogonal_singleton_iff_inner_right).mp (hR hy)))
+
+end FinalA
+
+end ReciprocityTheory.ChartRestriction.DS
+end
+end
+
+section
 noncomputable section
 
 open Finset Matrix
@@ -257,3 +584,5 @@ theorem final_HCMultDSG :
     hRle' (show (⟨x, hRD hx⟩ : smD ε σ) ∈ (LinearMap.range Θ).comap (smD ε σ).subtype from hx), rfl⟩
 
 end ReciprocityTheory.ChartRestriction.DS
+end
+end

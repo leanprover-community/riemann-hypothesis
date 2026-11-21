@@ -178,9 +178,6 @@ theorem finrank_span_of_isZLattice (L : Submodule ℤ E) [DiscreteTopology L] [I
     finrank ℝ (span ℝ (L : Set E)) = finrank ℝ E := by
   rw [IsZLattice.span_top, finrank_top]
 
-theorem lastMin_eq_succMin_finrank_int [FiniteDimensional ℝ E] (L : Submodule ℤ E)
-    [DiscreteTopology L] : lastMin L = succMin L (finrank ℤ L) := by
-  rw [lastMin, finrank_span_eq_finrank_int]
 
 theorem natCast_le_rank_of_le_finrank {K W : Type*} [DivisionRing K] [AddCommGroup W] [Module K W]
     (h : i ≤ finrank K W) : (i : Cardinal) ≤ Module.rank K W :=
@@ -259,9 +256,6 @@ theorem succMin_inSpan (L : Submodule ℤ E) (i : ℕ) : succMin (inSpan L) i = 
   succMin_comap_linearIsometry (span ℝ (L : Set E)).subtypeₗᵢ
     (fun x hx => ⟨⟨x, subset_span hx⟩, rfl⟩) i
 
-theorem lastMin_inSpan (L : Submodule ℤ E) : lastMin (inSpan L) = lastMin L := by
-  have h : span ℝ (inSpan L : Set (span ℝ (L : Set E))) = ⊤ := span_span_coe_preimage
-  rw [lastMin, succMin_inSpan, h, finrank_top, lastMin]
 
 theorem smul_eq_map (c : ℝ) (L : Submodule ℤ E) :
     c • L = L.map ((c • LinearMap.id : E →ₗ[ℝ] E).restrictScalars ℤ) := rfl
@@ -283,17 +277,7 @@ theorem minNorm_smul {c : ℝ} (hc : c ≠ 0) (L : Submodule ℤ E) :
 
 def coveringRadius (L : Submodule ℤ E) : ℝ := ⨆ x : E, Metric.infDist x (L : Set E)
 
-theorem exists_norm_sub_eq_infDist [FiniteDimensional ℝ E] (L : Submodule ℤ E)
-    [DiscreteTopology L] (x : E) : ∃ w ∈ L, ‖x - w‖ = Metric.infDist x (L : Set E) := by
-  have : DiscreteTopology L.toAddSubgroup := (inferInstance : DiscreteTopology L)
-  have hc : IsClosed (L.toAddSubgroup : Set E) := inferInstance
-  obtain ⟨w, hw, h⟩ := hc.exists_infDist_eq_dist ⟨0, L.zero_mem⟩ x
-  exact ⟨w, hw, by rw [← dist_eq_norm]; exact h.symm⟩
 
-theorem coveringRadius_le (h : ∀ x : E, ∃ w ∈ L, ‖x - w‖ ≤ r) : coveringRadius L ≤ r :=
-  ciSup_le fun x => by
-    obtain ⟨w, hw, h⟩ := h x
-    exact (Metric.infDist_le_dist_of_mem hw).trans (by rwa [dist_eq_norm])
 
 end Normed
 

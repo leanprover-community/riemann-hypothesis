@@ -186,10 +186,6 @@ end Maps
 theorem TrueD.bare {D : D7} (hD : TrueD D) : IsTrueColumnDatum D :=
   let ⟨B, X, I, l, Z, e, ⟨w⟩⟩ := hD; ⟨B, X, I, l, Z, e, ⟨w.bare⟩⟩
 
-theorem trueD_iff {D : D7} (h : ∀ T : STies D, FinX T.Y) : TrueD D ↔ IsTrueColumnDatum D := by
-  refine ⟨TrueD.bare, ?_⟩
-  rintro ⟨B, X, I, l, Z, rfl, ⟨w⟩⟩
-  exact ⟨B, X, I, l, Z, rfl, ⟨w.withFin (h w.S.toSTies)⟩⟩
 
 end Built
 
@@ -204,9 +200,6 @@ def OntoTower : Prop := ∀ W : Tower D, W.Is → ∀ P : W.Lv, W.Onto P
 theorem MITower.ker (h : MITower D u) : MIKerTower D u :=
   let ⟨W, L, h1, h2⟩ := h; ⟨W, L, h1, MIMap.miKer D u h2⟩
 
-theorem kerIncl_of_tower (h : MIKerTower D u) (h' : OntoTower D) : KerIncl D u :=
-  let ⟨W, L, h1, h2⟩ := h
-  kerIncl_of D u h2 (OntoAll.ontoP D u (L.ontoAll (h' W h1 L.P)))
 
 def MIPinned {B : GlobalTheory.Mem.Base} {X : GlobalTheory.Mem.PreX B.toPre} {I : GlobalTheory.Mem.Col2.TC B X} {l : I.Laws}
     {Z : GlobalTheory.Mem.Col2.TC.Later B (I.cols l)} (w : World I l Z) (u : (I.rec7 l Z).what₂.Word) : Prop :=
@@ -218,10 +211,6 @@ def MIPinned0 {B : GlobalTheory.Mem.Base} {X : GlobalTheory.Mem.PreX B.toPre} {I
   ∃ (W : Tower (I.rec7 l Z)) (L : Link (I.rec7 l Z) u W), W.Is ∧ L.TopPin (w.C.forms u) ∧
     (∀ hF : FinX w.S.Y, L.RowPinE w.S.toSTies hF) ∧ MIMap (I.rec7 l Z) u L.Θ
 
-theorem miPinned_withFin_iff {B : GlobalTheory.Mem.Base} {X : GlobalTheory.Mem.PreX B.toPre} {I : GlobalTheory.Mem.Col2.TC B X} {l : I.Laws}
-    {Z : GlobalTheory.Mem.Col2.TC.Later B (I.cols l)} (w : World0 I l Z) (hF : FinX w.S.Y) (u : (I.rec7 l Z).what₂.Word) :
-    MIPinned (w.withFin hF) u ↔ MIPinned0 w u :=
-  ⟨fun ⟨W, L, h1, h2, h3, h4⟩ => ⟨W, L, h1, h2, fun _ => h3, h4⟩, fun ⟨W, L, h1, h2, h3, h4⟩ => ⟨W, L, h1, h2, h3 hF, h4⟩⟩
 
 def thetaRec (V : D.what₂.EE →ₗ[ℂ] D.what₂.EE) : Desc D u :=
   D.sEE.toLinearMap ∘ₛₗ (V ∘ₗ D.iota0 ∘ₗ (D.eMt u).toLinearMap)

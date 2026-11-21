@@ -57,19 +57,7 @@ def RegBoundUnit (B : ℕ) (a : ℝ) : Prop :=
 def LimitBound (B : ℕ) (a : ℝ) : Prop :=
   ((D.n : ℝ) + 1) * (a - meanU H Cd / 2) * degMu H ≤ arLim H S B
 
-theorem RegBoundUnit.regBound {B : ℕ} {a : ℝ} (h : RegBoundUnit H Cd S' B a) : RegBound H Cd S' B a := by
-  intro p q hp hpq
-  filter_upwards [Ioc_mem_nhdsGT (zero_lt_one' ℝ)] with t ht
-  exact h p q hp hpq t ht.1 ht.2
 
-theorem limitBound_iff (hd : 0 < degMu H) (B : ℕ) (a : ℝ) :
-    LimitBound H Cd S B a ↔ ((D.n : ℝ) + 1) * (a * degMu H -
-      ptsIntegral (e := D.n) (mCoordIdeal D.y) (fun _ => phMu H) Cd.cuspWeight / 2) ≤ arLim H S B := by
-  have : ((D.n : ℝ) + 1) * (a - meanU H Cd / 2) * degMu H = ((D.n : ℝ) + 1) * (a * degMu H -
-      ptsIntegral (e := D.n) (mCoordIdeal D.y) (fun _ => phMu H) Cd.cuspWeight / 2) := by
-    unfold meanU
-    field_simp
-  rw [LimitBound, this]
 
 end Clauses
 
@@ -95,9 +83,6 @@ def StokesLimitUnguarded : Prop :=
     ∀ (B : ℕ) (a : ℝ), 4 * D.f + 2 ≤ B → ArLimExists H S B →
       RegBound H Cd S' B a → LimitBound H Cd S B a
 
-theorem StokesLimitUnguarded.stokesLimit (h : StokesLimitUnguarded) : StokesLimit :=
-  fun II hII Ψ _ K _ ι _ Ω _ _ E _ _ D H O abelian₂ _ _ _ Cd M S S' hT _ _ B a hB _ hL hR =>
-    h II hII Ψ K ι Ω E D H O abelian₂ Cd M S S' hT.1 hT.2.1 B a hB hL hR
 
 example (II : IntersectionSystem) (hII) :
     Ties (Line.lineHodge II hII) (Line.gaussCusp II hII) (Line.lineRegT II hII) (Line.lineBRegC II hII) ∧

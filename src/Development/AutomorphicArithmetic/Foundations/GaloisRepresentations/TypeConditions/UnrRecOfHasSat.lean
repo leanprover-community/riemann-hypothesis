@@ -61,10 +61,5 @@ theorem nice_of_locPar (hL : GlobalTheory.Published.LocalLanglandsGL) (hF : Glob
   rw [rec_algNorm (ParLaws.isRec_locRec hL h) σ]
   rwa [ParLaws.locPar_mk hL hσ h] at k
 
-theorem nice_of_spherical {h : IsPlaceOver A w} {rc : IrrGL (w.adicCompletion E) → WD h} (hrc : IsRec h rc)
-    {σ : SmIrr (GL (Fin a) (w.adicCompletion E))} (hσ : π.IsLocComp w σ) (hs : SmGL.IsSpherical σ.ρ) : Nice π h := by
-  refine ⟨σ, hσ, rc, hrc, NcW.of_unr ?_⟩
-  rw [rec_algNorm hrc, WD.unr_tw]
-  exact (ParLaws.unr_iff hrc (ParLaws.toRep σ)).2 hs
 
 end UpperTheory.GalS

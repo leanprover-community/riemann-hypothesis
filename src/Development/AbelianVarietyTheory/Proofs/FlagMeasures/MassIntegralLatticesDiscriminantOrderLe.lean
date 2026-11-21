@@ -1,13 +1,110 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianGenusMassEqOrbitStabilizerMassStatement
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianLatticeDiscriminantOrderNeZeroUnimodulaStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.EncardSublatticesOfIndexLe
+import Development.AbelianVarietyTheory.PublishedTheorems.DiscreteSeriesUnitary₂.MaxMass
+import Formalism.FlagUnipotentLattices.CardSubgroupsOfIndexLe
+import BuildAid.ForwardExisting
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsMaximalIntegralHermitianLatticeOrthonormal
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MemGenusIffMaximalIntegralHermitianLattice
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MaximalLatticeLocalFactorProductPosAndLe
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MaximalHermitianLatticeLocalStructureDiscriminan
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.OrbitStabilizerMassEqWeightedSumFibresStatement
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.OrbitWeightedStabilizerSumMonoSubadditiveStatement
 
+section
+section
+open NumberField Matrix GlobalTheory.Mass Formalism.HermitianLatticesTheory
+open scoped ENNReal Classical
+
+namespace GlobalTheory.Mass
+
+theorem sublattice_count : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (h : V →ₗ⋆[K] V →ₗ[K] K), IsCMUnram K → h.IsSymm → h.Nondegenerate → ∀ (M : Submodule (𝓞 K) V), Submodule.IsLattice K M → ∀ i : ℕ, 1 ≤ i → (({N : Submodule (𝓞 K) V | N ≤ M ∧ idxN M N = i}.encard : ℕ∞) : ℝ≥0∞) ≤ ENNReal.ofReal ((i : ℝ) ^ ((Module.finrank K V : ℝ) + Real.logb 2 (Module.finrank ℚ K))) := by
+  intro K V _ _ _ _ _ _ _ _ h _ _ _ M hM i hi
+  have : Module.Finite (𝓞 K) M := Module.Finite.iff_fg.mpr hM.fg
+  have : Module.IsTorsionFree (𝓞 K) V := Module.IsTorsionFree.trans_faithfulSMul (𝓞 K) K V
+  have : Module.IsTorsionFree (𝓞 K) M := inferInstance
+  have : Module.Flat (𝓞 K) M := inferInstance
+  have : Module.FinitePresentation (𝓞 K) M := Module.finitePresentation_of_finite _ _
+  have : Module.Projective (𝓞 K) M := Module.Flat.projective_of_finitePresentation
+  have hr : Module.finrank (𝓞 K) M ≤ Module.finrank K V := by
+    have h1 : Module.rank (𝓞 K) M ≤ Module.rank K V := by
+      rw [IsLocalization.rank_eq K (nonZeroDivisors (𝓞 K)) le_rfl]
+      exact Submodule.rank_le M
+    exact Cardinal.toNat_le_toNat h1 (Module.rank_lt_aleph0 K V)
+  obtain ⟨hfin, hle⟩ := Formalism.HermitianLatticeCounting.Final.LatticeSumBounds.c2a K M (Module.finrank K V) i hi hr
+  have hinj : Set.InjOn (fun N : Submodule (𝓞 K) V => N.comap M.subtype)
+      {N : Submodule (𝓞 K) V | N ≤ M ∧ idxN M N = i} := by
+    intro N hN N' hN' e
+    have := congrArg (Submodule.map M.subtype) e
+    simpa [Submodule.map_comap_subtype, inf_eq_right.mpr hN.1, inf_eq_right.mpr hN'.1] using this
+  have hmaps : Set.MapsTo (fun N : Submodule (𝓞 K) V => N.comap M.subtype)
+      {N : Submodule (𝓞 K) V | N ≤ M ∧ idxN M N = i}
+      {N : Submodule (𝓞 K) M | N.toAddSubgroup.index = i} := by
+    intro N hN
+    exact hN.2
+  have h2 := Set.encard_le_encard_of_injOn hmaps hinj
+  rw [← hfin.cast_ncard_eq] at h2
+  calc _ ≤ (((({N : Submodule (𝓞 K) M | N.toAddSubgroup.index = i}.ncard : ℕ) : ℕ∞)) : ℝ≥0∞) := by
+        exact_mod_cast h2
+    _ = ENNReal.ofReal ({N : Submodule (𝓞 K) M | N.toAddSubgroup.index = i}.ncard : ℝ) := by
+        simp
+    _ ≤ _ := ENNReal.ofReal_le_ofReal hle
+
+end GlobalTheory.Mass
+end
+
+open NumberField Matrix GlobalTheory.Mass Formalism.HermitianLatticesTheory
+open scoped ENNReal Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.encard_sublattices_of_index_le : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (h : V →ₗ⋆[K] V →ₗ[K] K), IsCMUnram K → h.IsSymm → h.Nondegenerate → ∀ (M : Submodule (𝓞 K) V), Submodule.IsLattice K M → ∀ i : ℕ, 1 ≤ i → (({N : Submodule (𝓞 K) V | N ≤ M ∧ idxN M N = i}.encard : ℕ∞) : ℝ≥0∞) ≤ ENNReal.ofReal ((i : ℝ) ^ ((Module.finrank K V : ℝ) + Real.logb 2 (Module.finrank ℚ K))) := by
+  atlas_forward_decl GlobalTheory.Mass.sublattice_count
+end
+
+section
+section
+open NumberField Matrix GlobalTheory.Mass Formalism.HermitianLatticesTheory
+open scoped ENNReal Classical
+
+noncomputable section
+
+namespace GlobalTheory.MaxLatLam
+
+theorem factor_bounds {q : ℝ} (hq : 2 ≤ q) {n : ℕ} (hn : 1 ≤ n) :
+    0 < (q ^ n - (-1) ^ n) / (q + 1) ∧ (q ^ n - (-1) ^ n) / (q + 1) ≤ (q ^ 2) ^ ((n : ℝ) / 2) := by
+  have h1 : q ≤ q ^ n := le_self_pow₀ (by linarith) (by omega)
+  have h2 : (-1 : ℝ) ^ n = 1 ∨ (-1 : ℝ) ^ n = -1 := neg_one_pow_eq_or ℝ n
+  have h3 : (q ^ 2) ^ ((n : ℝ) / 2) = q ^ n := by
+    rw [← Real.rpow_natCast q 2, ← Real.rpow_mul (by linarith), ← Real.rpow_natCast q n]
+    congr 1
+    push_cast
+    ring
+  refine ⟨div_pos (by rcases h2 with e | e <;> rw [e] <;> linarith) (by linarith), ?_⟩
+  rw [h3, div_le_iff₀ (by linarith)]
+  rcases h2 with e | e <;> rw [e] <;> nlinarith
+
+theorem main : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (h : V →ₗ⋆[K] V →ₗ[K] K), IsCMUnram K → h.IsSymm → h.Nondegenerate → 1 ≤ Module.finrank K V → ∀ M : Submodule (𝓞 K) V, IsMaxLat h M → 0 < lamMax h M ∧ lamMax h M ≤ (discN h M : ℝ) ^ ((Module.finrank K V : ℝ) / 2) := by
+  intro K V _ _ _ _ _ _ _ _ h hK hs hnd hn M hM
+  obtain ⟨hfin, hd, -, hP⟩ := GlobalTheory.MaxLatStruct.main K V h hK hs hnd M hM
+  rw [hd, lamMax, finprod_mem_eq_finite_toFinset_prod _ hfin, finprod_mem_eq_finite_toFinset_prod _ hfin]
+  have hq : ∀ P ∈ hfin.toFinset, (2 : ℝ) ≤ (qIn P : ℝ) := fun P hp => by
+    exact_mod_cast (hP P (hfin.mem_toFinset.1 hp)).2.1
+  refine ⟨Finset.prod_pos fun P hp => (factor_bounds (hq P hp) hn).1, ?_⟩
+  rw [Nat.cast_prod, ← Real.finset_prod_rpow _ _ (fun P _ => Nat.cast_nonneg _)]
+  refine Finset.prod_le_prod (fun P hp => (factor_bounds (hq P hp) hn).1.le) fun P hp => ?_
+  rw [(hP P (hfin.mem_toFinset.1 hp)).2.2.1, Nat.cast_pow]
+  exact (factor_bounds (hq P hp) hn).2
+
+end GlobalTheory.MaxLatLam
+end
+end
+
+open NumberField Matrix GlobalTheory.Mass Formalism.HermitianLatticesTheory
+open scoped ENNReal Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.maximalLatticeLocalFactorProduct_pos_and_le : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (h : V →ₗ⋆[K] V →ₗ[K] K), IsCMUnram K → h.IsSymm → h.Nondegenerate → 1 ≤ Module.finrank K V → ∀ M : Submodule (𝓞 K) V, IsMaxLat h M → 0 < lamMax h M ∧ lamMax h M ≤ (discN h M : ℝ) ^ ((Module.finrank K V : ℝ) / 2) := by
+  atlas_forward_decl GlobalTheory.MaxLatLam.main
+end
+
+section
 open NumberField Matrix GlobalTheory.Mass Formalism.HermitianLatticesTheory
 open scoped ENNReal Classical
 
@@ -154,3 +251,4 @@ theorem main : MaxMass → ∀ (K V : Type) [Field K] [NumberField K] [StarRing 
   exact_mod_cast Module.finrank_pos (R := ℚ) (M := K)
 
 end GlobalTheory.Mass.SpaceMass
+end

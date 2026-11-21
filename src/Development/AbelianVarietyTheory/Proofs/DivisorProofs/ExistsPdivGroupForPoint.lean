@@ -1,10 +1,690 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.HodgeTateLatticePointFinrankTateModule
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsPullbackBaseChange
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueTangent
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.QuasiCompactZeroSec
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentPhiSqZeroNaturality
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentPhiSmul
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SqZeroPointEqOfCotangentFormEqStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsIsoToBidualOfLocalFrames
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentSurjective
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteProjectiveCotangentGlobalSectionsGroupScheStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCotangentFrameSmoothGroupSchemeStatement
 import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.NonemptyTorusExtensionOfIsGt
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.TorusExtensionPointsDivisible
 
+section
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap epsR IsTangent)
+open GlobalTheory.SqZeroPt GlobalTheory.PDivGroup GlobalTheory.DeRham
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tangent_Phi_sqZero_naturality : ∀ (O : Type) [CommRing O] (M N : Type) [AddCommGroup M] [Module O M] [Module Oᵐᵒᵖ M] [IsCentralScalar O M] [AddCommGroup N] [Module O N] [Module Oᵐᵒᵖ N] [IsCentralScalar O N] (A : Over (Sp O)) [GrpObj A] (l : M →ₗ[O] N) (z : TM O M ⟶ A) (h : zeroSec O M ≫ z = η[A]) (h' : zeroSec O N ≫ (GlobalTheory.GrpTangent.sqZeroMap l ≫ z) = η[A]) (w : Wmod A), Phi (GlobalTheory.GrpTangent.sqZeroMap l ≫ z) h' w = l (Phi z h w) := by
+  first | exact @GlobalTheory.SqZeroPt.Phi_sqZeroMap_comp | exact GlobalTheory.SqZeroPt.Phi_sqZeroMap_comp | (intros; apply GlobalTheory.SqZeroPt.Phi_sqZeroMap_comp <;> assumption)
+end
+
+section
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap epsR IsTangent)
+open GlobalTheory.SqZeroPt GlobalTheory.PDivGroup GlobalTheory.DeRham
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tangent_Phi_smul : ∀ (O : Type) [CommRing O] (M : Type) [AddCommGroup M] [Module O M] [Module Oᵐᵒᵖ M] [IsCentralScalar O M] (A : Over (Sp O)) [GrpObj A] (z : TM O M ⟶ A) (h : zeroSec O M ≫ z = η[A]) (c : O) (w : Wmod A), Phi z h (c • w) = c • Phi z h w := by
+  first | exact @GlobalTheory.SqZeroPt.Phi_smul | exact GlobalTheory.SqZeroPt.Phi_smul | (intros; apply GlobalTheory.SqZeroPt.Phi_smul <;> assumption)
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap epsR IsTangent)
+open GlobalTheory.SqZeroPt GlobalTheory.PDivGroup GlobalTheory.DeRham
+open GlobalTheory.LieVB GlobalTheory.Conormal
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+namespace GlobalTheory.SqZeroPt
+
+theorem kappa_eq_epsIso (O : Type) [CommRing O]
+    (σ : Γ(conormal (sec (zeroSec O O)), ⊤)) :
+    kappa O O σ = toO O ((epsIso O).hom.app ⊤ σ) := by
+  obtain ⟨b, rfl⟩ := (isChart O O).d_surjective (sec_hom (zeroSec O O)) σ
+  rw [kappa_d]
+  have hinj := (ConcreteCategory.bijective_of_isIso
+    (Scheme.ΓSpecIso (CommRingCat.of (TrivSqZeroExt O O))).hom).1
+  let ε : Γ((TM O O).left, ⊤) := (Scheme.ΓSpecIso (.of (TrivSqZeroExt O O))).inv DualNumber.eps
+  have hε : toTsze O O ε = DualNumber.eps := Iso.inv_hom_id_apply _ _
+  have hb : b = (TM O O).hom.appLE ⊤ ⊤ le_top (cst O (toTsze O O b).fst) +
+      (TM O O).hom.appLE ⊤ ⊤ le_top (cst O (toTsze O O b).snd) * ε := by
+    apply hinj
+    change toTsze O O b = toTsze O O _
+    rw [map_add, map_mul, toTsze_base, toTsze_base, hε, Iso.inv_hom_id_apply,
+      Iso.inv_hom_id_apply]
+    ext <;> simp [TrivSqZeroExt.algebraMap_eq_inl]
+  have e0 := d_base (sec_hom (zeroSec O O)) (isChart O O).le (le_preimage_top (TM O O).hom ⊤)
+    (cst O (toTsze O O b).fst)
+  have e1 := d_base (sec_hom (zeroSec O O)) (isChart O O).le (le_preimage_top (TM O O).hom ⊤)
+    (cst O (toTsze O O b).snd)
+  have e2 := d_mul (sec_hom (zeroSec O O)) (isChart O O).le
+    ((TM O O).hom.appLE ⊤ ⊤ le_top (cst O (toTsze O O b).snd)) ε
+  have e3 := appLE_base (sec_hom (zeroSec O O)) (isChart O O).le
+    (le_preimage_top (TM O O).hom ⊤) le_rfl (cst O (toTsze O O b).snd)
+  have hd : d (sec_hom (zeroSec O O)) (isChart O O).le b =
+      cst O (toTsze O O b).snd • d (sec_hom (zeroSec O O)) (isChart O O).le ε := by
+    conv_lhs => rw [hb]
+    rw [map_add, e0, zero_add, e2, e1, smul_zero, add_zero, e3, GlobalTheory.LB.resG_self]
+  have h1 : (epsIso O).hom.app ⊤ (d (sec_hom (zeroSec O O)) (isChart O O).le ε) =
+      (1 : Γ(Sp O, ⊤)) := epsIso_d O
+  rw [hd]
+  have h2 := Scheme.Modules.Hom.app_smul (epsIso O).hom (cst O (toTsze O O b).snd)
+    (d (sec_hom (zeroSec O O)) (isChart O O).le ε)
+  refine Eq.trans ?_ (congrArg (toO O) h2).symm
+  rw [h1]
+  change _ = toO O (cst O (toTsze O O b).snd * 1)
+  rw [_root_.mul_one, Iso.inv_hom_id_apply]
+
+theorem exists_phi_eq (O : Type) [CommRing O] (A : Over (Sp O)) [GrpObj A] :
+    (GlobalTheory.LieVB.omega A).IsQuasicoherent →
+      (∀ (l : Wmod A →ₗ[O] O), ∃ (v : TM O O ⟶ A) (h : zeroSec O O ≫ v = η[A]),
+        ∀ w, Phi v h w = l w) := by
+  intro hqc l
+  let f : Γ(GlobalTheory.LieVB.omega A, ⊤) →ₗ[Γ(Sp O, ⊤)] Γ(Sp O, ⊤) :=
+    { toFun := fun w => cst O (l w)
+      map_add' := fun w w' => (congrArg (cst O) (l.map_add w w')).trans (map_add _ _ _)
+      map_smul' := fun r w => by
+        obtain ⟨a, rfl⟩ : ∃ a, r = cst O a := ⟨toO O r, (Iso.hom_inv_id_apply _ _).symm⟩
+        have e : l (cst O a • w) = a * l w := l.map_smul a w
+        exact (congrArg (cst O) e).trans (map_mul _ _ _) }
+  obtain ⟨lam, hlam⟩ := (GlobalTheory.OmegaGlobal.dualApp_top_bijective (GlobalTheory.LieVB.omega A)).2 f
+  obtain ⟨x, hx⟩ := GlobalTheory.LieVB.TangentSurj.tangent_surjective O A lam
+  refine ⟨x.1, epsZero_comp x, fun w => ?_⟩
+  have h1 := dualApp_tangent x (V := ⊤) w
+  rw [hx] at h1
+  have h2 : GlobalTheory.VB.dualApp lam (le_refl ⊤) w = cst O (l w) := LinearMap.congr_fun hlam w
+  refine (kappa_eq_epsIso O _).trans ?_
+  exact (congrArg (toO O) (h1.symm.trans h2)).trans (Iso.inv_hom_id_apply _ _)
+
+end GlobalTheory.SqZeroPt
+end
+end
+
+section
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap epsR IsTangent)
+open GlobalTheory.SqZeroPt GlobalTheory.PDivGroup GlobalTheory.DeRham
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tangent_Phi_surjective_onto_dual : ∀ (O : Type) [CommRing O] (A : Over (Sp O)) [GrpObj A], (GlobalTheory.LieVB.omega A).IsQuasicoherent → (∀ (l : Wmod A →ₗ[O] O), ∃ (v : TM O O ⟶ A) (h : zeroSec O O ≫ v = η[A]), ∀ w, Phi v h w = l w) := by
+  first | exact @GlobalTheory.SqZeroPt.exists_phi_eq | exact GlobalTheory.SqZeroPt.exists_phi_eq | (intros; apply GlobalTheory.SqZeroPt.exists_phi_eq <;> assumption)
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap epsR IsTangent)
+open GlobalTheory.SqZeroPt GlobalTheory.PDivGroup GlobalTheory.DeRham
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+namespace GlobalTheory.SqZeroPt
+
+theorem Phi_congr {O : Type} [CommRing O] {M : Type} [AddCommGroup M] [Module O M] [Module Oᵐᵒᵖ M]
+    [IsCentralScalar O M] {A : Over (Sp O)} [GrpObj A] {z z' : TM O M ⟶ A} (e : z = z')
+    (h : zeroSec O M ≫ z = η[A]) (h' : zeroSec O M ≫ z' = η[A]) (w : Wmod A) :
+    Phi z h w = Phi z' h' w := by
+  subst e; rfl
+
+theorem eq_map_comp_univ {p : ℕ} {O : Type} [CommRing O] (G : GlobalTheory.PDivGroup p O) {M : Type}
+    [AddCommGroup M] [Module O M] [Module Oᵐᵒᵖ M] [IsCentralScalar O M] (n : ℕ)
+    (φ : G.A n →ₐ[O] TrivSqZeroExt O M)
+    (hφ : (TrivSqZeroExt.fstHom O O M).comp φ = Bialgebra.counitAlgHom O (G.A n)) :
+    φ = (TrivSqZeroExt.map
+      (GlobalTheory.AugCot.sqZeroEquiv (Bialgebra.counitAlgHom O (G.A n)) M ⟨φ, hφ⟩)).comp (univ G n) := by
+  have hf : ∀ a, (φ a).fst = Bialgebra.counitAlgHom O (G.A n) a := fun a => AlgHom.congr_fun hφ a
+  ext a
+  · simp [univ, hf]
+  · simp [univ]
+
+theorem Phi_spOver_y : ∀ (p : ℕ) (O : Type) [CommRing O] (G : GlobalTheory.PDivGroup p O) (A : Over (Sp O)) [GrpObj A] (t : G.TorsionTower A), (∀ (M N : Type) [AddCommGroup M] [Module O M] [Module Oᵐᵒᵖ M] [IsCentralScalar O M] [AddCommGroup N] [Module O N] [Module Oᵐᵒᵖ N] [IsCentralScalar O N] (l : M →ₗ[O] N) (z : TM O M ⟶ A) (h : zeroSec O M ≫ z = η[A]) (h' : zeroSec O N ≫ (GlobalTheory.GrpTangent.sqZeroMap l ≫ z) = η[A]) (w : Wmod A), Phi (GlobalTheory.GrpTangent.sqZeroMap l ≫ z) h' w = l (Phi z h w)) → (∀ (M : Type) [AddCommGroup M] [Module O M] [Module Oᵐᵒᵖ M] [IsCentralScalar O M] (n : ℕ) (φ : G.A n →ₐ[O] TrivSqZeroExt O M) (hφ : (TrivSqZeroExt.fstHom O O M).comp φ = Bialgebra.counitAlgHom O (G.A n)) (w : Wmod A), Phi (spOver φ ≫ t.y n) (zeroSec_spOver_y t n φ hφ) w = GlobalTheory.AugCot.sqZeroEquiv (Bialgebra.counitAlgHom O (G.A n)) M ⟨φ, hφ⟩ (cn t n w)) := by
+  intro p O _ G A _ t nat M _ _ _ _ n φ hφ w
+  have e : spOver φ ≫ t.y n = GlobalTheory.GrpTangent.sqZeroMap
+      (GlobalTheory.AugCot.sqZeroEquiv (Bialgebra.counitAlgHom O (G.A n)) M ⟨φ, hφ⟩) ≫
+        spOver (univ G n) ≫ t.y n := by
+    rw [← Category.assoc]
+    congr 1
+    have e1 : GlobalTheory.GrpTangent.sqZeroMap
+        (GlobalTheory.AugCot.sqZeroEquiv (Bialgebra.counitAlgHom O (G.A n)) M ⟨φ, hφ⟩) =
+        spOver (TrivSqZeroExt.map
+          (GlobalTheory.AugCot.sqZeroEquiv (Bialgebra.counitAlgHom O (G.A n)) M ⟨φ, hφ⟩)) := rfl
+    rw [e1, spOver_comp, ← eq_map_comp_univ G n φ hφ]
+  have h' : zeroSec O M ≫ GlobalTheory.GrpTangent.sqZeroMap
+      (GlobalTheory.AugCot.sqZeroEquiv (Bialgebra.counitAlgHom O (G.A n)) M ⟨φ, hφ⟩) ≫
+        spOver (univ G n) ≫ t.y n = η[A] := e ▸ zeroSec_spOver_y t n φ hφ
+  rw [Phi_congr e _ h' w]
+  exact nat _ M _ (spOver (univ G n) ≫ t.y n)
+    (zeroSec_spOver_y t n _ (fst_comp_univ (G := G) n)) h' w
+
+end GlobalTheory.SqZeroPt
+end
+end
+
+section
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap epsR IsTangent)
+open GlobalTheory.SqZeroPt GlobalTheory.PDivGroup GlobalTheory.DeRham
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tangent_Phi_naturality_module : ∀ (p : ℕ) (O : Type) [CommRing O] (G : GlobalTheory.PDivGroup p O) (A : Over (Sp O)) [GrpObj A] (t : G.TorsionTower A), (∀ (M N : Type) [AddCommGroup M] [Module O M] [Module Oᵐᵒᵖ M] [IsCentralScalar O M] [AddCommGroup N] [Module O N] [Module Oᵐᵒᵖ N] [IsCentralScalar O N] (l : M →ₗ[O] N) (z : TM O M ⟶ A) (h : zeroSec O M ≫ z = η[A]) (h' : zeroSec O N ≫ (GlobalTheory.GrpTangent.sqZeroMap l ≫ z) = η[A]) (w : Wmod A), Phi (GlobalTheory.GrpTangent.sqZeroMap l ≫ z) h' w = l (Phi z h w)) → (∀ (M : Type) [AddCommGroup M] [Module O M] [Module Oᵐᵒᵖ M] [IsCentralScalar O M] (n : ℕ) (φ : G.A n →ₐ[O] TrivSqZeroExt O M) (hφ : (TrivSqZeroExt.fstHom O O M).comp φ = Bialgebra.counitAlgHom O (G.A n)) (w : Wmod A), Phi (spOver φ ≫ t.y n) (zeroSec_spOver_y t n φ hφ) w = GlobalTheory.AugCot.sqZeroEquiv (Bialgebra.counitAlgHom O (G.A n)) M ⟨φ, hφ⟩ (cn t n w)) := by
+  first | exact @GlobalTheory.SqZeroPt.Phi_spOver_y | exact GlobalTheory.SqZeroPt.Phi_spOver_y | (intros; apply GlobalTheory.SqZeroPt.Phi_spOver_y <;> assumption)
+end
+
+section
+section
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap epsR IsTangent)
+open GlobalTheory.SqZeroPt GlobalTheory.PDivGroup GlobalTheory.DeRham
+attribute [local instance] Over.cartesianMonoidalCategory
+
+namespace GlobalTheory.SqZeroPt
+
+theorem cotMap_res_cn : ∀ (p : ℕ) (O : Type) [CommRing O] (G : GlobalTheory.PDivGroup p O) (A : Over (Sp O)) [GrpObj A] (t : G.TorsionTower A), (∀ (M N : Type) [AddCommGroup M] [Module O M] [Module Oᵐᵒᵖ M] [IsCentralScalar O M] [AddCommGroup N] [Module O N] [Module Oᵐᵒᵖ N] [IsCentralScalar O N] (l : M →ₗ[O] N) (z : TM O M ⟶ A) (h : zeroSec O M ≫ z = η[A]) (h' : zeroSec O N ≫ (GlobalTheory.GrpTangent.sqZeroMap l ≫ z) = η[A]) (w : Wmod A), Phi (GlobalTheory.GrpTangent.sqZeroMap l ≫ z) h' w = l (Phi z h w)) → ∀ (n : ℕ) (w : Wmod A), GlobalTheory.PDiv.cotMap (G.res n) (cn t (n + 1) w) = cn t n w := by
+  intro p O _ G A _ t hnat n w
+  have key : (TrivSqZeroExt.map (GlobalTheory.PDiv.cotMap (G.res n))).comp (univ G (n + 1)) =
+      (univ G n).comp (G.res n : G.A (n + 1) →ₐ[O] G.A n) := by
+    ext a
+    · simp [univ]
+    · simp [univ]
+  have hz : GlobalTheory.GrpTangent.sqZeroMap (GlobalTheory.PDiv.cotMap (G.res n)) ≫
+      (spOver (univ G (n + 1)) ≫ t.y (n + 1)) = spOver (univ G n) ≫ t.y n := by
+    have e1 : GlobalTheory.GrpTangent.sqZeroMap (GlobalTheory.PDiv.cotMap (G.res n)) =
+        spOver (TrivSqZeroExt.map (GlobalTheory.PDiv.cotMap (G.res n))) := rfl
+    rw [← Category.assoc, e1, spOver_comp, key, ← spOver_comp, Category.assoc, t.res n]
+  have h0 := zeroSec_spOver_y t (n + 1) _ (fst_comp_univ (G := G) (n + 1))
+  have h1 : zeroSec O _ ≫ (GlobalTheory.GrpTangent.sqZeroMap (GlobalTheory.PDiv.cotMap (G.res n)) ≫
+      (spOver (univ G (n + 1)) ≫ t.y (n + 1))) = η[A] := by
+    rw [hz]; exact zeroSec_spOver_y t n _ (fst_comp_univ (G := G) n)
+  have := hnat _ _ (GlobalTheory.PDiv.cotMap (G.res n)) _ h0 h1 w
+  unfold cn
+  rw [← this]
+  have hP : ∀ {z z' : TM O (GlobalTheory.PDiv.Cot O (G.A n)) ⟶ A} (e : z = z') h h', Phi z h = Phi z' h' := by
+    rintro _ _ rfl _ _; rfl
+  exact congrArg (fun f => f w) (hP hz _ _)
+
+end GlobalTheory.SqZeroPt
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap epsR IsTangent)
+open GlobalTheory.SqZeroPt GlobalTheory.PDivGroup GlobalTheory.DeRham
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tangent_Phi_naturality_linear : ∀ (p : ℕ) (O : Type) [CommRing O] (G : GlobalTheory.PDivGroup p O) (A : Over (Sp O)) [GrpObj A] (t : G.TorsionTower A), (∀ (M N : Type) [AddCommGroup M] [Module O M] [Module Oᵐᵒᵖ M] [IsCentralScalar O M] [AddCommGroup N] [Module O N] [Module Oᵐᵒᵖ N] [IsCentralScalar O N] (l : M →ₗ[O] N) (z : TM O M ⟶ A) (h : zeroSec O M ≫ z = η[A]) (h' : zeroSec O N ≫ (GlobalTheory.GrpTangent.sqZeroMap l ≫ z) = η[A]) (w : Wmod A), Phi (GlobalTheory.GrpTangent.sqZeroMap l ≫ z) h' w = l (Phi z h w)) → ∀ (n : ℕ) (w : Wmod A), GlobalTheory.PDiv.cotMap (G.res n) (cn t (n + 1) w) = cn t n w := by
+  atlas_forward_decl GlobalTheory.SqZeroPt.cotMap_res_cn
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap epsR IsTangent)
+open GlobalTheory.SqZeroPt GlobalTheory.PDivGroup GlobalTheory.DeRham
+attribute [local instance] Over.cartesianMonoidalCategory
+
+namespace GlobalTheory.SqZeroPt.CnSurj
+
+theorem kappa_smul (O : Type) [CommRing O] (M : Type) [AddCommGroup M] [Module O M]
+    [Module Oᵐᵒᵖ M] [IsCentralScalar O M] (r : Γ(Sp O, ⊤))
+    (s : Γ(GlobalTheory.Conormal.conormal (GlobalTheory.LieVB.sec (zeroSec O M)), ⊤)) :
+    kappa O M (r • s) = toO O r • kappa O M s := by
+  letI := (isChart O M).algebra
+  letI := topModule O M
+  exact map_smul ((AugCot.lift ((isChart O M).aug (GlobalTheory.LieVB.sec_hom _)) (sndFn O M)
+    (sndFn_der O M)) ∘ₗ ((isChart O M).augCotEquiv (GlobalTheory.LieVB.sec_hom _)).symm.toLinearMap) r s
+
+theorem Phi_smul {O : Type} [CommRing O] {M : Type} [AddCommGroup M] [Module O M]
+    [Module Oᵐᵒᵖ M] [IsCentralScalar O M] {A : Over (Sp O)} [GrpObj A]
+    (z : TM O M ⟶ A) (h : zeroSec O M ≫ z = η[A]) (c : O) (w : Wmod A) :
+    Phi z h (c • w) = c • Phi z h w := by
+  have e : toO O (GlobalTheory.LieVB.cst O c) = c := Iso.inv_hom_id_apply (Scheme.ΓSpecIso (CommRingCat.of O)) c
+  have h1 := map_smul (QCoh.appLinear (GlobalTheory.LieVB.cotMap z h) ⊤) (GlobalTheory.LieVB.cst O c)
+    (show Γ(GlobalTheory.LieVB.omega A, ⊤) from w)
+  refine (congrArg (kappa O M) h1).trans ((kappa_smul O M _ _).trans ?_)
+  rw [e]
+  rfl
+
+theorem cn_surjective (p : ℕ) (O : Type) [CommRing O] (G : GlobalTheory.PDivGroup p O) (A : Over (Sp O))
+    [GrpObj A] (t : G.TorsionTower A)
+    (hinj : ∀ (M : Type) [AddCommGroup M] [Module O M] [Module Oᵐᵒᵖ M] [IsCentralScalar O M]
+      (z z' : TM O M ⟶ A) (h : zeroSec O M ≫ z = η[A]) (h' : zeroSec O M ≫ z' = η[A]),
+      (∀ w, Phi z h w = Phi z' h' w) → z = z')
+    (hnat : ∀ (M : Type) [AddCommGroup M] [Module O M] [Module Oᵐᵒᵖ M] [IsCentralScalar O M]
+      (n : ℕ) (φ : G.A n →ₐ[O] TrivSqZeroExt O M)
+      (hφ : (TrivSqZeroExt.fstHom O O M).comp φ = Bialgebra.counitAlgHom O (G.A n)) (w : Wmod A),
+      Phi (spOver φ ≫ t.y n) (zeroSec_spOver_y t n φ hφ) w =
+        GlobalTheory.AugCot.sqZeroEquiv (Bialgebra.counitAlgHom O (G.A n)) M ⟨φ, hφ⟩ (cn t n w))
+    (n : ℕ) : Function.Surjective (cn t n) := by
+  let ε := Bialgebra.counitAlgHom O (G.A n)
+  let c : Wmod A →ₗ[O] AugCot ε :=
+    { toFun := cn t n
+      map_add' := map_add (cn t n)
+      map_smul' := fun a w => Phi_smul _ _ a w }
+  let N := AugCot ε ⧸ LinearMap.range c
+  letI : Module Oᵐᵒᵖ N := opModule O N
+  haveI : IsCentralScalar O N := opModule_central O N
+  let q : AugCot ε →ₗ[O] N := (LinearMap.range c).mkQ
+  let φ := (AugCot.sqZeroEquiv ε N).symm q
+  let φ₀ := (AugCot.sqZeroEquiv ε N).symm 0
+  have e : φ.1 = φ₀.1 := t.inj n _ _ _ <|
+    hinj N _ _ (zeroSec_spOver_y t n φ.1 φ.2) (zeroSec_spOver_y t n φ₀.1 φ₀.2) fun w => by
+      refine (hnat N n φ.1 φ.2 w).trans (Eq.trans ?_ (hnat N n φ₀.1 φ₀.2 w).symm)
+      change AugCot.sqZeroEquiv ε N φ (c w) = AugCot.sqZeroEquiv ε N φ₀ (c w)
+      rw [Equiv.apply_symm_apply, Equiv.apply_symm_apply, LinearMap.zero_apply]
+      exact (Submodule.Quotient.mk_eq_zero _).2 ⟨w, rfl⟩
+  have hq : q = 0 := (AugCot.sqZeroEquiv ε N).symm.injective (Subtype.ext e)
+  intro x
+  exact (Submodule.Quotient.mk_eq_zero (LinearMap.range c)).1 (LinearMap.congr_fun hq x)
+
+end GlobalTheory.SqZeroPt.CnSurj
+end
+end
+
+section
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap epsR IsTangent)
+open GlobalTheory.SqZeroPt GlobalTheory.PDivGroup GlobalTheory.DeRham
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tangent_Phi_injective_criterion : ∀ (p : ℕ) (O : Type) [CommRing O] (G : GlobalTheory.PDivGroup p O) (A : Over (Sp O)) [GrpObj A] (t : G.TorsionTower A), (∀ (M : Type) [AddCommGroup M] [Module O M] [Module Oᵐᵒᵖ M] [IsCentralScalar O M] (z z' : TM O M ⟶ A) (h : zeroSec O M ≫ z = η[A]) (h' : zeroSec O M ≫ z' = η[A]), (∀ w, Phi z h w = Phi z' h' w) → z = z') → (∀ (M : Type) [AddCommGroup M] [Module O M] [Module Oᵐᵒᵖ M] [IsCentralScalar O M] (n : ℕ) (φ : G.A n →ₐ[O] TrivSqZeroExt O M) (hφ : (TrivSqZeroExt.fstHom O O M).comp φ = Bialgebra.counitAlgHom O (G.A n)) (w : Wmod A), Phi (spOver φ ≫ t.y n) (zeroSec_spOver_y t n φ hφ) w = GlobalTheory.AugCot.sqZeroEquiv (Bialgebra.counitAlgHom O (G.A n)) M ⟨φ, hφ⟩ (cn t n w)) → ∀ n : ℕ, Function.Surjective (cn t n) := by
+  first | exact @GlobalTheory.SqZeroPt.CnSurj.cn_surjective | exact GlobalTheory.SqZeroPt.CnSurj.cn_surjective | (intros; apply GlobalTheory.SqZeroPt.CnSurj.cn_surjective <;> assumption)
+end
+
+section
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap epsR IsTangent)
+open GlobalTheory.SqZeroPt GlobalTheory.PDivGroup GlobalTheory.DeRham
+attribute [local instance] Over.cartesianMonoidalCategory
+
+set_option autoImplicit false
+
+namespace GlobalTheory.LieKer
+
+theorem mem_smul_top_of_forms {O W : Type} [CommRing O] [AddCommGroup W] [Module O W]
+    [Module.Finite O W] [Module.Projective O W] (I : Ideal O) (w : W)
+    (hw : ∀ l : W →ₗ[O] O, l w ∈ I) : w ∈ (I • ⊤ : Submodule O W) := by
+  obtain ⟨m, f, hf⟩ := Module.Finite.exists_fin' O W
+  obtain ⟨s, hs⟩ := Module.projective_lifting_property f LinearMap.id hf
+  have e : w = ∑ i, (s w i) • f (Pi.single i 1) := by
+    conv_lhs => rw [← LinearMap.id_apply (R := O) w, ← hs]
+    rw [LinearMap.comp_apply]
+    conv_lhs => rw [pi_eq_sum_univ (s w)]
+    simp only [map_sum, map_smul]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    congr 2
+    ext j
+    simp [Pi.single_apply, eq_comm]
+  rw [e]
+  refine Submodule.sum_mem _ fun i _ => Submodule.smul_mem_smul ?_ Submodule.mem_top
+  exact hw (LinearMap.proj i ∘ₗ s)
+
+end GlobalTheory.LieKer
+
+namespace GlobalTheory.LieKer
+
+open GlobalTheory.PDiv
+
+theorem zeroSec_sqZeroMap {O : Type} [CommRing O] {M N : Type} [AddCommGroup M] [Module O M]
+    [Module Oᵐᵒᵖ M] [IsCentralScalar O M] [AddCommGroup N] [Module O N] [Module Oᵐᵒᵖ N]
+    [IsCentralScalar O N] (l : M →ₗ[O] N) :
+    zeroSec O N ≫ GlobalTheory.GrpTangent.sqZeroMap l = zeroSec O M := by
+  ext1
+  change Spec.map _ ≫ Spec.map _ = Spec.map _
+  rw [← Spec.map_comp]
+  congr 1
+  refine CommRingCat.hom_ext (RingHom.ext fun x => ?_)
+  simp
+
+theorem ker_cn_le : ∀ (p : ℕ) (O : Type) [CommRing O] (G : GlobalTheory.PDivGroup p O) (A : Over (Sp O)) [GrpObj A] (t : G.TorsionTower A), Module.Finite O (Wmod A) → Module.Projective O (Wmod A) → (∀ (M N : Type) [AddCommGroup M] [Module O M] [Module Oᵐᵒᵖ M] [IsCentralScalar O M] [AddCommGroup N] [Module O N] [Module Oᵐᵒᵖ N] [IsCentralScalar O N] (l : M →ₗ[O] N) (z : TM O M ⟶ A) (h : zeroSec O M ≫ z = η[A]) (h' : zeroSec O N ≫ (GlobalTheory.GrpTangent.sqZeroMap l ≫ z) = η[A]) (w : Wmod A), Phi (GlobalTheory.GrpTangent.sqZeroMap l ≫ z) h' w = l (Phi z h w)) → (∀ (l : Wmod A →ₗ[O] O), ∃ (v : TM O O ⟶ A) (h : zeroSec O O ≫ v = η[A]), ∀ w, Phi v h w = l w) → (∀ (M : Type) [AddCommGroup M] [Module O M] [Module Oᵐᵒᵖ M] [IsCentralScalar O M] (n : ℕ) (φ : G.A n →ₐ[O] TrivSqZeroExt O M) (hφ : (TrivSqZeroExt.fstHom O O M).comp φ = Bialgebra.counitAlgHom O (G.A n)) (w : Wmod A), Phi (spOver φ ≫ t.y n) (zeroSec_spOver_y t n φ hφ) w = GlobalTheory.AugCot.sqZeroEquiv (Bialgebra.counitAlgHom O (G.A n)) M ⟨φ, hφ⟩ (cn t n w)) → ∀ (n : ℕ) (w : Wmod A), cn t n w = 0 → w ∈ (Ideal.span {(p : O) ^ n} • ⊤ : Submodule O (Wmod A)) := by
+  intro p O _ G A _ t hfin hproj hnat hsurj hcn n w hw
+  refine mem_smul_top_of_forms _ w fun l => ?_
+  obtain ⟨v, hv, hl⟩ := hsurj l
+  let M := ModPow p O n
+  let mk : O →ₗ[O] M := (Ideal.Quotient.mkₐ O (Ideal.span {(p : O) ^ n})).toLinearMap
+  have h' : zeroSec O M ≫ (GlobalTheory.GrpTangent.sqZeroMap mk ≫ v) = η[A] := by
+    rw [← Category.assoc, zeroSec_sqZeroMap, hv]
+  have e1 := hnat O M mk v hv h' w
+  have htan : IsTangent v := by
+    have := congrArg Over.Hom.left hv
+    simp only [Over.comp_left, zeroSec, Over.homMk_left] at this
+    exact this
+  have hpow : (GlobalTheory.GrpTangent.sqZeroMap mk ≫ v : SpAlg O (TrivSqZeroExt O M) ⟶ A) ^ p ^ n = 1 := by
+    have hs : GlobalTheory.GrpTangent.sqZeroMap mk ≫ GlobalTheory.GrpTangent.epsScale (((p ^ n : ℕ) : O)) =
+        GlobalTheory.GrpTangent.sqZeroMap mk ≫ GlobalTheory.GrpTangent.epsScale 0 := by
+      ext1
+      change Spec.map _ ≫ Spec.map _ = Spec.map _ ≫ Spec.map _
+      rw [← Spec.map_comp, ← Spec.map_comp]
+      congr 1
+      refine CommRingCat.hom_ext (RingHom.ext fun x => ?_)
+      ext
+      · simp [ReciprocityTheory.ChartRestriction.G.Geo.Tor.epsScaleR]
+      · simp [ReciprocityTheory.ChartRestriction.G.Geo.Tor.epsScaleR, mk]
+    rw [← MonObj.comp_pow, GlobalTheory.GrpTangent.pow_eq_epsScale_comp htan, ← Category.assoc, hs,
+      Category.assoc, GlobalTheory.GrpTangent.epsScale_zero_comp htan, MonObj.comp_one]
+  obtain ⟨φ, hφy⟩ := t.surj n (TrivSqZeroExt O M) _ hpow
+  have hφ : (TrivSqZeroExt.fstHom O O M).comp φ = Bialgebra.counitAlgHom O (G.A n) := by
+    have H : spOver ((TrivSqZeroExt.fstHom O O M).comp φ) ≫ t.y n = 1 := by
+      rw [← spOver_comp, Category.assoc, hφy]
+      ext1
+      simp only [Over.comp_left]
+      have e : (spOver (TrivSqZeroExt.fstHom O O M)).left ≫ (GlobalTheory.GrpTangent.sqZeroMap mk).left =
+          spMap (TrivSqZeroExt.fstHom O O O).toRingHom := by
+        change Spec.map _ ≫ Spec.map _ = Spec.map _
+        rw [← Spec.map_comp]
+        congr 1
+        refine CommRingCat.hom_ext (RingHom.ext fun x => ?_)
+        simp
+      rw [← Category.assoc, e]
+      refine (htan : _).trans ?_
+      have hu : (toUnit (Over.mk (spMap (algebraMap O O)))).left = 𝟙 (Sp O) := by
+        rw [Over.toUnit_left]; exact Spec.map_id _
+      change η[A].left = (toUnit (Over.mk (spMap (algebraMap O O))) ≫ η[A]).left
+      rw [Over.comp_left, hu]
+      exact (Category.id_comp _).symm
+    exact AlgHom.ext fun a => ((t.eq_one_iff n _).1 H a).trans (by simp)
+  have e2 := hcn M n φ hφ w
+  have e3 : Phi (GlobalTheory.GrpTangent.sqZeroMap mk ≫ v) h' w = 0 := by
+    have tr : ∀ (z : TM O M ⟶ A) (hz : zeroSec O M ≫ z = η[A]), spOver φ ≫ t.y n = z →
+        Phi z hz w = Phi (spOver φ ≫ t.y n) (zeroSec_spOver_y t n φ hφ) w := by
+      rintro z hz rfl; rfl
+    rw [tr _ h' hφy, e2, hw, map_zero]
+  rw [e3, hl] at e1
+  exact (Ideal.Quotient.eq_zero_iff_mem).1 e1.symm
+
+end GlobalTheory.LieKer
+end
+
+section
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap epsR IsTangent)
+open GlobalTheory.SqZeroPt GlobalTheory.PDivGroup GlobalTheory.DeRham
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tangent_Phi_naturality_family : ∀ (p : ℕ) (O : Type) [CommRing O] (G : GlobalTheory.PDivGroup p O) (A : Over (Sp O)) [GrpObj A] (t : G.TorsionTower A), Module.Finite O (Wmod A) → Module.Projective O (Wmod A) → (∀ (M N : Type) [AddCommGroup M] [Module O M] [Module Oᵐᵒᵖ M] [IsCentralScalar O M] [AddCommGroup N] [Module O N] [Module Oᵐᵒᵖ N] [IsCentralScalar O N] (l : M →ₗ[O] N) (z : TM O M ⟶ A) (h : zeroSec O M ≫ z = η[A]) (h' : zeroSec O N ≫ (GlobalTheory.GrpTangent.sqZeroMap l ≫ z) = η[A]) (w : Wmod A), Phi (GlobalTheory.GrpTangent.sqZeroMap l ≫ z) h' w = l (Phi z h w)) → (∀ (l : Wmod A →ₗ[O] O), ∃ (v : TM O O ⟶ A) (h : zeroSec O O ≫ v = η[A]), ∀ w, Phi v h w = l w) → (∀ (M : Type) [AddCommGroup M] [Module O M] [Module Oᵐᵒᵖ M] [IsCentralScalar O M] (n : ℕ) (φ : G.A n →ₐ[O] TrivSqZeroExt O M) (hφ : (TrivSqZeroExt.fstHom O O M).comp φ = Bialgebra.counitAlgHom O (G.A n)) (w : Wmod A), Phi (spOver φ ≫ t.y n) (zeroSec_spOver_y t n φ hφ) w = GlobalTheory.AugCot.sqZeroEquiv (Bialgebra.counitAlgHom O (G.A n)) M ⟨φ, hφ⟩ (cn t n w)) → ∀ (n : ℕ) (w : Wmod A), cn t n w = 0 → w ∈ (Ideal.span {(p : O) ^ n} • ⊤ : Submodule O (Wmod A)) := by
+  first | exact @GlobalTheory.LieKer.ker_cn_le | exact GlobalTheory.LieKer.ker_cn_le | (intros; apply GlobalTheory.LieKer.ker_cn_le <;> assumption)
+end
+
+section
+section
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap epsR IsTangent)
+open GlobalTheory.SqZeroPt GlobalTheory.PDivGroup GlobalTheory.DeRham
+attribute [local instance] Over.cartesianMonoidalCategory
+
+set_option autoImplicit false
+
+noncomputable section
+
+open GlobalTheory.PDiv
+
+namespace GlobalTheory.SqZeroPt
+
+theorem tanDer_cn : ∀ (p : ℕ) (O : Type) [CommRing O] (G : GlobalTheory.PDivGroup p O) (A : Over (Sp O)) [GrpObj A] (t : G.TorsionTower A), (∀ (M N : Type) [AddCommGroup M] [Module O M] [Module Oᵐᵒᵖ M] [IsCentralScalar O M] [AddCommGroup N] [Module O N] [Module Oᵐᵒᵖ N] [IsCentralScalar O N] (l : M →ₗ[O] N) (z : TM O M ⟶ A) (h : zeroSec O M ≫ z = η[A]) (h' : zeroSec O N ≫ (GlobalTheory.GrpTangent.sqZeroMap l ≫ z) = η[A]) (w : Wmod A), Phi (GlobalTheory.GrpTangent.sqZeroMap l ≫ z) h' w = l (Phi z h w)) → (∀ (M : Type) [AddCommGroup M] [Module O M] [Module Oᵐᵒᵖ M] [IsCentralScalar O M] (n : ℕ) (φ : G.A n →ₐ[O] TrivSqZeroExt O M) (hφ : (TrivSqZeroExt.fstHom O O M).comp φ = Bialgebra.counitAlgHom O (G.A n)) (w : Wmod A), Phi (spOver φ ≫ t.y n) (zeroSec_spOver_y t n φ hφ) w = GlobalTheory.AugCot.sqZeroEquiv (Bialgebra.counitAlgHom O (G.A n)) M ⟨φ, hφ⟩ (cn t n w)) → ∀ (v : epsR O ⟶ A) (hv : IsTangent v) (h : zeroSec O O ≫ v = η[A]) (n : ℕ) (w : Wmod A), t.tanDer hv n (cn t n w) = Ideal.Quotient.mk _ (Phi v h w) := by
+  intro p O _ G A _ t hlin hpt v hv h n w
+  haveI : IsCentralScalar O (ModPow p O n) := ⟨fun r m => by
+    obtain ⟨x, rfl⟩ := Ideal.Quotient.mk_surjective m
+    change (Submodule.Quotient.mk (MulOpposite.op r • x) : ModPow p O n) =
+      Submodule.Quotient.mk (r • x)
+    rw [op_smul_eq_smul]⟩
+  let mk : O →ₗ[O] ModPow p O n := (Ideal.Quotient.mkₐ O _).toLinearMap
+  let v' : TM O (ModPow p O n) ⟶ A := GlobalTheory.GrpTangent.sqZeroMap mk ≫ v
+  have hsq : ∀ l : O →ₗ[O] ModPow p O n,
+      GlobalTheory.GrpTangent.sqZeroMap l = spOver (TrivSqZeroExt.map l) := fun _ => rfl
+  have hsc : ∀ c : O, GlobalTheory.GrpTangent.epsScale c =
+      spOver (TrivSqZeroExt.map (c • (LinearMap.id : O →ₗ[O] O))) := fun _ => rfl
+  have hpow : v' ^ p ^ n = 1 := by
+    have h0 : mk ∘ₗ (((p ^ n : ℕ) : O) • (LinearMap.id : O →ₗ[O] O)) =
+        mk ∘ₗ ((0 : O) • (LinearMap.id : O →ₗ[O] O)) := by
+      refine LinearMap.ext fun x => ?_
+      have hz : mk ((p ^ n : ℕ) : O) = 0 := by
+        change Ideal.Quotient.mk (Ideal.span {(p : O) ^ n}) ((p ^ n : ℕ) : O) = 0
+        rw [Ideal.Quotient.eq_zero_iff_mem, Nat.cast_pow]
+        exact Ideal.mem_span_singleton_self _
+      change mk (((p ^ n : ℕ) : O) • x) = mk ((0 : O) • x)
+      rw [zero_smul, map_zero, smul_eq_mul, mul_comm, ← smul_eq_mul, map_smul, hz, smul_zero]
+    have e1 : GlobalTheory.GrpTangent.sqZeroMap mk ≫ GlobalTheory.GrpTangent.epsScale ((p ^ n : ℕ) : O) =
+        GlobalTheory.GrpTangent.sqZeroMap mk ≫ GlobalTheory.GrpTangent.epsScale 0 := by
+      rw [hsq, hsc, hsc, spOver_comp, spOver_comp, ← TrivSqZeroExt.map_comp_map,
+        ← TrivSqZeroExt.map_comp_map, h0]
+    change (GlobalTheory.GrpTangent.sqZeroMap mk ≫ v) ^ p ^ n = 1
+    rw [← MonObj.comp_pow, GlobalTheory.GrpTangent.pow_eq_epsScale_comp hv, ← Category.assoc, e1,
+      Category.assoc, GlobalTheory.GrpTangent.epsScale_zero_comp hv, MonObj.comp_one]
+  obtain ⟨φ, hφv⟩ := t.surj n (TrivSqZeroExt O (ModPow p O n)) v' hpow
+  have hone : spOver (TrivSqZeroExt.fstHom O O O) ≫ v = 1 := by
+    have h2 := congrArg Over.Hom.left h
+    simp only [Over.comp_left] at h2
+    ext1
+    simp only [Over.comp_left]
+    change (zeroSec O O).left ≫ v.left = _
+    rw [h2]
+    have hu : (toUnit (Over.mk (spMap (algebraMap O O)))).left = 𝟙 (Sp O) := by
+      rw [Over.toUnit_left]; exact Spec.map_id _
+    change _ = (toUnit (Over.mk (spMap (algebraMap O O)))).left ≫ η[A].left
+    erw [hu]
+    exact (Category.id_comp _).symm
+  have hφ : (TrivSqZeroExt.fstHom O O (ModPow p O n)).comp φ =
+      Bialgebra.counitAlgHom O (G.A n) := by
+    have e : (TrivSqZeroExt.fstHom O O (ModPow p O n)).comp (TrivSqZeroExt.map mk) =
+        TrivSqZeroExt.fstHom O O O := by
+      ext; simp
+    have h1 : spOver ((TrivSqZeroExt.fstHom O O (ModPow p O n)).comp φ) ≫ t.y n = 1 := by
+      rw [← spOver_comp, Category.assoc, hφv]
+      change spOver _ ≫ GlobalTheory.GrpTangent.sqZeroMap mk ≫ v = 1
+      rw [hsq, ← Category.assoc, spOver_comp, e, hone]
+    exact AlgHom.ext fun a => ((t.eq_one_iff n _).1 h1 a).trans (by simp)
+  let q := Ideal.Quotient.mk (Ideal.span {(p : O) ^ n})
+  let κ : TrivSqZeroExt O (ModPow p O n) →ₐ[O] DualNumber (ModPow p O n) :=
+    { toFun := fun z => TrivSqZeroExt.inl (q z.fst) + TrivSqZeroExt.inr z.snd
+      map_one' := by ext <;> simp
+      map_mul' := fun x y => by
+        ext
+        · simp
+        · simp only [TrivSqZeroExt.snd_mul, TrivSqZeroExt.snd_add, TrivSqZeroExt.snd_inl, TrivSqZeroExt.snd_inr, TrivSqZeroExt.fst_add, TrivSqZeroExt.fst_inl, TrivSqZeroExt.fst_inr]
+          simp [Algebra.smul_def, q, mul_comm]
+      map_zero' := by ext <;> simp
+      map_add' := fun x y => by ext <;> simp [q]
+      commutes' := fun r => by ext <;> simp [q, TrivSqZeroExt.algebraMap_eq_inl', Ideal.Quotient.algebraMap_eq] }
+  have key : κ.comp (TrivSqZeroExt.map mk) = epsTo O (ModPow p O n) := by
+    ext <;> simp [κ, q, mk]
+  have htan : t.tanPt hv n = κ.comp φ := by
+    refine t.inj n _ _ _ ?_
+    rw [t.tanPt_y hv n, ← spOver_comp, Category.assoc, hφv]
+    change _ = spOver κ ≫ GlobalTheory.GrpTangent.sqZeroMap mk ≫ v
+    rw [hsq, ← Category.assoc, spOver_comp, key]
+  have hder : t.tanDer hv n =
+      GlobalTheory.AugCot.sqZeroEquiv (Bialgebra.counitAlgHom O (G.A n)) (ModPow p O n) ⟨φ, hφ⟩ :=
+    GlobalTheory.AugCot.hom_ext fun a => by
+      change t.tanDer hv n (dUnit O a) = _
+      rw [t.tanDer_d hv n, GlobalTheory.AugCot.sqZeroEquiv_d, htan]
+      simp [κ]
+  have h' : zeroSec O (ModPow p O n) ≫ GlobalTheory.GrpTangent.sqZeroMap mk ≫ v = η[A] :=
+    by have e := zeroSec_spOver_y t n φ hφ; rw [hφv] at e; exact e
+  have hc : ∀ (z z' : TM O (ModPow p O n) ⟶ A) (e : z = z') (hz : zeroSec O (ModPow p O n) ≫ z = η[A])
+      (hz' : zeroSec O (ModPow p O n) ≫ z' = η[A]), Phi z hz w = Phi z' hz' w := by
+    intro z z' e hz hz'; subst e; rfl
+  rw [hder, ← hpt (ModPow p O n) n φ hφ w, hc _ _ hφv _ h']
+  exact hlin O (ModPow p O n) mk v h h' w
+
+end GlobalTheory.SqZeroPt
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap epsR IsTangent)
+open GlobalTheory.SqZeroPt GlobalTheory.PDivGroup GlobalTheory.DeRham
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tangent_Phi_naturality_pair : ∀ (p : ℕ) (O : Type) [CommRing O] (G : GlobalTheory.PDivGroup p O) (A : Over (Sp O)) [GrpObj A] (t : G.TorsionTower A), (∀ (M N : Type) [AddCommGroup M] [Module O M] [Module Oᵐᵒᵖ M] [IsCentralScalar O M] [AddCommGroup N] [Module O N] [Module Oᵐᵒᵖ N] [IsCentralScalar O N] (l : M →ₗ[O] N) (z : TM O M ⟶ A) (h : zeroSec O M ≫ z = η[A]) (h' : zeroSec O N ≫ (GlobalTheory.GrpTangent.sqZeroMap l ≫ z) = η[A]) (w : Wmod A), Phi (GlobalTheory.GrpTangent.sqZeroMap l ≫ z) h' w = l (Phi z h w)) → (∀ (M : Type) [AddCommGroup M] [Module O M] [Module Oᵐᵒᵖ M] [IsCentralScalar O M] (n : ℕ) (φ : G.A n →ₐ[O] TrivSqZeroExt O M) (hφ : (TrivSqZeroExt.fstHom O O M).comp φ = Bialgebra.counitAlgHom O (G.A n)) (w : Wmod A), Phi (spOver φ ≫ t.y n) (zeroSec_spOver_y t n φ hφ) w = GlobalTheory.AugCot.sqZeroEquiv (Bialgebra.counitAlgHom O (G.A n)) M ⟨φ, hφ⟩ (cn t n w)) → ∀ (v : epsR O ⟶ A) (hv : IsTangent v) (h : zeroSec O O ≫ v = η[A]) (n : ℕ) (w : Wmod A), t.tanDer hv n (cn t n w) = Ideal.Quotient.mk _ (Phi v h w) := by
+  atlas_forward_decl GlobalTheory.SqZeroPt.tanDer_cn
+end
+
+section
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory
+  CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap epsR IsTangent)
+open GlobalTheory.SqZeroPt GlobalTheory.PDivGroup GlobalTheory.DeRham
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+namespace GlobalTheory.CompatLift
+
+theorem exists_of_compat {O : Type} [CommRing O] (p : O) [IsPrecomplete (Ideal.span {p}) O]
+    {W : Type} [AddCommGroup W] [Module O W] [Module.Finite O W]
+    {C : ℕ → Type} [∀ n, AddCommGroup (C n)] [∀ n, Module O (C n)]
+    (c : ∀ n, W →+ C n) (hsurj : ∀ n, Function.Surjective (c n))
+    (hker : ∀ (n : ℕ) (w : W), c n w = 0 → w ∈ (Ideal.span {p ^ n} • ⊤ : Submodule O W))
+    (hsmul : ∀ (n : ℕ) (a : O) (w : W), c n (a • w) = a • c n w)
+    (hkill : ∀ (n : ℕ) (x : C n), p ^ n • x = 0)
+    (u : ∀ n, C n) (hcomp : ∀ (n : ℕ) (w : W), c (n + 1) w = u (n + 1) → c n w = u n) :
+    ∃ w : W, ∀ n, c n w = u n := by
+  obtain ⟨k, f, hf⟩ := Module.Finite.exists_fin' O W
+  have step : ∀ (n : ℕ) (a : Fin k → O), c n (f a) = u n → ∃ a' : Fin k → O,
+      c (n + 1) (f a') = u (n + 1) ∧ ∃ b : Fin k → O, a' = a + p ^ n • b := by
+    intro n a ha
+    obtain ⟨w', hw'⟩ := hsurj (n + 1) (u (n + 1))
+    have h1 : c n (w' - f a) = 0 := by rw [map_sub, hcomp n w' hw', ha, sub_self]
+    have h2 := hker n _ h1
+    rw [Submodule.ideal_span_singleton_smul, Submodule.mem_smul_pointwise_iff_exists] at h2
+    obtain ⟨v, -, hv⟩ := h2
+    obtain ⟨b, rfl⟩ := hf v
+    refine ⟨a + p ^ n • b, ?_, b, rfl⟩
+    rw [map_add, map_smul, hv, add_sub_cancel, hw']
+  choose! g hg using step
+  let a : ℕ → Fin k → O := fun n => Nat.rec 0 (fun m x => g m x) n
+  have h0 : ∀ x : C 0, x = 0 := fun x => by simpa using hkill 0 x
+  have ha : ∀ n, c n (f (a n)) = u n := by
+    intro n
+    induction n with
+    | zero => rw [h0 (c 0 _), h0 (u 0)]
+    | succ n ih => exact (hg n _ ih).1
+  have hd : ∀ n, ∃ b : Fin k → O, a (n + 1) = a n + p ^ n • b := fun n => (hg n _ (ha n)).2
+  have hcong : ∀ m n, m ≤ n → ∀ i, ∃ e : O, a n i = a m i + p ^ m * e := by
+    intro m n hmn
+    induction n, hmn using Nat.le_induction with
+    | base => exact fun i => ⟨0, by simp⟩
+    | succ n hmn ih =>
+      intro i
+      obtain ⟨e, he⟩ := ih i
+      obtain ⟨b, hb⟩ := hd n
+      refine ⟨e + p ^ (n - m) * b i, ?_⟩
+      rw [hb, Pi.add_apply, Pi.smul_apply, smul_eq_mul, he, ← pow_mul_pow_sub p hmn]
+      ring
+  have hmem : ∀ (m : ℕ) (x y : O),
+      x ≡ y [SMOD (Ideal.span {p} ^ m • ⊤ : Submodule O O)] ↔ ∃ e : O, y = x + p ^ m * e := by
+    intro m x y
+    rw [SModEq.sub_mem, smul_eq_mul, Ideal.mul_top, Ideal.span_singleton_pow,
+      Ideal.mem_span_singleton']
+    constructor
+    · rintro ⟨e, he⟩
+      exact ⟨-e, by rw [mul_neg, mul_comm, he]; ring⟩
+    · rintro ⟨e, rfl⟩
+      exact ⟨-e, by ring⟩
+  choose L hL using fun i => IsPrecomplete.prec' (I := Ideal.span {p}) (fun n => a n i)
+    fun {m n} hmn => (hmem m _ _).2 (hcong m n hmn i)
+  refine ⟨f L, fun n => ?_⟩
+  choose e he using fun i => (hmem n _ _).1 (hL i n)
+  have hLe : L = a n + p ^ n • e := funext fun i => by
+    rw [he i, Pi.add_apply, Pi.smul_apply, smul_eq_mul]
+  rw [hLe, map_add, map_smul, map_add, hsmul, hkill, add_zero, ha]
+
+end GlobalTheory.CompatLift
+
+namespace GlobalTheory.SqZeroPt
+
+theorem cn_hits_compatible : ∀ (p : ℕ) (O : Type) [CommRing O] [IsAdicComplete (Ideal.span {(p : O)}) O] (G : GlobalTheory.PDivGroup p O) (A : Over (Sp O)) [GrpObj A] (t : G.TorsionTower A), Module.Finite O (Wmod A) → (∀ n, Function.Surjective (cn t n)) → (∀ (n : ℕ) (w : Wmod A), cn t n w = 0 → w ∈ (Ideal.span {(p : O) ^ n} • ⊤ : Submodule O (Wmod A))) → (∀ (n : ℕ) (w : Wmod A), GlobalTheory.PDiv.cotMap (G.res n) (cn t (n + 1) w) = cn t n w) → (∀ (n : ℕ) (c : O) (w : Wmod A), cn t n (c • w) = c • cn t n w) → ∀ u : G.omega, ∃ w, ∀ n, cn t n w = u.1 n := by
+  intro p O _ _ G A _ t hfin hsurj hker hres hsmul u
+  exact GlobalTheory.CompatLift.exists_of_compat (p : O) (C := fun n => GlobalTheory.PDiv.Cot O (G.A n)) (cn t)
+    hsurj hker hsmul (fun n x => G.pow_smul_cot n x) (fun n => u.1 n)
+    fun n w hw => by rw [← hres n w, hw]; exact u.2 n
+
+end GlobalTheory.SqZeroPt
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap epsR IsTangent)
+open GlobalTheory.SqZeroPt GlobalTheory.PDivGroup GlobalTheory.DeRham
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cotangent_inverse_limit_compatible : ∀ (p : ℕ) (O : Type) [CommRing O] [IsAdicComplete (Ideal.span {(p : O)}) O] (G : GlobalTheory.PDivGroup p O) (A : Over (Sp O)) [GrpObj A] (t : G.TorsionTower A), Module.Finite O (Wmod A) → (∀ n, Function.Surjective (cn t n)) → (∀ (n : ℕ) (w : Wmod A), cn t n w = 0 → w ∈ (Ideal.span {(p : O) ^ n} • ⊤ : Submodule O (Wmod A))) → (∀ (n : ℕ) (w : Wmod A), GlobalTheory.PDiv.cotMap (G.res n) (cn t (n + 1) w) = cn t n w) → (∀ (n : ℕ) (c : O) (w : Wmod A), cn t n (c • w) = c • cn t n w) → ∀ u : G.omega, ∃ w, ∀ n, cn t n w = u.1 n := by
+  atlas_forward_decl GlobalTheory.SqZeroPt.cn_hits_compatible
+end
+
+section
+set_option autoImplicit false
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory
+  CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap epsR IsTangent)
+open ReciprocityTheory.ChartRestriction.G.Semi (mulN)
+open GlobalTheory.SqZeroPt GlobalTheory.PDivGroup GlobalTheory.DeRham
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+open GlobalTheory.PDiv in
+
+theorem GlobalTheory.PDivGroup.TorsionTower.existsUnique_tangent : ∀ (p : ℕ) (O : Type) [CommRing O]
+    [IsAdicComplete (Ideal.span {(p : O)}) O] (G : GlobalTheory.PDivGroup p O) (A : Over (Sp O))
+    [GrpObj A] [Smooth A.hom] (t : G.TorsionTower A) (x : G.Lie), ∃! v : epsR O ⟶ A, t.LieCorr x v := by
+  intro p O _ _ G A _ _ t x
+  have hfr := GlobalTheory.T.exists_cotangent_frame_smooth_groupScheme O A
+  haveI hq : (GlobalTheory.LieVB.omega A).IsQuasicoherent := GlobalTheory.OmegaGlobal.isQuasicoherent_of_frames hfr
+  obtain ⟨hfin, hproj⟩ := GlobalTheory.T.finite_projective_cotangentGlobalSections_groupScheme O A hfr
+  have hnat := GlobalTheory.T.tangent_Phi_sqZero_naturality O
+  have hinj := GlobalTheory.T.sqZeroPoint_eq_of_cotangentForm_eq O A hq
+  have hsurj := GlobalTheory.T.tangent_Phi_surjective_onto_dual O A hq
+  have hspec := GlobalTheory.T.tangent_Phi_naturality_module p O G A t (hnat · · A)
+  have hl : ∀ n (c : O) w, cn t n (c • w) = c • cn t n w := fun n c w => GlobalTheory.T.tangent_Phi_smul O _ A _ _ c w
+  have hres := GlobalTheory.T.tangent_Phi_naturality_linear p O G A t (hnat · · A)
+  have hon := GlobalTheory.T.cotangent_inverse_limit_compatible p O G A t hfin (GlobalTheory.T.tangent_Phi_injective_criterion p O G A t hinj hspec)
+    (GlobalTheory.T.tangent_Phi_naturality_family p O G A t hfin hproj (hnat · · A) hsurj hspec) hres hl
+  have htan := GlobalTheory.T.tangent_Phi_naturality_pair p O G A t (hnat · · A) hspec
+  let c : Wmod A →ₗ[O] G.omega :=
+    { toFun := fun w => ⟨fun n => cn t n w, fun n => hres n w⟩
+      map_add' := fun w w' => Subtype.ext (funext fun n => map_add (cn t n) w w')
+      map_smul' := fun a w => Subtype.ext (funext fun n => hl n a w) }
+  have hmk : ∀ (n : ℕ) (a b : O), a ≡ b [SMOD (Ideal.span {(p : O)} ^ n • ⊤ : Submodule O O)] ↔
+      (Ideal.Quotient.mk _ a : ModPow p O n) = Ideal.Quotient.mk _ b := fun n a b => by
+    rw [SModEq.sub_mem, smul_eq_mul, Ideal.mul_top, Ideal.span_singleton_pow, Ideal.Quotient.eq]
+  have hu : ∀ a b : O, (∀ n, (Ideal.Quotient.mk _ a : ModPow p O n) = Ideal.Quotient.mk _ b) →
+      a = b := fun a b h => sub_eq_zero.1 <| IsHausdorff.haus' (I := Ideal.span {(p : O)}) _
+        fun n => SModEq.zero.2 (SModEq.sub_mem.1 ((hmk n a b).2 (h n)))
+  obtain ⟨v, hv0, hvμ⟩ := hsurj (x ∘ₗ c)
+  have hv : IsTangent v := congrArg Over.Hom.left hv0
+  refine ⟨v, (t.lieCorr_iff hv x).2 fun n u => ?_, fun y hy => ?_⟩
+  · obtain ⟨w, hw⟩ := hon u
+    have e : u = c w := Subtype.ext (funext fun n => (hw n).symm)
+    rw [← hw n, htan v hv hv0 n w, hvμ, e]
+    rfl
+  · have hy' : IsTangent y := hy.1
+    have hy0 : zeroSec O O ≫ y = η[A] := Over.OverMorphism.ext hy'
+    refine hinj O y v hy0 hv0 fun w => ?_
+    rw [hvμ]
+    refine hu _ _ fun n => ?_
+    rw [← htan y hy' hy0 n w]
+    exact ((t.lieCorr_iff hy' x).1 hy n (c w)).symm
+end
+
+section
 set_option autoImplicit false
 
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
@@ -290,3 +970,4 @@ theorem exists_pDivGroup_raynaud : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Fiel
   rfl
 
 end GlobalTheory.RaynaudPDiv
+end

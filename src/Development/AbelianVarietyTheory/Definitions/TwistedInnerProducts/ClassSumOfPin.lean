@@ -35,7 +35,6 @@ theorem pin_of_export (p : PtAt ex Csz) (hE : p.ExportRow)
   rw [p.P.mjH.j_eq, ← hD.thTheta, hx]
   exact (theta_cast _ _ _ ht _).symm
 
-theorem pin_of_rows (p : PtAt ex Csz) (h : p.Rows) : ClassSumPin p := pin_of_export p h.export_ h.divRows
 
 theorem dim_eq (p : PtAt ex Csz) (i : Fin D.R.m) :
     (p.P.A3.indefDown p.P.S0).dW i = Module.finrank D.what₂.LL (p.R.toRealDat.WL p.F.lv2 false i) := by

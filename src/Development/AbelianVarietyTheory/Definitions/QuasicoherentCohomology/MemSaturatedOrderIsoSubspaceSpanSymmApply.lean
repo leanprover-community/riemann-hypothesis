@@ -15,8 +15,6 @@ def saturation (N : Submodule R M) : Submodule R M :=
 def IsSaturatedSubmodule (N : Submodule R M) : Prop :=
   saturation N = N
 
-theorem saturation_eq_comap_torsion (N : Submodule R M) :
-    saturation N = (Submodule.torsion R (M ⧸ N)).comap N.mkQ := rfl
 
 theorem mem_saturation_iff' {N : Submodule R M} {x : M} :
     x ∈ saturation N ↔ ∃ a ∈ R⁰, a • x ∈ N := by
@@ -37,10 +35,6 @@ theorem mem_saturation_iff [IsDomain R] {N : Submodule R M} {x : M} :
   rw [mem_saturation_iff']
   simp only [mem_nonZeroDivisors_iff_ne_zero]
 
-theorem coe_saturation [IsDomain R] (N : Submodule R M) :
-    (saturation N : Set M) = {x | ∃ a : R, a ≠ 0 ∧ a • x ∈ N} := by
-  ext x
-  exact mem_saturation_iff
 
 theorem mem_saturation_of_smul_mem [IsDomain R] {N : Submodule R M} {a : R} {x : M} (ha : a ≠ 0)
     (hx : a • x ∈ N) : x ∈ saturation N := mem_saturation_iff.2 ⟨a, ha, hx⟩
@@ -137,8 +131,6 @@ theorem IsSaturatedSubmodule.saturation_le_iff {N P : Submodule R M}
 theorem IsSaturatedSubmodule.eq_saturation {N P : Submodule R M}
     (h : IsSaturatedSubmodule P) (h₁ : N ≤ P) (h₂ : P ≤ saturation N) : P = saturation N := le_antisymm h₂ (h.saturation_le_iff.2 h₁)
 
-theorem saturation_eq_of_le_of_le {N P : Submodule R M} (h₁ : N ≤ P) (h₂ : P ≤ saturation N) :
-    saturation P = saturation N := le_antisymm ((saturation_mono h₂).trans (saturation_saturation N).le) (saturation_mono h₁)
 
 @[simp]
 theorem saturation_bot : saturation (⊥ : Submodule R M) = Submodule.torsion R M := by
@@ -150,31 +142,10 @@ theorem saturation_bot : saturation (⊥ : Submodule R M) = Submodule.torsion R 
 @[simp]
 theorem saturation_top : saturation (⊤ : Submodule R M) = ⊤ := top_unique (le_saturation _)
 
-theorem isSaturatedSubmodule_top : IsSaturatedSubmodule (⊤ : Submodule R M) := by
-  rw [isSaturatedSubmodule_iff_le]
-  exact le_top
 
-theorem isSaturatedSubmodule_bot_iff [IsDomain R] :
-    IsSaturatedSubmodule (⊥ : Submodule R M) ↔ Module.IsTorsionFree R M := by
-  unfold IsSaturatedSubmodule
-  rw [saturation_bot, Submodule.isTorsionFree_iff_torsion_eq_bot]
 
-theorem isSaturatedSubmodule_bot [IsDomain R] [Module.IsTorsionFree R M] :
-    IsSaturatedSubmodule (⊥ : Submodule R M) := isSaturatedSubmodule_bot_iff.2 ‹_›
 
-theorem torsion_le_saturation (N : Submodule R M) : Submodule.torsion R M ≤ saturation N := by
-  rw [← saturation_bot]
-  exact saturation_mono bot_le
 
-theorem saturation_eq_top_iff {N : Submodule R M} :
-    saturation N = ⊤ ↔ Module.IsTorsion R (M ⧸ N) := by
-  rw [eq_top_iff]
-  constructor
-  · intro h y
-    obtain ⟨x, rfl⟩ := Submodule.mkQ_surjective N y
-    exact h (Submodule.mem_top (x := x))
-  · intro h x _
-    exact @h (N.mkQ x)
 
 theorem saturation_inf (N P : Submodule R M) :
     saturation (N ⊓ P) = saturation N ⊓ saturation P := by
@@ -189,25 +160,12 @@ theorem saturation_inf (N P : Submodule R M) :
   · rw [mul_smul]
     exact P.smul_mem a hbx
 
-theorem saturation_sup_saturation (N P : Submodule R M) :
-    saturation (saturation N ⊔ saturation P) = saturation (N ⊔ P) := by
-  refine le_antisymm ?_ (saturation_mono (sup_le_sup (le_saturation N) (le_saturation P)))
-  calc saturation (saturation N ⊔ saturation P) ≤ saturation (saturation (N ⊔ P)) :=
-        saturation_mono (sup_le (saturation_mono le_sup_left) (saturation_mono le_sup_right))
-    _ = saturation (N ⊔ P) := saturation_saturation _
 
 theorem IsSaturatedSubmodule.inf {N P : Submodule R M} (hN : IsSaturatedSubmodule N)
     (hP : IsSaturatedSubmodule P) : IsSaturatedSubmodule (N ⊓ P) := by
   unfold IsSaturatedSubmodule
   rw [saturation_inf, hN.saturation_eq, hP.saturation_eq]
 
-theorem isSaturatedSubmodule_iInf {ι : Sort*} {N : ι → Submodule R M}
-    (h : ∀ i, IsSaturatedSubmodule (N i)) : IsSaturatedSubmodule (⨅ i, N i) := by
-  rw [isSaturatedSubmodule_iff_le]
-  intro x hx
-  rw [Submodule.mem_iInf]
-  intro i
-  exact (h i).saturation_eq.le (saturation_mono (iInf_le N i) hx)
 
 theorem saturation_comap (f : M →ₗ[R] M') (N : Submodule R M') :
     saturation (N.comap f) = (saturation N).comap f := by
@@ -219,13 +177,6 @@ theorem IsSaturatedSubmodule.comap {N : Submodule R M'} (h : IsSaturatedSubmodul
   unfold IsSaturatedSubmodule
   rw [saturation_comap, h.saturation_eq]
 
-theorem isSaturatedSubmodule_ker [IsDomain R] [Module.IsTorsionFree R M'] (f : M →ₗ[R] M') :
-    IsSaturatedSubmodule (LinearMap.ker f) := by
-  rw [isSaturatedSubmodule_iff]
-  intro a ha x hx
-  rw [LinearMap.mem_ker] at hx ⊢
-  rw [map_smul] at hx
-  exact (smul_eq_zero_iff_right ha).1 hx
 
 theorem map_saturation_le (f : M →ₗ[R] M') (N : Submodule R M) :
     (saturation N).map f ≤ saturation (N.map f) := by
@@ -249,56 +200,10 @@ theorem map_saturation_of_injective {f : M →ₗ[R] M'} (hf : Function.Injectiv
   rw [← hf hfn]
   exact hn
 
-theorem map_saturation_equiv (e : M ≃ₗ[R] M') (N : Submodule R M) :
-    (saturation N).map (e : M →ₗ[R] M') = saturation (N.map (e : M →ₗ[R] M')) := by
-  rw [map_saturation_of_injective e.injective, LinearEquiv.range, top_inf_eq]
 
-theorem isSaturatedSubmodule_map_equiv_iff (e : M ≃ₗ[R] M') {N : Submodule R M} :
-    IsSaturatedSubmodule (N.map (e : M →ₗ[R] M')) ↔ IsSaturatedSubmodule N := by
-  unfold IsSaturatedSubmodule
-  rw [← map_saturation_equiv]
-  exact (Submodule.map_injective_of_injective e.injective).eq_iff
 
-theorem isSaturatedSubmodule_comap_iff_of_surjective {f : M →ₗ[R] M'}
-    (hf : Function.Surjective f) {N : Submodule R M'} :
-    IsSaturatedSubmodule (N.comap f) ↔ IsSaturatedSubmodule N := by
-  unfold IsSaturatedSubmodule
-  rw [saturation_comap]
-  exact (Submodule.comap_injective_of_surjective hf).eq_iff
 
-theorem IsSaturatedSubmodule.map_subtype {P : Submodule R M} {N : Submodule R P}
-    (hN : IsSaturatedSubmodule N) (hP : IsSaturatedSubmodule P) :
-    IsSaturatedSubmodule (N.map P.subtype) := by
-  rw [isSaturatedSubmodule_iff'] at hN
-  rw [isSaturatedSubmodule_iff'] at hP
-  rw [isSaturatedSubmodule_iff']
-  intro a ha x hx
-  obtain ⟨y, hy, hyx⟩ := Submodule.mem_map.1 hx
-  have haxP : a • x ∈ P := by
-    rw [← hyx]
-    exact y.2
-  have hxP : x ∈ P := hP a ha x haxP
-  have hy' : a • (⟨x, hxP⟩ : P) = y := Subtype.ext (by simpa using hyx.symm)
-  refine Submodule.mem_map.2 ⟨⟨x, hxP⟩, hN a ha _ ?_, rfl⟩
-  rw [hy']
-  exact hy
 
-theorem isSaturatedSubmodule_of_isCompl [IsDomain R] [Module.IsTorsionFree R M]
-    {N P : Submodule R M} (h : IsCompl N P) : IsSaturatedSubmodule N := by
-  rw [isSaturatedSubmodule_iff]
-  intro a ha x hx
-  have hxs : x ∈ N ⊔ P := by
-    rw [h.sup_eq_top]
-    exact Submodule.mem_top
-  obtain ⟨n, hn, p, hp, rfl⟩ := Submodule.mem_sup.1 hxs
-  have hap : a • p ∈ N := by
-    have e : a • p = a • (n + p) - a • n := by rw [smul_add, add_sub_cancel_left]
-    rw [e]
-    exact N.sub_mem hx (N.smul_mem a hn)
-  have h0 : a • p ∈ N ⊓ P := Submodule.mem_inf.2 ⟨hap, P.smul_mem a hp⟩
-  rw [h.inf_eq_bot, Submodule.mem_bot] at h0
-  rw [(smul_eq_zero_iff_right ha).1 h0, add_zero]
-  exact hn
 
 theorem IsSaturatedSubmodule.inf_smul_top [IsDomain R] {N : Submodule R M}
     (h : IsSaturatedSubmodule N) {a : R} (ha : a ≠ 0) :
@@ -312,15 +217,6 @@ theorem IsSaturatedSubmodule.inf_smul_top [IsDomain R] {N : Submodule R M}
   · rintro ⟨y, hy, rfl⟩
     exact ⟨N.smul_mem a hy, y, Submodule.mem_top, rfl⟩
 
-theorem saturation_smul [IsDomain R] (N : Submodule R M) {a : R} (ha : a ≠ 0) :
-    saturation (a • N) = saturation N := by
-  apply le_antisymm
-  · apply saturation_mono
-    intro x hx
-    obtain ⟨y, hy, rfl⟩ := (Submodule.mem_smul_pointwise_iff_exists _ _ _).1 hx
-    exact N.smul_mem a hy
-  · refine (isSaturatedSubmodule_saturation (a • N)).saturation_le_iff.2 fun x hx => ?_
-    exact mem_saturation_of_smul_mem ha (Submodule.smul_mem_pointwise_smul x a N hx)
 
 theorem isTorsion_saturation_quotient (N : Submodule R M) :
     Module.IsTorsion R (saturation N ⧸ N.submoduleOf (saturation N)) := by
@@ -332,23 +228,7 @@ theorem isTorsion_saturation_quotient (N : Submodule R M) :
   rw [← map_smul, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
   exact hax
 
-theorem isSaturatedSubmodule_int_iff {A : Type*} [AddCommGroup A] (N : Submodule ℤ A) :
-    IsSaturatedSubmodule N ↔ N.toAddSubgroup.NSMulSaturated := by
-  rw [isSaturatedSubmodule_iff, AddSubgroup.saturated_iff_zsmul]
-  constructor
-  · intro h n g hg
-    by_cases hn : n = 0
-    · exact Or.inl hn
-    · exact Or.inr (h n hn g hg)
-  · intro h a ha x hx
-    exact (h a x hx).resolve_left ha
 
-theorem isSaturatedSubmodule_of_field {K V : Type*} [Field K] [AddCommGroup V] [Module K V]
-    (W : Submodule K V) : IsSaturatedSubmodule W := by
-  rw [isSaturatedSubmodule_iff]
-  intro a ha x hx
-  have hx' := W.smul_mem a⁻¹ hx
-  rwa [smul_smul, inv_mul_cancel₀ ha, one_smul] at hx'
 
 end Basic
 
@@ -428,9 +308,6 @@ def IsSaturatedIn (M N : Submodule R V) : Prop :=
 
 theorem saturationIn_def (M N : Submodule R V) : saturationIn M N = M ⊓ saturation N := rfl
 
-theorem mem_saturationIn_iff [IsDomain R] {M N : Submodule R V} {x : V} :
-    x ∈ saturationIn M N ↔ x ∈ M ∧ ∃ a : R, a ≠ 0 ∧ a • x ∈ N := by
-  rw [saturationIn_def, Submodule.mem_inf, mem_saturation_iff]
 
 theorem saturationIn_le (M N : Submodule R V) : saturationIn M N ≤ M := inf_le_left
 
@@ -460,13 +337,7 @@ theorem saturationIn_saturationIn (M N : Submodule R V) :
   rw [saturationIn_def, saturationIn_def, saturation_inf, saturation_saturation, ← inf_assoc,
     inf_of_le_left (le_saturation M)]
 
-theorem isSaturatedIn_saturationIn (M N : Submodule R V) : IsSaturatedIn M (saturationIn M N) := by
-  unfold IsSaturatedIn
-  rw [saturationIn_saturationIn]
 
-theorem saturation_saturationIn {M N : Submodule R V} (h : N ≤ M) :
-    saturation (saturationIn M N) = saturation N := by
-  rw [saturationIn_def, saturation_inf, saturation_saturation, inf_of_le_right (saturation_mono h)]
 
 theorem map_subtype_saturation (M : Submodule R V) (N : Submodule R M) :
     (saturation N).map M.subtype = saturationIn M (N.map M.subtype) := by
@@ -502,28 +373,8 @@ theorem isSaturatedIn_iff {M N : Submodule R V} :
     rw [← map_subtype_saturation_submoduleOf, hs.saturation_eq, Submodule.submoduleOf,
       Submodule.map_comap_subtype, inf_of_le_right hle]
 
-theorem isSaturatedIn_map_subtype_iff {M : Submodule R V} {N : Submodule R M} :
-    IsSaturatedIn M (N.map M.subtype) ↔ IsSaturatedSubmodule N := by
-  unfold IsSaturatedIn IsSaturatedSubmodule
-  rw [← map_subtype_saturation]
-  exact (Submodule.map_injective_of_injective (f := M.subtype) Subtype.coe_injective).eq_iff
 
-theorem isSaturatedIn_iff_isTorsionFree [IsDomain R] {M N : Submodule R V} :
-    IsSaturatedIn M N ↔ N ≤ M ∧ Module.IsTorsionFree R (M ⧸ N.submoduleOf M) := by
-  rw [isSaturatedIn_iff, isSaturatedSubmodule_iff_isTorsionFree]
 
-theorem isSaturatedIn_iff_smul_mem [IsDomain R] {M N : Submodule R V} :
-    IsSaturatedIn M N ↔ N ≤ M ∧ ∀ a : R, a ≠ 0 → ∀ x ∈ M, a • x ∈ N → x ∈ N := by
-  constructor
-  · intro hs
-    refine ⟨hs.le, fun a ha x hx hax => ?_⟩
-    rw [← hs.saturationIn_eq]
-    exact mem_saturationIn_iff.2 ⟨hx, a, ha, hax⟩
-  · rintro ⟨hle, hs⟩
-    show saturationIn M N = N
-    refine le_antisymm (fun x hx => ?_) (le_saturationIn hle)
-    obtain ⟨hxM, a, ha, hax⟩ := mem_saturationIn_iff.1 hx
-    exact hs a ha x hxM hax
 
 theorem IsSaturatedSubmodule.isSaturatedIn_inf {W : Submodule R V} (h : IsSaturatedSubmodule W)
     (M : Submodule R V) : IsSaturatedIn M (M ⊓ W) := by
@@ -543,21 +394,8 @@ theorem IsSaturatedIn.trans {M P N : Submodule R V} (hP : IsSaturatedIn M P)
   rw [← hN.saturationIn_eq, saturationIn_def]
   exact Submodule.mem_inf.2 ⟨hxP, hx.2⟩
 
-theorem map_saturationIn_of_injective {f : V →ₗ[R] V'} (hf : Function.Injective f)
-    (M N : Submodule R V) :
-    (saturationIn M N).map f = saturationIn (M.map f) (N.map f) := by
-  rw [saturationIn_def, saturationIn_def, Submodule.map_inf f hf, map_saturation_of_injective hf,
-    ← inf_assoc, inf_of_le_left LinearMap.map_le_range]
 
-theorem rank_saturationIn [IsDomain R] {M N : Submodule R V} (h : N ≤ M) :
-    Module.rank R (saturationIn M N) = Module.rank R N := by
-  rw [← map_subtype_saturation_submoduleOf,
-    ← (Submodule.equivMapOfInjective M.subtype Subtype.coe_injective
-      (saturation (N.submoduleOf M))).rank_eq, rank_saturation,
-    (Submodule.submoduleOfEquivOfLe h).rank_eq]
 
-theorem finrank_saturationIn [IsDomain R] {M N : Submodule R V} [Module.Finite R M] (h : N ≤ M) :
-    Module.finrank R (saturationIn M N) = Module.finrank R N := congrArg Cardinal.toNat (rank_saturationIn h)
 
 end Relative
 
@@ -622,28 +460,8 @@ theorem IsSaturatedSubmodule.comap_localized' (hp : p ≤ R⁰) {N : Submodule R
   obtain ⟨a, ha, ham⟩ := hm
   exact h.saturation_eq.le (mem_saturation_iff'.2 ⟨a, hp ha, ham⟩)
 
-theorem localized'_saturationIn (hp : p ≤ R⁰) (P N : Submodule R M) :
-    (saturationIn P N).localized' S p f =
-      saturationIn (P.localized' S p f) (N.localized' S p f) := by
-  rw [saturationIn_def, saturationIn_def, Submodule.localized'_inf, localized'_saturation S p f hp]
 
-theorem localized_saturation_atPrime [IsDomain R] (P : Ideal R) [P.IsPrime] (N : Submodule R M) :
-    (saturation N).localized P.primeCompl = saturation (N.localized P.primeCompl) := localized'_saturation (Localization P.primeCompl) P.primeCompl
-    (LocalizedModule.mkLinearMap P.primeCompl M) P.primeCompl_le_nonZeroDivisors N
 
-theorem isSaturatedSubmodule_iff_localized_maximal [IsDomain R] {N : Submodule R M} :
-    IsSaturatedSubmodule N ↔
-      ∀ (P : Ideal R) [P.IsMaximal], IsSaturatedSubmodule (N.localized P.primeCompl) := by
-  constructor
-  · intro h P _
-    exact h.localized' (Localization P.primeCompl) P.primeCompl
-      (LocalizedModule.mkLinearMap P.primeCompl M) P.primeCompl_le_nonZeroDivisors
-  · intro h
-    rw [isSaturatedSubmodule_iff_le]
-    refine Submodule.le_of_localization_maximal (fun P _ => LocalizedModule P.primeCompl M)
-      (fun P _ => LocalizedModule.mkLinearMap P.primeCompl M) fun P _ => ?_
-    exact (congrArg (Submodule.restrictScalars R)
-      ((localized_saturation_atPrime P N).trans (h P).saturation_eq)).le
 
 end Localisation
 
@@ -730,44 +548,8 @@ theorem span_localization_inf_restrictScalars (M : Submodule R V) (W : Submodule
       Submodule.span S (M : Set V) ⊓ W := by
   rw [span_localization_inf S p, Submodule.coe_restrictScalars, Submodule.span_eq]
 
-theorem span_localization_saturation (hp : p ≤ R⁰) (N : Submodule R V) :
-    Submodule.span S (saturation N : Set V) = saturation (Submodule.span S (N : Set V)) := by
-  apply le_antisymm
-  · rw [Submodule.span_le]
-    intro x hx
-    obtain ⟨a, ha, hax⟩ := mem_saturation_iff'.1 hx
-    refine mem_saturation_iff'.2
-      ⟨algebraMap R S a, IsLocalization.nonZeroDivisors_le_comap (M := p) (S := S) ha, ?_⟩
-    rw [algebraMap_smul]
-    exact Submodule.subset_span hax
-  · intro y hy
-    obtain ⟨b, hb, hby⟩ := mem_saturation_iff'.1 hy
-    obtain ⟨c, hc, hcb⟩ := (mem_span_localization_iff S p N _).1 hby
-    obtain ⟨⟨r, t⟩, rfl⟩ := IsLocalization.mk'_surjective p b
-    have hr : r ∈ R⁰ := by
-      have h1 : algebraMap R S r ∈ S⁰ := by
-        rw [← IsLocalization.mk'_spec S r t]
-        exact mul_mem hb (IsLocalization.map_units S t).mem_nonZeroDivisors
-      exact mem_nonZeroDivisors_of_injective (IsLocalization.injective S hp) h1
-    have e : (t : R) • c • (IsLocalization.mk' S r t • y) = (c * r) • y := by
-      rw [smul_comm c (IsLocalization.mk' S r t) y, ← algebraMap_smul S (t : R),
-        smul_smul (algebraMap R S t), IsLocalization.mk'_spec', algebraMap_smul, smul_smul,
-        mul_comm]
-    refine Submodule.subset_span (mem_saturation_iff'.2 ⟨c * r, mul_mem (hp hc) hr, ?_⟩)
-    rw [← e]
-    exact N.smul_mem _ hcb
 
-theorem span_localization_saturationIn (hp : p ≤ R⁰) (M N : Submodule R V) :
-    Submodule.span S (saturationIn M N : Set V) =
-      saturationIn (Submodule.span S (M : Set V)) (Submodule.span S (N : Set V)) := by
-  rw [saturationIn_def, saturationIn_def, span_localization_inf S p,
-    span_localization_saturation S p hp]
 
-theorem IsSaturatedIn.span_localization (hp : p ≤ R⁰) {M N : Submodule R V}
-    (h : IsSaturatedIn M N) :
-    IsSaturatedIn (Submodule.span S (M : Set V)) (Submodule.span S (N : Set V)) := by
-  unfold IsSaturatedIn
-  rw [← span_localization_saturationIn S p hp, h.saturationIn_eq]
 
 end AmbientLocalisation
 
@@ -797,18 +579,11 @@ def saturatedOrderIsoSubspace :
     rw [P.2.comap_localized' K R⁰ f le_rfl]
     rfl
 
-theorem saturatedOrderIsoSubspace_apply (N : {N : Submodule R M // IsSaturatedSubmodule N}) :
-    saturatedOrderIsoSubspace K f N = Submodule.span K (f '' N.1) := by
-  show N.1.localized' K R⁰ f = _
-  exact Submodule.localized'_eq_span K R⁰ f N.1
 
 @[simp]
 theorem saturatedOrderIsoSubspace_symm_apply (W : Submodule K V) :
     ((saturatedOrderIsoSubspace K f).symm W).1 = (W.restrictScalars R).comap f := rfl
 
-theorem localized'_saturation_fractionRing (N : Submodule R M) :
-    (saturation N).localized' K R⁰ f = N.localized' K R⁰ f := by
-  rw [localized'_saturation K R⁰ f le_rfl, (isSaturatedSubmodule_of_field _).saturation_eq]
 
 end GenericFibre
 
@@ -826,27 +601,7 @@ theorem saturationIn_eq_inf_span (M N : Submodule R V) :
     saturationIn M N = M ⊓ (Submodule.span K (N : Set V)).restrictScalars R := by
   rw [saturationIn_def, saturation_eq_span K]
 
-theorem map_subtype_saturation_eq_inf_span (M : Submodule R V) (N : Submodule R M) :
-    (saturation N).map M.subtype =
-      M ⊓ (Submodule.span K (N.map M.subtype : Set V)).restrictScalars R := by
-  rw [map_subtype_saturation, saturationIn_eq_inf_span K]
 
-theorem mem_saturation_iff_mem_span {M : Submodule R V} {N : Submodule R M} {x : M} :
-    x ∈ saturation N ↔ (x : V) ∈ Submodule.span K (N.map M.subtype : Set V) := by
-  have e := map_subtype_saturation_eq_inf_span K M N
-  constructor
-  · intro hx
-    have hx' : (x : V) ∈ (saturation N).map M.subtype := Submodule.mem_map_of_mem hx
-    rw [e] at hx'
-    exact (Submodule.mem_inf.1 hx').2
-  · intro hx
-    have hx' : (x : V) ∈ M ⊓ (Submodule.span K (N.map M.subtype : Set V)).restrictScalars R :=
-      Submodule.mem_inf.2 ⟨x.2, hx⟩
-    rw [← e] at hx'
-    obtain ⟨y, hy, hyx⟩ := Submodule.mem_map.1 hx'
-    have hxy : y = x := Subtype.ext hyx
-    rw [← hxy]
-    exact hy
 
 variable {K} in
 
@@ -871,13 +626,6 @@ theorem isSaturatedIn_iff_inf_span_eq {M N : Submodule R V} :
   unfold IsSaturatedIn
   rw [saturationIn_eq_inf_span K]
 
-theorem isSaturatedIn_iff_exists_subspace {M N : Submodule R V} :
-    IsSaturatedIn M N ↔ ∃ W : Submodule K V, M ⊓ W.restrictScalars R = N := by
-  constructor
-  · intro h
-    exact ⟨Submodule.span K (N : Set V), (isSaturatedIn_iff_inf_span_eq K).1 h⟩
-  · rintro ⟨W, rfl⟩
-    exact isSaturatedIn_inf_restrictScalars M W
 
 variable {K} in
 
@@ -892,9 +640,6 @@ theorem span_inf_restrictScalars_of_le {M : Submodule R V} {W : Submodule K V}
     Submodule.span K ((M ⊓ W.restrictScalars R : Submodule R V) : Set V) = W := by
   rw [span_inf_restrictScalars, inf_of_le_right h]
 
-theorem span_saturationIn {M N : Submodule R V} (h : N ≤ M) :
-    Submodule.span K (saturationIn M N : Set V) = Submodule.span K (N : Set V) := by
-  rw [saturationIn_eq_inf_span K, span_inf_restrictScalars, inf_of_le_right (Submodule.span_mono h)]
 
 def saturatedOrderIsoSubspaceSpan (M : Submodule R V) :
     {N : Submodule R M // IsSaturatedSubmodule N} ≃o
@@ -902,19 +647,7 @@ def saturatedOrderIsoSubspaceSpan (M : Submodule R V) :
   haveI := isLocalizedModule_inclusionSpan K R⁰ M
   saturatedOrderIsoSubspace K (M.inclusionSpan K)
 
-theorem map_saturatedOrderIsoSubspaceSpan_apply (M : Submodule R V)
-    (N : {N : Submodule R M // IsSaturatedSubmodule N}) :
-    (saturatedOrderIsoSubspaceSpan K M N).map (Submodule.span K (M : Set V)).subtype =
-      Submodule.span K (N.1.map M.subtype : Set V) := by
-  have := isLocalizedModule_inclusionSpan K R⁰ M
-  have e : saturatedOrderIsoSubspaceSpan K M N = Submodule.span K (M.inclusionSpan K '' N.1) :=
-    saturatedOrderIsoSubspace_apply K (M.inclusionSpan K) N
-  rw [e, Submodule.map_span, ← Set.image_comp]
-  rfl
 
-theorem mem_saturatedOrderIsoSubspaceSpan_symm_apply (M : Submodule R V)
-    (W : Submodule K (Submodule.span K (M : Set V))) (x : M) :
-    x ∈ ((saturatedOrderIsoSubspaceSpan K M).symm W).1 ↔ M.inclusionSpan K x ∈ W := Iff.rfl
 
 def saturatedInOrderIso (M : Submodule R V) :
     {N : Submodule R V // IsSaturatedIn M N} ≃o Set.Iic (Submodule.span K (M : Set V)) where

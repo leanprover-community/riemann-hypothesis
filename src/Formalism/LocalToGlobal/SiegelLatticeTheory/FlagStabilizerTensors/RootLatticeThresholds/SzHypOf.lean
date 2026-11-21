@@ -279,12 +279,6 @@ theorem sizesAt_of {large₂ : SizeData₂ D} {C0 C' Cl Cg cb Cu CT CA Cn : ℝ}
       ((d9 u).2 : _ ≡ 1 [MOD _]).trans ((d9 u').2 : _ ≡ 1 [MOD _]).symm
     exact e1
 
-theorem fdl_of_cTvG {large₂ : SizeData₂ D} {CV : ℝ} (hg : Formalism.MainNotions.S.UnitaryVolumeMass.cTvG D large₂ (1 / 2) CV) (τ : D.what₂.Tau) :
-    Sz.FormalDegreeLower (Formalism.MainNotions.BridgeLemma.cfgOf D τ) (1 / 2) (VV D τ) := by
-  unfold Sz.FormalDegreeLower
-  rw [Formalism.MainNotions.BridgeLemma.Vand_lam D τ]
-  have h := (hg τ).1
-  linarith
 
 variable [Fact Formalism.HermitianLattices.Ext.L3.HermRepUnram] in
 

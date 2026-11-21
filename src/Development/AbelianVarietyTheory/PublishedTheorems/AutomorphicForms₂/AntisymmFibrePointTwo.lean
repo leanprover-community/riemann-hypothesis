@@ -36,15 +36,6 @@ theorem topCoeff_pow {n : ℕ} (K : Matrix (Fin n) (Fin n) ℂ) :
     Matrix.transpose_apply]
   ring
 
-theorem chernTop_line {n : ℕ} (G : V n → Mat (fun _ : Unit => 1) ℂ) (v : V n) :
-    chernTop (X ((), 1) ^ n) G v = n.factorial / Real.pi ^ n *
-      (Matrix.of fun a b => curv (fun u => G u ()) v (coordVec a) (coordVec b) 0 0).det.re := by
-  have e : chernPoly (fun u => G u ()) v 1 = curvPoly (fun u => G u ()) v 0 0 := by
-    rw [chernPoly, Matrix.coeff_charpolyRev_eq_neg_trace]
-    simp [Matrix.trace]
-  rw [chernTop, map_pow, aeval_X, e]
-  erw [topCoeff_pow (Matrix.of fun a b => curv (fun u => G u ()) v (coordVec a) (coordVec b) 0 0)]
-  simp [div_eq_mul_inv, mul_assoc, mul_left_comm]
 
 def logGram (v : V 1) : Matrix (Fin 1) (Fin 1) ℂ := Matrix.of fun _ _ => ((-Real.log (‖v‖ ^ 2) : ℝ) : ℂ)
 

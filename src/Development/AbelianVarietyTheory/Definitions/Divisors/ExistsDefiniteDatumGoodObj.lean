@@ -218,16 +218,6 @@ theorem sum_mult_eq (D : Geo.Tor.Datum H) (a : E) :
     obtain ⟨J, h₁, h₂, h₃, h₄⟩ := D.dom
     exact ⟨J, h₁, h₂, h₃, fun a A hA => h₄ a A _ hA (by convert sum_mult_eq D (a : E))⟩
 
-theorem dim_ofHost (D : Geo.Tor.Datum H) : (Datum.ofHost D).dim = D.dim := by
-  have h : ∀ τ : E →+* ℂ, D.mult τ * (D.p + D.q - D.mult τ) = D.p * D.q := fun τ => by
-    unfold Geo.Tor.Datum.mult
-    split_ifs
-    · rw [Nat.add_sub_cancel_left]
-    · rw [Nat.add_sub_cancel, mul_comm]
-  unfold Datum.dim Geo.Tor.Datum.dim
-  simp only [h, Finset.sum_const, Finset.card_univ, NumberField.Embeddings.card, smul_eq_mul]
-  rw [IsTotallyComplex.finrank E, Nat.mul_assoc, Nat.mul_div_cancel_left _ two_pos, Nat.mul_div_cancel_left _ two_pos,
-    Nat.mul_assoc]
 
 theorem definite_ofHost_iff (D : Geo.Tor.Datum H) : (Datum.ofHost D).Definite ↔ D.p = 0 ∨ D.q = 0 := by
   obtain ⟨τ₀, h₀⟩ := HostModel.exists_embedding_rt_eq H
@@ -318,35 +308,10 @@ def Obj.ofHost {D : Geo.Tor.Datum H} {l : Level H} {b : Base l ℂ} (hb : b.ρ =
     obtain ⟨hdet, I, -, hI, -⟩ := o.geom k x ξ hξ
     exact ⟨determinantConditionAt_of_determinantCondition D p _ x ξ (hb ▸ hdet), TateIsoP.ofHost p I, hI⟩
 
-theorem exists_obj_ofHost (D : Geo.Tor.Datum H) (hD : 1 ≤ D.p + D.q) (p N : ℕ) (hN : 0 < N) :
-    ∃ o : Obj (Datum.ofHost D) p N (𝟙 (Sp ℂ) ≫ spMap ((Datum.ofHost D).OEp p).subtype),
-      SmoothOfRelativeDimension (Module.finrank ℚ E / 2 * (Datum.ofHost D).n) o.A.hom ∧
-        ∃ x : 𝟙_ (Over (Sp ℂ)) ⟶ o.A, x ≠ 1 := by
-  obtain ⟨b, o, hb, -, h⟩ := GlobalTheory.exists_obj_complex E H D hD (HostModel.level H N hN)
-  exact ⟨Obj.ofHost hb p o, h⟩
 
 end Host
 
-theorem exists_datum_good_obj : ∃ (D : Datum HostModel.E21) (p : ℕ), D.n = 2 ∧ D.dim = 6 ∧ Good HostModel.E21 p 5 ∧
-    ∃ o : Obj D p 5 (𝟙 (Sp ℂ) ≫ spMap (D.OEp p).subtype), SmoothOfRelativeDimension 12 o.A.hom ∧
-      ∃ x : 𝟙_ (Over (Sp ℂ)) ⟶ o.A, x ≠ 1 := by
-  obtain ⟨p, hp⟩ := exists_good HostModel.E21 (N := 5) (by norm_num)
-  refine ⟨Datum.ofHost (HostModel.hypDatum HostModel.host), p, rfl, ?_, hp, ?_⟩
-  · rw [dim_ofHost, Geo.Tor.Datum.dim, HostModel.finrank_rat_E21_eq_twelve]; rfl
-  · have h := exists_obj_ofHost (HostModel.hypDatum HostModel.host) (by norm_num) p 5 (by norm_num)
-    rw [HostModel.finrank_rat_E21_eq_twelve] at h
-    exact h
 
-theorem exists_definite_datum_good_obj : ∃ (D : Datum CM.CyclotomicTwentyEight.CyclotomicFieldTwentyEight) (p : ℕ), D.n = 1 ∧ D.dim = 0 ∧ D.Definite ∧
-    Good CM.CyclotomicTwentyEight.CyclotomicFieldTwentyEight p 5 ∧ ∃ o : Obj D p 5 (𝟙 (Sp ℂ) ≫ spMap (D.OEp p).subtype),
-      ∃ x : 𝟙_ (Over (Sp ℂ)) ⟶ o.A, x ≠ 1 := by
-  obtain ⟨p, hp⟩ := exists_good CM.CyclotomicTwentyEight.CyclotomicFieldTwentyEight (N := 5) (by norm_num)
-  obtain ⟨D, h₁, h₀⟩ := CM.CyclotomicTwentyEight.exists_datum
-  obtain ⟨o, -, ho⟩ := exists_obj_ofHost D (by omega) p 5 (by norm_num)
-  refine ⟨Datum.ofHost D, p, ?_, ?_, (definite_ofHost_iff D).2 (Or.inr h₀), hp, o, ho⟩
-  · change D.p + D.q = 1
-    omega
-  · rw [dim_ofHost, Geo.Tor.Datum.dim, h₀, Nat.mul_zero]
 
 example (D : Datum F) : D.w ≠ 0 := fun h => by simpa [h] using D.w_add
 

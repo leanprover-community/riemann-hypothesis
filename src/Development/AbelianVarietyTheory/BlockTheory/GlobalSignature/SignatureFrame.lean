@@ -53,15 +53,7 @@ def SignFrame.toDiag (F : SignFrame ε P Q) (g : UpqT P Q) : UJ ε :=
 theorem SignFrame.umat_toDiag (F : SignFrame ε P Q) (g : UpqT P Q) :
     umat (F.toDiag g) = Matrix.reindex F.e F.e (UpqT.mat g) := rfl
 
-theorem SignFrame.continuous_toDiag (F : SignFrame ε P Q) : Continuous F.toDiag := by
-  refine Continuous.subtype_mk ?_ _
-  refine Continuous.comp (g := F.unitsMap) ?_ continuous_subtype_val
-  refine Continuous.units_map _ ?_
-  exact continuous_id.matrix_reindex F.e F.e
 
-theorem SignFrame.measurable_toDiag (F : SignFrame ε P Q) : Measurable F.toDiag := by
-  haveI : BorelSpace (UpqT P Q) := ⟨rfl⟩
-  exact F.continuous_toDiag.measurable
 
 theorem SignFrame.toDiag_mul (F : SignFrame ε P Q) (g h : UpqT P Q) :
     F.toDiag (g * h) = F.toDiag g * F.toDiag h :=
@@ -84,9 +76,6 @@ theorem SignFrame.bijective_toDiag (F : SignFrame ε P Q) : Function.Bijective F
 def cdMeasure (c : CDHaar) (F : SignFrame ε P Q) : Measure (UJ ε) :=
   Measure.map F.toDiag (c.cd P Q)
 
-theorem cdMeasure_apply (c : CDHaar) (F : SignFrame ε P Q) {A : Set (UJ ε)} (hA : MeasurableSet A) :
-    cdMeasure c F A = c.cd P Q (F.toDiag ⁻¹' A) :=
-  Measure.map_apply F.measurable_toDiag hA
 
 def SignFrame.mulEquiv (F : SignFrame ε P Q) : UpqT P Q ≃* UJ ε :=
   { Equiv.ofBijective F.toDiag F.bijective_toDiag with map_mul' := F.toDiag_mul }
@@ -105,11 +94,6 @@ theorem SignFrame.continuous_symm (F : SignFrame ε P Q) : Continuous F.mulEquiv
     funext h
   exact this ▸ hu.comp continuous_subtype_val
 
-theorem cdMeasure_isHaar (c : CDHaar) (F : SignFrame ε P Q) : (cdMeasure c F).IsHaarMeasure := by
-  haveI : BorelSpace (UpqT P Q) := ⟨rfl⟩
-  haveI : IsTopologicalGroup (UpqT P Q) := inferInstanceAs (IsTopologicalGroup (Formalism.UG.Upq P Q))
-  haveI := c.haar P Q
-  exact F.mulEquiv.isHaarMeasure_map (c.cd P Q) F.continuous_toDiag F.continuous_symm
 
 def dimV {n : ℕ} (lam : Fin n → ℝ) : ℝ :=
   (∏ a : Fin n, ∏ b ∈ Ioi a, (lam a - lam b)) /

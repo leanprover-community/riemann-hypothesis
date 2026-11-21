@@ -1,7 +1,49 @@
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FormalDegreeGap.HCFdegRGapHolds
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FormalDegreeGap.DimensionBoundOfGapUniform
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FormalDegreeGap.HCFdegRGap
+import Mathlib.Analysis.Complex.ExponentialBounds
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.HarishChandraMultiplicityBound
 
+section
+noncomputable section
+
+namespace PI.UnitaryGroupMassFormula.HCFdegRGap
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S MeasureTheory Matrix
+
+theorem gap_big {p q N ep0 h0 : ℝ} (hp : 1 ≤ p) (hq : 1 ≤ q) (hN : N = p + q)
+    (he1 : Real.exp (-N) ≤ ep0) (he2 : ep0 < 1 / 2)
+    (hh : 8192 * min p q * (p * q) ^ 3 * Real.log N / ep0 ^ 2 ≤ h0) :
+    32 * N * p * q + 2 < h0 := by
+  have hN2 : (2 : ℝ) ≤ N := by linarith
+  have hlog2 := Real.log_two_gt_d9
+  have hlog : (0.69 : ℝ) < Real.log N :=
+    lt_of_lt_of_le (by norm_num at hlog2 ⊢; linarith) (Real.log_le_log (by norm_num) hN2)
+  have hep : 0 < ep0 := lt_of_lt_of_le (Real.exp_pos _) he1
+  have hmin : 1 ≤ min p q := le_min hp hq
+  have hpq : 1 ≤ p * q := by nlinarith
+  have hpq3 : (p * q) ^ 2 ≤ (p * q) ^ 3 := by nlinarith
+  have hsum : p + q ≤ 2 * (p * q) := by nlinarith
+  set X := 8192 * min p q * (p * q) ^ 3 * Real.log N with hXdef
+  have hX : 8192 * 0.69 * (p * q) ^ 3 ≤ X := by
+    have h3 : 0 ≤ (p * q) ^ 3 := by positivity
+    have h4 : (1 : ℝ) * 0.69 ≤ min p q * Real.log N := mul_le_mul hmin hlog.le (by norm_num) (by linarith)
+    rw [hXdef]
+    nlinarith
+  have hdiv : 4 * X ≤ X / ep0 ^ 2 := by
+    rw [le_div_iff₀ (by positivity)]
+    have h5 : ep0 ^ 2 ≤ 1 / 4 := by nlinarith
+    have hXpos : 0 ≤ X := le_trans (by positivity) hX
+    nlinarith
+  rw [hN]
+  nlinarith
+
+
+
+end PI.UnitaryGroupMassFormula.HCFdegRGap
+end
+end
+
+section
 noncomputable section
 
 open MeasureTheory
@@ -36,72 +78,8 @@ theorem dsigEx_at (D : D7) (hd : dsigTie D) (ρ : D.what₂.Tau)
   rw [← key]
   exact hF
 
-theorem dimension_bound_of_scale_equalities (D : D7) (hc : cdScaleTie D) (hdt : dsigTie D) (hW : DiscreteSeriesWeylDimension.WeylForK)
-    (hL : DiscreteSeriesWeylDimension.LowKMultOne) : StandardLattice.SigmaDegreeTwoSidedBoundOfGap D := by
-  have hAll : StandardLattice.DiscreteSeriesDegreeBoundsOfGap D := Formalism.MainNotions.RT.theorem_three_under_scale_of_general (dimension_bound_of_gap_uniform hCFdegRGap_holds hW hL) D hc
-  have hT := DiscreteSeriesWeylDimension.lowest_K_type_count_of_weyl D hW hL
-  intro ep0 he1 he2 ρ hgap
-  have hHC := line_param_harish_chandra D ρ
-  have hp : ((Finset.univ.filter (fun a => epsSH D.R a = true)).card : ℝ) = (pY D : ℝ) := by
-    have : (Finset.univ.filter (fun a => epsSH D.R a = true)).card = nPlus (epsSH D.R) := rfl
-    rw [this, sign_vector_eq_line_sign, count_plus_finCast, count_plus_line_sign]
-  have hq : ((Finset.univ.filter (fun a => epsSH D.R a = false)).card : ℝ) = (qY D : ℝ) := by
-    have : (Finset.univ.filter (fun a => epsSH D.R a = false)).card = nMinus (epsSH D.R) := rfl
-    rw [this, sign_vector_eq_line_sign, count_minus_finCast, count_minus_line_sign]
-  have hN : ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) = (D.R.r : ℝ) := by rw [dimS_eq]
-  have hg' : Formalism.QuantumDeterminants.GapAtLeast (epsSH D.R) (lamSH D.R (D.hc ρ)) (spectralGapLowerBound D ep0) := by
-    rw [sign_vector_eq_line_sign, param_vector_eq_line_param]; exact gapAtLeast_finCast _ _ _ _ hgap
-  have hp1 : (1 : ℝ) ≤ ((Finset.univ.filter (fun a => epsSH D.R a = true)).card : ℝ) := by
-    rw [hp]; exact_mod_cast (signature_counts_ge_one D).1
-  have hq1 : (1 : ℝ) ≤ ((Finset.univ.filter (fun a => epsSH D.R a = false)).card : ℝ) := by
-    rw [hq]; exact_mod_cast (signature_counts_ge_one D).2
-  have hsum : ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) =
-      ((Finset.univ.filter (fun a => epsSH D.R a = true)).card : ℝ) +
-        ((Finset.univ.filter (fun a => epsSH D.R a = false)).card : ℝ) := by
-    have h' := congrArg (fun x : ℕ => (x : ℝ)) (card_add_card (epsSH D.R))
-    push_cast at h' ⊢
-    linarith
-  have hbig := gap_big (h0 := spectralGapLowerBound D ep0) hp1 hq1 hsum (by rw [hN]; exact he1) he2
-    (le_of_eq (by rw [hp, hq, hN]; unfold spectralGapLowerBound; rw [Nat.cast_min]))
 
-  have hq0 : ((ReciprocityTheory.ChartRestriction.DS.S7.q0 (epsSH D.R) : ℕ) : ℝ) ≤
-      ((Finset.univ.filter (fun a => epsSH D.R a = true)).card : ℝ) := by
-    have : ReciprocityTheory.ChartRestriction.DS.S7.q0 (epsSH D.R) ≤ (Finset.univ.filter (fun a => epsSH D.R a = true)).card :=
-      min_le_left _ _
-    exact_mod_cast this
-  have hmax : max (2 * ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ))
-      (8 * ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) * (ReciprocityTheory.ChartRestriction.DS.S7.q0 (epsSH D.R) : ℝ)) < spectralGapLowerBound D ep0 := by
-    generalize ((Finset.univ.filter (fun a => epsSH D.R a = true)).card : ℝ) = p at *
-    generalize ((Finset.univ.filter (fun a => epsSH D.R a = false)).card : ℝ) = q at *
-    generalize ((ReciprocityTheory.ChartRestriction.DS.S7.q0 (epsSH D.R) : ℕ) : ℝ) = r at *
-    generalize ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) = n at *
-    have hpq : 1 ≤ p * q := by nlinarith
-    have hn : 1 ≤ n := by linarith
-    have hrpq : r ≤ p * q := by nlinarith
-    rw [max_lt_iff]
-    constructor
-    · nlinarith
-    · nlinarith
-  have hEx := dsigEx_at D hdt ρ
-    (ReciprocityTheory.ChartRestriction.DS.G2.discrete_series_exists_large_gap _ (epsSH D.R) _ hHC (spectralGapLowerBound D ep0) hg' (Or.inr hmax))
-  obtain ⟨H, i1, i2, σ, hDS, hF⟩ := hEx
-  have hcs : CompleteSpace H := hDS.1
-  have hnt : Nontrivial H := hDS.2.1
-  obtain ⟨w, hw⟩ := exists_ne (0 : H)
-  have hdt' := (hT _ (epsSH D.R) (lamSH D.R (D.hc ρ)) hHC H σ hDS).2
-  have key := hAll _ (epsSH D.R) (lamSH D.R (D.hc ρ)) ep0 (spectralGapLowerBound D ep0) H σ w
-    (by rw [hp]; exact_mod_cast (signature_counts_ge_one D).1) (by rw [hq]; exact_mod_cast (signature_counts_ge_one D).2) hHC hg'
-    (by rw [hN]; exact he1) he2
-    (by rw [hp, hq, hN]; unfold spectralGapLowerBound; rw [Nat.cast_min]) hDS hw
-  rw [formal_degree_of_eq _ σ _ hF w hw, hp, hq, hdt'] at key
-  rw [← dimV_eq_fdegHC _ hHC.1] at key
-  rw [sign_vector_eq_line_sign, param_vector_eq_line_param, dim_weyl_finCast, formal_degree_finCast, abs_param_sup_finCast] at key
-  refine ⟨key.1, ?_⟩
-  have e : ((pY D : ℝ) * (qY D : ℝ)) = ((pY D * qY D : ℕ) : ℝ) := by push_cast; rfl
-  rw [e, Real.rpow_natCast] at key
-  exact key.2
-
-theorem dimension_family_of_weyl_multiplicity {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (hW : DiscreteSeriesWeylDimension.WeylForK) (hL : DiscreteSeriesWeylDimension.LowKMultOne) :
-    Formalism.MainNotions.flipTwoThree.fam0 Fm Formalism.MainNotions.StandardLattice.SigmaDegreeTwoSidedBoundOfGap := ⟨0, fun x _ _ i => dimension_bound_of_scale_equalities _ (Fm.ties x i).cdScale_tie (Fm.ties x i).dsig_tie hW hL⟩
 
 end PI.UnitaryGroupMassFormula.HCFdegRGap
+end
+end

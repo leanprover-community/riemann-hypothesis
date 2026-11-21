@@ -1,7 +1,926 @@
-import CompanionTheory.AutomorphicTheory.BesselWaveGrids.TiedNum
-import CompanionTheory.AutomorphicTheory.BesselWaveGrids.NormalizedMeasureScaling
+import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.TBBTie
+import Formalism.HermitianCurvature.BesselNonvanishingReduction
+import CompanionTheory.AutomorphicTheory.BesselWaveGrids.KDecayOfGap
+import CompanionTheory.AutomorphicTheory.BesselWaveGrids.FamilyThroughDiscreteSeries
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.SupExistsOfInterlaced
+import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.ImportsBisTer
+import Mathlib
+import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.NumericalFamilyShapeGaps
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.TensorDecompositionInjectiveParameters
+import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.DiscreteSeriesUnitarySmoothBasicImports
+import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.IsFRepDualStandardUnitaryRep
+import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.WeilFormulaIntegrableComplexImports
+import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.IsHaarOnIffGroupsUnitaryUnipotentImports
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.GapCoefficientBoundStatement
+import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.BesselCharacterUnipotentRadicalPropertiesImports
+import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.BesselSubgroupParameterMeasurePreservingImports
+import CompanionTheory.HarishChandraModules.NonemptyRepresentations.TypeHW
+import CompanionTheory.HarishChandraModules.NonemptyRepresentations.IsData
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ExistsPlaceWithVectors
+import CompanionTheory.AutomorphicTheory.BesselWaveGrids.PStarTie
+import Formalism.HermitianCurvature.StatementSz
+import CompanionTheory.AutomorphicTheory.BesselWaveGrids.NqMovedExample
+import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.AmpBig
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutLemB
+import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.BesselNormSqEqBigCellNormSqAltImports
 import CompanionTheory.AutomorphicTheory.BesselWaveGrids.PowFourLeRpowNineHalves
 
+section
+noncomputable section
+
+namespace CompanionTheory.WaveGrid.GapSizes
+
+theorem sizes (Cg m N P s : ℝ) (hCg : 1000 ≤ Cg) (hm2 : 2 ≤ m) (hmN : m ≤ N) (hPN : N ^ 3 ≤ P) (hs : 1 ≤ s) :
+    120 * N ^ 3 ≤ Cg * (m ^ 4 * s) * P / 4 ∧ 125 * m ^ 2 * N ^ 3 ≤ Cg * m ^ 4 * P / 32 := by
+  have hN1 : (1 : ℝ) ≤ N := by linarith
+  have hN3 : (0 : ℝ) ≤ N ^ 3 := by positivity
+  have hm2' : (4 : ℝ) ≤ m ^ 2 := by nlinarith
+  have hm4e : m ^ 4 = m ^ 2 * m ^ 2 := by ring
+  have hm4 : (16 : ℝ) ≤ m ^ 4 := by rw [hm4e]; nlinarith
+  have hm4' : 4 * m ^ 2 ≤ m ^ 4 := by rw [hm4e]; nlinarith
+  have hCg0 : (0 : ℝ) ≤ Cg := by linarith
+  constructor
+  · have a : (16 : ℝ) ≤ m ^ 4 * s := le_trans hm4 (le_mul_of_one_le_right (by positivity) hs)
+    have b : (16000 : ℝ) ≤ Cg * (m ^ 4 * s) := by nlinarith
+    have c : 16000 * N ^ 3 ≤ Cg * (m ^ 4 * s) * P :=
+      le_trans (mul_le_mul_of_nonneg_right b hN3) (mul_le_mul_of_nonneg_left hPN (by positivity))
+    linarith
+  · have b : 4000 * m ^ 2 ≤ Cg * m ^ 4 := by nlinarith
+    have c : 4000 * m ^ 2 * N ^ 3 ≤ Cg * m ^ 4 * P :=
+      le_trans (mul_le_mul_of_nonneg_right b hN3) (mul_le_mul_of_nonneg_left hPN (by positivity))
+    linarith
+
+theorem consts (k r : ℕ) (hk : 1 ≤ k) :
+    Formalism.FourierDecayAlt.ThreeDimData.Mexp r ≤ (2 * (r : ℝ) + 2) ^ 2 / 2 ∧ 0 ≤ Formalism.FourierDecayAlt.ThreeDimData.Mexp r ∧
+    Formalism.FourierDecayAlt.ThreeDimData.AS k r ≤ 2 * (2 * (r : ℝ) + k + 1) ^ 3 ∧ 0 ≤ Formalism.FourierDecayAlt.ThreeDimData.AS k r ∧
+    Formalism.FourierDecayAlt.ThreeDimData.AG k r ≤ 4 * (2 * (r : ℝ) + k + 1) ^ 3 ∧ 0 ≤ Formalism.FourierDecayAlt.ThreeDimData.AG k r := by
+  have hr0 : (0 : ℝ) ≤ r := Nat.cast_nonneg _
+  have hk1 : (1 : ℝ) ≤ k := by exact_mod_cast hk
+  set N : ℝ := 2 * (r : ℝ) + k + 1 with hN
+  have hN1 : (1 : ℝ) ≤ N := by linarith
+  have hN2 : N ^ 2 ≤ N ^ 3 := by nlinarith
+  have hdN : Formalism.FourierDecayAlt.ThreeDimData.dN k r ≤ 2 * N ^ 2 := by unfold Formalism.FourierDecayAlt.ThreeDimData.dN; rw [hN]; nlinarith
+  have hdN0 : 0 ≤ Formalism.FourierDecayAlt.ThreeDimData.dN k r := by unfold Formalism.FourierDecayAlt.ThreeDimData.dN; nlinarith
+  have hnk : ((2 * r + k : ℕ) : ℝ) ≤ N := by rw [hN]; push_cast; linarith
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
+  · unfold Formalism.FourierDecayAlt.ThreeDimData.Mexp; nlinarith
+  · unfold Formalism.FourierDecayAlt.ThreeDimData.Mexp; positivity
+  · unfold Formalism.FourierDecayAlt.ThreeDimData.AS
+    have : ((2 * r + k : ℕ) : ℝ) * Formalism.FourierDecayAlt.ThreeDimData.dN k r ≤ N * (2 * N ^ 2) :=
+      mul_le_mul hnk hdN hdN0 (by linarith)
+    nlinarith
+  · unfold Formalism.FourierDecayAlt.ThreeDimData.AS; positivity
+  · unfold Formalism.FourierDecayAlt.ThreeDimData.AG
+    have e1 : ((k : ℝ) + r) ≤ N := by rw [hN]; linarith
+    have e2 : ((r : ℝ) + 1) ≤ N := by rw [hN]; linarith
+    have e3 : ((k : ℝ) + r) * ((r : ℝ) + 1) ≤ N * N := mul_le_mul e1 e2 (by linarith) (by linarith)
+    nlinarith
+  · unfold Formalism.FourierDecayAlt.ThreeDimData.AG; positivity
+
+theorem gapOK_of (k r : ℕ) (hk : 1 ≤ k) (Cg : ℝ) (hCg : 1000 ≤ Cg) :
+    Formalism.FourierDecayAlt.ThreeDimData.GapOK k r (Cg * ((2 * r + 2 : ℕ) : ℝ) ^ ((9 : ℝ) / 2) *
+      (((3 * (r + 1) : ℕ) : ℝ) * ((2 * r + k + 1 : ℕ) : ℝ) ^ 2 + ((2 * r + k + 1 : ℕ) : ℝ) ^ 3) / 4) := by
+  have hr0 : (0 : ℝ) ≤ r := Nat.cast_nonneg _
+  have hk1 : (1 : ℝ) ≤ k := by exact_mod_cast hk
+  have em : ((2 * r + 2 : ℕ) : ℝ) = 2 * (r : ℝ) + 2 := by push_cast; ring
+  have eN : ((2 * r + k + 1 : ℕ) : ℝ) = 2 * (r : ℝ) + k + 1 := by push_cast; ring
+  have e3 : ((3 * (r + 1) : ℕ) : ℝ) = 3 * ((r : ℝ) + 1) := by push_cast; ring
+  unfold Formalism.FourierDecayAlt.ThreeDimData.GapOK
+  rw [em, eN, e3]
+  generalize hm : 2 * (r : ℝ) + 2 = m
+  generalize hN : 2 * (r : ℝ) + k + 1 = N
+  have hm2 : (2 : ℝ) ≤ m := by rw [← hm]; linarith
+  have hmN : m ≤ N := by rw [← hm, ← hN]; linarith
+  have hmpos : (0 : ℝ) < m := by linarith
+  have hN1 : (1 : ℝ) ≤ N := by linarith
+  have hsq : Real.sqrt (2 * ((r : ℝ) + 1)) = Real.sqrt m := by rw [← hm]; ring_nf
+  have h92 : m ^ ((9 : ℝ) / 2) = m ^ 4 * Real.sqrt m := by
+    rw [show (9 : ℝ) / 2 = ((4 : ℕ) : ℝ) + 1 / 2 by norm_num, Real.rpow_add hmpos, Real.rpow_natCast,
+      Real.sqrt_eq_rpow]
+  have hs1 : (1 : ℝ) ≤ Real.sqrt m := by
+    rw [show (1 : ℝ) = Real.sqrt 1 by simp]; exact Real.sqrt_le_sqrt (by linarith)
+  have hspos : (0 : ℝ) < Real.sqrt m := by linarith
+  have hN3 : (1 : ℝ) ≤ N ^ 3 := one_le_pow₀ hN1
+  have hPN : N ^ 3 ≤ 3 * ((r : ℝ) + 1) * N ^ 2 + N ^ 3 := by
+    have : (0 : ℝ) ≤ 3 * ((r : ℝ) + 1) * N ^ 2 := by positivity
+    linarith
+  obtain ⟨s1, s2⟩ := sizes Cg m N (3 * ((r : ℝ) + 1) * N ^ 2 + N ^ 3) (Real.sqrt m) hCg hm2 hmN hPN hs1
+  have hA : Formalism.FourierDecayAlt.ThreeDimData.aOf r (Cg * m ^ ((9 : ℝ) / 2) * (3 * ((r : ℝ) + 1) * N ^ 2 + N ^ 3) / 4) =
+      Cg * m ^ 4 * (3 * ((r : ℝ) + 1) * N ^ 2 + N ^ 3) / 32 := by
+    unfold Formalism.FourierDecayAlt.ThreeDimData.aOf
+    rw [hsq, h92]
+    field_simp
+    ring
+  obtain ⟨cM, cM0, cS, cS0, cG, cG0⟩ := consts k r hk
+  rw [hm] at cM
+  rw [hN] at cS cG
+  have hm2' : (4 : ℝ) ≤ m ^ 2 := by nlinarith
+  have hN3' : (0 : ℝ) ≤ N ^ 3 := by positivity
+  have hmm : m ^ 2 * N ^ 3 ≥ 4 * N ^ 3 := by nlinarith
+  have hX : 4 * N ^ 3 ≤ m ^ 2 * N ^ 3 := by nlinarith
+  have hX1 : (4 : ℝ) ≤ m ^ 2 * N ^ 3 := by linarith
+  refine ⟨hk, ?_, ?_, ?_⟩
+  · rw [h92]; linarith
+  · rw [hA]
+    have hsum : Formalism.FourierDecayAlt.ThreeDimData.AS k r + Formalism.FourierDecayAlt.ThreeDimData.AG k r ≤ 6 * N ^ 3 := by linarith
+    have hL : 2 * Formalism.FourierDecayAlt.ThreeDimData.Mexp r * (Formalism.FourierDecayAlt.ThreeDimData.AS k r + Formalism.FourierDecayAlt.ThreeDimData.AG k r) ≤ 2 * (m ^ 2 / 2) * (6 * N ^ 3) :=
+      mul_le_mul (by linarith) hsum (by positivity) (by positivity)
+    have hL' : 2 * (m ^ 2 / 2) * (6 * N ^ 3) = 6 * (m ^ 2 * N ^ 3) := by ring
+    have s2' : 125 * (m ^ 2 * N ^ 3) ≤ Cg * m ^ 4 * (3 * ((r : ℝ) + 1) * N ^ 2 + N ^ 3) / 32 := by
+      have : 125 * m ^ 2 * N ^ 3 = 125 * (m ^ 2 * N ^ 3) := by ring
+      linarith
+    linarith only [hL, hL', s2', cG, hX, hX1]
+  · rw [hA]
+    have hN23 : N ^ 2 ≤ N ^ 3 := by
+      have : N ^ 3 = N ^ 2 * N := by ring
+      rw [this]; exact le_mul_of_one_le_right (by positivity) hN1
+    have h9 : 9 * ((r : ℝ) + 1) = 4.5 * m := by rw [← hm]; ring
+    have e1 : 9 * ((r : ℝ) + 1) * N ^ 2 ≤ 4.5 * m * N ^ 3 := by
+      rw [h9]; exact mul_le_mul_of_nonneg_left hN23 (by positivity)
+    have hq : 4.5 * m ≤ 3 * m ^ 2 := by nlinarith only [hm2]
+    have e2 : 4.5 * m * N ^ 3 ≤ 3 * (m ^ 2 * N ^ 3) := by
+      have := mul_le_mul_of_nonneg_right hq hN3'
+      linarith only [this]
+    have s2' : 125 * (m ^ 2 * N ^ 3) ≤ Cg * m ^ 4 * (3 * ((r : ℝ) + 1) * N ^ 2 + N ^ 3) / 32 := by
+      have : 125 * m ^ 2 * N ^ 3 = 125 * (m ^ 2 * N ^ 3) := by ring
+      linarith
+    linarith only [e1, e2, hX, hX1, s2', cG]
+
+end CompanionTheory.WaveGrid.GapSizes
+end
+end
+
+section
+open BranchingSupport Formalism.FourierDecayAlt Formalism.FourierDecayAlt.ThreeDimData Matrix MeasureTheory Finset
+open scoped InnerProductSpace ENNReal
+
+noncomputable section
+
+namespace CompanionTheory.WaveGrid.TypeHC
+
+section param
+open PI.UpqRep PI.HwUniqW GlobalTheory.BesselFrame GlobalTheory.SupNonzero
+
+variable {k r : ℕ} {W : Type} [NormedAddCommGroup W] [InnerProductSpace ℂ W] [FiniteDimensional ℂ W]
+  {z : Fin (2 * r + k + 1) → ℂ} {π : Mx k r → (W →L[ℂ] W)}
+
+theorem isType_of_hc {u : ℕ → ℝ} {u₀ : Fin k → ℝ} (hz : Formalism.QuantumDeterminants.inWb k r z) (hT : 0 < Formalism.QuantumDeterminants.Tz k r z)
+    (hπ : IsHCTypeW k r z u₀ π) (hu : ∀ s : Fin k, u (s.val + 1) = u₀ s) : Q.IsType k r z π u := by
+  obtain ⟨p1, pmul, punit, pcont⟩ := Formalism.FourierDecayAlt.P.MatrixMultiplicationContinuity.piW_facts hT hπ
+  have hrep : Formalism.QuantumDeterminants.IsCRepOn (Formalism.QuantumDeterminants.UWset k r z) π := ⟨p1, pmul⟩
+  have hcont : ContinuousOn π (Formalism.QuantumDeterminants.UWset k r z) := continuousOn_clm_apply.2 pcont
+  obtain ⟨g, hg, h₀⟩ := hπ
+  have hirr : ∀ S : Submodule ℂ W, (∀ h ∈ Formalism.QuantumDeterminants.UWset k r z, ∀ v ∈ S, π h v ∈ S) → S = ⊥ ∨ S = ⊤ :=
+    fun S hS => h₀.2.2.2.2.2.1 S le_top fun x hx v hv => hS _ (conj_mem_UW hg (by
+      have := Matrix.mem_unitaryGroup_iff'.mp hx.1
+      rw [Matrix.star_eq_conjTranspose] at this
+      exact mem_UJset_allPos.2 this)) v hv
+  obtain ⟨E, hgl, -, hE⟩ := GlobalTheory.UnitaryDerived.exists_derived_action k W _ h₀.2.2.1
+  obtain ⟨v, hv, hq⟩ := qdet_eigen h₀ E hgl hE
+  have hB := isFrameOf hg
+  set A := g * incl k r with hA
+  set B := Aᴴ * Hpk k r with hBd
+  have hd : ∀ Z : Matrix (Fin k) (Fin k) ℂ, Zᴴ = -Z → ∀ x, Q.dRep π (A * Z * B) x = ∑ a, ∑ b, Z a b • E a b x := by
+    intro Z hZ x
+    rw [← (hE Z hZ x).deriv]
+    unfold Q.dRep
+    congr 1
+    funext t
+    rw [conj_blockW hg.1, ← exp_corner _ _ (co_mul hg.1), Matrix.mul_smul, Matrix.smul_mul]
+  have hH : (Formalism.QuantumDeterminants.Hpk k r)⁻¹ = Hpk k r := Matrix.inv_eq_left_inv Hpk_mul_self
+  have hc : ∀ Y : Matrix (Fin k) (Fin k) ℂ,
+      (Formalism.QuantumDeterminants.Hpk k r)⁻¹ * (A * Y * B)ᴴ * Formalism.QuantumDeterminants.Hpk k r = A * Yᴴ * B := by
+    intro Y
+    rw [hH, hBd]
+    simp only [Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, Hpk_conjTranspose, ← Matrix.mul_assoc,
+      Hpk_mul_self, Matrix.one_mul]
+    rfl
+  have hEB : Qr.EB π (fun a => g *ᵥ bvec (bl k r a)) = E := by
+    funext a b
+    refine LinearMap.ext fun x => ?_
+    have hl := P.QrD.frame_lie hB a b
+    show P.QrD.ecOp π _ x = _
+    rw [← P.QrD.ecRep_eq hrep hcont hl.1 hl.2, unitB_eq]
+    unfold Q.EcRep Formalism.QuantumDeterminants.hpart1 Formalism.QuantumDeterminants.hpart2
+    rw [← hA, ← hBd, hc, ← Matrix.sub_mul, ← Matrix.mul_sub, ← Matrix.add_mul, ← Matrix.mul_add, ← Matrix.smul_mul,
+      ← Matrix.mul_smul, ← Matrix.smul_mul, ← Matrix.mul_smul, hd, hd]
+    · simp only [Finset.smul_sum, smul_smul, ← Finset.sum_add_distrib, ← add_smul]
+      have e : ∀ c d, ((1 / 2 : ℂ) • (Matrix.single a b (1 : ℂ) - (Matrix.single a b (1 : ℂ))ᴴ)) c d +
+          Complex.I * ((1 / (2 * Complex.I) : ℂ) • (Matrix.single a b (1 : ℂ) + (Matrix.single a b (1 : ℂ))ᴴ)) c d =
+          Matrix.single a b (1 : ℂ) c d := by
+        intro c d
+        simp only [Matrix.smul_apply, Matrix.add_apply, Matrix.sub_apply, smul_eq_mul]
+        field_simp
+        ring
+      simp only [e]
+      simp [Matrix.single, ite_and, ite_smul]
+    · rw [Matrix.conjTranspose_smul, Matrix.conjTranspose_add, Matrix.conjTranspose_conjTranspose, ← neg_smul, add_comm]
+      congr 1
+      simp [Complex.conj_ofNat]
+    · rw [Matrix.conjTranspose_smul, Matrix.conjTranspose_sub, Matrix.conjTranspose_conjTranspose, ← smul_neg, neg_sub]
+      congr 1
+      simp
+  let K : Submodule ℂ W :=
+    { carrier := {x | ∀ Y : ℂ, Formalism.REAL.qdet E (Y + ((k : ℂ) - 1) / 2) x = (∏ s, (Y + (u₀ s : ℂ))) • x}
+      add_mem' := fun ha hb w => by rw [map_add, ha w, hb w, smul_add]
+      zero_mem' := fun w => by simp
+      smul_mem' := fun s x hx w => by rw [map_smul, hx w, smul_comm] }
+  have hKs : Qr.Stab (Qr.EB π (fun a => g *ᵥ bvec (bl k r a))) K := by
+    rw [hEB]
+    intro a b x hx w
+    have := congrArg (fun T : Module.End ℂ W => T x) (Formalism.REAL.qDetCentral _ k _ hgl (w + ((k : ℂ) - 1) / 2) a b)
+    simp only [Module.End.mul_apply] at this
+    rw [this, hx w, map_smul]
+  have hK := P.lie_stabilizer W k r z π _ hz hT ⟨hrep, hcont⟩ hB K hKs
+  have hKt : K = ⊤ := (hirr K hK).resolve_left ((Submodule.ne_bot_iff K).2 ⟨v, hq, hv⟩)
+  refine ⟨h₀.1, hrep, hcont, punit, hirr, fun Bs hBs w x => ?_⟩
+  have hx : x ∈ K := hKt ▸ Submodule.mem_top
+  have e := hx (w - ((k : ℂ) - 1) / 2)
+  rw [sub_add_cancel] at e
+  rw [(P.frame_general_linear W k r k z π Bs ⟨hrep, hcont⟩ hBs).2, P.QrCap.capChange hz hT ⟨hrep, hcont⟩ hBs hB, hEB, e,
+    CompanionTheory.D.Inhab.TypeHW.prod_Icc]
+  congr 1
+  refine Finset.prod_congr rfl fun j _ => ?_
+  rw [hu]
+  ring
+
+end param
+
+theorem exists_place : ∃ Cb : ℝ, ∀ (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
+    [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (P : M.Par)
+    (z z' : Fin (2 * P.r + P.k + 1) → ℂ) (π : Mx P.k P.r → (Wp →L[ℂ] Wp)) (π' : Mx P.k P.r → (Wq →L[ℂ] Wq))
+    (μW μW' : Measure (Formalism.QuantumDeterminants.Mt P.k P.r)) (l0 : ℕ), Q.IsPlace P z z' π π' → 2 ≤ P.k → 1 ≤ l0 → l0 ≤ P.k →
+    B.IsHaarOn (Formalism.QuantumDeterminants.UWset P.k P.r z) μW → μW Set.univ = 1 →
+    B.IsHaarOn (Formalism.QuantumDeterminants.UWset P.k P.r z') μW' → μW' Set.univ = 1 →
+    ∃ p : KB.Pl P Wp Wq, p.l0 = l0 ∧ p.T.base.z = z ∧ p.T.base.z' = z' ∧ p.T.base.π = π ∧ p.T.base.π' = π' ∧
+      p.T.base.μW = μW ∧ p.T.base.μN = D.muN P.k P.r ∧ p.T.base.μW' = μW' ∧
+      KB.InDDplus2 P p.l0 p.T.base Cb p.Θ := by
+  obtain ⟨Cb, -, hTL⟩ := Formalism.FourierDecayAlt.P.top_lift_exists
+  refine ⟨Cb, ?_⟩
+  intro Wp Wq _ _ _ _ _ _ P z z' π π' μW μW' l0 hP hk hl1 hl2 hW hW1 hW' hW1'
+  obtain ⟨μ, hμ⟩ := CompanionTheory.D.Inhab.IsDataInh.haar_glev_last P.k P.r
+  obtain ⟨hOK, hz, hz', hT, hT', ⟨-, hr, hc, hu, -, -⟩, ⟨-, hr', hc', hu', -, -⟩⟩ := id hP
+  obtain ⟨B0, e1, e2, e3, e4, -⟩ := Formalism.FourierDecayAlt.P.setting_with_prescribed_data_exists P.k P.r Wp Wq z z' π π' hOK.k_pos hz hz'
+    (by rw [hT]; exact hOK.T_pos) (by rw [hT']; exact hOK.T'_pos) hr hr' hu hu' hc hc'
+  obtain ⟨T0, -, -, -, -, hN0⟩ := Formalism.FourierDecayAlt.P.exists_normalized_tower P.k P.r Wp Wq B0
+  have hmuN : B.IsHaarOn (Formalism.QuantumDeterminants.Nset P.k P.r) (D.muN P.k P.r) := by
+    have h := (hN0 0 (Nat.zero_le _)).2.2
+    have h' : T0.base.μN = D.muN P.k P.r := (by simpa using h : (T0.bs 0).μN = D.muN P.k P.r)
+    exact h' ▸ T0.base.haarN
+  subst e1 e2 e3 e4
+  let Bs : B.RealPlaceData P.k P.r Wp Wq :=
+    { B0 with μW := μW, μN := D.muN P.k P.r, μW' := μW', haarW := hW, haarN := hmuN, haarW' := hW' }
+  obtain ⟨T, hTb, hTN⟩ := Formalism.FourierDecayAlt.P.exists_level_tower P.k P.r Wp Wq Bs hW1 hW1' rfl
+  have hPl : Q.IsPlace P T.base.z T.base.z' T.base.π T.base.π' := by
+    rw [hTb]; exact hP
+  obtain ⟨ν', m₀, hF⟩ := Formalism.FourierDecayAlt.P.HaarMassHermitianCurvature.frame_of T.base
+  obtain ⟨X, L, st, hD⟩ := CompanionTheory.D.Inhab.IsDataInh.isData_of_place P _ _ _ _ hPl μ hμ l0
+  obtain ⟨Θ, hI, hDD⟩ := hTL Wp Wq P T.base X μ L st l0 hl1 hl2 hD
+  obtain ⟨f1, f2, f3⟩ := Formalism.FourierDecayAlt.P.HaarMassHermitianCurvature.frameVec_facts T.base ν' m₀ hF
+  obtain ⟨TP⟩ := Formalism.FourierDecayAlt.P.type_projectors_exist Wp Wq P T.base.z T.base.z' T.base.π T.base.π' (m₀ *ᵥ ν') hPl
+    f1 f2 f3
+  refine ⟨⟨l0, T, ν', m₀, Θ, TP, ⟨hl1, hl2, hk⟩, hTN, hF, hPl, ⟨X, μ, L, st, hD, hI⟩⟩, rfl, ?_, ?_, ?_, ?_, ?_, ?_, ?_,
+    hDD⟩
+  · change T.base.z = B0.z; rw [hTb]
+  · change T.base.z' = B0.z'; rw [hTb]
+  · change T.base.π = B0.π; rw [hTb]
+  · change T.base.π' = B0.π'; rw [hTb]
+  · change T.base.μW = μW; rw [hTb]
+  · change T.base.μN = D.muN P.k P.r; rw [hTb]
+  · change T.base.μW' = μW'; rw [hTb]
+
+end CompanionTheory.WaveGrid.TypeHC
+end
+end
+
+section
+namespace CompanionTheory.WaveGrid
+
+open Formalism.FourierDecayAlt Finset
+
+noncomputable def cfgPar (c : Sz.Cfg) (r : ℕ) (T T' : ℝ) (de de' : ℕ → ℝ) : M.Par := ⟨c.k, r, T, T', c.u de, c.u de'⟩
+
+section cfg
+
+variable (c : Sz.Cfg)
+
+theorem cfg_v_step (i : ℕ) : c.v i = c.v (i + 1) + 4 * c.Del := by
+  simp only [Sz.Cfg.v]
+  push_cast
+  ring
+
+theorem cfg_v_mem (hok : c.Ok) (i : ℕ) (hi1 : 1 ≤ i) (hi : i + 1 ≤ c.k) : c.vlast ≤ c.v i ∧ c.v i ≤ c.v 1 := by
+  have hD : (1:ℝ) ≤ c.Del := hok.hDel
+  have h1 : (1:ℝ) ≤ i := by exact_mod_cast hi1
+  have h2 : (i:ℝ) + 1 ≤ c.k := by exact_mod_cast hi
+  simp only [Sz.Cfg.v, Nat.cast_one]
+  constructor
+  · nlinarith [mul_nonneg (by linarith : (0:ℝ) ≤ 4 * c.Del) (by linarith : (0:ℝ) ≤ (c.k:ℝ) - 1 - i)]
+  · nlinarith [mul_nonneg (by linarith : (0:ℝ) ≤ 4 * c.Del) (by linarith : (0:ℝ) ≤ (i:ℝ) - 1)]
+
+theorem cfg_v_last (hk : 1 ≤ c.k) : c.v (c.k - 1) = c.vlast := by
+  simp only [Sz.Cfg.v, Nat.cast_sub hk, Nat.cast_one]
+  ring
+
+theorem cfg_b_pos (hok : c.Ok) : ∀ j : ℕ, 1 ≤ j → j ≤ c.m → 1 ≤ c.b j := by
+  intro j hj
+  induction j, hj using Nat.le_induction with
+  | base => intro _; exact hok.hb1
+  | succ n hn ih =>
+    intro hnm
+    have h1 := hok.hgap n hn (by omega)
+    have h2 := ih (by omega)
+    linarith
+
+theorem cfg_inter (hok : c.Ok) (de : ℕ → ℝ) (hde : ∀ i, de i = 0 ∨ de i = 1) (s : ℕ) (hs1 : 1 ≤ s)
+    (hsk : s ≤ c.k - 1) : c.lam s + 1 / 2 ≤ c.u de s ∧ c.u de (s + 1) ≤ c.lam s - 1 / 2 := by
+  have hk4 : 4 ≤ c.k := hok.hk
+  have hD : (1:ℝ) ≤ c.Del := hok.hDel
+  have hk' : (4:ℝ) ≤ c.k := by exact_mod_cast hk4
+  have hlam : c.lam s = c.v s := by
+    rw [Sz.Cfg.lam, if_pos (by omega)]
+  rw [hlam]
+  constructor
+  · rcases Nat.lt_or_ge s 2 with h | h
+    · have hs : s = 1 := by omega
+      subst hs
+      rw [Sz.Cfg.u, if_pos rfl]
+      have := hok.ha
+      nlinarith [mul_nonneg (sub_nonneg.2 hk') (sub_nonneg.2 hD)]
+    · rw [Sz.Cfg.u, if_neg (by omega), if_neg (by omega)]
+      have hstep := cfg_v_step c (s - 1)
+      rw [Nat.sub_add_cancel hs1] at hstep
+      rcases hde (s - 1) with h0 | h0 <;> rw [h0] <;> linarith
+  · rw [Sz.Cfg.u, if_neg (by omega)]
+    by_cases hks : s + 1 = c.k
+    · rw [if_pos hks, Sz.Cfg.ulast]
+      have hv : c.v s = c.vlast := by
+        have := cfg_v_last c (by omega : 1 ≤ c.k)
+        rw [show s = c.k - 1 by omega]
+        exact this
+      rw [hv]
+      split_ifs with ht
+      · obtain ⟨h1, _⟩ := hok.htop ht
+        have := hok.hb1
+        have := hok.hv0
+        linarith
+      · linarith
+    · rw [if_neg hks, Nat.add_sub_cancel]
+      rcases hde s with h0 | h0 <;> rw [h0] <;> linarith
+
+theorem cfg_u_le (hok : c.Ok) (de : ℕ → ℝ) (hde : ∀ i, de i = 0 ∨ de i = 1) (b : ℝ) (ha : c.a ≤ b)
+    (hb1 : c.b 1 ≤ b) (i : ℕ) (hi1 : 1 ≤ i) (hik : i ≤ c.k) : |c.u de i| ≤ b := by
+  have hk4 : 4 ≤ c.k := hok.hk
+  have hD : (1:ℝ) ≤ c.Del := hok.hDel
+  have hk' : (4:ℝ) ≤ c.k := by exact_mod_cast hk4
+  have hprod : 16 * c.Del ≤ 4 * c.k * c.Del := by
+    nlinarith [mul_nonneg (sub_nonneg.2 hk') (by linarith : (0:ℝ) ≤ c.Del)]
+  have hv1 : c.vlast ≤ c.v 1 := (cfg_v_mem c hok 1 le_rfl (by omega)).1
+  have hv0 := hok.hv0
+  have hav := hok.ha
+  have hb1 := hok.hb1
+  rw [Sz.Cfg.u, abs_le]
+  split_ifs with h1 h2
+  · constructor <;> linarith
+  · rw [Sz.Cfg.ulast]
+    split_ifs with ht
+    · obtain ⟨h3, h4⟩ := hok.htop ht
+      constructor <;> linarith
+    · constructor <;> linarith
+  · have hm := cfg_v_mem c hok (i - 1) (by omega) (by omega)
+    rcases hde (i - 1) with h0 | h0 <;> rw [h0] <;> constructor <;> linarith [hm.1, hm.2]
+
+theorem lamData_cfg (r : ℕ) (hm : c.m = 2 * r + 2) (hok : c.Ok) (T T' : ℝ) (de de' : ℕ → ℝ)
+    (hde : ∀ i, de i = 0 ∨ de i = 1) (hde' : ∀ i, de' i = 0 ∨ de' i = 1) (cs b : ℝ) (hc0 : 0 < cs)
+    (hc : 1 + cs ≤ 4 * c.Del) (ha : c.a ≤ b) (hb : ∀ j, 1 ≤ j → j ≤ c.m → c.b j ≤ b) :
+    LamData (cfgPar c r T T' de de') c.lam cs (4 * c.Del) b := by
+  have hk4 : 4 ≤ c.k := hok.hk
+  have hD : (1:ℝ) ≤ c.Del := hok.hDel
+  have hk' : (4:ℝ) ≤ c.k := by exact_mod_cast hk4
+  have hprod : 16 * c.Del ≤ 4 * c.k * c.Del := by
+    nlinarith [mul_nonneg (sub_nonneg.2 hk') (by linarith : (0:ℝ) ≤ c.Del)]
+  have hkD : (c.k:ℝ) ≤ 4 * c.k * c.Del := by
+    nlinarith [mul_nonneg (by linarith : (0:ℝ) ≤ c.k) (sub_nonneg.2 hD)]
+  have hv1 : c.vlast ≤ c.v 1 := (cfg_v_mem c hok 1 le_rfl (by omega)).1
+  have hv0 := hok.hv0
+  have hav := hok.ha
+  have hbpos := cfg_b_pos c hok
+  refine ⟨hc0, hc, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · linarith
+  · show (c.k:ℝ) ≤ b
+    linarith
+  · linarith
+  · intro s hs1 hs2
+    change s ≤ c.k + 2 * r + 1 at hs2
+    rw [Sz.Cfg.lam]
+    split_ifs with hsk
+    · have := cfg_v_mem c hok s hs1 (by omega)
+      rw [abs_le]
+      constructor <;> linarith [this.1, this.2]
+    · have hj1 : 1 ≤ s + 1 - c.k := by omega
+      have hj2 : s + 1 - c.k ≤ c.m := by omega
+      have h1 := hbpos _ hj1 hj2
+      have h2 := hb _ hj1 hj2
+      rw [abs_neg, abs_of_pos (by linarith)]
+      exact h2
+  · intro s hs1 hs2
+    change s + 1 ≤ c.k - 1 at hs2
+    rw [Sz.Cfg.lam, Sz.Cfg.lam, if_pos (by omega), if_pos (by omega)]
+    have := cfg_v_step c s
+    linarith
+  · intro s hs1 hs2
+    exact ⟨cfg_inter c hok de hde s hs1 hs2, cfg_inter c hok de' hde' s hs1 hs2⟩
+  · intro i hi1 hi2
+    have hb1 := hb 1 le_rfl (by omega)
+    exact ⟨cfg_u_le c hok de hde b ha hb1 i hi1 hi2, cfg_u_le c hok de' hde' b ha hb1 i hi1 hi2⟩
+
+end cfg
+
+noncomputable def cfg₀ : Sz.Cfg where
+  k := 4
+  m := 2
+  Del := 15
+  vlast := 0
+  b := fun j => (j : ℝ) + 1
+  a := 400
+  top := false
+  bp := 0
+
+theorem cfg₀_ok : cfg₀.Ok where
+  hk := by
+    norm_num [cfg₀]
+  hm := by norm_num [cfg₀]
+  hDel := by norm_num [cfg₀]
+  hv0 := by norm_num [cfg₀]
+  hv1 := by norm_num [cfg₀, Sz.Cfg.v]
+  hb1 := by norm_num [cfg₀]
+  hgap := by
+    intro j _ _
+    simp only [cfg₀]
+    push_cast
+    linarith
+  ha := by norm_num [cfg₀, Sz.Cfg.v]
+  htop := by simp [cfg₀]
+
+theorem lamData_cfg₀ :
+    LamData (cfgPar cfg₀ 0 1 1 (fun _ => 0) (fun i => if i = 1 then 1 else 0)) cfg₀.lam 10 (4 * cfg₀.Del) 400 := by
+  refine lamData_cfg cfg₀ 0 (by norm_num [cfg₀]) cfg₀_ok 1 1 _ _ (fun _ => Or.inl rfl) ?_ 10 400
+    (by norm_num) (by norm_num [cfg₀]) (by norm_num [cfg₀]) ?_
+  · intro i
+    split_ifs <;> simp
+  · intro j _ hj
+    simp only [cfg₀] at hj ⊢
+    have : (j:ℝ) ≤ 2 := by exact_mod_cast hj
+    linarith
+
+end CompanionTheory.WaveGrid
+end
+
+section
+namespace CompanionTheory.WaveGrid.Inhab
+
+open Formalism.FourierDecayAlt Finset CompanionTheory.WaveGrid GroundTheory.BlockD.FourierDecayAlt.WaveGridLiftGrid
+
+theorem int_of_half {k : ℕ} {u v : ℕ → ℝ} (hk : 1 ≤ k)
+    (hu : ∀ i, 1 ≤ i → i ≤ k → ∃ m : ℤ, u i - ((k : ℝ) - 1) / 2 = m)
+    (hv : ∀ i, 1 ≤ i → i ≤ k → ∃ m : ℤ, v i - ((k : ℝ) - 1) / 2 = m) :
+    ∀ i ∈ Icc 1 k, ∃ n : ℤ, v i - u 1 = n := by
+  intro i hi
+  obtain ⟨hi1, hik⟩ := Finset.mem_Icc.1 hi
+  obtain ⟨m1, hm1⟩ := hu 1 le_rfl hk
+  obtain ⟨m2, hm2⟩ := hv i hi1 hik
+  exact ⟨m2 - m1, by push_cast; linarith⟩
+
+theorem ok_diff (P : M.Par) (hk : 1 ≤ P.k) (hT : 0 < P.T) (hT' : 0 < P.T') (lam : Fin (2 * P.r + P.k + 1) → ℝ)
+    (b : ℝ) (hc : Formalism.QuantumDeterminants.IsHCParam lam) (hu : HypType P.k P.r lam P.u b) (hu' : HypType P.k P.r lam P.u' b) :
+    P.OK := by
+  refine ⟨hk, hT, hT', int_of_half hk hu.half hu.half, int_of_half hk hu.half hu'.half, ?_⟩
+  intro i hi
+  obtain ⟨hi1, hik⟩ := Finset.mem_Icc.1 hi
+  obtain ⟨a1, a2⟩ := inter_half hc hu i hi1 hik
+  obtain ⟨b1, b2⟩ := inter_half hc hu' i hi1 hik
+  simp only [M.Par.lo, M.Par.hi]
+  have hmax := max_le a2 b2
+  have hmin := le_min a1 b1
+  linarith
+
+def uP (u : ℕ → ℝ) (l n₀ : ℕ) : ℕ → ℝ := fun i => if i = l + 1 then u i + n₀ else u i
+def uM (u : ℕ → ℝ) (l n₀ : ℕ) : ℕ → ℝ := fun i => if i = l then u i - n₀ else u i
+
+theorem ok_plus (k r : ℕ) (T T' : ℝ) (hT : 0 < T) (hT' : 0 < T') (lam : Fin (2 * r + k + 1) → ℝ) (u : ℕ → ℝ)
+    (b : ℝ) (hc : Formalism.QuantumDeterminants.IsHCParam lam) (hu : HypType k r lam u b) (l n₀ : ℕ) (hl1 : 1 ≤ l) (hlk : l < k)
+    (hposition : (2 * n₀ + 1 : ℝ) ≤ u l - u (l + 1)) : (⟨k, r, T, T', u, uP u l n₀⟩ : M.Par).OK := by
+  have hk : 1 ≤ k := by omega
+  have hn0 : (0 : ℝ) ≤ n₀ := Nat.cast_nonneg _
+  refine ⟨hk, hT, hT', int_of_half hk hu.half hu.half, ?_, ?_⟩
+  · intro i hi
+    obtain ⟨n, hn⟩ := int_of_half hk hu.half hu.half i hi
+    by_cases h : i = l + 1
+    · refine ⟨n + n₀, ?_⟩
+      simp only [uP, if_pos h]
+      push_cast
+      linarith
+    · refine ⟨n, ?_⟩
+      simp only [uP, if_neg h]
+      exact hn
+  · intro i hi
+    obtain ⟨hi1, hik⟩ := Finset.mem_Icc.1 hi
+    obtain ⟨a1, a2⟩ := inter_half hc hu i hi1 hik
+    simp only [M.Par.lo, M.Par.hi, uP]
+    by_cases h1 : i + 1 = l + 1
+    · have hil : i = l := by omega
+      subst hil
+      have h2 : ¬ (i = i + 1) := by omega
+      rw [if_pos h1, if_neg h2, min_self, max_eq_right (by linarith)]
+      linarith
+    · by_cases h2 : i = l + 1
+      · rw [if_neg h1, if_pos h2, max_self, min_eq_left (by linarith)]
+        linarith
+      · rw [if_neg h1, if_neg h2, max_self, min_self]
+        linarith
+
+theorem ok_minus (k r : ℕ) (T T' : ℝ) (hT : 0 < T) (hT' : 0 < T') (lam : Fin (2 * r + k + 1) → ℝ) (u : ℕ → ℝ)
+    (b : ℝ) (hc : Formalism.QuantumDeterminants.IsHCParam lam) (hu : HypType k r lam u b) (l n₀ : ℕ) (hl1 : 1 ≤ l) (hlk : l < k)
+    (hposition : (2 * n₀ + 1 : ℝ) ≤ u l - u (l + 1)) : (⟨k, r, T, T', u, uM u l n₀⟩ : M.Par).OK := by
+  have hk : 1 ≤ k := by omega
+  have hn0 : (0 : ℝ) ≤ n₀ := Nat.cast_nonneg _
+  refine ⟨hk, hT, hT', int_of_half hk hu.half hu.half, ?_, ?_⟩
+  · intro i hi
+    obtain ⟨n, hn⟩ := int_of_half hk hu.half hu.half i hi
+    by_cases h : i = l
+    · refine ⟨n - n₀, ?_⟩
+      simp only [uM, if_pos h]
+      push_cast
+      linarith
+    · refine ⟨n, ?_⟩
+      simp only [uM, if_neg h]
+      exact hn
+  · intro i hi
+    obtain ⟨hi1, hik⟩ := Finset.mem_Icc.1 hi
+    obtain ⟨a1, a2⟩ := inter_half hc hu i hi1 hik
+    simp only [M.Par.lo, M.Par.hi, uM]
+    by_cases h2 : i = l
+    · subst h2
+      have h1 : ¬ (i + 1 = i) := by omega
+      rw [if_neg h1, if_pos rfl, max_self, min_eq_right (by linarith)]
+      linarith
+    · by_cases h1 : i + 1 = l
+      · rw [if_pos h1, if_neg h2, max_eq_left (by linarith), min_self]
+        linarith
+      · rw [if_neg h1, if_neg h2, max_self, min_self]
+        linarith
+
+
+
+noncomputable def lamX (x : ℤ) : Fin (2 * 0 + 3 + 1) → ℝ := ![(x : ℝ) + 1 / 2, -79 / 2, -119 / 2, -159 / 2]
+noncomputable def uX : ℕ → ℝ := fun i => if i = 1 then 80 else if i = 2 then 0 else -50
+
+
+
+
+
+
+
+noncomputable def cfg₁ : Sz.Cfg := { cfg₀ with a := 801 / 2 }
+
+theorem cfg₁_ok : cfg₁.Ok := by
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;> simp [cfg₁, cfg₀, Sz.Cfg.v] <;> norm_num
+
+noncomputable def Pc : M.Par := cfgPar cfg₁ 0 1 1 (fun _ => 0) (fun i => if i = 1 then 1 else 0)
+
+
+
+
+end CompanionTheory.WaveGrid.Inhab
+end
+
+section
+noncomputable section
+
+namespace CompanionTheory.WaveGrid.Tied
+
+open MeasureTheory Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.L2.SG.Pf.BesselExpansion Formalism.FourierDecayAlt Formalism.FourierDecayAlt.P
+open CompanionTheory.WaveGrid CompanionTheory.WaveGrid.Coef
+
+def ExpBall : Prop :=
+  ∀ C : ℝ, 0 ≤ C → ∀ (P : M.Par) (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
+    [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq]
+    (p : KB.Pl P Wp Wq) (lam : Fin (2 * P.r + P.k + 1) → ℝ) (b bv ga h : ℝ) (q0 a₁ : ℕ) (R0 : BranchingSupport.Rep P.k P.r)
+    (f : B.Mat P.k P.r → (Wq →L[ℂ] Wp)) (ν₀ : Fin (2 * P.r + P.k + 1) → ℤ),
+    BranchingSupport.Num P.k P.r lam P.u b bv ga h q0 → BranchingSupport.Num P.k P.r lam P.u' b bv ga h q0 →
+    P.T ≤ b ^ (C * ((2 * P.r + 2 : ℕ) : ℝ)) → P.T' ≤ b ^ (C * ((2 * P.r + 2 : ℕ) : ℝ)) →
+    BranchingSupport.n1 ν₀ + (P.r + 1) * a₁ + (P.r + 1) * (P.r + 2) ≤ q0 →
+    R0.IsDS (PI.BesselPeriodGGP.eps48 P.k P.r) (fun a => lam a + (ν₀ a : ℝ)) →
+    (haveI := FiniteDimensional.complete ℂ Wp; PI.CapelliEig.IsKFinCoefT (k := P.k) (r := P.r) R0.σ f) →
+    CutBP.BigCellDerivativeExpansion p f b (C / 2 + 6) a₁
+
+
+theorem thmBpAt_mono {P : M.Par} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
+    [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq]
+    {p : KB.Pl P Wp Wq} {f : B.Mat P.k P.r → (Wq →L[ℂ] Wp)} {b C C' : ℝ} {n₀ p₀ : ℕ} (hb : 1 ≤ b) (hC : C ≤ C')
+    (h : TBB.ThmBpAt p f b C n₀ p₀) : TBB.ThmBpAt p f b C' n₀ p₀ := by
+  intro γ hγ hG
+  refine (h γ hγ hG).trans (mul_le_mul' (ENNReal.ofReal_le_ofReal ?_) le_rfl)
+  exact mul_le_mul_of_nonneg_right
+    (Real.rpow_le_rpow_of_exponent_le hb (mul_le_mul_of_nonneg_right hC (by positivity)))
+    (pow_nonneg (inv_nonneg.2 hG.le) _)
+
+section num
+
+variable {k r : ℕ}
+
+def gapY (k r : ℕ) : ℝ :=
+  ((2 * r + 2 : ℕ) : ℝ) ^ ((9 : ℝ) / 2) *
+    (((3 * (r + 1) : ℕ) : ℝ) * ((2 * r + k + 1 : ℕ) : ℝ) ^ 2 + ((2 * r + k + 1 : ℕ) : ℝ) ^ 3)
+
+theorem pow_four_le_rpow_nine_halves (r : ℕ) : ((2 * r + 2 : ℕ) : ℝ) ^ 4 ≤ ((2 * r + 2 : ℕ) : ℝ) ^ ((9 : ℝ) / 2) := by
+  rw [← Real.rpow_natCast]
+  exact Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast (by omega : 1 ≤ 2 * r + 2)) (by norm_num)
+
+theorem thrX_le_gapY (k r : ℕ) : thrX k r ≤ gapY k r := by
+  unfold thrX gapY
+  have h1 : ((r : ℝ) + 1) ^ 4 ≤ ((2 * r + 2 : ℕ) : ℝ) ^ 4 :=
+    pow_le_pow_left₀ (by positivity) (by push_cast; linarith [(Nat.cast_nonneg r : (0 : ℝ) ≤ r)]) 4
+  have e : ((2 * r + k + 1 : ℕ) : ℝ) = 2 * (r : ℝ) + k + 1 := by push_cast; ring
+  rw [e]
+  exact mul_le_mul_of_nonneg_right (h1.trans (pow_four_le_rpow_nine_halves r)) (by positivity)
+
+theorem mul_le_gapY (k r : ℕ) : ((2 * r + 2 : ℕ) : ℝ) ^ 4 * ((2 * r + k + 1 : ℕ) : ℝ) ^ 3 ≤ gapY k r :=
+  mul_le_mul (pow_four_le_rpow_nine_halves r) (le_add_of_nonneg_left (by positivity)) (by positivity) (by positivity)
+
+theorem fourth_power_le_gap (k r : ℕ) : ((2 * r + 2 : ℕ) : ℝ) ^ 4 ≤ gapY k r :=
+  le_trans (le_mul_of_one_le_right (by positivity)
+    (one_le_pow₀ (by exact_mod_cast (by omega : 1 ≤ 2 * r + k + 1)))) (mul_le_gapY k r)
+
+theorem cube_le_gap (k r : ℕ) : ((2 * r + k + 1 : ℕ) : ℝ) ^ 3 ≤ gapY k r :=
+  le_trans (le_mul_of_one_le_left (by positivity)
+    (one_le_pow₀ (by exact_mod_cast (by omega : 1 ≤ 2 * r + 2)))) (mul_le_gapY k r)
+
+theorem hypType_of (hk : 1 ≤ k) {lam : Fin (2 * r + k + 1) → ℝ} {u : Fin k → ℝ} {b : ℝ} (hlam : IsHCParam lam)
+    (hu : IsHCParam u) (hI : InterlaceS (by omega) u lam) (hb : ∀ i, |u i| ≤ b) : HypType k r lam (lamN u) b where
+  half := fun i h1 h2 => by
+    obtain ⟨j, rfl⟩ : ∃ j, i = j + 1 := ⟨i - 1, by omega⟩
+    rw [lamN_succ u ⟨j, by omega⟩]
+    exact hu.2 _
+  inter := by
+    refine ⟨fun s t hst => hlam.1 (by simpa using hst), fun s => ⟨fun hs => ?_, fun hs => ?_⟩⟩
+    · have hs' : (s : ℕ) < k := by simpa using hs
+      rw [lamN_succ u ⟨s, hs'⟩]
+      by_cases h : (s : ℕ) + 1 < k
+      · exact (hI.1 s h).1
+      · have e : (s : ℕ) = k - 1 := by omega
+        have := hI.2 (by omega)
+        simp only [← e] at this
+        exact this
+    · have hs' : (s : ℕ) + 1 < k := by
+        have : (s : ℕ) + 2 ≤ k := by simpa using hs
+        omega
+      rw [show (s : ℕ) + 2 = (s + 1) + 1 from rfl, lamN_succ u ⟨s + 1, hs'⟩]
+      exact (hI.1 s hs').2
+  u_le := fun i h1 h2 => by
+    obtain ⟨j, rfl⟩ : ∃ j, i = j + 1 := ⟨i - 1, by omega⟩
+    rw [lamN_succ u ⟨j, by omega⟩]
+    exact hb _
+
+theorem gap_of_lt {n : ℕ} {lam : Fin n → ℝ} {g : ℝ} (hlam : IsHCParam lam) (hg : AllGaps lam g) {a c : Fin n}
+    (h : a < c) : g ≤ lam a - lam c := by
+  have h1 := hg a c h.ne
+  rwa [abs_of_pos (sub_pos.2 (hlam.1 h))] at h1
+
+theorem shape_of (hk : 1 ≤ k) {lam : Fin (2 * r + k + 1) → ℝ} {u : Fin k → ℝ} {bv : ℝ} (hlam : IsHCParam lam)
+    (hu : IsHCParam u) (hI : InterlaceS (by omega) u lam) (hS : ShapeS u lam bv) :
+    (∀ a : Fin (2 * r + k + 1), a.val + 1 < k → 0 ≤ lam a ∧ lam a ≤ bv / 8) ∧
+      ∀ a : Fin (2 * r + k + 1), k ≤ a.val + 1 → -2 * bv ≤ lam a ∧ lam a ≤ -bv := by
+  refine ⟨fun a ha => (hS a).1 ⟨⟨_, (hI.1 a ha).1⟩, ⟨_, (hI.1 a ha).2⟩⟩, fun a ha => (hS a).2 ?_⟩
+  rintro ⟨-, i, hi⟩
+  have h1 := hI.2 (by omega)
+  have h2 : lam a ≤ lam ⟨k - 1, by omega⟩ := hlam.1.antitone (by rw [Fin.le_def]; simp only; omega)
+  have h3 : u ⟨k - 1, by omega⟩ ≤ u i := hu.1.antitone (by rw [Fin.le_def]; simp only; omega)
+  linarith
+
+theorem num_of (hk : 1 ≤ k) {lam : Fin (2 * r + k + 1) → ℝ} {u : ℕ → ℝ} {b bv ga h : ℝ} {q0 : ℕ}
+    (hlam : IsHCParam lam) (hu : HypType k r lam u b)
+    (hc : ∀ a : Fin (2 * r + k + 1), a.val + 1 < k → 0 ≤ lam a ∧ lam a ≤ bv / 8)
+    (hn : ∀ a : Fin (2 * r + k + 1), k ≤ a.val + 1 → -2 * bv ≤ lam a ∧ lam a ≤ -bv) (hb : ∀ a, |lam a| ≤ b)
+    (hg : AllGaps lam ga) (hh : GapAtLeast (PI.BesselPeriodGGP.eps48 k r) lam h) (hok : ThreeDimData.GapOK k r (h / 4))
+    (h1 : 100 * ((q0 : ℝ) + 1) ≤ ga) (h2 : 100 * ((q0 : ℝ) + 1) ≤ h)
+    (h3 : 10 ^ 6 * ((2 * r + k + 1 : ℕ) : ℝ) ^ 7 ≤ bv) : BranchingSupport.Num k r lam u b bv ga h q0 := by
+  refine ⟨hk, hlam, fun a i hi => ?_, fun a ha => ?_, fun a ha => ?_, hc, hn, hb,
+    fun i hi => hu.u_le i (Finset.mem_Icc.1 hi).1 (Finset.mem_Icc.1 hi).2, fun a c hac _ => gap_of_lt hlam hg hac,
+    hh, hok, h1, h2, h3⟩
+  · obtain ⟨m1, e1⟩ := hlam.2 a
+    obtain ⟨m2, e2⟩ := hu.half i (Finset.mem_Icc.1 hi).1 (Finset.mem_Icc.1 hi).2
+    refine ⟨m1 - m2 + r, ?_⟩
+    push_cast at e1 ⊢
+    linarith
+  · exact (hu.inter.2 (a.cast (by ring))).1 (by simpa using ha)
+  · exact (hu.inter.2 (a.cast (by ring))).2 (show a.val + 2 ≤ k by omega)
+
+theorem exists_shift {n : ℕ} {lam lam' : Fin n → ℝ} (h : IsHCParam lam) (h' : IsHCParam lam') :
+    ∃ ν : Fin n → ℤ, lam' = (fun a => lam a + (ν a : ℝ)) ∧ (BranchingSupport.n1 ν : ℝ) = l1 lam' lam := by
+  have key : ∀ a, ∃ m : ℤ, lam' a = lam a + m := fun a => by
+    obtain ⟨m1, e1⟩ := h.2 a
+    obtain ⟨m2, e2⟩ := h'.2 a
+    exact ⟨m2 - m1, by push_cast; linarith⟩
+  choose ν hν using key
+  refine ⟨ν, funext hν, ?_⟩
+  unfold BranchingSupport.n1 l1
+  push_cast
+  refine Finset.sum_congr rfl fun a _ => ?_
+  rw [hν a, add_sub_cancel_left, Nat.cast_natAbs, Int.cast_abs]
+
+theorem scaled_le {T ka b Ch : ℝ} (r : ℕ) (hb : 1 ≤ b) (hka : 0 < ka) (h1 : ka ≤ b ^ Ch)
+    (hT : T * (1 / ka) ^ (2 * r) ≤ b ^ (Ch * ((2 * r + 2 : ℕ) : ℝ))) : T ≤ b ^ (2 * |Ch| * ((2 * r + 2 : ℕ) : ℝ)) := by
+  have hb0 : 0 < b := by linarith
+  have e : T = T * (1 / ka) ^ (2 * r) * ka ^ (2 * r) := by
+    rw [mul_assoc, ← mul_pow, one_div, inv_mul_cancel₀ hka.ne', one_pow, mul_one]
+  have h2 : ka ^ (2 * r) ≤ b ^ (|Ch| * ((2 * r + 2 : ℕ) : ℝ)) := by
+    calc ka ^ (2 * r) ≤ (b ^ |Ch|) ^ (2 * r) :=
+          pow_le_pow_left₀ hka.le (h1.trans (Real.rpow_le_rpow_of_exponent_le hb (le_abs_self _))) _
+      _ ≤ (b ^ |Ch|) ^ (2 * r + 2) := pow_le_pow_right₀ (Real.one_le_rpow hb (abs_nonneg _)) (by omega)
+      _ = _ := by rw [← Real.rpow_natCast, ← Real.rpow_mul hb0.le]
+  have h3 : b ^ (Ch * ((2 * r + 2 : ℕ) : ℝ)) ≤ b ^ (|Ch| * ((2 * r + 2 : ℕ) : ℝ)) :=
+    Real.rpow_le_rpow_of_exponent_le hb (mul_le_mul_of_nonneg_right (le_abs_self _) (by positivity))
+  calc T = _ := e
+    _ ≤ b ^ (|Ch| * ((2 * r + 2 : ℕ) : ℝ)) * b ^ (|Ch| * ((2 * r + 2 : ℕ) : ℝ)) :=
+        mul_le_mul (hT.trans h3) h2 (by positivity) (by positivity)
+    _ = _ := by rw [← Real.rpow_add hb0]; congr 1; ring
+
+end num
+
+open CompanionTheory.LimBd.Main (ZuckT CoefCC) in
+
+theorem coefCC1_of {t : ∀ n : ℕ, (Fin n → Bool) → ℝ} {Ct : ℝ} (hCt : 0 ≤ Ct)
+    (ht : ∀ n ε, 1 ≤ n → t n ε ≤ Ct * (n : ℝ) ^ 3) (hZ : ZuckT t) (hK : PI.KFinSmooth) (hC : CoefCC) :
+    CoefCC1 (Ct + |Formalism.MainNotions.BigCellDensity.c3| + 2) := by
+  intro k r L f _ hf hgap
+  have hfK : CutBP.KFinDSCoef L.ε L.lam f := by
+    obtain ⟨Pm, Qm, h1, h2, h3⟩ := hf
+    exact ⟨L.Hs, _, _, _, L.σ, Pm, Qm, L.hlam, L.hσ, h1, h2, fun g _ => h3 g⟩
+  have hc := abs_nonneg Formalism.MainNotions.BigCellDensity.c3
+  have hX := thrX_nonneg k r
+  have hY1 := thrX_le_gapY k r
+  have hY2 := fourth_power_le_gap k r
+  have hY3 := cube_le_gap k r
+  have hm : (1 : ℝ) ≤ ((2 * r + 2 : ℕ) : ℝ) ^ 4 := one_le_pow₀ (by exact_mod_cast (by omega : 1 ≤ 2 * r + 2))
+  have h1 := ht (2 * r + k + 1) L.ε (by omega)
+  have h2 := mul_le_mul_of_nonneg_left hY3 hCt
+  have h3 := mul_le_mul_of_nonneg_left hY1 hc
+  have hD := kDecay_of_gap hZ k r L.ε (X := |Formalism.MainNotions.BigCellDensity.c3| * thrX k r) (d := 0)
+    (h := (Ct + |Formalism.MainNotions.BigCellDensity.c3| + 2) * gapY k r) (mul_nonneg hc hX) le_rfl (by nlinarith)
+  have hg : PI.ZuckTensor.GapAtLeast L.ε L.lam ((Ct + |Formalism.MainNotions.BigCellDensity.c3| + 2) * gapY k r - 2 * 0) := by
+    rw [mul_zero, sub_zero, gapY, ← mul_assoc]
+    exact hgap
+  exact JCx2.sq_inCC_mono (thr_conv k r (le_abs_self _) hc (by linarith)) le_rfl (kfin_inCC hK hC hD hg hfK 1)
+
+end CompanionTheory.WaveGrid.Tied
+end
+end
+
+section
+noncomputable section
+
+namespace CompanionTheory.WaveGrid.Ties
+
+open MeasureTheory Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.L2.SG.Pf.BesselExpansion Formalism.FourierDecayAlt Formalism.FourierDecayAlt.P
+open scoped ENNReal
+
+section energy
+
+variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
+  [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] {k r : ℕ}
+
+theorem norm_JF_eq (Bs : B.RealPlaceData k r Wp Wq) (F : B.Mat k r → (Wq →L[ℂ] Wp)) (d : Fin (r + 1) → ℂ)
+    (hd : ∀ a, d a ≠ 0) {γ γ' : B.Mat k r} (hγ : γ ∈ B.GV k r) (hγ' : γ' ∈ B.GV k r)
+    (hZ : Zhat k r Bs.z Bs.z' γ = D.ptMatN (PBJ.bigPt d) (r + 1))
+    (hZ' : Zhat k r Bs.z Bs.z' γ' = D.ptMatN (PBJ.bigPt d) (r + 1)) (hpos : 0 < Gf k r Bs.z Bs.z' γ) :
+    ‖B.hsVec (B.JF Bs F γ)‖ = ‖B.hsVec (B.JF Bs F γ')‖ := by
+  have hl : D.IsLocPt (PBJ.bigPt d) (r + 1) := PBJ.Dens.isLocPt_bigPt d hd
+  have hpos' : 0 < Gf k r Bs.z Bs.z' γ' := by
+    rw [← ptG_spec k r _ _ (PBJ.bigPt d) _ hl hZ', ptG_spec k r _ _ (PBJ.bigPt d) _ hl hZ]
+    exact hpos
+  obtain ⟨s, hs, s', hs', hγs⟩ := fibre_orbit_description k r Bs.z Bs.z'
+    ⟨Bs.k_pos, Dx2.VV.std_vector_z Bs, Dx2.VV.std_vector_z_prime Bs⟩ _ hγ _ hγ' hpos (hZ.trans hZ'.symm)
+  obtain ⟨hA, hhA, nA, hnA, hfA, rfl⟩ := Dx2.VV.stabilizer_decomp_unitary_mul_unipotent (Dx2.VV.std_vector_z Bs) hs
+  obtain ⟨hB, hhB, nB, hnB, hfB, rfl⟩ := Dx2.VV.stabilizer_decomp_unitary_mul_unipotent (Dx2.VV.std_vector_z_prime Bs) hs'
+  have hlaw := Dx2.VV.orbJ_pt Bs (PBJ.bigPt d) hl hγ hZ hpos hhA hnA hfA hhB hnB hfB F
+  rw [← hγs] at hlaw
+  have hw : (hl.2 ▸ D.ptPerm (PBJ.bigPt d) : Equiv.Perm (Fin (r + 1))) = 1 :=
+    PBM.cast_perm_eq_one _ _ (PBM.ptPerm_bigPt d hd)
+  obtain ⟨hmono, hnz⟩ := Dx2.VV.ptMatN_monoP' (PBJ.bigPt d) (r + 1) hl.2 hl.1
+  rw [hw] at hmono hlaw
+  rw [PBM.orbJ_one_eq Bs hγ' hpos' hnz (hZ'.trans hmono) F, PBM.orbJ_one_eq Bs hγ hpos hnz (hZ.trans hmono) F] at hlaw
+  rw [← hlaw, CutBP.hsVec_norm_CinL Bs hhA hhB]
+
+theorem normSq_sec (hk : 2 ≤ k) (Bs : B.RealPlaceData k r Wp Wq) (F : B.Mat k r → (Wq →L[ℂ] Wp))
+    (μsec : ℂ → Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (hsec : IsSection k r Bs.z Bs.z' μsec) :
+    B.normSq Bs F = jNormSq k r (Tz k r Bs.z) (Tz k r Bs.z')
+      fun q => Real.sqrt (hsNormSq (B.JF Bs F (bigCell k r q.1 (μsec q.2)))) := by
+  unfold B.normSq jNormSq
+  refine lintegral_congr fun q => ?_
+  by_cases hw0 : bcWeight k r (Tz k r Bs.z) (Tz k r Bs.z') q = 0
+  · rw [hw0, zero_mul, zero_mul]
+  obtain ⟨hc, hζ⟩ := Formalism.MainNotions.S.Pv.LemmaJ.bcWeight_ne hk hw0
+  have hζ0 : q.2 ≠ 0 := by
+    intro h
+    rw [h, map_zero] at hζ
+    exact absurd (mul_pos Bs.T_pos Bs.T'_pos) (not_lt.2 hζ.le)
+  obtain ⟨d, hd1, hd2⟩ : ∃ d : Fin (r + 1) → ℂ, (fun i : Fin r => d i.castSucc) = q.1 ∧ d (Fin.last r) = q.2 :=
+    ⟨Fin.snoc q.1 q.2, by funext i; simp, by simp⟩
+  have hd : ∀ a, d a ≠ 0 := fun a => by
+    refine Fin.lastCases ?_ (fun i => ?_) a
+    · rw [hd2]; exact hζ0
+    · rw [congrFun hd1 i]; exact hc i
+  have hZ := PBM.zhat_bigCell_pt Bs d (by rw [hd2]; exact hζ)
+  have hZ' := PBM.zhat_bigCell_pt { Bs with μsec := μsec, sec := hsec } d (by rw [hd2]; exact hζ)
+  rw [hd1, hd2] at hZ hZ'
+  have e := norm_JF_eq Bs F d hd (bigCellMem k r _ _ hc (Bs.sec.2 _ hζ).1) (bigCellMem k r _ _ hc (hsec.2 _ hζ).1) hZ hZ'
+    (Formalism.MainNotions.S.Pv.LemmaJ.Gf_big Bs.z_mem Bs.z'_mem Bs.sec q.1 hc q.2 hζ)
+  congr 2
+  rw [Real.norm_eq_abs, sq_abs, Real.sq_sqrt (Formalism.MainNotions.BesselShellMomentBounds.hsNormSq_nonneg _), Formalism.MainNotions.BesselShellMomentBounds.hsNormSq_eq]
+  change ‖B.hsVec (B.JF Bs F (bigCell k r q.1 (Bs.μsec q.2)))‖ ^ 2 = _
+  rw [e, PiLp.norm_sq_eq_of_L2]
+  rfl
+
+end energy
+
+theorem energy_identity : EnergyTie := by
+  intro k r L f μsec u u' p _ hc _ _ htie _ _ hsec
+  obtain ⟨hz, hz', hπ, hπ', hW, hN, hW'⟩ := htie
+  have e : TBB.jN2 p f = jNorm2 L f μsec := by
+    refine (GlobalTheory.T.jN2_eq_normSq_base (parOfL L u u') L.Wp L.Wq p f).trans ?_
+    have h := normSq_sec (k := k) (r := r) p.hl.2.2 p.T.base f μsec (by
+      have e1 : (p.T.base.z : Fin (2 * r + k + 1) → ℂ) = L.z := hz
+      have e2 : (p.T.base.z' : Fin (2 * r + k + 1) → ℂ) = L.z' := hz'
+      exact e1 ▸ e2 ▸ hsec)
+    refine h.trans ?_
+    unfold jNorm2 LocBessel.J B.JF
+    rw [hc]
+    simp only [hz, hz', hπ, hπ', hW, hN, hW']
+  rw [e]
+  refine le_mul_of_one_le_left' ?_
+  rw [ENNReal.one_le_ofReal]
+  exact one_le_pow₀ (by linarith [Real.pi_gt_three])
+
+section scale
+
+variable {k r : ℕ}
+
+@[reducible] def withN (L : LocBessel k r) (κ : ℝ≥0∞) : LocBessel k r := { L with κN := κ }
+
+theorem pairMeas_smul (L : LocBessel k r) (κ s : ℝ≥0∞) (h : L.μN = s • (withN L κ).μN) :
+    pairMeas L = (s * s) • pairMeas (withN L κ) := by
+  have i1 : SFinite (withN L κ).μN := Formalism.MainNotions.FrameBoundFromBesselTorus.sFinite_haarLie _ _
+  have i2 : SigmaFinite L.μW := L.hμW.1.1
+  have i3 : SigmaFinite L.μW' := L.hμW'.1.1
+  unfold pairMeas
+  rw [h]
+  change (L.μW.prod (s • (withN L κ).μN)).prod (L.μW'.prod (s • (withN L κ).μN)) =
+    (s * s) • (L.μW.prod (withN L κ).μN).prod (L.μW'.prod (withN L κ).μN)
+  rw [Measure.prod_smul_right, Measure.prod_smul_right, Measure.prod_smul_right, Measure.prod_smul_left, smul_smul]
+
+theorem orbSq_le (L : LocBessel k r) (κ s : ℝ≥0∞) (hs0 : s ≠ 0) (hs : s ≠ ⊤)
+    (h : pairMeas L = s • pairMeas (withN L κ)) (f : Mx k r → (L.Wq →L[ℂ] L.Wp)) (γ : Point ℂ (r + 1)) :
+    orbSq L f γ ≤ ENNReal.ofReal (s.toReal ^ 2) * orbSq (withN L κ) f γ := by
+  unfold orbSq
+  refine iSup_le fun g => iSup_le fun μR => iSup_le fun ν => iSup_le fun hc => ?_
+  have hq : IsOrbQuot (withN L κ) g μR (s⁻¹ • ν) := by
+    intro φ hφ
+    have e := hc.2.2.2 φ hφ
+    rw [h, lintegral_smul_measure] at e
+    rw [lintegral_smul_measure, ← e, smul_eq_mul, smul_eq_mul, ← mul_assoc, ENNReal.inv_mul_cancel hs0 hs, one_mul]
+  have e : OrbInt L f g ν = ((s.toReal : ℝ) : ℂ) • OrbInt (withN L κ) f g (s⁻¹ • ν) := by
+    have e1 : ν = s • (s⁻¹ • ν) := by rw [smul_smul, ENNReal.mul_inv_cancel hs0 hs, one_smul]
+    unfold OrbInt
+    conv_lhs => rw [e1, integral_smul_measure]
+    rw [Complex.coe_smul]
+    rfl
+  rw [e, Formalism.MainNotions.BesselShellMomentBounds.hsNormSq_smul, Complex.norm_real, Real.norm_eq_abs, sq_abs, ENNReal.ofReal_mul (by positivity)]
+  refine mul_le_mul' le_rfl ?_
+  exact le_iSup_of_le g (le_iSup_of_le μR (le_iSup_of_le (s⁻¹ • ν) (le_iSup_of_le ⟨hc.1, hc.2.1, hc.2.2.1, hq⟩ le_rfl)))
+
+theorem jNorm2_eq (L : LocBessel k r) (κ s : ℝ≥0∞) (h : pairMeas L = s • pairMeas (withN L κ))
+    (f : Mx k r → (L.Wq →L[ℂ] L.Wp)) (μsec : ℂ → Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) :
+    jNorm2 L f μsec = ENNReal.ofReal (s.toReal ^ 2) * jNorm2 (withN L κ) f μsec := by
+  have hJ : ∀ g, L.J f g = ((s.toReal : ℝ) : ℂ) • (withN L κ).J f g := fun g => by
+    change ∫ x, besselIntg L f g x ∂(pairMeas L) = _ • ∫ x, besselIntg L f g x ∂(pairMeas (withN L κ))
+    rw [h, integral_smul_measure, Complex.coe_smul]
+  rw [Formalism.MainNotions.BesselShellMomentBounds.jNorm2_eq, Formalism.MainNotions.BesselShellMomentBounds.jNorm2_eq, ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+  refine lintegral_congr fun q => ?_
+  rw [← ENNReal.ofReal_mul (by positivity)]
+  congr 1
+  unfold Formalism.MainNotions.BesselShellMomentBounds.dens
+  rw [hJ, Formalism.MainNotions.BesselShellMomentBounds.hsNormSq_smul, Complex.norm_real, Real.norm_eq_abs, sq_abs]
+  change _ = _ * (bcWeight k r (Tz k r L.z) (Tz k r L.z') q * _)
+  ring
+
+end scale
+
+end CompanionTheory.WaveGrid.Ties
+end
+end
+
+section
 noncomputable section
 
 namespace CompanionTheory.WaveGrid.WGlue
@@ -428,3 +1347,5 @@ theorem weighted_uniform_rotated_of_expansion_alt_alt (hW : ∀ Cb, WEnd.WBp Cb)
     _ = _ := by ring
 
 end CompanionTheory.WaveGrid.WGlue
+end
+end

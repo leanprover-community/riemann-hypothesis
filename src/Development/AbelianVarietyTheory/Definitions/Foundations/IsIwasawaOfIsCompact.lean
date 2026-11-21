@@ -58,10 +58,6 @@ theorem iwAbs_right (g : G) {k : G} (hk : k ∈ K) : iwAbs δ K (g * k) = iwAbs 
   obtain ⟨p', k', hk', rfl⟩ := h.1 g
   rw [mul_assoc, h.iwAbs_mul _ (mul_mem hk' hk), h.iwAbs_mul _ hk']
 
-theorem eq_iwAbs {f : G → ℝ≥0} (h1 : f 1 = 1) (hl : ∀ (p : P) g, f (p * g) = δ p * f g)
-    (hr : ∀ g, ∀ k ∈ K, f (g * k) = f g) : f = iwAbs δ K := funext fun g => by
-  obtain ⟨p, k, hk, rfl⟩ := h.1 g
-  rw [h.iwAbs_mul _ hk, hr _ _ hk, ← mul_one (p : G), hl, h1, mul_one]
 
 end IsIwasawa
 
@@ -188,9 +184,6 @@ variable {δ K χ t}
 theorem mem_indSpace [TopologicalSpace G] {Φ : G → ℂ} :
     Φ ∈ indSpace δ K χ t ↔ IndLaw δ χ t Φ ∧ Continuous Φ ∧ IsKFinite K Φ := Iff.rfl
 
-theorem translate_mem_indSpace [TopologicalSpace G] [ContinuousMul G] {Φ : G → ℂ} (h : Φ ∈ indSpace δ K χ t) {k : G}
-    (hk : k ∈ K) : (fun g => Φ (g * k)) ∈ indSpace δ K χ t :=
-  ⟨fun p g => by simpa only [mul_assoc] using h.1 p (g * k), h.2.1.comp (continuous_mul_const k), h.2.2.translate hk⟩
 
 @[simp] theorem flatSec_self (Φ : G → ℂ) (s₀ : ℂ) : flatSec δ K Φ s₀ s₀ = Φ := funext fun g => by simp [flatSec]
 
@@ -225,9 +218,6 @@ theorem indLaw_flatSec {Φ : G → ℂ} {ρ s₀ : ℂ} (hΦ : IndLaw δ χ (s�
     npow_add (hom_pos δ p) _ (s - s₀)]
   ring
 
-theorem eq_flatSec {Φ : ℂ → G → ℂ} {ρ : ℂ} (hΦ : ∀ s, IndLaw δ χ (s + ρ) (Φ s)) (hf : IsFlat K Φ) (s₀ s : ℂ) :
-    Φ s = flatSec δ K (Φ s₀) s₀ s :=
-  IndLaw.ext h.1 (hΦ s) (h.indLaw_flatSec (hΦ s₀) s) fun k hk => by rw [h.flatSec_of_mem _ _ _ hk, hf s s₀ k hk]
 
 theorem norm_le {Φ : G → ℂ} (hΦ : IndLaw δ χ t Φ) {C : ℝ} (hC : ∀ k ∈ K, ‖Φ k‖ ≤ C) (g : G) :
     ‖Φ g‖ ≤ C * (iwAbs δ K g : ℝ) ^ t.re := by
@@ -282,8 +272,6 @@ variable {H : Type} {X : Type} [NormedAddCommGroup X] [InnerProductSpace ℂ X]
 
 def coef (π : H → X → X) (x y : X) : H → ℂ := fun g => inner ℂ y (π g x)
 
-theorem conj_coef (π : H → X → X) (x y : X) (g : H) : starRingEnd ℂ (coef π x y g) = inner ℂ (π g x) y :=
-  inner_conj_symm _ _
 
 variable [MeasurableSpace H] (m : Measure H)
 

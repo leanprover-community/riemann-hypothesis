@@ -1,7 +1,108 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasFDerivAtOfCompImmersion
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AbsDetUnitaryMulMul
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContinuousExptPY
 
+section
+open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU Matrix MeasureTheory
+
+namespace GlobalTheory
+
+theorem hasFDerivAt_of_comp_immersion : ∀ (E F : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F] (Φ : E → F) (ψ : E → E) (x : E) (A D : E →L[ℝ] F), HasStrictFDerivAt Φ A (ψ x) → Function.Injective A → ContinuousAt ψ x → HasFDerivAt (fun y => Φ (ψ y)) D x → ∃ P : E →L[ℝ] E, HasFDerivAt ψ P x ∧ A.comp P = D := by
+  intro E F _ _ _ _ _ _ Φ ψ x A D hA hinj hψ hD
+
+  obtain ⟨g, hg⟩ := (A : E →ₗ[ℝ] F).exists_leftInverse_of_injective (LinearMap.ker_eq_bot.mpr hinj)
+  let L : F →L[ℝ] E := LinearMap.toContinuousLinearMap g
+  have hLA : ∀ v, L (A v) = v := fun v => by
+    have h := LinearMap.congr_fun hg v
+    simp only [LinearMap.comp_apply, LinearMap.id_apply, ContinuousLinearMap.coe_coe] at h
+    first
+      | exact h
+      | simpa [L] using h
+      | (rw [show (L : F → E) = g from LinearMap.coe_toContinuousLinearMap' g]; exact h)
+
+  have hr : (fun y => Φ (ψ y) - Φ (ψ x) - A (ψ y - ψ x)) =o[nhds x] (fun y => ψ y - ψ x) :=
+    hA.hasFDerivAt.isLittleO.comp_tendsto hψ
+  have hs : (fun y => Φ (ψ y) - Φ (ψ x) - D (y - x)) =o[nhds x] (fun y => y - x) :=
+    hD.isLittleO
+  have hLr : (fun y => L (Φ (ψ y) - Φ (ψ x) - A (ψ y - ψ x))) =o[nhds x] (fun y => ψ y - ψ x) :=
+    (L.isBigO_comp _ _).trans_isLittleO hr
+
+  have hu : (fun y => ψ y - ψ x) =O[nhds x] (fun y => y - x) := by
+    have h1 := hLr.right_isBigO_add
+    have hsum : (fun y => L (Φ (ψ y) - Φ (ψ x) - A (ψ y - ψ x)) + (ψ y - ψ x))
+        = fun y => L (Φ (ψ y) - Φ (ψ x)) := by
+      funext y
+      simp only [map_sub, hLA]
+      abel
+    rw [hsum] at h1
+    exact h1.trans ((L.isBigO_comp _ _).trans hD.isBigO_sub)
+
+  have hP : HasFDerivAt ψ (L.comp D) x := by
+    rw [hasFDerivAt_iff_isLittleO]
+    have hdiff : (fun y => L (Φ (ψ y) - Φ (ψ x) - D (y - x)) - L (Φ (ψ y) - Φ (ψ x) - A (ψ y - ψ x)))
+        = fun y => ψ y - ψ x - (L.comp D) (y - x) := by
+      funext y
+      simp only [map_sub, hLA, ContinuousLinearMap.comp_apply]
+      abel
+    rw [← hdiff]
+    exact ((L.isBigO_comp _ _).trans_isLittleO hs).sub (hLr.trans_isBigO hu)
+  refine ⟨L.comp D, hP, ?_⟩
+  exact (hA.hasFDerivAt.comp x hP).unique hD
+
+end GlobalTheory
+end
+
+section
+open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU Matrix MeasureTheory
+
+namespace GlobalTheory.PolarU
+
+open Kronecker in
+
+theorem abs_det_unitary_mul_mul : ∀ (p q : ℕ), ∀ U ∈ Matrix.unitaryGroup (Fin p) ℂ, ∀ V ∈ Matrix.unitaryGroup (Fin q) ℂ, ∀ T : (Fin p → Fin q → ℂ) →ₗ[ℝ] (Fin p → Fin q → ℂ), (∀ B, Matrix.of (T B) = U * Matrix.of B * V) → |LinearMap.det T| = 1 := by
+  classical
+  intro p q U hU V hV T hT
+
+  let e : (Fin p → Fin q → ℂ) ≃ₗ[ℂ] (Fin q → Fin p → ℂ) :=
+    { toFun := fun B j i => B i j
+      invFun := fun C i j => C j i
+      map_add' := fun _ _ => rfl
+      map_smul' := fun _ _ => rfl
+      left_inv := fun _ => rfl
+      right_inv := fun _ => rfl }
+
+  let L : (Fin q → Fin p → ℂ) →ₗ[ℂ] (Fin q → Fin p → ℂ) :=
+    LinearMap.pi (fun j => (Matrix.toLin' U).comp (LinearMap.proj j))
+
+  let R : (Fin p → Fin q → ℂ) →ₗ[ℂ] (Fin p → Fin q → ℂ) :=
+    LinearMap.pi (fun i => (Matrix.toLin' Vᵀ).comp (LinearMap.proj i))
+  let C : (Fin p → Fin q → ℂ) →ₗ[ℂ] (Fin p → Fin q → ℂ) :=
+    ((e.symm : (Fin q → Fin p → ℂ) →ₗ[ℂ] (Fin p → Fin q → ℂ)) ∘ₗ L ∘ₗ
+      (e.symm.symm : (Fin p → Fin q → ℂ) →ₗ[ℂ] (Fin q → Fin p → ℂ))) ∘ₗ R
+  have hTC : T = C.restrictScalars ℝ := by
+    apply LinearMap.ext
+    intro B
+    funext i j
+    have h := congrFun (congrFun (hT B) i) j
+    simp only [Matrix.of_apply] at h
+    rw [h, Matrix.mul_assoc]
+    simp [C, L, R, e, Matrix.mul_apply, Matrix.mulVec, dotProduct, Matrix.transpose_apply, mul_comm]
+  have hL : LinearMap.det L = U.det ^ q := by
+    simp [L, LinearMap.det_pi, LinearMap.det_toLin']
+  have hR : LinearMap.det R = V.det ^ p := by
+    simp [R, LinearMap.det_pi, LinearMap.det_toLin', Matrix.det_transpose]
+  have hC : LinearMap.det C = U.det ^ q * V.det ^ p := by
+    simp only [C]
+    rw [LinearMap.det_comp, LinearMap.det_conj L e.symm, hL, hR]
+  have hu : ‖U.det‖ = 1 := CStarRing.norm_of_mem_unitary (Matrix.det_of_mem_unitary hU)
+  have hv : ‖V.det‖ = 1 := CStarRing.norm_of_mem_unitary (Matrix.det_of_mem_unitary hV)
+  rw [hTC, LinearMap.det_restrictScalars, Algebra.norm_complex_apply, hC, map_mul, map_pow,
+    map_pow, Complex.normSq_eq_norm_sq, Complex.normSq_eq_norm_sq, hu, hv]
+  simp
+
+end GlobalTheory.PolarU
+end
+
+section
 open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU Matrix MeasureTheory
 
 namespace GlobalTheory.PolarU
@@ -133,3 +234,4 @@ theorem jacobian_action_p : ∀ (p q : ℕ) (g : Mat p q) (ψ : (Fin p → Fin q
   exact hd
 
 end GlobalTheory.PolarU
+end

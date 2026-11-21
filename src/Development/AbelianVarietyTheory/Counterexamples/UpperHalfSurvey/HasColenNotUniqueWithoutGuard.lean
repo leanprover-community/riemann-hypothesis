@@ -49,17 +49,6 @@ theorem intFun_eq_span {X : Type} [Fintype X] [DecidableEq X] :
     · exact ⟨1, by simp [Matrix.one_apply, h]⟩
     · exact ⟨0, by simp [Matrix.one_apply, h]⟩
 
-theorem hasColen_intFun (v : Valuation C NNReal) {X : Type} [Fintype X] [DecidableEq X] :
-    HasColen R v (intFun (C := C) R X) 1 := ⟨1, intFun_eq_span, by simp⟩
 
-theorem hasColen_not_unique_without_guard (v : Valuation C NNReal) (t : C) (ht : t ≠ 0) :
-    HasColen C v (⊤ : Submodule C (Unit → C)) (v t) := by
-  refine ⟨Matrix.of fun _ _ => t, ?_, by simp⟩
-  symm
-  rw [eq_top_iff]
-  intro f _
-  refine (Submodule.mem_span_range_iff_exists_fun C).mpr ⟨fun _ => f () / t, ?_⟩
-  ext x
-  simp [ht]
 
 end GlobalTheory.HopfOrderCheck

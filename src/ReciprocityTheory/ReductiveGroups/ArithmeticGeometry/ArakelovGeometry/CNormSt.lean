@@ -1,8 +1,202 @@
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.FibreSt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.IsBergDensity
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.EqZeroOfSecTraceMulEqZero
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.FibreStE
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ChooseLePowDivFactorial
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.SupLeL2NormSections
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ABridgeSt
+import ReciprocityTheory.GeometryOfNumbers.PluriharmonicAnalysis.MorseGenSt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.AInterpSt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.PenMet
 import ReciprocityTheory.GeometryOfNumbers.SphericalMonomials.SupStMonoNormSqPos
 
+section
+namespace ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
+
+open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.GeometryOfNumbersTheory MvPolynomial MeasureTheory Module Filter Asymptotics
+open scoped ComplexOrder
+
+variable {Ω : Type} [Field Ω] [CharZero Ω] {κ : Type} [Fintype κ] {D : ℕ}
+
+def prFib (x : Ix κ → Ω) (e : Fin (D + 1) → Ix κ) (w : Fin (D + 1) → ℂ) : Set (Ix κ → ℂ) :=
+  {z | z ∈ pts (coordIdeal ℤ x) ∧ ∀ k, z (e k) = w k}
+
+theorem exists_proj_ne_zero {x : Ix κ → Ω} {e : Fin (D + 1) → Ix κ} (hfr : IsProjFrame x e)
+    {z : Ix κ → ℂ} (hz : z ∈ pts (coordIdeal ℤ x)) : ∃ k, z (e k) ≠ 0 := by
+  by_contra hcon
+  push Not at hcon
+  obtain ⟨i, hi⟩ : ∃ i, z i ≠ 0 := by
+    by_contra h; push Not at h; exact hz.1 (funext h)
+  obtain ⟨q, hqm, hq⟩ := hfr.integral i
+  have hg : ∀ j, ∃ g, coneMap ℤ (x ∘ e) g = ((q.coeff j : coneRing ℤ (x ∘ e)) : Polynomial Ω) :=
+    fun j => (q.coeff j).2
+  choose g hg using hg
+  set n := q.natDegree
+  let Q : MvPolynomial (Ix κ) ℤ := ∑ j ∈ Finset.range (n + 1), rename e (g j) * X i ^ j
+  have hQ : Q ∈ coordIdeal ℤ x := by
+    rw [coordIdeal, RingHom.mem_ker]
+    rw [Polynomial.eval₂_eq_sum_range] at hq
+    simp only [Q, map_sum, map_mul, map_pow, Fib.coneMap_rename, hg]
+    convert hq using 2
+    simp [coneMap]
+  have hz0 := Fib.coneMap_eq_zero_of_mem_pts (coordIdeal_isHomogIdeal ℤ x) hz hQ
+  have hze : z ∘ e = 0 := funext hcon
+  have hcn : constantCoeff (g n) = 1 := by
+    have h1 := congrArg (fun p => Polynomial.coeff p 0) (hg n)
+    simp only [coeff_coneMap, homogeneousComponent_zero, aeval_C] at h1
+    rw [hqm.coeff_natDegree] at h1
+    simp at h1
+    exact_mod_cast h1
+  have h2 := congrArg (fun p => Polynomial.coeff p n) hz0
+  simp only [Q, map_sum, map_mul, map_pow, Fib.coneMap_rename, hze] at h2
+  have h3 : ∀ j, coneMap ℤ (0 : Fin (D + 1) → ℂ) (g j) =
+      Polynomial.C ((constantCoeff (g j) : ℤ) : ℂ) := by
+    intro j
+    simp [coneMap]
+  have hX : coneMap ℤ z (X i) = Polynomial.C (z i) * Polynomial.X := by simp [coneMap]
+  simp only [h3, hX, Polynomial.finsetSum_coeff, Polynomial.coeff_zero] at h2
+  rw [Finset.sum_eq_single n] at h2
+  · rw [mul_pow, ← Polynomial.C_pow, ← mul_assoc, ← Polynomial.C_mul, Polynomial.coeff_C_mul_X_pow,
+      if_pos rfl, hcn] at h2
+    simp at h2
+    exact hi h2.1
+  · intro j _ hj
+    rw [mul_pow, ← Polynomial.C_pow, ← mul_assoc, ← Polynomial.C_mul, Polynomial.coeff_C_mul_X_pow,
+      if_neg (Ne.symm hj)]
+  · intro h; simp at h
+
+def IsDiscr (x : Ix κ → Ω) (e : Fin (D + 1) → Ix κ) (Δ : MvPolynomial (Fin (D + 1)) ℂ) : Prop :=
+  Δ ≠ 0 ∧ ∀ w, eval w Δ ≠ 0 →
+    (prFib x e w).Finite ∧ (prFib x e w).ncard = projDeg x e ∧
+    (∀ z ∈ prFib x e w, ∃ (U : Set (Fin (D + 1) → ℂ)) (γ : (Fin (D + 1) → ℂ) → Ix κ → ℂ),
+      IsOpen U ∧ w ∈ U ∧ DifferentiableOn ℂ γ U ∧ γ w = z ∧ ∀ w' ∈ U, γ w' ∈ prFib x e w') ∧
+    ∀ (n : ℕ) (f : MvPolynomial (Ix κ) ℤ) (g : MvPolynomial (Fin (D + 1)) ℤ),
+      f.IsHomogeneous n → g.IsHomogeneous n → aeval (x ∘ e) g = secTrace x e n (aeval x f) →
+      eval w (map (Int.castRingHom ℂ) g) = ∑ᶠ z ∈ prFib x e w, eval z (map (Int.castRingHom ℂ) f)
+
+theorem exists_isDiscr {x : Ix κ → Ω} {e : Fin (D + 1) → Ix κ} (hfr : IsProjFrame x e) :
+    ∃ Δ, IsDiscr x e Δ := by
+  classical
+  obtain ⟨G, hdeg, hTr, hsc⟩ := Fib.exists_gen x e hfr
+  have hy0 : (x ∘ e) 0 ≠ 0 := Fib.coord_ne_zero _ hfr.free 0
+  have hx0 : x (e 0) ≠ 0 := hy0
+  let Δ0 : MvPolynomial (Fin (D + 1)) ℤ :=
+    X 0 * Fib.homog 0 G.dd.totalDegree G.dd * Fib.homog 0 G.cc.totalDegree G.cc
+  have hevΔ : ∀ w : Fin (D + 1) → ℂ, w 0 ≠ 0 →
+      eval w (map (Int.castRingHom ℂ) Δ0) = w 0 * (w 0 ^ G.dd.totalDegree * Fib.deh w 0 G.dd) *
+        (w 0 ^ G.cc.totalDegree * Fib.deh w 0 G.cc) := by
+    intro w hw0
+    rw [eval_map]
+    simp only [Δ0, eval₂_mul, eval₂_X, Fib.eval₂_homog w 0 hw0 _ le_rfl]
+  have hgood : ∀ w : Fin (D + 1) → ℂ, eval w (map (Int.castRingHom ℂ) Δ0) ≠ 0 → G.Good w := by
+    intro w hw
+    have hw0 : w 0 ≠ 0 := by
+      intro h0
+      apply hw
+      rw [eval_map]
+      simp [Δ0, h0]
+    rw [hevΔ w hw0] at hw
+    refine ⟨hw0, fun m hm => ?_, fun h0 => hw (by rw [h0]; ring), fun h0 => hw (by rw [h0]; ring)⟩
+    exact Fib.deh_eq_zero_of_deh_eq_zero (x ∘ e) w 0 hy0 hw0
+      (fun f hf => by rw [hfr.free, Ideal.mem_bot] at hf; simp [hf]) hm
+  refine ⟨map (Int.castRingHom ℂ) Δ0, ?_, fun w hw => ?_⟩
+  · intro h0
+    have h1 : Δ0 = 0 :=
+      map_injective _ (RingHom.injective_int (Int.castRingHom ℂ)) (by rw [h0, map_zero])
+    have h2 : aeval (x ∘ e) Δ0 = (x ∘ e) 0 * ((x ∘ e) 0 ^ G.dd.totalDegree *
+        Fib.deh (x ∘ e) 0 G.dd) * ((x ∘ e) 0 ^ G.cc.totalDegree * Fib.deh (x ∘ e) 0 G.cc) := by
+      simp only [Δ0, aeval_def, algebraMap_int_eq, eval₂_mul, eval₂_X,
+        Fib.eval₂_homog _ 0 hy0 _ le_rfl]
+    rw [h1, map_zero] at h2
+    exact (mul_ne_zero (mul_ne_zero hy0 (mul_ne_zero (pow_ne_zero _ hy0) G.dd_ne))
+      (mul_ne_zero (pow_ne_zero _ hy0) G.cc_ne)) h2.symm
+  have hgw := hgood w hw
+  have hfib : prFib x e w = Fib.fib x e w := rfl
+  refine ⟨hfib ▸ G.fib_finite hx0 hgw, by rw [hfib, G.fib_ncard hx0 hgw, hdeg], ?_, ?_⟩
+  · intro z hz
+    have hWo : IsOpen {w : Fin (D + 1) → ℂ | eval w (map (Int.castRingHom ℂ) Δ0) ≠ 0} :=
+      isOpen_ne_fun (MvPolynomial.continuous_eval _) continuous_const
+    obtain ⟨U, γ, hU, hwU, hγ, hγw, hγf⟩ :=
+      G.exists_section hx0 hWo (fun w' hw' => hgood w' hw') (w := w) hw (z := z) hz
+    exact ⟨U, γ, hU, hwU, hγ, hγw, hγf⟩
+  · intro n f g hf hg hfg
+    have hdf : aeval x f = x (e 0) ^ n * Fib.deh x (e 0) f :=
+      Fib.aeval_eq_pow_mul_deh x (e 0) hx0 hf
+    have hdg : aeval (x ∘ e) g = (x ∘ e) 0 ^ n * Fib.deh (x ∘ e) 0 g :=
+      Fib.aeval_eq_pow_mul_deh (x ∘ e) 0 hy0 hg
+    have hT : Fib.deh (x ∘ e) 0 g = fnTrace x e (Fib.deh x (e 0) f) := by
+      rw [hdg, secTrace, hdf, mul_div_cancel_left₀ _ (pow_ne_zero _ hx0)] at hfg
+      exact mul_left_cancel₀ (pow_ne_zero _ hy0) hfg
+    have htw := G.trace_w hgw (fnTrace x e) hTr hsc hT
+    have hw0 := hgw.w0
+    rw [hfib, G.finsum_fib hx0 hgw, eval_map, ← algebraMap_int_eq, ← aeval_def,
+      Fib.aeval_eq_pow_mul_deh w 0 hw0 hg, htw, ← Multiset.sum_map_mul_left]
+    congr 1
+    refine Multiset.map_congr rfl fun ρ hρ => ?_
+    have hρ' := (G.mem_roots).1 hρ
+    rw [eval_map, ← aeval_def,
+      Fib.aeval_eq_pow_mul_deh _ (e 0) (by rw [G.zOf_e hgw hρ' 0]; exact hw0) hf, G.zOf_e hgw hρ' 0]
+
+end ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
+end
+
+section
+noncomputable section
+
+namespace ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
+
+open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.GeometryOfNumbersTheory MvPolynomial MeasureTheory
+open scoped ContDiff
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+end ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
+end
+end
+
+section
+noncomputable section
+
+namespace ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
+
+open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.GeometryOfNumbersTheory MvPolynomial MeasureTheory
+open scoped ContDiff
+
+variable {Ω : Type} [Field Ω] [CharZero Ω] {κ : Type} [Fintype κ] {D : ℕ}
+
+
+
+
+end ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
+end
+end
+
+section
+namespace ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
+
+open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.GeometryOfNumbersTheory MvPolynomial MeasureTheory Module Filter Asymptotics
+open scoped ComplexOrder
+
+variable {Ω : Type} [Field Ω] [CharZero Ω] {κ : Type} [Fintype κ] {D : ℕ}
+
+
+
+end ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
+end
+
+section
 namespace ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.GeometryOfNumbersTheory MvPolynomial MeasureTheory Module Filter Asymptotics
@@ -44,90 +238,7 @@ theorem dense_eval_ne_zero {N : ℕ} {Δ : MvPolynomial (Fin N) ℂ} (hΔ : Δ �
     (Set.mem_univ w) (Filter.eventually_of_mem (hU.mem_nhds hw) h0)
   exact MvPolynomial.funext fun v => by simpa using hz (Set.mem_univ v)
 
-theorem sec_sup_bdd {x : Ix κ → Ω} {m : ConeMetric ℂ (Ix κ)} {μ : Measure (Ix κ → ℂ)}
-    (hg : IsGood D x m μ) (n : ℕ) (f : MvPolynomial (Ix κ) ℂ) (hf : f.IsHomogeneous n) :
-    ∃ S : ℝ, ∀ z ∈ pts (coordIdeal ℤ x), ‖eval z f‖ ≤ S * m.ρ z ^ n := by
-  classical
-  have hρc : ContinuousOn m.ρ {z | z ≠ 0} := hg.semipos.1.continuousOn
-  set K : Set (Ix κ → ℂ) := Metric.sphere 0 1 ∩
-    {z | ∀ g ∈ coordIdeal ℤ x, eval z (map (Int.castRingHom ℂ) g) = 0} with hKdef
-  have hcl : IsClosed {z : Ix κ → ℂ | ∀ g ∈ coordIdeal ℤ x,
-      eval z (map (Int.castRingHom ℂ) g) = 0} := by
-    simp only [Set.ofPred_forall]
-    exact isClosed_iInter fun g => isClosed_iInter fun _ =>
-      isClosed_eq (continuous_eval _) continuous_const
-  have hKc : IsCompact K := (isCompact_sphere 0 1).inter_right hcl
-  have hsub : K ⊆ {z | z ≠ 0} := fun z hz h0 => by
-    have := hz.1
-    rw [mem_sphere_zero_iff_norm, h0, norm_zero] at this
-    exact zero_ne_one this
-  have hF : ContinuousOn (fun z => ‖eval z f‖ / m.ρ z ^ n) K :=
-    (continuous_eval f).norm.continuousOn.div ((hρc.mono hsub).pow n)
-      fun z hz => pow_ne_zero n (m.pos z (hsub hz)).ne'
-  obtain ⟨C, hC⟩ := hKc.exists_bound_of_continuousOn hF
-  refine ⟨C, fun z hz => ?_⟩
-  have ht : 0 < ‖z‖ := norm_pos_iff.mpr hz.1
-  set c : ℂ := ((‖z‖⁻¹ : ℝ) : ℂ) with hcdef
-  have hcn : ‖c‖ = ‖z‖⁻¹ := by
-    rw [hcdef, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr ht)]
-  have hc0 : c ≠ 0 := by
-    intro h
-    rw [h, norm_zero] at hcn
-    exact (inv_pos.mpr ht).ne' hcn.symm
-  have hzK : c • z ∈ K := by
-    refine ⟨?_, (smul_mem_pts_coord x hz hc0).2⟩
-    rw [mem_sphere_zero_iff_norm, norm_smul, hcn, inv_mul_cancel₀ ht.ne']
-  have h1 := hC _ hzK
-  have hρ : 0 < m.ρ z := m.pos z hz.1
-  have hcpos : 0 < ‖c‖ := norm_pos_iff.mpr hc0
-  rw [eval_smul_of_isHomogeneous hf, m.smul, norm_mul, norm_pow, mul_pow,
-    mul_div_mul_left _ _ (pow_ne_zero n hcpos.ne'), Real.norm_eq_abs,
-    abs_of_nonneg (div_nonneg (norm_nonneg _) (pow_nonneg hρ.le n))] at h1
-  exact (div_le_iff₀ (pow_pos hρ n)).mp h1
 
-theorem trace_sup_le {x : Ix κ → Ω} {m : ConeMetric ℂ (Ix κ)} {μ : Measure (Ix κ → ℂ)}
-    (hg : IsGood D x m μ) {e : Fin (D + 1) → Ix κ} (hfr : IsProjFrame x e) (hFS : IsPullFS x e m)
-    {n r : ℕ} (f : Fin r → MvPolynomial (Ix κ) ℤ) (g : Fin r → MvPolynomial (Fin (D + 1)) ℤ)
-    (hf : ∀ k, (f k).IsHomogeneous n) (hgh : ∀ k, (g k).IsHomogeneous n)
-    (htr : ∀ k, aeval (x ∘ e) (g k) = secTrace x e n (aeval x (f k))) (c : Fin r → ℂ) {S : ℝ}
-    (hS : ∀ z ∈ pts (coordIdeal ℤ x),
-      ‖∑ k, c k * eval z (map (Int.castRingHom ℂ) (f k))‖ ≤ S * m.ρ z ^ n)
-    (w : Fin (D + 1) → ℂ) :
-    ‖∑ k, c k * eval w (map (Int.castRingHom ℂ) (g k))‖ ≤
-      (projDeg x e : ℝ) * S * Real.sqrt (sqN w) ^ n := by
-  classical
-  obtain ⟨Δ, hΔ0, hΔ⟩ := exists_isDiscr hfr
-  have hFc : Continuous fun w : Fin (D + 1) → ℂ =>
-      ‖∑ k, c k * eval w (map (Int.castRingHom ℂ) (g k))‖ :=
-    (continuous_finsetSum _ fun k _ => continuous_const.mul (continuous_eval _)).norm
-  have hGc : Continuous fun w : Fin (D + 1) → ℂ => (projDeg x e : ℝ) * S * Real.sqrt (sqN w) ^ n := by
-    unfold sqN
-    fun_prop
-  have hgood : ∀ w ∈ {w : Fin (D + 1) → ℂ | eval w Δ ≠ 0},
-      w ∈ {w : Fin (D + 1) → ℂ | ‖∑ k, c k * eval w (map (Int.castRingHom ℂ) (g k))‖ ≤
-        (projDeg x e : ℝ) * S * Real.sqrt (sqN w) ^ n} := by
-    intro w hw
-    obtain ⟨hfin, hcard, -, htrace⟩ := hΔ w hw
-    have hk : ∀ k, eval w (map (Int.castRingHom ℂ) (g k)) =
-        ∑ z ∈ hfin.toFinset, eval z (map (Int.castRingHom ℂ) (f k)) := fun k => by
-      rw [htrace n (f k) (g k) (hf k) (hgh k) (htr k), finsum_mem_eq_finite_toFinset_sum _ hfin]
-    have hsum : ∑ k, c k * eval w (map (Int.castRingHom ℂ) (g k)) =
-        ∑ z ∈ hfin.toFinset, ∑ k, c k * eval z (map (Int.castRingHom ℂ) (f k)) := by
-      simp_rw [hk, Finset.mul_sum]
-      exact Finset.sum_comm
-    simp only [Set.mem_ofPred_eq]
-    rw [hsum]
-    refine (norm_sum_le _ _).trans ?_
-    have hb : ∀ z ∈ hfin.toFinset,
-        ‖∑ k, c k * eval z (map (Int.castRingHom ℂ) (f k))‖ ≤ S * Real.sqrt (sqN w) ^ n := by
-      intro z hz
-      rw [Set.Finite.mem_toFinset] at hz
-      have h := hS z hz.1
-      rwa [hFS z hz.1, show (∑ k, ‖z (e k)‖ ^ 2) = sqN w by simp [sqN, hz.2]] at h
-    refine (Finset.sum_le_sum hb).trans ?_
-    rw [Finset.sum_const, nsmul_eq_mul, ← Set.ncard_eq_toFinset_card _ hfin, hcard, mul_assoc]
-  have hcl := closure_minimal hgood (isClosed_le hFc hGc)
-  rw [(dense_eval_ne_zero hΔ0).closure_eq] at hcl
-  exact hcl (Set.mem_univ w)
 
 end ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
+end

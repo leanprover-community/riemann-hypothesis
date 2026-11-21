@@ -83,20 +83,7 @@ def greenO (cv : LabelConv K) (hC : CuspParam K cv) : LabelMap K cv where
     have hL := hasCuspLabel_one cv τ x hx htr
     exact pickPoly_eq hL fun P' hP' => ((hC 1 le_rfl).1 τ hs (isCuspidal_fin_one τ)).1.unique hP' hL
 
-theorem labO_greenO (cv : LabelConv K) (hC : CuspParam K cv) {κ : Type} [Fintype κ] [DecidableEq κ]
-    {σ : FDRep ℂ (GL κ K)} {P : K[X]} (hs : Simple σ) (hc : IsCuspidal K σ) (hP : HasCuspLabel cv σ P)
-    (hd : 1 ≤ Fintype.card κ) : labO (greenO cv hC) σ = P := by
-  have hs' := simple_transp (Fintype.equivFin κ) hs
-  have hc' := isCuspidal_transp (Fintype.equivFin κ) hc
-  have hP' := hasCuspLabel_transp cv (Fintype.equivFin κ) hP
-  exact pickPoly_eq hP' fun P' h' => ((hC _ hd).1 _ hs' hc').1.unique h' hP'
 
-theorem hasLabelO_greenO (cv : LabelConv K) (hC : CuspParam K cv) {ι : Type} [Fintype ι] [DecidableEq ι]
-    {τ : FDRep ℂ (GL ι K)} {f : K[X]} (h : HasLabel cv τ f) : HasLabelO (greenO cv hC) τ f := by
-  obtain ⟨s, b, lam, P, hb, hl, hcons, rfl⟩ := h
-  refine ⟨s, b, lam, hb, fun c => ⟨(hl c).1, (hl c).2.1⟩, hcons, Finset.prod_congr rfl fun c _ => ?_⟩
-  obtain ⟨i, hi⟩ := hb c
-  exact (labO_greenO cv hC (hl c).1 (hl c).2.1 (hl c).2.2 (Fintype.card_pos_iff.mpr ⟨⟨i, hi⟩⟩)).symm
 
 end GreenO
 
@@ -114,9 +101,6 @@ theorem convOf_ι (T : Formalism.L2.NormalizedTypesCompatibility D jE) (k : Fin 
     haveI : Fact (D.host.g k).Prime := ⟨D.host.g_prime k⟩
     (convOf T k).ι = D.ntypes.teichC k := rfl
 
-theorem convOf_gen (T : Formalism.L2.NormalizedTypesCompatibility D jE) (k : Fin 2) :
-    haveI : Fact (D.host.g k).Prime := ⟨D.host.g_prime k⟩
-    (convOf T k).gen = T.ζ k := rfl
 
 end Conv
 
@@ -209,18 +193,8 @@ def PendingDataCompatible (T : Formalism.L2.NormalizedTypesCompatibility D jE) (
   ∀ k : Fin 2, haveI : Fact (D.host.g k).Prime := ⟨D.host.g_prime k⟩
     Nonempty (LzTieC (T.O k) (P.lz k))
 
-theorem lzTied_of_pendTied (T : Formalism.L2.NormalizedTypesCompatibility D jE) (P : Pend D) (h : PendingDataCompatible T P) : LzCompatibility P := by
-  intro k
-  haveI : Fact (D.host.g k).Prime := ⟨D.host.g_prime k⟩
-  obtain ⟨t⟩ := h k
-  exact ⟨convOf T k, T.O k, ⟨t.toLzTie⟩⟩
 
-theorem ktyTie_of_pend (P : Pend D) : KtyTie P :=
-  fun i PI k v τ h => (P.kty_spec i PI k v τ).1 h
 
-theorem ties_of_pendTied (T : Formalism.L2.NormalizedTypesCompatibility D jE) (P : Pend D)
-    (h : PendingDataCompatible T P) : LzCompatibility P ∧ KtyTie P :=
-  ⟨lzTied_of_pendTied T P h, ktyTie_of_pend P⟩
 
 end Pend
 
@@ -235,17 +209,6 @@ def SerBridge {g : ℕ} [Fact g.Prime] (cv : LabelConv (ZMod g)) (r : ℕ) : Pro
 
 variable {g : ℕ} [Fact g.Prime] {C : LabelConv (ZMod g)} {O : LabelMap (ZMod g) C} {L : LzData g}
 
-theorem sum_lab_eq_hasLabel (t : LzTieC O L) (hL : HCLabelO O) {r : ℕ} (hr : 1 ≤ r)
-    (f : (ZMod g)[X]) :
-    (∑ τ : L.Irr r, if L.lab τ = f then L.idem τ else 0) =
-      ∑ τ : L.Irr r, (open Classical in if HasLabelO O (t.rep τ) f then zIdem (t.rep τ) else 0) := by
-  classical
-  refine Finset.sum_congr rfl fun τ _ => ?_
-  by_cases h : L.lab τ = f
-  · rw [if_pos h, if_pos (h ▸ t.lab_eq τ hr), t.idem_eq]
-  · rw [if_neg h, if_neg]
-    intro hf
-    exact h ((hL r hr (t.rep τ) (t.rep_simple τ)).2 _ _ (t.lab_eq τ hr) hf)
 
 theorem eSerO_eq_sum (t : LzTieC O L) (hL : HCLabelO O) {r : ℕ} (hr : 1 ≤ r) (f : (ZMod g)[X]) :
     Formalism.L2.NT.eSerO O r f = ∑ τ : L.Irr r, if L.lab τ = f then L.idem τ else 0 := by
@@ -286,18 +249,7 @@ theorem one_le_r (D : D7) : 1 ≤ D.R.r := by
   show 1 ≤ D.R.k + D.R.m - 1
   omega
 
-theorem eSer_eq_hasLabel (T : Formalism.L2.NormalizedTypesCompatibility D jE) (P : Pend D) (k : Fin 2)
-    [Fact (D.host.g k).Prime] (t : LzTieC (T.O k) (P.lz k)) (f : (ZMod (D.host.g k))[X]) :
-    D.ntypes.eSer k f =
-      ∑ τ : (P.lz k).Irr D.R.r, (open Classical in if HasLabelO (T.O k) (t.rep τ) f then zIdem (t.rep τ) else 0) := by
-  rw [P.eSer_eq]
-  exact sum_lab_eq_hasLabel t (ReciprocityTheory.Ty.Fin.HCLabelO_mirror _ _ _) (one_le_r D) f
 
-theorem eSer_eq_of_tied (T : Formalism.L2.NormalizedTypesCompatibility D jE) (k : Fin 2) [Fact (D.host.g k).Prime]
-    {L : LzData (D.host.g k)} (t : LzTieC (T.O k) L) (f : (ZMod (D.host.g k))[X]) :
-    D.ntypes.eSer k f = ∑ τ : L.Irr D.R.r, if L.lab τ = f then L.idem τ else 0 := by
-  rw [T.eSer_def]
-  exact eSerO_eq_sum t (ReciprocityTheory.Ty.Fin.HCLabelO_mirror _ _ _) (one_le_r D) f
 
 end Ser
 
@@ -308,9 +260,5 @@ end
 namespace Formalism.L2.PT
 open Formalism.BasicNotions Formalism.MainNotions.N Formalism.MainNotions.PairedCharacterCondition Formalism.MainNotions.PairedCharacterCondition.RT Formalism.IrreducibleCountingLemmas.TYPES
 
-theorem relabel_untiedC {g : ℕ} [Fact g.Prime] (h2 : (2 : ZMod g) ≠ 0) (L : LzData g) {C : LabelConv (ZMod g)}
-    (O : LabelMap (ZMod g) C) (hL : HCLabelO O) (hM : LabelMulO O)
-    (hT : TranspO O) (hD : HCDisjointO O) : IsEmpty (LzTieC O (relabel h2 L)) :=
-  ⟨fun t => (relabel_untied h2 L O hL hM hT hD).false t.toLzTie⟩
 
 end Formalism.L2.PT

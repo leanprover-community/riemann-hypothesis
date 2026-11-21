@@ -192,32 +192,9 @@ theorem grBound_of (hK : Module.finrank ℚ K0 = 2) (hE : IsEmpty (K0 →+* ℝ)
 
 end Ray
 
-theorem finrank_sqrt_K (D : D7) :
-    Module.finrank ℚ D.host.K = 2 ∧ ∃ s : D.host.K, s ^ 2 = -(D.host.d : D.host.K) := by
-  have hd := D.host.hyp
-  have hsq : D.host.sqd ^ 2 = -(D.host.d : D.host.E) :=
-    Formalism.BasicNotions.Examples₂.bE_sq D.host
-  have hK : Module.finrank ℚ D.host.K = 2 :=
-    Formalism.FrobeniusOrbits.SplitK.finrank_K (L := D.host.E) (b := D.host.sqd) hd.2.1.pos hsq
-  have hmem : D.host.sqd ∈ D.host.K := IntermediateField.mem_adjoin_simple_self ℚ _
-  exact ⟨hK, ⟨_, hmem⟩, by apply Subtype.ext; push_cast; exact hsq⟩
 
-theorem noReal_K (D : D7) : IsEmpty (D.host.K →+* ℝ) := by
-  obtain ⟨s, hs⟩ := (finrank_sqrt_K D).2
-  refine ⟨fun σ => ?_⟩
-  have h := congrArg σ hs
-  rw [map_pow, map_neg, map_natCast] at h
-  have hd : (0 : ℝ) < D.host.d := by exact_mod_cast D.host.hyp.2.1.pos
-  have := sq_nonneg (σ s)
-  linarith
 
-theorem grBound_K (hCN : HeckeCharacterZeroLocus.ClassNumberQuad.ClassNumberLe.{0}) (D : D7) : GrBound D.host.K :=
-  grBound_of hCN (finrank_sqrt_K D).1 (noReal_K D)
 
-theorem linkAux_of_classNumberLe (hCN : HeckeCharacterZeroLocus.ClassNumberQuad.ClassNumberLe.{0}) : LinkPointsLemma := by
-  intro C0 Cr cr cQ cQ' hC0 hCr hcr hcQ hcQ'
-  obtain ⟨C0', c1, c2, p1, p2, p3, h⟩ := lemma_three_of_Q4_growth_bound C0 Cr cr cQ cQ' hC0 hCr hcr hcQ hcQ'
-  exact ⟨C0', c1, c2, p1, p2, p3, fun D cT _ ha => h D cT ha (grBound_K hCN D)⟩
 
 end Formalism.L2.GlobalTheoryTheory.FiltrationCocycleLiftCriterion
 

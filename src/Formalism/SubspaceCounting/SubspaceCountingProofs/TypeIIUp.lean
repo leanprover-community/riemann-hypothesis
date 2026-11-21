@@ -185,73 +185,11 @@ theorem finrank_comap_mkQ (A : Submodule F W) (V : Submodule F (W ⧸ A)) :
       (LinearEquiv.finrank_eq (LinearEquiv.ofEq _ _ hker))
   omega
 
-theorem countAbove_eq (A : Submodule F W) (j : ℕ) :
-    countAbove A j = if Module.finrank F A ≤ j then
-      countBelow (⊤ : Submodule F (W ⧸ A)) (j - Module.finrank F A) else 0 := by
-  haveI : Module.Finite F W := Module.Finite.of_finite
-  unfold countAbove countBelow
-  split_ifs with hj
-  · apply Nat.card_congr
-    exact
-      { toFun := fun U => ⟨U.1.map A.mkQ, le_top, by
-            have h3 := finrank_comap_mkQ A (U.1.map A.mkQ)
-            rw [Submodule.comap_map_mkQ, sup_eq_right.mpr U.2.1, U.2.2] at h3
-            omega⟩
-        invFun := fun V => ⟨V.1.comap A.mkQ,
-          (Submodule.ker_mkQ A).ge.trans (LinearMap.ker_le_comap _),
-          by rw [finrank_comap_mkQ, V.2.2]; omega⟩
-        left_inv := fun U => Subtype.ext (by
-          show (U.1.map A.mkQ).comap A.mkQ = U.1
-          rw [Submodule.comap_map_mkQ]; exact sup_eq_right.mpr U.2.1)
-        right_inv := fun V => Subtype.ext
-          (Submodule.map_comap_eq_of_surjective (Submodule.mkQ_surjective A) V.1) }
-  · rw [Nat.card_eq_zero]
-    left
-    constructor
-    rintro ⟨U, hAU, hU⟩
-    have h3 : Module.finrank F A ≤ Module.finrank F U := Submodule.finrank_mono hAU
-    omega
 
 end LA
 
 end TypeIIUpP
 
-theorem typeIIUp_of (hS : SubspaceCount) : TypeIIUp := by
-  intro F P Q _ _ _ _ _ _ _ _ f N g j hP hQ
-  haveI : Module.Finite F P := Module.Finite.of_finite
-  haveI : Module.Finite F Q := Module.Finite.of_finite
-  haveI := TypeIIUpP.finite_quot (LinearMap.range f)
-  obtain ⟨ρ, hρ⟩ : ∃ ρ, Module.finrank F (LinearMap.range f) = ρ := ⟨_, rfl⟩
-  have hrn := LinearMap.finrank_range_add_finrank_ker f
-  have hquot := Submodule.finrank_quotient_add_finrank (LinearMap.range f)
-  rw [hρ, hP] at hrn
-  rw [hρ, hQ] at hquot
-  have hK : ∀ l, Nat.card {U : Submodule F P // U ≤ LinearMap.ker f ∧ Module.finrank F U + (j - l) = N} =
-      if j - l ≤ N then gaussBinom (Fintype.card F) (N - ρ) (N - (j - l)) else 0 := by
-    intro l
-    split_ifs with hl
-    · rw [Nat.card_congr (Equiv.subtypeEquivRight
-          (q := fun U : Submodule F P => U ≤ LinearMap.ker f ∧ Module.finrank F U = N - (j - l))
-          (fun U => and_congr_right (fun _ => ⟨fun h => by omega, fun h => by omega⟩)))]
-      show countBelow (LinearMap.ker f) (N - (j - l)) = _
-      rw [TypeIIUpP.countBelow_eq, hS]
-      congr 1
-      omega
-    · rw [Nat.card_eq_zero]
-      left
-      constructor
-      rintro ⟨U, _, hU⟩
-      omega
-  have hA : countAbove (LinearMap.range f) j =
-      if ρ ≤ j then gaussBinom (Fintype.card F) (N + g - ρ) (j - ρ) else 0 := by
-    rw [TypeIIUpP.countAbove_eq, hS]
-    have hq : Module.finrank F (Q ⧸ LinearMap.range f) = N + g - ρ := by omega
-    rw [hq, hρ]
-  rw [hA]
-  simp only [hK]
-  have key := TypeIIUpP.arith (Fintype.card F) N g j ρ (by omega)
-  exact_mod_cast key
 
-theorem type_two_upper : TypeIIUp := typeIIUp_of countSubspacesEq
 
 end Formalism.G0

@@ -20,8 +20,6 @@ def KillsIrr {G : Type} [Group G] [Finite G] (φ Y : G → ℂ) : Prop :=
   ∀ (V : Type) [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V] (ρ : Representation ℂ G V), ρ.IsIrreducible →
     ∑ᶠ g, star (Y g) * LinearMap.trace ℂ V (ρ g) = 0 → ∑ᶠ g, star (φ g) • ρ g = 0
 
-theorem Kills.killsIrr {G : Type} [Group G] [Finite G] {φ Y : G → ℂ} (h : Kills φ Y) : KillsIrr φ Y :=
-  fun V _ _ _ ρ _ hρ => h V ρ hρ
 
 namespace IsoPart
 
@@ -34,51 +32,7 @@ def conjRep {G : Type} [Group G] {n : ℕ} (σ : Representation ℂ G (Fin n →
     rw [map_mul, Module.End.mul_eq_comp, LinearMap.toMatrix'_comp, Matrix.map_mul, Matrix.toLin'_mul,
       Module.End.mul_eq_comp]
 
-theorem character_conjRep {G : Type} [Group G] {n : ℕ} (σ : Representation ℂ G (Fin n → ℂ)) (g : G) :
-    (conjRep σ).character g = star (σ.character g) := by
-  have h : ∀ A : (Fin n → ℂ) →ₗ[ℂ] (Fin n → ℂ), LinearMap.trace ℂ _ A = (LinearMap.toMatrix' A).trace := fun A => by
-    rw [LinearMap.trace_eq_matrix_trace ℂ (Pi.basisFun ℂ (Fin n)), LinearMap.toMatrix_eq_toMatrix']
-  unfold Representation.character
-  rw [h, h]
-  simp [conjRep, Matrix.trace]
 
-theorem orth_subrepresentation {G : Type} [Group G] [Finite G] {Y : G → ℂ} (hY : GlobalTheory.BI.IsChar ℂ ℂ Y)
-    {V : Type} [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V] (ρ : Representation ℂ G V)
-    (h : ∑ᶠ g, star (Y g) * LinearMap.trace ℂ V (ρ g) = 0) (A : Subrepresentation ρ) :
-    ∑ᶠ g, star (Y g) * LinearMap.trace ℂ A.toSubmodule (A.toRepresentation g) = 0 := by
-  have : Fintype G := Fintype.ofFinite G
-  obtain ⟨n, σ, hσ⟩ := hY
-  have hst : ∀ g, star (Y g) = (conjRep σ).dual.character g⁻¹ := fun g => by
-    rw [Representation.char_dual, inv_inv, character_conjRep, hσ]; simp
-  have hne : (Nat.card G : ℂ) ≠ 0 := by
-    have : 0 < Nat.card G := Nat.card_pos
-    exact_mod_cast this.ne'
-  have hinv : Invertible (Nat.card G : ℂ) := invertibleOfNonzero hne
-  rw [finsum_eq_sum_of_fintype] at h ⊢
-  simp only [hst] at h ⊢
-  have h1 := Representation.card_inv_mul_sum_char_eq_finrank (Representation.linHom (conjRep σ).dual ρ)
-  have h2 := Representation.card_inv_mul_sum_char_eq_finrank
-    (Representation.linHom (conjRep σ).dual A.toRepresentation)
-  simp only [Representation.char_linHom] at h1 h2
-  have h' : ∑ g : G, (conjRep σ).dual.character g⁻¹ * ρ.character g = 0 := h
-  rw [h', mul_zero] at h1
-  have hbot : (Representation.linHom (conjRep σ).dual ρ).invariants = ⊥ := by
-    apply Submodule.finrank_eq_zero.mp
-    exact_mod_cast h1.symm
-  have hbot' : (Representation.linHom (conjRep σ).dual A.toRepresentation).invariants = ⊥ := by
-    rw [eq_bot_iff]
-    intro f hf
-    have hm : A.toSubmodule.subtype ∘ₗ f ∈ (Representation.linHom (conjRep σ).dual ρ).invariants := by
-      intro g
-      ext1 x
-      have := congrArg (fun F => ((F x : A.toSubmodule) : V)) (hf g)
-      exact this
-    rw [hbot, Submodule.mem_bot] at hm
-    rw [Submodule.mem_bot]
-    ext x
-    exact congrArg (fun F => F x) hm
-  rw [hbot', finrank_bot, Nat.cast_zero] at h2
-  exact (mul_eq_zero.1 h2).resolve_left (by simpa using hne)
 
 theorem exists_irreducible_le {G : Type} [Group G] {V : Type} [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V]
     (ρ : Representation ℂ G V) (C : Subrepresentation ρ) (hC : C.toSubmodule ≠ ⊥) :
@@ -111,39 +65,6 @@ theorem exists_irreducible_le {G : Type} [Group G] {V : Type} [AddCommGroup V] [
 
 end IsoPart
 
-theorem kills_iff_killsIrr {G : Type} [Group G] [Finite G] (φ : G → ℂ) {Y : G → ℂ} (hY : GlobalTheory.BI.IsChar ℂ ℂ Y) :
-    Kills φ Y ↔ KillsIrr φ Y := by
-  refine ⟨Kills.killsIrr, fun H V _ _ _ ρ h => ?_⟩
-  have : Fintype G := Fintype.ofFinite G
-  have : NeZero (Nat.card G : ℂ) := ⟨by
-    have : 0 < Nat.card G := Nat.card_pos
-    exact_mod_cast this.ne'⟩
-  set T : V →ₗ[ℂ] V := ∑ᶠ g, star (φ g) • ρ g with hT
-  let N : Subrepresentation ρ := ⟨⨅ g : G, LinearMap.ker (T ∘ₗ ρ g), by
-    intro g v hv
-    rw [Submodule.mem_iInf] at hv ⊢
-    intro x
-    have := hv (x * g)
-    simpa using this⟩
-  obtain ⟨C, hC⟩ := exists_isCompl N
-  have hCb : C.toSubmodule = ⊥ := by
-    by_contra hne
-    obtain ⟨A, hA, hAC, hirr⟩ := IsoPart.exists_irreducible_le ρ C hne
-    have h0 := H _ A.toRepresentation hirr (IsoPart.orth_subrepresentation hY ρ h A)
-    have hAN : A.toSubmodule ≤ N.toSubmodule := by
-      intro v hv
-      refine (Submodule.mem_iInf _).2 fun x => ?_
-      have := congrArg (fun F => ((F ⟨ρ x v, A.apply_mem_toSubmodule x hv⟩ : A.toSubmodule) : V)) h0
-      rw [LinearMap.mem_ker, hT]
-      rw [finsum_eq_sum_of_fintype] at this ⊢
-      simpa [LinearMap.sum_apply, Subrepresentation.toRepresentation] using this
-    have hd : N.toSubmodule ⊓ C.toSubmodule = ⊥ := congrArg Subrepresentation.toSubmodule hC.inf_eq_bot
-    exact hA (eq_bot_iff.2 (hd ▸ le_inf hAN hAC))
-  have hs : N.toSubmodule ⊔ C.toSubmodule = ⊤ := congrArg Subrepresentation.toSubmodule hC.sup_eq_top
-  rw [hCb, sup_bot_eq] at hs
-  ext v
-  have hv : v ∈ N.toSubmodule := hs ▸ Submodule.mem_top
-  simpa using (Submodule.mem_iInf _).1 hv 1
 
 def IsCl {G : Type} [Group G] (f : G → ℂ) : Prop := ∀ x y : G, f (y⁻¹ * x * y) = f x
 

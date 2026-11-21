@@ -53,8 +53,6 @@ theorem _root_.GlobalTheory.Principalise.effCartier_comap_of_disjoint {W X : Sch
   rw [htop, Ideal.span_singleton_one]
   simp [Scheme.IdealSheafData.ideal_top]
 
-theorem blowup_id {X : Scheme.{0}} {J : X.IdealSheafData} (h : FinalTheorems.EffCartier J) : FinalTheorems.Blowup (𝟙 X) J :=
-  ⟨by rwa [Scheme.IdealSheafData.comap_id], fun _ g _ => ⟨g, Category.comp_id g, fun _ e => by simpa using e⟩⟩
 
 open AlgebraicGeometry CategoryTheory Limits TopologicalSpace in
 

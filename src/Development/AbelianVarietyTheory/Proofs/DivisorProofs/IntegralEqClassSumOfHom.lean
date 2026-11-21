@@ -3,15 +3,295 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InnerProductFormula
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaIntegrandIntegrable
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UpqLocallyCompactGroup
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LamLowNumericalEnd
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralFundamentalDomainEqSum
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SummableAbsNormInvSq
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExpNegLeNormTprodOneSubInv
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbsLogInvOneSubLeTwoMulAbs
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToNatFloorLe
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MultRealElt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConjFrameMemUH
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VolEqIndexMulMass
+import Formalism.DoubleCosetMeasures.LowerUnipotentOrbits.RelIndexMulMeasure
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBoundUnitary
 
+section
+open MeasureTheory IsDedekindDomain NumberField
+
+namespace GlobalTheory.ClassIntegral
+
+variable {G : Type} [Group G] [MeasurableSpace G] [MeasurableMul G]
+
+def dcoset (Γ K : Subgroup G) (g : G) : Set G := {x | ∃ γ ∈ Γ, ∃ k ∈ K, x = γ * g * k}
+
+theorem measurableSet_dcoset (Γ K : Subgroup G) [Countable Γ] (hK : MeasurableSet (K : Set G)) (g : G) :
+    MeasurableSet (dcoset Γ K g) := by
+  have : dcoset Γ K g = ⋃ γ : Γ, (fun y => ((γ : G) * g)⁻¹ * y) ⁻¹' (K : Set G) := by
+    ext x
+    simp only [dcoset, Set.mem_setOf_eq, Set.mem_iUnion, Set.mem_preimage, SetLike.mem_coe]
+    constructor
+    · rintro ⟨γ, hγ, k, hk, rfl⟩
+      exact ⟨⟨γ, hγ⟩, by simpa [mul_assoc] using hk⟩
+    · rintro ⟨γ, h⟩
+      exact ⟨γ, γ.2, _, h, by group⟩
+  rw [this]
+  exact MeasurableSet.iUnion fun γ => (measurable_const_mul _) hK
+
+omit [MeasurableSpace G] [MeasurableMul G] in
+theorem tsum_indicator_eq (Γ K : Subgroup G) (g x : G) :
+    ∑' γ : Γ, ((fun y => g⁻¹ * y) ⁻¹' (K : Set G)).indicator (1 : G → ENNReal) (γ • x) =
+      (∑' _ : {γ : Γ // g⁻¹ * (γ : G) * g ∈ K}, (1 : ENNReal)) * (dcoset Γ K g).indicator 1 x := by
+  classical
+  by_cases hx : x ∈ dcoset Γ K g
+  · rw [Set.indicator_of_mem hx, Pi.one_apply, mul_one]
+    obtain ⟨δ, hδ, k, hk, rfl⟩ := hx
+    rw [← (Equiv.mulRight (⟨δ, hδ⟩ : Γ)⁻¹).tsum_eq]
+    have := tsum_subtype {γ : Γ | g⁻¹ * (γ : G) * g ∈ K} (fun _ => (1 : ENNReal))
+    refine Eq.trans ?_ this.symm
+    refine tsum_congr fun γ => ?_
+    have e : g⁻¹ * ((γ : G) * δ⁻¹ * (δ * g * k)) = g⁻¹ * γ * g * k := by group
+    simp only [Set.indicator, Set.mem_preimage, Subgroup.smul_def, smul_eq_mul, Equiv.coe_mulRight,
+      Subgroup.coe_mul, Subgroup.coe_inv, SetLike.mem_coe, Pi.one_apply, Set.mem_setOf_eq, e,
+      K.mul_mem_cancel_right hk]
+  · rw [Set.indicator_of_notMem hx, mul_zero, ENNReal.tsum_eq_zero]
+    intro γ
+    apply Set.indicator_of_notMem
+    intro h
+    apply hx
+    refine ⟨(γ : G)⁻¹, Γ.inv_mem γ.2, _, h, ?_⟩
+    simp only [Subgroup.smul_def, smul_eq_mul]
+    group
+
+theorem measure_dcoset (Γ K : Subgroup G) [Countable Γ] (μ : Measure G) [μ.IsMulLeftInvariant]
+    (hK : MeasurableSet (K : Set G)) (hK1 : μ K = 1) (g : G) {𝓕 : Set G}
+    (h𝓕 : IsFundamentalDomain Γ 𝓕 μ) :
+    (∑' _ : {γ : Γ // g⁻¹ * (γ : G) * g ∈ K}, (1 : ENNReal)) * μ.restrict 𝓕 (dcoset Γ K g) = 1 := by
+  have i1 : MeasurableConstSMul Γ G :=
+    ⟨fun γ => by simpa [Subgroup.smul_def, smul_eq_mul] using measurable_const_mul (γ : G)⟩
+  have i2 : SMulInvariantMeasure Γ G μ :=
+    ⟨fun γ s _ => by
+      have : ((fun x => γ • x) ⁻¹' s) = ((fun x => (γ : G) * x) ⁻¹' s) := by
+        ext x; simp [Subgroup.smul_def, smul_eq_mul]
+      rw [this, measure_preimage_mul]⟩
+  have hT : MeasurableSet ((fun y => g⁻¹ * y) ⁻¹' (K : Set G)) := (measurable_const_mul _) hK
+  have hf : Measurable (((fun y => g⁻¹ * y) ⁻¹' (K : Set G)).indicator (1 : G → ENNReal)) :=
+    measurable_one.indicator hT
+  have hC := measurableSet_dcoset Γ K hK g
+  rw [← lintegral_indicator_one hC, ← lintegral_const_mul _ (measurable_one.indicator hC)]
+  simp only [← tsum_indicator_eq]
+  have hmeas : ∀ γ : Γ, Measurable fun x : G =>
+      ((fun y => g⁻¹ * y) ⁻¹' (K : Set G)).indicator (1 : G → ENNReal) (γ • x) :=
+    fun γ => hf.comp (measurable_const_smul γ)
+  rw [lintegral_tsum fun γ => (hmeas γ).aemeasurable,
+    ← h𝓕.lintegral_eq_tsum'', lintegral_indicator_one hT, measure_preimage_mul, hK1]
+
+theorem tsum_one_mul_eq_one {α : Type} {m : ENNReal} (h : (∑' _ : α, (1 : ENNReal)) * m = 1) :
+    m ≠ ⊤ ∧ m.toReal = (Nat.card α : ℝ)⁻¹ := by
+  have hm0 : m ≠ 0 := by rintro rfl; simp at h
+  have hN0 : (∑' _ : α, (1 : ENNReal)) ≠ 0 := by intro h0; rw [h0] at h; simp at h
+  have hN : (∑' _ : α, (1 : ENNReal)) ≠ ⊤ := by
+    intro h0; rw [h0, ENNReal.top_mul hm0] at h; simp at h
+  have hm : m ≠ ⊤ := by
+    intro h0; rw [h0, ENNReal.mul_top hN0] at h; simp at h
+  have : Finite α := by
+    by_contra hα
+    have : Infinite α := not_finite_iff_infinite.mp hα
+    exact hN (ENNReal.tsum_const_eq_top_of_ne_zero one_ne_zero)
+  refine ⟨hm, ?_⟩
+  have := Fintype.ofFinite α
+  rw [tsum_fintype] at h
+  simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_one,
+    Fintype.card_eq_nat_card] at h
+  have h' := congrArg ENNReal.toReal h
+  rw [ENNReal.toReal_mul, ENNReal.toReal_natCast, ENNReal.toReal_one] at h'
+  exact eq_inv_of_mul_eq_one_right h'
+
+theorem integral_fundamentalDomain_eq_sum : ∀ {G : Type} [Group G] [MeasurableSpace G] [MeasurableMul G] (Γ K : Subgroup G) [Countable Γ] (μ : Measure G) [μ.IsMulLeftInvariant], MeasurableSet (K : Set G) → μ K = 1 → ∀ {ι : Type} [Fintype ι] (g : ι → G), (∀ x : G, ∃! i, ∃ γ ∈ Γ, ∃ k ∈ K, x = γ * g i * k) → ∀ 𝓕 : Set G, IsFundamentalDomain Γ 𝓕 μ → ∀ Φ : G → ℂ, (∀ γ ∈ Γ, ∀ k ∈ K, ∀ x, Φ (γ * x * k) = Φ x) → IntegrableOn Φ 𝓕 μ ∧ ∫ x in 𝓕, Φ x ∂μ = ∑ i, ((Nat.card {γ : Γ // (g i)⁻¹ * (γ : G) * g i ∈ K} : ℂ))⁻¹ * Φ (g i) := by
+  intro G _ _ _ Γ K _ μ _ hK hK1 ι _ g hcov 𝓕 h𝓕 Φ hΦ
+  have hm := fun i => tsum_one_mul_eq_one (measure_dcoset Γ K μ hK hK1 (g i) h𝓕)
+  have hC := fun i => measurableSet_dcoset Γ K hK (g i)
+  have hpt : Φ = fun x => ∑ i, (dcoset Γ K (g i)).indicator (fun _ => Φ (g i)) x := by
+    funext x
+    obtain ⟨j, hj, huniq⟩ := hcov x
+    rw [Finset.sum_eq_single j]
+    · rw [Set.indicator_of_mem (s := dcoset Γ K (g j)) hj]
+      obtain ⟨γ, hγ, k, hk, rfl⟩ := hj
+      exact hΦ γ hγ k hk _
+    · intro i _ hij
+      have hx : x ∉ dcoset Γ K (g i) := fun h => hij (huniq i h)
+      exact Set.indicator_of_notMem hx _
+    · intro h; exact absurd (Finset.mem_univ j) h
+  have hint : ∀ i, Integrable ((dcoset Γ K (g i)).indicator (fun _ => Φ (g i))) (μ.restrict 𝓕) :=
+    fun i => (integrable_indicator_iff (hC i)).mpr (integrableOn_const (hm i).1)
+  constructor
+  · rw [IntegrableOn, hpt]
+    exact integrable_finset_sum _ fun i _ => hint i
+  · calc ∫ x in 𝓕, Φ x ∂μ
+        = ∫ x in 𝓕, ∑ i, (dcoset Γ K (g i)).indicator (fun _ => Φ (g i)) x ∂μ := by
+          conv_lhs => rw [hpt]
+      _ = _ := by
+          rw [integral_finset_sum _ fun i _ => hint i]
+          refine Finset.sum_congr rfl fun i _ => ?_
+          rw [integral_indicator_const _ (hC i), Measure.real, (hm i).2, Complex.real_smul]
+          push_cast
+          rfl
+
+end GlobalTheory.ClassIntegral
+end
+
+section
+open MeasureTheory IsDedekindDomain NumberField
+
+namespace GlobalTheory
+
+theorem exp_neg_le_norm_tprod_one_sub_inv {ι : Type} (x : ι → ℂ) (B : ℝ)
+    (h : ∀ a, ‖x a‖ ≤ 1 / 2) (hs : Summable (fun a => ‖x a‖)) (hB : ∑' a, ‖x a‖ ≤ B) :
+    Real.exp (-B) ≤ ‖∏' a, (1 - x a)⁻¹‖ := by
+  have hlow : ∀ a, 1 / 2 ≤ ‖1 - x a‖ := by
+    intro a
+    have h1 := norm_sub_norm_le (1 : ℂ) (x a)
+    rw [norm_one] at h1
+    linarith [h a]
+  have hne : ∀ a, 1 - x a ≠ 0 := by
+    intro a h0
+    have := hlow a
+    rw [h0, norm_zero] at this
+    linarith
+  have heq : ∀ a, (1 - x a)⁻¹ = 1 + x a * (1 - x a)⁻¹ := by
+    intro a
+    have := hne a
+    field_simp
+    ring
+  have hsum : Summable (fun a => ‖x a * (1 - x a)⁻¹‖) := by
+    refine Summable.of_nonneg_of_le (fun a => norm_nonneg _) (fun a => ?_) (hs.mul_right 2)
+    rw [norm_mul, norm_inv]
+    refine mul_le_mul_of_nonneg_left ?_ (norm_nonneg _)
+    rw [inv_le_comm₀ (by linarith [hlow a]) (by norm_num)]
+    linarith [hlow a]
+  have hm : Multipliable (fun a => (1 - x a)⁻¹) := by
+    have := multipliable_one_add_of_summable hsum
+    simpa only [← heq] using this
+  have hfac : ∀ a, Real.exp (-‖x a‖) ≤ ‖(1 - x a)⁻¹‖ := by
+    intro a
+    rw [norm_inv, Real.exp_neg]
+    refine inv_anti₀ (by linarith [hlow a]) ?_
+    have h1 := norm_sub_le (1 : ℂ) (x a)
+    rw [norm_one] at h1
+    linarith [Real.add_one_le_exp ‖x a‖]
+  have ht := (continuous_norm.tendsto _).comp hm.hasProd
+  refine ge_of_tendsto' ht (fun s => ?_)
+  have hsle : ∑ a ∈ s, ‖x a‖ ≤ B :=
+    (hs.sum_le_tsum s (fun a _ => norm_nonneg _)).trans hB
+  calc Real.exp (-B) ≤ Real.exp (∑ a ∈ s, -‖x a‖) := by
+        rw [Finset.sum_neg_distrib]
+        exact Real.exp_le_exp.2 (neg_le_neg hsle)
+    _ = ∏ a ∈ s, Real.exp (-‖x a‖) := Real.exp_sum _ _
+    _ ≤ ∏ a ∈ s, ‖(1 - x a)⁻¹‖ :=
+        Finset.prod_le_prod (fun a _ => (Real.exp_pos _).le) (fun a _ => hfac a)
+    _ = _ := by simp only [Function.comp, norm_prod]
+
+end GlobalTheory
+end
+
+section
+open MeasureTheory IsDedekindDomain NumberField
+
+namespace GlobalTheory
+
+theorem abs_log_inv_one_sub_le_two_mul_abs (y : ℝ) (hy : |y| ≤ 1 / 2) :
+    |Real.log (1 - y)⁻¹| ≤ 2 * |y| := by
+  have h1 := le_abs_self y
+  have h2 := neg_abs_le y
+  have h0 := abs_nonneg y
+  have hpos : 0 < 1 - y := by linarith
+  rw [abs_le]
+  constructor
+  · rw [Real.log_inv]
+    have := Real.log_le_sub_one_of_pos hpos
+    linarith
+  · have h3 := Real.log_le_sub_one_of_pos (inv_pos.mpr hpos)
+    have h4 : (1 - y)⁻¹ ≤ 1 + 2 * |y| := by
+      rw [inv_le_iff_one_le_mul₀ hpos]
+      nlinarith [mul_nonneg h0 (show (0:ℝ) ≤ |y| - y by linarith), mul_nonneg h0 (show (0:ℝ) ≤ 1 / 2 - |y| by linarith)]
+    linarith
+
+theorem tprod_inv_one_sub_pos_and_le_exp :
+    ∀ {ι : Type} (y : ι → ℝ) (B : ℝ), (∀ a, |y a| ≤ 1 / 2) → Summable (fun a => |y a|) →
+      ∑' a, |y a| ≤ B →
+      0 < ∏' a, (1 - y a)⁻¹ ∧ ∏' a, (1 - y a)⁻¹ ≤ Real.exp (2 * B) := by
+  intro ι y B hy hs hB
+  have hb : ∀ a, |Real.log (1 - y a)⁻¹| ≤ 2 * |y a| :=
+    fun a => abs_log_inv_one_sub_le_two_mul_abs _ (hy a)
+  have hs2 : Summable (fun a => 2 * |y a|) := hs.mul_left 2
+  have hsl : Summable (fun a => Real.log (1 - y a)⁻¹) :=
+    Summable.of_norm_bounded hs2 (fun a => by simpa only [Real.norm_eq_abs] using hb a)
+  have hp := hsl.hasSum.rexp
+  have he : (Real.exp ∘ fun a => Real.log (1 - y a)⁻¹) = fun a => (1 - y a)⁻¹ := by
+    funext a
+    have h1 := le_abs_self (y a)
+    have h2 := hy a
+    exact Real.exp_log (inv_pos.mpr (by linarith))
+  rw [he] at hp
+  rw [hp.tprod_eq]
+  refine ⟨Real.exp_pos _, Real.exp_le_exp.mpr ?_⟩
+  calc ∑' a, Real.log (1 - y a)⁻¹ ≤ ∑' a, 2 * |y a| :=
+        hsl.tsum_le_tsum (fun a => (le_abs_self _).trans (hb a)) hs2
+    _ = 2 * ∑' a, |y a| := tsum_mul_left
+    _ ≤ 2 * B := by linarith
+
+end GlobalTheory
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
+open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult
+open scoped TensorProduct InnerProductSpace
+open GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues GlobalTheory.AdelicScalar
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.VolIndex
+
+open GlobalTheory.Mass GlobalTheory.Mass.Levels
+
+theorem latLev_le_range {D : D7} (V : HSp D) : latLev V ≤ (Lev.finE V).range := by
+  obtain ⟨π, hπ, -⟩ := existsUnique_isFinProj D.sp.cm.sig V.gram
+  rintro _ ⟨_, ⟨b, -, rfl⟩, rfl⟩
+  obtain ⟨g, rfl⟩ := hπ.surjective b
+  refine ⟨g, ?_⟩
+  change Lev.finE V g =
+    ((swapPts (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af D.host.F) D.sp.cm.sig V.gram (π g) : UA D.sp.cm V.gram) : GL (Fin V.rank) (Lev.EAf D))
+  rw [coe_swapPts, hπ g]
+  rfl
+
+theorem vol_eq_index_mul_mass : ∀ (D : D7) (V : HSp D) (K : Subgroup (GL (Fin V.rank) (Lev.EAf D))) (ν : Measure (GA D V)) (𝓕 : Set (GA D V)), V.SigOK → V.IsPosDef → K ≤ GlobalTheory.Mass.Levels.latLev V → K.relIndex (GlobalTheory.Mass.Levels.latLev V) ≠ 0 → IsOpen ((K.comap (Lev.finE V) : Subgroup (GA D V)) : Set (GA D V)) → IsMeasDef V K ν 𝓕 → (ν 𝓕).toReal = (K.relIndex (GlobalTheory.Mass.Levels.latLev V) : ℝ) * GlobalTheory.Mass.unitaryMass D.sp.cm.sig V.gram (GlobalTheory.Mass.Levels.latStab V) := by
+  intro D V K ν 𝓕 hW hs hK hi ho hν
+  have hd : Formalism.UG.IsTotDef D.sp.cm.sig V.gram := GlobalTheory.DefiniteQuotient.isTotDef_of_posDef V fun τ => by
+    have := hW (Formalism.BasicNotions.TH.tauE D τ)
+    rw [hs] at this
+    exact GlobalTheory.DefiniteQuotient.posDef_of_signature this
+  obtain ⟨π, hπ, -⟩ := existsUnique_isFinProj D.sp.cm.sig V.gram
+  obtain ⟨hc, hL⟩ := latStab_compact_open V
+  have := Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.measurableMulHA D.sp.cm.sig V.gram
+  have := Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.borelHA D.sp.cm.sig V.gram
+  have := hν.1.1
+  have h1 : ν (K.comap (Lev.finE V)) = 1 := measure_comap_finE hν.1
+  have hidx : (K.comap (Lev.finE V)).relIndex ((latLev V).comap (Lev.finE V)) = K.relIndex (latLev V) := by
+    rw [Subgroup.relIndex_comap, Subgroup.map_comap_eq_self (latLev_le_range V)]
+  have : ((K.comap (Lev.finE V)).subgroupOf ((latLev V).comap (Lev.finE V))).FiniteIndex := ⟨hidx.trans_ne hi⟩
+  have h2 := Formalism.DoubleCosetMeasures.P.GLRed.relIndex_mul_measure (K.comap (Lev.finE V)) ((latLev V).comap (Lev.finE V))
+    (Subgroup.comap_mono hK) ho.measurableSet ν
+  rw [hidx, h1, mul_one] at h2
+  have hn0 : ((K.relIndex (latLev V) : ℕ) : ENNReal) ≠ 0 := Nat.cast_ne_zero.2 hi
+  have hnt : ((K.relIndex (latLev V) : ℕ) : ENNReal) ≠ ⊤ := ENNReal.natCast_ne_top _
+  have hcm := GlobalTheory.Mem.Vol.cmData_isCMExt_and_gram_isHermND _ _ D.sp.cm
+  have h3 := hπ.measure_toReal hcm.1 (hcm.2 V) hd hc hL (((K.relIndex (latLev V) : ℕ) : ENNReal)⁻¹ • ν)
+    (by
+      rw [← toLev_latLev, comap_toLev V _ hπ, Measure.smul_apply, ← h2, smul_eq_mul]
+      exact ENNReal.inv_mul_cancel hn0 hnt)
+    (hν.2.mono (Measure.smul_absolutelyContinuous))
+  rw [← h3, Measure.smul_apply, smul_eq_mul, ENNReal.toReal_mul, ENNReal.toReal_inv, ENNReal.toReal_natCast,
+    mul_inv_cancel_left₀ (Nat.cast_ne_zero.2 hi)]
+
+end GlobalTheory.VolIndex
+end
+
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix
@@ -373,4 +653,5 @@ theorem HMod_onto {X : Type} [AddCommGroup X] [Module ℂ X] {M : HMod X} {V : S
 
 end GlobalTheory.AdelicScalar
 
+end
 end

@@ -1,7 +1,26 @@
-import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.NpDescOfValRat
+import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.YvRatOfValRat
+import Formalism.SharpRestriction.GrowthBounds.JointsLit
 import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.TiedRec
 import Formalism.SharpRestriction.GrowthBounds.PlaneCountTheoremWithConstants
 
+section
+namespace Formalism.L2.G.Cmp
+
+open Formalism.MainNotions.G Formalism.BasicNotions
+
+variable {D : D7} (c : LatCmp D)
+
+theorem yvRat (h : ValRat c) : Formalism.MainNotions.G.Joints.Lit.YvRat c :=
+  fun u w hg v => yvRat_of_valRat c h u w hg v
+
+theorem npDesc_of_valRat {L : SizeData₂ D} (hT : GatTies D) (X : Inst D L) (Y : LatInst D) (K : Consts)
+    (hv : c.VramDef Y) (h : ValRat c) : c.NPDesc X Y K :=
+  Formalism.MainNotions.G.Joints.Lit.NPDesc_of c hT X Y K hv (yvRat c h)
+
+end Formalism.L2.G.Cmp
+end
+
+section
 namespace Formalism.L2.G.Cmp
 
 open Formalism.MainNotions Formalism.MainNotions.G Formalism.BasicNotions Formalism.L2.Forms
@@ -21,3 +40,4 @@ theorem CmpTied.valRat {D : D7} {X : Formalism.L2.Herm.Herm0 D} {T : ∀ u : D.w
   exact ⟨_, ((K.tie u w hg).val_cmp x i L hL).symm⟩
 
 end Formalism.L2.G.Cmp
+end

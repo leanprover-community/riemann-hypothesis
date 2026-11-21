@@ -81,20 +81,6 @@ theorem colSpan_mul_eq {k : ℕ} (g : Matrix (Fin k) (Fin k) K) (u : Matrix (Fin
   rwa [Matrix.mul_assoc, ← Matrix.map_mul, Matrix.mul_nonsing_inv _ hu,
     Matrix.map_one _ (map_zero _) (map_one _), Matrix.mul_one] at this
 
-theorem isLattice_colSpan {A E : Type} [CommRing A] [Field E] [Algebra A E] {k : ℕ} (B : Matrix (Fin k) (Fin k) E)
-    (hB : IsUnit B.det) : Submodule.IsLattice E (colSpan A B) := by
-  refine ⟨Submodule.fg_span (Set.finite_range _), ?_⟩
-  rw [colSpan, Submodule.span_span_of_tower, eq_top_iff]
-  intro w _
-  have : w = ∑ j, (B⁻¹.mulVec w) j • fun i => B i j := by
-    funext i
-    have h : B.mulVec (B⁻¹.mulVec w) = w := by
-      rw [Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ hB, Matrix.one_mulVec]
-    conv_lhs => rw [← h]
-    generalize B⁻¹.mulVec w = y
-    simp [Matrix.mulVec, dotProduct, mul_comm]
-  rw [this]
-  exact Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
 
 theorem span_image {A E R K : Type} [CommRing A] [Field E] [Algebra A E] [CommRing R] [Field K] [Algebra R K]
     (f : E →+* K) (hf : ∀ r : A, f (algebraMap A E r) ∈ Set.range (algebraMap R K)) {k : ℕ}
@@ -125,24 +111,5 @@ theorem span_image {A E R K : Type} [CommRing A] [Field E] [Algebra A E] [CommRi
 
 end TupApx
 
-theorem exists_tup_eq : ∀ (p : ℕ) (O Kf : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field Kf] [Algebra O Kf] (X : Fields) (P : Places p O Kf) (T : PlTie X P) (n : ℕ) (hn : n = P.m + 1) (v : Fin P.nV) (L : Submodule (P.W v) (Fin (P.m + 1) → P.Qq v)), Formalism.MainNotions.G.IsLattice (P.W v) L → ∃ M : Submodule (𝓞 X.E) (Sp X.E n), Submodule.IsLattice X.E M ∧ T.tup hn M v = L := by
-  intro p O Kf _ _ _ _ _ X P T n hn v L hL
-  subst hn
-  obtain ⟨g, hg, rfl⟩ := hL
-  have hS := P.setting v
-  haveI := hS.frac_alt
-  obtain ⟨B, u, hu, hB⟩ := TupApx.exists_approx (T.iw v) hS.p_unif (p : X.E) (by simp)
-    (fun y N => by obtain ⟨x, z, h⟩ := T.iw_dense v y N; exact ⟨x, z, h⟩) g hg
-  have hdet : IsUnit B.det := by
-    have h1 : T.iw v B.det = g.det * algebraMap _ _ u.det := by
-      rw [RingHom.map_det, RingHom.map_det, ← Matrix.det_mul]
-      exact congrArg Matrix.det hB
-    refine isUnit_iff_ne_zero.2 fun h0 => ?_
-    rw [h0, map_zero] at h1
-    exact (hg.mul (hu.map _)).ne_zero h1.symm
-  refine ⟨colSpan (𝓞 X.E) B, TupApx.isLattice_colSpan B hdet, ?_⟩
-  rw [← TupApx.colSpan_mul_eq g u hu, ← hB,
-    ← TupApx.span_image (T.iw v) (fun r => (T.iw_int v _).1 (IntAt.coe _ r)) B]
-  rfl
 
 end GlobalTheory.GO

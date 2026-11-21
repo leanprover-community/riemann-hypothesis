@@ -43,12 +43,6 @@ theorem cmHost_rootZero_im_ne_zero (H : Host E) : H.rt0.im ≠ 0 := by
   have hd : (0 : ℝ) < Real.sqrt H.d := Real.sqrt_pos.2 (Nat.cast_pos.2 H.d_prime.pos)
   rcases cmHost_rootComplex_eq_pm_sqrt H with h | h <;> rw [h] <;> simp [hd.ne']
 
-theorem map_wE (τ : E →+* ℂ) (hτ : τ (H.rt : E) = H.rt0) (s : ℤ × ℤ) : τ (wE H s : E) = wC H s := by
-  have h := congrArg (fun a : 𝓞 E => τ (a : E)) H.two_weight_eq_one_add_root
-  simp only [map_mul, map_add, map_one, map_ofNat] at h
-  have h' : τ (H.w0 : E) = (1 + H.rt0) / 2 := by
-    rw [← hτ]; linear_combination h / 2
-  simp [wE, wC, h']
 
 theorem wC_injective (H : Host E) : Function.Injective (wC H) := by
   rintro ⟨m, n⟩ ⟨m', n'⟩ h
@@ -87,38 +81,11 @@ theorem exists_wC_mul (H : Host E) (s a : ℤ × ℤ) : ∃ b, wC H s * wC H a =
   push_cast
   linear_combination (s.2 * a.2 / 4 : ℂ) * H.sqrt_neg_disc_sq - (s.2 * a.2 / 4 : ℂ) * hk'
 
-theorem spMap_refl : spMap ((RingEquiv.refl ℂ : ℂ ≃+* ℂ) : ℂ →+* ℂ) = 𝟙 _ := Spec.map_id (CommRingCat.of ℂ)
 
-theorem actsBy_refl (C : Curve H) (n : ℕ) : C.ActsBy (RingEquiv.refl ℂ) (𝟙 _) n (1, 0) := by
-  refine ⟨?_, fun a => ?_⟩
-  · rw [spMap_refl]; exact @isGrpPullback_of_iso _ _ _ _ _ (Iso.refl C.P.A) (inferInstanceAs (IsMonHom (𝟙 C.P.A)))
-  · rw [spMap_refl, Category.comp_id, Category.id_comp]; simp [wC]
 
-theorem fixesCurve_refl (H : Host E) (n : ℕ) : FixesCurve H (RingEquiv.refl ℂ) n :=
-  ⟨Classical.arbitrary _, _, actsBy_refl _ n⟩
 
-theorem curveOver_top (H : Host E) (n : ℕ) : CurveOver H ⊤ n := fun τ h => by
-  rw [show τ = RingEquiv.refl ℂ from RingEquiv.ext fun x => h x trivial]
-  exact fixesCurve_refl H n
 
-theorem actsBy_unique {C : Curve H} {τ : ℂ ≃+* ℂ} {f : C.P.A.left ⟶ C.P.A.left} {n : ℕ} (hn : n ≠ 0) {s s' : ℤ × ℤ}
-    (h : C.ActsBy τ f n s) (h' : C.ActsBy τ f n s') : (n : ℤ) ∣ s.1 - s'.1 ∧ (n : ℤ) ∣ s.2 - s'.2 := by
-  have : IsIso (spMap (τ : ℂ →+* ℂ)) := inferInstanceAs (IsIso (Spec.map τ.toCommRingCatIso.hom))
-  have : IsIso f := h.1.1.isIso_fst_of_isIso
-  have e := (cancel_mono f).1 ((h.2 (1, 0)).trans (h'.2 (1, 0)).symm)
-  obtain ⟨t, ht⟩ := (pt_eq_iff C _ _).1 e
-  have hn' : (n : ℂ) ≠ 0 := Nat.cast_ne_zero.2 hn
-  have : wC H (s.1 - s'.1, s.2 - s'.2) = wC H (n * t.1, n * t.2) := by
-    simp only [wC] at ht ⊢
-    push_cast at ht ⊢
-    field_simp at ht ⊢
-    linear_combination ht / 2
-  have e := wC_injective H this
-  exact ⟨⟨t.1, congrArg Prod.fst e⟩, ⟨t.2, congrArg Prod.snd e⟩⟩
 
-theorem not_actsBy_neg (C : Curve H) : ¬ C.ActsBy (RingEquiv.refl ℂ) (𝟙 _) 3 (-1, 0) := fun h => by
-  have := (actsBy_unique (by norm_num) h (actsBy_refl C 3)).1
-  norm_num at this
 
 theorem actsBy_of_dvd {C : Curve H} {τ : ℂ ≃+* ℂ} {f : C.P.A.left ⟶ C.P.A.left} {m n : ℕ} (hn : n ≠ 0) (hmn : m ∣ n)
     {s : ℤ × ℤ} (h : C.ActsBy τ f n s) : C.ActsBy τ f m s := by
@@ -150,24 +117,7 @@ theorem actsBy_one {C : Curve H} {τ : ℂ ≃+* ℂ} {f : C.P.A.left ⟶ C.P.A.
   show (toUnit _ ≫ η[C.P.A]).left = _
   simp
 
-theorem fixesCurve_zero_iff (τ : ℂ ≃+* ℂ) : FixesCurve H τ 0 ↔ FixesCurve H τ 1 := by
-  refine ⟨fun ⟨C, f, h⟩ => ⟨C, f, actsBy_one h.1 _⟩, fun ⟨C, f, h⟩ => ⟨C, f, h.1, fun a => ?_⟩⟩
-  simpa [wC] using h.2 (0, 0)
 
-theorem exists_curveOver_one (H : Host E) : ∃ F : IntermediateField ℚ ℂ, FiniteDimensional ℚ F ∧ CurveOver H F 1 := by
-  obtain ⟨M, _, P, C, φ, h⟩ := exists_curve_model H
-  refine ⟨M, inferInstance, fun τ hτ => ?_⟩
-  have e : spMap (τ : ℂ →+* ℂ) ≫ spMap ((algebraMap M ℂ).comp (algebraMap (𝓞 M) M)) =
-      spMap ((algebraMap M ℂ).comp (algebraMap (𝓞 M) M)) := by
-    show Spec.map _ ≫ Spec.map _ = Spec.map _
-    rw [← Spec.map_comp]
-    congr 1
-    ext x
-    exact hτ _ (x : M).2
-  have w : φ ≫ P.A.hom = (C.P.A.hom ≫ spMap (τ : ℂ →+* ℂ)) ≫ spMap ((algebraMap M ℂ).comp (algebraMap (𝓞 M) M)) := by
-    rw [Category.assoc, e, h.1.w]
-  exact ⟨C, h.1.lift _ _ w, actsBy_one
-    (h.cancel (h.congr e.symm (h.1.lift_fst _ _ w).symm) (h.1.lift_snd _ _ w)) _⟩
 
 section Split
 
@@ -197,19 +147,7 @@ theorem signs : (∀ a ∈ lat hP H.rt0, a ≠ 0 → 0 < H.rt0.im * D.EF (H.rt �
 
 end Split
 
-theorem splitLat_of_q_zero (D : Datum H) (hq : D.q = 0) : SplitLat D ∧
-    ∀ (g : ℕ) (ty : Fin g → (E →+* ℂ)) (P : D.La →+ (Fin g → ℂ)) (hP : IsPeriod D ty P),
-      IsTypeFn H D.p D.q ty → IsSplit hP := by
-  refine ⟨?_, fun g ty P hP hty => by rw [IsSplit, lat_eq_top hP (hq ▸ hty), top_sup_eq]⟩
-  obtain ⟨g, ty, hty⟩ := PureTypeModel.exists_isTypeFn H D.p D.q
-  obtain ⟨P, hP⟩ := PeriodNonempty.exists_isPeriod E H D g ty hty
-  refine ⟨⊤, ⊥, top_sup_eq _, fun a _ b hb => ?_, by rw [finrank_top, D.rank, hq, add_zero], by rw [finrank_bot, hq],
-    fun a _ h0 => (signs hP).1 a (lat_eq_top hP (hq ▸ hty) ▸ Submodule.mem_top) h0, fun a ha h0 => absurd ha h0⟩
-  rw [(Submodule.mem_bot _).1 hb, map_zero]
 
-theorem exists_splitLat : ∃ D : Datum CM.LatModel.host, D.p = 1 ∧ D.q = 0 ∧ SplitLat D := by
-  obtain ⟨D, hp, hq⟩ := CM.LatModel.exists_datum
-  exact ⟨D, hp, hq, (splitLat_of_q_zero D hq).1⟩
 
 theorem neg_of_p_zero (D : Datum H) (hp : D.p = 0) (a : D.La) (h0 : a ≠ 0) : H.rt0.im * D.EF (H.rt • a) a < 0 := by
   obtain ⟨g, ty, hty⟩ := PureTypeModel.exists_isTypeFn H D.p D.q
@@ -245,9 +183,5 @@ theorem splitLat_sum (D D' : Datum H) (hq : D.q = 0) (hp : D'.p = 0) :
   · rintro _ ⟨a, rfl⟩ h0
     simpa [hE, i₂] using neg_of_p_zero D' hp a fun h => h0 (by rw [h, map_zero])
 
-theorem exists_splitLat_indefinite : ∃ D : Datum CM.LatModel.host, D.p = 1 ∧ D.q = 1 ∧ SplitLat D := by
-  obtain ⟨D, hp, hq⟩ := CM.LatModel.exists_datum
-  obtain ⟨D'', a, b, c⟩ := splitLat_sum D (CM.LatModel.negDatum D) hq hq
-  exact ⟨D'', a.trans hp, b.trans hp, c⟩
 
 end GlobalTheory.CompRatModel

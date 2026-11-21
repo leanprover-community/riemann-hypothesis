@@ -74,17 +74,6 @@ def KerJoinS (Dt : D.what₂.Word → Set X.B.I.GA) : Prop :=
       D.what₂.perCol u D.what₂.mu0 φ F =
         a * ⟪((conjHH X G (j (V (D.what₂.iota D.what₂.mu0 F))) : HHX X) : L2X X), PuFun X u hK (Dt u) T⟫_ℂ
 
-theorem kerJoinS_of_parts (Dt Fs : D.what₂.Word → Set X.B.I.GA) (hH : ∀ u, PoincareSeriesHypotheses X u hK (Dt u) (Fs u))
-    (hU : ∀ u, BesselUnfold X u hK (Dt u) (Fs u)) (hS : KerSide X G j Tr hK Fs) : KerJoinS X G j Tr hK Dt := by
-  obtain ⟨V, hV⟩ := hS
-  refine ⟨V, fun u => ?_⟩
-  obtain ⟨a, ha, U, hU'⟩ := hV u
-  refine ⟨a, ha, U, fun φ F hF T hT => ?_⟩
-  rw [hU' φ F hF T hT]
-  obtain ⟨h1, h2, h3, h4, h5, h6, h7⟩ := hH u
-  have e := (hU u h1 h2 h3 h4 h5 h6 h7 (rowL X G j (V (D.what₂.iota D.what₂.mu0 F))) T).2
-  rw [← e, conjHH_apply]
-  rfl
 
 end Ker
 

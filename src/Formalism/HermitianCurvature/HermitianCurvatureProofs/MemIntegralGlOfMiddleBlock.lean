@@ -219,31 +219,11 @@ theorem hEmb_map {B : Type} [CommRing B] (f : A →+* B) (h : Matrix (Fin k) (Fi
     (hEmb r h).map f = hEmb r (h.map f) := by
   simp [hEmb, midEmb, Matrix.fromBlocks_map]
 
-theorem det_of_isN {n : Matrix (Idx r k) (Idx r k) A} (hn : IsN n) : n.det = 1 := by
-  obtain ⟨h11, h33, h22, h21, h31, h32⟩ := hn
-  have e : n = Matrix.fromBlocks (b11 n) (n.toBlocks₁₂) 0 (Matrix.fromBlocks 1 (b23 n) 0 (b33 n)) := by
-    ext i j
-    rcases i with i | i | i <;> rcases j with j | j | j
-    · rfl
-    · rfl
-    · rfl
-    · exact congrFun (congrFun h21 i) j
-    · exact congrFun (congrFun h22 i) j
-    · rfl
-    · exact congrFun (congrFun h31 i) j
-    · exact congrFun (congrFun h32 i) j
-    · rfl
-  rw [e, Matrix.det_fromBlocks_zero₂₁, Matrix.det_fromBlocks_zero₂₁, Matrix.det_one,
-    Formalism.DoubleCosetMeasures.isUpUni_det A h11, Formalism.DoubleCosetMeasures.isUpUni_det A h33]
-  simp
 
 theorem isUpUni_map {B : Type} [CommRing B] (f : A →+* B) {n : ℕ} {x : Matrix (Fin n) (Fin n) A}
     (hx : IsUpUni x) : IsUpUni (x.map f) :=
   ⟨fun i j hij => by simp [hx.1 hij], fun a => by simp [hx.2 a]⟩
 
-theorem isUpUni_of_map {B : Type} [CommRing B] (f : A →+* B) (hf : Function.Injective f) {n : ℕ}
-    {x : Matrix (Fin n) (Fin n) A} (hx : IsUpUni (x.map f)) : IsUpUni x :=
-  ⟨fun i j hij => hf (by simpa using hx.1 hij), fun a => hf (by simpa using hx.2 a)⟩
 
 theorem isN_map {B : Type} [CommRing B] (f : A →+* B) {n : Matrix (Idx r k) (Idx r k) A}
     (hn : IsN n) : IsN (n.map f) := by
@@ -254,30 +234,8 @@ theorem isN_map {B : Type} [CommRing B] (f : A →+* B) {n : Matrix (Idx r k) (I
   · rw [block31_map, h31]; simp
   · rw [block32_map, h32]; simp
 
-theorem isN_of_map {B : Type} [CommRing B] (f : A →+* B) (hf : Function.Injective f)
-    {n : Matrix (Idx r k) (Idx r k) A} (hn : IsN (n.map f)) : IsN n := by
-  obtain ⟨h11, h33, h22, h21, h31, h32⟩ := hn
-  refine ⟨isUpUni_of_map f hf h11, isUpUni_of_map f hf h33, ?_, ?_, ?_, ?_⟩
-  · apply Matrix.map_injective hf; show (b22 n).map f = _; rw [← block22_map, h22]; simp
-  · apply Matrix.map_injective hf; show (b21 n).map f = _; rw [← block21_map, h21]; simp
-  · apply Matrix.map_injective hf; show (b31 n).map f = _; rw [← block31_map, h31]; simp
-  · apply Matrix.map_injective hf; show (b32 n).map f = _; rw [← block32_map, h32]; simp
 
-theorem isN_conj {a b : Matrix (Fin k) (Fin k) A} (hab : a * b = 1)
-    {n : Matrix (Idx r k) (Idx r k) A} (hn : IsN n) : IsN (hEmb r a * n * hEmb r b) := by
-  obtain ⟨h11, h33, h22, h21, h31, h32⟩ := hn
-  refine ⟨by simpa using h11, by simpa using h33, ?_, ?_, ?_, ?_⟩
-  · simp [h22, ← midEmb_mul, hab, midEmb_one]
-  · simp [h21]
-  · simp [h31]
-  · simp [h32]
 
-theorem isNU_hEmb_mul {u : Matrix (Fin k) (Fin k) A} (hu : IsUpUni u)
-    {n : Matrix (Idx r k) (Idx r k) A} (hn : IsN n) : IsNU (hEmb r u * n) := by
-  have hdet : IsUnit u.det := by rw [Formalism.DoubleCosetMeasures.isUpUni_det A hu]; exact isUnit_one
-  refine ⟨hEmb r u * n * hEmb r u⁻¹, hEmb r u, isN_conj (Matrix.mul_nonsing_inv u hdet) hn,
-    ⟨u, hu, rfl⟩, ?_⟩
-  rw [mul_assoc, ← hEmb_mul, Matrix.nonsing_inv_mul u hdet, hEmb_one, mul_one]
 
 end Alg
 
@@ -285,126 +243,17 @@ section Integral
 
 variable (o : Type) [CommRing o] {k0 : Type} [Field k0] [Algebra o k0]
 
-theorem inGLo_mul {ι : Type} [Fintype ι] [DecidableEq ι] {x y : Matrix ι ι k0} (hx : InGLo o x)
-    (hy : InGLo o y) : InGLo o (x * y) := by
-  obtain ⟨a, ha, rfl⟩ := hx
-  obtain ⟨b, hb, rfl⟩ := hy
-  exact ⟨a * b, by rw [Matrix.det_mul]; exact ha.mul hb, by rw [Matrix.map_mul]⟩
 
-theorem inGLo_inv {ι : Type} [Fintype ι] [DecidableEq ι] {x : Matrix ι ι k0} (hx : InGLo o x) :
-    InGLo o x⁻¹ := by
-  obtain ⟨a, ha, rfl⟩ := hx
-  refine ⟨a⁻¹, Matrix.isUnit_nonsing_inv_det a ha, ?_⟩
-  symm
-  apply Matrix.inv_eq_right_inv
-  rw [← Matrix.map_mul, Matrix.mul_nonsing_inv a ha]
-  simp
 
-theorem inGLo_hEmb {r k : ℕ} {h : Matrix (Fin k) (Fin k) k0} (hh : InGLo o h) :
-    InGLo o (hEmb r h) := by
-  obtain ⟨a, ha, rfl⟩ := hh
-  exact ⟨hEmb r a, by rw [det_hEmb]; exact ha, hEmb_map _ _⟩
 
 variable [IsFractionRing o k0]
 
-theorem mem_integral_gl_of_middle_block {r k : ℕ} {x : Matrix (Idx r k) (Idx r k) k0} {h : Matrix (Fin k) (Fin k) k0}
-    (hx : InGLo o x) (h22 : b22 x = midEmb h) (hdet : x.det = h.det) : InGLo o h := by
-  obtain ⟨y, hy, rfl⟩ := hx
-  have e : ((b22 y).toBlocks₁₁).map (algebraMap o k0) = h := by
-    ext i j
-    have := congrFun (congrFun h22 (Sum.inl i)) (Sum.inl j)
-    simpa [midEmb, Matrix.toBlocks₁₁] using this
-  refine ⟨(b22 y).toBlocks₁₁, ?_, e⟩
-  have h2 : algebraMap o k0 ((b22 y).toBlocks₁₁).det = algebraMap o k0 y.det := by
-    rw [RingHom.map_det, RingHom.map_det, RingHom.mapMatrix_apply, RingHom.mapMatrix_apply, e, hdet]
-  rw [IsFractionRing.injective o k0 h2]
-  exact hy
 
-theorem inGLo_nh {r k : ℕ} {n : Matrix (Idx r k) (Idx r k) k0} {h : Matrix (Fin k) (Fin k) k0}
-    (hn : IsN n) (hh : IsUnit h.det) : InGLo o (n * hEmb r h) ↔ InGLo o n ∧ InGLo o h := by
-  constructor
-  · intro hx
-    have h1 : InGLo o h := mem_integral_gl_of_middle_block o hx (by simp [hn.2.2.1])
-      (by rw [Matrix.det_mul, det_of_isN hn, det_hEmb, one_mul])
-    refine ⟨?_, h1⟩
-    have h2 := inGLo_mul o hx (inGLo_inv o (inGLo_hEmb o (r := r) h1))
-    rwa [Matrix.mul_nonsing_inv_cancel_right _ _ (by rw [det_hEmb]; exact hh)] at h2
-  · rintro ⟨h1, h2⟩
-    exact inGLo_mul o h1 (inGLo_hEmb o h2)
 
-theorem inGLo_hn {r k : ℕ} {n : Matrix (Idx r k) (Idx r k) k0} {h : Matrix (Fin k) (Fin k) k0}
-    (hn : IsN n) (hh : IsUnit h.det) : InGLo o (hEmb r h * n) ↔ InGLo o n ∧ InGLo o h := by
-  constructor
-  · intro hx
-    have h1 : InGLo o h := mem_integral_gl_of_middle_block o hx (by simp [hn.2.2.1])
-      (by rw [Matrix.det_mul, det_of_isN hn, det_hEmb, mul_one])
-    refine ⟨?_, h1⟩
-    have h2 := inGLo_mul o (inGLo_inv o (inGLo_hEmb o (r := r) h1)) hx
-    rwa [Matrix.nonsing_inv_mul_cancel_left _ _ (by rw [det_hEmb]; exact hh)] at h2
-  · rintro ⟨h1, h2⟩
-    exact inGLo_mul o (inGLo_hEmb o h2) h1
 
 variable [IsLocalRing o]
 
-theorem kpp_nh {r k : ℕ} {n : Matrix (Idx r k) (Idx r k) k0} {h : Matrix (Fin k) (Fin k) k0}
-    (hn : IsN n) (hh : IsUnit h.det) :
-    (∃ y : Matrix (Idx r k) (Idx r k) o, KppO y ∧ y.map (algebraMap o k0) = n * hEmb r h) ↔
-      InGLo o n ∧ ∃ y : Matrix (Fin k) (Fin k) o, IsUnit y.det ∧
-        IsUpUni (y.map (IsLocalRing.residue o)) ∧ y.map (algebraMap o k0) = h := by
-  have hinj := IsFractionRing.injective o k0
-  constructor
-  · rintro ⟨y, ⟨hdet, hNU⟩, hy⟩
-    obtain ⟨hn', yh, hyh, rfl⟩ := (inGLo_nh o hn hh).1 ⟨y, hdet, hy⟩
-    refine ⟨hn', yh, hyh, ?_, rfl⟩
-    obtain ⟨yn, hyn, rfl⟩ := hn'
-    have e : y = yn * hEmb r yh := by
-      apply Matrix.map_injective hinj
-      show y.map (algebraMap o k0) = (yn * hEmb r yh).map (algebraMap o k0)
-      rw [hy, Matrix.map_mul, hEmb_map]
-    subst e
-    obtain ⟨n', u', hn', ⟨u, hu, rfl⟩, e⟩ := hNU
-    have hN := isN_map (IsLocalRing.residue o) (isN_of_map _ hinj hn)
-    have e2 := congrArg b22 e
-    rw [Matrix.map_mul, hEmb_map, block22_mul_levi_embedding, block22_mul_levi_embedding, hN.2.2.1, hn'.2.2.1, one_mul,
-      one_mul] at e2
-    rw [midEmb_inj e2]
-    exact hu
-  · rintro ⟨⟨yn, hyn, rfl⟩, yh, hyh, hu, rfl⟩
-    refine ⟨yn * hEmb r yh, ⟨?_, ?_⟩, ?_⟩
-    · rw [Matrix.det_mul, det_hEmb]; exact hyn.mul hyh
-    · rw [Matrix.map_mul, hEmb_map]
-      exact ⟨_, _, isN_map (IsLocalRing.residue o) (isN_of_map _ hinj hn), ⟨_, hu, rfl⟩, rfl⟩
-    · rw [Matrix.map_mul, hEmb_map]
 
-theorem kpp_hn {r k : ℕ} {n : Matrix (Idx r k) (Idx r k) k0} {h : Matrix (Fin k) (Fin k) k0}
-    (hn : IsN n) (hh : IsUnit h.det) :
-    (∃ y : Matrix (Idx r k) (Idx r k) o, KppO y ∧ y.map (algebraMap o k0) = hEmb r h * n) ↔
-      InGLo o n ∧ ∃ y : Matrix (Fin k) (Fin k) o, IsUnit y.det ∧
-        IsUpUni (y.map (IsLocalRing.residue o)) ∧ y.map (algebraMap o k0) = h := by
-  have hinj := IsFractionRing.injective o k0
-  constructor
-  · rintro ⟨y, ⟨hdet, hNU⟩, hy⟩
-    obtain ⟨hn', yh, hyh, rfl⟩ := (inGLo_hn o hn hh).1 ⟨y, hdet, hy⟩
-    refine ⟨hn', yh, hyh, ?_, rfl⟩
-    obtain ⟨yn, hyn, rfl⟩ := hn'
-    have e : y = hEmb r yh * yn := by
-      apply Matrix.map_injective hinj
-      show y.map (algebraMap o k0) = (hEmb r yh * yn).map (algebraMap o k0)
-      rw [hy, Matrix.map_mul, hEmb_map]
-    subst e
-    obtain ⟨n', u', hn', ⟨u, hu, rfl⟩, e⟩ := hNU
-    have hN := isN_map (IsLocalRing.residue o) (isN_of_map _ hinj hn)
-    have e2 := congrArg b22 e
-    rw [Matrix.map_mul, hEmb_map, block22_levi_embedding_mul, block22_mul_levi_embedding, hN.2.2.1, hn'.2.2.1, one_mul,
-      mul_one] at e2
-    rw [midEmb_inj e2]
-    exact hu
-  · rintro ⟨⟨yn, hyn, rfl⟩, yh, hyh, hu, rfl⟩
-    refine ⟨hEmb r yh * yn, ⟨?_, ?_⟩, ?_⟩
-    · rw [Matrix.det_mul, det_hEmb]; exact hyh.mul hyn
-    · rw [Matrix.map_mul, hEmb_map]
-      exact isNU_hEmb_mul hu (isN_map (IsLocalRing.residue o) (isN_of_map _ hinj hn))
-    · rw [Matrix.map_mul, hEmb_map]
 
 end Integral
 
@@ -478,18 +327,8 @@ theorem card_prod_set (Q : Matrix (Fin k) (Fin k) A → Prop) (hQ : ∀ h, Q h �
   · rintro ⟨x, n, h', hn, ⟨h, hh, rfl⟩, rfl⟩
     exact ⟨⟨⟨h, hh⟩, ⟨n, hn⟩⟩, rfl⟩
 
-theorem isUnit_det_of_isS {x : Matrix (Idx r k) (Idx r k) A} (hx : IsS x) : IsUnit x.det := by
-  obtain ⟨n, h', hn, ⟨h, hh, rfl⟩, rfl⟩ := hx
-  rw [Matrix.det_mul, det_of_isN hn, det_hEmb, one_mul]
-  exact hh
 
-theorem isUnit_det_of_isUpUni {u : Matrix (Fin k) (Fin k) A} (hu : IsUpUni u) : IsUnit u.det := by
-  rw [Formalism.DoubleCosetMeasures.isUpUni_det A hu]; exact isUnit_one
 
-theorem isUnit_det_of_isNU {x : Matrix (Idx r k) (Idx r k) A} (hx : IsNU x) : IsUnit x.det := by
-  obtain ⟨n, h', hn, ⟨h, hh, rfl⟩, rfl⟩ := hx
-  rw [Matrix.det_mul, det_of_isN hn, det_hEmb, one_mul]
-  exact isUnit_det_of_isUpUni hh
 
 theorem card_S : Nat.card {x : Matrix (Idx r k) (Idx r k) A // IsS x} =
     Nat.card (GL (Fin k) A) * Nat.card {x : Matrix (Idx r k) (Idx r k) A // IsN x} := by
@@ -500,10 +339,6 @@ theorem card_S : Nat.card {x : Matrix (Idx r k) (Idx r k) A // IsS x} =
   rw [h2] at h
   exact h
 
-theorem card_NU : Nat.card {x : Matrix (Idx r k) (Idx r k) A // IsNU x} =
-    Nat.card (upUniG A k) * Nat.card {x : Matrix (Idx r k) (Idx r k) A // IsN x} :=
-  card_prod_set (r := r) (fun h : Matrix (Fin k) (Fin k) A => IsUpUni h)
-    (fun _ h => isUnit_det_of_isUpUni h)
 
 end Counting
 
@@ -511,23 +346,8 @@ section Levels
 
 variable (o : Type) [CommRing o] [IsLocalRing o] {r k : ℕ} (L : Levels o r k)
 
-theorem index_Kpp : L.Kpp.index *
-    (Nat.card (upUniG (IsLocalRing.ResidueField o) k) *
-      Nat.card {x : Matrix (Idx r k) (Idx r k) (IsLocalRing.ResidueField o) // IsN x}) =
-    Nat.card (GL (Idx r k) (IsLocalRing.ResidueField o)) := by
-  rw [← card_NU, ← card_GL_subtype _ (fun _ h => isUnit_det_of_isNU h)]
-  exact index_mul_card (red o (Idx r k)) (red_surjective o _) L.Kpp _ L.mem_Kpp
 
-theorem index_Knat : L.Knat.index *
-    (Nat.card (GL (Fin k) (IsLocalRing.ResidueField o)) *
-      Nat.card {x : Matrix (Idx r k) (Idx r k) (IsLocalRing.ResidueField o) // IsN x}) =
-    Nat.card (GL (Idx r k) (IsLocalRing.ResidueField o)) := by
-  rw [← card_S, ← card_GL_subtype _ (fun _ h => isUnit_det_of_isS h)]
-  exact index_mul_card (red o (Idx r k)) (red_surjective o _) L.Knat _ L.mem_Knat
 
-theorem index_JH : L.JH.index * Nat.card (upUniG (IsLocalRing.ResidueField o) k) =
-    Nat.card (GL (Fin k) (IsLocalRing.ResidueField o)) :=
-  index_mul_card (red o (Fin k)) (red_surjective o _) L.JH _ L.mem_JH
 
 end Levels
 
@@ -566,20 +386,6 @@ end Formalism.FourierDecayAlt.P.S3x3
 
 namespace Formalism.FourierDecayAlt.P
 
-theorem typedArithmetic_statement : Formalism.FourierDecayAlt.S3.TypedArithmetic := by
-  intro o _ _ _ r k L volK volKpp volKnat volKH volJH volNo p1 p2 p3 p4 v1 v2 v3 cG cS cGLk cUk γ
-    hG hS hGLk hUk hγ
-  refine S3x3.ratios L.Kpp.index L.Knat.index L.JH.index
-    (Nat.card {x : Matrix (S3.Idx r k) (S3.Idx r k) (IsLocalRing.ResidueField o) // S3.IsN x})
-    volK volKpp volKnat volKH volJH volNo cG cS cGLk cUk γ ?_ ?_ ?_ ?_ ?_ p1 p2 p3 p4 v1 v2 v3 hγ
-  · rw [hG]; exact_mod_cast Nat.card_pos
-  · rw [hG, hUk]; exact_mod_cast S3x3.index_Kpp o L
-  · rw [hG, hGLk]; exact_mod_cast S3x3.index_Knat o L
-  · rw [hGLk, hUk]; exact_mod_cast S3x3.index_JH o L
-  · rw [hS, hGLk]; exact_mod_cast S3x3.card_S
 
-theorem integralProduct_statement : Formalism.FourierDecayAlt.S3.IntegralProduct := by
-  intro o _ _ _ k0 _ _ _ r k n h hn hh
-  exact ⟨S3x3.inGLo_nh o hn hh, S3x3.inGLo_hn o hn hh, S3x3.kpp_nh o hn hh, S3x3.kpp_hn o hn hh⟩
 
 end Formalism.FourierDecayAlt.P

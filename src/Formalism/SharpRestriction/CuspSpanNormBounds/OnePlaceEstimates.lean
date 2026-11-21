@@ -236,19 +236,8 @@ def BesselConjugatesEveryCell (D : D7) (Ch Cg Cq Cb : ℝ) : Prop :=
           IsRootMeas L γ g μR → IsOrbQuot L g μR νm →
           (DpowPt α γ * star (DpowPt β γ)) • OrbInt L (fν 0) g νm = ∑' ν, a ν • OrbInt L (fν ν) g νm)
 
-theorem bessel_iteration_of_near {D : D7} {Ch Cg Cq Cb : ℝ} (h : BesselIterationNearParameter D Ch Cg Cq Cb) : BesselDerivativeIteration D Ch Cg Cq Cb := by
-  intro L f μsec ka b κ p hκ hL hR hf hs α hα
-  exact h L L.lam f μsec ka b κ p hκ hL hR.toC hf hs α hα
 
-theorem bessel_expansion_coeff_of_near {D : D7} {Ch Cg Cq Cb : ℝ} (h : BesselExpansionNearParameter D Ch Cg Cq Cb) : BesselExpansionCoefficientSum D Ch Cg Cq Cb := by
-  intro L μsec ka b κ p Hν _ _ _ σν fν hκ hL hR hs hν h0 α hα
-  exact h L L.lam μsec ka b κ p Hν σν fν hκ hL hR.toC hs hν h0 α hα
 
-theorem bessel_expansion_of_near {D : D7} {Ch Cg Cq Cb : ℝ} (h : BesselConjugatesEveryCell D Ch Cg Cq Cb) : BesselExpansionCoefficients D Ch Cg Cq Cb := by
-  intro L μsec ka b κ p Hν _ _ _ σν fν hκ hL hR hs hν h0 α β hαβ
-  obtain ⟨a, h1, h2, h3, h4, h5⟩ := h L L.lam μsec ka b κ p Hν σν fν hκ hL hR.toC hs hν h0 α β hαβ
-  refine ⟨a, h1, h2, h3, h4, fun hL' hh => h5 hL' ?_⟩
-  rwa [lOne_self_lemma, zero_add]
 
 def scaleBlocks (κ τ : ℝ) (r : ℕ) : ℕ → List (ℂ × ℕ) → List (ℂ × ℕ)
   | _, [] => []
@@ -532,38 +521,7 @@ def GridWd (r : ℕ) (y0 : ℝ) (w : Word) : Prop :=
 def GridW {D : D7} {k0 : ℕ} (X : GramWordSpace.Dat D k0) (y0 : D.what₂.Tau → ℝ) (w : GramWordSpace.GWord D) : Prop :=
   ∀ v, Admissible (X.I v) (w v) ∧ GridWd D.R.rS (y0 v) (w v)
 
-theorem gridWd_adm {r : ℕ} {y0 a b : ℝ} {w : Word} (h : GridWd r y0 w) (ha : a ≤ y0)
-    (hb : y0 + 30 * ((r : ℝ) + 1) ^ 2 - 4 ≤ b) : Admissible (Set.Icc a b) w := by
-  obtain ⟨hlen, hw⟩ := h
-  refine ⟨fun l hl => ?_, ?_⟩
-  · obtain ⟨i, hi⟩ := List.mem_iff_getElem?.mp (List.mem_reverse.mpr hl)
-    obtain ⟨n, -, hn2, hy⟩ := hw i l hi
-    have hil : i < w.length := by
-      have := (List.getElem?_eq_some_iff.mp hi).1
-      simpa using this
-    have hn : n + 1 ≤ 6 * (r + 1) ^ 2 := by
-      have h1 : (i + 1) * (2 * r + 2) ≤ (3 * (r + 1)) * (2 * r + 2) := Nat.mul_le_mul_right _ (by omega)
-      nlinarith
-    have hnR : (n : ℝ) + 1 ≤ 6 * ((r : ℝ) + 1) ^ 2 := by exact_mod_cast hn
-    have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
-    rw [Set.mem_Icc, hy]
-    constructor <;> split_ifs <;> nlinarith
-  · apply List.pairwise_reverse.mp
-    rw [List.pairwise_iff_getElem]
-    intro i j hi hj hij
-    obtain ⟨n, hn1, hn2, hy⟩ := hw i _ (List.getElem?_eq_getElem hi)
-    obtain ⟨n', hn1', hn2', hy'⟩ := hw j _ (List.getElem?_eq_getElem hj)
-    have hlt : n < n' := by
-      have : (i + 1) * (2 * r + 2) ≤ j * (2 * r + 2) := Nat.mul_le_mul_right _ hij
-      omega
-    have hltR : (n : ℝ) + 1 ≤ n' := by exact_mod_cast hlt
-    refine lt_abs.mpr (Or.inl ?_)
-    rw [hy, hy']
-    split_ifs <;> linarith
 
-theorem gridW_nil {D : D7} {k0 : ℕ} (X : GramWordSpace.Dat D k0) (y0 : D.what₂.Tau → ℝ) : GridW X y0 (fun _ => []) := by
-  intro v
-  refine ⟨⟨fun l hl => absurd hl List.not_mem_nil, List.Pairwise.nil⟩, ⟨by simp, fun a l h => by simp at h⟩⟩
 
 section Raw
 

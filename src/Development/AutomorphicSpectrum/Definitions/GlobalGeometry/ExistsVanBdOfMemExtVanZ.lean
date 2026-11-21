@@ -14,20 +14,6 @@ open GlobalTheory.CechPic GlobalTheory.TangentOrigin GlobalTheory.Vanishing Glob
 open GlobalTheory.AllWt (secZ exOf)
 open GlobalTheory.FlagMod (FlagCover)
 
-theorem evalPt_mem_maximalIdeal_iff {Y : Scheme.{0}} {V : Type} [CommRing V] [IsLocalRing V] (x : Sp V ⟶ Y)
-    (W : Y.Opens) (h : ⊤ ≤ x ⁻¹ᵁ W) (g : Γ(Y, W)) (hy : x (IsLocalRing.closedPoint V) ∈ W) :
-    evalPt x W h g ∈ IsLocalRing.maximalIdeal V ↔
-      ger _ hy g ∈ IsLocalRing.maximalIdeal (Y.presheaf.stalk (x (IsLocalRing.closedPoint V))) := by
-  have key := Scheme.germ_stalkClosedPointTo (R := CommRingCat.of V) x W hy
-  have e : (Scheme.stalkClosedPointTo (R := CommRingCat.of V) x).hom (ger _ hy g) = evalPt x W h g := by
-    have := congrArg (fun φ => φ.hom g) key
-    simp only [CommRingCat.hom_comp, RingHom.comp_apply] at this
-    refine this.trans ?_
-    simp only [evalPt, Scheme.Hom.appLE, Iso.trans_hom, Functor.mapIso_hom, Iso.op_hom, eqToIso.hom,
-      CommRingCat.hom_comp, RingHom.comp_apply, Category.assoc]
-    congr!
-  exact ⟨fun hg hu => hg (e ▸ hu.map _),
-    fun hg hu => hg (isUnit_of_map_unit (Scheme.stalkClosedPointTo (R := CommRingCat.of V) x).hom _ (e ▸ hu))⟩
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {c : Coeff l}

@@ -52,25 +52,6 @@ theorem del_stable {N : ℕ} (lam : DomWeight N) :
   rw [del_eq_nabla] at hf ⊢
   exact Submodule.smul_mem _ _ (Formalism.GradedWeylDivisibility.dualWeylRowStable ℂ N N lam.natW _ f hf)
 
-theorem isBr_congr {n N : ℕ} {h : n + 1 = N} {lam : DomWeight N} {sg : DomWeight n}
-    {br br' : MvPolynomial (Fin N × Fin N) ℂ →ₗ[ℂ] MvPolynomial (Fin n × Fin n) ℂ}
-    (hbr : IsBr h lam sg br) (e : Set.EqOn br' br (delSq ℂ N lam : Set _)) :
-    IsBr h lam sg br' := by
-  obtain ⟨h1, h2, ⟨f3, hf3, h3⟩, h4, h5, h6⟩ := hbr
-  have e1 : ∀ f ∈ delSq ℂ N lam, br' f = br f := fun f hf => e hf
-  have e2 : ∀ f0 ∈ delSq ℤ N lam, br' (MvPolynomial.map (Int.castRingHom ℂ) f0) =
-      br (MvPolynomial.map (Int.castRingHom ℂ) f0) := fun f0 hf => e (del_int lam f0 hf)
-  have e3 : ∀ (g : GL (Fin n) ℂ), ∀ f0 ∈ delSq ℂ N lam, br' (sqAct ℂ N lam (embGL ℂ n N h g) f0) =
-      br (sqAct ℂ N lam (embGL ℂ n N h g) f0) := fun g f0 hf => e (del_stable lam _ f0 hf)
-  have e4 : ∀ (a : ℂˣ), ∀ f0 ∈ delSq ℂ N lam, br' (sqAct ℂ N lam (lastGL ℂ N a) f0) =
-      br (sqAct ℂ N lam (lastGL ℂ N a) f0) := fun a f0 hf => e (del_stable lam _ f0 hf)
-  refine ⟨fun f hf => ?_, fun f hf => ?_, ⟨f3, hf3, ?_⟩, fun g f hf => ?_, fun a f hf => ?_, fun f hf => ?_⟩
-  · rw [e2 f hf]; exact h1 f hf
-  · rw [e1 f hf]; exact h2 f hf
-  · rw [e1 f3 hf3]; exact h3
-  · rw [e3 g f hf, e1 f hf]; exact h4 g f hf
-  · rw [e4 a f hf, e1 f hf]; exact h5 a f hf
-  · rw [e1 f hf]; exact h6 f hf
 
 variable {D : D7} {u : D.what₂.Word}
 
@@ -80,11 +61,6 @@ def BrTie (P : product_first_zeroth_parts.Pend D u) : Prop :=
     IsTranspose (product_first_zeroth_parts.lamTr D u τ) (product_first_zeroth_parts.sgTr D u τ) io br →
     Set.EqOn (P.br τ) br (delSq ℂ _ (product_first_zeroth_parts.lamTr D u τ) : Set _)
 
-theorem pending_condition_of_sixth (P : product_first_zeroth_parts.Pend D u) (H : PrimeDegreeVariant.Conclusion6) (tie : BrTie P) : product_first_zeroth_parts.ArchimedeanSignatureMatching P := by
-  intro τ
-  obtain ⟨-, -, -, -, io, br, hio, hbr, htr⟩ :=
-    H _ _ (product_first_zeroth_parts.Nm_succ D.R) (product_first_zeroth_parts.lamTr D u τ) (product_first_zeroth_parts.sgTr D u τ) (product_first_zeroth_parts.interlaceTr D u P.interlace τ)
-  exact isBr_congr hbr (tie τ io br hio hbr htr)
 
 end Formalism.MainNotions.J
 

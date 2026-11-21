@@ -1,6 +1,259 @@
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousOnG2SymmetricInterval
+import Mathlib
 import Formalism.HermitianCurvature.BigCellVanishingOfCommute
 
+section
+open MeasureTheory intervalIntegral Set
+
+noncomputable section
+
+namespace Formalism.FourierDecayAlt.P.DiscFubiniVolume
+
+def ee (u t : ℝ) : ℂ := Complex.exp (Complex.I * ((u * t : ℝ) : ℂ))
+
+lemma ee_norm (u t : ℝ) : ‖ee u t‖ = 1 := Complex.norm_exp_I_mul_ofReal (u * t)
+
+lemma ee_cont (u : ℝ) : Continuous (ee u) := by unfold ee; fun_prop
+
+lemma hasDerivAt_V {u : ℝ} (hu : u ≠ 0) (t : ℝ) :
+    HasDerivAt (fun t => ee u t / (Complex.I * u)) (ee u t) t := by
+  have hIu : Complex.I * (u : ℂ) ≠ 0 := mul_ne_zero Complex.I_ne_zero (by exact_mod_cast hu)
+  have h0 : HasDerivAt (fun t : ℝ => ((u * t : ℝ) : ℂ)) ((u : ℝ) : ℂ) t := by
+    have := ((hasDerivAt_id t).const_mul u).ofReal_comp
+    simpa using this
+  have h1 : HasDerivAt (fun t : ℝ => Complex.I * ((u * t : ℝ) : ℂ)) (Complex.I * u) t := h0.const_mul Complex.I
+  have h3 := h1.cexp.div_const (Complex.I * u)
+  exact h3.congr_deriv (by rw [mul_div_assoc, div_self hIu, mul_one]; rfl)
+
+lemma norm_V {u : ℝ} (hu : 0 < u) (t : ℝ) : ‖ee u t / (Complex.I * u)‖ = 1 / u := by
+  rw [norm_div, ee_norm, norm_mul, Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hu]
+
+lemma ibp2 {φ φ' φ'' : ℝ → ℝ} {α β u : ℝ} (hαβ : α ≤ β) (hu : 0 < u)
+    (h1 : ∀ x ∈ uIcc α β, HasDerivAt φ (φ' x) x) (h2 : ∀ x ∈ uIcc α β, HasDerivAt φ' (φ'' x) x)
+    (h3 : ContinuousOn φ'' (uIcc α β)) :
+    ‖∫ t in α..β, (φ t : ℂ) * ee u t‖ ≤
+      (|φ α| + |φ β|) / u + ((|φ' α| + |φ' β|) + ∫ t in α..β, |φ'' t|) / u ^ 2 := by
+  set V : ℝ → ℂ := fun t => ee u t / (Complex.I * u) with hV
+  have hVd : ∀ x ∈ uIcc α β, HasDerivAt V (ee u x) x := fun x _ => hasDerivAt_V hu.ne' x
+  have hφ'c : ContinuousOn φ' (uIcc α β) := fun x hx => (h2 x hx).continuousAt.continuousWithinAt
+  have hi1 : IntervalIntegrable (fun t => (φ' t : ℂ)) volume α β :=
+    (Complex.continuous_ofReal.comp_continuousOn hφ'c).intervalIntegrable
+  have hi2 : IntervalIntegrable (fun t => (φ'' t : ℂ)) volume α β :=
+    (Complex.continuous_ofReal.comp_continuousOn h3).intervalIntegrable
+  have hie : IntervalIntegrable (ee u) volume α β := (ee_cont u).intervalIntegrable _ _
+  have e1 := integral_mul_deriv_eq_deriv_mul (u := fun t => (φ t : ℂ)) (v := V) (u' := fun t => (φ' t : ℂ))
+    (v' := ee u) (fun x hx => (h1 x hx).ofReal_comp) hVd hi1 hie
+  have e2 := integral_mul_deriv_eq_deriv_mul (u := fun t => (φ' t : ℂ)) (v := V) (u' := fun t => (φ'' t : ℂ))
+    (v' := ee u) (fun x hx => (h2 x hx).ofReal_comp) hVd hi2 hie
+  have e3 : ∫ t in α..β, (φ' t : ℂ) * V t = (∫ t in α..β, (φ' t : ℂ) * ee u t) / (Complex.I * u) := by
+    rw [← intervalIntegral.integral_div]; congr 1; funext t; simp only [hV]; ring
+  have hVn := norm_V hu
+  have hu2 : 0 < u ^ 2 := by positivity
+
+  have b3 : ‖∫ t in α..β, (φ'' t : ℂ) * V t‖ ≤ (∫ t in α..β, |φ'' t|) / u := by
+    refine (intervalIntegral.norm_integral_le_integral_norm hαβ).trans (le_of_eq ?_)
+    rw [← intervalIntegral.integral_div]
+    congr 1; funext t
+    rw [norm_mul, hVn, Complex.norm_real, Real.norm_eq_abs]; ring
+  have b2 : ‖∫ t in α..β, (φ' t : ℂ) * ee u t‖ ≤ (|φ' α| + |φ' β|) / u + (∫ t in α..β, |φ'' t|) / u := by
+    rw [e2]
+    refine (norm_sub_le _ _).trans ?_
+    refine (add_le_add_left (norm_sub_le _ _) _).trans ?_
+    rw [norm_mul, norm_mul, hVn, hVn, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs]
+    have := b3
+    have e : |φ' β| * (1 / u) + |φ' α| * (1 / u) = (|φ' α| + |φ' β|) / u := by ring
+    linarith
+  rw [e1]
+  refine (norm_sub_le _ _).trans ?_
+  refine (add_le_add_left (norm_sub_le _ _) _).trans ?_
+  rw [norm_mul, norm_mul, hVn, hVn, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs, e3,
+    norm_div, norm_mul, Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hu]
+  have b2' : ‖∫ t in α..β, (φ' t : ℂ) * ee u t‖ / u ≤ ((|φ' α| + |φ' β|) + ∫ t in α..β, |φ'' t|) / u ^ 2 := by
+    rw [div_le_iff₀ hu]
+    calc ‖∫ t in α..β, (φ' t : ℂ) * ee u t‖ ≤ (|φ' α| + |φ' β|) / u + (∫ t in α..β, |φ'' t|) / u := b2
+      _ = ((|φ' α| + |φ' β|) + ∫ t in α..β, |φ'' t|) / u ^ 2 * u := by field_simp
+  have e : |φ β| * (1 / u) + |φ α| * (1 / u) = (|φ α| + |φ β|) / u := by ring
+  linarith
+
+def g0 (t : ℝ) : ℝ := Real.sqrt (1 - t ^ 2)
+def g1 (t : ℝ) : ℝ := -t / Real.sqrt (1 - t ^ 2)
+def g2 (t : ℝ) : ℝ := -1 / ((1 - t ^ 2) * Real.sqrt (1 - t ^ 2))
+
+lemma hp1 (t : ℝ) : HasDerivAt (fun y : ℝ => 1 - y ^ 2) (-(2 * t)) t :=
+  ((hasDerivAt_pow 2 t).const_sub 1).congr_deriv (by norm_num)
+
+lemma hasDerivAt_g0 {t : ℝ} (ht : t ^ 2 < 1) : HasDerivAt g0 (g1 t) t := by
+  have hp : 0 < 1 - t ^ 2 := by linarith
+  have hs : 0 < Real.sqrt (1 - t ^ 2) := Real.sqrt_pos.2 hp
+  have h2 := (hp1 t).sqrt hp.ne'
+  have e : g1 t = -(2 * t) / (2 * Real.sqrt (1 - t ^ 2)) := by
+    unfold g1; field_simp
+  rw [e]; exact h2
+
+lemma hasDerivAt_g1 {t : ℝ} (ht : t ^ 2 < 1) : HasDerivAt g1 (g2 t) t := by
+  have hp : 0 < 1 - t ^ 2 := by linarith
+  have hs : 0 < Real.sqrt (1 - t ^ 2) := Real.sqrt_pos.2 hp
+  have hsq : Real.sqrt (1 - t ^ 2) ^ 2 = 1 - t ^ 2 := Real.sq_sqrt hp.le
+  have h2 := (hasDerivAt_neg t).div ((hp1 t).sqrt hp.ne') hs.ne'
+  have e : g2 t = (-1 * Real.sqrt (1 - t ^ 2) - -t * (-(2 * t) / (2 * Real.sqrt (1 - t ^ 2)))) /
+      Real.sqrt (1 - t ^ 2) ^ 2 := by
+    unfold g2
+    set s := Real.sqrt (1 - t ^ 2)
+    rw [hsq]
+    field_simp
+    nlinarith [hsq]
+  rw [e]; exact h2
+
+lemma continuousOn_g2_symmetric_interval {a : ℝ} (ha : a < 1) (ha0 : 0 ≤ a) : ContinuousOn g2 (uIcc (-a) a) := by
+  apply ContinuousOn.div continuousOn_const
+  · exact ((continuous_const.sub (continuous_id.pow 2)).mul
+      (Real.continuous_sqrt.comp (continuous_const.sub (continuous_id.pow 2)))).continuousOn
+  · intro x hx
+    rw [uIcc_of_le (by linarith)] at hx
+    have : x ^ 2 < 1 := by nlinarith [hx.1, hx.2]
+    have hp : 0 < 1 - x ^ 2 := by linarith
+    exact (mul_pos hp (Real.sqrt_pos.2 hp)).ne'
+
+theorem J_bound {u : ℝ} (hu : 1 ≤ u) :
+    ‖∫ t in (-1 : ℝ)..1, (g0 t : ℂ) * ee u t‖ ≤ 10 / (u * Real.sqrt u) := by
+  have hu0 : 0 < u := by linarith
+  have hsu : 0 < Real.sqrt u := Real.sqrt_pos.2 hu0
+  have hsu2 : Real.sqrt u * Real.sqrt u = u := Real.mul_self_sqrt hu0.le
+  set a : ℝ := 1 - 1 / u with ha
+  have hia : 1 / u ≤ 1 := by rw [div_le_one hu0]; exact hu
+  have hia0 : 0 < 1 / u := by positivity
+  have ha0 : 0 ≤ a := by linarith
+  have ha1 : a < 1 := by linarith
+  have hcont : Continuous fun t => (g0 t : ℂ) * ee u t := by
+    unfold g0; exact (Complex.continuous_ofReal.comp (Real.continuous_sqrt.comp
+      (continuous_const.sub (continuous_id.pow 2)))).mul (ee_cont u)
+  have hii : ∀ x y : ℝ, IntervalIntegrable (fun t => (g0 t : ℂ) * ee u t) volume x y :=
+    fun x y => hcont.intervalIntegrable x y
+  rw [← integral_add_adjacent_intervals (hii (-1) (-a)) (hii (-a) 1),
+    ← integral_add_adjacent_intervals (hii (-a) a) (hii a 1)]
+
+  have hsq2 : Real.sqrt (2 / u) = Real.sqrt 2 / Real.sqrt u := Real.sqrt_div' 2 hu0.le
+  have hend : ∀ t : ℝ, 1 - t ^ 2 ≤ 2 / u → ‖(g0 t : ℂ) * ee u t‖ ≤ Real.sqrt 2 / Real.sqrt u := by
+    intro t ht
+    unfold g0
+    rw [norm_mul, ee_norm, mul_one, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (Real.sqrt_nonneg _), ← hsq2]
+    exact Real.sqrt_le_sqrt ht
+  have b1 : ‖∫ t in (-1 : ℝ)..(-a), (g0 t : ℂ) * ee u t‖ ≤ Real.sqrt 2 / Real.sqrt u * (1 / u) := by
+    refine (norm_integral_le_of_norm_le_const fun t ht => hend t ?_).trans (le_of_eq ?_)
+    · rw [uIoc_of_le (by linarith)] at ht
+      have h1 : 0 ≤ 1 + t := by linarith [ht.1]
+      have h2 : 1 + t ≤ 1 / u := by linarith [ht.2]
+      have h3 : 1 - t ≤ 2 := by linarith [ht.1]
+      have : 1 - t ^ 2 = (1 + t) * (1 - t) := by ring
+      rw [this, div_eq_mul_one_div 2 u]
+      nlinarith
+    · rw [abs_of_nonneg (by linarith)]; ring
+  have b3 : ‖∫ t in a..1, (g0 t : ℂ) * ee u t‖ ≤ Real.sqrt 2 / Real.sqrt u * (1 / u) := by
+    refine (norm_integral_le_of_norm_le_const fun t ht => hend t ?_).trans (le_of_eq ?_)
+    · rw [uIoc_of_le (by linarith)] at ht
+      have h1 : 0 ≤ 1 - t := by linarith [ht.2]
+      have h2 : 1 - t ≤ 1 / u := by linarith [ht.1]
+      have h3 : 1 + t ≤ 2 := by linarith [ht.2]
+      have : 1 - t ^ 2 = (1 - t) * (1 + t) := by ring
+      rw [this, div_eq_mul_one_div 2 u]
+      nlinarith
+    · rw [abs_of_nonneg (by linarith)]; ring
+
+  have hin : ∀ x ∈ uIcc (-a) a, x ^ 2 < 1 := by
+    intro x hx
+    rw [uIcc_of_le (by linarith)] at hx
+    nlinarith [hx.1, hx.2]
+  have b2 := ibp2 (φ := g0) (φ' := g1) (φ'' := g2) (α := -a) (β := a) (by linarith) hu0
+    (fun x hx => hasDerivAt_g0 (hin x hx)) (fun x hx => hasDerivAt_g1 (hin x hx)) (continuousOn_g2_symmetric_interval ha1 ha0)
+
+  have hpa : 0 < 1 - a ^ 2 := by nlinarith
+  set s := Real.sqrt (1 - a ^ 2) with hs
+  have hs0 : 0 < s := Real.sqrt_pos.2 hpa
+  have hslo : 1 / Real.sqrt u ≤ s := by
+    have e1 : 1 / Real.sqrt u = Real.sqrt (1 / u) := by rw [Real.sqrt_div' 1 hu0.le, Real.sqrt_one]
+    rw [hs, e1]
+    apply Real.sqrt_le_sqrt
+    rw [ha]
+    have : 1 - (1 - 1 / u) ^ 2 = 1 / u * (2 - 1 / u) := by ring
+    rw [this]
+    nlinarith
+  have hshi : s ≤ Real.sqrt 2 / Real.sqrt u := by
+    rw [hs, ← hsq2]
+    apply Real.sqrt_le_sqrt
+    rw [ha]
+    have : 1 - (1 - 1 / u) ^ 2 = 1 / u * (2 - 1 / u) := by ring
+    rw [this, div_eq_mul_one_div 2 u]
+    nlinarith
+  have hg0a : |g0 (-a)| + |g0 a| ≤ 2 * (Real.sqrt 2 / Real.sqrt u) := by
+    simp only [g0, neg_sq, abs_of_nonneg (Real.sqrt_nonneg _)]
+    rw [← hs]; linarith
+  have hinv : 1 / s ≤ Real.sqrt u := by
+    rw [div_le_iff₀ hs0]
+    have := mul_le_mul_of_nonneg_left hslo hsu.le
+    rw [mul_one_div_cancel hsu.ne'] at this
+    linarith
+  have hg1a : |g1 (-a)| + |g1 a| ≤ 2 * Real.sqrt u := by
+    simp only [g1, neg_sq, neg_neg, abs_div, abs_neg, abs_of_nonneg ha0, abs_of_nonneg (Real.sqrt_nonneg _)]
+    rw [← hs]
+    have : a / s ≤ 1 / s := div_le_div_of_nonneg_right (by linarith) hs0.le
+    linarith
+
+  have hint : ∫ t in (-a)..a, |g2 t| = 2 * (a / s) := by
+    have e : ∫ t in (-a)..a, |g2 t| = ∫ t in (-a)..a, -g2 t := by
+      apply intervalIntegral.integral_congr
+      intro x hx
+      have hx2 := hin x hx
+      have hp : 0 < 1 - x ^ 2 := by linarith
+      have : g2 x ≤ 0 := by
+        simp only [g2]
+        exact div_nonpos_of_nonpos_of_nonneg (by norm_num) (mul_nonneg hp.le (Real.sqrt_nonneg _))
+      simp only
+      rw [abs_of_nonpos this]
+    rw [e, intervalIntegral.integral_neg, integral_eq_sub_of_hasDerivAt (fun x hx => hasDerivAt_g1 (hin x hx))
+      ((continuousOn_g2_symmetric_interval ha1 ha0).intervalIntegrable)]
+    simp only [g1, neg_sq, neg_neg]
+    rw [← hs]; ring
+  have hint' : ∫ t in (-a)..a, |g2 t| ≤ 2 * Real.sqrt u := by
+    rw [hint]
+    have : a / s ≤ 1 / s := div_le_div_of_nonneg_right (by linarith) hs0.le
+    linarith
+
+  have hm : ‖∫ t in (-a)..a, (g0 t : ℂ) * ee u t‖ ≤ (2 * Real.sqrt 2 + 4) / (u * Real.sqrt u) := by
+    refine b2.trans ?_
+    have k1 : (|g0 (-a)| + |g0 a|) / u ≤ 2 * Real.sqrt 2 / (u * Real.sqrt u) := by
+      rw [div_le_div_iff₀ hu0 (by positivity)]
+      have := mul_le_mul_of_nonneg_right hg0a (by positivity : 0 ≤ u * Real.sqrt u)
+      calc (|g0 (-a)| + |g0 a|) * (u * Real.sqrt u) ≤ 2 * (Real.sqrt 2 / Real.sqrt u) * (u * Real.sqrt u) := this
+        _ = 2 * Real.sqrt 2 * u := by field_simp
+    have k2 : ((|g1 (-a)| + |g1 a|) + ∫ t in (-a)..a, |g2 t|) / u ^ 2 ≤ 4 / (u * Real.sqrt u) := by
+      rw [div_le_div_iff₀ (by positivity) (by positivity)]
+      have := add_le_add hg1a hint'
+      have h4 := mul_le_mul_of_nonneg_right this (by positivity : 0 ≤ u * Real.sqrt u)
+      calc ((|g1 (-a)| + |g1 a|) + ∫ t in (-a)..a, |g2 t|) * (u * Real.sqrt u)
+          ≤ (2 * Real.sqrt u + 2 * Real.sqrt u) * (u * Real.sqrt u) := h4
+        _ = 4 * u ^ 2 := by rw [show (2 * Real.sqrt u + 2 * Real.sqrt u) * (u * Real.sqrt u) =
+              4 * u * (Real.sqrt u * Real.sqrt u) by ring, hsu2]; ring
+    have : 2 * Real.sqrt 2 / (u * Real.sqrt u) + 4 / (u * Real.sqrt u) = (2 * Real.sqrt 2 + 4) / (u * Real.sqrt u) := by
+      ring
+    linarith
+  have hends : Real.sqrt 2 / Real.sqrt u * (1 / u) = Real.sqrt 2 / (u * Real.sqrt u) := by field_simp
+  have h22 : Real.sqrt 2 ≤ 3 / 2 := by
+    rw [Real.sqrt_le_left (by norm_num)]; norm_num
+  calc ‖(∫ t in (-1 : ℝ)..(-a), (g0 t : ℂ) * ee u t) + ((∫ t in (-a)..a, (g0 t : ℂ) * ee u t) +
+        ∫ t in a..1, (g0 t : ℂ) * ee u t)‖
+      ≤ ‖∫ t in (-1 : ℝ)..(-a), (g0 t : ℂ) * ee u t‖ + (‖∫ t in (-a)..a, (g0 t : ℂ) * ee u t‖ +
+        ‖∫ t in a..1, (g0 t : ℂ) * ee u t‖) :=
+        (norm_add_le _ _).trans (add_le_add_right (norm_add_le _ _) _)
+    _ ≤ Real.sqrt 2 / (u * Real.sqrt u) + ((2 * Real.sqrt 2 + 4) / (u * Real.sqrt u) +
+        Real.sqrt 2 / (u * Real.sqrt u)) := by rw [← hends]; gcongr
+    _ = (4 * Real.sqrt 2 + 4) / (u * Real.sqrt u) := by ring
+    _ ≤ 10 / (u * Real.sqrt u) := by
+        apply div_le_div_of_nonneg_right _ (by positivity); linarith
+
+end Formalism.FourierDecayAlt.P.DiscFubiniVolume
+end
+end
+
+section
 open MeasureTheory Set Metric
 open scoped ComplexConjugate
 
@@ -8,141 +261,9 @@ noncomputable section
 
 namespace Formalism.FourierDecayAlt.P.DiscFubiniVolume
 
-lemma J_all {u : ℝ} (hu : 0 < u) :
-    ‖∫ t in (-1 : ℝ)..1, (g0 t : ℂ) * ee u t‖ ≤ 10 / (u * Real.sqrt u) := by
-  rcases le_or_gt 1 u with h | h
-  · exact J_bound h
-  · have hb : ‖∫ t in (-1 : ℝ)..1, (g0 t : ℂ) * ee u t‖ ≤ 1 * |1 - (-1 : ℝ)| := by
-      apply intervalIntegral.norm_integral_le_of_norm_le_const
-      intro t _
-      rw [norm_mul]
-      have h1 : ‖(g0 t : ℂ)‖ ≤ 1 := by
-        rw [Complex.norm_real, Real.norm_eq_abs, show g0 t = Real.sqrt (1 - t ^ 2) from rfl,
-          abs_of_nonneg (Real.sqrt_nonneg _)]
-        calc Real.sqrt (1 - t ^ 2) ≤ Real.sqrt 1 := Real.sqrt_le_sqrt (by nlinarith [sq_nonneg t])
-          _ = 1 := Real.sqrt_one
-      have h2 : ‖ee u t‖ = 1 := by
-        simp only [ee]
-        exact Complex.norm_exp_I_mul_ofReal _
-      rw [h2, mul_one]
-      exact h1
-    have hsu : Real.sqrt u ≤ 1 := by
-      calc Real.sqrt u ≤ Real.sqrt 1 := Real.sqrt_le_sqrt h.le
-        _ = 1 := Real.sqrt_one
-    have hpos : 0 < u * Real.sqrt u := mul_pos hu (Real.sqrt_pos.mpr hu)
-    have hle : u * Real.sqrt u ≤ 1 := by nlinarith [Real.sqrt_nonneg u]
-    have h10 : 2 ≤ 10 / (u * Real.sqrt u) := by
-      rw [le_div_iff₀ hpos]
-      linarith
-    have e2 : (1 : ℝ) * |1 - (-1 : ℝ)| = 2 := by norm_num
-    linarith
 
-lemma vol_sq_lt (s : ℝ) : volume {b : ℝ | b ^ 2 < s} = ENNReal.ofReal (2 * Real.sqrt s) := by
-  have hset : {b : ℝ | b ^ 2 < s} = Ioo (-Real.sqrt s) (Real.sqrt s) := by
-    ext b
-    simp only [mem_setOf_eq, mem_Ioo]
-    exact Real.sq_lt
-  rw [hset, Real.volume_Ioo]
-  congr 1
-  ring
 
-lemma disc_fubini {R ρ : ℝ} (hR : 0 < R) :
-    ∫ z in ball (0 : ℂ) R, ee ρ z.re = ∫ t in (-R)..R, ((2 * Real.sqrt (R ^ 2 - t ^ 2) : ℝ) : ℂ) * ee ρ t := by
-  classical
-  set e := Complex.measurableEquivRealProd with he
-  have hpres : MeasurePreserving e.symm volume volume :=
-    MeasurePreserving.symm _ Complex.volume_preserving_equiv_real_prod
-  set F : ℂ → ℂ := (ball (0 : ℂ) R).indicator (fun z => ee ρ z.re) with hF
-  set S : Set (ℝ × ℝ) := {p | p.1 ^ 2 + p.2 ^ 2 < R ^ 2} with hS
-  have hmemS : ∀ p : ℝ × ℝ, e.symm p ∈ ball (0 : ℂ) R ↔ p ∈ S := by
-    intro p
-    rw [Complex.measurableEquivRealProd_symm_apply, mem_ball, dist_zero_right,
-      Complex.norm_eq_sqrt_sq_add_sq, Real.sqrt_lt' hR]
-    rfl
-  have hFG : ∀ p : ℝ × ℝ, F (e.symm p) = S.indicator (fun q => ee ρ q.1) p := by
-    intro p
-    by_cases hp : p ∈ S
-    · rw [Set.indicator_of_mem hp, hF, Set.indicator_of_mem ((hmemS p).mpr hp),
-        Complex.measurableEquivRealProd_symm_apply]
-    · rw [Set.indicator_of_notMem hp, hF,
-        Set.indicator_of_notMem (fun h => hp ((hmemS p).mp h))]
-  have hcont : Continuous (fun z : ℂ => ee ρ z.re) := by
-    unfold ee
-    fun_prop
-  have hFint : Integrable F := by
-    rw [hF, integrable_indicator_iff measurableSet_ball]
-    refine Measure.integrableOn_of_bounded (M := 1) measure_ball_lt_top.ne
-      hcont.aestronglyMeasurable ?_
-    refine Filter.Eventually.of_forall fun z => ?_
-    simp only [ee]
-    rw [Complex.norm_exp_I_mul_ofReal]
-  have hGint : Integrable (S.indicator (fun q : ℝ × ℝ => ee ρ q.1)) (volume.prod volume) := by
-    rw [← Measure.volume_eq_prod]
-    have h1 : (fun p => F (e.symm p)) = S.indicator (fun q : ℝ × ℝ => ee ρ q.1) := funext hFG
-    rw [← h1]
-    exact (hpres.integrable_comp_emb e.symm.measurableEmbedding).mpr hFint
-  have hSmeas : ∀ a : ℝ, MeasurableSet {b : ℝ | b ^ 2 < R ^ 2 - a ^ 2} := fun a =>
-    measurableSet_lt (by fun_prop) measurable_const
-  calc ∫ z in ball (0 : ℂ) R, ee ρ z.re = ∫ z, F z := (integral_indicator measurableSet_ball).symm
-    _ = ∫ p, F (e.symm p) := (hpres.integral_comp' F).symm
-    _ = ∫ p, S.indicator (fun q : ℝ × ℝ => ee ρ q.1) p ∂(volume.prod volume) := by
-        rw [← Measure.volume_eq_prod]
-        exact integral_congr_ae (Filter.Eventually.of_forall hFG)
-    _ = ∫ a, ∫ b, S.indicator (fun q : ℝ × ℝ => ee ρ q.1) (a, b) := integral_prod _ hGint
-    _ = ∫ a, ((2 * Real.sqrt (R ^ 2 - a ^ 2) : ℝ) : ℂ) * ee ρ a := by
-        congr 1
-        funext a
-        have hin : (fun b => S.indicator (fun q : ℝ × ℝ => ee ρ q.1) (a, b)) =
-            {b : ℝ | b ^ 2 < R ^ 2 - a ^ 2}.indicator (fun _ => ee ρ a) := by
-          funext b
-          by_cases hb : b ^ 2 < R ^ 2 - a ^ 2
-          · rw [Set.indicator_of_mem (show b ∈ {b : ℝ | b ^ 2 < R ^ 2 - a ^ 2} from hb),
-              Set.indicator_of_mem (show (a, b) ∈ S from show a ^ 2 + b ^ 2 < R ^ 2 by linarith)]
-          · rw [Set.indicator_of_notMem (show b ∉ {b : ℝ | b ^ 2 < R ^ 2 - a ^ 2} from hb),
-              Set.indicator_of_notMem (show (a, b) ∉ S from fun h => hb (by
-                have h' : a ^ 2 + b ^ 2 < R ^ 2 := h
-                linarith))]
-        rw [hin, integral_indicator_const _ (hSmeas a), measureReal_def, vol_sq_lt,
-          ENNReal.toReal_ofReal (by positivity), Complex.real_smul]
-    _ = ∫ t in (-R)..R, ((2 * Real.sqrt (R ^ 2 - t ^ 2) : ℝ) : ℂ) * ee ρ t := by
-        rw [intervalIntegral.integral_of_le (by linarith),
-          setIntegral_eq_integral_of_forall_compl_eq_zero]
-        intro a ha
-        have h2 : R ^ 2 - a ^ 2 ≤ 0 := by
-          simp only [mem_Ioc, not_and_or, not_lt, not_le] at ha
-          rcases ha with h | h <;> nlinarith
-        rw [Real.sqrt_eq_zero'.mpr h2]
-        simp
 
-lemma disc_scale {R ρ : ℝ} (hR : 0 < R) :
-    ∫ t in (-R)..R, ((2 * Real.sqrt (R ^ 2 - t ^ 2) : ℝ) : ℂ) * ee ρ t =
-      ((2 * R ^ 2 : ℝ) : ℂ) * ∫ s in (-1 : ℝ)..1, (g0 s : ℂ) * ee (ρ * R) s := by
-  have hR0 : R ≠ 0 := hR.ne'
-  have hRc : (R : ℂ) ≠ 0 := by exact_mod_cast hR0
-  have hsq : ∀ s : ℝ, Real.sqrt (1 - s ^ 2) = Real.sqrt (R ^ 2 - (R * s) ^ 2) / R := by
-    intro s
-    rw [show R ^ 2 - (R * s) ^ 2 = R ^ 2 * (1 - s ^ 2) by ring, Real.sqrt_mul (sq_nonneg R),
-      Real.sqrt_sq hR.le, mul_div_cancel_left₀ _ hR0]
-  have hee : ∀ s : ℝ, ee (ρ * R) s = ee ρ (R * s) := by
-    intro s
-    simp only [ee]
-    congr 2
-    push_cast
-    ring
-  have key : (fun s : ℝ => (g0 s : ℂ) * ee (ρ * R) s) =
-      fun s => ((Real.sqrt (R ^ 2 - (R * s) ^ 2) / R : ℝ) : ℂ) * ee ρ (R * s) := by
-    funext s
-    rw [hee, show g0 s = Real.sqrt (1 - s ^ 2) from rfl, hsq]
-  have hint : (∫ s in (-1 : ℝ)..1, (g0 s : ℂ) * ee (ρ * R) s) =
-      ∫ s in (-1 : ℝ)..1, ((Real.sqrt (R ^ 2 - (R * s) ^ 2) / R : ℝ) : ℂ) * ee ρ (R * s) := by
-    rw [key]
-  have hcomp := intervalIntegral.integral_comp_mul_left (a := (-1 : ℝ)) (b := 1)
-    (fun t : ℝ => ((Real.sqrt (R ^ 2 - t ^ 2) / R : ℝ) : ℂ) * ee ρ t) hR0
-  rw [hint, hcomp, mul_neg, mul_one, Complex.real_smul,
-    ← intervalIntegral.integral_const_mul, ← intervalIntegral.integral_const_mul]
-  refine intervalIntegral.integral_congr fun t _ => ?_
-  push_cast
-  field_simp
 
 end Formalism.FourierDecayAlt.P.DiscFubiniVolume
 
@@ -150,89 +271,7 @@ namespace Formalism.FourierDecayAlt.P
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.P.DiscFubiniVolume
 
-theorem disc_mean_value : C6.DiscMean := by
-  intro β hβ
-  refine ⟨20 / Real.pi * ‖β‖ ^ (-(3 / 2 : ℝ)), fun ξ x₀ R hξ hR => ?_⟩
-  classical
-  set γ := β * ξ with hγ
-  have hγ0 : γ ≠ 0 := mul_ne_zero hβ hξ
-  have hγn : 0 < ‖γ‖ := norm_pos_iff.mpr hγ0
-  set c : ℝ := ‖γ‖ with hc
-  have hpsi : ∀ x : ℂ, G.psi β (ξ * x) = Complex.exp (Complex.I * ((γ * x).re : ℂ)) := by
-    intro x
-    simp only [G.psi, hγ, mul_assoc]
-  have htr : ∫ x in ball x₀ R, G.psi β (ξ * x) =
-      Complex.exp (Complex.I * ((γ * x₀).re : ℂ)) *
-        ∫ w in ball (0 : ℂ) R, Complex.exp (Complex.I * ((γ * w).re : ℂ)) := by
-    rw [← integral_indicator measurableSet_ball, ← integral_indicator measurableSet_ball,
-      ← integral_const_mul, ← integral_add_left_eq_self _ x₀]
-    congr 1
-    funext w
-    by_cases hw : w ∈ ball (0 : ℂ) R
-    · have hw' : x₀ + w ∈ ball x₀ R := by
-        rw [mem_ball, dist_eq_norm, add_sub_cancel_left]
-        simpa using hw
-      rw [Set.indicator_of_mem hw', Set.indicator_of_mem hw, hpsi, mul_add, Complex.add_re,
-        Complex.ofReal_add, mul_add, Complex.exp_add]
-    · have hw' : x₀ + w ∉ ball x₀ R := by
-        rw [mem_ball, dist_eq_norm, add_sub_cancel_left]
-        simpa using hw
-      rw [Set.indicator_of_notMem hw', Set.indicator_of_notMem hw, mul_zero]
-  set u : Circle := Circle.exp (-Complex.arg γ) with hu
-  have hrot : ∀ v : ℂ, γ * (rotation u v) = (c : ℂ) * v := by
-    intro v
-    rw [rotation_apply, hu, Circle.coe_exp]
-    nth_rewrite 1 [← Complex.norm_mul_exp_arg_mul_I γ]
-    calc (↑‖γ‖ * Complex.exp (↑γ.arg * Complex.I)) * (Complex.exp (↑(-γ.arg) * Complex.I) * v)
-        = ↑‖γ‖ * (Complex.exp (↑γ.arg * Complex.I) * Complex.exp (↑(-γ.arg) * Complex.I)) * v := by
-          ring
-      _ = ↑‖γ‖ * v := by
-          rw [← Complex.exp_add, Complex.ofReal_neg, neg_mul, add_neg_cancel, Complex.exp_zero,
-            mul_one]
-  have hrotI : ∫ w in ball (0 : ℂ) R, Complex.exp (Complex.I * ((γ * w).re : ℂ)) =
-      ∫ v in ball (0 : ℂ) R, ee c v.re := by
-    have hL := LinearIsometryEquiv.measurePreserving (rotation u)
-    rw [← integral_indicator measurableSet_ball, ← integral_indicator measurableSet_ball,
-      ← hL.integral_comp (rotation u).toHomeomorph.measurableEmbedding]
-    congr 1
-    funext v
-    have hn : rotation u v ∈ ball (0 : ℂ) R ↔ v ∈ ball (0 : ℂ) R := by
-      simp only [mem_ball, dist_zero_right, LinearIsometryEquiv.norm_map]
-    by_cases hv : v ∈ ball (0 : ℂ) R
-    · rw [Set.indicator_of_mem (hn.mpr hv), Set.indicator_of_mem hv, hrot, Complex.re_ofReal_mul]
-      rfl
-    · rw [Set.indicator_of_notMem (fun h => hv (hn.mp h)), Set.indicator_of_notMem hv]
-  have hvol : (volume (ball x₀ R)).toReal = R ^ 2 * Real.pi := by
-    rw [Complex.volume_ball, ENNReal.toReal_mul, ENNReal.toReal_pow, ENNReal.toReal_ofReal hR.le]
-    simp
-  have hJ := J_all (u := c * R) (by positivity)
-  have hx : 0 < ‖β‖ := norm_pos_iff.mpr hβ
-  have hy : 0 < R * ‖ξ‖ := mul_pos hR (norm_pos_iff.mpr hξ)
-  have hcR : c * R = ‖β‖ * (R * ‖ξ‖) := by
-    rw [hc, hγ, norm_mul]
-    ring
-  have hpow : c * R * Real.sqrt (c * R) = (‖β‖ * (R * ‖ξ‖)) ^ (3 / 2 : ℝ) := by
-    rw [hcR, Real.sqrt_eq_rpow, show (3 / 2 : ℝ) = 1 + 1 / 2 by norm_num,
-      Real.rpow_add (by positivity), Real.rpow_one]
-  have hkey : 10 / (c * R * Real.sqrt (c * R)) =
-      10 * (‖β‖ ^ (-(3 / 2 : ℝ)) * (R * ‖ξ‖) ^ (-(3 / 2 : ℝ))) := by
-    rw [hpow, ← Real.mul_rpow hx.le hy.le, Real.rpow_neg (by positivity), div_eq_mul_inv]
-  simp only [C6.meanDisc]
-  rw [htr, hrotI, disc_fubini hR, disc_scale hR, hvol]
-  calc _ = 2 / Real.pi * ‖∫ s in (-1 : ℝ)..1, (g0 s : ℂ) * ee (c * R) s‖ := by
-        have hn1 : ‖Complex.exp (Complex.I * ((γ * x₀).re : ℂ))‖ = 1 :=
-          Complex.norm_exp_I_mul_ofReal _
-        have hn2 : ‖((2 * R ^ 2 : ℝ) : ℂ)‖ = 2 * R ^ 2 := by
-          rw [Complex.norm_real, Real.norm_of_nonneg (by positivity)]
-        have hn3 : ‖(R ^ 2 * Real.pi)⁻¹‖ = (R ^ 2 * Real.pi)⁻¹ :=
-          Real.norm_of_nonneg (by positivity)
-        rw [norm_smul, norm_mul, norm_mul, hn1, hn2, hn3]
-        have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
-        field_simp
-    _ ≤ 2 / Real.pi * (10 / (c * R * Real.sqrt (c * R))) :=
-        mul_le_mul_of_nonneg_left hJ (by positivity)
-    _ = 20 / Real.pi * ‖β‖ ^ (-(3 / 2 : ℝ)) * (R * ‖ξ‖) ^ (-(3 / 2 : ℝ)) := by
-        rw [hkey]
-        ring
 
 end Formalism.FourierDecayAlt.P
+end
+end

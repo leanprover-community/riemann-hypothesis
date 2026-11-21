@@ -67,34 +67,5 @@ def FCount : Prop :=
           H.dens ϖ Λ G₀ = Formalism.L2.SG.DensExact.densProd (Nat.card 𝓀[F]) (-1)
             (Module.finrank E V) (Fintype.card ι) 0
 
-theorem locDensField_of (h1 : FLocO) (h2 : FResField) (h3 : FLatBasis) (h4 : FCount) :
-    LocDensField := by
-  intro F E _ _ _ _ _ _ _ M hF hC hU V _ _ H Λ hSD ϖ hϖ ι _ _ G₀ hG1 hG2 hG3 hcard
-  obtain ⟨a1, a2, a3⟩ := h1 F E M.L hF hC hU ϖ hϖ
-  obtain ⟨hmax, hcardk, hfrob⟩ := h2 F E M.L hF hC hU ϖ hϖ
-  obtain ⟨b, hbΛ, hbli, hbspan, Q, hQ, hQb⟩ := h3 F E M hF hC hU V H Λ hSD
-  have := hF
-  have := hmax
-
-  let _ : Field (M.L.O ⧸ Ideal.span {piO M.L ϖ}) := Ideal.Quotient.field _
-  have hfin : Finite (M.L.O ⧸ Ideal.span {piO M.L ϖ}) := by
-    have hpos : 0 < Nat.card (M.L.O ⧸ Ideal.span {piO M.L ϖ}) := by
-      rw [hcardk]
-      exact pow_pos Nat.card_pos 2
-    exact (Nat.card_pos_iff.mp hpos).2
-  let _ : Fintype (M.L.O ⧸ Ideal.span {piO M.L ϖ}) := Fintype.ofFinite _
-  refine h4 F E M hF hC ϖ hϖ a1 a2 a3 (M.L.O ⧸ Ideal.span {piO M.L ϖ}) (Ideal.Quotient.mk _)
-    Ideal.Quotient.mk_surjective ?_ ?_ ?_ V H Λ hSD b hbΛ hbli hbspan Q hQ hQb ι G₀ hG1 hG2 hG3 hcard
-  · intro x
-    rw [Ideal.Quotient.eq_zero_iff_mem, Ideal.mem_span_singleton']
-    constructor
-    · rintro ⟨a, rfl⟩
-      exact ⟨a, a.2, by simp [piO, mul_comm]⟩
-    · rintro ⟨z, hz, hx⟩
-      refine ⟨⟨z, hz⟩, Subtype.ext ?_⟩
-      simp [piO, hx, mul_comm]
-  · rw [Fintype.card_eq_nat_card, hcardk]
-  · intro x y hxy
-    exact hfrob x y hxy
 
 end PI.UnitaryGroupMassFormula.CntFormula

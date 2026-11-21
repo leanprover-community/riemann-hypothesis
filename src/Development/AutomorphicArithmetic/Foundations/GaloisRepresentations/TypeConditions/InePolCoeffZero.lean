@@ -193,34 +193,6 @@ theorem sep_conj (hL : GlobalTheory.Published.LocalLanglandsGL) (hF : GlobalTheo
   rw [← H.dual a (ParLaws.toRep σ) π₁ hE, ← h2] at kd
   exact h1 ▸ kd.transport c (D.host.conj : D.host.E ≃+* D.host.E) hcE hcA h4
 
-theorem tm_rankOne (hL : GlobalTheory.Published.LocalLanglandsGL) {D : D7} {T : GlobalTheory.RowTie.WDTie D.nd D.naut} (C : CGTrue hL D T)
-    {C₀ : CharFrame D} (S : CharSide D C₀) (π : D.naut.CG 1) (w : PlE D.host) (ht : (S.e1 π).1.TameAt w) :
-    Tm D.nd D.naut (D.naut.locG π w) := by
-  haveI := host_isCMField D.host
-  set χ' := (CGu.equivChar D.host.E (C.e 1 π)).1 with hχ'
-  set χ := (S.e1 π).1 with hχ
-  have hloc : ∀ v, T.e v (D.naut.locG π v) = ParLaws.locPar hL (CG.ofChar χ') (D.nd.plOm.2 v) := fun v => by
-    rw [C.loc, hχ', CGu.ofChar_equivChar]; rfl
-  have unr' : ∀ v, D.naut.unr (D.naut.locG π v) ↔ χ'.UnrAt v := fun v => by
-    rw [T.unr, hloc v]; exact GlobalTheory.RankOneComp.locPar_ofChar_unr_iff hL χ' _
-  have hchar : χ' = χ := by
-    rw [← mul_inv_eq_one]
-    apply GlobalTheory.HeckeSplitRow.eq_one_of_split D.host
-    filter_upwards [D.naut.locG_unr_ae π] with v hv _
-    have u1 := (S.unr_iff π v).1 hv
-    have u2 := (unr' v).1 hv
-    refine ⟨fun x hx => ?_, ?_⟩
-    · rw [Formalism.L2.Host.HChar.loc_mul, Formalism.L2.Host.HChar.loc_inv, u1 x hx, u2 x hx, inv_one, mul_one]
-    · have hf := S.frob π v u1
-      have hf' : D.naut.frobEig (D.naut.locG π v) = {(((χ'.val v)⁻¹ : ℂˣ) : ℂ)} := by
-        rw [T.frobEig _ _ hv, hloc v]; exact GlobalTheory.RankOneComp.locPar_ofChar_frob hL χ' _ u2
-      rw [hf', Multiset.singleton_inj, Units.val_inj, inv_inj] at hf
-      rw [Formalism.L2.Host.HChar.val_mul, Formalism.L2.Host.HChar.val_inv, hf, mul_inv_cancel]
-  rw [tm_iff T, hloc, hchar, ParLaws.locPar_ofChar]
-  obtain ⟨a, ha, ε, -, H⟩ := ParLaws.isRec_locRec hL (D.nd.plOm.2 w)
-  rw [H.one]
-  refine GlobalTheory.SerSys.LabDepth.tame_of_isTameWD ((PositivityTheory.LocalParametersCuspidal.DZC.tame_lpOfChar_iff _ _).2 fun σ hσ => ?_)
-  exact GlobalTheory.MuTameQS.isTame_loc ht _ ((GlobalTheory.MuTameQS.val_lt_one_iff w _).2 (PositivityTheory.LocalParametersCuspidal.DZC.wild_to_unitsOne a ha σ hσ))
 
 theorem inePol_coeff_zero {R : Ranks} {H : Host R} {what₂ : Rows.Data R} {N : NData R H what₂} {A : NAut N}
     (T : GlobalTheory.RowTie.WDTie N A) {w : PlE H} (c : A.LP w) (s) (hs : s ∈ Ine (F := H.E) (N.plOm.1 w)) :

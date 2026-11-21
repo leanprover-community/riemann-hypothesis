@@ -3,11 +3,453 @@ import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.FourSignHolds
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.L2ExtensionLogCanonical
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LintegralNsqCanonicalAddChartPart
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MeasurableNsqExtendAndPsi
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VanishAtSimpleZeroOfWeightedSqIntegrable
+import Development.AbelianVarietyTheory.Definitions.Divisors.EtaleEmpty
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.VanishAtSStatementPf
+import BuildAid.ForwardExisting
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsOpenAtlasSectionNonvanishingSetAndMemIff
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.L2ExtensionAcrossDenseNonvanishing
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MeasureComplNonvanishingSetEqZeroOfDense
 
+section
+section
+open MeasureTheory Filter Topology Metric ReciprocityTheory.L2DbarEstimates ReciprocityTheory.L2DbarEstimates.Y GlobalTheory.OTY GlobalTheory.Published.L2Extension
+open scoped ENNReal ContDiff
+
+namespace GlobalTheory
+
+noncomputable section
+
+theorem vanish_at_simple_zero_of_weighted_sq_integrable :
+    ∀ (n : ℕ), 1 ≤ n → ∀ (p : V n) (O : Set (V n)) (Z : V n → V n) (lam : V n → ℝ), IsOpen O → p ∈ O →
+      DifferentiableOn ℂ Z O → Z p = 0 → (fderiv ℂ Z p).det ≠ 0 → ContinuousOn lam O →
+      ∀ u : V n → ℂ, ContinuousOn u O →
+        ∫⁻ v in O, ENNReal.ofReal (‖u v‖ ^ 2 * Real.exp (-((n : ℝ) * Real.log (‖Z v‖ ^ 2 * Real.exp (-lam v))))) < ⊤ →
+        u p = 0 := by
+  intro n hn1 p O Z lam hO hpO hZ hZ0 hdet hlam u hu hint
+  have hn : 0 < n := hn1
+  by_contra hne
+  have hOn : O ∈ 𝓝 p := hO.mem_nhds hpO
+
+  have htr : Tendsto (fun z : V n => z + p) (𝓝 0) (𝓝 p) := by
+    have := (continuous_add_right p).tendsto (0 : V n)
+    simpa using this
+  set a := ‖u p‖ with ha
+  have ha0 : 0 < a := norm_pos_iff.mpr hne
+  have ev1 : ∀ᶠ z in 𝓝 (0 : V n), a / 2 < ‖u (z + p)‖ := by
+    have hc : Tendsto (fun v => ‖u v‖) (𝓝 p) (𝓝 a) := ((hu.continuousAt hOn).norm)
+    exact htr.eventually (hc.eventually (Ioi_mem_nhds (by linarith)))
+  have ev4 : ∀ᶠ z in 𝓝 (0 : V n), lam p - 1 < lam (z + p) := by
+    have hc : Tendsto lam (𝓝 p) (𝓝 (lam p)) := hlam.continuousAt hOn
+    exact htr.eventually (hc.eventually (Ioi_mem_nhds (by linarith)))
+  have ev5 : ∀ᶠ z in 𝓝 (0 : V n), z + p ∈ O := htr.eventually hOn
+  set σ : V n → V n := fun z => Z (z + p) with hσ
+  have hσ0 : σ 0 = 0 := by simp [hσ, hZ0]
+  have hσd : fderiv ℂ σ 0 = fderiv ℂ Z p := by
+    rw [hσ, fderiv_comp_add_right]; simp
+  obtain ⟨c, hc, ev2⟩ := ReciprocityTheory.ChartRestriction.G.AR.Up.VanishPf.lower_of_det hn hσ0 (hσd ▸ hdet)
+  have hdiff : DifferentiableAt ℂ σ 0 := by
+    have h1 : DifferentiableAt ℂ Z (0 + p) := by simpa using hZ.differentiableAt hOn
+    exact h1.comp (0 : V n) ((differentiableAt_id).add_const p)
+  obtain ⟨C, ev3⟩ : ∃ C : ℝ, ∀ᶠ z in 𝓝 (0 : V n), ‖σ z‖ ≤ C * ‖z‖ := by
+    have h := hdiff.hasFDerivAt.isBigO_sub
+    simp only [hσ0, sub_zero] at h
+    obtain ⟨C, hC⟩ := h.bound
+    exact ⟨C, hC⟩
+  obtain ⟨δ0, hδ0, hall⟩ := Metric.eventually_nhds_iff.mp
+    (ev1.and (ev2.and (ev3.and (ev4.and ev5))))
+  set Eb : ℝ := Real.exp (1 - lam p) with hEb
+  set B : ℝ := C ^ 2 * Eb + 1 with hB
+  have hB0 : 0 < B := by positivity
+  set K : ℝ := (a / 2) ^ 2 * B ^ (-(n : ℝ)) with hK
+  have hK0 : 0 < K := by positivity
+  have hp : -(n : ℝ) ≤ 0 := by have : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg _; linarith
+  set F : V n → ℝ≥0∞ := fun v => ENNReal.ofReal (‖u v‖ ^ 2 *
+    Real.exp (-((n : ℝ) * Real.log (‖Z v‖ ^ 2 * Real.exp (-lam v))))) with hF
+  have hpt : ∀ z ∈ ball (0 : V n) δ0, z ≠ 0 →
+      ENNReal.ofReal K * ENNReal.ofReal (‖z‖ ^ (-2 * (n : ℝ))) ≤ F (z + p) := by
+    intro z hz hz0
+    obtain ⟨h1, h2, h3, h4, -⟩ := hall (by simpa using hz)
+    have hzpos : 0 < ‖z‖ := norm_pos_iff.mpr hz0
+    set X := ‖Z (z + p)‖ ^ 2 * Real.exp (-lam (z + p)) with hX
+    have hZpos : 0 < ‖Z (z + p)‖ := lt_of_lt_of_le (by positivity) h2
+    have hXpos : 0 < X := by positivity
+    have hexle : Real.exp (-lam (z + p)) ≤ Eb := Real.exp_le_exp.mpr (by linarith)
+    have hXle : X ≤ B * ‖z‖ ^ 2 := by
+      have hZle : ‖Z (z + p)‖ ^ 2 ≤ C ^ 2 * ‖z‖ ^ 2 := by
+        have h0 : 0 ≤ C * ‖z‖ := le_trans (norm_nonneg _) h3
+        calc ‖Z (z + p)‖ ^ 2 ≤ (C * ‖z‖) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) h3 2
+          _ = C ^ 2 * ‖z‖ ^ 2 := by ring
+      calc X ≤ (C ^ 2 * ‖z‖ ^ 2) * Eb :=
+            mul_le_mul hZle hexle (Real.exp_pos _).le (by positivity)
+        _ ≤ B * ‖z‖ ^ 2 := by rw [hB]; nlinarith [sq_nonneg ‖z‖, sq_nonneg C, Real.exp_pos (1 - lam p)]
+    have hw : Real.exp (-((n : ℝ) * Real.log X)) = X ^ (-(n : ℝ)) := by
+      rw [Real.rpow_def_of_pos hXpos]; ring_nf
+    show ENNReal.ofReal K * ENNReal.ofReal (‖z‖ ^ (-2 * (n : ℝ))) ≤
+      ENNReal.ofReal (‖u (z + p)‖ ^ 2 * Real.exp (-((n : ℝ) * Real.log X)))
+    rw [hw, ← ENNReal.ofReal_mul hK0.le]
+    refine ENNReal.ofReal_le_ofReal ?_
+    have hSp : (B * ‖z‖ ^ 2) ^ (-(n : ℝ)) ≤ X ^ (-(n : ℝ)) := Real.rpow_le_rpow_of_nonpos hXpos hXle hp
+    have hexp : (B * ‖z‖ ^ 2) ^ (-(n : ℝ)) = B ^ (-(n : ℝ)) * ‖z‖ ^ (-2 * (n : ℝ)) := by
+      rw [Real.mul_rpow hB0.le (by positivity), ← Real.rpow_two, ← Real.rpow_mul (norm_nonneg _)]
+      ring_nf
+    have hu2 : (a / 2) ^ 2 ≤ ‖u (z + p)‖ ^ 2 := pow_le_pow_left₀ (by positivity) h1.le 2
+    calc K * ‖z‖ ^ (-2 * (n : ℝ)) = (a / 2) ^ 2 * (B * ‖z‖ ^ 2) ^ (-(n : ℝ)) := by rw [hexp, hK]; ring
+      _ ≤ ‖u (z + p)‖ ^ 2 * X ^ (-(n : ℝ)) :=
+        mul_le_mul hu2 hSp (by positivity) (by positivity)
+  have hne0 : ∀ᵐ z ∂(volume : Measure (V n)), z ≠ 0 := by
+    have : Nonempty (Fin n) := ⟨⟨0, hn⟩⟩
+    exact measure_eq_zero_iff_ae_notMem.mp (measure_singleton 0)
+
+  have hsubO : ∀ z ∈ ball (0 : V n) δ0, z + p ∈ O := fun z hz => (hall (by simpa using hz)).2.2.2.2
+  have htrans : ∫⁻ z in ball (0 : V n) δ0, F (z + p) ≤ ∫⁻ v in O, F v := by
+    have hind : ∀ z : V n, (ball p δ0).indicator F (z + p) = (ball (0 : V n) δ0).indicator (fun z => F (z + p)) z := by
+      intro z
+      have hm : z + p ∈ ball p δ0 ↔ z ∈ ball (0 : V n) δ0 := by
+        simp [mem_ball, dist_eq_norm]
+      by_cases hz : z ∈ ball (0 : V n) δ0
+      · rw [Set.indicator_of_mem (hm.mpr hz), Set.indicator_of_mem hz]
+      · rw [Set.indicator_of_notMem (fun h => hz (hm.mp h)), Set.indicator_of_notMem hz]
+    have e1 : ∫⁻ z in ball (0 : V n) δ0, F (z + p) = ∫⁻ v in ball p δ0, F v := by
+      rw [← lintegral_indicator measurableSet_ball, ← lintegral_indicator measurableSet_ball]
+      simp_rw [← hind]
+      exact lintegral_add_right_eq_self (μ := volume) ((ball p δ0).indicator F) p
+    have hsb : ball p δ0 ⊆ O := by
+      intro v hv
+      have h1 : v - p ∈ ball (0 : V n) δ0 := by simpa [mem_ball, dist_eq_norm] using hv
+      simpa using hsubO (v - p) h1
+    rw [e1]
+    exact lintegral_mono_set hsb
+  have hlow : ENNReal.ofReal K * ∫⁻ z in ball (0 : V n) δ0, ENNReal.ofReal (‖z‖ ^ (-2 * (n : ℝ))) ≤
+      ∫⁻ v in O, F v := by
+    rw [← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+    refine le_trans ?_ htrans
+    refine lintegral_mono_ae ?_
+    filter_upwards [ae_restrict_mem measurableSet_ball, ae_restrict_of_ae hne0] with z hz hz0
+    exact hpt z hz hz0
+  rw [ReciprocityTheory.ChartRestriction.G.AR.Up.VanishPf.crit_div hn hδ0, ENNReal.mul_top (ENNReal.ofReal_pos.mpr hK0).ne'] at hlow
+  exact absurd (lt_of_le_of_lt hlow hint) (lt_irrefl _)
+
+end
+
+end GlobalTheory
+end
+
+open MeasureTheory Filter Topology Metric ReciprocityTheory.L2DbarEstimates ReciprocityTheory.L2DbarEstimates.Y GlobalTheory.OTY GlobalTheory.Published.L2Extension
+open scoped ENNReal ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eq_zero_at_simple_zero_of_weighted_sq_integrable : ∀ (n : ℕ), 1 ≤ n → ∀ (p : V n) (O : Set (V n)) (Z : V n → V n) (lam : V n → ℝ), IsOpen O → p ∈ O → DifferentiableOn ℂ Z O → Z p = 0 → (fderiv ℂ Z p).det ≠ 0 → ContinuousOn lam O → ∀ u : V n → ℂ, ContinuousOn u O → ∫⁻ v in O, ENNReal.ofReal (‖u v‖ ^ 2 * Real.exp (-((n : ℝ) * Real.log (‖Z v‖ ^ 2 * Real.exp (-lam v))))) < ⊤ → u p = 0 := by
+  atlas_forward_decl GlobalTheory.vanish_at_simple_zero_of_weighted_sq_integrable
+end
+
+section
+section
+namespace GlobalTheory.OTY
+
+open MeasureTheory Filter Topology Metric ReciprocityTheory.L2DbarEstimates ReciprocityTheory.L2DbarEstimates.Y Set
+open scoped ENNReal ContDiff
+
+noncomputable section
+
+section L2ExtNz
+
+variable {n : ℕ} {Y : Type} [TopologicalSpace Y] [T2Space Y] [SecondCountableTopology Y]
+  [MeasurableSpace Y] [BorelSpace Y] {ι La : Type} [AddCommGroup La]
+  (A : WeightedAtlas n Y ι La) {Λ : La} {τ : ι → Y → ℂ}
+
+theorem nz_coeff_ne_iff (hτ : A.IsSec Λ τ) {i : ι} {y : Y} (hy : y ∈ (A.chart i).source) :
+    τ i y ≠ 0 ↔ y ∈ nz A τ := by
+  show τ i y ≠ 0 ↔ τ (A.pick y) y ≠ 0
+  rw [hτ.2 (A.pick y) i y trivial (A.mem_pick y) hy]
+  have hg := A.g_ne Λ (A.pick y) i y (A.mem_pick y) hy
+  constructor
+  · intro h; exact mul_ne_zero hg h
+  · intro h h0; exact h (by rw [h0, mul_zero])
+
+theorem nz_isOpen_of_isSec (hτ : A.IsSec Λ τ) : IsOpen (nz A τ) := by
+  rw [isOpen_iff_forall_mem_open]
+  intro y hy
+  have hc : ContinuousOn (τ (A.pick y)) (A.chart (A.pick y)).source := by
+    simpa using fn_contOn_sec A hτ (A.pick y)
+  refine ⟨(A.chart (A.pick y)).source ∩ τ (A.pick y) ⁻¹' {0}ᶜ, ?_,
+    hc.isOpen_inter_preimage (A.chart _).open_source isOpen_compl_singleton, ⟨A.mem_pick y, hy⟩⟩
+  rintro x ⟨hxs, hx⟩
+  exact (nz_coeff_ne_iff A hτ hxs).1 hx
+
+theorem nz_coeff_diff (hτ : A.IsSec Λ τ) (i : ι) :
+    DifferentiableOn ℂ (τ i ∘ (A.chart i).symm) (A.chart i).target := by
+  simpa using hτ.1 i
+
+theorem nz_coeff_ne_iff' (hτ : A.IsSec Λ τ) {i : ι} {v : V n} (hv : v ∈ (A.chart i).target) :
+    (τ i ∘ (A.chart i).symm) v ≠ 0 ↔ (A.chart i).symm v ∈ nz A τ :=
+  nz_coeff_ne_iff A hτ ((A.chart i).map_target hv)
+
+theorem nz_loc (hτ : A.IsSec Λ τ) {la : La} {F : ι → Y → ℂ}
+    (hFs : A.IsSecOn la (nz A τ) F)
+    (hloc : ∀ y, ∃ U ∈ 𝓝 y, ∫⁻ x in U ∩ nz A τ, ENNReal.ofReal (A.nsq la F x) ∂A.mu < ⊤)
+    (i : ι) {v : V n} (hv : v ∈ (A.chart i).target) :
+    ∃ r > 0, Metric.ball v r ⊆ (A.chart i).target ∧
+      ∫⁻ u in Metric.ball v r \ {u | (τ i ∘ (A.chart i).symm) u = 0},
+        ENNReal.ofReal (‖F i ((A.chart i).symm u)‖ ^ 2) < ⊤ := by
+  have hMo : IsOpen (nz A τ) := nz_isOpen_of_isSec A hτ
+  obtain ⟨U, hU, hfin⟩ := hloc ((A.chart i).symm v)
+  obtain ⟨U', hU'U, hU'o, hyU'⟩ := mem_nhds_iff.1 hU
+  have hTo : IsOpen ((A.chart i).target ∩ (A.chart i).symm ⁻¹' U') :=
+    (A.chart i).isOpen_inter_preimage_symm hU'o
+  obtain ⟨r0, hr0, hB0⟩ := Metric.isOpen_iff.1 hTo v ⟨hv, hyU'⟩
+  have hK : Metric.closedBall v (r0 / 2) ⊆ (A.chart i).target ∩ (A.chart i).symm ⁻¹' U' :=
+    (Metric.closedBall_subset_ball (by linarith)).trans hB0
+  have hqc : ContinuousOn (fun u => Real.exp (A.ph la i ((A.chart i).symm u) -
+      A.ph A.kap i ((A.chart i).symm u))) (Metric.closedBall v (r0 / 2)) :=
+    (Real.continuous_exp.comp_continuousOn
+      ((A.smooth_ph la i).continuousOn.sub (A.smooth_ph A.kap i).continuousOn)).mono
+      (hK.trans inter_subset_left)
+  obtain ⟨C, hC⟩ := (isCompact_closedBall v (r0 / 2)).exists_bound_of_continuousOn hqc
+  have hC0 : 0 ≤ C := (norm_nonneg _).trans (hC v (Metric.mem_closedBall_self (by linarith)))
+  have hBt : Metric.ball v (r0 / 2) ⊆ (A.chart i).target :=
+    (Metric.ball_subset_closedBall.trans hK).trans inter_subset_left
+  refine ⟨r0 / 2, by linarith, hBt, ?_⟩
+  have hSm : MeasurableSet ((A.chart i).source ∩ nz A τ ∩ U') :=
+    (((A.chart i).open_source.inter hMo).inter hU'o).measurableSet
+  have hgc : ContinuousOn (fun x => ENNReal.ofReal (‖F i x‖ ^ 2 * Real.exp (-A.ph la i x)))
+      ((A.chart i).source ∩ nz A τ ∩ U') :=
+    ENNReal.continuous_ofReal.comp_continuousOn
+      (((fn_contOn_sec A hFs i).mono inter_subset_left).norm.pow 2 |>.mul
+        (Real.continuous_exp.comp_continuousOn
+          ((fn_contOn_ph A la i).mono (inter_subset_left.trans inter_subset_left)).neg))
+  have hmg : Measurable (((A.chart i).source ∩ nz A τ ∩ U').indicator
+      (fun x => ENNReal.ofReal (‖F i x‖ ^ 2 * Real.exp (-A.ph la i x)))) := by
+    classical
+    rw [← Set.piecewise_eq_indicator]
+    exact hgc.measurable_piecewise continuousOn_const hSm
+  have hmeas : MeasurableSet (Metric.ball v (r0 / 2) \ {u | (τ i ∘ (A.chart i).symm) u = 0}) := by
+    have : IsOpen (Metric.ball v (r0 / 2) ∩ (τ i ∘ (A.chart i).symm) ⁻¹' {0}ᶜ) :=
+      ((nz_coeff_diff A hτ i).continuousOn.mono hBt).isOpen_inter_preimage Metric.isOpen_ball
+        isOpen_compl_singleton
+    exact this.measurableSet
+  calc ∫⁻ u in Metric.ball v (r0 / 2) \ {u | (τ i ∘ (A.chart i).symm) u = 0},
+        ENNReal.ofReal (‖F i ((A.chart i).symm u)‖ ^ 2)
+      ≤ ∫⁻ u in Metric.ball v (r0 / 2) \ {u | (τ i ∘ (A.chart i).symm) u = 0},
+        ENNReal.ofReal C * (fnRho A i u * ((A.chart i).source ∩ nz A τ ∩ U').indicator
+          (fun x => ENNReal.ofReal (‖F i x‖ ^ 2 * Real.exp (-A.ph la i x))) ((A.chart i).symm u)) := by
+        refine setLIntegral_mono' hmeas fun u hu => ?_
+        have hut : u ∈ (A.chart i).target := hBt hu.1
+        have hsu : (A.chart i).symm u ∈ (A.chart i).source := (A.chart i).map_target hut
+        have hM : (A.chart i).symm u ∈ nz A τ := (nz_coeff_ne_iff' A hτ hut).1 hu.2
+        have hU' : (A.chart i).symm u ∈ U' := (hK (Metric.ball_subset_closedBall hu.1)).2
+        have hmem : (A.chart i).symm u ∈ (A.chart i).source ∩ nz A τ ∩ U' := ⟨⟨hsu, hM⟩, hU'⟩
+        rw [Set.indicator_of_mem (s := (A.chart i).source ∩ nz A τ ∩ U') hmem]
+        unfold fnRho
+        rw [← ENNReal.ofReal_mul (Real.exp_pos _).le, ← ENNReal.ofReal_mul hC0]
+        apply ENNReal.ofReal_le_ofReal
+        have hq := hC u (Metric.ball_subset_closedBall hu.1)
+        rw [Real.norm_of_nonneg (Real.exp_pos _).le] at hq
+        have e0 : Real.exp (A.ph la i ((A.chart i).symm u) - A.ph A.kap i ((A.chart i).symm u)) *
+            Real.exp (A.ph A.kap i ((A.chart i).symm u)) *
+            Real.exp (-A.ph la i ((A.chart i).symm u)) = 1 := by
+          rw [← Real.exp_add, ← Real.exp_add]; simp
+        calc ‖F i ((A.chart i).symm u)‖ ^ 2
+            = Real.exp (A.ph la i ((A.chart i).symm u) - A.ph A.kap i ((A.chart i).symm u)) *
+              (Real.exp (A.ph A.kap i ((A.chart i).symm u)) *
+                (‖F i ((A.chart i).symm u)‖ ^ 2 * Real.exp (-A.ph la i ((A.chart i).symm u)))) := by
+              linear_combination (-‖F i ((A.chart i).symm u)‖ ^ 2) * e0
+          _ ≤ _ := mul_le_mul_of_nonneg_right hq (by positivity)
+    _ ≤ ∫⁻ u in (A.chart i).target,
+        ENNReal.ofReal C * (fnRho A i u * ((A.chart i).source ∩ nz A τ ∩ U').indicator
+          (fun x => ENNReal.ofReal (‖F i x‖ ^ 2 * Real.exp (-A.ph la i x))) ((A.chart i).symm u)) :=
+        lintegral_mono_set (sdiff_subset.trans hBt)
+    _ = ENNReal.ofReal C * ∫⁻ x in (A.chart i).source, ((A.chart i).source ∩ nz A τ ∩ U').indicator
+          (fun x => ENNReal.ofReal (‖F i x‖ ^ 2 * Real.exp (-A.ph la i x))) x ∂A.mu := by
+        rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top, fn_lint A i hmg]
+    _ ≤ ENNReal.ofReal C * ∫⁻ x in U ∩ nz A τ, ENNReal.ofReal (A.nsq la F x) ∂A.mu := by
+        refine mul_le_mul_of_nonneg_left ?_ zero_le
+        calc _ ≤ ∫⁻ x, ((A.chart i).source ∩ nz A τ ∩ U').indicator
+              (fun x => ENNReal.ofReal (‖F i x‖ ^ 2 * Real.exp (-A.ph la i x))) x ∂A.mu :=
+              setLIntegral_le_lintegral _ _
+          _ = ∫⁻ x in (A.chart i).source ∩ nz A τ ∩ U',
+              ENNReal.ofReal (‖F i x‖ ^ 2 * Real.exp (-A.ph la i x)) ∂A.mu := lintegral_indicator hSm _
+          _ = ∫⁻ x in (A.chart i).source ∩ nz A τ ∩ U',
+              ENNReal.ofReal (A.nsq la F x) ∂A.mu :=
+              setLIntegral_congr_fun hSm fun x hx => by rw [fn_nsq_eq A hFs hx.1.1 hx.1.2]
+          _ ≤ _ := lintegral_mono_set fun x (hx : x ∈ (A.chart i).source ∩ nz A τ ∩ U') =>
+              (⟨hU'U hx.2, hx.1.2⟩ : x ∈ U ∩ nz A τ)
+    _ < ⊤ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top hfin
+
+theorem nz_sub_closure (hτ : A.IsSec Λ τ) (hdense : Dense (nz A τ)) (i : ι) {O : Set (V n)}
+    (hO : IsOpen O) (hOt : O ⊆ (A.chart i).target) :
+    O ⊆ closure (O ∩ {u | (τ i ∘ (A.chart i).symm) u ≠ 0}) := by
+  intro p hp
+  rw [_root_.mem_closure_iff]
+  intro o ho hpo
+  have hWo : IsOpen ((A.chart i).source ∩ A.chart i ⁻¹' (o ∩ O)) :=
+    (A.chart i).continuousOn.isOpen_inter_preimage (A.chart i).open_source (ho.inter hO)
+  have hpt := hOt hp
+  have hmem : (A.chart i).symm p ∈ (A.chart i).source ∩ A.chart i ⁻¹' (o ∩ O) := by
+    refine ⟨(A.chart i).map_target hpt, ?_⟩
+    show A.chart i ((A.chart i).symm p) ∈ o ∩ O
+    rw [(A.chart i).right_inv hpt]; exact ⟨hpo, hp⟩
+  obtain ⟨x, hxW, hxM⟩ := hdense.inter_open_nonempty _ hWo ⟨_, hmem⟩
+  refine ⟨A.chart i x, hxW.2.1, hxW.2.2, ?_⟩
+  show (τ i ∘ (A.chart i).symm) (A.chart i x) ≠ 0
+  rw [nz_coeff_ne_iff' A hτ ((A.chart i).map_source hxW.1), (A.chart i).left_inv hxW.1]
+  exact hxM
+
+theorem l2_extension_nz : ∀ (n : ℕ) (Y : Type) [TopologicalSpace Y] [T2Space Y] [SecondCountableTopology Y] [MeasurableSpace Y] [BorelSpace Y] (ι La : Type) [AddCommGroup La] (A : WeightedAtlas n Y ι La), ∀ (Λ la : La) (τ F : ι → Y → ℂ), A.IsSec Λ τ → Dense (nz A τ) → A.IsSecOn la (nz A τ) F → ∫⁻ y in nz A τ, ENNReal.ofReal (A.nsq la F y) ∂A.mu < ⊤ → ∃ G : ι → Y → ℂ, A.IsSec la G ∧ ∀ i y, y ∈ nz A τ → y ∈ (A.chart i).source → G i y = F i y := by
+  intro n Y _ _ _ _ _ ι La _ A Λ la τ F hτ hdense hFs hfin
+  have hloc : ∀ y, ∃ U ∈ 𝓝 y, ∫⁻ x in U ∩ nz A τ, ENNReal.ofReal (A.nsq la F x) ∂A.mu < ⊤ :=
+    fun y => ⟨univ, univ_mem, by simpa using hfin⟩
+  have hex : ∀ i, ∀ v ∈ (A.chart i).target, ∃ r > 0, Metric.ball v r ⊆ (A.chart i).target ∧
+      ∃ U : V n → ℂ, DifferentiableOn ℂ U (Metric.ball v r) ∧
+        EqOn U (F i ∘ (A.chart i).symm)
+          (Metric.ball v r \ {u | (τ i ∘ (A.chart i).symm) u = 0}) := by
+    intro i v hv
+    obtain ⟨r, hr, hBt, hfin'⟩ := nz_loc A hτ hFs hloc i hv
+    have hu : DifferentiableOn ℂ (F i ∘ (A.chart i).symm)
+        (Metric.ball v r \ {u | (τ i ∘ (A.chart i).symm) u = 0}) :=
+      (hFs.1 i).mono fun u (hu : u ∈ Metric.ball v r \ {u | (τ i ∘ (A.chart i).symm) u = 0}) =>
+        ⟨hBt hu.1, (nz_coeff_ne_iff' A hτ (hBt hu.1)).1 hu.2⟩
+    obtain ⟨U, hU, hUeq⟩ := ReciprocityTheory.L2DbarEstimates.ext n v r (τ i ∘ (A.chart i).symm)
+      (F i ∘ (A.chart i).symm) ((nz_coeff_diff A hτ i).mono hBt) hu hfin'
+    exact ⟨r, hr, hBt, U, hU, hUeq⟩
+  choose! R hR hRt U hU hUeq using hex
+  have hagree : ∀ i, ∀ v ∈ (A.chart i).target,
+      EqOn (fun u => U i u u) (U i v) (Metric.ball v (R i v)) := by
+    intro i v hv u hu
+    have hut := hRt i v hv hu
+    have hO : IsOpen (Metric.ball v (R i v) ∩ Metric.ball u (R i u)) :=
+      Metric.isOpen_ball.inter Metric.isOpen_ball
+    have hOt : Metric.ball v (R i v) ∩ Metric.ball u (R i u) ⊆ (A.chart i).target :=
+      inter_subset_left.trans (hRt i v hv)
+    have key := Set.EqOn.of_subset_closure
+      (s := (Metric.ball v (R i v) ∩ Metric.ball u (R i u)) ∩
+        {x | (τ i ∘ (A.chart i).symm) x ≠ 0})
+      (f := U i v) (g := U i u) ?_ ((hU i v hv).continuousOn.mono inter_subset_left)
+      ((hU i u hut).continuousOn.mono inter_subset_right) inter_subset_left
+      (nz_sub_closure A hτ hdense i hO hOt)
+    · exact (key ⟨hu, Metric.mem_ball_self (hR i u hut)⟩).symm
+    · intro x hx
+      rw [hUeq i v hv ⟨hx.1.1, hx.2⟩, hUeq i u hut ⟨hx.1.2, hx.2⟩]
+  have hGcd : ∀ i, DifferentiableOn ℂ (fun u => U i u u) (A.chart i).target := by
+    intro i v hv
+    have hev : (fun u => U i u u) =ᶠ[𝓝 v] U i v :=
+      Filter.eventually_of_mem (Metric.ball_mem_nhds v (hR i v hv)) (hagree i v hv)
+    exact (((hU i v hv).differentiableAt (Metric.ball_mem_nhds v (hR i v hv))).congr_of_eventuallyEq
+      hev).differentiableWithinAt
+  have hGcF : ∀ i, ∀ v ∈ (A.chart i).target, (A.chart i).symm v ∈ nz A τ →
+      U i v v = F i ((A.chart i).symm v) := by
+    intro i v hv hM
+    exact hUeq i v hv ⟨Metric.mem_ball_self (hR i v hv), (nz_coeff_ne_iff' A hτ hv).2 hM⟩
+  have hGF : ∀ i y, y ∈ nz A τ → y ∈ (A.chart i).source →
+      U i (A.chart i y) (A.chart i y) = F i y := by
+    intro i y hyM hys
+    rw [hGcF i _ ((A.chart i).map_source hys) (by rw [(A.chart i).left_inv hys]; exact hyM),
+      (A.chart i).left_inv hys]
+  refine ⟨fun i y => U i (A.chart i y) (A.chart i y), ⟨fun i => ?_, ?_⟩, hGF⟩
+  · refine ((hGcd i).mono inter_subset_left).congr fun u hu => ?_
+    simp [(A.chart i).right_inv hu.1]
+  · intro i j y _ hyi hyj
+    have hcont : ∀ k, ContinuousOn (fun y => U k (A.chart k y) (A.chart k y)) (A.chart k).source :=
+      fun k => (hGcd k).continuousOn.comp (A.chart k).continuousOn
+        fun x hx => (A.chart k).map_source hx
+    have hgc : ContinuousOn (A.g la i j) ((A.chart i).source ∩ (A.chart j).source) := by
+      refine ((A.holo_g la i j).continuousOn.comp ((A.chart i).continuousOn.mono inter_subset_left)
+        fun x hx => ?_).congr fun x hx => ?_
+      · show A.chart i x ∈ (A.chart i).target ∩ (A.chart i).symm ⁻¹' (A.chart j).source
+        refine ⟨(A.chart i).map_source hx.1, ?_⟩
+        show (A.chart i).symm (A.chart i x) ∈ (A.chart j).source
+        rw [(A.chart i).left_inv hx.1]; exact hx.2
+      · simp [(A.chart i).left_inv hx.1]
+    have hO : IsOpen ((A.chart i).source ∩ (A.chart j).source) :=
+      (A.chart i).open_source.inter (A.chart j).open_source
+    refine Set.EqOn.of_subset_closure
+      (s := ((A.chart i).source ∩ (A.chart j).source) ∩ nz A τ)
+      (f := fun y => U i (A.chart i y) (A.chart i y))
+      (g := fun y => A.g la i j y * U j (A.chart j y) (A.chart j y)) ?_
+      ((hcont i).mono inter_subset_left) (hgc.mul ((hcont j).mono inter_subset_right))
+      inter_subset_left (hdense.open_subset_closure_inter hO) ⟨hyi, hyj⟩
+    intro x hx
+    simp only
+    rw [hGF i x hx.2 hx.1.1, hGF j x hx.2 hx.1.2]
+    exact hFs.2 i j x hx.2 hx.1.1 hx.1.2
+
+end L2ExtNz
+
+end
+
+end GlobalTheory.OTY
+end
+
+open MeasureTheory Filter Topology Metric ReciprocityTheory.L2DbarEstimates ReciprocityTheory.L2DbarEstimates.Y GlobalTheory.OTY GlobalTheory.Published.L2Extension
+open scoped ENNReal ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_isSec_extension_of_dense_nz_of_l2 : ∀ (n : ℕ) (Y : Type) [TopologicalSpace Y] [T2Space Y] [SecondCountableTopology Y] [MeasurableSpace Y] [BorelSpace Y] (ι La : Type) [AddCommGroup La] (A : WeightedAtlas n Y ι La), ∀ (Λ la : La) (τ F : ι → Y → ℂ), A.IsSec Λ τ → Dense (nz A τ) → A.IsSecOn la (nz A τ) F → ∫⁻ y in nz A τ, ENNReal.ofReal (A.nsq la F y) ∂A.mu < ⊤ → ∃ G : ι → Y → ℂ, A.IsSec la G ∧ ∀ i y, y ∈ nz A τ → y ∈ (A.chart i).source → G i y = F i y := by
+  atlas_forward_decl GlobalTheory.OTY.l2_extension_nz
+end
+
+section
+section
+open MeasureTheory Filter Topology Metric ReciprocityTheory.L2DbarEstimates ReciprocityTheory.L2DbarEstimates.Y GlobalTheory.OTY GlobalTheory.Published.L2Extension
+open scoped ENNReal ContDiff
+
+namespace GlobalTheory
+
+theorem zeroSet_null_of_dense_nz : ∀ (n : ℕ) (Y : Type) [TopologicalSpace Y] [T2Space Y] [SecondCountableTopology Y] [MeasurableSpace Y] [BorelSpace Y] (ι La : Type) [AddCommGroup La] (A : WeightedAtlas n Y ι La), ∀ (Λ : La) (τ : ι → Y → ℂ), A.IsSec Λ τ → Dense (nz A τ) → A.mu (nz A τ)ᶜ = 0 := by
+  intro n Y _ _ _ _ _ ι La _ A Λ τ hτ hd
+  have hN : EXTNullStatement n := extNull n
+  have hiff : ∀ i y, y ∈ (A.chart i).source → (τ (A.pick y) y ≠ 0 ↔ τ i y ≠ 0) := by
+    intro i y hy
+    rw [hτ.2 (A.pick y) i y trivial (A.mem_pick y) hy]
+    simp [A.g_ne Λ (A.pick y) i y (A.mem_pick y) hy]
+  refine measure_null_of_locally_null _ fun y _ => ?_
+  have hys : y ∈ (A.chart (A.pick y)).source := A.mem_pick y
+  have hv := (A.chart (A.pick y)).map_source hys
+  obtain ⟨r, hr, hB⟩ := Metric.isOpen_iff.1 (A.chart (A.pick y)).open_target _ hv
+  have hUo : IsOpen ((A.chart (A.pick y)).source ∩ A.chart (A.pick y) ⁻¹'
+      Metric.ball (A.chart (A.pick y) y) r) :=
+    (A.chart _).continuousOn.isOpen_inter_preimage (A.chart _).open_source Metric.isOpen_ball
+  have hyU : y ∈ (A.chart (A.pick y)).source ∩ A.chart (A.pick y) ⁻¹'
+      Metric.ball (A.chart (A.pick y) y) r := ⟨hys, Metric.mem_ball_self hr⟩
+  have hF : DifferentiableOn ℂ (τ (A.pick y) ∘ (A.chart (A.pick y)).symm)
+      (A.chart (A.pick y)).target := by
+    simpa using hτ.1 (A.pick y)
+  have hcont : ContinuousOn (τ (A.pick y)) (A.chart (A.pick y)).source := by
+    have := hF.continuousOn.comp (A.chart (A.pick y)).continuousOn
+      (fun x hx => (A.chart (A.pick y)).map_source hx)
+    refine this.congr fun x hx => ?_
+    simp [Function.comp, (A.chart (A.pick y)).left_inv hx]
+  have hTo : IsOpen (((A.chart (A.pick y)).source ∩ A.chart (A.pick y) ⁻¹'
+      Metric.ball (A.chart (A.pick y) y) r) ∩ τ (A.pick y) ⁻¹' {0}ᶜ) :=
+    (hcont.mono Set.inter_subset_left).isOpen_inter_preimage hUo isOpen_compl_singleton
+  refine ⟨_, inter_mem_nhdsWithin _ (hUo.mem_nhds hyU), ?_⟩
+  refine measure_mono_null (t := ((A.chart (A.pick y)).source ∩ A.chart (A.pick y) ⁻¹'
+      Metric.ball (A.chart (A.pick y) y) r) \ (((A.chart (A.pick y)).source ∩ A.chart (A.pick y) ⁻¹'
+      Metric.ball (A.chart (A.pick y) y) r) ∩ τ (A.pick y) ⁻¹' {0}ᶜ)) ?_ ?_
+  · rintro x ⟨hxn, hxU⟩
+    refine ⟨hxU, fun h => hxn ?_⟩
+    exact (hiff _ x hxU.1).2 h.2
+  rw [A.mu_chart (A.pick y) _ (hUo.measurableSet.diff hTo.measurableSet)
+    (Set.diff_subset.trans Set.inter_subset_left)]
+  apply setLIntegral_measure_zero
+  obtain ⟨y', hy'U, hy'M⟩ := hd.inter_open_nonempty _ hUo ⟨y, hyU⟩
+  have hnull := hN (A.chart (A.pick y) y) r (τ (A.pick y) ∘ (A.chart (A.pick y)).symm)
+    (hF.mono hB) ⟨A.chart (A.pick y) y', hy'U.2, by
+      simp only [Function.comp, (A.chart _).left_inv hy'U.1]
+      exact (hiff _ y' hy'U.1).1 hy'M⟩
+  refine measure_mono_null ?_ hnull
+  rintro _ ⟨x, ⟨hxU, hxn⟩, rfl⟩
+  refine ⟨hxU.2, ?_⟩
+  simp only [Set.mem_setOf_eq, Function.comp, (A.chart _).left_inv hxU.1]
+  by_contra h
+  exact hxn ⟨hxU, h⟩
+
+end GlobalTheory
+end
+
+open MeasureTheory Filter Topology Metric ReciprocityTheory.L2DbarEstimates ReciprocityTheory.L2DbarEstimates.Y GlobalTheory.OTY GlobalTheory.Published.L2Extension
+open scoped ENNReal ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.measure_compl_nonvanishingSet_eq_zero_of_dense : ∀ (n : ℕ) (Y : Type) [TopologicalSpace Y] [T2Space Y] [SecondCountableTopology Y] [MeasurableSpace Y] [BorelSpace Y] (ι La : Type) [AddCommGroup La] (A : WeightedAtlas n Y ι La), ∀ (Λ : La) (τ : ι → Y → ℂ), A.IsSec Λ τ → Dense (nz A τ) → A.mu (nz A τ)ᶜ = 0 := by
+  atlas_forward_decl GlobalTheory.zeroSet_null_of_dense_nz
+end
+
+section
 section
 open MeasureTheory Filter Topology Metric ReciprocityTheory.L2DbarEstimates ReciprocityTheory.L2DbarEstimates.Y GlobalTheory.OTY GlobalTheory.Published.L2Extension
 open scoped ENNReal ContDiff
@@ -311,3 +753,4 @@ open scoped ENNReal ContDiff
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.extension_across_hypersurface_values_at_zeros : ∀ (n : ℕ) (Y : Type) [TopologicalSpace Y] [T2Space Y] [SecondCountableTopology Y] [MeasurableSpace Y] [BorelSpace Y] [CompactSpace Y] (ι La : Type) [AddCommGroup La] (A : WeightedAtlas n Y ι La), 1 ≤ n → ∀ (E L : La) (s : Fin n → ι → Y → ℂ), (∀ k, A.IsSec L (s k)) → ∀ hS : (A.zeroSet s).Finite, (∀ P ∈ A.zeroSet s, jacAt A s P ≠ 0) → (∀ y, A.sqn L s y ≤ 1) → ∀ δ : ℝ, 0 < δ → ∀ (Λ : La) (τ : ι → Y → ℂ), A.IsSec Λ τ → Dense (nz A τ) → ∀ (Ω : Set Y) (h : ι → Y → ℂ) (T : ℝ) (θ : ℝ → ℝ), (IsOpen Ω ∧ A.IsSecOn (A.kap + E) Ω h ∧ (∀ i y, y ∉ Ω → h i y = 0)) → A.zeroSet s ⊆ Ω → IsCut T θ → ∫⁻ y, ENNReal.ofReal (A.nsq (A.kap + E) h y) ∂A.mu < ⊤ → ∀ F : ι → Y → ℂ, A.IsSecOn (A.kap + E) (nz A τ) F → ∫⁻ y in nz A τ, ENNReal.ofReal (A.nsq (A.kap + E) (fun i x => (θ (δ * psi A L s x) : ℂ) * h i x - F i x) y * (wT T (δ * psi A L s y) * Real.exp (-psi A L s y))) ∂A.mu < ⊤ → ∃ G : ι → Y → ℂ, A.IsSec (A.kap + E) G ∧ (∀ i y, y ∈ nz A τ → y ∈ (A.chart i).source → G i y = F i y) ∧ ∀ P ∈ A.zeroSet s, G (A.pick P) P = h (A.pick P) P := by
   atlas_forward_decl GlobalTheory.OTY.extension_values_at_zeros
+end

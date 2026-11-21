@@ -145,16 +145,7 @@ theorem AtLevel₁.mono {i : X.Tw} {T T' : Set (X.Sig i)} {R n M : ℕ} (hT : T'
   obtain ⟨P, h2, h3, h5⟩ := h H S d hd z hz H' ho hn A
   exact ⟨P, h2, h3, fun s hs => h5 s (hT hs)⟩
 
-theorem ordBound_of_residualBound (i : X.Tw) (hl : nu X i = 0) (hg : ∀ s, goodS bkP i s ↔ GalHyp bkP i s)
-    (h : ResidualBound bkP i) : OrdBound bkP i 0 := by
-  refine (ordBound_zero_iff bkP i).2 fun T hT => ?_
-  obtain ⟨R, n, M₀, hM⟩ := loose_of_residualBoundOn bkP h hl fun s hs => (hg s).1 hs
-  exact ⟨R, n, M₀, fun M hle => (hM M hle).mono bkP fun s hs => (hg s).2 (hT s hs)⟩
 
-theorem good_rows_at_level_of_residual (h : ResidualBoundOddPrimes bkP) (i : X.Tw) (hl : nu X i = 0)
-    (hg : ∀ s, goodS bkP i s → GalHyp bkP i s) :
-    ∃ R n M₀ : ℕ, ∀ M, M₀ ≤ M → AtLevel₂ bkP i {s | goodS bkP i s} R n M :=
-  (residual_bound_iff_free_level bkP).1 h i _ hl hg
 
 theorem comparison :
     (∀ (i : X.Tw) (T : Set (X.Sig i)) (R n M : ℕ), 1 ≤ M → (AtLevel₁ bkP i T R n M ↔ AtLevel₂ bkP i T R n M)) ∧

@@ -5,16 +5,341 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InSupportOfIsSub
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AlgebraMapIntertwiningMapBijectiveOfIsSmooth
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.UnitaryAdmissibleMatrixCoefficient
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsSupercuspidalOfIsCuspidal
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.JacquetNontrivial
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsIrreducibleQuotientFinitelyGeneratedRep
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormalizedJacquetTwoBlocksFinitelyGenerated
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsCuspidalJacquetModuleSecondBlockOfVanishing
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsSmoothDualNeZeroAtVectorStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsUnitarisableComplexRepOfSupercuspidalUnitaryCeStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsNonzeroIntertwiningMapFromUnitarySupercuspStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InjectiveTensorLiftEquivariantMapsOfIrreducibleStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsEquivExteriorTensorOfIrreducibleProdRepStatement
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsComp
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HasSupportOfIsSubquotientProdIrr
+import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HasFiniteLengthOfIsIrreducible
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsCuspidalOfJacquetMin
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsSmoothDualNeZeroAtVector
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsUnitarizableComplexRepOfSupercuspidalUnitaryCentralCharacter
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsNonzeroIntertwiningMapFromUnitarySupercusp
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InjectiveTensorLiftEquivariantMapsOfIrreducible
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsEquivExteriorTensorOfIrreducibleProdRep
 
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.NT NumberField IsDedekindDomain Polynomial GlobalTheory.TypeRec GlobalTheory.GLq GlobalTheory.GLp GlobalTheory.SerSys
+attribute [local instance] GlobalTheory.TypeRec.factG
+open GlobalTheory.PRep GlobalTheory.SmGL
+
+namespace GlobalTheory.SmGL.JacquetEmptyFirstBlock
+
+theorem jacquet_nontrivial : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+    (n : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin n) k) V),
+    π.IsIrreducible → ∀ (h : 0 + n = n), Nontrivial (Jacquet π (unipRad k (two (stdSum h)))) := by
+  intro k _ _ _ _ n V _ _ π hπ h
+  have key : ∀ x, GlobalTheory.SmGL.blk (two (stdSum h)) x = true := by
+    intro x
+    unfold GlobalTheory.SmGL.blk
+    obtain ⟨⟨b, y⟩, hy⟩ : ∃ p, (two (stdSum h)).symm x = p := ⟨_, rfl⟩
+    rw [hy]
+    cases b
+    · exact Fin.elim0 y
+    · rfl
+  have hbot : unipRad k (two (stdSum h)) = ⊥ := by
+    by_contra hne
+    obtain ⟨i, j, hij⟩ := (GlobalTheory.SmGL.CuspMax.unipRad_ne_bot_iff).1 hne
+    rw [key i, key j] at hij
+    exact lt_irrefl _ hij
+  have hker : twKer π (⊥ : Subgroup (GL (Fin n) k)) 1 = ⊥ := by
+    unfold twKer
+    rw [Submodule.span_eq_bot]
+    rintro w ⟨⟨g, hg⟩, v, rfl⟩
+    rw [Subgroup.mem_bot] at hg
+    subst hg
+    simp
+  have hV : Nontrivial V := by
+    by_contra hV
+    rw [not_nontrivial_iff_subsingleton] at hV
+    have : IsSimpleOrder (Subrepresentation π) := hπ
+    exact (bot_ne_top : (⊥ : Subrepresentation π) ≠ ⊤)
+      (Subrepresentation.ext (Subsingleton.elim _ _))
+  rw [hbot]
+  show Nontrivial (V ⧸ twKer π ⊥ 1)
+  rw [hker]
+  exact (Submodule.quotEquivOfEqBot (⊥ : Submodule ℂ V) rfl).toEquiv.nontrivial
+
+end GlobalTheory.SmGL.JacquetEmptyFirstBlock
+end
+
+section
+section
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel Topology
+
+namespace GlobalTheory.IrrQuot
+
+theorem main : ∀ (G V : Type) [Group G] [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ G V) (s : Finset V), Nontrivial V → Submodule.span ℂ {w | ∃ g : G, ∃ v ∈ s, w = ρ g v} = ⊤ → ∃ (W : Type) (_ : AddCommGroup W) (_ : Module ℂ W) (τ : Representation ℂ G W), τ.IsIrreducible ∧ ∃ f : ρ.IntertwiningMap τ, Function.Surjective f := by
+  intro G V _ _ _ ρ s hV hspan
+  have key : ∀ T : Subrepresentation ρ, (∀ v ∈ s, v ∈ T.toSubmodule) → T = ⊤ := by
+    intro T hT
+    apply Subrepresentation.toSubmodule_injective
+    refine eq_top_iff.2 ?_
+    rw [← hspan]
+    refine Submodule.span_le.2 ?_
+    rintro w ⟨g, v, hv, rfl⟩
+    exact T.apply_mem_toSubmodule g (hT v hv)
+  haveI : Module.Finite (MonoidAlgebra ℂ G) ρ.asModule := by
+    let t : Finset ρ.asModule := s
+    refine ⟨⟨t, ?_⟩⟩
+    have h := key (Subrepresentation.ofSubmodule' (Submodule.span (MonoidAlgebra ℂ G) (t : Set ρ.asModule)))
+      (fun v hv => Submodule.subset_span (R := MonoidAlgebra ℂ G) (s := (t : Set ρ.asModule)) hv)
+    refine eq_top_iff.2 fun x _ => ?_
+    have hx : x ∈ Subrepresentation.ofSubmodule' (Submodule.span (MonoidAlgebra ℂ G) (t : Set ρ.asModule)) := by
+      rw [h]; trivial
+    exact hx
+  haveI : IsCoatomic (Subrepresentation ρ) :=
+    (OrderIso.isCoatomic_iff Subrepresentation.subrepresentationSubmoduleOrderIso).2 inferInstance
+  have hbt : (⊥ : Subrepresentation ρ) ≠ ⊤ := by
+    intro h
+    obtain ⟨v, hv⟩ := exists_ne (0 : V)
+    have : v ∈ (⊤ : Subrepresentation ρ).toSubmodule := trivial
+    rw [← h] at this
+    exact hv this
+  obtain ⟨M, hM, -⟩ := (eq_top_or_exists_le_coatom (⊥ : Subrepresentation ρ)).resolve_left hbt
+  refine ⟨_, inferInstance, inferInstance, GlobalTheory.SmGL.subQuot ⊤ M, GlobalTheory.SmGL.isIrreducible_subQuot hM.covBy_top, ?_⟩
+  refine ⟨⟨(Submodule.mkQ _).comp (LinearMap.codRestrict (⊤ : Subrepresentation ρ).toSubmodule LinearMap.id (fun _ => trivial)), fun g => rfl⟩, ?_⟩
+  intro y
+  obtain ⟨⟨v, _⟩, rfl⟩ := Submodule.Quotient.mk_surjective _ y
+  exact ⟨v, rfl⟩
+
+end GlobalTheory.IrrQuot
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_irreducible_quotient_finitelyGenerated_rep : ∀ (G V : Type) [Group G] [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ G V) (s : Finset V), Nontrivial V → Submodule.span ℂ {w | ∃ g : G, ∃ v ∈ s, w = ρ g v} = ⊤ → ∃ (W : Type) (_ : AddCommGroup W) (_ : Module ℂ W) (τ : Representation ℂ G W), τ.IsIrreducible ∧ ∃ f : ρ.IntertwiningMap τ, Function.Surjective f := by
+  atlas_forward_decl GlobalTheory.IrrQuot.main
+end
+
+section
+namespace GlobalTheory.SpanOrbitTop
+
+theorem span_orbit_eq_top {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V]
+    (π : Representation ℂ G V) (hπ : Representation.IsIrreducible π) {v : V} (hv : v ≠ 0) :
+    Submodule.span ℂ (Set.range fun g : G ↦ π g v) = ⊤ := by
+  have hinv : ∀ (h : G) ⦃x : V⦄, x ∈ Submodule.span ℂ (Set.range fun g : G ↦ π g v) →
+      π h x ∈ Submodule.span ℂ (Set.range fun g : G ↦ π g v) := by
+    intro h x hx
+    have hle : (Submodule.span ℂ (Set.range fun g : G ↦ π g v)).map (π h) ≤
+        Submodule.span ℂ (Set.range fun g : G ↦ π g v) := by
+      rw [Submodule.map_span_le]
+      rintro _ ⟨g, rfl⟩
+      exact Submodule.subset_span ⟨h * g, by simp [map_mul]⟩
+    exact hle (Submodule.mem_map_of_mem hx)
+  let S : Subrepresentation π := ⟨Submodule.span ℂ (Set.range fun g : G ↦ π g v), hinv⟩
+  have hvS : v ∈ S.toSubmodule := Submodule.subset_span ⟨1, by simp⟩
+  have := hπ
+  rcases eq_bot_or_eq_top S with h | h
+  · exfalso
+    have hb : v ∈ (⊥ : Subrepresentation π).toSubmodule := h ▸ hvS
+    exact hv ((Submodule.mem_bot ℂ).mp hb)
+  · exact congrArg Subrepresentation.toSubmodule h
+
+end GlobalTheory.SpanOrbitTop
+end
+
+section
+section
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel Topology
+
+namespace GlobalTheory.JacquetFinGen
+
+theorem span_orbit_eq_top {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V]
+    (π : Representation ℂ G V) (hπ : π.IsIrreducible) {v : V} (hv : v ≠ 0) :
+    Submodule.span ℂ (Set.range fun g : G => π g v) = ⊤ := by
+  first
+  | exact @_root_.GlobalTheory.SpanOrbitTop.span_orbit_eq_top
+  | exact _root_.GlobalTheory.SpanOrbitTop.span_orbit_eq_top
+  | (apply _root_.GlobalTheory.SpanOrbitTop.span_orbit_eq_top <;> assumption)
+  | (intros; apply _root_.GlobalTheory.SpanOrbitTop.span_orbit_eq_top <;> assumption)
+  | (intros; apply @_root_.GlobalTheory.SpanOrbitTop.span_orbit_eq_top <;> first | assumption | infer_instance)
+  | (intros; exact _root_.GlobalTheory.SpanOrbitTop.span_orbit_eq_top ..)
+
+theorem jacquet_fg : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] (a b n : ℕ) (h : a + b = n) (V : Type) [AddCommGroup V] [Module ℂ V]
+    (π : Representation ℂ (GL (Fin n) k) V), IsSmooth π → π.IsIrreducible →
+    ∃ s : Finset (Jacquet π (unipRad k (two (stdSum h)))),
+      Submodule.span ℂ {w | ∃ g : GL (Fin a) k × GL (Fin b) k, ∃ v ∈ s, w = jac₂ (stdSum h) π g v} = ⊤ := by
+  intro k _ _ _ _ a b n h V _ _ π hsm hirr
+  classical
+  haveI := GlobalTheory.SmGL.Model.nontrivial_of_isIrreducible hirr
+  obtain ⟨v, hv⟩ := exists_ne (0 : V)
+  set e := stdSum h
+  set N := unipRad k (two e)
+  have hO := GlobalTheory.SmoothRiesz.finite_orbit π hsm (KO k (Fin n)) (GlobalTheory.SplitFlip.isCompact_KO (k := k) (n := Fin n)) v
+  let s : Finset (Jacquet π N) := hO.toFinset.image (Submodule.Quotient.mk (p := twKer π N 1))
+  refine ⟨s, ?_⟩
+  set T := {w | ∃ g : GL (Fin a) k × GL (Fin b) k, ∃ x ∈ s, w = jac₂ e π g x}
+  have key : ∀ g : GL (Fin n) k,
+      (Submodule.Quotient.mk (π g v) : Jacquet π N) ∈ Submodule.span ℂ T := by
+    intro g
+    obtain ⟨p, w, hw, rfl⟩ := GlobalTheory.SmGL.MultiIrr.exists_parab_mul (two e) g
+    obtain ⟨u, hu, hp⟩ := exists_levi_mul_unip k (two e) p
+    set m := leviProj k (two e) p
+    set y := π w v
+    have hy : Submodule.Quotient.mk (p := twKer π N 1) y ∈ s :=
+      Finset.mem_image.2 ⟨y, hO.mem_toFinset.2 ⟨w, hw, rfl⟩, rfl⟩
+    have hu' : (Submodule.Quotient.mk (π u y) : Jacquet π N) = Submodule.Quotient.mk y := by
+      rw [Submodule.Quotient.eq]
+      exact Submodule.subset_span ⟨⟨u, hu⟩, y, by simp⟩
+    have h1 : π (↑p * w) v = π (leviEmb k (two e) m) (π u y) := by
+      rw [hp]; simp only [map_mul, Module.End.mul_apply, y]
+    have h2 : (Submodule.Quotient.mk (π (leviEmb k (two e) m) (π u y)) : Jacquet π N) =
+        ((deltaHalf k _ m : ℂˣ) : ℂ) • jac₂ e π ((leviTwo k (Fin a) (Fin b)).symm m)
+          (Submodule.Quotient.mk y) := by
+      show _ = _ • jac (two e) π (leviTwo k (Fin a) (Fin b) ((leviTwo k (Fin a) (Fin b)).symm m)) _
+      rw [MulEquiv.apply_symm_apply, ← hu', jac_mk, smul_smul, Units.mul_inv, one_smul]
+    rw [h1, h2]
+    exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨_, _, hy, rfl⟩)
+  have hle : Submodule.span ℂ (Set.range fun g : GL (Fin n) k => π g v) ≤
+      (Submodule.span ℂ T).comap (twKer π N 1).mkQ :=
+    Submodule.span_le.2 (by rintro _ ⟨g, rfl⟩; exact key g)
+  rw [GlobalTheory.JacquetFinGen.span_orbit_eq_top π hirr hv, top_le_iff] at hle
+  rw [eq_top_iff]
+  rintro x -
+  obtain ⟨y, rfl⟩ := Submodule.Quotient.mk_surjective _ x
+  have : y ∈ (Submodule.span ℂ T).comap (twKer π N 1).mkQ := hle ▸ Submodule.mem_top
+  exact this
+
+end GlobalTheory.JacquetFinGen
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.normalizedJacquetTwoBlocks_finitelyGenerated : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (a b n : ℕ) (h : a + b = n) (V : Type) [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin n) k) V), IsSmooth π → π.IsIrreducible → ∃ s : Finset (Jacquet π (unipRad k (two (stdSum h)))), Submodule.span ℂ {w | ∃ g : GL (Fin a) k × GL (Fin b) k, ∃ v ∈ s, w = jac₂ (stdSum h) π g v} = ⊤ := by
+  atlas_forward_decl GlobalTheory.JacquetFinGen.jacquet_fg
+end
+
+section
+section
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel Topology
+
+namespace GlobalTheory.JacMinCuspGL
+
+open GlobalTheory.SmGL.CuspMax GlobalTheory.JacMinCusp Matrix
+
+theorem isCuspidal_jac₂_inr : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] (a b n : ℕ) (h : a + b = n) (V : Type) [AddCommGroup V] [Module ℂ V]
+    (π : Representation ℂ (GL (Fin n) k) V), IsSmooth π →
+    (∀ (r t : ℕ) (h' : r + t = n), 0 < t → t < b → Subsingleton (Jacquet π (unipRad k (two (stdSum h'))))) →
+    IsCuspidal (k := k) (n := Fin b) ((jac₂ (stdSum h) π).comp (MonoidHom.inr (GL (Fin a) k) (GL (Fin b) k))) := by
+  intro k _ _ _ _ a b n h V _ _ π hπ hmin
+  set J := (jac₂ (stdSum h) π).comp (MonoidHom.inr (GL (Fin a) k) (GL (Fin b) k)) with hJdef
+  refine (isCuspidal_iff_maximal k b _ J).2 ⟨isSmooth_comp (isSmooth_jac₂ _ hπ) _
+    (continuous_const.prodMk continuous_id :
+      Continuous fun x : GL (Fin b) k => ((1 : GL (Fin a) k), x)),
+    fun r t h' hr ht => ?_⟩
+  have hcd : a + r + t = n := by omega
+  have hJ : twKer π (unipRad k (two (stdSum hcd))) 1 = ⊤ :=
+    Submodule.Quotient.subsingleton_iff.1 (hmin (a + r) t hcd ht (by omega))
+  set Kab := twKer π (unipRad k (two (stdSum h))) 1 with hKab
+  set K' := twKer J (unipRad k (two (stdSum h'))) 1 with hK'
+
+  have hB : ∀ g : GL (Fin a) k × GL (Fin b) k, g.1 = 1 → GeneralLinearGroup.det g.2 = 1 → ∀ v : V,
+      jac₂ (stdSum h) π g (Submodule.Quotient.mk v) =
+        Submodule.Quotient.mk (π (leviEmb k (two (stdSum h)) (leviTwo k _ _ g)) v) := by
+    intro g h1 h2 v
+    have hd : deltaHalf k (Two (Fin a) (Fin b)) (leviTwo k _ _ g) = 1 := by
+      rw [deltaHalf_two, h1, h2]; simp
+    show jac (two (stdSum h)) π (leviTwo k _ _ g) _ = _
+    rw [jac_mk, hd]; simp
+  have hN : ∀ u ∈ unipRad k (two (stdSum h)), ∀ v : V,
+      (Submodule.Quotient.mk (π u v) : V ⧸ Kab) = Submodule.Quotient.mk v := by
+    intro u hu v
+    exact (Submodule.Quotient.eq Kab).2 (Submodule.subset_span ⟨⟨u, hu⟩, v, by simp⟩)
+
+  have hC : ∀ u ∈ unipRad k (two (stdSum hcd)), ∀ v : V,
+      (Submodule.Quotient.mk (π u v) : V ⧸ Kab) - Submodule.Quotient.mk v ∈ K' := by
+    intro u hu v
+    have hu' := (mem_unipRad_two_iff hcd).1 hu
+    have hp : u ∈ parab k (two (stdSum h)) := by
+      rw [mem_parab]
+      intro i j hij
+      rw [blk_two_stdSum_lt] at hij
+      rw [hu' i j (by omega), Matrix.one_apply_ne]
+      intro hij'; subst hij'; omega
+    obtain ⟨n', hn', hun⟩ := exists_levi_mul_unip k (two (stdSum h)) ⟨u, hp⟩
+    set g := (leviTwo k (Fin a) (Fin b)).symm (leviProj k (two (stdSum h)) ⟨u, hp⟩) with hg
+    have hlg : leviTwo k _ _ g = leviProj k (two (stdSum h)) ⟨u, hp⟩ := by simp [g]
+    have hg1 : g.1 = 1 := by
+      ext i j
+      show (leviProj k (two (stdSum h)) ⟨u, hp⟩ false : Matrix (Fin a) (Fin a) k) i j = _
+      rw [leviProj_apply, two_false, two_false]
+      rw [hu' _ _ (by simp; omega)]
+      simp [Matrix.one_apply, stdSum]
+    have hg2 : g.2 ∈ unipRad k (two (stdSum h')) := by
+      rw [mem_unipRad_two_iff]
+      intro i j hij
+      show (leviProj k (two (stdSum h)) ⟨u, hp⟩ true : Matrix (Fin b) (Fin b) k) i j = _
+      rw [leviProj_apply, two_true, two_true]
+      rw [hu' _ _ (by simp; omega)]
+      simp [Matrix.one_apply, stdSum]
+    have hdet : GeneralLinearGroup.det g.2 = 1 := det_eq_one_of_mem_unipRad k hg2
+    have hu_eq : u = leviEmb k (two (stdSum h)) (leviTwo k _ _ g) * n' := by rw [hlg]; exact hun
+    have hJu : J g.2 (Submodule.Quotient.mk v) = Submodule.Quotient.mk (π u v) := by
+      rw [hu_eq, map_mul, Module.End.mul_apply]
+      show jac₂ (stdSum h) π (1, g.2) _ = _
+      rw [hB (1, g.2) rfl hdet, show ((1, g.2) : GL (Fin a) k × GL (Fin b) k) = g from Prod.ext hg1.symm rfl]
+      refine (Submodule.Quotient.eq Kab).2 ?_
+      rw [← map_sub]
+      refine twKer_le_comap π _ _ (leviEmb_mem_normalizer k _ _) ?_
+      have := (Submodule.Quotient.eq Kab).1 (hN n' hn' v)
+      rw [← neg_sub]
+      exact Kab.neg_mem this
+    rw [← hJu]
+    exact Submodule.subset_span ⟨⟨g.2, hg2⟩, Submodule.Quotient.mk v, by simp⟩
+  refine Submodule.Quotient.subsingleton_iff.2 (eq_top_iff.2 fun x _ => ?_)
+  obtain ⟨v, rfl⟩ := Submodule.Quotient.mk_surjective Kab x
+  have hle : twKer π (unipRad k (two (stdSum hcd))) 1 ≤ K'.comap Kab.mkQ := by
+    refine Submodule.span_le.2 ?_
+    rintro _ ⟨u, w, rfl⟩
+    simpa [Submodule.mkQ_apply] using hC u u.2 w
+  exact hle (hJ ▸ Submodule.mem_top)
+
+end GlobalTheory.JacMinCuspGL
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isCuspidal_jacquetModule_second_block_of_vanishing : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (a b n : ℕ) (h : a + b = n) (V : Type) [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin n) k) V), IsSmooth π → (∀ (r t : ℕ) (h' : r + t = n), 0 < t → t < b → Subsingleton (Jacquet π (unipRad k (two (stdSum h'))))) → IsCuspidal (k := k) (n := Fin b) ((jac₂ (stdSum h) π).comp (MonoidHom.inr (GL (Fin a) k) (GL (Fin b) k))) := by
+  atlas_forward_decl GlobalTheory.JacMinCuspGL.isCuspidal_jac₂_inr
+end
+
+section
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_smoothDual_ne_zero_at_vector : ∀ (G V : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ G V), (∀ U ∈ 𝓝 (1 : G), ∃ K : Subgroup G, IsOpen (K : Set G) ∧ IsCompact (K : Set G) ∧ (K : Set G) ⊆ U) → IsSmooth ρ → ∀ v : V, v ≠ 0 → ∃ l : Module.Dual ℂ V, l ∈ smoothPart ρ.dual ∧ l v ≠ 0 := by
+  first | exact @GlobalTheory.SmoothForm.exists_smooth_form_ne_zero | exact GlobalTheory.SmoothForm.exists_smooth_form_ne_zero | (intros; apply GlobalTheory.SmoothForm.exists_smooth_form_ne_zero <;> assumption)
+end
+
+section
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isUnitarisableComplexRep_of_supercuspidal_unitary_center : ∀ (G V : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ G V) (l : Module.Dual ℂ V), l ∈ smoothPart ρ.dual → l ≠ 0 → ρ.IsIrreducible → IsSupercuspidal ρ → (∀ z ∈ Subgroup.center G, ∃ c : ℂ, ‖c‖ = 1 ∧ ∀ v, ρ z v = c • v) → IsUnitarisable ρ := by
+  first | exact @GlobalTheory.isUnitarisable_of_isSupercuspidal | exact GlobalTheory.isUnitarisable_of_isSupercuspidal | (intros; apply GlobalTheory.isUnitarisable_of_isSupercuspidal <;> assumption)
+end
+
+section
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_nonzero_intertwiningMap_from_unitary_supercuspidal : ∀ (G W V : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup W] [Module ℂ W] [AddCommGroup V] [Module ℂ V] (π : Representation ℂ G W) (ρ : Representation ℂ G V) (p : π.IntertwiningMap ρ), IsSmooth π → IsSupercuspidal ρ → IsUnitarisable ρ → (∀ z ∈ Subgroup.center G, ∃ c : ℂ, ∀ w, π z w = c • w) → p ≠ 0 → ∃ ι : ρ.IntertwiningMap π, ι ≠ 0 := by
+  first | exact @GlobalTheory.CuspBack.exists_back | exact GlobalTheory.CuspBack.exists_back | (intros; apply GlobalTheory.CuspBack.exists_back <;> assumption)
+end
+
+section
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.injective_tensor_lift_equivariant_maps_of_irreducible : ∀ (H X Y : Type) [Group H] [AddCommGroup X] [Module ℂ X] [AddCommGroup Y] [Module ℂ Y] (τ : Representation ℂ H X) (ρ : Representation ℂ H Y), ρ.IsIrreducible → (∀ T : ρ.IntertwiningMap ρ, ∃ c : ℂ, ∀ v, T v = c • v) → ∀ (M : Submodule ℂ (Y →ₗ[ℂ] X)), (∀ φ ∈ M, ∀ g v, φ (ρ g v) = τ g (φ v)) → Function.Injective (TensorProduct.lift M.subtype) := by
+  first | exact @GlobalTheory.SmGL.EvalInj.lift_subtype_injective | exact GlobalTheory.SmGL.EvalInj.lift_subtype_injective | (intros; apply GlobalTheory.SmGL.EvalInj.lift_subtype_injective <;> assumption)
+end
+
+section
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_equiv_exteriorTensor_of_irreducible_prod_rep : ∀ (G H X Y : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Group H] [TopologicalSpace H] [IsTopologicalGroup H] [AddCommGroup X] [Module ℂ X] [AddCommGroup Y] [Module ℂ Y] (τ : Representation ℂ (G × H) X) (ρ : Representation ℂ H Y), IsSmooth τ → τ.IsIrreducible → ρ.IsIrreducible → (∀ (M : Submodule ℂ (Y →ₗ[ℂ] X)), (∀ φ ∈ M, ∀ g v, φ (ρ g v) = τ (1, g) (φ v)) → Function.Injective (TensorProduct.lift M.subtype)) → (∃ ι : Y →ₗ[ℂ] X, ι ≠ 0 ∧ ∀ g v, ι (ρ g v) = τ (1, g) (ι v)) → ∃ (W : Type) (_ : AddCommGroup W) (_ : Module ℂ W) (σ : Representation ℂ G W), IsSmooth σ ∧ σ.IsIrreducible ∧ Nonempty (τ.Equiv (extTensor σ ρ)) := by
+  first | exact @GlobalTheory.TensorFactor.exists_equiv_extTensor | exact GlobalTheory.TensorFactor.exists_equiv_extTensor | (intros; apply GlobalTheory.TensorFactor.exists_equiv_extTensor <;> assumption)
+end
+
+section
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel Topology
 
 namespace GlobalTheory.JacFactor
@@ -151,3 +476,4 @@ theorem exists_map_jac₂ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpac
   exact hx ((map_eq_zero_iff φ φ.injective).1 h1)
 
 end GlobalTheory.JacFactor
+end

@@ -3,10 +3,251 @@ import Formalism.SharpRestriction.LevelLetterCocycles.UsedLocalConclusion
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnramifiedSubfieldLeCyclotomicExt
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLatticeEqFiltrationSumAtLevel
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLatticeEqStdPowerSeriesAtZero
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemWachNIffExpansionStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachNInvQPowGammaStableStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PowerSeriesTwistedScalingTriangularLaurentStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NBasisLoc
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachExpansionsSpanFullLattice
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachExpansionBasisDivisibility
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLevelExpansionAtRootOfUnity
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachWeierstrassTestAndDensity
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NotFullBot
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MemEurOfTeichmullerSeries
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RingsCyclotomic
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GeomSumOneAddPrime
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachExpansionLatticeGradedOfLevelLe
 
+section
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct GlobalTheory.NL Formalism.MainNotions.DeltaInvariantLattices
+
+namespace GlobalTheory.NL.WachModulePoleQuotient
+
+section Generic
+
+variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
+    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
+    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
+    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
+    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
+    {PD : PeriodData G Qp K₀ K B BdR} {LL O : Type} [Field LL] [Algebra Qp LL]
+    [CommRing O] [Algebra O LL] [TopologicalSpace LL] {v : AddValuation LL (WithTop ℚ)} {n : ℕ}
+
+theorem mem_N_iff_of_points (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) {ι : Type} [Fintype ι]
+    (nb : Module.Basis ι (LetA O n) ↥(W.N T)) (P : ZMod n → LL → Prop) (Φ : ZMod n → LL → Prop)
+    (k : ℕ) (x : W.DD T) (hx : W.Q ^ k • x ∈ W.N T)
+    (hkey : ∀ i ζ, P i ζ → (Φ i ζ ↔ ∀ j, nb.repr ⟨W.Q ^ k • x, hx⟩ j ∈ van W i ζ k))
+    (hQ : ∀ i ζ, P i ζ → ∃ w : PowerSeries LL, W.lev i ζ W.Q = PowerSeries.X * w)
+    (hdiv : ∀ a : LetA O n, (∀ i ζ, P i ζ → a ∈ van W i ζ k) → W.Q ^ k ∣ a)
+    (hunit : IsUnit (algebraMap (LetA O n) W.EE W.Q)) :
+    x ∈ W.N T ↔ ∀ i ζ, P i ζ → Φ i ζ := by
+  constructor
+  · intro hxN i ζ hζ
+    rw [hkey i ζ hζ]
+    intro j
+    have e : (⟨W.Q ^ k • x, hx⟩ : ↥(W.N T)) = W.Q ^ k • (⟨x, hxN⟩ : ↥(W.N T)) := rfl
+    rw [e, map_smul, Finsupp.smul_apply, smul_eq_mul]
+    obtain ⟨w, hw⟩ := hQ i ζ hζ
+    refine Ideal.mem_comap.2 (Ideal.mem_span_singleton.2 ?_)
+    rw [map_mul, map_pow, hw]
+    exact Dvd.dvd.mul_right (pow_dvd_pow_of_dvd (dvd_mul_right _ _) k) _
+  · intro H
+    have hd : ∀ j, W.Q ^ k ∣ nb.repr ⟨W.Q ^ k • x, hx⟩ j := fun j =>
+      hdiv _ (fun i ζ hζ => (hkey i ζ hζ).1 (H i ζ hζ) j)
+    choose b hb using hd
+    let z : ↥(W.N T) := ∑ j, b j • nb j
+    have hz : W.Q ^ k • ((z : ↥(W.N T)) : W.DD T) = W.Q ^ k • x := by
+      have e : (⟨W.Q ^ k • x, hx⟩ : ↥(W.N T)) = W.Q ^ k • z := by
+        conv_lhs => rw [← nb.sum_repr ⟨W.Q ^ k • x, hx⟩]
+        simp only [z, Finset.smul_sum, hb, mul_smul]
+      exact (congrArg Subtype.val e).symm
+    have hu : IsUnit (algebraMap (LetA O n) W.EE (W.Q ^ k)) := by
+      rw [map_pow]
+      exact hunit.pow k
+    obtain ⟨u, hu'⟩ := hu
+    have h1 : ∀ y : W.DD T, W.Q ^ k • y = (u : W.EE) • y := fun y => by
+      rw [hu', algebraMap_smul]
+    rw [h1, h1] at hz
+    have hx' : x = (z : W.DD T) := by
+      have := congrArg (fun y => ((u⁻¹ : W.EEˣ) : W.EE) • y) hz
+      simp only [smul_smul, Units.inv_mul, one_smul] at this
+      exact this.symm
+    rw [hx']
+    exact z.2
+
+end Generic
+
+set_option synthInstance.maxHeartbeats 400000 in
+set_option maxHeartbeats 1000000 in
+
+theorem mem_N_iff_expansion : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let W := (HW l).W K s LL h; let C := Cm l; ∀ T : Lt K LL, IsCrys ((D.loc l).PD K) T.ρ → ∀ (k : ℕ) (x : W.DD T) (hx : W.Q ^ k • x ∈ W.N T), x ∈ W.N T ↔ ∀ (i : Let K) (ζ : ↥LL.1), IsPrimitiveRoot ζ (l ^ s) → ∃ f ∈ Lat C h T i ζ, ∀ j : ℤ, ex C h T i ζ ⟨W.Q ^ k • x, hx⟩ j = f (j - k) := by
+  intro D HW F Cm l _ K s LL h W C T hT k x hx
+  obtain ⟨nb⟩ := GlobalTheory.NL.N_basis D HW F l K s LL h T hT
+  refine mem_N_iff_of_points W T nb (fun i ζ => IsPrimitiveRoot ζ (l ^ s)) _ k x hx ?_ ?_ ?_ ?_
+  · intro i ζ hζ
+    exact ((GlobalTheory.NL.LevInj.expansion_basis D HW F Cm l K s LL h T hT i ζ ⟨s, hζ⟩
+      (GlobalTheory.NL.FullLevel.full_lat D HW F Cm l K s LL h T hT i ζ hζ)).2 _ nb).2.2 _ k
+  · intro i ζ hζ
+    obtain ⟨⟨w, _, hw⟩, -⟩ := (GlobalTheory.NL.lev_at_root_of_unity D HW l K s LL h i ζ ⟨s, hζ⟩).2.2.2.1 hζ
+    exact ⟨w, hw⟩
+  · exact (GlobalTheory.NL.WDiv.weierstrass_dense D HW l K s LL h).1 k
+  · have h0 := ((GlobalTheory.NL.IoXQ.main D HW F l K s LL h).2.2.2.2.2.2 0).2
+    simpa using h0
+
+end GlobalTheory.NL.WachModulePoleQuotient
+end
+
+section
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct GlobalTheory.NL Formalism.MainNotions.DeltaInvariantLattices
+set_option synthInstance.maxHeartbeats 400000 in
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_wachN_iff_expansion : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let W := (HW l).W K s LL h; let C := Cm l; ∀ T : Lt K LL, IsCrys ((D.loc l).PD K) T.ρ → ∀ (k : ℕ) (x : W.DD T) (hx : W.Q ^ k • x ∈ W.N T), x ∈ W.N T ↔ ∀ (i : Let K) (ζ : ↥LL.1), IsPrimitiveRoot ζ (l ^ s) → ∃ f ∈ Lat C h T i ζ, ∀ j : ℤ, ex C h T i ζ ⟨W.Q ^ k • x, hx⟩ j = f (j - k) := by
+  first | exact @GlobalTheory.NL.WachModulePoleQuotient.mem_N_iff_expansion | exact GlobalTheory.NL.WachModulePoleQuotient.mem_N_iff_expansion | (intros; apply GlobalTheory.NL.WachModulePoleQuotient.mem_N_iff_expansion <;> assumption)
+end
+
+section
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct GlobalTheory.NL Formalism.MainNotions.DeltaInvariantLattices
+
+namespace GlobalTheory.NL.GamQ
+
+theorem isUnit_one_add {O : Type} [CommRing O] (f : PowerSeries O)
+    (hf : PowerSeries.constantCoeff f = 0) : IsUnit (1 + f) := by
+  rw [PowerSeries.isUnit_iff_constantCoeff]; simp [hf]
+
+set_option synthInstance.maxHeartbeats 400000 in
+set_option maxHeartbeats 4000000 in
+
+theorem gam_Q_pow : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let W := (HW l).W K s LL h; let C := Cm l; let u : ↥LL.1 := algebraMap ↥(OL LL) ↥LL.1 (W.χΓ W.gam : ↥(OL LL)); ∀ T : Lt K LL, IsCrys ((D.loc l).PD K) T.ρ → ∀ k : ℕ, (∀ x : W.DD T, W.Q ^ k • x ∈ W.N T → W.Q ^ k • W.γ T x ∈ W.N T) ∧ ∀ (i : Let K) (ζ : ↥LL.1), IsPrimitiveRoot ζ (l ^ s) → ∃ w : PowerSeries ↥LL.1, PowerSeries.constantCoeff w = u ^ (-(k : ℤ)) ∧ ∀ (x : W.DD T) (hx : W.Q ^ k • x ∈ W.N T) (hγ : W.Q ^ k • W.γ T x ∈ W.N T) (j : ℤ), ex C h T i ζ ⟨W.Q ^ k • W.γ T x, hγ⟩ j = conv w (fun m => u ^ m • ex C h T i ζ ⟨W.Q ^ k • x, hx⟩ m) j := by
+  intro D HW F Cm l _ K s LL h W C u T hT k
+  obtain ⟨χ, -, -, hγ₀, -, hQ, -, -⟩ := GlobalTheory.NL.CycRing.rings_cyclotomic D HW l K s LL h
+  obtain ⟨b, hb⟩ := ((GlobalTheory.Cyc.XX_QQ_properties l ↥(OL LL) s h.1).2.2.2.2.2.1 (χ W.gam)).2
+  let U : AA K LL := fun _ => 1 + GlobalTheory.Cyc.XX l ↥(OL LL) s * b
+  have hγQ : W.γA W.gam W.Q = W.Q * U := by
+    funext i
+    show W.γ₀ W.gam (W.Q i) = W.Q i * U i
+    rw [hγ₀, hQ]
+    exact hb
+  have hUu : IsUnit U := Pi.isUnit_iff.2 fun _ => isUnit_one_add _ (by simp [GlobalTheory.Cyc.XX])
+  have hγs : ∀ (a : AA K LL) (y : W.DD T), W.γ T (a • y) = W.γA W.gam a • W.γ T y := by
+    intro a y
+    have := W.γD_smul T W.gam (algebraMap (AA K LL) W.EE a) y
+    rw [algebraMap_smul, W.γE_ext, algebraMap_smul] at this
+    exact this
+  let v : AA K LL := ((hUu.unit ^ k)⁻¹ : (AA K LL)ˣ)
+  have hvU : v * U ^ k = 1 := by
+    show (((hUu.unit ^ k)⁻¹ : (AA K LL)ˣ) : AA K LL) * U ^ k = 1
+    have e : U ^ k = ((hUu.unit ^ k : (AA K LL)ˣ) : AA K LL) := by
+      rw [Units.val_pow_eq_pow_val, IsUnit.unit_spec]
+    rw [e, Units.inv_mul]
+  have key : ∀ y : W.DD T, W.Q ^ k • W.γ T y = v • W.γ T (W.Q ^ k • y) := by
+    intro y
+    rw [hγs, map_pow, hγQ, mul_pow, smul_smul, mul_left_comm, hvU, mul_one]
+  refine ⟨fun x hx => ?_, fun i ζ hζ => ?_⟩
+  · rw [key]
+    exact (W.N T).smul_mem v (W.N_Γ T W.gam _ hx)
+  have hfull := GlobalTheory.NL.FullLevel.full_lat D HW F Cm l K s LL h T hT i ζ hζ
+  have hlev := (GlobalTheory.NL.LevInj.expansion_basis D HW F Cm l K s LL h T hT i ζ ⟨s, hζ⟩ hfull).1
+  refine ⟨W.lev i ζ v, ?_, fun x hx hγ j => ?_⟩
+  · have hg := W.gam_gen
+    rw [(HW l).W_s] at hg
+    have hΓ := ((Cm l).C K s LL h).tie.lev_Γ W.gam i ζ ζ s 1
+      (by rw [(D.loc l).PD_p]; exact hζ) (by rw [Nat.cast_one]; exact hg.ge) (pow_one ζ).symm W.Q
+    have hΓ' : W.lev i ζ W.Q * W.lev i ζ U = PowerSeries.rescale u (W.lev i ζ W.Q) := by
+      rw [← map_mul, ← hγQ]; exact hΓ
+    obtain ⟨w0, hw0, hQw⟩ := ((GlobalTheory.NL.lev_at_root_of_unity D HW l K s LL h i ζ ⟨s, hζ⟩).2.2.2.1 hζ).1
+    rw [hQw, map_mul, PowerSeries.rescale_X] at hΓ'
+    have h1 : w0 * W.lev i ζ U = PowerSeries.C u * PowerSeries.rescale u w0 := by
+      apply mul_left_cancel₀ (PowerSeries.X_ne_zero (R := ↥LL.1))
+      linear_combination hΓ'
+    have h2 := congrArg (PowerSeries.coeff 0) h1
+    rw [PowerSeries.coeff_C_mul, PowerSeries.coeff_rescale, pow_zero, one_mul,
+      PowerSeries.coeff_zero_eq_constantCoeff_apply, PowerSeries.coeff_zero_eq_constantCoeff_apply,
+      map_mul] at h2
+    have hw0c : PowerSeries.constantCoeff w0 ≠ 0 := (hw0.map PowerSeries.constantCoeff).ne_zero
+    have hUc : PowerSeries.constantCoeff (W.lev i ζ U) = u := by
+      apply mul_left_cancel₀ hw0c
+      rw [h2, mul_comm]
+    have h3 := congrArg PowerSeries.constantCoeff (congrArg (W.lev i ζ) hvU)
+    rw [map_mul, map_pow, map_one, map_mul, map_pow, map_one, hUc] at h3
+    rw [zpow_neg, zpow_natCast]
+    exact eq_inv_of_mul_eq_one_left h3
+  · have e1 : (⟨W.Q ^ k • W.γ T x, hγ⟩ : ↥(W.N T)) =
+        v • (⟨W.γD T W.gam (W.Q ^ k • x), W.N_Γ T W.gam _ hx⟩ : ↥(W.N T)) :=
+      Subtype.ext (key x)
+    have e2 : ex C h T i ζ ⟨W.γD T W.gam (W.Q ^ k • x), W.N_Γ T W.gam _ hx⟩ =
+        fun m => u ^ m • ex C h T i ζ ⟨W.Q ^ k • x, hx⟩ m :=
+      funext fun m => GlobalTheory.NL.GradedLat.ex_gam C h T hT i ζ hζ.pow_eq_one ⟨W.Q ^ k • x, hx⟩ m
+    rw [e1, hlev, e2]
+
+end GlobalTheory.NL.GamQ
+end
+
+section
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct GlobalTheory.NL Formalism.MainNotions.DeltaInvariantLattices
+set_option synthInstance.maxHeartbeats 400000 in
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.wachN_invQPow_gamma_stable : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let W := (HW l).W K s LL h; let C := Cm l; let u : ↥LL.1 := algebraMap ↥(OL LL) ↥LL.1 (W.χΓ W.gam : ↥(OL LL)); ∀ T : Lt K LL, IsCrys ((D.loc l).PD K) T.ρ → ∀ k : ℕ, (∀ x : W.DD T, W.Q ^ k • x ∈ W.N T → W.Q ^ k • W.γ T x ∈ W.N T) ∧ ∀ (i : Let K) (ζ : ↥LL.1), IsPrimitiveRoot ζ (l ^ s) → ∃ w : PowerSeries ↥LL.1, PowerSeries.constantCoeff w = u ^ (-(k : ℤ)) ∧ ∀ (x : W.DD T) (hx : W.Q ^ k • x ∈ W.N T) (hγ : W.Q ^ k • W.γ T x ∈ W.N T) (j : ℤ), ex C h T i ζ ⟨W.Q ^ k • W.γ T x, hγ⟩ j = conv w (fun m => u ^ m • ex C h T i ζ ⟨W.Q ^ k • x, hx⟩ m) j := by
+  first | exact @GlobalTheory.NL.GamQ.gam_Q_pow | exact GlobalTheory.NL.GamQ.gam_Q_pow | (intros; apply GlobalTheory.NL.GamQ.gam_Q_pow <;> assumption)
+end
+
+section
+open GlobalTheory.NL
+
+namespace GlobalTheory.NL.Twist
+
+variable {L M : Type} [Field L] [TopologicalSpace L] [AddCommGroup M] [Module L M]
+
+theorem conv_mem_of_forall (w : PowerSeries L) (g : ℤ → M) (S : Submodule L M) (j : ℤ)
+    (h : ∀ i : ℕ, g (j - i) ∈ S) : conv w g j ∈ S := by
+  unfold conv
+  exact finsum_induction (· ∈ S) S.zero_mem (fun _ _ => S.add_mem)
+    (fun i => S.smul_mem _ (h i))
+
+theorem conv_eq_sum (w : PowerSeries L) (g : ℤ → M) (m : ℤ) (hg : ∀ j < m, g j = 0) (k : ℤ) :
+    conv w g k = ∑ i ∈ Finset.range ((k - m).toNat + 1), PowerSeries.coeff i w • g (k - i) := by
+  unfold conv
+  apply finsum_eq_sum_of_support_subset
+  intro i hi
+  simp only [Function.mem_support] at hi
+  simp only [Finset.coe_range, Set.mem_Iio]
+  by_contra hc
+  push_neg at hc
+  apply hi
+  have : g (k - i) = 0 := hg _ (by omega)
+  simp [this]
+
+theorem tri (w : PowerSeries L) (u : L) (Sub : ℤ → Submodule L M) (hSub : Monotone Sub) (y : ℕ)
+    (f : ℤ → M) (hf : ∃ m : ℤ, ∀ j < m, f j = 0) (hfS : ∀ j, f j ∈ Sub j) (k : ℤ)
+    (hk : ∀ j < k, f j ∈ Sub (j - y)) :
+    (∃ m : ℤ, ∀ j < m, conv w (fun m => u ^ m • f m) j = 0) ∧
+    (∀ j, conv w (fun m => u ^ m • f m) j ∈ Sub j) ∧
+    (∀ j < k, conv w (fun m => u ^ m • f m) j ∈ Sub (j - y)) ∧
+    conv w (fun m => u ^ m • f m) k - (PowerSeries.constantCoeff w * u ^ k) • f k ∈ Sub (k - y) := by
+  obtain ⟨m, hm⟩ := hf
+  have hg : ∀ j < m, (fun m => u ^ m • f m) j = 0 := fun j hj => by simp [hm j hj]
+  refine ⟨⟨m, fun j hj => ?_⟩, fun j => ?_, fun j hj => ?_, ?_⟩
+  · refine (Submodule.mem_bot L).1 (conv_mem_of_forall w _ ⊥ j (fun i => ?_))
+    rw [hm _ (by omega), smul_zero]
+    exact Submodule.zero_mem _
+  · exact conv_mem_of_forall w _ _ j (fun i =>
+      Submodule.smul_mem _ _ (hSub (by omega : j - (i : ℤ) ≤ j) (hfS _)))
+  · exact conv_mem_of_forall w _ _ j (fun i =>
+      Submodule.smul_mem _ _ (hSub (by omega : j - (i : ℤ) - y ≤ j - y) (hk _ (by omega))))
+  · rw [conv_eq_sum w _ m hg k, Finset.sum_range_succ']
+    have h0 : PowerSeries.coeff 0 w • (u ^ (k - ((0 : ℕ) : ℤ)) • f (k - ((0 : ℕ) : ℤ))) -
+        (PowerSeries.constantCoeff w * u ^ k) • f k = 0 := by
+      simp [mul_smul]
+    rw [add_sub_assoc, h0, add_zero]
+    refine Submodule.sum_mem _ (fun i _ => Submodule.smul_mem _ _ (Submodule.smul_mem _ _ ?_))
+    exact hSub (by omega : k - ((i + 1 : ℕ) : ℤ) - y ≤ k - y) (hk _ (by omega))
+
+end GlobalTheory.NL.Twist
+end
+
+section
+open GlobalTheory.NL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.powerSeriesTwistedScaling_triangular_laurent : ∀ {L M : Type} [Field L] [TopologicalSpace L] [AddCommGroup M] [Module L M] (w : PowerSeries L) (u : L) (Sub : ℤ → Submodule L M), Monotone Sub → ∀ (y : ℕ) (f : ℤ → M), (∃ m : ℤ, ∀ j < m, f j = 0) → (∀ j, f j ∈ Sub j) → ∀ k : ℤ, (∀ j < k, f j ∈ Sub (j - y)) → (∃ m : ℤ, ∀ j < m, conv w (fun m => u ^ m • f m) j = 0) ∧ (∀ j, conv w (fun m => u ^ m • f m) j ∈ Sub j) ∧ (∀ j < k, conv w (fun m => u ^ m • f m) j ∈ Sub (j - y)) ∧ conv w (fun m => u ^ m • f m) k - (PowerSeries.constantCoeff w * u ^ k) • f k ∈ Sub (k - y) := by
+  first | exact @GlobalTheory.NL.Twist.tri | exact GlobalTheory.NL.Twist.tri | (intros; apply GlobalTheory.NL.Twist.tri <;> assumption)
+end
+
+section
 namespace GlobalTheory.NL.KillLevels
 
 theorem kill {β α M R : Type} [DecidableEq β] [Semiring R] [AddCommMonoid M] [Module R M]
@@ -351,3 +592,4 @@ theorem annihilate : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : 
     rw [sub_add_cancel, Ex_eq (Cm l) h T i ζ y _ hQ]
 
 end GlobalTheory.NL.KillLevels
+end

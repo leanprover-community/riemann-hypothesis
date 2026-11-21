@@ -1,10 +1,293 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasOpBOfMemClosure
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsSymp
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeylElementHasRationalWeilOperatorAdelicFourier
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicSchwartzSpaceMemSpanPureTensors
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalFourierInversionUpToConstant
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ArchimedeanFourierInversionConstant
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchwartzBruhatFiniteAdelesMemSpanRestrictedProdu
 
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
+open scoped GlobalTheory.VacAny
+
+noncomputable section
+
+namespace GlobalTheory.SympChangeBij
+
+open GlobalTheory.SympChange
+
+variable {F : Type} [Field F] {κ : Type} [Fintype κ] [DecidableEq κ]
+
+theorem spAct_one' {R : Type} [CommRing R] [Algebra F R] (w : (κ → R) × (κ → R)) :
+    spAct (1 : Matrix (κ ⊕ κ) (κ ⊕ κ) F) w = w := by
+  have h1 : (1 : Matrix (κ ⊕ κ) (κ ⊕ κ) F).map (algebraMap F R) = 1 :=
+    Matrix.map_one _ (map_zero _) (map_one _)
+  simp only [spAct, h1, Matrix.one_mulVec]
+  rfl
+
+theorem spAct_mul' {R : Type} [CommRing R] [Algebra F R] (G G' : Matrix (κ ⊕ κ) (κ ⊕ κ) F) (w : (κ → R) × (κ → R)) :
+    spAct (G * G') w = spAct G (spAct G' w) := by
+  have h : Sum.elim (spAct G' w).1 (spAct G' w).2 = G'.map (algebraMap F R) *ᵥ Sum.elim w.1 w.2 := by
+    funext i; cases i <;> rfl
+  conv_rhs => rw [spAct, h]
+  simp only [spAct, Matrix.map_mul (f := algebraMap F R), Matrix.mulVec_mulVec]
+
+variable [NumberField F]
+
+def HasOpB (ψ : AddChar (AF F) ℂ) (G : Matrix (κ ⊕ κ) (κ ⊕ κ) F) : Prop :=
+  ∃ (e : ((κ → AF F) → ℂ) →ₗ[ℂ] (κ → AF F) → ℂ) (ei : SInf F κ →L[ℂ] SInf F κ)
+    (ev : ∀ v : Pl F, ((κ → Fv F v) → ℂ) →ₗ[ℂ] (κ → Fv F v) → ℂ),
+    Function.Surjective ei ∧ (∀ Φ ∈ schA F κ, e Φ ∈ schA F κ) ∧
+    (∀ w, ∀ Φ ∈ schA F κ, e (schr ψ w Φ) = schr ψ (spAct G w) (e Φ)) ∧
+    (∀ v, (SB _).map (ev v) = SB _) ∧ (∀ v, ∀ φ ∈ SB (κ → Fv F v), ev v φ = 0 → φ = 0) ∧
+    (∀ v w, ∀ φ ∈ SB (κ → Fv F v),
+      ev v (schr (GlobalTheory.LatVac.psiAt ψ v) w φ) = schr (GlobalTheory.LatVac.psiAt ψ v) (spAct G w) (ev v φ)) ∧
+    (∀ᶠ v in cofinite, ev v (indO v) = indO v) ∧
+    (∀ f φ, (∀ v, φ v ∈ SB _) → (∀ᶠ v in cofinite, φ v = indO v) →
+      e (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure f φ) = GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure (ei f) fun v => ev v (φ v)) ∧
+    Set.BijOn e (schA F κ : Set ((κ → AF F) → ℂ)) (schA F κ : Set ((κ → AF F) → ℂ))
+
+theorem hasOpB_one (ψ : AddChar (AF F) ℂ) : HasOpB (κ := κ) ψ 1 := by
+  refine ⟨LinearMap.id, ContinuousLinearMap.id ℂ _, fun _ => LinearMap.id, Function.surjective_id, fun Φ h => h,
+    fun w Φ _ => by simp [spAct_one'], fun v => Submodule.map_id _, fun v φ _ h => h, fun v w φ _ => by simp [spAct_one'],
+    Filter.Eventually.of_forall fun v => rfl, fun f φ _ _ => rfl, ?_⟩
+  simpa using Set.bijOn_id (schA F κ : Set ((κ → AF F) → ℂ))
+
+theorem hasOpB_mul {ψ : AddChar (AF F) ℂ} {G G' : Matrix (κ ⊕ κ) (κ ⊕ κ) F} (hG : HasOpB ψ G) (hG' : HasOpB ψ G') :
+    HasOpB ψ (G * G') := by
+  obtain ⟨e, ei, ev, hs, hm, hh, hSB, hi, hl, hind, hp, hb⟩ := hG
+  obtain ⟨e', ei', ev', hs', hm', hh', hSB', hi', hl', hind', hp', hb'⟩ := hG'
+  have hmem : ∀ v, ∀ φ ∈ SB (κ → Fv F v), ev' v φ ∈ SB (κ → Fv F v) := fun v φ hφ => by
+    rw [← hSB' v]; exact Submodule.mem_map_of_mem hφ
+  refine ⟨e ∘ₗ e', ei.comp ei', fun v => ev v ∘ₗ ev' v, hs.comp hs', fun Φ h => hm _ (hm' _ h), ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro w Φ hΦ
+    simp only [LinearMap.comp_apply]
+    rw [hh' w Φ hΦ, hh _ _ (hm' _ hΦ), spAct_mul']
+  · intro v
+    rw [Submodule.map_comp, hSB', hSB]
+  · intro v φ hφ h0
+    exact hi' v φ hφ (hi v _ (hmem v φ hφ) h0)
+  · intro v w φ hφ
+    simp only [LinearMap.comp_apply]
+    rw [hl' v w φ hφ, hl v _ _ (hmem v φ hφ), spAct_mul']
+  · filter_upwards [hind, hind'] with v h1 h2
+    simp only [LinearMap.comp_apply, h2, h1]
+  · intro f φ hφ hφv
+    simp only [LinearMap.comp_apply, ContinuousLinearMap.comp_apply]
+    rw [hp' f φ hφ hφv, hp _ _ (fun v => hmem v _ (hφ v))]
+    filter_upwards [hφv, hind'] with v h1 h2
+    rw [h1, h2]
+  · rw [LinearMap.coe_comp]
+    exact hb.comp hb'
+
+theorem hasOpB_of_mem_closure {ψ : AddChar (AF F) ℂ} (hgen : ∀ G ∈ gens (F := F) (κ := κ), HasOpB ψ G) :
+    ∀ G ∈ Submonoid.closure (gens (F := F) (κ := κ)), HasOpB ψ G := fun G hG =>
+  Submonoid.closure_induction (fun x hx => hgen x hx) (hasOpB_one ψ) (fun _ _ _ _ hx hy => hasOpB_mul hx hy) hG
+
+theorem bijOn_of_inv (e e' : ((κ → AF F) → ℂ) →ₗ[ℂ] (κ → AF F) → ℂ) (hm : ∀ Φ ∈ schA F κ, e Φ ∈ schA F κ)
+    (hm' : ∀ Φ ∈ schA F κ, e' Φ ∈ schA F κ) (h1 : ∀ Φ ∈ schA F κ, e' (e Φ) = Φ) (h2 : ∀ Φ ∈ schA F κ, e (e' Φ) = Φ) :
+    Set.BijOn e (schA F κ : Set ((κ → AF F) → ℂ)) (schA F κ : Set ((κ → AF F) → ℂ)) :=
+  Set.InvOn.bijOn (f' := e') ⟨fun Φ h => h1 Φ h, fun Φ h => h2 Φ h⟩ (fun Φ h => hm Φ h) (fun Φ h => hm' Φ h)
+
+end GlobalTheory.SympChangeBij
+end
+end
+
+section
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
+open scoped GlobalTheory.VacAny
+
+noncomputable section
+
+namespace GlobalTheory.SchASpan
+
+theorem mem_span_pure : ∀ (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype κ], ∀ Φ ∈ schA F κ,
+    Φ ∈ Submodule.span ℂ {Ψ : (κ → AF F) → ℂ | ∃ (f : SInf F κ) (φ : ∀ v : Pl F, (κ → Fv F v) → ℂ),
+      GlobalTheory.RatWeilOp.IsFam φ ∧ Ψ = GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure f φ} := by
+  intro F _ _ κ _ Φ hΦ
+  refine (Submodule.span_le.2 ?_) hΦ
+  rintro _ ⟨f, g, hg, rfl⟩
+  let L : ((κ → Af F) → ℂ) →ₗ[ℂ] ((κ → AF F) → ℂ) :=
+    { toFun := fun g => pureA F f g
+      map_add' := fun a b => by funext x; simp only [pureA, Pi.add_apply, mul_add]
+      map_smul' := fun c a => by
+        funext x; simp only [pureA, Pi.smul_apply, smul_eq_mul, RingHom.id_apply]; ring }
+  have h : L g ∈ Submodule.map L (Submodule.span ℂ _) :=
+    Submodule.mem_map_of_mem (GlobalTheory.SBSpan.mem_span_restrictedProd F κ g hg)
+  rw [Submodule.map_span] at h
+  refine Submodule.span_mono ?_ h
+  rintro _ ⟨p, ⟨φ, hφ1, hφ2, rfl⟩, rfl⟩
+  exact ⟨f, φ, ⟨hφ1, hφ2⟩, rfl⟩
+
+end GlobalTheory.SchASpan
+
+end
+end
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
+open scoped GlobalTheory.VacAny
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adelicSchwartzSpace_mem_span_pureTensors : ∀ (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype κ], ∀ Φ ∈ schA F κ,
+    Φ ∈ Submodule.span ℂ {Ψ : (κ → AF F) → ℂ | ∃ (f : SInf F κ) (φ : ∀ v : Pl F, (κ → Fv F v) → ℂ),
+      GlobalTheory.RatWeilOp.IsFam φ ∧ Ψ = GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure f φ} := by
+  atlas_forward_decl GlobalTheory.SchASpan.mem_span_pure
+end
+
+section
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
+open scoped GlobalTheory.VacAny
+
+noncomputable section
+namespace GlobalTheory.FourierLocInv
+
+section General
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+
+theorem inversion_circle [MeasurableSpace k] [BorelSpace k] (ψ : AddChar k Circle) (hc : Continuous ψ) (h1 : ψ ≠ 1)
+    (κ : Type) [Fintype κ] (μ : Measure (κ → k)) [μ.IsAddHaarMeasure] :
+    ∃ d : ℂ, d ≠ 0 ∧ ∀ φ ∈ SB (κ → k), ∀ a : κ → k,
+      ∫ y, (∫ x, φ x * (ψ (x ⬝ᵥ y) : ℂ) ∂μ) * (ψ (y ⬝ᵥ a) : ℂ) ∂μ = d * φ (-a) := by
+  classical
+  haveI := GlobalTheory.SplitWeil.secondCountable k
+  haveI := GlobalTheory.SplitWeil.t2Space k
+  obtain ⟨ν, hν⟩ := (GlobalTheory.SplitWeil.selfDual_measure k ψ hc h1).1
+  haveI := hν.1
+  set m : Measure (κ → k) := Measure.pi fun _ => ν with hm
+  have hμ : μ = μ.addHaarScalarFactor m • m := Measure.isAddLeftInvariant_eq_smul μ m
+  set r := μ.addHaarScalarFactor m with hr_def
+  have hr : r ≠ 0 := by
+    intro h0
+    rw [h0, zero_smul] at hμ
+    exact NeZero.ne μ hμ
+  have hr' : ((r : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hr
+  refine ⟨((r : ℝ) : ℂ) ^ 2, pow_ne_zero 2 hr', fun φ hφ a => ?_⟩
+  have hg : (fun x => φ (x + -a)) ∈ SB (κ → k) :=
+    ⟨hφ.1.comp_continuous (Homeomorph.addRight (-a)).continuous, hφ.2.comp_homeomorph (Homeomorph.addRight (-a))⟩
+  have key := (GlobalTheory.SplitWeil.FourierPi.fourier_pi k κ ψ hc h1 ν hν _ hg).2
+  have hinner : ∀ y, ∫ x, φ (x + -a) * (ψ (x ⬝ᵥ y) : ℂ) ∂m
+      = (∫ x, φ x * (ψ (x ⬝ᵥ y) : ℂ) ∂m) * (ψ (y ⬝ᵥ a) : ℂ) := by
+    intro y
+    rw [GlobalTheory.FourierLocBij.translate_fourier, neg_dotProduct, neg_neg, dotProduct_comm a y, mul_comm]
+  have key' : ∫ y, (∫ x, φ x * (ψ (x ⬝ᵥ y) : ℂ) ∂m) * (ψ (y ⬝ᵥ a) : ℂ) ∂m = φ (-a) := by
+    refine Eq.trans ?_ (key.trans (congrArg φ (zero_add (-a))))
+    refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
+    exact (hinner y).symm
+  have hsm : ∀ G : (κ → k) → ℂ, ∫ y, G y ∂μ = ((r : ℝ) : ℂ) * ∫ y, G y ∂m := by
+    intro G
+    rw [hμ, integral_smul_nnreal_measure, NNReal.smul_def, Complex.real_smul]
+  have hfun : (fun y => (∫ x, φ x * (ψ (x ⬝ᵥ y) : ℂ) ∂μ) * (ψ (y ⬝ᵥ a) : ℂ)) =
+      fun y => ((r : ℝ) : ℂ) * ((∫ x, φ x * (ψ (x ⬝ᵥ y) : ℂ) ∂m) * (ψ (y ⬝ᵥ a) : ℂ)) := by
+    funext y
+    rw [hsm, mul_assoc]
+  rw [show (∫ y, (∫ x, φ x * (ψ (x ⬝ᵥ y) : ℂ) ∂μ) * (ψ (y ⬝ᵥ a) : ℂ) ∂μ) =
+      ∫ y, ((r : ℝ) : ℂ) * ((∫ x, φ x * (ψ (x ⬝ᵥ y) : ℂ) ∂m) * (ψ (y ⬝ᵥ a) : ℂ)) ∂μ from congrArg _ hfun,
+    integral_const_mul, hsm, key']
+  ring
+
+end General
+
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+theorem fourier_inversion : ∀ (F : Type) [Field F] [NumberField F] (v : Pl F) (χ : AddChar (Fv F v) ℂ), Continuous χ → (∀ t, ‖χ t‖ = 1) →
+    χ ≠ 1 → ∀ (κ : Type) [Fintype κ] [MeasurableSpace (κ → Fv F v)] [BorelSpace (κ → Fv F v)]
+    (μ : Measure (κ → Fv F v)) [μ.IsAddHaarMeasure], ∃ d : ℂ, d ≠ 0 ∧ ∀ φ ∈ SB (κ → Fv F v), ∀ a : κ → Fv F v,
+      ∫ y, (∫ x, φ x * χ (x ⬝ᵥ y) ∂μ) * χ (y ⬝ᵥ a) ∂μ = d * φ (-a) := by
+  intro F _ _ v χ hc hn h1 κ _ inst _ μ _
+  letI : MeasurableSpace (Fv F v) := borel _
+  haveI : BorelSpace (Fv F v) := ⟨rfl⟩
+  haveI := GlobalTheory.SplitWeil.secondCountable (Fv F v)
+  have e : inst = MeasurableSpace.pi := by
+    rw [BorelSpace.measurable_eq (α := κ → Fv F v)]
+    exact (BorelSpace.measurable_eq (α := κ → Fv F v) (self := Pi.borelSpace)).symm
+  subst e
+  have hcont : Continuous (GlobalTheory.FourierLocBij.toCircle χ hn) := Continuous.subtype_mk hc _
+  have hne : GlobalTheory.FourierLocBij.toCircle χ hn ≠ 1 := by
+    intro h
+    apply h1
+    ext t
+    simpa [GlobalTheory.FourierLocBij.coe_toCircle] using
+      congrArg (fun ψ : AddChar (Fv F v) Circle => ((ψ t : Circle) : ℂ)) h
+  exact inversion_circle (GlobalTheory.FourierLocBij.toCircle χ hn) hcont hne κ μ
+
+end GlobalTheory.FourierLocInv
+end
+end
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
+open scoped GlobalTheory.VacAny
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_fourier_inversion_up_to_constant : ∀ (F : Type) [Field F] [NumberField F] (v : Pl F) (χ : AddChar (Fv F v) ℂ), Continuous χ → (∀ t, ‖χ t‖ = 1) →
+    χ ≠ 1 → ∀ (κ : Type) [Fintype κ] [MeasurableSpace (κ → Fv F v)] [BorelSpace (κ → Fv F v)]
+    (μ : Measure (κ → Fv F v)) [μ.IsAddHaarMeasure], ∃ d : ℂ, d ≠ 0 ∧ ∀ φ ∈ SB (κ → Fv F v), ∀ a : κ → Fv F v,
+      ∫ y, (∫ x, φ x * χ (x ⬝ᵥ y) ∂μ) * χ (y ⬝ᵥ a) ∂μ = d * φ (-a) := by
+  atlas_forward_decl GlobalTheory.FourierLocInv.fourier_inversion
+end
+
+section
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
+open scoped GlobalTheory.VacAny
+
+namespace GlobalTheory.ArchFourier
+
+theorem fourier_twice_sInf : ∀ (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype κ] [MeasurableSpace (κ → mixedEmbedding.mixedSpace F)]
+    [BorelSpace (κ → mixedEmbedding.mixedSpace F)] (μ : Measure (κ → mixedEmbedding.mixedSpace F)) [μ.IsAddHaarMeasure],
+    ∃ d : ℂ, d ≠ 0 ∧ ∀ (f : SInf F κ) (a : κ → mixedEmbedding.mixedSpace F),
+      ∫ y, (∫ x, f x * Complex.exp (-(2 * Real.pi * Complex.I) *
+          (Algebra.trace ℝ (mixedEmbedding.mixedSpace F) (x ⬝ᵥ y) : ℝ)) ∂μ) *
+        Complex.exp (-(2 * Real.pi * Complex.I) * (Algebra.trace ℝ (mixedEmbedding.mixedSpace F) (y ⬝ᵥ a) : ℝ)) ∂μ =
+      d * f (-a) := by
+  intro F _ _ κ _ _ _ μ hμ
+  classical
+  obtain ⟨⟨c, hc, hinv⟩, hint⟩ := GlobalTheory.fourier_inversion_haar_symm_form (-(traceDot F κ))
+    (fun x y => by simp only [LinearMap.neg_apply, traceDot_comm x y])
+    (fun x hx => traceDot_nondeg x (fun y => by simpa using hx y)) μ hμ
+  refine ⟨(c : ℂ), by exact_mod_cast hc.ne', fun f a => ?_⟩
+  have hk : ∀ x y : κ → mixedEmbedding.mixedSpace F,
+      Complex.exp (2 * Real.pi * Complex.I * (((-(traceDot F κ)) x y : ℝ) : ℂ)) =
+        Complex.exp (-(2 * Real.pi * Complex.I) *
+          (Algebra.trace ℝ (mixedEmbedding.mixedSpace F) (x ⬝ᵥ y) : ℝ)) := by
+    intro x y
+    rw [LinearMap.neg_apply, LinearMap.neg_apply, traceDot_apply]
+    push_cast
+    ring_nf
+  have h := hinv f f.continuous (hint f).1 (hint f).2 a
+  simp only [hk] at h
+  exact h
+
+end GlobalTheory.ArchFourier
+end
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
+open scoped GlobalTheory.VacAny
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.archimedean_fourier_inversion_constant : ∀ (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype κ] [MeasurableSpace (κ → mixedEmbedding.mixedSpace F)]
+    [BorelSpace (κ → mixedEmbedding.mixedSpace F)] (μ : Measure (κ → mixedEmbedding.mixedSpace F)) [μ.IsAddHaarMeasure],
+    ∃ d : ℂ, d ≠ 0 ∧ ∀ (f : SInf F κ) (a : κ → mixedEmbedding.mixedSpace F),
+      ∫ y, (∫ x, f x * Complex.exp (-(2 * Real.pi * Complex.I) *
+          (Algebra.trace ℝ (mixedEmbedding.mixedSpace F) (x ⬝ᵥ y) : ℝ)) ∂μ) *
+        Complex.exp (-(2 * Real.pi * Complex.I) * (Algebra.trace ℝ (mixedEmbedding.mixedSpace F) (y ⬝ᵥ a) : ℝ)) ∂μ =
+      d * f (-a) := by
+  atlas_forward_decl GlobalTheory.ArchFourier.fourier_twice_sInf
+end
+
+section
 open scoped TensorProduct NNReal Matrix
 open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
@@ -233,3 +516,5 @@ theorem weyl_hasOpB : ∀ (F : Type) [Field F] [NumberField F] (ψ : AddChar (AF
     · rw [he', map_smul, hT4 Φ hΦ, smul_smul, inv_mul_cancel₀ hCne, one_smul]
 
 end GlobalTheory.WeylBij
+end
+end

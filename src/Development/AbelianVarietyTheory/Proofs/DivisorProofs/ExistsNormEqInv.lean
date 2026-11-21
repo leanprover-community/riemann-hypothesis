@@ -1,9 +1,70 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.SiegelWeilAnisotropicHermitian
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EisAtMinusRho
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsGoodPlace
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ShellInt
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InvApply
 import GroundTheory.GlobalFields.LocalAtPlace
+
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet GlobalTheory.EisRes
+open GlobalTheory.Doubling (absE)
+open GlobalTheory.PoleFactor
+
+noncomputable section
+
+namespace GlobalTheory.PoleGK
+
+open IsDedekindDomain
+open Formalism.UG (cT)
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+
+def IsGoodPlace (σ : E →ₐ[F] E) {n : ℕ} (J : Matrix (Fin n) (Fin n) E) (L : Submodule (𝓞 E) (Fin n → E))
+    (x y : Matrix (Fin n) (Fin 1) E) (v : HeightOneSpectrum (𝓞 F)) : Prop :=
+  ∃ (m : ℕ) (B : Matrix (Fin n) (Fin m) E) (B' : Matrix (Fin m) (Fin n) E) (θ : E), m + 2 = n ∧ B' * B = 1 ∧
+    cT (σ : E →+* E) x * J * B = 0 ∧ cT (σ : E →+* E) y * J * B = 0 ∧ B' * x = 0 ∧ B' * y = 0 ∧
+    B * B' + x * (cT (σ : E →+* E) y * J) + y * (cT (σ : E →+* E) x * J) = 1 ∧
+    θ ≠ 0 ∧ σ θ = -θ ∧ inclR (F := F) (Fv F v) θ ∈ intLoc F E v ∧ inclR (F := F) (Fv F v) θ⁻¹ ∈ intLoc F E v ∧
+    (2 : 𝓞 F) ∉ v.asIdeal ∧
+    ∀ z : Fin n → Fv F v ⊗[F] E, z ∈ latLoc F L v ↔
+      (((cT (σ : E →+* E) y * J).map (inclR (F := F) (Fv F v)) *ᵥ z) 0 ∈ intLoc F E v ∧
+        (∀ i, (B'.map (inclR (F := F) (Fv F v)) *ᵥ z) i ∈ intLoc F E v) ∧
+        ((cT (σ : E →+* E) x * J).map (inclR (F := F) (Fv F v)) *ᵥ z) 0 ∈ intLoc F E v)
+
+end GlobalTheory.PoleGK
+
+end
+end
+
+section
+noncomputable section
+
+namespace GlobalTheory.PoleInertCalc
+
+variable {K : Type} [NormedField K]
+
+def supN {m : ℕ} (ξ : Fin m → K × K) : ℝ := ⨆ i, max ‖(ξ i).1‖ ‖(ξ i).2‖
+
+def hQ (d : K) {m : ℕ} (ξ : Fin m → K × K) : K := ∑ i, ((ξ i).1 ^ 2 - d * (ξ i).2 ^ 2)
+
+def rad (d : K) {m : ℕ} (ξ : Fin m → K × K) : ℝ := max (max 1 (supN ξ)) ‖hQ d ξ‖
+
+def c0 (q s : ℝ) : ℝ := (1 - q ^ (-s)) / (1 - q ^ (1 - s))
+
+def nIso (q : ℝ) (m : ℕ) : ℝ := q ^ (2 * (m : ℤ) - 1) + (-1) ^ m * (q ^ m - q ^ ((m : ℤ) - 1)) - 1
+
+def primDen (q : ℝ) (m e : ℕ) : ℝ :=
+  if e = 0 then 1 - q ^ (-(2 * (m : ℤ))) else nIso q m * q ^ (-(2 * (m : ℤ))) * q ^ (1 - (e : ℤ))
+
+def shellInt (q u : ℝ) (m j : ℕ) : ℝ :=
+  u ^ j * primDen q m j + ∑ e ∈ Finset.range j, (primDen q m e - primDen q m (e + 1)) * u ^ (2 * j - e)
+
+end GlobalTheory.PoleInertCalc
+
+end
+end
+
+section
 open scoped TensorProduct NNReal Matrix
 open NumberField MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet GlobalTheory.EisRes
 open GlobalTheory.Doubling (absE)
@@ -57,3 +118,4 @@ open GlobalTheory.NormFvFacts in
 theorem GlobalTheory.NormFvFacts.main : ∀ (F : Type) [Field F] [NumberField F] (v : IsDedekindDomain.HeightOneSpectrum (𝓞 F)), 1 < (Ideal.absNorm v.asIdeal : ℝ) ∧ (∀ x : Fv F v, x ≠ 0 → ∃ k : ℤ, ‖x‖ = (Ideal.absNorm v.asIdeal : ℝ) ^ k) ∧ (∀ x : Fv F v, ‖x‖ ≤ 1 ↔ x ∈ v.adicCompletionIntegers F) ∧ (∃ ϖ : Fv F v, ‖ϖ‖ = (Ideal.absNorm v.asIdeal : ℝ)⁻¹) ∧ ∀ μ : Measure (Fv F v), μ.IsAddHaarMeasure → SigmaFinite μ :=
   fun F _ _ v => ⟨absNorm_gt_one F v, norm_eq_zpow F v, norm_le_one_iff F v, exists_norm_eq_inv F v,
     fun μ hμ => sigmaFinite_haar F v μ hμ⟩
+end

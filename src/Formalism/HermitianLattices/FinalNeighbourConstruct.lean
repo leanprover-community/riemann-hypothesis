@@ -31,9 +31,7 @@ import Formalism.HermitianLattices.HermitianLatticesProofs.UnimodUnramUnique
 
 namespace Formalism.HermitianLatticesTheory
 
-theorem final_dualBasic : DualBasic := Formalism.HermitianLatticesTheory.dualBasic
 theorem final_isomAct : IsomAct := Formalism.HermitianLatticesTheory.isomAct
-theorem final_locDual : LocDual := Formalism.HermitianLatticesTheory.locDual
 theorem final_genusBasic : GenusBasic := Formalism.HermitianLatticesTheory.genusBasic
 theorem final_finIntermediate : FinIntermediate := Formalism.HermitianLatticesTheory.finIntermediate
 theorem final_shortVectors : ShortVectors := Formalism.HermitianLatticesTheory.shortVectors

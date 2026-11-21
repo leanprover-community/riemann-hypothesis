@@ -169,11 +169,6 @@ def pointsMulEquiv (T : Over S) (X : Type u) [AddCommGroup X] :
   toEquiv := (pointsEquiv T X).trans Multiplicative.ofAdd
   map_mul' x y := congrArg Multiplicative.ofAdd (pointsEquiv_mul x y)
 
-theorem pointsEquiv_comp (h : T' ⟶ T) (g : T ⟶ splitTorus S X) :
-    pointsEquiv T' X (h ≫ g) =
-      (MonoidHom.toAdditive (Units.map h.left.appTop.hom.toMonoidHom)).comp (pointsEquiv T X g) := by
-  ext a
-  exact val_comp h g a
 
 theorem charUnit_val (a : X) : (charUnit S X a).val = chi X a := by
   have h1 : chi (S := S) X a = (torusFst S X).appTop.hom
@@ -586,11 +581,6 @@ theorem isMonHom_mulN {S : Scheme.{u}} (G : Over S) [GrpObj G] [IsCommMonObj G] 
     rw [h2, MonObj.comp_pow, MonObj.comp_pow, MonObj.comp_pow, Category.comp_id, Category.comp_id,
       Category.comp_id, ← mul_pow, ← h1]
 
-theorem connectedSpace_quotient {R : Type*} [CommRing R] [ConnectedSpace (PrimeSpectrum R)]
-    (I : Ideal R) (hI : I ≤ nilradical R) : ConnectedSpace (PrimeSpectrum (R ⧸ I)) := by
-  have h := PrimeSpectrum.isHomeomorph_comap (Ideal.Quotient.mk I)
-    (fun x => ⟨1, one_pos, by simpa using Ideal.Quotient.mk_surjective x⟩) (by simpa using hI)
-  exact h.homeomorph.symm.surjective.connectedSpace h.homeomorph.symm.continuous
 
 theorem connectedSpace_of_isLocalRing (R : Type*) [CommRing R] [IsLocalRing R] :
     ConnectedSpace (PrimeSpectrum R) := by

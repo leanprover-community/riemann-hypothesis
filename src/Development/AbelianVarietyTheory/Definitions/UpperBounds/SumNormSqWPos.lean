@@ -58,9 +58,6 @@ theorem Wdiv_of_mem (hx : x ∈ X.dom) :
   unfold Wdiv
   rw [if_pos hx]
 
-theorem Wdiv_of_notMem (hx : x ∉ X.dom) : Wdiv X Xa Fl n x = 0 := by
-  unfold Wdiv
-  rw [if_neg hx]
 
 theorem sum_normSq_pos {N : ℕ} {a : Fin N → ℂ} (h : ∃ k, a k ≠ 0) : 0 < ∑ k, ‖a k‖ ^ 2 := by
   obtain ⟨k, hk⟩ := h

@@ -710,35 +710,6 @@ theorem extra (hS : ∀ w, conjPl w ∈ S ↔ w ∈ S) (ha : a ≠ 0) (hk : ∀ 
 
 end two
 
-theorem two.Iw_true {K : Type} [Field K] [NumberField K] [StarRing K] (v0 : InfinitePlace K)
-    (S : Finset (HeightOneSpectrum (𝓞 K))) (a : K) (kap l : InfinitePlace K → ℝ) (ha : a ≠ 0)
-    (w : HeightOneSpectrum (𝓞 K)) : (two.dat K v0 S a kap l).Iw () true w = vw w a := by
-  have hf : (fun i => ∑ k, (a • (1 : Matrix (Fin 1) (Fin 1) K)) k i • sb K 1 k) =
-      fun i => a • sb K 1 i := by
-    funext i
-    fin_cases i
-    simp [Matrix.smul_apply]
-  have hmat : matLat (a • (1 : Matrix (Fin 1) (Fin 1) K)) (sl K 1) =
-      Submodule.span (𝓞 K) (Set.range fun i => a • sb K 1 i) := by
-    unfold matLat sl
-    rw [Submodule.map_span, ← Set.range_comp]
-    exact congrArg (fun s => Submodule.span (𝓞 K) s)
-      (congrArg Set.range (funext fun i => by simp [smul_one_mulVec]))
-  have hlin : LinearIndependent K (fun i => a • sb K 1 i) := by
-    rw [linearIndependent_unique_iff]
-    intro h0
-    exact ha (by simpa [sb] using congrFun h0 0)
-  have hlat : Submodule.IsLattice K (matLat (a • (1 : Matrix (Fin 1) (Fin 1) K)) (sl K 1)) := by
-    rw [hmat]
-    refine ⟨Submodule.fg_span (Set.finite_range _), ?_⟩
-    rw [Submodule.span_span_of_tower]
-    exact hlin.span_eq_top_of_card_eq_finrank (by simp)
-  have hidx := (index_change_formula K 1 _ hlat (sb K 1) (locB K 1 w).1 w (a • 1)
-    ⟨hf ▸ hlin, by rw [hf, hmat]⟩).1
-  have h2 : (two.dat K v0 S a kap l).Iw () true w =
-      vw w (a • (1 : Matrix (Fin 1) (Fin 1) K)).det := hidx
-  rw [h2, Matrix.det_smul, Matrix.det_one]
-  simp
 
 section Pair
 
@@ -785,20 +756,12 @@ theorem conjAt (v0 : InfinitePlace K3) : IsConjAt v0 := by
   intro a
   exact IsCMField.complexEmbedding_complexConj K3 v0.embedding a
 
-theorem example_field_totally_complex : IsTotallyComplex K3 := by
-  infer_instance
 
-theorem example_field_has_infinite_place : Nonempty (InfinitePlace K3) := by
-  infer_instance
 
 def coreOne (v0 : InfinitePlace K3) :
     IndefCore (one.df K3 v0) (one.df K3 v0) (one.dc K3 v0) (one.sp K3 v0) (one.num K3 v0) :=
   ⟨one.side K3 v0, one.cols K3 v0, one.extra K3 v0⟩
 
-theorem quadratic_example_rank_one_package (v0 : InfinitePlace K3) (C CH : ℝ) :
-    (one.df K3 v0).WF ∧ Nonempty (IndefPkg (amb (one.base K3 v0))
-      (fun _ => ⟨one.df K3 v0, one.df K3 v0, one.dc K3 v0, one.sp K3 v0, scaleOf (one.num K3 v0)⟩) C CH) := by
-  exact ⟨one.wf K3 v0 (conjAt v0), ⟨pkgOf rfl (coreOne v0) C CH⟩⟩
 
 def coreTwo (v0 : InfinitePlace K3) (w : HeightOneSpectrum (𝓞 K3)) :
     IndefCore (two.df K3 v0) (two.df K3 v0) (two.dc K3 v0 3) (two.sp K3 v0 3)
@@ -814,9 +777,6 @@ def faceTwo (v0 : InfinitePlace K3) (w : HeightOneSpectrum (𝓞 K3)) : IndefFac
   fc := fun _ => ⟨two.df K3 v0, two.df K3 v0, two.dc K3 v0 3, two.sp K3 v0 3,
     scaleOf (two.num K3 v0 (pairSet w) 3 (fun _ => 2) (fun _ => 5))⟩
 
-theorem quadratic_example_rank_two_package (v0 : InfinitePlace K3) (w : HeightOneSpectrum (𝓞 K3)) (C CH : ℝ) :
-    (two.df K3 v0).WF ∧ Nonempty (IndefPkg (faceTwo v0 w).A (faceTwo v0 w).fc C CH) := by
-  exact ⟨two.wf K3 v0 (conjAt v0), ⟨pkgOf rfl (coreTwo v0 w) C CH⟩⟩
 
 end Concrete
 

@@ -1,7 +1,301 @@
 import Mathlib
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryApproximation.SkewApprox
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryApproximation.MemIntOEOfIsIntegral
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryApproximation.Development
 import Lemmata.GeneralBFactRightTer.Imports
 
+section
+noncomputable section
+
+open Matrix TensorProduct NumberField IsDedekindDomain
+
+namespace PI.UnitaryApproxFinWork
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+variable {n : Type} [Fintype n] [DecidableEq n]
+
+def MS (E : Type) [Field E] [NumberField E] [Algebra F E] (v : HeightOneSpectrum (𝓞 F))
+    (M : Matrix n n (E ⊗[F] v.adicCompletion F)) : Prop :=
+  ∀ i j, M i j ∈ Sv E v
+
+def MC (E : Type) [Field E] [NumberField E] [Algebra F E] (v : HeightOneSpectrum (𝓞 F)) (d : 𝓞 F)
+    (M : Matrix n n (E ⊗[F] v.adicCompletion F)) : Prop :=
+  ∃ A, MS E v A ∧ M = dv E v d • A
+
+variable {v : HeightOneSpectrum (𝓞 F)}
+
+theorem MS_mul {M N : Matrix n n (E ⊗[F] v.adicCompletion F)} (hM : MS E v M) (hN : MS E v N) :
+    MS E v (M * N) := fun i j => by
+  rw [Matrix.mul_apply]
+  exact Subring.sum_mem _ fun k _ => Subring.mul_mem _ (hM i k) (hN k j)
+
+theorem MS_add {M N : Matrix n n (E ⊗[F] v.adicCompletion F)} (hM : MS E v M) (hN : MS E v N) :
+    MS E v (M + N) := fun i j => Subring.add_mem _ (hM i j) (hN i j)
+
+theorem MS_sub {M N : Matrix n n (E ⊗[F] v.adicCompletion F)} (hM : MS E v M) (hN : MS E v N) :
+    MS E v (M - N) := fun i j => Subring.sub_mem _ (hM i j) (hN i j)
+
+theorem MS_one : MS E v (1 : Matrix n n (E ⊗[F] v.adicCompletion F)) := fun i j => by
+  rw [Matrix.one_apply]
+  split_ifs
+  · exact Subring.one_mem _
+  · exact Subring.zero_mem _
+
+theorem MS_smul {a : E ⊗[F] v.adicCompletion F} (ha : a ∈ Sv E v)
+    {M : Matrix n n (E ⊗[F] v.adicCompletion F)} (hM : MS E v M) : MS E v (a • M) := fun i j => by
+  rw [Matrix.smul_apply, smul_eq_mul]
+  exact Subring.mul_mem _ ha (hM i j)
+
+def toS {M : Matrix n n (E ⊗[F] v.adicCompletion F)} (hM : MS E v M) : Matrix n n (Sv E v) :=
+  fun i j => ⟨M i j, hM i j⟩
+
+theorem map_toS {M : Matrix n n (E ⊗[F] v.adicCompletion F)} (hM : MS E v M) :
+    (Sv E v).subtype.mapMatrix (toS hM) = M := by
+  ext i j
+  rfl
+
+theorem MS_adjugate {M : Matrix n n (E ⊗[F] v.adicCompletion F)} (hM : MS E v M) :
+    MS E v M.adjugate := by
+  intro i j
+  rw [← map_toS hM, ← RingHom.map_adjugate]
+  exact ((toS hM).adjugate i j).2
+
+theorem det_mem {M : Matrix n n (E ⊗[F] v.adicCompletion F)} (hM : MS E v M) : M.det ∈ Sv E v := by
+  rw [← map_toS hM, ← RingHom.map_det]
+  exact (toS hM).det.2
+
+private lemma dv_mem_Sv' (d : 𝓞 F) : dv E v d ∈ Sv E v := by
+  apply Subring.subset_closure
+  left
+  exact ⟨⟨algebraMap F E (d : F),
+    ⟨⟨algebraMap F E (d : F), (RingOfIntegers.isIntegral_coe d).algebraMap⟩, rfl⟩⟩, rfl⟩
+
+theorem det_one_add (π : 𝓞 F) {A : Matrix n n (E ⊗[F] v.adicCompletion F)} (hA : MS E v A) :
+    ∃ s ∈ Sv E v, (1 + dv E v π • A).det = 1 + dv E v π * s := by
+  let p : Sv E v := ⟨dv E v π, dv_mem_Sv' π⟩
+  let B := toS hA
+  let I : Ideal (Sv E v) := Ideal.span {p}
+  have hp0 : Ideal.Quotient.mk I p = 0 :=
+    Ideal.Quotient.eq_zero_iff_mem.2 (Ideal.subset_span rfl)
+  have h0 : (Ideal.Quotient.mk I).mapMatrix (p • B) = 0 := by
+    ext i j
+    simp [hp0]
+  have hmap : (Ideal.Quotient.mk I).mapMatrix (1 + p • B) = 1 := by
+    rw [map_add, map_one, h0, add_zero]
+  have hdet : Ideal.Quotient.mk I ((1 + p • B).det - 1) = 0 := by
+    rw [map_sub, RingHom.map_det, hmap, Matrix.det_one, map_one, sub_self]
+  obtain ⟨t, ht⟩ := Ideal.mem_span_singleton'.1 (Ideal.Quotient.eq_zero_iff_mem.1 hdet)
+  refine ⟨(t : E ⊗[F] v.adicCompletion F), t.2, ?_⟩
+  have h2 : (Sv E v).subtype.mapMatrix (1 + p • B) = 1 + dv E v π • A := by
+    rw [map_add, map_one]
+    congr 1
+  have h4 : (1 + p • B).det = 1 + p * t := by
+    rw [mul_comm, ht]
+    ring
+  rw [← h2, ← RingHom.map_det, h4]
+  simp [p]
+
+theorem MC_entries {d : 𝓞 F} {M : Matrix n n (E ⊗[F] v.adicCompletion F)} (h : MC E v d M) (i j : n) :
+    Cong E v d (M i j) := by
+  obtain ⟨A, hA, rfl⟩ := h
+  exact ⟨A i j, hA i j, by rw [Matrix.smul_apply, smul_eq_mul]⟩
+
+theorem MC_of_entries {d : 𝓞 F} {M : Matrix n n (E ⊗[F] v.adicCompletion F)}
+    (h : ∀ i j, Cong E v d (M i j)) : MC E v d M := by
+  choose t ht heq using h
+  refine ⟨Matrix.of fun i j => t i j, fun i j => ht i j, ?_⟩
+  ext i j
+  rw [Matrix.smul_apply, Matrix.of_apply, smul_eq_mul]
+  exact heq i j
+
+theorem MC_cancel {c e : 𝓞 F} (hc : c ≠ 0) {M A : Matrix n n (E ⊗[F] v.adicCompletion F)}
+    (h : dv E v c • M = dv E v (c * e) • A) : M = dv E v e • A := by
+  have hx : algebraMap F E (c : F) ≠ 0 := by simpa using hc
+  have hu : IsUnit (dv E v c) :=
+    (IsUnit.mk0 _ hx).map (PI.UnitaryApproxDefs.inclE (F := F) (v.adicCompletion F))
+  have hmul : dv E v (c * e) = dv E v c * dv E v e := by simp [dv]
+  rw [hmul, mul_smul] at h
+  exact hu.smul_left_cancel.1 h
+
+theorem sigma_mem_intOE (σ : E →ₐ[F] E) {x : E} (hx : x ∈ PI.UnitaryApproxDefs.intOE E) : σ x ∈ PI.UnitaryApproxDefs.intOE E := by
+  simp only [PI.UnitaryApproxDefs.intOE, RingHom.mem_range] at hx ⊢
+  obtain ⟨y, rfl⟩ := hx
+  exact ⟨⟨σ y, (RingOfIntegers.isIntegral_coe y).map σ.toRingHom.toIntAlgHom⟩, rfl⟩
+
+theorem sigR_mem_Sv (σ : E →ₐ[F] E) {s : E ⊗[F] v.adicCompletion F} (hs : s ∈ Sv E v) :
+    PI.UnitaryApproxDefs.sigR σ (v.adicCompletion F) s ∈ Sv E v := by
+  have h : Sv E v ≤ (Sv E v).comap (PI.UnitaryApproxDefs.sigR σ (v.adicCompletion F)) := by
+    refine Subring.closure_le.2 ?_
+    rintro _ (⟨⟨x, hx⟩, rfl⟩ | ⟨⟨y, hy⟩, rfl⟩)
+    · simp only [Subring.coe_comap, Set.mem_preimage]
+      apply Subring.subset_closure
+      left
+      exact ⟨⟨σ x, sigma_mem_intOE σ hx⟩, by simp [PI.UnitaryApproxDefs.sigR]⟩
+    · simp only [Subring.coe_comap, Set.mem_preimage]
+      apply Subring.subset_closure
+      right
+      exact ⟨⟨y, hy⟩, by simp [PI.UnitaryApproxDefs.sigR]⟩
+  exact h hs
+
+theorem MS_cT (σ : E →ₐ[F] E) {M : Matrix n n (E ⊗[F] v.adicCompletion F)} (hM : MS E v M) :
+    MS E v (PI.UnitaryApproxDefs.cT (PI.UnitaryApproxDefs.sigR σ (v.adicCompletion F)) M) := fun i j => sigR_mem_Sv σ (hM j i)
+
+theorem sigR_dv (σ : E →ₐ[F] E) (d : 𝓞 F) : PI.UnitaryApproxDefs.sigR σ (v.adicCompletion F) (dv E v d) = dv E v d := by
+  simp [PI.UnitaryApproxDefs.sigR, PI.UnitaryApproxDefs.inclE, dv]
+
+theorem cT_map (σ : E →ₐ[F] E) (M : Matrix n n E) :
+    PI.UnitaryApproxDefs.cT (PI.UnitaryApproxDefs.sigR σ (v.adicCompletion F)) (M.map (PI.UnitaryApproxDefs.inclE (F := F) (v.adicCompletion F))) =
+      (PI.UnitaryApproxDefs.cT (σ : E →+* E) M).map (PI.UnitaryApproxDefs.inclE (F := F) (v.adicCompletion F)) := by
+  ext i j
+  simp [PI.UnitaryApproxDefs.cT, PI.UnitaryApproxDefs.sigR, PI.UnitaryApproxDefs.inclE]
+
+end PI.UnitaryApproxFinWork
+
+end
+end
+
+section
+noncomputable section
+
+open Matrix
+
+namespace PI.UnitaryApproxFinWork
+
+variable {n : Type} [Fintype n] [DecidableEq n] {A : Type} [CommRing A] (ρ : A →+* A)
+
+theorem cT_add (M N : Matrix n n A) : PI.UnitaryApproxDefs.cT ρ (M + N) = PI.UnitaryApproxDefs.cT ρ M + PI.UnitaryApproxDefs.cT ρ N := by
+  ext i j
+  simp [PI.UnitaryApproxDefs.cT]
+
+theorem cT_sub (M N : Matrix n n A) : PI.UnitaryApproxDefs.cT ρ (M - N) = PI.UnitaryApproxDefs.cT ρ M - PI.UnitaryApproxDefs.cT ρ N := by
+  ext i j
+  simp [PI.UnitaryApproxDefs.cT]
+
+theorem cayley_unitary (J X : Matrix n n A) (hX : PI.UnitaryApproxDefs.cT ρ X * J + J * X = 0)
+    (hQ : IsUnit (1 + X).det) :
+    PI.UnitaryApproxDefs.cT ρ ((1 - X) * (1 + X)⁻¹) * J * ((1 - X) * (1 + X)⁻¹) = J := by
+  have hXJ : PI.UnitaryApproxDefs.cT ρ X * J = -(J * X) := eq_neg_of_add_eq_zero_left hX
+  have hcP : PI.UnitaryApproxDefs.cT ρ (1 - X) * J = J * (1 + X) := by
+    rw [cT_sub ρ, PI.UnitaryApproxDefs.cT_one, sub_mul, one_mul, hXJ, sub_neg_eq_add, mul_add, mul_one]
+  have hcQ : PI.UnitaryApproxDefs.cT ρ (1 + X) * J = J * (1 - X) := by
+    rw [cT_add ρ, PI.UnitaryApproxDefs.cT_one, add_mul, one_mul, hXJ, mul_sub, mul_one, sub_eq_add_neg]
+  have hinvQ : PI.UnitaryApproxDefs.cT ρ (1 + X)⁻¹ * PI.UnitaryApproxDefs.cT ρ (1 + X) = 1 := by
+    rw [← PI.UnitaryApproxDefs.cT_mul, Matrix.mul_nonsing_inv _ hQ, PI.UnitaryApproxDefs.cT_one]
+  have hcomm : (1 + X) * (1 - X) = (1 - X) * (1 + X) := by noncomm_ring
+  rw [PI.UnitaryApproxDefs.cT_mul]
+  calc PI.UnitaryApproxDefs.cT ρ (1 + X)⁻¹ * PI.UnitaryApproxDefs.cT ρ (1 - X) * J * ((1 - X) * (1 + X)⁻¹)
+      = PI.UnitaryApproxDefs.cT ρ (1 + X)⁻¹ * (PI.UnitaryApproxDefs.cT ρ (1 - X) * J) * (1 - X) * (1 + X)⁻¹ := by simp only [mul_assoc]
+    _ = PI.UnitaryApproxDefs.cT ρ (1 + X)⁻¹ * J * ((1 + X) * (1 - X)) * (1 + X)⁻¹ := by rw [hcP]; simp only [mul_assoc]
+    _ = PI.UnitaryApproxDefs.cT ρ (1 + X)⁻¹ * J * (1 - X) * ((1 + X) * (1 + X)⁻¹) := by rw [hcomm]; simp only [mul_assoc]
+    _ = PI.UnitaryApproxDefs.cT ρ (1 + X)⁻¹ * (J * (1 - X)) := by rw [Matrix.mul_nonsing_inv _ hQ, mul_one, mul_assoc]
+    _ = PI.UnitaryApproxDefs.cT ρ (1 + X)⁻¹ * (PI.UnitaryApproxDefs.cT ρ (1 + X) * J) := by rw [hcQ]
+    _ = J := by rw [← mul_assoc, hinvQ, one_mul]
+
+theorem cayley_mem_UJ (J X : Matrix n n A) (hJd : IsUnit J.det) (hX : PI.UnitaryApproxDefs.cT ρ X * J + J * X = 0)
+    (hQ : IsUnit (1 + X).det) :
+    ∃ γ ∈ PI.UnitaryApproxDefs.UJ ρ J, (γ : Matrix n n A) = (1 - X) * (1 + X)⁻¹ := by
+  have hU := cayley_unitary ρ J X hX hQ
+  have hdet := congrArg Matrix.det hU
+  rw [Matrix.det_mul, Matrix.det_mul] at hdet
+  have h2 : J.det * ((PI.UnitaryApproxDefs.cT ρ ((1 - X) * (1 + X)⁻¹)).det * ((1 - X) * (1 + X)⁻¹).det) = J.det * 1 := by
+    rw [mul_one]
+    calc J.det * ((PI.UnitaryApproxDefs.cT ρ ((1 - X) * (1 + X)⁻¹)).det * ((1 - X) * (1 + X)⁻¹).det)
+        = (PI.UnitaryApproxDefs.cT ρ ((1 - X) * (1 + X)⁻¹)).det * J.det * ((1 - X) * (1 + X)⁻¹).det := by ring
+      _ = J.det := hdet
+  have h3 := hJd.mul_left_cancel h2
+  have hu : IsUnit ((1 - X) * (1 + X)⁻¹).det := isUnit_iff_exists_inv.2 ⟨_, by rw [mul_comm]; exact h3⟩
+  exact ⟨Matrix.nonsingInvUnit _ hu, hU, rfl⟩
+
+theorem lie_of_unitary (J g : Matrix n n A) (hg : PI.UnitaryApproxDefs.cT ρ g * J * g = J) (hP : IsUnit (1 + g).det) :
+    PI.UnitaryApproxDefs.cT ρ ((1 - g) * (1 + g)⁻¹) * J + J * ((1 - g) * (1 + g)⁻¹) = 0 := by
+  have hL : PI.UnitaryApproxDefs.cT ρ (1 + g)⁻¹ * PI.UnitaryApproxDefs.cT ρ (1 + g) = 1 := by
+    rw [← PI.UnitaryApproxDefs.cT_mul, Matrix.mul_nonsing_inv _ hP, PI.UnitaryApproxDefs.cT_one]
+  have hLinv : PI.UnitaryApproxDefs.cT ρ (1 + g) * PI.UnitaryApproxDefs.cT ρ (1 + g)⁻¹ = 1 := by
+    rw [← PI.UnitaryApproxDefs.cT_mul, Matrix.nonsing_inv_mul _ hP, PI.UnitaryApproxDefs.cT_one]
+  have hR : (1 + g) * (1 + g)⁻¹ = 1 := Matrix.mul_nonsing_inv _ hP
+  have e1 : (1 - PI.UnitaryApproxDefs.cT ρ g) * J * (1 + g) + (1 + PI.UnitaryApproxDefs.cT ρ g) * J * (1 - g) =
+      J + J - (PI.UnitaryApproxDefs.cT ρ g * J * g + PI.UnitaryApproxDefs.cT ρ g * J * g) := by noncomm_ring
+  have key : PI.UnitaryApproxDefs.cT ρ (1 + g) * (PI.UnitaryApproxDefs.cT ρ ((1 - g) * (1 + g)⁻¹) * J + J * ((1 - g) * (1 + g)⁻¹)) * (1 + g) = 0 := by
+    rw [PI.UnitaryApproxDefs.cT_mul]
+    calc PI.UnitaryApproxDefs.cT ρ (1 + g) * (PI.UnitaryApproxDefs.cT ρ (1 + g)⁻¹ * PI.UnitaryApproxDefs.cT ρ (1 - g) * J + J * ((1 - g) * (1 + g)⁻¹)) * (1 + g)
+        = (PI.UnitaryApproxDefs.cT ρ (1 + g) * PI.UnitaryApproxDefs.cT ρ (1 + g)⁻¹) * PI.UnitaryApproxDefs.cT ρ (1 - g) * J * (1 + g) +
+            PI.UnitaryApproxDefs.cT ρ (1 + g) * J * (1 - g) * ((1 + g)⁻¹ * (1 + g)) := by
+          simp only [mul_add, add_mul, mul_assoc]
+          abel
+      _ = PI.UnitaryApproxDefs.cT ρ (1 - g) * J * (1 + g) + PI.UnitaryApproxDefs.cT ρ (1 + g) * J * (1 - g) := by
+          rw [hLinv, Matrix.nonsing_inv_mul _ hP, one_mul, mul_one]
+      _ = 0 := by
+          rw [cT_sub ρ, cT_add ρ, PI.UnitaryApproxDefs.cT_one, e1, hg, sub_self]
+  calc PI.UnitaryApproxDefs.cT ρ ((1 - g) * (1 + g)⁻¹) * J + J * ((1 - g) * (1 + g)⁻¹)
+      = PI.UnitaryApproxDefs.cT ρ (1 + g)⁻¹ * PI.UnitaryApproxDefs.cT ρ (1 + g) * (PI.UnitaryApproxDefs.cT ρ ((1 - g) * (1 + g)⁻¹) * J + J * ((1 - g) * (1 + g)⁻¹)) *
+          ((1 + g) * (1 + g)⁻¹) := by rw [hL, hR, one_mul, mul_one]
+    _ = PI.UnitaryApproxDefs.cT ρ (1 + g)⁻¹ * (PI.UnitaryApproxDefs.cT ρ (1 + g) * (PI.UnitaryApproxDefs.cT ρ ((1 - g) * (1 + g)⁻¹) * J + J * ((1 - g) * (1 + g)⁻¹)) *
+          (1 + g)) * (1 + g)⁻¹ := by simp only [mul_assoc]
+    _ = 0 := by rw [key, mul_zero, zero_mul]
+
+end PI.UnitaryApproxFinWork
+
+end
+end
+
+section
+noncomputable section
+
+open Matrix TensorProduct NumberField IsDedekindDomain
+
+namespace PI.UnitaryApproxFinWork
+
+theorem dv_two {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+    (v : HeightOneSpectrum (𝓞 F)) : dv E v 2 = 2 := by
+  have h2 : ((2 : 𝓞 F) : F) = 2 := map_ofNat (algebraMap (𝓞 F) F) 2
+  simp only [dv, h2, map_ofNat]
+
+theorem skew_approx (hAE : ApproxE) {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
+    [Algebra F E] {n : Type} [Fintype n] [DecidableEq n] (σ : E →ₐ[F] E) (hσ : ∀ e, σ (σ e) = e)
+    (T : Finset (HeightOneSpectrum (𝓞 F)))
+    (Y : (v : HeightOneSpectrum (𝓞 F)) → Matrix n n (E ⊗[F] v.adicCompletion F))
+    (hY : ∀ v ∈ T, PI.UnitaryApproxDefs.cT (PI.UnitaryApproxDefs.sigR σ (v.adicCompletion F)) (Y v) = -Y v) (δ : 𝓞 F) (hδ : δ ≠ 0) :
+    ∃ Y' : Matrix n n E, PI.UnitaryApproxDefs.cT (σ : E →+* E) Y' = -Y' ∧
+      ∀ v ∈ T, MC E v δ (Y'.map (PI.UnitaryApproxDefs.inclE (F := F) (v.adicCompletion F)) - Y v) := by
+  have h2δ : (2 * δ : 𝓞 F) ≠ 0 := mul_ne_zero two_ne_zero hδ
+  have hz : ∀ i j, ∃ e : E, ∀ v ∈ T,
+      Cong E v (2 * δ) (Y v i j - PI.UnitaryApproxDefs.inclE (F := F) (v.adicCompletion F) e) :=
+    fun i j => hAE F E T (fun v => Y v i j) (2 * δ) h2δ
+  choose Z hZ using hz
+  refine ⟨Matrix.of fun i j => (2⁻¹ : E) * (Z i j - σ (Z j i)), ?_, fun v hv => ?_⟩
+  · ext i j
+    show (σ : E →+* E) ((2⁻¹ : E) * (Z j i - σ (Z i j))) = -((2⁻¹ : E) * (Z i j - σ (Z j i)))
+    simp only [AlgHom.coe_toRingHom, map_mul, map_inv₀, map_ofNat, map_sub, hσ]
+    ring
+  · obtain ⟨A, hAS, hAeq⟩ := MC_of_entries (E := E) (v := v) (d := 2 * δ)
+      (M := Y v - (Matrix.of Z).map (PI.UnitaryApproxDefs.inclE (F := F) (v.adicCompletion F))) (fun i j => hZ i j v hv)
+    refine ⟨PI.UnitaryApproxDefs.cT (PI.UnitaryApproxDefs.sigR σ (v.adicCompletion F)) A - A, MS_sub (MS_cT σ hAS) hAS, ?_⟩
+    ext i j
+    have e1 := congrFun (congrFun hAeq i) j
+    have e2 := congrArg (PI.UnitaryApproxDefs.sigR σ (v.adicCompletion F)) (congrFun (congrFun hAeq j) i)
+    have e3 := congrFun (congrFun (hY v hv) i) j
+    change PI.UnitaryApproxDefs.sigR σ (v.adicCompletion F) (Y v j i) = -(Y v i j) at e3
+    change Y v i j - PI.UnitaryApproxDefs.inclE (F := F) (v.adicCompletion F) (Z i j) = dv E v (2 * δ) * A i j at e1
+    change PI.UnitaryApproxDefs.sigR σ (v.adicCompletion F) (Y v j i - PI.UnitaryApproxDefs.inclE (F := F) (v.adicCompletion F) (Z j i)) =
+      PI.UnitaryApproxDefs.sigR σ (v.adicCompletion F) (dv E v (2 * δ) * A j i) at e2
+    rw [map_sub, map_mul, sigR_inclE, sigR_dv] at e2
+    rw [dv_mul, dv_two] at e1 e2
+    change PI.UnitaryApproxDefs.inclE (F := F) (v.adicCompletion F) ((2⁻¹ : E) * (Z i j - σ (Z j i))) - Y v i j =
+      dv E v δ * (PI.UnitaryApproxDefs.sigR σ (v.adicCompletion F) (A j i) - A i j)
+    have hh : PI.UnitaryApproxDefs.inclE (F := F) (v.adicCompletion F) (2⁻¹ : E) * 2 = 1 := by
+      rw [← map_ofNat (PI.UnitaryApproxDefs.inclE (F := F) (v.adicCompletion F)) 2, ← map_mul, inv_mul_cancel₀ two_ne_zero,
+        map_one]
+    rw [map_mul, map_sub]
+    linear_combination (-(PI.UnitaryApproxDefs.inclE (F := F) (v.adicCompletion F) (2⁻¹ : E))) * e1 +
+      (PI.UnitaryApproxDefs.inclE (F := F) (v.adicCompletion F) (2⁻¹ : E)) * e2 -
+      (PI.UnitaryApproxDefs.inclE (F := F) (v.adicCompletion F) (2⁻¹ : E)) * e3 +
+      (Y v i j + dv E v δ * (PI.UnitaryApproxDefs.sigR σ (v.adicCompletion F) (A j i) - A i j)) * hh
+
+end PI.UnitaryApproxFinWork
+
+end
+end
+
+section
 noncomputable section
 
 open Matrix TensorProduct NumberField IsDedekindDomain
@@ -200,4 +494,5 @@ theorem cayleyStep : CayleyStep := by
 
 end PI.UnitaryApproxFinWork
 
+end
 end

@@ -24,17 +24,6 @@ theorem dictLat_iff {c : Coeff l} {σ : c.F →+* ℂ} {g : ℕ} (e : Fin g ≃ 
 
 variable {σ' : KA l →+* ℂ} {g : ℕ} {ty : Fin g → (D.host.E →+* ℂ)} {F : FamilyUnif Xo σ' ty}
 
-theorem markSpec_left (M : GlobalTheory.FrameUnif.ModelsOf F r) (V : HSp D) (hr : V.rank = r)
-    (io : Dw.La →ₗ[𝓞 D.host.E] (Fin V.rank → D.host.E))
-    (th : ∀ k, (M.X k).Ψ → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ))
-    (x₀ : (D.host.E →+* ℂ) → Matrix (Fin r) (Fin r) ℂ) (h : GA D V) (p : Σ k, Frame (M.X k).Ψ r)
-    (δ : GA D V) (hδ : δ ∈ GQ V) :
-    MarkSpec M V hr io th x₀ (δ * h) p ↔ MarkSpec M V hr io th x₀ h p := by
-  constructor
-  · rintro ⟨γ, hγ, h1⟩
-    exact ⟨γ * δ, (GQ V).mul_mem hγ hδ, by simpa only [mul_assoc] using h1⟩
-  · rintro ⟨γ, hγ, h1⟩
-    exact ⟨γ * δ⁻¹, (GQ V).mul_mem hγ ((GQ V).inv_mem hδ), by simpa only [mul_assoc, inv_mul_cancel_left] using h1⟩
 
 theorem herm_gmW (V : HSp D) (hr : V.rank = r) (x y : Fin V.rank → D.host.E) :
     herm (gmW V hr) (x ∘ Fin.cast hr.symm) (y ∘ Fin.cast hr.symm) =
@@ -50,32 +39,8 @@ theorem herm_gmW (V : HSp D) (hr : V.rank = r) (x y : Fin V.rank → D.host.E) :
   simp [HSpace.gram]
   ring
 
-theorem recOK_isom (M : GlobalTheory.FrameUnif.ModelsOf F r) (V : HSp D) (hr : V.rank = r)
-    (io : Dw.La →ₗ[𝓞 D.host.E] (Fin V.rank → D.host.E))
-    (th : ∀ k, (M.X k).Ψ → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ))
-    (x₀ : (D.host.E →+* ℂ) → Matrix (Fin r) (Fin r) ℂ) (hR : RecOK M V hr io th x₀) (x y : Dw.La) :
-    ((Dw.EF x y : ℤ) : ℚ) = Algebra.trace ℚ D.host.E
-      (D.host.xi0 * V.hT (V.frame.equivFun.symm (io x)) (V.frame.equivFun.symm (io y))) := by
-  have h1 : Dw.EF x y = -Dw.EF y x := by
-    have h := Dw.alt (x + y)
-    simp only [map_add, LinearMap.add_apply, Dw.alt] at h
-    linarith
-  rw [h1, Int.cast_neg, hR.2.2.2.1 y x, herm_gmW, ← map_neg]
-  congr 1
-  ring
 
-theorem recOK_latIsom (M : GlobalTheory.FrameUnif.ModelsOf F r) (V : HSp D) (hr : V.rank = r)
-    (io : Dw.La →ₗ[𝓞 D.host.E] (Fin V.rank → D.host.E))
-    (th : ∀ k, (M.X k).Ψ → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ))
-    (x₀ : (D.host.E →+* ℂ) → Matrix (Fin r) (Fin r) ℂ) (hR : RecOK M V hr io th x₀) :
-    LatIsom V Dw.EF io :=
-  ⟨1, fun x y => by rw [recOK_isom M V hr io th x₀ hR]; simp⟩
 
-theorem recOK_gram (M : GlobalTheory.FrameUnif.ModelsOf F r) (V : HSp D) (hr : V.rank = r)
-    (io : Dw.La →ₗ[𝓞 D.host.E] (Fin V.rank → D.host.E))
-    (th : ∀ k, (M.X k).Ψ → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ))
-    (x₀ : (D.host.E →+* ℂ) → Matrix (Fin r) (Fin r) ℂ) (hR : RecOK M V hr io th x₀) (k : Fin F.n) :
-    (M.X k).Gm = gmW V hr := (hR.2.1 k).1
 
 theorem neg_baseElement_im_neg_baseEmbedding (D : D7) (τ : D.host.E →+* ℂ) (hτ : τ D.host.sqrtMinusD = D.host.φ₀ D.host.sqrtMinusD) :
     (τ (-D.host.xi0)).im < 0 := by

@@ -17,11 +17,393 @@ import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelPullbackCor
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FunctionFieldRatioGenerators
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginRootIndexBound
 import Development.AbelianVarietyTheory.Counterexamples.ModuliSurvey.IsQProjOverOfIsProjOver
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LocalSubringCoordRatioValue
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ValueScalingByMonomial
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LocalSubringChartPoint
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelLocalSubringPoint
+import Development.AutomorphicSpectrum.Definitions.MetricPeriods.HasMultiplier
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.MemPtsOverOfMemMcPts
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.OneMemChartLatNm
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
+import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeTangentVectorsAffineOpen
 
+section
+section
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo GlobalTheory.CompanionTheory.Ar
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.ClosLoc
+
+open GlobalTheory.CompanionTheory.Ar.Top GlobalTheory.CompanionTheory.Ar.Small GlobalTheory.CompanionTheory.Ar.Cmp GlobalTheory.CompanionTheory.Ar.Ht GlobalTheory.CompanionTheory.Ar.Flat.UnitChart
+
+section Vals
+
+variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
+  {y : (Σ k, ι k) → Ω} {L : Type} [Field L] {z : (Σ k, ι k) → L}
+
+theorem homog_const (n : ℤ) : IsMultiHomog (C n : MRing ι) 0 := by
+  intro m hm k
+  rw [C_apply] at hm
+  have h0 : m = 0 := by simpa using support_monomial_subset hm
+  simp [h0]
+
+theorem hasVal_one : HasVal y (0 : K → ℤ) (1 : Ω) z (1 : L) := by
+  refine ⟨0, 0, 1, 1, ?_, ?_, fun k => by simp, by simp, by simp, by simp⟩ <;>
+  · simpa using homog_const (ι := ι) 1
+
+theorem hasVal_mul {s s' : Ω} {w w' : L} (h : HasVal y (0 : K → ℤ) s z w)
+    (h' : HasVal y (0 : K → ℤ) s' z w') : HasVal y (0 : K → ℤ) (s * s') z (w * w') := by
+  obtain ⟨dg, dh, g, f, hg, hf, hd, e, hn, ev⟩ := h
+  obtain ⟨dg', dh', g', f', hg', hf', hd', e', hn', ev'⟩ := h'
+  refine ⟨dg + dg', dh + dh', g * g', f * f', homog_mul hg hg', homog_mul hf hf', fun k => ?_, ?_, ?_, ?_⟩
+  · have h1 := hd k
+    have h2 := hd' k
+    simp only [Pi.add_apply, Pi.zero_apply] at *
+    push_cast
+    omega
+  · simp only [map_mul, e, e']
+    ring
+  · rw [map_mul]
+    exact mul_ne_zero hn hn'
+  · simp only [map_mul, ev, ev']
+    ring
+
+theorem hasVal_neg {s : Ω} {w : L} (h : HasVal y (0 : K → ℤ) s z w) :
+    HasVal y (0 : K → ℤ) (-s) z (-w) := by
+  simpa using GlobalTheory.CompanionTheory.Ar.Rec.OS.hasVal_zsmul (-1) h
+
+theorem hasVal_inv (hz : z ∈ ptsOver L (mCoordIdeal y)) {s : Ω} {w : L} (h : HasVal y (0 : K → ℤ) s z w)
+    (hw : w ≠ 0) : s ≠ 0 ∧ HasVal y (0 : K → ℤ) s⁻¹ z w⁻¹ := by
+  obtain ⟨dg, dh, g, f, hg, hf, hd, e, hn, ev⟩ := h
+  have hgz : aeval z g ≠ 0 := by
+    rw [ev]
+    exact mul_ne_zero hw hn
+  have hgy : aeval y g ≠ 0 := fun h0 => hgz (hz.2 _ (mem_of_aeval_eq_zero hg h0))
+  have hs : s ≠ 0 := by
+    intro h0
+    rw [h0, zero_mul] at e
+    exact hgy e
+  refine ⟨hs, dh, dg, f, g, hf, hg, fun k => ?_, ?_, hgz, ?_⟩
+  · have h1 := hd k
+    simp only [Pi.zero_apply, add_zero] at *
+    exact h1.symm
+  · rw [e]
+    field_simp
+  · rw [ev]
+    field_simp
+
+end Vals
+
+def valRing {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
+    (y : (Σ k, ι k) → Ω) {L : Type} [Field L] (z : (Σ k, ι k) → L) : Subring Ω where
+  carrier := {s | ∃ w : L, HasVal y (0 : K → ℤ) s z w}
+  mul_mem' := fun ⟨w, h⟩ ⟨w', h'⟩ => ⟨w * w', hasVal_mul h h'⟩
+  one_mem' := ⟨1, hasVal_one⟩
+  add_mem' := fun ⟨w, h⟩ ⟨w', h'⟩ => ⟨w + w', GlobalTheory.CompanionTheory.Ar.Rec.OS.hasVal_add h h'⟩
+  zero_mem' := ⟨0, GlobalTheory.CompanionTheory.Ar.Rec.OS.hasVal_zero_of (hasVal_one (y := y) (z := z))⟩
+  neg_mem' := fun ⟨w, h⟩ => ⟨-w, hasVal_neg h⟩
+
+section Ev
+
+variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
+  {y : (Σ k, ι k) → Ω} {L : Type} [Field L] {z : (Σ k, ι k) → L}
+
+def evVal (hz : z ∈ ptsOver L (mCoordIdeal y)) : valRing y z →+* L where
+  toFun s := Classical.choose s.2
+  map_one' := GlobalTheory.CompanionTheory.Ar.Ht.Diag.hasVal_unique hz (Classical.choose_spec (valRing y z).one_mem) hasVal_one
+  map_mul' s t := GlobalTheory.CompanionTheory.Ar.Ht.Diag.hasVal_unique hz (Classical.choose_spec (s * t).2)
+    (hasVal_mul (Classical.choose_spec s.2) (Classical.choose_spec t.2))
+  map_zero' := GlobalTheory.CompanionTheory.Ar.Ht.Diag.hasVal_unique hz (Classical.choose_spec (valRing y z).zero_mem)
+    (GlobalTheory.CompanionTheory.Ar.Rec.OS.hasVal_zero_of (hasVal_one (y := y) (z := z)))
+  map_add' s t := GlobalTheory.CompanionTheory.Ar.Ht.Diag.hasVal_unique hz (Classical.choose_spec (s + t).2)
+    (GlobalTheory.CompanionTheory.Ar.Rec.OS.hasVal_add (Classical.choose_spec s.2) (Classical.choose_spec t.2))
+
+theorem hasVal_evVal (hz : z ∈ ptsOver L (mCoordIdeal y)) (s : valRing y z) :
+    HasVal y (0 : K → ℤ) (s : Ω) z (evVal hz s) := Classical.choose_spec s.2
+
+instance isLocalHom_evVal (hz : z ∈ ptsOver L (mCoordIdeal y)) : IsLocalHom (evVal hz) := by
+  refine ⟨fun s hs => ?_⟩
+  have hw : evVal hz s ≠ 0 := hs.ne_zero
+  obtain ⟨hs0, hinv⟩ := hasVal_inv hz (hasVal_evVal hz s) hw
+  refine IsUnit.of_mul_eq_one (⟨(s : Ω)⁻¹, _, hinv⟩ : valRing y z) ?_
+  exact Subtype.ext (mul_inv_cancel₀ hs0)
+
+theorem ratio_hasVal (hz : z ∈ ptsOver L (mCoordIdeal y)) (k : K) (a b : ι k) (hb : z ⟨k, b⟩ ≠ 0) :
+    y ⟨k, b⟩ ≠ 0 ∧ HasVal y (0 : K → ℤ) (y ⟨k, a⟩ / y ⟨k, b⟩) z (z ⟨k, a⟩ / z ⟨k, b⟩) := by
+  classical
+  have hy : y ⟨k, b⟩ ≠ 0 := by
+    intro h0
+    have hmem : (X ⟨k, b⟩ : MRing ι) ∈ mCoordIdeal y :=
+      mem_of_aeval_eq_zero (homog_X (ι := ι) ⟨k, b⟩) (by simpa using h0)
+    exact hb (by simpa using hz.2 _ hmem)
+  refine ⟨hy, Pi.single k 1, Pi.single k 1, X ⟨k, a⟩, X ⟨k, b⟩, homog_X (ι := ι) ⟨k, a⟩, homog_X (ι := ι) ⟨k, b⟩,
+    fun j => by simp, ?_, ?_, ?_⟩
+  · simp only [aeval_X]
+    field_simp
+  · simpa using hb
+  · simp only [aeval_X]
+    field_simp
+
+theorem nat_hasVal (hz : z ∈ ptsOver L (mCoordIdeal y)) (n : ℕ) (hn : (n : L) ≠ 0) :
+    (n : Ω) ≠ 0 ∧ HasVal y (0 : K → ℤ) (n : Ω)⁻¹ z (n : L)⁻¹ := by
+  have h : HasVal y (0 : K → ℤ) (n : Ω) z (n : L) := by
+    refine ⟨0, 0, C (n : ℤ), 1, homog_const _, by simpa using homog_const (ι := ι) 1, fun k => by simp, ?_, ?_, ?_⟩
+    · simp [aeval_C]
+    · simp
+    · simp [aeval_C]
+  exact hasVal_inv hz h hn
+
+end Ev
+
+theorem exists_localRing : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (Ω : Type) [Field Ω] (y : (Σ k, J k) → Ω) (L : Type) [Field L] (z : (Σ k, J k) → L), z ∈ Small.ptsOver L (mCoordIdeal y) → ∃ (A : Subring Ω) (_ : IsLocalRing A), (∀ (k : K) (a b : J k), z ⟨k, b⟩ ≠ 0 → y ⟨k, b⟩ ≠ 0 ∧ y ⟨k, a⟩ / y ⟨k, b⟩ ∈ A) ∧ (∀ n : ℕ, (n : L) ≠ 0 → (n : Ω) ≠ 0 ∧ (n : Ω)⁻¹ ∈ A) ∧ ∀ s ∈ A, s⁻¹ ∈ A → s ≠ 0 → ∃ w : L, w ≠ 0 ∧ Small.HasVal y (0 : K → ℤ) s z w := by
+  intro K _ J _ Ω _ y L _ z hz
+  refine ⟨valRing y z, RingHom.domain_isLocalRing (evVal hz), fun k a b hb => ?_, fun n hn => ?_, ?_⟩
+  · obtain ⟨h1, h2⟩ := ratio_hasVal hz k a b hb
+    exact ⟨h1, _, h2⟩
+  · obtain ⟨h1, h2⟩ := nat_hasVal hz n hn
+    exact ⟨h1, _, h2⟩
+  · rintro s ⟨w, hw⟩ ⟨w', hw'⟩ hs
+    refine ⟨w, ?_, hw⟩
+    rintro rfl
+    have h1 := hasVal_mul hw hw'
+    rw [mul_inv_cancel₀ hs, zero_mul] at h1
+    exact zero_ne_one (GlobalTheory.CompanionTheory.Ar.Ht.Diag.hasVal_unique hz h1 hasVal_one)
+
+end GlobalTheory.CompanionTheory.Ar.ClosLoc
+end
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo GlobalTheory.CompanionTheory.Ar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_subring_coord_ratio_value : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (Ω : Type) [Field Ω] (y : (Σ k, J k) → Ω) (L : Type) [Field L] (z : (Σ k, J k) → L), z ∈ Small.ptsOver L (mCoordIdeal y) → ∃ (A : Subring Ω) (_ : IsLocalRing A), (∀ (k : K) (a b : J k), z ⟨k, b⟩ ≠ 0 → y ⟨k, b⟩ ≠ 0 ∧ y ⟨k, a⟩ / y ⟨k, b⟩ ∈ A) ∧ (∀ n : ℕ, (n : L) ≠ 0 → (n : Ω) ≠ 0 ∧ (n : Ω)⁻¹ ∈ A) ∧ ∀ s ∈ A, s⁻¹ ∈ A → s ≠ 0 → ∃ w : L, w ≠ 0 ∧ Small.HasVal y (0 : K → ℤ) s z w := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.ClosLoc.exists_localRing
+end
+
+section
+section
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.ChartTwist
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Flat.UnitChart
+
+theorem prod_pow_toNat {K : Type} [Fintype K] {F : Type} [Field F] (u : K → F) (hu : ∀ k, u k ≠ 0) (a : K → ℤ) :
+    ∏ k, u k ^ (a k).toNat = (∏ k, u k ^ a k) * ∏ k, u k ^ (-a k).toNat := by
+  rw [← Finset.prod_mul_distrib]
+  refine Finset.prod_congr rfl fun k _ => ?_
+  have h := hu k
+  rw [← zpow_natCast, ← zpow_natCast, ← zpow_add₀ h]
+  congr 1
+  omega
+
+theorem hasVal_twist : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (Ω : Type) [Field Ω]
+    (y : (Σ k, J k) → Ω) (L : Type) [Field L] (z : (Σ k, J k) → L) (a : K → ℤ) (s : Ω) (w : L),
+    Small.HasVal y (0 : K → ℤ) s z w → w ≠ 0 → ∀ c : (k : K) → J k, (∀ k, y ⟨k, c k⟩ ≠ 0) →
+      (∀ k, z ⟨k, c k⟩ ≠ 0) → ∃ v : L, v ≠ 0 ∧ Small.HasVal y a (s * ∏ k, y ⟨k, c k⟩ ^ a k) z v := by
+  intro K _ J _ Ω _ y L _ z a s w h hw c hy hz
+  obtain ⟨dg, dh, g, f, hg, hf, hd, e, hn, ev⟩ := h
+  have hM : ∀ m : K → ℕ, aeval z (cMon c m) ≠ 0 := fun m => by
+    rw [aeval_cMon]
+    exact Finset.prod_ne_zero_iff.2 fun k _ => pow_ne_zero _ (hz k)
+  refine ⟨w * ∏ k, z ⟨k, c k⟩ ^ a k,
+    mul_ne_zero hw (Finset.prod_ne_zero_iff.2 fun k _ => zpow_ne_zero _ (hz k)),
+    dg + fun k => (a k).toNat, dh + fun k => (-a k).toNat,
+    g * cMon c fun k => (a k).toNat, f * cMon c fun k => (-a k).toNat,
+    homog_mul hg (homog_cMon c _), homog_mul hf (homog_cMon c _), fun k => ?_, ?_,
+    by rw [map_mul]; exact mul_ne_zero hn (hM _), ?_⟩
+  · have h1 := hd k
+    simp only [Pi.add_apply, Pi.zero_apply] at h1 ⊢
+    push_cast
+    omega
+  · rw [map_mul, map_mul, aeval_cMon, aeval_cMon, e,
+      prod_pow_toNat (fun k => y ⟨k, c k⟩) hy a]
+    ring
+  · rw [map_mul, map_mul, aeval_cMon, aeval_cMon, ev,
+      prod_pow_toNat (fun k => z ⟨k, c k⟩) hz a]
+    ring
+
+end GlobalTheory.CompanionTheory.Ar.ChartTwist
+end
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo GlobalTheory.CompanionTheory.Ar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.value_scaling_by_monomial : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (Ω : Type) [Field Ω] (y : (Σ k, J k) → Ω) (L : Type) [Field L] (z : (Σ k, J k) → L) (a : K → ℤ) (s : Ω) (w : L), Small.HasVal y (0 : K → ℤ) s z w → w ≠ 0 → ∀ c : (k : K) → J k, (∀ k, y ⟨k, c k⟩ ≠ 0) → (∀ k, z ⟨k, c k⟩ ≠ 0) → ∃ v : L, v ≠ 0 ∧ Small.HasVal y a (s * ∏ k, y ⟨k, c k⟩ ^ a k) z v := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.ChartTwist.hasVal_twist
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits GlobalTheory.CompanionTheory.Ar
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.ChartPoint
+
+variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X}
+
+abbrev chartRing {κ : Type} (x : κ → Ω) (c : κ) : Subalgebra ℤ Ω :=
+  Algebra.adjoin ℤ (Set.range fun j => x j / x c)
+
+theorem stalk_value (hg : IsCptGen ξ) {R : Type} [CommRing R] [IsLocalRing R] (p : Cpt ξ) (φ : regAt ξ p →+* R)
+    (z : Spec (CommRingCat.of R) ⟶ X) (hzc : centre z = p.1) (hv : ∀ a : regAt ξ p, ValAt ξ z (a : Ω) (φ a))
+    (h : genPt ξ ⤳ centre z) (s : X.presheaf.stalk (centre z)) :
+    ∃ hm : genMap ξ ⟨centre z, h⟩ s ∈ regAt ξ p,
+      (Scheme.stalkClosedPointTo z).hom s = φ ⟨genMap ξ ⟨centre z, h⟩ s, hm⟩ := by
+  obtain ⟨pp, hpp⟩ := p
+  dsimp only at hzc
+  subst hzc
+  refine ⟨⟨s, rfl⟩, ?_⟩
+  obtain ⟨h', s', e1, e2⟩ := hv ⟨genMap ξ ⟨centre z, h⟩ s, ⟨s, rfl⟩⟩
+  have e3 : s' = s := hg.inj ⟨centre z, h⟩ e1
+  subst e3
+  exact e2
+
+set_option backward.isDefEq.respectTransparency false in
+
+theorem spec_square {F : Type} [Field F] (θ : Ω →+* F) {A : Subring F} [IsLocalRing A]
+    (z : Spec (CommRingCat.of A) ⟶ X) (h : genPt ξ ⤳ centre z)
+    (hs : ∀ s : X.presheaf.stalk (centre z),
+      (((Scheme.stalkClosedPointTo z).hom s : A) : F) = θ (genMap ξ ⟨centre z, h⟩ s)) :
+    Spec.map (CommRingCat.ofHom A.subtype) ≫ z = Spec.map (CommRingCat.ofHom θ) ≫ ξ := by
+  have e : A.subtype.comp (Scheme.stalkClosedPointTo z).hom = θ.comp (genMap ξ ⟨centre z, h⟩) := RingHom.ext hs
+  have e1 := LieTangent.spec_centre z
+  have e2 := LieTangent.spec_genMap ξ ⟨centre z, h⟩
+  calc Spec.map (CommRingCat.ofHom A.subtype) ≫ z
+      = Spec.map (CommRingCat.ofHom A.subtype) ≫
+          (Spec.map (CommRingCat.ofHom (R := X.presheaf.stalk (centre z)) (Scheme.stalkClosedPointTo z).hom) ≫
+            X.fromSpecStalk (centre z)) := by rw [e1]
+    _ = Spec.map (CommRingCat.ofHom θ) ≫ (Spec.map (CommRingCat.ofHom (genMap ξ ⟨centre z, h⟩)) ≫
+            X.fromSpecStalk (centre z)) := by
+        rw [← Category.assoc, ← Category.assoc, LieTangent.spec_comp, LieTangent.spec_comp, e]
+    _ = Spec.map (CommRingCat.ofHom θ) ≫ ξ := by
+        exact congrArg (_ ≫ ·) e2
+
+theorem point_of_local_subring : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) (κ : Type) (x : κ → Ω) (c : κ), CoordTie ℤ ξ x → x c ≠ 0 → ∀ (F : Type) [Field F] (θ : Ω →+* F) (A : Subring F) [IsLocalRing A], (∀ j, θ (x j / x c) ∈ A) → ∃ (z : Spec (CommRingCat.of A) ⟶ X) (h : genPt ξ ⤳ centre z), InChart ξ x c ⟨centre z, h⟩ ∧ (∀ s : X.presheaf.stalk (centre z), (((Scheme.stalkClosedPointTo z).hom s : A) : F) = θ (genMap ξ ⟨centre z, h⟩ s)) ∧ Spec.map (CommRingCat.ofHom A.subtype) ≫ z = Spec.map (CommRingCat.ofHom θ) ≫ ξ := by
+  intro X Ω _ ξ κ x c hT hc F _ θ A _ hA
+  have hC : ∀ s ∈ chartRing x c, θ s ∈ A := by
+    intro s hs
+    induction hs using Algebra.adjoin_induction with
+    | mem a ha =>
+      obtain ⟨j, rfl⟩ := ha
+      exact hA j
+    | algebraMap r =>
+      have : θ (algebraMap ℤ Ω r) = (r : F) := by simp
+      rw [this]
+      exact intCast_mem A r
+    | add a b _ _ ha hb => rw [map_add]; exact add_mem ha hb
+    | mul a b _ _ ha hb => rw [map_mul]; exact mul_mem ha hb
+  let θC : chartRing x c →+* A :=
+    (θ.comp (chartRing x c).val.toRingHom).codRestrict A (fun s => hC s s.2)
+  obtain ⟨p, ⟨hpc, hpu⟩, -⟩ := GlobalTheory.T.prime_chart_existsUnique_point X Ω ξ ℤ κ x hT c hc
+    (Ideal.comap θC (IsLocalRing.maximalIdeal A)) inferInstance
+  have hunit : ∀ s (hs : s ∈ chartRing x c), unitAt ξ p s ↔ IsUnit (⟨θ s, hC s hs⟩ : A) := by
+    intro s hs
+    rw [← hpu ⟨s, hs⟩, Ideal.mem_comap, IsLocalRing.mem_maximalIdeal, mem_nonunits_iff, not_not]
+    rfl
+  have hreg : ∀ a ∈ regAt ξ p, θ a ∈ A := by
+    intro a ha
+    obtain ⟨s, hs, hsu, hsa⟩ := (regAt_iff_exists_chart_fraction X Ω ξ ℤ κ x hT c p hpc a).1 ha
+    obtain ⟨u, hu⟩ := (hunit s hs).1 hsu
+    have h1 : (((u⁻¹ : Aˣ) : A) : F) * θ s = 1 := by
+      have h2 := congrArg Subtype.val (Units.inv_mul u)
+      rw [hu] at h2
+      exact h2
+    have h3 : θ a = (((u⁻¹ : Aˣ) : A) : F) * θ (s * a) := by
+      rw [map_mul, ← mul_assoc, h1, one_mul]
+    rw [h3]
+    exact mul_mem ((u⁻¹ : Aˣ) : A).2 (hC _ hsa)
+  let φ : regAt ξ p →+* A := (θ.comp (regAt ξ p).subtype).codRestrict A (fun a => hreg a a.2)
+  have hloc : IsLocalHom φ := by
+    refine ⟨fun a ha => ?_⟩
+    obtain ⟨s, hs, hsu, hsa⟩ := (regAt_iff_exists_chart_fraction X Ω ξ ℤ κ x hT c p hpc a).1 a.2
+    have hua : IsUnit (⟨θ (s * a), hC _ hsa⟩ : A) := by
+      have h1 : (⟨θ (s * a), hC _ hsa⟩ : A) = ⟨θ s, hC s hs⟩ * φ a :=
+        Subtype.ext (map_mul θ s a)
+      rw [h1]
+      exact ((hunit s hs).1 hsu).mul ha
+    obtain ⟨h0, -, hi⟩ := (hunit _ hsa).2 hua
+    have hs0 : s ≠ 0 := left_ne_zero_of_mul h0
+    have ha0 : (a : Ω) ≠ 0 := right_ne_zero_of_mul h0
+    have hinv : (a : Ω)⁻¹ ∈ regAt ξ p := by
+      have h1 : (a : Ω)⁻¹ = s * (s * a)⁻¹ := by field_simp
+      rw [h1]
+      exact mul_mem hsu.2.1 hi
+    exact IsUnit.of_mul_eq_one ⟨_, hinv⟩ (Subtype.ext (mul_inv_cancel₀ ha0))
+  obtain ⟨z, ⟨hzc, hzv⟩, -⟩ := GlobalTheory.T.existsUnique_centre_local_hom X Ω ξ hT.gen p A φ hloc
+  have h : genPt ξ ⤳ centre z := by rw [hzc]; exact p.2
+  have hp : (⟨centre z, h⟩ : Cpt ξ) = p := Subtype.ext hzc
+  have hs : ∀ s : X.presheaf.stalk (centre z),
+      (((Scheme.stalkClosedPointTo z).hom s : A) : F) = θ (genMap ξ ⟨centre z, h⟩ s) := by
+    intro s
+    obtain ⟨hm, e⟩ := stalk_value hT.gen p φ z hzc hzv h s
+    rw [e]
+    rfl
+  exact ⟨z, h, by rw [hp]; exact hpc, hs, spec_square θ z h hs⟩
+
+end GlobalTheory.CompanionTheory.Ar.ChartPoint
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits GlobalTheory.CompanionTheory.Ar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_subring_chart_point : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) (κ : Type) (x : κ → Ω) (c : κ), CoordTie ℤ ξ x → x c ≠ 0 → ∀ (F : Type) [Field F] (θ : Ω →+* F) (A : Subring F) [IsLocalRing A], (∀ j, θ (x j / x c) ∈ A) → ∃ (z : Spec (CommRingCat.of A) ⟶ X) (h : genPt ξ ⤳ centre z), InChart ξ x c ⟨centre z, h⟩ ∧ (∀ s : X.presheaf.stalk (centre z), (((Scheme.stalkClosedPointTo z).hom s : A) : F) = θ (genMap ξ ⟨centre z, h⟩ s)) ∧ Spec.map (CommRingCat.ofHom A.subtype) ≫ z = Spec.map (CommRingCat.ofHom θ) ≫ ξ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.ChartPoint.point_of_local_subring
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj GlobalTheory.CompanionTheory.Ar
+
+set_option backward.isDefEq.respectTransparency false
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.HodgeMetric.FrameDual
+
+theorem exists_frame_dual_sq : ∀ (S X : Scheme.{0}) (G : Over S) [GrpObj G] (Gx : Over X) [GrpObj Gx] [IsCommMonObj Gx] [Smooth Gx.hom] (φ : Gx.left ⟶ G.left) (Ω₁ : Type) [Field Ω₁] (ξ : Spec (CommRingCat.of Ω₁) ⟶ X), IsCptGen ξ → ∀ (Li : Type) [AddCommGroup Li] [Module Ω₁ Li] (M : LieModel Gx ξ Li) (F : Type) [Field F] (θ : Ω₁ →+* F) (A : Subring F) [IsLocalRing A] (z : Spec (CommRingCat.of A) ⟶ X) (h : genPt ξ ⤳ centre z), (∀ s : X.presheaf.stalk (centre z), (((Scheme.stalkClosedPointTo z).hom s : A) : F) = θ (genMap ξ ⟨centre z, h⟩ s)) → ∀ (ER : Type) [AddCommGroup ER] [Module A ER] (MR : LieModel Gx z ER) (xF : Spec (CommRingCat.of F) ⟶ S) (V : Type) [AddCommGroup V] [Module F V] (MV : LieModel G xF V) (io : ER → V) (Lm : Li → V), (∀ x, (MV.pt (io x)).left = Spec.map (CommRingCat.ofHom (dualMap A.subtype)) ≫ (MR.pt x).left ≫ φ) → (∀ e, (MV.pt (Lm e)).left = Spec.map (CommRingCat.ofHom (dualMap θ)) ≫ (M.pt e).left ≫ φ) → ∀ (r : ℕ) (b : Fin r → Li) (π : Fin r → Module.Dual Ω₁ Li) (m : ℕ), (∀ i, (m : Ω₁) • b i ∈ M.lat ⟨centre z, h⟩) → (∀ i j, π i (b j) = if i = j then 1 else 0) → (∀ i, ∀ e ∈ M.lat ⟨centre z, h⟩, (m : Ω₁) * π i e ∈ regAt ξ ⟨centre z, h⟩) → ∃ (β : Fin r → ER) (g : Fin r → ER →ₗ[A] A), (∀ k, io (β k) = Lm ((m : Ω₁) • b k)) ∧ ∀ i k, ((g i (β k) : A) : F) = if k = i then (m : F) ^ 2 else 0 := by
+  intro S X G _ Gx _ _ _ φ Ω₁ _ ξ hξ Li _ _ M F _ θ A _ z h hs ER _ _ MR xF V _ _ MV io Lm hio hLm r b π m hm hπ hreg
+  obtain ⟨ev, hev, -, -⟩ := GlobalTheory.T.lie_lattice_eval_at_local_ring X Gx Ω₁ ξ Li M A z h ER MR hξ inferInstance
+  let β : Fin r → ER := fun k => ev ⟨(m : Ω₁) • b k, hm k⟩
+  have hval : ∀ k, M.ValAt z ((m : Ω₁) • b k) (MR.pt (β k)) := fun k => (hev _ _).2 ⟨hm k, rfl⟩
+  have hcomp : A.subtype.comp (Scheme.stalkClosedPointTo z).hom = θ.comp (genMap ξ ⟨centre z, h⟩) :=
+    RingHom.ext fun s => hs s
+  have hg : ∀ i, ∃ g : ER →ₗ[A] A, ∀ (e : Li) (x : ER) (u : A), M.ValAt z e (MR.pt x) →
+      ValAt ξ z (((m : Ω₁) • π i) e) u → g x = u := fun i =>
+    GlobalTheory.CompanionTheory.Ar.RootHt.exists_lieFunctional X Gx Ω₁ ξ Li M A z h ER MR ((m : Ω₁) • π i) hξ
+      (fun e he => by simpa [smul_eq_mul] using hreg i e he)
+  choose g hg using hg
+  refine ⟨β, g, fun k => ?_, fun i k => ?_⟩
+  · obtain ⟨h', v, hext, hw⟩ := hval k
+    have e1 := GlobalTheory.CompanionTheory.Ar.HodgeMetric.FrameExt.spec_dual_comp (Scheme.stalkClosedPointTo z).hom A.subtype
+    have e2 := GlobalTheory.CompanionTheory.Ar.HodgeMetric.FrameExt.spec_dual_comp (genMap ξ ⟨centre z, h⟩) θ
+    apply MV.inj
+    apply Over.OverMorphism.ext
+    rw [hio, hLm, hext.2, hw]
+    simp only [Category.assoc]
+    rw [← Category.assoc (Spec.map (CommRingCat.ofHom (dualMap A.subtype))),
+      ← Category.assoc (Spec.map (CommRingCat.ofHom (dualMap θ))), e1, e2, hcomp]
+  · have hnat : ∀ n : ℕ, ValAt ξ z (n : Ω₁) (n : A) := fun n =>
+      ⟨h, (n : X.presheaf.stalk (centre z)), map_natCast _ n, map_natCast _ n⟩
+    have hv : ((m : Ω₁) • π i) ((m : Ω₁) • b k) = ((if k = i then m ^ 2 else 0 : ℕ) : Ω₁) := by
+      by_cases e : k = i
+      · subst e
+        simp [hπ, smul_eq_mul, pow_two]
+      · have e' : ¬ i = k := fun q => e q.symm
+        simp [hπ, e, e']
+    have h1 := hg i _ (β k) _ (hval k) (hv ▸ hnat _)
+    rw [h1]
+    by_cases e : k = i <;> simp [e]
+
+end GlobalTheory.CompanionTheory.Ar.HodgeMetric.FrameDual
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj GlobalTheory.CompanionTheory.Ar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lie_model_local_subring_point : ∀ (S X : Scheme.{0}) (G : Over S) [GrpObj G] (Gx : Over X) [GrpObj Gx] [IsCommMonObj Gx] [Smooth Gx.hom] (φ : Gx.left ⟶ G.left) (Ω₁ : Type) [Field Ω₁] (ξ : Spec (CommRingCat.of Ω₁) ⟶ X), IsCptGen ξ → ∀ (Li : Type) [AddCommGroup Li] [Module Ω₁ Li] (M : LieModel Gx ξ Li) (F : Type) [Field F] (θ : Ω₁ →+* F) (A : Subring F) [IsLocalRing A] (z : Spec (CommRingCat.of A) ⟶ X) (h : genPt ξ ⤳ centre z), (∀ s : X.presheaf.stalk (centre z), (((Scheme.stalkClosedPointTo z).hom s : A) : F) = θ (genMap ξ ⟨centre z, h⟩ s)) → ∀ (ER : Type) [AddCommGroup ER] [Module A ER] (MR : LieModel Gx z ER) (xF : Spec (CommRingCat.of F) ⟶ S) (V : Type) [AddCommGroup V] [Module F V] (MV : LieModel G xF V) (io : ER → V) (Lm : Li → V), (∀ x, (MV.pt (io x)).left = Spec.map (CommRingCat.ofHom (dualMap A.subtype)) ≫ (MR.pt x).left ≫ φ) → (∀ e, (MV.pt (Lm e)).left = Spec.map (CommRingCat.ofHom (dualMap θ)) ≫ (M.pt e).left ≫ φ) → ∀ (r : ℕ) (b : Fin r → Li) (π : Fin r → Module.Dual Ω₁ Li) (m : ℕ), (∀ i, (m : Ω₁) • b i ∈ M.lat ⟨centre z, h⟩) → (∀ i j, π i (b j) = if i = j then 1 else 0) → (∀ i, ∀ e ∈ M.lat ⟨centre z, h⟩, (m : Ω₁) * π i e ∈ regAt ξ ⟨centre z, h⟩) → ∃ (β : Fin r → ER) (g : Fin r → ER →ₗ[A] A), (∀ k, io (β k) = Lm ((m : Ω₁) • b k)) ∧ ∀ i k, ((g i (β k) : A) : F) = if k = i then (m : F) ^ 2 else 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.HodgeMetric.FrameDual.exists_frame_dual_sq
+end
+
+section
 section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField TensorProduct Filter Topology Matrix
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
@@ -484,3 +866,4 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.root_model_flag_compare : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (S S₀ : Finset ℕ) [Fintype (CMType H)] (M R : Top.RootModel (CMType H) (D.p + D.q)) (𝔐 : HodgeCpt Y S M.y) (𝔐₀ : HodgeCpt Y S₀ R.y) (Fl : 𝔐.Flag) (Fl₀ : 𝔐₀.Flag) (i : R.Ω →+* M.Ω) (e : CMType H × Fin (D.p + D.q) → M.Ω) (e₀ : CMType H × Fin (D.p + D.q) → R.Ω), 𝔐.ξ ≫ 𝔐.f = spMap i ≫ 𝔐₀.ξ ≫ 𝔐₀.f → (∀ s k, (𝔐.M.pt (Fl.b s k)).left ≫ 𝔐.m.φ = spMap (dualMap i) ≫ (𝔐₀.M.pt (Fl₀.b s k)).left ≫ 𝔐₀.m.φ) → Fl.RootLines M.xdeg e → Fl₀.RootLines R.xdeg e₀ → ∀ r, Ht.GenUnit (Ht.joinOf M R i) (Ht.joinDeg M R (some r)) (i (e₀ r) / e r) := by
   atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Ht.CloseGen.genUnit_join
+end

@@ -41,9 +41,6 @@ theorem le_C (a : K) : Le ‖a‖ (MvPowerSeries.C a : MvPowerSeries σ K) := fu
   rw [MvPowerSeries.coeff_C]
   split_ifs <;> simp
 
-theorem intg_add {S T : MvPowerSeries σ K} (h : Intg S) (h' : Intg T) : Intg (S + T) := by
-  have := Le.add (c := 1) (d := 1) h h'
-  rwa [max_self] at this
 
 theorem intg_sub {S T : MvPowerSeries σ K} (h : Intg S) (h' : Intg T) : Intg (S - T) := by
   have := Le.sub (c := 1) (d := 1) h h'
@@ -99,10 +96,6 @@ theorem intg_pow {S : MvPowerSeries σ K} (h : Intg S) (n : ℕ) : Intg (S ^ n) 
   | zero => rw [pow_zero]; exact intg_one
   | succ n ih => rw [pow_succ]; exact intg_mul ih h
 
-theorem bdd_pow {S : MvPowerSeries σ K} (h : Bdd S) (n : ℕ) : Bdd (S ^ n) := by
-  induction n with
-  | zero => rw [pow_zero]; exact bdd_of_intg intg_one
-  | succ n ih => rw [pow_succ]; exact bdd_mul ih h
 
 omit [IsUltrametricDist K] in
 theorem small_X (i : σ) : Small (MvPowerSeries.X i : MvPowerSeries σ K) := by

@@ -108,35 +108,7 @@ theorem fil_one (δ : DividedPowers J) : fil δ 1 = J := by
       simpa [h] using hs
     · exact J.mul_mem_right _ (δ.dpow_mem h (hl p (by simp)))
 
-theorem isLev_two [DecidablePred (fun x ↦ x ∈ J)] (h2 : J ^ 2 = 0) :
-    IsLev (OfSquareZero.dividedPowers h2) 2 := by
-  set δ := OfSquareZero.dividedPowers h2 with hδ
-  refine le_bot_iff.1 (Ideal.span_le.2 ?_)
-  rintro _ ⟨l, hl, hs, rfl⟩
-  induction l with
-  | nil => simp at hs
-  | cons p l ih =>
-    simp only [List.map_cons, List.prod_cons, SetLike.mem_coe, Ideal.mem_bot, List.sum_cons] at hs ih ⊢
-    have hl' : ∀ q ∈ l, q.2 ∈ J := fun q hq ↦ hl q (by simp [hq])
-    have hp : p.2 ∈ J := hl p (by simp)
-    rcases Nat.lt_trichotomy p.1 1 with h | h | h
-    · rw [ih hl' (by omega), mul_zero]
-    · have hm : (l.map fun p ↦ δ.dpow p.1 p.2).prod ∈ J :=
-        (fil_one δ).le (Ideal.subset_span ⟨l, hl', by omega, rfl⟩)
-      have := Ideal.mul_mem_mul (δ.dpow_mem (n := p.1) (by omega) hp) hm
-      rw [← pow_two, h2] at this
-      simpa using this
-    · have : δ.dpow p.1 p.2 = 0 := OfSquareZero.dpow_of_two_le h2 h p.2
-      rw [this, zero_mul]
 
-theorem isLev_one_iff (δ : DividedPowers J) : IsLev δ 1 ↔ J = ⊥ := by rw [IsLev, fil_one]
 
-theorem not_isLev [Nontrivial B] (Q : PDPoly B) (δ : DividedPowers J) (η : DividedPowers (Q.ext J))
-    (h : Q.IsStd δ η) (N : ℕ) : ¬ IsLev η N := by
-  intro hN
-  have h1 : Q.e 1 ∈ Q.ext J := Ideal.mem_sup_right (Ideal.subset_span ⟨0, rfl⟩)
-  have : Q.e N ∈ fil η N := Ideal.subset_span ⟨[(N, Q.e 1)], by simpa using h1, by simp, by simp [h.var]⟩
-  rw [hN] at this
-  exact Q.e.ne_zero N this
 
 end GlobalTheory.PDA.Model

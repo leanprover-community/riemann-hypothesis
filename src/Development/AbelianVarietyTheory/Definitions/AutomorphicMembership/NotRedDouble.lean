@@ -14,18 +14,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheo
   {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F}
   {F : Type} [Field F] {Z : Model Xo c β} {e : F ≃+* c.F}
 
-theorem join_over [Mono (genι Z)] (C : FlagCpt Z e) (τ : E →+* ℂ) (i : Fin (Dw.mult τ))
-    (w : Sp (DualNumber C.Y.Fn) ⟶ Z.oF.t.G.left) (hw : w ≫ Z.m.φ = C.f0.v τ i) :
-    w ≫ Z.oF.t.G.hom = spMap (algebraMap C.Y.Fn (DualNumber C.Y.Fn)) ≫
-      (letI := (constF e C.Y).toAlgebra; GlobalTheory.AllWt.ptF C.y0) := by
-  have := Z.jQ_open
-  rw [← cancel_mono Z.jQ, ← cancel_mono (genι Z)]
-  have h1 := (C.f0.tan τ i).1
-  rw [← hw, Category.assoc, Z.m.cart.1.w] at h1
-  have h2 := congrArg (· ≫ genι Z) C.y0_x
-  simp only [Category.assoc] at h1 h2 ⊢
-  rw [h2]
-  exact h1
 
 theorem mono_genι (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) : Mono (genι Y) := by
   have : Epi (CommRingCat.ofHom (algebraMap (𝓞 c.F) c.F)) :=
@@ -48,10 +36,6 @@ theorem Lw_weightOf (C : FlagCpt Z e) (a : (E →+* ℂ) × ℕ → ℕ) (n : �
   congr 1
   simp [exKey, keyEx, ex, exZ]
 
-theorem exKey_none (a : (E →+* ℂ) × ℕ → ℕ) {n : ℕ} (hn : Even n) : exKey Dw a n none = 0 := by
-  obtain ⟨m, rfl⟩ := hn
-  simp only [exKey, keyEx, ex]
-  omega
 
 theorem dim_count (f p q : ℕ) :
     f * ((p + q) * (p + q - 1) / 2) = f * p * q + f * (p * (p - 1) / 2) + f * (q * (q - 1) / 2) := by
@@ -86,27 +70,6 @@ theorem comp_eq {σ : c.F →+* ℂ} {N : ℕ} {U : Formalism.L2.PjFree.Unf Xo c
     (cp : (Φ.C i).Carries p g) (cq : (Φ.C j).Carries q g) : i = j :=
   congrArg Sigma.fst ((Φ.lifts k φ x hx g).unique (y₁ := ⟨i, p⟩) (y₂ := ⟨j, q⟩) ⟨hp, cp⟩ ⟨hq, cq⟩)
 
-theorem bd_eq_zero (C : FlagCpt Z e) (h : ∀ y, C.π y ∉ genBd Z) : C.bd = 0 := by
-  refine CartierDiv.ext_of_isEqn fun y => ?_
-  have h1 : y ∉ C.bd.supp := fun hy => h y ((C.bd_supp y).1 hy)
-  obtain ⟨g', hg', hu⟩ := CartierDiv.notMem_supp_iff.1 h1
-  refine ⟨1, hg'.iff_unitAt.2 ?_, CartierDiv.isEqn_zero y⟩
-  simpa using hu.inv
 
-theorem not_red_double (Y : GlobalTheory.ProjVar.Var F) (Δ : Y.Dv) (hΔ : Y.Eff Δ) (y : Y.X) (hy : y ∈ Y.supp Δ) :
-    ¬ ∀ (y : Y.X) (g : Y.Fnˣ), (2 • Δ).IsEqn y g → ∀ (f : Y.Fn) (n : ℕ), RegAt y f → RegAt y (f ^ n / g) →
-      RegAt y (f / g) := fun h => by
-  obtain ⟨g, hg⟩ := Δ.exists_isEqn y
-  have hr : RegAt y (g : Y.Fn) := by simpa using hg.regularAt_iff.1 (hΔ y)
-  have h2 := h y (g ^ 2) (hg.nsmul 2) g 2 hr (by simpa using (unitAt_one y).regAt)
-  have h3 : RegAt y (g : Y.Fn)⁻¹ := by
-    convert h2 using 1
-    rw [Units.val_pow_eq_pow_val]; field_simp
-  refine CartierDiv.notMem_supp_iff.2 ⟨g, hg, ?_⟩ hy
-  obtain ⟨a, ha⟩ := hr
-  obtain ⟨b, hb⟩ := h3
-  refine ⟨a, IsUnit.of_mul_eq_one b (IsFractionRing.injective _ Y.X.functionField ?_), by rw [one_mul]; exact ha⟩
-  rw [map_mul, map_one]
-  exact (congrArg₂ (· * ·) ha hb).trans (mul_inv_cancel₀ g.ne_zero)
 
 end GlobalTheory.ShFam.FlagCheck

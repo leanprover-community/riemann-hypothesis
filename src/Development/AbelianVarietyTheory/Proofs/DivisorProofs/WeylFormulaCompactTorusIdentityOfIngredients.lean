@@ -1,7 +1,128 @@
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VandermondeSplitsCompactNoncompact
+import Development.AbelianVarietyTheory.Definitions.Divisors.VdmSplit
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdjointDetOnCompactTorus
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NumShiftHolds
+import Mathlib
 
+section
+section
+open GlobalTheory.PsCo.PcEG
+
+open Finset
+
+namespace GlobalTheory.PsCo.PcEF.VandermondeCompactNoncompactSplit
+
+variable {n : ℕ}
+
+theorem lhs_eq (t : Fin n → ℂ) :
+    (∏ a, ∏ b ∈ Finset.Ioi a, (t a - t b)) =
+      ∏ x : Fin n × Fin n, if x.1 < x.2 then t x.1 - t x.2 else 1 := by
+  rw [Fintype.prod_prod_type]
+  refine Finset.prod_congr rfl fun a _ => ?_
+  rw [← Finset.prod_filter]
+  congr 1
+  ext b
+  simp
+
+theorem wden_eq (ε : Fin n → Bool) (t : Fin n → ℂ) :
+    ReciprocityTheory.ChartRestriction.TR.Weyl.wdenK ε t =
+      ∏ x : Fin n × Fin n, if x.1 < x.2 ∧ ε x.1 = ε x.2 then t x.1 - t x.2 else 1 := by
+  rw [Fintype.prod_prod_type]
+  rfl
+
+theorem mode_eq (ε : Fin n → Bool) (t : Fin n → ℂ) :
+    (∏ x : GlobalTheory.PsCo.Pc1.Mode ε, (t x.1.1 - t x.1.2)) =
+      ∏ x : Fin n × Fin n, if ε x.1 = true ∧ ε x.2 = false then t x.1 - t x.2 else 1 := by
+  rw [← Finset.prod_filter]
+  exact (Finset.prod_subtype _ (fun x => by simp) (fun x : Fin n × Fin n => t x.1 - t x.2)).symm
+
+theorem sign_eq (ε : Fin n → Bool) :
+    (∏ x : Fin n × Fin n, if ε x.1 = true ∧ ε x.2 = false ∧ x.2 < x.1 then (-1 : ℂ) else 1) =
+      (-1) ^ ReciprocityTheory.ChartRestriction.DS.TRGap.sDeg ε := by
+  rw [← Finset.prod_filter, Finset.prod_const]
+  rfl
+
+theorem swap_eq (ε : Fin n → Bool) (t : Fin n → ℂ) :
+    (∏ x : Fin n × Fin n, if ε x.1 = true ∧ ε x.2 = false ∧ x.2 < x.1 then t x.2 - t x.1 else 1) =
+      ∏ x : Fin n × Fin n, if ε x.2 = true ∧ ε x.1 = false ∧ x.1 < x.2 then t x.1 - t x.2 else 1 :=
+  Fintype.prod_equiv (Equiv.prodComm _ _) _ _ (fun _ => rfl)
+
+theorem mode_split (ε : Fin n → Bool) (t : Fin n → ℂ) :
+    (∏ x : Fin n × Fin n, if ε x.1 = true ∧ ε x.2 = false then t x.1 - t x.2 else 1) =
+      (∏ x : Fin n × Fin n, if ε x.1 = true ∧ ε x.2 = false ∧ x.1 < x.2 then t x.1 - t x.2 else 1) *
+        ((∏ x : Fin n × Fin n, if ε x.1 = true ∧ ε x.2 = false ∧ x.2 < x.1 then (-1 : ℂ) else 1) *
+          ∏ x : Fin n × Fin n, if ε x.1 = true ∧ ε x.2 = false ∧ x.2 < x.1 then t x.2 - t x.1 else 1) := by
+  rw [← Finset.prod_mul_distrib, ← Finset.prod_mul_distrib]
+  refine Finset.prod_congr rfl fun x _ => ?_
+  obtain ⟨a, b⟩ := x
+  rcases lt_trichotomy a b with h | rfl | h
+  · cases h1 : ε a <;> cases h2 : ε b <;> simp [h, lt_asymm h]
+  · cases h1 : ε a <;> simp
+  · cases h1 : ε a <;> cases h2 : ε b <;> simp [h, lt_asymm h]
+
+theorem lhs_split (ε : Fin n → Bool) (t : Fin n → ℂ) :
+    (∏ x : Fin n × Fin n, if x.1 < x.2 then t x.1 - t x.2 else 1) =
+      (∏ x : Fin n × Fin n, if x.1 < x.2 ∧ ε x.1 = ε x.2 then t x.1 - t x.2 else 1) *
+        ((∏ x : Fin n × Fin n, if ε x.1 = true ∧ ε x.2 = false ∧ x.1 < x.2 then t x.1 - t x.2 else 1) *
+          ∏ x : Fin n × Fin n, if ε x.2 = true ∧ ε x.1 = false ∧ x.1 < x.2 then t x.1 - t x.2 else 1) := by
+  rw [← Finset.prod_mul_distrib, ← Finset.prod_mul_distrib]
+  refine Finset.prod_congr rfl fun x _ => ?_
+  obtain ⟨a, b⟩ := x
+  rcases lt_trichotomy a b with h | rfl | h
+  · cases h1 : ε a <;> cases h2 : ε b <;> simp [h]
+  · simp
+  · cases h1 : ε a <;> cases h2 : ε b <;> simp [lt_asymm h]
+
+end GlobalTheory.PsCo.PcEF.VandermondeCompactNoncompactSplit
+
+namespace GlobalTheory.PsCo.PcEF
+
+open VandermondeCompactNoncompactSplit in
+
+theorem vandermonde_splits_compactNoncompact : VdmSplit := by
+  intro n ε t
+  rw [lhs_eq, wden_eq, mode_eq, mode_split, sign_eq, swap_eq, lhs_split]
+  have hs : ((-1 : ℂ) ^ ReciprocityTheory.ChartRestriction.DS.TRGap.sDeg ε) * (-1) ^ ReciprocityTheory.ChartRestriction.DS.TRGap.sDeg ε = 1 := by
+    rw [← mul_pow]; norm_num
+  generalize (-1 : ℂ) ^ ReciprocityTheory.ChartRestriction.DS.TRGap.sDeg ε = s at hs ⊢
+  linear_combination (-((∏ x : Fin n × Fin n, if x.1 < x.2 ∧ ε x.1 = ε x.2 then t x.1 - t x.2 else 1) *
+    (∏ x : Fin n × Fin n, if ε x.1 = true ∧ ε x.2 = false ∧ x.1 < x.2 then t x.1 - t x.2 else 1) *
+    ∏ x : Fin n × Fin n, if ε x.2 = true ∧ ε x.1 = false ∧ x.1 < x.2 then t x.1 - t x.2 else 1)) * hs
+
+end GlobalTheory.PsCo.PcEF
+
+end
+end
+
+section
+open GlobalTheory.PsCo.PcEG
+
+namespace GlobalTheory.PsCo.PcEG
+
+theorem numShift_holds : NumShift := by
+  intro n ε m c t ht
+  unfold ReciprocityTheory.ChartRestriction.TR.Weyl.numK
+  have hfilt : (Finset.univ.filter (fun σ : Equiv.Perm (Fin n) => ∀ i, ε (σ i) = ε i)) =
+      Finset.univ.filter (fun w : Equiv.Perm (Fin n) => ε ∘ w = ε) := by
+    ext w; simp [funext_iff]
+  rw [hfilt, Finset.sum_mul]
+  refine Finset.sum_congr rfl fun w hw => ?_
+  have hw' : ∀ i, ε (w i) = ε i := fun i => congrFun (Finset.mem_filter.1 hw).2 i
+  rw [mul_assoc]
+  congr 1
+  have h1 : ∏ i, t (w i) ^ (m i - c (ε i)) =
+      (∏ i, t (w i) ^ m i) * ∏ i, t (w i) ^ (-c (ε (w i))) := by
+    rw [← Finset.prod_mul_distrib]
+    refine Finset.prod_congr rfl fun i _ => ?_
+    rw [hw', sub_eq_add_neg, zpow_add₀ (ht _)]
+  rw [h1]
+  congr 1
+  · have := Equiv.prod_comp w (fun a => t a ^ m (w.symm a))
+    simpa using this
+  · exact Equiv.prod_comp w (fun a => t a ^ (-c (ε a)))
+
+end GlobalTheory.PsCo.PcEG
+end
+
+section
 section
 open GlobalTheory.PsCo.PcEG
 
@@ -95,3 +216,4 @@ open GlobalTheory.PsCo.PcEG
 theorem torusId_full : TorusId := weylFormulaCompactTorusIdentity_of_ingredients vandermonde_splits_compactNoncompact adjointDet_onCompactTorus numShift_holds
 
 end GlobalTheory.PsCo.PcEF
+end

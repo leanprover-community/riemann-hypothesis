@@ -14,7 +14,6 @@ import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CharId
 
 namespace Formalism.REAL
 
-theorem casKHighest : CasKHighest := compactCasimirOnHighestWeight_holds
 theorem sumSq : SumSq := sumOfSquaresIdentity_holds
 theorem wdCas : WDCas := by
   intro V _ _ n ε E μ w hGl hU hKH

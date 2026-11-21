@@ -91,9 +91,6 @@ def RowsInh : Prop := InhG (AndE GapE LedE) ∧ InhG CodeE ∧ InhAbs GapE
 
 variable {E}
 
-theorem Row.of_noE {Q : ∀ D : D7, D.what₂.Word → ℝ → ℝ → Prop} (h : Row TrivialRankCondition Q) : Row E Q := fun Cg cb Cu cT CT h1 h2 =>
-  let ⟨C, a, b, hC, h⟩ := h Cg cb Cu cT CT h1 h2
-  ⟨C, a, b, hC, fun C' Cl ha hb D L u hD _ hH => h C' Cl ha hb D L u hD trivial hH⟩
 
 theorem Row.and {Q : ∀ D : D7, D.what₂.Word → ℝ → ℝ → Prop} {Q' : ∀ D : D7, D.what₂.Word → Prop} (h : Row E Q)
     (h' : Row E fun D u _ _ => Q' D u) : Row E fun D u L C => Q D u L C ∧ Q' D u := fun Cg cb Cu cT CT h1 h2 =>
@@ -103,16 +100,7 @@ theorem Row.and {Q : ∀ D : D7, D.what₂.Word → ℝ → ℝ → Prop} {Q' : 
     ⟨h C' Cl (le_trans (le_max_left _ _) ha) (le_trans (le_max_left _ _) hb) D L u hD hE hH,
       h' C' Cl (le_trans (le_max_right _ _) ha) (le_trans (le_max_right _ _) hb) D L u hD hE hH⟩⟩
 
-theorem rowKer_of (h : RowMI E) (h' : RowOnto E) : RowKer E := fun Cg cb Cu cT CT h1 h2 =>
-  let ⟨C, a, b, hC, h⟩ := Row.and (Q' := fun D _ => OntoTower D) h h' Cg cb Cu cT CT h1 h2
-  ⟨C, a, b, hC, fun C' Cl ha hb D L u hD hE hH =>
-    kerIncl_of_tower D u (h C' Cl ha hb D L u hD hE hH).1 (h C' Cl ha hb D L u hD hE hH).2⟩
 
-theorem rkFam_of (h : RKRowG E) : RKFam E := fun Cg cb Cu cT CT h1 h2 =>
-  let ⟨C, a, b, _, h⟩ := h Cg cb Cu cT CT h1 h2
-  ⟨C, a, b, fun _ L C' Cl ha hb ⟨x₀, hF⟩ => ⟨x₀, fun x hx i =>
-    let ⟨h3, h4, h5, h6, h7⟩ := hF x hx i (D7.u₀ _)
-    ⟨_, h C' Cl ha hb _ (L x) _ h3 h4 h5 h6 h7⟩⟩⟩
 
 theorem Row.of_imp {E' : D7 → ℝ → ℝ → Prop} (hE : ∀ D L C', E' D L C' → E D L C') {Q : ∀ D : D7, D.what₂.Word → ℝ → ℝ → Prop}
     (h : Row E Q) : Row E' Q := fun Cg cb Cu cT CT h1 h2 =>
@@ -170,7 +158,6 @@ theorem GapE.nodeGap {D : D7} {L C' : ℝ} (h : GapE D L C') : GlobalTheory.Inde
       linarith
     exact_mod_cast key
 
-theorem GapE.of_params {D : D7} {large₂ : SizeData₂ D} (P : ParameterChoice' D large₂) (L C' : ℝ) : GapE D L C' := P.nodeGap_ge_cubic_rank
 
 theorem one_le_mfL {D : D7} {L C' Cl Cg cb Cu cT CT : ℝ} (hH : Deg.HypL D L C' Cl Cg cb Cu cT CT) :
     1 ≤ mfL D L ∧ 16 ≤ D.R.k ∧ 1 ≤ D.R.f := by
@@ -221,44 +208,6 @@ example : RKRowAbs LedE := RKRowAbs.of_gamLe fun _ _ _ => LedE.gamLe
 
 example : ¬ InhAbs LedE := not_inhAbs_of_gamLe fun _ _ _ => LedE.gamLe
 
-theorem GamLe.code_room {D : D7} {L C' Cl Cg cb Cu cT CT : ℝ} (h : GamLe D L C') (hH : Deg.HypL D L C' Cl Cg cb Cu cT CT)
-    (u : D.what₂.Word) : C' * (D.mem u).A.GamP ^ 2 ≤ 2 ^ (D.R.k - 3) := by
-  obtain ⟨hx, hk, -⟩ := one_le_mfL hH
-  have hG : 0 < (D.mem u).A.GamP := one_pos.trans (D.mem u).A.one_lt_gammaP
-  rcases le_or_gt C' 0 with h0 | h0
-  · exact le_trans (mul_nonpos_of_nonpos_of_nonneg h0 (by positivity)) (by positivity)
-  have hC : C' ≤ D.R.k := by
-    have : C' * mfL D L ≤ D.R.k := le_trans (le_of_eq (by unfold mfL; ring)) hH.2.1
-    nlinarith
-  have he : Real.exp (1 / 4) ≤ 4 / 3 := by
-    have h1 : Real.exp (1 / 4) ^ 4 = Real.exp 1 := by rw [← Real.exp_nat_mul]; norm_num
-    refine le_of_not_gt fun h2 => ?_
-    have h3 : (4 / 3 : ℝ) ^ 4 ≤ Real.exp (1 / 4) ^ 4 := pow_le_pow_left₀ (by norm_num) h2.le 4
-    have := Real.exp_one_lt_d9
-    norm_num at h3
-    linarith
-  have h2 : (D.mem u).A.GamP ^ 2 ≤ (4 / 3 : ℝ) ^ D.R.k := by
-    calc (D.mem u).A.GamP ^ 2 = Real.exp (2 * Real.log (D.mem u).A.GamP) := by
-          rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.exp_nat_mul, Real.exp_log hG]
-      _ ≤ Real.exp ((D.R.k : ℝ) * (1 / 4)) := Real.exp_le_exp.2 (by have := h.le_k hH u; linarith)
-      _ = Real.exp (1 / 4) ^ D.R.k := Real.exp_nat_mul _ _
-      _ ≤ _ := pow_le_pow_left₀ (Real.exp_pos _).le he _
-  have h3 : ∀ n : ℕ, 16 ≤ n → 8 * ((n : ℝ) * (4 / 3) ^ n) ≤ 2 ^ n := by
-    intro n hn
-    induction n, hn using Nat.le_induction with
-    | base => norm_num
-    | succ n hn ih =>
-      have hn' : (16 : ℝ) ≤ n := by exact_mod_cast hn
-      have hp : (0 : ℝ) < (4 / 3) ^ n := by positivity
-      rw [pow_succ, pow_succ]
-      push_cast
-      nlinarith
-  have h4 := h3 _ hk
-  have h5 : (2 : ℝ) ^ D.R.k = 8 * 2 ^ (D.R.k - 3) := by
-    rw [show D.R.k = 3 + (D.R.k - 3) by omega, pow_add]
-    norm_num
-  have h6 : C' * (D.mem u).A.GamP ^ 2 ≤ D.R.k * (4 / 3 : ℝ) ^ D.R.k := mul_le_mul hC h2 (by positivity) (by positivity)
-  linarith
 
 theorem CodeE.one_lt_card {D : D7} {L C' : ℝ} (h : CodeE D L C') (hC : 1 ≤ C') : 1 < Fintype.card D.what₂.Word := by
   have h1 := h.2.2.1 D.u₀

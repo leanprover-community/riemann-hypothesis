@@ -197,27 +197,6 @@ structure IsRegConst (a θ : ChartForm p σ d) (Ψ : CxPts p σ → ℝ → ℝ)
         K * (‖w‖ ^ 2 * a c y ξ.ofLp + √(a c y ξ.ofLp) * ‖η‖ + ‖η‖ ^ 2) ≤
       θ c y ξ.ofLp + (leviForm (fun q : V d × ℂ => Ψ (c.e.symm q.1) ‖q.2‖) (c.e y, w) (ξ, η) (ξ, η)).re / Real.pi
 
-theorem isRegConst_const {a θ : ChartForm p σ d} (ha : ∀ c y ξ, 0 ≤ a c y ξ) (hθ : ∀ c y ξ, 0 ≤ θ c y ξ) (r : ℝ) {A K δ : ℝ}
-    (hA : 0 ≤ A) (hK : 0 ≤ K) (hδ : 0 < δ) : IsRegConst a θ (fun _ _ => r) A K δ where
-  A_nonneg := hA
-  K_nonneg := hK
-  δ_pos := hδ
-  smooth _ := contDiffOn_const
-  mono _ s hs t _ h := by
-    have := hs.1
-    beta_reduce
-    gcongr
-  hess c y _ w _ _ ξ η := by
-    have e : deriv (fun t : ℝ => r + K * t ^ 2) ‖w‖ = K * (2 * ‖w‖) := by
-      simpa using (((hasDerivAt_pow 2 ‖w‖).const_mul K).const_add r).deriv
-    have e' : dbar (fun _ : V d × ℂ => (r : ℂ)) = fun _ => 0 := funext fun _ => dbar_const _ _
-    have := ha c y ξ.ofLp
-    rw [e, leviForm, ddbar, e', del_const]
-    have h₁ : 0 ≤ A * (‖w‖ * (K * (2 * ‖w‖))) * a c y ξ.ofLp := by positivity
-    have h₂ : 0 ≤ K * (‖w‖ ^ 2 * a c y ξ.ofLp + √(a c y ξ.ofLp) * ‖η‖ + ‖η‖ ^ 2) := by positivity
-    have h₃ := hθ c y ξ.ofLp
-    simp only [ContinuousLinearMap.zero_apply, zero_re, zero_div]
-    linarith
 
 variable {a : ChartForm p σ d} {E : ChartMap p σ d} {R : AnRead p σ d}
 

@@ -66,38 +66,6 @@ theorem padicValuationGain : ValGain := by
       linear_combination (e : ℝ) * hq
     linarith
 
-theorem weight_identities' : WeightIdentities := by
-  intro l hl i hi
-  unfold rho gam
-  have hlR : (2 : ℝ) ≤ l := by exact_mod_cast hl
-  have hl0 : (l : ℝ) ≠ 0 := by positivity
-  have hA : 0 < (l : ℝ) ^ 2 - 1 := by nlinarith
-  have hB : 0 < (l : ℝ) - 1 := by linarith
-  have hq : ((l : ℝ) ^ 2 - 1) * (1 / ((l : ℝ) ^ 2 - 1)) = 1 := mul_one_div_cancel hA.ne'
-  have hr : ((l : ℝ) - 1) * (1 / ((l : ℝ) - 1)) = 1 := mul_one_div_cancel hB.ne'
-  have hP : (l : ℝ) ^ i * ((l : ℝ) ^ i)⁻¹ = 1 := mul_inv_cancel₀ (pow_ne_zero i hl0)
-  have hPL : (l : ℝ) ≤ (l : ℝ) ^ i := by
-    obtain ⟨j, rfl⟩ : ∃ j, i = j + 1 := ⟨i - 1, by omega⟩
-    rw [pow_succ]
-    have hb := one_add_mul_le_one_add_pow ((l : ℝ) - 1) hB.le j
-    rw [show (1 : ℝ) + ((l : ℝ) - 1) = l by ring] at hb
-    have hj : (1 : ℝ) ≤ (l : ℝ) ^ j := by
-      nlinarith [mul_nonneg (Nat.cast_nonneg j : (0 : ℝ) ≤ j) hB.le]
-    nlinarith
-  refine ⟨?_, ?_, ?_, ?_⟩
-  · linear_combination (1 / 2 : ℝ) * hP - ((l : ℝ) + 1) * (1 / ((l : ℝ) ^ 2 - 1)) * hr +
-      (1 / ((l : ℝ) - 1)) * hq
-  · intro B
-    linear_combination (B / 2) * hP - B * ((l : ℝ) + 1) * (1 / ((l : ℝ) ^ 2 - 1)) * hr +
-      B * (1 / ((l : ℝ) - 1)) * hq
-  · linear_combination (l : ℝ) ^ i * ((l : ℝ) + 1) * (1 / ((l : ℝ) ^ 2 - 1)) * hr -
-      (l : ℝ) ^ i * (1 / ((l : ℝ) - 1)) * hq
-  · have e : ((l : ℝ) ^ i + 1) * ((l : ℝ) / ((l : ℝ) ^ 2 - 1)) - 1 =
-        (((l : ℝ) ^ i + 1) * l - ((l : ℝ) ^ 2 - 1)) * (1 / ((l : ℝ) ^ 2 - 1)) := by
-      linear_combination hq
-    rw [e]
-    refine mul_nonneg ?_ (one_div_pos.2 hA).le
-    nlinarith [mul_le_mul_of_nonneg_right hPL (by linarith : (0 : ℝ) ≤ l)]
 
 theorem factorialSplit : FactSplit := by
   intro l hl i x

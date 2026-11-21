@@ -157,23 +157,8 @@ def trivRep : NG.AutRep L n where
     · obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.1 hφ
       exact hφ
 
-theorem dict_triv (F : FinIso L n) : Dict F (trivRep L n) (Submodule.span ℂ {(fun _ => 1 : UA L n → ℂ)}) := by
-  refine ⟨isAutRepU_const, ?_⟩
-  rw [Submodule.map_span, Set.image_singleton]
-  refine le_antisymm (Submodule.span_mono ?_) (Submodule.span_le.2 ?_)
-  · rintro _ rfl
-    exact ⟨fun _ => (1 : ℂ), Submodule.mem_span_singleton_self (R := ℂ) (fun _ => 1 : GAf L n → ℂ), (LinearMap.id : ℂ →ₗ[ℂ] ℂ), rfl⟩
-  · rintro _ ⟨f, hf, lam, rfl⟩
-    obtain ⟨c, rfl⟩ := (Submodule.mem_span_singleton (R := ℂ) (M := GAf L n → ℂ)).1 hf
-    exact Submodule.mem_span_singleton.2 ⟨lam (c • (1 : ℂ)), funext fun x => mul_one _⟩
 
-theorem not_dict_bot (F : FinIso L n) (π : NG.AutRep L n) : ¬ Dict F π ⊥ := fun h => h.1.ne_bot rfl
 
-theorem restrict_translate (F : FinIso L n) (φ : UA L n → ℂ) (h : GAf L n) :
-    LinearMap.funLeft ℂ ℂ F.j (RU L n (F.j h) φ) = NG.rt L n h (LinearMap.funLeft ℂ ℂ F.j φ) := by
-  funext g
-  change φ (F.j g * F.j h) = φ (F.j (g * h))
-  rw [map_mul]
 
 end GlobalTheory.FormDict.Model
 

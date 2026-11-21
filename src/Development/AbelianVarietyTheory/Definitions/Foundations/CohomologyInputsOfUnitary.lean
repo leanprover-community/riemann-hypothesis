@@ -15,14 +15,7 @@ variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {l : ℕ} [Fact l.Prime]
 
 theorem isConj_iff (s : G ℚ Ω) : IsConj s ↔ IsCC s := Iff.rfl
 
-theorem vanishOrd_of (h : X.LemmaKatoW) : VanishOrd := fun l _ _ Ω _ _ _ ι e he W hW => by
-  obtain ⟨f, M, φ, hM, hφ, hf⟩ := hW.modular
-  exact h e he f l Ω ι W hW.cont M hM φ hφ hf
 
-theorem cohomology_inputs_of_unitary (h : U3.Inp) : Inp0 :=
-  { h.toCohInp with
-    lemM := h.lemM, lemM' := h.lemM', lemP := h.lemP, adK := h.adK, adQ := h.adQ, newAut := h.newAut,
-    number := h.number }
 
 theorem om_mulVec (A : Matrix (Fin 2) (Fin 2) (Qbar l)) (x y : Fin 2 → Qbar l) :
     om (A *ᵥ x) (A *ᵥ y) = A.det * om x y := by
@@ -57,22 +50,8 @@ theorem cup_cob (W : R2 Ω l) (a : Fin 2 → Qbar l) (z : G ℚ Ω → Fin 2 →
   rw [hz, om_sub_left, om_add_right, om_equiv]
   ring
 
-theorem ht_cob (W : R2 Ω l) (a : Fin 2 → Qbar l) (z : G ℚ Ω → Fin 2 → Qbar l) (s : G ℚ Ω) :
-    ht W (fun s => mat W s *ᵥ a - a) z (fun s => om a (z s)) s = 0 := by
-  have h : mat W s *ᵥ a - a = (mat W s - 1) *ᵥ a := by rw [Matrix.sub_mulVec, Matrix.one_mulVec]
-  simp only [ht]
-  rw [h, Matrix.mulVec_mulVec, Matrix.adjugate_mul, Matrix.smul_mulVec, Matrix.one_mulVec]
-  simp [om]; ring
 
-theorem gr_of_triv (W : R2 Ω l) (A : ValuationSubring Ω) (hW : ∀ s ∈ Dec (F := ℚ) A, mat W s 1 0 = 0)
-    (c : G ℚ Ω → Fin 2 → Qbar l) (h : Triv W A c) : Gr W A c := by
-  obtain ⟨x, hx⟩ := h
-  refine ⟨x 1, fun s hs => ?_⟩
-  rw [hx s hs]
-  simp [Matrix.mulVec, dotProduct, Fin.sum_univ_two, hW s hs]
 
-theorem strZero_of_grZero (W : R2 Ω l) (A : ValuationSubring Ω) (hW : ∀ s ∈ Dec (F := ℚ) A, mat W s 1 0 = 0)
-    (h : GrZero W A) : StrZero W A := fun c hc hu ht => h c hc hu (gr_of_triv W A hW c ht)
 
 theorem eps_eq (s : G ℚ Ω) : eps l s = algebraMap ℤ_[l] (Qbar l) (cycZ ℚ Ω l s : ℤ_[l]) := rfl
 
@@ -87,22 +66,7 @@ theorem cycZ_ine [IsAlgClosure ℚ Ω] {v : Pl} (hl : ((l : ℕ) : 𝓞 ℚ) ∉
   rw [cycZ_toZModPow_eq hl hA (q := 1) (fun x hx => by simpa using hσ.2 x hx) n]
   simp
 
-theorem cyclotomic_two_cocycle [IsAlgClosure ℚ Ω] (c : Coef l) (n : ℕ) (S : Finset Pl) (hS : ContainsAbove S l) :
-    Coc2 c n S (fun s _ : G ℚ Ω => eps l s) where
-  cont := (cont_int.comp (Units.continuous_val.comp (continuous_cycZ ℚ Ω l))).comp continuous_fst
-  int s _ := c.O.algebraMap_mem _
-  coc r s t := by
-    have : eps l (r * s) = eps l r * eps l s := by simp [eps]
-    rw [this]; exact cg_refl _ _
-  unr s t a ha b _ := by
-    have hu : UnramOutside (S : Set Pl) (cycZ ℚ Ω l) := by
-      rw [unramOutside_iff _ _ (continuous_cycZ ℚ Ω l)]
-      exact fun v hv A hA σ hσ => cycZ_ine (fun h => hv (hS v h)) hA hσ
-    have h1 : cycZ ℚ Ω l a = 1 := hu a ((QuotientGroup.eq_one_iff a).1 ha)
-    rw [eps_eq, eps_eq, map_mul, h1, mul_one]; exact cg_refl _ _
 
-theorem cyclotomic_two_coboundary (c : Coef l) (n : ℕ) (H : Subgroup (G ℚ Ω)) : Cob2 c n H (fun s _ : G ℚ Ω => eps l s) :=
-  ⟨fun _ => 1, continuousOn_const, fun _ => c.O.one_mem, fun s _ t _ => by simpa using cg_refl n (eps l s)⟩
 
 def coefBot (l : ℕ) [Fact l.Prime] : Coef l :=
   have hi : Function.Injective (algebraMap ℤ_[l] (Qbar l)) :=

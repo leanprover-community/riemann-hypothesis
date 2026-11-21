@@ -32,11 +32,6 @@ theorem finSingleOne_of_ne {w u : HeightOneSpectrum (𝓞 K)} (h : u ≠ w) : fi
   classical
   exact Pi.single_eq_of_ne (M := fun u : HeightOneSpectrum (𝓞 K) ↦ u.adicCompletion K) h 1
 
-theorem eq_zero_or_one_of_mul_self {L : Type*} [Field L] {x : L} (h : x * x = x) : x = 0 ∨ x = 1 := by
-  have h1 : x * (x - 1) = 0 := by rw [mul_sub, h, mul_one, sub_self]
-  rcases mul_eq_zero.1 h1 with h2 | h2
-  · exact Or.inl h2
-  · exact Or.inr (sub_eq_zero.1 h2)
 
 end Single
 
@@ -95,17 +90,6 @@ theorem adeleMap_snd_of_isPlaceIdem {v : HeightOneSpectrum (𝓞 F)} {ε : AF F}
   · have : (pairA F 0 α).2 (below F w) = 0 := h0 _ hw
     rw [this, map_zero]
 
-theorem isPlaceIdem_mul_self {v : HeightOneSpectrum (𝓞 F)} {ε : AF F} (h : IsPlaceIdem F v ε) :
-    ε * ε = ε := by
-  obtain ⟨α, rfl, h1, h0⟩ := h
-  refine Prod.ext (by change (0 : Ainf F) * 0 = 0; rw [mul_zero]) (FiniteAdeleRing.ext (K := F) fun u ↦ ?_)
-  change α u * α u = α u
-  by_cases hu : u = v
-  · subst hu
-    have h1' : α u = 1 := h1
-    rw [h1', mul_one]
-  · have h0' : α u = 0 := h0 u hu
-    rw [h0', mul_zero]
 
 theorem finPart_mem_intAE_iff (z : AE F E) :
     finPart F E z ∈ intAE F E ↔ ∀ w, (adeleEquiv F E z).2 w ∈ w.adicCompletionIntegers E := by
@@ -153,50 +137,7 @@ theorem exists_mem_not_mem {P w : HeightOneSpectrum (𝓞 E)} (h : w ≠ P) :
   push_neg at hc
   exact h (HeightOneSpectrum.ext (w.isMaximal.eq_of_le P.isPrime.ne_top hc))
 
-theorem adeleEquiv_eq_idemAt {e : AE F E} {P : HeightOneSpectrum (𝓞 E)} (he : e * e = e)
-    {v : HeightOneSpectrum (𝓞 F)} {ε : AF F} (hε : IsPlaceIdem F v ε)
-    (hee : e * algebraMap (AF F) (AE F E) ε = e)
-    (hP : ∀ x : 𝓞 E, x ≠ 0 → (x ∈ P.asIdeal ↔ finPart F E (e * incA F E ((x : E)⁻¹)) ∉ intAE F E)) :
-    adeleEquiv F E e = idemAt P := by
-  set a := adeleEquiv F E e with ha
-  have ha2 : a * a = a := by rw [ha, ← map_mul, he]
-  have haε : a * adeleMap F E ε = a := by rw [ha, ← adeleEquiv_algebraMap, ← map_mul, hee]
-  have hfst : a.1 = 0 := by
-    have h := congrArg Prod.fst haε
-    change a.1 * (adeleMap F E ε).1 = a.1 at h
-    rw [adeleMap_fst_of_isPlaceIdem hε, mul_zero] at h
-    exact h.symm
-  have h01 : ∀ w, a.2 w = 0 ∨ a.2 w = 1 := fun w ↦ by
-    have h := congrArg (fun b : 𝔸[E] ↦ b.2 w) ha2
-    exact eq_zero_or_one_of_mul_self h
-  have hchar : ∀ x : 𝓞 E, x ≠ 0 → (x ∈ P.asIdeal ↔ ∃ w, a.2 w = 1 ∧ x ∈ w.asIdeal) :=
-    fun x hx ↦ (hP x hx).trans (char_iff_exists h01 hx)
-  have hsupp : ∀ w, a.2 w = 1 → w = P := by
-    intro w hw
-    by_contra hne
-    obtain ⟨x, hxw, hxP⟩ := exists_mem_not_mem hne
-    have hx0 : x ≠ 0 := fun h0 ↦ hxP (h0 ▸ zero_mem _)
-    exact hxP ((hchar x hx0).2 ⟨w, hw, hxw⟩)
-  have hP1 : a.2 P = 1 := by
-    obtain ⟨x, hxP, hx0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot P.ne_bot
-    obtain ⟨w, hw, -⟩ := (hchar x hx0).1 hxP
-    rwa [← hsupp w hw]
-  refine Prod.ext hfst (FiniteAdeleRing.ext (K := E) fun w ↦ ?_)
-  by_cases hw : w = P
-  · subst hw; rw [hP1, idemAt_snd_self]
-  · rw [idemAt_snd_of_ne hw]
-    rcases h01 w with h0 | h1
-    · exact h0
-    · exact absurd (hsupp w h1) hw
 
-theorem adeleEquiv_eq_idemAt_of_isPrimeIdem {σ : E →ₐ[F] E} {P : HeightOneSpectrum (𝓞 E)}
-    {e f : AE F E} (h : IsPrimeIdem σ P e f) : adeleEquiv F E e = idemAt P := by
-  rcases h with ⟨⟨⟨he2, hes, v, ε, hε, hsum⟩, hchar⟩, -⟩ | ⟨-, ⟨v, ε, hε, rfl⟩, hchar⟩
-  · refine adeleEquiv_eq_idemAt he2 hε ?_ hchar
-    rw [← hsum, mul_add, he2, hes, add_zero]
-  · refine adeleEquiv_eq_idemAt ?_ hε ?_ hchar
-    · rw [← map_mul, isPlaceIdem_mul_self hε]
-    · rw [← map_mul, isPlaceIdem_mul_self hε]
 
 theorem char_of_adeleEquiv_eq_idemAt {e : AE F E} {P : HeightOneSpectrum (𝓞 E)}
     (h : adeleEquiv F E e = idemAt P) :

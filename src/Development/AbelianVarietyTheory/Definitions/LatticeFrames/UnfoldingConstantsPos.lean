@@ -55,16 +55,7 @@ theorem MIMap.miKer {Θ : Desc D u} (h : MIMap D u Θ) : MIKer D u Θ := by
   rw [h0, LinearMap.zero_apply, mul_zero] at h1
   exact (mul_eq_zero.1 h1.symm).resolve_left hl
 
-theorem OntoAll.ontoP {Θ : Desc D u} (h : OntoAll D u Θ) : OntoP D u Θ := by
-  intro x hx
-  obtain ⟨F, hF⟩ := h (D.s.Pu u x)
-  have h1 := hx F
-  rw [hF] at h1
-  exact inner_self_eq_zero.1 h1
 
-theorem kerIncl_of {Θ : Desc D u} (h : MIKer D u Θ) (h' : OntoP D u Θ) : KerIncl D u := by
-  obtain ⟨FF, hi, h⟩ := h
-  exact ⟨FF, hi, fun φ h0 => h' _ (h φ h0)⟩
 
 theorem d0_eq : d0 D u = D.duS u := (D.s_Cu u).finrank_eq
 

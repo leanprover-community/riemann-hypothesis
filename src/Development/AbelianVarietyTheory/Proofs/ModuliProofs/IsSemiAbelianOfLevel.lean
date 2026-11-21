@@ -22,25 +22,6 @@ section Weights
 variable {S A Y₁ Y₂ : Scheme.{0}} {G : Over S} [GrpObj G] {X : Type} [AddCommGroup X] {i : splitTorus S X ⟶ G}
   {L : LB A}
 
-theorem exists_genWt_of_base (hL : L.IsLB) {F₁ : G.left ⟶ Y₁} {F₂ : G.left ⟶ Y₂}
-    (h₁ : ∀ (Z : Over S) (t : Z ⟶ splitTorus S X) (g : Z ⟶ G), ((t ≫ i) * g).left ≫ F₁ = g.left ≫ F₁)
-    (h₂ : ∀ (Z : Over S) (t : Z ⟶ splitTorus S X) (g : Z ⟶ G), ((t ≫ i) * g).left ≫ F₂ = g.left ≫ F₂)
-    {K₁ K₂ K₀ : Type} [Fintype K₁] [Fintype K₂] [Fintype K₀] {φ₁ : K₁ → (Y₁ ⟶ A)} {ε₁ : K₁ → ℤ}
-    {φ₂ : K₂ → (Y₂ ⟶ A)} {ε₂ : K₂ → ℤ} {φ₀ : K₀ → (S ⟶ A)} {ε₀ : K₀ → ℤ}
-    (hw : ∃ w : LB.Gen (LB.LinComb L φ₀ ε₀), w.IsGen)
-    (hs : ∀ (U : Type) [CommGroup U] (f : (G.left ⟶ A) → U),
-      (∏ k, f (F₁ ≫ φ₁ k) ^ ε₁ k) * ∏ k, f (G.hom ≫ φ₀ k) ^ ε₀ k = ∏ k, f (F₂ ≫ φ₂ k) ^ ε₂ k) {χ : X}
-    (h : ∃ u : LB.Gen ((LB.LinComb L φ₁ ε₁).pull F₁), u.IsGen ∧ ∀ j, IsWt i _ (u.s j).val χ) :
-    ∃ u : LB.Gen ((LB.LinComb L φ₂ ε₂).pull F₂), u.IsGen ∧ ∀ j, IsWt i _ (u.s j).val χ := by
-  obtain ⟨w, hw⟩ := hw
-  obtain ⟨u, hu, hχ⟩ := h
-  obtain ⟨v, hv, e⟩ := exists_gen hL (φ' := fun k => F₂ ≫ φ₂ k) (ε' := ε₂)
-    (fun U _ f => (Fintype.prod_sum_type _).trans (hs U f))
-    (LB.mulGen L _ _ _ _ (flatGen u) (LB.pullGen L _ _ w G.hom))
-    (DVR.mulGen_isGen _ _ _ _ _ _ _ (flatGen_isGen hu) (DVR.pullGen_isGen _ _ _ _ hw _))
-  refine ⟨unflatGen v, unflatGen_isGen hv, isWt_unflatGen h₂ hL hv fun Z t g z J hJ => ?_⟩
-  rw [e _ _ z J hJ, e _ _ z J hJ, val_mul hJ, val_mul hJ, val_pull hJ, val_pull hJ, Over.w, Over.w,
-    val_flatGen h₁ hχ t g hJ, _root_.mul_assoc]
 
 end Weights
 
@@ -90,36 +71,9 @@ theorem cubV_congr {L : RigLB G} (c : CubicalStr G L) {Z : Scheme.{0}} {a b : Z 
   rw [Over.OverMorphism.ext hx, Over.OverMorphism.ext hy, Over.OverMorphism.ext hu]
   rfl
 
-theorem isSemiAbelian_of_tq [Module.Free ℤ X] [Module.Finite ℤ X] (Q : TQ G X) : IsSemiAbelian G := by
-  have := Q.q_affine
-  have := Q.isAb.proper
-  refine ⟨inferInstance, (TrivDescentCompare.smooth_conn Q).1, ?_, ?_, (TrivDescentCompare.smooth_conn Q).2,
-    fun Ω _ _ p => ?_⟩
-  · rw [← Over.w Q.q]; infer_instance
-  · rw [← Over.w Q.q]; infer_instance
-  · obtain ⟨Q', -⟩ := exists_tq_baseChange _ _ p X G _ _ (isGrpPullback_pullback G p) Q
-    have := Q'.q_affine
-    exact ⟨{ X := X, B := Q'.B, isAbelian := Q'.isAb, q := Q'.q, q_hom := Q'.q_hom, q_flat := Q'.q_flat,
-             q_surjective := Q'.q_surj, q_quasiCompact := inferInstance, i := Q'.i, i_hom := Q'.i_hom,
-             isKernel := Q'.isKernel }⟩
 
 end Packages
 
-theorem isSemiAbelian_of_level {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V]
-    {A : PolAV (Spec (CommRingCat.of (FractionRing V)))} {G : Over (Spec (CommRingCat.of V))} [GrpObj G]
-    [IsCommMonObj G] (hs : Smooth G.hom) (hsep : IsSeparated G.hom) (hq : QuasiCompact G.hom)
-    (gen : (Over.pullback (jK V)).obj G ≅ A.A) (hgen : IsMonHom gen.hom) {X : Type} [AddCommGroup X]
-    [Module.Free ℤ X] [Module.Finite ℤ X] (Q : TQ (thickObj V (IsLocalRing.maximalIdeal V) 0 G) X) :
-    IsSemiAbelian G := by
-  have : IsCommMonObj ((Over.pullback (Spec.map (CommRingCat.ofHom (IsLocalRing.residue V)))).obj G) :=
-    Functor.isCommMonObj_obj
-  obtain ⟨Q'⟩ := nonempty_tq_pullback_comp (g := Spec.map (CommRingCat.ofHom (IsLocalRing.residue V)))
-    (Spec.map (CommRingCat.ofHom (Ideal.Quotient.factor
-      (show IsLocalRing.maximalIdeal V ^ (0 + 1) ≤ IsLocalRing.maximalIdeal V by simp))))
-    (thick V (IsLocalRing.maximalIdeal V) 0) (by rw [← Spec.map_comp]; rfl) G Q
-  exact ZJ.isSemiAbelian_of_fibres_dvr V G hs hsep hq (isSemiAbelian_of_tq Q')
-    (isSemiAbelian_of_isAbelianScheme _
-      (PolPull.isAbelianScheme_of_isGrpPullback A.isAb (isGrpPullback_of_iso gen)))
 
 section Triv
 variable {S S' : Scheme.{0}} {G : Over S} {G' H : Over S'} [GrpObj G] [IsCommMonObj G] [GrpObj G'] [IsCommMonObj G']
@@ -212,58 +166,6 @@ theorem nonempty_symTriv_iff [IsMonHom i] (h : IsCPMap P' P f F hw w) (hj : (i.l
 
 variable {S'' : Scheme.{0}} {X : Type} [AddCommGroup X]
 
-theorem symTriv_compat [ConnectedSpace S''] [Module.Free ℤ X] {g : S'' ⟶ S'} {f'' : S'' ⟶ S}
-    {j : (splitTorus S' X).left ⟶ G.left} {hj : j ≫ G.hom = (splitTorus S' X).hom ≫ f}
-    {j'' : (splitTorus S'' X).left ⟶ G.left} {hj'' : j'' ≫ G.hom = (splitTorus S'' X).hom ≫ f''}
-    (σ : SymTriv P j hj) (σ'' : SymTriv P j'' hj'') (ef : g ≫ f = f'') (ej : SplitTorus.bcMap g X ≫ j = j'')
-    (Z : Scheme.{0}) (r : Z ⟶ (splitTorus S'' X).left) (z : Z) (J) (hJ : Good P.L.L z J) :
-    val σ.s (r ≫ SplitTorus.bcMap g X) z J = val σ''.s r z J := by
-  subst ef ej
-  have hE := SplitTorus.isGrpPullback_bcMap g X
-  obtain ⟨a, ha⟩ := TorusCoord.exists_ratio P.L.isLB (fun U _ k => by
-      simp only [Fin.prod_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one]
-      rw [← Category.assoc, hE.1.w, Category.assoc, Category.assoc])
-    (LB.pullGen P.L.L _ _ σ.s (SplitTorus.bcMap g X)) (DVR.pullGen_isGen _ _ _ _ σ.gen _) σ''.s σ''.gen
-  have ha' : ∀ (Z : Scheme.{0}) (r : Z ⟶ (splitTorus S'' X).left) (z : Z) (J), Good P.L.L z J →
-      val σ.s (r ≫ SplitTorus.bcMap g X) z J = gm r z ⊤ a * val σ''.s r z J := fun Z r z J hJ =>
-    (val_pull hJ _ _ _).symm.trans (ha Z r z J hJ)
-  let β := toBaseHom (TowerEx.toBase_mul hE hE.1.w)
-  have h₃ : ∀ (Z : Over S'') (x y u : Z ⟶ splitTorus S'' X) (z : Z.left),
-      gm (x * y * u).left z ⊤ a * gm x.left z ⊤ a * gm y.left z ⊤ a * gm u.left z ⊤ a =
-        gm (x * y).left z ⊤ a * gm (x * u).left z ⊤ a * gm (y * u).left z ⊤ a := fun Z x y u z => by
-    obtain ⟨J, hJ⟩ := exists_good_pt P.L.isLB z
-    obtain ⟨V, hV⟩ : ∃ V : (Z ⟶ splitTorus S'' X) → (Z.left.presheaf.stalk z)ˣ,
-      ∀ t, V t = val σ.s (β Z t).left z J := ⟨_, fun _ => rfl⟩
-    have b := σ.cub _ (β Z x) (β Z y) (β Z u) z J hJ
-    simp only [← map_mul] at b
-    have c := σ''.cub Z x y u z J hJ
-    obtain ⟨C, hC⟩ : ∃ C, C = @id (Z.left.presheaf.stalk z)ˣ (cubV P.c (T := Over.mk (Z.hom ≫ g ≫ f)) z J
-      (toBase hj'' x) (toBase hj'' y) (toBase hj'' u)) := ⟨_, rfl⟩
-    have b' : V (x * y * u) * V x * V y * V u = C * V (x * y) * V (x * u) * V (y * u) := by
-      rw [hC, cubV_congr P.c z J (x' := toBase hj (β Z x)) (y' := toBase hj (β Z y)) (u' := toBase hj (β Z u))
-        (Category.assoc _ _ _).symm (Category.assoc _ _ _).symm (Category.assoc _ _ _).symm]
-      simp only [hV]; exact b
-    have v : ∀ t, V t = gm t.left z ⊤ a * val σ''.s t.left z J := fun t => (hV t).trans (ha' _ t.left z J hJ)
-    rw [← hC] at c
-    simp only [v] at b'
-    apply Additive.ofMul.injective
-    have c' := congrArg Additive.ofMul c
-    have b'' := congrArg Additive.ofMul b'
-    simp only [ofMul_mul] at c' b'' ⊢
-    linear_combination (norm := abel) b'' - c'
-  have a1 : a = 1 := CubTrivTorus.eq_one_of_even a h₃ (fun Z z => by
-      have := h₃ Z 1 1 1 z
-      simp only [_root_.mul_one] at this
-      exact mul_eq_left.1 this) fun Z x z => by
-    obtain ⟨J, hJ⟩ := exists_good_pt P.L.isLB z
-    have b := σ.even _ (β Z x) z J hJ
-    rw [← map_inv] at b
-    have b' : val σ.s ((x⁻¹).left ≫ SplitTorus.bcMap g X) z J =
-      val P.sym ((x.left ≫ SplitTorus.bcMap g X) ≫ j) z J * val σ.s (x.left ≫ SplitTorus.bcMap g X) z J := b
-    rw [ha' _ _ z J hJ, ha' _ _ z J hJ, σ''.even Z x z J hJ, Category.assoc x.left,
-      mul_left_comm _ (gm x.left z ⊤ a)] at b'
-    exact mul_right_cancel b'
-  rw [ha' Z r z J hJ, a1, map_one, _root_.one_mul]
 
 theorem exists_even_of_desc {Q : TQ G X} (D : Q.Desc P) : ∃ σ : CubTriv P.c Q.i, σ.Even := by
   have := Q.i_hom
@@ -390,49 +292,6 @@ theorem isCPPullback_iff (β : L₁.Q.B.left ⟶ B.left) : IsCPPullback L₁.D.M
 
 end Levels
 
-theorem represents_iff {A : Type} [CommRing A] [IsLocalRing A] {S : Scheme.{0}} {G : Over S} [GrpObj G]
-    [IsCommMonObj G] {P : CP G} {X : Type} [AddCommGroup X] {f : Spec (CommRingCat.of A) ⟶ S}
-    {G₁ : Over (Spec (CommRingCat.of A))} [GrpObj G₁] [IsCommMonObj G₁] {F : G₁.left ⟶ G.left}
-    {h : F ≫ G.hom = G₁.hom ≫ f} {L : Level P X f G₁ F h} {B : Over S} [GrpObj B] [IsCommMonObj B] {M : CP B}
-    (r : L.Red M) (c : 𝟙_ (Over S) ⟶ B) (χ : X) :
-    r.Represents c χ ↔ ∃ u : LB.Gen ((LB.LinComb M.L.L (K := Fin 2) ![((toUnit B ≫ c) * 𝟙 B).left, 𝟙 B.left]
-      ![-1, 1]).pull (L.Q.q.left ≫ r.toB)), u.IsGen ∧ ∀ j, IsWt L.Q.i _ (u.s j).val χ := by
-  have := L.Q.q_hom
-  have q₁ : ∀ (Z : Over _) (t : Z ⟶ splitTorus _ X) (g : Z ⟶ G₁),
-      ((t ≫ L.Q.i) * g).left ≫ L.Q.q.left = g.left ≫ L.Q.q.left := fun Z t g =>
-    congrArg (fun k => k.left) (show ((t ≫ L.Q.i) * g) ≫ L.Q.q = g ≫ L.Q.q by
-      rw [MonObj.mul_comp, Category.assoc, L.Q.isKernel.w, ← Category.assoc, toUnit_unique (t ≫ toUnit _) (toUnit _),
-        ← Hom.one_def, _root_.one_mul])
-  have q₂ : ∀ (Z : Over _) (t : Z ⟶ splitTorus _ X) (g : Z ⟶ G₁),
-      ((t ≫ L.Q.i) * g).left ≫ L.Q.q.left ≫ r.toB = g.left ≫ L.Q.q.left ≫ r.toB := fun Z t g => by
-    rw [← Category.assoc, q₁, Category.assoc]
-  let c₀ : S ⟶ B.left := c.left
-  have e₁ : (L.Q.q.left ≫ r.toB) ≫ ((toUnit B ≫ c) * 𝟙 B).left = L.Q.q.left ≫ r.lamφ c 0 := by
-    have : r.pt ≫ ((toUnit B ≫ c) * 𝟙 B) = (toUnit _ ≫ c) * r.pt := by
-      rw [MonObj.comp_mul, comp_toUnit_assoc, Category.comp_id]
-    exact (Category.assoc _ _ _).trans (congrArg (fun k => L.Q.q.left ≫ k.left) this)
-  have e₂ : G₁.hom ≫ f ≫ c₀ = L.Q.q.left ≫ r.lamφ c 1 := by
-    show _ = L.Q.q.left ≫ (toUnit (Over.mk (L.Q.B.hom ≫ f))).left ≫ c.left
-    rw [Rosenlicht.toUnit_left, ← Over.w L.Q.q]
-    exact (Category.assoc _ _ _).trans (congrArg _ (Category.assoc _ _ _).symm)
-  have e₃ : (L.Q.q.left ≫ r.toB) ≫ 𝟙 _ = L.Q.q.left ≫ r.lamφ c 2 := Category.comp_id _
-  have e₄ : G₁.hom ≫ f ≫ eSec B = L.Q.q.left ≫ r.lamφ c 3 := by
-    show _ = L.Q.q.left ≫ (1 : Over.mk (L.Q.B.hom ≫ f) ⟶ B).left
-    rw [one_left, ← Over.w L.Q.q]
-    exact (Category.assoc _ _ _).trans (congrArg _ (Category.assoc _ _ _).symm)
-  constructor
-  · refine exists_genWt_of_base M.L.isLB q₁ q₂ (DVR.exists_gen_of_local M.L.L M.L.isLB (K := Fin 2)
-      ![f ≫ c₀, f ≫ eSec B] ![-1, 1]) fun U _ k => ?_
-    rw [Fin.prod_univ_four, Fin.prod_univ_two, Fin.prod_univ_two, ← e₁, ← e₂, ← e₃, ← e₄]
-    apply Additive.ofMul.injective
-    simp
-    abel
-  · refine exists_genWt_of_base M.L.isLB q₂ q₁ (DVR.exists_gen_of_local M.L.L M.L.isLB (K := Fin 2)
-      ![f ≫ c₀, f ≫ eSec B] ![1, -1]) fun U _ k => ?_
-    rw [Fin.prod_univ_four, Fin.prod_univ_two, Fin.prod_univ_two, ← e₁, ← e₂, ← e₃, ← e₄]
-    apply Additive.ofMul.injective
-    simp
-    abel
 
 end GlobalTheory.UniformizationSetting
 end

@@ -8,8 +8,39 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecializa
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.EveryPointSatisfiesFrameConditionAlt
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.SeedPtOf
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.DimOf
-import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LinkedUnramifiedChains.DerivativeDivisibility.AbsGood
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LinkedUnramifiedChains.AbsGood
+import Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.PxIsCont
+import Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.FinLamOf
+import Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.FirstPrimeConditionTransfer
+import Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.SecondThirdPrimeConditionTransfer
+import Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.SeedOf
+import Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.ComponentsGoodRankTwo
+import Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.PropagationTheoremGL3
 
+section
+theorem UpperTheory.V.J.absGood :
+    UpperTheory.V.J.AbsGood := by
+  intro l _ O _ _ _ _ _ F T₂ T₃ J₂ J₃ h₂ h₃
+  obtain ⟨φ₂, hφ₂, hs₂⟩ := UpperTheory.V.Pr.phiEx l O F 2 T₂
+  obtain ⟨φ₃, hφ₃, hs₃⟩ := UpperTheory.V.Pr.phiEx l O F 3 T₃
+  obtain ⟨Λ₂, hΛ₂⟩ := h₂.fin
+  obtain ⟨Λ₃, hΛ₃⟩ := h₃.fin
+  have good₂ : UpperTheory.V.Pr.AllGood T₂.S (Ideal.map φ₂ J₂) :=
+    UpperTheory.V.Pr.components_good_rank_two l O F T₂.C₀ T₂.ok T₂.big T₂.S (Ideal.map φ₂ J₂)
+      (UpperTheory.V.Pr.finLamOf l O F 2 T₂ φ₂ hφ₂ hs₂ Λ₂ J₂ hΛ₂)
+      (UpperTheory.V.Pr.p1Of l O F 2 T₂ φ₂ hφ₂ h₂.n4 J₂ h₂.p1)
+      (UpperTheory.V.Pr.seedOf l O F 2 T₂ φ₂ hφ₂ J₂ h₂.unr h₂.dim h₂.seed)
+  refine ⟨φ₃, hφ₃, hs₃, ?_⟩
+  exact (UpperTheory.V.Pr.components_good_rank_three l O F T₃.C₀ T₃.ok T₃.big T₂.S (Ideal.map φ₂ J₂)
+      (UpperTheory.V.Pr.finLamOf l O F 2 T₂ φ₂ hφ₂ hs₂ Λ₂ J₂ hΛ₂) good₂
+      T₃.S (Ideal.map φ₃ J₃)
+      (UpperTheory.V.Pr.finLamOf l O F 3 T₃ φ₃ hφ₃ hs₃ Λ₃ J₃ hΛ₃)
+      (UpperTheory.V.Pr.p1Of l O F 3 T₃ φ₃ hφ₃ h₃.n4 J₃ h₃.p1)
+      (UpperTheory.V.Pr.rankThree_deformationSetup_splitting_condition l O F T₃ φ₃ hφ₃ h₃.n4 J₃ h₃.p3)
+      (UpperTheory.V.Pr.seedOf l O F 3 T₃ φ₃ hφ₃ J₃ h₃.unr h₃.dim h₃.seed)).1
+end
+
+section
 open NumberField Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.GalOfCusp IsLocalRing UpperTheory.V.HV UpperTheory.V.U3 UpperTheory.V.Base UpperTheory.V.Af
 
 namespace UpperTheory.V.J
@@ -64,23 +95,6 @@ private theorem oe_res {l : ℕ} [Fact l.Prime] {c c₁ : Coef l} (hle : c.O ≤
     rw [ResidueField.map_residue]
     exact congrArg _ (Subtype.ext h)⟩
 
-private theorem oe_modIn
-    {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ) {c : Coef l}
-    [CharP (ResidueField c.O) l] {N : ℕ} [NeZero N] {e : ℕ} {ψ : DirichletCharacter c.O N}
-    {η : G ℚ Ω →* ℤˣ} {σ g₁ : G ℚ Ω} {B : ValuationSubring Ω} {M : ℕ} (H : LinkHyp c N e η σ B M)
-    {L : Type} [Field L] [NumberField L] [IsCMField L] [Algebra L Ω] [IsAlgClosure L Ω] {Φ : Fr.Frame l (ResidueField c.O)}
-    {k : GalLink η (Chr.Psi l e (Chr.dirG ℚ Ω ψ)) σ g₁ B M L Φ} (v : Φ.V)
-    {c₁ : Coef l} [Fr.IsCoef l c₁.O] {f : ResidueField c.O →+* ResidueField c₁.O} {n : ℕ}
-    {ka : G L Ω →* (Qbar l)ˣ} (R : CReal k c₁ f n ka) (Λ : W.LamObj R.r)
-    (hΛ : Nonempty (Λ.Λ ≃ₐ[c₁.O] MvPowerSeries (Fin (n * Module.finrank ℚ (W.Lp L))) c₁.O))
-    (J : Ideal R.B₀.B) (hJ : R.B₀.Modular ι J Λ) (hs : R.T.IdealSpecializationPoint J) : R.T.ModIn J := by
-  obtain ⟨hd, -⟩ := degEq Ω l ι c N e ψ η σ g₁ B M H L Φ k v
-  refine ⟨⟨Λ, hJ.ring.fin⟩, ?_, fun g hg => (hJ.ring.unr0 R.v0 g hg).1,
-    n4Of Ω l ι c N e ψ η σ g₁ B M H L Φ k c₁ f n ka R, hJ.p1, hJ.p3, hs⟩
-  intro Z hZ
-  haveI : IsDiscreteValuationRing c₁.O := c₁.dvr
-  have := dimOf c₁.O Λ.Λ R.B₀.B (Λ.toPair R.B₀.u : Λ.Λ →+* R.B₀.B) J _ hΛ hJ.ring.fin hJ.ring.tf Z hZ
-  rw [← hd] at this
-  exact this
 
 end UpperTheory.V.J
+end

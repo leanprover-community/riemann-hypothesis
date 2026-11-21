@@ -103,29 +103,9 @@ theorem exists_level_point (u : ρ.UTest p y₀) (c : Sp (OO p) ⟶ u.G.left) (h
   rw [← Spec.map_comp, ← Spec.map_comp]
   rfl
 
-theorem ser_int (t : ρ.GeoTest p y₀) (a : t.u.PtC) (w : S.J → PadicAlgCl p)
-    (hw : Crd (t.u.H S.N) t.σ (t.u.toG a) w) :
-    ∃ ν : t.u.D.toPre.X →+ ℝ, Ser t.l.q S.N t.cls w ν ∧
-      ((∃ m, ∀ α, ν α = QuadraticMap.polar t.l.q m α) → t.u.Int a) :=
-  t.mod.ser _ (toG_over t.u a) w hw
 
-theorem hasU_of_hasGeo (h : ρ.HasGeo) : ρ.HasU := fun p _ y₀ hy Fs =>
-  let ⟨t, ht⟩ := h p y₀ hy Fs
-  ⟨t.u, t.l, t.τ, t.mt, ht⟩
 
-theorem hasTests_of_hasU (h : ρ.HasU) : S.HasTests := fun p _ y₀ hy =>
-  let ⟨_, _, τ, _⟩ := h p y₀ hy ∅
-  ⟨τ⟩
 
-theorem basis_rep (u : ρ.UTest p y₀) (l : u.Lab) (k : ℕ) {J : Type} [Fintype J] (σ : J → (u.H k).Sec)
-    (cls : J → u.D.toPre.X) (f : J → ∀ α, u.D.toPre.SecB k α) (h : u.Basis l k σ cls f) (α : u.D.toPre.X) :
-    ∃! β, β ∈ Set.range cls ∧ ∃ m, α = β + k • m := by
-  obtain ⟨-, h2, h3, -⟩ := h
-  obtain ⟨i, m, hi⟩ := h3 α
-  refine ⟨cls i, ⟨⟨i, rfl⟩, m, hi⟩, ?_⟩
-  rintro _ ⟨⟨i', rfl⟩, m', hi'⟩
-  refine h2 i' i ⟨m - m', ?_⟩
-  rw [smul_sub, ← add_sub_assoc, ← hi, hi', add_sub_cancel_right]
 
 theorem norm_unit {X : Scheme.{0}} (ψ : Sp (OO p) ⟶ X) (U : X.Opens) (h : ⊤ ≤ ψ ⁻¹ᵁ U) (f : Γ(X, U)ˣ) :
     ‖Geo.Tor.valR (gPt p ≫ ψ) U f.val‖ = 1 := by

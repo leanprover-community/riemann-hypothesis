@@ -155,13 +155,6 @@ def kerAtP_of {D : D7} (Gt : GatTies D) {c : LatCmp D} {Tw : TwForms D} {u : D.w
   cmp_int := cmpZero_int c Tw u w h
   cmp_K := chainFirst_cmp_K K.up.maps
 
-theorem kernelAtPrime_comparisonMaps_integral {D : D7} (Gt : GatTies D) {c : LatCmp D} {Tw : TwForms D} {u : D.what₂.Word} {w : D.what₂.places.Pl}
-    [Fact (D.what₂.places.resChar w).Prime]
-    {h : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)} {Fl : Fills (D.gat u w h)} {Lv : Levels Fl}
-    (K : KerData D c Tw u w h Lv) : (kerAtP_of Gt K).CmpIntAll := by
-  rintro (_ | j) hj
-  · exact cmpZero_int c Tw u w h
-  · exact K.intS j hj
 
 def KerData.ofKer {D : D7} {Gt : GatTies D} {c : LatCmp D} {Tw : TwForms D} {u : D.what₂.Word} {w : D.what₂.places.Pl}
     [Fact (D.what₂.places.resChar w).Prime]

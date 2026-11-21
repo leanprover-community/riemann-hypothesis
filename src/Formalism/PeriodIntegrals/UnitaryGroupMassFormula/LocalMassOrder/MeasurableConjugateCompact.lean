@@ -214,9 +214,6 @@ theorem measConj {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E
     (continuous_const.mul continuous_id).mul continuous_const
   exact hc.measurable (LocMassOrdKv.kv_measurableSet σ J v Λ hSD)
 
-theorem measurable_conjugate_compact : MeasConjK := by
-  intro F E _ _ _ _ _ σ n J ψ v r P Λ μG μS μS0 y h
-  exact measConj σ J v Λ h.2.2.1 y
 
 theorem measurable_unipotent_orbit : MeasUO := by
   intro F E _ _ _ _ _ v r

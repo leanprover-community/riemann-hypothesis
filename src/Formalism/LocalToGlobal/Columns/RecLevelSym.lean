@@ -103,13 +103,6 @@ theorem N_pred_eq {j : ℕ} (hj : j + 1 = R.m) : R.N j = R.r + j * R.t := by
   rw [show R.m - 1 - j = 0 by omega, add_zero] at h
   exact h.symm
 
-theorem colUSym_eq_lev (u : Pr.Word) {j : ℕ} (hj : j + 1 = R.m) :
-    colUSym hc Ch u j = Formalism.L2.DIV.lev hc 1 1
-        (parDat (r_le_N_of_le hj.ge) R.t j (rPsymF Ch) (fun w => extChi fun s => Ch.chi s w)) ⊓
-      ⨅ Q ∈ Pr.vT u, mirAt (F := X.F) (R.N j) Q := by
-  unfold colUSym
-  rw [colLevSym_pred Ch hj]
-  exact levU_parFam_eq_lev_inf hc (r_le_N_of_le hj.ge) (t_pos R) (N_pred_eq hj) _ _ _
 
 theorem colLevSym_zero : colLevSym Ch 0 = colLev Ch 0 := by
   funext w
@@ -234,10 +227,6 @@ theorem r_eq_sym (R : Ranks) : R.r = R.k + 2 * R.rS + 1 := by
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m)
 
-theorem rPsymF_lam_val (w : {w // w ∈ Pr.vGs}) (M : ↥(rPsymF Ch w).H) :
-    (((rPsymF Ch w).lam M : X.Kˣ) : X.K) =
-      Ch.psi0 w (supSum R.r (SPsymF R.r R.k) (M.1 : Matrix (Fin R.r) (Fin R.r) (𝓞 X.E ⧸ w.1.asIdeal))) :=
-  chiSymF_val (r_eq_sym R) (Ch.psi0 w) M
 
 end SymRanks
 

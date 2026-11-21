@@ -1,9 +1,97 @@
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TypeConditions.GalRead
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.IsTripleAtOfConj
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ResTiedOfPlSide
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ExistsGalRepCast
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CharpolyCConjRed
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.CharpolyEqOfIsRowPar
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ExistsReading
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ResidualCompatibleRows
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CohomologicalCsdTempered
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TypeConditions.IsPotCrysAtOfMono0
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GeneralAdmissibleOfIrreducibilityStmt
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TypeConditions.Triple
 
+section
+set_option synthInstance.maxHeartbeats 200000
+
+section
+noncomputable section
+namespace GlobalTheory.EigTie
+open NumberField IsDedekindDomain Polynomial Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.N
+open GlobalTheory.Triple (IsParam IsResidual FbAt)
+open GlobalTheory.HeightCounting (RowSide PlSide IotaOk setTy factRes)
+open GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting (IsGaloisRepOf Zbar GalE OnW)
+variable {D : D7}
+theorem residual_ties_of_charpoly_reduction {Rw : RowSide D} {Pl : PlSide D} (h : IotaOk D Pl)
+    (hr : ∀ w, D.what₂.muAt w ≠ D.what₂.mu0 → ∀ σ π r, D.nd.goodRow σ → OnW D σ → IsRowPar Rw σ π →
+      _root_.UpperTheory.GalS.IsGaloisRepOfN D π _ (Pl.ι w) r → IsSSRep (D.ntypes.rbar σ w) ∧ ∀ g, ∃ p : (Zbar (D.what₂.places.resChar w))[X],
+        p.map (Zbar (D.what₂.places.resChar w)).subtype = ((r g : GL (Fin D.R.r) (Qbar (D.what₂.places.resChar w))) : Matrix (Fin D.R.r) (Fin D.R.r) (Qbar (D.what₂.places.resChar w))).charpoly ∧
+        p.map (plRed Pl w) =
+          ((D.ntypes.rbar σ w g : GL (Fin D.R.r) (FbAt D w)) : Matrix (Fin D.R.r) (Fin D.R.r) (FbAt D w)).charpoly) :
+    _root_.GlobalTheory.EigTie.ResTiedAlt D Rw := by
+  intro w hw l _ e
+  subst e
+  exact ⟨Pl.ι w, plRed Pl w, Pl.ι_w w, teichAt_of_iotaOk h w, fun σ π r h1 h2 h3 h4 =>
+    ⟨(hr w hw σ π r h1 h2 h3 h4).1, (hr w hw σ π r h1 h2 h3 h4).2, teichAt_of_iotaOk h w⟩⟩
+end GlobalTheory.EigTie
+end
+end
+end
+
+section
+set_option synthInstance.maxHeartbeats 200000
+
+section
+noncomputable section
+namespace GlobalTheory.ResLoc
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2 Formalism.L2.Host GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial
+open GlobalTheory.EigTie (ResTied IsRowPar plRed resTied_of_plSide)
+open GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting (IsGaloisRepOf Zbar GalE OnW)
+theorem exists_galRep_cast_alt {D : D7} {a p q : ℕ} [Fact p.Prime] [Fact q.Prime] (h : p = q) {ι : Qbar p ≃+* ℂ} {π : D.naut.CG a}
+    {r : GalE D →* GL (Fin a) (Qbar p)} (hr : _root_.UpperTheory.GalS.IsGaloisRepOfN D π p ι r) : ∃ r', _root_.UpperTheory.GalS.IsGaloisRepOfN D π q (qCast h ι) r' := by
+  subst h
+  exact ⟨r, hr⟩
+end GlobalTheory.ResLoc
+namespace GlobalTheory.ResLoc
+end GlobalTheory.ResLoc
+end
+end
+end
+
+section
+set_option synthInstance.maxHeartbeats 200000
+
+section
+noncomputable section
+namespace GlobalTheory.TripleResidual
+open NumberField IsDedekindDomain Polynomial Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal
+open GlobalTheory.TameLabels GlobalTheory.AntiRamConj GlobalTheory.TwistDet
+open GlobalTheory.TypeLeaf (WildOne FrobDense)
+open GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting (OnW IsBaseChange IsGaloisRepOf IsReduction Zbar GaloisReps GalE toFb)
+open scoped Pointwise
+section Wild
+variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω]
+end Wild
+section Row
+variable {D : D7} (Y : NTw D.R D.host D.what₂ D.LL0 D.nd)
+theorem charpoly_cConj_eq_charpoly_inv_of_mem_ine (hD : FrobDense D) {n : ℕ} {π : D.naut.CG n} (hπ : D.naut.csd π) {l : ℕ} [Fact l.Prime]
+    {ι : Qbar l ≃+* ℂ} {red : Zbar l →+* Formalism.CyclotomicNorms.Fbar l} {r : GalE D →* GL (Fin n) (Qbar l)}
+    {ρ : GalE D →* GL (Fin n) (Formalism.CyclotomicNorms.Fbar l)} (hr : _root_.UpperTheory.GalS.IsGaloisRepOfN D π l ι r) (hρ : IsReduction D red r ρ)
+    {v : PlE D.host} (hv : v ∉ placesOver D.host.E l) {A : ValuationSubring D.nd.Om} (hA : IsPlaceOver A v)
+    {s : GalE D} (hs : s ∈ Ine (F := D.host.E) A) :
+    ((ρ (cConj Y s) : GL _ _) : Matrix (Fin n) (Fin n) (Formalism.CyclotomicNorms.Fbar l)).charpoly =
+      ((ρ s⁻¹ : GL _ _) : Matrix (Fin n) (Fin n) (Formalism.CyclotomicNorms.Fbar l)).charpoly := by
+  have h := _root_.GlobalTheory.TripleResidual.charpoly_cConj_eq_charpoly_cyc_zpow_smul_inv Y hD hπ hr s
+  rw [cyc_eq_one_of_mem_Ine hv hA hs, Units.val_one, one_zpow, one_smul] at h
+  obtain ⟨p, p1, p2⟩ := hρ.2.2 (cConj Y s)
+  obtain ⟨q, q1, q2⟩ := hρ.2.2 s⁻¹
+  rw [← p2, ← q2, Polynomial.map_injective _ Subtype.val_injective (p1.trans (h.trans q1.symm))]
+end Row
+section Triples
+end Triples
+end GlobalTheory.TripleResidual
+end
+end
+end
+
+section
 set_option synthInstance.maxHeartbeats 200000
 
 section
@@ -242,6 +330,7 @@ theorem irredOn_rbar_and_inertia_of_residual (Y : NTw D.R D.host D.what₂ D.LL0
     · exact (hg k).2.2.2.2.1 _ hlp hk v j x hx h3
 end Row
 end GlobalTheory.TripleAdm
+end
 end
 end
 end

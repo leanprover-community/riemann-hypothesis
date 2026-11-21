@@ -372,18 +372,6 @@ variable {D}
 
 def PlaceLawIdempotents (A : AllRows D) (CL : ℝ) : Prop := lawL D A.eVec CL
 
-theorem place_law_of_statement (A : AllRows D) (hL : ConclusionL D) (hg : ∀ k, 2 * D.R.r ≤ D.host.g k)
-    (hV : ∀ k v, ∃ ψ₀ : AddChar (ZMod (D.host.g k)) ℂ, ψ₀ ≠ 1 ∧
-      (A.eVec k v = eUk D k ψ₀ ∨ A.eVec k v = eJk D k ψ₀)) :
-    PlaceLawIdempotents A 6 := by
-  intro k v
-  obtain ⟨ψ₀, hψ, h | h⟩ := hV k v
-  · have h1 := (hL k ψ₀ hψ (hg k)).1
-    rw [h]
-    exact h1
-  · have h2 := (hL k ψ₀ hψ (hg k)).2
-    rw [h]
-    exact h2
 
 variable (D)
 

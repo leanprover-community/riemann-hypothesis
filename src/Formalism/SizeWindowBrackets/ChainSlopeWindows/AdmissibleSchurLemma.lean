@@ -90,22 +90,6 @@ theorem deficit_dropped {κ τ : Type*} (J : Finset κ) (TT : Finset τ) (vonMan
   unfold deficit wholeAsk
   rw [Finset.sum_eq_zero hg, ht]; ring
 
-theorem splitLe_valid : SplitLe := by
-  intro ι κ τ W below l Ps S J TT TTp vonMangoldtClassSum dT gainW tauW gain tau lo fl h hS hled hdrop
-  rw [splitEq_valid ι κ τ W below l Ps J TT vonMangoldtClassSum dT gainW tauW gain tau h,
-    ← Finset.sum_sdiff hS]
-  have hA : ∑ p ∈ S, 2 * Real.log p * deficit J TT vonMangoldtClassSum gain tau p ≤
-      ∑ p ∈ S, 2 * Real.log p * servedLoss J TT TTp vonMangoldtClassSum lo fl p := by
-    apply Finset.sum_le_sum
-    intro p hp
-    exact mul_le_mul_of_nonneg_left (deficit_le J TT TTp vonMangoldtClassSum gain tau lo fl p (hled p hp))
-      (by have := Real.log_natCast_nonneg p; linarith)
-  have hB : ∑ p ∈ Ps \ S, 2 * Real.log p * deficit J TT vonMangoldtClassSum gain tau p =
-      ∑ p ∈ Ps \ S, 2 * Real.log p * wholeAsk J TT vonMangoldtClassSum p := by
-    apply Finset.sum_congr rfl
-    intro p hp
-    rw [deficit_dropped J TT vonMangoldtClassSum gain tau p (hdrop p hp).1 (hdrop p hp).2]
-  linarith
 
 theorem split_classes_count : SplitClasses := by
   intro ι κ τ W below l Ps cl J TT TTp vonMangoldtClassSum dT gainW tauW gain tau lo fl h hled hdrop
@@ -599,30 +583,7 @@ theorem or_bucket_bound : OrBucket := by
   refine (add_le_add (add_le_add h4 h5) h6).trans (le_of_eq ?_)
   ring
 
-theorem bad_orbits_bucket_bound : BadOrbitsBucket := by
-  intro α ι _ _ _ δ β m a ω BAD _ hδ0 hδ1 h16 hβ hω hm ha hcond
-  obtain ⟨T, hT1, hT2, hT3⟩ :=
-    Formalism.RankGapBounds.V4.tops_lemma_sixteen_holds α ι δ β ω BAD hδ0 hδ1 h16 hβ hω hcond
-  refine ⟨T, hT1, hT2, ?_⟩
-  have hSum : 0 ≤ ∑ p, ω p := Finset.sum_nonneg (fun p _ => hω p)
-  have e : ∑ p, 4 * m * a * ω p * ((T.filter fun t => BAD p t T).card : ℝ) =
-      4 * m * a * ∑ p, ω p * ((T.filter fun t => BAD p t T).card : ℝ) := by
-    rw [Finset.mul_sum]; apply Finset.sum_congr rfl; intro p _; ring
-  rw [e]
-  have h1 := mul_le_mul_of_nonneg_left hT3 (show 0 ≤ 4 * m * a by positivity)
-  have h2 : 4 * β * δ * Fintype.card α * ∑ p, ω p ≤ 8 * β * T.card * ∑ p, ω p := by
-    apply mul_le_mul_of_nonneg_right _ hSum
-    nlinarith
-  have h3 := mul_le_mul_of_nonneg_left h2 (show 0 ≤ 4 * m * a by positivity)
-  refine h1.trans (h3.trans (le_of_eq ?_))
-  ring
 
-theorem orders_bucket_bound : OrdersBucket := by
-  obtain ⟨C, hC⟩ := Formalism.RankGapBounds.LocalQuadraticParts.ordersSumY_of Formalism.RankGapBounds.LocalQuadraticParts.powTwoPowEqOneIff_holds
-  refine ⟨C, ?_⟩
-  intro e J Y mTa s he hJ hY hm hs
-  rw [← Finset.mul_sum]
-  exact mul_le_mul_of_nonneg_left (hC e J Y s he hJ hY hs) (by linarith)
 
 theorem markov_drop : MarkovDrop := by
   intro Ω _ π s Sig L θ s₀ hπ hθ hSig hL hmean
@@ -651,20 +612,6 @@ theorem markov_drop : MarkovDrop := by
     rw [Finset.mul_sum]; apply Finset.sum_congr rfl; intro p _; ring
   linarith
 
-theorem sigma_mean : SigMean := by
-  intro Ω ν _ π V kap N m T c hm hc hmean hN
-  have h1 : ∑ o, π o * (m * ∑ v ∈ V, kap v o) = m * ∑ v ∈ V, ∑ o, π o * kap v o := by
-    simp only [Finset.mul_sum]
-    rw [Finset.sum_comm]
-    apply Finset.sum_congr rfl; intro v _
-    apply Finset.sum_congr rfl; intro o _
-    ring
-  have h2 : ∑ v ∈ V, ∑ o, π o * kap v o ≤ ∑ v ∈ V, N v * c := Finset.sum_le_sum hmean
-  rw [← Finset.sum_mul] at h2
-  have h3 : (∑ v ∈ V, N v) * c ≤ T * c := mul_le_mul_of_nonneg_right hN hc
-  rw [h1]
-  have := mul_le_mul_of_nonneg_left (h2.trans h3) hm
-  linarith
 
 theorem second_kind_bucket_bound : SecondKindBucket := by
   intro Ω _ π s Sig Y θ s₀ mTa hπ hθ hs₀ hm hY hSig hs hmean
@@ -707,14 +654,6 @@ theorem io_mean_bound : IoMean := by
     (show 0 ≤ 4 * mTa * s₀ by positivity)
   linarith
 
-theorem sigma_mean_variance : SigMeanVar := by
-  intro Ω ν _ π V Vo kap N m T c hm hc hπ hsub hkap hmean hN
-  refine le_trans ?_ (sigma_mean Ω ν π V kap N m T c hm hc hmean hN)
-  apply Finset.sum_le_sum
-  intro o _
-  apply mul_le_mul_of_nonneg_left _ (hπ o)
-  apply mul_le_mul_of_nonneg_left _ hm
-  exact Finset.sum_le_sum_of_subset_of_nonneg (hsub o) (fun v hv _ => hkap v hv o)
 
 theorem choose_window : ChooseWindow := by
   intro Ω _ π X M hπ h1 hM

@@ -1,9 +1,145 @@
 import Mathlib
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.CoreStepOf
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.RetractionReduction
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.SesquilinearRepresentation
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.DualFamilyExists
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.CoordStep
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TorsionFreeGenerators.ProjectiveReduction
 
+section
+open NumberField
+
+namespace PI.SRW
+
+theorem retraction_reduction : RetrStep := by
+  intro E V _ _ _ _ _ _ Λ N hNΛ hfg hsat
+  let N' : Submodule (𝓞 E) Λ := N.comap Λ.subtype
+  have : Module.Finite (𝓞 E) Λ := Module.Finite.iff_fg.mpr hfg
+  haveI : Module.Finite (𝓞 E) (Λ ⧸ N') := inferInstance
+  haveI : NoZeroSMulDivisors (𝓞 E) (Λ ⧸ N') := by
+    refine ⟨fun {o q} hq => ?_⟩
+    by_cases ho : o = 0
+    · exact Or.inl ho
+    right
+    obtain ⟨x, rfl⟩ := Submodule.Quotient.mk_surjective N' q
+    rw [← Submodule.Quotient.mk_smul, Submodule.Quotient.mk_eq_zero] at hq
+    rw [Submodule.Quotient.mk_eq_zero]
+    exact hsat o x ho x.2 hq
+  haveI : Module.Projective (𝓞 E) (Λ ⧸ N') := PI.FGTFG.projective_reduction (𝓞 E) (Λ ⧸ N')
+  obtain ⟨s, hs⟩ := Module.projective_lifting_property N'.mkQ LinearMap.id (Submodule.mkQ_surjective N')
+  let ρ' : Λ →ₗ[𝓞 E] Λ := LinearMap.id - s.comp N'.mkQ
+  have hρ' : ∀ x : Λ, ρ' x ∈ N' := by
+    intro x
+    have h1 : N'.mkQ (ρ' x) = 0 := by
+      have h2 := LinearMap.congr_fun hs (N'.mkQ x)
+      simp only [LinearMap.comp_apply, LinearMap.id_apply] at h2
+      show N'.mkQ (x - s (N'.mkQ x)) = 0
+      rw [map_sub, h2, sub_self]
+    simpa [Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero] using h1
+  refine ⟨Λ.subtype.comp ρ', fun x => hρ' x, fun x hx => ?_⟩
+  have hx' : x ∈ N' := hx
+  have h0 : N'.mkQ x = 0 := by simpa [Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero] using hx'
+  simp [ρ', h0]
+
+end PI.SRW
+end
+
+section
+open NumberField Module
+
+namespace PI.SRW
+
+theorem sesquilinearRepresentation : RepStep := by
+  intro E V _ _ _ _ _ _ _ _ h hnd Λ hΛ ℓ
+
+  have hsurj : Function.Surjective h := by
+    rw [← LinearMap.range_eq_top]
+    have hco : (LinearMap.range h).dualCoannihilator = ⊥ := by
+      rw [eq_bot_iff]
+      intro y hy
+      rw [Submodule.mem_dualCoannihilator] at hy
+      rw [Submodule.mem_bot]
+      exact hnd.2 y (fun x => hy (h x) ⟨x, rfl⟩)
+    rw [← Subspace.dualCoannihilator_dualAnnihilator_eq (W := LinearMap.range h), hco,
+      Submodule.dualAnnihilator_bot]
+
+  obtain ⟨s, hsΛ, hspan, hli⟩ := exists_linearIndependent E (Λ : Set V)
+  have hs_top : Submodule.span E s = ⊤ := hspan.trans hΛ.span_eq_top
+  let b : Basis s E V := Basis.mk hli (le_of_eq (by rw [Subtype.range_coe, hs_top]))
+  let φ : V →ₗ[E] E := b.constr E (fun i => ℓ ⟨i.1, hsΛ i.2⟩)
+  have hφb : ∀ v (hv : v ∈ s), φ v = ℓ ⟨v, hsΛ hv⟩ := by
+    intro v hv
+    have hb : b ⟨v, hv⟩ = v := Basis.mk_apply _ _ _
+    have e := b.constr_basis E (fun i : s => ℓ ⟨i.1, hsΛ i.2⟩) ⟨v, hv⟩
+    rw [hb] at e
+    exact e
+
+  have hind : ∀ y ∈ Submodule.span (𝓞 E) (s : Set V), ∃ hy : y ∈ Λ, ℓ ⟨y, hy⟩ = φ y := by
+    intro y hy
+    induction hy using Submodule.span_induction with
+    | mem v hv => exact ⟨hsΛ hv, (hφb v hv).symm⟩
+    | zero => exact ⟨zero_mem _, (map_zero ℓ).trans (map_zero φ).symm⟩
+    | add u v _ _ hu hv =>
+      obtain ⟨hu', eu⟩ := hu
+      obtain ⟨hv', ev⟩ := hv
+      refine ⟨add_mem hu' hv', ?_⟩
+      have e : (⟨u + v, add_mem hu' hv'⟩ : Λ) = ⟨u, hu'⟩ + ⟨v, hv'⟩ := rfl
+      rw [e, map_add, map_add, eu, ev]
+    | smul a u _ hu =>
+      obtain ⟨hu', eu⟩ := hu
+      refine ⟨Λ.smul_mem a hu', ?_⟩
+      have e : (⟨a • u, Λ.smul_mem a hu'⟩ : Λ) = a • ⟨u, hu'⟩ := rfl
+      rw [e, map_smul, eu, ← algebraMap_smul E a u, map_smul, Algebra.smul_def, smul_eq_mul]
+
+  have key : ∀ x : Λ, φ x = ℓ x := by
+    intro x
+    have hxE : (x : V) ∈ Submodule.span E s := by
+      rw [hs_top]
+      exact Submodule.mem_top
+    obtain ⟨y, hy, z, hxy⟩ := (IsLocalization.mem_span_iff (nonZeroDivisors (𝓞 E))).mp hxE
+    have hzx : (z : 𝓞 E) • (x : V) = y := by
+      rw [hxy, ← algebraMap_smul E (z : 𝓞 E), smul_smul, IsLocalization.mk'_spec', map_one,
+        one_smul]
+    obtain ⟨hyΛ, hℓφ⟩ := hind y hy
+    have h1 : ℓ ((z : 𝓞 E) • x) = algebraMap (𝓞 E) E z * ℓ x := by
+      rw [map_smul, Algebra.smul_def]
+    have h2 : φ ((z : 𝓞 E) • (x : V)) = algebraMap (𝓞 E) E z * φ x := by
+      rw [← algebraMap_smul E (z : 𝓞 E) (x : V), map_smul, smul_eq_mul]
+    have hzΛ : ((z : 𝓞 E) • x : Λ) = ⟨y, hyΛ⟩ := by
+      ext
+      exact hzx
+    have hne : algebraMap (𝓞 E) E z ≠ 0 :=
+      IsFractionRing.to_map_ne_zero_of_mem_nonZeroDivisors z.2
+    apply mul_left_cancel₀ hne
+    rw [← h1, ← h2, hzΛ, hzx, hℓφ]
+  obtain ⟨w, hw⟩ := hsurj φ
+  exact ⟨w, fun x => by rw [hw, key]⟩
+
+end PI.SRW
+end
+
+section
+open NumberField Module
+
+namespace PI.SRW
+
+theorem dualFamilyExists : CoordStep := by
+  intro E V _ _ _ n g hg
+  classical
+  let b := Basis.span hg
+  choose c hc using fun i => LinearMap.exists_extend (b.coord i)
+  refine ⟨c, fun i j => ?_⟩
+  have hmem : g j ∈ Submodule.span E (Set.range g) := Submodule.subset_span ⟨j, rfl⟩
+  have h1 : c i (g j) = b.coord i ⟨g j, hmem⟩ := by
+    rw [← hc i]; rfl
+  have h2 : (⟨g j, hmem⟩ : Submodule.span E (Set.range g)) = b j := by
+    rw [Basis.span_apply]
+  rw [h1, h2, Basis.coord_apply, Basis.repr_self, Finsupp.single_apply]
+  by_cases h : i = j
+  · subst h; simp
+  · simp [h, Ne.symm h]
+
+end PI.SRW
+end
+
+section
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 
 namespace PI.SRW
@@ -197,3 +333,4 @@ theorem frame_reduction : FrameStep := by
     exact hcfN b _ (hρN _)
 
 end PI.SRW
+end

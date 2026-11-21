@@ -86,21 +86,7 @@ theorem exists_isPair (hη : ∃ η, IsEtaTilde D η)
     (hecke_pow hη.1 _) (hecke_pow hη.1 _) (res_pow hη.2.2.1 _) (res_pow hη.2.2.1 _)
   exact ⟨ψ, θ, _, _, _, om, rfl, isPair_pow hη hθ k W hW om hom⟩
 
-theorem markAd_one {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : Datum H} (l : Level H) (W : HSp D)
-    (ι : Dw.La →ₗ[𝓞 D.host.E] (Fin W.rank → D.host.E)) : MarkAd l W rfl ι 1 ι := fun a _ =>
-  ⟨0, zero_mem _, by
-    rw [map_one, nsmul_zero]
-    show finVec W (ι a) - (1 : Matrix _ _ _).mulVec (finVec W (ι a)) = 0
-    rw [Matrix.one_mulVec, sub_self]⟩
 
-theorem markAd_of_markBy {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {r : ℕ}
-    {c : Coeff l} {σ : c.F →+* ℂ} (U : Unf Xo c σ r) (V : HSp D) (hr : V.rank = r)
-    (dict : GA D V → Σ k, Frame (U.X k).Ψ r) (ι : Dw.La →ₗ[𝓞 D.host.E] (Fin V.rank → D.host.E)) {g : ℕ}
-    {lab : Fin g → D.host.E →+* ℂ} (F : FamilyUnif Xo (σ.comp (IntermediateField.inclusion c.le).toRingHom) lab)
-    (ik : U.Comp → Fin F.n) (φ : ∀ k, (F.Di (ik k)).La ≃ₗ[𝓞 D.host.E] (U.X k).Λ) (h γ : GA D V)
-    (hm : MarkBy U V hr dict ι F ik φ h γ) :
-    MarkAd l V hr ι (γ * h) ((U.X (dict h).1).Λ.subtype ∘ₗ (φ (dict h).1).toLinearMap ∘ₗ F.t (ik (dict h).1)) :=
-  hm.2.2
 
 theorem finite_levQc {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} (Dw : Datum H)
     (l : Level H) : Finite (LevQc Dw l) := by
@@ -156,11 +142,6 @@ theorem phase_eq_inv_mul_product {p a c l m r : ℂ} (h0 : p ≠ 0) (h : p * a =
   field_simp
   linear_combination h
 
-theorem constant_unique_of_eq_product {p a c c' l m r : ℂ} (h0 : p ≠ 0) (ha : a ≠ 0) (h : p * a = c * l * m * r) (h' : p * a = c' * l * m * r) :
-    c = c' := by
-  have hne := mul_ne_zero h0 ha
-  rw [mul_assoc, mul_assoc] at h h'
-  exact mul_right_cancel₀ (fun hz => hne (by rw [h, hz, mul_zero])) (h.symm.trans h')
 
 theorem phase_one {O : OMDat C R i Tp tup} {κ : WeightFamilies.Wt D ((i : ℕ) + 1)} {v₀ : (R.MW i (sg0 D A)).Vec}
     {cc : (C.U ((i : ℕ) + 1) O.s0).Comp → ℂ} {ph : ℂ} (hs : SerOf O κ v₀ cc ph) : SerOf O κ v₀ (fun k => ph⁻¹ * cc k) 1 := by
@@ -168,16 +149,6 @@ theorem phase_one {O : OMDat C R i Tp tup} {κ : WeightFamilies.Wt D ((i : ℕ) 
   refine ⟨fun k => by rw [norm_mul, norm_inv, hs.2.1, hs.1 k]; norm_num, norm_one, fun t h J' h1 y x h2 f hf h3 g => ?_⟩
   exact phase_eq_inv_mul_product h0 (hs.2.2 t h J' h1 y x h2 f hf h3 g)
 
-theorem const_unique {O : OMDat C R i Tp tup} {κ : WeightFamilies.Wt D ((i : ℕ) + 1)} {v₀ : (R.MW i (sg0 D A)).Vec}
-    {cc cc' : (C.U ((i : ℕ) + 1) O.s0).Comp → ℂ} {ph : ℂ} (hs : SerOf O κ v₀ cc ph) (hs' : SerOf O κ v₀ cc' ph)
-    {t : Tp} {h J'} (h1 : RepsR R i (tup t) h (O.bad t) J' (O.Lh t) (O.gam t) (O.vol t)) {y x} (h2 : Place R i (tup t) h O.c0' y x)
-    {f} (hf : f ∈ sec (C.Q.Xo ((i : ℕ) + 1)) O.c' (wtA κ) (Vc D i).rank)
-    (h3 : IsThClsD (C.Q.Xo ((i : ℕ) + 1)) O.c' (O.dδ t) (O.w t) (O.La t) (O.Nc t) (O.gam t) (O.vol t) (O.ep t) O.io x f)
-    {g : GA D (Wc D i)} (hg : R.thF i (tup t) y v₀ g ≠ 0) : cc (O.dict g).1 = cc' (O.dict g).1 := by
-  have e := hs.2.2 t h J' h1 y x h2 f hf h3 g
-  have e' := hs'.2.2 t h J' h1 y x h2 f hf h3 g
-  have h0 : ph ≠ 0 := fun h => by have := hs.2.1; rw [h, norm_zero] at this; exact zero_ne_one this
-  exact constant_unique_of_eq_product h0 hg e e'
 
 end
 

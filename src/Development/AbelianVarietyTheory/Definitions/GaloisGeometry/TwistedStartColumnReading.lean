@@ -1,9 +1,309 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.CardStabDvdAutU
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SumFibreEqSumOrbits
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsSmulOfDecoEq
+import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.RedPEqZeroOfDiv
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NormMapOfFinOrder
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.IntegralGLSuccEmbeddingMemParahoricTimesPrincipa
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.PredMemGamRanks
 
+section
+noncomputable section
+
+namespace GlobalTheory.GO
+
+open NumberField Formalism.L2.Col Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Forms Formalism.L2.Ker
+
+variable {K : Type} [Field K] [NumberField K] [StarRing K]
+
+structure MemOn (F : GFam K) where
+
+  G : Type
+  [grpG : Group G]
+
+  D : Type
+  [actD : MulAction G D]
+
+  ρ : G →* Module.End K F.V
+
+  Nab : D → Submodule (𝓞 K) F.V
+
+  Del : D → Submodule (𝓞 K) F.V
+
+attribute [instance] MemOn.grpG MemOn.actD
+
+@[reducible] def MemOn.gsd {F : GFam K} (M : MemOn F) : GSD K where
+  G := M.G
+  D := M.D
+  V := F.V
+  ιV := F.ιV
+  bV := F.bV
+  pair := F.pair
+  ρ := M.ρ
+  Nab := M.Nab
+  Del := M.Del
+
+@[reducible] def MemOn.self (F : GFam K) (b : F.β) : MemOn F where
+  G := F.G b
+  D := F.D b
+  ρ := F.ρ b
+  Nab := F.Nab b
+  Del := F.Del b
+
+@[reducible] def MemOn.pairs (F : GFam K) (b : F.β) (Y : Cpl (F.mem b)) : MemOn F where
+  G := F.G b
+  D := Y.Pts
+  actD := (cplGSD (F.mem b) Y).actD
+  ρ := F.ρ b
+  Nab d := F.Nab b d.1.1
+  Del d := F.Del b d.1.1
+
+example (F : GFam K) (b : F.β) : (MemOn.self F b).gsd = F.mem b := rfl
+
+example (F : GFam K) (b : F.β) (Y : Cpl (F.mem b)) : (MemOn.pairs F b Y).gsd = cplGSD (F.mem b) Y := rfl
+
+inductive SpIdx (β : ℕ → Type) (n m i : ℕ) : Type
+  | mat (b : β i) (h : i ≤ n) : SpIdx β n m i
+  | cpl (h : i = n + 1) : SpIdx β n m i
+  | top (h : i = m) : SpIdx β n m i
+
+namespace SpIdx
+
+variable {β : ℕ → Type} {n m i : ℕ}
+
+instance [Finite (β i)] : Finite (SpIdx β n m i) :=
+  Finite.of_injective (fun b : SpIdx β n m i => match b with
+    | .mat b _ => (Sum.inl b : β i ⊕ Bool)
+    | .cpl _ => Sum.inr false
+    | .top _ => Sum.inr true) (by
+      rintro (⟨a, _⟩ | _ | _) (⟨b, _⟩ | _ | _) h <;> simp_all)
+
+instance [Finite (β i)] : Fintype (SpIdx β n m i) := Fintype.ofFinite _
+
+instance : DecidableEq (SpIdx β n m i) := Classical.decEq _
+
+def lowEquiv (hm : n < m) (hi : i ≤ n) : β i ≃ SpIdx β n m i where
+  toFun b := .mat b hi
+  invFun b := match b with
+    | .mat b _ => b
+    | .cpl h => absurd h (by omega)
+    | .top h => absurd h (by omega)
+  left_inv _ := rfl
+  right_inv b := match b with
+    | .mat _ _ => rfl
+    | .cpl h => absurd h (by omega)
+    | .top h => absurd h (by omega)
+
+
+theorem eq_top (hm : n + 1 < m) (h : i = m) (b : SpIdx β n m i) : b = .top h := by
+  rcases b with ⟨_, h'⟩ | h' | _
+  · omega
+  · omega
+  · rfl
+
+theorem isEmpty_of_lt (hm : n + 1 < m) (h : m < i) : IsEmpty (SpIdx β n m i) :=
+  ⟨fun b => by rcases b with ⟨_, h'⟩ | h' | h' <;> omega⟩
+
+end SpIdx
+
+section Splice
+
+variable (F : ℕ → GFam K) (n m : ℕ) (C : MemOn (F (n + 1))) (T : MemOn (F m))
+
+@[reducible] def spMem : ∀ (i : ℕ) (_ : SpIdx (fun j => (F j).β) n m i), MemOn (F i)
+  | i, .mat b _ => MemOn.self (F i) b
+  | _, .cpl rfl => C
+  | _, .top rfl => T
+
+@[reducible] def spFam (i : ℕ) : GFam K where
+  β := SpIdx (fun j => (F j).β) n m i
+  V := (F i).V
+  ιV := (F i).ιV
+  bV := (F i).bV
+  pair := (F i).pair
+  G b := (spMem F n m C T i b).G
+  D b := (spMem F n m C T i b).D
+  ρ b := (spMem F n m C T i b).ρ
+  Nab b := (spMem F n m C T i b).Nab
+  Del b := (spMem F n m C T i b).Del
+
+
+
+
+variable {F n m C T}
+
+theorem spFam_ok (hF : ∀ i, i ≤ n → (F i).Ok) (hC : C.gsd.Ok) (hT : T.gsd.Ok) (i : ℕ) : (spFam F n m C T i).Ok := by
+  rintro (⟨b, h⟩ | rfl | rfl)
+  · exact hF i h b
+  · exact hC
+  · exact hT
+
+def spEntry (kk : KerFam F) (k1 : ∀ al : (F n).β, ClsKer ((F n).mem al) C.gsd) (k2 : ClsKer C.gsd T.gsd)
+    (i j : ℕ) (e : j = i + 1) : ∀ (b : (spFam F n m C T i).β) (b' : (spFam F n m C T j).β),
+      ClsKer ((spFam F n m C T i).mem b) ((spFam F n m C T j).mem b')
+  | .mat al _, .mat be _ => (match j, e, be with | _, rfl, be => kk i al be : ClsKer ((F i).mem al) ((F j).mem be))
+  | .mat al _, .cpl h' =>
+    (match i, j, (Nat.succ.inj (h'.symm.trans e) : n = i), h', al with | _, _, rfl, rfl, al => k1 al :
+      ClsKer ((F i).mem al) ((spFam F n m C T j).mem (.cpl h')))
+  | .cpl h, .top h' =>
+    (match i, j, h, h' with | _, _, rfl, rfl => k2 :
+      ClsKer ((spFam F n m C T i).mem (.cpl h)) ((spFam F n m C T j).mem (.top h')))
+  | .mat _ _, .top _ => zeroKer _ _
+  | .cpl _, .mat _ _ => zeroKer _ _
+  | .cpl _, .cpl _ => zeroKer _ _
+  | .top _, _ => zeroKer _ _
+
+variable (kk : KerFam F) (k1 : ∀ al : (F n).β, ClsKer ((F n).mem al) C.gsd) (k2 : ClsKer C.gsd T.gsd)
+
+def spKer : KerFam (spFam F n m C T) := fun i b b' => spEntry kk k1 k2 i (i + 1) rfl b b'
+
+
+
+
+variable (n m C T) in
+
+def spIn (i : ℕ) : (F i).Forms →ₗ[K] (spFam F n m C T i).Forms :=
+  LinearMap.pi fun b => match b with
+    | .mat al _ => LinearMap.proj al
+    | .cpl _ => 0
+    | .top _ => 0
+
+
+variable {hS : ∀ i, (spFam F n m C T i).Ok}
+
+
+
+
+end Splice
+
+
+end GlobalTheory.GO
+end
+end
+
+section
+noncomputable section
+
+namespace GlobalTheory.GO
+
+open NumberField IsDedekindDomain Formalism.L2.Col Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Forms Formalism.L2.Ker
+
+section Aut
+
+variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
+
+def autU (N : Submodule (𝓞 E) (Sp E n)) : Subgroup (UF E n) where
+  carrier := {γ | ∀ x, γ.1 x ∈ N ↔ x ∈ N}
+  one_mem' := fun _ => Iff.rfl
+  mul_mem' := fun {a b} ha hb x => (ha (b.1 x)).trans (hb x)
+  inv_mem' := fun {a} ha x => by
+    have h := ha (a⁻¹.1 x)
+    rw [show a.1 (a⁻¹.1 x) = x from LinearEquiv.apply_symm_apply a.1 x] at h
+    exact h.symm
+
+theorem mem_autU {N : Submodule (𝓞 E) (Sp E n)} {γ : UF E n} : γ ∈ autU N ↔ gmap γ.1 N = N := by
+  constructor
+  · intro h
+    ext x
+    rw [mem_gmap, ← h (γ.1.symm x), LinearEquiv.apply_symm_apply]
+  · intro h x
+    conv_lhs => rw [← h, mem_gmap, LinearEquiv.symm_apply_apply]
+
+end Aut
+
+section Stab
+
+variable {X : Fields} {n : ℕ} {ST SG Q : Finset (HeightOneSpectrum (𝓞 X.E))}
+
+theorem card_dvd_card_autU (Λ : LevFam X.E X.K n SG) (Θ : LevQFam X.E X.K n Q) (p : DecoF X.E n ST SG Q)
+    (H : Subgroup (FrmG Λ Θ)) (hH : ∀ g ∈ H, g • p = p) : Nat.card H ∣ Nat.card (autU p.deco.1.N) := by
+  let f : H →* autU p.deco.1.N :=
+    { toFun := fun g => ⟨g.1.1, mem_autU.2 (congrArg (fun q : DecoF X.E n ST SG Q => q.deco.1.N) (hH g.1 g.2))⟩
+      map_one' := rfl
+      map_mul' := fun _ _ => rfl }
+  refine Subgroup.card_dvd_of_injective f fun a b hab => ?_
+  have h1 : a.1.1 = b.1.1 := congrArg Subtype.val hab
+  have ha : FrmG.incl Λ Θ a.1 • p = p := hH a.1 a.2
+  have hb : FrmG.incl Λ Θ b.1 • p = p := hH b.1 b.2
+  have h2 := DecoSet.stab_fst_injective p.deco (a := ((FrmG.incl Λ Θ a.1).1, (FrmG.incl Λ Θ a.1).2.1))
+    (b := ((FrmG.incl Λ Θ b.1).1, (FrmG.incl Λ Θ b.1).2.1)) (congrArg DecoF.deco ha) (congrArg DecoF.deco hb) h1
+  exact Subtype.ext (FramedForms.incl_injective Λ Θ (FramedForms.stab_inj p ha hb h1 (Prod.mk.inj h2).2))
+
+end Stab
+
+section Fam
+
+variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R)
+  (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
+  (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K)))
+  (u : Pr.Word) (m2 : ℕ) (b : L.β (m2 + 1)) (hY : YbHyp (R := R) sel mu cst L u m2 b)
+  (Λ : LevFam X.E X.K (R.N R.m) Pr.vGs) (Θ : LevQFam X.E X.K (R.N R.m) (QE sel (mu : Chr X.F X.E X.K)))
+
+@[reducible] def frmMem : MemOn (chF W sel mu L u R.m) where
+  G := FrmG Λ Θ
+  D := ChPt (R := R) sel mu u R.m
+  actD := frmAct Λ Θ
+  ρ := frmRho (colValF W sel mu u R.m) Λ Θ
+  Nab := (colValF W sel mu u R.m).Nab
+  Del := (colValF W sel mu u R.m).Del
+
+
+@[reducible] def cplMem : MemOn (chF W sel mu L u (m2 + 1)) :=
+  MemOn.pairs (chF W sel mu L u (m2 + 1)) b (ybCpl W sel mu cst L u m2 b hY)
+
+
+@[reducible] def levFam : ℕ → GFam X.K :=
+  spFam (chF W sel mu L u) m2 R.m (cplMem W sel mu cst L u m2 b hY) (frmMem W sel mu L u Λ Θ)
+
+variable {W sel mu cst L u m2 b hY Λ Θ}
+
+def levPt : ∀ (i : ℕ) (β : (levFam W sel mu cst L u m2 b hY Λ Θ i).β),
+    (levFam W sel mu cst L u m2 b hY Λ Θ i).D β → ChPt (R := R) sel mu u i
+  | _, .mat _ _ => fun p => p
+  | _, .cpl rfl => fun p => p.1.1
+  | _, .top rfl => fun p => p
+
+def levG : ∀ (i : ℕ) (_ : (levFam W sel mu cst L u m2 b hY Λ Θ i).β), LevFam X.E X.K (R.N i) Pr.vGs
+  | i, .mat al _ => L.levG i al
+  | _, .cpl rfl => L.levG (m2 + 1) b
+  | _, .top rfl => Λ
+
+def levQ : ∀ (i : ℕ) (_ : (levFam W sel mu cst L u m2 b hY Λ Θ i).β), LevQFam X.E X.K (R.N i) (QE sel (mu : Chr X.F X.E X.K))
+  | i, .mat al _ => L.levQ i al
+  | _, .cpl rfl => L.levQ (m2 + 1) b
+  | _, .top rfl => Θ
+
+def levGrp : ∀ (i : ℕ) (β : (levFam W sel mu cst L u m2 b hY Λ Θ i).β),
+    (levFam W sel mu cst L u m2 b hY Λ Θ i).G β ≃* FrmG (levG i β) (levQ i β)
+  | _, .mat _ _ => MulEquiv.refl _
+  | _, .cpl rfl => MulEquiv.refl _
+  | _, .top rfl => MulEquiv.refl _
+
+theorem levPt_smul (i : ℕ) (β : (levFam W sel mu cst L u m2 b hY Λ Θ i).β) (g : (levFam W sel mu cst L u m2 b hY Λ Θ i).G β)
+    (d : (levFam W sel mu cst L u m2 b hY Λ Θ i).D β) : levPt i β (g • d) = levGrp i β g • levPt i β d := by
+  rcases β with _ | rfl | rfl <;> rfl
+
+
+
+
+theorem card_stab_dvd_autU (i : ℕ) (β : (levFam W sel mu cst L u m2 b hY Λ Θ i).β) (d : (levFam W sel mu cst L u m2 b hY Λ Θ i).D β) :
+    Nat.card (MulAction.stabilizer ((levFam W sel mu cst L u m2 b hY Λ Θ i).G β) d) ∣ Nat.card (autU (levPt i β d).deco.1.N) := by
+  have h := card_dvd_card_autU (levG i β) (levQ i β) (levPt i β d)
+    ((MulAction.stabilizer ((levFam W sel mu cst L u m2 b hY Λ Θ i).G β) d).map (levGrp i β).toMonoidHom) (by
+      rintro _ ⟨g, hg, rfl⟩
+      exact (levPt_smul i β g d).symm.trans (congrArg (levPt i β) hg))
+  rwa [Subgroup.card_map_of_injective (levGrp i β).injective] at h
+
+theorem levFam_ok (hF : ∀ j, (chF W sel mu L u j).Ok) (hT : (frmGSD (colValF W sel mu u R.m) Λ Θ).Ok) (i : ℕ) :
+    (levFam W sel mu cst L u m2 b hY Λ Θ i).Ok :=
+  spFam_ok (fun j _ => hF j) (cplGSD_ok _ (hF (m2 + 1) b)) hT i
+
+end Fam
+
+end GlobalTheory.GO
+end
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.GO
@@ -215,3 +515,5 @@ example (σ : X.K →+* ℂ) (z : ℂ) (i : ℕ) (p : ChPt (R := R) sel mu u i) 
 end Chain
 
 end GlobalTheory.GO
+end
+end

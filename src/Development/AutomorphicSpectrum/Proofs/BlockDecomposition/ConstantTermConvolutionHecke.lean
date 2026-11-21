@@ -3,10 +3,58 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeCosetSumCo
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConstantTermLocallyConstant
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HintConstMulSum
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelFamInf
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RelIndexNeZeroOfIsOpen
+import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ThetaNormCommutation.LocalComparisonSplitting.EulerFactorLevels.EulerFinOf
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedOrbitalIntegralEqSumSmallerLevel
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedOrbitalIntegralProductGroup
+import Development.AbelianVarietyTheory.Definitions.Divisors.MaxWeightGL1EqOne
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FinsumOutOfLe
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalAlgebraHolds
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryLevelSubgroupProperties
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedOrbitalIntegralLeviConstantTerm
 
+section
+noncomputable section
+open GlobalTheory.BCT
+open scoped Classical
+
+namespace GlobalTheory.CompanionTheory.SplitConvTw
+
+variable {H : Type} [Group H]
+
+def emb (σ : H →* H) (d : H) : H →* H × H where
+  toFun g := (g, (σ d)⁻¹ * σ g * σ d)
+  map_one' := by simp
+  map_mul' a b := by simp only [map_mul, Prod.mk_mul_mk, Prod.mk.injEq, true_and]; group
+
+@[simp] theorem emb_fst (σ : H →* H) (d g : H) : (emb σ d g).1 = g := rfl
+@[simp] theorem emb_snd (σ : H →* H) (d g : H) : (emb σ d g).2 = (σ d)⁻¹ * σ g * σ d := rfl
+
+end GlobalTheory.CompanionTheory.SplitConvTw
+end
+end
+
+section
+open GlobalTheory.BCT GlobalTheory.CompanionTheory.SplitConvTw
+open scoped Classical Pointwise
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.SplitConvHecke
+
+theorem relIndex_ne_zero_of_isOpen {H : Type} [Group H] [TopologicalSpace H] [IsTopologicalGroup H]
+    (K L : Subgroup H) (hL : IsOpen (L : Set H)) (hK : IsCompact (K : Set H)) :
+    L.relIndex K ≠ 0 := by
+  haveI : CompactSpace K := isCompact_iff_compactSpace.1 hK
+  have hop : IsOpen ((L.subgroupOf K : Subgroup K) : Set K) :=
+    hL.preimage continuous_subtype_val
+  haveI : Finite (K ⧸ L.subgroupOf K) := Subgroup.quotient_finite_of_isOpen _ hop
+  exact Subgroup.index_ne_zero_of_finite
+
+end GlobalTheory.CompanionTheory.SplitConvHecke
+end
+end
+
+section
 open NumberField IsDedekindDomain Matrix Polynomial Filter
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT PositivityTheory.Rg.BcN.F2
 open scoped Classical TensorProduct
@@ -476,3 +524,5 @@ theorem constant_term_convolution : ∀ (E : Type) [Field E] [NumberField E] [Is
 end Local
 
 end GlobalTheory.CompanionTheory.ConvMat
+end
+end

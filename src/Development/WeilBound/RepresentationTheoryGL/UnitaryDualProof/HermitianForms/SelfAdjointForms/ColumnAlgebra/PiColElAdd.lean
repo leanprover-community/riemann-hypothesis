@@ -19,8 +19,6 @@ def fp (ξ : Fin (m + 1) → k) (p : AddSubgroup (Fin (m + 1) → k) × Finset (
 
 variable {ψ h π}
 
-theorem colEl_comm (x y : Fin (m + 1) → k) : colEl k m N h x * colEl k m N h y = colEl k m N h y * colEl k m N h x := by
-  rw [← colEl_add, ← colEl_add, add_comm]
 
 theorem pi_colEl_add (x y : Fin (m + 1) → k) (v : V) :
     π (colEl k m N h (x + y)) v = π (colEl k m N h x) (π (colEl k m N h y) v) := by
@@ -203,26 +201,6 @@ theorem avg_selfadj (hB : Lv ψ h π s B) (ξ : Fin (m + 1) → k) {A : AddSubgr
     smul_smul, map_inv₀, map_natCast, inv_mul_cancel₀ (by exact_mod_cast (card_pos hpw).ne' : (pw.2.card : ℂ) ≠ 0),
     one_smul]
 
-theorem avg_orth (hB : Lv ψ h π s B) (ξ η : Fin (m + 1) → k) {A : AddSubgroup (Fin (m + 1) → k)} (hA : IsLat A)
-    (hne : ∃ x ∈ A, ψ (ξ ⬝ᵥ x) ≠ ψ (η ⬝ᵥ x)) (v w : V) : B (avg ψ h π ξ A v) (avg ψ h π η A w) = 0 := by
-  obtain ⟨x, hx, hne⟩ := hne
-  set a := avg ψ h π ξ A v
-  set b := avg ψ h π η A w
-  have e := B_colEl hB x a b
-  rw [avg_eig hB ξ hA v hx, avg_eig hB η hA w hx, LinearMap.map_smul, LinearMap.smul_apply, LinearMap.map_smulₛₗ,
-    smul_eq_mul, smul_eq_mul, ← mul_assoc] at e
-  by_contra hX
-  apply hne
-  have hc : ((ψ (ξ ⬝ᵥ x) : Circle) : ℂ) * starRingEnd ℂ ((ψ (η ⬝ᵥ x) : Circle) : ℂ) = 1 := by
-    have h1 : (((ψ (ξ ⬝ᵥ x) : Circle) : ℂ) * starRingEnd ℂ ((ψ (η ⬝ᵥ x) : Circle) : ℂ) - 1) * B a b = 0 := by
-      rw [sub_mul, one_mul, e, sub_self]
-    exact sub_eq_zero.1 ((mul_eq_zero.1 h1).resolve_right hX)
-  have h2 : ((ψ (ξ ⬝ᵥ x) : Circle) : ℂ) = ((ψ (η ⬝ᵥ x) : Circle) : ℂ) := by
-    calc ((ψ (ξ ⬝ᵥ x) : Circle) : ℂ)
-        = ((ψ (ξ ⬝ᵥ x) : Circle) : ℂ) * (starRingEnd ℂ ((ψ (η ⬝ᵥ x) : Circle) : ℂ) * ((ψ (η ⬝ᵥ x) : Circle) : ℂ)) := by
-          rw [conj_mul_psi, mul_one]
-      _ = ((ψ (η ⬝ᵥ x) : Circle) : ℂ) := by rw [← mul_assoc, hc, one_mul]
-  first | exact Circle.ext h2 | exact Subtype.ext h2
 
 theorem avg_avg (hB : Lv ψ h π s B) (ξ : Fin (m + 1) → k) {A A' : AddSubgroup (Fin (m + 1) → k)} (hA : IsLat A)
     (hA' : IsLat A') (hAA : A ≤ A') (v : V) :

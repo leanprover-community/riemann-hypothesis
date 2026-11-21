@@ -20,7 +20,6 @@ theorem ratV_eq : ratV E ι = vecLattice E ι := rfl
 
 instance haar : (vecMeasure E ι).IsAddHaarMeasure := inferInstance
 
-theorem borel_ok : BorelSpace (ι → Ad E) := inferInstance
 
 theorem avg_eq_integral (f : (ι → Ad E) → ℂ) (hf : Per (ratV E ι) f) :
     avg (ratV E ι) f = ∫ x in vecDomain E ι, f x ∂vecMeasure E ι := by

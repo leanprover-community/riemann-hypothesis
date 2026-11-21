@@ -29,8 +29,6 @@ theorem apply_sub (b : R) (v : M) : isoTransvection h x hx b v - v = (b * h v x)
 @[simp] theorem apply_self (b : R) : isoTransvection h x hx b x = x := by
   simp [apply, hx]
 
-theorem apply_of_orth (b : R) {v : M} (hv : h v x = 0) : isoTransvection h x hx b v = v := by
-  simp [apply, hv]
 
 @[simp] theorem form_apply_self (b : R) (v : M) :
     h (isoTransvection h x hx b v) x = h v x := by
@@ -105,11 +103,6 @@ theorem form_apply_apply (hh : ∀ u v, h v u = star (h u v)) (b : R) (u v : M) 
   rw [form_apply_left, form_apply_right x hx hh, form_self_apply]
   ring
 
-theorem form_apply_apply' (hh : ∀ u v, h v u = star (h u v)) (b b' : R) (u v : M) :
-    h (isoTransvection h x hx b u) (isoTransvection h x hx b' v)
-      = h u v + (b + star b') * h u x * h x v := by
-  rw [form_apply_left, form_apply_right x hx hh, form_self_apply]
-  ring
 
 theorem form_apply_diag (hh : ∀ u v, h v u = star (h u v)) (b : R) (v : M) :
     h (isoTransvection h x hx b v) (isoTransvection h x hx b v)
@@ -120,13 +113,7 @@ theorem adjoint (hh : ∀ u v, h v u = star (h u v)) (b : R) (u v : M) :
     h (isoTransvection h x hx b u) v = h u (isoTransvection h x hx (star b) v) := by
   rw [form_apply_left, form_apply_right x hx hh, star_star]
 
-theorem isAdjointPair (hh : ∀ u v, h v u = star (h u v)) (b : R) :
-    LinearMap.IsAdjointPair h h (isoTransvection h x hx b) (isoTransvection h x hx (star b)) :=
-  fun u v => adjoint x hx hh b u v
 
-theorem form_apply_neg_star (hh : ∀ u v, h v u = star (h u v)) (b : R) (u v : M) :
-    h (isoTransvection h x hx b u) (isoTransvection h x hx (-star b) v) = h u v := by
-  rw [form_apply_apply' x hx hh]; simp
 
 theorem isometry (hh : ∀ u v, h v u = star (h u v)) {b : R} (hb : b + star b = 0) (u v : M) :
     h (isoTransvection h x hx b u) (isoTransvection h x hx b v) = h u v := by
@@ -181,10 +168,6 @@ theorem conj (g : M ≃ₗ[R] M) (hg : ∀ u v, h (g u) (g v) = h u v) (b : R)
   ext v
   simp [LinearEquiv.mul_apply, apply, hg]
 
-theorem commute_of_fix (g : M ≃ₗ[R] M) (hgx : g x = x) (hg : ∀ u, h (g u) x = h u x) (b : R) :
-    Commute g (isoTransvection h x hx b) := by
-  ext v
-  simp [LinearEquiv.mul_apply, apply, hg, hgx]
 
 section Lattice
 
@@ -218,12 +201,6 @@ theorem apply_mem {L : Submodule R₀ M} (hxL : x ∈ L)
   rw [apply, ← hc, ← map_mul, algebraMap_smul]
   exact L.add_mem hv (L.smul_mem _ hxL)
 
-theorem apply_mem_iff {L : Submodule R₀ M} (hxL : x ∈ L)
-    (hL : ∀ v ∈ L, h v x ∈ (algebraMap R₀ R).range) (b : R₀) (v : M) :
-    isoTransvection h x hx (algebraMap R₀ R b) v ∈ L ↔ v ∈ L := by
-  refine ⟨fun H => ?_, apply_mem h x hx hxL hL b⟩
-  have := apply_mem h x hx hxL hL (-b) H
-  rwa [apply_apply, map_neg, neg_add_cancel, zero] at this
 
 theorem image_eq {L : Submodule R₀ M} (hxL : x ∈ L)
     (hL : ∀ v ∈ L, h v x ∈ (algebraMap R₀ R).range) (b : R₀) :
@@ -254,40 +231,12 @@ namespace isoTransvection
 variable {W : Type*} [AddCommGroup W] [Module ℂ W] {h : W →ₗ[ℂ] W →ₗ⋆[ℂ] ℂ} (x : W)
   (hx : h x x = 0)
 
-theorem form_apply_apply_complex (hh : ∀ u v, h v u = star (h u v)) (b : ℂ) (u v : W) :
-    h (isoTransvection h x hx b u) (isoTransvection h x hx b v)
-      = h u v + (2 * b.re : ℝ) * h u x * h x v := by
-  rw [form_apply_apply x hx hh, Complex.star_def, Complex.add_conj]
 
-theorem form_apply_diag_complex (hh : ∀ u v, h v u = star (h u v)) (b : ℂ) (v : W) :
-    h (isoTransvection h x hx b v) (isoTransvection h x hx b v)
-      = h v v + ((2 * b.re * ‖h v x‖ ^ 2 : ℝ) : ℂ) := by
-  rw [form_apply_diag x hx hh, Complex.star_def, Complex.add_conj, Complex.mul_conj,
-    Complex.normSq_eq_norm_sq]
-  push_cast; ring
 
-theorem re_form_apply_diag_complex (hh : ∀ u v, h v u = star (h u v)) (b : ℂ) (v : W) :
-    (h (isoTransvection h x hx b v) (isoTransvection h x hx b v)).re
-      = (h v v).re + 2 * b.re * ‖h v x‖ ^ 2 := by
-  rw [form_apply_diag_complex x hx hh, Complex.add_re, Complex.ofReal_re]
 
-theorem isometry_iff_re (hh : ∀ u v, h v u = star (h u v)) (hx0 : ∃ v, h v x ≠ 0) (b : ℂ) :
-    (∀ u v, h (isoTransvection h x hx b u) (isoTransvection h x hx b v) = h u v)
-      ↔ b.re = 0 := by
-  rw [isometry_iff x hx hh hx0, Complex.star_def, Complex.add_conj]
-  simp
 
-theorem isometry_of_re (hh : ∀ u v, h v u = star (h u v)) {b : ℂ} (hb : b.re = 0) (u v : W) :
-    h (isoTransvection h x hx b u) (isoTransvection h x hx b v) = h u v := by
-  rw [form_apply_apply_complex x hx hh, hb]; simp
 
-theorem re_mul_I_mul (b : ℂ) (s : ℝ) : (b * (Complex.I * s)).re = -s * b.im := by
-  simp; ring
 
-theorem isometry_ofReal_mul_I_mul (hh : ∀ u v, h v u = star (h u v)) (b s : ℝ) (u v : W) :
-    h (isoTransvection h x hx (b * (Complex.I * s)) u)
-      (isoTransvection h x hx (b * (Complex.I * s)) v) = h u v :=
-  isometry_of_re x hx hh (by rw [re_mul_I_mul]; simp) u v
 
 end isoTransvection
 
@@ -296,68 +245,14 @@ namespace isoTransvection
 variable {W : Type*} [NormedAddCommGroup W] [NormedSpace ℂ W] (h : W →ₗ[ℂ] W →ₗ⋆[ℂ] ℂ) (x : W)
   (hx : h x x = 0)
 
-theorem differentiable_param (v : W) :
-    Differentiable ℂ fun b : ℂ => isoTransvection h x hx b v := by
-  simp only [apply]; fun_prop
 
-theorem analyticOnNhd_uncurry [FiniteDimensional ℂ W] :
-    AnalyticOnNhd ℂ (fun p : ℂ × W => isoTransvection h x hx p.1 p.2) Set.univ := by
-  have : CompleteSpace W := FiniteDimensional.complete ℂ W
-  let f : W →L[ℂ] ℂ := LinearMap.toContinuousLinearMap (h.flip x)
-  have : (fun p : ℂ × W => isoTransvection h x hx p.1 p.2)
-      = fun p : ℂ × W => p.2 + (p.1 * f p.2) • x := rfl
-  rw [this]
-  intro p _
-  exact analyticAt_snd.add
-    ((analyticAt_fst.mul ((f.analyticAt _).comp analyticAt_snd)).smul analyticAt_const)
 
-theorem differentiable_uncurry [FiniteDimensional ℂ W] :
-    Differentiable ℂ fun p : ℂ × W => isoTransvection h x hx p.1 p.2 :=
-  fun p => (analyticOnNhd_uncurry h x hx p (Set.mem_univ p)).differentiableAt
 
-theorem differentiable_toContinuousLinearMap [FiniteDimensional ℂ W] :
-    Differentiable ℂ fun b : ℂ =>
-      LinearMap.toContinuousLinearMap (isoTransvection h x hx b : W →ₗ[ℂ] W) := by
-  let f : W →L[ℂ] ℂ := LinearMap.toContinuousLinearMap (h.flip x)
-  have : (fun b : ℂ => LinearMap.toContinuousLinearMap (isoTransvection h x hx b : W →ₗ[ℂ] W))
-      = fun b : ℂ => ContinuousLinearMap.id ℂ W + b • f.smulRight x := by
-    ext b v
-    simp [apply, f, smul_smul]
-  rw [this]
-  fun_prop
 
 end isoTransvection
 
 end Complex
 
-theorem isoTransvection_spec {R M : Type*} [CommRing R] [StarRing R] [AddCommGroup M]
-    [Module R M] (h : M →ₗ[R] M →ₗ⋆[R] R) (hh : ∀ u v, h v u = star (h u v))
-    (x : M) (hx : h x x = 0) :
-    (∀ b v, isoTransvectionHom h x hx (Multiplicative.ofAdd b) v = v + (b * h v x) • x) ∧
-    (∀ b, isoTransvectionHom h x hx (Multiplicative.ofAdd b) = isoTransvection h x hx b) ∧
-    (∀ b b', isoTransvection h x hx b * isoTransvection h x hx b'
-      = isoTransvection h x hx (b + b')) ∧
-    (∀ b, isoTransvection h x hx b x = x) ∧
-    (∀ b v, h (isoTransvection h x hx b v) x = h v x) ∧
-    (∀ b u v, h (isoTransvection h x hx b u) (isoTransvection h x hx b v)
-      = h u v + (b + star b) * h u x * h x v) ∧
-    (∀ b u v, h (isoTransvection h x hx b u) v = h u (isoTransvection h x hx (star b) v)) ∧
-    (Module.Free R M → Module.Finite R M →
-      ∀ b, LinearMap.det (isoTransvection h x hx b : M →ₗ[R] M) = 1) ∧
-    (∀ b, b + star b = 0 →
-      ∀ u v, h (isoTransvection h x hx b u) (isoTransvection h x hx b v) = h u v) ∧
-    (∀ (R₀ : Subring R) (L : Submodule R₀ M) (I : Ideal R₀) (b : R₀), x ∈ L →
-      (∀ v ∈ L, h v x ∈ R₀) → b ∈ I →
-        (∀ v ∈ L, isoTransvection h x hx b v - v ∈ I • L) ∧
-          isoTransvection h x hx b '' (L : Set M) = L) := by
-  refine ⟨fun _ _ => rfl, fun _ => rfl, isoTransvection.mul h x hx,
-    isoTransvection.apply_self h x hx, isoTransvection.form_apply_self h x hx,
-    isoTransvection.form_apply_apply x hx hh, isoTransvection.adjoint x hx hh,
-    fun _ _ => isoTransvection.det_toLinearMap h x hx,
-    fun b hb => isoTransvection.isometry x hx hh hb, fun R₀ L I b hxL hL hb => ?_⟩
-  have hL' : ∀ v ∈ L, h v x ∈ (algebraMap R₀ R).range := fun v hv => ⟨⟨_, hL v hv⟩, rfl⟩
-  exact ⟨fun v hv => isoTransvection.sub_mem_smul h x hx hxL hL' hb hv,
-    isoTransvection.image_eq h x hx hxL hL' b⟩
 
 section Example
 

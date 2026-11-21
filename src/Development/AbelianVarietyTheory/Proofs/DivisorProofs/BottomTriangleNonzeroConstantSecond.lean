@@ -10,17 +10,853 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BottomTriangleLevel
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PlaceFinal
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.CharIntegrable
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsSelfDualEColLatOne
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryCharFiniteIdeleEqHeckeCharValue
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormalisedVacuaRatioAlgebraicUnitEveryPrime
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SquareNuCharConductorExponentsPosProdModulus
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GridLocalTensorPlacesCoprimeTwoQD
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HalfCosetIndicatorModIdealIsSchwartzBruhatHalf
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeckeCharacterFiniteIdeleValueEq
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OddEigenvectorUniqueUpToUnit
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsOrthonormalBasisFamily
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.JetsTorsionTranslatesCmThetaProduct
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SquareNuTwistedTupleRamifiedAtTwistPlace
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SquareNuHeckeCharacterNotUnramifiedAtChosenPlace
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ValuationLeOneOfMem
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CondEIsCoprimeHalfDifferent
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LevelIndicatorReadsNormPowerUnitVector
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConjIdealIndicatorUnitBlockTranslateReadsWeilOpe
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisenbergFinitePointReadsClassicalTranslation
+import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.InfPartOfSplitIdem
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardPairSecondUnitBlockCosetRootOfUnity
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsMaximalLevelMovesStandardPairSupportToUnit
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitBlockCosetIffMaximalLevelCongruentConjIdealStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitBlockCosetIffMaximalLevelCongruentConjIdeal
 
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Theta IsDedekindDomain NumberField Finset MeasureTheory
+open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 Formalism.L2.Indef.Tree.ArchimedeanLeafBounds.Cuts
+open Formalism.DivisionValues (vw)
+open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTheory.RowTest
+open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
+open GlobalTheory.NormSum (Pair Tup)
+open Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.BotSmallDict GlobalTheory.NormExact
+open scoped Pointwise
+
+namespace GlobalTheory.BotPointDict
+
+theorem chr_at_finIdl : ∀ {D : D7} (c : (Formalism.L2.Theta.AE D)ˣ →* Circle) (χ : Formalism.L2.Host.HChar D.host.E), ChrEq c χ →
+    ∀ x y, IsFinIdl x y → ((c x : Circle) : ℂ) = ((χ.1 (GlobalTheory.Mem.Col2.SplitChar.finIdl D y) : ℂˣ) : ℂ) :=
+  fun c χ h x y hxy => GlobalTheory.FinIdlRead.chr_finIdl c χ h x y hxy
+
+end GlobalTheory.BotPointDict
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Theta IsDedekindDomain NumberField Finset MeasureTheory
+open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 Formalism.L2.Indef.Tree.ArchimedeanLeafBounds.Cuts
+open Formalism.DivisionValues (vw)
+open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTheory.RowTest
+open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
+open GlobalTheory.NormSum (Pair Tup)
+open Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.BotSmallDict GlobalTheory.NormExact
+open scoped Pointwise
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitaryChar_finiteIdele_eq_heckeChar_value : ∀ {D : D7} (c : (Formalism.L2.Theta.AE D)ˣ →* Circle) (χ : Formalism.L2.Host.HChar D.host.E), ChrEq c χ →
+    ∀ x y, IsFinIdl x y → ((c x : Circle) : ℂ) = ((χ.1 (GlobalTheory.Mem.Col2.SplitChar.finIdl D y) : ℂˣ) : ℂ) := by
+  atlas_forward_decl GlobalTheory.BotPointDict.chr_at_finIdl
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Theta IsDedekindDomain NumberField Finset MeasureTheory
+open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 Formalism.L2.Indef.Tree.ArchimedeanLeafBounds.Cuts
+open Formalism.DivisionValues (vw)
+open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTheory.RowTest
+open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
+open GlobalTheory.NormSum (Pair Tup)
+open Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.BotSmallDict GlobalTheory.NormExact
+open scoped Pointwise
+
+noncomputable section
+
+namespace GlobalTheory.VacRatio
+
+theorem det_int {D : D7} {N N' r : ℕ} (p : ℕ) {b₁ b₂ : Fin r → Matrix (Fin N') (Fin N) D.host.E}
+    (hb₁ : OnB D b₁) (h₁ : LocBasis D p (YYl D (stdL D N) (stdL D N')) b₁)
+    (h₂ : LocBasis D p (YYl D (stdL D N) (stdL D N')) b₂) :
+    ∃ S : ℕ, Nat.Coprime S p ∧
+      IsIntegral ℤ ((S : D.host.E) * (((Matrix.of fun i j => hYY D (b₂ j) (b₁ i)).det : D.host.K) : D.host.E)) := by
+  have key : ∀ j, ∃ t : ℕ, Nat.Coprime t p ∧ ∃ c : Fin r → 𝓞 D.host.K,
+      ∀ i, (t : D.host.K) * hYY D (b₂ j) (b₁ i) = (c i : D.host.K) := by
+    intro j
+    obtain ⟨s, hs, hmem⟩ := h₂.2.1 j
+    obtain ⟨s', hs', c, hc⟩ := h₁.2.2 _ hmem
+    refine ⟨s' * s, Nat.Coprime.mul hs' hs, c, fun i => ?_⟩
+    have e1 : hYY D ((s' : D.host.E) • (s : D.host.E) • b₂ j) (b₁ i) =
+        ((s' * s : ℕ) : D.host.K) * hYY D (b₂ j) (b₁ i) := by
+      rw [smul_smul, ← Nat.cast_mul, Nat.cast_smul_eq_nsmul]
+      change GlobalTheory.NormSum.hYYLeft D (b₁ i) _ = _
+      rw [map_nsmul, nsmul_eq_mul]
+      rfl
+    have e2 : hYY D (∑ k, (((c k : D.host.K) : D.host.E)) • b₁ k) (b₁ i) = (c i : D.host.K) := by
+      change GlobalTheory.NormSum.hYYLeft D (b₁ i) _ = _
+      rw [map_sum]
+      have : ∀ k, GlobalTheory.NormSum.hYYLeft D (b₁ i) ((((c k : D.host.K) : D.host.E)) • b₁ k) =
+          if k = i then (c i : D.host.K) else 0 := by
+        intro k
+        rw [show (((c k : D.host.K) : D.host.E)) • b₁ k = (c k : D.host.K) • b₁ k from
+          algebraMap_smul D.host.E (c k : D.host.K) (b₁ k), map_smul]
+        change (c k : D.host.K) • hYY D (b₁ k) (b₁ i) = _
+        rw [hb₁.1 k i]
+        split_ifs with h
+        · subst h; simp
+        · simp
+      simp only [this]
+      simp
+    rw [← e1, hc, e2]
+  choose t ht c hc using key
+  refine ⟨∏ j, t j, Nat.Coprime.prod_left fun j _ => ht j, ?_⟩
+  let M' : Matrix (Fin r) (Fin r) (𝓞 D.host.K) := Matrix.of fun i j => c j i
+  have hM : (algebraMap (𝓞 D.host.K) D.host.K).mapMatrix M' =
+      Matrix.of fun i j => (t j : D.host.K) * hYY D (b₂ j) (b₁ i) := by
+    ext i j
+    simp [M', hc]
+  have hdet : ((∏ j, t j : ℕ) : D.host.K) * (Matrix.of fun i j => hYY D (b₂ j) (b₁ i)).det =
+      algebraMap (𝓞 D.host.K) D.host.K M'.det := by
+    rw [RingHom.map_det, hM]
+    have h := Matrix.det_mul_row (fun j => ((t j : ℕ) : D.host.K)) (Matrix.of fun i j => hYY D (b₂ j) (b₁ i))
+    simp only [Matrix.of_apply] at h
+    rw [h, Nat.cast_prod]
+  have hint : IsIntegral ℤ (((∏ j, t j : ℕ) : D.host.K) * (Matrix.of fun i j => hYY D (b₂ j) (b₁ i)).det) := by
+    rw [hdet]
+    exact M'.det.isIntegral_coe
+  have := hint.algebraMap (B := D.host.E)
+  simpa using this
+
+theorem det_unit {D : D7} (hG : admG1 D) {N N' r : ℕ} (p : ℕ) [Fact p.Prime] (lam : Qbar →+* ℂ_[p])
+    {b₁ b₂ : Fin r → Matrix (Fin N') (Fin N) D.host.E} (hb₁ : OnB D b₁) (hb₂ : OnB D b₂)
+    (h₁ : LocBasis D p (YYl D (stdL D N) (stdL D N')) b₁) (h₂ : LocBasis D p (YYl D (stdL D N) (stdL D N')) b₂) :
+    D.host.φ₀ (((Matrix.of fun i j => hYY D (b₂ j) (b₁ i)).det : D.host.K) : D.host.E) ∈ Qbar ∧
+      ‖lamC lam (D.host.φ₀ (((Matrix.of fun i j => hYY D (b₂ j) (b₁ i)).det : D.host.K) : D.host.E))‖ = 1 := by
+  have hc : ∀ (φ : D.host.E →+* ℂ) (z : D.host.E), φ (D.host.conj z) = starRingEnd ℂ (φ z) :=
+    fun φ z => D.host.conjE_apply φ z
+  set y : D.host.E := (((Matrix.of fun i j => hYY D (b₂ j) (b₁ i)).det : D.host.K) : D.host.E) with hy
+  obtain ⟨S, hS, hint⟩ := det_int p hb₁ h₁ h₂
+  rw [← hy] at hint
+  have hn : y * D.host.conj y = 1 := GlobalTheory.NormSum.det_onB_mul_conj D hG N N' r b₁ b₂ hb₁ hb₂
+  set x : ℂ := D.host.φ₀ y
+  have hx1 : x * starRingEnd ℂ x = 1 := by
+    have := congrArg D.host.φ₀ hn
+    rwa [map_mul, hc, map_one] at this
+  have hi1 : IsIntegral ℤ ((S : ℂ) * x) := by
+    have := hint.map (D.host.φ₀ : D.host.E →+* ℂ).toIntAlgHom
+    simpa [x] using this
+  have hi2 : IsIntegral ℤ ((S : ℂ) * starRingEnd ℂ x) := by
+    have := hi1.map (starRingEnd ℂ : ℂ →+* ℂ).toIntAlgHom
+    simpa using this
+  have hS0 : (S : ℂ) ≠ 0 := by
+    have : S ≠ 0 := by
+      rintro rfl
+      have := Nat.Prime.one_lt (Fact.out : p.Prime)
+      simp at hS
+      omega
+    exact_mod_cast this
+  have a1 : GlobalTheory.ProductJets.AlgLe lam x 1 := by
+    have := (GlobalTheory.ProductJets.AlgLe.inv_natCast (lam := lam) hS).mul (GlobalTheory.ProductJets.AlgLe.of_isIntegral (lam := lam) hi1)
+    rwa [← mul_assoc, inv_mul_cancel₀ hS0, one_mul, one_mul] at this
+  have a2 : GlobalTheory.ProductJets.AlgLe lam (starRingEnd ℂ x) 1 := by
+    have := (GlobalTheory.ProductJets.AlgLe.inv_natCast (lam := lam) hS).mul (GlobalTheory.ProductJets.AlgLe.of_isIntegral (lam := lam) hi2)
+    rwa [← mul_assoc, inv_mul_cancel₀ hS0, one_mul, one_mul] at this
+  refine ⟨a1.1, ?_⟩
+  have hprod : lamC lam x * lamC lam (starRingEnd ℂ x) = 1 := by
+    rw [← GlobalTheory.BotFormula.lamC_mul lam a1.1 a2.1, hx1]
+    have := GlobalTheory.ProductJets.lamC_coe (lam := lam) (1 : Qbar)
+    simpa using this
+  have hn2 := congrArg norm hprod
+  rw [norm_mul, norm_one] at hn2
+  have u1 := a1.2
+  have u2 := a2.2
+  have h0 := norm_nonneg (lamC lam x)
+  have h0' := norm_nonneg (lamC lam (starRingEnd ℂ x))
+  nlinarith
+
+theorem qbar_of_pow {x : ℂ} {n : ℕ} (hn : 0 < n) (h : x ^ n ∈ Qbar) : x ∈ Qbar :=
+  mem_algebraicClosure_iff.2 (IsAlgebraic.of_pow hn (mem_algebraicClosure_iff.1 h))
+
+theorem ratio_local {D : D7} (hI : GlobalTheory.NormSum.Inp D) {δ t0 : ℂ} (hC : Crv D ⊤ δ)
+    (ht : GL3Theta.IsTwoTorsionPointUnkilled D (lamOf D ⊤ δ) t0) {a d : ℕ} {e₁ e₂ : VC D a d → ℂ}
+    (h₁ : oddE0 D ⊤ δ t0 a d e₁) (h₂ : oddE0 D ⊤ δ t0 a d e₂) (hne : e₁ ≠ 0) {κ : ℂ} (hκ : e₂ = κ • e₁)
+    (p : ℕ) [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) : κ ∈ Qbar ∧ ‖lamC lam κ‖ = 1 := by
+  have hG : admG1 D := hI.g1
+  have hcop : Nat.Coprime (Ideal.absNorm (⊤ : Ideal (𝓞 D.host.K))) p := by simp
+  obtain ⟨b₁, ε₁, hb₁, hl₁, hε₁, hn₁, -, he₁⟩ := h₁.2.2.2.2 p lam hcop
+  obtain ⟨b₂, ε₂, hb₂, hl₂, hε₂, hn₂, -, he₂⟩ := h₂.2.2.2.2 p lam hcop
+  have hP : pullB D (tor0 D ⊤ δ) b₁ (GL3Theta.th0 (lamOf D ⊤ δ) t0) ∈
+      ThSp D (tor0 D ⊤ δ) (LaB D (tor0 D ⊤ δ) b₁) := by
+    obtain ⟨hd, hth⟩ := GlobalTheory.RatEquiv.theta_signed_translation D hG ⊤ δ hC t0 ht
+    obtain ⟨-, -, hpar, hmem, -⟩ := GlobalTheory.OnCoord.coords_of_orthonormal_basis D hG ⊤ δ a d _ b₁ hb₁
+    exact GlobalTheory.ProdTheta.pullB_mem_ThSp D _ a d _ b₁ _ hpar hmem hd hth
+  have hK1 : KLat D (tor0 D ⊤ δ) (LaB D (tor0 D ⊤ δ) b₁) := Or.inl ⟨_, b₁, hb₁, rfl⟩
+  have hK2 : KLat D (tor0 D ⊤ δ) (LaB D (tor0 D ⊤ δ) b₂) := Or.inl ⟨_, b₂, hb₂, rfl⟩
+  have hK0 : KLat D (tor0 D ⊤ δ) (La0 D (tor0 D ⊤ δ) a d) :=
+    Or.inr ⟨_, _, GlobalTheory.NormSum.VacInt.sd_std D a, GlobalTheory.NormSum.VacInt.sd_std D d, rfl⟩
+  obtain ⟨c, ζ, m, hm, hζ, hc, hpull⟩ := GlobalTheory.UnitaryTheta.const_sq_eq_det D ⊤ δ hC t0 ht a d _ b₁ b₂ hb₁ hb₂
+  obtain ⟨μ, hμ, hIμ⟩ := hI.mu ⊤ δ hC a d _ _ _ hK1 hK2 hK0 _ hP
+  have E2 : e₂ = fun z => ε₂ * (c * (μ * Iop D (tor0 D ⊤ δ) (LaB D (tor0 D ⊤ δ) b₁) (La0 D (tor0 D ⊤ δ) a d)
+      (pullB D (tor0 D ⊤ δ) b₁ (GL3Theta.th0 (lamOf D ⊤ δ) t0)) z)) := by
+    rw [he₂, hpull, GlobalTheory.RatEquiv.Iop_smul, hIμ]
+  obtain ⟨z, hz⟩ : ∃ z, e₁ z ≠ 0 := by
+    by_contra h
+    push_neg at h
+    exact hne (funext h)
+  have hz' := hz
+  rw [he₁] at hz'
+  have hJ : Iop D (tor0 D ⊤ δ) (LaB D (tor0 D ⊤ δ) b₁) (La0 D (tor0 D ⊤ δ) a d)
+      (pullB D (tor0 D ⊤ δ) b₁ (GL3Theta.th0 (lamOf D ⊤ δ) t0)) z ≠ 0 := right_ne_zero_of_mul hz'
+  have hε0 : ε₁ ≠ 0 := left_ne_zero_of_mul hz'
+  have key : κ * ε₁ = ε₂ * c * μ := by
+    have h := congrFun hκ z
+    rw [Pi.smul_apply, smul_eq_mul, E2, he₁] at h
+    apply mul_right_cancel₀ hJ
+    linear_combination -h
+  have hκe : κ = ε₂ * c * μ / ε₁ := by rw [eq_div_iff hε0, key]
+
+  obtain ⟨hxQ, hx1⟩ := det_unit hG p lam hb₁ hb₂ hl₁ hl₂
+  have hζQ : ζ ∈ Qbar := qbar_of_pow hm (by rw [hζ]; exact one_mem _)
+  have hcQ : c ∈ Qbar := qbar_of_pow two_pos (by rw [hc]; exact mul_mem hζQ hxQ)
+  have hμQ : μ ∈ Qbar := qbar_of_pow (n := 8) (by norm_num) (by rw [hμ]; exact one_mem _)
+  have hκQ : κ ∈ Qbar := by rw [hκe]; exact div_mem (mul_mem (mul_mem hε₂ hcQ) hμQ) hε₁
+  refine ⟨hκQ, ?_⟩
+
+  have L := fun {u v : ℂ} (hu : u ∈ Qbar) (hv : v ∈ Qbar) => GlobalTheory.BotFormula.lamC_mul lam hu hv
+  have one : lamC lam 1 = 1 := by
+    have := GlobalTheory.ProductJets.lamC_coe (lam := lam) (1 : Qbar)
+    simpa using this
+  have pw : ∀ {u : ℂ} (hu : u ∈ Qbar) (n : ℕ), lamC lam (u ^ n) = lamC lam u ^ n := by
+    intro u hu n
+    induction n with
+    | zero => simpa using one
+    | succ n ih => rw [pow_succ, L (pow_mem hu n) hu, ih, pow_succ]
+  have nμ : ‖lamC lam μ‖ = 1 := by
+    have := congrArg norm (pw hμQ 8)
+    rw [hμ, one, norm_one, norm_pow, eq_comm] at this
+    exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) (by norm_num)).1 this
+  have nζ : ‖lamC lam ζ‖ = 1 := by
+    have := congrArg norm (pw hζQ m)
+    rw [hζ, one, norm_one, norm_pow, eq_comm] at this
+    exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) hm.ne').1 this
+  have nc : ‖lamC lam c‖ = 1 := by
+    have := congrArg norm (pw hcQ 2)
+    rw [hc, L hζQ hxQ, norm_mul, nζ, hx1, one_mul, norm_pow] at this
+    exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) (by norm_num)).1 this.symm
+  have hk : ‖lamC lam (κ * ε₁)‖ = ‖lamC lam (ε₂ * c * μ)‖ := by rw [key]
+  rw [L hκQ hε₁, L (mul_mem hε₂ hcQ) hμQ, L hε₂ hcQ, norm_mul, norm_mul, norm_mul, hn₁, hn₂, nc, nμ] at hk
+  simpa using hk
+
+theorem vacuum_ratio_isAlgUnit : ∀ {D : D7}, GlobalTheory.NormSum.Inp D → ∀ {δ t0 : ℂ}, Crv D ⊤ δ → GL3Theta.IsTwoTorsionPointUnkilled D (lamOf D ⊤ δ) t0 →
+    ∀ {a d : ℕ} {e₁ e₂ : VC D a d → ℂ},
+    oddE0 D ⊤ δ t0 a d e₁ → oddE0 D ⊤ δ t0 a d e₂ → ∃ ζ : ℂ, IsAlgUnit ζ ∧ e₂ = ζ • e₁ := by
+  intro D hI δ t0 hC ht a d e₁ e₂ h₁ h₂
+  have hG : admG1 D := hI.g1
+  have hne : e₁ ≠ 0 := by
+    intro h
+    have hn := h₁.2.2.1
+    rw [h] at hn
+    have h0 : TaylorLogMetric.normSq D (tor0 D ⊤ δ) (La0 D (tor0 D ⊤ δ) a d) 0 = 0 := by simp [TaylorLogMetric.normSq]
+    rw [h0] at hn
+    exact pow_ne_zero _ (GlobalTheory.ConjJet.thetaZeroNormSq_ne_zero_cmLattice D hG ⊤ δ t0 hC ht) hn.symm
+  obtain ⟨κ, hκ1, hκ⟩ := GlobalTheory.VacuumUnique.vacuum_unique hI hC h₁ h₂ hne
+  have hκ0 : κ ≠ 0 := by
+    rintro rfl
+    simp at hκ1
+  haveI : Algebra.IsAlgebraic ℚ Qbar := algebraicClosure.isAlgebraic ℚ ℂ
+  let lam2 : Qbar →+* ℂ_[2] := (IsAlgClosed.lift (R := ℚ) (S := Qbar) (M := ℂ_[2])).toRingHom
+  refine ⟨κ, ⟨hκ0, (ratio_local hI hC ht h₁ h₂ hne hκ 2 lam2).1, fun p _ lam => ?_⟩, hκ⟩
+  exact (ratio_local hI hC ht h₁ h₂ hne hκ p lam).2
+
+end GlobalTheory.VacRatio
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Theta IsDedekindDomain NumberField Finset MeasureTheory
+open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 Formalism.L2.Indef.Tree.ArchimedeanLeafBounds.Cuts
+open Formalism.DivisionValues (vw)
+open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTheory.RowTest
+open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
+open GlobalTheory.NormSum (Pair Tup)
+open Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.BotSmallDict GlobalTheory.NormExact
+open scoped Pointwise
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.normalisedVacua_ratio_algebraicUnit_everyPrime : ∀ {D : D7}, GlobalTheory.NormSum.Inp D → ∀ {δ t0 : ℂ}, Crv D ⊤ δ → GL3Theta.IsTwoTorsionPointUnkilled D (lamOf D ⊤ δ) t0 → ∀ {a d : ℕ} {e₁ e₂ : VC D a d → ℂ},
+    oddE0 D ⊤ δ t0 a d e₁ → oddE0 D ⊤ δ t0 a d e₂ → ∃ ζ : ℂ, IsAlgUnit ζ ∧ e₂ = ζ • e₁ := by
+  atlas_forward_decl GlobalTheory.VacRatio.vacuum_ratio_isAlgUnit
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Theta IsDedekindDomain NumberField Finset MeasureTheory
+open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 Formalism.L2.Indef.Tree.ArchimedeanLeafBounds.Cuts
+open Formalism.DivisionValues (vw)
+open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTheory.RowTest
+open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
+open GlobalTheory.NormSum (Pair Tup)
+open Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.BotSmallDict GlobalTheory.NormExact
+open scoped Pointwise
+
+noncomputable section
+
+namespace GlobalTheory.SqTop.CondExpo
+
+theorem levelLe_of_le {K : Type} [Field K] [NumberField K] {χ : Formalism.L2.Host.HChar K} {v : HeightOneSpectrum (𝓞 K)}
+    {a b : ℕ} (h : χ.LevelLe v a) (hab : a ≤ b) : χ.LevelLe v b :=
+  fun x hx hle => h x hx (hle.trans (WithZero.exp_le_exp.2 (neg_le_neg (Nat.cast_le.2 hab))))
+
+theorem expAt_succ {K : Type} [Field K] [NumberField K] {χ : Formalism.L2.Host.HChar K} {v : HeightOneSpectrum (𝓞 K)} {n : ℕ}
+    (h : χ.LevelLe v (n + 1)) (h' : ¬ χ.LevelLe v n) : GlobalTheory.CMVal.ExpAt χ v (n + 1) := fun m =>
+  ⟨fun hm => by
+    by_contra hlt
+    exact h' (levelLe_of_le hm (by omega)), fun hm => levelLe_of_le h hm⟩
+
+end GlobalTheory.SqTop.CondExpo
+
+open GlobalTheory.SqTop.CondExpo in
+
+theorem GlobalTheory.SqTop.CondExpo.expo_modul : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} (G : GridData L sc) {μ₀ : T}, L.Is μ₀ →
+    ∀ (t : T) (i j : Fin D.R.m) (c : Formalism.L2.DIV.Pl D.host.E → ℕ), (∀ w ∈ locPl G t, GlobalTheory.CMVal.ExpAt (nuH G t i j) w (c w)) →
+    (∀ w ∈ locPl G t, 1 ≤ c w) ∧ modul (locPl G t) c = GlobalTheory.SqTop.modT G t := by
+  intro D T L sc G μ₀ hL t i j c hc
+  have k1 : 1 ≤ D.R.m - (i : ℕ) := by omega
+  have k2 : D.R.m - (i : ℕ) ≤ D.R.m := by omega
+  have hμ := L.C.isMu0 j
+  have enu : nuH G t i j = L.C.mu0 j * L.xiH t * (G.ch.chiH (D.R.m - i))⁻¹ := by
+    rw [nuH, div_eq_mul_inv]
+  have echi : G.ch.chiH (D.R.m - i) = L.C.mu0 j * L.xiH t * (nuH G t i j)⁻¹ := by
+    rw [enu, mul_inv, inv_inv, ← mul_assoc, mul_inv_cancel, one_mul]
+
+  have hW : ∀ v ∈ G.pl.S0, GlobalTheory.CMVal.ExpAt (nuH G t i j) (G.pl.w v) (SqNum.condExp G.pl v) := by
+    intro v hv
+    have hu := G.pl.under_w hv
+    by_cases h0 : v = G.pl.v0
+    · subst h0
+      rw [SqNum.condExp, if_pos rfl]
+      refine expAt_succ (n := 0) ?_ ?_
+      · rw [enu]
+        exact ((hμ.tame _).mul (hL.xi_tame t _)).mul (G.ch.lev0 _ k1 k2 _ hu).1.inv
+      · intro h
+        exact GlobalTheory.RowTest.squareNuHeckeCharacter_not_unramified_at_chosenPlace hL G t i j ((Formalism.L2.Host.HChar.unrAt_iff _ _).2 h)
+    · have h1 : v ∈ S1 D := (G.pl.mem_S0_of_sum_eq.1 hv).resolve_left h0
+      rw [SqNum.condExp, if_neg h0]
+      have hl := G.ch.lev1 _ k1 k2 (G.pl.w v) (by rw [hu]; exact h1)
+      refine expAt_succ (n := 1) ?_ ?_
+      · rw [enu]
+        exact ((levelLe_of_le (hμ.tame _) (by omega)).mul (levelLe_of_le (hL.xi_tame t _) (by omega))).mul hl.1.inv
+      · intro h
+        apply hl.2
+        rw [echi]
+        exact ((hμ.tame _).mul (hL.xi_tame t _)).mul h.inv
+
+  have hQ : ∀ w ∈ twPl G t, GlobalTheory.CMVal.ExpAt (nuH G t i j) w 1 := by
+    intro w hw
+    have hw' : w ∈ L.Q t ∧ w ∉ G.pl.W0 := by
+      simp only [twPl, GlobalTheory.FunObj.locPl, Finset.mem_filter, Finset.mem_union] at hw
+      exact ⟨hw.1.resolve_left hw.2, hw.2⟩
+    have hS1 : w.under (𝓞 D.host.F) ∉ S1 D := fun h => by
+      refine hw'.2 ?_
+      rw [G.pl.w_Q t w hw'.1 h]
+      exact Finset.mem_image_of_mem _ (G.pl.mem_S0_of_sum_eq.2 (Or.inr h))
+    have hS0 : w.under (𝓞 D.host.F) ∉ G.pl.S0 := fun h =>
+      (G.pl.mem_S0_of_sum_eq.1 h).elim (G.pl.levelPlace_ne_basePlace t w hw'.1) hS1
+    refine expAt_succ (n := 0) ?_ ?_
+    · rw [enu]
+      exact ((hμ.tame _).mul (hL.xi_tame t _)).mul
+        (Formalism.L2.Host.HChar.UnrAt.levelLe (G.ch.unr _ k1 k2 w hS0) 1).inv
+    · intro h
+      exact GlobalTheory.SqTop.nuH_not_unrAt_twPl G hL t i j w hw ((Formalism.L2.Host.HChar.unrAt_iff _ _).2 h)
+  have cW : ∀ v ∈ G.pl.S0, c (G.pl.w v) = SqNum.condExp G.pl v := fun v hv =>
+    (hc _ (Finset.mem_union_left _ (Finset.mem_image_of_mem _ hv))).unique (hW v hv)
+  have cQ : ∀ w ∈ twPl G t, c w = 1 := fun w hw =>
+    (hc w (Finset.mem_filter.1 hw).1).unique (hQ w hw)
+  refine ⟨fun w hw => ?_, ?_⟩
+  · by_cases h : w ∈ G.pl.W0
+    · obtain ⟨v, hv, rfl⟩ := Finset.mem_image.1 h
+      rw [cW v hv, SqNum.condExp]
+      split_ifs <;> omega
+    · rw [cQ w (Finset.mem_filter.2 ⟨hw, h⟩)]
+  · rw [modul, modT, ← Finset.prod_filter_mul_prod_filter_not (locPl G t) (fun w => w ∈ G.pl.W0)]
+    have e1 : (locPl G t).filter (fun w => w ∈ G.pl.W0) = G.pl.W0 := by
+      ext w
+      simp only [Finset.mem_filter, GlobalTheory.FunObj.locPl, Finset.mem_union]
+      tauto
+    have e2 : (locPl G t).filter (fun w => w ∉ G.pl.W0) = twPl G t := rfl
+    rw [e1, e2]
+    congr 1
+    · rw [Places.W0, Finset.prod_image fun v hv v' hv' h =>
+        (G.pl.under_w hv).symm.trans ((congrArg _ h).trans (G.pl.under_w hv'))]
+      exact Finset.prod_congr rfl fun v hv => by rw [cW v hv]
+    · exact Finset.prod_congr rfl fun w hw => by rw [cQ w hw, pow_one]
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Theta IsDedekindDomain NumberField Finset MeasureTheory
+open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 Formalism.L2.Indef.Tree.ArchimedeanLeafBounds.Cuts
+open Formalism.DivisionValues (vw)
+open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTheory.RowTest
+open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
+open GlobalTheory.NormSum (Pair Tup)
+open Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.BotSmallDict GlobalTheory.NormExact
+open scoped Pointwise
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.squareNuChar_conductorExponents_pos_prod_modulus : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} (G : GridData L sc) {μ₀ : T}, L.Is μ₀ →
+    ∀ (t : T) (i j : Fin D.R.m) (c : Formalism.L2.DIV.Pl D.host.E → ℕ), (∀ w ∈ locPl G t, GlobalTheory.CMVal.ExpAt (nuH G t i j) w (c w)) →
+    (∀ w ∈ locPl G t, 1 ≤ c w) ∧ modul (locPl G t) c = GlobalTheory.SqTop.modT G t := by
+  atlas_forward_decl GlobalTheory.SqTop.CondExpo.expo_modul
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Theta IsDedekindDomain NumberField Finset MeasureTheory
+open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 Formalism.L2.Indef.Tree.ArchimedeanLeafBounds.Cuts
+open Formalism.DivisionValues (vw)
+open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTheory.RowTest
+open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
+open GlobalTheory.NormSum (Pair Tup)
+open Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.BotSmallDict GlobalTheory.NormExact
+open scoped Pointwise
+
+noncomputable section
+
+namespace GlobalTheory.StdPairPlaces
+
+theorem coprime_of_splitK {φ : Formalism.HC.Frame} {H : Formalism.HC.HostRaw φ} {p : ℕ} (hp : p.Prime)
+    (h : primeClass H p = PrimeClass.splitK) : Nat.Coprime p (H.QS * H.q * H.d) := by
+  have hn : ¬ p ∣ H.condN := not_dvd_of_splitK hp h
+  exact (Nat.Prime.coprime_iff_not_dvd hp).2 hn
+
+theorem natCast_two_q_d_notMem : ∀ {D : D7} (large₂ : SizeData₂ D), GlobalTheory.SqTop.Rec large₂ → ∀ {T : Type} {L : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} (G : GridData L sc) {μ₀ : T},
+    L.Is μ₀ → ∀ (t : T), ∀ w ∈ locPl G t, ((D.host.QS * D.host.q * D.host.d : ℕ) : 𝓞 D.host.E) ∉ w.asIdeal := by
+  intro D large₂ hR T L sc G μ₀ hL t w hw
+  obtain ⟨⟨Pm, -, -⟩, -⟩ := hR.size
+  have hsp : ∀ p : ℕ, p.Prime → p ∈ D.host.levelPrimes → Nat.Coprime p (D.host.QS * D.host.q * D.host.d) := fun p hp h =>
+    coprime_of_splitK hp (Pm.level_split p h)
+  have hdvd : D.host.QS * D.host.q * D.host.d ∣ LevelStarExponents.condE D := dvd_rfl
+  rcases GlobalTheory.FunObj.Good.locPl_cases hw with ⟨a, -⟩ | ⟨-, -, b⟩
+  · rcases G.pl.mem_S0_of_sum_eq.1 a with a | a
+    · refine GlobalTheory.HalfCompare.not_mem_of_coprime w (b := q0 D) ?_ ((GlobalTheory.FunObj.Good.natCast_mem_under w _).1 (a ▸ G.pl.basePlace_over_qZero))
+      exact (GlobalTheory.FunObj.StdDatum.HalfDiff.coprime_of_mod (leastSplitAuxiliaryPrimeThetaChain_spec D).2.1 (hdvd.mul_left _)).symm
+    · simp only [S1_mem_OmF, GlobalTheory.FunObj.Good.natCast_mem_under] at a
+      rcases a with a | a | a | a
+      · exact GlobalTheory.HalfCompare.not_mem_of_coprime w
+          (GlobalTheory.FunObj.StdDatum.HalfDiff.coprime_of_mod (D.ntypes.g_cond 0) dvd_rfl).symm a
+      · exact GlobalTheory.HalfCompare.not_mem_of_coprime w
+          (GlobalTheory.FunObj.StdDatum.HalfDiff.coprime_of_mod (D.ntypes.g_cond 1) dvd_rfl).symm a
+      · exact GlobalTheory.HalfCompare.not_mem_of_coprime w (hsp _ D.host.pde_prime D.host.pde_level.1).symm a
+      · exact GlobalTheory.HalfCompare.not_mem_of_coprime w (hsp _ D.host.pde'_prime D.host.pde_level.2).symm a
+  · exact fun h => (hL.Q_off t w b).1 (GlobalTheory.HalfCompare.mem_of_dvd h ⟨D.sp.T, by ring⟩)
+
+end GlobalTheory.StdPairPlaces
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Theta IsDedekindDomain NumberField Finset MeasureTheory
+open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 Formalism.L2.Indef.Tree.ArchimedeanLeafBounds.Cuts
+open Formalism.DivisionValues (vw)
+open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTheory.RowTest
+open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
+open GlobalTheory.NormSum (Pair Tup)
+open Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.BotSmallDict GlobalTheory.NormExact
+open scoped Pointwise
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gridLocalTensorPlaces_coprime_two_q_d : ∀ {D : D7} (large₂ : SizeData₂ D), GlobalTheory.SqTop.Rec large₂ → ∀ {T : Type} {L : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} (G : GridData L sc) {μ₀ : T},
+    L.Is μ₀ → ∀ (t : T), ∀ w ∈ locPl G t, ((D.host.QS * D.host.q * D.host.d : ℕ) : 𝓞 D.host.E) ∉ w.asIdeal := by
+  atlas_forward_decl GlobalTheory.StdPairPlaces.natCast_two_q_d_notMem
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Theta IsDedekindDomain NumberField Finset MeasureTheory
+open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 Formalism.L2.Indef.Tree.ArchimedeanLeafBounds.Cuts
+open Formalism.DivisionValues (vw)
+open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTheory.RowTest
+open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
+open GlobalTheory.NormSum (Pair Tup)
+open Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.BotSmallDict GlobalTheory.NormExact
+open scoped Pointwise
+
+namespace GlobalTheory.BotSmallDict
+
+set_option synthInstance.maxHeartbeats 400000
+
+set_option maxHeartbeats 1000000 in
+
+theorem cosetFn_isSBHalf : ∀ {D : D7} (S T : HSp D) (LS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E))
+    (LT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)),
+    Submodule.IsLattice D.host.E LS → Submodule.IsLattice D.host.E LT → ∀ (a : Formalism.L2.Theta.AE D), infPart D a = 0 →
+    ∀ (I : Ideal (𝓞 D.host.E)), I ≠ ⊥ → ∀ x : WO S T, IsHalf a x →
+      IsSBHalf a (latO S T LS LT fun _ => True) (cosetFn a I x) := by
+  intro D S T LS LT hS hT a hinf I hI x _
+  obtain ⟨k₁, hk₁, h₁⟩ := GlobalTheory.PlaceVec.exists_nsmul_latO_int (S := S) (T := T) hS.fg hT.fg
+  obtain ⟨k₄, hk₄, h₄⟩ := GlobalTheory.PlaceVec.exists_nsmul_int_mem_latO hS hT (S := S) (T := T)
+  obtain ⟨d, hd, hx⟩ := GlobalTheory.PlaceVec.exists_common_nsmul (Formalism.L2.Herm.intAf D.host.F D.host.E).toAddSubgroup
+    (fun p : Fin T.rank × Fin S.rank => toEAf D (x p.1 p.2)) fun p => GlobalTheory.PlaceVec.exists_nsmul_mem_int _
+  obtain ⟨n₀, hn₀, hnI⟩ : ∃ n₀ : ℕ, 0 < n₀ ∧ ((n₀ : ℕ) : 𝓞 D.host.E) ∈ I :=
+    ⟨_, Nat.pos_of_ne_zero fun h => hI (Ideal.absNorm_eq_zero_iff.1 h), Ideal.absNorm_mem I⟩
+  have hsupp : ∀ t, cosetFn a I x t ≠ 0 →
+      IsHalf a t ∧ ∀ i j, GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.InId I (toEAf D (t i j - x i j)) := fun t ht => by
+    unfold cosetFn at ht
+    by_contra h
+    exact ht (if_neg h)
+  refine ⟨fun t ht => (hsupp t ht).1, n₀ * k₁ * (k₄ * d), by positivity, fun u hu hh t => ?_, fun t ht => ?_⟩
+  ·
+    have hw : ∀ i j, ((k₄ * d) • (k₁ • u.map (toEAf D))) i j ∈ Formalism.L2.Herm.intAf D.host.F D.host.E :=
+      fun i j => nsmul_mem (h₁ u hu i j) _
+    have hsh : ∀ i j, toEAf D ((t + (n₀ * k₁ * (k₄ * d)) • u : WO S T) i j - x i j) =
+        toEAf D (t i j - x i j) + (n₀ : EAf D) * ((k₄ * d) • (k₁ • u.map (toEAf D))) i j := fun i j => by
+      rw [Matrix.add_apply, Matrix.smul_apply, Matrix.smul_apply, Matrix.smul_apply, Matrix.map_apply, RingHom.map_sub,
+        RingHom.map_sub, RingHom.map_add, map_nsmul, nsmul_eq_mul, nsmul_eq_mul, nsmul_eq_mul]
+      push_cast
+      ring
+    have hH : IsHalf a (t + (n₀ * k₁ * (k₄ * d)) • u) ↔ IsHalf a t := by
+      rw [GlobalTheory.PlaceModel.isHalf_iff S T, GlobalTheory.PlaceModel.isHalf_iff S T]
+      exact AddSubgroup.add_mem_cancel_right _ (nsmul_mem ((GlobalTheory.PlaceModel.isHalf_iff S T).1 hh) _)
+    have hC : (∀ i j, GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.InId I (toEAf D ((t + (n₀ * k₁ * (k₄ * d)) • u : WO S T) i j - x i j))) ↔
+        ∀ i j, GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.InId I (toEAf D (t i j - x i j)) :=
+      ⟨fun H i j => StandardFirstTheta.GlobalTheory.CompanionTheory.StdFstTheta.inId_shift hnI (neg_mem (hw i j))
+          (by rw [hsh, mul_neg, add_neg_cancel_right]) (H i j),
+        fun H i j => StandardFirstTheta.GlobalTheory.CompanionTheory.StdFstTheta.inId_shift hnI (hw i j) (hsh i j) (H i j)⟩
+    unfold cosetFn
+    by_cases hc : IsHalf a t ∧ ∀ i j, GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.InId I (toEAf D (t i j - x i j))
+    · rw [if_pos hc, if_pos ⟨hH.2 hc.1, hC.2 hc.2⟩]
+    · rw [if_neg hc, if_neg fun h' => hc ⟨hH.1 h'.1, hC.1 h'.2⟩]
+  ·
+    obtain ⟨hth, htc⟩ := hsupp t ht
+    have hint : IsIntM ((d • t).map (toEAf D)) := fun i j => by
+      have e : ((d • t).map (toEAf D)) i j = d • toEAf D (t i j - x i j) + d • toEAf D (x i j) := by
+        rw [GlobalTheory.PlaceVec.map_toEAf_nsmul, Matrix.smul_apply, Matrix.map_apply, ← smul_add, RingHom.map_sub, sub_add_cancel]
+      rw [e]
+      exact add_mem (nsmul_mem (htc i j).1 d) (show d • toEAf D (x i j) ∈ Formalism.L2.Herm.intAf D.host.F D.host.E from hx (i, j))
+    have hinf' : (d • t).map (infPart D) = 0 :=
+      GlobalTheory.PlaceVec.half_infPart hinf (nsmul_mem ((GlobalTheory.PlaceModel.isHalf_iff S T).1 hth) d)
+    have h := nsmul_mem (h₄ (d • t) hinf' hint) (n₀ * k₁)
+    rw [smul_smul, smul_smul] at h
+    rwa [← mul_assoc (n₀ * k₁)]
+
+end GlobalTheory.BotSmallDict
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Theta IsDedekindDomain NumberField Finset MeasureTheory
+open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 Formalism.L2.Indef.Tree.ArchimedeanLeafBounds.Cuts
+open Formalism.DivisionValues (vw)
+open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTheory.RowTest
+open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
+open GlobalTheory.NormSum (Pair Tup)
+open Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.BotSmallDict GlobalTheory.NormExact
+open scoped Pointwise
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.halfCosetIndicatorModIdeal_isSchwartzBruhatHalf : ∀ {D : D7} (S T : HSp D) (LS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (LT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)),
+    Submodule.IsLattice D.host.E LS → Submodule.IsLattice D.host.E LT → ∀ (a : Formalism.L2.Theta.AE D), infPart D a = 0 →
+    ∀ (I : Ideal (𝓞 D.host.E)), I ≠ ⊥ → ∀ x : WO S T, IsHalf a x → IsSBHalf a (latO S T LS LT fun _ => True) (cosetFn a I x) := by
+  atlas_forward_decl GlobalTheory.BotSmallDict.cosetFn_isSBHalf
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Theta IsDedekindDomain NumberField Finset MeasureTheory
+open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 Formalism.L2.Indef.Tree.ArchimedeanLeafBounds.Cuts
+open Formalism.DivisionValues (vw)
+open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTheory.RowTest
+open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
+open GlobalTheory.NormSum (Pair Tup)
+open Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.BotSmallDict GlobalTheory.NormExact
+open scoped Pointwise
+
+noncomputable section
+
+namespace GlobalTheory.BotSmallTransl
+
+open GlobalTheory.PlaceModel GlobalTheory.LocReduction Formalism.IndefR.Fin.LevelGroupLemmas.Lat
+open scoped TensorProduct
+
+variable {D : D7}
+
+theorem mul_finOne {z : Formalism.L2.Theta.AE D} (hz : infPart D z = 0) :
+    z * (pairA D.host.F 0 1 ⊗ₜ[D.host.F] (1 : D.host.E)) = z := by
+  have h : finPart D (pairA D.host.F 0 1 ⊗ₜ[D.host.F] (1 : D.host.E)) = 1 := rfl
+  conv_lhs => rw [eq_lift_of_infPart z hz]
+  rw [lift_mul, h, mul_one, ← eq_lift_of_infPart z hz]
+
+theorem one_mem_AA (h : D.host.ccK = ⊤) : (1 : D.host.E) ∈ D.host.AA := by
+  have h1 : (1 : D.host.E) ∈ D.host.AA0 := by
+    refine FractionalIdeal.one_mem_inv_coe_ideal fun h => ?_
+    have h2 := D.host.𝔟_spec.2
+    rw [h, Ideal.smul_bot, sup_bot_eq] at h2
+    exact bot_ne_top h2
+  rwa [Host.AA, Host.ccE, h, Ideal.map_top, FractionalIdeal.coeIdeal_top, one_mul]
+
+theorem single_mem {n : ℕ} {L : Submodule (𝓞 D.host.E) (Fin n → D.host.E)} (h : IsStdLat L) (j : Fin n) :
+    (Pi.single j 1 : Fin n → D.host.E) ∈ L :=
+  (h _).2 fun i => by
+    by_cases hi : i = j
+    · exact ⟨1, by rw [hi, Pi.single_eq_same]; rfl⟩
+    · exact ⟨0, by rw [Pi.single_eq_of_ne hi]; rfl⟩
+
+variable {S T : HSp D} {LS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)}
+  {LT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)}
+
+theorem mem_latO_of_int (hc : D.host.ccK = ⊤) (hG : S.gram = 1) (hS : IsStdLat LS) (hT : IsStdLat LT) {t : WO S T}
+    (h0 : ∀ i j, infPart D (t i j) = 0) (h1 : ∀ i j, finPart D (t i j) ∈ intAE D) :
+    t ∈ latO S T LS LT fun _ => True := by
+  have e : t = ∑ i, ∑ j, t i j • genL S T 1 1 (Pi.single j 1) (Pi.single i 1) := by
+    ext k l
+    simp only [Matrix.sum_apply, Matrix.smul_apply, smul_eq_mul, genL, Matrix.of_apply, hG]
+    rw [Finset.sum_eq_single k, Finset.sum_eq_single l]
+    · have : (1 : D.host.E) * (Pi.single k 1 : Fin T.rank → D.host.E) k *
+          ∑ m, star ((Pi.single l 1 : Fin S.rank → D.host.E) m) * (1 : Matrix (Fin S.rank) (Fin S.rank) D.host.E) m l = 1 := by
+        simp [Matrix.one_apply]
+      rw [this, mul_finOne (h0 k l)]
+    · intro j _ hj
+      have : (1 : D.host.E) * (Pi.single k 1 : Fin T.rank → D.host.E) k *
+          ∑ m, star ((Pi.single j 1 : Fin S.rank → D.host.E) m) * (1 : Matrix (Fin S.rank) (Fin S.rank) D.host.E) m l = 0 := by
+        simp [Matrix.one_apply, Pi.single_eq_of_ne hj.symm]
+      rw [this, TensorProduct.tmul_zero, mul_zero]
+    · exact fun h => (h (Finset.mem_univ _)).elim
+    · intro i _ hi
+      refine Finset.sum_eq_zero fun j _ => ?_
+      rw [Pi.single_eq_of_ne hi.symm, mul_zero, zero_mul, TensorProduct.tmul_zero, mul_zero]
+    · exact fun h => (h (Finset.mem_univ _)).elim
+  rw [e]
+  refine AddSubgroup.sum_mem _ fun i _ => AddSubgroup.sum_mem _ fun j _ => smul_mem_latAll (h1 i j) ?_
+  exact genL_mem (fun v => by rw [map_one]; exact one_mem _) (one_mem_AA hc) (single_mem hS j) (single_mem hT i)
+
+variable {ψ : AddChar (AF D.host.F) ℂ}
+
+theorem heis_off (hψ : IsStdChar D ψ (-1)) (hS : IsSelfDualC S LS) (hT : IsSelfDualC T LT) {e : Formalism.L2.Theta.AE D}
+    {P : Finset (Formalism.L2.DIV.Pl D.host.E)} (he : IsIdemSum e P) {vac : WO S T → ℂ} (hv : IsThetaFunO ψ S T vac)
+    {Tm : (WO S T → ℂ) →ₗ[ℂ] (WO S T → ℂ)}
+    (hTm : IsPlaceModel ψ (symplO S T) (heisO ψ S T) (cA D e) (latO S T LS LT fun _ => True) 1 vac Tm)
+    (hfix : ∀ u ∈ latO S T LS LT fun _ => True, (IsHalf e u ∨ IsHalf (cA D e) u) → heisO ψ S T u vac = vac)
+    {u : WO S T} (h1 : ∀ x, IsHalf (cA D e) x → symplO S T u x = 0)
+    (h2 : ∀ x, IsHalf (cA D (cA D e)) x → symplO S T u x = 0) {c : ℂ} (hc : c ≠ 0) (hu : heisO ψ S T u vac = c • vac)
+    {Φ : WO S T → ℂ} (hΦ : IsSBHalf (cA D e) (latO S T LS LT fun _ => True) Φ) :
+    heisO ψ S T u (Tm Φ) = c • Tm Φ := by
+  obtain ⟨T0, -, huniq, -⟩ := Formalism.IndefR.Fin.placeModelAtF D ψ hψ S T LS LT hS hT P e he vac hv hfix (cA D e) (Or.inr rfl)
+  have ap : ∀ Φ, (c⁻¹ • (heisL S T ψ u ∘ₗ Tm)) Φ = c⁻¹ • heisO ψ S T u (Tm Φ) := fun _ => rfl
+  have hT' : IsPlaceModel ψ (symplO S T) (heisO ψ S T) (cA D e) (latO S T LS LT fun _ => True) 1 vac
+      (c⁻¹ • (heisL S T ψ u ∘ₗ Tm)) := by
+    refine ⟨fun Φ hΦ x hx => ?_, fun Φ hΦ x hx => ?_, ?_⟩
+    · rw [ap, ap, hTm.trans Φ hΦ x hx, heis_comm, h1 x hx, AddChar.map_zero_eq_one, one_smul, heis_smul]
+    · rw [ap, ap, hTm.modul Φ hΦ x hx, heis_comm, h2 x hx, AddChar.map_zero_eq_one, one_smul, heis_smul]
+    · rw [ap, hTm.vac, hu, smul_smul, inv_mul_cancel₀ hc, one_smul]
+  have h := (huniq _ hT' Φ hΦ).trans (huniq _ hTm Φ hΦ).symm
+  rw [ap] at h
+  rw [← h, smul_smul, mul_inv_cancel₀ hc, one_smul, h]
+
+set_option maxHeartbeats 1600000 in
+
+theorem heis_model (hψ : IsStdChar D ψ (-1)) (hS : IsSelfDualC S LS) (hT : IsSelfDualC T LT) {e : Formalism.L2.Theta.AE D}
+    {P : Finset (Formalism.L2.DIV.Pl D.host.E)} (he : IsIdemSum e P) {vac : WO S T → ℂ} (hv : IsThetaFunO ψ S T vac)
+    {Tm : (WO S T → ℂ) →ₗ[ℂ] (WO S T → ℂ)}
+    (hTm : IsPlaceModel ψ (symplO S T) (heisO ψ S T) (cA D e) (latO S T LS LT fun _ => True) 1 vac Tm)
+    {w : WO S T} (hw : w ∈ latO S T LS LT fun _ => True) {c : ℂ} (hc : c ≠ 0) (hu : heisO ψ S T w vac = c • vac)
+    {Φ : WO S T → ℂ} (hΦ : IsSBHalf (cA D e) (latO S T LS LT fun _ => True) Φ)
+    (hsupp : ∀ t, Φ t ≠ 0 → t ∈ latO S T LS LT fun _ => True) :
+    heisO ψ S T w (Tm Φ) = c • Tm fun t => Φ (t + cA D e • w) := by
+  have hee := GlobalTheory.PlaceVec.idemSum_mul_self he
+  have hcc : cA D e * cA D e = cA D e := by rw [← RingHom.map_mul, hee]
+  have hec := he.2
+  have hinf := GlobalTheory.PlaceVec.infPart_cA (GlobalTheory.PlaceVec.idemSum_infPart he)
+  have hLL := (lattice_facts (S := S) (T := T) hψ hS hT hcc hinf).1
+  have hb : cA D (cA D e) = e := GlobalTheory.DualPairCheck.cA_cA e
+  have hfix : ∀ u ∈ latO S T LS LT fun _ => True, (IsHalf e u ∨ IsHalf (cA D e) u) → heisO ψ S T u vac = vac :=
+    fun u hu h => h.elim (fun h => fix_conj hLL hTm hu (by rwa [hb])) fun h => fix_half hTm hu h
+  have hA : IsHalf (cA D e) (cA D e • w) := isHalf_smul.2 (by rw [smul_smul, hcc])
+  have hB : IsHalf e (e • w) := isHalf_smul.2 (by rw [smul_smul, hee])
+  have hAL := GlobalTheory.PlaceModelSum.idem_smul_latO hcc hw
+  have hBL := GlobalTheory.PlaceModelSum.idem_smul_latO hee hw
+  have k : cA D (1 - cA D e - e) = 1 - e - cA D e := by rw [RingHom.map_sub, RingHom.map_sub, RingHom.map_one, hb]
+  have h1 : ∀ x : WO S T, IsHalf (cA D e) x → symplO S T ((1 - cA D e - e) • w) x = 0 := fun x hx => by
+    have : (1 - e - cA D e) * cA D e = 0 := by linear_combination -hec - hcc
+    rw [← isHalf_smul.1 hx, symplO_smul, k, smul_smul, this, zero_smul, symplO_zero_right]
+  have h2 : ∀ x : WO S T, IsHalf e x → symplO S T ((1 - cA D e - e) • w) x = 0 := fun x hx => by
+    have : (1 - e - cA D e) * e = 0 := by linear_combination -hec - hee
+    rw [← isHalf_smul.1 hx, symplO_smul, k, smul_smul, this, zero_smul, symplO_zero_right]
+  have hp : ψ (symplOH S T (cA D e • w) (e • w)) ≠ 0 := (AddChar.val_isUnit ψ _).ne_zero
+  have dec : ∀ f, ψ (symplOH S T (cA D e • w) (e • w)) • heisO ψ S T w f =
+      heisO ψ S T ((1 - cA D e - e) • w) (heisO ψ S T (cA D e • w) (heisO ψ S T (e • w) f)) := fun f => by
+    have e1 : w = (1 - cA D e - e) • w + (cA D e • w + e • w) := by
+      rw [← add_smul, ← add_smul, sub_sub, sub_add_cancel, one_smul]
+    have e2 : heisO ψ S T (cA D e • w) (heisO ψ S T (e • w) f) =
+        ψ (symplOH S T (cA D e • w) (e • w)) • heisO ψ S T (cA D e • w + e • w) f := heisL_heisL S T ψ _ _ f
+    rw [e2, heis_smul, ← heis_add (by rw [symplO_add_right, h1 _ hA, h2 _ hB, add_zero]), ← e1]
+  have hvu := dec vac
+  rw [hfix _ hBL (Or.inl hB), hfix _ hAL (Or.inr hA), hu, smul_smul] at hvu
+  have hoff := heis_off hψ hS hT he hv hTm hfix h1 (by rwa [hb]) (mul_ne_zero hp hc) hvu.symm hΦ
+  have hm : heisO ψ S T (e • w) (Tm Φ) = Tm Φ := by
+    rw [← hTm.modul Φ hΦ _ (by rwa [hb])]
+    congr 1
+    funext t
+    by_cases ht : Φ t = 0
+    · rw [ht, mul_zero]
+    · rw [hLL t (hsupp t ht) (hΦ.1 t ht) _ hBL (by rwa [hb]), one_mul]
+  have hF := dec (Tm Φ)
+  rw [hm, heis_comm, h1 _ hA, AddChar.map_zero_eq_one, one_smul, hoff, heis_smul, ← hTm.trans Φ hΦ _ hA, mul_smul] at hF
+  exact smul_right_injective _ hp hF
+
+set_option maxHeartbeats 1600000 in
+
+theorem reads_transl : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) {a d : ℕ} (hS : S.rank = a) (hT : T.rank = d) (δ : ℂ),
+    D.host.ccK = ⊤ → Setup ψ θ S T ⊤ δ 1 →
+    ∀ (LS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (LT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)),
+    IsStdLat LS → IsStdLat LT → IsSelfDualC S LS → IsSelfDualC T LT →
+    ∀ (e : Formalism.L2.Theta.AE D) (P : Finset (Formalism.L2.DIV.Pl D.host.E)) (c : Formalism.L2.DIV.Pl D.host.E → ℕ), GoodIdem e P →
+    IsSBHalf (cA D e) (latO S T LS LT fun _ => True) (cosetFn (cA D e) (D.host.conj • modul P c) (0 : WO S T)) →
+    ∀ (κ : ℂ) (e0 : VC D a d → ℂ) (vac : WO S T → ℂ), e0 ∈ Th D (tor0 D ⊤ δ) (stdL D a) (stdL D d) →
+    Reads ψ θ hS hT ⊤ δ 1 (κ • e0) vac → IsLatVac (heisO ψ S T) (latO S T LS LT fun _ => True) vac →
+    ∀ Tm : (WO S T → ℂ) →ₗ[ℂ] (WO S T → ℂ),
+    IsPlaceModel ψ (symplO S T) (heisO ψ S T) (cA D e) (latO S T LS LT fun _ => True) 1 vac Tm →
+    ∀ (G : VC D a d → ℂ) (o : ℕ), Reads ψ θ hS hT ⊤ δ 1 G (Tm (cosetFn (cA D e) (D.host.conj • modul P c) 0)) →
+    ∃ ζ : ℂ, IsRootOne ζ ∧ Reads ψ θ hS hT ⊤ δ 1 (ζ • Wd D (tor0 D ⊤ δ) (pt D (tor0 D ⊤ δ) δ (unitBlock D o a d)) G)
+      (Tm (cosetFn (cA D e) (D.host.conj • modul P c) (unitPt S T (cA D e) o))) := by
+  intro D ψ θ S T a d hS hT δ hcc hset LS LT hLS hLT hSd hTd e P c hge hSB κ e0 vac he0 hrd _ Tm hTm G o hG
+  have hinf := GlobalTheory.PlaceVec.infPart_cA (GlobalTheory.PlaceVec.idemSum_infPart hge.1)
+  set x := pt D (tor0 D ⊤ δ) δ (unitBlock D o a d) with hx
+  have hph : wdPh D (tor0 D ⊤ δ) x ≠ 0 := Complex.exp_ne_zero _
+  have hW : ∀ F, Wd D (tor0 D ⊤ δ) x F = wdPh D (tor0 D ⊤ δ) x • U D (tor0 D ⊤ δ) x F := fun _ => rfl
+  have hfix : Wd D (tor0 D ⊤ δ) x e0 = e0 :=
+    GlobalTheory.NormSum.VacMove.wd_fix (GlobalTheory.InducedType.induced_type D).1 hset.crv
+      (GlobalTheory.NormSum.VacMove.klat _ (GlobalTheory.NormSum.VacMove.moves_one D _) (GlobalTheory.NormSum.VacMove.moves_one D _)) he0
+      (pt_unitBlock_mem δ o a d)
+  have hU : U D (tor0 D ⊤ δ) x (κ • e0) = (wdPh D (tor0 D ⊤ δ) x)⁻¹ • κ • e0 := by
+    have e1 : U D (tor0 D ⊤ δ) x (κ • e0) = κ • U D (tor0 D ⊤ δ) x e0 := by
+      funext z
+      simp only [U, Pi.smul_apply, smul_eq_mul, mul_assoc]
+    rw [e1, smul_comm]
+    conv_rhs => rw [← hfix, hW, smul_smul _ (wdPh D _ x), inv_mul_cancel₀ hph, one_smul]
+  have hvac : heisO ψ S T (finPt hS hT 1 (unitBlock D o a d)) vac = (wdPh D (tor0 D ⊤ δ) x)⁻¹ • vac := by
+    have h := heisO_finPt_reads ψ θ S T hS hT ⊤ δ 1 hset _ _ hrd (unitBlock D o a d)
+    rw [← hx, hU] at h
+    exact h.unique (hrd.smul _)
+  have hent : ∀ i j, finPt hS hT 1 (unitBlock D o a d) i j =
+      if i.1 = o + j.1 then -(pairA D.host.F 0 1 ⊗ₜ[D.host.F] (1 : D.host.E)) else 0 := fun i j => by
+    show pairA D.host.F 0 1 ⊗ₜ[D.host.F] (-((1 : D.host.E)⁻¹ * if i.1 = o + j.1 then 1 else 0)) = _
+    split_ifs
+    · rw [inv_one, mul_one, TensorProduct.tmul_neg]
+    · rw [mul_zero, neg_zero, TensorProduct.tmul_zero]
+  have hw : finPt hS hT 1 (unitBlock D o a d) ∈ latO S T LS LT fun _ => True := by
+    refine mem_latO_of_int hcc hset.gS hLS hLT (fun i j => congrFun (congrFun (GlobalTheory.VacUnique.finRat_inf S T _) i) j)
+      fun i j => ?_
+    rw [hent]
+    split_ifs
+    · have h : finPart D (pairA D.host.F 0 1 ⊗ₜ[D.host.F] (1 : D.host.E)) = 1 := rfl
+      rw [RingHom.map_neg, h]
+      exact neg_mem (GlobalTheory.AdIdem.idempotent_mem_intAE D _ (mul_one _))
+    · rw [RingHom.map_zero]
+      exact zero_mem _
+  have hsupp : ∀ t : WO S T, cosetFn (cA D e) (D.host.conj • modul P c) 0 t ≠ 0 → t ∈ latO S T LS LT fun _ => True := by
+    intro t ht
+    have h : IsHalf (cA D e) t ∧ ∀ i j, GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.InId (D.host.conj • modul P c) (toEAf D (t i j - (0 : WO S T) i j)) := by
+      by_contra h
+      exact ht (if_neg h)
+    refine mem_latO_of_int hcc hset.gS hLS hLT (fun i j => ?_) fun i j => GlobalTheory.PlaceVec.finPart_mem_intAE ?_
+    · rw [← h.1 i j, RingHom.map_mul, hinf, zero_mul]
+    · obtain ⟨h1, -⟩ := h.2 i j
+      rwa [Matrix.zero_apply, sub_zero] at h1
+  have hmod := heis_model hset.std hSd hTd hge.1 hrd.1 hTm hw (inv_ne_zero hph) hvac hSB hsupp
+  have hcc' : cA D e * cA D e = cA D e := by rw [← RingHom.map_mul, GlobalTheory.PlaceVec.idemSum_mul_self hge.1]
+  have hA : ∀ i j, (cA D e • finPt hS hT 1 (unitBlock D o a d)) i j = -unitPt S T (cA D e) o i j := fun i j => by
+    rw [Matrix.smul_apply, smul_eq_mul, hent, unitPt]
+    split_ifs
+    · rw [mul_neg, mul_finOne hinf]
+    · rw [mul_zero, neg_zero]
+  have hΦ : (fun t => cosetFn (cA D e) (D.host.conj • modul P c) (0 : WO S T) (t + cA D e • finPt hS hT 1 (unitBlock D o a d))) =
+      cosetFn (cA D e) (D.host.conj • modul P c) (unitPt S T (cA D e) o) := by
+    funext t
+    refine if_congr (and_congr ?_ (forall_congr' fun i => forall_congr' fun j => ?_)) rfl rfl
+    · rw [isHalf_smul, isHalf_smul, smul_add, smul_smul, hcc', add_left_inj]
+    · rw [Matrix.add_apply, hA, Matrix.zero_apply, sub_zero, ← sub_eq_add_neg]
+  have h := (heisO_finPt_reads ψ θ S T hS hT ⊤ δ 1 hset _ _ hG (unitBlock D o a d)).smul (wdPh D (tor0 D ⊤ δ) x)
+  rw [hmod, hΦ, smul_smul, mul_inv_cancel₀ hph, one_smul] at h
+  exact ⟨1, IsRootOne.one, by rw [one_smul]; exact h⟩
+
+end GlobalTheory.BotSmallTransl
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Theta IsDedekindDomain NumberField Finset MeasureTheory
+open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 Formalism.L2.Indef.Tree.ArchimedeanLeafBounds.Cuts
+open Formalism.DivisionValues (vw)
+open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTheory.RowTest
+open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
+open GlobalTheory.NormSum (Pair Tup)
+open Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.BotSmallDict GlobalTheory.NormExact
+open scoped Pointwise
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.conjIdealIndicator_unitBlockTranslate_reads_weilOperator : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) {a d : ℕ} (hS : S.rank = a) (hT : T.rank = d) (δ : ℂ),
+    D.host.ccK = ⊤ → Setup ψ θ S T ⊤ δ 1 →
+    ∀ (LS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (LT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)),
+    IsStdLat LS → IsStdLat LT → IsSelfDualC S LS → IsSelfDualC T LT →
+    ∀ (e : Formalism.L2.Theta.AE D) (P : Finset (Formalism.L2.DIV.Pl D.host.E)) (c : Formalism.L2.DIV.Pl D.host.E → ℕ), GoodIdem e P →
+    IsSBHalf (cA D e) (latO S T LS LT fun _ => True) (cosetFn (cA D e) (D.host.conj • modul P c) (0 : WO S T)) →
+    ∀ (κ : ℂ) (e0 : VC D a d → ℂ) (vac : WO S T → ℂ), e0 ∈ Th D (tor0 D ⊤ δ) (stdL D a) (stdL D d) →
+    Reads ψ θ hS hT ⊤ δ 1 (κ • e0) vac → IsLatVac (heisO ψ S T) (latO S T LS LT fun _ => True) vac →
+    ∀ Tm : (WO S T → ℂ) →ₗ[ℂ] (WO S T → ℂ),
+    IsPlaceModel ψ (symplO S T) (heisO ψ S T) (cA D e) (latO S T LS LT fun _ => True) 1 vac Tm →
+    ∀ (G : VC D a d → ℂ) (o : ℕ), Reads ψ θ hS hT ⊤ δ 1 G (Tm (cosetFn (cA D e) (D.host.conj • modul P c) 0)) →
+    ∃ ζ : ℂ, IsRootOne ζ ∧ Reads ψ θ hS hT ⊤ δ 1 (ζ • Wd D (tor0 D ⊤ δ) (pt D (tor0 D ⊤ δ) δ (unitBlock D o a d)) G)
+      (Tm (cosetFn (cA D e) (D.host.conj • modul P c) (unitPt S T (cA D e) o))) := by
+  atlas_forward_decl GlobalTheory.BotSmallTransl.reads_transl
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Theta IsDedekindDomain NumberField Finset MeasureTheory
+open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 Formalism.L2.Indef.Tree.ArchimedeanLeafBounds.Cuts
+open Formalism.DivisionValues (vw)
+open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTheory.RowTest
+open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
+open GlobalTheory.NormSum (Pair Tup)
+open Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.BotSmallDict GlobalTheory.NormExact
+open scoped Pointwise
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitBlockCoset_iff_maximalLevel_congruent_conjIdeal : ∀ {D : D7} (S T : HSp D), S.gram = 1 →
+    ∀ (e : Formalism.L2.Theta.AE D) (P : Finset (Formalism.L2.DIV.Pl D.host.E)) (c : Formalism.L2.DIV.Pl D.host.E → ℕ), IsIdemSum e P →
+    ∀ o : ℕ, o + S.rank = T.rank → ∀ k ∈ GlobalTheory.NormSum.intG D S.rank, ∀ k' ∈ GlobalTheory.NormSum.intG D S.rank, ∀ g g' : Formalism.L2.Theta.GA D S,
+    GlobalTheory.BotFormula.IsFinPt S g k → GlobalTheory.BotFormula.IsFinPt S g' k' → ∀ y : WO S T,
+    cosetFn (cA D e) (D.host.conj • modul P c) (unitPt S T (cA D e) o) (actO S T g⁻¹ 1 y) ≠ 0 →
+    (cosetFn (cA D e) (D.host.conj • modul P c) (unitPt S T (cA D e) o) (actO S T g'⁻¹ 1 y) ≠ 0 ↔
+      CongOne D (D.host.conj • modul P c) (k'⁻¹ * k)) := by
+  first | exact @GlobalTheory.BotSmallDict.CosetCong.coset_iff_congOne | exact GlobalTheory.BotSmallDict.CosetCong.coset_iff_congOne | (intros; apply GlobalTheory.BotSmallDict.CosetCong.coset_iff_congOne <;> assumption)
+end
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Theta IsDedekindDomain NumberField Finset MeasureTheory
 open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 Formalism.L2.Indef.Tree.ArchimedeanLeafBounds.Cuts
 open Formalism.DivisionValues (vw)
@@ -427,4 +1263,5 @@ theorem kernel_eq_term : GlobalTheory.FunPr.Hypotheses₂ → GlobalTheory.Indef
 
 end GlobalTheory.BotSmallDict
 
+end
 end

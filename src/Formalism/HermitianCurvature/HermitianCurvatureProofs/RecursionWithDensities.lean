@@ -244,23 +244,7 @@ lemma blk_psd (D : TA.Data E) (Sg : ℕ → ℕ → Finset E) (hNZ : NZSg Sg) (h
   simp only [Finset.sum_image hinj] at h
   simpa [TA.ext] using h
 
-theorem domMinOfTextA : TC.DomMinOfTextA := by
-  intro E _ _ D Sg Th hNZ hT i s hs hsi hi
-  obtain ⟨_, h2, h3, h4⟩ := hT i s hs hsi hi
-  refine ⟨fun t ht => h3 t (hNZ i s t ht), fun t _ t' _ hl h hh h' hh' => ?_,
-    fun R _ hR => h4 R hR⟩
-  have := h2 t' (t - t') hl h hh h' hh'
-  simpa using this
 
-theorem afterOfOldA : TC.AfterOfOldA := by
-  intro E _ _ D hA
-  have hT : ∀ Sg : ℕ → ℕ → Finset E, NZSg Sg → TC.DomTextA D Sg D.Th := by
-    intro Sg hNZ i s hs hsi hi
-    obtain ⟨h1, h2, h3, h4⟩ := hA i s hs hsi hi
-    have hP : ∀ h ∈ PT Sg (i - s), IsPt (i - s) h := isPt_of_mem_pt Sg hNZ (i - s)
-    exact ⟨fun t => h1 t _ hP, fun t l hl h _ h' _ => by rw [h2 t l hl],
-      fun t ht => h3 t _ ht hP, fun R hR => h4 R _ hR hP⟩
-  exact ⟨hT, fun Sg hNZ => ⟨D.Th, domMinOfTextA E D Sg D.Th hNZ (hT Sg hNZ)⟩⟩
 
 theorem majorantPSDA : TC.MajorantPSDA := by
   intro E _ _ D Sg Th hNZ hK hD i s hs hsi hi t ht
@@ -471,18 +455,7 @@ theorem reductionAfterOfSteps : ReductionAfterOfSteps := by
       _ = _ := by rw [hσ0]
   exact hA4 E H (D.r + 1) (D.K (D.r + 1)) V ρ c _ hG hPSD hsum
 
-theorem domAfterA_of_old {E : Type} [Field E] [DecidableEq E] (D : Data E) (h : ThetaDomination D) :
-    DomAfterA D := by
-  exact (A1.afterOfOldA E D h).2
 
-theorem reductionOfAfter : ReductionOfAfter := by
-  intro hR C₀ h0
-  obtain ⟨C', C, hC⟩ := hR C₀ h0
-  refine ⟨C', C, ?_⟩
-  intro E _ _ H _ _ _ W _ len Kl f Θ D Pat1 Pat3 _ pat1 pat3 c1 c3 ep1 ep3 bd4 Φ tr w0 V jn ρ c
-    hKl hf hΘ hr hK hA2 hA13 hE
-  exact hC E H W len Kl f Θ D Pat1 Pat3 pat1 pat3 c1 c3 ep1 ep3 bd4 Φ tr w0 V jn ρ c
-    hKl hf hΘ hr hK hA2 (domAfterA_of_old D hA13) hE
 
 end Formalism.FourierDecayAlt.P.RecursionWithDensities.A2
 
@@ -557,17 +530,6 @@ theorem domMinOfText : DomMinOfText := by
   rintro rfl
   exact T.zero_not_mem _ _ ht
 
-theorem afterOfOld : AfterOfOld := by
-  intro E W _ D hKer hA
-  obtain ⟨hKr, hTh⟩ := hKer
-  have hT : ∀ T : Tower E, DomText D T D.Th := by
-    intro T i s hs hsi hi
-    obtain ⟨_, h2, h3, h4⟩ := hA i s hs hsi hi
-    have hL : ∀ h ∈ T.X (i - s), level h = i - s := fun h hh => ((T.isTower (i - s) h).mp hh).1
-    exact ⟨fun t => hTh i s t _, fun t ht => h2 t ht _ hL,
-      fun t t' hl h _ h' _ => by rw [h3 t t' hl], fun S hS => h4 S hS _ hL⟩
-  exact ⟨hKr, fun i hi1 hi => (hA i 1 le_rfl hi1 hi).1, hT,
-    fun T => ⟨D.Th, domMinOfText E W D T D.Th (hT T)⟩⟩
 
 theorem majorantPSD : MajorantPSD := by
   intro E W _ D T Th hK hD i s hs hsi hi t ht
@@ -584,16 +546,6 @@ theorem majorantPSD : MajorantPSD := by
   intro x _ y _
   exact sub_add_cancel _ _
 
-theorem domMonoE : DomMonoE := by
-  intro E W _ D T Th e' hK he hD i s hs hsi hi
-  obtain ⟨h1, h2, h3⟩ := hD i s hs hsi hi
-  refine ⟨h1, h2, fun S hS hSd => ?_⟩
-  have ha := psd_add (h3 S hS hSd)
-    (psd_smul (e' i - D.e i) (by linarith [he i]) (hK (i - s) (T.X (i - s))))
-  refine psd_congr (fun x _ y _ => ?_) ha
-  dsimp only
-  push_cast
-  ring
 
 theorem psd_restrict' {α : Type} {X : Finset α} (Y : Finset α) {k k' : α → α → ℂ} (hk : PSDOn X k)
     (h1 : ∀ x y, x ∈ X ∧ y ∈ X → k' x y = k x y) (h0 : ∀ x y, ¬ (x ∈ X ∧ y ∈ X) → k' x y = 0) :
@@ -959,14 +911,6 @@ theorem theoremAAfterOfSteps : TC.TheoremAAfterOfSteps := by
     _ ≤ (1 + C * ((D.r : ℝ) + 1) * (C / Θ) ^ D.f) * (∏ i ∈ Icc 1 (D.r + 1), (1 + D.e i)) * σ₀ :=
         mul_le_mul_of_nonneg_left hσ00 (mul_nonneg hB0 hprod0)
 
-theorem theoremAOfAfter : TC.TheoremAOfAfter := by
-  intro hA C₁ C₄ h1 h4
-  obtain ⟨C, C', hC⟩ := hA C₁ C₄ h1 h4
-  refine ⟨C, C', ?_⟩
-  intro E W _ D Θ jn H _ _ _ Vt c hK hf hΘ hC' hr hS hG hKer hWd hA2 hA13 hEW hP hEL hEB hLS hEE
-    hCut hA4
-  obtain ⟨hKr, hEb, -, hDA⟩ := B1.afterOfOld E W D hKer hA13
-  exact hC E W D Θ jn H Vt c hK hf hΘ hC' hr hS hG hKr hWd hA2 hEb hDA hEW hP hEL hEB hLS hEE hCut hA4
 
 end Formalism.FourierDecayAlt.P.RecursionWithDensities.B2
 
@@ -974,14 +918,6 @@ namespace Formalism.FourierDecayAlt.P.RecursionWithDensities.J1
 
 open Finset Formalism.FourierDecayAlt Formalism.FourierDecayAlt.TC
 open scoped ComplexOrder ComplexConjugate
-theorem t_EOfDens : EOfDens := by
-  intro r e sd h0 h1 h2 i hi1 hi2
-  rcases Nat.lt_or_ge i (r + 1) with h | h
-  · have := h0 i (Finset.mem_Icc.mpr ⟨hi1, by omega⟩)
-    constructor <;> linarith
-  · have hi : i = r + 1 := by omega
-    subst hi
-    constructor <;> linarith [le_max_right sd 1, max_le h2 (one_le_two : (1 : ℝ) ≤ 2)]
 
 theorem t_ProductOfEMax : ProductOfEMax := by
   intro r e sd h0 h1
@@ -1016,60 +952,10 @@ theorem t_SumBoundMax : SumBoundMax := by
   push_cast
   ring
 
-theorem t_OnceOnlyMax : OnceOnlyMax := by
-  intro hO P _ B hpos hk hA
-  have h := hO P B hpos hk hA
-  have hA' := hA
-  unfold S3.MassData.InTheoremA S3.MassData.Smod at hA'
-  have hp := hpos.2
-  have hvN : 0 < B.volN := by tauto
-  have hvH : 0 < B.volH := by tauto
-  have hvN' : 0 < B.volN' := by tauto
-  have hvH' : 0 < B.volH' := by tauto
-  have hd : 0 < B.dimπ := by tauto
-  have hd' : 0 < B.dimπ' := by tauto
-  have hn : 0 < B.n0c := by tauto
-  have hδ : 0 ≤ B.δ := by tauto
-  have c0 : 0 ≤ B.c0 * B.c0' := by unfold S3.MassData.c0 S3.MassData.c0'; positivity
-  have h5 : 0 ≤ (1 + B.δ) * B.IntN := le_trans (mul_nonneg c0 hk.2) hA'
-  refine h.trans ?_
-  have h6 : (1 + B.δ) * B.supdens * (B.n0c * B.IntN) = B.supdens * (B.n0c * ((1 + B.δ) * B.IntN)) := by ring
-  have h7 : (1 + B.δ) * max B.supdens 1 * (B.n0c * B.IntN) = max B.supdens 1 * (B.n0c * ((1 + B.δ) * B.IntN)) := by ring
-  rw [h6, h7]
-  exact mul_le_mul_of_nonneg_right (le_max_left _ _) (mul_nonneg hn.le h5)
 
-theorem densityData_covers : MassDataCovers := by
-  intro P _ B r e hD h1 h0 hmax
-  rw [t_ProductOfEMax r e B.supdens h0 hmax]
-  exact max_le hD h1
 
-theorem t_DomTextOfSystems : DomTextOfSystems := by
-  intro E W _ D T Th hS i s hs hsi hi
-  obtain ⟨_, _, h3, h4, h5, h6⟩ := hS i s hs hsi hi
-  exact ⟨h4, h5, h3, h6⟩
 
-theorem t_RecHypAfterOfOld : RecHypAfterOfOld := by
-  intro hAO E W _ D C₁ C₄ Θ jn H _ _ Vt c hR
-  obtain ⟨h1, h2, h3, h4, h5, hKer, h7, h8, hA13, h10, h11, h12, h13, h14, h15, h16, h17⟩ := hR
-  obtain ⟨hKr, hEb, -, hDA⟩ := hAO E W D hKer hA13
-  unfold RecHypAfter
-  exact ⟨h1, h2, h3, h4, h5, hKr, h7, h8, hEb, hDA, h10, h11, h12, h13, h14, h15, h16, h17⟩
 
-theorem recursion_gives_densityData_after : RecursionGivesUniformBoundsAfter := by
-  intro hA C₁ C₄ h1 h4
-  obtain ⟨C, C', hC⟩ := hA C₁ C₄ h1 h4
-  refine ⟨C, C', ?_⟩
-  intro E W _ D Θ jn H _ _ _ Vt c hR hC' hr h0 P _ B hI hδ hS
-  unfold RecHypAfter at hR
-  obtain ⟨hK, hf, hΘ, hSz, hG, hKr, hWd, hA2, hEb, hDA, hEW, hP, hEL, hEB, hLS, hEE, hCut, hA4⟩ := hR
-  have hp : ∏ i ∈ Icc 1 (D.r + 1), (1 + D.e i) = 1 :=
-    Finset.prod_eq_one (fun i hi => by rw [h0 i hi, add_zero])
-  have hb := hC E W D Θ jn H Vt c hK hf hΘ hC' hr hSz hG hKr hWd hA2 hEb hDA hEW hP hEL hEB hLS hEE
-    hCut hA4
-  rw [hp, mul_one] at hb
-  unfold S3.MassData.InTheoremA
-  rw [hI, hδ]
-  exact hS _ hb
 
 theorem t_RecursionWithDens : RecursionWithDens := by
   intro hA C₁ C₄ h1 h4
@@ -1083,22 +969,6 @@ theorem t_RecursionWithDens : RecursionWithDens := by
     hCut hA4 R
   rwa [hp] at hb
 
-theorem t_DomAgree : DomAgree := by
-  intro hAg hTr hTw E W _ _ D T Th hD i s hs hsi hi
-  obtain ⟨h1, h2, h3⟩ := hD i s hs hsi hi
-  have hX : TA.PT (fun j s => T.Sg (j - s + 1) s) (i - s) = T.X (i - s) := (hTw E T (i - s)).symm
-  refine ⟨fun t ht => ?_, fun t ht t' ht' hl h hh h' hh' => ?_, fun R hR hRd => ?_⟩
-  · rw [hX]
-    apply ((hAg _ _ _).1).mp
-    refine B1.psd_congr (fun x _ y _ => ?_) (hTr _ _ _ (h1 t ht))
-    rfl
-  · rw [hX] at hh hh'
-    exact h2 t ht t' ht' hl h' hh' h hh
-  · rw [hX]
-    apply ((hAg _ _ _).1).mp
-    refine B1.psd_congr (fun x _ y _ => ?_) (hTr _ _ _ (h3 R hR hRd))
-    push_cast
-    rfl
 
 end Formalism.FourierDecayAlt.P.RecursionWithDensities.J1
 
@@ -1108,49 +978,29 @@ open RecursionWithDensities
 
 theorem domination_minimum_of_text : Formalism.FourierDecayAlt.TC.DomMinOfText := RecursionWithDensities.B1.domMinOfText
 
-theorem after_of_old : Formalism.FourierDecayAlt.TC.AfterOfOld := RecursionWithDensities.B1.afterOfOld
 
-theorem majorant_positive_semidefinite : Formalism.FourierDecayAlt.TC.MajorantPSD := RecursionWithDensities.B1.majorantPSD
 
-theorem domination_monotone : Formalism.FourierDecayAlt.TC.DomMonoE := RecursionWithDensities.B1.domMonoE
 
-theorem one_level_after : Formalism.FourierDecayAlt.TC.OneLevelAfter := RecursionWithDensities.B1.oneLevelAfter
 
-theorem one_level_after_of_old : Formalism.FourierDecayAlt.TC.OneLevelAfterOfOld := RecursionWithDensities.B1.oneLevelAfterOfOld
 
 theorem theorem_a_after : Formalism.FourierDecayAlt.TC.TheoremAAfter := RecursionWithDensities.B2.theoremAAfterOfSteps RecursionWithDensities.B1.oneLevelAfter limitStep joint_theorem_A'
 
-theorem theorem_a_after_of_parts : Formalism.FourierDecayAlt.TC.TheoremAAfterOfSteps := RecursionWithDensities.B2.theoremAAfterOfSteps
 
-theorem theorem_a_of_after : Formalism.FourierDecayAlt.TC.TheoremAOfAfter := RecursionWithDensities.B2.theoremAOfAfter
 
-theorem domMinOfTextA_statement : Formalism.FourierDecayAlt.TC.DomMinOfTextA := RecursionWithDensities.A1.domMinOfTextA
 
-theorem afterOfOldA_statement : Formalism.FourierDecayAlt.TC.AfterOfOldA := RecursionWithDensities.A1.afterOfOldA
 
-theorem majorantPSDA_statement : Formalism.FourierDecayAlt.TC.MajorantPSDA := RecursionWithDensities.A1.majorantPSDA
 
-theorem oneLevelAfterA_statement : Formalism.FourierDecayAlt.TC.OneLevelAfterA := RecursionWithDensities.A1.oneLevelAfterA
 
-theorem oneLevelAfterOfOldA_statement : Formalism.FourierDecayAlt.TC.OneLevelAfterOfOldA := RecursionWithDensities.A1.oneLevelAfterOfOldA
 
 theorem reduction_after : Formalism.FourierDecayAlt.TC.ReductionAfter := RecursionWithDensities.A2.reductionAfterOfSteps RecursionWithDensities.A1.oneLevelAfterA epsilon_limit domination_limit joint_theorem_A'
 
-theorem reduction_after_of_parts : Formalism.FourierDecayAlt.TC.ReductionAfterOfSteps := RecursionWithDensities.A2.reductionAfterOfSteps
 
-theorem reduction_of_after_inequality : Formalism.FourierDecayAlt.TC.ReductionOfAfter := RecursionWithDensities.A2.reductionOfAfter
 
-theorem domination_agree : Formalism.FourierDecayAlt.TC.DomAgree := RecursionWithDensities.J1.t_DomAgree
 
-theorem domination_text_of_systems : Formalism.FourierDecayAlt.TC.DomTextOfSystems := RecursionWithDensities.J1.t_DomTextOfSystems
 
-theorem recursion_hypothesis_after_of_old : Formalism.FourierDecayAlt.TC.RecHypAfterOfOld := RecursionWithDensities.J1.t_RecHypAfterOfOld
 
-theorem recursion_gives_explicit_after : Formalism.FourierDecayAlt.TC.RecursionGivesUniformBoundsAfter := RecursionWithDensities.J1.recursion_gives_densityData_after
 
-theorem exponent_of_densities : Formalism.FourierDecayAlt.TC.EOfDens := RecursionWithDensities.J1.t_EOfDens
 
-theorem product_of_exponent_max : Formalism.FourierDecayAlt.TC.ProductOfEMax := RecursionWithDensities.J1.t_ProductOfEMax
 
 theorem density_le_two : Formalism.FourierDecayAlt.TC.DensLeTwo := RecursionWithDensities.J1.t_DensLeTwo
 
@@ -1160,8 +1010,6 @@ theorem sum_bound_max : Formalism.FourierDecayAlt.TC.SumBoundMax := RecursionWit
 
 theorem recursion_with_densities : Formalism.FourierDecayAlt.TC.RecursionWithDens := RecursionWithDensities.J1.t_RecursionWithDens
 
-theorem once_only_max : Formalism.FourierDecayAlt.TC.OnceOnlyMax := RecursionWithDensities.J1.t_OnceOnlyMax
 
-theorem massData_covers : Formalism.FourierDecayAlt.TC.MassDataCovers := RecursionWithDensities.J1.densityData_covers
 
 end Formalism.FourierDecayAlt.P

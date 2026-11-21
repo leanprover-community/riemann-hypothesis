@@ -1,17 +1,1166 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.Uniformised
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsComplexFibreExponentialFullLattice
+import Development.AbelianVarietyTheory.Definitions.Divisors.IsHolPeriods
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsAbelianSchemeOfIsGrpPullback
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsPushEquiv
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsUniformisationOfPoint
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HomomorphismDescendsToAlgebraic
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqZeroOfFderivEqZero
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueLinearLiftOfAbelianEndomorphism
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPositiveRiemannFormOfRelAmpleExponential
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RosatiAdjointIffBiextensionPullbacksIsomorphicStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LieConditionUniformisingSpaceIsType
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RingHomConjOfTraceEqHarrisTaylorOrder
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UniformisedComplexFibreMarkedLatticeClassStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraceRingOfIntegersActionSumEmbeddingsEigenspaceStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemEigSp
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinrankJointEigenspaceAddConjEqMul
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.NonemptyFamilyUnifIffUnifAt
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.ExpRowsPf
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsDerivAt0CompLinearIff
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsPadicAlgClRingEquivComplexCompEqOfCountabl
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UniformisedComplexFibreMarkedLatticeClass
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UniformisationAtTransportIsometry
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRingHomMatrixLiftOfOrderActionExponential
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ImHermFormAlternatingNondegenerateOnLattice
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CompLinearEquivIntertwiningStatement
 
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.PELU
+open scoped Matrix
+
+noncomputable section
+
+namespace GlobalTheory.FibreExp
+
+theorem exists_exp_lattice : ∀ (X : Scheme.{0}) (G : Over X) [GrpObj G] [IsCommMonObj G] (g : ℕ), IsAbelianScheme G →
+    SmoothOfRelativeDimension g G.hom → ∀ y : Sp ℂ ⟶ X, ∃ (e : (Fin g → ℂ) → (Over.mk y ⟶ G))
+      (Λ : Submodule ℤ (Fin g → ℂ)), IsExp y e ∧ DiscreteTopology Λ ∧ Submodule.span ℝ (Λ : Set (Fin g → ℂ)) = ⊤ ∧
+        ∀ z, e z = 1 ↔ z ∈ Λ := by
+  intro X G _ _ g hG hgG y
+  letI : GrpObj ((Over.pullback y).obj G) := Functor.grpObjObj
+  have hj := isGrpPullback_pullback G y
+  have hA : IsAbelianScheme ((Over.pullback y).obj G) := GlobalTheory.PolPull.isAbelianScheme_of_isGrpPullback hG hj
+  have hgA : SmoothOfRelativeDimension g ((Over.pullback y).obj G).hom :=
+    (smoothOfRelativeDimension_isStableUnderBaseChange g).of_isPullback hj.1 hgG
+  obtain ⟨L, ⟨u⟩⟩ := GlobalTheory.HomDescentQb.exists_holUnif _ g hA hgA
+  obtain ⟨h1, h2⟩ := GlobalTheory.UnifTangent.tangent_bijection u hgA
+  obtain ⟨Φ, hΦ⟩ := GlobalTheory.LiePull.exists_pushEquiv hj (𝟙_ _) y (Category.id_comp _).symm
+  have he := GlobalTheory.PointUnif.isExp_push hj u h1 h2 Φ hΦ
+  exact ⟨fun z => Φ (u.ex z), u.Λ, he, u.discrete, u.full,
+    fun z => (map_eq_one_iff Φ Φ.injective).trans (u.ker z)⟩
+
+end GlobalTheory.FibreExp
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.PELU
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_complexFibreExponential_full_lattice : ∀ (X : Scheme.{0}) (G : Over X) [GrpObj G] [IsCommMonObj G] (g : ℕ), IsAbelianScheme G → SmoothOfRelativeDimension g G.hom → ∀ y : Sp ℂ ⟶ X, ∃ (e : (Fin g → ℂ) → (Over.mk y ⟶ G)) (Λ : Submodule ℤ (Fin g → ℂ)), IsExp y e ∧ DiscreteTopology Λ ∧ Submodule.span ℝ (Λ : Set (Fin g → ℂ)) = ⊤ ∧ ∀ z, e z = 1 ↔ z ∈ Λ := by
+  atlas_forward_decl GlobalTheory.FibreExp.exists_exp_lattice
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.PELU
+open scoped Matrix
+open GlobalTheory.UPel.HT GlobalTheory.UPel.HT.LieType
+
+noncomputable section
+namespace GlobalTheory.UPel.HT.LieType
+
+theorem eigSp_disjoint_biSup : ∀ (F : Type) [Field F] [NumberField F] (g : ℕ) (φ : 𝓞 F →+* Matrix (Fin g) (Fin g) ℂ) (s : Finset (F →+* ℂ)) (τ : F →+* ℂ), τ ∉ s → Disjoint (eigSp φ τ) (⨆ τ' ∈ s, eigSp φ τ') := by
+  intro F _ _ g φ s τ hτ
+  let ρ : 𝓞 F →+* Module.End ℂ (Fin g → ℂ) := (Matrix.toLinAlgEquiv' (R := ℂ) (n := Fin g)).toRingEquiv.toRingHom.comp φ
+  have hcomm : ∀ a b : 𝓞 F, Commute (ρ a) (ρ b) := fun a b => (Commute.all a b).map ρ
+  have h := Module.End.independent_iInf_maxGenEigenspace_of_forall_mapsTo (fun a : 𝓞 F => ρ a)
+    (fun i j m => Module.End.mapsTo_maxGenEigenspace_of_comm (hcomm j i) m)
+  let χ : (F →+* ℂ) → (𝓞 F → ℂ) := fun σ c => σ (c : F)
+  have hχ : Function.Injective χ := by
+    intro σ₁ σ₂ he
+    apply IsLocalization.ringHom_ext (nonZeroDivisors (𝓞 F))
+    ext c
+    exact congrFun he c
+  have hle : ∀ σ : F →+* ℂ, eigSp φ σ ≤ ⨅ c : 𝓞 F, (ρ c).maxGenEigenspace (χ σ c) := by
+    intro σ u hu
+    rw [Submodule.mem_iInf]
+    intro c
+    apply (Module.End.genEigenspace (ρ c) (χ σ c)).mono le_top
+    rw [Module.End.mem_eigenspace_iff]
+    have := hu c
+    simpa [ρ, χ, Matrix.toLin'_apply] using this
+  have hnot : χ τ ∉ (χ '' (s : Set (F →+* ℂ))) := by
+    rintro ⟨σ, hσ, he⟩
+    exact hτ (hχ he ▸ hσ)
+  have hd := h.disjoint_biSup hnot
+  refine (hd.mono_left (hle τ)).mono_right ?_
+  refine iSup₂_le fun σ hσ => (hle σ).trans ?_
+  exact le_iSup₂_of_le (f := fun (x : 𝓞 F → ℂ) (_ : x ∈ χ '' (s : Set (F →+* ℂ))) => ⨅ c : 𝓞 F, (ρ c).maxGenEigenspace (x c)) (χ σ) ⟨σ, hσ, rfl⟩ le_rfl
+
+end GlobalTheory.UPel.HT.LieType
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.PELU
+open scoped Matrix
+open GlobalTheory.UPel.HT GlobalTheory.UPel.HT.LieType
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ringOfIntegersJointEigenspace_disjoint_biSup : ∀ (F : Type) [Field F] [NumberField F] (g : ℕ) (φ : 𝓞 F →+* Matrix (Fin g) (Fin g) ℂ) (s : Finset (F →+* ℂ)) (τ : F →+* ℂ), τ ∉ s → Disjoint (eigSp φ τ) (⨆ τ' ∈ s, eigSp φ τ') := by
+  atlas_forward_decl GlobalTheory.UPel.HT.LieType.eigSp_disjoint_biSup
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.PELU
+open scoped Matrix
+open GlobalTheory.UPel.HT GlobalTheory.UPel.HT.LieType
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finrank_jointEigenspace_add_conj_eq_mul : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (D' : PLat D.O D.inv) (ρ : D.O →+* Matrix (Fin D.g) (Fin D.g) ℂ) (Q : D'.La →+ (Fin D.g → ℂ)), IsPeriod D' ρ Q → ∀ τ : D.F →+* ℂ, Module.finrank ℂ (eigSp (ρ.comp (algebraMap (𝓞 D.F) D.O)) τ) + Module.finrank ℂ (eigSp (ρ.comp (algebraMap (𝓞 D.F) D.O)) ((starRingEnd ℂ).comp τ)) = D.m * D.n := by
+  first | exact @GlobalTheory.UPel.HT.LieType.finrank_eigSp_add_conj_eq | exact GlobalTheory.UPel.HT.LieType.finrank_eigSp_add_conj_eq | (intros; apply GlobalTheory.UPel.HT.LieType.finrank_eigSp_add_conj_eq <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.PELU
+open scoped Matrix
+
+noncomputable section
+
+namespace GlobalTheory.UPel.HT.LieType
+
+variable {S : Scheme.{0}} {G : Over S} [GrpObj G] {y : Sp ℂ ⟶ S} {g : ℕ} {e : (Fin g → ℂ) → (Over.mk y ⟶ G)}
+
+def expDer (he : IsExp y e) (w : Fin g → ℂ) : epsPt y ⟶ G := (he.2.2.2.1 w).exists.choose
+
+variable (he : IsExp y e)
+include he
+
+theorem expDer_spec (w : Fin g → ℂ) : IsDerivAt0 (fun z => (e z).left) w (expDer he w).left :=
+  (he.2.2.2.1 w).exists.choose_spec
+
+theorem exp_zero : e 0 = 1 := by
+  have h := he.1 0 0
+  rw [add_zero] at h
+  exact (mul_eq_left.1 h.symm)
+
+theorem expDer_eq_iff (w : Fin g → ℂ) (v : epsPt y ⟶ G) :
+    IsDerivAt0 (fun z => (e z).left) w v.left ↔ expDer he w = v :=
+  ⟨fun hv => Over.OverMorphism.ext
+    (ReciprocityTheory.ChartRestriction.G.PullbackSections.ExpRows.isDerivAt0_unique (expDer_spec he w) hv), fun hv => hv ▸ expDer_spec he w⟩
+
+theorem expDer_base (w : Fin g → ℂ) :
+    spMap (TrivSqZeroExt.fstHom ℂ ℂ ℂ).toRingHom ≫ (expDer he w).left = (1 : Over.mk y ⟶ G).left := by
+  rw [(expDer_spec he w).1]; show (e 0).left = _; rw [exp_zero he]
+
+theorem expDer_injective : Function.Injective (expDer he) := by
+  intro w w' h
+  have h1 := expDer_spec he w
+  have h2 := expDer_spec he w'
+  rw [← h] at h2
+  have hb : spMap (TrivSqZeroExt.fstHom ℂ ℂ ℂ).toRingHom ≫ (expDer he w).left = (e 0).left := h1.1
+  exact (he.2.2.2.2 _ hb).unique h1 h2
+
+theorem expDer_surj (v : epsPt y ⟶ G)
+    (hv : spMap (TrivSqZeroExt.fstHom ℂ ℂ ℂ).toRingHom ≫ v.left = (1 : Over.mk y ⟶ G).left) :
+    ∃ w, expDer he w = v := by
+  obtain ⟨w, hw, -⟩ := he.2.2.2.2 v (by rw [hv, exp_zero he])
+  exact ⟨w, (expDer_eq_iff he w v).1 hw⟩
+
+theorem expDer_add (w w' : Fin g → ℂ) : expDer he (w + w') = expDer he w * expDer he w' :=
+  (expDer_eq_iff he _ _).1 (GlobalTheory.UnifCompare.isDerivAt0_mul (by rw [exp_zero he]) (expDer_spec he w)
+    (expDer_spec he w'))
+
+theorem expDer_zero : expDer he 0 = 1 := by
+  have h := expDer_add he 0 0
+  rw [add_zero] at h
+  exact (mul_eq_left.1 h.symm)
+
+theorem expDer_smul (c : ℂ) (w : Fin g → ℂ) :
+    (expDer he (c • w)).left = spMap (epsScale c) ≫ (expDer he w).left :=
+  ReciprocityTheory.ChartRestriction.G.PullbackSections.ExpRows.isDerivAt0_unique (expDer_spec he _)
+    (GlobalTheory.UnifCompare.isDerivAt0_smul (expDer_spec he w) c)
+
+theorem expDer_prod {n : ℕ} (f : Fin n → Fin g → ℂ) :
+    (List.ofFn fun j => expDer he (f j)).prod = expDer he (∑ j, f j) := by
+  induction n with
+  | zero => simp [expDer_zero he]
+  | succ n ih =>
+    rw [List.ofFn_succ, List.prod_cons, ih (fun j => f j.succ), Fin.sum_univ_succ, expDer_add he]
+
+theorem expDer_mulVec (M : Matrix (Fin g) (Fin g) ℂ) (φ : G ⟶ G) (hM : ∀ z, e (M *ᵥ z) = e z ≫ φ)
+    (w : Fin g → ℂ) : expDer he (M *ᵥ w) = expDer he w ≫ φ := by
+  have h1 := ReciprocityTheory.ChartRestriction.G.PullbackSections.ExpRows.isDerivAt0_comp_hom (expDer_spec he w) φ.left
+  have h2 : (fun z => (e z).left ≫ φ.left) = fun z => (e (Matrix.mulVecLin M z)).left := by
+    funext z; rw [Matrix.mulVecLin_apply, hM z, Over.comp_left]
+  rw [h2, GlobalTheory.ThetaWitness.isDerivAt0_comp_linear_iff (fun z => (e z).left) he.2.2.1] at h1
+  exact (expDer_eq_iff he _ _).1 h1
+
+theorem expDer_eigen_iff (M : Matrix (Fin g) (Fin g) ℂ) (φ : G ⟶ G) (hM : ∀ z, e (M *ᵥ z) = e z ≫ φ)
+    (c : ℂ) (w : Fin g → ℂ) :
+    (expDer he w ≫ φ).left = spMap (epsScale c) ≫ (expDer he w).left ↔ M *ᵥ w = c • w := by
+  rw [← expDer_mulVec he M φ hM, ← expDer_smul he]
+  constructor
+  · intro h
+    exact expDer_injective he (Over.OverMorphism.ext h)
+  · intro h
+    rw [h]
+
+end GlobalTheory.UPel.HT.LieType
+end
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.PELU
+open scoped Matrix
+open GlobalTheory.UPel.HT GlobalTheory.UPel.HT.LieType
+
+noncomputable section
+
+namespace GlobalTheory.LieEigenspaceFinrank
+
+variable {S : Scheme.{0}} {G : Over S} [GrpObj G] {y : Sp ℂ ⟶ S} {g : ℕ} {e : (Fin g → ℂ) → (Over.mk y ⟶ G)}
+
+theorem isLieEigen_iff (he : IsExp y e) {F : Type} [Field F] [NumberField F]
+    (φ : 𝓞 F →+* Matrix (Fin g) (Fin g) ℂ) (act : OAct (𝓞 F) G)
+    (hM : ∀ c z, e (φ c *ᵥ z) = e z ≫ act.act c) (τ : F →+* ℂ) (τ' : 𝓞 F →+* ℂ)
+    (hτ : ∀ c : 𝓞 F, τ (c : F) = τ' c) (w : Fin g → ℂ) :
+    IsLieEigen act y τ' (expDer he w) ↔ w ∈ eigSp φ τ := by
+  rw [mem_eigSp]
+  constructor
+  · intro h c
+    rw [hτ]
+    exact (expDer_eigen_iff he (φ c) (act.act c) (hM c) (τ' c) w).1 (h.2 c)
+  · intro h
+    refine ⟨expDer_base he w, fun c => ?_⟩
+    exact (expDer_eigen_iff he (φ c) (act.act c) (hM c) (τ' c) w).2 (by rw [← hτ]; exact h c)
+
+theorem comb_iff (he : IsExp y e) {n : ℕ} (w : Fin n → Fin g → ℂ) (c : Fin n → ℂ) (z : Fin g → ℂ) :
+    (∃ u : Fin n → (epsPt y ⟶ G), (∀ i, (u i).left = spMap (epsScale (c i)) ≫ (expDer he (w i)).left) ∧
+      expDer he z = (List.ofFn u).prod) ↔ z = ∑ i, c i • w i := by
+  constructor
+  · rintro ⟨u, hu, hz⟩
+    have hu' : u = fun i => expDer he (c i • w i) := by
+      funext i
+      exact Over.OverMorphism.ext (by rw [hu i, expDer_smul he])
+    rw [hu', expDer_prod he (fun i => c i • w i)] at hz
+    exact expDer_injective he hz
+  · intro hz
+    refine ⟨fun i => expDer he (c i • w i), fun i => expDer_smul he _ _, ?_⟩
+    rw [expDer_prod he (fun i => c i • w i), hz]
+
+theorem finrank_eigSp (he : IsExp y e) {F : Type} [Field F] [NumberField F]
+    (φ : 𝓞 F →+* Matrix (Fin g) (Fin g) ℂ) (act : OAct (𝓞 F) G)
+    (hM : ∀ c z, e (φ c *ᵥ z) = e z ≫ act.act c) (τ : F →+* ℂ) (τ' : 𝓞 F →+* ℂ)
+    (hτ : ∀ c : 𝓞 F, τ (c : F) = τ' c) (n : ℕ) (h : LieMult act y τ' n) :
+    Module.finrank ℂ (eigSp φ τ) = n := by
+  obtain ⟨v, hv, hb⟩ := h
+  choose w hw using fun i => expDer_surj he (v i) (hv i).1
+  obtain rfl : v = fun i => expDer he (w i) := funext fun i => (hw i).symm
+  have hwm : ∀ i, w i ∈ eigSp φ τ := fun i => (isLieEigen_iff he φ act hM τ τ' hτ _).1 (hv i)
+  have key : ∀ z ∈ eigSp φ τ, ∃! c : Fin n → ℂ, z = ∑ i, c i • w i := by
+    intro z hz
+    have := hb _ ((isLieEigen_iff he φ act hM τ τ' hτ z).2 hz)
+    simpa only [comb_iff he w] using this
+  let L : (Fin n → ℂ) →ₗ[ℂ] eigSp φ τ := Fintype.linearCombination ℂ (fun i => (⟨w i, hwm i⟩ : eigSp φ τ))
+  have hL : ∀ c, (L c : Fin g → ℂ) = ∑ i, c i • w i := by
+    intro c
+    simp [L, Fintype.linearCombination_apply]
+  have hbij : Function.Bijective L := by
+    rw [Function.bijective_iff_existsUnique]
+    intro z
+    obtain ⟨c, hc, hu⟩ := key z.1 z.2
+    refine ⟨c, Subtype.ext (by rw [hL]; exact hc.symm), fun c' hc' => hu c' ?_⟩
+    exact (congrArg Subtype.val hc').symm.trans (hL c')
+  rw [← (LinearEquiv.ofBijective L hbij).finrank_eq]
+  simp
+
+theorem lie_type_of_unif (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [CommRing R] (b : Base D R) (N : ℕ)
+    (σ : R →+* ℂ) (ρ : D.O →+* Matrix (Fin D.g) (Fin D.g) ℂ) (o : Obj b N (spMap σ))
+    (h : SmoothOfRelativeDimension D.g o.A.hom) (hL : (o.P.pull (lift (𝟙 o.A) (𝟙 o.A)).left).IsLB)
+    (D' : PLat D.O D.inv) (t : D.La → D'.La) (Q : D'.La →+ (Fin D.g → ℂ))
+    (e : (Fin D.g → ℂ) → (Over.mk (𝟙 (Sp ℂ)) ⟶ (o.fam h hL).A))
+    (hU : UnifAt (o.fam h hL) σ ρ N D' t Q (𝟙 (Sp ℂ)) e) (τ : Fin D.a → D.F →+* ℂ)
+    (hτ : ∀ (i : Fin D.a) (c : 𝓞 D.F), τ i (c : D.F) = σ (b.t i c)) :
+    (∀ i, Module.finrank ℂ (eigSp (ρ.comp (algebraMap (𝓞 D.F) D.O)) (τ i)) = D.m) ∧
+      ∀ u : Fin D.g → ℂ, ρ (algebraMap (𝓞 D.F) D.O D.ω) *ᵥ u = σ b.ρ • u →
+        u ∈ ⨆ i, eigSp (ρ.comp (algebraMap (𝓞 D.F) D.O)) (τ i) := by
+  have he : IsExp (G := o.A) (𝟙 (Sp ℂ)) e := hU.2.2.1
+  have hM : ∀ (a : D.O) z, e (ρ a *ᵥ z) = e z ≫ o.act.act a := hU.2.2.2.2.1
+  have hx : 𝟙 (Sp ℂ) ≫ spMap σ = spMap σ := Category.id_comp _
+  have hM' : ∀ (c : 𝓞 D.F) z, e ((ρ.comp (algebraMap (𝓞 D.F) D.O)) c *ᵥ z) = e z ≫ (o.act.toF D).act c :=
+    fun c z => hM _ z
+  refine ⟨fun i => ?_, fun u hu => ?_⟩
+  · exact finrank_eigSp (G := o.A) he _ (o.act.toF D) hM' (τ i) (σ.comp (b.t i)) (hτ i) _
+      (o.lieRank ℂ (𝟙 _) σ hx i)
+  · obtain ⟨v, hv, hprod⟩ := o.lie ℂ σ (𝟙 _) hx (expDer (G := o.A) he u)
+      ⟨expDer_base he u, (expDer_eigen_iff (G := o.A) he _ _ (hM _) (σ b.ρ) u).2 hu⟩
+    choose w hw using fun i => expDer_surj (G := o.A) he (v i) (hv i 0).1
+    obtain rfl : v = fun i => expDer (G := o.A) he (w i) := funext fun i => (hw i).symm
+    have hu' : u = ∑ i, w i := expDer_injective he (hprod.trans (expDer_prod he w))
+    rw [hu']
+    refine Submodule.sum_mem _ fun i _ => Submodule.mem_iSup_of_mem i ?_
+    exact (isLieEigen_iff (G := o.A) he _ (o.act.toF D) hM' (τ i) (σ.comp (b.t i)) (hτ i) _).1
+      ⟨(hv i 0).1, fun c => (hv i c).2⟩
+
+end GlobalTheory.LieEigenspaceFinrank
+end
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.PELU
+open scoped Matrix
+
+noncomputable section
+
+namespace GlobalTheory.UPel.HT.LieType
+
+open GlobalTheory.UPel.HT
+
+theorem lieEigen_rank_cover : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [CommRing R] (b : Base D R) (N : ℕ)
+    (σ : R →+* ℂ) (ρ : D.O →+* Matrix (Fin D.g) (Fin D.g) ℂ) (o : Obj b N (spMap σ)) h hL (D' : PLat D.O D.inv) t Q e,
+    UnifAt (o.fam h hL) σ ρ N D' t Q (𝟙 _) e → ∀ τ : Fin D.a → (D.F →+* ℂ),
+    (∀ i (c : 𝓞 D.F), τ i (c : D.F) = σ (b.t i c)) →
+    (∀ i, Module.finrank ℂ (eigSp (ρ.comp (algebraMap (𝓞 D.F) D.O)) (τ i)) = D.m) ∧
+    ∀ u : Fin D.g → ℂ, ρ (algebraMap (𝓞 D.F) D.O D.ω) *ᵥ u = σ b.ρ • u →
+      u ∈ ⨆ i, eigSp (ρ.comp (algebraMap (𝓞 D.F) D.O)) (τ i) := by
+  first
+  | exact @_root_.GlobalTheory.LieEigenspaceFinrank.lie_type_of_unif
+  | exact _root_.GlobalTheory.LieEigenspaceFinrank.lie_type_of_unif
+  | (apply _root_.GlobalTheory.LieEigenspaceFinrank.lie_type_of_unif <;> assumption)
+  | (intros; apply _root_.GlobalTheory.LieEigenspaceFinrank.lie_type_of_unif <;> assumption)
+  | (intros; apply @_root_.GlobalTheory.LieEigenspaceFinrank.lie_type_of_unif <;> first | assumption | infer_instance)
+  | (intros; exact _root_.GlobalTheory.LieEigenspaceFinrank.lie_type_of_unif ..)
+
+end GlobalTheory.UPel.HT.LieType
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.PELU
+open scoped Matrix
+open GlobalTheory.UPel.HT GlobalTheory.UPel.HT.LieType
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eigenspace_dimension_of_uniformization : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [CommRing R] (b : Base D R) (N : ℕ) (σ : R →+* ℂ) (ρ : D.O →+* Matrix (Fin D.g) (Fin D.g) ℂ) (o : Obj b N (spMap σ)) h hL (D' : PLat D.O D.inv) t Q e, UnifAt (o.fam h hL) σ ρ N D' t Q (𝟙 _) e → ∀ τ : Fin D.a → (D.F →+* ℂ), (∀ i (c : 𝓞 D.F), τ i (c : D.F) = σ (b.t i c)) → (∀ i, Module.finrank ℂ (eigSp (ρ.comp (algebraMap (𝓞 D.F) D.O)) (τ i)) = D.m) ∧ ∀ u : Fin D.g → ℂ, ρ (algebraMap (𝓞 D.F) D.O D.ω) *ᵥ u = σ b.ρ • u → u ∈ ⨆ i, eigSp (ρ.comp (algebraMap (𝓞 D.F) D.O)) (τ i) := by
+  atlas_forward_decl GlobalTheory.UPel.HT.LieType.lieEigen_rank_cover
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.PELU
+open scoped Matrix
+open GlobalTheory.UPel.HT
+
+noncomputable section
+
+namespace GlobalTheory.UPel.HT.LieType
+
+theorem exists_ext (F : Type) [Field F] [NumberField F] (τ : 𝓞 F →+* ℂ) :
+    ∃ τ' : F →+* ℂ, ∀ c : 𝓞 F, τ' (c : F) = τ c := by
+  have hinj : Function.Injective τ := by
+    rw [injective_iff_map_eq_zero]
+    intro x hx
+    by_contra hne
+    have hI := Ideal.comap_ne_bot_of_integral_mem (R := ℤ) (I := RingHom.ker τ) hne (by simpa [RingHom.mem_ker] using hx)
+      (Algebra.IsIntegral.isIntegral x)
+    apply hI
+    rw [eq_bot_iff]
+    intro n hn
+    simp only [Ideal.mem_comap, RingHom.mem_ker, map_intCast] at hn
+    simpa using hn
+  refine ⟨IsFractionRing.lift hinj, fun c => ?_⟩
+  exact IsFractionRing.lift_algebraMap hinj c
+
+theorem root_cases {r z : ℂ} {tr nm : ℤ} (hd : tr ^ 2 - 4 * nm < 0) (hr : r ^ 2 - tr * r + nm = 0)
+    (hz : z ^ 2 - tr * z + nm = 0) : (z ≠ r ↔ (starRingEnd ℂ) z = r) := by
+  have hc : ((starRingEnd ℂ) r) ^ 2 - tr * (starRingEnd ℂ) r + nm = 0 := by
+    have := congrArg (starRingEnd ℂ) hr
+    simpa using this
+  have hfac : ∀ x : ℂ, x ^ 2 - tr * x + nm = 0 → x = r ∨ x = tr - r := by
+    intro x hx
+    have : (x - r) * (x - (tr - r)) = 0 := by linear_combination hx - hr
+    rcases mul_eq_zero.1 this with h | h
+    · exact Or.inl (sub_eq_zero.1 h)
+    · exact Or.inr (sub_eq_zero.1 h)
+  have hne : (starRingEnd ℂ) r ≠ r := by
+    intro h
+    have him : r.im = 0 := Complex.conj_eq_iff_im.1 h
+    have hre := congrArg Complex.re hr
+    have himr : r = (r.re : ℂ) := by apply Complex.ext <;> simp [him]
+    rw [himr] at hre
+    simp [sq] at hre
+    have : ((2 * r.re - tr) ^ 2 : ℝ) = (tr : ℝ) ^ 2 - 4 * nm := by linear_combination 4 * hre
+    have h2 : ((tr : ℝ) ^ 2 - 4 * nm) < 0 := by exact_mod_cast hd
+    nlinarith [sq_nonneg (2 * r.re - tr)]
+  have hcr : (starRingEnd ℂ) r = tr - r := (hfac _ hc).resolve_left hne
+  constructor
+  · intro h
+    have : z = tr - r := (hfac z hz).resolve_left h
+    rw [this, ← hcr]; simp
+  · intro h hzr
+    rw [hzr] at h
+    exact hne h
+
+theorem lie_isType : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [CommRing R] (b : Base D R) (N : ℕ) (σ : R →+* ℂ) (ρ : D.O →+* Matrix (Fin D.g) (Fin D.g) ℂ) (o : Obj b N (spMap σ)) h hL (D' : PLat D.O D.inv) t Q e, UnifAt (o.fam h hL) σ ρ N D' t Q (𝟙 _) e → b.IsType σ ρ := by
+  intro p _ D R _ b N σ ρ o h hL D' t Q e hU
+  classical
+  choose τ hτ using fun i => exists_ext D.F (σ.comp (b.t i))
+  have hτ' : ∀ i (c : 𝓞 D.F), τ i (c : D.F) = σ (b.t i c) := fun i c => hτ i c
+  obtain ⟨hrank, hcov⟩ := GlobalTheory.T.eigenspace_dimension_of_uniformization p D R b N σ ρ o h hL D' t Q e hU τ hτ'
+  have hsum := GlobalTheory.T.finrank_jointEigenspace_add_conj_eq_mul p D D' ρ Q hU.2.1
+  set r := σ b.ρ with hrdef
+  have hr : r ^ 2 - D.tr * r + D.nm = 0 := by
+    have := congrArg σ b.ρ_root
+    simpa using this
+  have hω : (D.ω ^ 2 - (D.tr : 𝓞 D.F) * D.ω + D.nm : 𝓞 D.F) = 0 := by
+    rw [← D.tr_eq, ← D.nm_eq]; ring
+  have hτω : ∀ τ' : D.F →+* ℂ, τ' (D.ω : D.F) ^ 2 - D.tr * τ' (D.ω : D.F) + D.nm = 0 := by
+    intro τ'
+    have := congrArg (fun x : 𝓞 D.F => τ' (x : D.F)) hω
+    simpa using this
+  have key : ∀ τ' : D.F →+* ℂ, τ' (D.ω : D.F) ≠ r ↔ ((starRingEnd ℂ).comp τ') (D.ω : D.F) = r :=
+    fun τ' => root_cases D.disc_neg hr (hτω τ')
+
+  have hinj : Function.Injective τ := by
+    intro i j hij
+    by_contra hne
+    have hle : Ideal.span (Set.range fun x => b.t i x - b.t j x) ≤ RingHom.ker σ := by
+      rw [Ideal.span_le]
+      rintro _ ⟨x, rfl⟩
+      have h1 := hτ' i x
+      have h2 := hτ' j x
+      rw [hij] at h1
+      simp [RingHom.mem_ker, ← h1, ← h2]
+    rw [b.comax i j hne] at hle
+    have : (1 : R) ∈ RingHom.ker σ := hle Submodule.mem_top
+    simp [RingHom.mem_ker] at this
+  have hτA : ∀ i, τ i (D.ω : D.F) = r := fun i => by rw [hτ', b.t_ω]
+  set d : (D.F →+* ℂ) → ℕ := fun τ' => Module.finrank ℂ (eigSp (ρ.comp (algebraMap (𝓞 D.F) D.O)) τ') with hd
+
+  have hzero : ∀ τ' : D.F →+* ℂ, τ' (D.ω : D.F) = r → τ' ∉ Finset.univ.image τ → d τ' = 0 := by
+    intro τ' h1 h2
+    have hbot : eigSp (ρ.comp (algebraMap (𝓞 D.F) D.O)) τ' = ⊥ := by
+      rw [eq_bot_iff]
+      intro u hu
+      have hu' : ρ (algebraMap (𝓞 D.F) D.O D.ω) *ᵥ u = r • u := by
+        have := hu D.ω
+        rw [h1] at this
+        exact this
+      have hmem := hcov u hu'
+      have hle : (⨆ i, eigSp (ρ.comp (algebraMap (𝓞 D.F) D.O)) (τ i)) ≤ ⨆ τ'' ∈ Finset.univ.image τ, eigSp (ρ.comp (algebraMap (𝓞 D.F) D.O)) τ'' := by
+        refine iSup_le fun i => ?_
+        exact le_biSup (fun τ'' => eigSp (ρ.comp (algebraMap (𝓞 D.F) D.O)) τ'') (Finset.mem_image_of_mem τ (Finset.mem_univ i))
+      have := (GlobalTheory.T.ringOfIntegersJointEigenspace_disjoint_biSup D.F D.g (ρ.comp (algebraMap (𝓞 D.F) D.O)) _ τ' h2).le_bot ⟨hu, hle hmem⟩
+      simpa using this
+    simp [hd, hbot]
+  have hA : ∀ c : 𝓞 D.F, ∑ τ' ∈ Finset.univ.filter (fun τ' : D.F →+* ℂ => ¬ τ' (D.ω : D.F) ≠ r), (d τ' : ℂ) * τ' (c : D.F) =
+      ∑ i, (D.m : ℂ) * σ (b.t i c) := by
+    intro c
+    rw [← Finset.sum_subset (s₁ := Finset.univ.image τ)]
+    · rw [Finset.sum_image (fun i _ j _ h => hinj h)]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      simp only [hd, hrank i, hτ']
+    · intro x hx
+      obtain ⟨i, -, rfl⟩ := Finset.mem_image.1 hx
+      simp [hτA i]
+    · intro x hx hx'
+      have : x (D.ω : D.F) = r := by simpa using hx
+      simp [hzero x this hx']
+  have hA' : ∀ c : 𝓞 D.F, ∑ τ' ∈ Finset.univ.filter (fun τ' : D.F →+* ℂ => ¬ τ' (D.ω : D.F) ≠ r), (d τ' : ℂ) * (starRingEnd ℂ) (τ' (c : D.F)) =
+      ∑ i, (D.m : ℂ) * (starRingEnd ℂ) (σ (b.t i c)) := by
+    intro c
+    rw [← Finset.sum_subset (s₁ := Finset.univ.image τ)]
+    · rw [Finset.sum_image (fun i _ j _ h => hinj h)]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      simp only [hd, hrank i, hτ']
+    · intro x hx
+      obtain ⟨i, -, rfl⟩ := Finset.mem_image.1 hx
+      simp [hτA i]
+    · intro x hx hx'
+      have : x (D.ω : D.F) = r := by simpa using hx
+      simp [hzero x this hx']
+  have hconj : ∀ c : 𝓞 D.F, ∑ τ' ∈ Finset.univ.filter (fun τ' : D.F →+* ℂ => τ' (D.ω : D.F) ≠ r), (d ((starRingEnd ℂ).comp τ') : ℂ) * τ' (c : D.F) =
+      ∑ τ' ∈ Finset.univ.filter (fun τ' : D.F →+* ℂ => ¬ τ' (D.ω : D.F) ≠ r), (d τ' : ℂ) * (starRingEnd ℂ) (τ' (c : D.F)) := by
+    intro c
+    refine Finset.sum_nbij' (fun τ' => (starRingEnd ℂ).comp τ') (fun τ' => (starRingEnd ℂ).comp τ') ?_ ?_ ?_ ?_ ?_
+    · intro x hx
+      have := (key x).1 (by simpa using hx)
+      simpa using this
+    · intro x hx
+      have hx' : x (D.ω : D.F) = r := by simpa using hx
+      have : ¬ ((starRingEnd ℂ).comp x) (D.ω : D.F) = r := by
+        exact fun h => (key x).2 h hx'
+      simpa using this
+    · intro x _; ext; simp
+    · intro x _; ext; simp
+    · intro x _; simp
+  intro c
+  have htr : (ρ (algebraMap (𝓞 D.F) D.O c)).trace = ∑ τ' : D.F →+* ℂ, (d τ' : ℂ) * τ' (c : D.F) := GlobalTheory.T.trace_ringOfIntegers_action_sum_embeddings_eigenspace D.F D.g (ρ.comp (algebraMap (𝓞 D.F) D.O)) c
+  rw [htr, ← Finset.sum_filter_add_sum_filter_not Finset.univ (fun τ' : D.F →+* ℂ => τ' (D.ω : D.F) ≠ r)]
+  have hB : ∑ τ' ∈ Finset.univ.filter (fun τ' : D.F →+* ℂ => τ' (D.ω : D.F) ≠ r), (d τ' : ℂ) * τ' (c : D.F) =
+      ∑ τ' ∈ Finset.univ.filter (fun τ' : D.F →+* ℂ => τ' (D.ω : D.F) ≠ r), ((D.m : ℂ) * D.n * τ' (c : D.F) -
+        (d ((starRingEnd ℂ).comp τ') : ℂ) * τ' (c : D.F)) := by
+    refine Finset.sum_congr rfl fun τ' _ => ?_
+    have := hsum τ'
+    have h' : (d τ' : ℂ) + d ((starRingEnd ℂ).comp τ') = D.m * D.n := by exact_mod_cast this
+    linear_combination τ' (c : D.F) * h'
+  rw [hB, Finset.sum_sub_distrib, hconj c, hA c, hA' c]
+  have e1 : ∑ τ' ∈ Finset.univ.filter (fun τ' : D.F →+* ℂ => τ' (D.ω : D.F) ≠ r), (D.m : ℂ) * D.n * τ' (c : D.F) =
+      D.m * ∑ τ' ∈ Finset.univ.filter (fun τ' : D.F →+* ℂ => τ' (D.ω : D.F) ≠ r), (D.n : ℂ) * τ' (c : D.F) := by
+    rw [Finset.mul_sum]; exact Finset.sum_congr rfl fun _ _ => by ring
+  rw [e1]
+  simp only [← Finset.mul_sum]
+  ring
+
+end GlobalTheory.UPel.HT.LieType
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.PELU
+open scoped Matrix
+open GlobalTheory.UPel.HT
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lieCondition_uniformisingSpace_isType : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [CommRing R] (b : Base D R) (N : ℕ) (σ : R →+* ℂ) (ρ : D.O →+* Matrix (Fin D.g) (Fin D.g) ℂ) (o : Obj b N (spMap σ)) h hL (D' : PLat D.O D.inv) t Q e, UnifAt (o.fam h hL) σ ρ N D' t Q (𝟙 _) e → b.IsType σ ρ := by
+  atlas_forward_decl GlobalTheory.UPel.HT.LieType.lie_isType
+end
+
+section
+section
+noncomputable section
+
+namespace GlobalTheory.UPel.HT.SplitC
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.PELU
+open scoped Matrix TensorProduct
+open GlobalTheory.UPel.HT
+
+theorem span_embeddings_eq_top (K : Type) [Field K] [NumberField K] :
+    Submodule.span ℂ (Set.range fun (c : 𝓞 K) (τ : K →+* ℂ) => τ (c : K)) = ⊤ := by
+  rw [eq_top_iff, ← (canonicalEmbedding.latticeBasis K).span_eq]
+  apply Submodule.span_mono
+  rintro _ ⟨i, rfl⟩
+  refine ⟨RingOfIntegers.basis K i, ?_⟩
+  rw [canonicalEmbedding.latticeBasis_apply, integralBasis_apply]
+  rfl
+
+theorem mem_of_embeddings {K : Type} [Field K] [NumberField K] {W : Type} [AddCommGroup W] [Module ℂ W]
+    (V : Submodule ℂ W) (L : ((K →+* ℂ) → ℂ) → W) (hadd : ∀ f g, L (f + g) = L f + L g)
+    (hsmul : ∀ (a : ℂ) f, L (a • f) = a • L f) (h : ∀ c : 𝓞 K, L (fun τ => τ (c : K)) ∈ V)
+    (f : (K →+* ℂ) → ℂ) : L f ∈ V := by
+  let Ll : ((K →+* ℂ) → ℂ) →ₗ[ℂ] W := { toFun := L, map_add' := hadd, map_smul' := hsmul }
+  have hf : f ∈ Submodule.span ℂ (Set.range fun (c : 𝓞 K) (τ : K →+* ℂ) => τ (c : K)) := by
+    rw [span_embeddings_eq_top]; trivial
+  have : Ll f ∈ (Submodule.span ℂ (Set.range fun (c : 𝓞 K) (τ : K →+* ℂ) => τ (c : K))).map Ll :=
+    Submodule.mem_map_of_mem hf
+  have hle : (Submodule.span ℂ (Set.range fun (c : 𝓞 K) (τ : K →+* ℂ) => τ (c : K))).map Ll ≤ V := by
+    rw [Submodule.map_span_le]
+    rintro _ ⟨c, rfl⟩
+    exact h c
+  exact hle this
+
+variable {p : ℕ} [Fact p.Prime]
+
+def padicToComplex (j : PadicAlgCl p ≃+* ℂ) : ℤ_[p] →+* ℂ :=
+  j.toRingHom.comp ((algebraMap ℚ_[p] (PadicAlgCl p)).comp PadicInt.Coe.ringHom)
+
+def evalTensor (F : Type) [Field F] (κ : ℤ_[p] →+* ℂ) (τ : F →+* ℂ) : 𝓞 F ⊗[ℤ] ℤ_[p] →+* ℂ :=
+  (Algebra.TensorProduct.lift (τ.comp (algebraMap (𝓞 F) F)).toIntAlgHom κ.toIntAlgHom
+    (fun _ _ => Commute.all _ _)).toRingHom
+
+theorem evalTensor_tmul (F : Type) [Field F] (κ : ℤ_[p] →+* ℂ) (τ : F →+* ℂ) (c : 𝓞 F) (z : ℤ_[p]) :
+    evalTensor F κ τ (c ⊗ₜ z) = τ (c : F) * κ z := by
+  simp [evalTensor]
+
+def bigPhi (D : Datum p) (κ : ℤ_[p] →+* ℂ)
+    (e : (D.O ⊗[ℤ] ℤ_[p]) ≃ₐ[𝓞 D.F] Matrix (Fin D.m) (Fin D.m) (𝓞 D.F ⊗[ℤ] ℤ_[p])) :
+    (D.O ⊗[ℤ] ℤ_[p]) →+* ((D.F →+* ℂ) → Matrix (Fin D.m) (Fin D.m) ℂ) :=
+  Pi.ringHom fun τ => (evalTensor D.F κ τ).mapMatrix.comp e.toRingHom
+
+theorem bigPhi_algebraMap (D : Datum p) (κ : ℤ_[p] →+* ℂ)
+    (e : (D.O ⊗[ℤ] ℤ_[p]) ≃ₐ[𝓞 D.F] Matrix (Fin D.m) (Fin D.m) (𝓞 D.F ⊗[ℤ] ℤ_[p])) (c : 𝓞 D.F) (τ : D.F →+* ℂ) :
+    bigPhi D κ e (algebraMap (𝓞 D.F) D.O c ⊗ₜ 1) τ = Matrix.scalar (Fin D.m) (τ (c : D.F)) := by
+  have h1 : (algebraMap (𝓞 D.F) D.O c ⊗ₜ[ℤ] (1 : ℤ_[p])) = algebraMap (𝓞 D.F) (D.O ⊗[ℤ] ℤ_[p]) c := rfl
+  rw [h1]
+  show (evalTensor D.F κ τ).mapMatrix (e (algebraMap (𝓞 D.F) (D.O ⊗[ℤ] ℤ_[p]) c)) = _
+  rw [e.commutes c, Matrix.algebraMap_eq_diagonal]
+  ext i j
+  simp [Matrix.diagonal_apply, Matrix.scalar_apply, Algebra.TensorProduct.algebraMap_apply, evalTensor_tmul]
+  split_ifs <;> simp [evalTensor_tmul]
+
+theorem tmul_one_comm {A : Type} [Ring A] (z : ℤ_[p]) (a : A ⊗[ℤ] ℤ_[p]) :
+    a * ((1 : A) ⊗ₜ z) = ((1 : A) ⊗ₜ z) * a := by
+  induction a using TensorProduct.induction_on with
+  | zero => simp
+  | tmul x y => simp [Algebra.TensorProduct.tmul_mul_tmul, mul_comm]
+  | add a b ha hb => rw [add_mul, mul_add, ha, hb]
+
+theorem bigPhi_one_tmul (D : Datum p) (κ : ℤ_[p] →+* ℂ)
+    (e : (D.O ⊗[ℤ] ℤ_[p]) ≃ₐ[𝓞 D.F] Matrix (Fin D.m) (Fin D.m) (𝓞 D.F ⊗[ℤ] ℤ_[p])) (z : ℤ_[p]) :
+    ∃ w : 𝓞 D.F ⊗[ℤ] ℤ_[p], bigPhi D κ e ((1 : D.O) ⊗ₜ z) = fun τ => Matrix.scalar (Fin D.m) (evalTensor D.F κ τ w) := by
+  have hc : e ((1 : D.O) ⊗ₜ z) ∈ Set.center (Matrix (Fin D.m) (Fin D.m) (𝓞 D.F ⊗[ℤ] ℤ_[p])) := by
+    rw [Semigroup.mem_center_iff]
+    intro g
+    obtain ⟨a, rfl⟩ := e.surjective g
+    rw [← map_mul, ← map_mul, tmul_one_comm]
+  rw [Matrix.center_eq_range] at hc
+  obtain ⟨w, hw⟩ := hc
+  refine ⟨w, funext fun τ => ?_⟩
+  show (evalTensor D.F κ τ).mapMatrix (e ((1 : D.O) ⊗ₜ z)) = _
+  rw [← hw]
+  ext i j
+  simp only [Matrix.scalar_apply, RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.diagonal_apply]
+  split_ifs <;> simp
+
+theorem mem_span_bigPhi (D : Datum p) (κ : ℤ_[p] →+* ℂ)
+    (e : (D.O ⊗[ℤ] ℤ_[p]) ≃ₐ[𝓞 D.F] Matrix (Fin D.m) (Fin D.m) (𝓞 D.F ⊗[ℤ] ℤ_[p])) (y : D.O ⊗[ℤ] ℤ_[p]) :
+    bigPhi D κ e y ∈ Submodule.span ℂ (Set.range ((bigPhi D κ e).comp Algebra.TensorProduct.includeLeftRingHom)) := by
+  set V := Submodule.span ℂ (Set.range ((bigPhi D κ e).comp Algebra.TensorProduct.includeLeftRingHom))
+  have hφ : ∀ x : D.O, bigPhi D κ e (x ⊗ₜ 1) ∈ V := fun x => Submodule.subset_span ⟨x, rfl⟩
+  have hL : ∀ (x : D.O) (f : (D.F →+* ℂ) → ℂ),
+      (fun τ => Matrix.scalar (Fin D.m) (f τ)) * bigPhi D κ e (x ⊗ₜ 1) ∈ V := by
+    intro x
+    apply mem_of_embeddings V (fun f => (fun τ => Matrix.scalar (Fin D.m) (f τ)) * bigPhi D κ e (x ⊗ₜ 1))
+    · intro f g
+      funext τ
+      simp only [Pi.mul_apply, Pi.add_apply, map_add, _root_.add_mul]
+    · intro a f
+      funext τ
+      ext i j
+      simp [Matrix.scalar_apply, Matrix.diagonal_mul, _root_.mul_assoc]
+    · intro c
+      have : (fun τ : D.F →+* ℂ => Matrix.scalar (Fin D.m) (τ (c : D.F))) =
+          bigPhi D κ e (algebraMap (𝓞 D.F) D.O c ⊗ₜ 1) := funext fun τ => (bigPhi_algebraMap D κ e c τ).symm
+      rw [this, ← map_mul, Algebra.TensorProduct.tmul_mul_tmul, _root_.one_mul]
+      exact hφ _
+  induction y using TensorProduct.induction_on with
+  | zero => simp
+  | tmul x z =>
+    obtain ⟨w, hw⟩ := bigPhi_one_tmul D κ e z
+    have : x ⊗ₜ[ℤ] z = ((1 : D.O) ⊗ₜ z) * (x ⊗ₜ 1) := by
+      rw [Algebra.TensorProduct.tmul_mul_tmul, _root_.one_mul, _root_.mul_one]
+    rw [this, map_mul, hw]
+    exact hL x _
+  | add a b ha hb => rw [map_add]; exact V.add_mem ha hb
+
+theorem bigPhi_symm_single (D : Datum p) (κ : ℤ_[p] →+* ℂ)
+    (e : (D.O ⊗[ℤ] ℤ_[p]) ≃ₐ[𝓞 D.F] Matrix (Fin D.m) (Fin D.m) (𝓞 D.F ⊗[ℤ] ℤ_[p])) (i j : Fin D.m) (c : 𝓞 D.F) :
+    bigPhi D κ e (e.symm (Matrix.single i j (c ⊗ₜ 1))) = fun τ => Matrix.single i j (τ (c : D.F)) := by
+  funext τ
+  show (evalTensor D.F κ τ).mapMatrix (e (e.symm _)) = _
+  rw [e.apply_symm_apply]
+  ext k l
+  simp only [RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.single_apply]
+  split_ifs <;> simp [evalTensor_tmul]
+
+theorem exists_ringHom_pi_matrix : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p),
+    ∃ φ : D.O →+* ((D.F →+* ℂ) → Matrix (Fin D.m) (Fin D.m) ℂ),
+      (∀ (c : 𝓞 D.F) τ, φ (algebraMap (𝓞 D.F) D.O c) τ = Matrix.scalar (Fin D.m) (τ (c : D.F))) ∧
+        Submodule.span ℂ (Set.range φ) = ⊤ := by
+  intro p _ D
+  obtain ⟨e⟩ := D.splitP
+  obtain ⟨j⟩ := GlobalTheory.nonempty_padicAlgCl_ringEquiv_complex p
+  set κ := padicToComplex j
+  refine ⟨(bigPhi D κ e).comp Algebra.TensorProduct.includeLeftRingHom, fun c τ => bigPhi_algebraMap D κ e c τ, ?_⟩
+  rw [eq_top_iff]
+  intro X _
+  have hX : X = ∑ i, ∑ k, (fun τ => Matrix.single i k (X τ i k)) := by
+    funext τ
+    simp only [Finset.sum_apply]
+    exact Matrix.matrix_eq_sum_single (X τ)
+  rw [hX]
+  refine Submodule.sum_mem _ fun i _ => Submodule.sum_mem _ fun k _ => ?_
+  apply mem_of_embeddings _ (fun f => fun τ => Matrix.single i k (f τ)) (f := fun τ => X τ i k)
+  · intro f g; funext τ; simp [Matrix.single_add]
+  · intro a f; funext τ; simp [Matrix.smul_single]
+  · intro c
+    rw [← bigPhi_symm_single D κ e i k c]
+    exact mem_span_bigPhi D κ e _
+
+end GlobalTheory.UPel.HT.SplitC
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.PELU
+open scoped Matrix
+open GlobalTheory.UPel.HT
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_ringHom_order_pi_matrix_embeddings : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p), ∃ φ : D.O →+* ((D.F →+* ℂ) → Matrix (Fin D.m) (Fin D.m) ℂ), (∀ (c : 𝓞 D.F) τ, φ (algebraMap (𝓞 D.F) D.O c) τ = Matrix.scalar (Fin D.m) (τ (c : D.F))) ∧ Submodule.span ℂ (Set.range φ) = ⊤ := by
+  atlas_forward_decl GlobalTheory.UPel.HT.SplitC.exists_ringHom_pi_matrix
+end
+
+section
+section
+namespace GlobalTheory
+
+theorem ringHom_extends_algHom_of_span_of_finrank_eq :
+    ∀ (O : Type) [Ring O] [Module.Free ℤ O] [Module.Finite ℤ O] (A : Type) [Ring A] [Algebra ℂ A]
+      [FiniteDimensional ℂ A] (B : Type) [Ring B] [Algebra ℂ B] (φ : O →+* A) (ρ : O →+* B),
+      Submodule.span ℂ (Set.range φ) = ⊤ → Module.finrank ℂ A = Module.finrank ℤ O →
+      ∃ σ : A →ₐ[ℂ] B, ∀ x, σ (φ x) = ρ x := by
+  intro O _ _ _ A _ _ _ B _ _ φ ρ hspan hdim
+  classical
+  let b := Module.Free.chooseBasis ℤ O
+  let v : Module.Free.ChooseBasisIndex ℤ O → A := fun i => φ (b i)
+  have hle : ⊤ ≤ Submodule.span ℂ (Set.range v) := by
+    rw [← hspan]
+    apply Submodule.span_le.mpr
+    rintro _ ⟨x, rfl⟩
+    have hx : x = ∑ i, b.repr x i • b i := (b.sum_repr x).symm
+    rw [hx, map_sum]
+    apply Submodule.sum_mem
+    intro i _
+    rw [map_zsmul, ← Int.cast_smul_eq_zsmul ℂ]
+    exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+  have hcard : Fintype.card (Module.Free.ChooseBasisIndex ℤ O) = Module.finrank ℂ A := by
+    rw [hdim, Module.finrank_eq_card_chooseBasisIndex]
+  let bA := basisOfTopLeSpanOfCardEqFinrank v hle hcard
+  have hbA : ∀ i, bA i = φ (b i) := fun i => by
+    simp only [bA, coe_basisOfTopLeSpanOfCardEqFinrank, v]
+  let L : A →ₗ[ℂ] B := bA.constr ℂ (fun i => ρ (b i))
+  have hLb : ∀ i, L (φ (b i)) = ρ (b i) := by
+    intro i
+    rw [← hbA]
+    exact bA.constr_basis ℂ _ i
+  have hLφ : ∀ x, L (φ x) = ρ x := by
+    have h : (L.restrictScalars ℤ).comp φ.toAddMonoidHom.toIntLinearMap
+        = ρ.toAddMonoidHom.toIntLinearMap := b.ext (fun i => hLb i)
+    intro x
+    exact LinearMap.congr_fun h x
+  have hmul : ∀ u w : A, L (u * w) = L u * L w := by
+    have h : (LinearMap.mul ℂ A).compr₂ L = (LinearMap.mul ℂ B).compl₁₂ L L := by
+      refine bA.ext (fun i => bA.ext (fun j => ?_))
+      simp only [LinearMap.compr₂_apply, LinearMap.compl₁₂_apply, LinearMap.mul_apply', hbA]
+      rw [← map_mul, hLφ, hLφ, hLφ, map_mul]
+    intro u w
+    exact LinearMap.congr_fun₂ h u w
+  have hone : L 1 = 1 := by
+    rw [← map_one φ, hLφ, map_one]
+  exact ⟨AlgHom.ofLinearMap L hone hmul, fun x => by
+    simp only [AlgHom.ofLinearMap_apply]; exact hLφ x⟩
+
+end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_algHom_extend_ringHom_of_span_eq_top_of_finrank_eq : ∀ (O : Type) [Ring O] [Module.Free ℤ O] [Module.Finite ℤ O] (A : Type) [Ring A] [Algebra ℂ A] [FiniteDimensional ℂ A] (B : Type) [Ring B] [Algebra ℂ B] (φ : O →+* A) (ρ : O →+* B), Submodule.span ℂ (Set.range φ) = ⊤ → Module.finrank ℂ A = Module.finrank ℤ O → ∃ σ : A →ₐ[ℂ] B, ∀ x, σ (φ x) = ρ x := by
+  atlas_forward_decl GlobalTheory.ringHom_extends_algHom_of_span_of_finrank_eq
+end
+
+section
+namespace GlobalTheory.TraceEqualFinrank
+
+open Module
+
+theorem trace_eq_finrank_range {g : ℕ} (P : Matrix (Fin g) (Fin g) ℂ) (hP : IsIdempotentElem P) :
+    Matrix.trace P = (finrank ℂ (LinearMap.range (Matrix.toLin' P)) : ℂ) := by
+  have he : IsIdempotentElem (Matrix.toLin' P) := by
+    change Matrix.toLin' P * Matrix.toLin' P = Matrix.toLin' P
+    rw [Module.End.mul_eq_comp, ← Matrix.toLin'_mul, hP.eq]
+  have hproj := (LinearMap.isProj_range_iff_isIdempotentElem (Matrix.toLin' P)).mpr he
+  rw [← Matrix.trace_toLin'_eq, hproj.trace]
+
+theorem exists_mul_mul_eq_of_trace_eq {g : ℕ} (P P' : Matrix (Fin g) (Fin g) ℂ)
+    (hP : IsIdempotentElem P) (hP' : IsIdempotentElem P')
+    (h : Matrix.trace P = Matrix.trace P') :
+    ∃ (X : Matrix (Fin g) (Fin g) ℂ) (Y : Matrix (Fin g) (Fin g) ℂ), Y * P' * X = P := by
+  have hrk : finrank ℂ (LinearMap.range (Matrix.toLin' P')) =
+      finrank ℂ (LinearMap.range (Matrix.toLin' P)) := by
+    have h2 := (trace_eq_finrank_range P' hP').symm.trans (h.symm.trans (trace_eq_finrank_range P hP))
+    exact_mod_cast h2
+  let e := LinearEquiv.ofFinrankEq _ _ hrk
+  have hid' : ∀ w ∈ LinearMap.range (Matrix.toLin' P'), Matrix.toLin' P' w = w := by
+    rintro w ⟨u, rfl⟩
+    rw [← LinearMap.comp_apply, ← Matrix.toLin'_mul, hP'.eq]
+  let Xl : (Fin g → ℂ) →ₗ[ℂ] (Fin g → ℂ) := (LinearMap.range (Matrix.toLin' P')).subtype ∘ₗ
+    e.symm.toLinearMap ∘ₗ (Matrix.toLin' P).rangeRestrict
+  let Yl : (Fin g → ℂ) →ₗ[ℂ] (Fin g → ℂ) := (LinearMap.range (Matrix.toLin' P)).subtype ∘ₗ
+    e.toLinearMap ∘ₗ (Matrix.toLin' P').rangeRestrict
+  refine ⟨LinearMap.toMatrix' Xl, LinearMap.toMatrix' Yl, ?_⟩
+  apply Matrix.toLin'.injective
+  rw [Matrix.toLin'_mul, Matrix.toLin'_mul, Matrix.toLin'_toMatrix', Matrix.toLin'_toMatrix']
+  refine LinearMap.ext fun v => ?_
+  have hw := (e.symm ((Matrix.toLin' P).rangeRestrict v)).2
+  have h1 : (Matrix.toLin' P').rangeRestrict
+      (Matrix.toLin' P' ((e.symm ((Matrix.toLin' P).rangeRestrict v) : Fin g → ℂ))) =
+      e.symm ((Matrix.toLin' P).rangeRestrict v) := by
+    apply Subtype.ext
+    change Matrix.toLin' P' (Matrix.toLin' P' _) = _
+    rw [hid' _ hw, hid' _ hw]
+  change ((e ((Matrix.toLin' P').rangeRestrict
+      (Matrix.toLin' P' ((e.symm ((Matrix.toLin' P).rangeRestrict v) : Fin g → ℂ)))) :
+      LinearMap.range (Matrix.toLin' P)) : Fin g → ℂ) = Matrix.toLin' P v
+  rw [h1, LinearEquiv.apply_symm_apply]
+  rfl
+
+end GlobalTheory.TraceEqualFinrank
+end
+
+section
+section
+open Matrix
+
+namespace GlobalTheory
+
+def piMatUnit {I : Type} [DecidableEq I] (m : ℕ) (τ : I) (i j : Fin m) :
+    I → Matrix (Fin m) (Fin m) ℂ :=
+  Pi.single τ (Matrix.single i j 1)
+
+lemma piMatUnit_mul {I : Type} [DecidableEq I] (m : ℕ) (τ τ' : I) (i j k l : Fin m) :
+    piMatUnit m τ i j * piMatUnit m τ' k l =
+      if τ = τ' ∧ j = k then piMatUnit m τ i l else 0 := by
+  funext ρ
+  simp only [piMatUnit, Pi.mul_apply]
+  by_cases h1 : τ = τ'
+  · subst h1
+    by_cases h2 : j = k
+    · subst h2
+      by_cases h3 : ρ = τ
+      · subst h3; simp [Matrix.single_mul_single_same]
+      · simp [Pi.single_apply, h3]
+    · by_cases h3 : ρ = τ
+      · subst h3; simp [Matrix.single_mul_single_of_ne, h2]
+      · simp [Pi.single_apply, h3, h2]
+  · by_cases h3 : ρ = τ
+    · subst h3
+      have : ρ ≠ τ' := h1
+      simp [Pi.single_apply, this, h1]
+    · simp [Pi.single_apply, h3, h1]
+
+lemma piMatUnit_decomp {I : Type} [Fintype I] [DecidableEq I] (m : ℕ)
+    (x : I → Matrix (Fin m) (Fin m) ℂ) :
+    x = ∑ τ, ∑ i, ∑ j, x τ i j • piMatUnit m τ i j := by
+  funext ρ
+  ext a b
+  simp only [Finset.sum_apply, Matrix.sum_apply, Pi.smul_apply, Matrix.smul_apply, piMatUnit,
+    Pi.single_apply]
+  simp only [show ∀ (c : Prop) [Decidable c] (M : Matrix (Fin m) (Fin m) ℂ),
+      (if c then M else 0) a b = if c then M a b else 0 from fun c _ M => by split_ifs <;> rfl]
+  simp [Matrix.zero_apply, Matrix.single_apply, mul_ite, ite_and, Finset.sum_ite_eq,
+    Finset.sum_ite_eq']
+
+lemma sum_piMatUnit_diag {I : Type} [Fintype I] [DecidableEq I] (m : ℕ) (τ : I) :
+    ∑ i, piMatUnit m τ i i = Pi.single τ 1 := by
+  funext ρ
+  ext a b
+  by_cases h : ρ = τ
+  · subst h
+    simp only [piMatUnit, Finset.sum_apply, Matrix.sum_apply, Pi.single_eq_same, Matrix.single_apply,
+      Matrix.one_apply]
+    rcases eq_or_ne a b with rfl | hab
+    · simp
+    · simp [hab]
+  · simp [piMatUnit, Finset.sum_apply, Matrix.sum_apply, Pi.single_apply, h]
+
+lemma exists_mul_idem_mul_eq_of_trace_eq {g : ℕ} (P P' : Matrix (Fin g) (Fin g) ℂ)
+    (hP : IsIdempotentElem P) (hP' : IsIdempotentElem P') (ht : P.trace = P'.trace) :
+    ∃ X Y : Matrix (Fin g) (Fin g) ℂ, Y * P' * X = P := by
+  first
+  | exact @_root_.GlobalTheory.TraceEqualFinrank.exists_mul_mul_eq_of_trace_eq
+  | exact _root_.GlobalTheory.TraceEqualFinrank.exists_mul_mul_eq_of_trace_eq
+  | (apply _root_.GlobalTheory.TraceEqualFinrank.exists_mul_mul_eq_of_trace_eq <;> assumption)
+  | (intros; apply _root_.GlobalTheory.TraceEqualFinrank.exists_mul_mul_eq_of_trace_eq <;> assumption)
+  | (intros; apply @_root_.GlobalTheory.TraceEqualFinrank.exists_mul_mul_eq_of_trace_eq <;> first | assumption | infer_instance)
+  | (intros; exact _root_.GlobalTheory.TraceEqualFinrank.exists_mul_mul_eq_of_trace_eq ..)
+
+theorem conj_of_trace_central_idem_eq :
+    ∀ (I : Type) [Fintype I] [DecidableEq I] (m g : ℕ), 0 < m →
+      ∀ (σ σ' : (I → Matrix (Fin m) (Fin m) ℂ) →ₐ[ℂ] Matrix (Fin g) (Fin g) ℂ),
+        (∀ τ, (σ (Pi.single τ 1)).trace = (σ' (Pi.single τ 1)).trace) →
+          ∃ h : Matrix (Fin g) (Fin g) ℂ, IsUnit h ∧ ∀ x, σ' x * h = h * σ x := by
+  intro I _ _ m g hm σ σ' htr
+  set z : Fin m := ⟨0, hm⟩
+
+  have hdiag : ∀ (ρ : (I → Matrix (Fin m) (Fin m) ℂ) →ₐ[ℂ] Matrix (Fin g) (Fin g) ℂ) (τ : I),
+      (ρ (Pi.single τ 1)).trace = (m : ℂ) * (ρ (piMatUnit m τ z z)).trace := by
+    intro ρ τ
+    have hi : ∀ i, (ρ (piMatUnit m τ i i)).trace = (ρ (piMatUnit m τ z z)).trace := by
+      intro i
+      have e1 : piMatUnit m τ i i = piMatUnit m τ i z * piMatUnit m τ z i := by
+        rw [piMatUnit_mul]; simp
+      have e2 : piMatUnit m τ z z = piMatUnit m τ z i * piMatUnit m τ i z := by
+        rw [piMatUnit_mul]; simp
+      rw [e1, e2, map_mul, map_mul, Matrix.trace_mul_comm]
+    rw [← sum_piMatUnit_diag, map_sum, Matrix.trace_sum, Finset.sum_congr rfl (fun i _ => hi i),
+      Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+  have hidem : ∀ (ρ : (I → Matrix (Fin m) (Fin m) ℂ) →ₐ[ℂ] Matrix (Fin g) (Fin g) ℂ) (τ : I),
+      IsIdempotentElem (ρ (piMatUnit m τ z z)) := by
+    intro ρ τ
+    unfold IsIdempotentElem
+    rw [← map_mul, piMatUnit_mul]; simp
+  have hm' : (m : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hm.ne'
+  have htr' : ∀ τ, (σ (piMatUnit m τ z z)).trace = (σ' (piMatUnit m τ z z)).trace := by
+    intro τ
+    have := htr τ
+    rw [hdiag σ, hdiag σ'] at this
+    exact mul_left_cancel₀ hm' this
+  choose X Y hYX using fun τ => exists_mul_idem_mul_eq_of_trace_eq _ _ (hidem σ τ) (hidem σ' τ) (htr' τ)
+  set h : Matrix (Fin g) (Fin g) ℂ :=
+    ∑ τ, ∑ i, σ' (piMatUnit m τ i z) * X τ * σ (piMatUnit m τ z i) with hh
+  set h' : Matrix (Fin g) (Fin g) ℂ :=
+    ∑ τ, ∑ i, σ (piMatUnit m τ i z) * Y τ * σ' (piMatUnit m τ z i) with hh'
+
+  have hE : ∀ τ k l, σ' (piMatUnit m τ k l) * h = h * σ (piMatUnit m τ k l) := by
+    intro τ k l
+    have hL : ∀ τ' i, σ' (piMatUnit m τ k l) * (σ' (piMatUnit m τ' i z) * X τ' * σ (piMatUnit m τ' z i))
+        = if τ = τ' ∧ l = i then σ' (piMatUnit m τ k z) * X τ * σ (piMatUnit m τ z l) else 0 := by
+      intro τ' i
+      rw [← mul_assoc, ← mul_assoc, ← map_mul, piMatUnit_mul]
+      split_ifs with hc
+      · obtain ⟨rfl, rfl⟩ := hc; rfl
+      · simp
+    have hR : ∀ τ' i, σ' (piMatUnit m τ' i z) * X τ' * σ (piMatUnit m τ' z i) * σ (piMatUnit m τ k l)
+        = if τ = τ' ∧ k = i then σ' (piMatUnit m τ k z) * X τ * σ (piMatUnit m τ z l) else 0 := by
+      intro τ' i
+      rw [mul_assoc _ (σ _), ← map_mul, piMatUnit_mul]
+      by_cases hc : τ' = τ ∧ i = k
+      · obtain ⟨rfl, rfl⟩ := hc; simp
+      · have hc' : ¬ (τ = τ' ∧ k = i) := fun h => hc ⟨h.1.symm, h.2.symm⟩
+        simp [hc, hc']
+    rw [hh, Finset.mul_sum, Finset.sum_mul]
+    simp only [Finset.mul_sum, Finset.sum_mul, hL, hR]
+    simp [ite_and, Finset.sum_ite_eq]
+  have hint : ∀ x, σ' x * h = h * σ x := by
+    intro x
+    rw [piMatUnit_decomp m x]
+    simp only [map_sum, map_smul, Finset.sum_mul, Finset.mul_sum, smul_mul_assoc, mul_smul_comm, hE]
+
+  have hprod : ∀ τ i τ' j, σ (piMatUnit m τ i z) * Y τ * σ' (piMatUnit m τ z i) *
+      (σ' (piMatUnit m τ' j z) * X τ' * σ (piMatUnit m τ' z j))
+        = if τ = τ' ∧ i = j then σ (piMatUnit m τ i i) else 0 := by
+    intro τ i τ' j
+    have e : σ (piMatUnit m τ i z) * Y τ * σ' (piMatUnit m τ z i) *
+        (σ' (piMatUnit m τ' j z) * X τ' * σ (piMatUnit m τ' z j)) =
+        σ (piMatUnit m τ i z) * Y τ * σ' (piMatUnit m τ z i * piMatUnit m τ' j z) * X τ' *
+          σ (piMatUnit m τ' z j) := by
+      rw [map_mul]; simp only [mul_assoc]
+    rw [e, piMatUnit_mul]
+    split_ifs with hc
+    · obtain ⟨rfl, rfl⟩ := hc
+      rw [show σ (piMatUnit m τ i z) * Y τ * σ' (piMatUnit m τ z z) * X τ * σ (piMatUnit m τ z i) =
+          σ (piMatUnit m τ i z) * (Y τ * σ' (piMatUnit m τ z z) * X τ) * σ (piMatUnit m τ z i) by
+            simp only [mul_assoc], hYX τ, ← map_mul, ← map_mul]
+      simp [piMatUnit_mul]
+    · simp
+  have hrow : ∀ τ i, σ (piMatUnit m τ i z) * Y τ * σ' (piMatUnit m τ z i) * h =
+      σ (piMatUnit m τ i i) := by
+    intro τ i
+    rw [hh]
+    simp only [Finset.mul_sum, hprod]
+    simp [ite_and, Finset.sum_ite_eq, Finset.sum_ite_eq']
+  have hinv : h' * h = 1 := by
+    rw [hh', Finset.sum_mul]
+    simp only [Finset.sum_mul, hrow]
+    rw [← map_one σ, ← Finset.univ_sum_single (1 : I → Matrix (Fin m) (Fin m) ℂ), map_sum]
+    refine Finset.sum_congr rfl fun τ _ => ?_
+    rw [Pi.one_apply, ← sum_piMatUnit_diag, map_sum]
+  exact ⟨h, (Matrix.isUnit_iff_isUnit_det h).mpr (Matrix.isUnit_det_of_left_inverse hinv), hint⟩
+
+end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.representations_equal_traces_conjugate : ∀ (I : Type) [Fintype I] [DecidableEq I] (m g : ℕ), 0 < m → ∀ (σ σ' : (I → Matrix (Fin m) (Fin m) ℂ) →ₐ[ℂ] Matrix (Fin g) (Fin g) ℂ), (∀ τ, (σ (Pi.single τ 1)).trace = (σ' (Pi.single τ 1)).trace) → ∃ h : Matrix (Fin g) (Fin g) ℂ, IsUnit h ∧ ∀ x, σ' x * h = h * σ x := by
+  atlas_forward_decl GlobalTheory.conj_of_trace_central_idem_eq
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.PELU
+open scoped Matrix
+open GlobalTheory.UPel.HT
+
+namespace GlobalTheory.UPel.HT
+
+theorem rep_conj_of_trace_eq : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (g : ℕ) (ρ ρ' : D.O →+* Matrix (Fin g) (Fin g) ℂ), (∀ c : 𝓞 D.F, (ρ (algebraMap (𝓞 D.F) D.O c)).trace = (ρ' (algebraMap (𝓞 D.F) D.O c)).trace) → ∃ h : Matrix (Fin g) (Fin g) ℂ, IsUnit h ∧ ∀ a, ρ' a * h = h * ρ a := by
+  classical
+  intro p _ D g ρ ρ' htr
+  obtain ⟨φ, hφ, hspan⟩ := GlobalTheory.T.exists_ringHom_order_pi_matrix_embeddings p D
+  haveI := D.freeO
+  haveI := D.finO
+  have hdim : Module.finrank ℂ ((D.F →+* ℂ) → Matrix (Fin D.m) (Fin D.m) ℂ) = Module.finrank ℤ D.O := by
+    rw [Module.finrank_pi_fintype, D.rankO]
+    simp [Module.finrank_matrix, NumberField.Embeddings.card]
+    ring
+  obtain ⟨σ, hσ⟩ := GlobalTheory.T.exists_algHom_extend_ringHom_of_span_eq_top_of_finrank_eq D.O _ _ φ ρ hspan hdim
+  obtain ⟨σ', hσ'⟩ := GlobalTheory.T.exists_algHom_extend_ringHom_of_span_eq_top_of_finrank_eq D.O _ _ φ ρ' hspan hdim
+  have key : ∀ (s : ((D.F →+* ℂ) → Matrix (Fin D.m) (Fin D.m) ℂ) →ₐ[ℂ] Matrix (Fin g) (Fin g) ℂ) (f : (D.F →+* ℂ) → ℂ),
+      (s (fun τ => Matrix.scalar (Fin D.m) (f τ))).trace = ∑ τ, f τ * (s (Pi.single τ 1)).trace := by
+    intro s f
+    have : (fun τ => Matrix.scalar (Fin D.m) (f τ)) = ∑ τ, f τ • (Pi.single τ 1 : (D.F →+* ℂ) → Matrix (Fin D.m) (Fin D.m) ℂ) := by
+      ext τ i j
+      simp [Finset.sum_apply, Pi.single_apply, Matrix.scalar_apply, Matrix.diagonal_apply, Matrix.one_apply]
+    rw [this, map_sum, Matrix.trace_sum]
+    simp [map_smul, Matrix.trace_smul]
+  let χ : (D.F →+* ℂ) → (𝓞 D.F →* ℂ) := fun τ => (τ.comp (algebraMap (𝓞 D.F) D.F)).toMonoidHom
+  have hχ : Function.Injective χ := by
+    intro τ τ' h
+    apply IsLocalization.ringHom_ext (nonZeroDivisors (𝓞 D.F))
+    ext x
+    exact DFunLike.congr_fun h x
+  have hlin := (linearIndependent_monoidHom (𝓞 D.F) ℂ).comp χ hχ
+  rw [Fintype.linearIndependent_iff] at hlin
+  have heq : ∀ τ, (σ (Pi.single τ 1)).trace = (σ' (Pi.single τ 1)).trace := by
+    have := hlin (fun τ => (σ (Pi.single τ 1)).trace - (σ' (Pi.single τ 1)).trace) (by
+      funext c
+      have h1 := htr c
+      have hφ' : φ (algebraMap (𝓞 D.F) D.O c) = fun τ => Matrix.scalar (Fin D.m) (τ (c : D.F)) := funext (hφ c)
+      rw [← hσ, ← hσ', hφ', key, key] at h1
+      simp only [Finset.sum_apply, Pi.smul_apply, Function.comp_apply, smul_eq_mul, Pi.zero_apply]
+      simp only [χ, MonoidHom.coe_coe, RingHom.coe_comp, Function.comp_apply, sub_mul, Finset.sum_sub_distrib]
+      rw [sub_eq_zero]
+      simpa [mul_comm] using h1)
+    intro τ
+    exact sub_eq_zero.mp (this τ)
+  exact GlobalTheory.T.representations_equal_traces_conjugate (D.F →+* ℂ) D.m g D.m_pos σ σ' heq |>.imp fun h hh => ⟨hh.1, fun a => by rw [← hσ, ← hσ']; exact hh.2 _⟩
+
+end GlobalTheory.UPel.HT
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.PELU
+open scoped Matrix
+open GlobalTheory.UPel.HT
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ringHom_conj_of_trace_eq_harrisTaylorOrder : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (g : ℕ) (ρ ρ' : D.O →+* Matrix (Fin g) (Fin g) ℂ), (∀ c : 𝓞 D.F, (ρ (algebraMap (𝓞 D.F) D.O c)).trace = (ρ' (algebraMap (𝓞 D.F) D.O c)).trace) → ∃ h : Matrix (Fin g) (Fin g) ℂ, IsUnit h ∧ ∀ a, ρ' a * h = h * ρ a := by
+  atlas_forward_decl GlobalTheory.UPel.HT.rep_conj_of_trace_eq
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.PELU
+open scoped Matrix
+open GlobalTheory.UPel.HT
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.uniformised_complex_fibre_marked_lattice_class : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [CommRing R] (b : Base D R) (N : ℕ) (σ : R →+* ℂ) (ρ : D.O →+* Matrix (Fin D.g) (Fin D.g) ℂ) (o : Obj b N (spMap σ)) h hL (D' : PLat D.O D.inv) t Q e, 0 < N → N.Coprime p → UnifAt (o.fam h hL) σ ρ N D' t Q (𝟙 _) e → ∃ t', D.Cls N D' t' ∧ ∀ a, ∃ x, t' a = t a + N • x := by
+  first | exact @GlobalTheory.UPel.HT.unifAt_cls | exact GlobalTheory.UPel.HT.unifAt_cls | (intros; apply GlobalTheory.UPel.HT.unifAt_cls <;> assumption)
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.PELU
+open scoped Matrix
+
+namespace GlobalTheory.ExpLin
+
+theorem exists_ringHom_matrix_lift : ∀ (X : Scheme.{0}) (G : Over X) [GrpObj G] [IsCommMonObj G] (g : ℕ) (O : Type) [Ring O] (act : O → (G ⟶ G)), IsAbelianScheme G → SmoothOfRelativeDimension g G.hom → (∀ a, IsMonHom (act a)) → act 1 = 𝟙 G → (∀ a b, act (a * b) = act b ≫ act a) → (∀ a b, act (a + b) = act a * act b) → ∀ (y : Sp ℂ ⟶ X) (e : (Fin g → ℂ) → (Over.mk y ⟶ G)), IsExp y e → ∃ ρ' : O →+* Matrix (Fin g) (Fin g) ℂ, ∀ a z, e (ρ' a *ᵥ z) = e z ≫ act a := by
+  intro X G _ _ g O _ act hab hsm hhom h1 hmul hadd y e he
+  have H := fun a => GlobalTheory.T.existsUnique_linear_lift_of_abelianEndomorphism X G g hab hsm y e e (act a) he he (hhom a)
+  let M : O → (Fin g → ℂ) →ₗ[ℂ] (Fin g → ℂ) := fun a => (H a).exists.choose
+  have hM : ∀ a z, e (M a z) = e z ≫ act a := fun a => (H a).exists.choose_spec
+  have key : ∀ a (N : (Fin g → ℂ) →ₗ[ℂ] (Fin g → ℂ)), (∀ z, e (N z) = e z ≫ act a) → N = M a :=
+    fun a N hN => (H a).unique hN (hM a)
+  have M1 : M 1 = LinearMap.id := (key 1 LinearMap.id (fun z => by simp [h1])).symm
+  have Mmul : ∀ a b, M (a * b) = M a ∘ₗ M b := fun a b =>
+    (key (a * b) (M a ∘ₗ M b) (fun z => by
+      simp only [LinearMap.comp_apply, hM, hmul, Category.assoc])).symm
+  have Madd : ∀ a b, M (a + b) = M a + M b := fun a b =>
+    (key (a + b) (M a + M b) (fun z => by
+      rw [LinearMap.add_apply, he.1, hM, hM, hadd, MonObj.comp_mul])).symm
+  let f : O →* Matrix (Fin g) (Fin g) ℂ :=
+    { toFun := fun a => LinearMap.toMatrix' (M a)
+      map_one' := by simp only [M1, LinearMap.toMatrix'_id]
+      map_mul' := fun a b => by simp only [Mmul, LinearMap.toMatrix'_comp] }
+  refine ⟨RingHom.mk' f (fun a b => by simp only [f, MonoidHom.coe_mk, OneHom.coe_mk, Madd, map_add]), ?_⟩
+  intro a z
+  show e (LinearMap.toMatrix' (M a) *ᵥ z) = _
+  rw [LinearMap.toMatrix'_mulVec, hM]
+
+end GlobalTheory.ExpLin
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.PELU
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_ringHom_matrix_lift_of_orderAction_exponential : ∀ (X : Scheme.{0}) (G : Over X) [GrpObj G] [IsCommMonObj G] (g : ℕ) (O : Type) [Ring O] (act : O → (G ⟶ G)), IsAbelianScheme G → SmoothOfRelativeDimension g G.hom → (∀ a, IsMonHom (act a)) → act 1 = 𝟙 G → (∀ a b, act (a * b) = act b ≫ act a) → (∀ a b, act (a + b) = act a * act b) → ∀ (y : Sp ℂ ⟶ X) (e : (Fin g → ℂ) → (Over.mk y ⟶ G)), IsExp y e → ∃ ρ' : O →+* Matrix (Fin g) (Fin g) ℂ, ∀ a z, e (ρ' a *ᵥ z) = e z ≫ act a := by
+  atlas_forward_decl GlobalTheory.ExpLin.exists_ringHom_matrix_lift
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.PELU
+open scoped Matrix
+
+namespace GlobalTheory.HermImNondeg
+
+theorem hermForm_add_right' {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) (z w w' : Fin g → ℂ) :
+    hermForm Hm z (w + w') = hermForm Hm z w + hermForm Hm z w' := by
+  simp only [hermForm, star_add, Matrix.mulVec_add, dotProduct_add]
+
+theorem hermForm_smul_right' {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) (a : ℂ) (z w : Fin g → ℂ) :
+    hermForm Hm z (a • w) = star a * hermForm Hm z w := by
+  simp only [hermForm, star_smul, Matrix.mulVec_smul, dotProduct_smul, smul_eq_mul]
+
+theorem hermForm_self_star {g : ℕ} {Hm : Matrix (Fin g) (Fin g) ℂ} (h : Hm.IsHermitian) (z : Fin g → ℂ) :
+    star (hermForm Hm z z) = hermForm Hm z z := by
+  simp only [hermForm, dotProduct, Matrix.mulVec, star_sum, star_mul', Pi.star_apply, star_star, h.apply,
+    Finset.mul_sum]
+  rw [Finset.sum_comm]
+  exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
+
+theorem im_hermForm_alternating_nondegenerate (La : Type) [AddCommGroup La] (g : ℕ) (P : La →+ (Fin g → ℂ))
+    (Hm : Matrix (Fin g) (Fin g) ℂ) (EF : LinearMap.BilinForm ℤ La) (hP : Function.Injective P)
+    (hspan : Submodule.span ℝ (Set.range P) = ⊤) (hH : Hm.IsHermitian)
+    (hpos : ∀ z : Fin g → ℂ, z ≠ 0 → 0 < (hermForm Hm z z).re)
+    (hEF : ∀ x y, (hermForm Hm (P x) (P y)).im = EF x y) :
+    (∀ x, EF x x = 0) ∧ ∀ x, (∀ y, EF x y = 0) → x = 0 := by
+  refine ⟨fun x => ?_, fun x hx => ?_⟩
+  · have hc : ((EF x x : ℤ) : ℝ) = 0 := by
+      rw [← hEF]
+      have h1 := congrArg Complex.im (hermForm_self_star hH (P x))
+      have h2 : (star (hermForm Hm (P x) (P x))).im = -(hermForm Hm (P x) (P x)).im := Complex.conj_im _
+      linarith
+    exact_mod_cast hc
+  · set z := P x with hz
+    have key : ∀ w : Fin g → ℂ, (hermForm Hm z w).im = 0 := by
+      intro w
+      have hw : w ∈ Submodule.span ℝ (Set.range P) := hspan ▸ Submodule.mem_top
+      induction hw using Submodule.span_induction with
+      | mem a ha =>
+        obtain ⟨y, rfl⟩ := ha
+        rw [hEF, hx y]; simp
+      | zero => simp [hermForm]
+      | add a b _ _ h1 h2 => rw [hermForm_add_right', Complex.add_im, h1, h2, add_zero]
+      | smul r a _ h1 =>
+        rw [← Complex.coe_smul, hermForm_smul_right']
+        simp [h1]
+    have hI := key (Complex.I • z)
+    rw [hermForm_smul_right'] at hI
+    have hre : (hermForm Hm z z).re = 0 := by
+      have : (star Complex.I * hermForm Hm z z).im = -(hermForm Hm z z).re := by
+        simp [Complex.mul_im]
+      linarith
+    by_contra hne
+    have hz0 : z ≠ 0 := by
+      intro h0; apply hne; apply hP; rw [← hz, h0, map_zero]
+    have := hpos z hz0
+    linarith
+
+end GlobalTheory.HermImNondeg
+
+example : ∀ (La : Type) [AddCommGroup La] (g : ℕ) (P : La →+ (Fin g → ℂ)) (Hm : Matrix (Fin g) (Fin g) ℂ) (EF : LinearMap.BilinForm ℤ La), Function.Injective P → Submodule.span ℝ (Set.range P) = ⊤ → Hm.IsHermitian → (∀ z : Fin g → ℂ, z ≠ 0 → 0 < (hermForm Hm z z).re) → (∀ x y, (hermForm Hm (P x) (P y)).im = EF x y) → (∀ x, EF x x = 0) ∧ ∀ x, (∀ y, EF x y = 0) → x = 0 := GlobalTheory.HermImNondeg.im_hermForm_alternating_nondegenerate
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.PELU
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.im_hermForm_alternating_nondegenerate_on_lattice : ∀ (La : Type) [AddCommGroup La] (g : ℕ) (P : La →+ (Fin g → ℂ)) (Hm : Matrix (Fin g) (Fin g) ℂ) (EF : LinearMap.BilinForm ℤ La), Function.Injective P → Submodule.span ℝ (Set.range P) = ⊤ → Hm.IsHermitian → (∀ z : Fin g → ℂ, z ≠ 0 → 0 < (hermForm Hm z z).re) → (∀ x y, (hermForm Hm (P x) (P y)).im = EF x y) → (∀ x, EF x x = 0) ∧ ∀ x, (∀ y, EF x y = 0) → x = 0 := by
+  atlas_forward_decl GlobalTheory.HermImNondeg.im_hermForm_alternating_nondegenerate
+end
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.PELU
 open scoped Matrix
@@ -184,3 +1333,4 @@ theorem exists_unifAt : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [C
     (LinearEquiv.refl D.O D'.La) (LinearEquiv.refl ℂ (Fin D.g → ℂ)) hN hU2 hmk (fun x => rfl) hU2.2.1⟩
 
 end GlobalTheory.UPel.HT.Unif
+end

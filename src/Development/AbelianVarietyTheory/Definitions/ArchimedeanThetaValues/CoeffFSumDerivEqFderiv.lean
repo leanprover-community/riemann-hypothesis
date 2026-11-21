@@ -15,9 +15,6 @@ variable {O : Type} [CommRing O] [StarRing O] (A : AnArc O)
 def perFactor (w : ℂ) (la : A.La) (v : A.V) : ℂ :=
   A.ah la.l (v.2 + A.ct la.y) * (A.psi la.y * eTwoPi (v.1 la.y) * eTwoPi (w * A.q la.y))⁻¹
 
-theorem perFactor_ne_zero (w : ℂ) (la : A.La) (v : A.V) : A.perFactor w la v ≠ 0 :=
-  mul_ne_zero (A.ah_ne_zero _ _)
-    (inv_ne_zero (mul_ne_zero (mul_ne_zero (A.psi _).ne_zero (e_ne_zero _)) (e_ne_zero _)))
 
 open AlgebraicGeometry CategoryTheory Limits in
 variable {O : Type} [CommRing O] [StarRing O] (A : _root_.GlobalTheory.AnArc O) in

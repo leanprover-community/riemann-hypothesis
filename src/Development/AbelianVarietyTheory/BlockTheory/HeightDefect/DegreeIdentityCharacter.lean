@@ -20,24 +20,8 @@ def logOmega (H : Host E) : ℝ :=
   haveI : NeZero H.d := ⟨H.d_prime.ne_zero⟩
   (logOm E (hostChar H)).re
 
-theorem hostChar_apply (H : Host E) (n : ℤ) : hostChar H (n : ZMod H.d) = (jacobiSym n H.d : ℂ) := by
-  haveI : Fact H.d.Prime := ⟨H.d_prime⟩
-  rw [← jacobiSym.legendreSym.to_jacobiSym]
-  rfl
 
-theorem hostChar_ne_one (H : Host E) : hostChar H ≠ 1 := by
-  haveI : Fact H.d.Prime := ⟨H.d_prime⟩
-  have h2 : ringChar (ZMod H.d) ≠ 2 := by
-    rw [ZMod.ringChar_zmod_n]
-    have := H.d_mod
-    omega
-  exact (MulChar.ringHomComp_ne_one_iff (f := Int.castRingHom ℂ) Int.cast_injective).2 (quadraticChar_ne_one h2)
 
-theorem lFunction_one_ne_zero (H : Host E) :
-    haveI : NeZero H.d := ⟨H.d_prime.ne_zero⟩
-    (hostChar H).LFunction 1 ≠ 0 :=
-  haveI : NeZero H.d := ⟨H.d_prime.ne_zero⟩
-  DirichletCharacter.LFunction_apply_one_ne_zero (hostChar_ne_one H)
 
 end Period
 

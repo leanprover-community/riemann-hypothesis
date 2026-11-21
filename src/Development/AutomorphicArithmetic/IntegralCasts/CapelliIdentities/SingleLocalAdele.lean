@@ -1,10 +1,564 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
-import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.FourierTransformBijective
-import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.SymmetricShiftIsUnit
-import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.StandardAdditiveCharacter
-import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.SchwartzFunctionGeneration
 
+section
+open MeasureTheory Metric
+
+section
+variable {K : Type} [NontriviallyNormedField K] [IsUltrametricDist K] [ProperSpace K]
+
+
+omit [IsUltrametricDist K] [ProperSpace K] in
+private lemma cond_pi (ψ : AddChar K ℂ) {d : K}
+    (hd : ∀ t : K, (∀ x : K, ‖x‖ ≤ 1 → ψ (x * t) = 1) ↔ ‖t‖ ≤ ‖d‖)
+    {κ : Type} [Fintype κ] {c : K} (hc : c ≠ 0) (y : κ → K) :
+    (∀ x : κ → K, ‖x‖ ≤ ‖c‖ → ψ (dotProduct x y) = 1) ↔ ‖y‖ ≤ ‖d / c‖ := by
+  classical
+  have hc' : 0 < ‖c‖ := norm_pos_iff.2 hc
+  constructor
+  · intro h
+    rw [pi_norm_le_iff_of_nonneg (norm_nonneg _)]
+    intro i
+    rw [norm_div, le_div_iff₀ hc', ← norm_mul, ← hd]
+    intro x hx
+    have := h (Pi.single i (x * c)) (by
+      rw [Pi.norm_single, norm_mul]; exact mul_le_of_le_one_left (norm_nonneg _) hx)
+    rw [single_dotProduct] at this
+    rw [← this]; congr 1; ring
+  · intro h x hx
+    have key : ∀ s : Finset κ, ψ (∑ i ∈ s, x i * y i) = 1 := by
+      intro s
+      induction s using Finset.induction_on with
+      | empty => simp
+      | insert i s hi ih =>
+        rw [Finset.sum_insert hi, AddChar.map_add_eq_mul, ih, mul_one]
+        have h1 : ‖y i * c‖ ≤ ‖d‖ := by
+          rw [norm_mul, ← le_div_iff₀ hc', ← norm_div]
+          exact (norm_le_pi_norm y i).trans h
+        have h2 := (hd _).2 h1 (x i / c) (by
+          rw [norm_div]
+          exact div_le_one_of_le₀ ((norm_le_pi_norm x i).trans hx) (norm_nonneg _))
+        rw [← h2]; congr 1; field_simp
+    exact key _
+
+omit [IsUltrametricDist K] [ProperSpace K] in
+private lemma unif {κ : Type} [Fintype κ] {f : (κ → K) → ℂ} (h1 : IsLocallyConstant f)
+    (h2 : HasCompactSupport f) :
+    ∃ e : K, e ≠ 0 ∧ ∀ u : κ → K, ‖u‖ ≤ ‖e‖ → ∀ x, f (x + u) = f x := by
+  obtain ⟨δ, hδ, h⟩ := lebesgue_number_lemma_of_metric (c := fun z : ℂ => f ⁻¹' {z}) h2
+    (fun z => h1 _) (fun x _ => by simp)
+  obtain ⟨e, he0, heδ⟩ := NormedField.exists_norm_lt K hδ
+  refine ⟨e, norm_pos_iff.1 he0, fun u hu x => ?_⟩
+  have hlt : ‖u‖ < δ := lt_of_le_of_lt hu heδ
+  by_cases hx : x ∈ tsupport f
+  · obtain ⟨z, hz⟩ := h x hx
+    have a1 : f x = z := hz (mem_ball_self hδ)
+    have a2 : f (x + u) = z := hz (by simpa [mem_ball, dist_eq_norm] using hlt)
+    rw [a1, a2]
+  · by_cases hx' : x + u ∈ tsupport f
+    · obtain ⟨z, hz⟩ := h _ hx'
+      have a1 : f (x + u) = z := hz (mem_ball_self hδ)
+      have a2 : f x = z := hz (by simpa [mem_ball, dist_eq_norm] using hlt)
+      rw [a1, a2]
+    · rw [image_eq_zero_of_notMem_tsupport hx, image_eq_zero_of_notMem_tsupport hx']
+
+omit [IsUltrametricDist K] [ProperSpace K] in
+private lemma bdd {κ : Type} [Fintype κ] {f : (κ → K) → ℂ}
+    (h2 : HasCompactSupport f) :
+    ∃ c : K, c ≠ 0 ∧ ∀ x : κ → K, ¬ ‖x‖ ≤ ‖c‖ → f x = 0 := by
+  obtain ⟨R, hR⟩ := h2.isCompact.isBounded.subset_closedBall 0
+  obtain ⟨c, hc⟩ := NormedField.exists_lt_norm K (max R 0)
+  refine ⟨c, norm_pos_iff.1 (lt_of_le_of_lt (le_max_right _ _) hc), fun x hx => ?_⟩
+  apply image_eq_zero_of_notMem_tsupport
+  intro h
+  have := mem_closedBall_zero_iff.1 (hR h)
+  exact hx (this.trans ((le_max_left _ _).trans hc.le))
+
+omit [IsUltrametricDist K] in
+private lemma sb_of {κ : Type} [Fintype κ] {f : (κ → K) → ℂ} {e c : K} (he : e ≠ 0)
+    (h1 : ∀ u : κ → K, ‖u‖ ≤ ‖e‖ → ∀ x, f (x + u) = f x)
+    (h2 : ∀ x : κ → K, ¬ ‖x‖ ≤ ‖c‖ → f x = 0) :
+    IsLocallyConstant f ∧ HasCompactSupport f := by
+  constructor
+  · rw [IsLocallyConstant.iff_eventually_eq]
+    intro x
+    filter_upwards [closedBall_mem_nhds x (norm_pos_iff.2 he)] with y hy
+    rw [mem_closedBall, dist_eq_norm] at hy
+    simpa using h1 (y - x) hy x
+  · exact HasCompactSupport.intro (isCompact_closedBall 0 ‖c‖)
+      (fun x hx => h2 x (by simpa using hx))
+
+end
+
+section
+variable {K : Type} [NontriviallyNormedField K] [IsUltrametricDist K] [ProperSpace K]
+  {κ : Type} [Fintype κ] [MeasurableSpace (κ → K)] [BorelSpace (κ → K)]
+  (μ : Measure (κ → K)) [μ.IsAddHaarMeasure] (ψ : AddChar K ℂ)
+
+private noncomputable def four (f : (κ → K) → ℂ) (y : κ → K) : ℂ :=
+  ∫ x, ψ (dotProduct x y) * f x ∂μ
+
+omit [IsUltrametricDist K] [ProperSpace K] in
+private lemma four_transl (f : (κ → K) → ℂ) (a y : κ → K) :
+    four μ ψ (fun x => f (x + a)) y = ψ (-(dotProduct a y)) * four μ ψ f y := by
+  unfold four
+  rw [← integral_add_right_eq_self (fun x => ψ (dotProduct x y) * f x) a, ← integral_const_mul]
+  congr 1
+  ext x
+  rw [← mul_assoc, ← AddChar.map_add_eq_mul, add_dotProduct]
+  congr 2
+  ring
+
+omit [IsUltrametricDist K] [ProperSpace K] [BorelSpace (κ → K)] [μ.IsAddHaarMeasure] in
+private lemma four_mod (f : (κ → K) → ℂ) (b y : κ → K) :
+    four μ ψ (fun x => ψ (dotProduct x b) * f x) y = four μ ψ f (y + b) := by
+  unfold four
+  congr 1
+  ext x
+  rw [← mul_assoc, ← AddChar.map_add_eq_mul, dotProduct_add]
+
+variable {d : K} (hd : ∀ t : K, (∀ x : K, ‖x‖ ≤ 1 → ψ (x * t) = 1) ↔ ‖t‖ ≤ ‖d‖)
+include hd
+
+omit [IsUltrametricDist K] [ProperSpace K] in
+private lemma four_supp {f : (κ → K) → ℂ} {e : K} (he : e ≠ 0)
+    (h1 : ∀ u : κ → K, ‖u‖ ≤ ‖e‖ → ∀ x, f (x + u) = f x) (y : κ → K) (hy : ¬ ‖y‖ ≤ ‖d / e‖) :
+    four μ ψ f y = 0 := by
+  rw [← cond_pi ψ hd he] at hy
+  push Not at hy
+  obtain ⟨u, hu, hne⟩ := hy
+  have := four_transl μ ψ f (-u) y
+  rw [show (fun x => f (x + -u)) = f from funext (h1 _ (by simpa using hu)), neg_dotProduct,
+    neg_neg] at this
+  by_contra h
+  apply hne
+  exact (mul_right_cancel₀ h (this.symm.trans (one_mul _).symm))
+
+omit [IsUltrametricDist K] [ProperSpace K] [BorelSpace (κ → K)] [μ.IsAddHaarMeasure] in
+private lemma four_inv {f : (κ → K) → ℂ} {c : K} (hc : c ≠ 0)
+    (h2 : ∀ x : κ → K, ¬ ‖x‖ ≤ ‖c‖ → f x = 0) (u : κ → K) (hu : ‖u‖ ≤ ‖d / c‖) (y : κ → K) :
+    four μ ψ f (y + u) = four μ ψ f y := by
+  rw [← four_mod]
+  congr 1
+  ext x
+  by_cases hx : ‖x‖ ≤ ‖c‖
+  · rw [(cond_pi ψ hd hc u).2 hu x hx, one_mul]
+  · rw [h2 x hx, mul_zero]
+
+omit [IsUltrametricDist K] in
+private lemma four_sb (hd0 : d ≠ 0) {f : (κ → K) → ℂ} (h1 : IsLocallyConstant f)
+    (h2 : HasCompactSupport f) :
+    IsLocallyConstant (four μ ψ f) ∧ HasCompactSupport (four μ ψ f) := by
+  obtain ⟨e, he, h1⟩ := unif h1 h2
+  obtain ⟨c, hc, h2⟩ := bdd h2
+  exact sb_of (div_ne_zero hd0 hc) (four_inv μ ψ hd hc h2) (four_supp μ ψ hd he h1)
+
+omit hd [ProperSpace K] [MeasurableSpace (κ → K)] [BorelSpace (κ → K)] in
+private lemma ind_inv (r : ℝ) (u : κ → K) (hu : ‖u‖ ≤ r) (x : κ → K) :
+    (closedBall (0 : κ → K) r).indicator (fun _ => (1 : ℂ)) (x + u) =
+      (closedBall (0 : κ → K) r).indicator (fun _ => (1 : ℂ)) x := by
+  have : x + u ∈ closedBall (0 : κ → K) r ↔ x ∈ closedBall (0 : κ → K) r := by
+    simp only [mem_closedBall_zero_iff]
+    constructor
+    · intro h
+      have := IsUltrametricDist.norm_add_le_max (x + u) (-u)
+      rw [add_neg_cancel_right, norm_neg] at this
+      exact this.trans (max_le h hu)
+    · intro h
+      exact (IsUltrametricDist.norm_add_le_max x u).trans (max_le h hu)
+  by_cases hx : x ∈ closedBall (0 : κ → K) r
+  · rw [Set.indicator_of_mem hx, Set.indicator_of_mem (this.2 hx)]
+  · rw [Set.indicator_of_notMem hx, Set.indicator_of_notMem (fun h => hx (this.1 h))]
+
+omit [ProperSpace K] in
+private lemma four_ind {c : K} (hc : c ≠ 0) (y : κ → K) :
+    four μ ψ ((closedBall (0 : κ → K) ‖c‖).indicator (fun _ => (1 : ℂ))) y =
+      (μ.real (closedBall 0 ‖c‖) : ℂ) *
+        (closedBall (0 : κ → K) ‖d / c‖).indicator (fun _ => (1 : ℂ)) y := by
+  by_cases hy : ‖y‖ ≤ ‖d / c‖
+  · have := four_inv μ ψ hd hc
+      (f := (closedBall (0 : κ → K) ‖c‖).indicator (fun _ => (1 : ℂ)))
+      (fun x hx => Set.indicator_of_notMem (by simpa using hx) _) y hy 0
+    rw [zero_add] at this
+    rw [this, Set.indicator_of_mem (by simpa using hy), mul_one]
+    unfold four
+    simp only [dotProduct_zero, AddChar.map_zero_eq_one, one_mul]
+    rw [integral_indicator_const _ measurableSet_closedBall]
+    simp
+  · rw [four_supp μ ψ hd hc (ind_inv _) y hy, Set.indicator_of_notMem (by simpa using hy),
+      mul_zero]
+
+
+end
+end
+
+section
+open Matrix
+end
+
+section
+open NumberField IsDedekindDomain Filter Topology
+open scoped nonZeroDivisors
+
+namespace UpperTheory.TraceAwayCharacter
+
+private lemma trace_eq (F : Type) [Field F] [NumberField F] (x : F) :
+    Algebra.trace ℝ (mixedEmbedding.mixedSpace F) (mixedEmbedding F x)
+      = ((Algebra.trace ℚ F x : ℚ) : ℝ) := by
+  classical
+  rw [Algebra.trace_eq_matrix_trace (mixedEmbedding.latticeBasis F),
+    Algebra.trace_eq_matrix_trace (integralBasis F)]
+  simp only [Matrix.trace, Matrix.diag, Algebra.leftMulMatrix_eq_repr_mul, Rat.cast_sum]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [mixedEmbedding.latticeBasis_apply, ← map_mul, mixedEmbedding.latticeBasis_repr_apply]
+
+private lemma far (q : ℚ) (hq : ∀ z : ℤ, q ≠ z) :
+    ∃ m : ℕ, (Complex.exp (-(2 * Real.pi * Complex.I) * ((((m : ℚ) * q : ℚ) : ℝ) : ℂ))).re ≤ 0 := by
+  by_contra! h
+  set z : ℂ := Complex.exp (-(2 * Real.pi * Complex.I) * (q : ℂ)) with hz
+  have hpow : ∀ m : ℕ, Complex.exp (-(2 * Real.pi * Complex.I) *
+      ((((m : ℚ) * q : ℚ) : ℝ) : ℂ)) = z ^ m := by
+    intro m
+    rw [hz, ← Complex.exp_nat_mul]
+    congr 1
+    push_cast
+    ring
+  have hz1 : z ≠ 1 := by
+    intro h1
+    obtain ⟨n, hn⟩ := Complex.exp_eq_one_iff.mp h1
+    apply hq (-n)
+    have h2 : (q : ℂ) = ((-n : ℤ) : ℂ) := by
+      apply mul_left_cancel₀ (neg_ne_zero.mpr Complex.two_pi_I_ne_zero)
+      rw [hn]
+      push_cast
+      ring
+    exact_mod_cast h2
+  have hd : z ^ q.den = 1 := by
+    rw [← hpow, Rat.den_mul_eq_num, Complex.exp_eq_one_iff]
+    refine ⟨-q.num, ?_⟩
+    push_cast
+    ring
+  have hs : ∑ m ∈ Finset.range q.den, z ^ m = 0 := by
+    rw [geom_sum_eq hz1, hd]
+    simp
+  have hpos : 0 < (∑ m ∈ Finset.range q.den, z ^ m).re := by
+    rw [Complex.re_sum]
+    refine Finset.sum_pos (fun m _ => hpow m ▸ h m) ?_
+    exact Finset.nonempty_range_iff.mpr q.den_nz
+  rw [hs] at hpos
+  simp at hpos
+
+private lemma exists_pole (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) :
+    ∃ x : F, (∀ u : HeightOneSpectrum (𝓞 F), u ≠ v → u.valuation F x ≤ 1) ∧ ¬ IsIntegral ℤ x := by
+  obtain ⟨x, hx, hx1⟩ :=
+    FractionalIdeal.exists_notMem_one_of_ne_bot (K := F) v.ne_bot v.isPrime.ne_top
+  refine ⟨x, fun u hu => ?_, fun hi => hx1 ?_⟩
+  · have hle : ¬ v.asIdeal ≤ u.asIdeal := fun h =>
+      hu (HeightOneSpectrum.ext (v.isMaximal.eq_of_le u.isPrime.ne_top h).symm)
+    obtain ⟨t, ht, htu⟩ := Set.not_subset.mp hle
+    have hv0 : (v.asIdeal : FractionalIdeal (𝓞 F)⁰ F) ≠ 0 :=
+      FractionalIdeal.coeIdeal_ne_zero.mpr v.ne_bot
+    have h1 := (FractionalIdeal.mem_inv_iff hv0).mp hx (algebraMap _ F t)
+      (FractionalIdeal.mem_coeIdeal_of_mem _ ht)
+    obtain ⟨s, hs⟩ := (FractionalIdeal.mem_one_iff _).mp h1
+    have h2 : u.valuation F (algebraMap _ F t) = 1 := by
+      refine le_antisymm (u.valuation_le_one t) (not_lt.mp fun h => htu ?_)
+      exact (u.valuation_lt_one_iff_mem t).mp h
+    have h3 : u.valuation F (algebraMap (𝓞 F) F s) ≤ 1 := u.valuation_le_one s
+    rwa [hs, map_mul, h2, mul_one] at h3
+  · exact (FractionalIdeal.mem_one_iff _).mpr ⟨⟨x, hi⟩, rfl⟩
+
+private lemma exists_trace (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F))
+    (N : ℕ) (hN : N ≠ 0) :
+    ∃ y : F, (∀ u : HeightOneSpectrum (𝓞 F), u ≠ v → u.valuation F y ≤ 1) ∧
+      ∀ z : ℤ, Algebra.trace ℚ F ((N : F) * y) ≠ z := by
+  classical
+  by_contra! h
+  obtain ⟨x, hx, hxi⟩ := exists_pole F v
+  let M : Submodule ℤ F :=
+    AddSubgroup.toIntSubmodule
+      { carrier := {a | ∃ y : F, (∀ u : HeightOneSpectrum (𝓞 F), u ≠ v → u.valuation F y ≤ 1) ∧
+          a = (N : F) * y}
+        add_mem' := by
+          rintro _ _ ⟨a, ha, rfl⟩ ⟨b, hb, rfl⟩
+          exact ⟨a + b, fun u hu => Valuation.map_add_le _ (ha u hu) (hb u hu), by ring⟩
+        zero_mem' := ⟨0, by simp, by simp⟩
+        neg_mem' := by
+          rintro _ ⟨a, ha, rfl⟩
+          exact ⟨-a, fun u hu => by simpa using ha u hu, by ring⟩ }
+  have hM : ∀ a, a ∈ M ↔ ∃ y : F,
+      (∀ u : HeightOneSpectrum (𝓞 F), u ≠ v → u.valuation F y ≤ 1) ∧ a = (N : F) * y :=
+    fun _ => Iff.rfl
+  have hle : M ≤ Submodule.span ℤ (Set.range ((Algebra.traceForm ℚ F).dualBasis
+      (traceForm_nondegenerate ℚ F) (integralBasis F))) := by
+    rw [← LinearMap.BilinForm.dualSubmodule_span_of_basis]
+    intro a ha b hb
+    obtain ⟨y, hy, rfl⟩ := (hM a).mp ha
+    obtain ⟨c, rfl⟩ := (mem_span_integralBasis F).mp hb
+    obtain ⟨z, hz⟩ := h (y * algebraMap _ F c) fun u hu => by
+      rw [map_mul]
+      exact mul_le_one' (hy u hu) (u.valuation_le_one c)
+    refine Submodule.mem_one.mpr ⟨z, ?_⟩
+    rw [Algebra.traceForm_apply, mul_assoc, hz]
+    simp
+  have hfg : M.FG := Submodule.FG.of_le (Submodule.fg_span (Set.finite_range _)) hle
+  refine hxi (isIntegral_of_smul_mem_submodule M ?_ hfg x ?_)
+  · refine (Submodule.ne_bot_iff _).mpr ⟨(N : F), (hM _).mpr ⟨1, by simp, by simp⟩, ?_⟩
+    exact_mod_cast hN
+  · intro a ha
+    obtain ⟨y, hy, rfl⟩ := (hM a).mp ha
+    refine (hM _).mpr ⟨x * y, fun u hu => ?_, by rw [smul_eq_mul]; ring⟩
+    rw [map_mul]
+    exact mul_le_one' (hx u hu) (hy u hu)
+
+private lemma tendsto_local (F : Type) [Field F] [NumberField F] (u : HeightOneSpectrum (𝓞 F))
+    (w : ℕ → u.adicCompletion F) (hw : ∀ n, Valued.v (w n) ≤ 1) :
+    Tendsto (fun n : ℕ => ((n.factorial : ℕ) : u.adicCompletion F) * w n) atTop (𝓝 0) := by
+  have hnat : ∀ m : ℕ, ((m : ℕ) : u.adicCompletion F) =
+      algebraMap F (u.adicCompletion F) (algebraMap (𝓞 F) F (m : 𝓞 F)) := by
+    intro m
+    simp
+  have hval : ∀ m : ℕ, Valued.v ((m : ℕ) : u.adicCompletion F) =
+      u.valuation F (algebraMap (𝓞 F) F (m : 𝓞 F)) := by
+    intro m
+    rw [hnat]
+    exact HeightOneSpectrum.valuedAdicCompletion_eq_valuation' u _
+  set p : ℕ := Ideal.absNorm u.asIdeal with hp
+  have hp0 : p ≠ 0 := fun h => u.ne_bot (Ideal.absNorm_eq_zero_iff.mp h)
+  have hp1 : Valued.v ((p : ℕ) : u.adicCompletion F) < 1 := by
+    rw [hval]
+    exact (u.valuation_lt_one_iff_mem _).mpr (Ideal.absNorm_mem _)
+  have ht := Valued.tendsto_zero_pow_of_v_lt_one hp1
+  rw [(Valued.hasBasis_nhds_zero _ _).tendsto_right_iff] at ht ⊢
+  intro γ hγ
+  obtain ⟨k, hk⟩ := (ht γ hγ).exists
+  filter_upwards [eventually_ge_atTop (p ^ k)] with n hn
+  obtain ⟨c, hc⟩ := Nat.dvd_factorial (Nat.pos_of_ne_zero (pow_ne_zero k hp0)) hn
+  refine lt_of_le_of_lt ?_ hk
+  rw [hc, Nat.cast_mul, Nat.cast_pow, mul_assoc, map_mul]
+  refine mul_le_of_le_one_right' ?_
+  rw [Valuation.restrict_le_one_iff, map_mul]
+  refine mul_le_one' ?_ (hw n)
+  rw [hval]
+  exact u.valuation_le_one _
+
+private lemma tendsto_finite (F : Type) [Field F] [NumberField F]
+    (a : ℕ → FiniteAdeleRing (𝓞 F) F) (w : ∀ u : HeightOneSpectrum (𝓞 F), ℕ → u.adicCompletion F)
+    (hw : ∀ u n, Valued.v (w u n) ≤ 1)
+    (ha : ∀ u n, a n u = ((n.factorial : ℕ) : u.adicCompletion F) * w u n) :
+    Tendsto a atTop (𝓝 0) := by
+  have hmem : ∀ u n, a n u ∈ (u.adicCompletionIntegers F : Set (u.adicCompletion F)) := by
+    intro u n
+    rw [ha]
+    exact mul_mem (natCast_mem (u.adicCompletionIntegers F) _) (hw u n)
+  let b : ℕ → ∀ u : HeightOneSpectrum (𝓞 F),
+      (u.adicCompletionIntegers F : Set (u.adicCompletion F)) := fun n u => ⟨a n u, hmem u n⟩
+  let b0 : ∀ u : HeightOneSpectrum (𝓞 F),
+      (u.adicCompletionIntegers F : Set (u.adicCompletion F)) :=
+    fun u => ⟨0, zero_mem (u.adicCompletionIntegers F)⟩
+  have hb : Tendsto b atTop (𝓝 b0) := by
+    rw [tendsto_pi_nhds]
+    intro u
+    rw [tendsto_subtype_rng]
+    simp only [b, b0, ha]
+    exact tendsto_local F u (w u) (hw u)
+  exact ((RestrictedProduct.isEmbedding_structureMap
+    (R := fun u : HeightOneSpectrum (𝓞 F) => u.adicCompletion F)
+    (A := fun u => (u.adicCompletionIntegers F : Set (u.adicCompletion F)))
+    (𝓕 := cofinite)).continuous.tendsto b0).comp hb
+
+private lemma exists_away (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F))
+    (x : F) : ∃ r : FiniteAdeleRing (𝓞 F) F,
+      r v = 0 ∧ ∀ u, u ≠ v → r u = algebraMap F (u.adicCompletion F) x := by
+  classical
+  refine ⟨⟨fun u => if u = v then 0 else algebraMap F (u.adicCompletion F) x, ?_⟩, ?_, ?_⟩
+  · filter_upwards [(algebraMap F (FiniteAdeleRing (𝓞 F) F) x).2] with u hu
+    split_ifs
+    · exact zero_mem (u.adicCompletionIntegers F)
+    · exact hu
+  · exact if_pos rfl
+  · exact fun u hu => if_neg hu
+
+end UpperTheory.TraceAwayCharacter
+
+open UpperTheory.TraceAwayCharacter in
+theorem UpperTheory.standard_additive_character :
+    ∀ (F : Type) [Field F] [NumberField F] (ψ : AddChar (NumberField.AdeleRing (NumberField.RingOfIntegers F) F) ℂ),
+        Continuous ψ →
+        (∀ x : F, ψ (algebraMap F (NumberField.AdeleRing (NumberField.RingOfIntegers F) F) x) = 1) →
+        (∀ a : NumberField.AdeleRing (NumberField.RingOfIntegers F) F, a.2 = 0 →
+          ψ a = Complex.exp (-(2 * Real.pi * Complex.I) *
+            (Algebra.trace ℝ (NumberField.mixedEmbedding.mixedSpace F)
+              (NumberField.InfiniteAdeleRing.ringEquiv_mixedSpace F a.1) : ℝ))) →
+        ∀ v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F),
+          ∃ a : NumberField.AdeleRing (NumberField.RingOfIntegers F) F,
+            a.1 = 0 ∧ (∀ u, u ≠ v → a.2 u = 0) ∧ ψ a ≠ 1 := by
+  intro F _ _ ψ hc hF hinf v
+  classical
+  by_contra! hv
+  let j : FiniteAdeleRing (𝓞 F) F → AdeleRing (𝓞 F) F := fun r => (0, r)
+  have hj : Continuous j := continuous_const.prodMk continuous_id
+  have key : ∀ (x : F) (r : FiniteAdeleRing (𝓞 F) F),
+      (∀ u, u ≠ v → r u = algebraMap F (u.adicCompletion F) x) →
+      ψ (-j r) = Complex.exp (-(2 * Real.pi * Complex.I) *
+        (((Algebra.trace ℚ F x : ℚ) : ℝ) : ℂ)) := by
+    intro x r hr
+    let i : AdeleRing (𝓞 F) F := (algebraMap F (InfiniteAdeleRing F) x, 0)
+    let c : AdeleRing (𝓞 F) F := (0, r - algebraMap F (FiniteAdeleRing (𝓞 F) F) x)
+    have h1 : ψ c = 1 := hv c rfl fun u hu => by
+      change r u - algebraMap F (u.adicCompletion F) x = 0
+      rw [hr u hu, sub_self]
+    have h2 : i = -j r + c + algebraMap F (AdeleRing (𝓞 F) F) x := by
+      refine Prod.ext ?_ ?_
+      · change algebraMap F (InfiniteAdeleRing F) x
+          = -0 + 0 + algebraMap F (InfiniteAdeleRing F) x
+        ring
+      · change 0 = -r + (r - algebraMap F (FiniteAdeleRing (𝓞 F) F) x)
+          + algebraMap F (FiniteAdeleRing (𝓞 F) F) x
+        ring
+    have h3 := hinf i rfl
+    have h4 : InfiniteAdeleRing.ringEquiv_mixedSpace F i.1 = mixedEmbedding F x :=
+      (InfiniteAdeleRing.mixedEmbedding_eq_algebraMap_comp F).symm
+    rw [h4, trace_eq, h2, AddChar.map_add_eq_mul, AddChar.map_add_eq_mul, h1, hF, mul_one,
+      mul_one] at h3
+    exact h3
+  have hy : ∀ n : ℕ, ∃ y : F, (∀ u : HeightOneSpectrum (𝓞 F), u ≠ v → u.valuation F y ≤ 1) ∧
+      (Complex.exp (-(2 * Real.pi * Complex.I) *
+        (((Algebra.trace ℚ F ((n.factorial : F) * y) : ℚ) : ℝ) : ℂ))).re ≤ 0 := by
+    intro n
+    obtain ⟨y, hy, hz⟩ := exists_trace F v n.factorial n.factorial_ne_zero
+    obtain ⟨m, hm⟩ := far _ hz
+    refine ⟨(m : F) * y, fun u hu => ?_, ?_⟩
+    · rw [map_mul]
+      refine mul_le_one' ?_ (hy u hu)
+      have : u.valuation F (algebraMap (𝓞 F) F (m : 𝓞 F)) ≤ 1 := u.valuation_le_one _
+      rwa [map_natCast] at this
+    · rwa [mul_left_comm, ← nsmul_eq_mul m, map_nsmul, nsmul_eq_mul]
+  choose y hy hre using hy
+  choose r hr0 hr using fun n : ℕ => exists_away F v ((n.factorial : F) * y n)
+  have ht : Tendsto r atTop (𝓝 0) := by
+    refine tendsto_finite F r
+      (fun u n => if u = v then 0 else algebraMap F (u.adicCompletion F) (y n)) ?_ ?_
+    · intro u n
+      split_ifs with hu
+      · simp
+      · exact (HeightOneSpectrum.valuedAdicCompletion_eq_valuation' u _).trans_le (hy n u hu)
+    · intro u n
+      split_ifs with hu
+      · subst hu
+        rw [hr0, mul_zero]
+      · rw [hr n u hu, map_mul, map_natCast]
+  have hcont : Continuous fun s => (ψ (-j s)).re :=
+    Complex.continuous_re.comp (hc.comp hj.neg)
+  have hlim := (hcont.tendsto 0).comp ht
+  have h0 : (ψ (-j 0)).re = 1 := by
+    have : j 0 = 0 := rfl
+    rw [this, neg_zero, AddChar.map_zero_eq_one, Complex.one_re]
+  rw [h0] at hlim
+  have hle : (1 : ℝ) ≤ 0 := le_of_tendsto' hlim fun n => by
+    change (ψ (-j (r n))).re ≤ 0
+    rw [key _ _ (hr n)]
+    exact hre n
+  exact absurd hle (by norm_num)
+end
+
+section
+open scoped RestrictedProduct
+open Filter Set
+
+private lemma UpperTheory.factorizable_generation {ι : Type*} {R : ι → Type*} [∀ i, TopologicalSpace (R i)]
+    [∀ i, T2Space (R i)] {A : ∀ i, Set (R i)} (ho : ∀ i, IsOpen (A i))
+    (hc : ∀ i, IsCompact (A i)) {κ : Type*} [Finite κ] (v : ι) (φ : (κ → R v) → ℂ)
+    (h1 : IsLocallyConstant φ) (h2 : HasCompactSupport φ) (g : (κ → Πʳ i, [R i, A i]) → ℂ)
+    (hg : ∀ x, g x = φ (fun i => x i v) *
+      Set.indicator {z : κ → Πʳ i, [R i, A i] | ∀ i u, u ≠ v → z i u ∈ A u} 1 x) :
+    IsLocallyConstant g ∧ HasCompactSupport g := by
+  classical
+  set S : Set (κ → Πʳ i, [R i, A i]) := {z | ∀ i u, u ≠ v → z i u ∈ A u} with hS
+  have hSo : IsOpen S := by
+    rw [hS, Set.setOf_forall]
+    exact isOpen_iInter_of_finite fun i =>
+      (RestrictedProduct.isOpen_forall_imp_mem ho (p := fun u => u ≠ v)).preimage
+        (f := fun z : κ → Πʳ i, [R i, A i] => z i) (continuous_apply i)
+  have hSc : IsClosed S := by
+    simp only [hS, Set.setOf_forall]
+    exact isClosed_iInter fun i => isClosed_iInter fun u => isClosed_iInter fun _ =>
+      (hc u).isClosed.preimage
+        ((RestrictedProduct.continuous_eval u).comp (continuous_apply i))
+  have hev : Continuous fun (x : κ → Πʳ i, [R i, A i]) (i : κ) => x i v :=
+    continuous_pi fun i => (RestrictedProduct.continuous_eval v).comp (continuous_apply i)
+  have hK : ∀ K : Set (R v), IsCompact K →
+      IsCompact {y : Πʳ i, [R i, A i] | y v ∈ K ∧ ∀ u, u ≠ v → y u ∈ A u} := by
+    intro K hK
+    have hle : (cofinite : Filter ι) ≤ 𝓟 ({v}ᶜ : Set ι) := by simp
+    have hQ : IsCompact (Set.univ.pi (Function.update A v K)) :=
+      isCompact_univ_pi fun u => by
+        by_cases h : u = v
+        · subst h; simpa using hK
+        · simpa [h] using hc u
+    have hP := (RestrictedProduct.isEmbedding_coe_of_principal (R := R) (A := A)
+      (S := ({v}ᶜ : Set ι))).isCompact_preimage_iff (K := Set.univ.pi (Function.update A v K))
+      (by
+        rw [RestrictedProduct.range_coe_principal]
+        intro x hx u hu
+        have h : u ≠ v := hu
+        simpa [h] using hx u trivial) |>.mpr hQ
+    convert hP.image (RestrictedProduct.continuous_inclusion hle) using 1
+    ext y
+    constructor
+    · rintro ⟨hy1, hy2⟩
+      refine ⟨⟨y.1, hy2⟩, fun u _ => ?_, rfl⟩
+      by_cases h : u = v
+      · subst h; rw [Function.update_self]; exact hy1
+      · rw [Function.update_of_ne h]; exact hy2 u h
+    · rintro ⟨z, hz, rfl⟩
+      refine ⟨?_, fun u hu => z.2 hu⟩
+      have := hz v trivial
+      rw [Function.update_self] at this
+      exact this
+  constructor
+  · have hI : IsLocallyConstant (S.indicator (1 : (κ → Πʳ i, [R i, A i]) → ℂ)) :=
+      (LocallyConstant.indicator (1 : LocallyConstant (κ → Πʳ i, [R i, A i]) ℂ)
+        (U := S) ⟨hSc, hSo⟩).isLocallyConstant
+    rw [funext hg]
+    exact (h1.comp_continuous hev).mul hI
+  · refine HasCompactSupport.intro (isCompact_univ_pi fun i : κ =>
+      hK _ (h2.isCompact.image (continuous_apply i))) fun x hx => ?_
+    rw [hg]
+    by_cases hxS : x ∈ S
+    · by_contra hne
+      refine hx fun i _ => ⟨⟨fun j => x j v, ?_, rfl⟩, hxS i⟩
+      exact subset_tsupport _ (left_ne_zero_of_mul hne)
+    · rw [Set.indicator_of_notMem hxS, mul_zero]
+
+private lemma UpperTheory.valuation_subring_compact {K Γ : Type*} [Field K] [LinearOrderedCommGroupWithZero Γ]
+    [Valued K Γ] [(Valued.v : Valuation K Γ).RankOne] [LocallyCompactSpace K] :
+    IsCompact ((Valued.v : Valuation K Γ).valuationSubring : Set K) := by
+  letI := Valued.toNontriviallyNormedField K Γ
+  haveI : ProperSpace K := .of_nontriviallyNormedField_of_weaklyLocallyCompactSpace K
+  exact isCompact_iff_compactSpace.mpr
+    (Valued.integer.properSpace_iff_compactSpace_integer.mp this)
+
+theorem UpperTheory.schwartz_function_generation :
+    ∀ (F : Type) [Field F] [NumberField F],
+        (∀ u : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F), LocallyCompactSpace (u.adicCompletion F)) →
+        ∀ (κ : Type) [Fintype κ] (v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F))
+          (φ : (κ → v.adicCompletion F) → ℂ), IsLocallyConstant φ → HasCompactSupport φ →
+          ∀ g : (κ → IsDedekindDomain.FiniteAdeleRing (NumberField.RingOfIntegers F) F) → ℂ,
+            (∀ x, g x = φ (fun i => x i v) *
+              Set.indicator {z : κ → IsDedekindDomain.FiniteAdeleRing (NumberField.RingOfIntegers F) F |
+                ∀ i u, u ≠ v → z i u ∈ u.adicCompletionIntegers F} 1 x) →
+            IsLocallyConstant g ∧ HasCompactSupport g := by
+  intro F _ _ hlc κ _ v φ h1 h2 g hg
+  exact UpperTheory.factorizable_generation
+    (R := fun u : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F) =>
+      u.adicCompletion F)
+    (A := fun u => (u.adicCompletionIntegers F : Set (u.adicCompletion F)))
+    (fun _ => Valued.isOpen_valuationSubring _)
+    (fun u => haveI := hlc u; UpperTheory.valuation_subring_compact) v φ h1 h2 g hg
+end
+
+section
 noncomputable section
 
 namespace UpperTheory.Reformulated.B.SingleLocalAdele
@@ -13,156 +567,14 @@ open GlobalTheory.WeilM Matrix
 
 section Local
 
-private theorem locConst {K : Type} [NormedField K] [IsUltrametricDist K] (ψ : AddChar K ℂ) (hψ : Continuous ψ) :
-    IsLocallyConstant ψ := by
-  obtain ⟨δ, hδ, h⟩ := Metric.continuousAt_iff.1 (hψ.continuousAt (x := 0)) (1 / 2) (by norm_num)
-  simp only [AddChar.map_zero_eq_one, dist_eq_norm, sub_zero] at h
-  have key : ∀ k : ℕ, ∀ x : K, ‖x‖ < δ → ‖ψ x - 1‖ ≤ (2 / 3) ^ k := by
-    intro k
-    induction k with
-    | zero => intro x hx; have := h hx; simp only [pow_zero]; linarith
-    | succ k ih =>
-      intro x hx
-      have h2 := ih (x + x) (lt_of_le_of_lt (IsUltrametricDist.norm_add_le_max x x) (by simpa using hx))
-      have e : ψ (x + x) - 1 = (ψ x - 1) * (2 + (ψ x - 1)) := by rw [AddChar.map_add_eq_mul]; ring
-      have h3 : (3 / 2 : ℝ) ≤ ‖2 + (ψ x - 1)‖ := by
-        have h4 := norm_sub_norm_le (2 : ℂ) (-(ψ x - 1))
-        rw [sub_neg_eq_add, norm_neg] at h4
-        have := h hx
-        simp only [Complex.norm_ofNat] at h4
-        linarith
-      rw [e, norm_mul] at h2
-      rw [pow_succ]
-      nlinarith [norm_nonneg (ψ x - 1)]
-  have h1 : ∀ x : K, ‖x‖ < δ → ψ x = 1 := fun x hx => by
-    have := ge_of_tendsto' (tendsto_pow_atTop_nhds_zero_of_lt_one (r := (2 / 3 : ℝ)) (by norm_num) (by norm_num))
-      (fun k => key k x hx)
-    exact sub_eq_zero.1 (norm_le_zero_iff.1 this)
-  refine (IsLocallyConstant.iff_eventually_eq _).2 fun x => ?_
-  filter_upwards [Metric.ball_mem_nhds x hδ] with y hy
-  rw [← add_sub_cancel x y, AddChar.map_add_eq_mul, h1 (y - x) (by simpa [dist_eq_norm] using hy), mul_one]
 
-private theorem sb_comp {X Y : Type} [TopologicalSpace X] [TopologicalSpace Y] (h : X ≃ₜ Y) {f : Y → ℂ}
-    (hf : f ∈ SB Y) : f ∘ h ∈ SB X :=
-  ⟨hf.1.comp_continuous h.continuous, hf.2.comp_homeomorph h⟩
 
-private theorem bij_comp {X Y : Type} [TopologicalSpace X] [TopologicalSpace Y] (h : X ≃ₜ Y) :
-    Set.BijOn (LinearMap.funLeft ℂ ℂ h) (SB Y : Set _) (SB X : Set _) :=
-  Set.InvOn.bijOn (f' := LinearMap.funLeft ℂ ℂ h.symm)
-    ⟨fun f _ => funext fun y => by simp [LinearMap.funLeft_apply], fun f _ => funext fun y => by
-      simp [LinearMap.funLeft_apply]⟩ (fun _ hf => sb_comp h hf) (fun _ hf => sb_comp h.symm hf)
 
-private theorem sb_mul {X : Type} [TopologicalSpace X] {c f : X → ℂ} (hc : IsLocallyConstant c)
-    (hf : f ∈ SB X) : c * f ∈ SB X :=
-  ⟨hc.mul hf.1, hf.2.mul_left⟩
 
 variable {K : Type} [NontriviallyNormedField K] [IsUltrametricDist K] [ProperSpace K] [Invertible (2 : K)]
   {ψ : AddChar K ℂ} {κ : Type} [Fintype κ] [DecidableEq κ]
 
-private theorem inter (hψ : IsLocallyConstant ψ) (h1 : ∃ t, ψ t ≠ 1)
-    (g : (κ → K) × (κ → K) →ₗ[K] (κ → K) × (κ → K))
-    (hg : ∀ w w', (g w).1 ⬝ᵥ (g w').2 - (g w').1 ⬝ᵥ (g w).2 = w.1 ⬝ᵥ w'.2 - w'.1 ⬝ᵥ w.2) :
-    ∃ ι : ((κ → K) → ℂ) →ₗ[ℂ] ((κ → K) → ℂ), Set.BijOn ι (SB (κ → K) : Set _) (SB (κ → K) : Set _) ∧
-      ∀ w, ∀ φ ∈ SB (κ → K), ι (schr ψ (g w) φ) = schr ψ w (ι φ) := by
-  refine UpperTheory.symplectic_generation K κ (fun f => ∃ ι : ((κ → K) → ℂ) →ₗ[ℂ] ((κ → K) → ℂ),
-    Set.BijOn ι (SB (κ → K) : Set _) (SB (κ → K) : Set _) ∧
-      ∀ w, ∀ φ ∈ SB (κ → K), ι (schr ψ (f w) φ) = schr ψ w (ι φ)) ?_ ?_ ?_ ?_ g hg
-  · rintro f g ⟨a, ha, ha'⟩ ⟨b, hb, hb'⟩
-    exact ⟨b ∘ₗ a, hb.comp ha, fun w φ hφ => by
-      simp only [LinearMap.comp_apply, Function.comp_apply]
-      rw [ha' _ _ hφ, hb' _ _ (ha.mapsTo hφ)]⟩
-  · obtain ⟨T, hT, ht, hm⟩ := UpperTheory.fourier_transform_bijective K ψ hψ h1 κ
-    refine ⟨LinearMap.funLeft ℂ ℂ (Homeomorph.neg (κ → K)) ∘ₗ T, (bij_comp _).comp hT, fun w φ hφ => ?_⟩
-    have e : schr ψ (w.2, -w.1) φ =
-        ψ (⅟(2 : K) * (w.2 ⬝ᵥ (-w.1))) • fun x => ψ (x ⬝ᵥ (-w.1)) * (fun x => φ (x + w.2)) x := by
-      funext x
-      simp only [schr, AddChar.map_add_eq_mul, Pi.smul_apply, smul_eq_mul]; ring
-    have hφ' := sb_comp (Homeomorph.addRight w.2) hφ
-    funext y
-    simp only [LinearMap.comp_apply, LinearMap.funLeft_apply, Homeomorph.coe_neg, Pi.neg_apply]
-    rw [e, map_smul, Pi.smul_apply, hm (fun x => φ (x + w.2)) hφ'.1 hφ'.2, ht φ hφ.1 hφ.2]
-    simp only [schr, LinearMap.funLeft_apply, Homeomorph.coe_neg, Pi.neg_apply, smul_eq_mul, ← mul_assoc, neg_add,
-      ← AddChar.map_add_eq_mul]
-    congr 2
-    simp only [dotProduct_comm w.2, neg_dotProduct, add_dotProduct]
-    linear_combination (-(w.1 ⬝ᵥ w.2)) * invOf_mul_self (2 : K)
-  · intro S hS
-    have hq : ∀ c : K, IsLocallyConstant fun x : κ → K => ψ (c * (x ⬝ᵥ S *ᵥ x)) := fun c =>
-      hψ.comp_continuous (continuous_const.mul (continuous_id.dotProduct (continuous_const.matrix_mulVec continuous_id)))
-    refine ⟨LinearMap.mulLeft ℂ (fun x : κ → K => ψ (⅟(2 : K) * (x ⬝ᵥ S *ᵥ x))),
-      Set.InvOn.bijOn (f' := LinearMap.mulLeft ℂ (fun x : κ → K => ψ (-⅟(2 : K) * (x ⬝ᵥ S *ᵥ x))))
-        ⟨fun f _ => funext fun y => ?_, fun f _ => funext fun y => ?_⟩
-        (fun _ hf => sb_mul (hq _) hf) (fun _ hf => sb_mul (hq _) hf), fun w φ hφ => funext fun x => ?_⟩
-    · simp only [LinearMap.mulLeft_apply, Pi.mul_apply, ← mul_assoc, ← AddChar.map_add_eq_mul]; simp
-    · simp only [LinearMap.mulLeft_apply, Pi.mul_apply, ← mul_assoc, ← AddChar.map_add_eq_mul]; simp
-    · simp only [schr, LinearMap.mulLeft_apply, Pi.mul_apply, ← mul_assoc, ← AddChar.map_add_eq_mul]
-      congr 2
-      have e : w.1 ⬝ᵥ S *ᵥ x = x ⬝ᵥ S *ᵥ w.1 := by
-        rw [dotProduct_mulVec, ← mulVec_transpose, hS.eq, dotProduct_comm]
-      simp only [dotProduct_add, add_dotProduct, mulVec_add, e]
-      linear_combination (-(x ⬝ᵥ S *ᵥ w.1)) * invOf_mul_self (2 : K)
-  · intro A A' hA
-    have hA' : A * A' = 1 := mul_eq_one_comm.1 hA
-    let h : (κ → K) ≃ₜ (κ → K) :=
-      { toFun := fun x => A *ᵥ x
-        invFun := fun x => A' *ᵥ x
-        left_inv := fun x => by simp [hA]
-        right_inv := fun x => by simp [hA']
-        continuous_toFun := continuous_const.matrix_mulVec continuous_id
-        continuous_invFun := continuous_const.matrix_mulVec continuous_id }
-    refine ⟨LinearMap.funLeft ℂ ℂ h, bij_comp h, fun w φ hφ => funext fun x => ?_⟩
-    have e : ∀ a b : κ → K, (A *ᵥ a) ⬝ᵥ (A'ᵀ *ᵥ b) = a ⬝ᵥ b := fun a b => by
-      rw [dotProduct_mulVec, vecMul_transpose, mulVec_mulVec, hA, one_mulVec]
-    change schr ψ _ φ (A *ᵥ x) = _ * φ (A *ᵥ (x + w.1))
-    simp only [schr, e, mulVec_add]
 
-private theorem inter2 (hψ : IsLocallyConstant ψ) (h1 : ∃ t, ψ t ≠ 1)
-    (G : (κ → K) × (κ → K) →ₗ[K] (κ → K) × (κ → K)) (hG : Function.Injective G)
-    (ha : ∀ y z, (G (y, 0)).1 ⬝ᵥ (G (z, 0)).2 - (G (z, 0)).1 ⬝ᵥ (G (y, 0)).2 = 0)
-    (hb : ∀ y z, (G (0, y)).1 ⬝ᵥ (G (0, z)).2 - (G (0, z)).1 ⬝ᵥ (G (0, y)).2 = 0) :
-    ∃ ι : ((κ → K) → ℂ) →ₗ[ℂ] ((κ → K) → ℂ), Set.BijOn ι (SB (κ → K) : Set _) (SB (κ → K) : Set _) ∧
-      (∀ y, ∀ φ ∈ SB (κ → K), ∀ Y, ι (schr ψ (G (y, 0)) φ) Y = ι φ (Y + y)) ∧
-      ∀ z, ∀ φ ∈ SB (κ → K), ∀ Y, ι (schr ψ (G (0, z)) φ) Y =
-        ψ ((G (Y, 0)).1 ⬝ᵥ (G (0, z)).2 - (G (0, z)).1 ⬝ᵥ (G (Y, 0)).2) * ι φ Y := by
-  let ω : ((κ → K) × (κ → K)) →ₗ[K] ((κ → K) × (κ → K)) →ₗ[K] K :=
-    LinearMap.mk₂ K (fun w w' => w.1 ⬝ᵥ w'.2 - w'.1 ⬝ᵥ w.2)
-      (fun _ _ _ => by simp; ring) (fun _ _ _ => by simp; ring) (fun _ _ _ => by simp; ring) (fun _ _ _ => by simp; ring)
-  have hω : ∀ w w', ω w w' = w.1 ⬝ᵥ w'.2 - w'.1 ⬝ᵥ w.2 := fun _ _ => rfl
-  have hanti : ∀ w w', ω w w' = -ω w' w := fun _ _ => by simp [hω]
-  let β : (κ → K) →ₗ[K] (κ → K) →ₗ[K] K := ω.compl₁₂ (G ∘ₗ LinearMap.inl K _ _) (G ∘ₗ LinearMap.inr K _ _)
-  have hβ : ∀ y z, β y z = ω (G (y, 0)) (G (0, z)) := fun _ _ => rfl
-  let N : (κ → K) →ₗ[K] (κ → K) := LinearMap.pi fun i => β (Pi.single i 1)
-  have hN : ∀ y z, y ⬝ᵥ N z = β y z := fun y z => by
-    conv_rhs => rw [← Finset.univ_sum_single y]
-    rw [map_sum, LinearMap.sum_apply]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [show (Pi.single i (y i) : κ → K) = y i • Pi.single i 1 by rw [← Pi.single_smul]; simp, map_smul]
-    rfl
-  have hsp : ∀ w, G w = G (w.1, 0) + G (0, w.2) := fun w => by rw [← map_add]; simp
-  have hNi : Function.Injective N := (injective_iff_map_eq_zero _).2 fun z hz => by
-    have h0 : ∀ w, ω w (G (0, z)) = 0 := fun w => by
-      obtain ⟨w, rfl⟩ := LinearMap.injective_iff_surjective.1 hG w
-      rw [hsp, map_add, LinearMap.add_apply, ← hβ, ← hN, hz, hω, hb]; simp
-    have : G (0, z) = G 0 := by
-      rw [map_zero]
-      refine Prod.ext (funext fun i => ?_) (funext fun i => ?_)
-      · simpa [hω] using h0 (0, Pi.single i 1)
-      · simpa [hω] using h0 (Pi.single i 1, 0)
-    exact congrArg Prod.snd (hG this)
-  let e := LinearEquiv.ofInjectiveEndo N hNi
-  have he : ∀ z, N (e.symm z) = z := e.apply_symm_apply
-  have he' : ∀ z, e.symm (N z) = z := e.symm_apply_apply
-  obtain ⟨ι, hι, H⟩ := inter hψ h1 (G ∘ₗ LinearMap.prodMap LinearMap.id e.symm.toLinearMap) fun w w' => by
-    change ω (G (w.1, e.symm w.2)) (G (w'.1, e.symm w'.2)) = _
-    rw [hsp (w.1, _), hsp (w'.1, _)]
-    simp only [map_add, LinearMap.add_apply]
-    rw [hanti (G (0, _)) (G (_, 0)), ← hβ, ← hβ, ← hN, ← hN, he, he, hω, hω, ha, hb]
-    ring
-  refine ⟨ι, hι, fun y φ hφ Y => ?_, fun z φ hφ Y => ?_⟩
-  · simpa [schr] using congrFun (H (y, 0) φ hφ) Y
-  · have := congrFun (H (0, N z) φ hφ) Y
-    rw [← hω, ← hβ, ← hN]
-    simpa [schr, he'] using this
 
 end Local
 
@@ -196,8 +608,6 @@ private theorem at_iff {M : Type} [AddCommGroup M] [Module (AF F) M] (v : Pl F) 
     exact this.symm
   · rw [← h, smul_smul, mul_s, hu, zero_mul, map_zero, zero_smul]
 
-private theorem leviSection_continuous (v : Pl F) : Continuous (sL v) :=
-  continuous_const.prodMk (continuous_singleFin v)
 
 private def psiK (ψ : AddChar (AF F) ℂ) (v : Pl F) : AddChar (Fv F v) ℂ := ψ.compAddMonoidHom (sL v).toAddMonoidHom
 
@@ -206,21 +616,6 @@ private theorem psi_at (ψ : AddChar (AF F) ℂ) (v : Pl F) {a : AF F} (h : sL v
   rw [sL_one_mul_eq_sL_evFin] at h
   exact (congrArg ψ h).symm
 
-private theorem psiK_ne {ψ : AddChar (AF F) ℂ} (h : IsStd ψ) (v : Pl F) : ∃ t, psiK ψ v t ≠ 1 := by
-  obtain ⟨a, h1, h2, h3⟩ := UpperTheory.standard_additive_character F ψ h.1 h.2.1 (fun a ha => h.2.2 a fun u hu => by
-    have hu1 : u.1 = 0 := (InfiniteAdeleRing.ringEquiv_mixedSpace F).injective (hu.trans (map_zero _).symm)
-    refine Prod.ext ?_ ?_
-    · change u.1 * a.1 = 0
-      rw [hu1, zero_mul]
-    · change u.2 * a.2 = 0
-      rw [ha, mul_zero]) v
-  refine ⟨evFin F v a, fun e => h3 (Eq.trans (psi_at ψ v ?_) e)⟩
-  rw [sL_one_mul_eq_sL_evFin]
-  refine Prod.ext h1.symm (af_ext fun w => ?_)
-  change evalV F w (singleFin v _) = _
-  by_cases h : w = v
-  · subst h; rw [evalV_singleFin_self]; rfl
-  · rw [evalV_singleFin_ne h]; exact (h2 w h).symm
 
 private theorem exists_schwartz (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V] :
     ∃ f : SchwartzMap V ℂ, f 0 = 1 := by
@@ -287,17 +682,7 @@ private theorem acts_eq {κ : Type} [Fintype κ] (ψ : AddChar (AF F) ℂ) (v : 
   funext i
   exact congrArg (· + _) (eval_single_local v _)
 
-private theorem comp_rT (v : Pl F) (y : Fv F v ⊗[F] E) : compFin F E v (LinearMap.rTensor E (sL v) y) = y := by
-  induction y using TensorProduct.induction_on with
-  | zero => simp
-  | add x y hx hy => simp only [map_add, hx, hy]
-  | tmul a e => exact congrArg (· ⊗ₜ[F] e) (eval_single_local v a)
 
-private theorem rT_comp (v : Pl F) (z : AE F E) : LinearMap.rTensor E (sL v) (compFin F E v z) = sL v 1 • z := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp
-  | add x y hx hy => simp only [map_add, hx, hy, smul_add]
-  | tmul a e => exact congrArg (· ⊗ₜ[F] e) (sL_one_mul_eq_sL_evFin v a).symm
 
 private theorem rT_smul (v : Pl F) (a : Fv F v) (y : Fv F v ⊗[F] E) :
     LinearMap.rTensor E (sL v) (a • y) = sL v a • LinearMap.rTensor E (sL v) y := by
@@ -308,29 +693,9 @@ private theorem rT_smul (v : Pl F) (a : Fv F v) (y : Fv F v ⊗[F] E) :
     refine congrArg (· ⊗ₜ[F] e) (?_ : sL v (a * b) = sL v a * sL v b)
     rw [mul_s, eval_single_local]
 
-private theorem piW_cA {v : Pl F} (t : E →ₐ[F] Fv F v) (z : AE F E) : piW t (cA σ z) = piW (t.comp σ) z := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp
-  | add x y hx hy => simp only [map_add, hx, hy]
-  | tmul b e => rfl
 
 variable {n d : ℕ}
 
-private theorem iso_symp (h : IsCMExt F E σ) {v : Pl F} (t : E →ₐ[F] Fv F v) (JA : Matrix (Fin n) (Fin n) (AE F E))
-    (JB : Matrix (Fin d) (Fin d) (AE F E)) {x u : Matrix (Fin n) (Fin d) (AE F E)} (hx : ∀ i j, piW t (x i j) = 0)
-    (hu : ∀ i j, piW t (u i j) = 0) : evFin F v (symp (R := AF F) (cA σ) (-1) JA JB x u) = 0 := by
-  have h0 : compFin F E v (hTens (cA σ) JA JB x u) = 0 := by
-    refine split_ext h t ?_ ?_
-    · change piW t _ = _
-      simp only [hTens, map_sum, map_mul, hx, zero_mul, Finset.sum_const_zero, map_zero]
-    · change piW (t.comp σ) _ = _
-      simp only [hTens, map_sum, map_mul, piW_cA, comp_conj_conj h, hu, mul_zero, Finset.sum_const_zero, map_zero]
-  have h1 := rT_comp v (hTens (cA σ) JA JB x u)
-  rw [h0, map_zero] at h1
-  have h2 : sL v 1 * symp (R := AF F) (cA σ) (-1) JA JB x u = 0 := by
-    rw [symp, ← smul_eq_mul, ← map_smul, ← mul_smul_comm, ← h1, mul_zero, map_zero]
-  have h3 := congrArg (evFin F v) h2
-  rwa [map_mul, eval_single_local, one_mul, map_zero] at h3
 
 private def liftM (h : IsCMExt F E σ) {v : Pl F} (t : E →ₐ[F] Fv F v)
     (p : (Fin n × Fin d → Fv F v) × (Fin n × Fin d → Fv F v)) : Matrix (Fin n) (Fin d) (AE F E) :=
@@ -338,32 +703,11 @@ private def liftM (h : IsCMExt F E σ) {v : Pl F} (t : E →ₐ[F] Fv F v)
 
 variable (h : IsCMExt F E σ) {v : Pl F} (t : E →ₐ[F] Fv F v)
 
-private theorem liftM_add (p q : (Fin n × Fin d → Fv F v) × (Fin n × Fin d → Fv F v)) :
-    liftM h t (p + q) = liftM h t p + liftM h t q := Matrix.ext fun i j => by
-  simp only [liftM, Matrix.of_apply, Matrix.add_apply, ← map_add]; rfl
 
-private theorem liftM_smul (a : Fv F v) (p : (Fin n × Fin d → Fv F v) × (Fin n × Fin d → Fv F v)) :
-    liftM h t (a • p) = sL v a • liftM h t p := Matrix.ext fun i j => by
-  simp only [liftM, Matrix.of_apply, Matrix.smul_apply, ← rT_smul, ← map_smul]; rfl
 
-private theorem liftM_at (p : (Fin n × Fin d → Fv F v) × (Fin n × Fin d → Fv F v)) :
-    sL v 1 • liftM h t p = liftM h t p := by rw [← liftM_smul, one_smul]
 
-private theorem piW_liftM (p : (Fin n × Fin d → Fv F v) × (Fin n × Fin d → Fv F v)) (i j) :
-    piW t (liftM h t p i j) = p.1 (i, j) := by
-  change splitProj t (compFin F E v (LinearMap.rTensor E (sL v) _)) = _
-  rw [comp_rT, splitProj_symm]
 
-private theorem piW_liftM' (p : (Fin n × Fin d → Fv F v) × (Fin n × Fin d → Fv F v)) (i j) :
-    piW (t.comp σ) (liftM h t p i j) = p.2 (i, j) := by
-  change splitProj (t.comp σ) (compFin F E v (LinearMap.rTensor E (sL v) _)) = _
-  rw [comp_rT, splitProj_comp_symm]
 
-private theorem liftM_piW {u : Matrix (Fin n) (Fin d) (AE F E)} (hu : sL v 1 • u = u) :
-    liftM h t (fun k => piW t (u k.1 k.2), fun k => piW (t.comp σ) (u k.1 k.2)) = u := Matrix.ext fun i j => by
-  change LinearMap.rTensor E (sL v) ((splitAlgEquiv h t).symm (splitAlgEquiv h t (compFin F E v (u i j)))) = _
-  rw [AlgEquiv.symm_apply_apply, rT_comp]
-  exact congrFun₂ hu i j
 
 end Global
 
@@ -374,94 +718,10 @@ open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.Genus
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n d : ℕ}
 
-private theorem main {X : Spc F E n} {W : Spc F E d} (M : Model σ X W) {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ)
-    (h : IsCMExt F E σ) (v : Pl F) (t : E →ₐ[F] Fv F v) :
-    ∃ ι : ((Fin n × Fin d → Fv F v) → ℂ) →ₗ[ℂ] Matrix (Fin n) (Fin d) (Fv F v) → ℂ, M.IsLinW ψ t 1 1 ι := by
-  letI : NontriviallyNormedField (Fv F v) := Valued.toNontriviallyNormedField (Fv F v) (WithZero (Multiplicative ℤ))
-  haveI : LocallyCompactSpace (Fv F v) := (locField v).toLocallyCompactSpace
-  haveI : ProperSpace (Fv F v) := .of_nontriviallyNormedField_of_weaklyLocallyCompactSpace _
-  haveI : IsUltrametricDist (Fv F v) := inferInstance
-  letI : Invertible (2 : Fv F v) := invertibleOfNonzero (by
-    rw [← map_ofNat (algebraMap F (Fv F v)) 2]; exact (map_ne_zero _).2 two_ne_zero)
-  let G : ((Fin n × Fin d → Fv F v) × (Fin n × Fin d → Fv F v)) →ₗ[Fv F v]
-      ((Fin n × Fin d → Fv F v) × (Fin n × Fin d → Fv F v)) :=
-    { toFun := fun p => evp v (M.co.e (liftM h t p))
-      map_add' := fun p q => by
-        rw [liftM_add, map_add]
-        exact Prod.ext (funext fun i => map_add (evFin F v) _ _) (funext fun i => map_add (evFin F v) _ _)
-      map_smul' := fun a p => by
-        rw [liftM_smul, map_smul]
-        exact Prod.ext (funext fun i => (map_mul (evFin F v) _ _).trans (congrArg (· * _) (eval_single_local v a)))
-          (funext fun i => (map_mul (evFin F v) _ _).trans (congrArg (· * _) (eval_single_local v a))) }
-  have hG : ∀ p, G p = evp v (M.co.e (liftM h t p)) := fun _ => rfl
-  have hf : ∀ x u, evFin F v (symp (R := AF F) (cA σ) (-1) (incM F X.J) (incM F W.J) x u) =
-      (evp v (M.co.e x)).1 ⬝ᵥ (evp v (M.co.e u)).2 - (evp v (M.co.e u)).1 ⬝ᵥ (evp v (M.co.e x)).2 := fun x u => by
-    rw [M.co.form, map_sub, ev_dot, ev_dot]; rfl
-  have hinj : Function.Injective G := (injective_iff_map_eq_zero _).2 fun p hp => by
-    have h1 : M.co.e (liftM h t p) = 0 := by
-      rw [← liftM_at, map_smul]
-      refine Prod.ext (funext fun i => (sL_one_mul_eq_sL_evFin v _).trans ?_) (funext fun i => (sL_one_mul_eq_sL_evFin v _).trans ?_)
-      · exact (congrArg (sL v) (congrFun (congrArg Prod.fst hp) i)).trans (map_zero _)
-      · exact (congrArg (sL v) (congrFun (congrArg Prod.snd hp) i)).trans (map_zero _)
-    have h2 : liftM h t p = 0 := M.co.e.map_eq_zero_iff.1 h1
-    refine Prod.ext (funext fun k => ?_) (funext fun k => ?_)
-    · rw [← piW_liftM h t p k.1 k.2, h2]; exact map_zero _
-    · rw [← piW_liftM' h t p k.1 k.2, h2]; exact map_zero _
-  have hcc : ∀ z : AE F E, piW t z = piW ((t.comp σ).comp σ) z := fun z => by rw [comp_conj_conj h]
-  obtain ⟨ι, hι, ht, hm⟩ := inter2 (locConst (psiK ψ v) (hψ.1.comp (leviSection_continuous v))) (psiK_ne hψ v) G hinj
-    (fun y z => (hf _ _).symm.trans
-      (iso_symp h (t.comp σ) _ _ (fun i j => piW_liftM' h t _ i j) fun i j => piW_liftM' h t _ i j))
-    (fun y z => (hf _ _).symm.trans
-      (iso_symp h t _ _ (fun i j => piW_liftM h t _ i j) fun i j => piW_liftM h t _ i j))
-  let c : Matrix (Fin n) (Fin d) (Fv F v) ≃ₜ (Fin n × Fin d → Fv F v) :=
-    { toFun := fun Y k => Y k.1 k.2
-      invFun := fun y => Matrix.of fun i j => y (i, j)
-      left_inv := fun _ => rfl
-      right_inv := fun _ => rfl
-      continuous_toFun := continuous_pi fun k => continuous_id.matrix_elem k.1 k.2
-      continuous_invFun := continuous_matrix fun i j => continuous_apply _ }
-  have hco : ∀ u : Matrix (Fin n) (Fin d) (AE F E), ((1 : GL (Fin n) (Fv F v))⁻¹).1 * u.map (piW t) *
-      ((1 : GL (Fin d) (Fv F v))⁻¹).1ᵀ = u.map (piW t) := fun u => by simp
-  have h1 : ∀ u : Matrix (Fin n) (Fin d) (AE F E), At (evFin F v) u → u.map (piW (t.comp σ)) = 0 →
-      G (c (u.map (piW t)), 0) = evp v (M.co.e u) := fun u hu h0 => by
-    rw [hG]
-    conv_rhs => rw [← liftM_piW h t ((at_iff v u).1 hu)]
-    congr 4
-    exact funext fun k => (congrFun₂ h0 k.1 k.2).symm
-  have h0 : ∀ u : Matrix (Fin n) (Fin d) (AE F E), At (evFin F v) u → u.map (piW t) = 0 →
-      G (0, c (u.map (piW (t.comp σ)))) = evp v (M.co.e u) := fun u hu h0 => by
-    rw [hG]
-    conv_rhs => rw [← liftM_piW h t ((at_iff v u).1 hu)]
-    congr 4
-    exact funext fun k => (congrFun₂ h0 k.1 k.2).symm
-  have hat : ∀ u : Matrix (Fin n) (Fin d) (AE F E), At (evFin F v) u → sL v 1 • M.co.e u = M.co.e u := fun u hu => by
-    rw [← map_smul, (at_iff v u).1 hu]
-  refine ⟨LinearMap.funLeft ℂ ℂ c ∘ₗ ι, (bij_comp c).comp hι, fun u hu hu0 φ hφ φ₁ _ hA Y => ?_,
-    fun u hu hu0 φ hφ φ₁ _ hA x hx hx0 => ?_⟩
-  · rw [acts_eq ψ v (hat u hu) hφ hA, ← h1 u hu hu0, hco]
-    exact ht _ φ hφ (c Y)
-  · rw [acts_eq ψ v (hat u hu) hφ hA, hco, psi_at ψ v (a := symp (R := AF F) (cA σ) (-1) _ _ x u) (by
-      have e1 : sL v 1 • (M.co.e u).1 = (M.co.e u).1 := congrArg Prod.fst (hat u hu)
-      have e2 : sL v 1 • (M.co.e u).2 = (M.co.e u).2 := congrArg Prod.snd (hat u hu)
-      rw [M.co.form, mul_sub, ← smul_eq_mul (sL v 1), ← smul_eq_mul (sL v 1), ← dotProduct_smul, ← smul_dotProduct,
-        e1, e2]), hf, ← h0 u hu hu0, ← h1 x hx hx0]
-    exact hm _ φ hφ _
 
 end Main
 
 end UpperTheory.Reformulated.B.SingleLocalAdele
 
 end
-
-theorem UpperTheory.Reformulated.B.SingleLocalAdele.exists_linW :
-    ∀ {F E : Type} [inst : Field F] [inst_1 : NumberField F] [inst_2 : Field E] [inst_3 : NumberField E]
-      [inst_4 : Algebra F E] {σ : E →ₐ[F] E} {n d : ℕ} {X : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Spc F E n} {W : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Spc F E d}
-      (B : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Base F E) (M : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Model σ X W) (χX χW : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Chr F E)
-      (om : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep σ X W) {r s r' s' : ℕ},
-      GlobalTheory.ThK.IsPair B M χX χW om r s r' s' →
-        ∀ (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl F) (t : E →ₐ[F] Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v),
-          ∃ (ι :
-            ((Fin n × Fin d → Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v) → ℂ) →ₗ[ℂ] Matrix (Fin n) (Fin d) (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v) → ℂ),
-            M.IsLinW B.ψ t (1 : GL (Fin n) (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v)) (1 : GL (Fin d) (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v)) ι := by
-  intro F E _ _ _ _ _ σ n d X W B M χX χW om r s r' s' H v t
-  exact UpperTheory.Reformulated.B.SingleLocalAdele.main M H.base.std H.base.cm v t
+end

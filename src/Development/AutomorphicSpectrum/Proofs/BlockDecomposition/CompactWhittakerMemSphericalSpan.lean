@@ -1,22 +1,1124 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PartialFourierSchwartzBruhatPlane
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerLowerLeftNonzero
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerUpperTriangularCase
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegrableTwistedSectionLine
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CosetInd
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactWhittakerEqGodementLocal
+import BuildAid.ForwardExisting
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegrableSplitWhittakerDensity
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SchwartzBruhatPlaneRightTranslateStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CosetIndicatorSchwartzBruhat
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SchwartzBruhatPlaneCosetSpan
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SpanSetEqLatticePreimage
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeAnnulusCosetDecomposition
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CosetIndicatorUnitScaling
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StandardLatticeIntegralGL2Invariant
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SplitWhittakerLeftUnipotent
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InnerIntegralLatticeTorusFormula
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnramifiedCharacterAnnulusIntegral
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SchurPolynomialGL2Sum
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ModulusHalfUniformizerPower
 
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+namespace GlobalTheory.CompanionTheory.WS.PF
+
+theorem isSB_pF : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (χ : AddChar F Circle), IsStd χ → ∀ Φ : F × F → ℂ, GlobalTheory.CompanionTheory.WS.IsSB Φ → GlobalTheory.CompanionTheory.WS.IsSB (GlobalTheory.CompanionTheory.WS.pF χ Φ) := by
+  intro F _ _ _ _ _ _ χ hχ Φ hΦ
+  have hm := GodementSectionLocal.mem_schwartzBruhat2.1 (GlobalTheory.CompanionTheory.WcSplit.phiW_mem hχ hΦ.1 hΦ.2)
+  have e : GlobalTheory.CompanionTheory.WS.pF χ Φ = GlobalTheory.CompanionTheory.WcSplit.phiW χ Φ ∘ (Homeomorph.finTwoArrow (X := F)).symm := by
+    funext p
+    simp [GlobalTheory.CompanionTheory.WS.pF, GlobalTheory.CompanionTheory.WcSplit.phiW, mul_comm]
+  rw [e]
+  exact ⟨hm.1.comp_continuous (Homeomorph.finTwoArrow (X := F)).symm.continuous,
+    hm.2.comp_homeomorph (Homeomorph.finTwoArrow (X := F)).symm⟩
+
+end GlobalTheory.CompanionTheory.WS.PF
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.partial_fourier_schwartz_bruhat_plane : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (χ : AddChar F Circle), IsStd χ → ∀ Φ : F × F → ℂ, GlobalTheory.CompanionTheory.WS.IsSB Φ → GlobalTheory.CompanionTheory.WS.IsSB (GlobalTheory.CompanionTheory.WS.pF χ Φ) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WS.PF.isSB_pF
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.WS
+
+theorem model_ne : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (χ : AddChar F Circle), IsStd χ → ∀ Φ : F × F → ℂ, GlobalTheory.CompanionTheory.WS.IsSB Φ → ∀ g : GL (Fin 2) F, g.val 1 0 ≠ 0 → ∀ u : Fˣ, GL2LocalData.rW χ GL2LocalData.swapE ((selfDualMeasure χ).prod (selfDualMeasure χ)) 1 (g.val 0 0 / (g.val).det) (g.val 0 1) (g.val 1 0 / (g.val).det) (g.val 1 1) (fun x => Φ (x * ((g.val).det, 1))) ((u : F), ((u⁻¹ : Fˣ) : F)) = mp u 1 * GlobalTheory.CompanionTheory.WS.inn χ (GlobalTheory.CompanionTheory.WS.pF χ Φ ∘ GlobalTheory.CompanionTheory.WS.rowAct g) u := by
+  intro F _ _ _ _ _ _ χ hχ Φ hΦ g hc u
+  have hd0 : (g.val).det ≠ 0 := (Matrix.isUnits_det_units g).ne_zero
+  have hdet : (g.val).det = g.val 0 0 * g.val 1 1 - g.val 0 1 * g.val 1 0 := Matrix.det_fin_two _
+  rw [GlobalTheory.CompanionTheory.WcSplit.rW_lower hχ hΦ.1 hΦ.2 hc hdet hd0 u]
+  congr 1
+  refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
+  simp only [Function.comp_apply, rowAct, pF, GlobalTheory.CompanionTheory.WcSplit.phiW, Matrix.cons_val_zero, Matrix.cons_val_one]
+  congr 1
+  refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+  simp only [mul_comm t]
+
+end GlobalTheory.CompanionTheory.WS
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weil_whittaker_lower_left_nonzero : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (χ : AddChar F Circle), IsStd χ → ∀ Φ : F × F → ℂ, GlobalTheory.CompanionTheory.WS.IsSB Φ → ∀ g : GL (Fin 2) F, g.val 1 0 ≠ 0 → ∀ u : Fˣ, GL2LocalData.rW χ GL2LocalData.swapE ((selfDualMeasure χ).prod (selfDualMeasure χ)) 1 (g.val 0 0 / (g.val).det) (g.val 0 1) (g.val 1 0 / (g.val).det) (g.val 1 1) (fun x => Φ (x * ((g.val).det, 1))) ((u : F), ((u⁻¹ : Fˣ) : F)) = mp u 1 * GlobalTheory.CompanionTheory.WS.inn χ (GlobalTheory.CompanionTheory.WS.pF χ Φ ∘ GlobalTheory.CompanionTheory.WS.rowAct g) u := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WS.model_ne
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.WS
+
+theorem modelzero_upper : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (χ : AddChar F Circle), IsStd χ → ∀ Φ : F × F → ℂ, GlobalTheory.CompanionTheory.WS.IsSB Φ → ∀ g : GL (Fin 2) F, g.val 1 0 = 0 → ∀ u : Fˣ, GL2LocalData.rW χ GL2LocalData.swapE ((selfDualMeasure χ).prod (selfDualMeasure χ)) 1 (g.val 0 0 / (g.val).det) (g.val 0 1) (g.val 1 0 / (g.val).det) (g.val 1 1) (fun x => Φ (x * ((g.val).det, 1))) ((u : F), ((u⁻¹ : Fˣ) : F)) = mp u 1 * GlobalTheory.CompanionTheory.WS.inn χ (GlobalTheory.CompanionTheory.WS.pF χ Φ ∘ GlobalTheory.CompanionTheory.WS.rowAct g) u := by
+  intro F _ _ _ _ _ _ χ hχ Φ hΦ g hg u
+  have hdet : (g.val).det = g.val 0 0 * g.val 1 1 := by
+    rw [Matrix.det_fin_two, hg]; ring
+  have hdet0 : (g.val).det ≠ 0 := by
+    have := g.isUnit.map (Matrix.detMonoidHom (n := Fin 2) (R := F))
+    exact this.ne_zero
+  have hA : g.val 0 0 ≠ 0 := fun h => hdet0 (by rw [hdet, h, zero_mul])
+  have hD : g.val 1 1 ≠ 0 := fun h => hdet0 (by rw [hdet, h, mul_zero])
+  have hu : (u : F) ≠ 0 := u.ne_zero
+  set A := g.val 0 0 with hAdef
+  set B := g.val 0 1 with hBdef
+  set D := g.val 1 1 with hDdef
+  have hc : (u : F) * D ≠ 0 := mul_ne_zero hu hD
+
+  have hinn : GlobalTheory.CompanionTheory.WS.inn χ (GlobalTheory.CompanionTheory.WS.pF χ Φ ∘ GlobalTheory.CompanionTheory.WS.rowAct g) u =
+      ((modulus ((u : F) * D) : ℝ))⁻¹ * ((χ (B / D) : ℂ) * Φ ((u : F) * A, ((u : F) * D)⁻¹)) := by
+    set G : F → ℂ := fun y' => GlobalTheory.CompanionTheory.WS.pF χ Φ ((u : F) * A, y') * (χ (-(y' / ((u : F) * D)) + B / D) : ℂ) with hG
+    have h1 : GlobalTheory.CompanionTheory.WS.inn χ (GlobalTheory.CompanionTheory.WS.pF χ Φ ∘ GlobalTheory.CompanionTheory.WS.rowAct g) u =
+        ∫ y, (fun y => G (((u : F) * D) * y)) (y + B / D) ∂selfDualMeasure χ := by
+      unfold GlobalTheory.CompanionTheory.WS.inn
+      refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
+      simp only [Function.comp, GlobalTheory.CompanionTheory.WS.rowAct, hG, hg]
+      have e1 : (u : F) * A + (u : F) * y * 0 = (u : F) * A := by ring
+      have e2 : (u : F) * B + (u : F) * y * D = (u : F) * D * (y + B / D) := by
+        field_simp
+        ring
+      have e3 : -((u : F) * D * (y + B / D) / ((u : F) * D)) + B / D = -y := by
+        field_simp
+        ring
+      rw [e1, e2, e3]
+    rw [h1, integral_add_right_eq_self (fun y => G (((u : F) * D) * y)) (B / D),
+      GroundTheory.LocalField.integral_comp_mul_left _ hc G]
+    have h2 : ∫ y, G y ∂selfDualMeasure χ = (χ (B / D) : ℂ) * Φ ((u : F) * A, ((u : F) * D)⁻¹) := by
+      have h3 := GlobalTheory.CompanionTheory.WcSplit.integral_phiW hχ hΦ.1 hΦ.2 ((u : F) * A) (((u : F) * D)⁻¹)
+      rw [← h3, ← integral_const_mul]
+      refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
+      simp only [hG]
+      have e4 : -(y / ((u : F) * D)) + B / D = B / D + -(y * ((u : F) * D)⁻¹) := by
+        rw [div_eq_mul_inv y]; ring
+      rw [e4, AddChar.map_add_eq_mul, Circle.coe_mul]
+      have e7 : GlobalTheory.CompanionTheory.WS.pF χ Φ ((u : F) * A, y) = GlobalTheory.CompanionTheory.WcSplit.phiW χ Φ ![(u : F) * A, y] := by
+        rw [GlobalTheory.CompanionTheory.WcSplit.phiW_pair]
+        unfold GlobalTheory.CompanionTheory.WS.pF localFourier
+        refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+        simp only [mul_comm y t]
+      rw [e7]
+      ring
+    rw [h2]
+    simp [Complex.real_smul]
+  rw [hinn]
+  have hmod : ((modulus ((u : F) * D) : ℝ)) = (modulus (u : F) : ℝ) * (modulus D : ℝ) := by
+    rw [modulus_mul]; push_cast; rfl
+  have hmu : (modulus (u : F) : ℝ) ≠ 0 := by
+    exact_mod_cast modulus_ne_zero hu
+  have hmD : (modulus D : ℝ) ≠ 0 := by
+    exact_mod_cast modulus_ne_zero hD
+  have ha' : A / (g.val).det = D⁻¹ := by
+    rw [hdet]; field_simp
+  have hz : (0 : F) / (g.val).det = 0 := zero_div _
+  unfold GL2LocalData.rW
+  rw [hg, hz, if_pos rfl, ha', GlobalTheory.CompanionTheory.WcSplit.nsg_pair (inv_ne_zero hD), GlobalTheory.CompanionTheory.WcSplit.norm_pair]
+  have e5 : D⁻¹ * B * ((u : F) * ((u⁻¹ : Fˣ) : F)) = B / D := by
+    simp only [Units.val_inv_eq_inv_val]
+    field_simp
+  have e6 : (algebraMap F (F × F) D⁻¹ * ((u : F), ((u⁻¹ : Fˣ) : F))) * ((g.val).det, 1) =
+      ((u : F) * A, ((u : F) * D)⁻¹) := by
+    rw [hdet]
+    ext
+    · simp
+      field_simp
+    · simp
+  simp only [e5, e6]
+  have hmp : mp u 1 = ((modulus (u : F) : ℝ) : ℂ) := by
+    simp [mp]
+  rw [hmp, hmod, modulus_inv]
+  have hmuC : ((modulus (u : F) : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hmu
+  have hmDC : ((modulus D : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hmD
+  push_cast
+  field_simp
+
+end GlobalTheory.CompanionTheory.WS
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weil_whittaker_upper_triangular_case : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (χ : AddChar F Circle), IsStd χ → ∀ Φ : F × F → ℂ, GlobalTheory.CompanionTheory.WS.IsSB Φ → ∀ g : GL (Fin 2) F, g.val 1 0 = 0 → ∀ u : Fˣ, GL2LocalData.rW χ GL2LocalData.swapE ((selfDualMeasure χ).prod (selfDualMeasure χ)) 1 (g.val 0 0 / (g.val).det) (g.val 0 1) (g.val 1 0 / (g.val).det) (g.val 1 1) (fun x => Φ (x * ((g.val).det, 1))) ((u : F), ((u⁻¹ : Fˣ) : F)) = mp u 1 * GlobalTheory.CompanionTheory.WS.inn χ (GlobalTheory.CompanionTheory.WS.pF χ Φ ∘ GlobalTheory.CompanionTheory.WS.rowAct g) u := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WS.modelzero_upper
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.WS
+
+theorem inner_integrable : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (χ : AddChar F Circle), IsStd χ → ∀ Ψ : F × F → ℂ, GlobalTheory.CompanionTheory.WS.IsSB Ψ → ∀ u : Fˣ, Integrable (fun y : F => Ψ ((u : F), (u : F) * y) * (χ (-y) : ℂ)) (selfDualMeasure χ) := by
+  intro F _ _ _ _ _ _ χ hχ Ψ hΨ u
+  have hcΨ : Continuous Ψ := hΨ.1.continuous
+  have hcχ : Continuous (fun y : F => ((χ (-y) : Circle) : ℂ)) :=
+    (continuous_induced_dom : Continuous ((↑) : Circle → ℂ)).comp (hχ.1.comp continuous_neg)
+  have hcg : Continuous (fun y : F => Ψ ((u : F), (u : F) * y)) :=
+    hcΨ.comp (continuous_const.prodMk (continuous_const.mul continuous_id))
+  have hK : IsCompact ((fun p : F × F => ((u⁻¹ : Fˣ) : F) * p.2) '' tsupport Ψ) :=
+    hΨ.2.isCompact.image (continuous_const.mul continuous_snd)
+  have hs : HasCompactSupport (fun y : F => Ψ ((u : F), (u : F) * y)) := by
+    refine HasCompactSupport.intro hK (fun y hy => ?_)
+    by_contra hne
+    exact hy ⟨((u : F), (u : F) * y), subset_tsupport _ hne, by simp⟩
+  exact (hcg.mul hcχ).integrable_of_hasCompactSupport hs.mul_right
+
+end GlobalTheory.CompanionTheory.WS
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integrable_twisted_section_line : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (χ : AddChar F Circle), IsStd χ → ∀ Ψ : F × F → ℂ, GlobalTheory.CompanionTheory.WS.IsSB Ψ → ∀ u : Fˣ, Integrable (fun y : F => Ψ ((u : F), (u : F) * y) * (χ (-y) : ℂ)) (selfDualMeasure χ) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WS.inner_integrable
+end
+
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+namespace GlobalTheory.CompanionTheory.WS.Comp
+
+theorem rowAct_rowAct {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
+    [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F]
+    (h k : GL (Fin 2) F) (v : F × F) :
+    GlobalTheory.CompanionTheory.WS.rowAct h (GlobalTheory.CompanionTheory.WS.rowAct k v) = GlobalTheory.CompanionTheory.WS.rowAct (k * h) v := by
+  ext <;>
+    simp only [GlobalTheory.CompanionTheory.WS.rowAct, Units.val_mul, Matrix.mul_apply, Fin.sum_univ_two] <;> ring
+
+theorem rowAct_one {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
+    [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (v : F × F) :
+    GlobalTheory.CompanionTheory.WS.rowAct (1 : GL (Fin 2) F) v = v := by
+  ext <;> simp [GlobalTheory.CompanionTheory.WS.rowAct]
+
+theorem continuous_rowAct {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
+    [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (g : GL (Fin 2) F) :
+    Continuous (GlobalTheory.CompanionTheory.WS.rowAct g) := by
+  unfold GlobalTheory.CompanionTheory.WS.rowAct
+  fun_prop
+
+def rowActHomeo {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
+    [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (g : GL (Fin 2) F) :
+    (F × F) ≃ₜ (F × F) where
+  toFun := GlobalTheory.CompanionTheory.WS.rowAct g
+  invFun := GlobalTheory.CompanionTheory.WS.rowAct g⁻¹
+  left_inv v := by rw [rowAct_rowAct, mul_inv_cancel, rowAct_one]
+  right_inv v := by rw [rowAct_rowAct, inv_mul_cancel, rowAct_one]
+  continuous_toFun := continuous_rowAct g
+  continuous_invFun := continuous_rowAct g⁻¹
+
+theorem isSB_comp_rowAct : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F]
+    [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (Ψ : F × F → ℂ),
+    GlobalTheory.CompanionTheory.WS.IsSB Ψ → ∀ g : GL (Fin 2) F, GlobalTheory.CompanionTheory.WS.IsSB (Ψ ∘ GlobalTheory.CompanionTheory.WS.rowAct g) := by
+  intro F _ _ _ _ _ _ Ψ hΨ g
+  exact ⟨hΨ.1.comp_continuous (continuous_rowAct g),
+    hΨ.2.comp_homeomorph (rowActHomeo g)⟩
+
+end GlobalTheory.CompanionTheory.WS.Comp
+end
+
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+theorem _root_.GlobalTheory.T.schwartz_bruhat_plane_right_translate : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (Ψ : F × F → ℂ), GlobalTheory.CompanionTheory.WS.IsSB Ψ → ∀ g : GL (Fin 2) F, GlobalTheory.CompanionTheory.WS.IsSB (Ψ ∘ GlobalTheory.CompanionTheory.WS.rowAct g) := by
+  first | exact @GlobalTheory.CompanionTheory.WS.Comp.isSB_comp_rowAct | exact GlobalTheory.CompanionTheory.WS.Comp.isSB_comp_rowAct | (intros; apply GlobalTheory.CompanionTheory.WS.Comp.isSB_comp_rowAct <;> assumption) | exact @GlobalTheory.CompanionTheory.WS.Comp.isSB_comp_rowAct | exact GlobalTheory.CompanionTheory.WS.Comp.isSB_comp_rowAct | (intros; apply GlobalTheory.CompanionTheory.WS.Comp.isSB_comp_rowAct <;> assumption) | exact @GlobalTheory.CompanionTheory.WS.Comp.continuous_rowAct | exact GlobalTheory.CompanionTheory.WS.Comp.continuous_rowAct | (intros; apply GlobalTheory.CompanionTheory.WS.Comp.continuous_rowAct <;> assumption) | exact @GlobalTheory.CompanionTheory.WS.Comp.rowAct_one | exact GlobalTheory.CompanionTheory.WS.Comp.rowAct_one | (intros; apply GlobalTheory.CompanionTheory.WS.Comp.rowAct_one <;> assumption) | exact @GlobalTheory.CompanionTheory.WS.Comp.rowAct_rowAct | exact GlobalTheory.CompanionTheory.WS.Comp.rowAct_rowAct | (intros; apply GlobalTheory.CompanionTheory.WS.Comp.rowAct_rowAct <;> assumption)
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+namespace GlobalTheory.CompanionTheory.WS.Coset
+
+theorem isSB_cosetInd : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (n : ℤ) (x : F × F), GlobalTheory.CompanionTheory.WS.IsSB (GlobalTheory.CompanionTheory.WS.cosetInd n x) := by
+  intro F _ _ _ _ _ _ n x
+  have hB : IsClopen (valBall F n : Set F) :=
+    ⟨AddSubgroup.isClosed_of_isOpen _ (isOpen_valBall n), isOpen_valBall n⟩
+  have hP : IsClopen ((valBall F n : Set F) ×ˢ (valBall F n : Set F)) := hB.prod hB
+  have hS : {v : F × F | v - x ∈ Ln F n} =
+      (fun v : F × F => v - x) ⁻¹' ((valBall F n : Set F) ×ˢ (valBall F n : Set F)) := rfl
+  have hC : IsClopen {v : F × F | v - x ∈ Ln F n} := by
+    rw [hS]
+    exact hP.preimage (continuous_id.sub continuous_const)
+  have hK : IsCompact {v : F × F | v - x ∈ Ln F n} := by
+    rw [hS]
+    exact (Homeomorph.subRight x).isCompact_preimage.2
+      ((isCompact_valBall n).prod (isCompact_valBall n))
+  refine ⟨?_, ?_⟩
+  · exact (LocallyConstant.indicator (1 : LocallyConstant (F × F) ℂ) hC).isLocallyConstant
+  · exact HasCompactSupport.intro hK fun v hv => Set.indicator_of_notMem hv _
+
+end GlobalTheory.CompanionTheory.WS.Coset
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coset_indicator_schwartz_bruhat : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (n : ℤ) (x : F × F), GlobalTheory.CompanionTheory.WS.IsSB (GlobalTheory.CompanionTheory.WS.cosetInd n x) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WS.Coset.isSB_cosetInd
+end
+
+section
+section
+noncomputable section
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+namespace GlobalTheory.CompanionTheory.WS.Decomp
+
+variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
+
+theorem add_mem_Ln {n : ℤ} {u v : F × F} (hu : u ∈ Ln F n) (hv : v ∈ Ln F n) :
+    u + v ∈ Ln F n :=
+  ⟨add_mem hu.1 hv.1, add_mem hu.2 hv.2⟩
+
+theorem neg_mem_Ln {n : ℤ} {u : F × F} (hu : u ∈ Ln F n) : -u ∈ Ln F n :=
+  ⟨neg_mem hu.1, neg_mem hu.2⟩
+
+theorem zero_mem_Ln (n : ℤ) : (0 : F × F) ∈ Ln F n :=
+  ⟨zero_mem _, zero_mem _⟩
+
+theorem Ln_anti {m n : ℤ} (h : m ≤ n) : Ln F n ⊆ Ln F m :=
+  fun _ hv => ⟨valBall_antitone h hv.1, valBall_antitone h hv.2⟩
+
+theorem isOpen_Ln (n : ℤ) : IsOpen (Ln F n) :=
+  ((isOpen_valBall n).preimage continuous_fst).inter ((isOpen_valBall n).preimage continuous_snd)
+
+theorem exists_Ln_subset {U : Set (F × F)} (hU : U ∈ 𝓝 (0 : F × F)) : ∃ n : ℤ, Ln F n ⊆ U := by
+  rw [show (0 : F × F) = ((0 : F), (0 : F)) from rfl, mem_nhds_prod_iff] at hU
+  obtain ⟨u, hu, v, hv, huv⟩ := hU
+  obtain ⟨a, -, ha⟩ := hasBasis_nhds_zero_valBall.mem_iff.mp hu
+  obtain ⟨b, -, hb⟩ := hasBasis_nhds_zero_valBall.mem_iff.mp hv
+  refine ⟨max a b, fun w hw => huv ?_⟩
+  exact ⟨ha (valBall_antitone (le_max_left a b) hw.1),
+    hb (valBall_antitone (le_max_right a b) hw.2)⟩
+
+theorem exists_periodic {Ψ : F × F → ℂ} (hl : IsLocallyConstant Ψ) (hc : HasCompactSupport Ψ) :
+    ∃ n : ℤ, ∀ y, ∀ h ∈ Ln F n, Ψ (y + h) = Ψ y := by
+  have hloc : ∀ x : F × F, ∃ n : ℤ, ∀ h ∈ Ln F n, Ψ (x + h) = Ψ x := by
+    intro x
+    have ho : IsOpen {h : F × F | Ψ (x + h) = Ψ x} :=
+      (hl.isOpen_fiber (Ψ x)).preimage (continuous_const.add continuous_id)
+    obtain ⟨n, hn⟩ := exists_Ln_subset (ho.mem_nhds (by simp))
+    exact ⟨n, fun h hh => hn hh⟩
+  choose n hn using hloc
+  obtain ⟨t, -, ht⟩ := hc.isCompact.elim_nhds_subcover
+    (fun x => {z : F × F | z - x ∈ Ln F (n x)})
+    (fun x _ => ((isOpen_Ln _).preimage (continuous_id.sub continuous_const)).mem_nhds
+      (by simpa using zero_mem_Ln (n x)))
+  obtain ⟨N, hN⟩ := (t.image n).exists_le
+  have hval : ∀ y ∈ tsupport Ψ, ∀ h ∈ Ln F N, Ψ (y + h) = Ψ y := by
+    intro y hy h hh
+    have := ht hy
+    simp only [Set.mem_iUnion] at this
+    obtain ⟨x, hxt, hyx⟩ := this
+    have hN' : h ∈ Ln F (n x) := Ln_anti (hN _ (Finset.mem_image_of_mem n hxt)) hh
+    have e1 : Ψ y = Ψ x := by
+      have := hn x (y - x) hyx
+      rwa [add_sub_cancel] at this
+    have e2 : Ψ (y + h) = Ψ x := by
+      have := hn x (y + h - x)
+        (by rw [show y + h - x = (y - x) + h by abel]; exact add_mem_Ln hyx hN')
+      rwa [add_sub_cancel] at this
+    rw [e1, e2]
+  refine ⟨N, fun y h hh => ?_⟩
+  by_cases hy : y ∈ tsupport Ψ
+  · exact hval y hy h hh
+  by_cases hyh : y + h ∈ tsupport Ψ
+  · have := hval (y + h) hyh (-h) (neg_mem_Ln hh)
+    rw [add_neg_cancel_right] at this
+    exact this.symm
+  · rw [image_eq_zero_of_notMem_tsupport hy, image_eq_zero_of_notMem_tsupport hyh]
+
+theorem cosetInd_of_mem {n : ℤ} {x y : F × F} (h : y - x ∈ Ln F n) : cosetInd n x y = 1 := by
+  unfold cosetInd
+  rw [Set.indicator_of_mem (show y ∈ {v | v - x ∈ Ln F n} from h)]
+  rfl
+
+theorem cosetInd_of_notMem {n : ℤ} {x y : F × F} (h : y - x ∉ Ln F n) : cosetInd n x y = 0 := by
+  unfold cosetInd
+  exact Set.indicator_of_notMem (show y ∉ {v | v - x ∈ Ln F n} from h) _
+
+theorem cosetInd_add {n : ℤ} (x y : F × F) {h : F × F} (hh : h ∈ Ln F n) :
+    cosetInd n x (y + h) = cosetInd n x y := by
+  by_cases hy : y - x ∈ Ln F n
+  · rw [cosetInd_of_mem hy, cosetInd_of_mem]
+    rw [show y + h - x = (y - x) + h by abel]
+    exact add_mem_Ln hy hh
+  · rw [cosetInd_of_notMem hy, cosetInd_of_notMem]
+    intro hyh
+    apply hy
+    have := add_mem_Ln hyh (neg_mem_Ln hh)
+    rwa [show y + h - x + -h = y - x by abel] at this
+
+theorem mem_span_of_cover (n : ℤ) (t : Finset (F × F)) :
+    ∀ Ψ : F × F → ℂ, (∀ y, ∀ h ∈ Ln F n, Ψ (y + h) = Ψ y) →
+      (∀ y, Ψ y ≠ 0 → ∃ x ∈ t, y - x ∈ Ln F n) →
+      Ψ ∈ Submodule.span ℂ (Set.range (cosetInd (F := F) n)) := by
+  classical
+  induction t using Finset.induction_on with
+  | empty =>
+    intro Ψ _ hs
+    have : Ψ = 0 := by
+      funext y
+      by_contra hy
+      obtain ⟨x, hx, -⟩ := hs y hy
+      simp at hx
+    rw [this]
+    exact zero_mem _
+  | insert x t _ ih =>
+    intro Ψ hp hs
+    have hmem : Ψ - Ψ x • cosetInd n x ∈ Submodule.span ℂ (Set.range (cosetInd (F := F) n)) := by
+      refine ih _ (fun y h hh => ?_) (fun y hy => ?_)
+      · simp only [Pi.sub_apply, Pi.smul_apply, smul_eq_mul]
+        rw [hp y h hh, cosetInd_add x y hh]
+      · simp only [Pi.sub_apply, Pi.smul_apply, smul_eq_mul] at hy
+        by_cases hyx : y - x ∈ Ln F n
+        · exfalso
+          apply hy
+          have := hp x (y - x) hyx
+          rw [add_sub_cancel] at this
+          rw [cosetInd_of_mem hyx, this]
+          ring
+        · rw [cosetInd_of_notMem hyx, mul_zero, sub_zero] at hy
+          obtain ⟨x', hx', hyx'⟩ := hs y hy
+          rcases Finset.mem_insert.mp hx' with rfl | hx''
+          · exact absurd hyx' hyx
+          · exact ⟨x', hx'', hyx'⟩
+    have hx : cosetInd n x ∈ Submodule.span ℂ (Set.range (cosetInd (F := F) n)) :=
+      Submodule.subset_span ⟨x, rfl⟩
+    have := add_mem hmem (Submodule.smul_mem _ (Ψ x) hx)
+    rwa [sub_add_cancel] at this
+
+theorem exists_sum_cosetInd : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F]
+    [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (Ψ : F × F → ℂ),
+    GlobalTheory.CompanionTheory.WS.IsSB Ψ → ∃ (n : ℤ) (s : Finset (F × F)) (a : F × F → ℂ),
+      Ψ = ∑ x ∈ s, a x • GlobalTheory.CompanionTheory.WS.cosetInd n x := by
+  intro F _ _ _ _ _ _ Ψ hΨ
+  classical
+  obtain ⟨n, hn⟩ := exists_periodic hΨ.1 hΨ.2
+  obtain ⟨t, -, ht⟩ := hΨ.2.isCompact.elim_nhds_subcover
+    (fun x => {z : F × F | z - x ∈ Ln F n})
+    (fun x _ => ((isOpen_Ln _).preimage (continuous_id.sub continuous_const)).mem_nhds
+      (by simpa using zero_mem_Ln n))
+  have hspan := mem_span_of_cover n t Ψ hn (fun y hy => by
+    have := ht (subset_tsupport Ψ (Function.mem_support.mpr hy))
+    simp only [Set.mem_iUnion] at this
+    obtain ⟨x, hx, hyx⟩ := this
+    exact ⟨x, hx, hyx⟩)
+  obtain ⟨c, hc⟩ := (Finsupp.mem_span_range_iff_exists_finsupp).1 hspan
+  exact ⟨n, c.support, c, by rw [← hc]; rfl⟩
+
+end GlobalTheory.CompanionTheory.WS.Decomp
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.schwartz_bruhat_plane_coset_span : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (Ψ : F × F → ℂ), GlobalTheory.CompanionTheory.WS.IsSB Ψ → ∃ (n : ℤ) (s : Finset (F × F)) (a : F × F → ℂ), Ψ = ∑ x ∈ s, a x • GlobalTheory.CompanionTheory.WS.cosetInd n x := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WS.Decomp.exists_sum_cosetInd
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+namespace GlobalTheory.CompanionTheory.WS
+
+theorem unit_mul_mem_valBall_iff {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
+    [IsNonarchimedeanLocalField F] (n : ℤ) (t : Fˣ) (ht : t ∈ unitFiltrationUnits F 0) (y : F) :
+    (t : F) * y ∈ valBall F n ↔ y ∈ valBall F n := by
+  have h0 : ord (t : F) = 0 := mem_unitFiltrationUnits_zero_iff_ord.1 ht
+  by_cases hy : y = 0
+  · simp [hy]
+  rw [mem_valBall_iff_le_ord (mul_ne_zero t.ne_zero hy), mem_valBall_iff_le_ord hy,
+    ord_mul t.ne_zero hy, h0, zero_add]
+
+theorem cosetInd_unit_smul : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F]
+    [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (n : ℤ) (x : F × F) (t : Fˣ),
+    t ∈ unitFiltrationUnits F 0 →
+      GlobalTheory.CompanionTheory.WS.cosetInd n ((t : F) • x) = fun v => GlobalTheory.CompanionTheory.WS.cosetInd n x (((t⁻¹ : Fˣ) : F) • v) := by
+  intro F _ _ _ _ _ _ n x t ht
+  have hti : t⁻¹ ∈ unitFiltrationUnits F 0 := inv_mem ht
+  have hc : ∀ a b : F, a - (t : F) * b ∈ valBall F n ↔
+      ((t⁻¹ : Fˣ) : F) * a - b ∈ valBall F n := by
+    intro a b
+    have e : ((t⁻¹ : Fˣ) : F) * (a - (t : F) * b) = ((t⁻¹ : Fˣ) : F) * a - b := by
+      rw [mul_sub, ← mul_assoc, Units.inv_mul, one_mul]
+    rw [← e, unit_mul_mem_valBall_iff n t⁻¹ hti]
+  have hs : ∀ v : F × F, v - (t : F) • x ∈ Ln F n ↔ ((t⁻¹ : Fˣ) : F) • v - x ∈ Ln F n := by
+    intro v
+    simp only [Ln, Set.mem_ofPred_eq, Prod.fst_sub, Prod.snd_sub, Prod.smul_fst, Prod.smul_snd,
+      smul_eq_mul, hc]
+  funext v
+  have hm : v ∈ {w : F × F | w - (t : F) • x ∈ Ln F n} ↔
+      ((t⁻¹ : Fˣ) : F) • v ∈ {w : F × F | w - x ∈ Ln F n} := hs v
+  unfold cosetInd
+  by_cases h : v ∈ {w : F × F | w - (t : F) • x ∈ Ln F n}
+  · rw [Set.indicator_of_mem h, Set.indicator_of_mem (hm.1 h)]
+    rfl
+  · rw [Set.indicator_of_notMem h, Set.indicator_of_notMem (fun h' => h (hm.2 h'))]
+
+end GlobalTheory.CompanionTheory.WS
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coset_indicator_unit_scaling : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (n : ℤ) (x : F × F) (t : Fˣ), t ∈ unitFiltrationUnits F 0 → GlobalTheory.CompanionTheory.WS.cosetInd n ((t : F) • x) = fun v => GlobalTheory.CompanionTheory.WS.cosetInd n x (((t⁻¹ : Fˣ) : F) • v) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WS.cosetInd_unit_smul
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+namespace GlobalTheory.CompanionTheory.WS
+
+variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
+  [MeasurableSpace F] [BorelSpace F]
+
+theorem mem_Ln_zero_iff (v : F × F) : v ∈ Ln F 0 ↔ v.1 ∈ 𝒪[F] ∧ v.2 ∈ 𝒪[F] := by
+  simp only [Ln, Set.mem_setOf_eq, mem_valBall_zero_iff]
+
+theorem rowAct_mem_Ln_zero {k : GL (Fin 2) F} (h : ∀ i j, k.val i j ∈ 𝒪[F]) {v : F × F}
+    (hv : v ∈ Ln F 0) : rowAct k v ∈ Ln F 0 := by
+  rw [mem_Ln_zero_iff] at hv ⊢
+  exact ⟨add_mem (mul_mem hv.1 (h 0 0)) (mul_mem hv.2 (h 1 0)),
+    add_mem (mul_mem hv.1 (h 0 1)) (mul_mem hv.2 (h 1 1))⟩
+
+theorem rowAct_inv_rowAct (k : GL (Fin 2) F) (v : F × F) : rowAct k⁻¹ (rowAct k v) = v := by
+  obtain ⟨m, hm⟩ : ∃ m : Matrix (Fin 2) (Fin 2) F, m = (k⁻¹).val := ⟨_, rfl⟩
+  have h : k.val * m = 1 := by
+    rw [hm, ← Matrix.GeneralLinearGroup.coe_mul, mul_inv_cancel]; rfl
+  have e00 := congrFun (congrFun h 0) 0
+  have e01 := congrFun (congrFun h 0) 1
+  have e10 := congrFun (congrFun h 1) 0
+  have e11 := congrFun (congrFun h 1) 1
+  simp [Matrix.mul_apply, Fin.sum_univ_two] at e00 e01 e10 e11
+  ext
+  · simp only [rowAct, ← hm]
+    linear_combination v.1 * e00 + v.2 * e10
+  · simp only [rowAct, ← hm]
+    linear_combination v.1 * e01 + v.2 * e11
+
+theorem standard_lattice_indicator_invariant (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F]
+    [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (k : GL (Fin 2) F)
+    (hk : k ∈ GLnLocal.integralGL F 2) : lat0 F ∘ rowAct k = lat0 F := by
+  obtain ⟨h1, h2⟩ := (GLnLocal.mem_integralGL_iff F 2).1 hk
+  have key : ∀ v, rowAct k v ∈ Ln F 0 ↔ v ∈ Ln F 0 := fun v =>
+    ⟨fun h => by
+      have := rowAct_mem_Ln_zero (k := k⁻¹) h2 h
+      rwa [rowAct_inv_rowAct] at this, rowAct_mem_Ln_zero h1⟩
+  funext v
+  by_cases hv : v ∈ Ln F 0
+  · simp [lat0, Set.indicator_of_mem hv, Set.indicator_of_mem ((key v).2 hv)]
+  · simp [lat0, Set.indicator_of_notMem hv, Set.indicator_of_notMem (fun h => hv ((key v).1 h))]
+
+end GlobalTheory.CompanionTheory.WS
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.standard_lattice_integral_GL2_invariant : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (k : GL (Fin 2) F), k ∈ GLnLocal.integralGL F 2 → GlobalTheory.CompanionTheory.WS.lat0 F ∘ GlobalTheory.CompanionTheory.WS.rowAct k = GlobalTheory.CompanionTheory.WS.lat0 F := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WS.standard_lattice_indicator_invariant
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.WS
+
+theorem rowAct_mul_left {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
+    [IsNonarchimedeanLocalField F] (v g : GL (Fin 2) F) (w : F × F) :
+    rowAct (v * g) w = rowAct g (rowAct v w) := by
+  ext <;> simp only [rowAct, Units.val_mul, Matrix.mul_apply, Fin.sum_univ_two] <;> ring
+
+theorem inn_unipotent_left {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
+    [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F]
+    (χ : AddChar F Circle) (Ψ : F × F → ℂ) (v g : GL (Fin 2) F)
+    (hv : v ∈ Iwasawa.unipotent F 2) (u : Fˣ) :
+    inn χ (Ψ ∘ rowAct (v * g)) u = (χ (v.val 0 1) : ℂ) * inn χ (Ψ ∘ rowAct g) u := by
+  have h00 : v.val 0 0 = 1 := hv.2 0
+  have h11 : v.val 1 1 = 1 := hv.2 1
+  have h10 : v.val 1 0 = 0 := hv.1 (by decide : (0 : Fin 2) < 1)
+  set x := v.val 0 1 with hx
+  set h : F → ℂ := fun y => (Ψ ∘ rowAct g) ((u : F), (u : F) * y) * (χ (-y) : ℂ) with hh
+  have key : ∀ y : F, (Ψ ∘ rowAct (v * g)) ((u : F), (u : F) * y) * (χ (-y) : ℂ) =
+      (χ x : ℂ) * h (y + x) := by
+    intro y
+    have hrow : rowAct v ((u : F), (u : F) * y) = ((u : F), (u : F) * (y + x)) := by
+      ext
+      · simp only [rowAct, h00, h10]; ring
+      · simp only [rowAct, h11, ← hx]; ring
+    have hchi : (χ (-y) : ℂ) = (χ x : ℂ) * (χ (-(y + x)) : ℂ) := by
+      rw [← Circle.coe_mul, ← AddChar.map_add_eq_mul]
+      congr 2
+      ring
+    simp only [hh, Function.comp_apply, rowAct_mul_left, hrow, hchi]
+    ring
+  have htr : ∫ y, h (y + x) ∂selfDualMeasure χ = ∫ y, h y ∂selfDualMeasure χ :=
+    integral_add_right_eq_self h x
+  calc inn χ (Ψ ∘ rowAct (v * g)) u
+      = ∫ y, (χ x : ℂ) * h (y + x) ∂selfDualMeasure χ := by
+        unfold inn
+        exact integral_congr_ae (Eventually.of_forall key)
+    _ = (χ x : ℂ) * inn χ (Ψ ∘ rowAct g) u := by
+        rw [integral_const_mul, htr]
+        rfl
+
+theorem WL_unipotent_left : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (χ : AddChar F Circle) (c₁ c₂ : Fˣ →* ℂˣ) (Ψ : F × F → ℂ) (v g : GL (Fin 2) F), v ∈ Iwasawa.unipotent F 2 → GlobalTheory.CompanionTheory.WS.WL χ c₁ c₂ Ψ (v * g) = Whittaker.psiN (Circle.coeHom.compAddChar χ) v * GlobalTheory.CompanionTheory.WS.WL χ c₁ c₂ Ψ g := by
+  intro F _ _ _ _ _ _ χ c₁ c₂ Ψ v g hv
+  have h00 : v.val 0 0 = 1 := hv.2 0
+  have h11 : v.val 1 1 = 1 := hv.2 1
+  have h10 : v.val 1 0 = 0 := hv.1 (by decide : (0 : Fin 2) < 1)
+  have hdetv : Matrix.GeneralLinearGroup.det v = 1 := by
+    apply Units.ext
+    simp [Matrix.det_fin_two, h00, h11, h10]
+  have hdet : Matrix.GeneralLinearGroup.det (v * g) = Matrix.GeneralLinearGroup.det g := by
+    rw [map_mul, hdetv, one_mul]
+  have hpsi : Whittaker.psiN (Circle.coeHom.compAddChar χ) v = (χ (v.val 0 1) : ℂ) := by
+    have hs : Whittaker.superdiagSum (v : Matrix (Fin 2) (Fin 2) F) = v.val 0 1 := by
+      simp [Whittaker.superdiagSum, Fin.sum_univ_two]
+    rw [Whittaker.psiN, hs]
+    rfl
+  have hlin : lin χ c₁ c₂ (Ψ ∘ rowAct (v * g)) =
+      (χ (v.val 0 1) : ℂ) * lin χ c₁ c₂ (Ψ ∘ rowAct g) := by
+    unfold lin
+    rw [← integral_const_mul]
+    refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+    simp only [den, inn_unipotent_left χ Ψ v g hv u]
+    ring
+  rw [WL, WL, hdet, hlin, hpsi]
+  ring
+
+end GlobalTheory.CompanionTheory.WS
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.split_whittaker_left_unipotent : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (χ : AddChar F Circle) (c₁ c₂ : Fˣ →* ℂˣ) (Ψ : F × F → ℂ) (v g : GL (Fin 2) F), v ∈ Iwasawa.unipotent F 2 → GlobalTheory.CompanionTheory.WS.WL χ c₁ c₂ Ψ (v * g) = Whittaker.psiN (Circle.coeHom.compAddChar χ) v * GlobalTheory.CompanionTheory.WS.WL χ c₁ c₂ Ψ g := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WS.WL_unipotent_left
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.WS
+namespace InnTorus
+
+variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
+
+theorem rowAct_torusPow (l : Fin 2 → ℤ) (v : F × F) :
+    rowAct (Iwasawa.torusPow F 2 l) v =
+      (v.1 * (GLnLocal.uniformizer F : F) ^ l 0, v.2 * (GLnLocal.uniformizer F : F) ^ l 1) := by
+  have h : (Iwasawa.torusPow F 2 l).val = diagonal fun i => (GLnLocal.uniformizer F : F) ^ l i :=
+    Iwasawa.coe_torusPow F 2 l
+  unfold rowAct
+  rw [h]
+  simp [Matrix.diagonal]
+
+theorem unif_ne_zero : (GLnLocal.uniformizer F : F) ≠ 0 :=
+  (Iwasawa.uniformizerUnit F).ne_zero
+
+theorem ord_mul_unif_zpow {x : F} (hx : x ≠ 0) (k : ℤ) :
+    ord (x * (GLnLocal.uniformizer F : F) ^ k) = ord x + k := by
+  have h := ord_units_zpow (Iwasawa.uniformizerUnit F) k
+  have hz : (((Iwasawa.uniformizerUnit F ^ k : Fˣ)) : F) = (GLnLocal.uniformizer F : F) ^ k := by
+    simp [Units.val_zpow_eq_zpow_val]
+  rw [hz, Iwasawa.coe_uniformizerUnit, ord_uniformizer (GLnLocal.irreducible_uniformizer F),
+    mul_one] at h
+  rw [ord_mul hx (zpow_ne_zero _ unif_ne_zero), h]
+
+theorem mul_unif_zpow_mem_iff {x : F} (hx : x ≠ 0) (k : ℤ) :
+    x * (GLnLocal.uniformizer F : F) ^ k ∈ valBall F 0 ↔ -k ≤ ord x := by
+  rw [mem_valBall_iff_le_ord (mul_ne_zero hx (zpow_ne_zero _ unif_ne_zero)), ord_mul_unif_zpow hx]
+  omega
+
+theorem mul_mul_unif_zpow_mem_iff {u : F} (hu : u ≠ 0) (y : F) (k : ℤ) :
+    u * y * (GLnLocal.uniformizer F : F) ^ k ∈ valBall F 0 ↔ y ∈ valBall F (-ord u - k) := by
+  by_cases hy : y = 0
+  · simp [hy, zero_mem]
+  rw [mul_unif_zpow_mem_iff (mul_ne_zero hu hy), mem_valBall_iff_le_ord hy, ord_mul hu hy]
+  omega
+
+variable [MeasurableSpace F] [BorelSpace F]
+
+theorem selfDualMeasure_eq {χ : AddChar F Circle} (hχ : IsStd χ) :
+    selfDualMeasure χ = haarIntegers F := by
+  unfold GroundTheory.LocalField.selfDualMeasure
+  rw [hχ.2.2]
+  simp
+
+theorem integral_indicator_valBall {χ : AddChar F Circle} (hχ : IsStd χ) (m : ℤ) :
+    ∫ y, (valBall F m : Set F).indicator (fun y => ((χ (-y) : Circle) : ℂ)) y ∂haarIntegers F =
+      if 0 ≤ m then (residueCard F : ℂ) ^ (-m) else 0 := by
+  have ht : IsTrivialOn χ 0 := by
+    have := isTrivialOn_addCharConductor hχ.1 hχ.2.1
+    rwa [hχ.2.2] at this
+  split_ifs with hm
+  · have h1 : Set.EqOn (fun y => ((χ (-y) : Circle) : ℂ)) (fun _ => (1 : ℂ)) (valBall F m : Set F) := by
+      intro y hy
+      have hy0 : -y ∈ valBall F 0 := neg_mem (valBall_antitone hm hy)
+      simp [ht _ hy0]
+    rw [integral_indicator (measurableSet_valBall m),
+      setIntegral_congr_fun (measurableSet_valBall m) h1, setIntegral_const, measureReal_def,
+      haarIntegers_valBall, ENNReal.coe_toReal]
+    simp
+  · have hnot := not_isTrivialOn_addCharConductor_sub_one hχ.1 hχ.2.1
+    rw [hχ.2.2] at hnot
+    unfold IsTrivialOn at hnot
+    push_neg at hnot
+    obtain ⟨y₀, hy₀, hne⟩ := hnot
+    have hy₀m : y₀ ∈ valBall F m := valBall_antitone (by omega) hy₀
+    set f : F → ℂ := (valBall F m : Set F).indicator (fun y => ((χ (-y) : Circle) : ℂ)) with hf
+    have shift : ∀ y, f (y + y₀) = ((χ (-y₀) : Circle) : ℂ) * f y := by
+      intro y
+      by_cases hy : y ∈ valBall F m
+      · have hy' : y + y₀ ∈ valBall F m := add_mem hy hy₀m
+        rw [hf, Set.indicator_of_mem (show y + y₀ ∈ (valBall F m : Set F) from hy'),
+          Set.indicator_of_mem (show y ∈ (valBall F m : Set F) from hy), neg_add, add_comm,
+          AddChar.map_add_eq_mul, Circle.coe_mul]
+      · have hy' : y + y₀ ∉ valBall F m := fun h => hy (by simpa using sub_mem h hy₀m)
+        rw [hf, Set.indicator_of_notMem (show y + y₀ ∉ (valBall F m : Set F) from hy'),
+          Set.indicator_of_notMem (show y ∉ (valBall F m : Set F) from hy), mul_zero]
+    have hI : ∫ y, f y ∂haarIntegers F = ((χ (-y₀) : Circle) : ℂ) * ∫ y, f y ∂haarIntegers F := by
+      rw [← integral_const_mul, ← integral_add_right_eq_self f y₀]
+      exact integral_congr_ae (Filter.Eventually.of_forall shift)
+    have hc : ((χ (-y₀) : Circle) : ℂ) ≠ 1 := by
+      intro h
+      apply hne
+      have h' : χ (-y₀) = 1 := Circle.ext (by simpa using h)
+      rw [AddChar.map_neg_eq_inv, inv_eq_one] at h'
+      exact h'
+    have h0 : (1 - ((χ (-y₀) : Circle) : ℂ)) * ∫ y, f y ∂haarIntegers F = 0 := by
+      rw [sub_mul, one_mul, ← hI, sub_self]
+    exact (mul_eq_zero.mp h0).resolve_left (sub_ne_zero.mpr hc.symm)
+
+theorem mp_one_inv (u : Fˣ) : (mp u 1)⁻¹ = (residueCard F : ℂ) ^ ord (u : F) := by
+  unfold mp
+  rw [Complex.cpow_one, modulus_of_ne_zero u.ne_zero]
+  push_cast
+  rw [_root_.zpow_neg, inv_inv]
+
+theorem inner_integral_standard_lattice_torus : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (χ : AddChar F Circle), IsStd χ → ∀ (l : Fin 2 → ℤ) (u : Fˣ), GlobalTheory.CompanionTheory.WS.inn χ (GlobalTheory.CompanionTheory.WS.lat0 F ∘ GlobalTheory.CompanionTheory.WS.rowAct (Iwasawa.torusPow F 2 l)) u = if -(l 0) ≤ ord (u : F) ∧ ord (u : F) ≤ -(l 1) then ((Spherical.qF F : ℕ) : ℂ) ^ (l 1) * (mp u 1)⁻¹ else 0 := by
+  intro F _ _ _ _ _ _ χ hχ l u
+  have hpt : ∀ y : F, (lat0 F ∘ rowAct (Iwasawa.torusPow F 2 l)) ((u : F), (u : F) * y) *
+      ((χ (-y) : Circle) : ℂ) = if -(l 0) ≤ ord (u : F) then
+        (valBall F (-ord (u : F) - l 1) : Set F).indicator (fun y => ((χ (-y) : Circle) : ℂ)) y
+        else 0 := by
+    intro y
+    have h1 := mul_unif_zpow_mem_iff u.ne_zero (l 0)
+    have h2 := mul_mul_unif_zpow_mem_iff u.ne_zero y (l 1)
+    simp only [Function.comp, rowAct_torusPow, lat0]
+    by_cases hA : -(l 0) ≤ ord (u : F)
+    · rw [if_pos hA]
+      by_cases hy : y ∈ valBall F (-ord (u : F) - l 1)
+      · rw [Set.indicator_of_mem (show ((u : F) * (GLnLocal.uniformizer F : F) ^ l 0,
+            (u : F) * y * (GLnLocal.uniformizer F : F) ^ l 1) ∈ Ln F 0 from ⟨h1.2 hA, h2.2 hy⟩),
+          Set.indicator_of_mem (show y ∈ (valBall F (-ord (u : F) - l 1) : Set F) from hy)]
+        simp
+      · rw [Set.indicator_of_notMem (show ((u : F) * (GLnLocal.uniformizer F : F) ^ l 0,
+            (u : F) * y * (GLnLocal.uniformizer F : F) ^ l 1) ∉ Ln F 0 from fun h => hy (h2.1 h.2)),
+          Set.indicator_of_notMem (show y ∉ (valBall F (-ord (u : F) - l 1) : Set F) from hy)]
+        simp
+    · rw [if_neg hA, Set.indicator_of_notMem (show ((u : F) * (GLnLocal.uniformizer F : F) ^ l 0,
+          (u : F) * y * (GLnLocal.uniformizer F : F) ^ l 1) ∉ Ln F 0 from fun h => hA (h1.1 h.1))]
+      simp
+  unfold inn
+  rw [selfDualMeasure_eq hχ]
+  simp_rw [hpt]
+  have hq : Spherical.qF F = residueCard F := rfl
+  have hq0 : (residueCard F : ℂ) ≠ 0 := by exact_mod_cast residueCard_ne_zero
+  by_cases hA : -(l 0) ≤ ord (u : F)
+  · simp only [if_pos hA, integral_indicator_valBall hχ]
+    by_cases hD : ord (u : F) ≤ -(l 1)
+    · rw [if_pos (by omega), if_pos ⟨hA, hD⟩, mp_one_inv, hq, ← zpow_add₀ hq0]
+      congr 1
+      omega
+    · rw [if_neg (by omega), if_neg (fun h => hD h.2)]
+  · rw [if_neg (fun h => hA h.1)]
+    simp [if_neg hA]
+
+end InnTorus
+end GlobalTheory.CompanionTheory.WS
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.inner_integral_lattice_torus_formula : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (χ : AddChar F Circle), IsStd χ → ∀ (l : Fin 2 → ℤ) (u : Fˣ), GlobalTheory.CompanionTheory.WS.inn χ (GlobalTheory.CompanionTheory.WS.lat0 F ∘ GlobalTheory.CompanionTheory.WS.rowAct (Iwasawa.torusPow F 2 l)) u = if -(l 0) ≤ ord (u : F) ∧ ord (u : F) ≤ -(l 1) then ((Spherical.qF F : ℕ) : ℂ) ^ (l 1) * (mp u 1)⁻¹ else 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WS.InnTorus.inner_integral_standard_lattice_torus
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.WS
+
+theorem unramified_apply_eq_zpow_ord {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
+    [IsNonarchimedeanLocalField F] {μ : Fˣ →* ℂˣ} (hμ : IsUnramifiedChar μ) (u : Fˣ) :
+    ((μ u : ℂˣ) : ℂ) = ((μ (unifUnit F) : ℂˣ) : ℂ) ^ ord (u : F) := by
+  have h0 : (unifUnit F ^ (-ord (u : F)) * u) ∈ ordShell F 0 := by
+    rw [mem_ordShell, ord_units_mul, ord_unifUnit_zpow]
+    omega
+  have h1 : μ (unifUnit F ^ (-ord (u : F)) * u) = 1 := isUnramifiedChar_iff.mp hμ _ h0
+  have h2 : μ u = μ (unifUnit F) ^ ord (u : F) := by
+    rw [map_mul, map_zpow, _root_.zpow_neg] at h1
+    exact (inv_mul_eq_one.mp h1).symm
+  rw [h2, Units.val_zpow_eq_zpow_val]
+
+theorem integral_unramified_shells : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (μ : Fˣ →* ℂˣ), IsUnramifiedChar μ → ∀ A D : ℤ, ∫ u : Fˣ, (if -A ≤ ord (u : F) ∧ ord (u : F) ≤ -D then ((μ u : ℂˣ) : ℂ) else 0) ∂multHaar F = ∑ j ∈ Finset.Icc D A, ((μ (unifUnit F) : ℂˣ) : ℂ) ^ (-j) := by
+  intro F _ _ _ _ _ _ μ hμ A D
+  have hpt : (fun u : Fˣ => if -A ≤ ord (u : F) ∧ ord (u : F) ≤ -D then ((μ u : ℂˣ) : ℂ) else 0) =
+      fun u => ∑ j ∈ Finset.Icc D A,
+        (ordShell F (-j)).indicator (fun _ => ((μ (unifUnit F) : ℂˣ) : ℂ) ^ (-j)) u := by
+    funext u
+    by_cases h : -A ≤ ord (u : F) ∧ ord (u : F) ≤ -D
+    · rw [if_pos h, Finset.sum_eq_single (-ord (u : F))]
+      · rw [Set.indicator_of_mem (by rw [mem_ordShell]; omega), neg_neg,
+          unramified_apply_eq_zpow_ord hμ]
+      · intro j _ hj
+        refine Set.indicator_of_notMem (fun hu => hj ?_) _
+        rw [mem_ordShell] at hu
+        omega
+      · intro hn
+        exact absurd (Finset.mem_Icc.mpr (by omega)) hn
+    · rw [if_neg h]
+      symm
+      refine Finset.sum_eq_zero fun j hj => Set.indicator_of_notMem (fun hu => h ?_) _
+      rw [mem_ordShell] at hu
+      have := Finset.mem_Icc.mp hj
+      omega
+  have hint : ∀ j : ℤ, Integrable
+      ((ordShell F (-j)).indicator (fun _ => ((μ (unifUnit F) : ℂˣ) : ℂ) ^ (-j))) (multHaar F) := by
+    intro j
+    rw [integrable_indicator_iff (measurableSet_ordShell _)]
+    exact integrableOn_const (by rw [multHaar_ordShell]; exact ENNReal.one_ne_top)
+  rw [hpt, integral_finset_sum _ fun j _ => hint j]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  rw [integral_indicator (measurableSet_ordShell _), setIntegral_const, measureReal_def,
+    multHaar_ordShell]
+  simp
+
+end GlobalTheory.CompanionTheory.WS
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unramified_character_annulus_integral : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (μ : Fˣ →* ℂˣ), IsUnramifiedChar μ → ∀ A D : ℤ, ∫ u : Fˣ, (if -A ≤ ord (u : F) ∧ ord (u : F) ≤ -D then ((μ u : ℂˣ) : ℂ) else 0) ∂multHaar F = ∑ j ∈ Finset.Icc D A, ((μ (unifUnit F) : ℂˣ) : ℂ) ^ (-j) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WS.integral_unramified_shells
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+set_option maxSynthPendingDepth 1
+
+namespace GlobalTheory.CompanionTheory.WS.SchurTwo
+
+open GroundTheory.Automorphic.Spherical
+
+theorem sum_Icc_sub_succ {G : Type*} [AddCommGroup G] (f : ℤ → G) (D A : ℤ) (h : D ≤ A) :
+    ∑ j ∈ Finset.Icc D A, (f j - f (j + 1)) = f D - f (A + 1) := by
+  induction A, h using Int.le_induction with
+  | base => simp
+  | succ A hA ih =>
+    have hI : Finset.Icc D (A + 1) = insert (A + 1) (Finset.Icc D A) := by
+      ext x
+      simp only [Finset.mem_Icc, Finset.mem_insert]
+      omega
+    rw [hI, Finset.sum_insert (by simp), ih]
+    abel
+
+theorem alternant_two (a b : ℤ) :
+    alternant ![a, b] = monomial ![a, b] - monomial ![b, a] := by
+  rw [alternant_eq_det, Matrix.det_fin_two]
+  simp only [Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one]
+  rw [← monomial_add, ← monomial_add]
+  congr 2
+  · funext i
+    fin_cases i <;> simp
+  · funext i
+    fin_cases i <;> simp
+
+theorem monomial_mul_two (a b c d : ℤ) :
+    (monomial ![a, b] : LaurentRing 2) * monomial ![c, d] = monomial ![a + c, b + d] := by
+  rw [← monomial_add]
+  congr 1
+  funext i
+  fin_cases i <;> simp
+
+theorem schur_two_eq_sum (A D : ℤ) (h : D ≤ A) :
+    schur ![A, D] = ∑ j ∈ Finset.Icc D A, (monomial ![A + D - j, j] : LaurentRing 2) := by
+  refine mul_left_cancel₀ (alternant_staircase_ne_zero (n := 2)) ?_
+  have hs : staircase 2 = ![1, 0] := by
+    funext i
+    fin_cases i <;> simp [staircase]
+  have hl : ![A, D] + staircase 2 = ![A + 1, D] := by
+    rw [hs]
+    funext i
+    fin_cases i <;> simp
+  rw [alternant_mul_schur, hl, hs, alternant_two, alternant_two, Finset.mul_sum]
+  have hterm : ∀ j ∈ Finset.Icc D A,
+      ((monomial ![1, 0] : LaurentRing 2) - monomial ![0, 1]) * monomial ![A + D - j, j] =
+        (fun j : ℤ => (monomial ![A + D + 1 - j, j] : LaurentRing 2)) j -
+          (fun j : ℤ => (monomial ![A + D + 1 - j, j] : LaurentRing 2)) (j + 1) := by
+    intro j _
+    rw [sub_mul, monomial_mul_two, monomial_mul_two]
+    have e1 : (1 : ℤ) + (A + D - j) = A + D + 1 - j := by ring
+    have e2 : (0 : ℤ) + j = j := by ring
+    have e3 : (0 : ℤ) + (A + D - j) = A + D + 1 - (j + 1) := by ring
+    have e4 : (1 : ℤ) + j = j + 1 := by ring
+    rw [e1, e2, e3, e4]
+  rw [Finset.sum_congr rfl hterm, sum_Icc_sub_succ _ D A h]
+  have e5 : A + D + 1 - D = A + 1 := by ring
+  have e6 : A + D + 1 - (A + 1) = D := by ring
+  simp only [e5, e6]
+
+theorem evalAt_monomial_two (x y : ℂˣ) (a b : ℤ) :
+    evalAt ![x, y] (monomial ![a, b]) = (x : ℂ) ^ a * (y : ℂ) ^ b := by
+  rw [evalAt_single, one_mul, monomialChar_apply, Fin.prod_univ_two]
+  simp [Units.val_zpow_eq_zpow_val]
+
+theorem evalAt_schur_two :
+    ∀ (x y : ℂˣ) (A D : ℤ), D ≤ A → Spherical.evalAt ![x, y] (Spherical.schur ![A, D]) = ∑ j ∈ Finset.Icc D A, (x : ℂ) ^ (A + D - j) * (y : ℂ) ^ j := by
+  intro x y A D h
+  rw [schur_two_eq_sum A D h, map_sum]
+  exact Finset.sum_congr rfl fun j _ => evalAt_monomial_two x y _ _
+
+end GlobalTheory.CompanionTheory.WS.SchurTwo
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.schur_polynomial_GL2_sum : ∀ (x y : ℂˣ) (A D : ℤ), D ≤ A → Spherical.evalAt ![x, y] (Spherical.schur ![A, D]) = ∑ j ∈ Finset.Icc D A, (x : ℂ) ^ (A + D - j) * (y : ℂ) ^ j := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WS.SchurTwo.evalAt_schur_two
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+namespace GlobalTheory.CompanionTheory.WS
+
+theorem mp_uniformizer_zpow_half (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F]
+    [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (m : ℤ) :
+    mp (Iwasawa.uniformizerUnit F ^ m) (1 / 2) = Spherical.sqrtQ F ^ (-m) := by
+  set r : NNReal := NNReal.sqrt (Spherical.qF F : NNReal) with hr
+  have hr2 : r ^ 2 = (Spherical.qF F : NNReal) := NNReal.sq_sqrt _
+  have hmod : Measures.modulus (((Iwasawa.uniformizerUnit F ^ m : Fˣ)) : F) = (r ^ (-m)) ^ 2 := by
+    rw [Units.val_zpow_eq_zpow_val, map_zpow₀, Iwasawa.coe_uniformizerUnit,
+      Spherical.modulus_uniformizer, ← hr2, ← zpow_natCast r 2, ← zpow_natCast (r ^ (-m)) 2,
+      ← _root_.zpow_neg, ← _root_.zpow_mul, ← _root_.zpow_mul]
+    congr 1
+    push_cast
+    ring
+  have hS : Spherical.sqrtQ F = ((r : ℝ) : ℂ) := rfl
+  have ht : (0 : ℝ) ≤ ((r ^ (-m) : NNReal) : ℝ) := NNReal.coe_nonneg _
+  have hbr : GroundTheory.LocalField.modulus (((Iwasawa.uniformizerUnit F ^ m : Fˣ)) : F) = (r ^ (-m)) ^ 2 := by
+    rw [← GroundTheory.LocalField.distribHaarChar_eq_modulus, ← Measures.modulus_units, hmod]
+  unfold mp
+  rw [hbr, hS, NNReal.coe_pow, Complex.ofReal_pow]
+  have h1 : (((r ^ (-m) : NNReal) : ℝ) : ℂ) ^ 2 = (((((r ^ (-m) : NNReal) : ℝ) ^ 2 : ℝ)) : ℂ) := by
+    push_cast; rfl
+  rw [h1]
+  have h2 : ((1 : ℂ) / 2) = (((1 / 2 : ℝ)) : ℂ) := by push_cast; rfl
+  rw [h2, ← Complex.ofReal_cpow (by positivity), ← Real.sqrt_eq_rpow, Real.sqrt_sq ht,
+    NNReal.coe_zpow, Complex.ofReal_zpow]
+
+end GlobalTheory.CompanionTheory.WS
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open scoped NumberField.AdeleRing ValuativeRel
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.modulus_half_uniformizer_power : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (m : ℤ), mp (Iwasawa.uniformizerUnit F ^ m) (1 / 2) = Spherical.sqrtQ F ^ (-m) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WS.mp_uniformizer_zpow_half
+end
+
+section
 section
 noncomputable section
 
@@ -448,3 +1550,4 @@ open scoped NumberField.AdeleRing ValuativeRel
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.compact_whittaker_mem_spherical_span : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (χ : AddChar F Circle), IsStd χ → ∀ c₁ c₂ : Fˣ →* ℂˣ, IsUnit1 c₁ → IsUnit1 c₂ → IsUnramifiedChar c₁ → IsUnramifiedChar c₂ → ∀ Φ : F × F → ℂ, IsLocallyConstant Φ → HasCompactSupport Φ → GL2LocalData.WcS χ c₁ c₂ Φ ∈ Submodule.span ℂ {f : GL (Fin 2) F → ℂ | ∃ h : GL (Fin 2) F, f = fun g => Spherical.sphericalWhittaker (Circle.coeHom.compAddChar χ) ![c₁ (unifUnit F), c₂ (unifUnit F)] (g * h)} := by
   atlas_forward_decl GlobalTheory.CompanionTheory.WS.WcS_mem_span
+end

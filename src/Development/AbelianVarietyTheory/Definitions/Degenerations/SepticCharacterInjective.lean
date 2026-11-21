@@ -189,7 +189,6 @@ theorem mul_s (g g' : N.Gt) (χ : N.X) : (g * g').s χ = g.s χ * g'.s χ / N.θ
 
 @[simp] theorem inv_b (g : N.Gt) : g⁻¹.b = g.b⁻¹ := rfl
 
-theorem generator_inv_apply (g : N.Gt) (χ : N.X) : g⁻¹.s χ = N.θ (N.c χ) g.b g.b⁻¹ / g.s χ := rfl
 
 @[simp] theorem s_zero (g : N.Gt) : g.s 0 = 1 := by
   have := g.mult 0 0
@@ -272,9 +271,7 @@ theorem exists_tor_iff (g : N.Gt) : (∃ t, N.tor t = g) ↔ g.b = 1 := by
     have := g.mult a.toAdd b.toAdd
     rwa [h, N.cub.face₃, mul_one] at this
 
-theorem range_tor : Set.range N.tor = {g | g.b = 1} := Set.ext fun g => N.exists_tor_iff g
 
-theorem range_torHom : N.torHom.range = N.projB.ker := Subgroup.ext fun g => N.exists_tor_iff g
 
 theorem tor_mul_s_apply (t : Multiplicative N.X →* Oˣ) (g : N.Gt) (χ : N.X) :
     (N.tor t * g).s χ = t (Multiplicative.ofAdd χ) * g.s χ := by
@@ -487,8 +484,6 @@ theorem tate_τ (q : Oˣ) (a b : ℤ) : (tate q).τ a b = q ^ (2 * a * b) := by
   congr 1
   ring
 
-theorem tate_vt (q : Oˣ) (t : Multiplicative ℤ →* Oˣ) (n : ℤ) :
-    (tate q).vt ((tate q).tor t) n = (q ^ n ^ 2 * t (Multiplicative.ofAdd n) : Oˣ) := mul_one _
 
 def tateQ (r : Oˣ) (k : ℕ) (y : ℤ) : (tate (r ^ k)).QT k :=
   ⟨(Multiplicative.ofAdd y, (tate (r ^ k)).tor (zpowersHom Oˣ (r ^ (2 * y)))), by
@@ -503,41 +498,8 @@ def tateQ (r : Oˣ) (k : ℕ) (y : ℤ) : (tate (r ^ k)).QT k :=
 def tateForm {C : Type} [NormedField C] (q : Cˣ) : QuadraticMap ℤ ℤ ℝ :=
   (LinearMap.toSpanSingleton ℤ ℝ (-Real.log ‖(q : C)‖)).compQuadraticMap QuadraticMap.sq
 
-theorem tateForm_apply {C : Type} [NormedField C] (q : Cˣ) (n : ℤ) :
-    tateForm q n = (n : ℝ) ^ 2 * (-Real.log ‖(q : C)‖) := by
-  simp [tateForm, sq]
 
-theorem tate_int {C : Type} [NormedField C] (q : Cˣ) (hq : ‖(q : C)‖ < 1) : (tate q).Int (tateForm q) where
-  θ _ _ _ := norm_one
-  σ _ := norm_one
-  th _ := norm_one.le
-  ψ (n : ℤ) := by
-    have h0 : 0 < ‖(q : C)‖ := norm_pos_iff.2 q.ne_zero
-    change ‖((q ^ n ^ 2 : Cˣ) : C)‖ = Real.exp (-tateForm q n)
-    rw [tateForm_apply, Units.val_zpow_eq_zpow_val, norm_zpow, ← Real.rpow_intCast, Real.rpow_def_of_pos h0]
-    congr 1
-    push_cast
-    ring
-  pos := by
-    have h0 : 0 < ‖(q : C)‖ := norm_pos_iff.2 q.ne_zero
-    have hl : 0 < -Real.log ‖(q : C)‖ := neg_pos.2 (Real.log_neg h0 hq)
-    have e : (tateForm q : ℤ → ℝ) = fun n : ℤ => ‖(n : ℝ)‖ ^ 2 * (-Real.log ‖(q : C)‖) :=
-      funext fun n => by rw [tateForm_apply, Real.norm_eq_abs, sq_abs]
-    change Filter.Tendsto (tateForm q : ℤ → ℝ) Filter.cofinite Filter.atTop
-    rw [e]
-    exact ((Filter.tendsto_pow_atTop two_ne_zero).comp
-      ((tendsto_norm_cocompact_atTop (E := ℝ)).comp Int.tendsto_coe_cofinite)).atTop_mul_const hl
 
-theorem tate_tors {C : Type} [NormedField C] (q : Cˣ) (n : ℕ) : (tate q).toNumB.Tors n 0 where
-  div x := ⟨x, rfl⟩
-  str j := by
-    haveI : Unique (tate q).A := inferInstanceAs (Unique PUnit)
-    haveI : Unique (powMonoidHom (n ^ j) : (tate q).A →* (tate q).A).ker := ⟨⟨1⟩, fun _ => Subsingleton.elim _ _⟩
-    haveI : IsEmpty (Fin (2 * 0)) := inferInstanceAs (IsEmpty (Fin 0))
-    exact ⟨MulEquiv.ofUnique⟩
-  nondeg _ _ _ _ := rfl
-  good a := ⟨a, rfl, norm_one⟩
-  sep _ _ _ _ _ _ _ := rfl
 
 namespace Level3
 
@@ -560,9 +522,6 @@ theorem sym_one : sym 1 = 1 := by decide +kernel
 
 theorem sym_mul : ∀ x y, sym (x * y) * cube x x⁻¹ y⁻¹ = sym x * sym y * cube y y⁻¹ x := by decide +kernel
 
-theorem cube_nondeg : ∀ b : A₃, (∀ b', cubN cube 3 1 b' b / cubN cube 3 1 b b' = 1) → b = 1 := by
-  simp only [cubN, Finset.prod_range_succ, Finset.prod_range_zero]
-  decide +kernel
 
 def bun (f : Multiplicative (ZMod 3) →* Oˣ) (s : A₃ → O) : NumB O where
   A := A₃
@@ -574,11 +533,6 @@ def bun (f : Multiplicative (ZMod 3) →* Oˣ) (s : A₃ → O) : NumB O where
   σ_mul x y := by rw [← map_mul, sym_mul, map_mul, map_mul]
   th := s
 
-theorem bun_nondeg (f : Multiplicative (ZMod 3) →* Oˣ) (hf : Function.Injective f) (s : A₃ → O) (b : A₃)
-    (hb : ∀ b' : A₃, (bun f s).weil 3 b b' = 1) : b = 1 := by
-  refine cube_nondeg b fun b' => hf ?_
-  rw [map_one, map_div, cubN, cubN, map_prod, map_prod]
-  exact hb b'
 
 def pt (n : ℤ) : A₃ := Multiplicative.ofAdd ((n : ZMod 3), (0 : ZMod 3))
 
@@ -605,18 +559,7 @@ def dat (f : Multiplicative (ZMod 3) →* Oˣ) (s : A₃ → O) (q : Oˣ) : NumD
 def chi7 : Multiplicative (ZMod 3) →* (ZMod 7)ˣ :=
   MonoidHom.mk' (fun a => (⟨2, 4, by decide, by decide⟩ : (ZMod 7)ˣ) ^ a.toAdd.val) (by decide +kernel)
 
-theorem septicCharacter_injective : Function.Injective chi7 := by
-  intro a b
-  revert a b
-  decide +kernel
 
-theorem exists_weil_ne_one : ∃ (N : NumD (ZMod 7)) (b b' : N.A), b ^ 3 = 1 ∧ b' ^ 3 = 1 ∧ N.weil 3 b b' ≠ 1 := by
-  have t : ∀ b : A₃, b ^ 3 = 1 := by decide +kernel
-  by_contra h
-  have := bun_nondeg chi7 septicCharacter_injective (fun _ => 1) (Multiplicative.ofAdd (1, 0)) fun b' =>
-    not_not.1 fun e => h ⟨dat chi7 (fun _ => 1) 1, _, b', t _, t _, e⟩
-  revert this
-  decide
 end Level3
 
 example (r ζ : Oˣ) (k : ℕ) (hζ : zpowersHom Oˣ ζ ^ k = 1) (y : ℤ) :

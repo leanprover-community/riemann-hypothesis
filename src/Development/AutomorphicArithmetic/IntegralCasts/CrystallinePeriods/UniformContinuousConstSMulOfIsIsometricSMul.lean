@@ -317,8 +317,6 @@ theorem CK.smul_algebraMap (g : GalK K) (x : K) :
   change g • ((algebraMap K (AlgCl K) x : AlgCl K) : CK K) = (algebraMap K (AlgCl K) x : AlgCl K)
   rw [CK.smul_coe, AlgEquiv.commutes]
 
-theorem OCK.smul_ofInteger (g : GalK K) (x : unitBall K) :
-    g • OCK.ofInteger K x = OCK.ofInteger K x := Subtype.ext (CK.smul_algebraMap K g x)
 
 example (p : ℕ) [Fact (‖(p : K)‖ < 1)] : Fact ¬IsUnit (p : OCK K) := inferInstance
 example (p : ℕ) [Fact (‖(p : K)‖ < 1)] : IsAdicComplete (span {(p : OCK K)}) (OCK K) :=

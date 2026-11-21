@@ -176,15 +176,6 @@ def colK (hKer : ColTieT T R.extendedDatum X e (colM F hX v0 TU Xg xiVal trIv hE
   muTie := fun _ => rfl
   ok1 := colFam3_ok W Ch sel hX v0 TU Xg ∅ xiVal trIv hH
 
-theorem kerTieM (hXk : T.ker.X = fieldsLL D X e) (hPr : HEq Pr T.ker.Pr) (hCh : HEq Ch T.ker.Ch) (hsl : HEq sel T.ker.sel)
-    (hSg : HEq Sg T.ker.S)
-    (hmu : HEq (fun t : TupF (X := fieldsLL D X e) TU => t.1) (fun t : TupF (X := fieldsLL D X e) TU => T.ker.tup (R.I.tup t)))
-    (hcst : HEq (fun t : TupF (X := fieldsLL D X e) TU => F.cst t.1) (fun t : TupF (X := fieldsLL D X e) TU => T.ker.cst (R.I.tup t)))
-    (hLi : HEq (fun t : TupF (X := fieldsLL D X e) TU => F.Li t.1) (fun t : TupF (X := fieldsLL D X e) TU => T.ker.idx (R.I.tup t)))
-    (hm2 : m2 = T.ker.m2) (hGc : HEq Gc T.ker.glob)
-    (hAm : HEq F.Am (Formalism.L2.Ker.ambOf T.ker.seam T.ker.B T.ker.χ T.ker.cD)) (hwd : HEq F.wd T.ker.word) :
-    ColTieT T R.extendedDatum X e (colM F hX v0 TU Xg xiVal trIv hE ev) :=
-  ⟨hXk, rfl, hPr, hCh, hsl, hSg, hmu, hcst, hLi, hm2, hGc, hAm, rfl, hwd⟩
 
 end K
 
@@ -261,17 +252,6 @@ variable {X : Fields} {e : X.Tau → (X.E →+* D.what₂.LL)} {Pr : Primes (fie
   {hKer : ColTieT T R.extendedDatum X e (colM F hX v0 TU Xg xiVal trIv hE ev)} {hwU : ∀ u, HEq (R.I.wU u) u}
   {hsg : F.Am.σ₀ = D.what₂.embLL} {hH : ColHyp3 W Ch sel v0 TU Xg ∅}
 
-theorem colPinsM (hW : W.Ok) (hCh : Ch.Ok) (hr : PinRows (colK T R hKer hwU hsg hH)) : ColPins (colK T R hKer hwU hsg hH) where
-  grpTie := HEq.rfl
-  psTie := ⟨HEq.rfl, HEq.rfl⟩
-  pointCharacterEq := ⟨HEq.rfl, HEq.rfl⟩
-  wOk := hW
-  chOk := hCh
-  hcTie := hr.hcTie
-  wtTie := hr.wtTie
-  xgTie := hr.xgTie
-  qNF := hr.qNF
-  columnEvaluationOk := hr.columnEvaluationOk
 
 end Pins
 

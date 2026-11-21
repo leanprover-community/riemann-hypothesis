@@ -276,9 +276,6 @@ def normQuotientEquivGal : v.Completionˣ ⧸ normSubgroup v w ≃* Gal(w.Comple
   (QuotientGroup.quotientMulEquivOfEq (ker_localSymbol v w).symm).trans
     (QuotientGroup.quotientKerEquivOfSurjective _ (localSymbol_surjective v w))
 
-theorem natCard_quotient_normSubgroup :
-    Nat.card (v.Completionˣ ⧸ normSubgroup v w) = Module.finrank v.Completion w.Completion := by
-  rw [Nat.card_congr (normQuotientEquivGal v w).toEquiv, natCard_gal_completion w]
 
 end LocalSymbol
 
@@ -426,10 +423,6 @@ theorem cyclicHerbrand_unitsRep_eq_two (hv : v.IsReal) (hw : w.IsComplex) :
     natCard_kerModRange_normHom_cycSub v w hv hw]
   norm_num
 
-theorem hasCyclicHerbrand_unitsRep (hv : v.IsReal) (hw : w.IsComplex) :
-    HasCyclicHerbrand (unitsRep v w) (completionConj hv) :=
-  ⟨Nat.finite_of_card_ne_zero (by rw [natCard_kerModRange_cycSub_normHom v w hv hw]; norm_num),
-    Nat.finite_of_card_ne_zero (by rw [natCard_kerModRange_normHom_cycSub v w hv hw]; norm_num)⟩
 
 theorem cyclicHerbrand_unitsRep_eq_finrank (σ : Gal(w.Completion/v.Completion))
     (hσ : ∀ g, g ∈ Subgroup.zpowers σ) :

@@ -1,9 +1,124 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsDiscreteValuationRingIntegralClosure
-import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.IsWeaklyRegularMvPowerSeriesOfFiniteColength
-import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.FlatMvPowerSeriesOfIsNoetherianRing
-import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.FlatQuotientWeaklyRegularStatement
+import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsRegularOfSupportDimQuotientAddLengthLe
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.FlatQuotientWeaklyRegular
 
+section
+section
+open IsLocalRing TensorProduct
+
+namespace GlobalTheory
+
+theorem isWeaklyRegular_mvPowerSeries_of_pow_le :
+    ∀ (k : Type) [Field k] (σ : Type) [Finite σ] (n : ℕ) (e : Fin n ≃ σ)
+      (f : σ → MvPowerSeries σ k), (∀ j, MvPowerSeries.constantCoeff (f j) = 0) →
+      (∃ M : ℕ, Ideal.span (Set.range (MvPowerSeries.X : σ → MvPowerSeries σ k)) ^ M ≤
+        Ideal.span (Set.range f)) →
+      RingTheory.Sequence.IsWeaklyRegular (MvPowerSeries σ k) (List.ofFn fun i => f (e i)) := by
+  rintro k _ σ _ n e f h0 ⟨M, hM⟩
+  have := FormalIsogeny.isRegularLocalRing_mvPowerSeries k σ
+  refine (isRegular_of_radical_eq_maximalIdeal ?_ ?_).1
+  · have h1 : Ideal.ofList (List.ofFn fun i => f (e i)) = Ideal.span (Set.range f) := by
+      rw [ofList_ofFn_eq_span_range]
+      exact congrArg Ideal.span (e.surjective.range_comp f)
+    rw [h1]
+    refine le_antisymm ((maximalIdeal.isMaximal _).isPrime.radical_le_iff.2 ?_) fun g hg => ?_
+    · rw [Ideal.span_le]
+      rintro _ ⟨j, rfl⟩
+      exact FormalIsogeny.mem_maximalIdeal_iff_constantCoeff.2 (by simp [h0])
+    · have h2 : MvPowerSeries.constantCoeff g = 0 := by
+        simpa [maximalIdeal_eq_bot] using FormalIsogeny.mem_maximalIdeal_iff_constantCoeff.1 hg
+      have h3 : g ∈ Ideal.span (Set.range (MvPowerSeries.X : σ → MvPowerSeries σ k)) := by
+        rw [← germIdeal_eq_span]
+        exact h2
+      exact ⟨M, hM (Ideal.pow_mem_pow h3 M)⟩
+  · rw [FormalIsogeny.ringKrullDim_mvPowerSeries, ringKrullDim_eq_zero_of_field, zero_add,
+      List.length_ofFn, ← Nat.card_congr e, Nat.card_eq_fintype_card, Fintype.card_fin]
+
+end GlobalTheory
+end
+
+open IsLocalRing TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isWeaklyRegular_mvPowerSeries_of_finite_colength : ∀ (k : Type) [Field k] (σ : Type) [Finite σ] (n : ℕ) (e : Fin n ≃ σ) (f : σ → MvPowerSeries σ k), (∀ j, MvPowerSeries.constantCoeff (f j) = 0) → (∃ M : ℕ, Ideal.span (Set.range (MvPowerSeries.X : σ → MvPowerSeries σ k)) ^ M ≤ Ideal.span (Set.range f)) → RingTheory.Sequence.IsWeaklyRegular (MvPowerSeries σ k) (List.ofFn fun i => f (e i)) := by
+  atlas_forward_decl GlobalTheory.isWeaklyRegular_mvPowerSeries_of_pow_le
+end
+
+section
+open MvPowerSeries IsLocalRing
+open scoped TensorProduct
+
+namespace GlobalTheory.PowerSeriesFlat
+
+theorem flat_pi (T : Type*) [CommRing T] [IsNoetherianRing T] (ι : Type*) :
+    Module.Flat T (ι → T) := by
+  apply Module.Flat.of_forall_isTrivialRelation
+  intro l f x h
+  let φ : (Fin l → T) →ₗ[T] T := Fintype.linearCombination T f
+  have hφ : ∀ v : Fin l → T, φ v = ∑ i, f i * v i := by
+    intro v
+    simp [φ, Fintype.linearCombination_apply, mul_comm]
+  have hfg : (LinearMap.ker φ).FG := IsNoetherian.noetherian _
+  obtain ⟨k, s, hs⟩ := Submodule.fg_iff_exists_fin_generating_family.1 hfg
+  have hx : ∀ t : ι, ∃ c : Fin k → T, ∑ j, c j • s j = fun i => x i t := by
+    intro t
+    have hm : (fun i => x i t) ∈ LinearMap.ker φ := by
+      rw [LinearMap.mem_ker, hφ]
+      have := congrFun h t
+      simpa [Finset.sum_apply] using this
+    rw [← hs] at hm
+    exact (Submodule.mem_span_range_iff_exists_fun T).1 hm
+  choose c hc using hx
+  refine ⟨k, fun i j => s j i, fun j t => c t j, ?_, ?_⟩
+  · intro i
+    funext t
+    have := congrFun (hc t) i
+    simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul] at this ⊢
+    rw [← this]
+    exact Finset.sum_congr rfl fun j _ => mul_comm _ _
+  · intro j
+    have hm : s j ∈ LinearMap.ker φ := by
+      rw [← hs]
+      exact Submodule.subset_span ⟨j, rfl⟩
+    rwa [LinearMap.mem_ker, hφ] at hm
+
+theorem flat_mvPowerSeries :
+    ∀ (T : Type) [CommRing T] [IsNoetherianRing T] (σ : Type),
+      Module.Flat T (MvPowerSeries σ T) :=
+  fun T _ _ σ => flat_pi T (σ →₀ ℕ)
+
+end GlobalTheory.PowerSeriesFlat
+end
+
+section
+section
+open IsLocalRing TensorProduct
+
+namespace GlobalTheory.FiniteHeight
+
+theorem flat_mvPowerSeries_of_isNoetherianRing :
+    ∀ (T : Type) [CommRing T] [IsNoetherianRing T] (σ : Type),
+      Module.Flat T (MvPowerSeries σ T) :=
+  GlobalTheory.PowerSeriesFlat.flat_mvPowerSeries
+
+end GlobalTheory.FiniteHeight
+end
+
+open IsLocalRing TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.module_flat_mvPowerSeries_of_isNoetherianRing : ∀ (T : Type) [CommRing T] [IsNoetherianRing T] (σ : Type), Module.Flat T (MvPowerSeries σ T) := by
+  atlas_forward_decl GlobalTheory.FiniteHeight.flat_mvPowerSeries_of_isNoetherianRing
+end
+
+section
+open IsLocalRing TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flat_quotient_weakly_regular : ∀ (V A : Type) [CommRing V] [IsNoetherianRing V] [IsLocalRing V] [CommRing A] [IsNoetherianRing A] [IsLocalRing A] [Algebra V A] [IsLocalHom (algebraMap V A)] [Module.Flat V A] (rs : List A), (∀ r ∈ rs, r ∈ maximalIdeal A) → RingTheory.Sequence.IsWeaklyRegular (A ⧸ (maximalIdeal V).map (algebraMap V A)) rs → Module.Flat V (A ⧸ Ideal.ofList rs) := by
+  first | exact @GlobalTheory.flat_quotient_ofList_of_isWeaklyRegular_closedFibre | exact GlobalTheory.flat_quotient_ofList_of_isWeaklyRegular_closedFibre | (intros; apply GlobalTheory.flat_quotient_ofList_of_isWeaklyRegular_closedFibre <;> assumption)
+end
+
+section
 open IsLocalRing TensorProduct
 
 namespace GlobalTheory.FiniteColength
@@ -70,3 +185,4 @@ theorem free_finite_quotient : ∀ (T : Type) [CommRing T] [IsLocalRing T] [IsNo
   exact Module.free_of_flat_of_isLocalRing
 
 end GlobalTheory.FiniteColength
+end

@@ -26,10 +26,6 @@ def Top.Amp {n N : ℕ} (T : Top Xo n N) : Prop :=
 
 def System.Amp (S : System Xo) : Prop := ∀ i, (S.T i).Amp
 
-theorem topExists_iff_amp : TopExists ↔
-    ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H), 1 ≤ D.p + D.q →
-      ∀ (Xo : ∀ l : Level H, Moduli D l) (n : ℕ), AuxiliaryInertOddPrime H n → ∃ J : ℕ, 1 ≤ J ∧ ∃ T : Top Xo n (n ^ J), T.Amp :=
-  Iff.rfl
 
 end Amp
 

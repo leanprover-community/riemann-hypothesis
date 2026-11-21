@@ -112,9 +112,6 @@ instance normedCommRing_preTilt : NormedCommRing (PreTilt (normInteger K) p) whe
 theorem preTilt_norm_def (x : PreTilt (normInteger K) p) :
     ‖x‖ = ‖((x.untilt : normInteger K) : K)‖ := rfl
 
-theorem nnnorm_eq_val (x : PreTilt (normInteger K) p) :
-    ‖x‖₊ = PreTilt.val K NormedField.valuation (normInteger K) normInteger_integers p x := by
-  rw [val_eq_nnnorm_untilt]; rfl
 
 instance : NormMulClass (PreTilt (normInteger K) p) :=
   ⟨fun x y => map_mul (tiltNorm K p) x y⟩

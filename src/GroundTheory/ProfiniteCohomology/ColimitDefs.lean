@@ -80,13 +80,7 @@ noncomputable def levelCochains :
 noncomputable abbrev levelFunctor (n : ℕ) : (OpenNormalSubgroup G)ᵒᵖ ⥤ ModuleCat k :=
   levelCochains A ⋙ HomologicalComplex.homologyFunctor (ModuleCat k) (ComplexShape.up ℕ) n
 
-theorem levelFunctor_obj (n : ℕ) (U : (OpenNormalSubgroup G)ᵒᵖ) :
-    (levelFunctor A n).obj U = groupCohomology (A.quotientToInvariants (U.unop : Subgroup G)) n :=
-  rfl
 
-theorem levelFunctor_map (n : ℕ) {U V : (OpenNormalSubgroup G)ᵒᵖ} (f : U ⟶ V) :
-    (levelFunctor A n).map f = transition A (leOfHom f.unop) n :=
-  rfl
 
 variable [IsTopologicalGroup G] [IsDiscreteRep A]
 
@@ -131,13 +125,6 @@ noncomputable def inflation (U : OpenNormalSubgroup G) (n : ℕ) :
     groupCohomology (A.quotientToInvariants (U : Subgroup G)) n ⟶ cohomology A n :=
   HomologicalComplex.homologyMap (inflationCochains A U) n
 
-theorem inflation_comp_cohomologyToGroupCohomology (U : OpenNormalSubgroup G) (n : ℕ) :
-    inflation A U n ≫ cohomologyToGroupCohomology A n =
-      (groupCohomology.infNatTrans k (U : Subgroup G) n).app A := by
-  unfold inflation cohomologyToGroupCohomology
-  refine (HomologicalComplex.homologyMap_comp _ _ n).symm.trans ?_
-  rw [inflationCochains_comp_cochainsComplexι]
-  rfl
 
 theorem transitionCochains_comp_inflationCochains {U V : OpenNormalSubgroup G} (h : V ≤ U) :
     transitionCochains A h ≫ inflationCochains A V = inflationCochains A U := by
@@ -165,8 +152,6 @@ noncomputable abbrev inflationCocone (n : ℕ) : Limits.Cocone (levelFunctor A n
   (HomologicalComplex.homologyFunctor (ModuleCat k) (ComplexShape.up ℕ) n).mapCocone
     (inflationCochainsCocone A)
 
-theorem inflationCocone_pt (n : ℕ) : (inflationCocone A n).pt = cohomology A n :=
-  rfl
 
 theorem inflationCocone_ι_app (n : ℕ) (U : (OpenNormalSubgroup G)ᵒᵖ) :
     (inflationCocone A n).ι.app U = inflation A U.unop n :=

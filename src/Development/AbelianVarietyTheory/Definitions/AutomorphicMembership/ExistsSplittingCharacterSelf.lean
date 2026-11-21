@@ -1,7 +1,8 @@
 import Mathlib
 import Formalism.LocalToGlobal.BesselHermitianTheta.AllTied
 import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SplitFacTwistRight
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.AdelicDataRowMeasureScaleTrivialTuple
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FinrankOrth
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCmAdeleUnitCharacterReadingHeckeChar
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdelicUnitaryTopology
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdelicUnitaryUnimodularExistsFundamentalDomain
@@ -15,6 +16,47 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsWeilRepresent
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsEtaConj
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasInfExpOfOrder
 
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta GlobalTheory.Mem.Th MeasureTheory IsDedekindDomain NumberField Matrix
+open scoped TensorProduct
+
+namespace GlobalTheory.Mem.ThModel
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+variable {D : D7}
+
+theorem nonempty_tow (D : D7) : Nonempty (Tow D) := GlobalTheory.Mem.Th.nonempty_tow (GlobalTheory.WittLow.wittLowEx D)
+
+theorem orthEx (D : D7) : OrthEx D := by
+  intro V hV
+  obtain ⟨b, hb⟩ := GlobalTheory.HermDiag.exists_orthogonal_basis_fin (two_ne_zero : (2 : D.host.E) ≠ 0) V.rank V.hT.flip
+    (fun x y => V.herm.eq y x) V.rank_eq
+  have ho : ∀ i j, i ≠ j → V.hT (b i) (b j) = 0 := fun i j hij => hb j i hij.symm
+  obtain ⟨h1, h2, h3⟩ := (GlobalTheory.FockBasisMatrix.basis_matrix D V).2 b
+  have hd : ∀ τ, ((V.frame.toMatrix b).map (tauE D τ)).det ≠ 0 := fun τ => by
+    have := (tauE D τ).map_det (V.frame.toMatrix b)
+    rw [RingHom.mapMatrix_apply] at this
+    rw [← this]
+    exact (h1.map (tauE D τ)).ne_zero
+  choose A hA hA' using fun τ => GlobalTheory.MonomialDiag.exists_monomial _ _ _ (gramAt D V τ) _ _ (hV (tauE D τ)) (hd τ)
+    (h3 ho τ).1 (h3 ho τ).2.1
+  exact ⟨A, V.frame.toMatrix b, hA, h1, fun i j hij => (h2 i j).trans (ho i j hij), hA'⟩
+
+theorem nonempty_orthDec (D : D7) : Nonempty (OrthDec D) := GlobalTheory.Mem.Th.nonempty_orthDec (orthEx D)
+
+
+
+
+
+end GlobalTheory.Mem.ThModel
+
+end
+end
+
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta MeasureTheory IsDedekindDomain NumberField Matrix
@@ -29,17 +71,7 @@ variable {D : D7}
 def AdmE (V W : HSp D) (χ χ' : IdC D) : Prop :=
   V.rank = W.rank ∧ IsHC D χ ∧ IsHC D χ' ∧ ResEta D χ V.rank ∧ ResEta D χ' W.rank
 
-theorem admissibleEven_trivial {V W : HSp D} (h : V.rank = W.rank) (hV : Even V.rank) : AdmE V W 1 1 := by
-  have h0 : ResEta D 1 0 := ⟨GlobalTheory.VolHeckeCompare.exists_isEta D, fun _ _ _ => by simp⟩
-  have h1 := resEta_parity (m := V.rank) h0 (by rw [Nat.even_iff] at hV; omega)
-  exact ⟨h, isHC_one D, isHC_one D, h1, h ▸ h1⟩
 
-theorem exists_splittingCharacter_self {V W : HSp D} (e : V.rank = W.rank) : ∃ χ : IdC D, AdmE V W χ χ := by
-  obtain ⟨η, h1, h2, h3, -⟩ := GlobalTheory.Mem.EtaTilde.exists_etaTilde D
-  rcases Nat.even_or_odd V.rank with h | h
-  · exact ⟨1, admissibleEven_trivial e h⟩
-  · have := resEta_parity (m := V.rank) h3 (by rw [Nat.odd_iff] at h; omega)
-    exact ⟨η, e, ⟨h1, fun τ => ⟨_, h2 τ⟩⟩, ⟨h1, fun τ => ⟨_, h2 τ⟩⟩, this, e ▸ this⟩
 
 theorem IsHC.mul {χ ν : IdC D} (h : IsHC D χ) (k : IsHC D ν) : IsHC D (χ * ν) :=
   ⟨⟨h.1.1.mul k.1.1, fun x => by rw [MonoidHom.mul_apply, h.1.2, k.1.2, mul_one]⟩, fun τ =>
@@ -82,45 +114,10 @@ def WeilFun.patch {ψ : AddChar (AF D.host.F) ℂ} (Wf : WeilFun D ψ)
     om_swap := fun V W χ χ' ha => by rw [e ha.1, e ha.1.symm]; exact Wf.om_swap V W χ χ' ha
     om_unr := fun V W χ χ' ha => by rw [e ha.1]; exact Wf.om_unr V W χ χ' ha }
 
-theorem WeilFun.patch_om_eq {ψ : AddChar (AF D.host.F) ℂ} (Wf : WeilFun D ψ) (o) {V W : HSp D} (h : V.rank = W.rank) (χ χ') :
-    (Wf.patch o).om V W χ χ' = o V W χ χ' := if_pos h
 
-theorem WeilFun.patch_om_ne {ψ : AddChar (AF D.host.F) ℂ} (Wf : WeilFun D ψ) (o) {V W : HSp D} (h : V.rank ≠ W.rank) (χ χ') :
-    (Wf.patch o).om V W χ χ' = Wf.om V W χ χ' := if_neg h
 
-theorem WeilFun.exists_eqRank (he : WeilOnEqEx D) (ht : WeilTwEq D) {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1))
-    (Wf : WeilFun D ψ) : ∃ Wf' : WeilFun D ψ, Wf'.EqRank ∧
-      ∀ V W χ χ', V.rank ≠ W.rank → Wf'.om V W χ χ' = Wf.om V W χ χ' := by
-  classical
-  choose o ho using he ψ hψ
-  refine ⟨Wf.patch fun V W χ χ' => if k : AdmE V W χ χ' then o V W χ χ' k else 1, ⟨fun V W χ χ' k => ?_,
-    fun V W χ χ' ν k h1 h2 g x y hy => ?_, fun V W χ χ' ν k h1 h2 g x y hy => ?_⟩,
-    fun V W χ χ' h => WeilFun.patch_om_ne _ _ h _ _⟩
-  · rw [WeilFun.patch_om_eq _ _ k.1, dif_pos k]; exact ho _ _ _ _ k
-  · rw [WeilFun.patch_om_eq _ _ k.1, WeilFun.patch_om_eq _ _ k.1, dif_pos k, dif_pos (k.mul_right h1 h2)]
-    exact (ht ψ hψ V W χ χ' ν k h1 h2 _ (ho _ _ _ _ k)).1 _ (ho _ _ _ _ _) g x y hy
-  · rw [WeilFun.patch_om_eq _ _ k.1, WeilFun.patch_om_eq _ _ k.1, dif_pos k, dif_pos (k.mul_left h1 h2)]
-    exact (ht ψ hψ V W χ χ' ν k h1 h2 _ (ho _ _ _ _ k)).2 _ (ho _ _ _ _ _) g x y hy
 
-theorem isWeilOn_both_zero (ψ : AddChar (AF D.host.F) ℂ) {V W : HSp D} (hV : V.rank = 0) (hW : W.rank = 0) (χ χ' : IdC D) :
-    IsWeilOn ψ V W χ χ' 1 := by
-  haveI : IsEmpty (Fin W.rank) := by rw [hW]; infer_instance
-  haveI : IsEmpty (Fin V.rank) := by rw [hV]; infer_instance
-  have hs : ∀ x y : WA V W, x = y := fun x y => Matrix.ext fun _ j => isEmptyElim j
-  refine ⟨fun g h w₀ Φ Φ' e => ?_, fun _ _ _ _ _ => rfl,
-    fun Φ w => (continuous_const : Continuous fun _ : GA D V × GA D W => Φ.1 w), fun _ _ _ _ _ _ => rfl,
-    fun e _ g h _ _ x y hx hy => ⟨1, one_pos, fun ℓ _ Φ => ?_⟩⟩
-  · rw [hs (actHom V W g h w₀) w₀]; exact e
-  · have hy1 : y = 1 := Units.ext (by rw [hy, Matrix.det_isEmpty]; simp)
-    have hx1 : x = 1 := Units.ext (by rw [hx, Matrix.det_isEmpty]; simp)
-    simp [splitFac, hy1, hx1]
 
-theorem splitFac_twist_eq {V W : HSp D} (h : V.rank = W.rank) (χ χ' ν : IdC D) (x y : (AE D)ˣ) :
-    splitFac V W χ (χ' * ν) x y = (ν x)⁻¹ * splitFac V W χ χ' x y ∧
-      splitFac V W (χ * ν) χ' x y = ν y * splitFac V W χ χ' x y := by
-  unfold splitFac
-  simp only [if_pos h.le, MonoidHom.mul_apply]
-  exact ⟨by rw [_root_.mul_inv_rev, mul_assoc], by rw [mul_comm (χ y), mul_left_comm]⟩
 
 def LiftAutEq (D : D7) : Prop := ∀ θ : InfF D, IsInfFam θ → ∀ ψ, IsStdChar D ψ (-1) → ∀ (V W : HSp D) χ χ', AdmE V W χ χ' →
   ∀ om, IsWeilOn ψ V W χ χ' om → ∀ μ 𝓕, IsQuot V μ 𝓕 → ∀ (Φ : ThS ψ V W) F, IsCuspForm θ V F →
@@ -252,34 +249,9 @@ theorem Realises.exists_liftEq (h : Realises B Wf Tw Rc) (hE : Wf.EqRank) (hL : 
 abbrev withLifts (X : ThetaX D) (t : ∀ V V', X.Chr → X.Chr → X.Sch V V' →ₗ[ℂ] X.cusp V →ₗ[ℂ] X.AF V') : ThetaX D :=
   { X with th := t }
 
-theorem Realises.exists_realisesE (h : Realises B Wf Tw Rc) (hE : Wf.EqRank) (hL : LiftAutEq D) :
-    ∃ (X' : ThetaX D) (T' : ThetaTied D X') (W' : WeilTied D X' T') (B' : BesselTied D X' T' W') (e : W'.ψ = W.ψ),
-      RealisesE (θ := θ) B' (e ▸ Wf) Tw (e ▸ Rc) := by
-  choose t t1 t2 using h.exists_liftEq hE hL
-  let T' : ThetaTied D (withLifts X t) := { T with }
-  let W' : WeilTied D (withLifts X t) T' :=
-    { W with
-      om_tw := ⟨W.om_tw.1, W.om_tw.2, W.om_tw.3, W.om_tw.4⟩
-      th := fun V V' χ χ' hr h1 h2 hV μ 𝓕 hμ Φ F x => by
-        show T.ev V' (t V V' χ χ' Φ F) x = _
-        rw [t1 V V' χ χ' fun k => hr k.1.1]
-        exact W.th V V' χ χ' hr h1 h2 hV μ 𝓕 hμ Φ F x }
-  let B' : BesselTied D (withLifts X t) T' W' := { B with }
-  obtain ⟨K, k1, k2⟩ := h.kfin
-  refine ⟨withLifts X t, T', W', B', rfl,
-    { h with
-      eqRank := hE
-      thOff := fun V V' χ χ' k => ?_
-      thEq := t2
-      kfin := ⟨{ K with }, k1, k2⟩
-      besOnly := h.besOnly }⟩
-  exact (t1 V V' χ χ' fun k' => k ⟨Or.inr k'.1, k'.2⟩).trans (h.thOff V V' χ χ' fun k' => k ⟨Or.inl k'.1, k'.2⟩)
 
 end Lift
 
-theorem realisedExE_of (h : RealisedEx D) (hL : LiftAutEq D) : RealisedExE D := fun θ hθ ψ hψ Wf hE Tw Rc => by
-  obtain ⟨X, T, W, B, rfl, k⟩ := h θ hθ ψ hψ Wf Tw Rc
-  exact Realises.exists_realisesE k hE hL
 
 structure WeilThetaCompatibility {X : ThetaX D} {T : ThetaTied D X} (W : WeilTied D X T) : Prop where
   range : ∀ V V' : HSp D, V.rank = V'.rank → Set.range (W.evS V V') = {f | IsThetaFun W.ψ V V' f}
@@ -390,30 +362,11 @@ theorem eqTied : WeilThetaCompatibility W := by
     rw [LinearMap.smul_apply, map_smul, h.schEquiv_om, h.schEquiv_om, map_mul,
       h.eqRank.twV _ _ _ _ _ (ha hr h1 h2) (hc ν) h3 g x a k, LinearMap.smul_apply]
 
-theorem allTied (ht : TypAdd D) {A : ProvA} (hr : RealTied D) (hp : ProvisionCompatibility D A) : Nonempty (AllTied D X A) := by
-  obtain ⟨K, -⟩ := h.kfin
-  exact ⟨⟨T, h.afTiedSm, h.typTied ht, W, h.weilUnrTied, K, h.phiUp, B, hr, hp⟩⟩
 
 theorem petC_eq (V : HSp D) : T.petC V = Rc.petC V := by
   unfold ThetaTied.petC RecFun.petC; rw [h.petF, h.petR]
 
-theorem tieRowIsom (hi : Rc.RowIsom) : X.TieRowIsom := fun μ j hj x y => by
-  obtain ⟨⟨m, hm⟩, h2⟩ := hi μ j hj x y
-  have e := T.pet _ (D.sp.Y_sig j) m.1 m.2 hm (X.rowAF μ j x) (X.rowAF μ j y)
-  unfold ThetaX.petY
-  rw [e, (h2 m hm).2, h.row, h.row, h.mY, ← h.petC_eq]
-  simp only [ThetaTied.petC, Complex.ofReal_mul, mul_assoc]
 
-theorem tieBm (hi : Rc.TopTie) : X.TieBm := fun u μ φ F => by
-  have hι : HSpace.IsIsomEmb (D.sp.Y D.R.m) (D.sp.X D.R.m) (D.sp.iX'.comp D.sp.eYm.symm.toLinearMap) := fun x y => by
-    have h1 := D.sp.iX'_isom (D.sp.eYm.symm x) (D.sp.eYm.symm y)
-    have h2 := D.sp.eYm_isom (D.sp.eYm.symm x) (D.sp.eYm.symm y)
-    simp only [LinearEquiv.coe_coe, LinearEquiv.apply_symm_apply] at h2
-    exact h1.trans h2.symm
-  have hs := fun g => (GlobalTheory.AutFunCompare.embRel_iff _ _ _ hι _ g).2 rfl
-  obtain ⟨⟨m, hm⟩, h2⟩ := hi u μ φ F _ hs
-  rw [T.btop _ _ _ (D.sp.Y_sig _) hι m.1 m.2 hm _ hs, (h2 m hm).2]
-  simp only [T.conj, star_star, h.col, h.row, h.mY, ← h.petC_eq, ThetaTied.petC, Complex.ofReal_mul, mul_assoc]
 
 theorem carY_eq (μ s i) : T.eChr (X.carY μ s i) = Rc.carY μ s i := by
   unfold ThetaX.carY RecFun.carY
@@ -509,17 +462,6 @@ theorem RealisesE.chrRead {θ : InfF D} {X : ThetaX D} {T : ThetaTied D X} {W : 
     {xi : D.what₂.Tup → Formalism.L2.Host.HChar D.host.E} (k : Rc.ChrIs C xi) : ChrRead T C xi :=
   ⟨fun μ j => by rw [h.chr]; exact k.chr μ j, by rw [h.eta]; exact k.eta⟩
 
-theorem exists_chrRead (hX : RealisedExE D) (hW : WeilEx D) (he : WeilOnEqEx D) (htw : WeilTwEq D) (Tw : Tow D)
-    {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) (C : Formalism.L2.Host.CharFrame D)
-    (xi : D.what₂.Tup → Formalism.L2.Host.HChar D.host.E) (hf : ∀ μ, ∃ n : ℕ, 0 < n ∧ (xi μ).OrderDvd n)
-    (ht : ∀ μ, (xi μ).TrivOn D.host.F) :
-    ∃ (X : ThetaX D) (T : ThetaTied D X) (W : WeilTied D X T), WeilThetaCompatibility W ∧ ChrRead T C xi := by
-  obtain ⟨θ, hθ⟩ := GlobalTheory.Member.exists_isInfFam_family D
-  obtain ⟨Wf₀⟩ := hW ψ hψ
-  obtain ⟨Wf, hE, -⟩ := Wf₀.exists_eqRank he htw hψ
-  obtain ⟨Rc, hR⟩ := RecFun.exists_chrIs C xi hf ht θ ψ
-  obtain ⟨X, T, W, B, rfl, k⟩ := hX θ hθ ψ hψ Wf hE Tw Rc
-  exact ⟨X, T, W, k.eqTied, k.chrRead hR⟩
 
 example (C : Formalism.L2.Host.CharFrame D) (θ : InfF D) (ψ : AddChar (AF D.host.F) ℂ) :
     ∃ Rc : RecFun D θ ψ, Rc.ChrIs C fun _ => 1 :=
@@ -538,4 +480,5 @@ example {V W : HSp D} {χ χ' : IdC D} (h : admitted V W χ χ') : ¬ AdmE V W �
 
 end GlobalTheory.Mem.Th
 
+end
 end

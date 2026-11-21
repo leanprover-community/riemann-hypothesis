@@ -70,17 +70,6 @@ theorem isIntegrallyClosedIn_fractionField_of_residue (R : Type v) [CommRing R] 
   refine hc (IsUnit.of_mul_eq_one s (IsFractionRing.injective R L ?_))
   rw [map_mul, map_sub, hs, ← IsScalarTower.algebraMap_apply, map_one, mul_inv_cancel₀ h0]
 
-theorem isIntegrallyClosedIn_fractionField_of_surjective_residue (R : Type v) [CommRing R]
-    [IsDomain R] [IsLocalRing R] [IsIntegrallyClosed R] [Algebra K R] (L : Type w) [Field L]
-    [Algebra R L] [IsFractionRing R L] [Algebra K L] [IsScalarTower K R L]
-    (hres : Function.Surjective fun c : K ↦ IsLocalRing.residue R (algebraMap K R c)) :
-    IsIntegrallyClosedIn K L := by
-  refine isIntegrallyClosedIn_fractionField_of_residue R L fun r ↦ ?_
-  obtain ⟨c, hc⟩ := hres (IsLocalRing.residue R r)
-  refine ⟨c, ?_⟩
-  rw [← mem_nonunits_iff, ← IsLocalRing.mem_maximalIdeal, ← IsLocalRing.residue_eq_zero_iff,
-    map_sub, sub_eq_zero]
-  exact hc.symm
 
 theorem isIntegrallyClosedIn_fractionField_powerSeries (L : Type w) [Field L] [Algebra K⟦X⟧ L]
     [IsFractionRing K⟦X⟧ L] [Algebra K L] [IsScalarTower K K⟦X⟧ L] :
@@ -203,17 +192,6 @@ theorem exists_section_ker_eq_nilradical [PerfectField K] {F : Scheme.{u}} [None
     IsClosedImmersion.of_comp s f
   exact ⟨s, hs, hci, hsurj, ker_eq_nilradical s⟩
 
-theorem isIso_reduction [PerfectField K] {F : Scheme.{u}} [Nonempty F]
-    (f : F ⟶ Spec (.of K)) [LocallyOfFiniteType f]
-    (Ω : Type u) [Field Ω] [Algebra K Ω] [IsAlgClosed Ω]
-    (h : ∀ a b : Spec (.of Ω) ⟶ F, a ≫ f = specAlg(K, Ω) → b ≫ f = specAlg(K, Ω) → a = b) :
-    IsIso (F.nilradical.subschemeι ≫ f) := by
-  obtain ⟨s, hs, _, -, hker⟩ := exists_section_ker_eq_nilradical f Ω h
-  have he : s.ker = F.nilradical.subschemeι.ker := by
-    rw [hker, Scheme.IdealSheafData.ker_subschemeι]
-  have := IsClosedImmersion.isIso_lift s _ he
-  rw [← IsClosedImmersion.lift_fac s _ he.le, Category.assoc, hs, Category.comp_id]
-  exact this
 
 theorem existsUnique_section [PerfectField K] {F : Scheme.{u}} [Nonempty F]
     (f : F ⟶ Spec (.of K)) [LocallyOfFiniteType f]
@@ -257,21 +235,6 @@ theorem exists_point_of_injective [PerfectField K] {X Y : Scheme.{u}} (κ : X �
   exists_point_of_subsingleton_fiber κ y (AlgebraicClosure K)
     (fun _ _ ha hb ↦ h _ (ha.trans hb.symm)) _ x hx
 
-theorem exists_point_of_injective_of_charZero {k : Type u} [Field k] [CharZero k]
-    {X Y : Scheme.{u}} (κ : X ⟶ Y) (π : Y ⟶ Spec (.of k)) [LocallyOfFiniteType κ]
-    (h : ∀ (Ω : Type u) [Field Ω] [IsAlgClosed Ω] [Algebra k Ω] (a b : Spec (.of Ω) ⟶ X),
-      a ≫ κ ≫ π = specAlg(k, Ω) → a ≫ κ = b ≫ κ → a = b)
-    (K' : Type u) [Field K'] [Algebra K K'] (x : Spec (.of K') ⟶ X) (y : Spec (.of K) ⟶ Y)
-    (hx : x ≫ κ = specAlg(K, K') ≫ y) :
-    ∃ x₀ : Spec (.of K) ⟶ X, specAlg(K, K') ≫ x₀ = x ∧ x₀ ≫ κ = y ∧
-      ∀ x₁ : Spec (.of K) ⟶ X, specAlg(K, K') ≫ x₁ = x → x₁ = x₀ := by
-  obtain ⟨φ, hφ⟩ := Spec.map_surjective (y ≫ π)
-  let : Algebra k K := φ.hom.toAlgebra
-  have : CharZero K := charZero_of_injective_algebraMap (algebraMap k K).injective
-  refine exists_point_of_subsingleton_fiber κ y (AlgebraicClosure K)
-    (fun a b ha hb ↦ h _ a b ?_ (ha.trans hb.symm)) _ x hx
-  rw [reassoc_of% ha, ← hφ, ← Spec.map_comp]
-  rfl
 
 theorem exists_section_of_locallyQuasiFinite {F : Scheme.{u}} (f : F ⟶ Spec (.of K))
     [LocallyQuasiFinite f] (L : Type u) [Field L] [Algebra K L] [IsIntegrallyClosedIn K L]
@@ -317,41 +280,8 @@ theorem exists_point_of_locallyQuasiFinite {X Y : Scheme.{u}} (κ : X ⟶ Y)
   refine ⟨s ≫ pullback.fst κ y, hg, ?_, fun x₁ h₁ ↦ point_ext _ (h₁.trans hg.symm)⟩
   rw [Category.assoc, pullback.condition, reassoc_of% hs']
 
-theorem exists_section_laurentSeries {F : Scheme.{u}} (f : F ⟶ Spec (.of K))
-    [LocallyQuasiFinite f] (x : Spec (.of K⸨X⸩) ⟶ F) (hx : x ≫ f = specAlg(K, K⸨X⸩)) :
-    ∃ x₀ : Spec (.of K) ⟶ F, specAlg(K, K⸨X⸩) ≫ x₀ = x ∧ x₀ ≫ f = 𝟙 _ ∧
-      ∀ x₁ : Spec (.of K) ⟶ F, specAlg(K, K⸨X⸩) ≫ x₁ = x → x₁ = x₀ :=
-  have := isIntegrallyClosedIn_laurentSeries (K := K)
-  exists_section_of_locallyQuasiFinite f _ x hx
 
-theorem exists_point_laurentSeries {X Y : Scheme.{u}} (κ : X ⟶ Y) [LocallyQuasiFinite κ]
-    (x : Spec (.of K⸨X⸩) ⟶ X) (y : Spec (.of K) ⟶ Y) (hx : x ≫ κ = specAlg(K, K⸨X⸩) ≫ y) :
-    ∃ x₀ : Spec (.of K) ⟶ X, specAlg(K, K⸨X⸩) ≫ x₀ = x ∧ x₀ ≫ κ = y ∧
-      ∀ x₁ : Spec (.of K) ⟶ X, specAlg(K, K⸨X⸩) ≫ x₁ = x → x₁ = x₀ :=
-  have := isIntegrallyClosedIn_laurentSeries (K := K)
-  exists_point_of_locallyQuasiFinite κ _ x y hx
 
-theorem one_geometric_point (K : Type u) [Field K] [PerfectField K] :
-    (∀ (F : Scheme.{u}) [Nonempty F] (f : F ⟶ Spec (.of K)) [LocallyOfFiniteType f]
-      (Ω : Type u) [Field Ω] [Algebra K Ω] [IsAlgClosed Ω],
-      (∀ a b : Spec (.of Ω) ⟶ F, a ≫ f = specAlg(K, Ω) → b ≫ f = specAlg(K, Ω) → a = b) →
-      IsIso (F.nilradical.subschemeι ≫ f)) ∧
-    (∀ (X Y : Scheme.{u}) (κ : X ⟶ Y) [LocallyOfFiniteType κ],
-      (∀ (Ω : Type u) [Field Ω] [IsAlgClosed Ω],
-        Function.Injective fun a : Spec (.of Ω) ⟶ X ↦ a ≫ κ) →
-      ∀ (K' : Type u) [Field K'] [Algebra K K'] (x : Spec (.of K') ⟶ X) (y : Spec (.of K) ⟶ Y),
-        x ≫ κ = specAlg(K, K') ≫ y →
-        ∃ x₀ : Spec (.of K) ⟶ X, specAlg(K, K') ≫ x₀ = x ∧ x₀ ≫ κ = y) ∧
-    (∀ x : K⸨X⸩, IsAlgebraic K x → ∃ c : K, x = HahnSeries.C c) ∧
-    (∀ (F : Scheme.{u}) (f : F ⟶ Spec (.of K)) [LocallyQuasiFinite f]
-      (x : Spec (.of K⸨X⸩) ⟶ F), x ≫ f = specAlg(K, K⸨X⸩) →
-      ∃ x₀ : Spec (.of K) ⟶ F, specAlg(K, K⸨X⸩) ≫ x₀ = x ∧ x₀ ≫ f = 𝟙 _) := by
-  refine ⟨fun F _ f _ Ω _ _ _ h ↦ isIso_reduction f Ω h, fun X Y κ _ h K' _ _ x y hx ↦ ?_,
-    fun x hx ↦ exists_eq_C_of_isAlgebraic hx, fun F f _ x hx ↦ ?_⟩
-  · obtain ⟨x₀, h₁, h₂, -⟩ := exists_point_of_injective κ h K' x y hx
-    exact ⟨x₀, h₁, h₂⟩
-  · obtain ⟨x₀, h₁, h₂, -⟩ := exists_section_laurentSeries f x hx
-    exact ⟨x₀, h₁, h₂⟩
 
 end Scheme
 end GlobalTheory.OnePoint

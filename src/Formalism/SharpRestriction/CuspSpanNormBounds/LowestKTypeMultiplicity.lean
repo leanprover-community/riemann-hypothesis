@@ -472,14 +472,6 @@ theorem bessel_cont {Wp : Type*} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp] (h
 
 end Rep
 
-theorem PhMeas_closed (D : D7) : Formalism.MainNotions.BesselShellMomentBounds.PhMeas D := by
-  intro L Bf w hB hw
-  have hσ := urep_of_DS L.hσ
-  have hc := bessel_cont hσ hB hw
-  classical
-  rw [← Set.piecewise_eq_indicator]
-  refine ContinuousOn.measurable_piecewise ?_ continuousOn_const (Formalism.MainNotions.BesselShellMomentBounds.measurableSet_UH _ _)
-  exact hc.norm
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
 
@@ -1336,20 +1328,6 @@ theorem dens_meas (L : LocBessel k r) (hk : 2 ≤ k) (μsec : ℂ → Matrix (Fi
   refine Measurable.indicator ?_ (isOpen_Om L.z L.z').measurableSet
   exact (measurable_bcWeight _ _).mul (continuous_hsNormSq.comp_stronglyMeasurable hint).measurable
 
-theorem JMeas_closed (D : D7) : Formalism.MainNotions.BesselShellMomentBounds.JMeas D := by
-  intro L μsec H _ _ _ σ lam' f hsec hσ hf
-  obtain ⟨P, Q, _, _, hPQ⟩ := hf
-  have hrep := urep_of_DS hσ
-  have hk : 2 ≤ D.R.k := by
-    have h1 := D.R.m_add_three_le_k
-    omega
-  refine dens_meas L hk μsec hsec f ?_
-  rw [continuousOn_clm_apply]
-  intro y
-  have : (fun x => f x y) = fun x => P (σ x (Q y)) := by
-    funext x; rw [hPQ x]; rfl
-  rw [this]
-  exact P.continuous.comp_continuousOn (hrep.2.2 (Q y))
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
 
@@ -1417,165 +1395,13 @@ theorem hc_shift {lam : Fin n → ℝ} (hlam : IsHCParam lam) {G : ℝ} (hgap : 
     push_cast
     linarith
 
-theorem int_l1_norm_split (x : Fin n → ℤ) (s : Fin n) :
-    nat1 x = (x s).natAbs + ∑ t ∈ Finset.univ.erase s, (x t).natAbs := by
-  unfold nat1
-  exact (Finset.add_sum_erase Finset.univ (fun t => (x t).natAbs) (Finset.mem_univ s)).symm
 
-theorem int_l1_norm_decrement (ν : Fin n → ℤ) (s : Fin n) (h : 0 < ν s) : nat1 (ν - Pi.single s 1) + 1 = nat1 ν := by
-  rw [int_l1_norm_split _ s, int_l1_norm_split ν s]
-  have hs : (ν - Pi.single s 1 : Fin n → ℤ) s = ν s - 1 := by simp
-  have ht : ∑ t ∈ Finset.univ.erase s, ((ν - Pi.single s 1 : Fin n → ℤ) t).natAbs =
-      ∑ t ∈ Finset.univ.erase s, (ν t).natAbs := by
-    refine Finset.sum_congr rfl fun t ht => ?_
-    have hts : t ≠ s := Finset.ne_of_mem_erase ht
-    simp [Pi.single_eq_of_ne hts]
-  rw [hs, ht]
-  have e1 : ((ν s - 1).natAbs : ℤ) = ν s - 1 := Int.natAbs_of_nonneg (by omega)
-  have e2 : ((ν s).natAbs : ℤ) = ν s := Int.natAbs_of_nonneg (by omega)
-  omega
 
-theorem int_l1_norm_increment (ν : Fin n → ℤ) (s : Fin n) (h : ν s < 0) : nat1 (ν + Pi.single s 1) + 1 = nat1 ν := by
-  rw [int_l1_norm_split _ s, int_l1_norm_split ν s]
-  have hs : (ν + Pi.single s 1 : Fin n → ℤ) s = ν s + 1 := by simp
-  have ht : ∑ t ∈ Finset.univ.erase s, ((ν + Pi.single s 1 : Fin n → ℤ) t).natAbs =
-      ∑ t ∈ Finset.univ.erase s, (ν t).natAbs := by
-    refine Finset.sum_congr rfl fun t ht => ?_
-    have hts : t ≠ s := Finset.ne_of_mem_erase ht
-    simp [Pi.single_eq_of_ne hts]
-  rw [hs, ht]
-  have e1 : ((ν s + 1).natAbs : ℤ) = -(ν s + 1) := Int.ofNat_natAbs_of_nonpos (by omega)
-  have e2 : ((ν s).natAbs : ℤ) = -ν s := Int.ofNat_natAbs_of_nonpos (by omega)
-  omega
 
-theorem int_l1_norm_single_le (ν : Fin n → ℤ) (s : Fin n) (c : ℤ) (hc : c = 1 ∨ c = -1) : nat1 (ν + Pi.single s c) ≤ nat1 ν + 1 := by
-  rw [int_l1_norm_split _ s, int_l1_norm_split ν s]
-  have hs : (ν + Pi.single s c : Fin n → ℤ) s = ν s + c := by simp
-  have ht : ∑ t ∈ Finset.univ.erase s, ((ν + Pi.single s c : Fin n → ℤ) t).natAbs =
-      ∑ t ∈ Finset.univ.erase s, (ν t).natAbs := by
-    refine Finset.sum_congr rfl fun t ht => ?_
-    have hts : t ≠ s := Finset.ne_of_mem_erase ht
-    simp [Pi.single_eq_of_ne hts]
-  rw [hs, ht]
-  have h1 := Int.natAbs_add_le (ν s) c
-  have h2 : c.natAbs = 1 := by rcases hc with rfl | rfl <;> rfl
-  omega
 
-theorem add_single_cast (lam : Fin n → ℝ) (ν : Fin n → ℤ) (t : Fin n) (c : ℤ) :
-    (lam + fun s => ((ν + Pi.single t c : Fin n → ℤ) s : ℝ)) = (lam + fun s => (ν s : ℝ)) + (Pi.single t (c : ℝ) : Fin n → ℝ) := by
-  funext x
-  simp only [Pi.add_apply, Pi.single_apply]
-  split_ifs <;> push_cast <;> ring
 
-theorem add_single_neg (x : Fin n → ℝ) (t : Fin n) :
-    x + (Pi.single t ((-1 : ℤ) : ℝ) : Fin n → ℝ) = x - (Pi.single t 1 : Fin n → ℝ) := by
-  rw [Int.cast_neg, Int.cast_one, Pi.single_neg, ← sub_eq_add_neg]
 
-theorem hc_shift_pm {lam : Fin n → ℝ} (hlam : IsHCParam lam) {G : ℝ} (hgap : AllGaps lam G) (ν : Fin n → ℤ) (t : Fin n)
-    (c : ℤ) (hc : c = 1 ∨ c = -1) (hν : (nat1 ν : ℝ) + 1 < G) :
-    IsHCParam ((lam + fun s => (ν s : ℝ)) + (Pi.single t (c : ℝ) : Fin n → ℝ)) := by
-  have hle : nat1 (ν + Pi.single t c) ≤ nat1 ν + 1 := int_l1_norm_single_le ν t c hc
-  have hle' : ((nat1 (ν + Pi.single t c) : ℕ) : ℝ) ≤ ((nat1 ν + 1 : ℕ) : ℝ) := Nat.cast_le.mpr hle
-  push_cast at hle'
-  have h2 := hc_shift hlam hgap (ν + Pi.single t c) (by linarith)
-  rw [add_single_cast] at h2
-  exact h2
 
-theorem exDS_UJ (D : D7) (h18 : Formalism.MainNotions.OnePlaceEstimates.adm18 D) (h18d : Formalism.MainNotions.OnePlaceEstimates.DualTranslationPrinciple D) (ε : Fin n → Bool) (lam : Fin n → ℝ)
-    (hlam : IsHCParam lam) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-    (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) (hσ : IsDS ε lam σ) (R : ℕ) (G : ℝ) (hG : (R : ℝ) < G)
-    (hgap : AllGaps lam G) :
-    ∀ N : ℕ, N ≤ R → ∀ ν : Fin n → ℤ, nat1 ν = N →
-      ∃ (H' : Type) (_ : NormedAddCommGroup H') (_ : InnerProductSpace ℂ H') (_ : CompleteSpace H')
-        (σ' : Matrix (Fin n) (Fin n) ℂ → (H' →L[ℂ] H')), IsDS ε (lam + fun a => (ν a : ℝ)) σ' := by
-  intro N
-  induction N with
-  | zero =>
-    intro _ ν hν
-    have h0 : ν = 0 := by
-      funext s
-      have : (ν s).natAbs = 0 := by
-        have h1 : (ν s).natAbs ≤ nat1 ν := Finset.single_le_sum (f := fun s => (ν s).natAbs) (fun _ _ => Nat.zero_le _)
-          (Finset.mem_univ s)
-        omega
-      simpa using this
-    refine ⟨H, inferInstance, inferInstance, inferInstance, σ, ?_⟩
-    have : (lam + fun a => ((ν a : ℤ) : ℝ)) = lam := by
-      funext a; simp [h0]
-    rw [this]; exact hσ
-  | succ N ih =>
-    intro hN ν hν
-    have hex : ∃ s, ν s ≠ 0 := by
-      by_contra hcon
-      push Not at hcon
-      have : nat1 ν = 0 := by
-        unfold nat1
-        exact Finset.sum_eq_zero fun s _ => by rw [hcon s]; rfl
-      omega
-    obtain ⟨s, hs⟩ := hex
-    have hνR : (nat1 ν : ℝ) < G := by
-      rw [hν]
-      have : ((N + 1 : ℕ) : ℝ) ≤ (R : ℝ) := by exact_mod_cast hN
-      linarith
-    have hfin := hc_shift hlam hgap ν hνR
-    rcases lt_or_gt_of_ne hs with hneg | hpos
-    ·
-      have hn1 := int_l1_norm_increment ν s hneg
-      have hn : nat1 (ν + Pi.single s 1) = N := by omega
-      obtain ⟨H', i1, i2, i3, σ', hσ'⟩ := ih (by omega) _ hn
-      have hR' : (nat1 (ν + Pi.single s 1) : ℝ) < G := by
-        rw [hn]
-        have : ((N + 1 : ℕ) : ℝ) ≤ (R : ℝ) := by exact_mod_cast hN
-        push_cast at this
-        linarith
-      have hpar := hc_shift hlam hgap (ν + Pi.single s 1) hR'
-      have hgp' : ∀ t : Fin n, IsHCParam ((lam + fun a => (((ν + Pi.single s 1 : Fin n → ℤ) a : ℤ) : ℝ)) - Pi.single t 1) := by
-        intro t
-        have := hc_shift_pm hlam hgap (ν + Pi.single s 1) t (-1) (Or.inr rfl) (by
-          rw [hn]
-          have : ((N + 1 : ℕ) : ℝ) ≤ (R : ℝ) := by exact_mod_cast hN
-          push_cast at this
-          linarith)
-        rw [add_single_neg] at this
-        exact this
-      obtain ⟨X, hX⟩ := h18d n ε _ H' σ' hpar hσ' hgp'
-      have e : (lam + fun a => (((ν + Pi.single s 1 : Fin n → ℤ) a : ℤ) : ℝ)) - Pi.single s 1 = lam + fun a => ((ν a : ℤ) : ℝ) := by
-        funext a
-        by_cases ha : a = s
-        · subst ha; simp; try ring
-        · simp [Pi.single_apply, ha]
-      have hmem : s ∈ X.Sm := (hX s).2 (by rw [e]; exact hfin)
-      refine ⟨X.Hs s, inferInstance, inferInstance, inferInstance, X.σs s, ?_⟩
-      have := (X.ds s hmem).2
-      rwa [e] at this
-    · have hn1 := int_l1_norm_decrement ν s hpos
-      have hn : nat1 (ν - Pi.single s 1) = N := by omega
-      obtain ⟨H', i1, i2, i3, σ', hσ'⟩ := ih (by omega) _ hn
-      have hR' : (nat1 (ν - Pi.single s 1) : ℝ) < G := by
-        rw [hn]
-        have : ((N + 1 : ℕ) : ℝ) ≤ (R : ℝ) := by exact_mod_cast hN
-        push_cast at this
-        linarith
-      have hpar := hc_shift hlam hgap (ν - Pi.single s 1) hR'
-      have hgp' : ∀ t : Fin n, IsHCParam ((lam + fun a => (((ν - Pi.single s 1 : Fin n → ℤ) a : ℤ) : ℝ)) + Pi.single t 1) := by
-        intro t
-        have := hc_shift_pm hlam hgap (ν - Pi.single s 1) t 1 (Or.inl rfl) (by
-          rw [hn]
-          have : ((N + 1 : ℕ) : ℝ) ≤ (R : ℝ) := by exact_mod_cast hN
-          push_cast at this
-          linarith)
-        rw [Int.cast_one] at this
-        exact this
-      obtain ⟨X, hX⟩ := h18 n ε _ H' σ' hpar hσ' hgp'
-      have e : (lam + fun a => (((ν - Pi.single s 1 : Fin n → ℤ) a : ℤ) : ℝ)) + Pi.single s 1 = lam + fun a => ((ν a : ℤ) : ℝ) := by
-        funext a
-        by_cases ha : a = s
-        · subst ha; simp; try ring
-        · simp [Pi.single_apply, ha]
-      have hmem : s ∈ X.Sm := (hX s).2 (by rw [e]; exact hfin)
-      refine ⟨X.Hs s, inferInstance, inferInstance, inferInstance, X.σs s, ?_⟩
-      have := (X.ds s hmem).2
-      rwa [e] at this
 
 end Shift
 
@@ -1631,89 +1457,7 @@ theorem coef_zero {k r : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpa
   · intro g
     simp
 
-theorem dsHpk_of_UJ {k r : ℕ} {ε : Fin (2 * r + k + 1) → Bool} {μ : Fin (2 * r + k + 1) → ℝ} {P : Mx k r}
-    (hP : IsCayleyU k r ε P) {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-    {σ' : Mx k r → (H →L[ℂ] H)} (h : IsDS ε μ σ') : IsDSHpk k r ε μ (fun g => σ' (P * g * P⁻¹)) := by
-  refine ⟨P, hP, ?_⟩
-  have hPd : IsUnit P.det := (Matrix.isUnit_iff_isUnit_det P).1 hP.1.1
-  have hP2 : P * P⁻¹ = 1 := Matrix.mul_nonsing_inv P hPd
-  have : (fun g => (fun g => σ' (P * g * P⁻¹)) (P⁻¹ * g * P)) = σ' := by
-    funext g
-    simp only
-    congr 1
-    calc P * (P⁻¹ * g * P) * P⁻¹ = (P * P⁻¹) * g * (P * P⁻¹) := by simp only [Matrix.mul_assoc]
-      _ = g := by rw [hP2, Matrix.one_mul, Matrix.mul_one]
-  rw [this]
-  exact h
 
-theorem ExFam_of_tensor (D : D7) (Ch Cg Cq : ℝ) (hCg : 1 ≤ Cg) (h18 : Formalism.MainNotions.OnePlaceEstimates.adm18 D) (h18d : Formalism.MainNotions.OnePlaceEstimates.DualTranslationPrinciple D)
-    (hU : UnitDich D Ch Cg Cq) : ExFam D Ch Cg Cq := by
-  intro L μsec ka b κ p f0 hκ hL hR hsec hf0 hn0
-  obtain ⟨P, hP, hDS⟩ := L.hσ
-  have hex : ∀ ν : Fin (2 * D.R.rS + D.R.k + 1) → ℤ, ∑ s, |(ν s : ℝ)| ≤ ((D.R.rS + 1) * p : ℕ) →
-      ∃ (H' : Type) (_ : NormedAddCommGroup H') (_ : InnerProductSpace ℂ H') (_ : CompleteSpace H')
-        (σ' : Mx D.R.k D.R.rS → (H' →L[ℂ] H')), IsDSHpk D.R.k D.R.rS L.ε (L.lam + fun a => (ν a : ℝ)) σ' := by
-    intro ν hν
-    rw [int_l1_norm_cast_sum_abs] at hν
-    have hν' : nat1 ν ≤ (D.R.rS + 1) * p := by exact_mod_cast hν
-    by_cases hp : p = 0
-    · have h0 : nat1 ν = 0 := by rw [hp] at hν'; omega
-      have hz : ν = 0 := by
-        funext s
-        have h1 : (ν s).natAbs ≤ nat1 ν := Finset.single_le_sum (f := fun s => (ν s).natAbs) (fun _ _ => Nat.zero_le _)
-          (Finset.mem_univ s)
-        have : (ν s).natAbs = 0 := by omega
-        simpa using this
-      refine ⟨L.Hs, inferInstance, inferInstance, inferInstance, L.σ, ?_⟩
-      have : (L.lam + fun a => ((ν a : ℤ) : ℝ)) = L.lam := by funext a; simp [hz]
-      rw [this]; exact L.hσ
-    · have hp1 : 1 ≤ p := Nat.one_le_iff_ne_zero.2 hp
-      have hG : (((D.R.rS + 1) * p : ℕ) : ℝ) < Cg * p * ((2 * D.R.rS + 2 : ℕ) : ℝ) := by
-        have hp' : (1 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp1
-        have hr : (0 : ℝ) ≤ (D.R.rS : ℝ) := Nat.cast_nonneg _
-        push_cast
-        have h1 : (p : ℝ) * (2 * (D.R.rS : ℝ) + 2) ≤ Cg * p * (2 * (D.R.rS : ℝ) + 2) := by
-          have : 0 ≤ (p : ℝ) * (2 * (D.R.rS : ℝ) + 2) := by positivity
-          nlinarith
-        nlinarith
-      obtain ⟨H', i1, i2, i3, σ', hσ'⟩ := exDS_UJ D h18 h18d L.ε L.lam L.hlam L.Hs _ hDS ((D.R.rS + 1) * p) _ hG hR.1
-        (nat1 ν) hν' ν rfl
-      exact ⟨H', i1, i2, i3, _, dsHpk_of_UJ hP hσ'⟩
-  have hpk : ∀ ν : Fin (2 * D.R.rS + D.R.k + 1) → ℤ, ∃ pk : DSPk L, (ν = 0 → pk.f = f0) ∧
-      (∑ s, |(ν s : ℝ)| ≤ ((D.R.rS + 1) * p : ℕ) →
-        IsDSHpk D.R.k D.R.rS L.ε (L.lam + fun a => (ν a : ℝ)) pk.σ ∧ IsKFinCoefH pk.σ pk.f ∧
-        (jNorm2 L pk.f μsec = 1 ∨
-          ((∀ q : (Fin D.R.rS → ℂ) × ℂ, Formalism.MainNotions.OnePlaceEstimates.InBig L q → L.J pk.f (bigCell D.R.k D.R.rS q.1 (μsec q.2)) = 0) ∧
-            ∀ f' : Mx D.R.k D.R.rS → (L.Wq →L[ℂ] L.Wp), IsKFinCoefH pk.σ f' →
-              ∀ q : (Fin D.R.rS → ℂ) × ℂ, Formalism.MainNotions.OnePlaceEstimates.InBig L q → L.J f' (bigCell D.R.k D.R.rS q.1 (μsec q.2)) = 0))) := by
-    intro ν
-    by_cases hz : ν = 0
-    · refine ⟨⟨L.Hs, L.σ, f0⟩, fun _ => rfl, fun _ => ⟨?_, hf0, Or.inl hn0⟩⟩
-      have : (L.lam + fun a => ((ν a : ℤ) : ℝ)) = L.lam := by funext a; simp [hz]
-      rw [this]; exact L.hσ
-    · by_cases hν : ∑ s, |(ν s : ℝ)| ≤ ((D.R.rS + 1) * p : ℕ)
-      · obtain ⟨H', i1, i2, i3, σ', hσ'⟩ := hex ν hν
-        by_cases hall : ∀ f' : Mx D.R.k D.R.rS → (L.Wq →L[ℂ] L.Wp), IsKFinCoefH σ' f' →
-            ∀ q : (Fin D.R.rS → ℂ) × ℂ, Formalism.MainNotions.OnePlaceEstimates.InBig L q → L.J f' (bigCell D.R.k D.R.rS q.1 (μsec q.2)) = 0
-        · exact ⟨⟨H', σ', fun _ => 0⟩, fun h => absurd h hz, fun _ => ⟨hσ', coef_zero L σ',
-            Or.inr ⟨hall _ (coef_zero L σ'), hall⟩⟩⟩
-        · push Not at hall
-          obtain ⟨f', hf', q, hq, hne⟩ := hall
-          obtain ⟨f'', hf'', h0, hT⟩ := hU L μsec ka b κ p hκ hL hR hsec ν hν H' σ' hσ' f' hf' ⟨q, hq, hne⟩
-          set N : ℝ := (jNorm2 L f'' μsec).toReal with hN
-          have hNpos : 0 < N := ENNReal.toReal_pos h0 hT
-          set c : ℂ := (((Real.sqrt N)⁻¹ : ℝ) : ℂ) with hc
-          refine ⟨⟨H', σ', fun x => c • f'' x⟩, fun h => absurd h hz, fun _ => ⟨hσ', coef_smul L σ' c f'' hf'', Or.inl ?_⟩⟩
-          show jNorm2 L (fun x => c • f'' x) μsec = 1
-          rw [jNorm2_smul]
-          have e1 : ‖c‖ ^ 2 = N⁻¹ := by
-            rw [hc, Complex.norm_real, Real.norm_eq_abs, sq_abs, inv_pow, Real.sq_sqrt hNpos.le]
-          rw [e1, ← ENNReal.ofReal_toReal hT, ← hN, ← ENNReal.ofReal_mul (by positivity), inv_mul_cancel₀ hNpos.ne']
-          simp
-      · exact ⟨⟨L.Hs, L.σ, f0⟩, fun h => absurd h hz, fun h => absurd h hν⟩
-  choose pk hpk0 hpk1 using hpk
-  exact ⟨fun ν => (pk ν).H, fun ν => (pk ν).i1, fun ν => (pk ν).i2, fun ν => (pk ν).i3, fun ν => (pk ν).σ,
-    fun ν => (pk ν).f, hpk0 0 rfl, fun ν hν => hpk1 ν hν⟩
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
 
@@ -2020,9 +1764,6 @@ def rhoS (P : Mx k r) (σ : Mx k r → (H →L[ℂ] H)) (S : Submodule ℂ H) [F
     (hst : IsKStableOn ε (fun g => σ (P⁻¹ * g * P)) S) (κ : Formalism.REAL.KG ε) : S →L[ℂ] S :=
   LinearMap.toContinuousLinearMap ((σ (kp P κ)).toLinearMap.restrict (fun v hv => hst _ κ.2 v hv))
 
-theorem rhoS_coe (S : Submodule ℂ H) [FiniteDimensional ℂ S]
-    (hst : IsKStableOn ε (fun g => σ (P⁻¹ * g * P)) S) (κ : Formalism.REAL.KG ε) (u : S) :
-    ((rhoS P σ S hst κ u : S) : H) = σ (kp P κ) u := rfl
 
 def Tx {z : Fin (2 * r + k + 1) → ℂ} {ψ : Mx k r → ℂ} {π : Mx k r → (Wp →L[ℂ] Wp)} {B : H → Wp}
     (hσ : IsURepOn (UH (Hpk k r)) σ) (hB : IsBesselMapSm z ψ σ π B) (S : Submodule ℂ H)
@@ -2332,52 +2073,7 @@ theorem cayley_change (hP : IsCayleyU k r ε P) (hP' : IsCayleyU k r ε P') :
 
 end Cay
 
-theorem ShellSmooth_of_KFinSmooth (D : D7) (h : KFinSmooth) : ShellSmooth D := by
-  intro L P j hP w hw
-  unfold shell at hw
-  induction hw using Submodule.span_induction with
-  | mem v hv =>
-    obtain ⟨Λ', ν, S, hS, hvS, _⟩ := hv
-    exact h _ _ L.ε L.lam L.Hs L.σ L.hlam L.hσ v ⟨S, hS.1, hvS, kstable_Hpk hP hS.2.1⟩
-  | zero => exact smooth_zero
-  | add x y _ _ hx hy => exact smooth_add hx hy
-  | smul c x _ hx => exact smooth_smul c hx
 
-theorem lowest_K_type_bound_of_mult_one (D : D7) (Ch Cg : ℝ) (h2 : Formalism.MainNotions.PlaceDegreeData.adm2 D) (hSm : KFinSmooth) (hQ : QuotRightInv) (hLS : LALeftS)
-    (hRK : LARightK) (hC : DSConjK) : LowestKTypeRightInvariant D Ch Cg := by
-  intro L lam0 ka b bv Bf μG μS νq P w hH hw hw0
-  obtain ⟨_, _, _, hB, hG, hS, hq, _, hP⟩ := hH
-  obtain ⟨P', hP', hDS'⟩ := L.hσ
-  obtain ⟨hκ, hκe⟩ := cayley_change hP hP'
-  have hDS : IsDS L.ε L.lam (fun g => L.σ (P⁻¹ * g * P)) := by
-    have := hC _ L.ε L.lam L.Hs _ _ hκ hDS'
-    simp only [hκe] at this
-    exact this
-  have hKT := (h2 _ L.ε L.lam L.hlam L.Hs _ hDS).1
-  obtain ⟨hfd, hst, hirr, ⟨v, hvS, hv0, hwt⟩, _⟩ := id hKT
-  have hσ := urep_of_DS L.hσ
-  obtain ⟨_, hπ, _⟩ := rp_repOfHC _ _ L.z L.u L.Wp L.π L.hz.1 L.hz.2 L.hπ
-  have hl0 : l1 (lowK L.ε L.lam) (lowK L.ε L.lam) ≤ ((0 : ℕ) : ℝ) := by simp [l1]
-  refine ⟨v, Submodule.subset_span ⟨_, _, _, hKT, hvS, hwt, hl0, hl0⟩, hv0, ?_⟩
-  intro Φ hΦ
-  have hS0 : lowKSub L.ε L.lam (fun g => L.σ (P⁻¹ * g * P)) ≠ ⊥ := by
-    intro hbot
-    rw [hbot] at hvS
-    exact hv0 (by simpa using hvS)
-  have hsm : ∀ u ∈ lowKSub L.ε L.lam (fun g => L.σ (P⁻¹ * g * P)), IsSmoothVec (k := D.R.k) (r := D.R.rS) L.σ u :=
-    fun u hu => hSm _ _ L.ε L.lam L.Hs L.σ L.hlam L.hσ u ⟨_, hfd, hu, kstable_Hpk hP hst⟩
-  obtain ⟨C, hCC⟩ := kinv_form hQ hLS hRK hP hσ L.hz.1 L.hz.2 L.c hπ hB hG hS hq _ hS0 hst hirr hsm hΦ
-  have key : ∀ u ∈ lowKSub L.ε L.lam (fun g => L.σ (P⁻¹ * g * P)), u ≠ 0 →
-      Emom L Bf νq u (fun g => Φ (fun a => la D L a g)) = C := by
-    intro u hu hu0
-    unfold Emom
-    have := hCC u hu
-    unfold la
-    rw [this, ← mul_assoc, ENNReal.inv_mul_cancel, one_mul]
-    · have : 0 < ‖u‖ ^ 2 := by positivity
-      exact (ENNReal.ofReal_pos.2 this).ne'
-    · exact ENNReal.ofReal_ne_top
-  rw [key w hw hw0, key v hvS hv0]
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
 
@@ -2426,28 +2122,8 @@ theorem fdegOf_of_isFdeg {n : ℕ} {ε : Fin n → Bool} {H : Type} [NormedAddCo
   have := hd.1
   field_simp
 
-theorem hc_int_diff {n : ℕ} {μ : Fin n → ℝ} (h : IsHCParam μ) : ∀ a b, ∃ m : ℤ, μ a - μ b = (m : ℝ) := by
-  have h' : StrictAnti μ ∧ ∀ a, ∃ m : ℤ, μ a - ((n : ℝ) - 1) / 2 = (m : ℝ) := h
-  intro a b
-  obtain ⟨ma, ha⟩ := h'.2 a
-  obtain ⟨mb, hb⟩ := h'.2 b
-  exact ⟨ma - mb, by push_cast; linarith⟩
 
-theorem formal_degree_ratio_of_HC_formula (D : D7) (hHC : HCFdeg) : Formalism.MainNotions.OnePlaceEstimates.FormalDegreeRatioAlt D := by
-  intro n ε μ H _ _ _ σ X hμ hDS _ s hs v vs hv hvs
-  obtain ⟨c, hc, hF⟩ := hHC n ε
-  obtain ⟨hμs, hDSs⟩ := X.ds s hs
-  rw [fdegOf_of_isFdeg (hF _ _ _ hμs hDSs) hvs, fdegOf_of_isFdeg (hF _ _ _ hμ hDS) hv]
-  rw [mul_div_mul_left _ _ hc.ne']
-  exact fdegRatio n μ s hμ.1.injective (hc_int_diff hμ) hμs.1.injective
 
-theorem dual_formal_degree_ratio_of_HC_formula (D : D7) (hHC : HCFdeg) : Formalism.MainNotions.OnePlaceEstimates.FormalDegreeRatioDual D := by
-  intro n ε μ H _ _ _ σ X hμ hDS _ s hs v vs hv hvs
-  obtain ⟨c, hc, hF⟩ := hHC n ε
-  obtain ⟨hμs, hDSs⟩ := X.ds s hs
-  rw [fdegOf_of_isFdeg (hF _ _ _ hμs hDSs) hvs, fdegOf_of_isFdeg (hF _ _ _ hμ hDS) hv]
-  rw [mul_div_mul_left _ _ hc.ne']
-  exact Formalism.HermitianLatticeCounting.Final.ExpansionTerms.degRatioMinus n μ s hμ.1.injective (hc_int_diff hμ) hμs.1.injective
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
 
@@ -2846,9 +2522,6 @@ namespace Formalism.MainNotions.LowestKTypeMultiplicity
 
 open Formalism.BasicNotions
 
-theorem lowest_K_type_bound_proved (D : D7) (Ch Cg : ℝ) (h2 : Formalism.MainNotions.PlaceDegreeData.adm2 D) (hSm : KFinSmooth) (hQ : QuotRightInv) :
-    Formalism.MainNotions.BesselShellMomentBounds.LowestKTypeRightInvariant D Ch Cg :=
-  lowest_K_type_bound_of_mult_one D Ch Cg h2 hSm hQ laLeftS_proved laRightK_proved dsConjK_proved
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
 

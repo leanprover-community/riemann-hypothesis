@@ -62,8 +62,6 @@ def shift (A : Agree X M rep) (g : Fin D.R.m → ReciprocityTheory.Aut.GQ D.host
         (congrArg (fun z => A.eW μ hμ j (X.fn hμ j x ((A.PV j).ψ z))) (inv_aux _ _ _))))
   rep_iso := A.rep_iso
 
-theorem shift_a (A : Agree X M rep) (g : Fin D.R.m → ReciprocityTheory.Aut.GQ D.host.E D.R.nV) (j) :
-    (shift A g).a j = g j * A.a j := rfl
 
 theorem real_eq {M' : MtFam D} (A : Agree X M rep) (A' : Agree X M' rep) (hP : A.PV = A'.PV) (ha : A.a = A'.a)
     {μ} (hμ : Used0 D μ) (j : Fin D.R.m) (x) (h) :
@@ -71,12 +69,6 @@ theorem real_eq {M' : MtFam D} (A : Agree X M rep) (A' : Agree X M' rep) (hP : A
       (A.eW μ hμ j).symm ((M μ (j.1 + 1) (by omega) (by omega)).real x h) := by
   rw [A.real μ hμ, A'.real μ hμ, LinearEquiv.symm_apply_apply, LinearEquiv.symm_apply_apply, hP, ha]
 
-theorem eq_zero_of_fin (A : Agree X M rep) {μ} (hμ : Used0 D μ) (j : Fin D.R.m) (x : D.what₂.Mt μ (j.1 + 1))
-    (hx : ∀ g ∈ GfC (Vc D j), X.fn hμ j x g = 0) : x = 0 := by
-  apply (M μ (j.1 + 1) (by omega) (by omega)).real_inj
-  funext h
-  rw [A.real μ hμ, hx _ ((A.PV j).into _), map_zero, map_zero]
-  rfl
 
 theorem rep_inj (A : Agree X M rep) (σ σ' : D.what₂.FT) (h : rep σ = rep σ') : σ = σ' := by
   obtain ⟨T, hT⟩ := A.iso_rep σ
@@ -94,14 +86,6 @@ theorem rep_inj (A : Agree X M rep) (σ σ' : D.what₂.FT) (h : rep σ = rep σ
   have h3 : T ⟨_, hm⟩ = f' := Subtype.ext (h2.trans ((congrArg (fun z : (X.rep σ).S => NG.rt D.host.E D.R.r k z.1) h4).trans e.symm))
   exact congrArg Subtype.val (T.symm_apply_eq.2 h3.symm)
 
-theorem canon_phi_inj (j : Fin D.R.m) (Y : GlobalTheory.NPin.RowMod D rep (j.1 + 1)) (h : IsCanon X j rfl Y) :
-    Function.Injective Y.φ := by
-  obtain ⟨e, c, -, -, -, -, -, h6⟩ := h
-  intro y y' hy
-  apply (X.IL.jMj j).injective
-  apply Subtype.ext
-  rw [← h6, ← h6]
-  exact congrArg (fun z => PiTensorProduct.lift (e z)) hy
 
 end GlobalTheory.NJoin.Model
 

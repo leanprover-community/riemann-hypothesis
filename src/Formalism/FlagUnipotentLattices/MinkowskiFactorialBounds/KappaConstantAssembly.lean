@@ -4,6 +4,5 @@ import Formalism.LatticeRigidity.RecursionUnrestrictedFalse
 
 namespace Formalism.HermitianLatticeCounting.P
 
-theorem kappa_constant_assembly : Formalism.HermitianLatticeCounting.S7.KappaAssembly := kappaAssembly_of volume_ratio
 
 end Formalism.HermitianLatticeCounting.P

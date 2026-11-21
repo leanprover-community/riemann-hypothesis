@@ -3,13 +3,442 @@ import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PowMulMemLatIff
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrobSubMulSurjective
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicCharacterPadicBasicProperties
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicActionOnRootTowerStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicActionOnRootTower
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PadicIntAddFilClosedInDeRhamPeriodRing
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PrimePowMulInvPowMemAinfFilLattice
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsAinfCocycleRecursionOfFrobeniusTwist
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsSeriesLimitLat
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsInvIoPi
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExpStar
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NonemptyThetaOnBdRPlusPeriodData
 
+section
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc GlobalTheory.ExpImage
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cyclotomic_action_on_root_tower : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (g : GQ l) (u : ℕ), (P.χQ g : ℚ_[l]) = (u : ℚ_[l]) → ∀ j : ℕ, AI.actT g (AI.εroot j) = AI.εroot j ^ u := by
+  first | exact @GlobalTheory.ExpImage.actT_εroot_eq_pow | exact GlobalTheory.ExpImage.actT_εroot_eq_pow | (intros; apply GlobalTheory.ExpImage.actT_εroot_eq_pow <;> assumption)
+end
+
+section
+section
+section
+
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc
+
+namespace GlobalTheory.CompanionTheory.InertiaEigenvalues.LPow
+
+open Polynomial in
+
+theorem geom_poly {l : ℕ} (hl : l.Prime) :
+    ∃ v : ℤ[X], ∑ i ∈ Finset.range l, (1 + (X : ℤ[X])) ^ i
+      = X ^ (l - 1) + (l : ℤ[X]) * (1 + X * v) := by
+  obtain ⟨r, hr⟩ := exists_add_pow_prime_eq hl (1 : ℤ[X]) X
+  have hl1 : l - 1 + 1 = l := Nat.sub_add_cancel hl.one_le
+  have hg := geom_sum_mul (1 + (X : ℤ[X])) l
+  have hs : ∑ i ∈ Finset.range l, (1 + (X : ℤ[X])) ^ i = X ^ (l - 1) + (l : ℤ[X]) * r := by
+    apply mul_right_cancel₀ (X_ne_zero (R := ℤ))
+    have e : (1 + (X : ℤ[X])) - 1 = X := by ring
+    rw [e, hr] at hg
+    rw [hg, add_mul, ← pow_succ, hl1]
+    ring
+  have r0 : r.coeff 0 = 1 := by
+    have h := congrArg (Polynomial.eval 0) hs
+    have hz : (0 : ℤ) ^ (l - 1) = 0 := zero_pow (by have := hl.two_le; omega)
+    simp [Polynomial.eval_finset_sum, hz] at h
+    have hl0 : (l : ℤ) ≠ 0 := by exact_mod_cast hl.ne_zero
+    rw [Polynomial.coeff_zero_eq_eval_zero]
+    have h' : (l : ℤ) * Polynomial.eval 0 r = (l : ℤ) * 1 := by linarith
+    exact mul_left_cancel₀ hl0 h'
+  obtain ⟨v, hv⟩ := X_dvd_sub_C (p := r)
+  refine ⟨v, ?_⟩
+  have : r = 1 + X * v := by
+    rw [← hv, r0]; simp
+  rw [hs, ← this]
+
+theorem geom_ring {R : Type*} [CommRing R] {l : ℕ} (hl : l.Prime) (y : R) :
+    ∃ v : R, ∑ i ∈ Finset.range l, (1 + y) ^ i = y ^ (l - 1) + (l : R) * (1 + y * v) := by
+  obtain ⟨v, hv⟩ := geom_poly hl
+  refine ⟨Polynomial.aeval y v, ?_⟩
+  have h := congrArg (Polynomial.aeval y) hv
+  simpa [map_sum] using h
+
+theorem pow_mem_span {R : Type*} [CommRing R] (y ξ c v : R) (a k n M : ℕ)
+    (hξ : ξ = y ^ a + c * (1 + y * v)) (hM : 1 ≤ M) (hk : k ≤ a * n) :
+    c ^ (n + M - 1) ∈ Ideal.span {y ^ k, ξ ^ M} := by
+  set I : Ideal R := Ideal.span {y ^ k, ξ ^ M} with hI
+  have hy : y ^ k ∈ I := Ideal.subset_span (by simp)
+  have hx : ξ ^ M ∈ I := Ideal.subset_span (by simp)
+  have hb : (-(y ^ a)) ^ n ∈ I := by
+    rw [neg_pow, ← pow_mul]
+    refine I.mul_mem_left _ ?_
+    have : y ^ (a * n) = y ^ (a * n - k) * y ^ k := by
+      rw [← pow_add, Nat.sub_add_cancel hk]
+    rw [this]
+    exact I.mul_mem_left _ hy
+  have h1 : (ξ + -(y ^ a)) ^ (n + M - 1) ∈ I :=
+    Ideal.add_pow_mem_of_pow_mem_of_le I hx hb (by omega)
+  have e1 : ξ + -(y ^ a) = c * (1 + y * v) := by rw [hξ]; ring
+  rw [e1, mul_pow] at h1
+
+  have hs := mul_neg_geom_sum (-(y * v)) k
+  have hu : (1 + y * v) * ∑ i ∈ Finset.range k, (-(y * v)) ^ i = 1 - (-(y * v)) ^ k := by
+    have := hs
+    simpa [sub_neg_eq_add] using this
+  have hyk : (-(y * v)) ^ k ∈ I := by
+    rw [neg_pow, mul_pow]
+    have : (-1 : R) ^ k * (y ^ k * v ^ k) = ((-1 : R) ^ k * v ^ k) * y ^ k := by ring
+    rw [this]
+    exact I.mul_mem_left _ hy
+  rw [← Ideal.Quotient.eq_zero_iff_mem] at h1 hyk ⊢
+  rw [map_mul, map_pow, map_pow] at h1
+  have hu' := congrArg (Ideal.Quotient.mk I) hu
+  rw [map_mul, map_sub, hyk, map_one, sub_zero] at hu'
+  have hunit : IsUnit (Ideal.Quotient.mk I (1 + y * v)) := IsUnit.of_mul_eq_one _ hu'
+  rw [map_pow]
+  exact (hunit.pow _).mul_left_eq_zero.mp h1
+
+theorem l_pow_mem (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (k n M : ℕ)
+    (hM : 1 ≤ M) (hk : k ≤ (l - 1) * n) :
+    ((l : ℕ) : Ainf l) ^ (n + M - 1) ∈ Ideal.span {AI.π₁ ^ k, AI.ξ ^ M} := by
+  obtain ⟨v, hv⟩ := geom_ring (Fact.out : l.Prime) AI.π₁
+  have e : 1 + AI.π₁ = WittVector.teichmuller l AI.ε1 := by
+    rw [LocAinf.π₁]; ring
+  rw [e] at hv
+  exact pow_mem_span AI.π₁ AI.ξ (l : Ainf l) v (l - 1) k n M hv hM hk
+
+theorem main : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (k n M : ℕ), 1 ≤ M → k ≤ (l - 1) * n → ((l : ℕ) : Ainf l) ^ (n + M - 1) ∈ Ideal.span {AI.π₁ ^ k, AI.ξ ^ M} :=
+  fun l _ P AI k n M hM hk => l_pow_mem l P AI k n M hM hk
+
+end GlobalTheory.CompanionTheory.InertiaEigenvalues.LPow
+
+end
+
+section
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc
+
+private theorem xi_eq_sum_choose_mul_pi_pow_lemma_2 {l : ℕ} [Fact l.Prime] {P : _root_.Formalism.BasicNotions.LocPrime l}
+    (AI : _root_.Formalism.BasicNotions.LocAinf l P) :
+    AI.ξ = ∑ i ∈ Finset.range l, ((l.choose (i + 1) : ℕ) : _root_.Formalism.BasicNotions.Loc.Ainf l) * AI.π₁ ^ i := by
+  have h := congrArg (Polynomial.eval AI.π₁)
+    (Polynomial.geom_sum_X_comp_X_add_one_eq_sum (R := _root_.Formalism.BasicNotions.Loc.Ainf l) l)
+  simp only [Polynomial.eval_comp, Polynomial.eval_finset_sum, Polynomial.eval_pow,
+    Polynomial.eval_X, Polynomial.eval_add, Polynomial.eval_one, Polynomial.eval_mul,
+    Polynomial.eval_natCast] at h
+  rw [← h]
+  unfold _root_.Formalism.BasicNotions.LocAinf.ξ _root_.Formalism.BasicNotions.LocAinf.π₁
+  simp
+
+private theorem xi_eq_pi_pow_add_prime_mul_lemma {l : ℕ} [hl : Fact l.Prime] {P : _root_.Formalism.BasicNotions.LocPrime l}
+    (AI : _root_.Formalism.BasicNotions.LocAinf l P) :
+    ∃ w, AI.ξ = AI.π₁ ^ (l - 1) + (l : _root_.Formalism.BasicNotions.Loc.Ainf l) * (1 + AI.π₁ * w) := by
+  have hp := hl.out
+  obtain ⟨m, hm⟩ : ∃ m, l = m + 2 := ⟨l - 2, by have := hp.two_le; omega⟩
+  refine ⟨∑ i ∈ Finset.range m, ((l.choose (i + 2) / l : ℕ) : _root_.Formalism.BasicNotions.Loc.Ainf l) * AI.π₁ ^ i, ?_⟩
+  rw [xi_eq_sum_choose_mul_pi_pow_lemma_2, show Finset.range l = Finset.range (m + 1 + 1) by rw [hm],
+    Finset.sum_range_succ, Finset.sum_range_succ',
+    show l.choose (m + 1 + 1) = 1 by rw [show m + 1 + 1 = l by omega]; simp]
+  have hd : ∀ i ∈ Finset.range m, ((l.choose (i + 1 + 1) : ℕ) : _root_.Formalism.BasicNotions.Loc.Ainf l) * AI.π₁ ^ (i + 1) =
+      (l : _root_.Formalism.BasicNotions.Loc.Ainf l) * (AI.π₁ * (((l.choose (i + 2) / l : ℕ) : _root_.Formalism.BasicNotions.Loc.Ainf l) * AI.π₁ ^ i)) := by
+    intro i hi
+    have hi' := Finset.mem_range.1 hi
+    have hdvd : l ∣ l.choose (i + 2) := hp.dvd_choose_self (by omega) (by omega)
+    rw [show ((l.choose (i + 1 + 1) : ℕ) : _root_.Formalism.BasicNotions.Loc.Ainf l) =
+        ((l * (l.choose (i + 2) / l) : ℕ) : _root_.Formalism.BasicNotions.Loc.Ainf l) by rw [Nat.mul_div_cancel' hdvd]]
+    push_cast
+    ring
+  rw [Finset.sum_congr rfl hd, ← Finset.mul_sum, ← Finset.mul_sum]
+  simp only [zero_add, Nat.choose_one_right, pow_zero, mul_one, Nat.cast_one, one_mul]
+  rw [show m + 1 = l - 1 by omega]
+  ring
+
+theorem _root_.GlobalTheory.Adopt.ainf_invPi_mod_xi_pow_bounded_denominator : ∀ (l : ℕ) [Fact l.Prime] (P : _root_.Formalism.BasicNotions.LocPrime l)
+    (AI : _root_.Formalism.BasicNotions.LocAinf l P) (k n M : ℕ), 1 ≤ M → k ≤ (l - 1) * n →
+    ((l : ℕ) : _root_.Formalism.BasicNotions.Loc.Ainf l) ^ (n + M - 1) ∈ Ideal.span {AI.π₁ ^ k, AI.ξ ^ M} := by
+  intro l _ P AI k n M hM hk
+  obtain ⟨w, hw⟩ := xi_eq_pi_pow_add_prime_mul_lemma AI
+  rw [← Ideal.Quotient.eq_zero_iff_mem]
+  set q := Ideal.Quotient.mk (Ideal.span {AI.π₁ ^ k, AI.ξ ^ M})
+  have hπ : q AI.π₁ ^ k = 0 := by
+    rw [← map_pow, Ideal.Quotient.eq_zero_iff_mem]
+    exact Ideal.subset_span (by simp)
+  have hξ : q AI.ξ ^ M = 0 := by
+    rw [← map_pow, Ideal.Quotient.eq_zero_iff_mem]
+    exact Ideal.subset_span (by simp)
+  have hu : IsUnit (q (1 + AI.π₁ * w)) := by
+    rw [map_add, map_one, map_mul]
+    exact IsNilpotent.isUnit_one_add ⟨k, by rw [mul_pow, hπ, zero_mul]⟩
+  have hneg : (-(q AI.π₁ ^ (l - 1))) ^ n = 0 := by
+    rw [neg_pow, ← pow_mul, pow_eq_zero_of_le hk hπ, mul_zero]
+  have hsum := (Commute.all (q AI.ξ) (-(q AI.π₁ ^ (l - 1)))).add_pow_eq_zero_of_add_le_succ_of_pow_eq_zero
+    hξ hneg (k := n + M - 1) (by omega)
+  rw [← sub_eq_add_neg, congrArg q hw, map_add, map_pow, add_sub_cancel_left, map_mul,
+    mul_pow] at hsum
+  rw [map_pow, map_natCast]
+  exact ((hu.pow _).mul_left_eq_zero).1 hsum
+
+end
+end
+
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ainf_invPi_mod_xi_pow_bounded_denominator : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (k n M : ℕ), 1 ≤ M → k ≤ (l - 1) * n → ((l : ℕ) : Ainf l) ^ (n + M - 1) ∈ Ideal.span {AI.π₁ ^ k, AI.ξ ^ M} := by
+  atlas_forward_decl GlobalTheory.Adopt.ainf_invPi_mod_xi_pow_bounded_denominator
+end
+
+section
+section
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc GlobalTheory.ExpImage
+
+namespace GlobalTheory.ExpImage
+
+theorem exists_exponent_small {l s : ℕ} (hl : l.Prime) (hs : Lev l s) (M n k : ℕ) (hM : 1 ≤ M)
+    (hk : 2 * (M + n) ≤ k) : ∃ N : ℕ, k + 1 ≤ (l - 1) * N ∧ N + M - 1 + n ≤ s * k := by
+  obtain ⟨h1, h2⟩ := hs
+  by_cases h : l = 2
+  · refine ⟨k + 1, by subst h; omega, ?_⟩
+    have := Nat.mul_le_mul_right k (h2 h)
+    omega
+  · have h3 : 2 ≤ l - 1 := by have := hl.two_le; omega
+    refine ⟨k / 2 + 1, ?_, ?_⟩
+    · have := Nat.mul_le_mul_right (k / 2 + 1) h3
+      omega
+    · have := Nat.mul_le_mul_right k h1
+      omega
+
+theorem pow_mul_inv_pow_mem_Lat (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (s : ℕ)
+    (hs : Lev l s) (u : P.R.BdR) (hu : u ∈ FilB P 0) (hx : io AI AI.π₁ * u = 1) (M n : ℕ) :
+    ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ a : Ainf l,
+      (l : P.R.BdR) ^ (s * k) * io AI a * u ^ (k + 1) ∈ Lat AI M n := by
+  refine ⟨2 * (M + n), fun k hk a => ?_⟩
+  have hu' : u ^ (k + 1) ∈ FilB P 0 := by simpa using FilB_pow hu (k + 1)
+  rcases Nat.eq_zero_or_pos M with rfl | hM
+  · apply FilB_le_Lat
+    have := FilB_zero_mul (io_mem AI (((l : ℕ) : Ainf l) ^ (s * k) * a)) hu'
+    simpa only [map_mul, map_pow, map_natCast, Nat.cast_zero] using this
+  obtain ⟨N, hN1, hN2⟩ := exists_exponent_small (Fact.out : l.Prime) hs M n k hM hk
+  obtain ⟨a', b', hab⟩ := Ideal.mem_span_pair.mp (GlobalTheory.T.ainf_invPi_mod_xi_pow_bounded_denominator l P AI (k + 1) N M hM hN1)
+  obtain ⟨e, he⟩ := Nat.exists_eq_add_of_le hN2
+  have hio := congrArg (io AI) hab
+  simp only [map_mul, map_pow, map_natCast, map_add] at hio
+  have hxk : io AI AI.π₁ ^ (k + 1) * u ^ (k + 1) = 1 := by rw [← mul_pow, hx, one_pow]
+  have hξ : io AI AI.ξ ^ M ∈ FilB P (M : ℤ) := by simpa using FilB_pow (io_ξ_mem AI) M
+  refine ⟨((l : ℕ) : Ainf l) ^ e * a * a', ?_⟩
+  have := FilB_zero_mul
+    (FilB_zero_mul (io_mem AI (((l : ℕ) : Ainf l) ^ n * ((l : ℕ) : Ainf l) ^ e * a * b')) hu') hξ
+  convert this using 1
+  rw [he, pow_add, pow_add _ (N + M - 1), ← hio]
+  simp only [map_mul, map_pow, map_natCast]
+  linear_combination ((l : P.R.BdR) ^ n * (l : P.R.BdR) ^ e * io AI a * io AI a') * hxk
+
+end GlobalTheory.ExpImage
+end
+
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc GlobalTheory.ExpImage
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.prime_pow_mul_inv_pow_mem_ainfFilLattice : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (s : ℕ), Lev l s → ∀ u ∈ FilB P 0, io AI AI.π₁ * u = 1 → ∀ M n : ℕ, ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ a : Ainf l, (l : P.R.BdR) ^ (s * k) * io AI a * u ^ (k + 1) ∈ Lat AI M n := by
+  atlas_forward_decl GlobalTheory.ExpImage.pow_mul_inv_pow_mem_Lat
+end
+
+section
+section
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc GlobalTheory.ExpImage
+
+namespace GlobalTheory.ExpStep
+
+theorem exists_fixed {A W : Type} [CommRing A] [CommRing W] (i : A →+* W) (φ : A →+* A)
+    (Φ : W →+* W) (h : ∀ a, Φ (i a) = i (φ a)) {N D c : A} (hD : IsUnit (i D))
+    (hN : φ N = c * N) (hD' : φ D = c * D) : ∃ w : W, Φ w = w ∧ i N = w * i D := by
+  obtain ⟨v, hv⟩ := hD.exists_left_inv
+  have e : i N = i N * v * i D := by rw [mul_assoc, hv, mul_one]
+  refine ⟨i N * v, ?_, e⟩
+  apply (hD.map Φ).mul_right_cancel
+  rw [← map_mul, ← e, h, h, hN, hD', map_mul, map_mul]
+  linear_combination (i c) * e
+
+variable {l : ℕ} [Fact l.Prime] {P : LocPrime l} (AI : LocAinf l P)
+
+theorem isUnit_inclW {a : Ainf l} (ha : a.coeff 0 ≠ 0) : IsUnit (inclW l a) := by
+  apply WittVector.isUnit_of_coeff_zero_ne_zero
+  rw [inclW, WittVector.map_coeff]
+  exact fun hz => ha (IsFractionRing.injective (OCb l) (Cb l) (by rw [hz, map_zero]))
+
+theorem π₁_coeff : AI.π₁.coeff 0 ≠ 0 := by
+  have h0 : AI.π₁.coeff 0 = AI.ε1 - 1 := by
+    change WittVector.constantCoeff (WittVector.teichmuller l AI.ε1 - 1) = _
+    rw [map_sub, map_one, WittVector.constantCoeff_apply, WittVector.teichmuller_coeff_zero]
+  rw [h0]
+  intro hz
+  apply AI.ε_ne_one
+  rw [← frobeniusEquiv_symm_pow_p (OCb l) l AI.ε]
+  change AI.ε1 ^ l = 1
+  rw [sub_eq_zero.mp hz, one_pow]
+
+theorem act_π₁_coeff (g : GQ l) : (AI.actW g AI.π₁).coeff 0 ≠ 0 := by
+  rw [LocAinf.actW, WittVector.map_coeff]
+  intro hz
+  exact π₁_coeff AI ((AI.actT g).injective (by rw [map_zero]; exact hz))
+
+theorem frob_π₁ : WittVector.frobenius AI.π₁ = AI.μ := by
+  rw [LocAinf.π₁, LocAinf.μ, map_sub, map_one, WittVector.frobenius_eq_map_frobenius,
+    WittVector.map_teichmuller, LocAinf.ε1, frobenius_apply_frobeniusEquiv_symm]
+
+theorem frob_act (g : GQ l) (a : Ainf l) :
+    WittVector.frobenius (AI.actW g a) = AI.actW g (WittVector.frobenius a) := by
+  ext n
+  simp only [LocAinf.actW, WittVector.coeff_frobenius_charP, WittVector.map_coeff, map_pow]
+
+theorem frob_zl (z : ℤ_[l]) :
+    WittVector.frobenius (algebraMap ℤ_[l] (Ainf l) z) = algebraMap ℤ_[l] (Ainf l) z := by
+  rw [WittVector.frobenius_eq_map_frobenius]
+  exact map_zlW l _ z
+
+theorem frobW_inclW (a : Ainf l) : frobW l (inclW l a) = inclW l (WittVector.frobenius a) := by
+  ext n
+  change (WittVector.map (frobenius (Cb l) l) (inclW l a)).coeff n = _
+  simp only [inclW, WittVector.coeff_frobenius_charP, WittVector.map_coeff, map_pow, frobenius_def]
+
+theorem main : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (g : GQ l) (U : ℤ_[l]) (k : ℕ) (β η : Ainf l), Step AI g U AI.μ k (WittVector.frobenius β - AI.ξ ^ k * β) (WittVector.frobenius η - AI.ξ ^ k * η) → ∃ z : ℤ_[l], Step AI g U AI.π₁ k β (η + algebraMap ℤ_[l] (Ainf l) z * AI.π₁ ^ k) := by
+  intro l _ P AI g U k β η h
+  have hu : IsUnit (inclW l (AI.π₁ ^ k * AI.actW g AI.π₁ ^ k)) := by
+    rw [map_mul, map_pow, map_pow]
+    exact ((isUnit_inclW (π₁_coeff AI)).pow k).mul ((isUnit_inclW (act_π₁_coeff AI g)).pow k)
+  obtain ⟨w, hw, e⟩ := exists_fixed (inclW l) WittVector.frobenius (frobW l : WCb l →+* WCb l)
+    frobW_inclW (N := algebraMap ℤ_[l] (Ainf l) U * AI.actW g β * AI.π₁ ^ k
+      - AI.actW g AI.π₁ ^ k * β - AI.actW g AI.π₁ ^ k * η)
+    (c := AI.ξ ^ k * AI.actW g AI.ξ ^ k) hu (by
+      unfold Step at h
+      simp only [map_sub, map_mul, map_pow, frob_act, frob_zl, frob_π₁, AI.μ_eq, mul_pow] at h ⊢
+      linear_combination h) (by
+      simp only [map_mul, map_pow, frob_act, frob_π₁, AI.μ_eq, mul_pow]
+      ring)
+  obtain ⟨z, rfl⟩ := (GlobalTheory.ArtinSchreierWitt.main l).2.1 w hw
+  refine ⟨z, ?_⟩
+  rw [← (inclWA l).commutes z] at e
+  change _ = inclW l _ * _ at e
+  rw [← map_mul] at e
+  have e' := WittVector.map_injective _ (IsFractionRing.injective (OCb l) (Cb l)) e
+  unfold Step
+  linear_combination e'
+
+end GlobalTheory.ExpStep
+end
+
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc GlobalTheory.ExpImage
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_ainfCocycleRecursion_of_frobenius_twist : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (g : GQ l) (U : ℤ_[l]) (k : ℕ) (β η : Ainf l), Step AI g U AI.μ k (WittVector.frobenius β - AI.ξ ^ k * β) (WittVector.frobenius η - AI.ξ ^ k * η) → ∃ z : ℤ_[l], Step AI g U AI.π₁ k β (η + algebraMap ℤ_[l] (Ainf l) z * AI.π₁ ^ k) := by
+  atlas_forward_decl GlobalTheory.ExpStep.main
+end
+
+section
+section
+noncomputable section
+
+namespace GlobalTheory.ExpImage
+
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc
+
+theorem exists_Ainf_series_limit (l : ℕ) [Fact l.Prime] (a : ℕ → Ainf l) :
+    ∃ x : Ainf l, ∀ n : ℕ, ∃ y : Ainf l,
+      x - ∑ i ∈ Finset.range n, ((l : ℕ) : Ainf l) ^ i * a i = ((l : ℕ) : Ainf l) ^ n * y := by
+  have hc : IsAdicComplete (Ideal.span {((l : ℕ) : Ainf l)}) (Ainf l) :=
+    WittVector.isAdicCompleteIdealSpanP
+  have key : ∀ (n : ℕ) (u v : Ainf l),
+      u ≡ v [SMOD ((Ideal.span {((l : ℕ) : Ainf l)}) ^ n • ⊤ : Submodule (Ainf l) (Ainf l))] ↔
+        ((l : ℕ) : Ainf l) ^ n ∣ u - v := by
+    intro n u v
+    rw [SModEq.sub_mem, smul_eq_mul, Ideal.mul_top, Ideal.span_singleton_pow,
+      Ideal.mem_span_singleton]
+  obtain ⟨x, hx⟩ := hc.toIsPrecomplete.prec
+    (f := fun n => ∑ i ∈ Finset.range n, ((l : ℕ) : Ainf l) ^ i * a i) (by
+      intro m n hmn
+      rw [key, ← dvd_neg, neg_sub, ← Finset.sum_Ico_eq_sub _ hmn]
+      exact Finset.dvd_sum fun i hi =>
+        Dvd.dvd.mul_right (pow_dvd_pow _ (Finset.mem_Ico.mp hi).1) _)
+  refine ⟨x, fun n => ?_⟩
+  have := hx n
+  rw [key, ← dvd_neg, neg_sub] at this
+  exact this
+
+theorem exists_series_limit_Lat (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (M : ℕ)
+    (c : ℕ → P.R.BdR) (h0 : ∀ k, c k ∈ FilB P 0)
+    (hc : ∀ n : ℕ, ∃ k₀ : ℕ, ∀ k ≥ k₀, c k ∈ Lat AI M n) :
+    ∃ b ∈ FilB P 0, ∀ n : ℕ, ∃ R₀ : ℕ, ∀ R ≥ R₀,
+      b - ∑ k ∈ Finset.range R, c k ∈ Lat AI M n := by
+  choose k hk using hc
+  let K : ℕ → ℕ := fun n => ∑ i ∈ Finset.range (n + 1), k i
+  have hK1 : ∀ n, k n ≤ K n := fun n => by
+    simp only [K, Finset.sum_range_succ]
+    omega
+  have hK2 : ∀ n, K n ≤ K (n + 1) := fun n => by
+    simp only [K, Finset.sum_range_succ k (n + 1)]
+    omega
+  have hblock : ∀ n R, K n ≤ R →
+      ∑ j ∈ Finset.range R, c j - ∑ j ∈ Finset.range (K n), c j ∈ Lat AI M n := by
+    intro n R hR
+    rw [← Finset.sum_Ico_eq_sub _ hR]
+    exact AddSubgroup.sum_mem _ fun j hj => hk n j ((hK1 n).trans (Finset.mem_Ico.mp hj).1)
+  choose a ha using fun n => (mem_Lat AI).mp (hblock n (K (n + 1)) (hK2 n))
+  have htel : ∀ n, ∑ j ∈ Finset.range (K n), c j - ∑ j ∈ Finset.range (K 0), c j -
+      io AI (∑ i ∈ Finset.range n, ((l : ℕ) : Ainf l) ^ i * a i) ∈ FilB P (M : ℤ) := by
+    intro n
+    induction n with
+    | zero => simp
+    | succ n ih =>
+      have := add_mem ih (ha n)
+      rw [Finset.sum_range_succ (fun i => ((l : ℕ) : Ainf l) ^ i * a i), map_add]
+      convert this using 1
+      ring
+  obtain ⟨x, hx⟩ := exists_Ainf_series_limit l a
+  refine ⟨∑ j ∈ Finset.range (K 0), c j + io AI x,
+    add_mem (Submodule.sum_mem _ fun j _ => h0 j) (io_mem AI x), fun n => ⟨K n, fun R hR => ?_⟩⟩
+  obtain ⟨y, hy⟩ := hx n
+  have h1 := io_mem_Lat AI M n y
+  rw [← hy, map_sub] at h1
+  have := sub_mem (sub_mem h1 (FilB_le_Lat AI (n := n) (htel n))) (hblock n R hR)
+  convert this using 1
+  ring
+
+end GlobalTheory.ExpImage
+end
+end
+
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc GlobalTheory.ExpImage
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_series_limit_Lat_alt : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (M : ℕ) (c : ℕ → P.R.BdR), (∀ k, c k ∈ FilB P 0) → (∀ n : ℕ, ∃ k₀ : ℕ, ∀ k ≥ k₀, c k ∈ Lat AI M n) → ∃ b ∈ FilB P 0, ∀ n : ℕ, ∃ R₀ : ℕ, ∀ R ≥ R₀, b - ∑ k ∈ Finset.range R, c k ∈ Lat AI M n := by
+  atlas_forward_decl GlobalTheory.ExpImage.exists_series_limit_Lat
+end
+
+section
+section
+namespace GlobalTheory.ExpImage
+
+open Formalism Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc GlobalTheory.MemLoc GlobalTheory.ThetaTie
+open scoped Formalism.Per
+
+theorem exists_inv_io_pi : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P),
+    LocTied l P AI → ∃ u ∈ FilB P 0, io AI AI.π₁ * u = 1 := by
+  intro l _ P AI T
+  obtain ⟨-, -, hun, hth, -⟩ := thetaD_props l
+  have hθ : Per.θ l AI.π₁ ≠ 0 := by
+    have h : Per.θ l AI.π₁ = PreTilt.untilt AI.ε1 - 1 := by
+      rw [LocAinf.π₁, map_sub, WittVector.fontaineTheta_teichmuller, map_one]
+    rw [h]
+    exact sub_ne_zero.2 (isEps AI).2
+  have hne : Per.θD l (aDp l AI.π₁) ≠ 0 := by
+    rw [hth]
+    exact fun h0 => hθ (Subtype.ext h0)
+  obtain ⟨v, hv⟩ := (hun _ hne).exists_right_inv
+  refine ⟨T.eD.symm (algebraMap (Per.BdRp l) (Per.BdR l) v),
+    (fil_zero T _).2 ⟨v, (T.eD.apply_symm_apply _).symm⟩, T.eD.injective ?_⟩
+  rw [map_mul, io_apply, eD_ιA, T.eD.apply_symm_apply, ← map_mul, hv, map_one, map_one]
+
+end GlobalTheory.ExpImage
+end
+
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc GlobalTheory.ExpImage
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_inv_io_pi_alt : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P), LocTied l P AI → ∃ u ∈ FilB P 0, io AI AI.π₁ * u = 1 := by
+  atlas_forward_decl GlobalTheory.ExpImage.exists_inv_io_pi
+end
+
+section
 section
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc GlobalTheory.ExpImage
 
@@ -155,3 +584,4 @@ open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.Basi
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.exists_deRham_element_of_cocycleRecursion : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P), LocTied l P AI → ∀ (K : FinExt l) (s : ℕ), Lev l s → ∀ (g : GQ l) (U : ℤ_[l]) (M : ℕ), 1 ≤ M → ∀ y : Ainf l, Solv AI K s g U (y - WittVector.frobenius y) → ∃ b ∈ FilB P 0, (∀ h ∈ Hinf K, NearZ P M (P.actQdR h b - b)) ∧ NearZ P M (io AI y + (qB P (U : ℚ_[l]) * P.actQdR g b - b)) := by
   atlas_forward_decl GlobalTheory.ExpImage.Sum.main
+end

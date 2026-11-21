@@ -1,11 +1,102 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFormOneAddMulSmulStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DelDbarAdditiveComplexLinearOneStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DelDbarLeibnizEvenFormMul
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HolAtlasIsFormDelDbarSmoothStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DelDbarAdditiveComplexLinearOne
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContDiffOnCoefficientsComplexFormMul
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DelOperatorAtDbarOperatorAtLinearLocalStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DelOperatorAtDbarOperatorAtLeibnizOfCommuteStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HolAtlasIsFormDelDbarSmooth
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HolAtlasIsFormPullbackHolomorphicStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DelDbarCommPullbackOfSmoothDelDbarStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DelDbarCommPullbackOfSmoothDelDbar
 
+section
+open GlobalTheory GlobalTheory.CxForm GlobalTheory.GoodMetric
+open ReciprocityTheory.L2DbarEstimates (V)
+open scoped ContDiff ComplexConjugate Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.del_dbar_additive_complexLinear_one : ∀ (M : Type) [TopologicalSpace M] (n : ℕ) (A : HolAtlas M n), (A.del 1 = 0 ∧ A.dbar 1 = 0) ∧
+    ∀ (c : ℂ) (α β : A.Fld), A.IsForm α → A.IsForm β →
+      A.del (α + β) = A.del α + A.del β ∧ A.dbar (α + β) = A.dbar α + A.dbar β ∧
+      A.del (c • α) = c • A.del α ∧ A.dbar (c • α) = c • A.dbar α := by
+  first | exact @GlobalTheory.CxForm.HolAtlas.del_dbar_linear | exact GlobalTheory.CxForm.HolAtlas.del_dbar_linear | (intros; apply GlobalTheory.CxForm.HolAtlas.del_dbar_linear <;> assumption)
+end
+
+section
+section
+open GlobalTheory GlobalTheory.CxForm GlobalTheory.GoodMetric
+open ReciprocityTheory.L2DbarEstimates (V)
+open scoped ContDiff ComplexConjugate Topology
+
+namespace GlobalTheory.CxForm.HolAtlas
+
+theorem del_dbar_even_mul (M : Type) [TopologicalSpace M] (n : ℕ) (A : HolAtlas M n) (w : A.Pt → Ev n) (β : A.Fld)
+    (hw : A.IsForm (GlobalTheory.LineForm.fld A w)) (hβ : A.IsForm β) :
+    A.del (GlobalTheory.LineForm.fld A w * β) = A.del (GlobalTheory.LineForm.fld A w) * β + GlobalTheory.LineForm.fld A w * A.del β ∧
+    A.dbar (GlobalTheory.LineForm.fld A w * β) = A.dbar (GlobalTheory.LineForm.fld A w) * β + GlobalTheory.LineForm.fld A w * A.dbar β := by
+  have hloc : ∀ i, A.loc (GlobalTheory.LineForm.fld A w * β) i =
+      fun v => A.loc (GlobalTheory.LineForm.fld A w) i v * A.loc β i v := by
+    intro i
+    funext v
+    unfold HolAtlas.loc
+    split_ifs
+    · rfl
+    · simp
+  have hd : ∀ α : A.Fld, A.IsForm α → ∀ (x : A.Pt) (S),
+      DifferentiableAt ℝ (fun v => (bas n).repr (A.loc α x.1.1 v) S) x.crd := fun α hα x S =>
+    ((hα.smooth x.1.1 S).contDiffAt ((A.e x.1.1).open_target.mem_nhds (x.ch.map_source x.2))).differentiableAt (by simp)
+  have key := fun x : A.Pt => GlobalTheory.T.delOperatorAt_dbarOperatorAt_leibniz_of_commute n (A.loc (GlobalTheory.LineForm.fld A w) x.1.1) (A.loc β x.1.1) x.crd
+    (GlobalTheory.LineForm.fld A w x) (hd _ hw x) (hd _ hβ x)
+  have hc : ∀ (x : A.Pt) (b : Alt n), b * A.loc (GlobalTheory.LineForm.fld A w) x.1.1 x.crd = GlobalTheory.LineForm.fld A w x * b := by
+    intro x b
+    rw [A.loc_crd]
+    exact Subalgebra.mem_center_iff.1 (w x).2 b
+  constructor
+  · funext x
+    have := (key x).1 fun a => hc x _
+    rw [A.loc_crd β x] at this
+    simp only [HolAtlas.del, Pi.add_apply, Pi.mul_apply, hloc]
+    exact this
+  · funext x
+    have := (key x).2 fun a => hc x _
+    rw [A.loc_crd β x] at this
+    simp only [HolAtlas.dbar, Pi.add_apply, Pi.mul_apply, hloc]
+    exact this
+
+end GlobalTheory.CxForm.HolAtlas
+end
+
+open GlobalTheory GlobalTheory.CxForm GlobalTheory.GoodMetric
+open ReciprocityTheory.L2DbarEstimates (V)
+open scoped ContDiff ComplexConjugate Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.del_dbar_leibniz_evenForm_mul : ∀ (M : Type) [TopologicalSpace M] (n : ℕ) (A : HolAtlas M n) (w : A.Pt → Ev n) (β : A.Fld),
+    A.IsForm (GlobalTheory.LineForm.fld A w) → A.IsForm β →
+    A.del (GlobalTheory.LineForm.fld A w * β) = A.del (GlobalTheory.LineForm.fld A w) * β + GlobalTheory.LineForm.fld A w * A.del β ∧
+    A.dbar (GlobalTheory.LineForm.fld A w * β) = A.dbar (GlobalTheory.LineForm.fld A w) * β + GlobalTheory.LineForm.fld A w * A.dbar β := by
+  atlas_forward_decl GlobalTheory.CxForm.HolAtlas.del_dbar_even_mul
+end
+
+section
+open GlobalTheory GlobalTheory.CxForm GlobalTheory.GoodMetric
+open ReciprocityTheory.L2DbarEstimates (V)
+open scoped ContDiff ComplexConjugate Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.holAtlas_isForm_del_dbar_smooth : ∀ (M : Type) [TopologicalSpace M] (n : ℕ) (A : HolAtlas M n) (α : A.Fld), A.IsForm α →
+    A.IsForm (A.del α) ∧ A.IsForm (A.dbar α) := by
+  first | exact @GlobalTheory.CxForm.isForm_del_dbar | exact GlobalTheory.CxForm.isForm_del_dbar | (intros; apply GlobalTheory.CxForm.isForm_del_dbar <;> assumption)
+end
+
+section
+open GlobalTheory GlobalTheory.CxForm GlobalTheory.GoodMetric
+open ReciprocityTheory.L2DbarEstimates (V)
+open scoped ContDiff ComplexConjugate Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.del_dbar_comm_pullback_of_smooth_del_dbar : ∀ (M M' : Type) [TopologicalSpace M] [TopologicalSpace M'] (n n' : ℕ) (A : HolAtlas M n) (A' : HolAtlas M' n')
+    (f : M' → M) (α : A.Fld), A.IsHolo A' f → A.IsForm α → A.IsForm (A.del α) → A.IsForm (A.dbar α) →
+    A'.del (A.pullback A' f α) = A.pullback A' f (A.del α) ∧ A'.dbar (A.pullback A' f α) = A.pullback A' f (A.dbar α) := by
+  first | exact @GlobalTheory.CxForm.HolAtlas.del_dbar_comm_pullback | exact GlobalTheory.CxForm.HolAtlas.del_dbar_comm_pullback | (intros; apply GlobalTheory.CxForm.HolAtlas.del_dbar_comm_pullback <;> assumption)
+end
+
+section
 open CategoryTheory AlgebraicGeometry MvPolynomial MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.ArInt GlobalTheory.CxForm GlobalTheory.CxPts GlobalTheory.VB GlobalTheory.Cartier GlobalTheory.CovTest GlobalTheory.CovTest.SwapLine GlobalTheory.LineForm
@@ -80,3 +171,4 @@ theorem formCalculus : ∀ (M : Type) [TopologicalSpace M] (n : ℕ) (A : HolAtl
     exact ⟨GlobalTheory.T.holAtlas_isForm_pullback_holomorphic M M' n n' A A' f α hf hα, GlobalTheory.T.del_dbar_comm_pullback_of_smooth_del_dbar M M' n n' A A' f α hf hα d1 d2⟩
 
 end GlobalTheory
+end

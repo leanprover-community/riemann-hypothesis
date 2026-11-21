@@ -104,36 +104,5 @@ theorem densSplitDisplay_holds : DensSplitDisplay := by
     (by omega : n - m + 1 - c ≤ n - m + 1) (by omega : n - m + 1 ≤ n + 1)]
   ring
 
-theorem densInertDisplay_holds : DensInertDisplay := by
-  intro q n m c _ hcm hmc
-  have hA : ∏ j ∈ Icc (n - m + c + 1) n, (1 - ((-(q : ℝ)) ^ j)⁻¹) =
-      ∏ j ∈ Ico (n - m + c + 1) (n + 1), (1 - (-1 : ℝ) ^ j * ((q : ℝ) ^ j)⁻¹) := by
-    have hI : Icc (n - m + c + 1) n = Ico (n - m + c + 1) (n + 1) := by
-      ext x; simp only [mem_Icc, mem_Ico]; omega
-    rw [hI]
-    refine prod_congr rfl (fun j _ => ?_)
-    rcases neg_one_pow_eq_or ℝ j with h | h <;> simp [neg_pow, h]
-  have hB : ∏ i ∈ range c, ((1 - (-1 : ℝ) ^ (n - m + c - 2 * i) * ((q : ℝ) ^ (n - m + c - 2 * i))⁻¹) *
-          (1 + (-1 : ℝ) ^ (n - m + c - 2 * i) * ((q : ℝ) ^ (n - m + c - 2 * i - 1))⁻¹)) =
-      ∏ i ∈ range c, ((1 - (-1 : ℝ) ^ (n - m + c - 2 * i) * ((q : ℝ) ^ (n - m + c - 2 * i))⁻¹) *
-          (1 - (-1 : ℝ) ^ (n - m + c - 2 * i - 1) * ((q : ℝ) ^ (n - m + c - 2 * i - 1))⁻¹)) := by
-    refine prod_congr rfl (fun i hi => ?_)
-    have hi' : i < c := mem_range.mp hi
-    obtain ⟨k, hk⟩ : ∃ k, n - m + c - 2 * i = k + 1 := ⟨n - m + c - 2 * i - 1, by omega⟩
-    rw [hk, Nat.add_sub_cancel]
-    ring
-  have hC : ∏ i ∈ range c, ((1 - (-1 : ℝ) ^ (n - m + c - 2 * i) * ((q : ℝ) ^ (n - m + c - 2 * i))⁻¹) *
-          (1 - (-1 : ℝ) ^ (n - m + c - 2 * i - 1) * ((q : ℝ) ^ (n - m + c - 2 * i - 1))⁻¹)) =
-      ∏ j ∈ Ico (n - m + c + 1 - 2 * c) (n - m + c + 1), (1 - (-1 : ℝ) ^ j * ((q : ℝ) ^ j)⁻¹) :=
-    prod_pairs (fun j => 1 - (-1 : ℝ) ^ j * ((q : ℝ) ^ j)⁻¹) c (n - m + c) (by omega)
-  have hD : densProd q (-1) n m c =
-      ∏ j ∈ Ico (n - m + c + 1 - 2 * c) (n + 1), (1 - (-1 : ℝ) ^ j * ((q : ℝ) ^ j)⁻¹) := by
-    unfold densProd
-    have hI : Icc (n + 1 - (m + c)) n = Ico (n - m + c + 1 - 2 * c) (n + 1) := by
-      ext x; simp only [mem_Icc, mem_Ico]; omega
-    rw [hI]
-  rw [hA, hB, hC, hD, ← prod_Ico_consecutive (fun j => 1 - (-1 : ℝ) ^ j * ((q : ℝ) ^ j)⁻¹)
-    (by omega : n - m + c + 1 - 2 * c ≤ n - m + c + 1) (by omega : n - m + c + 1 ≤ n + 1)]
-  ring
 
 end Formalism.L2.SG.DensExact

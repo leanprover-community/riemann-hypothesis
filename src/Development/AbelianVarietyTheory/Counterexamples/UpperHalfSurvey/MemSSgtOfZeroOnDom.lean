@@ -18,14 +18,6 @@ theorem fj_congr (la : Wt X.Ψ r) {ξ : Fin r → E} (hξ : X.IsIso ξ) (ν : X.
   unfold Data.fj
   simp only [e]
 
-theorem fj_one (la : Wt X.Ψ r) (ξ : Fin r → E) (x : Frame X.Ψ r) :
-    X.fj la ξ 0 (fun _ => 1) x = 1 := by
-  have h := PeriodLatticeCountable.fd_exists X la
-  unfold Data.fj
-  rw [if_pos (fun p _ => ⟨0, by simp⟩), dif_pos h]
-  obtain ⟨-, -, h0, h1⟩ := h.choose_spec
-  have : (volume h.choose).toReal ≠ 0 := (ENNReal.toReal_pos h0.ne' h1.ne).ne'
-  simp [Measure.real, this]
 
 theorem chi_zero {γ : GL (Fin r) E} (hγ : γ ∈ X.Γ) : X.χ 0 γ = 1 := by
   obtain ⟨n, hn, h⟩ := X.χ_fin 0
@@ -37,36 +29,9 @@ theorem chi_zero {γ : GL (Fin r) E} (hγ : γ ∈ X.Γ) : X.χ 0 γ = 1 := by
   rw [add_zero] at this
   exact (mul_left_cancel₀ h0 (by rw [mul_one]; exact this)).symm
 
-theorem one_isBddSec : X.IsBddSec 0 (fun _ => 1) :=
-  ⟨⟨differentiableOn_const _, fun _ _ _ _ => by simp [bchar],
-    fun γ hγ _ _ => by simp [chi_zero X hγ]⟩, 1, fun x _ => by simp [Data.pnorm]⟩
 
-theorem one_not_mem_SS {ξ : Fin r → E} (hξ : X.IsIso ξ) (hd : X.dom.Nonempty) :
-    (fun _ => 1) ∉ X.SS 0 := by
-  obtain ⟨x, hx⟩ := hd
-  intro h
-  have := h.2 ξ hξ x hx
-  rw [fj_one] at this
-  exact one_ne_zero this
 
-theorem SSgt_eq_SS (la : Wt X.Ψ r) {c : ℝ} (hc : c ≤ 0) : X.SSgt la c = X.SS la := by
-  ext P
-  refine ⟨fun h => h.1, fun hP => ⟨hP, fun ξ hξ ν hν x hx => ?_⟩⟩
-  by_contra h
-  have hs := BoundedSectionAlgebra.sign_of_bdd X moderateCoefficientPositivity_holds hP.1 hξ ν hx h
-  have hsum : ∑ τ, ν τ = 0 := le_antisymm (hν.trans hc) (Finset.sum_nonneg fun τ _ => hs τ)
-  have h0 : ν = 0 := funext fun τ =>
-    (Finset.sum_eq_zero_iff_of_nonneg (fun τ _ => hs τ)).1 hsum τ (Finset.mem_univ _)
-  subst h0
-  exact h (hP.2 ξ hξ x hx)
 
-theorem eq_zero_of_fj_zero {la : Wt X.Ψ r} {P : Frame X.Ψ r → ℂ} (hP : X.IsSec la P)
-    {ξ : Fin r → E} (hξ : X.IsIso ξ) {x : Frame X.Ψ r} (hx : x ∈ X.dom)
-    (h : ∀ ν, X.fj la ξ ν P x = 0) (s : X.Ψ → ℂ) (hs : X.flow ξ s x ∈ X.dom) :
-    P (X.flow ξ s x) = 0 := by
-  have := m3bExp_holds r X la P hP ξ hξ x hx s hs
-  simp only [h, zero_mul] at this
-  exact this.unique hasSum_zero
 
 theorem zero_not_mem_dom (hr : 0 < r) : (0 : Frame X.Ψ r) ∉ X.dom := by
   obtain ⟨τ, hτ⟩ : ∃ τ, τ ∈ X.Ψ := by

@@ -1,7 +1,19 @@
-import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.Beyond44OfRestRawTail
+import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.Lemma44IdentityOfRawTail
+import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.PolyUpperBoundDelta
 import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.TestFlat
 import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.SegFormZeroRight
 
+section
+noncomputable section
+
+namespace Formalism.MainNotions.ColumnSystems.Pf
+
+
+end Formalism.MainNotions.ColumnSystems.Pf
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.MainNotions.ColumnSystems.Pf
@@ -242,3 +254,5 @@ theorem paired_lifts_of_identity (hW : WittIdent) (hRT : RestRawTail1) (hForm : 
     (srcHalf1_of (le_refl 13) hCt hstd (lemma44_identity_of_raw_tail hR hK) monoAt planeAt (symIntAt C0 CE1 CE2)) hF
 
 end Formalism.MainNotions.ColumnSystems.Pf
+end
+end

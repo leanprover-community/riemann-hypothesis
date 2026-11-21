@@ -2,11 +2,220 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsMoveRight
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLevelGroupModTypePrime
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemIntegralGLPrincipalCongruenceOfColsCongStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.RowCharacterIdAddQSmulLatticePreservingEqOneStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ConjExtendPrincipalCongruenceCongOneModQ
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemParahoricOfCongOneModQ
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.BlockDetResidueCharEqOneOfCongModQ
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.RowCharacterIdAddQSmulLatticePreservingEqOne
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemParahoricOfTrivialReduction
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.TwistedK1BlockDecomposition
 
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rowCharacter_id_add_q_smul_latticePreserving_eq_one : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m) {S : Set ℕ} (mu : Tup X.F X.E X.K S) (sharp : Bool) (j : ℕ) (P : HeightOneSpectrum (𝓞 X.E)), P ∈ Pr.vGs → ∀ y : HomE X.E (R.N j + cOf R j) (R.N j + cOf R j), (∀ x ∈ lamYat (Pr := Pr) (R := R) j P, y x ∈ lamYat (Pr := Pr) (R := R) j P) → lamRow Ch mu sharp j P (LinearMap.id + (qOf P : X.E) • y) = 1 := by
+  first | exact @GlobalTheory.LamRowCong.lamRow_one_add_q | exact GlobalTheory.LamRowCong.lamRow_one_add_q | (intros; apply GlobalTheory.LamRowCong.lamRow_one_add_q <;> assumption)
+end
+
+section
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col
+
+namespace GlobalTheory.QCong
+
+theorem conj_extE_cong : ∀ {E : Type} [Field E] [NumberField E] [StarRing E] (P : HeightOneSpectrum (𝓞 E)) {n : ℕ} (c j D : ℕ) (h : Sp E (n + c) ≃ₗ[E] Sp E (n + c)) (κ : GLint E n P), κ ∈ GlobalTheory.TopStep.prinCong n P D → j + 1 ≤ D → (∀ x ∈ stdAt E (n + c) P, h⁻¹ x ∈ stdAt E (n + c) P ∧ ((qOf P : E) ^ j) • h x ∈ stdAt E (n + c) P) → ∀ x ∈ stdAt E (n + c) P, (qOf P : E)⁻¹ • ((h⁻¹ * GlobalTheory.CongLevel.extE c κ.1 * h) x - x) ∈ stdAt E (n + c) P := by
+  intro E _ _ _ P n c j D h κ hκ hjD hh x hx
+  obtain ⟨m, rfl⟩ : ∃ m, D = j + 1 + m := ⟨D - (j + 1), by omega⟩
+  have hq : ((qOf P : ℕ) : E) ≠ 0 := GlobalTheory.TopStep.qOf_ne_zero
+  have hu := (hh x hx).2
+  have hw : GlobalTheory.CongLevel.resX c (((qOf P : E) ^ j) • h x) ∈ stdAt E n P :=
+    GlobalTheory.TopStep.mem_stdAt.2 fun i => GlobalTheory.TopStep.mem_stdAt.1 hu (Fin.castAdd c i)
+  have hw' := (GlobalTheory.TopStep.mem_prinCong.1 hκ) _ hw
+  have key : (qOf P : E)⁻¹ • (GlobalTheory.CongLevel.extE c κ.1 (h x) - h x) = ((qOf P : E) ^ m) • Loc.inX E n c
+      ((((qOf P : E) ^ (j + 1 + m))⁻¹) • (κ.1 (GlobalTheory.CongLevel.resX c (((qOf P : E) ^ j) • h x)) - GlobalTheory.CongLevel.resX c (((qOf P : E) ^ j) • h x))) := by
+    rw [GlobalTheory.CongLevel.extE_apply, add_sub_cancel_left, map_smul (GlobalTheory.CongLevel.resX c), map_smul κ.1, ← smul_sub, smul_smul,
+      ← map_smul, ← map_smul, smul_smul]
+    congr 2
+    field_simp
+    ring
+  have e1 : (h⁻¹ * GlobalTheory.CongLevel.extE c κ.1 * h) x - x = h⁻¹ (GlobalTheory.CongLevel.extE c κ.1 (h x) - h x) := by
+    rw [map_sub]
+    congr 1
+    exact (LinearEquiv.symm_apply_apply h x).symm
+  rw [e1, ← map_smul, key]
+  refine (hh _ ?_).1
+  refine GlobalTheory.TopStep.mem_stdAt.2 fun l => ?_
+  rw [Pi.smul_apply, smul_eq_mul, GlobalTheory.CongLevel.inX_apply]
+  split_ifs with hl
+  · exact (GlobalTheory.TopStep.intAt_pow (GlobalTheory.TopStep.intAt_nat _) m).mul (GlobalTheory.TopStep.mem_stdAt.1 hw' _)
+  · rw [mul_zero]; exact GlobalTheory.TopStep.intAt_zero
+
+end GlobalTheory.QCong
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.conj_extend_principalCongruence_cong_one_mod_q : ∀ {E : Type} [Field E] [NumberField E] [StarRing E] (P : HeightOneSpectrum (𝓞 E)) {n : ℕ} (c j D : ℕ) (h : Sp E (n + c) ≃ₗ[E] Sp E (n + c)) (κ : GLint E n P), κ ∈ GlobalTheory.TopStep.prinCong n P D → j + 1 ≤ D → (∀ x ∈ stdAt E (n + c) P, h⁻¹ x ∈ stdAt E (n + c) P ∧ ((qOf P : E) ^ j) • h x ∈ stdAt E (n + c) P) → ∀ x ∈ stdAt E (n + c) P, (qOf P : E)⁻¹ • ((h⁻¹ * GlobalTheory.CongLevel.extE c κ.1 * h) x - x) ∈ stdAt E (n + c) P := by
+  atlas_forward_decl GlobalTheory.QCong.conj_extE_cong
+end
+
+section
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col
+
+noncomputable section
+
+namespace GlobalTheory.ParahoricOfCong
+
+variable {E : Type} [Field E] [NumberField E] [StarRing E] (P : HeightOneSpectrum (𝓞 E))
+
+theorem mem_stdAt_iff_sclLat_zero (q N : ℕ) (x : Sp E N) :
+    x ∈ stdAt E N P ↔ x ∈ LocE.sclLat P q N (fun _ => 0) := by
+  rw [GlobalTheory.CongLevel.mem_sclLat, GlobalTheory.TopStep.mem_stdAt]
+  simp
+
+theorem map_mem_of_cong {N : ℕ} (q : E) (M : Submodule (𝓞 E) (Sp E N)) (hM : M ≤ stdAt E N P)
+    (hqM : ∀ y : Sp E N, q⁻¹ • y ∈ stdAt E N P → y ∈ M)
+    (h : Sp E N ≃ₗ[E] Sp E N) (hh : ∀ x ∈ stdAt E N P, q⁻¹ • (h x - x) ∈ stdAt E N P) :
+    ∀ x ∈ M, h x ∈ M := by
+  intro x hx
+  have e : h x = x + (h x - x) := by abel
+  rw [e]
+  exact M.add_mem hx (hqM _ (hh x (hM hx)))
+
+theorem mem_stabL_of_cong {N : ℕ} (q : E) (M : Submodule (𝓞 E) (Sp E N)) (hM : M ≤ stdAt E N P)
+    (hqM : ∀ y : Sp E N, q⁻¹ • y ∈ stdAt E N P → y ∈ M)
+    (g : Sp E N ≃ₗ[E] Sp E N) (h1 : ∀ x ∈ stdAt E N P, q⁻¹ • (g x - x) ∈ stdAt E N P)
+    (h2 : ∀ x ∈ stdAt E N P, q⁻¹ • (g⁻¹ x - x) ∈ stdAt E N P) :
+    g ∈ stabL E N M := by
+  intro x
+  constructor
+  · intro hx
+    have := map_mem_of_cong P q M hM hqM g⁻¹ h2 (g x) hx
+    have e : g⁻¹ (g x) = x := LinearEquiv.symm_apply_apply g x
+    rwa [e] at this
+  · exact map_mem_of_cong P q M hM hqM g h1 x
+
+end GlobalTheory.ParahoricOfCong
+
+open GlobalTheory.ParahoricOfCong in
+
+theorem GlobalTheory.ParahoricOfCong.mem_JQ_of_cong : ∀ {E : Type} [Field E] [NumberField E] [StarRing E] (P : HeightOneSpectrum (𝓞 E)) (kj n c : ℕ) (g : Sp E (n + c) ≃ₗ[E] Sp E (n + c)), (∀ x ∈ stdAt E (n + c) P, (qOf P : E)⁻¹ • (g x - x) ∈ stdAt E (n + c) P) → (∀ x ∈ stdAt E (n + c) P, (qOf P : E)⁻¹ • (g⁻¹ x - x) ∈ stdAt E (n + c) P) → g ∈ LocE.JQ P (qOf P) kj n c := by
+  intro E _ _ _ P kj n c g h1 h2
+  have hq : ((qOf P : ℕ) : E) ≠ 0 := GlobalTheory.TopStep.qOf_ne_zero (P := P)
+  refine ⟨?_, ?_⟩
+  · refine mem_stabL_of_cong P _ _ le_rfl (fun y hy => ?_) g h1 h2
+    have e : y = (qOf P : E) • ((qOf P : E)⁻¹ • y) := by rw [smul_smul, mul_inv_cancel₀ hq, one_smul]
+    rw [e, Nat.cast_smul_eq_nsmul E]
+    exact nsmul_mem hy _
+  · refine mem_stabL_of_cong P _ _ ?_ ?_ g h1 h2
+    · intro x hx
+      rw [mem_stdAt_iff_sclLat_zero P (qOf P)]
+      have := GlobalTheory.CongLevel.sclLat_le P (qOf P) hq (n + c) (fun _ => 0) (fun l => kj ≤ l ∧ l < n)
+      exact this (by simpa [LocE.parL] using hx)
+    · intro y hy
+      rw [mem_stdAt_iff_sclLat_zero P (qOf P)] at hy
+      have := GlobalTheory.CongLevel.smul_mem_sclLat P (qOf P) hq (n + c) (fun _ => 0) (fun l => kj ≤ l ∧ l < n) y hy
+      simpa [LocE.parL] using this
+end
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_parahoric_of_cong_one_mod_q : ∀ {E : Type} [Field E] [NumberField E] [StarRing E] (P : HeightOneSpectrum (𝓞 E)) (kj n c : ℕ) (g : Sp E (n + c) ≃ₗ[E] Sp E (n + c)), (∀ x ∈ stdAt E (n + c) P, (qOf P : E)⁻¹ • (g x - x) ∈ stdAt E (n + c) P) → (∀ x ∈ stdAt E (n + c) P, (qOf P : E)⁻¹ • (g⁻¹ x - x) ∈ stdAt E (n + c) P) → g ∈ LocE.JQ P (qOf P) kj n c := by
+  atlas_forward_decl GlobalTheory.ParahoricOfCong.mem_JQ_of_cong
+end
+
+section
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col
+
+noncomputable section
+
+namespace GlobalTheory.LamQBCong
+
+open GlobalTheory.TopStep
+
+variable {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K]
+
+theorem entry_cong (P : HeightOneSpectrum (𝓞 E)) {N : ℕ} (g : HomE E N N)
+    (hg : ∀ x ∈ stdAt E N P, (qOf P : E)⁻¹ • (g x - x) ∈ stdAt E N P) (s t : Fin N) :
+    IntAt P (g (Pi.single t 1) s) ∧ redP P (g (Pi.single t 1) s) = if s = t then 1 else 0 := by
+  classical
+  have hq0 : ((qOf P : ℕ) : E) ≠ 0 := qOf_ne_zero
+  have hx := mem_stdAt.1 (hg _ (single_mem_stdAt (P := P) t)) s
+  set δ : E := (Pi.single t (1 : E) : Sp E N) s with hδ
+  have hδI : IntAt P δ := mem_stdAt.1 (single_mem_stdAt (P := P) t) s
+  have hdiv : IntAt P ((g (Pi.single t 1) s - δ) / (qOf P : E)) := by
+    have e : (((qOf P : E)⁻¹ • (g (Pi.single t 1) - Pi.single t 1) : Sp E N)) s = (g (Pi.single t 1) s - δ) / (qOf P : E) := by
+      rw [Pi.smul_apply, Pi.sub_apply, smul_eq_mul, div_eq_mul_inv, mul_comm]
+    rw [← e]
+    exact hx
+  have hI : IntAt P (g (Pi.single t 1) s - δ) := by
+    have e : g (Pi.single t 1) s - δ = (qOf P : E) * ((g (Pi.single t 1) s - δ) / (qOf P : E)) := by
+      field_simp
+    rw [e]
+    exact (intAt_nat _).mul hdiv
+  have hI' : IntAt P (g (Pi.single t 1) s) := by
+    have := intAt_sub hI (intAt_neg hδI)
+    rwa [sub_neg_eq_add, sub_add_cancel] at this
+  refine ⟨hI', ?_⟩
+  have h0 := redP_eq_zero_of_div hdiv
+  rw [reduction_sub hI' hδI, sub_eq_zero] at h0
+  rw [h0, hδ, Pi.single_apply]
+  split_ifs
+  · exact reduction_one₂
+  · exact reduction_zero
+
+theorem lamQB_eq_one_of_cong : ∀ {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K] (P : HeightOneSpectrum (𝓞 E))
+    (ξ : (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) (kj n N : ℕ) (g : HomE E N N), n ≤ N →
+    (∀ x ∈ stdAt E N P, (qOf P : E)⁻¹ • (g x - x) ∈ stdAt E N P) → LocE.lamQB ξ kj n g = 1 := by
+  intro E K _ _ _ _ P ξ kj n N g hn hg
+  classical
+  unfold LocE.lamQB
+  set D : Matrix (Fin (n - kj)) (Fin (n - kj)) E := Matrix.of fun s t : Fin (n - kj) =>
+    Loc.atN (g (Loc.eN E N (kj + t.1))) (kj + s.1) with hD
+  have hent : ∀ s t : Fin (n - kj), IntAt P (D s t) ∧ redP P (D s t) = (1 : Matrix _ _ (𝓞 E ⧸ P.asIdeal)) s t := by
+    intro s t
+    have hs : kj + s.1 < N := by have := s.2; omega
+    have ht : kj + t.1 < N := by have := t.2; omega
+    have e1 : Loc.eN E N (kj + t.1) = Pi.single ⟨kj + t.1, ht⟩ 1 := by
+      funext l
+      unfold Loc.eN
+      rw [Pi.single_apply]
+      congr 1
+      apply propext
+      constructor
+      · intro h; exact Fin.ext h
+      · intro h; rw [h]
+    have e2 : D s t = g (Pi.single ⟨kj + t.1, ht⟩ 1) ⟨kj + s.1, hs⟩ := by
+      rw [hD, Matrix.of_apply, e1]
+      unfold Loc.atN
+      rw [dif_pos hs]
+    obtain ⟨h1, h2⟩ := entry_cong P g hg ⟨kj + s.1, hs⟩ ⟨kj + t.1, ht⟩
+    rw [e2]
+    refine ⟨h1, ?_⟩
+    rw [h2, Matrix.one_apply]
+    by_cases hst : s = t
+    · rw [if_pos (Fin.ext (by simp [hst])), if_pos hst]
+    · rw [if_neg (fun h => hst (Fin.ext (by have := congrArg Fin.val h; simp at this; omega))), if_neg hst]
+  have hdet : redP P D.det = 1 := by
+    rw [(det_int fun s t => (hent s t).1).2]
+    have : D.map (redP P) = 1 := Matrix.ext fun s t => (hent s t).2
+    rw [this, Matrix.det_one]
+  unfold LocE.unitV
+  have hu : IsUnit (redP P D.det) := by rw [hdet]; exact isUnit_one
+  rw [dif_pos hu]
+  have : hu.unit = 1 := Units.ext (by rw [IsUnit.unit_spec, hdet]; rfl)
+  rw [this, map_one, Units.val_one, inv_one]
+
+end GlobalTheory.LamQBCong
+end
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.blockDetResidueChar_eq_one_of_cong_mod_q : ∀ {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K] (P : HeightOneSpectrum (𝓞 E)) (ξ : (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) (kj n N : ℕ) (g : HomE E N N), n ≤ N → (∀ x ∈ stdAt E N P, (qOf P : E)⁻¹ • (g x - x) ∈ stdAt E N P) → LocE.lamQB ξ kj n g = 1 := by
+  atlas_forward_decl GlobalTheory.LamQBCong.lamQB_eq_one_of_cong
+end
+
+section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col
 
 noncomputable section
@@ -98,4 +307,5 @@ theorem cong_mem_level_chr_one : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} (C
 
 end GlobalTheory.LevOne
 
+end
 end

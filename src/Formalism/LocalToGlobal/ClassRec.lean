@@ -1,11 +1,33 @@
 import Formalism.LocalToGlobal.ClassSK
 import Formalism.LocalToGlobal.ClassSLinks
-import Formalism.LocalToGlobal.ClassSR
+import Formalism.LocalToGlobal.HilbertRowConditions.RowPin
 import Formalism.LocalToGlobal.HilbertRowConditions.RowPinMin
 import Formalism.LocalToGlobal.RatioJoints.CharacterProductEqOne
 import Formalism.LocalToGlobal.UnitaryNorms.DatumS
 import Formalism.LocalToGlobal.BesselHermitianTheta.TiedWeilEq
 
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.MainNotions
+
+namespace Formalism.L2
+
+def LinkedFamiliesFixedSide : FamClass := fun {_} Fm =>
+  ∃ x0 : ℝ, ∀ x (hx : Fm.x1 < x), x0 ≤ x → ∀ i : Fm.Ix x, Rows.SymmetricRowCompatibility (Fm.ex x hx i)
+
+theorem LinkedFamiliesFixedSide.c2sk {eps : ℝ} {Fm : FamP eps} (h : LinkedFamiliesFixedSide Fm) : LinkedFamiliesKernelFrame Fm := by
+  obtain ⟨x0, h⟩ := h
+  exact ⟨x0, fun x hx hx0 i => let ⟨T, _, _⟩ := h x hx hx0 i; ⟨T⟩⟩
+
+theorem LinkedFamiliesFixedSide.c2s {eps : ℝ} {Fm : FamP eps} (h : LinkedFamiliesFixedSide Fm) : LinkedFamiliesLevelClass Fm := (LinkedFamiliesFixedSide.c2sk h).c2s
+
+end Formalism.L2
+
+end
+end
+
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.MainNotions
@@ -45,8 +67,9 @@ theorem LayerTwoFamilyClass.c2sk {eps : ℝ} {Fm : FamP eps} (h : LayerTwoFamily
 
 theorem LayerTwoFamilyClass.c2s {eps : ℝ} {Fm : FamP eps} (h : LayerTwoFamilyClass Fm) : LinkedFamiliesLevelClass Fm := h.c2sk.c2s
 
-theorem LayerTwoFamilyClass.c2sa {eps : ℝ} {Fm : FamP eps} (h : LayerTwoFamilyClass Fm) : LinkedFamiliesAligned Fm := h.2
 
 theorem gTiedF_of_C2Rec {eps : ℝ} (Fm : FamP eps) (h : LayerTwoFamilyClass Fm) : G.GroupCompatibilityFamily Fm := gTiedF_of_C2S Fm h.c2s
 
 end Formalism.L2
+end
+end

@@ -47,20 +47,7 @@ theorem isUnitarisable_twist_one (hu : IsUnitarisable ρ) (χ : G →* ℂˣ) (h
   rw [twist_apply, twist_apply, hχ g, Units.val_one, one_smul, one_smul]
   exact h3 g v w
 
-theorem equiv_eig {W : Type} [AddCommGroup W] [Module ℂ W] {σ : Representation ℂ G W} (E : ρ.Equiv σ) (g : G)
-    (c : ℂ) (v : V) (hv : v ≠ 0) (h : ρ g v = c • v) :
-    E.toLinearEquiv v ≠ 0 ∧ σ g (E.toLinearEquiv v) = c • E.toLinearEquiv v := by
-  refine ⟨(LinearEquiv.map_ne_zero_iff _).2 hv, ?_⟩
-  have := LinearMap.congr_fun (E.isIntertwining' g) v
-  simp only [LinearMap.comp_apply] at this
-  have e1 : E.toLinearEquiv (ρ g v) = σ g (E.toLinearEquiv v) := this
-  rw [← e1, h, map_smul]
 
-theorem subQuot_eq_zero_of_eq {S T : Subrepresentation ρ} (h : S = T)
-    (w : S.toSubmodule ⧸ Submodule.comap S.toSubmodule.subtype T.toSubmodule) : w = 0 := by
-  subst h
-  induction w using Submodule.Quotient.induction_on with
-  | H x => exact (Submodule.Quotient.mk_eq_zero _).2 (by simp)
 
 theorem le_of_subsingleton_subQuot {S T : Subrepresentation ρ}
     [Subsingleton (S.toSubmodule ⧸ Submodule.comap S.toSubmodule.subtype T.toSubmodule)] : S ≤ T := by
@@ -202,29 +189,12 @@ theorem norm_dpow_sc (n : ℕ) (s : ℝ) (x : kˣ) :
   show ‖((nabs k (x ^ n) : ℝ) : ℂ) ^ (s : ℂ)‖ = _
   rw [Complex.norm_cpow_eq_rpow_re_of_pos (nabs_pos' _), Complex.ofReal_re, hn, ← Real.rpow_natCast_mul hp.le]
 
-theorem untw_eig {n : ℕ} (A : GRep k n) (s : ℝ) (x : kˣ) (c : ℂ) (a : A.V) (h : (A.tw s).ρ (sc n x) a = c • a) :
-    A.ρ (sc n x) a = ((((dpow n s (sc n x))⁻¹ : ℂˣ) : ℂ) * c) • a ∧
-      ‖(((dpow n s (sc n x))⁻¹ : ℂˣ) : ℂ) * c‖ * nabs k x ^ ((n : ℝ) * s) = ‖c‖ := by
-  rw [tw_apply] at h
-  refine ⟨?_, ?_⟩
-  · rw [mul_smul, ← h, smul_smul, ← Units.val_mul, inv_mul_cancel, Units.val_one, one_smul]
-  · rw [← norm_dpow_sc, ← norm_mul, mul_comm, ← mul_assoc, ← Units.val_mul, mul_inv_cancel, Units.val_one,
-      one_mul]
 
 theorem tw_eig {n : ℕ} (A : GRep k n) (s : ℝ) (x : kˣ) (d : ℂ) (a : A.V) (h : A.ρ (sc n x) a = d • a) :
     (A.tw s).ρ (sc n x) a = (((dpow n s (sc n x) : ℂˣ) : ℂ) * d) • a ∧
       ‖((dpow n s (sc n x) : ℂˣ) : ℂ) * d‖ = ‖d‖ * nabs k x ^ ((n : ℝ) * s) := by
   refine ⟨by rw [tw_apply, h, smul_smul], by rw [norm_mul, norm_dpow_sc, mul_comm]⟩
 
-theorem tw_eig_move {n : ℕ} (A : GRep k n) (s s' : ℝ) (x : kˣ) (c : ℂ) (a : A.V)
-    (h : (A.tw s).ρ (sc n x) a = c • a) :
-    ∃ d : ℂ, (A.tw s').ρ (sc n x) a = d • a ∧ ‖c‖ = ‖d‖ * nabs k x ^ ((n : ℝ) * (s - s')) := by
-  obtain ⟨h1, h2⟩ := untw_eig A s x c a h
-  obtain ⟨h3, h4⟩ := tw_eig A s' x _ a h1
-  refine ⟨_, h3, ?_⟩
-  rw [h4, ← h2, mul_assoc, ← Real.rpow_add (nabs_pos' x)]
-  congr 2
-  ring
 
 end Tw
 

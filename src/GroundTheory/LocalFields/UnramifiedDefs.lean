@@ -74,8 +74,6 @@ theorem IsUnramified.trans [IsUnramified K L] [IsUnramified L M] : IsUnramified 
 theorem IsUnramified.of_tower_left [IsUnramified K M] : IsUnramified K L :=
   ((isUnramified_tower_iff K L M).1 inferInstance).1
 
-theorem IsUnramified.of_tower_right [IsUnramified K M] : IsUnramified L M :=
-  ((isUnramified_tower_iff K L M).1 inferInstance).2
 
 end Tower
 

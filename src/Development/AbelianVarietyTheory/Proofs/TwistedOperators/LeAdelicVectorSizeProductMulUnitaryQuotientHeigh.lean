@@ -1,7 +1,83 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FinitePlaceRelativeNormLeLocalSizePow
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InfinitePlaceRelativeNormLeMaxEmbeddingPow
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.VsizeNonneg
+import BuildAid.ForwardExisting
 
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Matrix NumberField IsDedekindDomain
+open scoped NNReal TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.NormFin
+open GlobalTheory.AdelicU
+
+theorem nnnorm_algebraMap_norm_le (F : Type) [Field F] [NumberField F] {E : Type} [Field E] [NumberField E]
+    [Algebra F E] (v : HeightOneSpectrum (𝓞 F)) (y : E) :
+    ‖algebraMap F (Fv F v) (Algebra.norm F y)‖₊ ≤
+      absFin F v ((1 : Fv F v) ⊗ₜ[F] y) ^ Module.finrank F E := by
+  rw [← absBar_algebraMap F v, ← IsScalarTower.algebraMap_apply,
+    Algebra.norm_eq_prod_embeddings F (FvBar F v) y]
+  rw [show absBar F v (∏ τ : E →ₐ[F] FvBar F v, τ y) = ∏ τ : E →ₐ[F] FvBar F v, absBar F v (τ y) from
+    map_prod (valBar F v) _ _]
+  rw [← AlgHom.card F E (FvBar F v), ← Finset.card_univ]
+  refine Finset.prod_le_pow_card _ _ _ fun τ _ => ?_
+  have := le_absFin F v τ ((1 : Fv F v) ⊗ₜ[F] y)
+  simpa using this
+
+theorem normFin_le (D : D7) (v : HeightOneSpectrum (𝓞 D.host.F)) (y : D.host.E) :
+    ‖algebraMap D.host.F (Fv D.host.F v) (Algebra.norm D.host.F y)‖₊ ≤
+      GlobalTheory.AdelicU.absFin D.host.F v ((1 : Fv D.host.F v) ⊗ₜ[D.host.F] y) ^ Module.finrank D.host.F D.host.E :=
+  nnnorm_algebraMap_norm_le D.host.F v y
+
+end GlobalTheory.NormFin
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Matrix NumberField IsDedekindDomain
+open scoped NNReal TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finitePlace_relativeNorm_le_localSize_pow : ∀ (D : D7) (v : HeightOneSpectrum (𝓞 D.host.F)) (y : D.host.E), ‖algebraMap D.host.F (Fv D.host.F v) (Algebra.norm D.host.F y)‖₊ ≤ GlobalTheory.AdelicU.absFin D.host.F v ((1 : Fv D.host.F v) ⊗ₜ[D.host.F] y) ^ Module.finrank D.host.F D.host.E := by
+  atlas_forward_decl GlobalTheory.NormFin.normFin_le
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Matrix NumberField IsDedekindDomain
+open scoped NNReal TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.NormInf
+
+theorem infPlace_norm_le {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+    (w : InfinitePlace F) (y : E) (c : ℝ≥0) (h : ∀ τ : GlobalTheory.AdelicU.EmbOver E w, ‖τ.1 y‖₊ ≤ c) :
+    w (Algebra.norm F y) ≤ (c : ℝ) ^ Module.finrank F E := by
+  letI : Algebra F ℂ := w.embedding.toAlgebra
+  rw [← InfinitePlace.norm_embedding_eq]
+  have e : w.embedding (Algebra.norm F y) = ∏ σ : E →ₐ[F] ℂ, σ y := Algebra.norm_eq_prod_embeddings F ℂ y
+  rw [e, norm_prod, ← AlgHom.card F E ℂ]
+  calc ∏ σ : E →ₐ[F] ℂ, ‖σ y‖ ≤ ∏ _σ : E →ₐ[F] ℂ, (c : ℝ) :=
+        Finset.prod_le_prod (fun _ _ => norm_nonneg _) fun σ _ => by
+          exact_mod_cast h ⟨σ.toRingHom, RingHom.ext σ.commutes⟩
+    _ = (c : ℝ) ^ Fintype.card (E →ₐ[F] ℂ) := by rw [Finset.prod_const, Finset.card_univ]
+
+theorem main : ∀ (D : D7) (w : InfinitePlace D.host.F) (y : D.host.E) (c : ℝ≥0), (∀ τ : GlobalTheory.AdelicU.EmbOver D.host.E w, ‖τ.1 y‖₊ ≤ c) → w (Algebra.norm D.host.F y) ≤ (c : ℝ) ^ Module.finrank D.host.F D.host.E :=
+  fun D w y c h => infPlace_norm_le w y c h
+
+end GlobalTheory.NormInf
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Matrix NumberField IsDedekindDomain
+open scoped NNReal TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.infinitePlace_relativeNorm_le_maxEmbedding_pow : ∀ (D : D7) (w : InfinitePlace D.host.F) (y : D.host.E) (c : ℝ≥0), (∀ τ : GlobalTheory.AdelicU.EmbOver D.host.E w, ‖τ.1 y‖₊ ≤ c) → w (Algebra.norm D.host.F y) ≤ (c : ℝ) ^ Module.finrank D.host.F D.host.E := by
+  atlas_forward_decl GlobalTheory.NormInf.main
+end
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Matrix
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -272,3 +348,5 @@ theorem le_vsize_mul_quotHeight : ∀ (D : D7) (V : HSp D), ∃ (c : ℝ) (N : �
     _ = _ := by ring
 
 end GlobalTheory.SeenSize
+end
+end

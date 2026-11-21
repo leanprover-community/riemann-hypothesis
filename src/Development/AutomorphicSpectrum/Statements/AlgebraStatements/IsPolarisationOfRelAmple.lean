@@ -73,16 +73,6 @@ theorem isPolarisation_id (Q : Out.PolAV S) : IsPolarisation Q.A Q.A (abelian₂
   refine isPolarisation_of_relAmple hΛ inferInstance Q.isLB Q.ample ((cls_eq_iff hΛ (pull_isLB hΛ _)).1 ?_)
   rw [cls_ev hΛ, evc, Category.comp_id, lift_fst_snd, Over.id_left, pull_id]
 
-theorem hyp_zero (S : Scheme.{0}) : IsAbelianScheme (𝟙_ (Over S)) ∧
-    IsDual (𝟙_ (Over S)) (𝟙_ (Over S)) (LB.triv _) ∧
-    IsPolarisation (𝟙_ (Over S)) (𝟙_ (Over S)) (LB.triv _) (𝟙 _) := by
-  let Q := Out.Inh.zeroPolAV S
-  have hΛ : (abelian₂ Q.A Q.L).IsLB := LB.isLB_linComb Q.isLB _ _
-  refine ⟨Q.isAb, isDual_unit, isPolarisation_of_relAmple (LB.isLB_triv _) inferInstance Q.isLB Q.ample
-    ((cls_eq_iff hΛ (pull_isLB (LB.isLB_triv _) _)).1 ?_)⟩
-  rw [show cls _ hΛ = lam (cls Q.L Q.isLB) (fst _ _) (snd _ _) from cls_cube_two Q.isLB _ _ hΛ,
-    show fst Q.A Q.A = 1 from toUnit_unique _ _, lam_one_left]
-  exact (map_zero (pull _)).symm
 
 theorem hyp_elliptic (hD : GlobalTheory.Published.DualAbelianScheme) {R : Type} [CommRing R] [IsNoetherianRing R]
     (W : WeierstrassCurve R) [W.IsElliptic] :
@@ -133,10 +123,6 @@ def prodPol {R : Type} [CommRing R] (P P' : Out.PolAV (Sp R)) : Out.PolAV (Sp R)
   ample := (exists_prod P P').choose_spec.2.2.2.1
   ktriv := (exists_prod P P').choose_spec.2.2.2.2
 
-theorem conclusion_of_polAV {R : Type} [CommRing R] (E : Out.PolAV (Sp R)) :
-    ∃ c : Pic (G4 (E.A ⊗ E.A) ⊗ G4 (E.A ⊗ E.A)).left, IsPrincipalPol (G4 (E.A ⊗ E.A)) c :=
-  let D := prodPol E E
-  ⟨_, GlobalTheory.IndefiniteRowSideFullHecke.ZeroSectionBase.isPrincipalPol_of_polAV (prodPol D (prodPol D (prodPol D D)))⟩
 
 theorem exists_elliptic (R : Type) [CommRing R] [IsLocalRing R] : ∃ W : WeierstrassCurve R, W.IsElliptic := by
   have e : IsUnit ((-8 : R) * 37 + (-11) * (-27)) := by
@@ -155,41 +141,8 @@ theorem isLocalRing_integers {C : Type} [Field C] {v : Valuation C NNReal} {R : 
   haveI := ValuationRing.of_integers v hv
   inferInstance
 
-theorem symmetricBundle_elliptic {C : Type} [Field C] {v : Valuation C NNReal} {R : Type} [CommRing R]
-    [Algebra R C] (hv : v.Integers R) :
-    ∃ (A : Over (Sp R)) (_ : GrpObj A) (c : Pic (A ⊗ A).left), IsAbelianScheme A ∧
-      SmoothOfRelativeDimension 1 A.hom ∧ IsPrincipalPol A c ∧
-      ∃ (L : LB A.left) (hL : L.IsLB), Out.Rigidified A L ∧ Out.Sym A L ∧ Out.RelAmple A L ∧ Out.KTriv A L ∧
-        c = lam (cls L hL) (fst A A) (snd A A) := by
-  have := isLocalRing_integers hv
-  obtain ⟨W, _⟩ := exists_elliptic R
-  let E := GlobalTheory.WeierstrassCurve.ellPolAV W
-  exact ⟨E.A, E.grp, _, E.isAb, E.smoothDim, GlobalTheory.IndefiniteRowSideFullHecke.ZeroSectionBase.isPrincipalPol_of_polAV E, E.L, E.isLB, E.rigid, E.sym,
-    E.ample, E.ktriv, rfl⟩
 
-theorem setting_padic (p : ℕ) [Fact p.Prime] : IsAlgClosed ℂ_[p] ∧
-    (Valued.v : Valuation ℂ_[p] NNReal).Integers (Valued.v : Valuation ℂ_[p] NNReal).integer :=
-  ⟨inferInstance, Valuation.integer.integers _⟩
 
-theorem zarhinStatement_of (hD : GlobalTheory.Published.DualAbelianScheme) (hC : GlobalTheory.Published.CubeTheorem) (hZ : ZarhinScheme)
-    (hS : SymmetricBundleSt) : GlobalTheory.CompanionTheory.Ar.GR.ZarhinStatement := by
-  intro C _ _ v R _ _ hv A _ L hA hL ha
-  have := isLocalRing_integers hv
-  have hΛ : (abelian₂ A L).IsLB := LB.isLB_linComb hL _ _
-  obtain ⟨a₁, a₂⟩ := GlobalTheory.CubeDual.isAdditive_lam hC hA hL hΛ
-  obtain ⟨B, _, P, hB, -, h₁, h₂⟩ := hD _ A hA
-  obtain ⟨x, hx, -⟩ := h₁.univ A (abelian₂ A L) hΛ a₁
-  have hm := isMonHom_of_classifying _ A A B (abelian₂ A L) P h₁ h₂.additive hΛ a₂ x hx
-  obtain ⟨c, hc⟩ := hZ _ A B P x hA hB h₁ (isPolarisation_of_relAmple h₁.isLB hm hL ha hx)
-  have hAB := AbelianSchemeGerms.isAbelianScheme_tensor A B hA hB
-  have h4 : IsAbelianScheme (G4 (A ⊗ B)) := AbelianSchemeGerms.isAbelianScheme_tensor _ _ hAB
-    (AbelianSchemeGerms.isAbelianScheme_tensor _ _ hAB (AbelianSchemeGerms.isAbelianScheme_tensor _ _ hAB hAB))
-  obtain ⟨M, hM, m₁, m₂, m₃, m₄, -⟩ := hS C v R hv _ h4 c hc
-  obtain ⟨g, hg⟩ := GlobalTheory.AbelianDim.exists_relDim R _ h4
-  haveI := hA.comm
-  haveI := hB.comm
-  refine ⟨⟨G4 (A ⊗ B), h4, g, hg, M, hM, m₁, m₂, m₃, m₄⟩, lift (lift (𝟙 A) 1) 1, fst _ _ ≫ fst _ _,
-    inferInstance, inferInstance, by simp⟩
 
 end Zarhin
 

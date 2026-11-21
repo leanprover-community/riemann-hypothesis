@@ -6,11 +6,103 @@ import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GlueApplyOfNot
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EpiRingHomFieldClosure
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExtendToFractionField
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LocalHomCharZeroUnits
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenericVanishingStalkVanishing
+import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.SubfieldClosureEqTopOfEpi
+import BuildAid.ForwardExisting
+import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.ExtendsToFractionField
+import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.GermVanishesOfGenericVanishing
 
+section
+section
+open AlgebraicGeometry CategoryTheory
+
+namespace GlobalTheory.CompanionTheory.Ggeo
+
+theorem epi_subfield_closure_range_eq_top : ∀ (O F : Type) [CommRing O] [Field F] (β : O →+* F),
+    (∀ (T : Type) [CommRing T] (g₁ g₂ : F →+* T), g₁.comp β = g₂.comp β → g₁ = g₂) →
+    Subfield.closure (Set.range β) = ⊤ :=
+  PositivityTheory.UnitarySelfGeneration.subfield_closure_eq_top_of_epi
+
+end GlobalTheory.CompanionTheory.Ggeo
+end
+
+open AlgebraicGeometry CategoryTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.epi_ring_hom_field_closure : ∀ (O F : Type) [CommRing O] [Field F] (β : O →+* F), (∀ (T : Type) [CommRing T] (g₁ g₂ : F →+* T), g₁.comp β = g₂.comp β → g₁ = g₂) → Subfield.closure (Set.range β) = ⊤ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ggeo.epi_subfield_closure_range_eq_top
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory
+
+namespace GlobalTheory.CompanionTheory.Ggeo
+
+theorem extend_to_fraction_field_relay : ∀ (O F L : Type) [CommRing O] [Field F] [CommRing L] (β : O →+* F) (θ : O →+* L), Subfield.closure (Set.range β) = ⊤ → (∀ b, β b ≠ 0 → IsUnit (θ b)) → (∀ a, β a = 0 → θ a = 0) → ∃ χ : F →+* L, χ.comp β = θ :=
+  PositivityTheory.UnitarySelfGeneration.extends_to_fraction_field
+
+end GlobalTheory.CompanionTheory.Ggeo
+end
+
+open AlgebraicGeometry CategoryTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.extend_to_fraction_field : ∀ (O F L : Type) [CommRing O] [Field F] [CommRing L] (β : O →+* F) (θ : O →+* L), Subfield.closure (Set.range β) = ⊤ → (∀ b, β b ≠ 0 → IsUnit (θ b)) → (∀ a, β a = 0 → θ a = 0) → ∃ χ : F →+* L, χ.comp β = θ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ggeo.extend_to_fraction_field_relay
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory
+
+namespace GlobalTheory.CompanionTheory.Ggeo
+
+private theorem map_aeval_int' {A B : Type*} [CommRing A] [CommRing B] (f : A →+* B) (a : A)
+    (q : Polynomial ℤ) : f (Polynomial.aeval a q) = Polynomial.aeval (f a) q := by
+  rw [Polynomial.aeval_def, Polynomial.aeval_def, Polynomial.hom_eval₂,
+    RingHom.ext_int (f.comp (algebraMap ℤ A)) (algebraMap ℤ B)]
+
+theorem unit_of_local_hom_charZero_nf : ∀ (O F L K : Type) [CommRing O] [Field F] [NumberField F] [CommRing L] [Field K] [CharZero K] (β : O →+* F) (θ : O →+* L) (ρ : L →+* K), IsLocalHom ρ → (∀ a, β a = 0 → θ a = 0) → ∀ b, β b ≠ 0 → IsUnit (θ b) := by
+  intro O F L K _ _ _ _ _ _ β θ ρ hρ hker b hb
+  have halg : IsAlgebraic ℤ (β b) :=
+    (IsFractionRing.isAlgebraic_iff ℤ ℚ F).mpr (Algebra.IsAlgebraic.isAlgebraic (β b))
+  obtain ⟨q, hq0, hq⟩ :=
+    halg.exists_nonzero_coeff_and_aeval_eq_zero (mem_nonZeroDivisors_of_ne_zero hb)
+  have h1 : β (Polynomial.aeval b q) = 0 := by rw [map_aeval_int', hq]
+  have h2 : ρ (θ (Polynomial.aeval b q)) = 0 := by rw [hker _ h1, map_zero]
+  rw [map_aeval_int', map_aeval_int'] at h2
+  have h3 : ρ (θ b) ≠ 0 := by
+    intro h0
+    rw [h0, ← Polynomial.coeff_zero_eq_aeval_zero'] at h2
+    exact hq0 (by simpa using h2)
+  exact hρ.map_nonunit _ (isUnit_iff_ne_zero.mpr h3)
+
+end GlobalTheory.CompanionTheory.Ggeo
+end
+
+open AlgebraicGeometry CategoryTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_hom_char_zero_units : ∀ (O F L K : Type) [CommRing O] [Field F] [NumberField F] [CommRing L] [Field K] [CharZero K] (β : O →+* F) (θ : O →+* L) (ρ : L →+* K), IsLocalHom ρ → (∀ a, β a = 0 → θ a = 0) → ∀ b, β b ≠ 0 → IsUnit (θ b) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ggeo.unit_of_local_hom_charZero_nf
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory
+
+namespace GlobalTheory.CompanionTheory.Ggeo
+
+theorem germ_vanish_of_generic_dominated : ∀ (X : Scheme.{0}) [IsReduced X] (Ω O : Type) [Field Ω] [CommRing O] (ξ : Spec (CommRingCat.of Ω) ⟶ X), (∀ q : X, ξ (IsLocalRing.closedPoint Ω) ⤳ q) → ∀ (s₀ : X ⟶ Spec (CommRingCat.of O)) (gm : O →+* Ω), ξ ≫ s₀ = Spec.map (CommRingCat.ofHom gm) → ∀ (x : X) (a : O), gm a = 0 → (Spec.preimage (X.fromSpecStalk x ≫ s₀)).hom a = 0 :=
+  PositivityTheory.UnitarySelfGeneration.germ_vanishes_of_generic_vanishing
+
+end GlobalTheory.CompanionTheory.Ggeo
+end
+
+open AlgebraicGeometry CategoryTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.generic_vanishing_stalk_vanishing : ∀ (X : Scheme.{0}) [IsReduced X] (Ω O : Type) [Field Ω] [CommRing O] (ξ : Spec (CommRingCat.of Ω) ⟶ X), (∀ q : X, ξ (IsLocalRing.closedPoint Ω) ⤳ q) → ∀ (s₀ : X ⟶ Spec (CommRingCat.of O)) (gm : O →+* Ω), ξ ≫ s₀ = Spec.map (CommRingCat.ofHom gm) → ∀ (x : X) (a : O), gm a = 0 → (Spec.preimage (X.fromSpecStalk x ≫ s₀)).hom a = 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ggeo.germ_vanish_of_generic_dominated
+end
+
+section
 section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar
@@ -96,3 +188,4 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.hodge_cpt_interior_iff : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (O : Type) [CommRing O] (β : O →+* c.F) (Y : Model Xo c β) (S : Finset ℕ) (Ω : Type) [Field Ω] (K : Type) [Fintype K] (J : K → Type) (y : (Σ k, J k) → Ω) (A : HodgeCpt Y S y) (z : Sp ℂ ⟶ A.X), Mono (spMap β) → Mono Y.j ∧ (A.Interior z ↔ ∃ u : Spec (A.X.presheaf.stalk (centre z)) ⟶ Xo.XF c, u ≫ Y.j = A.X.fromSpecStalk (centre z) ≫ A.f) := by
   atlas_forward_decl GlobalTheory.CompanionTheory.Ar.IntOpen.interior_iff_factor
+end

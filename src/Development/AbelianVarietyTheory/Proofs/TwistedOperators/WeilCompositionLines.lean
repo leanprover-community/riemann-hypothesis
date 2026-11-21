@@ -7,11 +7,53 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsThetaSubGAlgDO
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRealmapsIsomorphism
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsOneParamSubgroupTransposeGramLieAt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EigenIntertwinerSkewPlaneUniqueDual
-
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilLineCmModelActionStatement
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilLineCmModelSumStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SchwartzTendstoOperatorCurveOfPointwise
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchwartzMapBarrelledSpace
 
+section
+section
+open Filter Topology
+open scoped Uniformity
+
+namespace GlobalTheory
+
+theorem schwartz_tendsto_apply_of_tendsto_pointwise :
+    ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
+    (S : ℝ → SchwartzMap V ℂ →L[ℂ] SchwartzMap V ℂ),
+    (∀ f, Filter.Tendsto (fun t => S t f) (nhdsWithin 0 {0}ᶜ) (nhds f)) →
+    ∀ (g : ℝ → SchwartzMap V ℂ) (g₀ : SchwartzMap V ℂ), Filter.Tendsto g (nhdsWithin 0 {0}ᶜ) (nhds g₀) →
+      Filter.Tendsto (fun t => S t (g t)) (nhdsWithin 0 {0}ᶜ) (nhds g₀) := by
+  intro V _ _ _ S hS g g₀ hg
+  haveI : BarrelledSpace ℂ (SchwartzMap V ℂ) := schwartzMap_barrelledSpace V
+  rw [tendsto_iff_seq_tendsto]
+  intro u hu
+  have hq := schwartz_withSeminorms ℂ V ℂ
+  have hUE : UniformEquicontinuous ((↑) ∘ fun n => S (u n)) := by
+    refine hq.banach_steinhaus (𝓕 := fun n => S (u n)) ?_
+    intro k f
+    exact ((hq.continuous_seminorm k).tendsto f).comp ((hS f).comp hu) |>.bddAbove_range
+  have hE := hUE.equicontinuous g₀
+  have h1 : Tendsto (fun n => (S (u n) g₀, S (u n) (g (u n)))) atTop (𝓤 (SchwartzMap V ℂ)) := by
+    intro U hU
+    have := (hg.comp hu).eventually (hE U hU)
+    rw [Filter.mem_map]
+    exact this.mono fun n hn => hn n
+  exact ((hS g₀).comp hu).congr_uniformity h1
+
+end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.schwartz_tendsto_operatorCurve_of_pointwise : ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
+    (S : ℝ → SchwartzMap V ℂ →L[ℂ] SchwartzMap V ℂ),
+    (∀ f, Filter.Tendsto (fun t => S t f) (nhdsWithin 0 {0}ᶜ) (nhds f)) →
+    ∀ (g : ℝ → SchwartzMap V ℂ) (g₀ : SchwartzMap V ℂ), Filter.Tendsto g (nhdsWithin 0 {0}ᶜ) (nhds g₀) →
+      Filter.Tendsto (fun t => S t (g t)) (nhdsWithin 0 {0}ᶜ) (nhds g₀) := by
+  atlas_forward_decl GlobalTheory.schwartz_tendsto_apply_of_tendsto_pointwise
+end
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
@@ -112,3 +154,4 @@ theorem hasDerivAt_prod : GlobalTheory.FunPr.Hypotheses₂ → ∀ {F E : Type} 
   exact hev _ _ _
 
 end GlobalTheory.ArchProdRule
+end

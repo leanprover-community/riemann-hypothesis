@@ -20,13 +20,6 @@ def wtOfN (N : ℕ) (w : WeightFamilies.Wt D j) (τ : D.what₂.Tau) (i : Fin N)
 
 def wtOf (w : WeightFamilies.Wt D j) : D.what₂.Tau → Fin D.R.r → ℤ := wtOfN D.R.r w
 
-theorem wtOfN_wadd (N : ℕ) (w w' : WeightFamilies.Wt D j) :
-    wtOfN N (WeightAlgebra.wadd w w') = wtOfN N w + wtOfN N w' := by
-  have hn : (w.n + w'.n) / 2 = w.n / 2 + w'.n / 2 := by
-    obtain ⟨a, ha⟩ := w.n_even; obtain ⟨b, hb⟩ := w'.n_even; omega
-  funext τ i
-  simp only [wtOfN, WeightAlgebra.wadd, Pi.add_apply, hn]
-  split_ifs <;> push_cast <;> ring
 
 theorem wtOf_eq_kapW (w : WeightFamilies.Wt D j) (hP : ∀ τ i, (w.aP τ i : ℤ) = D.what₂.kaBig j τ i)
     (hM : ∀ τ c, (w.aM τ c : ℤ) = -D.what₂.kaSmall j τ (Fin.rev c)) (hn : w.n = D.R.nV) :
@@ -46,7 +39,6 @@ instance instAddCommSemigroupWt : AddCommSemigroup (WeightFamilies.Wt D j) where
   add_comm _ _ := wt_ext (funext fun _ => funext fun _ => Nat.add_comm _ _)
     (funext fun _ => funext fun _ => Nat.add_comm _ _) (Nat.add_comm _ _)
 
-theorem wt_add_def (w w' : WeightFamilies.Wt D j) : w + w' = WeightAlgebra.wadd w w' := rfl
 
 theorem wt_unique {j : ℕ} (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) {w w' : WeightFamilies.Wt D j} (hn : w.n = w'.n)
     (h : wtOf w = wtOf w') : w = w' := by
@@ -81,37 +73,10 @@ def weylDim {n : ℕ} (a : Fin n → ℤ) : ℝ :=
     if i < k then ((a i : ℝ) - (a k : ℝ) + ((k : ℕ) : ℝ) - ((i : ℕ) : ℝ)) / (((k : ℕ) : ℝ) - ((i : ℕ) : ℝ))
     else 1
 
-theorem one_le_weylDim {n : ℕ} (a : Fin n → ℤ) (ha : Antitone a) : 1 ≤ weylDim a := by
-  unfold weylDim
-  refine one_le_prod_of_one_le _ _ fun i _ => ?_
-  refine one_le_prod_of_one_le _ _ fun k _ => ?_
-  split_ifs with h
-  · have h1 : (a k : ℝ) ≤ a i := by exact_mod_cast ha h.le
-    have h2 : (0 : ℝ) < ((k : ℕ) : ℝ) - ((i : ℕ) : ℝ) := by
-      have : (i : ℕ) < (k : ℕ) := h
-      have : ((i : ℕ) : ℝ) < ((k : ℕ) : ℝ) := by exact_mod_cast this
-      linarith
-    rw [le_div_iff₀ h2]; linarith
-  · exact le_rfl
 
 def dimKap (D : D7) (j : ℕ) : ℝ :=
   ∏ τ : D.what₂.Tau, weylDim (D.what₂.kaBig j τ) * weylDim (D.what₂.kaSmall j τ)
 
-theorem one_le_dimKap {D : D7} {j : ℕ} (w : WeightFamilies.Wt D j) (hP : ∀ τ i, (w.aP τ i : ℤ) = D.what₂.kaBig j τ i)
-    (hM : ∀ τ c, (w.aM τ c : ℤ) = -D.what₂.kaSmall j τ (Fin.rev c)) : 1 ≤ dimKap D j := by
-  unfold dimKap
-  refine one_le_prod_of_one_le _ _ fun τ _ => ?_
-  have hB : Antitone (D.what₂.kaBig j τ) := by
-    intro a b hab
-    rw [← hP, ← hP]; exact_mod_cast w.aPlus_antitone τ hab
-  have hS : Antitone (D.what₂.kaSmall j τ) := by
-    intro a b hab
-    have h1 := hM τ (Fin.rev a); have h2 := hM τ (Fin.rev b)
-    rw [Fin.rev_rev] at h1 h2
-    have h3 : ((w.aM τ (Fin.rev a) : ℕ) : ℤ) ≤ w.aM τ (Fin.rev b) := by
-      exact_mod_cast w.aM_anti τ (Fin.rev_le_rev.mpr hab)
-    omega
-  exact one_le_mul_of_one_le_of_one_le (one_le_weylDim _ hB) (one_le_weylDim _ hS)
 
 section Val
 
@@ -329,8 +294,6 @@ def tup (j : ℕ) (w : WeightFamilies.Wt D j) : P.Cusp j w →ₗ[P.KO] P.Coef j
     change P.cmp j w c (a • F) = (a • (fun c => P.cmp j w c F : P.FnT j)) c
     rw [FnT_smul_apply, LinearMap.map_smulₛₗ])
 
-theorem tup_apply {j : ℕ} {w : WeightFamilies.Wt D j} (F : P.Cusp j w) :
-    P.tup j w F = (0, fun c => P.cmp j w c F) := rfl
 
 theorem tup_inj (j : ℕ) (w : WeightFamilies.Wt D j) : Function.Injective (P.tup j w) := by
   rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
@@ -350,25 +313,9 @@ theorem tup_mul {j : ℕ} {w w' : WeightFamilies.Wt D j} (F : P.Cusp j w) (F' : 
   change P.cmp j w c F * P.cmp j w' c F' = P.cmp j (WeightAlgebra.wadd w w') c (P.mulC j w w' F F')
   rw [P.cmp_mul]
 
-theorem mulC_add_left {j : ℕ} {w w' : WeightFamilies.Wt D j} (F F' : P.Cusp j w) (G' : P.Cusp j w') :
-    P.mulC j w w' (F + F') G' = P.mulC j w w' F G' + P.mulC j w w' F' G' := by
-  apply P.tup_inj j (w + w')
-  simp only [map_add, ← P.tup_mul, add_mul]
 
-theorem mulC_add_right {j : ℕ} {w w' : WeightFamilies.Wt D j} (F : P.Cusp j w) (G' G'' : P.Cusp j w') :
-    P.mulC j w w' F (G' + G'') = P.mulC j w w' F G' + P.mulC j w w' F G'' := by
-  apply P.tup_inj j (w + w')
-  simp only [map_add, ← P.tup_mul, mul_add]
 
-theorem mulC_smul_left {j : ℕ} {w w' : WeightFamilies.Wt D j} (a : P.KO) (F : P.Cusp j w) (G' : P.Cusp j w') :
-    P.mulC j w w' (a • F) G' = a • P.mulC j w w' F G' := by
-  apply P.tup_inj j (w + w')
-  simp only [map_smul, ← P.tup_mul, smul_mul_assoc]
 
-theorem mulC_smul_right {j : ℕ} {w w' : WeightFamilies.Wt D j} (a : P.KO) (F : P.Cusp j w) (G' : P.Cusp j w') :
-    P.mulC j w w' F (a • G') = a • P.mulC j w w' F G' := by
-  apply P.tup_inj j (w + w')
-  simp only [map_smul, ← P.tup_mul, mul_smul_comm]
 
 def Vm (j : ℕ) (m : WithZero (WeightFamilies.Wt D j)) : Submodule P.KO (P.Coef j) :=
   WithZero.recZeroCoe (motive := fun _ => Submodule P.KO (P.Coef j))
@@ -418,7 +365,6 @@ def FormsS (j : ℕ) : Subalgebra P.KO (P.Amb j) where
     · subst h; exact ⟨a, rfl⟩
     · exact zero_mem _
 
-theorem mem_FormsS {j : ℕ} (x : P.Amb j) : x ∈ P.FormsS j ↔ ∀ m, x.coeff m ∈ P.Vm j m := Iff.rfl
 
 def cf (j : ℕ) (m : WithZero (WeightFamilies.Wt D j)) : P.FormsS j →ₗ[P.KO] P.Coef j where
   toFun x := (x : P.Amb j).coeff m
@@ -457,9 +403,6 @@ theorem incS_mul_eq {j : ℕ} {w w' : WeightFamilies.Wt D j} (F : P.Cusp j w) (F
     ← WithZero.coe_add, P.tup_mul]
   rfl
 
-theorem incS_mul {j : ℕ} (w w' : WeightFamilies.Wt D j) (F : P.Cusp j w) (F' : P.Cusp j w') :
-    ∃ H : P.Cusp j (WeightAlgebra.wadd w w'), P.incS j w F * P.incS j w' F' = P.incS j (WeightAlgebra.wadd w w') H :=
-  ⟨_, P.incS_mul_eq F F'⟩
 
 theorem exists_Fof {j : ℕ} (w : WeightFamilies.Wt D j) (x : P.FormsS j) :
     ∃ F, P.tup j w F = (x : P.Amb j).coeff (w : WithZero (WeightFamilies.Wt D j)) :=
@@ -669,7 +612,6 @@ theorem Mlat_eq {w : WeightFamilies.Wt D j} (F : P.Cusp j w) :
 def MlatVal : Prop :=
   ∀ j (w : WeightFamilies.Wt D j) (F : P.Cusp j w), F ∈ P.Mlat j w ↔ ∀ la (y : P.Pt j la), 0 ≤ P.vAt la y (P.inc j w F)
 
-theorem mlatVal : P.MlatVal := fun _ _ F => P.Mlat_eq F
 
 def toWeightFamilies : WeightFamilies.Prov D where
   KO := P.KO

@@ -24,8 +24,6 @@ def towerLimit : Submodule A (∀ n, E n) where
     change τ n (a • x (n + 1)) = a • x n
     rw [map_smul, hx n]
 
-lemma mem_towerLimit (x : ∀ n, E n) : x ∈ towerLimit τ ↔ ∀ n, τ n (x (n + 1)) = x n :=
-  Iff.rfl
 
 def towerComp (n : ℕ) : (k : ℕ) → E (n + k) →ₗ[A] E n
   | 0 => LinearMap.id
@@ -45,16 +43,7 @@ lemma towerComp_apply_of_mem {x : ∀ n, E n} (hx : x ∈ towerLimit τ) (n k : 
     rw [hx (n + k)]
     exact ih
 
-lemma range_towerComp_succ_le (n k : ℕ) :
-    LinearMap.range (towerComp τ n (k + 1)) ≤ LinearMap.range (towerComp τ n k) := by
-  rw [towerComp_succ, LinearMap.range_comp]
-  exact LinearMap.map_le_range
 
-lemma range_towerComp_antitone (n : ℕ) {k l : ℕ} (h : k ≤ l) :
-    LinearMap.range (towerComp τ n l) ≤ LinearMap.range (towerComp τ n k) := by
-  induction l, h using Nat.le_induction with
-  | base => exact le_rfl
-  | succ l _ ih => exact (range_towerComp_succ_le τ n l).trans ih
 
 lemma towerComp_eq_zero_of_le {c : ℕ} (hc : ∀ n, towerComp τ n c = 0) (n j : ℕ) :
     towerComp τ n (c + j) = 0 := by
@@ -150,9 +139,6 @@ def towerLimitEquivOfExact {c : ℕ} (hc : ∀ n, towerComp τQ n c = 0) :
   LinearEquiv.ofBijective (towerLimitMap τP τE ι hι)
     (bijective_towerLimitMap τP τE τQ ι π hι hπ hinj hex hc)
 
-lemma towerLimitEquivOfExact_apply {c : ℕ} (hc : ∀ n, towerComp τQ n c = 0)
-    (x : towerLimit τP) (n : ℕ) :
-    (towerLimitEquivOfExact τP τE τQ ι π hι hπ hinj hex hc x).1 n = ι n (x.1 n) := rfl
 
 omit [∀ n, AddCommGroup (E n)] [∀ n, Module A (E n)] [∀ n, AddCommGroup (Q n)]
   [∀ n, Module A (Q n)] in
@@ -261,10 +247,6 @@ def adicCompletionEquivTowerLimit (h₁ : ∀ n, I ^ (n + 1) • (⊤ : Submodul
       rw [← hz]
       rfl)
 
-lemma adicCompletionEquivTowerLimit_of (h₁ : ∀ n, I ^ (n + 1) • (⊤ : Submodule A H) ≤ K n)
-    {c : ℕ} (h₂ : ∀ n, K (n + c) ≤ I ^ n • (⊤ : Submodule A H)) (h : H) (n : ℕ) :
-    (adicCompletionEquivTowerLimit hK h₁ h₂ (AdicCompletion.of I H h)).1 n =
-      Submodule.Quotient.mk h := rfl
 
 end Adic
 

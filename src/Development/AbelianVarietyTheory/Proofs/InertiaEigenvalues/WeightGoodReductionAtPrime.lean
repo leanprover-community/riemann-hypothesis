@@ -5,17 +5,576 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormSubLtOneOf
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteQuotientPow
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardCocyclesMulInvariantsDiscrete
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsLengthEqAndCardEqPowOfIsFiniteLength
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LengthTorsionByQuotientDivisibleLe
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsOpenOfFgOfSpanEqTop
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsGenerator
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsDRAndDdRLeFilZeroOfTwist
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IotaTmulOneMem
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsTmulOneOfFrobFixedOfMemFilZero
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsTopologicalClosureZpowersSupInertia
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsUnramifiedCharacter
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsMemGKChiPowNeOne
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EqZeroOfLocallyConstant
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsNeZeroSmulMemOfSpanEqTop
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FinrankCyclotomicExtAndCyclotomicCharSurjective
+import Formalism.SharpRestriction.GlobalSchurBounds.GL3Theta
 
+section
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc TensorProduct
+
+namespace GlobalTheory
+
+theorem length_torsionBy_quotient_divisible_le (O : Type) [CommRing O] [IsDomain O]
+    [IsDiscreteValuationRing O] (Z Q : Type) [AddCommGroup Z] [Module O Z] [AddCommGroup Q]
+    [Module O Q] (π : Z →ₗ[O] Q) (hs : Function.Surjective π)
+    (hdiv : ∀ b : O, b ≠ 0 → ∀ x, π x = 0 → ∃ y, π y = 0 ∧ b • y = x)
+    (htor : ∃ x, x ≠ 0 ∧ π x = 0 ∧ ∃ b : O, b ≠ 0 ∧ b • x = 0) (a : O) (ha : a ≠ 0) (k : ℕ)
+    (hle : Module.length O ↥(Submodule.torsionBy O Z a) ≤
+      ((k + 1 : ℕ) : ℕ∞) * Module.length O (O ⧸ Ideal.span {a})) :
+    Module.length O ↥(Submodule.torsionBy O Q a) ≤
+      (k : ℕ∞) * Module.length O (O ⧸ Ideal.span {a}) := by
+  classical
+
+  have hLfin : Module.length O (O ⧸ Ideal.span {a}) ≠ ⊤ := by
+    rw [Module.length_ne_top_iff]
+    exact isFiniteLength_quotient_span_singleton O (mem_nonZeroDivisors_of_ne_zero ha)
+
+  let φ : Submodule.torsionBy O Z a →ₗ[O] Submodule.torsionBy O Q a :=
+    LinearMap.codRestrict (Submodule.torsionBy O Q a) (π ∘ₗ (Submodule.torsionBy O Z a).subtype)
+      (fun z => by
+        rw [Submodule.mem_torsionBy_iff, LinearMap.comp_apply, Submodule.subtype_apply,
+          ← map_smul, (Submodule.mem_torsionBy_iff _ _).mp z.2, map_zero])
+
+  have hφ : Function.Surjective φ := by
+    rintro ⟨q, hq⟩
+    obtain ⟨z, rfl⟩ := hs q
+    have h1 : π (a • z) = 0 := by
+      rw [map_smul]; exact (Submodule.mem_torsionBy_iff _ _).mp hq
+    obtain ⟨y, hy0, hy⟩ := hdiv a ha (a • z) h1
+    refine ⟨⟨z - y, ?_⟩, ?_⟩
+    · rw [Submodule.mem_torsionBy_iff, smul_sub, hy, sub_self]
+    · apply Subtype.ext
+      simp [φ, hy0]
+  have hexact := Module.length_eq_add_of_exact (LinearMap.ker φ).subtype φ
+    (Submodule.subtype_injective _) hφ (LinearMap.exact_subtype_ker_map φ)
+
+  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible O
+  have hdvd_unit : ∀ c : O, ¬ ϖ ∣ c → IsUnit c := by
+    intro c hc
+    by_contra hnu
+    apply hc
+    have hmem := (IsLocalRing.mem_maximalIdeal c).mpr hnu
+    rw [(IsDiscreteValuationRing.irreducible_iff_uniformizer ϖ).mp hϖ,
+      Ideal.mem_span_singleton] at hmem
+    exact hmem
+  obtain ⟨x, hx0, hxK, b, hb0, hbx⟩ := htor
+  obtain ⟨m, u, rfl⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible hb0 hϖ
+  have hxm : ϖ ^ m • x = 0 := by
+    rw [mul_smul, ← Units.smul_def, smul_eq_zero_iff_eq] at hbx
+    exact hbx
+  have hex : ∃ j, ϖ ^ j • x = 0 := ⟨m, hxm⟩
+  have hj : ϖ ^ Nat.find hex • x = 0 := Nat.find_spec hex
+  have hj0 : Nat.find hex ≠ 0 := by
+    intro h
+    rw [h, pow_zero, one_smul] at hj
+    exact hx0 hj
+  obtain ⟨i, hi⟩ := Nat.exists_eq_succ_of_ne_zero hj0
+  have he0 : ϖ ^ i • x ≠ 0 := Nat.find_min hex (by omega)
+  have hϖe : ϖ • (ϖ ^ i • x) = 0 := by
+    rw [hi] at hj
+    rw [smul_smul, ← pow_succ']; exact hj
+  have heK : π (ϖ ^ i • x) = 0 := by rw [map_smul, hxK, smul_zero]
+  have hunit_e : ∀ w : O, IsUnit w → w • (ϖ ^ i • x) ≠ 0 := by
+    intro w hw h
+    exact he0 ((hw.smul_eq_zero).mp h)
+  obtain ⟨n, v, hav⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible ha hϖ
+  have hadvd : ∀ c : O, a ∣ c ↔ ϖ ^ n ∣ c := by
+    intro c; rw [hav, Units.mul_left_dvd]
+  obtain ⟨y₀, hy₀K, hy₀⟩ : ∃ y₀ : Z, π y₀ = 0 ∧ ∀ c : O, c • y₀ = 0 ↔ a ∣ c := by
+    cases n with
+    | zero =>
+      refine ⟨0, map_zero π, fun c => ?_⟩
+      rw [hadvd, pow_zero]
+      simp
+    | succ n' =>
+      obtain ⟨y, hyK, hy⟩ := hdiv (ϖ ^ n') (pow_ne_zero _ hϖ.ne_zero) _ heK
+      refine ⟨y, hyK, fun c => ?_⟩
+      rw [hadvd]
+      constructor
+      · intro hc
+        by_cases hc0 : c = 0
+        · rw [hc0]; exact dvd_zero _
+        obtain ⟨r, w, rfl⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible hc0 hϖ
+        by_cases hr : n' + 1 ≤ r
+        · exact Dvd.dvd.mul_left (pow_dvd_pow ϖ hr) _
+        · exfalso
+          obtain ⟨d, hd⟩ : ∃ d, n' = r + d := ⟨n' - r, by omega⟩
+          apply hunit_e (w : O) w.isUnit
+          have hmul : (w : O) * ϖ ^ n' = ϖ ^ d * ((w : O) * ϖ ^ r) := by rw [hd, pow_add]; ring
+          rw [← hy, smul_smul, hmul, mul_smul, hc, smul_zero]
+      · rintro ⟨d, rfl⟩
+        have hmul : ϖ ^ (n' + 1) * d = d * ϖ * ϖ ^ n' := by ring
+        rw [hmul, mul_smul, hy, mul_smul, hϖe, smul_zero]
+  have hy₀T : y₀ ∈ Submodule.torsionBy O Z a :=
+    (Submodule.mem_torsionBy_iff _ _).mpr ((hy₀ a).mpr dvd_rfl)
+  have hy₀ker : (⟨y₀, hy₀T⟩ : Submodule.torsionBy O Z a) ∈ LinearMap.ker φ := by
+    rw [LinearMap.mem_ker]
+    apply Subtype.ext
+    simp [φ, hy₀K]
+  let f : O →ₗ[O] LinearMap.ker φ := LinearMap.toSpanSingleton O _ ⟨⟨y₀, hy₀T⟩, hy₀ker⟩
+  have hker : Ideal.span {a} = LinearMap.ker f := by
+    ext c
+    rw [LinearMap.mem_ker, LinearMap.toSpanSingleton_apply, Ideal.mem_span_singleton, ← hy₀ c]
+    simp [Subtype.ext_iff]
+  have hK : Module.length O (O ⧸ Ideal.span {a}) ≤ Module.length O (LinearMap.ker φ) := by
+    calc Module.length O (O ⧸ Ideal.span {a})
+        = Module.length O (O ⧸ LinearMap.ker f) :=
+          (Submodule.quotEquivOfEq _ _ hker).length_eq
+      _ = Module.length O (LinearMap.range f) := f.quotKerEquivRange.length_eq
+      _ ≤ Module.length O (LinearMap.ker φ) :=
+          Module.length_le_of_injective (LinearMap.range f).subtype (Submodule.subtype_injective _)
+  have h2 : Module.length O ↥(Submodule.torsionBy O Q a) + Module.length O (O ⧸ Ideal.span {a}) ≤
+      (k : ℕ∞) * Module.length O (O ⧸ Ideal.span {a}) + Module.length O (O ⧸ Ideal.span {a}) := by
+    calc _ ≤ Module.length O ↥(Submodule.torsionBy O Q a) + Module.length O (LinearMap.ker φ) := by
+            gcongr
+      _ = Module.length O ↥(Submodule.torsionBy O Z a) := by rw [hexact, add_comm]
+      _ ≤ _ := hle
+      _ = _ := by push_cast; ring
+  exact (ENat.add_le_add_iff_right hLfin).mp h2
+
+end GlobalTheory
+end
+
+section
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc TensorProduct
+
+namespace GlobalTheory.HfZero
+
+section
+variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
+    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
+    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
+    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
+    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
+    (PD : PeriodData G Qp K₀ K B BdR)
+    {LL : Type} [Field LL] [Algebra Qp LL]
+    {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
+    (ρ : Representation LL G V)
+
+include PD in
+theorem nontrivial_cris : Nontrivial B := by
+  by_contra h
+  rw [not_nontrivial_iff_subsingleton] at h
+  apply PD.not_mem_filtration_two
+  rw [Subsingleton.elim PD.t 0, map_zero]
+  exact Submodule.zero_mem _
+
+include PD in
+theorem tmul_one_inj {v w : V} (h : v ⊗ₜ[Qp] (1 : B) = w ⊗ₜ[Qp] (1 : B)) : v = w := by
+  have := nontrivial_cris PD
+  obtain ⟨r, hr⟩ := LinearMap.exists_leftInverse_of_injective (Algebra.linearMap Qp B)
+    (LinearMap.ker_eq_bot.2 (algebraMap Qp B).injective)
+  have h1 : r 1 = 1 := by simpa using LinearMap.congr_fun hr 1
+  have := congrArg (fun z => TensorProduct.rid Qp V (r.lTensor V z)) h
+  simpa [h1] using this
+
+theorem frob_act (g : G) (x : V ⊗[Qp] B) :
+    φVB PD (LL := LL) (V := V) (actVB PD ρ g x) = actVB PD ρ g (φVB PD (LL := LL) (V := V) x) := by
+  induction x using TensorProduct.induction_on with
+  | zero => simp
+  | tmul v b => simp [φVB, actVB, PD.φ_comm]
+  | add y z hy hz => simp only [map_add, hy, hz]
+
+theorem iota_act (g : G) (x : V ⊗[Qp] B) :
+    ιV PD (LL := LL) (V := V) (actVB PD ρ g x) = actVdR PD ρ g (ιV PD (LL := LL) (V := V) x) := by
+  induction x using TensorProduct.induction_on with
+  | zero => simp
+  | tmul v b => simp [ιV, actVB, actVdR, PD.ι_comm]
+  | add y z hy hz => simp only [map_add, hy, hz]
+
+theorem frob_tmul_one (v : V) :
+    φVB PD (LL := LL) (V := V) (v ⊗ₜ[Qp] (1 : B)) = v ⊗ₜ[Qp] (1 : B) := by
+  simp [φVB]
+
+theorem act_tmul_one (g : G) (v : V) :
+    actVB PD ρ g (v ⊗ₜ[Qp] (1 : B)) = ρ g v ⊗ₜ[Qp] (1 : B) := by
+  simp [actVB]
+
+theorem tmul_mem_filV (v : V) (a : ℤ) (b : BdR) (hb : b ∈ PD.Fil a) :
+    v ⊗ₜ[Qp] b ∈ FilV PD (LL := LL) (V := V) a :=
+  ⟨v ⊗ₜ ⟨b, hb⟩, by simp⟩
+
+theorem iota_tmul_one_mem (v : V) :
+    ιV PD (LL := LL) (V := V) (v ⊗ₜ[Qp] (1 : B)) ∈ FilV PD (LL := LL) (V := V) 0 := by
+  have : ιV PD (LL := LL) (V := V) (v ⊗ₜ[Qp] (1 : B)) = v ⊗ₜ[Qp] (1 : BdR) := by simp [ιV]
+  rw [this]
+  exact tmul_mem_filV PD v 0 1 PD.one_mem
+
+theorem filV_succ_le (a : ℤ) :
+    FilV PD (LL := LL) (V := V) (a + 1) ≤ FilV PD (LL := LL) (V := V) a := by
+  rintro x ⟨y, rfl⟩
+  induction y using TensorProduct.induction_on with
+  | zero => simp
+  | tmul v b => exact ⟨v ⊗ₜ ⟨b.1, PD.Fil_anti a b.2⟩, by simp⟩
+  | add y z hy hz => rw [map_add]; exact Submodule.add_mem _ hy hz
+
+theorem filV_antitone : Antitone (FilV PD (LL := LL) (V := V)) :=
+  antitone_int_of_succ_le (filV_succ_le PD)
+
+theorem exists_mem_filV (z : V ⊗[Qp] BdR) : ∃ a, z ∈ FilV PD (LL := LL) (V := V) a := by
+  induction z using TensorProduct.induction_on with
+  | zero => exact ⟨0, Submodule.zero_mem _⟩
+  | tmul v b =>
+    obtain ⟨a, ha⟩ := PD.Fil_exh b
+    exact ⟨a, tmul_mem_filV PD v a b ha⟩
+  | add y z hy hz =>
+    obtain ⟨a, ha⟩ := hy
+    obtain ⟨b, hb⟩ := hz
+    exact ⟨min a b, Submodule.add_mem _ (filV_antitone PD (min_le_left a b) ha)
+      (filV_antitone PD (min_le_right a b) hb)⟩
+
+theorem mem_dcris_iff (x : V ⊗[Qp] B) : x ∈ Dcris PD ρ ↔ ∀ g, actVB PD ρ g x = x := by
+  simp [Dcris, Submodule.mem_iInf, sub_eq_zero]
+
+theorem mem_ddR_iff (x : V ⊗[Qp] BdR) : x ∈ DdR PD ρ ↔ ∀ g, actVdR PD ρ g x = x := by
+  simp [DdR, Submodule.mem_iInf, sub_eq_zero]
+
+theorem iota_mem_ddR (x : V ⊗[Qp] B) (hx : x ∈ Dcris PD ρ) :
+    ιV PD (LL := LL) (V := V) x ∈ DdR PD ρ := by
+  rw [mem_ddR_iff]
+  intro g
+  rw [← iota_act, (mem_dcris_iff PD ρ x).1 hx g]
+
+end
+
+theorem z1f_le_b1 : ∀ {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K] [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K] {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B] [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR] [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR] (PD : PeriodData G Qp K₀ K B BdR) [TopologicalSpace Qp] {LL : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL] {O : Type} [CommRing O] [Algebra O LL], TateFilteredInvariants PD → fontCore PD → GoodO (Qp := Qp) LL O → ∀ A : GRep G Qp LL O, IsDR PD A.ρ → DdR PD A.ρ ≤ FilV PD (LL := LL) (V := A.V) 0 → H0V A.ρ = ⊥ → finiteCocycles PD A.ρ ≤ B1 A.ρ := by
+  intro G _ _ Qp K₀ K _ _ _ _ _ _ _ B BdR _ _ _ _ _ _ _ _ _ _ _ PD _ LL _ _ _ O _ _ h5 hfont hO A
+    hdR hFil hH0 c hc
+  obtain ⟨-, x, hx⟩ := hc
+  have : Module.Finite LL ↥(Dcris PD A.ρ) := (hfont LL O hO A).1.1
+  let ψ : A.V ⊗[Qp] B →ₗ[LL] A.V ⊗[Qp] B := LinearMap.id - φVB PD (LL := LL) (V := A.V)
+  have hψ : ∀ z, ψ z = z - φVB PD (LL := LL) (V := A.V) z := fun z => rfl
+  have hstab : ∀ z ∈ Dcris PD A.ρ, ψ z ∈ Dcris PD A.ρ := by
+    intro z hz
+    rw [mem_dcris_iff] at hz ⊢
+    intro g
+    rw [hψ, map_sub, ← frob_act, hz g]
+  have hinj : Function.Injective (ψ.restrict hstab) := by
+    rw [injective_iff_map_eq_zero]
+    rintro ⟨z, hz⟩ h0
+    have h1 : ψ z = 0 := congrArg Subtype.val h0
+    rw [hψ, sub_eq_zero] at h1
+    obtain ⟨v, rfl⟩ := exists_tmul_one_of_frob_fixed_of_mem_fil_zero PD (LL := LL) z h1.symm
+      (hFil (iota_mem_ddR PD A.ρ z hz))
+    have hv : v ∈ H0V A.ρ := by
+      simp only [H0V, Submodule.mem_iInf, LinearMap.mem_ker, LinearMap.sub_apply,
+        LinearMap.id_apply, sub_eq_zero]
+      intro g
+      apply tmul_one_inj PD
+      rw [← act_tmul_one PD A.ρ, (mem_dcris_iff PD A.ρ _).1 hz g]
+    rw [hH0, Submodule.mem_bot] at hv
+    subst hv
+    exact Subtype.ext (TensorProduct.zero_tmul _ _)
+  have hsurj := LinearMap.injective_iff_surjective.1 hinj
+  have hy : ψ x ∈ Dcris PD A.ρ := by
+    rw [mem_dcris_iff]
+    intro g
+    have h1 := frob_tmul_one PD (LL := LL) (c g)
+    rw [hx g, map_sub, frob_act] at h1
+    rw [hψ, map_sub, sub_eq_sub_iff_sub_eq_sub, h1]
+  obtain ⟨⟨x', hx'⟩, hxx⟩ := hsurj ⟨ψ x, hy⟩
+  have h2 : ψ x' = ψ x := congrArg Subtype.val hxx
+  have hfix : φVB PD (LL := LL) (V := A.V) (x - x') = x - x' := by
+    rw [hψ, hψ, sub_eq_sub_iff_sub_eq_sub] at h2
+    rw [map_sub, ← neg_sub x' x, h2, neg_sub]
+  obtain ⟨a, ha⟩ := exists_mem_filV PD (LL := LL) (ιV PD (LL := LL) (V := A.V) x)
+  obtain ⟨w, ⟨hw, -⟩, hw'⟩ := h5 LL O hO A hdR a 0 _ ha (fun g => by
+    rw [← iota_act, ← map_sub, ← hx g]
+    exact iota_tmul_one_mem PD (c g))
+  have hF : ιV PD (LL := LL) (V := A.V) (x - x') ∈ FilV PD (LL := LL) (V := A.V) 0 := by
+    have h3 := Submodule.sub_mem _ (Submodule.add_mem _ hw' (hFil hw))
+      (hFil (iota_mem_ddR PD A.ρ x' hx'))
+    rwa [sub_add_cancel, ← map_sub] at h3
+  obtain ⟨v, hv⟩ := exists_tmul_one_of_frob_fixed_of_mem_fil_zero PD (LL := LL) _ hfix hF
+  refine ⟨v, funext fun g => ?_⟩
+  change A.ρ g v - v = c g
+  apply tmul_one_inj PD
+  rw [hx g, TensorProduct.sub_tmul, ← act_tmul_one PD A.ρ, ← hv, map_sub,
+    (mem_dcris_iff PD A.ρ _).1 hx' g]
+  abel
+
+end GlobalTheory.HfZero
+end
+
+section
+namespace GlobalTheory.Cyc
+
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation TensorProduct
+
+private lemma norm_one_add_prime_padic (l : ℕ) [Fact l.Prime] : ‖(1 : ℚ_[l]) + l‖ = 1 := by
+  have h1 : ‖(l : ℚ_[l])‖ < 1 := Padic.norm_p_lt_one
+  have hne : ‖(1 : ℚ_[l])‖ ≠ ‖(l : ℚ_[l])‖ := by rw [norm_one]; exact ne_of_gt h1
+  first
+  | rw [padicNormE.add_eq_max_of_ne hne, norm_one]; exact max_eq_left h1.le
+  | rw [IsUltrametricDist.norm_add_eq_max_of_norm_ne_norm hne, norm_one]; exact max_eq_left h1.le
+
+private lemma zmod_pow_ne_one_of_pow_mod_ne_one (l : ℕ) [Fact l.Prime] (n : ℕ) (hn : 0 < n) :
+    ((1 : ℚ_[l]) + l) ^ n ≠ 1 := by
+  have hl : 2 ≤ l := (Fact.out : l.Prime).two_le
+  have key : (1 + l) ^ n ≠ 1 := (Nat.one_lt_pow (by omega) (by omega)).ne'
+  intro h
+  apply key
+  exact_mod_cast h
+
+theorem exists_mem_GK_chi_pow_ne_one : ∀ (l : ℕ) [Fact l.Prime] (χ : GQ l →* ℚ_[l]ˣ), IsCyc χ →
+    ∀ (K : FinExt l) (e : ℕ), 0 < e → ∃ g ∈ GK K, (χ g : ℚ_[l]) ^ e ≠ 1 := by
+  intro l _ χ hχ K e he
+
+  obtain ⟨σ, -, hσ⟩ := exists_chi_eq K χ hχ _ (norm_one_add_prime_padic l)
+  have hK : FiniteDimensional ℚ_[l] ↥K.1 := K.2
+
+  let f : ℕ → (↥K.1 →ₐ[ℚ_[l]] Om l) := fun n =>
+    (AlgEquiv.toAlgHom (σ ^ n : Om l ≃ₐ[ℚ_[l]] Om l)).comp (IntermediateField.val K.1)
+  obtain ⟨i, j, hij, hfij⟩ := Finite.exists_ne_map_eq_of_infinite f
+
+  have key : ∀ a b : ℕ, a < b → f a = f b → ∃ g ∈ GK K, (χ g : ℚ_[l]) ^ e ≠ 1 := by
+    intro a b hab hfab
+    refine ⟨σ ^ (b - a), ?_, ?_⟩
+    · unfold GK
+      rw [IntermediateField.mem_fixingSubgroup_iff]
+      intro x hx
+      have h1 : (σ ^ a) x = (σ ^ b) x :=
+        congrArg (fun φ : ↥K.1 →ₐ[ℚ_[l]] Om l => φ ⟨x, hx⟩) hfab
+      have hb : σ ^ b = σ ^ a * σ ^ (b - a) := by
+        rw [← pow_add]
+        congr 1
+        omega
+      rw [hb, AlgEquiv.mul_apply] at h1
+      exact ((σ ^ a).injective h1).symm
+    · rw [map_pow, Units.val_pow_eq_pow_val, hσ, ← pow_mul]
+      exact zmod_pow_ne_one_of_pow_mod_ne_one l _ (Nat.mul_pos (by omega) he)
+  rcases lt_or_gt_of_ne hij with h | h
+  · exact key i j h hfij
+  · exact key j i h hfij.symm
+
+end GlobalTheory.Cyc
+end
+
+section
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc TensorProduct
+
+namespace GlobalTheory.UnramifiedClasses
+
+theorem eq_zero_of_locallyConstant {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
+    {A : Type} [AddCommGroup A] (I : Subgroup G) (φ : G)
+    (hgen : (Subgroup.zpowers φ ⊔ I).topologicalClosure = ⊤) (c : G → A)
+    (hlc : IsLocallyConstant c) (hc : ∀ g h, c (g * h) = c g + c h) (hφ : c φ = 0)
+    (hI : ∀ g ∈ I, c g = 0) (g : G) : c g = 0 := by
+  have h1 : c 1 = 0 := by
+    have := hc 1 1
+    rw [mul_one] at this
+    exact left_eq_add.mp this
+  let H : Subgroup G :=
+    { carrier := {g | c g = 0}
+      mul_mem' := fun {a b} ha hb => by
+        simp only [Set.mem_ofPred_eq] at ha hb ⊢
+        rw [hc, ha, hb, add_zero]
+      one_mem' := h1
+      inv_mem' := fun {a} ha => by
+        simp only [Set.mem_ofPred_eq] at ha ⊢
+        have := hc a a⁻¹
+        rw [mul_inv_cancel, h1, ha, zero_add] at this
+        exact this.symm }
+  have hle : Subgroup.zpowers φ ⊔ I ≤ H :=
+    sup_le ((Subgroup.zpowers_le (G := G)).mpr hφ) (fun g hg => hI g hg)
+  have hcl : (Subgroup.zpowers φ ⊔ I).topologicalClosure ≤ H :=
+    Subgroup.topologicalClosure_minimal _ hle (hlc.isClosed_fiber 0)
+  rw [hgen] at hcl
+  exact hcl (Subgroup.mem_top g)
+
+theorem isLocallyConstant_mkQ {X : Type} [TopologicalSpace X] {O V : Type} [CommRing O]
+    [AddCommGroup V] [Module O V] [TopologicalSpace V] [ContinuousAdd V] (T : Submodule O V)
+    (hT : IsOpen (T : Set V)) (f : X → V) (hf : Continuous f) :
+    IsLocallyConstant (fun x => T.mkQ (f x)) := by
+  rw [IsLocallyConstant.iff_exists_open]
+  intro x
+  refine ⟨(fun y => f y + (-f x)) ⁻¹' (T : Set V),
+    hT.preimage (hf.add continuous_const), by simp, fun y hy => ?_⟩
+  simp only [Submodule.mkQ_apply]
+  rw [Submodule.Quotient.eq, sub_eq_add_neg]
+  exact hy
+
+theorem exists_not_mem_range {O LL : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
+    [Field LL] [Algebra O LL] [IsFractionRing O LL] :
+    ∃ y : LL, y ∉ Set.range (algebraMap O LL) := by
+  by_contra h
+  push Not at h
+  apply IsDiscreteValuationRing.not_isField O
+  exact (RingEquiv.ofBijective (algebraMap O LL)
+    ⟨IsFractionRing.injective O LL, h⟩).toMulEquiv.isField (Field.toIsField LL)
+
+theorem HfD_eq_unramified : ∀ {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K] [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K] {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B] [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR] [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR] (PD : PeriodData G Qp K₀ K B BdR) [IsTopologicalGroup G] [TopologicalSpace Qp] {LL : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL] {O : Type} [CommRing O] [Algebra O LL] [IsTopologicalRing LL], GoodO (Qp := Qp) LL O → ∀ (T : LocLat G Qp LL O), Module.finrank LL T.V = 1 → (∀ g x, T.ρ g x = x) → Module.finrank LL (FiniteCohomology PD T.ρ) = 1 → ∀ (I : Subgroup G) (φ : G), (Subgroup.zpowers φ ⊔ I).topologicalClosure = ⊤ → ∀ δ : G → LL, δ ∈ finiteCocycles PD (1 : Representation LL G LL) → (∀ g ∈ I, δ g = 0) → δ ≠ 0 → HfD PD T.L ≠ ⊥ ∧ ∀ c : G → T.V ⧸ T.L.T, c ∈ HfD PD T.L ↔ (c ∈ divisibleCocycles T.L ∧ ∃ x, ∀ g ∈ I, c g = actD T.L g x - x) := by
+  intro G _ _ Qp K₀ K _ _ _ _ _ _ _ B BdR _ _ _ _ _ _ _ _ _ _ _ PD _ _ LL _ _ _ O _ _ _ hO T hV hρ
+    hH I φ hgen δ hδ hδI hδ0
+  have hopen := GlobalTheory.Cyc.locLat_isOpen hO T
+  obtain ⟨⟨hdom, hdvr, hfr⟩, -⟩ := hO
+  obtain ⟨⟨e, he⟩, -⟩ := GlobalTheory.LineLattice.lattice_rank_one T.L hV
+  obtain ⟨y₀, hy₀⟩ := exists_not_mem_range (O := O) (LL := LL)
+  obtain ⟨⟨hδc, hδh⟩, x₀, hx₀⟩ := hδ
+  have hδadd : ∀ g h, δ (g * h) = δ g + δ h := fun g h => by simpa using hδh g h
+  have hact : ∀ g (x : T.V ⧸ T.L.T), actD T.L g x = x := by
+    intro g x
+    obtain ⟨x, rfl⟩ := Submodule.Quotient.mk_surjective _ x
+    exact congrArg (Submodule.Quotient.mk (p := T.L.T)) (hρ g x)
+  have hBD : BD T.L = ⊥ := by
+    rw [eq_bot_iff]
+    rintro _ ⟨x, rfl⟩
+    ext g
+    simp [hact]
+  have hB1 : B1 T.ρ = ⊥ := by
+    rw [eq_bot_iff]
+    rintro _ ⟨x, rfl⟩
+    ext g
+    simp [cob, hρ]
+  have : ContinuousSMul LL T.V := IsModuleTopology.toContinuousSMul LL T.V
+  have hc₀c : Continuous fun g => e (δ g) := by
+    have : (fun g => e (δ g)) = fun g => δ g • e 1 := by
+      funext g
+      rw [← map_smul, smul_eq_mul, mul_one]
+    rw [this]
+    exact hδc.smul continuous_const
+  have hc₀ : (fun g => e (δ g)) ∈ finiteCocycles PD T.ρ := by
+    let m := AlgebraTensorModule.map (e : LL →ₗ[LL] T.V) (LinearMap.id : B →ₗ[Qp] B)
+    have hm : ∀ g y, m (actVB PD (1 : Representation LL G LL) g y) = actVB PD T.ρ g (m y) := by
+      intro g y
+      induction y using TensorProduct.induction_on with
+      | zero => simp
+      | tmul v b => simp [m, actVB, hρ]
+      | add a b ha hb => simp only [map_add, ha, hb]
+    refine ⟨⟨hc₀c, fun g h => by simp only [hδadd, map_add, hρ]⟩, m x₀, fun g => ?_⟩
+    have := congrArg m (hx₀ g)
+    simp only [m, AlgebraTensorModule.map_tmul, LinearMap.id_apply, map_sub] at this
+    rw [← hm]
+    exact this
+  obtain ⟨g₀, hg₀⟩ : ∃ g, δ g ≠ 0 := Function.ne_iff.mp hδ0
+  have hdim : Module.finrank LL ↥(finiteCocycles PD T.ρ) = 1 := by
+    rw [← hH]
+    refine (Submodule.quotEquivOfEqBot _ ?_).finrank_eq.symm
+    rw [hB1, Submodule.comap_bot, Submodule.ker_subtype]
+  have hspan : ∀ z ∈ finiteCocycles PD T.ρ, ∃ a : LL, ∀ g, z g = e (a * δ g) := by
+    intro z hz
+    have hne : (⟨_, hc₀⟩ : ↥(finiteCocycles PD T.ρ)) ≠ 0 := by
+      intro h
+      have := congrFun (congrArg Subtype.val h) g₀
+      exact hg₀ (by simpa using this)
+    obtain ⟨a, ha⟩ := (finrank_eq_one_iff_of_nonzero' _ hne).mp hdim ⟨z, hz⟩
+    refine ⟨a, fun g => ?_⟩
+    have := congrFun (congrArg Subtype.val ha) g
+    rw [← smul_eq_mul, map_smul]
+    exact this.symm
+
+  let r : LL → G → T.V ⧸ T.L.T := fun a g => T.L.T.mkQ (e (a * δ g))
+  have hHf : ∀ c, c ∈ HfD PD T.L ↔ ∃ a, c = r a := by
+    intro c
+    unfold HfD
+    rw [hBD, sup_bot_eq]
+    constructor
+    · rintro ⟨z, hz, rfl⟩
+      obtain ⟨a, ha⟩ := hspan z hz
+      exact ⟨a, funext fun g => by simp [r, ha]⟩
+    · rintro ⟨a, rfl⟩
+      refine ⟨a • fun g => e (δ g), (finiteCocycles PD T.ρ).smul_mem a hc₀, ?_⟩
+      funext g
+      simp [r, ← map_smul]
+  have hrlc : ∀ a, IsLocallyConstant (r a) := fun a => by
+    refine isLocallyConstant_mkQ T.L.T hopen (fun g => e (a * δ g)) ?_
+    have : (fun g => e (a * δ g)) = fun g => a • e (δ g) := by
+      funext g
+      rw [← map_smul, smul_eq_mul]
+    rw [this]
+    exact hc₀c.const_smul a
+  have hradd : ∀ a g h, r a (g * h) = r a g + r a h := fun a g h => by
+    simp only [r, hδadd, mul_add, map_add]
+  have hrI : ∀ a, ∀ g ∈ I, r a g = 0 := fun a g hg => by
+    simp only [r, hδI g hg, mul_zero, map_zero]
+  have hr₀ : r (y₀ / δ g₀) g₀ ≠ 0 := by
+    intro h
+    simp only [r, div_mul_cancel₀ _ hg₀, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero] at h
+    exact hy₀ ((he _).mp h)
+  have hφ : δ φ ≠ 0 := by
+    intro h
+    exact hr₀ (eq_zero_of_locallyConstant I φ hgen _ (hrlc _) (hradd _)
+      (by simp only [r, h, mul_zero, map_zero]) (hrI _) g₀)
+  refine ⟨fun h => ?_, fun c => ?_⟩
+  · have : r (y₀ / δ g₀) ∈ HfD PD T.L := (hHf _).mpr ⟨_, rfl⟩
+    rw [h, Submodule.mem_bot] at this
+    exact hr₀ (congrFun this g₀)
+  · rw [hHf]
+    constructor
+    · rintro ⟨a, rfl⟩
+      exact ⟨⟨hrlc a, fun g h => by rw [hact, hradd]⟩, 0, fun g hg => by
+        rw [hrI a g hg, hact, sub_zero]⟩
+    · rintro ⟨⟨hlc, hcoc⟩, x, hx⟩
+      obtain ⟨v, hv⟩ := Submodule.Quotient.mk_surjective _ (c φ)
+      refine ⟨e.symm v / δ φ, funext fun g => sub_eq_zero.mp ?_⟩
+      refine eq_zero_of_locallyConstant I φ hgen (fun g => c g - r (e.symm v / δ φ) g)
+        (hlc.sub (hrlc _)) (fun g h => ?_) ?_ (fun g hg => ?_) g
+      · simp only [hcoc, hact, hradd]
+        abel
+      · simp only [r, div_mul_cancel₀ _ hφ, LinearEquiv.apply_symm_apply, Submodule.mkQ_apply, hv,
+          sub_self]
+      · simp only [hx g hg, hact, hrI _ g hg, sub_self]
+
+end GlobalTheory.UnramifiedClasses
+end
+
+section
+namespace GlobalTheory.QuotientLatticeTorsion
+
+theorem exists_ne_zero_smul_mem_of_span_eq_top
+    {O K V : Type} [CommRing O] [IsDomain O] [Field K] [Algebra O K] [IsFractionRing O K]
+    [AddCommGroup V] [Module K V] [Module O V] [IsScalarTower O K V]
+    (N : Submodule O V) (hN : Submodule.span K (N : Set V) = ⊤) (v : V) :
+    ∃ b : O, b ≠ 0 ∧ b • v ∈ N := by
+  have hv : v ∈ Submodule.span K (N : Set V) := hN ▸ Submodule.mem_top
+  induction hv using Submodule.span_induction with
+  | mem x hx => exact ⟨1, one_ne_zero, by simpa using hx⟩
+  | zero => exact ⟨1, one_ne_zero, by simp⟩
+  | add x y _ _ hx hy =>
+    obtain ⟨a, ha, hax⟩ := hx
+    obtain ⟨b, hb, hby⟩ := hy
+    refine ⟨a * b, mul_ne_zero ha hb, ?_⟩
+    rw [smul_add]
+    refine N.add_mem ?_ ?_
+    · rw [mul_comm, mul_smul]
+      exact N.smul_mem b hax
+    · rw [mul_smul]
+      exact N.smul_mem a hby
+  | smul c x _ hx =>
+    obtain ⟨a, ha, hax⟩ := hx
+    obtain ⟨⟨r, s⟩, hrs⟩ := IsLocalization.surj (nonZeroDivisors O) c
+    refine ⟨s.1 * a, mul_ne_zero (nonZeroDivisors.ne_zero s.2) ha, ?_⟩
+    have key : (s.1 * a) • c • x = r • a • x := by
+      rw [← algebraMap_smul K (s.1 * a), ← algebraMap_smul K r, ← algebraMap_smul K a x,
+        smul_smul, smul_smul, ← hrs, map_mul]
+      congr 1
+      ring
+    rw [key]
+    exact N.smul_mem r hax
+
+theorem quotient_lattice_torsion
+    {G : Type} [Group G] [TopologicalSpace G] {Qp : Type} [Field Qp] {LL : Type} [Field LL]
+    [Algebra Qp LL] [TopologicalSpace LL] {O : Type} [CommRing O] [Algebra O LL] [IsDomain O]
+    [IsFractionRing O LL] (T : Formalism.BasicNotions.LocLat G Qp LL O)
+    (w : Formalism.BasicNotions.LocLat.V T ⧸ Formalism.WeaklyAdmissibleFiltrations.Lattice.T (Formalism.BasicNotions.LocLat.L T)) :
+    ∃ (b : O), b ≠ (0 : O) ∧
+      b • w = (0 : Formalism.BasicNotions.LocLat.V T ⧸ Formalism.WeaklyAdmissibleFiltrations.Lattice.T (Formalism.BasicNotions.LocLat.L T)) := by
+  obtain ⟨v, rfl⟩ := Submodule.Quotient.mk_surjective _ w
+  obtain ⟨b, hb, hbv⟩ :=
+    exists_ne_zero_smul_mem_of_span_eq_top (K := LL) T.L.T T.L.span v
+  refine ⟨b, hb, ?_⟩
+  rw [← Submodule.Quotient.mk_smul, Submodule.Quotient.mk_eq_zero]
+  exact hbv
+
+end GlobalTheory.QuotientLatticeTorsion
+end
+
+section
 noncomputable section
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc TensorProduct
@@ -376,3 +935,5 @@ theorem twist_torsion_facts : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.l
     exact hg1
 
 end GlobalTheory.TwistTors
+end
+end

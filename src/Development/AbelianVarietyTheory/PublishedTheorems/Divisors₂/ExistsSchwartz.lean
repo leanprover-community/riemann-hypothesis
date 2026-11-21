@@ -72,14 +72,6 @@ theorem absThetaInt_pos (V : HSp D) (ν : Measure (GA D V)) [ν.IsHaarMeasure] {
     (h : φ 0 ≠ 0) : 0 < absThetaInt V ν φ :=
   lt_of_lt_of_le (ENNReal.mul_pos (by simpa using h) (NeZero.ne _)) (le_absThetaInt V ν φ)
 
-theorem absThetaInt_one (V : HSp D) (hV : 1 ≤ V.rank) (ν : Measure (GA D V)) [ν.IsHaarMeasure] {n : ℕ} (hn : 1 ≤ n) :
-    absThetaInt V ν (fun _ : Mx D V.rank n => (1 : ℂ)) = ⊤ := by
-  haveI : Infinite (Matrix (Fin V.rank) (Fin n) D.host.E) :=
-    Infinite.of_surjective (fun x => x ⟨0, hV⟩ ⟨0, hn⟩) fun a => ⟨fun _ _ => a, rfl⟩
-  have h3 : descend (GQ V) (absTheta V (fun _ : Mx D V.rank n => (1 : ℂ))) = fun _ => ⊤ := funext fun q => by
-    rw [AutomorphicL2Unitary.descend, absTheta]
-    simp
-  rw [absThetaInt, h3, lintegral_const, ENNReal.top_mul (NeZero.ne _)]
 
 theorem rank_zero (V : HSp D) (hV : V.rank = 0) (ν : Measure (GA D V)) [ν.IsHaarMeasure] {n : ℕ} (φ : Mx D V.rank n → ℂ) :
     absThetaInt V ν φ < ⊤ := by
@@ -103,11 +95,6 @@ theorem instances (H : GlobalTheory.Published.WeilThetaConvergence) (D : D7) (n 
     ⟨θ, Ψ, hθ, wittIdx_dblSp _, absThetaInt_pos _ _ _ hΨ, H D 1 _ le_rfl (.inr ?_) θ hθ _ inferInstance Ψ⟩⟩
   rw [wittIdx_dblSp]; exact show 1 + 2 < 2 + 2 by decide
 
-theorem split_excluded (D : D7) (k n : ℕ) (hk : 1 ≤ k) (h : k ≤ n) : ¬ (Formalism.MainNotions.SchurIrreducible.wittIdx (dblSp (pos D k)) = 0 ∨
-    n + Formalism.MainNotions.SchurIrreducible.wittIdx (dblSp (pos D k)) < (dblSp (pos D k)).rank) := by
-  rw [wittIdx_dblSp]
-  show ¬ (k = 0 ∨ n + k < k + k)
-  omega
 
 end GlobalTheory.Published.ThetaConvModel
 

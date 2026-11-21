@@ -40,11 +40,6 @@ structure Recip.Good (a : Recip D Ω) : Prop where
         AdeleRing (𝓞 D.host.E) D.host.E)
   artin : IsGlobalArtin a.art
 
-theorem exists_recip_good (h : GlobalTheory.Published.GlobalArtinReciprocity) (D : D7) (Ω : Type) [Field Ω] [Algebra D.host.E Ω]
-    [IsAlgClosure D.host.E Ω] : ∃ a : Recip D Ω, a.Good := by
-  obtain ⟨art, ha⟩ := h D.host.E Ω
-  obtain ⟨κ, h1, h2, h3⟩ := GlobalTheory.CharTransport.exists_hom D
-  exact ⟨⟨κ, art⟩, h1, h2, h3, ha⟩
 
 def Recip.sym (a : Recip D Ω) : (AE D)ˣ →* Gab D.host.E Ω := a.art.comp (Units.map a.κ.toMonoidHom)
 

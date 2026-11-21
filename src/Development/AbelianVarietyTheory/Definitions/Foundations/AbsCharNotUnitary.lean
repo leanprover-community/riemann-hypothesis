@@ -1,9 +1,86 @@
 import Mathlib
 import Formalism.LocalToGlobal.UnitaryNorms.MemFIffReal
-import Development.AbelianVarietyTheory.Definitions.Foundations.DiagUnitsEqLocalIdele
+import Development.AbelianVarietyTheory.Definitions.Foundations.ValuedAlgebraMapEqOne
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsUnitaryOfOrder
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
 
+section
+noncomputable section
+open NumberField IsDedekindDomain
+namespace GlobalTheory.Mem.Chr.Model
+variable (L : Type) [Field L] [NumberField L]
+
+theorem localIdele_snd_self (v : HeightOneSpectrum (𝓞 L)) (x : (v.adicCompletion L)ˣ) :
+    ((localIdele L v x : Ideles L) : AdeleRing (𝓞 L) L).2 v = x := by
+  classical
+  change Pi.mulSingle (M := fun w : HeightOneSpectrum (𝓞 L) => w.adicCompletion L) v
+    (x : v.adicCompletion L) v = x
+  exact Pi.mulSingle_eq_same _ _
+
+theorem localIdele_snd_ne (v w : HeightOneSpectrum (𝓞 L)) (h : w ≠ v) (x : (v.adicCompletion L)ˣ) :
+    ((localIdele L v x : Ideles L) : AdeleRing (𝓞 L) L).2 w = 1 := by
+  classical
+  change Pi.mulSingle (M := fun w : HeightOneSpectrum (𝓞 L) => w.adicCompletion L) v
+    (x : v.adicCompletion L) w = 1
+  exact Pi.mulSingle_eq_of_ne h _
+
+theorem localIdele_fst (v : HeightOneSpectrum (𝓞 L)) (x : (v.adicCompletion L)ˣ) :
+    ((localIdele L v x : Ideles L) : AdeleRing (𝓞 L) L).1 = 1 := rfl
+
+theorem infIdele_fst_self (w : InfinitePlace L) (x : (w.Completion)ˣ) :
+    ((infIdele L w x : Ideles L) : AdeleRing (𝓞 L) L).1 w = x := by
+  classical
+  change Pi.mulSingle (M := fun u : InfinitePlace L => u.Completion) w (x : w.Completion) w = x
+  exact Pi.mulSingle_eq_same _ _
+
+theorem infIdele_fst_ne (w u : InfinitePlace L) (h : u ≠ w) (x : (w.Completion)ˣ) :
+    ((infIdele L w x : Ideles L) : AdeleRing (𝓞 L) L).1 u = 1 := by
+  classical
+  change Pi.mulSingle (M := fun u : InfinitePlace L => u.Completion) w (x : w.Completion) u = 1
+  exact Pi.mulSingle_eq_of_ne h _
+
+theorem infIdele_snd (w : InfinitePlace L) (x : (w.Completion)ˣ) :
+    ((infIdele L w x : Ideles L) : AdeleRing (𝓞 L) L).2 = 1 := rfl
+
+
+
+
+
+
+example : IsTopologicalGroup (Ideles L) := inferInstance
+example : CommGroup (Ideles L) := inferInstance
+
+
+theorem finSingle_continuous (v : HeightOneSpectrum (𝓞 L)) : Continuous (finSingle L v) := by
+  classical
+  have hS : Filter.cofinite ≤ Filter.principal ({v}ᶜ : Set (HeightOneSpectrum (𝓞 L))) := by
+    rw [Filter.le_principal_iff]
+    exact (Set.finite_singleton v).compl_mem_cofinite
+  let g : v.adicCompletion L → RestrictedProduct (fun w : HeightOneSpectrum (𝓞 L) => w.adicCompletion L)
+      (fun w => (w.adicCompletionIntegers L : Set (w.adicCompletion L))) (Filter.principal {v}ᶜ) :=
+    fun x => ⟨Pi.mulSingle v x, Filter.eventually_principal.2 fun w hw => by
+      rw [Pi.mulSingle_eq_of_ne (Set.mem_compl_singleton_iff.mp hw)]
+      exact one_mem _⟩
+  have hg : Continuous g :=
+    RestrictedProduct.continuous_rng_of_principal.2 (continuous_mulSingle v)
+  have hfg : (finSingle L v : v.adicCompletion L → FiniteAdeleRing (𝓞 L) L) =
+      RestrictedProduct.inclusion _ _ hS ∘ g := by
+    funext x
+    rfl
+  rw [hfg]
+  exact (RestrictedProduct.continuous_inclusion hS).comp hg
+
+theorem localIdele_continuous (v : HeightOneSpectrum (𝓞 L)) : Continuous (localIdele L v) := by
+  exact Continuous.units_map _ (continuous_const.prodMk (finSingle_continuous L v))
+
+
+
+
+end GlobalTheory.Mem.Chr.Model
+end
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain nonZeroDivisors
@@ -224,17 +301,8 @@ theorem absChar_not_unitary : ¬ (absChar F 1).IsUnitary := by
   push_cast at h1 this
   linarith
 
-theorem absChar_unitary (t : ℝ) : (absChar F (t * Complex.I)).IsUnitary := fun x => by
-  change ‖Complex.exp (t * Complex.I * logNorm F x)‖ = 1
-  rw [Complex.norm_exp]; simp
 
-theorem unitaryNorm {χ : HChar F} (h : χ.IsUnitary) (s : ℝ) : χ.IsUnitaryNormOf (χ * absChar F s) s :=
-  ⟨h, _, absChar_isAbsPow s, rfl⟩
 
-theorem isCond_top {χ : HChar F} (h : ∀ v, χ.UnrAt v) : χ.IsCond ⊤ := by
-  refine ⟨top_ne_bot, fun v n => ⟨fun _ hd => ?_, fun _ => (h v).levelLe n⟩⟩
-  rw [Ideal.dvd_iff_le, top_le_iff] at hd
-  exact v.isPrime.ne_top (top_le_iff.1 (hd ▸ Ideal.pow_le_self (Nat.succ_ne_zero n)))
 
 end Norm
 
@@ -360,11 +428,6 @@ theorem productRule (χ : HChar F) : χ.ProductRule := by
     intro h0
     exact hv (by rw [h0, zpow_zero])
 
-theorem principal_unr (χ : HChar F) (h : ∀ v, χ.UnrAt v) (k : Fˣ) :
-    ∏ᶠ v : HeightOneSpectrum (𝓞 F), χ.val v ^ ordF v k = (χ.inf k)⁻¹ := by
-  have := productRule χ ∅ (fun v _ => h v) k
-  simp only [Finset.prod_empty, mul_one, Finset.notMem_empty, not_false_eq_true, finprod_true] at this
-  exact (eq_inv_of_mul_eq_one_right this)
 
 end Product
 
@@ -386,9 +449,6 @@ theorem exists_over (K : Type) [Field K] [NumberField K] {p : ℕ} (hp : p.Prime
   exact ⟨⟨M, hM.isPrime, Ring.ne_bot_of_isMaximal_of_not_isField hM (RingOfIntegers.not_isField K)⟩,
     hle (Ideal.mem_span_singleton_self _)⟩
 
-theorem nonempty_piBar : Nonempty (PiBar H) := by
-  choose f hf using fun k : Fin 2 => exists_over H.K (H.g_prime k)
-  exact ⟨⟨f, hf⟩⟩
 
 theorem exists_faithful {p : ℕ} (hp : p.Prime) : ∃ ω : (ZMod p)ˣ →* ℂˣ, Function.Injective ω := by
   haveI := Fact.mk hp
@@ -399,38 +459,13 @@ theorem exists_faithful {p : ℕ} (hp : p.Prime) : ∃ ω : (ZMod p)ˣ →* ℂ�
   exact ⟨(rootsOfUnity _ ℂ).subtype.comp (mulEquivOfCyclicCardEq hc).toMonoidHom,
     Subtype.val_injective.comp (mulEquivOfCyclicCardEq hc).injective⟩
 
-theorem nonempty_omg : Nonempty (Omg H) := by
-  choose f hf using fun k : Fin 2 => exists_faithful (H.g_prime k)
-  exact ⟨⟨f, hf⟩⟩
 
-theorem isEtaAlg_of {χ : HChar H.E} (h : IsEtaT H χ) : IsEtaAlg H (χ * absChar H.E ((1 / 2 : ℝ) : ℂ)) :=
-  ⟨χ, h, unitaryNorm h.unitary _⟩
 
-theorem isEtaAlg_inf {χ : HChar H.E} (h : IsEtaAlg H χ) (k : H.Eˣ) :
-    ((χ.inf k : ℂˣ) : ℂ) * ∏ g : R.Psi, ((‖embPsi H g (k : H.E)‖ : ℝ) : ℂ) =
-      (∏ g : R.Psi, embPsi H g (k : H.E)) * ∏ φ : H.E →+* ℂ, ((‖φ (k : H.E)‖ : ℝ) : ℂ) ^ (((1 / 2 : ℝ)) : ℂ) := by
-  obtain ⟨η, hη, -, ν, hν, rfl⟩ := h
-  rw [HChar.inf_mul, Units.val_mul, hη.inf k, hν.2.2 k, mul_right_comm, ← Finset.prod_mul_distrib]
-  congr 1
-  refine Finset.prod_congr rfl fun g _ => ?_
-  have h0 : ((‖embPsi H g (k : H.E)‖ : ℝ) : ℂ) ≠ 0 := by
-    exact_mod_cast norm_ne_zero_iff.2 ((map_ne_zero _).2 k.ne_zero)
-  rw [zpow_one, div_mul_cancel₀ _ h0]
 
-theorem not_isDelta_one {p : ℕ} (hp : p.Prime) : ¬ IsDelta (H := H) p 1 := by
-  intro h
-  obtain ⟨v, hv⟩ := exists_over H.E hp
-  have := (h.ine v hv 1).1 fun x _ => by simp
-  norm_num at this
 
-theorem not_isEtaT_one : ¬ IsEtaT H 1 := by
-  intro h
-  obtain ⟨w⟩ : Nonempty (InfinitePlace H.F) := inferInstance
-  have h1 := h.res.2 w (-1)
-  rw [isClsF_one.triv.2, etaInf, if_pos (by simp)] at h1
-  have h2 := congrArg (fun z : ℂˣ => (z : ℂ)) h1
-  norm_num at h2
 
 end HostData
 
 end GlobalTheory.Mem.Chr.CharModel
+end
+end

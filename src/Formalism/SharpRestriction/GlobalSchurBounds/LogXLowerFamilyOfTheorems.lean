@@ -17,8 +17,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Pk Forma
 theorem s59 (𝒞 : FamClass) : Closed 𝒞 fun Fm _ => ∀ x : ℝ, Fm.x1 < x → ∀ i : Fm.Ix x, UnusedSlot33.division_rows_rational_lattice (Fm.D x i) :=
   Closed.of_all fun Fm _ => UnusedSlot33.family_finite_order_holds Fm
 
-theorem lemma_one_seven_closed (𝒞 : FamClass) : Closed 𝒞 fun Fm _ => EvD Fm UnusedSlot33.division_rows_rational_lattice :=
-  Closed.of_all fun Fm _ => EvD.of_all Fm UnusedSlot33.division_rational_lattice
 
 theorem hLit (𝒞 : FamClass) (h6 : Closed 𝒞 fun Fm _ => ShortIntervalPrimes.FamilySixthHypothesis Fm) :
     Closed 𝒞 fun Fm _ => ShortIntervalPrimes.FamilySixthHypothesis Fm ∧ ShortIntervalPrimes.adm7F Fm ∧ ShortIntervalPrimes.ComplementTwoFamily Fm :=
@@ -28,11 +26,7 @@ theorem t7 (𝒞 : FamClass) (C0 : ℝ) (h : ∀ {eps : ℝ} (Fm : FamP eps), �
     Closed (Des 𝒞 C0) fun Fm _ => flipTwoThree.admF7 Fm :=
   kernel_ratio_closed_of_class fun Fm hc => h Fm hc.1.1.1
 
-theorem log_gamma_small_family {eps : ℝ} (Fm : FamP eps) : ShortIntervalPrimes.compactDualInputFamily Fm := ShortIntervalPrimes.family_log_gamma_small_holds Fm
 
-theorem log_X_lower_family_of_theorems {eps : ℝ} (Fm : FamP eps) (h2b : flipTwoThree.fam0 Fm StandardLattice.MassRatio₂) (h2v : flipTwoThree.fam0 Fm StandardLattice.BaseVolumeEqualsMass)
-    (h3 : flipTwoThree.fam0 Fm StandardLattice.SigmaDegreeTwoSidedBoundOfGap) : ShortIntervalPrimes.proportionalityInputFamily Fm :=
-  ShortIntervalPrimes.log_X_lower_of_corollary_five_six Fm (StandardLattice.division_level_prime_family Fm h2b h2v h3)
 
 structure FamGLmin (𝒞 : FamClass) (C5 : ℝ) : Prop where
   h2b : Closed 𝒞 fun Fm _ => flipTwoThree.fam0 Fm StandardLattice.MassRatio₂
@@ -88,12 +82,6 @@ theorem FamGLmin.muRank {𝒞 : FamClass} {C5 : ℝ} (h : FamGLmin 𝒞 C5) (C0 
     obtain ⟨_, _, _, _, _, _, _, _, _, _, _, cPr, _⟩ := hCh
     exact ⟨hNF, muRank_min Fm hC0 cPr hNF hE tSet⟩
 
-theorem FamGLmin.muRank7 {𝒞 : FamClass} {C5 : ℝ} (h : FamGLmin 𝒞 C5) (C0 : ℝ) (hC0 : 0 < C0) :
-    Closed 𝒞 fun Fm CH => TuSize Fm → WeightVectorSmallSharesSeven Fm C0 CH → NuFullF Fm ∧ J.MuRank Fm :=
-  (h.hW.and (h.hμ.and (h.hI.and (h.hR.and h.hB)))).imp fun Fm _ _ ⟨hW, hμ, hI, hR, hB⟩ hTu hCh => by
-    obtain ⟨hT2, hT5⟩ := family_theorems_two_and_five Fm hW hμ hI hR hB
-    obtain ⟨_, _, _, _, _, _, _, _, _, _, cPr, _⟩ := hCh
-    exact muRank_items Fm C0 hC0 hT2 hT5 hTu cPr
 
 theorem FamGLmin.nuFull {𝒞 : FamClass} {C5 : ℝ} (h : FamGLmin 𝒞 C5)
     (hTu : ∀ {eps : ℝ} (Fm : FamP eps), 𝒞 Fm → TuSize Fm) : Closed 𝒞 fun Fm _ => NuFullF Fm :=
@@ -124,11 +112,7 @@ theorem packet_conditions_closed (𝒞 : FamClass)
     ⟨max a b, fun x hx i u => (packet_conditions_iff_pure _ u).2
       ⟨ha x (le_trans (le_max_left _ _) hx) i u, hb x (le_trans (le_max_right _ _) hx) i u⟩⟩
 
-theorem brExists_of {D : D7} {u : D.what₂.Word} (H : PrimeDegreeVariant.Conclusion6) (P : product_first_zeroth_parts.Pend D u) (tie : J.BrTie P) : BrExists D u :=
-  ⟨P, J.pending_condition_of_sixth P H tie⟩
 
-theorem brExists_of_tie {D : D7} {u : D.what₂.Word} (P : product_first_zeroth_parts.Pend D u) (tie : J.BrTie P) : BrExists D u :=
-  brExists_of Formalism.L2.DIV.BrJ.branching_interlacing_pairs P tie
 
 open Formalism.MainNotions.flipTwoThree in
 
@@ -212,8 +196,6 @@ theorem VolumeRatio₂ (Cn Cd : ℝ) : ∃ C : ℝ, ∀ (D : D7) (x Cth : ℝ), 
   let ⟨C, hC⟩ := flipTwoThree.opNorm_estimate_of_theta_mass Cn Cd C1
   ⟨C, fun D x Cth h2 => hC D x Cth h2 (h1 Cn D x)⟩
 
-theorem counting_constant_as_function (Cd : ℝ) : ∃ K : ℝ → ℝ, ∀ (Cn : ℝ) (D : D7) (x Cth : ℝ), flipTwoThree.adm2 D Cn Cth x → flipTwoThree.Conclusion2 D Cn Cd (K Cn) x :=
-  ⟨fun Cn => Classical.choose (VolumeRatio₂ Cn Cd), fun Cn => Classical.choose_spec (VolumeRatio₂ Cn Cd)⟩
 
 end Formalism.MainNotions.Wire
 

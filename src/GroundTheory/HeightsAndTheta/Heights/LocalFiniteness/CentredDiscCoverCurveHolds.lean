@@ -51,8 +51,6 @@ theorem GroundTheory.Heights₂.Heights.AutoClose.DiscriminantSheetCover : Groun
 theorem GroundTheory.Heights₂.Heights.AutoClose.LelongLimitOffZero : GroundTheory.Heights₂.Heights.LelongLimitOffZero.Statement :=
   @GroundTheory.Heights₂.Heights.LelongLimitOffZero.proof GroundTheory.Heights₂.Heights.HilbertSamuel.Closed.ChartMassCompact
 
-theorem GroundTheory.Heights₂.Heights.AutoClose.areaGraph_holds : GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets.AreaGraph.Statement :=
-  @GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets.AreaGraph.rowPoisson_half_implies_one GroundTheory.Heights₂.Heights.AreaGraph.full
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.VarMassNearSmall : GroundTheory.Heights₂.Heights.VarMassNearSmall.Statement :=
   @GroundTheory.Heights₂.Heights.VarMassNearSmall.proof GroundTheory.Heights₂.Heights.HilbertSamuel.Closed.ChartMassCompact

@@ -2,10 +2,216 @@ import Mathlib
 import Formalism.LocalToGlobal.ProjectiveLattices.ThClass
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsIndexIdeal
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.NotIsOfFinOrderUnitQuot
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCommonIndexIdealInfSupLattices
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DetSpanConjMulIntegralOfIntegralPairing
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsSquareAbsNormConjInvariantMovedPrimesIdeal
+import BuildAid.ForwardExisting
 
+section
+section
+set_option autoImplicit false
+noncomputable section
+namespace GlobalTheory.BetaEx
+open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+
+theorem exists_index_ideal_inf_sup (E : Type) [Field E] [NumberField E] (n : ℕ)
+    (M M' : Submodule (𝓞 E) (Fin n → E)) (hb : Bdd (M' ⊔ M))
+    (ht : ∀ m ∈ M, ∃ a : 𝓞 E, a ≠ 0 ∧ a • m ∈ M') :
+    ∃ 𝔞 : Ideal (𝓞 E), 𝔞 ≠ ⊥ ∧ detSpan (M ⊓ M') = 𝔞 • detSpan M ∧
+      detSpan M' = 𝔞 • detSpan (M' ⊔ M) ∧
+      Ideal.absNorm 𝔞 = (M ⊓ M').toAddSubgroup.relIndex M.toAddSubgroup := by
+  classical
+  have hsub : ∀ N : Submodule (𝓞 E) (Fin n → E), N ≤ M' ⊔ M → Bdd N := by
+    intro N hN
+    obtain ⟨k, hk, h⟩ := hb
+    exact ⟨k, hk, fun v hv => h v (hN hv)⟩
+  have key : ∀ s : Finset (Fin n → E), (∀ x ∈ s, x ∈ M) →
+      ∃ 𝔞 : Ideal (𝓞 E), 𝔞 ≠ ⊥ ∧
+        detSpan (M ⊓ M') = 𝔞 • detSpan ((M ⊓ M') ⊔ Submodule.span (𝓞 E) (s : Set (Fin n → E))) ∧
+        detSpan M' = 𝔞 • detSpan (M' ⊔ Submodule.span (𝓞 E) (s : Set (Fin n → E))) ∧
+        Ideal.absNorm 𝔞 = (M ⊓ M').toAddSubgroup.relIndex
+          ((M ⊓ M') ⊔ Submodule.span (𝓞 E) (s : Set (Fin n → E))).toAddSubgroup := by
+    intro s
+    induction s using Finset.induction_on with
+    | empty => intro _; exact ⟨⊤, by simp, by simp, by simp, by simp⟩
+    | insert m s _ ih =>
+      intro hs
+      obtain ⟨𝔞, h0, h1, h1', h2⟩ := ih fun x hx => hs x (Finset.mem_insert_of_mem hx)
+      have hsM : Submodule.span (𝓞 E) (s : Set (Fin n → E)) ≤ M :=
+        Submodule.span_le.2 fun x hx => hs x (Finset.mem_insert_of_mem hx)
+      set N := (M ⊓ M') ⊔ Submodule.span (𝓞 E) (s : Set (Fin n → E)) with hN
+      set S := M' ⊔ Submodule.span (𝓞 E) (s : Set (Fin n → E)) with hS
+      have hm : m ∈ M := hs m (Finset.mem_insert_self _ _)
+      have hmM : Submodule.span (𝓞 E) {m} ≤ M := (Submodule.span_singleton_le_iff_mem _ _).2 hm
+      have e : (M ⊓ M') ⊔ Submodule.span (𝓞 E) ((insert m s : Finset (Fin n → E)) : Set (Fin n → E)) =
+          N ⊔ Submodule.span (𝓞 E) {m} := by
+        rw [Finset.coe_insert, Submodule.span_insert, hN, sup_assoc, sup_comm (Submodule.span _ {m})]
+      have e' : M' ⊔ Submodule.span (𝓞 E) ((insert m s : Finset (Fin n → E)) : Set (Fin n → E)) =
+          S ⊔ Submodule.span (𝓞 E) {m} := by
+        rw [Finset.coe_insert, Submodule.span_insert, hS, sup_assoc, sup_comm (Submodule.span _ {m})]
+      have hNS : N = M ⊓ S := by
+        rw [hN, hS, inf_sup_assoc_of_le _ hsM]
+      have hb1 : Bdd (N ⊔ Submodule.span (𝓞 E) {m}) :=
+        hsub _ (le_sup_of_le_right (sup_le (sup_le inf_le_left hsM) hmM))
+      have hb2 : Bdd (S ⊔ Submodule.span (𝓞 E) {m}) :=
+        hsub _ (sup_le (sup_le_sup_left hsM _) (le_sup_of_le_right hmM))
+      have hc : (N.comap (LinearMap.toSpanSingleton (𝓞 E) _ m) : Ideal (𝓞 E)) =
+          S.comap (LinearMap.toSpanSingleton (𝓞 E) _ m) := by
+        ext a
+        rw [hNS]
+        exact ⟨fun h => h.2, fun h => ⟨M.smul_mem a hm, h⟩⟩
+      rw [e, e']
+      refine ⟨𝔞 * (N.comap (LinearMap.toSpanSingleton (𝓞 E) _ m) : Ideal (𝓞 E)), ?_, ?_, ?_, ?_⟩
+      · refine mul_ne_zero h0 ?_
+        obtain ⟨a, ha, ham⟩ := ht m hm
+        exact (Submodule.ne_bot_iff _).2
+          ⟨a, (le_sup_left : M ⊓ M' ≤ N) ⟨M.smul_mem a hm, ham⟩, ha⟩
+      · rw [h1, Submodule.mul_smul, ← detSpan_cyclic N m hb1]
+      · rw [h1', hc, Submodule.mul_smul, ← detSpan_cyclic S m hb2]
+      · rw [map_mul, h2, index_cyclic]
+        exact AddSubgroup.relIndex_mul_relIndex _ _ _ (Submodule.toAddSubgroup_mono le_sup_left)
+          (Submodule.toAddSubgroup_mono le_sup_left)
+  have hfg : M.FG := by
+    obtain ⟨k, hk, h⟩ := hsub M le_sup_right
+    have hs : (stdLat E n).FG := Submodule.fg_pi fun _ => by
+      rw [Submodule.one_eq_span]; exact Submodule.fg_span_singleton _
+    apply Submodule.fg_of_fg_map_injective (LinearMap.lsmul (𝓞 E) (Fin n → E) k)
+      (fun x y hxy => smul_right_injective _ hk hxy)
+    exact hs.of_le (by rintro _ ⟨v, hv, rfl⟩; exact h v hv)
+  obtain ⟨s, rfl⟩ := hfg
+  have := key s fun x hx => Submodule.subset_span hx
+  rwa [sup_eq_right.2 inf_le_left] at this
+
+end GlobalTheory.BetaEx
+end
+end
+
+open NumberField IsDedekindDomain Formalism.L2.Pj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_common_indexIdeal_inf_sup_lattices : ∀ (E : Type) [Field E] [NumberField E] (n : ℕ) (M M' : Submodule (𝓞 E) (Fin n → E)), GlobalTheory.BetaEx.Bdd (M' ⊔ M) → (∀ m ∈ M, ∃ a : 𝓞 E, a ≠ 0 ∧ a • m ∈ M') → ∃ 𝔞 : Ideal (𝓞 E), 𝔞 ≠ ⊥ ∧ GlobalTheory.BetaEx.detSpan (M ⊓ M') = 𝔞 • GlobalTheory.BetaEx.detSpan M ∧ GlobalTheory.BetaEx.detSpan M' = 𝔞 • GlobalTheory.BetaEx.detSpan (M' ⊔ M) ∧ Ideal.absNorm 𝔞 = (M ⊓ M').toAddSubgroup.relIndex M.toAddSubgroup := by
+  atlas_forward_decl GlobalTheory.BetaEx.exists_index_ideal_inf_sup
+end
+
+section
+section
+open NumberField IsDedekindDomain Formalism.L2.Pj
+
+namespace GlobalTheory
+
+theorem detSpan_conj_mul_mem_range (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ)
+    (M M' : Submodule (𝓞 E) (Fin n → E))
+    (h : ∀ v ∈ M, ∀ w ∈ M', ∑ j, IsCMField.complexConj E (v j) * w j ∈ (algebraMap (𝓞 E) E).range) :
+    ∀ x ∈ GlobalTheory.BetaEx.detSpan M, ∀ y ∈ GlobalTheory.BetaEx.detSpan M',
+      IsCMField.complexConj E x * y ∈ (algebraMap (𝓞 E) E).range := by
+  have hc : ∀ a : 𝓞 E, IsCMField.complexConj E (a : E) ∈ (algebraMap (𝓞 E) E).range := fun a =>
+    ⟨IsCMField.ringOfIntegersComplexConj E a, IsCMField.coe_ringOfIntegersComplexConj E a⟩
+  intro x hx y hy
+  unfold GlobalTheory.BetaEx.detSpan at hx hy
+  induction hx using Submodule.span_induction with
+  | mem x hx =>
+    obtain ⟨v, hv, rfl⟩ := (GlobalTheory.BetaEx.mem_detSet M x).1 hx
+    induction hy using Submodule.span_induction with
+    | mem y hy =>
+      obtain ⟨w, hw, rfl⟩ := (GlobalTheory.BetaEx.mem_detSet M' y).1 hy
+      choose A hA using fun i k => h (v i) (hv i) (w k) (hw k)
+      refine ⟨(Matrix.of A).det, ?_⟩
+      have e1 : IsCMField.complexConj E v.det
+          = ((IsCMField.complexConj E : E →+* E).mapMatrix v).det := by
+        rw [← RingHom.map_det]; rfl
+      rw [RingHom.map_det, e1, ← Matrix.det_transpose w, ← Matrix.det_mul]
+      congr 1
+      ext i k
+      simp only [RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.of_apply, Matrix.mul_apply,
+        Matrix.transpose_apply, hA]
+      rfl
+    | zero => simpa using Subring.zero_mem _
+    | add a b _ _ ha hb => rw [mul_add]; exact Subring.add_mem _ ha hb
+    | smul a b _ hb =>
+      rw [Algebra.smul_def, mul_left_comm]
+      exact Subring.mul_mem _ ⟨a, rfl⟩ hb
+  | zero => simpa using Subring.zero_mem _
+  | add a b _ _ ha hb => rw [map_add, add_mul]; exact Subring.add_mem _ ha hb
+  | smul a b _ hb =>
+    rw [Algebra.smul_def, map_mul, mul_assoc]
+    exact Subring.mul_mem _ (hc a) hb
+
+end GlobalTheory
+end
+
+open NumberField IsDedekindDomain Formalism.L2.Pj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.detSpan_conj_mul_integral_of_integral_pairing : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (M M' : Submodule (𝓞 E) (Fin n → E)), (∀ v ∈ M, ∀ w ∈ M', ∑ j, IsCMField.complexConj E (v j) * w j ∈ (algebraMap (𝓞 E) E).range) → ∀ x ∈ GlobalTheory.BetaEx.detSpan M, ∀ y ∈ GlobalTheory.BetaEx.detSpan M', IsCMField.complexConj E x * y ∈ (algebraMap (𝓞 E) E).range := by
+  atlas_forward_decl GlobalTheory.detSpan_conj_mul_mem_range
+end
+
+section
+section
+set_option autoImplicit false
+
+namespace GlobalTheory.SquareNorm
+
+open NumberField IsDedekindDomain Formalism.L2.Pj
+
+theorem exists_eq_mul_map {R : Type} [CommRing R] [IsDedekindDomain R] (e : R ≃+* R) (he : ∀ x, e (e x) = x)
+    (𝔡 : Ideal R) : 𝔡 ≠ ⊥ → 𝔡.map (e : R →+* R) = 𝔡 →
+      (∀ P : Ideal R, P.IsPrime → 𝔡 ≤ P → P.map (e : R →+* R) ≠ P) →
+      ∃ 𝔞 : Ideal R, 𝔡 = 𝔞 * 𝔞.map (e : R →+* R) := by
+  have hee : ∀ I : Ideal R, (I.map (e : R →+* R)).map (e : R →+* R) = I := fun I => by
+    rw [Ideal.map_map]
+    have : (e : R →+* R).comp (e : R →+* R) = RingHom.id R := RingHom.ext he
+    rw [this, Ideal.map_id]
+  induction 𝔡 using WellFoundedGT.induction with
+  | ind 𝔡 ih =>
+  intro h0 hinv hmv
+  by_cases ht : 𝔡 = ⊤
+  · exact ⟨⊤, by rw [ht, Ideal.map_top, Ideal.top_mul]⟩
+  obtain ⟨P, hP, hle⟩ := Ideal.exists_le_maximal 𝔡 ht
+  have hQ : (P.map (e : R →+* R)).IsMaximal := Ideal.IsMaximal.map_bijective (e : R →+* R) e.bijective hP
+  have hne := hmv P hP.isPrime hle
+  have hle' : 𝔡 ≤ P.map (e : R →+* R) := by
+    have := Ideal.map_mono (f := (e : R →+* R)) hle
+    rwa [hinv] at this
+  have hcop : IsCoprime P (P.map (e : R →+* R)) :=
+    Ideal.isCoprime_iff_sup_eq.2 (hP.coprime_of_ne hQ hne.symm)
+  obtain ⟨𝔟, hb⟩ := hcop.mul_dvd (Ideal.dvd_iff_le.2 hle) (Ideal.dvd_iff_le.2 hle')
+  have hPQ : P * P.map (e : R →+* R) ≠ 0 := fun h => h0 (by rw [hb, h, zero_mul]; rfl)
+  have hb0 : 𝔟 ≠ ⊥ := fun h => h0 (by rw [hb, h, Ideal.mul_bot])
+  have hdb : 𝔡 ≤ 𝔟 := Ideal.le_of_dvd ⟨P * P.map (e : R →+* R), by rw [mul_comm]; exact hb⟩
+  have hlt : 𝔡 < 𝔟 := by
+    refine lt_of_le_of_ne hdb fun h => ?_
+    have h1 : P * P.map (e : R →+* R) * 𝔟 = 1 * 𝔟 := by rw [← hb, one_mul, h]
+    have h2 := mul_right_cancel₀ hb0 h1
+    have h3 : (1 : Ideal R) ≤ P := Ideal.le_of_dvd ⟨_, h2.symm⟩
+    rw [Ideal.one_eq_top] at h3
+    exact hP.ne_top (top_le_iff.1 h3)
+  have hbinv : 𝔟.map (e : R →+* R) = 𝔟 := by
+    apply mul_left_cancel₀ hPQ
+    rw [← hb]
+    conv_rhs => rw [← hinv, hb]
+    rw [Ideal.map_mul, Ideal.map_mul, hee, mul_comm P]
+  obtain ⟨𝔞, ha⟩ := ih 𝔟 hlt hb0 hbinv fun Q hQ' h => hmv Q hQ' (hdb.trans h)
+  refine ⟨P * 𝔞, ?_⟩
+  rw [hb, Ideal.map_mul]
+  conv_lhs => rw [ha]
+  ring
+
+theorem isSquare_absNorm : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (𝔡 : Ideal (𝓞 E)), 𝔡 ≠ ⊥ → 𝔡.map (H.bar : 𝓞 E →+* 𝓞 E) = 𝔡 → (∀ P : Ideal (𝓞 E), P.IsPrime → 𝔡 ≤ P → P.map (H.bar : 𝓞 E →+* 𝓞 E) ≠ P) → IsSquare (Ideal.absNorm 𝔡) := by
+  intro E _ _ _ H 𝔡 h0 hinv hmv
+  have he : ∀ x, H.bar (H.bar x) = x := fun x => RingOfIntegers.ext (by
+    rw [H.bar_eq, H.bar_eq, IsCMField.complexConj_apply_apply])
+  obtain ⟨𝔞, ha⟩ := exists_eq_mul_map H.bar he 𝔡 h0 hinv hmv
+  have hN : Ideal.absNorm (𝔞.map (H.bar : 𝓞 E →+* 𝓞 E)) = Ideal.absNorm 𝔞 := by
+    rw [Ideal.absNorm_apply, Ideal.absNorm_apply, Submodule.cardQuot_apply, Submodule.cardQuot_apply]
+    exact (Nat.card_congr (Ideal.quotientEquiv 𝔞 _ H.bar rfl).toEquiv).symm
+  exact ⟨Ideal.absNorm 𝔞, by rw [ha, map_mul, hN]⟩
+
+end GlobalTheory.SquareNorm
+end
+
+open NumberField IsDedekindDomain Formalism.L2.Pj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isSquare_absNorm_conjInvariant_movedPrimes_ideal : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (𝔡 : Ideal (𝓞 E)), 𝔡 ≠ ⊥ → 𝔡.map (H.bar : 𝓞 E →+* 𝓞 E) = 𝔡 → (∀ P : Ideal (𝓞 E), P.IsPrime → 𝔡 ≤ P → P.map (H.bar : 𝓞 E →+* 𝓞 E) ≠ P) → IsSquare (Ideal.absNorm 𝔡) := by
+  atlas_forward_decl GlobalTheory.SquareNorm.isSquare_absNorm
+end
+
+section
 set_option autoImplicit false
 
 namespace GlobalTheory.LawOfSquares
@@ -161,3 +367,4 @@ theorem law_of_squares : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
   ring
 
 end GlobalTheory.LawOfSquares
+end

@@ -6,13 +6,500 @@ import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.StatementsBundles
 import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PLineDegreeBundle
 import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.BaseChangeIndex
 import Development.AutomorphicSpectrum.Proofs.AdelicProofs.GramMat
-import Development.AutomorphicSpectrum.Proofs.AdelicProofs.IdealNormPrincipalInExtensionStatement
-import Development.AutomorphicSpectrum.Proofs.AdelicProofs.IdealLineLatticeIndex
-import Development.AutomorphicSpectrum.Proofs.AdelicProofs.GramMatrixPosDefConjugateStatement
-import Development.AutomorphicSpectrum.Proofs.AdelicProofs.LinearIndependentCoordinatesDenominator
-import Development.AutomorphicSpectrum.Proofs.AdelicProofs.HermitianLatticeDegreeEqBundleDegree
-import Development.AutomorphicSpectrum.Proofs.AdelicProofs.SpanBaseChangeCoordinates
+import Development.AutomorphicSpectrum.Proofs.AdelicProofs.IdealNormPrincipalInExtension
+import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PIdealIndexPlaces
+import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.SchwartzBilinear.IntegerSmulEqAlgebraMapSmul
+import BuildAid.ForwardExisting
+import Development.AutomorphicSpectrum.Proofs.AdelicProofs.GramMatrixPosDefConjugate
 
+section
+open NumberField GroundTheory.Heights₂.Heights
+open scoped nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ideal_norm_principal_in_extension : ∀ (K : Type) [Field K] [NumberField K] (I : Ideal (𝓞 K)), I ≠ ⊥ → ∃ (K' : Type) (_ : Field K') (_ : NumberField K') (_ : Algebra K K') (y : 𝓞 K'), y ≠ 0 ∧ y ∈ I.map (algebraMap (𝓞 K) (𝓞 K')) ∧ |((Algebra.norm ℚ (y : K') : ℚ) : ℝ)| = (I.absNorm : ℝ) ^ Module.finrank K K' := by
+  first | exact @GlobalTheory.CompanionTheory.Lines.exists_principal_extension | exact GlobalTheory.CompanionTheory.Lines.exists_principal_extension | (intros; apply GlobalTheory.CompanionTheory.Lines.exists_principal_extension <;> assumption)
+end
+
+section
+section
+open NumberField GroundTheory.Heights₂.Heights
+open scoped nonZeroDivisors
+
+namespace GlobalTheory.CompanionTheory.Adelic.SatLine
+
+section aux
+
+variable {K : Type} [Field K] [NumberField K] {n : ℕ}
+
+theorem smul_field (c : 𝓞 K) (y : K) : c • y = (c : K) * y := Algebra.smul_def c y
+
+theorem smul_coord (c : 𝓞 K) (x : Fin n → K) (i : Fin n) : (c • x) i = (c : K) * x i :=
+  smul_field c (x i)
+
+theorem exists_smul_mem (M : Submodule (𝓞 K) (Fin n → K)) {x : Fin n → K}
+    (hx : x ∈ Submodule.span K (M : Set (Fin n → K))) :
+    ∃ c : 𝓞 K, c ≠ 0 ∧ c • x ∈ M :=
+  _root_.UpperTheory.Reformulated.B.P6.r03a.GlobalTheory.CompanionTheory.Adelic.SatLine.exists_smul_mem M hx
+
+theorem exists_denominator {M : Submodule (𝓞 K) (Fin n → K)} (hM : M.FG) (j : Fin n) (a : K) :
+    ∃ d : 𝓞 K, d ≠ 0 ∧ ∀ x ∈ M, ∃ t : 𝓞 K, (d : K) * (a * x j) = t := by
+  classical
+  obtain ⟨S, hS⟩ := hM
+  obtain ⟨b, hb⟩ := IsLocalization.exist_integer_multiples_of_finset (𝓞 K)⁰
+    (S.image fun x : Fin n → K => a * x j)
+  refine ⟨b, nonZeroDivisors.ne_zero b.2, fun x hx => ?_⟩
+  rw [← hS] at hx
+  induction hx using Submodule.span_induction with
+  | mem x h =>
+    obtain ⟨t, ht⟩ := hb _ (Finset.mem_image_of_mem _ (Finset.mem_coe.mp h))
+    refine ⟨t, ?_⟩
+    have h1 : algebraMap (𝓞 K) K t = (b : 𝓞 K) • (a * x j) := ht
+    rw [Algebra.smul_def] at h1
+    exact h1.symm
+  | zero => exact ⟨0, by simp⟩
+  | add x y _ _ hx hy =>
+    obtain ⟨s, hs⟩ := hx
+    obtain ⟨t, ht⟩ := hy
+    refine ⟨s + t, ?_⟩
+    have : ((s + t : 𝓞 K) : K) = (s : K) + (t : K) := rfl
+    rw [this, ← hs, ← ht, Pi.add_apply]
+    ring
+  | smul r x _ hx =>
+    obtain ⟨s, hs⟩ := hx
+    refine ⟨r * s, ?_⟩
+    have : ((r * s : 𝓞 K) : K) = (r : K) * (s : K) := rfl
+    rw [this, ← hs, smul_coord]
+    ring
+
+end aux
+
+theorem saturatedLine_eq_ideal_div :
+    ∀ (K : Type) [Field K] [NumberField K] (n : ℕ) (M : Submodule (𝓞 K) (Fin n → K)), M.FG →
+      Submodule.span K (M : Set (Fin n → K)) = ⊤ → ∀ v : Fin n → K, v ≠ 0 →
+      ∃ (I : Ideal (𝓞 K)) (d : 𝓞 K), I ≠ ⊥ ∧ d ≠ 0 ∧ (∀ t ∈ I, ((t : K) / (d : K)) • v ∈ M) ∧
+        genIndex (M ⊓ (Submodule.span K (Set.range fun _ : Fin 1 => v)).restrictScalars (𝓞 K)).toAddSubgroup
+          (Submodule.span (𝓞 K) (Set.range fun _ : Fin 1 => v)).toAddSubgroup =
+        |((Algebra.norm ℚ (d : K) : ℚ) : ℝ)| / (I.absNorm : ℝ) := by
+  intro K _ _ n M hM hspan v hv
+  obtain ⟨j, hj⟩ : ∃ j, v j ≠ 0 := Function.ne_iff.mp hv
+  obtain ⟨d, hd, hden⟩ := exists_denominator hM j (v j)⁻¹
+  have hdK : (d : K) ≠ 0 := fun h => hd (RingOfIntegers.ext h)
+  let g : 𝓞 K →ₗ[𝓞 K] (Fin n → K) := LinearMap.toSpanSingleton (𝓞 K) _ ((d : K)⁻¹ • v)
+  have hg_apply : ∀ t : 𝓞 K, g t = ((t : K) / (d : K)) • v := by
+    intro t
+    ext i
+    simp only [g, LinearMap.toSpanSingleton_apply, Pi.smul_apply, smul_field, smul_eq_mul]
+    rw [div_eq_mul_inv, mul_assoc]
+  have hginj : Function.Injective g := by
+    intro s t h
+    have h1 := congrFun h j
+    rw [hg_apply, hg_apply] at h1
+    simp only [Pi.smul_apply, smul_eq_mul] at h1
+    exact RingOfIntegers.ext ((div_left_inj' hdK).mp (mul_right_cancel₀ hj h1))
+  let I : Ideal (𝓞 K) := M.comap g
+  have hmemI : ∀ t, t ∈ I ↔ ((t : K) / (d : K)) • v ∈ M := fun t => by
+    change g t ∈ M ↔ _
+    rw [hg_apply]
+  have hI : I ≠ ⊥ := by
+    obtain ⟨c, hc, hcv⟩ := exists_smul_mem M (show v ∈ Submodule.span K (M : Set (Fin n → K)) by
+      rw [hspan]; exact Submodule.mem_top)
+    intro h
+    have hcd : c * d ∈ I := by
+      rw [hmemI]
+      have e : (((c * d : 𝓞 K) : K) / (d : K)) • v = c • v := by
+        ext i
+        have : ((c * d : 𝓞 K) : K) = (c : K) * (d : K) := rfl
+        rw [smul_coord, Pi.smul_apply, this, smul_eq_mul]
+        field_simp
+      rw [e]
+      exact hcv
+    rw [h, Ideal.mem_bot] at hcd
+    exact mul_ne_zero hc hd hcd
+  refine ⟨I, d, hI, hd, fun t ht => (hmemI t).1 ht, ?_⟩
+  have hline : M ⊓ (Submodule.span K (Set.range fun _ : Fin 1 => v)).restrictScalars (𝓞 K) =
+      Submodule.map g I := by
+    ext x
+    simp only [Submodule.mem_inf, Submodule.restrictScalars_mem, Set.range_const,
+      Submodule.mem_span_singleton, Submodule.mem_map]
+    constructor
+    · rintro ⟨hx, c, rfl⟩
+      obtain ⟨t, ht⟩ := hden _ hx
+      have hc : (t : K) / (d : K) = c := by
+        rw [← ht, Pi.smul_apply, smul_eq_mul]
+        field_simp
+      have hgt : g t = c • v := by rw [hg_apply, hc]
+      exact ⟨t, (show g t ∈ M by rw [hgt]; exact hx), hgt⟩
+    · rintro ⟨t, ht, rfl⟩
+      exact ⟨ht, (t : K) / (d : K), (hg_apply t).symm⟩
+  have hN : Submodule.span (𝓞 K) (Set.range fun _ : Fin 1 => v) =
+      Submodule.map g (Ideal.span {d}) := by
+    have e : g d = v := by rw [hg_apply, div_self hdK, one_smul]
+    rw [Set.range_const, Ideal.span, Submodule.map_span, Set.image_singleton, e]
+  have hd0 : (Ideal.span {d} : Ideal (𝓞 K)) ≠ ⊥ := by
+    rw [Ne, Ideal.span_singleton_eq_bot]
+    exact hd
+  have hnorm : (((Ideal.span {d} : Ideal (𝓞 K))).absNorm : ℝ) =
+      |((Algebra.norm ℚ (d : K) : ℚ) : ℝ)| := by
+    rw [Ideal.absNorm_span_singleton, Nat.cast_natAbs, Int.cast_abs, ← Rat.cast_intCast,
+      Algebra.coe_norm_int]
+  rw [hline, hN, Submodule.map_toAddSubgroup, Submodule.map_toAddSubgroup, genIndex,
+    AddSubgroup.relIndex_map_map_of_injective _ _ hginj,
+    AddSubgroup.relIndex_map_map_of_injective _ _ hginj, ← genIndex,
+    IdealIndexPlaces.genIndex_ideal hI hd0, hnorm]
+
+end GlobalTheory.CompanionTheory.Adelic.SatLine
+end
+
+open NumberField GroundTheory.Heights₂.Heights
+open scoped nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ideal_line_lattice_index : ∀ (K : Type) [Field K] [NumberField K] (n : ℕ) (M : Submodule (𝓞 K) (Fin n → K)), M.FG → Submodule.span K (M : Set (Fin n → K)) = ⊤ → ∀ v : Fin n → K, v ≠ 0 → ∃ (I : Ideal (𝓞 K)) (d : 𝓞 K), I ≠ ⊥ ∧ d ≠ 0 ∧ (∀ t ∈ I, ((t : K) / (d : K)) • v ∈ M) ∧ genIndex (M ⊓ (Submodule.span K (Set.range fun _ : Fin 1 => v)).restrictScalars (𝓞 K)).toAddSubgroup (Submodule.span (𝓞 K) (Set.range fun _ : Fin 1 => v)).toAddSubgroup = |((Algebra.norm ℚ (d : K) : ℚ) : ℝ)| / (I.absNorm : ℝ) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Adelic.SatLine.saturatedLine_eq_ideal_div
+end
+
+section
+open NumberField TensorProduct GroundTheory.Heights₂.Heights GlobalTheory.CompanionTheory.Ar.Lines Matrix
+open scoped ComplexOrder nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gram_matrix_pos_def_conjugate : ∀ (L : Type) [Field L] [NumberField L] (B : HermitianBundle.{0} L) (i : ℕ) (f : Fin i → B.carrier), LinearIndependent (𝓞 L) f → (∀ σ, (gramMat B σ f).PosDef) ∧ ∀ σ, gramMat B (ComplexEmbedding.conjugate σ) f = (gramMat B σ f).map (starRingEnd ℂ) := by
+  first | exact @GlobalTheory.CompanionTheory.Ar.Lines.gramMat_posDef_and_conj | exact GlobalTheory.CompanionTheory.Ar.Lines.gramMat_posDef_and_conj | (intros; apply GlobalTheory.CompanionTheory.Ar.Lines.gramMat_posDef_and_conj <;> assumption)
+end
+
+section
+section
+open NumberField TensorProduct GroundTheory.Heights₂.Heights GlobalTheory.CompanionTheory.Ar.Lines Matrix
+open scoped ComplexOrder nonZeroDivisors
+
+namespace GlobalTheory.CompanionTheory.Ar.Lines.Coords
+
+variable {R : Type*} [CommRing R] [IsDomain R] {M : Type*} [AddCommGroup M] [Module R M]
+
+theorem exists_relation [Module.Finite R M] {i : ℕ} {f : Fin i → M}
+    (hf : LinearIndependent R f) (hi : i = Module.finrank R M) (x : M) :
+    ∃ (D : R) (a : Fin i → R), D ≠ 0 ∧ D • x = ∑ j, a j • f j := by
+  classical
+  have hnot : ¬ LinearIndependent R (Fin.cons x f : Fin (i + 1) → M) := fun hli => by
+    have := hli.fintype_card_le_finrank
+    rw [Fintype.card_fin] at this
+    omega
+  obtain ⟨g, hg, k, hk⟩ := Fintype.not_linearIndependent_iff.mp hnot
+  rw [Fin.sum_univ_succ] at hg
+  simp only [Fin.cons_zero, Fin.cons_succ] at hg
+  have h0 : g 0 ≠ 0 := by
+    intro h0
+    rw [h0, zero_smul, zero_add] at hg
+    have hz := Fintype.linearIndependent_iff.mp hf _ hg
+    apply hk
+    induction k using Fin.cases with
+    | zero => exact h0
+    | succ j => exact hz j
+  refine ⟨g 0, fun j => -g j.succ, h0, ?_⟩
+  simp only [neg_smul, Finset.sum_neg_distrib]
+  exact eq_neg_of_add_eq_zero_left hg
+
+theorem relation_cross {i : ℕ} {f : Fin i → M} (hf : LinearIndependent R f) {x : M}
+    {D D' : R} {a a' : Fin i → R} (h : D • x = ∑ j, a j • f j)
+    (h' : D' • x = ∑ j, a' j • f j) (j : Fin i) : D' * a j = D * a' j := by
+  have key : ∑ j, (D' * a j - D * a' j) • f j = 0 := by
+    simp only [sub_smul, mul_smul, Finset.sum_sub_distrib, ← Finset.smul_sum, ← h, ← h']
+    rw [smul_comm D' D x, sub_self]
+  exact sub_eq_zero.mp (Fintype.linearIndependent_iff.mp hf _ key j)
+
+private theorem coord_lemma (K : Type*) [Field K] [Algebra R K] [IsFractionRing R K] {i : ℕ}
+    {f : Fin i → M} (hf : LinearIndependent R f) {x : M} {D D' : R} {a a' : Fin i → R}
+    (hD : D ≠ 0) (hD' : D' ≠ 0) (h : D • x = ∑ j, a j • f j) (h' : D' • x = ∑ j, a' j • f j)
+    (j : Fin i) :
+    algebraMap R K (a j) / algebraMap R K D = algebraMap R K (a' j) / algebraMap R K D' := by
+  have hne : ∀ {E : R}, E ≠ 0 → algebraMap R K E ≠ 0 := fun hE h0 =>
+    hE (IsFractionRing.injective R K (by rw [h0, map_zero]))
+  rw [div_eq_div_iff (hne hD) (hne hD'), ← map_mul, ← map_mul, mul_comm (a j),
+    relation_cross hf h h' j, mul_comm]
+
+theorem exists_coordinates (K : Type*) [Field K] [Algebra R K] [IsFractionRing R K]
+    [Module.Finite R M] [Module.IsTorsionFree R M] {i : ℕ} {f : Fin i → M}
+    (hf : LinearIndependent R f) (hi : i = Module.finrank R M) :
+    ∃ c : M →ₗ[R] (Fin i → K), Function.Injective c ∧ (∀ j, c (f j) = Pi.single j 1) ∧
+      ∀ x, ∃ (D : R) (a : Fin i → R), D ≠ 0 ∧ D • x = ∑ j, a j • f j ∧
+        ∀ j, algebraMap R K D * c x j = algebraMap R K (a j) := by
+  classical
+  choose Dx ax hDx hax using fun x => exists_relation hf hi x
+  have hne : ∀ {D : R}, D ≠ 0 → algebraMap R K D ≠ 0 := fun hD h0 =>
+    hD (IsFractionRing.injective R K (by rw [h0, map_zero]))
+  have key : ∀ x (D : R) (a : Fin i → R), D ≠ 0 → D • x = ∑ j, a j • f j → ∀ j,
+      algebraMap R K (ax x j) / algebraMap R K (Dx x) =
+        algebraMap R K (a j) / algebraMap R K D :=
+    fun x D a hD h j => coord_lemma K hf (hDx x) hD (hax x) h j
+  let c : M →ₗ[R] (Fin i → K) :=
+    { toFun := fun x j => algebraMap R K (ax x j) / algebraMap R K (Dx x)
+      map_add' := fun x y => by
+        funext j
+        have hrel : (Dx x * Dx y) • (x + y) = ∑ j, (Dx y * ax x j + Dx x * ax y j) • f j := by
+          rw [smul_add, mul_smul, mul_smul, smul_comm (Dx x) (Dx y) x, hax x, hax y,
+            Finset.smul_sum, Finset.smul_sum, ← Finset.sum_add_distrib]
+          simp only [add_smul, mul_smul]
+        dsimp only [Pi.add_apply]
+        rw [key (x + y) _ _ (mul_ne_zero (hDx x) (hDx y)) hrel j,
+          div_add_div _ _ (hne (hDx x)) (hne (hDx y))]
+        simp only [map_add, map_mul]
+        ring
+      map_smul' := fun r x => by
+        funext j
+        have hrel : Dx x • (r • x) = ∑ j, (r * ax x j) • f j := by
+          rw [smul_comm, hax x, Finset.smul_sum]
+          simp only [mul_smul]
+        dsimp only [Pi.smul_apply, RingHom.id_apply]
+        rw [key (r • x) _ _ (hDx x) hrel j, Algebra.smul_def, map_mul]
+        ring }
+  have hc : ∀ x j, c x j = algebraMap R K (ax x j) / algebraMap R K (Dx x) := fun _ _ => rfl
+  refine ⟨c, ?_, ?_, ?_⟩
+  · rw [injective_iff_map_eq_zero]
+    intro x hx
+    have ha : ∀ j, ax x j = 0 := fun j => by
+      have := congrFun hx j
+      rw [hc, Pi.zero_apply, div_eq_zero_iff] at this
+      rcases this with h | h
+      · exact IsFractionRing.injective R K (by rw [h, map_zero])
+      · exact absurd h (hne (hDx x))
+    have h0 : Dx x • x = 0 := by
+      rw [hax x]
+      simp [ha]
+    exact (smul_eq_zero_iff_right (hDx x)).mp h0
+  · intro j
+    funext k
+    have hrel : (1 : R) • f j = ∑ l, (Pi.single j (1 : R) : Fin i → R) l • f l := by
+      rw [one_smul]
+      simp [Pi.single_apply]
+    rw [hc, key (f j) 1 _ one_ne_zero hrel k]
+    by_cases hk : k = j
+    · subst hk
+      simp
+    · simp [hk]
+  · intro x
+    exact ⟨Dx x, ax x, hDx x, hax x, fun j => by
+      rw [hc]
+      exact mul_div_cancel₀ _ (hne (hDx x))⟩
+
+theorem coordinates_of_maximal_independent (L : Type) [Field L] [NumberField L] (M : Type)
+    [AddCommGroup M] [Module (𝓞 L) M] [Module.Finite (𝓞 L) M] [Module.IsTorsionFree (𝓞 L) M]
+    (i : ℕ) (f : Fin i → M) (hf : LinearIndependent (𝓞 L) f)
+    (hi : i = Module.finrank (𝓞 L) M) :
+    ∃ c : M →ₗ[𝓞 L] (Fin i → L), Function.Injective c ∧ (∀ j, c (f j) = Pi.single j 1) ∧
+      ∀ x, ∃ (D : 𝓞 L) (a : Fin i → 𝓞 L), D ≠ 0 ∧ D • x = ∑ j, a j • f j ∧
+        ∀ j, (D : L) * c x j = a j := by
+  obtain ⟨c, h1, h2, h3⟩ := exists_coordinates L hf hi
+  exact ⟨c, h1, h2, h3⟩
+
+end GlobalTheory.CompanionTheory.Ar.Lines.Coords
+end
+
+open NumberField TensorProduct GroundTheory.Heights₂.Heights GlobalTheory.CompanionTheory.Ar.Lines Matrix
+open scoped ComplexOrder nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.linear_independent_coordinates_denominator : ∀ (L : Type) [Field L] [NumberField L] (M : Type) [AddCommGroup M] [Module (𝓞 L) M] [Module.Finite (𝓞 L) M] [Module.IsTorsionFree (𝓞 L) M] (i : ℕ) (f : Fin i → M), LinearIndependent (𝓞 L) f → i = Module.finrank (𝓞 L) M → ∃ c : M →ₗ[𝓞 L] (Fin i → L), Function.Injective c ∧ (∀ j, c (f j) = Pi.single j 1) ∧ ∀ x, ∃ (D : 𝓞 L) (a : Fin i → 𝓞 L), D ≠ 0 ∧ D • x = ∑ j, a j • f j ∧ ∀ j, (D : L) * c x j = a j := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Lines.Coords.coordinates_of_maximal_independent
+end
+
+section
+section
+namespace GlobalTheory.CompanionTheory.Ar.Lines
+
+open NumberField TensorProduct GroundTheory.Heights₂.Heights Matrix
+open scoped ComplexOrder nonZeroDivisors
+
+noncomputable section
+
+theorem gramAt_standard {L : Type} [Field L] {i : ℕ} (h : Matrix (Fin i) (Fin i) ℂ) (σ : L →+* ℂ) :
+    gramAt h σ (fun j : Fin i => (Pi.single j 1 : Fin i → L)) = h := by
+  have he : ∀ j : Fin i, embVec σ (Pi.single j 1 : Fin i → L) = Pi.single j 1 := by
+    intro j
+    funext k
+    by_cases hk : k = j
+    · subst hk; simp [embVec]
+    · simp [embVec, Pi.single_eq_of_ne hk]
+  ext a b
+  simp [gramAt, he, Matrix.mulVec_single_one, Matrix.col_apply]
+
+theorem degree_eq_degreeWith (L : Type) [Field L] [NumberField L] (B : HermitianBundle.{0} L)
+    (F : Submodule (𝓞 L) B.carrier) (i : ℕ) (f : Fin i → F) (c : F →ₗ[𝓞 L] (Fin i → L))
+    (Fl : HermLattice L i) (hf : LinearIndependent (𝓞 L) f) (hi : i = B.rank F)
+    (hc : Function.Injective c) (hcf : ∀ j, c (f j) = Pi.single j 1)
+    (hlat : Fl.lattice = LinearMap.range c)
+    (hmet : ∀ σ, Fl.metric σ = gramMat B σ (fun j => (f j : B.carrier))) :
+    Fl.degree = B.degreeWith F f := by
+  have hspanK : Submodule.span L (Set.range fun j : Fin i => (Pi.single j 1 : Fin i → L)) = ⊤ := by
+    have h : (Set.range fun j : Fin i => (Pi.single j 1 : Fin i → L)) =
+        Set.range (Pi.basisFun L (Fin i)) := by
+      congr 1; funext j; exact (Pi.basisFun_apply _ _ _).symm
+    rw [h]
+    exact (Pi.basisFun L (Fin i)).span_eq
+  have hS : (Submodule.span (𝓞 L) (Set.range f)).map c =
+      Submodule.span (𝓞 L) (Set.range fun j : Fin i => (Pi.single j 1 : Fin i → L)) := by
+    rw [Submodule.map_span, ← Set.range_comp]
+    exact congrArg _ (congrArg Set.range (funext hcf))
+  have hA : (Fl.lattice ⊓ (Submodule.span L (Set.range fun j : Fin i =>
+      (Pi.single j 1 : Fin i → L))).restrictScalars (𝓞 L)) = LinearMap.range c := by
+    rw [hspanK, hlat, Submodule.restrictScalars_top, inf_top_eq]
+  have hidx : genIndex
+      (Fl.lattice ⊓ (Submodule.span L (Set.range fun j : Fin i =>
+        (Pi.single j 1 : Fin i → L))).restrictScalars (𝓞 L)).toAddSubgroup
+      (Submodule.span (𝓞 L) (Set.range fun j : Fin i =>
+        (Pi.single j 1 : Fin i → L))).toAddSubgroup =
+      (Nat.card (F ⧸ Submodule.span (𝓞 L) (Set.range f)) : ℝ) := by
+    rw [hA, ← hS, genIndex]
+    have hle : ((Submodule.span (𝓞 L) (Set.range f)).map c).toAddSubgroup ≤
+        (LinearMap.range c).toAddSubgroup := by
+      rintro _ ⟨x, -, rfl⟩
+      exact ⟨x, rfl⟩
+    rw [AddSubgroup.relIndex_eq_one.mpr hle, LinearMap.range_eq_map, Submodule.map_toAddSubgroup,
+      Submodule.map_toAddSubgroup, AddSubgroup.relIndex_map_map_of_injective _ _ hc,
+      Submodule.top_toAddSubgroup, AddSubgroup.relIndex_top_right]
+    simp
+    rfl
+  have hgram : ∀ σ : L →+* ℂ,
+      (gramAt (Fl.metric σ) σ fun j : Fin i => (Pi.single j 1 : Fin i → L)).det.re =
+        ‖HermitianBundle.gramDet B σ (fun j => (f j : B.carrier))‖ := by
+    intro σ
+    have hd : HermitianBundle.gramDet B σ (fun j => (f j : B.carrier)) = (Fl.metric σ).det := by
+      rw [hmet σ]
+      rfl
+    rw [gramAt_standard, hd]
+    have hp : 0 < (Fl.metric σ).det := (Fl.posDef σ).det_pos
+    have hre : ((Fl.metric σ).det.re : ℂ) = (Fl.metric σ).det := by
+      apply Complex.ext
+      · simp
+      · simpa using (Complex.lt_def.mp hp).2.symm ▸ rfl
+    rw [← hre, Complex.ofReal_re, Complex.norm_real, Real.norm_eq_abs, abs_of_pos]
+    exact (Complex.lt_def.mp hp).1
+  simp only [HermLattice.degree, subDegree, HermitianBundle.degreeWith, hidx, hgram]
+
+end
+
+end GlobalTheory.CompanionTheory.Ar.Lines
+end
+
+open NumberField TensorProduct GroundTheory.Heights₂.Heights GlobalTheory.CompanionTheory.Ar.Lines Matrix
+open scoped ComplexOrder nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermitian_lattice_degree_eq_bundle_degree : ∀ (L : Type) [Field L] [NumberField L] (B : HermitianBundle.{0} L) (F : Submodule (𝓞 L) B.carrier) (i : ℕ) (f : Fin i → F) (c : F →ₗ[𝓞 L] (Fin i → L)) (Fl : HermLattice L i), LinearIndependent (𝓞 L) f → i = B.rank F → Function.Injective c → (∀ j, c (f j) = Pi.single j 1) → Fl.lattice = LinearMap.range c → (∀ σ, Fl.metric σ = gramMat B σ (fun j => (f j : B.carrier))) → Fl.degree = B.degreeWith F f := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Lines.degree_eq_degreeWith
+end
+
+section
+section
+open NumberField TensorProduct GroundTheory.Heights₂.Heights GlobalTheory.CompanionTheory.Ar.Lines Matrix
+open scoped ComplexOrder nonZeroDivisors
+
+namespace GlobalTheory.CompanionTheory.Ar.Lines.Lift
+
+open ComplexAt
+
+noncomputable section
+
+variable {L : Type} [Field L] [NumberField L] {K : Type} [Field K] [NumberField K] [Algebra L K]
+  {E : Type} [AddCommGroup E] [Module (𝓞 L) E]
+
+theorem coord_one_tmul (τ : K →+* ℂ) (b : 𝓞 K) (e : E) :
+    baseChangeCoord τ ((1 : ComplexAt τ) ⊗ₜ[𝓞 K] (b ⊗ₜ[𝓞 L] e)) =
+      τ (b : K) • ((1 : ComplexAt (τ.comp (algebraMap L K))) ⊗ₜ[𝓞 L] e) := by
+  rw [baseChangeCoord_tmul, TensorProduct.smul_tmul']
+  congr 1
+
+theorem coord_smul (τ : K →+* ℂ) (b : 𝓞 K) (X : 𝓞 K ⊗[𝓞 L] E) :
+    baseChangeCoord τ ((1 : ComplexAt τ) ⊗ₜ[𝓞 K] (b • X)) =
+      τ (b : K) • baseChangeCoord τ ((1 : ComplexAt τ) ⊗ₜ[𝓞 K] X) := by
+  induction X using TensorProduct.induction_on with
+  | zero => simp
+  | tmul c e =>
+    rw [TensorProduct.smul_tmul', coord_one_tmul, coord_one_tmul, smul_eq_mul, smul_smul]
+    simp
+  | add X Y hX hY => rw [smul_add, tmul_add, map_add, hX, hY, tmul_add, map_add, smul_add]
+
+theorem one_tmul_smul (σ : L →+* ℂ) (a : 𝓞 L) (e : E) :
+    (1 : ComplexAt σ) ⊗ₜ[𝓞 L] (a • e) = σ (a : L) • ((1 : ComplexAt σ) ⊗ₜ[𝓞 L] e) := by
+  rw [← TensorProduct.smul_tmul, TensorProduct.smul_tmul', smul_def, complex_smul_def]
+
+theorem exists_lift (F : Submodule (𝓞 L) E) {i : ℕ} (f : Fin i → F) (c : F →ₗ[𝓞 L] (Fin i → L))
+    (hc : ∀ x, ∃ (D : 𝓞 L) (a : Fin i → 𝓞 L), D ≠ 0 ∧ D • x = ∑ j, a j • f j ∧
+      ∀ j, (D : L) * c x j = a j)
+    (x : Fin i → K)
+    (hx : x ∈ Submodule.span (𝓞 K) ((fun (w : Fin i → L) j => algebraMap L K (w j)) ''
+      (LinearMap.range c : Submodule (𝓞 L) (Fin i → L)))) :
+    ∃ X : 𝓞 K ⊗[𝓞 L] E, ∀ τ : K →+* ℂ,
+      baseChangeCoord τ ((1 : ComplexAt τ) ⊗ₜ[𝓞 K] X) =
+        ∑ j, τ (x j) • ((1 : ComplexAt (τ.comp (algebraMap L K))) ⊗ₜ[𝓞 L] (f j : E)) := by
+  induction hx using Submodule.span_induction with
+  | mem x hx =>
+    obtain ⟨w, ⟨y, rfl⟩, rfl⟩ := hx
+    obtain ⟨D, a, hD, hDy, ha⟩ := hc y
+    refine ⟨(1 : 𝓞 K) ⊗ₜ[𝓞 L] (y : E), fun τ => ?_⟩
+    rw [coord_one_tmul]
+    have hD' : ((D : 𝓞 L) : L) ≠ 0 := by exact_mod_cast hD
+    have hσ : (τ.comp (algebraMap L K)) (D : L) ≠ 0 := (map_ne_zero _).2 hD'
+    have h1 : D • (y : E) = ∑ j, a j • (f j : E) := by
+      have := congrArg Subtype.val hDy
+      simpa using this
+    have H : (τ.comp (algebraMap L K)) (D : L) •
+        ((1 : ComplexAt (τ.comp (algebraMap L K))) ⊗ₜ[𝓞 L] (y : E)) =
+        (τ.comp (algebraMap L K)) (D : L) •
+          ∑ j, τ (algebraMap L K (c y j)) •
+            ((1 : ComplexAt (τ.comp (algebraMap L K))) ⊗ₜ[𝓞 L] (f j : E)) := by
+      rw [← one_tmul_smul, h1, tmul_sum, Finset.smul_sum]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rw [one_tmul_smul, smul_smul, ← ha j, map_mul]
+      rfl
+    have H2 := congrArg (fun v => ((τ.comp (algebraMap L K)) (D : L))⁻¹ • v) H
+    simp only [inv_smul_smul₀ hσ] at H2
+    simpa using H2
+  | zero => exact ⟨0, fun τ => by simp⟩
+  | add x y _ _ hx hy =>
+    obtain ⟨X, hX⟩ := hx
+    obtain ⟨Y, hY⟩ := hy
+    refine ⟨X + Y, fun τ => ?_⟩
+    rw [tmul_add, map_add, hX, hY, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [Pi.add_apply, map_add, add_smul]
+  | smul b x _ hx =>
+    obtain ⟨X, hX⟩ := hx
+    refine ⟨b • X, fun τ => ?_⟩
+    rw [coord_smul, hX, Finset.smul_sum]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [smul_smul, Pi.smul_apply, Algebra.smul_def, map_mul]
+
+theorem lift_length : ∀ (L : Type) [Field L] [NumberField L] (B : HermitianBundle.{0} L) (F : Submodule (𝓞 L) B.carrier) (i : ℕ) (f : Fin i → F) (c : F →ₗ[𝓞 L] (Fin i → L)), (∀ x, ∃ (D : 𝓞 L) (a : Fin i → 𝓞 L), D ≠ 0 ∧ D • x = ∑ j, a j • f j ∧ ∀ j, (D : L) * c x j = a j) → ∀ (K : Type) [Field K] [NumberField K] [Algebra L K] (x : Fin i → K), x ∈ Submodule.span (𝓞 K) ((fun (w : Fin i → L) j => algebraMap L K (w j)) '' (LinearMap.range c : Submodule (𝓞 L) (Fin i → L))) → ∃ X : (B.baseChange K).carrier, ∀ τ : K →+* ℂ, ((B.baseChange K).metric.form τ).inner ((1 : ComplexAt τ) ⊗ₜ[𝓞 K] X) ((1 : ComplexAt τ) ⊗ₜ[𝓞 K] X) = star (fun j => τ (x j)) ⬝ᵥ (gramMat B (τ.comp (algebraMap L K)) (fun j => (f j : B.carrier)) *ᵥ fun j => τ (x j)) := by
+  intro L _ _ B F i f c hc K _ _ _ x hx
+  obtain ⟨X, hX⟩ := exists_lift F f c hc x hx
+  refine ⟨X, fun τ => ?_⟩
+  change inner ℂ (FibreSpace.equiv B.metric (τ.comp (algebraMap L K))
+      (baseChangeCoord τ ((1 : ComplexAt τ) ⊗ₜ[𝓞 K] X)))
+    (FibreSpace.equiv B.metric (τ.comp (algebraMap L K))
+      (baseChangeCoord τ ((1 : ComplexAt τ) ⊗ₜ[𝓞 K] X))) = _
+  rw [hX τ]
+  simp only [map_sum, map_smul, sum_inner, inner_sum, inner_smul_left, inner_smul_right]
+  simp only [dotProduct, mulVec, Pi.star_apply, Finset.mul_sum]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
+  rw [starRingEnd_apply]
+  have e : gramMat B (τ.comp (algebraMap L K)) (fun j => (f j : B.carrier)) a b =
+      inner ℂ (FibreSpace.equiv B.metric (τ.comp (algebraMap L K))
+          ((1 : ComplexAt (τ.comp (algebraMap L K))) ⊗ₜ[𝓞 L] (f a : B.carrier)))
+        (FibreSpace.equiv B.metric (τ.comp (algebraMap L K))
+          ((1 : ComplexAt (τ.comp (algebraMap L K))) ⊗ₜ[𝓞 L] (f b : B.carrier))) := rfl
+  rw [e]
+  ring
+
+end
+
+end GlobalTheory.CompanionTheory.Ar.Lines.Lift
+end
+
+open NumberField TensorProduct GroundTheory.Heights₂.Heights GlobalTheory.CompanionTheory.Ar.Lines Matrix
+open scoped ComplexOrder nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.baseChange_inner_self_eq_gramMat_form : ∀ (L : Type) [Field L] [NumberField L] (B : HermitianBundle.{0} L) (F : Submodule (𝓞 L) B.carrier) (i : ℕ) (f : Fin i → F) (c : F →ₗ[𝓞 L] (Fin i → L)), (∀ x, ∃ (D : 𝓞 L) (a : Fin i → 𝓞 L), D ≠ 0 ∧ D • x = ∑ j, a j • f j ∧ ∀ j, (D : L) * c x j = a j) → ∀ (K : Type) [Field K] [NumberField K] [Algebra L K] (x : Fin i → K), x ∈ Submodule.span (𝓞 K) ((fun (w : Fin i → L) j => algebraMap L K (w j)) '' (LinearMap.range c : Submodule (𝓞 L) (Fin i → L))) → ∃ X : (B.baseChange K).carrier, ∀ τ : K →+* ℂ, ((B.baseChange K).metric.form τ).inner ((1 : ComplexAt τ) ⊗ₜ[𝓞 K] X) ((1 : ComplexAt τ) ⊗ₜ[𝓞 K] X) = star (fun j => τ (x j)) ⬝ᵥ (gramMat B (τ.comp (algebraMap L K)) (fun j => (f j : B.carrier)) *ᵥ fun j => τ (x j)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Lines.Lift.lift_length
+end
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
 open GroundTheory.Heights₂.Heights TensorProduct
@@ -325,3 +812,4 @@ theorem short_vector_of_submodule : LineOfLargeDegree.Statement → ∀ (L : Typ
 
 end
 end GlobalTheory.CompanionTheory.Ar.Lines
+end

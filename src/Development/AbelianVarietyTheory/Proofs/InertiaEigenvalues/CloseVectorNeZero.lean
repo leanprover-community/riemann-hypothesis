@@ -7,8 +7,6 @@ open scoped LaurentSeries PowerSeries
 namespace GlobalTheory.PhiGam.Close
 variable {k : Type} [Field k]
 
-theorem vv_alg : vv k = algebraMap k⟦X⟧ k⸨X⸩ PowerSeries.X := by
-  simp [vv]
 
 variable {V : Type} [AddCommGroup V] [Module k⸨X⸩ V] [Module k⟦X⟧ V] [Module k V]
   [IsScalarTower k⟦X⟧ k⸨X⸩ V]

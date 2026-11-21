@@ -1,9 +1,20 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AnisotropicIteratedIntegrabilityStatement
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AnisotropicIteratedIntegrability
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUniqueNormalizedHaarMeasureAdelicUnitary
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsClosedNFlag
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUnitOfCocompact
 
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta GlobalTheory.Per MeasureTheory IsDedekindDomain NumberField
+open GlobalTheory.IndefiniteRowSideFullHecke.BesselData (hA vecA actV)
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.theta_convolution_anisotropic : ∀ (D : D7) (X : ThetaX D) (T : ThetaTied D X) (Wl : WeilTied D X T) (L A B : HSp D) (ι : A.V →ₗ[D.host.E] B.V) (d : FJDat L A B ι), 1 < A.rank → IsAniso A → ∀ μ 𝓕, μ.IsHaarMeasure → IsFundamentalDomain (GQ A) 𝓕 μ → ∀ ν 𝓝, IsUnitN B d.eM ν 𝓝 → ∀ s : GA D A → GA D B, (∀ h, EmbRel B A ι (s h) h) → ∀ (Φ : X.Sch L A) φ F, IsAutFun A φ → IsAutFun B F → d.Conv Wl.ψ (omZ Wl L A Φ) μ 𝓕 ν 𝓝 s φ F := by
+  first | exact @GlobalTheory.Per.FJConv.conv_of_isAniso | exact GlobalTheory.Per.FJConv.conv_of_isAniso | (intros; apply GlobalTheory.Per.FJConv.conv_of_isAniso <;> assumption)
+end
+
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta MeasureTheory IsDedekindDomain NumberField
@@ -210,13 +221,6 @@ structure Frame (A B : HSp D) (ι : A.V →ₗ[D.host.E] B.V) {ρ : ℕ} (e : Ma
   unit : IsUnitN B e ν 𝓝
   emb : ∀ h, EmbRel B A ι (s h) h
 
-theorem frame_nonempty (hg : IsGood A B ι) {ρ : ℕ} {e : Matrix (Fin B.rank) (Fin ρ) D.host.E} (he : IsIsoSub B e) :
-    Nonempty (Frame A B ι e) := by
-  obtain ⟨μ, hμ, -⟩ := GlobalTheory.Mem.VolMeasure.existsUnique_isVolMeasG D A hg.sigOK
-  obtain ⟨-, 𝓕, h𝓕⟩ := GlobalTheory.Mem.AdelicGroupFund.rightInvariant_and_exists_fundamentalDomain D A μ hμ.1
-  obtain ⟨ν, 𝓝, hN⟩ := UnitN.exists_isUnitN D B ρ e he
-  obtain ⟨s, -, hs, -⟩ := GlobalTheory.Mem.UnitaryEmb.exists_embHom D B A ι hg.isom
-  exact ⟨⟨μ, 𝓕, ν, 𝓝, s, ⟨hμ, h𝓕⟩, hN, fun h => (hs h _).2 rfl⟩⟩
 
 open Classical in
 
@@ -429,28 +433,11 @@ def SameTies {X X' : ThetaX D} {T : ThetaTied D X} {T' : ThetaTied D X'} (Wl : W
   HEq T'.ev T.ev ∧ HEq T'.eGf T.eGf ∧ T'.petF = T.petF ∧ T'.petR = T.petR ∧ HEq T'.eChr T.eChr ∧
     Wl'.ψ = Wl.ψ ∧ HEq Wl'.evS Wl.evS ∧ HEq Wl'.om Wl.om
 
-theorem sameOffPeriods_record {X : ThetaX D} {T : ThetaTied D X} (Wl : WeilTied D X T) :
-    SameOffPeriods X (record Wl) :=
-  ⟨_, _, _, _, _, _, (record Wl).Bper_right, (record Wl).Bper_add_left, (record Wl).Bper_smul_left,
-    (record Wl).Bper_odd, _, _, rfl⟩
 
-theorem sameTies_record {X : ThetaX D} {T : ThetaTied D X} (Wl : WeilTied D X T) : SameTies Wl (recordW Wl) :=
-  ⟨.rfl, .rfl, rfl, rfl, .rfl, rfl, .rfl, .rfl⟩
 
-theorem exists_allTied_perTied (D : D7) (X : ThetaX D) (P : TH.ProvA) (a : AllTied D X P) :
-    ∃ (X' : ThetaX D) (a' : AllTied D X' P), Nonempty (PerTied a'.W) ∧ SameOffPeriods X X' ∧ SameTies a.W a'.W ∧
-      HEq a'.kf.cpt a.kf.cpt ∧ HEq a'.kf.bas a.kf.bas ∧
-      ∀ u, IsBesPos a'.W (BesselCompare.toBes (IndefiniteRowSideFullHecke.BesselData.memberDatum D u)) (X'.posSym u) :=
-  ⟨record a.W, ⟨recordT a.W, a.sm, a.ty, recordW a.W, a.unr, { a.kf with }, a.phiUp, recordB a.W, a.real, a.prov⟩,
-    ⟨perTied a.W⟩, sameOffPeriods_record _, sameTies_record _, .rfl, .rfl,
-    fun _ => isBesPos_record a.W (isGood_member a.T) _ rfl⟩
 
-theorem exists_perTied (D : D7) (X : ThetaX D) (T : ThetaTied D X) (Wl : WeilTied D X T) :
-    ∃ (X' : ThetaX D) (T' : ThetaTied D X') (Wl' : WeilTied D X' T'), Nonempty (PerTied Wl') ∧ SameOffPeriods X X' ∧
-      SameTies Wl Wl' ∧ ∀ u, IsBesPos Wl' (BesselCompare.toBes (IndefiniteRowSideFullHecke.BesselData.memberDatum D u)) (X'.posSym u) :=
-  ⟨record Wl, recordT Wl, recordW Wl, ⟨perTied Wl⟩, sameOffPeriods_record Wl, sameTies_record Wl,
-    fun _ => isBesPos_record Wl (isGood_member T) _ rfl⟩
 
 end GlobalTheory.Per.Inhab
 
+end
 end

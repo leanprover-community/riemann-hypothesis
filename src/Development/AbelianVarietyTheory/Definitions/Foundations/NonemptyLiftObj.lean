@@ -110,8 +110,6 @@ theorem exists_ok (p : ℕ) [Fact p.Prime] (hp : p ≠ 2) :
 
 def ofRec {p : ℕ} [Fact p.Prime] (g : GL3Theta.G1 p) : G1 p := ⟨g.lam, g.abelian₂, g.C, g.wq, g.ex⟩
 
-theorem at_ofRec (D : D7) {p : ℕ} [Fact p.Prime] (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (g : GL3Theta.G1 p) :
-    At D cc δ (ofRec g) ↔ GL3Theta.At D cc δ g := Iff.rfl
 
 theorem exists_at (D : D7) (p : ℕ) [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) (cc : Ideal (𝓞 D.host.K))
     (h1 : IsCurveIdeal D cc) (h3 : Nat.Coprime (Ideal.absNorm cc) p) :
@@ -121,10 +119,6 @@ theorem exists_at (D : D7) (p : ℕ) [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) (
     ⟨h1, hδ⟩ h3
   exact ⟨δ, ofRec g, hg, hl⟩
 
-theorem exists_at_top (D : D7) (p : ℕ) [Fact p.Prime] : ∃ (δ : ℂ) (g : G1 p), At D ⊤ δ g := by
-  obtain ⟨lam⟩ := nonempty_place p
-  obtain ⟨δ, g, h, -⟩ := exists_at D p lam ⊤ ⟨by simp, by simp⟩ (by simp)
-  exact ⟨δ, g, h⟩
 
 theorem simeq_refl {σ : Type*} {p : ℕ} [Fact p.Prime] (f : MvPowerSeries σ ℂ_[p]) : Simeq f f := by
   refine ⟨by simp, fun α => ?_⟩
@@ -138,29 +132,6 @@ theorem simeq_refl {σ : Type*} {p : ℕ} [Fact p.Prime] (f : MvPowerSeries σ �
     simp [hn]
   · simp
 
-theorem not_simeq_X (p : ℕ) [Fact p.Prime] : ¬ Simeq (Xv () : MvPowerSeries Unit ℂ_[p]) 0 := by
-  rintro ⟨-, h⟩
-  have h1 := h (Finsupp.single () p)
-  rw [sub_zero] at h1
-  change ‖∑ n ∈ Finset.range (((Finsupp.single () p).sum fun _ k => k) + 1),
-    MvPowerSeries.coeff (Finsupp.single () p) ((MvPowerSeries.X () : MvPowerSeries Unit ℂ_[p]) ^ n) /
-      (n.factorial : ℂ_[p])‖ ≤ 1 at h1
-  rw [Finset.sum_eq_single p] at h1
-  · rw [MvPowerSeries.coeff_X_pow, if_pos rfl, norm_div, norm_one] at h1
-    have e : ((p.factorial : ℕ) : ℂ_[p]) = algebraMap ℚ_[p] ℂ_[p] ((p.factorial : ℕ) : ℚ_[p]) := by simp
-    have hlt : ‖((p.factorial : ℕ) : ℂ_[p])‖ < 1 := by
-      rw [e, norm_algebraMap', Padic.norm_natCast_lt_one_iff]
-      exact Nat.dvd_factorial (Fact.out : p.Prime).pos le_rfl
-    have hpos : 0 < ‖((p.factorial : ℕ) : ℂ_[p])‖ := by
-      rw [norm_pos_iff]; exact_mod_cast p.factorial_ne_zero
-    rw [div_le_one hpos] at h1
-    linarith
-  · intro n _ hn
-    rw [MvPowerSeries.coeff_X_pow, if_neg]
-    · simp
-    · intro e
-      exact hn ((Finsupp.single_injective ()) e).symm
-  · simp
 
 theorem coeff_one_logF (p : ℕ) [Fact p.Prime] : PowerSeries.coeff 1 (logF p) = 1 := by
   have hp : (p : ℕ) ^ 2 ≠ 1 := by
@@ -168,13 +139,6 @@ theorem coeff_one_logF (p : ℕ) [Fact p.Prime] : PowerSeries.coeff 1 (logF p) =
     nlinarith
   simp [logF, Finset.sum_range_succ, hp.symm]
 
-theorem hP_smul {p : ℕ} [Fact p.Prime] {ι : Type*} [Fintype ι] (a : ℂ_[p] × ℂ_[p]) (x y : ι → ℂ_[p] × ℂ_[p]) :
-    hP (fun k => a * x k) y = a * hP x y ∧ hP x (fun k => a * y k) = a.swap * hP x y := by
-  constructor
-  · simp [hP, Finset.mul_sum, mul_assoc]
-  · simp only [hP, Finset.mul_sum]
-    refine Finset.sum_congr rfl fun k _ => ?_
-    ext <;> simp <;> ring
 
 def stdLat (E : Type) [Field E] [NumberField E] (N : ℕ) : Submodule (𝓞 E) (Fin N → E) :=
   Submodule.pi Set.univ fun _ => (1 : Submodule (𝓞 E) E)
@@ -233,25 +197,5 @@ def frameChain (D : D7) (u : D.what₂.Word) : ColumnChain D.R D.what₂.Tau (D.
   sDiv := (D.mem u).C.sDiv
   sDiv_eq := (D.mem u).C.sDiv_eq
 
-theorem nonempty_liftObj (D : D7) (u : D.what₂.Word) (s : D.what₂.Tau → ℂ)
-    (hs : ∃ (M : IntermediateField ℚ ℂ) (_ : NumberField M), (∀ τ x, embT D τ x ∈ M) ∧ ∀ τ, ∃ t : M, (t : ℂ) = s τ ∧
-      ellT D M τ = Submodule.span (𝓞 M) {t}) : Nonempty (LiftObj D (frameChain D u)) := by
-  let _ := D.host.cmStar
-  exact ⟨{
-    mt := D.muTil
-    L0 := fun i => ⟨stdLat _ _, isSDLat_std _ _⟩
-    lattice_integral_coordinates := fun i x => mem_stdLat x
-    lat := fun i _ => ⟨stdLat _ _, isSDLat_std _ _⟩
-    dt := fun _ _ => 1
-    dt_lat := fun i c => (D.relDet_self _ _).symm
-    c13 := fun i _ => ⟨fun c => by simp [frameChain], fun c => by simp [frameChain]⟩
-    frm := fun i y => y.1
-    frm_inj := fun i _ => Subtype.val_injective
-    frm_range := fun i _ f => ⟨by rintro ⟨y, rfl⟩; exact y.2, fun h => ⟨⟨f, h⟩, rfl⟩⟩
-    frm_de := fun _ _ _ _ => rfl
-    dgen := s
-    dgen_gen := hs
-    S := ∅
-    Th := fun _ _ _ _ => 0 }⟩
 
 end GlobalTheory.Glob.IntegralWittCoefficients.Model

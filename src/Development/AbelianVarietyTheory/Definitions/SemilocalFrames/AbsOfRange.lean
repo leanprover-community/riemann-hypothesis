@@ -11,17 +11,6 @@ example : @HypZ = @Formalism.MainNotions.S.Cnt.Hyp0 := rfl
 example : @MomIn = @Formalism.MainNotions.S.UnitaryVolumeMass.stMOM := rfl
 example : @SchurSt = @Formalism.MainNotions.S.UnitaryVolumeMass.stSchur := rfl
 
-theorem abs_of_range (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT C0 A Cn C1 C : ℝ) (hn : 0 ≤ Cn)
-    (h : ABSr D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1 C) :
-    Formalism.MainNotions.S.UnitaryVolumeMass.stABS D large₂ C' Cl Cg cb Cu cT CT C0 A C1 C ∧
-      Formalism.MainNotions.S.UnitaryVolumeMass.stABSconv D large₂ C' Cl Cg cb Cu cT CT C0 A C1 := by
-  have h0 : ∀ τ, l1dist (lamD D τ) (lamD D τ) ≤ Cn * D.R.k * (D.R.m : ℝ) ^ 3 := fun τ => by
-    simp only [l1dist, sub_self, abs_zero, Finset.sum_const_zero]; positivity
-  constructor
-  · intro τ w w' hT θ hθ W hW S hS _ γ p hp θ' hθ' ν hν hH hD
-    exact (h hH.1 τ w w' hT θ hθ W hW _ (h0 τ) S hS γ p hp θ' hθ' ν hν hD).2
-  · intro τ w w' hT θ hθ W hW S hS _ γ p hp θ' hθ' ν hν hH hD
-    exact (h hH.1 τ w w' hT θ hθ W hW _ (h0 τ) S hS γ p hp θ' hθ' ν hν hD).1
 
 theorem vand_pos {n : ℕ} {x : Fin n → ℝ} (h : StrictAnti x) : 0 < Formalism.MainNotions.S.vand x :=
   Finset.prod_pos fun _ _ => Finset.prod_pos fun _ hb => sub_pos.2 (h (Finset.mem_filter.1 hb).2)

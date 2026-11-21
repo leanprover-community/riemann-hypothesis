@@ -432,20 +432,7 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdel
         gcongr
         exact hsP.sum_le_tsum _ fun _ _ => by positivity
 
-theorem multipliable_eulerFactor (χ : UnitaryHeckeChar E) {s : ℂ} (hs : 1 < s.re) :
-    Multipliable fun P => χ.eulerFactor P s := by
-  have h1 : Summable fun P : HeightOneSpectrum (𝓞 E) =>
-      χ.valueAt P * (Ideal.absNorm P.asIdeal : ℂ) ^ (-s) :=
-    Summable.of_norm_bounded (summable_absNorm_rpow hs) fun P => χ.norm_term_le P s
-  have h2 := h1.clog_one_sub.neg.hasSum.cexp.multipliable
-  refine h2.congr fun P => ?_
-  simp only [Function.comp_apply]
-  rw [Complex.exp_neg, Complex.exp_log (χ.one_sub_ne_zero P (by linarith))]
-  rfl
 
-theorem hasProd_eulerFactor (χ : UnitaryHeckeChar E) (s : {s : ℂ // 1 < s.re}) :
-    HasProd (fun P => χ.eulerFactor P s) (χ.finiteL s) :=
-  (χ.multipliable_eulerFactor s.2).hasProd
 
 end UnitaryHeckeChar
 
@@ -518,31 +505,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdel
     rfl
   rw [_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleNorm, MonoidHom.mul_apply, hinf, hfin, prod_abs_eq_one x.ne_zero]
 
-theorem continuous_finiteIdeleNorm : Continuous (finiteIdeleNorm (E := E)) := by
-  have hO : IsOpen {a : FiniteAdeleRing (𝓞 E) E | ∀ v, a v ∈ v.adicCompletionIntegers E} :=
-    RestrictedProduct.isOpen_forall_mem
-      (A := fun v : HeightOneSpectrum (𝓞 E) => (v.adicCompletionIntegers E : Set (v.adicCompletion E)))
-      fun _ => Valued.isOpen_valuationSubring _
-  have h1 : Continuous fun x : Idele E => x.val.2 := continuous_snd.comp Units.continuous_val
-  have h2 : Continuous fun x : Idele E => (x⁻¹).val.2 := h1.comp continuous_inv
-  have key : ∀ y : Idele E, (∀ v, y.val.2 v ∈ v.adicCompletionIntegers E) →
-      (∀ v, (y⁻¹).val.2 v ∈ v.adicCompletionIntegers E) → finiteIdeleNorm y = 1 := by
-    intro y hy hy'
-    refine finprod_eq_one_of_forall_eq_one fun v => norm_eq_one_of_valued ?_
-    have e : y.val.2 v * (y⁻¹).val.2 v = 1 :=
-      congrArg (fun a : AdeleRing (𝓞 E) E => a.2 v) y.mul_inv
-    have e' := congrArg Valued.v e
-    rw [map_mul, map_one] at e'
-    exact eq_one_of_one_le_mul_left (hy v) (hy' v) e'.ge
-  refine continuous_iff_continuousAt.mpr fun x => ?_
-  have hc : Continuous fun y : Idele E => x⁻¹ * y := continuous_const.mul continuous_id
-  have hU := (hO.preimage (h1.comp hc)).inter (hO.preimage (h2.comp hc))
-  refine (continuousAt_const (y := finiteIdeleNorm x)).congr ?_
-  filter_upwards [hU.mem_nhds (x := x) ⟨fun v => by
-    simp only [Function.comp_apply, inv_mul_cancel]; exact one_mem _, fun v => by
-    simp only [Function.comp_apply, inv_mul_cancel, inv_one]; exact one_mem _⟩] with y hy
-  have := key _ hy.1 hy.2
-  rw [← mul_one (finiteIdeleNorm x), ← this, ← map_mul, mul_inv_cancel_left]
 
 open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
 open scoped RestrictedProduct in

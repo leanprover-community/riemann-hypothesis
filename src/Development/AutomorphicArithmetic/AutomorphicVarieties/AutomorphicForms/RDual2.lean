@@ -163,8 +163,6 @@ theorem isAutForm_dualFn {φ : Sm E a} (h : IsAutForm φ) : IsAutForm (dualFn E 
 theorem isCuspForm_dualFn {φ : Sm E a} (h : IsCuspForm φ) : IsCuspForm (dualFn E a φ) :=
   ⟨isAutForm_dualFn h.1, isCuspidal_invT h.1.left h.2⟩
 
-theorem dualFn_mulChi (χ : HChar E) (φ : Sm E a) : dualFn E a (mulChi a χ φ) = mulChi a χ⁻¹ (dualFn E a φ) :=
-  Subtype.ext <| funext fun g => by simp only [dualFn_apply, mulChi_apply, chiDet_invT]
 
 namespace CuspSub
 
@@ -209,10 +207,6 @@ theorem locRep_toDual (w : HeightOneSpectrum (𝓞 E)) (g : GL (Fin a) (w.adicCo
   ext φ
   rw [mem_dual, mem_dual, dualFn_dualFn]
 
-theorem dual_twist (χ : HChar E) : dual (π.twist χ) = π.dual.twist χ⁻¹ := CuspSub.ext <| by
-  change (π.V.map _).map _ = (π.V.map _).map _
-  rw [← Submodule.map_comp, ← Submodule.map_comp]
-  exact congrArg (fun f => π.V.map f) (LinearMap.ext (dualFn_mulChi χ))
 
 variable {π} {π' : CuspSub E a}
 
@@ -247,12 +241,7 @@ theorem IsLocComp.dual {w : HeightOneSpectrum (𝓞 E)} {σ : SmIrr (GL (Fin a) 
     rw [locRep_toDual]
     exact congrArg _ (hf _ v)
 
-theorem hasFixed_dual {U : Subgroup (GL (Fin a) (Af E))} (hU : ∀ u ∈ U, invT a (Af E) u ∈ U)
-    (h : Af.HasFixed π.finPart U) : Af.HasFixed π.dual.finPart U :=
-  hasFixed_invT (toDual π) (finPart_toDual π) hU h
 
-theorem hasFixed_KLev_dual {M : ℕ} (h : Af.HasFixed π.finPart (Af.KLev E a M)) :
-    Af.HasFixed π.dual.finPart (Af.KLev E a M) := hasFixed_dual (fun _ => invT_mem_KLev) h
 
 theorem IsRegAlg.dual (h : π.IsRegAlg) : π.dual.IsRegAlg := fun v => by
   obtain ⟨m, h1, h2, h3⟩ := h v

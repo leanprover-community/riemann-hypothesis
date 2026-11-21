@@ -125,17 +125,7 @@ theorem rDuO_cont (i : D.nd.Loc) (r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV)
     (rO D.nd i r x g⁻¹).transpose
   exact hc.smul ((hr x).comp hinv).matrix_transpose
 
-theorem split_bound_ge_ten (L : SizeData₂ D) (h : (10 : ℝ) ≤ L.sc.x ^ (L.sc.ez / 5)) : 10 ≤ D.host.splitBound :=
-  (Nat.le_floor (by exact_mod_cast h)).trans L.split_tie
 
-theorem split_bound_ge_ten_of_x (L : SizeData₂ D) (h : (10 : ℝ) ^ (5 / L.sc.ez) ≤ L.sc.x) :
-    10 ≤ D.host.splitBound := by
-  have hez : 0 < L.sc.ez := div_pos L.sc.eps_pos (lt_of_lt_of_le one_pos L.sc.one_le_J)
-  apply split_bound_ge_ten L
-  calc (10 : ℝ) = ((10 : ℝ) ^ (5 / L.sc.ez)) ^ (L.sc.ez / 5) := by
-        rw [← Real.rpow_mul (by norm_num), show 5 / L.sc.ez * (L.sc.ez / 5) = 1 by field_simp]
-        simp
-    _ ≤ L.sc.x ^ (L.sc.ez / 5) := Real.rpow_le_rpow (by positivity) h (div_nonneg hez.le (by norm_num))
 
 section Cond
 
@@ -201,22 +191,7 @@ def JointClosingConditions : Prop :=
 
 variable {L HW i r ρ π}
 
-theorem JointCond_81_B_of (hO : LitGoodO) (hFont : Formalism.MainNotions.TruncatedSeriesCountingIdentities.FontaineAtPlacesOverL (D := D) i)
-    (hr : Formalism.MainNotions.TruncatedSeriesCountingIdentities.FamilyContinuous (D := D) i r) {C₂ : ℝ} (h : JointSecondConstantCondition L HW i r ρ π C₂) :
-    LocalRepresentationBoundCondition L HW C₂ i r ρ π := by
-  intro w hw
-  refine ⟨(h w hw).1, fun Cx hG => ?_⟩
-  obtain ⟨Wd, hb, hW⟩ := (h w hw).2 Cx hG
-  exact ⟨Wd, hb.toBase hO hFont hr, hW⟩
 
-theorem JointCond_81_CD_of (hO : LitGoodO) (hFont : Formalism.MainNotions.TruncatedSeriesCountingIdentities.FontaineAtPlacesOverL (D := D) i)
-    (hr : Formalism.MainNotions.TruncatedSeriesCountingIdentities.FamilyContinuous (D := D) i r) (h : JointClosingConditions L HW i r ρ π) :
-    LocalRepresentationCongruenceCondition L HW i r ρ π := by
-  intro w hw
-  refine ⟨(h w hw).1, fun Cx hG => ?_⟩
-  obtain ⟨Wd, hb, hbox, hW⟩ := (h w hw).2 Cx hG
-  have hB := hb.toBase hO hFont hr
-  exact ⟨Wd, hB, hbox, hW.imp_right fun hd => ⟨WordBase.toC (hFont w hw Cx) hB, hd⟩⟩
 
 end Cond
 

@@ -1,7 +1,26 @@
-import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.TwistedPieces.FiniteDimensionalDescent.DescOf
+import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.TwistedPieces.FiniteDimensionalDescent.PieceGood
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.TwistedPieces.FiniteDimensionalDescent.RestrictedCharpolys.RestrL
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.TwistedPieces.FiniteDimensionalDescent.ClosedOrbitPieces.PieceGood
 
+section
+namespace PositivityTheory.RgUd.TP.Desc.Asm
+
+open PositivityTheory.RgUd.T PositivityTheory.RgUd.TP PositivityTheory.RgUd.TP.Desc
+
+variable (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+
+theorem desc_of (hR : Restr k) (hP : PieceGood k) (p : ℕ) [Fact p.Prime] [CharP k p]
+    (hU : PositivityTheory.RgUd.T.Desc.SLF.Unimod (k := k)) : Desc k := by
+  refine ⟨fun n Z => mu Z, fun n Z hZ χ => ?_⟩
+  obtain ⟨N, q, Z', hZ', hmu, hq, hr, hb, hpull⟩ := hR p n Z hZ
+  obtain ⟨l, hl⟩ := hpull χ
+  obtain ⟨m, F, hF, hg⟩ := hl fun χ' _ => hP p hU N q Z' hZ' hq hr hb χ'
+  refine ⟨m, F, hF, fun i => (hg i).imp_right fun ⟨N', S, hS, hlt, hv⟩ ih => hv (ih N' S hS hlt)⟩
+
+end PositivityTheory.RgUd.TP.Desc.Asm
+end
+
+section
 namespace PositivityTheory.RgUd.TP.Desc.Final
 
 open PositivityTheory.RgUd.T PositivityTheory.RgUd.TP PositivityTheory.RgUd.TP.Desc
@@ -12,3 +31,4 @@ theorem desc (p : ℕ) [Fact p.Prime] [CharP k p] (hU : PositivityTheory.RgUd.T.
   Asm.desc_of k (Restr.Final.restr k) (Piece.Final.pieceGood k) p hU
 
 end PositivityTheory.RgUd.TP.Desc.Final
+end

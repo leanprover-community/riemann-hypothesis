@@ -120,36 +120,6 @@ private theorem tied_pkg_lemma_3 (P : RowSideFamily ex) (hr : RowsHold0_3 P) (X 
     (congr_arg_heq Sp hZs.symm) (C' := Pk.core.cols.col) (hC'.trans hCol.symm) hT'
   exact ⟨NuC'', I'', hT'', hI''.trans hI'⟩
 
-theorem pkg_of_rows (T : TiedDataSK ex) (P : RowSideFamily ex) (hr : RowsHold3 P) (X : Formalism.L2.Col.Fields)
-    (e : X.Tau → (X.E →+* D.what₂.LL)) (c : ColRec3 (fieldsLL D X e) P.A3 P.Ps P.ψs)
-    (Sp : ∀ Zs : DefSub P.A3.fam3.amb3, SPer (c.face Zs)) (Zsc : DefSub P.A3.fam3.amb3 → IndefScale P.A3.fam3.base3)
-    (hCT : ColTie3 P X e c Sp) (_hCTT : ColTieT T P X e c)
-    (hR : DivRows3 D P.A3 P.P0 P.ψ0 P.Ps P.ψs P.Zs P.S0 P.S1 ex.p0 P.C P.NuC P.I) (C Cabs Cp CHp : ℝ) (cf : ConvFace P.A3.fam3.base3)
-    (Pk : IndefPkgR P.A3.fam3.amb3 (Formalism.IndefR.Cx.faceOf3 P.A3 P.P0 P.ψ0 P.Ps P.ψs c.face Sp Zsc) cf Cp CHp)
-    (hZs : Pk.Zs = P.Zs) (hRows : HEq Pk.core.base.toIndefRows (Classical.choose hr.rows0))
-    (hS1 : HEq Pk.core.cols.toIndefData P.S1) (hCol : HEq Pk.core.cols.col P.C)
-    (Del h0 : ℕ) (lam0 C0 ce Ch Sw C1 : ℝ) (eJ : P.A3.fam3.base3.J ≃ Fin D.R.m)
-    (H : ∀ u, (ofRecord D L Del h0).NumFacts (letterOf D L Del h0 u) L.Nc lam0 C0 ce Ch Sw C1)
-    (hOpen : ∀ (NuC : ∀ w, Submodule (𝓞 D.what₂.LL) (Fin ((c.face Pk.Zs).a w) → D.what₂.LL))
-      (I : DivisionCompatibilityDataThreeSided D P.A3 P.P0 P.ψ0 P.Ps P.ψs Pk.Zs Pk.core.base.toIndefData Pk.core.cols.toIndefData ex.p0 (c.face Pk.Zs)),
-      DivTied3 D P.A3 P.P0 P.ψ0 P.Ps P.ψs Pk.Zs Pk.core.base.toIndefData Pk.core.cols.toIndefData ex.p0 Pk.core.cols.col NuC I →
-      HEq I P.I →
-      (Formalism.L2.G.ServJointF.ColBrF.mk P.A3.fam3.base3 (P.A3.side3 P.Ps P.ψs Pk.Zs) (c.face Pk.Zs) I.wU
-        (fun u x => I.eNu u x) I.tup (fun t F => I.jA t ((rV0 D P.A3.A P.Ps P.ψs t).mulVec F)) Pk.core.cols.μ).Tied ∧
-      ∃ inp : ∀ u, DivInputs0R Pk.core
-          (RecNums.ofNum (ofRecord D L Del h0) eJ (letterOf D L Del h0 u) ((D.mem u).A.T) L.Nc lam0 C0 ce Ch Sw C1 (H u))
-          (I.wU u) (Cons.nuOf L u (I.eNu u)) (sgRec L u),
-        ∃ hQ : ∀ u, ChainTie (inp u).ch (c.memQ (I.wU u)), ∀ u, FirstCols c.hE (hQ u))
-    (hN : NprimeDef D L) (Z : DivX D) (hk : ∀ σ, Z.kapR σ = Pk.core.cols.κ (InfinitePlace.mk σ))
-    (tH : ∀ u, NumRecTieH (ofRecord D L Del h0) L u (letterOf D L Del h0 u) ((D.mem u).A.T) Del h0)
-    (hh : ∀ u, D.div.h u = hExpl6 D L Z Ch u)
-    (hF : FTie L ((Formalism.IndefR.Cx.faceOf3 P.A3 P.P0 P.ψ0 P.Ps P.ψs c.face Sp Zsc Pk.Zs).Z.num Cp CHp) eJ)
-    (hC0 : 0 ≤ C) (hC1 : 50 * C0 + 10 ≤ C) (hC2 : 60 * ce ≤ C) (hCabs : 1 ≤ Cabs) (hLa : 0 ≤ L.La) :
-    Nonempty (DivisionPackageColumns (DivisionRowsColumns.split_model_to_place_model (L := L) P hr.toRowsHold0_3 X e c Sp Zsc) C Cabs) := by
-  obtain ⟨NuC', I', hT', hI'⟩ := tied_pkg_lemma_3 P hr.toRowsHold0_3 X e c Sp Zsc hCT hR Pk hZs hRows hS1 hCol
-  obtain ⟨brT, inp, hQ, h0c⟩ := hOpen NuC' I' hT' hI'
-  exact ⟨DivisionPackageColumns.ofTied P hr.toRowsHold0_3 X e c Sp Zsc C Cabs Cp CHp cf Pk hZs hRows NuC' I' hT' brT Del h0 lam0 C0 ce Ch Sw C1
-    eJ H inp hQ h0c hN Z hk tH hh hF hC0 hC1 hC2 hCabs hLa⟩
 
 end Sel
 
@@ -252,17 +222,12 @@ def SquareIntegrableColumnsCompatible.toK {T : TiedDataSK ex} {P : RowSideFamily
   muTie := K.muTie
   ok1 := K.ok1
 
-theorem SquareIntegrableColumnsCompatible.toK_c {T : TiedDataSK ex} {P : RowSideFamily ex} (K : SquareIntegrableColumnsCompatible T P) (hr : RowsHold0_3 P)
-    (Zsc : DefSub P.A3.fam3.amb3 → IndefScale P.A3.fam3.base3) : (K.toK hr Zsc).c = K.c := rfl
 
 def DivisionRowsKernel.toT (R : DivisionRowsKernel ex) : DivisionRowsColumns L :=
   { DivisionRowsColumns.split_model_to_place_model (L := L) R.P R.hr R.X R.e R.c R.Sp R.Zsc with s := 1, hOk := R.ok1 }
 
-theorem DivisionRowsKernel.tied_rows_scale_eq_one (R : DivisionRowsKernel ex) : R.toT.s = 1 := rfl
 
-theorem DivisionRowsKernel.toT_c (R : DivisionRowsKernel ex) : R.toT.c = R.c := rfl
 
-theorem DivisionRowsKernel.toT_toF (R : DivisionRowsKernel ex) : R.toT.toF = (DivisionRowsColumns.split_model_to_place_model (L := L) R.P R.hr R.X R.e R.c R.Sp R.Zsc).toF := rfl
 
 structure DivisionPackageKernel (Q : DivisionRowsKernel ex) (C Cabs : ℝ) extends DivisionPackageColumns Q.toT C Cabs where
   tupTie : ∀ t, tup t = Q.P.I.tup t

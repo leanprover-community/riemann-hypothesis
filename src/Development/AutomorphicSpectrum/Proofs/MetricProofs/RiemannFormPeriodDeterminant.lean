@@ -1,11 +1,277 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DifferentiableOnOfTendstoLocallyUniformlyOn
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.IterDifferentiableOn
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.AnalyticGroupLawBoundedCommutator
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.AnalyticDoublingMapLocalInverse
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.DoublingLimitLocalLogarithm
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.LocalLogarithmHomomorphism
+import BuildAid.ForwardExisting
 
+section
+section
+open Set Filter Topology Metric
+
+namespace GlobalTheory.CompanionTheory.Metric
+
+theorem norm_le_mul_norm_div_of_bounded_on_ball {V W : Type} [NormedAddCommGroup V]
+    [NormedSpace ℂ V] [NormedAddCommGroup W] [NormedSpace ℂ W] {ψ : V → W} {R M : ℝ}
+    (hd : DifferentiableOn ℂ ψ (ball (0 : V) R)) (h0 : ψ 0 = 0)
+    (hM : ∀ x ∈ ball (0 : V) R, ‖ψ x‖ ≤ M) {x : V} (hx : x ∈ ball (0 : V) R) :
+    ‖ψ x‖ ≤ M * ‖x‖ / R := by
+  have h := Complex.dist_le_div_mul_dist_of_mapsTo_ball (R₂ := M) hd (by
+    intro y hy
+    rw [mem_closedBall, h0, dist_zero_right]
+    exact hM y hy) hx
+  rw [h0, dist_zero_right, dist_zero_right] at h
+  calc ‖ψ x‖ ≤ M / R * ‖x‖ := h
+    _ = M * ‖x‖ / R := by ring
+
+theorem norm_le_of_vanishing_on_axes {B V W : Type} [NormedAddCommGroup B] [NormedSpace ℂ B]
+    [NormedAddCommGroup V] [NormedSpace ℂ V] [NormedAddCommGroup W] [NormedSpace ℂ W]
+    (b₀ : B) (G : B × V × V → W) (R : ℝ) (hR : 0 < R)
+    (hG : DifferentiableOn ℂ G (ball b₀ R ×ˢ ball (0 : V) R ×ˢ ball (0 : V) R))
+    (hb : ∀ p ∈ ball b₀ R ×ˢ ball (0 : V) R ×ˢ ball (0 : V) R, ‖G p‖ ≤ 1)
+    (hz : ∀ b ∈ ball b₀ R, ∀ s ∈ ball (0 : V) R, G (b, s, 0) = 0 ∧ G (b, 0, s) = 0) :
+    ∀ b ∈ ball b₀ R, ∀ s ∈ ball (0 : V) R, ∀ t ∈ ball (0 : V) R,
+      ‖G (b, s, t)‖ ≤ ‖s‖ * ‖t‖ / R ^ 2 := by
+  intro b hbm s hs t ht
+
+  have h1 : ∀ s ∈ ball (0 : V) R, ∀ t ∈ ball (0 : V) R, ‖G (b, s, t)‖ ≤ ‖s‖ / R := by
+    intro s hs t ht
+    have hd : DifferentiableOn ℂ (fun s' => G (b, s', t)) (ball (0 : V) R) :=
+      hG.comp ((differentiableOn_const b).prodMk (differentiableOn_id.prodMk (differentiableOn_const t)))
+        (by intro s' hs'; exact ⟨hbm, hs', ht⟩)
+    have h := norm_le_mul_norm_div_of_bounded_on_ball hd (hz b hbm t ht).2
+      (fun s' hs' => hb _ ⟨hbm, hs', ht⟩) hs
+    rwa [one_mul] at h
+
+  have hd : DifferentiableOn ℂ (fun t' => G (b, s, t')) (ball (0 : V) R) :=
+    hG.comp ((differentiableOn_const b).prodMk ((differentiableOn_const s).prodMk differentiableOn_id))
+      (by intro t' ht'; exact ⟨hbm, hs, ht'⟩)
+  have h := norm_le_mul_norm_div_of_bounded_on_ball hd (hz b hbm s hs).1
+    (fun t' ht' => h1 s hs t' ht') ht
+  calc ‖G (b, s, t)‖ ≤ ‖s‖ / R * ‖t‖ / R := h
+    _ = ‖s‖ * ‖t‖ / R ^ 2 := by ring
+
+end GlobalTheory.CompanionTheory.Metric
+end
+
+open Set Filter Topology Metric
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.analytic_group_law_bounded_commutator : ∀ {B V W : Type} [NormedAddCommGroup B] [NormedSpace ℂ B] [NormedAddCommGroup V] [NormedSpace ℂ V] [NormedAddCommGroup W] [NormedSpace ℂ W] (b₀ : B) (G : B × V × V → W) (R : ℝ), 0 < R → DifferentiableOn ℂ G (ball b₀ R ×ˢ ball (0 : V) R ×ˢ ball (0 : V) R) → (∀ p ∈ ball b₀ R ×ˢ ball (0 : V) R ×ˢ ball (0 : V) R, ‖G p‖ ≤ 1) → (∀ b ∈ ball b₀ R, ∀ s ∈ ball (0 : V) R, G (b, s, 0) = 0 ∧ G (b, 0, s) = 0) → ∀ b ∈ ball b₀ R, ∀ s ∈ ball (0 : V) R, ∀ t ∈ ball (0 : V) R, ‖G (b, s, t)‖ ≤ ‖s‖ * ‖t‖ / R ^ 2 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Metric.norm_le_of_vanishing_on_axes
+end
+
+section
+section
+open Set Filter Topology Metric
+
+namespace GlobalTheory.CompanionTheory.Metric.FamilyInverse
+
+theorem exists_analytic_family_inverse {B V : Type} [NormedAddCommGroup B] [NormedSpace ℂ B]
+    [CompleteSpace B] [NormedAddCommGroup V] [NormedSpace ℂ V] [CompleteSpace V]
+    (b₀ : B) (d : B × V → V) (han : AnalyticAt ℂ d (b₀, 0)) (h0 : d (b₀, 0) = 0)
+    (hd : HasFDerivAt d ((2 : ℂ) • ContinuousLinearMap.snd ℂ B V) (b₀, 0)) :
+    ∃ h : B × V → V, AnalyticAt ℂ h (b₀, 0) ∧ h (b₀, 0) = 0 ∧
+      (∀ᶠ p : B × V in 𝓝 (b₀, 0), d (p.1, h p) = p.2) ∧
+      (∀ᶠ p : B × V in 𝓝 (b₀, 0), h (p.1, d p) = p.2) := by
+  let Φ : B × V → B × V := fun p => (p.1, d p)
+  let L : (B × V) →L[ℂ] (B × V) :=
+    (ContinuousLinearMap.fst ℂ B V).prod ((2 : ℂ) • ContinuousLinearMap.snd ℂ B V)
+  let L' : (B × V) →L[ℂ] (B × V) :=
+    (ContinuousLinearMap.fst ℂ B V).prod ((2⁻¹ : ℂ) • ContinuousLinearMap.snd ℂ B V)
+  let Le : (B × V) ≃L[ℂ] (B × V) :=
+    ContinuousLinearEquiv.equivOfInverse L L'
+      (fun p => by simp [L, L', smul_smul]) (fun p => by simp [L, L', smul_smul])
+  have hLe : (Le : (B × V) →L[ℂ] (B × V)) = L := rfl
+  have hΦan : AnalyticAt ℂ Φ (b₀, 0) := analyticAt_fst.prod han
+  have hΦd : HasFDerivAt Φ L (b₀, 0) := hasFDerivAt_fst.prodMk hd
+  have hs : HasStrictFDerivAt Φ (Le : (B × V) →L[ℂ] (B × V)) (b₀, 0) := by
+    have := hΦan.hasStrictFDerivAt
+    rwa [hΦd.fderiv, ← hLe] at this
+  have hfix : Φ (b₀, 0) = (b₀, 0) := by simp [Φ, h0]
+  let P := hs.toOpenPartialHomeomorph Φ
+  have hPc : (P : B × V → B × V) = Φ := hs.toOpenPartialHomeomorph_coe
+  have hPan : AnalyticAt ℂ P.symm (P (b₀, 0)) :=
+    P.analyticAt_symm' (i := Le) hs.mem_toOpenPartialHomeomorph_source
+      (by rw [hPc]; exact hΦan) (by rw [hPc, hΦd.fderiv, hLe])
+  have hΨan : AnalyticAt ℂ P.symm (b₀, 0) := by
+    have : P (b₀, 0) = (b₀, 0) := by rw [hPc]; exact hfix
+    rwa [this] at hPan
+  have hright : ∀ᶠ q in 𝓝 (b₀, 0), Φ (P.symm q) = q := by
+    have := hs.eventually_right_inverse
+    rw [hfix] at this
+    exact this
+  have hleft : ∀ᶠ p in 𝓝 (b₀, 0), P.symm (Φ p) = p := hs.eventually_left_inverse
+  have hΨ0 : P.symm (b₀, 0) = (b₀, 0) := by
+    have := hs.localInverse_apply_image
+    rw [hfix] at this
+    exact this
+  refine ⟨fun q => (P.symm q).2, analyticAt_snd.comp hΨan, by simp [hΨ0], ?_, ?_⟩
+  · filter_upwards [hright] with q hq
+    have e1 := congrArg Prod.fst hq
+    have e2 := congrArg Prod.snd hq
+    have h1 : (P.symm q).1 = q.1 := e1
+    have h2 : d (P.symm q) = q.2 := e2
+    have h3 : (q.1, (P.symm q).2) = P.symm q := by rw [← h1]
+    rw [h3, h2]
+  · filter_upwards [hleft] with p hp
+    have e := congrArg Prod.snd hp
+    exact e
+
+end GlobalTheory.CompanionTheory.Metric.FamilyInverse
+end
+
+open Set Filter Topology Metric
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.analytic_doubling_map_local_inverse : ∀ {B V : Type} [NormedAddCommGroup B] [NormedSpace ℂ B] [CompleteSpace B] [NormedAddCommGroup V] [NormedSpace ℂ V] [CompleteSpace V] (b₀ : B) (d : B × V → V), AnalyticAt ℂ d (b₀, 0) → d (b₀, 0) = 0 → HasFDerivAt d ((2 : ℂ) • ContinuousLinearMap.snd ℂ B V) (b₀, 0) → ∃ h : B × V → V, AnalyticAt ℂ h (b₀, 0) ∧ h (b₀, 0) = 0 ∧ (∀ᶠ p : B × V in 𝓝 (b₀, 0), d (p.1, h p) = p.2) ∧ (∀ᶠ p : B × V in 𝓝 (b₀, 0), h (p.1, d p) = p.2) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Metric.FamilyInverse.exists_analytic_family_inverse
+end
+
+section
+section
+open Set Filter Topology Metric
+
+namespace GlobalTheory.CompanionTheory.Ar.Flat.LocalLog
+
+theorem koenigs_step {B V : Type} [NormedAddCommGroup B] [NormedAddCommGroup V]
+    [NormedSpace ℂ V] (b₀ : B) (h : B × V → V) (ρ C : ℝ) (hC : 0 ≤ C)
+    (hcontr : ∀ b ∈ ball b₀ ρ, ∀ s ∈ ball (0 : V) ρ, ‖h (b, s)‖ ≤ 3 / 5 * ‖s‖)
+    (hquad : ∀ b ∈ ball b₀ ρ, ∀ s ∈ ball (0 : V) ρ, ‖(2 : ℂ) • h (b, s) - s‖ ≤ C * ‖s‖ ^ 2)
+    {b : B} (hb : b ∈ ball b₀ ρ) {s : V} (hs : s ∈ ball (0 : V) ρ) (k : ℕ) :
+    dist ((2 : ℂ) ^ k • iter h k (b, s)) ((2 : ℂ) ^ (k + 1) • iter h (k + 1) (b, s))
+      ≤ C * ‖s‖ ^ 2 * (18 / 25) ^ k := by
+  rw [dist_eq_norm, iter_succ, pow_succ, mul_smul, ← smul_sub, norm_smul, norm_sub_rev]
+  have hx := iter_mem_ball b₀ h ρ hcontr hb hs k
+  have hxn := norm_iter_le b₀ h ρ hcontr hb hs k
+  have h2 : ‖(2 : ℂ) ^ k‖ = (2 : ℝ) ^ k := by simp
+  rw [h2]
+  calc (2 : ℝ) ^ k * ‖(2 : ℂ) • h (b, iter h k (b, s)) - iter h k (b, s)‖
+      ≤ (2 : ℝ) ^ k * (C * ‖iter h k (b, s)‖ ^ 2) :=
+        mul_le_mul_of_nonneg_left (hquad b hb _ hx) (by positivity)
+    _ ≤ (2 : ℝ) ^ k * (C * ((3 / 5) ^ k * ‖s‖) ^ 2) := by gcongr
+    _ = C * ‖s‖ ^ 2 * (18 / 25) ^ k := by
+        have e : (18 / 25 : ℝ) ^ k = 2 ^ k * ((3 / 5) ^ k) ^ 2 := by
+          rw [← pow_mul, mul_comm k 2, pow_mul, ← mul_pow]
+          norm_num
+        rw [e]
+        ring
+
+theorem koenigs_limit : ∀ {B V : Type} [NormedAddCommGroup B] [NormedSpace ℂ B]
+    [NormedAddCommGroup V] [NormedSpace ℂ V] [CompleteSpace V] (b₀ : B) (h : B × V → V)
+    (ρ C : ℝ), 0 < ρ → 0 ≤ C →
+    (∀ b ∈ ball b₀ ρ, ∀ s ∈ ball (0 : V) ρ, ‖h (b, s)‖ ≤ 3 / 5 * ‖s‖) →
+    (∀ b ∈ ball b₀ ρ, ∀ s ∈ ball (0 : V) ρ, ‖(2 : ℂ) • h (b, s) - s‖ ≤ C * ‖s‖ ^ 2) →
+    ∃ L : B × V → V,
+      TendstoUniformlyOn (fun (k : ℕ) (p : B × V) => (2 : ℂ) ^ k • iter h k p) L atTop
+        (ball b₀ ρ ×ˢ ball (0 : V) ρ) ∧
+      ∀ b ∈ ball b₀ ρ, ∀ s ∈ ball (0 : V) ρ, ‖L (b, s) - s‖ ≤ 4 * C * ‖s‖ ^ 2 := by
+  intro B V _ _ _ _ _ b₀ h ρ C hρ hC hcontr hquad
+  set F : ℕ → B × V → V := fun k p => (2 : ℂ) ^ k • iter h k p with hF
+  have hstep : ∀ p ∈ ball b₀ ρ ×ˢ ball (0 : V) ρ, ∀ k : ℕ,
+      dist (F k p) (F (k + 1) p) ≤ C * ‖p.2‖ ^ 2 * (18 / 25) ^ k := by
+    rintro ⟨b, s⟩ ⟨hb, hs⟩ k
+    exact koenigs_step b₀ h ρ C hC hcontr hquad hb hs k
+  have hr : (18 / 25 : ℝ) < 1 := by norm_num
+  have hcauchy : ∀ p ∈ ball b₀ ρ ×ˢ ball (0 : V) ρ, CauchySeq (fun k => F k p) :=
+    fun p hp => cauchySeq_of_le_geometric _ _ hr (hstep p hp)
+  let L : B × V → V := fun p => limUnder atTop (fun k => F k p)
+  have hlim : ∀ p ∈ ball b₀ ρ ×ˢ ball (0 : V) ρ, Tendsto (fun k => F k p) atTop (𝓝 (L p)) :=
+    fun p hp => (hcauchy p hp).tendsto_limUnder
+  have hdist : ∀ p ∈ ball b₀ ρ ×ˢ ball (0 : V) ρ, ∀ n : ℕ,
+      dist (F n p) (L p) ≤ C * ‖p.2‖ ^ 2 * (18 / 25) ^ n / (7 / 25) := by
+    intro p hp n
+    have h1 := dist_le_of_le_geometric_of_tendsto _ _ hr (hstep p hp) (hlim p hp) n
+    rwa [show (1 - 18 / 25 : ℝ) = 7 / 25 by norm_num] at h1
+  refine ⟨L, ?_, ?_⟩
+  · rw [Metric.tendstoUniformlyOn_iff]
+    intro ε hε
+    have hg : Tendsto (fun n : ℕ => C * ρ ^ 2 * (18 / 25 : ℝ) ^ n / (7 / 25)) atTop (𝓝 0) := by
+      have h1 := ((tendsto_pow_atTop_nhds_zero_of_lt_one (by norm_num : (0 : ℝ) ≤ 18 / 25) hr).const_mul
+        (C * ρ ^ 2)).div_const (7 / 25 : ℝ)
+      simpa using h1
+    filter_upwards [hg.eventually (gt_mem_nhds hε)] with n hn
+    rintro ⟨b, s⟩ hp
+    rw [dist_comm]
+    refine lt_of_le_of_lt ((hdist _ hp n).trans ?_) hn
+    have hs : ‖s‖ < ρ := by simpa using hp.2
+    have hsle : ‖s‖ ≤ ρ := hs.le
+    have hsq : ‖s‖ ^ 2 ≤ ρ ^ 2 := by gcongr
+    show C * ‖s‖ ^ 2 * (18 / 25) ^ n / (7 / 25) ≤ C * ρ ^ 2 * (18 / 25) ^ n / (7 / 25)
+    apply div_le_div_of_nonneg_right _ (by norm_num)
+    apply mul_le_mul_of_nonneg_right _ (by positivity)
+    exact mul_le_mul_of_nonneg_left hsq hC
+  · intro b hb s hs
+    have h0 := hdist (b, s) ⟨hb, hs⟩ 0
+    have e0 : F 0 (b, s) = s := by simp [hF]
+    rw [e0, dist_comm, dist_eq_norm] at h0
+    calc ‖L (b, s) - s‖ ≤ C * ‖s‖ ^ 2 * (18 / 25) ^ 0 / (7 / 25) := h0
+      _ ≤ 4 * C * ‖s‖ ^ 2 := by
+        rw [pow_zero, mul_one, div_le_iff₀ (by norm_num)]
+        nlinarith [mul_nonneg hC (sq_nonneg ‖s‖)]
+
+end GlobalTheory.CompanionTheory.Ar.Flat.LocalLog
+end
+
+open Set Filter Topology Metric
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.doubling_limit_local_logarithm : ∀ {B V : Type} [NormedAddCommGroup B] [NormedSpace ℂ B] [NormedAddCommGroup V] [NormedSpace ℂ V] [CompleteSpace V] (b₀ : B) (h : B × V → V) (ρ C : ℝ), 0 < ρ → 0 ≤ C → (∀ b ∈ ball b₀ ρ, ∀ s ∈ ball (0 : V) ρ, ‖h (b, s)‖ ≤ 3 / 5 * ‖s‖) → (∀ b ∈ ball b₀ ρ, ∀ s ∈ ball (0 : V) ρ, ‖(2 : ℂ) • h (b, s) - s‖ ≤ C * ‖s‖ ^ 2) → ∃ L : B × V → V, TendstoUniformlyOn (fun (k : ℕ) (p : B × V) => (2 : ℂ) ^ k • GlobalTheory.CompanionTheory.Ar.Flat.LocalLog.iter h k p) L atTop (ball b₀ ρ ×ˢ ball (0 : V) ρ) ∧ ∀ b ∈ ball b₀ ρ, ∀ s ∈ ball (0 : V) ρ, ‖L (b, s) - s‖ ≤ 4 * C * ‖s‖ ^ 2 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Flat.LocalLog.koenigs_limit
+end
+
+section
+section
+open Set Filter Topology Metric
+
+namespace GlobalTheory.CompanionTheory.Ar.Flat.LocalLog
+
+theorem koenigs_limit_additive_for_law : ∀ {B V : Type} [NormedAddCommGroup B] [NormedSpace ℂ B] [NormedAddCommGroup V] [NormedSpace ℂ V] (b₀ : B) (h : B × V → V) (μ : B × V × V → V) (L : B × V → V) (ρ C : ℝ), 0 < ρ → 0 ≤ C → (∀ b ∈ ball b₀ ρ, ∀ s ∈ ball (0 : V) ρ, ‖h (b, s)‖ ≤ 3 / 5 * ‖s‖) → (∀ b ∈ ball b₀ ρ, ∀ s ∈ ball (0 : V) ρ, ∀ t ∈ ball (0 : V) ρ, ‖μ (b, s, t) - s - t‖ ≤ C * ‖s‖ * ‖t‖) → (∀ b ∈ ball b₀ ρ, ∀ s ∈ ball (0 : V) ρ, ∀ t ∈ ball (0 : V) ρ, h (b, μ (b, s, t)) = μ (b, h (b, s), h (b, t))) → (∀ b ∈ ball b₀ ρ, ∀ s ∈ ball (0 : V) ρ, Tendsto (fun k : ℕ => (2 : ℂ) ^ k • GlobalTheory.CompanionTheory.Ar.Flat.LocalLog.iter h k (b, s)) atTop (𝓝 (L (b, s)))) → ∀ b ∈ ball b₀ ρ, ∀ s ∈ ball (0 : V) ρ, ∀ t ∈ ball (0 : V) ρ, μ (b, s, t) ∈ ball (0 : V) ρ → L (b, μ (b, s, t)) = L (b, s) + L (b, t) := by
+  intro B V _ _ _ _ b₀ h μ L ρ C _hρ hC hcontr happrox hhom hlim b hb s hs t ht hm
+  have hsk := fun k => iter_mem_ball b₀ h ρ hcontr hb hs k
+  have htk := fun k => iter_mem_ball b₀ h ρ hcontr hb ht k
+  have hiter : ∀ k : ℕ, iter h k (b, μ (b, s, t)) = μ (b, iter h k (b, s), iter h k (b, t)) := by
+    intro k
+    induction k with
+    | zero => rw [iter_zero, iter_zero, iter_zero]
+    | succ k ih =>
+      rw [iter_succ, iter_succ, iter_succ, ih]
+      exact hhom b hb _ (hsk k) _ (htk k)
+  have hn2 : ‖(2 : ℂ)‖ = 2 := by simp
+  have herr : Tendsto (fun k : ℕ => (2 : ℂ) ^ k •
+      (μ (b, iter h k (b, s), iter h k (b, t)) - iter h k (b, s) - iter h k (b, t))) atTop (𝓝 0) := by
+    have hg : Tendsto (fun k : ℕ => C * ‖s‖ * ‖t‖ * (18 / 25 : ℝ) ^ k) atTop (𝓝 0) := by
+      have := tendsto_pow_atTop_nhds_zero_of_lt_one (by norm_num : (0 : ℝ) ≤ 18 / 25)
+        (by norm_num : (18 / 25 : ℝ) < 1)
+      simpa using this.const_mul (C * ‖s‖ * ‖t‖)
+    refine squeeze_zero_norm (fun k => ?_) hg
+    rw [norm_smul, norm_pow, hn2]
+    have h1 := happrox b hb _ (hsk k) _ (htk k)
+    have h2 := norm_iter_le b₀ h ρ hcontr hb hs k
+    have h3 := norm_iter_le b₀ h ρ hcontr hb ht k
+    calc (2 : ℝ) ^ k * ‖μ (b, iter h k (b, s), iter h k (b, t)) - iter h k (b, s) - iter h k (b, t)‖
+        ≤ 2 ^ k * (C * ‖iter h k (b, s)‖ * ‖iter h k (b, t)‖) :=
+          mul_le_mul_of_nonneg_left h1 (by positivity)
+      _ ≤ 2 ^ k * (C * ((3 / 5) ^ k * ‖s‖) * ((3 / 5) ^ k * ‖t‖)) := by
+          apply mul_le_mul_of_nonneg_left _ (by positivity)
+          exact mul_le_mul (mul_le_mul_of_nonneg_left h2 hC) h3 (norm_nonneg _)
+            (mul_nonneg hC (by positivity))
+      _ = C * ‖s‖ * ‖t‖ * (18 / 25) ^ k := by
+          rw [show (18 / 25 : ℝ) = 2 * (3 / 5) * (3 / 5) by norm_num, mul_pow, mul_pow]
+          ring
+  have hsum : Tendsto (fun k : ℕ => (2 : ℂ) ^ k • iter h k (b, μ (b, s, t))) atTop
+      (𝓝 (L (b, s) + L (b, t) + 0)) := by
+    refine (((hlim b hb s hs).add (hlim b hb t ht)).add herr).congr (fun k => ?_)
+    rw [hiter k, smul_sub, smul_sub]
+    abel
+  rw [add_zero] at hsum
+  exact tendsto_nhds_unique (hlim b hb _ hm) hsum
+
+end GlobalTheory.CompanionTheory.Ar.Flat.LocalLog
+end
+
+open Set Filter Topology Metric
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_logarithm_homomorphism : ∀ {B V : Type} [NormedAddCommGroup B] [NormedSpace ℂ B] [NormedAddCommGroup V] [NormedSpace ℂ V] (b₀ : B) (h : B × V → V) (μ : B × V × V → V) (L : B × V → V) (ρ C : ℝ), 0 < ρ → 0 ≤ C → (∀ b ∈ ball b₀ ρ, ∀ s ∈ ball (0 : V) ρ, ‖h (b, s)‖ ≤ 3 / 5 * ‖s‖) → (∀ b ∈ ball b₀ ρ, ∀ s ∈ ball (0 : V) ρ, ∀ t ∈ ball (0 : V) ρ, ‖μ (b, s, t) - s - t‖ ≤ C * ‖s‖ * ‖t‖) → (∀ b ∈ ball b₀ ρ, ∀ s ∈ ball (0 : V) ρ, ∀ t ∈ ball (0 : V) ρ, h (b, μ (b, s, t)) = μ (b, h (b, s), h (b, t))) → (∀ b ∈ ball b₀ ρ, ∀ s ∈ ball (0 : V) ρ, Tendsto (fun k : ℕ => (2 : ℂ) ^ k • GlobalTheory.CompanionTheory.Ar.Flat.LocalLog.iter h k (b, s)) atTop (𝓝 (L (b, s)))) → ∀ b ∈ ball b₀ ρ, ∀ s ∈ ball (0 : V) ρ, ∀ t ∈ ball (0 : V) ρ, μ (b, s, t) ∈ ball (0 : V) ρ → L (b, μ (b, s, t)) = L (b, s) + L (b, t) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Flat.LocalLog.koenigs_limit_additive_for_law
+end
+
+section
 section
 open Set Filter Topology Metric
 
@@ -212,3 +478,4 @@ open Set Filter Topology
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.holomorphic_group_law_germ : ∀ (n g : ℕ) (b₀ : Fin n → ℂ) (μ : (Fin n → ℂ) × (Fin g → ℂ) × (Fin g → ℂ) → (Fin g → ℂ)), AnalyticAt ℂ μ (b₀, 0, 0) → (∀ᶠ p : (Fin n → ℂ) × (Fin g → ℂ) in 𝓝 (b₀, 0), μ (p.1, p.2, 0) = p.2 ∧ μ (p.1, 0, p.2) = p.2) → (∀ᶠ p : (Fin n → ℂ) × (Fin g → ℂ) × (Fin g → ℂ) in 𝓝 (b₀, 0, 0), μ (p.1, p.2.1, p.2.2) = μ (p.1, p.2.2, p.2.1)) → (∀ᶠ p : (Fin n → ℂ) × (Fin g → ℂ) × (Fin g → ℂ) × (Fin g → ℂ) in 𝓝 (b₀, 0, 0, 0), μ (p.1, μ (p.1, p.2.1, p.2.2.1), p.2.2.2) = μ (p.1, p.2.1, μ (p.1, p.2.2.1, p.2.2.2))) → ∃ L : (Fin n → ℂ) × (Fin g → ℂ) → (Fin g → ℂ), AnalyticAt ℂ L (b₀, 0) ∧ (∀ᶠ b in 𝓝 b₀, L (b, 0) = 0 ∧ HasFDerivAt (fun s => L (b, s)) (ContinuousLinearMap.id ℂ (Fin g → ℂ)) 0) ∧ ∀ᶠ p : (Fin n → ℂ) × (Fin g → ℂ) × (Fin g → ℂ) in 𝓝 (b₀, 0, 0), L (p.1, μ p) = L (p.1, p.2.1) + L (p.1, p.2.2) := by
   atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Flat.exists_local_log_of_commutative_law
+end

@@ -119,13 +119,8 @@ def LinkTrivialLevelIsometry : Prop :=
       ∀ B : Base D cc δ, ∀ χ, IsChi D χ → EigenvectorPacketProperties B C χ) →
     aux₃ D C
 
-theorem isometry_linkage_trivial_level : LinkIso0 := G0.iso0
 
-theorem base_linkage_at_prime : LinkBaseP :=
-  fun D hp => base_exists_link D (isometry_extension_link D (isometry_linkage_trivial_level D)) hp
 
-theorem eigen_linkage_at_prime : LinkTrivialLevelIsometry :=
-  fun D C hA hper hΔ hp h => provision_extension_link D C hA hper hΔ (isometry_linkage_trivial_level D) hp h
 
 end Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity
 

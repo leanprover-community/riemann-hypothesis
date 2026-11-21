@@ -1,6 +1,435 @@
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CrossDiagonalMatching.DualSigmaApply
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CrossDiagonalMatching.Development
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CrossDiagonalMatching.Common
+import Formalism.SharpRestriction.GlobalSchurBounds.IntegralityOfRationalityLocal
+import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.NaturalTranslateAdelicFunction
+import Formalism.LocalToGlobal.GroupLattices.Joint0
 
+section
+noncomputable section
+
+namespace CrossDiaZero
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.product_first_zeroth_parts Formalism.L2.Forms Formalism.L2.GlobalTheoryTheory Formalism.L2.GlobalTheoryTheory.LocalLatticeBases Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.S0 Formalism.UG
+open NumberField IsDedekindDomain Matrix
+
+variable {D : D7} {u : D.what₂.Word}
+
+set_option maxHeartbeats 2000000 in
+set_option synthInstance.maxHeartbeats 400000 in
+
+theorem dnk_tld (T : Forms0 D u) (c : (D.mem u).C.cls 0) (y : Fin (D.R.N 0) → D.host.E)
+    (hy : y ∈ Ld D u 0 (Nat.zero_le _) c) :
+    (((D.mem u).A.T : ℕ) : 𝓞 D.host.E) • y ∈ clsCrd D u 0 (Nat.zero_le _) c := by
+  rw [Nat.cast_smul_eq_nsmul]
+  have hLd := Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.S0.dual_class_lattice_eq_global T.cls0 c
+  have hfin := tld_isLat (u := u) 0 (Nat.zero_le _) c
+  have hone := Formalism.L2.GlobalTheoryTheory.Comp.glob_one (F := D.host.F) hfin
+  have hdl : ∀ x ∈ Formalism.L2.GlobalTheoryTheory.Comp.dl (sigD D) (gramN D 0 (Nat.zero_le _)) T.cls0.lev.Lb,
+      ((D.mem u).A.T : ℕ) • x ∈ T.cls0.lev.Lb := by
+    intro x hx
+    unfold Formalism.L2.GlobalTheoryTheory.Comp.dl at hx
+    induction hx using Submodule.span_induction with
+    | mem x hx => rw [← Nat.cast_smul_eq_nsmul D.host.E]; exact T.cls0.lev.Lb_dual x hx
+    | zero => rw [smul_zero]; exact zero_mem _
+    | add x y _ _ ihx ihy => rw [smul_add]; exact add_mem ihx ihy
+    | smul a x _ ih => rw [smul_comm]; exact Submodule.smul_mem _ a ih
+  have hkey : ∀ w ∈ latS (F := D.host.F) (FiniteAdeleRing (𝓞 D.host.F) D.host.F) (tensInt (F := D.host.F) (FiniteAdeleRing (𝓞 D.host.F) D.host.F) (intOE D.host.E) (intAd D.host.F))
+      (Formalism.L2.GlobalTheoryTheory.Comp.dl (sigD D) (gramN D 0 (Nat.zero_le _)) T.cls0.lev.Lb),
+      ((D.mem u).A.T : ℕ) • w ∈ latS (F := D.host.F) (FiniteAdeleRing (𝓞 D.host.F) D.host.F) (tensInt (F := D.host.F) (FiniteAdeleRing (𝓞 D.host.F) D.host.F) (intOE D.host.E) (intAd D.host.F)) T.cls0.lev.Lb := by
+    intro w hw
+    unfold latS at hw ⊢
+    induction hw using Submodule.span_induction with
+    | mem x hx =>
+      obtain ⟨x, hx, rfl⟩ := hx
+      apply Submodule.subset_span
+      refine ⟨_, hdl x hx, ?_⟩
+      funext i
+      simp only [Pi.smul_apply, map_nsmul]
+    | zero => rw [smul_zero]; exact zero_mem _
+    | add x y _ _ ihx ihy => rw [smul_add]; exact add_mem ihx ihy
+    | smul a x _ ih => rw [smul_comm]; exact Submodule.smul_mem _ a ih
+  have hmem : ∀ (g : GL (Fin (D.R.N 0)) (TensorProduct D.host.F D.host.E (FiniteAdeleRing (𝓞 D.host.F) D.host.F)))
+      (Λ : Submodule (𝓞 D.host.E) (Fin (D.R.N 0) → D.host.E)) (x : Fin (D.R.N 0) → D.host.E),
+      x ∈ Formalism.UG.CS.globLat g Λ ↔ ((g⁻¹ : GL _ _) : Matrix _ _ _) *ᵥ
+        (fun i => inclE (F := D.host.F) (E := D.host.E) (FiniteAdeleRing (𝓞 D.host.F) D.host.F) (x i)) ∈ latS (F := D.host.F) (FiniteAdeleRing (𝓞 D.host.F) D.host.F) (tensInt (F := D.host.F) (FiniteAdeleRing (𝓞 D.host.F) D.host.F) (intOE D.host.E) (intAd D.host.F)) Λ :=
+    fun _ _ _ => Iff.rfl
+  rw [hLd, hmem] at hy
+  rw [← hone, hmem, inv_one, Units.val_one, Matrix.one_mulVec, T.cls0.y_lat c]
+  have e : (fun i => inclE (F := D.host.F) (E := D.host.E) (FiniteAdeleRing (𝓞 D.host.F) D.host.F) ((((D.mem u).A.T : ℕ) • y) i)) =
+      ((D.mem u).A.T : ℕ) • (fun i => inclE (F := D.host.F) (E := D.host.E) (FiniteAdeleRing (𝓞 D.host.F) D.host.F) (y i)) := by
+    funext i
+    simp only [Pi.smul_apply, map_nsmul]
+  rw [e, Matrix.mulVec_smul]
+  exact hkey _ hy
+
+theorem dnk_lk_le (T : Forms0 D u) (v : (D.mem u).A.vT) (c : (D.mem u).C.cls 0) :
+    Lk T.atT 0 (Nat.zero_le _) v c ≤ Ld D u 0 (Nat.zero_le _) c := sup_le (cls_le_ld T c) Submodule.smul_le_right
+
+set_option maxHeartbeats 2000000 in
+
+theorem dnk_lk_locP (T : Forms0 D u) (v : (D.mem u).A.vT) (c : (D.mem u).C.cls 0) :
+    Formalism.HermitianLatticesTheory.localization₂ (T.atT.Pv v) (Lk T.atT 0 (Nat.zero_le _) v c) ≤
+      Formalism.HermitianLatticesTheory.localization₂ (T.atT.Pv v) (clsCrd D u 0 (Nat.zero_le _) c) := by
+  intro x hx
+  have hx' : ∃ s ∈ (T.atT.Pv v).primeCompl, s • x ∈ Lk T.atT 0 (Nat.zero_le _) v c := hx
+  obtain ⟨s, hs, hsx⟩ := hx'
+  obtain ⟨a, ha, b, hb, hab⟩ := Submodule.mem_sup.mp hsx
+  obtain ⟨t, ht, y, hy, hty⟩ := exists_smul_eq_smul_of_mem_ideal_smul T.atT v (Ld D u 0 (Nat.zero_le _) c) b hb
+  show ∃ r ∈ (T.atT.Pv v).primeCompl, r • x ∈ clsCrd D u 0 (Nat.zero_le _) c
+  refine ⟨t * s, Submonoid.mul_mem _ (Ideal.mem_primeCompl_iff.mpr ht) hs, ?_⟩
+  rw [mul_smul, ← hab, smul_add, hty]
+  exact Submodule.add_mem _ (Submodule.smul_mem _ t ha) (dnk_tld T c y hy)
+
+set_option synthInstance.maxHeartbeats 400000 in
+set_option maxHeartbeats 4000000 in
+
+theorem dnk_char (T : Forms0 D u) (v : (D.mem u).A.vT) (c c1 : (D.mem u).C.cls 0)
+    (g : Module.Dual ((D.mem u).A.Fv v) ((D.fm u).lk 0 v c)) (γ : GL (Fin (D.R.N 0)) D.host.E)
+    (hl : Formalism.HermitianLatticesTheory.localization₂ (T.atT.Pv v) (mulLat (γ : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) (Ld D u 0 (Nat.zero_le _) c1)) =
+      Formalism.HermitianLatticesTheory.localization₂ (T.atT.Pv v) (clsCrd D u 0 (Nat.zero_le _) c))
+    (hfun : ∀ (x : ↥(Ld D u 0 (Nat.zero_le _) c1)) (hx : (γ : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ x.1 ∈ Lk T.atT 0 (Nat.zero_le _) v c),
+      (D.fm u).fv 0 v c1 (T.lv0.pr v c1 x) = g (T.lv0.prk v c ⟨_, hx⟩))
+    (y : Fin (D.R.N 0) → D.host.E) :
+    y ∈ Formalism.HermitianLatticesTheory.localization₂ (T.atT.Pv v) (mulLat (γ : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) (Lk T.atT 0 (Nat.zero_le _) v c1)) ↔
+      ∃ s : 𝓞 D.host.E, s ∉ T.atT.Pv v ∧ ∃ h : s • y ∈ Lk T.atT 0 (Nat.zero_le _) v c,
+        g (T.lv0.prk v c ⟨_, h⟩) = 0 := by
+  have memP : ∀ (L : Submodule (𝓞 D.host.E) (Fin (D.R.N 0) → D.host.E)) (z : Fin (D.R.N 0) → D.host.E),
+      z ∈ Formalism.HermitianLatticesTheory.localization₂ (T.atT.Pv v) L ↔ ∃ s ∈ (T.atT.Pv v).primeCompl, s • z ∈ L := fun _ _ => Iff.rfl
+  have memM : ∀ (M : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) (L : Submodule (𝓞 D.host.E) (Fin (D.R.N 0) → D.host.E)) (z : Fin (D.R.N 0) → D.host.E),
+      z ∈ mulLat M L ↔ ∃ x ∈ L, M *ᵥ x = z := fun _ _ _ => Iff.rfl
+  have hsm : ∀ (M : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) (t : 𝓞 D.host.E) (x : Fin (D.R.N 0) → D.host.E), M *ᵥ (t • x) = t • (M *ᵥ x) :=
+    fun M t x => Matrix.mulVec_smul M t x
+  have hPc : ∀ {a b : 𝓞 D.host.E}, a ∈ (T.atT.Pv v).primeCompl → b ∈ (T.atT.Pv v).primeCompl →
+      a * b ∈ (T.atT.Pv v).primeCompl := fun ha hb => Submonoid.mul_mem _ ha hb
+  constructor
+  · intro hy
+    obtain ⟨s, hs, hsy⟩ := (memP _ _).mp hy
+    obtain ⟨x, hx, hxy⟩ := (memM _ _ _).mp hsy
+    have hxd : x ∈ Ld D u 0 (Nat.zero_le _) c1 := dnk_lk_le T v c1 hx
+    have h1 : (γ : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ x ∈ Formalism.HermitianLatticesTheory.localization₂ (T.atT.Pv v) (clsCrd D u 0 (Nat.zero_le _) c) := by
+      rw [← hl]
+      exact (memP _ _).mpr ⟨1, Submonoid.one_mem _, by rw [one_smul]; exact (memM _ _ _).mpr ⟨x, hxd, rfl⟩⟩
+    obtain ⟨t, ht, htx⟩ := (memP _ _).mp h1
+    have htx' : (γ : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ (t • x) ∈ Lk T.atT 0 (Nat.zero_le _) v c := by
+      rw [hsm]; exact Submodule.mem_sup_left htx
+    have hfx : (D.fm u).fv 0 v c1 (T.lv0.pr v c1 ⟨t • x, Submodule.smul_mem _ t hxd⟩) = 0 :=
+      (T.lv0.fv_ker v c1 _).mpr (Submodule.smul_mem _ t hx)
+    have hmem : (t * s) • y ∈ Lk T.atT 0 (Nat.zero_le _) v c := by
+      rw [mul_smul, ← hxy, ← hsm]; exact htx'
+    refine ⟨t * s, Ideal.mem_primeCompl_iff.mp (hPc ht hs), hmem, ?_⟩
+    have e : (⟨(t * s) • y, hmem⟩ : ↥(Lk T.atT 0 (Nat.zero_le _) v c)) = ⟨_, htx'⟩ := by
+      apply Subtype.ext
+      show (t * s) • y = (γ : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ (t • x)
+      rw [mul_smul, ← hxy, hsm]
+    rw [e]
+    exact (hfun ⟨t • x, Submodule.smul_mem _ t hxd⟩ htx').symm.trans hfx
+  · rintro ⟨s, hs, hsy, hg⟩
+    have h1 : s • y ∈ Formalism.HermitianLatticesTheory.localization₂ (T.atT.Pv v) (clsCrd D u 0 (Nat.zero_le _) c) :=
+      dnk_lk_locP T v c ((memP _ _).mpr ⟨1, Submonoid.one_mem _, by rw [one_smul]; exact hsy⟩)
+    rw [← hl] at h1
+    obtain ⟨t, ht, htm⟩ := (memP _ _).mp h1
+    obtain ⟨x, hx, hxe⟩ := (memM _ _ _).mp htm
+    have hxk : (γ : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ x ∈ Lk T.atT 0 (Nat.zero_le _) v c := by
+      rw [hxe]; exact Submodule.smul_mem _ t hsy
+    have hf : (D.fm u).fv 0 v c1 (T.lv0.pr v c1 ⟨x, hx⟩) = g (T.lv0.prk v c ⟨_, hxk⟩) := hfun ⟨x, hx⟩ hxk
+    have e : (⟨_, hxk⟩ : ↥(Lk T.atT 0 (Nat.zero_le _) v c)) = t • ⟨s • y, hsy⟩ := Subtype.ext hxe
+    rw [e, T.lv0.prk_smul, map_smul, hg, smul_zero] at hf
+    have hxk1 : x ∈ Lk T.atT 0 (Nat.zero_le _) v c1 := (T.lv0.fv_ker v c1 ⟨x, hx⟩).mp hf
+    exact (memP _ _).mpr ⟨t * s, hPc ht (Ideal.mem_primeCompl_iff.mpr hs),
+      (memM _ _ _).mpr ⟨x, hxk1, by rw [hxe, mul_smul]⟩⟩
+
+set_option synthInstance.maxHeartbeats 400000 in
+set_option maxHeartbeats 4000000 in
+
+theorem dnk_latP (T : Forms0 D u) (v : (D.mem u).A.vT) (c c1 c2 : (D.mem u).C.cls 0)
+    (g : Module.Dual ((D.mem u).A.Fv v) ((D.fm u).lk 0 v c)) (γ γ' : GL (Fin (D.R.N 0)) D.host.E)
+    (hl : Formalism.HermitianLatticesTheory.localization₂ (T.atT.Pv v) (mulLat (γ : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) (Ld D u 0 (Nat.zero_le _) c1)) =
+      Formalism.HermitianLatticesTheory.localization₂ (T.atT.Pv v) (clsCrd D u 0 (Nat.zero_le _) c))
+    (hfun : ∀ (x : ↥(Ld D u 0 (Nat.zero_le _) c1)) (hx : (γ : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ x.1 ∈ Lk T.atT 0 (Nat.zero_le _) v c),
+      (D.fm u).fv 0 v c1 (T.lv0.pr v c1 x) = g (T.lv0.prk v c ⟨_, hx⟩))
+    (hl' : Formalism.HermitianLatticesTheory.localization₂ (T.atT.Pv v) (mulLat (γ' : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) (Ld D u 0 (Nat.zero_le _) c2)) =
+      Formalism.HermitianLatticesTheory.localization₂ (T.atT.Pv v) (clsCrd D u 0 (Nat.zero_le _) c))
+    (hfun' : ∀ (x : ↥(Ld D u 0 (Nat.zero_le _) c2)) (hx : (γ' : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ x.1 ∈ Lk T.atT 0 (Nat.zero_le _) v c),
+      (D.fm u).fv 0 v c2 (T.lv0.pr v c2 x) = g (T.lv0.prk v c ⟨_, hx⟩)) :
+    Formalism.HermitianLatticesTheory.localization₂ (T.atT.Pv v) (mulLat ((γ⁻¹ * γ' : GL (Fin (D.R.N 0)) D.host.E) : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E)
+      (clsCrd D u 0 (Nat.zero_le _) c2)) =
+      Formalism.HermitianLatticesTheory.localization₂ (T.atT.Pv v) (clsCrd D u 0 (Nat.zero_le _) c1) := by
+  have memP : ∀ (L : Submodule (𝓞 D.host.E) (Fin (D.R.N 0) → D.host.E)) (z : Fin (D.R.N 0) → D.host.E),
+      z ∈ Formalism.HermitianLatticesTheory.localization₂ (T.atT.Pv v) L ↔ ∃ s ∈ (T.atT.Pv v).primeCompl, s • z ∈ L := fun _ _ => Iff.rfl
+  have memM : ∀ (M : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) (L : Submodule (𝓞 D.host.E) (Fin (D.R.N 0) → D.host.E)) (z : Fin (D.R.N 0) → D.host.E),
+      z ∈ mulLat M L ↔ ∃ x ∈ L, M *ᵥ x = z := fun _ _ _ => Iff.rfl
+  have hsm : ∀ (M : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) (t : 𝓞 D.host.E) (x : Fin (D.R.N 0) → D.host.E), M *ᵥ (t • x) = t • (M *ᵥ x) :=
+    fun M t x => Matrix.mulVec_smul M t x
+  have hPc : ∀ {a b : 𝓞 D.host.E}, a ∈ (T.atT.Pv v).primeCompl → b ∈ (T.atT.Pv v).primeCompl →
+      a * b ∈ (T.atT.Pv v).primeCompl := fun ha hb => Submonoid.mul_mem _ ha hb
+  have hloc : ∀ (c' : (D.mem u).C.cls 0) (w : Fin (D.R.N 0) → D.host.E), w ∈ Lk T.atT 0 (Nat.zero_le _) v c' →
+      ∃ r ∈ (T.atT.Pv v).primeCompl, r • w ∈ clsCrd D u 0 (Nat.zero_le _) c' := fun c' w hw =>
+    (memP _ _).mp (dnk_lk_locP T v c' ((memP _ _).mpr ⟨1, Submonoid.one_mem _, by rw [one_smul]; exact hw⟩))
+  have hA : ∀ y, y ∈ Formalism.HermitianLatticesTheory.localization₂ (T.atT.Pv v) (mulLat (γ : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) (Lk T.atT 0 (Nat.zero_le _) v c1)) ↔
+      y ∈ Formalism.HermitianLatticesTheory.localization₂ (T.atT.Pv v) (mulLat (γ' : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) (Lk T.atT 0 (Nat.zero_le _) v c2)) := fun y =>
+    (dnk_char T v c c1 g γ hl hfun y).trans (dnk_char T v c c2 g γ' hl' hfun' y).symm
+  have hcomp : ∀ x : Fin (D.R.N 0) → D.host.E, ((γ⁻¹ * γ' : GL (Fin (D.R.N 0)) D.host.E) : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ x = ((γ⁻¹ : GL (Fin (D.R.N 0)) D.host.E) : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ ((γ' : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ x) :=
+    fun x => by rw [Units.val_mul, Matrix.mulVec_mulVec]
+  have hinv : ∀ w : Fin (D.R.N 0) → D.host.E, ((γ⁻¹ : GL (Fin (D.R.N 0)) D.host.E) : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ ((γ : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ w) = w := fun w => by
+    rw [Matrix.mulVec_mulVec, Units.inv_mul, Matrix.one_mulVec]
+  have hinv' : ∀ w : Fin (D.R.N 0) → D.host.E, (γ : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ (((γ⁻¹ : GL (Fin (D.R.N 0)) D.host.E) : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ w) = w := fun w => by
+    rw [Matrix.mulVec_mulVec, Units.mul_inv, Matrix.one_mulVec]
+  have hinj : ∀ a b : Fin (D.R.N 0) → D.host.E, (γ : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ a = (γ : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ b → a = b := fun a b h =>
+    (hinv a).symm.trans ((congrArg (fun w => ((γ⁻¹ : GL (Fin (D.R.N 0)) D.host.E) : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ w) h).trans (hinv b))
+  ext z
+  constructor
+  · intro hz
+    obtain ⟨s, hs, hsz⟩ := (memP _ _).mp hz
+    obtain ⟨x, hx, hxz⟩ := (memM _ _ _).mp hsz
+    have hx2 : x ∈ Lk T.atT 0 (Nat.zero_le _) v c2 := Submodule.mem_sup_left hx
+    have hA2 : (γ' : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ x ∈ Formalism.HermitianLatticesTheory.localization₂ (T.atT.Pv v) (mulLat (γ' : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) (Lk T.atT 0 (Nat.zero_le _) v c2)) :=
+      (memP _ _).mpr ⟨1, Submonoid.one_mem _, by rw [one_smul]; exact (memM _ _ _).mpr ⟨x, hx2, rfl⟩⟩
+    obtain ⟨t, ht, htx⟩ := (memP _ _).mp ((hA _).mpr hA2)
+    obtain ⟨w, hw, hwx⟩ := (memM _ _ _).mp htx
+    have hx' : (γ' : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ x = (γ : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ (s • z) := by rw [← hxz, hcomp, hinv']
+    have hwz : w = (t * s) • z := by
+      apply hinj
+      rw [hwx, hx', mul_smul, hsm _ t (s • z)]
+    obtain ⟨r, hr, hrw⟩ := hloc c1 w hw
+    exact (memP _ _).mpr ⟨r * (t * s), hPc hr (hPc ht hs), by rw [mul_smul, ← hwz]; exact hrw⟩
+  · intro hz
+    obtain ⟨s, hs, hsz⟩ := (memP _ _).mp hz
+    have hk1 : s • z ∈ Lk T.atT 0 (Nat.zero_le _) v c1 := Submodule.mem_sup_left hsz
+    have hA1 : (γ : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ (s • z) ∈ Formalism.HermitianLatticesTheory.localization₂ (T.atT.Pv v) (mulLat (γ : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) (Lk T.atT 0 (Nat.zero_le _) v c1)) :=
+      (memP _ _).mpr ⟨1, Submonoid.one_mem _, by rw [one_smul]; exact (memM _ _ _).mpr ⟨_, hk1, rfl⟩⟩
+    obtain ⟨t, ht, htx⟩ := (memP _ _).mp ((hA _).mp hA1)
+    obtain ⟨w, hw, hwx⟩ := (memM _ _ _).mp htx
+    obtain ⟨r, hr, hrw⟩ := hloc c2 w hw
+    refine (memP _ _).mpr ⟨r * (t * s), hPc hr (hPc ht hs), (memM _ _ _).mpr ⟨r • w, hrw, ?_⟩⟩
+    simp only [hcomp, hsm, hwx, hinv, mul_smul]
+
+end CrossDiaZero
+
+end
+end
+
+section
+noncomputable section
+
+namespace CrossDiaZero
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.product_first_zeroth_parts Formalism.L2.Forms Formalism.L2.GlobalTheoryTheory Formalism.L2.GlobalTheoryTheory.LocalLatticeBases Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.S0 Formalism.UG
+open NumberField IsDedekindDomain Matrix
+
+def dualSigma {K V W : Type} [CommRing K] [AddCommGroup V] [Module K V] [AddCommGroup W] [Module K W]
+    (φ : W ≃ₗ[K] V) (tv : V) (tw : W) (h : φ tw = tv) :
+    {x : Module.Dual K V // x tv = 1} ≃ {y : Module.Dual K W // y tw = 1} where
+  toFun x := ⟨x.1 ∘ₗ φ.toLinearMap, by rw [LinearMap.comp_apply, LinearEquiv.coe_coe, h]; exact x.2⟩
+  invFun y := ⟨y.1 ∘ₗ φ.symm.toLinearMap, by
+    rw [LinearMap.comp_apply, LinearEquiv.coe_coe, ← h, LinearEquiv.symm_apply_apply]; exact y.2⟩
+  left_inv x := Subtype.ext (LinearMap.ext fun w => by simp)
+  right_inv y := Subtype.ext (LinearMap.ext fun w => by simp)
+
+theorem dualSigma_apply {K V W : Type} [CommRing K] [AddCommGroup V] [Module K V] [AddCommGroup W] [Module K W]
+    (φ : W ≃ₗ[K] V) (tv : V) (tw : W) (h : φ tw = tv) (x : {x : Module.Dual K V // x tv = 1}) (w : W) :
+    (dualSigma φ tv tw h x).1 w = x.1 (φ w) := rfl
+
+variable {D : D7} {u : D.what₂.Word}
+
+set_option maxHeartbeats 2000000 in
+
+theorem dni_lk (T : Forms0 D u) (v : (D.mem u).A.vT) (c c' : (D.mem u).C.cls 0)
+    (g : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E)
+    (hL : mulLat g (clsCrd D u 0 (Nat.zero_le _) c) = clsCrd D u 0 (Nat.zero_le _) c')
+    (hLd : mulLat g (Ld D u 0 (Nat.zero_le _) c) = Ld D u 0 (Nat.zero_le _) c') :
+    mulLat g (Lk T.atT 0 (Nat.zero_le _) v c) = Lk T.atT 0 (Nat.zero_le _) v c' := by
+  show mulLat g (clsCrd D u 0 (Nat.zero_le _) c ⊔ T.atT.Pv v • Ld D u 0 (Nat.zero_le _) c) =
+    clsCrd D u 0 (Nat.zero_le _) c' ⊔ T.atT.Pv v • Ld D u 0 (Nat.zero_le _) c'
+  unfold mulLat at hL hLd ⊢
+  rw [Submodule.map_sup, Submodule.map_smul'', hL, hLd]
+
+theorem dni_mem_of {E : Type} [Field E] [NumberField E] {n : ℕ} (g : Matrix (Fin n) (Fin n) E)
+    {M M' : Submodule (𝓞 E) (Fin n → E)} (h : mulLat g M = M') {z : Fin n → E} (hz : z ∈ M) : g *ᵥ z ∈ M' := by
+  rw [← h]
+  exact Submodule.mem_map_of_mem hz
+
+set_option maxHeartbeats 2000000 in
+theorem dni_mem (T : Forms0 D u) (v : (D.mem u).A.vT) (c c' : (D.mem u).C.cls 0)
+    (g : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E)
+    (hL : mulLat g (clsCrd D u 0 (Nat.zero_le _) c) = clsCrd D u 0 (Nat.zero_le _) c')
+    (hLd : mulLat g (Ld D u 0 (Nat.zero_le _) c) = Ld D u 0 (Nat.zero_le _) c')
+    {z : Fin (D.R.N 0) → D.host.E} (hz : z ∈ Lk T.atT 0 (Nat.zero_le _) v c) :
+    g *ᵥ z ∈ Lk T.atT 0 (Nat.zero_le _) v c' :=
+  dni_mem_of g (dni_lk T v c c' g hL hLd) hz
+
+set_option maxHeartbeats 2000000 in
+theorem dni_mem_ker (T : Forms0 D u) (v : (D.mem u).A.vT) (c c' : (D.mem u).C.cls 0)
+    (g : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E)
+    (hL : mulLat g (clsCrd D u 0 (Nat.zero_le _) c) = clsCrd D u 0 (Nat.zero_le _) c')
+    (hLd : mulLat g (Ld D u 0 (Nat.zero_le _) c) = Ld D u 0 (Nat.zero_le _) c')
+    {z : Fin (D.R.N 0) → D.host.E} (hz : z ∈ T.atT.Pv v • Lk T.atT 0 (Nat.zero_le _) v c) :
+    g *ᵥ z ∈ T.atT.Pv v • Lk T.atT 0 (Nat.zero_le _) v c' := by
+  have h := dni_lk T v c c' g hL hLd
+  have h2 : mulLat g (T.atT.Pv v • Lk T.atT 0 (Nat.zero_le _) v c) =
+      T.atT.Pv v • Lk T.atT 0 (Nat.zero_le _) v c' := by
+    unfold mulLat at h ⊢
+    rw [Submodule.map_smul'', h]
+  exact dni_mem_of g h2 hz
+
+def dniFun (T : Forms0 D u) (v : (D.mem u).A.vT) (c c' : (D.mem u).C.cls 0)
+    (g : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E)
+    (hL : mulLat g (clsCrd D u 0 (Nat.zero_le _) c) = clsCrd D u 0 (Nat.zero_le _) c')
+    (hLd : mulLat g (Ld D u 0 (Nat.zero_le _) c) = Ld D u 0 (Nat.zero_le _) c')
+    (w : (D.fm u).lk 0 v c) : (D.fm u).lk 0 v c' :=
+  T.lv0.prk v c' ⟨g *ᵥ (Function.surjInv (T.lv0.prk_surj v c) w).1,
+    dni_mem T v c c' g hL hLd (Function.surjInv (T.lv0.prk_surj v c) w).2⟩
+
+set_option maxHeartbeats 2000000 in
+theorem dniFun_prk (T : Forms0 D u) (v : (D.mem u).A.vT) (c c' : (D.mem u).C.cls 0)
+    (g : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E)
+    (hL : mulLat g (clsCrd D u 0 (Nat.zero_le _) c) = clsCrd D u 0 (Nat.zero_le _) c')
+    (hLd : mulLat g (Ld D u 0 (Nat.zero_le _) c) = Ld D u 0 (Nat.zero_le _) c')
+    (z : ↥(Lk T.atT 0 (Nat.zero_le _) v c)) :
+    dniFun T v c c' g hL hLd (T.lv0.prk v c z) = T.lv0.prk v c' ⟨g *ᵥ z.1, dni_mem T v c c' g hL hLd z.2⟩ := by
+  have hs := Function.surjInv_eq (T.lv0.prk_surj v c) (T.lv0.prk v c z)
+  have hd : (Function.surjInv (T.lv0.prk_surj v c) (T.lv0.prk v c z) - z).1 ∈
+      T.atT.Pv v • Lk T.atT 0 (Nat.zero_le _) v c := by
+    rw [← T.lv0.prk_ker, map_sub, hs, sub_self]
+  have hg := dni_mem_ker T v c c' g hL hLd hd
+  unfold dniFun
+  rw [← sub_eq_zero, ← map_sub, T.lv0.prk_ker]
+  simpa [Matrix.mulVec_sub] using hg
+
+set_option maxHeartbeats 2000000 in
+
+def dniLin (T : Forms0 D u) (v : (D.mem u).A.vT) (c c' : (D.mem u).C.cls 0)
+    (g : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E)
+    (hL : mulLat g (clsCrd D u 0 (Nat.zero_le _) c) = clsCrd D u 0 (Nat.zero_le _) c')
+    (hLd : mulLat g (Ld D u 0 (Nat.zero_le _) c) = Ld D u 0 (Nat.zero_le _) c') :
+    (D.fm u).lk 0 v c →ₗ[(D.mem u).A.Fv v] (D.fm u).lk 0 v c' where
+  toFun := dniFun T v c c' g hL hLd
+  map_add' w1 w2 := by
+    obtain ⟨z1, rfl⟩ := T.lv0.prk_surj v c w1
+    obtain ⟨z2, rfl⟩ := T.lv0.prk_surj v c w2
+    rw [← map_add, dniFun_prk, dniFun_prk, dniFun_prk, ← map_add]
+    congr 1
+    apply Subtype.ext
+    show g *ᵥ (z1.1 + z2.1) = g *ᵥ z1.1 + g *ᵥ z2.1
+    exact Matrix.mulVec_add _ _ _
+  map_smul' r w := by
+    obtain ⟨a, rfl⟩ := T.atT.res_surj v r
+    obtain ⟨z, rfl⟩ := T.lv0.prk_surj v c w
+    rw [RingHom.id_apply, ← T.lv0.prk_smul, dniFun_prk, dniFun_prk, ← T.lv0.prk_smul]
+    congr 1
+    apply Subtype.ext
+    show g *ᵥ (a • z.1) = a • (g *ᵥ z.1)
+    exact Matrix.mulVec_smul _ _ _
+
+theorem dniLin_prk (T : Forms0 D u) (v : (D.mem u).A.vT) (c c' : (D.mem u).C.cls 0)
+    (g : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E)
+    (hL : mulLat g (clsCrd D u 0 (Nat.zero_le _) c) = clsCrd D u 0 (Nat.zero_le _) c')
+    (hLd : mulLat g (Ld D u 0 (Nat.zero_le _) c) = Ld D u 0 (Nat.zero_le _) c')
+    (z : ↥(Lk T.atT 0 (Nat.zero_le _) v c)) :
+    dniLin T v c c' g hL hLd (T.lv0.prk v c z) = T.lv0.prk v c' ⟨g *ᵥ z.1, dni_mem T v c c' g hL hLd z.2⟩ :=
+  dniFun_prk T v c c' g hL hLd z
+
+theorem dni_inv_eq {E : Type} [Field E] [NumberField E] {n : ℕ} (g : GL (Fin n) E)
+    {M M' : Submodule (𝓞 E) (Fin n → E)} (h : mulLat (g : Matrix (Fin n) (Fin n) E) M = M') :
+    mulLat ((g⁻¹ : GL (Fin n) E) : Matrix (Fin n) (Fin n) E) M' = M := by
+  have hid : ((Matrix.mulVecLin ((g⁻¹ : GL (Fin n) E) : Matrix (Fin n) (Fin n) E)).restrictScalars (𝓞 E)).comp
+      ((Matrix.mulVecLin (g : Matrix (Fin n) (Fin n) E)).restrictScalars (𝓞 E)) = LinearMap.id := by
+    refine LinearMap.ext fun x => ?_
+    simp only [LinearMap.comp_apply, LinearMap.restrictScalars_apply, Matrix.mulVecLin_apply,
+      LinearMap.id_apply]
+    rw [Matrix.mulVec_mulVec, Units.inv_mul, Matrix.one_mulVec]
+  rw [← h]
+  unfold mulLat
+  rw [← Submodule.map_comp, hid, Submodule.map_id]
+
+set_option maxHeartbeats 2000000 in
+
+def dniEquiv (T : Forms0 D u) (v : (D.mem u).A.vT) (c c' : (D.mem u).C.cls 0) (g : GL (Fin (D.R.N 0)) D.host.E)
+    (hL : mulLat (g : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) (clsCrd D u 0 (Nat.zero_le _) c) =
+      clsCrd D u 0 (Nat.zero_le _) c')
+    (hLd : mulLat (g : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) (Ld D u 0 (Nat.zero_le _) c) =
+      Ld D u 0 (Nat.zero_le _) c') :
+    (D.fm u).lk 0 v c ≃ₗ[(D.mem u).A.Fv v] (D.fm u).lk 0 v c' :=
+  LinearEquiv.ofLinear (dniLin T v c c' _ hL hLd) (dniLin T v c' c _ (dni_inv_eq g hL) (dni_inv_eq g hLd))
+    (LinearMap.ext fun w => by
+      obtain ⟨z, rfl⟩ := T.lv0.prk_surj v c' w
+      rw [LinearMap.comp_apply, dniLin_prk, dniLin_prk, LinearMap.id_apply]
+      congr 1
+      apply Subtype.ext
+      show (g : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ
+        (((g⁻¹ : GL (Fin (D.R.N 0)) D.host.E) : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ z.1) = z.1
+      rw [Matrix.mulVec_mulVec, ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.one_mulVec])
+    (LinearMap.ext fun w => by
+      obtain ⟨z, rfl⟩ := T.lv0.prk_surj v c w
+      rw [LinearMap.comp_apply, dniLin_prk, dniLin_prk, LinearMap.id_apply]
+      congr 1
+      apply Subtype.ext
+      show ((g⁻¹ : GL (Fin (D.R.N 0)) D.host.E) : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ
+        ((g : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ z.1) = z.1
+      rw [Matrix.mulVec_mulVec, ← Units.val_mul, inv_mul_cancel, Units.val_one, Matrix.one_mulVec])
+
+theorem dniEquiv_prk (T : Forms0 D u) (v : (D.mem u).A.vT) (c c' : (D.mem u).C.cls 0) (g : GL (Fin (D.R.N 0)) D.host.E)
+    (hL : mulLat (g : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) (clsCrd D u 0 (Nat.zero_le _) c) =
+      clsCrd D u 0 (Nat.zero_le _) c')
+    (hLd : mulLat (g : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) (Ld D u 0 (Nat.zero_le _) c) =
+      Ld D u 0 (Nat.zero_le _) c')
+    (z : ↥(Lk T.atT 0 (Nat.zero_le _) v c)) :
+    dniEquiv T v c c' g hL hLd (T.lv0.prk v c z) =
+      T.lv0.prk v c' ⟨(g : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ z.1, dni_mem T v c c' _ hL hLd z.2⟩ :=
+  dniLin_prk T v c c' _ hL hLd z
+
+set_option maxHeartbeats 2000000 in
+
+theorem dniEquiv_te (T : Forms0 D u) (v : (D.mem u).A.vT) (c c' : (D.mem u).C.cls 0) (g : GL (Fin (D.R.N 0)) D.host.E)
+    (hL : mulLat (g : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) (clsCrd D u 0 (Nat.zero_le _) c) =
+      clsCrd D u 0 (Nat.zero_le _) c')
+    (hLd : mulLat (g : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) (Ld D u 0 (Nat.zero_le _) c) =
+      Ld D u 0 (Nat.zero_le _) c')
+    (z : ↥(Ld D u 0 (Nat.zero_le _) c)) (hz : (D.fm u).fv 0 v c (T.lv0.pr v c z) = 1)
+    (hgz : (g : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) *ᵥ z.1 ∈ Ld D u 0 (Nat.zero_le _) c')
+    (hz' : (D.fm u).fv 0 v c' (T.lv0.pr v c' ⟨_, hgz⟩) = 1) :
+    dniEquiv T v c c' g hL hLd ((D.fm u).te 0 v c) = (D.fm u).te 0 v c' := by
+  have e1 := T.lv0.te v c z hz
+    (Submodule.mem_sup_right (Submodule.smul_mem_smul (bwA_T_mem_Pv D u T.atT v) z.2))
+  have e2 := T.lv0.te v c' ⟨_, hgz⟩ hz'
+    (Submodule.mem_sup_right (Submodule.smul_mem_smul (bwA_T_mem_Pv D u T.atT v) hgz))
+  rw [← e1, ← e2, dniEquiv_prk]
+  congr 1
+  apply Subtype.ext
+  simp only [Matrix.mulVec_smul]
+
+theorem dni_exists_one (T : Forms0 D u) (v : (D.mem u).A.vT) (c : (D.mem u).C.cls 0) :
+    ∃ z : ↥(Ld D u 0 (Nat.zero_le _) c), (D.fm u).fv 0 v c (T.lv0.pr v c z) = 1 := by
+  obtain ⟨w, hw⟩ : ∃ w, (D.fm u).fv 0 v c w ≠ 0 := by
+    by_contra h
+    push_neg at h
+    exact (D.fm u).fv_ne 0 v c (LinearMap.ext h)
+  obtain ⟨z, hz⟩ := T.lv0.pr_surj v c (((D.fm u).fv 0 v c w)⁻¹ • w)
+  refine ⟨z, ?_⟩
+  rw [hz, map_smul, smul_eq_mul, inv_mul_cancel₀ hw]
+
+end CrossDiaZero
+
+end
+end
+
+section
+noncomputable section
+
+namespace CrossDiaZero
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.product_first_zeroth_parts Formalism.MainNotions.RT Formalism.L2.Forms Formalism.L2.GlobalTheoryTheory Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.S0
+
+def UpMatchAll : Prop := ∀ (D : D7) (u : D.what₂.Word) (T : Forms0 D u), UpDiaMatch0F T
+
+def DnMatchAll : Prop := ∀ (D : D7) (u : D.what₂.Word) (T : Forms0 D u), DnDiaMatch0F T
+
+
+
+end CrossDiaZero
+
+end
+end
+
+section
 noncomputable section
 
 namespace CrossDiaZero
@@ -164,4 +593,5 @@ theorem dnMatchAll_holds : DnMatchAll := fun _ _ T => dnDiaMatch0F_holds T
 
 end CrossDiaZero
 
+end
 end

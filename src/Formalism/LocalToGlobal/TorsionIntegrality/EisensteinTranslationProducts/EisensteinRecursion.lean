@@ -12,7 +12,6 @@ theorem pOfIsWp : POfIsWp := weierstrass_p_of_series
 theorem pOfLattice : POfLattice := weierstrass_p_of_lattice
 theorem curveBridge : CurveBridge := curve_weierstrass_series_eq
 theorem iotaExists : IotaExists := iotaExists_thm
-theorem sigmaUniversal : SigmaUniversal := sigma_universal
 theorem hasCMByIsogeny : HasCMByIsogeny := hasCMByIsogeny_of' isogenyFormulaInstance
 
 end Formalism.L2.Th1.F

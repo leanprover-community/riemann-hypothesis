@@ -46,15 +46,4 @@ theorem norm_nat_eq_one {q : ℕ} [Fact q.Prime] (n : ℕ) (h : ¬ q ∣ n) : �
   rw [this, norm_algebraMap']
   exact Padic.norm_natCast_eq_one_iff.2 ((Nat.Prime.coprime_iff_not_dvd Fact.out).2 h)
 
-theorem exists_mdl_ok (q : ℕ) [hq : Fact q.Prime] : ∃ M : Mdl q, M.Ok := by
-  by_cases h : q ∣ 27
-  · have h' : ¬ q ∣ 64 := fun h' => hq.out.one_lt.ne' (Nat.eq_one_of_dvd_coprimes (by norm_num : Nat.Coprime 27 64) h h')
-    obtain ⟨M, hM, -⟩ := exists_ok (q := q) ⟨0, 0, 0, -1, 0⟩ (by simp) (by simp) (by simp) (by simp) (by simp) (by
-      rw [← norm_nat_eq_one 64 h']; congr 1
-      simp [WeierstrassCurve.Δ, WeierstrassCurve.b₂, WeierstrassCurve.b₄, WeierstrassCurve.b₆, WeierstrassCurve.b₈]; norm_num)
-    exact ⟨M, hM⟩
-  · obtain ⟨M, hM, -⟩ := exists_ok (q := q) ⟨0, 0, 1, 0, 0⟩ (by simp) (by simp) (by simp) (by simp) (by simp) (by
-      rw [← norm_nat_eq_one 27 h, ← norm_neg]; congr 1
-      simp [WeierstrassCurve.Δ, WeierstrassCurve.b₂, WeierstrassCurve.b₄, WeierstrassCurve.b₆, WeierstrassCurve.b₈])
-    exact ⟨M, hM⟩
 end GlobalTheory.MomOne.Inh

@@ -88,9 +88,6 @@ section Int
 
 variable {A L : Type} [CommRing A] [CommRing L] {n : Type} [Fintype n] [DecidableEq n]
 
-theorem gLoc_range_subtype {R : Type} [CommRing R] (S : Subring R) (x : R) :
-    x ∈ Set.range S.subtype ↔ x ∈ S := by
-  exact ⟨fun ⟨y, hy⟩ => hy ▸ y.2, fun h => ⟨⟨x, h⟩, rfl⟩⟩
 
 theorem gLoc_int_iff (e : A ≃+* L) (T : Subring A) (O : Subring L) (hT : ∀ x, x ∈ T ↔ e x ∈ O)
     (g : GL n A) :

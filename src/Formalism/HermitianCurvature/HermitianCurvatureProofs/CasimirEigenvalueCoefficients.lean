@@ -154,61 +154,9 @@ theorem steps (hrep : IsCRepOn (UH (Hpk k r)) σ) (ℓ : Vs →L[ℂ] ℂ) :
     rw [top_local (f' := fun x => ℓ (σ x (L.foldr (fun p y => stepV σ p.1 p.2.1 p.2.2 y) w))) h2 _ _ _ hg]
     exact top_coeff hrep h1 ℓ _ _ _ hg
 
-theorem qminor_coeff (hrep : IsCRepOn (UH (Hpk k r)) σ) (ℓ : Vs →L[ℂ] ℂ) {t : ℕ}
-    (a b : Fin t → Fin (2 * r + k + 1)) (u : ℂ) {w : Vs} (hw : SV σ w) {g : Mx k r} (hg : g ∈ GV k r) :
-    qminorOp (EH k r) a b u (fun x => ℓ (σ x w)) g =
-      ℓ (σ g (qmF (fun a b => EcRep (Hpk k r) σ (Matrix.single a b 1)) a b u w)) := by
-  unfold qminorOp qmF
-  rw [Finset.sum_apply, map_sum, map_sum]
-  refine Finset.sum_congr rfl fun τ _ => ?_
-  rw [Pi.smul_apply, map_smul, map_smul]
-  congr 1
-  have e1 : (List.ofFn fun i : Fin t => QuantumDeterminants.Top (EH (E := ℂ) k r) (u - ((i : ℕ) : ℂ)) (a (τ i)) (b i)) =
-      (List.ofFn fun i : Fin t => ((u - ((i : ℕ) : ℂ)), a (τ i), b i)).map
-        (fun p => QuantumDeterminants.Top (EH (E := ℂ) k r) p.1 p.2.1 p.2.2) := by
-    rw [List.map_ofFn]; rfl
-  have e2 : (List.ofFn fun i : Fin t => fun y : Vs =>
-      (if a (τ i) = b i then (u - ((i : ℕ) : ℂ)) • y else 0) +
-        EcRep (Hpk k r) σ (Matrix.single (a (τ i)) (b i) 1) y).foldr (fun T h => T h) w =
-      (List.ofFn fun i : Fin t => ((u - ((i : ℕ) : ℂ)), a (τ i), b i)).foldr
-        (fun p y => stepV σ p.1 p.2.1 p.2.2 y) w := by
-    have e3 : (List.ofFn fun i : Fin t => fun y : Vs =>
-        (if a (τ i) = b i then (u - ((i : ℕ) : ℂ)) • y else 0) +
-          EcRep (Hpk k r) σ (Matrix.single (a (τ i)) (b i) 1) y) =
-        (List.ofFn fun i : Fin t => ((u - ((i : ℕ) : ℂ)), a (τ i), b i)).map
-          (fun (p : ℂ × Fin (2 * r + k + 1) × Fin (2 * r + k + 1)) (y : Vs) => stepV σ p.1 p.2.1 p.2.2 y) := by
-      rw [List.map_ofFn]; rfl
-    rw [e3, List.foldr_map]
-  rw [e1, e2]
-  exact (steps hrep ℓ _ w hw).2 g hg
 
-theorem qmF_reindex {X : Type*} [AddCommGroup X] [Module ℂ X] {n : ℕ} (Eop : Fin n → Fin n → X → X) (u : ℂ) (x : X) :
-    ∀ (t : ℕ) (h : t = n) (a : Fin t → Fin n), (∀ j, (a j).val = j.val) →
-      qmF Eop a a u x = qmF Eop (id : Fin n → Fin n) id u x := by
-  intro t h a ha
-  subst h
-  have : a = id := funext fun j => Fin.ext (ha j)
-  subst this
-  rfl
 
 end Qb1
 
-theorem casimir_eigenvalue_coefficients : Formalism.FourierDecayAlt.Q.EigenCoeff := by
-  intro Vs _ _ k r σ v lam hrep hsm hC ℓ Y g hg
-  have hw : Qb1.SV σ v := by
-    intro g₀ hg₀
-    have hmem : ∀ x ∈ GV k r, x ∈ Glev k r 0 := fun x hx =>
-      ⟨hx, fun a ha => absurd ha (by simp)⟩
-    obtain ⟨U, F, a, b, c, d⟩ := hsm g₀ ⟨hmem g₀ hg₀, trivial⟩
-    exact ⟨U, F, a, b, c, fun x hx hxG => d x hx (hmem x hxG)⟩
-  unfold CV capL
-  rw [Qb1.qminor_coeff hrep ℓ _ _ _ hw hg,
-    Qb1.qmF_reindex _ _ _ (mdim k r 0) (by simp [mdim]) (posL k r 0) (fun j => by simp [posL]), hC,
-    map_smul, map_smul]
-  congr 1
-  refine Finset.prod_congr rfl fun s _ => ?_
-  simp only [uC, mdim, Fin.val_zero, Nat.sub_zero]
-  push_cast
-  ring
 
 end Formalism.FourierDecayAlt.P

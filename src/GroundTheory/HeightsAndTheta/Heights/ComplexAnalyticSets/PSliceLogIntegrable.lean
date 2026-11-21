@@ -1,8 +1,32 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceFsLogIntegrable
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceLogIntegrable
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceCutOffLimit
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceIdeal
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetSumMeasurable
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+open MvPolynomial MeasureTheory Matrix ComplexSets
+
+noncomputable section
+
+def SliceFsLogIntegrable.Statement : Prop :=
+  ∀ (n e : ℕ) (h : HermNorm n) (J : Ideal (MvPolynomial (Fin n) ℂ))
+    (F : MvPolynomial (Fin (e + 2) × Fin n) ℂ) (u ℓ : Fin n → ℂ) (A : Matrix (Fin (e + 1)) (Fin n) ℂ),
+    IsProjPrime J → IsChowForm J (e + 2) F → linForm u ∉ J → linForm ℓ ∉ J →
+    IsFiniteProjection (J ⊔ Ideal.span {linForm ℓ - 1}) A →
+      Integrable (chartAbsDens (J ⊔ Ideal.span {linForm ℓ - 1}) A (fsLog h u)
+        (fun _ x => Real.log (h.dualNorm x)))
+
+end
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
@@ -82,3 +106,4 @@ theorem SliceLogIntegrable.proof (hG : SliceFsLogIntegrable.Statement) : SliceLo
 end
 
 end GroundTheory.Heights₂.Heights
+end

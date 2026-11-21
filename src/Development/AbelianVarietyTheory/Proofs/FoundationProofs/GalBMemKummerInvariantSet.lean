@@ -1,8 +1,90 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ModularFunctionTowerIntegralityStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsConjLevelElemExponentShimuraStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsCommonLevelSpanMultipleStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsConjLevelElemExponentShimura
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.Klm
 
+section
+open scoped MatrixGroups TensorProduct
+open Matrix GlobalTheory.KZ
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_conj_level_elem_exponent_shimura : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (N l n M : ℕ) [Fact l.Prime], 0 < M → N ∣ M → l ∣ M → l ^ n ∣ M → ∀ (s : Ω ≃ₐ[ℚ] Ω) (γ : SL(2, ℤ)), γ ∈ Gam N l → ∃ γ'' ∈ Gam N l, ∃ ζ : Ω, IsPrimitiveRoot ζ M ∧ ∃ d : ℤ, s ζ = ζ ^ d ∧ ((en γ 0 0 : ZMod M) = en γ'' 0 0 ∧ (en γ 0 1 : ZMod M) = d * en γ'' 0 1 ∧ (d : ZMod M) * en γ 1 0 = en γ'' 1 0 ∧ (en γ 1 1 : ZMod M) = en γ'' 1 1) ∧ (d : ZMod (l ^ n)) = PadicInt.toZModPow n (cyclotomicCharacter Ω l s.toRingEquiv : ℤ_[l]) := by
+  first | exact @GlobalTheory.exists_conj_level_exponent | exact GlobalTheory.exists_conj_level_exponent | (intros; apply GlobalTheory.exists_conj_level_exponent <;> assumption)
+end
+
+section
+open scoped MatrixGroups TensorProduct
+open Matrix GlobalTheory.KZ
+
+noncomputable section
+
+namespace GlobalTheory.KZ
+
+open scoped MatrixGroups TensorProduct in
+open Matrix in
+
+theorem _root_.GlobalTheory.KZ.gamma_le_of_dvd {M M' : ℕ} (h : M ∣ M') :
+    CongruenceSubgroup.Gamma M' ≤ CongruenceSubgroup.Gamma M := by
+  intro γ hγ
+  rw [CongruenceSubgroup.Gamma_mem] at hγ ⊢
+  obtain ⟨h1, h2, h3, h4⟩ := hγ
+  have e : ∀ z : ℤ, (z : ZMod M) = ZMod.castHom h (ZMod M) (z : ZMod M') := fun z =>
+    (map_intCast _ z).symm
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · rw [e, h1, map_one]
+  · rw [e, h2, map_zero]
+  · rw [e, h3, map_zero]
+  · rw [e, h4, map_one]
+
+variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ}
+
+theorem Tower.lev_mono (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] {M M' : ℕ} (h : M ∣ M') :
+    X.Lev l M ≤ X.Lev l M' := by
+  apply Submodule.span_mono
+  rintro x ⟨f, hf, rfl⟩
+  exact ⟨f, fun γ hγ => hf γ (gamma_le_of_dvd h hγ), rfl⟩
+
+theorem Tower.exists_lev (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] (y : X.Kl l) :
+    ∃ M : ℕ, 0 < M ∧ y ∈ X.Lev l M := by
+  induction y using TensorProduct.induction_on with
+  | zero => exact ⟨1, one_pos, Submodule.zero_mem _⟩
+  | tmul a f =>
+    obtain ⟨M, hM, hf⟩ := X.level (Additive.toMul f : X.Kˣ)
+    refine ⟨M, hM, ?_⟩
+    have hmem : (1 : ℤ_[l]) ⊗ₜ[ℤ] f ∈ X.Lev l M :=
+      Submodule.subset_span ⟨Additive.toMul f, fun γ hγ => hf γ hγ, rfl⟩
+    have e : a ⊗ₜ[ℤ] f = a • ((1 : ℤ_[l]) ⊗ₜ[ℤ] f) := by
+      rw [TensorProduct.smul_tmul', smul_eq_mul, mul_one]
+    rw [e]
+    exact Submodule.smul_mem _ a hmem
+  | add y z hy hz =>
+    obtain ⟨M, hM, hy⟩ := hy
+    obtain ⟨M', hM', hz⟩ := hz
+    refine ⟨M * M', Nat.mul_pos hM hM', Submodule.add_mem _ ?_ ?_⟩
+    · exact X.lev_mono l (dvd_mul_right M M') hy
+    · exact X.lev_mono l (dvd_mul_left M' M) hz
+
+theorem Tower.exists_lev_family : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} (X : Tower Ω ε) (l : ℕ)
+    [Fact l.Prime] (K : ℕ) {ι : Type} [Fintype ι] (y : ι → X.Kl l), 0 < K →
+    ∃ M : ℕ, 0 < M ∧ K ∣ M ∧ ∀ i, y i ∈ X.Lev l M := by
+  intro Ω _ _ ε X l _ K ι _ y hK
+  choose L hL hy using fun i => X.exists_lev l (y i)
+  refine ⟨K * ∏ i, L i, Nat.mul_pos hK (Finset.prod_pos fun i _ => hL i), dvd_mul_right _ _, fun i => ?_⟩
+  refine X.lev_mono l ?_ (hy i)
+  exact Dvd.dvd.mul_left (Finset.dvd_prod_of_mem L (Finset.mem_univ i)) K
+
+end GlobalTheory.KZ
+end
+end
+
+section
+open scoped MatrixGroups TensorProduct
+open Matrix GlobalTheory.KZ
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_common_level_span_multiple : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] (K : ℕ) {ι : Type} [Fintype ι] (y : ι → X.Kl l), 0 < K → ∃ M : ℕ, 0 < M ∧ K ∣ M ∧ ∀ i, y i ∈ X.Lev l M := by
+  first | exact @GlobalTheory.KZ.Tower.exists_lev_family | exact GlobalTheory.KZ.Tower.exists_lev_family | (intros; apply GlobalTheory.KZ.Tower.exists_lev_family <;> assumption)
+end
+
+section
 noncomputable section
 
 open scoped MatrixGroups TensorProduct
@@ -132,3 +214,5 @@ theorem galB_mem_B : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure �
   exact Submodule.span_mono himg (Submodule.apply_mem_span_image_of_mem_span (X.galB l s) hb)
 
 end GlobalTheory.KZ.StabGal
+end
+end

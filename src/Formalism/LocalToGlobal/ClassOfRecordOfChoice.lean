@@ -76,15 +76,6 @@ theorem class_duties_of_choice {eps : ℝ} {Fm : FamP eps} (s : Formalism.L2.TSe
 theorem class_of_record_of_choice {eps : ℝ} {Fm : FamP eps} (s : Formalism.L2.TSelF Fm) (h : Formalism.L2.LinkedFamiliesAligned Fm) : Formalism.L2.LayerTwoFamilyClass Fm :=
   ⟨s.tiedRec, h⟩
 
-theorem real_place_second_layer_conditions_of_choice {eps : ℝ} {Fm : FamP eps} (s : Formalism.L2.TSelF Fm)
-    (hχ : ∃ x0 : ℝ, ∀ x (hx : Fm.x1 < x) (h : s.1 ≤ x), x0 ≤ x → ∀ (i : Fm.Ix x) u, ChiFin0 ((s.2 x hx h i).T.cols.forms u)) :
-    RealPlaceSecondLayerConditions Fm := by
-  obtain ⟨x0, hχ⟩ := hχ
-  refine ⟨max (max x0 s.1) (Fm.x1 + 1), fun x hx i => ?_⟩
-  have h1 : Fm.x1 < x := by have := le_trans (le_max_right _ _) hx; linarith
-  have hs : s.1 ≤ x := le_trans (le_trans (le_max_right _ _) (le_max_left _ _)) hx
-  have h0 : x0 ≤ x := le_trans (le_trans (le_max_left _ _) (le_max_left _ _)) hx
-  exact ⟨(s.2 x h1 hs i).T.theta.real, (s.2 x h1 hs i).T.cols, fun u => hχ x h1 hs h0 i u⟩
 
 open Formalism.L2.DIV in
 

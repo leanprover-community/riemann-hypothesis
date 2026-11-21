@@ -198,23 +198,8 @@ theorem degree_norm_base : DegNN0 := by
   rw [hnd']
   linarith
 
-theorem CMNumbersLink_of (hH : HadamardIdeals) (hD : DetGood) : CMNumbersLink := by
-  unfold CMNumbersLink
-  intro K _ _ g Lie ℓ u de La logOm h
-  unfold CMNumbers at h
-  unfold CMNumbers0
-  obtain ⟨hL, hℓ, hde, hu, hmem, hLa, hsq, hnd, hdd⟩ := h
-  exact ⟨(hD K g Lie hL).2, hℓ, hde, hLa, hH K g Lie ℓ u La hL hℓ hu hmem (by linarith) hsq, hnd, hdd⟩
 
-theorem DegDe_of (hH : HadamardIdeals) (hD : DetGood) : DegDe := by
-  unfold DegDe
-  intro K _ _ g Lie ℓ u de La logOm h
-  exact degree_delta_base K g _ ℓ de La logOm (CMNumbersLink_of hH hD K g Lie ℓ u de La logOm h)
 
-theorem DegNN_of (hH : HadamardIdeals) (hD : DetGood) : DegNN := by
-  unfold DegNN
-  intro K _ _ g Lie ℓ u de La logOm V _ c μ n h
-  exact degree_norm_base K g _ ℓ de La logOm V c μ n (CMNumbersLink_of hH hD K g Lie ℓ u de La logOm h)
 
 section cauchy
 
@@ -367,10 +352,6 @@ theorem lambda_number_base : LamNumber0 := by
   rw [hlogB] at hE
   nlinarith
 
-theorem LamNumber_of (hH : HadamardIdeals) (hD : DetGood) : LamNumber := by
-  unfold LamNumber
-  intro K _ _ g Lie ℓ u de La logOm V _ c G μ n S Rr h
-  exact lambda_number_base K g _ ℓ de La logOm V c G μ n S Rr (CMNumbersLink_of hH hD K g Lie ℓ u de La logOm h)
 
 section loc
 

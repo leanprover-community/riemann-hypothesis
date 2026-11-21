@@ -161,18 +161,6 @@ def PhQ (k : ℕ) (p : QkPt D F k) (w : LB.Gen (LB.LinComb D.P.L (DegPre.lineφ 
     (s s' : RawFam D F k) : Prop :=
   Ph D F k p.y p.g w s s'
 
-theorem pow_base_eq {k : ℕ} (p : QkPt D F k) : p.g.b ^ k = toUnit _ ≫ D.c p.y := by
-  obtain ⟨h, ⟨gs, h0, hs, hl⟩, hi⟩ := p.eq
-  have key : ∀ i : Fin (k + 1), (gs i).b = p.g.b ^ (i : ℕ) := by
-    intro i
-    induction i using Fin.induction with
-    | zero => exact h0.1
-    | succ i ih =>
-      have e : (gs i.succ).b = (gs i.castSucc).b * p.g.b := (hs i).1
-      rw [e, ih, Fin.val_succ, pow_succ]; rfl
-  have := key (Fin.last k)
-  rw [hl, Fin.val_last] at this
-  exact this.symm.trans hi.1
 
 theorem Ph.unique {k : ℕ} {y : D.X} {g : GtPtF D F} {w} {s s₁ s₂ : RawFam D F k} (h₁ : Ph D F k y g w s s₁)
     (h₂ : Ph D F k y g w s s₂) : s₁ = s₂ := by

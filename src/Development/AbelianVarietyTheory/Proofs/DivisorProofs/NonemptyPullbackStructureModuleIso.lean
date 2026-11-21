@@ -1,13 +1,434 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NonemptyLink
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PullbackTwistedSectionIso
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SupportPullbackEqPreimage
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFiniteSetDimDropClosed
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ModuleLengthDisjointSupport
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteFlatQuasicoherentLocal
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteFlatAffineAvoiding
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteMapClosedFibre
+import Development.AbelianVarietyTheory.Definitions.Divisors.GlobalHeightBoundIffAtGoodPrimes
+import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
+import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.EventuallyExistsFiniteSubsetNonzeroLocus
+import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsFiniteLengthOfIsArtinianRingAnnihilator
 
+section
+open CategoryTheory Limits AlgebraicGeometry IsLocalRing
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Out
+open GlobalTheory GlobalTheory.QCoh GlobalTheory.CechPic GlobalTheory.Vert GlobalTheory.Twist
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory.CutPull
+
+variable {X Y : Scheme.{0}} (f : Y ⟶ X) {L : LB X}
+
+theorem homEquiv_pullbackZIso_hom (hL : L.IsLB) (G : X.Modules) (n : ℤ) :
+    (Scheme.Modules.pullbackPushforwardAdjunction f).homEquiv _ _ (pullbackZIso G f hL n).hom =
+      Twist.map (lbZPow L n) ((Scheme.Modules.pullbackPushforwardAdjunction f).unit.app G) ≫
+        (projZIso f hL ((Scheme.Modules.pullback f).obj G) n).inv := by
+  have e : (Scheme.Modules.pullbackPushforwardAdjunction f).unit.app (twist G (lbZPow L n)) ≫
+      (Scheme.Modules.pushforward f).map (pullbackHom G (lbZPow L n) f) =
+        Twist.map (lbZPow L n) ((Scheme.Modules.pullbackPushforwardAdjunction f).unit.app G) ≫
+          (projIso (lbZPow L n) f _).inv :=
+    ((Scheme.Modules.pullbackPushforwardAdjunction f).homEquiv_unit _ _ _).symm.trans
+      (Equiv.apply_symm_apply _ _)
+  rw [Adjunction.homEquiv_unit, pullbackZIso, Iso.trans_hom, Functor.map_comp, ← Category.assoc,
+    pullbackIso_hom, e, projZIso, Iso.trans_inv, Functor.mapIso_inv, Iso.symm_hom, Category.assoc]
+
+theorem pullback_mulSecOfEq (hL : L.IsLB) (G : X.Modules) {n m k : ℤ} (σ : LB.Sec (lbZPow L m))
+    (h : n + m = k) :
+    (Scheme.Modules.pullback f).map (mulSecOfEq G σ h) ≫ (pullbackZIso G f hL k).hom =
+      (pullbackZIso G f hL n).hom ≫ mulSecOfEq ((Scheme.Modules.pullback f).obj G) (zpull f σ) h := by
+  apply ((Scheme.Modules.pullbackPushforwardAdjunction f).homEquiv _ _).injective
+  rw [Adjunction.homEquiv_naturality_left, Adjunction.homEquiv_naturality_right,
+    homEquiv_pullbackZIso_hom, homEquiv_pullbackZIso_hom, Category.assoc]
+  have e := projZIso_mulSecOfEq f hL ((Scheme.Modules.pullback f).obj G) σ h
+  have e' : (projZIso f hL ((Scheme.Modules.pullback f).obj G) n).inv ≫
+      (Scheme.Modules.pushforward f).map (mulSecOfEq ((Scheme.Modules.pullback f).obj G) (zpull f σ) h) =
+        mulSecOfEq ((Scheme.Modules.pushforward f).obj ((Scheme.Modules.pullback f).obj G)) σ h ≫
+          (projZIso f hL ((Scheme.Modules.pullback f).obj G) k).inv := by
+    rw [Iso.inv_comp_eq, ← Category.assoc, Iso.eq_comp_inv]
+    exact e
+  rw [e', ← Category.assoc, ← Category.assoc]
+  congr 1
+  exact (mulSecOfEq_naturality σ h _).symm
+
+end GlobalTheory.CutPull
+
+namespace GlobalTheory
+
+open GlobalTheory.CutPull in
+
+theorem cut_pullback_iso : ∀ {X Y : Scheme.{0}} (f : Y ⟶ X) (G : X.Modules) [G.IsQuasicoherent] {L : LB X} (hL : L.IsLB) (s : L.Sec) (hL' : (L.pull f).IsLB), Nonempty ((Scheme.Modules.pullback f).obj (cut G hL s) ≅ cut ((Scheme.Modules.pullback f).obj G) hL' (secPull s f)) := by
+  intro X Y f G _ L hL s hL'
+  have : PreservesColimits (Scheme.Modules.pullback f) :=
+    (Scheme.Modules.pullbackPushforwardAdjunction f).leftAdjoint_preservesColimits
+  have hz : ∀ j, zfun (zpull f (zofSec s)) j = zfun (zofSec (secPull s f)) j := fun j => by
+    rw [zfun_zpull, zfun_zofSec, zfun_zofSec]
+    rfl
+  have hM : mulSecOfEq ((Scheme.Modules.pullback f).obj G) (zpull f (zofSec s)) (neg_add_cancel (1 : ℤ)) =
+      mulSecOfEq ((Scheme.Modules.pullback f).obj G) (zofSec (secPull s f)) (neg_add_cancel (1 : ℤ)) :=
+    zhom_ext fun V t j => by rw [zcoord_mulSecOfEq_app, zcoord_mulSecOfEq_app, hz]
+  have e := pullback_mulSecOfEq f hL G (zofSec s) (neg_add_cancel (1 : ℤ))
+  rw [hM, ← Iso.eq_comp_inv] at e
+  have key : (Scheme.Modules.pullback f).map (cutHom G hL s) =
+      (pullbackZIso G f hL (-1)).hom ≫
+        (mulSecOfEq ((Scheme.Modules.pullback f).obj G) (zofSec (secPull s f)) (neg_add_cancel (1 : ℤ)) ≫
+          ((pullbackZIso G f hL 0).symm ≪≫ (Scheme.Modules.pullback f).mapIso (twistZZeroIso G hL).symm).hom) := by
+    rw [cutHom, Functor.map_comp, e]
+    simp
+  exact ⟨PreservesCokernel.iso (Scheme.Modules.pullback f) (cutHom G hL s) ≪≫ cokernelIsoOfEq key ≪≫
+    cokernelEpiComp _ _ ≪≫ cokernelCompIsIso _ _ ≪≫
+    (cokernelCompIsIso _ (twistZZeroIso ((Scheme.Modules.pullback f).obj G) hL').inv).symm⟩
+
+end GlobalTheory
+end
+end
+
+section
+open CategoryTheory Limits AlgebraicGeometry IsLocalRing
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Out
+open GlobalTheory GlobalTheory.QCoh GlobalTheory.CechPic GlobalTheory.Vert GlobalTheory.Twist
+
+namespace GlobalTheory.QCoh
+
+open TensorProduct in
+
+theorem nontrivial_fibre_of_isBaseChange {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
+    {M N : Type*} [AddCommGroup M] [Module R M]
+    [AddCommGroup N] [Module R N] [Module S N] [IsScalarTower R S N]
+    {l : M →ₗ[R] N} (hl : IsBaseChange S l) (p : Ideal R) [p.IsPrime] (q : Ideal S) [q.IsPrime]
+    (hpq : p = q.comap (algebraMap R S)) :
+    Nontrivial (q.ResidueField ⊗[S] N) ↔ Nontrivial (p.ResidueField ⊗[R] M) := by
+  letI : Algebra p.ResidueField q.ResidueField :=
+    (Ideal.ResidueField.map p q (algebraMap R S) hpq).toAlgebra
+  haveI : IsScalarTower R p.ResidueField q.ResidueField :=
+    .of_algebraMap_eq fun r =>
+      (IsScalarTower.algebraMap_apply R S q.ResidueField r).trans
+        (Ideal.ResidueField.map_algebraMap _ _ _ hpq r).symm
+  have e₁ : q.ResidueField ⊗[S] N ≃ₗ[S] q.ResidueField ⊗[S] (S ⊗[R] M) :=
+    LinearEquiv.lTensor q.ResidueField hl.equiv.symm
+  have e₂ : q.ResidueField ⊗[S] (S ⊗[R] M) ≃ₗ[q.ResidueField] q.ResidueField ⊗[R] M :=
+    AlgebraTensorModule.cancelBaseChange R S q.ResidueField q.ResidueField M
+  have e₃ : q.ResidueField ⊗[p.ResidueField] (p.ResidueField ⊗[R] M) ≃ₗ[q.ResidueField]
+      q.ResidueField ⊗[R] M :=
+    AlgebraTensorModule.cancelBaseChange R p.ResidueField q.ResidueField q.ResidueField M
+  rw [e₁.toEquiv.nontrivial_congr, e₂.toEquiv.nontrivial_congr, ← e₃.toEquiv.nontrivial_congr]
+  exact Module.FaithfullyFlat.nontrivial_tensorProduct_iff_right p.ResidueField q.ResidueField
+
+theorem mem_support_of_isBaseChange {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
+    {M N : Type*} [AddCommGroup M] [Module R M] [Module.Finite R M]
+    [AddCommGroup N] [Module R N] [Module S N] [IsScalarTower R S N]
+    {l : M →ₗ[R] N} (hl : IsBaseChange S l) (q : PrimeSpectrum S) :
+    q ∈ Module.support S N ↔ PrimeSpectrum.comap (algebraMap R S) q ∈ Module.support R M := by
+  haveI : Module.Finite S N := Module.Finite.equiv hl.equiv
+  rw [Module.mem_support_iff_nontrivial_residueField_tensorProduct,
+    Module.mem_support_iff_nontrivial_residueField_tensorProduct]
+  exact nontrivial_fibre_of_isBaseChange hl _ _ rfl
+
+theorem support_pullback {X Y : Scheme.{0}} (f : Y ⟶ X) (G : X.Modules) [IsFiniteQC G] :
+    support ((Scheme.Modules.pullback f).obj G) = f.base ⁻¹' support G := by
+  ext y
+  obtain ⟨U, V, hU, hV, hy, -, e⟩ := exists_affine_pair f y (W := ⊤) trivial
+  have hfy : f y ∈ V := e hy
+  rw [Set.mem_preimage, mem_support_iff_primeIdealOf hU ⟨y, hy⟩,
+    mem_support_iff_primeIdealOf hV ⟨f y, hfy⟩]
+  letI := appLEAlgebra f e
+  letI := appLEModule f ((Scheme.Modules.pullback f).obj G) e
+  haveI := appLE_isScalarTower f ((Scheme.Modules.pullback f).obj G) e
+  have := finite_sections G hV
+  rw [mem_support_of_isBaseChange (isBaseChange_pullbackSections f G hU hV e)]
+  have h := IsAffineOpen.comap_primeIdealOf_appLE V hV U hU e hy
+  convert Iff.rfl using 2
+  exact h.symm
+
+end GlobalTheory.QCoh
+end
+
+section
+set_option autoImplicit false
+
+open TopologicalSpace
+
+namespace GlobalTheory
+
+theorem exists_finite_topologicalKrullDim_inter_add_one_le {T : Type} [TopologicalSpace T]
+    [NoetherianSpace T] [QuasiSober T] (Z : Set T) (hZ : IsClosed Z) :
+    ∃ S : Set T, S.Finite ∧ ∀ C : Set T, IsClosed C → Disjoint S C →
+      topologicalKrullDim (Z ∩ C : Set T) + 1 ≤ topologicalKrullDim Z := by
+  obtain ⟨F, hF, hcl, hirr, rfl⟩ := NoetherianSpace.exists_finite_set_isClosed_irreducible hZ
+  choose g hg using fun t : F => QuasiSober.sober (hirr t.1 t.2) (hcl t.1 t.2)
+  have := hF.to_subtype
+  refine ⟨Set.range g, Set.finite_range g, fun C hC hd => ?_⟩
+  refine topologicalKrullDim_add_one_le (hZ.inter hC) hZ ?_
+  rintro x ⟨⟨t, ht, hxt⟩, -⟩
+  exact ⟨g ⟨t, ht⟩, ⟨t, ht, (hg ⟨t, ht⟩).mem⟩, fun h => Set.disjoint_left.1 hd ⟨_, rfl⟩ h.2,
+    (hg ⟨t, ht⟩).specializes hxt⟩
+
+end GlobalTheory
+end
+
+section
+open CategoryTheory Limits AlgebraicGeometry TopologicalSpace
+open GlobalTheory GlobalTheory.QCoh
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory
+
+theorem sectionsOn_res_pi_bijective_of_separating {X : Scheme.{0}} (F : X.Modules) [IsFiniteQC F]
+    (R : Type) [CommRing R] [Algebra R Γ(X, ⊤)] {ι : Type} [Fintype ι] (W : ι → X.Opens)
+    (hcov : support F ⊆ ⋃ i, (W i : Set X))
+    (hdisj : ∀ i j, i ≠ j → ∀ x ∈ support F, x ∈ W i → x ∉ W j) :
+    Function.Bijective
+      (LinearMap.pi fun i => sectionsOn.res R F (le_top : W i ≤ ⊤) :
+        sectionsOn F ⊤ →ₗ[R] ∀ i, sectionsOn F (W i)) := by
+  classical
+  refine ⟨?_, fun t => ?_⟩
+  · rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
+    intro s hs
+    apply (sectionsOn.toΓ F ⊤).injective
+    rw [map_zero]
+    refine section_eq_zero_of_germ _ fun x hx => ?_
+    by_cases hxs : x ∈ support F
+    · obtain ⟨i, hi⟩ := Set.mem_iUnion.1 (hcov hxs)
+      have h0 : sectionsOn.res R F (le_top : W i ≤ ⊤) s = 0 := congrFun hs i
+      have := congrArg (fun u => F.presheaf.germ (W i) x hi (sectionsOn.toΓ F (W i) u)) h0
+      simp only [sectionsOn.toΓ_res, map_zero] at this
+      rwa [F.presheaf.germ_res_apply] at this
+    · exact (notMem_support_iff.1 hxs).elim _ _
+  have key (i : ι) : ∃ s : sectionsOn F ⊤, sectionsOn.res R F (le_top : W i ≤ ⊤) s = t i ∧
+      ∀ j, j ≠ i → sectionsOn.res R F (le_top : W j ≤ ⊤) s = 0 := by
+    let C : X.Opens := ⟨(support F)ᶜ, (isClosed_support F).isOpen_compl⟩
+    let V : X.Opens := (⨆ (j : ι) (_ : j ≠ i), W j) ⊔ C
+    have hWV (j : ι) (hj : j ≠ i) : W j ≤ V :=
+      le_sup_of_le_left (le_iSup₂ (f := fun (j : ι) (_ : j ≠ i) => W j) j hj)
+    have hcovV : (⊤ : X.Opens) ≤ W i ⊔ V := fun x _ => by
+      by_cases hxs : x ∈ support F
+      · obtain ⟨j, hj⟩ := Set.mem_iUnion.1 (hcov hxs)
+        by_cases hji : j = i
+        · exact Or.inl (hji ▸ hj)
+        · exact Or.inr (hWV j hji hj)
+      · exact Or.inr (Or.inr hxs)
+    have : Subsingleton Γ(F, W i ⊓ V) := subsingleton_sections_of_notMem_support fun y hy hys => by
+      rcases hy.2 with hy' | hy'
+      · obtain ⟨j, hj, hyj⟩ : ∃ j, j ≠ i ∧ y ∈ W j := by
+          simpa [Opens.mem_iSup] using hy'
+        exact hdisj i j (Ne.symm hj) y hys hy.1 hyj
+      · exact hy' hys
+    obtain ⟨s, h₁, h₂⟩ := Qcqs.exists_section_glue₂ F (V₁ := W i) (V₂ := V) (W := ⊤) le_top le_top
+      hcovV (sectionsOn.toΓ F (W i) (t i)) 0 (Subsingleton.elim _ _)
+    refine ⟨(sectionsOn.toΓ F ⊤).symm s, (sectionsOn.toΓ F (W i)).injective ?_, fun j hj =>
+      (sectionsOn.toΓ F (W j)).injective ?_⟩
+    · rw [sectionsOn.toΓ_res, AddEquiv.apply_symm_apply]
+      exact h₁
+    · rw [sectionsOn.toΓ_res, AddEquiv.apply_symm_apply, map_zero]
+      have e := congrArg (F.presheaf.map (homOfLE (hWV j hj)).op) h₂
+      rw [map_zero, ← ConcreteCategory.comp_apply, ← Functor.map_comp] at e
+      exact e
+  choose s h₁ h₂ using key
+  refine ⟨∑ i, s i, funext fun j => ?_⟩
+  rw [LinearMap.pi_apply, map_sum, Finset.sum_eq_single j (fun i _ hi => h₂ i j hi.symm) (by simp),
+    h₁]
+
+theorem length_sectionsOn_top_eq_sum_of_separating :
+    ∀ {X : Scheme.{0}} (F : X.Modules) [IsFiniteQC F] (R : Type) [CommRing R]
+      [Algebra R Γ(X, ⊤)] {ι : Type} [Fintype ι] (W : ι → X.Opens),
+      support F ⊆ ⋃ i, (W i : Set X) → (∀ i j, i ≠ j → ∀ x ∈ support F, x ∈ W i → x ∉ W j) →
+      Module.length R (sectionsOn F ⊤) = ∑ i, Module.length R (sectionsOn F (W i)) := by
+  intro X F _ R _ _ ι _ W hcov hdisj
+  rw [(LinearEquiv.ofBijective _
+    (sectionsOn_res_pi_bijective_of_separating F R W hcov hdisj)).length_eq,
+    Module.length_pi_of_fintype]
+
+end GlobalTheory
+end
+end
+
+section
+open CategoryTheory Limits AlgebraicGeometry TopologicalSpace
+open GlobalTheory GlobalTheory.QCoh
+
+noncomputable section
+
+namespace GlobalTheory
+
+theorem restrictGlobal_appTop_eq_appLE {X Y : Scheme.{0}} (f : Y ⟶ X) (V : X.Opens)
+    (a : Γ(X, ⊤)) :
+    restrictGlobal Y (f ⁻¹ᵁ V) (f.appTop a) = f.appLE V (f ⁻¹ᵁ V) le_rfl (restrictGlobal X V a) := by
+  have h : f.app V (restrictGlobal X V a) = restrictGlobal Y (f ⁻¹ᵁ V) (f.appTop a) :=
+    ConcreteCategory.congr_hom (f.naturality (homOfLE le_top : V ⟶ ⊤).op) _
+  rw [← h, Scheme.Hom.app_eq_appLE]
+
+theorem length_sectionsOn_pullback_of_free (O : Type) [CommRing O] {X Y : Scheme.{0}}
+    [Algebra O Γ(X, ⊤)] [Algebra O Γ(Y, ⊤)] (f : Y ⟶ X)
+    (hO : ∀ r : O, f.appTop (algebraMap O Γ(X, ⊤) r) = algebraMap O Γ(Y, ⊤) r)
+    (V : X.Opens) (n : ℕ) (hV : IsAffineOpen V) (hU : IsAffineOpen (f ⁻¹ᵁ V))
+    (hfree : letI := (f.app V).hom.toAlgebra; Module.Free Γ(X, V) Γ(Y, f ⁻¹ᵁ V) ∧
+      Module.Finite Γ(X, V) Γ(Y, f ⁻¹ᵁ V) ∧ Module.finrank Γ(X, V) Γ(Y, f ⁻¹ᵁ V) = n)
+    (G : X.Modules) [G.IsQuasicoherent] :
+    Module.length O (sectionsOn ((Scheme.Modules.pullback f).obj G) (f ⁻¹ᵁ V)) =
+      n * Module.length O (sectionsOn G V) := by
+  rw [Scheme.Hom.app_eq_appLE] at hfree
+  letI := appLEAlgebra f (le_refl (f ⁻¹ᵁ V))
+  letI := appLEModule f ((Scheme.Modules.pullback f).obj G) (le_refl (f ⁻¹ᵁ V))
+  haveI := appLE_isScalarTower f ((Scheme.Modules.pullback f).obj G) (le_refl (f ⁻¹ᵁ V))
+  obtain ⟨hF, hFin, hr⟩ := hfree
+  have hbc := isBaseChange_pullbackSections f G hU hV (le_refl (f ⁻¹ᵁ V))
+  let b := Module.Free.chooseBasis Γ(X, V) Γ(Y, f ⁻¹ᵁ V)
+  let ι := Module.Free.ChooseBasisIndex Γ(X, V) Γ(Y, f ⁻¹ᵁ V)
+  let E : Γ((Scheme.Modules.pullback f).obj G, f ⁻¹ᵁ V) ≃ₗ[Γ(X, V)] (ι → Γ(G, V)) :=
+    (hbc.equiv.restrictScalars Γ(X, V)).symm ≪≫ₗ
+      TensorProduct.congr b.equivFun (LinearEquiv.refl Γ(X, V) Γ(G, V)) ≪≫ₗ
+      TensorProduct.comm _ _ _ ≪≫ₗ TensorProduct.piScalarRight _ _ _ _
+  let A : sectionsOn ((Scheme.Modules.pullback f).obj G) (f ⁻¹ᵁ V) ≃+ (ι → sectionsOn G V) :=
+    (sectionsOn.toΓ _ _).trans (E.toAddEquiv.trans
+      (AddEquiv.piCongrRight fun _ ↦ (sectionsOn.toΓ G V).symm))
+  let Φ : sectionsOn ((Scheme.Modules.pullback f).obj G) (f ⁻¹ᵁ V) ≃ₗ[O]
+      (ι → sectionsOn G V) :=
+    A.toLinearEquiv fun r x ↦ by
+      funext i
+      apply (sectionsOn.toΓ G V).injective
+      change sectionsOn.toΓ G V ((sectionsOn.toΓ G V).symm
+          (E (sectionsOn.toΓ _ _ (r • x)) i)) =
+        sectionsOn.toΓ G V (r • (sectionsOn.toΓ G V).symm (E (sectionsOn.toΓ _ _ x) i))
+      rw [AddEquiv.apply_symm_apply, sectionsOn.toΓ_smul, sectionsOn.toΓ_smul,
+        AddEquiv.apply_symm_apply, ← hO, restrictGlobal_appTop_eq_appLE]
+      rw [← appLEModule_smul, E.map_smul]
+      rfl
+  rw [Φ.length_eq, Module.length_pi_of_fintype, Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+  rcases subsingleton_or_nontrivial Γ(X, V) with hA | hA
+  · haveI : Subsingleton Γ(G, V) := Module.subsingleton Γ(X, V) Γ(G, V)
+    haveI : Subsingleton (sectionsOn G V) := (sectionsOn.toΓ G V).toEquiv.subsingleton_congr.2 this
+    rw [Module.length_eq_zero_iff.2 this, mul_zero, mul_zero]
+  · rw [← hr, Module.finrank_eq_card_chooseBasisIndex]
+
+end GlobalTheory
+end
+end
+
+section
+open CategoryTheory Limits AlgebraicGeometry TopologicalSpace
+open GlobalTheory GlobalTheory.QCoh
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory
+
+theorem exists_basicOpen_free_avoiding_finite : ∀ {X Y : Scheme.{0}} (f : Y ⟶ X) (n : ℕ) (V : X.Opens), IsAffineOpen V → IsAffineOpen (f ⁻¹ᵁ V) → (letI := (f.app V).hom.toAlgebra; Module.Free Γ(X, V) Γ(Y, f ⁻¹ᵁ V) ∧ Module.Finite Γ(X, V) Γ(Y, f ⁻¹ᵁ V) ∧ Module.finrank Γ(X, V) Γ(Y, f ⁻¹ᵁ V) = n) → ∀ (x : X), x ∈ V → ∀ (T : Set X), T.Finite → (∀ y ∈ T, IsClosed ({y} : Set X)) → x ∉ T → ∃ W : X.Opens, x ∈ W ∧ W ≤ V ∧ (∀ y ∈ T, y ∉ W) ∧ IsAffineOpen W ∧ IsAffineOpen (f ⁻¹ᵁ W) ∧ (letI := (f.app W).hom.toAlgebra; Module.Free Γ(X, W) Γ(Y, f ⁻¹ᵁ W) ∧ Module.Finite Γ(X, W) Γ(Y, f ⁻¹ᵁ W) ∧ Module.finrank Γ(X, W) Γ(Y, f ⁻¹ᵁ W) = n) := by
+  intro X Y f n V hV hV' hfree x hx T hT hcl hxT
+  have hTc : IsClosed T := by
+    rw [← Set.biUnion_of_singleton T]
+    exact hT.isClosed_biUnion hcl
+  let O : X.Opens := V ⊓ ⟨Tᶜ, hTc.isOpen_compl⟩
+  obtain ⟨a, haO, hxa⟩ := hV.exists_basicOpen_le (V := O) ⟨x, hx, hxT⟩ hx
+  refine ⟨X.basicOpen a, hxa, X.basicOpen_le a, fun y hy hya => (haO hya).2 hy, hV.basicOpen a,
+    ?_, ?_⟩
+  · rw [Scheme.preimage_basicOpen]; exact hV'.basicOpen _
+  letI : Algebra Γ(X, V) Γ(Y, f ⁻¹ᵁ V) := (f.app V).hom.toAlgebra
+  obtain ⟨hF, hFin, hr⟩ := hfree
+  letI : Algebra Γ(X, X.basicOpen a) Γ(Y, f ⁻¹ᵁ X.basicOpen a) :=
+    (f.app (X.basicOpen a)).hom.toAlgebra
+  let iX : X.basicOpen a ⟶ V := homOfLE (X.basicOpen_le a)
+  let iY : f ⁻¹ᵁ X.basicOpen a ⟶ f ⁻¹ᵁ V := homOfLE (fun y hy => X.basicOpen_le a hy)
+  letI : Algebra Γ(X, V) Γ(X, X.basicOpen a) := (X.presheaf.map iX.op).hom.toAlgebra
+  letI : Algebra Γ(Y, f ⁻¹ᵁ V) Γ(Y, f ⁻¹ᵁ X.basicOpen a) := (Y.presheaf.map iY.op).hom.toAlgebra
+  letI : Algebra Γ(X, V) Γ(Y, f ⁻¹ᵁ X.basicOpen a) :=
+    ((algebraMap Γ(Y, f ⁻¹ᵁ V) Γ(Y, f ⁻¹ᵁ X.basicOpen a)).comp
+      (algebraMap Γ(X, V) Γ(Y, f ⁻¹ᵁ V))).toAlgebra
+  haveI : IsScalarTower Γ(X, V) Γ(Y, f ⁻¹ᵁ V) Γ(Y, f ⁻¹ᵁ X.basicOpen a) :=
+    IsScalarTower.of_algebraMap_eq' rfl
+  have hcomm : (algebraMap Γ(X, X.basicOpen a) Γ(Y, f ⁻¹ᵁ X.basicOpen a)).comp
+      (algebraMap Γ(X, V) Γ(X, X.basicOpen a)) =
+      (algebraMap Γ(Y, f ⁻¹ᵁ V) Γ(Y, f ⁻¹ᵁ X.basicOpen a)).comp
+        (algebraMap Γ(X, V) Γ(Y, f ⁻¹ᵁ V)) :=
+    congrArg CommRingCat.Hom.hom (f.naturality iX.op)
+  haveI : IsScalarTower Γ(X, V) Γ(X, X.basicOpen a) Γ(Y, f ⁻¹ᵁ X.basicOpen a) :=
+    IsScalarTower.of_algebraMap_eq' hcomm.symm
+  haveI : IsLocalization.Away a Γ(X, X.basicOpen a) := hV.isLocalization_basicOpen a
+  haveI : IsLocalization.Away (algebraMap Γ(X, V) Γ(Y, f ⁻¹ᵁ V) a)
+      Γ(Y, f ⁻¹ᵁ X.basicOpen a) :=
+    hV'.isLocalization_of_eq_basicOpen _ iY (Scheme.preimage_basicOpen f a)
+  haveI : IsLocalization (Algebra.algebraMapSubmonoid Γ(Y, f ⁻¹ᵁ V) (Submonoid.powers a))
+      Γ(Y, f ⁻¹ᵁ X.basicOpen a) := by
+    rw [Algebra.algebraMapSubmonoid_powers]; infer_instance
+  haveI : IsLocalizedModule (Submonoid.powers a)
+      (IsScalarTower.toAlgHom Γ(X, V) Γ(Y, f ⁻¹ᵁ V) Γ(Y, f ⁻¹ᵁ X.basicOpen a)).toLinearMap :=
+    isLocalizedModule_iff_isLocalization.mpr this
+  have hbc : IsBaseChange Γ(X, X.basicOpen a)
+      (IsScalarTower.toAlgHom Γ(X, V) Γ(Y, f ⁻¹ᵁ V) Γ(Y, f ⁻¹ᵁ X.basicOpen a)).toLinearMap :=
+    (isLocalizedModule_iff_isBaseChange (Submonoid.powers a) Γ(X, X.basicOpen a) _).mp
+      inferInstance
+  haveI : Nonempty V := ⟨⟨x, hx⟩⟩
+  haveI : Nonempty (X.basicOpen a) := ⟨⟨x, hxa⟩⟩
+  haveI : Nontrivial Γ(X, V) := Scheme.component_nontrivial X V
+  haveI : Nontrivial Γ(X, X.basicOpen a) := Scheme.component_nontrivial X _
+  let b := Module.Free.chooseBasis Γ(X, V) Γ(Y, f ⁻¹ᵁ V)
+  let b' := hbc.basis b
+  refine ⟨Module.Free.of_basis b', Module.Finite.of_basis b', ?_⟩
+  rw [Module.finrank_eq_card_basis b', ← hr, Module.finrank_eq_card_basis b]
+
+end GlobalTheory
+end
+end
+
+section
+open CategoryTheory Limits AlgebraicGeometry TopologicalSpace
+open GlobalTheory GlobalTheory.QCoh
+
+namespace GlobalTheory
+
+set_option backward.isDefEq.respectTransparency.types false in
+
+theorem fibre_finite_isClosed_of_affine_finite {X Y : Scheme.{0}} (f : Y ⟶ X) (V : X.Opens)
+    (hV : IsAffineOpen V) (hU : IsAffineOpen (f ⁻¹ᵁ V))
+    (hfin : letI := (f.app V).hom.toAlgebra; Module.Finite Γ(X, V) Γ(Y, f ⁻¹ᵁ V))
+    (x : X) (hxV : x ∈ V) (hx : IsClosed ({x} : Set X)) :
+    (f.base ⁻¹' {x}).Finite ∧ ∀ y : Y, f.base y = x → IsClosed ({y} : Set Y) := by
+  haveI : IsAffine V.toScheme := hV
+  haveI : IsAffine (f ⁻¹ᵁ V).toScheme := hU
+  haveI hg : IsFinite (f ∣_ V) := by
+    rw [HasAffineProperty.iff_of_isAffine (P := @IsFinite)]
+    refine ⟨inferInstance, ?_⟩
+    have h1 : (f.app (V.ι ''ᵁ ⊤)).hom.Finite := by
+      rw [Scheme.Opens.ι_image_top]; exact hfin
+    have h2 : ∀ {A B : CommRingCat.{0}} (e : A ⟶ B) [IsIso e], e.hom.Finite := fun e _ =>
+      RingHom.Finite.of_surjective _ (ConcreteCategory.bijective_of_isIso e).2
+    rw [morphismRestrict_appTop]
+    exact (h2 _).comp h1
+  have hmemU : ∀ y : Y, f.base y = x → y ∈ f ⁻¹ᵁ V := fun y hy => by
+    show f.base y ∈ V
+    rw [hy]; exact hxV
+  have hres : ∀ (y : Y) (hy : f.base y = x),
+      (f ∣_ V) (⟨y, hmemU y hy⟩ : (f ⁻¹ᵁ V).toScheme) = (⟨x, hxV⟩ : V.toScheme) := by
+    intro y hy
+    exact Subtype.ext ((morphismRestrict_base_coe f V _).trans hy)
+  refine ⟨?_, ?_⟩
+  · refine (((f ∣_ V).finite_preimage_singleton (⟨x, hxV⟩ : V.toScheme)).image
+      (f ⁻¹ᵁ V).ι.base).subset ?_
+    intro y hy
+    exact ⟨⟨y, hmemU y hy⟩, hres y hy, rfl⟩
+  · intro y hy
+    rw [← closure_subset_iff_isClosed]
+    intro z hz
+    rw [← specializes_iff_mem_closure] at hz
+    have hfz : f.base z = x := by
+      have h1 : f.base y ⤳ f.base z := hz.map f.base.hom.continuous
+      rw [hy, specializes_iff_mem_closure, hx.closure_eq] at h1
+      exact h1
+    have hspec : (⟨y, hmemU y hy⟩ : (f ⁻¹ᵁ V).toScheme) ⤳ ⟨z, hmemU z hfz⟩ :=
+      (f ⁻¹ᵁ V).ι.isOpenEmbedding.isInducing.specializes_iff.1 hz
+    have hdisc := ((f ∣_ V).isDiscrete_preimage_singleton (⟨x, hxV⟩ : V.toScheme)).to_subtype
+    have hs2 : (⟨_, hres y hy⟩ : ((f ∣_ V) ⁻¹' {(⟨x, hxV⟩ : V.toScheme)} : Set _)) ⤳
+        ⟨_, hres z hfz⟩ :=
+      Topology.IsInducing.subtypeVal.specializes_iff.1 hspec
+    have := congrArg (fun p => (p.1 : (f ⁻¹ᵁ V).toScheme).1) hs2.eq
+    exact (Set.mem_singleton_iff.2 this.symm)
+
+end GlobalTheory
+end
+
+section
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
@@ -222,3 +643,5 @@ theorem interNum_pull_eq_mul (k : Type) [Field k] (X Y : Scheme.{0}) [IsIntegral
   exact h0
 
 end GlobalTheory.FieldProj
+end
+end

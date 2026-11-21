@@ -396,14 +396,9 @@ theorem topCells_of (hZ : ZjAffine) (hST : SizesTop) (hIT : IntTop) : TopCells :
           ring
       _ ≤ _ := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hsum hK) hr
 
-theorem topCellsOfParts : TopCellsOfParts := by
-  intro hZ _ hST hIT
-  exact topCells_of hZ hST hIT
 
 end Formalism.FourierDecayAlt.P.Ux13
 
-theorem Formalism.FourierDecayAlt.P.top_cells_of_parts : Formalism.FourierDecayAlt.U.TopCellsOfParts := by
-  exact Formalism.FourierDecayAlt.P.Ux13.topCellsOfParts
 
 theorem Formalism.FourierDecayAlt.P.top_cells : Formalism.FourierDecayAlt.U.TopCells := by
   exact Formalism.FourierDecayAlt.P.Ux13.topCells_of Formalism.FourierDecayAlt.P.level_z_affine Formalism.FourierDecayAlt.P.sizes_top_level Formalism.FourierDecayAlt.P.integrability_top_level

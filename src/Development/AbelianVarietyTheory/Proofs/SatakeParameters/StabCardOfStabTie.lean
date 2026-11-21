@@ -1,14 +1,15 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.ThetaLiftGeometry.WeightedChainData
 import Development.AbelianVarietyTheory.BlockTheory.ThetaLiftGeometry.AmbientLatticeAvoidance
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.DecorationLiftStdLatticeReduction
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IntegralGlReductionModPrimeStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsDecorationExtensionAtPrimesStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemParahoricOfTrivialReductionStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LambdaCharMulInvEqOneStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LambdaCharSymMulInvEqOneStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LambdaQuotientCharMulInvEqOneStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IntegralDivUniformizerOfRedZeroStatement
+import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.RedPEqZeroOfDiv
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IntegralGlReductionModPrime
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsDecorationExtensionAtPrimes
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemParahoricOfTrivialReduction
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LambdaCharMulInvEqOne
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LambdaCharSymMulInvEqOne
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LambdaQuotientCharMulInvEqOne
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IntegralDivUniformizerOfRedZero
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FiniteDivLatticeQuotient
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ThetaSupportInDivLattice
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.DatumSupportDivLatticeInterior
@@ -16,6 +17,79 @@ import Development.AbelianVarietyTheory.Proofs.SatakeParameters.DatumPeriodicMul
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.DatumSupportDivLatticeFinal
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.DatumPeriodicMulLatticeFinal
 
+section
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col
+
+namespace GlobalTheory
+
+theorem decoSet_liftFr_lifts_level :
+    ∀ (E : Type) [Field E] [NumberField E] [StarRing E] (n : ℕ) (ST SG : Finset (HeightOneSpectrum (𝓞 E)))
+      (d : DecoSet E n ST SG) (w : SG),
+      (∀ x, d.1.liftFr w x ∈ d.1.at w.1 ↔ x ∈ stdAt E n w.1) ∧
+        ∀ x ∈ stdAt E n w.1, d.1.be w (d.1.liftFr w x) = redV w.1 x :=
+  fun _ _ _ _ _ _ _ d w => GlobalTheory.TopStep.liftFr_spec d.2 w
+
+end GlobalTheory
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.decoration_lift_std_lattice_reduction : ∀ (E : Type) [Field E] [NumberField E] [StarRing E] (n : ℕ) (ST SG : Finset (HeightOneSpectrum (𝓞 E))) (d : DecoSet E n ST SG) (w : SG), (∀ x, d.1.liftFr w x ∈ d.1.at w.1 ↔ x ∈ stdAt E n w.1) ∧ ∀ x ∈ stdAt E n w.1, d.1.be w (d.1.liftFr w x) = redV w.1 x := by
+  atlas_forward_decl GlobalTheory.decoSet_liftFr_lifts_level
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_gl_reduction_mod_prime : ∀ (E : Type) [Field E] [NumberField E] [StarRing E] (n : ℕ) (P : HeightOneSpectrum (𝓞 E)) (κ : Sp E n ≃ₗ[E] Sp E n), κ ∈ GLint E n P → ∃ h : GL (Fin n) (𝓞 E ⧸ P.asIdeal), ∀ x ∈ stdAt E n P, redV P (κ x) = h.1.mulVec (redV P x) := by
+  first | exact @GlobalTheory.exists_GL_redV_of_mem_GLint | exact GlobalTheory.exists_GL_redV_of_mem_GLint | (intros; apply GlobalTheory.exists_GL_redV_of_mem_GLint <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_decoration_extension_at_primes : ∀ (E : Type) [Field E] [NumberField E] [StarRing E] (n : ℕ) (ST SG : Finset (HeightOneSpectrum (𝓞 E))) (d : DecoSet E n ST ∅) (f : SG → (Sp E n ≃ₗ[E] Sp E n)), (∀ (w : SG) (x : Sp E n), f w x ∈ d.1.at w.1 ↔ x ∈ stdAt E n w.1) → ∃ d' : DecoSet E n ST SG, d'.1.N = d.1.N ∧ d'.1.f = d.1.f ∧ ∀ w : SG, ∀ x ∈ stdAt E n w.1, d'.1.be w (f w x) = redV w.1 x := by
+  first | exact @GlobalTheory.FrameDeco.exists_deco_of_frames | exact GlobalTheory.FrameDeco.exists_deco_of_frames | (intros; apply GlobalTheory.FrameDeco.exists_deco_of_frames <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_parahoric_of_trivial_reduction : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (sharp : Bool) (j : ℕ) (w : HeightOneSpectrum (𝓞 X.E)), w ∈ Pr.vGs → (∀ a : X.E, IntAt w a → redP w a = 0 → IntAt w (a / (qOf w : X.E))) → ∀ h : AutY X R j, h ∈ stabL X.E _ (lamYat (Pr := Pr) j w) → ∀ κ : Sp X.E (R.N j) ≃ₗ[X.E] Sp X.E (R.N j), κ ∈ GLint X.E (R.N j) w → (∀ x ∈ stdAt X.E (R.N j) w, redV w (κ x) = redV w x) → κ ∈ prCat (Pr := Pr) sharp j w h := by
+  first | exact @GlobalTheory.CongLevel.cong_mem_prCat | exact GlobalTheory.CongLevel.cong_mem_prCat | (intros; apply GlobalTheory.CongLevel.cong_mem_prCat <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lambda_char_mul_inv_eq_one : ∀ (E K : Type) [Field E] [NumberField E] [StarRing E] [Field K] (P : HeightOneSpectrum (𝓞 E)) (q : ℕ), q ≠ 0 → (q : 𝓞 E) ∈ P.asIdeal → ∀ (ψ₀ : AddChar (𝓞 E ⧸ P.asIdeal) K) (χ : ℕ → (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) (k₀ r t j n : ℕ), r + j * t ≤ n → ∀ g ∈ LocE.JG P q k₀ r t n 0, LocE.lamGB q ψ₀ χ k₀ r t j n 0 g.toLinearMap * LocE.lamGB q ψ₀ χ k₀ r t j n 0 (g⁻¹).toLinearMap = 1 := by
+  first | exact @GlobalTheory.lamGB_mul_lamGB_inv | exact GlobalTheory.lamGB_mul_lamGB_inv | (intros; apply GlobalTheory.lamGB_mul_lamGB_inv <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lambda_char_sym_mul_inv_eq_one : ∀ (E K : Type) [Field E] [NumberField E] [StarRing E] [Field K] (P : HeightOneSpectrum (𝓞 E)) (q : ℕ), q ≠ 0 → (q : 𝓞 E) ∈ P.asIdeal → ∀ (ψ₀ : AddChar (𝓞 E ⧸ P.asIdeal) K) (χ : ℕ → (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) (k₀ rS r t j n : ℕ), k₀ + rS < r → r + j * t ≤ n → ∀ g ∈ LocE.JGsym P q k₀ rS r t n 0, LocE.lamGBS q ψ₀ χ k₀ r t j n 0 g.toLinearMap * LocE.lamGBS q ψ₀ χ k₀ r t j n 0 (g⁻¹).toLinearMap = 1 := by
+  first | exact @GlobalTheory.SymLevelInv.lamGBS_mul_inv | exact GlobalTheory.SymLevelInv.lamGBS_mul_inv | (intros; apply GlobalTheory.SymLevelInv.lamGBS_mul_inv <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lambda_quotient_char_mul_inv_eq_one : ∀ (E K : Type) [Field E] [NumberField E] [StarRing E] [Field K] (P : HeightOneSpectrum (𝓞 E)) (q : ℕ), q ≠ 0 → (q : 𝓞 E) ∈ P.asIdeal → ∀ (ξ : (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) (kj n : ℕ), ∀ g ∈ LocE.JQ P q kj n 0, LocE.lamQB ξ kj n g.toLinearMap * LocE.lamQB ξ kj n (g⁻¹).toLinearMap = 1 := by
+  first | exact @GlobalTheory.TwistRowType.lamQB_mul_inv | exact GlobalTheory.TwistRowType.lamQB_mul_inv | (intros; apply GlobalTheory.TwistRowType.lamQB_mul_inv <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_div_uniformizer_of_red_zero : ∀ (X : Fields) (Pr : Primes X), X.Ok → Pr.Ok → ∀ w ∈ Pr.vGs, ∀ a : X.E, IntAt w a → redP w a = 0 → IntAt w (a / (qOf w : X.E)) := by
+  first | exact @GlobalTheory.TypePrimeUnif.intAt_div_qOf | exact GlobalTheory.TypePrimeUnif.intAt_div_qOf | (intros; apply GlobalTheory.TypePrimeUnif.intAt_div_qOf <;> assumption)
+end
+
+section
 open NumberField IsDedekindDomain
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker Formalism.MainNotions
 open GlobalTheory.IndefiniteRowSideFullHecke GlobalTheory.IndefiniteRowSideFullHecke.WeightedChainData
@@ -1051,3 +1125,5 @@ def ChainA (T : ChainData D u μ) (Tw : TwForms D)
 end Kernels
 
 end GlobalTheory.KFormsCmp
+end
+end

@@ -1,6 +1,157 @@
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.AnLawX
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.ComposeLinearAction
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.AnHolFamOfHolTo
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.AnChartX
 
+section
+set_option autoImplicit false
+
+noncomputable section
+
+namespace ReciprocityTheory.ChartRestriction.G.PullbackSections
+
+open NumberField
+
+section Chart
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.TB.ValAt
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
+  {Xo : Moduli Dw l} {c : Coeff l} {σ' : KA l →+* ℂ} {g : ℕ} {ty : Fin g → (E →+* ℂ)} [Algebra c.F ℂ]
+
+
+end Chart
+
+end ReciprocityTheory.ChartRestriction.G.PullbackSections
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+namespace ReciprocityTheory.ChartRestriction.G.PullbackSections
+
+open MvPowerSeries ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ NumberField
+
+section Ev
+
+variable {g m n : ℕ}
+
+theorem ev_addF (a : Fin 2 → Pt ℂ n g) (ha : ∀ p : Fin 2 × Fin g, constantCoeff (a p.1 p.2) = 0) (i : Fin g) :
+    ev a (addF ℂ g i) = a 0 i + a 1 i := by
+  have hs := MvPowerSeries.hasSubst_of_constantCoeff_zero ha
+  simp only [ev, addF]
+  rw [MvPowerSeries.subst_add hs, MvPowerSeries.subst_X hs, MvPowerSeries.subst_X hs]
+
+theorem ev_CX (a : Fin 1 → Pt ℂ n g) (ha : ∀ p : Fin 1 × Fin g, constantCoeff (a p.1 p.2) = 0) (c : ℂ)
+    (i : Fin g) : ev a (C c * X ((0 : Fin 1), i) : PS ℂ 1 g) = C c * a 0 i := by
+  have hs := MvPowerSeries.hasSubst_of_constantCoeff_zero ha
+  rw [← MvPowerSeries.smul_eq_C_mul, ← MvPowerSeries.smul_eq_C_mul]
+  simp only [ev]
+  rw [MvPowerSeries.subst_smul hs, MvPowerSeries.subst_X hs]
+
+theorem addOf_addF (a b : Pt ℂ n g) (ha : ∀ i, constantCoeff (a i) = 0) (hb : ∀ i, constantCoeff (b i) = 0) :
+    addOf (addF ℂ g) a b = a + b := by
+  funext i
+  simp only [addOf]
+  rw [ev_addF _ (fun ⟨j, k⟩ => by fin_cases j <;> simp [ha, hb])]
+  simp
+
+theorem expS_zero_an (k : Type) [CommRing k] [Algebra ℚ k] {n d : ℕ} : FB.expS k (0 : PS k n d) = 1 := by
+  have ha : PowerSeries.HasSubst (0 : PS k n d) :=
+    PowerSeries.HasSubst.of_constantCoeff_zero (by simp)
+  unfold FB.expS
+  conv_lhs => rw [PowerSeries.eq_X_mul_shift_add_const (PowerSeries.exp k)]
+  rw [PowerSeries.subst_add ha, PowerSeries.subst_mul ha, PowerSeries.subst_X ha, zero_mul, zero_add,
+    PowerSeries.constantCoeff_exp, map_one, ← PowerSeries.coe_substAlgHom ha, map_one]
+
+theorem cc_pt (j : Fin n) (i : Fin g) : constantCoeff (pt ℂ g j i) = 0 := by
+  simp [pt]
+
+end Ev
+
+def addFGLaw (g : ℕ) : FGLaw ℂ g where
+  F := addF ℂ g
+  const i := by simp [addF]
+  unit i := by
+    rw [ev_addF _ (fun ⟨j, k⟩ => by fin_cases j <;> simp [pt])]
+    simp [pt]
+  comm i := by
+    rw [ev_addF _ (fun ⟨j, k⟩ => by fin_cases j <;> simp [pt])]
+    simp [pt, addF, add_comm]
+  assoc i := by
+    have h01 : (fun l => ev (n := 3) ![pt ℂ g 0, pt ℂ g 1] (addF ℂ g l)) =
+        fun l => (X ((0 : Fin 3), l) + X ((1 : Fin 3), l) : PS ℂ 3 g) :=
+      funext fun l => by rw [ev_addF _ (fun ⟨j, k⟩ => by fin_cases j <;> simp [pt])]; simp [pt]
+    have h12 : (fun l => ev (n := 3) ![pt ℂ g 1, pt ℂ g 2] (addF ℂ g l)) =
+        fun l => (X ((1 : Fin 3), l) + X ((2 : Fin 3), l) : PS ℂ 3 g) :=
+      funext fun l => by rw [ev_addF _ (fun ⟨j, k⟩ => by fin_cases j <;> simp [pt])]; simp [pt]
+    rw [h01, h12, ev_addF _ (fun ⟨j, k⟩ => by fin_cases j <;> simp [pt]),
+      ev_addF _ (fun ⟨j, k⟩ => by fin_cases j <;> simp [pt])]
+    simp [pt, add_assoc]
+
+section Act
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {g n : ℕ}
+
+def linAct (ty : Fin g → (E →+* ℂ)) (a : 𝓞 E) : Pt ℂ 1 g :=
+  fun k => C (ty k (a : E)) * X ((0 : Fin 1), k)
+
+theorem cc_linAct (ty : Fin g → (E →+* ℂ)) (a : 𝓞 E) (i : Fin g) : constantCoeff (linAct ty a i) = 0 := by
+  simp [linAct]
+
+theorem compose_linear_action (ty : Fin g → (E →+* ℂ)) (a : 𝓞 E) (b : Pt ℂ n g) (hb : ∀ i, constantCoeff (b i) = 0) :
+    comp1 (linAct ty a) b = fun i => C (ty i (a : E)) * b i := by
+  funext i
+  simp only [comp1, linAct]
+  rw [ev_CX _ (fun ⟨j, k⟩ => by fin_cases j; simp [hb])]
+  simp
+
+def linOAct (ty : Fin g → (E →+* ℂ)) : OAct (𝓞 E) (addFGLaw g) where
+  act := linAct ty
+  const := cc_linAct ty
+  hom a := by
+    show comp1 (linAct ty a) (addOf (addF ℂ g) (pt ℂ g 0) (pt ℂ g 1)) =
+      addOf (addF ℂ g) (comp1 (linAct ty a) (pt ℂ g 0)) (comp1 (linAct ty a) (pt ℂ g 1))
+    rw [addOf_addF _ _ (cc_pt 0) (cc_pt 1), compose_linear_action _ _ _ (fun i => by simp [pt]),
+      compose_linear_action _ _ _ (cc_pt 0), compose_linear_action _ _ _ (cc_pt 1), addOf_addF _ _ (fun i => by simp [pt])
+        (fun i => by simp [pt])]
+    funext i
+    simp [mul_add]
+  add_act a b := by
+    show linAct ty (a + b) = addOf (addF ℂ g) (linAct ty a) (linAct ty b)
+    rw [addOf_addF _ _ (cc_linAct ty a) (cc_linAct ty b)]
+    funext i
+    simp [linAct, add_mul]
+  mul_act a b := by
+    show linAct ty (a * b) = comp1 (linAct ty a) (linAct ty b)
+    rw [compose_linear_action _ _ _ (cc_linAct ty b)]
+    funext i
+    simp [linAct, mul_assoc]
+  one_act := by
+    funext i
+    simp [linAct, pt]
+
+def anFB [StarRing (𝓞 E)] (ty : Fin g → (E →+* ℂ)) : FB ℂ g (𝓞 E) := FB.triv (addFGLaw g) (linOAct ty)
+
+theorem anFB_canon [StarRing (𝓞 E)] (ty : Fin g → (E →+* ℂ)) : (anFB ty).IsCanonGauge ℂ 0 where
+  ax0 := ev_zero' _
+  ax1 := ev_zero' _
+  ph1 := by simp [anFB, FB.triv, ev_zero', expS_zero_an]
+  ph2 := by simp [anFB, FB.triv, ev_zero', expS_zero_an]
+  sy := by simp [anFB, FB.triv, ev_zero', expS_zero_an]
+  ad a := by simp [anFB, FB.triv, ev_zero', expS_zero_an]
+
+end Act
+
+end ReciprocityTheory.ChartRestriction.G.PullbackSections
+end
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -17,18 +168,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : D
 
 def anUvec (e' : Fin g ≃ Lt1 Dw) : Lt1 Dw → Fin g → ℂ := fun ℓ j => if j = e'.symm ℓ then 1 else 0
 
-theorem anX_isChart [StarRing (𝓞 E)] (F : FamilyUnif Xo σ' ty) (i : Fin F.n) (P : (F.Di i).La →+ (Fin g → ℂ))
-    (hP : IsPeriod (F.Di i) ty P) (y : FrPt Xo c ℂ) (hy : y.x = F.u i P) (e' : Fin g ≃ Lt1 Dw)
-    (hder : ∀ ℓ : Lt1 Dw, IsDerivAt0 (anE F i P) (Pi.single (e'.symm ℓ) 1) (y.u ℓ.1 ℓ.2))
-    (hPair : IsHolTo (Set.univ : Set (Fin (2 * g) → ℂ)) fun v =>
-      pullback.lift (F.ex i P (anPr 0 v)).left (F.ex i P (anPr 1 v)).left
-        ((Over.w (F.ex i P (anPr 0 v))).trans (Over.w (F.ex i P (anPr 1 v))).symm)) :
-    IsChart y g (anFB ty).G.F (anFB ty).A.act (anUvec e') (anX F i P hP y hy) where
-  zero m := anX_zero F i P hP y hy m
-  trunc m := anX_trunc F i P hP y hy m
-  law m := anX_law_chart F i P hP y hy hPair m
-  act m a := anX_act F i P hP y hy m a
-  tan ℓ := anX_tan F i P hP y hy (e'.symm ℓ) (y.u ℓ.1 ℓ.2) (hder ℓ)
-  basis v := basis_single e' v
 
 end ReciprocityTheory.ChartRestriction.G.PullbackSections
+end
+end

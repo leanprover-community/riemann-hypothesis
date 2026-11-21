@@ -26,7 +26,6 @@ def lamExp : LamK → ℤ := fun I => (-1) ^ (2 - I.down.card)
 def lamAt (L : LB G.left) {T : Over S} (x z : T ⟶ G) : LB T.left :=
   LB.LinComb L (lamPt G x z) lamExp
 
-theorem lamAt_fst_snd (L : LB G.left) : lamAt G L (fst G G) (snd G G) = abelian₂ G L := rfl
 
 theorem lamPt_comp {T T' : Over S} (h : T' ⟶ T) (x z : T ⟶ G) (I : LamK) :
     h.left ≫ lamPt G x z I = lamPt G (h ≫ x) (h ≫ z) I := by
@@ -179,10 +178,6 @@ def PullIso.toPull {t' : Triple H S'} {t : Triple H S} {f : S' ⟶ S} (p : PullI
     Pull t' t f :=
   ⟨p.m.F, p.isGrpPullback, p.act_comm, p.m, rfl, p.base, p.w, p.isGen, p.rig, p.cube⟩
 
-theorem PullIso.toPull_surjective {t' : Triple H S'} {t : Triple H S} {f : S' ⟶ S} :
-    Function.Surjective (PullIso.toPull (t' := t') (t := t) (f := f)) := by
-  rintro ⟨φ, h1, h2, m, rfl, h3, w, h4, h5, h6⟩
-  exact ⟨⟨m, h3, h1, h2, w, h4, h5, h6⟩, rfl⟩
 
 theorem cubeMap_coord {G' : Over S'} {G : Over S} [GrpObj G'] [IsCommMonObj G'] [GrpObj G]
     [IsCommMonObj G] (m : CubeMap G' G) (i : Fin 3) :

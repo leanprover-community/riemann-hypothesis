@@ -59,81 +59,9 @@ theorem mulW_apply (a : Matrix (Fin n) (Fin n) K) (d : Fin n → K) (i j : Fin n
   · intro h
     exact absurd (Finset.mem_univ _) h
 
-theorem Wmul_apply (c : Matrix (Fin n) (Fin n) K) (d : Fin n → K) (i j : Fin n) :
-    ((w0 n * diagonal d) * c : Matrix (Fin n) (Fin n) K) i j = d (Fin.rev i) * c (Fin.rev i) j := by
-  rw [antidiag_mul_diagonal, Matrix.mul_apply, Finset.sum_eq_single (Fin.rev i)]
-  · simp
-  · intro k _ hk
-    simp only [Matrix.of_apply]
-    rw [if_neg, zero_mul]
-    intro h
-    apply hk
-    rw [h, Fin.rev_rev]
-  · intro h
-    exact absurd (Finset.mem_univ _) h
 
-theorem lower_eq_one {a c : Matrix (Fin n) (Fin n) K} {d : Fin n → K} (ha : IsUpUni a)
-    (hc : IsUpUni c) (hd : ∀ x, d x ≠ 0)
-    (h : a * (w0 n * diagonal d) = (w0 n * diagonal d) * c) : a = 1 := by
-  ext i k
-  rw [Matrix.one_apply]
-  split_ifs with hik
-  · subst hik
-    exact ha.2 i
-  · rcases lt_or_gt_of_ne hik with h' | h'
-    · have e := congrFun (congrFun h i) (Fin.rev k)
-      rw [mulW_apply, Wmul_apply, Fin.rev_rev] at e
-      have hc0 : c (Fin.rev i) (Fin.rev k) = 0 := hc.1 (Fin.rev_lt_rev.mpr h')
-      rw [hc0, mul_zero] at e
-      exact (mul_eq_zero.mp e).resolve_right (hd _)
-    · exact ha.1 h'
 
-theorem right_eq_one {b : Matrix (Fin n) (Fin n) K} {d : Fin n → K} (hd : ∀ x, d x ≠ 0)
-    (h : (w0 n * diagonal d) * b = w0 n * diagonal d) : b = 1 := by
-  ext x j
-  have e := congrFun (congrFun h (Fin.rev x)) j
-  have e1 : (w0 n * Matrix.diagonal d : Matrix (Fin n) (Fin n) K) (Fin.rev x) j =
-      ((w0 n * Matrix.diagonal d) * 1 : Matrix (Fin n) (Fin n) K) (Fin.rev x) j := by
-    rw [Matrix.mul_one]
-  rw [e1, Wmul_apply, Wmul_apply, Fin.rev_rev] at e
-  exact mul_left_cancel₀ (hd x) e
 
-theorem bigCellFree : BigCellFree := by
-  intro K' _ m v v' u u' d hv hv' hu hu' hd h
-  have hvU := upUni_isUnit hv
-  have hv'U := upUni_isUnit hv'
-  rw [Matrix.mul_assoc v (w0 m) (Matrix.diagonal d)] at h
-  obtain ⟨W, hW⟩ : ∃ W, W = w0 m * Matrix.diagonal d := ⟨_, rfl⟩
-  rw [← hW] at h
-  have ha : IsUpUni (v⁻¹ * u * v) := upUni_mul (upUni_mul (upUni_inv hv) hu) hv
-  have hc : IsUpUni (v' * u' * v'⁻¹) := upUni_mul (upUni_mul hv' hu') (upUni_inv hv')
-  have hcU := upUni_isUnit hc
-  have key : (v⁻¹ * u * v) * W * (v' * u' * v'⁻¹) = W := by
-    have e : v⁻¹ * (u * (v * W * v') * u') * v'⁻¹ = W := by
-      rw [h, ← Matrix.mul_assoc, ← Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hvU, Matrix.one_mul,
-        Matrix.mul_assoc, Matrix.mul_nonsing_inv _ hv'U, Matrix.mul_one]
-    rw [show (v⁻¹ * u * v) * W * (v' * u' * v'⁻¹) = v⁻¹ * (u * (v * W * v') * u') * v'⁻¹ by
-      simp only [Matrix.mul_assoc]]
-    exact e
-  have key2 : (v⁻¹ * u * v) * W = W * (v' * u' * v'⁻¹)⁻¹ := by
-    calc (v⁻¹ * u * v) * W
-        = (v⁻¹ * u * v) * W * ((v' * u' * v'⁻¹) * (v' * u' * v'⁻¹)⁻¹) := by
-          rw [Matrix.mul_nonsing_inv _ hcU, Matrix.mul_one]
-      _ = ((v⁻¹ * u * v) * W * (v' * u' * v'⁻¹)) * (v' * u' * v'⁻¹)⁻¹ :=
-          (Matrix.mul_assoc _ _ _).symm
-      _ = W * (v' * u' * v'⁻¹)⁻¹ := by rw [key]
-  have ha1 : v⁻¹ * u * v = 1 := lower_eq_one ha (upUni_inv hc) hd (by rw [← hW]; exact key2)
-  rw [ha1, Matrix.one_mul] at key
-  have hc1 : v' * u' * v'⁻¹ = 1 := right_eq_one hd (by rw [← hW]; exact key)
-  constructor
-  · calc u = v * (v⁻¹ * u * v) * v⁻¹ := by
-          simp only [← Matrix.mul_assoc, Matrix.mul_nonsing_inv _ hvU, Matrix.one_mul]
-          rw [Matrix.mul_assoc, Matrix.mul_nonsing_inv _ hvU, Matrix.mul_one]
-      _ = 1 := by rw [ha1, Matrix.mul_one, Matrix.mul_nonsing_inv _ hvU]
-  · calc u' = v'⁻¹ * (v' * u' * v'⁻¹) * v' := by
-          simp only [← Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hv'U, Matrix.one_mul]
-          rw [Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hv'U, Matrix.mul_one]
-      _ = 1 := by rw [hc1, Matrix.mul_one, Matrix.nonsing_inv_mul _ hv'U]
 
 theorem jointTheoremA : JointTheoremA := by
   intro C₀ hC₀
@@ -163,6 +91,5 @@ theorem jointTheoremA : JointTheoremA := by
 
 end Formalism.FourierDecayAlt.P.K
 
-theorem Formalism.FourierDecayAlt.P.big_cell_free : Formalism.FourierDecayAlt.K.BigCellFree := Formalism.FourierDecayAlt.P.K.bigCellFree
 
 theorem Formalism.FourierDecayAlt.P.joint_theorem_A' : Formalism.FourierDecayAlt.K.JointTheoremA := Formalism.FourierDecayAlt.P.K.jointTheoremA

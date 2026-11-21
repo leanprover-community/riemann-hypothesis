@@ -72,10 +72,7 @@ theorem nComp_pos [Nonempty S.X] : 0 < S.nComp := by
   have := S.finite_components
   exact Nat.card_pos
 
-theorem nComp_eq_one [ConnectedSpace S.X] : S.nComp = 1 :=
-  Nat.card_unique
 
-theorem nComp_comap {σ' : Type} (f : σ' → σ) : (S.comap f).nComp = S.nComp := rfl
 
 end AnSys
 
@@ -163,24 +160,8 @@ theorem numDe_eq (t : ℝ) (w : Fin (D + 1) → σ) : Re.numDe II t w = Re.num I
 theorem num_eq (t : ℝ) (w : Fin (D + 1) → σ) : Re.num II t w = S.nComp * Re.numDe II t w := by
   rw [numDe_eq, mul_div_cancel₀ _ (Nat.cast_ne_zero.2 Re.nComp_pos.ne')]
 
-theorem limNum_eq (w : Fin (D + 1) → σ) : Re.limNum II w = S.nComp * Re.limNumDe II w := by
-  rw [limNumDe, mul_div_cancel₀ _ (Nat.cast_ne_zero.2 Re.nComp_pos.ne')]
 
-theorem tendsto_numDe_iff (w : Fin (D + 1) → σ) :
-    Tendsto (fun t => Re.numDe II t w) (𝓝[>] 0) (𝓝 (Re.limNumDe II w)) ↔
-      Tendsto (fun t => Re.num II t w) (𝓝[>] 0) (𝓝 (Re.limNum II w)) := by
-  refine ⟨fun h => ?_, fun h => ?_⟩
-  · simp only [num_eq, limNum_eq]
-    exact h.const_mul _
-  · simp only [numDe_eq, limNumDe]
-    exact h.div_const _
 
-theorem limNumDe_eq_of_tendsto {w : Fin (D + 1) → σ} {L : ℝ}
-    (h : Tendsto (fun t => Re.numDe II t w) (𝓝[>] 0) (𝓝 L)) : Re.limNumDe II w = L := by
-  have h1 : Tendsto (fun t => Re.num II t w) (𝓝[>] 0) (𝓝 (S.nComp * L)) := by
-    simp only [num_eq]
-    exact h.const_mul _
-  rw [limNumDe, limNum, h1.limUnder_eq, mul_div_cancel_left₀ _ (Nat.cast_ne_zero.2 Re.nComp_pos.ne')]
 
 theorem FT_eq [Fintype σ] (t : ℝ) : Re.FT II t = (S.nComp : ℝ) • Re.FTDe II t := by
   rw [FTDe, ← formPoly_const_mul, FT]
@@ -188,15 +169,7 @@ theorem FT_eq [Fintype σ] (t : ℝ) : Re.FT II t = (S.nComp : ℝ) • Re.FTDe 
   funext w
   exact Re.num_eq II t w
 
-theorem PB_eq [Fintype σ] : Re.PB II = (S.nComp : ℝ) • Re.PBDe II := by
-  rw [PBDe, ← formPoly_const_mul, PB]
-  congr 1
-  funext w
-  exact Re.limNum_eq II w
 
-theorem PBDe_of_connected [Fintype σ] [ConnectedSpace S.X] :
-    Re.de = Re.deg ∧ Re.PBDe II = Re.PB II ∧ ∀ t, Re.FTDe II t = Re.FT II t := by
-  simp [de, PB_eq, FT_eq, S.nComp_eq_one]
 
 def comap {σ' : Type} (f : σ' → σ) : Realis (S.comap f) P where
   arith := Re.arith
@@ -216,13 +189,8 @@ def comap {σ' : Type} (f : σ' → σ) : Realis (S.comap f) P where
   line_smooth a := Re.line_smooth (f a)
   line_eq a := Re.line_eq (f a)
 
-theorem de_comap {σ' : Type} (f : σ' → σ) : (Re.comap f).de = Re.de := rfl
 
-theorem numDe_comap {σ' : Type} (f : σ' → σ) (t : ℝ) (w : Fin (D + 1) → σ') :
-    (Re.comap f).numDe II t w = Re.numDe II t (f ∘ w) := rfl
 
-theorem limNumDe_comap {σ' : Type} (f : σ' → σ) (w : Fin (D + 1) → σ') :
-    (Re.comap f).limNumDe II w = Re.limNumDe II (f ∘ w) := rfl
 
 end Realis
 
@@ -242,28 +210,9 @@ def Realis.PBsDe (k : ℕ) : MvPolynomial (Option (Ψ × Fin N)) ℝ := scaleS k
 
 def Realis.PBwtDe : MvPolynomial (Ψ × Fin N) ℝ := toWt ((Re.comap some).PBDe II)
 
-theorem eval_scaleS {τ : Type} (k : ℕ) (Q : MvPolynomial (Option τ) ℝ) (lam : τ → ℝ) (s : ℝ) :
-    eval (fun o : Option τ => o.elim s lam) (scaleS k Q) = eval (fun o : Option τ => o.elim (s / k) lam) Q := by
-  induction Q using MvPolynomial.induction_on with
-  | C a => simp [scaleS]
-  | add p q hp hq => simp only [map_add, hp, hq]
-  | mul_X p o hp =>
-    simp only [map_mul, hp, eval_X]
-    congr 1
-    cases o <;> simp [scaleS, div_eq_inv_mul]
 
-theorem Realis.PBwt_eq : Re.PBwt II = (S.nComp : ℝ) • Re.PBwtDe II := by
-  rw [Realis.PBwt, Realis.PB_eq, map_smul]
-  rfl
 
-theorem Realis.scaleS_PBs (k : ℕ) : scaleS k (Re.PBs II) = (S.nComp : ℝ) • Re.PBsDe II k := by
-  rw [Realis.PBs, Realis.PB_eq, map_smul, map_smul]
-  rfl
 
-theorem Realis.eval_PBsDe (k : ℕ) (lam : Ψ × Fin N → ℝ) (s : ℝ) :
-    eval (fun o => o.elim s lam) (Re.PBsDe II k) = eval (fun o => o.elim (s / k) lam) (Re.PBs II) / S.nComp := by
-  have h : (S.nComp : ℝ) ≠ 0 := Nat.cast_ne_zero.2 Re.nComp_pos.ne'
-  rw [← eval_scaleS, Realis.scaleS_PBs, smul_eval, mul_div_cancel_left₀ _ h]
 
 end Weights
 
@@ -277,10 +226,6 @@ theorem prime_charOf_of_ne_zero {W : Ideal (MRing ι)} (hW : W.IsPrime) (h : cha
   rw [← Ideal.span_singleton_generator (W.comap (C : ℤ →+* MRing ι)), Ideal.span_singleton_prime h0] at hI
   exact Int.prime_iff_natAbs_prime.1 hI
 
-theorem nefOnFibres_iff_nefAt (P : Ideal (MRing ι)) (a : K → ℤ) :
-    NefOnFibres P a ↔ ∀ p : ℕ, p.Prime → NefAt P p a :=
-  ⟨fun h p hp W h1 h2 h3 h4 => h W h1 h2 (h3 ▸ hp.ne_zero) h4,
-    fun h W h1 h2 h3 h4 => h _ (prime_charOf_of_ne_zero h1.1 h3) W h1 h2 rfl h4⟩
 
 def VertClose (P : Ideal (MRing ι)) (T : Finset ℕ) (α : ℕ → ℝ) (A B : HermLine ι) : Prop :=
   ∃ (f g : MRing ι) (df dg : K → ℕ), IsMultiHomog f df ∧ IsMultiHomog g dg ∧ f ∉ P ∧ g ∉ P ∧
@@ -310,7 +255,6 @@ def Inputs : Prop :=
 
 namespace Inputs
 
-theorem convergence (h : Inputs) : ConvergenceStatement := h.1.1
 
 theorem convergenceSigned (h : Inputs) : ConvergenceSignedStatement := h.1.2.1
 
@@ -334,7 +278,6 @@ theorem metricLocal (h : Inputs) : ReciprocityTheory.ChartRestriction.G.AI.I2.Me
 
 theorem projFormula (h : Inputs) : ReciprocityTheory.ChartRestriction.G.AI.I4.PFStatement := h.2.2.2.1.1
 
-theorem lineFibre (h : Inputs) : ReciprocityTheory.ChartRestriction.G.AI.I4.LineFibreStatement := h.2.2.2.1.2.1
 
 theorem fibreDim (h : Inputs) : ReciprocityTheory.ChartRestriction.G.AI.I4.FibreDimStatement := h.2.2.2.1.2.2
 

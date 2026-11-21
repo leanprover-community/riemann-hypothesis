@@ -49,23 +49,5 @@ theorem spanFinrank_maximalIdeal_le {R : Type} [CommRing R] [IsLocalRing R] (p :
   have h7 : (Finset.univ.image f).card ≤ r := Finset.card_image_le.trans (by simp)
   omega
 
-theorem isRegularLocalRing_of_quotient_prime :
-    ∀ (R : Type) [CommRing R] [IsLocalRing R] [IsNoetherianRing R] (p : Ideal R) [p.IsPrime]
-      (r : ℕ) (f : Fin r → R), p = Ideal.span (Set.range f) → p.height = r →
-      IsRegularLocalRing (R ⧸ p) → IsRegularLocalRing R := by
-  intro R _ _ _ p _ r f hf hh hreg
-  apply IsRegularLocalRing.of_spanFinrank_maximalIdeal_le
-  have hfg : (maximalIdeal (R ⧸ p)).FG := IsNoetherian.noetherian _
-  have hs := spanFinrank_maximalIdeal_le p r f hf hfg
-  have hq : ((maximalIdeal (R ⧸ p)).spanFinrank : WithBot ℕ∞) = ringKrullDim (R ⧸ p) :=
-    IsRegularLocalRing.spanFinrank_maximalIdeal
-  have hd := height_add_ringKrullDim_quotient_le p
-  rw [hh, ← hq] at hd
-  refine le_trans ?_ hd
-  have : (((maximalIdeal R).spanFinrank : ℕ) : WithBot ℕ∞) ≤
-      (((r + (maximalIdeal (R ⧸ p)).spanFinrank : ℕ)) : WithBot ℕ∞) := by exact_mod_cast hs
-  refine this.trans (le_of_eq ?_)
-  push_cast
-  rfl
 
 end GlobalTheory.RegularAscent

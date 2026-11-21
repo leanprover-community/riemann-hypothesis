@@ -9,47 +9,11 @@ open CategoryTheory
 
 namespace GlobalTheory.LogCris.CupModel
 
-theorem isDPLog_unique {B : Type} [CommRing B] {J : Ideal B} (δ : DividedPowers J) {v a a' : B}
-    (h : IsDPLog δ v a) (h' : IsDPLog δ v a') : a = a' := by
-  obtain ⟨-, N, hN, rfl⟩ := h
-  obtain ⟨-, N', hN', rfl⟩ := h'
-  have key : ∀ (N M : ℕ), N ≤ M → (∀ n, N ≤ n → ((n - 1).factorial : B) * δ.dpow n (v - 1) = 0) →
-      ∑ n ∈ Finset.Ico 1 N, (-1) ^ (n + 1) * ((n - 1).factorial : B) * δ.dpow n (v - 1) =
-      ∑ n ∈ Finset.Ico 1 M, (-1) ^ (n + 1) * ((n - 1).factorial : B) * δ.dpow n (v - 1) := by
-    intro N M hM h
-    refine Finset.sum_subset (Finset.Ico_subset_Ico_right hM) fun n hn hn' => ?_
-    rw [Finset.mem_Ico] at hn hn'
-    rw [mul_assoc, h n (by omega), mul_zero]
-  rw [key N (max N N') (le_max_left _ _) hN, key N' (max N N') (le_max_right _ _) hN']
 
-theorem isDPLog_mem {B : Type} [CommRing B] {J : Ideal B} (δ : DividedPowers J) {v a : B}
-    (h : IsDPLog δ v a) : a ∈ J := by
-  obtain ⟨hv, N, -, rfl⟩ := h
-  refine J.sum_mem fun n hn => J.mul_mem_left _ (δ.dpow_mem ?_ hv)
-  rw [Finset.mem_Ico] at hn
-  omega
 
-theorem isDPLog_eps : IsDPLog Ex.δJ (1 + DualNumber.eps) DualNumber.eps := by
-  have hm : (DualNumber.eps : Ex.D) ∈ Ex.J := Ideal.subset_span rfl
-  rw [IsDPLog, add_sub_cancel_left]
-  refine ⟨hm, 2, fun n hn => ?_, ?_⟩
-  · obtain ⟨m, rfl⟩ : ∃ m, n = m + 2 := ⟨n - 2, by omega⟩
-    have h1 := Ex.δJ.factorial_mul_dpow_eq_pow (n := m + 2) hm
-    have h2 : (DualNumber.eps : Ex.D) ^ (m + 2) = 0 := by
-      rw [pow_add, pow_two, DualNumber.eps_mul_eps, mul_zero]
-    have h3 : IsUnit (((m + 2).factorial : ℕ) : Ex.D) := by
-      have := (IsUnit.mk0 (((m + 2).factorial : ℕ) : ℚ) (by exact_mod_cast Nat.factorial_ne_zero _)).map
-        (algebraMap ℚ Ex.D)
-      simpa using this
-    rw [h2] at h1
-    rw [(h3.mul_right_eq_zero).1 h1, mul_zero]
-  · simp [Ex.δJ.dpow_one hm]
 
 variable {b : Base} {L : b.Fun}
 
-theorem firstChernClass_mem_hodgeFiltration {E : LB L} {z : H L 2} (h : IsFirstChernClassOfLineBundle E z) : z ∈ Fil L 2 1 := by
-  obtain ⟨u, ℓ, -, hℓ, rfl⟩ := h
-  exact ⟨ℓ, rfl, fun s => Thick.J_le_pdPow_one _ (isDPLog_mem _ (hℓ s))⟩
 
 theorem isNilpotent_of_mem (T : Thick L) {x : T.B} (hx : x ∈ T.J) : IsNilpotent x := by
   by_cases hp : b.p = 0
@@ -75,37 +39,6 @@ theorem exists_unit_lift (T : Thick L) (v : (T.B ⧸ T.J)ˣ) :
     rwa [sub_add_cancel] at this
   exact ⟨(isUnit_of_mul_isUnit_left h2).unit, Units.ext ha⟩
 
-theorem firstChernClass_logComponent (i : L.ι) : IsFirstChernClassOfLineBundle (LB.ofComp i : LB L) 0 := by
-  choose w hw using fun T : Thick L => exists_unit_lift T (T.v i)
-  refine ⟨fun {T T'} φ => φ.u i * Units.map φ.φ.toMonoidHom (w T) * (w T')⁻¹, 0, fun {T T'} φ => ?_,
-    fun s => ?_, Submodule.Quotient.mk_zero _⟩
-  · have h := φ.hv i
-    have e : Units.map (Ideal.Quotient.mk T'.J).toMonoidHom (Units.map φ.φ.toMonoidHom (w T)) =
-        Units.map (Ideal.quotientMap T'.J φ.φ φ.hle).toMonoidHom (T.v i) := by
-      rw [← hw T]; exact Units.ext rfl
-    change _ = L.g T'.α T.α i T'.y
-    rw [map_mul, map_mul, map_inv, hw T', e, ← h, mul_inv_cancel_comm]
-  · have e : chainUnit (fun {T T'} φ => φ.u i * Units.map φ.φ.toMonoidHom (w T) * (w T')⁻¹) s = 1 := by
-      have c : s.map' 0 2 = s.map' 0 1 ≫ s.map' 1 2 := s.map'_comp 0 1 2
-      have key : ∀ {T T' T'' : Thick L} (f : T ⟶ T') (g : T' ⟶ T''),
-          Units.map g.φ.toMonoidHom (f.u i * Units.map f.φ.toMonoidHom (w T) * (w T')⁻¹) *
-            (g.u i * Units.map g.φ.toMonoidHom (w T') * (w T'')⁻¹) *
-            ((f ≫ g).u i * Units.map (f ≫ g).φ.toMonoidHom (w T) * (w T'')⁻¹)⁻¹ = 1 := by
-        intro T T' T'' f g
-        have e1 : (f ≫ g).u i = g.u i * Units.map g.φ.toMonoidHom (f.u i) := rfl
-        have e2 : Units.map (f ≫ g).φ.toMonoidHom (w T) =
-          Units.map g.φ.toMonoidHom (Units.map f.φ.toMonoidHom (w T)) := Units.ext rfl
-        rw [e1, e2, map_mul, map_mul, map_inv, mul_inv_eq_one]
-        generalize Units.map g.φ.toMonoidHom (w T') = A
-        generalize Units.map g.φ.toMonoidHom (f.u i) = B
-        generalize Units.map g.φ.toMonoidHom (Units.map f.φ.toMonoidHom (w T)) = C
-        calc B * C * A⁻¹ * (g.u i * A * (w T'')⁻¹) = (A⁻¹ * A) * (g.u i * B * C * (w T'')⁻¹) := by ac_rfl
-          _ = _ := by rw [inv_mul_cancel, one_mul]
-      have := congrArg Units.val (key (s.map' 0 1) (s.map' 1 2))
-      rw [← c] at this
-      exact this
-    rw [e]
-    exact isDPLog_one (s.obj (Fin.last 2)).δ
 
 def rel (B : Type) [CommRing B] (q q' : Fin 2 → B) : Prop := ∃ u : Bˣ, ∀ i, q' i = u * q i
 
@@ -232,10 +165,5 @@ end GlobalTheory.LogCris.CupModel
 
 namespace GlobalTheory.CatH
 
-theorem cupC_one_one_model {R : Type} [CommRing R] {C : Type} [Category.{0} C] {F : C ⥤ ModuleCat.{0} R} (μ : Mult F)
-    (f g : Cn F 1) (s : ComposableArrows C 2) :
-    cupC μ (show 1 + 1 = 2 from rfl) f g s =
-      μ.mul _ ((F.map (s.map' 1 2)).hom (f ((fr_mono 1 2 (by omega)).functor ⋙ s)))
-        ((F.map (s.map' 2 2)).hom (g ((bk_mono 1 1 2 (by omega)).functor ⋙ s))) := rfl
 
 end GlobalTheory.CatH

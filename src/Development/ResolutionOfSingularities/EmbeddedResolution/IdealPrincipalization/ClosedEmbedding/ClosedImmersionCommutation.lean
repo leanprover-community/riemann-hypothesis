@@ -10,15 +10,606 @@ import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionDescen
 import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionDescent.PullbackBlowupSequenceComposition
 import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionDescent.SmoothPullbackAdmissible
 import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.ClosedEmbedding.ClosedImmersionKrullDim
-import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.ClosedEmbedding.HypersurfaceFiberCodim
-import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.ClosedEmbedding.HypersurfaceScheme
-import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.ClosedEmbedding.IsoBlowupPushforward
+import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.CoordinateBlowupChart
+import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.StrictTransformChart
+import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.ConstantCodimension
+import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReductionProperties
+import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.ClosedEmbedding.MaximalContactCover
+import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.CoordinateDivisorSmoothness
+import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.OrderAtGenericPoint
+import Development.ResolutionOfSingularities.EmbeddedResolution.AlgebraicPreliminaries.GenericPointImage
+import Development.ResolutionOfSingularities.EmbeddedResolution.MaximalContactHypersurfaces.TunedSheaf
+import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupBasic
+import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.BlowupSequenceRelations
+import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.BlowupSequenceBasic
+import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReduction.IsomorphismTransport
 import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.ClosedEmbedding.PushforwardComposition
 import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.ClosedEmbedding.PushforwardFlatBaseChange
 import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.ClosedEmbedding.PushforwardUniqueness
 import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.CanonicalPrincipalization
 import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.IrreducibleComponentsAlongSequence
 import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.MarkedSequenceTransforms
+
+section
+universe u
+
+open CategoryTheory AlgebraicGeometry
+
+noncomputable section
+
+namespace FunctorialResolution.EmbeddedResolution
+
+private theorem comap_subschemeι_self {W : Scheme.{u}} (J : W.IdealSheafData) :
+    J.comap J.subschemeι = ⊥ := by
+  simp [Scheme.IdealSheafData.comap]
+
+theorem card_complEmbPreimage (m : ℕ) (S : Finset (Fin m)) (a : Fin m) (ha : a ∈ S) :
+    (complEmbPreimage m S a).card = S.card - 1 := by
+  classical
+  rw [← Finset.card_erase_of_mem ha]
+  refine Finset.card_bij (fun t _ => complOrderEmb m ({a} : Finset (Fin m)) t) ?_ ?_ ?_
+  · intro t ht
+    rw [mem_complEmbPreimage] at ht
+    refine Finset.mem_erase.mpr ⟨?_, ht⟩
+    intro hcontra
+    exact (complOrderEmb_notMem m {a} t) (by rw [hcontra]; exact Finset.mem_singleton_self a)
+  · intro t₁ _ t₂ _ hEq
+    exact (complOrderEmb m ({a} : Finset (Fin m))).injective hEq
+  · intro b hb
+    obtain ⟨hb1, hb2⟩ := Finset.mem_erase.mp hb
+    obtain ⟨t, ht⟩ := exists_complOrderEmb_eq m ({a} : Finset (Fin m)) (by simpa using hb1)
+    exact ⟨t, mem_complEmbPreimage_of_complOrderEmb_eq m S a hb2 ht, ht⟩
+
+namespace MaximalContactCover
+
+variable {X X' : Scheme.{u}} {k : Type u} [Field k] {p : X' ⟶ Spec (CommRingCat.of k)}
+  {τ : X ⟶ X'} {I : X.IdealSheafData} {c : ℕ}
+
+theorem comap_iInfImageIdeal_subschemeι_eq_bot (C : MaximalContactCover p τ I c) :
+    C.toCoverData.iInfImageIdeal.comap C.toCoverData.iInfImageIdeal.subschemeι = ⊥ :=
+  comap_subschemeι_self C.toCoverData.iInfImageIdeal
+
+theorem ker_pullbackFiberToHypersurface (C : MaximalContactCover p τ I c) [IsClosedImmersion τ] :
+    Scheme.Hom.ker C.pullbackFiberToHypersurface =
+      (Scheme.Hom.ker C.pullbackFiberToTotal).comap C.toCoverData.iInfImageIdeal.subschemeι := by
+  have h := Scheme.Hom.ker_comp C.pullbackFiberToHypersurface C.toCoverData.iInfImageIdeal.subschemeι
+  rw [C.pullbackFiberToHypersurface_comp_subschemeι] at h
+  rw [h, Blowup.comap_map_of_isClosedImmersion]
+
+theorem hasEtaleCoordCodim_pullbackFiberToHypersurface (C : MaximalContactCover p τ I c) [IsClosedImmersion τ] :
+    HasEtaleCoordCodim (C.toCoverData.iInfImageIdeal.subschemeι ≫ C.projection ≫ p) C.pullbackFiberToHypersurface
+      (c - 1) := by
+  intro x
+  obtain ⟨i, y, hy⟩ :=
+    MaxContactReduction.FiniteOpenCoverWithIdeals.exists_summandι_base_eq C.toCoverData (C.pullbackFiberToTotal.base x)
+  have hmemU : C.pullbackFiberToTotal.base x ∈ C.toCoverData.summandOpen i := by
+    rw [← hy]
+    exact Set.mem_range_self y
+  have hprojmem : C.toCoverData.disjointUnionMap.base (C.pullbackFiberToTotal.base x) ∈ C.toCoverData.opens i := by
+    rw [← hy]
+    exact MaxContactReduction.FiniteOpenCoverWithIdeals.disjointUnionMap_summandι_mem C.toCoverData i y
+  have h1 : τ.base (C.pullbackFiberToBase.base x)
+      = C.toCoverData.disjointUnionMap.base (C.pullbackFiberToTotal.base x) := by
+    have h0 : C.pullbackFiberToBase ≫ τ = C.pullbackFiberToTotal ≫ C.projection := Limits.pullback.condition
+    have h2 := congrArg (fun f : C.pullbackFiber ⟶ X' => f.base x) h0
+    simpa using h2
+  rcases C.adapted i with ⟨-, hfar⟩ | ⟨n, ch, S, j, hcard, hjS, hker, hloc⟩
+  · exfalso
+    refine hfar (C.pullbackFiberToBase.base x) ?_
+    rw [h1]
+    exact hprojmem
+  · have hUaff : IsAffineOpen (C.toCoverData.summandOpen i) :=
+      MaxContactReduction.FiniteOpenCoverWithIdeals.isAffineOpen_summandOpen C.toCoverData i (C.isAffine i)
+    have hkse : Scheme.Hom.ker C.pullbackFiberToTotal
+        = (Scheme.Hom.ker τ).comap C.toCoverData.disjointUnionMap := C.ker_pullbackFiberToTotal
+    have hH : restrictIdeal C.toCoverData.iInfImageIdeal (C.toCoverData.summandOpen i) =
+        (C.toCoverData.summandEtaleChart i ch).coordIdeal {j} := by
+      rw [MaxContactReduction.FiniteOpenCoverWithIdeals.restrictIdeal_iInfImageIdeal_summandOpen C.toCoverData i,
+        MaxContactReduction.FiniteOpenCoverWithIdeals.summandEtaleChart_coordIdeal C.toCoverData i ch {j}, hloc]
+    have h2 := MaxContactReduction.FiniteOpenCoverWithIdeals.restrictIdeal_comap_disjointUnionMap_summandOpen
+      C.toCoverData i (Scheme.Hom.ker τ)
+    have h3 := MaxContactReduction.FiniteOpenCoverWithIdeals.summandEtaleChart_coordIdeal C.toCoverData i ch S
+    have hZ : restrictIdeal (Scheme.Hom.ker C.pullbackFiberToTotal) (C.toCoverData.summandOpen i) =
+        (C.toCoverData.summandEtaleChart i ch).coordIdeal S := by
+      rw [hkse, h3]
+      exact h2.trans (by rw [hker])
+    have hb : C.toCoverData.iInfImageIdeal.subschemeι.base (C.pullbackFiberToHypersurface.base x)
+        = C.pullbackFiberToTotal.base x := by
+      have h4 := congrArg (fun f : C.pullbackFiber ⟶ C.toCoverData.disjointUnion => f.base x)
+        C.pullbackFiberToHypersurface_comp_subschemeι
+      simpa using h4
+    refine ⟨C.toCoverData.iInfImageIdeal.subschemeι ⁻¹ᵁ C.toCoverData.summandOpen i, ?_,
+      n - ({j} : Finset (Fin n)).card,
+      (C.toCoverData.summandEtaleChart i ch).restrictToSubscheme hUaff C.toCoverData.iInfImageIdeal {j} hH,
+      complEmbPreimage n S j, ?_, ?_⟩
+    · show C.toCoverData.iInfImageIdeal.subschemeι.base (C.pullbackFiberToHypersurface.base x) ∈
+        C.toCoverData.summandOpen i
+      rw [hb]
+      exact hmemU
+    · rw [card_complEmbPreimage n S j hjS, hcard]
+    · rw [C.ker_pullbackFiberToHypersurface]
+      exact restrictIdeal_comap_subschemeι_eq_coordIdeal (C.toCoverData.summandEtaleChart i ch)
+        hUaff (Scheme.Hom.ker C.pullbackFiberToTotal) C.toCoverData.iInfImageIdeal S j hZ hH
+
+theorem isIso_pullbackFiberToHypersurface_of_eq_one (C : MaximalContactCover p τ I c) [IsClosedImmersion τ] (hc : c = 1) :
+    IsIso C.pullbackFiberToHypersurface := by
+  have hkse : Scheme.Hom.ker C.pullbackFiberToTotal
+      = (Scheme.Hom.ker τ).comap C.toCoverData.disjointUnionMap := C.ker_pullbackFiberToTotal
+  have hkey : Scheme.Hom.ker C.pullbackFiberToTotal = C.toCoverData.iInfImageIdeal := by
+    rw [hkse]
+    refine MaxContactReduction.FiniteOpenCoverWithIdeals.ext_of_comap_summandι C.toCoverData (fun i => ?_)
+    have e1 : C.toCoverData.iInfImageIdeal.comap (C.toCoverData.summandι i)
+        = C.toCoverData.localIdeal i :=
+      MaxContactReduction.FiniteOpenCoverWithIdeals.comap_iInfImageIdeal_summandι C.toCoverData i
+    have e2 : ((Scheme.Hom.ker τ).comap C.toCoverData.disjointUnionMap).comap
+          (C.toCoverData.summandι i)
+        = restrictIdeal (Scheme.Hom.ker τ) (C.toCoverData.opens i) := by
+      rw [← Scheme.IdealSheafData.comap_comp,
+        MaxContactReduction.FiniteOpenCoverWithIdeals.summandι_comp_disjointUnionMap C.toCoverData i]
+    rw [e1, e2]
+    rcases C.adapted i with ⟨hloc, hfar⟩ | ⟨n, ch, S, j, hcard, hjS, hker, hloc⟩
+    · rw [hloc]
+      exact restrictIdeal_ker_eq_top_of_not_mem τ (C.toCoverData.opens i) hfar
+    · have hS : S = {j} := by
+        have h1 : S.card = 1 := by rw [hcard, hc]
+        obtain ⟨a, ha⟩ := Finset.card_eq_one.mp h1
+        subst ha
+        rw [Finset.mem_singleton] at hjS
+        rw [hjS]
+      rw [hker, hloc, hS]
+  have hker0 : Scheme.Hom.ker C.pullbackFiberToHypersurface = ⊥ := by
+    rw [C.ker_pullbackFiberToHypersurface, hkey, C.comap_iInfImageIdeal_subschemeι_eq_bot]
+  exact IsClosedImmersion.isIso_iff_ker_eq_bot.mpr hker0
+
+end MaximalContactCover
+
+end FunctorialResolution.EmbeddedResolution
+
+end
+end
+
+section
+universe u
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry
+
+noncomputable section
+
+namespace FunctorialResolution.EmbeddedResolution
+
+private def chartOnOpenSubscheme {Y : Scheme.{u}} {k : Type u} [Field k] {q : Y ⟶ Spec (CommRingCat.of k)}
+    {V : Y.Opens} {m : ℕ} (c : EtaleChart q V m)
+    (hEt : AlgebraicGeometry.Etale ((⊤ : V.toScheme.Opens).ι ≫ c.map)) :
+    EtaleChart (V.ι ≫ q) (⊤ : V.toScheme.Opens) m where
+  map := (⊤ : V.toScheme.Opens).ι ≫ c.map
+  comp_struct := by rw [Category.assoc, c.comp_struct]
+  isEtale := hEt
+
+private theorem restrictIdeal_top_coordIdeal {Y : Scheme.{u}} {k : Type u} [Field k]
+    {q : Y ⟶ Spec (CommRingCat.of k)} {V : Y.Opens} {m : ℕ} (c : EtaleChart q V m)
+    (hEt : AlgebraicGeometry.Etale ((⊤ : V.toScheme.Opens).ι ≫ c.map))
+    (S : Finset (Fin m)) :
+    restrictIdeal (c.coordIdeal S) (⊤ : V.toScheme.Opens) = (chartOnOpenSubscheme c hEt).coordIdeal S := by
+  simp only [restrictIdeal_eq_comap_ι, EtaleChart.coordIdeal_eq_comap_coordSubspaceIdeal]
+  exact (Scheme.IdealSheafData.comap_comp _ _ _).symm
+
+private theorem false_of_forall_mem_support_of_coordIdeal_singleton {Z : Scheme.{u}} {k : Type u} [Field k]
+    (p : Z ⟶ Spec (CommRingCat.of k)) (hZ : IsAffineOpen (⊤ : Z.Opens)) {m : ℕ}
+    (c : EtaleChart p (⊤ : Z.Opens) m) (j : Fin m) (D : Z.IdealSheafData)
+    (hD : restrictIdeal D (⊤ : Z.Opens) = c.coordIdeal {j})
+    (hsupp : ∀ y : ↥Z, y ∈ D.support) (y₀ : ↥Z) : False := by
+  have hnzd := coord_mem_nonZeroDivisors hZ c j
+  have hno : ∀ y : ↥Z, y ∉ Z.basicOpen (c.coord j) := by
+    intro y hy
+    have hu := (Z.mem_basicOpen (c.coord j) y trivial).mp hy
+    have h1 : stalkIdeal D y ≠ ⊤ := (mem_support_iff_stalkIdeal_ne_top D y).mp (hsupp y)
+    apply h1
+    rw [stalkIdeal_eq_span_germ_coord p hZ c j D hD y trivial, Ideal.span_singleton_eq_top]
+    exact hu
+  have hnil : IsNilpotent (c.coord j) := by
+    rw [Scheme.isNilpotent_iff_basicOpen_eq_bot_of_isCompact hZ.isCompact]
+    refine le_antisymm ?_ bot_le
+    intro y hy
+    exact absurd hy (hno y)
+  obtain ⟨n, hn⟩ := hnil
+  have hone : (1 : ↑(Z.presheaf.obj (Opposite.op (⊤ : Z.Opens)))) = 0 :=
+    (mem_nonZeroDivisors_iff.mp (pow_mem hnzd n)).2 1 (by rw [one_mul, hn])
+  have h1 : stalkIdeal D y₀ ≠ ⊤ := (mem_support_iff_stalkIdeal_ne_top D y₀).mp (hsupp y₀)
+  apply h1
+  rw [stalkIdeal_eq_span_germ_coord p hZ c j D hD y₀ trivial, Ideal.eq_top_iff_one]
+  have hstalk1 : (1 : ↑(Z.presheaf.stalk y₀)) = 0 := by
+    have h := congrArg (CommRingCat.Hom.hom (Z.presheaf.germ (⊤ : Z.Opens) y₀ trivial)) hone
+    simp at h
+  rw [hstalk1]
+  exact Submodule.zero_mem _
+
+theorem nonzeroOnComponents_of_locally_eq_coordIdeal {Y : Scheme.{u}} {k : Type u} [Field k]
+    (q : Y ⟶ Spec (CommRingCat.of k)) (K : Y.IdealSheafData)
+    (hfin : (irreducibleComponents ↥Y).Finite)
+    (hloc : ∀ y : ↥Y, y ∈ K.support → ∃ (U : Y.Opens) (_ : y ∈ U) (m : ℕ)
+      (ch : EtaleChart q U m) (S : Finset (Fin m)),
+      S.Nonempty ∧ restrictIdeal K U = ch.coordIdeal S) :
+    NonzeroOnComponents K := by
+  rw [nonzeroOnComponents_iff]
+  intro T hT hTsub
+  have hTirr : IsIrreducible T := hT.1
+  have hOfin : (irreducibleComponents ↥Y \ {T}).Finite := hfin.subset Set.sdiff_subset
+  have hOclosed : IsClosed (⋃₀ (irreducibleComponents ↥Y \ {T})) := by
+    rw [Set.sUnion_eq_biUnion]
+    exact Set.Finite.isClosed_biUnion hOfin
+      (fun s hs => isClosed_of_mem_irreducibleComponents s hs.1)
+  have hOsub : ∀ z : ↥Y, z ∉ (⋃₀ (irreducibleComponents ↥Y \ {T})) → z ∈ T := by
+    intro z hz
+    by_cases hEq : irreducibleComponent z = T
+    · rw [← hEq]
+      exact mem_irreducibleComponent
+    · exact (hz (Set.mem_sUnion.mpr ⟨irreducibleComponent z,
+        ⟨irreducibleComponent_mem_irreducibleComponents z,
+          fun hmem => hEq (Set.mem_singleton_iff.mp hmem)⟩,
+        mem_irreducibleComponent⟩)).elim
+  obtain ⟨x, hxT, hxO⟩ :
+      ∃ x : ↥Y, x ∈ T ∧ x ∉ (⋃₀ (irreducibleComponents ↥Y \ {T})) := by
+    by_contra hcon
+    push Not at hcon
+    have hsub : T ⊆ ⋃₀ ((hOfin.toFinset : Finset (Set ↥Y)) : Set (Set ↥Y)) := by
+      intro t ht
+      rw [Set.Finite.coe_toFinset]
+      exact hcon t ht
+    obtain ⟨C, hCmem, hTsubC⟩ := isIrreducible_iff_sUnion_isClosed.mp hTirr hOfin.toFinset
+      (fun C hC => isClosed_of_mem_irreducibleComponents C (hOfin.mem_toFinset.mp hC).1) hsub
+    have hC := hOfin.mem_toFinset.mp hCmem
+    exact hC.2 (Set.mem_singleton_iff.mpr (Set.Subset.antisymm (hT.2 hC.1.1 hTsubC) hTsubC))
+  obtain ⟨U, hxU, m, ch, S, hSne, hKU⟩ := hloc x (hTsub hxT)
+  obtain ⟨j, hjS⟩ := hSne
+  have hWopen : IsOpen ((U : Set ↥Y) ∩ (⋃₀ (irreducibleComponents ↥Y \ {T}))ᶜ) :=
+    U.isOpen.inter hOclosed.isOpen_compl
+  obtain ⟨V, hVaff, hxV, hVle⟩ := exists_isAffineOpen_mem_and_subset
+    (show x ∈ (⟨(U : Set ↥Y) ∩ (⋃₀ (irreducibleComponents ↥Y \ {T}))ᶜ, hWopen⟩ : Y.Opens) from
+      ⟨hxU, hxO⟩)
+  have hVsub : (V : Set ↥Y) ⊆ ((U : Set ↥Y) ∩ (⋃₀ (irreducibleComponents ↥Y \ {T}))ᶜ) := hVle
+  have hVU : V ≤ U := fun z hz => (hVsub hz).1
+  have hVdisj : ∀ z : ↥Y, z ∈ V → z ∉ (⋃₀ (irreducibleComponents ↥Y \ {T})) :=
+    fun z hz => (hVsub hz).2
+  have hKV : restrictIdeal K V = (ch.restrict hVU).coordIdeal S :=
+    restrictIdeal_eq_restrict_coordIdeal_of_le hVU ch K S hKU
+  have : IsAffine V.toScheme := hVaff
+  have haffineTop : IsAffineOpen (⊤ : V.toScheme.Opens) := isAffineOpen_top V.toScheme
+  have hEt : AlgebraicGeometry.Etale ((⊤ : V.toScheme.Opens).ι ≫ (ch.restrict hVU).map) := by
+    have : AlgebraicGeometry.Etale (ch.restrict hVU).map := (ch.restrict hVU).isEtale
+    infer_instance
+  have hmemV : ∀ y : ↥V.toScheme, (V.ι).base y ∈ V := by
+    intro y
+    have h : ((V.ι).base y) ∈ (V : Set ↥Y) := by
+      rw [← Scheme.Opens.range_ι V]
+      exact ⟨y, rfl⟩
+    exact h
+  have hsupp : ∀ y : ↥V.toScheme,
+      y ∈ ((ch.restrict hVU).coordIdeal ({j} : Finset (Fin m))).support := by
+    intro y
+    have hyV : (V.ι).base y ∈ V := hmemV y
+    have hyT : (V.ι).base y ∈ T := hOsub _ (hVdisj _ hyV)
+    have hmem : (V.ι).base y ∈ (K.support : Set ↥Y) := hTsub hyT
+    have h2 : y ∈ ((K.comap V.ι).support : Set ↥V.toScheme) := by
+      rw [support_comap_eq V.ι K]
+      exact hmem
+    have h3 : y ∈ ((ch.restrict hVU).coordIdeal S).support := by
+      rw [← hKV, restrictIdeal_eq_comap_ι]
+      exact h2
+    rw [← one_le_orderAt_iff_mem_support] at h3 ⊢
+    exact le_trans h3 (orderAt_le_of_le
+      ((ch.restrict hVU).coordIdeal_mono (Finset.singleton_subset_iff.mpr hjS)) y)
+  have y₀ : ↥V.toScheme := (⟨x, hxV⟩ : ↥V)
+  exact false_of_forall_mem_support_of_coordIdeal_singleton (V.ι ≫ q) haffineTop (chartOnOpenSubscheme (ch.restrict hVU) hEt) j
+    ((ch.restrict hVU).coordIdeal ({j} : Finset (Fin m)))
+    (restrictIdeal_top_coordIdeal (ch.restrict hVU) hEt ({j} : Finset (Fin m))) hsupp y₀
+
+namespace MaximalContactCover
+
+variable {X X' : Scheme.{u}} {k : Type u} [Field k] {p : X' ⟶ Spec (CommRingCat.of k)}
+  {τ : X ⟶ X'} {I : X.IdealSheafData} {c : ℕ}
+
+abbrev hypersurfaceScheme (C : MaximalContactCover p τ I c) : Scheme.{u} :=
+  C.toCoverData.iInfImageIdeal.subscheme
+
+abbrev hypersurfaceStructureMap (C : MaximalContactCover p τ I c) :
+    C.hypersurfaceScheme ⟶ Spec (CommRingCat.of k) :=
+  C.toCoverData.iInfImageIdeal.subschemeι ≫ C.projection ≫ p
+
+theorem smooth_hypersurfaceStructureMap (C : MaximalContactCover p τ I c) :
+    AlgebraicGeometry.Smooth C.hypersurfaceStructureMap :=
+  ((isSmoothDivisor_iff (C.projection ≫ p) C.toCoverData.iInfImageIdeal).mp
+    C.isSmoothDivisor_iInfImageIdeal).2
+
+theorem isAffine_hypersurfaceScheme (C : MaximalContactCover p τ I c) : IsAffine C.hypersurfaceScheme := by
+  have : IsAffine C.toCoverData.disjointUnion := C.isAffine_disjointUnion
+  exact isAffine_of_isAffineHom C.toCoverData.iInfImageIdeal.subschemeι
+
+instance instIsAffineHypScheme (C : MaximalContactCover p τ I c) : IsAffine C.hypersurfaceScheme :=
+  C.isAffine_hypersurfaceScheme
+
+theorem isAffine_pullbackFiber (C : MaximalContactCover p τ I c) [IsClosedImmersion τ] :
+    IsAffine C.pullbackFiber := by
+  have : IsAffine C.toCoverData.disjointUnion := C.isAffine_disjointUnion
+  have := C.isClosedImmersion_pullbackFiberToTotal
+  exact isAffine_of_isAffineHom C.pullbackFiberToTotal
+
+instance instIsAffineStarFiber (C : MaximalContactCover p τ I c) [IsClosedImmersion τ] :
+    IsAffine C.pullbackFiber :=
+  C.isAffine_pullbackFiber
+
+theorem nonzeroOnComponents_iInfImageIdeal (C : MaximalContactCover p τ I c)
+    [TopologicalSpace.NoetherianSpace ↥C.toCoverData.disjointUnion] :
+    NonzeroOnComponents C.toCoverData.iInfImageIdeal := by
+  refine nonzeroOnComponents_of_locally_eq_coordIdeal (C.projection ≫ p) C.toCoverData.iInfImageIdeal
+    TopologicalSpace.NoetherianSpace.finite_irreducibleComponents ?_
+  intro y hy
+  obtain ⟨i, hi⟩ := C.toCoverData.exists_mem_summandOpen y
+  rcases C.hypersurface i with htop | ⟨n, ch, j, hch⟩
+  · exfalso
+    have h1 : restrictIdeal C.toCoverData.iInfImageIdeal (C.toCoverData.summandOpen i) = ⊤ := by
+      rw [MaxContactReduction.FiniteOpenCoverWithIdeals.restrictIdeal_iInfImageIdeal_summandOpen, htop]
+      simp
+    exact notMem_support_of_mem_opens_of_restrictIdeal_eq_top _ _ h1 y hi hy
+  · refine ⟨C.toCoverData.summandOpen i, hi, n, C.toCoverData.summandEtaleChart i ch, {j},
+      ⟨j, Finset.mem_singleton_self j⟩, ?_⟩
+    rw [MaxContactReduction.FiniteOpenCoverWithIdeals.restrictIdeal_iInfImageIdeal_summandOpen, hch,
+      MaxContactReduction.FiniteOpenCoverWithIdeals.summandEtaleChart_coordIdeal]
+
+theorem ker_pullbackFiberToHypersurface_le_idealOnHypersurface (C : MaximalContactCover p τ I c) [IsClosedImmersion τ] :
+    Scheme.Hom.ker C.pullbackFiberToHypersurface ≤ C.idealOnHypersurface := by
+  rw [C.idealOnHypersurface_eq_imageIdealSheaf]
+  exact ker_le_map_idealSheaf C.pullbackFiberToHypersurface (I.comap C.pullbackFiberToBase)
+
+theorem support_idealOnHypersurface_subset_support_ker (C : MaximalContactCover p τ I c)
+    [IsClosedImmersion τ] :
+    (C.idealOnHypersurface.support : Set ↥C.hypersurfaceScheme) ⊆
+      ((Scheme.Hom.ker C.pullbackFiberToHypersurface).support : Set ↥C.hypersurfaceScheme) := by
+  intro x hx
+  have hx' : x ∈ C.idealOnHypersurface.support := hx
+  rw [mem_support_iff_stalkIdeal_ne_top] at hx'
+  show x ∈ (Scheme.Hom.ker C.pullbackFiberToHypersurface).support
+  rw [mem_support_iff_stalkIdeal_ne_top]
+  intro hker
+  have h1 := stalkIdeal_mono (ker_pullbackFiberToHypersurface_le_idealOnHypersurface C) x
+  rw [hker, top_le_iff] at h1
+  exact hx' h1
+
+theorem nonzeroOnComponents_ker_pullbackFiberToHypersurface (C : MaximalContactCover p τ I c) [IsClosedImmersion τ]
+    [TopologicalSpace.NoetherianSpace ↥C.hypersurfaceScheme]
+    (hloc : ∀ x : ↥C.pullbackFiber, ∃ (W : C.hypersurfaceScheme.Opens)
+      (_ : C.pullbackFiberToHypersurface.base x ∈ W) (m : ℕ) (ch : EtaleChart C.hypersurfaceStructureMap W m)
+      (S : Finset (Fin m)),
+      S.Nonempty ∧ restrictIdeal (Scheme.Hom.ker C.pullbackFiberToHypersurface) W = ch.coordIdeal S) :
+    NonzeroOnComponents (Scheme.Hom.ker C.pullbackFiberToHypersurface) := by
+  refine nonzeroOnComponents_of_locally_eq_coordIdeal C.hypersurfaceStructureMap (Scheme.Hom.ker C.pullbackFiberToHypersurface)
+    TopologicalSpace.NoetherianSpace.finite_irreducibleComponents ?_
+  intro y hy
+  obtain ⟨x, hx⟩ : ∃ x : ↥C.pullbackFiber, C.pullbackFiberToHypersurface.base x = y := by
+    have hr : ((Scheme.Hom.ker C.pullbackFiberToHypersurface).support : Set ↥C.hypersurfaceScheme)
+        = Set.range (⇑C.pullbackFiberToHypersurface) := by
+      rw [Scheme.Hom.support_ker]
+      exact (AlgebraicGeometry.IsClosedImmersion.isClosedEmbedding
+        C.pullbackFiberToHypersurface).isClosed_range.closure_eq
+    have hy' : y ∈ Set.range (⇑C.pullbackFiberToHypersurface) := by
+      rw [← hr]; exact hy
+    exact hy'
+  obtain ⟨W, hW, m, ch, S, hS, hres⟩ := hloc x
+  exact ⟨W, hx ▸ hW, m, ch, S, hS, hres⟩
+
+theorem nonzeroOnComponents_idealOnHypersurface (C : MaximalContactCover p τ I c) [IsClosedImmersion τ]
+    [TopologicalSpace.NoetherianSpace ↥C.hypersurfaceScheme]
+    (hloc : ∀ x : ↥C.pullbackFiber, ∃ (W : C.hypersurfaceScheme.Opens)
+      (_ : C.pullbackFiberToHypersurface.base x ∈ W) (m : ℕ) (ch : EtaleChart C.hypersurfaceStructureMap W m)
+      (S : Finset (Fin m)),
+      S.Nonempty ∧ restrictIdeal (Scheme.Hom.ker C.pullbackFiberToHypersurface) W = ch.coordIdeal S) :
+    NonzeroOnComponents C.idealOnHypersurface := by
+  have hker := C.nonzeroOnComponents_ker_pullbackFiberToHypersurface hloc
+  rw [nonzeroOnComponents_iff] at hker ⊢
+  intro T hT hTsub
+  exact hker T hT (hTsub.trans (C.support_idealOnHypersurface_subset_support_ker))
+
+theorem krullDimSucc_hypersurfaceScheme_lt (C : MaximalContactCover p τ I c)
+    [AlgebraicGeometry.LocallyOfFiniteType p]
+    [TopologicalSpace.NoetherianSpace ↥C.toCoverData.disjointUnion]
+    [Nonempty ↥C.hypersurfaceScheme] :
+    krullDimSucc C.hypersurfaceScheme < krullDimSucc C.toCoverData.disjointUnion := by
+  have : AlgebraicGeometry.LocallyOfFiniteType (C.projection ≫ p) := C.locallyOfFiniteType_projection_comp
+  have : AlgebraicGeometry.QuasiCompact (C.projection ≫ p) := C.quasiCompact_projection_comp
+  have hker : NonzeroOnComponents (Scheme.Hom.ker C.toCoverData.iInfImageIdeal.subschemeι) := by
+    rw [Scheme.IdealSheafData.ker_subschemeι]
+    exact C.nonzeroOnComponents_iInfImageIdeal
+  exact krullDimSucc_lt_of_isClosedImmersion_of_nonzeroOnComponents (C.projection ≫ p)
+    C.toCoverData.iInfImageIdeal.subschemeι hker
+
+end MaximalContactCover
+
+end FunctorialResolution.EmbeddedResolution
+
+end
+end
+
+section
+universe u
+
+open CategoryTheory AlgebraicGeometry Opposite
+
+noncomputable section
+
+namespace FunctorialResolution.EmbeddedResolution
+
+private theorem isIso_subschemeι_comap_bot {X X' : Scheme.{u}} (π : X' ⟶ X) :
+    IsIso ((⊥ : X.IdealSheafData).comap π).subschemeι := by
+  rw [show (⊥ : X.IdealSheafData).comap π = ⊥ from by simp]
+  infer_instance
+
+theorem ker_preimage_ι_comp_of_isIso {X Y : Scheme.{u}} (f : X ⟶ Y) [IsIso f] (U : Y.Opens) :
+    ((f ⁻¹ᵁ U).ι ≫ f).ker = U.ι.ker := by
+  have : IsIso (AlgebraicGeometry.morphismRestrict f U) := inferInstance
+  rw [← (isPullback_morphismRestrict f U).w]
+  exact Scheme.Hom.ker_comp_of_isIso ..
+
+theorem section_eq_zero_of_locally_zero {X : Scheme.{u}} (U : X.Opens)
+    (s : X.presheaf.obj (op U))
+    (h : ∀ x ∈ U, ∃ V : X.Opens, ∃ hV : V ≤ U, x ∈ V ∧
+      X.presheaf.map (homOfLE hV).op s = 0) :
+    s = 0 := by
+  apply TopCat.Presheaf.section_ext X.sheaf U
+  intro x hx
+  obtain ⟨V, hV, hxV, hs⟩ := h x hx
+  have h1 : X.presheaf.germ V x hxV (X.presheaf.map (homOfLE hV).op s)
+      = X.presheaf.germ U x hx s := X.presheaf.germ_res_apply (homOfLE hV) x hxV s
+  rw [hs, map_zero] at h1
+  show X.presheaf.germ U x hx s = X.presheaf.germ U x hx 0
+  rw [map_zero]
+  exact h1.symm
+
+private theorem map_homOfLE_map_homOfLE {X : Scheme.{u}} {V V' V'' : X.Opens} (h1 : V' ≤ V) (h2 : V'' ≤ V')
+    (s : Γ(X, V)) :
+    X.presheaf.map (homOfLE h2).op (X.presheaf.map (homOfLE h1).op s)
+      = X.presheaf.map (homOfLE (h2.trans h1)).op s := by
+  have hcomp : X.presheaf.map (homOfLE h1).op ≫ X.presheaf.map (homOfLE h2).op
+      = X.presheaf.map (homOfLE (h2.trans h1)).op := by
+    rw [← Functor.map_comp]
+    rfl
+  exact congrArg (fun φ : Γ(X, V) ⟶ Γ(X, V'') => (ConcreteCategory.hom φ) s) hcomp
+
+private theorem map_eq_zero_of_app_ι_eq_zero {X : Scheme.{u}} (W V V' : X.Opens) (s : Γ(X, V))
+    (hs : (W.ι.app V).hom s = 0) (h1 : V' ≤ V) (h2 : ∀ y : ↥X, y ∈ V' → y ∈ W) :
+    X.presheaf.map (homOfLE h1).op s = 0 := by
+  have hT : W.ι ''ᵁ W.ι ⁻¹ᵁ V ≤ V := by
+    rintro y ⟨z, hz, rfl⟩
+    exact hz
+  have hle : V' ≤ W.ι ''ᵁ W.ι ⁻¹ᵁ V := by
+    intro y hy
+    exact ⟨⟨y, h2 y hy⟩, h1 hy, rfl⟩
+  have hzero : X.presheaf.map (homOfLE hT).op s = 0 := by
+    rw [Scheme.Opens.ι_app] at hs
+    exact hs
+  rw [← map_homOfLE_map_homOfLE hT hle s, hzero, map_zero]
+
+private theorem algebraMap_basicOpen {X : Scheme.{u}} {U : X.Opens} (f : Γ(X, U)) (t : Γ(X, U)) :
+    algebraMap Γ(X, U) Γ(X, X.basicOpen f) t
+      = X.presheaf.map (homOfLE (X.basicOpen_le f)).op t := rfl
+
+private theorem notMem_support_of_mem_basicOpen {X : Scheme.{u}} (I : X.IdealSheafData) (U : X.affineOpens)
+    (f : Γ(X, U.1)) (hf : f ∈ I.ideal U) (y : ↥X) (hy : y ∈ X.basicOpen f) :
+    y ∉ I.support := by
+  intro hmem
+  have h1 : y ∈ I.supportSet := hmem
+  rw [Scheme.IdealSheafData.mem_supportSet_iff] at h1
+  have h2 := h1 U
+  rw [Scheme.mem_zeroLocus_iff] at h2
+  exact h2 f hf hy
+
+private theorem map_basicOpen_eq_zero_of_app_ι_eq_zero {X : Scheme.{u}} (W V U₀ : X.Opens)
+    (hU₀ : IsAffineOpen U₀)
+    (s : Γ(X, V)) (hs : (W.ι.app V).hom s = 0)
+    (f : Γ(X, U₀)) (hf : f ∈ nonZeroDivisors Γ(X, U₀))
+    (hWf : ∀ y : ↥X, y ∈ X.basicOpen f → y ∈ W)
+    (b : Γ(X, U₀)) (hbV : X.basicOpen b ≤ V) :
+    X.presheaf.map (homOfLE hbV).op s = 0 := by
+  have hAaff : IsAffineOpen (X.basicOpen b) := hU₀.basicOpen b
+  have := hU₀.isLocalization_basicOpen b
+  have hAU₀ : X.basicOpen b ≤ U₀ := X.basicOpen_le b
+  have hgnzd : X.presheaf.map (homOfLE hAU₀).op f ∈ nonZeroDivisors Γ(X, X.basicOpen b) := by
+    have hq : X.presheaf.map (homOfLE hAU₀).op f
+        = algebraMap Γ(X, U₀) Γ(X, X.basicOpen b) f := rfl
+    rw [hq]
+    exact IsLocalization.nonZeroDivisors_le_comap (Submonoid.powers b) Γ(X, X.basicOpen b) hf
+  have hbg : X.basicOpen (X.presheaf.map (homOfLE hAU₀).op f)
+      = X.basicOpen b ⊓ X.basicOpen f := by
+    rw [Scheme.basicOpen_res]
+  have hgV : X.basicOpen (X.presheaf.map (homOfLE hAU₀).op f) ≤ V :=
+    (X.basicOpen_le _).trans hbV
+  have hres : X.presheaf.map (homOfLE hgV).op s = 0 := by
+    refine map_eq_zero_of_app_ι_eq_zero W V _ s hs hgV ?_
+    intro y hy
+    rw [hbg] at hy
+    exact hWf y hy.2
+  have := hAaff.isLocalization_basicOpen (X.presheaf.map (homOfLE hAU₀).op f)
+  have hres' : algebraMap Γ(X, X.basicOpen b)
+      Γ(X, X.basicOpen (X.presheaf.map (homOfLE hAU₀).op f))
+      (X.presheaf.map (homOfLE hbV).op s) = 0 := by
+    rw [algebraMap_basicOpen, map_homOfLE_map_homOfLE]
+    exact hres
+  obtain ⟨m, hm⟩ := (IsLocalization.map_eq_zero_iff
+    (Submonoid.powers (X.presheaf.map (homOfLE hAU₀).op f))
+    Γ(X, X.basicOpen (X.presheaf.map (homOfLE hAU₀).op f))
+    (X.presheaf.map (homOfLE hbV).op s)).mp hres'
+  obtain ⟨n, hn⟩ := m.2
+  have hmem : (m : Γ(X, X.basicOpen b)) ∈ nonZeroDivisors Γ(X, X.basicOpen b) := by
+    rw [← hn]
+    exact pow_mem hgnzd n
+  refine (mem_nonZeroDivisors_iff.mp hmem).1 (X.presheaf.map (homOfLE hbV).op s) ?_
+  exact hm
+
+theorem _root_.FunctorialResolution.Blowup.IsLocallyGeneratedByNonZeroDivisor.ker_supportCompl_ι_eq_bot {X : Scheme.{u}} {I : X.IdealSheafData}
+    (h : FunctorialResolution.Blowup.IsLocallyGeneratedByNonZeroDivisor I) :
+    (Scheme.Opens.ι (X := X) I.support.compl).ker = ⊥ := by
+  refine le_antisymm (fun U => ?_) bot_le
+  intro s hs
+  have hs' : s ∈ RingHom.ker ((Scheme.Opens.ι (X := X) I.support.compl).app U.1).hom :=
+    Scheme.IdealSheafData.ideal_ofIdeals_le _ U hs
+  rw [show (⊥ : X.IdealSheafData).ideal U = ⊥ from by simp, Ideal.mem_bot]
+  refine EmbeddedResolution.section_eq_zero_of_locally_zero U.1 s ?_
+  intro x hx
+  obtain ⟨U₀, f, hxU₀, hfnzd, hIf⟩ := h x
+  obtain ⟨a, b, hab, hxa⟩ := exists_basicOpen_le_affine_inter U.2 U₀.2 x ⟨hx, hxU₀⟩
+  have hbV : X.basicOpen b ≤ U.1 := hab ▸ X.basicOpen_le a
+  refine ⟨X.basicOpen b, hbV, hab ▸ hxa, ?_⟩
+  refine _root_.FunctorialResolution.EmbeddedResolution.map_basicOpen_eq_zero_of_app_ι_eq_zero I.support.compl U.1 U₀.1 U₀.2 s
+    (RingHom.mem_ker.mp hs') f hfnzd ?_ b hbV
+  intro y hy
+  show y ∉ I.support
+  refine _root_.FunctorialResolution.EmbeddedResolution.notMem_support_of_mem_basicOpen I U₀ f ?_ y hy
+  rw [hIf]
+  exact Ideal.mem_span_singleton_self f
+
+theorem strictTransform_bot_of_isBlowupAlongIdealSheaf {X X' : Scheme.{u}} {π : X' ⟶ X}
+    {I : X.IdealSheafData} (h : Blowup.IsBlowupAlongIdealSheaf π I) :
+    Blowup.strictTransform π I (⊥ : X.IdealSheafData) = (⊥ : X'.IdealSheafData) := by
+  have := isIso_subschemeι_comap_bot π
+  rw [Blowup.strictTransform_eq_ker, Blowup.strictTransformImmersion_eq, Blowup.strictTransformOpens_eq]
+  exact (ker_preimage_ι_comp_of_isIso _ _).trans h.1.ker_supportCompl_ι_eq_bot
+
+theorem IsPushforwardBlowupSeq.of_isStrictPullback_of_isIso {X' X : Scheme.{u}} (φ : X' ⟶ X)
+    [IsIso φ] [IsClosedImmersion φ] {B' : SequenceOfBlowups X'} {B : SequenceOfBlowups X}
+    (h : IsStrictPullbackBlowupSeq φ B' B) : IsPushforwardBlowupSeq φ B' B := by
+  obtain ⟨hlen, σ, hσ0, hsq, hc⟩ := h
+  have hiso : ∀ (i : ℕ) (hi : i ≤ B'.length), IsIso (σ i hi) := by
+    intro i
+    induction i with
+    | zero =>
+        intro hi
+        have hz : σ 0 hi = B'.isoZero.hom ≫ φ ≫ B.isoZero.inv := by
+          rw [← Category.assoc, ← hσ0]
+          simp
+        rw [hz]
+        infer_instance
+    | succ n ih =>
+        intro hi
+        have hn : n < B'.length := hi
+        have := ih hn.le
+        exact (hsq n hn).isIso_fst_of_isIso
+  refine ⟨hlen, σ, ?_, hσ0, fun i hi => (hsq i hi).w, ?_, ?_⟩
+  · intro i hi
+    have := hiso i hi
+    infer_instance
+  · intro i hi
+    have := hiso i hi.le
+    rw [hc i hi, imageIdealSheaf_comap]
+  · intro i hi
+    have hi' : i < B.length := hlen ▸ hi
+    have := hiso i hi.le
+    have := hiso (i + 1) hi
+    rw [Scheme.Hom.ker_eq_bot_of_isIso, Scheme.Hom.ker_eq_bot_of_isIso,
+      strictTransform_bot_of_isBlowupAlongIdealSheaf (B.isBlowupAlongIdealSheaf_blowupMorphism i hi')]
+
+end FunctorialResolution.EmbeddedResolution
+end
+end
+
+section
 universe u
 
 open CategoryTheory AlgebraicGeometry
@@ -407,3 +998,4 @@ theorem commutesWithClosedImmersion_of_isCorrect (B : PrincipalizationRules.{u})
   commutesWithClosedImmersion_of_isCorrect_of_smoothPullback B hB isAdmissible_pullbackAlong_of_smooth
 
 end FunctorialResolution.EmbeddedResolution
+end

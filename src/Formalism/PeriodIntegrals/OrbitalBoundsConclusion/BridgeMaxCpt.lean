@@ -1,7 +1,13 @@
 import Mathlib
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MaximalCompactConjugacy.Assembly
-import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.BridgeRealK
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RealFieldComparison.JmMulApply
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.BridgeFinK
 
+section
+theorem adelic_compact_real_places : PI.AdBridgeSteps.RealK := PI.UnitaryGroupMassFormula.BridgeRealK.realK
+end
+
+section
 theorem adelic_maximal_compact : ∀ I : Formalism.MainNotions.S.AutInst, Formalism.L2.SG.AdBridge.AdBridgeK I :=
   PI.BridgeMaxCptWork.bridgeMaxCpt_of adelic_compact_real_places adelic_compact_finite_places
+end

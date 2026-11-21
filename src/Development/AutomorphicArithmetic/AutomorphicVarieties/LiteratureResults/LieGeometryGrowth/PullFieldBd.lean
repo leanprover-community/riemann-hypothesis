@@ -55,7 +55,6 @@ private def pol : Lie E a →L[ℝ] Lie E a →L[ℝ] HV E a →L[ℝ] HV E a :=
       (fun A B B' => (polarization_comm _ _).trans ((polarization_add _ _ _).trans (congrArg₂ (· + ·) (polarization_comm _ _) (polarization_comm _ _))))
       (fun c A B => (polarization_comm _ _).trans ((polarization_smul c _ _).trans (congrArg (c • ·) (polarization_comm _ _)))))
 
-private theorem pol_apply (A B : Lie E a) : pol E a A B = pol0 (Matrix.of A) (Matrix.of B) := rfl
 
 private theorem pol_sand (g : GL (Fin a) (Cinf E)) :
     sand g = (2⁻¹ : ℝ) • pol E a (toL g.val) (toL g.val) :=

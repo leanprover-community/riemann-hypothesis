@@ -206,43 +206,6 @@ namespace Formalism.FourierDecayAlt.P
 
 open NumberField
 
-theorem word_fusion : Formalism.FourierDecayAlt.W.WordFusion := by
-  unfold Formalism.FourierDecayAlt.W.WordFusion
-  intro R B _ _ _ L h hp
-  exact Formalism.FourierDecayAlt.P.W.wordFusion_list L h hp
 
-theorem norm_lower_bound : Formalism.FourierDecayAlt.W.NormLower := by
-  unfold Formalism.FourierDecayAlt.W.NormLower
-  intro E _ _ _ aa l hl hl0
-  have hb : aa ≠ 0 := by
-    rintro rfl
-    first
-    | exact hl0 ((FractionalIdeal.mem_zero_iff _).mp hl)
-    | exact hl0 (FractionalIdeal.mem_zero_iff.mp hl)
-    | (simp at hl; exact hl0 hl)
-  have h1 := Formalism.FourierDecayAlt.P.W.absNorm_le_norm aa hb l hl hl0
-  have hsq : (∏ w : NumberField.InfinitePlace E, w l) ^ 2 =
-      ∏ w : NumberField.InfinitePlace E, w l ^ w.mult := by
-    rw [← Finset.prod_pow]
-    refine Finset.prod_congr rfl (fun w _ => ?_)
-    have hc : ¬ w.IsReal :=
-      NumberField.InfinitePlace.not_isReal_iff_isComplex.mpr (NumberField.IsTotallyComplex.isComplex w)
-    first
-    | rw [NumberField.InfinitePlace.mult, if_neg hc]
-    | simp [NumberField.InfinitePlace.mult, hc]
-  have hprod : (∏ w : NumberField.InfinitePlace E, w l) ^ 2 = |(Algebra.norm ℚ l : ℝ)| := by
-    rw [hsq, NumberField.InfinitePlace.prod_eq_abs_norm]
-    first
-    | rfl
-    | simp
-    | (push_cast; rfl)
-  have hnn : 0 ≤ ∏ w : NumberField.InfinitePlace E, w l := by
-    refine Finset.prod_nonneg (fun w _ => ?_)
-    first
-    | positivity
-    | exact w.nonneg l
-    | exact AbsoluteValue.nonneg _ _
-  rw [← Real.sqrt_sq hnn, hprod]
-  exact Real.sqrt_le_sqrt h1
 
 end Formalism.FourierDecayAlt.P

@@ -178,9 +178,7 @@ def restrictEx (z : Dat X I hX T Wt) (e : z.R.toRealDat.ExAt) (Wt' : Set X.B.pla
 
 variable (z : Dat X I hX T Wt) (e : z.R.toRealDat.ExAt) (h : Wt' ⊆ Wt) (hc : ConjStable X Wt')
 
-theorem restrictEx_core : (restrictEx z e Wt' h hc).core = z.core := rfl
 
-theorem restrictEx_exAt : (restrictEx z e Wt' h hc).R.toRealDat.ExAt := intertwinersExist_scalar_update_invariant (exAt_res z h e) _ _
 
 set_option maxHeartbeats 4000000 in
 
@@ -232,34 +230,10 @@ theorem resMu_self : z.resMu subset_rfl = z.R.mu := by
 
 theorem resTw_self : z.resTw Wt = z.R.twPl := Finset.ext fun v => (z.mem_resTw subset_rfl v).trans (z.mem_twPl v).symm
 
-theorem tup_empty (z : Dat X I hX T Wt) (t : TupU I (usedOf I T (∅ : Set X.B.places.Pl))) :
-    t = mu0F (X := X.B.fields) (tuOf I (usedOf I T ∅)) := by
-  rcases z.resMu_used (Set.empty_subset _) t with h | ⟨v, h⟩
-  · exact h
-  · exact h.symm.trans (z.resMu_off _ fun h => h)
 
-theorem inclU_not_surjective (z : Dat X I hX T Wt) {w} (hw : w ∈ Wt) :
-    ¬ Function.Surjective (inclU I (usedOf_mono I T (Set.empty_subset Wt))) := by
-  intro h
-  obtain ⟨t, ht⟩ := h (z.R.mu (plB X w))
-  rw [tup_empty z t] at ht
-  exact z.pins.char.tup.mu_ne _ ((z.plB_mem_twPl w).2 hw) ht.symm
 
-theorem conj_needed (h : ¬ ConjStable X Wt') : IsEmpty (Dat X I hX T Wt') := ⟨fun y => h y.conjStable⟩
 
-theorem finite_of_dat (z : Dat X I hX T Wt) : Wt.Finite :=
-  (z.R.twPl.finite_toSet.preimage (plB X).injective.injOn).subset fun w hw => (z.plB_mem_twPl w).2 hw
 
-theorem restrictE_twice (e : z.R.toRealDat.ExAt) (h : Wt' ⊆ Wt) (hc : ConjStable X Wt') (h' : Wt'' ⊆ Wt') :
-    (z.restrictE e Wt' h hc).resTw Wt'' = z.resTw Wt'' ∧ (z.restrictE e Wt' h hc).resMu h' = z.resMu (h'.trans h) := by
-  refine ⟨Finset.ext fun v => ((z.restrictE e Wt' h hc).mem_resTw h' v).trans (z.mem_resTw (h'.trans h) v).symm, funext fun v => ?_⟩
-  by_cases hv : (plB X).symm v ∈ Wt''
-  · apply inclU_injective (usedOf_mono I T (h'.trans h))
-    have h1 := (z.restrictE e Wt' h hc).inclU_resMu h' hv
-    have h2 := z.inclU_resMu h (h' hv)
-    rw [z.inclU_resMu (h'.trans h) hv, ← h2]
-    exact congrArg (inclU I (usedOf_mono I T h)) h1
-  · exact ((z.restrictE e Wt' h hc).resMu_off h' hv).trans (z.resMu_off (h'.trans h) hv).symm
 
 theorem pair (e : z.R.toRealDat.ExAt) {w} (hw : w ∈ Wt) :
     ∃ y : Dat X I hX T {w, X.B.places.conj w}, plB X w ∈ y.R.twPl ∧ y.R.twPl.card ≤ 2 ∧ y.core = z.core := by
@@ -286,9 +260,6 @@ open Classical in
 theorem subset_nonzero_places_indicator (j : Fin X.toD7.R.m) : Wt ⊆ z.W1 fun v _ => if v ∈ z.R.twPl then 1 else 0 := fun w hw =>
   (z.mem_nonzero_index_places_iff_at_place_or_conjugate _ w).2 ⟨j, Or.inl (Or.inr (Or.inr (by simp [(z.plB_mem_twPl w).2 hw])))⟩
 
-theorem restrictNonzero_idempotent (F0) (e : z.R.toRealDat.ExAt) (h : z.W1 F0 ⊆ Wt) :
-    ((z.restrictNonzeroOfExists F0 e h).restrictNonzeroOfExists F0 (z.restrictNonzeroOfExists_exists_lifts F0 e h) (z.restrictNonzeroOfExists_nonzero_places F0 e h).le).W1 F0 = z.W1 F0 :=
-  (Dat.restrictNonzeroOfExists_nonzero_places _ F0 _ _).trans (z.restrictNonzeroOfExists_nonzero_places F0 e h)
 
 set_option maxHeartbeats 400000 in
 

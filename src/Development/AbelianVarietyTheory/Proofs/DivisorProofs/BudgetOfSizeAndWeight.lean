@@ -5,10 +5,245 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.EightDvdNCol
 import Development.AbelianVarietyTheory.Definitions.Divisors.QuoIff
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SumLogDivPredLeReal
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightDivisionL1Bound
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PosDividedSlopeWeightsBaseHeight
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SpreadLeAt
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LogDivPredMemOfPrime
+import Development.AbelianVarietyTheory.Definitions.Divisors.DividedWeightUnique
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DividedWeightEntriesSignsSizes
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DividedWeightGapsBlockAndBarStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DividedWeightNodesFarAndSpread
+import Development.AutomorphicArithmetic.PrimeDiscriminants.BadCount
 
+section
+open Formalism.BasicNotions Formalism.BasicNotions.DV Formalism.MainNotions Formalism.L2.Indef.Tree NumberField GlobalTheory.MeanTop
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weight_division_l1_bound : ∀ (ι : Type) [Fintype ι] (N : ℕ) (W : Wts ι N), W.Hyp → W.IsDiv → (W.T : ℝ) * l1 W.u1 ≤ l1 W.u + (Fintype.card ι : ℝ) * N * (W.c0 + 4 * N) ∧ l1 W.u' ≤ l1 W.u1 ∧ ∀ τ i, |W.u' τ i| ≤ |W.u1 τ i| := by
+  first | exact @GlobalTheory.MeanTop.divided_weight_size | exact GlobalTheory.MeanTop.divided_weight_size | (intros; apply GlobalTheory.MeanTop.divided_weight_size <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.DV Formalism.MainNotions Formalism.L2.Indef.Tree NumberField GlobalTheory.MeanTop
+
+namespace GlobalTheory.MeanTop.DividedSlope
+
+theorem strictAnti_of_adj {N : ℕ} (v : Fin N → ℝ)
+    (h : ∀ a b : Fin N, (b : ℕ) = a + 1 → v b < v a) : ∀ a b : Fin N, a < b → v b < v a := by
+  intro a b hab
+  obtain ⟨b, hb⟩ := b
+  have hab' : (a : ℕ) < b := hab
+  induction b, hab' using Nat.le_induction with
+  | base => exact h a _ rfl
+  | succ n hn ih =>
+    have h1 := ih (by omega) (show (a : ℕ) < n from hn)
+    have h2 := h ⟨n, by omega⟩ ⟨n + 1, hb⟩ rfl
+    linarith
+
+variable {ι : Type} [Fintype ι] {N : ℕ} (W : Wts ι N)
+
+omit [Fintype ι] in
+theorem T_pos (hW : W.Hyp) : (0 : ℝ) < W.T := by
+  have := hW.h1
+  have : 0 < W.T := by omega
+  exact_mod_cast this
+
+omit [Fintype ι] in
+theorem pos_dividedSlopeWeights_baseHeight (hW : W.Hyp) : (0 : ℝ) < W.h0 := by
+  have h1 := hW.h2.1
+  have h2 := hW.weightConst_nonneg
+  have : 0 < W.h0 := by omega
+  exact_mod_cast this
+
+omit [Fintype ι] in
+theorem g_pos (hW : W.Hyp) : 0 < W.g := by
+  have := T_pos W hW
+  have := pos_dividedSlopeWeights_baseHeight W hW
+  unfold Wts.g
+  positivity
+
+omit [Fintype ι] in
+theorem g_le_of (hW : W.Hyp) {x : ℤ} (hx : W.h0 ≤ 4 * W.T * x) : W.g ≤ (x : ℝ) := by
+  have hT := T_pos W hW
+  have hx' : (W.h0 : ℝ) ≤ 4 * W.T * x := by exact_mod_cast hx
+  unfold Wts.g
+  rw [div_le_iff₀ (by positivity)]
+  linarith
+
+theorem adj_ge (hW : W.Hyp) (hD : W.IsDiv) (τ : ι) (a b : Fin N) (hab : (b : ℕ) = a + 1) (hb : W.p ≤ (b : ℕ)) :
+    W.g ≤ reWt W.u' τ a - reWt W.u' τ b := by
+  obtain ⟨-, h2, h3⟩ := GlobalTheory.T.dividedWeight_gaps_block_and_bar ι N W hW hD τ a b hab
+  have hk := hW.kc_lt
+  by_cases hp : (b : ℕ) = W.p
+  · have := g_le_of W hW (h2 hp).2
+    have ha : (a : ℕ) < W.p := by omega
+    have hb' : ¬ (b : ℕ) < W.p := by omega
+    simp only [reWt, Wts.u', ha, hb', if_true, if_false]
+    push_cast at this ⊢
+    linarith
+  · have := g_le_of W hW (h3 hp (by omega))
+    have ha : ¬ (a : ℕ) < W.p := by omega
+    have hb' : ¬ (b : ℕ) < W.p := by omega
+    simp only [reWt, Wts.u', ha, hb', if_false]
+    push_cast at this ⊢
+    linarith
+
+theorem adj_lt (hW : W.Hyp) (hD : W.IsDiv) (τ : ι) (a b : Fin N) (hab : (b : ℕ) = a + 1) :
+    reWt W.u' τ b < reWt W.u' τ a := by
+  by_cases hb : W.p ≤ (b : ℕ)
+  · have := adj_ge W hW hD τ a b hab hb
+    have := g_pos W hW
+    linarith
+  · obtain ⟨h1, -, -⟩ := GlobalTheory.T.dividedWeight_gaps_block_and_bar ι N W hW hD τ a b hab
+    have h := h1 (by omega)
+    have h' : W.u1 τ b < W.u1 τ a := by omega
+    have ha : (a : ℕ) < W.p := by omega
+    have hb' : (b : ℕ) < W.p := by omega
+    simp only [reWt, Wts.u', ha, hb', if_true]
+    exact_mod_cast h'
+
+theorem regular (hW : W.Hyp) (hD : W.IsDiv) (τ : ι) (a b : Fin N) (hab : a < b) :
+    reWt W.u' τ b < reWt W.u' τ a :=
+  strictAnti_of_adj _ (adj_lt W hW hD τ) a b hab
+
+theorem anti (hW : W.Hyp) (hD : W.IsDiv) (τ : ι) (a b : Fin N) (hab : a ≤ b) :
+    reWt W.u' τ b ≤ reWt W.u' τ a := by
+  rcases hab.eq_or_lt with h | h
+  · rw [h]
+  · exact (regular W hW hD τ a b h).le
+
+theorem far (hW : W.Hyp) (hD : W.IsDiv) (τ : ι) (a b : Fin N) (ha : W.p ≤ (a : ℕ)) (hab : a ≠ b) :
+    W.g ≤ |reWt W.u' τ a - reWt W.u' τ b| := by
+  have hk := hW.kc_lt
+  rcases lt_or_gt_of_ne hab with h | h
+  · have h' : (a : ℕ) < b := h
+    have hb := b.2
+    have h1 := adj_ge W hW hD τ a ⟨a + 1, by omega⟩ rfl (by simp only; omega)
+    have h2 := anti W hW hD τ ⟨a + 1, by omega⟩ b (show (a : ℕ) + 1 ≤ b from h')
+    exact le_trans (by linarith) (le_abs_self _)
+  · have h' : (b : ℕ) < a := h
+    have hb := a.2
+    have h1 := adj_ge W hW hD τ ⟨a - 1, by omega⟩ a (by simp only; omega) ha
+    have h2 := anti W hW hD τ b ⟨a - 1, by omega⟩ (show (b : ℕ) ≤ a - 1 by omega)
+    exact le_trans (by linarith) (neg_le_abs _)
+
+theorem entry_le (hW : W.Hyp) (hD : W.IsDiv) (τ : ι) (i : Fin N) :
+    |reWt W.u' τ i| ≤ 2 * W.b / W.T := by
+  have hT := T_pos W hW
+  have h1 := (GlobalTheory.MeanTop.divided_entries ι N W hW hD τ i).1
+  have h2 := (GlobalTheory.T.weight_division_l1_bound ι N W hW hD).2.2 τ i
+  have h3 := hW.h5 τ i
+  have h1' : ((W.T : ℝ) + W.Dd + 1) * |(W.u1 τ i : ℝ)| ≤ |(W.u τ i : ℝ)| + W.c0 + 4 * N := by exact_mod_cast h1
+  have h2' : |(W.u' τ i : ℝ)| ≤ |(W.u1 τ i : ℝ)| := by exact_mod_cast h2
+  have h4 : (0 : ℝ) ≤ W.Dd := Nat.cast_nonneg _
+  have h5 := abs_nonneg (W.u1 τ i : ℝ)
+  rw [le_div_iff₀ hT]
+  show |(W.u' τ i : ℝ)| * W.T ≤ 2 * W.b
+  nlinarith [mul_le_mul_of_nonneg_right h2' hT.le, mul_nonneg h4 h5]
+
+end GlobalTheory.MeanTop.DividedSlope
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.DV Formalism.MainNotions Formalism.L2.Indef.Tree NumberField GlobalTheory.MeanTop
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dividedWeight_nodes_far_and_spread : ∀ (ι : Type) [Fintype ι] (N : ℕ) (W : Wts ι N), W.Hyp → W.IsDiv → ∀ τ, (∀ i : Fin N, W.kc ≤ (i : ℕ) → W.w τ / (2 * W.T) ≤ -(W.u1 τ i : ℝ) ∧ W.w τ / (4 * W.T) ≤ |(W.u' τ i : ℝ)|) ∧ ∀ i l : Fin N, (W.u' τ i : ℝ) - W.u' τ l ≤ 3 / 2 * W.w τ / W.T := by
+  first | exact @GlobalTheory.MeanTop.nodes_far_and_spread | exact GlobalTheory.MeanTop.nodes_far_and_spread | (intros; apply GlobalTheory.MeanTop.nodes_far_and_spread <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.DV Formalism.MainNotions Formalism.L2.Indef.Tree NumberField GlobalTheory.MeanTop
+
+namespace GlobalTheory.MeanTop
+
+theorem spread_le_at {ι : Type} [Fintype ι] {N : ℕ} (W : Wts ι N) (hW : W.Hyp) (hD : W.IsDiv) (τ : ι)
+    (j : ℕ) (hj : j ≤ N - W.kc) :
+    (j : ℝ) * ((⨆ i, reWt W.u' τ i) - ⨅ i, reWt W.u' τ i) ≤ 6 * ∑ i, |(W.u' τ i : ℝ)| := by
+  classical
+  obtain ⟨h1, h2⟩ := GlobalTheory.T.dividedWeight_nodes_far_and_spread ι N W hW hD τ
+  have hN : 0 < N := lt_of_le_of_lt (Nat.zero_le _) hW.p_lt
+  haveI : Nonempty (Fin N) := ⟨⟨0, hN⟩⟩
+  obtain ⟨a, ha⟩ := exists_eq_ciSup_of_finite (f := reWt W.u' τ)
+  obtain ⟨b, hb⟩ := exists_eq_ciInf_of_finite (f := reWt W.u' τ)
+  have hsp : (⨆ i, reWt W.u' τ i) - ⨅ i, reWt W.u' τ i ≤ 3 / 2 * W.w τ / W.T := by
+    rw [← ha, ← hb]; exact h2 a b
+  have h0 : 0 ≤ 3 / 2 * W.w τ / W.T := by simpa using h2 a a
+  have hkN : W.kc < N := hW.kc_lt.trans hW.p_lt
+  set s : Finset (Fin N) := Finset.Ici (⟨W.kc, hkN⟩ : Fin N) with hs
+  have hcard : s.card = N - W.kc := by simp [hs]
+  have hsum : (s.card : ℝ) * (W.w τ / (4 * W.T)) ≤ ∑ i ∈ s, |(W.u' τ i : ℝ)| := by
+    have := Finset.card_nsmul_le_sum s (fun i => |(W.u' τ i : ℝ)|) (W.w τ / (4 * W.T))
+      (fun i hi => (h1 i (by simpa [hs, Fin.le_def] using hi)).2)
+    simpa [nsmul_eq_mul] using this
+  have hsub : ∑ i ∈ s, |(W.u' τ i : ℝ)| ≤ ∑ i, |(W.u' τ i : ℝ)| :=
+    Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _) (fun _ _ _ => abs_nonneg _)
+  have hjc : (j : ℝ) ≤ s.card := by rw [hcard]; exact_mod_cast hj
+  have he : 3 / 2 * W.w τ / W.T = 6 * (W.w τ / (4 * W.T)) := by ring
+  calc (j : ℝ) * ((⨆ i, reWt W.u' τ i) - ⨅ i, reWt W.u' τ i) ≤ j * (3 / 2 * W.w τ / W.T) :=
+        mul_le_mul_of_nonneg_left hsp (Nat.cast_nonneg _)
+    _ ≤ s.card * (3 / 2 * W.w τ / W.T) := mul_le_mul_of_nonneg_right hjc h0
+    _ = 6 * (s.card * (W.w τ / (4 * W.T))) := by rw [he]; ring
+    _ ≤ _ := by linarith
+
+end GlobalTheory.MeanTop
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.DV Formalism.MainNotions Formalism.L2.Indef.Tree NumberField GlobalTheory.MeanTop
+
+namespace GlobalTheory.MeanTop
+
+theorem sum_padicValNat_mul_log_le_log (n : ℕ) (S : Finset ℕ) (hS : ∀ p ∈ S, p.Prime) :
+    ∑ p ∈ S, (padicValNat p n : ℝ) * Real.log p ≤ Real.log n := by
+  classical
+  rw [Real.log_nat_eq_sum_factorization, Finsupp.sum]
+  have h1 : ∑ p ∈ S, (padicValNat p n : ℝ) * Real.log p
+      = ∑ p ∈ S, (n.factorization p : ℝ) * Real.log p :=
+    Finset.sum_congr rfl fun p hp => by rw [Nat.factorization_def n (hS p hp)]
+  rw [h1]
+  have h2 : ∑ p ∈ S ∪ n.factorization.support, (n.factorization p : ℝ) * Real.log p
+      = ∑ p ∈ n.factorization.support, (n.factorization p : ℝ) * Real.log p := by
+    symm
+    refine Finset.sum_subset Finset.subset_union_right fun p _ hp => ?_
+    rw [Finsupp.notMem_support_iff.1 hp]; simp
+  rw [← h2]
+  exact Finset.sum_le_sum_of_subset_of_nonneg Finset.subset_union_left
+    fun p _ _ => mul_nonneg (Nat.cast_nonneg _) (Real.log_natCast_nonneg p)
+
+theorem sum_vDiff_mul_log_le :
+    ∀ (D : D7) (S : Finset ℕ), (∀ p ∈ S, p.Prime) → (∀ p, 0 ≤ vDiff D p) ∧ ∑ p ∈ S, vDiff D p * Real.log p ≤ Real.log D.host.rdE := by
+  intro D S hS
+  refine ⟨fun p => div_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _), ?_⟩
+  have hn : (0 : ℝ) < (Module.finrank ℚ D.host.E : ℝ) := by exact_mod_cast Module.finrank_pos
+  have hd : (0 : ℝ) < |(discr D.host.E : ℝ)| := by
+    rw [abs_pos]; exact_mod_cast discr_ne_zero D.host.E
+  have hc : ((WeightThresholdDefs.dE D : ℕ) : ℝ) = |(discr D.host.E : ℝ)| := by
+    rw [WeightThresholdDefs.dE, Nat.cast_natAbs, Int.cast_abs]
+  have hr : Real.log D.host.rdE = Real.log (WeightThresholdDefs.dE D : ℕ) / (Module.finrank ℚ D.host.E : ℝ) := by
+    rw [hc]
+    unfold Host.rdE
+    rw [Real.log_rpow hd]; ring
+  rw [hr]
+  refine le_trans (le_of_eq ?_) (div_le_div_of_nonneg_right (sum_padicValNat_mul_log_le_log (WeightThresholdDefs.dE D) S hS) hn.le)
+  rw [Finset.sum_div]
+  refine Finset.sum_congr rfl fun p _ => ?_
+  rw [vDiff]; ring
+
+end GlobalTheory.MeanTop
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.DV Formalism.MainNotions Formalism.L2.Indef.Tree NumberField GlobalTheory.MeanTop
+
+namespace GlobalTheory.MeanTop
+
+theorem log_div_pred_mem_of_prime {p : ℕ} (hp : p.Prime) :
+    0 ≤ Real.log p / ((p : ℝ) - 1) ∧ Real.log p / ((p : ℝ) - 1) ≤ 1 := by
+  have h2 : (2 : ℝ) ≤ p := by exact_mod_cast hp.two_le
+  have hpos : (0 : ℝ) < (p : ℝ) - 1 := by linarith
+  refine ⟨div_nonneg (Real.log_nonneg (by linarith)) hpos.le, ?_⟩
+  rw [div_le_one hpos]
+  exact Real.log_le_sub_one_of_pos (by linarith)
+
+end GlobalTheory.MeanTop
+end
+
+section
 set_option synthInstance.maxHeartbeats 400000
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.BasicNotions.TH Formalism.L2.Theta ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.CovTop GlobalTheory.BigTop GlobalTheory.CovHt
@@ -319,3 +554,4 @@ theorem budget : (∀ M, HostN M) → WtN → Size → Budget := fun hH hW _ =>
       budgetAt p i ((h x hx hle ι p hp).1 i) ((h x hx hle ι p hp).2 i) hi Y hY u1 hq⟩
 
 end GlobalTheory.CovHt.BudgetPf
+end

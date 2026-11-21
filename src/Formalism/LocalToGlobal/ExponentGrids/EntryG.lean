@@ -133,49 +133,7 @@ def EntryG (A : Amb X) (a₀ : ℕ) (b₀ c₀ : ℤ) (ha : 0 < a₀) (hd : 0 < 
     LastInt Y ∧ UnitsInt Y ∧ StabDvd Y D j1 ∧ ¬ g ∣ D ∧
     ∀ π j, IsEntryG A a₀ b₀ c₀ ha hd lam hlam ι ϖ pE (Dg j) (e j) (ab j).1 (ab j).2 (Y.e π j)
 
-theorem gAt_of_entryG (hJ : JetAtSplit) (A : Amb X) (a₀ : ℕ) (b₀ c₀ : ℤ) (ha : 0 < a₀) (hd : 0 < A.d) (lam : ℂ) (hlam : lam ≠ 0)
-    (ϖ : ℂ) (pE : 𝓞 X.E) {Bs : DefBase X.K} {Df : DefSide Bs} (Dc : DefCols Df) (u : Dc.Mem) (t : Bs.Tup)
-    (Nu : Submodule (𝓞 X.K) (Fin (Dc.a u) → X.K)) (w : HeightOneSpectrum (𝓞 X.K)) (g : ℕ) [Fact g.Prime]
-    (Dg : Bs.J → ℕ) (ab : Bs.J → ℕ × ℕ) (e : Bs.J → ℝ)
-    (hg2 : g ≠ 2) (hgd : ¬ g ∣ A.d) (hϖ : IsQInt A.d ϖ) (hϖϖ : ϖ * conj ϖ = (g : ℂ)) (pb : X.K) (hpb : A.σ₀ pb = conj ϖ)
-    (h : EntryG A a₀ b₀ c₀ ha hd lam hlam ϖ pE Dc u t Nu w g Dg ab e) :
-    GAt Dc u t Nu w g pb Dg (fun j => ((Fintype.card X.Tau * (ab j).2 * (ab j).1 : ℕ) : ℝ) - e j) := by
-  obtain ⟨ι, Y, D, j1, hι, hY, hc, hr, hl, hu, hD, hgD, he⟩ := h
-  refine ⟨(ι : ℂ →+* ℂ_[g]).comp A.σ₀, Y, D, j1, hι, hY, hc, hr, hl, hu, hD, hgD, fun π j => ?_⟩
-  have hb := entry_bound hJ A a₀ b₀ c₀ ha hd lam hlam ι ϖ pE hg2 hgd hϖ hϖϖ (he π j)
-  have hpi : ((ι : ℂ →+* ℂ_[g]).comp A.σ₀) pb = ι (conj ϖ) := by
-    rw [RingHom.comp_apply, hpb]
-    rfl
-  rw [hpi]
-  exact hb
 
-theorem perBd_of_entryG (hJ : JetAtSplit) (A : Amb X) (a₀ : ℕ) (b₀ c₀ : ℤ) (ha : 0 < a₀) (hd : 0 < A.d) (lam : ℂ) (hlam : lam ≠ 0)
-    (ϖ : ℂ) (pE : 𝓞 X.E) {Bs : DefBase X.K} {Df : DefSide Bs} (Dc : DefCols Df) (u : Dc.Mem) (t : Bs.Tup)
-    (Nu : Submodule (𝓞 X.K) (Fin (Dc.a u) → X.K)) (w : HeightOneSpectrum (𝓞 X.K)) (g : ℕ) [Fact g.Prime]
-    (Dg : Bs.J → ℕ) (ab : Bs.J → ℕ × ℕ) (e : Bs.J → ℝ)
-    (hg2 : g ≠ 2) (hgd : ¬ g ∣ A.d) (hϖ : IsQInt A.d ϖ) (hϖϖ : ϖ * conj ϖ = (g : ℂ)) (pb : X.K) (hpb : A.σ₀ pb = conj ϖ)
-    (hw : PlOver g w) (h : EntryG A a₀ b₀ c₀ ha hd lam hlam ϖ pE Dc u t Nu w g Dg ab e)
-    {Jx : Type} (sx : Finset Jx) (Dx : Jx → ℕ) (cg : X.K) (E0 : ℝ) (hcg : ∃ k : ℕ, 0 < k ∧ cg ^ k = 1)
-    (hD : ∑ j, (Dg j : ℝ) = ∑ l ∈ sx, (Dx l : ℝ))
-    (hR : ∑ j, (((Fintype.card X.Tau * (ab j).2 * (ab j).1 : ℕ) : ℝ) - e j) ≤ E0) :
-    PerBd Dc u Nu t w (colRhs sx g (fun l => pb ^ Dx l) cg E0 w) := by
-  have hpb0 : pb ≠ 0 := by
-    intro h0
-    have h1 : conj ϖ = 0 := by rw [← hpb, h0, map_zero]
-    have h2 : (g : ℂ) = 0 := by rw [← hϖϖ, h1, mul_zero]
-    exact (Fact.out : g.Prime).ne_zero (by exact_mod_cast h2)
-  have hG := gAt_of_entryG hJ A a₀ b₀ c₀ ha hd lam hlam ϖ pE Dc u t Nu w g Dg ab e hg2 hgd hϖ hϖϖ pb hpb h
-  have hB := (Formalism.L2.AlgTh.column_bound_of_paths X.K Bs Df Dc u t Nu w g pb Dg
-    (fun j => ((Fintype.card X.Tau * (ab j).2 * (ab j).1 : ℕ) : ℝ) - e j) hw hpb0 hG).2
-  refine hB Jx sx (fun l => pb ^ Dx l) cg E0 ?_
-  have hle := Formalism.L2.AlgTh.column_right_side_le X.K w g hw Bs.J pb cg Dg
-    (fun j => ((Fintype.card X.Tau * (ab j).2 * (ab j).1 : ℕ) : ℝ) - e j) E0 hpb0 hcg hR
-  refine le_trans (le_of_eq ?_) hle
-  unfold colRhs
-  simp only [Formalism.AtG.PlacesLyingOver.vw_pow' w pb hpb0]
-  push_cast
-  simp only [← Finset.sum_mul]
-  rw [hD]
 
 end Place
 
@@ -199,42 +157,7 @@ def EntryGRec (hX : X.Ok) {Bs : DefBase X.K} (Df : DefSide Bs) {P : LevFam X.E X
   EntryG Am a₀ b₀ c₀ ha hd lam hlam ϖ pE (colFace hX Df Xg mu cst L hL hP Mem wd b hY (kerRec mu cst L wd b hY Am hK) hF ev) u t Nu w g
     Dg ab e
 
-theorem val2AtG_concrete (hJ : JetAtSplit) (hX : X.Ok) {Bs : DefBase X.K} {Df0 Df1 : DefSide Bs} {P : LevFam X.E X.K Rk.r Pr.vGs}
-    (Xg : Finset (G0 X.E Pr.vGs Rk.r → X.K)) {m2 : ℕ} {Gc : ChGlob X Rk.m} (mu : Bs.Tup → Tup X.F X.E X.K Sg)
-    (cst : ∀ t, LocCst X (rowSG Pr sel (mu t))) (L : ∀ t, ChIdx X Pr Rk (QE sel (mu t : Chr X.F X.E X.K)))
-    (hL : ∀ t, (L t).Ok Ch sel (mu t) (cst t) Gc m2) (hP : ∀ t, (mtildeGSD W Ch sel (mu t) P).Ok) (Mem : Type) (wd : Mem → Pr.Word)
-    (b : ∀ t, Mem → (L t).β (m2 + 1)) (hY : ∀ t x, YbHyp (R := Rk) sel (mu t) (cst t) (L t) (wd x) m2 (b t x))
-    (Am : Amb X) (hK : ∀ t x, Formalism.L2.Ker.KerEquivC W Ch sel (mu t) (cst t) (L t) Am (wd x) m2 (b t x) (hY t x) P)
-    (hF : ∀ t x j, (chF W sel (mu t) (L t) (wd x) j).Ok) (ev : ∀ t, (Fin (Df1.nV t) → X.K) →ₗ[X.K] V0X W Ch sel (mu t) Xg P)
-    (Sp : SPer (colFace hX Df1 Xg mu cst L hL hP Mem wd b hY (kerRec mu cst L wd b hY Am hK) hF ev)) (Nn : IndefNum Bs)
-    (Pk : IndefCore Df0 Df1 (colFace hX Df1 Xg mu cst L hL hP Mem wd b hY (kerRec mu cst L wd b hY Am hK) hF ev) Sp Nn)
-    (u : Mem) (Nu : Submodule (𝓞 X.K) (Fin (ramDim W Ch hX (wd u)) → X.K))
-    (N : Formalism.L2.DIV.NumDatum) (Lv : Formalism.L2.GlobalTheoryTheory.Arith.Lev N) (sd : X.K) (Dx : ℕ → ℕ) (cg : Fin 2 → X.K) (Cc : ℝ)
-    (hcg : ∀ i, ∃ n : ℕ, 0 < n ∧ cg i ^ n = 1)
-    (a₀ : ℕ) (b₀ c₀ : ℤ) (ha : 0 < a₀) (hd : 0 < Am.d) (lam : ℂ) (hlam : lam ≠ 0)
-    (ϖ : Fin 2 → ℂ) (pE : Fin 2 → 𝓞 X.E) (hg : ∀ i, (N.g i).Prime) (hg2 : ∀ i, N.g i ≠ 2) (hgd : ∀ i, ¬ N.g i ∣ Am.d)
-    (hϖ : ∀ i, IsQInt Am.d (ϖ i)) (hϖϖ : ∀ i, ϖ i * conj (ϖ i) = (N.g i : ℂ))
-    (hpb : ∀ i, Am.σ₀ (Formalism.L2.GlobalTheoryTheory.Arith.eltBar sd (Lv.piG i)) = conj (ϖ i))
-    (Dg : Bs.J → ℕ) (ab : Bs.J → ℕ × ℕ) (e : Fin 2 → Bs.J → ℝ)
-    (hD : ∑ j, (Dg j : ℝ) = ∑ l ∈ N.lifts, (Dx l : ℝ))
-    (hR : ∀ i, ∑ j, (((Fintype.card X.Tau * (ab j).2 * (ab j).1 : ℕ) : ℝ) - e i j) ≤
-      Cc * (N.R.f : ℝ) * (N.R.m : ℝ) * (N.Nm : ℝ) * ((N.Nm : ℝ) + (N.R.t : ℝ)))
-    (hE : ∀ (i : Fin 2) [Fact (N.g i).Prime] (w : HeightOneSpectrum (𝓞 X.K)), PlOver (N.g i) w →
-      EntryGRec (W := W) (Ch := Ch) hX Df1 Xg mu cst L hL hP Mem wd b hY Am hK hF ev a₀ b₀ c₀ ha hd lam hlam (ϖ i) (pE i) u
-        (Pk.cols.μ w) Nu w (N.g i) Dg ab (e i)) :
-    ∀ i w, PlOver (N.g i) w →
-      PerBd (colFace hX Df1 Xg mu cst L hL hP Mem wd b hY (kerRec mu cst L wd b hY Am hK) hF ev) u Nu (Pk.cols.μ w) w
-        (colRhs N.lifts (N.g i) (fun j => Formalism.L2.GlobalTheoryTheory.Arith.eltBar sd (Lv.piG i) ^ Dx j) (cg i)
-          (Cc * (N.R.f : ℝ) * (N.R.m : ℝ) * (N.Nm : ℝ) * ((N.Nm : ℝ) + (N.R.t : ℝ))) w) := by
-  intro i w hw
-  have : Fact (N.g i).Prime := ⟨hg i⟩
-  exact perBd_of_entryG hJ Am a₀ b₀ c₀ ha hd lam hlam (ϖ i) (pE i)
-    (colFace hX Df1 Xg mu cst L hL hP Mem wd b hY (kerRec mu cst L wd b hY Am hK) hF ev) u (Pk.cols.μ w) Nu w (N.g i) Dg ab (e i)
-    (hg2 i) (hgd i) (hϖ i) (hϖϖ i) _ (hpb i) hw (hE i w hw) N.lifts Dx (cg i) _ (hcg i) hD (hR i)
 
-theorem sumDeg_of_eJ (N : Formalism.L2.DIV.NumDatum) (Dx : ℕ → ℕ) {J : Type} [Fintype J] (eJ : J ≃ Fin N.R.m) :
-    ∑ j, ((Dx ((eJ j).1 + 1) : ℕ) : ℝ) = ∑ l ∈ N.lifts, (Dx l : ℝ) :=
-  Formalism.L2.DIV.NumDatum.sum_lifts N (fun l => (Dx l : ℝ)) eJ
 
 end Record
 

@@ -1,11 +1,532 @@
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SeparableMatrixStability.SysCover
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SeparableMatrixStability.Loc_fin
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SeparableMatrixStability.InLim
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SeparableMatrixStability.EltLim
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SeparableMatrixStability.CloseMap
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SeparableMatrixStability.CommLim
+import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SeparableMatrixStability.PlGen
+import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.FreeProf
+import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.GenExt
+import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SeparableMatrixStability.MapEta
+import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SeparableMatrixStability.PlMap
+import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SeparableMatrixStability.HomlDesc
+import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.QuotProf
+import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SeparableMatrixStability.SecondSelmerSpanBoundAtAllLevels
+import Mathlib
+import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.LimKer
+import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.LimElt
+import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.FiniteHomOfTopFG
+import Mathlib.Topology.Algebra.ClopenNhdofOne
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.LimOut
 
+section
+open IsLocalRing Matrix Filter UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.AlgebraTools UpperTheory.V.Pa
+
+theorem UpperTheory.V.Pa.sys_cover :
+    ∀ (l : ℕ) [Fact l.Prime] (L : Loc) (G0 : Glob l L) (T : TWGrp G0), T.ProL → ∃ (Ph : Type) (_ : Group Ph) (_ : TopologicalSpace Ph) (_ : IsTopologicalGroup Ph) (_ : CompactSpace Ph) (_ : TotallyDisconnectedSpace Ph) (π : ∀ N, Ph →* (T.GN N).Γ) (ct : Ph), TopFG Ph ∧ (∀ N, Continuous (π N) ∧ Function.Surjective (π N) ∧ π N ct = (T.GN N).c) ∧ ∀ N N' g, (T.h N).p (π N g) * ((T.h N').p (π N' g))⁻¹ ∈ T.H := by
+  intro l _ L G0 T hT
+  classical
+  let H0 : Subgroup G0.Γ := (T.H : Subgroup G0.Γ)
+  have hH0open : IsOpen (H0 : Set G0.Γ) := T.H.isOpen
+  obtain ⟨n, e, he⟩ : ∃ n : ℕ, ∃ e : Fin n → G0.Γ ⧸ H0, Function.Surjective e := by
+    obtain ⟨n, ⟨eq⟩⟩ := Finite.exists_equiv_fin (G0.Γ ⧸ H0)
+    exact ⟨n, eq.symm, eq.symm.surjective⟩
+  let lift : G0.Γ ⧸ H0 → G0.Γ := Function.surjInv QuotientGroup.mk_surjective
+  have hlift : ∀ y, (QuotientGroup.mk (lift y) : G0.Γ ⧸ H0) = y :=
+    Function.surjInv_eq QuotientGroup.mk_surjective
+  let yc : Fin (n + 1) → G0.Γ := Fin.cons G0.c (fun i => lift (e i))
+  let γ : Fin (n + 1) → G0.Γ ⧸ H0 := fun i => QuotientGroup.mk (yc i)
+  have hγ : Function.Surjective γ := by
+    intro y
+    obtain ⟨i, rfl⟩ := he y
+    exact ⟨i.succ, by simp [γ, yc, hlift]⟩
+  obtain ⟨P, iG, iT, iTG, iC, iTD, x, hx, hfree⟩ := exists_free_profinite (n + 1 + T.hb)
+  obtain ⟨f0, hf0c, hf0x⟩ := hfree G0.Γ (Fin.append yc (fun _ => 1))
+  let π0 : P →* G0.Γ ⧸ H0 := (QuotientGroup.mk' H0).comp f0
+  have hπ0ker : IsOpen (π0.ker : Set P) := by
+    have : (π0.ker : Set P) = f0 ⁻¹' (H0 : Set G0.Γ) := by
+      ext g
+      simp [π0, MonoidHom.mem_ker, QuotientGroup.eq_one_iff]
+    rw [this]
+    exact hH0open.preimage hf0c
+  have hcast : ∀ i : Fin (n + 1), π0 (x (Fin.castAdd T.hb i)) = γ i := by
+    intro i
+    simp [π0, γ, hf0x, Fin.append_left]
+  have hnat : ∀ i : Fin T.hb, π0 (x (Fin.natAdd (n + 1) i)) = 1 := by
+    intro i
+    simp [π0, hf0x, Fin.append_right]
+  have key : ∀ N : ℕ, ∃ f : P →* (T.GN N).Γ, Continuous f ∧ Function.Surjective f ∧
+      ((QuotientGroup.mk' H0).comp (T.h N).p).comp f = π0 ∧
+      f (x (Fin.castAdd T.hb 0)) = (T.GN N).c := by
+    intro N
+    let p := (T.h N).p
+    let q : (T.GN N).Γ →* G0.Γ ⧸ H0 := (QuotientGroup.mk' H0).comp p
+    let HN : Subgroup (T.GN N).Γ := H0.comap p
+    haveI : HN.Normal := Subgroup.Normal.comap inferInstance p
+    have hqker : q.ker = HN := by
+      ext g
+      simp [q, HN, p, MonoidHom.mem_ker, QuotientGroup.eq_one_iff]
+    have hHNopen : IsOpen (HN : Set (T.GN N).Γ) := hH0open.preimage (T.h N).cont
+    have hqopen : IsOpen (q.ker : Set (T.GN N).Γ) := by rw [hqker]; exact hHNopen
+    let g : Fin (n + 1) → (T.GN N).Γ :=
+      Fin.cons (T.GN N).c (fun i => Function.surjInv (T.h N).surj (yc i.succ))
+    have hg : ∀ i, q (g i) = γ i := by
+      intro i
+      refine Fin.cases ?_ (fun j => ?_) i
+      · simp [q, g, γ, yc, p, (T.h N).c]
+      · simp [q, g, γ, p, Function.surjInv_eq (T.h N).surj]
+    have hz : ∃ z : Fin T.hb → ↥q.ker, TopGen (Set.range z) := by
+      rw [hqker]
+      have hPL := hT.2 N
+      have hfin := T.finN N
+      exact (pl_gen l (T.GN N).Γ HN hHNopen hPL hfin.1).2 T.hb hfin.2
+    obtain ⟨f, hfc, hfs, hfq, hfx⟩ :=
+      exists_surj_over_finite P (G0.Γ ⧸ H0) (n + 1) T.hb x γ π0 hx hfree hγ hπ0ker hcast hnat
+        (T.GN N).Γ q hqopen g hg hz
+    exact ⟨f, hfc, hfs, hfq, by rw [hfx 0]; simp [g]⟩
+  choose F hFc hFs hFq hFx using key
+  refine ⟨P, iG, iT, iTG, iC, iTD, F, x (Fin.castAdd T.hb 0), ⟨Set.range x, Set.finite_range x, hx⟩,
+    fun N => ⟨hFc N, hFs N, hFx N⟩, ?_⟩
+  intro N N' g
+  have h1 := congrArg (fun φ => φ g) (hFq N)
+  have h2 := congrArg (fun φ => φ g) (hFq N')
+  simp only [MonoidHom.comp_apply, QuotientGroup.mk'_apply] at h1 h2
+  have h3 : (QuotientGroup.mk ((T.h N).p (F N g)) : G0.Γ ⧸ H0) = QuotientGroup.mk ((T.h N').p (F N' g)) := by
+    rw [h1, h2]
+  rw [QuotientGroup.eq_iff_div_mem, div_eq_mul_inv] at h3
+  exact h3
+end
+
+section
+open IsLocalRing Matrix Filter UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.AlgebraTools UpperTheory.V.Pa
+
+theorem UpperTheory.V.Pa.loc_fin :
+    ∀ (l : ℕ) [Fact l.Prime] (Y : Type) [Group Y] [TopologicalSpace Y] [IsTopologicalGroup Y] [CompactSpace Y] [TotallyDisconnectedSpace Y] (H : Subgroup Y) [H.Normal], IsOpen (H : Set Y) → PhiCond Y l → ∃ (P : Subgroup Y) (_ : P.Normal), TopFG (Y ⧸ P) ∧ ∀ (Z : Type) [Group Z] [TopologicalSpace Z] [IsTopologicalGroup Z] [CompactSpace Z] [TotallyDisconnectedSpace Z] (f : Y →* Z) (H' : Subgroup Z), Continuous f → PL l H' = ⊥ → H ≤ H'.comap f → P ≤ f.ker := by
+  intro l _ Y _ _ _ _ _ H _ hH hphi
+  obtain ⟨hPn, hPc, hPH, -, -, -⟩ := pl_props l Y H hH
+  refine ⟨PL l H, hPn, ?_, ?_⟩
+  · let P := PL l H
+    let m : Y →* Y ⧸ P := QuotientGroup.mk' P
+    have hmc : Continuous m := continuous_quot_mk
+    have hms : Function.Surjective m := QuotientGroup.mk'_surjective P
+    haveI : TotallyDisconnectedSpace (Y ⧸ P) := (totallyDisconnected_quot Y P hPc).1
+    let H' : Subgroup (Y ⧸ P) := H.map m
+    haveI : H'.Normal := Subgroup.Normal.map inferInstance m hms
+    have hcm : H'.comap m = H := by
+      rw [Subgroup.comap_map_eq, QuotientGroup.ker_mk']
+      exact sup_eq_left.mpr hPH
+    have hH'open : IsOpen (H' : Set (Y ⧸ P)) := by
+      have : (H' : Set (Y ⧸ P)) = m '' (H : Set Y) := by simp [H']
+      rw [this]
+      exact QuotientGroup.isOpenMap_coe _ hH
+    have hPL' : PL l H' = ⊥ := by
+      rw [← pl_map l Y (Y ⧸ P) m H' hH'open hmc hms, hcm]
+      rw [Subgroup.map_eq_bot_iff, QuotientGroup.ker_mk']
+    have hfin : Finite (HomL l (H'.comap m)) := by
+      rw [hcm]
+      exact hphi H hH
+    exact (pl_gen l (Y ⧸ P) H' hH'open hPL' (homl_desc l Y (Y ⧸ P) m H' hmc hms hfin).1).1
+  · intro Z _ _ _ _ _ f H' hf hPL hle g hg
+    rw [MonoidHom.mem_ker]
+    have hmem : f g ∈ PL l H' := by
+      simp only [PL, Subgroup.mem_iInf] at hg ⊢
+      intro U hU
+      let V : OpenNormalSubgroup Y :=
+        { toOpenSubgroup := U.toOpenSubgroup.comap f hf
+          isNormal' := Subgroup.Normal.comap U.isNormal' f }
+      have hV : ∀ y : Y, y ∈ V ↔ f y ∈ U := fun y => Iff.rfl
+      have := hg V (by
+        intro h hh
+        obtain ⟨e, he⟩ := hU (f h) (hle hh)
+        exact ⟨e, (hV _).mpr (by simpa using he)⟩)
+      exact (hV g).mp this
+    rw [hPL] at hmem
+    exact (Subgroup.mem_bot).mp hmem
+end
+
+section
+open IsLocalRing Matrix Filter UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.AlgebraTools UpperTheory.V.Pa
+
+private theorem exists_tendsto_ultrafilter_of_compact {X : Type} [TopologicalSpace X] [CompactSpace X] (U : Ultrafilter ℕ) (a : ℕ → X) :
+    ∃ x, Tendsto a (U : Filter ℕ) (nhds x) := by
+  obtain ⟨x, -, hx⟩ := isCompact_univ.ultrafilter_le_nhds (U.map a) (by simp)
+  exact ⟨x, by rwa [Ultrafilter.coe_map] at hx⟩
+
+private theorem inv_mul_mem_limKer_of_tendsto_of_eventually_eq {Ph : Type} [Group Ph] [TopologicalSpace Ph] [IsTopologicalGroup Ph]
+    {Γ : ℕ → Type} [∀ N, Group (Γ N)] (π : ∀ N, Ph →* Γ N) (U : Ultrafilter ℕ)
+    (a b : ℕ → Ph) (x y : Ph) (ha : Tendsto a (U : Filter ℕ) (nhds x))
+    (hb : Tendsto b (U : Filter ℕ) (nhds y))
+    (hab : ∀ᶠ N in (U : Filter ℕ), π N (a N) = π N (b N)) :
+    x⁻¹ * y ∈ limKer (U : Filter ℕ) (fun N => (π N).ker) := by
+  rw [mem_limKer]
+  intro O
+  have hO : ((O.toOpenSubgroup : Subgroup Ph) : Set Ph) ∈ nhds (1 : Ph) :=
+    O.toOpenSubgroup.isOpen.mem_nhds O.toOpenSubgroup.one_mem
+  have h1 : Tendsto (fun N => x⁻¹ * a N) (U : Filter ℕ) (nhds 1) := by
+    simpa using (tendsto_const_nhds (x := x⁻¹)).mul ha
+  have h2 : Tendsto (fun N => (b N)⁻¹ * y) (U : Filter ℕ) (nhds 1) := by
+    simpa using hb.inv.mul (tendsto_const_nhds (x := y))
+  filter_upwards [h1 hO, h2 hO, hab] with N h1N h2N hN
+  have e : x⁻¹ * y = (x⁻¹ * a N) * ((a N)⁻¹ * b N) * ((b N)⁻¹ * y) := by group
+  rw [e]
+  refine Subgroup.mul_mem _ (Subgroup.mul_mem _ (Subgroup.mem_sup_right h1N)
+    (Subgroup.mem_sup_left ?_)) (Subgroup.mem_sup_right h2N)
+  rw [MonoidHom.mem_ker, map_mul, map_inv, hN, inv_mul_cancel]
+
+private theorem exists_eventually_eq_of_eventually_mem_finite {β : Type} (U : Ultrafilter ℕ) (g : ℕ → β) (A : Set β) (hA : A.Finite)
+    (hg : ∀ᶠ N in (U : Filter ℕ), g N ∈ A) : ∃ c ∈ A, ∀ᶠ N in (U : Filter ℕ), g N = c := by
+  have h : (⋃ c ∈ A, {N | g N = c}) ∈ (U : Filter ℕ) := by
+    filter_upwards [hg] with N hN
+    exact Set.mem_biUnion hN rfl
+  exact (Ultrafilter.finite_biUnion_mem_iff hA).1 h
+
+private theorem continuous_section_quotient_of_ker_le_open {Ph G : Type} [Group Ph] [TopologicalSpace Ph] [IsTopologicalGroup Ph]
+    [CompactSpace Ph] [Group G] [TopologicalSpace G] [T2Space G] (π : Ph →* G) (hπ : Continuous π)
+    (σ : G → Ph) (hσ : ∀ γ, π (σ γ) = γ) (S : Subgroup Ph) (hS : IsOpen (S : Set Ph))
+    (hk : π.ker ≤ S) : Continuous (fun γ => (σ γ : Ph ⧸ S)) := by
+  haveI : DiscreteTopology (Ph ⧸ S) := QuotientGroup.discreteTopology hS
+  have hmk : Continuous (QuotientGroup.mk : Ph → Ph ⧸ S) := continuous_quot_mk
+  have key : ∀ s : Set (Ph ⧸ S), (fun γ => (σ γ : Ph ⧸ S)) ⁻¹' s =
+      π '' ((QuotientGroup.mk : Ph → Ph ⧸ S) ⁻¹' s) := by
+    intro s
+    ext γ
+    constructor
+    · intro h
+      exact ⟨σ γ, h, hσ γ⟩
+    · rintro ⟨a, ha, rfl⟩
+      have e : (σ (π a) : Ph ⧸ S) = (a : Ph ⧸ S) := by
+        rw [QuotientGroup.eq]
+        apply hk
+        rw [MonoidHom.mem_ker, map_mul, map_inv, hσ, inv_mul_cancel]
+      simp only [Set.mem_preimage, e]
+      exact ha
+  rw [continuous_discrete_rng]
+  intro z
+  have hc : IsClosed (π '' ((QuotientGroup.mk : Ph → Ph ⧸ S) ⁻¹' {z}ᶜ)) :=
+    hπ.isClosedMap _ ((isClosed_discrete ({z}ᶜ : Set (Ph ⧸ S))).preimage hmk)
+  rw [← key, Set.preimage_compl] at hc
+  exact isClosed_compl_iff.1 hc
+
+private theorem mul_one_sub_add_psi_eq_of_conj {Ph Y : Type} [Group Ph] [TopologicalSpace Ph] [IsTopologicalGroup Ph]
+    [CompactSpace Ph] [Group Y] [TopologicalSpace Y] [IsTopologicalGroup Y]
+    {Γ : ℕ → Type} [∀ N, Group (Γ N)] [∀ N, TopologicalSpace (Γ N)] [∀ N, T2Space (Γ N)]
+    (π : ∀ N, Ph →* Γ N) (hπ : ∀ N, Continuous (π N))
+    (σ : ∀ N, Γ N → Ph) (hσ : ∀ N γ, π N (σ N γ) = γ)
+    (U : Ultrafilter ℕ) (P : Subgroup Y) [P.Normal] (f : ∀ N, Y →* Γ N)
+    (hP : TopFG (Y ⧸ P)) (hf : ∀ N, Continuous (f N) ∧ P ≤ (f N).ker)
+    (V : OpenNormalSubgroup Ph) :
+    ∃ S : Subgroup Ph, IsOpen (S : Set Ph) ∧ ∃ c : Y → Ph ⧸ S, Continuous c ∧
+      ∀ᶠ N in (U : Filter ℕ), (π N).ker ⊔ (V.toOpenSubgroup : Subgroup Ph) = S ∧
+        ∀ y, ((σ N (f N y) : Ph) : Ph ⧸ S) = c y := by
+  set W : Subgroup Ph := (V.toOpenSubgroup : Subgroup Ph) with hW
+  have hWo : IsOpen (W : Set Ph) := V.toOpenSubgroup.isOpen
+  haveI : Finite (Ph ⧸ W) := Subgroup.quotient_finite_of_isOpen W hWo
+  have hmem : ∀ S : Subgroup Ph, W ≤ S → ∀ x : Ph,
+      x ∈ S ↔ (x : Ph ⧸ W) ∈ (QuotientGroup.mk : Ph → Ph ⧸ W) '' (S : Set Ph) := by
+    intro S hS x
+    constructor
+    · intro hx
+      exact ⟨x, hx, rfl⟩
+    · rintro ⟨s, hs, he⟩
+      rw [QuotientGroup.eq] at he
+      have e : x = s * (s⁻¹ * x) := by group
+      rw [e]
+      exact S.mul_mem hs (hS he)
+  have hA1 : {S : Subgroup Ph | W ≤ S}.Finite := by
+    apply Set.Finite.of_finite_image (f := fun S : Subgroup Ph =>
+      (QuotientGroup.mk : Ph → Ph ⧸ W) '' (S : Set Ph)) (Set.toFinite _)
+    intro S1 h1 S2 h2 he
+    ext x
+    rw [hmem S1 h1, hmem S2 h2]
+    simp only at he
+    rw [he]
+  obtain ⟨S, hWS, hS⟩ := exists_eventually_eq_of_eventually_mem_finite U (fun N => (π N).ker ⊔ W) _ hA1
+    (Filter.Eventually.of_forall fun N => show W ≤ (π N).ker ⊔ W from le_sup_right)
+  have hSo : IsOpen (S : Set Ph) := Subgroup.isOpen_mono hWS hWo
+  obtain ⟨N0, hN0⟩ := hS.exists
+  haveI hSn : S.Normal := by
+    rw [← hN0]
+    infer_instance
+  haveI : DiscreteTopology (Ph ⧸ S) := QuotientGroup.discreteTopology hSo
+  haveI : Finite (Ph ⧸ S) := Subgroup.quotient_finite_of_isOpen S hSo
+  have hΦ := (finite_hom_of_topFG (Y ⧸ P) hP).1 (Ph ⧸ S)
+  set A2 : Set (Y → Ph ⧸ S) := {φ | Continuous φ ∧
+    ∃ θ ∈ {θ : Y ⧸ P →* Ph ⧸ S | IsOpen (θ.ker : Set (Y ⧸ P))},
+      φ = fun y : Y => θ (y : Y ⧸ P)} with hA2
+  have hA2f : A2.Finite := by
+    apply (hΦ.image (fun θ : Y ⧸ P →* Ph ⧸ S => fun y : Y => θ (y : Y ⧸ P))).subset
+    rintro φ ⟨-, θ, hθ, rfl⟩
+    exact ⟨θ, hθ, rfl⟩
+  have hg2 : ∀ᶠ N in (U : Filter ℕ), (fun y => ((σ N (f N y) : Ph) : Ph ⧸ S)) ∈ A2 := by
+    filter_upwards [hS] with N hN
+    have kle : (π N).ker ≤ S := hN ▸ le_sup_left
+    have hcont : Continuous (fun y => ((σ N (f N y) : Ph) : Ph ⧸ S)) :=
+      (continuous_section_quotient_of_ker_le_open (π N) (hπ N) (σ N) (hσ N) S hSo kle).comp (hf N).1
+    refine ⟨hcont, ?_⟩
+    let φY : Y →* Ph ⧸ S := MonoidHom.mk' (fun y => ((σ N (f N y) : Ph) : Ph ⧸ S)) (by
+      intro a b
+      rw [← QuotientGroup.mk_mul, QuotientGroup.eq]
+      apply kle
+      simp [MonoidHom.mem_ker, hσ])
+    have hPle : P ≤ φY.ker := by
+      intro p hp
+      rw [MonoidHom.mem_ker]
+      show ((σ N (f N p) : Ph) : Ph ⧸ S) = 1
+      rw [(hf N).2 hp, QuotientGroup.eq_one_iff]
+      apply kle
+      simp [MonoidHom.mem_ker, hσ]
+    refine ⟨QuotientGroup.lift P φY hPle, ?_, rfl⟩
+    have hpre : (QuotientGroup.mk : Y → Y ⧸ P) ⁻¹' ((QuotientGroup.lift P φY hPle).ker : Set (Y ⧸ P))
+        = (fun y => ((σ N (f N y) : Ph) : Ph ⧸ S)) ⁻¹' {1} := by
+      ext y
+      simp [MonoidHom.mem_ker, φY]
+    have ho := hcont.isOpen_preimage _ (isOpen_discrete ({1} : Set (Ph ⧸ S)))
+    rw [← hpre] at ho
+    have ho2 := (QuotientGroup.isOpenMap_coe (N := P)) _ ho
+    rwa [Set.image_preimage_eq _ QuotientGroup.mk_surjective] at ho2
+  obtain ⟨c, hcA, hc⟩ := exists_eventually_eq_of_eventually_mem_finite U _ A2 hA2f hg2
+  refine ⟨S, hSo, c, hcA.1, ?_⟩
+  filter_upwards [hS, hc] with N h1 h2
+  exact ⟨h1, fun y => congrFun h2 y⟩
+
+theorem UpperTheory.V.Pa.in_lim :
+    ∀ (Ph Y : Type) [Group Ph] [TopologicalSpace Ph] [IsTopologicalGroup Ph] [CompactSpace Ph] [TotallyDisconnectedSpace Ph] [Group Y] [TopologicalSpace Y] [IsTopologicalGroup Y] [CompactSpace Y] [TotallyDisconnectedSpace Y] (Γ : ℕ → Type) [∀ N, Group (Γ N)] [∀ N, TopologicalSpace (Γ N)] [∀ N, IsTopologicalGroup (Γ N)] [∀ N, CompactSpace (Γ N)] [∀ N, TotallyDisconnectedSpace (Γ N)] (π : ∀ N, Ph →* Γ N) (U : Ultrafilter ℕ) (P : Subgroup Y) [P.Normal] (f : ∀ N, Y →* Γ N), (∀ N, Continuous (π N) ∧ Function.Surjective (π N)) → TopFG (Y ⧸ P) → (∀ N, Continuous (f N) ∧ P ≤ (f N).ker) → ∃ F : Y →* Ph ⧸ limKer (U : Filter ℕ) (fun N => (π N).ker), Continuous F ∧ ∀ V : OpenNormalSubgroup Ph, ∀ᶠ N in (U : Filter ℕ), ∀ y, Close (π N) (QuotientGroup.mk' (limKer (U : Filter ℕ) fun N => (π N).ker)) V.toSubgroup (f N y) (F y) := by
+  intro Ph Y _ _ _ _ _ _ _ _ _ _ Γ _ _ _ _ _ π U P _ f hπ hP hf
+  haveI : ∀ N, T2Space (Γ N) := fun N => inferInstance
+  choose σ hσ using fun N (γ : Γ N) => (hπ N).2 γ
+  choose h hh using fun y => exists_tendsto_ultrafilter_of_compact U (fun N => σ N (f N y))
+  have hmul : ∀ a b, ((h (a * b) : Ph) : Ph ⧸ limKer (U : Filter ℕ) fun N => (π N).ker) =
+      (h a : Ph ⧸ limKer (U : Filter ℕ) fun N => (π N).ker) * (h b) := by
+    intro a b
+    rw [← QuotientGroup.mk_mul, QuotientGroup.eq]
+    refine inv_mul_mem_limKer_of_tendsto_of_eventually_eq π U _ _ _ _ (hh (a * b)) ((hh a).mul (hh b)) ?_
+    filter_upwards with N
+    simp [hσ, map_mul]
+  refine ⟨MonoidHom.mk' (fun y => (h y : Ph ⧸ limKer (U : Filter ℕ) fun N => (π N).ker)) hmul, ?_, ?_⟩
+  · apply continuous_of_continuousAt_one
+    rw [ContinuousAt, map_one, Filter.tendsto_def]
+    intro W hW
+    have hmkc : Continuous (QuotientGroup.mk : Ph → Ph ⧸ limKer (U : Filter ℕ) fun N => (π N).ker) :=
+      continuous_quot_mk
+    have h1 : (QuotientGroup.mk : Ph → Ph ⧸ limKer (U : Filter ℕ) fun N => (π N).ker) ⁻¹' W ∈ nhds (1 : Ph) :=
+      hmkc.continuousAt.preimage_mem_nhds (by rw [QuotientGroup.mk_one]; exact hW)
+    obtain ⟨t, ht, hto, ht1⟩ := mem_nhds_iff.1 h1
+    obtain ⟨V, hV⟩ := ProfiniteGrp.exist_openNormalSubgroup_sub_open_nhds_of_one hto ht1
+    obtain ⟨S, hSo, c, hc, hev⟩ := mul_one_sub_add_psi_eq_of_conj π (fun N => (hπ N).1) σ hσ U P f hP hf V
+    haveI : DiscreteTopology (Ph ⧸ S) := QuotientGroup.discreteTopology hSo
+    rw [mem_nhds_iff]
+    refine ⟨c ⁻¹' {c 1}, ?_, hc.isOpen_preimage _ (isOpen_discrete _), rfl⟩
+    intro y hy
+    have hin : ∀ᶠ N in (U : Filter ℕ),
+        σ N (f N y) ∈ (π N).ker ⊔ (V.toOpenSubgroup : Subgroup Ph) := by
+      filter_upwards [hev] with N hN
+      obtain ⟨hN, hcN⟩ := hN
+      have e1 : ((σ N (f N y) : Ph) : Ph ⧸ S) = ((σ N (f N 1) : Ph) : Ph ⧸ S) := by
+        rw [hcN y, hcN 1]
+        exact hy
+      rw [QuotientGroup.eq] at e1
+      have hk1 : σ N (f N 1) ∈ (π N).ker := by simp [MonoidHom.mem_ker, hσ]
+      have e2 : σ N (f N y) = σ N (f N 1) * ((σ N (f N 1))⁻¹ * σ N (f N y)) := by group
+      rw [e2]
+      refine Subgroup.mul_mem _ (Subgroup.mem_sup_left hk1) ?_
+      rw [hN]
+      simpa using S.inv_mem e1
+    have hdec : ∀ N, ∃ v ∈ (V.toOpenSubgroup : Subgroup Ph),
+        σ N (f N y) ∈ (π N).ker ⊔ (V.toOpenSubgroup : Subgroup Ph) →
+          σ N (f N y) * v⁻¹ ∈ (π N).ker := by
+      intro N
+      by_cases hm : σ N (f N y) ∈ (π N).ker ⊔ (V.toOpenSubgroup : Subgroup Ph)
+      · rw [← SetLike.mem_coe, Subgroup.mul_normal] at hm
+        obtain ⟨k, hk, v, hv, hkv⟩ := hm
+        refine ⟨v, hv, fun _ => ?_⟩
+        rw [← hkv, mul_inv_cancel_right]
+        exact hk
+      · exact ⟨1, one_mem _, fun h' => absurd h' hm⟩
+    choose v hvV hv using hdec
+    obtain ⟨w, hw⟩ := exists_tendsto_ultrafilter_of_compact U v
+    have hwV : w ∈ (V.toOpenSubgroup : Subgroup Ph) :=
+      V.toOpenSubgroup.isClosed.mem_of_tendsto hw (Filter.Eventually.of_forall hvV)
+    have hlim := inv_mul_mem_limKer_of_tendsto_of_eventually_eq π U (fun N => σ N (f N y) * (v N)⁻¹) (fun _ => 1) (h y * w⁻¹) 1
+      ((hh y).mul hw.inv) tendsto_const_nhds (by
+        filter_upwards [hin] with N hN
+        rw [map_one]
+        exact (MonoidHom.mem_ker).1 (hv N hN))
+    have hm' : h y * w⁻¹ ∈ limKer (U : Filter ℕ) (fun N => (π N).ker) := by
+      simpa using inv_mem hlim
+    have hconj := (limKer_normal (U : Filter ℕ) (fun N => (π N).ker)).conj_mem _ hm' w⁻¹
+    have e3 : w⁻¹ * (h y * w⁻¹) * w⁻¹⁻¹ = w⁻¹ * h y := by group
+    rw [e3] at hconj
+    show ((h y : Ph) : Ph ⧸ limKer (U : Filter ℕ) fun N => (π N).ker) ∈ W
+    have e4 : ((h y : Ph) : Ph ⧸ limKer (U : Filter ℕ) fun N => (π N).ker) =
+        ((w : Ph) : Ph ⧸ limKer (U : Filter ℕ) fun N => (π N).ker) := by
+      rw [QuotientGroup.eq]
+      simpa using inv_mem hconj
+    rw [e4]
+    exact ht (hV hwV)
+  · intro V
+    obtain ⟨S, hSo, c, hc, hev⟩ := mul_one_sub_add_psi_eq_of_conj π (fun N => (hπ N).1) σ hσ U P f hP hf V
+    have hVS : ∀ᶠ N in (U : Filter ℕ), (V.toOpenSubgroup : Subgroup Ph) ≤ S := by
+      filter_upwards [hev] with N hN
+      rw [← hN.1]
+      exact le_sup_right
+    have hcy : ∀ y, c y = ((h y : Ph) : Ph ⧸ S) := by
+      intro y
+      have hO : ((V.toOpenSubgroup : Subgroup Ph) : Set Ph) ∈ nhds (1 : Ph) :=
+        V.toOpenSubgroup.isOpen.mem_nhds V.toOpenSubgroup.one_mem
+      have ht : Tendsto (fun N => (σ N (f N y))⁻¹ * h y) (U : Filter ℕ) (nhds 1) := by
+        simpa using (hh y).inv.mul (tendsto_const_nhds (x := h y))
+      obtain ⟨N, ⟨-, hN⟩, hle, hmemN⟩ := (hev.and (hVS.and (ht hO))).exists
+      rw [← hN y, QuotientGroup.eq]
+      exact hle hmemN
+    filter_upwards [hev] with N hN
+    obtain ⟨hN, hcN⟩ := hN
+    intro y
+    have e1 : ((σ N (f N y) : Ph) : Ph ⧸ S) = ((h y : Ph) : Ph ⧸ S) := by rw [hcN y, hcy y]
+    rw [QuotientGroup.eq, ← hN, ← SetLike.mem_coe, Subgroup.mul_normal] at e1
+    obtain ⟨k, hk, v, hv, hkv⟩ := e1
+    refine ⟨σ N (f N y) * k, h y, ?_, rfl, ?_⟩
+    · rw [map_mul, hσ, (MonoidHom.mem_ker).1 hk, mul_one]
+    · have e : (σ N (f N y) * k)⁻¹ * h y = k⁻¹ * ((σ N (f N y))⁻¹ * h y) := by group
+      rw [e, ← hkv, inv_mul_cancel_left]
+      exact hv
+end
+
+section
+open IsLocalRing Matrix Filter UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.AlgebraTools UpperTheory.V.Pa
+
+theorem UpperTheory.V.Pa.elt_lim :
+    ∀ (Ph B : Type) [Group Ph] [TopologicalSpace Ph] [IsTopologicalGroup Ph] [CompactSpace Ph] [TotallyDisconnectedSpace Ph] [Group B] (Γ : ℕ → Type) [∀ N, Group (Γ N)] (π : ∀ N, Ph →* Γ N) (πo : Ph →* B) (U : Ultrafilter ℕ) (a : ∀ N, Γ N), (∀ N, Function.Surjective (π N)) → ∃ b : B, ∀ V : OpenNormalSubgroup Ph, ∀ᶠ N in (U : Filter ℕ), Close (π N) πo V.toSubgroup (a N) b := by
+  intro Ph B _ _ _ _ _ _ Γ _ π πo U a hπ
+  choose g hg using fun N => hπ N (a N)
+  obtain ⟨b, hb⟩ := (exists_lim_elt Ph ℕ U fun N => (π N).ker).1 g
+  refine ⟨πo b, fun V => (hb V).mono fun N h => ⟨g N, b, hg N, rfl, ?_⟩⟩
+  simpa using V.toSubgroup.inv_mem h
+end
+
+section
+open IsLocalRing Matrix Filter UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.AlgebraTools UpperTheory.V.Pa
+
+theorem UpperTheory.V.Pa.close_map :
+    ∀ (Ph B Z : Type) [Group Ph] [TopologicalSpace Ph] [IsTopologicalGroup Ph] [CompactSpace Ph] [TotallyDisconnectedSpace Ph] [Group B] [Group Z] [TopologicalSpace Z] [IsTopologicalGroup Z] [CompactSpace Z] [TotallyDisconnectedSpace Z] (Γ : ℕ → Type) [∀ N, Group (Γ N)] (π : ∀ N, Ph →* Γ N) (πo : Ph →* B) (p : ∀ N, Γ N →* Z) (po : B →* Z) (U : Ultrafilter ℕ) (a : ∀ N, Γ N) (b : B) (z : Z), Continuous (po.comp πo) → (∀ W : OpenNormalSubgroup Z, ∀ᶠ N in (U : Filter ℕ), ∀ g, p N (π N g) * (po (πo g))⁻¹ ∈ W) → (∀ V : OpenNormalSubgroup Ph, ∀ᶠ N in (U : Filter ℕ), Close (π N) πo V.toSubgroup (a N) b) → (∀ W : OpenNormalSubgroup Z, ∀ᶠ N in (U : Filter ℕ), p N (a N) * z⁻¹ ∈ W) → po b = z := by
+  intro Ph B Z _ _ _ _ _ _ _ _ _ _ _ Γ _ π πo p po U a b z hf hp hclose ha
+  set f : Ph →* Z := po.comp πo with hfdef
+  have key : ∀ W : OpenNormalSubgroup Z, po b * z⁻¹ ∈ W := by
+    intro W
+    let V : OpenNormalSubgroup Ph :=
+      { toOpenSubgroup := ⟨W.toSubgroup.comap f, W.isOpen.preimage hf⟩
+        isNormal' := Subgroup.Normal.comap W.isNormal' f }
+    obtain ⟨N, h1, h2, h3⟩ := ((hp W).and ((hclose V).and (ha W))).exists
+    obtain ⟨g, g', hg, hg', hV⟩ := h2
+    have hV' : f (g⁻¹ * g') ∈ W := hV
+    have e1 := h1 g
+    rw [hg] at e1
+    have hb : po b = f g' := by simp [hfdef, hg']
+    have hn : f g' * (f g)⁻¹ ∈ W := by
+      have hc := W.isNormal'.conj_mem _ hV' (f g)
+      have he : f g * f (g⁻¹ * g') * (f g)⁻¹ = f g' * (f g)⁻¹ := by
+        simp [map_mul, map_inv, mul_assoc]
+      rw [he] at hc
+      exact hc
+    have hx : po b * z⁻¹ = (f g' * (f g)⁻¹) * (p N (a N) * (f g)⁻¹)⁻¹ * (p N (a N) * z⁻¹) := by
+      rw [hb]; group
+    rw [hx]
+    exact W.mul_mem (W.mul_mem hn (W.inv_mem e1)) h3
+  by_contra hne
+  have hx1 : po b * z⁻¹ ≠ 1 := fun h => hne (mul_inv_eq_one.mp h)
+  obtain ⟨H, hH⟩ := ProfiniteGrp.exist_openNormalSubgroup_sub_open_nhds_of_one
+    (isOpen_compl_singleton (x := po b * z⁻¹)) (by simpa [eq_comm] using hx1)
+  exact hH (key H) rfl
+end
+
+section
+open IsLocalRing Matrix Filter UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.AlgebraTools UpperTheory.V.Pa
+
+private theorem eventually_le_of_le_atTop {U : Filter ℕ} (h : U ≤ atTop) (n : ℕ) : ∀ᶠ N in U, n ≤ N :=
+  h (eventually_ge_atTop n)
+
+theorem UpperTheory.V.Pa.comm_lim :
+    ∀ (l : ℕ) [Fact l.Prime] (Ph B : Type) [Group Ph] [TopologicalSpace Ph] [IsTopologicalGroup Ph] [CompactSpace Ph] [TotallyDisconnectedSpace Ph] [Group B] [TopologicalSpace B] [IsTopologicalGroup B] [CompactSpace B] [TotallyDisconnectedSpace B] (Γ : ℕ → Type) [∀ N, Group (Γ N)] [∀ N, TopologicalSpace (Γ N)] [∀ N, IsTopologicalGroup (Γ N)] [∀ N, CompactSpace (Γ N)] [∀ N, TotallyDisconnectedSpace (Γ N)] (π : ∀ N, Ph →* Γ N) (πo : Ph →* B) (U : Ultrafilter ℕ) (ph ta : ∀ N, Γ N) (q : ℕ → ℕ) (a b : B), (U : Filter ℕ) ≤ atTop → (∀ N, Continuous (π N) ∧ Function.Surjective (π N)) → Continuous πo → (∀ V : OpenNormalSubgroup Ph, ∀ᶠ N in (U : Filter ℕ), (π N).ker ⊔ V.toSubgroup = πo.ker ⊔ V.toSubgroup) → (∀ V : OpenNormalSubgroup Ph, ∀ᶠ N in (U : Filter ℕ), Close (π N) πo V.toSubgroup (ph N) a) → (∀ V : OpenNormalSubgroup Ph, ∀ᶠ N in (U : Filter ℕ), Close (π N) πo V.toSubgroup (ta N) b) → (∀ N, q N ≡ 1 [MOD l ^ N]) → (∀ N, (ph N)⁻¹ * ta N * ph N = ta N ^ q N) → (∀ N (W : OpenNormalSubgroup (Γ N)), ∃ e : ℕ, ta N ^ l ^ e ∈ W) → a * b = b * a := by
+  intro l _ Ph B _ _ _ _ _ _ _ _ _ _ Γ _ _ _ _ _ π πo U ph ta q a b hUa hπ hπo hker hph hta hq hrel hlw
+  have hl : l.Prime := Fact.out
+  have key : ∀ W : OpenNormalSubgroup B, (a * b)⁻¹ * (b * a) ∈ W.toSubgroup := by
+    intro W
+    haveI : W.toSubgroup.Normal := W.isNormal'
+    haveI : Finite (B ⧸ W.toSubgroup) :=
+      W.toSubgroup.quotient_finite_of_isOpen W.toOpenSubgroup.isOpen
+    haveI : W.toSubgroup.FiniteIndex := W.toSubgroup.finiteIndex_of_finite_quotient
+    have hn0 : W.toSubgroup.index ≠ 0 := Subgroup.FiniteIndex.index_ne_zero
+    let V : OpenNormalSubgroup Ph :=
+      { toOpenSubgroup := ⟨W.toSubgroup.comap πo, W.toOpenSubgroup.isOpen.preimage hπo⟩
+        isNormal' := Subgroup.Normal.comap W.isNormal' πo }
+    have hVmem : ∀ x, x ∈ V.toSubgroup ↔ πo x ∈ W.toSubgroup := fun x => Iff.rfl
+    obtain ⟨N, hNn, hk, h1, h2⟩ := ((eventually_le_of_le_atTop hUa W.toSubgroup.index).and
+      ((hker V).and ((hph V).and (hta V)))).exists
+    obtain ⟨g1, g1', e1, e1', hg1⟩ := h1
+    obtain ⟨g2, g2', e2, e2', hg2⟩ := h2
+    have hkV : (π N).ker ≤ V.toSubgroup := by
+      have : (π N).ker ≤ πo.ker ⊔ V.toSubgroup := hk ▸ le_sup_left
+      refine this.trans (sup_le ?_ le_rfl)
+      intro x hx
+      rw [hVmem, MonoidHom.mem_ker.mp hx]
+      exact W.toSubgroup.one_mem
+    set mk : B →* B ⧸ W.toSubgroup := QuotientGroup.mk' W.toSubgroup with hmk
+    have eqmk : ∀ x y : Ph, x⁻¹ * y ∈ V.toSubgroup → mk (πo x) = mk (πo y) := by
+      intro x y h
+      rw [hmk, QuotientGroup.mk'_apply, QuotientGroup.mk'_apply, QuotientGroup.eq]
+      have := (hVmem _).mp h
+      simpa [map_mul, map_inv] using this
+    have hA : mk (πo g1) = mk a := by rw [← e1']; exact eqmk _ _ hg1
+    have hB : mk (πo g2) = mk b := by rw [← e2']; exact eqmk _ _ hg2
+    have hrelq : (mk a)⁻¹ * mk b * mk a = mk b ^ q N := by
+      have hk1 : (g1⁻¹ * g2 * g1) ⁻¹ * g2 ^ q N ∈ V.toSubgroup := by
+        apply hkV
+        rw [MonoidHom.mem_ker]
+        simp only [map_mul, map_inv, map_pow, e1, e2, hrel N]
+        group
+      have := eqmk _ _ hk1
+      simp only [map_mul, map_inv, map_pow, hA, hB] at this
+      exact this
+    have hW'ex : ∃ W' : OpenNormalSubgroup (Γ N), ∀ x, π N x ∈ W'.toSubgroup → x ∈ V.toSubgroup := by
+      have hVc : IsClosed ((V.toSubgroup : Set Ph)ᶜ) := V.toOpenSubgroup.isOpen.isClosed_compl
+      have hcm : IsClosedMap (π N) := (hπ N).1.isClosedMap
+      have hS : IsOpen ((π N '' (V.toSubgroup : Set Ph)ᶜ)ᶜ) := (hcm _ hVc).isOpen_compl
+      have h1S : (1 : Γ N) ∈ (π N '' (V.toSubgroup : Set Ph)ᶜ)ᶜ := by
+        rintro ⟨x, hx, hx1⟩
+        exact hx (hkV (MonoidHom.mem_ker.mpr hx1))
+      obtain ⟨W', hW'⟩ := ProfiniteGrp.exist_openNormalSubgroup_sub_open_nhds_of_one hS h1S
+      refine ⟨W', fun x hx => ?_⟩
+      by_contra hxV
+      exact hW' hx ⟨x, hxV, rfl⟩
+    obtain ⟨W', hW'⟩ := hW'ex
+    obtain ⟨e, he⟩ := hlw N W'
+    have hbe : mk b ^ l ^ e = 1 := by
+      have h3 : g2 ^ l ^ e ∈ V.toSubgroup := hW' _ (by rw [map_pow, e2]; exact he)
+      have h' := eqmk 1 (g2 ^ l ^ e) (by simpa using h3)
+      simp only [map_one, map_pow, hB] at h'
+      exact h'.symm
+    have hbn : mk b ^ W.toSubgroup.index = 1 := by
+      rw [← map_pow, hmk, QuotientGroup.mk'_apply, QuotientGroup.eq_one_iff]
+      exact W.toSubgroup.pow_index_mem b
+    obtain ⟨c, -, hc⟩ := (Nat.dvd_prime_pow hl).mp (orderOf_dvd_of_pow_eq_one hbe)
+    have hc1 : l ^ c ≤ W.toSubgroup.index := by
+      rw [← hc]
+      exact Nat.le_of_dvd (Nat.pos_of_ne_zero hn0) (orderOf_dvd_of_pow_eq_one hbn)
+    have hc2 : c < l ^ c := Nat.lt_pow_self hl.one_lt
+    have hdiv : orderOf (mk b) ∣ l ^ N := by
+      rw [hc]
+      exact pow_dvd_pow l (by omega)
+    have hbq : mk b ^ q N = mk b := by
+      have h4 : q N ≡ 1 [MOD orderOf (mk b)] := Nat.ModEq.of_dvd hdiv (hq N)
+      simpa using pow_eq_pow_iff_modEq.mpr h4
+    have hcomm : mk a * mk b = mk b * mk a := by
+      rw [hbq] at hrelq
+      calc mk a * mk b = mk a * ((mk a)⁻¹ * mk b * mk a) := by rw [hrelq]
+        _ = mk b * mk a := by group
+    have h5 : mk (a * b) = mk (b * a) := by simp only [map_mul, hcomm]
+    rw [hmk, QuotientGroup.mk'_apply, QuotientGroup.mk'_apply, QuotientGroup.eq] at h5
+    exact h5
+  by_contra hne
+  have hx1 : (a * b)⁻¹ * (b * a) ≠ 1 := fun h => hne (inv_mul_eq_one.mp h)
+  obtain ⟨H, hH⟩ := ProfiniteGrp.exist_openNormalSubgroup_sub_open_nhds_of_one
+    (isOpen_compl_singleton (x := (a * b)⁻¹ * (b * a))) (by simpa [eq_comm] using hx1)
+  exact hH (key H) rfl
+end
+
+section
 open IsLocalRing Matrix Filter UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.AlgebraTools UpperTheory.V.Pa
 
 theorem UpperTheory.V.Pa.selmer_cocycles_limit_and_descent_properties :
@@ -205,3 +726,4 @@ theorem UpperTheory.V.Pa.selmer_cocycles_limit_and_descent_properties :
       comm := fun j => Subtype.ext (hcomm j)
       p_ph := fun j => Subtype.ext (hbphp j)
       p_ta := fun j => Subtype.ext (hbtap j) }⟩
+end

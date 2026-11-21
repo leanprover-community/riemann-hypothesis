@@ -1,4 +1,5 @@
-import Formalism.LocalToGlobal.KernelLattices.ColumnData.StdLat
+import Mathlib
+import Formalism.LocalToGlobal.KernelLattices.ColumnData
 import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.MatrixFormFourfoldBlock
 import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.LocalComponentGL
 import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.LogarithmEquivalence
@@ -7,6 +8,94 @@ import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.Cayley
 import Formalism.SharpRestriction.GlobalSchurBounds.StandardIntegralLatticeExists
 import Formalism.LocalToGlobal.KernelLattices.ColumnData.ThIndep
 
+section
+noncomputable section
+
+namespace Formalism.L2.Ker.Cd.Inhab
+
+open Formalism.BasicNotions NumberField
+
+variable (D : Car)
+
+theorem mem_stdL {N : ℕ} (x : Fin N → D.host.E) :
+    x ∈ Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL D N ↔ ∀ i, x i ∈ (algebraMap (𝓞 D.host.E) D.host.E).range := by
+  simp [Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL, Submodule.mem_pi, Submodule.mem_one, RingHom.mem_range]
+
+theorem single_mem_stdL {N : ℕ} (a : Fin N) : (Pi.single a 1 : Fin N → D.host.E) ∈ Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL D N := by
+  rw [mem_stdL]
+  intro i
+  by_cases h : i = a
+  · subst h
+    simp only [Pi.single_eq_same]
+    exact one_mem _
+  · simp only [Pi.single_eq_of_ne h]
+    exact zero_mem _
+
+theorem star_mem_range (x : D.host.E) (h : x ∈ (algebraMap (𝓞 D.host.E) D.host.E).range) :
+    (letI := D.host.cmStar; star x) ∈ (algebraMap (𝓞 D.host.E) D.host.E).range := by
+  letI := D.host.cmStar
+  obtain ⟨y, rfl⟩ := RingHom.mem_range.1 h
+  have hi : IsIntegral ℤ (star (algebraMap (𝓞 D.host.E) D.host.E y)) :=
+    (NumberField.RingOfIntegers.isIntegral_coe y).map (starRingEnd D.host.E).toIntAlgHom
+  exact RingHom.mem_range.2 ⟨⟨_, hi⟩, rfl⟩
+
+theorem stdL_isSD (N : ℕ) : (letI := D.host.cmStar; IsSDLat D.host.E N (Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL D N)) := by
+  letI := D.host.cmStar
+  refine ⟨?_, ?_, ?_⟩
+  · have hspan : Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL D N = Submodule.span (𝓞 D.host.E)
+        (Set.range fun i : Fin N => (Pi.single i 1 : Fin N → D.host.E)) := by
+      apply le_antisymm
+      · intro y hy
+        rw [mem_stdL] at hy
+        have hy' : ∀ i, ∃ z, algebraMap (𝓞 D.host.E) D.host.E z = y i := fun i => RingHom.mem_range.1 (hy i)
+        choose z hz using hy'
+        have hyz : y = ∑ i, z i • (Pi.single i 1 : Fin N → D.host.E) := by
+          funext j
+          simp [Finset.sum_apply, Pi.single_apply, ← hz j, Algebra.algebraMap_eq_smul_one]
+        rw [hyz]
+        exact Submodule.sum_mem _ (fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩))
+      · rw [Submodule.span_le]
+        rintro _ ⟨i, rfl⟩
+        exact single_mem_stdL D i
+    rw [hspan]
+    exact Submodule.fg_span (Set.finite_range _)
+  · rw [eq_top_iff]
+    rintro v -
+    rw [← (Pi.basisFun D.host.E (Fin N)).sum_repr v]
+    refine Submodule.sum_mem _ (fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ?_))
+    rw [Pi.basisFun_apply]
+    exact single_mem_stdL D i
+  · intro y
+    constructor
+    · intro hy x hx
+      rw [mem_stdL] at hx hy
+      simp only [stdH]
+      refine Subring.sum_mem _ (fun i _ => ?_)
+      first
+        | exact Subring.mul_mem _ (star_mem_range D _ (hx i)) (hy i)
+        | exact Subring.mul_mem _ (hx i) (star_mem_range D _ (hy i))
+        | exact Subring.mul_mem _ (hy i) (star_mem_range D _ (hx i))
+        | exact Subring.mul_mem _ (star_mem_range D _ (hy i)) (hx i)
+    · intro h
+      rw [mem_stdL]
+      intro i
+      have := h _ (single_mem_stdL D i)
+      simp only [stdH] at this
+      rw [Fintype.sum_eq_single i (fun j hj => by simp [Pi.single_eq_of_ne hj])] at this
+      simp only [Pi.single_eq_same, star_one, one_mul, mul_one] at this
+      first
+        | exact this
+        | simpa using star_mem_range D _ this
+
+theorem Adm_std (N N' : ℕ) (h : Even N) (h' : Even N') :
+    Formalism.L2.Ker.Cd.TaylorLogMetric.admitted D N N' (Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL D N) (Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL D N') := by
+  exact ⟨h, h', stdL_isSD D N, stdL_isSD D N'⟩
+
+end Formalism.L2.Ker.Cd.Inhab
+end
+end
+
+section
 noncomputable section
 open scoped BigOperators ComplexConjugate
 open NumberField Formalism.BasicNotions Classical
@@ -218,15 +307,6 @@ theorem thMM_ne_zero (h : B.StdOK) : B.thMM ≠ 0 := isThM_ne_zero _ _ _ _ _ _ h
 
 theorem thZero_ne_zero (h : B.StdOK) (N N' : ℕ) : B.thZero N N' ≠ 0 := tensPow_ne_zero (B.thMM_ne_zero h) N N'
 
-theorem eNat_base (χ : TaylorLogMetric.IdE D → ℂ) (N N' : ℕ) (L : Submodule (𝓞 D.host.E) (Fin N → D.host.E))
-    (L' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)) :
-    B.eNat χ N N' L L' = fun z => χ (TaylorLogMetric.detId D (StandardLatticesGL3.stdL D N') L') ^ (-((N / 2 : ℕ) : ℤ)) *
-      TaylorLogMetric.Iop D B.tor (TaylorLogMetric.La D B.tor L (StandardLatticesGL3.stdL D N')) (TaylorLogMetric.La D B.tor L L')
-        (fun v => χ (TaylorLogMetric.detId D (StandardLatticesGL3.stdL D N) L) ^ (((N' / 2 : ℕ) : ℤ)) * B.thHalf N N' L v) z := by
-  funext z
-  rw [Iop_smul]
-  simp only [eNat, chiFac, thMoved]
-  ring
 
 theorem isAdmissible_flagPair_of_unitriangular_left_automorphism {N N' : ℕ} {L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)}
     {L' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)} (h : TaylorLogMetric.admitted D N N' L L') :
@@ -555,43 +635,9 @@ theorem thHalf_mem (hS : B.StdOK) (hL : B.LatAll) {N N' : ℕ} {L : Submodule (�
   kInterTh _ _ (formV_herm (TaylorLogMetric.area (TaylorLogMetric.lamOf D cc δ)) D.what₂.Tau N N') _ _ _
     (hL.1 N N' L _ (isAdmissible_flagPair_of_unitriangular_left_automorphism hA)).2 (hL.2 N N' _ _ _ _ (first_coordinate_admissible hA) (isAdmissible_flagPair_of_unitriangular_left_automorphism hA)).1 _ (B.thZeroMem hS N N')
 
-theorem eNat_left (hS : B.StdOK) (hL : B.LatAll) (χ : TaylorLogMetric.IdE D → ℂ) (hχ : TaylorLogMetric.IsChi D χ) {N N' : ℕ}
-    {L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)} {L' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)}
-    (hA : TaylorLogMetric.admitted D N N' L L') :
-    B.eNat χ N N' L (StandardLatticesGL3.stdL D N') =
-      fun z => χ (TaylorLogMetric.detId D (StandardLatticesGL3.stdL D N) L) ^ (((N' / 2 : ℕ) : ℤ)) * B.thHalf N N' L z := by
-  have h1 : B.thMoved N N' L (StandardLatticesGL3.stdL D N') = B.thHalf N N' L :=
-    inter_self _ (formV_herm (TaylorLogMetric.area (TaylorLogMetric.lamOf D cc δ)) D.what₂.Tau N N') _ _
-      (hL.1 N N' L _ (isAdmissible_flagPair_of_unitriangular_left_automorphism hA)).2 (B.thHalf_mem hS hL hA).2
-  funext z
-  simp only [eNat, chiFac, h1, detId_std, chi_one D χ hχ, one_zpow, mul_one]
 
-theorem eNat_zero (hS : B.StdOK) (hL : B.LatAll) (χ : TaylorLogMetric.IdE D → ℂ) (hχ : TaylorLogMetric.IsChi D χ) {N N' : ℕ}
-    (hN : Even N) (hN' : Even N') :
-    B.eNat χ N N' (StandardLatticesGL3.stdL D N) (StandardLatticesGL3.stdL D N') = B.thZero N N' := by
-  have hA := Formalism.L2.Ker.Cd.Inhab.Adm_std D N N' hN hN'
-  rw [B.eNat_left hS hL χ hχ hA]
-  have h1 : B.thHalf N N' (StandardLatticesGL3.stdL D N) = B.thZero N N' :=
-    inter_self _ (formV_herm (TaylorLogMetric.area (TaylorLogMetric.lamOf D cc δ)) D.what₂.Tau N N') _ _
-      (hL.1 N N' _ _ hA).2 (B.thZeroMem hS N N').2
-  funext z
-  simp only [h1, detId_std, chi_one D χ hχ, one_zpow, one_mul]
 
-theorem eq_change_right (hS : B.StdOK) (hL : B.LatAll) (χ : TaylorLogMetric.IdE D → ℂ) (hχ : TaylorLogMetric.IsChi D χ) {N N' : ℕ}
-    {L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)} {L'' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)}
-    (hA : TaylorLogMetric.admitted D N N' L L'') :
-    B.eNat χ N N' L L'' = fun z => χ (TaylorLogMetric.detId D (StandardLatticesGL3.stdL D N') L'') ^ (-((N / 2 : ℕ) : ℤ)) *
-      TaylorLogMetric.Iop D B.tor (TaylorLogMetric.La D B.tor L (StandardLatticesGL3.stdL D N')) (TaylorLogMetric.La D B.tor L L'')
-        (B.eNat χ N N' L (StandardLatticesGL3.stdL D N')) z := by
-  rw [B.eNat_left hS hL χ hχ hA]; exact B.eNat_base χ N N' L L''
 
-theorem eq_change_left (hS : B.StdOK) (hL : B.LatAll) (χ : TaylorLogMetric.IdE D → ℂ) (hχ : TaylorLogMetric.IsChi D χ) {N N' : ℕ}
-    {L₁ : Submodule (𝓞 D.host.E) (Fin N → D.host.E)} {L' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)}
-    (hA : TaylorLogMetric.admitted D N N' L₁ L') :
-    B.eNat χ N N' L₁ (StandardLatticesGL3.stdL D N') = fun z => χ (TaylorLogMetric.detId D (StandardLatticesGL3.stdL D N) L₁) ^ (((N' / 2 : ℕ) : ℤ)) *
-      TaylorLogMetric.Iop D B.tor (TaylorLogMetric.La D B.tor (StandardLatticesGL3.stdL D N) (StandardLatticesGL3.stdL D N')) (TaylorLogMetric.La D B.tor L₁ (StandardLatticesGL3.stdL D N'))
-        (B.eNat χ N N' (StandardLatticesGL3.stdL D N) (StandardLatticesGL3.stdL D N')) z := by
-  rw [B.eNat_left hS hL χ hχ hA, B.eNat_zero hS hL χ hχ hA.1 hA.2.1]; rfl
 
 end Base
 
@@ -839,41 +885,7 @@ theorem exists_gen (D : Car) (𝔭 : IsDedekindDomain.HeightOneSpectrum (𝓞 D.
   obtain ⟨π, hπ⟩ := h2.principal
   exact ⟨π, hπ⟩
 
-theorem KapChoice.nonempty_of (γ₀ : IsoK D)
-    (h : ∀ p : ℕ, p.Prime → SplitK D p → ∃ γ : IsoK D, γ.AtP p) : Nonempty (KapChoice γ₀) := by
-  obtain ⟨𝔮, -⟩ := exists_prime_over D 2 Nat.prime_two
-  have a1 : ∀ p : ℕ, ∃ 𝔭 : IsDedekindDomain.HeightOneSpectrum (𝓞 D.host.K),
-      p.Prime → SplitK D p → ((p : ℕ) : 𝓞 D.host.K) ∈ 𝔭.asIdeal := by
-    intro p
-    by_cases hp : p.Prime
-    · obtain ⟨𝔭, h𝔭⟩ := exists_prime_over D p hp; exact ⟨𝔭, fun _ _ => h𝔭⟩
-    · exact ⟨𝔮, fun h' => absurd h' hp⟩
-  choose pp hpp using a1
-  choose pi hpi using fun p : ℕ => exists_gen D (pp p)
-  have a3 : ∀ p : ℕ, ∃ γ : IsoK D, p.Prime → SplitK D p → γ.AtP p := by
-    intro p
-    by_cases hp : p.Prime ∧ SplitK D p
-    · obtain ⟨γ, hγ⟩ := h p hp.1 hp.2; exact ⟨γ, fun _ _ => hγ⟩
-    · exact ⟨γ₀, fun h1 h2 => absurd ⟨h1, h2⟩ hp⟩
-  choose gaP hgaP using a3
-  choose rt hrt using fun p : ℕ => IsAlgClosed.exists_pow_nat_eq
-    (D.host.φ₀ (((pi p : 𝓞 D.host.K) : D.host.K) : D.host.E)
-      / D.host.φ₀ (D.host.conj (((pi p : 𝓞 D.host.K) : D.host.K) : D.host.E)))
-    (Nat.pos_of_ne_zero (mul_ne_zero two_ne_zero (classNumber_ne D)))
-  exact ⟨⟨pp, hpp, pi, fun p _ _ => hpi p, gaP, hgaP, rt, fun p _ _ => hrt p⟩⟩
 
-theorem Base.nonempty_of (cc : Ideal (𝓞 D.host.K)) (δ : ℂ)
-    (hL : ∃ L : PeriodPair, L.lattice.toAddSubgroup = TaylorLogMetric.lamOf D cc δ)
-    (ht : ∃ t : ℂ, GL3Theta.IsTwoTorsionPointUnkilled D (TaylorLogMetric.lamOf D cc δ) t)
-    (hγ : ∃ (γ₀ : IsoK D) (gC : (Fin 4 × D.what₂.Tau → ℂ) ≃ₗ[ℂ] (Fin 4 × D.what₂.Tau → ℂ)),
-      ∀ x : Fin 4 → D.host.E, gC (fun w => TaylorLogMetric.embT D w.2 (x w.1))
-        = fun w => D.host.φ₀ ((γ₀.g x w : D.host.K) : D.host.E))
-    (hp : ∀ p : ℕ, p.Prime → SplitK D p → ∃ γ : IsoK D, γ.AtP p) : Nonempty (Base D cc δ) := by
-  obtain ⟨L, hL⟩ := hL
-  obtain ⟨t, ht⟩ := ht
-  obtain ⟨γ₀, gC, hg⟩ := hγ
-  obtain ⟨k⟩ := KapChoice.nonempty_of γ₀ hp
-  exact ⟨⟨L, hL, 2 * t, by rw [mul_div_cancel_left₀ t two_ne_zero]; exact ht, γ₀, gC, hg, k⟩⟩
 
 end KapInh
 
@@ -895,9 +907,6 @@ open Formalism.L2.Th1.H.Inh (L7 gU stdData_seven seven_nontrivial)
 
 variable (n : Type) [Fintype n] [DecidableEq n]
 
-theorem seven_moves [Nonempty n] :
-    imgLat (gU n : (Fin 4 × n → ℂ) →ₗ[ℂ] (Fin 4 × n → ℂ)) (pow4 (stdLat L7 n)) ≠ stdLat L7 (Fin 4 × n) :=
-  seven_nontrivial n
 
 end Test
 
@@ -918,3 +927,5 @@ def isoToy : IsoKG ℂ ℂ (starRingEnd ℂ) Unit where
 end Test
 
 end Formalism.L2.Ker.Cd
+end
+end

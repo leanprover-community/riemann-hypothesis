@@ -1,9 +1,172 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.EffectiveHilbertSamuel.InhabitantsExt
-import GroundTheory.HeightsAndTheta.Heights.EffectiveHilbertSamuel.StatementsExtTwist
-import GroundTheory.HeightsAndTheta.Heights.EffectiveHilbertSamuel.StatementsExtShell
-import GroundTheory.HeightsAndTheta.Heights.EffectiveHilbertSamuel.StatementsExtCutoff
-import GroundTheory.HeightsAndTheta.Heights.EffectiveHilbertSamuel.StatementsExtBergman
+import GroundTheory.HeightsAndTheta.Heights.EffectiveHilbertSamuel.Inhabitants
+import GroundTheory.HeightsAndTheta.Heights.EffectiveHilbertSamuel.StatementsExtDelta
+import GroundTheory.HeightsAndTheta.Heights.EffectiveHilbertSamuel.StatementsExtCompact
+import GroundTheory.HeightsAndTheta.Heights.EffectiveHilbertSamuel.StatementsExtNonInt
+import GroundTheory.HeightsAndTheta.Heights.EffectiveHilbertSamuel.ObjectsExtDelta
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.EffectiveHS
+
+open MeasureTheory Set ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M GroundTheory.Heights₂.Heights.HilbertSamuel
+open scoped ENNReal
+
+noncomputable section
+
+namespace ExtInhabitants
+
+def c0 : Fin (flatAtlas 1).n := ⟨0, Nat.one_pos⟩
+
+
+
+
+
+
+def exZdz : Fin (flatAtlas 1).n → (Fin 1 → ℂ) → ℂ := fun _ y => y 0
+
+end ExtInhabitants
+
+open ExtInhabitants
+
+
+
+
+end
+
+end GroundTheory.Heights₂.Heights.EffectiveHS
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.EffectiveHS
+
+open MeasureTheory Set Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M
+  GroundTheory.Heights₂.Heights.HilbertSamuel
+open scoped ENNReal ComplexConjugate
+
+noncomputable section
+
+def ExtTwist.Statement : Prop :=
+  ∀ (D : ℕ) (X : EmbDatum D) (Z : ZeroDatum X) (j : ℕ), 1 ≤ D → 2 ≤ j →
+    ∀ ε δ : ℝ, 0 < ε → 0 < δ →
+      (∀ k, X.A.SmoothOn (X.A.chart k).source (fun y => extPsi Z j δ k y + extPhi Z ε k y)) ∧
+      (∀ k, ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (extPhi Z ε k ∘ (X.A.chart k).symm)
+        (X.A.chart k).target) ∧
+      (∀ k l, ∀ x ∈ (X.A.chart k).source ∩ (X.A.chart l).source,
+        extPsi Z j δ k x = extPsi Z j δ l x + Real.log (‖X.L₂.g k l x * X.L.g k l x ^ (D + j)‖ ^ 2) ∧
+          extPhi Z ε k x = extPhi Z ε l x) ∧
+      (∀ k, ∀ y ∈ (X.A.chart k).target, ∀ ξ : Fin D → ℂ,
+        extTheta ε (extEv Z k ((X.A.chart k).symm y)) * extOmega Z ε k y ξ ≤
+          levi ((fun x => extPsi Z j δ k x + extPhi Z ε k x) ∘ (X.A.chart k).symm) y ξ) ∧
+      (∀ k, ∀ y ∈ (X.A.chart k).target, ∀ ξ : Fin D → ℂ,
+        ‖dbarPair (fun z => (extPhi Z ε k ((X.A.chart k).symm z) : ℂ)) y ξ‖ ^ 2 =
+          (curvK (extX ε (extEv Z k ((X.A.chart k).symm y))) /
+            curvEta (extX ε (extEv Z k ((X.A.chart k).symm y)))) ^ 2 * extOmega Z ε k y ξ)
+
+end
+
+end GroundTheory.Heights₂.Heights.EffectiveHS
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.EffectiveHS
+
+open MeasureTheory Set Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M
+  GroundTheory.Heights₂.Heights.HilbertSamuel
+open scoped ENNReal ComplexConjugate
+
+noncomputable section
+
+def ExtShell.Statement : Prop :=
+  ∀ (D : ℕ) (X : EmbDatum D) (Z : ZeroDatum X) (m : ℕ), 1 ≤ D →
+    ∀ (g : X.U → ℂ) (W : Set X.U) (gt : Fin X.A.n → X.U → ℂ), IsOpen W → Z.S ⊆ W →
+      (∀ k, ContinuousOn (gt k ∘ (X.A.chart k).symm)
+        ((X.A.chart k).target ∩ (X.A.chart k).symm ⁻¹' W)) →
+      (∀ k l, ∀ x ∈ (X.A.chart k).source ∩ (X.A.chart l).source ∩ W,
+        gt k x = jac X.A k l x * X.L₂.g k l x * X.L.g k l x ^ (D + m) * gt l x) →
+      (∀ x ∈ Z.S, gt (chartIdx X.A x) x = g x * sJac X.A Z.s (chartIdx X.A x) x) →
+      Tendsto (fun ε : ℝ => chartIntegral X.A (fun k y => ENNReal.ofReal (2 ^ D * ‖gt k y‖ ^ 2 *
+          Real.exp (-X.wt (D + m) k y) * (extEv Z k y ^ D)⁻¹ * extShell ε (extEv Z k y))))
+        (𝓝[>] 0)
+        (𝓝 (ENNReal.ofReal (Real.log 2 / 2 * cD D * rSq Z.c ^ D * sNormSq X.A Z.S (X.wt m) g)))
+
+end
+
+end GroundTheory.Heights₂.Heights.EffectiveHS
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.EffectiveHS
+
+open MeasureTheory Set Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M
+  GroundTheory.Heights₂.Heights.HilbertSamuel
+open scoped ENNReal ComplexConjugate
+
+noncomputable section
+
+def ExtCutoff.Statement : Prop :=
+  ∀ (D : ℕ) (X : EmbDatum D) (Z : ZeroDatum X) (j : ℕ), 1 ≤ D → 2 ≤ j →
+    ∀ (g : X.U → ℂ) (θ : ℝ), 0 < θ → ∃ ε₀ : ℝ, 0 < ε₀ ∧ ∀ ε : ℝ, 0 < ε → ε ≤ ε₀ →
+      ∃ (F₀ : Fin X.A.n → X.U → ℂ) (G : Fin X.A.n → X.U → ℝ),
+        (∀ k, ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (F₀ k ∘ (X.A.chart k).symm)
+          (X.A.chart k).target) ∧
+        (∀ k l, ∀ x ∈ (X.A.chart k).source ∩ (X.A.chart l).source,
+          F₀ k x = jac X.A k l x * X.L₂.g k l x * X.L.g k l x ^ (D + j) * F₀ l x) ∧
+        (∀ k, ∀ x ∉ (X.A.chart k).source, F₀ k x = 0) ∧
+        (∀ x ∈ Z.S, res X.A Z.s F₀ x = g x) ∧
+        topNormSq X.A (X.wt (D + j)) F₀ ≤ ENNReal.ofReal θ ∧
+        (∀ k, ContinuousOn (G k ∘ (X.A.chart k).symm) (X.A.chart k).target) ∧
+        (∀ k y, 0 ≤ G k y) ∧
+        (∀ k, ∀ y ∈ (X.A.chart k).target, ∀ ξ : Fin D → ℂ,
+          ‖dbarPair (F₀ k ∘ (X.A.chart k).symm) y ξ‖ ^ 2 ≤
+            9 * extShell ε (extEv Z k ((X.A.chart k).symm y)) * G k ((X.A.chart k).symm y) *
+              ‖dbarPair (fun z => (extEv Z k ((X.A.chart k).symm z) : ℂ)) y ξ‖ ^ 2 / ε ^ 4) ∧
+        72 * chartIntegral X.A (fun k y => ENNReal.ofReal (2 ^ D * G k y *
+            Real.exp (-X.wt (D + j) k y) * (extEv Z k y ^ D)⁻¹ * extShell ε (extEv Z k y))) ≤
+          ENNReal.ofReal (36 * Real.log 2 * cD D * rSq Z.c ^ D * sNormSq X.A Z.S (X.wt j) g + θ)
+
+end
+
+end GroundTheory.Heights₂.Heights.EffectiveHS
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.EffectiveHS
+
+open MeasureTheory Set Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M
+  GroundTheory.Heights₂.Heights.HilbertSamuel
+open scoped ENNReal ComplexConjugate
+
+noncomputable section
+
+def BergmanProj.Statement : Prop :=
+  ∀ (D : ℕ) (U : Type) [TopologicalSpace U] [T2Space U] (A : FinHolAtlas D U)
+    (L₂ L : HolLineBundle A) (m : ℕ) (ψ : Fin A.n → U → ℝ) (F₀ : Fin A.n → U → ℂ),
+    (∀ k, ContinuousOn (ψ k ∘ (A.chart k).symm) (A.chart k).target) →
+    (∀ k l, ∀ x ∈ (A.chart k).source ∩ (A.chart l).source,
+      ψ k x = ψ l x + Real.log (‖L₂.g k l x * L.g k l x ^ m‖ ^ 2)) →
+    (∀ k, ContinuousOn (F₀ k ∘ (A.chart k).symm) (A.chart k).target) →
+    (∀ k l, ∀ x ∈ (A.chart k).source ∩ (A.chart l).source,
+      F₀ k x = jac A k l x * L₂.g k l x * L.g k l x ^ m * F₀ l x) →
+    topNormSq A ψ F₀ < ⊤ →
+    ∃ F ∈ topSections A L₂ L m, topNormSq A ψ F < ⊤ ∧
+      ∀ G ∈ topSections A L₂ L m, topNormSq A ψ G < ⊤ → chartInner A ψ (F₀ - F) G = 0
+
+end
+
+end GroundTheory.Heights₂.Heights.EffectiveHS
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.EffectiveHS
@@ -15,63 +178,10 @@ noncomputable section
 
 open ExtInhabitants
 
-theorem extTwist_hyp : ∃ (X : EmbDatum 1) (Z : ZeroDatum X), 1 ≤ 1 ∧ 2 ≤ 2 ∧ Z.S.Nonempty ∧
-    (0 : ℝ) < 1 ∧ (0 : ℝ) < 1 :=
-  let ⟨X, Z, h1, h2, h3⟩ := extDelta_hyp
-  ⟨X, Z, h1, h2, h3, one_pos, one_pos⟩
 
-theorem extShell_hyp : IsOpen (univ : Set exEmb.U) ∧ exZ.S ⊆ univ ∧
-    (∀ k, ContinuousOn (exOne k ∘ (exEmb.A.chart k).symm)
-      ((exEmb.A.chart k).target ∩ (exEmb.A.chart k).symm ⁻¹' univ)) ∧
-    (∀ k l, ∀ x ∈ (exEmb.A.chart k).source ∩ (exEmb.A.chart l).source ∩ univ,
-      exOne k x = jac exEmb.A k l x * exEmb.L₂.g k l x * exEmb.L.g k l x ^ (1 + 2) * exOne l x) ∧
-    (∀ x ∈ exZ.S, exOne (chartIdx exEmb.A x) x =
-      (fun _ => (1 : ℂ)) x * sJac exEmb.A exZ.s (chartIdx exEmb.A x) x) ∧ exZ.S.Nonempty := by
-  refine ⟨isOpen_univ, subset_univ _, fun k => continuousOn_const, fun k l x _ => ?_,
-    fun x _ => ?_, ?_⟩
-  · simp [exOne, jac_flat, trivLB]
-  · change (1 : ℂ) = 1 * sJac (flatAtlas 1) (fun i => lin exE (exC i)) _ x
-    rw [exSJac, one_mul]
-  · obtain ⟨X, Z, -, -, h⟩ := extDelta_hyp
-    exact ⟨0, by
-      change (0 : Fin 1 → ℂ) ∈ zeroSet (flatAtlas 1) (fun i => lin exE (exC i))
-      rw [exZero]; rfl⟩
 
-theorem bergmanProj_hyp :
-    (∀ k, ContinuousOn (exEmb.wt 2 k ∘ (exEmb.A.chart k).symm) (exEmb.A.chart k).target) ∧
-    (∀ k l, ∀ x ∈ (exEmb.A.chart k).source ∩ (exEmb.A.chart l).source,
-      exEmb.wt 2 k x = exEmb.wt 2 l x + Real.log (‖exEmb.L₂.g k l x * exEmb.L.g k l x ^ 2‖ ^ 2)) ∧
-    (∀ k, ContinuousOn (exOne k ∘ (exEmb.A.chart k).symm) (exEmb.A.chart k).target) ∧
-    (∀ k l, ∀ x ∈ (exEmb.A.chart k).source ∩ (exEmb.A.chart l).source,
-      exOne k x = jac exEmb.A k l x * exEmb.L₂.g k l x * exEmb.L.g k l x ^ 2 * exOne l x) ∧
-    topNormSq exEmb.A (exEmb.wt 2) exOne < ⊤ ∧ exOne ≠ 0 := by
-  refine ⟨fun k => ?_, fun k l x _ => ?_, fun k => continuousOn_const,
-    fun k l x _ => by simp [exOne, jac_flat, trivLB], ?_, fun h => ?_⟩
-  · apply Continuous.continuousOn
-    have h1 : ∀ y, (∑ i : Fin 1, ‖exE₂ i k y‖ ^ 2) = 1 := fun y => by simp [exE₂]
-    have h2 : ∀ y, (∑ i : Fin 2, ‖exE i k y‖ ^ 2) = 1 + ‖y 0‖ ^ 2 := fun y => by
-      simp [exE, Fin.sum_univ_two]
-    have e : exEmb.wt 2 k ∘ (exEmb.A.chart k).symm =
-        fun y => Real.log 1 + ((2 : ℕ) : ℝ) * Real.log (1 + ‖y 0‖ ^ 2) := by
-      funext y
-      change Real.log (∑ i : Fin 1, ‖exE₂ i k y‖ ^ 2) +
-        ((2 : ℕ) : ℝ) * Real.log (∑ i : Fin 2, ‖exE i k y‖ ^ 2) = _
-      rw [h1, h2]
-    rw [e]
-    exact continuous_const.add (continuous_const.mul
-      ((continuous_const.add ((continuous_apply 0).norm.pow 2)).log fun y =>
-        (by positivity : (0 : ℝ) < 1 + ‖y 0‖ ^ 2).ne'))
-  · have hkl : k = l := Subsingleton.elim k l
-    subst hkl
-    simp [trivLB]
-  · change chartIntegral (flatAtlas 1) _ < ⊤
-    rw [chartIntegral_flat]
-    simp only [exOne, norm_one, one_pow, mul_one]
-    simp only [exp_neg_wt]
-    simpa using lintegral_inv_one_add_sq_sq_lt_top 2
-  · have := congr_fun (congr_fun h c0) 0
-    simp [exOne] at this
 
 end
 
 end GroundTheory.Heights₂.Heights.EffectiveHS
+end

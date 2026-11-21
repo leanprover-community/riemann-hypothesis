@@ -26,9 +26,6 @@ structure IsPreDP (J : Ideal B) (γ : ℕ → B → B) : Prop where
   mul : ∀ n a, ∀ x ∈ J, γ n (a * x) = a ^ n * γ n x
   mul_dpow : ∀ m n, ∀ x ∈ J, γ m x * γ n x = ((m + n).choose m : B) * γ (m + n) x
 
-theorem isPreDP_dpow (δ : DividedPowers J) : IsPreDP J δ.dpow :=
-  ⟨fun _ _ h ↦ δ.dpow_null h, fun _ h ↦ δ.dpow_zero h, fun _ h ↦ δ.dpow_one h, fun _ hn _ h ↦ δ.dpow_mem hn h,
-    fun _ _ hx _ hy ↦ δ.dpow_add hx hy, fun _ _ _ h ↦ δ.dpow_mul h, fun _ _ _ h ↦ δ.mul_dpow h⟩
 
 structure PDPoly (B : Type) [CommRing B] : Type 1 where
 
@@ -50,10 +47,7 @@ structure PDPoly.IsStd (Q : PDPoly B) (δ : DividedPowers J) (η : DividedPowers
   dp : IsDPMorphism δ η (algebraMap B Q.P)
   var : ∀ n, η.dpow n (Q.e 1) = Q.e n
 
-theorem isLev_top_of_subsingleton [Subsingleton B] (δ : DividedPowers J) (N : ℕ) : IsLev δ N :=
-  Subsingleton.elim _ _
 
-theorem fil_eq_dpFil (δ : DividedPowers J) (N : ℕ) : fil δ N = GlobalTheory.Cris.ExpBij.dpFil δ N := rfl
 
 set_option autoImplicit false in
 open DividedPowers in
@@ -125,30 +119,8 @@ theorem _root_.GlobalTheory.PDA.fil_one_eq (δ : DividedPowers J) :
   · intro x hx
     exact Ideal.subset_span ⟨[(1, x)], by simpa using hx, by simp, by simp [δ.dpow_one hx]⟩
 
-theorem isLev_one_iff_eq_bot (δ : DividedPowers J) : IsLev δ 1 ↔ J = ⊥ := by rw [IsLev, fil_one_eq]
 
-theorem isLev_sqDP (h : J ^ 2 = 0) : IsLev (GlobalTheory.Cris.divided₂ h) 2 := by
-  refine (isLev_iff_prod _ _).2 fun l ↦ ?_
-  induction l with
-  | nil => simp
-  | cons p l ih =>
-    intro hl hs
-    simp only [List.map_cons, List.prod_cons, List.sum_cons] at hs ⊢
-    have hl' : ∀ q ∈ l, q.2 ∈ J := fun q hq ↦ hl q (by simp [hq])
-    have hp : p.2 ∈ J := hl p (by simp)
-    rcases Nat.lt_trichotomy p.1 1 with h1 | h1 | h1
-    · rw [ih hl' (by omega), mul_zero]
-    · have hm := (GlobalTheory.Cris.ExpBij.exists_widePullback_of_iteratedLine (GlobalTheory.Cris.divided₂ h) l hl' (by omega)).1
-      have := Ideal.mul_mem_mul ((GlobalTheory.Cris.divided₂ h).dpow_mem (n := p.1) (by omega) hp) hm
-      rwa [← pow_two, h, Ideal.zero_eq_bot, Ideal.mem_bot] at this
-    · rw [GlobalTheory.Cris.squareZeroDividedPowers_dpow h h1, zero_mul]
 
-theorem exists_isLev_two_not_one :
-    ∃ δ : DividedPowers (Ideal.span {(2 : ZMod 4)}), IsLev δ 2 ∧ ¬ IsLev δ 1 := by
-  have h : Ideal.span {(2 : ZMod 4)} ^ 2 = 0 := by
-    rw [Ideal.span_singleton_pow, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]; decide
-  refine ⟨_, isLev_sqDP h, ?_⟩
-  rw [isLev_one_iff_eq_bot, Ideal.span_singleton_eq_bot]; decide
 
 set_option autoImplicit false in
 open DividedPowers in
@@ -188,23 +160,7 @@ theorem PDPoly.e_one_pow (Q : PDPoly B) (n : ℕ) : Q.e 1 ^ n = (n.factorial : Q
     rw [pow_succ', ih, mul_left_comm, Q.e_mul, Nat.factorial_succ, add_comm 1 n]
     simp; ring
 
-theorem PDPoly.IsStd.not_isLev [Nontrivial B] {Q : PDPoly B} {δ : DividedPowers J}
-    {η : DividedPowers (Q.ext J)} (h : Q.IsStd δ η) (N : ℕ) : ¬ IsLev η N := by
-  intro hN
-  have := GlobalTheory.Cris.ExpBij.dpow_mem_dpFil η (Q.e_one_mem_ext J) N
-  rw [h.var, ← fil_eq_dpFil, hN] at this
-  exact Q.e.ne_zero N this
 
-theorem PDPoly.exists_isStd_of_rat [Algebra ℚ B] (Q : PDPoly B) (δ : DividedPowers J) :
-    ∃ η : DividedPowers (Q.ext J), Q.IsStd δ η := by
-  classical
-  letI : Algebra ℚ Q.P := ((algebraMap B Q.P).comp (algebraMap ℚ B)).toAlgebra
-  have key : ∀ (n : ℕ) (x y : Q.P), (n.factorial : Q.P) * x = n.factorial * y → x = y :=
-    fun n x y h ↦ (IsUnit.natCast_factorial_of_algebra (A := Q.P) ℚ n).mul_left_cancel h
-  refine ⟨RatAlgebra.dividedPowers _, ⟨le_sup_left, fun {n} a ha ↦ key n _ _ ?_⟩, fun n ↦ key n _ _ ?_⟩
-  · rw [factorial_mul_dpow_eq_pow _ (Q.algebraMap_mem_ext ha), ← map_pow,
-      ← factorial_mul_dpow_eq_pow δ ha, map_mul, map_natCast]
-  · rw [factorial_mul_dpow_eq_pow _ (Q.e_one_mem_ext J), Q.e_one_pow]
 
 section Inhabitants
 
@@ -300,8 +256,6 @@ theorem _root_.GlobalTheory.PDA.ratBasis_linearIndependent_int : LinearIndepende
 
 def intBasis : Module.Basis ℕ ℤ intForm := Module.Basis.span ratBasis_linearIndependent_int
 
-theorem intBasis_coe (n : ℕ) : (intBasis n : ℚ[X]) = ratBasis n :=
-  Module.Basis.span_apply ratBasis_linearIndependent_int n ▸ rfl
 
 set_option autoImplicit false in
 open DividedPowers in
@@ -342,10 +296,6 @@ def stdPoly (B : Type) [CommRing B] : PDPoly B where
     simp only [Algebra.TensorProduct.basis_apply, Algebra.TensorProduct.tmul_mul_tmul, one_mul, intBasis_mul]
     rw [← nsmul_eq_mul, ← nsmul_eq_mul, tmul_smul]
 
-theorem stdPoly_two : (stdPoly (ZMod 2)).e 1 ^ 2 = 0 ∧ (stdPoly (ZMod 2)).e 2 ≠ 0 := by
-  refine ⟨?_, (stdPoly (ZMod 2)).e.ne_zero 2⟩
-  rw [PDPoly.e_one_pow, ← map_natCast (algebraMap (ZMod 2) _), show ((Nat.factorial 2 : ℕ) : ZMod 2) = 0 by decide,
-    map_zero, zero_mul]
 
 end Inhabitants
 

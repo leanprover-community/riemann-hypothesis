@@ -22,7 +22,6 @@ theorem avg_eq_setIntegral {ι : Type} [Fintype ι] (Φ : (ι → Ad E) → ℂ)
   rw [h, vecMeasure_vecDomain]
   simp
 
-theorem diagonal_eq_ratGL (n : ℕ) (γ : GL (Fin n) E) : AdelicGLn.diagonal E n γ = ratGL E n γ := rfl
 
 def colIx {a k : ℕ} (hk : k < a) : Fin k ≃ UnipotentBlockColumnIndex a k k where
   toFun i := ⟨(⟨i.1, by omega⟩, ⟨k, hk⟩), i.2, le_rfl, le_rfl⟩

@@ -1,9 +1,207 @@
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.IsLocalHom
-import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.GRatliff
+import Mathlib
+import ReciprocityTheory.CommutativeAlgebra.SaturatedChains.IsSaturatedChain
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.ClCmquot
-import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.CplCm
-import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.CplQuot
+import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.HighestWeightSpaceFinite
+import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.KStableHighestWeightVector
+import ReciprocityTheory.CommutativeAlgebra.CohenMacaulay.LocDim
+import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.CplUniq
 
+section
+open IsLocalRing
+
+theorem UpperTheory.V.CA.g_ratliff :
+    ∀ (P Q : Type) [CommRing P] [CommRing Q] [IsNoetherianRing P] [IsNoetherianRing Q] [Algebra P Q] [Module.Flat P Q] (n : ℕ),
+      ReciprocityTheory.CA.DimFormula P → ReciprocityTheory.CA.DimFormula Q → ringKrullDim P = n → ringKrullDim Q = n →
+        ∀ (q : Ideal P) [q.IsPrime], ∀ Q' ∈ (q.map (algebraMap P Q)).minimalPrimes,
+          Q'.comap (algebraMap P Q) = q ∧ ringKrullDim (Q ⧸ Q') = ringKrullDim (P ⧸ q) := by
+  intro P Q _ _ _ _ _ _ n hP hQ dP dQ q _ Q' hQ'
+  have hprime : Q'.IsPrime := hQ'.1.1
+  have hle : q.map (algebraMap P Q) ≤ Q' := hQ'.1.2
+  have hle' : q ≤ Q'.under P := Ideal.map_le_iff_le_comap.mp hle
+  obtain ⟨P₁, h1, h2, h3⟩ := Ideal.exists_ideal_le_liesOver_of_le (p := q) (q := Q'.under P) Q' hle'
+  have h4 : q.map (algebraMap P Q) ≤ P₁ := Ideal.map_le_iff_le_comap.mpr h3.over.le
+  have h5 : P₁ = Q' := le_antisymm h1 (hQ'.2 ⟨h2, h4⟩ h1)
+  subst h5
+  refine ⟨h3.over.symm, ?_⟩
+  have hh := Ideal.height_eq_height_add_of_liesOver_of_hasGoingDown q P₁
+  have hpm : (P₁.map (Ideal.Quotient.mk (q.map (algebraMap P Q)))).IsPrime :=
+    Ideal.map_isPrime_of_surjective Ideal.Quotient.mk_surjective (by simpa using h4)
+  have h0 : (P₁.map (Ideal.Quotient.mk (q.map (algebraMap P Q)))).height = 0 := by
+    rw [Ideal.height_eq_zero_iff]
+    have := Ideal.minimalPrimes_map_of_surjective
+      (f := Ideal.Quotient.mk (q.map (algebraMap P Q))) Ideal.Quotient.mk_surjective ⊥
+    rw [Ideal.map_bot, bot_sup_eq, Ideal.mk_ker] at this
+    change _ ∈ (⊥ : Ideal _).minimalPrimes
+    rw [this]
+    exact ⟨P₁, hQ', rfl⟩
+  rw [h0, add_zero] at hh
+  have e1 := hP q
+  have e2 := hQ P₁
+  rw [dP] at e1
+  rw [dQ, hh, ← e1] at e2
+  have hne : q.height ≠ ⊤ := Ideal.height_ne_top (Ideal.IsPrime.ne_top inferInstance)
+  obtain ⟨k, hk⟩ := ENat.ne_top_iff_exists.mp hne
+  rw [← hk] at e2
+  generalize ringKrullDim (Q ⧸ P₁) = a at e2
+  generalize ringKrullDim (P ⧸ q) = b at e2
+  induction a using WithBot.recBotCoe with
+  | bot =>
+    induction b using WithBot.recBotCoe with
+    | bot => rfl
+    | coe b =>
+      rw [WithBot.add_bot, ← WithBot.coe_add] at e2
+      exact absurd e2 WithBot.bot_ne_coe
+  | coe a =>
+    induction b using WithBot.recBotCoe with
+    | bot =>
+      rw [WithBot.add_bot, ← WithBot.coe_add] at e2
+      exact absurd e2 WithBot.coe_ne_bot
+    | coe b =>
+      rw [← WithBot.coe_add, ← WithBot.coe_add, WithBot.coe_inj] at e2
+      rw [WithTop.add_left_cancel (ENat.coe_ne_top k) e2]
+end
+
+section
+open IsLocalRing UpperTheory.V.Alg UpperTheory.V.CA ReciprocityTheory.CA
+
+theorem UpperTheory.V.CA.cpl_cm :
+    ∀ (S R : Type) [CommRing S] [IsLocalRing S] [CommRing R] [IsLocalRing R] [Algebra S R], IsCplAt (maximalIdeal S) R → IsCM S → IsCM R ∧ DimFormula R ∧ DimFormula S ∧ ringKrullDim R = ringKrullDim S := by
+  intro S R _ _ _ _ _ hR hS
+  haveI : IsNoetherianRing S := hS.1
+  haveI : IsNoetherianRing R := hR.noeth
+  haveI : Module.Flat S R := (c3a (maximalIdeal S) hR).1
+  have hdim : ringKrullDim R = ringKrullDim S := by
+    have h := (c3c (maximalIdeal S) hR).1 ⊥
+    rw [Ideal.map_bot] at h
+    unfold dimAt at h
+    rw [Ideal.map_bot] at h
+    have hu : (maximalIdeal S).primeCompl ≤ IsUnit.submonoid S := fun x hx =>
+      IsLocalRing.notMem_maximalIdeal.mp hx
+    have e : S ≃+* Localization.AtPrime (maximalIdeal S) :=
+      (IsLocalization.atUnits S (maximalIdeal S).primeCompl hu).toRingEquiv
+    rw [← ringKrullDim_eq_of_ringEquiv (RingEquiv.quotientBot R), h,
+      ringKrullDim_eq_of_ringEquiv (RingEquiv.quotientBot _), ringKrullDim_eq_of_ringEquiv e.symm]
+  have hcomap : Ideal.comap (algebraMap S R) (maximalIdeal R) = maximalIdeal S := by
+    simpa using hR.comap_pow 1
+  have hRCM : IsCM R := by
+    obtain ⟨-, n, hn, rs, hlen, hmem, hreg⟩ := hS
+    have hmem' : ∀ r ∈ rs.map (algebraMap S R), r ∈ maximalIdeal R := by
+      intro r hr
+      obtain ⟨a, ha, rfl⟩ := List.mem_map.mp hr
+      have : a ∈ Ideal.comap (algebraMap S R) (maximalIdeal R) := by
+        rw [hcomap]
+        exact hmem a ha
+      exact this
+    refine ⟨inferInstance, n, hdim.trans hn, rs.map (algebraMap S R), by simp [hlen], hmem', ?_⟩
+    exact (IsLocalRing.isRegular_iff_isWeaklyRegular_of_subset_maximalIdeal hmem').mpr
+      hreg.toIsWeaklyRegular.of_flat
+  exact ⟨hRCM, fun p _ => hRCM.height_add_ringKrullDim_quotient p,
+    fun p _ => hS.height_add_ringKrullDim_quotient p, hdim⟩
+end
+
+section
+open IsLocalRing UpperTheory.V.Alg UpperTheory.V.CA ReciprocityTheory.CA
+
+private theorem precomplete_quot {R : Type} [CommRing R] (I K : Ideal R) [IsPrecomplete I R] :
+    IsPrecomplete I (R ⧸ K) := by
+  have hmap : ∀ n : ℕ, (I ^ n • ⊤ : Submodule R R).map K.mkQ = (I ^ n • ⊤ : Submodule R (R ⧸ K)) := by
+    intro n
+    rw [Submodule.map_smul'', Submodule.map_top, Submodule.range_mkQ]
+  refine ⟨fun f hf => ?_⟩
+  have hd : ∀ n, ∃ d ∈ (I ^ n • ⊤ : Submodule R R), K.mkQ d = f (n + 1) - f n := by
+    intro n
+    have h := (hf (Nat.le_succ n)).symm
+    rw [SModEq.sub_mem, ← hmap] at h
+    exact h
+  choose d hd hd' using hd
+  obtain ⟨a, ha⟩ := K.mkQ_surjective (f 0)
+  let g : ℕ → R := fun n => a + ∑ i ∈ Finset.range n, d i
+  have hg : ∀ n, K.mkQ (g n) = f n := by
+    intro n
+    induction n with
+    | zero => simpa [g] using ha
+    | succ n ih =>
+      have : g (n + 1) = g n + d n := by simp only [g, Finset.sum_range_succ, add_assoc]
+      rw [this, map_add, ih, hd']; abel
+  have hc : ∀ {m n : ℕ}, m ≤ n → g m ≡ g n [SMOD (I ^ m • ⊤ : Submodule R R)] := by
+    intro m n h
+    induction h with
+    | refl => rfl
+    | @step n h ih =>
+      have : g (n + 1) = g n + d n := by simp only [g, Finset.sum_range_succ, add_assoc]
+      refine ih.trans ?_
+      rw [SModEq.sub_mem, this, sub_add_cancel_left]
+      exact neg_mem (Submodule.smul_mono_left (Ideal.pow_le_pow_right h) (hd n))
+  obtain ⟨L, hL⟩ := IsPrecomplete.prec inferInstance hc
+  refine ⟨K.mkQ L, fun n => ?_⟩
+  rw [SModEq.sub_mem, ← hg, ← map_sub, ← hmap]
+  exact Submodule.mem_map_of_mem (SModEq.sub_mem.1 (hL n))
+
+theorem UpperTheory.V.CA.cpl_quot :
+    ∀ {C R : Type} [CommRing C] [IsNoetherianRing C] [CommRing R] [Algebra C R] [IsLocalRing R] (x : Ideal C) [x.IsMaximal], IsCplAt x R → ∀ (C' R' : Type) [CommRing C'] [CommRing R'] [Algebra C' R'] [IsLocalRing R'] (π : C →+* C') (x' : Ideal C'), Function.Surjective π → x'.comap π = x → IsCplAt x' R' → ∃ F : R →+* R', Function.Surjective F ∧ F.comp (algebraMap C R) = (algebraMap C' R').comp π ∧ RingHom.ker F = (RingHom.ker π).map (algebraMap C R) := by
+  intro C R _ _ _ _ _ x hx hR C' R' _ _ _ _ π x' hπ hx' hR'
+  haveI : IsNoetherianRing C' := isNoetherianRing_of_surjective C C' π hπ
+  have hxm : x.map π = x' := by rw [← hx', Ideal.map_comap_of_surjective π hπ]
+  haveI hx'm : x'.IsMaximal := by
+    rcases Ideal.map_eq_top_or_isMaximal_of_surjective π hπ hx with h | h
+    · rw [hxm] at h
+      exact absurd (by rw [← hx', h, Ideal.comap_top]) hx.ne_top
+    · rwa [hxm] at h
+  haveI := hR.noeth
+  haveI := hR.complete
+  haveI := hR'.complete
+  obtain ⟨hU, -, hm⟩ := cpl_uniq x hR
+  obtain ⟨hU', -, hm'⟩ := cpl_uniq x' hR'
+  have hx1 : x' ≤ (maximalIdeal R').comap (algebraMap C' R') := by
+    rw [← Ideal.map_le_iff_le_comap, hm']
+  obtain ⟨F, ⟨hF, hFm⟩, -⟩ := hU R' (maximalIdeal R') ((algebraMap C' R').comp π) (by
+    rw [← Ideal.comap_comap, ← hx']; exact Ideal.comap_mono hx1)
+  set K := (RingHom.ker π).map (algebraMap C R) with hK
+  have hKF : K ≤ RingHom.ker F := by
+    rw [hK, Ideal.map_le_iff_le_comap]
+    intro c hc
+    rw [RingHom.mem_ker] at hc
+    have := RingHom.congr_fun hF c
+    simp only [RingHom.comp_apply, hc, map_zero] at this
+    exact this
+  set J := (maximalIdeal R).map (Ideal.Quotient.mk K) with hJ
+  haveI : IsAdicComplete J (R ⧸ K) := by
+    haveI := precomplete_quot (maximalIdeal R) K
+    haveI : IsHausdorff (maximalIdeal R) (R ⧸ K) :=
+      IsHausdorff.of_le_jacobson _ _ (by rw [jacobson_eq_maximalIdeal _ bot_ne_top])
+    exact (IsAdicComplete.map_algebraMap_iff (S := R ⧸ K) (maximalIdeal R) (R ⧸ K)).2 ⟨⟩
+  let g : C' →+* R ⧸ K := π.liftOfSurjective hπ ⟨(Ideal.Quotient.mk K).comp (algebraMap C R), fun c hc => by
+    rw [RingHom.mem_ker, RingHom.comp_apply, Ideal.Quotient.eq_zero_iff_mem]
+    exact Ideal.mem_map_of_mem _ hc⟩
+  have hg : g.comp π = (Ideal.Quotient.mk K).comp (algebraMap C R) := RingHom.liftOfSurjective_comp _ _ _
+  have hxJ : x ≤ J.comap ((Ideal.Quotient.mk K).comp (algebraMap C R)) := by
+    rw [← Ideal.map_le_iff_le_comap, ← Ideal.map_map, hm]
+  obtain ⟨G, ⟨hG, hGm⟩, -⟩ := hU' (R ⧸ K) J g (by
+    rw [← hxm, Ideal.map_le_iff_le_comap, Ideal.comap_comap, hg]; exact hxJ)
+  have h1 : G.comp F = Ideal.Quotient.mk K := by
+    refine (hU (R ⧸ K) J _ hxJ).unique ⟨?_, ?_⟩ ⟨rfl, Ideal.le_comap_map⟩
+    · rw [RingHom.comp_assoc, hF, ← RingHom.comp_assoc, hG, hg]
+    · rw [← Ideal.comap_comap]; exact hFm.trans (Ideal.comap_mono hGm)
+  let Fb : R ⧸ K →+* R' := Ideal.Quotient.lift K F hKF
+  have hFb : Fb.comp (Ideal.Quotient.mk K) = F := RingHom.ext fun _ => rfl
+  have h2 : Fb.comp G = RingHom.id R' := by
+    refine (hU' R' (maximalIdeal R') _ hx1).unique ⟨?_, ?_⟩ ⟨rfl, le_rfl⟩
+    · rw [RingHom.comp_assoc, hG, ← RingHom.cancel_right hπ, RingHom.comp_assoc, hg, ← RingHom.comp_assoc, hFb, hF]
+    · rw [← Ideal.comap_comap]
+      refine hGm.trans (Ideal.comap_mono ?_)
+      rw [hJ, Ideal.map_le_iff_le_comap, Ideal.comap_comap, hFb]
+      exact hFm
+  refine ⟨F, fun y => ?_, hF, le_antisymm (fun r hr => ?_) hKF⟩
+  · obtain ⟨r, hr⟩ := Ideal.Quotient.mk_surjective (G y)
+    refine ⟨r, ?_⟩
+    have := RingHom.congr_fun h2 y
+    rw [RingHom.comp_apply, ← hr] at this
+    exact this
+  · rw [← Ideal.Quotient.eq_zero_iff_mem, ← h1, RingHom.comp_apply, (RingHom.mem_ker).1 hr, map_zero]
+end
+
+section
 open IsLocalRing UpperTheory.V.Alg UpperTheory.V.CA ReciprocityTheory.CA
 
 private theorem exists_inverse_mod_maximal_pow {A : Type} [CommRing A] (x : Ideal A) [x.IsMaximal] (n : ℕ) (w : A)
@@ -237,3 +435,4 @@ theorem UpperTheory.V.CA.c3d :
     (Ideal.Quotient.lift_surjective_of_surjective ps hkerφ hφq)
   rw [hiso, hdimeq]
   exact hfin
+end

@@ -58,9 +58,5 @@ def SmoothnessLemma : Prop :=
 
 def CoveringAndSmoothness : Prop := CoveringLemma ∧ SmoothnessLemma
 
-theorem goodPrime_iff (l : Level H) {p : ℕ} (hp : p.Prime) :
-    GoodPrime l p ↔ ¬ (p : ℤ) ∣ discr E ∧ ¬ p ∣ l.M' := by
-  unfold GoodPrime
-  rw [NumberField.not_dvd_discr_iff_isUnramifiedIn E (𝓞 E) (Nat.prime_iff_prime_int.mp hp)]
 
 end GlobalTheory.IndefiniteRowSideFullHecke.CoveringAbelianLocusSmooth

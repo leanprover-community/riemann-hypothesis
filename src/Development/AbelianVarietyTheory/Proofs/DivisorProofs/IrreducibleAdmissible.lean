@@ -2,9 +2,22 @@ import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IrreducibleAdmissibleGL
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.StandardFunctorsFiniteLength
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InductionContragredient
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InductionFiniteLengthStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LeviBlocksParabolicInductionFiniteLengthStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InductionFiniteLength
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LeviBlocksParabolicInductionFiniteLength
 
+section
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.jacquet_finite_length : GlobalTheory.Published.StandardFunctorsFiniteLength → ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], GlobalTheory.SmGL.JacquetFiniteLength k := by
+  first | exact @GlobalTheory.JacquetBlocks.jacquetFiniteLength_of_standard | exact GlobalTheory.JacquetBlocks.jacquetFiniteLength_of_standard | (intros; apply GlobalTheory.JacquetBlocks.jacquetFiniteLength_of_standard <;> assumption)
+end
+
+section
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.induction_finite_length : GlobalTheory.Published.StandardFunctorsFiniteLength → ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], GlobalTheory.SmGL.InductionFiniteLength k := by
+  first | exact @GlobalTheory.inductionFiniteLength_of_standard | exact GlobalTheory.inductionFiniteLength_of_standard | (intros; apply GlobalTheory.inductionFiniteLength_of_standard <;> assumption)
+end
+
+section
 noncomputable section
 
 open GlobalTheory.PRep GlobalTheory.SmGL
@@ -87,3 +100,5 @@ theorem main : GlobalTheory.Published.IrreducibleAdmissibleGL → GlobalTheory.P
     GlobalTheory.SmGL.IndDual.inductionContragredient k⟩
 
 end GlobalTheory.BZBridge
+end
+end

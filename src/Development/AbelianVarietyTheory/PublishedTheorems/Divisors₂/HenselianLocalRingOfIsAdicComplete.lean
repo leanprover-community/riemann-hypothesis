@@ -36,10 +36,6 @@ theorem isFormalIso_refl (G : Over (Sp R)) [GrpObj G] :
     IsFormalIso I G G fun e => pullback.fst G.hom (thick R I e) :=
   ⟨fun e => isGrpPullback_pullback G (thick R I e), fun _ => (pullback.lift_fst _ _ _).trans (Category.comp_id _)⟩
 
-theorem isExtension_refl (G : Over (Sp R)) [GrpObj G] (hG : IsSemiAbelian G) {X : Type} [AddCommGroup X]
-    [Module.Free ℤ X] [Module.Finite ℤ X] (Q : UU.TQ G X) :
-    IsExtension I G G fun e => pullback.fst G.hom (thick R I e) :=
-  ⟨hG, ⟨X, inferInstance, inferInstance, inferInstance, ⟨Q⟩⟩, isFormalIso_refl I G⟩
 
 variable {I}
 
@@ -135,21 +131,6 @@ def PairsToOne {A A' : Over S} [GrpObj A] [GrpObj A'] (P : LB (A ⊗ A').left) (
     (x : T ⟶ A) (y : T ⟶ A') : Prop :=
   WeilIs (A ⊗ A') P (n : ℤ) (lift x 1) (lift 1 y) 1
 
-theorem liesIn_torsion_iff (G : Over S) [GrpObj G] (n : ℕ) {Y : Over S} (x : Y ⟶ G) :
-    LiesIn (torsion.ι G n) x.left ↔ x ^ n = 1 := by
-  have e : ∀ {Z : Over S} (z : Z ⟶ G), z ≫ mulN G n = z ^ n := fun z => by
-    rw [SplitTorus.mulN_eq_pow, MonObj.comp_pow, Category.comp_id]
-  constructor
-  · rintro ⟨h, hh⟩
-    let h' : Y ⟶ torsion G n := Over.homMk h (by rw [← Over.w (torsion.ι G n), ← Category.assoc, hh, Over.w])
-    have : h' ≫ torsion.ι G n = x := Over.OverMorphism.ext hh
-    let s : torsion G n ⟶ 𝟙_ (Over S) := pullback.snd (mulN G n) η[G]
-    have c : torsion.ι G n ≫ mulN G n = s ≫ η[G] := pullback.condition
-    rw [← e, ← this, Category.assoc, c, ← Category.assoc, Hom.one_def, toUnit_unique (h' ≫ s) (toUnit Y)]
-  · intro hx
-    let l : Y ⟶ torsion G n := pullback.lift x (toUnit Y) ((e x).trans hx)
-    have c : l ≫ torsion.ι G n = x := pullback.lift_fst _ _ _
-    exact ⟨l.left, congrArg (fun q => q.left) c⟩
 
 theorem pow_eq_one_iff_of_isGrpPullback {S' : Scheme.{0}} {f : S' ⟶ S} {G : Over S} {G' : Over S'} [GrpObj G]
     [GrpObj G'] {F : G'.left ⟶ G.left} (h : IsGrpPullback G' G f F) {Y : Over S'} (y : Y ⟶ G') (n : ℕ) :
@@ -161,51 +142,9 @@ theorem pow_eq_one_iff_of_isGrpPullback {S' : Scheme.{0}} {f : S' ⟶ S} {G : Ov
   show m y ^ n = 1 ↔ _
   rw [← map_pow, map_eq_one_iff m hm]
 
-theorem isFiniteFlatSubgroup_torsion (G : Over S) [GrpObj G] [IsCommMonObj G] [IsSeparated G.hom] (n : ℕ)
-    (h₁ : IsFinite (torsion G n).hom) (h₂ : Flat (torsion G n).hom) : IsFiniteFlatSubgroup n (torsion.ι G n) := by
-  have k : ∀ {Y : Over S} (a : Y ⟶ torsion G n), (a ≫ torsion.ι G n) ^ n = 1 := fun a =>
-    (liesIn_torsion_iff G n _).1 ⟨a.left, rfl⟩
-  refine ⟨?_, h₁, h₂, (liesIn_torsion_iff G n _).2 ?_, fun Y a b => (liesIn_torsion_iff G n _).2 ?_, ?_⟩
-  · have : IsFinite ((torsion.ι G n).left ≫ G.hom) := by rw [Over.w]; exact h₁
-    have : IsFinite (torsion.ι G n).left := IsFinite.of_comp _ G.hom
-    have : Mono (η[G]) := ⟨fun a b _ => toUnit_unique a b⟩
-    have : Mono (torsion.ι G n) := inferInstanceAs (Mono (pullback.fst _ _))
-    have : Mono (torsion.ι G n).left := inferInstanceAs (Mono ((Over.forget S).map (torsion.ι G n)))
-    exact (IsClosedImmersion.iff_isFinite_and_mono _).2 ⟨inferInstance, inferInstance⟩
-  · have : η[G] = (1 : 𝟙_ (Over S) ⟶ G) := by rw [Hom.one_def, toUnit_unique (toUnit _) (𝟙 _), Category.id_comp]
-    rw [this, one_pow]
-  · rw [mul_pow, k, k, _root_.mul_one]
-  · simpa using k (𝟙 _)
 
-theorem liesIn_torsion_fibre {S' : Scheme.{0}} (f : S' ⟶ S) (G : Over S) [GrpObj G] (n : ℕ) {Y : Over S'}
-    (y : Y ⟶ (Over.pullback f).obj G) :
-    LiesIn (torsion.ι G n) (y.left ≫ pullback.fst G.hom f) ↔ y ^ n = 1 :=
-  (liesIn_torsion_iff G n (pushPt (isGrpPullback_pullback G f).1.w y)).trans
-    (pow_eq_one_iff_of_isGrpPullback (isGrpPullback_pullback G f) y n)
 
-theorem isFinitePart_torsion [IsLocalRing V] (G : Over (Sp V)) [GrpObj G] [IsCommMonObj G] [IsSeparated G.hom]
-    (n : ℕ) (h₁ : IsFinite (torsion G n).hom) (h₂ : Flat (torsion G n).hom) : IsFinitePart n (torsion.ι G n) :=
-  ⟨isFiniteFlatSubgroup_torsion G n h₁ h₂, _, inferInstance, IsLocalRing.residue V, inferInstance,
-    fun _ y => liesIn_torsion_fibre _ G n y⟩
 
-theorem parts_splitTorus [IsLocalRing V] (X : Type) [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X]
-    {n : ℕ} (hn : n ≠ 0) :
-    IsFinitePart n (torsion.ι (splitTorus (Sp V) X) n) ∧ IsTorusPart n (torsion.ι (splitTorus (Sp V) X) n) := by
-  have a₁ := Diag.isFinite_mulN (Sp V) X hn
-  have a₂ := Diag.flat_mulN (Sp V) X hn
-  have sq := (IsPullback.of_hasPullback (mulN (splitTorus (Sp V) X) n) η[splitTorus (Sp V) X]).map (Over.forget _)
-  have e : (torsion (splitTorus (Sp V) X) n).hom =
-      (pullback.snd (mulN (splitTorus (Sp V) X) n) η[splitTorus (Sp V) X]).left :=
-    ((Category.comp_id _).symm.trans (Over.w _)).symm
-  have h₁ : IsFinite (torsion (splitTorus (Sp V) X) n).hom := by
-    rw [e]; exact MorphismProperty.of_isPullback sq a₁
-  have h₂ : Flat (torsion (splitTorus (Sp V) X) n).hom := by
-    rw [e]; exact MorphismProperty.of_isPullback sq a₂
-  refine ⟨isFinitePart_torsion _ n h₁ h₂, isFiniteFlatSubgroup_torsion _ n h₁ h₂, _, inferInstance,
-    IsLocalRing.residue V, inferInstance, Diag.torusExtension _ X _, fun Y y => ?_⟩
-  rw [liesIn_torsion_fibre]
-  exact ⟨fun h => ⟨h, y ≫ (Diag.baseChangeIso _ X).hom, (Category.assoc _ _ _).trans
-    ((congrArg (y ≫ ·) (Iso.hom_inv_id _)).trans (Category.comp_id _))⟩, fun h => h.1⟩
 
 theorem henselianLocalRing_of_isAdicComplete [IsLocalRing V] [IsAdicComplete (IsLocalRing.maximalIdeal V) V] :
     HenselianLocalRing V where

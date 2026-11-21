@@ -55,9 +55,6 @@ def nrm (X : DetTw S emb c) {cls : Type} (yc : cls → UPts σ J (FiniteAdeleRin
     (cls → Frames (gramC J emb) → ℂ) ≃ₗ[ℂ] (cls → Frames (gramC J emb) → ℂ) :=
   scaleE (fun cl z => X.fac (yc cl) z) (fun cl z => X.fac_ne (yc cl) z)
 
-theorem nrmA_apply (X : DetTw S emb c) (g : UPts σ J (FiniteAdeleRing (𝓞 F) F) → Frames (gramC J emb) → ℂ)
-    (x : UPts σ J (FiniteAdeleRing (𝓞 F) F)) (z : Frames (gramC J emb)) :
-    nrmA X g x z = (X.ch x : ℂ) * detF c z * g x z := rfl
 
 theorem nrm_apply (X : DetTw S emb c) {cls : Type} (yc : cls → UPts σ J (FiniteAdeleRing (𝓞 F) F))
     (φ : cls → Frames (gramC J emb) → ℂ) (cl : cls) (z : Frames (gramC J emb)) :
@@ -158,26 +155,7 @@ theorem mem_ValC_shW (hn : 0 < n) (G : Tau → Matrix (Fin n) (Fin n) ℂ) (lam 
     have h2 : detF c z * fnOf G (shiftOf (fun τ => shW (lam τ) c)) 1 P z = detF c z * (a * h z) := by rw [h1]; ring
     rw [mul_left_cancel₀ (detF_ne c z) h2, ← mul_assoc, inv_mul_cancel₀ ha, one_mul]
 
-theorem nrmA_mem_AdForms (hn : 0 < n) (X : DetTw S emb c) (lam : Tau → DomWeight n)
-    (g : UPts σ J (FiniteAdeleRing (𝓞 F) F) → Frames (gramC J emb) → ℂ) :
-    nrmA X g ∈ AdForms S emb lam ↔ g ∈ AdForms S emb (fun τ => shW (lam τ) c) := by
-  unfold AdForms
-  rw [Submodule.mem_inf, Submodule.mem_inf, nrmA_mem_AdFun, Submodule.mem_pi, Submodule.mem_pi]
-  refine and_congr Iff.rfl (forall_congr' fun x => forall_congr' fun _ => ?_)
-  exact (mem_ValC_shW hn (gramC J emb) lam c (X.ch x : ℂ) (Units.ne_zero _) (g x)).symm
 
-theorem FiC_nrm (hn : 0 < n) (X : DetTw S emb c) (lam : Tau → DomWeight n) {cls : Type}
-    (yc : cls → UPts σ J (FiniteAdeleRing (𝓞 F) F)) (φ : cls → Frames (gramC J emb) → ℂ) :
-    nrm X yc φ ∈ FiC S emb lam yc ↔ φ ∈ FiC S emb (fun τ => shW (lam τ) c) yc := by
-  unfold FiC
-  constructor
-  · rintro ⟨g', hg', h⟩
-    refine ⟨(nrmA X).symm g', (nrmA_mem_AdForms hn X lam _).1 (by rw [LinearEquiv.apply_symm_apply]; exact hg'), ?_⟩
-    apply (nrm X yc).injective
-    rw [← res_nrmA, LinearEquiv.apply_symm_apply]
-    exact h
-  · rintro ⟨g, hg, rfl⟩
-    exact ⟨nrmA X g, (nrmA_mem_AdForms hn X lam g).2 hg, res_nrmA X yc g⟩
 
 theorem nrm_val_one (hn : 0 < n) (a : ℂ) (G : Tau → Matrix (Fin n) (Fin n) ℂ) (lam : Tau → DomWeight n) (c : ℤ)
     (Q : MvPolynomial (Tau × Fin n × Fin n) ℂ) (z : Frames G) (v : ℂ)
@@ -238,19 +216,9 @@ theorem embN_apply (β : Ch) (X : DetTw (K β).lev (embT D) (cTw D i)) (x : (M.l
     (z : Fr D i hi) :
     embN M eY chOf K β X x cl z = (X.ch ((K β).y cl) : ℂ) * detF (cTw D i) z * M.emb i x cl.1 (eY.symm z) := rfl
 
-theorem embN_inj (X : ∀ β, DetTw (K β).lev (embT D) (cTw D i)) (x y : (M.lat i).V)
-    (h : ∀ β, embN M eY chOf K β (X β) x = embN M eY chOf K β (X β) y) : x = y := by
-  apply M.emb_inj i
-  funext c z
-  have h1 := congrFun (congrFun (h (chOf c)) ⟨c, rfl⟩) (eY z)
-  rw [embN_apply, embN_apply, Equiv.symm_apply_apply] at h1
-  exact mul_left_cancel₀ ((X (chOf c)).fac_ne _ _) h1
 
 variable {M eY chOf K}
 
-theorem embN_mem_FiC (V : ValuationCompatibleChart M eY okW chOf K) (β : Ch) (X : DetTw (K β).lev (embT D) (cTw D i)) (x : (M.lat i).V) :
-    embN M eY chOf K β X x ∈ FiC (K β).lev (embT D) (M.lam i) (K β).y :=
-  (FiC_nrm (D.R.N_pos i) X (M.lam i) (K β).y _).2 ((V.Fi _).1 ((V.rat _).1 ⟨x, rfl⟩).1 β)
 
 set_option maxHeartbeats 1000000 in
 

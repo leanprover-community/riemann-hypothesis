@@ -2,16 +2,1311 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.KeyFormula.IsSquareDeterminantComparison
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.SignInsert
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.LePreimageOfClosedPoint
-import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.JacEqUnitMulDetPderiv
-import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.MulVecCongrDeg
-import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.IsCxOfFactor
-import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.SpanModEquationsLift
-import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsPowSpanXLeOfDense
-import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.KosDApplyMap
-import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsCombSubMemSupPow
-import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.KosDExactGeneric
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.IsLieBasisIffIsUnitDet
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.MemNonzeroLocusVia
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsDiscreteValuationRingIntegralClosure
+import Development.AbelianVarietyTheory.Definitions.KeyFormula.DegProd
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsIsUnitField
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsKeyDataBaseChangeSectionsMatrices
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.KoszulSectionsExactAlgClosedPolarisedAV
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.JacNeZeroIffSpanEqMaximalIdeal
+import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.PredMulSumPadicValNatFactorialAddCardLe
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsKoszulTorsionTransversalSplitZerosStatement
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsFactorAssociatedJacobian
 
+section
+noncomputable section
+
+namespace GlobalTheory.JacSer
+
+section Algebra
+
+open IsLocalRing MvPowerSeries GlobalTheory.SqZero
+
+variable {O : Type} [CommRing O] [IsLocalRing O]
+
+theorem isLocalRing_trivSqZeroExt (M : Type) [AddCommGroup M] [Module O M] [Module Oᵐᵒᵖ M] [IsCentralScalar O M] :
+    IsLocalRing (TrivSqZeroExt O M) :=
+  IsLocalRing.of_isUnit_or_isUnit_one_sub_self fun a => by
+    simp only [TrivSqZeroExt.isUnit_iff_isUnit_fst, TrivSqZeroExt.fst_sub, TrivSqZeroExt.fst_one]
+    exact isUnit_or_isUnit_one_sub_self _
+
+omit [IsLocalRing O] in
+
+def dirPt {n : ℕ} (e : MvPowerSeries (Fin n) O →ₐ[O] O) (c : Fin n → O) :
+    MvPowerSeries (Fin n) O →ₐ[O] DualNumber O :=
+  addDer ((inlS O O).comp e) (TrivSqZeroExt.inrHom O O ∘ₗ
+      ∑ j, c j • (e.toLinearMap ∘ₗ (pderiv O j : Derivation O _ _).toLinearMap))
+    (fun a b => by
+      ext
+      · simp [TrivSqZeroExt.fst_sum]
+      · simp [TrivSqZeroExt.snd_sum, Finset.mul_sum, ← Finset.sum_add_distrib, mul_add, mul_left_comm]
+        exact Finset.sum_congr rfl fun _ _ => by ring)
+    (fun _ _ => TrivSqZeroExt.inr_mul_inr _ _ _)
+
+omit [IsLocalRing O] in
+theorem dirPt_fst {n : ℕ} (e : MvPowerSeries (Fin n) O →ₐ[O] O) (c : Fin n → O) (a : MvPowerSeries (Fin n) O) :
+    (dirPt e c a).fst = e a := add_zero (e a)
+
+omit [IsLocalRing O] in
+theorem dirPt_snd {n : ℕ} (e : MvPowerSeries (Fin n) O →ₐ[O] O) (c : Fin n → O) (a : MvPowerSeries (Fin n) O) :
+    (dirPt e c a).snd = ∑ j, c j * e (pderiv O j a) :=
+  (zero_add _).trans ((TrivSqZeroExt.snd_inr _ _).trans (by simp))
+
+omit [IsLocalRing O] in
+theorem dirPt_snd_X {n : ℕ} (e : MvPowerSeries (Fin n) O →ₐ[O] O) (c : Fin n → O) (i : Fin n) :
+    (dirPt e c (X i)).snd = c i := by
+  simp [dirPt_snd, pderiv_X, Pi.single_apply, apply_ite e]
+
+variable [IsNoetherianRing O] [IsAdicComplete (maximalIdeal O) O]
+
+theorem snd_eq_sum {n : ℕ} (e : MvPowerSeries (Fin n) O →ₐ[O] O) (he : ∀ i, e (X i) ∈ maximalIdeal O)
+    (ψ : MvPowerSeries (Fin n) O →ₐ[O] DualNumber O) (hψ : ∀ a, (ψ a).fst = e a) (a : MvPowerSeries (Fin n) O) :
+    (ψ a).snd = ∑ j, (ψ (X j)).snd * e (pderiv O j a) := by
+  have := isLocalRing_trivSqZeroExt (O := O) O
+  have : Module.Finite O (DualNumber O) := inferInstanceAs (Module.Finite O (O × O))
+  have := GlobalTheory.FormalIsogeny.isAdicComplete_maximalIdeal_of_finite O (DualNumber O)
+  have h : ψ = dirPt e fun j => (ψ (X j)).snd :=
+    mvPowerSeries_algHom_ext_of_isHausdorff (maximalIdeal (DualNumber O))
+      (fun i h => he i (hψ _ ▸ TrivSqZeroExt.isUnit_iff_isUnit_fst.1 h))
+      (fun i => TrivSqZeroExt.ext (by rw [hψ, dirPt_fst]) (by rw [dirPt_snd_X]))
+  exact (congrArg (fun q => (q a).snd) h).trans (dirPt_snd _ _ _)
+
+omit [IsNoetherianRing O] [IsAdicComplete (maximalIdeal O) O] in
+theorem isLocalHom_of_X_mem {n : ℕ} (e : MvPowerSeries (Fin n) O →ₐ[O] O) (he : ∀ i, e (X i) ∈ maximalIdeal O) :
+    IsLocalHom e.toRingHom := by
+  refine ((IsLocalRing.local_hom_TFAE _).out 0 3).2 fun g hg => ?_
+  have h1 := algHom_sub_constantCoeff_mem e he g
+  have h2 := (FormalIsogeny.mem_maximalIdeal_iff_constantCoeff (g := g)).1 hg
+  simpa using add_mem h1 h2
+
+end Algebra
+
+section Group
+
+open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory
+open scoped CategoryTheory.MonObj
+open ReciprocityTheory.ChartRestriction.G.Chart (sp spMap spMap_left spMap_comp spMap_id comp_one' IsTan fstD isTan_iff)
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp epsR IsTangent IsLieComb IsLieBasis)
+open TrivSqZeroExt (inl inr)
+open GlobalTheory.SqZero GlobalTheory.LieComb IsLocalRing MvPowerSeries
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+variable {O : Type} [CommRing O] [IsLocalRing O] [IsNoetherianRing O] [IsAdicComplete (maximalIdeal O) O]
+  {G : Over (Spec (CommRingCat.of O))} [GrpObj G] [IsCommMonObj G] {n : ℕ} {v : Fin n → (epsR O ⟶ G)}
+
+theorem exists_matrix (hv : IsLieBasis v) (j : sp (R₀ := O) (MvPowerSeries (Fin n) O) ⟶ G)
+    (inj : ∀ {T : Type} [CommRing T] [Algebra O T] (φ ψ : MvPowerSeries (Fin n) O →ₐ[O] T),
+      spMap φ ≫ j = spMap ψ ≫ j → ∀ i, φ (X i) = ψ (X i))
+    (z : 𝟙_ _ ⟶ G) (u : MvPowerSeries (Fin n) O →ₐ[O] O) (hu0 : ∀ i, u (X i) ∈ maximalIdeal O)
+    (hu : spMap u ≫ j = toUnit _ ≫ z)
+    (χ : MvPowerSeries (Fin n) O →ₐ[O] TrivSqZeroExt O (Fin n → O))
+    (hχ : spMap χ ≫ j = (toUnit _ ≫ z) * lieExp v (fun i => inr (Pi.single i 1))
+      (fun _ => TrivSqZeroExt.inr_mul_inr _ _ _)) :
+    ∃ C : Matrix (Fin n) (Fin n) O, IsUnit C.det ∧
+      ∀ k, ∃ φ : MvPowerSeries (Fin n) O →ₐ[O] DualNumber O, spMap φ ≫ j = (toUnit _ ≫ z) * v k ∧
+        ∀ a, (φ a).snd = ∑ i, u (pderiv O i a) * C i k := by
+  have hz : ∀ {T T' : Type} [CommRing T] [Algebra O T] [CommRing T'] [Algebra O T'] (φ : T →ₐ[O] T'),
+      spMap φ ≫ toUnit _ ≫ z = toUnit _ ≫ z := fun φ => by
+    rw [← Category.assoc, comp_toUnit]
+  have hfst : ∀ a, (χ a).fst = u a := by
+    refine fun a => (AlgHom.congr_fun (mvPowerSeries_algHom_ext_of_isHausdorff (maximalIdeal O) hu0
+      (inj u ((TrivSqZeroExt.fstHom O O _).comp χ) ?_)) a).symm
+    rw [← spMap_comp, Category.assoc, hχ, MonObj.comp_mul, hz, comp_lieExp,
+      lieExp_eq_one hv.1 _ (fun i => by rfl), mul_one, hu]
+  let φ : (Fin n → O) → (MvPowerSeries (Fin n) O →ₐ[O] DualNumber O) := fun c =>
+    (vecTo (inlS O O) (fun i => inr (c i)) (fun _ _ => TrivSqZeroExt.inr_mul_inr _ _ _)).comp χ
+  have hφ : ∀ c, spMap (φ c) ≫ j = (toUnit _ ≫ z) * tanExp v c := fun c => by
+    rw [← spMap_comp, Category.assoc, hχ, MonObj.comp_mul, hz, comp_lieExp]
+    exact congrArg _ (lieExp_congr _ (fun i => vecTo_single _ _ _ i) _ _)
+  have hφ1 : ∀ c a, (φ c a).fst = u a := fun c a => by
+    simp [φ, vecTo_apply, TrivSqZeroExt.fst_sum, hfst]
+  have hφ2 : ∀ c a, (φ c a).snd = ∑ k, (χ a).snd k * c k := fun c a => by
+    simp [φ, vecTo_apply, TrivSqZeroExt.snd_sum, mul_comm]
+  obtain ⟨-, hsurj⟩ := isLieBasisOver_self hv
+  have hM : ∀ l : Fin n, ∃ c : Fin n → O, ∀ i, ∑ k, (χ (X i)).snd k * c k = (Pi.single l 1 : Fin n → O) i := by
+    intro l
+    have h1 : (fstS O O).comp (dirPt u (Pi.single l 1)) = u := AlgHom.ext fun a => dirPt_fst _ _ a
+    obtain ⟨c, hc⟩ := hsurj ((toUnit _ ≫ z)⁻¹ * (spMap (dirPt u (Pi.single l 1)) ≫ j)) (by
+      rw [IsTanOver, MonObj.comp_mul, GrpObj.comp_inv, hz, ← Category.assoc, spMap_comp, h1, hu,
+        inv_mul_cancel])
+    have h2 := inj (dirPt u (Pi.single l 1)) (φ c) (by rw [hφ, ← hc, mul_inv_cancel_left])
+    exact ⟨c, fun i => by rw [← hφ2, ← h2, dirPt_snd_X]⟩
+  choose M hM using hM
+  refine ⟨Matrix.of fun i k => (χ (X i)).snd k, ?_, fun k => ⟨φ (Pi.single k 1), ?_, fun a => ?_⟩⟩
+  · refine Matrix.isUnit_det_of_right_inverse (B := Matrix.of fun k l => M l k) (Matrix.ext fun i l => ?_)
+    rw [Matrix.mul_apply, Matrix.one_apply]
+    exact (hM l i).trans (Pi.single_apply _ _ _)
+  · rw [hφ, tanExp_single hv.1]
+  · rw [snd_eq_sum u hu0 _ (hφ1 _)]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [hφ2, mul_comm]
+    simp [Pi.single_apply]
+
+end Group
+
+end GlobalTheory.JacSer
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.AbLaw
+open GlobalTheory.KeyKa
+
+theorem GlobalTheory.KeyKa.jac_eq_unit_mul_det_pderiv : ∀ (O : Type) [CommRing O] [IsLocalRing O] [IsNoetherianRing O] [IsAdicComplete (IsLocalRing.maximalIdeal O) O] (x : KeyIn O) (θ : Sp (MvPowerSeries (Fin x.P.g) O) ⟶ x.P.A.left) (z : Pt x) (e : (MvPowerSeries (Fin x.P.g) O) →ₐ[O] O), θ ≫ x.P.A.hom = spMap (algebraMap O (MvPowerSeries (Fin x.P.g) O)) → (∃ (V : x.P.A.left.Opens) (t : Fin x.P.g → Γ(x.P.A.left, V)), ⊤ ≤ θ ⁻¹ᵁ V ∧ ∀ i, valT (T := (MvPowerSeries (Fin x.P.g) O)) θ V (t i) = MvPowerSeries.X i) → (∀ (T : Type) [CommRing T] [IsLocalRing T] [Algebra O T] [IsAdicComplete (IsLocalRing.maximalIdeal T) T] (w : Sp T ⟶ x.P.A.left), w ≫ x.P.A.hom = spMap (algebraMap O T) → w (IsLocalRing.closedPoint T) = θ (IsLocalRing.closedPoint (MvPowerSeries (Fin x.P.g) O)) → ∃ e : (MvPowerSeries (Fin x.P.g) O) →ₐ[O] T, (∀ i, e (MvPowerSeries.X i) ∈ IsLocalRing.maximalIdeal T) ∧ spMap e.toRingHom ≫ θ = w) → (∀ i, e (MvPowerSeries.X i) ∈ IsLocalRing.maximalIdeal O) → spMap e.toRingHom ≫ θ = z.left → ∃ u : Oˣ, ∀ (n : ℕ) (s : Fin x.P.g → RR x n) (c : x.P.L.ι), ⊤ ≤ z.left ⁻¹ᵁ x.P.L.U c → jac x s z c = u * e (Matrix.of fun i j => MvPowerSeries.pderiv O j (valT (T := (MvPowerSeries (Fin x.P.g) O)) θ (x.P.L.U c) ((s i).f c))).det := by
+  intro O _ _ _ _ x θ z e hθ ⟨V, t, hV, ht⟩ hlift he hz
+  let j : Chart.sp (R₀ := O) (MvPowerSeries (Fin x.P.g) O) ⟶ x.P.A := Over.homMk θ hθ
+  have hloc := GlobalTheory.JacSer.isLocalHom_of_X_mem e he
+  have hcl : z.left (IsLocalRing.closedPoint O) = θ (IsLocalRing.closedPoint (MvPowerSeries (Fin x.P.g) O)) := by
+    rw [← hz, ← IsLocalRing.comap_closedPoint e.toRingHom]
+    rfl
+  have hu : Chart.spMap e ≫ j = toUnit _ ≫ z := by
+    apply Over.OverMorphism.ext
+    have e1 : (toUnit (Chart.sp (R₀ := O) O)).left = 𝟙 (Sp O) := by
+      rw [Over.toUnit_left]
+      exact Spec.map_id _
+    rw [Over.comp_left, Over.comp_left, e1]
+    exact hz.trans (Category.id_comp _).symm
+  have := GlobalTheory.JacSer.isLocalRing_trivSqZeroExt (O := O) (Fin x.P.g → O)
+  have : Module.Finite O (TrivSqZeroExt O (Fin x.P.g → O)) :=
+    inferInstanceAs (Module.Finite O (O × (Fin x.P.g → O)))
+  have := GlobalTheory.FormalIsogeny.isAdicComplete_maximalIdeal_of_finite O (TrivSqZeroExt O (Fin x.P.g → O))
+  let w : Chart.sp (R₀ := O) (TrivSqZeroExt O (Fin x.P.g → O)) ⟶ x.P.A :=
+    (toUnit _ ≫ z) * GlobalTheory.SqZero.lieExp x.v (fun i => TrivSqZeroExt.inr (Pi.single i 1))
+      (fun _ => TrivSqZeroExt.inr_mul_inr _ _ _)
+  obtain ⟨χ, -, hχ⟩ := hlift (TrivSqZeroExt O (Fin x.P.g → O)) w.left (Over.w w) (by
+    have h1 : IsLocalHom (TrivSqZeroExt.fstHom O O (Fin x.P.g → O)).toRingHom :=
+      ⟨fun a ha => TrivSqZeroExt.isUnit_iff_isUnit_fst.2 ha⟩
+    have h2 : Chart.spMap (TrivSqZeroExt.fstHom O O (Fin x.P.g → O)) ≫ w = Chart.spMap e ≫ j := by
+      rw [hu, MonObj.comp_mul, GlobalTheory.SqZero.comp_lieExp, GlobalTheory.SqZero.lieExp_eq_one x.basis.1 _ (fun i => by rfl),
+        _root_.mul_one, ← Category.assoc, comp_toUnit]
+    have h3 := congrArg (fun q => q.left (IsLocalRing.closedPoint O)) h2
+    rw [← IsLocalRing.comap_closedPoint (TrivSqZeroExt.fstHom O O (Fin x.P.g → O)).toRingHom,
+      ← IsLocalRing.comap_closedPoint e.toRingHom]
+    exact h3)
+  obtain ⟨C, hC, hφ⟩ := GlobalTheory.JacSer.exists_matrix x.basis j (fun φ ψ h i => by
+    have h1 : spMap φ.toRingHom ≫ θ = spMap ψ.toRingHom ≫ θ := congrArg (·.left) h
+    have h2 := EtBaseChange.valT_spMap φ.toRingHom θ hV (t i)
+    rw [h1, EtBaseChange.valT_spMap ψ.toRingHom θ hV, ht] at h2
+    exact h2.symm) z e he hu χ (Over.OverMorphism.ext hχ)
+  refine ⟨hC.unit, fun n s c hc => ?_⟩
+  have hθc : ⊤ ≤ θ ⁻¹ᵁ x.P.L.U c := fun p _ =>
+    ((IsLocalRing.specializes_closedPoint p).map θ.continuous).mem_open (x.P.L.U c).isOpen
+      (hcl ▸ hc (x := IsLocalRing.closedPoint O) trivial)
+  rw [IsUnit.unit_spec, _root_.mul_comm, AlgHom.map_det, ← Matrix.det_mul]
+  refine congrArg Matrix.det (Matrix.ext fun i k => ?_)
+  obtain ⟨φ, h1, h2⟩ := hφ k
+  rw [Matrix.mul_apply, Matrix.of_apply]
+  refine Eq.trans (congrArg TrivSqZeroExt.snd ?_) (h2 _)
+  exact (congrArg (fun q : epsR O ⟶ x.P.A => valT (T := DualNumber O) q.left (x.P.L.U c) ((s i).f c)) h1.symm).trans
+    (EtBaseChange.valT_spMap φ.toRingHom θ hθc _)
+
+end
+end
+end
+
+section
+open GlobalTheory.KeyKa
+noncomputable section
+namespace GlobalTheory.KeyKa.KosKer
+open Matrix
+
+theorem mulVec_congr_deg {R Ix : Type} [CommRing R] [Fintype Ix] {deg : Ix → ℕ} {D : Matrix Ix Ix R}
+    (h : ∀ p q, deg q ≠ deg p + 1 → D p q = 0) (u u' : Ix → R) (p : Ix)
+    (hu : ∀ q, deg q = deg p + 1 → u q = u' q) : (D *ᵥ u) p = (D *ᵥ u') p := by
+  simp only [mulVec, dotProduct]
+  refine Finset.sum_congr rfl fun q _ => ?_
+  by_cases hq : deg q = deg p + 1
+  · rw [hu q hq]
+  · rw [h p q hq, zero_mul, zero_mul]
+
+theorem clear_denom {O Ix : Type} [CommRing O] [IsDomain O] [Fintype Ix] (D : Matrix Ix Ix O)
+    (h : ∀ v, (D.map (algebraMap O (FractionRing O))) *ᵥ v = 0 →
+      ∃ w, (D.map (algebraMap O (FractionRing O))) *ᵥ w = v) (x : Ix → O) (hx : D *ᵥ x = 0) :
+    ∃ c : O, c ≠ 0 ∧ ∃ u, D *ᵥ u = c • x := by
+  have hm : ∀ y : Ix → O, (D.map (algebraMap O (FractionRing O))) *ᵥ (algebraMap O (FractionRing O) ∘ y) =
+      algebraMap O (FractionRing O) ∘ (D *ᵥ y) := fun y => funext fun p => (RingHom.map_mulVec _ D y p).symm
+  obtain ⟨w, hw⟩ := h (algebraMap O (FractionRing O) ∘ x) (by rw [hm, hx]; ext p; simp)
+  obtain ⟨b, hb⟩ := IsLocalization.exist_integer_multiples_of_finite (nonZeroDivisors O) w
+  choose u hu using hb
+  refine ⟨b, nonZeroDivisors.coe_ne_zero b, u, funext fun p => ?_⟩
+  apply IsFractionRing.injective O (FractionRing O)
+  have e : algebraMap O (FractionRing O) ∘ u = (b : O) • w := funext hu
+  have e2 := congrFun (hm u) p
+  rw [e, mulVec_smul, hw] at e2
+  simp only [Function.comp, Pi.smul_apply] at e2 ⊢
+  rw [← e2, smul_eq_mul, map_mul, Algebra.smul_def]
+
+variable {g d : ℕ} {N : ℕ → ℕ}
+
+theorem mulVec_empty {R : Type} [CommRing R] (m : Fin g → ∀ j j', Matrix (Fin (N j)) (Fin (N j')) R)
+    (ev : ∀ j, Matrix (Fin d) (Fin (N j)) R) (u : KIx g d N → R) (a : Fin (N 0)) :
+    (kosD m ev *ᵥ u) (.inl ⟨∅, a⟩) = (∑ i, m i 0 1 *ᵥ (fun k => u (.inl ⟨{i}, k⟩))) a := by
+  simp only [mulVec, dotProduct, Fintype.sum_sum_type, kosD, zero_mul, Finset.sum_const_zero, add_zero,
+    Finset.sum_mul, Finset.sum_apply]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [Fintype.sum_sigma, Finset.sum_eq_single {i}]
+  · refine Finset.sum_congr rfl fun k _ => ?_
+    rw [if_pos ⟨by simp, by simp⟩]
+    simp
+    rfl
+  · intro J _ hJ
+    refine Finset.sum_eq_zero fun k _ => ?_
+    rw [if_neg (fun h => hJ (by simpa using h.2)), zero_mul]
+  · simp
+
+theorem mulVec_inr {R : Type} [CommRing R] (m : Fin g → ∀ j j', Matrix (Fin (N j)) (Fin (N j')) R)
+    (ev : ∀ j, Matrix (Fin d) (Fin (N j)) R) (u : KIx g d N → R) (a : Fin d) :
+    (kosD m ev *ᵥ u) (.inr a) = (ev 0 *ᵥ (fun k => u (.inl ⟨∅, k⟩))) a := by
+  simp only [mulVec, dotProduct, Fintype.sum_sum_type, kosD, zero_mul, Finset.sum_const_zero, add_zero]
+  rw [Fintype.sum_sigma, Finset.sum_eq_single ∅]
+  · refine Finset.sum_congr rfl fun k _ => ?_
+    rw [if_pos rfl]
+    rfl
+  · intro J _ hJ
+    refine Finset.sum_eq_zero fun k _ => ?_
+    rw [if_neg hJ, zero_mul]
+  · simp
+
+theorem mulVec_inl_map {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) {d' : ℕ}
+    (m : Fin g → ∀ j j', Matrix (Fin (N j)) (Fin (N j')) R)
+    (ev : ∀ j, Matrix (Fin d) (Fin (N j)) R) (ev' : ∀ j, Matrix (Fin d') (Fin (N j)) S)
+    (u : KIx g d N → R) (u' : KIx g d' N → S) (hu : ∀ q, u' (.inl q) = f (u (.inl q))) (p) :
+    (kosD (fun i j j' => (m i j j').map f) ev' *ᵥ u') (.inl p) = f ((kosD m ev *ᵥ u) (.inl p)) := by
+  simp only [mulVec, dotProduct, Fintype.sum_sum_type, kosD, zero_mul, Finset.sum_const_zero, add_zero,
+    map_sum, map_mul, hu, apply_ite f, map_zero, map_pow, map_neg, map_one, Matrix.map_apply]
+
+theorem div_unif {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
+    (m : Fin g → ∀ j j', Matrix (Fin (N j)) (Fin (N j')) O) (ev : ∀ j, Matrix (Fin d) (Fin (N j)) O)
+    (hD : IsCx kdeg (kosD m ev))
+    (hk : ∀ v : KIx g 0 N → IsLocalRing.ResidueField O,
+      (kosD (fun i j j' => (m i j j').map (IsLocalRing.residue O)) (fun _ => 0)).mulVec v = 0 →
+      ∃ w, ∀ p, p.1 ≠ ∅ → v (.inl p) =
+        (kosD (d := 0) (fun i j j' => (m i j j').map (IsLocalRing.residue O)) (fun _ => 0)).mulVec w (.inl p))
+    {π : O} (hπ : Irreducible π) (v : Fin (N 0) → O) (u : KIx g d N → O)
+    (hu : ∀ a, π * v a = (kosD m ev *ᵥ u) (.inl ⟨∅, a⟩)) :
+    ∃ y : KIx g d N → O, ∀ a, v a = (kosD m ev *ᵥ y) (.inl ⟨∅, a⟩) := by
+  classical
+  have hres : ∀ x : O, IsLocalRing.residue O x = 0 ↔ π ∣ x := fun x => by
+    rw [IsLocalRing.residue_eq_zero_iff, hπ.maximalIdeal_eq, Ideal.mem_span_singleton]
+  let u' : KIx g d N → O := fun q => if kdeg q = 2 then u q else 0
+  have h1 : ∀ a : Fin (N 0), (kosD m ev *ᵥ u') (.inl ⟨∅, a⟩) = π * v a := fun a => by
+    rw [hu a]
+    exact mulVec_congr_deg hD.1 _ _ _ fun q hq => if_pos hq
+  obtain ⟨wb, hwb⟩ := hk (Sum.elim (fun q => IsLocalRing.residue O (u' (.inl q))) 0) (by
+    ext p
+    rcases p with ⟨I, a⟩ | a
+    · rw [mulVec_inl_map (IsLocalRing.residue O) m ev _ u' _ (fun _ => rfl)]
+      by_cases hI : I = ∅
+      · subst hI
+        rw [h1 a]
+        exact (hres _).2 (dvd_mul_right _ _)
+      · rw [mulVec_congr_deg hD.1 u' 0 _ fun q hq => if_neg ?_]
+        · simp
+        · have : I.card ≠ 0 := by simpa using hI
+          rw [hq]
+          simp only [kdeg]
+          omega
+    · exact a.elim0)
+  choose w0 hw0 using fun q => IsLocalRing.residue_surjective (R := O) (wb (.inl q))
+  let w : KIx g d N → O := Sum.elim w0 0
+  have h2 : ∀ q : KIx g d N, ∃ y, kdeg q = 2 → (u' - kosD m ev *ᵥ w) q = π * y := by
+    rintro (p | a)
+    · by_cases hp : p.1 = ∅
+      · refine ⟨0, fun h => ?_⟩
+        simp [kdeg, hp] at h
+      · have e := hwb p hp
+        rw [mulVec_inl_map (IsLocalRing.residue O) m ev _ w _ (fun q => (hw0 q).symm)] at e
+        obtain ⟨y, hy⟩ := (hres ((u' - kosD m ev *ᵥ w) (.inl p))).1 (by
+          rw [Pi.sub_apply, map_sub, ← e]; exact sub_self _)
+        exact ⟨y, fun _ => hy⟩
+    · exact ⟨0, fun h => by simp [kdeg] at h⟩
+  choose y hy using h2
+  refine ⟨y, fun a => mul_left_cancel₀ hπ.ne_zero ?_⟩
+  have e := mulVec_congr_deg hD.1 (u' - kosD m ev *ᵥ w) (π • y) (.inl ⟨∅, a⟩) fun q hq => hy q hq
+  rw [mulVec_sub, mulVec_mulVec, hD.2, zero_mulVec, sub_zero, mulVec_smul, h1 a] at e
+  exact e
+
+theorem ker_and_image : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (g d : ℕ) (N : ℕ → ℕ) (m : Fin g → ∀ j j', Matrix (Fin (N j)) (Fin (N j')) O) (ev : ∀ j, Matrix (Fin d) (Fin (N j)) O), IsCx kdeg (kosD m ev) → (∀ v, ((kosD m ev).map (algebraMap O (FractionRing O))).mulVec v = 0 → ∃ w, ((kosD m ev).map (algebraMap O (FractionRing O))).mulVec w = v) → (∀ v : KIx g 0 N → IsLocalRing.ResidueField O, (kosD (fun i j j' => (m i j j').map (IsLocalRing.residue O)) (fun _ => 0)).mulVec v = 0 → ∃ w, ∀ p, p.1 ≠ ∅ → v (.inl p) = (kosD (d := 0) (fun i j j' => (m i j j').map (IsLocalRing.residue O)) (fun _ => 0)).mulVec w (.inl p)) → (∀ v, (ev 0).mulVec v = 0 → ∃ w : Fin g → Fin (N 1) → O, v = ∑ i, (m i 0 1).mulVec (w i)) ∧ ∃ c : O, c ≠ 0 ∧ ∀ t, ∃ v, (ev 0).mulVec v = c • t := by
+  intro O _ _ _ g d N m ev hD hK hk
+  classical
+  obtain ⟨π, hπ⟩ := IsDiscreteValuationRing.exists_irreducible O
+  have hpow : ∀ (n : ℕ) (v : Fin (N 0) → O), (∃ u : KIx g d N → O, ∀ a, π ^ n * v a = (kosD m ev *ᵥ u) (.inl ⟨∅, a⟩)) →
+      ∃ y : KIx g d N → O, ∀ a, v a = (kosD m ev *ᵥ y) (.inl ⟨∅, a⟩) := by
+    intro n
+    induction n with
+    | zero => intro v h; simpa using h
+    | succ n ih =>
+      rintro v ⟨u, hu⟩
+      exact ih v (div_unif m ev hD hk hπ (fun a => π ^ n * v a) u fun a => by rw [← hu a]; ring)
+  refine ⟨fun v hv => ?_, ?_⟩
+  · let x : KIx g d N → O := Sum.elim (fun p => if h : p.1 = ∅ then v (Fin.cast (by rw [h]; rfl) p.2) else 0) 0
+    have hx0 : ∀ a : Fin (N 0), x (.inl ⟨∅, a⟩) = v a := fun a => by
+      simp only [x, Sum.elim_inl, dif_pos]
+      rfl
+    have hx : kosD m ev *ᵥ x = 0 := by
+      ext p
+      rcases p with p | a
+      · rw [mulVec_congr_deg hD.1 x 0 _ ?_]
+        · simp
+        · rintro (q | q) hq
+          · refine dif_neg fun h => ?_
+            simp [kdeg, h] at hq
+          · rfl
+      · rw [mulVec_inr, funext hx0, hv]
+        rfl
+    obtain ⟨c, hc, u, hu⟩ := clear_denom _ hK x hx
+    obtain ⟨n, e, rfl⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible hc hπ
+    obtain ⟨y, hy⟩ := hpow n v ⟨(↑e⁻¹ : O) • u, fun a => by
+      rw [mulVec_smul, hu, smul_smul, ← mul_assoc, Units.inv_mul, one_mul, Pi.smul_apply, hx0, smul_eq_mul]⟩
+    exact ⟨fun i k => y (.inl ⟨{i}, k⟩), funext fun a => (hy a).trans (mulVec_empty m ev y a)⟩
+  · have h1 : ∀ a : Fin d, ∃ c : O, c ≠ 0 ∧ ∃ v, ev 0 *ᵥ v = c • (Pi.single a 1 : Fin d → O) := by
+      intro a
+      obtain ⟨c, hc, u, hu⟩ := clear_denom _ hK (Sum.elim 0 (Pi.single a 1)) (by
+        ext p
+        rcases p with p | p <;> simp [mulVec, dotProduct, Fintype.sum_sum_type, kosD])
+      refine ⟨c, hc, fun k => u (.inl ⟨∅, k⟩), funext fun b => ?_⟩
+      rw [← mulVec_inr m ev u b, hu]
+      rfl
+    choose c hc v hv using h1
+    refine ⟨∏ a, c a, Finset.prod_ne_zero_iff.2 fun a _ => hc a, fun t => ?_⟩
+    choose e he using fun a => Finset.dvd_prod_of_mem c (Finset.mem_univ a)
+    refine ⟨∑ a, (t a * e a) • v a, ?_⟩
+    rw [mulVec_sum]
+    ext b
+    simp only [mulVec_smul, hv, Finset.sum_apply, Pi.smul_apply, Pi.single_apply, smul_eq_mul, mul_ite, mul_one,
+      mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    rw [he b]
+    ring
+
+end GlobalTheory.KeyKa.KosKer
+end
+end
+
+section
+open GlobalTheory.KeyKa
+
+namespace GlobalTheory.KeyKa.KoszulTors
+section Alg
+variable {R : Type} [CommRing R] {g d : ℕ} {N : ℕ → ℕ}
+
+end Alg
+
+variable {R : Type} [CommRing R] {g d : ℕ} {N : ℕ → ℕ} in
+private lemma kosD_inl_indep_ev
+    (m : Fin g → ∀ j j', Matrix (Fin (N j)) (Fin (N j')) R) (ev ev' : ∀ j, Matrix (Fin d) (Fin (N j)) R)
+    (p : (I : Finset (Fin g)) × Fin (N I.card)) (y : _root_.GlobalTheory.KeyKa.KIx g d N) :
+    _root_.GlobalTheory.KeyKa.kosD m ev (.inl p) y = _root_.GlobalTheory.KeyKa.kosD m ev' (.inl p) y := by
+  rcases y with q | b <;> rfl
+
+variable {R : Type} [CommRing R] {g d : ℕ} {N : ℕ → ℕ} in
+private lemma kosD_inr_eq_zero
+    (m : Fin g → ∀ j j', Matrix (Fin (N j)) (Fin (N j')) R) (ev : ∀ j, Matrix (Fin d) (Fin (N j)) R)
+    (x : _root_.GlobalTheory.KeyKa.KIx g d N) (a : Fin d) :
+    _root_.GlobalTheory.KeyKa.kosD m ev x (.inr a) = 0 := by
+  rcases x with p | b <;> rfl
+
+variable {R : Type} [CommRing R] {g d : ℕ} {N : ℕ → ℕ} in
+private lemma map_kosD_inl_inl {S : Type} [CommRing S] (f : R →+* S)
+    (m : Fin g → ∀ j j', Matrix (Fin (N j)) (Fin (N j')) R) (ev : ∀ j, Matrix (Fin d) (Fin (N j)) R)
+    {d' : ℕ} (e : ∀ j, Matrix (Fin d') (Fin (N j)) S) (p q : (I : Finset (Fin g)) × Fin (N I.card)) :
+    f (_root_.GlobalTheory.KeyKa.kosD m ev (.inl p) (.inl q)) =
+      _root_.GlobalTheory.KeyKa.kosD (fun i j j' => (m i j j').map f) e (.inl p) (.inl q) := by
+  simp [_root_.GlobalTheory.KeyKa.kosD, map_sum, apply_ite]
+
+theorem _root_.GlobalTheory.KeyKa.KoszulTors.koszul_tors : ∀ (O : Type) [CommRing O] [IsDomain O] [IsLocalRing O]
+    (g d : ℕ) (N : ℕ → ℕ) (m : Fin g → ∀ j j', Matrix (Fin (N j)) (Fin (N j')) O)
+    (ev ev₀ : ∀ j, Matrix (Fin d) (Fin (N j)) O) (Pm : Matrix (Fin d) (Fin d) O),
+    _root_.GlobalTheory.KeyKa.IsCx _root_.GlobalTheory.KeyKa.kdeg (_root_.GlobalTheory.KeyKa.kosD m ev) →
+    ev 0 = Pm * ev₀ 0 → Pm.det ≠ 0 → Function.Surjective (ev₀ 0).mulVec →
+    (∀ v, (ev 0).mulVec v = 0 → ∃ w : Fin g → Fin (N 1) → O, v = ∑ i, (m i 0 1).mulVec (w i)) →
+    (∀ v : _root_.GlobalTheory.KeyKa.KIx g 0 N → IsLocalRing.ResidueField O,
+      (_root_.GlobalTheory.KeyKa.kosD (fun i j j' => (m i j j').map (IsLocalRing.residue O))
+        (fun _ => 0)).mulVec v = 0 →
+      ∃ w, ∀ p, p.1 ≠ ∅ → v (.inl p) = (_root_.GlobalTheory.KeyKa.kosD (d := 0)
+        (fun i j j' => (m i j j').map (IsLocalRing.residue O)) (fun _ => 0)).mulVec w (.inl p)) →
+    _root_.GlobalTheory.KeyKa.IsCx _root_.GlobalTheory.KeyKa.kdeg (_root_.GlobalTheory.KeyKa.kosD m ev₀) ∧
+      ∃ t, _root_.GlobalTheory.KeyKa.TorsSq _root_.GlobalTheory.KeyKa.kdeg
+        (_root_.GlobalTheory.KeyKa.kosD m ev₀) t := by
+  intro O _ _ _ g d N m ev ev₀ Pm hcx hev hdet hsurj hker hres
+  set K := _root_.GlobalTheory.KeyKa.kosD m ev with hK
+  set K₀ := _root_.GlobalTheory.KeyKa.kosD m ev₀ with hK₀
+  have hrow : ∀ p y, K (.inl p) y = K₀ (.inl p) y := fun p y =>
+    kosD_inl_indep_ev m ev ev₀ p y
+  have haug : ∀ a y, K (.inr a) y = ∑ b, Pm a b * K₀ (.inr b) y := by
+    intro a y
+    rcases y with ⟨I, l⟩ | c
+    · by_cases hI : I = ∅
+      · subst hI
+        show ev 0 a l = ∑ b, Pm a b * (if (∅ : Finset (Fin g)) = ∅ then ev₀ 0 b l else 0)
+        rw [hev]
+        exact Matrix.mul_apply.trans (Finset.sum_congr rfl fun b _ => by rw [if_pos rfl])
+      · show (if I = ∅ then ev I.card a l else 0) = ∑ b, Pm a b * (if I = ∅ then ev₀ I.card b l else 0)
+        simp [hI]
+    · simp [hK, hK₀, kosD_inr_eq_zero]
+  have hcx₀ : _root_.GlobalTheory.KeyKa.IsCx _root_.GlobalTheory.KeyKa.kdeg K₀ := by
+    refine ⟨fun x y hxy => ?_, ?_⟩
+    · rcases x with p | a
+      · rw [← hrow]; exact hcx.1 _ _ hxy
+      · rcases y with ⟨I, l⟩ | c
+        · have hI : I ≠ ∅ := by
+            rintro rfl
+            exact hxy rfl
+          show (if I = ∅ then ev₀ I.card a l else 0) = 0
+          simp [hI]
+        · exact kosD_inr_eq_zero m ev₀ _ c
+    · have hsq : ∀ x y, ∑ b, K x b * K b y = 0 := fun x y => by
+        have := congrFun (congrFun hcx.2 x) y
+        simpa [Matrix.mul_apply] using this
+      ext x y
+      rw [Matrix.mul_apply, Matrix.zero_apply]
+      have hmid : ∀ x b, K₀ x b * K₀ b y = K₀ x b * K b y := by
+        intro x b
+        rcases b with q | c
+        · rw [hrow]
+        · have hz : K₀ x (.inr c) = 0 := kosD_inr_eq_zero m ev₀ x c
+          rw [hz, zero_mul, zero_mul]
+      rcases x with p | a
+      · rw [← hsq (.inl p) y]
+        refine Fintype.sum_congr _ _ fun b => ?_
+        rw [hmid, hrow]
+      · have hvec : Pm.mulVec (fun b => ∑ c, K₀ (.inr b) c * K₀ c y) = 0 := by
+          ext a'
+          rw [Matrix.mulVec, dotProduct, Pi.zero_apply, ← hsq (.inr a') y]
+          simp only [Finset.mul_sum, haug, Finset.sum_mul]
+          rw [Finset.sum_comm]
+          refine Fintype.sum_congr _ _ fun c => Fintype.sum_congr _ _ fun b => ?_
+          rw [mul_assoc, hmid]
+        exact congrFun (Matrix.eq_zero_of_mulVec_eq_zero hdet hvec) a
+  refine ⟨hcx₀, _root_.GlobalTheory.TorsExists.exists_torsSq O _ _root_.GlobalTheory.KeyKa.kdeg K₀ hcx₀ ?_⟩
+  intro v hv
+  have hz : ∀ x c, K₀ x (.inr c) = 0 := fun x c => kosD_inr_eq_zero m ev₀ x c
+  have hmv : ∀ (u : _root_.GlobalTheory.KeyKa.KIx g d N → IsLocalRing.ResidueField O) y,
+      (K₀.map (IsLocalRing.residue O)).mulVec u y = ∑ I : Finset (Fin g), ∑ l : Fin (N I.card),
+        IsLocalRing.residue O (K₀ y (.inl ⟨I, l⟩)) * u (.inl ⟨I, l⟩) := by
+    intro u y
+    rw [Matrix.mulVec, dotProduct, Fintype.sum_sum_type, Fintype.sum_sigma]
+    simp [Matrix.map_apply, hz]
+  have hmv₀ : ∀ (u : _root_.GlobalTheory.KeyKa.KIx g 0 N → IsLocalRing.ResidueField O) y,
+      (_root_.GlobalTheory.KeyKa.kosD (fun i j j' => (m i j j').map (IsLocalRing.residue O))
+        (fun _ => 0)).mulVec u y = ∑ I : Finset (Fin g), ∑ l : Fin (N I.card),
+        _root_.GlobalTheory.KeyKa.kosD (fun i j j' => (m i j j').map (IsLocalRing.residue O))
+          (fun _ => 0) y (.inl ⟨I, l⟩) * u (.inl ⟨I, l⟩) := by
+    intro u y
+    rw [Matrix.mulVec, dotProduct, Fintype.sum_sum_type, Fintype.sum_sigma]
+    simp
+  have hent : ∀ (p q : (I : Finset (Fin g)) × Fin (N I.card)),
+      IsLocalRing.residue O (K₀ (.inl p) (.inl q)) =
+        _root_.GlobalTheory.KeyKa.kosD (fun i j j' => (m i j j').map (IsLocalRing.residue O))
+          (fun _ => (0 : Matrix (Fin 0) _ _)) (.inl p) (.inl q) := fun p q =>
+    map_kosD_inl_inl _ m ev₀ _ p q
+
+  choose u0 hu0 using fun a : Fin d => IsLocalRing.residue_surjective (v (.inr a))
+  obtain ⟨s, hs⟩ := hsurj u0
+
+  choose sa hsa using fun a : Fin d => hsurj (Pi.single a 1)
+  choose x hx using fun l : Fin (N 0) => IsLocalRing.residue_surjective (v (.inl ⟨∅, l⟩))
+  have hc : ∀ a, IsLocalRing.residue O ((ev₀ 0).mulVec x a) = 0 := by
+    intro a
+    have h := congrFun hv (.inr a)
+    rw [Pi.zero_apply, hmv, Finset.sum_eq_single (∅ : Finset (Fin g))] at h
+    · rw [← h]
+      simp only [Matrix.mulVec, dotProduct, map_sum, map_mul]
+      refine Finset.sum_congr rfl fun l _ => ?_
+      rw [hx]
+      rfl
+    · intro I _ hI
+      refine Finset.sum_eq_zero fun l _ => ?_
+      show IsLocalRing.residue O (if I = ∅ then ev₀ I.card a l else 0) * _ = 0
+      simp [hI]
+    · intro h'
+      exact absurd (Finset.mem_univ _) h'
+  set s' : Fin (N 0) → O := ∑ a, (ev₀ 0).mulVec x a • sa a with hs'
+  have hs'ev : (ev₀ 0).mulVec s' = (ev₀ 0).mulVec x := by
+    ext a
+    simp [hs', Matrix.mulVec_sum, Matrix.mulVec_smul, hsa, Finset.sum_apply, Pi.single_apply]
+  have hs'res : ∀ l, IsLocalRing.residue O (s' l) = 0 := by
+    intro l
+    simp [hs', Finset.sum_apply, hc]
+  have hx'0 : (ev 0).mulVec (x - s') = 0 := by
+    rw [hev, ← Matrix.mulVec_mulVec, Matrix.mulVec_sub, hs'ev, sub_self, Matrix.mulVec_zero]
+  obtain ⟨w1, hw1⟩ := hker (x - s') hx'0
+
+  obtain ⟨w', hw'⟩ := hres (Sum.elim (fun p => v (.inl p)) (fun e => Fin.elim0 e)) (by
+    ext z
+    rcases z with ⟨I, l⟩ | e
+    · have h := congrFun hv (.inl ⟨I, l⟩)
+      rw [Pi.zero_apply, hmv] at h
+      rw [hmv₀, Pi.zero_apply, ← h]
+      refine Finset.sum_congr rfl fun J _ => Finset.sum_congr rfl fun l' _ => ?_
+      rw [hent]
+      rfl
+    · exact Fin.elim0 e)
+  let wf : (I : Finset (Fin g)) → Fin (N I.card) → IsLocalRing.ResidueField O := fun I l =>
+    if hI : I = ∅ then IsLocalRing.residue O (s (Fin.cast (by simp [hI]) l))
+    else if I.card = 1 then
+      ∑ i, (if h : I = {i} then IsLocalRing.residue O (w1 i (Fin.cast (by simp [h]) l)) else 0)
+    else w' (.inl ⟨I, l⟩)
+  refine ⟨Sum.elim (fun p => wf p.1 p.2) (fun _ => 0), ?_⟩
+  ext y
+  rcases y with ⟨I, l⟩ | a
+  · by_cases hI : I = ∅
+    · subst hI
+      obtain ⟨l, rfl⟩ : ∃ l' : Fin (N 0), l' = l := ⟨l, rfl⟩
+      have hxl : IsLocalRing.residue O (x l) = ∑ i, ∑ l'' : Fin (N 1),
+          IsLocalRing.residue O (m i 0 1 l l'') * IsLocalRing.residue O (w1 i l'') := by
+        calc IsLocalRing.residue O (x l)
+            = IsLocalRing.residue O ((∑ i, (m i 0 1).mulVec (w1 i)) l) := by
+              rw [← hw1]
+              show _ = IsLocalRing.residue O (x l - s' l)
+              simp [hs'res]
+          _ = _ := by simp [Finset.sum_apply, Matrix.mulVec, dotProduct, map_sum]
+      refine Eq.trans ?_ (hx l)
+      rw [hmv, hxl]
+      have hJ : ∀ J : Finset (Fin g), ∑ l' : Fin (N J.card),
+          IsLocalRing.residue O (K₀ (.inl ⟨∅, l⟩) (.inl ⟨J, l'⟩)) *
+            Sum.elim (fun p : (I : Finset (Fin g)) × Fin (N I.card) => wf p.1 p.2)
+              (fun _ : Fin d => (0 : IsLocalRing.ResidueField O)) (.inl ⟨J, l'⟩) =
+          ∑ i, if J = {i} then ∑ l'' : Fin (N 1),
+            IsLocalRing.residue O (m i 0 1 l l'') * IsLocalRing.residue O (w1 i l'') else 0 := by
+        intro J
+        by_cases h : ∃ i, J = {i}
+        · obtain ⟨i, rfl⟩ := h
+          rw [Finset.sum_eq_single i (fun j _ hj => if_neg fun h' => hj (Finset.singleton_inj.mp h').symm)
+            (fun h' => absurd (Finset.mem_univ _) h'), if_pos rfl]
+          refine Finset.sum_congr rfl fun l' _ => ?_
+          congr 1
+          · rw [hK₀]
+            first
+              | (simp [_root_.GlobalTheory.KeyKa.kosD]; done)
+              | (simp [_root_.GlobalTheory.KeyKa.kosD]; rfl)
+          · first
+              | (simp [wf]; done)
+              | (simp [wf]; rfl)
+        · push_neg at h
+          rw [Finset.sum_eq_zero fun i _ => if_neg (h i)]
+          refine Finset.sum_eq_zero fun l' _ => ?_
+          rw [hK₀]
+          simp [_root_.GlobalTheory.KeyKa.kosD, h]
+      rw [Finset.sum_congr rfl fun J _ => hJ J, Finset.sum_comm]
+      simp
+    · refine Eq.trans ?_ (hw' ⟨I, l⟩ hI).symm
+      rw [hmv, hmv₀]
+      refine Finset.sum_congr rfl fun J _ => Finset.sum_congr rfl fun l' _ => ?_
+      by_cases hdeg : J.card = I.card + 1
+      · have hJ0 : J ≠ ∅ := by
+          rintro rfl
+          simp at hdeg
+        have hJ1 : J.card ≠ 1 := by
+          intro h
+          exact hI (Finset.card_eq_zero.mp (by omega))
+        rw [hent]
+        congr 1
+        simp [wf, hJ0, hJ1]
+      · have h0 : K₀ (.inl ⟨I, l⟩) (.inl ⟨J, l'⟩) = 0 :=
+          hcx₀.1 _ _ (by show J.card + 1 ≠ I.card + 1 + 1; omega)
+        rw [← hent, h0, map_zero, zero_mul, zero_mul]
+  · rw [hmv, Finset.sum_eq_single (∅ : Finset (Fin g))]
+    · rw [← hu0 a, ← hs]
+      simp only [Matrix.mulVec, dotProduct, map_sum, map_mul]
+      refine Finset.sum_congr rfl fun l _ => ?_
+      show IsLocalRing.residue O (if (∅ : Finset (Fin g)) = ∅ then ev₀ 0 a l else 0) * wf ∅ l = _
+      first
+        | (simp [wf]; done)
+        | (simp [wf]; rfl)
+        | rfl
+        | (simp only [wf, ↓reduceDIte, ↓reduceIte]; rfl)
+    · intro I _ hI
+      refine Finset.sum_eq_zero fun l _ => ?_
+      show IsLocalRing.residue O (if I = ∅ then ev₀ I.card a l else 0) * _ = 0
+      simp [hI]
+    · intro h'
+      exact absurd (Finset.mem_univ _) h'
+
+end GlobalTheory.KeyKa.KoszulTors
+end
+
+section
+open GlobalTheory.KeyKa
+
+namespace GlobalTheory.SeriesNakayama
+
+theorem mem_pow_smul_top_iff {O M : Type*} [CommRing O] [AddCommGroup M] [Module O M] (π : O)
+    (n : ℕ) (x : M) :
+    x ∈ (Ideal.span {π} ^ n • ⊤ : Submodule O M) ↔ ∃ y : M, π ^ n • y = x := by
+  rw [Ideal.span_singleton_pow, Submodule.ideal_span_singleton_smul,
+    Submodule.mem_smul_pointwise_iff_exists]
+  simp
+
+theorem mem_pow_smul_top_pi {O ι : Type*} [CommRing O] (π : O) (n : ℕ) (x : ι → O) :
+    x ∈ (Ideal.span {π} ^ n • ⊤ : Submodule O (ι → O)) ↔
+      ∀ i, x i ∈ (Ideal.span {π} ^ n • ⊤ : Submodule O O) := by
+  simp only [mem_pow_smul_top_iff]
+  refine ⟨fun ⟨y, hy⟩ i => ⟨y i, congrFun hy i⟩, fun h => ?_⟩
+  choose y hy using h
+  exact ⟨y, funext hy⟩
+
+theorem surjective_of_mod {O ι κ : Type*} [CommRing O] (π : O)
+    [IsAdicComplete (Ideal.span {π}) O] (Φ : (ι → O) →ₗ[O] (κ → O))
+    (h : ∀ G : κ → O, ∃ x, ∀ j, G j - Φ x j ∈ Ideal.span {π}) : Function.Surjective Φ := by
+  have : IsPrecomplete (Ideal.span {π}) (ι → O) := by
+    refine ⟨fun u hu => ?_⟩
+    have h1 : ∀ i, ∃ L : O, ∀ k, u k i ≡ L [SMOD (Ideal.span {π} ^ k • ⊤ : Submodule O O)] :=
+      fun i => IsPrecomplete.prec' (fun k => u k i) fun {a b} hab =>
+        SModEq.sub_mem.2 ((mem_pow_smul_top_pi π a _).1 (SModEq.sub_mem.1 (hu hab)) i)
+    choose L hL using h1
+    exact ⟨L, fun k => SModEq.sub_mem.2
+      ((mem_pow_smul_top_pi π k _).2 fun i => SModEq.sub_mem.1 (hL i k))⟩
+  have : IsHausdorff (Ideal.span {π}) (κ → O) := by
+    refine ⟨fun x hx => funext fun j => IsHausdorff.haus' (I := Ideal.span {π}) (x j) fun n => ?_⟩
+    exact SModEq.sub_mem.2 ((mem_pow_smul_top_pi π n _).1 (SModEq.sub_mem.1 (hx n)) j)
+  refine surjective_of_mkQ_comp_surjective (I := Ideal.span {π}) fun G => ?_
+  obtain ⟨G, rfl⟩ := Submodule.Quotient.mk_surjective _ G
+  obtain ⟨x, hx⟩ := h G
+  refine ⟨x, ((Submodule.Quotient.eq _).2 ?_).symm⟩
+  have := (mem_pow_smul_top_pi π 1 (G - Φ x)).2 fun j => by simpa using hx j
+  rwa [pow_one] at this
+
+theorem exists_projection {O K : Type*} [CommRing O] [IsLocalRing O] [Field K] (f : O →+* K)
+    (hf : RingHom.ker f = IsLocalRing.maximalIdeal O) :
+    ∃ (μ : K →+ K) (l : K → O), (∀ a, f (l a) = μ a) ∧ (∀ a o, μ (a * f o) = μ a * f o) ∧
+      ∀ o, μ (f o) = f o := by
+  let φ : IsLocalRing.ResidueField O →+* K :=
+    Ideal.Quotient.lift _ f fun a ha => by rwa [← hf] at ha
+  have hφ : ∀ o, φ (IsLocalRing.residue O o) = f o := fun _ => rfl
+  letI := φ.toAlgebra
+  obtain ⟨r, hr⟩ := (Algebra.linearMap (IsLocalRing.ResidueField O) K).exists_leftInverse_of_injective
+    (LinearMap.ker_eq_bot.2 φ.injective)
+  choose l hl using fun a => IsLocalRing.residue_surjective (R := O) (r a)
+  refine ⟨φ.toAddMonoidHom.comp r.toAddMonoidHom, l, fun a => ?_, fun a o => ?_, fun o => ?_⟩
+  · change _ = φ (r a)
+    rw [← hl, hφ]
+  · change φ (r _) = φ (r a) * _
+    have : a * f o = IsLocalRing.residue O o • a := mul_comm _ _
+    rw [this, map_smul, smul_eq_mul, map_mul, hφ, mul_comm]
+  · change φ (r _) = _
+    have : r (f o) = IsLocalRing.residue O o := LinearMap.congr_fun hr (IsLocalRing.residue O o)
+    rw [this, hφ]
+
+theorem span_mod_equations_lift (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
+    [IsAdicComplete (IsLocalRing.maximalIdeal O) O] (K : Type) [Field K] (f : O →+* K) (g N : ℕ)
+    (Y : Type) (F : Y → Fin g → (MvPowerSeries (Fin g) O))
+    (ρ : Y → Fin N → (MvPowerSeries (Fin g) O))
+    (hf : RingHom.ker f = IsLocalRing.maximalIdeal O)
+    (h : ∀ G : Y → MvPowerSeries (Fin g) K, ∃ v : Fin N → K, ∀ y,
+      G y - ∑ k, v k • MvPowerSeries.map f (ρ y k) ∈
+        Ideal.span (Set.range fun i => MvPowerSeries.map f (F y i)))
+    (G : Y → (MvPowerSeries (Fin g) O)) :
+    ∃ v : Fin N → O, ∀ y, G y - ∑ k, v k • ρ y k ∈ Ideal.span (Set.range (F y)) := by
+  classical
+  obtain ⟨π, hπ⟩ := IsDiscreteValuationRing.exists_irreducible O
+  have hm := hπ.maximalIdeal_eq
+  have : IsAdicComplete (Ideal.span {π}) O := hm ▸ ‹_›
+  obtain ⟨μ, l, hl, hμ, hμ1⟩ := exists_projection f hf
+  let Φ : (Fin N ⊕ (Y × Fin g × (Fin g →₀ ℕ)) → O) →ₗ[O] (Y × (Fin g →₀ ℕ) → O) :=
+    { toFun := fun x j => ∑ k, x (.inl k) * MvPowerSeries.coeff j.2 (ρ j.1 k) +
+        ∑ i, ∑ p ∈ Finset.HasAntidiagonal.antidiagonal j.2,
+          x (.inr (j.1, i, p.1)) * MvPowerSeries.coeff p.2 (F j.1 i)
+      map_add' := fun x x' => funext fun j => by
+        simp only [Pi.add_apply, add_mul, Finset.sum_add_distrib]
+        ring
+      map_smul' := fun c x => funext fun j => by
+        simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply, mul_add, Finset.mul_sum,
+          mul_assoc] }
+  have hΦ : Function.Surjective Φ := by
+    refine surjective_of_mod π Φ fun G => ?_
+    let G' : Y → MvPowerSeries (Fin g) K := fun y d => f (G (y, d))
+    obtain ⟨v, hv⟩ := h G'
+    choose H hH using fun y => (Ideal.mem_span_range_iff_exists_fun).1 (hv y)
+    refine ⟨Sum.elim (fun k => l (v k)) fun q => l (MvPowerSeries.coeff q.2.2 (H q.1 q.2.1)), ?_⟩
+    rintro ⟨y, d⟩
+    rw [← hm, ← hf, RingHom.mem_ker]
+    have h1 := congrArg (fun s => μ (MvPowerSeries.coeff d s)) (eq_sub_iff_add_eq.1 (hH y))
+    have h2 : MvPowerSeries.coeff d (G' y) = f (G (y, d)) := rfl
+    simp only [map_add, map_sum, MvPowerSeries.coeff_mul, MvPowerSeries.coeff_map,
+      MvPowerSeries.coeff_smul, hμ, hμ1, h2] at h1
+    simp only [Φ, LinearMap.coe_mk, AddHom.coe_mk, map_sub, map_add, map_sum, map_mul, Sum.elim_inl,
+      Sum.elim_inr, hl]
+    rw [← h1, add_comm, sub_self]
+  obtain ⟨x, hx⟩ := hΦ fun j => MvPowerSeries.coeff j.2 (G j.1)
+  refine ⟨fun k => x (.inl k), fun y => Ideal.mem_span_range_iff_exists_fun.2
+    ⟨fun i => (show MvPowerSeries (Fin g) O from fun d => x (.inr (y, i, d))), ?_⟩⟩
+  ext d
+  have h1 : _ = MvPowerSeries.coeff d (G y) := congrFun hx (y, d)
+  simp only [map_sub, map_sum, MvPowerSeries.coeff_mul, MvPowerSeries.coeff_smul, ← h1, Φ,
+    LinearMap.coe_mk, AddHom.coe_mk, add_sub_cancel_left]
+  exact Finset.sum_congr rfl fun i _ => MvPowerSeries.coeff_mul d _ _
+
+end GlobalTheory.SeriesNakayama
+end
+
+section
+open GlobalTheory.KeyKa
+
+namespace GlobalTheory.KeyKa
+
+theorem exists_pow_span_X_le_of_dense (K : Type) [Field K] (g N : ℕ)
+    (I : Ideal (MvPowerSeries (Fin g) K)) (ρ : Fin N → MvPowerSeries (Fin g) K)
+    (h : ∀ (r : ℕ) (G : MvPowerSeries (Fin g) K), ∃ v : Fin N → K,
+      G - ∑ k, v k • ρ k ∈ I ⊔ Ideal.span (Set.range MvPowerSeries.X) ^ r) :
+    ∃ r : ℕ, Ideal.span (Set.range (MvPowerSeries.X : Fin g → MvPowerSeries (Fin g) K)) ^ r ≤ I := by
+  set J : Ideal (MvPowerSeries (Fin g) K) := Ideal.span (Set.range MvPowerSeries.X) with hJ
+  let L : (Fin N → K) →ₗ[K] MvPowerSeries (Fin g) K := Fintype.linearCombination K ρ
+  have hL : ∀ v, L v = ∑ k, v k • ρ k := fun v => Fintype.linearCombination_apply K ρ v
+  let V : ℕ →o (Submodule K (Fin N → K))ᵒᵈ :=
+    ⟨fun r => OrderDual.toDual (((I ⊔ J ^ r).restrictScalars K).comap L), by
+      intro a b hab
+      change ((I ⊔ J ^ b).restrictScalars K).comap L ≤ ((I ⊔ J ^ a).restrictScalars K).comap L
+      intro v hv
+      exact (sup_le_sup_left (Ideal.pow_le_pow_right hab) I) hv⟩
+  obtain ⟨r, hr⟩ := IsArtinian.monotone_stabilizes V
+  have hV : ∀ v, L v ∈ I ⊔ J ^ r → L v ∈ I ⊔ J ^ (r + 1) := by
+    intro v hv
+    have e : ((I ⊔ J ^ r).restrictScalars K).comap L = ((I ⊔ J ^ (r + 1)).restrictScalars K).comap L :=
+      hr (r + 1) (Nat.le_succ r)
+    have : v ∈ ((I ⊔ J ^ r).restrictScalars K).comap L := hv
+    rw [e] at this
+    exact this
+  have hfg : J.FG := Submodule.fg_span (Set.finite_range _)
+  have hjac : J ≤ Ideal.jacobson ⊥ := by
+    rw [IsLocalRing.jacobson_eq_maximalIdeal ⊥ bot_ne_top, hJ, Ideal.span_le]
+    rintro _ ⟨i, rfl⟩
+    simp only [SetLike.mem_coe, IsLocalRing.mem_maximalIdeal, mem_nonunits_iff,
+      MvPowerSeries.isUnit_iff_constantCoeff]
+    simp
+  refine ⟨r, Submodule.le_of_le_smul_of_le_jacobson_bot (N' := J ^ r) (N := I) (I := J)
+    (Ideal.FG.pow hfg) hjac ?_⟩
+  intro G hG
+  obtain ⟨v, hv⟩ := h (r + 1) G
+  rw [← hL] at hv
+  have h1 : L v ∈ I ⊔ J ^ r := by
+    have h2 : G - L v ∈ I ⊔ J ^ r :=
+      (sup_le_sup_left (Ideal.pow_le_pow_right (Nat.le_succ r)) I) hv
+    have h3 : G ∈ I ⊔ J ^ r := Ideal.mem_sup_right hG
+    simpa using Ideal.sub_mem _ h3 h2
+  have h4 := Ideal.add_mem _ hv (hV v h1)
+  rw [sub_add_cancel, pow_succ'] at h4
+  exact h4
+
+theorem exists_sub_mem_of_dense : ∀ (K : Type) [Field K] (g N : ℕ) (Y : Type) [Finite Y] (I : Y → Ideal (MvPowerSeries (Fin g) K)) (ρ : Y → Fin N → MvPowerSeries (Fin g) K), (∀ (r : ℕ) (G : Y → MvPowerSeries (Fin g) K), ∃ v : Fin N → K, ∀ y, G y - ∑ k, v k • ρ y k ∈ I y ⊔ Ideal.span (Set.range MvPowerSeries.X) ^ r) → ∀ G : Y → MvPowerSeries (Fin g) K, ∃ v : Fin N → K, ∀ y, G y - ∑ k, v k • ρ y k ∈ I y := by
+  intro K _ g N Y _ I ρ h G
+  have hy : ∀ y, ∃ r : ℕ,
+      Ideal.span (Set.range (MvPowerSeries.X : Fin g → MvPowerSeries (Fin g) K)) ^ r ≤ I y :=
+    fun y => exists_pow_span_X_le_of_dense K g N (I y) (ρ y) fun r F => by
+      obtain ⟨v, hv⟩ := h r (fun _ => F)
+      exact ⟨v, hv y⟩
+  choose r hr using hy
+  obtain ⟨R, hR⟩ := (Set.finite_range r).bddAbove
+  obtain ⟨v, hv⟩ := h R G
+  refine ⟨v, fun y => ?_⟩
+  exact (sup_le le_rfl ((Ideal.pow_le_pow_right (hR ⟨y, rfl⟩)).trans (hr y))) (hv y)
+
+end GlobalTheory.KeyKa
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.AbLaw
+open GlobalTheory.KeyKa
+
+namespace GlobalTheory.KosResidueExact
+
+theorem kosD_apply_map {k K : Type} [CommRing k] [CommRing K] (f : k →+* K) {g : ℕ} {N : ℕ → ℕ}
+    (m : Fin g → ∀ j j', Matrix (Fin (N j)) (Fin (N j')) k) (p q : KIx g 0 N) :
+    kosD (d := 0) (fun i j j' => (m i j j').map f) (fun _ => 0) p q =
+      f (kosD (d := 0) m (fun _ => 0) p q) := by
+  rcases p with p | a
+  · rcases q with q | a
+    · simp only [kosD, map_sum]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      split_ifs <;> simp
+    · exact a.elim0
+  · exact a.elim0
+
+theorem descend {k K : Type} [Field k] [Field K] [Algebra k K] {g : ℕ} {N : ℕ → ℕ}
+    (m : Fin g → ∀ j j', Matrix (Fin (N j)) (Fin (N j')) k)
+    (H : ∀ v : KIx g 0 N → K,
+      (kosD (d := 0) (fun i j j' => (m i j j').map (algebraMap k K)) (fun _ => 0)).mulVec v = 0 →
+      ∃ w, ∀ p, p.1 ≠ ∅ → v (.inl p) =
+        (kosD (d := 0) (fun i j j' => (m i j j').map (algebraMap k K)) (fun _ => 0)).mulVec w (.inl p))
+    (v : KIx g 0 N → k) (hv : (kosD (d := 0) m (fun _ => 0)).mulVec v = 0) :
+    ∃ w, ∀ p, p.1 ≠ ∅ → v (.inl p) = (kosD (d := 0) m (fun _ => 0)).mulVec w (.inl p) := by
+  obtain ⟨lam, hlam⟩ := LinearMap.exists_leftInverse_of_injective (Algebra.linearMap k K)
+    (LinearMap.ker_eq_bot.2 (algebraMap k K).injective)
+  have hl : ∀ a, lam (algebraMap k K a) = a := fun a => LinearMap.congr_fun hlam a
+  obtain ⟨w, hw⟩ := H (fun p => algebraMap k K (v p)) (by
+    funext p
+    have := congrArg (algebraMap k K) (congrFun hv p)
+    simp only [Matrix.mulVec, dotProduct, map_sum, map_mul, Pi.zero_apply, map_zero] at this ⊢
+    simpa only [kosD_apply_map] using this)
+  refine ⟨fun q => lam (w q), fun p hp => ?_⟩
+  have := congrArg lam (hw p hp)
+  rw [hl] at this
+  rw [this]
+  simp only [Matrix.mulVec, dotProduct, map_sum, kosD_apply_map]
+  refine Finset.sum_congr rfl fun q _ => ?_
+  rw [← Algebra.smul_def, map_smul, smul_eq_mul]
+
+theorem transport {O K : Type} [CommRing O] [CommRing K] (f : O →+* K) {g g' : ℕ} (hg : g' = g) (l n : ℕ)
+    (m : Fin g → ∀ j j', Matrix (Fin ((l - j * n) ^ g)) (Fin ((l - j' * n) ^ g)) O)
+    (m' : Fin g' → ∀ j j', Matrix (Fin ((l - j * n) ^ g')) (Fin ((l - j' * n) ^ g')) K)
+    (hm : ∀ i j j' k k', m' i j j' k k' = f (m (i.cast hg) j j'
+      (k.cast (congrArg (fun r => (l - j * n) ^ r) hg)) (k'.cast (congrArg (fun r => (l - j' * n) ^ r) hg))))
+    (H : ∀ v : KIx g' 0 (fun j => (l - j * n) ^ g') → K, (kosD m' (fun _ => 0)).mulVec v = 0 →
+      ∃ w, ∀ p, p.1 ≠ ∅ → v (.inl p) = (kosD (d := 0) m' (fun _ => 0)).mulVec w (.inl p)) :
+    ∀ v : KIx g 0 (fun j => (l - j * n) ^ g) → K,
+      (kosD (fun i j j' => (m i j j').map f) (fun _ => 0)).mulVec v = 0 →
+      ∃ w, ∀ p, p.1 ≠ ∅ → v (.inl p) =
+        (kosD (d := 0) (fun i j j' => (m i j j').map f) (fun _ => 0)).mulVec w (.inl p) := by
+  subst hg
+  have : m' = fun i j j' => (m i j j').map f := by
+    funext i j j'
+    ext k k'
+    exact hm i j j' k k'
+  subst this
+  exact H
+
+theorem main : Out.Laws → ∀ (O : Type) [CommRing O] [IsLocalRing O] [IsNoetherianRing O] (k : Type) [Field k] (f : O →+* k) (x : KeyIn O) (n l : ℕ) (s : Fin x.P.g → RR x n) (b : ∀ j, Fin ((l - j * n) ^ x.P.g) → RR x (l - j * n)) (m), 1 ≤ n → x.P.g * n < l → (∀ j ≤ x.P.g, IsBasis x (b j)) → IsMul x l s b m → FinZ x s → (∀ v : KIx x.P.g 0 (fun j => (l - j * n) ^ x.P.g) → k, (kosD (fun i j j' => (m i j j').map f) (fun _ => 0)).mulVec v = 0 → ∃ w, ∀ p, p.1 ≠ ∅ → v (.inl p) = (kosD (d := 0) (fun i j j' => (m i j j').map f) (fun _ => 0)).mulVec w (.inl p)) := by
+  intro hL O _ _ _ k _ f x n l s b m hn hl hb hm hZ
+  obtain ⟨x', φ, w, hg, s', b', m', -, -, -, hb', hm', hmm, hZ'⟩ :=
+    GlobalTheory.T.exists_keyData_baseChange_sections_matrices hL O (AlgebraicClosure k) ((algebraMap k (AlgebraicClosure k)).comp f) x n l s b m hl hb hm
+  have hfin : Finite (Sp (AlgebraicClosure k)) :=
+    inferInstanceAs (Finite (PrimeSpectrum (AlgebraicClosure k)))
+  have hc : ∀ y : x'.P.A.left, ∃ i, y ∈ x'.P.L.U i := fun y => exists_chart x'.P.isLB y
+  choose c hc using hc
+  have H := (GlobalTheory.T.koszul_sections_exact_algClosed_polarisedAV hL (AlgebraicClosure k) x' n l s' b' m' c hn (by rw [hg]; exact hl)
+    (hZ' hfin hZ) hb' hm' hc).1
+  have H' := transport ((algebraMap k (AlgebraicClosure k)).comp f) hg l n m m' hmm H
+  exact descend (K := AlgebraicClosure k) (N := fun j => (l - j * n) ^ x.P.g)
+    (fun i j j' => (m i j j').map f) H'
+
+end GlobalTheory.KosResidueExact
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.AbLaw
+open GlobalTheory.KeyKa
+
+noncomputable section
+namespace GlobalTheory.KeyKa.ClosedApprox
+open EtBaseChange
+
+theorem valT_cst {R T : Type} [CommRing R] [CommRing T] {X : Scheme.{0}} (p : X ⟶ Sp R) (w : Sp T ⟶ X) (F : R →+* T)
+    (hw : w ≫ p = spMap F) (U : X.Opens) (h : ⊤ ≤ w ⁻¹ᵁ U) (c : R) : valT w U (AbLaw.cst p U c) = F c := by
+  have h0 : valT w U (AbLaw.cst p U c) =
+      valT w U ((p.appLE ⊤ U le_top).hom ((Scheme.ΓSpecIso (CommRingCat.of R)).inv.hom c)) := rfl
+  refine h0.trans ((valT_appLE w p (U := ⊤) le_top h _).trans ?_)
+  rw [hw, ← Category.comp_id (spMap F)]
+  refine (valT_spMap F (𝟙 (Sp R)) le_top _).trans (congrArg F ((valT_eq _ _ le_top _).trans ?_))
+  have e3 : Scheme.Hom.appLE (𝟙 (Sp R)) ⊤ ⊤ le_top = 𝟙 _ := by
+    rw [← Scheme.Hom.id_appTop]; exact Scheme.Hom.appLE_eq_app _
+  unfold valH
+  erw [e3]
+  exact congrArg (fun q => q.hom c) (Scheme.ΓSpecIso (CommRingCat.of R)).inv_hom_id
+
+theorem top_le_of_closedPoint {T : Type} [CommRing T] [IsLocalRing T] {X : Scheme.{0}} (w : Sp T ⟶ X) {U : X.Opens}
+    (h : w (IsLocalRing.closedPoint T) ∈ U) : ⊤ ≤ w ⁻¹ᵁ U := fun p _ =>
+  ((IsLocalRing.specializes_closedPoint p).map w.continuous).mem_open U.isOpen h
+
+theorem exists_stalk_hom {T : Type} [CommRing T] [IsLocalRing T] {X : Scheme.{0}} (w : Sp T ⟶ X) (z : X)
+    (hz : w (IsLocalRing.closedPoint T) = z) : ∃ ψ : X.presheaf.stalk z →+* T, ∀ (U : X.Opens), z ∈ U →
+      ∀ a : Γ(X, U), valT w U a = ψ (gs (𝟙 X) z U a) := by
+  obtain ⟨φ, hφ⟩ : ∃ φ : X.presheaf.stalk z ⟶ .of T, Spec.map φ ≫ X.fromSpecStalk z = w := by
+    subst hz
+    exact ⟨_, Scheme.Spec_stalkClosedPointTo_fromSpecStalk (R := .of T) w⟩
+  refine ⟨φ.hom, fun U hU a => ?_⟩
+  rw [← hφ, JacGen.valT_specMap_fromSpecStalk hU, gs_eq (𝟙 X) z U hU]
+  rfl
+
+theorem exists_mem_sub_mem_pow {σ K : Type} [Finite σ] [CommRing K] (S : Subring (MvPowerSeries σ K))
+    (hC : ∀ a, algebraMap K _ a ∈ S) (hX : ∀ i, MvPowerSeries.X i ∈ S) (r : ℕ) (G : MvPowerSeries σ K) :
+    ∃ p ∈ S, G - p ∈ Ideal.span (Set.range (MvPowerSeries.X : σ → MvPowerSeries σ K)) ^ r := by
+  have key : ∀ q : MvPolynomial σ K, (q : MvPowerSeries σ K) ∈ S := fun q => by
+    induction q using MvPolynomial.induction_on with
+    | C a => rw [MvPolynomial.coe_C]; exact hC a
+    | add p q hp hq => simpa using S.add_mem hp hq
+    | mul_X p i hp => simpa using S.mul_mem hp (hX i)
+  refine ⟨_, key (MvPowerSeries.truncTotal r G), ?_⟩
+  rw [← germIdeal_eq_span, mem_germIdeal_pow_iff]
+  intro d hd
+  rw [map_sub, MvPolynomial.coeff_coe, MvPowerSeries.coeff_truncTotal _ hd, sub_self]
+
+theorem mem_nonzeroLocus_of_via {R R' : Type} [CommRing R] [CommRing R'] {x : KeyIn R} {x' : KeyIn R'}
+    {φ : x'.P.A.left ⟶ x.P.A.left} {w : LB.Iso x'.P.L (x.P.L.pull φ)} {l : ℕ} {s' : RR x' l} {s : RR x l}
+    (hs : SecVia x' x φ w s' s) (y : x'.P.A.left) (hy : y ∈ Out.nonzeroLocus s') : φ y ∈ Out.nonzeroLocus s := by
+  obtain ⟨i, hi⟩ := TopologicalSpace.Opens.mem_iSup.1 hy
+  obtain ⟨k, hk⟩ := exists_chart x.P.isLB (φ y)
+  have hle : (x.P.L.pull φ).U (fun _ => k) ⊓ x'.P.L.U i ≤ φ ⁻¹ᵁ x.P.L.U k := fun y hy => mem_pull.1 hy.1
+  have e := hs (fun _ => k) i hle
+  have hm : y ∈ (x.P.L.pull φ).U (fun _ => k) ⊓ x'.P.L.U i := ⟨mem_pull.2 hk, x'.P.A.left.basicOpen_le _ hi⟩
+  have h1 : y ∈ x'.P.A.left.basicOpen ((φ.appLE _ _ hle).hom (s.f k)) := by
+    refine (congrArg x'.P.A.left.basicOpen e).ge ((Scheme.basicOpen_mul _ _ _).ge ⟨?_, ?_⟩)
+    · exact (Scheme.basicOpen_of_isUnit _ ((w.s (fun _ => k, i)).isUnit.pow l)).ge hm
+    · exact (Scheme.basicOpen_res _ _ _).ge ⟨hm, hi⟩
+  exact TopologicalSpace.Opens.mem_iSup.2 ⟨k, ((Scheme.basicOpen_appLE φ _ (x.P.L.U k) hle (s.f k)).le h1).2⟩
+
+theorem isLocalHom_map {σ O K : Type} [CommRing O] [IsLocalRing O] [Field K] (f : O →+* K)
+    (hf : RingHom.ker f = IsLocalRing.maximalIdeal O) : IsLocalHom (MvPowerSeries.map (σ := σ) f) :=
+  ⟨fun a ha => by
+    rw [MvPowerSeries.isUnit_iff_constantCoeff] at ha ⊢
+    by_contra h
+    have : MvPowerSeries.constantCoeff a ∈ RingHom.ker f := hf ▸ h
+    rw [MvPowerSeries.constantCoeff_map, RingHom.mem_ker.1 this] at ha
+    exact not_isUnit_zero ha⟩
+
+theorem exists_sec_cast {R : Type} [CommRing R] (x : KeyIn R) {l l' : ℕ} (h : l = l') (s : RR x l) :
+    ∃ s' : RR x l', ∀ c, (show Γ(x.P.A.left, x.P.L.U c) from s'.f c) = (show Γ(x.P.A.left, x.P.L.U c) from s.f c) := by
+  subst h
+  exact ⟨s, fun _ => rfl⟩
+
+theorem sub_mem_sup {S T : Type} [CommRing S] [CommRing T] (ψ : S →+* T) (u : Tˣ) (N : ℕ) {I : Ideal S} {J J' : Ideal T}
+    (hI : I ≤ J.comap ψ) {g a : S} {G : T} (h₁ : g - a ∈ I) (h₂ : ((u⁻¹ : Tˣ) : T) ^ N * G - ψ a ∈ J') :
+    G - (u : T) ^ N * ψ g ∈ J ⊔ J' := by
+  have e : G - (u : T) ^ N * ψ g = (u : T) ^ N * ((((u⁻¹ : Tˣ) : T) ^ N * G - ψ a) - ψ (g - a)) := by
+    have : (u : T) ^ N * ((u⁻¹ : Tˣ) : T) ^ N = 1 := by rw [← mul_pow, Units.mul_inv, one_pow]
+    rw [map_sub]
+    linear_combination (-G) * this
+  rw [e]
+  exact Ideal.mul_mem_left _ _ (Ideal.sub_mem _ (Ideal.mem_sup_right h₂) (Ideal.mem_sup_left (hI h₁)))
+
+end GlobalTheory.KeyKa.ClosedApprox
+
+namespace GlobalTheory.KeyKa
+open EtBaseChange ClosedApprox
+
+theorem exists_comb_sub_mem_sup_pow : Out.Laws → ∀ (O : Type) [CommRing O] [IsLocalRing O] [IsNoetherianRing O] (K : Type) [Field K] [IsAlgClosed K] (f : O →+* K) (x : KeyIn O) (n l : ℕ) (s : Fin x.P.g → RR x n) (b : ∀ j, Fin ((l - j * n) ^ x.P.g) → RR x (l - j * n)) (m) (Y : Type) (θ : Y → (Sp (MvPowerSeries (Fin x.P.g) O) ⟶ x.P.A.left)) (c : Y → x.P.L.ι), RingHom.ker f = IsLocalRing.maximalIdeal O → 1 ≤ n → x.P.g * n < l → (∀ j ≤ x.P.g, IsBasis x (b j)) → IsMul x l s b m → FinZ x s → (∀ y, θ y ≫ x.P.A.hom = spMap (algebraMap O (MvPowerSeries (Fin x.P.g) O))) → (∀ y, (∃ (V : x.P.A.left.Opens) (t : Fin x.P.g → Γ(x.P.A.left, V)), ⊤ ≤ (θ y) ⁻¹ᵁ V ∧ ∀ i, valT (T := (MvPowerSeries (Fin x.P.g) O)) (θ y) V (t i) = MvPowerSeries.X i)) → (∀ y, ⊤ ≤ (θ y) ⁻¹ᵁ x.P.L.U (c y)) → Function.Injective (fun y => θ y (IsLocalRing.closedPoint (MvPowerSeries (Fin x.P.g) O))) → (∀ y i, θ y (IsLocalRing.closedPoint (MvPowerSeries (Fin x.P.g) O)) ∉ Out.nonzeroLocus (s i)) → ∀ (r : ℕ) (G : Y → MvPowerSeries (Fin x.P.g) K), ∃ v : Fin ((l - 0 * n) ^ x.P.g) → K, ∀ y, G y - ∑ k, v k • MvPowerSeries.map f (valT (T := (MvPowerSeries (Fin x.P.g) O)) (θ y) (x.P.L.U (c y)) ((b 0 k).f (c y))) ∈ Ideal.span (Set.range fun i => MvPowerSeries.map f (valT (T := (MvPowerSeries (Fin x.P.g) O)) (θ y) (x.P.L.U (c y)) ((s i).f (c y)))) ⊔ Ideal.span (Set.range MvPowerSeries.X) ^ r := by
+  intro hL O _ _ _ K _ _ f x n l s b m Y θ c hf hn hl hb hm hZ hθ hco hc hinj hz r G
+  obtain ⟨x', φ, w, hg, s', b', m', ⟨_, _, _, hp, -⟩, hs', hb', hB', hm', -, hZ'⟩ :=
+    GlobalTheory.T.exists_keyData_baseChange_sections_matrices hL O K f x n l s b m hl hb hm
+  replace hZ' := hZ' (inferInstanceAs (Finite (PrimeSpectrum K))) hZ
+  let F : MvPowerSeries (Fin x.P.g) O →+* MvPowerSeries (Fin x.P.g) K := MvPowerSeries.map f
+  have hF : IsLocalHom F := isLocalHom_map f hf
+  have hw : ∀ y, (spMap F ≫ θ y) ≫ x.P.A.hom = spMap (algebraMap K (MvPowerSeries (Fin x.P.g) K)) ≫ spMap f :=
+    fun y => by
+      have : F.comp (algebraMap O _) = (algebraMap K (MvPowerSeries (Fin x.P.g) K)).comp f :=
+        RingHom.ext fun a => MvPowerSeries.map_C f a
+      rw [Category.assoc, hθ, ← Spec.map_comp, ← Spec.map_comp, ← CommRingCat.ofHom_comp, ← CommRingCat.ofHom_comp, this]
+  obtain ⟨θ', h₁, h₂⟩ : ∃ θ' : Y → (Sp (MvPowerSeries (Fin x.P.g) K) ⟶ x'.P.A.left),
+      (∀ y, θ' y ≫ φ = spMap F ≫ θ y) ∧
+        ∀ y, θ' y ≫ x'.P.A.hom = spMap (algebraMap K (MvPowerSeries (Fin x.P.g) K)) :=
+    ⟨fun y => hp.1.lift _ _ (hw y), fun y => hp.1.lift_fst _ _ _, fun y => hp.1.lift_snd _ _ _⟩
+  let P : Y → x'.P.A.left := fun y => θ' y (IsLocalRing.closedPoint (MvPowerSeries (Fin x.P.g) K))
+  have hP : ∀ y, φ (P y) = θ y (IsLocalRing.closedPoint (MvPowerSeries (Fin x.P.g) O)) := fun y =>
+    (congrArg (fun q => q (IsLocalRing.closedPoint (MvPowerSeries (Fin x.P.g) K))) (h₁ y)).trans
+      (congrArg (θ y) (IsLocalRing.comap_closedPoint F))
+  have hPinj : Function.Injective P := fun y y' h => hinj ((hP y).symm.trans ((congrArg φ h).trans (hP y')))
+  choose c' hc' using exists_chart x'.P.isLB
+  have hU : ∀ y, ⊤ ≤ θ' y ⁻¹ᵁ x'.P.L.U (c' (P y)) := fun y => top_le_of_closedPoint _ (hc' (P y))
+  have hφ : ∀ y {V : x.P.A.left.Opens}, ⊤ ≤ θ y ⁻¹ᵁ V → ⊤ ≤ (θ' y ≫ φ) ⁻¹ᵁ V := fun y V h p _ => by
+    rw [h₁ y]
+    exact h (show spMap F p ∈ ⊤ from trivial)
+  have hval : ∀ y {V : x.P.A.left.Opens}, ⊤ ≤ θ y ⁻¹ᵁ V → ∀ a, valT (θ' y ≫ φ) V a = F (valT (θ y) V a) :=
+    fun y V h a => (congrArg (fun q => valT q V a) (h₁ y)).trans (valT_spMap F (θ y) h a)
+  have hW := fun y => le_inf_pull (θ' y) (c y) (c' (P y)) (hφ y (hc y)) (hU y)
+  obtain ⟨u, hu⟩ : ∃ u : Y → (MvPowerSeries (Fin x.P.g) K)ˣ, ∀ y (l : ℕ) (sg : RR x l) (sg' : RR x' l),
+      SecVia x' x φ w sg' sg → F (valT (θ y) (x.P.L.U (c y)) (sg.f (c y))) =
+        (u y : MvPowerSeries (Fin x.P.g) K) ^ l * valT (θ' y) (x'.P.L.U (c' (P y))) (sg'.f (c' (P y))) := by
+    refine ⟨fun y => Units.map (valH (θ' y) _ (hW y)).toMonoidHom (w.s (fun _ => c y, c' (P y))),
+      fun y l sg sg' h => (hval y (hc y) _).symm.trans ((valT_via h (θ' y) (c y) (c' (P y)) (hφ y (hc y)) (hU y)).trans
+        (congrArg (· ^ l * _) (valT_eq _ _ (hW y) _)))⟩
+  choose ψ hψ using fun y z (h : P y = z) => exists_stalk_hom (θ' y) z h
+  have ha : ∀ z : x'.P.A.left, ∃ a : x'.P.A.left.presheaf.stalk z, ∀ y (h : P y = z),
+      (((u y)⁻¹ : (MvPowerSeries (Fin x.P.g) K)ˣ) : MvPowerSeries (Fin x.P.g) K) ^ (l - 0 * n) * G y - ψ y z h a ∈
+        Ideal.span (Set.range MvPowerSeries.X) ^ r := fun z => by
+    by_cases hz : ∃ y, P y = z
+    · obtain ⟨y, rfl⟩ := hz
+      obtain ⟨V, t, hV, ht⟩ := hco y
+      obtain ⟨_, ⟨a, rfl⟩, ha⟩ := exists_mem_sub_mem_pow (ψ y _ rfl).range
+        (fun a => ⟨_, (hψ y _ rfl _ (hc' _) _).symm.trans (valT_cst _ _ _ (h₂ y) _ (hU y) a)⟩)
+        (fun i => ⟨_, (hψ y _ rfl (φ ⁻¹ᵁ V) (hφ y hV trivial) _).symm.trans
+          ((valT_appLE (θ' y) φ le_rfl (hφ y hV) (t i)).trans ((hval y hV _).trans
+            ((congrArg F (ht i)).trans (MvPowerSeries.map_X f i))))⟩) r
+        ((((u y)⁻¹ : (MvPowerSeries (Fin x.P.g) K)ˣ) : MvPowerSeries (Fin x.P.g) K) ^ (l - 0 * n) * G y)
+      refine ⟨a, fun y' h => ?_⟩
+      obtain rfl := hPinj h
+      exact ha
+    · exact ⟨0, fun y h => (hz ⟨y, h⟩).elim⟩
+  choose a ha using ha
+  obtain ⟨sg₀, hsg₀⟩ := (GlobalTheory.T.koszul_sections_exact_algClosed_polarisedAV hL K x' n l s' b' m' c' hn (hg ▸ hl) hZ' hB' hm' hc').2.1 a
+  obtain ⟨sg, hsg⟩ := exists_sec_cast x' (show l = l - 0 * n by simp) sg₀
+  obtain ⟨v, hv, -⟩ := hB' 0 (Nat.zero_le _) sg
+  have hN : (l - 0 * n) ^ x'.P.g = (l - 0 * n) ^ x.P.g := congrArg (fun r => (l - 0 * n) ^ r) hg
+  refine ⟨fun k => v (k.cast hN.symm), fun y => ?_⟩
+  have hzero : ∀ i, P y ∉ Out.nonzeroLocus (s' i) := fun i h =>
+    hz y (i.cast hg) (hP y ▸ mem_nonzeroLocus_of_via (hs' i) _ h)
+  have e : ∑ k, v (k.cast hN.symm) • F (valT (θ y) (x.P.L.U (c y)) ((b 0 k).f (c y))) =
+      (u y : MvPowerSeries (Fin x.P.g) K) ^ (l - 0 * n) *
+        ψ y _ rfl (gs (𝟙 _) (P y) (x'.P.L.U (c' (P y))) (sg₀.f (c' (P y)))) := by
+    have e₁ := (hψ y _ rfl _ (hc' _) _).symm.trans ((congrArg (valT (θ' y) (x'.P.L.U (c' (P y))))
+      ((hsg (c' (P y))).symm.trans (hv (c' (P y))))).trans ((valT_eq _ _ (hU y) _).trans (map_sum _ _ _)))
+    refine Eq.trans ?_ (congrArg (_ * ·) e₁.symm)
+    rw [Finset.mul_sum]
+    refine (Fintype.sum_equiv (finCongr hN) _ _ fun k => ?_).symm
+    rw [map_mul, ← valT_eq, ← valT_eq, valT_cst _ _ _ (h₂ y) _ (hU y), mul_left_comm, Algebra.smul_def]
+    exact congrArg (_ * ·) (hu y _ _ _ (hb' 0 k)).symm
+  refine (congrArg (fun q => G y - q ∈ _) e).mpr (sub_mem_sup (ψ y _ rfl) (u y) _ ?_ (hsg₀ (P y) hzero) (ha _ y rfl))
+  refine Ideal.span_le.2 ?_
+  rintro _ ⟨i, rfl⟩
+  refine Ideal.mem_comap.2 ((Ideal.unit_mul_mem_iff_mem _ ((u y).isUnit.pow n)).1
+    (Ideal.subset_span (Set.mem_range.2 ⟨i.cast hg, ?_⟩)))
+  exact (hu y _ _ _ (hs' i)).trans (congrArg (_ * ·) (hψ y _ rfl _ (hc' _) _))
+
+end GlobalTheory.KeyKa
+end
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.AbLaw
+open GlobalTheory.KeyKa
+
+noncomputable section
+namespace GlobalTheory.KeyKa
+open EtBaseChange
+
+theorem section_ext_of_apply_eq {K : Type} [Field K] {X : Scheme.{0}} (t : X ⟶ Sp K) (a b : Sp K ⟶ X)
+    (ha : a ≫ t = 𝟙 _) (hb : b ≫ t = 𝟙 _) (p : Sp K) (h : a p = b p) : a = b := by
+  obtain ⟨⟨y, α⟩, rfl⟩ := (Scheme.SpecToEquivOfField K X).symm.surjective a
+  obtain ⟨⟨y', β⟩, rfl⟩ := (Scheme.SpecToEquivOfField K X).symm.surjective b
+  simp only [Scheme.SpecToEquivOfField_symm_apply] at ha hb h ⊢
+  have hy : y = y' := by simpa using h
+  subst hy
+  obtain ⟨c, hc⟩ := Spec.map_surjective (X.fromSpecResidueField y ≫ t)
+  rw [Category.assoc, ← hc, ← Spec.map_comp, ← Spec.map_id] at ha hb
+  have h₁ := Spec.map_injective ha
+  have h₂ := Spec.map_injective hb
+  have e₁ : ∀ k, α.hom (c.hom k) = k := fun k => congrArg (fun q => q.hom k) h₁
+  have e₂ : ∀ k, β.hom (c.hom k) = k := fun k => congrArg (fun q => q.hom k) h₂
+  have : α = β := by
+    ext k
+    have e₃ : c.hom (α.hom k) = k := α.hom.injective (e₁ _)
+    exact (e₂ (α.hom k)).symm.trans (congrArg β.hom e₃)
+  rw [this]
+
+theorem etZ_of_jac_ne_zero : ∀ (O K : Type) [CommRing O] [IsDomain O] [Field K] (x : KeyIn O) (x' : KeyIn K) (f : O →+* K) φ w (n d : ℕ) (hg : x'.P.g = x.P.g) (s : Fin x.P.g → RR x n) (s' : Fin x'.P.g → RR x' n) (z : Fin d → Pt x) (ch : Fin d → x.P.L.ι), Function.Injective f → KeyVia x' x f φ w → (∀ i, SecVia x' x φ w (s' i) (s (i.cast hg))) → (∀ a, ⊤ ≤ (z a).left ⁻¹ᵁ x.P.L.U (ch a)) → (∀ a i, valT (T := O) (z a).left (x.P.L.U (ch a)) ((s i).f (ch a)) = 0) → (∀ a, jac x s (z a) (ch a) ≠ 0) → Function.Injective z → (∀ y : x.P.A.left, (∃ q : Sp K, spMap f q = x.P.A.hom y) → (∀ i, y ∉ Out.nonzeroLocus (s i)) → ∃ a, ∃ p : Sp O, (z a).left p = y) → ∃ (z' : Fin d → Pt x') (ch' : Fin d → x'.P.L.ι) (u : Fin d → Kˣ), EtZ x' s' z' ch' ∧ ∀ (l : ℕ) (sg : RR x l) (sg' : RR x' l) (a), SecVia x' x φ w sg' sg → valT (T := K) (z' a).left (x'.P.L.U (ch' a)) (sg'.f (ch' a)) * (u a : K) ^ l = f (valT (T := O) (z a).left (x.P.L.U (ch a)) (sg.f (ch a))) := by
+  intro O K _ _ _ x x' f φ w n d hg s s' z ch hf ⟨_, _, F, hp, _, _, _, hF₁, hF₂, hv⟩ hs hz₁ hz₂ hz₃ hz₄ hz₅
+  have hw : ∀ a, (spMap f ≫ (z a).left) ≫ x.P.A.hom = 𝟙 _ ≫ spMap f := fun a =>
+    (Category.assoc _ _ _).trans ((congrArg (spMap f ≫ ·) (Over.w (z a))).trans
+      ((Category.comp_id _).trans (Category.id_comp _).symm))
+  let z' : Fin d → Pt x' := fun a => Over.homMk (hp.1.lift (spMap f ≫ (z a).left) (𝟙 _) (hw a)) (hp.1.lift_snd _ _ _)
+  have hz' : ∀ a, (z' a).left ≫ φ = spMap f ≫ (z a).left := fun a => hp.1.lift_fst _ _ _
+  have hch : ∀ a, ∃ i, ⊤ ≤ (z' a).left ⁻¹ᵁ x'.P.L.U i := fun a => by
+    obtain ⟨i, hi⟩ := exists_chart x'.P.isLB ((z' a).left (IsLocalRing.closedPoint K))
+    exact ⟨i, fun p _ => ((IsLocalRing.specializes_closedPoint p).map (z' a).left.continuous).mem_open
+      (x'.P.L.U i).isOpen hi⟩
+  choose ch' hch' using hch
+  have hφ : ∀ a, ⊤ ≤ ((z' a).left ≫ φ) ⁻¹ᵁ x.P.L.U (ch a) := fun a p _ => by
+    rw [hz' a]
+    exact hz₁ a (show spMap f p ∈ ⊤ from trivial)
+  have hW := fun a => le_inf_pull (T := K) (z' a).left (ch a) (ch' a) (hφ a) (hch' a)
+  let u : Fin d → Kˣ := fun a => Units.map (valH (T := K) (z' a).left _ (hW a)).toMonoidHom (w.s (fun _ => ch a, ch' a))
+  have hu : ∀ a, valT (T := K) (z' a).left ((x.P.L.pull φ).U (fun _ => ch a) ⊓ x'.P.L.U (ch' a))
+      (w.s (fun _ => ch a, ch' a)).val = u a := fun a => valT_eq _ _ (hW a) _
+  have hval : ∀ (l : ℕ) (sg : RR x l) (sg' : RR x' l) (a), SecVia x' x φ w sg' sg →
+      valT (T := K) (z' a).left (x'.P.L.U (ch' a)) (sg'.f (ch' a)) * (u a : K) ^ l =
+        f (valT (T := O) (z a).left (x.P.L.U (ch a)) (sg.f (ch a))) := fun l sg sg' a h => by
+    have e := valT_via (T := K) h (z' a).left (ch a) (ch' a) (hφ a) (hch' a)
+    rw [hu] at e
+    refine (_root_.mul_comm _ _).trans (e.symm.trans ?_)
+    exact (congrArg (fun q => valT (T := K) q (x.P.L.U (ch a)) (sg.f (ch a))) (hz' a)).trans
+      (valT_spMap f (z a).left (hz₁ a) _)
+  have hzero : ∀ a i, valT (T := K) (z' a).left (x'.P.L.U (ch' a)) ((s' i).f (ch' a)) = 0 := fun a i => by
+    have e := hval n _ _ a (hs i)
+    rw [hz₂, map_zero] at e
+    exact ((u a).isUnit.pow n).mul_left_eq_zero.1 e
+  have hjac : ∀ a, jac x' s' (z' a) (ch' a) * (u a : K) ^ (x.P.g * n) = f (jac x s (z a) (ch a)) := fun a => by
+    have ent : ∀ i k, f (TrivSqZeroExt.snd (valT (T := DualNumber O) ((toUnit (epsR O) ≫ z a) * x.v (k.cast hg)).left
+        (x.P.L.U (ch a)) ((s (i.cast hg)).f (ch a)))) = (u a : K) ^ n * TrivSqZeroExt.snd (valT (T := DualNumber K)
+          ((toUnit (epsR K) ≫ z' a) * x'.v k).left (x'.P.L.U (ch' a)) ((s' i).f (ch' a))) := fun i k => by
+      have c := translate_comp hp F hF₁ (z a) (z' a) (hz' a) (x.v (k.cast hg)) (x'.v k) (hv k)
+      have l₁ := translate_le (z a) (x.v (k.cast hg)) (x.basis.1 _) (hz₁ a)
+      have l₂ := translate_le (z' a) (x'.v k) (x'.basis.1 _) (hch' a)
+      have l₃ : ⊤ ≤ (((toUnit (epsR K) ≫ z' a) * x'.v k).left ≫ φ) ⁻¹ᵁ x.P.L.U (ch a) := fun p _ => by
+        rw [c]
+        exact l₁ (show spMap F p ∈ ⊤ from trivial)
+      have e := valT_via (T := DualNumber K) (hs i) _ (ch a) (ch' a) l₃ l₂
+      have e₂ := (congrArg (fun q => valT (T := DualNumber K) q (x.P.L.U (ch a)) ((s (i.cast hg)).f (ch a))) c).trans
+        (valT_spMap F _ l₁ _)
+      refine (snd_map f F hF₁ hF₂ _).symm.trans ((congrArg TrivSqZeroExt.snd (e₂.symm.trans e)).trans ?_)
+      refine (snd_pow_mul _ _ _ ((fst_valT_translate (z' a) (x'.v k) (x'.basis.1 _) (hch' a) _).trans (hzero a i))).trans ?_
+      exact congrArg (· ^ n * _) ((fst_valT_translate (z' a) (x'.v k) (x'.basis.1 _) (hW a) _).trans (hu a))
+    unfold jac
+    rw [RingHom.map_det, ← Matrix.det_submatrix_equiv_self (finCongr hg), _root_.mul_comm, _root_.mul_comm x.P.g n,
+      pow_mul]
+    have hc : x.P.g = Fintype.card (Fin x'.P.g) := hg.symm.trans (Fintype.card_fin _).symm
+    refine (congrArg (fun m => ((u a : K) ^ n) ^ m * _) hc).trans ((Matrix.det_smul _ _).symm.trans ?_)
+    congr 1
+    ext i k
+    exact (ent i k).symm
+  refine ⟨z', ch', u, ⟨hch', hzero, fun a => ?_, fun a a' h p e => ?_, fun y hy => ?_⟩, hval⟩
+  · have hne : f (jac x s (z a) (ch a)) ≠ 0 := fun h => hz₃ a (hf (h.trans (map_zero f).symm))
+    exact isUnit_of_mul_isUnit_left (hjac a ▸ hne.isUnit)
+  · have e₀ : (z' a).left = (z' a').left :=
+      section_ext_of_apply_eq x'.P.A.hom (z' a).left (z' a').left (Over.w (z' a)) (Over.w (z' a')) p e
+    have e₁ : spMap f ≫ (z a).left = spMap f ≫ (z a').left :=
+      (hz' a).symm.trans ((congrArg (· ≫ φ) e₀).trans (hz' a'))
+    have : IsDominant (spMap f) := ⟨(PrimeSpectrum.denseRange_comap_iff_ker_le_nilRadical f).2 (by
+      rw [(RingHom.injective_iff_ker_eq_bot f).1 hf]; exact bot_le)⟩
+    have : IsProper x.P.A.hom := x.P.isAb.proper
+    exact h (hz₄ (Over.OverMorphism.ext (ext_of_isDominant_of_isSeparated (X := Sp O) x.P.A.hom
+      ((Over.w (z a)).trans (Over.w (z a')).symm) (spMap f) e₁)))
+  · obtain ⟨a, p, hp'⟩ := hz₅ (φ y) ⟨x'.P.A.hom y, (congrArg (fun q => q y) hp.1.w).symm⟩
+      fun i h => hy (i.cast hg.symm) (mem_nonzeroLocus_via (hs (i.cast hg.symm)) y h)
+    have sq : IsPullback (spMap f) (z' a).left (z a).left φ := by
+      refine IsPullback.of_bot (t := hp.1) ?_ (hz' a).symm
+      have e₁ : (z' a).left ≫ x'.P.A.hom = 𝟙 _ := Over.w (z' a)
+      have e₂ : (z a).left ≫ x.P.A.hom = 𝟙 _ := Over.w (z a)
+      rw [e₁, e₂]
+      exact IsPullback.of_vert_isIso (fst := spMap f) (snd := 𝟙 (Sp K)) (f := 𝟙 (Sp O)) (g := spMap f) ⟨by simp⟩
+    obtain ⟨q, -, hq⟩ := Scheme.exists_preimage_of_isPullback sq p y hp'
+    exact ⟨a, q, hq⟩
+
+end GlobalTheory.KeyKa
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.AbLaw
+open GlobalTheory.KeyKa
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.transversal_zeros_of_jacobian_ne_zero_domain : ∀ (O K : Type) [CommRing O] [IsDomain O] [Field K] (x : KeyIn O) (x' : KeyIn K) (f : O →+* K) φ w (n d : ℕ) (hg : x'.P.g = x.P.g) (s : Fin x.P.g → RR x n) (s' : Fin x'.P.g → RR x' n) (z : Fin d → Pt x) (ch : Fin d → x.P.L.ι), Function.Injective f → KeyVia x' x f φ w → (∀ i, SecVia x' x φ w (s' i) (s (i.cast hg))) → (∀ a, ⊤ ≤ (z a).left ⁻¹ᵁ x.P.L.U (ch a)) → (∀ a i, valT (T := O) (z a).left (x.P.L.U (ch a)) ((s i).f (ch a)) = 0) → (∀ a, jac x s (z a) (ch a) ≠ 0) → Function.Injective z → (∀ y : x.P.A.left, (∃ q : Sp K, spMap f q = x.P.A.hom y) → (∀ i, y ∉ Out.nonzeroLocus (s i)) → ∃ a, ∃ p : Sp O, (z a).left p = y) → ∃ (z' : Fin d → Pt x') (ch' : Fin d → x'.P.L.ι) (u : Fin d → Kˣ), EtZ x' s' z' ch' ∧ ∀ (l : ℕ) (sg : RR x l) (sg' : RR x' l) (a), SecVia x' x φ w sg' sg → valT (T := K) (z' a).left (x'.P.L.U (ch' a)) (sg'.f (ch' a)) * (u a : K) ^ l = f (valT (T := O) (z a).left (x.P.L.U (ch a)) (sg.f (ch a))) := by
+  atlas_forward_decl GlobalTheory.KeyKa.etZ_of_jac_ne_zero
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.AbLaw
+open GlobalTheory.KeyKa
+
+noncomputable section
+namespace GlobalTheory.KeyKa.KoszulGenExact
+
+theorem exact_of_rescale {K Ix : Type} [CommRing K] [Fintype Ix] [DecidableEq Ix] (D D' h : Matrix Ix Ix K)
+    (σ : Ix → Kˣ) (h1 : D' * h + h * D' = 1) (h2 : ∀ p q, D p q = σ p * D' p q)
+    (h3 : ∀ p q, D' p q * ((σ q)⁻¹ : Kˣ) = D' p q) (v : Ix → K) (hv : D.mulVec v = 0) :
+    ∃ w, D.mulVec w = v := by
+  have key : ∀ (x : Ix → K) (p : Ix), D.mulVec x p = (σ p : K) * D'.mulVec x p := by
+    intro x p
+    simp only [Matrix.mulVec, dotProduct, h2, Finset.mul_sum, _root_.mul_assoc]
+  have hD'v : D'.mulVec v = 0 := by
+    funext p
+    have hp := congrFun hv p
+    rw [key] at hp
+    exact (Units.mul_right_eq_zero (σ p)).mp hp
+  have hcol : ∀ x : Ix → K, D'.mulVec (fun q => ((σ q)⁻¹ : Kˣ) * x q) = D'.mulVec x := by
+    intro x
+    funext p
+    simp only [Matrix.mulVec, dotProduct]
+    refine Finset.sum_congr rfl fun q _ => ?_
+    rw [← _root_.mul_assoc, h3]
+  have hu : D'.mulVec (fun q => ((σ q)⁻¹ : Kˣ) * v q) = 0 := by
+    rw [hcol]
+    exact hD'v
+  have hback : D'.mulVec (h.mulVec (fun q => ((σ q)⁻¹ : Kˣ) * v q)) = fun q => ((σ q)⁻¹ : Kˣ) * v q := by
+    have e := congrArg (fun M => M.mulVec (fun q => ((σ q)⁻¹ : Kˣ) * v q)) h1
+    simp only [Matrix.add_mulVec, ← Matrix.mulVec_mulVec, hu, Matrix.mulVec_zero, add_zero,
+      Matrix.one_mulVec] at e
+    exact e
+  refine ⟨h.mulVec (fun q => ((σ q)⁻¹ : Kˣ) * v q), ?_⟩
+  funext p
+  rw [key, hback]
+  exact Units.mul_inv_cancel_left (σ p) (v p)
+
+theorem exact_kosD_map {O K : Type} [CommRing O] [CommRing K] (f : O →+* K) {g g' d : ℕ} (hg : g' = g) (c : ℕ → ℕ)
+    (m : Fin g → ∀ j j', Matrix (Fin (c j ^ g)) (Fin (c j' ^ g)) O) (ev : ∀ j, Matrix (Fin d) (Fin (c j ^ g)) O)
+    (m' : Fin g' → ∀ j j', Matrix (Fin (c j ^ g')) (Fin (c j' ^ g')) K)
+    (ev' : ∀ j, Matrix (Fin d) (Fin (c j ^ g')) K) (u : Fin d → Kˣ)
+    (hm : ∀ i j, j < g' → ∀ k k', m' i j (j + 1) k k' = f (m (i.cast hg) j (j + 1)
+      (k.cast (congrArg (fun r => c j ^ r) hg)) (k'.cast (congrArg (fun r => c (j + 1) ^ r) hg))))
+    (hev : ∀ a k, ev' 0 a k * u a = f (ev 0 a (k.cast (congrArg (fun r => c 0 ^ r) hg))))
+    (t : K) (ht : TorsSq kdeg (kosD (N := fun j => c j ^ g') m' ev') t) (v)
+    (hv : ((kosD (N := fun j => c j ^ g) m ev).map f).mulVec v = 0) :
+    ∃ w, ((kosD (N := fun j => c j ^ g) m ev).map f).mulVec w = v := by
+  subst hg
+  obtain ⟨h, -, hh, -⟩ := ht
+  have hm2 : ∀ (i : Fin g') (j j' : ℕ), j' = j + 1 → j < g' →
+      ∀ k k', m' i j j' k k' = f (m i j j' k k') := by
+    intro i j j' hj hlt k k'
+    subst hj
+    have e := hm i j hlt k k'
+    simp only [Fin.cast_eq_self] at e
+    exact e
+  have hev2 : ∀ j : ℕ, j = 0 → ∀ a k, f (ev j a k) = (u a : K) * ev' j a k := by
+    intro j hj a k
+    subst hj
+    have e := hev a k
+    simp only [Fin.cast_eq_self] at e
+    rw [← e, mul_comm]
+  refine exact_of_rescale ((kosD m ev).map f) (kosD m' ev') h (Sum.elim (fun _ => 1) u) hh ?_ ?_ v hv
+  · intro p q
+    rcases p with ⟨P, kp⟩ | a <;> rcases q with ⟨Q, kq⟩ | b
+    · simp only [Matrix.map_apply, kosD, Sum.elim_inl, Units.val_one, _root_.one_mul, map_sum]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      split_ifs with hc
+      · obtain ⟨hi, hQ⟩ := hc
+        have hQc : Q.card = P.card + 1 := by rw [hQ, Finset.card_insert_of_notMem hi]
+        have hlt : P.card < g' := by
+          have hle := Finset.card_le_univ (insert i P)
+          rw [Finset.card_insert_of_notMem hi, Fintype.card_fin] at hle
+          omega
+        rw [hm2 i P.card Q.card hQc hlt]
+        simp
+      · simp
+    · simp [kosD]
+    · simp only [Matrix.map_apply, kosD, Sum.elim_inr]
+      split_ifs with hQ
+      · exact hev2 _ (by simp [hQ]) a kq
+      · simp
+    · simp [kosD]
+  · intro p q
+    rcases q with _ | b
+    · simp
+    · rcases p with _ | a <;> simp [kosD]
+
+theorem kosD_exact_generic : Out.Laws → ∀ (O : Type) [CommRing O] [IsDomain O] [IsLocalRing O] [IsNoetherianRing O] (K : Type) [Field K] (f : O →+* K) (x : KeyIn O) (n l : ℕ) (s : Fin x.P.g → RR x n) (b : ∀ j, Fin ((l - j * n) ^ x.P.g) → RR x (l - j * n)) (m) (d : ℕ) (z : Fin d → Pt x) (ch : Fin d → x.P.L.ι), Function.Injective f → 1 ≤ n → x.P.g * n < l → (∀ j ≤ x.P.g, IsBasis x (b j)) → IsMul x l s b m → (∀ a, ⊤ ≤ (z a).left ⁻¹ᵁ x.P.L.U (ch a)) → (∀ a i, valT (T := O) (z a).left (x.P.L.U (ch a)) ((s i).f (ch a)) = 0) → (∀ a, jac x s (z a) (ch a) ≠ 0) → Function.Injective z → (∀ y : x.P.A.left, (∃ q : Sp K, spMap f q = x.P.A.hom y) → (∀ i, y ∉ Out.nonzeroLocus (s i)) → ∃ a, ∃ p : Sp O, (z a).left p = y) → ∀ v, ((kosD (N := (fun j => (l - j * n) ^ x.P.g)) m (fun j => Matrix.of fun a k => valT (T := O) (z a).left (x.P.L.U (ch a)) ((b j k).f (ch a)))).map f).mulVec v = 0 → ∃ w, ((kosD (N := (fun j => (l - j * n) ^ x.P.g)) m (fun j => Matrix.of fun a k => valT (T := O) (z a).left (x.P.L.U (ch a)) ((b j k).f (ch a)))).map f).mulVec w = v := by
+  intro hL O _ _ _ _ K _ f x n l s b m d z ch hf hn hl hb hmul hz0 hs0 hjac hzi hcov v hv
+  obtain ⟨x', φ, w, hg, s', b', m', hkv, hsv, hbv, hb', hmul', hm', -⟩ :=
+    GlobalTheory.T.exists_keyData_baseChange_sections_matrices hL O K f x n l s b m hl hb hmul
+  obtain ⟨z', ch', u, het, hval⟩ :=
+    GlobalTheory.T.transversal_zeros_of_jacobian_ne_zero_domain O K x x' f φ w n d hg s s' z ch hf hkv hsv hz0 hs0 hjac hzi hcov
+  have hl' : x'.P.g * n < l := by rw [hg]; exact hl
+  obtain ⟨-, t, m'', hmul'', ht⟩ := GlobalTheory.T.exists_koszulTorsion_transversal_split_zeros hL K x' n l d s' b' z' ch' hn hl' hb' het
+  refine exact_kosD_map f hg (fun j => l - j * n) m
+    (fun j => Matrix.of fun a k => valT (T := O) (z a).left (x.P.L.U (ch a)) ((b j k).f (ch a))) m''
+    (fun j => Matrix.of fun a k => valT (T := K) (z' a).left (x'.P.L.U (ch' a)) ((b' j k).f (ch' a)))
+    (fun a => u a ^ (l - 0 * n)) ?_ ?_ (t : K) ht v hv
+  · intro i j hj k k'
+    have hS := hb' j hj.le
+      (GlobalTheory.KeyKa.KoszulCx.mulSec x'.P.L (GlobalTheory.KeyKa.KoszulCx.cast_step hl' hj) (s' i) (b' (j + 1) k'))
+    have e := hS.unique (hmul'' i j hj k') (hmul' i j hj k')
+    exact (congrFun e k).trans (hm' i j (j + 1) k k')
+  · intro a k
+    have e := hval (l - 0 * n) (b 0 (k.cast (congrArg (fun r => (l - 0 * n) ^ r) hg))) (b' 0 k) a (hbv 0 k)
+    rw [Units.val_pow_eq_pow_val]
+    exact e
+
+end GlobalTheory.KeyKa.KoszulGenExact
+end
+end
+
+section
 section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
@@ -184,3 +1479,4 @@ open GlobalTheory.KeyKa
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.discriminant_eq_jacobian_complete_intersection_dvr : Out.Laws → ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [IsAdicComplete (IsLocalRing.maximalIdeal O) O] (x : KeyIn O) (n l d : ℕ) (s : Fin x.P.g → RR x n) (b : ∀ j, Fin ((l - j * n) ^ x.P.g) → RR x (l - j * n)) (m) (z : Fin d → Pt x) (ch : Fin d → x.P.L.ι), 1 ≤ n → x.P.g * n < l → (∀ j ≤ x.P.g, IsBasis x (b j)) → IsMul x l s b m → {y : x.P.A.left | x.P.A.hom y = IsLocalRing.closedPoint O ∧ ∀ i, y ∉ Out.nonzeroLocus (s i)}.Finite → (∀ a, ⊤ ≤ (z a).left ⁻¹ᵁ x.P.L.U (ch a)) → (∀ a i, valT (T := O) (z a).left (x.P.L.U (ch a)) ((s i).f (ch a)) = 0) → (∀ a, jac x s (z a) (ch a) ≠ 0) → Function.Injective z → (∀ y : x.P.A.left, x.P.A.hom y ≠ IsLocalRing.closedPoint O → (∀ i, y ∉ Out.nonzeroLocus (s i)) → ∃ a, ∃ p : Sp O, (z a).left p = y) → ∃ (ev₀ : ∀ j, Matrix (Fin d) (Fin ((l - j * n) ^ x.P.g)) O) (Pm : Matrix (Fin d) (Fin d) O) (t₀ : O), (Matrix.of fun a k => valT (T := O) (z a).left (x.P.L.U (ch a)) ((b 0 k).f (ch a))) = Pm * ev₀ 0 ∧ IsCx kdeg (kosD (N := fun j => (l - j * n) ^ x.P.g) m ev₀) ∧ TorsSq kdeg (kosD (N := fun j => (l - j * n) ^ x.P.g) m ev₀) t₀ ∧ Associated (Pm.det ^ 2) (∏ a, jac x s (z a) (ch a)) := by
   atlas_forward_decl GlobalTheory.DiscrJacGlobal.main
+end

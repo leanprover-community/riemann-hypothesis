@@ -206,10 +206,6 @@ theorem kFiniteVectorsSmooth_holds : KFiniteVectorsSmooth := fun _ ε _ _ _ _ π
   ⟨fun _ hv => smoothVec_of_kFin h hv, fun _ hv => hv, GlobalTheory.GKModule.isKStableOn_kFinVec ε π,
     fun _ hX _ hv => kFin_dRep h hv hX⟩
 
-theorem kFiniteVectorsSmooth_hyp_det {n : ℕ} (ε : Fin n → Bool) :
-    GlobalTheory.RealInd.IsAdmRep ε (fun g => g.det • (1 : ℂ →L[ℂ] ℂ)) ∧
-      GlobalTheory.GKModule.kFinVec ε (fun g => g.det • (1 : ℂ →L[ℂ] ℂ)) = ⊤ :=
-  ⟨(GlobalTheory.RealInd.isIrrAdm_det ε).2.1, eq_top_iff.2 fun _ _ => ⟨⊤, inferInstance, trivial, fun _ _ _ _ => trivial⟩⟩
 
 end GlobalTheory.Published
 

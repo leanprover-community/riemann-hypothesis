@@ -1,8 +1,324 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IdempotentBlockCharPolyEqCharpolyImageStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsMemSubmoduleAllCharpolySeparable
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsMemSpanCornerSeparable
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IdempotentBlockCharPolyEqCharpolyImage
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemSpanRingCornerIdealModuleIff
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SpanRepresentationDensityOfIsInternalConstituent
 
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N GlobalTheory.IndefiniteRowSideFullHecke.CongruenceModuleMatrices GlobalTheory.SpanRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.idempotentBlockCharPoly_eq_charpoly_image : ∀ {K : Type} [Field K] {n t : ℕ} (e : Matrix (Fin n) (Fin n) K), e * e = e → e.rank = t → ∃ (a : Matrix (Fin n) (Fin t) K) (b : Matrix (Fin t) (Fin n) K), b * a = 1 ∧ a * b = e ∧ ∀ M : Matrix (Fin n) (Fin n) K, blockPol e (e * M * e) = (b * M * a).charpoly := by
+  first | exact @GlobalTheory.BlockCharpoly.blockPol_eq_charpoly | exact GlobalTheory.BlockCharpoly.blockPol_eq_charpoly | (intros; apply GlobalTheory.BlockCharpoly.blockPol_eq_charpoly <;> assumption)
+end
+
+section
+section
+open Polynomial
+
+namespace GlobalTheory.SepGeneric
+
+theorem separable_iff_resultant {K : Type} [Field K] {f : K[X]} (hf : f.Monic) {t : ℕ}
+    (ht : f.natDegree = t) : f.Separable ↔ resultant f (derivative f) t t ≠ 0 := by
+  have hle : (derivative f).natDegree ≤ t :=
+    (natDegree_derivative_le f).trans (by omega)
+  obtain ⟨k, hk⟩ := Nat.exists_eq_add_of_le hle
+  have h1 : resultant f (derivative f) t t
+      = resultant f (derivative f) f.natDegree (derivative f).natDegree := by
+    have := resultant_add_right_deg f (derivative f) t (derivative f).natDegree k le_rfl
+    rw [← hk] at this
+    rw [this, ← ht, hf.coeff_natDegree]
+    simp
+  rw [h1, ← isUnit_iff_ne_zero, isUnit_resultant_iff_isCoprime hf]
+  rfl
+
+theorem finite_bad_base {K : Type} [Field K] {t : ℕ} (B A : Matrix (Fin t) (Fin t) K)
+    (hB : B.charpoly.Separable) : {l : K | ¬ (B + l • A).charpoly.Separable}.Finite := by
+  classical
+  let N : Matrix (Fin t) (Fin t) K[X] := B.map C + (X : K[X]) • A.map C
+  let D : K[X] := resultant N.charpoly (derivative N.charpoly) t t
+  have hN : ∀ l : K, N.map (evalRingHom l) = B + l • A := by
+    intro l
+    ext i j
+    simp [N]
+    ring
+  have hD : ∀ l : K, (B + l • A).charpoly.Separable ↔ D.eval l ≠ 0 := by
+    intro l
+    rw [separable_iff_resultant (Matrix.charpoly_monic _)
+      (t := t) (by simp), ← hN, Matrix.charpoly_map, derivative_map, resultant_map_map]
+    rfl
+  have hD0 : D ≠ 0 := by
+    intro h
+    have := (hD 0).1 (by simpa using hB)
+    simp [h] at this
+  refine (D.roots.toFinset.finite_toSet).subset ?_
+  intro l hl
+  simp only [Set.mem_setOf_eq, hD, not_not] at hl
+  simp [hD0, hl]
+
+theorem separable_smul {K : Type} [Field K] {t : ℕ} (A : Matrix (Fin t) (Fin t) K) {c : K}
+    (hc : c ≠ 0) (hA : A.charpoly.Separable) : (c • A).charpoly.Separable := by
+  classical
+  have h1 : (c • A).charpoly = C c ^ t * A.charpoly.comp (C c⁻¹ * X) := by
+    have : (c • A).charmatrix = (C c : K[X]) • (A.charmatrix.map (compRingHom (C c⁻¹ * X))) := by
+      ext1 i j
+      by_cases h : i = j
+      · subst h
+        have h3 : (C c : K[X]) * (C c⁻¹ * X) = X := by
+          rw [← mul_assoc, ← C_mul, mul_inv_cancel₀ hc, C_1, one_mul]
+        simp [mul_sub, h3]
+      · simp [Matrix.charmatrix_apply_ne _ _ _ h]
+    rw [Matrix.charpoly, this, Matrix.det_smul, Matrix.charpoly, Fintype.card_fin]
+    congr 1
+    exact ((compRingHom (C c⁻¹ * X)).map_det A.charmatrix).symm
+  have h2 : (A.charpoly.comp (C c⁻¹ * X)).Separable := by
+    rw [separable_def, derivative_comp]
+    have hu : IsUnit (derivative (C c⁻¹ * X : K[X])) := by
+      simpa using isUnit_C.2 (IsUnit.mk0 _ (inv_ne_zero hc))
+    rw [isCoprime_mul_unit_left_right hu]
+    exact ((separable_def _).1 hA).map (compRingHom (C c⁻¹ * X))
+  rw [h1, mul_comm]
+  exact h2.mul_unit ((isUnit_C.2 (IsUnit.mk0 _ hc)).pow t)
+
+theorem finite_bad_dir {K : Type} [Field K] {t : ℕ} (B A : Matrix (Fin t) (Fin t) K) {c : K}
+    (hc : c ≠ 0) (hA : (c • A).charpoly.Separable) :
+    {l : K | ¬ (B + l • A).charpoly.Separable}.Finite := by
+  have hA' : A.charpoly.Separable := by
+    have := separable_smul _ (inv_ne_zero hc) hA
+    rwa [smul_smul, inv_mul_cancel₀ hc, one_smul] at this
+  have hf := (finite_bad_base A B hA').preimage (f := fun l : K => l⁻¹) inv_injective.injOn
+  refine (hf.insert 0).subset ?_
+  intro l hl
+  by_cases h0 : l = 0
+  · exact Or.inl h0
+  · refine Or.inr ?_
+    intro h
+    apply hl
+    have := separable_smul _ h0 h
+    rwa [smul_add, smul_smul, mul_inv_cancel₀ h0, one_smul, add_comm] at this
+
+theorem exists_separable {O K X : Type} [CommRing O] [IsDomain O] [Infinite O] [Field K]
+    [Algebra O K] [IsFractionRing O K] [Finite X] (t : ℕ)
+    (M : Submodule O (X → Matrix (Fin t) (Fin t) K)) (a : X → Matrix (Fin t) (Fin t) K)
+    (h : ∀ x, (a x).charpoly.Separable ∨
+      ∃ s ∈ M, ∃ c : K, c ≠ 0 ∧ (c • s x).charpoly.Separable) :
+    ∃ s ∈ M, ∀ x, (a x + s x).charpoly.Separable := by
+  classical
+  have key : ∀ Y : Finset X, ∃ s ∈ M, ∀ x ∈ Y, (a x + s x).charpoly.Separable := by
+    intro Y
+    induction Y using Finset.induction_on with
+    | empty => exact ⟨0, M.zero_mem, by simp⟩
+    | insert x Y hx ih =>
+      obtain ⟨s, hs, hY⟩ := ih
+      have h1 : ∃ s' ∈ M, {l : K | ¬ (a x + s x + l • s' x).charpoly.Separable}.Finite := by
+        rcases h x with h | ⟨s', hs', c, hc, h⟩
+        · refine ⟨s, hs, ?_⟩
+          have hf := (finite_bad_base (a x) (s x) h).preimage (f := fun l : K => 1 + l)
+            (add_right_injective 1).injOn
+          refine hf.subset ?_
+          intro l hl
+          simpa [add_smul, add_assoc] using hl
+        · exact ⟨s', hs', finite_bad_dir _ _ hc h⟩
+      obtain ⟨s', hs', h1⟩ := h1
+      have h2 : (⋃ y ∈ insert x Y,
+          {l : K | ¬ (a y + s y + l • s' y).charpoly.Separable}).Finite := by
+        refine (insert x Y).finite_toSet.biUnion ?_
+        intro y hy
+        rcases Finset.mem_insert.1 hy with rfl | hy
+        · exact h1
+        · exact finite_bad_base _ _ (hY y hy)
+      have h3 := h2.preimage (f := algebraMap O K) (IsFractionRing.injective O K).injOn
+      obtain ⟨l, hl⟩ := h3.exists_notMem
+      refine ⟨s + l • s', M.add_mem hs (M.smul_mem l hs'), ?_⟩
+      intro y hy
+      simp only [Set.mem_preimage, Set.mem_iUnion, Set.mem_setOf_eq, not_exists, not_not] at hl
+      have := hl y hy
+      rwa [algebraMap_smul, add_assoc] at this
+  have := Fintype.ofFinite X
+  obtain ⟨s, hs, h⟩ := key Finset.univ
+  exact ⟨s, hs, fun x => h x (Finset.mem_univ x)⟩
+
+end GlobalTheory.SepGeneric
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N GlobalTheory.IndefiniteRowSideFullHecke.CongruenceModuleMatrices GlobalTheory.SpanRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_mem_submodule_all_charpoly_separable : ∀ {O K X : Type} [CommRing O] [IsDomain O] [Infinite O] [Field K] [Algebra O K] [IsFractionRing O K] [Finite X] (t : ℕ) (M : Submodule O (X → Matrix (Fin t) (Fin t) K)) (a : X → Matrix (Fin t) (Fin t) K), (∀ x, (a x).charpoly.Separable ∨ ∃ s ∈ M, ∃ c : K, c ≠ 0 ∧ (c • s x).charpoly.Separable) → ∃ s ∈ M, ∀ x, (a x + s x).charpoly.Separable := by
+  atlas_forward_decl GlobalTheory.SepGeneric.exists_separable
+end
+
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N GlobalTheory.IndefiniteRowSideFullHecke.CongruenceModuleMatrices GlobalTheory.SpanRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.span_representation_density_of_isInternal_constituents : ∀ {K Γ V : Type} [Field K] [Group Γ] [AddCommGroup V] [Module K V] [FiniteDimensional K V] (ρ : Representation K Γ V) (ι : Type) [Fintype ι] [DecidableEq ι] (Vs : ι → Submodule K V) (hs : ∀ j, Stable ρ (Vs j)), DirectSum.IsInternal Vs → (∀ j, Submodule.span K (Set.range fun g => (ρ g).restrict (hs j g)) = ⊤) → (∀ j j', j ≠ j' → ∀ e : Vs j ≃ₗ[K] Vs j', ¬ ∀ g v, e ((ρ g).restrict (hs j g) v) = (ρ g).restrict (hs j' g) (e v)) → ∀ f : V →ₗ[K] V, (∀ j, ∀ v ∈ Vs j, f v ∈ Vs j) → f ∈ Submodule.span K (Set.range ρ) := by
+  first | exact @GlobalTheory.BlockDensity.density | exact GlobalTheory.BlockDensity.density | (intros; apply GlobalTheory.BlockDensity.density <;> assumption)
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N GlobalTheory.IndefiniteRowSideFullHecke.CongruenceModuleMatrices GlobalTheory.SpanRing
+
+namespace GlobalTheory.SpanRing
+
+theorem isInternal_map_of_corner {K : Type} [Field K] {n t : ℕ} (ι : Type) [Fintype ι]
+    [DecidableEq ι] (Vs : ι → Submodule K (Fin n → K)) (a : Matrix (Fin n) (Fin t) K)
+    (b : Matrix (Fin t) (Fin n) K) (hV : DirectSum.IsInternal Vs) (hba : b * a = 1)
+    (he : ∀ j, ∀ v ∈ Vs j, (a * b).mulVec v ∈ Vs j) :
+    DirectSum.IsInternal (fun j => (Vs j).map b.mulVecLin) := by
+  classical
+  have hfg : ∀ w : Fin t → K, b.mulVecLin (a.mulVecLin w) = w := fun w => by
+    simp [Matrix.mulVec_mulVec, hba]
+  have hE : (a * b).mulVecLin = a.mulVecLin ∘ₗ b.mulVecLin := Matrix.mulVecLin_mul a b
+
+  have hback : ∀ S : Submodule K (Fin n → K), S.map (a * b).mulVecLin ≤ S →
+      (S.map b.mulVecLin).map a.mulVecLin ≤ S := by
+    intro S hS
+    rwa [← Submodule.map_comp, ← hE]
+  have hVj : ∀ j, (Vs j).map (a * b).mulVecLin ≤ Vs j := by
+    rintro j _ ⟨v, hv, rfl⟩
+    exact he j v hv
+  rw [DirectSum.isInternal_submodule_iff_iSupIndep_and_iSup_eq_top] at hV ⊢
+  obtain ⟨hind, htop⟩ := hV
+  constructor
+  · rw [iSupIndep_def] at hind ⊢
+    intro j
+    rw [Submodule.disjoint_def]
+    intro x hx1 hx2
+    have hrest : (⨆ k, ⨆ (_ : k ≠ j), Vs k).map (a * b).mulVecLin ≤ ⨆ k, ⨆ (_ : k ≠ j), Vs k := by
+      simp_rw [Submodule.map_iSup]
+      exact iSup₂_mono fun k _ => hVj k
+    have hx2' : x ∈ (⨆ k, ⨆ (_ : k ≠ j), Vs k).map b.mulVecLin := by
+      simp_rw [Submodule.map_iSup]
+      exact hx2
+    have h1 : a.mulVecLin x ∈ Vs j := hback _ (hVj j) (Submodule.mem_map_of_mem hx1)
+    have h2 : a.mulVecLin x ∈ ⨆ k, ⨆ (_ : k ≠ j), Vs k :=
+      hback _ hrest (Submodule.mem_map_of_mem hx2')
+    rw [← hfg x, Submodule.disjoint_def.1 (hind j) _ h1 h2, map_zero]
+  · rw [← Submodule.map_iSup, htop, Submodule.map_top, LinearMap.range_eq_top]
+    exact fun w => ⟨a.mulVecLin w, hfg w⟩
+
+theorem exists_separable_charpoly_of_isInternal {K : Type} [Field K] [Infinite K] {t : ℕ}
+    (ι : Type) [Fintype ι] [DecidableEq ι] (W : ι → Submodule K (Fin t → K))
+    (hW : DirectSum.IsInternal W) :
+    ∃ D : Matrix (Fin t) (Fin t) K, (∀ j, ∀ w ∈ W j, D.mulVec w ∈ W j) ∧
+      D.charpoly.Separable := by
+  classical
+
+  let v : ∀ j, Module.Basis (Fin (Module.finrank K (W j))) K (W j) := fun j => Module.finBasis K (W j)
+  let B := hW.collectedBasis v
+  let μ : (Σ j, Fin (Module.finrank K (W j))) → K :=
+    fun s => Infinite.natEmbedding K (Fintype.equivFin _ s)
+  have hμ : Function.Injective μ :=
+    (Infinite.natEmbedding K).injective.comp (Fin.val_injective.comp (Fintype.equivFin _).injective)
+  let φ : (Fin t → K) →ₗ[K] (Fin t → K) := B.constr K (fun s => μ s • B s)
+  have hφB : ∀ s, φ (B s) = μ s • B s := fun s => B.constr_basis K _ s
+  refine ⟨LinearMap.toMatrix' φ, ?_, ?_⟩
+  · intro j w hw
+    have hD : (LinearMap.toMatrix' φ).mulVec w = φ w := by
+      rw [← Matrix.toLin'_apply, Matrix.toLin'_toMatrix']
+    have hw' : w = ((∑ k, (v j).repr ⟨w, hw⟩ k • v j k : W j) : Fin t → K) := by
+      rw [(v j).sum_repr]
+    rw [hD, hw', Submodule.coe_sum, map_sum]
+    refine Submodule.sum_mem _ fun k _ => ?_
+    rw [Submodule.coe_smul, map_smul]
+    refine Submodule.smul_mem _ _ ?_
+    have hk : ((v j k : W j) : Fin t → K) = B ⟨j, k⟩ := by simp [B]
+    rw [hk, hφB]
+    exact Submodule.smul_mem _ _ (hW.collectedBasis_mem v ⟨j, k⟩)
+  · have h1 : (LinearMap.toMatrix' φ).charpoly = φ.charpoly := by
+      rw [← LinearMap.toMatrix_eq_toMatrix', LinearMap.charpoly_toMatrix]
+    have h2 : LinearMap.toMatrix B B φ = Matrix.diagonal μ := by
+      ext s s'
+      rw [LinearMap.toMatrix_apply, hφB, map_smul, B.repr_self, Matrix.diagonal_apply]
+      by_cases h : s = s'
+      · subst h; simp
+      · simp [h]
+    rw [h1, ← LinearMap.charpoly_toMatrix φ B, h2, Matrix.charpoly_diagonal]
+    exact Polynomial.separable_prod_X_sub_C_iff.2 hμ
+
+theorem exists_corner_separable_charpoly :
+    ∀ {K : Type} [Field K] [Infinite K] {n t : ℕ} (ι : Type) [Fintype ι] [DecidableEq ι] (Vs : ι → Submodule K (Fin n → K)) (a : Matrix (Fin n) (Fin t) K) (b : Matrix (Fin t) (Fin n) K), DirectSum.IsInternal Vs → b * a = 1 → (∀ j, ∀ v ∈ Vs j, (a * b).mulVec v ∈ Vs j) → ∃ m : Matrix (Fin n) (Fin n) K, (∀ j, ∀ v ∈ Vs j, m.mulVec v ∈ Vs j) ∧ (b * m * a).charpoly.Separable := by
+  intro K _ _ n t ι _ _ Vs a b hV hba he
+  obtain ⟨D, hD, hsep⟩ :=
+    exists_separable_charpoly_of_isInternal ι _ (isInternal_map_of_corner ι Vs a b hV hba he)
+  refine ⟨a * D * b, ?_, ?_⟩
+  · intro j v hv
+    obtain ⟨u, hu, hu'⟩ := hD j (b.mulVec v) (Submodule.mem_map_of_mem hv)
+    have hm : (a * D * b).mulVec v = (a * b).mulVec u := by
+      rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec]
+      congr 1
+      exact hu'.symm
+    rw [hm]
+    exact he j u hu
+  · have hc : b * (a * D * b) * a = D := by
+      calc b * (a * D * b) * a = (b * a) * D * (b * a) := by simp only [Matrix.mul_assoc]
+        _ = D := by rw [hba, Matrix.one_mul, Matrix.mul_one]
+    rw [hc]
+    exact hsep
+
+end GlobalTheory.SpanRing
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N GlobalTheory.IndefiniteRowSideFullHecke.CongruenceModuleMatrices GlobalTheory.SpanRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_corner_separable_charpoly_of_isInternal : ∀ {K : Type} [Field K] [Infinite K] {n t : ℕ} (ι : Type) [Fintype ι] [DecidableEq ι] (Vs : ι → Submodule K (Fin n → K)) (a : Matrix (Fin n) (Fin t) K) (b : Matrix (Fin t) (Fin n) K), DirectSum.IsInternal Vs → b * a = 1 → (∀ j, ∀ v ∈ Vs j, (a * b).mulVec v ∈ Vs j) → ∃ m : Matrix (Fin n) (Fin n) K, (∀ j, ∀ v ∈ Vs j, m.mulVec v ∈ Vs j) ∧ (b * m * a).charpoly.Separable := by
+  atlas_forward_decl GlobalTheory.SpanRing.exists_corner_separable_charpoly
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N GlobalTheory.IndefiniteRowSideFullHecke.CongruenceModuleMatrices GlobalTheory.SpanRing
+
+namespace GlobalTheory.SpanRing
+
+theorem exists_mem_span_corner_separable {K Γ : Type} [Field K] [Infinite K] [Group Γ] {n t : ℕ}
+    (σ : Γ →* Matrix (Fin n) (Fin n) K) (a : Matrix (Fin n) (Fin t) K)
+    (b : Matrix (Fin t) (Fin n) K) (h : AbsIrrDistinct (matRep σ)) (hba : b * a = 1)
+    (hab : a * b ∈ Submodule.span K (Set.range σ)) :
+    ∃ m ∈ Submodule.span K (Set.range σ), (b * m * a).charpoly.Separable := by
+  obtain ⟨ι, _, _, Vs, hs, hint, -, hspan, hdist⟩ := h
+  have hstab : ∀ j, ∀ M ∈ Submodule.span K (Set.range σ), ∀ v ∈ Vs j, M.mulVec v ∈ Vs j := by
+    intro j M hM
+    induction hM using Submodule.span_induction with
+    | mem x hx =>
+      obtain ⟨g, rfl⟩ := hx
+      intro v hv
+      exact hs j g v hv
+    | zero => intro v _; simp
+    | add x y _ _ hx hy =>
+      intro v hv
+      rw [Matrix.add_mulVec]
+      exact (Vs j).add_mem (hx v hv) (hy v hv)
+    | smul c x _ hx =>
+      intro v hv
+      rw [show (c • x).mulVec v = c • x.mulVec v by
+        ext i; simp [Matrix.mulVec, dotProduct, Finset.mul_sum, mul_assoc]]
+      exact (Vs j).smul_mem c (hx v hv)
+  obtain ⟨m, hm, hsep⟩ := GlobalTheory.T.exists_corner_separable_charpoly_of_isInternal ι Vs a b hint hba (fun j => hstab j _ hab)
+  refine ⟨m, ?_, hsep⟩
+  have hlin := GlobalTheory.T.span_representation_density_of_isInternal_constituents (matRep σ) ι Vs hs hint hspan hdist (Matrix.toLin' m)
+    (fun j v hv => by simpa [Matrix.toLin'_apply] using hm j v hv)
+  have hfun : (⇑(matRep σ)) = ⇑(Matrix.toLin' : Matrix (Fin n) (Fin n) K ≃ₗ[K] _) ∘ ⇑σ := rfl
+  rw [hfun, Set.range_comp] at hlin
+  have hle : Submodule.span K (⇑(Matrix.toLin' : Matrix (Fin n) (Fin n) K ≃ₗ[K] _) '' Set.range ⇑σ) ≤
+      (Submodule.span K (Set.range σ)).map
+        (Matrix.toLin' : Matrix (Fin n) (Fin n) K ≃ₗ[K] _).toLinearMap := by
+    rw [Submodule.span_le]
+    rintro _ ⟨M, hM, rfl⟩
+    exact ⟨M, Submodule.subset_span hM, rfl⟩
+  obtain ⟨y, hy, hye⟩ := hle hlin
+  have hym : y = m := Matrix.toLin'.injective hye
+  rwa [hym] at hy
+
+end GlobalTheory.SpanRing
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N GlobalTheory.IndefiniteRowSideFullHecke.CongruenceModuleMatrices GlobalTheory.SpanRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_mem_span_corner_charpoly_separable : ∀ {K Γ : Type} [Field K] [Infinite K] [Group Γ] {n t : ℕ} (σ : Γ →* Matrix (Fin n) (Fin n) K) (a : Matrix (Fin n) (Fin t) K) (b : Matrix (Fin t) (Fin n) K), AbsIrrDistinct (matRep σ) → b * a = 1 → a * b ∈ Submodule.span K (Set.range σ) → ∃ m ∈ Submodule.span K (Set.range σ), (b * m * a).charpoly.Separable := by
+  atlas_forward_decl GlobalTheory.SpanRing.exists_mem_span_corner_separable
+end
+
+section
 section
 noncomputable section
 
@@ -161,3 +477,4 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Global
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.exists_heckeSpan_correction_distinct_eigenvalues : ∀ {Γ X A : Type} [Group Γ] [Finite X] [CommRing A] [IsDomain A] [CharZero A] {n t : ℕ} (T : Subalgebra A (X → A)) (rep : X → (Γ →* GL (Fin n) A)) (π : X) (g0 : Γ) (eB : X → Matrix (Fin n) (Fin n) A) (z : A), z ≠ 0 → (∀ x y : X, x ≠ y → ∃ f ∈ T, (f : X → A) x ≠ (f : X → A) y) → (∀ x, AbsIrrDistinct (overK (rep x))) → InRing T rep eB → eB * eB = eB → (∀ x, ((eB x).map (toFr A)).rank = t) → ((blockPol (eB π) (eB π * mat (rep π) g0 * eB π)).map (toFr A)).Separable → ∃ s, InMatrixCongruenceModule T rep π eB s ∧ ∀ x, (((blockPol (eB x) (eB x * mat (rep x) g0 * eB x + z • s x)).map (toFr A)).rootSet (AlgebraicClosure (FractionRing A))).ncard = t := by
   atlas_forward_decl GlobalTheory.SpanRing.exists_correction_distinct_eigenvalues
+end

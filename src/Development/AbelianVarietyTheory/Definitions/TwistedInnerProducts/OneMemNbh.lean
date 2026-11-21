@@ -155,8 +155,6 @@ def DerBounds : Prop := ∀ C₀ : ℝ, 0 < C₀ → ∃ C : ℝ, 0 < C ∧ ForP
     Integrable (fun h => ⟪dR π (embL e X) (π g₀ v₀), π (embH e (umat h)) (π g₀ v₀)⟫_ℂ) (muG ε') ∧
       ∫ h, ‖⟪dR π (embL e X) (π g₀ v₀), π (embH e (umat h)) (π g₀ v₀)⟫_ℂ‖ ∂muG ε' ≤ (muG ε' (nbh ε' (1 / 4))).toReal * big C n B
 
-theorem one_mem_nbh {m : ℕ} (ε : Fin m → Bool) {δ : ℝ} (h : 0 ≤ δ) : (1 : UJ ε) ∈ nbh ε δ := by
-  simpa [nbh, hsn, umat] using h
 
 section RankOne
 
@@ -169,34 +167,8 @@ theorem exp_entry (X : Mat 1) : (NormedSpace.exp X) 0 0 = Complex.exp (X 0 0) :=
   rw [this, Matrix.exp_diagonal]
   simp [Pi.exp_def, Complex.exp_eq_exp_ℂ]
 
-theorem prod_entry (l : List (Mat 1)) : l.prod 0 0 = (l.map fun X => X 0 0).prod := by
-  induction l with
-  | nil => simp
-  | cons a l ih => simp [Matrix.mul_apply, ih]
 
-theorem smV_chi (L : Set (Mat 1)) (m : ℤ) (w : ℂ) : SmV L (chi m) w := by
-  intro k Xs _
-  have : (fun t : Fin k → ℝ => chi m ((List.ofFn fun i => NormedSpace.exp (t i • Xs i)).prod) w) =
-      fun t => Complex.exp (m * ∑ i, (t i : ℂ) * Xs i 0 0) * w := by
-    funext t
-    simp only [chi, ContinuousLinearMap.smul_apply, ContinuousLinearMap.id_apply, smul_eq_mul, prod_entry, List.map_ofFn,
-      List.prod_ofFn, Function.comp, exp_entry, Complex.exp_int_mul, Complex.exp_sum]
-    simp
-  rw [this]
-  refine ContDiff.mul (ContDiff.cexp (ContDiff.mul contDiff_const (ContDiff.sum fun i _ => ContDiff.mul ?_ contDiff_const))) contDiff_const
-  exact Complex.ofRealCLM.contDiff.comp (contDiff_apply ℝ ℝ i)
 
-theorem dR_chi (m : ℤ) (X : Mat 1) (w : ℂ) : dR (chi m) X w = m * X 0 0 * w := by
-  have : (fun t : ℝ => chi m (NormedSpace.exp (t • X)) w) = fun t : ℝ => Complex.exp ((t : ℂ) * (m * X 0 0)) * w := by
-    funext t
-    simp only [chi, ContinuousLinearMap.smul_apply, ContinuousLinearMap.id_apply, smul_eq_mul, exp_entry, ← Complex.exp_int_mul]
-    congr 2
-    simp; ring
-  have hd : HasDerivAt (fun t : ℝ => Complex.exp ((t : ℂ) * (m * X 0 0)) * w)
-      ((Complex.exp (((0 : ℝ) : ℂ) * (m * X 0 0)) * (1 * (m * X 0 0))) * w) 0 :=
-    ((((hasDerivAt_id (((0 : ℝ) : ℂ))).mul_const _).cexp).comp_ofReal).mul_const _
-  unfold dR
-  rw [this, hd.deriv]; simp
 
 def tensOne (ε : Fin 1 → Bool) (m : ℤ) : TensDat 1 ℂ where
   K := fun _ => ℂ
@@ -205,34 +177,6 @@ def tensOne (ε : Fin 1 → Bool) (m : ℤ) : TensDat 1 ℂ where
   io := fun _ y _ => y
   pr := fun _ x => x 0
 
-theorem tensOne_is (ε : Fin 1 → Bool) (m : ℤ) : (tensOne ε m).Is ε (fun _ => (m : ℝ)) (chi m) := by
-  have hne : ∀ g ∈ UJset ε, g 0 0 ≠ 0 := fun g hg h0 => by
-    have := GlobalTheory.Survey.MatrixExponentialEntries.norm_entry (ε := ε) hg
-    simp [h0] at this
-  have hinv : ∀ g : Mat 1, g⁻¹ 0 0 = (g 0 0)⁻¹ := fun g => by
-    simp [Matrix.inv_def, Matrix.det_unique, Matrix.adjugate_fin_one]
-  refine ⟨fun s => ?_, fun s => ?_, fun _ _ _ _ => smV_chi _ _ _, fun _ _ _ => smV_chi _ _ _, fun _ _ _ _ _ _ => rfl,
-    fun _ _ _ _ _ _ => rfl, fun s g hg y _ c => ?_, fun s g hg x _ => ?_, fun s X _ y _ c => ?_, fun x _ => ?_, fun s y x _ _ => ?_⟩
-  · have : ((fun _ => (m : ℝ)) - Pi.single s 1 : Fin 1 → ℝ) = fun _ => (((m - 1 : ℤ)) : ℝ) := by
-      funext a; obtain rfl : a = s := Subsingleton.elim _ _; simp
-    rw [this]
-    exact GlobalTheory.Survey.MatrixExponentialEntries.isDS_chi ε (m - 1)
-  · simp only [tensOne]; split_ifs <;> simp
-  · obtain rfl : c = 0 := Subsingleton.elim _ _
-    show (g 0 0) ^ (m - 1) * (show ℂ from y) = ∑ d, g⁻¹ d 0 • chi m g (show ℂ from y)
-    generalize (show ℂ from y) = z
-    simp [tensOne, chi, hinv, zpow_sub₀ (hne g hg)]
-    ring
-  · show _ = (g 0 0) ^ (m - 1) * x 0
-    simp [tensOne, chi, hinv, zpow_sub₀ (hne g hg)]
-    ring
-  · obtain rfl : c = 0 := Subsingleton.elim _ _
-    show dR (chi (m - 1)) X (show ℂ from y) = dR (chi m) X (show ℂ from y) - ∑ d, X d 0 • (show ℂ from y)
-    generalize (show ℂ from y) = z
-    simp [dR_chi]; ring
-  · funext a; obtain rfl : a = 0 := Subsingleton.elim _ _; simp [tensOne]
-  · show ∑ c : Fin 1, (if ε c then 1 else -1 : ℂ) * ⟪x c, (y : ℂ)⟫_ℂ = (((if ε 0 then 1 else -1 : ℝ)) : ℂ) * ⟪x 0, (y : ℂ)⟫_ℂ
-    by_cases h : ε 0 <;> simp [h]
 
 end RankOne
 

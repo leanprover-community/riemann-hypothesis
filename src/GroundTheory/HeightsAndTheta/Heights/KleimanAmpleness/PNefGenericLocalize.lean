@@ -1,9 +1,22 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.NefGenericLocalizeSt
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.NefGenericDVRSt
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.NefExtendIsoSt
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.LocalizeBundleSt
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.LocalizeNefAboveSt
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ExtendTwist
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
+
+def NefGenericLocalize.Statement : Prop :=
+  NefGenericDVR.Statement → Kleiman.NefGeneric.Statement.{0, 0}
+
+end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
@@ -50,3 +63,4 @@ theorem NefGenericLocalize.proof (hI : NefExtendIso.Statement) (hB : LocalizeBun
     exact (Kleiman.span_extend_span I _).symm
 
 end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
+end

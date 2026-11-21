@@ -132,17 +132,10 @@ variable (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r) (x : ℝ) {D : D7} (V : (c.
 
 def genPoint (Z : Comp Xo c) (C : Submodule c.F (Rul Xo c)) : C →ₗ[c.F] Om Z := (genVal Z).toLinearMap ∘ₗ C.subtype
 
-theorem mem_imageIdeal_genPoint (Z : Comp Xo c) {C : Submodule c.F (Rul Xo c)} {N : ℕ} (b : Basis (Fin N) c.F C) {d : ℕ}
-    {g : MvPolynomial (Fin N) c.F} (hg : g.IsHomogeneous d) :
-    g ∈ imageIdeal (genPoint Z C) b ↔ genVal Z (aeval (fun j => (b j : Rul Xo c)) g) = 0 := by
-  rw [imageIdeal, mem_coneIdeal_of_isHomogeneous _ hg, ← AlgHom.comp_apply, comp_aeval]
-  rfl
 
 def compIdeal (Z : Comp Xo c) (G : WTZ E) {N : ℕ} (b : Basis (Fin N) c.F (cuspOn U Z G)) :
     Ideal (MvPolynomial (Fin N) c.F) := imageIdeal (genPoint Z (cuspOn U Z G)) b
 
-theorem isPrime_compIdeal (Z : Comp Xo c) (G : WTZ E) {N : ℕ} (b : Basis (Fin N) c.F (cuspOn U Z G)) :
-    (compIdeal U Z G b).IsPrime := isPrime_coneIdeal _
 
 attribute [local instance] MvPolynomial.gradedAlgebra in
 
@@ -151,9 +144,6 @@ theorem isHomogeneous_compIdeal (Z : Comp Xo c) (G : WTZ E) {N : ℕ} (b : Basis
 
 def compDeg (Z : Comp Xo c) (G : WTZ E) : ℕ := imageDeg (genPoint Z (cuspOn U Z G)) (dimFlag Dw)
 
-theorem compDeg_eq {Z : Comp Xo c} {G : WTZ E} {N δ : ℕ} {b : Basis (Fin N) c.F (cuspOn U Z G)}
-    {f : MvPolynomial (Fin (dimFlag Dw + 1) × Fin N) c.F} (hf : IsChowFormInt (compIdeal U Z G b) (dimFlag Dw) δ f) :
-    compDeg U Z G = δ := IsImageDeg.imageDeg_eq ⟨N, b, f, hf⟩
 
 def IsCompHeight (Z : Comp Xo c) (G : WTZ E) (h : ℝ) : Prop :=
   IsImageHeight (normOn U x V dict Z G) (latOn U Z G) (genPoint Z (cuspOn U Z G)) (dimFlag Dw) h
@@ -209,9 +199,6 @@ def CompShortGen (G : WTZ E) {n : ℕ} (w : Fin n → cuspW Xo c U G) (abelian�
 
 def depth_vw (G : WTZ E) (v : Rul Xo c → EReal) : EReal := ⨅ w ∈ latW U G, v w
 
-theorem depth_vw_nonneg (G : WTZ E) {la : HeightOneSpectrum (𝓞 c.F)} {v : Rul Xo c → EReal}
-    (hv : v ∈ valSet Xo c (algCls Xo c) la) : 0 ≤ depth_vw U G v :=
-  le_iInf₂ fun _ hw => hw la v hv
 
 def valL_vw (G : WTZ E) (τ : ℕ) (v : Rul Xo c → EReal) (t : Rul Xo c) : EReal := v t - (τ : EReal) * depth_vw U G v
 
@@ -229,9 +216,6 @@ theorem vZero_nonneg (Z : Comp Xo c) : 0 ≤ vZero U Z :=
 
 def topDeg (Z : Comp Xo c) (la : Weight Dw) : ℝ := vZero U Z * (vdm la : ℤ)
 
-theorem topDeg_stdWt (Z : Comp Xo c) : topDeg U Z (stdWt (Psi H) (Dw.p + Dw.q)) =
-    (growthOn U Z (wtOf Dw (stdWt (Psi H) (Dw.p + Dw.q)) 0)).toReal :=
-  div_mul_cancel₀ _ (Int.cast_pos.2 (vdm_pos strictAnti_stdWt)).ne'
 
 def delPrime (Z : Comp Xo c) (u : Weight Dw) : ℝ := topDeg U Z (uPrime Dw u)
 
@@ -262,20 +246,14 @@ example (A B : ValFam Xo c) : ValFam.patch ∅ A B = B := Subtype.ext (funext fu
 def latVal (Vs : ValFam Xo c) (Z : Comp Xo c) (G : WTZ E) : Submodule (𝓞 c.F) (cuspOn U Z G) :=
   latOf (cuspOn U Z G) Vs.1 Vs.2
 
-theorem latVal_recVals (Z : Comp Xo c) (G : WTZ E) : latVal U (recVals Xo c) Z G = latOn U Z G := rfl
 
 def smallOn (Vs : ValFam Xo c) (Z : Comp Xo c) (G : WTZ E) (R : ℝ) : Set (cuspOn U Z G) :=
   {f | f ∈ latVal U Vs Z G ∧ ∀ σ, GoodEmb c σ → ∀ z ∈ framesOn (U σ) Z, homN (U σ) x G f z ≤ R}
 
-theorem smallOn_mono (Vs : ValFam Xo c) (Z : Comp Xo c) (G : WTZ E) : Monotone (smallOn U x Vs Z G) :=
-  fun _ _ h _ hf => ⟨hf.1, fun σ hσ z hz => (hf.2 σ hσ z hz).trans h⟩
 
 def compVol (a : ℕ) (Vs : ValFam Xo c) (Z : Comp Xo c) (G : WTZ E) (t : ℝ) : ℝ≥0∞ :=
   countVol (dimFlag Dw) (finrank ℚ c.F) a fun τ => (smallOn U x Vs Z (τ • G) (Real.exp (τ * t))).encard
 
-theorem compVol_mono (a : ℕ) (Vs : ValFam Xo c) (Z : Comp Xo c) (G : WTZ E) : Monotone (compVol U x a Vs Z G) :=
-  fun _ _ h => countVol_mono _ _ _ fun τ => Set.encard_le_encard (smallOn_mono U x Vs Z _
-    (Real.exp_le_exp.2 (mul_le_mul_of_nonneg_left h τ.cast_nonneg)))
 
 def compVolSlope (a : ℕ) (Vs : ValFam Xo c) (Z : Comp Xo c) (la : Weight Dw) : EReal :=
   volSlope (topDeg U Z la) (compVol U x a Vs Z (wtOf Dw la 0))
@@ -289,8 +267,5 @@ def compDegSlope (a : ℕ) (Vs : ValFam Xo c) (Z : Comp Xo c) (la : Weight Dw) :
   degSlope a (fun τ => AllWt.deg (normOn U x V dict Z (τ • wtOf Dw la 0)) (latVal U Vs Z (τ • wtOf Dw la 0)))
     fun τ => Formalism.HN.rkK (latVal U Vs Z (τ • wtOf Dw la 0))
 
-theorem isLimSlope_iff {D' : D7} (Y : Formalism.BasicNotions.DV.ShimX D'.what₂.Tau) (B : ℝ) (u : D'.what₂.Tau → Fin Y.N → ℝ) (k : Y.Comp)
-    (s : ℝ) : IsLimSlope (Formalism.MainNotions.WeightThresholdDefs.dimY Y) (fun t => Y.arSelfC (Y.Mbar B u t) k) (fun t => Y.geoC (Y.Mbar B u t) k) s ↔
-      IndefiniteRowSideFullHecke.EqualVolumeMeanCorrection.IsSlope Y B u k s := Iff.rfl
 
 end GlobalTheory.CompHt

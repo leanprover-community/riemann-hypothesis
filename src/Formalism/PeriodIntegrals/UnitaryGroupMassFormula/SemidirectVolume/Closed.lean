@@ -134,12 +134,5 @@ theorem isClosed_Nsub [IsTopologicalRing (R ⊗[F] E)] [T2Space (R ⊗[F] E)] {r
 
 end Gen
 
-theorem closedStep_of (hT : TensTop) : ClosedStep := by
-  intro F E _ _ _ _ _ σ _ M J _ r P T _ _
-  obtain ⟨h1, h2, _, _⟩ := hT F E
-  refine ⟨isClosed_stabT _ σ J _, ?_, isClosed_stabT _ σ J _⟩
-  show IsClosed ((Nsub (AF F) σ J P ⊓ S0 (AF F) σ J P : Subgroup (HA (AF F) σ J)) : Set (HA (AF F) σ J))
-  rw [Subgroup.coe_inf]
-  exact (isClosed_Nsub _ σ J P).inter (isClosed_stabT _ σ J _)
 
 end PI.VolSemiDirect.W

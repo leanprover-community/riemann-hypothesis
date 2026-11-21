@@ -36,11 +36,6 @@ variable (F) in
 def cong (m : ℕ) : Set (GL (Fin 2) F) :=
   {h | ∀ i j, (h : Matrix (Fin 2) (Fin 2) F) i j - (1 : Matrix (Fin 2) (Fin 2) F) i j ∈ valBall F m}
 
-theorem volume_unit_box_ne_zero (ψ : AddChar F Circle) :
-    (vol2 ψ).real (GodementSectionLocal.box F 0 : Set (Fin 2 → F)) ≠ 0 := by
-  have : (vol2 ψ).IsAddHaarMeasure := by unfold vol2; infer_instance
-  refine (ENNReal.toReal_ne_zero).2 ⟨?_, (GodementSectionLocal.isCompact_box 0).measure_lt_top.ne⟩
-  exact (GodementSectionLocal.isClopen_box 0).isOpen.measure_ne_zero _ ⟨0, zero_mem _⟩
 
 end
 

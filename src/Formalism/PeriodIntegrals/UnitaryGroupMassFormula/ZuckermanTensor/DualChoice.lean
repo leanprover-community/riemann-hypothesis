@@ -1,6 +1,86 @@
 import Mathlib
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ZuckermanTensor.DualDefs
+import Formalism.PeriodIntegrals.ZuckTensor
 
+section
+open Matrix Finset
+open scoped InnerProductSpace
+noncomputable section
+namespace PI.ZuckTensorWork
+open PI.UpqRep PI.ZuckTensor
+
+def Cj (H : Type) : Type := H
+
+namespace Cj
+variable {H : Type}
+
+def mk (x : H) : Cj H := x
+
+def un (x : Cj H) : H := x
+
+@[simp] theorem un_mk (x : H) : un (mk x) = x := rfl
+@[simp] theorem mk_un (x : Cj H) : mk (un x) = x := rfl
+
+instance [NormedAddCommGroup H] : NormedAddCommGroup (Cj H) := inferInstanceAs (NormedAddCommGroup H)
+
+instance [NormedAddCommGroup H] [CompleteSpace H] : CompleteSpace (Cj H) := inferInstanceAs (CompleteSpace H)
+
+instance [NormedAddCommGroup H] [Nontrivial H] : Nontrivial (Cj H) := inferInstanceAs (Nontrivial H)
+
+variable [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+
+instance : Module ℂ (Cj H) := Module.compHom H (starRingEnd ℂ)
+
+theorem un_smul (c : ℂ) (x : Cj H) : un (c • x) = (starRingEnd ℂ) c • un x := rfl
+
+instance : NormedSpace ℂ (Cj H) where
+  norm_smul_le c x := by
+    show ‖(starRingEnd ℂ) c • un x‖ ≤ ‖c‖ * ‖un x‖
+    rw [norm_smul, RCLike.norm_conj]
+
+instance : InnerProductSpace ℂ (Cj H) where
+  inner x y := ⟪un y, un x⟫_ℂ
+  norm_sq_eq_re_inner x := norm_sq_eq_re_inner (𝕜 := ℂ) (un x)
+  conj_inner_symm x y := inner_conj_symm (un y) (un x)
+  add_left x y z := inner_add_right (un z) (un x) (un y)
+  smul_left x y r := by
+    show ⟪un y, (starRingEnd ℂ) r • un x⟫_ℂ = (starRingEnd ℂ) r * ⟪un y, un x⟫_ℂ
+    rw [inner_smul_right]
+
+theorem inner_def (x y : Cj H) : ⟪x, y⟫_ℂ = ⟪un y, un x⟫_ℂ := rfl
+
+end Cj
+
+variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+
+def cjOp (T : H →L[ℂ] H) : Cj H →L[ℂ] Cj H :=
+  LinearMap.mkContinuous
+    { toFun := fun x => Cj.mk (T (Cj.un x))
+      map_add' := fun x y => by
+        show T (Cj.un x + Cj.un y) = T (Cj.un x) + T (Cj.un y)
+        exact map_add T _ _
+      map_smul' := fun c x => by
+        show T ((starRingEnd ℂ) c • Cj.un x) = (starRingEnd ℂ) c • T (Cj.un x)
+        exact map_smul T _ _ }
+    ‖T‖ (fun x => T.le_opNorm (Cj.un x))
+
+theorem cjOp_apply (T : H →L[ℂ] H) (x : Cj H) : Cj.un (cjOp T x) = T (Cj.un x) := rfl
+
+variable {n : ℕ}
+
+def revM (g : Matrix (Fin n) (Fin n) ℂ) : Matrix (Fin n) (Fin n) ℂ := g.submatrix Fin.rev Fin.rev
+
+def revE (ε : Fin n → Bool) : Fin n → Bool := fun a => ε (Fin.rev a)
+
+def revP (lam : Fin n → ℝ) : Fin n → ℝ := fun a => - lam (Fin.rev a)
+
+def sigC (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) : Matrix (Fin n) (Fin n) ℂ → (Cj H →L[ℂ] Cj H) :=
+  fun g => cjOp (σ (revM g))
+
+end PI.ZuckTensorWork
+end
+end
+
+section
 open Matrix Finset
 open scoped InnerProductSpace
 noncomputable section
@@ -73,22 +153,11 @@ def DSConj : Prop :=
   ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) (lam : Fin n → ℝ), IsDS ε lam σ → IsDS (revE ε) (revP lam) (sigC σ)
 
-theorem dualWeight_dualWeight {n : ℕ} (lam : Fin n → ℝ) : revP (revP lam) = lam := by
-  funext a; simp [revP]
 
 theorem revE_revE {n : ℕ} (ε : Fin n → Bool) : revE (revE ε) = ε := by
   funext a; simp [revE]
 
-theorem dsConj_of (h1 : URepConj) (h2 : IrredConj) (h3 : SqIntConj) (h4 : KTypeConj) (h5 : KTypeConjInv)
-    (h6 : LowKRev) (h7 : VNormRev) : DSConj := by
-  intro n ε H _ _ σ lam ⟨hc, hn, hu, hi, hs, ⟨S, hS⟩, hmin⟩
-  refine ⟨inferInstanceAs (CompleteSpace H), inferInstanceAs (Nontrivial H), h1 n ε H σ hu, h2 n ε H σ hi, h3 n ε H σ hs,
-    ⟨cjSub S, by rw [h6]; exact h4 n ε H σ _ S hS⟩, fun μ S' hS' => ?_⟩
-  have := hmin (revP μ) (cjSubInv S') (h5 n ε H σ μ S' hS')
-  rw [h6, h7]
-  calc vNormSq ε (lowK ε lam) ≤ vNormSq ε (revP μ) := this
-    _ = vNormSq (revE ε) (revP (revP μ)) := (h7 n ε (revP μ)).symm
-    _ = vNormSq (revE ε) μ := by rw [dualWeight_dualWeight]
 
 end PI.ZuckTensorWork
+end
 end

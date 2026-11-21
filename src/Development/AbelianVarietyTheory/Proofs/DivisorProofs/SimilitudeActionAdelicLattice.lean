@@ -2,15 +2,546 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.HasDivPlace
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIntegralAdeleLimitCompatibleIntSystemStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteAdeleAwayFromPEqZeroOfDivisibleCoprimeStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsInverseAdeleAwayFromPOfUnitCongruencesStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqZeroOfDivisibleInLattice
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PowEqPowOfModEqSim
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAdelicEndomorphismLattice
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCompatibleInverseSystemLatticeMapsStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsGroupAlgebraActionOfCommuteOrderStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicGroupAlgebraActionInjectiveStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqZeroOfPairingVanishes
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PairingAdjointInvolution
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatticePairingIntegral
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitSectionDivisorEq
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.AV GlobalTheory.AV.AbVar GlobalTheory.PDivGroup GlobalTheory.Dieu GlobalTheory.UPel.HT GlobalTheory.LKTrip GlobalTheory.LKMid GlobalTheory.LKGeo GlobalTheory.LKRes
+open ReciprocityTheory.DiscreteGroups.LocalClassField
+open scoped TensorProduct
+open IsDedekindDomain
+
+noncomputable section
+
+namespace GlobalTheory.AfUnit
+
+variable {p : ℕ} [Fact p.Prime]
+
+theorem exists_nat_mem (v : AwayP p) : ∃ l : ℕ, 0 < l ∧ l.Coprime p ∧ (l : ℤ) ∈ v.1.asIdeal := by
+  have hp : Prime (p : ℤ) := Nat.prime_iff_prime_int.1 Fact.out
+  have hmax : v.1.asIdeal.IsMaximal := v.1.isMaximal
+  have hmp : (Ideal.span {(p : ℤ)}).IsPrime := (Ideal.span_singleton_prime hp.ne_zero).2 hp
+  have hnle : ¬ v.1.asIdeal ≤ Ideal.span {(p : ℤ)} := fun hle => v.2 (hmax.eq_of_le hmp.ne_top hle)
+  obtain ⟨x, hx, hxp⟩ := Set.not_subset.1 hnle
+  have hxp' : ¬ (p : ℤ) ∣ x := fun hd => hxp (Ideal.mem_span_singleton.2 hd)
+  refine ⟨x.natAbs, Int.natAbs_pos.2 (fun h0 => hxp' (h0 ▸ dvd_zero _)), ?_, ?_⟩
+  · exact ((Nat.Prime.coprime_iff_not_dvd Fact.out).2 (fun hd => hxp' (Int.natCast_dvd.2 hd))).symm
+  · rcases Int.natAbs_eq x with h1 | h1
+    · rw [← h1]; exact hx
+    · rw [← neg_eq_iff_eq_neg.2 h1]; exact neg_mem hx
+
+theorem val_natCast (v : AwayP p) (m : ℕ) :
+    Valued.v ((m : ℕ) : v.1.adicCompletion ℚ) = v.1.valuation ℚ (algebraMap ℤ ℚ (m : ℤ)) := by
+  have e : ((m : ℕ) : v.1.adicCompletion ℚ) = algebraMap ℤ (v.1.adicCompletion ℚ) (m : ℤ) := by simp
+  rw [e, IsScalarTower.algebraMap_apply ℤ ℚ (v.1.adicCompletion ℚ)]
+  exact HeightOneSpectrum.valuedAdicCompletion_eq_valuation' v.1 _
+
+theorem val_eval_eq_one (c : AfP p) (u : ℕ → ℕ)
+    (h : ∀ n : ℕ, 0 < n → n.Coprime p → (u n).Coprime n ∧ ∃ β : AfP p, IsIntAf β ∧ c = (u n : AfP p) + n • β)
+    (v : AwayP p) : Valued.v (AfP.eval v c) = 1 := by
+  obtain ⟨l, hl0, hlp, hlv⟩ := exists_nat_mem v
+  obtain ⟨hcop, β, hβ, e⟩ := h l hl0 hlp
+  have hlt : Valued.v ((l : ℕ) : v.1.adicCompletion ℚ) < 1 := by
+    rw [val_natCast, HeightOneSpectrum.valuation_lt_one_iff_mem]; exact hlv
+  have hu : Valued.v ((u l : ℕ) : v.1.adicCompletion ℚ) = 1 := by
+    rw [val_natCast]
+    refine le_antisymm (HeightOneSpectrum.valuation_le_one _ _) (not_lt.1 fun hlt' => ?_)
+    rw [HeightOneSpectrum.valuation_lt_one_iff_mem] at hlt'
+    obtain ⟨a, b, hab⟩ := Nat.isCoprime_iff_coprime.2 hcop
+    exact v.1.isPrime.ne_top ((Ideal.eq_top_iff_one _).2
+      (hab ▸ add_mem (Ideal.mul_mem_left _ a hlt') (Ideal.mul_mem_left _ b hlv)))
+  have hsmall : Valued.v (AfP.eval v (l • β)) < 1 := by
+    rw [map_nsmul, nsmul_eq_mul, map_mul]
+    exact lt_of_le_of_lt (mul_le_of_le_one_right' (hβ v)) hlt
+  rw [e, map_add, map_natCast]
+  rw [Valuation.map_add_eq_of_lt_left _ (by rw [hu]; exact hsmall), hu]
+
+theorem exists_mul_eq_one : ∀ (p : ℕ) [Fact p.Prime] (c : AfP p) (u : ℕ → ℕ),
+    (∀ n : ℕ, 0 < n → n.Coprime p → (u n).Coprime n ∧ ∃ β : AfP p, IsIntAf β ∧ c = (u n : AfP p) + n • β) →
+    ∃ c' : AfP p, c * c' = 1 := by
+  intro p _ c u h
+  have hv := val_eval_eq_one c u h
+  have hint : ∀ v : AwayP p, (AfP.eval v c)⁻¹ ∈ v.1.adicCompletionIntegers ℚ := fun v => by
+    show Valued.v (AfP.eval v c)⁻¹ ≤ 1
+    rw [map_inv₀, hv v, inv_one]
+  let c' : AfP p := ⟨fun v => (AfP.eval v c)⁻¹, Filter.Eventually.of_forall hint⟩
+  refine ⟨c', Subtype.ext (funext fun v => ?_)⟩
+  have hne : AfP.eval v c ≠ 0 := fun h0 => by simpa [h0] using hv v
+  exact mul_inv_cancel₀ hne
+
+end GlobalTheory.AfUnit
+end
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.AV GlobalTheory.AV.AbVar GlobalTheory.PDivGroup GlobalTheory.Dieu GlobalTheory.UPel.HT GlobalTheory.LKTrip GlobalTheory.LKMid GlobalTheory.LKGeo GlobalTheory.LKRes
+open ReciprocityTheory.DiscreteGroups.LocalClassField
+open scoped TensorProduct
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_inverse_adeleAwayFromP_of_unitCongruences : ∀ (p : ℕ) [Fact p.Prime] (c : AfP p) (u : ℕ → ℕ), (∀ n : ℕ, 0 < n → n.Coprime p → (u n).Coprime n ∧ ∃ β : AfP p, IsIntAf β ∧ c = (u n : AfP p) + n • β) → ∃ c' : AfP p, c * c' = 1 := by
+  first | (exact @GlobalTheory.AfUnit.exists_mul_eq_one) | (exact GlobalTheory.AfUnit.exists_mul_eq_one) | (intros; apply GlobalTheory.AfUnit.exists_mul_eq_one  <;> assumption)
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.AV GlobalTheory.AV.AbVar GlobalTheory.PDivGroup GlobalTheory.Dieu GlobalTheory.UPel.HT GlobalTheory.LKTrip GlobalTheory.LKMid GlobalTheory.LKGeo GlobalTheory.LKRes
+open ReciprocityTheory.DiscreteGroups.LocalClassField
+open scoped TensorProduct
+
+noncomputable section
+
+namespace GlobalTheory.LKGeo.ModZero
+
+theorem repr_isIntAf {p : ℕ} [Fact p.Prime] (D : Datum p) {κ : Type} (b : Module.Basis κ ℤ D.La)
+    (u : AfP p ⊗[ℚ] VQ D) (hu : u ∈ LaHat D) (i : κ) :
+    IsIntAf ((Algebra.TensorProduct.basis (AfP p) (Algebra.TensorProduct.basis ℚ b)).repr u i) := by
+  induction hu using AddSubgroup.closure_induction with
+  | mem u hu =>
+    obtain ⟨a, x, ha, rfl⟩ := hu
+    intro v
+    rw [Algebra.TensorProduct.basis_repr_tmul, Finsupp.smul_apply, Finsupp.mapRange_apply,
+      Algebra.TensorProduct.basis_repr_tmul, Finsupp.smul_apply, Finsupp.mapRange_apply, smul_eq_mul, one_smul,
+      eq_intCast (algebraMap ℤ ℚ), map_intCast, map_mul, map_intCast]
+    exact mul_mem (ha v) (intCast_mem _ _)
+  | zero => intro v; rw [map_zero, Finsupp.zero_apply, map_zero]; exact zero_mem _
+  | add u u' _ _ hu hu' => intro v; rw [map_add, Finsupp.add_apply, map_add]; exact add_mem (hu v) (hu' v)
+  | neg u _ hu => intro v; rw [map_neg, Finsupp.neg_apply, map_neg]; exact neg_mem (hu v)
+
+end GlobalTheory.LKGeo.ModZero
+
+open GlobalTheory.LKGeo.ModZero in
+
+theorem GlobalTheory.LKGeo.eq_zero_of_forall_nsmul_laHat : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (z : AfP p ⊗[ℚ] VQ D),
+    (∀ n : ℕ, 0 < n → n.Coprime p → ∃ w ∈ LaHat D, z = n • w) → z = 0 := by
+  intro p _ D z hz
+  have := D.freeLa
+  have := D.finLa
+  let b := Module.Free.chooseBasis ℤ D.La
+  let bA := Algebra.TensorProduct.basis (AfP p) (Algebra.TensorProduct.basis ℚ b)
+  refine bA.ext_elem fun i => ?_
+  rw [map_zero, Finsupp.zero_apply]
+  refine GlobalTheory.T.finiteAdeleAwayFromP_eq_zero_of_divisible_coprime p (bA.repr z i) fun n hn hc => ?_
+  obtain ⟨w, hw, rfl⟩ := hz n hn hc
+  exact ⟨bA.repr w i, repr_isIntAf D b w hw i, by rw [map_nsmul, Finsupp.smul_apply]⟩
+end
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.AV GlobalTheory.AV.AbVar GlobalTheory.PDivGroup GlobalTheory.Dieu GlobalTheory.UPel.HT GlobalTheory.LKTrip GlobalTheory.LKMid GlobalTheory.LKGeo GlobalTheory.LKRes
+open ReciprocityTheory.DiscreteGroups.LocalClassField
+open scoped TensorProduct
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eq_zero_of_divisible_in_lattice : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (z : AfP p ⊗[ℚ] VQ D), (∀ n : ℕ, 0 < n → n.Coprime p → ∃ w ∈ LaHat D, z = n • w) → z = 0 := by
+  first | (exact @GlobalTheory.LKGeo.eq_zero_of_forall_nsmul_laHat) | (exact GlobalTheory.LKGeo.eq_zero_of_forall_nsmul_laHat) | (intros; apply GlobalTheory.LKGeo.eq_zero_of_forall_nsmul_laHat <;> assumption)
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.AV GlobalTheory.AV.AbVar GlobalTheory.PDivGroup GlobalTheory.Dieu GlobalTheory.UPel.HT GlobalTheory.LKTrip GlobalTheory.LKMid GlobalTheory.LKGeo GlobalTheory.LKRes
+open ReciprocityTheory.DiscreteGroups.LocalClassField
+open scoped TensorProduct
+open scoped TensorProduct
+
+namespace GlobalTheory.InvSys
+
+theorem exists_nsmul_of_basis {M κ : Type} [AddCommGroup M] (b : Module.Basis κ ℤ M) (f : M →ₗ[ℤ] M) (n : ℕ)
+    (hb : ∀ i, ∃ z, f (b i) = n • z) (x : M) : ∃ z, f x = n • z := by
+  have hx : x ∈ Submodule.span ℤ (Set.range b) := by rw [b.span_eq]; exact Submodule.mem_top
+  induction hx using Submodule.span_induction with
+  | mem y hy => obtain ⟨i, rfl⟩ := hy; exact hb i
+  | zero => exact ⟨0, by simp⟩
+  | add y w _ _ hy hw =>
+    obtain ⟨z1, h1⟩ := hy; obtain ⟨z2, h2⟩ := hw
+    exact ⟨z1 + z2, by rw [map_add, h1, h2, smul_add]⟩
+  | smul a y _ hy =>
+    obtain ⟨z, h⟩ := hy
+    exact ⟨a • z, by rw [map_smul, h, smul_comm]⟩
+
+theorem invSys : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (g : ℕ → D.La →+ D.La), (∀ n m : ℕ, 0 < n → 0 < m → (n * m).Coprime p → ∀ x, ∃ z, g (n * m) x = g n x + n • z) → (∀ n, 0 < n → n.Coprime p → ∀ x, ∃ y z, g n y = x + n • z) → (∀ n, 0 < n → n.Coprime p → ∀ x z, g n x = n • z → ∃ w, x = n • w) → ∃ g' : ℕ → D.La →+ D.La, (∀ n m : ℕ, 0 < n → 0 < m → (n * m).Coprime p → ∀ x, ∃ z, g' (n * m) x = g' n x + n • z) ∧ (∀ n, 0 < n → n.Coprime p → ∀ x, ∃ z, g n (g' n x) = x + n • z) ∧ (∀ n, 0 < n → n.Coprime p → ∀ x, ∃ z, g' n (g n x) = x + n • z) := by
+  intro p _ D g htow hsurj hinj
+  haveI := D.freeLa
+  let b := Module.Free.chooseBasis ℤ D.La
+  choose y z hyz using hsurj
+  let g' : ℕ → D.La →+ D.La := fun n =>
+    if h : 0 < n ∧ n.Coprime p then (b.constr ℤ (fun i => y n h.1 h.2 (b i))).toAddMonoidHom else 0
+  have sec : ∀ n, 0 < n → n.Coprime p → ∀ x, ∃ z, g n (g' n x) = x + n • z := by
+    intro n hn hc x
+    have hg' : g' n = (b.constr ℤ (fun i => y n hn hc (b i))).toAddMonoidHom := by
+      simp only [g', dif_pos (And.intro hn hc)]
+    obtain ⟨w, hw⟩ := exists_nsmul_of_basis b
+      ((g n).toIntLinearMap ∘ₗ b.constr ℤ (fun i => y n hn hc (b i)) - LinearMap.id) n
+      (fun i => ⟨z n hn hc (b i), by simp [Module.Basis.constr_basis, hyz]⟩) x
+    refine ⟨w, ?_⟩
+    rw [hg']
+    simp only [LinearMap.sub_apply, LinearMap.comp_apply, AddMonoidHom.coe_toIntLinearMap, LinearMap.id_apply] at hw
+    simp only [LinearMap.toAddMonoidHom_coe]
+    rw [← hw]; abel
+  refine ⟨g', ?_, sec, ?_⟩
+  · intro n m hn hm hc x
+    have hcn : n.Coprime p := Nat.Coprime.coprime_dvd_left (Dvd.intro m rfl) hc
+    obtain ⟨z1, h1⟩ := htow n m hn hm hc (g' (n * m) x)
+    obtain ⟨z2, h2⟩ := sec (n * m) (Nat.mul_pos hn hm) hc x
+    obtain ⟨z3, h3⟩ := sec n hn hcn x
+    obtain ⟨w, hw⟩ := hinj n hn hcn (g' (n * m) x - g' n x) (m • z2 - z1 - z3) (by
+      rw [map_sub, smul_sub, smul_sub]
+      rw [h2] at h1
+      have : g n (g' (n * m) x) = x + (n * m) • z2 - n • z1 := by rw [h1]; abel
+      rw [this, h3]
+      rw [mul_smul]; abel)
+    exact ⟨w, by rw [← hw]; abel⟩
+  · intro n hn hc x
+    obtain ⟨z1, h1⟩ := sec n hn hc (g n x)
+    obtain ⟨w, hw⟩ := hinj n hn hc (g' n (g n x) - x) z1 (by rw [map_sub, h1]; abel)
+    exact ⟨w, by rw [← hw]; abel⟩
+
+end GlobalTheory.InvSys
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.AV GlobalTheory.AV.AbVar GlobalTheory.PDivGroup GlobalTheory.Dieu GlobalTheory.UPel.HT GlobalTheory.LKTrip GlobalTheory.LKMid GlobalTheory.LKGeo GlobalTheory.LKRes
+open ReciprocityTheory.DiscreteGroups.LocalClassField
+open scoped TensorProduct
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_compatible_inverseSystem_latticeMaps : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (g : ℕ → D.La →+ D.La), (∀ n m : ℕ, 0 < n → 0 < m → (n * m).Coprime p → ∀ x, ∃ z, g (n * m) x = g n x + n • z) → (∀ n, 0 < n → n.Coprime p → ∀ x, ∃ y z, g n y = x + n • z) → (∀ n, 0 < n → n.Coprime p → ∀ x z, g n x = n • z → ∃ w, x = n • w) → ∃ g' : ℕ → D.La →+ D.La, (∀ n m : ℕ, 0 < n → 0 < m → (n * m).Coprime p → ∀ x, ∃ z, g' (n * m) x = g' n x + n • z) ∧ (∀ n, 0 < n → n.Coprime p → ∀ x, ∃ z, g n (g' n x) = x + n • z) ∧ (∀ n, 0 < n → n.Coprime p → ∀ x, ∃ z, g' n (g n x) = x + n • z) := by
+  first | (exact @GlobalTheory.InvSys.invSys) | (exact GlobalTheory.InvSys.invSys) | (intros; apply GlobalTheory.InvSys.invSys  <;> assumption)
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.AV GlobalTheory.AV.AbVar GlobalTheory.PDivGroup GlobalTheory.Dieu GlobalTheory.UPel.HT GlobalTheory.LKTrip GlobalTheory.LKMid GlobalTheory.LKGeo GlobalTheory.LKRes
+open ReciprocityTheory.DiscreteGroups.LocalClassField
+open scoped TensorProduct
+open scoped TensorProduct
+
+set_option autoImplicit false
+noncomputable section
+
+namespace GlobalTheory.LKGeo.CommBC
+
+theorem actOn_tmul_tmul {C V : Type} [Ring C] [Algebra ℚ C] [AddCommGroup V] [Module ℚ V]
+    (rep : C →ₐ[ℚ] Module.End ℚ V) (R : Type) [CommRing R] [Algebra ℚ R] (a b : R) (c : C) (v : V) :
+    actOn rep R (a ⊗ₜ c) (b ⊗ₜ v) = (a * b) ⊗ₜ rep c v := by
+  have : actOn rep R (a ⊗ₜ c) = Algebra.ofId R _ a * Module.End.baseChangeHom ℚ R V (rep c) :=
+    Algebra.TensorProduct.lift_tmul _ _ _ a c
+  rw [this, Module.End.mul_apply]
+  simp only [Algebra.ofId_apply, Module.algebraMap_end_apply]
+  change a • (LinearMap.baseChange R (rep c)) (b ⊗ₜ v) = _
+  rw [LinearMap.baseChange_tmul, TensorProduct.smul_tmul', smul_eq_mul]
+
+theorem exists_actOn_eq {C V : Type} [Ring C] [Algebra ℚ C] [AddCommGroup V] [Module ℚ V] [Module.Finite ℚ V]
+    (rep : C →ₐ[ℚ] Module.End ℚ V) {ι' : Type} (S : ι' → Module.End ℚ V)
+    (hrange : ∀ B : Module.End ℚ V, (∀ b, B * S b = S b * B) → ∃ x, rep x = B)
+    (R : Type) [CommRing R] [Algebra ℚ R] (A : Module.End R (R ⊗[ℚ] V))
+    (hA : ∀ b, A * (S b).baseChange R = (S b).baseChange R * A) : ∃ y, actOn rep R y = A := by
+  classical
+  let r := Module.Free.chooseBasis ℚ R
+  let e : R ⊗[ℚ] V ≃ₗ[ℚ] (Module.Free.ChooseBasisIndex ℚ R →₀ V) :=
+    (LinearEquiv.rTensor V r.repr).trans (TensorProduct.finsuppScalarLeft ℚ V _)
+  have he : ∀ (a : R) (v : V) k, e (a ⊗ₜ v) k = r.repr a k • v := by
+    intro a v k
+    simp [e, TensorProduct.finsuppScalarLeft_apply_tmul_apply]
+  let Ak : Module.Free.ChooseBasisIndex ℚ R → Module.End ℚ V := fun k =>
+    (Finsupp.lapply k) ∘ₗ e.toLinearMap ∘ₗ (A.restrictScalars ℚ) ∘ₗ (TensorProduct.mk ℚ R V 1)
+  have hAk : ∀ k v, Ak k v = e (A (1 ⊗ₜ v)) k := fun k v => rfl
+  have heS : ∀ (s : Module.End ℚ V) (x : R ⊗[ℚ] V) k, e (s.baseChange R x) k = s (e x k) := by
+    intro s x k
+    induction x using TensorProduct.induction_on with
+    | zero => simp
+    | tmul a v => simp [he]
+    | add x y hx hy => simp only [map_add, Finsupp.add_apply, hx, hy]
+  have hcomm : ∀ k b, Ak k * S b = S b * Ak k := by
+    intro k b; ext v
+    simp only [Module.End.mul_apply, hAk]
+    have := congrArg (fun f => f ((1 : R) ⊗ₜ v)) (hA b)
+    simp only [Module.End.mul_apply, LinearMap.baseChange_tmul] at this
+    rw [this, heS]
+  choose x hx using fun k => hrange (Ak k) (hcomm k)
+  let bV := Module.finBasis ℚ V
+  let F := Finset.univ.biUnion fun i => (e (A ((1 : R) ⊗ₜ bV i))).support
+  have hzero : ∀ k ∉ F, Ak k = 0 := by
+    intro k hk
+    refine bV.ext fun i => ?_
+    rw [hAk, LinearMap.zero_apply]
+    by_contra h
+    exact hk (Finset.mem_biUnion.mpr ⟨i, Finset.mem_univ _, Finsupp.mem_support_iff.mpr h⟩)
+  refine ⟨∑ k ∈ F, r k ⊗ₜ x k, ?_⟩
+  have h1 : ∀ v, actOn rep R (∑ k ∈ F, r k ⊗ₜ x k) ((1 : R) ⊗ₜ v) = A ((1 : R) ⊗ₜ v) := by
+    intro v
+    apply e.injective
+    ext j
+    rw [map_sum, LinearMap.sum_apply, map_sum, Finsupp.finset_sum_apply]
+    simp_rw [actOn_tmul_tmul, _root_.mul_one, hx, he, Module.Basis.repr_self, Finsupp.single_apply, ite_smul, one_smul,
+      zero_smul]
+    rw [Finset.sum_ite_eq', ← hAk]
+    split_ifs with hj
+    · rfl
+    · rw [hzero j hj, LinearMap.zero_apply]
+  apply TensorProduct.AlgebraTensorModule.ext
+  intro a v
+  have : a ⊗ₜ[ℚ] v = a • ((1 : R) ⊗ₜ v) := by rw [TensorProduct.smul_tmul', smul_eq_mul, _root_.mul_one]
+  rw [this, map_smul, map_smul, h1]
+
+theorem exists_actOn_eq_of_commute : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (G : HTGroup p) (L : Link D G)
+    (A : Module.End (AfP p) (AfP p ⊗[ℚ] VQ D)),
+    (∀ b : D.O, A * (actQ D b).baseChange (AfP p) = (actQ D b).baseChange (AfP p) * A) →
+    ∃ y, actOn L.rep (AfP p) y = A := by
+  intro p _ D G L A hA
+  haveI := D.finLa
+  exact exists_actOn_eq L.rep (actQ D) (fun B hB => (L.rep_range B).mpr hB) (AfP p) A hA
+
+end GlobalTheory.LKGeo.CommBC
+end
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.AV GlobalTheory.AV.AbVar GlobalTheory.PDivGroup GlobalTheory.Dieu GlobalTheory.UPel.HT GlobalTheory.LKTrip GlobalTheory.LKMid GlobalTheory.LKGeo GlobalTheory.LKRes
+open ReciprocityTheory.DiscreteGroups.LocalClassField
+open scoped TensorProduct
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_groupAlgebra_action_of_commute_order : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (G : HTGroup p) (L : Link D G) (A : Module.End (AfP p) (AfP p ⊗[ℚ] VQ D)), (∀ b : D.O, A * (actQ D b).baseChange (AfP p) = (actQ D b).baseChange (AfP p) * A) → ∃ y, actOn L.rep (AfP p) y = A := by
+  first | (exact @GlobalTheory.LKGeo.CommBC.exists_actOn_eq_of_commute) | (exact GlobalTheory.LKGeo.CommBC.exists_actOn_eq_of_commute) | (intros; apply GlobalTheory.LKGeo.CommBC.exists_actOn_eq_of_commute  <;> assumption)
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.AV GlobalTheory.AV.AbVar GlobalTheory.PDivGroup GlobalTheory.Dieu GlobalTheory.UPel.HT GlobalTheory.LKTrip GlobalTheory.LKMid GlobalTheory.LKGeo GlobalTheory.LKRes
+open ReciprocityTheory.DiscreteGroups.LocalClassField
+open scoped TensorProduct
+
+namespace GlobalTheory.LKGeo
+
+theorem baseChangeAlgebraRepresentationAction_injective {C V : Type} [Ring C] [Algebra ℚ C] [AddCommGroup V] [Module ℚ V] [Module.Finite ℚ V]
+    (rep : C →ₐ[ℚ] Module.End ℚ V) (hrep : Function.Injective rep) (R : Type) [CommRing R] [Algebra ℚ R] :
+    Function.Injective (actOn rep R) := by
+  classical
+  set b := Module.finBasis ℚ V
+  let g : C →ₗ[ℚ] (Fin (Module.finrank ℚ V) × Fin (Module.finrank ℚ V) → ℚ) :=
+    LinearMap.pi (fun ij => (b.coord ij.2).comp ((LinearMap.applyₗ (b ij.1)).comp rep.toLinearMap))
+  have hg : Function.Injective g := by
+    rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
+    intro x hx
+    apply hrep
+    rw [map_zero]
+    refine b.ext (fun i => b.ext_elem (fun j => ?_))
+    have := congrFun hx (i, j)
+    simpa [g] using this
+  have hlg : Function.Injective (LinearMap.lTensor R g) :=
+    Module.Flat.lTensor_preserves_injective_linearMap g hg
+  have key : ∀ (y : R ⊗[ℚ] C) (i j : Fin (Module.finrank ℚ V)),
+      TensorProduct.piScalarRight ℚ R R _ (LinearMap.lTensor R g y) (i, j) =
+        TensorProduct.rid ℚ R (LinearMap.lTensor R (b.coord j) (actOn rep R y ((1 : R) ⊗ₜ b i))) := by
+    intro y i j
+    induction y using TensorProduct.induction_on with
+    | zero => simp
+    | tmul r x =>
+      have h1 : actOn rep R (r ⊗ₜ x) ((1 : R) ⊗ₜ b i) = r ⊗ₜ (rep x (b i)) := by
+        simp only [actOn, Algebra.TensorProduct.lift_tmul, Module.End.mul_apply]
+        change r • ((rep x).baseChange R ((1 : R) ⊗ₜ b i)) = _
+        rw [LinearMap.baseChange_tmul, TensorProduct.smul_tmul', smul_eq_mul, _root_.mul_one]
+      rw [h1]
+      simp [g, Algebra.smul_def]
+    | add y z hy hz => simp only [map_add, Pi.add_apply, LinearMap.add_apply, hy, hz]
+  rw [injective_iff_map_eq_zero]
+  intro y hy
+  apply hlg
+  rw [map_zero]
+  apply (TensorProduct.piScalarRight ℚ R R _).injective
+  rw [map_zero]
+  funext ij
+  rw [key, hy]
+  simp
+
+theorem actOn_rep_afP_injective : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (G : HTGroup p) (L : Link D G),
+    Function.Injective (actOn L.rep (AfP p)) := by
+  intro p _ D G L
+  haveI := D.finLa
+  exact baseChangeAlgebraRepresentationAction_injective L.rep L.rep_inj (AfP p)
+
+end GlobalTheory.LKGeo
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.AV GlobalTheory.AV.AbVar GlobalTheory.PDivGroup GlobalTheory.Dieu GlobalTheory.UPel.HT GlobalTheory.LKTrip GlobalTheory.LKMid GlobalTheory.LKGeo GlobalTheory.LKRes
+open ReciprocityTheory.DiscreteGroups.LocalClassField
+open scoped TensorProduct
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adelicGroupAlgebraAction_injective : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (G : HTGroup p) (L : Link D G), Function.Injective (actOn L.rep (AfP p)) := by
+  first | (exact @GlobalTheory.LKGeo.actOn_rep_afP_injective) | (exact GlobalTheory.LKGeo.actOn_rep_afP_injective) | (intros; apply GlobalTheory.LKGeo.actOn_rep_afP_injective  <;> assumption)
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.AV GlobalTheory.AV.AbVar GlobalTheory.PDivGroup GlobalTheory.Dieu GlobalTheory.UPel.HT GlobalTheory.LKTrip GlobalTheory.LKMid GlobalTheory.LKGeo GlobalTheory.LKRes
+open ReciprocityTheory.DiscreteGroups.LocalClassField
+open scoped TensorProduct
+
+namespace GlobalTheory.LKGeo
+
+theorem det_gram_ne_zero {L : Type} [AddCommGroup L] {κ : Type} [Fintype κ] [DecidableEq κ]
+    (b : Module.Basis κ ℤ L) (B : LinearMap.BilinForm ℤ L) (hB : Function.Injective B) :
+    (Matrix.of fun i j => B (b i) (b j)).det ≠ 0 := by
+  intro h0
+  obtain ⟨c, hc0, hc⟩ := Matrix.exists_vecMul_eq_zero_iff.mpr h0
+  apply hc0
+  have hx : B (∑ i, c i • b i) = 0 := by
+    apply b.ext
+    intro j
+    have := congrFun hc j
+    simpa [Matrix.vecMul, dotProduct, map_sum, map_smul, mul_comm] using this
+  have h1 : ∑ i, c i • b i = 0 := hB (hx.trans (map_zero B).symm)
+  funext i
+  exact Fintype.linearIndependent_iff.mp b.linearIndependent c h1 i
+
+theorem nondeg_afP : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (z : AfP p ⊗[ℚ] VQ D),
+    (∀ v, (D.EF.baseChange ℚ).baseChange (AfP p) v z = 0) → z = 0 := by
+  intro p _ D z hz
+  classical
+  haveI := D.freeLa; haveI := D.finLa
+  let b := Module.Free.chooseBasis ℤ D.La
+  let bQ := Algebra.TensorProduct.basis ℚ b
+  let bA := Algebra.TensorProduct.basis (AfP p) bQ
+  have hg : ∀ i j, (D.EF.baseChange ℚ).baseChange (AfP p) (bA i) (bA j) = ((D.EF (b i) (b j) : ℤ) : AfP p) := by
+    intro i j
+    simp [bA, bQ, LinearMap.BilinForm.baseChange_tmul, Algebra.smul_def]
+  set c := bA.repr z
+  let M : Matrix _ _ (AfP p) := (Matrix.of fun i j => D.EF (b i) (b j)).map (Int.castRingHom (AfP p))
+  have hzs : z = ∑ j, c j • bA j := (bA.sum_repr z).symm
+  have hM : M.mulVec c = 0 := by
+    funext i
+    have := hz (bA i)
+    rw [hzs, map_sum] at this
+    simpa [Matrix.mulVec, dotProduct, M, hg, mul_comm] using this
+  have hdet : IsUnit M.det := by
+    rw [show M.det = Int.castRingHom (AfP p) (Matrix.of fun i j => D.EF (b i) (b j)).det from
+      (RingHom.map_det _ _).symm]
+    have h0 := det_gram_ne_zero b D.EF D.nondeg
+    have hq : IsUnit (((Matrix.of fun i j => D.EF (b i) (b j)).det : ℤ) : ℚ) :=
+      isUnit_iff_ne_zero.mpr (by exact_mod_cast h0)
+    have := hq.map (algebraMap ℚ (AfP p))
+    simpa using this
+  have hc : (⇑c : _ → AfP p) = 0 := by
+    have := congrArg (M⁻¹).mulVec hM
+    rwa [Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ hdet, Matrix.one_mulVec, Matrix.mulVec_zero] at this
+  have hc' : ∀ j, c j = 0 := fun j => congrFun hc j
+  rw [hzs]
+  simp [hc']
+
+end GlobalTheory.LKGeo
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.AV GlobalTheory.AV.AbVar GlobalTheory.PDivGroup GlobalTheory.Dieu GlobalTheory.UPel.HT GlobalTheory.LKTrip GlobalTheory.LKMid GlobalTheory.LKGeo GlobalTheory.LKRes
+open ReciprocityTheory.DiscreteGroups.LocalClassField
+open scoped TensorProduct
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eq_zero_of_pairing_vanishes : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (z : AfP p ⊗[ℚ] VQ D), (∀ v, (D.EF.baseChange ℚ).baseChange (AfP p) v z = 0) → z = 0 := by
+  first | (exact @GlobalTheory.LKGeo.nondeg_afP) | (exact GlobalTheory.LKGeo.nondeg_afP) | (intros; apply GlobalTheory.LKGeo.nondeg_afP  <;> assumption)
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.AV GlobalTheory.AV.AbVar GlobalTheory.PDivGroup GlobalTheory.Dieu GlobalTheory.UPel.HT GlobalTheory.LKTrip GlobalTheory.LKMid GlobalTheory.LKGeo GlobalTheory.LKRes
+open ReciprocityTheory.DiscreteGroups.LocalClassField
+open scoped TensorProduct
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pairing_adjoint_involution : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (G : HTGroup p) (L : Link D G) (x : AfP p ⊗[ℚ] G.C) (v w : AfP p ⊗[ℚ] VQ D), (D.EF.baseChange ℚ).baseChange (AfP p) (actOn L.rep (AfP p) x v) w = (D.EF.baseChange ℚ).baseChange (AfP p) v (actOn L.rep (AfP p) (starT G.star (AfP p) x).unop w) := by
+  first | (exact @GlobalTheory.LKGeo.adj_actOn_afP) | (exact GlobalTheory.LKGeo.adj_actOn_afP) | (intros; apply GlobalTheory.LKGeo.adj_actOn_afP  <;> assumption)
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.AV GlobalTheory.AV.AbVar GlobalTheory.PDivGroup GlobalTheory.Dieu GlobalTheory.UPel.HT GlobalTheory.LKTrip GlobalTheory.LKMid GlobalTheory.LKGeo GlobalTheory.LKRes
+open ReciprocityTheory.DiscreteGroups.LocalClassField
+open scoped TensorProduct
+
+namespace GlobalTheory.LKGeo
+
+variable {p : ℕ} [Fact p.Prime]
+
+theorem isIntAf_zero : IsIntAf (0 : AfP p) := fun v => by rw [map_zero]; exact zero_mem _
+
+theorem isIntAf_add {a b : AfP p} (ha : IsIntAf a) (hb : IsIntAf b) : IsIntAf (a + b) := fun v => by
+  rw [map_add]; exact add_mem (ha v) (hb v)
+
+theorem isIntAf_neg {a : AfP p} (ha : IsIntAf a) : IsIntAf (-a) := fun v => by
+  rw [map_neg]; exact neg_mem (ha v)
+
+theorem isIntAf_zsmul_mul (n : ℤ) {a b : AfP p} (ha : IsIntAf a) (hb : IsIntAf b) :
+    IsIntAf ((n : ℚ) • (a * b)) := fun v => by
+  rw [Int.cast_smul_eq_zsmul, map_zsmul, map_mul]
+  exact zsmul_mem (mul_mem (ha v) (hb v)) n
+
+theorem formInt_gen (D : Datum p) (a a' : AfP p) (x y : D.La) (ha : IsIntAf a) (ha' : IsIntAf a') :
+    IsIntAf ((D.EF.baseChange ℚ).baseChange (AfP p) (a ⊗ₜ ((1 : ℚ) ⊗ₜ x)) (a' ⊗ₜ ((1 : ℚ) ⊗ₜ y))) := by
+  rw [LinearMap.BilinForm.baseChange_tmul, LinearMap.BilinForm.baseChange_tmul, _root_.mul_one, zsmul_eq_mul, _root_.mul_one]
+  exact isIntAf_zsmul_mul _ ha ha'
+
+theorem formInt_laHat : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (v w : AfP p ⊗[ℚ] VQ D), v ∈ LaHat D → w ∈ LaHat D →
+    IsIntAf ((D.EF.baseChange ℚ).baseChange (AfP p) v w) := by
+  intro p _ D v w hv hw
+  set B := (D.EF.baseChange ℚ).baseChange (AfP p)
+
+  have hgen : ∀ z ∈ {z | ∃ (a : AfP p) (x : D.La), IsIntAf a ∧ z = a ⊗ₜ ((1 : ℚ) ⊗ₜ x)},
+      ∀ w ∈ LaHat D, IsIntAf (B z w) := by
+    rintro z ⟨a, x, ha, rfl⟩ w hw
+    induction hw using AddSubgroup.closure_induction with
+    | mem w hw' =>
+      obtain ⟨a', y, ha', rfl⟩ := hw'
+      exact formInt_gen D a a' x y ha ha'
+    | zero => rw [map_zero]; exact isIntAf_zero
+    | add w₁ w₂ _ _ h₁ h₂ => rw [map_add]; exact isIntAf_add h₁ h₂
+    | neg w _ h => rw [map_neg]; exact isIntAf_neg h
+  induction hv using AddSubgroup.closure_induction with
+  | mem z hz => exact hgen z hz w hw
+  | zero => rw [map_zero, LinearMap.zero_apply]; exact isIntAf_zero
+  | add v₁ v₂ _ _ h₁ h₂ => rw [map_add, LinearMap.add_apply]; exact isIntAf_add h₁ h₂
+  | neg v _ h => rw [map_neg, LinearMap.neg_apply]; exact isIntAf_neg h
+
+end GlobalTheory.LKGeo
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.AV GlobalTheory.AV.AbVar GlobalTheory.PDivGroup GlobalTheory.Dieu GlobalTheory.UPel.HT GlobalTheory.LKTrip GlobalTheory.LKMid GlobalTheory.LKGeo GlobalTheory.LKRes
+open ReciprocityTheory.DiscreteGroups.LocalClassField
+open scoped TensorProduct
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lattice_pairing_integral : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (v w : AfP p ⊗[ℚ] VQ D), v ∈ LaHat D → w ∈ LaHat D → IsIntAf ((D.EF.baseChange ℚ).baseChange (AfP p) v w) := by
+  first | (exact @GlobalTheory.LKGeo.formInt_laHat) | (exact GlobalTheory.LKGeo.formInt_laHat) | (intros; apply GlobalTheory.LKGeo.formInt_laHat  <;> assumption)
+end
+
+section
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.AV GlobalTheory.AV.AbVar GlobalTheory.PDivGroup GlobalTheory.Dieu GlobalTheory.UPel.HT GlobalTheory.LKTrip GlobalTheory.LKMid GlobalTheory.LKGeo GlobalTheory.LKRes
@@ -297,3 +828,5 @@ theorem exists_mem_KN (p : ℕ) [Fact p.Prime] (D : Datum p) (G : HTGroup p) (L 
   · rw [ha0]; exact h₀c n hn hnp x
 
 end GlobalTheory.AdelicSim
+end
+end

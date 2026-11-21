@@ -102,22 +102,6 @@ theorem DefiniteUnitary.csum (h : DefiniteUnitary A) :
       (A.MtCSD i t).csum (f : _ → _) (f' : _ → _) :=
   ⟨fun t => (isUnitaryAt_iff _ _ D.starLL_cx _).1 (h.what₂ t _), fun i t => (isUnitaryAt_iff _ _ D.starLL_cx _).1 (h.lifts i t _)⟩
 
-theorem rows_iff (R : RealDat D A Ks) (F : Face D A) (h : R.Char F) :
-    IsUnitaryRep R.gE ↔ ∀ (g : G), ∀ x ∈ R.EEat R.triv, ∀ y ∈ R.EEat R.triv,
-      Formalism.IndefR.Mult.ipM (R.MY 0) R.ν0 R.fd0
-                (Formalism.IndefR.Mult.postOn _ (actL (Yc D 0) (R.βY 0) (R.dat0 R.triv) (R.eG g)) x)
-                (Formalism.IndefR.Mult.postOn _ (actL (Yc D 0) (R.βY 0) (R.dat0 R.triv) (R.eG g)) y) =
-        Formalism.IndefR.Mult.ipM (R.MY 0) R.ν0 R.fd0 x y := by
-  obtain ⟨-, hr, hip⟩ := h.models.HE
-  constructor
-  · intro hu g x hx y hy
-    rw [← hr] at hx hy
-    obtain ⟨x, rfl⟩ := hx
-    obtain ⟨y, rfl⟩ := hy
-    rw [← h.models.gE, ← h.models.gE, ← hip, ← hip, hu]
-  · intro hu g x y
-    rw [hip, hip, h.models.gE, h.models.gE]
-    exact hu g _ (hr ▸ LinearMap.mem_range_self _ x) _ (hr ▸ LinearMap.mem_range_self _ y)
 
 end Basic₂
 

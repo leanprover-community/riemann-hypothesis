@@ -29,8 +29,6 @@ theorem smul_mem_HermR (c : R) (S : Matrix (Fin a) (Fin a) (R ⊗[F] E)) (hS : S
 instance hermSMul : SMul R (HermR R σ a) :=
   ⟨fun c S => ⟨c • (S : Matrix (Fin a) (Fin a) (R ⊗[F] E)), smul_mem_HermR R σ a c S S.2⟩⟩
 
-theorem coe_herm_smul (c : R) (S : HermR R σ a) :
-    ((c • S : HermR R σ a) : Matrix (Fin a) (Fin a) (R ⊗[F] E)) = c • (S : Matrix _ _ _) := rfl
 
 instance hermModule : Module R (HermR R σ a) :=
   Function.Injective.module R (HermR R σ a).subtype Subtype.val_injective (fun _ _ => rfl)
@@ -100,22 +98,5 @@ def FrameH : Prop :=
       (∀ x, x = ∑ j, pairHerm (Fv F v) σ a x (β' j) • β j) ∧
       (∀ y, y = ∑ j, pairHerm (Fv F v) σ a (β j) y • β' j)
 
-theorem sdEx_of (hP : PsiNT) (hA : AbsSd) (hWf : BRFacts) (hW : FrameW) (hHf : HermFacts)
-    (hH : FrameH) : SdEx := by
-  intro F E _ _ _ _ _ σ n J ψ v a hS
-  obtain ⟨hCM, hJ, hψ, hstd⟩ := hS
-  have hc : Continuous (psiV F ψ v) := continuous_psiV ψ hψ.1 v
-  have hadd := psiV_add ψ v
-  have hn : ∀ r, ‖psiV F ψ v r‖ = 1 := fun r => hψ.2.1 _
-  have hnt := hP ψ v hψ hstd hCM.1
-  constructor
-  · obtain ⟨ι, _, β, β', h1, h2⟩ := hW σ J v a hCM hJ
-    obtain ⟨ha, hs, hsym, hcont⟩ := hWf σ J v a hCM hJ
-    obtain ⟨μ, hμ⟩ := hA v _ hc hadd hn hnt (BR (Fv F v) σ J) ha hs hsym hcont β β' h1 h2
-    exact ⟨μ, hμ⟩
-  · obtain ⟨ι, _, β, β', h1, h2⟩ := hH σ v a hCM
-    obtain ⟨ha, hs, hsym, hcont⟩ := hHf σ v a hCM
-    obtain ⟨μ, hμ⟩ := hA v _ hc hadd hn hnt (pairHerm (Fv F v) σ a) ha hs hsym hcont β β' h1 h2
-    exact ⟨μ, hμ⟩
 
 end PI.OmFibreUniq.W.Sd

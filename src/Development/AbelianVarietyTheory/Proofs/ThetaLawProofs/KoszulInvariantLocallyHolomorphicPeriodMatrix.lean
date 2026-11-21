@@ -6,18 +6,439 @@ import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.SurjectiveOfCo
 import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.IsIntegralOfIsAbelianSchemeField
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsLevBasisReal
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.DifferentiableOnCoordOfLinearIndependent
-import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.SimpleZerosMoveHolomorphically
-import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.UnifValueJacZeros
+import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DifferentiableOnOfTendstoLocallyUniformlyOn
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.SndFDerivAddSndFDerivIEqZeroOfHarmonicAtLine
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.KosBlockMulKosD
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.KaFormHomogeneous
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsDifferentiableOnTorsSq
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.SubmatrixMulOfVanish
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.SignInsert
-import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.LineBundlePowSectionsEqThetaLevelStatement
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.LineBundlePowSectionsEqThetaLevel
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsHolomorphicThetaOfLevelBasis
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsKoszulTorsionTransversalSplitZerosStatement
-import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsSquareDeterminantComparisonIsAlgClosedStatement
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsSquareDeterminantComparisonIsAlgClosed
 
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.AbLaw
+open GlobalTheory.KeyPow GlobalTheory.KeyKa
+
+open Filter Topology
+
+namespace GlobalTheory.HolZeros
+
+noncomputable def coords {g : ℕ} (τ : Matrix (Fin g) (Fin g) ℂ) (w : Fin g → ℂ) :
+    (Fin g → ℝ) × (Fin g → ℝ) :=
+  ((fun i => (w i).re) - (τ.map Complex.re).mulVec
+      ((τ.map Complex.im)⁻¹.mulVec fun i => (w i).im),
+    (τ.map Complex.im)⁻¹.mulVec fun i => (w i).im)
+
+noncomputable def comb {g : ℕ} (τ : Matrix (Fin g) (Fin g) ℂ) (x : (Fin g → ℝ) × (Fin g → ℝ)) :
+    Fin g → ℂ :=
+  (fun i => (x.1 i : ℂ)) + τ.mulVec (fun i => (x.2 i : ℂ))
+
+theorem re_comb {g : ℕ} (τ : Matrix (Fin g) (Fin g) ℂ) (x : (Fin g → ℝ) × (Fin g → ℝ)) :
+    (fun i => (comb τ x i).re) = x.1 + (τ.map Complex.re).mulVec x.2 := by
+  ext i
+  simp [comb, Matrix.mulVec, dotProduct]
+
+theorem im_comb {g : ℕ} (τ : Matrix (Fin g) (Fin g) ℂ) (x : (Fin g → ℝ) × (Fin g → ℝ)) :
+    (fun i => (comb τ x i).im) = (τ.map Complex.im).mulVec x.2 := by
+  ext i
+  simp [comb, Matrix.mulVec, dotProduct]
+
+theorem coords_comb {g : ℕ} {τ : Matrix (Fin g) (Fin g) ℂ} (h : IsUnit (τ.map Complex.im).det)
+    (x : (Fin g → ℝ) × (Fin g → ℝ)) : coords τ (comb τ x) = x := by
+  simp only [coords, re_comb, im_comb, Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ h,
+    Matrix.one_mulVec]
+  ext1
+  · simp
+  · rfl
+
+theorem comb_coords {g : ℕ} {τ : Matrix (Fin g) (Fin g) ℂ} (h : IsUnit (τ.map Complex.im).det)
+    (w : Fin g → ℂ) : comb τ (coords τ w) = w := by
+  have h1 := re_comb τ (coords τ w)
+  have h2 := im_comb τ (coords τ w)
+  simp only [coords, sub_add_cancel] at h1
+  simp only [coords, Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ h, Matrix.one_mulVec] at h2
+  ext i
+  exact Complex.ext (congrFun h1 i) (congrFun h2 i)
+
+theorem continuousAt_coords {g : ℕ} {P : Type*} [TopologicalSpace P]
+    {τ : P → Matrix (Fin g) (Fin g) ℂ} {w : P → Fin g → ℂ} {p : P} (hτ : Continuous τ)
+    (hw : ContinuousAt w p) (h : IsUnit ((τ p).map Complex.im).det) :
+    ContinuousAt (fun q => coords (τ q) (w q)) p := by
+  have him : Continuous fun q => (τ q).map Complex.im := hτ.matrix_map Complex.continuous_im
+  have hre : Continuous fun q => (τ q).map Complex.re := hτ.matrix_map Complex.continuous_re
+  have hinv : ContinuousAt (fun q => ((τ q).map Complex.im)⁻¹) p := by
+    refine ContinuousAt.comp (f := fun q => (τ q).map Complex.im) ?_ him.continuousAt
+    refine continuousAt_matrix_inv _ ?_
+    rw [Ring.inverse_eq_inv']
+    exact continuousAt_inv₀ h.ne_zero
+  have hmv : Continuous fun x : Matrix (Fin g) (Fin g) ℝ × (Fin g → ℝ) => x.1.mulVec x.2 :=
+    continuous_fst.matrix_mulVec continuous_snd
+  have hwi : ContinuousAt (fun q i => (w q i).im) p :=
+    continuousAt_pi.2 fun i => Complex.continuous_im.continuousAt.comp (continuousAt_pi.1 hw i)
+  have hwr : ContinuousAt (fun q i => (w q i).re) p :=
+    continuousAt_pi.2 fun i => Complex.continuous_re.continuousAt.comp (continuousAt_pi.1 hw i)
+  have hb := hmv.continuousAt.comp (hinv.prodMk hwi)
+  exact (hwr.sub (hmv.continuousAt.comp (hre.continuousAt.prodMk hb))).prodMk hb
+
+theorem continuous_comb {g : ℕ} {P : Type*} [TopologicalSpace P]
+    {τ : P → Matrix (Fin g) (Fin g) ℂ} {x : P → (Fin g → ℝ) × (Fin g → ℝ)} (hτ : Continuous τ)
+    (hx : Continuous x) : Continuous fun q => comb (τ q) (x q) := by
+  unfold comb
+  exact (by fun_prop : Continuous fun q i => ((x q).1 i : ℂ)).add
+    (hτ.matrix_mulVec (by fun_prop))
+
+theorem exists_implicit {g : ℕ} {P : Type*} [NormedAddCommGroup P] [NormedSpace ℂ P]
+    [CompleteSpace P] (F : Fin g → P → (Fin g → ℂ) → ℂ) (p₀ : P) (z₀ : Fin g → ℂ)
+    (hF : ∀ i, ContDiffAt ℂ 1 (fun q : P × (Fin g → ℂ) => F i q.1 q.2) (p₀, z₀))
+    (h0 : ∀ i, F i p₀ z₀ = 0)
+    (hd : (Matrix.of fun i k => fderiv ℂ (F i p₀) z₀ (Pi.single k 1)).det ≠ 0) :
+    ∃ z : P → Fin g → ℂ, z p₀ = z₀ ∧ (∀ᶠ p in 𝓝 p₀, DifferentiableAt ℂ z p) ∧
+      (∀ᶠ p in 𝓝 p₀, ∀ i, F i p (z p) = 0) ∧
+      (∀ᶠ p in 𝓝 p₀, (Matrix.of fun i k => fderiv ℂ (F i p) (z p) (Pi.single k 1)).det ≠ 0) ∧
+      ∀ᶠ q in 𝓝 (p₀, z₀), (∀ i, F i q.1 q.2 = 0) → z q.1 = q.2 := by
+  set f : P × (Fin g → ℂ) → Fin g → ℂ := fun q i => F i q.1 q.2 with hf
+  have cdf : ContDiffAt ℂ 1 f (p₀, z₀) := contDiffAt_pi.2 hF
+  have key : ∀ q : P × (Fin g → ℂ), DifferentiableAt ℂ f q → ∀ i v,
+      fderiv ℂ (F i q.1) q.2 v = fderiv ℂ f q (0, v) i := by
+    intro q hq i v
+    have h1 := HasFDerivAt.comp (f := fun y => (q.1, y)) q.2
+      (hasFDerivAt_pi'.1 hq.hasFDerivAt i) (hasFDerivAt_prodMk_right (𝕜 := ℂ) q.1 q.2)
+    have h2 : fderiv ℂ (F i q.1) q.2 = _ := h1.fderiv
+    rw [h2]
+    simp
+  have hinv : (fderiv ℂ f (p₀, z₀) ∘L ContinuousLinearMap.inr ℂ P (Fin g → ℂ)).IsInvertible := by
+    set L := fderiv ℂ f (p₀, z₀) ∘L ContinuousLinearMap.inr ℂ P (Fin g → ℂ) with hL
+    have hdet : L.det ≠ 0 := by
+      rw [ContinuousLinearMap.det, ← LinearMap.det_toMatrix' ]
+      convert hd using 2
+      ext i k
+      rw [Matrix.of_apply, key (p₀, z₀) (cdf.differentiableAt one_ne_zero)]
+      simp [hL, LinearMap.toMatrix'_apply]
+    exact ⟨L.toContinuousLinearEquivOfDetNeZero hdet, rfl⟩
+  have hf0 : f (p₀, z₀) = 0 := funext h0
+  have hz := cdf.contDiffAt_implicitFunction one_ne_zero hinv
+  have hz0 := cdf.implicitFunction_apply_self one_ne_zero hinv
+  set z := cdf.implicitFunction one_ne_zero hinv with hzdef
+  refine ⟨z, hz0, ?_, ?_, ?_, ?_⟩
+  · exact (hz.eventually (by simp)).mono fun p hp => hp.differentiableAt one_ne_zero
+  · filter_upwards [cdf.eventually_apply_implicitFunction one_ne_zero hinv] with p hp i
+    exact congrFun (hp.trans hf0) i
+  · have ht : Tendsto (fun p => (p, z p)) (𝓝 p₀) (𝓝 (p₀, z₀)) := by
+      have := (continuousAt_id.prodMk hz.continuousAt).tendsto
+      simp only [id] at this hz0
+      rwa [hz0] at this
+    have hc : ContinuousAt (fderiv ℂ f) (p₀, z₀) := cdf.continuousAt_fderiv one_ne_zero
+    have hc2 : ContinuousAt (fun q => (Matrix.of fun i k =>
+        fderiv ℂ f q (0, Pi.single k 1) i).det) (p₀, z₀) := by
+      refine (continuous_id.matrix_det).continuousAt.comp (f := fun q => (Matrix.of fun i k =>
+        fderiv ℂ f q (0, Pi.single k 1) i)) ?_
+      refine continuousAt_pi.2 fun i => continuousAt_pi.2 fun k => ?_
+      exact continuousAt_pi.1 (hc.clm_apply continuousAt_const) i
+    have hne : ∀ᶠ q in 𝓝 (p₀, z₀), (Matrix.of fun i k =>
+        fderiv ℂ f q (0, Pi.single k 1) i).det ≠ 0 := by
+      refine hc2.eventually_ne ?_
+      simpa only [← key (p₀, z₀) (cdf.differentiableAt one_ne_zero)] using hd
+    filter_upwards [ht.eventually hne, ht.eventually (cdf.eventually (by simp))] with p h1 h2
+    simpa only [← key (p, z p) (h2.differentiableAt one_ne_zero)] using h1
+  · filter_upwards [cdf.eventually_apply_eq_iff_implicitFunction one_ne_zero hinv] with q hq h
+    exact hq.1 ((funext h).trans hf0.symm)
+
+theorem comb_add {g : ℕ} (τ : Matrix (Fin g) (Fin g) ℂ) (x y : (Fin g → ℝ) × (Fin g → ℝ)) :
+    comb τ (x + y) = comb τ x + comb τ y := by
+  ext i
+  simp [comb, Matrix.mulVec, dotProduct, mul_add, Finset.sum_add_distrib]
+  ring
+
+theorem comb_int {g : ℕ} (τ : Matrix (Fin g) (Fin g) ℂ) (m m' : Fin g → ℤ) :
+    comb τ (fun i => (m i : ℝ), fun i => (m' i : ℝ)) =
+      (fun i => (m i : ℂ)) + τ.mulVec (fun i => (m' i : ℂ)) := by
+  simp [comb]
+
+theorem IsLevel.zero_iff {g : ℕ} {τ : Matrix (Fin g) (Fin g) ℂ} {a b : Fin g → ℂ} {n : ℕ}
+    {F : (Fin g → ℂ) → ℂ} (h : IsLevel τ a b n F) (m m' : Fin g → ℤ) (z : Fin g → ℂ) :
+    F (z + ((fun i => (m i : ℂ)) + τ.mulVec (fun i => (m' i : ℂ)))) = 0 ↔ F z = 0 := by
+  rw [h.2, mul_eq_zero, or_iff_right (pow_ne_zero _ (Complex.exp_ne_zero _))]
+
+theorem simple_zeros_move_holomorphically :
+    ∀ (g n d : ℕ) (a b : Fin g → ℂ) (F : Fin g → (Fin g → Fin g → ℂ) → (Fin g → ℂ) → ℂ) (p₀ : (Fin g → Fin g → ℂ)) (z₀ : Fin d → Fin g → ℂ), p₀ ∈ Key.phDom g → (∀ i, HolFam (Key.phDom g) (F i)) → (∀ i, ∀ p ∈ Key.phDom g, IsLevel (per p) a b n (F i p)) → let Good : (Fin g → Fin g → ℂ) → (Fin d → Fin g → ℂ) → Prop := fun p z => (∀ e i, F i p (z e) = 0) ∧ (∀ e, (Matrix.of fun i k => fderiv ℂ (F i p) (z e) (Pi.single k 1)).det ≠ 0) ∧ (∀ e e' (m m' : Fin g → ℤ), z e = z e' + ((fun i => (m i : ℂ)) + (per p).mulVec (fun i => (m' i : ℂ))) → e = e') ∧ ∀ y, (∀ i, F i p y = 0) → ∃ (e : Fin d) (m m' : Fin g → ℤ), y = z e + ((fun i => (m i : ℂ)) + (per p).mulVec (fun i => (m' i : ℂ))); Good p₀ z₀ → ∃ (W : Set (Fin g → Fin g → ℂ)) (z : (Fin g → Fin g → ℂ) → Fin d → Fin g → ℂ), IsOpen W ∧ p₀ ∈ W ∧ W ⊆ Key.phDom g ∧ z p₀ = z₀ ∧ DifferentiableOn ℂ z W ∧ ∀ p ∈ W, Good p (z p) := by
+  intro g n d a b F p₀ z₀ hp₀ hF hL Good hG
+  obtain ⟨h0, hd, hdist, hex⟩ := hG
+  have hdom : Key.phDom g ∈ 𝓝 p₀ := (GlobalTheory.isOpen_phDom g).mem_nhds hp₀
+  have hcd : ∀ i y, ContDiffAt ℂ 1
+      (fun q : (Fin g → Fin g → ℂ) × (Fin g → ℂ) => F i q.1 q.2) (p₀, y) := fun i y =>
+    GlobalTheory.SCV.contDiffAt_of_differentiableOn (hF i) (prod_mem_nhds hdom univ_mem) 1
+  choose ζ hζ0 hζd hζz hζj hζu using fun e =>
+    exists_implicit F p₀ (z₀ e) (fun i => hcd i _) (h0 e) (hd e)
+  have hτ : Continuous fun p : Fin g → Fin g → ℂ => per p :=
+    GlobalTheory.differentiable_phSym_coords.continuous
+  have hun : ∀ p ∈ Key.phDom g, IsUnit ((per p).map Complex.im).det := fun p hp =>
+    (Matrix.isUnit_iff_isUnit_det _).1 hp.2.isUnit
+
+  have hS : IsClosed {x : (Fin g → ℝ) × (Fin g → ℝ) | ∀ i,
+      x.1 i ∈ Set.range ((↑) : ℤ → ℝ) ∧ x.2 i ∈ Set.range ((↑) : ℤ → ℝ)} := by
+    simp only [Set.setOf_forall]
+    refine isClosed_iInter fun i => IsClosed.inter ?_ ?_
+    · exact Int.isClosedEmbedding_coe_real.isClosed_range.preimage
+        (f := fun x : (Fin g → ℝ) × (Fin g → ℝ) => x.1 i) (by fun_prop)
+    · exact Int.isClosedEmbedding_coe_real.isClosed_range.preimage
+        (f := fun x : (Fin g → ℝ) × (Fin g → ℝ) => x.2 i) (by fun_prop)
+  have hD : ∀ e e', ∀ᶠ p in 𝓝 p₀, ∀ m m' : Fin g → ℤ, ζ e p = ζ e' p +
+      ((fun i => (m i : ℂ)) + (per p).mulVec (fun i => (m' i : ℂ))) → e = e' := by
+    intro e e'
+    by_cases hee : e = e'
+    · exact Eventually.of_forall fun _ _ _ _ => hee
+    have hc := continuousAt_coords (w := fun p => ζ e p - ζ e' p) hτ
+      ((hζd e).self_of_nhds.continuousAt.sub (hζd e').self_of_nhds.continuousAt) (hun p₀ hp₀)
+    have hn : coords (per p₀) (ζ e p₀ - ζ e' p₀) ∈ {x : (Fin g → ℝ) × (Fin g → ℝ) | ∀ i,
+        x.1 i ∈ Set.range ((↑) : ℤ → ℝ) ∧ x.2 i ∈ Set.range ((↑) : ℤ → ℝ)}ᶜ := by
+      intro h
+      choose m hm using fun i => (h i).1
+      choose m' hm' using fun i => (h i).2
+      refine hee (hdist e e' m m' ?_)
+      have h1 : coords (per p₀) (ζ e p₀ - ζ e' p₀) = (fun i => (m i : ℝ), fun i => (m' i : ℝ)) :=
+        Prod.ext (funext fun i => (hm i).symm) (funext fun i => (hm' i).symm)
+      rw [← comb_int, ← h1, comb_coords (hun p₀ hp₀), hζ0, hζ0, add_sub_cancel]
+    filter_upwards [hc.eventually (hS.isOpen_compl.mem_nhds hn), hdom] with p hp hpd m m' h
+    refine absurd ?_ hp
+    rw [h, add_sub_cancel_left, ← comb_int, coords_comb (hun p hpd)]
+    exact fun i => ⟨⟨m i, rfl⟩, ⟨m' i, rfl⟩⟩
+
+  have hK : IsCompact (Set.Icc (0 : (Fin g → ℝ) × (Fin g → ℝ)) 1) := isCompact_Icc
+  have hcc : Continuous fun q : (Fin g → Fin g → ℂ) × ((Fin g → ℝ) × (Fin g → ℝ)) =>
+      comb (per q.1) q.2 := continuous_comb (hτ.comp continuous_fst) continuous_snd
+  have hE : ∀ᶠ p in 𝓝 p₀, ∀ x ∈ Set.Icc (0 : (Fin g → ℝ) × (Fin g → ℝ)) 1,
+      (∀ i, F i p (comb (per p) x) = 0) → ∃ (e : Fin d) (m m' : Fin g → ℤ), comb (per p) x =
+        ζ e p + ((fun i => (m i : ℂ)) + (per p).mulVec (fun i => (m' i : ℂ))) := by
+    refine hK.eventually_forall_of_forall_eventually fun x₀ _ => ?_
+    by_cases hz : ∀ i, F i p₀ (comb (per p₀) x₀) = 0
+    · obtain ⟨e, m, m', he⟩ := hex _ hz
+      have hc2 : Continuous fun q : (Fin g → Fin g → ℂ) × ((Fin g → ℝ) × (Fin g → ℝ)) =>
+          (q.1, comb (per q.1) q.2 -
+            comb (per q.1) (fun i => (m i : ℝ), fun i => (m' i : ℝ))) :=
+        continuous_fst.prodMk (hcc.sub (continuous_comb (hτ.comp continuous_fst) continuous_const))
+      have ht := hc2.tendsto (p₀, x₀)
+      simp only [comb_int, he, add_sub_cancel_right] at ht
+      filter_upwards [ht.eventually (hζu e), continuousAt_fst.eventually
+        (show ∀ᶠ p in 𝓝 (p₀, x₀).1, p ∈ Key.phDom g from hdom)] with q hq hqd hq0
+      refine ⟨e, m, m', ?_⟩
+      rw [hq fun i => ?_, sub_add_cancel]
+      rw [← IsLevel.zero_iff (hL i q.1 hqd) m m', sub_add_cancel]
+      exact hq0 i
+    · push Not at hz
+      obtain ⟨i, hi⟩ := hz
+      have hc : ContinuousAt (fun q : (Fin g → Fin g → ℂ) × ((Fin g → ℝ) × (Fin g → ℝ)) =>
+          F i q.1 (comb (per q.1) q.2)) (p₀, x₀) :=
+        ContinuousAt.comp (f := fun q : (Fin g → Fin g → ℂ) × ((Fin g → ℝ) × (Fin g → ℝ)) =>
+          (q.1, comb (per q.1) q.2)) (x := (p₀, x₀)) (hcd i (comb (per p₀) x₀)).continuousAt
+          (continuous_fst.prodMk hcc).continuousAt
+      filter_upwards [hc.eventually_ne hi] with q hq h
+      exact absurd (h i) hq
+  have hall : ∀ᶠ p in 𝓝 p₀, p ∈ Key.phDom g ∧ DifferentiableAt ℂ (fun p e => ζ e p) p ∧
+      Good p (fun e => ζ e p) := by
+    filter_upwards [hdom, eventually_all.2 hζd, eventually_all.2 hζz, eventually_all.2 hζj,
+      eventually_all.2 fun e => eventually_all.2 (hD e), hE] with p hp h1 h2 h3 h4 h5
+    refine ⟨hp, differentiableAt_pi.2 h1, h2, h3, h4, fun y hy => ?_⟩
+    set c := coords (per p) y with hc
+    let x : (Fin g → ℝ) × (Fin g → ℝ) := (fun i => Int.fract (c.1 i), fun i => Int.fract (c.2 i))
+    have hy' : y = comb (per p) x + ((fun i => ((⌊c.1 i⌋ : ℤ) : ℂ)) +
+        (per p).mulVec (fun i => ((⌊c.2 i⌋ : ℤ) : ℂ))) := by
+      rw [← comb_int, ← comb_add, ← comb_coords (hun p hp) y, ← hc]
+      congr 1
+      ext i <;> simp [x]
+    obtain ⟨e, m, m', he⟩ := h5 x
+      ⟨⟨fun i => Int.fract_nonneg _, fun i => Int.fract_nonneg _⟩,
+        ⟨fun i => (Int.fract_lt_one _).le, fun i => (Int.fract_lt_one _).le⟩⟩ fun i => by
+      rw [← IsLevel.zero_iff (hL i p hp) (fun i => ⌊c.1 i⌋) (fun i => ⌊c.2 i⌋), ← hy']
+      exact hy i
+    refine ⟨e, fun i => m i + ⌊c.1 i⌋, fun i => m' i + ⌊c.2 i⌋, ?_⟩
+    rw [hy', he, add_assoc, ← comb_int, ← comb_int, ← comb_int, ← comb_add]
+    congr 2
+    ext i <;> simp
+  obtain ⟨W, hW, hWo, hW0⟩ := eventually_nhds_iff.1 hall
+  exact ⟨W, fun p e => ζ e p, hWo, hW0, fun p hp => (hW p hp).1, funext hζ0,
+    fun p hp => (hW p hp).2.1.differentiableWithinAt, fun p hp => (hW p hp).2.2⟩
+
+end GlobalTheory.HolZeros
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.AbLaw
+open GlobalTheory.KeyPow GlobalTheory.KeyKa
+
+noncomputable section
+
+namespace GlobalTheory.UnifJac
+
+theorem valT_comp {T : Type} [CommRing T] {X Y : Scheme.{0}} (w : Sp T ⟶ X) (φ : X ⟶ Y) (U : Y.Opens)
+    (f : Γ(Y, U)) : valT (w ≫ φ) U f = valT w (φ ⁻¹ᵁ U) ((φ.app U).hom f) := by
+  unfold valT
+  by_cases h : ⊤ ≤ w ⁻¹ᵁ (φ ⁻¹ᵁ U)
+  · rw [dif_pos h, dif_pos (show ⊤ ≤ (w ≫ φ) ⁻¹ᵁ U from h)]
+    rfl
+  · rw [dif_neg h, dif_neg (show ¬ ⊤ ≤ (w ≫ φ) ⁻¹ᵁ U from h)]
+
+variable {A : Over (Sp ℂ)} [GrpObj A]
+
+theorem translate_left {T : Over (Sp ℂ)} (z : 𝟙_ (Over (Sp ℂ)) ⟶ A) (v : T ⟶ A) :
+    ((toUnit T ≫ z) * v).left = v.left ≫ ((toUnit A ≫ z) * 𝟙 A).left := by
+  rw [← Over.comp_left, MonObj.comp_mul, Category.comp_id, ← Category.assoc, comp_toUnit]
+
+theorem le_of_isTangent {v : epsR ℂ ⟶ A} (hv : IsTangent v) (U : A.left.Opens)
+    (h : ⊤ ≤ η[A].left ⁻¹ᵁ U) : ⊤ ≤ v.left ⁻¹ᵁ U := by
+  intro p _
+  have hp : p = spMap (TrivSqZeroExt.fstHom ℂ ℂ ℂ).toRingHom (IsLocalRing.closedPoint ℂ) := by
+    have : Subsingleton (PrimeSpectrum (DualNumber ℂ)) := by
+      refine ⟨fun a b => ?_⟩
+      have hn : ∀ c : PrimeSpectrum (DualNumber ℂ), c.asIdeal = IsLocalRing.maximalIdeal _ := fun c => by
+        refine le_antisymm (IsLocalRing.le_maximalIdeal c.isPrime.ne_top) ?_
+        rw [DualNumber.maximalIdeal_eq_span_singleton_eps, Ideal.span_singleton_le_iff_mem]
+        exact c.isPrime.mem_of_pow_mem 2 (by rw [sq, DualNumber.eps_mul_eps]; exact zero_mem _)
+      exact PrimeSpectrum.ext ((hn a).trans (hn b).symm)
+    exact Subsingleton.elim (α := PrimeSpectrum (DualNumber ℂ)) _ _
+  have h1 : η[A].left (IsLocalRing.closedPoint ℂ) ∈ U := h (show _ ∈ (⊤ : (Sp ℂ).Opens) from trivial)
+  rw [← hv] at h1
+  rw [hp]
+  exact h1
+
+variable {L : LB A.left} {g : ℕ} (u : HolUnif A L g)
+
+theorem ex_zero : u.ex 0 = 1 := (u.ker 0).2 u.Λ.zero_mem
+
+theorem ex_translate (z w : Fin g → ℂ) :
+    (u.ex w).left ≫ ((toUnit A ≫ u.ex z) * 𝟙 A).left = (u.ex (z + w)).left := by
+  rw [← translate_left, u.ex_add, toUnit_unique (toUnit (𝟙_ (Over (Sp ℂ)))) (𝟙 _), Category.id_comp]
+
+theorem snd_valT_translate {v : epsR ℂ ⟶ A} (hv : IsTangent v) {w : Fin g → ℂ} (hd : u.IsDiff w v)
+    (z : Fin g → ℂ) (U : A.left.Opens) (hz : ⊤ ≤ (u.ex z).left ⁻¹ᵁ U) (f : Γ(A.left, U)) :
+    TrivSqZeroExt.snd (valT (T := DualNumber ℂ) ((toUnit (epsR ℂ) ≫ u.ex z) * v).left U f) =
+      fderiv ℂ (fun y => valAt' (u.ex y).left U f) z w := by
+  have h0 : ⊤ ≤ η[A].left ⁻¹ᵁ (((toUnit A ≫ u.ex z) * 𝟙 A).left ⁻¹ᵁ U) := by
+    have e := ex_translate u z 0
+    rw [add_zero, ex_zero] at e
+    rw [← e] at hz
+    have e1 : (1 : 𝟙_ (Over (Sp ℂ)) ⟶ A) = η[A] := by
+      rw [Hom.one_def, toUnit_unique (toUnit (𝟙_ (Over (Sp ℂ)))) (𝟙 _), Category.id_comp]
+    rw [e1] at hz
+    exact hz
+  have h1 := le_of_isTangent hv _ h0
+  rw [translate_left]
+  refine (congrArg _ (valT_comp _ _ _ _)).trans ?_
+  refine (congrArg TrivSqZeroExt.snd (dif_pos h1)).trans ((hd _ h1 _).trans ?_)
+  have e : (fun y => valAt' (u.ex y).left (((toUnit A ≫ u.ex z) * 𝟙 A).left ⁻¹ᵁ U)
+      ((((toUnit A ≫ u.ex z) * 𝟙 A).left.app U).hom f)) = fun y => valAt' (u.ex (z + y)).left U f := by
+    funext y
+    rw [← ex_translate]
+    exact (valT_comp (T := ℂ) _ _ _ _).symm
+  rw [e, fderiv_comp_add_left (f := fun y => valAt' (u.ex y).left U f), add_zero]
+
+theorem fderiv_val (c : L.ι) (f : Γ(A.left, L.U c)) (F : (Fin g → ℂ) → ℂ) (hF : Differentiable ℂ F) (n : ℕ)
+    (hf : ∀ y, ⊤ ≤ (u.ex y).left ⁻¹ᵁ L.U c → valAt' (u.ex y).left (L.U c) f = F y * u.fr c y ^ n)
+    (z : Fin g → ℂ) (hz : ⊤ ≤ (u.ex z).left ⁻¹ᵁ L.U c) (h0 : F z = 0) (w : Fin g → ℂ) :
+    fderiv ℂ (fun y => valAt' (u.ex y).left (L.U c) f) z w = u.fr c z ^ n * fderiv ℂ F z w := by
+  have hn := (u.hol (L.U c) f).1.mem_nhds hz
+  have e : (fun y => valAt' (u.ex y).left (L.U c) f) =ᶠ[nhds z] fun y => F y * u.fr c y ^ n :=
+    Filter.eventually_of_mem hn hf
+  have hd : DifferentiableAt ℂ (fun y => u.fr c y ^ n) z := ((u.fr_hol c).differentiableAt hn).pow n
+  rw [e.fderiv_eq, fderiv_fun_mul (hF z) hd, h0]
+  simp
+
+end GlobalTheory.UnifJac
+
+namespace GlobalTheory
+
+open UnifJac in
+
+theorem unif_value_jac_zeros : ThetaUnifAV → ∀ (g : ℕ) (x : KeyIn ℂ) (h : x.P.g = g) (u : HolUnif x.P.A x.P.L g) (τ : Matrix (Fin g) (Fin g) ℂ) (a b : Fin g → ℂ) (n : ℕ) (s : Fin x.P.g → RR x n) (F : Fin x.P.g → (Fin g → ℂ) → ℂ) (z : Fin g → ℂ) (c : x.P.L.ι), Wit x h u τ a b → (∀ i, Differentiable ℂ (F i) ∧ FnPw x u (s i) (F i)) → ⊤ ≤ (u.ex z).left ⁻¹ᵁ x.P.L.U c → (∀ i, valT (T := ℂ) (u.ex z).left (x.P.L.U c) ((s i).f c) = F i z * u.fr c z ^ n) ∧ ((∀ i, F i z = 0) → jac x s (u.ex z) c = u.fr c z ^ (g * n) * (Matrix.of fun i k : Fin x.P.g => (2 * Real.pi * Complex.I)⁻¹ * fderiv ℂ (F i) z (Pi.single (k.cast h) 1)).det) ∧ ∀ (d : ℕ) (zs : Fin d → Fin g → ℂ), (∀ y, (∀ i, F i y = 0) → ∃ a, ∃ e ∈ u.Λ, y = zs a + e) → ∀ y : x.P.A.left, (∀ i, y ∉ Out.nonzeroLocus (s i)) → ∃ a, ∃ p : Sp ℂ, (u.ex (zs a)).left p = y := by
+  intro _ g x h u τ a b n s F z c hW hF hz
+  refine ⟨fun i => (hF i).2 c z hz, fun h0 => ?_, fun d zs hzs y hy => ?_⟩
+  · subst h
+    unfold jac
+    rw [mul_comm x.P.g n, pow_mul, show (u.fr c z ^ n) ^ x.P.g = (u.fr c z ^ n) ^ Fintype.card (Fin x.P.g) by
+      rw [Fintype.card_fin], ← Matrix.det_smul]
+    congr 1
+    ext i k
+    have hd := hW.2.2.2.2.2 k
+    simp only [Matrix.of_apply, Matrix.smul_apply, smul_eq_mul]
+    refine (snd_valT_translate u (x.basis.1 k) hd z _ hz _).trans ?_
+    refine (fderiv_val u c _ (F i) (hF i).1 n ((hF i).2 c) z hz (h0 i) _).trans ?_
+    rw [show (Pi.single k (2 * Real.pi * Complex.I)⁻¹ : Fin x.P.g → ℂ) =
+      (2 * Real.pi * Complex.I : ℂ)⁻¹ • Pi.single k 1 by rw [← Pi.single_smul, smul_eq_mul, _root_.mul_one], map_smul]
+    rfl
+  · haveI := x.P.isAb.smooth
+    by_contra hne
+    have hcl : IsClosed {y : x.P.A.left | ∃ a, ∃ p : Sp ℂ, (u.ex (zs a)).left p = y} := by
+      have : {y : x.P.A.left | ∃ a, ∃ p : Sp ℂ, (u.ex (zs a)).left p = y} =
+          ⋃ a, Set.range (u.ex (zs a)).left := by
+        ext y; simp
+      rw [this]
+      refine isClosed_iUnion_of_finite fun a => ?_
+      haveI := x.P.isAb.proper
+      have : IsClosedImmersion (u.ex (zs a)).left := by
+        have hw : (u.ex (zs a)).left ≫ x.P.A.hom = 𝟙 _ := Over.w _
+        have : IsClosedImmersion ((u.ex (zs a)).left ≫ x.P.A.hom) := by rw [hw]; infer_instance
+        exact IsClosedImmersion.of_comp _ x.P.A.hom
+      exact (u.ex (zs a)).left.isClosedEmbedding.isClosed_range
+    have hcz : IsClosed {y : x.P.A.left | ∀ i, y ∉ Out.nonzeroLocus (s i)} := by
+      rw [Set.setOf_forall]
+      exact isClosed_iInter fun i => (Out.nonzeroLocus (s i)).isOpen.isClosed_compl
+    obtain ⟨q, hq, hqZ⟩ := ComplexPoints.exists_point_mem x.P.A.hom
+      (hcz.isLocallyClosed.inter hcl.isOpen_compl.isLocallyClosed) ⟨y, hy, hne⟩
+    obtain ⟨w, hw⟩ := u.ex_onto (Over.homMk q hq)
+    have hw' : (u.ex w).left = q := congrArg (fun φ => φ.left) hw
+    let p : Sp ℂ := IsLocalRing.closedPoint ℂ
+    obtain ⟨j, hj⟩ : ∃ j, q p ∈ x.P.L.U j :=
+      TopologicalSpace.Opens.mem_iSup.1 (by rw [x.P.isLB.cover]; trivial)
+    have hj' : ⊤ ≤ q ⁻¹ᵁ x.P.L.U j := (ComplexPoints.top_le_preimage_iff q _ p).2 hj
+    obtain ⟨a', e, he, hwe⟩ := hzs w fun i => by
+      by_contra hi
+      refine (hqZ p).1 i (TopologicalSpace.Opens.mem_iSup.2 ⟨j, ?_⟩)
+      refine (ComplexPoints.top_le_preimage_iff q _ p).1
+        ((ComplexPoints.top_le_preimage_basicOpen_iff q _ hj' _).2 ?_)
+      have hv := (hF i).2 j w (by rw [hw']; exact hj')
+      rw [hw'] at hv
+      exact ((dif_pos hj').symm.trans hv).trans_ne (mul_ne_zero hi (pow_ne_zero _ (u.fr_ne j w (by rw [hw']; exact hj'))))
+    refine (hqZ p).2 ⟨a', p, ?_⟩
+    rw [← hw', hwe, u.ex_add, (u.ker e).2 he, _root_.mul_one]
+
+end GlobalTheory
+
+end
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.AbLaw
+open GlobalTheory.KeyPow GlobalTheory.KeyKa
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lineBundlePow_sections_eq_theta_level : ThetaUnifAV → ∀ (g : ℕ) (x : KeyIn ℂ) (h : x.P.g = g) (u : HolUnif x.P.A x.P.L g) (τ : Matrix (Fin g) (Fin g) ℂ) (a b : Fin g → ℂ) (l : ℕ), charHalf g a b → Wit x h u τ a b → (∀ s : RR x l, ∃! F, IsLevel τ a b l F ∧ FnPw x u s F) ∧ ∀ F, IsLevel τ a b l F → ∃! s : RR x l, FnPw x u s F := by
+  first | exact @GlobalTheory.LevelDict.sections_eq_level | exact GlobalTheory.LevelDict.sections_eq_level | (intros; apply GlobalTheory.LevelDict.sections_eq_level <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.AbLaw
+open GlobalTheory.KeyKa
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_squareDeterminantComparison_isAlgClosed : Out.Laws → ∀ (K : Type) [Field K] [IsAlgClosed K] (x : KeyIn K) (m : ℕ) (al : Matrix (Fin 4) (Fin 4) ℤ) (b : Fin (m ^ x.P.g) → RR x m), (m : K) ≠ 0 → al.transpose * al = (m : ℤ) • (1 : Matrix (Fin 4) (Fin 4) ℤ) → IsBasis x b → ∃ lam, IsSquareDeterminantComparison x m al b lam := by
+  first | exact @GlobalTheory.SimilDet.exists_l2Val | exact GlobalTheory.SimilDet.exists_l2Val | (intros; apply GlobalTheory.SimilDet.exists_l2Val <;> assumption)
+end
+
+section
 section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
@@ -586,3 +1007,4 @@ open GlobalTheory.KeyPow GlobalTheory.KeyKa
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.koszulInvariant_locally_holomorphic_periodMatrix : Out.Laws → ThetaUnifAV → ∀ (g : ℕ) (n l l' : ℕ) (al : ℕ → Matrix (Fin 4) (Fin 4) ℤ) (a b : Fin g → ℂ) (p₀ : (Fin g → Fin g → ℂ)) (x₀ : KeyIn ℂ) (h₀ : x₀.P.g = g) (u₀ : HolUnif x₀.P.A x₀.P.L g) (s₀ : Fin x₀.P.g → RR x₀ n) (κ₀ : ℂˣ), charHalf g a b → admitted g n l l' al → p₀ ∈ Key.phDom g → Wit x₀ h₀ u₀ (per p₀) a b → KaVal x₀ n l l' al s₀ κ₀ → ∃ (W : Set (Fin g → Fin g → ℂ)) (V : (Fin g → Fin g → ℂ) → ℂ), IsOpen W ∧ p₀ ∈ W ∧ W ⊆ Key.phDom g ∧ DifferentiableOn ℂ V W ∧ ∀ p ∈ W, ∀ (x : KeyIn ℂ) (h : x.P.g = g) (u : HolUnif x.P.A x.P.L g), Wit x h u (per p) a b → ∃ (s : Fin x.P.g → RR x n) (κ : ℂˣ), KaVal x n l l' al s κ ∧ (κ : ℂ) = V p := by
   atlas_forward_decl GlobalTheory.KeyKa.KaHol.kaVal_locally_holomorphic
+end
