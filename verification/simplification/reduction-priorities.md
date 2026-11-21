@@ -1,5 +1,7 @@
 # Where to reduce the Lean proof
 
+For the implemented file and declaration reductions, see [module consolidation and pruning results](fold-and-prune.md). The measurements below describe the planning baseline.
+
 The largest reproducible file-count reduction on the current fork is **60,482 files (43.57%)**. The largest mathematical target covers **8,215,997 lines**. The first figure comes from a concrete list of module moves. The second measures code behind a theorem for which a shorter proof is still needed.
 
 The baseline is commit `7bf5b5d67b5369f0fdf403a11f5bae67515c6772`, shared by the fork's main and simplification branches when measured. It has 138,828 tracked Lean files and 16,436,985 newline-terminated source lines. Of these, 138,819 files and 16,436,151 lines are in the import closure of `Main`. The repository totals include the Comparator challenge, theorem checks and cache utilities. Lake dependencies are excluded. All percentages below use the repository totals unless otherwise indicated. [Baseline source](https://github.com/mmmbeer/riemann-hypothesis/tree/7bf5b5d67b5369f0fdf403a11f5bae67515c6772)

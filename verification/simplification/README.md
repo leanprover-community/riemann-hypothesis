@@ -1,5 +1,7 @@
 # Simplification verification
 
+The [module consolidation and pruning results](fold-and-prune.md) record the current source tree, build checks and reproduction commands.
+
 This branch starts with the [Proof Atlas source release](https://riemann.fairway3games.com/simplification)
 derived from [`40e56bab`](https://github.com/leanprover-community/riemann-hypothesis/tree/40e56bab026552e089d7afcfeff08d2defb9c005).
 The release contains 138,819 Lean modules. The fork also carries its existing `src/Challenge.lean`
