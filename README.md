@@ -1,17 +1,17 @@
 # riemann-hypothesis
 
-[![checks](https://github.com/mmmbeer/riemann-hypothesis/actions/workflows/checks.yml/badge.svg?branch=main)](https://github.com/mmmbeer/riemann-hypothesis/actions/workflows/checks.yml)
+[![checks](https://github.com/leanprover-community/riemann-hypothesis/actions/workflows/checks.yml/badge.svg)](https://github.com/leanprover-community/riemann-hypothesis/actions/workflows/checks.yml)
 
-A [Comparator](https://github.com/leanprover/comparator) setup for the Lean formalization that
-claims a proof of the Riemann Hypothesis and of GRH for Dirichlet L-functions, announced on
+A [Comparator](https://github.com/leanprover/comparator) setup and community build cache for the Lean formalization that
+claims a proof of the Riemann Hypothesis, and of GRH for Dirichlet L-functions, announced on
 2026-11-20 at <https://alpo.ge/remark.pdf>.
 
-This fork contains the [Proof Atlas simplification](https://riemann.fairway3games.com/simplification).
-The current tree has 78,351 tracked Lean files. Main reaches 78,342 of them.
-The five theorem declarations in `src/Main.lean` match the submission. A complete build
-and axiom audit of the reduced proof are pending. [Row proof and verification](verification/simplification/row-proof.md) · [Earlier reductions](verification/simplification/fold-and-prune.md).
+This revision simplifies the submitted Lean source. The project modules reachable from `Main`
+fall from 175,187 to 78,342. All five theorem declarations and their proof bodies in `Main.lean`
+match the original submission. A clean build of the reduced `Main`, its five axiom checks and
+Comparator verification are pending. [Changes, measurements and targeted checks](verification/simplification/README.md)
 
-The fork also includes the Comparator setup and the upstream cache infrastructure.
+The repository includes these verification and build tools.
 
 | File | What it is |
 |---|---|
@@ -21,19 +21,27 @@ The fork also includes the Comparator setup and the upstream cache infrastructur
 | [`verification/`](verification/NOTES.md) | our notes, and the results once there are some |
 | [`scripts/`](scripts/) | public Lake cache configuration and reproducible bootstrap/publishing tools |
 
-## Build cache
+## Using the build cache
 
-Fetch the Mathlib cache before building the simplified source:
+For a fresh build of the reduced source, fetch the pinned Mathlib cache.
 
 ```bash
 lake exe mathlib/cache get
+lake build Main
+lake env lean CheckMain.lean
 ```
 
-The upstream `lake exe cache get` command also looks for project artifacts that match the
-current source and falls back to the cache for the original submission. That fallback requires
-the original source tree. The [upstream cache notes](verification/CACHE.md) describe how the
-community publishes and restores project artifacts. Use the clean-build instructions below
-for proof verification.
+The project's `lake exe cache get` command looks for compiled artifacts that match the current
+source, configuration, dependency manifest and toolchain. Its fallback archive requires the
+original source tree. Use the clean-build procedure below to verify this revision independently.
+
+The community cache includes outputs from **untrusted pull requests and volunteer machines**.
+Download integrity checks do not verify proofs. Use an independent fresh build when you need
+to trust the result.
+
+The [cache notes](verification/CACHE.md) describe the pinned published archive, the cheaper
+bootstrap that reuses its proofs, and how to produce and publish future caches. For independent
+verification, follow the clean-build instructions below.
 
 ## What is claimed
 
@@ -76,9 +84,9 @@ What to know before running it:
   only from Lean 4.35. So the proof is built and exported with `v4.33.1` and judged with
   `v4.36.0`. The exporter is [lean4export](https://github.com/leanprover/lean4export) at tag
   `v4.33.0`, built with Lean `v4.33.1`.
-- **Challenge first.** Export `Challenge` from a clean clone before compiling the proof.
-  The hosted check builds `Challenge` against Mathlib. Step 1 creates the export used by
-  Comparator.
+- **Challenge first.** Compiling the submission runs its code, so the challenge is exported
+  where none of that code has been compiled. The hosted check builds the Mathlib-only
+  challenge. Step 1 above produces the challenge export for the independent comparison.
 - **Cost.** Hours on a large machine, about 100 GB of disk, and a lot of memory for step 4.
 
 The [notes](verification/NOTES.md) have the details: where the source came from, the Lean
@@ -87,5 +95,5 @@ limits of what a passing run shows.
 
 ## License
 
-The submission belongs to its author and was published without a license. This fork presents
-the simplified source for verification.
+The submission belongs to its author and was published without a license. This revision contains
+a derived source tree for verification.

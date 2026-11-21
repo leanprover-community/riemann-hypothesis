@@ -31,7 +31,6 @@ concurrency:
 
 jobs:
   resolve:
-    if: github.repository == 'leanprover-community/riemann-hypothesis'
     runs-on: ubuntu-latest
     outputs:
       candidate: ${{ steps.resolve.outputs.candidate }}
