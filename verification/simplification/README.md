@@ -10,6 +10,8 @@ The branch applies the [upstream issue #3 correction](https://github.com/leanpro
 to remove `plugAll` and its sole explicit caller `everyE₂`. The five-declaration `EveryCharacter`
 chain is retained, including `every_character_of_green_v_win`.
 
+The [ranked reduction analysis](reduction-priorities.md) measures further cuts against the reconciled fork and records the Lean pilot checks.
+
 The receipts below apply to the Atlas archive before those two declarations were removed.
 
 - [Release verification](release-verification.json) records the archive digest, source reduction,
